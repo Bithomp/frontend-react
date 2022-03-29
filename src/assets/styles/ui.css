@@ -1,0 +1,39 @@
+:root {
+  --background1: #002C37;
+  --background2: white;
+  --text-primary: white;
+  --text-secondary: black;
+  --accent: #00B1C1;
+  --accent2: #006B7D;
+}
+
+[data-theme='dark'] {
+  --background1: #002C37;
+  --background2: #002C37;
+  --accent: white;
+  --accent2: #006B7D;
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.body {
+  background-color: var(--background2);
+  min-height: 800px;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+}
+
+a {
+  color: var(--accent);
+}
+
+@import "header.css";
