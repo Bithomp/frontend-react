@@ -6,16 +6,17 @@ function Header({theme, switchTheme}) {
       <img src={logo} className="header-logo" alt="logo" />
       <div className="header-menu-left">
         <a href="/explorer/">Explorer</a>
-        <div class="menu-dropdown">
-          <button class="menu-dropdown-button">Services</button>
-          <div class="menu-dropdown-content">
-            <a href="/username">Usernames</a>
+        <div className="menu-dropdown">
+          <button className="menu-dropdown-button">Services</button>
+          <div className="menu-dropdown-content">
+            <a href="/username">Username registartion</a>
             <a href="/alerts">XRPL Price Alerts</a>
+            <a href="https://docs.bithomp.com">API</a>
           </div>
         </div>
-        <div class="menu-dropdown">
-          <button class="menu-dropdown-button">Tools</button>
-          <div class="menu-dropdown-content">
+        <div className="menu-dropdown">
+          <button className="menu-dropdown-button">Tools</button>
+          <div className="menu-dropdown-content">
             <a href="/submit/">Submit offline transaction</a>
             <a href="https://test.bithomp.com">Bithomp (Testnet)</a>
             <a href="https://xls20.bithomp.com">Bithomp (XLS-20)</a>

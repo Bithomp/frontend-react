@@ -1,0 +1,36 @@
+footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 224px;
+  background-color: var(--background3);
+}
+
+.footer {
+  position: relative;
+}
+
+.footer-menu {
+  position: absolute;
+  top: 20px;
+  left: 80px;
+}
+
+.footer-menu-column {
+  display: inline-block;
+  margin-right: 60px;
+  vertical-align: top;
+}
+
+.footer-menu a {
+  display: block;
+  margin: 5px 0;
+  text-decoration: none;
+}
+
+.footer-menu-header {
+  color: var(--text2);
+  text-transform: uppercase;
+  font-size: 12px;
+  line-height: 17px;
+}

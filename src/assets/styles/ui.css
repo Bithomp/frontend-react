@@ -1,16 +1,22 @@
 :root {
   --background1: #002C37;
   --background2: white;
-  --text-primary: white;
-  --text-secondary: black;
-  --accent: #00B1C1;
+  --background3: #333333;
+  --text1: black;
+  --text2: white;
+  --accent1: #00B1C1;
+  --accent1-hover: #79BFCB;
   --accent2: #006B7D;
 }
 
 [data-theme='dark'] {
   --background1: #002C37;
   --background2: #002C37;
-  --accent: white;
+  --background3: #333333;
+  --text1: white;
+  --text2: white;
+  --accent1: #00B1C1;
+  --accent1-hover: #79BFCB;
   --accent2: #006B7D;
 }
 
@@ -25,7 +31,14 @@ body {
 
 .body {
   background-color: var(--background2);
-  min-height: 800px;
+  color: var(--text1);
+  position: relative;
+  min-height: 100vh;
+}
+
+.content {
+  padding-top: 81px;
+  padding-bottom: 143px;
 }
 
 code {
@@ -33,7 +46,12 @@ code {
 }
 
 a {
-  color: var(--accent);
+  color: var(--accent1);
+}
+
+a:hover {
+  color: var(--accent1-hover);
 }
 
 @import "header.css";
+@import "footer.css";
