@@ -1,5 +1,6 @@
 .switch {
   display: inline-block;
+  vertical-align: middle;
 }
 
 .switch-container {

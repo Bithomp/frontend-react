@@ -20,12 +20,12 @@ header {
 .header-menu-left,
 .header-menu-right {
   position: absolute;
-  top: 34px;
   font-size: 16px;
   line-height: 18px;
 }
 
 .header-menu-left {
+  top: 34px;
   left: 250px;
 }
 
@@ -37,10 +37,6 @@ header {
 
 .header-menu-left a:hover {
   color: var(--accent1);
-}
-
-.header-menu-right {
-  right: 30px;
 }
 
 /* style menu-dropdown starts */
@@ -102,9 +98,15 @@ header {
 
 /* style menu-dropdown ends */
 
+.header-menu-right {
+  right: 80px;
+  top: 28px;
+}
+
 .header-menu-right a {
   text-decoration: none;
-  margin: 0 10px;
+  margin-right: 20px;
+  vertical-align: middle;
 }
 
 .header-under {
