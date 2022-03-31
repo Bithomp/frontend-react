@@ -21,7 +21,7 @@ header {
 .header-menu-right {
   position: absolute;
   top: 34px;
-  font-size: 14px;
+  font-size: 16px;
   line-height: 18px;
 }
 
@@ -49,6 +49,7 @@ header {
   border: none;
   cursor: pointer;
   background-color: var(--background1);
+  font-size: 16px;
 }
 
 .menu-dropdown {

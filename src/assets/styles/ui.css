@@ -31,6 +31,7 @@ body {
 
 .body {
   background-color: var(--background2);
+  transition: background-color .5s, color .5s;
   color: var(--text1);
   position: relative;
   min-height: 100vh;
@@ -54,4 +55,5 @@ a:hover {
 }
 
 @import "header.css";
+@import "switch.css";
 @import "footer.css";

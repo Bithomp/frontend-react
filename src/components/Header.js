@@ -1,4 +1,5 @@
-import logo from '../assets/images/logo.svg';
+import logo from "../assets/images/logo.svg";
+import Switch from "./Switch";
 
 function Header({theme, switchTheme}) {
   return (
@@ -28,7 +29,7 @@ function Header({theme, switchTheme}) {
       </div>
       <div className="header-menu-right">
         <a href="/explorer/?hwlogin">Sign in</a>
-        <button onClick={switchTheme}>switch to {theme === 'light' ? 'dark' : 'light'}</button>
+        <Switch theme={theme} switchTheme={switchTheme} />
       </div>
       <div className="header-under"></div>
     </header>

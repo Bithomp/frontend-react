@@ -1,0 +1,38 @@
+.switch {
+  display: inline-block;
+}
+
+.switch-container {
+  display: flex;
+  margin-left: auto;
+  width: 52px;
+  height: 30px;
+  background-color: var(--background3);
+  border: 1px solid var(--accent1);
+  border-radius: 30px;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 5px;
+  cursor: pointer;
+  position: relative;
+  box-sizing: border-box;
+}
+
+.switch-container .switch-icon {
+  width: 15px;
+  height: 15px;
+}
+
+.switcher {
+  position: absolute;
+  height: 20px;
+  width: 20px;
+  border-radius: 50%;
+  background-color: #fff;
+  transition: transform .5s, background-color .5s;
+  will-change: transform;
+}
+
+.switch-container.dark .switcher {
+  transform: translateX(100%);
+}
