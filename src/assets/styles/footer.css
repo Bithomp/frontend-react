@@ -8,6 +8,7 @@ footer {
 
 .footer {
   position: relative;
+  color: var(--text2);
 }
 
 .footer-menu {
@@ -29,8 +30,27 @@ footer {
 }
 
 .footer-menu-header {
-  color: var(--text2);
   text-transform: uppercase;
   font-size: 12px;
   line-height: 17px;
+}
+
+.footer-brand {
+  position: absolute;
+  top: 20px;
+  right: 80px;
+  text-align: right;
+}
+
+.footer-brand .footer-logo {
+  height: 40px;
+  float: right;
+  margin-bottom: 5px;
+}
+
+.footer-brand .footer-brand-text {
+  clear: both;
+  line-height: 20px;
+  font-size: 14px;
+  margin-right: 10px;
 }

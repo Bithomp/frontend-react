@@ -1,4 +1,9 @@
+import logo from "../assets/images/logo.svg";
+
 function Footer() {
+
+  const year = new Date().getFullYear();
+
   return (
     <footer>
       <div className="footer">
@@ -28,6 +33,14 @@ function Footer() {
             <span className="footer-menu-header">Bithomp</span>
             <a href="/contact">Contact</a>
             <a href="/midiakit">Media kit</a>
+          </div>
+        </div>
+        <div className="footer-brand">
+          <img src={logo} className="footer-logo" alt="logo" />
+          <div className="footer-brand-text">
+            Copyright © {year} Bithomp AB<br/>
+            Vasagatan 16, 111 20 Stockholm<br/>
+            Organization number: 559342-2867
           </div>
         </div>
       </div>
