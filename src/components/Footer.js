@@ -1,4 +1,9 @@
 import logo from "../assets/images/logo.svg";
+import twitter from "../assets/images/twitter.svg";
+import youtube from "../assets/images/youtube.svg";
+import instagram from "../assets/images/instagram.svg";
+import reddit from "../assets/images/reddit.svg";
+import github from "../assets/images/github.svg";
 
 function Footer() {
 
@@ -38,10 +43,17 @@ function Footer() {
         <div className="footer-brand">
           <img src={logo} className="footer-logo" alt="logo" />
           <div className="footer-brand-text">
-            Copyright © {year} Bithomp AB<br/>
-            Vasagatan 16, 111 20 Stockholm<br/>
+            Copyright © {year} Bithomp AB<br />
+            Vasagatan 16, 111 20 Stockholm<br />
             Organization number: 559342-2867
           </div>
+        </div>
+        <div className="footer-social">
+          <a href="https://twitter.com/bithomp"><img src={twitter} className="footer-social-icon" alt="twitter" /></a>
+          <a href="https://www.youtube.com/channel/UCTvrMnG-Tpqi5FN9zO7GcWw"><img src={youtube} className="footer-social-icon" alt="youtube" /></a>
+          <a href="https://www.instagram.com/bithomp/"><img src={instagram} className="footer-social-icon" alt="instagram" /></a>
+          <a href="https://www.reddit.com/user/bithomp/"><img src={reddit} className="footer-social-icon" alt="reddit" /></a>
+          <a href="https://github.com/Bithomp"><img src={github} className="footer-social-icon" alt="github" /></a>
         </div>
       </div>
     </footer>

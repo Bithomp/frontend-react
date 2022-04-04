@@ -5,7 +5,6 @@
   --text1: black;
   --text2: white;
   --accent1: #00B1C1;
-  --accent1-hover: #79BFCB;
   --accent2: #006B7D;
 }
 
@@ -16,7 +15,6 @@
   --text1: white;
   --text2: white;
   --accent1: #00B1C1;
-  --accent1-hover: #79BFCB;
   --accent2: #006B7D;
 }
 
@@ -52,10 +50,11 @@ code {
 
 a {
   color: var(--accent1);
+  transition: opacity 0.5s ease;
 }
 
 a:hover {
-  color: var(--accent1-hover);
+  opacity: 0.7;
 }
 
 @import "header.css";
