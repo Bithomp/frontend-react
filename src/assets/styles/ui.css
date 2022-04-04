@@ -37,6 +37,10 @@ body {
   min-height: 100vh;
 }
 
+.credits {
+  display: none;
+}
+
 .content {
   padding-top: 81px;
   padding-bottom: 143px;

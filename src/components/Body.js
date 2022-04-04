@@ -1,6 +1,6 @@
 function Body() {
   return (
-    <div style={{margin: "20px"}}>
+    <div style={{ marginTop: "20px", marginLeft: "80px" }}>
       Some text goes here...
     </div>
   );
