@@ -21,6 +21,10 @@ See the section about [running tests](https://facebook.github.io/create-react-ap
 
 ### `yarn build`
 
+* the subfolder is specified in:
+`package.json`, `"homepage": "/react"`,
+`/services/i18n.js`, `loadPath: '/react/locales/{{lng}}/{{ns}}.json'`
+
 Builds the app for production to the `build` folder.\
 It correctly bundles React in production mode and optimizes the build for the best performance.
 

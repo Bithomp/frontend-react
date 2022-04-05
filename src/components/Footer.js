@@ -1,3 +1,5 @@
+import { useTranslation } from 'react-i18next';
+
 import logo from "../assets/images/logo.svg";
 import twitter from "../assets/images/twitter.svg";
 import youtube from "../assets/images/youtube.svg";
@@ -6,38 +8,50 @@ import reddit from "../assets/images/reddit.svg";
 import github from "../assets/images/github.svg";
 
 function Footer() {
-
   const year = new Date().getFullYear();
+  const { t, i18n } = useTranslation();
+
+  const handleLangChange = evt => {
+    const lang = evt.target.value;
+    i18n.changeLanguage(lang);
+  };
 
   return (
     <footer>
       <div className="footer">
         <div className="footer-menu">
           <div className="footer-menu-column">
-            <span className="footer-menu-header">Services</span>
-            <a href="/username">Username registration</a>
-            <a href="/alerts">XRP price alerts</a>
-            <a href="https://docs.bithomp.com">API</a>
+            <span className="footer-menu-header">{t("menu.services")}</span>
+            <a href="/username">{t("menu.usernames")}</a>
+            <a href="/alerts">{t("menu.price-alerts")}</a>
+            <a href="https://docs.bithomp.com">{t("menu.api")}</a>
           </div>
           <div className="footer-menu-column">
-            <span className="footer-menu-header">Tools</span>
-            <a href="/submit/">Submit offline transaction</a>
+            <span className="footer-menu-header">{t("menu.tools")}</span>
+            <a href="/submit/">{t("menu.submit-offline-transaction")}</a>
             <a href="https://test.bithomp.com">Bithomp (Testnet)</a>
             <a href="https://xls20.bithomp.com">Bithomp (XLS-20)</a>
             <a href="https://hooks.bithomp.com">Bithomp (Hooks)</a>
             <a href="https://beta.bithomp.com">Bithomp (Hooks v2)</a>
           </div>
           <div className="footer-menu-column">
-            <span className="footer-menu-header">Legal</span>
-            <a href="/disclaimer">Disclaimer</a>
-            <a href="/privacypolicy">Privacy policy</a>
-            <a href="/termsofservice">Terms of service</a>
-            <a href="/gdpr">GDPR</a>
+            <span className="footer-menu-header">{t("menu.legal")}</span>
+            <a href="/disclaimer">{t("menu.disclaimer")}</a>
+            <a href="/privacypolicy">{t("menu.privacy-policy")}</a>
+            <a href="/termsofservice">{t("menu.terms-of-service")}</a>
+            <a href="/gdpr">{t("menu.gdpr")}</a>
           </div>
           <div className="footer-menu-column">
             <span className="footer-menu-header">Bithomp</span>
-            <a href="/contact">Contact</a>
-            <a href="/midiakit">Media kit</a>
+            <a href="/contact">{t("menu.contact")}</a>
+            <a href="/midiakit">{t("menu.media-kit")}</a>
+          </div>
+          <div className="language-select">
+            {t("settings.language")}:{" "}
+            <select onChange={handleLangChange} value={i18n.language}>
+              <option value="en">English</option>
+              <option value="ru">Русский</option>
+            </select>
           </div>
         </div>
         <div className="footer-brand">

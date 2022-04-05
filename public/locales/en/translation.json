@@ -1,0 +1,22 @@
+{
+  "menu": {
+    "explorer": "Explorer",
+    "services": "Services",
+    "usernames": "Username registration",
+    "price-alerts": "XRP price alerts",
+    "api": "API",
+    "tools": "Tools",
+    "submit-offline-transaction": "Submit offline transaction",
+    "legal": "Legal",
+    "disclaimer": "Disclaimer",
+    "privacy-policy": "Privacy policy",
+    "terms-of-service": "Terms of service",
+    "gdpr": "GDPR",
+    "contact": "Contact",
+    "media-kit": "Media kit",
+    "sign-in": "Sign in"
+  },
+  "settings": {
+    "language": "Language"
+  }
+}

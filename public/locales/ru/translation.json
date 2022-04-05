@@ -1,0 +1,22 @@
+{
+  "menu": {
+    "explorer": "Эксплорер",
+    "services": "Сервисы",
+    "usernames": "Регистрация ника",
+    "price-alerts": "Мониторинг XRP цены",
+    "api": "API",
+    "tools": "Инструменты",
+    "submit-offline-transaction": "Отправка оффлайн транзакций",
+    "legal": "Документы",
+    "disclaimer": "Отказ от ответственности",
+    "privacy-policy": "Политика конфиденциальности",
+    "terms-of-service": "Условия использования",
+    "gdpr": "GDPR",
+    "contact": "Контакты",
+    "media-kit": "Для прессы",
+    "sign-in": "Войти"
+  },
+  "settings": {
+    "language": "Язык"
+  }
+}

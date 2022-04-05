@@ -8,7 +8,7 @@ function Switch({ theme, switchTheme }) {
         <div className="switcher"></div>
         <img src={sun} className="switch-icon" alt="light mode" />
         <img src={moon} className="switch-icon" alt="dark mode" />
-        <div class="credits">
+        <div className="credits">
           <div>Sun Icon made by
             <a href="https://www.flaticon.com/authors/smashicons" title="Smashicons">Smashicons</a>
             from
