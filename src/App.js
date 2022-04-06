@@ -1,8 +1,11 @@
+import { Routes, Route } from "react-router-dom";
 import useLocalStorage from 'use-local-storage';
 
 import Header from './components/Header';
-import Body from './components/Body';
 import Footer from './components/Footer';
+
+import Home from './screens/Home';
+import About from './screens/About';
 
 function App() {
   const defaultDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -17,7 +20,10 @@ function App() {
     <div data-theme={theme} className="body">
       <Header theme={theme} switchTheme={switchTheme} />
       <div className="content">
-        <Body />
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="about" element={<About />} />
+        </Routes>
       </div>
       <Footer />
     </div>

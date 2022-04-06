@@ -1,4 +1,4 @@
-function Body() {
+function Home() {
   return (
     <div style={{ margin: "80px" }}>
       Some text goes here...
@@ -23,4 +23,4 @@ function Body() {
   );
 }
 
-export default Body;
+export default Home;

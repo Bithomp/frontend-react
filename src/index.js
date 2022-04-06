@@ -1,14 +1,18 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './assets/styles/ui.css';
+import { BrowserRouter } from "react-router-dom";
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import i18n from './services/i18n';
 
+import './assets/styles/ui.css';
+
 i18n.on("initialized", () => {
   ReactDOM.render(
     <React.StrictMode>
-      <App />
+      <BrowserRouter>
+        <App />
+      </BrowserRouter>
     </React.StrictMode>,
     document.getElementById('root')
   );

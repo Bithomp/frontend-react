@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { useTranslation } from 'react-i18next';
 
 import logo from "../assets/images/logo.svg";
@@ -18,9 +19,9 @@ function Header({ theme, switchTheme }) {
 
   return (
     <header>
-      <a href="/">
+      <Link to="/">
         <img src={logo} className="header-logo" alt="logo" />
-      </a>
+      </Link>
       <div className="header-menu-left">
         <a href="/explorer/">{t("menu.explorer")}</a>
         <div className="menu-dropdown">
@@ -41,7 +42,7 @@ function Header({ theme, switchTheme }) {
             <a href="https://beta.bithomp.com">Bithomp (Hooks v2)</a>
           </div>
         </div>
-        <a href="/statistics">XRPL</a>
+        <Link to="/about">XRPL</Link>
       </div>
       <div className="header-menu-right">
         <a href="/explorer/?hwlogin">{t("menu.sign-in")}</a>
