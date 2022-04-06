@@ -18,49 +18,47 @@ function Footer() {
 
   return (
     <footer>
-      <div className="footer">
-        <div className="footer-menu">
-          <div className="footer-menu-column">
-            <span className="footer-menu-header">{t("menu.services")}</span>
-            <a href="/username">{t("menu.usernames")}</a>
-            <a href="/alerts">{t("menu.price-alerts")}</a>
-            <a href="https://docs.bithomp.com">{t("menu.api")}</a>
-          </div>
-          <div className="footer-menu-column">
-            <span className="footer-menu-header">{t("menu.tools")}</span>
-            <a href="/submit/">{t("menu.submit-offline-transaction")}</a>
-            <a href="https://test.bithomp.com">Bithomp (Testnet)</a>
-            <a href="https://xls20.bithomp.com">Bithomp (XLS-20)</a>
-            <a href="https://hooks.bithomp.com">Bithomp (Hooks)</a>
-            <a href="https://beta.bithomp.com">Bithomp (Hooks v2)</a>
-          </div>
-          <div className="footer-menu-column">
-            <span className="footer-menu-header">{t("menu.legal")}</span>
-            <a href="/disclaimer">{t("menu.disclaimer")}</a>
-            <a href="/privacypolicy">{t("menu.privacy-policy")}</a>
-            <a href="/termsofservice">{t("menu.terms-of-service")}</a>
-            <a href="/gdpr">{t("menu.gdpr")}</a>
-          </div>
-          <div className="footer-menu-column">
-            <span className="footer-menu-header">Bithomp</span>
-            <a href="/contact">{t("menu.contact")}</a>
-            <a href="/midiakit">{t("menu.media-kit")}</a>
-          </div>
-          <div className="language-select">
-            {t("settings.language")}:{" "}
-            <select onChange={handleLangChange} value={i18n.language}>
-              <option value="en">English</option>
-              <option value="ru">Русский</option>
-            </select>
-          </div>
+      <div className="footer-menu">
+        <div className="footer-menu-column">
+          <span className="footer-menu-header">{t("menu.services")}</span>
+          <a href="/username">{t("menu.usernames")}</a>
+          <a href="/alerts">{t("menu.price-alerts")}</a>
+          <a href="https://docs.bithomp.com">{t("menu.api")}</a>
         </div>
-        <div className="footer-brand">
-          <img src={logo} className="footer-logo" alt="logo" />
-          <div className="footer-brand-text">
-            Copyright © {year} Bithomp AB<br />
-            Vasagatan 16, 111 20 Stockholm<br />
-            Organization number: 559342-2867
-          </div>
+        <div className="footer-menu-column">
+          <span className="footer-menu-header">{t("menu.tools")}</span>
+          <a href="/submit/">{t("menu.submit-offline-transaction")}</a>
+          <a href="https://test.bithomp.com">Bithomp (Testnet)</a>
+          <a href="https://xls20.bithomp.com">Bithomp (XLS-20)</a>
+          <a href="https://hooks.bithomp.com">Bithomp (Hooks)</a>
+          <a href="https://beta.bithomp.com">Bithomp (Hooks v2)</a>
+        </div>
+        <div className="footer-menu-column">
+          <span className="footer-menu-header">{t("menu.legal")}</span>
+          <a href="/disclaimer">{t("menu.disclaimer")}</a>
+          <a href="/privacypolicy">{t("menu.privacy-policy")}</a>
+          <a href="/termsofservice">{t("menu.terms-of-service")}</a>
+          <a href="/gdpr">{t("menu.gdpr")}</a>
+        </div>
+        <div className="footer-menu-column">
+          <span className="footer-menu-header">Bithomp</span>
+          <a href="/contact">{t("menu.contact")}</a>
+          <a href="/midiakit">{t("menu.media-kit")}</a>
+        </div>
+        <div className="footer-language-select">
+          {t("settings.language")}:{" "}
+          <select onChange={handleLangChange} value={i18n.language}>
+            <option value="en">English</option>
+            <option value="ru">Русский</option>
+          </select>
+        </div>
+      </div>
+      <div className="footer-brand">
+        <img src={logo} className="footer-logo" alt="logo" />
+        <div className="footer-brand-text">
+          Copyright © {year} Bithomp AB<br />
+          Vasagatan 16, 111 20 Stockholm<br />
+          Organization number: 559342-2867
         </div>
         <div className="footer-social">
           <a href="https://twitter.com/bithomp"><img src={twitter} className="footer-social-icon" alt="twitter" /></a>

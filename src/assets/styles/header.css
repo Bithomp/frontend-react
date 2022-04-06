@@ -117,3 +117,14 @@ header {
   height: 60px;
   background: linear-gradient(180deg, rgba(9, 138, 157, 0.5) 0%, rgba(255, 255, 255, 0) 100%);
 }
+
+@media screen and (max-device-width: 1024px) {
+  .header-menu-left,
+  .header-menu-right {
+    display: none;
+  }
+
+  .header-logo {
+    left: 20px;
+  }
+}
