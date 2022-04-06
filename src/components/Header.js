@@ -55,6 +55,7 @@ function Header({ theme, switchTheme }) {
         </label>
         <div className="mobile-menu">
           <a href="/explorer/" className="mobile-menu-item">{t("menu.explorer")}</a>
+          <a href="/statistics" className="mobile-menu-item">XRPL</a>
           <div className="mobile-menu-directory"><span>{t("menu.services")}</span></div>
           <a href="/username" className="mobile-menu-item">{t("menu.usernames")}</a>
           <a href="/alerts" className="mobile-menu-item">{t("menu.price-alerts")}</a>
@@ -65,7 +66,6 @@ function Header({ theme, switchTheme }) {
           <a href="https://xls20.bithomp.com" className="mobile-menu-item">Bithomp (XLS-20)</a>
           <a href="https://hooks.bithomp.com" className="mobile-menu-item">Bithomp (Hooks)</a>
           <a href="https://beta.bithomp.com" className="mobile-menu-item">Bithomp (Hooks v2)</a>
-          <a href="/statistics" className="mobile-menu-item">XRPL</a>
           <div className="mobile-menu-directory"></div>
           <a href="/explorer/?hwlogin" className="mobile-menu-item">{t("menu.sign-in")}</a>
         </div>

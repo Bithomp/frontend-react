@@ -132,7 +132,7 @@ header {
 .header-burger .mobile-menu {
   margin-top: 81px;
   background-color: var(--background4);
-  height: 100vh;
+  min-height: calc(100% - 81px);
   width: 100%;
   position: fixed;
   right: 0;
