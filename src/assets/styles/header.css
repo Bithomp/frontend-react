@@ -118,6 +118,10 @@ header {
   background: linear-gradient(180deg, rgba(9, 138, 157, 0.5) 0%, rgba(255, 255, 255, 0) 100%);
 }
 
+[data-theme='dark'] .header-under {
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.15) 0%, rgba(0, 0, 0, 0) 100%);
+}
+
 @media screen and (max-device-width: 1024px) {
   .header-menu-left,
   .header-menu-right {

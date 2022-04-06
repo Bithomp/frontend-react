@@ -9,12 +9,12 @@
 }
 
 [data-theme='dark'] {
-  --background1: #002C37;
-  --background2: #002C37;
-  --background3: #333333;
+  --background1: #031B21;
+  --background2: #101010;
+  --background3: #1C1C1C;
   --text1: white;
   --text2: white;
-  --accent1: #00B1C1;
+  --accent1: #66D0DA;
   --accent2: #006B7D;
 }
 

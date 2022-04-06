@@ -73,12 +73,13 @@ footer {
 
   .footer-brand {
     margin-right: 20px;
-    text-align: center;
     margin-left: 20px;
+    margin-top: 0;
     float: none;
+    text-align: center;
   }
 
   .footer-brand .footer-logo {
-    float: none;
+    display: none;
   }
 }
