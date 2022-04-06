@@ -11,8 +11,8 @@ function Footer() {
   const year = new Date().getFullYear();
   const { t, i18n } = useTranslation();
 
-  const handleLangChange = evt => {
-    const lang = evt.target.value;
+  const handleLangChange = e => {
+    const lang = e.target.value;
     i18n.changeLanguage(lang);
   };
 

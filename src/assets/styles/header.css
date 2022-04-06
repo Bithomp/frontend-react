@@ -122,6 +122,90 @@ header {
   background: linear-gradient(180deg, rgba(0, 0, 0, 0.15) 0%, rgba(0, 0, 0, 0) 100%);
 }
 
+.header-burger {
+  display: none;
+  position: absolute;
+  right: 20px;
+  top: 28px;
+}
+
+.header-burger .mobile-menu {
+  margin-top: 81px;
+  background-color: var(--background4);
+  height: 100vh;
+  width: 100%;
+  position: fixed;
+  right: 0;
+  transform: translateX(50rem);
+  top: 0;
+  z-index: 2;
+  transition: 0.5s;
+}
+
+.header-burger .mobile-menu .mobile-menu-item {
+  display: block;
+  margin: 23px 40px;
+  color: white;
+  text-decoration: none;
+  font-size: 18px;
+}
+
+.header-burger .mobile-menu .mobile-menu-directory {
+  color: rgba(255, 255, 255, 0.5);
+  height: 1px;
+  border-top: 1px solid rgba(255, 255, 255, 0.5);
+  text-align: center;
+  position: relative;
+  margin: 0 40px;
+}
+
+.header-burger .mobile-menu .mobile-menu-directory span {
+  position: relative;
+  top: -.8em;
+  font-size: 14px;
+  background-color: var(--background4);
+  display: inline-block;
+  padding: 0 10px;
+}
+
+#header-burger {
+  display: none;
+}
+
+#header-burger:checked ~ .mobile-menu {
+  transform: translateX(0rem);
+}
+
+.header-burger-elements {
+  width: 32px;
+  height: 26px;
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
+  cursor: pointer;
+}
+
+.header-burger-elements > div {
+  height: 3px;
+  background-color: white;
+  transition: 0.5s;
+  z-index: 3;
+}
+
+#header-burger:checked ~ .header-burger-elements > div {
+  background-color: #fff;
+}
+
+#header-burger:checked ~ .header-burger-elements > div:nth-child(1) {
+  transform: translateY(11.5px) rotate(45deg);
+}
+#header-burger:checked ~ .header-burger-elements > div:nth-child(2) {
+  opacity: 0;
+}
+#header-burger:checked~ .header-burger-elements > div:nth-child(3) {
+  transform: translateY(-11.5px) rotate(-45deg);
+}
+
 @media screen and (max-device-width: 1024px) {
   .header-menu-left,
   .header-menu-right {
@@ -131,4 +215,9 @@ header {
   .header-logo {
     left: 20px;
   }
+
+  .header-burger {
+    display: block;
+  }
+
 }
