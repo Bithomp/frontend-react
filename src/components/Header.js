@@ -18,7 +18,9 @@ function Header({ theme, switchTheme }) {
 
   return (
     <header>
-      <img src={logo} className="header-logo" alt="logo" />
+      <a href="/">
+        <img src={logo} className="header-logo" alt="logo" />
+      </a>
       <div className="header-menu-left">
         <a href="/explorer/">{t("menu.explorer")}</a>
         <div className="menu-dropdown">
