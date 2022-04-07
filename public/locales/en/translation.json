@@ -18,5 +18,9 @@
   },
   "settings": {
     "language": "Language"
+  },
+  "home": {
+    "search-placeholder": "Search by XRPL Address / Transaction / Username / PayString / Token",
+    "search-placeholder-short": "Search by XRPL Address / Transaction / Username"
   }
 }
