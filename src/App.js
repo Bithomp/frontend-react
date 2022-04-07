@@ -21,8 +21,8 @@ function App() {
       <Header theme={theme} switchTheme={switchTheme} />
       <div className="content">
         <Routes>
-          <Route path="/react/" element={<Home />} />
-          <Route path="/react/about" element={<About />} />
+          <Route path="/" element={<Home />} />
+          <Route path="/about" element={<About />} />
         </Routes>
       </div>
       <Footer />

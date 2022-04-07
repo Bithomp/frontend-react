@@ -10,7 +10,7 @@ import './assets/styles/ui.css';
 i18n.on("initialized", () => {
   ReactDOM.render(
     <React.StrictMode>
-      <BrowserRouter>
+      <BrowserRouter basename='/react/'>
         <App />
       </BrowserRouter>
     </React.StrictMode>,
