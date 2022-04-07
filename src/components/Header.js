@@ -42,7 +42,7 @@ function Header({ theme, switchTheme }) {
             <a href="https://beta.bithomp.com">Bithomp (Hooks v2)</a>
           </div>
         </div>
-        <Link to="/about">XRPL</Link>
+        <Link to="/react/about">XRPL</Link>
       </div>
       <div className="header-menu-right">
         <a href="/explorer/?hwlogin">{t("menu.sign-in")}</a>
