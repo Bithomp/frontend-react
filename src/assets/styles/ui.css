@@ -57,6 +57,18 @@ body {
 .content {
   padding-top: 81px;
   flex: 1;
+  position: relative;
+}
+
+.content:after {
+  position: absolute;
+  content: "";
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background-image: url('../images/logo-square.svg');
+  background-size: 700px 550px;
 }
 
 code {
