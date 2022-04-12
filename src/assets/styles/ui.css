@@ -72,6 +72,11 @@ a:hover {
   opacity: 0.7;
 }
 
+input {
+  border-radius: 0; /* remove rounded corners on ios safari */
+  font-size: 16px; /* remove auto zoom on ios safari */
+}
+
 @import "./components/header.css";
 @import "./components/switch.css";
 @import "./components/footer.css";

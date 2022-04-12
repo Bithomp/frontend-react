@@ -21,6 +21,6 @@
   },
   "home": {
     "search-placeholder": "Поиск по XRPL Адресу / Транзакции / Нику / PayString / Токену",
-    "search-placeholder-short": "Поиск по XRPL Адресу / Транзакции / Нику"
+    "search-placeholder-short": "Поиск по Адресу / Транзакции / Нику"
   }
 }

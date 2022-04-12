@@ -21,6 +21,6 @@
   },
   "home": {
     "search-placeholder": "Search by XRPL Address / Transaction / Username / PayString / Token",
-    "search-placeholder-short": "Search by XRPL Address / Transaction / Username"
+    "search-placeholder-short": "Search by Address / Transaction / User"
   }
 }

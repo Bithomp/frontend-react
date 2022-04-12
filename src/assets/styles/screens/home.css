@@ -21,6 +21,8 @@
   color: var(--text1);
   padding-left: 20px;
   padding-right: 54px;
+  padding-top: 1px; /* set for ios safari */
+  padding-bottom: 1px; /* set for ios safari */
   width: 100%;
   max-width: calc(100% - 76px);
 }
