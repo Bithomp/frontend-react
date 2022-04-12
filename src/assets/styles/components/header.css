@@ -108,19 +108,6 @@ header {
   vertical-align: middle;
 }
 
-.header-under {
-  position: absolute;
-  top: 80px;
-  left: 0;
-  right: 0;
-  height: 60px;
-  background: linear-gradient(180deg, rgba(9, 138, 157, 0.5) 0%, rgba(255, 255, 255, 0) 100%);
-}
-
-[data-theme='dark'] .header-under {
-  background: linear-gradient(180deg, rgba(0, 0, 0, 0.15) 0%, rgba(0, 0, 0, 0) 100%);
-}
-
 .header-burger {
   display: none;
   position: absolute;

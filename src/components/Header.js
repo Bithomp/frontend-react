@@ -73,8 +73,6 @@ function Header({ theme, switchTheme }) {
           <a href="/explorer/?hwlogin" className="mobile-menu-item">{t("menu.sign-in")}</a>
         </div>
       </div>
-
-      <div className="header-under"></div>
     </header>
   );
 }

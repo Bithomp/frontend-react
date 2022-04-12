@@ -4,6 +4,9 @@ import { useTranslation } from 'react-i18next';
 import '../assets/styles/screens/home.css';
 import search from "../assets/images/search.svg";
 
+import nexo from "../assets/images/nexo.svg";
+import btcbit from "../assets/images/btcbit.svg";
+
 const searchClick = item => {
   const searchItem = item.trim();
   if (searchItem) {
@@ -27,7 +30,7 @@ function Home() {
     if (e.key === 'Enter') {
       searchClick(searchItem);
     }
-  
+
     if (!searchItemRe.test(e.key)) {
       e.preventDefault();
     }
@@ -60,6 +63,20 @@ function Home() {
         </div>
       </div>
       <div className="home-sponsored">
+        <a href="https://bithomp.com/go/earn-on-xrp" target="_blank" rel="noopener">
+          <div className="sponsored-brand">
+            <img src={nexo} className="sponsored-brand-icon" alt="nexo" />
+            <div className="sponsored-brand-title">Earn on XRP</div>
+            <div className="sponsored-brand-text">Start earning up to 8% APR with XRP, paid out daily</div>
+          </div>
+        </a>
+        <a href="https://bithomp.com/go/buy-xrp" target="_blank" rel="noopener">
+          <div className="sponsored-brand">
+            <img src={btcbit} className="sponsored-brand-icon" alt="btcbit" />
+            <div className="sponsored-brand-title">Buy XRP</div>
+            <div className="sponsored-brand-text">Instantly buy and sell cryptocurrency with low commission</div>
+          </div>
+        </a>
       </div>
       <div className="home-converter">
       </div>
