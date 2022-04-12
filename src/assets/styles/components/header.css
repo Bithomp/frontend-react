@@ -55,7 +55,7 @@ header {
 .menu-dropdown-content {
   display: none;
   position: absolute;
-  padding-top: 28px;
+  padding-top: 26px;
   min-width: 165px;
   background-color: var(--background1);
   border-bottom: 1px solid var(--accent2);
@@ -66,7 +66,7 @@ header {
 .menu-dropdown-content:after {
   content: "";
   position: absolute;
-  top: 27.5px;
+  top: 25.5px;
   left: 0;
   right: 0;
   height: 1px;
