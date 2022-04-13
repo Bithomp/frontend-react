@@ -58,21 +58,21 @@
   position: absolute;
   bottom: -39px;
   left: 0;
+  transition: none;
 }
 
 .home-search .search-scan-qr .search-scan-qr-icon {
   display: inline-block;
   vertical-align: middle;
-  background-image: url(../../images/qr.svg);
-  width: 24px;
-  height: 24px;
-  transition: background-image .5s;
 }
 
-.home-search .search-scan-qr:hover .search-scan-qr-icon {
-  display: inline-block;
-  vertical-align: middle;
-  background-image: url(../../images/qr-hover.svg);
+.home-search .search-scan-qr:hover .search-scan-qr-icon #qr-stroke1,
+.home-search .search-scan-qr:hover .search-scan-qr-icon #qr-stroke2 {
+  stroke: var(--hover1);
+}
+
+.home-search .search-scan-qr:hover .search-scan-qr-icon #qr-fill1 {
+  fill: var(--hover1);
 }
 
 .home-search .search-scan-qr .search-scan-qr-text {

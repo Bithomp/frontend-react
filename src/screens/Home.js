@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 
 import '../assets/styles/screens/home.css';
 import search from "../assets/images/search.svg";
+import { ReactComponent as Qr } from "../assets/images/qr.svg";
 
 import nexo from "../assets/images/nexo.svg";
 import btcbit from "../assets/images/btcbit.svg";
@@ -61,7 +62,7 @@ function Home() {
             <img src={search} className="search-icon" alt="search" />
           </div>
           <a className="search-scan-qr" href="/explorer/?scanqr">
-            <div className="search-scan-qr-icon"></div>
+            <Qr className="search-scan-qr-icon" />
             <span className="search-scan-qr-text">{t("home.scan-qr")}</span>
           </a>
         </div>
