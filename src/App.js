@@ -16,8 +16,10 @@ function App() {
     setTheme(newTheme);
   }
 
+  const network = process.env.REACT_APP_NETWORK_NAME ? process.env.REACT_APP_NETWORK_NAME : "mainnet";
+
   return (
-    <div data-theme={theme} className="body">
+    <div data-theme={theme} className="body" data-network={network}>
       <Header theme={theme} switchTheme={switchTheme} />
       <div className="content">
         <Routes>

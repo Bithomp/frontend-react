@@ -90,6 +90,10 @@
   transition: background-color .5s;
 }
 
+.body:not([data-network='mainnet']) .home-sponsored {
+  display: none;
+}
+
 .home-sponsored .sponsored-brand {
   height: 70px;
   width: 360px;
