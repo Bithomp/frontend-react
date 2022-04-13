@@ -10,6 +10,8 @@
   --text3: #333333;
   --accent1: #00B1C1;
   --accent2: #006B7D;
+  --accent3: #3FA3B5;
+  --hover1: #79BFCB;
 }
 
 [data-theme='dark'] {
@@ -24,6 +26,8 @@
   --text3: white;
   --accent1: #66D0DA;
   --accent2: #006B7D;
+  --accent3: #3FA3B5;
+  --hover1: #79BFCB;
 }
 
 html, body {
@@ -80,11 +84,12 @@ code {
 
 a {
   color: var(--accent1);
-  transition: opacity 0.5s ease;
+  transition: color 0.5s;
+  text-decoration: none;
 }
 
 a:hover {
-  opacity: 0.7;
+  color: var(--hover1);
 }
 
 input {

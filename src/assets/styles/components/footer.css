@@ -2,6 +2,7 @@ footer {
   position: relative;
   background-color: var(--background3);
   color: var(--text2);
+  transition: background-color .5s, color .5s;
 }
 
 .footer-menu {
@@ -21,7 +22,6 @@ footer {
 .footer-menu a {
   display: block;
   margin: 5px 0;
-  text-decoration: none;
 }
 
 .footer-menu-header {

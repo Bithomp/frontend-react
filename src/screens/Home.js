@@ -60,6 +60,10 @@ function Home() {
           <div className="search-button" onClick={() => searchClick(searchItem)}>
             <img src={search} className="search-icon" alt="search" />
           </div>
+          <a className="search-scan-qr" href="/explorer/?scanqr">
+            <div className="search-scan-qr-icon"></div>
+            <span className="search-scan-qr-text">{t("home.scan-qr")}</span>
+          </a>
         </div>
       </div>
       <div className="home-sponsored">

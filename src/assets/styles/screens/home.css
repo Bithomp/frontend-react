@@ -2,6 +2,7 @@
   height: 390px;
   background-color: var(--background1);
   text-align: center;
+  transition: background-color .5s;
 }
 
 .home-search {
@@ -17,7 +18,7 @@
 
 .home-search .search-input {
   height: 40px;
-  border: 1px solid var(--accent1);
+  border: 1px solid var(--accent3);
   background-color: var(--background2);
   color: var(--text1);
   padding-left: 20px;
@@ -30,16 +31,16 @@
 
 .home-search .search-input:focus {
   outline: none !important;
-  box-shadow: 0 0 10px var(--accent1);
+  box-shadow: 0 0 10px var(--accent3);
 }
 
 .home-search .search-button {
+  position: absolute;
   width: 34px;
   height: 34px;
-  position: absolute;
   top: 5px;
   right: 5px;
-  background-color: var(--accent1);
+  background-color: var(--accent3);
   cursor: pointer;
   transition: opacity 0.5s ease;
 }
@@ -53,12 +54,40 @@
   padding-left: 1px;
 }
 
+.home-search .search-scan-qr {
+  position: absolute;
+  bottom: -39px;
+  left: 0;
+}
+
+.home-search .search-scan-qr .search-scan-qr-icon {
+  display: inline-block;
+  vertical-align: middle;
+  background-image: url(../../images/qr.svg);
+  width: 24px;
+  height: 24px;
+  transition: background-image .5s;
+}
+
+.home-search .search-scan-qr:hover .search-scan-qr-icon {
+  display: inline-block;
+  vertical-align: middle;
+  background-image: url(../../images/qr-hover.svg);
+}
+
+.home-search .search-scan-qr .search-scan-qr-text {
+  display: inline-block;
+  vertical-align: middle;
+  margin-left: 6px;
+}
+
 .home-sponsored {
   height: 150px;
   background-color: var(--background5);
   display: flex;
   justify-content: center;
   align-items: center;
+  transition: background-color .5s;
 }
 
 .home-sponsored .sponsored-brand {
@@ -72,6 +101,11 @@
   cursor: pointer;
   box-shadow: 0px 0px 2px rgba(0, 0, 0, 0.25);
   color: var(--text3);
+}
+
+.home-sponsored .sponsored-brand:hover {
+  background-color: var(--background5);
+  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.25);
 }
 
 .home-sponsored .sponsored-brand .sponsored-brand-icon {
@@ -99,6 +133,7 @@
 .home-converter {
   height: 566px;
   background-color: var(--background2);
+  transition: background-color .5s;
 }
 
 @media only screen and (max-width: 1024px) {
