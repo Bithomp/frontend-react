@@ -76,6 +76,7 @@ body {
   bottom: 0;
   right: 0;
   background-image: url('../images/logo-square.svg');
+  background-size: 100% auto;
 }
 
 code {
