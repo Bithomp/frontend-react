@@ -5,7 +5,7 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import i18n from './services/i18n';
 
-import './assets/styles/ui.css';
+import './assets/styles/ui.scss';
 
 i18n.on("initialized", () => {
   ReactDOM.render(

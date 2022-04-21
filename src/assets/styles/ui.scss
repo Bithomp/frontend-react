@@ -1,34 +1,4 @@
-:root {
-  --background1: #002C37;
-  --background2: white;
-  --background3: #333333;
-  --background4: #005460;
-  --background5: #F9F9F9;
-  --background6: white;
-  --text1: black;
-  --text2: white;
-  --text3: #333333;
-  --accent1: #00B1C1;
-  --accent2: #006B7D;
-  --accent3: #3FA3B5;
-  --hover1: #79BFCB;
-}
-
-[data-theme='dark'] {
-  --background1: #031B21;
-  --background2: #101010;
-  --background3: #1C1C1C;
-  --background4: black;
-  --background5: #101010;
-  --background6: #193039;
-  --text1: white;
-  --text2: white;
-  --text3: white;
-  --accent1: #66D0DA;
-  --accent2: #006B7D;
-  --accent3: #3FA3B5;
-  --hover1: #79BFCB;
-}
+@import "./variables.scss";
 
 /* open-sans-regular - latin_cyrillic */
 @font-face {
@@ -121,6 +91,6 @@ button {
   font-family: inherit;
 }
 
-@import "./components/header.css";
-@import "./components/switch.css";
-@import "./components/footer.css";
+@import "./components/header.scss";
+@import "./components/switch.scss";
+@import "./components/footer.scss";
