@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import CurrencySelect from "../components/CurrencySelect";
+import PriceChart from "../components/PriceChart";
 
 import '../assets/styles/screens/home.scss';
 import search from "../assets/images/search.svg";
@@ -109,7 +110,9 @@ function Home() {
             <CurrencySelect setSelectedCurrency={setSelectedCurrency} />
           </div>
         </div>
-        {selectedCurrency} graph
+      </div>
+      <div className="home-price-chart">
+        <PriceChart currency={selectedCurrency} />
       </div>
     </>
   );

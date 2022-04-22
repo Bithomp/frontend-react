@@ -121,7 +121,7 @@
 
 .home-converter {
   position: relative;
-  height: 566px;
+  height: 200px;
   text-align: center;
   .converter-amount {
     width: 156px;
@@ -151,6 +151,11 @@
   .converter-xrp-text {
     padding-left: 5px;
   }
+}
+
+.home-price-chart {
+  max-width: 740px;
+  margin: auto;
 }
 
 @media only screen and (max-width: 1024px) {
@@ -190,7 +195,7 @@
   }
 
   .home-converter {
-    height: 495px;
+    height: 170px;
     .converter-amount {
       margin: 5px;
       padding-left: 10px;
