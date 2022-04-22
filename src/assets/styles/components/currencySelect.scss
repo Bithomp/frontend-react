@@ -4,9 +4,13 @@
     border-radius: 0;
     height: 40px;
     box-shadow: none;
-    background-color: var(--background7);
+    background-color: var(--background8);
+    transition: background-color .5s;
     &:hover {
       border-color: var(--accent3);
+    }
+    .currency-select__input {
+      padding-left: 29.5px !important;
     }
   }
 

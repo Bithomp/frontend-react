@@ -85,6 +85,10 @@ input {
   font-size: 16px; /* remove auto zoom on ios safari */
   outline: none; /* remove default rounded corners on focus */
   font-family: inherit;
+  transition: background-color .5s, color .5s;
+  background-color: var(--background8);
+  caret-color: var(--text1);
+  color: var(--text1);
 }
 
 button {

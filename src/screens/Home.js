@@ -97,16 +97,16 @@ function Home() {
       <div className="home-converter">
         <h2>XRP price</h2>
         <div>
-          <input className="converter-amount" value="1" onChange={onFiatAmountChange} />
-          <div className="converter-currency-select">
-            <CurrencySelect setSelectedCurrency={setSelectedCurrency} />
-          </div>
-        </div>
-        <div>
-          <input className="converter-amount" value="0.86233" onChange={onXrpAmountChange} />
+          <input className="converter-amount" defaultValue="1" onChange={onXrpAmountChange} />
           <div className="converter-xrp">
             <XrpBlack style={{ height: '18px', width: '18px' }} />
             <span className="converter-xrp-text">XRP</span>
+          </div>
+        </div>
+        <div>
+          <input className="converter-amount" defaultValue="0.86233" onChange={onFiatAmountChange} />
+          <div className="converter-currency-select">
+            <CurrencySelect setSelectedCurrency={setSelectedCurrency} />
           </div>
         </div>
         {selectedCurrency} graph
