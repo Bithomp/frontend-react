@@ -13,7 +13,7 @@ import { ReactComponent as Cn } from "../assets/images/flags/cn.svg";
 import { ReactComponent as Hk } from "../assets/images/flags/hk.svg";
 import { ReactComponent as Nz } from "../assets/images/flags/nz.svg";
 import { ReactComponent as Se } from "../assets/images/flags/se.svg";
-import { ReactComponent as Kr } from "../assets/images/flags/kr.svg";
+import krFlag from "../assets/images/flags/kr.png";
 import { ReactComponent as Sg } from "../assets/images/flags/sg.svg";
 import { ReactComponent as No } from "../assets/images/flags/no.svg";
 import { ReactComponent as Mx } from "../assets/images/flags/mx.svg";
@@ -43,6 +43,10 @@ import { ReactComponent as Ng } from "../assets/images/flags/ng.svg";
 import { ReactComponent as Ua } from "../assets/images/flags/ua.svg";
 import { ReactComponent as Ve } from "../assets/images/flags/ve.svg";
 import { ReactComponent as Vn } from "../assets/images/flags/vn.svg";
+
+function Kr() {
+  return <img src={krFlag} alt="korea" height="18px" width="24px" />;
+}
 
 function CurrencySelect({ setSelectedCurrency }) {
 
