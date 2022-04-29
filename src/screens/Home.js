@@ -112,7 +112,7 @@ function Home() {
         </div>
       </div>
       <div className="home-price-chart">
-        <PriceChart currency={selectedCurrency} />
+        <PriceChart currency='usd' />
       </div>
     </>
   );

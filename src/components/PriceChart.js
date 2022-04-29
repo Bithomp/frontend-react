@@ -1,16 +1,31 @@
 import Chart from 'react-apexcharts';
+import axios from 'axios';
+import { useState, useEffect } from 'react';
 
 function PriceChart({ currency }) {
+
+  const [data, setData] = useState({ timestamps: [], prices: [] });
+
+  useEffect(() => {
+    async function fetchData() {
+      const response = await axios(
+        'v2/rates/history/usd',
+      );
+      setData(response.data);
+    }
+    fetchData();
+  }, []);
+
   const series = [
     {
       name: '',
-      data: [0.757887, 0.74879098, 0.769877, 0.723345]
+      data: data.prices
     }
   ];
   const options = {
     xaxis: {
       type: 'datetime',
-      categories: ["2022-04-19", "2022-04-20", "2022-04-21", "2022-04-22"]
+      categories: data.timestamps
     },
     yaxis: {
       labels: {
