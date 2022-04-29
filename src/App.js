@@ -40,6 +40,8 @@ function App() {
     case 'local':
       baseApi = "https://test.bithomp.com/api/";
       break;
+    default:
+      break;
   }
 
   if (process.env.NODE_ENV === 'development') {

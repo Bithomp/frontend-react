@@ -21,7 +21,7 @@ function Converter() {
       setFiatValue((xrpValue * response.data[selectedCurrency]).toFixed(2));
     }
     fetchData();
-  }, [selectedCurrency]);
+  }, [selectedCurrency, xrpValue]);
 
   const onXrpAmountChange = (e) => {
     const xrpAmount = e.target.value;
