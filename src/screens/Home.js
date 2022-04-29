@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import CurrencySelect from "../components/CurrencySelect";
+import Converter from "../components/Converter";
 import PriceChart from "../components/PriceChart";
 
 import '../assets/styles/screens/home.scss';
@@ -9,7 +9,6 @@ import search from "../assets/images/search.svg";
 import { ReactComponent as Qr } from "../assets/images/qr.svg";
 import nexo from "../assets/images/nexo.svg";
 import btcbit from "../assets/images/btcbit.svg";
-import { ReactComponent as XrpBlack } from "../assets/images/xrp-black.svg";
 
 const searchClick = item => {
   const searchItem = item.trim();
@@ -23,17 +22,8 @@ const searchClick = item => {
 
 const searchItemRe = /^[~]{0,1}[a-zA-Z0-9-_.]*[+]{0,1}[a-zA-Z0-9-_.]*[$]{0,1}[a-zA-Z0-9-.]*[a-zA-Z0-9]*$/i;
 
-const onFiatAmountChange = () => {
-
-}
-
-const onXrpAmountChange = () => {
-
-}
-
 function Home() {
   const [searchItem, setSearchItem] = useState("");
-  const [selectedCurrency, setSelectedCurrency] = useState('usd');
 
   const { t } = useTranslation();
 
@@ -96,20 +86,8 @@ function Home() {
         </a>
       </div>
       <div className="home-converter">
-        <h2>XRP price</h2>
-        <div>
-          <input className="converter-amount" defaultValue="1" onChange={onXrpAmountChange} />
-          <div className="converter-xrp">
-            <XrpBlack style={{ height: '18px', width: '18px' }} />
-            <span className="converter-xrp-text">XRP</span>
-          </div>
-        </div>
-        <div>
-          <input className="converter-amount" defaultValue="0.86233" onChange={onFiatAmountChange} />
-          <div className="converter-currency-select">
-            <CurrencySelect setSelectedCurrency={setSelectedCurrency} />
-          </div>
-        </div>
+        <h2>{t("home.xrp-price")}</h2>
+        <Converter/>
       </div>
       <div className="home-price-chart">
         <PriceChart currency='usd' />

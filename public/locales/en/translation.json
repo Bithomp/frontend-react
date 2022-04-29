@@ -22,6 +22,7 @@
   "home": {
     "search-placeholder": "Search by XRPL Address / Transaction / Username / PayString / Token",
     "search-placeholder-short": "Search by Address / Transaction / User",
-    "scan-qr": "SCAN A CODE"
+    "scan-qr": "SCAN A CODE",
+    "xrp-price": "XRP price"
   }
 }

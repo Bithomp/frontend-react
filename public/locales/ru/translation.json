@@ -22,6 +22,7 @@
   "home": {
     "search-placeholder": "Поиск по XRPL Адресу / Транзакции / Нику / PayString / Токену",
     "search-placeholder-short": "Поиск по Адресу / Транзакции / Нику",
-    "scan-qr": "СКАНИРОВАТЬ КОД"
+    "scan-qr": "СКАНИРОВАТЬ КОД",
+    "xrp-price": "Курс XRP"
   }
 }
