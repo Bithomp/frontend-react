@@ -41,7 +41,6 @@ import { ReactComponent as Bh } from "../assets/images/flags/bh.svg";
 import { ReactComponent as Kw } from "../assets/images/flags/kw.svg";
 import { ReactComponent as Ng } from "../assets/images/flags/ng.svg";
 import { ReactComponent as Ua } from "../assets/images/flags/ua.svg";
-import { ReactComponent as Ve } from "../assets/images/flags/ve.svg";
 import { ReactComponent as Vn } from "../assets/images/flags/vn.svg";
 
 function Kr() {
@@ -97,7 +96,6 @@ function CurrencySelect({ setSelectedCurrency }) {
     { value: 'kwd', label: 'KWD', icon: <Kw /> },
     { value: 'ngn', label: 'NGN', icon: <Ng /> },
     { value: 'uah', label: 'UAH', icon: <Ua /> },
-    { value: 'vef', label: 'VEF', icon: <Ve /> },
     { value: 'vnd', label: 'VND', icon: <Vn /> },
   ];
 
