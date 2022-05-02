@@ -24,6 +24,7 @@ const searchItemRe = /^[~]{0,1}[a-zA-Z0-9-_.]*[+]{0,1}[a-zA-Z0-9-_.]*[$]{0,1}[a-
 
 function Home() {
   const [searchItem, setSearchItem] = useState("");
+  const [selectedCurrency, setSelectedCurrency] = useState('usd');
 
   const { t } = useTranslation();
 
@@ -87,10 +88,10 @@ function Home() {
       </div>
       <div className="home-converter">
         <h2>{t("home.xrp-price")}</h2>
-        <Converter/>
+        <Converter selectedCurrency={selectedCurrency} setSelectedCurrency={setSelectedCurrency} />
       </div>
       <div className="home-price-chart">
-        <PriceChart currency='usd' />
+        <PriceChart currency={selectedCurrency} />
       </div>
     </>
   );

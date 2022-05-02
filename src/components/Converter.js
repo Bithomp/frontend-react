@@ -6,9 +6,8 @@ import CurrencySelect from "../components/CurrencySelect";
 import '../assets/styles/components/converter.scss';
 import { ReactComponent as XrpBlack } from "../assets/images/xrp-black.svg";
 
-function Converter() {
+function Converter({ selectedCurrency, setSelectedCurrency }) {
   const [data, setData] = useState({});
-  const [selectedCurrency, setSelectedCurrency] = useState('usd');
   const [xrpValue, setXrpValue] = useState('1');
   const [fiatValue, setFiatValue] = useState('');
 

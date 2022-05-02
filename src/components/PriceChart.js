@@ -9,12 +9,12 @@ function PriceChart({ currency }) {
   useEffect(() => {
     async function fetchData() {
       const response = await axios(
-        'v2/rates/history/usd',
+        'v2/rates/history/' + currency.toLowerCase(),
       );
       setData(response.data);
     }
     fetchData();
-  }, []);
+  }, [currency]);
 
   const series = [
     {
@@ -66,7 +66,11 @@ function PriceChart({ currency }) {
     },
     markers: {
       size: 0,
-    }
+    },
+    stroke: {
+      curve: 'smooth',
+      width: 3
+    },
   };
   return <Chart type="line" series={series} options={options} />;
 }
