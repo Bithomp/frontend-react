@@ -22,7 +22,7 @@ const searchClick = item => {
 
 const searchItemRe = /^[~]{0,1}[a-zA-Z0-9-_.]*[+]{0,1}[a-zA-Z0-9-_.]*[$]{0,1}[a-zA-Z0-9-.]*[a-zA-Z0-9]*$/i;
 
-function Home() {
+function Home({ theme }) {
   const [searchItem, setSearchItem] = useState("");
   const [selectedCurrency, setSelectedCurrency] = useState('usd');
 
@@ -91,7 +91,7 @@ function Home() {
         <Converter selectedCurrency={selectedCurrency} setSelectedCurrency={setSelectedCurrency} />
       </div>
       <div className="home-price-chart">
-        <PriceChart currency={selectedCurrency} />
+        <PriceChart currency={selectedCurrency} theme={theme} />
       </div>
     </>
   );

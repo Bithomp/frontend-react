@@ -4,31 +4,83 @@ import { useState, useEffect } from 'react';
 
 import '../assets/styles/components/priceChart.scss';
 
-function PriceChart({ currency }) {
+function PriceChart({ currency, theme }) {
 
   const [data, setData] = useState({ data: [[]] });
-  const [selection, setSelection] = useState('ytd');
+  const [selection, setSelection] = useState('one_year');
   const [options, setOptions] = useState({
     xaxis: {
       type: 'datetime',
     },
   });
 
+  const date = new Date();
+  const now = date.getTime();
+
+  let yearAgo = new Date();
+  yearAgo.setFullYear(date.getFullYear() - 1);
+  yearAgo = yearAgo.getTime();
+
+  let monthAgo = new Date()
+  monthAgo.setMonth(date.getMonth() - 1);
+  monthAgo = monthAgo.getTime();
+
+  let halfAnYearAgo = new Date();
+  halfAnYearAgo.setMonth(date.getMonth() - 6);
+  halfAnYearAgo = halfAnYearAgo.getTime();
+
+  const thisYearStart = new Date('1 Jan ' + date.getFullYear()).getTime();
+
   useEffect(() => {
     async function fetchData() {
+      let params = '';
+      if (selection === 'all') {
+        params = '?date=20130804..';
+      } else if (selection === 'one_month') {
+        //params = '?date=' + monthAgo + '..';
+      } else if (selection === 'six_month') {
+        //params = '?date=' + halfAnYearAgo + '..';
+      } else if (selection === 'one_year') {
+        //params = '?date=' + yearAgo + '..';
+      } else if (selection === 'ytd') {
+        //params = '?date=' + thisYearStart + '..';
+      }
+
       const response = await axios(
-        'v2/rates/history/' + currency.toLowerCase(),
+        'v2/rates/history/' + currency.toLowerCase() + params,
       );
+
+      const chartData = response.data.data;
+
+      const textColor = theme === 'light' ? '#000000' : '#ffffff';
+
+      const digitsAfterDot = chartData[0][1] > 0.5 && chartData[chartData.length - 1][1] > 0.5 ? 2 : 4;
+
       setOptions({
         xaxis: {
           type: 'datetime',
         },
         yaxis: {
           labels: {
-            formatter: (val) => val.toFixed(2),
-          },
-          title: {
-            text: 'Price'
+            formatter: (val) => {
+              let currencySign = '';
+              const cur = currency.toLowerCase();
+              const dollar = ["ars", "aud", "bsd", "bbd", "bmd", "bnd", "cad", "kyd", "clp", "cop", "xcd", "svc", "fjd", "gyd", "hkd", "lrd", "mxn", "nad", "nzd", "sgd", "sbd", "srd", "tvd", "usd"];
+              const yen = ["cny", "jpy"];
+              const pound = ["egp", "fkp", "gip", "ggp", "imp", "jep", "lbp", "shp", "syp", "gbp"];
+
+              if (dollar.includes(cur)) {
+                currencySign = '$';
+              } else if (yen.includes(cur)) {
+                currencySign = '¥';
+              } else if (pound.includes(cur)) {
+                currencySign = '£';
+              } else if (cur === 'eur') {
+                currencySign = '€';
+              }
+
+              return currencySign + val.toFixed(digitsAfterDot)
+            }
           },
           tickAmount: 5,
         },
@@ -51,25 +103,26 @@ function PriceChart({ currency }) {
           events: {
             beforeZoom: (e, { xaxis }) => {
               // dont zoom out any further
-              let maindifference = response.data.data[response.data.data.length - 1][0] - response.data.data[0][0];
+              let maindifference = chartData[chartData.length - 1][0] - chartData[0][0];
               let zoomdifference = xaxis.max - xaxis.min;
               if (zoomdifference > maindifference) {
                 return {
                   xaxis: {
-                    min: response.data.data[0][0],
-                    max: response.data.data[response.data.data.length - 1][0]
+                    min: chartData[0][0],
+                    max: chartData[chartData.length - 1][0]
                   }
                 };
               }
             }
-          }
+          },
+          foreColor: textColor
         },
         tooltip: {
           x: {
             format: 'dd MMM yyyy'
           },
           y: {
-            formatter: (val) => val.toFixed(2) + ' ' + currency.toUpperCase()
+            formatter: (val) => val.toFixed(digitsAfterDot) + ' ' + currency.toUpperCase()
           }
         },
         dataLabels: {
@@ -81,55 +134,43 @@ function PriceChart({ currency }) {
         },
         //colors: ['#006B7D'],
       });
+      updateOptions(selection);
       setData(response.data);
     }
     fetchData();
-  }, [currency]);
+  }, [currency, selection, theme]);
 
   const series = [{
     name: '',
     data: data.data,
   }];
 
-  const updateData = timeline => {
-    setSelection(timeline);
-
+  function updateOptions(timeline) {
     let newOptions = { ...options };
-
-    const now = new Date();
-
-    let yearAgo = new Date();
-    yearAgo.setFullYear(now.getFullYear() - 1);
-
-    let monthAgo = new Date();
-    monthAgo.setMonth(now.getMonth() - 1);
-
-    let halfAnYearAgo = new Date();
-    halfAnYearAgo.setMonth(now.getMonth() - 6);
 
     switch (timeline) {
       case 'one_month':
         newOptions.xaxis = {
-          min: monthAgo.getTime(),
-          max: now.getTime(),
+          min: monthAgo,
+          max: now,
         };
         break;
       case 'six_months':
         newOptions.xaxis = {
-          min: halfAnYearAgo.getTime(),
-          max: now.getTime(),
+          min: halfAnYearAgo,
+          max: now,
         };
         break;
       case 'one_year':
         newOptions.xaxis = {
-          min: yearAgo.getTime(),
-          max: now.getTime(),
+          min: yearAgo,
+          max: now,
         };
         break;
       case 'ytd':
         newOptions.xaxis = {
-          min: new Date('1 Jan ' + now.getFullYear()).getTime(),
-          max: now.getTime(),
+          min: thisYearStart,
+          max: now,
         };
         break;
       case 'all':
@@ -146,11 +187,11 @@ function PriceChart({ currency }) {
 
   return <>
     <div className="chart-toolbar">
-      <button onClick={() => updateData('one_month')} className={(selection === 'one_month' ? 'active' : '')}>1M</button>
-      <button onClick={() => updateData('six_months')} className={(selection === 'six_months' ? 'active' : '')}>6M</button>
-      <button onClick={() => updateData('one_year')} className={(selection === 'one_year' ? 'active' : '')}>1Y</button>
-      <button onClick={() => updateData('ytd')} className={(selection === 'ytd' ? 'active' : '')}>YTD</button>
-      <button onClick={() => updateData('all')} className={(selection === 'all' ? 'active' : '')}>ALL</button>
+      <button onClick={() => setSelection('one_month')} className={(selection === 'one_month' ? 'active' : '')}>1M</button>
+      <button onClick={() => setSelection('six_months')} className={(selection === 'six_months' ? 'active' : '')}>6M</button>
+      <button onClick={() => setSelection('one_year')} className={(selection === 'one_year' ? 'active' : '')}>1Y</button>
+      <button onClick={() => setSelection('ytd')} className={(selection === 'ytd' ? 'active' : '')}>YTD</button>
+      <button onClick={() => setSelection('all')} className={(selection === 'all' ? 'active' : '')}>ALL</button>
     </div>
     <Chart type="line" series={series} options={options} />
   </>;
