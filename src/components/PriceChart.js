@@ -12,6 +12,14 @@ function PriceChart({ currency, theme }) {
     xaxis: {
       type: 'datetime',
     },
+    chart: {
+      toolbar: {
+        tools: {
+          download: false,
+          reset: false
+        }
+      },
+    }
   });
 
   useEffect(() => {

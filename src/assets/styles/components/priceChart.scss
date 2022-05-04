@@ -12,6 +12,10 @@
   }
 }
 
+.apexcharts-toolbar {
+  z-index: 1 !important;
+}
+
 @media only screen and (max-width: 650px) {
   .chart-toolbar {
     margin-bottom: 20px;
