@@ -11,3 +11,11 @@
     }
   }
 }
+
+@media only screen and (max-width: 650px) {
+  .chart-toolbar {
+    margin-bottom: 20px;
+    margin-left: unset;
+    text-align: center;
+  }
+}

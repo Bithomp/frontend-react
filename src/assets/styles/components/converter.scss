@@ -1,12 +1,28 @@
 .converter-amount {
-  margin: 5px;
+  width: 156px;
+  height: 36px;
   padding-left: 10px;
+  border: 1px solid var(--accent3);
+  margin: 5px;
+  vertical-align: top;
 }
 .converter-currency-select {
-  margin: 5px;
+  display: inline-block;
   width: 170px;
+  height: 40px;
+  margin: 5px;
+  vertical-align: top;
 }
 .converter-xrp {
-  margin: 5px;
+  display: inline-flex;
   width: 158px;
+  height: 38px;
+  padding-left: 10px;
+  border: 1px solid var(--accent3);
+  vertical-align: top;
+  margin: 5px;
+  align-items: center;
+}
+.converter-xrp-text {
+  padding-left: 5px;
 }
