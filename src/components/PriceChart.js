@@ -7,7 +7,7 @@ import '../assets/styles/components/priceChart.scss';
 function PriceChart({ currency, theme }) {
 
   const [data, setData] = useState({ data: [[]] });
-  const [selection, setSelection] = useState('one_month');
+  const [selection, setSelection] = useState('one_week');
   const [options, setOptions] = useState({
     xaxis: {
       type: 'datetime',
@@ -30,13 +30,17 @@ function PriceChart({ currency, theme }) {
     yearAgo.setFullYear(date.getFullYear() - 1);
     yearAgo = yearAgo.getTime();
 
+    let halfAnYearAgo = new Date();
+    halfAnYearAgo.setMonth(date.getMonth() - 6);
+    halfAnYearAgo = halfAnYearAgo.getTime();
+
     let monthAgo = new Date()
     monthAgo.setMonth(date.getMonth() - 1);
     monthAgo = monthAgo.getTime();
 
-    let halfAnYearAgo = new Date();
-    halfAnYearAgo.setMonth(date.getMonth() - 6);
-    halfAnYearAgo = halfAnYearAgo.getTime();
+    let weekAgo = new Date()
+    weekAgo.setDate(date.getDate() - 7);
+    weekAgo = weekAgo.getTime();
 
     const thisYearStart = new Date('1 Jan ' + date.getFullYear()).getTime();
 
@@ -44,6 +48,8 @@ function PriceChart({ currency, theme }) {
       let params = '';
       if (selection === 'all') {
         params = '?date=20130804..';
+      } else if (selection === 'one_week') {
+        params = '?date=' + weekAgo + '..';
       } else if (selection === 'one_month') {
         params = '?date=' + monthAgo + '..';
       } else if (selection === 'six_months') {
@@ -62,7 +68,7 @@ function PriceChart({ currency, theme }) {
 
       const textColor = theme === 'light' ? '#000000' : '#ffffff';
 
-      const digitsAfterDot = chartData[0][1] > 5 && chartData[chartData.length - 1][1] > 5 ? 0 : chartData[0][1] > 0.5 && chartData[chartData.length - 1][1] > 0.5 ? 2 : 4;
+      const digitsAfterDot = chartData[0][1] > 10 && chartData[chartData.length - 1][1] > 10 ? 0 : chartData[0][1] > 0.5 && chartData[chartData.length - 1][1] > 0.5 ? 2 : 4;
 
       let newOptions = {
         xaxis: {
@@ -98,6 +104,9 @@ function PriceChart({ currency, theme }) {
         },
         chart: {
           type: 'area',
+          animations: {
+            enabled: false
+          },
           zoom: {
             autoScaleYaxis: true
           },
@@ -145,6 +154,12 @@ function PriceChart({ currency, theme }) {
       };
 
       switch (selection) {
+        case 'one_week':
+          newOptions.xaxis = {
+            min: weekAgo,
+            max: now,
+          };
+          break;
         case 'one_month':
           newOptions.xaxis = {
             min: monthAgo,
@@ -191,6 +206,7 @@ function PriceChart({ currency, theme }) {
 
   return <>
     <div className="chart-toolbar">
+      <button onClick={() => setSelection('one_week')} className={(selection === 'one_week' ? 'active' : '')}>1W</button>
       <button onClick={() => setSelection('one_month')} className={(selection === 'one_month' ? 'active' : '')}>1M</button>
       <button onClick={() => setSelection('six_months')} className={(selection === 'six_months' ? 'active' : '')}>6M</button>
       <button onClick={() => setSelection('one_year')} className={(selection === 'one_year' ? 'active' : '')}>1Y</button>
