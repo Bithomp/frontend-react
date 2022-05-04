@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { useTranslation } from 'react-i18next';
 
 import logo from "../assets/images/logo.svg";
@@ -35,7 +36,7 @@ function Footer() {
         </div>
         <div className="footer-menu-column">
           <span className="footer-menu-header">{t("menu.legal")}</span>
-          <a href="/disclaimer">{t("menu.disclaimer")}</a>
+          <Link to="/disclaimer">{t("menu.disclaimer")}</Link>
           <a href="/privacypolicy">{t("menu.privacy-policy")}</a>
           <a href="/termsofservice">{t("menu.terms-of-service")}</a>
           <a href="/gdpr">{t("menu.gdpr")}</a>

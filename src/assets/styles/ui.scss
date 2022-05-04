@@ -53,17 +53,21 @@ body {
   padding-top: 81px;
   flex: 1;
   position: relative;
-}
 
-.content:before {
-  position: absolute;
-  content: "";
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 0;
-  background-image: url('../images/logo-square.svg');
-  background-size: 100% auto;
+  &:before {
+    position: absolute;
+    content: "";
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background-image: url('../images/logo-square.svg');
+    background-size: 100% auto;
+  }
+
+  .content-text {
+    margin: 80px;
+  }
 }
 
 code {
@@ -93,6 +97,14 @@ input {
 
 button {
   font-family: inherit;
+}
+
+@media only screen and (max-width: 1024px) {
+  .content {  
+    .content-text {
+      margin: 20px;
+    }
+  }
 }
 
 @import "./components/header.scss";

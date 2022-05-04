@@ -42,7 +42,13 @@ function Header({ theme, switchTheme }) {
             <a href="https://beta.bithomp.com">Bithomp (Hooks v2)</a>
           </div>
         </div>
-        <Link to="/about">XRPL</Link>
+        <div className="menu-dropdown">
+          <button className="menu-dropdown-button">XRPL</button>
+          <div className="menu-dropdown-content">
+            <a href="/statistics">{t("menu.last-ledger-information")}</a>
+            <a href="/genesis">{t("menu.genesis-accounts")}</a>
+          </div>
+        </div>
       </div>
       <div className="header-menu-right">
         <a href="/explorer/?hwlogin">{t("menu.sign-in")}</a>
@@ -58,7 +64,6 @@ function Header({ theme, switchTheme }) {
         </label>
         <div className="mobile-menu">
           <a href="/explorer/" className="mobile-menu-item">{t("menu.explorer")}</a>
-          <a href="/statistics" className="mobile-menu-item">XRPL</a>
           <div className="mobile-menu-directory"><span>{t("menu.services")}</span></div>
           <a href="/username" className="mobile-menu-item">{t("menu.usernames")}</a>
           <a href="/alerts" className="mobile-menu-item">{t("menu.price-alerts")}</a>
@@ -69,6 +74,9 @@ function Header({ theme, switchTheme }) {
           <a href="https://xls20.bithomp.com" className="mobile-menu-item">Bithomp (XLS-20)</a>
           <a href="https://hooks.bithomp.com" className="mobile-menu-item">Bithomp (Hooks)</a>
           <a href="https://beta.bithomp.com" className="mobile-menu-item">Bithomp (Hooks v2)</a>
+          <div className="mobile-menu-directory"><span>XRPL</span></div>
+          <a href="/statistics" className="mobile-menu-item">{t("menu.last-ledger-information")}</a>
+          <a href="/genesis" className="mobile-menu-item">{t("menu.genesis-accounts")}</a>
           <div className="mobile-menu-directory"></div>
           <a href="/explorer/?hwlogin" className="mobile-menu-item">{t("menu.sign-in")}</a>
         </div>

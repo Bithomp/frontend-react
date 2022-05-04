@@ -6,7 +6,7 @@ import Header from './components/Header';
 import Footer from './components/Footer';
 
 import Home from './screens/Home';
-import About from './screens/About';
+import Disclaimer from './screens/Disclaimer';
 
 function App() {
   const defaultDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -57,7 +57,7 @@ function App() {
       <div className="content">
         <Routes>
           <Route path="/" element={<Home theme={theme} />} />
-          <Route path="/about" element={<About />} />
+          <Route path="/disclaimer" element={<Disclaimer />} />
         </Routes>
       </div>
       <Footer />
