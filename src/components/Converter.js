@@ -17,10 +17,14 @@ function Converter({ selectedCurrency, setSelectedCurrency }) {
         'v2/rates/current/' + selectedCurrency,
       );
       setData(response.data);
-      setFiatValue((xrpValue * response.data[selectedCurrency]).toFixed(2));
+      updateFiat(response.data[selectedCurrency]);
     }
     fetchData();
-  }, [selectedCurrency, xrpValue]);
+  }, [selectedCurrency]);
+
+  const updateFiat = (rate) => {
+    setFiatValue((xrpValue * rate).toFixed(2));
+  }
 
   const onXrpAmountChange = (e) => {
     const xrpAmount = e.target.value;
