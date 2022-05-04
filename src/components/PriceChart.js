@@ -7,43 +7,43 @@ import '../assets/styles/components/priceChart.scss';
 function PriceChart({ currency, theme }) {
 
   const [data, setData] = useState({ data: [[]] });
-  const [selection, setSelection] = useState('one_year');
+  const [selection, setSelection] = useState('one_month');
   const [options, setOptions] = useState({
     xaxis: {
       type: 'datetime',
     },
   });
 
-  const date = new Date();
-  const now = date.getTime();
-
-  let yearAgo = new Date();
-  yearAgo.setFullYear(date.getFullYear() - 1);
-  yearAgo = yearAgo.getTime();
-
-  let monthAgo = new Date()
-  monthAgo.setMonth(date.getMonth() - 1);
-  monthAgo = monthAgo.getTime();
-
-  let halfAnYearAgo = new Date();
-  halfAnYearAgo.setMonth(date.getMonth() - 6);
-  halfAnYearAgo = halfAnYearAgo.getTime();
-
-  const thisYearStart = new Date('1 Jan ' + date.getFullYear()).getTime();
-
   useEffect(() => {
+    const date = new Date();
+    const now = date.getTime();
+
+    let yearAgo = new Date();
+    yearAgo.setFullYear(date.getFullYear() - 1);
+    yearAgo = yearAgo.getTime();
+
+    let monthAgo = new Date()
+    monthAgo.setMonth(date.getMonth() - 1);
+    monthAgo = monthAgo.getTime();
+
+    let halfAnYearAgo = new Date();
+    halfAnYearAgo.setMonth(date.getMonth() - 6);
+    halfAnYearAgo = halfAnYearAgo.getTime();
+
+    const thisYearStart = new Date('1 Jan ' + date.getFullYear()).getTime();
+
     async function fetchData() {
       let params = '';
       if (selection === 'all') {
         params = '?date=20130804..';
       } else if (selection === 'one_month') {
-        //params = '?date=' + monthAgo + '..';
-      } else if (selection === 'six_month') {
-        //params = '?date=' + halfAnYearAgo + '..';
+        params = '?date=' + monthAgo + '..';
+      } else if (selection === 'six_months') {
+        params = '?date=' + halfAnYearAgo + '..';
       } else if (selection === 'one_year') {
-        //params = '?date=' + yearAgo + '..';
+        params = '?date=' + yearAgo + '..';
       } else if (selection === 'ytd') {
-        //params = '?date=' + thisYearStart + '..';
+        params = '?date=' + thisYearStart + '..';
       }
 
       const response = await axios(
@@ -54,9 +54,9 @@ function PriceChart({ currency, theme }) {
 
       const textColor = theme === 'light' ? '#000000' : '#ffffff';
 
-      const digitsAfterDot = chartData[0][1] > 0.5 && chartData[chartData.length - 1][1] > 0.5 ? 2 : 4;
+      const digitsAfterDot = chartData[0][1] > 5 && chartData[chartData.length - 1][1] > 5 ? 0 : chartData[0][1] > 0.5 && chartData[chartData.length - 1][1] > 0.5 ? 2 : 4;
 
-      setOptions({
+      let newOptions = {
         xaxis: {
           type: 'datetime',
         },
@@ -123,7 +123,8 @@ function PriceChart({ currency, theme }) {
           },
           y: {
             formatter: (val) => val.toFixed(digitsAfterDot) + ' ' + currency.toUpperCase()
-          }
+          },
+          theme,
         },
         dataLabels: {
           enabled: false
@@ -133,8 +134,43 @@ function PriceChart({ currency, theme }) {
           width: 3
         },
         //colors: ['#006B7D'],
-      });
-      updateOptions(selection);
+      };
+
+      switch (selection) {
+        case 'one_month':
+          newOptions.xaxis = {
+            min: monthAgo,
+            max: now,
+          };
+          break;
+        case 'six_months':
+          newOptions.xaxis = {
+            min: halfAnYearAgo,
+            max: now,
+          };
+          break;
+        case 'one_year':
+          newOptions.xaxis = {
+            min: yearAgo,
+            max: now,
+          };
+          break;
+        case 'ytd':
+          newOptions.xaxis = {
+            min: thisYearStart,
+            max: now,
+          };
+          break;
+        case 'all':
+          newOptions.xaxis = {
+            min: undefined,
+            max: undefined,
+          };
+          break;
+        default:
+          break;
+      };
+      setOptions(newOptions);
       setData(response.data);
     }
     fetchData();
@@ -144,46 +180,6 @@ function PriceChart({ currency, theme }) {
     name: '',
     data: data.data,
   }];
-
-  function updateOptions(timeline) {
-    let newOptions = { ...options };
-
-    switch (timeline) {
-      case 'one_month':
-        newOptions.xaxis = {
-          min: monthAgo,
-          max: now,
-        };
-        break;
-      case 'six_months':
-        newOptions.xaxis = {
-          min: halfAnYearAgo,
-          max: now,
-        };
-        break;
-      case 'one_year':
-        newOptions.xaxis = {
-          min: yearAgo,
-          max: now,
-        };
-        break;
-      case 'ytd':
-        newOptions.xaxis = {
-          min: thisYearStart,
-          max: now,
-        };
-        break;
-      case 'all':
-        newOptions.xaxis = {
-          min: undefined,
-          max: undefined,
-        };
-        break;
-      default:
-        break;
-    };
-    setOptions(newOptions);
-  }
 
   return <>
     <div className="chart-toolbar">
