@@ -78,10 +78,9 @@ a {
   color: var(--accent1);
   transition: color 0.5s;
   text-decoration: none;
-}
-
-a:hover {
-  color: var(--hover1);
+  &:hover {
+    color: var(--hover1);
+  }
 }
 
 input {

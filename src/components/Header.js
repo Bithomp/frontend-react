@@ -23,9 +23,11 @@ function Header({ theme, switchTheme }) {
         <img src={logo} className="header-logo" alt="logo" />
       </Link>
       <div className="header-menu-left">
-        <a href="/explorer/">{t("menu.explorer")}</a>
         <div className="menu-dropdown">
-          <button className="menu-dropdown-button">{t("menu.services")}</button>
+          <a href="/explorer/" className="menu-dropdown-button">{t("menu.explorer")}</a>
+        </div>
+        <div className="menu-dropdown">
+          <div className="menu-dropdown-button">{t("menu.services")}</div>
           <div className="menu-dropdown-content">
             <a href="/username">{t("menu.usernames")}</a>
             <a href="/alerts">{t("menu.price-alerts")}</a>
@@ -33,7 +35,7 @@ function Header({ theme, switchTheme }) {
           </div>
         </div>
         <div className="menu-dropdown">
-          <button className="menu-dropdown-button">{t("menu.tools")}</button>
+          <div className="menu-dropdown-button">{t("menu.tools")}</div>
           <div className="menu-dropdown-content">
             <a href="/submit/">{t("menu.submit-offline-transaction")}</a>
             <a href="https://test.bithomp.com">Bithomp (Testnet)</a>
@@ -43,7 +45,7 @@ function Header({ theme, switchTheme }) {
           </div>
         </div>
         <div className="menu-dropdown">
-          <button className="menu-dropdown-button">XRPL</button>
+          <div className="menu-dropdown-button">XRPL</div>
           <div className="menu-dropdown-content">
             <a href="/statistics">{t("menu.last-ledger-information")}</a>
             <a href="/genesis">{t("menu.genesis-accounts")}</a>
