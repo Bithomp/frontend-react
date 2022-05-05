@@ -37,14 +37,28 @@ function Converter({ selectedCurrency, setSelectedCurrency }) {
 
   return <>
     <div>
-      <input className="converter-amount" value={xrpValue} onChange={onXrpAmountChange} />
+      <input
+        className="converter-amount"
+        value={xrpValue}
+        onChange={onXrpAmountChange}
+        type="number"
+        pattern="[0-9]*"
+        inputmode="decimal"
+      />
       <div className="converter-xrp">
         <XrpBlack style={{ height: '18px', width: '18px' }} />
         <span className="converter-xrp-text">XRP</span>
       </div>
     </div>
     <div>
-      <input className="converter-amount" value={fiatValue} onChange={onFiatAmountChange} />
+      <input
+        className="converter-amount"
+        value={fiatValue}
+        onChange={onFiatAmountChange}
+        type="number"
+        pattern="[0-9]*"
+        inputmode="decimal"
+      />
       <div className="converter-currency-select">
         <CurrencySelect setSelectedCurrency={setSelectedCurrency} />
       </div>
