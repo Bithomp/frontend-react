@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { useState, useEffect } from 'react';
+import { isMobile } from "react-device-detect";
 
 import CurrencySelect from "../components/CurrencySelect";
 
@@ -24,15 +25,24 @@ function Converter({ selectedCurrency, setSelectedCurrency }) {
   }, [selectedCurrency]);
 
   const onXrpAmountChange = (e) => {
-    const xrpAmount = e.target.value;
+    let xrpAmount = e.target.value;
+    xrpAmount = xrpAmount.replace(',', '.');
     setXrpValue(xrpAmount);
     setFiatValue((xrpAmount * data[selectedCurrency]).toFixed(2));
   }
 
   const onFiatAmountChange = (e) => {
-    const fiatAmount = e.target.value;
+    let fiatAmount = e.target.value;
+    fiatAmount = fiatAmount.replace(',', '.');
     setFiatValue(fiatAmount);
     setXrpValue((fiatAmount / data[selectedCurrency]).toFixed(2));
+  }
+
+  const typeNumberOnly = e => {
+    const pattern = /^[,.0-9]+$/;
+    if (!pattern.test(e.key)) {
+      e.preventDefault();
+    }
   }
 
   return <>
@@ -41,9 +51,11 @@ function Converter({ selectedCurrency, setSelectedCurrency }) {
         className="converter-amount"
         value={xrpValue}
         onChange={onXrpAmountChange}
-        type="number"
+        onKeyPress={typeNumberOnly}
+        type={isMobile ? "number" : "text"}
         pattern="[0-9]*"
-        inputmode="decimal"
+        inputMode="decimal"
+        min="0"
       />
       <div className="converter-xrp">
         <XrpBlack style={{ height: '18px', width: '18px' }} />
@@ -55,9 +67,11 @@ function Converter({ selectedCurrency, setSelectedCurrency }) {
         className="converter-amount"
         value={fiatValue}
         onChange={onFiatAmountChange}
-        type="number"
+        onKeyPress={typeNumberOnly}
+        type={isMobile ? "number" : "text"}
         pattern="[0-9]*"
-        inputmode="decimal"
+        inputMode="decimal"
+        min="0"
       />
       <div className="converter-currency-select">
         <CurrencySelect setSelectedCurrency={setSelectedCurrency} />
