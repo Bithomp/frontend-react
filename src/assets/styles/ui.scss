@@ -84,9 +84,9 @@ a {
 }
 
 input {
-  border-radius: 0; /* remove rounded corners on ios safari */
-  font-size: 16px; /* remove auto zoom on ios safari */
-  outline: none; /* remove default rounded corners on focus */
+  border-radius: 0; // remove rounded corners on ios safari
+  font-size: 16px; // remove auto zoom on ios safari
+  outline: none; // remove default rounded corners on focus
   font-family: inherit;
   transition: background-color .5s, color .5s;
   background-color: var(--background8);
