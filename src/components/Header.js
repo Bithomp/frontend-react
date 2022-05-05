@@ -68,12 +68,6 @@ function Header({ theme, switchTheme }) {
           <a href="/username" className="mobile-menu-item">{t("menu.usernames")}</a>
           <a href="/alerts" className="mobile-menu-item">{t("menu.price-alerts")}</a>
           <a href="https://docs.bithomp.com" className="mobile-menu-item">{t("menu.api")}</a>
-          <div className="mobile-menu-directory"><span>{t("menu.tools")}</span></div>
-          <a href="/submit/" className="mobile-menu-item">{t("menu.submit-offline-transaction")}</a>
-          <a href="https://test.bithomp.com" className="mobile-menu-item">Bithomp (Testnet)</a>
-          <a href="https://xls20.bithomp.com" className="mobile-menu-item">Bithomp (XLS-20)</a>
-          <a href="https://hooks.bithomp.com" className="mobile-menu-item">Bithomp (Hooks)</a>
-          <a href="https://beta.bithomp.com" className="mobile-menu-item">Bithomp (Hooks v2)</a>
           <div className="mobile-menu-directory"><span>XRPL</span></div>
           <a href="/statistics" className="mobile-menu-item">{t("menu.last-ledger-information")}</a>
           <a href="/genesis" className="mobile-menu-item">{t("menu.genesis-accounts")}</a>
