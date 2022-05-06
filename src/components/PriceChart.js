@@ -1,13 +1,14 @@
 import Chart from 'react-apexcharts';
 import axios from 'axios';
 import { useState, useEffect } from 'react';
+import { isMobile } from "react-device-detect";
 
 import '../assets/styles/components/priceChart.scss';
 
 function PriceChart({ currency, theme }) {
 
   const [data, setData] = useState({ data: [[]] });
-  const [selection, setSelection] = useState('one_week');
+  const [selection, setSelection] = useState('one_day');
   const [options, setOptions] = useState({
     xaxis: {
       type: 'datetime',
@@ -42,12 +43,24 @@ function PriceChart({ currency, theme }) {
     weekAgo.setDate(date.getDate() - 7);
     weekAgo = weekAgo.getTime();
 
+    let dayAgo = new Date()
+    dayAgo.setDate(date.getDate() - 1);
+    dayAgo = dayAgo.getTime();
+
     const thisYearStart = new Date('1 Jan ' + date.getFullYear()).getTime();
 
     async function fetchData() {
+      //day charts available only for eur/usd/btc
+      if (currency !== 'usd' && currency !== 'eur' && selection === 'one_day') {
+        setSelection('one_week');
+        return;
+      }
+
       let params = '';
       if (selection === 'all') {
         params = '?date=20130804..';
+      } else if (selection === 'one_day') {
+        params = '?date=' + dayAgo + '..';
       } else if (selection === 'one_week') {
         params = '?date=' + weekAgo + '..';
       } else if (selection === 'one_month') {
@@ -100,7 +113,8 @@ function PriceChart({ currency, theme }) {
         },
         title: {
           text: 'XRP/' + currency.toUpperCase(),
-          align: 'center'
+          align: 'center',
+          offsetX: 20
         },
         chart: {
           type: 'area',
@@ -136,7 +150,7 @@ function PriceChart({ currency, theme }) {
         },
         tooltip: {
           x: {
-            format: 'dd MMM yyyy'
+            format: 'd MMM yyyy'
           },
           y: {
             formatter: (val) => val.toFixed(digitsAfterDot) + ' ' + currency.toUpperCase()
@@ -153,12 +167,24 @@ function PriceChart({ currency, theme }) {
         //colors: ['#006B7D'],
       };
 
+      if (isMobile) {
+        newOptions.title.offsetX = 0;
+      }
+
       switch (selection) {
+        case 'one_day':
+          newOptions.xaxis = {
+            min: dayAgo,
+            max: now,
+          };
+          newOptions.tooltip.x.format = 'd MMM, H:mm';
+          break;
         case 'one_week':
           newOptions.xaxis = {
             min: weekAgo,
             max: now,
           };
+          newOptions.tooltip.x.format = 'd MMM, H:mm';
           break;
         case 'one_month':
           newOptions.xaxis = {
@@ -204,8 +230,11 @@ function PriceChart({ currency, theme }) {
     data: data.data,
   }];
 
+  const showDayChart = currency === 'eur' || currency === "usd";
+
   return <>
     <div className="chart-toolbar">
+      {showDayChart && <button onClick={() => setSelection('one_day')} className={(selection === 'one_day' ? 'active' : '')}>1D</button>}
       <button onClick={() => setSelection('one_week')} className={(selection === 'one_week' ? 'active' : '')}>1W</button>
       <button onClick={() => setSelection('one_month')} className={(selection === 'one_month' ? 'active' : '')}>1M</button>
       <button onClick={() => setSelection('six_months')} className={(selection === 'six_months' ? 'active' : '')}>6M</button>
