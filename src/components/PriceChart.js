@@ -23,6 +23,8 @@ function PriceChart({ currency, theme }) {
     }
   });
 
+  const detailedDayAndWeekChartAvailable = currency === 'eur' || currency === "usd";
+
   useEffect(() => {
     const date = new Date();
     const now = date.getTime();
@@ -50,8 +52,8 @@ function PriceChart({ currency, theme }) {
     const thisYearStart = new Date('1 Jan ' + date.getFullYear()).getTime();
 
     async function fetchData() {
-      //day charts available only for eur/usd/btc
-      if (currency !== 'usd' && currency !== 'eur' && selection === 'one_day') {
+      //day charts available only for eur/usd
+      if (!detailedDayAndWeekChartAvailable && selection === 'one_day') {
         setSelection('one_week');
         return;
       }
@@ -81,7 +83,7 @@ function PriceChart({ currency, theme }) {
 
       const textColor = theme === 'light' ? '#000000' : '#ffffff';
 
-      const digitsAfterDot = chartData[0][1] > 10 && chartData[chartData.length - 1][1] > 10 ? 0 : chartData[0][1] > 0.5 && chartData[chartData.length - 1][1] > 0.5 ? 2 : 4;
+      const digitsAfterDot = chartData[0][1] > 100 && chartData[chartData.length - 1][1] > 100 ? 0 : chartData[0][1] > 1 && chartData[chartData.length - 1][1] > 1 ? 2 : 4;
 
       let newOptions = {
         xaxis: {
@@ -184,7 +186,9 @@ function PriceChart({ currency, theme }) {
             min: weekAgo,
             max: now,
           };
-          newOptions.tooltip.x.format = 'd MMM, H:mm';
+          if (detailedDayAndWeekChartAvailable) {
+            newOptions.tooltip.x.format = 'd MMM, H:mm';
+          }
           break;
         case 'one_month':
           newOptions.xaxis = {
@@ -223,18 +227,16 @@ function PriceChart({ currency, theme }) {
       setData(response.data);
     }
     fetchData();
-  }, [currency, selection, theme]);
+  }, [currency, selection, theme, detailedDayAndWeekChartAvailable]);
 
   const series = [{
     name: '',
     data: data.data,
   }];
 
-  const showDayChart = currency === 'eur' || currency === "usd";
-
   return <>
     <div className="chart-toolbar">
-      {showDayChart && <button onClick={() => setSelection('one_day')} className={(selection === 'one_day' ? 'active' : '')}>1D</button>}
+      {detailedDayAndWeekChartAvailable && <button onClick={() => setSelection('one_day')} className={(selection === 'one_day' ? 'active' : '')}>1D</button>}
       <button onClick={() => setSelection('one_week')} className={(selection === 'one_week' ? 'active' : '')}>1W</button>
       <button onClick={() => setSelection('one_month')} className={(selection === 'one_month' ? 'active' : '')}>1M</button>
       <button onClick={() => setSelection('six_months')} className={(selection === 'six_months' ? 'active' : '')}>6M</button>
