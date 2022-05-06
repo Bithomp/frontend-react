@@ -39,6 +39,11 @@ function Converter({ selectedCurrency, setSelectedCurrency }) {
   }
 
   const typeNumberOnly = e => {
+    if (e.key === ',') {
+      e.preventDefault();
+      e.target.value += '.';
+      return;
+    }
     const pattern = /^[,.0-9]+$/;
     if (!pattern.test(e.key)) {
       e.preventDefault();
