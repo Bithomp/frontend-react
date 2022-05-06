@@ -115,10 +115,6 @@
   }
 }
 
-.body:not([data-network='mainnet']) .home-sponsored {
-  display: none;
-}
-
 .home-converter {
   position: relative;
   height: 200px;
