@@ -12,6 +12,9 @@ function PriceChart({ currency, theme }) {
   const [options, setOptions] = useState({
     xaxis: {
       type: 'datetime',
+      labels: {
+        datetimeUTC: false
+      }
     },
     chart: {
       toolbar: {
@@ -58,19 +61,22 @@ function PriceChart({ currency, theme }) {
         return;
       }
 
+      const day = 86400000;
+      const hour = 3600000;
+
       let params = '';
       if (selection === 'all') {
         params = '?date=20130804..';
       } else if (selection === 'one_day') {
-        params = '?date=' + dayAgo + '..';
+        params = '?date=' + (dayAgo - hour) + '..';
       } else if (selection === 'one_week') {
-        params = '?date=' + weekAgo + '..';
+        params = '?date=' + (weekAgo - day) + '..';
       } else if (selection === 'one_month') {
-        params = '?date=' + monthAgo + '..';
+        params = '?date=' + (monthAgo - day) + '..';
       } else if (selection === 'six_months') {
-        params = '?date=' + halfAnYearAgo + '..';
+        params = '?date=' + (halfAnYearAgo - day) + '..';
       } else if (selection === 'one_year') {
-        params = '?date=' + yearAgo + '..';
+        params = '?date=' + (yearAgo - day) + '..';
       } else if (selection === 'ytd') {
         params = '?date=' + thisYearStart + '..';
       }
@@ -88,6 +94,9 @@ function PriceChart({ currency, theme }) {
       let newOptions = {
         xaxis: {
           type: 'datetime',
+          labels: {
+            datetimeUTC: false
+          }
         },
         yaxis: {
           labels: {
