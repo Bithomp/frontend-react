@@ -1,6 +1,7 @@
 function Disclaimer() {
   return (
     <div className="content-text">
+      <h1>Disclaimer</h1>
       Bithomp provides information based on public data.
       <h3>Accuracy of information</h3>
       Bithomp will strive to ensure accuracy of information listed on this website although it will not hold any responsibility for any missing or wrong information. Data may be delayed or incorrect. Bithomp provides all information "as is" and solely for informational purposes only. You understand that you are using any and all information available here at your own risk.
