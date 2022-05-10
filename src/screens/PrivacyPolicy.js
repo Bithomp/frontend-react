@@ -76,6 +76,7 @@ function PrivacyPolicy() {
       <h3>Tracking Technologies and Cookies</h3>
       <p>We use Cookies and similar tracking technologies to track the activity on Our Service and store certain information. Tracking technologies used are beacons, tags, and scripts to collect and track information and to improve and analyze Our Service. The technologies We use may include:</p>
       <ul>
+        <li><strong>The local storage</strong> The local storage of a browser called "sessionStorage" and "localStorage" is used to store information. "SessionStorage" is automatically deleted when the browser program is closed, to delete the "localStorage" You must delete the browsing history.</li>
         <li><strong>Cookies or Browser Cookies.</strong> A cookie is a small file placed on Your Device. You can instruct Your browser to refuse all Cookies or to indicate when a Cookie is being sent. However, if You do not accept Cookies, You may not be able to use some parts of our Service. Unless you have adjusted Your browser setting so that it will refuse Cookies, our Service may use Cookies.</li>
         <li><strong>Flash Cookies.</strong> Certain features of our Service may use local stored objects (or Flash Cookies) to collect and store information about Your preferences or Your activity on our Service. Flash Cookies are not managed by the same browser settings as those used for Browser Cookies. For more information on how You can delete Flash Cookies, please read &quot;Where can I change the settings for disabling, or deleting local shared objects?&quot; available at <a href="https://helpx.adobe.com/flash-player/kb/disable-local-shared-objects-flash.html#main_Where_can_I_change_the_settings_for_disabling__or_deleting_local_shared_objects_" rel="noreferrer" target="_blank">https://helpx.adobe.com/flash-player/kb/disable-local-shared-objects-flash.html#main_Where_can_I_change_the_settings_for_disabling__or_deleting_local_shared_objects_</a></li>
         <li><strong>Web Beacons.</strong> Certain sections of our Service and our emails may contain small electronic files known as web beacons (also referred to as clear gifs, pixel tags, and single-pixel gifs) that permit the Company, for example, to count users who have visited those pages or opened an email and for other related website statistics (for example, recording the popularity of a certain section and verifying system and server integrity).</li>
@@ -102,7 +103,26 @@ function PrivacyPolicy() {
           <p>Purpose: These Cookies allow us to remember choices You make when You use the Website, such as remembering your login details or language preference. The purpose of these Cookies is to provide You with a more personal experience and to avoid You having to re-enter your preferences every time You use the Website.</p>
         </li>
       </ul>
-      <p>For more information about the cookies we use and your choices regarding cookies, please visit our Cookies Policy or the Cookies section of our Privacy Policy.</p>
+      <h3>Cookies and Local storage in use</h3>
+      <h4>Third party Cookies</h4>
+      <p><strong>cf_clearance</strong> - The challenge cookie by Cloudflare. If you solve a challenge correctly, Cloudflare will set that cookie for the domain that presented the challenge. Clearance cookies are like authentication cookies, but instead of being tied to an identity, they are tied to the fact that you solved a challenge sometime in the past.</p>
+      <h4>Local storage</h4>
+      <p><strong>theme</strong> - the prefered theme of the Service (ex: "light").</p>
+      <p><strong>i18nextLng</strong> - the prefered Service language (ex: "en").</p>
+      <p><strong>language</strong> - on docs.bithomp.com, the prefered programing language (ex: "php").</p>
+      <h3>How to manage Cookies</h3>
+      <p>If You prefer to avoid the use of Cookies on the Website, first You must disable the use of Cookies in your browser and then delete the Cookies saved in your browser associated with this website. You may use this option for preventing the use of Cookies at any time.</p>
+      <p>If You do not accept Our Cookies, You may experience some inconvenience in your use of the Website and some features may not function properly.</p>
+      <p>If You'd like to delete Cookies or instruct your web browser to delete or refuse Cookies, please visit the help pages of your web browser.</p>
+      <ul>
+        <li><a href="https://support.google.com/accounts/answer/61416?co=GENIE.Platform%3DDesktop&amp;hl=en">Google Chrome</a></li>
+        <li><a href="https://privacy.microsoft.com/en-us/windows-10-microsoft-edge-and-privacy">Microsoft Edge</a></li>
+        <li><a href="https://support.mozilla.org/en-US/kb/enable-and-disable-cookies-website-preferences">Mozilla Firefox</a></li>
+        <li><a href="https://support.microsoft.com/en-gb/help/17442/windows-internet-explorer-delete-manage-cookies">Microsoft Internet Explorer</a></li>
+        <li><a href="https://www.opera.com/help/tutorials/security/privacy/">Opera</a></li>
+        <li><a href="https://support.apple.com/kb/ph21411?locale=en_US">Apple Safari</a></li>
+      </ul>
+      <p>For any other web browser, please visit your web browser's official web pages.</p>
       <h2>Use of Your Personal Data</h2>
       <p>The Company may use Personal Data for the following purposes:</p>
       <ul>
@@ -180,23 +200,13 @@ function PrivacyPolicy() {
         <li><strong>The right to object to processing:</strong> You have the right to object to Our processing of your personal data, under certain conditions.</li>
         <li><strong>The right to data portability:</strong> You have the right to request that We transfer the data that we have collected to another organization, or directly to you, under certain conditions.</li>
       </ul>
-      <p>If You make a request, We have one month to respond to you. If you would like to exercise any of these rights, please contact Us at our email: <Mailto email='privacy@bithomp.com' headers={{ subject: 'Data Protection' }} />.</p>
-      <h1>How to manage Cookies</h1>
-      <p>You can set your browser not to accept Cookies, and the above websites tells you how to remove Cookies from your browser. However, in a few cases, some of our website features may not function as a result.</p>
-      <ul>
-        <li><a href="https://support.google.com/accounts/answer/61416?co=GENIE.Platform%3DDesktop&amp;hl=en">Google Chrome</a></li>
-        <li><a href="https://privacy.microsoft.com/en-us/windows-10-microsoft-edge-and-privacy">Microsoft Edge</a></li>
-        <li><a href="https://support.mozilla.org/en-US/kb/enable-and-disable-cookies-website-preferences">Mozilla Firefox</a></li>
-        <li><a href="https://support.microsoft.com/en-gb/help/17442/windows-internet-explorer-delete-manage-cookies">Microsoft Internet Explorer</a></li>
-        <li><a href="https://www.opera.com/help/tutorials/security/privacy/">Opera</a></li>
-        <li><a href="https://support.apple.com/kb/ph21411?locale=en_US">Apple Safari</a></li>
-      </ul>
+      <p>If You make a request, We have one month to respond to you. If you would like to exercise any of these rights, please contact Us at our email: <Mailto email='dataprotection@bithomp.com' headers={{ subject: 'Data Protection' }} />.</p>
       <h1>Changes to this Privacy Policy</h1>
       <p>We may update Our Privacy Policy from time to time. We will notify You of any changes by posting the new Privacy Policy on this page.</p>
       <p>We will let You know via email and/or a prominent notice on Our Service, prior to the change becoming effective and update the &quot;Last updated&quot; date at the top of this Privacy Policy.</p>
       <p>You are advised to review this Privacy Policy periodically for any changes. Changes to this Privacy Policy are effective when they are posted on this page.</p>
       <h1>Contact Us</h1>
-      <p>If you have any questions about this Privacy Policy, You can contact us by email: <Mailto email='privacy@bithomp.com' headers={{ subject: 'Privacy Policy' }} />.</p>
+      <p>If you have any questions about this Privacy Policy, You can contact us by email: <Mailto email='dataprotection@bithomp.com' headers={{ subject: 'Privacy Policy' }} />.</p>
       <h1>Supervisory organs and other authorities</h1>
       <p>Our supervisory authority who You can turn to regarding our data processing is:</p>
       <p><strong>Name:</strong> Swedish Authority for Privacy Protection (Imy)</p>
