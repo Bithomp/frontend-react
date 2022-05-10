@@ -196,10 +196,15 @@ function PrivacyPolicy() {
       <p>We will let You know via email and/or a prominent notice on Our Service, prior to the change becoming effective and update the &quot;Last updated&quot; date at the top of this Privacy Policy.</p>
       <p>You are advised to review this Privacy Policy periodically for any changes. Changes to this Privacy Policy are effective when they are posted on this page.</p>
       <h1>Contact Us</h1>
-      <p>If you have any questions about this Privacy Policy, You can contact us:</p>
-      <ul>
-        <li>By email: <Mailto email='privacy@bithomp.com' headers={{ subject: 'Privacy Policy' }} />.</li>
-      </ul>
+      <p>If you have any questions about this Privacy Policy, You can contact us by email: <Mailto email='privacy@bithomp.com' headers={{ subject: 'Privacy Policy' }} />.</p>
+      <h1>Supervisory organs and other authorities</h1>
+      <p>Our supervisory authority who You can turn to regarding our data processing is:</p>
+      <p><strong>Name:</strong> Swedish Authority for Privacy Protection (Imy)</p>
+      <p><strong>Address:</strong> Drottninggatan 29, plan 5, 10420 Stockholm</p>
+      <p><strong>Post address:</strong> Integritetsskyddsmyndigheten Box 8114, 10420 Stockholm</p>
+      <p><strong>Phone:</strong> 08-657 61 00</p>
+      <p><strong>Email:</strong> <Mailto email='imy@imy.se' headers={{ subject: 'Privacy Protection' }} /></p>
+      <p>Foreign data protection authorities may also be involved if you have your location or place of business outside Sweden. You can search the relevant authority <a href="https://ec.europa.eu/justice/article-29/structure/data-protection-authorities/index_en.htm" rel="noreferrer">here</a>.</p>
     </div >
   );
 }
