@@ -7,6 +7,7 @@ import Footer from './components/Footer';
 
 import Home from './screens/Home';
 import Disclaimer from './screens/Disclaimer';
+import PrivacyPolicy from './screens/PrivacyPolicy';
 
 function App() {
   const defaultDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -58,6 +59,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Home theme={theme} />} />
           <Route path="/disclaimer" element={<Disclaimer />} />
+          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
         </Routes>
       </div>
       <Footer />
