@@ -7,15 +7,11 @@ import youtube from "../assets/images/youtube.svg";
 import instagram from "../assets/images/instagram.svg";
 import reddit from "../assets/images/reddit.svg";
 import github from "../assets/images/github.svg";
+import LanguageSelect from "./LanguageSelect";
 
 function Footer() {
   const year = new Date().getFullYear();
-  const { t, i18n } = useTranslation();
-
-  const handleLangChange = e => {
-    const lang = e.target.value;
-    i18n.changeLanguage(lang);
-  };
+  const { t } = useTranslation();
 
   return (
     <footer>
@@ -46,11 +42,7 @@ function Footer() {
           <a href="/midiakit">{t("menu.media-kit")}</a>
         </div>
         <div className="footer-language-select">
-          {t("settings.language")}:{" "}
-          <select onChange={handleLangChange} value={i18n.language}>
-            <option value="en">English</option>
-            <option value="ru">Русский</option>
-          </select>
+          <LanguageSelect/>
         </div>
       </div>
       <div className="footer-brand">
