@@ -1,6 +1,6 @@
 import Mailto from 'react-protected-mailto';
 
-function PrivacyPolicy() {
+export default function PrivacyPolicy() {
   return (
     <div className="content-text">
       <h1>Privacy Policy</h1>
@@ -217,6 +217,4 @@ function PrivacyPolicy() {
       <p>Foreign data protection authorities may also be involved if you have your location or place of business outside Sweden. You can search the relevant authority <a href="https://ec.europa.eu/justice/article-29/structure/data-protection-authorities/index_en.htm" rel="noreferrer">here</a>.</p>
     </div >
   );
-}
-
-export default PrivacyPolicy;
+};

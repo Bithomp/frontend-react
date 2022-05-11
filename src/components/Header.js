@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import logo from "../assets/images/logo.svg";
 import Switch from "./Switch";
 
-function Header({ theme, switchTheme }) {
+export default function Header({ theme, switchTheme }) {
   const { t } = useTranslation();
 
   const mobileMenuToggle = e => {
@@ -79,6 +79,4 @@ function Header({ theme, switchTheme }) {
       </div>
     </header>
   );
-}
-
-export default Header;
+};

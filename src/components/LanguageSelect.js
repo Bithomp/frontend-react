@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 
-function LanguageSelect() {
+export default function LanguageSelect() {
   const { t, i18n } = useTranslation();
 
   const handleLangChange = e => {
@@ -17,5 +17,4 @@ function LanguageSelect() {
       </select>
     </div>
   );
-}
-export default LanguageSelect;
+};

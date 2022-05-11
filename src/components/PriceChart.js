@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 
 import '../assets/styles/components/priceChart.scss';
 
-function PriceChart({ currency, theme }) {
+export default function PriceChart({ currency, theme }) {
   const { i18n } = useTranslation();
 
   const [data, setData] = useState({ data: [[]] });
@@ -298,5 +298,4 @@ function PriceChart({ currency, theme }) {
     </div>
     <Chart type="line" series={series} options={options} />
   </>;
-}
-export default PriceChart;
+};

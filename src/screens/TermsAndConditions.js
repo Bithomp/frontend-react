@@ -1,6 +1,6 @@
 import Mailto from 'react-protected-mailto';
 
-function TermsAndConditions() {
+export default function TermsAndConditions() {
   return (
     <div className="content-text">
       <h1>Terms and Conditions</h1>
@@ -95,6 +95,4 @@ function TermsAndConditions() {
       <p>If you have any questions about these Terms and Conditions, You can contact us by email: <Mailto email='support@bithomp.com' headers={{ subject: 'Terms and conditions' }} /></p>
     </div >
   );
-}
-
-export default TermsAndConditions;
+};

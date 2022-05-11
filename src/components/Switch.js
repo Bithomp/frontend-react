@@ -1,7 +1,7 @@
 import sun from "../assets/images/sun.svg";
 import moon from "../assets/images/moon.svg";
 
-function Switch({ theme, switchTheme }) {
+export default function Switch({ theme, switchTheme }) {
   return (
     <div className="switch">
       <div className={`switch-container ${theme}`} onClick={switchTheme}>
@@ -35,5 +35,4 @@ function Switch({ theme, switchTheme }) {
       </div>
     </div>
   );
-}
-export default Switch;
+};

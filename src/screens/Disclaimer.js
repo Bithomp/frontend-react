@@ -1,6 +1,6 @@
 import Mailto from 'react-protected-mailto';
 
-function Disclaimer() {
+export default function Disclaimer() {
   return (
     <div className="content-text">
       <h1>Disclaimer</h1>
@@ -45,6 +45,4 @@ function Disclaimer() {
       <p>If you have any questions about these Terms and Conditions, You can contact us by email: <Mailto email='support@bithomp.com' headers={{ subject: 'Disclaimer' }} /></p>
     </div>
   );
-}
-
-export default Disclaimer;
+};

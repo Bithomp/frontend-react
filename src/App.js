@@ -4,13 +4,15 @@ import axios from 'axios';
 
 import Header from './components/Header';
 import Footer from './components/Footer';
+import ScrollToTop from "./components/ScrollToTop";
 
+import PageNotFound from './screens/PageNotFound';
 import Home from './screens/Home';
 import Disclaimer from './screens/Disclaimer';
 import PrivacyPolicy from './screens/PrivacyPolicy';
 import TermsAndConditions from './screens/TermsAndConditions';
 
-function App() {
+export default function App() {
   const defaultDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
   const [theme, setTheme] = useLocalStorage('theme', defaultDark ? 'dark' : 'light');
 
@@ -23,7 +25,7 @@ function App() {
 
   let baseApi = "https://test.bithomp.com/api/";
 
-  switch(network) {
+  switch (network) {
     case 'mainnet':
       baseApi = "https://bithomp.com/api/";
       break;
@@ -57,16 +59,16 @@ function App() {
     <div data-theme={theme} className="body" data-network={network}>
       <Header theme={theme} switchTheme={switchTheme} />
       <div className="content">
+        <ScrollToTop />
         <Routes>
           <Route path="/" element={<Home theme={theme} />} />
           <Route path="/disclaimer" element={<Disclaimer />} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
+          <Route path="*" element={<PageNotFound />} />
         </Routes>
       </div>
       <Footer />
     </div>
   );
-}
-
-export default App;
+};

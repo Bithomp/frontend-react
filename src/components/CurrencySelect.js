@@ -47,7 +47,7 @@ function Kr() {
   return <img src={krFlag} alt="korea" height="18px" width="24px" />;
 }
 
-function CurrencySelect({ setSelectedCurrency }) {
+export default function CurrencySelect({ setSelectedCurrency }) {
 
   const [selectCurrency, setSelectCurrency] = useState({ value: 'usd', label: 'USD', icon: <Us /> });
 
@@ -115,5 +115,4 @@ function CurrencySelect({ setSelectedCurrency }) {
       classNamePrefix="currency-select"
     />
   );
-}
-export default CurrencySelect;
+};

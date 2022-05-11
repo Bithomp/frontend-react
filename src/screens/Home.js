@@ -22,7 +22,7 @@ const searchClick = item => {
 
 const searchItemRe = /^[~]{0,1}[a-zA-Z0-9-_.]*[+]{0,1}[a-zA-Z0-9-_.]*[$]{0,1}[a-zA-Z0-9-.]*[a-zA-Z0-9]*$/i;
 
-function Home({ theme }) {
+export default function Home({ theme }) {
   const [searchItem, setSearchItem] = useState("");
   const [selectedCurrency, setSelectedCurrency] = useState('usd');
 
@@ -95,6 +95,4 @@ function Home({ theme }) {
       </div>
     </>
   );
-}
-
-export default Home;
+};

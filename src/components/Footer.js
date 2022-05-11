@@ -9,7 +9,7 @@ import reddit from "../assets/images/reddit.svg";
 import github from "../assets/images/github.svg";
 import LanguageSelect from "./LanguageSelect";
 
-function Footer() {
+export default function Footer() {
   const year = new Date().getFullYear();
   const { t } = useTranslation();
 
@@ -62,6 +62,4 @@ function Footer() {
       </div>
     </footer>
   );
-}
-
-export default Footer;
+};
