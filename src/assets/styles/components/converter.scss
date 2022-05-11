@@ -27,3 +27,18 @@
 .converter-xrp-text {
   padding-left: 5px;
 }
+
+@media only screen and (max-width: 1024px) {
+  .converter-amount {
+    margin: 5px 10px;
+    width: 164px;
+  }
+  .converter-xrp {
+    width: 152px;
+    margin: 5px 10px;
+  }
+  .converter-currency-select {
+    width: 164px;
+    margin: 5px 10px;
+  }
+}

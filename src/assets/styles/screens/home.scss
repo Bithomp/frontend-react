@@ -10,7 +10,7 @@
     margin-left: 20px;
     margin-right: 20px;
     width: calc(100% - 40px);
-    max-width: 740px;
+    max-width: 760px;
     z-index: 1;
     .search-input {
       height: 40px;
@@ -122,21 +122,21 @@
 }
 
 .home-price-chart {
-  max-width: 740px;
+  max-width: 790px;
   margin-left: auto;
   margin-right: auto;
-  margin-top: 60px;
   margin-bottom: 60px;
+  padding-right: 10px;
 }
 
 @media only screen and (max-width: 1024px) {
   .home-search-block {
-    height: 290px;
+    height: 250px;
     .home-search {
       margin-left: 10px;
       margin-right: 10px;
       margin-top: 89px;
-      width: calc(100% - 20px);
+      width: calc(100% - 40px);
       .search-input {
         padding-left: 10px;
         padding-right: 44px;
