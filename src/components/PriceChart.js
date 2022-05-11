@@ -2,21 +2,61 @@ import Chart from 'react-apexcharts';
 import axios from 'axios';
 import { useState, useEffect } from 'react';
 import { isMobile } from "react-device-detect";
+import { useTranslation } from 'react-i18next';
 
 import '../assets/styles/components/priceChart.scss';
 
 function PriceChart({ currency, theme }) {
+  const { i18n } = useTranslation();
 
   const [data, setData] = useState({ data: [[]] });
   const [selection, setSelection] = useState('one_day');
+
+  const supportedLanguages = ["en", "ru"];
+  let chartLang = "en";
+  if (supportedLanguages.includes(i18n.language)) {
+    chartLang = i18n.language;
+  }
+
   const [options, setOptions] = useState({
     xaxis: {
       type: 'datetime',
       labels: {
-        datetimeUTC: false
-      }
+        datetimeUTC: false,
+        datetimeFormatter: {
+          day: 'd MMM'
+        }
+      },
     },
     chart: {
+      id: "currency-chart",
+      defaultLocale: chartLang,
+      locales: [
+        {
+          name: 'en',
+          options: {
+            shortMonths: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+            toolbar: {
+              selectionZoom: 'Selection Zoom',
+              zoomIn: 'Zoom In',
+              zoomOut: 'Zoom Out',
+              pan: 'Panning'
+            }
+          }
+        },
+        {
+          name: 'ru',
+          options: {
+            shortMonths: ['Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июн', 'Июл', 'Авг', 'Сен', 'Окт', 'Ноя', 'Дек'],
+            toolbar: {
+              selectionZoom: 'Увеличение выбора',
+              zoomIn: 'Приблизить',
+              zoomOut: 'Уменьшить',
+              pan: 'Панорамирование'
+            }
+          }
+        }
+      ],
       toolbar: {
         tools: {
           download: false,
@@ -95,7 +135,10 @@ function PriceChart({ currency, theme }) {
         xaxis: {
           type: 'datetime',
           labels: {
-            datetimeUTC: false
+            datetimeUTC: false,
+            datetimeFormatter: {
+              day: 'd MMM'
+            }
           }
         },
         yaxis: {
