@@ -38,7 +38,7 @@ function Footer() {
           <span className="footer-menu-header">{t("menu.legal")}</span>
           <Link to="/disclaimer">{t("menu.disclaimer")}</Link>
           <Link to="/privacy-policy">{t("menu.privacy-policy")}</Link>
-          <Link to="/terms-of-service">{t("menu.terms-of-service")}</Link>
+          <Link to="/terms-and-conditions">{t("menu.terms-and-conditions")}</Link>
         </div>
         <div className="footer-menu-column">
           <span className="footer-menu-header">Bithomp</span>
