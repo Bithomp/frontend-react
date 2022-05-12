@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { useTranslation } from 'react-i18next';
 
-import logo from "../assets/images/logo.svg";
+import logo from "../assets/images/logo-animated.svg";
 
 import LanguageSelect from "./LanguageSelect";
 import SocialIcons from "./SocialIcons";
@@ -36,7 +36,7 @@ export default function Footer() {
         <div className="footer-menu-column">
           <span className="footer-menu-header">Bithomp</span>
           <Link to="/customer-support">{t("menu.customer-support")}</Link>
-          <a href="/midiakit">{t("menu.media-kit")}</a>
+          <a href="/mediakit">{t("menu.media-kit")}</a>
         </div>
         <div className="footer-language-select">
           <LanguageSelect/>

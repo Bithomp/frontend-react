@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { useTranslation } from 'react-i18next';
 
-import logo from "../assets/images/logo.svg";
+import logo from "../assets/images/logo-animated.svg";
 import Switch from "./Switch";
 
 export default function Header({ theme, switchTheme }) {
