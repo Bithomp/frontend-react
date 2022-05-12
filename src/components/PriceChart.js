@@ -1,7 +1,6 @@
 import Chart from 'react-apexcharts';
 import axios from 'axios';
 import { useState, useEffect } from 'react';
-import { isMobile } from "react-device-detect";
 import { useTranslation } from 'react-i18next';
 
 import '../assets/styles/components/priceChart.scss';
@@ -167,8 +166,7 @@ export default function PriceChart({ currency, theme }) {
         },
         title: {
           text: 'XRP/' + currency.toUpperCase(),
-          align: 'center',
-          offsetX: 20
+          align: 'center'
         },
         chart: {
           type: 'area',
@@ -220,10 +218,6 @@ export default function PriceChart({ currency, theme }) {
         },
         //colors: ['#006B7D'],
       };
-
-      if (isMobile) {
-        newOptions.title.offsetX = 0;
-      }
 
       switch (selection) {
         case 'one_day':
