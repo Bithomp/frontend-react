@@ -23,21 +23,12 @@ header {
   .header-menu-left {
     top: 31px;
     left: 250px;
-    a {
-      color: white;
-      opacity: 0.7;
-      &:hover {
-        color: var(--accent1);
-      }
-    }
-
     .menu-dropdown {
       position: relative;
       display: inline-block;
       .menu-dropdown-button {
         margin: 0 10px;
         color: white;
-        opacity: 0.7;
         cursor: pointer;
         transition: color .5s;
       }
@@ -59,7 +50,6 @@ header {
           height: 1px;
           border-top: 1px solid var(--accent2);
         }
-      
         a {
           display: block;
           margin: 0;
@@ -67,6 +57,7 @@ header {
           white-space: nowrap;
           border-left: 1px solid var(--accent2);
           border-right: 1px solid var(--accent2);
+          color: white;
           &:hover {
             color: var(--accent1);
           }
