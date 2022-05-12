@@ -11,6 +11,7 @@ import Home from './screens/Home';
 import Disclaimer from './screens/Disclaimer';
 import PrivacyPolicy from './screens/PrivacyPolicy';
 import TermsAndConditions from './screens/TermsAndConditions';
+import CustomerSupport from "./screens/CustomerSupport";
 
 export default function App() {
   const defaultDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -65,6 +66,7 @@ export default function App() {
           <Route path="/disclaimer" element={<Disclaimer />} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
+          <Route path="/customer-support" element={<CustomerSupport />} />
           <Route path="*" element={<PageNotFound />} />
         </Routes>
       </div>

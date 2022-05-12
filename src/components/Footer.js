@@ -2,12 +2,9 @@ import { Link } from "react-router-dom";
 import { useTranslation } from 'react-i18next';
 
 import logo from "../assets/images/logo.svg";
-import twitter from "../assets/images/twitter.svg";
-import youtube from "../assets/images/youtube.svg";
-import instagram from "../assets/images/instagram.svg";
-import reddit from "../assets/images/reddit.svg";
-import github from "../assets/images/github.svg";
+
 import LanguageSelect from "./LanguageSelect";
+import SocialIcons from "./SocialIcons";
 
 export default function Footer() {
   const year = new Date().getFullYear();
@@ -38,7 +35,7 @@ export default function Footer() {
         </div>
         <div className="footer-menu-column">
           <span className="footer-menu-header">Bithomp</span>
-          <a href="/contact">{t("menu.contact")}</a>
+          <Link to="/customer-support">{t("menu.customer-support")}</Link>
           <a href="/midiakit">{t("menu.media-kit")}</a>
         </div>
         <div className="footer-language-select">
@@ -53,11 +50,7 @@ export default function Footer() {
           Organization number: 559342-2867
         </div>
         <div className="footer-social">
-          <a href="https://twitter.com/bithomp"><img src={twitter} className="footer-social-icon" alt="twitter" /></a>
-          <a href="https://www.youtube.com/channel/UCTvrMnG-Tpqi5FN9zO7GcWw"><img src={youtube} className="footer-social-icon" alt="youtube" /></a>
-          <a href="https://www.instagram.com/bithomp/"><img src={instagram} className="footer-social-icon" alt="instagram" /></a>
-          <a href="https://www.reddit.com/user/bithomp/"><img src={reddit} className="footer-social-icon" alt="reddit" /></a>
-          <a href="https://github.com/Bithomp"><img src={github} className="footer-social-icon" alt="github" /></a>
+          <SocialIcons/>
         </div>
       </div>
     </footer>
