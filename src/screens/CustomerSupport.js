@@ -23,8 +23,7 @@ export default function Contact() {
       </ol>
       <p>Due to our limited time we do not answer to emails related to 1-7.</p>
       <h2>Submit information about your XRPL service</h2>
-      <p>If you have a public XRPL service and you want your XRP addresses to be recognised on Bithomp submit your information <a href="https://bithomp.com/explorer/submit.html">here</a>.</p>
-
+      <p>If you have a public XRPL service and you want your XRP addresses to be recognised on Bithomp submit your information <a href="https://bithomp.com/explorer/submit.html">here</a>. You can also contact us by email: <Mailto email='support@bithomp.com' headers={{ subject: 'New XRPL Service' }} /> if you want to speed up the process.</p>
       <h2>Follow us on social media</h2>
       <SocialIcons />
     </div>
