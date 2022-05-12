@@ -4,7 +4,7 @@ export default function PrivacyPolicy() {
   return (
     <div className="content-text">
       <h1>Privacy Policy</h1>
-      <p>Last updated: May 10, 2022</p>
+      <p>Last updated: May 12, 2022</p>
       <p>This Privacy Policy describes Our policies and procedures on the collection, use and disclosure of Your information when You use the Service and tells You about Your privacy rights and how the law protects You.</p>
       <p>We use Your Personal data to provide and improve the Service. By using the Service, You agree to the collection and use of information in accordance with this Privacy Policy.</p>
       <h1>Interpretation and Definitions</h1>
@@ -106,6 +106,7 @@ export default function PrivacyPolicy() {
       <h3>Cookies and Local storage in use</h3>
       <h4>Third party Cookies</h4>
       <p><strong>cf_clearance</strong> - The challenge cookie by Cloudflare. If you solve a challenge correctly, Cloudflare will set that cookie for the domain that presented the challenge. Clearance cookies are like authentication cookies, but instead of being tied to an identity, they are tied to the fact that you solved a challenge sometime in the past.</p>
+      <p><strong>allow-cookies</strong> - The cookie consent by the app from Cloudflare.</p>
       <h4>Local storage</h4>
       <p><strong>theme</strong> - the prefered theme of the Service (ex: "light").</p>
       <p><strong>i18nextLng</strong> - the prefered Service language (ex: "en").</p>
