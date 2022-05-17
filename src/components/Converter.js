@@ -7,7 +7,7 @@ import CurrencySelect from "../components/CurrencySelect";
 import '../assets/styles/components/converter.scss';
 import { ReactComponent as XrpBlack } from "../assets/images/xrp-black.svg";
 
-export default function Converter({ selectedCurrency, setSelectedCurrency }) {
+export default function Converter({ selectedCurrency, setSelectedCurrency, chartPeriod }) {
   const [data, setData] = useState({});
   const [xrpValue, setXrpValue] = useState('1');
   const [fiatValue, setFiatValue] = useState('');
@@ -22,7 +22,7 @@ export default function Converter({ selectedCurrency, setSelectedCurrency }) {
     }
     fetchData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedCurrency]);
+  }, [selectedCurrency, chartPeriod]);
 
   const onXrpAmountChange = (e) => {
     let xrpAmount = e.target.value;

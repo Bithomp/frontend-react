@@ -26,6 +26,7 @@ const searchItemRe = /^[~]{0,1}[a-zA-Z0-9-_.]*[+]{0,1}[a-zA-Z0-9-_.]*[$]{0,1}[a-
 export default function Home({ theme }) {
   const [searchItem, setSearchItem] = useState("");
   const [selectedCurrency, setSelectedCurrency] = useLocalStorage('currency', 'usd');
+  const [chartPeriod, setChartPeriod] = useState('one_day');
 
   const { t } = useTranslation();
 
@@ -89,10 +90,10 @@ export default function Home({ theme }) {
       </div>
       <div className="home-converter">
         <h2>{t("home.xrp-price")}</h2>
-        <Converter selectedCurrency={selectedCurrency} setSelectedCurrency={setSelectedCurrency} />
+        <Converter selectedCurrency={selectedCurrency} setSelectedCurrency={setSelectedCurrency} chartPeriod={chartPeriod} />
       </div>
       <div className="home-price-chart">
-        <PriceChart currency={selectedCurrency} theme={theme} />
+        <PriceChart currency={selectedCurrency} theme={theme} chartPeriod={chartPeriod} setChartPeriod={setChartPeriod} />
       </div>
     </>
   );

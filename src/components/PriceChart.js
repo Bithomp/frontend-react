@@ -5,11 +5,10 @@ import { useTranslation } from 'react-i18next';
 
 import '../assets/styles/components/priceChart.scss';
 
-export default function PriceChart({ currency, theme }) {
+export default function PriceChart({ currency, theme, chartPeriod, setChartPeriod }) {
   const { i18n } = useTranslation();
 
   const [data, setData] = useState({ data: [[]] });
-  const [selection, setSelection] = useState('one_day');
 
   const supportedLanguages = ["en", "ru"];
   let chartLang = "en";
@@ -95,8 +94,8 @@ export default function PriceChart({ currency, theme }) {
 
     async function fetchData() {
       //day charts available only for eur/usd
-      if (!detailedDayAndWeekChartAvailable && selection === 'one_day') {
-        setSelection('one_week');
+      if (!detailedDayAndWeekChartAvailable && chartPeriod === 'one_day') {
+        setChartPeriod('one_week');
         return;
       }
 
@@ -104,19 +103,19 @@ export default function PriceChart({ currency, theme }) {
       const hour = 3600000;
 
       let params = '';
-      if (selection === 'all') {
+      if (chartPeriod === 'all') {
         params = '?date=20130804..';
-      } else if (selection === 'one_day') {
+      } else if (chartPeriod === 'one_day') {
         params = '?date=' + (dayAgo - hour) + '..';
-      } else if (selection === 'one_week') {
+      } else if (chartPeriod === 'one_week') {
         params = '?date=' + (weekAgo - day) + '..';
-      } else if (selection === 'one_month') {
+      } else if (chartPeriod === 'one_month') {
         params = '?date=' + (monthAgo - day) + '..';
-      } else if (selection === 'six_months') {
+      } else if (chartPeriod === 'six_months') {
         params = '?date=' + (halfAnYearAgo - day) + '..';
-      } else if (selection === 'one_year') {
+      } else if (chartPeriod === 'one_year') {
         params = '?date=' + (yearAgo - day) + '..';
-      } else if (selection === 'ytd') {
+      } else if (chartPeriod === 'ytd') {
         params = '?date=' + thisYearStart + '..';
       }
 
@@ -219,7 +218,7 @@ export default function PriceChart({ currency, theme }) {
         //colors: ['#006B7D'],
       };
 
-      switch (selection) {
+      switch (chartPeriod) {
         case 'one_day':
           newOptions.xaxis = {
             min: dayAgo,
@@ -273,7 +272,8 @@ export default function PriceChart({ currency, theme }) {
       setData(response.data);
     }
     fetchData();
-  }, [currency, selection, theme, detailedDayAndWeekChartAvailable]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currency, chartPeriod, theme, detailedDayAndWeekChartAvailable]);
 
   const series = [{
     name: '',
@@ -282,13 +282,13 @@ export default function PriceChart({ currency, theme }) {
 
   return <>
     <div className="chart-toolbar">
-      {detailedDayAndWeekChartAvailable && <button onClick={() => setSelection('one_day')} className={(selection === 'one_day' ? 'active' : '')}>1D</button>}
-      <button onClick={() => setSelection('one_week')} className={(selection === 'one_week' ? 'active' : '')}>1W</button>
-      <button onClick={() => setSelection('one_month')} className={(selection === 'one_month' ? 'active' : '')}>1M</button>
-      <button onClick={() => setSelection('six_months')} className={(selection === 'six_months' ? 'active' : '')}>6M</button>
-      <button onClick={() => setSelection('one_year')} className={(selection === 'one_year' ? 'active' : '')}>1Y</button>
-      <button onClick={() => setSelection('ytd')} className={(selection === 'ytd' ? 'active' : '')}>YTD</button>
-      <button onClick={() => setSelection('all')} className={(selection === 'all' ? 'active' : '')}>ALL</button>
+      {detailedDayAndWeekChartAvailable && <button onClick={() => setChartPeriod('one_day')} className={(chartPeriod === 'one_day' ? 'active' : '')}>1D</button>}
+      <button onClick={() => setChartPeriod('one_week')} className={(chartPeriod === 'one_week' ? 'active' : '')}>1W</button>
+      <button onClick={() => setChartPeriod('one_month')} className={(chartPeriod === 'one_month' ? 'active' : '')}>1M</button>
+      <button onClick={() => setChartPeriod('six_months')} className={(chartPeriod === 'six_months' ? 'active' : '')}>6M</button>
+      <button onClick={() => setChartPeriod('one_year')} className={(chartPeriod === 'one_year' ? 'active' : '')}>1Y</button>
+      <button onClick={() => setChartPeriod('ytd')} className={(chartPeriod === 'ytd' ? 'active' : '')}>YTD</button>
+      <button onClick={() => setChartPeriod('all')} className={(chartPeriod === 'all' ? 'active' : '')}>ALL</button>
     </div>
     <Chart type="line" series={series} options={options} />
   </>;
