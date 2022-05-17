@@ -59,7 +59,7 @@ export default function App() {
 
   return (
     <div data-theme={theme} className="body" data-network={network}>
-      <Header theme={theme} switchTheme={switchTheme} />
+      <Header theme={theme} switchTheme={switchTheme} network={network} />
       <div className="content">
         <ScrollToTop />
         <Routes>

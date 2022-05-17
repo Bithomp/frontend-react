@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import logo from "../assets/images/logo-animated.svg";
 import Switch from "./Switch";
 
-export default function Header({ theme, switchTheme }) {
+export default function Header({ theme, switchTheme, network }) {
   const { t } = useTranslation();
 
   const mobileMenuToggle = e => {
@@ -16,6 +16,8 @@ export default function Header({ theme, switchTheme }) {
       document.body.style.overflow = "auto";
     }
   };
+
+  const devNet = !['mainnet', 'local'].includes(network);
 
   return (
     <header>
@@ -45,11 +47,15 @@ export default function Header({ theme, switchTheme }) {
           </div>
         </div>
         <div className="menu-dropdown">
-          <div className="menu-dropdown-button">XRPL</div>
-          <div className="menu-dropdown-content">
-            <Link to="/last-ledger-information">{t("menu.last-ledger-information")}</Link>
-            <a href="/genesis">{t("menu.genesis-accounts")}</a>
-          </div>
+          {devNet ? <Link to="/last-ledger-information" className="menu-dropdown-button">XRPL</Link> :
+            <>
+              <div className="menu-dropdown-button">XRPL</div>
+              <div className="menu-dropdown-content">
+                <Link to="/last-ledger-information">{t("menu.last-ledger-information")}</Link>
+                <a href="/genesis">{t("menu.genesis-accounts")}</a>
+              </div>
+            </>
+          }
         </div>
       </div>
       <div className="header-menu-right">
