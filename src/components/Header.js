@@ -47,7 +47,7 @@ export default function Header({ theme, switchTheme }) {
         <div className="menu-dropdown">
           <div className="menu-dropdown-button">XRPL</div>
           <div className="menu-dropdown-content">
-            <a href="/statistics">{t("menu.last-ledger-information")}</a>
+            <Link to="/last-ledger-information">{t("menu.last-ledger-information")}</Link>
             <a href="/genesis">{t("menu.genesis-accounts")}</a>
           </div>
         </div>
@@ -71,7 +71,7 @@ export default function Header({ theme, switchTheme }) {
           <a href="/alerts" className="mobile-menu-item">{t("menu.price-alerts")}</a>
           <a href="https://docs.bithomp.com" className="mobile-menu-item">{t("menu.api")}</a>
           <div className="mobile-menu-directory"><span>XRPL</span></div>
-          <a href="/statistics" className="mobile-menu-item">{t("menu.last-ledger-information")}</a>
+          <Link to="/last-ledger-information" className="mobile-menu-item">{t("menu.last-ledger-information")}</Link>
           <a href="/genesis" className="mobile-menu-item">{t("menu.genesis-accounts")}</a>
           <div className="mobile-menu-directory"></div>
           <a href="/explorer/?hwlogin" className="mobile-menu-item">{t("menu.sign-in")}</a>

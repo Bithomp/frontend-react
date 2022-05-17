@@ -8,6 +8,7 @@ import ScrollToTop from "./components/ScrollToTop";
 
 import PageNotFound from './screens/PageNotFound';
 import Home from './screens/Home';
+import LastLedgerInformation from './screens/LastLedgerInformation';
 import Disclaimer from './screens/Disclaimer';
 import PrivacyPolicy from './screens/PrivacyPolicy';
 import TermsAndConditions from './screens/TermsAndConditions';
@@ -63,6 +64,7 @@ export default function App() {
         <ScrollToTop />
         <Routes>
           <Route path="/" element={<Home theme={theme} />} />
+          <Route path="/last-ledger-information" element={<LastLedgerInformation />} />
           <Route path="/disclaimer" element={<Disclaimer />} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
