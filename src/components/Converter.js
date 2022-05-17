@@ -79,7 +79,7 @@ export default function Converter({ selectedCurrency, setSelectedCurrency }) {
         min="0"
       />
       <div className="converter-currency-select">
-        <CurrencySelect setSelectedCurrency={setSelectedCurrency} />
+        <CurrencySelect setSelectedCurrency={setSelectedCurrency} selectedCurrency={selectedCurrency} />
       </div>
     </div>
   </>;

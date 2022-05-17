@@ -4,7 +4,7 @@ export default function PrivacyPolicy() {
   return (
     <div className="content-text">
       <h1>Privacy Policy</h1>
-      <p>Last updated: May 10, 2022</p>
+      <p>Last updated: May 17, 2022</p>
       <p>This Privacy Policy describes Our policies and procedures on the collection, use and disclosure of Your information when You use the Service and tells You about Your privacy rights and how the law protects You.</p>
       <p>We use Your Personal data to provide and improve the Service. By using the Service, You agree to the collection and use of information in accordance with this Privacy Policy.</p>
       <h1>Interpretation and Definitions</h1>
@@ -109,6 +109,7 @@ export default function PrivacyPolicy() {
       <h4>Local storage</h4>
       <p><strong>theme</strong> - the prefered theme of the Service (ex: "light").</p>
       <p><strong>i18nextLng</strong> - the prefered Service language (ex: "en").</p>
+      <p><strong>currency</strong> - the prefered Service currency (ex: "sek").</p>
       <p><strong>language</strong> - on docs.bithomp.com, the prefered programing language (ex: "php").</p>
       <h3>How to manage Cookies</h3>
       <p>If You prefer to avoid the use of Cookies on the Website, first You must disable the use of Cookies in your browser and then delete the Cookies saved in your browser associated with this website. You may use this option for preventing the use of Cookies at any time.</p>

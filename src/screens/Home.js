@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import useLocalStorage from 'use-local-storage';
 
 import Converter from "../components/Converter";
 import PriceChart from "../components/PriceChart";
@@ -24,7 +25,7 @@ const searchItemRe = /^[~]{0,1}[a-zA-Z0-9-_.]*[+]{0,1}[a-zA-Z0-9-_.]*[$]{0,1}[a-
 
 export default function Home({ theme }) {
   const [searchItem, setSearchItem] = useState("");
-  const [selectedCurrency, setSelectedCurrency] = useState('usd');
+  const [selectedCurrency, setSelectedCurrency] = useLocalStorage('currency', 'usd');
 
   const { t } = useTranslation();
 

@@ -47,14 +47,7 @@ function Kr() {
   return <img src={krFlag} alt="korea" height="18px" width="24px" />;
 }
 
-export default function CurrencySelect({ setSelectedCurrency }) {
-
-  const [selectCurrency, setSelectCurrency] = useState({ value: 'usd', label: 'USD', icon: <Us /> });
-
-  const onCurrencyChange = value => {
-    setSelectCurrency(value);
-    setSelectedCurrency(value.value);
-  };
+export default function CurrencySelect({ setSelectedCurrency, selectedCurrency }) {
 
   const currencies = [
     { value: 'usd', label: 'USD', icon: <Us /> },
@@ -98,6 +91,21 @@ export default function CurrencySelect({ setSelectedCurrency }) {
     { value: 'uah', label: 'UAH', icon: <Ua /> },
     { value: 'vnd', label: 'VND', icon: <Vn /> },
   ];
+
+  let defaultOption = { value: 'usd', label: 'USD', icon: <Us /> };
+  for (let i = 0; i < currencies.length; i++) {
+    if (currencies[i].value.toLocaleLowerCase() === selectedCurrency.toLocaleLowerCase()) {
+      defaultOption = currencies[i];
+      break;
+    }
+  }
+
+  const [selectCurrency, setSelectCurrency] = useState(defaultOption);
+
+  const onCurrencyChange = value => {
+    setSelectCurrency(value);
+    setSelectedCurrency(value.value);
+  };
 
   return (
     <Select
