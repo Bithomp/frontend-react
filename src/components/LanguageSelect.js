@@ -13,6 +13,7 @@ export default function LanguageSelect() {
       {t("settings.language")}:{" "}
       <select onChange={handleLangChange} value={i18n.language}>
         <option value="en">English</option>
+        {/* <option value="sv">Svenska</option> */}
         <option value="ru">Русский</option>
       </select>
     </div>
