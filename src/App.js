@@ -24,6 +24,7 @@ export default function App() {
   }
 
   const network = process.env.REACT_APP_NETWORK_NAME ? process.env.REACT_APP_NETWORK_NAME : "mainnet";
+  const devNet = ['mainnet', 'local'].includes(network) ? false : network;
 
   let baseApi = "https://test.bithomp.com/api/";
 
@@ -59,7 +60,7 @@ export default function App() {
 
   return (
     <div data-theme={theme} className="body" data-network={network}>
-      <Header theme={theme} switchTheme={switchTheme} network={network} />
+      <Header theme={theme} switchTheme={switchTheme} devNet={devNet} />
       <div className="content">
         <ScrollToTop />
         <Routes>
@@ -72,7 +73,7 @@ export default function App() {
           <Route path="*" element={<PageNotFound />} />
         </Routes>
       </div>
-      <Footer />
+      <Footer devNet={devNet} />
     </div>
   );
 };

@@ -6,7 +6,7 @@ import logo from "../assets/images/logo-animated.svg";
 import LanguageSelect from "./LanguageSelect";
 import SocialIcons from "./SocialIcons";
 
-export default function Footer() {
+export default function Footer({ devNet }) {
   const year = new Date().getFullYear();
   const { t } = useTranslation();
 
@@ -22,10 +22,22 @@ export default function Footer() {
         <div className="footer-menu-column">
           <span className="footer-menu-header">{t("menu.tools")}</span>
           <a href="/submit/">{t("menu.submit-offline-transaction")}</a>
-          <a href="https://test.bithomp.com">Bithomp (Testnet)</a>
-          <a href="https://xls20.bithomp.com">Bithomp (XLS-20)</a>
-          <a href="https://hooks.bithomp.com">Bithomp (Hooks)</a>
-          <a href="https://beta.bithomp.com">Bithomp (Hooks v2)</a>
+          {devNet ?
+            <>
+              <a href="/create/">{t("menu.account-generation")}</a>
+              {devNet === 'testnet' ?
+                <a href="https://xrpl.org/xrp-testnet-faucet.html">{t("menu.faucet")}</a> :
+                <a href="/faucet/">{t("menu.faucet")}</a>
+              }
+              <a href="/tools/">Bithomp tools</a>
+            </> :
+            <>
+              <a href="https://test.bithomp.com">Bithomp (Testnet)</a>
+              <a href="https://xls20.bithomp.com">Bithomp (XLS-20)</a>
+              <a href="https://hooks.bithomp.com">Bithomp (Hooks)</a>
+              <a href="https://beta.bithomp.com">Bithomp (Hooks v2)</a>
+            </>
+          }
         </div>
         <div className="footer-menu-column">
           <span className="footer-menu-header">{t("menu.legal")}</span>
@@ -39,7 +51,7 @@ export default function Footer() {
           <a href="/mediakit">{t("menu.media-kit")}</a>
         </div>
         <div className="footer-language-select">
-          <LanguageSelect/>
+          <LanguageSelect />
         </div>
       </div>
       <div className="footer-brand">
@@ -50,7 +62,7 @@ export default function Footer() {
           Organization number: 559342-2867
         </div>
         <div className="footer-social">
-          <SocialIcons/>
+          <SocialIcons />
         </div>
       </div>
     </footer>
