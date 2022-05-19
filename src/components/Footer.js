@@ -15,7 +15,7 @@ export default function Footer({ devNet }) {
       <div className="footer-menu">
         <div className="footer-menu-column">
           <span className="footer-menu-header">{t("menu.services")}</span>
-          <a href="/username">{t("menu.usernames")}</a>
+          <Link to="/username">{t("menu.usernames")}</Link>
           <a href="/alerts">{t("menu.price-alerts")}</a>
           <a href="https://docs.bithomp.com">{t("menu.api")}</a>
         </div>

@@ -29,7 +29,7 @@ export default function Header({ theme, switchTheme, devNet }) {
         <div className="menu-dropdown">
           <div className="menu-dropdown-button">{t("menu.services")}</div>
           <div className="menu-dropdown-content">
-            <a href="/username">{t("menu.usernames")}</a>
+            <Link to="/username">{t("menu.usernames")}</Link>
             {!devNet && <a href="/alerts">{t("menu.price-alerts")}</a>}
             <a href="https://docs.bithomp.com">{t("menu.api")}</a>
           </div>
@@ -94,7 +94,7 @@ export default function Header({ theme, switchTheme, devNet }) {
         <div className="mobile-menu">
           <a href="/explorer/" className="mobile-menu-item">{t("menu.explorer")}</a>
           <div className="mobile-menu-directory"><span>{t("menu.services")}</span></div>
-          <a href="/username" className="mobile-menu-item">{t("menu.usernames")}</a>
+          <Link to="/username" className="mobile-menu-item">{t("menu.usernames")}</Link>
           {!devNet && <a href="/alerts" className="mobile-menu-item">{t("menu.price-alerts")}</a>}
           <a href="https://docs.bithomp.com" className="mobile-menu-item">{t("menu.api")}</a>
           <div className="mobile-menu-directory"><span>XRPL</span></div>

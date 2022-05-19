@@ -69,6 +69,12 @@ body {
     margin: 80px;
     position: relative;
   }
+
+  .content-center {
+    margin: 80px auto;
+    max-width: 760px;
+    position: relative;
+  }
 }
 
 code {
@@ -93,6 +99,30 @@ input {
   background-color: var(--background8);
   caret-color: var(--text1);
   color: var(--text1);
+  &.input-text {
+    height: 40px;
+    width: 100%;
+    max-width: calc(100% - 40px);
+    border: 1px solid var(--accent3);
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-top: 1px; /* set for ios safari */
+    padding-bottom: 1px; /* set for ios safari */
+    &:focus {
+      box-shadow: 0 0 10px var(--accent3);
+    }
+  }
+}
+
+.input-validation {
+  position: relative;
+  .validation-icon {
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    top: 6px;
+    right: 6px;
+  }
 }
 
 button {
@@ -106,6 +136,9 @@ button {
 @media only screen and (max-width: 1024px) {
   .content {  
     .content-text {
+      margin: 20px;
+    }
+    .content-center {
       margin: 20px;
     }
   }

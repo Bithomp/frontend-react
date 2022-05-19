@@ -8,6 +8,7 @@ import ScrollToTop from "./components/ScrollToTop";
 
 import PageNotFound from './screens/PageNotFound';
 import Home from './screens/Home';
+import Username from './screens/Username';
 import LastLedgerInformation from './screens/LastLedgerInformation';
 import Disclaimer from './screens/Disclaimer';
 import PrivacyPolicy from './screens/PrivacyPolicy';
@@ -26,26 +27,26 @@ export default function App() {
   const network = process.env.REACT_APP_NETWORK_NAME ? process.env.REACT_APP_NETWORK_NAME : "mainnet";
   const devNet = ['mainnet', 'local'].includes(network) ? false : network;
 
-  let baseApi = "https://test.bithomp.com/api/";
+  let server = "https://test.bithomp.com";
 
   switch (network) {
     case 'mainnet':
-      baseApi = "https://bithomp.com/api/";
+      server = "https://bithomp.com";
       break;
     case 'testnet':
-      baseApi = "https://test.bithomp.com/api/";
+      server = "https://test.bithomp.com";
       break;
     case 'hooks':
-      baseApi = "https://hooks.bithomp.com/api/";
+      server = "https://hooks.bithomp.com";
       break;
     case 'beta':
-      baseApi = "https://beta.bithomp.com/api/";
+      server = "https://beta.bithomp.com";
       break;
     case 'xls20':
-      baseApi = "https://xls20.bithomp.com/api/";
+      server = "https://xls20.bithomp.com";
       break;
     case 'local':
-      baseApi = "https://test.bithomp.com/api/";
+      server = "https://test.bithomp.com";
       break;
     default:
       break;
@@ -53,9 +54,9 @@ export default function App() {
 
   if (process.env.NODE_ENV === 'development') {
     axios.defaults.headers.common['x-bithomp-token'] = process.env.REACT_APP_BITHOMP_API_TEST_KEY;
-    axios.defaults.baseURL = baseApi;
+    axios.defaults.baseURL = server + '/api/';
   } else {
-    axios.defaults.baseURL = baseApi + '/cors/';
+    axios.defaults.baseURL = server + '/api/cors/';
   }
 
   return (
@@ -64,7 +65,8 @@ export default function App() {
       <div className="content">
         <ScrollToTop />
         <Routes>
-          <Route path="/" element={<Home theme={theme} />} />
+          <Route path="/" element={<Home theme={theme} devNet={devNet} />} />
+          <Route path="/username" element={<Username server={server} />} />
           <Route path="/last-ledger-information" element={<LastLedgerInformation />} />
           <Route path="/disclaimer" element={<Disclaimer />} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />

@@ -23,7 +23,7 @@ const searchClick = item => {
 
 const searchItemRe = /^[~]{0,1}[a-zA-Z0-9-_.]*[+]{0,1}[a-zA-Z0-9-_.]*[$]{0,1}[a-zA-Z0-9-.]*[a-zA-Z0-9]*$/i;
 
-export default function Home({ theme }) {
+export default function Home({ theme, devNet }) {
   const [searchItem, setSearchItem] = useState("");
   const [selectedCurrency, setSelectedCurrency] = useLocalStorage('currency', 'usd');
   const [chartPeriod, setChartPeriod] = useState('one_day');
@@ -88,13 +88,17 @@ export default function Home({ theme }) {
           </div>
         </a>
       </div>
-      <div className="home-converter">
-        <h2>{t("home.xrp-price")}</h2>
-        <Converter selectedCurrency={selectedCurrency} setSelectedCurrency={setSelectedCurrency} chartPeriod={chartPeriod} />
-      </div>
-      <div className="home-price-chart">
-        <PriceChart currency={selectedCurrency} theme={theme} chartPeriod={chartPeriod} setChartPeriod={setChartPeriod} />
-      </div>
+      {!devNet &&
+        <>
+          <div className="home-converter">
+            <h2>{t("home.xrp-price")}</h2>
+            <Converter selectedCurrency={selectedCurrency} setSelectedCurrency={setSelectedCurrency} chartPeriod={chartPeriod} />
+          </div>
+          <div className="home-price-chart">
+            <PriceChart currency={selectedCurrency} theme={theme} chartPeriod={chartPeriod} setChartPeriod={setChartPeriod} />
+          </div>
+        </>
+      }
     </>
   );
 };
