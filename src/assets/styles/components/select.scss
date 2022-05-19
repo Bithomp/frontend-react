@@ -1,0 +1,51 @@
+@mixin react-select {
+  .react-select__control {
+    border-color: var(--accent3);
+    border-radius: 0;
+    height: 40px;
+    box-shadow: none;
+    background-color: var(--background8);
+    transition: background-color .5s;
+    &:hover {
+      border-color: var(--accent3);
+    }
+    .react-select__input-container {
+      color: var(--text1);
+    }
+  }
+
+  .react-select__menu {
+    border-radius: 0;
+    margin-top: 0;
+    z-index: 2;
+  }
+
+  .react-select__menu-list {
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+
+  .react-select__option {
+    background-color: var(--background7);
+    color: var(--text1);
+    &:hover {
+      background-color: var(--background7);
+    }
+  }
+
+  .react-select__dropdown-indicator {
+    color: var(--accent3);
+    &:hover {
+      color: var(--accent3);
+    }
+  }
+
+  .react-select__indicator-separator {
+    //background-color: var(--accent3);
+    display: none;
+  }
+
+  .react-select__single-value {
+    color: var(--text1);
+  }
+}

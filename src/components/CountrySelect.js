@@ -5,7 +5,7 @@ import countries from "i18n-iso-countries";
 import axios from 'axios';
 import useLocalStorage from 'use-local-storage';
 
-import '../assets/styles/components/currencySelect.scss';
+import '../assets/styles/components/countrySelect.scss';
 
 export default function CountrySelect() {
   const { i18n } = useTranslation();
@@ -21,13 +21,13 @@ export default function CountrySelect() {
   countryArr.sort((a, b) => a.label.localeCompare(b.label, i18n.language));
 
   const [savedCountry, setSavedCounty] = useLocalStorage('country');
-  const [selectCountry, setSelectCountry] = useState({value: '', label: ''});
+  const [selectCountry, setSelectCountry] = useState({ value: '', label: '' });
 
   useEffect(() => {
     if (savedCountry) {
       setSelectCountry({
         value: savedCountry,
-        label: countries.getName(savedCountry, i18n.language, {select: "official"})
+        label: countries.getName(savedCountry, i18n.language, { select: "official" })
       });
     } else {
       async function fetchData() {
@@ -37,7 +37,7 @@ export default function CountrySelect() {
           const countryCode = json.country.toUpperCase();
           setSelectCountry({
             value: countryCode,
-            label: countries.getName(countryCode, i18n.language, {select: "official"})
+            label: countries.getName(countryCode, i18n.language, { select: "official" })
           });
           setSavedCounty(countryCode);
         }
@@ -51,7 +51,7 @@ export default function CountrySelect() {
     if (selectCountry.value) {
       setSelectCountry({
         value: selectCountry.value,
-        label: countries.getName(selectCountry.value, i18n.language, {select: "official"})
+        label: countries.getName(selectCountry.value, i18n.language, { select: "official" })
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -68,8 +68,8 @@ export default function CountrySelect() {
       value={selectCountry}
       onChange={onCountryChange}
       isSearchable={true}
-      className="currency-select"
-      classNamePrefix="currency-select"
+      className="country-select"
+      classNamePrefix="react-select"
     />
   );
 };

@@ -120,7 +120,7 @@ export default function CurrencySelect({ setSelectedCurrency, selectedCurrency }
         </div>
       )}
       className="currency-select"
-      classNamePrefix="currency-select"
+      classNamePrefix="react-select"
     />
   );
 };

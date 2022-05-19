@@ -1,54 +1,11 @@
+@import "./select.scss";
+
 .currency-select {
-  .currency-select__control {
-    border-color: var(--accent3);
-    border-radius: 0;
-    height: 40px;
-    box-shadow: none;
-    background-color: var(--background8);
-    transition: background-color .5s;
-    &:hover {
-      border-color: var(--accent3);
-    }
-    .currency-select__input {
+  @include react-select;
+
+  .react-select__control {
+    .react-select__input {
       padding-left: 29.5px !important;
     }
-    .currency-select__input-container {
-      color: var(--text1);
-    }
-  }
-
-  .currency-select__menu {
-    border-radius: 0;
-    margin-top: 0;
-    z-index: 2;
-  }
-
-  .currency-select__menu-list {
-    padding-top: 0;
-    padding-bottom: 0;
-  }
-
-  .currency-select__option {
-    background-color: var(--background7);
-    color: var(--text1);
-    &:hover {
-      background-color: var(--background7);
-    }
-  }
-
-  .currency-select__dropdown-indicator {
-    color: var(--accent3);
-    &:hover {
-      color: var(--accent3);
-    }
-  }
-
-  .currency-select__indicator-separator {
-    //background-color: var(--accent3);
-    display: none;
-  }
-
-  .currency-select__single-value {
-    color: var(--text1);
   }
 }

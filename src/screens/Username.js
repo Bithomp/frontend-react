@@ -27,7 +27,6 @@ export default function Username({ server }) {
       searchParams.delete("username");
     }
     setSearchParams(searchParams);
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
