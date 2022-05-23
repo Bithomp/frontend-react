@@ -133,6 +133,22 @@ button {
   text-align: center;
 }
 
+.red {
+  color: var(--red);
+}
+
+.button-action {
+  background-color: var(--accent3);
+  border: none;
+  color: var(--text2);
+  height: 40px;
+  min-width: 100px;
+  cursor: pointer;
+  &:hover {
+    background-color: var(--accent2);
+  }
+}
+
 @media only screen and (max-width: 1024px) {
   .content {  
     .content-text {
