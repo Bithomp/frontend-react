@@ -122,6 +122,9 @@ input {
     height: 30px;
     top: 6px;
     right: 6px;
+    @media only screen and (max-width: 1024px) {
+      display: none;
+    }
   }
 }
 
@@ -131,6 +134,14 @@ button {
 
 .center {
   text-align: center;
+}
+
+.bold {
+  font-weight: 600;
+}
+
+.brake {
+  word-break: break-word;
 }
 
 .red {

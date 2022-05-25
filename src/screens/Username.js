@@ -35,6 +35,8 @@ export default function Username({ server }) {
   let addressRef: HTMLInputElement | null;
   let usernameRef: HTMLInputElement | null;
 
+  let interval;
+
   useEffect(() => {
     let getAddress = searchParams.get("address");
     let getUsername = searchParams.get("username");
@@ -49,6 +51,13 @@ export default function Username({ server }) {
       searchParams.delete("username");
     }
     setSearchParams(searchParams);
+
+    //on component unmount
+    return () => {
+      setUpdate(false);
+      clearInterval(interval);
+    }
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -76,6 +85,12 @@ export default function Username({ server }) {
       searchParams.delete("username");
     }
     setSearchParams(searchParams);
+  }
+
+  const onCancel = () => {
+    setUpdate(false);
+    clearInterval(interval);
+    setStep(0);
   }
 
   const onSubmit = async () => {
@@ -160,6 +175,11 @@ export default function Username({ server }) {
         addressInput?.focus();
         return;
       }
+      if (data.error === 'Sorry, you already have a registered username on that address. Try another address') {
+        setErrorMessage('The address already has a registered username.');
+        addressInput?.focus();
+        return;
+      }
       setErrorMessage(data.error);
       return;
     }
@@ -180,7 +200,7 @@ export default function Username({ server }) {
 
   useEffect(() => {
     if (update) {
-      checkPayment(register.bithompid, register.sourceAddress, register.destinationTag);
+      interval = setInterval(() => checkPayment(register.bithompid, register.sourceAddress, register.destinationTag), 3000);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [update, register]);
@@ -193,6 +213,8 @@ export default function Username({ server }) {
       if (data.bid.status === 'Completed') {
         setStep(2);
         setUpdate(false);
+        setErrorMessage("");
+        clearInterval(interval);
         return;
       }
       if (data.bid.status === "Partly paid") {
@@ -202,6 +224,7 @@ export default function Username({ server }) {
       if (data.bid.status === "Timeout") {
         setStep(0);
         setUpdate(false);
+        clearInterval(interval);
         return;
       }
     }
@@ -213,49 +236,50 @@ export default function Username({ server }) {
   return (
     <div className="page-username content-center">
       <h2 className="center">{t("menu.usernames")}</h2>
-      {!step && <>
-        <p>Bithomp <b>username</b> is a <b>public</b> username for your XRPL address.</p>
-        <p>
-          The username will be assosiated with your address on the Bithomp explorer and in third-party services which use bithomp <a href="https://docs.bithomp.com">API</a>.
-          After the registration it will become public - <b>anyone</b> will be able to see it.
-          Your XRPL address will be accessable by: {server}/explorer/{isUsernameValid(username) ? username : "<username>"}
-        </p>
-        <p>The username <b>can not be changed or deleted</b>.</p>
-        <p>For each XRPL address you can register only one username.</p>
-        <p>You can only register usernames for XRPL addresses you control (you have a secret or recovery 12/24 words). You can not register a username for a hosted address (wich has a destination tag) within an exchange / service / wallet .</p>
-        <p>To prove that you're in control of the XRPL address you will need to make a payment from that address (for which you want to assign a username). Payments from other addresses will be counted as donations and won't be refunded.</p>
-        <p>The payment is for 100 SEK denominated in XRP. The payment for the username is <b>not refundable</b>. If you pay more than requested, the exceeding amount will be counted as donation and won't be refunded.</p>
+      {!step &&
+        <>
+          <p>Bithomp <b>username</b> is a <b>public</b> username for your XRPL address.</p>
+          <p className="brake">
+            The username will be assosiated with your address on the Bithomp explorer and in third-party services which use bithomp <a href="https://docs.bithomp.com">API</a>.
+            After the registration it will become public - <b>anyone</b> will be able to see it.
+            Your XRPL address will be accessable by: {server}/explorer/{isUsernameValid(username) ? username : <i>username</i>}
+          </p>
+          <p>The username <b>can not be changed or deleted</b>.</p>
+          <p>For each XRPL address you can register only one username.</p>
+          <p>You can only register usernames for XRPL addresses you control (you have a secret or recovery 12/24 words). You can not register a username for a hosted address (wich has a destination tag) within an exchange / service / wallet .</p>
+          <p>To prove that you're in control of the XRPL address you will need to make a payment from that address (for which you want to assign a username). Payments from other addresses will be counted as donations and won't be refunded.</p>
+          <p>The payment is for 100 SEK denominated in XRP. The payment for the username is <b>not refundable</b>. If you pay more than requested, the exceeding amount will be counted as donation and won't be refunded.</p>
 
-        <p>Enter your XRPL address:</p>
-        <div className="input-validation">
-          <input placeholder="Your XRPL address" value={address} onChange={onAddressChange} className="input-text" ref={node => { addressRef = node; }} spellCheck="false" maxLength="36" />
-          {isAddressValid(address) && <img src={checkmark} className="validation-icon" alt="validated" />}
-        </div>
-        <p>Enter the username you would like to have:</p>
-        <div className="input-validation">
-          <input placeholder="Username" value={username} onChange={onUsernameChange} className="input-text" ref={node => { usernameRef = node; }} spellCheck="false" maxLength="18" />
-          {isUsernameValid(username) && <img src={checkmark} className="validation-icon" alt="validated" />}
-        </div>
-        <p>Your country of residence (for our accounting):</p>
-        <CountrySelect setCountryCode={setCountryCode} />
+          <p>Enter your XRPL address:</p>
+          <div className="input-validation">
+            <input placeholder="Your XRPL address" value={address} onChange={onAddressChange} className="input-text" ref={node => { addressRef = node; }} spellCheck="false" maxLength="36" />
+            {isAddressValid(address) && <img src={checkmark} className="validation-icon" alt="validated" />}
+          </div>
+          <p>Enter the username you would like to have:</p>
+          <div className="input-validation">
+            <input placeholder="Username" value={username} onChange={onUsernameChange} className="input-text" ref={node => { usernameRef = node; }} spellCheck="false" maxLength="18" />
+            {isUsernameValid(username) && <img src={checkmark} className="validation-icon" alt="validated" />}
+          </div>
+          <p>Your country of residence (for our accounting):</p>
+          <CountrySelect setCountryCode={setCountryCode} />
 
-        <CheckBox checked={agreeToPageTerms} setChecked={setAgreeToPageTerms} >
-          I understand and agree to the terms and conditions specified above.
-        </CheckBox>
+          <CheckBox checked={agreeToPageTerms} setChecked={setAgreeToPageTerms} >
+            I understand and agree to the terms and conditions specified above.
+          </CheckBox>
 
-        <CheckBox checked={agreeToSiteTerms} setChecked={setAgreeToSiteTerms} >
-          I agree with the <Link to="/terms-and-conditions" target="_blank">{t("menu.terms-and-conditions")}</Link>.
-        </CheckBox>
+          <CheckBox checked={agreeToSiteTerms} setChecked={setAgreeToSiteTerms} >
+            I agree with the <Link to="/terms-and-conditions" target="_blank">{t("menu.terms-and-conditions")}</Link>.
+          </CheckBox>
 
-        <CheckBox checked={agreeToPrivacyPolicy} setChecked={setAgreeToPrivacyPolicy} >
-          I agree with the <Link to="/privacy-policy" target="_blank">{t("menu.privacy-policy")}</Link>.
-        </CheckBox>
+          <CheckBox checked={agreeToPrivacyPolicy} setChecked={setAgreeToPrivacyPolicy} >
+            I agree with the <Link to="/privacy-policy" target="_blank">{t("menu.privacy-policy")}</Link>.
+          </CheckBox>
 
-        <p className="center">
-          <input type="button" value="Continue" className="button-action" onClick={onSubmit} />
-        </p>
-
-      </>}
+          <p className="center">
+            <input type="button" value="Continue" className="button-action" onClick={onSubmit} />
+          </p>
+        </>
+      }
       {step === 1 &&
         <>
           <p>To register your public username: <b className="blue">{register.bithompid}</b></p>
@@ -276,9 +300,23 @@ export default function Username({ server }) {
             <br /><br />
             You will see a confirmation as soon as we receive your payment.
           </div>
+          <p className="center">
+            <input type="button" value="Cancel" className="button-action" onClick={onCancel} />
+          </p>
         </>
       }
-      <p className="red center">{errorMessage} </p>
+      {step === 2 &&
+        <>
+          <p className="bold center">Congratulations!</p>
+          <p className="center">Your username <b className="blue">{register.bithompid}</b> has been succesfully registered.</p>
+          <p className="center bold">
+            <a href={server + '/explorer/' + register.bithompid}>
+              <u>{server}/explorer/{register.bithompid}</u>
+            </a>
+          </p>
+        </>
+      }
+      <p className="red center" dangerouslySetInnerHTML={{ __html: errorMessage }} />
     </div>
   );
 };
