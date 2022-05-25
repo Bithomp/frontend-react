@@ -17,6 +17,8 @@ const isUsernameValid = (username) => {
   return username && /^(?=.{3,18}$)[0-9a-zA-Z]{1,18}[-]{0,1}[0-9a-zA-Z]{1,18}$/.test(username);
 }
 
+let interval;
+
 export default function Username({ server }) {
   const { t } = useTranslation();
 
@@ -34,8 +36,6 @@ export default function Username({ server }) {
 
   let addressRef: HTMLInputElement | null;
   let usernameRef: HTMLInputElement | null;
-
-  let interval;
 
   useEffect(() => {
     let getAddress = searchParams.get("address");
