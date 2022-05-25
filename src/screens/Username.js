@@ -1,18 +1,20 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSearchParams, Link } from "react-router-dom";
+import axios from 'axios';
 
 import CountrySelect from '../components/CountrySelect';
 import CheckBox from '../components/CheckBox';
 
 import checkmark from "../assets/images/checkmark.svg";
+import '../assets/styles/screens/username.scss';
 
 const isAddressValid = (address) => {
   return /^r[0-9a-zA-Z]{24,35}$/.test(address);
 }
 
 const isUsernameValid = (username) => {
-  return username && /^[0-9a-zA-Z]{1,18}$/.test(username);
+  return username && /^(?=.{3,18}$)[0-9a-zA-Z]{1,18}[-]{0,1}[0-9a-zA-Z]{1,18}$/.test(username);
 }
 
 export default function Username({ server }) {
@@ -25,6 +27,10 @@ export default function Username({ server }) {
   const [agreeToSiteTerms, setAgreeToSiteTerms] = useState(false);
   const [agreeToPrivacyPolicy, setAgreeToPrivacyPolicy] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [countryCode, setCountryCode] = useState("");
+  const [register, setRegister] = useState({});
+  const [step, setStep] = useState(0);
+  const [update, setUpdate] = useState(false);
 
   let addressRef: HTMLInputElement | null;
   let usernameRef: HTMLInputElement | null;
@@ -52,6 +58,7 @@ export default function Username({ server }) {
     setAddress(address);
     if (isAddressValid(address)) {
       searchParams.set("address", address);
+      setErrorMessage("");
     } else {
       searchParams.delete("address");
     }
@@ -64,77 +71,213 @@ export default function Username({ server }) {
     setUsername(username);
     if (isUsernameValid(username)) {
       searchParams.set("username", username);
+      setErrorMessage("");
     } else {
       searchParams.delete("username");
     }
     setSearchParams(searchParams);
   }
 
-  const onSubmit = () => {
+  const onSubmit = async () => {
+    if (!address) {
+      setErrorMessage("Please enter your XRPL address.");
+      addressRef?.focus();
+      return;
+    }
+
     if (!isAddressValid(address)) {
       setErrorMessage("Please enter a valid XRPL address.");
       addressRef?.focus();
       return;
-    } else if (!isUsernameValid(username)) {
-      setErrorMessage("Please enter a valid username.");
+    }
+
+    if (!username) {
+      setErrorMessage("Please enter username you want to register.");
       usernameRef?.focus();
       return;
-    } else if (!agreeToPageTerms) {
-      setErrorMessage("Please agree to terms and conditions specified on this page.");
+    }
+
+    if (!isUsernameValid(username)) {
+      setErrorMessage("Username should be shorter than 18 characters, no symbols allowed.");
+      usernameRef?.focus();
       return;
-    } else if (!agreeToSiteTerms) {
-      setErrorMessage("Please agree to our website terms and conditions.");
+    }
+
+    if (!agreeToPageTerms) {
+      setErrorMessage("Please agree to the terms and conditions specified on this page.");
       return;
-    } else if (!agreeToPrivacyPolicy) {
+    }
+
+    if (!agreeToSiteTerms) {
+      setErrorMessage("Please agree to the website's terms and conditions.");
+      return;
+    }
+
+    if (!agreeToPrivacyPolicy) {
       setErrorMessage("Please agree to our Privacy Policy.");
       return;
+    }
+
+    const postData = {
+      bithompid: username,
+      address,
+      countryCode,
+    };
+    const { data } = await axios.post('v1/bithompid', postData).catch(error => {
+      setErrorMessage(error.message);
+    });
+
+    if (data.invoiceId) {
+      let serviceName = '';
+      if (data.userInfo) {
+        if (data.userInfo.name) {
+          serviceName = data.userInfo.name;
+        } else {
+          serviceName = data.userInfo.domain;
+        }
+        if (serviceName) {
+          serviceName = " on <b>" + serviceName + "</b>";
+        }
+      }
+      setErrorMessage('Entered address is hosted' + serviceName + ', you can register usernames only for <a href="/wallets" class="orange bold"><u>non-hosted wallets</u></a>. If you are an exchange operator, please contact us.');
+      return;
+    }
+
+    if (data.error) {
+      let addressInput = addressRef;
+      let usernameInput = usernameRef;
+      if (data.error === 'Username is already registered') {
+        setErrorMessage('The username <b>' + username + '</b> is already taken :(');
+        usernameInput?.focus();
+        return;
+      }
+      if (data.error === 'Bithompid is on registration') {
+        setErrorMessage('The username <b>' + username + '</b> is on hold for registration by another XRPL account. You can try again in 24 hours.');
+        return;
+      }
+      if (data.error === "Address is invalid") {
+        setErrorMessage('Please enter a correct XRPL address.');
+        addressInput?.focus();
+        return;
+      }
+      setErrorMessage(data.error);
+      return;
+    }
+
+    if (data.bithompid) {
+      setRegister(data);
+      setStep(1);
+      setErrorMessage("");
+      setUpdate(true);
+    }
+  }
+
+  useEffect(() => {
+    if (agreeToPageTerms || agreeToSiteTerms || agreeToPrivacyPolicy) {
+      setErrorMessage("");
+    }
+  }, [agreeToPageTerms, agreeToSiteTerms, agreeToPrivacyPolicy]);
+
+  useEffect(() => {
+    if (update) {
+      checkPayment(register.bithompid, register.sourceAddress, register.destinationTag);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [update, register]);
+
+  const checkPayment = async (username, address, destinationTag) => {
+    const response = await axios('v1/bithompid/' + username + '/status?address=' + address + '&dt=' + destinationTag);
+    const data = response.data;
+
+    if (data.bid) {
+      if (data.bid.status === 'Completed') {
+        setStep(2);
+        setUpdate(false);
+        return;
+      }
+      if (data.bid.status === "Partly paid") {
+        setErrorMessage('Please send the rest of the amount, so far we only received ' + data.bid.totalReceivedAmount + ' ' + register.currency + ' when <b>' + register.amount + ' ' + register.currency + '</b> is required.');
+        return;
+      }
+      if (data.bid.status === "Timeout") {
+        setStep(0);
+        setUpdate(false);
+        return;
+      }
+    }
+    if (data.error) {
+      setErrorMessage(data.error);
     }
   }
 
   return (
-    <div className="content-center">
-      <h1 className="center">{t("menu.usernames")}</h1>
-      <p>Bithomp <b>username</b> is a <b>public</b> username for your XRPL address.</p>
-      <p>
-        The username will be assosiated with your address on the Bithomp explorer and in third-party services which use bithomp <a href="https://docs.bithomp.com">API</a>.
-        After the registration it will become public - <b>anyone</b> will be able to see it.
-        Your XRPL address will be accessable by: {server}/explorer/{isUsernameValid(username) ? username : "<username>"}
-      </p>
-      <p>The username <b>can not be changed or deleted</b>.</p>
-      <p>For each XRPL address you can register only one username.</p>
-      <p>You can only register usernames for XRPL addresses you control (you have a secret or recovery 12/24 words). You can not register a username for a hosted address (wich has a destination tag) within an exchange / service / wallet .</p>
-      <p>To prove that you're in control of the XRPL address you will need to make a payment from that address (for which you want to assign a username). Payments from other addresses will be counted as donations and won't be refunded.</p>
-      <p>The payment is for 100 SEK denominated in XRP. The payment for the username is <b>not refundable</b>. If you pay more than requested, the exceeding amount will be counted as donation and won't be refunded.</p>
+    <div className="page-username content-center">
+      <h2 className="center">{t("menu.usernames")}</h2>
+      {!step && <>
+        <p>Bithomp <b>username</b> is a <b>public</b> username for your XRPL address.</p>
+        <p>
+          The username will be assosiated with your address on the Bithomp explorer and in third-party services which use bithomp <a href="https://docs.bithomp.com">API</a>.
+          After the registration it will become public - <b>anyone</b> will be able to see it.
+          Your XRPL address will be accessable by: {server}/explorer/{isUsernameValid(username) ? username : "<username>"}
+        </p>
+        <p>The username <b>can not be changed or deleted</b>.</p>
+        <p>For each XRPL address you can register only one username.</p>
+        <p>You can only register usernames for XRPL addresses you control (you have a secret or recovery 12/24 words). You can not register a username for a hosted address (wich has a destination tag) within an exchange / service / wallet .</p>
+        <p>To prove that you're in control of the XRPL address you will need to make a payment from that address (for which you want to assign a username). Payments from other addresses will be counted as donations and won't be refunded.</p>
+        <p>The payment is for 100 SEK denominated in XRP. The payment for the username is <b>not refundable</b>. If you pay more than requested, the exceeding amount will be counted as donation and won't be refunded.</p>
 
-      <p>Enter your XRPL address:</p>
-      <div className="input-validation">
-        <input placeholder="Your XRPL address" value={address} onChange={onAddressChange} className="input-text" ref={node => { addressRef = node; }} />
-        {isAddressValid(address) && <img src={checkmark} className="validation-icon" alt="validated" />}
-      </div>
-      <p>Enter the username you would like to have:</p>
-      <div className="input-validation">
-        <input placeholder="Username" value={username} onChange={onUsernameChange} className="input-text" ref={node => { usernameRef = node; }} />
-        {isUsernameValid(username) && <img src={checkmark} className="validation-icon" alt="validated" />}
-      </div>
-      <p>Your country of residence (for our accounting):</p>
-      <CountrySelect />
+        <p>Enter your XRPL address:</p>
+        <div className="input-validation">
+          <input placeholder="Your XRPL address" value={address} onChange={onAddressChange} className="input-text" ref={node => { addressRef = node; }} spellCheck="false" maxLength="36" />
+          {isAddressValid(address) && <img src={checkmark} className="validation-icon" alt="validated" />}
+        </div>
+        <p>Enter the username you would like to have:</p>
+        <div className="input-validation">
+          <input placeholder="Username" value={username} onChange={onUsernameChange} className="input-text" ref={node => { usernameRef = node; }} spellCheck="false" maxLength="18" />
+          {isUsernameValid(username) && <img src={checkmark} className="validation-icon" alt="validated" />}
+        </div>
+        <p>Your country of residence (for our accounting):</p>
+        <CountrySelect setCountryCode={setCountryCode} />
 
-      <CheckBox checked={agreeToPageTerms} setChecked={setAgreeToPageTerms} >
-        I understand and agree to the terms and conditions specified above.
-      </CheckBox>
+        <CheckBox checked={agreeToPageTerms} setChecked={setAgreeToPageTerms} >
+          I understand and agree to the terms and conditions specified above.
+        </CheckBox>
 
-      <CheckBox checked={agreeToSiteTerms} setChecked={setAgreeToSiteTerms} >
-        I agree with the <Link to="/terms-and-conditions" target="_blank">{t("menu.terms-and-conditions")}</Link>.
-      </CheckBox>
+        <CheckBox checked={agreeToSiteTerms} setChecked={setAgreeToSiteTerms} >
+          I agree with the <Link to="/terms-and-conditions" target="_blank">{t("menu.terms-and-conditions")}</Link>.
+        </CheckBox>
 
-      <CheckBox checked={agreeToPrivacyPolicy} setChecked={setAgreeToPrivacyPolicy} >
-        I agree with the <Link to="/privacy-policy" target="_blank">{t("menu.privacy-policy")}</Link>.
-      </CheckBox>
+        <CheckBox checked={agreeToPrivacyPolicy} setChecked={setAgreeToPrivacyPolicy} >
+          I agree with the <Link to="/privacy-policy" target="_blank">{t("menu.privacy-policy")}</Link>.
+        </CheckBox>
 
-      <p className="center">
-        <input type="button" value="Continue" className="button-action" onClick={onSubmit} />
-      </p>
+        <p className="center">
+          <input type="button" value="Continue" className="button-action" onClick={onSubmit} />
+        </p>
 
+      </>}
+      {step === 1 &&
+        <>
+          <p>To register your public username: <b className="blue">{register.bithompid}</b></p>
+          <p>You need to make a payment from the address: <b>{register.sourceAddress}</b> (payments made by you from any other addresses <b className="red">won't be accepted and won't be refunded</b>.)</p>
+
+          <h3>Payment instructions</h3>
+          <div className='payment-instructions bordered'>
+            XRPL address:<br /><b>{register.destinationAddress}</b>
+            <br /><br />
+            Destination Tag:<br /><b className="red">{register.destinationTag}</b>
+            <br /><br />
+            Amount:<br /><b>{register.amount} {register.currency}</b>
+          </div>
+
+          <h3>Awaiting your payment</h3>
+          <div className='payment-awaiting bordered center'>
+            <div className="waiting"></div>
+            <br /><br />
+            You will see a confirmation as soon as we receive your payment.
+          </div>
+        </>
+      }
       <p className="red center">{errorMessage} </p>
     </div>
   );

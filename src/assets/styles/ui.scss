@@ -137,6 +137,14 @@ button {
   color: var(--red);
 }
 
+.blue {
+  color: var(--accent1);
+}
+
+.bordered {
+  border: 2px solid var(--accent2);
+}
+
 .button-action {
   background-color: var(--accent3);
   border: none;
@@ -147,6 +155,28 @@ button {
   &:hover {
     background-color: var(--accent2);
   }
+}
+
+.waiting {
+  display: inline-block;
+  border: 16px solid #f3f3f3;
+  border-radius: 50%;
+  border-top: 16px solid var(--accent2);
+  width: 80px;
+  height: 80px;
+  -webkit-animation: spin 2s linear infinite;
+  animation: spin 2s linear infinite;
+}
+
+
+@-webkit-keyframes spin {
+  0% { -webkit-transform: rotate(0deg); }
+  100% { -webkit-transform: rotate(360deg); }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
 @media only screen and (max-width: 1024px) {

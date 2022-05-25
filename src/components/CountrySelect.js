@@ -7,7 +7,7 @@ import useLocalStorage from 'use-local-storage';
 
 import '../assets/styles/components/countrySelect.scss';
 
-export default function CountrySelect() {
+export default function CountrySelect({ setCountryCode }) {
   const { i18n } = useTranslation();
   const languageData = require('i18n-iso-countries/langs/' + i18n.language + '.json');
   countries.registerLocale(languageData);
@@ -29,6 +29,7 @@ export default function CountrySelect() {
         value: savedCountry,
         label: countries.getName(savedCountry, i18n.language, { select: "official" })
       });
+      setCountryCode(savedCountry);
     } else {
       async function fetchData() {
         const response = await axios('client/info');
@@ -40,6 +41,7 @@ export default function CountrySelect() {
             label: countries.getName(countryCode, i18n.language, { select: "official" })
           });
           setSavedCounty(countryCode);
+          setCountryCode(countryCode);
         }
       }
       fetchData();
