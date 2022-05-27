@@ -49,11 +49,15 @@
         "on": "on",
         "hosted": "Entered address is hosted {{serviceName}}, you can register usernames only for non-hosted wallets (hardware wallets, xumm, etc). If you are an exchange operator, please contact us."
       },
+      "address-done": "The address already has a registered username.",
       "username-empty": "Please enter username you want to register.",
       "username-invalid": "Username should be shorter than 18 characters, no symbols allowed.",
+      "username-taken": "The username <b>{{username}}</b> is already taken :(",
+      "username-hold": "The username <b>{{username}}</b> is on hold for registration by another XRPL account. You can try again in 24 hours.",
       "agree-terms-page": "Please agree to the terms and conditions specified on this page.",
       "agree-terms-site": "Please agree to the website's terms and conditions.",
-      "agree-privacy-policy": "Please agree to our Privacy Policy."
+      "agree-privacy-policy": "Please agree to our Privacy Policy.",
+      "payment-partly": "Please send the rest of the amount, so far we only received {{received}} {{currency}} when <b>{{required}} {{currency}}</b> is required."
     }
   }
 }

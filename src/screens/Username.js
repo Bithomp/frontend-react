@@ -20,7 +20,7 @@ const isUsernameValid = (username) => {
 let interval;
 
 export default function Username({ server }) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   const [searchParams, setSearchParams] = useSearchParams();
   const [address, setAddress] = useState("");
@@ -60,6 +60,10 @@ export default function Username({ server }) {
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    setErrorMessage("");
+  }, [i18n.language]);
 
   const onAddressChange = (e) => {
     let address = e.target.value;
@@ -151,10 +155,10 @@ export default function Username({ server }) {
           serviceName = data.userInfo.domain;
         }
         if (serviceName) {
-          serviceName = " " + t("username.error.address-hosted.on") +" <b>" + serviceName + "</b>";
+          serviceName = " " + t("username.error.address-hosted.on") + " <b>" + serviceName + "</b>";
         }
       }
-      setErrorMessage(t("username.error.address-hosted.hosted", {serviceName}));
+      setErrorMessage(t("username.error.address-hosted.hosted", { serviceName }));
       return;
     }
 
@@ -162,21 +166,21 @@ export default function Username({ server }) {
       let addressInput = addressRef;
       let usernameInput = usernameRef;
       if (data.error === 'Username is already registered') {
-        setErrorMessage('The username <b>' + username + '</b> is already taken :(');
+        setErrorMessage(t("username.error.username-taken", { username }));
         usernameInput?.focus();
         return;
       }
       if (data.error === 'Bithompid is on registration') {
-        setErrorMessage('The username <b>' + username + '</b> is on hold for registration by another XRPL account. You can try again in 24 hours.');
+        setErrorMessage(t("username.error.username-hold", { username }));
         return;
       }
       if (data.error === "Address is invalid") {
-        setErrorMessage('Please enter a correct XRPL address.');
+        setErrorMessage(t("username.error.address-invalid"));
         addressInput?.focus();
         return;
       }
       if (data.error === 'Sorry, you already have a registered username on that address. Try another address') {
-        setErrorMessage('The address already has a registered username.');
+        setErrorMessage(t("username.error.address-done"));
         addressInput?.focus();
         return;
       }
@@ -218,7 +222,7 @@ export default function Username({ server }) {
         return;
       }
       if (data.bid.status === "Partly paid") {
-        setErrorMessage('Please send the rest of the amount, so far we only received ' + data.bid.totalReceivedAmount + ' ' + register.currency + ' when <b>' + register.amount + ' ' + register.currency + '</b> is required.');
+        setErrorMessage(t("username.error.payment-partly", { received: data.bid.totalReceivedAmount, required: register.amount, currency: register.currency }));
         return;
       }
       if (data.bid.status === "Timeout") {
@@ -300,9 +304,6 @@ export default function Username({ server }) {
             <br /><br />
             You will see a confirmation as soon as we receive your payment.
           </div>
-          <p className="center">
-            <input type="button" value="Cancel" className="button-action" onClick={onCancel} />
-          </p>
         </>
       }
       {step === 2 &&
@@ -317,6 +318,11 @@ export default function Username({ server }) {
         </>
       }
       <p className="red center" dangerouslySetInnerHTML={{ __html: errorMessage || "&nbsp;" }} />
+      {step === 1 &&
+        <p className="center">
+          <input type="button" value="Cancel" className="button-action" onClick={onCancel} />
+        </p>
+      }
     </div>
   );
 };
