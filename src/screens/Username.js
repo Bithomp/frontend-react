@@ -34,8 +34,8 @@ export default function Username({ server }) {
   const [step, setStep] = useState(0);
   const [update, setUpdate] = useState(false);
 
-  let addressRef: HTMLInputElement | null;
-  let usernameRef: HTMLInputElement | null;
+  let addressRef;
+  let usernameRef;
 
   useEffect(() => {
     let getAddress = searchParams.get("address");
