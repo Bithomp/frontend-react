@@ -235,7 +235,7 @@ export default function Username({ server }) {
 
   return (
     <div className="page-username content-center">
-      <h2 className="center">{t("menu.usernames")}</h2>
+      <h1 className="center">{t("menu.usernames")}</h1>
       {!step &&
         <>
           <p>Bithomp <b>username</b> is a <b>public</b> username for your XRPL address.</p>

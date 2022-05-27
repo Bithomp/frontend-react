@@ -7,13 +7,14 @@ export default function LastLedgerInformation({ server }) {
   const { t } = useTranslation();
 
   const [ledger, setLedger] = useState(null);
+  const [connected, setConnected] = useState(false);
 
-  useEffect(() => {
+  const connect = () => {
     const wssServer = server.replace("https://", "wss://") + '/wss';
     ws = new WebSocket(wssServer);
 
     ws.onopen = () => {
-      console.log('ws connected');
+      setConnected(true);
       ws.send(JSON.stringify({ command: "subscribe", streams: ["ledger"], id: 1 }));
     }
 
@@ -45,26 +46,41 @@ export default function LastLedgerInformation({ server }) {
     }
 
     ws.onclose = () => {
-      console.log('ws disconnected');
+      setConnected(false);
     }
-  }, [server]);
+  }
+
+  useEffect(() => {
+    connect();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const onConnect = () => {
+    connect();
+  }
 
   return (
-    <div className="content-text">
+    <div className="content-text content-center">
       <h1 className="center">{t("menu.last-ledger-information")}</h1>
-      {ledger &&
-        <>
-          <p>Ledger hash: {ledger.validatedLedger.hash}</p>
-          <p>Ledger #{ledger.validatedLedger.ledgerIndex}</p>
-          <p>Ledger closed at: {ledger.validatedLedger.ledgerTime}</p>
-          <p>Transactions: {ledger.validatedLedger.transactionsCount}</p>
-          <p>Proposers: {ledger.lastClose.proposers}</p>
-          <p>Validation Quorum: {ledger.validationQuorum}</p>
+      <div className="bordered brake" style={{ padding: "0 20px", position: "relative" }}>
+        <p>Ledger hash: {ledger?.validatedLedger.hash}</p>
+        <p>Ledger: {ledger?.validatedLedger.ledgerIndex && '#' + ledger.validatedLedger.ledgerIndex}</p>
+        <p>Ledger closed at: {ledger?.validatedLedger.ledgerTime}</p>
+        <p>Transactions: {ledger?.validatedLedger.transactionsCount}</p>
+        <p>Proposers: {ledger?.lastClose.proposers}</p>
+        <p>Validation quorum: {ledger?.validationQuorum}</p>
+        <p>Base fee: {ledger?.validatedLedger.baseFeeXRP && ledger.validatedLedger.baseFeeXRP + ' XRP'}</p>
+        <p>Base reserve: {ledger?.validatedLedger.reserveBaseXRP && ledger.validatedLedger.reserveBaseXRP + ' XRP'}</p>
+        <p>Increment reserve: {ledger?.validatedLedger.reserveIncrementXRP && ledger.validatedLedger.reserveIncrementXRP + ' XRP'}</p>
+        <p className="center" style={{ position: "absolute", top: "calc(50% - 72px)", left: "calc(50% - 54px)" }}>
+          {!ledger && <span className="waiting"></span>}
+        </p>
+      </div>
 
-          <p>Base fee: {ledger.validatedLedger.baseFeeXRP} XRP</p>
-          <p>Base reserve: {ledger.validatedLedger.reserveBaseXRP} XRP</p>
-          <p>Increment reserve: {ledger.validatedLedger.reserveIncrementXRP} XRP</p>
-        </>
+      {!connected && ledger &&
+        <p className="center">
+          <input type="button" value="Reconnect" className="button-action" onClick={onConnect} />
+        </p>
       }
     </div>
   );

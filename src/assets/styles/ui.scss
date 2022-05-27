@@ -68,12 +68,24 @@ body {
   .content-text {
     margin: 80px;
     position: relative;
+    @media only screen and (max-width: 1024px) {
+      margin: 20px;
+    }
   }
 
   .content-center {
     margin: 80px auto;
     max-width: 760px;
     position: relative;
+    @media only screen and (max-width: 800px) {
+      margin: 20px;
+    }
+  }
+}
+
+h1 {
+  @media only screen and (max-width: 800px) {
+    font-size: 24px;
   }
 }
 
@@ -188,17 +200,6 @@ button {
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
-}
-
-@media only screen and (max-width: 1024px) {
-  .content {  
-    .content-text {
-      margin: 20px;
-    }
-    .content-center {
-      margin: 20px;
-    }
-  }
 }
 
 @import "./components/header.scss";
