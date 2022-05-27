@@ -28,5 +28,16 @@
     "search-placeholder-short": "Search by Address / Transaction / User",
     "scan-qr": "SCAN A CODE",
     "xrp-price": "XRP price"
+  },
+  "last-ledger-information": {
+    "ledger-hash": "Ledger hash",
+    "ledger": "Ledger",
+    "ledger-closed-at": "Ledger closed at",
+    "transactions": "Transactions",
+    "proposers": "Proposers",
+    "validation-quorum": "Validation quorum",
+    "base-fee": "Base fee",
+    "base-reserve": "Base reserve",
+    "increment-reserve": "Increment reserve"
   }
 }

@@ -63,15 +63,15 @@ export default function LastLedgerInformation({ server }) {
     <div className="content-text content-center">
       <h1 className="center">{t("menu.last-ledger-information")}</h1>
       <div className="bordered brake" style={{ padding: "0 20px", position: "relative" }}>
-        <p>Ledger hash: {ledger?.validatedLedger.hash}</p>
-        <p>Ledger: {ledger?.validatedLedger.ledgerIndex && '#' + ledger.validatedLedger.ledgerIndex}</p>
-        <p>Ledger closed at: {ledger?.validatedLedger.ledgerTime}</p>
-        <p>Transactions: {ledger?.validatedLedger.transactionsCount}</p>
-        <p>Proposers: {ledger?.lastClose.proposers}</p>
-        <p>Validation quorum: {ledger?.validationQuorum}</p>
-        <p>Base fee: {ledger?.validatedLedger.baseFeeXRP && ledger.validatedLedger.baseFeeXRP + ' XRP'}</p>
-        <p>Base reserve: {ledger?.validatedLedger.reserveBaseXRP && ledger.validatedLedger.reserveBaseXRP + ' XRP'}</p>
-        <p>Increment reserve: {ledger?.validatedLedger.reserveIncrementXRP && ledger.validatedLedger.reserveIncrementXRP + ' XRP'}</p>
+        <p>{t("last-ledger-information.ledger-hash")}: {ledger?.validatedLedger.hash.toLowerCase()}</p>
+        <p>{t("last-ledger-information.ledger")}: {ledger?.validatedLedger.ledgerIndex && '#' + ledger.validatedLedger.ledgerIndex}</p>
+        <p>{t("last-ledger-information.ledger-closed-at")}: {ledger?.validatedLedger.ledgerTime}</p>
+        <p>{t("last-ledger-information.transactions")}: {ledger?.validatedLedger.transactionsCount}</p>
+        <p>{t("last-ledger-information.proposers")}: {ledger?.lastClose.proposers}</p>
+        <p>{t("last-ledger-information.validation-quorum")}: {ledger?.validationQuorum}</p>
+        <p>{t("last-ledger-information.base-fee")}: {ledger?.validatedLedger.baseFeeXRP && ledger.validatedLedger.baseFeeXRP + ' XRP'}</p>
+        <p>{t("last-ledger-information.base-reserve")}: {ledger?.validatedLedger.reserveBaseXRP && ledger.validatedLedger.reserveBaseXRP + ' XRP'}</p>
+        <p>{t("last-ledger-information.increment-reserve")}: {ledger?.validatedLedger.reserveIncrementXRP && ledger.validatedLedger.reserveIncrementXRP + ' XRP'}</p>
         <p className="center" style={{ position: "absolute", top: "calc(50% - 72px)", left: "calc(50% - 54px)" }}>
           {!ledger && <span className="waiting"></span>}
         </p>

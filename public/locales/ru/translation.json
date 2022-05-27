@@ -28,5 +28,16 @@
     "search-placeholder-short": "Поиск по Адресу / Транзакции / Нику",
     "scan-qr": "СКАНИРОВАТЬ КОД",
     "xrp-price": "Курс XRP"
+  },
+  "last-ledger-information": {
+    "ledger-hash": "Хеш леджера",
+    "ledger": "Индекс леджера",
+    "ledger-closed-at": "Время закрытия леджера",
+    "transactions": "Транзакций в леджере",
+    "proposers": "Колличество предлагаюзих валидаторов",
+    "validation-quorum": "Кворум валидаторов",
+    "base-fee": "Базовая комиссия",
+    "base-reserve": "Базовый резерв",
+    "increment-reserve": "Резерв трастлайна и др."
   }
 }
