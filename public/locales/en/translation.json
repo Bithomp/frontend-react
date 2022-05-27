@@ -38,7 +38,8 @@
     "validation-quorum": "Validation quorum",
     "base-fee": "Base fee",
     "base-reserve": "Base reserve",
-    "increment-reserve": "Increment reserve"
+    "increment-reserve": "Increment reserve",
+    "reconnect": "Reconnect"
   },
   "username": {
     "error": {

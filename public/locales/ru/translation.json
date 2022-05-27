@@ -38,7 +38,8 @@
     "validation-quorum": "Кворум валидаторов",
     "base-fee": "Базовая комиссия",
     "base-reserve": "Базовый резерв",
-    "increment-reserve": "Резерв трастлайна и др."
+    "increment-reserve": "Резерв трастлайна и др.",
+    "reconnect": "Переподключиться"
   },
   "username": {
     "error": {

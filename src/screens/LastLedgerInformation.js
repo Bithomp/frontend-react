@@ -79,7 +79,7 @@ export default function LastLedgerInformation({ server }) {
 
       {!connected && ledger &&
         <p className="center">
-          <input type="button" value="Reconnect" className="button-action" onClick={onConnect} />
+          <input type="button" value={t("last-ledger-information.reconnect")} className="button-action" onClick={onConnect} />
         </p>
       }
     </div>
