@@ -95,41 +95,41 @@ export default function Username({ server }) {
 
   const onSubmit = async () => {
     if (!address) {
-      setErrorMessage("Please enter your XRPL address.");
+      setErrorMessage(t("username.error.address-empty"));
       addressRef?.focus();
       return;
     }
 
     if (!isAddressValid(address)) {
-      setErrorMessage("Please enter a valid XRPL address.");
+      setErrorMessage(t("username.error.address-invalid"));
       addressRef?.focus();
       return;
     }
 
     if (!username) {
-      setErrorMessage("Please enter username you want to register.");
+      setErrorMessage(t("username.error.username-empty"));
       usernameRef?.focus();
       return;
     }
 
     if (!isUsernameValid(username)) {
-      setErrorMessage("Username should be shorter than 18 characters, no symbols allowed.");
+      setErrorMessage(t("username.error.username-invalid"));
       usernameRef?.focus();
       return;
     }
 
     if (!agreeToPageTerms) {
-      setErrorMessage("Please agree to the terms and conditions specified on this page.");
+      setErrorMessage(t("username.error.agree-terms-page"));
       return;
     }
 
     if (!agreeToSiteTerms) {
-      setErrorMessage("Please agree to the website's terms and conditions.");
+      setErrorMessage(t("username.error.agree-terms-site"));
       return;
     }
 
     if (!agreeToPrivacyPolicy) {
-      setErrorMessage("Please agree to our Privacy Policy.");
+      setErrorMessage(t("username.error.agree-privacy-policy"));
       return;
     }
 
@@ -151,10 +151,10 @@ export default function Username({ server }) {
           serviceName = data.userInfo.domain;
         }
         if (serviceName) {
-          serviceName = " on <b>" + serviceName + "</b>";
+          serviceName = " " + t("username.error.address-hosted.on") +" <b>" + serviceName + "</b>";
         }
       }
-      setErrorMessage('Entered address is hosted' + serviceName + ', you can register usernames only for <a href="/wallets" class="orange bold"><u>non-hosted wallets</u></a>. If you are an exchange operator, please contact us.');
+      setErrorMessage(t("username.error.address-hosted.hosted", {serviceName}));
       return;
     }
 
@@ -316,7 +316,7 @@ export default function Username({ server }) {
           </p>
         </>
       }
-      <p className="red center" dangerouslySetInnerHTML={{ __html: errorMessage }} />
+      <p className="red center" dangerouslySetInnerHTML={{ __html: errorMessage || "&nbsp;" }} />
     </div>
   );
 };
