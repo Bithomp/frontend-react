@@ -33,12 +33,16 @@
     "ledger-hash": "Ledger hash",
     "ledger": "Ledger",
     "ledger-closed-at": "Ledger closed at",
+    "ledger-interval": "Ledger interval",
     "transactions": "Transactions",
+    "transaction-speed": "Transactions per second",
     "proposers": "Proposers",
     "validation-quorum": "Validation quorum",
     "base-fee": "Base fee",
     "base-reserve": "Base reserve",
     "increment-reserve": "Increment reserve",
+    "total-supply": "Total supply",
+    "total-burned": "Total burned",
     "reconnect": "Reconnect"
   },
   "username": {
@@ -59,5 +63,8 @@
       "agree-privacy-policy": "Please agree to our Privacy Policy.",
       "payment-partly": "Please send the rest of the amount, so far we only received {{received}} {{currency}} when <b>{{required}} {{currency}}</b> is required."
     }
+  },
+  "units": {
+    "seconds-short": "s."
   }
 }

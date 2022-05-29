@@ -33,12 +33,16 @@
     "ledger-hash": "Хеш леджера",
     "ledger": "Индекс леджера",
     "ledger-closed-at": "Время закрытия леджера",
+    "ledger-interval": "Интервал между закрытиями леджеров",
     "transactions": "Транзакций в леджере",
+    "transaction-speed": "Транзакций в секунду",
     "proposers": "Колличество предлагающих валидаторов",
     "validation-quorum": "Кворум валидаторов",
     "base-fee": "Базовая комиссия",
     "base-reserve": "Базовый резерв",
     "increment-reserve": "Резерв трастлайна и др.",
+    "total-supply": "Всего существует",
+    "total-burned": "Всего сожжено (комиссией)",
     "reconnect": "Переподключиться"
   },
   "username": {
@@ -59,5 +63,8 @@
       "agree-privacy-policy": "Согласитесь с политикой конфиденциальности.",
       "payment-partly": "Нам пришло лишь {{received}} {{currency}}, когда мы ожидали <b>{{required}} {{currency}}</b>. Дошлите оставшееся, чтобы завершить регистрацию."
     }
+  },
+  "units": {
+    "seconds-short": "с."
   }
 }

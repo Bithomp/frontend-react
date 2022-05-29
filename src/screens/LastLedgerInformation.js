@@ -23,25 +23,26 @@ export default function LastLedgerInformation({ server }) {
       setLedger(message);
 
       /* 
-        {
-          "type": "ledgerClosed",
-          "lastClose": {
-            "convergeTimeS": 2,
-            "proposers": 6
-          },
-          "validationQuorum": 5,
-          "validatedLedgers": "27887240-28102846",
-          "validatedLedger": {
-            "type": "ledgerClosed",
-            "hash": "7B4C03BC011499AAF8A7605D1D0CC17170B255AAD9488A33DB68589F240C6ED0",
-            "baseFeeXRP": "0.00001",
-            "reserveBaseXRP": "10",
-            "reserveIncrementXRP": "2",
-            "ledgerTime": 706913181,
-            "ledgerIndex": 28102846,
-            "transactionsCount": 9
-          }
-        } 
+      {
+        "type": "ledgerClosed", // ledger ws
+        "lastClose": { 
+          "convergeTimeS": 2, // server info
+          "proposers": 6 // server info
+        },
+        "validationQuorum": 5, // server info
+        "totalCoins": "99999573822861715", // ledger info
+        "validatedLedgers": "27887240-28154648", // ledger ws
+        "validatedLedger": {
+          "age": 2, // ledger ws (current time - ledgerTime)
+          "hash": "CEFB234BABF6592B973D108F4C4283711878425F1A4ABF3B5F9703B1B703F908", // ledger ws
+          "baseFeeXRP": "0.00001", // ledger ws
+          "reserveBaseXRP": "10", // ledger ws
+          "reserveIncrementXRP": "2", // ledger ws
+          "ledgerTime": 1653770111, // ledger ws
+          "ledgerIndex": 28154648, // ledger ws
+          "transactionsCount": 7 // ledger ws
+        }
+      }
       */
     }
 
@@ -66,12 +67,16 @@ export default function LastLedgerInformation({ server }) {
         <p>{t("last-ledger-information.ledger-hash")}: {ledger?.validatedLedger.hash.toLowerCase()}</p>
         <p>{t("last-ledger-information.ledger")}: {ledger?.validatedLedger.ledgerIndex && '#' + ledger.validatedLedger.ledgerIndex}</p>
         <p>{t("last-ledger-information.ledger-closed-at")}: {ledger?.validatedLedger.ledgerTime}</p>
+        <p>{t("last-ledger-information.ledger-interval")}: {ledger?.lastClose.convergeTimeS && ledger?.lastClose.convergeTimeS + ' ' + t("units.seconds-short")}</p>
         <p>{t("last-ledger-information.transactions")}: {ledger?.validatedLedger.transactionsCount}</p>
+        <p>{t("last-ledger-information.transaction-speed")}: {ledger && (ledger.validatedLedger.transactionsCount / ledger.lastClose.convergeTimeS).toFixed(2)}</p>
         <p>{t("last-ledger-information.proposers")}: {ledger?.lastClose.proposers}</p>
         <p>{t("last-ledger-information.validation-quorum")}: {ledger?.validationQuorum}</p>
-        <p>{t("last-ledger-information.base-fee")}: {ledger?.validatedLedger.baseFeeXRP && ledger.validatedLedger.baseFeeXRP + ' XRP'}</p>
+        <p>{t("last-ledger-information.base-fee")}: {ledger?.validatedLedger.baseFeeXRP && (ledger.validatedLedger.baseFeeXRP * 1).toFixed(6) + ' XRP'}</p>
         <p>{t("last-ledger-information.base-reserve")}: {ledger?.validatedLedger.reserveBaseXRP && ledger.validatedLedger.reserveBaseXRP + ' XRP'}</p>
         <p>{t("last-ledger-information.increment-reserve")}: {ledger?.validatedLedger.reserveIncrementXRP && ledger.validatedLedger.reserveIncrementXRP + ' XRP'}</p>
+        <p>{t("last-ledger-information.total-supply")}: {ledger?.totalCoins && (ledger.totalCoins / 1000000).toFixed(6) + ' XRP'}</p>
+        <p>{t("last-ledger-information.total-burned")}: {ledger?.totalCoins && (100000000000 - ledger.totalCoins / 1000000).toFixed(6) + ' XRP'}</p>
         <p className="center" style={{ position: "absolute", top: "calc(50% - 72px)", left: "calc(50% - 54px)" }}>
           {!ledger && <span className="waiting"></span>}
         </p>
