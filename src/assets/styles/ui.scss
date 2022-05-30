@@ -96,10 +96,10 @@ code {
 
 a {
   color: var(--accent-link);
-  transition: opacity 0.5s;
+  transition: color 0.5s;
   text-decoration: none;
   &:hover {
-    opacity: 0.8;
+    color: var(--accent-link-hover);
   }
 }
 

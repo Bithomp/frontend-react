@@ -46,7 +46,7 @@
       position: absolute;
       bottom: -39px;
       left: 0;
-      transition: opacity 0.5s;
+      transition: none;
       .search-scan-qr-icon {
         display: inline-block;
         vertical-align: middle;
@@ -55,10 +55,10 @@
         .search-scan-qr-icon {
           #qr-stroke1,
           #qr-stroke2 {
-            opacity: 0.8;
+            stroke: var(--accent-link-hover);
           }
           #qr-fill1 {
-            opacity: 0.8;
+            fill: var(--accent-link-hover);
           }
         }
       }
