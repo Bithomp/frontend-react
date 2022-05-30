@@ -1,6 +1,8 @@
 import { useTranslation } from 'react-i18next';
 import { useState, useEffect } from 'react';
 
+import { numberWithSpaces } from '../utils/utils';
+
 let ws = null;
 
 export default function LastLedgerInformation({ server }) {
@@ -60,13 +62,19 @@ export default function LastLedgerInformation({ server }) {
     connect();
   }
 
+  let closedAt = '';
+  if (ledger) {
+    closedAt = ledger.validatedLedger.ledgerTime * 1000;
+    closedAt = new Date(closedAt).toLocaleTimeString();
+  }
+
   return (
     <div className="content-text content-center">
       <h1 className="center">{t("menu.last-ledger-information")}</h1>
       <div className="bordered brake" style={{ padding: "0 20px", position: "relative" }}>
         <p>{t("last-ledger-information.ledger-hash")}: {ledger?.validatedLedger.hash.toLowerCase()}</p>
         <p>{t("last-ledger-information.ledger")}: {ledger?.validatedLedger.ledgerIndex && '#' + ledger.validatedLedger.ledgerIndex}</p>
-        <p>{t("last-ledger-information.ledger-closed-at")}: {ledger?.validatedLedger.ledgerTime}</p>
+        <p>{t("last-ledger-information.ledger-closed-at")}: {closedAt}</p>
         <p>{t("last-ledger-information.ledger-interval")}: {ledger?.lastClose.convergeTimeS && ledger?.lastClose.convergeTimeS + ' ' + t("units.seconds-short")}</p>
         <p>{t("last-ledger-information.transactions")}: {ledger?.validatedLedger.transactionsCount}</p>
         <p>{t("last-ledger-information.transaction-speed")}: {ledger && (ledger.validatedLedger.transactionsCount / ledger.lastClose.convergeTimeS).toFixed(2)}</p>
@@ -75,8 +83,8 @@ export default function LastLedgerInformation({ server }) {
         <p>{t("last-ledger-information.base-fee")}: {ledger?.validatedLedger.baseFeeXRP && (ledger.validatedLedger.baseFeeXRP * 1).toFixed(6) + ' XRP'}</p>
         <p>{t("last-ledger-information.base-reserve")}: {ledger?.validatedLedger.reserveBaseXRP && ledger.validatedLedger.reserveBaseXRP + ' XRP'}</p>
         <p>{t("last-ledger-information.increment-reserve")}: {ledger?.validatedLedger.reserveIncrementXRP && ledger.validatedLedger.reserveIncrementXRP + ' XRP'}</p>
-        <p>{t("last-ledger-information.total-supply")}: {ledger?.totalCoins && (ledger.totalCoins / 1000000).toFixed(6) + ' XRP'}</p>
-        <p>{t("last-ledger-information.total-burned")}: {ledger?.totalCoins && (100000000000 - ledger.totalCoins / 1000000).toFixed(6) + ' XRP'}</p>
+        <p>{t("last-ledger-information.total-supply")}: {numberWithSpaces(ledger?.totalCoins && (ledger.totalCoins / 1000000).toFixed(6)) + ' XRP'}</p>
+        <p>{t("last-ledger-information.total-burned")}: {numberWithSpaces(ledger?.totalCoins && (100000000000 - ledger.totalCoins / 1000000).toFixed(6)) + ' XRP'}</p>
         <p className="center" style={{ position: "absolute", top: "calc(50% - 72px)", left: "calc(50% - 54px)" }}>
           {!ledger && <span className="waiting"></span>}
         </p>
