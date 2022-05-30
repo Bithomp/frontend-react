@@ -37,7 +37,7 @@
     opacity: 0;
     cursor: pointer;
     &:checked ~ .checkmark {
-      background-color: var(--accent3);
+      background-color: var(--accent-icon);
       &:after {
         display: block;
       }

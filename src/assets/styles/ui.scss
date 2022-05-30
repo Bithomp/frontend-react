@@ -40,9 +40,9 @@ body {
   min-height: 100%;
   flex-direction: column;
   position: relative;
-  background-color: var(--background2);
+  background-color: var(--background-main);
   transition: background-color .5s, color .5s;
-  color: var(--text1);
+  color: var(--text-main);
 }
 
 .credits {
@@ -68,6 +68,7 @@ body {
   .content-text {
     margin: 80px;
     position: relative;
+    color: var(--text-main);
     @media only screen and (max-width: 1024px) {
       margin: 20px;
     }
@@ -94,11 +95,11 @@ code {
 }
 
 a {
-  color: var(--accent1);
-  transition: color 0.5s;
+  color: var(--accent-link);
+  transition: opacity 0.5s;
   text-decoration: none;
   &:hover {
-    color: var(--hover1);
+    opacity: 0.8;
   }
 }
 
@@ -108,20 +109,20 @@ input {
   outline: none; // remove default rounded corners on focus
   font-family: inherit;
   transition: background-color .5s, color .5s;
-  background-color: var(--background8);
-  caret-color: var(--text1);
-  color: var(--text1);
+  background-color: var(--background-input);
+  caret-color: var(--text-main);
+  color: var(--text-main);
   &.input-text {
     height: 36px;
     width: 100%;
     max-width: calc(100% - 22px);
-    border: 1px solid var(--accent3);
+    border: 1px solid var(--accent-icon);
     padding-left: 10px;
     padding-right: 10px;
     padding-top: 1px; /* set for ios safari */
     padding-bottom: 1px; /* set for ios safari */
     &:focus {
-      box-shadow: 0 0 10px var(--accent3);
+      box-shadow: 0 0 10px var(--accent-icon);
     }
   }
 }
@@ -161,22 +162,22 @@ button {
 }
 
 .blue {
-  color: var(--accent1);
+  color: var(--accent-link);
 }
 
 .bordered {
-  border: 2px solid var(--accent2);
+  border: 2px solid var(--background-menu);
 }
 
 .button-action {
-  background-color: var(--accent3);
+  background-color: var(--accent-icon);
   border: none;
-  color: var(--text2);
+  color: var(--text-contrast);
   height: 40px;
   min-width: 100px;
   cursor: pointer;
   &:hover {
-    background-color: var(--accent2);
+    background-color: var(--background-menu);
   }
 }
 
@@ -184,7 +185,7 @@ button {
   display: inline-block;
   border: 16px solid #f3f3f3;
   border-radius: 50%;
-  border-top: 16px solid var(--accent2);
+  border-top: 16px solid var(--background-menu);
   width: 80px;
   height: 80px;
   -webkit-animation: spin 2s linear infinite;
