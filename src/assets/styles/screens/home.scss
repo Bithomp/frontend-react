@@ -33,7 +33,7 @@
       right: 5px;
       background-color: var(--accent-icon);
       cursor: pointer;
-      transition: opacity 0.5s ease;
+      transition: opacity 0.5s;
       &:hover {
         opacity: 0.7;
       }
@@ -46,19 +46,26 @@
       position: absolute;
       bottom: -39px;
       left: 0;
-      transition: none;
       .search-scan-qr-icon {
         display: inline-block;
         vertical-align: middle;
+        #qr-stroke1,
+        #qr-stroke2 {
+          transition: stroke .5s;
+        }
+        #qr-fill1 {
+          transition: fill .5s;
+        }
       }
       &:hover {
+        color: var(--text-contrast);
         .search-scan-qr-icon {
           #qr-stroke1,
           #qr-stroke2 {
-            stroke: var(--accent-link-hover);
+            stroke: var(--text-contrast);
           }
           #qr-fill1 {
-            fill: var(--accent-link-hover);
+            fill: var(--text-contrast);
           }
         }
       }

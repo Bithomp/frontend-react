@@ -57,7 +57,7 @@ header {
           white-space: nowrap;
           border-left: 1px solid var(--background-menu);
           border-right: 1px solid var(--background-menu);
-          color: white;
+          color: var(--text-contrast);
           &:hover {
             color: var(--accent-link);
           }
