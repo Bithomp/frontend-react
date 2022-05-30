@@ -1,6 +1,6 @@
 .home-search-block {
   height: 390px;
-  background-color: var(--background1);
+  background-color: var(--background-block);
   text-align: center;
   transition: background-color .5s;
   .home-search {
@@ -14,7 +14,7 @@
     z-index: 1;
     .search-input {
       height: 40px;
-      border: 1px solid var(--accent3);
+      border: 1px solid var(--accent-icon);
       padding-left: 20px;
       padding-right: 54px;
       padding-top: 1px; /* set for ios safari */
@@ -22,7 +22,7 @@
       width: 100%;
       max-width: calc(100% - 76px);
       &:focus {
-        box-shadow: 0 0 10px var(--accent3);
+        box-shadow: 0 0 10px var(--accent-icon);
       }
     }
     .search-button {
@@ -31,9 +31,9 @@
       height: 34px;
       top: 5px;
       right: 5px;
-      background-color: var(--accent3);
+      background-color: var(--accent-icon);
       cursor: pointer;
-      transition: opacity 0.5s ease;
+      transition: opacity 0.5s;
       &:hover {
         opacity: 0.7;
       }
@@ -46,19 +46,26 @@
       position: absolute;
       bottom: -39px;
       left: 0;
-      transition: none;
       .search-scan-qr-icon {
         display: inline-block;
         vertical-align: middle;
+        #qr-stroke1,
+        #qr-stroke2 {
+          transition: stroke .5s;
+        }
+        #qr-fill1 {
+          transition: fill .5s;
+        }
       }
       &:hover {
+        color: var(--text-contrast);
         .search-scan-qr-icon {
           #qr-stroke1,
           #qr-stroke2 {
-            stroke: var(--hover1);
+            stroke: var(--text-contrast);
           }
           #qr-fill1 {
-            fill: var(--hover1);
+            fill: var(--text-contrast);
           }
         }
       }
@@ -73,7 +80,7 @@
 
 .home-sponsored {
   height: 150px;
-  background-color: var(--background5);
+  background-color: var(--background-secondary);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -82,15 +89,15 @@
     height: 80px;
     width: 360px;
     display: inline-block;
-    background-color: var(--background6);
+    background-color: var(--button-additional);
     z-index: 1;
     position: relative;
     margin: 20px;
     cursor: pointer;
     box-shadow: 0px 0px 2px rgba(0, 0, 0, 0.25);
-    color: var(--text3);
+    color: var(--text-main);
     &:hover {
-      background-color: var(--background5);
+      background-color: var(--background-secondary);
       box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.25);
     }
     .sponsored-brand-icon {

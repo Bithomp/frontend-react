@@ -3,8 +3,8 @@ header {
   top: 0;
   height: 80px;
   width: 100%;
-  background-color: var(--background1);
-  border-bottom: 1px solid var(--accent2);
+  background-color: var(--background-header);
+  border-bottom: 1px solid var(--background-menu);
   z-index: 2;
   transition: background-color .5s;
   .header-logo {
@@ -37,8 +37,8 @@ header {
         position: absolute;
         padding-top: 31px;
         min-width: 165px;
-        background-color: var(--background1);
-        border-bottom: 1px solid var(--accent2);
+        background-color: var(--background-header);
+        border-bottom: 1px solid var(--background-menu);
         box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
         z-index: 2;
         &:after {
@@ -48,18 +48,18 @@ header {
           left: 0;
           right: 0;
           height: 1px;
-          border-top: 1px solid var(--accent2);
+          border-top: 1px solid var(--background-menu);
         }
         a {
           display: block;
           margin: 0;
           padding: 10px 16px;
           white-space: nowrap;
-          border-left: 1px solid var(--accent2);
-          border-right: 1px solid var(--accent2);
-          color: white;
+          border-left: 1px solid var(--background-menu);
+          border-right: 1px solid var(--background-menu);
+          color: var(--text-contrast);
           &:hover {
-            color: var(--accent1);
+            color: var(--accent-link);
           }
         }
       }
@@ -68,7 +68,7 @@ header {
           display: block;
         }
         .menu-dropdown-button {
-          color: var(--accent1);
+          color: var(--accent-link);
         }
       }
     }
@@ -90,7 +90,7 @@ header {
     top: 28px;
     .mobile-menu {
       margin-top: 81px;
-      background-color: var(--background4);
+      background-color: var(--background-menu);
       min-height: calc(100% - 81px);
       width: 100%;
       position: fixed;
@@ -116,7 +116,7 @@ header {
           position: relative;
           top: -.8em;
           font-size: 14px;
-          background-color: var(--background4);
+          background-color: var(--background-menu);
           display: inline-block;
           padding: 0 10px;
         }

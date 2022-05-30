@@ -1,37 +1,37 @@
 :root {
-  --background1: #002C37;
-  --background2: white;
-  --background3: #333333;
-  --background4: #005460;
-  --background5: #F9F9F9;
-  --background6: white;
-  --background7: white;
-  --background8: white;
-  --text1: black;
-  --text2: white;
-  --text3: #333333;
-  --accent1: #00B1C1;
-  --accent2: #006B7D;
-  --accent3: #3FA3B5;
-  --hover1: #79BFCB;
+  --background-header: #002C37;
+  --background-block: #002C37;
+  --background-main: white;
+  --background-footer: #333333;
+  --background-menu: #005460;
+  --background-secondary: #F9F9F9;
+  --button-additional: white;
+  --background-input: white;
+  --text-main: #333333;
+  --text-contrast: white;
+  --accent-link: #00B1C1;
+  --accent-link-hover: #002C37;
+  --accent-icon: #3FA3B5;
   --red: #D23A1C;
+  --green: #14913E;
+  --orange: #FCAC45;
 }
 
 [data-theme='dark'] {
-  --background1: #031B21;
-  --background2: #101010;
-  --background3: #1C1C1C;
-  --background4: black;
-  --background5: #101010;
-  --background6: #193039;
-  --background7: #002C37;
-  --background8: black;
-  --text1: white;
-  --text2: white;
-  --text3: white;
-  --accent1: #66D0DA;
-  --accent2: #006B7D;
-  --accent3: #3FA3B5;
-  --hover1: #79BFCB;
-  --red: #D23A1C;
+  --background-header: #031B21;
+  --background-block: #031B21;
+  --background-main: #090909;
+  --background-footer: #1C1C1C;
+  --background-menu: black;
+  --background-secondary: #101010;
+  --button-additional: #1C1C1C;
+  --background-input: black;
+  --text-main: white;
+  --text-contrast: white;
+  --accent-link: #66D0DA;
+  --accent-link-hover: white;
+  --accent-icon: #00B1C1;
+  --red: #E48977;
+  --green: #62C683;
+  --orange: #FAD29E;
 }
