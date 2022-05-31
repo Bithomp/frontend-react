@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
+import { useTranslation, Trans } from 'react-i18next';
 import { useSearchParams, Link } from "react-router-dom";
 import axios from 'axios';
 
@@ -142,11 +142,17 @@ export default function Username({ server }) {
       address,
       countryCode,
     };
-    const { data } = await axios.post('v1/bithompid', postData).catch(error => {
-      setErrorMessage(error.message);
+    const apiData = await axios.post('v1/bithompid', postData).catch(error => {
+      if (i18n.exists("error." + error.message)) {
+        setErrorMessage(t("error." + error.message));
+      } else {
+        setErrorMessage(error.message);
+      }
     });
 
-    if (data.invoiceId) {
+    const data = apiData?.data;
+
+    if (data?.invoiceId) {
       let serviceName = '';
       if (data.userInfo) {
         if (data.userInfo.name) {
@@ -162,7 +168,7 @@ export default function Username({ server }) {
       return;
     }
 
-    if (data.error) {
+    if (data?.error) {
       let addressInput = addressRef;
       let usernameInput = usernameRef;
       if (data.error === 'Username is already registered') {
@@ -188,7 +194,7 @@ export default function Username({ server }) {
       return;
     }
 
-    if (data.bithompid) {
+    if (data?.bithompid) {
       setRegister(data);
       setStep(1);
       setErrorMessage("");
@@ -242,74 +248,103 @@ export default function Username({ server }) {
       <h1 className="center">{t("menu.usernames")}</h1>
       {!step &&
         <>
-          <p>Bithomp <b>username</b> is a <b>public</b> username for your XRPL address.</p>
-          <p className="brake">
-            The username will be assosiated with your address on the Bithomp explorer and in third-party services which use bithomp <a href="https://docs.bithomp.com">API</a>.
-            After the registration it will become public - <b>anyone</b> will be able to see it.
-            Your XRPL address will be accessable by: {server}/explorer/{isUsernameValid(username) ? username : <i>username</i>}
+          <p>
+            <Trans i18nKey="username.step0.text0">
+              Bithomp <b>username</b> is a <b>public</b> username for your XRPL address.
+            </Trans>
           </p>
-          <p>The username <b>can not be changed or deleted</b>.</p>
-          <p>For each XRPL address you can register only one username.</p>
-          <p>You can only register usernames for XRPL addresses you control (you have a secret or recovery 12/24 words). You can not register a username for a hosted address (wich has a destination tag) within an exchange / service / wallet .</p>
-          <p>To prove that you're in control of the XRPL address you will need to make a payment from that address (for which you want to assign a username). Payments from other addresses will be counted as donations and won't be refunded.</p>
-          <p>The payment is for 100 SEK denominated in XRP. The payment for the username is <b>not refundable</b>. If you pay more than requested, the exceeding amount will be counted as donation and won't be refunded.</p>
+          <p className="brake">
+            <Trans i18nKey="username.step0.text1">
+              The username will be assosiated with your address on the bithomp explorer and in third-party services which use bithomp <a href="https://docs.bithomp.com">API</a>.
+              After the registration it will become public - <b>anyone</b> will be able to see it.
+              Your XRPL address will be accessable by:
+            </Trans>
+            {" " + server}/explorer/{isUsernameValid(username) ? username : <i>username</i>}
+          </p>
+          <p>
+            <Trans i18nKey="username.step0.text2">
+              The username <b>can not be changed or deleted</b>.
+            </Trans>
+          </p>
+          <p>{t("username.step0.only-one-for-address")}</p>
+          <p>{t("username.step0.address-you-control")}</p>
+          <p>{t("username.step0.pay-from-your-address")}</p>
+          <p>
+            <Trans i18nKey="username.step0.text3">
+              The payment is for 100 SEK denominated in XRP. The payment for the username is <b>not refundable</b>. If you pay more than requested, the exceeding amount will be counted as donation and won't be refunded.
+            </Trans>
+          </p>
 
-          <p>Enter your XRPL address:</p>
+          <p>{t("username.step0.enter-address")}:</p>
           <div className="input-validation">
-            <input placeholder="Your XRPL address" value={address} onChange={onAddressChange} className="input-text" ref={node => { addressRef = node; }} spellCheck="false" maxLength="36" />
+            <input placeholder={t("username.step0.your-address")} value={address} onChange={onAddressChange} className="input-text" ref={node => { addressRef = node; }} spellCheck="false" maxLength="36" />
             {isAddressValid(address) && <img src={checkmark} className="validation-icon" alt="validated" />}
           </div>
-          <p>Enter the username you would like to have:</p>
+          <p>{t("username.step0.enter-username")}:</p>
           <div className="input-validation">
-            <input placeholder="Username" value={username} onChange={onUsernameChange} className="input-text" ref={node => { usernameRef = node; }} spellCheck="false" maxLength="18" />
+            <input placeholder={t("username.step0.your-username")} value={username} onChange={onUsernameChange} className="input-text" ref={node => { usernameRef = node; }} spellCheck="false" maxLength="18" />
             {isUsernameValid(username) && <img src={checkmark} className="validation-icon" alt="validated" />}
           </div>
-          <p>Your country of residence (for our accounting):</p>
+          <p>{t("username.step0.enter-country")}:</p>
           <CountrySelect setCountryCode={setCountryCode} />
 
           <CheckBox checked={agreeToPageTerms} setChecked={setAgreeToPageTerms} >
-            I understand and agree to the terms and conditions specified above.
+            {t("username.step0.agree-terms-page")}
           </CheckBox>
 
           <CheckBox checked={agreeToSiteTerms} setChecked={setAgreeToSiteTerms} >
-            I agree with the <Link to="/terms-and-conditions" target="_blank">{t("menu.terms-and-conditions")}</Link>.
+            <Trans i18nKey="username.step0.agree-terms-site">
+              I agree with the <Link to="/terms-and-conditions" target="_blank">Terms and conditions</Link>.
+            </Trans>
           </CheckBox>
 
           <CheckBox checked={agreeToPrivacyPolicy} setChecked={setAgreeToPrivacyPolicy} >
-            I agree with the <Link to="/privacy-policy" target="_blank">{t("menu.privacy-policy")}</Link>.
+            <Trans i18nKey="username.step0.agree-privacy-policy">
+              I agree with the <Link to="/privacy-policy" target="_blank">Privacy policy</Link>.
+            </Trans>
           </CheckBox>
 
           <p className="center">
-            <input type="button" value="Continue" className="button-action" onClick={onSubmit} />
+            <input type="button" value={t("button.continue")} className="button-action" onClick={onSubmit} />
           </p>
         </>
       }
       {step === 1 &&
         <>
-          <p>To register your public username: <b className="blue">{register.bithompid}</b></p>
-          <p>You need to make a payment from the address: <b>{register.sourceAddress}</b> (payments made by you from any other addresses <b className="red">won't be accepted and won't be refunded</b>.)</p>
+          <p>{t("username.step1.to-register")} <b className="blue">{register.bithompid}</b></p>
+          <p>
+            {t("username.step1.from-your-address")} <b>{register.sourceAddress}</b>.
+            <br />
+            <Trans i18nKey="username.step1.text0">
+              Payments made by you <b className="red">from any other addresses</b> won't be accepted for the service, it will be accepted as a donation and <b className="red">won't be refunded</b>.
+            </Trans>
+          </p>
 
-          <h3>Payment instructions</h3>
+          <h3>{t("username.step1.payment-instructions")}</h3>
           <div className='payment-instructions bordered'>
-            XRPL address:<br /><b>{register.destinationAddress}</b>
+            {t("username.step1.address")}<br /><b>{register.destinationAddress}</b>
             <br /><br />
-            Destination Tag:<br /><b className="red">{register.destinationTag}</b>
+            {t("username.step1.tag")}<br /><b className="red">{register.destinationTag}</b>
             <br /><br />
-            Amount:<br /><b>{register.amount} {register.currency}</b>
+            {t("username.step1.amount")}<br /><b>{register.amount} {register.currency}</b>
           </div>
 
-          <h3>Awaiting your payment</h3>
+          <h3>{t("username.step1.awaiting")}</h3>
           <div className='payment-awaiting bordered center'>
             <div className="waiting"></div>
             <br /><br />
-            You will see a confirmation as soon as we receive your payment.
+            {t("username.step1.about-confirmation")}
           </div>
         </>
       }
       {step === 2 &&
         <>
-          <p className="bold center">Congratulations!</p>
-          <p className="center">Your username <b className="blue">{register.bithompid}</b> has been succesfully registered.</p>
+          <p className="bold center">{t("username.step2.congratulations")}</p>
+          <p className="center">
+            <Trans i18nKey="username.step2.text0" values={{ username: register.bithompid }}>
+              Your username <b className="blue">{{ username }}</b> has been succesfully registered.
+            </Trans>
+          </p>
           <p className="center bold">
             <a href={server + '/explorer/' + register.bithompid}>
               <u>{server}/explorer/{register.bithompid}</u>
@@ -320,7 +355,7 @@ export default function Username({ server }) {
       <p className="red center" dangerouslySetInnerHTML={{ __html: errorMessage || "&nbsp;" }} />
       {step === 1 &&
         <p className="center">
-          <input type="button" value="Cancel" className="button-action" onClick={onCancel} />
+          <input type="button" value={t("button.cancel")} className="button-action" onClick={onCancel} />
         </p>
       }
     </div>
