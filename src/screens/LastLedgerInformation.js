@@ -55,6 +55,9 @@ export default function LastLedgerInformation({ server }) {
 
   useEffect(() => {
     connect();
+    return () => {
+      if (ws) ws.close();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
