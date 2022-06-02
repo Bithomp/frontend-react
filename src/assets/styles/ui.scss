@@ -49,21 +49,19 @@ body {
   display: none;
 }
 
+.background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background-size: 100% auto;
+}
+
 .content {
   padding-top: 81px;
   flex: 1;
   position: relative;
-
-  &:before {
-    position: absolute;
-    content: "";
-    top: 0;
-    left: 0;
-    bottom: 0;
-    right: 0;
-    background-image: url('../images/logo-square.svg');
-    background-size: 100% auto;
-  }
 
   .content-text {
     margin: 80px;

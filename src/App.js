@@ -15,6 +15,9 @@ import PrivacyPolicy from './screens/PrivacyPolicy';
 import TermsAndConditions from './screens/TermsAndConditions';
 import CustomerSupport from "./screens/CustomerSupport";
 
+import { renderToStaticMarkup } from 'react-dom/server';
+import BackgroundImage from './components/BackgroundImage';
+
 export default function App() {
   const defaultDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
   const [theme, setTheme] = useLocalStorage('theme', defaultDark ? 'dark' : 'light');
@@ -59,6 +62,9 @@ export default function App() {
     axios.defaults.baseURL = server + '/api/cors/';
   }
 
+  const backgroundText = devNet ? devNet : '';
+  const svgString = encodeURIComponent(renderToStaticMarkup(<BackgroundImage network={backgroundText.toUpperCase()} />));
+
   return (
     <div data-theme={theme} className="body" data-network={network}>
       <Header theme={theme} switchTheme={switchTheme} devNet={devNet} />
@@ -75,6 +81,7 @@ export default function App() {
           <Route path="*" element={<PageNotFound />} />
         </Routes>
       </div>
+      <div className="background" style={{ backgroundImage: `url("data:image/svg+xml,${svgString}")` }}></div>
       <Footer devNet={devNet} />
     </div>
   );
