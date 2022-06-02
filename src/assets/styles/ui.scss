@@ -61,10 +61,10 @@ body {
 .content {
   padding-top: 81px;
   flex: 1;
-  position: relative;
 
   .content-text {
     margin: 80px;
+    z-index: 1;
     position: relative;
     @media only screen and (max-width: 1024px) {
       margin: 20px;
@@ -74,6 +74,7 @@ body {
   .content-center {
     margin: 80px auto;
     max-width: 760px;
+    z-index: 1;
     position: relative;
     @media only screen and (max-width: 800px) {
       margin: 20px;
