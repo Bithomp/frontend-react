@@ -80,6 +80,9 @@ header {
     a {
       margin-right: 20px;
       vertical-align: middle;
+      &:hover {
+        color: var(--text-contrast);
+      }
     }
   }
 
