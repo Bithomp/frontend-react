@@ -10,6 +10,10 @@ export default function Footer({ devNet }) {
   const year = new Date().getFullYear();
   const { t } = useTranslation();
 
+  const onCookieAccept = () => {
+    //
+  }
+
   return (
     <footer>
       <div className="footer-menu">
@@ -63,6 +67,20 @@ export default function Footer({ devNet }) {
         </div>
         <div className="footer-social">
           <SocialIcons />
+        </div>
+      </div>
+      <div className="footer-cookie center">
+        <div className="cookie-text center">
+          {t("footer.cookie.we-use-cookie")}
+          {" "}
+          <Link to="/privacy-policy" className="hover-oposite">{t("footer.cookie.read-more")}</Link>.
+          {" "}
+          <input
+            type="button"
+            value={t("button.accept")}
+            className="button-action thin"
+            onClick={onCookieAccept}
+          />
         </div>
       </div>
     </footer>

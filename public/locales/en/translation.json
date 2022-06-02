@@ -23,6 +23,12 @@
   "settings": {
     "language": "Language"
   },
+  "footer": {
+    "cookie": {
+      "we-use-cookie": "We use cookies and similar technologies to improve your experience on our site.",
+      "read-more": "Read more"
+    }
+  },
   "home": {
     "search-placeholder": "Search by XRPL Address / Transaction / Username / PayString / Token",
     "search-placeholder-short": "Search by Address / Transaction / User",
@@ -98,7 +104,8 @@
   },
   "button": {
     "continue": "Continue",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "accept": "Accept"
   },
   "error": {
     "Network Error": "It seems there is no internet connection ;("

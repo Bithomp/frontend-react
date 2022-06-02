@@ -99,6 +99,11 @@ a {
   &:hover {
     color: var(--accent-link-hover);
   }
+  &.hover-oposite {
+    &:hover {
+      color: var(--text-oposite);
+    }
+  }
 }
 
 input {
@@ -178,6 +183,9 @@ button {
   padding-right: 10px;
   &:hover {
     background-color: var(--background-menu);
+  }
+  &.thin {
+    height: 30px;
   }
 }
 

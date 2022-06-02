@@ -70,6 +70,17 @@ footer {
   }
 }
 
+.footer-cookie {
+  position: fixed;
+  z-index: 2;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 20px;
+  background-color: var(--background-contrast);
+  color: var(--text-oposite);
+}
+
 @media only screen and (max-width: 1024px) {
   .footer-menu {
     margin-left: 30px;

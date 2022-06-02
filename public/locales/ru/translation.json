@@ -23,6 +23,12 @@
   "settings": {
     "language": "Язык"
   },
+  "footer": {
+    "cookie": {
+      "we-use-cookie": "Мы используем файлы cookie и аналогичные технологии, чтобы вам было проще и удобнее пользоваться нашим сайтом.",
+      "read-more": "Подробнее тут"
+    }
+  },
   "home": {
     "search-placeholder": "Поиск по XRPL Адресу / Транзакции / Нику / PayString / Токену",
     "search-placeholder-short": "Поиск по Адресу / Транзакции / Нику",
@@ -98,7 +104,8 @@
   },
   "button": {
     "continue": "Продолжить",
-    "cancel": "Отменить"
+    "cancel": "Отменить",
+    "accept": "Принять"
   },
   "error": {
     "Network Error": "Похоже, что у вас пропал интернет :("
