@@ -16,7 +16,7 @@ export default function Footer({ devNet }) {
         <div className="footer-menu-column">
           <span className="footer-menu-header">{t("menu.services")}</span>
           <Link to="/username">{t("menu.usernames")}</Link>
-          <a href="/alerts">{t("menu.price-alerts")}</a>
+          {!devNet && <a href="/alerts">{t("menu.price-alerts")}</a>}
           <a href="https://docs.bithomp.com">{t("menu.api")}</a>
         </div>
         <div className="footer-menu-column">
@@ -48,7 +48,7 @@ export default function Footer({ devNet }) {
         <div className="footer-menu-column">
           <span className="footer-menu-header">Bithomp</span>
           <Link to="/customer-support">{t("menu.customer-support")}</Link>
-          <a href="/mediakit">{t("menu.media-kit")}</a>
+          {!devNet && <Link to="/media-kit">{t("menu.media-kit")}</Link>}
         </div>
         <div className="footer-language-select">
           <LanguageSelect />

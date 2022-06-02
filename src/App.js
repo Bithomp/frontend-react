@@ -14,6 +14,7 @@ import Disclaimer from './screens/Disclaimer';
 import PrivacyPolicy from './screens/PrivacyPolicy';
 import TermsAndConditions from './screens/TermsAndConditions';
 import CustomerSupport from "./screens/CustomerSupport";
+import MediaKit from "./screens/MediaKit";
 
 import { renderToStaticMarkup } from 'react-dom/server';
 import BackgroundImage from './components/BackgroundImage';
@@ -78,6 +79,7 @@ export default function App() {
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
           <Route path="/customer-support" element={<CustomerSupport />} />
+          <Route path="/media-kit" element={<MediaKit />} />
           <Route path="*" element={<PageNotFound />} />
         </Routes>
       </div>
