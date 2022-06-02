@@ -8,14 +8,19 @@ export default function LanguageSelect() {
     i18n.changeLanguage(lang);
   };
 
-  return (
-    <div className="language-select">
-      {t("settings.language")}:{" "}
-      <select onChange={handleLangChange} value={i18n.language}>
-        <option value="en">English</option>
-        {/* <option value="sv">Svenska</option> */}
-        <option value="ru">Русский</option>
-      </select>
-    </div>
-  );
+  //hide switcher from users whose languages are not supported yet
+  if (i18n.language === 'ru') {
+    return (
+      <div className="language-select">
+        {t("settings.language")}:{" "}
+        <select onChange={handleLangChange} value={i18n.language}>
+          <option value="en">English</option>
+          {/* <option value="sv">Svenska</option> */}
+          <option value="ru">Русский</option>
+        </select>
+      </div>
+    );
+  }
+
+  return null;
 };
