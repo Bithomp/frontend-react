@@ -11,10 +11,9 @@ export default function Header({ theme, switchTheme, devNet }) {
   const [menuOpen, setsetMenuOpen] = useState(false);
 
   const mobileMenuToggle = e => {
+    setsetMenuOpen(!menuOpen);
     // remove scrollbar when menu is open
-    const isMenuOpen = e.target.checked;
-    setsetMenuOpen(isMenuOpen);
-    if (isMenuOpen) {
+    if (menuOpen) {
       document.body.style.overflow = "hidden";
     } else {
       document.body.style.overflow = "auto";
@@ -91,7 +90,7 @@ export default function Header({ theme, switchTheme, devNet }) {
       </div>
 
       <div className="header-burger">
-        <input type="checkbox" id="header-burger" checked={menuOpen} onChange={mobileMenuToggle} defaultChecked="false" />
+        <input type="checkbox" id="header-burger" checked={menuOpen} onChange={mobileMenuToggle} />
         <label htmlFor="header-burger" className="header-burger-elements">
           <div></div><div></div><div></div>
         </label>
