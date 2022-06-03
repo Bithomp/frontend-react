@@ -47,7 +47,6 @@ export default function Header({ theme, switchTheme, devNet }) {
                   <a href="https://xrpl.org/xrp-testnet-faucet.html">{t("menu.faucet")}</a> :
                   <a href="/faucet/">{t("menu.faucet")}</a>
                 }
-                <a href="/tools/">Bithomp tools</a>
               </> :
               <>
                 <a href="https://test.bithomp.com">Bithomp (Testnet)</a>
