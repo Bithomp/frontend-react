@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { useTranslation } from 'react-i18next';
+import { useState } from 'react';
 
 import logo from "../assets/images/logo-animated.svg";
 import Switch from "./Switch";
@@ -7,9 +8,12 @@ import Switch from "./Switch";
 export default function Header({ theme, switchTheme, devNet }) {
   const { t } = useTranslation();
 
+  const [menuOpen, setsetMenuOpen] = useState(false);
+
   const mobileMenuToggle = e => {
     // remove scrollbar when menu is open
     const isMenuOpen = e.target.checked;
+    setsetMenuOpen(isMenuOpen);
     if (isMenuOpen) {
       document.body.style.overflow = "hidden";
     } else {
@@ -87,18 +91,30 @@ export default function Header({ theme, switchTheme, devNet }) {
       </div>
 
       <div className="header-burger">
-        <input type="checkbox" id="header-burger" onClick={mobileMenuToggle} />
+        <input type="checkbox" id="header-burger" checked={menuOpen} onChange={mobileMenuToggle} defaultChecked="false" />
         <label htmlFor="header-burger" className="header-burger-elements">
           <div></div><div></div><div></div>
         </label>
         <div className="mobile-menu">
           <a href="/explorer/" className="mobile-menu-item">{t("menu.explorer")}</a>
           <div className="mobile-menu-directory"><span>{t("menu.services")}</span></div>
-          <Link to="/username" className="mobile-menu-item">{t("menu.usernames")}</Link>
+          <Link
+            to="/username"
+            className="mobile-menu-item"
+            onClick={mobileMenuToggle}
+          >
+            {t("menu.usernames")}
+          </Link>
           {!devNet && <a href="/alerts" className="mobile-menu-item">{t("menu.price-alerts")}</a>}
           <a href="https://docs.bithomp.com" className="mobile-menu-item">{t("menu.api")}</a>
           <div className="mobile-menu-directory"><span>XRPL</span></div>
-          <Link to="/last-ledger-information" className="mobile-menu-item">{t("menu.last-ledger-information")}</Link>
+          <Link
+            to="/last-ledger-information"
+            className="mobile-menu-item"
+            onClick={mobileMenuToggle}
+          >
+            {t("menu.last-ledger-information")}
+          </Link>
           {!devNet && <a href="/genesis" className="mobile-menu-item">{t("menu.genesis-accounts")}</a>}
           {devNet &&
             <>
