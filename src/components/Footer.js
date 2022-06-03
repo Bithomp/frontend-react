@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { useTranslation } from 'react-i18next';
+import useLocalStorage from 'use-local-storage';
 
 import logo from "../assets/images/logo-animated.svg";
 
@@ -10,8 +11,10 @@ export default function Footer({ devNet }) {
   const year = new Date().getFullYear();
   const { t } = useTranslation();
 
+  const [showCookie, setShowCokie] = useLocalStorage('showCookie', true);
+
   const onCookieAccept = () => {
-    //
+    setShowCokie(false);
   }
 
   return (
@@ -69,20 +72,21 @@ export default function Footer({ devNet }) {
           <SocialIcons />
         </div>
       </div>
-      <div className="footer-cookie center">
-        <div className="cookie-text center">
+      {showCookie &&
+        <div className="footer-cookie center">
           {t("footer.cookie.we-use-cookie")}
           {" "}
           <Link to="/privacy-policy" className="hover-oposite">{t("footer.cookie.read-more")}</Link>.
-          {" "}
+          <br />
           <input
             type="button"
             value={t("button.accept")}
             className="button-action thin"
             onClick={onCookieAccept}
+            style={{ marginTop: "10px" }}
           />
         </div>
-      </div>
+      }
     </footer>
   );
 };
