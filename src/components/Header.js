@@ -40,7 +40,6 @@ export default function Header({ theme, switchTheme, devNet }) {
         <div className="menu-dropdown">
           <div className="menu-dropdown-button">{t("menu.tools")}</div>
           <div className="menu-dropdown-content">
-            <a href="/submit/">{t("menu.submit-offline-transaction")}</a>
             {devNet ?
               <>
                 <a href="/create/">{t("menu.account-generation")}</a>

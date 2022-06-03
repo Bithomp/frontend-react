@@ -28,7 +28,6 @@ export default function Footer({ devNet }) {
         </div>
         <div className="footer-menu-column">
           <span className="footer-menu-header">{t("menu.tools")}</span>
-          <a href="/submit/">{t("menu.submit-offline-transaction")}</a>
           {devNet ?
             <>
               <a href="/create/">{t("menu.account-generation")}</a>
