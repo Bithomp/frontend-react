@@ -161,6 +161,10 @@ button {
   word-break: break-word;
 }
 
+.no-brake {
+  white-space: nowrap;
+}
+
 .red {
   color: var(--red);
 }

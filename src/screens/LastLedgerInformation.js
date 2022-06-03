@@ -75,19 +75,50 @@ export default function LastLedgerInformation({ server }) {
     <div className="content-text content-center">
       <h1 className="center">{t("menu.last-ledger-information")}</h1>
       <div className="bordered brake" style={{ padding: "0 20px", position: "relative" }}>
-        <p>{t("last-ledger-information.ledger-hash")}: {ledger?.validatedLedger.hash.toLowerCase()}</p>
-        <p>{t("last-ledger-information.ledger")}: {ledger?.validatedLedger.ledgerIndex && '#' + ledger.validatedLedger.ledgerIndex}</p>
-        <p>{t("last-ledger-information.ledger-closed-at")}: {closedAt}</p>
-        <p>{t("last-ledger-information.ledger-interval")}: {ledger?.lastClose.convergeTimeS && ledger?.lastClose.convergeTimeS + ' ' + t("units.seconds-short")}</p>
-        <p>{t("last-ledger-information.transactions")}: {ledger?.validatedLedger.transactionsCount}</p>
-        <p>{t("last-ledger-information.transaction-speed")}: {ledger && (ledger.validatedLedger.transactionsCount / ledger.lastClose.convergeTimeS).toFixed(2)}</p>
-        <p>{t("last-ledger-information.proposers")}: {ledger?.lastClose.proposers}</p>
-        <p>{t("last-ledger-information.validation-quorum")}: {ledger?.validationQuorum}</p>
-        <p>{t("last-ledger-information.base-fee")}: {ledger?.validatedLedger.baseFeeXRP && (ledger.validatedLedger.baseFeeXRP * 1).toFixed(6) + ' XRP'}</p>
-        <p>{t("last-ledger-information.base-reserve")}: {ledger?.validatedLedger.reserveBaseXRP && ledger.validatedLedger.reserveBaseXRP + ' XRP'}</p>
-        <p>{t("last-ledger-information.increment-reserve")}: {ledger?.validatedLedger.reserveIncrementXRP && ledger.validatedLedger.reserveIncrementXRP + ' XRP'}</p>
-        <p>{t("last-ledger-information.total-supply")}: {numberWithSpaces(ledger?.totalCoins && (ledger.totalCoins / 1000000).toFixed(6)) + ' XRP'}</p>
-        <p>{t("last-ledger-information.total-burned")}: {numberWithSpaces(ledger?.totalCoins && (100000000000 - ledger.totalCoins / 1000000).toFixed(6)) + ' XRP'}</p>
+        <p>
+          {t("last-ledger-information.ledger-hash")}: {ledger?.validatedLedger.hash.toLowerCase()}
+        </p>
+        <p>
+          {t("last-ledger-information.ledger")}: {ledger?.validatedLedger.ledgerIndex && '#' + ledger.validatedLedger.ledgerIndex}
+        </p>
+        <p>
+          {t("last-ledger-information.ledger-closed-at")}: {closedAt}</p>
+        <p>
+          {t("last-ledger-information.ledger-interval")}: {ledger?.lastClose.convergeTimeS && ledger?.lastClose.convergeTimeS + ' ' + t("units.seconds-short")}
+        </p>
+        <p>
+          {t("last-ledger-information.transactions")}: {ledger?.validatedLedger.transactionsCount}</p>
+        <p>
+          {t("last-ledger-information.transaction-speed")}: {ledger && (ledger.validatedLedger.transactionsCount / ledger.lastClose.convergeTimeS).toFixed(2)}
+        </p>
+        <p>
+          {t("last-ledger-information.proposers")}: {ledger?.lastClose.proposers}
+        </p>
+        <p>
+          {t("last-ledger-information.validation-quorum")}: {ledger?.validationQuorum}
+        </p>
+        <p>
+          {t("last-ledger-information.base-fee")}: {ledger?.validatedLedger.baseFeeXRP && (ledger.validatedLedger.baseFeeXRP * 1).toFixed(6) + ' XRP'}
+        </p>
+        <p>
+          {t("last-ledger-information.base-reserve")}: {ledger?.validatedLedger.reserveBaseXRP && ledger.validatedLedger.reserveBaseXRP + ' XRP'}
+        </p>
+        <p>
+          {t("last-ledger-information.increment-reserve")}: {ledger?.validatedLedger.reserveIncrementXRP && ledger.validatedLedger.reserveIncrementXRP + ' XRP'}
+        </p>
+        <p>
+          {t("last-ledger-information.total-supply") + ": "}
+          <span className='no-brake'>
+            {numberWithSpaces(ledger?.totalCoins && (ledger.totalCoins / 1000000).toFixed(6)) + ' XRP'}
+          </span>
+        </p>
+        <p>
+          {t("last-ledger-information.total-burned") + ": "}
+          <span className='no-brake'>
+            {numberWithSpaces(ledger?.totalCoins && (100000000000 - ledger.totalCoins / 1000000).toFixed(6)) + ' XRP'}
+          </span>
+
+        </p>
         <p className="center" style={{ position: "absolute", top: "calc(50% - 72px)", left: "calc(50% - 54px)" }}>
           {!ledger && <span className="waiting"></span>}
         </p>
