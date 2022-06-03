@@ -8,16 +8,16 @@ import Switch from "./Switch";
 export default function Header({ theme, switchTheme, devNet }) {
   const { t } = useTranslation();
 
-  const [menuOpen, setsetMenuOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   const mobileMenuToggle = e => {
-    setsetMenuOpen(!menuOpen);
     // remove scrollbar when menu is open
-    if (menuOpen) {
+    if (!menuOpen) {
       document.body.style.overflow = "hidden";
     } else {
       document.body.style.overflow = "auto";
     }
+    setMenuOpen(!menuOpen);
   };
 
   return (
