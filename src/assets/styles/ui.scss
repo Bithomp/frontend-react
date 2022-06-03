@@ -107,6 +107,7 @@ a {
 }
 
 input {
+  -webkit-appearance: none; // for ios safari
   border-radius: 0; // remove rounded corners on ios safari
   font-size: 16px; // remove auto zoom on ios safari
   outline: none; // remove default rounded corners on focus
@@ -122,8 +123,8 @@ input {
     border: 1px solid var(--accent-icon);
     padding-left: 10px;
     padding-right: 10px;
-    padding-top: 1px; /* set for ios safari */
-    padding-bottom: 1px; /* set for ios safari */
+    padding-top: 1px; // set for ios safari
+    padding-bottom: 1px; // set for ios safari
     &:focus {
       box-shadow: 0 0 10px var(--accent-icon);
     }
