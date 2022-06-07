@@ -25,9 +25,11 @@ See the section about [running tests](https://facebook.github.io/create-react-ap
 
 ### `yarn build`
 
-* the subfolder is temporarily specified in:
+* the subfolder is specified in:
 `package.json`, `"homepage": "/react"`,
 `/src/services/i18n.js`, `loadPath: '/react/locales/{{lng}}/{{ns}}.json'`,
+
+It can also be added here to make it work locally.
 `/src/index.js`, `<BrowserRouter basename='/react/'>`
 
 Builds the app for production to the `build` folder.\
@@ -41,6 +43,14 @@ Your app is ready to be deployed!
 mainnet | testnet | hooks | beta | xls20
 
 See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+
+`cd <folder for projects>`
+`npm install -g yarn` (first time)
+`git clone https://github.com/Bithomp/frontend-react` (first time)
+`cd frontend-react`
+`git pull` (if exists)
+`yarn install`
+`REACT_APP_NETWORK_NAME=testnet yarn build`
 
 ### `yarn eject`
 
