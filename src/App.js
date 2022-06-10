@@ -6,7 +6,6 @@ import Header from './components/Header';
 import Footer from './components/Footer';
 import ScrollToTop from "./components/ScrollToTop";
 
-import PageNotFound from './screens/PageNotFound';
 import Home from './screens/Home';
 import Username from './screens/Username';
 import LastLedgerInformation from './screens/LastLedgerInformation';
@@ -15,6 +14,8 @@ import PrivacyPolicy from './screens/PrivacyPolicy';
 import TermsAndConditions from './screens/TermsAndConditions';
 import CustomerSupport from "./screens/CustomerSupport";
 import MediaKit from "./screens/MediaKit";
+import PageNotFound from './screens/PageNotFound';
+import Redirect from './screens/Redirect';
 
 import { renderToStaticMarkup } from 'react-dom/server';
 import BackgroundImage from './components/BackgroundImage';
@@ -73,6 +74,7 @@ export default function App() {
         <ScrollToTop />
         <Routes>
           <Route path="/" element={<Home theme={theme} devNet={devNet} />} />
+          <Route path="/index.html" element={<Home theme={theme} devNet={devNet} />} />
           <Route path="/username" element={<Username server={server} />} />
           <Route path="/last-ledger-information" element={<LastLedgerInformation server={server} />} />
           <Route path="/disclaimer" element={<Disclaimer />} />
@@ -80,7 +82,8 @@ export default function App() {
           <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
           <Route path="/customer-support" element={<CustomerSupport />} />
           <Route path="/media-kit" element={<MediaKit />} />
-          <Route path="*" element={<PageNotFound />} />
+          <Route path="/error" element={<PageNotFound />} />
+          <Route path="*" element={<Redirect />} />
         </Routes>
       </div>
       <div className="background" style={{ backgroundImage: `url("data:image/svg+xml,${svgString}")` }}></div>

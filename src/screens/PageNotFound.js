@@ -1,8 +1,10 @@
 export default function Eror404() {
   return (
     <div className="content-text center">
-      <h1>Error 404</h1>
-      <p>Page not found!</p>
+      <h1>The requested page wasn't found.</h1>
+      <p>
+        Click <a href="/"><b>here</b></a> to check our landing page.
+      </p>
     </div>
   );
 };
