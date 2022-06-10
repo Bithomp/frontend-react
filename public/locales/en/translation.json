@@ -101,6 +101,10 @@
       "text0": "Your username <1>{{ username }}</1> has been succesfully registered."
     }
   },
+  "page-not-found": {
+    "header": "The requested page wasn't found.",
+    "text": "Click <1>here</1> to check our landing page."
+  },
   "button": {
     "continue": "Continue",
     "cancel": "Cancel",
