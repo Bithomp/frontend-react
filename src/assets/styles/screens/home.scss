@@ -125,11 +125,14 @@
 
 .home-converter {
   position: relative;
+  z-index: 1;
   height: 200px;
   text-align: center;
 }
 
 .home-price-chart {
+  position: relative;
+  z-index: 1;
   max-width: 790px;
   margin-left: auto;
   margin-right: auto;
