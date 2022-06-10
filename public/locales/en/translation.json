@@ -101,6 +101,22 @@
       "text0": "Your username <1>{{ username }}</1> has been succesfully registered."
     }
   },
+  "customer-support": {
+    "text0": "Bithomp is an explorer of the <1>public</1> XRP Ledger.",
+    "no-help": "We can not freeze accounts, make refunds, cancel transactions or change/add destination tags. We do not do investigations and we can not help you to recover your lost or stolen funds.",
+    "text1": "If you funds were stolen or if you became a victim of fraud/scam you can report it <1>here</1>.",
+    "status-failed": "If your transactions has a status \"failed\" but your funds were taken from your balance then contact the service / wallet / exchange which you used to make this transaction.",
+    "status-success": " If your transaction has a status \"success\" but it wasn't received then contact the receipient's wallet / service / exchange support.",
+    "wrong-tag": "If you sent a transaction without a destination tag or with a wrong destination tag then read (2) and (3) above.",
+    "text2": "If you're missing 10 XRP in your wallet, please read about the <1>base reserve</1>.",
+    "paper-wallet": "If you want to send XRP from a paper wallet, you need to import it to a software wallet first, you can use XUMM mobile app for that (import secret as a \"family seed\").",
+    "flare": "If you have a question about \"Flare\" you need to address it to the Flare community.",
+    "text3": "If you have a <1>partnership or marketing</1> proposals then you can contact us by email: <3/>. You can also contact us with questions about the bithomp username registration or bithomp transaction explorer.",
+    "no-answer": "Due to our limited time we do not answer to emails related to 1-7.",
+    "submit-info": "Submit information about your XRPL service",
+    "text4": "If you have a public XRPL service and you want your XRP addresses to be recognised on Bithomp submit your information <1>here</1>. You can also contact us by email: <3/> if you want to speed up the process.",
+    "follow-us": "Follow us on social media"
+  },
   "page-not-found": {
     "header": "The requested page wasn't found.",
     "text": "Click <1>here</1> to check our landing page."
