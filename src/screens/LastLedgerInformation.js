@@ -9,14 +9,12 @@ export default function LastLedgerInformation({ server }) {
   const { t } = useTranslation();
 
   const [ledger, setLedger] = useState(null);
-  const [connected, setConnected] = useState(false);
 
   const connect = () => {
     const wssServer = server.replace("https://", "wss://") + '/wss';
     ws = new WebSocket(wssServer);
 
     ws.onopen = () => {
-      setConnected(true);
       ws.send(JSON.stringify({ command: "subscribe", streams: ["ledger"], id: 1 }));
     }
 
@@ -49,7 +47,6 @@ export default function LastLedgerInformation({ server }) {
     }
 
     ws.onclose = () => {
-      setConnected(false);
       connect();
     }
   }
