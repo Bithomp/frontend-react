@@ -47,8 +47,7 @@
     "base-reserve": "Базовый резерв",
     "increment-reserve": "Резерв трастлайна и др.",
     "total-supply": "Всего существует",
-    "total-burned": "Всего сожжено (комиссией)",
-    "reconnect": "Переподключиться"
+    "total-burned": "Всего сожжено (комиссией)"
   },
   "username": {
     "error": {

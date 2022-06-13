@@ -47,8 +47,7 @@
     "base-reserve": "Base reserve",
     "increment-reserve": "Increment reserve",
     "total-supply": "Total supply",
-    "total-burned": "Total burned",
-    "reconnect": "Reconnect"
+    "total-burned": "Total burned"
   },
   "username": {
     "error": {

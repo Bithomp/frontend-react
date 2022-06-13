@@ -50,6 +50,7 @@ export default function LastLedgerInformation({ server }) {
 
     ws.onclose = () => {
       setConnected(false);
+      connect();
     }
   }
 
@@ -60,10 +61,6 @@ export default function LastLedgerInformation({ server }) {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  const onConnect = () => {
-    connect();
-  }
 
   let closedAt = '';
   if (ledger) {
@@ -123,12 +120,6 @@ export default function LastLedgerInformation({ server }) {
           {!ledger && <span className="waiting"></span>}
         </p>
       </div>
-
-      {!connected && ledger &&
-        <p className="center">
-          <input type="button" value={t("last-ledger-information.reconnect")} className="button-action" onClick={onConnect} />
-        </p>
-      }
     </div>
   );
 };
