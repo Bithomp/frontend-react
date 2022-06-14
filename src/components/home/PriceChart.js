@@ -3,7 +3,7 @@ import axios from 'axios';
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import '../assets/styles/components/priceChart.scss';
+import '../../assets/styles/components/priceChart.scss';
 
 export default function PriceChart({ currency, theme, chartPeriod, setChartPeriod }) {
   const { i18n } = useTranslation();

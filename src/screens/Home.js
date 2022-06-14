@@ -2,8 +2,9 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import useLocalStorage from 'use-local-storage';
 
-import Converter from "../components/Converter";
-import PriceChart from "../components/PriceChart";
+import Converter from "../components/home/Converter";
+import PriceChart from "../components/home/PriceChart";
+import Statistics from "../components/home/Statistics";
 
 import '../assets/styles/screens/home.scss';
 import search from "../assets/images/search.svg";
@@ -23,7 +24,7 @@ const searchClick = item => {
 
 const searchItemRe = /^[~]{0,1}[a-zA-Z0-9-_.]*[+]{0,1}[a-zA-Z0-9-_.]*[$]{0,1}[a-zA-Z0-9-.]*[a-zA-Z0-9]*$/i;
 
-export default function Home({ theme, devNet }) {
+export default function Home({ theme, devNet, server }) {
   const [searchItem, setSearchItem] = useState("");
   const [selectedCurrency, setSelectedCurrency] = useLocalStorage('currency', 'usd');
   const [chartPeriod, setChartPeriod] = useState('one_day');
@@ -73,23 +74,28 @@ export default function Home({ theme, devNet }) {
         </div>
       </div>
       {!devNet &&
+        <div className="home-sponsored">
+          <a href="https://bithomp.com/go/earn-on-xrp" target="_blank" rel="noreferrer">
+            <div className="sponsored-brand">
+              <img src={nexo} className="sponsored-brand-icon" alt="earn on xrp" />
+              <div className="sponsored-brand-title">Earn on XRP</div>
+              <div className="sponsored-brand-text">Start earning up to 8% APR with XRP, paid out daily</div>
+            </div>
+          </a>
+          <a href="https://bithomp.com/go/buy-xrp" target="_blank" rel="noreferrer">
+            <div className="sponsored-brand">
+              <img src={btcbit} className="sponsored-brand-icon" alt="buy xrp" />
+              <div className="sponsored-brand-title">Buy XRP</div>
+              <div className="sponsored-brand-text">Instantly buy and sell cryptocurrency with low commission</div>
+            </div>
+          </a>
+        </div>
+      }
+      <div className="home-statistics">
+        <Statistics server={server} />
+      </div>
+      {!devNet &&
         <>
-          <div className="home-sponsored">
-            <a href="https://bithomp.com/go/earn-on-xrp" target="_blank" rel="noreferrer">
-              <div className="sponsored-brand">
-                <img src={nexo} className="sponsored-brand-icon" alt="earn on xrp" />
-                <div className="sponsored-brand-title">Earn on XRP</div>
-                <div className="sponsored-brand-text">Start earning up to 8% APR with XRP, paid out daily</div>
-              </div>
-            </a>
-            <a href="https://bithomp.com/go/buy-xrp" target="_blank" rel="noreferrer">
-              <div className="sponsored-brand">
-                <img src={btcbit} className="sponsored-brand-icon" alt="buy xrp" />
-                <div className="sponsored-brand-title">Buy XRP</div>
-                <div className="sponsored-brand-text">Instantly buy and sell cryptocurrency with low commission</div>
-              </div>
-            </a>
-          </div>
           <div className="home-converter">
             <h2>{t("home.xrp-price")}</h2>
             <Converter selectedCurrency={selectedCurrency} setSelectedCurrency={setSelectedCurrency} chartPeriod={chartPeriod} />

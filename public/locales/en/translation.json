@@ -32,7 +32,17 @@
     "search-placeholder": "Search by XRPL Address / Transaction / Username / PayString / Token",
     "search-placeholder-short": "Search by Address / Transaction / User",
     "scan-qr": "SCAN A CODE",
-    "xrp-price": "XRP price"
+    "xrp-price": "XRP price",
+    "stat": {
+      "ledger-index": "Ledger index",
+      "close-time": "Close time",
+      "transactions": "Transactions",
+      "txs-per-sec": "txs/s",
+      "quorum": "Validation quorum",
+      "proposers": "proposers",
+      "accounts": "Accounts",
+      "usernames": "Usernames"
+    }
   },
   "last-ledger-information": {
     "ledger-hash": "Ledger hash",

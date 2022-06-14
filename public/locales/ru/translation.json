@@ -32,7 +32,17 @@
     "search-placeholder": "Поиск по XRPL Адресу / Транзакции / Нику / PayString / Токену",
     "search-placeholder-short": "Поиск по Адресу / Транзакции / Нику",
     "scan-qr": "СКАНИРОВАТЬ КОД",
-    "xrp-price": "Курс XRP"
+    "xrp-price": "Курс XRP",
+    "stat": {
+      "ledger-index": "Номер леджера",
+      "close-time": "Время закрытия",
+      "transactions": "Кол-во транзакций",
+      "txs-per-sec": "тран/сек",
+      "quorum": "Кворум валидаторов",
+      "proposers": "предлагающих",
+      "accounts": "Кол-во адресов",
+      "usernames": "Кол-во юзернемов"
+    }
   },
   "last-ledger-information": {
     "ledger-hash": "Хеш леджера",

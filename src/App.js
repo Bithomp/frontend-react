@@ -73,8 +73,8 @@ export default function App() {
       <div className="content">
         <ScrollToTop />
         <Routes>
-          <Route path="/" element={<Home theme={theme} devNet={devNet} />} />
-          <Route path="/index.html" element={<Home theme={theme} devNet={devNet} />} />
+          <Route path="/" element={<Home theme={theme} devNet={devNet} server={server}/>} />
+          <Route path="/index.html" element={<Home theme={theme} devNet={devNet} server={server} />} />
           <Route path="/username" element={<Username server={server} />} />
           <Route path="/last-ledger-information" element={<LastLedgerInformation server={server} />} />
           <Route path="/disclaimer" element={<Disclaimer />} />

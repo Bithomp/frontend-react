@@ -2,10 +2,10 @@ import axios from 'axios';
 import { useState, useEffect } from 'react';
 import { isMobile } from "react-device-detect";
 
-import CurrencySelect from "../components/CurrencySelect";
+import CurrencySelect from "../CurrencySelect";
 
-import '../assets/styles/components/converter.scss';
-import { ReactComponent as XrpBlack } from "../assets/images/xrp-black.svg";
+import '../../assets/styles/components/converter.scss';
+import { ReactComponent as XrpBlack } from "../../assets/images/xrp-black.svg";
 
 export default function Converter({ selectedCurrency, setSelectedCurrency, chartPeriod }) {
   const [data, setData] = useState({});
