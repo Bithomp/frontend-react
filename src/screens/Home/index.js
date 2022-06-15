@@ -7,7 +7,7 @@ import PriceChart from "./PriceChart";
 import Statistics from "./Statistics";
 //import Whales from './Whales';
 
-import '../../assets/styles/screens/home.scss';
+import './styles.scss';
 import search from "../../assets/images/search.svg";
 import { ReactComponent as Qr } from "../../assets/images/qr.svg";
 import nexo from "../../assets/images/nexo.svg";
