@@ -2,15 +2,15 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import useLocalStorage from 'use-local-storage';
 
-import Converter from "../components/home/Converter";
-import PriceChart from "../components/home/PriceChart";
-import Statistics from "../components/home/Statistics";
+import Converter from "./Converter";
+import PriceChart from "./PriceChart";
+import Statistics from "./Statistics";
 
-import '../assets/styles/screens/home.scss';
-import search from "../assets/images/search.svg";
-import { ReactComponent as Qr } from "../assets/images/qr.svg";
-import nexo from "../assets/images/nexo.svg";
-import btcbit from "../assets/images/btcbit.svg";
+import '../../assets/styles/screens/home.scss';
+import search from "../../assets/images/search.svg";
+import { ReactComponent as Qr } from "../../assets/images/qr.svg";
+import nexo from "../../assets/images/nexo.svg";
+import btcbit from "../../assets/images/btcbit.svg";
 
 const searchClick = item => {
   const searchItem = item.trim();

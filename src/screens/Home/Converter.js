@@ -2,7 +2,7 @@ import axios from 'axios';
 import { useState, useEffect } from 'react';
 import { isMobile } from "react-device-detect";
 
-import CurrencySelect from "../CurrencySelect";
+import CurrencySelect from "../../components/CurrencySelect";
 
 import '../../assets/styles/components/converter.scss';
 import { ReactComponent as XrpBlack } from "../../assets/images/xrp-black.svg";

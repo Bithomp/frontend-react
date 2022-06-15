@@ -76,7 +76,7 @@ export default function Statistics({ server }) {
   return <div className='statistics-block'>
     <div className='stat-piece'>
       <div className='stat-piece-header'>{t("home.stat.ledger-index")}</div>
-      <div># {ledgerIndex}</div>
+      <div>#{ledgerIndex}</div>
     </div>
     <div className='stat-piece'>
       <div className='stat-piece-header'>{t("home.stat.close-time")}</div>
