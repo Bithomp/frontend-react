@@ -77,6 +77,20 @@
       }
     }
   }
+  @media only screen and (max-width: 1024px) {
+    height: 250px;
+    .home-search {
+      margin-left: 10px;
+      margin-right: 10px;
+      margin-top: 89px;
+      width: calc(100% - 40px);
+      .search-input {
+        padding-left: 10px;
+        padding-right: 44px;
+        max-width: calc(100% - 56px);
+      }
+    }
+  }
 }
 
 .home-sponsored {
@@ -122,6 +136,25 @@
       font-size: 14px;
     }
   }
+  @media only screen and (max-width: 1024px) {
+    height: 120px;
+    .sponsored-brand {
+      height: 40px;
+      width: 164px;
+      margin: 10px;
+      .sponsored-brand-icon {
+        height: 30px;
+      }
+      .sponsored-brand-title {
+        left: 67px;
+        font-size: 14px;
+        font-weight: 400;
+      }
+      .sponsored-brand-text {
+        display: none;
+      }
+    }
+  }
 }
 
 .home-statistics {
@@ -160,6 +193,9 @@
   z-index: 1;
   height: 200px;
   text-align: center;
+  @media only screen and (max-width: 1024px) {
+    height: 170px;
+  }
 }
 
 .home-price-chart {
@@ -170,45 +206,4 @@
   margin-right: auto;
   margin-bottom: 60px;
   padding-right: 10px;
-}
-
-@media only screen and (max-width: 1024px) {
-  .home-search-block {
-    height: 250px;
-    .home-search {
-      margin-left: 10px;
-      margin-right: 10px;
-      margin-top: 89px;
-      width: calc(100% - 40px);
-      .search-input {
-        padding-left: 10px;
-        padding-right: 44px;
-        max-width: calc(100% - 56px);
-      }
-    }
-  }
-  .home-sponsored {
-    height: 120px;
-    .sponsored-brand {
-      height: 40px;
-      width: 164px;
-      margin: 10px;
-      .sponsored-brand-icon {
-        top: 5px;
-        height: 30px;
-      }
-      .sponsored-brand-title {
-        left: 67px;
-        font-size: 14px;
-        font-weight: 400;
-      }
-      .sponsored-brand-text {
-        display: none;
-      }
-    }
-  }
-
-  .home-converter {
-    height: 170px;
-  }
 }
