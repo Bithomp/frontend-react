@@ -2,8 +2,9 @@ import { Link } from "react-router-dom";
 import { useTranslation } from 'react-i18next';
 import { useState } from 'react';
 
-import logo from "../assets/images/logo-animated.svg";
+import logo from "../../assets/images/logo-animated.svg";
 import Switch from "./Switch";
+import './styles.scss';
 
 export default function Header({ theme, switchTheme, devNet }) {
   const { t } = useTranslation();
