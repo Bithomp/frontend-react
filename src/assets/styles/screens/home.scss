@@ -190,7 +190,7 @@
 
 .home-converter {
   position: relative;
-  z-index: 1;
+  z-index: 2; //to show over the chart
   height: 200px;
   text-align: center;
   @media only screen and (max-width: 1024px) {

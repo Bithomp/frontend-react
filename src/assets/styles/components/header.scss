@@ -5,7 +5,7 @@ header {
   width: 100%;
   background-color: var(--background-header);
   border-bottom: 1px solid var(--background-menu);
-  z-index: 2;
+  z-index: 3;
   transition: background-color .5s;
   .header-logo {
     max-width: 160px;
