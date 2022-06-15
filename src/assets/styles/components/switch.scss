@@ -1,37 +1,30 @@
 .switch {
   display: inline-block;
   vertical-align: middle;
-}
-
-.switch-container {
-  display: flex;
-  margin-left: auto;
-  width: 52px;
-  height: 30px;
-  background-color: var(--background-menu);
-  border: 1px solid var(--background-header);
-  border-radius: 30px;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0 7px;
-  cursor: pointer;
-  position: relative;
-  box-sizing: border-box;
-  transition: transform .5s, background-color .5s;
-}
-
-.switch-container .switch-icon {
-  width: 15px;
-  height: 15px;
-}
-
-.switch-container img {
-  opacity: 0.2;
-  transition: opacity .5s;
-}
-.switch-container.dark img:nth-of-type(1) {
-  opacity: 1;
-}
-.switch-container.light img:nth-of-type(2) {
-  opacity: 1;
+  .switch-container {
+    display: flex;
+    margin-left: auto;
+    width: 52px;
+    height: 30px;
+    background-color: var(--background-menu);
+    border: 1px solid var(--background-header);
+    border-radius: 30px;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 7px;
+    cursor: pointer;
+    position: relative;
+    box-sizing: border-box;
+    transition: background-color .5s;
+    .switch-icon {
+      width: 15px;
+      height: 15px;
+      opacity: 0.2;
+      transition: opacity .5s;
+    }
+    &.dark .sun,
+    &.light .moon {
+      opacity: 1;
+    }
+  }
 }
