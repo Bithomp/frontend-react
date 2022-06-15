@@ -3,11 +3,11 @@ import { useTranslation, Trans } from 'react-i18next';
 import { useSearchParams, Link } from "react-router-dom";
 import axios from 'axios';
 
-import CountrySelect from '../components/CountrySelect';
-import CheckBox from '../components/CheckBox';
+import CountrySelect from '../../components/CountrySelect';
+import CheckBox from '../../components/CheckBox';
 
-import checkmark from "../assets/images/checkmark.svg";
-import '../assets/styles/screens/username.scss';
+import checkmark from "../../assets/images/checkmark.svg";
+import './styles.scss';
 
 const isAddressValid = (address) => {
   return /^r[0-9a-zA-Z]{24,35}$/.test(address);
