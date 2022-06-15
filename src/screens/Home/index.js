@@ -5,6 +5,7 @@ import useLocalStorage from 'use-local-storage';
 import Converter from "./Converter";
 import PriceChart from "./PriceChart";
 import Statistics from "./Statistics";
+//import Whales from './Whales';
 
 import '../../assets/styles/screens/home.scss';
 import search from "../../assets/images/search.svg";
@@ -94,6 +95,10 @@ export default function Home({ theme, devNet, server }) {
       <div className="home-statistics">
         <Statistics server={server} />
       </div>
+      {/*
+        <h2 className='center'>{t("home.whale-transactions")}</h2>
+        <div className="home-whale-transactions"><Whales /></div>
+      */}
       {!devNet &&
         <>
           <div className="home-converter">
