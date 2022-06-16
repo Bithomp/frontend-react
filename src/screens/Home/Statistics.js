@@ -1,10 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { WssServer } from '../../utils/utils';
+import { wssServer } from '../../utils/utils';
 
 let ws = null;
-const wssServer = WssServer();
 
 export default function Statistics() {
   const [ledger, setLedger] = useState(null);

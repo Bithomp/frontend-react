@@ -20,7 +20,7 @@ import Redirect from './screens/Redirect';
 import { renderToStaticMarkup } from 'react-dom/server';
 import BackgroundImage from './components/BackgroundImage';
 
-import { network, devNet, Server } from './utils/utils';
+import { network, devNet, server } from './utils/utils';
 
 export default function App() {
   const defaultDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -30,8 +30,6 @@ export default function App() {
     const newTheme = theme === 'light' ? 'dark' : 'light';
     setTheme(newTheme);
   }
-
-  let server = Server();
 
   if (process.env.NODE_ENV === 'development') {
     axios.defaults.headers.common['x-bithomp-token'] = process.env.REACT_APP_BITHOMP_API_TEST_KEY;

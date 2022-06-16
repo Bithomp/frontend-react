@@ -1,10 +1,9 @@
 import { useTranslation } from 'react-i18next';
 import { useState, useEffect } from 'react';
 
-import { numberWithSpaces, WssServer } from '../utils/utils';
+import { numberWithSpaces, wssServer } from '../utils/utils';
 
 let ws = null;
-const wssServer = WssServer();
 
 export default function LastLedgerInformation() {
   const { t } = useTranslation();

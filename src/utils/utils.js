@@ -13,7 +13,7 @@ export const numberWithSpaces = (x) => {
 export const network = process.env.REACT_APP_NETWORK_NAME ? process.env.REACT_APP_NETWORK_NAME : "mainnet";
 export const devNet = ['mainnet', 'local'].includes(network) ? false : network;
 
-export const Server = () => {
+const Server = () => {
   let server = "https://test.bithomp.com";
   switch (network) {
     case 'mainnet':
@@ -40,11 +40,14 @@ export const Server = () => {
   return server;
 }
 
-export const WssServer = () => {
-  const server = Server();
+export const server = Server();
+
+const WssServer = () => {
   let token = '';
   if (process.env.NODE_ENV === 'development') {
     token = '?x-bithomp-token=' + process.env.REACT_APP_BITHOMP_API_TEST_KEY;
   }
   return server.replace("https://", "wss://") + '/wss/' + token;
 }
+
+export const wssServer = WssServer();
