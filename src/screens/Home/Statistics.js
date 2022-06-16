@@ -52,6 +52,7 @@ export default function Statistics() {
   useEffect(() => {
     connect();
     return () => {
+      setLedger(null);
       if (ws) ws.close();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
