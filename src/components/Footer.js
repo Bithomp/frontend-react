@@ -26,24 +26,33 @@ export default function Footer({ devNet }) {
           {!devNet && <a href="/alerts">{t("menu.price-alerts")}</a>}
           <a href="https://docs.bithomp.com">{t("menu.api")}</a>
         </div>
+
+        {devNet &&
+          <div className="footer-menu-column">
+            <span className="footer-menu-header">{t("menu.tools")}</span>
+            <a href="/create/">{t("menu.account-generation")}</a>
+            {devNet === 'testnet' ?
+              <a href="https://xrpl.org/xrp-testnet-faucet.html">{t("menu.faucet")}</a> :
+              <a href="/faucet/">{t("menu.faucet")}</a>
+            }
+            {devNet === 'xls20' &&
+              <>
+                <a href="/nft-test/">NFT tester</a>
+                <a href="https://xrpl.org/nftoken-tester-tutorial.html">NFT tester tutorial</a>
+              </>
+            }
+          </div>
+        }
+
         <div className="footer-menu-column">
-          <span className="footer-menu-header">{t("menu.tools")}</span>
-          {devNet ?
-            <>
-              <a href="/create/">{t("menu.account-generation")}</a>
-              {devNet === 'testnet' ?
-                <a href="https://xrpl.org/xrp-testnet-faucet.html">{t("menu.faucet")}</a> :
-                <a href="/faucet/">{t("menu.faucet")}</a>
-              }
-            </> :
-            <>
-              <a href="https://test.bithomp.com">Bithomp (Testnet)</a>
-              <a href="https://xls20.bithomp.com">Bithomp (XLS-20)</a>
-              <a href="https://hooks.bithomp.com">Bithomp (Hooks)</a>
-              <a href="https://beta.bithomp.com">Bithomp (Hooks v2)</a>
-            </>
-          }
+          <span className="footer-menu-header">{t("menu.networks")}</span>
+          {devNet && <a href="https://bithomp.com">Mainnet</a>}
+          {devNet !== 'testnet' && <a href="https://test.bithomp.com">Testnet</a>}
+          {devNet !== 'xls20' && <a href="https://xls20.bithomp.com">XLS-20</a>}
+          {devNet !== 'hooks' && <a href="https://hooks.bithomp.com">Hooks</a>}
+          {devNet !== 'beta' && <a href="https://beta.bithomp.com">Hooks v2 / beta</a>}
         </div>
+
         <div className="footer-menu-column">
           <span className="footer-menu-header">{t("menu.legal")}</span>
           <Link to="/disclaimer">{t("menu.disclaimer")}</Link>

@@ -38,38 +38,36 @@ export default function Header({ theme, switchTheme, devNet }) {
             <a href="https://docs.bithomp.com">{t("menu.api")}</a>
           </div>
         </div>
-        <div className="menu-dropdown">
-          <div className="menu-dropdown-button">{t("menu.tools")}</div>
-          <div className="menu-dropdown-content">
-            {devNet ?
-              <>
-                <a href="/create/">{t("menu.account-generation")}</a>
-                {devNet === 'testnet' ?
-                  <a href="https://xrpl.org/xrp-testnet-faucet.html">{t("menu.faucet")}</a> :
-                  <a href="/faucet/">{t("menu.faucet")}</a>
-                }
-              </> :
-              <>
-                <a href="https://test.bithomp.com">Bithomp (Testnet)</a>
-                <a href="https://xls20.bithomp.com">Bithomp (XLS-20)</a>
-                <a href="https://hooks.bithomp.com">Bithomp (Hooks)</a>
-                <a href="https://beta.bithomp.com">Bithomp (Hooks v2)</a>
-              </>
-            }
-          </div>
-        </div>
         {devNet &&
           <div className="menu-dropdown">
-            <div className="menu-dropdown-button">{t("menu.networks")}</div>
+            <div className="menu-dropdown-button">{t("menu.tools")}</div>
             <div className="menu-dropdown-content">
-              <a href="https://bithomp.com">Mainnet</a>
-              {devNet !== 'testnet' && <a href="https://test.bithomp.com">Testnet</a>}
-              {devNet !== 'xls20' && <a href="https://xls20.bithomp.com">XLS-20</a>}
-              {devNet !== 'hooks' && <a href="https://hooks.bithomp.com">Hooks</a>}
-              {devNet !== 'beta' && <a href="https://beta.bithomp.com">Hooks v2 / beta</a>}
+              <a href="/create/">{t("menu.account-generation")}</a>
+              {devNet === 'testnet' ?
+                <a href="https://xrpl.org/xrp-testnet-faucet.html">{t("menu.faucet")}</a> :
+                <a href="/faucet/">{t("menu.faucet")}</a>
+              }
+              {devNet === 'xls20' &&
+                <>
+                  <a href="/nft-test/">NFT tester</a>
+                  <a href="https://xrpl.org/nftoken-tester-tutorial.html">NFT tester tutorial</a>
+                </>
+              }
             </div>
           </div>
         }
+
+        <div className="menu-dropdown">
+          <div className="menu-dropdown-button">{t("menu.networks")}</div>
+          <div className="menu-dropdown-content">
+            {devNet && <a href="https://bithomp.com">Mainnet</a>}
+            {devNet !== 'testnet' && <a href="https://test.bithomp.com">Testnet</a>}
+            {devNet !== 'xls20' && <a href="https://xls20.bithomp.com">XLS-20</a>}
+            {devNet !== 'hooks' && <a href="https://hooks.bithomp.com">Hooks</a>}
+            {devNet !== 'beta' && <a href="https://beta.bithomp.com">Hooks v2 / beta</a>}
+          </div>
+        </div>
+
         <div className="menu-dropdown">
           {devNet ?
             <Link to="/last-ledger-information" className="menu-dropdown-button">XRPL</Link> :
@@ -114,7 +112,21 @@ export default function Header({ theme, switchTheme, devNet }) {
             {t("menu.last-ledger-information")}
           </Link>
           {!devNet && <a href="/genesis" className="mobile-menu-item">{t("menu.genesis-accounts")}</a>}
-          {devNet &&
+          {devNet ?
+            <>
+              <div className="mobile-menu-directory"><span>{t("menu.tools")}</span></div>
+              <a href="/create/" className="mobile-menu-item">{t("menu.account-generation")}</a>
+              {devNet === 'testnet' ?
+                <a href="https://xrpl.org/xrp-testnet-faucet.html" className="mobile-menu-item">{t("menu.faucet")}</a> :
+                <a href="/faucet/" className="mobile-menu-item">{t("menu.faucet")}</a>
+              }
+              {devNet === 'xls20' &&
+                <>
+                  <a href="/nft-test/" className="mobile-menu-item">NFT tester</a>
+                  <a href="https://xrpl.org/nftoken-tester-tutorial.html" className="mobile-menu-item">NFT tester tutorial</a>
+                </>
+              }
+            </> :
             <>
               <div className="mobile-menu-directory"><span>{t("menu.networks")}</span></div>
               <a href="https://bithomp.com" className="mobile-menu-item">Mainnet</a>
