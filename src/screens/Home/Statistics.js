@@ -1,14 +1,16 @@
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 
-let ws = null;
+import { WssServer } from '../../utils/utils';
 
-export default function Statistics({ server }) {
+let ws = null;
+const wssServer = WssServer();
+
+export default function Statistics() {
   const [ledger, setLedger] = useState(null);
   const { t } = useTranslation();
 
   const connect = () => {
-    const wssServer = server.replace("https://", "wss://") + '/wss';
     ws = new WebSocket(wssServer);
 
     ws.onopen = () => {

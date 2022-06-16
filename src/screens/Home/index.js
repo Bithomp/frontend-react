@@ -25,7 +25,7 @@ const searchClick = item => {
 
 const searchItemRe = /^[~]{0,1}[a-zA-Z0-9-_.]*[+]{0,1}[a-zA-Z0-9-_.]*[$]{0,1}[a-zA-Z0-9-.]*[a-zA-Z0-9]*$/i;
 
-export default function Home({ theme, devNet, server }) {
+export default function Home({ theme, devNet }) {
   const [searchItem, setSearchItem] = useState("");
   const [selectedCurrency, setSelectedCurrency] = useLocalStorage('currency', 'usd');
   const [chartPeriod, setChartPeriod] = useState('one_day');
@@ -93,7 +93,7 @@ export default function Home({ theme, devNet, server }) {
         </div>
       }
       <div className="home-statistics">
-        <Statistics server={server} />
+        <Statistics />
       </div>
       {/*
         <h2 className='center'>{t("home.whale-transactions")}</h2>

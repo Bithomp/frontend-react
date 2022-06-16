@@ -1,17 +1,17 @@
 import { useTranslation } from 'react-i18next';
 import { useState, useEffect } from 'react';
 
-import { numberWithSpaces } from '../utils/utils';
+import { numberWithSpaces, WssServer } from '../utils/utils';
 
 let ws = null;
+const wssServer = WssServer();
 
-export default function LastLedgerInformation({ server }) {
+export default function LastLedgerInformation() {
   const { t } = useTranslation();
 
   const [ledger, setLedger] = useState(null);
 
   const connect = () => {
-    const wssServer = server.replace("https://", "wss://") + '/wss';
     ws = new WebSocket(wssServer);
 
     ws.onopen = () => {

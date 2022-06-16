@@ -20,6 +20,8 @@ import Redirect from './screens/Redirect';
 import { renderToStaticMarkup } from 'react-dom/server';
 import BackgroundImage from './components/BackgroundImage';
 
+import { network, devNet, Server } from './utils/utils';
+
 export default function App() {
   const defaultDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
   const [theme, setTheme] = useLocalStorage('theme', defaultDark ? 'dark' : 'light');
@@ -29,33 +31,7 @@ export default function App() {
     setTheme(newTheme);
   }
 
-  const network = process.env.REACT_APP_NETWORK_NAME ? process.env.REACT_APP_NETWORK_NAME : "mainnet";
-  const devNet = ['mainnet', 'local'].includes(network) ? false : network;
-
-  let server = "https://test.bithomp.com";
-
-  switch (network) {
-    case 'mainnet':
-      server = "https://bithomp.com";
-      break;
-    case 'testnet':
-      server = "https://test.bithomp.com";
-      break;
-    case 'hooks':
-      server = "https://hooks.bithomp.com";
-      break;
-    case 'beta':
-      server = "https://beta.bithomp.com";
-      break;
-    case 'xls20':
-      server = "https://xls20.bithomp.com";
-      break;
-    case 'local':
-      server = "https://test.bithomp.com";
-      break;
-    default:
-      break;
-  }
+  let server = Server();
 
   if (process.env.NODE_ENV === 'development') {
     axios.defaults.headers.common['x-bithomp-token'] = process.env.REACT_APP_BITHOMP_API_TEST_KEY;
@@ -73,10 +49,10 @@ export default function App() {
       <div className="content">
         <ScrollToTop />
         <Routes>
-          <Route path="/" element={<Home theme={theme} devNet={devNet} server={server}/>} />
-          <Route path="/index.html" element={<Home theme={theme} devNet={devNet} server={server} />} />
+          <Route path="/" element={<Home theme={theme} devNet={devNet} />} />
+          <Route path="/index.html" element={<Home theme={theme} devNet={devNet} />} />
           <Route path="/username" element={<Username server={server} />} />
-          <Route path="/last-ledger-information" element={<LastLedgerInformation server={server} />} />
+          <Route path="/last-ledger-information" element={<LastLedgerInformation />} />
           <Route path="/disclaimer" element={<Disclaimer />} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
