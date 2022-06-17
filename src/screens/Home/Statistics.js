@@ -66,13 +66,16 @@ export default function Statistics() {
   let proposers = "x";
 
   if (ledger) {
-    closedAt = ledger.validatedLedger.ledgerTime * 1000;
+    const { validatedLedger, lastClose, validationQuorum } = ledger;
+    closedAt = validatedLedger.ledgerTime * 1000;
     closedAt = new Date(closedAt).toLocaleTimeString();
-    ledgerIndex = ledger.validatedLedger.ledgerIndex;
-    txPerSecond = (ledger.validatedLedger.transactionsCount / ledger.lastClose.convergeTimeS).toFixed(2);
-    txCount = ledger.validatedLedger.transactionsCount;
-    quorum = ledger.validationQuorum;
-    proposers = ledger.lastClose.proposers;
+    ledgerIndex = validatedLedger.ledgerIndex;
+    txCount = validatedLedger.transactionsCount;
+    quorum = validationQuorum;
+    if (lastClose) {
+      txPerSecond = (validatedLedger.transactionsCount / lastClose.convergeTimeS).toFixed(2);
+      proposers = lastClose.proposers;
+    }
   }
 
   return <div className='statistics-block'>

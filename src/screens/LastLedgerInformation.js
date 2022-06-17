@@ -78,15 +78,15 @@ export default function LastLedgerInformation() {
         <p>
           {t("last-ledger-information.ledger-closed-at")}: {closedAt}</p>
         <p>
-          {t("last-ledger-information.ledger-interval")}: {ledger?.lastClose.convergeTimeS && ledger?.lastClose.convergeTimeS + ' ' + t("units.seconds-short")}
+          {t("last-ledger-information.ledger-interval")}: {ledger?.lastClose?.convergeTimeS && ledger?.lastClose.convergeTimeS + ' ' + t("units.seconds-short")}
         </p>
         <p>
           {t("last-ledger-information.transactions")}: {ledger?.validatedLedger.transactionsCount}</p>
         <p>
-          {t("last-ledger-information.transaction-speed")}: {ledger && (ledger.validatedLedger.transactionsCount / ledger.lastClose.convergeTimeS).toFixed(2)}
+          {t("last-ledger-information.transaction-speed")}: {ledger?.lastClose && (ledger.validatedLedger.transactionsCount / ledger.lastClose.convergeTimeS).toFixed(2)}
         </p>
         <p>
-          {t("last-ledger-information.proposers")}: {ledger?.lastClose.proposers}
+          {t("last-ledger-information.proposers")}: {ledger?.lastClose?.proposers}
         </p>
         <p>
           {t("last-ledger-information.validation-quorum")}: {ledger?.validationQuorum}
