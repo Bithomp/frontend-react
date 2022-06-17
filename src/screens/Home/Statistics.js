@@ -1,24 +1,24 @@
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { wssServer } from '../../utils/utils';
+import { wssServer, numberWithSpaces } from '../../utils/utils';
 
 let ws = null;
 
 export default function Statistics() {
-  const [ledger, setLedger] = useState(null);
+  const [data, setData] = useState(null);
   const { t } = useTranslation();
 
   const connect = () => {
     ws = new WebSocket(wssServer);
 
     ws.onopen = () => {
-      ws.send(JSON.stringify({ command: "subscribe", streams: ["ledger"], id: 1 }));
+      ws.send(JSON.stringify({ command: "subscribe", streams: ["statistics"], id: 1 }));
     }
 
     ws.onmessage = evt => {
       const message = JSON.parse(evt.data);
-      setLedger(message);
+      setData(message);
 
       /* 
       {
@@ -39,6 +39,10 @@ export default function Statistics() {
           "ledgerTime": 1653770111, // ledger ws
           "ledgerIndex": 28154648, // ledger ws
           "transactionsCount": 7 // ledger ws
+        },
+        usernames: 1,
+        accounts: {
+          created: 1
         }
       }
       */
@@ -52,7 +56,7 @@ export default function Statistics() {
   useEffect(() => {
     connect();
     return () => {
-      setLedger(null);
+      setData(null);
       if (ws) ws.close();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -63,10 +67,12 @@ export default function Statistics() {
   let txPerSecond = 'x.xx';
   let txCount = 'x';
   let quorum = 'x';
-  let proposers = "x";
+  let proposers = 'x';
+  let createdAccounts = 'xxxx';
+  let registeredUsernames = 'xx';
 
-  if (ledger) {
-    const { validatedLedger, lastClose, validationQuorum } = ledger;
+  if (data) {
+    const { validatedLedger, lastClose, validationQuorum, accounts, usernames } = data;
     closedAt = validatedLedger.ledgerTime * 1000;
     closedAt = new Date(closedAt).toLocaleTimeString();
     ledgerIndex = validatedLedger.ledgerIndex;
@@ -76,6 +82,8 @@ export default function Statistics() {
       txPerSecond = (validatedLedger.transactionsCount / lastClose.convergeTimeS).toFixed(2);
       proposers = lastClose.proposers;
     }
+    createdAccounts = numberWithSpaces(accounts.created);
+    registeredUsernames = numberWithSpaces(usernames);
   }
 
   return <div className='statistics-block'>
@@ -95,15 +103,13 @@ export default function Statistics() {
       <div className='stat-piece-header'>{t("home.stat.quorum")}</div>
       <div>{quorum} ({proposers} {t("home.stat.proposers")})</div>
     </div>
-    {/* 
     <div className='stat-piece'>
       <div className='stat-piece-header'>{t("home.stat.accounts")}</div>
-      <div>xxxxx</div>
+      <div>{createdAccounts}</div>
     </div>
     <div className='stat-piece'>
       <div className='stat-piece-header'>{t("home.stat.usernames")}</div>
-      <div>xxxxx</div>
+      <div>{registeredUsernames}</div>
     </div>
-    */}
   </div>;
 }

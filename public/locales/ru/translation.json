@@ -37,12 +37,12 @@
     "stat": {
       "ledger-index": "Номер леджера",
       "close-time": "Время закрытия",
-      "transactions": "Кол-во транзакций",
+      "transactions": "Транзакций в леджере",
       "txs-per-sec": "тран/сек",
       "quorum": "Кворум валидаторов",
       "proposers": "предлагающих",
-      "accounts": "Кол-во адресов",
-      "usernames": "Кол-во юзернемов"
+      "accounts": "Аадреса",
+      "usernames": "Ники"
     }
   },
   "last-ledger-information": {
