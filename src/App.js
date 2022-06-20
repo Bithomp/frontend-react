@@ -8,6 +8,7 @@ import ScrollToTop from "./components/ScrollToTop";
 
 import Home from './screens/Home';
 import Username from './screens/Username';
+import Alerts from "./screens/Alerts";
 import LastLedgerInformation from './screens/LastLedgerInformation';
 import Disclaimer from './screens/Disclaimer';
 import PrivacyPolicy from './screens/PrivacyPolicy';
@@ -50,6 +51,7 @@ export default function App() {
           <Route path="/" element={<Home theme={theme} devNet={devNet} />} />
           <Route path="/index.html" element={<Home theme={theme} devNet={devNet} />} />
           <Route path="/username" element={<Username server={server} />} />
+          <Route path="/alerts" element={<Alerts />} />
           <Route path="/last-ledger-information" element={<LastLedgerInformation />} />
           <Route path="/disclaimer" element={<Disclaimer />} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
