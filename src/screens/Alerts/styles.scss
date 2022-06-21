@@ -1,0 +1,24 @@
+.page-alerts {
+  table {
+    tr {
+      th {
+        &:nth-child(2),
+        &:nth-child(6),
+        &:nth-child(7) {
+          text-align: right;
+        }
+      }
+      td {
+        &:nth-child(1),
+        &:nth-child(3) {
+          text-align: center;
+        }
+        &:nth-child(2),
+        &:nth-child(6),
+        &:nth-child(7) {
+          text-align: right;
+        }
+      }
+    }
+  }
+}

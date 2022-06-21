@@ -145,6 +145,34 @@ button {
   font-family: inherit;
 }
 
+table {
+  margin: auto;
+  border-collapse: collapse;
+  border: 1px solid var(--accent-link);
+  tr {
+    th, td {
+      padding: 10px;
+      font-size: 14px;
+    }
+    @media only screen and (max-width: 640px) {
+      td, th {
+        padding: 2px;
+      }
+      td {
+        font-size: 12px;
+      }
+      th {
+        font-size: 10px;
+      }
+    }
+    &:hover {
+      td {
+        background-color: var(--text-secondary);
+      }
+    }
+  }
+}
+
 .center {
   text-align: center;
 }

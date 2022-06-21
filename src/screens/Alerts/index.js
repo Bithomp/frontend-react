@@ -3,8 +3,19 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import moment from "moment";
 import momentDurationFormatSetup from "moment-duration-format";
+import { isMobile } from "react-device-detect";
+
+import './styles.scss';
 
 momentDurationFormatSetup(moment);
+
+function localDateAndTime(timestamp) {
+  let params = { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric' };
+  if (isMobile) {
+    params = { month: '2-digit', day: '2-digit',  hour: 'numeric', minute: 'numeric' };
+  }
+  return new Date(timestamp * 1000).toLocaleString([], params);
+}
 
 export default function Alerts() {
   const { t } = useTranslation();
@@ -32,10 +43,13 @@ export default function Alerts() {
     fetchData();
   }, [setData]);
 
-  return (
-    <div className="content-text">
-      <h1>{t("menu.price-alerts")}</h1>
+  function duration(seconds) {
+    return moment.duration(seconds, "seconds").format("h[" + t("units.hours-short") + "], m[" + t("units.minutes-short") + "]", { trim: "both" });
+  }
 
+  return (
+    <div className="page-alerts content-center">
+      <h1 className='center'>{t("menu.price-alerts")}</h1>
       <p>
         <Trans i18nKey="alerts.text0">
           Get notified when XRP/USD or XRP/BTC market price by <a href="https://www.bitstamp.net/">Bitstamp</a> changes for more than 5% within an hour or more than 10% within a day.
@@ -46,28 +60,27 @@ export default function Alerts() {
           Follow the Telegram channel: <a href="https://t.me/bithomp">bithomp</a> or the twitter account: <a href="https://twitter.com/bithompAlerts">bithompAlerts</a>.
         </Trans>
       </p>
-
-      <p>{t("alerts.last-alerts")}</p>
-
-      <table className="center">
+      <br />
+      <h3 className="center">{t("alerts.last-alerts")}</h3>
+      <table>
         <thead>
           <tr>
             <th>#</th>
-            <th role="button">Date &amp; time</th>
-            <th role="button">Currency pair</th>
-            <th role="button">Change duration</th>
-            <th role="button">Change</th>
-            <th role="button">Old rate</th>
-            <th role="button">New rate</th>
+            <th>{t("alerts.date-and-time")}</th>
+            <th>{t("alerts.currency-pair")}</th>
+            <th>{t("alerts.change-duration")}</th>
+            <th>{t("alerts.change")}</th>
+            <th>{t("alerts.old-rate")}</th>
+            <th>{t("alerts.new-rate")}</th>
           </tr>
         </thead>
         <tbody>
           {data?.alerts?.map((alert, i) => (
             <tr key={i}>
               <td>{i + 1}</td>
-              <td>{new Date(alert.timestamp_new * 1000).toLocaleString([], { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric' })}</td>
-              <td>XRP/{alert.currency.toUpperCase()}</td>
-              <td>{moment.duration(alert.timestamp_new - alert.timestamp_old, "seconds").format("d [days], h [hours], m [minutes]", { trim: "both" })}</td>
+              <td>{localDateAndTime(alert.timestamp_new)}</td>
+              <td>XRP/{isMobile && " "}{alert.currency.toUpperCase()}</td>
+              <td>{duration(alert.timestamp_new - alert.timestamp_old)}</td>
               <td>{alert.change}</td>
               <td>{alert.rate_old}</td>
               <td>{alert.rate_new}</td>
