@@ -5,7 +5,7 @@ import { wssServer, numberWithSpaces } from '../../utils/utils';
 
 let ws = null;
 
-export default function Statistics() {
+export default function Statistics({ devNet }) {
   const [data, setData] = useState(null);
   const { t } = useTranslation();
 
@@ -43,6 +43,19 @@ export default function Statistics() {
         usernames: 1,
         accounts: {
           created: 1
+        },
+        "nftokens":{
+          "created": 138633,
+          "burned": 9182,
+          "burnable": 21042,
+          "onlyXRP": 12602,
+          "transferable": 111820,
+          "owners": 11976,
+          "issuers": 13671,
+          "transfers": 16720,
+          "forSale": 4377,
+          "forSaleWithoutDestination": 2564,
+          "forSaleWithDestination": 1817
         }
       }
       */
@@ -70,9 +83,17 @@ export default function Statistics() {
   let proposers = 'x';
   let createdAccounts = 'xxxx';
   let registeredUsernames = 'xx';
+  let nft = {
+    created: 'xxx',
+    burned: 'xxx',
+    owners: 'xxx',
+    issuers: 'xxx',
+    transfers: 'xxx',
+    forSaleWithoutDestination: 'xxx'
+  };
 
   if (data) {
-    const { validatedLedger, lastClose, validationQuorum, accounts, usernames } = data;
+    const { validatedLedger, lastClose, validationQuorum, accounts, usernames, nftokens } = data;
     closedAt = validatedLedger.ledgerTime * 1000;
     closedAt = new Date(closedAt).toLocaleTimeString();
     ledgerIndex = validatedLedger.ledgerIndex;
@@ -84,32 +105,63 @@ export default function Statistics() {
     }
     createdAccounts = numberWithSpaces(accounts.created);
     registeredUsernames = numberWithSpaces(usernames);
+    if (nftokens) {
+      nft = nftokens;
+    }
   }
 
-  return <div className='statistics-block'>
-    <div className='stat-piece'>
-      <div className='stat-piece-header'>{t("home.stat.ledger-index")}</div>
-      <div>#{ledgerIndex}</div>
+  return <>
+    <div className='statistics-block'>
+      <div className='stat-piece'>
+        <div className='stat-piece-header'>{t("home.stat.ledger-index")}</div>
+        <div>#{ledgerIndex}</div>
+      </div>
+      <div className='stat-piece'>
+        <div className='stat-piece-header'>{t("home.stat.close-time")}</div>
+        <div>{closedAt}</div>
+      </div>
+      <div className='stat-piece'>
+        <div className='stat-piece-header'>{t("home.stat.transactions")}</div>
+        <div>{txCount} ({txPerSecond} {t("home.stat.txs-per-sec")})</div>
+      </div>
+      <div className='stat-piece'>
+        <div className='stat-piece-header'>{t("home.stat.quorum")}</div>
+        <div>{quorum} ({proposers} {t("home.stat.proposers")})</div>
+      </div>
+      <div className='stat-piece'>
+        <div className='stat-piece-header'>{t("home.stat.accounts")}</div>
+        <div>{createdAccounts}</div>
+      </div>
+      <div className='stat-piece'>
+        <div className='stat-piece-header'>{t("home.stat.usernames")}</div>
+        <div>{registeredUsernames}</div>
+      </div>
     </div>
-    <div className='stat-piece'>
-      <div className='stat-piece-header'>{t("home.stat.close-time")}</div>
-      <div>{closedAt}</div>
-    </div>
-    <div className='stat-piece'>
-      <div className='stat-piece-header'>{t("home.stat.transactions")}</div>
-      <div>{txCount} ({txPerSecond} {t("home.stat.txs-per-sec")})</div>
-    </div>
-    <div className='stat-piece'>
-      <div className='stat-piece-header'>{t("home.stat.quorum")}</div>
-      <div>{quorum} ({proposers} {t("home.stat.proposers")})</div>
-    </div>
-    <div className='stat-piece'>
-      <div className='stat-piece-header'>{t("home.stat.accounts")}</div>
-      <div>{createdAccounts}</div>
-    </div>
-    <div className='stat-piece'>
-      <div className='stat-piece-header'>{t("home.stat.usernames")}</div>
-      <div>{registeredUsernames}</div>
-    </div>
-  </div>;
+    {(devNet === 'xls20' || devNet === 'beta') && <div className='statistics-block'>
+      <div className='stat-piece'>
+        <div className='stat-piece-header'>{t("home.stat.nft.created")}</div>
+        <div>{nft.created}</div>
+      </div>
+      <div className='stat-piece'>
+        <div className='stat-piece-header'>{t("home.stat.nft.burned")}</div>
+        <div>{nft.burned}</div>
+      </div>
+      <div className='stat-piece'>
+        <div className='stat-piece-header'>{t("home.stat.nft.issuers")}</div>
+        <div>{nft.issuers}</div>
+      </div>
+      <div className='stat-piece'>
+        <div className='stat-piece-header'>{t("home.stat.nft.owners")}</div>
+        <div>{nft.owners} </div>
+      </div>
+      <div className='stat-piece'>
+        <div className='stat-piece-header'>{t("home.stat.nft.transfers")}</div>
+        <div>{nft.transfers}</div>
+      </div>
+      <div className='stat-piece'>
+        <div className='stat-piece-header'>{t("home.stat.nft.for-sale")}</div>
+        <div>{nft.forSaleWithoutDestination}</div>
+      </div>
+    </div>}
+  </>;
 }

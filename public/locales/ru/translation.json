@@ -10,6 +10,7 @@
     "faucet": "Раздача тестовых XRP",
     "networks": "Сети",
     "last-ledger-information": "Информация с последнего леджера",
+    "nft-statistics": "NFT XLS-20 статистика",
     "genesis-accounts": "Генезис аккаунты",
     "legal": "Документы",
     "disclaimer": "Отказ от ответственности",
@@ -35,14 +36,22 @@
     "xrp-price": "Курс XRP",
     "whale-transactions": "Последние крупные транзакции",
     "stat": {
-      "ledger-index": "Номер леджера",
+      "ledger-index": "№ леджера",
       "close-time": "Время закрытия",
       "transactions": "Транзакций в леджере",
       "txs-per-sec": "тран/сек",
       "quorum": "Кворум валидаторов",
       "proposers": "предлагающих",
       "accounts": "Аадреса",
-      "usernames": "Ники"
+      "usernames": "Ники",
+      "nft": {
+        "created": "NFT создано",
+        "burned": "NFT сожжено",
+        "owners": "Владельцев",
+        "issuers": "NFT издатели",
+        "transfers": "Продано",
+        "for-sale": "Продается"
+      }
     }
   },
   "last-ledger-information": {
@@ -59,6 +68,20 @@
     "increment-reserve": "Резерв трастлайна и др.",
     "total-supply": "Всего существует",
     "total-burned": "Всего сожжено (комиссией)"
+  },
+  "nft-statistics": {
+    "created": "Всего создано",
+    "burned": "Сожжено",
+    "exist": "Колличество NFT на леджере",
+    "burnable": "Сжигаемые",
+    "only-xrp": "Могут быть проданы только за XRP",
+    "transferable": "Могут быть отправлены",
+    "owners": "NFT владельцев сейчас",
+    "issuers": "Издатели NFT",
+    "transfers": "Продаж",
+    "for-sale": "NFT на продаже",
+    "for-sale-without-destination": "NFT, публичная продажа",
+    "for-sale-with-destination": "NFT, частная продажа"
   },
   "username": {
     "error": {

@@ -10,6 +10,7 @@
     "faucet": "Faucet",
     "networks": "Networks",
     "last-ledger-information": "Last ledger information",
+    "nft-statistics": "NFT XLS-20 statistics",
     "genesis-accounts": "Genesis accounts",
     "legal": "Legal",
     "disclaimer": "Disclaimer",
@@ -42,7 +43,15 @@
       "quorum": "Validation quorum",
       "proposers": "proposers",
       "accounts": "Accounts",
-      "usernames": "Usernames"
+      "usernames": "Usernames",
+      "nft": {
+        "created": "NFT created",
+        "burned": "NFT burned",
+        "owners": "Current owners",
+        "issuers": "NFT issuers",
+        "transfers": "NFT transfers",
+        "for-sale": "NFTs for sale"
+      }
     }
   },
   "last-ledger-information": {
@@ -59,6 +68,20 @@
     "increment-reserve": "Increment reserve",
     "total-supply": "Total supply",
     "total-burned": "Total burned"
+  },
+  "nft-statistics": {
+    "created": "Total created",
+    "burned": "Burned",
+    "exist": "Currently exist",
+    "burnable": "Burnable",
+    "only-xrp": "Can be sold only for XRP",
+    "transferable": "Can be transfered",
+    "owners": "Current owners",
+    "issuers": "Total issuers",
+    "transfers": "NFT transfers",
+    "for-sale": "NFTs for sale",
+    "for-sale-without-destination": "NFTs for public sale",
+    "for-sale-with-destination": "NFTs for direct sale"
   },
   "username": {
     "error": {

@@ -40,6 +40,19 @@ export default function LastLedgerInformation() {
           "ledgerTime": 1653770111, // ledger ws
           "ledgerIndex": 28154648, // ledger ws
           "transactionsCount": 7 // ledger ws
+        },
+        "nftokens":{
+          "created": 138633,
+          "burned": 9182,
+          "burnable": 21042,
+          "onlyXRP": 12602,
+          "transferable": 111820,
+          "owners": 11976,
+          "issuers": 13671,
+          "transfers": 16720,
+          "forSale": 4377,
+          "forSaleWithoutDestination": 2564,
+          "forSaleWithDestination": 1817
         }
       }
       */

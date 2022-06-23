@@ -93,7 +93,7 @@ export default function Home({ theme, devNet }) {
         </div>
       }
       <div className="home-statistics">
-        <Statistics />
+        <Statistics devNet={devNet} />
       </div>
       {/*
         <h2 className='center'>{t("home.whale-transactions")}</h2>

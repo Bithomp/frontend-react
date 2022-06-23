@@ -10,6 +10,7 @@ import Home from './screens/Home';
 import Username from './screens/Username';
 import Alerts from "./screens/Alerts";
 import LastLedgerInformation from './screens/LastLedgerInformation';
+import NftStatistics from './screens/NftStatistics';
 import Disclaimer from './screens/Disclaimer';
 import PrivacyPolicy from './screens/PrivacyPolicy';
 import TermsAndConditions from './screens/TermsAndConditions';
@@ -53,6 +54,7 @@ export default function App() {
           <Route path="/username" element={<Username server={server} />} />
           <Route path="/alerts" element={<Alerts />} />
           <Route path="/last-ledger-information" element={<LastLedgerInformation />} />
+          <Route path="/nft-statistics" element={<NftStatistics />} />
           <Route path="/disclaimer" element={<Disclaimer />} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path="/terms-and-conditions" element={<TermsAndConditions />} />

@@ -69,13 +69,16 @@ export default function Header({ theme, switchTheme, devNet }) {
         </div>
 
         <div className="menu-dropdown">
-          {devNet ?
+          {(devNet && devNet !== 'xls20' && devNet !== 'beta') ?
             <Link to="/last-ledger-information" className="menu-dropdown-button">XRPL</Link> :
             <>
               <div className="menu-dropdown-button">XRPL</div>
               <div className="menu-dropdown-content">
                 <Link to="/last-ledger-information">{t("menu.last-ledger-information")}</Link>
-                <a href="/genesis">{t("menu.genesis-accounts")}</a>
+                {devNet ?
+                  <Link to="/nft-statistics">{t("menu.nft-statistics")}</Link> :
+                  <a href="/genesis">{t("menu.genesis-accounts")}</a>
+                }
               </div>
             </>
           }
