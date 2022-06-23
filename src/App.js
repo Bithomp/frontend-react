@@ -5,6 +5,7 @@ import axios from 'axios';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import ScrollToTop from "./components/ScrollToTop";
+import BackgroundImage from './components/BackgroundImage';
 
 import Home from './screens/Home';
 import Username from './screens/Username';
@@ -18,9 +19,6 @@ import CustomerSupport from "./screens/CustomerSupport";
 import MediaKit from "./screens/MediaKit";
 import PageNotFound from './screens/PageNotFound';
 import Redirect from './screens/Redirect';
-
-import { renderToStaticMarkup } from 'react-dom/server';
-import BackgroundImage from './components/BackgroundImage';
 
 import { network, devNet, server } from './utils/utils';
 
@@ -40,12 +38,9 @@ export default function App() {
     axios.defaults.baseURL = server + '/api/cors/';
   }
 
-  const backgroundText = devNet ? devNet : '';
-  const svgString = encodeURIComponent(renderToStaticMarkup(<BackgroundImage network={backgroundText.toUpperCase()} />));
-
   return (
     <div data-theme={theme} className="body" data-network={network}>
-      <Header theme={theme} switchTheme={switchTheme} devNet={devNet} />
+      <Header theme={theme} switchTheme={switchTheme} />
       <div className="content">
         <ScrollToTop />
         <Routes>
@@ -64,8 +59,8 @@ export default function App() {
           <Route path="*" element={<Redirect />} />
         </Routes>
       </div>
-      <div className="background" style={{ backgroundImage: `url("data:image/svg+xml,${svgString}")` }}></div>
-      <Footer devNet={devNet} />
+      <BackgroundImage />
+      <Footer />
     </div>
   );
 };

@@ -1,4 +1,8 @@
-export default function BackgroundImage({ network }) {
+import { renderToStaticMarkup } from 'react-dom/server';
+
+import { devNet } from '../utils/utils';
+
+function svgImage(network) {
   return (
     <svg viewBox="0 0 1280 1000" fill="#3fa3b5" xmlns="http://www.w3.org/2000/svg">
       <defs>
@@ -19,4 +23,11 @@ export default function BackgroundImage({ network }) {
       <text fillOpacity="0.07" fontFamily="Arial, sans-serif" fontSize="39px" fontWeight="700" transform="matrix(0.995681, 0.551986, -0.603099, 1.08788, -289.70639, -632.31012)" x="751.169" y="274.211">{network}</text>
     </svg>
   )
+}
+
+const backgroundText = devNet ? devNet : '';
+const svgString = encodeURIComponent(renderToStaticMarkup(svgImage(backgroundText.toUpperCase())));
+
+export default function BackgroundImage() {
+  return <div className="background" style={{ backgroundImage: `url("data:image/svg+xml,${svgString}")` }}></div>
 }

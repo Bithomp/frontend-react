@@ -2,12 +2,14 @@ import { Link } from "react-router-dom";
 import { useTranslation } from 'react-i18next';
 import useLocalStorage from 'use-local-storage';
 
+import { devNet, xls20Enabled } from '../utils/utils';
+
 import logo from "../assets/images/logo-animated.svg";
 
 import LanguageSelect from "./LanguageSelect";
 import SocialIcons from "./SocialIcons";
 
-export default function Footer({ devNet }) {
+export default function Footer() {
   const year = new Date().getFullYear();
   const { t } = useTranslation();
 
@@ -35,7 +37,7 @@ export default function Footer({ devNet }) {
               <a href="https://xrpl.org/xrp-testnet-faucet.html">{t("menu.faucet")}</a> :
               <a href="/faucet/">{t("menu.faucet")}</a>
             }
-            {devNet === 'xls20' &&
+            {xls20Enabled &&
               <>
                 <a href="/nft-test/">NFT tester</a>
                 <a href="https://xrpl.org/nftoken-tester-tutorial.html">NFT tester tutorial</a>

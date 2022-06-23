@@ -2,11 +2,13 @@ import { Link } from "react-router-dom";
 import { useTranslation } from 'react-i18next';
 import { useState } from 'react';
 
+import { devNet, xls20Enabled } from '../../utils/utils';
+
 import logo from "../../assets/images/logo-animated.svg";
 import Switch from "./Switch";
 import './styles.scss';
 
-export default function Header({ theme, switchTheme, devNet }) {
+export default function Header({ theme, switchTheme }) {
   const { t } = useTranslation();
 
   const [menuOpen, setMenuOpen] = useState(false);
@@ -47,7 +49,7 @@ export default function Header({ theme, switchTheme, devNet }) {
                 <a href="https://xrpl.org/xrp-testnet-faucet.html">{t("menu.faucet")}</a> :
                 <a href="/faucet/">{t("menu.faucet")}</a>
               }
-              {devNet === 'xls20' &&
+              {xls20Enabled &&
                 <>
                   <a href="/nft-test/">NFT tester</a>
                   <a href="https://xrpl.org/nftoken-tester-tutorial.html">NFT tester tutorial</a>
@@ -69,7 +71,7 @@ export default function Header({ theme, switchTheme, devNet }) {
         </div>
 
         <div className="menu-dropdown">
-          {(devNet && devNet !== 'xls20' && devNet !== 'beta') ?
+          {(devNet && !xls20Enabled) ?
             <Link to="/last-ledger-information" className="menu-dropdown-button">XRPL</Link> :
             <>
               <div className="menu-dropdown-button">XRPL</div>
@@ -114,6 +116,15 @@ export default function Header({ theme, switchTheme, devNet }) {
           >
             {t("menu.last-ledger-information")}
           </Link>
+          {xls20Enabled &&
+            <Link
+              to="/nft-statistics"
+              className="mobile-menu-item"
+              onClick={mobileMenuToggle}
+            >
+              {t("menu.nft-statistics")}
+            </Link>
+          }
           {!devNet && <a href="/genesis" className="mobile-menu-item">{t("menu.genesis-accounts")}</a>}
           {devNet ?
             <>
@@ -123,7 +134,7 @@ export default function Header({ theme, switchTheme, devNet }) {
                 <a href="https://xrpl.org/xrp-testnet-faucet.html" className="mobile-menu-item">{t("menu.faucet")}</a> :
                 <a href="/faucet/" className="mobile-menu-item">{t("menu.faucet")}</a>
               }
-              {devNet === 'xls20' &&
+              {xls20Enabled &&
                 <>
                   <a href="/nft-test/" className="mobile-menu-item">NFT tester</a>
                   <a href="https://xrpl.org/nftoken-tester-tutorial.html" className="mobile-menu-item">NFT tester tutorial</a>
