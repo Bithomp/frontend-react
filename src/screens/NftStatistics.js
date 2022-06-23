@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { useState, useEffect } from 'react';
 
-import { wssServer } from '../utils/utils';
+import { numberWithSpaces, wssServer } from '../utils/utils';
 
 let ws = null;
 
@@ -61,40 +61,40 @@ export default function LastLedgerInformation() {
       <h1 className="center">{t("menu.nft-statistics")}</h1>
       <div className="bordered brake" style={{ padding: "0 20px", position: "relative" }}>
         <p>
-          {t("nft-statistics.created")}: {nft?.created}
+          {t("nft-statistics.created")}: {numberWithSpaces(nft?.created)}
         </p>
         <p>
-          {t("nft-statistics.burned")}: {nft?.burned}
+          {t("nft-statistics.burned")}: {numberWithSpaces(nft?.burned)}
         </p>
         <p>
-          {t("nft-statistics.exist")}: {nft && (nft.created - nft.burned)}
+          {t("nft-statistics.exist")}: {nft && numberWithSpaces(nft.created - nft.burned)}
         </p>
         <p>
-          {t("nft-statistics.owners")}: {nft?.owners}
+          {t("nft-statistics.owners")}: {numberWithSpaces(nft?.owners)}
         </p>
         <p>
-          {t("nft-statistics.issuers")}: {nft?.issuers}
+          {t("nft-statistics.issuers")}: {numberWithSpaces(nft?.issuers)}
         </p>
         <p>
-          {t("nft-statistics.transfers")}: {nft?.transfers}
+          {t("nft-statistics.transfers")}: {numberWithSpaces(nft?.transfers)}
         </p>
         <p>
-          {t("nft-statistics.for-sale")}: {nft?.forSale}
+          {t("nft-statistics.for-sale")}: {numberWithSpaces(nft?.forSale)}
         </p>
         <p>
-          {t("nft-statistics.for-sale-without-destination")}: {nft?.forSaleWithoutDestination}
+          {t("nft-statistics.for-sale-without-destination")}: {numberWithSpaces(nft?.forSaleWithoutDestination)}
         </p>
         <p>
-          {t("nft-statistics.for-sale-with-destination")}: {nft?.forSaleWithDestination}
+          {t("nft-statistics.for-sale-with-destination")}: {numberWithSpaces(nft?.forSaleWithDestination)}
         </p>
         <p>
-          {t("nft-statistics.burnable")}: {nft?.burnable}
+          {t("nft-statistics.burnable")}: {numberWithSpaces(nft?.burnable)}
         </p>
         <p>
-          {t("nft-statistics.only-xrp")}: {nft?.onlyXRP}
+          {t("nft-statistics.only-xrp")}: {numberWithSpaces(nft?.onlyXRP)}
         </p>
         <p>
-          {t("nft-statistics.transferable")}: {nft?.transferable}
+          {t("nft-statistics.transferable")}: {numberWithSpaces(nft?.transferable)}
         </p>
         <p className="center" style={{ position: "absolute", top: "calc(50% - 72px)", left: "calc(50% - 54px)" }}>
           {!data && <span className="waiting"></span>}

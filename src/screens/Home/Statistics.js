@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { wssServer, numberWithSpaces } from '../../utils/utils';
+import { wssServer, numberWithSpaces, xls20Enabled } from '../../utils/utils';
 
 let ws = null;
 
-export default function Statistics({ devNet }) {
+export default function Statistics() {
   const [data, setData] = useState(null);
   const { t } = useTranslation();
 
@@ -137,30 +137,30 @@ export default function Statistics({ devNet }) {
         <div>{registeredUsernames}</div>
       </div>
     </div>
-    {(devNet === 'xls20' || devNet === 'beta') && <div className='statistics-block'>
+    {xls20Enabled && <div className='statistics-block'>
       <div className='stat-piece'>
         <div className='stat-piece-header'>{t("home.stat.nft.created")}</div>
-        <div>{nft.created}</div>
+        <div>{numberWithSpaces(nft.created)}</div>
       </div>
       <div className='stat-piece'>
         <div className='stat-piece-header'>{t("home.stat.nft.burned")}</div>
-        <div>{nft.burned}</div>
+        <div>{numberWithSpaces(nft.burned)}</div>
       </div>
       <div className='stat-piece'>
         <div className='stat-piece-header'>{t("home.stat.nft.issuers")}</div>
-        <div>{nft.issuers}</div>
+        <div>{numberWithSpaces(nft.issuers)}</div>
       </div>
       <div className='stat-piece'>
         <div className='stat-piece-header'>{t("home.stat.nft.owners")}</div>
-        <div>{nft.owners} </div>
+        <div>{numberWithSpaces(nft.owners)} </div>
       </div>
       <div className='stat-piece'>
         <div className='stat-piece-header'>{t("home.stat.nft.transfers")}</div>
-        <div>{nft.transfers}</div>
+        <div>{numberWithSpaces(nft.transfers)}</div>
       </div>
       <div className='stat-piece'>
         <div className='stat-piece-header'>{t("home.stat.nft.for-sale")}</div>
-        <div>{nft.forSaleWithoutDestination}</div>
+        <div>{numberWithSpaces(nft.forSaleWithoutDestination)}</div>
       </div>
     </div>}
   </>;
