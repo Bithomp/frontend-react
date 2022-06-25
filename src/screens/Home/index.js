@@ -84,7 +84,6 @@ export default function Home({ theme, devNet }) {
       {!devNet &&
         <>
           <div className="home-converter">
-            <h2>{t("home.xrp-price")}</h2>
             <Converter selectedCurrency={selectedCurrency} setSelectedCurrency={setSelectedCurrency} chartPeriod={chartPeriod} />
           </div>
           <div className="home-price-chart">

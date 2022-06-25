@@ -50,7 +50,10 @@ export default function Converter({ selectedCurrency, setSelectedCurrency, chart
     }
   }
 
+  const rate = data[selectedCurrency] ? '1 XRP = ' + data[selectedCurrency] + ' ' + selectedCurrency.toUpperCase() : <br/>;
+
   return <>
+    <h2>{rate}</h2>
     <div>
       <input
         className="converter-amount"

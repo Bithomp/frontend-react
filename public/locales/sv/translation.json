@@ -25,7 +25,6 @@
   "home": {
     "search-placeholder": "Sök efter XRPL-adress / Transaktion / Användarnamn / PayString / Token",
     "search-placeholder-short": "Sök efter Adress / Transaktion / Användare",
-    "scan-qr": "SKANNA EN KOD",
-    "xrp-price": "XRP-pris"
+    "scan-qr": "SKANNA EN KOD"
   }
 }

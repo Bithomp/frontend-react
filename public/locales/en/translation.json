@@ -36,7 +36,6 @@
     "search-placeholder": "Search by XRPL Address / Transaction / Username / PayString / Token",
     "search-placeholder-short": "Search by Address / Transaction / User",
     "scan-qr": "SCAN A CODE",
-    "xrp-price": "XRP price",
     "whale-transactions": "Whale alerts",
     "stat": {
       "ledger-index": "Ledger index",
