@@ -74,24 +74,6 @@ export default function Home({ theme, devNet }) {
           </a>
         </div>
       </div>
-      {!devNet &&
-        <div className="home-sponsored">
-          <a href="https://bithomp.com/go/earn-on-xrp" target="_blank" rel="noreferrer">
-            <div className="sponsored-brand">
-              <img src={nexo} className="sponsored-brand-icon" alt="earn on xrp" />
-              <div className="sponsored-brand-title">Earn on XRP</div>
-              <div className="sponsored-brand-text">Start earning up to 8% APR with XRP, paid out daily.</div>
-            </div>
-          </a>
-          <a href="https://bithomp.com/go/buy-xrp" target="_blank" rel="noreferrer">
-            <div className="sponsored-brand">
-              <img src={btcbit} className="sponsored-brand-icon" alt="buy xrp" />
-              <div className="sponsored-brand-title">Buy XRP</div>
-              <div className="sponsored-brand-text">Instantly buy and sell cryptocurrency with low commission.</div>
-            </div>
-          </a>
-        </div>
-      }
       <div className="home-statistics">
         <Statistics />
       </div>
@@ -107,6 +89,22 @@ export default function Home({ theme, devNet }) {
           </div>
           <div className="home-price-chart">
             <PriceChart currency={selectedCurrency} theme={theme} chartPeriod={chartPeriod} setChartPeriod={setChartPeriod} />
+          </div>
+          <div className="home-sponsored">
+            <a href="https://bithomp.com/go/earn-on-xrp" target="_blank" rel="noreferrer">
+              <div className="sponsored-brand">
+                <img src={nexo} className="sponsored-brand-icon" alt="earn on xrp" />
+                <div className="sponsored-brand-title">Earn on XRP</div>
+                <div className="sponsored-brand-text">Start earning up to 8% APR with XRP, paid out daily.</div>
+              </div>
+            </a>
+            <a href="https://bithomp.com/go/buy-xrp" target="_blank" rel="noreferrer">
+              <div className="sponsored-brand">
+                <img src={btcbit} className="sponsored-brand-icon" alt="buy xrp" />
+                <div className="sponsored-brand-title">Buy XRP</div>
+                <div className="sponsored-brand-text">Instantly buy and sell cryptocurrency with low commission.</div>
+              </div>
+            </a>
           </div>
         </>
       }

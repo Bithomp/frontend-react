@@ -162,6 +162,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  background-color: var(--background-secondary);
   .statistics-block {
     min-height: 80px;
     width: calc(100% - 40px);
