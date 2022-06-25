@@ -40,7 +40,6 @@ const Server = () => {
   }
   return server;
 }
-
 export const server = Server();
 
 const WssServer = () => {
@@ -50,5 +49,27 @@ const WssServer = () => {
   }
   return server.replace("https://", "wss://") + '/wss/' + token;
 }
-
 export const wssServer = WssServer();
+
+export const isEmailValid = (x) => {
+  let re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  return x && re.test(x);
+}
+
+export const isUrlValid = (x) => {
+  let re = new RegExp('^(https?:\\/\\/)?'+ // protocol
+    '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|'+ // domain name
+    '((\\d{1,3}\\.){3}\\d{1,3}))'+ // OR ip (v4) address
+    '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+ // port and path
+    '(\\?[;&a-z\\d%_.~+=-]*)?'+ // query string
+    '(\\#[-a-z\\d_]*)?$','i'); // fragment locator
+  return !!re.test(x);
+}
+
+export const isAddressValid = (x) => {
+  return /^r[0-9a-zA-Z]{24,35}$/.test(x);
+}
+
+export const isUsernameValid = (x) => {
+  return x && /^(?=.{3,18}$)[0-9a-zA-Z]{1,18}[-]{0,1}[0-9a-zA-Z]{1,18}$/.test(x);
+}

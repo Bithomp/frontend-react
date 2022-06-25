@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { useTranslation } from 'react-i18next';
 import { useState } from 'react';
 
-import { devNet, xls20Enabled } from '../../utils/utils';
+import { devNet, xls20Enabled } from '../../utils';
 
 import logo from "../../assets/images/logo-animated.svg";
 import Switch from "./Switch";

@@ -218,6 +218,13 @@ table {
   }
 }
 
+.main-box {
+  border: 2px solid var(--accent-link);
+  word-break: break-word;
+  padding: "0 20px";
+  position: "relative";
+}
+
 .waiting {
   display: inline-block;
   border: 16px solid #f3f3f3;

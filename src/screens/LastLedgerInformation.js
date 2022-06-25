@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { useState, useEffect } from 'react';
 
-import { numberWithSpaces, wssServer } from '../utils/utils';
+import { numberWithSpaces, wssServer } from '../utils';
 
 let ws = null;
 
@@ -81,7 +81,7 @@ export default function LastLedgerInformation() {
   return (
     <div className="content-text content-center">
       <h1 className="center">{t("menu.last-ledger-information")}</h1>
-      <div className="bordered brake" style={{ padding: "0 20px", position: "relative" }}>
+      <div className="main-box">
         <p>
           {t("last-ledger-information.ledger-hash")}: {ledger?.validatedLedger.hash.toLowerCase()}
         </p>

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { wssServer, numberWithSpaces, xls20Enabled } from '../../utils/utils';
+import { wssServer, numberWithSpaces, xls20Enabled } from '../../utils';
 
 let ws = null;
 

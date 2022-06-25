@@ -6,7 +6,7 @@ export default function Genesis() {
   return (
     <div className="content-text content-center">
       <h1 className="center">{t("menu.genesis")}</h1>
-      <div className="bordered brake" style={{ padding: "0 20px", position: "relative" }}>
+      <div className="main-box">
         <p>The page is on the maintenance right now. Come back later.</p>
       </div>
     </div>

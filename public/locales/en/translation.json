@@ -145,6 +145,22 @@
     "old-rate": "Old rate",
     "new-rate": "New rate"
   },
+  "developer": {
+    "header": "Bithomp API key request",
+    "email": "Your company/university e-mail address:",
+    "url": "Your website/app URL:",
+    "description": "Project description and API use details:",
+    "text0": "The request won't be approved:<1/>- if you use your private email<3/>- if you want to use API for something that our API doesn't support<5/>- if you want to use it for something that already supported by <7>xrpl.js</7>.",
+    "success": "Thank you. Your should receive your api token by email within 48 hours.",
+    "error": {
+      "email-empty": "Please enter your e-mail address.",
+      "email-invalid": "Please enter a valid e-mail address.",
+      "url-empty": "Please enter your site/app URL.",
+      "url-invalid": "Please enter a valid URL.",
+      "description-empty": "Please add a description of your project.",
+      "description-invalid": "Please write a detailed description of your project."
+    }
+  },
   "customer-support": {
     "text0": "Bithomp is an explorer of the <1>public</1> XRP Ledger.",
     "no-help": "We can not freeze accounts, make refunds, cancel transactions or change/add destination tags. We do not do investigations and we can not help you to recover your lost or stolen funds.",
@@ -168,7 +184,8 @@
   "button": {
     "continue": "Continue",
     "cancel": "Cancel",
-    "accept": "Accept"
+    "accept": "Accept",
+    "submit": "Submit"
   },
   "error": {
     "Network Error": "It seems there is no internet connection ;("

@@ -6,7 +6,7 @@ export default function MediaKit() {
   return (
     <div className="content-text content-center">
       <h1 className="center">{t("menu.media-kit")}</h1>
-      <div className="bordered brake" style={{ padding: "0 20px", position: "relative" }}>
+      <div className="main-box">
         <p>Download our press materials.</p>
       </div>
     </div>

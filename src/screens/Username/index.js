@@ -3,19 +3,13 @@ import { useTranslation, Trans } from 'react-i18next';
 import { useSearchParams, Link } from "react-router-dom";
 import axios from 'axios';
 
+import { isAddressValid, isUsernameValid } from '../../utils';
+
 import CountrySelect from '../../components/CountrySelect';
 import CheckBox from '../../components/CheckBox';
 
 import checkmark from "../../assets/images/checkmark.svg";
 import './styles.scss';
-
-const isAddressValid = (address) => {
-  return /^r[0-9a-zA-Z]{24,35}$/.test(address);
-}
-
-const isUsernameValid = (username) => {
-  return username && /^(?=.{3,18}$)[0-9a-zA-Z]{1,18}[-]{0,1}[0-9a-zA-Z]{1,18}$/.test(username);
-}
 
 let interval;
 
