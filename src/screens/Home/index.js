@@ -80,14 +80,14 @@ export default function Home({ theme, devNet }) {
             <div className="sponsored-brand">
               <img src={nexo} className="sponsored-brand-icon" alt="earn on xrp" />
               <div className="sponsored-brand-title">Earn on XRP</div>
-              <div className="sponsored-brand-text">Start earning up to 8% APR with XRP, paid out daily</div>
+              <div className="sponsored-brand-text">Start earning up to 8% APR with XRP, paid out daily.</div>
             </div>
           </a>
           <a href="https://bithomp.com/go/buy-xrp" target="_blank" rel="noreferrer">
             <div className="sponsored-brand">
               <img src={btcbit} className="sponsored-brand-icon" alt="buy xrp" />
               <div className="sponsored-brand-title">Buy XRP</div>
-              <div className="sponsored-brand-text">Instantly buy and sell cryptocurrency with low commission</div>
+              <div className="sponsored-brand-text">Instantly buy and sell cryptocurrency with low commission.</div>
             </div>
           </a>
         </div>

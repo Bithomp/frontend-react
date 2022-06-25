@@ -71,16 +71,14 @@ export default function Header({ theme, switchTheme }) {
         </div>
 
         <div className="menu-dropdown">
-          {(devNet && !xls20Enabled) ?
+          {!xls20Enabled ?
             <Link to="/last-ledger-information" className="menu-dropdown-button">XRPL</Link> :
             <>
               <div className="menu-dropdown-button">XRPL</div>
               <div className="menu-dropdown-content">
                 <Link to="/last-ledger-information">{t("menu.last-ledger-information")}</Link>
-                {devNet ?
-                  <Link to="/nft-statistics">{t("menu.nft-statistics")}</Link> :
-                  <a href="/genesis">{t("menu.genesis-accounts")}</a>
-                }
+                <Link to="/nft-statistics">{t("menu.nft-statistics")}</Link>
+                {/* <Link to="/genesis">{t("menu.genesis")}</Link> */}
               </div>
             </>
           }
@@ -125,7 +123,7 @@ export default function Header({ theme, switchTheme }) {
               {t("menu.nft-statistics")}
             </Link>
           }
-          {!devNet && <a href="/genesis" className="mobile-menu-item">{t("menu.genesis-accounts")}</a>}
+          {/* !devNet && <Link to="/genesis" className="mobile-menu-item">{t("menu.genesis")}</link> */}
           {devNet ?
             <>
               <div className="mobile-menu-directory"><span>{t("menu.tools")}</span></div>

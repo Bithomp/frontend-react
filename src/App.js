@@ -12,11 +12,12 @@ import Username from './screens/Username';
 import Alerts from "./screens/Alerts";
 import LastLedgerInformation from './screens/LastLedgerInformation';
 import NftStatistics from './screens/NftStatistics';
+import Genesis from "./screens/Genesis"; // TODO
 import Disclaimer from './screens/Disclaimer';
 import PrivacyPolicy from './screens/PrivacyPolicy';
 import TermsAndConditions from './screens/TermsAndConditions';
 import CustomerSupport from "./screens/CustomerSupport";
-import MediaKit from "./screens/MediaKit";
+import MediaKit from "./screens/MediaKit"; // TODO
 import PageNotFound from './screens/PageNotFound';
 import Redirect from './screens/Redirect';
 
@@ -50,11 +51,12 @@ export default function App() {
           <Route path="/alerts" element={<Alerts />} />
           <Route path="/last-ledger-information" element={<LastLedgerInformation />} />
           <Route path="/nft-statistics" element={<NftStatistics />} />
+          <Route path="/genesis" element={<Genesis />} />
           <Route path="/disclaimer" element={<Disclaimer />} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
           <Route path="/customer-support" element={<CustomerSupport />} />
-          <Route path="/media-kit" element={<MediaKit />} />
+          <Route path="/mediakit" element={<MediaKit />} />
           <Route path="/error" element={<PageNotFound />} />
           <Route path="*" element={<Redirect />} />
         </Routes>

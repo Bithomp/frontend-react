@@ -45,7 +45,6 @@ export default function Footer() {
             }
           </div>
         }
-
         <div className="footer-menu-column">
           <span className="footer-menu-header">{t("menu.networks")}</span>
           {devNet && <a href="https://bithomp.com">Mainnet</a>}
@@ -54,7 +53,6 @@ export default function Footer() {
           {devNet !== 'hooks' && <a href="https://hooks.bithomp.com">Hooks</a>}
           {devNet !== 'beta' && <a href="https://beta.bithomp.com">Hooks v2 / beta</a>}
         </div>
-
         <div className="footer-menu-column">
           <span className="footer-menu-header">{t("menu.legal")}</span>
           <Link to="/disclaimer">{t("menu.disclaimer")}</Link>
@@ -64,12 +62,20 @@ export default function Footer() {
         <div className="footer-menu-column">
           <span className="footer-menu-header">Bithomp</span>
           <Link to="/customer-support">{t("menu.customer-support")}</Link>
-          {!devNet && <Link to="/media-kit">{t("menu.media-kit")}</Link>}
+          {/* !devNet && <Link to="/mediakit">{t("menu.media-kit")}</Link> */}
         </div>
+
+        {!devNet && <div className="footer-menu-column">
+          <span className="footer-menu-header">Sponsored</span>
+          <a href="/go/earn-on-xrp">Earn on XRP</a>
+          <a href="/go/gamble">Play XRP</a>
+        </div>}
+
         <div className="footer-language-select">
           <LanguageSelect />
         </div>
       </div>
+
       <div className="footer-brand">
         <img src={logo} className="footer-logo" alt="logo" />
         <div className="footer-brand-text">
