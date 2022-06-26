@@ -9,6 +9,7 @@ export default function LastLedgerInformation() {
   const { t } = useTranslation();
 
   const [data, setData] = useState(null);
+  const [lastUpdate, setLastUpdate] = useState('');
 
   const connect = () => {
     ws = new WebSocket(wssServer);
@@ -20,7 +21,7 @@ export default function LastLedgerInformation() {
     ws.onmessage = evt => {
       const message = JSON.parse(evt.data);
       setData(message);
-
+      setLastUpdate(new Date().toLocaleTimeString());
       /* 
       {
         "nftokens":{
@@ -60,6 +61,9 @@ export default function LastLedgerInformation() {
     <div className="content-text content-center">
       <h1 className="center">{t("menu.nft-statistics")}</h1>
       <div className="main-box">
+        <p>
+          {t("nft-statistics.updated")}: {lastUpdate}
+        </p>
         <p>
           {t("nft-statistics.created")}: {numberWithSpaces(nft?.created)}
         </p>
