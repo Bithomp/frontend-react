@@ -1,0 +1,93 @@
+.receipt {
+  margin: auto;
+  max-width: 400px;
+  .receipt-body {
+    align-items: center;
+    border-radius: 5px;
+    border-top: 5px solid var(--background-header);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden; //for animation
+    position: relative;
+    &::after {
+      background-color: var(--background-header);
+      border-radius: 25px;
+      content: '';
+      height: 11px;
+      position: absolute;
+      top: -5px;
+      width: 100%;
+    }
+    .receipt-details {
+      filter: grayscale(100%);
+      animation: slideDown 1.5s;
+      background-color: var(--background-secondary);
+      box-shadow: 0 -4px 3px 0 rgb(0 0 0 / 20%);
+      padding: 30px;
+      transform-origin: 50% 0%;
+      width: 98%;
+      z-index: 1;
+      border-bottom: 1px dashed var(--accent-icon);
+      box-sizing: border-box;
+      .receipt-header {
+        text-align: center;
+        font-size: 14px;
+        margin-bottom: 20px;
+      }
+      table {
+        width: 100%;
+        border: none;
+        th {
+          text-align: left;
+          text-transform: uppercase;
+        }
+        tr:last-child {
+          border-top: 1px solid var(--accent-icon);
+        }
+      }
+      .receipt-order-id {
+        border: 1px dotted var(--accent-icon);
+        padding: 10px;
+        font-size: 14px;
+        word-break: break-all;
+        margin-top: 20px;
+      }
+    }
+    .receipt-bottom {
+      overflow-y: hidden;
+      animation: unfoldDown 1s;
+      animation-delay: 1s;
+      animation-fill-mode: backwards;
+      background: linear-gradient(var(--background-secondary) 49%, transparent 49%),linear-gradient(-45deg, var(--background-main) 33%, transparent 33%) 0 50%,var(--background-secondary) linear-gradient(45deg, var(--background-main) 33%, var(--background-secondary) 33%) 0 50%;
+      background-position: center bottom;
+      background-repeat: repeat-x;
+      background-size: 1px 100%, 14px 14px, 14px 14px;
+      min-height: 110px;
+      padding: 20px;
+      position: relative;
+      transform-origin: 50% 0%;
+      width: 98%;
+      box-shadow: 0 -4px 3px 0 rgb(0 0 0 / 20%);
+      box-sizing: border-box;
+      text-align: center;
+      font-size: 14px;
+    }
+  }
+}
+
+@keyframes slideDown {
+  0% {
+    transform: translateY(-100%);
+  }
+  50%, 100% {
+    transform: translateY(0);
+  }
+}
+@keyframes unfoldDown {
+  0% {
+    transform: perspective(350px) rotateX(-90deg);
+  }
+  50%, 100% {
+    transform: perspective(350px) rotateX(0deg);
+  }
+}

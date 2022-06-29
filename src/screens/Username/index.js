@@ -3,17 +3,19 @@ import { useTranslation, Trans } from 'react-i18next';
 import { useSearchParams, Link } from "react-router-dom";
 import axios from 'axios';
 
-import { isAddressValid, isUsernameValid } from '../../utils';
+import { isAddressValid, isUsernameValid, server, wssServer } from '../../utils';
 
 import CountrySelect from '../../components/CountrySelect';
 import CheckBox from '../../components/CheckBox';
+import Receipt from '../../components/Receipt';
 
 import checkmark from "../../assets/images/checkmark.svg";
 import './styles.scss';
 
 let interval;
+let ws = null;
 
-export default function Username({ server }) {
+export default function Username() {
   const { t, i18n } = useTranslation();
 
   const [searchParams, setSearchParams] = useSearchParams();
@@ -25,6 +27,7 @@ export default function Username({ server }) {
   const [errorMessage, setErrorMessage] = useState("");
   const [countryCode, setCountryCode] = useState("");
   const [register, setRegister] = useState({});
+  const [bidData, setBidData] = useState({});
   const [step, setStep] = useState(0);
   const [update, setUpdate] = useState(false);
 
@@ -50,6 +53,7 @@ export default function Username({ server }) {
     return () => {
       setUpdate(false);
       clearInterval(interval);
+      if (ws) ws.close();
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -203,37 +207,99 @@ export default function Username({ server }) {
   }, [agreeToPageTerms, agreeToSiteTerms, agreeToPrivacyPolicy]);
 
   useEffect(() => {
-    if (update) {
-      interval = setInterval(() => checkPayment(register.bithompid, register.sourceAddress, register.destinationTag), 3000);
+    if (register.destinationTag && update) {
+      interval = setInterval(() => checkPayment(register.bithompid, register.sourceAddress, register.destinationTag), 60000);
+      checkPaymentWs(register.bithompid, register.sourceAddress, register.destinationTag);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [update, register]);
 
-  const checkPayment = async (username, address, destinationTag) => {
-    const response = await axios('v1/bithompid/' + username + '/status?address=' + address + '&dt=' + destinationTag);
-    const data = response.data;
-
-    if (data.bid) {
-      if (data.bid.status === 'Completed') {
-        setStep(2);
-        setUpdate(false);
-        setErrorMessage("");
-        clearInterval(interval);
-        return;
-      }
-      if (data.bid.status === "Partly paid") {
-        setErrorMessage(t("username.error.payment-partly", { received: data.bid.totalReceivedAmount, required: register.amount, currency: register.currency }));
-        return;
-      }
-      if (data.bid.status === "Timeout") {
-        setStep(0);
-        setUpdate(false);
-        clearInterval(interval);
-        return;
-      }
+  const updateBid = (data) => {
+    setBidData(data);
+    /* 
+      setBidData({
+        "bid": {
+          "id": 907,
+          "createdAt": 1653497569,
+          "updatedAt": 165349767,
+          "bithompid": "test13",
+          "address": "rUjTn3UjrZC3jwisxqH6VpcTKccYSWiLDi",
+          "destinationTag": 646158625,
+          "action": "Registration",
+          "status": "Completed",
+          "price": 25.2,
+          "totalReceivedAmount": 25.2,
+          "currency": "XRP",
+          "priceInSEK": 100,
+          "country": ""
+        },
+        "transactions": [
+          {
+            "id": 352,
+            "processedAt": 1653497667,
+            "hash": "AABFBAA8321D6500B83EF18733A5A0DBE3A819D18FA6DDBEDE8CCEA3893DE844",
+            "ledger": 28071047,
+            "type": "Payment",
+            "sourceAddress": "rUjTn3UjrZC3jwisxqH6VpcTKccYSWiLDi",
+            "destinationAddress": "rsuUjfWxrACCAwGQDsNeZUhpzXf1n1NK5Z",
+            "destinationTag": 646158625,
+            "amount": 25.2,
+            "status": "Completed"
+          }
+        ]
+      });
+    */
+    if (data.bid.status === 'Completed') {
+      setStep(2);
+      setUpdate(false);
+      setErrorMessage("");
+      clearInterval(interval);
+      if (ws) ws.close();
+      return;
+    }
+    if (data.bid.status === "Partly paid") {
+      setErrorMessage(t("username.error.payment-partly", { received: data.bid.totalReceivedAmount, required: register.amount, currency: register.currency }));
+      return;
+    }
+    if (data.bid.status === "Timeout") {
+      setStep(0);
+      setUpdate(false);
+      clearInterval(interval);
+      if (ws) ws.close();
+      return;
     }
     if (data.error) {
       setErrorMessage(data.error);
+    }
+  }
+
+  const checkPayment = async (username, address, destinationTag) => {
+    const response = await axios('v1/bithompid/' + username + '/status?address=' + address + '&dt=' + destinationTag);
+    const data = response.data;
+    if (data) {
+      updateBid(data);
+    }
+  }
+
+  const checkPaymentWs = (bithompid, address, destinationTag) => {
+    if (!update) return;
+    ws = new WebSocket(wssServer);
+
+    ws.onopen = () => {
+      ws.send(JSON.stringify({ command: "subscribe", bids: [{ bithompid, address, destinationTag }], "id": 1 }));
+    }
+
+    ws.onmessage = evt => {
+      const message = JSON.parse(evt.data);
+      if (message) {
+        updateBid(message);
+      }
+    }
+
+    ws.onclose = () => {
+      if (update) {
+        checkPaymentWs(bithompid, address, destinationTag);
+      }
     }
   }
 
@@ -333,10 +399,9 @@ export default function Username({ server }) {
       }
       {step === 2 &&
         <>
-          <p className="bold center">{t("username.step2.congratulations")}</p>
           <p className="center">
             <Trans i18nKey="username.step2.text0" values={{ username: register.bithompid }}>
-              Your username <b className="blue">{{ username }}</b> has been succesfully registered.
+              Congratulations! Your username <b className="blue">{{ username }}</b> has been succesfully registered.
             </Trans>
           </p>
           <p className="center bold">
@@ -344,6 +409,8 @@ export default function Username({ server }) {
               <u>{server}/explorer/{register.bithompid}</u>
             </a>
           </p>
+
+          <Receipt item="username" details={bidData} />
         </>
       }
       <p className="red center" dangerouslySetInnerHTML={{ __html: errorMessage || "&nbsp;" }} />
