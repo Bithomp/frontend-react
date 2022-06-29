@@ -21,6 +21,7 @@ export default function Username() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [address, setAddress] = useState("");
   const [username, setUsername] = useState("");
+  const [receipt, setReceipt] = useState(false);
   const [agreeToPageTerms, setAgreeToPageTerms] = useState(false);
   const [agreeToSiteTerms, setAgreeToSiteTerms] = useState(false);
   const [agreeToPrivacyPolicy, setAgreeToPrivacyPolicy] = useState(false);
@@ -37,6 +38,7 @@ export default function Username() {
   useEffect(() => {
     let getAddress = searchParams.get("address");
     let getUsername = searchParams.get("username");
+    let getReceipt = searchParams.get("receipt");
     if (isAddressValid(getAddress)) {
       setAddress(getAddress);
     } else {
@@ -46,6 +48,11 @@ export default function Username() {
       setUsername(getUsername);
     } else {
       searchParams.delete("username");
+    }
+    if (getReceipt === "true") {
+      setReceipt(true);
+    } else {
+      searchParams.delete("receipt");
     }
     setSearchParams(searchParams);
 
@@ -62,6 +69,13 @@ export default function Username() {
   useEffect(() => {
     setErrorMessage("");
   }, [i18n.language]);
+
+  useEffect(() => {
+    // show receipt
+    if (receipt && username && address && countryCode) {
+      onSubmit();
+    }
+  }, [receipt, username, address, countryCode]);
 
   const onAddressChange = (e) => {
     let address = e.target.value;
@@ -120,19 +134,21 @@ export default function Username() {
       return;
     }
 
-    if (!agreeToPageTerms) {
-      setErrorMessage(t("username.error.agree-terms-page"));
-      return;
-    }
+    if (!receipt) {
+      if (!agreeToPageTerms) {
+        setErrorMessage(t("username.error.agree-terms-page"));
+        return;
+      }
 
-    if (!agreeToSiteTerms) {
-      setErrorMessage(t("username.error.agree-terms-site"));
-      return;
-    }
+      if (!agreeToSiteTerms) {
+        setErrorMessage(t("username.error.agree-terms-site"));
+        return;
+      }
 
-    if (!agreeToPrivacyPolicy) {
-      setErrorMessage(t("username.error.agree-privacy-policy"));
-      return;
+      if (!agreeToPrivacyPolicy) {
+        setErrorMessage(t("username.error.agree-privacy-policy"));
+        return;
+      }
     }
 
     const postData = {
