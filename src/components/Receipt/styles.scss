@@ -40,6 +40,9 @@
         th {
           text-align: left;
           text-transform: uppercase;
+          @media only screen and (max-width: 640px) {
+            font-size: 12px;
+          }
         }
         tr:last-child {
           border-top: 1px solid var(--accent-icon);
@@ -51,6 +54,9 @@
         font-size: 14px;
         word-break: break-all;
         margin-top: 20px;
+        @media only screen and (max-width: 640px) {
+          font-size: 12px;
+        }
       }
     }
     .receipt-bottom {
