@@ -75,6 +75,7 @@ export default function Username() {
     if (receipt && username && address && countryCode) {
       onSubmit();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [receipt, username, address, countryCode]);
 
   const onAddressChange = (e) => {
