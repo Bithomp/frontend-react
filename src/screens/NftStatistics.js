@@ -94,6 +94,9 @@ export default function LastLedgerInformation() {
           {t("nft-statistics.transfers")}: {numberWithSpaces(nft?.transfers)}
         </p>
         <p>
+          {t("nft-statistics.trustline")}: {numberWithSpaces(nft?.trustline)}
+        </p>
+        <p>
           {t("nft-statistics.for-sale")}: {numberWithSpaces(nft?.forSale)}
         </p>
         <p>
@@ -110,9 +113,6 @@ export default function LastLedgerInformation() {
         </p>
         <p>
           {t("nft-statistics.transferable")}: {numberWithSpaces(nft?.transferable)}
-        </p>
-        <p>
-          {t("nft-statistics.trustline")}: {numberWithSpaces(nft?.trustline)}
         </p>
         <p className="center" style={{ position: "absolute", top: "calc(50% - 72px)", left: "calc(50% - 54px)" }}>
           {!data && <span className="waiting"></span>}
