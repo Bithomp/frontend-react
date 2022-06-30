@@ -66,9 +66,9 @@ export default function Footer() {
         </div>
 
         {!devNet && <div className="footer-menu-column">
-          <span className="footer-menu-header">Sponsored</span>
-          <a href="/go/earn-on-xrp">Earn on XRP</a>
-          <a href="/go/gamble">Play XRP</a>
+          <span className="footer-menu-header">{t("menu.sponsored")}</span>
+          <a href="/go/earn-on-xrp">{t("menu.earn")}</a>
+          <a href="/go/gamble">{t("menu.play")}</a>
         </div>}
 
         <div className="footer-language-select">
