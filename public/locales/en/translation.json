@@ -73,6 +73,7 @@
   },
   "nft-statistics": {
     "updated": "Updated",
+    "ledger-index": "Last ledger index",
     "created": "Total created",
     "burned": "Burned",
     "exist": "Currently exist",
@@ -82,6 +83,7 @@
     "owners": "Current owners",
     "issuers": "Total issuers",
     "transfers": "NFT transfers",
+    "trustline": "NFTs with auto trustline creation for seller",
     "for-sale": "NFTs for sale",
     "for-sale-without-destination": "NFTs for public sale",
     "for-sale-with-destination": "NFTs for direct sale"
