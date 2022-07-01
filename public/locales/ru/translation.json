@@ -4,7 +4,7 @@
     "services": "Сервисы",
     "usernames": "Регистрация ника",
     "price-alerts": "Мониторинг XRP цены",
-    "api": "API",
+    "api": "Bithomp API",
     "tools": "Инструменты",
     "account-generation": "Генерация аккаунта",
     "faucet": "Раздача тестовых XRP",
@@ -16,11 +16,20 @@
     "disclaimer": "Отказ от ответственности",
     "privacy-policy": "Политика конфиденциальности",
     "terms-and-conditions": "Условия использования",
-    "customer-support": "Поддержка клиентов",
+    "customer-support": "Контакты",
     "media-kit": "Для прессы",
-    "sponsored": "Реклама",
-    "earn": "Получить прибыль с XRP",
-    "play": "Играть с XRP",
+    "community": {
+      "title": "XRPL сообщество",
+      "xumm": "Xumm кошелёк",
+      "xrplf": "XRPL учреждение",
+      "xrpl": "XRPL веб-сайт",
+      "xrpchat": "XRP чат"
+    },
+    "sponsored": {
+      "title": "Реклама",
+      "earn": "XRP вклады",
+      "play": "Играть с XRP"
+    },
     "sign-in": "Войти"
   },
   "settings": {

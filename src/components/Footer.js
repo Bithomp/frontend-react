@@ -65,10 +65,18 @@ export default function Footer() {
           {/* !devNet && <Link to="/mediakit">{t("menu.media-kit")}</Link> */}
         </div>
 
+        <div className="footer-menu-column">
+          <span className="footer-menu-header">{t("menu.community.title")}</span>
+          <a href="https://xumm.app" target="_blank" rel="noreferrer">{t("menu.community.xumm")}</a>
+          <a href="https://foundation.xrpl.org" target="_blank" rel="noreferrer">{t("menu.community.xrplf")}</a>
+          <a href="https://xrpl.org" target="_blank" rel="noreferrer">{t("menu.community.xrpl")}</a>
+          <a href="https://www.xrpchat.com" target="_blank" rel="noreferrer">{t("menu.community.xrpchat")}</a>
+        </div>
+
         {!devNet && <div className="footer-menu-column">
-          <span className="footer-menu-header">{t("menu.sponsored")}</span>
-          <a href="/go/earn-on-xrp">{t("menu.earn")}</a>
-          <a href="/go/gamble">{t("menu.play")}</a>
+          <span className="footer-menu-header">{t("menu.sponsored.title")}</span>
+          <a href="/go/earn-on-xrp" target="_blank" rel="noreferrer">{t("menu.sponsored.earn")}</a>
+          <a href="/go/gamble" target="_blank" rel="noreferrer">{t("menu.sponsored.play")}</a>
         </div>}
 
         <div className="footer-language-select">
