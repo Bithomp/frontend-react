@@ -1,12 +1,12 @@
 .home-search-block {
-  height: 240px;
+  height: 200px;
   background-color: var(--background-block);
   text-align: center;
   transition: background-color .5s;
   .home-search {
     display: inline-block;
     position: relative;
-    margin-top: 98px;
+    margin-top: 60px;
     margin-left: 20px;
     margin-right: 20px;
     width: calc(100% - 40px);
@@ -14,15 +14,20 @@
     z-index: 1;
     .search-input {
       height: 40px;
-      border: 1px solid var(--accent-icon);
+      border: 1px solid var(--unaccent-icon);
       padding-left: 20px;
       padding-right: 54px;
       padding-top: 1px; /* set for ios safari */
       padding-bottom: 1px; /* set for ios safari */
       width: 100%;
       max-width: calc(100% - 76px);
+      transition: border-color 0.5s;
       &:focus {
         box-shadow: 0 0 10px var(--accent-icon);
+      };
+      &:hover {
+        border-color: var(--accent-icon);
+        transition: border-color 0.5s;
       }
     }
     .search-button {
@@ -95,7 +100,6 @@
 
 .home-sponsored {
   height: 150px;
-  background-color: var(--background-secondary);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -158,13 +162,12 @@
 }
 
 .home-statistics {
-  min-height: 150px;
+  min-height: 100px;
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: var(--background-secondary);
   .statistics-block {
-    min-height: 80px;
+    min-height: 60px;
     width: calc(100% - 40px);
     max-width: 760px;
     z-index: 1;

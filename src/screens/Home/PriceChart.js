@@ -3,6 +3,11 @@ import axios from 'axios';
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 
+import zoomicon from "../../assets/images/zoom.svg";
+import zoominicon from "../../assets/images/zoom-in.svg";
+import zoomouticon from "../../assets/images/zoom-out.svg";
+import panicon from "../../assets/images/panning.svg";
+
 import '../../assets/styles/components/priceChart.scss';
 
 export default function PriceChart({ currency, theme, chartPeriod, setChartPeriod }) {
@@ -58,6 +63,10 @@ export default function PriceChart({ currency, theme, chartPeriod, setChartPerio
       toolbar: {
         tools: {
           download: false,
+          zoom: '<img src="' + zoomicon + '" width="20">',
+          zoomin: '<img src="' + zoominicon + '" width="20">',
+          zoomout: '<img src="' + zoomouticon + '" width="20">',
+          pan: '<img src="' + panicon + '" width="20">',
           reset: false
         }
       },
