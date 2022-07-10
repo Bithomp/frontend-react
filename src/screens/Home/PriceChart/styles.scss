@@ -30,8 +30,7 @@
   div[class*="-icon"] {
     transform: scale(1) !important;
   }
-
-  .apexcharts-zoomin-icon > svg {
-    fill: var(--accent-icon);
+  .apexcharts-zoomout-icon {
+    margin-right: unset;
   }
 }
