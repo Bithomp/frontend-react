@@ -35,6 +35,14 @@ body {
   height: 100%;
 }
 
+[data-theme="dark"] {
+  #logo {
+    path, rect {
+      fill: white;
+    }
+  }
+}
+
 .body {
   display: flex;
   min-height: 100%;
@@ -189,6 +197,10 @@ table {
   white-space: nowrap;
 }
 
+.uppercase {
+  text-transform: uppercase;
+}
+
 .red {
   color: var(--red);
 }
@@ -244,6 +256,20 @@ table {
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
+}
+
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  #section-to-print, #section-to-print * {
+    visibility: visible;
+  }
+  #section-to-print {
+    position: absolute;
+    left: 0;
+    top: 0;
+  }
 }
 
 @import "./components/switch.scss";

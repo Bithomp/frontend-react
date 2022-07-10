@@ -48,7 +48,7 @@ export default function App() {
         <Routes>
           <Route path="/" element={<Home theme={theme} devNet={devNet} />} />
           <Route path="/index.html" element={<Home theme={theme} devNet={devNet} />} />
-          <Route path="/username" element={<Username server={server} />} />
+          <Route path="/username" element={<Username />} />
           <Route path="/alerts" element={<Alerts />} />
           <Route path="/developer" element={<Developer />} />
           <Route path="/last-ledger-information" element={<LastLedgerInformation />} />

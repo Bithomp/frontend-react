@@ -87,7 +87,7 @@ export default function Developer() {
     }
 
     const postData = { email, url, description };
-    const apiData = await axios.post('partner/register', postData).catch(error => {
+    const apiData = await axios.post('/v2/developer/register', postData).catch(error => {
       if (i18n.exists("error." + error.message)) {
         setErrorMessage(t("error." + error.message));
       } else {
@@ -107,7 +107,7 @@ export default function Developer() {
         setErrorMessage(data.error);
       }
     } else {
-      console.log('partner/register error: no data');
+      console.log('developer/register error: no data');
     }
   }
 
@@ -144,7 +144,7 @@ export default function Developer() {
       </>}
 
       {step === 1 &&
-        <p>{t("developer.success")}</p>
+        <p className='center'>{t("developer.success")}</p>
       }
 
       <p className="red center">{errorMessage || <br />}</p>

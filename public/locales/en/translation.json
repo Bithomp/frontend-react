@@ -4,7 +4,7 @@
     "services": "Services",
     "usernames": "Username registration",
     "price-alerts": "XRP price alerts",
-    "api": "API",
+    "api": "Bithomp API",
     "tools": "Tools",
     "account-generation": "Account generation",
     "faucet": "Faucet",
@@ -18,9 +18,18 @@
     "terms-and-conditions": "Terms and conditions",
     "customer-support": "Customer support",
     "media-kit": "Media kit",
-    "sponsored": "Sponsored",
-    "earn": "Earn on XRP",
-    "play": "Play XRP",
+    "community": {
+      "title": "Community",
+      "xumm": "Xumm wallet",
+      "xrplf": "XRPL foundation",
+      "xrpl": "XRPL website",
+      "xrpchat": "XRP chat"
+    },
+    "sponsored": {
+      "title": "Sponsored",
+      "earn": "Earn on XRP",
+      "play": "Play XRP"
+    },
     "sign-in": "Sign in"
   },
   "settings": {
@@ -73,6 +82,7 @@
   },
   "nft-statistics": {
     "updated": "Updated",
+    "ledger-index": "Last ledger index",
     "created": "Total created",
     "burned": "Burned",
     "exist": "Currently exist",
@@ -82,6 +92,7 @@
     "owners": "Current owners",
     "issuers": "Total issuers",
     "transfers": "NFT transfers",
+    "trustline": "NFTs with auto trustline creation for seller",
     "for-sale": "NFTs for sale",
     "for-sale-without-destination": "NFTs for public sale",
     "for-sale-with-destination": "NFTs for direct sale"
@@ -133,8 +144,7 @@
       "about-confirmation": "You will see a confirmation as soon as we receive your payment."
     },
     "step2": {
-      "congratulations": "Congratulations!",
-      "text0": "Your username <1>{{ username }}</1> has been succesfully registered."
+      "text0": "Congratulations! Your username <1>{{ username }}</1> has been succesfully registered."
     }
   },
   "alerts": {
@@ -184,11 +194,20 @@
     "header": "The requested page wasn't found.",
     "text": "Click <1>here</1> to check our landing page."
   },
+  "receipt": {
+    "quantity": "qty.",
+    "items": "items",
+    "price": "price",
+    "total": "total",
+    "paid": "paid",
+    "order-id": "order id"
+  },
   "button": {
     "continue": "Continue",
     "cancel": "Cancel",
     "accept": "Accept",
-    "submit": "Submit"
+    "submit": "Submit",
+    "print": "Print"
   },
   "error": {
     "Network Error": "It seems there is no internet connection ;("
