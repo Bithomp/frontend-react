@@ -1,11 +1,11 @@
 @mixin react-select {
   .react-select__control {
-    border-color: var(--accent-icon);
+    border-color: var(--unaccent-icon);
     border-radius: 0;
     height: 40px;
     box-shadow: none;
     background-color: var(--background-input);
-    transition: background-color .5s;
+    transition: background-color .5s, border-color 0.5s;
     &:hover {
       border-color: var(--accent-icon);
     }
