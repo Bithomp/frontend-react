@@ -27,7 +27,7 @@
 
 .apexcharts-toolbar {
   z-index: 1 !important;
-  div[class$="-icon"] {
+  div[class*="-icon"] {
     transform: scale(1) !important;
   }
 
