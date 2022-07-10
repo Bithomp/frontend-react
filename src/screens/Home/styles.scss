@@ -160,9 +160,30 @@
   }
 }
 
+.home-converter {
+  position: relative;
+  z-index: 2; //to show over the chart
+  height: 200px;
+  text-align: center;
+  @media only screen and (max-width: 1024px) {
+    height: 170px;
+  }
+}
+
+.home-price-chart {
+  position: relative;
+  z-index: 1;
+  max-width: 790px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 60px;
+  padding-right: 10px;
+}
+
 .home-statistics {
   text-align: center;
   padding: 20px;
+  min-height: 100px;
   .statistics-block {
     position: relative;
     min-height: 60px;
@@ -189,26 +210,6 @@
       }
     }
   }
-}
-
-.home-converter {
-  position: relative;
-  z-index: 2; //to show over the chart
-  height: 200px;
-  text-align: center;
-  @media only screen and (max-width: 1024px) {
-    height: 170px;
-  }
-}
-
-.home-price-chart {
-  position: relative;
-  z-index: 1;
-  max-width: 790px;
-  margin-left: auto;
-  margin-right: auto;
-  margin-bottom: 60px;
-  padding-right: 10px;
 }
 
 .home-whale-transactions {
