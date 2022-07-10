@@ -8,7 +8,6 @@
     transition: background-color .5s, border-color 0.5s;
     &:hover {
       border-color: var(--accent-icon);
-      transition: border-color 0.5s;
     }
     .react-select__input-container {
       color: var(--text-main);

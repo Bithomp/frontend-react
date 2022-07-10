@@ -20,12 +20,12 @@
   width: 158px;
   height: 38px;
   padding-left: 10px;
-  border: 1px solid var(--unaccent-icon);
   background-color: var(--background-input);
+  border: 1px solid var(--unaccent-icon);
   vertical-align: top;
   margin: 5px;
   align-items: center;
-  transition: border-color 0.5s;
+  transition: background-color, border-color 0.5s;
 }
 .converter-amount:hover, .converter-xrp:hover {
   border: 1px solid var(--accent-icon);
