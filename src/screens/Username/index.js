@@ -26,6 +26,7 @@ export default function Username() {
   const [agreeToSiteTerms, setAgreeToSiteTerms] = useState(false);
   const [agreeToPrivacyPolicy, setAgreeToPrivacyPolicy] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [paymentErrorMessage, setPaymentErrorMessage] = useState("");
   const [countryCode, setCountryCode] = useState("");
   const [register, setRegister] = useState({});
   const [bidData, setBidData] = useState({});
@@ -211,9 +212,16 @@ export default function Username() {
 
     if (data?.bithompid) {
       setRegister(data);
-      setStep(1);
       setErrorMessage("");
-      setUpdate(true);
+      // if partly paid, completed or receipt
+      checkPayment(data.bithompid, data.sourceAddress, data.destinationTag);
+      if (data.completedAt) {
+        setStep(2);
+      } else {
+        setStep(1);
+        //no ws when completed / receipt, no api status check every minute
+        setUpdate(true);
+      }
     }
   }
 
@@ -232,35 +240,37 @@ export default function Username() {
   }, [update, register]);
 
   const updateBid = (data) => {
-    setBidData(data);
+    setBidData(data.bid);
     /* 
       setBidData({
         "bid": {
-          "id": 907,
-          "createdAt": 1653497569,
-          "updatedAt": 165349767,
-          "bithompid": "test13",
-          "address": "rUjTn3UjrZC3jwisxqH6VpcTKccYSWiLDi",
-          "destinationTag": 646158625,
+          "id": 933,
+          "createdAt": 1658837571,
+          "updatedAt": 1658840261,
+          "bithompid": "testtest1",
+          "address": "rpqVJrX7L4yx2vjYPpDC5DAGrdp92zcsMW",
+          "destinationTag": 480657625,
           "action": "Registration",
-          "status": "Completed",
-          "price": 25.2,
-          "totalReceivedAmount": 25.2,
+          "status": "Partly paid",
+          "price": 29.46,
+          "totalReceivedAmount": 29.1,
           "currency": "XRP",
           "priceInSEK": 100,
-          "country": ""
+          "country": "SE",
+          "totalToPay": 29.46,
+          "totalPayLeft": 0.35999999999999943
         },
         "transactions": [
           {
-            "id": 352,
-            "processedAt": 1653497667,
-            "hash": "AABFBAA8321D6500B83EF18733A5A0DBE3A819D18FA6DDBEDE8CCEA3893DE844",
-            "ledger": 28071047,
+            "id": 365,
+            "processedAt": 1658837750,
+            "hash": "65FC5B4F3227D385CFFEEC7DC14493A59AB78FD112096877EB94CB4C24C12CD9",
+            "ledger": 29798617,
             "type": "Payment",
-            "sourceAddress": "rUjTn3UjrZC3jwisxqH6VpcTKccYSWiLDi",
+            "sourceAddress": "rpqVJrX7L4yx2vjYPpDC5DAGrdp92zcsMW",
             "destinationAddress": "rsuUjfWxrACCAwGQDsNeZUhpzXf1n1NK5Z",
-            "destinationTag": 646158625,
-            "amount": 25.2,
+            "destinationTag": 480657625,
+            "amount": 29,
             "status": "Completed"
           }
         ]
@@ -275,7 +285,7 @@ export default function Username() {
       return;
     }
     if (data.bid.status === "Partly paid") {
-      setErrorMessage(t("username.error.payment-partly", { received: data.bid.totalReceivedAmount, required: register.amount, currency: register.currency }));
+      setPaymentErrorMessage(t("username.error.payment-partly", { received: data.bid.totalReceivedAmount, required: data.bid.price, currency: data.bid.currency }));
       return;
     }
     if (data.bid.status === "Timeout") {
@@ -410,6 +420,7 @@ export default function Username() {
           <div className='payment-awaiting bordered center'>
             <div className="waiting"></div>
             <br /><br />
+            <p className="red center" dangerouslySetInnerHTML={{ __html: paymentErrorMessage || "&nbsp;" }} />
             {t("username.step1.about-confirmation")}
           </div>
         </>

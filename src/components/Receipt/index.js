@@ -29,48 +29,30 @@ export default function Receipt({ item, details }) {
 
   if (item === "username") {
     serviceName = t("menu.usernames");
-    const { bid, transactions } = details;
-    if (bid) {
-      timestamp = bid.createdAt; // CHANGE TO COMPLETED!!!
-      fiatPrice = bid.priceInSEK;
-      xrpPrice = bid.price;
-    }
-
-    if (transactions) {
-      txHash = transactions[0].hash; // CHANGE TO HASH in BID !!!
+    if (details) {
+      timestamp = details.completedAt;
+      fiatPrice = details.priceInSEK;
+      xrpPrice = details.price;
+      txHash = details.txHash
     }
 
     /*
     {
-      "bid": {
-        "id": 907,
-        "createdAt": 1653497569,
-        "updatedAt": 165349767,
-        "bithompid": "test13",
-        "address": "rUjTn3UjrZC3jwisxqH6VpcTKccYSWiLDi",
-        "destinationTag": 646158625,
-        "action": "Registration",
-        "status": "Completed",
-        "price": 25.2,
-        "totalReceivedAmount": 25.2,
-        "currency": "XRP",
-        "priceInSEK": 100,
-        "country": ""
-      },
-      "transactions": [
-        {
-          "id": 352,
-          "processedAt": 1653497667,
-          "hash": "AABFBAA8321D6500B83EF18733A5A0DBE3A819D18FA6DDBEDE8CCEA3893DE844",
-          "ledger": 28071047,
-          "type": "Payment",
-          "sourceAddress": "rUjTn3UjrZC3jwisxqH6VpcTKccYSWiLDi",
-          "destinationAddress": "rsuUjfWxrACCAwGQDsNeZUhpzXf1n1NK5Z",
-          "destinationTag": 646158625,
-          "amount": 25.2,
-          "status": "Completed"
-        }
-      ]
+      action: "Registration",
+      address: "rpqVJrX7L4yx2vjYPpDC5DAGrdp92zcsMW",
+      bithompid: "testtest1",
+      completedAt: 1658841346,
+      country: "SE",
+      createdAt: 1658837571,
+      currency: "XRP",
+      destinationTag: 480657625,
+      id: 933,
+      price: 29.46,
+      priceInSEK: 100,
+      status: "Completed",
+      totalReceivedAmount: 29.470000000000002,
+      txHash: "5F622D6CA708F72B7ECAC575995739D4844C267A533889A595573E91316B2FA0"
+      updatedAt: 1658841346
     }
     */
   }
