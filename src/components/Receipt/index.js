@@ -58,8 +58,8 @@ export default function Receipt({ item, details }) {
   }
 
   timestamp = new Date(timestamp * 1000).toLocaleString();
-  fiatPrice = fiatPrice.toFixed(2);
-  xrpPrice = xrpPrice.toFixed(2);
+  fiatPrice = fiatPrice?.toFixed(2);
+  xrpPrice = xrpPrice?.toFixed(2);
   const rate = Math.floor((fiatPrice / xrpPrice) * 100) / 100;
 
   return (
