@@ -71,17 +71,12 @@ export default function Header({ theme, switchTheme }) {
         </div>
 
         <div className="menu-dropdown">
-          {!xls20Enabled ?
-            <Link to="/last-ledger-information" className="menu-dropdown-button">XRPL</Link> :
-            <>
-              <div className="menu-dropdown-button">XRPL</div>
-              <div className="menu-dropdown-content">
-                <Link to="/last-ledger-information">{t("menu.last-ledger-information")}</Link>
-                <Link to="/nft-statistics">{t("menu.nft-statistics")}</Link>
-                {/* <Link to="/genesis">{t("menu.genesis")}</Link> */}
-              </div>
-            </>
-          }
+          <div className="menu-dropdown-button">XRPL</div>
+          <div className="menu-dropdown-content">
+            {xls20Enabled && <Link to="/nft-statistics">{t("menu.nft-statistics")}</Link>}
+            <Link to="/last-ledger-information">{t("menu.last-ledger-information")}</Link>
+            {!devNet && <Link to="/genesis">{t("menu.genesis")}</Link>}
+          </div>
         </div>
       </div>
       <div className="header-menu-right">
@@ -123,7 +118,7 @@ export default function Header({ theme, switchTheme }) {
               {t("menu.nft-statistics")}
             </Link>
           }
-          {/* !devNet && <Link to="/genesis" className="mobile-menu-item">{t("menu.genesis")}</link> */}
+          {!devNet && <Link to="/genesis" className="mobile-menu-item">{t("menu.genesis")}</Link>}
           {devNet ?
             <>
               <div className="mobile-menu-directory"><span>{t("menu.tools")}</span></div>
@@ -141,7 +136,6 @@ export default function Header({ theme, switchTheme }) {
             </> :
             <>
               <div className="mobile-menu-directory"><span>{t("menu.networks")}</span></div>
-              <a href="https://bithomp.com" className="mobile-menu-item">Mainnet</a>
               {devNet !== 'testnet' && <a href="https://test.bithomp.com" className="mobile-menu-item">Testnet</a>}
               {devNet !== 'xls20' && <a href="https://xls20.bithomp.com" className="mobile-menu-item">XLS-20</a>}
               {devNet !== 'hooks' && <a href="https://hooks.bithomp.com" className="mobile-menu-item">Hooks</a>}

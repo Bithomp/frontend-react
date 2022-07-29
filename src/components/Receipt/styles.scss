@@ -36,16 +36,22 @@
       }
       table {
         width: 100%;
-        border: none;
-        th {
-          text-align: left;
-          text-transform: uppercase;
-          @media only screen and (max-width: 640px) {
-            font-size: 12px;
+        tr {
+          th, td {
+            padding: 10px;
+            font-size: 14px;
+            @media only screen and (max-width: 640px) {
+              padding: 2px;
+              font-size: 12px;
+            }
           }
-        }
-        tr:last-child {
-          border-top: 1px solid var(--accent-icon);
+          th {
+            text-align: left;
+            text-transform: uppercase;
+          }
+          &:last-child {
+            border-top: 1px solid var(--accent-icon);
+          }
         }
       }
       .receipt-order-id {

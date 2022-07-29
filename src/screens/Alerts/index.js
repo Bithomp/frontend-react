@@ -62,7 +62,7 @@ export default function Alerts() {
       </p>
       <br />
       <h3 className="center">{t("alerts.last-alerts")}</h3>
-      <table>
+      <table className="table-large">
         <thead>
           <tr>
             <th>#</th>

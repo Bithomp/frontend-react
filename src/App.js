@@ -13,7 +13,7 @@ import Alerts from "./screens/Alerts";
 import Developer from "./screens/Developer";
 import LastLedgerInformation from './screens/LastLedgerInformation';
 import NftStatistics from './screens/NftStatistics';
-import Genesis from "./screens/Genesis"; // TODO
+import Genesis from "./screens/Genesis";
 import Disclaimer from './screens/Disclaimer';
 import PrivacyPolicy from './screens/PrivacyPolicy';
 import TermsAndConditions from './screens/TermsAndConditions';
