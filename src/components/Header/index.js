@@ -99,8 +99,14 @@ export default function Header({ theme, switchTheme }) {
           >
             {t("menu.usernames")}
           </Link>
-          {!devNet && <Link to="/alerts" className="mobile-menu-item">{t("menu.price-alerts")}</Link>}
-          <a href="https://docs.bithomp.com" className="mobile-menu-item">{t("menu.api")}</a>
+          {!devNet &&
+            <Link to="/alerts" className="mobile-menu-item" onClick={mobileMenuToggle}>
+              {t("menu.price-alerts")}
+            </Link>
+          }
+          <a href="https://docs.bithomp.com" className="mobile-menu-item">
+            {t("menu.api")}
+          </a>
           <div className="mobile-menu-directory"><span>XRPL</span></div>
           <Link
             to="/last-ledger-information"
@@ -118,7 +124,11 @@ export default function Header({ theme, switchTheme }) {
               {t("menu.nft-statistics")}
             </Link>
           }
-          {!devNet && <Link to="/genesis" className="mobile-menu-item">{t("menu.genesis")}</Link>}
+          {!devNet &&
+            <Link to="/genesis" className="mobile-menu-item" onClick={mobileMenuToggle}>
+              {t("menu.genesis")}
+            </Link>
+          }
           {devNet ?
             <>
               <div className="mobile-menu-directory"><span>{t("menu.tools")}</span></div>
