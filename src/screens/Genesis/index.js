@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useTranslation } from 'react-i18next';
+import { isMobile } from "react-device-detect";
 
 import { numberWithSpaces } from '../../utils';
 
@@ -85,30 +86,75 @@ export default function Genesis() {
         </div>
       </div>
       <br />
-      <table className="table-large">
-        <thead>
-          <tr>
-            <th>Genesis index</th>
-            <th>Address</th>
-            <th>Genesis XRP balance</th>
-            <th>XRP balance {lastUpdate(data.balance_update, {})}</th>
-            <th>Rippletrade</th>
-            <th>Nickname</th>
-          </tr>
-        </thead>
-        <tbody>
-          {data?.genesis?.map((account, i) => (
-            <tr key={i}>
-              <td>{account.genesis_index}</td>
-              <td><a href={"https://bithomp.com/explorer/" + account.address}>{account.address}</a></td>
-              <td>{numberWithSpaces(account.genesis_balance)}</td>
-              <td>{numberWithSpaces(account.balance)}</td>
-              <td><a href={"https://bithomp.com/explorer/" + account.rippletrade}>{account.rippletrade}</a></td>
-              <td>{account.nickname}</td>
+
+      {isMobile ?
+        <table className="table-mobile">
+          <thead>
+            <tr>
+              <th>№</th>
+              <th>Details</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {data?.genesis?.map((account, i) => (
+              <tr key={i}>
+                <td>{account.genesis_index}</td>
+                <td>
+                  <p>
+                    Address<br />
+                    <a href={"https://bithomp.com/explorer/" + account.address}>{account.address}</a>
+                  </p>
+                  <p>
+                    Genesis XRP balance<br />
+                    {numberWithSpaces(account.genesis_balance)}
+                  </p>
+                  <p>
+                    XRP balance {lastUpdate(data.balance_update, {})}<br />
+                    {numberWithSpaces(account.balance)}
+                  </p>
+                  {account.rippletrade &&
+                    <p>
+                      Rippletrade username<br />
+                      <a href={"https://bithomp.com/explorer/" + account.rippletrade}>{account.rippletrade}</a>
+                    </p>
+                  }
+                  {
+                    account.nickname &&
+                    <p>
+                      Nickname<br />
+                      {account.nickname}
+                    </p>
+                  }
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table> :
+        <table className="table-large">
+          <thead>
+            <tr>
+              <th>Genesis index</th>
+              <th>Address</th>
+              <th>Genesis XRP balance</th>
+              <th>XRP balance {lastUpdate(data.balance_update, {})}</th>
+              <th>Rippletrade</th>
+              <th>Nickname</th>
+            </tr>
+          </thead>
+          <tbody>
+            {data?.genesis?.map((account, i) => (
+              <tr key={i}>
+                <td>{account.genesis_index}</td>
+                <td><a href={"https://bithomp.com/explorer/" + account.address}>{account.address}</a></td>
+                <td>{numberWithSpaces(account.genesis_balance)}</td>
+                <td>{numberWithSpaces(account.balance)}</td>
+                <td><a href={"https://bithomp.com/explorer/" + account.rippletrade}>{account.rippletrade}</a></td>
+                <td>{account.nickname}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      }
     </div>
   );
 };
