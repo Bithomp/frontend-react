@@ -22,7 +22,10 @@ i18n
       escapeValue: false, // no need for react. it escapes by default
     },
     backend: {
-      loadPath: '/react/locales/{{lng}}/{{ns}}.json'
+      loadPath: '/react/locales/{{lng}}/{{ns}}.json',
+      requestOptions: {
+        cache: 'no-store'
+      },
     },
   });
 
