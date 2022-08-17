@@ -358,7 +358,7 @@ export default function Username() {
           <p>{t("username.step0.pay-from-your-address")}</p>
           <p>
             <Trans i18nKey="username.step0.text3">
-              The payment is for 100 SEK denominated in XRP. The payment for the username is <b>not refundable</b>. If you pay more than requested, the exceeding amount will be counted as donation and won't be refunded.
+              The payment is for 100 Swedish kronor denominated in XRP. The payment for the username is <b>not refundable</b>. If you pay more than requested, the exceeding amount will be counted as donation and won't be refunded.
             </Trans>
           </p>
 
