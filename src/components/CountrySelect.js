@@ -62,6 +62,7 @@ export default function CountrySelect({ setCountryCode }) {
   const onCountryChange = (item) => {
     setSelectCountry(item);
     setSavedCounty(item.value);
+    setCountryCode(item.value);
   }
 
   return (
