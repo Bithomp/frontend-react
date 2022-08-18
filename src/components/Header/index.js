@@ -45,10 +45,7 @@ export default function Header({ theme, switchTheme }) {
             <div className="menu-dropdown-button">{t("menu.tools")}</div>
             <div className="menu-dropdown-content">
               <a href="/create/">{t("menu.account-generation")}</a>
-              {devNet === 'testnet' ?
-                <a href="https://xrpl.org/xrp-testnet-faucet.html">{t("menu.faucet")}</a> :
-                <a href="/faucet/">{t("menu.faucet")}</a>
-              }
+              <a href="/faucet/">{t("menu.faucet")}</a>
               {xls20Enabled &&
                 <>
                   <a href="/nft-test/">NFT tester</a>
@@ -133,10 +130,7 @@ export default function Header({ theme, switchTheme }) {
             <>
               <div className="mobile-menu-directory"><span>{t("menu.tools")}</span></div>
               <a href="/create/" className="mobile-menu-item">{t("menu.account-generation")}</a>
-              {devNet === 'testnet' ?
-                <a href="https://xrpl.org/xrp-testnet-faucet.html" className="mobile-menu-item">{t("menu.faucet")}</a> :
-                <a href="/faucet/" className="mobile-menu-item">{t("menu.faucet")}</a>
-              }
+              <a href="/faucet/" className="mobile-menu-item">{t("menu.faucet")}</a>
               {xls20Enabled &&
                 <>
                   <a href="/nft-test/" className="mobile-menu-item">NFT tester</a>

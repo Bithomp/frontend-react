@@ -33,10 +33,7 @@ export default function Footer() {
           <div className="footer-menu-column">
             <span className="footer-menu-header">{t("menu.tools")}</span>
             <a href="/create/">{t("menu.account-generation")}</a>
-            {devNet === 'testnet' ?
-              <a href="https://xrpl.org/xrp-testnet-faucet.html">{t("menu.faucet")}</a> :
-              <a href="/faucet/">{t("menu.faucet")}</a>
-            }
+            <a href="/faucet/">{t("menu.faucet")}</a>
             {xls20Enabled &&
               <>
                 <a href="/nft-test/">NFT tester</a>
