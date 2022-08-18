@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import axios from 'axios';
 
 import { wssServer, numberWithSpaces, xls20Enabled } from '../../utils';
 
@@ -8,6 +9,14 @@ let ws = null;
 export default function Statistics() {
   const [data, setData] = useState(null);
   const { t } = useTranslation();
+
+  const checkStatApi = async () => {
+    const response = await axios('v2/statistics');
+    const data = response.data;
+    if (data) {
+      setData(data);
+    }
+  }
 
   const connect = () => {
     ws = new WebSocket(wssServer);
@@ -67,6 +76,7 @@ export default function Statistics() {
   }
 
   useEffect(() => {
+    checkStatApi();
     connect();
     return () => {
       setData(null);
