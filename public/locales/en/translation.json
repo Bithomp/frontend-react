@@ -135,7 +135,7 @@
     "step1": {
       "to-register": "To register your public username:",
       "from-your-address": "You need to make a payment from the address:",
-      "text0": "Payments made by you <1>from any other addresses</1> won't be accepted for the service, it will be accepted as a donation and <3>won't be refunded</3>.",
+      "text0": "Payments made by you <1>from any other addresses</1> or with a <3>wrong destination tag</3> won't be accepted for the service, it will be accepted as a donation and <5>won't be refunded</5>.",
       "payment-instructions": "Payment instructions",
       "address": "XRPL address:",
       "tag": "Destination tag:",

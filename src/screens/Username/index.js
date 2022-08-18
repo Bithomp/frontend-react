@@ -403,7 +403,7 @@ export default function Username() {
             {t("username.step1.from-your-address")} <b>{register.sourceAddress}</b>.
             <br />
             <Trans i18nKey="username.step1.text0">
-              Payments made by you <b className="red">from any other addresses</b> won't be accepted for the service, it will be accepted as a donation and <b className="red">won't be refunded</b>.
+              Payments made by you <b className="red">from any other addresses</b> or with a <b className="red">wrong destination tag</b> won't be accepted for the service, it will be accepted as a donation and <b className="red">won't be refunded</b>.
             </Trans>
           </p>
 
