@@ -61,9 +61,10 @@ export default function Header({ theme, switchTheme }) {
           <div className="menu-dropdown-content">
             {devNet && <a href="https://bithomp.com">Mainnet</a>}
             {devNet !== 'testnet' && <a href="https://test.bithomp.com">Testnet</a>}
+            {devNet !== 'devnet' && <a href="https://dev.bithomp.com">Devnet</a>}
+            {devNet !== 'beta' && <a href="https://beta.bithomp.com">Betanet (Hooks v2)</a>}
             {devNet !== 'xls20' && <a href="https://xls20.bithomp.com">XLS-20</a>}
             {devNet !== 'hooks' && <a href="https://hooks.bithomp.com">Hooks</a>}
-            {devNet !== 'beta' && <a href="https://beta.bithomp.com">Hooks v2 / beta</a>}
           </div>
         </div>
 
@@ -141,9 +142,10 @@ export default function Header({ theme, switchTheme }) {
             <>
               <div className="mobile-menu-directory"><span>{t("menu.networks")}</span></div>
               {devNet !== 'testnet' && <a href="https://test.bithomp.com" className="mobile-menu-item">Testnet</a>}
+              {devNet !== 'devnet' && <a href="https://dev.bithomp.com" className="mobile-menu-item">Devnet</a>}
+              {devNet !== 'beta' && <a href="https://beta.bithomp.com" className="mobile-menu-item">Betanet (Hooks v2)</a>}
               {devNet !== 'xls20' && <a href="https://xls20.bithomp.com" className="mobile-menu-item">XLS-20</a>}
               {devNet !== 'hooks' && <a href="https://hooks.bithomp.com" className="mobile-menu-item">Hooks</a>}
-              {devNet !== 'beta' && <a href="https://beta.bithomp.com" className="mobile-menu-item">Hooks v2 / beta</a>}
             </>
           }
           <div className="mobile-menu-directory"></div>

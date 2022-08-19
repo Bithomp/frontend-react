@@ -7,8 +7,8 @@ export const numberWithSpaces = (x) => {
   return parts.join(".");
 }
 
-//const networks = ['local', 'mainnet', 'testnet', 'beta', 'xls20', 'hooks'];
-//const devNetworks = ['testnet', 'beta', 'xls20', 'hooks'];
+//const networks = ['local', 'mainnet', 'testnet', 'beta', 'xls20', 'hooks', 'devnet'];
+//const devNetworks = ['testnet', 'beta', 'xls20', 'hooks', 'devnet'];
 
 export const network = process.env.REACT_APP_NETWORK_NAME ? process.env.REACT_APP_NETWORK_NAME : "mainnet";
 export const devNet = ['mainnet', 'local'].includes(network) ? false : network;
@@ -22,6 +22,9 @@ const Server = () => {
       break;
     case 'testnet':
       server = "https://test.bithomp.com";
+      break;
+    case 'devnet':
+      server = "https://dev.bithomp.com";
       break;
     case 'hooks':
       server = "https://hooks.bithomp.com";
