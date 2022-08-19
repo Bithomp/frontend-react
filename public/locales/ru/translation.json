@@ -53,7 +53,7 @@
       "txs-per-sec": "тран/сек",
       "quorum": "Кворум валидаторов",
       "proposers": "предлагающих",
-      "accounts": "Аадреса",
+      "accounts": "Адреса",
       "usernames": "Ники",
       "nft": {
         "created": "NFT создано",
