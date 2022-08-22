@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useTranslation } from 'react-i18next';
+import { useTranslation, Trans } from 'react-i18next';
 import { isMobile } from "react-device-detect";
 
 import { numberWithSpaces } from '../../utils';
@@ -49,36 +49,37 @@ export default function Genesis() {
 
       <div className='flex'>
         <div className="grey-box">
-          The ledger <b>32570</b> is the earliest ledger available, approximately the first week of XRPL history,
-          {" "}
-          <a
-            href="https://web.archive.org/web/20171211225452/https://forum.ripple.com/viewtopic.php?f=2&t=3613"
-            rel="noreferrer"
-            target="_blank"
-          >
-            ledgers 1 through 32569 were lost due to a mishap in 2012
-          </a>.
+          <Trans i18nKey="genesis.text0">
+            The ledger <b>32570</b> is the earliest ledger available, approximately the first week of XRPL history,
+            <a
+              href="https://web.archive.org/web/20171211225452/https://forum.ripple.com/viewtopic.php?f=2&t=3613"
+              rel="noreferrer"
+              target="_blank"
+            >
+              ledgers 1 through 32569 were lost due to a mishap in 2012
+            </a>.
+          </Trans>
           <br /><br />
-          Because the XRP Ledger's state is recorded in every ledger version, the ledger can continue without the missing history.
+          {t("genesis.ledger-continue")}
         </div>
 
         <div className="grey-box">
           <table>
             <tbody>
-              <tr><td>Ledger index</td><td>32570</td></tr>
-              <tr><td>Account count</td><td>136</td></tr>
+              <tr><td>{t("genesis.ledger-index")}</td><td>32570</td></tr>
+              <tr><td>{t("genesis.account-count")}</td><td>136</td></tr>
               <tr>
-                <td>Inception</td>
+                <td>{t("genesis.inception")}</td>
                 <td>{new Date("2013-01-01T03:21:00Z").toLocaleString([], timestampFormatParams)}</td>
               </tr>
-              <tr><td>XRP balance</td><td>99 999 999 999.996320</td></tr>
+              <tr><td>{t("genesis.xrp-balance")}</td><td>99 999 999 999.996320</td></tr>
               <tr><td colSpan={2}><hr /></td></tr>
               <tr>
-                <td>Balance update</td>
+                <td>{t("genesis.balance-update")}</td>
                 <td>{lastUpdate(data.balance_update, timestampFormatParams)}</td>
               </tr>
               <tr>
-                <td>XRP balance</td>
+                <td>{t("genesis.xrp-balance")}</td>
                 <td>{data.balance_all && numberWithSpaces(data.balance_all)}</td>
               </tr>
             </tbody>
@@ -92,7 +93,7 @@ export default function Genesis() {
           <thead>
             <tr>
               <th>№</th>
-              <th>Details</th>
+              <th>{t("genesis.details")}</th>
             </tr>
           </thead>
           <tbody>
@@ -101,27 +102,27 @@ export default function Genesis() {
                 <td>{account.genesis_index}</td>
                 <td>
                   <p>
-                    Address<br />
+                    {t("genesis.address")}<br />
                     <a href={"https://bithomp.com/explorer/" + account.address}>{account.address}</a>
                   </p>
                   <p>
-                    Genesis XRP balance<br />
+                    {t("genesis.genesis-balance")}<br />
                     {numberWithSpaces(account.genesis_balance)}
                   </p>
                   <p>
-                    XRP balance {lastUpdate(data.balance_update, {})}<br />
+                    {t("genesis.xrp-balance")} {lastUpdate(data.balance_update, {})}<br />
                     {numberWithSpaces(account.balance)}
                   </p>
                   {account.rippletrade &&
                     <p>
-                      Rippletrade username<br />
+                      {t("genesis.rippletrade-username")}<br />
                       <a href={"https://bithomp.com/explorer/" + account.rippletrade}>{account.rippletrade}</a>
                     </p>
                   }
                   {
                     account.nickname &&
                     <p>
-                      Nickname<br />
+                      {t("genesis.nickname")}<br />
                       {account.nickname}
                     </p>
                   }
@@ -133,12 +134,12 @@ export default function Genesis() {
         <table className="table-large">
           <thead>
             <tr>
-              <th>Genesis index</th>
-              <th>Address</th>
-              <th>Genesis XRP balance</th>
-              <th>XRP balance {lastUpdate(data.balance_update, {})}</th>
+              <th>{t("genesis.genesis-index")}</th>
+              <th>{t("genesis.address")}</th>
+              <th>{t("genesis.genesis-balance")}</th>
+              <th>{t("genesis.xrp-balance")} {lastUpdate(data.balance_update, {})}</th>
               <th>Rippletrade</th>
-              <th>Nickname</th>
+              <th>{t("genesis.nickname")}</th>
             </tr>
           </thead>
           <tbody>

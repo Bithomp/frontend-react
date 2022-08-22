@@ -158,6 +158,21 @@
     "old-rate": "Old rate",
     "new-rate": "New rate"
   },
+  "genesis": {
+    "text0": "The ledger <1>32570</1> is the earliest ledger available, approximately the first week of XRPL history, <3>ledgers 1 through 32569 were lost due to a mishap in 2012</3>.",
+    "ledger-continue": "Because the XRP Ledger's state is recorded in every ledger version, the ledger can continue without the missing history.",
+    "ledger-index": "Ledger index",
+    "account-count": "Account count",
+    "inception": "Inception",
+    "xrp-balance": "XRP balance",
+    "balance-update": "Balance update",
+    "details": "Details",
+    "address": "Address",
+    "genesis-balance": "Genesis XRP balance",
+    "rippletrade-username": "Rippletrade username",
+    "nickname": " Nickname",
+    "genesis-index": "Genesis index"
+  },
   "developer": {
     "header": "Bithomp API key request",
     "email": "Your company/university e-mail address:",
