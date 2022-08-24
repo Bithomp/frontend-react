@@ -150,7 +150,7 @@
   "alerts": {
     "text0": "Get notified when XRP/USD or XRP/BTC market price by <1>Bitstamp</1> changes for more than 5% within an hour or more than 10% within a day.",
     "text1": "Follow the Telegram channel: <1>bithomp</1> or the twitter account: <3>bithompAlerts</3>.",
-    "last-alerts": "Last alerts",
+    "last-alerts": "Last 50 alerts",
     "date-and-time": "Date & time",
     "currency-pair": "Currency pair",
     "change-duration": "Change duration",
