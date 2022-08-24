@@ -60,7 +60,7 @@ export default function Footer() {
         <div className="footer-menu-column">
           <span className="footer-menu-header">Bithomp</span>
           <Link to="/customer-support">{t("menu.customer-support")}</Link>
-          {/* !devNet && <Link to="/mediakit">{t("menu.media-kit")}</Link> */}
+          <Link to="/mediakit">{t("menu.media-kit")}</Link>
         </div>
 
         <div className="footer-menu-column">
