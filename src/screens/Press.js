@@ -1,17 +1,17 @@
 import { Trans, useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
-import { ReactComponent as Logo } from "../assets/images/logo.svg";
+import press from '../assets/images/press.png';
 
-export default function MediaKit() {
+export default function Press() {
   const { t } = useTranslation();
 
   return (
     <div className="content-text content-center">
-      <h1 className="center">{t("menu.media-kit")}</h1>
-      <Logo />
+      <h1 className="center">{t("menu.press")}</h1>
+      <img src={press} alt="press" style={{ "width": "100%" }} />
       <p>
-        <Trans i18nKey="mediakit">
+        <Trans i18nKey="press">
           This is the official logo for Bithomp to use by media and press professionals for print and web (svg, png, eps, pdf, for dark and light backgrounds).
           For media inquiries, please <Link to="/customer-support">contact us</Link>.
         </Trans>
@@ -19,7 +19,7 @@ export default function MediaKit() {
       <p className="center">
         <a
           className="button-action"
-          href={process.env.PUBLIC_URL + '/download/bithomp-mediakit.zip'}
+          href={process.env.PUBLIC_URL + '/download/bithomp-press.zip'}
         >
           {t("button.download")}
         </a>

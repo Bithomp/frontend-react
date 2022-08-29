@@ -18,7 +18,7 @@ import Disclaimer from './screens/Disclaimer';
 import PrivacyPolicy from './screens/PrivacyPolicy';
 import TermsAndConditions from './screens/TermsAndConditions';
 import CustomerSupport from "./screens/CustomerSupport";
-import MediaKit from "./screens/MediaKit"; // TODO
+import Press from "./screens/Press";
 import PageNotFound from './screens/PageNotFound';
 import Redirect from './screens/Redirect';
 
@@ -58,7 +58,7 @@ export default function App() {
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
           <Route path="/customer-support" element={<CustomerSupport />} />
-          <Route path="/mediakit" element={<MediaKit />} />
+          <Route path="/press" element={<Press />} />
           <Route path="/error" element={<PageNotFound />} />
           <Route path="*" element={<Redirect />} />
         </Routes>

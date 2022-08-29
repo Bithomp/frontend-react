@@ -17,7 +17,7 @@
     "privacy-policy": "Privacy policy",
     "terms-and-conditions": "Terms and conditions",
     "customer-support": "Customer support",
-    "media-kit": "Media kit",
+    "press": "Press",
     "community": {
       "title": "Community",
       "xumm": "Xumm wallet",
@@ -205,7 +205,7 @@
     "text4": "If you have a public XRPL service and you want your XRP addresses to be recognised on Bithomp submit your information <1>here</1>. You can also contact us by email: <3/> if you want to speed up the process.",
     "follow-us": "Follow us on social media"
   },
-  "mediakit": "This is the official logo for Bithomp to use by media and press professionals for print and web (svg, png, eps, pdf, for dark and light backgrounds). For media inquiries, please <1>contact us</1>.",
+  "press": "This is the official logo for Bithomp to use by media and press professionals for print and web (svg, png, eps, pdf, for dark and light backgrounds). For media inquiries, please <1>contact us</1>.",
   "page-not-found": {
     "header": "The requested page wasn't found.",
     "text": "Click <1>here</1> to check our landing page."
