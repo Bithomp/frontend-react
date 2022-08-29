@@ -120,6 +120,7 @@ header {
           top: -.8em;
           font-size: 14px;
           background-color: var(--background-menu);
+          transition: background-color .5s;
           display: inline-block;
           padding: 0 10px;
         }
@@ -168,9 +169,15 @@ header {
 
 @media only screen and (max-width: 1024px) {
   header {
-    .header-menu-left,
-    .header-menu-right {
+    .header-menu-left {
       display: none;
+    }
+
+    .header-menu-right {
+      .header-signin-link,
+      .theme-switch {
+        display: none;
+      }
     }
 
     .header-logo {

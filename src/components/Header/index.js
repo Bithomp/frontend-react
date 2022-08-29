@@ -17,8 +17,10 @@ export default function Header({ theme, switchTheme }) {
     // remove scrollbar when menu is open
     if (!menuOpen) {
       document.body.style.overflow = "hidden";
+      document.getElementsByClassName("theme-switch")[0].style.display = "block";
     } else {
       document.body.style.overflow = "auto";
+      document.getElementsByClassName("theme-switch")[0].style.display = "none";
     }
     setMenuOpen(!menuOpen);
   };
@@ -78,7 +80,7 @@ export default function Header({ theme, switchTheme }) {
         </div>
       </div>
       <div className="header-menu-right">
-        <a href="/explorer/?hwlogin">{t("menu.sign-in")}</a>
+        <a href="/explorer/?hwlogin" className="header-signin-link">{t("menu.sign-in")}</a>
         <Switch theme={theme} switchTheme={switchTheme} />
       </div>
 
