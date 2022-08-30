@@ -1,9 +1,11 @@
 import { Routes, Route } from "react-router-dom";
+import { useState } from "react";
 import useLocalStorage from 'use-local-storage';
 import axios from 'axios';
 
 import Header from './components/Header';
 import Footer from './components/Footer';
+import SignInForm from "./components/SignInForm";
 import ScrollToTop from "./components/ScrollToTop";
 import BackgroundImage from './components/BackgroundImage';
 
@@ -27,6 +29,7 @@ import { network, devNet, server } from './utils';
 export default function App() {
   const defaultDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
   const [theme, setTheme] = useLocalStorage('theme', defaultDark ? 'dark' : 'light');
+  const [signInFormOpen, setSignInFormOpen] = useState(false);
 
   const switchTheme = () => {
     const newTheme = theme === 'light' ? 'dark' : 'light';
@@ -42,9 +45,10 @@ export default function App() {
 
   return (
     <div data-theme={theme} className="body" data-network={network}>
-      <Header theme={theme} switchTheme={switchTheme} />
+      <Header theme={theme} switchTheme={switchTheme} setSignInFormOpen={setSignInFormOpen} />
       <div className="content">
         <ScrollToTop />
+        {signInFormOpen && <SignInForm />}
         <Routes>
           <Route path="/" element={<Home theme={theme} devNet={devNet} />} />
           <Route path="/index.html" element={<Home theme={theme} devNet={devNet} />} />

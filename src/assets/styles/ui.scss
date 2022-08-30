@@ -105,7 +105,8 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
 }
 
-a {
+a, .link {
+  cursor: pointer;
   color: var(--accent-link);
   transition: color 0.5s;
   text-decoration: none;
