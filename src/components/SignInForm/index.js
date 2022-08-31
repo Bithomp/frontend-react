@@ -10,7 +10,7 @@ export default function SignInForm({ setSignInFormOpen }) {
   return (
     <div className="sign-in-form">
       <div className="sign-in-body center">
-        <h2 className='center'>Choose a signing app</h2>
+        <div className='header'>Choose a signing app</div>
         <div className='close-button' onClick={() => setSignInFormOpen(false)}></div>
         <div className='signin-apps'>
           <a href="">
