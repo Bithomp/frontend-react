@@ -48,7 +48,7 @@ export default function App() {
       <Header theme={theme} switchTheme={switchTheme} setSignInFormOpen={setSignInFormOpen} />
       <div className="content">
         <ScrollToTop />
-        {signInFormOpen && <SignInForm />}
+        {signInFormOpen && <SignInForm setSignInFormOpen={setSignInFormOpen} />}
         <Routes>
           <Route path="/" element={<Home theme={theme} devNet={devNet} />} />
           <Route path="/index.html" element={<Home theme={theme} devNet={devNet} />} />
