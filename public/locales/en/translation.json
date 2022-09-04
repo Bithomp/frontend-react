@@ -35,6 +35,9 @@
   "settings": {
     "language": "Language"
   },
+  "signin": {
+    "choose-app": "Choose a signing app"
+  },
   "footer": {
     "cookie": {
       "we-use-cookie": "We use cookies and similar technologies to improve your experience on our site.",
