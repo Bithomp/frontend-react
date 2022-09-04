@@ -35,6 +35,9 @@
   "settings": {
     "language": "Language"
   },
+  "signin": {
+    "choose-app": "Choose a signing app"
+  },
   "footer": {
     "cookie": {
       "we-use-cookie": "We use cookies and similar technologies to improve your experience on our site.",
@@ -120,7 +123,7 @@
       "text1": "The username will be assosiated with your address on the bithomp explorer and in third-party services which use bithomp <1>API</1>. After the registration it will become public - <3>anyone</3> will be able to see it. Your XRPL address will be accessable by:",
       "text2": "The username <1>can not be changed or deleted</1>.",
       "only-one-for-address": "For each XRPL address you can register only one username.",
-      "address-you-control": "You can only register usernames for XRPL addresses you control (you have a secret or recovery 12/24 words). You can not register a username for a hosted address (wich has a destination tag) within an exchange / service / wallet.",
+      "address-you-control": "You can only register usernames for XRPL addresses you control (you have a secret or recovery 12/24 words). You can not register a username for a hosted address (which has a destination tag) within an exchange / service / wallet.",
       "pay-from-your-address": "To prove that you're in control of the XRPL address you will need to make a payment from that address (for which you want to assign a username). Payments from other addresses will be counted as donations and won't be refunded.",
       "text3": "The payment is for 100 Swedish kronor denominated in XRP. The payment for the username is <1>not refundable</1>. If you pay more than requested, the exceeding amount will be counted as donation and won't be refunded.",
       "enter-address": "Enter your XRPL address",
