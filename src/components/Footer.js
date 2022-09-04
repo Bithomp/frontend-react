@@ -49,7 +49,6 @@ export default function Footer() {
           {devNet !== 'devnet' && <a href="https://dev.bithomp.com">Devnet</a>}
           {devNet !== 'beta' && <a href="https://beta.bithomp.com">Betanet (Hooks v2)</a>}
           {devNet !== 'xls20' && <a href="https://xls20.bithomp.com">XLS-20</a>}
-          {devNet !== 'hooks' && <a href="https://hooks.bithomp.com">Hooks</a>}
         </div>
         <div className="footer-menu-column">
           <span className="footer-menu-header">{t("menu.legal")}</span>

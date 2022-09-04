@@ -66,7 +66,6 @@ export default function Header({ theme, switchTheme, setSignInFormOpen }) {
             {devNet !== 'devnet' && <a href="https://dev.bithomp.com">Devnet</a>}
             {devNet !== 'beta' && <a href="https://beta.bithomp.com">Betanet (Hooks v2)</a>}
             {devNet !== 'xls20' && <a href="https://xls20.bithomp.com">XLS-20</a>}
-            {devNet !== 'hooks' && <a href="https://hooks.bithomp.com">Hooks</a>}
           </div>
         </div>
 
@@ -147,7 +146,6 @@ export default function Header({ theme, switchTheme, setSignInFormOpen }) {
               {devNet !== 'devnet' && <a href="https://dev.bithomp.com" className="mobile-menu-item">Devnet</a>}
               {devNet !== 'beta' && <a href="https://beta.bithomp.com" className="mobile-menu-item">Betanet (Hooks v2)</a>}
               {devNet !== 'xls20' && <a href="https://xls20.bithomp.com" className="mobile-menu-item">XLS-20</a>}
-              {devNet !== 'hooks' && <a href="https://hooks.bithomp.com" className="mobile-menu-item">Hooks</a>}
             </>
           }
           <div className="mobile-menu-directory"></div>
