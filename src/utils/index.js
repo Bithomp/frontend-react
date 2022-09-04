@@ -12,7 +12,6 @@ export const numberWithSpaces = (x) => {
 
 export const network = process.env.REACT_APP_NETWORK_NAME ? process.env.REACT_APP_NETWORK_NAME : "mainnet";
 export const devNet = ['mainnet', 'local'].includes(network) ? false : network;
-export const xls20Enabled = ['xls20', 'beta'].includes(network);
 
 const Server = () => {
   let server = "https://test.bithomp.com";

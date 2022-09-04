@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { useTranslation } from 'react-i18next';
 import useLocalStorage from 'use-local-storage';
 
-import { devNet, xls20Enabled } from '../utils';
+import { devNet } from '../utils';
 
 import logo from "../assets/images/logo-animated.svg";
 
@@ -34,12 +34,6 @@ export default function Footer() {
             <span className="footer-menu-header">{t("menu.tools")}</span>
             <a href="/create/">{t("menu.account-generation")}</a>
             <a href="/faucet/">{t("menu.faucet")}</a>
-            {xls20Enabled &&
-              <>
-                <a href="/nft-test/">NFT tester</a>
-                <a href="https://xrpl.org/nftoken-tester-tutorial.html">NFT tester tutorial</a>
-              </>
-            }
           </div>
         }
         <div className="footer-menu-column">

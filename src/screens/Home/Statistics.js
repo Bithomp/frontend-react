@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import axios from 'axios';
 
-import { wssServer, numberWithSpaces, xls20Enabled } from '../../utils';
+import { wssServer, numberWithSpaces } from '../../utils';
 
 let ws = null;
 
@@ -147,7 +147,7 @@ export default function Statistics() {
         <div>{registeredUsernames}</div>
       </div>
     </div>
-    {xls20Enabled && <div className='statistics-block'>
+    <div className='statistics-block'>
       <div className='stat-piece'>
         <div className='stat-piece-header'>{t("home.stat.nft.created")}</div>
         <div>{numberWithSpaces(nft.created)}</div>
@@ -172,6 +172,6 @@ export default function Statistics() {
         <div className='stat-piece-header'>{t("home.stat.nft.for-sale")}</div>
         <div>{numberWithSpaces(nft.forSaleWithoutDestination)}</div>
       </div>
-    </div>}
+    </div>
   </>;
 }

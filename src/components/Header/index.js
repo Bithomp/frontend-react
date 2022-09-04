@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { useTranslation } from 'react-i18next';
 import { useState } from 'react';
 
-import { devNet, xls20Enabled } from '../../utils';
+import { devNet } from '../../utils';
 
 import logo from "../../assets/images/logo-animated.svg";
 import Switch from "./Switch";
@@ -48,12 +48,6 @@ export default function Header({ theme, switchTheme, setSignInFormOpen }) {
             <div className="menu-dropdown-content">
               <a href="/create/">{t("menu.account-generation")}</a>
               <a href="/faucet/">{t("menu.faucet")}</a>
-              {xls20Enabled &&
-                <>
-                  <a href="/nft-test/">NFT tester</a>
-                  <a href="https://xrpl.org/nftoken-tester-tutorial.html">NFT tester tutorial</a>
-                </>
-              }
             </div>
           </div>
         }
@@ -72,7 +66,7 @@ export default function Header({ theme, switchTheme, setSignInFormOpen }) {
         <div className="menu-dropdown">
           <div className="menu-dropdown-button">XRPL</div>
           <div className="menu-dropdown-content">
-            {xls20Enabled && <Link to="/nft-statistics">{t("menu.nft-statistics")}</Link>}
+            <Link to="/nft-statistics">{t("menu.nft-statistics")}</Link>
             <Link to="/last-ledger-information">{t("menu.last-ledger-information")}</Link>
             {!devNet && <Link to="/genesis">{t("menu.genesis")}</Link>}
           </div>
@@ -114,15 +108,13 @@ export default function Header({ theme, switchTheme, setSignInFormOpen }) {
           >
             {t("menu.last-ledger-information")}
           </Link>
-          {xls20Enabled &&
-            <Link
-              to="/nft-statistics"
-              className="mobile-menu-item"
-              onClick={mobileMenuToggle}
-            >
-              {t("menu.nft-statistics")}
-            </Link>
-          }
+          <Link
+            to="/nft-statistics"
+            className="mobile-menu-item"
+            onClick={mobileMenuToggle}
+          >
+            {t("menu.nft-statistics")}
+          </Link>
           {!devNet &&
             <Link to="/genesis" className="mobile-menu-item" onClick={mobileMenuToggle}>
               {t("menu.genesis")}
@@ -133,12 +125,6 @@ export default function Header({ theme, switchTheme, setSignInFormOpen }) {
               <div className="mobile-menu-directory"><span>{t("menu.tools")}</span></div>
               <a href="/create/" className="mobile-menu-item">{t("menu.account-generation")}</a>
               <a href="/faucet/" className="mobile-menu-item">{t("menu.faucet")}</a>
-              {xls20Enabled &&
-                <>
-                  <a href="/nft-test/" className="mobile-menu-item">NFT tester</a>
-                  <a href="https://xrpl.org/nftoken-tester-tutorial.html" className="mobile-menu-item">NFT tester tutorial</a>
-                </>
-              }
             </> :
             <>
               <div className="mobile-menu-directory"><span>{t("menu.networks")}</span></div>
