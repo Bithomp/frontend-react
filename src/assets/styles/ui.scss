@@ -235,6 +235,11 @@ table {
   color: var(--accent-link);
 }
 
+.orange,
+.orange a {
+  color: var(--orange);
+}
+
 .bordered {
   border: 2px solid var(--accent-link);
 }
