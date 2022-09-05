@@ -18,7 +18,7 @@ export default function SignInForm({ setSignInFormOpen }) {
   const { t } = useTranslation();
 
   const [screen, setScreen] = useState("choose-app");
-  const [status, setStatus] = useState("Please wait...");
+  const [status, setStatus] = useState(t("signin.xumm.statuses.wait"));
   const [showXummQr, setShowXummQr] = useState(false);
   const [xummQrSrc, setXummQrSrc] = useState(qr);
   const [xummUuid, setXummUuid] = useState(null);
@@ -34,7 +34,7 @@ export default function SignInForm({ setSignInFormOpen }) {
     };
 
     if (isMobile) {
-      setStatus("Redirecting to xumm...");
+      setStatus(t("signin.xumm.statuses.redirecting"));
       signInPayload.options.return_url = {
         app: "https://" + server + "/explorer/?hw=xumm&uuid={id}",
       };
@@ -58,7 +58,7 @@ export default function SignInForm({ setSignInFormOpen }) {
         setXummQrSrc(payloadXumm.refs.qr_png);
         XummWsConnect(payloadXumm.refs.websocket_status);
         if (payloadXumm.pushed) {
-          setStatus("Check a push notification on your mobile.");
+          setStatus(t("signin.xumm.statuses.check-push"));
         } else {
           if (isMobile) {
             if (payloadXumm.next && payloadXumm.next.always) {
@@ -68,7 +68,7 @@ export default function SignInForm({ setSignInFormOpen }) {
             }
           } else {
             setShowXummQr(true);
-            setStatus("Scan this QR with your xumm app.");
+            setStatus(t("signin.xumm.scan-qr"));
           }
         }
       } else {
@@ -88,10 +88,10 @@ export default function SignInForm({ setSignInFormOpen }) {
     xummWs.onmessage = function (evt) {
       var obj = JSON.parse(evt.data);
       if (obj.opened) {
-        setStatus("Please follow instructions in the xumm app.");
+        setStatus(t("signin.xumm.statuses.check-app"));
       } else if (obj.signed) {
         setShowXummQr(false);
-        setStatus("Thank you, please wait...");
+        setStatus(t("signin.xumm.statuses.wait"));
         xummWs.close();
         XummRedirect(obj.payload_uuidv4);
       } else {
@@ -186,19 +186,19 @@ export default function SignInForm({ setSignInFormOpen }) {
         }
         {screen !== 'choose-app' &&
           <>
-            <div className='header'>Login with {screen}</div>
+            <div className='header'>{t("signin.login-with")} {screen}</div>
             {screen === 'xumm' &&
               <>
                 {!isMobile &&
                   <div className="signin-actions-list">
-                    1. Open the xumm app on your phone.<br />
+                    1. {t("signin.xumm.open-app")}<br />
                     {devNet ?
                       <>
-                        2. Go to settings and choose a testnet node.<br />
-                        3. Scan this QR code with the xumm app.
+                        2. {t("signin.xumm.chnage-settings")}<br />
+                        3. {t("signin.xumm.scan-qr")}
                       </> :
                       <>
-                        2. Scan the QR code.
+                        2. {t("signin.xumm.scan-qr")}
                       </>
                     }
                   </div>
