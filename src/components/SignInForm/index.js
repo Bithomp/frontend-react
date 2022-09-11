@@ -30,7 +30,7 @@ export default function SignInForm({ setSignInFormOpen }) {
       },
       txjson: {
         TransactionType: "SignIn"
-      },
+      }
     };
 
     if (isMobile) {
@@ -140,6 +140,7 @@ export default function SignInForm({ setSignInFormOpen }) {
   }
 
   const XummCancel = async (uuid) => {
+    if (!uuid) return;
     const payloadXumm = await axios.delete('app/xumm/payload/' + uuid).catch(error => {
       console.log(error.message);
     });
