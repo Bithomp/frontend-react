@@ -36,7 +36,7 @@ export default function SignInForm({ setSignInFormOpen }) {
     if (isMobile) {
       setStatus(t("signin.xumm.statuses.redirecting"));
       signInPayload.options.return_url = {
-        app: "https://" + server + "/explorer/?hw=xumm&uuid={id}",
+        app: server + "/explorer/?hw=xumm&uuid={id}",
       };
     } else {
       setShowXummQr(true);
