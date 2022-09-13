@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import axios from 'axios';
 
-import { wssServer, numberWithSpaces } from '../../utils';
+import { wssServer, numberWithSpaces, devNet } from '../../utils';
 
 let ws = null;
 
@@ -142,10 +142,12 @@ export default function Statistics() {
         <div className='stat-piece-header'>{t("home.stat.accounts")}</div>
         <div>{createdAccounts}</div>
       </div>
-      <div className='stat-piece'>
-        <div className='stat-piece-header'>{t("home.stat.usernames")}</div>
-        <div>{registeredUsernames}</div>
-      </div>
+      {!devNet &&
+        <div className='stat-piece'>
+          <div className='stat-piece-header'>{t("home.stat.usernames")}</div>
+          <div>{registeredUsernames}</div>
+        </div>
+      }
     </div>
     <div className='statistics-block'>
       <div className='stat-piece'>
