@@ -46,23 +46,24 @@ export default function SignInForm({ setSignInFormOpen }) {
   }
 
   const PayloadXumm = async (payload) => {
-    const payloadXumm = await axios.post('app/xumm/payload', payload).catch(error => {
+    const respponse = await axios.post('app/xumm/payload', payload).catch(error => {
       console.log(error.message);
     });
-    if (payloadXumm) {
-      if (payloadXumm.refs) {
+    if (respponse) {
+      const { data } = respponse;
+      if (data.refs) {
         //make all inputs readonly when showing QR or pushed to mobile.
         //$("#hwSendXrpForm input").attr("readonly", "readonly");
         //$("#hwSend").hide();
-        setXummUuid(payloadXumm.uuid);
-        setXummQrSrc(payloadXumm.refs.qr_png);
-        XummWsConnect(payloadXumm.refs.websocket_status);
-        if (payloadXumm.pushed) {
+        setXummUuid(data.uuid);
+        setXummQrSrc(data.refs.qr_png);
+        XummWsConnect(data.refs.websocket_status);
+        if (data.pushed) {
           setStatus(t("signin.xumm.statuses.check-push"));
         } else {
           if (isMobile) {
-            if (payloadXumm.next && payloadXumm.next.always) {
-              window.location.href = payloadXumm.next.always;
+            if (data.next && data.next.always) {
+              window.location.href = data.next.always;
             } else {
               console.log("payload next.always is missing");
             }
@@ -115,6 +116,10 @@ export default function SignInForm({ setSignInFormOpen }) {
             data.response.account +
             "?hw=xumm&xummtoken=" +
             data.application.issued_user_token;
+          console.log("/explorer/" +
+            data.response.account +
+            "?hw=xumm&xummtoken=" +
+            data.application.issued_user_token) //delete
         } else {
           setStatus("Error: xumm get payload: no account");
         }
@@ -195,7 +200,7 @@ export default function SignInForm({ setSignInFormOpen }) {
                     1. {t("signin.xumm.open-app")}<br />
                     {devNet ?
                       <>
-                        2. {t("signin.xumm.chnage-settings")}<br />
+                        2. {t("signin.xumm.change-settings")}<br />
                         3. {t("signin.xumm.scan-qr")}
                       </> :
                       <>
