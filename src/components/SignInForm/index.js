@@ -116,10 +116,6 @@ export default function SignInForm({ setSignInFormOpen }) {
             data.response.account +
             "?hw=xumm&xummtoken=" +
             data.application.issued_user_token;
-          console.log("/explorer/" +
-            data.response.account +
-            "?hw=xumm&xummtoken=" +
-            data.application.issued_user_token) //delete
         } else {
           setStatus("Error: xumm get payload: no account");
         }
