@@ -94,7 +94,7 @@ export default function CurrencySelect({ setSelectedCurrency, selectedCurrency }
 
   let defaultOption = { value: 'usd', label: 'USD', icon: <Us /> };
   for (let i = 0; i < currencies.length; i++) {
-    if (currencies[i].value.toLocaleLowerCase() === selectedCurrency.toLocaleLowerCase()) {
+    if (currencies[i].value.toLowerCase() === selectedCurrency.toLowerCase()) {
       defaultOption = currencies[i];
       break;
     }

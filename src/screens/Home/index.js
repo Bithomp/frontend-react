@@ -102,10 +102,14 @@ export default function Home({ theme, devNet }) {
           </div>
         </>
       }
+
       {/*
-        <h2 className='center'>{t("home.whale-transactions")}</h2>
-        <div className="home-whale-transactions"><Whales /></div>
+      <h2 className='center'>{t("home.whale-transactions")}</h2>
+      <div className="home-whale-transactions">
+        <Whales />
+      </div>
       */}
+
       <div className="home-statistics">
         <Statistics />
       </div>
