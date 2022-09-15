@@ -12,12 +12,16 @@
     font-size: 28px;
     font-weight: bold;
   }
+  .qr-expired {
+    height: 168px;
+    padding-top: 120px;
+  }
   .sign-in-body {
     outline: 3px solid var(--text-main);
     outline-offset: -15px;
     position: fixed;
     width: 480px;
-    height: 500px;
+    height: 510px;
     margin-top: -240px;
     margin-left: -240px;
     top: 50%;

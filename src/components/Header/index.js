@@ -120,18 +120,11 @@ export default function Header({ theme, switchTheme, setSignInFormOpen }) {
               {t("menu.genesis")}
             </Link>
           }
-          {devNet ?
+          {devNet &&
             <>
               <div className="mobile-menu-directory"><span>{t("menu.tools")}</span></div>
               <a href="/create/" className="mobile-menu-item">{t("menu.account-generation")}</a>
               <a href="/faucet/" className="mobile-menu-item">{t("menu.faucet")}</a>
-            </> :
-            <>
-              <div className="mobile-menu-directory"><span>{t("menu.networks")}</span></div>
-              {devNet !== 'testnet' && <a href="https://test.bithomp.com" className="mobile-menu-item">Testnet</a>}
-              {devNet !== 'devnet' && <a href="https://dev.bithomp.com" className="mobile-menu-item">Devnet</a>}
-              {devNet !== 'beta' && <a href="https://beta.bithomp.com" className="mobile-menu-item">Betanet (Hooks v2)</a>}
-              {devNet !== 'xls20' && <a href="https://xls20.bithomp.com" className="mobile-menu-item">XLS-20</a>}
             </>
           }
           <div className="mobile-menu-directory"></div>

@@ -37,7 +37,7 @@
   },
   "signin": {
     "choose-app": "Choose a signing app",
-    "login-with": "login with",
+    "login-with": "Login with",
     "xumm": {
       "open-app": "Open the xumm app on your phone.",
       "change-settings": "Go to settings and choose a testnet node.",
@@ -46,8 +46,10 @@
         "redirecting": "Redirecting to xumm...",
         "wait": "Please wait...",
         "check-push": "Check a push notification on your mobile.",
-        "check-app": "Please follow instructions in the xumm app."
-      }
+        "check-app": "Please follow instructions in the xumm app.",
+        "expired": "The QR code is expired, request a new one."
+      },
+      "new-qr": "Get a new QR code"
     }
   },
   "footer": {
