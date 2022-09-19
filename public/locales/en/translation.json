@@ -29,13 +29,14 @@
       "title": "Sponsored",
       "earn": "Earn on XRP",
       "play": "Play XRP"
-    },
-    "sign-in": "Sign in"
+    }
   },
   "settings": {
     "language": "Language"
   },
   "signin": {
+    "signin": "Sign in",
+    "logout": "Log out",
     "choose-app": "Choose a signing app",
     "login-with": "Login with",
     "xumm": {
@@ -50,6 +51,10 @@
         "expired": "The QR code is expired, request a new one."
       },
       "new-qr": "Get a new QR code"
+    },
+    "actions": {
+      "view": "Explorer view",
+      "send": "Send"
     }
   },
   "footer": {

@@ -16,7 +16,7 @@ import ellipal from '../../assets/images/ellipal-large.svg';
 
 let xummWs;
 
-export default function SignInForm({ setSignInFormOpen }) {
+export default function SignInForm({ setSignInFormOpen, setAccount }) {
   const { t } = useTranslation();
 
   const [screen, setScreen] = useState("choose-app");
@@ -43,7 +43,19 @@ export default function SignInForm({ setSignInFormOpen }) {
       clearTimeout(timer);
       isSubscribed = false;
     };
+    //eslint-disable-next-line react-hooks/exhaustive-deps
   }, [expiresInSeconds]);
+
+  const saveAddressData = async (address) => {
+    //&service=true&verifiedDomain=true&blacklist=true&payString=true&twitterImageUrl=true&nickname=true
+    const response = await axios("v2/address/" + address + '?username=true&hashicon=true');
+    if (response.data) {
+      const { address, hashicon, username } = response.data;
+      setAccount({ address, hashicon, username });
+    } else {
+      setAccount(null);
+    }
+  }
 
   const XummLogin = () => {
     let signInPayload = {
@@ -138,24 +150,35 @@ export default function SignInForm({ setSignInFormOpen }) {
     const response = await axios("app/xumm/payload/" + uuid);
     const data = response.data;
     if (data) {
-      if (data.payload.tx_type === "SignIn") {
-        setStatus("Redirecting...");
-        if (data.response && data.response.account) {
-          window.location.href =
-            "/explorer/" +
-            data.response.account +
-            "?hw=xumm&xummtoken=" +
-            data.application.issued_user_token;
-        } else {
-          setStatus("Error: xumm get payload: no account");
+      /*
+      {
+        "application": {
+          "issued_user_token": "xxx"
+        },
+        "response": {
+          "hex": "xxx",
+          "txid": "xxx",
+          "environment_nodeuri": "wss://testnet.xrpl-labs.com",
+          "environment_nodetype": "TESTNET",
+          "account": "xxx",
+          "signer": "xxx"
         }
+      }
+      */
+      if (data.response && data.response.account) {
+        saveAddressData(data.response.account);
+        localStorage.setItem("xummUserToken", data.application.issued_user_token);
+      } else {
+        setStatus("Error: xumm get payload: no account");
+      }
+      if (data.payload.tx_type === "SignIn") {
+        //close the sign in form
+        setXummQrSrc(qr);
+        setScreen("choose-app");
+        setSignInFormOpen(false);
       } else {
         if (isMobile) {
-          window.location.href =
-            "/explorer/" +
-            data.response.account +
-            "?hw=xumm&xummtoken=" +
-            data.application.issued_user_token;
+          window.location.href = "/explorer/" + data.response.account + "?hw=xumm&xummtoken=" + data.application.issued_user_token;
         } else {
           if (data.response && data.response.hex) {
             //submitTransaction({

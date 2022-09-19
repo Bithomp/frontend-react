@@ -8,10 +8,31 @@ import logo from "../../assets/images/logo-animated.svg";
 import Switch from "./Switch";
 import './styles.scss';
 
-export default function Header({ theme, switchTheme, setSignInFormOpen }) {
+export default function Header({ theme, switchTheme, setSignInFormOpen, account, setAccount }) {
   const { t } = useTranslation();
 
   const [menuOpen, setMenuOpen] = useState(false);
+
+  let address, hashicon, displayName;
+  if (account) {
+    address = account.address;
+    hashicon = account.hashicon;
+    if (account.username) {
+      displayName = <b className="blue">{account.username}</b>;
+    } else {
+      displayName = address.substring(0, 3) + "...";
+    }
+  }
+
+  const xummUserToken = localStorage.getItem('xummUserToken');
+
+  const logOut = () => {
+    localStorage.removeItem('xummUserToken');
+    setAccount(null);
+    displayName = '';
+    address = '';
+    hashicon = '';
+  }
 
   const mobileMenuToggle = e => {
     // remove scrollbar when menu is open
@@ -73,7 +94,20 @@ export default function Header({ theme, switchTheme, setSignInFormOpen }) {
         </div>
       </div>
       <div className="header-menu-right">
-        <span onClick={() => { setSignInFormOpen(true) }} className="header-signin-link link">{t("menu.sign-in")}</span>
+        {displayName ?
+          <div className="menu-dropdown">
+            <div className="menu-dropdown-button">
+              <img src={hashicon} alt="user icon" className="user-icon" />
+              {displayName}
+            </div>
+            <div className="menu-dropdown-content">
+              <a href={"/explorer/" + address + "?hw=xumm&xummtoken=" + xummUserToken}>{t("signin.actions.view")}</a>
+              <a href={"/explorer/" + address + "?hw=xumm&xummtoken=" + xummUserToken + "&action=send"}>{t("signin.actions.send")}</a>
+              <button onClick={logOut}>{t("signin.logout")}</button>
+            </div>
+          </div> :
+          <span onClick={() => { setSignInFormOpen(true) }} className="header-signin-link link">{t("signin.signin")}</span>
+        }
         <Switch theme={theme} switchTheme={switchTheme} />
       </div>
 
@@ -83,7 +117,17 @@ export default function Header({ theme, switchTheme, setSignInFormOpen }) {
           <div></div><div></div><div></div>
         </label>
         <div className="mobile-menu">
-          <a href="/explorer/" className="mobile-menu-item">{t("menu.explorer")}</a>
+          {displayName ?
+            <>
+              <a href={"/explorer/" + address + "?hw=xumm&xummtoken=" + xummUserToken} className="mobile-menu-item">
+                <img src={hashicon} alt="user icon" className="user-icon" />
+                {displayName}
+              </a>
+              <a href={"/explorer/" + address + "?hw=xumm&xummtoken=" + xummUserToken + "&action=send"} className="mobile-menu-item">{t("signin.actions.send")}</a>
+            </> :
+            <a href="/explorer/" className="mobile-menu-item">{t("menu.explorer")}</a>
+          }
+
           <div className="mobile-menu-directory"><span>{t("menu.services")}</span></div>
           <Link
             to="/username"
@@ -128,7 +172,10 @@ export default function Header({ theme, switchTheme, setSignInFormOpen }) {
             </>
           }
           <div className="mobile-menu-directory"></div>
-          <span onClick={() => { setSignInFormOpen(true) }} className="mobile-menu-item link">{t("menu.sign-in")}</span>
+          {displayName ?
+            <span onClick={logOut} className="mobile-menu-item link">{t("signin.logout")}</span> :
+            <span onClick={() => { setSignInFormOpen(true) }} className="mobile-menu-item link">{t("signin.signin")}</span>
+          }
         </div>
       </div>
     </header>

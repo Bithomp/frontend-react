@@ -13,70 +13,77 @@ header {
     margin-left: 80px;
     margin-top: 17px;
   }
+
+  .menu-dropdown {
+    position: relative;
+    display: inline-block;
+    .menu-dropdown-button {
+      margin: 0 10px;
+      color: white;
+      cursor: pointer;
+      transition: color .5s;
+      display: flex;
+    }
+    .menu-dropdown-content {
+      display: none;
+      position: absolute;
+      padding-top: 31px;
+      min-width: 165px;
+      background-color: var(--background-header);
+      border-bottom: 1px solid var(--background-menu);
+      box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+      z-index: 2;
+      &:after {
+        content: "";
+        position: absolute;
+        top: 31px;
+        left: 0;
+        right: 0;
+        height: 1px;
+        border-top: 1px solid var(--background-menu);
+      }
+      a, button {
+        display: block;
+        margin: 0;
+        padding: 10px 16px;
+        white-space: nowrap;
+        color: var(--text-contrast);
+        background: none;
+        border: none;
+        font-size: 16px;
+        cursor: pointer;
+        &:hover {
+          color: var(--accent-link);
+        }
+      }
+    }
+    &:hover {
+      .menu-dropdown-content {
+        display: block;
+      }
+      .menu-dropdown-button {
+        color: var(--accent-link);
+      }
+    }
+  }
+
   .header-menu-left,
   .header-menu-right {
     position: absolute;
     font-size: 16px;
     line-height: 18px;
   }
-  
+
   .header-menu-left {
     top: 31px;
     left: 250px;
-    .menu-dropdown {
-      position: relative;
-      display: inline-block;
-      .menu-dropdown-button {
-        margin: 0 10px;
-        color: white;
-        cursor: pointer;
-        transition: color .5s;
-      }
-      .menu-dropdown-content {
-        display: none;
-        position: absolute;
-        padding-top: 31px;
-        min-width: 165px;
-        background-color: var(--background-header);
-        border-bottom: 1px solid var(--background-menu);
-        box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
-        z-index: 2;
-        &:after {
-          content: "";
-          position: absolute;
-          top: 31px;
-          left: 0;
-          right: 0;
-          height: 1px;
-          border-top: 1px solid var(--background-menu);
-        }
-        a {
-          display: block;
-          margin: 0;
-          padding: 10px 16px;
-          white-space: nowrap;
-          border-left: 1px solid var(--background-menu);
-          border-right: 1px solid var(--background-menu);
-          color: var(--text-contrast);
-          &:hover {
-            color: var(--accent-link);
-          }
-        }
-      }
-      &:hover {
-        .menu-dropdown-content {
-          display: block;
-        }
-        .menu-dropdown-button {
-          color: var(--accent-link);
-        }
-      }
-    }
   }
 
   .header-menu-right {
     right: 80px;
-    top: 28px;
+    top: 23.5px;
+    display: flex;
+    align-items: center;
     a, .link {
       margin-right: 20px;
       vertical-align: middle;
@@ -84,13 +91,19 @@ header {
         color: var(--text-contrast);
       }
     }
+    .user-icon {
+      width: 24px;
+      height: 24px;
+      margin-right: 5px;
+      margin-top: -3px;
+    }
   }
 
   .header-burger {
     display: none;
     position: absolute;
     right: 20px;
-    top: 28px;
+    top: 25px;
     .mobile-menu {
       margin-top: 81px;
       background-color: var(--background-menu);
@@ -103,10 +116,15 @@ header {
       z-index: 3;
       transition: 0.5s;
       .mobile-menu-item {
-        display: block;
+        display: flex;
         margin: 23px 40px;
         color: white;
         font-size: 18px;
+        .user-icon {
+          width: 24px;
+          height: 24px;
+          margin-right: 5px;
+        }
       }
       .mobile-menu-directory {
         color: rgba(255, 255, 255, 0.5);
@@ -176,6 +194,9 @@ header {
     .header-menu-right {
       .header-signin-link,
       .theme-switch {
+        display: none;
+      }
+      .menu-dropdown {
         display: none;
       }
     }
