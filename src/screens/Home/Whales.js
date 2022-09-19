@@ -6,12 +6,12 @@ const timeFormat = (timestamp) => {
   return new Date(timestamp * 1000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
 }
 
-export default function Whales() {
+export default function Whales({currency}) {
   const [data, setData] = useState(null);
 
   useEffect(() => {
     async function fetchData() {
-      const response = await axios('v2/transactions?amount=10000..');
+      const response = await axios('v2/transactions/whale?currency=true&service=true');
       setData(response.data);
     }
     fetchData();
@@ -28,7 +28,11 @@ export default function Whales() {
         "ars":"47980"
       },
       "counterparty":null,
-      "currency":"XRP",
+      "currency": {
+        "type": "hex",
+        "currencyCode": "53616E6374756D00000000000000000000000000",
+        "currency": "Sanctum"
+      },
       "sourceAddress":"rPT1Sjq2YGrBMTttX4GZHjKu9dyfzbpAYe",
       "destinationAddress":"rKb1QJ7dxZ3piULkWbpmTg8UK9eARKFLaY"
      }
@@ -38,8 +42,9 @@ export default function Whales() {
     {data?.map(tx => (
       <div key={tx.hash} className="tx-row">
         <span className='tx-time'>{timeFormat(tx.timestamp)}</span>
-        <span className='tx-link'><a href={'/explorer/' + tx.hash}>{tx.hash}</a></span>
-        <span className='tx-amount'>{numberWithSpaces(parseInt(tx.amount))} {tx.currency}</span>
+        <span className='tx-link'><a href={'/explorer/' + tx.hash}>{tx.hash.substr(0,21) + "..." + tx.hash.substr(-21)}</a></span>
+        <span className='tx-amount'>{numberWithSpaces(parseInt(tx.amount))} {tx.currency.currency}</span>
+        <span className='tx-amount-fiat'>{numberWithSpaces(parseInt(tx.amountFiats[currency.toLowerCase()]))} {currency.toUpperCase()}</span>
       </div>
     ))}
   </div>;

@@ -234,18 +234,25 @@
       }
       .tx-link {
         padding-left: 5px;
-        width: 70%;
+        width: 48%;
         display: inline-block;
       }
       .tx-amount {
         padding-right: 5px;
         text-align: right;
         display: inline-block;
-        width: 24%;
+        width: 23%;
 
         // need a fix for currencies
         overflow: hidden; 
         white-space: nowrap;
+        max-width: 165px;
+      }
+      .tx-amount-fiat {
+        padding-right: 5px;
+        text-align: right;
+        display: inline-block;
+        width: 23%;
         max-width: 165px;
       }
     }
