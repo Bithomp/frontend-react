@@ -4,7 +4,7 @@ export default function PrivacyPolicy() {
   return (
     <div className="content-text">
       <h1>Privacy Policy</h1>
-      <p>Last updated: September 19, 2022</p>
+      <p>Last updated: September 20, 2022</p>
       <p>This Privacy Policy describes Our policies and procedures on the collection, use and disclosure of Your information when You use the Service and tells You about Your privacy rights and how the law protects You.</p>
       <p>We use Your Personal data to provide and improve the Service. By using the Service, You agree to the collection and use of information in accordance with this Privacy Policy.</p>
       <h1>Interpretation and Definitions</h1>
