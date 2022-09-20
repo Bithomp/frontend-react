@@ -13,14 +13,15 @@ export default function Header({ theme, switchTheme, setSignInFormOpen, account,
 
   const [menuOpen, setMenuOpen] = useState(false);
 
-  let address, hashicon, displayName;
+  let address, hashicon, displayName, username;
   if (account) {
     address = account.address;
     hashicon = account.hashicon;
+    username = account.username;
     if (account.username) {
-      displayName = <b className="blue">{account.username}</b>;
+      displayName = <b className="blue">{username}</b>;
     } else {
-      displayName = address.substring(0, 3) + "...";
+      displayName = address.substr(0, 8) + "..." + address.substr(-7);
     }
   }
 
@@ -102,6 +103,7 @@ export default function Header({ theme, switchTheme, setSignInFormOpen, account,
             </div>
             <div className="menu-dropdown-content">
               <a href={"/explorer/" + address + "?hw=xumm&xummtoken=" + xummUserToken}>{t("signin.actions.view")}</a>
+              {!username && <a href={"/username?address=" + address}>{t("menu.usernames")}</a>}
               <a href={"/explorer/" + address + "?hw=xumm&xummtoken=" + xummUserToken + "&action=send"}>{t("signin.actions.send")}</a>
               <button onClick={logOut}>{t("signin.logout")}</button>
             </div>
@@ -123,19 +125,23 @@ export default function Header({ theme, switchTheme, setSignInFormOpen, account,
                 <img src={hashicon} alt="user icon" className="user-icon" />
                 {displayName}
               </a>
+              {!username && <a href={"/username?address=" + address} className="mobile-menu-item">{t("menu.usernames")}</a>}
               <a href={"/explorer/" + address + "?hw=xumm&xummtoken=" + xummUserToken + "&action=send"} className="mobile-menu-item">{t("signin.actions.send")}</a>
             </> :
             <a href="/explorer/" className="mobile-menu-item">{t("menu.explorer")}</a>
           }
 
           <div className="mobile-menu-directory"><span>{t("menu.services")}</span></div>
-          <Link
-            to="/username"
-            className="mobile-menu-item"
-            onClick={mobileMenuToggle}
-          >
-            {t("menu.usernames")}
-          </Link>
+          {!displayName &&
+            <Link
+              to="/username"
+              className="mobile-menu-item"
+              onClick={mobileMenuToggle}
+            >
+              {t("menu.usernames")}
+            </Link>
+          }
+
           {!devNet &&
             <Link to="/alerts" className="mobile-menu-item" onClick={mobileMenuToggle}>
               {t("menu.price-alerts")}
