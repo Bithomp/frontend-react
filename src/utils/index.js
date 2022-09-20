@@ -1,5 +1,5 @@
 export const niceNumber = (n, fractionDigits = 0, currency = null) => {
-  const num = new Number(n);
+  const num = Number(n);
   if (n) {
     let options = {
       maximumFractionDigits: fractionDigits,
