@@ -1,5 +1,7 @@
-import sun from "../../assets/images/sun.svg";
-import moon from "../../assets/images/moon.svg";
+import sun from "../../../assets/images/sun.svg";
+import moon from "../../../assets/images/moon.svg";
+
+import './styles.scss';
 
 export default function Switch({ theme, switchTheme }) {
   return (

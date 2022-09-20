@@ -1,6 +1,7 @@
 .theme-switch {
   display: inline-block;
   vertical-align: middle;
+  z-index: 2;
   .switch-container {
     display: flex;
     margin-left: auto;
