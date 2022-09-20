@@ -4,7 +4,7 @@ export default function PrivacyPolicy() {
   return (
     <div className="content-text">
       <h1>Privacy Policy</h1>
-      <p>Last updated: June 3, 2022</p>
+      <p>Last updated: September 20, 2022</p>
       <p>This Privacy Policy describes Our policies and procedures on the collection, use and disclosure of Your information when You use the Service and tells You about Your privacy rights and how the law protects You.</p>
       <p>We use Your Personal data to provide and improve the Service. By using the Service, You agree to the collection and use of information in accordance with this Privacy Policy.</p>
       <h1>Interpretation and Definitions</h1>
@@ -115,6 +115,8 @@ export default function PrivacyPolicy() {
         <li><strong>i18nextLng</strong> - the prefered Service language (ex: "en").</li>
         <li><strong>currency</strong> - the prefered Service currency (ex: "sek").</li>
         <li><strong>country</strong> - country of residence (ex: "SE").</li>
+        <li><strong>account</strong> - Logged in user data: XRPL address, hashicon, bithomp username. (ex. {"{'address': 'rhphEJQoxuquJmuJgtLbGyBW2NK6s6nQSW', 'hashicon': 'data:image/png;base64,iV+IKg2dQrggg==', 'username': 'Bithomp'}"})</li>
+        <li><strong>xummUserToken</strong> - xumm user token (ex. "c3f386ab-b5b5-47c3-87a4-d031451777fa").</li>
         <li><strong>language</strong> - on docs.bithomp.com, the prefered programing language (ex: "php").</li>
       </p>
       <h3>How to manage Cookies</h3>

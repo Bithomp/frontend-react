@@ -29,6 +29,7 @@ import { network, devNet, server } from './utils';
 export default function App() {
   const defaultDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
   const [theme, setTheme] = useLocalStorage('theme', defaultDark ? 'dark' : 'light');
+  const [account, setAccount] = useLocalStorage('account', null);
   const [signInFormOpen, setSignInFormOpen] = useState(false);
 
   const switchTheme = () => {
@@ -45,10 +46,16 @@ export default function App() {
 
   return (
     <div data-theme={theme} className="body" data-network={network}>
-      <Header theme={theme} switchTheme={switchTheme} setSignInFormOpen={setSignInFormOpen} />
+      <Header
+        theme={theme}
+        switchTheme={switchTheme}
+        setSignInFormOpen={setSignInFormOpen}
+        account={account}
+        setAccount={setAccount}
+      />
       <div className="content">
         <ScrollToTop />
-        {signInFormOpen && <SignInForm setSignInFormOpen={setSignInFormOpen} />}
+        {signInFormOpen && <SignInForm setSignInFormOpen={setSignInFormOpen} setAccount={setAccount} />}
         <Routes>
           <Route path="/" element={<Home theme={theme} devNet={devNet} />} />
           <Route path="/index.html" element={<Home theme={theme} devNet={devNet} />} />
