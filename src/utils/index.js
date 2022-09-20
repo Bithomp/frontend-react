@@ -15,6 +15,37 @@ export const niceNumber = (n, fractionDigits = 0, currency = null) => {
   }
 }
 
+export const shortNiceNumber = (n, smallNumberFractionDigits = 2, largeNumberFractionDigits = 3, currency = null) => {
+  let beforeNumber = '';
+  if (n < 0) {
+    beforeNumber = '-';
+    n = -1 * n;
+  }
+  if (smallNumberFractionDigits > 2) {
+    if (n > 99.99) {
+      smallNumberFractionDigits = 2;
+    } else if (n > 9.99) {
+      smallNumberFractionDigits = 3;
+    }
+  }
+  let output = '';
+  if (n > 999999999999) {
+    output = niceNumber(n / 1000000000000, largeNumberFractionDigits, currency) + 'T';
+  } else if (n > 999999999) {
+    output = niceNumber(n / 1000000000, largeNumberFractionDigits, currency) + 'B';
+  } else if (n > 999999) {
+    output = niceNumber(n / 1000000, largeNumberFractionDigits, currency) + 'M';
+  } else if (n > 99999) {
+    output = niceNumber(Math.floor(n), 0, currency);
+  } else if (n == 0) {
+    output = 0;
+  } else {
+    const pow = Math.pow(10, smallNumberFractionDigits);
+    output = niceNumber(Math.floor(n * pow) / pow, smallNumberFractionDigits, currency);
+  }
+  return beforeNumber + output;
+}
+
 //const networks = ['local', 'mainnet', 'testnet', 'beta', 'xls20', 'devnet'];
 //const devNetworks = ['testnet', 'beta', 'xls20', 'devnet'];
 
