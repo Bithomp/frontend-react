@@ -23,6 +23,7 @@ header {
       cursor: pointer;
       transition: color .5s;
       display: flex;
+      align-items: center;
     }
     .menu-dropdown-content {
       display: none;
@@ -36,7 +37,6 @@ header {
       &:after {
         content: "";
         position: absolute;
-        top: 31px;
         left: 0;
         right: 0;
         height: 1px;
@@ -77,11 +77,18 @@ header {
   .header-menu-left {
     top: 31px;
     left: 250px;
+    .menu-dropdown {
+      .menu-dropdown-content {
+        &:after {
+          top: 31px;
+        }
+      }
+    }
   }
 
   .header-menu-right {
     right: 80px;
-    top: 23.5px;
+    top: 24px;
     display: flex;
     align-items: center;
     a, .link {
@@ -95,7 +102,13 @@ header {
       width: 24px;
       height: 24px;
       margin-right: 5px;
-      margin-top: -3px;
+    }
+    .menu-dropdown {
+      .menu-dropdown-content {
+        &:after {
+          top: 29px;
+        }
+      }
     }
   }
 
