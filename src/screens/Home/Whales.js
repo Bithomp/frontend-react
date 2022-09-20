@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { numberWithSpaces } from '../../utils';
+import { niceNumber } from '../../utils';
 
 const timeFormat = (timestamp) => {
   return new Date(timestamp * 1000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
@@ -42,9 +42,9 @@ export default function Whales({currency}) {
     {data?.map(tx => (
       <div key={tx.hash} className="tx-row">
         <span className='tx-time'>{timeFormat(tx.timestamp)}</span>
-        <span className='tx-link'><a href={'/explorer/' + tx.hash}>{tx.hash.substr(0,21) + "..." + tx.hash.substr(-21)}</a></span>
-        <span className='tx-amount'>{numberWithSpaces(parseInt(tx.amount))} {tx.currency.currency}</span>
-        <span className='tx-amount-fiat'>{numberWithSpaces(parseInt(tx.amountFiats[currency.toLowerCase()]))} {currency.toUpperCase()}</span>
+        <span className='tx-link'><a href={'/explorer/' + tx.hash}>{tx.hash.substr(0,28) + "..." + tx.hash.substr(-28)}</a></span>
+        <span className='tx-amount'>{niceNumber(tx.amount, 0)} {tx.currency}</span>
+        <span className='tx-amount-fiat'>{niceNumber(tx.amountFiats[currency.toLowerCase()], 0, currency)}</span>
       </div>
     ))}
   </div>;

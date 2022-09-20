@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { useState, useEffect } from 'react';
 
-import { numberWithSpaces, wssServer } from '../utils';
+import { niceNumber, wssServer } from '../utils';
 
 let ws = null;
 
@@ -116,13 +116,13 @@ export default function LastLedgerInformation() {
         <p>
           {t("last-ledger-information.total-supply") + ": "}
           <span className='no-brake'>
-            {numberWithSpaces(ledger?.totalCoins && (ledger.totalCoins / 1000000).toFixed(6)) + ' XRP'}
+            {niceNumber(ledger?.totalCoins && (ledger.totalCoins / 1000000), 6) + ' XRP'}
           </span>
         </p>
         <p>
           {t("last-ledger-information.total-burned") + ": "}
           <span className='no-brake'>
-            {numberWithSpaces(ledger?.totalCoins && (100000000000 - ledger.totalCoins / 1000000).toFixed(6)) + ' XRP'}
+            {niceNumber(ledger?.totalCoins && (100000000000 - ledger.totalCoins / 1000000), 6) + ' XRP'}
           </span>
 
         </p>

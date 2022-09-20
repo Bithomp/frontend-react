@@ -3,7 +3,7 @@ import axios from 'axios';
 import { useTranslation, Trans } from 'react-i18next';
 import { isMobile } from "react-device-detect";
 
-import { numberWithSpaces } from '../../utils';
+import { niceNumber } from '../../utils';
 
 import './styles.scss';
 
@@ -72,7 +72,7 @@ export default function Genesis() {
                 <td>{t("genesis.inception")}</td>
                 <td>{new Date("2013-01-01T03:21:00Z").toLocaleString([], timestampFormatParams)}</td>
               </tr>
-              <tr><td>{t("genesis.xrp-balance")}</td><td>99 999 999 999.996320</td></tr>
+              <tr><td>{t("genesis.xrp-balance")}</td><td>{niceNumber(99999999999.996320, 6)}</td></tr>
               <tr><td colSpan={2}><hr /></td></tr>
               <tr>
                 <td>{t("genesis.balance-update")}</td>
@@ -80,7 +80,7 @@ export default function Genesis() {
               </tr>
               <tr>
                 <td>{t("genesis.xrp-balance")}</td>
-                <td>{data.balance_all && numberWithSpaces(data.balance_all)}</td>
+                <td>{data.balance_all && niceNumber(data.balance_all, 6)}</td>
               </tr>
             </tbody>
           </table>
@@ -107,11 +107,11 @@ export default function Genesis() {
                   </p>
                   <p>
                     {t("genesis.genesis-balance")}<br />
-                    {numberWithSpaces(account.genesis_balance)}
+                    {niceNumber(account.genesis_balance)}
                   </p>
                   <p>
                     {t("genesis.xrp-balance")} {lastUpdate(data.balance_update, {})}<br />
-                    {numberWithSpaces(account.balance)}
+                    {niceNumber(account.balance)}
                   </p>
                   {account.rippletrade &&
                     <p>
@@ -147,8 +147,8 @@ export default function Genesis() {
               <tr key={i}>
                 <td>{account.genesis_index}</td>
                 <td><a href={"https://bithomp.com/explorer/" + account.address}>{account.address}</a></td>
-                <td>{numberWithSpaces(account.genesis_balance)}</td>
-                <td>{numberWithSpaces(account.balance)}</td>
+                <td>{niceNumber(account.genesis_balance)}</td>
+                <td>{niceNumber(account.balance)}</td>
                 <td><a href={"https://bithomp.com/explorer/" + account.rippletrade}>{account.rippletrade}</a></td>
                 <td>{account.nickname}</td>
               </tr>

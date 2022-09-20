@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import axios from 'axios';
 
-import { wssServer, numberWithSpaces, devNet } from '../../utils';
+import { wssServer, niceNumber, devNet } from '../../utils';
 
 let ws = null;
 
@@ -113,8 +113,8 @@ export default function Statistics() {
       txPerSecond = (validatedLedger.transactionsCount / lastClose.convergeTimeS).toFixed(2);
       proposers = lastClose.proposers;
     }
-    createdAccounts = numberWithSpaces(accounts.created);
-    registeredUsernames = numberWithSpaces(usernames);
+    createdAccounts = niceNumber(accounts.created);
+    registeredUsernames = niceNumber(usernames);
     if (nftokens) {
       nft = nftokens;
     }
@@ -152,27 +152,27 @@ export default function Statistics() {
     <div className='statistics-block'>
       <div className='stat-piece'>
         <div className='stat-piece-header'>{t("home.stat.nft.created")}</div>
-        <div>{numberWithSpaces(nft.created)}</div>
+        <div>{niceNumber(nft.created)}</div>
       </div>
       <div className='stat-piece'>
         <div className='stat-piece-header'>{t("home.stat.nft.burned")}</div>
-        <div>{numberWithSpaces(nft.burned)}</div>
+        <div>{niceNumber(nft.burned)}</div>
       </div>
       <div className='stat-piece'>
         <div className='stat-piece-header'>{t("home.stat.nft.issuers")}</div>
-        <div>{numberWithSpaces(nft.issuers)}</div>
+        <div>{niceNumber(nft.issuers)}</div>
       </div>
       <div className='stat-piece'>
         <div className='stat-piece-header'>{t("home.stat.nft.owners")}</div>
-        <div>{numberWithSpaces(nft.owners)} </div>
+        <div>{niceNumber(nft.owners)} </div>
       </div>
       <div className='stat-piece'>
         <div className='stat-piece-header'>{t("home.stat.nft.transfers")}</div>
-        <div>{numberWithSpaces(nft.transfers)}</div>
+        <div>{niceNumber(nft.transfers)}</div>
       </div>
       <div className='stat-piece'>
         <div className='stat-piece-header'>{t("home.stat.nft.for-sale")}</div>
-        <div>{numberWithSpaces(nft.forSaleWithoutDestination)}</div>
+        <div>{niceNumber(nft.forSaleWithoutDestination)}</div>
       </div>
     </div>
   </>;

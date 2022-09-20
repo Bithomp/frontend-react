@@ -1,10 +1,18 @@
-export const numberWithSpaces = (x) => {
-  if (!x) {
-    return x === 0 ? 0 : '';
+export const niceNumber = (n, fractionDigits = 0, currency = null) => {
+  const num = new Number(n);
+  if (n) {
+    let options = {
+      maximumFractionDigits: fractionDigits,
+      minimumFractionDigits: fractionDigits
+    }
+    if (currency) {
+      options.style = "currency";
+      options.currency = currency.toUpperCase();
+    }
+    return num.toLocaleString(undefined, options);
+  } else {
+    return n;
   }
-  var parts = x.toString().split(".");
-  parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, " ");
-  return parts.join(".");
 }
 
 //const networks = ['local', 'mainnet', 'testnet', 'beta', 'xls20', 'devnet'];
