@@ -16,6 +16,7 @@ export const niceNumber = (n, fractionDigits = 0, currency = null) => {
 }
 
 export const shortNiceNumber = (n, smallNumberFractionDigits = 2, largeNumberFractionDigits = 3, currency = null) => {
+  n = Number(n);
   let beforeNumber = '';
   if (n < 0) {
     beforeNumber = '-';
@@ -37,7 +38,7 @@ export const shortNiceNumber = (n, smallNumberFractionDigits = 2, largeNumberFra
     output = niceNumber(n / 1000000, largeNumberFractionDigits, currency) + 'M';
   } else if (n > 99999) {
     output = niceNumber(Math.floor(n), 0, currency);
-  } else if (n == 0) {
+  } else if (n === 0) {
     output = 0;
   } else {
     const pow = Math.pow(10, smallNumberFractionDigits);
