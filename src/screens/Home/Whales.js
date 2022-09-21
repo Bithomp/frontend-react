@@ -1,24 +1,55 @@
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import axios from 'axios';
-import { shortNiceNumber, devNet } from '../../utils';
+
+import { wssServer, shortNiceNumber, devNet } from '../../utils';
 
 const timeFormat = (timestamp) => {
   return new Date(timestamp * 1000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
 }
 
+let ws = null;
+
 export default function Whales({ currency }) {
   const [data, setData] = useState(null);
-
   const { t } = useTranslation();
 
-  useEffect(() => {
-    async function fetchData() {
-      const response = await axios('v2/transactions/whale?currency=true&service=true');
-      setData(response.data);
+  const checkStatApi = async () => {
+    //?currency=true&service=true
+    const response = await axios('v2/transactions/whale');
+    const data = response.data;
+    if (data) {
+      setData(data);
     }
-    fetchData();
-  }, [setData]);
+  }
+
+  const connect = () => {
+    ws = new WebSocket(wssServer);
+
+    ws.onopen = () => {
+      //?currency=true&service=true
+      ws.send(JSON.stringify({ command: "subscribe", streams: ["whale_transactions"], id: 1 }));
+    }
+
+    ws.onmessage = evt => {
+      const message = JSON.parse(evt.data);
+      setData(message.transactions);
+    }
+
+    ws.onclose = () => {
+      connect();
+    }
+  }
+
+  useEffect(() => {
+    checkStatApi();
+    connect();
+    return () => {
+      setData(null);
+      if (ws) ws.close();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   /*
      {
