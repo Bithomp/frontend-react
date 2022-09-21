@@ -1,13 +1,16 @@
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import axios from 'axios';
-import { shortNiceNumber } from '../../utils';
+import { shortNiceNumber, devNet } from '../../utils';
 
 const timeFormat = (timestamp) => {
   return new Date(timestamp * 1000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
 }
 
-export default function Whales({currency}) {
+export default function Whales({ currency }) {
   const [data, setData] = useState(null);
+
+  const { t } = useTranslation();
 
   useEffect(() => {
     async function fetchData() {
@@ -38,14 +41,17 @@ export default function Whales({currency}) {
      }
    */
 
-  return <div className='whale-transactions-block'>
-    {data?.map(tx => (
-      <div key={tx.hash} className="tx-row">
-        <span className='tx-time'>{timeFormat(tx.timestamp)}</span>
-        <span className='tx-link'><a href={'/explorer/' + tx.hash}>{tx.hash.toLowerCase()}</a></span>
-        <span className='tx-amount'>{shortNiceNumber(tx.amount, 0, 1)} {tx.currency}</span>
-        <span className='tx-amount-fiat'>{shortNiceNumber(tx.amountFiats[currency.toLowerCase()], 0, 1, currency)}</span>
-      </div>
-    ))}
-  </div>;
+  return <>
+    <h2 className="center">{t("home.whales.header")}</h2>
+    <div className='whale-transactions-block'>
+      {data?.map(tx => (
+        <div key={tx.hash} className="tx-row">
+          <span className='tx-time'>{timeFormat(tx.timestamp)}</span>
+          <span className='tx-link'><a href={'/explorer/' + tx.hash}>{tx.hash.toLowerCase()}</a></span>
+          <span className='tx-amount'>{shortNiceNumber(tx.amount, 0, 1)} {tx.currency}</span>
+          <span className='tx-amount-fiat'>{devNet ? t("home.whales.no-value") : shortNiceNumber(tx.amountFiats[currency.toLowerCase()], 0, 1, currency)}</span>
+        </div>
+      ))}
+    </div>
+  </>;
 }

@@ -67,8 +67,12 @@
     "search-placeholder": "Search by XRPL Address / Transaction / Username / PayString / Token",
     "search-placeholder-short": "Search by Address / Transaction / User",
     "scan-qr": "SCAN A CODE",
-    "whale-transactions": "Whale alerts",
+    "whales": {
+      "header": "The most significant transactions for the last 24 hours",
+      "no-value": "no value"
+    },
     "stat": {
+      "header": "XRPL live statistics",
       "ledger-index": "Ledger index",
       "close-time": "Close time",
       "transactions": "Transactions",

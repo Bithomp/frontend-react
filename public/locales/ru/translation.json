@@ -67,8 +67,12 @@
     "search-placeholder": "Поиск по XRPL Адресу / Транзакции / Нику / PayString / Токену",
     "search-placeholder-short": "Поиск по Адресу / Транзакции / Нику",
     "scan-qr": "СКАНИРОВАТЬ КОД",
-    "whale-transactions": "Последние крупные транзакции",
+    "whales": {
+      "header": "Самые крупные транзакции за последние 24 часа",
+      "no-value": "без цены"
+    },
     "stat": {
+      "header": "Последние данные с XRPL",
       "ledger-index": "№ леджера",
       "close-time": "Время закрытия",
       "transactions": "Транзакций в леджере",

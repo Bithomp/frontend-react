@@ -5,7 +5,7 @@ import useLocalStorage from 'use-local-storage';
 import Converter from "./Converter";
 import PriceChart from "./PriceChart";
 import Statistics from "./Statistics";
-//import Whales from './Whales';
+import Whales from './Whales';
 
 import './styles.scss';
 import search from "../../assets/images/search.svg";
@@ -103,12 +103,9 @@ export default function Home({ theme, devNet }) {
         </>
       }
 
-      {/*
-      <h2 className='center'>{t("home.whale-transactions")}</h2>
       <div className="home-whale-transactions">
         <Whales currency={selectedCurrency} />
       </div>
-      */}
 
       <div className="home-statistics">
         <Statistics />
