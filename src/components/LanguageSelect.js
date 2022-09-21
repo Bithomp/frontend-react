@@ -6,7 +6,10 @@ export default function LanguageSelect() {
   const handleLangChange = e => {
     const lang = e.target.value;
     i18n.changeLanguage(lang);
+    document.documentElement.lang = i18n.language;
   };
+
+  document.documentElement.lang = i18n.language;
 
   //hide switcher from users whose languages are not supported yet
   if (i18n.language === 'ru') {
