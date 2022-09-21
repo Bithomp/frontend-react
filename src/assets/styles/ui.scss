@@ -63,7 +63,7 @@ body {
 }
 
 .content {
-  padding-top: 81px;
+  border-top: 81px solid var(--background-header);
   flex: 1;
 
   .content-text {
