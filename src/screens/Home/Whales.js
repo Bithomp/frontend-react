@@ -29,7 +29,7 @@ export default function Whales({ currency }) {
     ws = new WebSocket(wssServer);
 
     ws.onopen = () => {
-      //?currency=true&service=true
+      //{ command: "subscribe", streams: ["whale_transactions"], currency: true, service: true, id: 1 }
       ws.send(JSON.stringify({ command: "subscribe", streams: ["whale_transactions"], id: 1 }));
     }
 
