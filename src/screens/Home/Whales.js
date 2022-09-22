@@ -12,6 +12,8 @@ let ws = null;
 
 export default function Whales({ currency }) {
   const [data, setData] = useState(null);
+  const [oldData, setOldData] = useState(null);
+  const [difference, setDifference] = useState(null);
   const { t } = useTranslation();
 
   const checkStatApi = async () => {
@@ -42,10 +44,20 @@ export default function Whales({ currency }) {
   }
 
   useEffect(() => {
+    if (oldData && data) {
+      const change = data.filter(({ hash: id1 }) => !oldData.some(({ hash: id2 }) => id2 === id1));
+      setDifference(change);
+    }
+    setOldData(data);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data]);
+
+  useEffect(() => {
     checkStatApi();
     connect();
     return () => {
       setData(null);
+      setDifference(null);
       if (ws) ws.close();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -70,13 +82,13 @@ export default function Whales({ currency }) {
       "sourceAddress":"rPT1Sjq2YGrBMTttX4GZHjKu9dyfzbpAYe",
       "destinationAddress":"rKb1QJ7dxZ3piULkWbpmTg8UK9eARKFLaY"
      }
-   */
+  */
 
   return <>
     <h2 className="center">{t("home.whales.header")}</h2>
     <div className='whale-transactions-block'>
       {data?.map(tx => (
-        <div key={tx.hash} className="tx-row">
+        <div key={tx.hash} className={"tx-row" + (difference?.includes(tx) ? " just-added" : "")}>
           <span className='tx-time'>{timeFormat(tx.timestamp)}</span>
           <span className='tx-link'><a href={'/explorer/' + tx.hash}>{tx.hash.toLowerCase()}</a></span>
           <span className='tx-amount'>{shortNiceNumber(tx.amount, 0, 1)} {tx.currency}</span>
