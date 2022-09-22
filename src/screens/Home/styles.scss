@@ -276,6 +276,6 @@
 
 @keyframes just-added {
   0%   { background-color: var(--background-main); color: var(--text-main); }
-  50%  { background-color: var(--background-contrast); color: var(--text-contrast); }
+  50%  { background-color: var(--background-contrast); color: var(--text-oposite); }
   100%  { background-color: var(--background-main); color: var(--text-main); }
 }
