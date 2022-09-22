@@ -40,7 +40,7 @@ Your app is ready to be deployed!
 
 `REACT_APP_NETWORK_NAME=mainnet yarn build`
 
-mainnet | testnet | beta | xls20 | devnet
+| mainnet | testnet | devnet | beta | xls20 |
 
 See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
 
