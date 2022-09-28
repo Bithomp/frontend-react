@@ -90,6 +90,7 @@ export default function Header({ theme, switchTheme, setSignInFormOpen, account,
           <div className="menu-dropdown-content">
             <Link to="/nft-statistics">{t("menu.nft-statistics")}</Link>
             <Link to="/last-ledger-information">{t("menu.last-ledger-information")}</Link>
+            <Link to="/amendments">{t("menu.amendments")}</Link>
             {!devNet && <Link to="/genesis">{t("menu.genesis")}</Link>}
           </div>
         </div>
@@ -164,6 +165,13 @@ export default function Header({ theme, switchTheme, setSignInFormOpen, account,
             onClick={mobileMenuToggle}
           >
             {t("menu.nft-statistics")}
+          </Link>
+          <Link
+            to="amendments"
+            className="mobile-menu-item"
+            onClick={mobileMenuToggle}
+          >
+            {t("menu.amendments")}
           </Link>
           {!devNet &&
             <Link to="/genesis" className="mobile-menu-item" onClick={mobileMenuToggle}>

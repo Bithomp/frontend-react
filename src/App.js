@@ -15,6 +15,7 @@ import Alerts from "./screens/Alerts";
 import Developer from "./screens/Developer";
 import LastLedgerInformation from './screens/LastLedgerInformation';
 import NftStatistics from './screens/NftStatistics';
+import Amendments from './screens/Amendments';
 import Genesis from "./screens/Genesis";
 import Disclaimer from './screens/Disclaimer';
 import PrivacyPolicy from './screens/PrivacyPolicy';
@@ -64,6 +65,7 @@ export default function App() {
           <Route path="/developer" element={<Developer />} />
           <Route path="/last-ledger-information" element={<LastLedgerInformation />} />
           <Route path="/nft-statistics" element={<NftStatistics />} />
+          <Route path="/amendments" element={<Amendments />} />
           <Route path="/genesis" element={<Genesis />} />
           <Route path="/disclaimer" element={<Disclaimer />} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />

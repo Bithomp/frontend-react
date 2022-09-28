@@ -11,6 +11,7 @@
     "networks": "Сети",
     "last-ledger-information": "Информация с последнего леджера",
     "nft-statistics": "NFT XLS-20 статистика",
+    "amendments": "Поправки",
     "genesis": "Генезис аккаунты",
     "legal": "Документы",
     "disclaimer": "Отказ от ответственности",
@@ -121,6 +122,15 @@
     "for-sale": "NFT на продаже",
     "for-sale-without-destination": "NFT, публичная продажа",
     "for-sale-with-destination": "NFT, частная продажа"
+  },
+  "amendment": {
+    "soon": "Поправки, набравшие большинство",
+    "enabled": "Включенные поправки",
+    "name": "Имя",
+    "introduction": "Внесена",
+    "majority": "Большинство",
+    "loading": "Данные загружаются...",
+    "unknown": "Название не известно"
   },
   "username": {
     "error": {

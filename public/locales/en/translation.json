@@ -11,6 +11,7 @@
     "networks": "Networks",
     "last-ledger-information": "Last ledger information",
     "nft-statistics": "NFT XLS-20 statistics",
+    "amendments": "Amendments",
     "genesis": "Genesis accounts",
     "legal": "Legal",
     "disclaimer": "Disclaimer",
@@ -121,6 +122,15 @@
     "for-sale": "NFTs for sale",
     "for-sale-without-destination": "NFTs for public sale",
     "for-sale-with-destination": "NFTs for direct sale"
+  },
+  "amendment": {
+    "soon": "Amendments with a majority",
+    "enabled": "Enabled amendments",
+    "name": "Name",
+    "introduction": "Introduction",
+    "majority": "Majority",
+    "loading": "Loading data...",
+    "unknown": "unknown"
   },
   "username": {
     "error": {

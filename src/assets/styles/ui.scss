@@ -175,6 +175,9 @@ table {
           background-color: var(--accent-icon);
           color: var(--text-oposite);
         }
+        a {
+          color: var(--text-oposite);
+        }
       }
       th, td {
         padding: 10px;
