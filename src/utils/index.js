@@ -1,5 +1,11 @@
 export const niceNumber = (n, fractionDigits = 0, currency = null) => {
-  const num = Number(n);
+  if (typeof n === 'string') {
+    if (n.includes('x')) { //in case of placeholders xxx
+      return n;
+    } else {
+      n = Number(n);
+    }
+  }
   if (n) {
     let options = {
       maximumFractionDigits: fractionDigits,
@@ -9,7 +15,7 @@ export const niceNumber = (n, fractionDigits = 0, currency = null) => {
       options.style = "currency";
       options.currency = currency.toUpperCase();
     }
-    return num.toLocaleString(undefined, options);
+    return n.toLocaleString(undefined, options);
   } else {
     return n;
   }
