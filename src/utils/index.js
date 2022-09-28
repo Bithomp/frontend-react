@@ -47,8 +47,8 @@ export const shortNiceNumber = (n, smallNumberFractionDigits = 2, largeNumberFra
   return beforeNumber + output;
 }
 
-//const networks = ['local', 'mainnet', 'testnet', 'beta', 'xls20', 'devnet'];
-//const devNetworks = ['testnet', 'beta', 'xls20', 'devnet'];
+//const networks = ['local', 'mainnet', 'testnet', 'devnet', 'beta', 'xls20', 'amm'];
+//const devNetworks = ['testnet', 'devnet', 'beta', 'xls20', 'amm'];
 
 export const network = process.env.REACT_APP_NETWORK_NAME ? process.env.REACT_APP_NETWORK_NAME : "mainnet";
 export const devNet = ['mainnet', 'local'].includes(network) ? false : network;
@@ -70,6 +70,9 @@ const Server = () => {
       break;
     case 'xls20':
       server = "https://xls20.bithomp.com";
+      break;
+    case 'amm':
+      server = "https://amm.bithomp.com";
       break;
     case 'local':
       server = "https://test.bithomp.com";
