@@ -44,7 +44,7 @@ export default function Amendment() {
 
   return <>
     <div className="content-text">
-      {majorityAmendments &&
+      {majorityAmendments?.length ?
         <>
           <h2 className="center">{t("amendment.soon")}</h2>
           <table className="table-large">
@@ -65,7 +65,7 @@ export default function Amendment() {
               )}
             </tbody>
           </table>
-        </>
+        </> : ""
       }
 
       <h2 className="center">{t("amendment.enabled")}</h2>
