@@ -84,10 +84,14 @@ export default function Whales({ currency }) {
      }
   */
 
+  if (!data?.length) {
+    return "";
+  }
+
   return <>
     <h2 className="center">{t("home.whales.header")}</h2>
     <div className='whale-transactions-block'>
-      {data?.map(tx => (
+      {data.map(tx => (
         <div key={tx.hash} className={"tx-row" + (difference?.includes(tx) ? " just-added" : "")}>
           <span className='tx-time'>{timeFormat(tx.timestamp)}</span>
           <span className='tx-link'><a href={'/explorer/' + tx.hash}>{tx.hash.toLowerCase()}</a></span>
