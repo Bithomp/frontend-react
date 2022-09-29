@@ -7,16 +7,16 @@ const dataFormat = (timestamp) => {
 }
 
 export default function Amendment() {
-  const [data, setData] = useState(null);
   const [majorityAmendments, setMajorityAmendments] = useState(null);
+  const [enabledAmendments, setEnabledAmendments] = useState(null);
   const { t } = useTranslation();
 
   const checkApi = async () => {
     const response = await axios('v2/amendment');
     const data = response.data;
     if (data) {
-      setData(data);
       setMajorityAmendments(data.filter(a => !!a.majority));
+      setEnabledAmendments(data.filter(a => a.enabled === true));
     }
   }
 
@@ -67,24 +67,27 @@ export default function Amendment() {
           </table>
         </> : ""
       }
-
-      <h2 className="center">{t("amendment.enabled")}</h2>
-      <table className="table-large">
-        <thead>
-          <tr>
-            <th>{t("amendment.name")}</th>
-            <th>{t("amendment.introduction")}</th>
-          </tr>
-        </thead>
-        <tbody>
-          {data ? data.filter(a => a.enabled === true).map(a =>
-            <tr key={a.amendment}>
-              <td>{amendmentLink(a.name)}</td>
-              <td>{a.introduced}</td>
-            </tr>
-          ) : <tr><td colSpan="2">{t("amendment.loading")}</td></tr>}
-        </tbody>
-      </table>
+      {enabledAmendments?.length ?
+        <>
+          <h2 className="center">{t("amendment.enabled")}</h2>
+          <table className="table-large">
+            <thead>
+              <tr>
+                <th>{t("amendment.name")}</th>
+                <th>{t("amendment.introduction")}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {enabledAmendments.map(a =>
+                <tr key={a.amendment}>
+                  <td>{amendmentLink(a.name)}</td>
+                  <td>{a.introduced}</td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </> : ""
+      }
     </div>
   </>;
 };
