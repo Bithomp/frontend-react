@@ -1,3 +1,7 @@
+export const fullDateAndTime = (timestamp) => {
+  return new Date(timestamp * 1000).toLocaleString();
+}
+
 export const niceNumber = (n, fractionDigits = 0, currency = null) => {
   if (typeof n === 'string') {
     if (n.includes('x')) { //in case of placeholders xxx

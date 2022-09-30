@@ -15,6 +15,7 @@ import Alerts from "./screens/Alerts";
 import Developer from "./screens/Developer";
 import LastLedgerInformation from './screens/LastLedgerInformation';
 import NftStatistics from './screens/NftStatistics';
+import Validators from './screens/Validators';
 import Amendments from './screens/Amendments';
 import Genesis from "./screens/Genesis";
 import Disclaimer from './screens/Disclaimer';
@@ -65,6 +66,7 @@ export default function App() {
           <Route path="/developer" element={<Developer />} />
           <Route path="/last-ledger-information" element={<LastLedgerInformation />} />
           <Route path="/nft-statistics" element={<NftStatistics />} />
+          <Route path="/validators" element={<Validators />} />
           <Route path="/amendments" element={<Amendments />} />
           <Route path="/genesis" element={<Genesis />} />
           <Route path="/disclaimer" element={<Disclaimer />} />

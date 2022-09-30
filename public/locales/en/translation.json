@@ -131,6 +131,15 @@
     "majority": "Majority",
     "unknown": "unknown"
   },
+  "validators": {
+    "unl": "UNL validators",
+    "domain": "Domain",
+    "public-key": "Public key",
+    "sequence": "Sequence",
+    "address": "XRPL address",
+    "no-domain": "without a domain in the manifest",
+    "text0": "The validator list <1>{{url}}</1> has sequence {{sequence}} and expiration on {{expiration}}."
+  },
   "username": {
     "error": {
       "address-empty": "Please enter your XRPL address.",
@@ -143,6 +152,7 @@
       "username-empty": "Please enter username you want to register.",
       "username-invalid": "Username should be shorter than 18 characters, no symbols allowed.",
       "username-taken": "The username <b>{{username}}</b> is already taken :(",
+      "username-reserved": "The username <b>{{username}}</b> is reserved, contact our support.",
       "username-hold": "The username <b>{{username}}</b> is on hold for registration by another XRPL account. You can try again in 24 hours.",
       "agree-terms-page": "Please agree to the terms and conditions specified on this page.",
       "agree-terms-site": "Please agree to the website's terms and conditions.",

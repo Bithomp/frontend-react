@@ -192,6 +192,11 @@ export default function Username() {
         usernameInput?.focus();
         return;
       }
+      if (data.error === 'Username can not be registered') {
+        setErrorMessage(t("username.error.username-reserved", { username }));
+        usernameInput?.focus();
+        return;
+      }
       if (data.error === 'Bithompid is on registration') {
         setErrorMessage(t("username.error.username-hold", { username }));
         return;

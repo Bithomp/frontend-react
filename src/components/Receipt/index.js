@@ -1,5 +1,7 @@
 import { useTranslation } from 'react-i18next';
 
+import { fullDateAndTime } from '../../utils';
+
 import { ReactComponent as Logo } from "../../assets/images/logo.svg";
 import './styles.scss';
 
@@ -57,7 +59,7 @@ export default function Receipt({ item, details }) {
     */
   }
 
-  timestamp = new Date(timestamp * 1000).toLocaleString();
+  timestamp = fullDateAndTime(timestamp);
   fiatPrice = fiatPrice?.toFixed(2);
   xrpPrice = xrpPrice?.toFixed(2);
   const rate = Math.floor((fiatPrice / xrpPrice) * 100) / 100;

@@ -2,9 +2,7 @@ import { useTranslation } from 'react-i18next';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 
-const dataFormat = (timestamp) => {
-  return new Date(timestamp * 1000).toLocaleString();
-}
+import { fullDateAndTime } from '../utils';
 
 export default function Amendment() {
   const [majorityAmendments, setMajorityAmendments] = useState(null);
@@ -60,7 +58,7 @@ export default function Amendment() {
                 <tr key={a.amendment}>
                   <td>{amendmentLink(a.name)}</td>
                   <td>{a.introduced}</td>
-                  <td>{dataFormat(a.majority)}</td>
+                  <td>{fullDateAndTime(a.majority)}</td>
                 </tr>
               )}
             </tbody>
