@@ -179,6 +179,9 @@ table {
           color: var(--text-oposite);
         }
       }
+      th {
+        text-align: left;
+      }
       th, td {
         padding: 10px;
         font-size: 14px;

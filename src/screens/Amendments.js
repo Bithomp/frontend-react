@@ -51,14 +51,16 @@ export default function Amendment() {
                 <th>{t("amendment.name")}</th>
                 <th>{t("amendment.introduction")}</th>
                 <th>{t("amendment.majority")}</th>
+                <th>{t("amendment.eta")}</th>
               </tr>
             </thead>
             <tbody>
               {majorityAmendments.map(a =>
                 <tr key={a.amendment}>
                   <td>{amendmentLink(a.name)}</td>
-                  <td>{a.introduced}</td>
+                  <td className='center'>{a.introduced}</td>
                   <td>{fullDateAndTime(a.majority)}</td>
+                  <td>{fullDateAndTime(a.majority + 14 * 86400 + 3)}</td>
                 </tr>
               )}
             </tbody>
@@ -79,7 +81,7 @@ export default function Amendment() {
               {enabledAmendments.map(a =>
                 <tr key={a.amendment}>
                   <td>{amendmentLink(a.name)}</td>
-                  <td>{a.introduced}</td>
+                  <td className='center'>{a.introduced}</td>
                 </tr>
               )}
             </tbody>

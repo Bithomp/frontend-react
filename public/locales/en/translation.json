@@ -129,6 +129,7 @@
     "name": "Name",
     "introduction": "Introduction",
     "majority": "Majority",
+    "eta": "Estimated activation time",
     "unknown": "unknown"
   },
   "validators": {
