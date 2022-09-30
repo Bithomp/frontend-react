@@ -49,18 +49,19 @@ export default function Amendment() {
 
   return <>
     <div className="content-text">
-      <div className="flex center">
-        <div className="grey-box">
-          {data &&
-            <Trans i18nKey="validators.text0">
-              The validator list <b>{{ url: data.url }}</b> has sequence {{ sequence: data.sequence }} and expiration on {{ expiration: fullDateAndTime(data.expiration) }}.
-            </Trans>
-          }
-        </div>
-      </div>
       {data?.validators.length ?
         <>
           <h2 className="center">{t("validators.unl")}</h2>
+          <div className="flex center">
+            <div className="grey-box">
+              {data &&
+                <Trans i18nKey="validators.text0">
+                  The validator list <b>{{ url: data.url }}</b> has sequence {{ sequence: data.sequence }} and expiration on {{ expiration: fullDateAndTime(data.expiration) }}.
+                </Trans>
+              }
+            </div>
+          </div>
+          <br />
           <table className="table-large">
             <thead>
               <tr>
