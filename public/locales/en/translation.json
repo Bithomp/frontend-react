@@ -133,12 +133,13 @@
     "unknown": "unknown"
   },
   "validators": {
+    "updated": "updated",
     "unl": "UNL validators",
     "domain": "Domain",
     "public-key": "Public key",
     "sequence": "Sequence",
     "address": "XRPL address",
-    "no-domain": "without a domain in the manifest",
+    "no-domain": "no domain specified",
     "text0": "The validator list <1>{{url}}</1> has sequence {{sequence}} and expiration on {{expiration}}."
   },
   "username": {

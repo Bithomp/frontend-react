@@ -1,4 +1,6 @@
 import { useTranslation } from 'react-i18next';
+import moment from "moment";
+import 'moment/locale/ru'; // Add more langauges
 
 export default function LanguageSelect() {
   const { t, i18n } = useTranslation();
@@ -7,9 +9,11 @@ export default function LanguageSelect() {
     const lang = e.target.value;
     i18n.changeLanguage(lang);
     document.documentElement.lang = i18n.language;
+    moment.locale(i18n.language);
   };
 
   document.documentElement.lang = i18n.language;
+  moment.locale(i18n.language);
 
   //hide switcher from users whose languages are not supported yet
   if (i18n.language === 'ru') {

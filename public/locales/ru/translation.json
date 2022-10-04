@@ -133,12 +133,13 @@
     "unknown": "Название неизвестно"
   },
   "validators": {
+    "updated": "обновлено",
     "unl": "UNL валидаторы",
     "domain": "Домен",
     "public-key": "Публичный ключ",
     "sequence": "Версия",
     "address": "XRPL адрес",
-    "no-domain": "без домена в манифесте",
+    "no-domain": "домен не указан",
     "text0": "Список валидаторов <1>{{url}}</1> с порядковым номером {{sequence}} истекает {{expiration}}."
   },
   "username": {
