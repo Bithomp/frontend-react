@@ -11,6 +11,7 @@
     "networks": "Networks",
     "last-ledger-information": "Last ledger information",
     "nft-statistics": "NFT XLS-20 statistics",
+    "validators": "Validators",
     "amendments": "Amendments",
     "genesis": "Genesis accounts",
     "legal": "Legal",
@@ -136,11 +137,12 @@
     "updated": "updated",
     "unl": "UNL validators",
     "domain": "Domain",
+    "domain-legacy": "Domain (old verification)",
     "public-key": "Public key",
     "sequence": "Sequence",
     "address": "XRPL address",
     "no-domain": "no domain specified",
-    "text0": "The validator list <1>{{url}}</1> has sequence {{sequence}} and expiration on {{expiration}}."
+    "text0": "The validator list <1>{{url}}</1> has sequence {{sequence}} and expiration on {{expiration}}.<br/>It includes {{validatorCount}} validators which are listed below."
   },
   "username": {
     "error": {
@@ -271,6 +273,9 @@
     "submit": "Submit",
     "print": "Print",
     "download": "Download"
+  },
+  "general": {
+    "error": "Error"
   },
   "error": {
     "Network Error": "It seems there is no internet connection ;("

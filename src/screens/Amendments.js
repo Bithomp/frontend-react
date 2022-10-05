@@ -57,7 +57,7 @@ export default function Amendment() {
             <tbody>
               {majorityAmendments.map(a =>
                 <tr key={a.amendment}>
-                  <td>{amendmentLink(a.name)}</td>
+                  <td className="brake">{amendmentLink(a.name)}</td>
                   <td className='center'>{a.introduced}</td>
                   <td>{fullDateAndTime(a.majority)}</td>
                   <td>{fullDateAndTime(a.majority + 14 * 86400 + 3)}</td>

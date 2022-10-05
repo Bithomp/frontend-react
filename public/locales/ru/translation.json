@@ -11,6 +11,7 @@
     "networks": "Сети",
     "last-ledger-information": "Информация с последнего леджера",
     "nft-statistics": "NFT XLS-20 статистика",
+    "validators": "Валидаторы",
     "amendments": "Поправки",
     "genesis": "Генезис аккаунты",
     "legal": "Документы",
@@ -136,11 +137,12 @@
     "updated": "обновлено",
     "unl": "UNL валидаторы",
     "domain": "Домен",
+    "domain-legacy": "Домен (старая верификация)",
     "public-key": "Публичный ключ",
     "sequence": "Версия",
     "address": "XRPL адрес",
     "no-domain": "домен не указан",
-    "text0": "Список валидаторов <1>{{url}}</1> с порядковым номером {{sequence}} истекает {{expiration}}."
+    "text0": "Список валидаторов <1>{{url}}</1> с порядковым номером {{sequence}} истекает {{expiration}}.<br/>В данном списке {{validatorCount}} валидаторов, которые перечислены ниже."
   },
   "username": {
     "error": {
@@ -271,6 +273,9 @@
     "submit": "Отправить",
     "print": "Распечатать",
     "download": "Скачать"
+  },
+  "general": {
+    "error": "Ошибка"
   },
   "error": {
     "Network Error": "Похоже, что у вас пропал интернет :("
