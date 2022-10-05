@@ -13,6 +13,7 @@ import Home from './screens/Home';
 import Username from './screens/Username';
 import Alerts from "./screens/Alerts";
 import Developer from "./screens/Developer";
+import Domains from './screens/Domains';
 import LastLedgerInformation from './screens/LastLedgerInformation';
 import NftStatistics from './screens/NftStatistics';
 import Validators from './screens/Validators';
@@ -64,6 +65,7 @@ export default function App() {
           <Route path="/username" element={<Username />} />
           <Route path="/alerts" element={<Alerts />} />
           <Route path="/developer" element={<Developer />} />
+          <Route path="/domains" element={<Domains />} />
           <Route path="/last-ledger-information" element={<LastLedgerInformation />} />
           <Route path="/nft-statistics" element={<NftStatistics />} />
           <Route path="/validators" element={<Validators />} />
