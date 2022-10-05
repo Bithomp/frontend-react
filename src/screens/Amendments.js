@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 
-import { fullDateAndTime } from '../utils';
+import { fullDateAndTime, title } from '../utils';
 
 export default function Amendment() {
   const [majorityAmendments, setMajorityAmendments] = useState(null);
@@ -38,6 +38,8 @@ export default function Amendment() {
 
   useEffect(() => {
     checkApi();
+    title(t("menu.amendments"));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return <>

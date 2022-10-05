@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Link } from "react-router-dom";
 import { useTranslation } from 'react-i18next';
 import axios from 'axios';
 
@@ -137,7 +138,7 @@ export default function Statistics() {
       </div>
       <div className='stat-piece'>
         <div className='stat-piece-header'>{t("home.stat.quorum")}</div>
-        <div>{quorum} ({proposers} {t("home.stat.proposers")})</div>
+        <div>{quorum} (<Link to="validators">{proposers} {t("home.stat.proposers")}</Link>)</div>
       </div>
       <div className='stat-piece'>
         <div className='stat-piece-header'>{t("home.stat.accounts")}</div>

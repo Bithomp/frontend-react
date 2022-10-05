@@ -1,3 +1,11 @@
+export const title = (title) => {
+  if (network === 'mainnet') {
+    document.title = 'XRPL ' + title;
+  } else {
+    document.title = 'XRPL ' + network.toUpperCase() + ": " + title;
+  }
+}
+
 export const fullDateAndTime = (timestamp) => {
   return new Date(timestamp * 1000).toLocaleString();
 }

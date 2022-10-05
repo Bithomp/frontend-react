@@ -4,7 +4,7 @@ import axios from 'axios';
 import { isMobile } from "react-device-detect";
 import moment from "moment";
 
-import { fullDateAndTime } from '../utils';
+import { fullDateAndTime, title } from '../utils';
 
 const compare = (a, b) => {
   // nulls sort after anything else
@@ -53,6 +53,8 @@ export default function Amendment() {
 
   useEffect(() => {
     checkApi();
+    title(t("menu.validators"));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return <>
