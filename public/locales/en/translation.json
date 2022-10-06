@@ -173,13 +173,17 @@
       "pay-from-your-address": "To prove that you're in control of the XRPL address you will need to make a payment from that address (for which you want to assign a username). Payments from other addresses will be counted as donations and won't be refunded.",
       "text3": "The payment is for 100 Swedish kronor denominated in XRP. The payment for the username is <1>not refundable</1>. If you pay more than requested, the exceeding amount will be counted as donation and won't be refunded.",
       "enter-address-or": "Enter your XRPL address or",
+      "sign-in": "Sign in with Xumm",
+      "sign-out": "sign out",
       "your-address": "Your XRPL address",
       "enter-username": "Enter the username you would like to have",
       "your-username": "Username",
       "enter-country": "Your country of residence (for our accounting)",
       "agree-terms-page": "I understand and agree to the terms and conditions specified above.",
       "agree-terms-site": "I agree with the <1>Terms and conditions</1>.",
-      "agree-privacy-policy": "I agree with the <1>Privacy policy</1>."
+      "agree-privacy-policy": "I agree with the <1>Privacy policy</1>.",
+      "already-registered": "You account already have a registered username",
+      "sign-out-to-register-another-one": "<0>Sign out</0> from this account to register a username for a different address."
     },
     "step1": {
       "to-register": "To register your public username:",

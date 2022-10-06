@@ -19,7 +19,7 @@ export default function Header({ theme, switchTheme, setSignInFormOpen, account,
     hashicon = account.hashicon;
     username = account.username;
     if (account.username) {
-      displayName = <b className="blue">{username}</b>;
+      displayName = <b>{username}</b>;
     } else {
       displayName = address.substr(0, 8) + "..." + address.substr(-7);
     }

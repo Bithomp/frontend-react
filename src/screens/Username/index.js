@@ -78,6 +78,7 @@ export default function Username({ setSignInFormOpen, account, signOut }) {
     if (account?.address) {
       setAddress(account.address);
       searchParams.set("address", account.address);
+      setSearchParams(searchParams);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [account]);
@@ -385,14 +386,14 @@ export default function Username({ setSignInFormOpen, account, signOut }) {
             <>
               {account?.address ?
                 <>
-                  <p>{t("username.step0.your-address")} (<b className='link' onClick={signOut}>sign out</b>):</p>
+                  <p>{t("username.step0.your-address")} (<b className='link' onClick={signOut}>{t("username.step0.sign-out")}</b>):</p>
                   <div className="input-validation">
                     <input placeholder={t("username.step0.your-address")} value={address} className="input-text" spellCheck="false" readOnly />
                     <img src={checkmark} className="validation-icon" alt="validated" />
                   </div>
                 </> :
                 <>
-                  <p>{t("username.step0.enter-address-or")} <b className="link" onClick={() => setSignInFormOpen("xumm")}>Sign in with Xumm</b>:</p>
+                  <p>{t("username.step0.enter-address-or")} <b className="link" onClick={() => setSignInFormOpen("xumm")}>{t("username.step0.sign-in")}</b>:</p>
                   <div className="input-validation">
                     <input placeholder={t("username.step0.your-address")} value={address} onChange={onAddressChange} className="input-text" ref={node => { addressRef = node; }} spellCheck="false" maxLength="36" />
                     {isAddressValid(address) && <img src={checkmark} className="validation-icon" alt="validated" />}
@@ -427,8 +428,12 @@ export default function Username({ setSignInFormOpen, account, signOut }) {
                 <input type="button" value={t("button.continue")} className="button-action" onClick={onSubmit} />
               </p>
             </> :
-            <p className='center'>
-              You address already have a registered username: {account.username}. Login with a different account to register a new username.
+            <p className='bordered' style={{ padding: "20px" }}>
+              {t("username.step0.already-registered")}: <b>{account.username}</b>.
+              <br />
+              <Trans i18nKey="username.step0.sign-out-to-register-another-one">
+                <b className='link' onClick={signOut}>Sign out</b> from this account to register a username for a different address.
+              </Trans>
             </p>
           }
         </>
