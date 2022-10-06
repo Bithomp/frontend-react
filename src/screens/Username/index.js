@@ -79,6 +79,7 @@ export default function Username({ setSignInFormOpen, account, signOut }) {
       setAddress(account.address);
       searchParams.set("address", account.address);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [account]);
 
   useEffect(() => {
