@@ -142,6 +142,12 @@ input {
     &:focus {
       box-shadow: 0 0 10px var(--accent-icon);
     }
+    &:read-only {
+      background-color: var(--background-input-readonly);
+      &:focus {
+        box-shadow: none;
+      }
+    }
   }
 }
 

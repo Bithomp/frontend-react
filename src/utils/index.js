@@ -1,3 +1,7 @@
+export const capitalize = (word) => {
+  return word.charAt(0).toUpperCase() + word.slice(1);
+}
+
 export const title = (title) => {
   if (network === 'mainnet') {
     document.title = 'XRPL ' + title;

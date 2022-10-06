@@ -39,18 +39,18 @@
   },
   "signin": {
     "signin": "Sign in",
-    "logout": "Log out",
+    "signout": "Sign out",
     "choose-app": "Choose a signing app",
     "login-with": "Login with",
     "xumm": {
-      "open-app": "Open the xumm app on your phone.",
+      "open-app": "Open the Xumm app on your phone.",
       "change-settings": "Go to settings and choose a testnet node.",
-      "scan-qr": "Scan this QR code with the xumm app.",
+      "scan-qr": "Scan this QR code with the Xumm app.",
       "statuses": {
-        "redirecting": "Redirecting to xumm...",
+        "redirecting": "Redirecting to Xumm...",
         "wait": "Please wait...",
         "check-push": "Check a push notification on your mobile.",
-        "check-app": "Please follow instructions in the xumm app.",
+        "check-app": "Please follow instructions in the Xumm app.",
         "expired": "The QR code is expired, request a new one."
       },
       "new-qr": "Get a new QR code"
@@ -151,7 +151,7 @@
       "address-invalid": "Please enter a valid XRPL address.",
       "address-hosted": {
         "on": "on",
-        "hosted": "Entered address is hosted {{serviceName}}, you can register usernames only for non-hosted wallets (hardware wallets, xumm, etc). If you are an exchange operator, please contact us."
+        "hosted": "Entered address is hosted {{serviceName}}, you can register usernames only for non-hosted wallets (hardware wallets, Xumm, etc). If you are an exchange operator, please contact us."
       },
       "address-done": "The address already has a registered username.",
       "username-empty": "Please enter username you want to register.",
@@ -172,7 +172,7 @@
       "address-you-control": "You can only register usernames for XRPL addresses you control (you have a secret or recovery 12/24 words). You can not register a username for a hosted address (which has a destination tag) within an exchange / service / wallet.",
       "pay-from-your-address": "To prove that you're in control of the XRPL address you will need to make a payment from that address (for which you want to assign a username). Payments from other addresses will be counted as donations and won't be refunded.",
       "text3": "The payment is for 100 Swedish kronor denominated in XRP. The payment for the username is <1>not refundable</1>. If you pay more than requested, the exceeding amount will be counted as donation and won't be refunded.",
-      "enter-address": "Enter your XRPL address",
+      "enter-address-or": "Enter your XRPL address or",
       "your-address": "Your XRPL address",
       "enter-username": "Enter the username you would like to have",
       "your-username": "Username",
@@ -246,7 +246,7 @@
     "status-success": " If your transaction has a status \"success\" but it wasn't received then contact the receipient's wallet / service / exchange support.",
     "wrong-tag": "If you sent a transaction without a destination tag or with a wrong destination tag then read (2) and (3) above.",
     "text2": "If you're missing 10 XRP in your wallet, please read about the <1>base reserve</1>.",
-    "paper-wallet": "If you want to send XRP from a paper wallet, you need to import it to a software wallet first, you can use XUMM mobile app for that (import secret as a \"family seed\").",
+    "paper-wallet": "If you want to send XRP from a paper wallet, you need to import it to a software wallet first, you can use Xumm mobile app for that (import secret as a \"family seed\").",
     "flare": "If you have a question about \"Flare\" you need to address it to the Flare community.",
     "text3": "If you have a <1>partnership or marketing</1> proposals then you can contact us by email: <3/>. You can also contact us with questions about the bithomp username registration or bithomp transaction explorer.",
     "no-answer": "Due to our limited time we do not answer to emails related to 1-7.",

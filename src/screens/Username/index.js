@@ -15,7 +15,7 @@ import './styles.scss';
 let interval;
 let ws = null;
 
-export default function Username() {
+export default function Username({ setSignInFormOpen, account, signOut }) {
   const { t, i18n } = useTranslation();
 
   const [searchParams, setSearchParams] = useSearchParams();
@@ -40,10 +40,17 @@ export default function Username() {
     let getAddress = searchParams.get("address");
     let getUsername = searchParams.get("username");
     let getReceipt = searchParams.get("receipt");
-    if (isAddressValid(getAddress)) {
-      setAddress(getAddress);
+    if (account) {
+      if (account.address) {
+        setAddress(account.address);
+        searchParams.set("address", account.address);
+      }
     } else {
-      searchParams.delete("address");
+      if (isAddressValid(getAddress)) {
+        setAddress(getAddress);
+      } else {
+        searchParams.delete("address");
+      }
     }
     if (isUsernameValid(getUsername)) {
       setUsername(getUsername);
@@ -66,6 +73,13 @@ export default function Username() {
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    if (account?.address) {
+      setAddress(account.address);
+      searchParams.set("address", account.address);
+    }
+  }, [account]);
 
   useEffect(() => {
     setErrorMessage("");
@@ -366,39 +380,56 @@ export default function Username() {
               The payment is for 100 Swedish kronor denominated in XRP. The payment for the username is <b>not refundable</b>. If you pay more than requested, the exceeding amount will be counted as donation and won't be refunded.
             </Trans>
           </p>
+          {!account?.username ?
+            <>
+              {account?.address ?
+                <>
+                  <p>{t("username.step0.your-address")} (<b className='link' onClick={signOut}>sign out</b>):</p>
+                  <div className="input-validation">
+                    <input placeholder={t("username.step0.your-address")} value={address} className="input-text" spellCheck="false" readOnly />
+                    <img src={checkmark} className="validation-icon" alt="validated" />
+                  </div>
+                </> :
+                <>
+                  <p>{t("username.step0.enter-address-or")} <b className="link" onClick={() => setSignInFormOpen("xumm")}>Sign in with Xumm</b>:</p>
+                  <div className="input-validation">
+                    <input placeholder={t("username.step0.your-address")} value={address} onChange={onAddressChange} className="input-text" ref={node => { addressRef = node; }} spellCheck="false" maxLength="36" />
+                    {isAddressValid(address) && <img src={checkmark} className="validation-icon" alt="validated" />}
+                  </div>
+                </>
+              }
+              <p>{t("username.step0.enter-username")}:</p>
+              <div className="input-validation">
+                <input placeholder={t("username.step0.your-username")} value={username} onChange={onUsernameChange} className="input-text" ref={node => { usernameRef = node; }} spellCheck="false" maxLength="18" />
+                {isUsernameValid(username) && <img src={checkmark} className="validation-icon" alt="validated" />}
+              </div>
+              <p>{t("username.step0.enter-country")}:</p>
+              <CountrySelect setCountryCode={setCountryCode} />
 
-          <p>{t("username.step0.enter-address")}:</p>
-          <div className="input-validation">
-            <input placeholder={t("username.step0.your-address")} value={address} onChange={onAddressChange} className="input-text" ref={node => { addressRef = node; }} spellCheck="false" maxLength="36" />
-            {isAddressValid(address) && <img src={checkmark} className="validation-icon" alt="validated" />}
-          </div>
-          <p>{t("username.step0.enter-username")}:</p>
-          <div className="input-validation">
-            <input placeholder={t("username.step0.your-username")} value={username} onChange={onUsernameChange} className="input-text" ref={node => { usernameRef = node; }} spellCheck="false" maxLength="18" />
-            {isUsernameValid(username) && <img src={checkmark} className="validation-icon" alt="validated" />}
-          </div>
-          <p>{t("username.step0.enter-country")}:</p>
-          <CountrySelect setCountryCode={setCountryCode} />
+              <CheckBox checked={agreeToPageTerms} setChecked={setAgreeToPageTerms} >
+                {t("username.step0.agree-terms-page")}
+              </CheckBox>
 
-          <CheckBox checked={agreeToPageTerms} setChecked={setAgreeToPageTerms} >
-            {t("username.step0.agree-terms-page")}
-          </CheckBox>
+              <CheckBox checked={agreeToSiteTerms} setChecked={setAgreeToSiteTerms} >
+                <Trans i18nKey="username.step0.agree-terms-site">
+                  I agree with the <Link to="/terms-and-conditions" target="_blank">Terms and conditions</Link>.
+                </Trans>
+              </CheckBox>
 
-          <CheckBox checked={agreeToSiteTerms} setChecked={setAgreeToSiteTerms} >
-            <Trans i18nKey="username.step0.agree-terms-site">
-              I agree with the <Link to="/terms-and-conditions" target="_blank">Terms and conditions</Link>.
-            </Trans>
-          </CheckBox>
+              <CheckBox checked={agreeToPrivacyPolicy} setChecked={setAgreeToPrivacyPolicy} >
+                <Trans i18nKey="username.step0.agree-privacy-policy">
+                  I agree with the <Link to="/privacy-policy" target="_blank">Privacy policy</Link>.
+                </Trans>
+              </CheckBox>
 
-          <CheckBox checked={agreeToPrivacyPolicy} setChecked={setAgreeToPrivacyPolicy} >
-            <Trans i18nKey="username.step0.agree-privacy-policy">
-              I agree with the <Link to="/privacy-policy" target="_blank">Privacy policy</Link>.
-            </Trans>
-          </CheckBox>
-
-          <p className="center">
-            <input type="button" value={t("button.continue")} className="button-action" onClick={onSubmit} />
-          </p>
+              <p className="center">
+                <input type="button" value={t("button.continue")} className="button-action" onClick={onSubmit} />
+              </p>
+            </> :
+            <p className='center'>
+              You address already have a registered username: {account.username}. Login with a different account to register a new username.
+            </p>
+          }
         </>
       }
       {step === 1 &&

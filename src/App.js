@@ -40,6 +40,11 @@ export default function App() {
     setTheme(newTheme);
   }
 
+  const signOut = () => {
+    localStorage.removeItem('xummUserToken');
+    setAccount(null);
+  }
+
   if (process.env.NODE_ENV === 'development') {
     axios.defaults.headers.common['x-bithomp-token'] = process.env.REACT_APP_BITHOMP_API_TEST_KEY;
     axios.defaults.baseURL = server + '/api/';
@@ -54,15 +59,24 @@ export default function App() {
         switchTheme={switchTheme}
         setSignInFormOpen={setSignInFormOpen}
         account={account}
-        setAccount={setAccount}
+        signOut={signOut}
       />
       <div className="content">
         <ScrollToTop />
-        {signInFormOpen && <SignInForm setSignInFormOpen={setSignInFormOpen} setAccount={setAccount} />}
+        {signInFormOpen &&
+          <SignInForm
+            setSignInFormOpen={setSignInFormOpen}
+            setAccount={setAccount}
+            signInFormOpen={signInFormOpen}
+          />
+        }
         <Routes>
           <Route path="/" element={<Home theme={theme} devNet={devNet} />} />
           <Route path="/index.html" element={<Home theme={theme} devNet={devNet} />} />
-          <Route path="/username" element={<Username />} />
+          <Route
+            path="/username"
+            element={<Username setSignInFormOpen={setSignInFormOpen} account={account} signOut={signOut} />}
+          />
           <Route path="/alerts" element={<Alerts />} />
           <Route path="/developer" element={<Developer />} />
           <Route path="/domains" element={<Domains />} />

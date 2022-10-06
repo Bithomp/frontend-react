@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { isMobile } from "react-device-detect";
 import axios from 'axios';
 
-import { server, devNet } from '../../utils';
+import { server, devNet, capitalize } from '../../utils';
 
 import ProgressBar from "../ProgressBar";
 
@@ -16,7 +16,7 @@ import ellipal from '../../assets/images/ellipal-large.svg';
 
 let xummWs;
 
-export default function SignInForm({ setSignInFormOpen, setAccount }) {
+export default function SignInForm({ setSignInFormOpen, setAccount, signInFormOpen }) {
   const { t } = useTranslation();
 
   const [screen, setScreen] = useState("choose-app");
@@ -26,6 +26,13 @@ export default function SignInForm({ setSignInFormOpen, setAccount }) {
   const [xummUuid, setXummUuid] = useState(null);
   const [expiresInSeconds, setExpiresInSeconds] = useState(180);
   const [expiredQr, setExpiredQr] = useState(false);
+
+  useEffect(() => {
+    if (signInFormOpen === "xumm") {
+      XummLogin();
+    }
+    //eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     let isSubscribed = true;
@@ -241,7 +248,7 @@ export default function SignInForm({ setSignInFormOpen, setAccount }) {
         }
         {screen !== 'choose-app' &&
           <>
-            <div className='header'>{t("signin.login-with")} {screen}</div>
+            <div className='header'>{t("signin.login-with")} {capitalize(screen)}</div>
             {screen === 'xumm' &&
               <>
                 {!expiredQr ?

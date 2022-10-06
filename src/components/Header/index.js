@@ -8,7 +8,7 @@ import logo from "../../assets/images/logo-animated.svg";
 import Switch from "./Switch";
 import './styles.scss';
 
-export default function Header({ theme, switchTheme, setSignInFormOpen, account, setAccount }) {
+export default function Header({ theme, switchTheme, setSignInFormOpen, account, signOut }) {
   const { t } = useTranslation();
 
   const [menuOpen, setMenuOpen] = useState(false);
@@ -26,14 +26,6 @@ export default function Header({ theme, switchTheme, setSignInFormOpen, account,
   }
 
   const xummUserToken = localStorage.getItem('xummUserToken');
-
-  const logOut = () => {
-    localStorage.removeItem('xummUserToken');
-    setAccount(null);
-    displayName = '';
-    address = '';
-    hashicon = '';
-  }
 
   const mobileMenuToggle = e => {
     // remove scrollbar when menu is open
@@ -107,7 +99,7 @@ export default function Header({ theme, switchTheme, setSignInFormOpen, account,
               <a href={"/explorer/" + address + "?hw=xumm&xummtoken=" + xummUserToken}>{t("signin.actions.view")}</a>
               {!username && <a href={"/username?address=" + address}>{t("menu.usernames")}</a>}
               <a href={"/explorer/" + address + "?hw=xumm&xummtoken=" + xummUserToken + "&action=send"}>{t("signin.actions.send")}</a>
-              <button onClick={logOut}>{t("signin.logout")}</button>
+              <button onClick={signOut}>{t("signin.signout")}</button>
             </div>
           </div> :
           <span onClick={() => { setSignInFormOpen(true) }} className="header-signin-link link">{t("signin.signin")}</span>
@@ -195,7 +187,7 @@ export default function Header({ theme, switchTheme, setSignInFormOpen, account,
           }
           <div className="mobile-menu-directory"></div>
           {displayName ?
-            <span onClick={logOut} className="mobile-menu-item link">{t("signin.logout")}</span> :
+            <span onClick={signOut} className="mobile-menu-item link">{t("signin.signout")}</span> :
             <span onClick={() => { setSignInFormOpen(true) }} className="mobile-menu-item link">{t("signin.signin")}</span>
           }
         </div>
