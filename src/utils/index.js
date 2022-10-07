@@ -1,3 +1,13 @@
+import i18next from '../services/i18n';
+
+export const onFailedRequest = (error, showErrorFunction) => {
+  if (i18next.exists("error." + error.message)) {
+    showErrorFunction(i18next.t("error." + error.message));
+  } else {
+    showErrorFunction(error.message);
+  }
+}
+
 export const capitalize = (word) => {
   return word.charAt(0).toUpperCase() + word.slice(1);
 }

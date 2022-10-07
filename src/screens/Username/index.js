@@ -3,7 +3,7 @@ import { useTranslation, Trans } from 'react-i18next';
 import { useSearchParams, Link } from "react-router-dom";
 import axios from 'axios';
 
-import { isAddressValid, isUsernameValid, server, wssServer } from '../../utils';
+import { isAddressValid, isUsernameValid, server, wssServer, onFailedRequest } from '../../utils';
 
 import CountrySelect from '../../components/CountrySelect';
 import CheckBox from '../../components/CheckBox';
@@ -175,11 +175,7 @@ export default function Username({ setSignInFormOpen, account, signOut }) {
       countryCode,
     };
     const apiData = await axios.post('v1/bithompid', postData).catch(error => {
-      if (i18n.exists("error." + error.message)) {
-        setErrorMessage(t("error." + error.message));
-      } else {
-        setErrorMessage(error.message);
-      }
+      onFailedRequest(error, setErrorMessage);
     });
 
     const data = apiData?.data;
@@ -322,7 +318,9 @@ export default function Username({ setSignInFormOpen, account, signOut }) {
   }
 
   const checkPayment = async (username, address, destinationTag) => {
-    const response = await axios('v1/bithompid/' + username + '/status?address=' + address + '&dt=' + destinationTag);
+    const response = await axios('v1/bithompid/' + username + '/status?address=' + address + '&dt=' + destinationTag).catch(error => {
+      onFailedRequest(error, setErrorMessage);
+    });
     const data = response.data;
     if (data) {
       updateBid(data);
@@ -440,7 +438,7 @@ export default function Username({ setSignInFormOpen, account, signOut }) {
       }
       {step === 1 &&
         <>
-          <p>{t("username.step1.to-register")} <b className="blue">{register.bithompid}</b></p>
+          <p>{t("username.step1.to-register")} <b>{register.bithompid}</b></p>
           <p>
             {t("username.step1.from-your-address")} <b>{register.sourceAddress}</b>.
             <br />
