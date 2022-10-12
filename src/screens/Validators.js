@@ -61,7 +61,7 @@ export default function Amendment() {
     <div className="content-text">
       {data?.validators?.length ?
         <>
-          <h2 className="center">{t("validators.unl")} ({t("validators.updated")} {moment(data.updatedAt * 1000 - 4, "unix").fromNow()})</h2>
+          <h2 className="center">{t("validators.unl")} ({t("validators.updated")} {moment((data.updatedAt - 1) * 1000, "unix").fromNow()})</h2>
           <div className="flex center">
             <div className="grey-box">
               {data &&
