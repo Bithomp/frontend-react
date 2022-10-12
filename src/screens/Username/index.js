@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react';
 import { useTranslation, Trans } from 'react-i18next';
 import { useSearchParams, Link } from "react-router-dom";
+import { isMobile } from "react-device-detect";
 import axios from 'axios';
 
 import { isAddressValid, isUsernameValid, server, wssServer, onFailedRequest } from '../../utils';
+import { payloadXummPost, xummWsConnect } from '../../utils/xumm';
 
 import CountrySelect from '../../components/CountrySelect';
 import CheckBox from '../../components/CheckBox';
@@ -14,6 +16,7 @@ import './styles.scss';
 
 let interval;
 let ws = null;
+const xummUserToken = localStorage.getItem('xummUserToken');
 
 export default function Username({ setSignInFormOpen, account, signOut }) {
   const { t, i18n } = useTranslation();
@@ -32,6 +35,7 @@ export default function Username({ setSignInFormOpen, account, signOut }) {
   const [bidData, setBidData] = useState({});
   const [step, setStep] = useState(0);
   const [update, setUpdate] = useState(false);
+  const [status, setStatus] = useState("");
 
   let addressRef;
   let usernameRef;
@@ -232,12 +236,93 @@ export default function Username({ setSignInFormOpen, account, signOut }) {
       setErrorMessage("");
       // if partly paid, completed or receipt
       checkPayment(data.bithompid, data.sourceAddress, data.destinationTag);
+      if (xummUserToken) {
+        xummPostPayment(
+          {
+            destination: data.destinationAddress,
+            amount: data.amount,
+            //memos,
+            destinationTag: data.destinationTag
+          },
+          onPayloadResponse
+        );
+      }
       if (data.completedAt) {
         setStep(2);
       } else {
         setStep(1);
         //no ws when completed / receipt, no api status check every minute
         setUpdate(true);
+      }
+    }
+  }
+
+  const xummPostPayment = ({ destination, amount, memos, destinationTag }, callback) => {
+    let preparedTx = {
+      TransactionType: "Payment",
+      Destination: destination,
+      Amount: amount,
+      //Memos: memos
+    };
+
+    if (destinationTag) {
+      preparedTx.DestinationTag = destinationTag;
+    }
+
+    let data = {
+      options: {
+        submit: false,
+        expire: 5,
+      },
+      txjson: preparedTx
+    };
+
+    if (isMobile) {
+      data.options.return_url = {
+        app: server + "/explorer/?hw=xumm&uuid={id}",
+      };
+      data.options.submit = true;
+    }
+
+    if (xummUserToken) {
+      data.user_token = xummUserToken;
+    }
+
+    payloadXummPost(data, callback);
+  }
+
+  const onPayloadResponse = (data) => {
+    //setXummUuid(data.uuid);
+    //setXummQrSrc(data.refs.qr_png);
+    //setExpiredQr(false);
+    xummWsConnect(data.refs.websocket_status, xummWsConnected);
+    if (data.pushed) {
+      setStatus(t("signin.xumm.statuses.check-push"));
+    } else {
+      if (isMobile) {
+        if (data.next && data.next.always) {
+          window.location.href = data.next.always;
+        } else {
+          console.log("payload next.always is missing");
+        }
+      } else {
+        //setShowXummQr(true);
+        //setStatus(t("signin.xumm.scan-qr"));
+      }
+    }
+  }
+
+  const xummWsConnected = (obj) => {
+    if (obj.opened) {
+      setStatus(t("signin.xumm.statuses.check-app"));
+    } else if (obj.signed) {
+      //setShowXummQr(false);
+      setStatus(t("signin.xumm.statuses.wait"));
+      //XummRedirect(obj.payload_uuidv4);
+    } else if (obj.expires_in_seconds) {
+      if (obj.expires_in_seconds <= 0) {
+        //setExpiredQr(true);
+        setStatus(t("signin.xumm.statuses.expired"));
       }
     }
   }
@@ -438,31 +523,38 @@ export default function Username({ setSignInFormOpen, account, signOut }) {
       }
       {step === 1 &&
         <>
-          <p>{t("username.step1.to-register")} <b>{register.bithompid}</b></p>
-          <p>
-            {t("username.step1.from-your-address")} <b>{register.sourceAddress}</b>.
-            <br />
-            <Trans i18nKey="username.step1.text0">
-              Payments made by you <b className="red">from any other addresses</b> or with a <b className="red">wrong destination tag</b> won't be accepted for the service, it will be accepted as a donation and <b className="red">won't be refunded</b>.
-            </Trans>
-          </p>
+          {xummUserToken ?
+            <>
+              {status}
+            </> :
+            <>
+              <p>{t("username.step1.to-register")} <b>{register.bithompid}</b></p>
+              <p>
+                {t("username.step1.from-your-address")} <b>{register.sourceAddress}</b>.
+                <br />
+                <Trans i18nKey="username.step1.text0">
+                  Payments made by you <b className="red">from any other addresses</b> or with a <b className="red">wrong destination tag</b> won't be accepted for the service, it will be accepted as a donation and <b className="red">won't be refunded</b>.
+                </Trans>
+              </p>
 
-          <h3>{t("username.step1.payment-instructions")}</h3>
-          <div className='payment-instructions bordered'>
-            {t("username.step1.address")}<br /><b>{register.destinationAddress}</b>
-            <br /><br />
-            {t("username.step1.tag")}<br /><b className="red">{register.destinationTag}</b>
-            <br /><br />
-            {t("username.step1.amount")}<br /><b>{register.amount} {register.currency}</b>
-          </div>
+              <h3>{t("username.step1.payment-instructions")}</h3>
+              <div className='payment-instructions bordered'>
+                {t("username.step1.address")}<br /><b>{register.destinationAddress}</b>
+                <br /><br />
+                {t("username.step1.tag")}<br /><b className="red">{register.destinationTag}</b>
+                <br /><br />
+                {t("username.step1.amount")}<br /><b>{register.amount} {register.currency}</b>
+              </div>
 
-          <h3>{t("username.step1.awaiting")}</h3>
-          <div className='payment-awaiting bordered center'>
-            <div className="waiting"></div>
-            <br /><br />
-            <p className="red center" dangerouslySetInnerHTML={{ __html: paymentErrorMessage || "&nbsp;" }} />
-            {t("username.step1.about-confirmation")}
-          </div>
+              <h3>{t("username.step1.awaiting")}</h3>
+              <div className='payment-awaiting bordered center'>
+                <div className="waiting"></div>
+                <br /><br />
+                <p className="red center" dangerouslySetInnerHTML={{ __html: paymentErrorMessage || "&nbsp;" }} />
+                {t("username.step1.about-confirmation")}
+              </div>
+            </>
+          }
         </>
       }
       {step === 2 &&
