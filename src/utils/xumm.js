@@ -34,17 +34,21 @@ export const xummCancel = async (uuid) => {
 
 export const payloadXummPost = async (payload, callback) => {
   const response = await axios.post('app/xumm/payload', payload).catch(error => {
-    console.log("payloadXumm error:", error.message);
+    console.log("payloadXummPost error:", error.message);
   });
   if (response) {
     const { data } = response;
     if (data?.refs) {
       callback(data);
     } else {
-      console.log("payloadXumm error: no data or no refs in data");
+      if (data?.error?.message) {
+        console.log("payloadXummPost error:", data.error.message);
+      } else {
+        console.log("payloadXummPost error: no data or no refs in data");
+      }
     }
   } else {
-    console.log("payloadXumm error: no response");
+    console.log("payloadXummPost error: no response");
   }
 }
 

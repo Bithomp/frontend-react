@@ -3,6 +3,7 @@ import { useTranslation, Trans } from 'react-i18next';
 import { useSearchParams, Link } from "react-router-dom";
 import { isMobile } from "react-device-detect";
 import axios from 'axios';
+import { Buffer } from 'buffer';
 
 import { isAddressValid, isUsernameValid, server, wssServer, onFailedRequest, devNet } from '../../utils';
 import { payloadXummPost, xummWsConnect } from '../../utils/xumm';
@@ -16,7 +17,6 @@ import './styles.scss';
 
 let interval;
 let ws = null;
-const xummUserToken = localStorage.getItem('xummUserToken');
 
 export default function Username({ setSignInFormOpen, account, signOut }) {
   const { t, i18n } = useTranslation();
@@ -39,6 +39,8 @@ export default function Username({ setSignInFormOpen, account, signOut }) {
 
   let addressRef;
   let usernameRef;
+
+  const xummUserToken = localStorage.getItem('xummUserToken');
 
   useEffect(() => {
     let getAddress = searchParams.get("address");
@@ -241,7 +243,7 @@ export default function Username({ setSignInFormOpen, account, signOut }) {
           {
             destination: data.destinationAddress,
             amount: data.amount,
-            //memos,
+            memo: "Bithomp username registration",
             destinationTag: data.destinationTag
           },
           onPayloadResponse
@@ -257,13 +259,23 @@ export default function Username({ setSignInFormOpen, account, signOut }) {
     }
   }
 
-  const xummPostPayment = ({ destination, amount, memos, destinationTag }, callback) => {
+  const xummPostPayment = ({ destination, amount, memo, destinationTag }, callback) => {
     let preparedTx = {
       TransactionType: "Payment",
       Destination: destination,
-      Amount: amount,
-      //Memos: memos
+      Amount: String(amount * 1000000)
     };
+
+    if (memo) {
+      const hex = Buffer.from(memo).toString('hex').toUpperCase();
+      preparedTx.Memos = [
+        {
+          "Memo": {
+            "MemoData": hex
+          }
+        }
+      ];
+    }
 
     if (destinationTag) {
       preparedTx.DestinationTag = destinationTag;
@@ -540,9 +552,9 @@ export default function Username({ setSignInFormOpen, account, signOut }) {
       {step === 1 &&
         <>
           {xummUserToken ?
-            <>
+            <p className='center'>
               {status}
-            </> :
+            </p> :
             <>
               <p>{t("username.step1.to-register")} <b>{register.bithompid}</b></p>
               <p>
