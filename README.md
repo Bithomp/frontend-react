@@ -10,7 +10,7 @@ In the project directory, you can run:
 
 `REACT_APP_NETWORK_NAME=mainnet yarn start`
 
-mainnet | testnet | devnet | beta | xls20 | amm
+mainnet | staging | testnet | devnet | beta | xls20 | amm
 
 Runs the app in the development mode.\
 Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
@@ -40,7 +40,7 @@ Your app is ready to be deployed!
 
 `REACT_APP_NETWORK_NAME=mainnet yarn build`
 
-| mainnet | testnet | devnet | beta | xls20 | amm
+| mainnet | staging | testnet | devnet | beta | xls20 | amm
 
 See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
 
