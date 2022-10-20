@@ -55,10 +55,10 @@ export const payloadXummPost = async (payload, callback) => {
 export const xummWsConnect = (wsUri, callback) => {
   xummWs = new WebSocket(wsUri);
   xummWs.onopen = function () {
-    console.log("xummWs connected");
+    //console.log("xummWs connected");
   };
   xummWs.onclose = function () {
-    console.log("xummWs disconnected");
+    //console.log("xummWs disconnected");
   };
   xummWs.onmessage = function (evt) {
     const obj = JSON.parse(evt.data);
@@ -69,6 +69,10 @@ export const xummWsConnect = (wsUri, callback) => {
     } else if (obj.expires_in_seconds) {
       if (obj.expires_in_seconds <= 0) {
         xummWs.close();
+      }
+    } else if (obj.message) {
+      if (!obj.message.includes("Welcome")) {
+        console.log("xummWs message:", obj.message);
       }
     } else {
       console.log("xummWs response:", evt.data);
