@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { isMobile } from "react-device-detect";
+import { useLocation } from 'react-router-dom';
 import axios from 'axios';
 
 import { server, devNet, capitalize } from '../../utils';
-import { payloadXummPost, xummWsConnect, xummCancel, xummSignedData } from '../../utils/xumm';
+import { payloadXummPost, xummWsConnect, xummCancel, xummGetSignedData } from '../../utils/xumm';
 
 import ProgressBar from "../ProgressBar";
 
@@ -25,6 +26,7 @@ export default function SignInForm({ setSignInFormOpen, setAccount, signInFormOp
   const [xummUuid, setXummUuid] = useState(null);
   const [expiresInSeconds, setExpiresInSeconds] = useState(180);
   const [expiredQr, setExpiredQr] = useState(false);
+  const location = useLocation();
 
   useEffect(() => {
     if (signInFormOpen === "xumm") {
@@ -75,8 +77,9 @@ export default function SignInForm({ setSignInFormOpen, setAccount, signInFormOp
 
     if (isMobile) {
       setStatus(t("signin.xumm.statuses.redirecting"));
+      //return to the same page
       signInPayload.options.return_url = {
-        app: server + "/explorer/?hw=xumm&uuid={id}",
+        app: server + location.pathname + "?uuid={id}" + (location.search ? "&" + location.search.substr(1) : "")
       };
     } else {
       setShowXummQr(true);
@@ -113,7 +116,7 @@ export default function SignInForm({ setSignInFormOpen, setAccount, signInFormOp
     } else if (obj.signed) {
       setShowXummQr(false);
       setStatus(t("signin.xumm.statuses.wait"));
-      xummSignedData(obj.payload_uuidv4, xummRedirect);
+      xummGetSignedData(obj.payload_uuidv4, afterSumbit);
     } else if (obj.expires_in_seconds) {
       if (obj.expires_in_seconds <= 0) {
         setExpiredQr(true);
@@ -122,7 +125,7 @@ export default function SignInForm({ setSignInFormOpen, setAccount, signInFormOp
     }
   }
 
-  const xummRedirect = (data) => {
+  const afterSumbit = (data) => {
     /*
     {
       "application": {
@@ -140,26 +143,12 @@ export default function SignInForm({ setSignInFormOpen, setAccount, signInFormOp
     */
     if (data.response && data.response.account) {
       saveAddressData(data.response.account);
-      localStorage.setItem("xummUserToken", data.application.issued_user_token);
-    } else {
-      setStatus("Error: xumm get payload: no account");
     }
     if (data.payload.tx_type === "SignIn") {
       //close the sign in form
       setXummQrSrc(qr);
       setScreen("choose-app");
       setSignInFormOpen(false);
-    } else {
-      if (isMobile) {
-        window.location.href = "/explorer/" + data.response.account + "?hw=xumm&xummtoken=" + data.application.issued_user_token;
-      } else {
-        if (data.response && data.response.hex) {
-          //submitTransaction({
-          //  signedTransaction: data.response.hex,
-          //  id: data.response.txid,
-          //});
-        }
-      }
     }
   }
 

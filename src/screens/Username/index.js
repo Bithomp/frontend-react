@@ -6,7 +6,7 @@ import axios from 'axios';
 import { Buffer } from 'buffer';
 
 import { isAddressValid, isUsernameValid, server, wssServer, onFailedRequest, devNet } from '../../utils';
-import { payloadXummPost, xummWsConnect } from '../../utils/xumm';
+import { payloadXummPost, xummWsConnect, xummGetSignedData } from '../../utils/xumm';
 
 import CountrySelect from '../../components/CountrySelect';
 import CheckBox from '../../components/CheckBox';
@@ -283,17 +283,17 @@ export default function Username({ setSignInFormOpen, account, signOut }) {
 
     let data = {
       options: {
-        submit: false,
-        expire: 5,
+        //submit: false,
+        expire: 10,
       },
       txjson: preparedTx
     };
 
     if (isMobile) {
       data.options.return_url = {
-        app: server + "/explorer/?hw=xumm&uuid={id}",
+        app: server + "/username/?address=" + address + "&username=" + username + "&uuid={id}&receipt=true",
       };
-      data.options.submit = true;
+      //data.options.submit = true;
     }
 
     if (xummUserToken) {
@@ -330,7 +330,6 @@ export default function Username({ setSignInFormOpen, account, signOut }) {
     } else if (obj.signed) {
       //setShowXummQr(false);
       setStatus(t("signin.xumm.statuses.wait"));
-      //XummRedirect(obj.payload_uuidv4);
     } else if (obj.expires_in_seconds) {
       if (obj.expires_in_seconds <= 0) {
         //setExpiredQr(true);

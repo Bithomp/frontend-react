@@ -1,4 +1,17 @@
 import i18next from '../services/i18n';
+import axios from 'axios';
+
+export const submitTransaction = async (blob, callback) => {
+  blob = JSON.stringify(blob);
+
+  const response = await axios.post('v2/transaction/submit', blob).catch(error => {
+    onFailedRequest(error, (error) => { console.log("submitTransaction error:", error) });
+  });
+
+  if (response) {
+    callback(response);
+  }
+}
 
 export const onFailedRequest = (error, showErrorFunction) => {
   if (i18next.exists("error." + error.message)) {

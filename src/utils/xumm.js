@@ -2,14 +2,30 @@ import axios from 'axios';
 
 let xummWs;
 
-export const xummSignedData = async (uuid, callback) => {
+export const xummGetSignedData = async (uuid, callback) => {
   const response = await axios("app/xumm/payload/" + uuid);
   const data = response.data;
   if (data) {
+    callback(data);
     if (data.response && data.response.account) {
-      callback(data);
+      /*
+      {
+        "application": {
+          "issued_user_token": "xxx"
+        },
+        "response": {
+          "hex": "xxx",
+          "txid": "xxx",
+          "environment_nodeuri": "wss://testnet.xrpl-labs.com",
+          "environment_nodetype": "TESTNET",
+          "account": "xxx",
+          "signer": "xxx"
+        }
+      }
+      */
+      localStorage.setItem("xummUserToken", data.application.issued_user_token);
     } else {
-      console.log("xummSignedData error: xumm get payload: no account");
+      console.log("xummGetSignedData error: xumm get payload: no account");
     }
   } else {
     console.log("app/xumm/payload/" + uuid + " no data");
