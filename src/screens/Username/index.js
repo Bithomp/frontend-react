@@ -18,7 +18,7 @@ import './styles.scss';
 let interval;
 let ws = null;
 
-export default function Username({ setSignInFormOpen, account, signOut }) {
+export default function Username({ setSignInFormOpen, account, setAccount, signOut }) {
   const { t, i18n } = useTranslation();
 
   const [searchParams, setSearchParams] = useSearchParams();
@@ -394,6 +394,13 @@ export default function Username({ setSignInFormOpen, account, signOut }) {
       setUpdate(false);
       setErrorMessage("");
       clearInterval(interval);
+
+      setAccount({
+        address: account.address,
+        hashicon: account.hashicon,
+        username: data.bid.bithompid
+      })
+
       if (ws) ws.close();
       return;
     }
