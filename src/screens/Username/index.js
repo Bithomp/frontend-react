@@ -6,12 +6,14 @@ import axios from 'axios';
 import { Buffer } from 'buffer';
 
 import { isAddressValid, isUsernameValid, server, wssServer, onFailedRequest, devNet } from '../../utils';
-import { payloadXummPost, xummWsConnect, xummGetSignedData } from '../../utils/xumm';
+import { payloadXummPost, xummWsConnect, xummCancel } from '../../utils/xumm';
 
 import CountrySelect from '../../components/CountrySelect';
 import CheckBox from '../../components/CheckBox';
 import Receipt from '../../components/Receipt';
+import XummQr from "../../components/Xumm/Qr";
 
+import qr from "../../assets/images/qr.gif";
 import checkmark from "../../assets/images/checkmark.svg";
 import './styles.scss';
 
@@ -36,6 +38,10 @@ export default function Username({ setSignInFormOpen, account, setAccount, signO
   const [step, setStep] = useState(0);
   const [update, setUpdate] = useState(false);
   const [status, setStatus] = useState("");
+  const [xummUuid, setXummUuid] = useState(null);
+  const [showXummQr, setShowXummQr] = useState(false);
+  const [expiredQr, setExpiredQr] = useState(false);
+  const [xummQrSrc, setXummQrSrc] = useState(qr);
 
   let addressRef;
   let usernameRef;
@@ -131,6 +137,10 @@ export default function Username({ setSignInFormOpen, account, setAccount, signO
     setUpdate(false);
     clearInterval(interval);
     setStep(0);
+
+    if (xummUuid) {
+      xummCancel(xummUuid);
+    }
   }
 
   const onSubmit = async () => {
@@ -238,12 +248,12 @@ export default function Username({ setSignInFormOpen, account, setAccount, signO
       setErrorMessage("");
       // if partly paid, completed or receipt
       checkPayment(data.bithompid, data.sourceAddress, data.destinationTag);
-      if (xummUserToken) {
+      if (xummUserToken && data.destinationAddress) {
         xummPostPayment(
           {
             destination: data.destinationAddress,
             amount: data.amount,
-            memo: "Bithomp username registration",
+            memo: t("username.memo") + ": " + data.bithompid,
             destinationTag: data.destinationTag
           },
           onPayloadResponse
@@ -294,6 +304,8 @@ export default function Username({ setSignInFormOpen, account, setAccount, signO
         app: server + "/username/?address=" + address + "&username=" + username + "&uuid={id}&receipt=true",
       };
       //data.options.submit = true;
+    } else {
+      setShowXummQr(true);
     }
 
     if (xummUserToken) {
@@ -304,9 +316,14 @@ export default function Username({ setSignInFormOpen, account, setAccount, signO
   }
 
   const onPayloadResponse = (data) => {
-    //setXummUuid(data.uuid);
-    //setXummQrSrc(data.refs.qr_png);
-    //setExpiredQr(false);
+    if (!data || data.error) {
+      setShowXummQr(false);
+      setStatus(data.error);
+      return;
+    }
+    setXummUuid(data.uuid);
+    setXummQrSrc(data.refs.qr_png);
+    setExpiredQr(false);
     xummWsConnect(data.refs.websocket_status, xummWsConnected);
     if (data.pushed) {
       setStatus(t("signin.xumm.statuses.check-push"));
@@ -318,8 +335,8 @@ export default function Username({ setSignInFormOpen, account, setAccount, signO
           console.log("payload next.always is missing");
         }
       } else {
-        //setShowXummQr(true);
-        //setStatus(t("signin.xumm.scan-qr"));
+        setShowXummQr(true);
+        setStatus(t("signin.xumm.scan-qr"));
       }
     }
   }
@@ -328,11 +345,11 @@ export default function Username({ setSignInFormOpen, account, setAccount, signO
     if (obj.opened) {
       setStatus(t("signin.xumm.statuses.check-app"));
     } else if (obj.signed) {
-      //setShowXummQr(false);
+      setShowXummQr(false);
       setStatus(t("signin.xumm.statuses.wait"));
     } else if (obj.expires_in_seconds) {
       if (obj.expires_in_seconds <= 0) {
-        //setExpiredQr(true);
+        setExpiredQr(true);
         setStatus(t("signin.xumm.statuses.expired"));
       }
     }
@@ -559,7 +576,11 @@ export default function Username({ setSignInFormOpen, account, setAccount, signO
         <>
           {xummUserToken ?
             <p className='center'>
-              {status}
+              {showXummQr ?
+                <XummQr expiredQr={expiredQr} xummQrSrc={xummQrSrc} onReset={xummPostPayment} status={status} />
+                :
+                <div className="orange bold">{status}</div>
+              }
             </p> :
             <>
               <p>{t("username.step1.to-register")} <b>{register.bithompid}</b></p>

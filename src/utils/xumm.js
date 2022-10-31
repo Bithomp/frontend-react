@@ -51,6 +51,7 @@ export const xummCancel = async (uuid) => {
 export const payloadXummPost = async (payload, callback) => {
   const response = await axios.post('app/xumm/payload', payload).catch(error => {
     console.log("payloadXummPost error:", error.message);
+    callback({ error: error.message });
   });
   if (response) {
     const { data } = response;
@@ -59,17 +60,22 @@ export const payloadXummPost = async (payload, callback) => {
     } else {
       if (data?.error?.message) {
         console.log("payloadXummPost error:", data.error.message);
+        callback({ error: data.error.message });
       } else {
         console.log("payloadXummPost error: no data or no refs in data");
+        callback({ error: "no data or no refs in data" });
       }
     }
-  } else {
-    console.log("payloadXummPost error: no response");
   }
 }
 
 export const xummWsConnect = (wsUri, callback) => {
-  xummWs = new WebSocket(wsUri);
+  if (xummWs) {
+    xummWs.close();
+    xummWs = new WebSocket(wsUri);
+  } else {
+    xummWs = new WebSocket(wsUri);
+  }
   xummWs.onopen = function () {
     //console.log("xummWs connected");
   };
@@ -82,10 +88,12 @@ export const xummWsConnect = (wsUri, callback) => {
       //nothing
     } else if (obj.signed) {
       xummWs.close();
-    } else if (obj.expires_in_seconds) {
+    } else if (obj.hasOwnProperty('expires_in_seconds')) {
       if (obj.expires_in_seconds <= 0) {
         xummWs.close();
       }
+    } else if (obj.expired) {
+      xummWs.close();
     } else if (obj.message) {
       if (!obj.message.includes("Welcome")) {
         console.log("xummWs message:", obj.message);

@@ -7,7 +7,7 @@ import axios from 'axios';
 import { server, devNet, capitalize } from '../../utils';
 import { payloadXummPost, xummWsConnect, xummCancel, xummGetSignedData } from '../../utils/xumm';
 
-import ProgressBar from "../ProgressBar";
+import XummQr from "../Xumm/Qr";
 
 import './styles.scss';
 import qr from "../../assets/images/qr.gif";
@@ -24,7 +24,6 @@ export default function SignInForm({ setSignInFormOpen, setAccount, signInFormOp
   const [showXummQr, setShowXummQr] = useState(false);
   const [xummQrSrc, setXummQrSrc] = useState(qr);
   const [xummUuid, setXummUuid] = useState(null);
-  const [expiresInSeconds, setExpiresInSeconds] = useState(180);
   const [expiredQr, setExpiredQr] = useState(false);
   const location = useLocation();
 
@@ -34,25 +33,6 @@ export default function SignInForm({ setSignInFormOpen, setAccount, signInFormOp
     }
     //eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  useEffect(() => {
-    let isSubscribed = true;
-    const timer = setTimeout(function () {
-      if (isSubscribed) {
-        setExpiresInSeconds(expiresInSeconds - 1);
-      }
-    }, 1000);
-    if (expiresInSeconds <= 0) {
-      clearTimeout(timer);
-      setExpiredQr(true);
-      setStatus(t("signin.xumm.statuses.expired"));
-    }
-    return () => {
-      clearTimeout(timer);
-      isSubscribed = false;
-    };
-    //eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [expiresInSeconds]);
 
   const saveAddressData = async (address) => {
     //&service=true&verifiedDomain=true&blacklist=true&payString=true&twitterImageUrl=true&nickname=true
@@ -86,10 +66,14 @@ export default function SignInForm({ setSignInFormOpen, setAccount, signInFormOp
     }
     payloadXummPost(signInPayload, onPayloadResponse);
     setScreen("xumm");
-    setExpiresInSeconds(180);
   }
 
   const onPayloadResponse = (data) => {
+    if (!data || data.error) {
+      setShowXummQr(false);
+      setStatus(data.error);
+      return;
+    }
     setXummUuid(data.uuid);
     setXummQrSrc(data.refs.qr_png);
     setExpiredQr(false);
@@ -185,42 +169,37 @@ export default function SignInForm({ setSignInFormOpen, setAccount, signInFormOp
         {screen !== 'choose-app' &&
           <>
             <div className='header'>{t("signin.login-with")} {capitalize(screen)}</div>
-            {screen === 'xumm' &&
+            {screen === 'xumm' ?
               <>
-                {!expiredQr ?
-                  <>
-                    {!isMobile &&
-                      <div className="signin-actions-list">
-                        1. {t("signin.xumm.open-app")}<br />
-                        {devNet ?
-                          <>
-                            2. {t("signin.xumm.change-settings")}<br />
-                            3. {t("signin.xumm.scan-qr")}
-                          </> :
-                          <>
-                            2. {t("signin.xumm.scan-qr")}
-                          </>
-                        }
-                      </div>
+                {!isMobile &&
+                  <div className="signin-actions-list">
+                    1. {t("signin.xumm.open-app")}<br />
+                    {devNet ?
+                      <>
+                        2. {t("signin.xumm.change-settings")}<br />
+                        3. {t("signin.xumm.scan-qr")}
+                      </> :
+                      <>
+                        2. {t("signin.xumm.scan-qr")}
+                      </>
                     }
-                    <br />
-                    {showXummQr &&
-                      <div className='center'>
-                        <img width="200" height="200" src={xummQrSrc} alt="qr-code" />
-                      </div>
-                    }
-                  </> :
-                  <div className='qr-expired'>
-                    <input type="button" value={t("signin.xumm.new-qr")} className="button-action" onClick={XummLogin} />
                   </div>
                 }
+                <br />
+                {showXummQr ?
+                  <XummQr expiredQr={expiredQr} xummQrSrc={xummQrSrc} onReset={XummLogin} status={status} />
+                  :
+                  <div className="orange bold center">{status}</div>
+                }
+              </>
+              :
+              <>
+                <div className="orange bold center" style={{ margin: "20px" }}>{status}</div>
               </>
             }
-            <div className="signin-status orange bold">{status}</div>
-            {!expiredQr && showXummQr && <center><ProgressBar goneSeconds={expiresInSeconds} maxSeconds={180} /></center>}
           </>
         }
       </div>
-    </div>
+    </div >
   );
 };
