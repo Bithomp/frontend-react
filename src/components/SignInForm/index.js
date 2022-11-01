@@ -28,11 +28,12 @@ export default function SignInForm({ setSignInFormOpen, setAccount, signInFormOp
   const location = useLocation();
 
   useEffect(() => {
-    if (signInFormOpen === "xumm") {
+    //deeplink doesnt work on mobiles when it's not in the onClick event
+    if (!isMobile && signInFormOpen === "xumm") {
       XummLogin();
     }
     //eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [signInFormOpen]);
 
   const saveAddressData = async (address) => {
     //&service=true&verifiedDomain=true&blacklist=true&payString=true&twitterImageUrl=true&nickname=true
@@ -58,8 +59,9 @@ export default function SignInForm({ setSignInFormOpen, setAccount, signInFormOp
     if (isMobile) {
       setStatus(t("signin.xumm.statuses.redirecting"));
       //return to the same page
+      // app: server + location.pathname + "?uuid={id}" + (location.search ? "&" + location.search.substr(1) : "")
       signInPayload.options.return_url = {
-        app: server + location.pathname + "?uuid={id}" + (location.search ? "&" + location.search.substr(1) : "")
+        app: server + location.pathname + location.search
       };
     } else {
       setShowXummQr(true);
@@ -154,15 +156,19 @@ export default function SignInForm({ setSignInFormOpen, setAccount, signInFormOp
             <div className='header'>{t("signin.choose-app")}</div>
             <div className='signin-apps'>
               <img alt="xumm" className='signin-app-logo' src={xumm} onClick={XummLogin} />
-              <a href="/explorer/?hwlogin=ledger">
-                <img alt="ledger" className='signin-app-logo' src={ledger} />
-              </a>
-              <a href="/explorer/?hwlogin=trezor">
-                <img alt="trezor" className='signin-app-logo' src={trezor} />
-              </a>
-              <a href="/explorer/?hwlogin=ellipal">
-                <img alt="ellipal" className='signin-app-logo' src={ellipal} />
-              </a>
+              {signInFormOpen !== "xumm" &&
+                <>
+                  <a href="/explorer/?hwlogin=ledger">
+                    <img alt="ledger" className='signin-app-logo' src={ledger} />
+                  </a>
+                  <a href="/explorer/?hwlogin=trezor">
+                    <img alt="trezor" className='signin-app-logo' src={trezor} />
+                  </a>
+                  <a href="/explorer/?hwlogin=ellipal">
+                    <img alt="ellipal" className='signin-app-logo' src={ellipal} />
+                  </a>
+                </>
+              }
             </div>
           </>
         }
