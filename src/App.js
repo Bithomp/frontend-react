@@ -75,7 +75,7 @@ export default function App() {
           <Route path="/index.html" element={<Home theme={theme} devNet={devNet} />} />
           <Route
             path="/username"
-            element={<Username setSignInFormOpen={setSignInFormOpen} account={account} signOut={signOut} />}
+            element={<Username setSignInFormOpen={setSignInFormOpen} account={account} setAccount={setAccount} signOut={signOut} />}
           />
           <Route path="/alerts" element={<Alerts />} />
           <Route path="/developer" element={<Developer />} />

@@ -52,8 +52,7 @@
         "check-push": "Check a push notification on your mobile.",
         "check-app": "Please follow instructions in the Xumm app.",
         "expired": "The QR code is expired, request a new one."
-      },
-      "new-qr": "Get a new QR code"
+      }
     },
     "actions": {
       "view": "Explorer view",
@@ -146,6 +145,7 @@
     "text0": "The validator list <1>{{url}}</1> has sequence {{sequence}} and expiration on {{expiration}}.<br/>It includes {{validatorCount}} validators which are listed below."
   },
   "username": {
+    "memo": "Bithomp username registration",
     "error": {
       "address-empty": "Please enter your XRPL address.",
       "address-invalid": "Please enter a valid XRPL address.",
@@ -172,6 +172,7 @@
       "address-you-control": "You can only register usernames for XRPL addresses you control (you have a secret or recovery 12/24 words). You can not register a username for a hosted address (which has a destination tag) within an exchange / service / wallet.",
       "pay-from-your-address": "To prove that you're in control of the XRPL address you will need to make a payment from that address (for which you want to assign a username). Payments from other addresses will be counted as donations and won't be refunded.",
       "text3": "The payment is for 100 Swedish kronor denominated in XRP. The payment for the username is <1>not refundable</1>. If you pay more than requested, the exceeding amount will be counted as donation and won't be refunded.",
+      "text4": "Usernames are now used cross-chain, <1>register a username on the XRPL mainnet</1> and it will be available on bithomp dev explorers (within 1 hour).",
       "enter-address-or": "Enter your XRPL address or",
       "sign-in": "Sign in with Xumm",
       "sign-out": "sign out",
@@ -289,5 +290,8 @@
     "seconds-short": "s",
     "minutes-short": "m",
     "hours-short": "h"
+  },
+  "xumm": {
+    "new-qr": "Get a new QR code"
   }
 }

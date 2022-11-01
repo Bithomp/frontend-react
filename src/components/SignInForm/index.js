@@ -1,12 +1,13 @@
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { isMobile } from "react-device-detect";
+import { useLocation } from 'react-router-dom';
 import axios from 'axios';
 
 import { server, devNet, capitalize } from '../../utils';
-import { payloadXummPost, xummWsConnect, xummCancel, xummSignedData } from '../../utils/xumm';
+import { payloadXummPost, xummWsConnect, xummCancel, xummGetSignedData } from '../../utils/xumm';
 
-import ProgressBar from "../ProgressBar";
+import XummQr from "../Xumm/Qr";
 
 import './styles.scss';
 import qr from "../../assets/images/qr.gif";
@@ -23,34 +24,16 @@ export default function SignInForm({ setSignInFormOpen, setAccount, signInFormOp
   const [showXummQr, setShowXummQr] = useState(false);
   const [xummQrSrc, setXummQrSrc] = useState(qr);
   const [xummUuid, setXummUuid] = useState(null);
-  const [expiresInSeconds, setExpiresInSeconds] = useState(180);
   const [expiredQr, setExpiredQr] = useState(false);
+  const location = useLocation();
 
   useEffect(() => {
-    if (signInFormOpen === "xumm") {
+    //deeplink doesnt work on mobiles when it's not in the onClick event
+    if (!isMobile && signInFormOpen === "xumm") {
       XummLogin();
     }
     //eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  useEffect(() => {
-    let isSubscribed = true;
-    const timer = setTimeout(function () {
-      if (isSubscribed) {
-        setExpiresInSeconds(expiresInSeconds - 1);
-      }
-    }, 1000);
-    if (expiresInSeconds <= 0) {
-      clearTimeout(timer);
-      setExpiredQr(true);
-      setStatus(t("signin.xumm.statuses.expired"));
-    }
-    return () => {
-      clearTimeout(timer);
-      isSubscribed = false;
-    };
-    //eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [expiresInSeconds]);
+  }, [signInFormOpen]);
 
   const saveAddressData = async (address) => {
     //&service=true&verifiedDomain=true&blacklist=true&payString=true&twitterImageUrl=true&nickname=true
@@ -75,18 +58,24 @@ export default function SignInForm({ setSignInFormOpen, setAccount, signInFormOp
 
     if (isMobile) {
       setStatus(t("signin.xumm.statuses.redirecting"));
+      //return to the same page
+      // app: server + location.pathname + "?uuid={id}" + (location.search ? "&" + location.search.substr(1) : "")
       signInPayload.options.return_url = {
-        app: server + "/explorer/?hw=xumm&uuid={id}",
+        app: server + location.pathname + location.search
       };
     } else {
       setShowXummQr(true);
     }
     payloadXummPost(signInPayload, onPayloadResponse);
     setScreen("xumm");
-    setExpiresInSeconds(180);
   }
 
   const onPayloadResponse = (data) => {
+    if (!data || data.error) {
+      setShowXummQr(false);
+      setStatus(data.error);
+      return;
+    }
     setXummUuid(data.uuid);
     setXummQrSrc(data.refs.qr_png);
     setExpiredQr(false);
@@ -113,7 +102,7 @@ export default function SignInForm({ setSignInFormOpen, setAccount, signInFormOp
     } else if (obj.signed) {
       setShowXummQr(false);
       setStatus(t("signin.xumm.statuses.wait"));
-      xummSignedData(obj.payload_uuidv4, xummRedirect);
+      xummGetSignedData(obj.payload_uuidv4, afterSumbit);
     } else if (obj.expires_in_seconds) {
       if (obj.expires_in_seconds <= 0) {
         setExpiredQr(true);
@@ -122,7 +111,7 @@ export default function SignInForm({ setSignInFormOpen, setAccount, signInFormOp
     }
   }
 
-  const xummRedirect = (data) => {
+  const afterSumbit = (data) => {
     /*
     {
       "application": {
@@ -140,26 +129,12 @@ export default function SignInForm({ setSignInFormOpen, setAccount, signInFormOp
     */
     if (data.response && data.response.account) {
       saveAddressData(data.response.account);
-      localStorage.setItem("xummUserToken", data.application.issued_user_token);
-    } else {
-      setStatus("Error: xumm get payload: no account");
     }
     if (data.payload.tx_type === "SignIn") {
       //close the sign in form
       setXummQrSrc(qr);
       setScreen("choose-app");
       setSignInFormOpen(false);
-    } else {
-      if (isMobile) {
-        window.location.href = "/explorer/" + data.response.account + "?hw=xumm&xummtoken=" + data.application.issued_user_token;
-      } else {
-        if (data.response && data.response.hex) {
-          //submitTransaction({
-          //  signedTransaction: data.response.hex,
-          //  id: data.response.txid,
-          //});
-        }
-      }
     }
   }
 
@@ -181,57 +156,56 @@ export default function SignInForm({ setSignInFormOpen, setAccount, signInFormOp
             <div className='header'>{t("signin.choose-app")}</div>
             <div className='signin-apps'>
               <img alt="xumm" className='signin-app-logo' src={xumm} onClick={XummLogin} />
-              <a href="/explorer/?hwlogin=ledger">
-                <img alt="ledger" className='signin-app-logo' src={ledger} />
-              </a>
-              <a href="/explorer/?hwlogin=trezor">
-                <img alt="trezor" className='signin-app-logo' src={trezor} />
-              </a>
-              <a href="/explorer/?hwlogin=ellipal">
-                <img alt="ellipal" className='signin-app-logo' src={ellipal} />
-              </a>
+              {signInFormOpen !== "xumm" &&
+                <>
+                  <a href="/explorer/?hwlogin=ledger">
+                    <img alt="ledger" className='signin-app-logo' src={ledger} />
+                  </a>
+                  <a href="/explorer/?hwlogin=trezor">
+                    <img alt="trezor" className='signin-app-logo' src={trezor} />
+                  </a>
+                  <a href="/explorer/?hwlogin=ellipal">
+                    <img alt="ellipal" className='signin-app-logo' src={ellipal} />
+                  </a>
+                </>
+              }
             </div>
           </>
         }
         {screen !== 'choose-app' &&
           <>
             <div className='header'>{t("signin.login-with")} {capitalize(screen)}</div>
-            {screen === 'xumm' &&
+            {screen === 'xumm' ?
               <>
-                {!expiredQr ?
-                  <>
-                    {!isMobile &&
-                      <div className="signin-actions-list">
-                        1. {t("signin.xumm.open-app")}<br />
-                        {devNet ?
-                          <>
-                            2. {t("signin.xumm.change-settings")}<br />
-                            3. {t("signin.xumm.scan-qr")}
-                          </> :
-                          <>
-                            2. {t("signin.xumm.scan-qr")}
-                          </>
-                        }
-                      </div>
+                {!isMobile &&
+                  <div className="signin-actions-list">
+                    1. {t("signin.xumm.open-app")}<br />
+                    {devNet ?
+                      <>
+                        2. {t("signin.xumm.change-settings")}<br />
+                        3. {t("signin.xumm.scan-qr")}
+                      </> :
+                      <>
+                        2. {t("signin.xumm.scan-qr")}
+                      </>
                     }
-                    <br />
-                    {showXummQr &&
-                      <div className='center'>
-                        <img width="200" height="200" src={xummQrSrc} alt="qr-code" />
-                      </div>
-                    }
-                  </> :
-                  <div className='qr-expired'>
-                    <input type="button" value={t("signin.xumm.new-qr")} className="button-action" onClick={XummLogin} />
                   </div>
                 }
+                <br />
+                {showXummQr ?
+                  <XummQr expiredQr={expiredQr} xummQrSrc={xummQrSrc} onReset={XummLogin} status={status} />
+                  :
+                  <div className="orange bold center">{status}</div>
+                }
+              </>
+              :
+              <>
+                <div className="orange bold center" style={{ margin: "20px" }}>{status}</div>
               </>
             }
-            <div className="signin-status orange bold">{status}</div>
-            {!expiredQr && showXummQr && <center><ProgressBar goneSeconds={expiresInSeconds} maxSeconds={180} /></center>}
           </>
         }
       </div>
-    </div>
+    </div >
   );
 };

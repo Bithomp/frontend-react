@@ -11,7 +11,8 @@ export default function ProgressBar({ goneSeconds, maxSeconds }) {
     backgroundColor: "#e0e0de",
     borderRadius: 50,
     margin: 10,
-    textAlign: 'center'
+    textAlign: 'center',
+    display: "inline-block"
   }
 
   const fillerStyles = {

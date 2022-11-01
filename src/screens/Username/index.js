@@ -1,21 +1,26 @@
 import { useState, useEffect } from 'react';
 import { useTranslation, Trans } from 'react-i18next';
 import { useSearchParams, Link } from "react-router-dom";
+import { isMobile } from "react-device-detect";
 import axios from 'axios';
+import { Buffer } from 'buffer';
 
-import { isAddressValid, isUsernameValid, server, wssServer, onFailedRequest } from '../../utils';
+import { isAddressValid, isUsernameValid, server, wssServer, onFailedRequest, devNet } from '../../utils';
+import { payloadXummPost, xummWsConnect, xummCancel } from '../../utils/xumm';
 
 import CountrySelect from '../../components/CountrySelect';
 import CheckBox from '../../components/CheckBox';
 import Receipt from '../../components/Receipt';
+import XummQr from "../../components/Xumm/Qr";
 
+import qr from "../../assets/images/qr.gif";
 import checkmark from "../../assets/images/checkmark.svg";
 import './styles.scss';
 
 let interval;
 let ws = null;
 
-export default function Username({ setSignInFormOpen, account, signOut }) {
+export default function Username({ setSignInFormOpen, account, setAccount, signOut }) {
   const { t, i18n } = useTranslation();
 
   const [searchParams, setSearchParams] = useSearchParams();
@@ -32,9 +37,16 @@ export default function Username({ setSignInFormOpen, account, signOut }) {
   const [bidData, setBidData] = useState({});
   const [step, setStep] = useState(0);
   const [update, setUpdate] = useState(false);
+  const [status, setStatus] = useState("");
+  const [xummUuid, setXummUuid] = useState(null);
+  const [showXummQr, setShowXummQr] = useState(false);
+  const [expiredQr, setExpiredQr] = useState(false);
+  const [xummQrSrc, setXummQrSrc] = useState(qr);
 
   let addressRef;
   let usernameRef;
+
+  const xummUserToken = localStorage.getItem('xummUserToken');
 
   useEffect(() => {
     let getAddress = searchParams.get("address");
@@ -125,6 +137,10 @@ export default function Username({ setSignInFormOpen, account, signOut }) {
     setUpdate(false);
     clearInterval(interval);
     setStep(0);
+
+    if (xummUuid) {
+      xummCancel(xummUuid);
+    }
   }
 
   const onSubmit = async () => {
@@ -232,12 +248,109 @@ export default function Username({ setSignInFormOpen, account, signOut }) {
       setErrorMessage("");
       // if partly paid, completed or receipt
       checkPayment(data.bithompid, data.sourceAddress, data.destinationTag);
+      if (xummUserToken && data.destinationAddress) {
+        xummPostPayment(
+          {
+            destination: data.destinationAddress,
+            amount: data.amount,
+            memo: t("username.memo") + ": " + data.bithompid,
+            destinationTag: data.destinationTag
+          },
+          onPayloadResponse
+        );
+      }
       if (data.completedAt) {
         setStep(2);
       } else {
         setStep(1);
         //no ws when completed / receipt, no api status check every minute
         setUpdate(true);
+      }
+    }
+  }
+
+  const xummPostPayment = ({ destination, amount, memo, destinationTag }, callback) => {
+    let preparedTx = {
+      TransactionType: "Payment",
+      Destination: destination,
+      Amount: String(amount * 1000000)
+    };
+
+    if (memo) {
+      const hex = Buffer.from(memo).toString('hex').toUpperCase();
+      preparedTx.Memos = [
+        {
+          "Memo": {
+            "MemoData": hex
+          }
+        }
+      ];
+    }
+
+    if (destinationTag) {
+      preparedTx.DestinationTag = destinationTag;
+    }
+
+    let data = {
+      options: {
+        //submit: false,
+        expire: 10,
+      },
+      txjson: preparedTx
+    };
+
+    if (isMobile) {
+      data.options.return_url = {
+        app: server + "/username/?address=" + address + "&username=" + username + "&uuid={id}&receipt=true",
+      };
+      //data.options.submit = true;
+    } else {
+      setShowXummQr(true);
+    }
+
+    if (xummUserToken) {
+      data.user_token = xummUserToken;
+    }
+
+    payloadXummPost(data, callback);
+  }
+
+  const onPayloadResponse = (data) => {
+    if (!data || data.error) {
+      setShowXummQr(false);
+      setStatus(data.error);
+      return;
+    }
+    setXummUuid(data.uuid);
+    setXummQrSrc(data.refs.qr_png);
+    setExpiredQr(false);
+    xummWsConnect(data.refs.websocket_status, xummWsConnected);
+    if (data.pushed) {
+      setStatus(t("signin.xumm.statuses.check-push"));
+    } else {
+      if (isMobile) {
+        if (data.next && data.next.always) {
+          window.location.href = data.next.always;
+        } else {
+          console.log("payload next.always is missing");
+        }
+      } else {
+        setShowXummQr(true);
+        setStatus(t("signin.xumm.scan-qr"));
+      }
+    }
+  }
+
+  const xummWsConnected = (obj) => {
+    if (obj.opened) {
+      setStatus(t("signin.xumm.statuses.check-app"));
+    } else if (obj.signed) {
+      setShowXummQr(false);
+      setStatus(t("signin.xumm.statuses.wait"));
+    } else if (obj.expires_in_seconds) {
+      if (obj.expires_in_seconds <= 0) {
+        setExpiredQr(true);
+        setStatus(t("signin.xumm.statuses.expired"));
       }
     }
   }
@@ -298,6 +411,13 @@ export default function Username({ setSignInFormOpen, account, signOut }) {
       setUpdate(false);
       setErrorMessage("");
       clearInterval(interval);
+
+      setAccount({
+        address: account.address,
+        hashicon: account.hashicon,
+        username: data.bid.bithompid
+      })
+
       if (ws) ws.close();
       return;
     }
@@ -359,72 +479,88 @@ export default function Username({ setSignInFormOpen, account, signOut }) {
               Bithomp <b>username</b> is a <b>public</b> username for your XRPL address.
             </Trans>
           </p>
-          <p className="brake">
-            <Trans i18nKey="username.step0.text1">
-              The username will be assosiated with your address on the bithomp explorer and in third-party services which use bithomp <a href="https://docs.bithomp.com">API</a>.
-              After the registration it will become public - <b>anyone</b> will be able to see it.
-              Your XRPL address will be accessable by:
-            </Trans>
-            {" " + server}/explorer/{isUsernameValid(username) ? username : <i>username</i>}
-          </p>
-          <p>
-            <Trans i18nKey="username.step0.text2">
-              The username <b>can not be changed or deleted</b>.
-            </Trans>
-          </p>
-          <p>{t("username.step0.only-one-for-address")}</p>
-          <p>{t("username.step0.address-you-control")}</p>
-          <p>{t("username.step0.pay-from-your-address")}</p>
-          <p>
-            <Trans i18nKey="username.step0.text3">
-              The payment is for 100 Swedish kronor denominated in XRP. The payment for the username is <b>not refundable</b>. If you pay more than requested, the exceeding amount will be counted as donation and won't be refunded.
-            </Trans>
-          </p>
+          {!devNet &&
+            <>
+              <p className="brake">
+                <Trans i18nKey="username.step0.text1">
+                  The username will be assosiated with your address on the bithomp explorer and in third-party services which use bithomp <a href="https://docs.bithomp.com">API</a>.
+                  After the registration it will become public - <b>anyone</b> will be able to see it.
+                  Your XRPL address will be accessable by:
+                </Trans>
+                {" " + server}/explorer/{isUsernameValid(username) ? username : <i>username</i>}
+              </p>
+              <p>
+                <Trans i18nKey="username.step0.text2">
+                  The username <b>can not be changed or deleted</b>.
+                </Trans>
+              </p>
+              <p>{t("username.step0.only-one-for-address")}</p>
+              <p>{t("username.step0.address-you-control")}</p>
+              <p>{t("username.step0.pay-from-your-address")}</p>
+              <p>
+                <Trans i18nKey="username.step0.text3">
+                  The payment is for 100 Swedish kronor denominated in XRP. The payment for the username is <b>not refundable</b>. If you pay more than requested, the exceeding amount will be counted as donation and won't be refunded.
+                </Trans>
+              </p>
+            </>
+          }
+
           {!account?.username ?
             <>
-              {account?.address ?
+              {devNet ?
+                <p>
+                  <Trans i18nKey="username.step0.text4">
+                    Usernames are now used cross-chain, <a href="https://bithomp.com/username" target="_blank" rel='noreferrer'>Register a username for an address on the XRPL mainnet</a> and it will be also available on bithomp dev explorers.
+                  </Trans>
+                </p>
+                :
                 <>
-                  <p>{t("username.step0.your-address")} (<b className='link' onClick={signOut}>{t("username.step0.sign-out")}</b>):</p>
+                  {account?.address ?
+                    <>
+                      <p>{t("username.step0.your-address")} (<b className='link' onClick={signOut}>{t("username.step0.sign-out")}</b>):</p>
+                      <div className="input-validation">
+                        <input placeholder={t("username.step0.your-address")} value={address} className="input-text" spellCheck="false" readOnly />
+                        <img src={checkmark} className="validation-icon" alt="validated" />
+                      </div>
+                    </> :
+                    <>
+                      <p>{t("username.step0.enter-address-or")} <b className="link" onClick={() => setSignInFormOpen("xumm")}>{t("username.step0.sign-in")}</b>:</p>
+                      <div className="input-validation">
+                        <input placeholder={t("username.step0.your-address")} value={address} onChange={onAddressChange} className="input-text" ref={node => { addressRef = node; }} spellCheck="false" maxLength="36" />
+                        {isAddressValid(address) && <img src={checkmark} className="validation-icon" alt="validated" />}
+                      </div>
+                    </>
+                  }
+                  <p>{t("username.step0.enter-username")}:</p>
                   <div className="input-validation">
-                    <input placeholder={t("username.step0.your-address")} value={address} className="input-text" spellCheck="false" readOnly />
-                    <img src={checkmark} className="validation-icon" alt="validated" />
+                    <input placeholder={t("username.step0.your-username")} value={username} onChange={onUsernameChange} className="input-text" ref={node => { usernameRef = node; }} spellCheck="false" maxLength="18" />
+                    {isUsernameValid(username) && <img src={checkmark} className="validation-icon" alt="validated" />}
                   </div>
-                </> :
-                <>
-                  <p>{t("username.step0.enter-address-or")} <b className="link" onClick={() => setSignInFormOpen("xumm")}>{t("username.step0.sign-in")}</b>:</p>
-                  <div className="input-validation">
-                    <input placeholder={t("username.step0.your-address")} value={address} onChange={onAddressChange} className="input-text" ref={node => { addressRef = node; }} spellCheck="false" maxLength="36" />
-                    {isAddressValid(address) && <img src={checkmark} className="validation-icon" alt="validated" />}
-                  </div>
+                  <p>{t("username.step0.enter-country")}:</p>
+                  <CountrySelect setCountryCode={setCountryCode} />
+
+                  <CheckBox checked={agreeToPageTerms} setChecked={setAgreeToPageTerms} >
+                    {t("username.step0.agree-terms-page")}
+                  </CheckBox>
+
+                  <CheckBox checked={agreeToSiteTerms} setChecked={setAgreeToSiteTerms} >
+                    <Trans i18nKey="username.step0.agree-terms-site">
+                      I agree with the <Link to="/terms-and-conditions" target="_blank">Terms and conditions</Link>.
+                    </Trans>
+                  </CheckBox>
+
+                  <CheckBox checked={agreeToPrivacyPolicy} setChecked={setAgreeToPrivacyPolicy} >
+                    <Trans i18nKey="username.step0.agree-privacy-policy">
+                      I agree with the <Link to="/privacy-policy" target="_blank">Privacy policy</Link>.
+                    </Trans>
+                  </CheckBox>
+
+                  <p className="center">
+                    <input type="button" value={t("button.continue")} className="button-action" onClick={onSubmit} />
+                  </p>
                 </>
               }
-              <p>{t("username.step0.enter-username")}:</p>
-              <div className="input-validation">
-                <input placeholder={t("username.step0.your-username")} value={username} onChange={onUsernameChange} className="input-text" ref={node => { usernameRef = node; }} spellCheck="false" maxLength="18" />
-                {isUsernameValid(username) && <img src={checkmark} className="validation-icon" alt="validated" />}
-              </div>
-              <p>{t("username.step0.enter-country")}:</p>
-              <CountrySelect setCountryCode={setCountryCode} />
 
-              <CheckBox checked={agreeToPageTerms} setChecked={setAgreeToPageTerms} >
-                {t("username.step0.agree-terms-page")}
-              </CheckBox>
-
-              <CheckBox checked={agreeToSiteTerms} setChecked={setAgreeToSiteTerms} >
-                <Trans i18nKey="username.step0.agree-terms-site">
-                  I agree with the <Link to="/terms-and-conditions" target="_blank">Terms and conditions</Link>.
-                </Trans>
-              </CheckBox>
-
-              <CheckBox checked={agreeToPrivacyPolicy} setChecked={setAgreeToPrivacyPolicy} >
-                <Trans i18nKey="username.step0.agree-privacy-policy">
-                  I agree with the <Link to="/privacy-policy" target="_blank">Privacy policy</Link>.
-                </Trans>
-              </CheckBox>
-
-              <p className="center">
-                <input type="button" value={t("button.continue")} className="button-action" onClick={onSubmit} />
-              </p>
             </> :
             <p className='bordered' style={{ padding: "20px" }}>
               {t("username.step0.already-registered")}: <b>{account.username}</b>.
@@ -438,31 +574,42 @@ export default function Username({ setSignInFormOpen, account, signOut }) {
       }
       {step === 1 &&
         <>
-          <p>{t("username.step1.to-register")} <b>{register.bithompid}</b></p>
-          <p>
-            {t("username.step1.from-your-address")} <b>{register.sourceAddress}</b>.
-            <br />
-            <Trans i18nKey="username.step1.text0">
-              Payments made by you <b className="red">from any other addresses</b> or with a <b className="red">wrong destination tag</b> won't be accepted for the service, it will be accepted as a donation and <b className="red">won't be refunded</b>.
-            </Trans>
-          </p>
+          {xummUserToken ?
+            <p className='center'>
+              {showXummQr ?
+                <XummQr expiredQr={expiredQr} xummQrSrc={xummQrSrc} onReset={xummPostPayment} status={status} />
+                :
+                <div className="orange bold">{status}</div>
+              }
+            </p> :
+            <>
+              <p>{t("username.step1.to-register")} <b>{register.bithompid}</b></p>
+              <p>
+                {t("username.step1.from-your-address")} <b>{register.sourceAddress}</b>.
+                <br />
+                <Trans i18nKey="username.step1.text0">
+                  Payments made by you <b className="red">from any other addresses</b> or with a <b className="red">wrong destination tag</b> won't be accepted for the service, it will be accepted as a donation and <b className="red">won't be refunded</b>.
+                </Trans>
+              </p>
 
-          <h3>{t("username.step1.payment-instructions")}</h3>
-          <div className='payment-instructions bordered'>
-            {t("username.step1.address")}<br /><b>{register.destinationAddress}</b>
-            <br /><br />
-            {t("username.step1.tag")}<br /><b className="red">{register.destinationTag}</b>
-            <br /><br />
-            {t("username.step1.amount")}<br /><b>{register.amount} {register.currency}</b>
-          </div>
+              <h3>{t("username.step1.payment-instructions")}</h3>
+              <div className='payment-instructions bordered'>
+                {t("username.step1.address")}<br /><b>{register.destinationAddress}</b>
+                <br /><br />
+                {t("username.step1.tag")}<br /><b className="red">{register.destinationTag}</b>
+                <br /><br />
+                {t("username.step1.amount")}<br /><b>{register.amount} {register.currency}</b>
+              </div>
 
-          <h3>{t("username.step1.awaiting")}</h3>
-          <div className='payment-awaiting bordered center'>
-            <div className="waiting"></div>
-            <br /><br />
-            <p className="red center" dangerouslySetInnerHTML={{ __html: paymentErrorMessage || "&nbsp;" }} />
-            {t("username.step1.about-confirmation")}
-          </div>
+              <h3>{t("username.step1.awaiting")}</h3>
+              <div className='payment-awaiting bordered center'>
+                <div className="waiting"></div>
+                <br /><br />
+                <p className="red center" dangerouslySetInnerHTML={{ __html: paymentErrorMessage || "&nbsp;" }} />
+                {t("username.step1.about-confirmation")}
+              </div>
+            </>
+          }
         </>
       }
       {step === 2 &&

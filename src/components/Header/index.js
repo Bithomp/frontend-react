@@ -21,7 +21,7 @@ export default function Header({ theme, switchTheme, setSignInFormOpen, account,
     if (account.username) {
       displayName = <b>{username}</b>;
     } else {
-      displayName = address.substr(0, 8) + "..." + address.substr(-7);
+      displayName = address.substr(0, 8) + "..." + address.substr(-8);
     }
   }
 
@@ -96,6 +96,7 @@ export default function Header({ theme, switchTheme, setSignInFormOpen, account,
               {displayName}
             </div>
             <div className="menu-dropdown-content">
+              {/* Link to copy full address */}
               <a href={"/explorer/" + address + "?hw=xumm&xummtoken=" + xummUserToken}>{t("signin.actions.view")}</a>
               {!username && <a href={"/username?address=" + address}>{t("menu.usernames")}</a>}
               <a href={"/explorer/" + address + "?hw=xumm&xummtoken=" + xummUserToken + "&action=send"}>{t("signin.actions.send")}</a>
