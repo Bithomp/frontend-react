@@ -137,6 +137,7 @@ export default function Username({ setSignInFormOpen, account, setAccount, signO
     setUpdate(false);
     clearInterval(interval);
     setStep(0);
+    if (ws) ws.close();
 
     if (xummUuid) {
       xummCancel(xummUuid);
