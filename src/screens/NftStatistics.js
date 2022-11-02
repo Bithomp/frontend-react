@@ -1,7 +1,7 @@
-import { useTranslation } from 'react-i18next';
+import { useTranslation, Trans } from 'react-i18next';
 import { useState, useEffect } from 'react';
 
-import { niceNumber, wssServer } from '../utils';
+import { niceNumber, wssServer, fullDateAndTime } from '../utils';
 
 let ws = null;
 
@@ -9,7 +9,6 @@ export default function LastLedgerInformation() {
   const { t } = useTranslation();
 
   const [data, setData] = useState(null);
-  const [lastUpdate, setLastUpdate] = useState('');
 
   const connect = () => {
     ws = new WebSocket(wssServer);
@@ -21,10 +20,13 @@ export default function LastLedgerInformation() {
     ws.onmessage = evt => {
       const message = JSON.parse(evt.data);
       setData(message);
-      setLastUpdate(new Date().toLocaleTimeString());
       /*
         {
           "type": "NFTokens",
+          "crawler": {
+            "ledgerIndex": 7025469,
+            "ledgerTime": 1656405521,
+          },
           "validatedLedger": {
             "age": 3,
             "hash": "814430F058D4BBFB3677E6536EA61D0FA8125E18351FE47C467E09322F8BF5F5",
@@ -63,17 +65,50 @@ export default function LastLedgerInformation() {
   }, []);
 
   const nft = data?.allTime;
+  const crawlerIndex = data?.crawler?.ledgerIndex;
+  const currentLedgerIndex = data?.validatedLedger.ledgerIndex;
+  const crawlerTime = data?.crawler?.ledgerTime && fullDateAndTime(data.crawler.ledgerTime);
+  const currentLedgerTime = data?.validatedLedger.ledgerTime && fullDateAndTime(data.validatedLedger.ledgerTime);
+
+  //delete when we have both deployed everywhere, show crawlerIndex instead!!!
+  const ledgerIndex = crawlerIndex ? crawlerIndex : currentLedgerIndex;
+
+  //delete when we have both deployed everywhere, show crawlerTime instead!!!
+  const ledgerTime = crawlerTime ? crawlerTime : currentLedgerTime;
+
+  let lag = false;
+  //delete crawlerTime from if when deployed everyehere!!!
+  if (crawlerIndex && currentLedgerIndex && crawlerTime) {
+    //check if ledger index gap is more than 1
+    if (currentLedgerIndex - crawlerIndex > 1) {
+      //crawler is lagging bihind
+      lag = currentLedgerIndex - crawlerIndex;
+    }
+  }
 
   return (
     <div className="content-text content-center">
       <h1 className="center">{t("menu.nft-statistics")}</h1>
       <div className="main-box">
-        <p>
-          {t("nft-statistics.updated")}: {lastUpdate}
-        </p>
-        <p>
-          {t("nft-statistics.ledger-index")}: {data?.validatedLedger.ledgerIndex && '#' + data.validatedLedger.ledgerIndex}
-        </p>
+        {lag ?
+          <p className='orange'>
+            <Trans i18nKey="nft-statistics.text0">
+              The informations is a bit outdated, we need to catch up with <b>{{ lag }}</b> ledgers.
+              <br />
+              The data is provided for the ledger #{{ crawlerIndex }}, ({{ crawlerTime }}).
+              The last validated ledger is #{{ currentLedgerIndex }}, ({{ currentLedgerTime }}).
+            </Trans>
+          </p>
+          :
+          <>
+            <p>
+              {t("nft-statistics.updated")}: {ledgerTime}
+            </p>
+            <p>
+              {t("nft-statistics.ledger-index")}: {ledgerIndex && '#' + ledgerIndex}
+            </p>
+          </>
+        }
         <p>
           {t("nft-statistics.created")}: {niceNumber(nft?.created)}
         </p>

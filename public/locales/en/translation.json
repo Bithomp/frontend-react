@@ -109,9 +109,10 @@
     "total-burned": "Total burned"
   },
   "nft-statistics": {
+    "text0": "The information is a bit outdated, we need to catch up with <1>{{lag}}</1> ledgers.<br/>The data is provided for the ledger #{{crawlerIndex}}, ({{crawlerTime}}).<br/>The last validated ledger is #{{currentLedgerIndex}}, ({{currentLedgerTime}}).",
     "updated": "Updated",
-    "ledger-index": "Last ledger index",
-    "created": "Total created",
+    "ledger-index": "Ledger index",
+    "created": "Minted",
     "burned": "Burned",
     "exist": "Currently exist",
     "burnable": "Burnable by a minter",
