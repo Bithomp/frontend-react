@@ -103,7 +103,7 @@ export default function Genesis() {
                 <td>
                   <p>
                     {t("genesis.address")}<br />
-                    <a href={"https://bithomp.com/explorer/" + account.address}>{account.address}</a>
+                    <a href={"/explorer/" + account.address}>{account.address}</a>
                   </p>
                   <p>
                     {t("genesis.genesis-balance")}<br />
@@ -116,7 +116,7 @@ export default function Genesis() {
                   {account.rippletrade &&
                     <p>
                       {t("genesis.rippletrade-username")}<br />
-                      <a href={"https://bithomp.com/explorer/" + account.rippletrade}>{account.rippletrade}</a>
+                      <a href={"/explorer/" + account.rippletrade}>{account.rippletrade}</a>
                     </p>
                   }
                   {
@@ -146,10 +146,10 @@ export default function Genesis() {
             {data?.genesis?.map((account, i) => (
               <tr key={i}>
                 <td>{account.genesis_index}</td>
-                <td><a href={"https://bithomp.com/explorer/" + account.address}>{account.address}</a></td>
+                <td><a href={"/explorer/" + account.address}>{account.address}</a></td>
                 <td>{niceNumber(account.genesis_balance)}</td>
                 <td>{niceNumber(account.balance)}</td>
-                <td><a href={"https://bithomp.com/explorer/" + account.rippletrade}>{account.rippletrade}</a></td>
+                <td><a href={"/explorer/" + account.rippletrade}>{account.rippletrade}</a></td>
                 <td>{account.nickname}</td>
               </tr>
             ))}
