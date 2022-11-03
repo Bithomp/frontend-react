@@ -70,15 +70,8 @@ export default function LastLedgerInformation() {
   const crawlerTime = data?.crawler?.ledgerTime && fullDateAndTime(data.crawler.ledgerTime);
   const currentLedgerTime = data?.validatedLedger.ledgerTime && fullDateAndTime(data.validatedLedger.ledgerTime);
 
-  //delete when we have both deployed everywhere, show crawlerIndex instead!!!
-  const ledgerIndex = crawlerIndex ? crawlerIndex : currentLedgerIndex;
-
-  //delete when we have both deployed everywhere, show crawlerTime instead!!!
-  const ledgerTime = crawlerTime ? crawlerTime : currentLedgerTime;
-
   let lag = false;
-  //delete crawlerTime from if when deployed everyehere!!!
-  if (crawlerIndex && currentLedgerIndex && crawlerTime) {
+  if (crawlerIndex && currentLedgerIndex) {
     //check if ledger index gap is more than 1
     if (currentLedgerIndex - crawlerIndex > 1) {
       //crawler is lagging bihind
@@ -102,10 +95,10 @@ export default function LastLedgerInformation() {
           :
           <>
             <p>
-              {t("nft-statistics.updated")}: {ledgerTime}
+              {t("nft-statistics.updated")}: {crawlerTime}
             </p>
             <p>
-              {t("nft-statistics.ledger-index")}: {ledgerIndex && '#' + ledgerIndex}
+              {t("nft-statistics.ledger-index")}: {crawlerIndex && '#' + crawlerIndex}
             </p>
           </>
         }
