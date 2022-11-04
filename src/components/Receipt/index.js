@@ -103,7 +103,7 @@ export default function Receipt({ item, details }) {
           </div>
           <div className="receipt-bottom">
             Bithomp AB, 559342-2867<br />
-            Box 160,  101 23 Stockholm<br />
+            Kivra: 559342-2867,  106 31 Stockholm<br />
             VAT: SE559342286701
           </div>
         </div>

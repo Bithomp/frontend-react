@@ -4,7 +4,7 @@ export default function PrivacyPolicy() {
   return (
     <div className="content-text">
       <h1>Privacy Policy</h1>
-      <p>Last updated: September 20, 2022</p>
+      <p>Last updated: November 4, 2022</p>
       <p>This Privacy Policy describes Our policies and procedures on the collection, use and disclosure of Your information when You use the Service and tells You about Your privacy rights and how the law protects You.</p>
       <p>We use Your Personal data to provide and improve the Service. By using the Service, You agree to the collection and use of information in accordance with this Privacy Policy.</p>
       <h1>Interpretation and Definitions</h1>
@@ -17,7 +17,7 @@ export default function PrivacyPolicy() {
           <p><strong>Account</strong> means a unique account created for You to access our Service or parts of our Service.</p>
         </li>
         <li>
-          <p><strong>Company</strong> (referred to as either &quot;the Company&quot;, &quot;We&quot;, &quot;Us&quot; or &quot;Our&quot; in this Agreement) refers to Bithomp AB, Box 160, 101 23 Stockholm.</p>
+          <p><strong>Company</strong> (referred to as either &quot;the Company&quot;, &quot;We&quot;, &quot;Us&quot; or &quot;Our&quot; in this Agreement) refers to Bithomp AB, Kivra: 559342-2867, 106 31, Stockholm, Sweden.</p>
         </li>
         <li>
           <p><strong>Cookies</strong> means Cookies and other similar technologies such as local shared objects, flash cookies, are files that are placed on Your computer, mobile device or any other device by a website, containing the details of Your browsing history on that website among its many uses.</p>

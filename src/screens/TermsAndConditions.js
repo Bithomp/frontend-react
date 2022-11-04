@@ -4,7 +4,7 @@ export default function TermsAndConditions() {
   return (
     <div className="content-text">
       <h1>Terms and Conditions</h1>
-      <p>Last updated: May 12, 2022</p>
+      <p>Last updated: November 4, 2022</p>
       <p>Please read these terms and conditions carefully before using Our Service.</p>
       <h1>Interpretation and Definitions</h1>
       <h2>Interpretation</h2>
@@ -19,7 +19,7 @@ export default function TermsAndConditions() {
           <p><strong>Country</strong> refers to:  Sweden</p>
         </li>
         <li>
-          <p><strong>Company</strong> (referred to as either &quot;the Company&quot;, &quot;We&quot;, &quot;Us&quot; or &quot;Our&quot; in this Agreement) refers to Bithomp AB, Box 160, 101 23, Stockholm, Sweden.</p>
+          <p><strong>Company</strong> (referred to as either &quot;the Company&quot;, &quot;We&quot;, &quot;Us&quot; or &quot;Our&quot; in this Agreement) refers to Bithomp AB, Kivra: 559342-2867, 106 31, Stockholm, Sweden.</p>
         </li>
         <li>
           <p><strong>Device</strong> means any device that can access the Service such as a computer, a cellphone or a digital tablet.</p>

@@ -79,8 +79,8 @@ export default function Footer() {
         <img src={logo} className="footer-logo" alt="logo" />
         <div className="footer-brand-text">
           Copyright © {year} Bithomp AB<br />
-          Vasagatan 16, 111 20 Stockholm<br />
-          Organization number: 559342-2867
+          Kivra: 559342-2867<br />
+          106 31, Stockholm
         </div>
         <div className="footer-social">
           <SocialIcons />

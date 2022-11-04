@@ -4,7 +4,7 @@ export default function Disclaimer() {
   return (
     <div className="content-text">
       <h1>Disclaimer</h1>
-      <p>Last updated: May 11, 2022</p>
+      <p>Last updated: November 4, 2022</p>
       <h1>Interpretation and Definitions</h1>
       <h2>Interpretation</h2>
       <p>The words of which the initial letter is capitalized have meanings defined under the following conditions.
@@ -12,7 +12,7 @@ export default function Disclaimer() {
       <h2>Definitions</h2>
       <p>For the purposes of this Disclaimer:</p>
       <ul>
-        <li><strong>Company</strong> (referred to as either &quot;the Company&quot;, &quot;We&quot;, &quot;Us&quot; or &quot;Our&quot; in this Disclaimer) refers to Bithomp AB, Box 160, 101 23 Stockholm.</li>
+        <li><strong>Company</strong> (referred to as either &quot;the Company&quot;, &quot;We&quot;, &quot;Us&quot; or &quot;Our&quot; in this Disclaimer) refers to Bithomp AB, Kivra: 559342-2867, 106 31, Stockholm, Sweden.</li>
         <li><strong>Service</strong> refers to the Website.</li>
         <li><strong>You</strong> means the individual accessing the Service, or the company, or other legal entity on behalf of which such individual is accessing or using the Service, as applicable.</li>
         <li><strong>Website</strong> refers to Bithomp, accessible from <a href="https://bithomp.com">https://bithomp.com</a></li>
