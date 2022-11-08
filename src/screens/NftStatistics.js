@@ -73,8 +73,8 @@ export default function LastLedgerInformation() {
 
   let lag = false;
   if (crawlerIndex && currentLedgerIndex) {
-    //check if ledger index gap is more than 1
-    if (currentLedgerIndex - crawlerIndex > 1) {
+    //check if ledger index gap is more than 2
+    if (currentLedgerIndex - crawlerIndex > 2) {
       //crawler is lagging bihind
       lag = currentLedgerIndex - crawlerIndex;
     }
