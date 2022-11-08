@@ -1,7 +1,7 @@
 import { useTranslation, Trans } from 'react-i18next';
 import { useState, useEffect } from 'react';
 
-import { niceNumber, wssServer, fullDateAndTime } from '../utils';
+import { niceNumber, wssServer, fullDateAndTime, title } from '../utils';
 
 let ws = null;
 
@@ -57,6 +57,7 @@ export default function LastLedgerInformation() {
 
   useEffect(() => {
     connect();
+    title(t("menu.nft-statistics"));
     return () => {
       setData(null);
       if (ws) ws.close();
