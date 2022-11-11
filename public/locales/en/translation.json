@@ -57,7 +57,8 @@
     "actions": {
       "view": "Explorer view",
       "send": "Send XRP"
-    }
+    },
+    "not-available": "Not available"
   },
   "footer": {
     "cookie": {

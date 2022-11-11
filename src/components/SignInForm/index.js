@@ -147,6 +147,27 @@ export default function SignInForm({ setSignInFormOpen, setAccount, signInFormOp
     setSignInFormOpen(false);
   }
 
+  // temporary styles while hardware wallets are not connected
+  const notAvailable = (picture, name) => {
+    const divStyle = {
+      display: "inline-block",
+      position: "relative",
+      opacity: 0.5,
+      pointerEvents: "none"
+    }
+    const spanStyle = {
+      position: "absolute",
+      width: '100%',
+      bottom: "20px",
+      left: 0,
+      textAlign: "center"
+    }
+    return <div style={divStyle}>
+      <img alt={name} className='signin-app-logo' src={picture} />
+      <span style={spanStyle}>{t("signin.not-available")}</span>
+    </div>
+  }
+
   return (
     <div className="sign-in-form">
       <div className="sign-in-body center">
@@ -158,15 +179,9 @@ export default function SignInForm({ setSignInFormOpen, setAccount, signInFormOp
               <img alt="xumm" className='signin-app-logo' src={xumm} onClick={XummLogin} />
               {signInFormOpen !== "xumm" &&
                 <>
-                  <a href="/explorer/?hwlogin=ledger">
-                    <img alt="ledger" className='signin-app-logo' src={ledger} />
-                  </a>
-                  <a href="/explorer/?hwlogin=trezor">
-                    <img alt="trezor" className='signin-app-logo' src={trezor} />
-                  </a>
-                  <a href="/explorer/?hwlogin=ellipal">
-                    <img alt="ellipal" className='signin-app-logo' src={ellipal} />
-                  </a>
+                  {notAvailable(ledger, "ledger")}
+                  {notAvailable(trezor, "trezor")}
+                  {notAvailable(ellipal, "ellipal")}
                 </>
               }
             </div>

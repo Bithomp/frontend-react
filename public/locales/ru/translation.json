@@ -57,7 +57,8 @@
     "actions": {
       "view": "Cтраница в эксплорере",
       "send": "Отправить XRP"
-    }
+    },
+    "not-available": "Не доступно"
   },
   "footer": {
     "cookie": {
