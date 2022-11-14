@@ -67,6 +67,23 @@ export default function Header({ theme, switchTheme, setSignInFormOpen, account,
         }
 
         <div className="menu-dropdown">
+          <div className="menu-dropdown-button">NFT</div>
+          <div className="menu-dropdown-content">
+            <Link to="/nft-statistics">{t("menu.nft-statistics")}</Link>
+          </div>
+        </div>
+
+        <div className="menu-dropdown">
+          <div className="menu-dropdown-button">XRPL</div>
+          <div className="menu-dropdown-content">
+            <Link to="/last-ledger-information">{t("menu.last-ledger-information")}</Link>
+            <Link to="/validators">{t("menu.validators")}</Link>
+            <Link to="/amendments">{t("menu.amendments")}</Link>
+            {!devNet && <Link to="/genesis">{t("menu.genesis")}</Link>}
+          </div>
+        </div>
+
+        <div className="menu-dropdown">
           <div className="menu-dropdown-button">{t("menu.networks")}</div>
           <div className="menu-dropdown-content">
             {devNet && <a href="https://bithomp.com">Mainnet</a>}
@@ -74,17 +91,6 @@ export default function Header({ theme, switchTheme, setSignInFormOpen, account,
             {devNet !== 'devnet' && <a href="https://dev.bithomp.com">Devnet</a>}
             {devNet !== 'beta' && <a href="https://beta.bithomp.com">Betanet (Hooks v2)</a>}
             {devNet !== 'xls20' && <a href="https://xls20.bithomp.com">XLS-20</a>}
-          </div>
-        </div>
-
-        <div className="menu-dropdown">
-          <div className="menu-dropdown-button">XRPL</div>
-          <div className="menu-dropdown-content">
-            <Link to="/nft-statistics">{t("menu.nft-statistics")}</Link>
-            <Link to="/last-ledger-information">{t("menu.last-ledger-information")}</Link>
-            <Link to="/validators">{t("menu.validators")}</Link>
-            <Link to="/amendments">{t("menu.amendments")}</Link>
-            {!devNet && <Link to="/genesis">{t("menu.genesis")}</Link>}
           </div>
         </div>
       </div>
