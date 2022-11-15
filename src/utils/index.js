@@ -1,6 +1,11 @@
 import i18next from '../services/i18n';
 import axios from 'axios';
 
+export const stripText = (text) => {
+  let doc = new DOMParser().parseFromString(html, 'text/html');
+  return doc.body.textContent || "";
+}
+
 export const submitTransaction = async (blob, callback) => {
   blob = JSON.stringify(blob);
 

@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 
-import { title } from '../../utils';
+import { title, stripText } from '../../utils';
 import { timeFormat, amountFormat } from '../../utils/format';
 
 import { ReactComponent as LinkIcon } from "../../assets/images/link.svg";
@@ -104,7 +104,7 @@ export default function NftSalesLatest() {
                 <tr key={i}>
                   <td>{timeFormat(nft.acceptedAt)}</td>
                   <td>{amountFormat(nft.amount)}</td>
-                  <td>{nft.nftoken?.metadata?.name ? nft.nftoken.metadata.name : "---//---"}</td>
+                  <td>{nft.nftoken?.metadata?.name ? stripText(nft.nftoken.metadata.name) : "---//---"}</td>
                   <td className='center'><a href={"/explorer/" + nft.nftokenID}><LinkIcon /></a></td>
                   <td className='center'><a href={"/explorer/" + nft.acceptedTxHash}><LinkIcon /></a></td>
                 </tr>
