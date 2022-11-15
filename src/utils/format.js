@@ -35,7 +35,7 @@ const amountParced = (amount) => {
     issuer = amount.issuer;
     type = 'IOU';
     const xls14NftVal = xls14NftValue(value);
-    const realXls14 = false;
+    let realXls14 = false;
     let firstTwoNumbers = currency.substr(0, 2);
     if (currency.length > 3) {
       if (firstTwoNumbers === '01') {
@@ -44,11 +44,11 @@ const amountParced = (amount) => {
         let currencyText = Buffer.from(currency.substr(2, 8), 'hex');
         currencyText = currencyText.substr(0, 3);
         let profit = currency.substr(16, 16);
-        if (profit == 'C1F76FF6ECB0BAC6' || profit == 'C1F76FF6ECB0CCCD') {
+        if (profit === 'C1F76FF6ECB0BAC6' || profit === 'C1F76FF6ECB0CCCD') {
           valuePrefix = '(-0.5%pa)';
-        } else if (profit == '41F76FF6ECB0BAC6' || profit == '41F76FF6ECB0CCCD') {
+        } else if (profit === '41F76FF6ECB0BAC6' || profit === '41F76FF6ECB0CCCD') {
           valuePrefix = '(+0.5%pa)';
-        } else if (profit == 'C1E76FF6ECB0BAC6') {
+        } else if (profit === 'C1E76FF6ECB0BAC6') {
           valuePrefix = '(+1%pa)';
         } else {
           /*
