@@ -69,8 +69,8 @@ export default function Header({ theme, switchTheme, setSignInFormOpen, account,
         <div className="menu-dropdown">
           <div className="menu-dropdown-button">NFT</div>
           <div className="menu-dropdown-content">
-            <Link to="/nft-statistics">{t("menu.nft-statistics")}</Link>
             <Link to="/latest-nft-sales">{t("menu.nft-sales-latest")}</Link>
+            <Link to="/nft-statistics">{t("menu.nft-statistics")}</Link>
           </div>
         </div>
 
