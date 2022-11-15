@@ -288,7 +288,8 @@
     "download": "Download"
   },
   "general": {
-    "error": "Error"
+    "error": "Error",
+    "no-data": "No data available"
   },
   "error": {
     "Network Error": "It seems there is no internet connection ;("

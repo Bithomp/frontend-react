@@ -98,18 +98,21 @@ export default function NftSalesLatest() {
           </tr>
         </thead>
         <tbody>
-          {data ? <>
-            {data.map((nft, i) =>
-              <tr key={i}>
-                <td>{timeFormat(nft.acceptedAt)}</td>
-                <td>{amountFormat(nft.amount)}</td>
-                <td>{nft.nftoken?.metadata?.name ? nft.nftoken.metadata.name : "---//---"}</td>
-                <td className='center'><a href={"/explorer/" + nft.nftokenID}><LinkIcon /></a></td>
-                <td className='center'><a href={"/explorer/" + nft.acceptedTxHash}><LinkIcon /></a></td>
-              </tr>
-            )}
-          </> : <tr className='center'><td colSpan="5"><span className="waiting"></span></td></tr>}
-
+          {data ?
+            <>
+              {data.length ? data.map((nft, i) =>
+                <tr key={i}>
+                  <td>{timeFormat(nft.acceptedAt)}</td>
+                  <td>{amountFormat(nft.amount)}</td>
+                  <td>{nft.nftoken?.metadata?.name ? nft.nftoken.metadata.name : "---//---"}</td>
+                  <td className='center'><a href={"/explorer/" + nft.nftokenID}><LinkIcon /></a></td>
+                  <td className='center'><a href={"/explorer/" + nft.acceptedTxHash}><LinkIcon /></a></td>
+                </tr>
+              ) : <tr className='center'><td colSpan="5">{t("general.no-data")}</td></tr>}
+            </>
+            :
+            <tr className='center'><td colSpan="5"><span className="waiting"></span></td></tr>
+          }
         </tbody>
       </table>
 
