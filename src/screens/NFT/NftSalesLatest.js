@@ -79,8 +79,8 @@ export default function NftSalesLatest() {
   */
 
   useEffect(() => {
+    title("Latest NFT Sales");
     checkApi();
-    title(t("menu.nft-sales-latest"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
