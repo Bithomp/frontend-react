@@ -10,8 +10,13 @@
     "faucet": "Раздача тестовых XRP",
     "networks": "Сети",
     "domains": "Домены",
+    "ledger": "Транзакции леджера",
     "last-ledger-information": "Информация с последнего леджера",
     "nft-statistics": "NFT онлайн статистика",
+    "nft": "NFT страница",
+    "nfts": "NFT пренадлежащие адресу",
+    "nft-sales-latest": "Последние NFT продажи",
+    "nft-sales-top": "ТОП NFT продажи",
     "validators": "Валидаторы",
     "amendments": "Поправки",
     "genesis": "Генезис аккаунты",
@@ -77,7 +82,7 @@
     "stat": {
       "header": "Последние данные с XRPL",
       "ledger-index": "№ леджера",
-      "close-time": "Время закрытия",
+      "close-time": "Время",
       "transactions": "Транзакций в леджере",
       "txs-per-sec": "тран/сек",
       "quorum": "Кворум валидаторов",
@@ -292,6 +297,12 @@
     "seconds-short": "с",
     "minutes-short": "м",
     "hours-short": "ч"
+  },
+  "table": {
+    "time": "Время",
+    "amount": "Сумма",
+    "name": "Имя",
+    "transaction": "Транзакция"
   },
   "xumm": {
     "new-qr": "Получить новый QR-код"

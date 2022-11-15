@@ -3,7 +3,7 @@ import axios from 'axios';
 import { useTranslation, Trans } from 'react-i18next';
 import { isMobile } from "react-device-detect";
 
-import { niceNumber } from '../../utils';
+import { niceNumber } from '../../utils/format';
 
 import './styles.scss';
 

@@ -3,7 +3,8 @@ import { Link } from "react-router-dom";
 import { useTranslation } from 'react-i18next';
 import axios from 'axios';
 
-import { wssServer, niceNumber, devNet } from '../../utils';
+import { wssServer, devNet } from '../../utils';
+import { niceNumber } from '../../utils/format';
 
 let ws = null;
 

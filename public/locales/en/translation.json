@@ -10,8 +10,13 @@
     "faucet": "Faucet",
     "networks": "Networks",
     "domains": "Domains",
+    "ledger": "Ledger transactions",
     "last-ledger-information": "Last ledger information",
     "nft-statistics": "NFT live statistics",
+    "nft": "NFT page",
+    "nfts": "NFT owned by address",
+    "nft-sales-latest": "Latest NFT sales",
+    "nft-sales-top": "TOP NFT sales",
     "validators": "Validators",
     "amendments": "Amendments",
     "genesis": "Genesis accounts",
@@ -292,6 +297,12 @@
     "seconds-short": "s",
     "minutes-short": "m",
     "hours-short": "h"
+  },
+  "table": {
+    "time": "Time",
+    "amount": "Amount",
+    "name": "Name",
+    "transaction": "Transaction"
   },
   "xumm": {
     "new-qr": "Get a new QR code"

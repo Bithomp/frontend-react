@@ -1,7 +1,8 @@
 import { useTranslation, Trans } from 'react-i18next';
 import { useState, useEffect } from 'react';
 
-import { niceNumber, wssServer, fullDateAndTime, title } from '../utils';
+import { wssServer, title } from '../../utils';
+import { niceNumber, fullDateAndTime } from '../../utils/format';
 
 let ws = null;
 

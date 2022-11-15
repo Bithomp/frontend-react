@@ -4,7 +4,8 @@ import { isMobile } from "react-device-detect";
 import { useLocation } from 'react-router-dom';
 import axios from 'axios';
 
-import { server, devNet, capitalize } from '../../utils';
+import { server, devNet } from '../../utils';
+import { capitalize } from '../../utils/format';
 import { payloadXummPost, xummWsConnect, xummCancel, xummGetSignedData } from '../../utils/xumm';
 
 import XummQr from "../Xumm/Qr";

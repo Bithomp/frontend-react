@@ -70,6 +70,7 @@ export default function Header({ theme, switchTheme, setSignInFormOpen, account,
           <div className="menu-dropdown-button">NFT</div>
           <div className="menu-dropdown-content">
             <Link to="/nft-statistics">{t("menu.nft-statistics")}</Link>
+            <Link to="/latest-nft-sales">{t("menu.nft-sales-latest")}</Link>
           </div>
         </div>
 
@@ -151,13 +152,13 @@ export default function Header({ theme, switchTheme, setSignInFormOpen, account,
           <a href="https://docs.bithomp.com" className="mobile-menu-item">
             {t("menu.api")}
           </a>
-          <div className="mobile-menu-directory"><span>XRPL</span></div>
+          <div className="mobile-menu-directory"><span>NFT</span></div>
           <Link
-            to="/last-ledger-information"
+            to="/latest-nft-sales"
             className="mobile-menu-item"
             onClick={mobileMenuToggle}
           >
-            {t("menu.last-ledger-information")}
+            {t("menu.nft-sales-latest")}
           </Link>
           <Link
             to="/nft-statistics"
@@ -165,6 +166,15 @@ export default function Header({ theme, switchTheme, setSignInFormOpen, account,
             onClick={mobileMenuToggle}
           >
             {t("menu.nft-statistics")}
+          </Link>
+
+          <div className="mobile-menu-directory"><span>XRPL</span></div>
+          <Link
+            to="/last-ledger-information"
+            className="mobile-menu-item"
+            onClick={mobileMenuToggle}
+          >
+            {t("menu.last-ledger-information")}
           </Link>
           <Link
             to="/validators"

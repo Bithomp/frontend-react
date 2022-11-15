@@ -2,7 +2,8 @@ import { useTranslation } from 'react-i18next';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 
-import { fullDateAndTime, title } from '../utils';
+import { title } from '../utils';
+import { fullDateAndTime } from '../utils/format';
 
 export default function Amendment() {
   const [majorityAmendments, setMajorityAmendments] = useState(null);

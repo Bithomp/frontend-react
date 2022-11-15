@@ -183,6 +183,9 @@ table {
         }
         a {
           color: var(--text-oposite);
+          svg {
+            stroke: var(--text-oposite);
+          }
         }
       }
       th {

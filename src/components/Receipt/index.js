@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 
-import { fullDateAndTime } from '../../utils';
+import { fullDateAndTime } from '../../utils/format';
 
 import { ReactComponent as Logo } from "../../assets/images/logo.svg";
 import './styles.scss';

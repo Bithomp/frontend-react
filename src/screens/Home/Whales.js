@@ -2,11 +2,8 @@ import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import axios from 'axios';
 
-import { wssServer, shortNiceNumber, devNet } from '../../utils';
-
-const timeFormat = (timestamp) => {
-  return new Date(timestamp * 1000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
-}
+import { wssServer, devNet } from '../../utils';
+import { shortNiceNumber, timeFormat } from '../../utils/format';
 
 let ws = null;
 

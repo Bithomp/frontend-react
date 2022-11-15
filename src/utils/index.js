@@ -21,9 +21,11 @@ export const onFailedRequest = (error, showErrorFunction) => {
   }
 }
 
-export const capitalize = (word) => {
-  return word.charAt(0).toUpperCase() + word.slice(1);
-}
+//const networks = ['mainnet', 'staging', 'testnet', 'devnet', 'beta', 'xls20', 'amm'];
+//const devNetworks = ['testnet', 'devnet', 'beta', 'xls20', 'amm'];
+
+export const network = process.env.REACT_APP_NETWORK_NAME ? process.env.REACT_APP_NETWORK_NAME : "mainnet";
+export const devNet = ['mainnet', 'staging'].includes(network) ? false : network;
 
 export const title = (title) => {
   if (network === 'mainnet') {
@@ -32,71 +34,6 @@ export const title = (title) => {
     document.title = 'XRPL ' + network.toUpperCase() + ": " + title;
   }
 }
-
-export const fullDateAndTime = (timestamp) => {
-  return new Date(timestamp * 1000).toLocaleString();
-}
-
-export const niceNumber = (n, fractionDigits = 0, currency = null) => {
-  if (typeof n === 'string') {
-    if (n.includes('x')) { //in case of placeholders xxx
-      return n;
-    } else {
-      n = Number(n);
-    }
-  }
-  if (n) {
-    let options = {
-      maximumFractionDigits: fractionDigits,
-      minimumFractionDigits: fractionDigits
-    }
-    if (currency) {
-      options.style = "currency";
-      options.currency = currency.toUpperCase();
-    }
-    return n.toLocaleString(undefined, options);
-  } else {
-    return n;
-  }
-}
-
-export const shortNiceNumber = (n, smallNumberFractionDigits = 2, largeNumberFractionDigits = 3, currency = null) => {
-  n = Number(n);
-  let beforeNumber = '';
-  if (n < 0) {
-    beforeNumber = '-';
-    n = -1 * n;
-  }
-  if (smallNumberFractionDigits > 2) {
-    if (n > 99.99) {
-      smallNumberFractionDigits = 2;
-    } else if (n > 9.99) {
-      smallNumberFractionDigits = 3;
-    }
-  }
-  let output = '';
-  if (n > 999999999999) {
-    output = niceNumber(n / 1000000000000, largeNumberFractionDigits, currency) + 'T';
-  } else if (n > 999999999) {
-    output = niceNumber(n / 1000000000, largeNumberFractionDigits, currency) + 'B';
-  } else if (n > 999999) {
-    output = niceNumber(n / 1000000, largeNumberFractionDigits, currency) + 'M';
-  } else if (n > 99999) {
-    output = niceNumber(Math.floor(n), 0, currency);
-  } else if (n === 0) {
-    output = 0;
-  } else {
-    const pow = Math.pow(10, smallNumberFractionDigits);
-    output = niceNumber(Math.floor(n * pow) / pow, smallNumberFractionDigits, currency);
-  }
-  return beforeNumber + output;
-}
-
-//const networks = ['mainnet', 'staging', 'testnet', 'devnet', 'beta', 'xls20', 'amm'];
-//const devNetworks = ['testnet', 'devnet', 'beta', 'xls20', 'amm'];
-
-export const network = process.env.REACT_APP_NETWORK_NAME ? process.env.REACT_APP_NETWORK_NAME : "mainnet";
-export const devNet = ['mainnet', 'staging'].includes(network) ? false : network;
 
 const Server = () => {
   let server = "https://test.bithomp.com";

@@ -4,7 +4,8 @@ import axios from 'axios';
 import { isMobile } from "react-device-detect";
 import moment from "moment";
 
-import { fullDateAndTime, title } from '../utils';
+import { title } from '../utils';
+import { fullDateAndTime } from '../utils/format';
 
 const compare = (a, b) => {
   // nulls sort after anything else
