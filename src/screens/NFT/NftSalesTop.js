@@ -113,10 +113,10 @@ export default function NftSalesTop() {
                   <td className='center'><a href={"/explorer/" + nft.acceptedTxHash}><LinkIcon /></a></td>
                   {!isMobile && <td className='center'><a href={"/explorer/" + nft.owner}><LinkIcon /></a></td>}
                 </tr>
-              ) : <tr className='center'><td colSpan="6">{t("general.no-data")}</td></tr>}
+              ) : <tr className='center'><td colSpan="7">{t("general.no-data")}</td></tr>}
             </>
             :
-            <tr className='center'><td colSpan="6"><span className="waiting"></span></td></tr>
+            <tr className='center'><td colSpan="7"><span className="waiting"></span></td></tr>
           }
         </tbody>
       </table>

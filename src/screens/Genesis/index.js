@@ -73,7 +73,7 @@ export default function Genesis() {
                 <td>{new Date("2013-01-01T03:21:00Z").toLocaleString([], timestampFormatParams)}</td>
               </tr>
               <tr><td>{t("genesis.xrp-balance")}</td><td>{niceNumber(99999999999.996320, 6)}</td></tr>
-              <tr><td colSpan={2}><hr /></td></tr>
+              <tr><td colSpan="2"><hr /></td></tr>
               <tr>
                 <td>{t("genesis.balance-update")}</td>
                 <td>{lastUpdate(data.balance_update, timestampFormatParams)}</td>

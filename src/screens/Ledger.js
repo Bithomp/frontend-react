@@ -85,7 +85,7 @@ export default function Ledger() {
                 }
               </>
               :
-              <tr className='center'><td colSpan="5"><span className="waiting"></span></td></tr>
+              <tr className='center'><td colSpan="4"><span className="waiting"></span></td></tr>
             }
           </tbody>
         </table>
