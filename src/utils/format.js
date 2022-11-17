@@ -1,6 +1,13 @@
 import { Buffer } from 'buffer'; //transfer to the backend
 import { isMobile } from "react-device-detect";
 
+export const ledgerLink = (id) => {
+  if (id) {
+    return <a href={"/ledger/" + id}>#{id}</a>
+  }
+  return '';
+}
+
 export const txIdFormat = (txId) => {
   txId = txId.toLowerCase();
   if (isMobile) {

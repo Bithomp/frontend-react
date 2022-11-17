@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next';
 import { useState, useEffect } from 'react';
 
 import { wssServer } from '../utils';
-import { niceNumber } from '../utils/format';
+import { niceNumber, ledgerLink } from '../utils/format';
 
 let ws = null;
 
@@ -78,11 +78,9 @@ export default function LastLedgerInformation() {
   }, []);
 
   let closedAt = '';
-  let ledgerIndex = null;
   if (ledger) {
     closedAt = ledger.validatedLedger.ledgerTime * 1000;
     closedAt = new Date(closedAt).toLocaleTimeString();
-    ledgerIndex = ledger.validatedLedger.ledgerIndex;
   }
 
   return (
@@ -93,7 +91,7 @@ export default function LastLedgerInformation() {
           {t("last-ledger-information.ledger-hash")}: {ledger?.validatedLedger.hash.toLowerCase()}
         </p>
         <p>
-          {t("last-ledger-information.ledger")}: {ledgerIndex && <a href={"/ledger/" + ledgerIndex}>#{ledgerIndex}</a>}
+          {t("last-ledger-information.ledger")}: {ledgerLink(ledger?.validatedLedger.ledgerIndex)}
         </p>
         <p>
           {t("last-ledger-information.ledger-closed-at")}: {closedAt}</p>

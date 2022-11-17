@@ -2,7 +2,7 @@ import { useTranslation, Trans } from 'react-i18next';
 import { useState, useEffect } from 'react';
 
 import { wssServer, title } from '../../utils';
-import { niceNumber, fullDateAndTime } from '../../utils/format';
+import { niceNumber, fullDateAndTime, ledgerLink } from '../../utils/format';
 
 let ws = null;
 
@@ -100,7 +100,7 @@ export default function LastLedgerInformation() {
               {t("nft-statistics.updated")}: {crawlerTime}
             </p>
             <p>
-              {t("nft-statistics.ledger-index")}: {crawlerIndex && '#' + crawlerIndex}
+              {t("nft-statistics.ledger-index")}: {ledgerLink(crawlerIndex)}
             </p>
           </>
         }

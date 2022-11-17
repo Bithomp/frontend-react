@@ -5,7 +5,7 @@ import { useParams } from "react-router-dom";
 import { isMobile } from 'react-device-detect';
 
 import { title } from '../utils';
-import { txIdFormat, fullDateAndTime } from '../utils/format';
+import { txIdFormat, fullDateAndTime, ledgerLink } from '../utils/format';
 
 export default function Ledger() {
   const [data, setData] = useState(null);
@@ -57,9 +57,8 @@ export default function Ledger() {
       <div className="content-text">
         <h2 className="center">{t("menu.ledger")} #{ledgerVersion}<br />{data ? fullDateAndTime(data.close_time) : <br />}</h2>
         <p className="center">
-          {t("ledger.past-ledgers")}: <a href={"/ledger/" + (ledgerVersion - 1)}>#{ledgerVersion - 1}</a>
-          , <a href={"/ledger/" + (ledgerVersion - 2)}>#{ledgerVersion - 2}</a>
-          , <a href={"/ledger/" + (ledgerVersion - 3)}>#{ledgerVersion - 3}</a>.
+          {t("ledger.past-ledgers")}: {ledgerLink(ledgerVersion - 1)}
+          , {ledgerLink(ledgerVersion - 2)}, {ledgerLink(ledgerVersion - 3)}.
         </p>
         <table className="table-large">
           <thead>

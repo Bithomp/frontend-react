@@ -121,6 +121,7 @@ a, .link {
 }
 
 input {
+  appearance: none;
   -webkit-appearance: none; // for ios safari
   border-radius: 0; // remove rounded corners on ios safari
   font-size: 16px; // remove auto zoom on ios safari
