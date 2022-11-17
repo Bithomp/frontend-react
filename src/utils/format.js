@@ -19,7 +19,7 @@ export const txIdFormat = (txId) => {
 export const amountFormat = (amount) => {
   //issuer, type: ['XRP', 'IOU', 'IOU demurraging', 'NFT']
   const { value, currency, valuePrefix } = amountParced(amount);
-  return niceNumber(value) + " " + valuePrefix + " " + currency;
+  return value + " " + valuePrefix + " " + currency;
 }
 
 //transfer to the backend
@@ -135,6 +135,7 @@ export const dateFormat = (timestamp) => {
   return new Date(timestamp * 1000).toLocaleDateString();
 }
 
+//need to make dynamic fraction digits
 export const niceNumber = (n, fractionDigits = 0, currency = null) => {
   if (typeof n === 'string') {
     if (n.includes('x')) { //in case of placeholders xxx
