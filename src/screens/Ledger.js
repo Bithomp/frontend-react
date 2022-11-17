@@ -4,7 +4,6 @@ import axios from 'axios';
 import { useParams } from "react-router-dom";
 
 import { title } from '../utils';
-import { fullDateAndTime } from '../utils/format';
 
 export default function Ledger() {
   const [data, setData] = useState(null);
@@ -17,7 +16,9 @@ export default function Ledger() {
     }
     const response = await axios('xrpl/ledger/' + ledgerIndex + '?transactions=true&expand=true');
     const data = response.data;
+
     if (data) {
+      data.transactions.sort((a, b) => (a.metaData.TransactionIndex > b.metaData.TransactionIndex) ? 1 : -1);
       setData(data);
     }
   }
@@ -40,9 +41,10 @@ export default function Ledger() {
         },
         "TransactionType": "TrustSet",
         "hash": "0897DE7DE37145FDA95DEEA2B24553FC5ACCFE6AEA25647FB78402A5D5CABE60",
-        "metadata": '',
-        "TransactionIndex": 16,
-        "TransactionResult": "tesSUCCESS"
+        "metaData": {
+          "TransactionIndex": 16,
+          "TransactionResult": "tesSUCCESS"
+        }
   */
 
   useEffect(() => {
@@ -55,20 +57,22 @@ export default function Ledger() {
     <div className="content-text">
       {data?.transactions ?
         <>
-          <h2 className="center">{t("menu.ledger")} # {data.ledger_index} ({fullDateAndTime(data.close_time)})</h2>
+          <h2 className="center">{t("menu.ledger")} # {data.ledger_index} ({data.close_time_human.slice(0, -14)} UTC)</h2>
           <table className="table-large">
             <thead>
               <tr>
-                <th>Transaction Index</th>
-                <th>Transaction Type</th>
+                <th>Index</th>
+                <th>Type</th>
+                <th>Status</th>
                 <th>Hash</th>
               </tr>
             </thead>
             <tbody>
               {data?.transactions?.map((tx, i) =>
                 <tr key={i}>
-                  <td>{tx.TransactionIndex}</td>
+                  <td className='center'>{tx.metaData.TransactionIndex}</td>
                   <td>{tx.TransactionType}</td>
+                  <td>{tx.metaData.TransactionResult}</td>
                   <td><a href={"/explorer/" + tx.hash}>{tx.hash}</a></td>
                 </tr>
               )}
