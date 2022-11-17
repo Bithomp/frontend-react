@@ -127,7 +127,7 @@ export default function Statistics() {
     <div className='statistics-block'>
       <div className='stat-piece'>
         <div className='stat-piece-header'>{t("home.stat.ledger-index")}</div>
-        <div>#{ledgerIndex}</div>
+        <div><Link to={`ledger/${ledgerIndex}`}>#{ledgerIndex}</Link></div>
       </div>
       <div className='stat-piece'>
         <div className='stat-piece-header'>{t("home.stat.close-time")}</div>

@@ -19,7 +19,7 @@ import LastLedgerInformation from './screens/LastLedgerInformation';
 import Nft from './screens/NFT/Nft';
 import Nfts from './screens/NFT/Nfts';
 import NftSalesLatest from './screens/NFT/NftSalesLatest';
-//import NftSalesTop from './screens/NftSalesTop';
+import NftSalesTop from './screens/NFT/NftSalesTop';
 import NftStatistics from './screens/NFT/NftStatistics';
 import Validators from './screens/Validators';
 import Amendments from './screens/Amendments';
@@ -96,7 +96,7 @@ export default function App() {
             <Route path="/nfts/:address" element={<Nfts />} />
           </Route>
           <Route path="/latest-nft-sales" element={<NftSalesLatest />} />
-          {/* <Route path="/top-nft-sales" element={<NftSalesTop />} /> */}
+          <Route path="/top-nft-sales" element={<NftSalesTop />} />
           <Route path="/nft-statistics" element={<NftStatistics />} />
           <Route path="/validators" element={<Validators />} />
           <Route path="/amendments" element={<Amendments />} />

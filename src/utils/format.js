@@ -1,9 +1,18 @@
 import { Buffer } from 'buffer'; //transfer to the backend
+import { isMobile } from "react-device-detect";
+
+export const txIdFormat = (txId) => {
+  txId = txId.toLowerCase();
+  if (isMobile) {
+    return txId.substr(0, 6) + "..." + txId.substr(-6);
+  }
+  return txId;
+}
 
 export const amountFormat = (amount) => {
   //issuer, type: ['XRP', 'IOU', 'IOU demurraging', 'NFT']
   const { value, currency, valuePrefix } = amountParced(amount);
-  return value + " " + valuePrefix + " " + currency;
+  return niceNumber(value) + " " + valuePrefix + " " + currency;
 }
 
 //transfer to the backend
@@ -113,6 +122,10 @@ export const fullDateAndTime = (timestamp) => {
 
 export const timeFormat = (timestamp) => {
   return new Date(timestamp * 1000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
+}
+
+export const dateFormat = (timestamp) => {
+  return new Date(timestamp * 1000).toLocaleDateString();
 }
 
 export const niceNumber = (n, fractionDigits = 0, currency = null) => {

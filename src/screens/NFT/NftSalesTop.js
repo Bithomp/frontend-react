@@ -1,18 +1,19 @@
 import { useTranslation } from 'react-i18next';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import { isMobile } from 'react-device-detect';
 
 import { title, stripText } from '../../utils';
-import { timeFormat, amountFormat } from '../../utils/format';
+import { dateFormat, amountFormat } from '../../utils/format';
 
 import { ReactComponent as LinkIcon } from "../../assets/images/link.svg";
 
-export default function NftSalesLatest() {
+export default function NftSalesTop() {
   const [data, setData] = useState(null);
   const { t } = useTranslation();
 
   const checkApi = async () => {
-    const response = await axios('v2/nft/offer/lastSold');
+    const response = await axios('v2/nft/offer/topSold');
     const data = response.data;
     if (data) {
       setData(data);
@@ -79,22 +80,24 @@ export default function NftSalesLatest() {
   */
 
   useEffect(() => {
-    title(t("menu.nft-sales-latest"));
+    title(t("menu.nft-sales-top"));
     checkApi();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return <>
     <div className="content-text">
-      <h2 className="center">{t("menu.nft-sales-latest")}</h2>
+      <h2 className="center">{t("menu.nft-sales-top")} (XRP)</h2>
       <table className="table-large">
         <thead>
           <tr>
-            <th>{t("table.time")}</th>
             <th>{t("table.amount")}</th>
+            <th>{t("table.sold")}</th>
+            {!isMobile && <th>{t("table.created")}</th>}
             <th>{t("table.name")}</th>
             <th>NFT</th>
             <th>{t("table.transaction")}</th>
+            {!isMobile && <th>{t("table.owner")}</th>}
           </tr>
         </thead>
         <tbody>
@@ -102,16 +105,18 @@ export default function NftSalesLatest() {
             <>
               {data.length ? data.map((nft, i) =>
                 <tr key={i}>
-                  <td>{timeFormat(nft.acceptedAt)}</td>
                   <td>{amountFormat(nft.amount)}</td>
+                  <td>{dateFormat(nft.acceptedAt)}</td>
+                  {!isMobile && <td>{dateFormat(nft.createdAt)}</td>}
                   <td>{nft.nftoken?.metadata?.name ? stripText(nft.nftoken.metadata.name) : "---//---"}</td>
                   <td className='center'><a href={"/explorer/" + nft.nftokenID}><LinkIcon /></a></td>
                   <td className='center'><a href={"/explorer/" + nft.acceptedTxHash}><LinkIcon /></a></td>
+                  {!isMobile && <td className='center'><a href={"/explorer/" + nft.owner}><LinkIcon /></a></td>}
                 </tr>
-              ) : <tr className='center'><td colSpan="5">{t("general.no-data")}</td></tr>}
+              ) : <tr className='center'><td colSpan="6">{t("general.no-data")}</td></tr>}
             </>
             :
-            <tr className='center'><td colSpan="5"><span className="waiting"></span></td></tr>
+            <tr className='center'><td colSpan="6"><span className="waiting"></span></td></tr>
           }
         </tbody>
       </table>

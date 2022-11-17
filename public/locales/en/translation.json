@@ -12,6 +12,7 @@
     "domains": "Domains",
     "ledger": "Ledger transactions",
     "last-ledger-information": "Last ledger information",
+    "last-ledger-transactions": "Last ledger transactions",
     "nft-statistics": "NFT live statistics",
     "nft": "NFT page",
     "nfts": "NFT owned by address",
@@ -113,6 +114,10 @@
     "increment-reserve": "Increment reserve",
     "total-supply": "Total supply",
     "total-burned": "Total burned"
+  },
+  "ledger": {
+    "past-ledgers": "View transactions in the previous ledgers",
+    "no-transactions": "There are no included transactions in that ledger."
   },
   "nft-statistics": {
     "text0": "The information is a bit outdated, we need to catch up with <1>{{lag}}</1> ledgers.<br/>The data is provided for the ledger #{{crawlerIndex}}, ({{crawlerTime}}).<br/>The last validated ledger is #{{currentLedgerIndex}}, ({{currentLedgerTime}}).",
@@ -301,9 +306,17 @@
   },
   "table": {
     "time": "Time",
+    "date": "Date",
     "amount": "Amount",
     "name": "Name",
-    "transaction": "Transaction"
+    "transaction": "Transaction",
+    "owner": "Owner",
+    "sold": "Sold",
+    "created": "Created",
+    "index": "Index",
+    "type": "Type",
+    "status": "Status",
+    "hash": "Hash"
   },
   "xumm": {
     "new-qr": "Get a new QR code"

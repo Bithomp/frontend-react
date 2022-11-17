@@ -12,6 +12,7 @@
     "domains": "Домены",
     "ledger": "Транзакции леджера",
     "last-ledger-information": "Информация с последнего леджера",
+    "last-ledger-transactions": "Транзакции последнего леджера",
     "nft-statistics": "NFT онлайн статистика",
     "nft": "NFT страница",
     "nfts": "NFT пренадлежащие адресу",
@@ -113,6 +114,10 @@
     "increment-reserve": "Резерв трастлайна и др.",
     "total-supply": "Всего существует",
     "total-burned": "Всего сожжено (комиссией)"
+  },
+  "ledger": {
+    "past-ledgers": "Предыдущие леджеры",
+    "no-transactions": "В данный леджер не было включено ни одной транзакции."
   },
   "nft-statistics": {
     "text0": "Информация немного устарела, нам осталось проанализировать ещё <1>{{lag}}</1> леджеров.<br/>Данные актуальны для леджера #{{crawlerIndex}}, ({{crawlerTime}}).<br/>Последний валидированный леджер #{{currentLedgerIndex}}, ({{currentLedgerTime}}).",
@@ -301,9 +306,17 @@
   },
   "table": {
     "time": "Время",
+    "date": "Дата",
     "amount": "Сумма",
     "name": "Имя",
-    "transaction": "Транзакция"
+    "transaction": "Транзакция",
+    "owner": "Владелец",
+    "sold": "Продан",
+    "created": "Создан",
+    "index": "Индекс",
+    "type": "Тип",
+    "status": "Статус",
+    "hash": "Хеш"
   },
   "xumm": {
     "new-qr": "Получить новый QR-код"

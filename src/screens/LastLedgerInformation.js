@@ -10,6 +10,7 @@ export default function LastLedgerInformation() {
   const { t } = useTranslation();
 
   const [ledger, setLedger] = useState(null);
+  const [update, setUpdate] = useState(true);
 
   const connect = () => {
     ws = new WebSocket(wssServer);
@@ -60,7 +61,9 @@ export default function LastLedgerInformation() {
     }
 
     ws.onclose = () => {
-      connect();
+      if (update) {
+        connect();
+      }
     }
   }
 
@@ -68,15 +71,18 @@ export default function LastLedgerInformation() {
     connect();
     return () => {
       setLedger(null);
+      setUpdate(false);
       if (ws) ws.close();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   let closedAt = '';
+  let ledgerIndex = null;
   if (ledger) {
     closedAt = ledger.validatedLedger.ledgerTime * 1000;
     closedAt = new Date(closedAt).toLocaleTimeString();
+    ledgerIndex = ledger.validatedLedger.ledgerIndex;
   }
 
   return (
@@ -87,7 +93,7 @@ export default function LastLedgerInformation() {
           {t("last-ledger-information.ledger-hash")}: {ledger?.validatedLedger.hash.toLowerCase()}
         </p>
         <p>
-          {t("last-ledger-information.ledger")}: {ledger?.validatedLedger.ledgerIndex && '#' + ledger.validatedLedger.ledgerIndex}
+          {t("last-ledger-information.ledger")}: {ledgerIndex && <a href={"/ledger/" + ledgerIndex}>#{ledgerIndex}</a>}
         </p>
         <p>
           {t("last-ledger-information.ledger-closed-at")}: {closedAt}</p>

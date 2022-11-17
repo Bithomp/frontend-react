@@ -116,53 +116,9 @@ header {
     position: absolute;
     right: 20px;
     top: 25px;
-    .mobile-menu {
-      margin-top: 81px;
-      background-color: var(--background-menu);
-      min-height: calc(100% - 81px);
-      width: 100%;
-      position: fixed;
-      right: 0;
-      transform: translateX(100%);
-      top: 0;
-      z-index: 3;
-      transition: 0.5s;
-      .mobile-menu-item {
-        display: flex;
-        margin: 23px 40px;
-        color: white;
-        font-size: 18px;
-        .user-icon {
-          width: 24px;
-          height: 24px;
-          margin-right: 5px;
-        }
-      }
-      .mobile-menu-directory {
-        color: rgba(255, 255, 255, 0.5);
-        height: 1px;
-        border-top: 1px solid rgba(255, 255, 255, 0.5);
-        text-align: center;
-        position: relative;
-        margin: 0 40px;
-        span {
-          position: relative;
-          top: -.8em;
-          font-size: 14px;
-          background-color: var(--background-menu);
-          transition: background-color .5s;
-          display: inline-block;
-          padding: 0 10px;
-        }
-      }
-    }
   
     #header-burger {
       display: none;
-    }
-    
-    #header-burger:checked ~ .mobile-menu {
-      transform: translateX(0);
     }
     
     .header-burger-elements {
@@ -193,6 +149,48 @@ header {
     }
     #header-burger:checked~ .header-burger-elements > div:nth-child(3) {
       transform: translateY(-12px) rotate(-45deg);
+    }
+  }
+}
+
+.mobile-menu {
+  margin-top: 81px;
+  background-color: var(--background-menu);
+  height: calc(100% - 81px);
+  width: 100%;
+  position: fixed;
+  right: 0;
+  transform: translateX(100%);
+  top: 0;
+  z-index: 3;
+  transition: 0.5s;
+  overflow: auto;
+  .mobile-menu-item {
+    display: flex;
+    margin: 23px 40px;
+    color: white;
+    font-size: 18px;
+    .user-icon {
+      width: 24px;
+      height: 24px;
+      margin-right: 5px;
+    }
+  }
+  .mobile-menu-directory {
+    color: rgba(255, 255, 255, 0.5);
+    height: 1px;
+    border-top: 1px solid rgba(255, 255, 255, 0.5);
+    text-align: center;
+    position: relative;
+    margin: 0 40px;
+    span {
+      position: relative;
+      top: -.8em;
+      font-size: 14px;
+      background-color: var(--background-menu);
+      transition: background-color .5s;
+      display: inline-block;
+      padding: 0 10px;
     }
   }
 }
