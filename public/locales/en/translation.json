@@ -117,7 +117,7 @@
   },
   "ledger": {
     "past-ledgers": "View transactions in the previous ledgers",
-    "no-transactions": "There are no included transactions in that ledger."
+    "no-transactions": "We could not find any transactions to show."
   },
   "nft-statistics": {
     "text0": "The information is a bit outdated, we need to catch up with <1>{{lag}}</1> ledgers.<br/>The data is provided for the ledger #{{crawlerIndex}}, ({{crawlerTime}}).<br/>The last validated ledger is #{{currentLedgerIndex}}, ({{currentLedgerTime}}).",

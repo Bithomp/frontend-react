@@ -21,13 +21,20 @@ export default function Ledger() {
     const data = response.data;
 
     if (data) {
-      setLedgerVersion(data.ledgerVersion)
+      setLedgerVersion(data.ledgerVersion ? data.ledgerVersion : ledgerI)
       data.transactions?.sort((a, b) => (a.outcome.indexInLedger > b.outcome.indexInLedger) ? 1 : -1);
       setData(data);
     }
   }
 
   /*
+  {
+    error: "lgrNotFound"
+    error_code: 21
+    error_message: "ledgerNotFound"
+    status: "error"
+  }
+
   {
     "closeTime": "2022-11-17T11:40:20.000Z",
     "closeTimeResolution": 10,
@@ -55,7 +62,7 @@ export default function Ledger() {
   return <>
     {ledgerVersion &&
       <div className="content-text">
-        <h2 className="center">{t("menu.ledger")} #{ledgerVersion}<br />{data ? fullDateAndTime(data.close_time) : <br />}</h2>
+        <h2 className="center">{t("menu.ledger")} #{ledgerVersion}<br />{data?.close_time ? fullDateAndTime(data.close_time) : <br />}</h2>
         <p className="center">
           {t("ledger.past-ledgers")}: {ledgerLink(ledgerVersion - 1)}
           , {ledgerLink(ledgerVersion - 2)}, {ledgerLink(ledgerVersion - 3)}.
@@ -80,7 +87,7 @@ export default function Ledger() {
                     <td><a href={"/explorer/" + tx.id}>{txIdFormat(tx.id)}</a></td>
                   </tr>
                 ) :
-                  <tr><td colSpan="4">There are no included transactions in that ledger.</td></tr>
+                  <tr><td colSpan="4">{t("ledger.no-transactions")}</td></tr>
                 }
               </>
               :
