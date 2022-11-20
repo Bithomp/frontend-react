@@ -305,15 +305,16 @@
     "hours-short": "ч"
   },
   "table": {
+    "index": "Индекс",
     "time": "Время",
     "date": "Дата",
     "amount": "Сумма",
     "name": "Имя",
     "transaction": "Транзакция",
     "owner": "Владелец",
+    "issuer": "Создатель",
     "sold": "Продан",
     "created": "Создан",
-    "index": "Индекс",
     "type": "Тип",
     "status": "Статус",
     "hash": "Хеш"

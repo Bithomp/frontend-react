@@ -5,6 +5,8 @@ import { useParams } from "react-router-dom";
 
 import { title } from '../../utils';
 
+import { ReactComponent as LinkIcon } from "../../assets/images/link.svg";
+
 export default function Nfts() {
   const [data, setData] = useState(null);
   const { t } = useTranslation();
@@ -66,27 +68,35 @@ export default function Nfts() {
 
   return <>
     <div className="content-text">
-      {data?.nfts ?
-        <>
-          <h2 className="center">{t("menu.nfts") + " " + address}</h2>
-          <table className="table-large">
-            <thead>
-              <tr>
-                <th>NFT name</th>
-                <th>NFT link</th>
-              </tr>
-            </thead>
-            <tbody>
-              {data.nfts?.map((nft, i) =>
+      <h4 className="center">{t("menu.nfts") + " " + address}</h4>
+      <table className="table-large">
+        <thead>
+          <tr>
+            <th>{t("table.index")}</th>
+            <th>{t("table.name")}</th>
+            <th>NFT</th>
+            <th>{t("table.issuer")}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {data ?
+            <>
+              {data.nfts ? data.nfts.map((nft, i) =>
                 <tr key={i}>
+                  <td className="center">{i + 1}</td>
                   <td>{nft.metadata?.name}</td>
-                  <td><a href={"/explorer/" + nft.nftokenID}>{nft.nftokenID}</a></td>
+                  <td className='center'><a href={"/explorer/" + nft.nftokenID}><LinkIcon /></a></td>
+                  <td className='center'><a href={"/explorer/" + nft.issuer}><LinkIcon /></a></td>
                 </tr>
-              )}
-            </tbody>
-          </table>
-        </> : "No NFTs found on this address"
-      }
+              ) :
+                <tr className='center'><td colSpan="4">No NFTs found on this address</td></tr>
+              }
+            </>
+            :
+            <tr className='center'><td colSpan="4"><span className="waiting"></span></td></tr>
+          }
+        </tbody>
+      </table>
     </div>
   </>;
 };

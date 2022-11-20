@@ -15,7 +15,7 @@
     "last-ledger-transactions": "Last ledger transactions",
     "nft-statistics": "NFT live statistics",
     "nft": "NFT page",
-    "nfts": "NFT owned by address",
+    "nfts": "NFT owned by the address",
     "nft-sales-latest": "Latest NFT sales",
     "nft-sales-top": "TOP NFT sales",
     "validators": "Validators",
@@ -305,15 +305,16 @@
     "hours-short": "h"
   },
   "table": {
+    "index": "Index",
     "time": "Time",
     "date": "Date",
     "amount": "Amount",
     "name": "Name",
     "transaction": "Transaction",
     "owner": "Owner",
+    "issuer": "Issuer",
     "sold": "Sold",
     "created": "Created",
-    "index": "Index",
     "type": "Type",
     "status": "Status",
     "hash": "Hash"
