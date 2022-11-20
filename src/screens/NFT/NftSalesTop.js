@@ -91,8 +91,9 @@ export default function NftSalesTop() {
       <table className="table-large">
         <thead>
           <tr>
+            <th>{t("table.index")}</th>
             <th>{t("table.amount")}</th>
-            <th>{t("table.sold")}</th>
+            {!isMobile && <th>{t("table.sold")}</th>}
             {!isMobile && <th>{t("table.created")}</th>}
             <th>{t("table.name")}</th>
             <th>NFT</th>
@@ -105,8 +106,9 @@ export default function NftSalesTop() {
             <>
               {data.length ? data.map((nft, i) =>
                 <tr key={i}>
+                  <td className='center'>{i + 1}</td>
                   <td>{amountFormat(nft.amount)}</td>
-                  <td>{dateFormat(nft.acceptedAt)}</td>
+                  {!isMobile && <td>{dateFormat(nft.acceptedAt)}</td>}
                   {!isMobile && <td>{dateFormat(nft.createdAt)}</td>}
                   <td>{nft.nftoken?.metadata?.name ? stripText(nft.nftoken.metadata.name) : "---//---"}</td>
                   <td className='center'><a href={"/explorer/" + nft.nftokenID}><LinkIcon /></a></td>
