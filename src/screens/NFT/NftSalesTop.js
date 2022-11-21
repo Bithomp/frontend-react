@@ -10,6 +10,7 @@ import { ReactComponent as LinkIcon } from "../../assets/images/link.svg";
 
 export default function NftSalesTop() {
   const [data, setData] = useState(null);
+
   const { t } = useTranslation();
 
   const checkApi = async () => {
@@ -96,6 +97,7 @@ export default function NftSalesTop() {
             {!isMobile && <th>{t("table.sold")}</th>}
             {!isMobile && <th>{t("table.created")}</th>}
             <th>{t("table.name")}</th>
+            <th>{t("table.serial")}</th>
             <th>NFT</th>
             <th>{t("table.transaction")}</th>
             {!isMobile && <th>{t("table.owner")}</th>}
@@ -111,18 +113,18 @@ export default function NftSalesTop() {
                   {!isMobile && <td>{dateFormat(nft.acceptedAt)}</td>}
                   {!isMobile && <td>{dateFormat(nft.createdAt)}</td>}
                   <td>{nft.nftoken?.metadata?.name ? stripText(nft.nftoken.metadata.name) : "---//---"}</td>
+                  <td>{nft.nftoken.nftSerial}</td>
                   <td className='center'><a href={"/explorer/" + nft.nftokenID}><LinkIcon /></a></td>
                   <td className='center'><a href={"/explorer/" + nft.acceptedTxHash}><LinkIcon /></a></td>
                   {!isMobile && <td className='center'><a href={"/explorer/" + nft.owner}><LinkIcon /></a></td>}
                 </tr>
-              ) : <tr className='center'><td colSpan="8">{t("general.no-data")}</td></tr>}
+              ) : <tr className='center'><td colSpan="9">{t("general.no-data")}</td></tr>}
             </>
             :
-            <tr className='center'><td colSpan="8"><span className="waiting"></span></td></tr>
+            <tr className='center'><td colSpan="9"><span className="waiting"></span></td></tr>
           }
         </tbody>
       </table>
-
     </div>
   </>;
 };

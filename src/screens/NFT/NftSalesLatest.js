@@ -93,6 +93,7 @@ export default function NftSalesLatest() {
             <th>{t("table.time")}</th>
             <th>{t("table.amount")}</th>
             <th>{t("table.name")}</th>
+            <th>{t("table.serial")}</th>
             <th>NFT</th>
             <th>{t("table.transaction")}</th>
           </tr>
@@ -105,13 +106,14 @@ export default function NftSalesLatest() {
                   <td>{timeFormat(nft.acceptedAt)}</td>
                   <td>{amountFormat(nft.amount)}</td>
                   <td>{nft.nftoken?.metadata?.name ? stripText(nft.nftoken.metadata.name) : "---//---"}</td>
+                  <td>{nft.nftoken.nftSerial}</td>
                   <td className='center'><a href={"/explorer/" + nft.nftokenID}><LinkIcon /></a></td>
                   <td className='center'><a href={"/explorer/" + nft.acceptedTxHash}><LinkIcon /></a></td>
                 </tr>
-              ) : <tr className='center'><td colSpan="5">{t("general.no-data")}</td></tr>}
+              ) : <tr className='center'><td colSpan="6">{t("general.no-data")}</td></tr>}
             </>
             :
-            <tr className='center'><td colSpan="5"><span className="waiting"></span></td></tr>
+            <tr className='center'><td colSpan="6"><span className="waiting"></span></td></tr>
           }
         </tbody>
       </table>

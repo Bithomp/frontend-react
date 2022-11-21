@@ -1,21 +1,24 @@
 import { useTranslation } from 'react-i18next';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import InfiniteScroll from 'react-infinite-scroll-component';
 
 import { title, onFailedRequest } from '../../utils';
 
+import search from "../../assets/images/search.svg";
 import { ReactComponent as LinkIcon } from "../../assets/images/link.svg";
 
 export default function Nfts() {
   const { t } = useTranslation();
   const { address } = useParams();
+  const navigate = useNavigate();
 
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [hasMore, setHasMore] = useState("first");
   const [errorMessage, setErrorMessage] = useState("");
+  const [searchItem, setSearchItem] = useState("");
 
   const checkApi = async () => {
     if (!address || !hasMore || (hasMore === "first" && data.length)) {
@@ -89,61 +92,108 @@ export default function Nfts() {
   }
   */
 
+  const searchItemType = e => {
+    if (e.key === 'Enter') {
+      searchClick(searchItem);
+    }
+
+    //if (!searchItemRe.test(e.key)) {
+    //  e.preventDefault();
+    //}
+  }
+
+  const validateSearchItem = e => {
+    let item = e.target.value;
+    item = item.trim();
+    //if (searchItemRe.test(item)) {
+    setSearchItem(item);
+    //} else {
+    //  setSearchItem("");
+    //}
+  }
+
+  const searchClick = item => {
+    const searchItem = item.trim();
+    if (searchItem) {
+      navigate("/nfts/" + encodeURI(searchItem));
+      //window.location.replace('/explorer/' + encodeURI(searchItem));
+    }
+  };
+
   useEffect(() => {
     checkApi();
     title(t("menu.nfts") + " " + address);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [address]);
 
   return <>
     <div className="content-text">
-      <h4 className="center">{t("menu.nfts") + " " + address}</h4>
-      <InfiniteScroll
-        dataLength={data.length}
-        next={checkApi}
-        hasMore={hasMore}
-        loader={!errorMessage &&
-          <p className="center">{t("nfts.load-more")}</p>
-        }
-        endMessage={<p className="center">{t("nfts.end")}</p>}
-      // below props only if you need pull down functionality
-      //refreshFunction={this.refresh}
-      //pullDownToRefresh
-      //pullDownToRefreshThreshold={50}
-      //</>pullDownToRefreshContent={
-      //  <h3 style={{ textAlign: 'center' }}>&#8595; Pull down to refresh</h3>
-      //}
-      //releaseToRefreshContent={
-      //  <h3 style={{ textAlign: 'center' }}>&#8593; Release to refresh</h3>
-      //}
-      >
-        <table className="table-large">
-          <thead>
-            <tr>
-              <th>{t("table.index")}</th>
-              <th>{t("table.name")}</th>
-              <th>NFT</th>
-              <th>{t("table.issuer")}</th>
-            </tr>
-          </thead>
-          <tbody>
-            {loading ?
-              <tr className='center'><td colSpan="4"><span className="waiting"></span></td></tr>
-              :
-              <>
-                {!errorMessage ? data.map((nft, i) =>
-                  <tr key={nft.nftokenID}>
-                    <td className="center">{i + 1}</td>
-                    <td>{nft.metadata?.name}</td>
-                    <td className='center'><a href={"/explorer/" + nft.nftokenID}><LinkIcon /></a></td>
-                    <td className='center'><a href={"/explorer/" + nft.issuer}><LinkIcon /></a></td>
-                  </tr>) : <tr className='center'><td colSpan="4">{errorMessage}</td></tr>
-                }
-              </>
-            }
-          </tbody>
-        </table>
-      </InfiniteScroll>
+      <h4 className="center">{t("menu.nfts") + (address ? (" " + address) : "")}</h4>
+      {address ?
+        <InfiniteScroll
+          dataLength={data.length}
+          next={checkApi}
+          hasMore={hasMore}
+          loader={!errorMessage &&
+            <p className="center">{t("nfts.load-more")}</p>
+          }
+          endMessage={<p className="center">{t("nfts.end")}</p>}
+        // below props only if you need pull down functionality
+        //refreshFunction={this.refresh}
+        //pullDownToRefresh
+        //pullDownToRefreshThreshold={50}
+        //</>pullDownToRefreshContent={
+        //  <h3 style={{ textAlign: 'center' }}>&#8595; Pull down to refresh</h3>
+        //}
+        //releaseToRefreshContent={
+        //  <h3 style={{ textAlign: 'center' }}>&#8593; Release to refresh</h3>
+        //}
+        >
+          <table className="table-large">
+            <thead>
+              <tr>
+                <th>{t("table.index")}</th>
+                <th>{t("table.name")}</th>
+                <th>{t("table.serial")}</th>
+                <th>NFT</th>
+                <th>{t("table.issuer")}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {loading ?
+                <tr className='center'><td colSpan="5"><span className="waiting"></span></td></tr>
+                :
+                <>
+                  {!errorMessage ? data.map((nft, i) =>
+                    <tr key={nft.nftokenID}>
+                      <td className="center">{i + 1}</td>
+                      <td>{nft.metadata?.name}</td>
+                      <td>{nft.nftSerial}</td>
+                      <td className='center'><a href={"/explorer/" + nft.nftokenID}><LinkIcon /></a></td>
+                      <td className='center'><a href={"/explorer/" + nft.issuer}><LinkIcon /></a></td>
+                    </tr>) : <tr className='center'><td colSpan="5">{errorMessage}</td></tr>
+                  }
+                </>
+              }
+            </tbody>
+          </table>
+        </InfiniteScroll>
+        :
+        <div className='center'>
+          <div className="search-box" style={{ marginTop: "10px" }}>
+            <input
+              className="search-input"
+              placeholder="Enter an XRPL address"
+              value={searchItem}
+              onKeyPress={searchItemType}
+              onChange={validateSearchItem}
+            />
+            <div className="search-button" onClick={() => searchClick(searchItem)}>
+              <img src={search} className="search-icon" alt="search" />
+            </div>
+          </div>
+        </div>
+      }
     </div>
   </>;
 };

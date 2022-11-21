@@ -57,7 +57,7 @@ export default function Home({ theme, devNet }) {
   return (
     <>
       <div className="home-search-block">
-        <div className="home-search">
+        <div className="search-box">
           <input
             className="search-input"
             placeholder={searchPlaceholderText}

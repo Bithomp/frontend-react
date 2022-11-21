@@ -15,7 +15,7 @@
     "last-ledger-transactions": "Last ledger transactions",
     "nft-statistics": "NFT live statistics",
     "nft": "NFT page",
-    "nfts": "NFT owned by the address",
+    "nfts": "NFTs owned by the address",
     "nft-sales-latest": "Latest NFT sales",
     "nft-sales-top": "TOP NFT sales",
     "validators": "Validators",
@@ -322,7 +322,8 @@
     "created": "Created",
     "type": "Type",
     "status": "Status",
-    "hash": "Hash"
+    "hash": "Hash",
+    "serial": "Serial"
   },
   "xumm": {
     "new-qr": "Get a new QR code"
