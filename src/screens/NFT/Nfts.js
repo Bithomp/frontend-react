@@ -2,24 +2,53 @@ import { useTranslation } from 'react-i18next';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useParams } from "react-router-dom";
+import InfiniteScroll from 'react-infinite-scroll-component';
 
-import { title } from '../../utils';
+import { title, onFailedRequest } from '../../utils';
 
 import { ReactComponent as LinkIcon } from "../../assets/images/link.svg";
 
 export default function Nfts() {
-  const [data, setData] = useState(null);
   const { t } = useTranslation();
   const { address } = useParams();
 
-  const checkApi = async (address) => {
-    if (!address) {
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [hasMore, setHasMore] = useState("first");
+  const [errorMessage, setErrorMessage] = useState("");
+
+  const checkApi = async () => {
+    if (!address || !hasMore || (hasMore === "first" && data.length)) {
       return;
     }
-    const response = await axios('v2/address/' + address + '?nfts=true');
-    const data = response.data;
-    if (data) {
-      setData(data);
+
+    const response = await axios('v2/address/' + address + '?nfts=true' + (hasMore !== "first" ? ("&nfts[marker]=" + hasMore) : "")).catch(error => {
+      onFailedRequest(error, setErrorMessage);
+      setLoading(false);
+    });
+    setLoading(false);
+    const newdata = response?.data;
+    if (newdata) {
+      if (newdata.address) {
+        if (newdata.nfts) {
+          setErrorMessage("");
+          if (newdata.markers?.nfts) {
+            setHasMore(newdata.markers.nfts);
+          } else {
+            setHasMore(false);
+          }
+          setData([...data, ...newdata.nfts]);
+        } else {
+          setErrorMessage("No NFTs found on this address");
+        }
+      } else {
+        if (newdata.error) {
+          setErrorMessage(newdata.error);
+        } else {
+          setErrorMessage("Error");
+          console.log(newdata);
+        }
+      }
     }
   }
 
@@ -61,7 +90,7 @@ export default function Nfts() {
   */
 
   useEffect(() => {
-    checkApi(address);
+    checkApi();
     title(t("menu.nfts") + " " + address);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -69,34 +98,52 @@ export default function Nfts() {
   return <>
     <div className="content-text">
       <h4 className="center">{t("menu.nfts") + " " + address}</h4>
-      <table className="table-large">
-        <thead>
-          <tr>
-            <th>{t("table.index")}</th>
-            <th>{t("table.name")}</th>
-            <th>NFT</th>
-            <th>{t("table.issuer")}</th>
-          </tr>
-        </thead>
-        <tbody>
-          {data ?
-            <>
-              {data.nfts ? data.nfts.map((nft, i) =>
-                <tr key={i}>
-                  <td className="center">{i + 1}</td>
-                  <td>{nft.metadata?.name}</td>
-                  <td className='center'><a href={"/explorer/" + nft.nftokenID}><LinkIcon /></a></td>
-                  <td className='center'><a href={"/explorer/" + nft.issuer}><LinkIcon /></a></td>
-                </tr>
-              ) :
-                <tr className='center'><td colSpan="4">No NFTs found on this address</td></tr>
-              }
-            </>
-            :
-            <tr className='center'><td colSpan="4"><span className="waiting"></span></td></tr>
-          }
-        </tbody>
-      </table>
+      <InfiniteScroll
+        dataLength={data.length}
+        next={checkApi}
+        hasMore={hasMore}
+        loader={!errorMessage &&
+          <p className="center">We are looking for data on the XRPL... please wait...</p>
+        }
+        endMessage={<p className="center">Here are all the NFTs we could find.</p>}
+      // below props only if you need pull down functionality
+      //refreshFunction={this.refresh}
+      //pullDownToRefresh
+      //pullDownToRefreshThreshold={50}
+      //</>pullDownToRefreshContent={
+      //  <h3 style={{ textAlign: 'center' }}>&#8595; Pull down to refresh</h3>
+      //}
+      //releaseToRefreshContent={
+      //  <h3 style={{ textAlign: 'center' }}>&#8593; Release to refresh</h3>
+      //}
+      >
+        <table className="table-large">
+          <thead>
+            <tr>
+              <th>{t("table.index")}</th>
+              <th>{t("table.name")}</th>
+              <th>NFT</th>
+              <th>{t("table.issuer")}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {loading ?
+              <tr className='center'><td colSpan="4"><span className="waiting"></span></td></tr>
+              :
+              <>
+                {!errorMessage ? data.map((nft, i) =>
+                  <tr key={nft.nftokenID}>
+                    <td className="center">{i + 1}</td>
+                    <td>{nft.metadata?.name}</td>
+                    <td className='center'><a href={"/explorer/" + nft.nftokenID}><LinkIcon /></a></td>
+                    <td className='center'><a href={"/explorer/" + nft.issuer}><LinkIcon /></a></td>
+                  </tr>) : <tr className='center'><td colSpan="4">{errorMessage}</td></tr>
+                }
+              </>
+            }
+          </tbody>
+        </table>
+      </InfiniteScroll>
     </div>
   </>;
 };
