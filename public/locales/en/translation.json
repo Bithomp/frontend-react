@@ -15,7 +15,7 @@
     "last-ledger-transactions": "Last ledger transactions",
     "nft-statistics": "NFT live statistics",
     "nft": "NFT page",
-    "nfts": "NFTs owned by the address",
+    "nfts": "Search NFT by owner",
     "nft-sales-latest": "Latest NFT sales",
     "nft-sales-top": "TOP NFT sales",
     "validators": "Validators",
@@ -120,6 +120,8 @@
     "no-transactions": "We could not find any transactions to show."
   },
   "nfts": {
+    "enter-address": "Enter XRPL address",
+    "owned-by": "NFTs owned by",
     "no-nfts": "We couldn't find any NFTs owned by that address.",
     "load-more": "We are looking for data on the XRPL... please wait...",
     "end": "Here are all the NFTs we could find."

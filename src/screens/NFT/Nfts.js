@@ -128,7 +128,6 @@ export default function Nfts() {
 
   return <>
     <div className="content-text">
-      <h4 className="center">{t("menu.nfts") + (address ? (" " + address) : "")}</h4>
       {address ?
         <InfiniteScroll
           dataLength={data.length}
@@ -149,6 +148,8 @@ export default function Nfts() {
         //  <h3 style={{ textAlign: 'center' }}>&#8593; Release to refresh</h3>
         //}
         >
+          <h2 className="center">{t("nfts.owned-by")}</h2>
+          <h5 className="center">{address ? address : " "}</h5>
           <table className="table-large">
             <thead>
               <tr>
@@ -180,10 +181,11 @@ export default function Nfts() {
         </InfiniteScroll>
         :
         <div className='center'>
+          <h2>{t("menu.nfts")}</h2>
           <div className="search-box" style={{ marginTop: "10px" }}>
             <input
               className="search-input"
-              placeholder="Enter an XRPL address"
+              placeholder={t("nfts.enter-address")}
               value={searchItem}
               onKeyPress={searchItemType}
               onChange={validateSearchItem}

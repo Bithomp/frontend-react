@@ -72,6 +72,7 @@ export default function Header({ theme, switchTheme, setSignInFormOpen, account,
           <div className="menu-dropdown">
             <div className="menu-dropdown-button">NFT</div>
             <div className="menu-dropdown-content">
+              <Link to="/nfts">{t("menu.nfts")}</Link>
               <Link to="/top-nft-sales">{t("menu.nft-sales-top")}</Link>
               <Link to="/latest-nft-sales">{t("menu.nft-sales-latest")}</Link>
               <Link to="/nft-statistics">{t("menu.nft-statistics")}</Link>
@@ -159,6 +160,13 @@ export default function Header({ theme, switchTheme, setSignInFormOpen, account,
           {t("menu.api")}
         </a>
         <div className="mobile-menu-directory"><span>NFT</span></div>
+        <Link
+          to="/nfts"
+          className="mobile-menu-item"
+          onClick={mobileMenuToggle}
+        >
+          {t("menu.nfts")}
+        </Link>
         <Link
           to="/top-nft-sales"
           className="mobile-menu-item"
