@@ -119,6 +119,11 @@
     "past-ledgers": "View transactions in the previous ledgers",
     "no-transactions": "We could not find any transactions to show."
   },
+  "nfts": {
+    "no-nfts": "We couldn't find any NFTs owned by that address.",
+    "load-more": "We are looking for data on the XRPL... please wait...",
+    "end": "Here are all the NFTs we could find."
+  },
   "nft-statistics": {
     "text0": "The information is a bit outdated, we need to catch up with <1>{{lag}}</1> ledgers.<br/>The data is provided for the ledger #{{crawlerIndex}}, ({{crawlerTime}}).<br/>The last validated ledger is #{{currentLedgerIndex}}, ({{currentLedgerTime}}).",
     "updated": "Updated",

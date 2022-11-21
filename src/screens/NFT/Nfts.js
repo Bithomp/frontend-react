@@ -39,7 +39,7 @@ export default function Nfts() {
           }
           setData([...data, ...newdata.nfts]);
         } else {
-          setErrorMessage("No NFTs found on this address");
+          setErrorMessage(t("nfts.no-nfts"));
         }
       } else {
         if (newdata.error) {
@@ -103,9 +103,9 @@ export default function Nfts() {
         next={checkApi}
         hasMore={hasMore}
         loader={!errorMessage &&
-          <p className="center">We are looking for data on the XRPL... please wait...</p>
+          <p className="center">{t("nfts.load-more")}</p>
         }
-        endMessage={<p className="center">Here are all the NFTs we could find.</p>}
+        endMessage={<p className="center">{t("nfts.end")}</p>}
       // below props only if you need pull down functionality
       //refreshFunction={this.refresh}
       //pullDownToRefresh
