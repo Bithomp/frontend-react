@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useSearchParams } from "react-router-dom";
 import InfiniteScroll from 'react-infinite-scroll-component';
 
 import { title, onFailedRequest } from '../../utils';
@@ -9,16 +9,26 @@ import { title, onFailedRequest } from '../../utils';
 import search from "../../assets/images/search.svg";
 import { ReactComponent as LinkIcon } from "../../assets/images/link.svg";
 
+import Tabs from '../../components/Tabs';
+import Tiles from '../../components/Tiles';
+
 export default function Nfts() {
   const { t } = useTranslation();
   const { address } = useParams();
   const navigate = useNavigate();
 
+  const [searchParams, setSearchParams] = useSearchParams();
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [hasMore, setHasMore] = useState("first");
   const [errorMessage, setErrorMessage] = useState("");
   const [searchItem, setSearchItem] = useState("");
+  const [tab, setTab] = useState("list");
+
+  const tabList = [
+    { value: 'list', label: 'List' },
+    { value: 'tiles', label: 'Tiles' }
+  ];
 
   const checkApi = async () => {
     if (!address || !hasMore || (hasMore === "first" && data.length)) {
@@ -126,6 +136,30 @@ export default function Nfts() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [address]);
 
+  useEffect(() => {
+    const view = searchParams.get("view");
+    if (view) {
+      const found = tabList.some(tab => tab.value === view);
+      if (found) {
+        setTab(view);
+      } else {
+        searchParams.delete("view");
+        setSearchParams(searchParams);
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    if (tab === 'list') {
+      searchParams.delete("view");
+    } else {
+      searchParams.set("view", tab);
+    }
+    setSearchParams(searchParams);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tab]);
+
   return <>
     <div className="content-text">
       {address ?
@@ -150,34 +184,52 @@ export default function Nfts() {
         >
           <h2 className="center">{t("nfts.owned-by")}</h2>
           <h5 className="center">{address ? address : " "}</h5>
-          <table className="table-large">
-            <thead>
-              <tr>
-                <th>{t("table.index")}</th>
-                <th>{t("table.name")}</th>
-                <th>{t("table.serial")}</th>
-                <th>NFT</th>
-                <th>{t("table.issuer")}</th>
-              </tr>
-            </thead>
-            <tbody>
+          <Tabs tabList={tabList} tab={tab} setTab={setTab} />
+          {tab === "list" &&
+            <table className="table-large">
+              <thead>
+                <tr>
+                  <th>{t("table.index")}</th>
+                  <th>{t("table.name")}</th>
+                  <th>{t("table.serial")}</th>
+                  <th>NFT</th>
+                  <th>{t("table.issuer")}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {loading ?
+                  <tr className='center'><td colSpan="5"><span className="waiting"></span></td></tr>
+                  :
+                  <>
+                    {!errorMessage ? data.map((nft, i) =>
+                      <tr key={nft.nftokenID}>
+                        <td className="center">{i + 1}</td>
+                        <td>{nft.metadata?.name}</td>
+                        <td>{nft.nftSerial}</td>
+                        <td className='center'><a href={"/explorer/" + nft.nftokenID}><LinkIcon /></a></td>
+                        <td className='center'><a href={"/explorer/" + nft.issuer}><LinkIcon /></a></td>
+                      </tr>) : <tr className='center'><td colSpan="5">{errorMessage}</td></tr>
+                    }
+                  </>
+                }
+              </tbody>
+            </table>
+          }
+          {tab === "tiles" &&
+            <>
               {loading ?
-                <tr className='center'><td colSpan="5"><span className="waiting"></span></td></tr>
+                <div className='center' style={{ marginTop: "20px" }}><span className="waiting"></span></div>
                 :
                 <>
-                  {!errorMessage ? data.map((nft, i) =>
-                    <tr key={nft.nftokenID}>
-                      <td className="center">{i + 1}</td>
-                      <td>{nft.metadata?.name}</td>
-                      <td>{nft.nftSerial}</td>
-                      <td className='center'><a href={"/explorer/" + nft.nftokenID}><LinkIcon /></a></td>
-                      <td className='center'><a href={"/explorer/" + nft.issuer}><LinkIcon /></a></td>
-                    </tr>) : <tr className='center'><td colSpan="5">{errorMessage}</td></tr>
+                  {errorMessage ?
+                    <div className='center'>{errorMessage}</div>
+                    :
+                    <Tiles nftList={data} />
                   }
                 </>
               }
-            </tbody>
-          </table>
+            </>
+          }
         </InfiniteScroll>
         :
         <div className='center'>
