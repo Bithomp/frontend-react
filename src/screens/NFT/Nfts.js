@@ -26,8 +26,8 @@ export default function Nfts() {
   const [tab, setTab] = useState("list");
 
   const tabList = [
-    { value: 'list', label: 'List' },
-    { value: 'tiles', label: 'Tiles' }
+    { value: 'list', label: t("tabs.list") },
+    { value: 'tiles', label: t("tabs.tiles") }
   ];
 
   const checkApi = async () => {

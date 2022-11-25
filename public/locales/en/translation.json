@@ -327,6 +327,10 @@
     "hash": "Hash",
     "serial": "Serial"
   },
+  "tabs": {
+    "list": "List",
+    "tiles": "Tiles"
+  },
   "xumm": {
     "new-qr": "Get a new QR code"
   }
