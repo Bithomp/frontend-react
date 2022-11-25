@@ -17,16 +17,15 @@
       transition: all 0.5s;
       backface-visibility: hidden;
       will-change: transform;
-      transition: all 0.5s;
       &:after {
         content: '';
         display: block;
-        padding-bottom: 86.602%;
+        padding-bottom: 86.602%; // 100/tan(60) * 1.5
       }
       .hexIn {
         position: absolute;
-        width: 96%;
-        padding-bottom: 110.851%;
+        width: 98%;
+        padding-bottom: 113.161%; // width/sin(60)
         margin: 2%;
         overflow: hidden;
         visibility: hidden;
@@ -48,13 +47,50 @@
           color: #fff;
           overflow: hidden;
           -webkit-transform: skewY(-30deg) rotate3d(0,0,1,60deg);
-              -ms-transform: skewY(-30deg) rotate3d(0,0,1,60deg);
-                  transform: skewY(-30deg) rotate3d(0,0,1,60deg);
-
-          &:hover h1, &:focus h1,
-          &:hover p, &:focus p {
-            opacity: 1;
-            transition: 0.8s;
+          -ms-transform: skewY(-30deg) rotate3d(0,0,1,60deg);
+          transform: skewY(-30deg) rotate3d(0,0,1,60deg);
+          .img {
+            width: 98%;
+            height: 98%;
+            position: absolute;
+            top: 1%;
+            right: 0;
+            bottom: 0;
+            left: 1%;
+            background-position: center center;
+            background-size: cover;
+            overflow: hidden;
+            -webkit-clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+            clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+            &:before, &:after {
+              position: absolute;
+              top: 0;
+              right: 0;
+              bottom: 0;
+              left: 0;
+              content: '';
+              opacity: 0;
+              transition: opacity 0.5s;
+            }
+            &:before {
+              background: rgba(22, 103, 137, 0.3)
+            }
+            &:after {
+              background: linear-gradient(to top, transparent, rgba(0, 0, 0, 0.5), transparent);
+            }
+          }
+          &:hover {
+            background-color: var(--accent-link-hover);
+            h1, p {
+              opacity: 1;
+              transition: 0.8s;
+            }
+          }
+          &:focus {
+            h1, p {
+              opacity: 1;
+              transition: 0.8s;
+            }
           }
         }
       }
@@ -88,34 +124,6 @@
       p {
         top: 50%;
         text-align: center;
-      }
-      .img {
-        position: absolute;
-        top: 0;
-        right: 0;
-        bottom: 0;
-        left: 0;
-        background-position: center center;
-        background-size: cover;
-        overflow: hidden;
-        -webkit-clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
-        clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
-        &:before, &:after {
-          position: absolute;
-          top: 0;
-          right: 0;
-          bottom: 0;
-          left: 0;
-          content: '';
-          opacity: 0;
-          transition: opacity 0.5s;
-        }
-        &:before {
-          background: rgba(22, 103, 137, 0.3)
-        }
-        &:after {
-          background: linear-gradient(to top, transparent, rgba(0, 0, 0, 0.5), transparent);
-        }
       }
     }
   }
