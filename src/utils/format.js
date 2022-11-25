@@ -1,4 +1,4 @@
-import { Buffer } from 'buffer'; //transfer to the backend
+import { Buffer } from 'buffer';
 import { isMobile } from "react-device-detect";
 
 export const ledgerLink = (id) => {
@@ -160,6 +160,7 @@ export const niceNumber = (n, fractionDigits = 0, currency = null) => {
 }
 
 export const shortNiceNumber = (n, smallNumberFractionDigits = 2, largeNumberFractionDigits = 3, currency = null) => {
+  if (n !== 0 && !n) return null;
   n = Number(n);
   let beforeNumber = '';
   if (n < 0) {

@@ -1,0 +1,169 @@
+.tiles {
+  * {
+    margin: 0;
+    padding: 0;
+  }
+  .hexGrid {
+    display: flex;
+    flex-wrap: wrap;
+    width: 90%;
+    margin: 0 auto;
+    overflow: hidden;
+    list-style-type: none;
+    .hex {
+      position: relative;
+      visibility: hidden;
+      outline: 1px solid transparent;
+      transition: all 0.5s;
+      backface-visibility: hidden;
+      will-change: transform;
+      &:after {
+        content: '';
+        display: block;
+        padding-bottom: 86.602%; // 100/tan(60) * 1.5
+      }
+      .hexIn {
+        position: absolute;
+        width: 98%;
+        padding-bottom: 113.161%; // width/sin(60)
+        margin: 2%;
+        overflow: hidden;
+        visibility: hidden;
+        outline: 1px solid transparent;
+        -webkit-transform: rotate3d(0,0,1,-60deg) skewY(30deg);
+        -ms-transform: rotate3d(0,0,1,-60deg) skewY(30deg);
+        transform: rotate3d(0,0,1,-60deg) skewY(30deg);
+        transition: all 0.5s;
+        * {
+          position: absolute;
+          visibility: visible;
+          outline: 1px solid transparent;
+        }
+        .hexLink {
+          display:block;
+          width: 100%;
+          height: 100%;
+          overflow: hidden;
+          -webkit-transform: skewY(-30deg) rotate3d(0,0,1,60deg);
+          -ms-transform: skewY(-30deg) rotate3d(0,0,1,60deg);
+          transform: skewY(-30deg) rotate3d(0,0,1,60deg);
+          .title {
+            background-color: var(--background-main);
+            opacity: 0.5;
+            width: 100%;
+            height: 16%;
+            bottom: 10%;
+            clip-path: polygon(1% 5%, 99% 5%, 68% 99%, 32% 99%);
+          }
+          h1 {
+            width: 60%;
+            left: 20%;
+            bottom: 9.2%;
+            height: 16%;
+            color: var(--text-main);
+            font-size: 1em;
+            text-align: center;
+            word-break: break-word;
+          }
+          .img {
+            width: 98%;
+            height: 98%;
+            background-color: var(--background-input-readonly);
+            position: absolute;
+            top: 1%;
+            right: 0;
+            bottom: 0;
+            left: 1%;
+            background-position: center center;
+            background-size: cover;
+            overflow: hidden;
+            -webkit-clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+            clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+            &:before, &:after {
+              position: absolute;
+              top: 0;
+              right: 0;
+              bottom: 0;
+              left: 0;
+              content: '';
+              opacity: 0;
+              transition: opacity 0.5s;
+            }
+            &:before {
+              background: rgba(22, 103, 137, 0.3)
+            }
+            &:after {
+              background: linear-gradient(to top, transparent, rgba(0, 0, 0, 0.5), transparent);
+            }
+          }
+          &:hover {
+            background-color: var(--accent-link-hover);
+          }
+        }
+      }
+    }
+  }
+  
+  .hexIn:hover .img:before,
+  .hexIn:hover .img:after,
+  .hexIn:hover .hexLink {
+    opacity: 1;
+  }
+
+  @media (min-width:1201px) {
+    .hexGrid{
+      padding-bottom: 5.4%;
+    }
+    .hex {
+      width: 20%;
+    }
+    .hex:nth-child(9n+6) {
+      margin-left: 10%;
+    }
+  }
+  
+  @media (max-width: 1200px) and (min-width:901px) {
+    .hexGrid{
+      padding-bottom: 6.5%;
+      font-size: 13px;
+    }
+    .hex {
+      width: 25%
+    }
+    .hex:nth-child(7n+5){
+      margin-left: 12.5%;
+    }
+  }
+  
+  @media (max-width: 900px) and (min-width:601px) {
+    .hexGrid{
+      padding-bottom: 8.4%;
+      font-size: 14px;
+    }
+    .hex {
+      width: 33.333%;
+    }
+    .hex:nth-child(5n+4){
+      margin-left: 16.666%;
+    }
+  }
+  
+  @media (max-width: 600px) {
+    .hexGrid{
+      padding-bottom: 12.2%;
+      font-size: 12px;
+    }
+    .hex {
+      width: 50%;
+    }
+    .hex:nth-child(3n+3){
+      margin-left: 25%;
+    }
+  }
+  
+  @media (max-width: 400px) {
+    .hexGrid {
+      font-size: 8px;
+    }
+  }
+}
