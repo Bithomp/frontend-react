@@ -1,5 +1,5 @@
 import { Routes, Route } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import useLocalStorage from 'use-local-storage';
 import axios from 'axios';
 
@@ -39,6 +39,14 @@ export default function App() {
   const [theme, setTheme] = useLocalStorage('theme', defaultDark ? 'dark' : 'light');
   const [account, setAccount] = useLocalStorage('account', null);
   const [signInFormOpen, setSignInFormOpen] = useState(false);
+
+  useEffect(() => {
+    if (theme === 'dark') {
+      document.body.style.backgroundColor = '#1C1C1C'; //--background-footer
+    } else {
+      document.body.style.backgroundColor = '#333333';
+    }
+  }, [theme]);
 
   const switchTheme = () => {
     const newTheme = theme === 'light' ? 'dark' : 'light';
