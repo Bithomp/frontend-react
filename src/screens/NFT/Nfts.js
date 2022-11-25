@@ -183,7 +183,7 @@ export default function Nfts() {
         //}
         >
           <h2 className="center">{t("nfts.owned-by")}</h2>
-          <h5 className="center">{address ? address : " "}</h5>
+          <h5 className="center">{address ? <a href={"/explorer/" + address}>{address}</a> : " "}</h5>
           <Tabs tabList={tabList} tab={tab} setTab={setTab} />
           {tab === "list" &&
             <table className="table-large">
