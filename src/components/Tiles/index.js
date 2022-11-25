@@ -4,6 +4,13 @@ import './styles.scss';
 
 export default function Tiles({ nftList }) {
 
+  const shortName = (name) => {
+    if (name?.length > 32) {
+      return name.slice(0, 29) + '...';
+    }
+    return name;
+  }
+
   return <div className='tiles'>
     <div className="grid">
       <ul className="hexGrid">
@@ -12,8 +19,8 @@ export default function Tiles({ nftList }) {
             <div className="hexIn">
               <a className="hexLink" href={"/explorer/" + nft.nftokenID}>
                 <div className='img' style={nftImageStyle(nft)}></div>
-                <h1 id="demo1">{nft.metadata?.name}</h1>
-                <p id="demo2">{nft.nftSerial}</p>
+                <div className='title'></div>
+                <h1>{nft.metadata?.name ? shortName(nft.metadata.name) : ''}</h1>
               </a>
             </div>
           </li>
