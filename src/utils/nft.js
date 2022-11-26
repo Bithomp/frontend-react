@@ -51,19 +51,16 @@ const assetUrl = (uri) => {
 }
 
 const metaImageUrl = (meta) => {
-  if (meta?.image || meta?.image_url) {
-    let uri;
-    if (meta.image) {
-      uri = meta.image;
-    } else {
-      uri = meta.image_url;
-    }
-    return assetUrl(uri);
-  }
+  if (!meta) return null;
+  if (meta.image) return assetUrl(meta.image);
+  if (meta.image_url) return assetUrl(meta.image_url);
+  if (isIpfsImage(meta.animation)) return assetUrl(meta.animation);
+  if (isIpfsImage(meta.animation_url)) return assetUrl(meta.animation_url);
   return null;
 }
 
 const isIpfsImage = (url) => {
+  if (!url) return false;
   let type = url.slice(-4).toString().toUpperCase();
   if (type === '.JPG' || type === '.PNG' || type === '.GIF') {
     return true;
