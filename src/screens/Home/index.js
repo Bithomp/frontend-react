@@ -12,6 +12,7 @@ import search from "../../assets/images/search.svg";
 import { ReactComponent as Qr } from "../../assets/images/qr.svg";
 import nexo from "../../assets/images/nexo.svg";
 import btcbit from "../../assets/images/btcbit.svg";
+import xbit from "../../assets/images/xbit.png";
 
 const searchClick = item => {
   const searchItem = item.trim();
@@ -76,6 +77,13 @@ export default function Home({ theme, devNet }) {
       </div>
       {!devNet &&
         <div className="home-sponsored">
+          <a href="https://bithomp.com/go/play-xrp" target="_blank" rel="noreferrer">
+            <div className="sponsored-brand">
+              <img src={xbit} className="sponsored-brand-icon" alt="play with xrp" />
+              <div className="sponsored-brand-title">Play with XRP</div>
+              <div className="sponsored-brand-text">Watch Qatar 2022 and bet with XRP.</div>
+            </div>
+          </a>
           <a href="https://bithomp.com/go/earn-on-xrp" target="_blank" rel="noreferrer">
             <div className="sponsored-brand">
               <img src={nexo} className="sponsored-brand-icon" alt="earn on xrp" />
