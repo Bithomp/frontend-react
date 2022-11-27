@@ -38,15 +38,38 @@
           position: absolute;
           visibility: visible;
           outline: 1px solid transparent;
+          transition: opacity 0.5s;
+        }
+        .index {
+          width: 100%;
+          text-align: center;
+          font-size: 1.2em;
+          color: white;
+          top: 10%;
         }
         .hexLink {
-          display:block;
+          display: block;
           width: 100%;
           height: 100%;
           overflow: hidden;
           -webkit-transform: skewY(-30deg) rotate3d(0,0,1,60deg);
           -ms-transform: skewY(-30deg) rotate3d(0,0,1,60deg);
           transform: skewY(-30deg) rotate3d(0,0,1,60deg);
+          background-color: var(--background-input-readonly);
+          .img-status {
+            top: 40%;
+            color: black;
+            font-size: 1.3em;
+            width: 100%;
+            text-align: center;
+          }
+          .serial {
+            background-color: var(--background-main);
+            width: 50%;
+            height: 16%;
+            bottom: 30%;
+            right: 0;
+          }
           .title {
             background-color: var(--background-main);
             opacity: 0.5;
@@ -54,6 +77,15 @@
             height: 16%;
             bottom: 10%;
             clip-path: polygon(1% 5%, 99% 5%, 68% 99%, 32% 99%);
+          }
+          .title-full {
+            opacity: 0;
+            color: white;
+            width: 90%;
+            left: 5%;
+            top: 25%;
+            font-size: 1em;
+            font-weight: bold;
           }
           h1 {
             width: 48%;
@@ -68,7 +100,6 @@
           .img {
             width: 98%;
             height: 98%;
-            background-color: var(--background-input-readonly);
             position: absolute;
             top: 1%;
             right: 0;
@@ -87,7 +118,6 @@
               left: 0;
               content: '';
               opacity: 0;
-              transition: opacity 0.5s;
             }
             &:before {
               background: rgba(22, 103, 137, 0.3)
@@ -98,16 +128,24 @@
           }
           &:hover {
             background-color: var(--accent-link-hover);
+            .title-full {
+              opacity: 1;
+            }
+            .img {
+              &:before,
+              &:after {
+                opacity: 1;
+              }
+            }
+            h1,
+            .title,
+            .img-status {
+              opacity: 0;
+            }
           }
         }
       }
     }
-  }
-  
-  .hexIn:hover .img:before,
-  .hexIn:hover .img:after,
-  .hexIn:hover .hexLink {
-    opacity: 1;
   }
 
   @media (min-width:1201px) {

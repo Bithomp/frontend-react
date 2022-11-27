@@ -301,7 +301,8 @@
   },
   "general": {
     "error": "Error",
-    "no-data": "No data available"
+    "no-data": "No data available",
+    "loading": "Loading..."
   },
   "error": {
     "Network Error": "It seems there is no internet connection ;("
