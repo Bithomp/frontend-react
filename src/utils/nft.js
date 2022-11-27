@@ -33,7 +33,7 @@ const ipfsUrl = (url) => {
 
   if (cid) {
     url = cid + url.split(cid).pop();
-    return 'https://cloudflare-ipfs.com/ipfs/' + stripText(url);
+    return 'https://ipfs.bithomp.com/image/' + stripText(url);
   } else {
     return null;
   }
