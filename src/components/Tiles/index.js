@@ -5,8 +5,8 @@ import './styles.scss';
 export default function Tiles({ nftList }) {
 
   const shortName = (name) => {
-    if (name?.length > 32) {
-      return name.slice(0, 29) + '...';
+    if (name?.length > 30) {
+      return name.slice(0, 27).trim() + '...';
     }
     return name;
   }
