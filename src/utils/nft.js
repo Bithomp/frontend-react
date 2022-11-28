@@ -76,9 +76,13 @@ const nftImageUrl = (nft) => {
   if (imageUrl) {
     return imageUrl;
   } else {
-    const decodedUri = Buffer.from(nft.uri, 'hex');
-    if (isIpfsImage(decodedUri)) {
-      return assetUrl(decodedUri);
+    if (nft.uri) {
+      const decodedUri = Buffer.from(nft.uri, 'hex');
+      if (isIpfsImage(decodedUri)) {
+        return assetUrl(decodedUri);
+      }
+    } else {
+      return null;
     }
   }
 }
@@ -88,10 +92,15 @@ export const nftImageStyle = (nft, style = {}) => {
   const imageUrl = nftImageUrl(nft);
   if (imageUrl) {
     style.backgroundImage = "url('" + imageUrl + "')";
-
     if (imageUrl.slice(0, 10) === 'data:image') {
       style.imageRendering = 'pixelated';
     }
+  } else if (!nft.uri) {
+    style.imageRendering = 'pixelated';
+    style.backgroundSize = "80%";
+    style.backgroundRepeat = "no-repeat";
+    style.backgroundColor = "white";
+    style.backgroundImage = "url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADoAAAAMAgMAAABO9kYLAAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAACVBMVEUAAAAAscH///9gi2cVAAAAAXRSTlMAQObYZgAAAAFiS0dEAmYLfGQAAAAJb0ZGcwAAAAQAAAAMAO0Ou9QAAAAJdnBBZwAAAE0AAAAaABY5XmAAAABCSURBVAjXdc6xEYAwDATBI1AHcj9fwhOo/1ZsEQIKd+aCw3iVCLJKYerjW2Tb5CXsyadvx2QHbUbjXz8/lEycn5c3880aCfVVMdcAAAAASUVORK5CYII=')";
   }
   return style;
 }
