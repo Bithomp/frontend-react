@@ -32,14 +32,6 @@ export const onFailedRequest = (error, showErrorFunction) => {
 export const network = process.env.REACT_APP_NETWORK_NAME ? process.env.REACT_APP_NETWORK_NAME : "mainnet";
 export const devNet = ['mainnet', 'staging'].includes(network) ? false : network;
 
-export const title = (title) => {
-  if (network === 'mainnet') {
-    document.title = 'XRPL ' + title;
-  } else {
-    document.title = 'XRPL ' + network.toUpperCase() + ": " + title;
-  }
-}
-
 const Server = () => {
   let server = "https://test.bithomp.com";
   switch (network) {

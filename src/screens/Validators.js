@@ -1,10 +1,11 @@
 import { useTranslation, Trans } from 'react-i18next';
 import { useState, useEffect } from 'react';
-import axios from 'axios';
 import { isMobile } from "react-device-detect";
+import axios from 'axios';
 import moment from "moment";
 
-import { title } from '../utils';
+import SEO from '../components/SEO';
+
 import { fullDateAndTime } from '../utils/format';
 
 const compare = (a, b) => {
@@ -54,11 +55,11 @@ export default function Amendment() {
 
   useEffect(() => {
     checkApi();
-    title(t("menu.validators"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return <>
+    <SEO title={t("menu.validators")} />
     <div className="content-text">
       {data?.validators?.length ?
         <>

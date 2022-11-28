@@ -1,9 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { BrowserRouter } from "react-router-dom";
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import i18n from './services/i18n';
+import { BrowserRouter } from "react-router-dom";
+import { HelmetProvider } from 'react-helmet-async';
 
 import './assets/styles/ui.scss';
 
@@ -11,7 +12,9 @@ i18n.on("initialized", () => {
   ReactDOM.render(
     <React.StrictMode>
       <BrowserRouter basename='/'>
-        <App />
+        <HelmetProvider>
+          <App />
+        </HelmetProvider>
       </BrowserRouter>
     </React.StrictMode>,
     document.getElementById('root')

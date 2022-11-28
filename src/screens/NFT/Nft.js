@@ -1,9 +1,10 @@
 import { useTranslation } from 'react-i18next';
 import { useState, useEffect } from 'react';
-import axios from 'axios';
 import { useParams } from "react-router-dom";
+import axios from 'axios';
 
-import { title } from '../../utils';
+import SEO from '../../components/SEO';
+
 import { fullDateAndTime } from '../../utils/format';
 
 export default function Nft() {
@@ -84,19 +85,12 @@ export default function Nft() {
   */
 
   useEffect(() => {
-    title(t("menu.nft"));
     checkApi(nftId);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  useEffect(() => {
-    if (data?.metadata?.name) {
-      title(data.metadata.name);
-      //add description and image
-    }
-  }, [data]);
-
   return <>
+    {data && <SEO title={t("menu.nft") + " " + data.metadata?.name} />}
     <div className="content-text">
       {data ?
         <>
@@ -110,11 +104,11 @@ export default function Nft() {
               </tr>
             </thead>
             <tbody>
-                <tr>
-                  <td>{fullDateAndTime(data.issuedAt)}</td>
-                  <td><a href={"/explorer/" + data.owner}>{data.owner}</a></td>
-                  <td><a href={"/explorer/" + data.issuer}>{data.issuer}</a></td>
-                </tr>
+              <tr>
+                <td>{fullDateAndTime(data.issuedAt)}</td>
+                <td><a href={"/explorer/" + data.owner}>{data.owner}</a></td>
+                <td><a href={"/explorer/" + data.issuer}>{data.issuer}</a></td>
+              </tr>
             </tbody>
           </table>
         </> : "Search for NFT ID"

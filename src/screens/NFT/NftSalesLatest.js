@@ -2,7 +2,9 @@ import { useTranslation } from 'react-i18next';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 
-import { title, stripText } from '../../utils';
+import SEO from '../../components/SEO';
+
+import { stripText } from '../../utils';
 import { timeFormat, amountFormat } from '../../utils/format';
 
 import { ReactComponent as LinkIcon } from "../../assets/images/link.svg";
@@ -79,12 +81,12 @@ export default function NftSalesLatest() {
   */
 
   useEffect(() => {
-    title(t("menu.nft-sales-latest"));
     checkApi();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return <>
+    <SEO title={t("menu.nft-sales-latest")} />
     <div className="content-text">
       <h2 className="center">{t("menu.nft-sales-latest")}</h2>
       <table className="table-large">

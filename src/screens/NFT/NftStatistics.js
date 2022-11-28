@@ -1,7 +1,9 @@
 import { useTranslation, Trans } from 'react-i18next';
 import { useState, useEffect } from 'react';
 
-import { wssServer, title } from '../../utils';
+import SEO from '../../components/SEO';
+
+import { wssServer } from '../../utils';
 import { niceNumber, fullDateAndTime, ledgerLink } from '../../utils/format';
 
 let ws = null;
@@ -58,7 +60,6 @@ export default function LastLedgerInformation() {
 
   useEffect(() => {
     connect();
-    title(t("menu.nft-statistics"));
     return () => {
       setData(null);
       if (ws) ws.close();
@@ -83,6 +84,7 @@ export default function LastLedgerInformation() {
 
   return (
     <div className="content-text content-center">
+      <SEO title={t("menu.nft-statistics")} />
       <h1 className="center">{t("menu.nft-statistics")}</h1>
       <div className="main-box">
         {lag ?

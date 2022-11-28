@@ -1,8 +1,8 @@
 import { useTranslation } from 'react-i18next';
 import { useState, useEffect } from 'react';
+import SEO from '../components/SEO';
 import axios from 'axios';
 
-import { title } from '../utils';
 import { fullDateAndTime } from '../utils/format';
 
 export default function Amendment() {
@@ -39,11 +39,11 @@ export default function Amendment() {
 
   useEffect(() => {
     checkApi();
-    title(t("menu.amendments"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return <>
+    <SEO title={t("menu.amendments")} />
     <div className="content-text">
       {majorityAmendments?.length ?
         <>

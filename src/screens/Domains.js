@@ -2,8 +2,9 @@ import { useTranslation } from 'react-i18next';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 
-import { title } from '../utils';
 import { fullDateAndTime } from '../utils/format';
+
+import SEO from '../components/SEO';
 
 export default function Domains() {
   const [data, setData] = useState(null);
@@ -37,11 +38,11 @@ export default function Domains() {
 
   useEffect(() => {
     checkApi();
-    title(t("menu.domains"));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return <>
+    <SEO title={t("menu.domains")} />
     <div className="content-text">
       {data?.domains ?
         <>

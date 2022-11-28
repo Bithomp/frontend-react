@@ -4,7 +4,8 @@ import axios from 'axios';
 import { useParams } from "react-router-dom";
 import { isMobile } from 'react-device-detect';
 
-import { title } from '../utils';
+import SEO from '../components/SEO';
+
 import { txIdFormat, fullDateAndTime, ledgerLink } from '../utils/format';
 
 export default function Ledger() {
@@ -55,11 +56,11 @@ export default function Ledger() {
 
   useEffect(() => {
     checkApi(ledgerIndex);
-    title(t("menu.ledger") + " " + ledgerVersion);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return <>
+    <SEO title={t("menu.ledger") + " " + ledgerVersion} />
     {ledgerVersion &&
       <div className="content-text">
         <h2 className="center">{t("menu.ledger")} #{ledgerVersion}<br />{data?.close_time ? fullDateAndTime(data.close_time) : <br />}</h2>

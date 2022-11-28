@@ -1,16 +1,17 @@
 import { useTranslation } from 'react-i18next';
 import { useState, useEffect } from 'react';
-import axios from 'axios';
 import { useParams, useNavigate, useSearchParams } from "react-router-dom";
+import axios from 'axios';
 import InfiniteScroll from 'react-infinite-scroll-component';
 
-import { title, onFailedRequest } from '../../utils';
+import SEO from '../../components/SEO';
+import Tabs from '../../components/Tabs';
+import Tiles from '../../components/Tiles';
+
+import { onFailedRequest } from '../../utils';
 
 import search from "../../assets/images/search.svg";
 import { ReactComponent as LinkIcon } from "../../assets/images/link.svg";
-
-import Tabs from '../../components/Tabs';
-import Tiles from '../../components/Tiles';
 
 export default function Nfts() {
   const { t } = useTranslation();
@@ -132,7 +133,6 @@ export default function Nfts() {
 
   useEffect(() => {
     checkApi();
-    title(t("menu.nfts") + " " + address);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [address]);
 
@@ -161,6 +161,7 @@ export default function Nfts() {
   }, [tab]);
 
   return <>
+    <SEO title={t("menu.nfts") + " " + address} />
     <div className="content-text">
       {address ?
         <InfiniteScroll
