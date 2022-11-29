@@ -165,7 +165,11 @@ export default function Nfts() {
   const onSearchChange = (e) => {
     let searchItem = e.target.value;
     setSearch(searchItem);
-    searchParams.set("search", searchItem);
+    if (searchItem) {
+      searchParams.set("search", searchItem);
+    } else {
+      searchParams.delete("search");
+    }
     setSearchParams(searchParams);
   }
 
