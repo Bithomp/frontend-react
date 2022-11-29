@@ -10,8 +10,9 @@ import Tiles from '../../components/Tiles';
 
 import { onFailedRequest } from '../../utils';
 
-import search from "../../assets/images/search.svg";
+import Search from "../../assets/images/search.svg";
 import { ReactComponent as LinkIcon } from "../../assets/images/link.svg";
+import { registerLocale } from 'i18n-iso-countries';
 
 export default function Nfts() {
   const { t } = useTranslation();
@@ -25,6 +26,8 @@ export default function Nfts() {
   const [errorMessage, setErrorMessage] = useState("");
   const [searchItem, setSearchItem] = useState("");
   const [tab, setTab] = useState("list");
+  const [search, setSearch] = useState(searchParams.get("search"));
+  const [filteredData, setFilteredData] = useState([]);
 
   const tabList = [
     { value: 'list', label: t("tabs.list") },
@@ -160,12 +163,28 @@ export default function Nfts() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tab]);
 
+  const onSearchChange = (e) => {
+    let searchItem = e.target.value;
+    setSearch(searchItem);
+    searchParams.set("search", searchItem);
+    setSearchParams(searchParams);
+  }
+
+  useEffect(() => {
+    if (search) {
+      const name = search.toLocaleLowerCase();
+      setFilteredData(data.filter(nft => nft.metadata?.name?.toString().toLocaleLowerCase().includes(name)));
+    } else {
+      setFilteredData(data);
+    }
+  }, [data, search]);
+
   return <>
     <SEO title={t("menu.nfts") + " " + address} />
     <div className="content-text">
       {address ?
         <InfiniteScroll
-          dataLength={data.length}
+          dataLength={filteredData.length}
           next={checkApi}
           hasMore={hasMore}
           loader={!errorMessage &&
@@ -186,8 +205,11 @@ export default function Nfts() {
           <h2 className="center">{t("nfts.owned-by")}</h2>
           <h5 className="center">{address ? <a href={"/explorer/" + address}>{address}</a> : " "}</h5>
           <Tabs tabList={tabList} tab={tab} setTab={setTab} />
+          <div className='center' style={{ marginBottom: "10px" }}>
+            <input placeholder="Search by NFT name" value={search} onChange={onSearchChange} className="input-text" spellCheck="false" maxLength="18" style={{ width: "calc(100% - 22px)", maxWidth: "738px" }} />
+          </div>
           {tab === "list" &&
-            <table className="table-large">
+            <table className="table-large" style={{ width: "760px", maxWidth: "100%" }}>
               <thead>
                 <tr>
                   <th>{t("table.index")}</th>
@@ -202,7 +224,7 @@ export default function Nfts() {
                   <tr className='center'><td colSpan="5"><span className="waiting"></span></td></tr>
                   :
                   <>
-                    {!errorMessage ? data.map((nft, i) =>
+                    {!errorMessage ? filteredData.map((nft, i) =>
                       <tr key={nft.nftokenID}>
                         <td className="center">{i + 1}</td>
                         <td>{nft.metadata?.name}</td>
@@ -225,7 +247,7 @@ export default function Nfts() {
                   {errorMessage ?
                     <div className='center'>{errorMessage}</div>
                     :
-                    <Tiles nftList={data} />
+                    <Tiles nftList={filteredData} />
                   }
                 </>
               }
@@ -244,7 +266,7 @@ export default function Nfts() {
               onChange={validateSearchItem}
             />
             <div className="search-button" onClick={() => searchClick(searchItem)}>
-              <img src={search} className="search-icon" alt="search" />
+              <img src={Search} className="search-icon" alt="search" />
             </div>
           </div>
         </div>
