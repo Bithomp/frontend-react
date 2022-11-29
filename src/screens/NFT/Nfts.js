@@ -12,7 +12,6 @@ import { onFailedRequest } from '../../utils';
 
 import Search from "../../assets/images/search.svg";
 import { ReactComponent as LinkIcon } from "../../assets/images/link.svg";
-import { registerLocale } from 'i18n-iso-countries';
 
 export default function Nfts() {
   const { t } = useTranslation();
