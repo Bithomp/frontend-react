@@ -205,17 +205,17 @@ export default function Nfts() {
           <h5 className="center">{address ? <a href={"/explorer/" + address}>{address}</a> : " "}</h5>
           <Tabs tabList={tabList} tab={tab} setTab={setTab} />
           <div className='center' style={{ marginBottom: "10px" }}>
-            <input placeholder="Search by NFT name" value={search} onChange={onSearchChange} className="input-text" spellCheck="false" maxLength="18" style={{ width: "calc(100% - 22px)", maxWidth: "738px" }} />
+            <input placeholder={t("nfts.search-by-name")} value={search} onChange={onSearchChange} className="input-text" spellCheck="false" maxLength="18" style={{ width: "calc(100% - 22px)", maxWidth: "738px" }} />
           </div>
           {tab === "list" &&
             <table className="table-large" style={{ width: "760px", maxWidth: "100%" }}>
               <thead>
                 <tr>
-                  <th>{t("table.index")}</th>
+                  <th className='center'>{t("table.index")}</th>
                   <th>{t("table.name")}</th>
-                  <th>{t("table.serial")}</th>
-                  <th>NFT</th>
-                  <th>{t("table.issuer")}</th>
+                  <th className='center'>{t("table.serial")}</th>
+                  <th className='center'>NFT</th>
+                  <th className='center'>{t("table.issuer")}</th>
                 </tr>
               </thead>
               <tbody>
@@ -227,7 +227,7 @@ export default function Nfts() {
                       <tr key={nft.nftokenID}>
                         <td className="center">{i + 1}</td>
                         <td>{nft.metadata?.name}</td>
-                        <td>{nft.nftSerial}</td>
+                        <td className='center'>{nft.nftSerial}</td>
                         <td className='center'><a href={"/explorer/" + nft.nftokenID}><LinkIcon /></a></td>
                         <td className='center'><a href={"/explorer/" + nft.issuer}><LinkIcon /></a></td>
                       </tr>) : <tr className='center'><td colSpan="5">{errorMessage}</td></tr>

@@ -122,6 +122,7 @@
   "nfts": {
     "enter-address": "Enter XRPL address",
     "owned-by": "NFTs owned by",
+    "search-by-name": "Search by NFT name",
     "no-nfts": "We couldn't find any NFTs owned by that address.",
     "load-more": "We are looking for data on the XRPL... please wait...",
     "end": "Here are all the NFTs we could find."
