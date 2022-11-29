@@ -209,10 +209,10 @@ export default function Nfts() {
           <h5 className="center">{address ? <a href={"/explorer/" + address}>{address}</a> : " "}</h5>
           <Tabs tabList={tabList} tab={tab} setTab={setTab} />
           <div className='center' style={{ marginBottom: "10px" }}>
-            <input placeholder={t("nfts.search-by-name")} value={search} onChange={onSearchChange} className="input-text" spellCheck="false" maxLength="18" style={{ width: "calc(100% - 22px)", maxWidth: "738px" }} />
+            <input placeholder={t("nfts.search-by-name")} value={search} onChange={onSearchChange} className="input-text" spellCheck="false" maxLength="18" />
           </div>
           {tab === "list" &&
-            <table className="table-large" style={{ width: "760px", maxWidth: "100%" }}>
+            <table className="table-large">
               <thead>
                 <tr>
                   <th className='center'>{t("table.index")}</th>
