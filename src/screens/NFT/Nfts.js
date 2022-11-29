@@ -25,7 +25,7 @@ export default function Nfts() {
   const [errorMessage, setErrorMessage] = useState("");
   const [searchItem, setSearchItem] = useState("");
   const [tab, setTab] = useState("list");
-  const [search, setSearch] = useState(searchParams.get("search"));
+  const [search, setSearch] = useState(searchParams.get("search") || "");
   const [filteredData, setFilteredData] = useState([]);
 
   const tabList = [

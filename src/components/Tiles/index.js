@@ -1,10 +1,12 @@
 import { useTranslation } from 'react-i18next';
 
+import { stripText } from '../../utils';
 import { nftImageStyle } from '../../utils/nft';
+import { amountFormat, dateFormat } from '../../utils/format';
 
 import './styles.scss';
 
-export default function Tiles({ nftList }) {
+export default function Tiles({ nftList, type = 'name' }) {
   const { t } = useTranslation();
   /*
     {
@@ -24,33 +26,65 @@ export default function Tiles({ nftList }) {
   */
 
   const shortName = (name) => {
+    name = stripText(name);
     if (name?.length > 25) {
       return name.slice(0, name.slice(0, 25).lastIndexOf(" ")) + '...';
     }
     return name;
   }
 
-  return <div className='tiles'>
-    <div className="grid">
-      <ul className="hexGrid">
-        {nftList.length > 0 && nftList.map((nft, i) =>
-          <li className="hex" key={i}>
-            <div className="hexIn">
-              <a className="hexLink" href={"/explorer/" + nft.nftokenID}>
-                <div className="img-status">{t("general.loading")}</div>
-                <div className='img' style={nftImageStyle(nft)}></div>
-                <div className="index">{i + 1}</div>
-                <div className='title'></div>
-                <h1>{nft.metadata?.name ? shortName(nft.metadata.name) : ''}</h1>
-                <div className='title-full'>
-                  {t("table.name")}: {nft.metadata?.name}<br />
-                  {t("table.serial")}: {nft.nftSerial}
-                </div>
-              </a>
-            </div>
-          </li>
-        )}
-      </ul>
+  if (type === "name") {
+    return <div className='tiles'>
+      <div className="grid">
+        <ul className="hexGrid">
+          {nftList.length > 0 && nftList.map((nft, i) =>
+            <li className="hex" key={i}>
+              <div className="hexIn">
+                <a className="hexLink" href={"/explorer/" + nft.nftokenID}>
+                  <div className="img-status">{t("general.loading")}</div>
+                  <div className='img' style={nftImageStyle(nft)}></div>
+                  <div className="index">{i + 1}</div>
+                  <div className='title'></div>
+                  <h1>{nft.metadata?.name ? shortName(nft.metadata.name) : ''}</h1>
+                  <div className='title-full'>
+                    {t("table.name")}: {nft.metadata?.name}<br />
+                    {t("table.serial")}: {nft.nftSerial}
+                  </div>
+                </a>
+              </div>
+            </li>
+          )}
+        </ul>
+      </div>
     </div>
-  </div>
+  }
+
+  if (type === 'price') {
+    return <div className='tiles'>
+      <div className="grid">
+        <ul className="hexGrid">
+          {nftList?.length > 0 && nftList.map((nft, i) =>
+            <li className="hex" key={i}>
+              <div className="hexIn">
+                <a className="hexLink" href={"/explorer/" + nft.nftoken.nftokenID}>
+                  <div className="img-status">{t("general.loading")}</div>
+                  <div className='img' style={nftImageStyle(nft.nftoken)}></div>
+                  <div className="index">{i + 1}</div>
+                  <div className='title'></div>
+                  <h1>
+                    {amountFormat(nft.amount)}<br />
+                    {dateFormat(nft.acceptedAt)}
+                  </h1>
+                  <div className='title-full'>
+                    {t("table.name")}: {stripText(nft.nftoken.metadata?.name)}<br />
+                    {t("table.serial")}: {nft.nftoken.nftSerial}
+                  </div>
+                </a>
+              </div>
+            </li>
+          )}
+        </ul>
+      </div>
+    </div>
+  }
 };
