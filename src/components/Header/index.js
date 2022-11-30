@@ -97,6 +97,7 @@ export default function Header({ theme, switchTheme, setSignInFormOpen, account,
               {devNet !== 'testnet' && <a href="https://test.bithomp.com">Testnet</a>}
               {devNet !== 'devnet' && <a href="https://dev.bithomp.com">Devnet</a>}
               {devNet !== 'beta' && <a href="https://beta.bithomp.com">Betanet (Hooks v2)</a>}
+              {devNet !== 'amm' && <a href="https://amm.bithomp.com">AMM</a>}
               {devNet !== 'xls20' && <a href="https://xls20.bithomp.com">XLS-20</a>}
             </div>
           </div>
