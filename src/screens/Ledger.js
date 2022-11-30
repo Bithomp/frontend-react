@@ -2,7 +2,6 @@ import { useTranslation } from 'react-i18next';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useParams } from "react-router-dom";
-import { isMobile } from 'react-device-detect';
 
 import SEO from '../components/SEO';
 
@@ -73,7 +72,7 @@ export default function Ledger() {
             <tr>
               <th>{t("table.index")}</th>
               <th>{t("table.type")}</th>
-              {!isMobile && <th>{t("table.status")}</th>}
+              <th className='hide-on-mobile'>{t("table.status")}</th>
               <th>{t("table.hash")}</th>
             </tr>
           </thead>
@@ -84,7 +83,7 @@ export default function Ledger() {
                   <tr key={tx.id}>
                     <td className='center'>{tx.outcome.indexInLedger}</td>
                     <td>{tx.type}</td>
-                    {!isMobile && <td>{tx.outcome.result}</td>}
+                    <td className='hide-on-mobile'>{tx.outcome.result}</td>
                     <td><a href={"/explorer/" + tx.id}>{txIdFormat(tx.id)}</a></td>
                   </tr>
                 ) :

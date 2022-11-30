@@ -119,14 +119,6 @@
     "past-ledgers": "View transactions in the previous ledgers",
     "no-transactions": "We could not find any transactions to show."
   },
-  "nfts": {
-    "enter-address": "Enter XRPL address",
-    "desc": "Here you can search for NFTs (XLS-20), type in the XRPL address to see what NFTs it owns.",
-    "search-by-name": "Search by NFT name",
-    "no-nfts": "We couldn't find any NFTs owned by that address.",
-    "load-more": "We are looking for data on the XRPL... please wait...",
-    "end": "Here are all the NFTs we could find."
-  },
   "nft-statistics": {
     "text0": "The information is a bit outdated, we need to catch up with <1>{{lag}}</1> ledgers.<br/>The data is provided for the ledger #{{crawlerIndex}}, ({{crawlerTime}}).<br/>The last validated ledger is #{{currentLedgerIndex}}, ({{currentLedgerTime}}).",
     "updated": "Updated",
@@ -335,5 +327,20 @@
   },
   "xumm": {
     "new-qr": "Get a new QR code"
+  },
+  "explorer": {
+    "menu": {
+      "account": "Account information",
+      "transactions": "Transactions",
+      "tokens": "Tokens"
+    },
+    "nfts": {
+      "enter-address": "Enter XRPL address",
+      "desc": "Here you can search for NFTs (XLS-20), type in the XRPL address to see what NFTs it owns.",
+      "search-by-name": "Search by NFT name",
+      "no-nfts": "We couldn't find any NFTs owned by that address.",
+      "load-more": "We are looking for data on the XRPL... please wait...",
+      "end": "Here are all the NFTs we could find."
+    }
   }
 }

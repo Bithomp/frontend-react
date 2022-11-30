@@ -1,6 +1,5 @@
 import { useTranslation } from 'react-i18next';
 import { useState, useEffect } from 'react';
-import { isMobile } from 'react-device-detect';
 import { useSearchParams } from "react-router-dom";
 import axios from 'axios';
 
@@ -125,13 +124,13 @@ export default function NftSalesTop() {
             <tr>
               <th>{t("table.index")}</th>
               <th>{t("table.amount")}</th>
-              {!isMobile && <th>{t("table.sold")}</th>}
-              {!isMobile && <th>{t("table.created")}</th>}
+              <th className='hide-on-mobile'>{t("table.sold")}</th>
+              <th className='hide-on-mobile'>{t("table.created")}</th>
               <th>{t("table.name")}</th>
               <th>{t("table.serial")}</th>
               <th>NFT</th>
               <th>{t("table.transaction")}</th>
-              {!isMobile && <th>{t("table.owner")}</th>}
+              <th className='hide-on-mobile'>{t("table.owner")}</th>
             </tr>
           </thead>
           <tbody>
@@ -141,13 +140,13 @@ export default function NftSalesTop() {
                   <tr key={i}>
                     <td className='center'>{i + 1}</td>
                     <td>{amountFormat(nft.amount)}</td>
-                    {!isMobile && <td>{dateFormat(nft.acceptedAt)}</td>}
-                    {!isMobile && <td>{dateFormat(nft.createdAt)}</td>}
+                    <td className='hide-on-mobile'>{dateFormat(nft.acceptedAt)}</td>
+                    <td className='hide-on-mobile'>{dateFormat(nft.createdAt)}</td>
                     <td>{nft.nftoken?.metadata?.name ? stripText(nft.nftoken.metadata.name) : "---//---"}</td>
                     <td>{nft.nftoken.nftSerial}</td>
                     <td className='center'><a href={"/explorer/" + nft.nftokenID}><LinkIcon /></a></td>
                     <td className='center'><a href={"/explorer/" + nft.acceptedTxHash}><LinkIcon /></a></td>
-                    {!isMobile && <td className='center'><a href={"/explorer/" + nft.owner}><LinkIcon /></a></td>}
+                    <td className='center hide-on-mobile'><a href={"/explorer/" + nft.owner}><LinkIcon /></a></td>
                   </tr>
                 ) : <tr className='center'><td colSpan="9">{t("general.no-data")}</td></tr>}
               </>

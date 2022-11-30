@@ -1,5 +1,4 @@
 import { Buffer } from 'buffer';
-import { isMobile } from "react-device-detect";
 
 export const ledgerLink = (id) => {
   if (id) {
@@ -10,7 +9,7 @@ export const ledgerLink = (id) => {
 
 export const txIdFormat = (txId) => {
   txId = txId.toLowerCase();
-  if (isMobile) {
+  if (window.innerWidth < 800) {
     return txId.substr(0, 6) + "..." + txId.substr(-6);
   }
   return txId;

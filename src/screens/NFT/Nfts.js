@@ -27,6 +27,7 @@ export default function Nfts() {
   const [tab, setTab] = useState("list");
   const [search, setSearch] = useState(searchParams.get("search") || "");
   const [filteredData, setFilteredData] = useState([]);
+  const [explorerTab, setExplorerTab] = useState(false);
 
   const tabList = [
     { value: 'list', label: t("tabs.list") },
@@ -55,7 +56,7 @@ export default function Nfts() {
           }
           setData([...data, ...newdata.nfts]);
         } else {
-          setErrorMessage(t("nfts.no-nfts"));
+          setErrorMessage(t("explorer.nfts.no-nfts"));
         }
       } else {
         if (newdata.error) {
@@ -118,6 +119,9 @@ export default function Nfts() {
 
   useEffect(() => {
     checkApi();
+    if (address) {
+      setExplorerTab("nft");
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [address]);
 
@@ -168,21 +172,22 @@ export default function Nfts() {
   return <>
     <SEO title={t("menu.nfts") + " " + address} />
     <SearchBlock
-      searchPlaceholderText={t("nfts.enter-address")}
+      searchPlaceholderText={t("explorer.nfts.enter-address")}
       searchClick={searchClick}
       setSearchItem={setSearchItem}
       searchItem={searchItem}
+      tab={explorerTab}
     />
-    <div className="content-text">
+    <div className="content-text" style={{ marginTop: "20px" }}>
       {address ?
         <InfiniteScroll
           dataLength={filteredData.length}
           next={checkApi}
           hasMore={hasMore}
           loader={!errorMessage &&
-            <p className="center">{t("nfts.load-more")}</p>
+            <p className="center">{t("explorer.nfts.load-more")}</p>
           }
-          endMessage={<p className="center">{t("nfts.end")}</p>}
+          endMessage={<p className="center">{t("explorer.nfts.end")}</p>}
         // below props only if you need pull down functionality
         //refreshFunction={this.refresh}
         //pullDownToRefresh
@@ -196,7 +201,7 @@ export default function Nfts() {
         >
           <Tabs tabList={tabList} tab={tab} setTab={setTab} />
           <div className='center' style={{ marginBottom: "10px" }}>
-            <input placeholder={t("nfts.search-by-name")} value={search} onChange={onSearchChange} className="input-text" spellCheck="false" maxLength="18" />
+            <input placeholder={t("explorer.nfts.search-by-name")} value={search} onChange={onSearchChange} className="input-text" spellCheck="false" maxLength="18" />
           </div>
           {tab === "list" &&
             <table className="table-large">
@@ -248,7 +253,7 @@ export default function Nfts() {
         <>
           <h2 className='center'>{t("menu.nfts")}</h2>
           <p className='center'>
-            {t("nfts.desc")}
+            {t("explorer.nfts.desc")}
           </p>
         </>
       }

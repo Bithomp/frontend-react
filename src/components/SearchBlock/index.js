@@ -1,4 +1,4 @@
-//import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 
 import './styles.scss';
 import search from '../../assets/images/search.svg'
@@ -6,8 +6,8 @@ import search from '../../assets/images/search.svg'
 
 const searchItemRe = /^[~]{0,1}[a-zA-Z0-9-_.]*[+]{0,1}[a-zA-Z0-9-_.]*[$]{0,1}[a-zA-Z0-9-.]*[a-zA-Z0-9]*$/i;
 
-export default function SearchBlock({searchPlaceholderText, searchClick, searchItem, setSearchItem}) {
-  //const { t } = useTranslation();
+export default function SearchBlock({ searchPlaceholderText, searchClick, searchItem, setSearchItem, tab }) {
+  const { t } = useTranslation();
 
   const searchItemType = e => {
     if (e.key === 'Enter') {
@@ -30,26 +30,39 @@ export default function SearchBlock({searchPlaceholderText, searchClick, searchI
   }
 
   return (
-    <div className="search-block">
-      <div className="search-box">
-        <input
-          className="search-input"
-          placeholder={searchPlaceholderText}
-          value={searchItem}
-          onKeyPress={searchItemType}
-          onChange={validateSearchItem}
-          spellCheck="false"
-        />
-        <div className="search-button" onClick={() => searchClick(searchItem.trim())}>
-          <img src={search} className="search-icon" alt="search" />
-        </div>
-        {/*
+    <>
+      <div className="search-block">
+        <div className="search-box">
+          <input
+            className="search-input"
+            placeholder={searchPlaceholderText}
+            value={searchItem}
+            onKeyPress={searchItemType}
+            onChange={validateSearchItem}
+            spellCheck="false"
+          />
+          <div className="search-button" onClick={() => searchClick(searchItem.trim())}>
+            <img src={search} className="search-icon" alt="search" />
+          </div>
+          {/*
           <a className="search-scan-qr" href="/explorer/?scanqr">
             <Qr className="search-scan-qr-icon" />
             <span className="search-scan-qr-text">{t("home.scan-qr")}</span>
           </a>
         */}
+        </div>
       </div>
-    </div>
+      {tab &&
+        <div className='explorer-tabs-block'>
+          <div className='explorer-tabs'>
+            <b>NFT</b>
+            <a href={"/explorer/" + searchItem}>{t("explorer.menu.account")}</a>
+            <a href={"/explorer/" + searchItem} className='hide-on-mobile'>{t("explorer.menu.transactions")}</a>
+            <a href={"/explorer/" + searchItem} className='hide-on-mobile'>{t("explorer.menu.tokens")}</a>
+          </div>
+          <div className='explorer-tabs-shadow'></div>
+        </div>
+      }
+    </>
   );
 };
