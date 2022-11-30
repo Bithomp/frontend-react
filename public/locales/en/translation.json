@@ -121,7 +121,7 @@
   },
   "nfts": {
     "enter-address": "Enter XRPL address",
-    "owned-by": "NFTs owned by",
+    "desc": "Here you can search for NFTs (XLS-20), type in the XRPL address to see what NFTs it owns.",
     "search-by-name": "Search by NFT name",
     "no-nfts": "We couldn't find any NFTs owned by that address.",
     "load-more": "We are looking for data on the XRPL... please wait...",

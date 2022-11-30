@@ -1,13 +1,3 @@
-.home-search-block {
-  height: 164px; //200px with QR code scanner
-  background-color: var(--background-block);
-  text-align: center;
-  transition: background-color .5s;
-  @media only screen and (max-width: 1024px) {
-    height: 250px;
-  }
-}
-
 .home-sponsored {
   height: 150px;
   display: flex;

@@ -5,12 +5,12 @@ import axios from 'axios';
 import InfiniteScroll from 'react-infinite-scroll-component';
 
 import SEO from '../../components/SEO';
+import SearchBlock from '../../components/SearchBlock';
 import Tabs from '../../components/Tabs';
 import Tiles from '../../components/Tiles';
 
 import { onFailedRequest } from '../../utils';
 
-import Search from "../../assets/images/search.svg";
 import { ReactComponent as LinkIcon } from "../../assets/images/link.svg";
 
 export default function Nfts() {
@@ -23,7 +23,7 @@ export default function Nfts() {
   const [loading, setLoading] = useState(true);
   const [hasMore, setHasMore] = useState("first");
   const [errorMessage, setErrorMessage] = useState("");
-  const [searchItem, setSearchItem] = useState("");
+  const [searchItem, setSearchItem] = useState(address || "");
   const [tab, setTab] = useState("list");
   const [search, setSearch] = useState(searchParams.get("search") || "");
   const [filteredData, setFilteredData] = useState([]);
@@ -105,32 +105,15 @@ export default function Nfts() {
   }
   */
 
-  const searchItemType = e => {
-    if (e.key === 'Enter') {
-      searchClick(searchItem);
-    }
-
-    //if (!searchItemRe.test(e.key)) {
-    //  e.preventDefault();
-    //}
-  }
-
-  const validateSearchItem = e => {
-    let item = e.target.value;
-    item = item.trim();
-    //if (searchItemRe.test(item)) {
-    setSearchItem(item);
-    //} else {
-    //  setSearchItem("");
-    //}
-  }
-
   const searchClick = item => {
     const searchItem = item.trim();
-    if (searchItem) {
-      navigate("/nfts/" + encodeURI(searchItem));
-      //window.location.replace('/explorer/' + encodeURI(searchItem));
-    }
+    //remove current state
+    setHasMore("first");
+    setData([]);
+    setLoading(true);
+    //change url
+    navigate("/nfts/" + encodeURI(searchItem));
+    //window.location.replace('/explorer/' + encodeURI(searchItem));
   };
 
   useEffect(() => {
@@ -184,6 +167,12 @@ export default function Nfts() {
 
   return <>
     <SEO title={t("menu.nfts") + " " + address} />
+    <SearchBlock
+      searchPlaceholderText={t("nfts.enter-address")}
+      searchClick={searchClick}
+      setSearchItem={setSearchItem}
+      searchItem={searchItem}
+    />
     <div className="content-text">
       {address ?
         <InfiniteScroll
@@ -205,8 +194,6 @@ export default function Nfts() {
         //  <h3 style={{ textAlign: 'center' }}>&#8593; Release to refresh</h3>
         //}
         >
-          <h2 className="center">{t("nfts.owned-by")}</h2>
-          <h5 className="center">{address ? <a href={"/explorer/" + address}>{address}</a> : " "}</h5>
           <Tabs tabList={tabList} tab={tab} setTab={setTab} />
           <div className='center' style={{ marginBottom: "10px" }}>
             <input placeholder={t("nfts.search-by-name")} value={search} onChange={onSearchChange} className="input-text" spellCheck="false" maxLength="18" />
@@ -234,7 +221,7 @@ export default function Nfts() {
                         <td className='center'>{nft.nftSerial}</td>
                         <td className='center'><a href={"/explorer/" + nft.nftokenID}><LinkIcon /></a></td>
                         <td className='center'><a href={"/explorer/" + nft.issuer}><LinkIcon /></a></td>
-                      </tr>) : <tr className='center'><td colSpan="5">{errorMessage}</td></tr>
+                      </tr>) : <tr><td colSpan="5" className='center orange bold'>{errorMessage}</td></tr>
                     }
                   </>
                 }
@@ -258,21 +245,12 @@ export default function Nfts() {
           }
         </InfiniteScroll>
         :
-        <div className='center'>
-          <h2>{t("menu.nfts")}</h2>
-          <div className="search-box" style={{ marginTop: "10px" }}>
-            <input
-              className="search-input"
-              placeholder={t("nfts.enter-address")}
-              value={searchItem}
-              onKeyPress={searchItemType}
-              onChange={validateSearchItem}
-            />
-            <div className="search-button" onClick={() => searchClick(searchItem)}>
-              <img src={Search} className="search-icon" alt="search" />
-            </div>
-          </div>
-        </div>
+        <>
+          <h2 className='center'>{t("menu.nfts")}</h2>
+          <p className='center'>
+            {t("nfts.desc")}
+          </p>
+        </>
       }
     </div>
   </>;

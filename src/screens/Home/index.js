@@ -2,29 +2,25 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import useLocalStorage from 'use-local-storage';
 
+import SearchBlock from '../../components/SearchBlock';
 import Converter from "./Converter";
 import PriceChart from "./PriceChart";
 import Statistics from "./Statistics";
 import Whales from './Whales';
 
 import './styles.scss';
-import search from "../../assets/images/search.svg";
-//import { ReactComponent as Qr } from "../../assets/images/qr.svg";
 import nexo from "../../assets/images/nexo.svg";
 import btcbit from "../../assets/images/btcbit.svg";
 import xbit from "../../assets/images/xbit.png";
 
 const searchClick = item => {
-  const searchItem = item.trim();
-  if (searchItem) {
-    window.location.replace('/explorer/' + encodeURI(searchItem));
+  if (item) {
+    window.location.replace('/explorer/' + encodeURI(item));
   } else {
     window.location.replace('/explorer/');
   }
   return null;
 };
-
-const searchItemRe = /^[~]{0,1}[a-zA-Z0-9-_.]*[+]{0,1}[a-zA-Z0-9-_.]*[$]{0,1}[a-zA-Z0-9-.]*[a-zA-Z0-9]*$/i;
 
 export default function Home({ theme, devNet }) {
   const [searchItem, setSearchItem] = useState("");
@@ -32,51 +28,16 @@ export default function Home({ theme, devNet }) {
   const [chartPeriod, setChartPeriod] = useState('one_day');
 
   const { t } = useTranslation();
-
   const searchPlaceholderText = window.innerWidth > 500 ? t("home.search-placeholder") : t("home.search-placeholder-short");
-
-  const searchItemType = e => {
-    if (e.key === 'Enter') {
-      searchClick(searchItem);
-    }
-
-    if (!searchItemRe.test(e.key)) {
-      e.preventDefault();
-    }
-  }
-
-  const validateSearchItem = e => {
-    let item = e.target.value;
-    item = item.trim();
-    if (searchItemRe.test(item)) {
-      setSearchItem(item);
-    } else {
-      setSearchItem("");
-    }
-  }
 
   return (
     <>
-      <div className="home-search-block">
-        <div className="search-box">
-          <input
-            className="search-input"
-            placeholder={searchPlaceholderText}
-            value={searchItem}
-            onKeyPress={searchItemType}
-            onChange={validateSearchItem}
-          />
-          <div className="search-button" onClick={() => searchClick(searchItem)}>
-            <img src={search} className="search-icon" alt="search" />
-          </div>
-          {/*
-          <a className="search-scan-qr" href="/explorer/?scanqr">
-            <Qr className="search-scan-qr-icon" />
-            <span className="search-scan-qr-text">{t("home.scan-qr")}</span>
-          </a>
-          */}
-        </div>
-      </div>
+      <SearchBlock
+        searchPlaceholderText={searchPlaceholderText}
+        searchClick={searchClick}
+        setSearchItem={setSearchItem}
+        searchItem={searchItem}
+      />
       {!devNet &&
         <div className="home-sponsored">
           <a href="https://bithomp.com/go/play-xrp" target="_blank" rel="noreferrer">
