@@ -88,9 +88,12 @@
             font-weight: bold;
           }
           h1 {
+            display: flex;
+            justify-content: center;
+            align-items: center;
             width: 48%;
             left: 26%;
-            bottom: 9%;
+            bottom: 10%;
             height: 16%;
             color: var(--text-main);
             font-size: 0.9em;
