@@ -252,8 +252,14 @@ table {
   color: var(--red);
 }
 
-.blue {
+.blue,
+.blue a {
   color: var(--accent-link);
+}
+
+.green,
+.green a {
+  color: var(--green);
 }
 
 .orange,

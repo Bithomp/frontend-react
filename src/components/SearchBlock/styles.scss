@@ -12,6 +12,15 @@
     width: calc(100% - 40px);
     max-width: 760px;
     z-index: 1;
+    @media only screen and (max-width: 1024px) {
+      margin-left: 10px;
+      margin-right: 10px;
+      width: calc(100% - 40px);
+    }
+    .above-search-box {
+      position: absolute;
+      bottom: 50px;
+    }
     .search-input {
       height: 40px;
       border: 1px solid var(--unaccent-icon);
@@ -27,6 +36,11 @@
       };
       &:hover {
         border-color: var(--accent-icon);
+      }
+      @media only screen and (max-width: 1024px) {
+        padding-left: 10px;
+        padding-right: 44px;
+        max-width: calc(100% - 56px);
       }
     }
     .search-button {
@@ -80,19 +94,8 @@
         user-select: none;
       }
     }
-    @media only screen and (max-width: 1024px) {
-      margin-left: 10px;
-      margin-right: 10px;
-      width: calc(100% - 40px);
-      .search-input {
-        padding-left: 10px;
-        padding-right: 44px;
-        max-width: calc(100% - 56px);
-      }
-    }
   }
 }
-
 .explorer-tabs-block {
   background-color: var(--background-secondary);
   z-index: 1;

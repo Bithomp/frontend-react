@@ -1,17 +1,20 @@
 import { useTranslation } from 'react-i18next';
 
+import { isUsernameValid, isAddressValid } from '../../utils';
+import { userOrServiceName } from '../../utils/format';
+
 import './styles.scss';
 import search from '../../assets/images/search.svg'
 //import { ReactComponent as Qr } from "../../assets/images/qr.svg";
 
 const searchItemRe = /^[~]{0,1}[a-zA-Z0-9-_.]*[+]{0,1}[a-zA-Z0-9-_.]*[$]{0,1}[a-zA-Z0-9-.]*[a-zA-Z0-9]*$/i;
 
-export default function SearchBlock({ searchPlaceholderText, searchClick, searchItem, setSearchItem, tab }) {
+export default function SearchBlock({ searchPlaceholderText, searchItem, setSearchItem, tab, userData = {} }) {
   const { t } = useTranslation();
 
   const searchItemType = e => {
     if (e.key === 'Enter') {
-      searchClick(searchItem.trim());
+      onSearch();
     }
 
     if (!searchItemRe.test(e.key)) {
@@ -29,10 +32,43 @@ export default function SearchBlock({ searchPlaceholderText, searchClick, search
     }
   }
 
+  const onSearch = () => {
+    let searchFor = searchItem.trim();
+    if (tab === "nfts") {
+      if (isAddressValid(searchFor) || isUsernameValid(searchFor)) {
+        window.location.replace('/nfts/' + encodeURI(searchFor));
+        return;
+      }
+    }
+    window.location.replace('/explorer/' + encodeURI(searchFor));
+  }
+
+  /*
+  PayID
+  searchItem.indexOf("$") > -1
+
+  username
+  <18 
+
+  CurrencyCode, XLS14
+  searchItem.length == 40
+
+  TX, NFT
+  searchItem.length == 64
+
+  X-address
+  searchItem.length > 36
+  searchItem.charAt(0) == "T"
+  searchItem.charAt(0) == "X"
+  */
+
   return (
     <>
       <div className="search-block">
         <div className="search-box">
+          <div className='above-search-box'>
+            {userOrServiceName(userData)}
+          </div>
           <input
             className="search-input"
             placeholder={searchPlaceholderText}
@@ -41,7 +77,7 @@ export default function SearchBlock({ searchPlaceholderText, searchClick, search
             onChange={validateSearchItem}
             spellCheck="false"
           />
-          <div className="search-button" onClick={() => searchClick(searchItem.trim())}>
+          <div className="search-button" onClick={onSearch}>
             <img src={search} className="search-icon" alt="search" />
           </div>
           {/*

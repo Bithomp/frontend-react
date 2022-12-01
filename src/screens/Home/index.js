@@ -13,15 +13,6 @@ import nexo from "../../assets/images/nexo.svg";
 import btcbit from "../../assets/images/btcbit.svg";
 import xbit from "../../assets/images/xbit.png";
 
-const searchClick = item => {
-  if (item) {
-    window.location.replace('/explorer/' + encodeURI(item));
-  } else {
-    window.location.replace('/explorer/');
-  }
-  return null;
-};
-
 export default function Home({ theme, devNet }) {
   const [searchItem, setSearchItem] = useState("");
   const [selectedCurrency, setSelectedCurrency] = useLocalStorage('currency', 'usd');
@@ -34,7 +25,6 @@ export default function Home({ theme, devNet }) {
     <>
       <SearchBlock
         searchPlaceholderText={searchPlaceholderText}
-        searchClick={searchClick}
         setSearchItem={setSearchItem}
         searchItem={searchItem}
       />

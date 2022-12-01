@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { useState, useEffect } from 'react';
-import { useParams, useNavigate, useSearchParams } from "react-router-dom";
+import { useParams, useSearchParams } from "react-router-dom";
 import axios from 'axios';
 import InfiniteScroll from 'react-infinite-scroll-component';
 
@@ -16,7 +16,6 @@ import { ReactComponent as LinkIcon } from "../../assets/images/link.svg";
 export default function Nfts() {
   const { t } = useTranslation();
   const { address } = useParams();
-  const navigate = useNavigate();
 
   const [searchParams, setSearchParams] = useSearchParams();
   const [data, setData] = useState([]);
@@ -27,7 +26,7 @@ export default function Nfts() {
   const [tab, setTab] = useState("list");
   const [search, setSearch] = useState(searchParams.get("search") || "");
   const [filteredData, setFilteredData] = useState([]);
-  const [explorerTab, setExplorerTab] = useState(false);
+  const [userData, setUserData] = useState({});
 
   const tabList = [
     { value: 'list', label: t("tabs.list") },
@@ -39,7 +38,13 @@ export default function Nfts() {
       return;
     }
 
-    const response = await axios('v2/address/' + address + '?nfts=true' + (hasMore !== "first" ? ("&nfts[marker]=" + hasMore) : "")).catch(error => {
+    let addParams = "";
+    if (hasMore === "first") {
+      //check username and service name on the first run
+      addParams = "username=true&service=true&";
+    }
+
+    const response = await axios('v2/address/' + address + '?' + addParams + 'nfts=true' + (hasMore !== "first" ? ("&nfts[marker]=" + hasMore) : "")).catch(error => {
       onFailedRequest(error, setErrorMessage);
       setLoading(false);
     });
@@ -47,6 +52,11 @@ export default function Nfts() {
     const newdata = response?.data;
     if (newdata) {
       if (newdata.address) {
+        setUserData({
+          username: newdata.username,
+          service: newdata.service
+        });
+
         if (newdata.nfts) {
           setErrorMessage("");
           if (newdata.markers?.nfts) {
@@ -106,22 +116,8 @@ export default function Nfts() {
   }
   */
 
-  const searchClick = item => {
-    const searchItem = item.trim();
-    //remove current state
-    setHasMore("first");
-    setData([]);
-    setLoading(true);
-    //change url
-    navigate("/nfts/" + encodeURI(searchItem));
-    //window.location.replace('/explorer/' + encodeURI(searchItem));
-  };
-
   useEffect(() => {
     checkApi();
-    if (address) {
-      setExplorerTab("nft");
-    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [address]);
 
@@ -173,10 +169,10 @@ export default function Nfts() {
     <SEO title={t("menu.nfts") + " " + address} />
     <SearchBlock
       searchPlaceholderText={t("explorer.nfts.enter-address")}
-      searchClick={searchClick}
       setSearchItem={setSearchItem}
       searchItem={searchItem}
-      tab={explorerTab}
+      tab="nfts"
+      userData={userData}
     />
     <div className="content-text" style={{ marginTop: "20px" }}>
       {address ?
