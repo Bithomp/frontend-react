@@ -23,14 +23,14 @@ export default function Nfts() {
   const [hasMore, setHasMore] = useState("first");
   const [errorMessage, setErrorMessage] = useState("");
   const [searchItem, setSearchItem] = useState(address || "");
-  const [tab, setTab] = useState("list");
+  const [tab, setTab] = useState(searchParams.get("view") || "tiles");
   const [search, setSearch] = useState(searchParams.get("search") || "");
   const [filteredData, setFilteredData] = useState([]);
   const [userData, setUserData] = useState({});
 
   const tabList = [
-    { value: 'list', label: t("tabs.list") },
-    { value: 'tiles', label: t("tabs.tiles") }
+    { value: 'tiles', label: t("tabs.tiles") },
+    { value: 'list', label: t("tabs.list") }
   ];
 
   const checkApi = async () => {
@@ -122,21 +122,11 @@ export default function Nfts() {
   }, [address]);
 
   useEffect(() => {
-    const view = searchParams.get("view");
-    if (view) {
-      const found = tabList.some(tab => tab.value === view);
-      if (found) {
-        setTab(view);
-      } else {
-        searchParams.delete("view");
-        setSearchParams(searchParams);
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  useEffect(() => {
-    if (tab === 'list') {
+    const exist = tabList.some(t => t.value === tab);
+    if (!exist) {
+      setTab("tiles");
+      searchParams.delete("view");
+    } else if (tab === 'tiles') {
       searchParams.delete("view");
     } else {
       searchParams.set("view", tab);

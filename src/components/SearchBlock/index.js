@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next';
+import { useSearchParams } from 'react-router-dom';
 
 import { isUsernameValid, isAddressValid } from '../../utils';
 import { userOrServiceName } from '../../utils/format';
@@ -11,6 +12,7 @@ const searchItemRe = /^[~]{0,1}[a-zA-Z0-9-_.]*[+]{0,1}[a-zA-Z0-9-_.]*[$]{0,1}[a-
 
 export default function SearchBlock({ searchPlaceholderText, searchItem, setSearchItem, tab, userData = {} }) {
   const { t } = useTranslation();
+  const [searchParams] = useSearchParams();
 
   const searchItemType = e => {
     if (e.key === 'Enter') {
@@ -35,8 +37,13 @@ export default function SearchBlock({ searchPlaceholderText, searchItem, setSear
   const onSearch = () => {
     let searchFor = searchItem.trim();
     if (tab === "nfts") {
+      let addParams = "";
+      let view = searchParams.get('view');
+      if (view) {
+        addParams = "?view=" + view;
+      }
       if (isAddressValid(searchFor) || isUsernameValid(searchFor)) {
-        window.location.replace('/nfts/' + encodeURI(searchFor));
+        window.location.replace('/nfts/' + encodeURI(searchFor) + addParams);
         return;
       }
     }

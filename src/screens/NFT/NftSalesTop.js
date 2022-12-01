@@ -15,15 +15,15 @@ import { ReactComponent as LinkIcon } from "../../assets/images/link.svg";
 export default function NftSalesTop() {
   const [data, setData] = useState(null);
   const [searchParams, setSearchParams] = useSearchParams();
-  const [tab, setTab] = useState(searchParams.get("view") || "list");
+  const [tab, setTab] = useState(searchParams.get("view") || "tiles");
   const [loading, setLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
 
   const { t } = useTranslation();
 
   const tabList = [
-    { value: 'list', label: t("tabs.list") },
-    { value: 'tiles', label: t("tabs.tiles") }
+    { value: 'tiles', label: t("tabs.tiles") },
+    { value: 'list', label: t("tabs.list") }
   ];
 
   const checkApi = async () => {
@@ -104,7 +104,11 @@ export default function NftSalesTop() {
   }, []);
 
   useEffect(() => {
-    if (tab === 'list') {
+    const exist = tabList.some(t => t.value === tab);
+    if (!exist) {
+      setTab("tiles");
+      searchParams.delete("view");
+    } else if (tab === 'tiles') {
       searchParams.delete("view");
     } else {
       searchParams.set("view", tab);
