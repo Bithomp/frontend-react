@@ -319,7 +319,8 @@
     "type": "Type",
     "status": "Status",
     "hash": "Hash",
-    "serial": "Serial"
+    "serial": "Serial",
+    "taxon": "Taxon"
   },
   "tabs": {
     "list": "List",

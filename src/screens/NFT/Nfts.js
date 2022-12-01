@@ -196,6 +196,7 @@ export default function Nfts() {
                   <th className='center'>{t("table.index")}</th>
                   <th>{t("table.name")}</th>
                   <th className='center'>{t("table.serial")}</th>
+                  <th className='center'>{t("table.taxon")}</th>
                   <th className='center'>NFT</th>
                   <th className='center'>{t("table.issuer")}</th>
                 </tr>
@@ -210,6 +211,7 @@ export default function Nfts() {
                         <td className="center">{i + 1}</td>
                         <td>{nft.metadata?.name}</td>
                         <td className='center'>{nft.nftSerial}</td>
+                        <td className='center'>{nft.nftokenTaxon}</td>
                         <td className='center'><a href={"/explorer/" + nft.nftokenID}><LinkIcon /></a></td>
                         <td className='center'><a href={"/explorer/" + nft.issuer}><LinkIcon /></a></td>
                       </tr>) : <tr><td colSpan="5" className='center orange bold'>{errorMessage}</td></tr>

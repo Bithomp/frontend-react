@@ -131,7 +131,8 @@ export default function NftSalesTop() {
               <th className='hide-on-mobile'>{t("table.sold")}</th>
               <th className='hide-on-mobile'>{t("table.created")}</th>
               <th>{t("table.name")}</th>
-              <th>{t("table.serial")}</th>
+              <th className='center'>{t("table.serial")}</th>
+              <th className='center hide-on-mobile'>{t("table.taxon")}</th>
               <th>NFT</th>
               <th>{t("table.transaction")}</th>
               <th className='hide-on-mobile'>{t("table.owner")}</th>
@@ -147,7 +148,8 @@ export default function NftSalesTop() {
                     <td className='hide-on-mobile'>{dateFormat(nft.acceptedAt)}</td>
                     <td className='hide-on-mobile'>{dateFormat(nft.createdAt)}</td>
                     <td>{nft.nftoken?.metadata?.name ? stripText(nft.nftoken.metadata.name) : "---//---"}</td>
-                    <td>{nft.nftoken.nftSerial}</td>
+                    <td className='center'>{nft.nftoken.nftSerial}</td>
+                    <td className='center hide-on-mobile'>{nft.nftoken.nftokenTaxon}</td>
                     <td className='center'><a href={"/explorer/" + nft.nftokenID}><LinkIcon /></a></td>
                     <td className='center'><a href={"/explorer/" + nft.acceptedTxHash}><LinkIcon /></a></td>
                     <td className='center hide-on-mobile'><a href={"/explorer/" + nft.owner}><LinkIcon /></a></td>
