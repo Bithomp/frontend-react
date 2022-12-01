@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next';
 
 import { stripText } from '../../utils';
-import { nftImageStyle } from '../../utils/nft';
+import { nftImageStyle, nftUrl } from '../../utils/nft';
 import { amountFormat, dateFormat } from '../../utils/format';
 
 import './styles.scss';
@@ -33,6 +33,24 @@ export default function Tiles({ nftList, type = 'name' }) {
     return name;
   }
 
+  const imageOrVideo = (nft) => {
+    let imageStyle = nftImageStyle(nft);
+    if (Object.keys(imageStyle).length === 0) {
+      const nftVideoUrl = nftUrl(nft, 'video');
+      if (nftVideoUrl) {
+        return <div className='img'>
+          <video autoPlay muted loop>
+            <source src={nftVideoUrl} type="video/mp4" />
+          </video>
+        </div>;
+      } else {
+        return <div className='img background-secondary'></div>;
+      }
+    } else {
+      return <div className='img' style={imageStyle}></div>;
+    }
+  }
+
   if (type === "name") {
     return <div className='tiles'>
       <div className="grid">
@@ -42,7 +60,7 @@ export default function Tiles({ nftList, type = 'name' }) {
               <div className="hexIn">
                 <a className="hexLink" href={"/explorer/" + nft.nftokenID}>
                   <div className="img-status">{t("general.loading")}</div>
-                  <div className='img' style={nftImageStyle(nft)}></div>
+                  {imageOrVideo(nft)}
                   <div className="index">{i + 1}</div>
                   <div className='title'></div>
                   <h1>{nft.metadata?.name ? shortName(nft.metadata.name) : ''}</h1>
@@ -68,7 +86,7 @@ export default function Tiles({ nftList, type = 'name' }) {
               <div className="hexIn">
                 <a className="hexLink" href={"/explorer/" + nft.nftoken.nftokenID}>
                   <div className="img-status">{t("general.loading")}</div>
-                  <div className='img' style={nftImageStyle(nft.nftoken)}></div>
+                  {imageOrVideo(nft.nftoken)}
                   <div className="index">{i + 1}</div>
                   <div className='title'></div>
                   <h1>
