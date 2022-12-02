@@ -5,7 +5,7 @@ const isValidCid = (hash) => {
   return /^Qm[a-zA-Z0-9]{44}$|^baf[a-zA-Z0-9]{56}$/.test(hash);
 }
 
-const ipfsUrl = (url, type) => {
+const ipfsUrl = (url, type = 'image') => {
   if (!url) return null;
   if (url.includes('.ipfs.w3s.link') || url.includes('.ipfs.nftstorage.link')) {
     url = url.replace("https://", "");
@@ -15,12 +15,12 @@ const ipfsUrl = (url, type) => {
     return 'https://wallet.xrplnft.art/ipfs/' + url.slice(4);
     //url = slice(4);
   } else if (url.includes('?filename=')) {
-    url = url.split('?filename=')[0];
+    url = url.toString().split('?filename=')[0];
   } else if (url.slice(0, 5) === 'hash:') {
     url = url.slice(5);
   }
 
-  const urlParts = url.split('/');
+  const urlParts = url.toString().split('/');
 
   let cid = null;
 
@@ -32,14 +32,14 @@ const ipfsUrl = (url, type) => {
   }
 
   if (cid) {
-    url = cid + url.split(cid).pop();
+    url = cid + url.toString().split(cid).pop();
     return 'https://ipfs.bithomp.com/' + type + '/' + stripText(url);
   } else {
     return null;
   }
 }
 
-const assetUrl = (uri, type) => {
+const assetUrl = (uri, type = 'image') => {
   const ipfs = ipfsUrl(uri, type);
   if (ipfs) {
     return ipfs;
@@ -52,7 +52,7 @@ const assetUrl = (uri, type) => {
   }
 }
 
-const metaUrl = (meta, type) => {
+const metaUrl = (meta, type = 'image') => {
   if (!meta) return null;
   if (type === 'image') {
     if (meta.image) return assetUrl(meta.image, type);
