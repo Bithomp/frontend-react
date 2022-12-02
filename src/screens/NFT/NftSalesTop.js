@@ -76,7 +76,6 @@ export default function NftSalesTop() {
         "sequence": 812,
         "owner": "rpQhwaXtiVVjg9VjBEW4LuR9eG9c8zYaQx",
         "uri": "68747470733A2F2F6B65677372702E636F6D2F6E66742F6A736F6E2F3831312E6A736F6E",
-        "nftSerial": 812,
         "issuedAt": 1667295801,
         "ownerChangedAt": 1668435710,
         "deletedAt": null,
@@ -148,7 +147,7 @@ export default function NftSalesTop() {
                     <td className='hide-on-mobile'>{dateFormat(nft.acceptedAt)}</td>
                     <td className='hide-on-mobile'>{dateFormat(nft.createdAt)}</td>
                     <td>{nft.nftoken?.metadata?.name ? stripText(nft.nftoken.metadata.name) : "---//---"}</td>
-                    <td className='center'>{nft.nftoken.nftSerial}</td>
+                    <td className='center'>{nft.nftoken.sequence}</td>
                     <td className='center hide-on-mobile'>{nft.nftoken.nftokenTaxon}</td>
                     <td className='center'><a href={"/explorer/" + nft.nftokenID}><LinkIcon /></a></td>
                     <td className='center'><a href={"/explorer/" + nft.acceptedTxHash}><LinkIcon /></a></td>

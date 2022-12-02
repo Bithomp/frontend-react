@@ -100,7 +100,7 @@ export default function Nfts() {
         "transferFee": null,
         "uri": "68747470733A2F2F697066732E696F2F697066732F6261667962656964727274376C6C796A6232717167337533376F61676E77726D707779756F686C74373637676B6E7635707966796A3668706F68342F6D657461646174612E6A736F6E",
         "url": "https://cloudflare-ipfs.com/ipfs/bafybeidrrt7llyjb2qqg3u37oagnwrmpwyuohlt767gknv5pyfyj6hpoh4/metadata.json",
-        "nftSerial": 1,
+        "sequence": 3658,
         "metadata": {
           "name": "Pirate Edition",
           "description": "-Sanctum NFTs 007-\n\n&quot;The discovery of treasure in the land of Atlantis.&quot;",
@@ -212,7 +212,7 @@ export default function Nfts() {
                       <tr key={nft.nftokenID}>
                         <td className="center">{i + 1}</td>
                         <td>{nft.metadata?.name}</td>
-                        <td className='center'>{nft.nftSerial}</td>
+                        <td className='center'>{nft.sequence}</td>
                         <td className='center'>{nft.nftokenTaxon}</td>
                         <td className='center'><a href={"/explorer/" + nft.nftokenID}><LinkIcon /></a></td>
                         <td className='center'><a href={"/explorer/" + nft.issuer}><LinkIcon /></a></td>

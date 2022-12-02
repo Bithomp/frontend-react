@@ -14,7 +14,7 @@ export default function Tiles({ nftList, type = 'name' }) {
       "nftokenID": "000800005822D634B22590727E3CB2431F03C3B8B041528316E72FD300000001",
       "nftokenTaxon": 193871,
       "uri": "HEX",
-      "nftSerial": 1,
+      "sequence": 1,
       "metadata": {
         "name": "Pirate Edition",
         "description": "A long description",
@@ -66,7 +66,7 @@ export default function Tiles({ nftList, type = 'name' }) {
                   <h1>{nft.metadata?.name ? shortName(nft.metadata.name) : ''}</h1>
                   <div className='title-full'>
                     {t("table.name")}: {nft.metadata?.name}<br />
-                    {t("table.serial")}: {nft.nftSerial}
+                    {t("table.serial")}: {nft.sequence}
                   </div>
                 </a>
               </div>
@@ -95,7 +95,7 @@ export default function Tiles({ nftList, type = 'name' }) {
                   </h1>
                   <div className='title-full'>
                     {t("table.name")}: {stripText(nft.nftoken.metadata?.name)}<br />
-                    {t("table.serial")}: {nft.nftoken.nftSerial}
+                    {t("table.serial")}: {nft.nftoken.sequence}
                   </div>
                 </a>
               </div>
