@@ -13,7 +13,7 @@ const ipfsUrl = (url, type = 'image') => {
     url = url.replace(".ipfs.nftstorage.link", "");
   } else if (url.slice(0, 4) === 'cid:') {
     return 'https://wallet.xrplnft.art/ipfs/' + url.slice(4);
-    //url = slice(4);
+    //url = url.slice(4);
   } else if (url.includes('?filename=')) {
     url = url.toString().split('?filename=')[0];
   } else if (url.slice(0, 5) === 'hash:') {
@@ -40,6 +40,13 @@ const ipfsUrl = (url, type = 'image') => {
 }
 
 const assetUrl = (uri, type = 'image') => {
+  if (type === 'image' && isCorrectFileType(uri, 'video')) {
+    return null;
+  }
+  if (type === 'video' && isCorrectFileType(uri, 'image')) {
+    return null;
+  }
+
   const ipfs = ipfsUrl(uri, type);
   if (ipfs) {
     return ipfs;
