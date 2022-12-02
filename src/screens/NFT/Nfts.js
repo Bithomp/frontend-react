@@ -66,7 +66,11 @@ export default function Nfts() {
           }
           setData([...data, ...newdata.nfts]);
         } else {
-          setErrorMessage(t("explorer.nfts.no-nfts"));
+          if (hasMore === 'first') {
+            setErrorMessage(t("explorer.nfts.no-nfts"));
+          } else {
+            setHasMore(false);
+          }
         }
       } else {
         if (newdata.error) {
