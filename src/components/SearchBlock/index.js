@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router-dom';
 
@@ -10,9 +11,16 @@ import search from '../../assets/images/search.svg'
 
 const searchItemRe = /^[~]{0,1}[a-zA-Z0-9-_.]*[+]{0,1}[a-zA-Z0-9-_.]*[$]{0,1}[a-zA-Z0-9-.]*[a-zA-Z0-9]*$/i;
 
-export default function SearchBlock({ searchPlaceholderText, searchItem, setSearchItem, tab, userData = {} }) {
+export default function SearchBlock({ searchPlaceholderText, tab = null, userData = {} }) {
   const { t } = useTranslation();
   const [searchParams] = useSearchParams();
+  const [searchItem, setSearchItem] = useState(userData?.address || "");
+
+  useEffect(() => {
+    if (userData?.address) {
+      setSearchItem(userData.address);
+    }
+  }, [userData]);
 
   const searchItemType = e => {
     if (e.key === 'Enter') {

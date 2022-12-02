@@ -22,7 +22,6 @@ export default function Nfts() {
   const [loading, setLoading] = useState(true);
   const [hasMore, setHasMore] = useState("first");
   const [errorMessage, setErrorMessage] = useState("");
-  const [searchItem, setSearchItem] = useState(address || "");
   const [tab, setTab] = useState(searchParams.get("view") || "tiles");
   const [search, setSearch] = useState(searchParams.get("search") || "");
   const [filteredData, setFilteredData] = useState([]);
@@ -54,7 +53,8 @@ export default function Nfts() {
       if (newdata.address) {
         setUserData({
           username: newdata.username,
-          service: newdata.service
+          service: newdata.service,
+          address: newdata.address
         });
 
         if (newdata.nfts) {
@@ -136,10 +136,10 @@ export default function Nfts() {
   }, [tab]);
 
   const onSearchChange = (e) => {
-    let searchItem = e.target.value;
-    setSearch(searchItem);
-    if (searchItem) {
-      searchParams.set("search", searchItem);
+    let searchName = e.target.value;
+    setSearch(searchName);
+    if (searchName) {
+      searchParams.set("search", searchName);
     } else {
       searchParams.delete("search");
     }
@@ -159,8 +159,6 @@ export default function Nfts() {
     <SEO title={t("menu.nfts") + " " + address} />
     <SearchBlock
       searchPlaceholderText={t("explorer.nfts.enter-address")}
-      setSearchItem={setSearchItem}
-      searchItem={searchItem}
       tab="nfts"
       userData={userData}
     />

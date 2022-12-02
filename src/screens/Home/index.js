@@ -14,7 +14,6 @@ import btcbit from "../../assets/images/btcbit.svg";
 import xbit from "../../assets/images/xbit.png";
 
 export default function Home({ theme, devNet }) {
-  const [searchItem, setSearchItem] = useState("");
   const [selectedCurrency, setSelectedCurrency] = useLocalStorage('currency', 'usd');
   const [chartPeriod, setChartPeriod] = useState('one_day');
 
@@ -23,11 +22,7 @@ export default function Home({ theme, devNet }) {
 
   return (
     <>
-      <SearchBlock
-        searchPlaceholderText={searchPlaceholderText}
-        setSearchItem={setSearchItem}
-        searchItem={searchItem}
-      />
+      <SearchBlock searchPlaceholderText={searchPlaceholderText} />
       {!devNet &&
         <div className="home-sponsored">
           <a href="https://bithomp.com/go/play-xrp" target="_blank" rel="noreferrer">
