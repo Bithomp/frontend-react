@@ -39,7 +39,7 @@ export default function Tiles({ nftList, type = 'name' }) {
       const nftVideoUrl = nftUrl(nft, 'video');
       if (nftVideoUrl) {
         return <div className='img'>
-          <video autoPlay muted loop>
+          <video autoPlay playsInline muted loop>
             <source src={nftVideoUrl} type="video/mp4" />
           </video>
         </div>;
