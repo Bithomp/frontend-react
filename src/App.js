@@ -18,6 +18,7 @@ import Ledger from './screens/Ledger';
 import LastLedgerInformation from './screens/LastLedgerInformation';
 import Nft from './screens/NFT/Nft';
 import Nfts from './screens/NFT/Nfts';
+import NftOffers from "./screens/NFT/NftOffers";
 import NftSalesLatest from './screens/NFT/NftSalesLatest';
 import NftSalesTop from './screens/NFT/NftSalesTop';
 import NftStatistics from './screens/NFT/NftStatistics';
@@ -102,6 +103,9 @@ export default function App() {
           </Route>
           <Route path="/nfts/" element={<Nfts />}>
             <Route path="/nfts/:address" element={<Nfts />} />
+          </Route>
+          <Route path="/nft-offers/" element={<NftOffers />}>
+            <Route path="/nft-offers/:address" element={<NftOffers />} />
           </Route>
           <Route path="/latest-nft-sales" element={<NftSalesLatest />} />
           <Route path="/top-nft-sales" element={<NftSalesTop />} />

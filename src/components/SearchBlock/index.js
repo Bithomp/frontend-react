@@ -15,12 +15,20 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
   const { t } = useTranslation();
   const [searchParams] = useSearchParams();
   const [searchItem, setSearchItem] = useState(userData?.address || "");
+  const [addParams, setAddParams] = useState("");
 
   useEffect(() => {
     if (userData?.address) {
       setSearchItem(userData.address);
     }
   }, [userData]);
+
+  useEffect(() => {
+    let view = searchParams.get('view');
+    if (view) {
+      setAddParams("?view=" + view);
+    }
+  }, [searchParams]);
 
   const searchItemType = e => {
     if (e.key === 'Enter') {
@@ -45,11 +53,6 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
   const onSearch = () => {
     let searchFor = searchItem.trim();
     if (tab === "nfts") {
-      let addParams = "";
-      let view = searchParams.get('view');
-      if (view) {
-        addParams = "?view=" + view;
-      }
       if (isAddressValid(searchFor) || isUsernameValid(searchFor)) {
         window.location.replace('/nfts/' + encodeURI(searchFor) + addParams);
         return;
@@ -106,7 +109,7 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
       {tab &&
         <div className='explorer-tabs-block'>
           <div className='explorer-tabs'>
-            <b>NFT</b>
+            {tab === "nfts" ? <b>NFT</b> : <a href={"/nfts/" + searchItem + addParams}>NFT</a>}
             <a href={"/explorer/" + searchItem}>{t("explorer.menu.account")}</a>
             <a href={"/explorer/" + searchItem} className='hide-on-mobile'>{t("explorer.menu.transactions")}</a>
             <a href={"/explorer/" + searchItem} className='hide-on-mobile'>{t("explorer.menu.tokens")}</a>

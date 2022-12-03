@@ -162,7 +162,7 @@ export default function Nfts() {
   return <>
     <SEO title={t("menu.nfts") + " " + address} />
     <SearchBlock
-      searchPlaceholderText={t("explorer.nfts.enter-address")}
+      searchPlaceholderText={t("explorer.enter-address")}
       tab="nfts"
       userData={userData}
     />

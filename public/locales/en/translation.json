@@ -16,6 +16,7 @@
     "nft-statistics": "NFT live statistics",
     "nft": "NFT page",
     "nfts": "NFT explorer",
+    "nft-offers": "NFT offers",
     "nft-sales-latest": "Latest NFT sales",
     "nft-sales-top": "TOP NFT sales",
     "validators": "Validators",
@@ -330,18 +331,21 @@
     "new-qr": "Get a new QR code"
   },
   "explorer": {
+    "enter-address": "Enter an XRPL address or a username",
     "menu": {
       "account": "Account information",
       "transactions": "Transactions",
       "tokens": "Tokens"
     },
     "nfts": {
-      "enter-address": "Enter XRPL address",
       "desc": "Here you can search for NFTs (XLS-20), type in the XRPL address to see what NFTs it owns.",
       "search-by-name": "Search by NFT name",
       "no-nfts": "We couldn't find any NFTs owned by that address.",
       "load-more": "We are looking for data on the XRPL... please wait...",
       "end": "Here are all the NFTs we could find."
+    },
+    "nft-offers": {
+      "desc": "Here you can search for Buy and Sell Offers for (XLS-20) NFTs, type in the XRPL address to see what it offers."
     }
   }
 }
