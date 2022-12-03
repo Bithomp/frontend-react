@@ -1,21 +1,39 @@
 import { useTranslation } from 'react-i18next';
 import { useState, useEffect } from 'react';
+import { useSearchParams } from "react-router-dom";
 import axios from 'axios';
 
 import SEO from '../../components/SEO';
+import Tabs from '../../components/Tabs';
+import Tiles from '../../components/Tiles';
 
-import { stripText } from '../../utils';
+import { stripText, onFailedRequest } from '../../utils';
 import { timeFormat, amountFormat } from '../../utils/format';
 
 import { ReactComponent as LinkIcon } from "../../assets/images/link.svg";
 
 export default function NftSalesLatest() {
   const [data, setData] = useState(null);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [tab, setTab] = useState(searchParams.get("view") || "tiles");
+  const [loading, setLoading] = useState(true);
+  const [errorMessage, setErrorMessage] = useState("");
+
   const { t } = useTranslation();
 
+  const tabList = [
+    { value: 'tiles', label: t("tabs.tiles") },
+    { value: 'list', label: t("tabs.list") }
+  ];
+
   const checkApi = async () => {
-    const response = await axios('v2/nft/offer/lastSold');
+    const response = await axios('v2/nft/offer/lastSold').catch(error => {
+      onFailedRequest(error, setErrorMessage);
+      setLoading(false);
+    });
+
     const data = response.data;
+    setLoading(false);
     if (data) {
       setData(data);
     }
@@ -84,41 +102,72 @@ export default function NftSalesLatest() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  useEffect(() => {
+    const exist = tabList.some(t => t.value === tab);
+    if (!exist) {
+      setTab("tiles");
+      searchParams.delete("view");
+    } else if (tab === 'tiles') {
+      searchParams.delete("view");
+    } else {
+      searchParams.set("view", tab);
+    }
+    setSearchParams(searchParams);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tab]);
+
   return <>
     <SEO title={t("menu.nft-sales-latest")} />
     <div className="content-text">
       <h2 className="center">{t("menu.nft-sales-latest")}</h2>
-      <table className="table-large">
-        <thead>
-          <tr>
-            <th>{t("table.time")}</th>
-            <th>{t("table.amount")}</th>
-            <th>{t("table.name")}</th>
-            <th>{t("table.serial")}</th>
-            <th>NFT</th>
-            <th>{t("table.transaction")}</th>
-          </tr>
-        </thead>
-        <tbody>
-          {data ?
-            <>
-              {data.length ? data.map((nft, i) =>
-                <tr key={i}>
-                  <td>{timeFormat(nft.acceptedAt)}</td>
-                  <td>{amountFormat(nft.amount)}</td>
-                  <td>{nft.nftoken?.metadata?.name ? stripText(nft.nftoken.metadata.name) : "---//---"}</td>
-                  <td>{nft.nftoken.sequence}</td>
-                  <td className='center'><a href={"/explorer/" + nft.nftokenID}><LinkIcon /></a></td>
-                  <td className='center'><a href={"/explorer/" + nft.acceptedTxHash}><LinkIcon /></a></td>
-                </tr>
-              ) : <tr className='center'><td colSpan="6">{t("general.no-data")}</td></tr>}
-            </>
+      <Tabs tabList={tabList} tab={tab} setTab={setTab} />
+      {tab === "list" &&
+        <table className="table-large">
+          <thead>
+            <tr>
+              <th>{t("table.time")}</th>
+              <th>{t("table.amount")}</th>
+              <th>{t("table.name")}</th>
+              <th>{t("table.serial")}</th>
+              <th>NFT</th>
+              <th>{t("table.transaction")}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {data ?
+              <>
+                {data.length ? data.map((nft, i) =>
+                  <tr key={i}>
+                    <td>{timeFormat(nft.acceptedAt)}</td>
+                    <td>{amountFormat(nft.amount)}</td>
+                    <td>{nft.nftoken?.metadata?.name ? stripText(nft.nftoken.metadata.name) : "---//---"}</td>
+                    <td>{nft.nftoken.sequence}</td>
+                    <td className='center'><a href={"/explorer/" + nft.nftokenID}><LinkIcon /></a></td>
+                    <td className='center'><a href={"/explorer/" + nft.acceptedTxHash}><LinkIcon /></a></td>
+                  </tr>
+                ) : <tr className='center'><td colSpan="6">{t("general.no-data")}</td></tr>}
+              </>
+              :
+              <tr className='center'><td colSpan="6"><span className="waiting"></span></td></tr>
+            }
+          </tbody>
+        </table>
+      }
+      {tab === "tiles" &&
+        <>
+          {loading ?
+            <div className='center' style={{ marginTop: "20px" }}><span className="waiting"></span></div>
             :
-            <tr className='center'><td colSpan="6"><span className="waiting"></span></td></tr>
+            <>
+              {errorMessage ?
+                <div className='center'>{errorMessage}</div>
+                :
+                <Tiles nftList={data} type="latest" />
+              }
+            </>
           }
-        </tbody>
-      </table>
-
+        </>
+      }
     </div>
   </>;
 };

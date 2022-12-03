@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next';
 
 import { stripText } from '../../utils';
 import { nftImageStyle, nftUrl } from '../../utils/nft';
-import { amountFormat, dateFormat } from '../../utils/format';
+import { amountFormat, dateFormat, timeFormat } from '../../utils/format';
 
 import './styles.scss';
 
@@ -66,7 +66,8 @@ export default function Tiles({ nftList, type = 'name' }) {
                   <h1>{nft.metadata?.name ? shortName(nft.metadata.name) : ''}</h1>
                   <div className='title-full'>
                     {t("table.name")}: {nft.metadata?.name}<br />
-                    {t("table.serial")}: {nft.sequence}
+                    {t("table.serial")}: {nft.nftoken.sequence}<br />
+                    {t("table.taxon")}: {nft.nftoken.nftokenTaxon}
                   </div>
                 </a>
               </div>
@@ -77,7 +78,7 @@ export default function Tiles({ nftList, type = 'name' }) {
     </div>
   }
 
-  if (type === 'price') {
+  if (type === 'price' || type === 'latest') {
     return <div className='tiles'>
       <div className="grid">
         <ul className="hexGrid">
@@ -91,11 +92,12 @@ export default function Tiles({ nftList, type = 'name' }) {
                   <div className='title'></div>
                   <h1>
                     {amountFormat(nft.amount)}<br />
-                    {dateFormat(nft.acceptedAt)}
+                    {type === 'latest' ? timeFormat(nft.acceptedAt) : dateFormat(nft.acceptedAt)}
                   </h1>
                   <div className='title-full'>
                     {t("table.name")}: {stripText(nft.nftoken.metadata?.name)}<br />
-                    {t("table.serial")}: {nft.nftoken.sequence}
+                    {t("table.serial")}: {nft.nftoken.sequence}<br />
+                    {t("table.taxon")}: {nft.nftoken.nftokenTaxon}
                   </div>
                 </a>
               </div>
@@ -105,4 +107,5 @@ export default function Tiles({ nftList, type = 'name' }) {
       </div>
     </div>
   }
+  return "";
 };
