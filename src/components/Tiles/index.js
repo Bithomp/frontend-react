@@ -45,17 +45,17 @@ export default function Tiles({ nftList, type = 'name' }) {
     if (Object.keys(imageStyle).length === 0) {
       const nftVideoUrl = nftUrl(nft, 'video');
       if (nftVideoUrl) {
-        return <div className='img'>
+        return <div className='tile-content'>
           <video autoPlay playsInline muted loop>
             <source src={nftVideoUrl} type="video/mp4" />
           </video>
         </div>;
       } else {
-        return <div className='img background-secondary'></div>;
+        return <div className='tile-content background-secondary'></div>;
       }
     } else {
       return <>
-        <div className='img' style={imageStyle}></div>
+        <div className='tile-content' style={imageStyle}></div>
         <img
           style={{ display: 'none' }}
           src={nftUrl(nft, 'image')}

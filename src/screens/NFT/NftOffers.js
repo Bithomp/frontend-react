@@ -67,7 +67,9 @@ export default function NftOffers() {
         "createdTxHash": "D5DEA2B5AABD3F0E70B6449C9A53CC38E58EC95FC11DC086158EFE5DD818768D",
         "createdAt": 2342342342,
         "owner": "rHAfrQNDBohGbWuWTWzpJe1LQWyYVnbG2n",
-        "amount": "10000000",
+        "destination": null,
+        "expiration": null,
+        "amount": "100",
         "flags": {
           "sellToken": true
         }
@@ -98,13 +100,15 @@ export default function NftOffers() {
               <th>{t("table.type")}</th>
               <th>{t("table.amount")}</th>
               <th>{t("table.placed")}</th>
+              <th className='hide-on-mobile'>{t("table.expiration")}</th>
+              <th className='center'>{t("table.destination")}</th>
               <th className='center'>{t("table.offer")}</th>
               <th className='center'>{t("table.transaction")}</th>
             </tr>
           </thead>
           <tbody>
             {loading ?
-              <tr className='center'><td colSpan="5"><span className="waiting"></span></td></tr>
+              <tr className='center'><td colSpan="9"><span className="waiting"></span></td></tr>
               :
               <>
                 {!errorMessage ? data.map((offer, i) =>
@@ -114,9 +118,11 @@ export default function NftOffers() {
                     <td>{offer.flags?.sellToken === true ? "Sell" : "Buy"}</td>
                     <td>{amountFormat(offer.amount)}</td>
                     <td>{fullDateAndTime(offer.createdAt)}</td>
+                    <td className='hide-on-mobile'>{offer.expiration ? fullDateAndTime(offer.expiration) : ""}</td>
+                    <td className='center'>{offer.destination ? <a href={"/nfts/" + offer.destination}><LinkIcon /></a> : ""}</td>
                     <td className='center'><a href={"/nft-offer/" + offer.offerIndex}><LinkIcon /></a></td>
                     <td className='center'><a href={"/explorer/" + offer.createdTxHash}><LinkIcon /></a></td>
-                  </tr>) : <tr><td colSpan="5" className='center orange bold'>{errorMessage}</td></tr>
+                  </tr>) : <tr><td colSpan="9" className='center orange bold'>{errorMessage}</td></tr>
                 }
               </>
             }

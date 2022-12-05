@@ -97,6 +97,7 @@ const isCorrectFileType = (url, nftType = 'image') => {
 }
 
 export const nftUrl = (nft, type = 'image') => {
+  if (!nft) return null;
   const url = metaUrl(nft.metadata, type);
   if (url) {
     return url;

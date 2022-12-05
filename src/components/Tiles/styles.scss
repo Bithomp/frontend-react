@@ -100,7 +100,7 @@
             text-align: center;
             word-break: break-word;
           }
-          .img {
+          .tile-content {
             width: 98%;
             height: 98%;
             position: absolute;
@@ -139,7 +139,7 @@
             .title-full {
               opacity: 1;
             }
-            .img {
+            .tile-content {
               &:before,
               &:after {
                 opacity: 1;
