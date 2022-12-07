@@ -36,7 +36,7 @@ export default function Home({ theme, devNet }) {
             <div className="sponsored-brand">
               <img src={nexo} className="sponsored-brand-icon" alt="earn on xrp" />
               <div className="sponsored-brand-title">Earn on XRP</div>
-              <div className="sponsored-brand-text">Start earning up to 8% APR, paid out daily!</div>
+              <div className="sponsored-brand-text">Make your XRP work for you.<br/>Start earning daily interest.</div>
             </div>
           </a>
           <a href="https://bithomp.com/go/buy-xrp" target="_blank" rel="noreferrer">
