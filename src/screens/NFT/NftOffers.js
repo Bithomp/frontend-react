@@ -20,6 +20,8 @@ export default function NftOffers() {
   const [loading, setLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
   const [userData, setUserData] = useState({});
+  const [showExpirationColumn, setShowExpirationColumn] = useState(false);
+  const [showDestinationColumn, setShowDestinationColumn] = useState(false);
 
   const checkApi = async () => {
     if (!id) {
@@ -56,6 +58,19 @@ export default function NftOffers() {
       }
     }
   }
+
+  useEffect(() => {
+    if (data && data.length > 0) {
+      for (let i = 0; i < data.length; i++) {
+        if (data[i].destination) {
+          setShowDestinationColumn(true);
+        }
+        if (data[i].expiration) {
+          setShowExpirationColumn(true);
+        }
+      }
+    }
+  }, [data]);
 
   /*
   {
@@ -103,8 +118,8 @@ export default function NftOffers() {
                   <th>{t("table.type")}</th>
                   <th>{t("table.amount")}</th>
                   <th>{t("table.placed")}</th>
-                  <th>{t("table.expiration")}</th>
-                  <th className='center'>{t("table.destination")}</th>
+                  {showExpirationColumn && <th>{t("table.expiration")}</th>}
+                  {showDestinationColumn && <th className='center'>{t("table.destination")}</th>}
                   <th className='center'>{t("table.offer")}</th>
                   <th className='center'>{t("table.transaction")}</th>
                 </tr>
@@ -121,8 +136,8 @@ export default function NftOffers() {
                         <td>{offer.flags?.sellToken === true ? t("table.text.sell") : t("table.text.buy")}</td>
                         <td>{amountFormat(offer.amount, { tooltip: true })}</td>
                         <td>{fullDateAndTime(offer.createdAt)}</td>
-                        <td>{offer.expiration ? fullDateAndTime(offer.expiration) : t("table.text.no-expiration")}</td>
-                        <td className='center'>{offer.destination ? <a href={"/explorer/" + offer.destination}><LinkIcon /></a> : ""}</td>
+                        {showExpirationColumn && <td>{offer.expiration ? fullDateAndTime(offer.expiration) : t("table.text.no-expiration")}</td>}
+                        {showDestinationColumn && <td className='center'>{offer.destination ? <a href={"/explorer/" + offer.destination}><LinkIcon /></a> : ""}</td>}
                         <td className='center'><CopyButton text={offer.offerIndex} /></td>
                         <td className='center'><a href={"/explorer/" + offer.createdTxHash}><LinkIcon /></a></td>
                       </tr>)

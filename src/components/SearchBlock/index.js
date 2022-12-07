@@ -53,16 +53,21 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
 
   const onSearch = () => {
     let searchFor = searchItem.trim();
-    if (tab === "nfts") {
-      if (isAddressValid(searchFor) || isUsernameValid(searchFor)) {
-        window.location.replace('/nfts/' + encodeURI(searchFor) + addParams);
-        return;
-      }
+    if (tab === "nfts" && (isAddressValid(searchFor) || isUsernameValid(searchFor))) {
+      window.location.replace('/nfts/' + encodeURI(searchFor) + addParams);
+      return;
     }
+
+    if (tab === "nft-offers" && (isAddressValid(searchFor) || isUsernameValid(searchFor))) {
+      window.location.replace('/nft-offers/' + encodeURI(searchFor));
+      return;
+    }
+
     if (tab === "nft-offer" && isNftOfferValid(searchFor)) {
       window.location.replace('/nft-offer/' + encodeURI(searchFor));
       return;
     }
+
     window.location.replace('/explorer/' + encodeURI(searchFor));
     return;
   }
