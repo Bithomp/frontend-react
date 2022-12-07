@@ -12,6 +12,7 @@ export default function Header({ theme, switchTheme, setSignInFormOpen, account,
   const { t } = useTranslation();
 
   const [menuOpen, setMenuOpen] = useState(false);
+  const [isCopied, setIsCopied] = useState(false);
 
   let address, hashicon, displayName, username;
   if (account) {
@@ -40,6 +41,19 @@ export default function Header({ theme, switchTheme, setSignInFormOpen, account,
     }
     setMenuOpen(!menuOpen);
   };
+
+  const copyToClipboard = () => {
+    navigator.clipboard.writeText(address).then(() => {
+      setIsCopied(true);
+      setTimeout(() => {
+        setIsCopied(false);
+      }, 1000);
+    },
+      (err) => {
+        console.error('Could not copy text: ', err);
+      }
+    );
+  }
 
   return (
     <>
@@ -110,7 +124,9 @@ export default function Header({ theme, switchTheme, setSignInFormOpen, account,
                 {displayName}
               </div>
               <div className="menu-dropdown-content">
-                {/* Link to copy full address */}
+                <button onClick={copyToClipboard}>
+                  {isCopied ? t("button.copied") : t("button.copy-my-address")}
+                </button>
                 <a href={"/explorer/" + address + "?hw=xumm&xummtoken=" + xummUserToken}>{t("signin.actions.view")}</a>
                 {!username && <a href={"/username?address=" + address}>{t("menu.usernames")}</a>}
                 <a href={"/explorer/" + address + "?hw=xumm&xummtoken=" + xummUserToken + "&action=send"}>{t("signin.actions.send")}</a>

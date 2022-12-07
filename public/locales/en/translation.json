@@ -294,7 +294,8 @@
     "print": "Print",
     "download": "Download",
     "copy": "Copy",
-    "copied": "Copied"
+    "copied": "Copied",
+    "copy-my-address": "Copy my address"
   },
   "general": {
     "error": "Error",
