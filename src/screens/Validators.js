@@ -1,12 +1,13 @@
 import { useTranslation, Trans } from 'react-i18next';
 import { useState, useEffect } from 'react';
-import { isMobile } from "react-device-detect";
 import axios from 'axios';
 import moment from "moment";
 
 import SEO from '../components/SEO';
 
 import { fullDateAndTime } from '../utils/format';
+
+import { ReactComponent as LinkIcon } from "../assets/images/link.svg";
 
 const compare = (a, b) => {
   // nulls sort after anything else
@@ -77,7 +78,7 @@ export default function Amendment() {
           </div>
           <br />
 
-          {isMobile ?
+          {window.innerWidth < 960 ?
             <table className="table-mobile">
               <thead>
               </thead>
@@ -143,7 +144,7 @@ export default function Amendment() {
                     </td>
                     <td>{v.publicKey}</td>
                     <td className='center'>{v.sequence}</td>
-                    <td><a href={"/explorer/" + v.address}>{v.address}</a></td>
+                    <td className='center'><a href={"/explorer/" + v.address}><LinkIcon/></a></td>
                   </tr>
                 )}
               </tbody>

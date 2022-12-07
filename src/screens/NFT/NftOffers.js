@@ -5,6 +5,7 @@ import axios from 'axios';
 
 import SEO from '../../components/SEO';
 import SearchBlock from '../../components/SearchBlock';
+import CopyButton from '../../components/CopyButton';
 
 import { onFailedRequest } from '../../utils';
 import { amountFormat, fullDateAndTime } from '../../utils/format';
@@ -13,7 +14,7 @@ import { ReactComponent as LinkIcon } from "../../assets/images/link.svg";
 
 export default function NftOffers() {
   const { t } = useTranslation();
-  const { address } = useParams();
+  const { id } = useParams();
 
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -21,11 +22,11 @@ export default function NftOffers() {
   const [userData, setUserData] = useState({});
 
   const checkApi = async () => {
-    if (!address) {
+    if (!id) {
       return;
     }
 
-    const response = await axios('v2/address/' + address + '?username=true&service=true&nftOffers=true').catch(error => {
+    const response = await axios('v2/address/' + id + '?username=true&service=true&nftOffers=true').catch(error => {
       onFailedRequest(error, setErrorMessage);
       setLoading(false);
     });
@@ -41,7 +42,7 @@ export default function NftOffers() {
 
         if (newdata.nftOffers) {
           setErrorMessage("");
-          setData(newdata.nftOffers);
+          setData(newdata.nftOffers.sort((a, b) => (a.createdAt < b.createdAt) ? 1 : -1));
         } else {
           setErrorMessage(t("explorer.nfts.no-nfts"));
         }
@@ -81,53 +82,109 @@ export default function NftOffers() {
   useEffect(() => {
     checkApi();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [address]);
+  }, [id]);
 
   return <>
-    <SEO title={t("menu.nft-offers") + " " + address} />
+    <SEO title={t("menu.nft-offers") + " " + id} />
     <SearchBlock
       searchPlaceholderText={t("explorer.enter-address")}
-      tab="nftoffers"
+      tab="nft-offers"
       userData={userData}
     />
     <div className="content-text" style={{ marginTop: "20px" }}>
-      {address ?
-        <table className="table-large">
-          <thead>
-            <tr>
-              <th className='center'>{t("table.index")}</th>
-              <th className='center'>NFT</th>
-              <th>{t("table.type")}</th>
-              <th>{t("table.amount")}</th>
-              <th>{t("table.placed")}</th>
-              <th className='hide-on-mobile'>{t("table.expiration")}</th>
-              <th className='center'>{t("table.destination")}</th>
-              <th className='center'>{t("table.offer")}</th>
-              <th className='center'>{t("table.transaction")}</th>
-            </tr>
-          </thead>
-          <tbody>
-            {loading ?
-              <tr className='center'><td colSpan="9"><span className="waiting"></span></td></tr>
-              :
-              <>
-                {!errorMessage ? data.map((offer, i) =>
-                  <tr key={i}>
-                    <td className="center">{i + 1}</td>
-                    <td className='center'><a href={"/explorer/" + offer.nftokenID}><LinkIcon /></a></td>
-                    <td>{offer.flags?.sellToken === true ? "Sell" : "Buy"}</td>
-                    <td>{amountFormat(offer.amount)}</td>
-                    <td>{fullDateAndTime(offer.createdAt)}</td>
-                    <td className='hide-on-mobile'>{offer.expiration ? fullDateAndTime(offer.expiration) : ""}</td>
-                    <td className='center'>{offer.destination ? <a href={"/nfts/" + offer.destination}><LinkIcon /></a> : ""}</td>
-                    <td className='center'><a href={"/nft-offer/" + offer.offerIndex}><LinkIcon /></a></td>
-                    <td className='center'><a href={"/explorer/" + offer.createdTxHash}><LinkIcon /></a></td>
-                  </tr>) : <tr><td colSpan="9" className='center orange bold'>{errorMessage}</td></tr>
+      {id ?
+        <>
+          {window.innerWidth > 960 ?
+            <table className="table-large">
+              <thead>
+                <tr>
+                  <th className='center'>{t("table.index")}</th>
+                  <th className='center'>NFT</th>
+                  <th>{t("table.type")}</th>
+                  <th>{t("table.amount")}</th>
+                  <th>{t("table.placed")}</th>
+                  <th>{t("table.expiration")}</th>
+                  <th className='center'>{t("table.destination")}</th>
+                  <th className='center'>{t("table.offer")}</th>
+                  <th className='center'>{t("table.transaction")}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {loading ?
+                  <tr className='center'><td colSpan="9"><span className="waiting"></span></td></tr>
+                  :
+                  <>
+                    {!errorMessage ? data.map((offer, i) =>
+                      <tr key={i}>
+                        <td className="center">{i + 1}</td>
+                        <td className='center'><a href={"/explorer/" + offer.nftokenID}><LinkIcon /></a></td>
+                        <td>{offer.flags?.sellToken === true ? t("table.text.sell") : t("table.text.buy")}</td>
+                        <td>{amountFormat(offer.amount, { tooltip: true })}</td>
+                        <td>{fullDateAndTime(offer.createdAt)}</td>
+                        <td>{offer.expiration ? fullDateAndTime(offer.expiration) : t("table.text.no-expiration")}</td>
+                        <td className='center'>{offer.destination ? <a href={"/explorer/" + offer.destination}><LinkIcon /></a> : ""}</td>
+                        <td className='center'><CopyButton text={offer.offerIndex} /></td>
+                        <td className='center'><a href={"/explorer/" + offer.createdTxHash}><LinkIcon /></a></td>
+                      </tr>)
+                      :
+                      <tr><td colSpan="9" className='center orange bold'>{errorMessage}</td></tr>
+                    }
+                  </>
                 }
-              </>
-            }
-          </tbody>
-        </table>
+              </tbody>
+            </table>
+            :
+            <table className="table-mobile">
+              <thead>
+              </thead>
+              <tbody>
+                {loading ?
+                  <tr className='center'><td colSpan="9"><span className="waiting"></span></td></tr>
+                  :
+                  <>
+                    {!errorMessage ? data.map((offer, i) =>
+                      <tr key={i}>
+                        <td style={{ padding: "5px" }}>{i + 1}</td>
+                        <td>
+                          <p>
+                            NFT: <a href={"/explorer/" + offer.nftokenID}><LinkIcon /></a>
+                          </p>
+                          <p>
+                            {t("table.type")}: {offer.flags?.sellToken === true ? t("table.text.sell") : t("table.text.buy")}
+                          </p>
+                          <p>
+                            {t("table.amount")}: {amountFormat(offer.amount)}
+                          </p>
+                          <p>
+                            {t("table.placed")}: {fullDateAndTime(offer.createdAt)}
+                          </p>
+                          {offer.expiration &&
+                            <p>
+                              {t("table.expiration")}: {fullDateAndTime(offer.expiration)}
+                            </p>
+                          }
+                          {offer.destination &&
+                            <p>
+                              {t("table.destination")}: <a href={"/explorer/" + offer.destination}><LinkIcon /></a>
+                            </p>
+                          }
+                          <p>
+                            {t("table.offer")}: <CopyButton text={offer.offerIndex} />
+                          </p>
+                          <p>
+                            {t("table.transaction")}: <a href={"/explorer/" + offer.createdTxHash}><LinkIcon /></a>
+                          </p>
+                        </td>
+                      </tr>)
+                      :
+                      <tr><td colSpan="9" className='center orange bold'>{errorMessage}</td></tr>
+                    }
+                  </>
+                }
+              </tbody>
+            </table>
+          }
+        </>
         :
         <>
           <h2 className='center'>{t("menu.nft-offers")}</h2>

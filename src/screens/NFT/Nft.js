@@ -10,13 +10,13 @@ import { fullDateAndTime } from '../../utils/format';
 export default function Nft() {
   const [data, setData] = useState(null);
   const { t } = useTranslation();
-  const { nftId } = useParams();
+  const { id } = useParams();
 
-  const checkApi = async (nftId) => {
-    if (!nftId) {
+  const checkApi = async () => {
+    if (!id) {
       return;
     }
-    const response = await axios('v2/nft/' + nftId + '?uri=true&metadata=true&history=true&sellOffers=true&buyOffers=true');
+    const response = await axios('v2/nft/' + id + '?uri=true&metadata=true&history=true&sellOffers=true&buyOffers=true');
     const data = response.data;
     if (data) {
       setData(data);
@@ -84,16 +84,16 @@ export default function Nft() {
   */
 
   useEffect(() => {
-    checkApi(nftId);
+    checkApi();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [id]);
 
   return <>
     {data && <SEO title={t("menu.nft") + " " + data.metadata?.name} />}
     <div className="content-text">
       {data ?
         <>
-          <h2 className="center">{nftId}</h2>
+          <h2 className="center">{id}</h2>
           <table className="table-large">
             <thead>
               <tr>

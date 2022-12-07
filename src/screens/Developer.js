@@ -87,7 +87,7 @@ export default function Developer() {
     }
 
     const postData = { email, url, description };
-    const apiData = await axios.post('/v2/developer/register', postData).catch(error => {
+    const apiData = await axios.post('v2/developer/register', postData).catch(error => {
       if (i18n.exists("error." + error.message)) {
         setErrorMessage(t("error." + error.message));
       } else {

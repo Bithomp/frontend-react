@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, useParams } from 'react-router-dom';
 
-import { isUsernameValid, isAddressValid } from '../../utils';
+import { isUsernameValid, isAddressValid, isNftOfferValid } from '../../utils';
 import { userOrServiceName } from '../../utils/format';
 
 import './styles.scss';
@@ -14,7 +14,8 @@ const searchItemRe = /^[~]{0,1}[a-zA-Z0-9-_.]*[+]{0,1}[a-zA-Z0-9-_.]*[$]{0,1}[a-
 export default function SearchBlock({ searchPlaceholderText, tab = null, userData = {} }) {
   const { t } = useTranslation();
   const [searchParams] = useSearchParams();
-  const [searchItem, setSearchItem] = useState(userData?.address || "");
+  const { id } = useParams();
+  const [searchItem, setSearchItem] = useState(id || userData?.address || "");
   const [addParams, setAddParams] = useState("");
 
   useEffect(() => {
@@ -58,7 +59,12 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
         return;
       }
     }
+    if (tab === "nft-offer" && isNftOfferValid(searchFor)) {
+      window.location.replace('/nft-offer/' + encodeURI(searchFor));
+      return;
+    }
     window.location.replace('/explorer/' + encodeURI(searchFor));
+    return;
   }
 
   /*
@@ -71,7 +77,7 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
   CurrencyCode, XLS14
   searchItem.length == 40
 
-  TX, NFT
+  TX, NFT, NFT Offer
   searchItem.length == 64
 
   X-address
@@ -86,6 +92,7 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
         <div className="search-box">
           <div className='above-search-box'>
             {userOrServiceName(userData)}
+            {tab === "nft-offer" && <b>{t("menu.nft-offer")}</b>}
           </div>
           <input
             className="search-input"
@@ -109,7 +116,8 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
       {tab &&
         <div className='explorer-tabs-block'>
           <div className='explorer-tabs'>
-            {tab === "nfts" ? <b>NFT</b> : <a href={"/nfts/" + searchItem + addParams}>NFT</a>}
+            {tab === "nfts" ? <b>NFTs</b> : <a href={"/nfts/" + searchItem + addParams}>NFTs</a>}
+            {tab === "nft-offers" ? <b>{t("menu.nft-offers")}</b> : <a href={"/nft-offers/" + searchItem}>{t("menu.nft-offers")}</a>}
             <a href={"/explorer/" + searchItem}>{t("explorer.menu.account")}</a>
             <a href={"/explorer/" + searchItem} className='hide-on-mobile'>{t("explorer.menu.transactions")}</a>
             <a href={"/explorer/" + searchItem} className='hide-on-mobile'>{t("explorer.menu.tokens")}</a>

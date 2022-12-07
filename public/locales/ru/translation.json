@@ -16,6 +16,7 @@
     "nft-statistics": "NFT онлайн статистика",
     "nft": "NFT страница",
     "nfts": "NFT эксплорер",
+    "nft-offer": "NFT предложение",
     "nft-offers": "NFT предложения",
     "nft-sales-latest": "Последние NFT продажи",
     "nft-sales-top": "ТОП NFT продажи",
@@ -291,7 +292,9 @@
     "accept": "Принять",
     "submit": "Отправить",
     "print": "Распечатать",
-    "download": "Скачать"
+    "download": "Скачать",
+    "copy": "Копировать",
+    "copied": "Скопировано"
   },
   "general": {
     "error": "Ошибка",
@@ -325,7 +328,12 @@
     "placed": "Создано",
     "offer": "Предложение",
     "expiration": "Истекает",
-    "destination": "Кому"
+    "destination": "Кому",
+    "text": {
+      "no-expiration": "Без срока действия",
+      "sell": "Продажа",
+      "buy": "Покупка"
+    }
   },
   "tabs": {
     "list": "Список",

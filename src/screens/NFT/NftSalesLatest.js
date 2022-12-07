@@ -139,7 +139,7 @@ export default function NftSalesLatest() {
                 {data.length ? data.map((nft, i) =>
                   <tr key={i}>
                     <td>{timeFormat(nft.acceptedAt)}</td>
-                    <td>{amountFormat(nft.amount)}</td>
+                    <td>{amountFormat(nft.amount, { tooltip: 'right' })}</td>
                     <td>{nft.nftoken?.metadata?.name ? stripText(nft.nftoken.metadata.name) : "---//---"}</td>
                     <td>{nft.nftoken.sequence}</td>
                     <td className='center'><a href={"/explorer/" + nft.nftokenID}><LinkIcon /></a></td>

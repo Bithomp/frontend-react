@@ -30,8 +30,8 @@ export default function Tiles({ nftList, type = 'name' }) {
 
   const shortName = (name) => {
     name = stripText(name);
-    if (name?.length > 25) {
-      return name.slice(0, name.slice(0, 25).lastIndexOf(" ")) + '...';
+    if (name?.length > 18) {
+      return name.slice(0, name.slice(0, 18).lastIndexOf(" ")) + '...';
     }
     return name;
   }

@@ -16,6 +16,7 @@
     "nft-statistics": "NFT live statistics",
     "nft": "NFT page",
     "nfts": "NFT explorer",
+    "nft-offer": "NFT offer",
     "nft-offers": "NFT offers",
     "nft-sales-latest": "Latest NFT sales",
     "nft-sales-top": "TOP NFT sales",
@@ -291,7 +292,9 @@
     "accept": "Accept",
     "submit": "Submit",
     "print": "Print",
-    "download": "Download"
+    "download": "Download",
+    "copy": "Copy",
+    "copied": "Copied"
   },
   "general": {
     "error": "Error",
@@ -321,7 +324,16 @@
     "status": "Status",
     "hash": "Hash",
     "serial": "Serial",
-    "taxon": "Taxon"
+    "taxon": "Taxon",
+    "placed": "Placed",
+    "offer": "Offer",
+    "expiration": "Expiration",
+    "destination": "Destination",
+    "text": {
+      "no-expiration": "No expiration date",
+      "sell": "Sell",
+      "buy": "Buy"
+    }
   },
   "tabs": {
     "list": "List",

@@ -15,7 +15,7 @@ import { ReactComponent as LinkIcon } from "../../assets/images/link.svg";
 
 export default function Nfts() {
   const { t } = useTranslation();
-  const { address } = useParams();
+  const { id } = useParams();
 
   const [searchParams, setSearchParams] = useSearchParams();
   const [data, setData] = useState([]);
@@ -33,7 +33,7 @@ export default function Nfts() {
   ];
 
   const checkApi = async () => {
-    if (!address || !hasMore || (hasMore === "first" && data.length)) {
+    if (!id || !hasMore || (hasMore === "first" && data.length)) {
       return;
     }
 
@@ -43,7 +43,7 @@ export default function Nfts() {
       addParams = "username=true&service=true&";
     }
 
-    const response = await axios('v2/address/' + address + '?' + addParams + 'nfts=true' + (hasMore !== "first" ? ("&nfts[marker]=" + hasMore) : "")).catch(error => {
+    const response = await axios('v2/address/' + id + '?' + addParams + 'nfts=true' + (hasMore !== "first" ? ("&nfts[marker]=" + hasMore) : "")).catch(error => {
       onFailedRequest(error, setErrorMessage);
       setLoading(false);
     });
@@ -123,7 +123,7 @@ export default function Nfts() {
   useEffect(() => {
     checkApi();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [address]);
+  }, [id]);
 
   useEffect(() => {
     const exist = tabList.some(t => t.value === tab);
@@ -160,14 +160,14 @@ export default function Nfts() {
   }, [data, search]);
 
   return <>
-    <SEO title={t("menu.nfts") + " " + address} />
+    <SEO title={t("menu.nfts") + " " + id} />
     <SearchBlock
       searchPlaceholderText={t("explorer.enter-address")}
       tab="nfts"
       userData={userData}
     />
     <div className="content-text" style={{ marginTop: "20px" }}>
-      {address ?
+      {id ?
         <InfiniteScroll
           dataLength={filteredData.length}
           next={checkApi}

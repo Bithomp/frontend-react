@@ -15,7 +15,7 @@ export const userOrServiceName = (data) => {
 
 export const ledgerLink = (id) => {
   if (id) {
-    return <a href={"/ledger/" + id}>#{id}</a>
+    return <a href={"/ledger/" + id}>#{id}</a>;
   }
   return '';
 }
@@ -28,14 +28,25 @@ export const txIdFormat = (txId) => {
   return txId;
 }
 
-export const amountFormat = (amount) => {
-  //issuer, type: ['XRP', 'IOU', 'IOU demurraging', 'NFT']
-  const { value, currency, valuePrefix } = amountParced(amount);
-  return value + " " + valuePrefix + " " + currency;
+export const amountFormat = (amount, options = {}) => {
+  const { value, currency, valuePrefix, issuer, type } = amountParced(amount);
+  let showValue = value;
+  if (value > 100) {
+    showValue = niceNumber(value);
+  }
+  if (type !== 'XRP' && options.tooltip) {
+    // curency + " " - otherwise it is in the hex format
+    return <>{showValue} {valuePrefix} <span className='tooltip'>{currency + " "}<span className={'tooltiptext ' + options.tooltip}>{issuer}</span></span></>
+  } else {
+    //type: ['IOU', 'IOU demurraging', 'NFT']
+    return showValue + " " + valuePrefix + " " + currency;
+  }
 }
 
-//transfer to the backend
 const amountParced = (amount) => {
+  if (!amount && amount !== 0) {
+    return false;
+  }
 
   const xls14NftValue = (value) => {
     if (value.includes("e-")) {
@@ -136,6 +147,7 @@ export const capitalize = (word) => {
 }
 
 export const fullDateAndTime = (timestamp) => {
+  if (!timestamp) return '';
   return new Date(timestamp * 1000).toLocaleString();
 }
 

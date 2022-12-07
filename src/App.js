@@ -100,16 +100,16 @@ export default function App() {
           </Route>
           <Route path="/last-ledger-information" element={<LastLedgerInformation />} />
           <Route path="/nft/" element={<Nft />}>
-            <Route path="/nft/:nftId" element={<Nft />} />
+            <Route path="/nft/:id" element={<Nft />} />
           </Route>
           <Route path="/nfts/" element={<Nfts />}>
-            <Route path="/nfts/:address" element={<Nfts />} />
+            <Route path="/nfts/:id" element={<Nfts />} />
           </Route>
           <Route path="/nft-offer/" element={<NftOffer />}>
-            <Route path="/nft-offer/:offerId" element={<NftOffer />} />
+            <Route path="/nft-offer/:id" element={<NftOffer />} />
           </Route>
           <Route path="/nft-offers/" element={<NftOffers />}>
-            <Route path="/nft-offers/:address" element={<NftOffers />} />
+            <Route path="/nft-offers/:id" element={<NftOffers />} />
           </Route>
           <Route path="/latest-nft-sales" element={<NftSalesLatest />} />
           <Route path="/top-nft-sales" element={<NftSalesTop />} />

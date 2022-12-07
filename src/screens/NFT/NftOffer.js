@@ -5,27 +5,28 @@ import axios from 'axios';
 
 import SEO from '../../components/SEO';
 import SearchBlock from '../../components/SearchBlock';
+import CopyButton from '../../components/CopyButton';
 
 import { onFailedRequest } from '../../utils';
-import { fullDateAndTime } from '../../utils/format';
+import { fullDateAndTime, amountFormat } from '../../utils/format';
 import { nftImageStyle, nftUrl } from '../../utils/nft';
 
 import { ReactComponent as LinkIcon } from "../../assets/images/link.svg";
 
 export default function NftOffer() {
   const { t } = useTranslation();
-  const { offerId } = useParams();
+  const { id } = useParams();
 
   const [data, setData] = useState({});
   const [loading, setLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
 
   const checkApi = async () => {
-    if (!offerId) {
+    if (!id) {
       return;
     }
 
-    const response = await axios('v2/nft/offer/' + offerId).catch(error => {
+    const response = await axios('v2/nft/offer/' + id).catch(error => {
       onFailedRequest(error, setErrorMessage);
       setLoading(false);
     });
@@ -63,9 +64,9 @@ export default function NftOffer() {
     "acceptedAt": 1669036370,
     "acceptedLedgerIndex": 33047043,
     "acceptedTxHash": "F50B1E61AE1AA2DCD0ECABC90AF91119F703DBED2C65E3D98BF54E0B851DC7DE",
-    "cancelledAt": 1669036370,
-    "cancelledLedgerIndex": 33047043,
-    "cancelledTxHash": "F50B1E61AE1AA2DCD0ECABC90AF91119F703DBED2C65E3D98BF54E0B851DC7DE",
+    "canceledAt": 1669036370,
+    "canceledLedgerIndex": 33047043,
+    "canceledTxHash": "F50B1E61AE1AA2DCD0ECABC90AF91119F703DBED2C65E3D98BF54E0B851DC7DE",
     "nftoken": {
       "flags": {
         "burnable": true,
@@ -80,7 +81,6 @@ export default function NftOffer() {
       "sequence": 0,
       "owner": "rPN5J7wXYXctCm4HzUKptWTjV2WvbDpdxN",
       "uri": "68747470733A2F2F656E2E77696B6970656469612E6F72672F77696B692F46696C653A416C6963652D626F622D6D616C6C6F72792E6A7067",
-      "nftSerial": 0,
       "issuedAt": 1669036310,
       "ownerChangedAt": 1669036370,
       "deletedAt": null,
@@ -93,13 +93,15 @@ export default function NftOffer() {
   useEffect(() => {
     checkApi();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [offerId]);
+  }, [id]);
 
   const nftPrev = {
-    width: "250px",
-    height: "250px",
-    backgroundSize: "cover",
-    display: "inline-block"
+    width: "calc(40% - 80px)",
+    height: "400px",
+    backgroundSize: "contain",
+    backgroundRepeat: "no-repeat",
+    display: "inline-block",
+    verticalAlign: "top"
   }
 
   const imageOrVideo = (nft) => {
@@ -124,7 +126,7 @@ export default function NftOffer() {
     {data && <SEO title={t("menu.nft-offers") + " " + data.offerIndex} />}
     <SearchBlock
       searchPlaceholderText="Enter an NFT offer ID"
-      tab="nft-offers"
+      tab="nft-offer"
     />
     <div className="content-text">
       {loading ?
@@ -135,13 +137,38 @@ export default function NftOffer() {
             <div className='center'>{errorMessage}</div>
             :
             <div>
-              {imageOrVideo(data.nftoken)}<br />
-              <div style={{ display: "inline-block", margin: "20px" }}>
-                Offer ID: {data.offerIndex}<br />
-                NFT ID: <a href={"/explorer/" + data.nftokenID}><LinkIcon /></a><br />
+              {imageOrVideo(data.nftoken)}
+              <div style={{ display: "inline-block", margin: "0 20px", maxWidth: "60%" }}>
+                Offer ID: <CopyButton text={data.offerIndex} /><br />
                 Offer created: {fullDateAndTime(data.createdAt)}<br />
                 Offer creation TX: <a href={"/explorer/" + data.createdTxHash}><LinkIcon /></a><br />
-                Created by: <a href={"/nfts/" + data.account}><LinkIcon /></a><br />
+                Created by: <a href={"/nfts/" + data.account}>{data.account}</a><br />
+                Destination: <a href={"/nfts/" + data.destination}>{data.destination}</a><br />
+                {data.expiration ? <>Expiration: {fullDateAndTime(data.expiration)}<br /></> : ""}
+                Amount: {amountFormat(data.amount)}<br />
+                Type: {data.flags?.sellToken === true ? "SELL" : "BUY"}<br />
+
+                {data.acceptedAt && <>
+                  Offer accepted: {fullDateAndTime(data.acceptedAt)}<br />
+                  Offer accept TX: <a href={"/explorer/" + data.acceptedTxHash}><LinkIcon /></a><br />
+                </>}
+                {data.canceledAt && <>
+                  Offer canceled: {fullDateAndTime(data.canceledAt)}<br />
+                  Offer cancel TX: <a href={"/explorer/" + data.canceledTxHash}><LinkIcon /></a><br />
+                </>}
+
+                <br />
+                NFT ID: <a href={"/explorer/" + data.nftokenID}><LinkIcon /></a><br />
+                {data.nftoken && <>
+                  {data.nftoken.metadata && <>
+                    <div>
+                      Name: {data.nftoken.metadata.name}<br />
+                      Description: {data.nftoken.metadata.description}<br />
+                    </div>
+                  </>}
+                  Serial: {data.nftoken.sequence}<br />
+                  Taxon: {data.nftoken.nftokenTaxon}<br />
+                </>}
               </div>
             </div>
           }
