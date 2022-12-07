@@ -9,7 +9,7 @@ import SearchBlock from '../../components/SearchBlock';
 import Tabs from '../../components/Tabs';
 import Tiles from '../../components/Tiles';
 
-import { onFailedRequest } from '../../utils';
+import { onFailedRequest, isAddressValid } from '../../utils';
 
 import { ReactComponent as LinkIcon } from "../../assets/images/link.svg";
 
@@ -26,6 +26,8 @@ export default function Nfts() {
   const [search, setSearch] = useState(searchParams.get("search") || "");
   const [filteredData, setFilteredData] = useState([]);
   const [userData, setUserData] = useState({});
+  const [issuer] = useState(searchParams.get("issuer") || "");
+  const [taxon] = useState(searchParams.get("taxon") || "");
 
   const tabList = [
     { value: 'tiles', label: t("tabs.tiles") },
@@ -33,7 +35,7 @@ export default function Nfts() {
   ];
 
   const checkApi = async () => {
-    if (!id || !hasMore || (hasMore === "first" && data.length)) {
+    if (!(isAddressValid(id) || isAddressValid(issuer)) || !hasMore || (hasMore === "first" && data.length)) {
       return;
     }
 
@@ -43,14 +45,25 @@ export default function Nfts() {
       addParams = "username=true&service=true&";
     }
 
-    const response = await axios('v2/address/' + id + '?' + addParams + 'nfts=true' + (hasMore !== "first" ? ("&nfts[marker]=" + hasMore) : "")).catch(error => {
-      onFailedRequest(error, setErrorMessage);
-      setLoading(false);
-    });
+    let response;
+    if (id) {
+      response = await axios('v2/address/' + id + '?' + addParams + 'nfts=true' + (hasMore !== "first" ? ("&nfts[marker]=" + hasMore) : "")).catch(error => {
+        onFailedRequest(error, setErrorMessage);
+        setLoading(false);
+      });
+    }
+
+    if (issuer) {
+      response = await axios('v2/nfts?issuer=' + issuer + '&taxon=' + taxon).catch(error => {
+        onFailedRequest(error, setErrorMessage);
+        setLoading(false);
+      });
+    }
+
     setLoading(false);
     const newdata = response?.data;
     if (newdata) {
-      if (newdata.address) {
+      if (newdata.address || newdata.issuer) {
         setUserData({
           username: newdata.username,
           service: newdata.service,
@@ -167,7 +180,7 @@ export default function Nfts() {
       userData={userData}
     />
     <div className="content-text" style={{ marginTop: "20px" }}>
-      {id ?
+      {(id || issuer) ?
         <InfiniteScroll
           dataLength={filteredData.length}
           next={checkApi}
