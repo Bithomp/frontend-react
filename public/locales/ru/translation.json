@@ -64,7 +64,9 @@
     },
     "actions": {
       "view": "Cтраница в эксплорере",
-      "send": "Отправить XRP"
+      "send": "Отправить XRP",
+      "my-nfts": "Мои NFT",
+      "my-nft-offers": "Мои NFT предложения"
     },
     "not-available": "Не доступно"
   },
@@ -346,7 +348,7 @@
   "explorer": {
     "enter-address": "Введите XRPL адрес или ник",
     "menu": {
-      "account": "Информация об адресе",
+      "account": "Aдрес",
       "transactions": "Транзакции",
       "tokens": "Токены"
     },

@@ -127,6 +127,8 @@ export default function Header({ theme, switchTheme, setSignInFormOpen, account,
                 <button onClick={copyToClipboard}>
                   {isCopied ? t("button.copied") : t("button.copy-my-address")}
                 </button>
+                <a href={"/nfts/" + address}>{t("signin.actions.my-nfts")}</a>
+                <a href={"/nft-offers/" + address}>{t("signin.actions.my-nft-offers")}</a>
                 <a href={"/explorer/" + address + "?hw=xumm&xummtoken=" + xummUserToken}>{t("signin.actions.view")}</a>
                 {!username && <a href={"/username?address=" + address}>{t("menu.usernames")}</a>}
                 <a href={"/explorer/" + address + "?hw=xumm&xummtoken=" + xummUserToken + "&action=send"}>{t("signin.actions.send")}</a>
@@ -151,10 +153,21 @@ export default function Header({ theme, switchTheme, setSignInFormOpen, account,
               <img src={hashicon} alt="user icon" className="user-icon" />
               {displayName}
             </a>
+            <span onClick={copyToClipboard} className="mobile-menu-item link">
+              {isCopied ? t("button.copied") : t("button.copy-my-address")}
+            </span>
+            <a href={"/nfts/" + address} className="mobile-menu-item">{t("signin.actions.my-nfts")}</a>
+            <a href={"/nft-offers/" + address} className="mobile-menu-item">{t("signin.actions.my-nft-offers")}</a>
+            <a href={"/explorer/" + address + "?hw=xumm&xummtoken=" + xummUserToken} className="mobile-menu-item">{t("signin.actions.view")}</a>
             {!username && <a href={"/username?address=" + address} className="mobile-menu-item">{t("menu.usernames")}</a>}
             <a href={"/explorer/" + address + "?hw=xumm&xummtoken=" + xummUserToken + "&action=send"} className="mobile-menu-item">{t("signin.actions.send")}</a>
-          </> :
-          <a href="/explorer/" className="mobile-menu-item">{t("menu.explorer")}</a>
+            <span onClick={signOut} className="mobile-menu-item link">{t("signin.signout")}</span>
+          </>
+          :
+          <>
+            <span onClick={() => { setSignInFormOpen(true) }} className="mobile-menu-item link">{t("signin.signin")}</span>
+            <a href="/explorer/" className="mobile-menu-item">{t("menu.explorer")}</a>
+          </>
         }
 
         <div className="mobile-menu-directory"><span>{t("menu.services")}</span></div>
@@ -246,11 +259,6 @@ export default function Header({ theme, switchTheme, setSignInFormOpen, account,
             <a href="/create/" className="mobile-menu-item">{t("menu.account-generation")}</a>
             <a href="/faucet/" className="mobile-menu-item">{t("menu.faucet")}</a>
           </>
-        }
-        <div className="mobile-menu-directory"></div>
-        {displayName ?
-          <span onClick={signOut} className="mobile-menu-item link">{t("signin.signout")}</span> :
-          <span onClick={() => { setSignInFormOpen(true) }} className="mobile-menu-item link">{t("signin.signin")}</span>
         }
       </div>
     </>

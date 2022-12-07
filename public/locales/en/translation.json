@@ -64,7 +64,9 @@
     },
     "actions": {
       "view": "Explorer view",
-      "send": "Send XRP"
+      "send": "Send XRP",
+      "my-nfts": "My NFTs",
+      "my-nft-offers": "My NFT offers"
     },
     "not-available": "Not available"
   },
