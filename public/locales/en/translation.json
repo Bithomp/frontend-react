@@ -302,7 +302,8 @@
   "general": {
     "error": "Error",
     "no-data": "No data available",
-    "loading": "Loading..."
+    "loading": "Loading...",
+    "load-failed": "Failed to load"
   },
   "error": {
     "Network Error": "It seems there is no internet connection ;("

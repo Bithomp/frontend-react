@@ -11,6 +11,7 @@ export default function Tiles({ nftList, type = 'name' }) {
   const { t } = useTranslation();
 
   const [loaded, setLoaded] = useState([]);
+  const [errored, setErrored] = useState([]);
   /*
     {
       "issuer": "r9spUPhPBfB6kQeF6vPhwmtFwRhBh2JUCG",
@@ -37,7 +38,11 @@ export default function Tiles({ nftList, type = 'name' }) {
   }
 
   const loadingImage = (nft) => {
-    return !loaded.includes(nft.nftokenID) && <div className="img-status">{t("general.loading")}</div>;
+    if (errored.includes(nft.nftokenID)) {
+      return <div className="img-status">{t("general.load-failed")}</div>;
+    } else if (!loaded.includes(nft.nftokenID)) {
+      return <div className="img-status">{t("general.loading")}</div>;
+    }
   }
 
   const imageOrVideo = (nft) => {
@@ -60,6 +65,7 @@ export default function Tiles({ nftList, type = 'name' }) {
           style={{ display: 'none' }}
           src={nftUrl(nft, 'image')}
           onLoad={() => setLoaded([...loaded, nft.nftokenID])}
+          onError={() => setErrored([...errored, nft.nftokenID])}
           alt={nft.metadata?.name}
         />
       </>;
