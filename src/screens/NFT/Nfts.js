@@ -54,7 +54,7 @@ export default function Nfts() {
     }
 
     if (issuer) {
-      response = await axios('v2/nfts?issuer=' + issuer + '&taxon=' + taxon).catch(error => {
+      response = await axios('v2/nfts?issuer=' + issuer + '&taxon=' + taxon + (hasMore !== "first" ? ("&marker=" + hasMore) : "")).catch(error => {
         onFailedRequest(error, setErrorMessage);
         setLoading(false);
       });
@@ -74,6 +74,8 @@ export default function Nfts() {
           setErrorMessage("");
           if (newdata.markers?.nfts) {
             setHasMore(newdata.markers.nfts);
+          } else if (newdata.marker) {
+            setHasMore(newdata.marker);
           } else {
             setHasMore(false);
           }
