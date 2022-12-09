@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSearchParams, useParams } from 'react-router-dom';
 
-import { isUsernameValid, isAddressValid, isNftOfferValid } from '../../utils';
+import { isAddressOrUsername, isNftOfferValid } from '../../utils';
 import { userOrServiceName } from '../../utils/format';
 
 import './styles.scss';
@@ -53,12 +53,12 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
 
   const onSearch = () => {
     let searchFor = searchItem.trim();
-    if (tab === "nfts" && (isAddressValid(searchFor) || isUsernameValid(searchFor))) {
+    if (tab === "nfts" && isAddressOrUsername(searchFor)) {
       window.location.replace('/nfts/' + encodeURI(searchFor) + addParams);
       return;
     }
 
-    if (tab === "nft-offers" && (isAddressValid(searchFor) || isUsernameValid(searchFor))) {
+    if (tab === "nft-offers" && isAddressOrUsername(searchFor)) {
       window.location.replace('/nft-offers/' + encodeURI(searchFor));
       return;
     }

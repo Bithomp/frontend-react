@@ -9,7 +9,7 @@ import SearchBlock from '../../components/SearchBlock';
 import Tabs from '../../components/Tabs';
 import Tiles from '../../components/Tiles';
 
-import { onFailedRequest, isAddressValid } from '../../utils';
+import { onFailedRequest, isAddressOrUsername } from '../../utils';
 
 import { ReactComponent as LinkIcon } from "../../assets/images/link.svg";
 
@@ -35,7 +35,7 @@ export default function Nfts() {
   ];
 
   const checkApi = async () => {
-    if (!(isAddressValid(id) || isAddressValid(issuer)) || !hasMore || (hasMore === "first" && data.length)) {
+    if (!(isAddressOrUsername(id) || isAddressOrUsername(issuer)) || !hasMore || (hasMore === "first" && data.length)) {
       return;
     }
 

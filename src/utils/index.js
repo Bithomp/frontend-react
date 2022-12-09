@@ -101,6 +101,10 @@ export const isUsernameValid = (x) => {
   return x && /^(?=.{3,18}$)[0-9a-zA-Z]{1,18}[-]{0,1}[0-9a-zA-Z]{1,18}$/.test(x);
 }
 
+export const isAddressOrUsername = (x) => {
+  return isAddressValid(x) || isUsernameValid(x);
+}
+
 export const isNftOfferValid = (x) => {
   return /^[0-9a-zA-Z]{64}$/.test(x);
 }
