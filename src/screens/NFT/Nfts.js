@@ -39,42 +39,49 @@ export default function Nfts() {
       return;
     }
 
-    let addParams = "";
-    if (hasMore === "first") {
-      //check username and service name on the first run
-      addParams = "username=true&service=true&";
-    }
+    let ownerUrlPart = '';
+    let collectionUrlPart = '';
+    let markerUrlPart = '';
 
-    let response;
     if (id) {
-      response = await axios('v2/address/' + id + '?' + addParams + 'nfts=true' + (hasMore !== "first" ? ("&nfts[marker]=" + hasMore) : "")).catch(error => {
-        onFailedRequest(error, setErrorMessage);
-        setLoading(false);
-      });
+      ownerUrlPart = '/' + id;
     }
 
     if (issuer) {
-      response = await axios('v2/nfts?issuer=' + issuer + '&taxon=' + taxon + (hasMore !== "first" ? ("&marker=" + hasMore) : "")).catch(error => {
-        onFailedRequest(error, setErrorMessage);
-        setLoading(false);
-      });
+      collectionUrlPart = '?issuer=' + issuer;
+      if (taxon) {
+        collectionUrlPart += '&taxon=' + taxon;
+      }
+      if (hasMore && hasMore !== "first") {
+        markerUrlPart = "&marker=" + hasMore;
+      }
+    } else {
+      if (hasMore && hasMore !== "first") {
+        markerUrlPart = "?marker=" + hasMore;
+      }
     }
+
+    const response = await axios('v2/nfts' + ownerUrlPart + collectionUrlPart + markerUrlPart).catch(error => {
+      onFailedRequest(error, setErrorMessage);
+      setLoading(false);
+    });
 
     setLoading(false);
     const newdata = response?.data;
     if (newdata) {
-      if (newdata.address || newdata.issuer) {
-        setUserData({
-          username: newdata.username,
-          service: newdata.service,
-          address: newdata.address
-        });
+      if (newdata.owner || newdata.issuer) {
+
+        if (newdata.owner && newdata.accounts) {
+          setUserData({
+            username: newdata.ownerDetails?.username,
+            service: newdata.ownerDetails?.service,
+            address: newdata.owner
+          });
+        }
 
         if (newdata.nfts) {
           setErrorMessage("");
-          if (newdata.markers?.nfts) {
-            setHasMore(newdata.markers.nfts);
-          } else if (newdata.marker) {
+          if (newdata.marker) {
             setHasMore(newdata.marker);
           } else {
             setHasMore(false);
@@ -97,43 +104,6 @@ export default function Nfts() {
       }
     }
   }
-
-  /*
-  {
-    "address": "r9spUPhPBfB6kQeF6vPhwmtFwRhBh2JUCG",
-    "nfts": [
-      {
-        "flags": {
-          "burnable": false,
-          "onlyXRP": false,
-          "trustLine": false,
-          "transferable": true
-        },
-        "issuer": "r9spUPhPBfB6kQeF6vPhwmtFwRhBh2JUCG",
-        "nftokenID": "000800005822D634B22590727E3CB2431F03C3B8B041528316E72FD300000001",
-        "nftokenTaxon": 193871,
-        "transferFee": null,
-        "uri": "68747470733A2F2F697066732E696F2F697066732F6261667962656964727274376C6C796A6232717167337533376F61676E77726D707779756F686C74373637676B6E7635707966796A3668706F68342F6D657461646174612E6A736F6E",
-        "url": "https://cloudflare-ipfs.com/ipfs/bafybeidrrt7llyjb2qqg3u37oagnwrmpwyuohlt767gknv5pyfyj6hpoh4/metadata.json",
-        "sequence": 3658,
-        "metadata": {
-          "name": "Pirate Edition",
-          "description": "-Sanctum NFTs 007-\n\n&quot;The discovery of treasure in the land of Atlantis.&quot;",
-          "external_url": "https://address.com/nfts",
-          "attributes": [
-            {
-              "trait_type": "skin",
-              "value": "PIRATES SKIN"
-            }
-          ],
-          "category": "collectibles",
-          "image_url": "ipfs://ipfs/bafybeievxhvot3tikwz4vupfkzmlybh6rzpwsz4gkscc7obc6dkbyhrvqe/image.jpeg",
-          "animation_url": "ipfs://ipfs/bafybeievxhvot3tikwz4vupfkzmlybh6rzpwsz4gkscc7obc6dkbyhrvqe/animation.jpeg"
-        }
-      }
-    ]
-  }
-  */
 
   useEffect(() => {
     checkApi();
