@@ -8,6 +8,7 @@ import SEO from '../../components/SEO';
 import SearchBlock from '../../components/SearchBlock';
 import Tabs from '../../components/Tabs';
 import Tiles from '../../components/Tiles';
+import IssuerSelect from '../../components/IssuerSelect';
 
 import { onFailedRequest, isAddressOrUsername } from '../../utils';
 
@@ -26,7 +27,8 @@ export default function Nfts() {
   const [search, setSearch] = useState(searchParams.get("search") || "");
   const [filteredData, setFilteredData] = useState([]);
   const [userData, setUserData] = useState({});
-  const [issuer] = useState(searchParams.get("issuer") || "");
+  const [issuersList, setIssuersList] = useState([]);
+  const [issuer, setIssuer] = useState(searchParams.get("issuer") || "");
   const [taxon] = useState(searchParams.get("taxon") || "");
 
   const tabList = [
@@ -34,8 +36,18 @@ export default function Nfts() {
     { value: 'list', label: t("tabs.list") }
   ];
 
-  const checkApi = async () => {
-    if (!(isAddressOrUsername(id) || isAddressOrUsername(issuer)) || !hasMore || (hasMore === "first" && data.length)) {
+  const checkApi = async (options) => {
+    let marker = hasMore;
+    let nftsData = data;
+    if (options?.restart) {
+      marker = "first";
+      setHasMore("first");
+      setLoading(true);
+      setData([]);
+      nftsData = [];
+    }
+
+    if (!(isAddressOrUsername(id) || isAddressOrUsername(issuer)) || !marker || (marker === "first" && nftsData.length)) {
       return;
     }
 
@@ -45,6 +57,7 @@ export default function Nfts() {
 
     if (id) {
       ownerUrlPart = '/' + id;
+      //get issuer list for that owner here when usernames are supported
     }
 
     if (issuer) {
@@ -52,12 +65,12 @@ export default function Nfts() {
       if (taxon) {
         collectionUrlPart += '&taxon=' + taxon;
       }
-      if (hasMore && hasMore !== "first") {
-        markerUrlPart = "&marker=" + hasMore;
+      if (marker && marker !== "first") {
+        markerUrlPart = "&marker=" + marker;
       }
     } else {
-      if (hasMore && hasMore !== "first") {
-        markerUrlPart = "?marker=" + hasMore;
+      if (marker && marker !== "first") {
+        markerUrlPart = "?marker=" + marker;
       }
     }
 
@@ -77,6 +90,13 @@ export default function Nfts() {
             service: newdata.ownerDetails?.service,
             address: newdata.owner
           });
+          //move to earlier when usernames are supported
+          const issuersJson = await axios('v2/nft-issuers?owner=' + newdata.owner).catch(error => {
+            onFailedRequest(error, (errorText) => { console.log(errorText) });
+          });
+          if (issuersJson?.data?.issuers) {
+            setIssuersList(issuersJson.data.issuers);
+          }
         }
 
         if (newdata.nfts) {
@@ -86,9 +106,9 @@ export default function Nfts() {
           } else {
             setHasMore(false);
           }
-          setData([...data, ...newdata.nfts]);
+          setData([...nftsData, ...newdata.nfts]);
         } else {
-          if (hasMore === 'first') {
+          if (marker === 'first') {
             setErrorMessage(t("explorer.nfts.no-nfts"));
           } else {
             setHasMore(false);
@@ -106,9 +126,9 @@ export default function Nfts() {
   }
 
   useEffect(() => {
-    checkApi();
+    checkApi({ restart: true });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id]);
+  }, [id, issuer]);
 
   useEffect(() => {
     const exist = tabList.some(t => t.value === tab);
@@ -120,9 +140,16 @@ export default function Nfts() {
     } else {
       searchParams.set("view", tab);
     }
+
+    if (isAddressOrUsername(issuer)) {
+      searchParams.set("issuer", issuer);
+    } else {
+      searchParams.delete("issuer");
+    }
+
     setSearchParams(searchParams);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [tab]);
+  }, [tab, issuer]);
 
   const onSearchChange = (e) => {
     let searchName = e.target.value;
@@ -151,7 +178,7 @@ export default function Nfts() {
       tab="nfts"
       userData={userData}
     />
-    <div className="content-text" style={{ marginTop: "20px" }}>
+    <div className="content-text" style={{ marginTop: "20px", minHeight: "480px" }}>
       {(id || issuer) ?
         <InfiniteScroll
           dataLength={filteredData.length}
@@ -174,7 +201,21 @@ export default function Nfts() {
         >
           <Tabs tabList={tabList} tab={tab} setTab={setTab} />
           <div className='center' style={{ marginBottom: "10px" }}>
-            <input placeholder={t("explorer.nfts.search-by-name")} value={search} onChange={onSearchChange} className="input-text" spellCheck="false" maxLength="18" />
+
+            <IssuerSelect
+              issuersList={issuersList}
+              selectedIssuer={issuer}
+              setSelectedIssuer={setIssuer}
+            />
+
+            <input
+              placeholder={t("explorer.nfts.search-by-name")}
+              value={search}
+              onChange={onSearchChange}
+              className="input-text halv"
+              spellCheck="false"
+              maxLength="18"
+            />
           </div>
           {tab === "list" &&
             <table className="table-large">
@@ -190,7 +231,7 @@ export default function Nfts() {
               </thead>
               <tbody>
                 {loading ?
-                  <tr className='center'><td colSpan="5"><span className="waiting"></span></td></tr>
+                  <tr className='center'><td colSpan="100"><span className="waiting"></span></td></tr>
                   :
                   <>
                     {!errorMessage ? filteredData.map((nft, i) =>
@@ -201,7 +242,7 @@ export default function Nfts() {
                         <td className='center'>{nft.nftokenTaxon}</td>
                         <td className='center'><a href={"/explorer/" + nft.nftokenID}><LinkIcon /></a></td>
                         <td className='center'><a href={"/explorer/" + nft.issuer}><LinkIcon /></a></td>
-                      </tr>) : <tr><td colSpan="5" className='center orange bold'>{errorMessage}</td></tr>
+                      </tr>) : <tr><td colSpan="100" className='center orange bold'>{errorMessage}</td></tr>
                     }
                   </>
                 }

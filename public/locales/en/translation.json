@@ -303,7 +303,8 @@
     "error": "Error",
     "no-data": "No data available",
     "loading": "Loading...",
-    "load-failed": "Failed to load"
+    "load-failed": "Failed to load",
+    "all-issuers": "All issuers"
   },
   "error": {
     "Network Error": "It seems there is no internet connection ;("
