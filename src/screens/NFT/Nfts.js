@@ -71,7 +71,7 @@ export default function Nfts() {
     if (newdata) {
       if (newdata.owner || newdata.issuer) {
 
-        if (newdata.owner && newdata.accounts) {
+        if (newdata.owner) {
           setUserData({
             username: newdata.ownerDetails?.username,
             service: newdata.ownerDetails?.service,
