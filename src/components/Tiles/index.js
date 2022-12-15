@@ -86,7 +86,7 @@ export default function Tiles({ nftList, type = 'name' }) {
                   <div className='title'></div>
                   <h1>{nft.metadata?.name ? shortName(nft.metadata.name) : ''}</h1>
                   <div className='title-full'>
-                    {t("table.name")}: {nft.metadata?.name}<br />
+                    {nft.metadata?.name ? <>{t("table.name")}: {stripText(nft.metadata.name)}<br /></> : ""}
                     {t("table.serial")}: {nft.sequence}<br />
                     {t("table.taxon")}: {nft.nftokenTaxon}
                   </div>
@@ -116,7 +116,7 @@ export default function Tiles({ nftList, type = 'name' }) {
                     {type === 'latest' ? timeFormat(nft.acceptedAt) : dateFormat(nft.acceptedAt)}
                   </h1>
                   <div className='title-full'>
-                    {t("table.name")}: {stripText(nft.nftoken?.metadata?.name)}<br />
+                    {nft.nftoken?.metadata?.name ? <>{t("table.name")}: {stripText(nft.nftoken.metadata.name)}<br /></> : ""}
                     {t("table.serial")}: {nft.nftoken?.sequence}<br />
                     {t("table.taxon")}: {nft.nftoken?.nftokenTaxon}
                   </div>
