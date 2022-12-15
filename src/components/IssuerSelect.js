@@ -1,5 +1,6 @@
 import Select from 'react-select';
 import { useTranslation } from "react-i18next";
+import { useState, useEffect } from 'react';
 
 import '../assets/styles/components/issuerSelect.scss';
 
@@ -32,15 +33,36 @@ export default function CurrencySelect({ issuersList, selectedIssuer, setSelecte
     issuersArray.unshift(emptyOption);
   }
 
+  const [value, setValue] = useState(defaultOption);
+
   const onChange = value => {
+    setValue(value);
     setSelectedIssuer(value.label);
   };
+
+  useEffect(() => {
+    if (selectedIssuer && issuersList) {
+      for (let i = 0; i < issuersList.length; i++) {
+        const { address, username, service } = issuersList[i];
+        if (address === selectedIssuer || username?.toLowerCase() === selectedIssuer.toLowerCase()) {
+          let label = address;
+          if (service) {
+            label = service;
+          } else if (username) {
+            label = username;
+          }
+          setValue({ value: address, label });
+        }
+      }
+    }
+  }, [selectedIssuer, issuersList]);
 
   return (
     <Select
       options={issuersArray}
       defaultValue={defaultOption}
       onChange={onChange}
+      value={value}
       isSearchable={true}
       className="issuer-select"
       classNamePrefix="react-select"
