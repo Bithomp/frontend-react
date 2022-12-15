@@ -3,11 +3,11 @@ import { Buffer } from 'buffer';
 export const userOrServiceName = (data) => {
   if (data) {
     const { service, username } = data;
-    if (service) {
-      return <b className='green'>{service}</b>;
-    }
     if (username) {
       return <b className='blue'>{username}</b>;
+    }
+    if (service) {
+      return <b className='green'>{service}</b>;
     }
   }
   return "";

@@ -7,7 +7,7 @@ import '../assets/styles/components/issuerSelect.scss';
 export default function CurrencySelect({ issuersList, selectedIssuer, setSelectedIssuer }) {
   const { t } = useTranslation();
 
-  let emptyOption = { value: '', label: t("general.all-issuers")};
+  let emptyOption = { value: '', label: t("general.all-issuers"), username: ""};
   let defaultOption = emptyOption;
   let issuersArray = [];
 
@@ -15,13 +15,13 @@ export default function CurrencySelect({ issuersList, selectedIssuer, setSelecte
     for (let i = 0; i < issuersList.length; i++) {
       const { address, service, username } = issuersList[i];
       let label = address;
-      if (service) {
-        label = service;
-      } else if (username) {
+      if (username) {
         label = username;
+      } else if (service) {
+        label = service;
       }
-      const option = { value: address, label };
-      if (address === selectedIssuer || label.toLowerCase() === selectedIssuer.toLowerCase()) {
+      const option = { value: address, label, username };
+      if (address === selectedIssuer || username?.toLowerCase() === selectedIssuer.toLowerCase()) {
         defaultOption = option;
       }
       if (address === label) {
@@ -37,7 +37,7 @@ export default function CurrencySelect({ issuersList, selectedIssuer, setSelecte
 
   const onChange = value => {
     setValue(value);
-    setSelectedIssuer(value.label);
+    setSelectedIssuer(value.username || value.value);
   };
 
   useEffect(() => {
@@ -46,12 +46,12 @@ export default function CurrencySelect({ issuersList, selectedIssuer, setSelecte
         const { address, username, service } = issuersList[i];
         if (address === selectedIssuer || username?.toLowerCase() === selectedIssuer.toLowerCase()) {
           let label = address;
-          if (service) {
-            label = service;
-          } else if (username) {
+          if (username) {
             label = username;
+          } else if (service) {
+            label = service;
           }
-          setValue({ value: address, label });
+          setValue({ value: address, label, username });
         }
       }
     }
