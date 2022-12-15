@@ -7,6 +7,21 @@ import { amountFormat, dateFormat, timeFormat } from '../../utils/format';
 
 import './styles.scss';
 
+const addressName = (details, name) => {
+  if (!details) return "";
+  const { username, service } = details;
+  let label = "";
+  if (service) {
+    label = service;
+  } else if (username) {
+    label = username;
+  }
+  if (label) {
+    return <><br />{name}: {label}</>;
+  }
+  return "";
+}
+
 export default function Tiles({ nftList, type = 'name' }) {
   const { t } = useTranslation();
 
@@ -89,6 +104,8 @@ export default function Tiles({ nftList, type = 'name' }) {
                     {nft.metadata?.name ? <>{t("table.name")}: {stripText(nft.metadata.name)}<br /></> : ""}
                     {t("table.serial")}: {nft.sequence}<br />
                     {t("table.taxon")}: {nft.nftokenTaxon}
+                    {addressName(nft.issuerDetails, t("table.issuer"))}
+                    {addressName(nft.ownerDetails, t("table.owner"))}
                   </div>
                 </a>
               </div>
@@ -119,6 +136,8 @@ export default function Tiles({ nftList, type = 'name' }) {
                     {nft.nftoken?.metadata?.name ? <>{t("table.name")}: {stripText(nft.nftoken.metadata.name)}<br /></> : ""}
                     {t("table.serial")}: {nft.nftoken?.sequence}<br />
                     {t("table.taxon")}: {nft.nftoken?.nftokenTaxon}
+                    {addressName(nft.nftoken?.issuerDetails, t("table.issuer"))}
+                    {addressName(nft.nftoken?.ownerDetails, t("table.owner"))}
                   </div>
                 </a>
               </div>

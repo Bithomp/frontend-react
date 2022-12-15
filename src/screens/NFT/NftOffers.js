@@ -38,7 +38,7 @@ export default function NftOffers() {
       if (newdata.address) {
         setUserData({
           username: newdata.username,
-          service: newdata.service,
+          service: newdata.service?.name,
           address: newdata.address
         });
 
