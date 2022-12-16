@@ -298,6 +298,7 @@ export default function Nfts() {
               className="input-text"
               spellCheck="false"
               maxLength="18"
+              disabled={(id || ownerInput || issuerInput) ? false : true}
             />
           </span>
         </div>
@@ -305,7 +306,7 @@ export default function Nfts() {
           <input type="button" className="button-action" value={t("button.search")} onClick={searchClick} />
         </p>
       </>}
-      {(id || issuer) ?
+      {(id || issuer || owner) ?
         <InfiniteScroll
           dataLength={filteredData.length}
           next={checkApi}
