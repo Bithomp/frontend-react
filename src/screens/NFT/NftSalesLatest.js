@@ -8,7 +8,7 @@ import Tabs from '../../components/Tabs';
 import Tiles from '../../components/Tiles';
 
 import { stripText, onFailedRequest } from '../../utils';
-import { timeFormat, amountFormat, userOrServiceName } from '../../utils/format';
+import { timeFormat, amountFormat, nftLink } from '../../utils/format';
 
 import { ReactComponent as LinkIcon } from "../../assets/images/link.svg";
 
@@ -146,16 +146,8 @@ export default function NftSalesLatest() {
                     <td>{nft.nftoken.sequence}</td>
                     <td className='center'><a href={"/explorer/" + nft.nftokenID}><LinkIcon /></a></td>
                     <td className='center'><a href={"/explorer/" + nft.acceptedTxHash}><LinkIcon /></a></td>
-                    <td className='center hide-on-mobile'>
-                      <a href={"/explorer/" + nft.owner}>
-                        {userOrServiceName(nft.ownerDetails) ? userOrServiceName(nft.ownerDetails, { link: true }) : <LinkIcon />}
-                      </a>
-                    </td>
-                    <td className='center hide-on-mobile'>
-                      <a href={"/explorer/" + nft.nftoken.issuer}>
-                        {userOrServiceName(nft.nftoken.issuerDetails) ? userOrServiceName(nft.nftoken.issuerDetails, { link: true }) : <LinkIcon />}
-                      </a>
-                    </td>
+                    <td className='center hide-on-mobile'>{nftLink(nft, 'owner')}</td>
+                    <td className='center hide-on-mobile'>{nftLink(nft.nftoken, 'issuer')}</td>
                   </tr>
                 ) : <tr className='center'><td colSpan="100">{t("general.no-data")}</td></tr>}
               </>

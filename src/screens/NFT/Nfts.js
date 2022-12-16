@@ -12,7 +12,7 @@ import IssuerSelect from '../../components/IssuerSelect';
 
 import { onFailedRequest, isAddressOrUsername } from '../../utils';
 import { isValidTaxon } from '../../utils/nft';
-import { userOrServiceName } from '../../utils/format';
+import { nftLink } from '../../utils/format';
 
 import { ReactComponent as LinkIcon } from "../../assets/images/link.svg";
 
@@ -366,20 +366,8 @@ export default function Nfts() {
                         <td className='center'>{nft.sequence}</td>
                         {!taxon && <td className='center'>{nft.nftokenTaxon}</td>}
                         <td className='center'><a href={"/explorer/" + nft.nftokenID}><LinkIcon /></a></td>
-                        {!issuer &&
-                          <td className='center'>
-                            <a href={"/explorer/" + nft.issuer}>
-                              {userOrServiceName(nft.issuerDetails) ? userOrServiceName(nft.issuerDetails, { link: true }) : <LinkIcon />}
-                            </a>
-                          </td>
-                        }
-                        {(!id && !owner) &&
-                          <td className='center'>
-                            <a href={"/explorer/" + nft.owner}>
-                              {userOrServiceName(nft.ownerDetails) ? userOrServiceName(nft.ownerDetails, { link: true }) : <LinkIcon />}
-                            </a>
-                          </td>
-                        }
+                        {!issuer && <td className='center'>{nftLink(nft, 'issuer')}</td>}
+                        {(!id && !owner) && <td className='center'>{nftLink(nft, 'owner')}</td>}
                       </tr>) : <tr><td colSpan="100" className='center orange bold'>{errorMessage}</td></tr>
                     }
                   </>

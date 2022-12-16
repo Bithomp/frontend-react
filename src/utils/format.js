@@ -1,5 +1,27 @@
 import { Buffer } from 'buffer';
 
+import { ReactComponent as LinkIcon } from "../assets/images/link.svg";
+
+export const nftLink = (nft, type) => {
+  if (!nft || !type || !nft[type]) return "";
+
+  let link = "/explorer/";
+  if (type === "issuer") {
+    link = "/nft-explorer?issuer=";
+  } else if (type === "owner") {
+    link = "/nfts/";
+  }
+
+  if (nft[type + 'Details']) {
+    const showName = userOrServiceName(nft[type + 'Details'], { link: true });
+    const { username } = nft[type + 'Details'];
+    return <a href={link + (username || nft[type])}>
+      {showName ? showName : <LinkIcon />}
+    </a>
+  }
+  return <a href={link + nft[type]}><LinkIcon /></a>
+}
+
 export const userOrServiceName = (data, options) => {
   if (data) {
     const { service, username } = data;
