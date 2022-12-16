@@ -234,18 +234,22 @@ export default function Nfts() {
   }
 
   return <>
-    <SEO title={t("menu.nfts") + " " + id} />
-    {!nftExplorer &&
-      <SearchBlock
-        searchPlaceholderText={t("explorer.enter-address")}
-        tab="nfts"
-        userData={userData}
-      />
+    {nftExplorer ?
+      <SEO title={t("menu.nft-explorer")} />
+      :
+      <>
+        <SEO title={t("menu.nfts") + " " + id} />
+        <SearchBlock
+          searchPlaceholderText={t("explorer.enter-address")}
+          tab="nfts"
+          userData={userData}
+        />
+      </>
     }
 
     <div className="content-text" style={{ marginTop: "20px", minHeight: "480px" }}>
       {nftExplorer && <>
-        <h2 className='center'>{t("menu.nfts")}</h2>
+        <h2 className='center'>{t("menu.nft-explorer")}</h2>
         <div className='center'>
           <span className='halv'>
             <span className='input-title'>{t("table.issuer")}</span>

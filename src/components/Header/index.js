@@ -86,10 +86,12 @@ export default function Header({ theme, switchTheme, setSignInFormOpen, account,
           <div className="menu-dropdown">
             <div className="menu-dropdown-button">NFT</div>
             <div className="menu-dropdown-content">
-              <a href="/nfts">{t("menu.nfts")}</a>
+              <a href="/nft-explorer">{t("menu.nft-explorer")}</a>
               <Link to="/top-nft-sales">{t("menu.nft-sales-top")}</Link>
               <Link to="/latest-nft-sales">{t("menu.nft-sales-latest")}</Link>
               <Link to="/nft-statistics">{t("menu.nft-statistics")}</Link>
+              <a href="/nfts">{t("menu.nfts")}</a>
+              <a href="/nft-offers">{t("menu.nft-offers")}</a>
             </div>
           </div>
 
@@ -190,7 +192,7 @@ export default function Header({ theme, switchTheme, setSignInFormOpen, account,
           {t("menu.api")}
         </a>
         <div className="mobile-menu-directory"><span>NFT</span></div>
-        <a href="/nfts" className="mobile-menu-item" onClick={mobileMenuToggle}> {t("menu.nfts")}</a>
+        <a href="/nft-explorer" className="mobile-menu-item" onClick={mobileMenuToggle}> {t("menu.nft-explorer")}</a>
         <Link
           to="/top-nft-sales"
           className="mobile-menu-item"
@@ -212,6 +214,8 @@ export default function Header({ theme, switchTheme, setSignInFormOpen, account,
         >
           {t("menu.nft-statistics")}
         </Link>
+        <a href="/nfts" className="mobile-menu-item" onClick={mobileMenuToggle}> {t("menu.nfts")}</a>
+        <a href="/nft-offers" className="mobile-menu-item" onClick={mobileMenuToggle}> {t("menu.nft-offers")}</a>
 
         <div className="mobile-menu-directory"><span>XRPL</span></div>
         <Link
