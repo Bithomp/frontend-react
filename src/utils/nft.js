@@ -1,6 +1,12 @@
 import { Buffer } from 'buffer';
 import { stripText } from '.';
 
+export const isValidTaxon = (taxon) => {
+  if (taxon !== 0 && !taxon) return false;
+  taxon = Number(taxon);
+  return Number.isInteger(taxon) && taxon > -1 && taxon < 2147483648;
+}
+
 const isValidCid = (hash) => {
   return /^Qm[a-zA-Z0-9]{44}$|^baf[a-zA-Z0-9]{56}$/.test(hash);
 }

@@ -175,6 +175,20 @@ input {
   }
 }
 
+.input-title {
+  text-align: left;
+  display: inline-block;
+  width: 100%;
+  padding-bottom: 5px;
+}
+
+span.halv {
+  margin: 5px;
+  max-width: 378px;
+  width: calc(100% - 44px);
+  display: inline-block;
+}
+
 button {
   font-family: inherit;
   transition: color 0.5s;

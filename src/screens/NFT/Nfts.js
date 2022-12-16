@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { useState, useEffect } from 'react';
-import { useParams, useSearchParams } from "react-router-dom";
+import { useParams, useSearchParams, useLocation } from "react-router-dom";
 import axios from 'axios';
 import InfiniteScroll from 'react-infinite-scroll-component';
 
@@ -11,16 +11,19 @@ import Tiles from '../../components/Tiles';
 import IssuerSelect from '../../components/IssuerSelect';
 
 import { onFailedRequest, isAddressOrUsername } from '../../utils';
+import { isValidTaxon } from '../../utils/nft';
 
 import { ReactComponent as LinkIcon } from "../../assets/images/link.svg";
+import { relativeTimeRounding } from 'moment';
 
 export default function Nfts() {
   const { t } = useTranslation();
   const { id } = useParams();
+  const location = useLocation();
 
   const [searchParams, setSearchParams] = useSearchParams();
   const [data, setData] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState("first");
   const [errorMessage, setErrorMessage] = useState("");
   const [tab, setTab] = useState(searchParams.get("view") || "tiles");
@@ -29,7 +32,13 @@ export default function Nfts() {
   const [userData, setUserData] = useState({});
   const [issuersList, setIssuersList] = useState([]);
   const [issuer, setIssuer] = useState(searchParams.get("issuer") || "");
-  const [taxon] = useState(searchParams.get("taxon") || "");
+  const [owner, setOwner] = useState(searchParams.get("owner") || "");
+  const [taxon, setTaxon] = useState(searchParams.get("taxon") || "");
+  const [issuerInput, setIssuerInput] = useState(searchParams.get("issuer") || "");
+  const [ownerInput, setOwnerInput] = useState(searchParams.get("owner") || "");
+  const [taxonInput, setTaxonInput] = useState(searchParams.get("taxon") || "");
+
+  const nftExplorer = location.pathname.includes("nft-explorer");
 
   const tabList = [
     { value: 'tiles', label: t("tabs.tiles") },
@@ -47,7 +56,7 @@ export default function Nfts() {
       nftsData = [];
     }
 
-    if (!(isAddressOrUsername(id) || isAddressOrUsername(issuer)) || !marker || (marker === "first" && nftsData.length)) {
+    if (!(isAddressOrUsername(id) || isAddressOrUsername(issuer) || isAddressOrUsername(owner)) || !marker || (marker === "first" && nftsData.length)) {
       return;
     }
 
@@ -55,8 +64,8 @@ export default function Nfts() {
     let collectionUrlPart = '';
     let markerUrlPart = '';
 
-    if (id) {
-      ownerUrlPart = '/' + id;
+    if (id || owner) {
+      ownerUrlPart = '/' + (id || owner);
       //get issuer list for that owner here when usernames are supported
     }
 
@@ -74,9 +83,11 @@ export default function Nfts() {
       }
     }
 
+    if (marker === "first") {
+      setLoading(true);
+    }
     const response = await axios('v2/nfts' + ownerUrlPart + collectionUrlPart + markerUrlPart).catch(error => {
       onFailedRequest(error, setErrorMessage);
-      setLoading(false);
     });
 
     setLoading(false);
@@ -126,9 +137,11 @@ export default function Nfts() {
   }
 
   useEffect(() => {
-    checkApi({ restart: true });
+    if (id || issuer || owner) {
+      checkApi({ restart: true });
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id, issuer]);
+  }, [id, issuer, taxon, owner]);
 
   useEffect(() => {
     const exist = tabList.some(t => t.value === tab);
@@ -143,13 +156,25 @@ export default function Nfts() {
 
     if (isAddressOrUsername(issuer)) {
       searchParams.set("issuer", issuer);
+      if (isValidTaxon(taxon)) {
+        searchParams.set("taxon", taxon);
+      } else {
+        searchParams.delete("taxon");
+      }
     } else {
       searchParams.delete("issuer");
+      searchParams.delete("taxon");
+    }
+
+    if (isAddressOrUsername(owner)) {
+      searchParams.set("owner", owner);
+    } else {
+      searchParams.delete("owner");
     }
 
     setSearchParams(searchParams);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [tab, issuer]);
+  }, [tab, issuer, taxon, owner]);
 
   const onSearchChange = (e) => {
     let searchName = e.target.value;
@@ -171,14 +196,111 @@ export default function Nfts() {
     }
   }, [data, search]);
 
+  const searchClick = () => {
+    if (isAddressOrUsername(issuerInput)) {
+      setIssuer(issuerInput);
+      if (isValidTaxon(taxonInput)) {
+        setTaxon(taxonInput);
+      } else {
+        setTaxonInput("");
+        setTaxon("");
+      }
+    } else {
+      setIssuerInput("");
+      setIssuer("");
+      setTaxonInput("");
+      setTaxon("");
+    }
+    if (isAddressOrUsername(ownerInput)) {
+      setOwner(ownerInput);
+    } else {
+      setOwnerInput("");
+      setOwner("");
+    }
+  }
+
+  const enterPress = e => {
+    if (e.key === 'Enter') {
+      searchClick();
+    }
+  }
+
+  const onTaxonInput = (e) => {
+    if (!/^\d+$/.test(e.key)) {
+      e.preventDefault();
+    }
+    enterPress(e);
+  }
+
   return <>
     <SEO title={t("menu.nfts") + " " + id} />
-    <SearchBlock
-      searchPlaceholderText={t("explorer.enter-address")}
-      tab="nfts"
-      userData={userData}
-    />
+    {!nftExplorer &&
+      <SearchBlock
+        searchPlaceholderText={t("explorer.enter-address")}
+        tab="nfts"
+        userData={userData}
+      />
+    }
+
     <div className="content-text" style={{ marginTop: "20px", minHeight: "480px" }}>
+      {nftExplorer && <>
+        <h2 className='center'>{t("menu.nfts")}</h2>
+        <div className='center'>
+          <span className='halv'>
+            <span className='input-title'>{t("table.issuer")}</span>
+            <input
+              placeholder={t("explorer.nfts.search-by-issuer")}
+              value={issuerInput}
+              onChange={(e) => { setIssuerInput(e.target.value) }}
+              onKeyPress={enterPress}
+              className="input-text"
+              spellCheck="false"
+              maxLength="35"
+            />
+          </span>
+          <span className='halv'>
+            <span className='input-title'>{t("table.taxon")}</span>
+            <input
+              placeholder={t("explorer.nfts.search-by-taxon")}
+              value={taxonInput}
+              onChange={(e) => { setTaxonInput(e.target.value) }}
+              onKeyPress={onTaxonInput}
+              className="input-text"
+              spellCheck="false"
+              maxLength="35"
+              disabled={issuerInput ? false : true}
+            />
+          </span>
+        </div>
+        <div className='center'>
+          <span className='halv'>
+            <span className='input-title'>{t("table.owner")}</span>
+            <input
+              placeholder={t("explorer.nfts.search-by-owner")}
+              value={ownerInput}
+              onChange={(e) => { setOwnerInput(e.target.value) }}
+              onKeyPress={enterPress}
+              className="input-text"
+              spellCheck="false"
+              maxLength="35"
+            />
+          </span>
+          <span className='halv'>
+            <span className='input-title'>{t("table.name")}</span>
+            <input
+              placeholder={t("explorer.nfts.search-by-name")}
+              value={search}
+              onChange={onSearchChange}
+              className="input-text"
+              spellCheck="false"
+              maxLength="18"
+            />
+          </span>
+        </div>
+        <p className="center" style={{ marginBottom: "40px" }}>
+          <input type="button" className="button-action" value={t("button.search")} onClick={searchClick} />
+        </p>
+      </>}
       {(id || issuer) ?
         <InfiniteScroll
           dataLength={filteredData.length}
@@ -200,23 +322,24 @@ export default function Nfts() {
         //}
         >
           <Tabs tabList={tabList} tab={tab} setTab={setTab} />
-          <div className='center' style={{ marginBottom: "10px" }}>
+          {!nftExplorer &&
+            <div className='center' style={{ marginBottom: "10px" }}>
+              <IssuerSelect
+                issuersList={issuersList}
+                selectedIssuer={issuer}
+                setSelectedIssuer={setIssuer}
+              />
+              <input
+                placeholder={t("explorer.nfts.search-by-name")}
+                value={search}
+                onChange={onSearchChange}
+                className="input-text halv"
+                spellCheck="false"
+                maxLength="18"
+              />
+            </div>
+          }
 
-            <IssuerSelect
-              issuersList={issuersList}
-              selectedIssuer={issuer}
-              setSelectedIssuer={setIssuer}
-            />
-
-            <input
-              placeholder={t("explorer.nfts.search-by-name")}
-              value={search}
-              onChange={onSearchChange}
-              className="input-text halv"
-              spellCheck="false"
-              maxLength="18"
-            />
-          </div>
           {tab === "list" &&
             <table className="table-large">
               <thead>
@@ -267,10 +390,14 @@ export default function Nfts() {
         </InfiniteScroll>
         :
         <>
-          <h2 className='center'>{t("menu.nfts")}</h2>
-          <p className='center'>
-            {t("explorer.nfts.desc")}
-          </p>
+          {!nftExplorer &&
+            <>
+              <h2 className='center'>{t("menu.nfts")}</h2>
+              <p className='center'>
+                {t("explorer.nfts.desc")}
+              </p>
+            </>
+          }
         </>
       }
     </div>
