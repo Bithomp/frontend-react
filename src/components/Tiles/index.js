@@ -22,7 +22,7 @@ const addressName = (details, name) => {
   return "";
 }
 
-export default function Tiles({ nftList, type = 'name', content = 'image' }) {
+export default function Tiles({ nftList, type = 'name' }) {
   const { t } = useTranslation();
 
   const [loaded, setLoaded] = useState([]);
@@ -87,33 +87,6 @@ export default function Tiles({ nftList, type = 'name', content = 'image' }) {
     }
   }
 
-  const videoOrImage = (nft) => {
-    const nftVideoUrl = nftUrl(nft, 'video');
-    if (nftVideoUrl) {
-      return <div className='tile-content'>
-        <video autoPlay playsInline muted loop>
-          <source src={nftVideoUrl} type="video/mp4" />
-        </video>
-      </div>;
-    } else {
-      let imageStyle = nftImageStyle(nft);
-      if (Object.keys(imageStyle).length === 0) {
-        return <div className='tile-content background-secondary'></div>;
-      } else {
-        return <>
-          <div className='tile-content' style={imageStyle}></div>
-          <img
-            style={{ display: 'none' }}
-            src={nftUrl(nft, 'image')}
-            onLoad={() => setLoaded([...loaded, nft.nftokenID])}
-            onError={() => setErrored([...errored, nft.nftokenID])}
-            alt={nft.metadata?.name}
-          />
-        </>;
-      }
-    }
-  }
-
   if (type === "name") {
     return <div className='tiles'>
       <div className="grid">
@@ -123,7 +96,7 @@ export default function Tiles({ nftList, type = 'name', content = 'image' }) {
               <div className="hexIn">
                 <a className="hexLink" href={"/explorer/" + nft.nftokenID}>
                   {loadingImage(nft)}
-                  {content === 'video' ? videoOrImage(nft) : imageOrVideo(nft)}
+                  {imageOrVideo(nft)}
                   <div className="index">{i + 1}</div>
                   <div className='title'></div>
                   <h1>{nft.metadata?.name ? shortName(nft.metadata.name) : ''}</h1>
@@ -152,7 +125,7 @@ export default function Tiles({ nftList, type = 'name', content = 'image' }) {
               <div className="hexIn">
                 <a className="hexLink" href={"/explorer/" + nft.nftoken.nftokenID}>
                   {loadingImage(nft.nftoken)}
-                  {content === 'video' ? videoOrImage(nft.nftoken) : imageOrVideo(nft.nftoken)}
+                  {imageOrVideo(nft.nftoken)}
                   <div className="index">{i + 1}</div>
                   <div className='title'></div>
                   <h1>

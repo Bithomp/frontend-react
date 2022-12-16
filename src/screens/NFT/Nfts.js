@@ -37,7 +37,6 @@ export default function Nfts() {
   const [issuerInput, setIssuerInput] = useState(searchParams.get("issuer") || "");
   const [ownerInput, setOwnerInput] = useState(searchParams.get("owner") || "");
   const [taxonInput, setTaxonInput] = useState(searchParams.get("taxon") || "");
-  const [content] = useState(searchParams.get("content") || "");
 
   const nftExplorer = location.pathname.includes("nft-explorer");
 
@@ -388,7 +387,7 @@ export default function Nfts() {
                   {errorMessage ?
                     <div className='center'>{errorMessage}</div>
                     :
-                    <Tiles nftList={filteredData} content={content === 'video' ? content : 'image'} />
+                    <Tiles nftList={filteredData} />
                   }
                 </>
               }
