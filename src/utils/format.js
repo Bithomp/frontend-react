@@ -1,8 +1,14 @@
 import { Buffer } from 'buffer';
 
-export const userOrServiceName = (data) => {
+export const userOrServiceName = (data, options) => {
   if (data) {
     const { service, username } = data;
+
+    if (options?.link) {
+      if (username) return username;
+      if (service) return service;
+    }
+
     if (username) {
       return <b className='blue'>{username}</b>;
     }

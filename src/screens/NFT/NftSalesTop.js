@@ -154,12 +154,12 @@ export default function NftSalesTop() {
                     <td className='center'><a href={"/explorer/" + nft.acceptedTxHash}><LinkIcon /></a></td>
                     <td className='center hide-on-mobile'>
                       <a href={"/explorer/" + nft.owner}>
-                        {userOrServiceName(nft.ownerDetails) ? userOrServiceName(nft.ownerDetails) : <LinkIcon />}
+                        {userOrServiceName(nft.ownerDetails) ? userOrServiceName(nft.ownerDetails, { link: true }) : <LinkIcon />}
                       </a>
                     </td>
                     <td className='center hide-on-mobile'>
                       <a href={"/explorer/" + nft.nftoken.issuer}>
-                        {userOrServiceName(nft.nftoken.issuerDetails) ? userOrServiceName(nft.nftoken.issuerDetails) : <LinkIcon />}
+                        {userOrServiceName(nft.nftoken.issuerDetails) ? userOrServiceName(nft.nftoken.issuerDetails, { link: true }) : <LinkIcon />}
                       </a>
                     </td>
                   </tr>

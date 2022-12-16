@@ -12,9 +12,9 @@ import IssuerSelect from '../../components/IssuerSelect';
 
 import { onFailedRequest, isAddressOrUsername } from '../../utils';
 import { isValidTaxon } from '../../utils/nft';
+import { userOrServiceName } from '../../utils/format';
 
 import { ReactComponent as LinkIcon } from "../../assets/images/link.svg";
-import { relativeTimeRounding } from 'moment';
 
 export default function Nfts() {
   const { t } = useTranslation();
@@ -350,6 +350,7 @@ export default function Nfts() {
                   <th className='center'>{t("table.taxon")}</th>
                   <th className='center'>NFT</th>
                   <th className='center'>{t("table.issuer")}</th>
+                  <th className='center'>{t("table.owner")}</th>
                 </tr>
               </thead>
               <tbody>
@@ -364,7 +365,16 @@ export default function Nfts() {
                         <td className='center'>{nft.sequence}</td>
                         <td className='center'>{nft.nftokenTaxon}</td>
                         <td className='center'><a href={"/explorer/" + nft.nftokenID}><LinkIcon /></a></td>
-                        <td className='center'><a href={"/explorer/" + nft.issuer}><LinkIcon /></a></td>
+                        <td className='center'>
+                          <a href={"/explorer/" + nft.issuer}>
+                            {userOrServiceName(nft.issuerDetails) ? userOrServiceName(nft.issuerDetails, { link: true }) : <LinkIcon />}
+                          </a>
+                        </td>
+                        <td className='center'>
+                          <a href={"/explorer/" + nft.owner}>
+                            {userOrServiceName(nft.ownerDetails) ? userOrServiceName(nft.ownerDetails, { link: true }) : <LinkIcon />}
+                          </a>
+                        </td>
                       </tr>) : <tr><td colSpan="100" className='center orange bold'>{errorMessage}</td></tr>
                     }
                   </>
