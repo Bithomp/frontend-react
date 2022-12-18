@@ -42,11 +42,11 @@ export default function NftOffers() {
           address: newdata.address
         });
 
-        if (newdata.nftOffers) {
+        if (newdata.nftOffers.length > 0) {
           setErrorMessage("");
           setData(newdata.nftOffers.sort((a, b) => (a.createdAt < b.createdAt) ? 1 : -1));
         } else {
-          setErrorMessage(t("explorer.nfts.no-nfts"));
+          setErrorMessage(t("explorer.nft-offers.no-nft-offers"));
         }
       } else {
         if (newdata.error) {
