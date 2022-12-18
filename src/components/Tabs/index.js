@@ -1,6 +1,6 @@
 import './styles.scss';
 
-export default function Tabs({ tabList, tab, setTab }) {
+export default function Tabs({ tabList, tab, setTab, name = "radio" }) {
 
   const Changed = (e) => {
     setTab(e.currentTarget.value);
@@ -12,7 +12,7 @@ export default function Tabs({ tabList, tab, setTab }) {
         <input
           key={tabItem.value}
           type="radio"
-          name="gender"
+          name={name}
           value={tabItem.value}
           checked={tabItem.value === tab}
           onChange={Changed}

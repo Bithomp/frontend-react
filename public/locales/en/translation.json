@@ -325,8 +325,9 @@
     "transaction": "Transaction",
     "owner": "Owner",
     "issuer": "Issuer",
+    "seller": "Seller",
+    "buyer": "Buyer",
     "sold": "Sold",
-    "created": "Minted",
     "type": "Type",
     "status": "Status",
     "hash": "Hash",
@@ -344,7 +345,10 @@
   },
   "tabs": {
     "list": "List",
-    "tiles": "Tiles"
+    "tiles": "Tiles",
+    "secondary": "Secondary sale",
+    "primary": "Primary sale",
+    "all": "All"
   },
   "xumm": {
     "new-qr": "Get a new QR code"

@@ -8,7 +8,7 @@ export const nftLink = (nft, type) => {
   let link = "/explorer/";
   if (type === "issuer") {
     link = "/nft-explorer?issuer=";
-  } else if (type === "owner") {
+  } else if (type === "owner" || type === "seller" || type === "buyer") {
     link = "/nfts/";
   }
 
