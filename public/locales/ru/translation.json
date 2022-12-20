@@ -303,13 +303,17 @@
   },
   "general": {
     "error": "Ошибка",
-    "no-data": "Данные не доступны",
+    "no-data": "Данных нет",
     "loading": "Загрузка...",
     "load-failed": "Ошибка загрузки",
     "all-issuers": "Все эмитенты"
   },
   "error": {
     "Network Error": "Похоже, что у вас пропал интернет :("
+  },
+  "error-api": {
+    "Issuer username is not valid": "Неверный ник эмитета",
+    "Issuer address is not valid": "Неверный адрес эмитета"
   },
   "units": {
     "seconds-short": "с",

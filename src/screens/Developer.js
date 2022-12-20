@@ -4,10 +4,10 @@ import axios from 'axios';
 
 import checkmark from "../assets/images/checkmark.svg";
 
-import { isEmailValid, isUrlValid } from '../utils';
+import { isEmailValid, isUrlValid, onFailedRequest } from '../utils';
 
 export default function Developer() {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
 
   const [errorMessage, setErrorMessage] = useState("");
   const [step, setStep] = useState(0);
@@ -88,11 +88,7 @@ export default function Developer() {
 
     const postData = { email, url, description };
     const apiData = await axios.post('v2/developer/register', postData).catch(error => {
-      if (i18n.exists("error." + error.message)) {
-        setErrorMessage(t("error." + error.message));
-      } else {
-        setErrorMessage(error.message);
-      }
+      onFailedRequest(error, setErrorMessage);
     });
 
     const data = apiData?.data;

@@ -32,6 +32,14 @@ export const onFailedRequest = (error, showErrorFunction) => {
   }
 }
 
+export const onApiError = (error, showErrorFunction) => {
+  if (i18next.exists("error-api." + error)) {
+    showErrorFunction(i18next.t("error-api." + error));
+  } else {
+    showErrorFunction(error);
+  }
+}
+
 //const networks = ['mainnet', 'staging', 'testnet', 'devnet', 'beta', 'xls20', 'amm'];
 //const devNetworks = ['testnet', 'devnet', 'beta', 'xls20', 'amm'];
 

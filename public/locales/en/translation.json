@@ -311,6 +311,10 @@
   "error": {
     "Network Error": "It seems there is no internet connection ;("
   },
+  "error-api": {
+    "Issuer username is not valid": "Invalid issuer's username",
+    "Issuer address is not valid": "Invalid issuer's address"
+  },
   "units": {
     "seconds-short": "s",
     "minutes-short": "m",

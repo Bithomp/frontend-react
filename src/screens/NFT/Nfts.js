@@ -10,7 +10,7 @@ import Tabs from '../../components/Tabs';
 import Tiles from '../../components/Tiles';
 import IssuerSelect from '../../components/IssuerSelect';
 
-import { onFailedRequest, isAddressOrUsername } from '../../utils';
+import { onFailedRequest, onApiError, isAddressOrUsername } from '../../utils';
 import { isValidTaxon } from '../../utils/nft';
 import { nftLink } from '../../utils/format';
 
@@ -127,7 +127,7 @@ export default function Nfts() {
         }
       } else {
         if (newdata.error) {
-          setErrorMessage(newdata.error);
+          onApiError(newdata.error, setErrorMessage);
         } else {
           setErrorMessage("Error");
           console.log(newdata);
@@ -388,7 +388,7 @@ export default function Nfts() {
                 :
                 <>
                   {errorMessage ?
-                    <div className='center'>{errorMessage}</div>
+                    <div className='center orange bold'>{errorMessage}</div>
                     :
                     <Tiles nftList={filteredData} />
                   }

@@ -6,7 +6,7 @@ import axios from 'axios';
 import Tabs from './Tabs';
 import Tiles from './Tiles';
 
-import { stripText, onFailedRequest, isAddressOrUsername } from '../utils';
+import { stripText, onFailedRequest, onApiError, isAddressOrUsername } from '../utils';
 import { isValidTaxon } from '../utils/nft';
 import { dateFormat, timeFormat, amountFormat, nftLink } from '../utils/format';
 
@@ -69,6 +69,13 @@ export default function Sales({ list, defaultSaleTab = "all" }) {
         setErrorMessage("");
       } else {
         setErrorMessage(t("general.no-data"));
+      }
+    } else {
+      if (data.error) {
+        onApiError(data.error, setErrorMessage);
+      } else {
+        setErrorMessage("Error");
+        console.log(data);
       }
     }
   }
@@ -198,9 +205,11 @@ export default function Sales({ list, defaultSaleTab = "all" }) {
           </tr>
         </thead>
         <tbody>
-          {data ?
+          {loading ?
+            <tr className='center'><td colSpan="100"><span className="waiting"></span></td></tr>
+            :
             <>
-              {!errorMessage && data.length ?
+              {!errorMessage && data?.length ?
                 data.map((nft, i) =>
                   <tr key={i}>
                     <td className='center'>{list === 'lastSold' ? timeFormat(nft.acceptedAt) : (i + 1)}</td>
@@ -220,8 +229,6 @@ export default function Sales({ list, defaultSaleTab = "all" }) {
                 <tr><td colSpan="100" className='center orange bold'>{errorMessage}</td></tr>
               }
             </>
-            :
-            <tr className='center'><td colSpan="100"><span className="waiting"></span></td></tr>
           }
         </tbody>
       </table>
@@ -233,7 +240,7 @@ export default function Sales({ list, defaultSaleTab = "all" }) {
           :
           <>
             {errorMessage ?
-              <div className='center'>{errorMessage}</div>
+              <div className='center orange bold'>{errorMessage}</div>
               :
               <Tiles nftList={data} type={list} />
             }

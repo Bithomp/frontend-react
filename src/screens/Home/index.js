@@ -14,10 +14,11 @@ import btcbit from "../../assets/images/btcbit.svg";
 //import xbit from "../../assets/images/xbit.png";
 
 export default function Home({ theme, devNet }) {
+  const { t } = useTranslation();
+  
   const [selectedCurrency, setSelectedCurrency] = useLocalStorage('currency', 'usd');
   const [chartPeriod, setChartPeriod] = useState('one_day');
 
-  const { t } = useTranslation();
   const searchPlaceholderText = window.innerWidth > 500 ? t("home.search-placeholder") : t("home.search-placeholder-short");
 
   return (
