@@ -312,8 +312,8 @@
     "Network Error": "Похоже, что у вас пропал интернет :("
   },
   "error-api": {
-    "Issuer username is not valid": "Неверный ник эмитета",
-    "Issuer address is not valid": "Неверный адрес эмитета"
+    "Issuer username is not valid": "Неверный ник эмитента",
+    "Issuer address is not valid": "Неверный адрес эмитента"
   },
   "units": {
     "seconds-short": "с",
