@@ -12,7 +12,7 @@ import IssuerSelect from '../../components/IssuerSelect';
 
 import { onFailedRequest, onApiError, isAddressOrUsername } from '../../utils';
 import { isValidTaxon } from '../../utils/nft';
-import { nftLink } from '../../utils/format';
+import { nftLink, usernameOrAddress } from '../../utils/format';
 
 import { ReactComponent as LinkIcon } from "../../assets/images/link.svg";
 
@@ -23,6 +23,7 @@ export default function Nfts() {
 
   const [searchParams, setSearchParams] = useSearchParams();
   const [data, setData] = useState([]);
+  const [rawData, setRawData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState("first");
   const [errorMessage, setErrorMessage] = useState("");
@@ -43,6 +44,11 @@ export default function Nfts() {
   const tabList = [
     { value: 'tiles', label: t("tabs.tiles") },
     { value: 'list', label: t("tabs.list") }
+  ];
+
+  const pageTabList = [
+    { value: 'topSold', label: t("menu.nft-sales-top") },
+    { value: 'lastSold', label: t("menu.nft-sales-latest") }
   ];
 
   const checkApi = async (options) => {
@@ -93,6 +99,7 @@ export default function Nfts() {
     setLoading(false);
     const newdata = response?.data;
     if (newdata) {
+      setRawData(newdata);
       if (newdata.owner || newdata.issuer) {
 
         if (newdata.owner) {
@@ -232,6 +239,23 @@ export default function Nfts() {
     enterPress(e);
   }
 
+  const pageRedirect = (page) => {
+    const params = issuerTaxonUrlPart();
+    if (page === "topSold") {
+      window.location = "/top-nft-sales" + params;
+    }
+    if (page === "lastSold") {
+      window.location = "/latest-nft-sales" + params;
+    }
+  }
+
+  const issuerTaxonUrlPart = () => {
+    if (!rawData) return "";
+    let params = "?view=" + tab;
+    const issuerPart = issuer ? ("&issuer=" + usernameOrAddress(rawData, 'issuer') + (taxon ? ("&taxon=" + taxon) : "")) : "";
+    return params + issuerPart;
+  }
+
   return <>
     {nftExplorer ?
       <SEO title={t("menu.nft-explorer")} />
@@ -246,9 +270,9 @@ export default function Nfts() {
       </>
     }
 
-    <div className="content-text" style={{ marginTop: "20px", minHeight: "480px" }}>
+    <div className="content-text" style={{ minHeight: "480px" }}>
       {nftExplorer && <>
-        <h2 className='center'>{t("menu.nft-explorer")}</h2>
+        <h2 className='center'>{t("menu.nft-explorer") + " "}</h2>
         <div className='center'>
           <span className='halv'>
             <span className='input-title'>{t("table.issuer")}</span>
@@ -302,10 +326,14 @@ export default function Nfts() {
             />
           </span>
         </div>
-        <p className="center" style={{ marginBottom: "40px" }}>
+        <p className="center" style={{ marginBottom: "20px" }}>
           <input type="button" className="button-action" value={t("button.search")} onClick={searchClick} />
         </p>
       </>}
+      <div className='tabs-inline'>
+        <Tabs tabList={tabList} tab={tab} setTab={setTab} />
+        {nftExplorer && <Tabs tabList={pageTabList} tab="explorer" setTab={pageRedirect} name="page" />}
+      </div>
       {(id || issuer || owner) ?
         <InfiniteScroll
           dataLength={filteredData.length}
@@ -326,7 +354,6 @@ export default function Nfts() {
         //  <h3 style={{ textAlign: 'center' }}>&#8593; Release to refresh</h3>
         //}
         >
-          <Tabs tabList={tabList} tab={tab} setTab={setTab} />
           {!nftExplorer &&
             <div className='center' style={{ marginBottom: "10px" }}>
               <IssuerSelect

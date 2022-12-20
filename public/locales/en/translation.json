@@ -350,9 +350,9 @@
   "tabs": {
     "list": "List",
     "tiles": "Tiles",
-    "secondary": "Secondary sale",
-    "primary": "Primary sale",
-    "all": "All"
+    "secondary-sales": "Secondary sale",
+    "primary-sales": "Primary sale",
+    "all-sales": "All"
   },
   "xumm": {
     "new-qr": "Get a new QR code"

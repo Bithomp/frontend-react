@@ -8,8 +8,8 @@ export default function NftSalesTop() {
 
   return <>
     <SEO title={t("menu.nft-sales-top")} />
-    <div className="content-text">
-      <h2 className="center">{t("menu.nft-sales-top")}</h2>
+    <div className="content-text" style={{ minHeight: "480px" }}>
+      <h2 className="center">{t("menu.nft-sales-top") + " "}</h2>
       <Sales list="topSold" defaultSaleTab="all" />
     </div>
   </>;

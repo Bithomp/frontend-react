@@ -22,6 +22,17 @@ export const nftLink = (nft, type) => {
   return <a href={link + nft[type]}><LinkIcon /></a>
 }
 
+export const usernameOrAddress = (data, type) => {
+  if (!data || !type || !data[type]) return "";
+  if (data[type + 'Details']) {
+    const { username } = data[type + 'Details'];
+    if (username) {
+      return username;
+    }
+  }
+  return data[type];
+}
+
 export const userOrServiceLink = (data, type) => {
   if (!data || !type || !data[type]) return "";
   if (data[type + 'Details']) {

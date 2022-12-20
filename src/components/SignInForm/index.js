@@ -86,7 +86,7 @@ export default function SignInForm({ setSignInFormOpen, setAccount, signInFormOp
     } else {
       if (isMobile) {
         if (data.next && data.next.always) {
-          window.location.href = data.next.always;
+          window.location = data.next.always;
         } else {
           console.log("payload next.always is missing");
         }

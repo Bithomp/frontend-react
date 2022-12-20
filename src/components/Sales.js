@@ -8,7 +8,7 @@ import Tiles from './Tiles';
 
 import { stripText, onFailedRequest, onApiError, isAddressOrUsername } from '../utils';
 import { isValidTaxon } from '../utils/nft';
-import { amountFormat, nftLink, timeOrDate, userOrServiceLink } from '../utils/format';
+import { amountFormat, nftLink, timeOrDate, userOrServiceLink, usernameOrAddress } from '../utils/format';
 
 import { ReactComponent as LinkIcon } from "../assets/images/link.svg";
 
@@ -32,10 +32,20 @@ export default function Sales({ list, defaultSaleTab = "all" }) {
   ];
 
   const saleTabList = [
-    { value: 'all', label: t("tabs.all") },
-    { value: 'secondary', label: t("tabs.secondary") },
-    { value: 'primary', label: t("tabs.primary") }
+    { value: 'all', label: t("tabs.all-sales") },
+    { value: 'secondary', label: t("tabs.secondary-sales") },
+    { value: 'primary', label: t("tabs.primary-sales") }
   ];
+
+  const pageTabList = [
+    { value: 'explorer', label: t("menu.nft-explorer") }
+  ];
+
+  if (list === 'topSold') {
+    pageTabList.unshift({ value: 'lastSold', label: t("menu.nft-sales-latest") });
+  } else if (list === 'lastSold') {
+    pageTabList.unshift({ value: 'topSold', label: t("menu.nft-sales-top") });
+  }
 
   const checkApi = async () => {
     setData(null);
@@ -152,6 +162,27 @@ export default function Sales({ list, defaultSaleTab = "all" }) {
     enterPress(e);
   }
 
+  const pageRedirect = (page) => {
+    let view = "?view=" + viewTab;
+    let sale = "&sale=" + saleTab;
+    let url = '';
+    if (page === "explorer") {
+      url = "/nft-explorer" + view;
+    }
+    if (page === "topSold") {
+      url = "/top-nft-sales" + view + sale;
+    }
+    if (page === "lastSold") {
+      url = "/latest-nft-sales" + view + sale;
+    }
+    window.location = url + issuerTaxonUrlPart();
+  }
+
+  const issuerTaxonUrlPart = () => {
+    if (!data) return "";
+    return issuer ? ("&issuer=" + usernameOrAddress(data, 'issuer') + (taxon ? ("&taxon=" + taxon) : "")) : "";
+  }
+
   return <>
     <div className='center'>
       <span className='halv'>
@@ -180,12 +211,13 @@ export default function Sales({ list, defaultSaleTab = "all" }) {
         />
       </span>
     </div>
-    <p className="center" style={{ marginBottom: "40px" }}>
+    <p className="center" style={{ marginBottom: "20px" }}>
       <input type="button" className="button-action" value={t("button.search")} onClick={searchClick} />
     </p>
     <div className='tabs-inline'>
       <Tabs tabList={viewTabList} tab={viewTab} setTab={setViewTab} name="view" />
       <Tabs tabList={saleTabList} tab={saleTab} setTab={setSaleTab} name="sale" />
+      <Tabs tabList={pageTabList} tab={list} setTab={pageRedirect} name="page" />
     </div>
     {viewTab === "list" &&
       <table className="table-large">
