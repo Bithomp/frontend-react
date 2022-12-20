@@ -11,7 +11,7 @@ import Whales from './Whales';
 import './styles.scss';
 import nexo from "../../assets/images/nexo.svg";
 import btcbit from "../../assets/images/btcbit.svg";
-import xbit from "../../assets/images/xbit.png";
+//import xbit from "../../assets/images/xbit.png";
 
 export default function Home({ theme, devNet }) {
   const [selectedCurrency, setSelectedCurrency] = useLocalStorage('currency', 'usd');
@@ -25,13 +25,6 @@ export default function Home({ theme, devNet }) {
       <SearchBlock searchPlaceholderText={searchPlaceholderText} />
       {!devNet &&
         <div className="home-sponsored">
-          <a href="https://bithomp.com/go/play-xrp" target="_blank" rel="noreferrer">
-            <div className="sponsored-brand">
-              <img src={xbit} className="sponsored-brand-icon" alt="play with xrp" />
-              <div className="sponsored-brand-title">Play with XRP</div>
-              <div className="sponsored-brand-text">Watch Qatar 2022 and bet with XRP.</div>
-            </div>
-          </a>
           <a href="https://bithomp.com/go/earn-on-xrp" target="_blank" rel="noreferrer">
             <div className="sponsored-brand">
               <img src={nexo} className="sponsored-brand-icon" alt="earn on xrp" />
