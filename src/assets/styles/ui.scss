@@ -306,7 +306,7 @@ table {
   display: inline-block;
   line-height: 38px;
   background-color: var(--accent-icon);
-  border: none;
+  border: 1px solid var(--accent-icon);
   color: var(--text-contrast);
   height: 40px;
   min-width: 100px;
@@ -316,6 +316,7 @@ table {
   &:hover {
     background-color: var(--background-menu);
     color: var(--text-contrast);
+    border-color: var(--accent-link);
   }
   &.thin {
     height: 30px;
