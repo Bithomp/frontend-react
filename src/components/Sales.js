@@ -3,19 +3,16 @@ import { useState, useEffect } from 'react';
 import { useSearchParams } from "react-router-dom";
 import axios from 'axios';
 
-import Tabs from '../../components/Tabs';
-import Tiles from '../../components/Tiles';
+import Tabs from './Tabs';
+import Tiles from './Tiles';
 
-import { stripText, onFailedRequest, isAddressOrUsername } from '../../utils';
-import { isValidTaxon } from '../../utils/nft';
-import { dateFormat, timeFormat, amountFormat, nftLink } from '../../utils/format';
+import { stripText, onFailedRequest, isAddressOrUsername } from '../utils';
+import { isValidTaxon } from '../utils/nft';
+import { dateFormat, timeFormat, amountFormat, nftLink } from '../utils/format';
 
-import { ReactComponent as LinkIcon } from "../../assets/images/link.svg";
+import { ReactComponent as LinkIcon } from "../assets/images/link.svg";
 
-export default function Sales({ list, defaultSaleTab = "all" }) {//list topSold, lastSold
-
-  if (!list) return "";
-
+export default function Sales({ list, defaultSaleTab = "all" }) {
   const [data, setData] = useState(null);
   const [searchParams, setSearchParams] = useSearchParams();
   const [viewTab, setViewTab] = useState(searchParams.get("view") || "tiles");
