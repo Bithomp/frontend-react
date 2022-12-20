@@ -3,7 +3,7 @@ import { useState } from 'react';
 
 import { stripText } from '../../utils';
 import { nftImageStyle, nftUrl } from '../../utils/nft';
-import { amountFormat, dateFormat, timeFormat } from '../../utils/format';
+import { amountFormat, timeOrDate } from '../../utils/format';
 
 import './styles.scss';
 
@@ -130,7 +130,7 @@ export default function Tiles({ nftList, type = 'name' }) {
                   <div className='title'></div>
                   <h1>
                     {amountFormat(nft.amount)}<br />
-                    {(new Date(nft.acceptedAt * 1000)).setHours(0, 0, 0, 0) === (new Date()).setHours(0, 0, 0, 0) ? timeFormat(nft.acceptedAt) : dateFormat(nft.acceptedAt)}
+                    {timeOrDate(nft.acceptedAt)}
                   </h1>
                   <div className='title-full'>
                     {nft.nftoken?.metadata?.name ? <>{t("table.name")}: {stripText(nft.nftoken.metadata.name)}<br /></> : ""}

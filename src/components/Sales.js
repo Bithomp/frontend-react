@@ -8,7 +8,7 @@ import Tiles from './Tiles';
 
 import { stripText, onFailedRequest, onApiError, isAddressOrUsername } from '../utils';
 import { isValidTaxon } from '../utils/nft';
-import { dateFormat, timeFormat, amountFormat, nftLink } from '../utils/format';
+import { amountFormat, nftLink, timeOrDate } from '../utils/format';
 
 import { ReactComponent as LinkIcon } from "../assets/images/link.svg";
 
@@ -212,9 +212,9 @@ export default function Sales({ list, defaultSaleTab = "all" }) {
               {!errorMessage && data?.length ?
                 data.map((nft, i) =>
                   <tr key={i}>
-                    <td className='center'>{list === 'lastSold' ? timeFormat(nft.acceptedAt) : (i + 1)}</td>
+                    <td className='center'>{list === 'lastSold' ? timeOrDate(nft.acceptedAt) : (i + 1)}</td>
                     <td>{amountFormat(nft.amount, { tooltip: 'right' })}</td>
-                    {list === 'topSold' && <td className='hide-on-mobile'>{dateFormat(nft.acceptedAt)}</td>}
+                    {list === 'topSold' && <td className='hide-on-mobile'>{timeOrDate(nft.acceptedAt)}</td>}
                     <td>{nft.nftoken?.metadata?.name ? stripText(nft.nftoken.metadata.name) : "---//---"}</td>
                     <td className='center hide-on-mobile'>{nft.nftoken.nftokenTaxon}</td>
                     <td className='center hide-on-mobile'>{nft.nftoken.sequence}</td>

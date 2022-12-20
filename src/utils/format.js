@@ -187,6 +187,11 @@ export const dateFormat = (timestamp) => {
   return new Date(timestamp * 1000).toLocaleDateString();
 }
 
+export const timeOrDate = (timestamp) => {
+  //if today - return time, otherwise date
+  return (new Date(timestamp * 1000)).setHours(0, 0, 0, 0) === (new Date()).setHours(0, 0, 0, 0) ? timeFormat(timestamp) : dateFormat(timestamp);
+}
+
 //need to make dynamic fraction digits
 export const niceNumber = (n, fractionDigits = 0, currency = null) => {
   if (typeof n === 'string') {
