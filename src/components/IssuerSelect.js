@@ -57,6 +57,11 @@ export default function CurrencySelect({ issuersList, selectedIssuer, setSelecte
     }
   }, [selectedIssuer, issuersList]);
 
+  if (issuersList && issuersList.length === 1) {
+    //Do not show the select if it's only one issuer inside
+    return "";
+  }
+
   return (
     <Select
       options={issuersArray}
