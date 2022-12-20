@@ -8,7 +8,7 @@ import Tiles from './Tiles';
 
 import { stripText, onFailedRequest, onApiError, isAddressOrUsername } from '../utils';
 import { isValidTaxon } from '../utils/nft';
-import { amountFormat, nftLink, timeOrDate } from '../utils/format';
+import { amountFormat, nftLink, timeOrDate, userOrServiceLink } from '../utils/format';
 
 import { ReactComponent as LinkIcon } from "../assets/images/link.svg";
 
@@ -64,7 +64,7 @@ export default function Sales({ list, defaultSaleTab = "all" }) {
     const data = response.data;
     setLoading(false);
     if (data.sales) {
-      setData(data.sales);
+      setData(data);
       if (data.sales.length > 0) {
         setErrorMessage("");
       } else {
@@ -155,7 +155,7 @@ export default function Sales({ list, defaultSaleTab = "all" }) {
   return <>
     <div className='center'>
       <span className='halv'>
-        <span className='input-title'>{t("table.issuer")}</span>
+        <span className='input-title'>{t("table.issuer")} {userOrServiceLink(data, 'issuer')}</span>
         <input
           placeholder={t("explorer.nfts.search-by-issuer")}
           value={issuerInput}
@@ -209,8 +209,8 @@ export default function Sales({ list, defaultSaleTab = "all" }) {
             <tr className='center'><td colSpan="100"><span className="waiting"></span></td></tr>
             :
             <>
-              {!errorMessage && data?.length ?
-                data.map((nft, i) =>
+              {!errorMessage && data?.sales?.length ?
+                data.sales.map((nft, i) =>
                   <tr key={i}>
                     <td className='center'>{list === 'lastSold' ? timeOrDate(nft.acceptedAt) : (i + 1)}</td>
                     <td>{amountFormat(nft.amount, { tooltip: 'right' })}</td>
@@ -242,7 +242,7 @@ export default function Sales({ list, defaultSaleTab = "all" }) {
             {errorMessage ?
               <div className='center orange bold'>{errorMessage}</div>
               :
-              <Tiles nftList={data} type={list} />
+              <Tiles nftList={data?.sales} type={list} />
             }
           </>
         }

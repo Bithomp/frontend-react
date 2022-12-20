@@ -22,6 +22,20 @@ export const nftLink = (nft, type) => {
   return <a href={link + nft[type]}><LinkIcon /></a>
 }
 
+export const userOrServiceLink = (data, type) => {
+  if (!data || !type || !data[type]) return "";
+  if (data[type + 'Details']) {
+    const { username, service } = data[type + 'Details'];
+    if (username) {
+      return <a href={"/explorer/" + username} className='bold blue'>{username}</a>;
+    }
+    if (service) {
+      return <a href={"/explorer/" + data[type]} className='bold green'>{service}</a>;
+    }
+  }
+  return "";
+}
+
 export const userOrServiceName = (data, options) => {
   if (data) {
     const { service, username } = data;
