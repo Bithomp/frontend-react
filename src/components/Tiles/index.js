@@ -116,7 +116,7 @@ export default function Tiles({ nftList, type = 'name' }) {
     </div>
   }
 
-  if (type === 'price' || type === 'latest') {
+  if (type === 'topSold' || type === 'lastSold') {
     return <div className='tiles'>
       <div className="grid">
         <ul className="hexGrid">
@@ -130,7 +130,7 @@ export default function Tiles({ nftList, type = 'name' }) {
                   <div className='title'></div>
                   <h1>
                     {amountFormat(nft.amount)}<br />
-                    {type === 'latest' ? timeFormat(nft.acceptedAt) : dateFormat(nft.acceptedAt)}
+                    {type === 'lastSold' ? timeFormat(nft.acceptedAt) : dateFormat(nft.acceptedAt)}
                   </h1>
                   <div className='title-full'>
                     {nft.nftoken?.metadata?.name ? <>{t("table.name")}: {stripText(nft.nftoken.metadata.name)}<br /></> : ""}

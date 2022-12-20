@@ -372,7 +372,9 @@ export default function Nfts() {
                         <td className='center'><a href={"/explorer/" + nft.nftokenID}><LinkIcon /></a></td>
                         {!issuer && <td className='center'>{nftLink(nft, 'issuer')}</td>}
                         {(!id && !owner) && <td className='center'>{nftLink(nft, 'owner')}</td>}
-                      </tr>) : <tr><td colSpan="100" className='center orange bold'>{errorMessage}</td></tr>
+                      </tr>)
+                      :
+                      <tr><td colSpan="100" className='center orange bold'>{errorMessage}</td></tr>
                     }
                   </>
                 }
