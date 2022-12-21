@@ -122,7 +122,7 @@ export default function Nfts() {
           }
         }
 
-        if (newdata.nfts) {
+        if (newdata.nfts.length > 0) {
           setErrorMessage("");
           if (newdata.marker) {
             setHasMore(newdata.marker);
