@@ -313,8 +313,10 @@
     "Network Error": "Похоже, что у вас пропал интернет :("
   },
   "error-api": {
-    "Issuer username is not valid": "Неверный ник эмитента",
-    "Issuer address is not valid": "Неверный адрес эмитента"
+    "Issuer username is not valid": "Эмитент с таким ником не найден",
+    "Issuer address is not valid": "Неверный адрес эмитента",
+    "Owner username is not found or invalid": "Не верный ник владельца",
+    "Owner address is not valid": "Не верный адрес владельца"
   },
   "units": {
     "seconds-short": "с",
@@ -353,7 +355,7 @@
     "tiles": "Картинки",
     "secondary-sales": "Вторичные",
     "primary-sales": "Первичные",
-    "all-sales": "Все продажи"
+    "all-sales": "Все"
   },
   "xumm": {
     "new-qr": "Получить новый QR-код"

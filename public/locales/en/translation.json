@@ -314,7 +314,9 @@
   },
   "error-api": {
     "Issuer username is not valid": "Invalid issuer's username",
-    "Issuer address is not valid": "Invalid issuer's address"
+    "Issuer address is not valid": "Invalid issuer's address",
+    "Owner username is not found or invalid": "Invalid owner's username",
+    "Owner address is not valid": "Invalid owner's address"
   },
   "units": {
     "seconds-short": "s",
@@ -351,9 +353,9 @@
   "tabs": {
     "list": "List",
     "tiles": "Tiles",
-    "secondary-sales": "Secondary sale",
-    "primary-sales": "Primary sale",
-    "all-sales": "All"
+    "secondary-sales": "Secondary",
+    "primary-sales": "Primary",
+    "all-sales": "All sales"
   },
   "xumm": {
     "new-qr": "Get a new QR code"

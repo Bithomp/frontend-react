@@ -23,6 +23,7 @@ export default function Sales({ list, defaultSaleTab = "all" }) {
   const [taxon, setTaxon] = useState(searchParams.get("taxon") || "");
   const [issuerInput, setIssuerInput] = useState(searchParams.get("issuer") || "");
   const [taxonInput, setTaxonInput] = useState(searchParams.get("taxon") || "");
+  const [total, setTotal] = useState({});
 
   const { t } = useTranslation();
 
@@ -33,8 +34,8 @@ export default function Sales({ list, defaultSaleTab = "all" }) {
 
   const saleTabList = [
     { value: 'all', label: t("tabs.all-sales") },
-    { value: 'secondary', label: t("tabs.secondary-sales") },
-    { value: 'primary', label: t("tabs.primary-sales") }
+    { value: 'secondary', label: (t("tabs.secondary-sales") + (total?.secondary ? (" (" + total.secondary + ")") : "")) },
+    { value: 'primary', label: (t("tabs.primary-sales") + (total?.primary ? (" (" + total.primary + ")") : "")) }
   ];
 
   const pageTabList = [
@@ -75,6 +76,12 @@ export default function Sales({ list, defaultSaleTab = "all" }) {
     setLoading(false);
 
     if (data) {
+      if (data.issuer || data.owner) {
+        setTotal(data.total);
+      } else {
+        setTotal({});
+      }
+
       if (data.issuer) {
         setIssuerInput(data.issuer);
       }
