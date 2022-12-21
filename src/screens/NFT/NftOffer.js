@@ -122,6 +122,8 @@ export default function NftOffer() {
     }
   }
 
+  const sellerOrBuyer = data?.flags?.sellToken === true ? "Seller" : "Buyer";
+
   return <>
     {data && <SEO title={t("menu.nft-offers") + " " + data.offerIndex} />}
     <SearchBlock
@@ -139,36 +141,30 @@ export default function NftOffer() {
             <div>
               {imageOrVideo(data.nftoken)}
               <div style={{ display: "inline-block", margin: "0 20px", maxWidth: "60%" }}>
-                Offer ID: <CopyButton text={data.offerIndex} /><br />
-                Offer created: {fullDateAndTime(data.createdAt)}<br />
-                Offer creation TX: <a href={"/explorer/" + data.createdTxHash}><LinkIcon /></a><br />
-                Created by: <a href={"/nfts/" + data.account}>{data.account}</a><br />
+                Offer: {data.offerIndex} <CopyButton text={data.offerIndex} /><br />
+                {data.flags.sellToken === true ? "Selling" : "Buying"} NFT: <b>{data.nftoken.metadata?.name ? data.nftoken.metadata.name : ""}</b> <a href={"/explorer/" + data.nftokenID}><LinkIcon /></a><br />
+                {sellerOrBuyer}: <a href={"/nfts/" + data.account}>{data.account}</a><br />
                 Destination: <a href={"/nfts/" + data.destination}>{data.destination}</a><br />
+                Price: {amountFormat(data.amount)}<br />
+
+                Offer created: {fullDateAndTime(data.createdAt)}<br />
+                Offer creation transaction: <a href={"/explorer/" + data.createdTxHash}><LinkIcon /></a><br />
+
                 {data.expiration ? <>Expiration: {fullDateAndTime(data.expiration)}<br /></> : ""}
-                Amount: {amountFormat(data.amount)}<br />
-                Type: {data.flags?.sellToken === true ? "SELL" : "BUY"}<br />
+
 
                 {data.acceptedAt && <>
                   Offer accepted: {fullDateAndTime(data.acceptedAt)}<br />
-                  Offer accept TX: <a href={"/explorer/" + data.acceptedTxHash}><LinkIcon /></a><br />
+                  Offer accept transaction: <a href={"/explorer/" + data.acceptedTxHash}><LinkIcon /></a><br />
                 </>}
                 {data.canceledAt && <>
                   Offer canceled: {fullDateAndTime(data.canceledAt)}<br />
-                  Offer cancel TX: <a href={"/explorer/" + data.canceledTxHash}><LinkIcon /></a><br />
+                  Offer cancel transaction: <a href={"/explorer/" + data.canceledTxHash}><LinkIcon /></a><br />
                 </>}
-
                 <br />
-                NFT ID: <a href={"/explorer/" + data.nftokenID}><LinkIcon /></a><br />
-                {data.nftoken && <>
-                  {data.nftoken.metadata && <>
-                    <div>
-                      Name: {data.nftoken.metadata.name}<br />
-                      Description: {data.nftoken.metadata.description}<br />
-                    </div>
-                  </>}
-                  Serial: {data.nftoken.sequence}<br />
-                  Taxon: {data.nftoken.nftokenTaxon}<br />
-                </>}
+                <a href={"/nft-offers/" + data.account}>Active offers from the same {sellerOrBuyer}</a><br />
+                <a href={"/nft-explorer?issuer=" + data.nftoken.issuer}>NFTs from the same issuer</a><br />
+                <a href={"/nfts/" + data.account}>NFTs owned by the same {sellerOrBuyer}</a><br />
               </div>
             </div>
           }
