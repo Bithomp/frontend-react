@@ -67,6 +67,7 @@ export default function Footer() {
 
         {!devNet && <div className="footer-menu-column">
           <span className="footer-menu-header">{t("menu.sponsored.title")}</span>
+          <a href="/go/buy-xrp" target="_blank" rel="noreferrer">{t("menu.sponsored.buy")}</a>
           <a href="/go/earn-on-xrp" target="_blank" rel="noreferrer">{t("menu.sponsored.earn")}</a>
           <a href="/go/playxrp" target="_blank" rel="noreferrer">{t("menu.sponsored.play")}</a>
         </div>}
