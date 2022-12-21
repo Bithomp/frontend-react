@@ -261,6 +261,11 @@ export default function Nfts() {
     return params + issuerPart;
   }
 
+  const contextStyle = { minHeight: "480px" };
+  if (!nftExplorer) {
+    contextStyle.marginTop = "20px";
+  }
+
   return <>
     {nftExplorer ?
       <SEO title={t("menu.nft-explorer")} />
@@ -275,7 +280,7 @@ export default function Nfts() {
       </>
     }
 
-    <div className="content-text" style={{ minHeight: "480px" }}>
+    <div className="content-text" style={contextStyle}>
       {nftExplorer && <>
         <h2 className='center'>{t("menu.nft-explorer") + " "}</h2>
         <div className='center'>
