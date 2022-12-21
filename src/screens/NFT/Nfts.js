@@ -156,7 +156,7 @@ export default function Nfts() {
   }, [id, issuer, taxon, owner]);
 
   useEffect(() => {
-    if (isAddressOrUsername(rawData?.owner)) {
+    if (nftExplorer && isAddressOrUsername(rawData?.owner)) {
       searchParams.set("owner", usernameOrAddress(rawData, 'owner'));
     } else {
       searchParams.delete("owner");
