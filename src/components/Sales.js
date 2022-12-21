@@ -73,19 +73,26 @@ export default function Sales({ list, defaultSaleTab = "all" }) {
 
     const data = response.data;
     setLoading(false);
-    if (data.sales) {
-      setData(data);
-      if (data.sales.length > 0) {
-        setErrorMessage("");
-      } else {
-        setErrorMessage(t("general.no-data"));
+
+    if (data) {
+      if (data.issuer) {
+        setIssuerInput(data.issuer);
       }
-    } else {
-      if (data.error) {
-        onApiError(data.error, setErrorMessage);
+
+      if (data.sales) {
+        setData(data);
+        if (data.sales.length > 0) {
+          setErrorMessage("");
+        } else {
+          setErrorMessage(t("general.no-data"));
+        }
       } else {
-        setErrorMessage("Error");
-        console.log(data);
+        if (data.error) {
+          onApiError(data.error, setErrorMessage);
+        } else {
+          setErrorMessage("Error");
+          console.log(data);
+        }
       }
     }
   }
@@ -96,26 +103,16 @@ export default function Sales({ list, defaultSaleTab = "all" }) {
   }, [saleTab, issuer, taxon]);
 
   useEffect(() => {
-    if (isAddressOrUsername(issuer)) {
-      searchParams.set("issuer", issuer);
-      if (isValidTaxon(taxon)) {
-        searchParams.set("taxon", taxon);
+    if (isAddressOrUsername(data?.issuer)) {
+      searchParams.set("issuer", usernameOrAddress(data, 'issuer'));
+      if (isValidTaxon(data?.taxon)) {
+        searchParams.set("taxon", data.taxon);
       } else {
         searchParams.delete("taxon");
       }
     } else {
       searchParams.delete("issuer");
       searchParams.delete("taxon");
-    }
-
-    const existView = viewTabList.some(t => t.value === viewTab);
-    if (!existView) {
-      setViewTab("tiles");
-      searchParams.delete("view");
-    } else if (viewTab === 'tiles') {
-      searchParams.delete("view");
-    } else {
-      searchParams.set("view", viewTab);
     }
 
     const existSaleType = saleTabList.some(t => t.value === saleTab);
@@ -128,9 +125,19 @@ export default function Sales({ list, defaultSaleTab = "all" }) {
       searchParams.set("sale", saleTab);
     }
 
+    const existView = viewTabList.some(t => t.value === viewTab);
+    if (!existView) {
+      setViewTab("tiles");
+      searchParams.delete("view");
+    } else if (viewTab === 'tiles') {
+      searchParams.delete("view");
+    } else {
+      searchParams.set("view", viewTab);
+    }
+
     setSearchParams(searchParams);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [viewTab, saleTab, issuer, taxon]);
+  }, [viewTab, saleTab, data]);
 
   const searchClick = () => {
     if (isAddressOrUsername(issuerInput)) {

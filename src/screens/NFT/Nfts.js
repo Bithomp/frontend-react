@@ -12,7 +12,7 @@ import IssuerSelect from '../../components/IssuerSelect';
 
 import { onFailedRequest, onApiError, isAddressOrUsername } from '../../utils';
 import { isValidTaxon } from '../../utils/nft';
-import { nftLink, usernameOrAddress } from '../../utils/format';
+import { nftLink, usernameOrAddress, userOrServiceLink } from '../../utils/format';
 
 import { ReactComponent as LinkIcon } from "../../assets/images/link.svg";
 
@@ -102,7 +102,12 @@ export default function Nfts() {
       setRawData(newdata);
       if (newdata.owner || newdata.issuer) {
 
+        if (newdata.issuer) {
+          setIssuerInput(newdata.issuer);
+        }
+
         if (newdata.owner) {
+          setOwnerInput(newdata.owner);
           setUserData({
             username: newdata.ownerDetails?.username,
             service: newdata.ownerDetails?.service,
@@ -151,6 +156,24 @@ export default function Nfts() {
   }, [id, issuer, taxon, owner]);
 
   useEffect(() => {
+    if (isAddressOrUsername(rawData?.owner)) {
+      searchParams.set("owner", usernameOrAddress(rawData, 'owner'));
+    } else {
+      searchParams.delete("owner");
+    }
+
+    if (isAddressOrUsername(rawData?.issuer)) {
+      searchParams.set("issuer", usernameOrAddress(rawData, 'issuer'));
+      if (isValidTaxon(rawData?.taxon)) {
+        searchParams.set("taxon", rawData.taxon);
+      } else {
+        searchParams.delete("taxon");
+      }
+    } else {
+      searchParams.delete("issuer");
+      searchParams.delete("taxon");
+    }
+
     const exist = tabList.some(t => t.value === tab);
     if (!exist) {
       setTab("tiles");
@@ -161,27 +184,9 @@ export default function Nfts() {
       searchParams.set("view", tab);
     }
 
-    if (isAddressOrUsername(issuer)) {
-      searchParams.set("issuer", issuer);
-      if (isValidTaxon(taxon)) {
-        searchParams.set("taxon", taxon);
-      } else {
-        searchParams.delete("taxon");
-      }
-    } else {
-      searchParams.delete("issuer");
-      searchParams.delete("taxon");
-    }
-
-    if (isAddressOrUsername(owner)) {
-      searchParams.set("owner", owner);
-    } else {
-      searchParams.delete("owner");
-    }
-
     setSearchParams(searchParams);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [tab, issuer, taxon, owner]);
+  }, [tab, rawData]);
 
   const onSearchChange = (e) => {
     let searchName = e.target.value;
@@ -275,7 +280,7 @@ export default function Nfts() {
         <h2 className='center'>{t("menu.nft-explorer") + " "}</h2>
         <div className='center'>
           <span className='halv'>
-            <span className='input-title'>{t("table.issuer")}</span>
+            <span className='input-title'>{t("table.issuer")} {userOrServiceLink(rawData, 'issuer')}</span>
             <input
               placeholder={t("explorer.nfts.search-by-issuer")}
               value={issuerInput}
@@ -302,7 +307,7 @@ export default function Nfts() {
         </div>
         <div className='center'>
           <span className='halv'>
-            <span className='input-title'>{t("table.owner")}</span>
+            <span className='input-title'>{t("table.owner")} {userOrServiceLink(rawData, 'owner')}</span>
             <input
               placeholder={t("explorer.nfts.search-by-owner")}
               value={ownerInput}
