@@ -81,6 +81,11 @@ export const txIdFormat = (txId) => {
   return txId;
 }
 
+export const shortHash = (id) => {
+  id = id.toLowerCase();
+  return id.substr(0, 6) + "..." + id.substr(-6);
+}
+
 export const amountFormat = (amount, options = {}) => {
   const { value, currency, valuePrefix, issuer, type } = amountParced(amount);
   let showValue = value;

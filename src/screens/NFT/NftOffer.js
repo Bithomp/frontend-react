@@ -8,7 +8,7 @@ import SearchBlock from '../../components/SearchBlock';
 import CopyButton from '../../components/CopyButton';
 
 import { onFailedRequest } from '../../utils';
-import { fullDateAndTime, amountFormat } from '../../utils/format';
+import { fullDateAndTime, amountFormat, shortHash } from '../../utils/format';
 import { nftImageStyle, nftUrl } from '../../utils/nft';
 
 import { ReactComponent as LinkIcon } from "../../assets/images/link.svg";
@@ -142,8 +142,8 @@ export default function NftOffer() {
               <div>
                 {imageOrVideo(data.nftoken)}
                 <div style={{ display: "inline-block", margin: "0 20px", maxWidth: "60%" }}>
-                  Offer: {data.offerIndex} <CopyButton text={data.offerIndex} /><br />
-                  {data.flags.sellToken === true ? "Selling" : "Buying"} NFT: <b>{data.nftoken.metadata?.name ? data.nftoken.metadata.name : ""}</b> <a href={"/explorer/" + data.nftokenID}><LinkIcon /></a><br />
+                  Offer: {shortHash(data.offerIndex)} <CopyButton text={data.offerIndex} /><br />
+                  {data.flags.sellToken === true ? "Selling" : "Buying"} NFT: {data.nftoken.metadata?.name ? data.nftoken.metadata.name : ""} <a href={"/explorer/" + data.nftokenID}><LinkIcon /></a><br />
                   {sellerOrBuyer}: <a href={"/nfts/" + data.account}>{data.account}</a><br />
                   Destination: <a href={"/nfts/" + data.destination}>{data.destination}</a><br />
                   Price: {amountFormat(data.amount)}<br />

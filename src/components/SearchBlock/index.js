@@ -91,13 +91,15 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
   searchItem.charAt(0) == "X"
   */
 
+  const showTabs = tab && ['nfts', 'nft-offers'].includes(tab);
+
   return (
     <>
       <div className="search-block">
         <div className="search-box">
           <div className='above-search-box'>
             {userOrServiceName(userData)}
-            {tab === "nft-offer" && <b>{t("menu.nft-offer")}</b>}
+            {tab === "nft-offer" && <b className='contrast'>{t("menu.nft-offer")}</b>}
           </div>
           <input
             className="search-input"
@@ -118,7 +120,7 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
         */}
         </div>
       </div>
-      {tab &&
+      {showTabs &&
         <div className='explorer-tabs-block'>
           <div className='explorer-tabs'>
             {tab === "nfts" ? <b>NFTs</b> : <a href={"/nfts/" + searchItem + addParams}>NFTs</a>}
