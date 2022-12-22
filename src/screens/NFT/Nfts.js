@@ -46,11 +46,6 @@ export default function Nfts() {
     { value: 'list', label: t("tabs.list") }
   ];
 
-  const pageTabList = [
-    { value: 'topSold', label: t("menu.nft-sales-top") },
-    { value: 'lastSold', label: t("menu.nft-sales-latest") }
-  ];
-
   const checkApi = async (options) => {
     let marker = hasMore;
     let nftsData = data;
@@ -244,22 +239,7 @@ export default function Nfts() {
     enterPress(e);
   }
 
-  const pageRedirect = (page) => {
-    const params = issuerTaxonUrlPart();
-    if (page === "topSold") {
-      window.location = "/top-nft-sales" + params;
-    }
-    if (page === "lastSold") {
-      window.location = "/latest-nft-sales" + params;
-    }
-  }
-
-  const issuerTaxonUrlPart = () => {
-    if (!rawData) return "";
-    let params = "?view=" + tab;
-    const issuerPart = issuer ? ("&issuer=" + usernameOrAddress(rawData, 'issuer') + (taxon ? ("&taxon=" + taxon) : "")) : "";
-    return params + issuerPart;
-  }
+  const issuerTaxonUrlPart = "?view=" + tab + (rawData ? ("&issuer=" + usernameOrAddress(rawData, 'issuer') + (rawData.taxon ? ("&taxon=" + rawData.taxon) : "")) : "");
 
   const contextStyle = { minHeight: "480px" };
   if (!nftExplorer) {
@@ -283,6 +263,10 @@ export default function Nfts() {
     <div className="content-text" style={contextStyle}>
       {nftExplorer && <>
         <h2 className='center'>{t("menu.nft-explorer") + " "}</h2>
+        <p className='center'>
+          <a href={"/top-nft-sales" + issuerTaxonUrlPart} style={{ marginRight: "5px" }}>{t("menu.nft-sales-top")}</a>
+          <a href={"/latest-nft-sales" + issuerTaxonUrlPart}>{t("menu.nft-sales-latest")}</a>
+        </p>
         <div className='center'>
           <span className='halv'>
             <span className='input-title'>{t("table.issuer")} {userOrServiceLink(rawData, 'issuer')}</span>
@@ -342,7 +326,6 @@ export default function Nfts() {
       </>}
       <div className='tabs-inline'>
         <Tabs tabList={tabList} tab={tab} setTab={setTab} />
-        {nftExplorer && <Tabs tabList={pageTabList} tab="explorer" setTab={pageRedirect} name="page" />}
       </div>
       {(id || issuer || owner) ?
         <InfiniteScroll

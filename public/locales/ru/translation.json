@@ -355,7 +355,9 @@
     "tiles": "Картинки",
     "secondary-sales": "Вторичные",
     "primary-sales": "Первичные",
-    "all-sales": "Все"
+    "all-sales": "Все",
+    "top-sales": "ТОП",
+    "latest-sales": "Последние"
   },
   "xumm": {
     "new-qr": "Получить новый QR-код"

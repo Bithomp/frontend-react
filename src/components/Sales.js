@@ -39,14 +39,9 @@ export default function Sales({ list, defaultSaleTab = "all" }) {
   ];
 
   const pageTabList = [
-    { value: 'explorer', label: t("menu.nft-explorer") }
+    { value: 'topSold', label: t("tabs.top-sales") },
+    { value: 'lastSold', label: t("tabs.latest-sales") }
   ];
-
-  if (list === 'topSold') {
-    pageTabList.unshift({ value: 'lastSold', label: t("menu.nft-sales-latest") });
-  } else if (list === 'lastSold') {
-    pageTabList.unshift({ value: 'topSold', label: t("menu.nft-sales-top") });
-  }
 
   const checkApi = async () => {
     setData(null);
@@ -177,27 +172,20 @@ export default function Sales({ list, defaultSaleTab = "all" }) {
   }
 
   const pageRedirect = (page) => {
-    let view = "?view=" + viewTab;
-    let sale = "&sale=" + saleTab;
+    let params = "?view=" + viewTab + "&sale=" + saleTab;
     let url = '';
-    if (page === "explorer") {
-      url = "/nft-explorer" + view;
-    }
     if (page === "topSold") {
-      url = "/top-nft-sales" + view + sale;
+      url = "/top-nft-sales" + params;
+    } else if (page === "lastSold") {
+      url = "/latest-nft-sales" + params;
     }
-    if (page === "lastSold") {
-      url = "/latest-nft-sales" + view + sale;
-    }
-    window.location = url + issuerTaxonUrlPart();
+    window.location = url + issuerTaxonUrlPart;
   }
 
-  const issuerTaxonUrlPart = () => {
-    if (!data) return "";
-    return issuer ? ("&issuer=" + usernameOrAddress(data, 'issuer') + (taxon ? ("&taxon=" + taxon) : "")) : "";
-  }
+  const issuerTaxonUrlPart = (data && issuer) ? ("&issuer=" + usernameOrAddress(data, 'issuer') + (taxon ? ("&taxon=" + taxon) : "")) : "";
 
   return <>
+    <p className='center'><a href={"/nft-explorer?view=" + viewTab + issuerTaxonUrlPart}>{t("menu.nft-explorer")}</a></p>
     <div className='center'>
       <span className='halv'>
         <span className='input-title'>{t("table.issuer")} {userOrServiceLink(data, 'issuer')}</span>
@@ -230,8 +218,8 @@ export default function Sales({ list, defaultSaleTab = "all" }) {
     </p>
     <div className='tabs-inline'>
       <Tabs tabList={viewTabList} tab={viewTab} setTab={setViewTab} name="view" />
-      <Tabs tabList={saleTabList} tab={saleTab} setTab={setSaleTab} name="sale" />
       <Tabs tabList={pageTabList} tab={list} setTab={pageRedirect} name="page" />
+      <Tabs tabList={saleTabList} tab={saleTab} setTab={setSaleTab} name="sale" />
     </div>
     {viewTab === "list" &&
       <table className="table-large">
