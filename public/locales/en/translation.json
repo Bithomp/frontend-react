@@ -357,7 +357,12 @@
     "primary-sales": "Primary",
     "all-sales": "All sales",
     "top-sales": "TOP sales",
-    "latest-sales": "Latest sales"
+    "latest-sales": "Latest sales",
+    "all-time": "All time",
+    "year": "Year",
+    "month": "Month",
+    "week": "Week",
+    "day": "Day"
   },
   "xumm": {
     "new-qr": "Get a new QR code"

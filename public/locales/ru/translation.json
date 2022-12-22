@@ -357,7 +357,12 @@
     "primary-sales": "Первичные",
     "all-sales": "Все",
     "top-sales": "ТОП",
-    "latest-sales": "Последние"
+    "latest-sales": "Последние",
+    "all-time": "Все время",
+    "year": "Год",
+    "month": "Месяц",
+    "week": "Неделя",
+    "day": "День"
   },
   "xumm": {
     "new-qr": "Получить новый QR-код"

@@ -24,6 +24,7 @@ export default function Sales({ list, defaultSaleTab = "all" }) {
   const [issuerInput, setIssuerInput] = useState(searchParams.get("issuer") || "");
   const [taxonInput, setTaxonInput] = useState(searchParams.get("taxon") || "");
   const [total, setTotal] = useState({});
+  const [periodTab, setPeriodTab] = useState(searchParams.get("period") || "all");
 
   const { t } = useTranslation();
 
@@ -43,16 +44,29 @@ export default function Sales({ list, defaultSaleTab = "all" }) {
     { value: 'lastSold', label: t("tabs.latest-sales") }
   ];
 
+  const periodTabList = [
+    { value: 'all', label: t("tabs.all-time") },
+    //{ value: 'year', label: t("tabs.year") },
+    { value: 'month', label: t("tabs.month") },
+    { value: 'week', label: t("tabs.week") },
+    { value: 'day', label: t("tabs.day") }
+  ];
+
   const checkApi = async () => {
     setData(null);
     setLoading(true);
 
     let currency = '';
     let currencyUrlPart = '';
+    let periodUrlPart = '';
     if (list === 'topSold') {
       currency = searchParams.get("currency");
       currency = currency ? stripText(currency) : "xrp";
       currencyUrlPart = '&currency=' + currency;
+
+      if (periodTab) {
+        periodUrlPart = '&period=' + periodTab;
+      }
     }
 
     let collectionUrlPart = '';
@@ -63,7 +77,7 @@ export default function Sales({ list, defaultSaleTab = "all" }) {
       }
     }
 
-    const response = await axios('v2/nft-sales?list=' + list + currencyUrlPart + '&saleType=' + saleTab + collectionUrlPart).catch(error => {
+    const response = await axios('v2/nft-sales?list=' + list + currencyUrlPart + '&saleType=' + saleTab + collectionUrlPart + periodUrlPart).catch(error => {
       onFailedRequest(error, setErrorMessage);
     });
 
@@ -102,7 +116,7 @@ export default function Sales({ list, defaultSaleTab = "all" }) {
   useEffect(() => {
     checkApi();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [saleTab, issuer, taxon]);
+  }, [saleTab, issuer, taxon, periodTab]);
 
   useEffect(() => {
     if (isAddressOrUsername(data?.issuer)) {
@@ -137,9 +151,23 @@ export default function Sales({ list, defaultSaleTab = "all" }) {
       searchParams.set("view", viewTab);
     }
 
+    if (list === 'topSold') {
+      const existPeriod = periodTabList.some(t => t.value === periodTab);
+      if (!existPeriod) {
+        setPeriodTab("all");
+        searchParams.delete("period");
+      } else if (periodTab === 'all') {
+        searchParams.delete("period");
+      } else {
+        searchParams.set("period", periodTab);
+      }
+    } else {
+      searchParams.delete("period");
+    }
+
     setSearchParams(searchParams);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [viewTab, saleTab, data]);
+  }, [viewTab, saleTab, data, periodTab]);
 
   const searchClick = () => {
     if (isAddressOrUsername(issuerInput)) {
@@ -217,8 +245,9 @@ export default function Sales({ list, defaultSaleTab = "all" }) {
       <input type="button" className="button-action" value={t("button.search")} onClick={searchClick} />
     </p>
     <div className='tabs-inline'>
-      <Tabs tabList={viewTabList} tab={viewTab} setTab={setViewTab} name="view" />
       <Tabs tabList={pageTabList} tab={list} setTab={pageRedirect} name="page" />
+      <Tabs tabList={viewTabList} tab={viewTab} setTab={setViewTab} name="view" />
+      {list === 'topSold' && <Tabs tabList={periodTabList} tab={periodTab} setTab={setPeriodTab} name="period" />}
       <Tabs tabList={saleTabList} tab={saleTab} setTab={setSaleTab} name="sale" />
     </div>
     {viewTab === "list" &&
