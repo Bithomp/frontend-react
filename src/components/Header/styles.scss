@@ -48,7 +48,8 @@ header {
         white-space: nowrap;
         color: var(--text-contrast);
         background: none;
-        border: none;
+        border-right: 1px solid var(--background-menu);
+        border-left: 1px solid var(--background-menu);
         font-size: 16px;
         cursor: pointer;
         &:hover {
