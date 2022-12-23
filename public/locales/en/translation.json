@@ -21,6 +21,7 @@
     "nft-offers": "NFT offers",
     "nft-sales-latest": "Latest NFT sales",
     "nft-sales-top": "TOP NFT sales",
+    "nft-volumes": "NFT sales volumes",
     "validators": "Validators",
     "amendments": "Amendments",
     "genesis": "Genesis accounts",
@@ -344,6 +345,8 @@
     "offer": "Offer",
     "expiration": "Expiration",
     "destination": "Destination",
+    "sales": "Sales count",
+    "volume": "Sales volume",
     "text": {
       "no-expiration": "No expiration date",
       "sell": "Sell",

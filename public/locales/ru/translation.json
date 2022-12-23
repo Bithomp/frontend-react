@@ -21,6 +21,7 @@
     "nft-offers": "NFT предложения",
     "nft-sales-latest": "Последние NFT продажи",
     "nft-sales-top": "ТОП NFT продажи",
+    "nft-volumes": "Объёмы продаж NFT",
     "validators": "Валидаторы",
     "amendments": "Поправки",
     "genesis": "Генезис аккаунты",
@@ -344,6 +345,8 @@
     "offer": "Предложение",
     "expiration": "Истекает",
     "destination": "Кому",
+    "sales": "Колличество продаж",
+    "volume": "Объем продаж",
     "text": {
       "no-expiration": "Без срока действия",
       "sell": "Продажа",

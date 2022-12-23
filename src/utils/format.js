@@ -117,6 +117,10 @@ const amountParced = (amount) => {
         return Number(number) / Math.pow(10, powCalc);
       }
     }
+    if (value.toString().includes('0.0000000000000000000000000000000000000000000000000000000000000000000000')) {
+      value = value.replace('0.0', '');
+      return value.replace(/^0+/, '')
+    }
     return false;
   }
 

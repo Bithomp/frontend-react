@@ -22,6 +22,7 @@ import NftOffer from "./screens/NFT/NftOffer";
 import NftOffers from "./screens/NFT/NftOffers";
 import NftSalesLatest from './screens/NFT/NftSalesLatest';
 import NftSalesTop from './screens/NFT/NftSalesTop';
+import NftVolumes from "./screens/NFT/NftVolumes";
 import NftStatistics from './screens/NFT/NftStatistics';
 import Validators from './screens/Validators';
 import Amendments from './screens/Amendments';
@@ -114,6 +115,7 @@ export default function App() {
           </Route>
           <Route path="/latest-nft-sales" element={<NftSalesLatest />} />
           <Route path="/top-nft-sales" element={<NftSalesTop />} />
+          <Route path="/nft-volumes" element={<NftVolumes />} />
           <Route path="/nft-statistics" element={<NftStatistics />} />
           <Route path="/validators" element={<Validators />} />
           <Route path="/amendments" element={<Amendments />} />

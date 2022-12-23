@@ -30,7 +30,6 @@ export default function NftOffers() {
 
     const response = await axios('v2/address/' + id + '?username=true&service=true&nftOffers=true').catch(error => {
       onFailedRequest(error, setErrorMessage);
-      setLoading(false);
     });
     setLoading(false);
     const newdata = response?.data;
@@ -154,7 +153,7 @@ export default function NftOffers() {
               </thead>
               <tbody>
                 {loading ?
-                  <tr className='center'><td colSpan="9"><span className="waiting"></span></td></tr>
+                  <tr className='center'><td colSpan="100"><span className="waiting"></span></td></tr>
                   :
                   <>
                     {!errorMessage ? data.map((offer, i) =>
@@ -192,7 +191,7 @@ export default function NftOffers() {
                         </td>
                       </tr>)
                       :
-                      <tr><td colSpan="9" className='center orange bold'>{errorMessage}</td></tr>
+                      <tr><td colSpan="100" className='center orange bold'>{errorMessage}</td></tr>
                     }
                   </>
                 }
