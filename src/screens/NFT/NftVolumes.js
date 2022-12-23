@@ -7,7 +7,9 @@ import SEO from '../../components/SEO';
 import Tabs from '../../components/Tabs';
 
 import { onFailedRequest } from '../../utils';
-import { amountFormat } from '../../utils/format';
+import { amountFormat, shortNiceNumber } from '../../utils/format';
+
+import { ReactComponent as LinkIcon } from "../../assets/images/link.svg";
 
 export default function NftVolumes() {
   const { t } = useTranslation();
@@ -113,8 +115,10 @@ export default function NftVolumes() {
       <table className="table-large shrink">
         <thead>
           <tr>
-            <th>{t("table.index")}</th>
-            <th>{t("table.sales")}</th>
+            <th className='center'>{t("table.index")}</th>
+            <th className='right'>{t("table.sales")}</th>
+            <th className='center'>{t("tabs.top-sales")}</th>
+            <th className='center'>{t("tabs.latest-sales")}</th>
             <th>{t("table.volume")}</th>
           </tr>
         </thead>
@@ -125,8 +129,10 @@ export default function NftVolumes() {
             <>
               {(!errorMessage && data) ? data.map((volume, i) =>
                 <tr key={i}>
-                  <td>{i + 1}</td>
-                  <td><a href={'/top-nft-sales' + currencyPeriodUrlPart(volume.amount)}>{volume.sales}</a></td>
+                  <td className='center'>{i + 1}</td>
+                  <td className='right'>{shortNiceNumber(volume.sales, 0)}</td>
+                  <td className='center'><a href={'/top-nft-sales' + currencyPeriodUrlPart(volume.amount)}><LinkIcon /></a></td>
+                  <td className='center'><a href={'/latest-nft-sales' + currencyPeriodUrlPart(volume.amount)}><LinkIcon /></a></td>
                   <td>{amountFormat(volume.amount, { tooltip: 'right' })}</td>
                 </tr>)
                 :
