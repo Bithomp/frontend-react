@@ -25,6 +25,8 @@ export default function Sales({ list, defaultSaleTab = "all" }) {
   const [taxonInput, setTaxonInput] = useState(searchParams.get("taxon") || "");
   const [total, setTotal] = useState({});
   const [periodTab, setPeriodTab] = useState(searchParams.get("period") || "all");
+  const [currency] = useState(searchParams.get("currency"));
+  const [currencyIssuer] = useState(searchParams.get("currencyIssuer"));
 
   const { t } = useTranslation();
 
@@ -56,17 +58,10 @@ export default function Sales({ list, defaultSaleTab = "all" }) {
     setData(null);
     setLoading(true);
 
-    let currency = '';
-    let currencyUrlPart = '';
     let periodUrlPart = '';
-    if (list === 'topSold') {
-      currency = searchParams.get("currency");
-      currency = currency ? stripText(currency) : "xrp";
-      currencyUrlPart = '&currency=' + currency;
 
-      if (periodTab) {
-        periodUrlPart = '&period=' + periodTab;
-      }
+    if (periodTab) {
+      periodUrlPart = '&period=' + periodTab;
     }
 
     let collectionUrlPart = '';
@@ -165,9 +160,14 @@ export default function Sales({ list, defaultSaleTab = "all" }) {
       searchParams.delete("period");
     }
 
+    if (!currency || !isAddressOrUsername(currencyIssuer)) {
+      searchParams.delete("currency");
+      searchParams.delete("currencyIssuer");
+    }
+
     setSearchParams(searchParams);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [viewTab, saleTab, data, periodTab]);
+  }, [viewTab, saleTab, data, periodTab, currency, currencyIssuer]);
 
   const searchClick = () => {
     if (isAddressOrUsername(issuerInput)) {
@@ -200,7 +200,8 @@ export default function Sales({ list, defaultSaleTab = "all" }) {
   }
 
   const pageRedirect = (page) => {
-    let params = "?view=" + viewTab + "&sale=" + saleTab;
+    let params = "?view=" + viewTab + "&sale=" + saleTab + currencyUrlPart;
+
     let url = '';
     if (page === "topSold") {
       url = "/top-nft-sales" + params;
@@ -211,6 +212,7 @@ export default function Sales({ list, defaultSaleTab = "all" }) {
   }
 
   const issuerTaxonUrlPart = (data && issuer) ? ("&issuer=" + usernameOrAddress(data, 'issuer') + (taxon ? ("&taxon=" + taxon) : "")) : "";
+  const currencyUrlPart = (currency && isAddressOrUsername(currencyIssuer)) ? '&currency=' + stripText(currency) + "&currencyIssuer=" + stripText(currencyIssuer) : (list === 'topSold' ? '&currency=xrp' : "");
 
   return <>
     <p className='center'><a href={"/nft-explorer?view=" + viewTab + issuerTaxonUrlPart}>{t("menu.nft-explorer")}</a></p>

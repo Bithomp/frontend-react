@@ -94,6 +94,17 @@ export default function NftVolumes() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [periodTab]);
 
+  const currencyPeriodUrlPart = (amount) => {
+    if (amount.currency) {
+      return "?currency=" + amount.currency + '&currencyIssuer=' + amount.issuer + (periodTab ? ("&period=" + periodTab) : "");
+    }
+    let urlPart = '';
+    if (periodTab) {
+      urlPart = '?period=' + periodTab;
+    }
+    return urlPart;
+  }
+
   return <>
     <SEO title={t("menu.nft-volumes")} />
     <div className="content-text">
@@ -115,7 +126,7 @@ export default function NftVolumes() {
               {(!errorMessage && data) ? data.map((volume, i) =>
                 <tr key={i}>
                   <td>{i + 1}</td>
-                  <td>{volume.sales}</td>
+                  <td><a href={'/top-nft-sales' + currencyPeriodUrlPart(volume.amount)}>{volume.sales}</a></td>
                   <td>{amountFormat(volume.amount, { tooltip: 'right' })}</td>
                 </tr>)
                 :
