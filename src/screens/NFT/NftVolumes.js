@@ -132,7 +132,7 @@ export default function NftVolumes() {
                   <td className='center'>{i + 1}</td>
                   <td className='right'>{shortNiceNumber(volume.sales, 0)}</td>
                   <td className='center'><a href={'/top-nft-sales' + currencyPeriodUrlPart(volume.amount)}><LinkIcon /></a></td>
-                  <td className='center'><a href={'/latest-nft-sales' + currencyPeriodUrlPart(volume.amount)}><LinkIcon /></a></td>
+                  <td className='center'><a href={'/latest-nft-sales' + currencyPeriodUrlPart(volume.amount) + '&sale=all'}><LinkIcon /></a></td>
                   <td>{amountFormat(volume.amount, { tooltip: 'right' })}</td>
                 </tr>)
                 :
