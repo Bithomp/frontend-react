@@ -32,7 +32,7 @@ export default function NftVolumes() {
       periodUrlPart = '?period=' + periodTab;
     }
 
-    const response = await axios('https://bithomp.com/api/v2/nft-volumes' + periodUrlPart).catch(error => {
+    const response = await axios('v2/nft-volumes' + periodUrlPart).catch(error => {
       onFailedRequest(error, setErrorMessage);
     });
     setLoading(false);
