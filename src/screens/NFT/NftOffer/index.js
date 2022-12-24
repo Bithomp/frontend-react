@@ -19,7 +19,7 @@ export default function NftOffer() {
   const { id } = useParams();
 
   const [data, setData] = useState({});
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [loaded, setLoaded] = useState(false);
   const [errored, setErrored] = useState(false);
@@ -28,10 +28,9 @@ export default function NftOffer() {
     if (!id) {
       return;
     }
-
+    setLoading(true);
     const response = await axios('v2/nft/offer/' + id).catch(error => {
       onFailedRequest(error, setErrorMessage);
-      setLoading(false);
     });
     setLoading(false);
     const newdata = response?.data;
@@ -155,96 +154,107 @@ export default function NftOffer() {
       tab="nft-offer"
     />
     <div className="content-center nft-offer">
-      {loading ?
-        <div className='center' style={{ marginTop: "80px" }}><span className="waiting"></span></div>
-        :
-        <>
-          {errorMessage ?
-            <div className='center'>{errorMessage}</div>
-            :
-            <>{data.flags &&
-              <>
-                <div className="column-left">
-                  <div className="dummy"></div>
-                  {loadingImage(data.nftoken)}
-                  {imageOrVideo(data.nftoken)}
-                  <div className='column-left-bottom'>
-                    {data.nftoken.metadata?.name ? data.nftoken.metadata.name : ""}
+      {id ? <>
+        {loading ?
+          <div className='center' style={{ marginTop: "80px" }}><span className="waiting"></span></div>
+          :
+          <>
+            {errorMessage ?
+              <div className='center'>{errorMessage}</div>
+              :
+              <>{data.flags &&
+                <>
+                  <div className="column-left">
+                    <div className="dummy"></div>
+                    {loadingImage(data.nftoken)}
+                    {imageOrVideo(data.nftoken)}
+                    <div className='column-left-bottom'>
+                      {data.nftoken.metadata?.name ? data.nftoken.metadata.name : ""}
+                    </div>
                   </div>
-                </div>
-                <div className="main-box column-right">
-                  <table>
-                    <tbody>
-                      <tr>
-                        <td style={{ minWidth: "95px" }}>{t("table.offer")}</td>
-                        <td>{shortHash(data.offerIndex)} <CopyButton text={data.offerIndex} /></td>
-                      </tr>
-                      <tr>
-                        <td>{sellerOrBuyer}</td>
-                        <td><a href={"/nfts/" + data.account}>{data.account}</a></td>
-                      </tr>
-                      <tr>
-                        <td>{data.flags.sellToken === true ? t("nft-offer.selling") : t("nft-offer.buying")} NFT</td>
-                        <td><a href={"/explorer/" + data.nftokenID}>{shortHash(data.nftokenID)}</a></td>
-                      </tr>
-                      {userOrServiceLink(data, 'account') !== "" &&
+                  <div className="main-box column-right">
+                    <table>
+                      <tbody>
                         <tr>
-                          <td>&nbsp;</td>
-                          <td>{userOrServiceLink(data, 'account')}</td>
+                          <td style={{ minWidth: "95px" }}>{t("table.offer")}</td>
+                          <td>{shortHash(data.offerIndex)} <CopyButton text={data.offerIndex} /></td>
                         </tr>
-                      }
-                      <tr>
-                        <td>{t("table.destination")}</td>
-                        <td><a href={"/nfts/" + data.destination}>{data.destination}</a></td>
-                      </tr>
-                      {userOrServiceLink(data, 'destination') !== "" &&
                         <tr>
-                          <td>&nbsp;</td>
-                          <td>{userOrServiceLink(data, 'destination')}</td>
+                          <td>{sellerOrBuyer}</td>
+                          <td><a href={"/nfts/" + data.account}>{data.account}</a></td>
                         </tr>
-                      }
-                      <tr>
-                        <td>{t("table.price")}</td>
-                        <td>{amountFormat(data.amount)}</td>
-                      </tr>
-                      <tr>
-                        <td>{t("table.placed")}</td>
-                        <td>{fullDateAndTime(data.createdAt)} <a href={"/explorer/" + data.createdTxHash}><LinkIcon /></a></td>
-                      </tr>
-                      {data.expiration && <tr>
-                        <td>{t("table.expiration")}</td>
-                        <td>{fullDateAndTime(data.expiration)}</td>
-                      </tr>}
-                      {data.acceptedAt &&
                         <tr>
-                          <td>{t("table.accepted")}</td>
-                          <td>{fullDateAndTime(data.acceptedAt)} <a href={"/explorer/" + data.acceptedTxHash}><LinkIcon /></a></td>
+                          <td>{data.flags.sellToken === true ? t("nft-offer.selling") : t("nft-offer.buying")} NFT</td>
+                          <td><a href={"/explorer/" + data.nftokenID}>{shortHash(data.nftokenID)}</a></td>
                         </tr>
-                      }
-                      {data.canceledAt &&
+                        {userOrServiceLink(data, 'account') !== "" &&
+                          <tr>
+                            <td>&nbsp;</td>
+                            <td>{userOrServiceLink(data, 'account')}</td>
+                          </tr>
+                        }
                         <tr>
-                          <td>{t("table.canceled")}</td>
-                          <td>{fullDateAndTime(data.canceledAt)} <a href={"/explorer/" + data.canceledAt}><LinkIcon /></a></td>
+                          <td>{t("table.destination")}</td>
+                          <td><a href={"/nfts/" + data.destination}>{data.destination}</a></td>
                         </tr>
-                      }
-                    </tbody>
-                  </table>
-                  <p>
-                    <a href={"/nft-offers/" + data.account}>{t("links.active-offers-same-account")}</a>
-                  </p>
-                  <p>
-                    <a href={"/nfts/" + data.account}>{t("links.owned-nfts-same-account")}</a>
-                  </p>
-                  <p>
-                    <a href={"/nft-explorer?issuer=" + data.nftoken.issuer}>{t("links.nfts-same-issuer")}</a>
-                  </p>
-                </div>
+                        {userOrServiceLink(data, 'destination') !== "" &&
+                          <tr>
+                            <td>&nbsp;</td>
+                            <td>{userOrServiceLink(data, 'destination')}</td>
+                          </tr>
+                        }
+                        <tr>
+                          <td>{t("table.price")}</td>
+                          <td>{amountFormat(data.amount)}</td>
+                        </tr>
+                        <tr>
+                          <td>{t("table.placed")}</td>
+                          <td>{fullDateAndTime(data.createdAt)} <a href={"/explorer/" + data.createdTxHash}><LinkIcon /></a></td>
+                        </tr>
+                        {data.expiration && <tr>
+                          <td>{t("table.expiration")}</td>
+                          <td>{fullDateAndTime(data.expiration)}</td>
+                        </tr>}
+                        {data.acceptedAt &&
+                          <tr>
+                            <td>{t("table.accepted")}</td>
+                            <td>{fullDateAndTime(data.acceptedAt)} <a href={"/explorer/" + data.acceptedTxHash}><LinkIcon /></a></td>
+                          </tr>
+                        }
+                        {data.canceledAt &&
+                          <tr>
+                            <td>{t("table.canceled")}</td>
+                            <td>{fullDateAndTime(data.canceledAt)} <a href={"/explorer/" + data.canceledAt}><LinkIcon /></a></td>
+                          </tr>
+                        }
+                      </tbody>
+                    </table>
+                    <p>
+                      <a href={"/nft-offers/" + data.account}>{t("links.active-offers-same-account")}</a>
+                    </p>
+                    <p>
+                      <a href={"/nfts/" + data.account}>{t("links.owned-nfts-same-account")}</a>
+                    </p>
+                    <p>
+                      <a href={"/nft-explorer?issuer=" + data.nftoken.issuer}>{t("links.nfts-same-issuer")}</a>
+                    </p>
+                  </div>
+                </>
+              }
               </>
             }
-            </>
-          }
+          </>
+        }
+      </>
+        :
+        <>
+          <h2 className='center'>{t("menu.nft-offer")}</h2>
+          <p className='center'>
+            {t("nft-offer.desc")}
+          </p>
         </>
       }
+
     </div>
   </>;
 };
