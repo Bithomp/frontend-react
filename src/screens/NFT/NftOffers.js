@@ -5,7 +5,6 @@ import axios from 'axios';
 
 import SEO from '../../components/SEO';
 import SearchBlock from '../../components/SearchBlock';
-import CopyButton from '../../components/CopyButton';
 
 import { onFailedRequest } from '../../utils';
 import { amountFormat, fullDateAndTime } from '../../utils/format';
@@ -137,7 +136,7 @@ export default function NftOffers() {
                         <td>{fullDateAndTime(offer.createdAt)}</td>
                         {showExpirationColumn && <td>{offer.expiration ? fullDateAndTime(offer.expiration) : t("table.text.no-expiration")}</td>}
                         {showDestinationColumn && <td className='center'>{offer.destination ? <a href={"/explorer/" + offer.destination}><LinkIcon /></a> : ""}</td>}
-                        <td className='center'><CopyButton text={offer.offerIndex} /></td>
+                        <td className='center'><a href={"/nft-offer/" + offer.offerIndex}><LinkIcon /></a></td>
                         <td className='center'><a href={"/explorer/" + offer.createdTxHash}><LinkIcon /></a></td>
                       </tr>)
                       :
@@ -183,7 +182,7 @@ export default function NftOffers() {
                             </p>
                           }
                           <p>
-                            {t("table.offer")}: <CopyButton text={offer.offerIndex} />
+                            {t("table.offer")}: <a href={"/nft-offer/" + offer.offerIndex}><LinkIcon /></a>
                           </p>
                           <p>
                             {t("table.transaction")}: <a href={"/explorer/" + offer.createdTxHash}><LinkIcon /></a>

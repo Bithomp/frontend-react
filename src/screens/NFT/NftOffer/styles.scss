@@ -1,0 +1,43 @@
+.nft-offer {
+  margin-top: 40px !important;
+  max-width: 1000px !important;
+  .column-left {
+    display: inline-block;
+    position: relative;
+    width: calc(40% - 10px);
+    padding-right: 10px;
+    margin-bottom: 40px;
+    .dummy {
+      margin-top: 100%;
+    }
+    .column-left-bottom {
+      position: absolute;
+      bottom: -40px;
+      width: 100%;
+      text-align: center;
+    }
+  }
+  .column-right {
+    display: inline-block;
+    width: calc(60% - 32px);
+    padding: 5px 15px 0 15px;
+    vertical-align: top;
+    table {
+      td {
+        padding: 15px 15px 0 0;
+      }
+    }
+  }
+  @media only screen and (max-width: 600px) {
+    font-size: 14px;
+    .column-left {
+      width: 100%;
+      height: 300px;
+      margin: auto;
+    }
+    .column-right {
+      margin-top: 50px;
+      width: calc(100% - 32px);
+    }
+  }
+}

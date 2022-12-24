@@ -342,11 +342,14 @@
     "serial": "Serial",
     "taxon": "Taxon",
     "placed": "Placed",
+    "accepted": "Accepted",
+    "canceled": "Canceled",
     "offer": "Offer",
     "expiration": "Expiration",
     "destination": "Destination",
     "sales": "Sales count",
     "volume": "Sales volume",
+    "price": "Price",
     "text": {
       "no-expiration": "No expiration date",
       "sell": "Sell",
@@ -391,5 +394,15 @@
       "desc": "Here you can search for Buy and Sell Offers for (XLS-20) NFTs, type in the XRPL address to see what it offers.",
       "no-nft-offers": "We couldn't find any NFT Offers placed by that address."
     }
+  },
+  "nft-offer": {
+    "enter-offer-id": "Enter an NFT offer ID",
+    "selling": "Selling",
+    "buying": "Buying"
+  },
+  "links": {
+    "active-offers-same-account": "View active offers from that account",
+    "nfts-same-issuer": "View NFTs with the same issuer",
+    "owned-nfts-same-account": "View NFTs owned by that account"
   }
 }
