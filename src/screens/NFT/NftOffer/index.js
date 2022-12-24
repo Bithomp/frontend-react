@@ -195,7 +195,7 @@ export default function NftOffer() {
                         }
                         <tr>
                           <td>{t("table.destination")}</td>
-                          <td><a href={"/nfts/" + data.destination}>{data.destination}</a></td>
+                          <td><a href={"/explorer/" + data.destination}>{data.destination}</a></td>
                         </tr>
                         {userOrServiceLink(data, 'destination') !== "" &&
                           <tr>
