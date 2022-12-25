@@ -19,6 +19,7 @@ export default function NftVolumes() {
   const [loading, setLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
   const [periodTab, setPeriodTab] = useState(searchParams.get("period") || "all");
+  const [saleTab, setSaleTab] = useState(searchParams.get("sale") || "all");
 
   const periodTabList = [
     { value: 'all', label: t("tabs.all-time") },
@@ -28,13 +29,14 @@ export default function NftVolumes() {
     { value: 'day', label: t("tabs.day") }
   ];
 
-  const checkApi = async () => {
-    let periodUrlPart = '';
-    if (periodTab) {
-      periodUrlPart = '?period=' + periodTab;
-    }
+  const saleTabList = [
+    { value: 'all', label: t("tabs.all-sales") },
+    { value: 'secondary', label: (t("tabs.secondary-sales")) },
+    { value: 'primary', label: (t("tabs.primary-sales")) }
+  ];
 
-    const response = await axios('v2/nft-volumes' + periodUrlPart).catch(error => {
+  const checkApi = async () => {
+    const response = await axios('v2/nft-volumes?period=' + periodTab + '&saleType=' + saleTab).catch(error => {
       onFailedRequest(error, setErrorMessage);
     });
     setLoading(false);
@@ -91,18 +93,25 @@ export default function NftVolumes() {
     } else {
       searchParams.set("period", periodTab);
     }
-    setSearchParams(searchParams);
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [periodTab]);
-
-  const currencyPeriodUrlPart = (amount) => {
-    if (amount.currency) {
-      return "?currency=" + amount.currency + '&currencyIssuer=' + amount.issuer + (periodTab ? ("&period=" + periodTab) : "");
+    const existSaleType = saleTabList.some(t => t.value === saleTab);
+    if (!existSaleType) {
+      setSaleTab("all");
+      searchParams.delete("sale");
+    } else if (saleTab === "all") {
+      searchParams.delete("sale");
+    } else {
+      searchParams.set("sale", saleTab);
     }
-    let urlPart = '';
-    if (periodTab) {
-      urlPart = '?period=' + periodTab;
+
+    setSearchParams(searchParams);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [saleTab, periodTab]);
+
+  const urlParams = (amount) => {
+    let urlPart = "?period=" + periodTab + "&sale=" + saleTab;
+    if (amount.currency) {
+      urlPart = urlPart + "&currency=" + amount.currency + '&currencyIssuer=' + amount.issuer;
     }
     return urlPart;
   }
@@ -111,7 +120,10 @@ export default function NftVolumes() {
     <SEO title={t("menu.nft-volumes")} />
     <div className="content-text">
       <h2 className="center">{t("menu.nft-volumes") + " "}</h2>
-      <Tabs tabList={periodTabList} tab={periodTab} setTab={setPeriodTab} name="period" />
+      <div className='tabs-inline'>
+        <Tabs tabList={periodTabList} tab={periodTab} setTab={setPeriodTab} name="period" />
+        <Tabs tabList={saleTabList} tab={saleTab} setTab={setSaleTab} name="sale" />
+      </div>
       <table className="table-large shrink">
         <thead>
           <tr>
@@ -131,8 +143,8 @@ export default function NftVolumes() {
                 <tr key={i}>
                   <td className='center'>{i + 1}</td>
                   <td className='right'>{shortNiceNumber(volume.sales, 0)}</td>
-                  <td className='center'><a href={'/top-nft-sales' + currencyPeriodUrlPart(volume.amount)}><LinkIcon /></a></td>
-                  <td className='center'><a href={'/latest-nft-sales' + currencyPeriodUrlPart(volume.amount) + '&sale=all'}><LinkIcon /></a></td>
+                  <td className='center'><a href={'/top-nft-sales' + urlParams(volume.amount)}><LinkIcon /></a></td>
+                  <td className='center'><a href={'/latest-nft-sales' + urlParams(volume.amount)}><LinkIcon /></a></td>
                   <td>{amountFormat(volume.amount, { tooltip: 'right' })}</td>
                 </tr>)
                 :
