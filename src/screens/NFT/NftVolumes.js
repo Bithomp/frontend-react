@@ -16,7 +16,7 @@ export default function NftVolumes() {
 
   const [searchParams, setSearchParams] = useSearchParams();
   const [data, setData] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [periodTab, setPeriodTab] = useState(searchParams.get("period") || "all");
   const [saleTab, setSaleTab] = useState(searchParams.get("sale") || "all");
@@ -42,16 +42,16 @@ export default function NftVolumes() {
   ];
 
   const checkApi = async () => {
-    let params = '';
-    let apiUrl = 'v2/nft-volumes-issuers';
+    let apiUrl = 'v2/nft-volumes';
     if (listTab === 'currencies') {
-      apiUrl = 'v2/nft-volumes';
+      apiUrl += '?list=currencies';
     }
     if (listTab === 'issuers') {
-      params = '&currency=xrp';
+      apiUrl += '?list=issuers&currency=xrp';
     }
 
-    const response = await axios(apiUrl + '?period=' + periodTab + '&saleType=' + saleTab + params).catch(error => {
+    setLoading(true);
+    const response = await axios(apiUrl + '&period=' + periodTab + '&saleType=' + saleTab).catch(error => {
       onFailedRequest(error, setErrorMessage);
     });
     setLoading(false);
@@ -60,9 +60,9 @@ export default function NftVolumes() {
     if (data) {
       if (data.period) {
         if (listTab === 'issuers') {
-          if (data.issuers.length > 0) {
+          if (data.volumes.length > 0) {
             setErrorMessage("");
-            setData(data.issuers.sort((a, b) => (parseFloat(a.volumes[0].amount) < parseFloat(b.volumes[0].amount)) ? 1 : -1));
+            setData(data.volumes.sort((a, b) => (parseFloat(a.amount) < parseFloat(b.amount)) ? 1 : -1));
           } else {
             setErrorMessage(t("general.no-data"));
           }
@@ -170,23 +170,12 @@ export default function NftVolumes() {
         <thead>
           <tr>
             <th className='center'>{t("table.index")}</th>
-            {listTab === 'currencies' &&
-              <>
-                <th className='right'>{t("table.sales")}</th>
-                <th className='center'>{t("tabs.top-sales")}</th>
-                <th className='center'>{t("tabs.latest-sales")}</th>
-                <th>{t("table.volume")}</th>
-              </>
-            }
-            {listTab === 'issuers' &&
-              <>
-                <th>{t("table.issuer")}</th>
-                <th className='center'>{t("tabs.top-sales")}</th>
-                <th className='center'>{t("tabs.latest-sales")}</th>
-                <th>{t("table.sales")}</th>
-                <th>{t("table.volume")}</th>
-              </>
-            }
+            {listTab === 'currencies' && <th className='right'>{t("table.sales")}</th>}
+            {listTab === 'issuers' && <th>{t("table.issuer")}</th>}
+            <th className='center'>{t("tabs.top-sales")}</th>
+            <th className='center'>{t("tabs.latest-sales")}</th>
+            {listTab === 'issuers' && <th>{t("table.sales")}</th>}
+            <th>{t("table.volume")}</th>
           </tr>
         </thead>
         <tbody>
@@ -196,25 +185,16 @@ export default function NftVolumes() {
             <>
               {(!errorMessage && data) ?
                 <>
-                  {listTab === 'currencies' && data.length > 0 &&
+                  {data.length > 0 &&
                     data.map((volume, i) =>
                       <tr key={i}>
                         <td className='center'>{i + 1}</td>
-                        <td className='right'>{shortNiceNumber(volume.sales, 0)}</td>
+                        {listTab === 'currencies' && <td className='right'>{shortNiceNumber(volume.sales, 0)}</td>}
+                        {listTab === 'issuers' && <td>{addressUsernameOrServiceLink(volume, "issuer", "/nft-explorer?issuer=")}</td>}
                         <td className='center'><a href={'/top-nft-sales' + urlParams(volume)}><LinkIcon /></a></td>
                         <td className='center'><a href={'/latest-nft-sales' + urlParams(volume)}><LinkIcon /></a></td>
+                        {listTab === 'issuers' && <td>{volume.sales}</td>}
                         <td>{amountFormat(volume.amount, { tooltip: 'right' })}</td>
-                      </tr>)
-                  }
-                  {listTab === 'issuers' && data.length > 0 &&
-                    data.map((issuer, i) =>
-                      <tr key={i}>
-                        <td className='center'>{i + 1}</td>
-                        <td>{addressUsernameOrServiceLink(issuer, "issuer", "/nft-explorer?issuer=")}</td>
-                        <td className='center'>{issuer.volumes && <a href={'/top-nft-sales' + urlParams(issuer)}><LinkIcon /></a>}</td>
-                        <td className='center'>{issuer.volumes && <a href={'/latest-nft-sales' + urlParams(issuer)}><LinkIcon /></a>}</td>
-                        <td>{issuer.volumes && issuer.volumes[0].sales}</td>
-                        <td>{issuer.volumes && amountFormat(issuer.volumes[0].amount, { tooltip: 'right' })}</td>
                       </tr>)
                   }
                 </>
