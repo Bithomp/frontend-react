@@ -42,12 +42,16 @@ export default function NftVolumes() {
   ];
 
   const checkApi = async () => {
+    let params = '';
     let apiUrl = 'v2/nft-volumes-issuers';
     if (listTab === 'currencies') {
       apiUrl = 'v2/nft-volumes';
     }
+    if (listTab === 'issuers') {
+      params = '&currency=xrp';
+    }
 
-    const response = await axios(apiUrl + '?period=' + periodTab + '&saleType=' + saleTab).catch(error => {
+    const response = await axios(apiUrl + '?period=' + periodTab + '&saleType=' + saleTab + params).catch(error => {
       onFailedRequest(error, setErrorMessage);
     });
     setLoading(false);
@@ -58,7 +62,7 @@ export default function NftVolumes() {
         if (listTab === 'issuers') {
           if (data.issuers.length > 0) {
             setErrorMessage("");
-            setData(data.issuers.sort((a, b) => (a.volumes[0].sales < b.volumes[0].sales) ? 1 : -1));
+            setData(data.issuers.sort((a, b) => (parseFloat(a.volumes[0].amount) < parseFloat(b.volumes[0].amount)) ? 1 : -1));
           } else {
             setErrorMessage(t("general.no-data"));
           }

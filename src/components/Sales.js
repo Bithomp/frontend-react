@@ -128,13 +128,7 @@ export default function Sales({ list, defaultSaleTab = "all" }) {
 
     setTabParams(saleTabList, saleTab, defaultSaleTab, setSaleTab, searchParams, "sale");
     setTabParams(viewTabList, viewTab, "tiles", setViewTab, searchParams, "view");
-
-    //add for the lastSold too! 
-    if (list === 'topSold') {
-      setTabParams(periodTabList, periodTab, "all", setPeriodTab, searchParams, "period");
-    } else {
-      searchParams.delete("period");
-    }
+    setTabParams(periodTabList, periodTab, "all", setPeriodTab, searchParams, "period");
 
     if (!currency || (currency.toLowerCase() !== 'xrp' && !isAddressOrUsername(currencyIssuer))) {
       searchParams.delete("currency");
@@ -177,7 +171,9 @@ export default function Sales({ list, defaultSaleTab = "all" }) {
 
   const pageRedirect = (page) => {
     let params = "?view=" + viewTab + "&sale=" + saleTab + currencyUrlPart();
-
+    if (periodTab !== 'all') {
+      params = params + "&period=" + periodTab;
+    }
     let url = '';
     if (page === "topSold") {
       url = "/top-nft-sales" + params;
@@ -236,7 +232,7 @@ export default function Sales({ list, defaultSaleTab = "all" }) {
     <div className='tabs-inline'>
       <Tabs tabList={pageTabList} tab={list} setTab={pageRedirect} name="page" />
       <Tabs tabList={viewTabList} tab={viewTab} setTab={setViewTab} name="view" />
-      {list === 'topSold' && <Tabs tabList={periodTabList} tab={periodTab} setTab={setPeriodTab} name="period" />}
+      {(list === 'topSold' || periodTab !== 'all') && <Tabs tabList={periodTabList} tab={periodTab} setTab={setPeriodTab} name="period" />}
       <Tabs tabList={saleTabList} tab={saleTab} setTab={setSaleTab} name="sale" />
     </div>
     {viewTab === "list" &&
