@@ -6,7 +6,7 @@ import axios from 'axios';
 import Tabs from './Tabs';
 import Tiles from './Tiles';
 
-import { stripText, onFailedRequest, onApiError, isAddressOrUsername } from '../utils';
+import { stripText, onFailedRequest, onApiError, isAddressOrUsername, setTabParams } from '../utils';
 import { isValidTaxon } from '../utils/nft';
 import { amountFormat, nftLink, timeOrDate, userOrServiceLink, usernameOrAddress } from '../utils/format';
 
@@ -72,7 +72,7 @@ export default function Sales({ list, defaultSaleTab = "all" }) {
       }
     }
 
-    const response = await axios('v2/nft-sales?list=' + list + currencyUrlPart + '&saleType=' + saleTab + collectionUrlPart + periodUrlPart).catch(error => {
+    const response = await axios('v2/nft-sales?list=' + list + currencyUrlPart() + '&saleType=' + saleTab + collectionUrlPart + periodUrlPart).catch(error => {
       onFailedRequest(error, setErrorMessage);
     });
 
@@ -126,41 +126,11 @@ export default function Sales({ list, defaultSaleTab = "all" }) {
       searchParams.delete("taxon");
     }
 
-    const existSaleType = saleTabList.some(t => t.value === saleTab);
-    if (!existSaleType) {
-      setSaleTab(defaultSaleTab);
-      searchParams.delete("sale");
-    } else if (saleTab === defaultSaleTab) {
-      searchParams.delete("sale");
-    } else {
-      searchParams.set("sale", saleTab);
-    }
+    setTabParams(saleTabList, saleTab, defaultSaleTab, setSaleTab, searchParams, "sale");
+    setTabParams(viewTabList, viewTab, "tiles", setViewTab, searchParams, "view");
+    setTabParams(periodTabList, periodTab, "all", setPeriodTab, searchParams, "period");
 
-    const existView = viewTabList.some(t => t.value === viewTab);
-    if (!existView) {
-      setViewTab("tiles");
-      searchParams.delete("view");
-    } else if (viewTab === 'tiles') {
-      searchParams.delete("view");
-    } else {
-      searchParams.set("view", viewTab);
-    }
-
-    if (list === 'topSold') {
-      const existPeriod = periodTabList.some(t => t.value === periodTab);
-      if (!existPeriod) {
-        setPeriodTab("all");
-        searchParams.delete("period");
-      } else if (periodTab === 'all') {
-        searchParams.delete("period");
-      } else {
-        searchParams.set("period", periodTab);
-      }
-    } else {
-      searchParams.delete("period");
-    }
-
-    if (!currency || !isAddressOrUsername(currencyIssuer)) {
+    if (!currency || (currency.toLowerCase() !== 'xrp' && !isAddressOrUsername(currencyIssuer))) {
       searchParams.delete("currency");
       searchParams.delete("currencyIssuer");
     }
@@ -200,8 +170,10 @@ export default function Sales({ list, defaultSaleTab = "all" }) {
   }
 
   const pageRedirect = (page) => {
-    let params = "?view=" + viewTab + "&sale=" + saleTab + currencyUrlPart;
-
+    let params = "?view=" + viewTab + "&sale=" + saleTab + currencyUrlPart();
+    if (periodTab !== 'all') {
+      params = params + "&period=" + periodTab;
+    }
     let url = '';
     if (page === "topSold") {
       url = "/top-nft-sales" + params;
@@ -212,7 +184,18 @@ export default function Sales({ list, defaultSaleTab = "all" }) {
   }
 
   const issuerTaxonUrlPart = (data && issuer) ? ("&issuer=" + usernameOrAddress(data, 'issuer') + (taxon ? ("&taxon=" + taxon) : "")) : "";
-  const currencyUrlPart = (currency && isAddressOrUsername(currencyIssuer)) ? '&currency=' + stripText(currency) + "&currencyIssuer=" + stripText(currencyIssuer) : (list === 'topSold' ? '&currency=xrp' : "");
+
+  const currencyUrlPart = () => {
+    if (!currency) return "";
+    if (currency.toLowerCase() === 'xrp' || list === 'topSold') {
+      return "&currency=xrp";
+    } else {
+      if (isAddressOrUsername(currencyIssuer)) {
+        return '&currency=' + stripText(currency) + "&currencyIssuer=" + stripText(currencyIssuer);
+      }
+    }
+    return "";
+  }
 
   return <>
     <p className='center'><a href={"/nft-explorer?view=" + viewTab + issuerTaxonUrlPart}>{t("menu.nft-explorer")}</a></p>
@@ -249,7 +232,7 @@ export default function Sales({ list, defaultSaleTab = "all" }) {
     <div className='tabs-inline'>
       <Tabs tabList={pageTabList} tab={list} setTab={pageRedirect} name="page" />
       <Tabs tabList={viewTabList} tab={viewTab} setTab={setViewTab} name="view" />
-      {list === 'topSold' && <Tabs tabList={periodTabList} tab={periodTab} setTab={setPeriodTab} name="period" />}
+      {(list === 'topSold' || periodTab !== 'all') && <Tabs tabList={periodTabList} tab={periodTab} setTab={setPeriodTab} name="period" />}
       <Tabs tabList={saleTabList} tab={saleTab} setTab={setSaleTab} name="sale" />
     </div>
     {viewTab === "list" &&

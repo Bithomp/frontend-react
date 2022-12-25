@@ -33,18 +33,25 @@ export const usernameOrAddress = (data, type) => {
   return data[type];
 }
 
-export const userOrServiceLink = (data, type) => {
+export const userOrServiceLink = (data, type, url = '/explorer/') => {
   if (!data || !type || !data[type]) return "";
   if (data[type + 'Details']) {
     const { username, service } = data[type + 'Details'];
     if (username) {
-      return <a href={"/explorer/" + username} className='bold blue'>{username}</a>;
+      return <a href={url + username} className='bold blue'>{username}</a>;
     }
     if (service) {
-      return <a href={"/explorer/" + data[type]} className='bold green'>{service}</a>;
+      return <a href={url + data[type]} className='bold green'>{service}</a>;
     }
   }
   return "";
+}
+
+export const addressUsernameOrServiceLink = (data, type, url = '/explorer/') => {
+  if (userOrServiceLink(data, type) !== "") {
+    return userOrServiceLink(data, type, url);
+  }
+  return <a href={url + data[type]}>{data[type]}</a>;
 }
 
 export const userOrServiceName = (data, options) => {

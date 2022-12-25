@@ -368,7 +368,9 @@
     "year": "Year",
     "month": "Month",
     "week": "Week",
-    "day": "Day"
+    "day": "Day",
+    "currencies": "Currencies",
+    "issuers": "Issuers"
   },
   "xumm": {
     "new-qr": "Get a new QR code"
