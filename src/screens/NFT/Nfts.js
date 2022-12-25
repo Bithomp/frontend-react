@@ -10,7 +10,7 @@ import Tabs from '../../components/Tabs';
 import Tiles from '../../components/Tiles';
 import IssuerSelect from '../../components/IssuerSelect';
 
-import { onFailedRequest, onApiError, isAddressOrUsername } from '../../utils';
+import { onFailedRequest, onApiError, isAddressOrUsername, setTabParams } from '../../utils';
 import { isValidTaxon } from '../../utils/nft';
 import { nftLink, usernameOrAddress, userOrServiceLink } from '../../utils/format';
 
@@ -169,15 +169,7 @@ export default function Nfts() {
       searchParams.delete("taxon");
     }
 
-    const exist = tabList.some(t => t.value === tab);
-    if (!exist) {
-      setTab("tiles");
-      searchParams.delete("view");
-    } else if (tab === 'tiles') {
-      searchParams.delete("view");
-    } else {
-      searchParams.set("view", tab);
-    }
+    setTabParams(tabList, tab, "tiles", setTab, searchParams, "view");
 
     setSearchParams(searchParams);
     // eslint-disable-next-line react-hooks/exhaustive-deps

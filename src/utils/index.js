@@ -1,6 +1,18 @@
 import i18next from '../services/i18n';
 import axios from 'axios';
 
+export const setTabParams = (tabList, tab, defaultTab, setTab, searchParameters, paramName) => {
+  const existTab = tabList.some(t => t.value === tab);
+  if (!existTab) {
+    setTab(defaultTab);
+    searchParameters.delete(paramName);
+  } else if (tab === defaultTab) {
+    searchParameters.delete(paramName);
+  } else {
+    searchParameters.set(paramName, tab);
+  }
+}
+
 //not in use yet
 export const isDarkTheme = () => {
   return document.querySelector('[data-theme="dark"]');
