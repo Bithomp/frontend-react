@@ -47,6 +47,7 @@ const ipfsUrl = (url, type = 'image') => {
 }
 
 const assetUrl = (uri, type = 'image') => {
+  uri = uri.toString();
   if (type === 'image' && isCorrectFileType(uri, 'video')) {
     return null;
   }
