@@ -325,7 +325,7 @@
     "hours-short": "ч"
   },
   "table": {
-    "index": "Индекс",
+    "index": "№",
     "time": "Время",
     "date": "Дата",
     "amount": "Сумма",
@@ -347,7 +347,7 @@
     "offer": "Предложение",
     "expiration": "Истекает",
     "destination": "Кому",
-    "sales": "Колличество продаж",
+    "sales": "Продажи",
     "volume": "Объем продаж",
     "price": "Цена",
     "text": {

@@ -33,25 +33,28 @@ export const usernameOrAddress = (data, type) => {
   return data[type];
 }
 
-export const userOrServiceLink = (data, type, url = '/explorer/') => {
+export const userOrServiceLink = (data, type, options = { url: "/explorer/" }) => {
   if (!data || !type || !data[type]) return "";
   if (data[type + 'Details']) {
     const { username, service } = data[type + 'Details'];
     if (username) {
-      return <a href={url + username} className='bold blue'>{username}</a>;
+      return <a href={options.url + username} className='bold blue'>{username}</a>;
     }
     if (service) {
-      return <a href={url + data[type]} className='bold green'>{service}</a>;
+      return <a href={options.url + data[type]} className='bold green'>{service}</a>;
     }
   }
   return "";
 }
 
-export const addressUsernameOrServiceLink = (data, type, url = '/explorer/') => {
+export const addressUsernameOrServiceLink = (data, type, options = { url: "/explorer/", short: false }) => {
   if (userOrServiceLink(data, type) !== "") {
-    return userOrServiceLink(data, type, url);
+    return userOrServiceLink(data, type, options);
   }
-  return <a href={url + data[type]}>{data[type]}</a>;
+  if (options.short) {
+    return <a href={options.url + data[type]}>{shortAddress(data[type])}</a>;
+  }
+  return <a href={options.url + data[type]}>{data[type]}</a>;
 }
 
 export const userOrServiceName = (data, options) => {
@@ -89,7 +92,12 @@ export const txIdFormat = (txId) => {
 }
 
 export const shortHash = (id) => {
-  id = id.toLowerCase();
+  if (!id) return "";
+  return id.substr(0, 6) + "..." + id.substr(-6);
+}
+
+export const shortAddress = (id) => {
+  if (!id) return "";
   return id.substr(0, 6) + "..." + id.substr(-6);
 }
 

@@ -170,11 +170,10 @@ export default function NftVolumes() {
         <thead>
           <tr>
             <th className='center'>{t("table.index")}</th>
-            {listTab === 'currencies' && <th className='right'>{t("table.sales")}</th>}
             {listTab === 'issuers' && <th>{t("table.issuer")}</th>}
+            <th className='right'>{t("table.sales")}</th>
             <th className='center'>{t("tabs.top-sales")}</th>
-            <th className='center'>{t("tabs.latest-sales")}</th>
-            {listTab === 'issuers' && <th>{t("table.sales")}</th>}
+            <th className='center hide-on-mobile'>{t("tabs.latest-sales")}</th>
             <th>{t("table.volume")}</th>
           </tr>
         </thead>
@@ -189,11 +188,10 @@ export default function NftVolumes() {
                     data.map((volume, i) =>
                       <tr key={i}>
                         <td className='center'>{i + 1}</td>
-                        {listTab === 'currencies' && <td className='right'>{shortNiceNumber(volume.sales, 0)}</td>}
-                        {listTab === 'issuers' && <td>{addressUsernameOrServiceLink(volume, "issuer", "/nft-explorer?issuer=")}</td>}
+                        {listTab === 'issuers' && <td>{addressUsernameOrServiceLink(volume, "issuer", { url: "/nft-explorer?issuer=", short: true })}</td>}
+                        <td className='right'>{shortNiceNumber(volume.sales, 0)}</td>
                         <td className='center'><a href={'/top-nft-sales' + urlParams(volume)}><LinkIcon /></a></td>
-                        <td className='center'><a href={'/latest-nft-sales' + urlParams(volume)}><LinkIcon /></a></td>
-                        {listTab === 'issuers' && <td>{volume.sales}</td>}
+                        <td className='center hide-on-mobile'><a href={'/latest-nft-sales' + urlParams(volume)}><LinkIcon /></a></td>
                         <td>{amountFormat(volume.amount, { tooltip: 'right' })}</td>
                       </tr>)
                   }
