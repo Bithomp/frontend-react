@@ -147,6 +147,28 @@ export default function NftOffer() {
     }
   }
 
+  const trWithAccount = (data, valueName, tableName, url = "explorer") => {
+    if (!data || !data[valueName]) return null;
+    let link = <a href={url + data[valueName]}>{data[valueName]}</a>;
+    let userOrServicelink = userOrServiceLink(data, valueName, { url });
+    return userOrServicelink ?
+      <>
+        <tr>
+          <td>{tableName}</td>
+          <td>{userOrServicelink}</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>{link}</td>
+        </tr>
+      </>
+      :
+      <tr>
+        <td>{tableName}</td>
+        <td>{link}</td>
+      </tr>
+  }
+
   return <>
     {data && <SEO title={t("menu.nft-offer") + " " + data.offerIndex} />}
     <SearchBlock
@@ -179,30 +201,12 @@ export default function NftOffer() {
                           <td style={{ minWidth: "95px" }}>{t("table.offer")}</td>
                           <td>{shortHash(data.offerIndex)} <CopyButton text={data.offerIndex} /></td>
                         </tr>
-                        <tr>
-                          <td>{sellerOrBuyer}</td>
-                          <td><a href={"/nfts/" + data.account}>{data.account}</a></td>
-                        </tr>
+                        {trWithAccount(data, 'account', sellerOrBuyer, "/nfts/")}
                         <tr>
                           <td>{data.flags.sellToken === true ? t("nft-offer.selling") : t("nft-offer.buying")} NFT</td>
                           <td><a href={"/explorer/" + data.nftokenID}>{shortHash(data.nftokenID)}</a></td>
                         </tr>
-                        {userOrServiceLink(data, 'account') !== "" &&
-                          <tr>
-                            <td>&nbsp;</td>
-                            <td>{userOrServiceLink(data, 'account')}</td>
-                          </tr>
-                        }
-                        <tr>
-                          <td>{t("table.destination")}</td>
-                          <td><a href={"/explorer/" + data.destination}>{data.destination}</a></td>
-                        </tr>
-                        {userOrServiceLink(data, 'destination') !== "" &&
-                          <tr>
-                            <td>&nbsp;</td>
-                            <td>{userOrServiceLink(data, 'destination')}</td>
-                          </tr>
-                        }
+                        {trWithAccount(data, 'destination', t("table.destination"), "/explorer/")}
                         <tr>
                           <td>{t("table.price")}</td>
                           <td>{amountFormat(data.amount)}</td>
@@ -211,10 +215,12 @@ export default function NftOffer() {
                           <td>{t("table.placed")}</td>
                           <td>{fullDateAndTime(data.createdAt)} <a href={"/explorer/" + data.createdTxHash}><LinkIcon /></a></td>
                         </tr>
-                        {data.expiration && <tr>
-                          <td>{expirationExpired(data.expiration)}</td>
-                          <td>{fullDateAndTime(data.expiration, "expiration")}</td>
-                        </tr>}
+                        {data.expiration &&
+                          <tr>
+                            <td>{expirationExpired(data.expiration)}</td>
+                            <td>{fullDateAndTime(data.expiration, "expiration")}</td>
+                          </tr>
+                        }
                         {data.acceptedAt &&
                           <tr>
                             <td>{t("table.accepted")}</td>
