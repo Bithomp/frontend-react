@@ -186,8 +186,12 @@ export default function Sales({ list, defaultSaleTab = "all" }) {
   const issuerTaxonUrlPart = (data && issuer) ? ("&issuer=" + usernameOrAddress(data, 'issuer') + (taxon ? ("&taxon=" + taxon) : "")) : "";
 
   const currencyUrlPart = () => {
-    if (!currency && list === 'lastSold') return "";
-    if (currency?.toLowerCase() === 'xrp' || list === 'topSold') {
+    if (!currency) {
+      if (list === 'lastSold') return "";
+      if (list === 'topSold') return "&currency=xrp";
+    }
+
+    if (currency.toLowerCase() === 'xrp') {
       return "&currency=xrp";
     } else {
       if (isAddressOrUsername(currencyIssuer)) {
