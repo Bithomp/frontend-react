@@ -38,11 +38,12 @@ export const userOrServiceLink = (data, type, options = { url: "/explorer/" }) =
   if (!data || !type || !data[type]) return "";
   if (data[type + 'Details']) {
     const { username, service } = data[type + 'Details'];
+    let link = username ? username : data[type];
     if (service) {
-      return <a href={options.url + data[type]} className='bold green'>{service}</a>;
+      return <a href={options.url + link} className='bold green'>{service}</a>;
     }
     if (username) {
-      return <a href={options.url + username} className='bold blue'>{username}</a>;
+      return <a href={options.url + link} className='bold blue'>{username}</a>;
     }
   }
   return "";
