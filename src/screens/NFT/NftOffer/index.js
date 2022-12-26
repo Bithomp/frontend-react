@@ -7,7 +7,7 @@ import SEO from '../../../components/SEO';
 import SearchBlock from '../../../components/SearchBlock';
 import CopyButton from '../../../components/CopyButton';
 
-import { onFailedRequest } from '../../../utils';
+import { onFailedRequest, onApiError } from '../../../utils';
 import { fullDateAndTime, amountFormat, shortHash, userOrServiceLink, expirationExpired } from '../../../utils/format';
 import { nftImageStyle, nftUrl } from '../../../utils/nft';
 
@@ -39,7 +39,7 @@ export default function NftOffer() {
         setData(newdata);
       } else {
         if (newdata.error) {
-          setErrorMessage(newdata.error);
+          onApiError(newdata.error, setErrorMessage);
         } else {
           setErrorMessage("Error");
           console.log(newdata);
@@ -182,7 +182,7 @@ export default function NftOffer() {
           :
           <>
             {errorMessage ?
-              <div className='center'>{errorMessage}</div>
+              <div className='center orange bold'>{errorMessage}</div>
               :
               <>{data.flags &&
                 <>

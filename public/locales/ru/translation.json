@@ -317,7 +317,8 @@
     "Issuer username is not valid": "Эмитент с таким ником не найден",
     "Issuer address is not valid": "Неверный адрес эмитента",
     "Owner username is not found or invalid": "Не верный ник владельца",
-    "Owner address is not valid": "Не верный адрес владельца"
+    "Owner address is not valid": "Не верный адрес владельца",
+    "Token information is not found": "Нам не удалось найти каких-либо данных по этому ID"
   },
   "units": {
     "seconds-short": "с",
