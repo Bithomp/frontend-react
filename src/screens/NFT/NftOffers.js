@@ -7,7 +7,7 @@ import SEO from '../../components/SEO';
 import SearchBlock from '../../components/SearchBlock';
 
 import { onFailedRequest } from '../../utils';
-import { amountFormat, fullDateAndTime } from '../../utils/format';
+import { amountFormat, fullDateAndTime, expirationExpired } from '../../utils/format';
 
 import { ReactComponent as LinkIcon } from "../../assets/images/link.svg";
 
@@ -112,13 +112,13 @@ export default function NftOffers() {
               <thead>
                 <tr>
                   <th className='center'>{t("table.index")}</th>
+                  <th className='center'>{t("table.offer")}</th>
                   <th className='center'>NFT</th>
                   <th>{t("table.type")}</th>
                   <th>{t("table.amount")}</th>
                   <th>{t("table.placed")}</th>
                   {showExpirationColumn && <th>{t("table.expiration")}</th>}
                   {showDestinationColumn && <th className='center'>{t("table.destination")}</th>}
-                  <th className='center'>{t("table.offer")}</th>
                   <th className='center'>{t("table.transaction")}</th>
                 </tr>
               </thead>
@@ -130,13 +130,13 @@ export default function NftOffers() {
                     {!errorMessage ? data.map((offer, i) =>
                       <tr key={i}>
                         <td className="center">{i + 1}</td>
+                        <td className='center'><a href={"/nft-offer/" + offer.offerIndex}><LinkIcon /></a></td>
                         <td className='center'><a href={"/explorer/" + offer.nftokenID}><LinkIcon /></a></td>
                         <td>{offer.flags?.sellToken === true ? t("table.text.sell") : t("table.text.buy")}</td>
                         <td>{amountFormat(offer.amount, { tooltip: true })}</td>
                         <td>{fullDateAndTime(offer.createdAt)}</td>
-                        {showExpirationColumn && <td>{offer.expiration ? fullDateAndTime(offer.expiration) : t("table.text.no-expiration")}</td>}
+                        {showExpirationColumn && <td>{offer.expiration ? fullDateAndTime(offer.expiration, "expiration") : t("table.text.no-expiration")}</td>}
                         {showDestinationColumn && <td className='center'>{offer.destination ? <a href={"/explorer/" + offer.destination}><LinkIcon /></a> : ""}</td>}
-                        <td className='center'><a href={"/nft-offer/" + offer.offerIndex}><LinkIcon /></a></td>
                         <td className='center'><a href={"/explorer/" + offer.createdTxHash}><LinkIcon /></a></td>
                       </tr>)
                       :
@@ -160,6 +160,9 @@ export default function NftOffers() {
                         <td style={{ padding: "5px" }}>{i + 1}</td>
                         <td>
                           <p>
+                            {t("table.offer")}: <a href={"/nft-offer/" + offer.offerIndex}><LinkIcon /></a>
+                          </p>
+                          <p>
                             NFT: <a href={"/explorer/" + offer.nftokenID}><LinkIcon /></a>
                           </p>
                           <p>
@@ -173,7 +176,7 @@ export default function NftOffers() {
                           </p>
                           {offer.expiration &&
                             <p>
-                              {t("table.expiration")}: {fullDateAndTime(offer.expiration)}
+                              {expirationExpired(offer.expiration)}: {fullDateAndTime(offer.expiration, "expiration")}
                             </p>
                           }
                           {offer.destination &&
@@ -181,9 +184,6 @@ export default function NftOffers() {
                               {t("table.destination")}: <a href={"/explorer/" + offer.destination}><LinkIcon /></a>
                             </p>
                           }
-                          <p>
-                            {t("table.offer")}: <a href={"/nft-offer/" + offer.offerIndex}><LinkIcon /></a>
-                          </p>
                           <p>
                             {t("table.transaction")}: <a href={"/explorer/" + offer.createdTxHash}><LinkIcon /></a>
                           </p>

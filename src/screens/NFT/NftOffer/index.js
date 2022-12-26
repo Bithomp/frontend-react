@@ -8,7 +8,7 @@ import SearchBlock from '../../../components/SearchBlock';
 import CopyButton from '../../../components/CopyButton';
 
 import { onFailedRequest } from '../../../utils';
-import { fullDateAndTime, amountFormat, shortHash, userOrServiceLink } from '../../../utils/format';
+import { fullDateAndTime, amountFormat, shortHash, userOrServiceLink, expirationExpired } from '../../../utils/format';
 import { nftImageStyle, nftUrl } from '../../../utils/nft';
 
 import { ReactComponent as LinkIcon } from "../../../assets/images/link.svg";
@@ -212,8 +212,8 @@ export default function NftOffer() {
                           <td>{fullDateAndTime(data.createdAt)} <a href={"/explorer/" + data.createdTxHash}><LinkIcon /></a></td>
                         </tr>
                         {data.expiration && <tr>
-                          <td>{new Date(data.expiration * 1000) < new Date() ? <b className='red'>{t("table.expired")}</b> : t("table.expiration")}</td>
-                          <td>{fullDateAndTime(data.expiration)}</td>
+                          <td>{expirationExpired(data.expiration)}</td>
+                          <td>{fullDateAndTime(data.expiration, "expiration")}</td>
                         </tr>}
                         {data.acceptedAt &&
                           <tr>

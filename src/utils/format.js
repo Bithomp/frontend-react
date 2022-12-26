@@ -1,4 +1,5 @@
 import { Buffer } from 'buffer';
+import i18n from '../services/i18n';
 
 import { ReactComponent as LinkIcon } from "../assets/images/link.svg";
 
@@ -223,9 +224,14 @@ export const capitalize = (word) => {
   return word.charAt(0).toUpperCase() + word.slice(1);
 }
 
-export const fullDateAndTime = (timestamp) => {
+export const fullDateAndTime = (timestamp, type = null) => {
   if (!timestamp) return '';
-  return new Date(timestamp * 1000).toLocaleString();
+  let dateAndTime = new Date(timestamp * 1000).toLocaleString();
+  if (type === 'expiration') {
+    return new Date(timestamp * 1000) < new Date() ? <span className='orange'>{dateAndTime}</span> : dateAndTime;
+  } else {
+    return dateAndTime;
+  }
 }
 
 export const timeFormat = (timestamp) => {
@@ -239,6 +245,10 @@ export const dateFormat = (timestamp) => {
 export const timeOrDate = (timestamp) => {
   //if today - return time, otherwise date
   return (new Date(timestamp * 1000)).setHours(0, 0, 0, 0) === (new Date()).setHours(0, 0, 0, 0) ? timeFormat(timestamp) : dateFormat(timestamp);
+}
+
+export const expirationExpired = (timestamp) => {
+  return new Date(timestamp * 1000) < new Date() ? i18n.t("table.expired") : i18n.t("table.expiration");
 }
 
 //need to make dynamic fraction digits
