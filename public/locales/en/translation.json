@@ -346,6 +346,7 @@
     "canceled": "Canceled",
     "offer": "Offer",
     "expiration": "Expiration",
+    "expired": "Expired",
     "destination": "Destination",
     "sales": "Sales count",
     "volume": "Sales volume",

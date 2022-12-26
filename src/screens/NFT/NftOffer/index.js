@@ -212,7 +212,7 @@ export default function NftOffer() {
                           <td>{fullDateAndTime(data.createdAt)} <a href={"/explorer/" + data.createdTxHash}><LinkIcon /></a></td>
                         </tr>
                         {data.expiration && <tr>
-                          <td>{t("table.expiration")}</td>
+                          <td>{new Date(data.expiration * 1000) < new Date() ? <b className='red'>{t("table.expired")}</b> : t("table.expiration")}</td>
                           <td>{fullDateAndTime(data.expiration)}</td>
                         </tr>}
                         {data.acceptedAt &&
