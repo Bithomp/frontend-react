@@ -67,7 +67,11 @@ export default function NftVolumes() {
         if (listTab === 'issuers') {
           if (data.volumes.length > 0) {
             setErrorMessage("");
-            setData(data.volumes.sort((a, b) => (parseFloat(a.amount) < parseFloat(b.amount)) ? 1 : -1));
+            if (data.volumes[0].amount.value) {
+              setData(data.volumes.sort((a, b) => (parseFloat(a.amount.value) < parseFloat(b.amount.value)) ? 1 : -1));
+            } else {
+              setData(data.volumes.sort((a, b) => (parseFloat(a.amount) < parseFloat(b.amount)) ? 1 : -1));
+            }
           } else {
             setErrorMessage(t("general.no-data"));
           }
