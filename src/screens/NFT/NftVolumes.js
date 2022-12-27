@@ -6,7 +6,7 @@ import axios from 'axios';
 import SEO from '../../components/SEO';
 import Tabs from '../../components/Tabs';
 
-import { onFailedRequest, setTabParams } from '../../utils';
+import { onFailedRequest, setTabParams, stripText } from '../../utils';
 import { amountFormat, shortNiceNumber, addressUsernameOrServiceLink, usernameOrAddress } from '../../utils/format';
 
 import { ReactComponent as LinkIcon } from "../../assets/images/link.svg";
@@ -47,7 +47,12 @@ export default function NftVolumes() {
       apiUrl += '?list=currencies';
     }
     if (listTab === 'issuers') {
-      apiUrl += '?list=issuers&currency=xrp';
+      apiUrl += '?list=issuers';
+      if (searchParams.get("currency") && searchParams.get("currencyIssuer")) {
+        apiUrl += '&currency=' + stripText(searchParams.get("currency")) + '&currencyIssuer=' + stripText(searchParams.get("currencyIssuer"));
+      } else {
+        apiUrl += '&currency=xrp';
+      }
     }
 
     setLoading(true);
