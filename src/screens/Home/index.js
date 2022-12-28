@@ -27,6 +27,13 @@ export default function Home({ theme, devNet }) {
       <SearchBlock searchPlaceholderText={searchPlaceholderText} />
       {!devNet &&
         <div className="home-sponsored">
+          <a href="https://bithomp.com/go/play-crypto" target="_blank" rel="noreferrer">
+            <div className="sponsored-brand">
+              <img src={wolfbet} className="sponsored-brand-icon" alt="play crypto" />
+              <div className="sponsored-brand-title">XRP Casino</div>
+              <div className="sponsored-brand-text">XRP crypto casino & sportsbook.</div>
+            </div>
+          </a>
           <a href="https://bithomp.com/go/buy-xrp" target="_blank" rel="noreferrer">
             <div className="sponsored-brand">
               <img src={btcbit} className="sponsored-brand-icon" alt="buy xrp" />
@@ -39,13 +46,6 @@ export default function Home({ theme, devNet }) {
               <img src={nexo} className="sponsored-brand-icon" alt="earn on xrp" />
               <div className="sponsored-brand-title">Earn on XRP</div>
               <div className="sponsored-brand-text">Make your XRP work for you.<br/>Start earning daily interest.</div>
-            </div>
-          </a>
-          <a href="https://bithomp.com/go/play-crypto" target="_blank" rel="noreferrer">
-            <div className="sponsored-brand">
-              <img src={wolfbet} className="sponsored-brand-icon" alt="play crypto" />
-              <div className="sponsored-brand-title">XRP Casino</div>
-              <div className="sponsored-brand-text">XRP crypto casino & sportsbook.</div>
             </div>
           </a>
         </div>
