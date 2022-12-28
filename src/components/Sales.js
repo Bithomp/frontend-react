@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { useState, useEffect } from 'react';
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, useNavigate } from "react-router-dom";
 import axios from 'axios';
 
 import Tabs from './Tabs';
@@ -14,7 +14,7 @@ import { ReactComponent as LinkIcon } from "../assets/images/link.svg";
 
 export default function Sales({ list, defaultSaleTab = "all" }) {
   const [data, setData] = useState(null);
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
   const [viewTab, setViewTab] = useState(searchParams.get("view") || "tiles");
   const [loading, setLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
@@ -29,6 +29,7 @@ export default function Sales({ list, defaultSaleTab = "all" }) {
   const [currencyIssuer] = useState(searchParams.get("currencyIssuer"));
 
   const { t } = useTranslation();
+  const navigate = useNavigate();
 
   const viewTabList = [
     { value: 'tiles', label: t("tabs.tiles") },
@@ -135,7 +136,16 @@ export default function Sales({ list, defaultSaleTab = "all" }) {
       searchParams.delete("currencyIssuer");
     }
 
-    setSearchParams(searchParams);
+    let url;
+    if (list === 'topSold') {
+      url = '/top-nft-sales?';
+    } else if (list === 'lastSold') {
+      url = 'latest-nft-sales';
+    } else {
+      return;
+    }
+
+    navigate(url + searchParams.toString(), { replace: true });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [viewTab, saleTab, data, periodTab, currency, currencyIssuer]);
 

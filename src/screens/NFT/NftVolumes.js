@@ -1,26 +1,29 @@
 import { useTranslation } from 'react-i18next';
 import { useState, useEffect } from 'react';
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, useNavigate } from "react-router-dom";
 import axios from 'axios';
 
 import SEO from '../../components/SEO';
 import Tabs from '../../components/Tabs';
 
-import { onFailedRequest, setTabParams, stripText } from '../../utils';
+import { onFailedRequest, setTabParams, stripText, isAddressOrUsername } from '../../utils';
 import { amountFormat, shortNiceNumber, addressUsernameOrServiceLink, usernameOrAddress } from '../../utils/format';
 
 import { ReactComponent as LinkIcon } from "../../assets/images/link.svg";
 
 export default function NftVolumes() {
   const { t } = useTranslation();
+  const navigate = useNavigate();
 
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [periodTab, setPeriodTab] = useState(searchParams.get("period") || "all");
   const [saleTab, setSaleTab] = useState(searchParams.get("sale") || "all");
   const [listTab, setListTab] = useState(searchParams.get("list") || "issuers");
+  const [currency] = useState(searchParams.get("currency"));
+  const [currencyIssuer] = useState(searchParams.get("currencyIssuer"));
 
   const listTabList = [
     { value: 'issuers', label: (t("tabs.issuers")) },
@@ -45,14 +48,15 @@ export default function NftVolumes() {
     let apiUrl = 'v2/nft-volumes';
     if (listTab === 'currencies') {
       apiUrl += '?list=currencies';
-    }
-    if (listTab === 'issuers') {
+    } else if (listTab === 'issuers') {
       apiUrl += '?list=issuers';
-      if (searchParams.get("currency") && searchParams.get("currencyIssuer")) {
-        apiUrl += '&currency=' + stripText(searchParams.get("currency")) + '&currencyIssuer=' + stripText(searchParams.get("currencyIssuer"));
+      if (currency && currencyIssuer) {
+        apiUrl += '&currency=' + stripText(currency) + '&currencyIssuer=' + stripText(currencyIssuer);
       } else {
         apiUrl += '&currency=xrp';
       }
+    } else {
+      return;
     }
 
     setLoading(true);
@@ -147,9 +151,15 @@ export default function NftVolumes() {
     setTabParams(listTabList, listTab, "issuers", setListTab, searchParams, "list");
     setTabParams(periodTabList, periodTab, "all", setPeriodTab, searchParams, "period");
     setTabParams(saleTabList, saleTab, "all", setSaleTab, searchParams, "sale");
-    setSearchParams(searchParams);
+
+    if ((!currency || (currency.toLowerCase() !== 'xrp' && !isAddressOrUsername(currencyIssuer))) || listTab === 'currencies' ) {
+      searchParams.delete("currency");
+      searchParams.delete("currencyIssuer");
+    }
+
+    navigate('/nft-volumes?' + searchParams.toString(), { replace: true });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [saleTab, periodTab, listTab]);
+  }, [saleTab, periodTab, listTab, currency, currencyIssuer]);
 
   const urlParams = (volume) => {
     let urlPart = "?period=" + periodTab + "&sale=" + saleTab;
@@ -181,6 +191,7 @@ export default function NftVolumes() {
             <th className='center'>{t("table.index")}</th>
             {listTab === 'issuers' && <th>{t("table.issuer")}</th>}
             <th className='right'>{t("table.sales")}</th>
+            {listTab === 'currencies' && <th>{t("table.issuers")}</th>}
             <th className='center'>{t("tabs.top-sales")}</th>
             <th className='center hide-on-mobile'>{t("tabs.latest-sales")}</th>
             <th>{t("table.volume")}</th>
@@ -199,6 +210,7 @@ export default function NftVolumes() {
                         <td className='center'>{i + 1}</td>
                         {listTab === 'issuers' && <td>{addressUsernameOrServiceLink(volume, "issuer", { url: "/nft-explorer?issuer=", short: true })}</td>}
                         <td className='right'>{shortNiceNumber(volume.sales, 0)}</td>
+                        {listTab === 'currencies' && <td className='center'><a href={'/nft-volumes?list=issuers' + urlParams(volume)}><LinkIcon /></a></td>}
                         <td className='center'><a href={'/top-nft-sales' + urlParams(volume)}><LinkIcon /></a></td>
                         <td className='center hide-on-mobile'><a href={'/latest-nft-sales' + urlParams(volume)}><LinkIcon /></a></td>
                         <td>{amountFormat(volume.amount, { tooltip: 'right' })}</td>

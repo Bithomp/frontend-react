@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { useState, useEffect } from 'react';
-import { useParams, useSearchParams, useLocation } from "react-router-dom";
+import { useParams, useSearchParams, useLocation, useNavigate } from "react-router-dom";
 import axios from 'axios';
 import InfiniteScroll from 'react-infinite-scroll-component';
 
@@ -19,9 +19,10 @@ import { ReactComponent as LinkIcon } from "../../assets/images/link.svg";
 export default function Nfts() {
   const { t } = useTranslation();
   const { id } = useParams();
+  const navigate = useNavigate();
   const location = useLocation();
 
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
   const [data, setData] = useState([]);
   const [rawData, setRawData] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -153,25 +154,18 @@ export default function Nfts() {
   useEffect(() => {
     if (nftExplorer && isAddressOrUsername(rawData?.owner)) {
       searchParams.set("owner", usernameOrAddress(rawData, 'owner'));
-    } else {
-      searchParams.delete("owner");
     }
 
     if (isAddressOrUsername(rawData?.issuer)) {
       searchParams.set("issuer", usernameOrAddress(rawData, 'issuer'));
       if (isValidTaxon(rawData?.taxon)) {
         searchParams.set("taxon", rawData.taxon);
-      } else {
-        searchParams.delete("taxon");
       }
-    } else {
-      searchParams.delete("issuer");
-      searchParams.delete("taxon");
     }
 
     setTabParams(tabList, tab, "tiles", setTab, searchParams, "view");
 
-    setSearchParams(searchParams);
+    navigate(location.pathname + '?' + searchParams.toString(), { replace: true });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tab, rawData]);
 
@@ -180,10 +174,8 @@ export default function Nfts() {
     setSearch(searchName);
     if (searchName) {
       searchParams.set("search", searchName);
-    } else {
-      searchParams.delete("search");
     }
-    setSearchParams(searchParams);
+    navigate(location.pathname + '?' + searchParams.toString(), { replace: true });
   }
 
   useEffect(() => {

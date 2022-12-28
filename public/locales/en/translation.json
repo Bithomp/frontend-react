@@ -334,6 +334,7 @@
     "transaction": "Transaction",
     "owner": "Owner",
     "issuer": "Issuer",
+    "issuers": "Issuers",
     "seller": "Seller",
     "buyer": "Buyer",
     "sold": "Sold",
