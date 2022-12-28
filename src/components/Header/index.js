@@ -87,10 +87,10 @@ export default function Header({ theme, switchTheme, setSignInFormOpen, account,
             <div className="menu-dropdown-button">NFT</div>
             <div className="menu-dropdown-content">
               <a href="/nft-explorer">{t("menu.nft-explorer")}</a>
+              <Link to="/nft-volumes">{t("menu.nft-volumes")}</Link>
               <Link to="/top-nft-sales">{t("menu.nft-sales-top")}</Link>
               <Link to="/latest-nft-sales">{t("menu.nft-sales-latest")}</Link>
               <Link to="/nft-statistics">{t("menu.nft-statistics")}</Link>
-              <Link to="/nft-volumes">{t("menu.nft-volumes")}</Link>
               <a href="/nfts">{t("menu.nfts")}</a>
               <a href="/nft-offers">{t("menu.nft-offers")}</a>
               <Link to="/nft-offer">{t("menu.nft-offer")}</Link>
@@ -196,6 +196,13 @@ export default function Header({ theme, switchTheme, setSignInFormOpen, account,
         <div className="mobile-menu-directory"><span>NFT</span></div>
         <a href="/nft-explorer" className="mobile-menu-item" onClick={mobileMenuToggle}> {t("menu.nft-explorer")}</a>
         <Link
+          to="/nft-volumes"
+          className="mobile-menu-item"
+          onClick={mobileMenuToggle}
+        >
+          {t("menu.nft-volumes")}
+        </Link>
+        <Link
           to="/top-nft-sales"
           className="mobile-menu-item"
           onClick={mobileMenuToggle}
@@ -215,13 +222,6 @@ export default function Header({ theme, switchTheme, setSignInFormOpen, account,
           onClick={mobileMenuToggle}
         >
           {t("menu.nft-statistics")}
-        </Link>
-        <Link
-          to="/nft-volumes"
-          className="mobile-menu-item"
-          onClick={mobileMenuToggle}
-        >
-          {t("menu.nft-volumes")}
         </Link>
         <a href="/nfts" className="mobile-menu-item" onClick={mobileMenuToggle}> {t("menu.nfts")}</a>
         <a href="/nft-offers" className="mobile-menu-item" onClick={mobileMenuToggle}> {t("menu.nft-offers")}</a>
