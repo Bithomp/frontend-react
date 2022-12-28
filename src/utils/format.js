@@ -34,8 +34,11 @@ export const usernameOrAddress = (data, type) => {
   return data[type];
 }
 
-export const userOrServiceLink = (data, type, options = { url: "/explorer/" }) => {
+export const userOrServiceLink = (data, type, options = {}) => {
   if (!data || !type || !data[type]) return "";
+  if (!options.url) {
+    options.url = "/explorer/";
+  }
   if (data[type + 'Details']) {
     const { username, service } = data[type + 'Details'];
     let link = username ? username : data[type];
@@ -50,11 +53,11 @@ export const userOrServiceLink = (data, type, options = { url: "/explorer/" }) =
 }
 
 export const addressUsernameOrServiceLink = (data, type, options = {}) => {
-  if (userOrServiceLink(data, type) !== "") {
-    return userOrServiceLink(data, type, options);
-  }
   if (!options.url) {
     options.url = "/explorer/";
+  }
+  if (userOrServiceLink(data, type) !== "") {
+    return userOrServiceLink(data, type, options);
   }
   if (options.short) {
     return <a href={options.url + data[type]}>{shortAddress(data[type])}</a>;
