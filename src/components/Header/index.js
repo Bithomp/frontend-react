@@ -69,6 +69,7 @@ export default function Header({ theme, switchTheme, setSignInFormOpen, account,
             <div className="menu-dropdown-button">{t("menu.services")}</div>
             <div className="menu-dropdown-content">
               <Link to="/username">{t("menu.usernames")}</Link>
+              <a href="/explorer/submit.html">{t("menu.project-registartion")}</a>
               {!devNet && <Link to="/alerts">{t("menu.price-alerts")}</Link>}
               <a href="https://docs.bithomp.com">{t("menu.api")}</a>
             </div>
@@ -184,7 +185,7 @@ export default function Header({ theme, switchTheme, setSignInFormOpen, account,
             {t("menu.usernames")}
           </Link>
         }
-
+        <a href="/explorer/submit.html" className="mobile-menu-item">{t("menu.project-registartion")}</a>
         {!devNet &&
           <Link to="/alerts" className="mobile-menu-item" onClick={mobileMenuToggle}>
             {t("menu.price-alerts")}
