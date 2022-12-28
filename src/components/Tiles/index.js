@@ -60,13 +60,17 @@ export default function Tiles({ nftList, type = 'name' }) {
     }
   }
 
+  const playMovie = (e) => {
+    e.target.querySelector('video').play();
+  }
+
   const imageOrVideo = (nft) => {
     let imageStyle = nftImageStyle(nft);
     if (Object.keys(imageStyle).length === 0) {
       const nftVideoUrl = nftUrl(nft, 'video');
       if (nftVideoUrl) {
-        return <div className='tile-content'>
-          <video autoPlay playsInline muted loop>
+        return <div className='tile-content' onMouseOver={playMovie}>
+          <video playsInline muted preload="metadata">
             <source src={nftVideoUrl} type="video/mp4" />
           </video>
         </div>;
