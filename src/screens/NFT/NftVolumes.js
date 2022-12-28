@@ -171,7 +171,7 @@ export default function NftVolumes() {
       }
     }
     if (volume?.issuer) {
-      urlPart = urlPart + "&issuer=" + usernameOrAddress(volume, "issuer") + "&currency=xrp";
+      urlPart = urlPart + "&issuer=" + usernameOrAddress(volume, "issuer");
     }
     return urlPart;
   }
@@ -210,7 +210,7 @@ export default function NftVolumes() {
                         <td className='center'>{i + 1}</td>
                         {listTab === 'issuers' && <td>{addressUsernameOrServiceLink(volume, "issuer", { url: "/nft-explorer?issuer=", short: true })}</td>}
                         <td className='right'>{shortNiceNumber(volume.sales, 0)}</td>
-                        {listTab === 'currencies' && <td className='center'><a href={'/nft-volumes?list=issuers' + urlParams(volume)}><LinkIcon /></a></td>}
+                        {listTab === 'currencies' && <td className='center'><a href={'/nft-volumes' + urlParams(volume) + '&list=issuers'}><LinkIcon /></a></td>}
                         <td className='center'><a href={'/top-nft-sales' + urlParams(volume)}><LinkIcon /></a></td>
                         <td className='center hide-on-mobile'><a href={'/latest-nft-sales' + urlParams(volume)}><LinkIcon /></a></td>
                         <td>{amountFormat(volume.amount, { tooltip: 'right' })}</td>
