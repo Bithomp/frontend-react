@@ -27,6 +27,7 @@ export default function NftVolumes() {
 
   const listTabList = [
     { value: 'issuers', label: (t("tabs.issuers")) },
+    { value: 'brokers', label: (t("tabs.brokers")) },
     { value: 'currencies', label: (t("tabs.currencies")) }
   ];
 
@@ -48,8 +49,8 @@ export default function NftVolumes() {
     let apiUrl = 'v2/nft-volumes';
     if (listTab === 'currencies') {
       apiUrl += '?list=currencies';
-    } else if (listTab === 'issuers') {
-      apiUrl += '?list=issuers';
+    } else if (listTab === 'issuers' || listTab === 'brokers') {
+      apiUrl += '?list=' + listTab;
       if (currency && currencyIssuer) {
         apiUrl += '&currency=' + stripText(currency) + '&currencyIssuer=' + stripText(currencyIssuer);
       } else {
@@ -68,24 +69,19 @@ export default function NftVolumes() {
     const data = response?.data;
     if (data) {
       if (data.period) {
-        if (listTab === 'issuers') {
-          if (data.volumes.length > 0) {
-            setErrorMessage("");
+        if (data.volumes.length > 0) {
+          setErrorMessage("");
+          if (listTab === 'issuers' || listTab === 'brokers') {
             if (data.volumes[0].amount.value) {
               setData(data.volumes.sort((a, b) => (parseFloat(a.amount.value) < parseFloat(b.amount.value)) ? 1 : -1));
             } else {
               setData(data.volumes.sort((a, b) => (parseFloat(a.amount) < parseFloat(b.amount)) ? 1 : -1));
             }
-          } else {
-            setErrorMessage(t("general.no-data"));
-          }
-        } else if (listTab === 'currencies') {
-          if (data.volumes.length > 0) {
-            setErrorMessage("");
+          } else if (listTab === 'currencies') {
             setData(data.volumes.sort((a, b) => (a.sales < b.sales) ? 1 : -1));
-          } else {
-            setErrorMessage(t("general.no-data"));
           }
+        } else {
+          setErrorMessage(t("general.no-data"));
         }
       } else {
         if (data.error) {
@@ -152,7 +148,7 @@ export default function NftVolumes() {
     setTabParams(periodTabList, periodTab, "all", setPeriodTab, searchParams, "period");
     setTabParams(saleTabList, saleTab, "all", setSaleTab, searchParams, "sale");
 
-    if ((!currency || (currency.toLowerCase() !== 'xrp' && !isAddressOrUsername(currencyIssuer))) || listTab === 'currencies' ) {
+    if ((!currency || (currency.toLowerCase() !== 'xrp' && !isAddressOrUsername(currencyIssuer))) || listTab === 'currencies') {
       searchParams.delete("currency");
       searchParams.delete("currencyIssuer");
     }
@@ -190,10 +186,11 @@ export default function NftVolumes() {
           <tr>
             <th className='center'>{t("table.index")}</th>
             {listTab === 'issuers' && <th>{t("table.issuer")}</th>}
+            {listTab === 'brokers' && <th>{t("table.broker")}</th>}
             <th className='right'>{t("table.sales")}</th>
             {listTab === 'currencies' && <th>{t("table.issuers")}</th>}
-            <th className='center'>{t("tabs.top-sales")}</th>
-            <th className='center hide-on-mobile'>{t("tabs.latest-sales")}</th>
+            {listTab !== 'brokers' && <th className='center'>{t("tabs.top-sales")}</th>}
+            {listTab !== 'brokers' && <th className='center hide-on-mobile'>{t("tabs.latest-sales")}</th>}
             <th>{t("table.volume")}</th>
           </tr>
         </thead>
@@ -209,10 +206,11 @@ export default function NftVolumes() {
                       <tr key={i}>
                         <td className='center'>{i + 1}</td>
                         {listTab === 'issuers' && <td>{addressUsernameOrServiceLink(volume, "issuer", { url: "/nft-explorer?issuer=", short: true })}</td>}
+                        {listTab === 'brokers' && <td>{addressUsernameOrServiceLink(volume, "broker", { short: true })}</td>}
                         <td className='right'>{shortNiceNumber(volume.sales, 0)}</td>
                         {listTab === 'currencies' && <td className='center'><a href={'/nft-volumes' + urlParams(volume) + '&list=issuers'}><LinkIcon /></a></td>}
-                        <td className='center'><a href={'/top-nft-sales' + urlParams(volume)}><LinkIcon /></a></td>
-                        <td className='center hide-on-mobile'><a href={'/latest-nft-sales' + urlParams(volume)}><LinkIcon /></a></td>
+                        {listTab !== 'brokers' && <td className='center'><a href={'/top-nft-sales' + urlParams(volume)}><LinkIcon /></a></td>}
+                        {listTab !== 'brokers' && <td className='center hide-on-mobile'><a href={'/latest-nft-sales' + urlParams(volume)}><LinkIcon /></a></td>}
                         <td>{amountFormat(volume.amount, { tooltip: 'right' })}</td>
                       </tr>)
                   }

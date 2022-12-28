@@ -336,6 +336,7 @@
     "owner": "Owner",
     "issuer": "Issuer",
     "issuers": "Issuers",
+    "broker": "Broker",
     "seller": "Seller",
     "buyer": "Buyer",
     "sold": "Sold",
@@ -374,7 +375,8 @@
     "week": "Week",
     "day": "Day",
     "currencies": "Currencies",
-    "issuers": "Issuers"
+    "issuers": "Issuers",
+    "brokers": "Brokers"
   },
   "xumm": {
     "new-qr": "Get a new QR code"

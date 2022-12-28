@@ -49,9 +49,12 @@ export const userOrServiceLink = (data, type, options = { url: "/explorer/" }) =
   return "";
 }
 
-export const addressUsernameOrServiceLink = (data, type, options = { url: "/explorer/", short: false }) => {
+export const addressUsernameOrServiceLink = (data, type, options = {}) => {
   if (userOrServiceLink(data, type) !== "") {
     return userOrServiceLink(data, type, options);
+  }
+  if (!options.url) {
+    options.url = "/explorer/";
   }
   if (options.short) {
     return <a href={options.url + data[type]}>{shortAddress(data[type])}</a>;
