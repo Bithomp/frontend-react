@@ -6,7 +6,9 @@ export const setTabParams = (tabList, tab, defaultTab, setTab, searchParameters,
   if (!existTab) {
     setTab(defaultTab);
     searchParameters.delete(paramName);
-  } else if (tab !== defaultTab) {
+  } else if (tab === defaultTab) {
+    searchParameters.delete(paramName);
+  } else {
     searchParameters.set(paramName, tab);
   }
 }
