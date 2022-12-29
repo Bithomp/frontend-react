@@ -140,7 +140,7 @@ export default function Sales({ list, defaultSaleTab = "all" }) {
     if (list === 'topSold') {
       url = '/top-nft-sales?';
     } else if (list === 'lastSold') {
-      url = '/latest-nft-sales';
+      url = '/latest-nft-sales?';
     } else {
       return;
     }
