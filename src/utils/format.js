@@ -2,6 +2,7 @@ import { Buffer } from 'buffer';
 import i18n from '../services/i18n';
 
 import { ReactComponent as LinkIcon } from "../assets/images/link.svg";
+import { stripText } from '.';
 
 export const nftLink = (nft, type) => {
   if (!nft || !type || !nft[type]) return "";
@@ -216,6 +217,7 @@ const amountParced = (amount) => {
     value = amount / 1000000;
     currency = "XRP";
   }
+  currency = stripText(currency);
   return {
     type,
     value,
