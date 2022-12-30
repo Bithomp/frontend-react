@@ -49,47 +49,83 @@ export default function NftOffer() {
   }
 
   /*
-  {
-    "nftokenID": "000903E8E8A080A9F8DB20A3AAC39E00933C85DAF69E37CE0000099E00000000",
-    "offerIndex": "2154FFC81426C16C906D2B8E7AB4E98DEBCE97A4087E56528AB4B840F2FC5F40",
-    "createdAt": 1669036331,
-    "createdLedgerIndex": 33047031,
-    "createdTxHash": "A1E378EDCFDBA8DAFA11D870BBCC6EEF43E8C63FEBCB9AAEDA5375DC8D25FF84",
-    "account": "r4DpsRPfURSxrjJCAv679TJWpqa9uDfXky",
-    "owner": "r4DpsRPfURSxrjJCAv679TJWpqa9uDfXky",
-    "destination": null,
-    "expiration": null,
-    "amount": "100",
+{
+  "nftokenID": "00081068F3D76A09647C813D0363E6F820BB7C797D2EB704E0422464000001C9",
+  "offerIndex": "0CD12DD4975654BF1022241D92D63BA7297B579DF685A9BF0777A0D1BAB738BB",
+  "createdAt": 1671836850,
+  "createdLedgerIndex": 76632990,
+  "createdTxHash": "13FDE6CC174F4FDC4D61673064E552D8B370A91DEF4DD9D510089105B7F8ED7B",
+  "account": "rK4UpLZAJEkwbE3qx2ZSVG5REWGHEiNdHp",
+  "owner": "rK4UpLZAJEkwbE3qx2ZSVG5REWGHEiNdHp",
+  "destination": null,
+  "expiration": null,
+  "amount": "50750000",
+  "flags": {
+    "sellToken": false
+  },
+  "acceptedAt": 1671836851,
+  "acceptedLedgerIndex": 76632991,
+  "acceptedTxHash": "FA9A48CCA34EFA25C94D6DD0F7B2B70D00AE0BE6446CF08D044D246BFB0DBB0B",
+  "acceptedAccount": "rsQmGXm3G4FA6n5L5QqTELBqTph9xEP5nK",
+  "nftoken": {
     "flags": {
-      "sellToken": true
+      "burnable": false,
+      "onlyXRP": false,
+      "trustLine": false,
+      "transferable": true
     },
-    "acceptedAt": 1669036370,
-    "acceptedLedgerIndex": 33047043,
-    "acceptedTxHash": "F50B1E61AE1AA2DCD0ECABC90AF91119F703DBED2C65E3D98BF54E0B851DC7DE",
-    "canceledAt": 1669036370,
-    "canceledLedgerIndex": 33047043,
-    "canceledTxHash": "F50B1E61AE1AA2DCD0ECABC90AF91119F703DBED2C65E3D98BF54E0B851DC7DE",
-    "nftoken": {
-      "flags": {
-        "burnable": true,
-        "onlyXRP": false,
-        "trustLine": false,
-        "transferable": true
-      },
-      "issuer": "r4DpsRPfURSxrjJCAv679TJWpqa9uDfXky",
-      "nftokenID": "000903E8E8A080A9F8DB20A3AAC39E00933C85DAF69E37CE0000099E00000000",
-      "nftokenTaxon": 5,
-      "transferFee": 1000,
-      "sequence": 0,
-      "owner": "rPN5J7wXYXctCm4HzUKptWTjV2WvbDpdxN",
-      "uri": "68747470733A2F2F656E2E77696B6970656469612E6F72672F77696B692F46696C653A416C6963652D626F622D6D616C6C6F72792E6A7067",
-      "issuedAt": 1669036310,
-      "ownerChangedAt": 1669036370,
-      "deletedAt": null,
-      "url": "https://en.wikipedia.org/wiki/File:Alice-bob-mallory.jpg",
-      "metadata": null
+    "issuer": "rPNKEiCGzPd53MhqjkQJrtJKLLVWi6bav1",
+    "nftokenID": "00081068F3D76A09647C813D0363E6F820BB7C797D2EB704E0422464000001C9",
+    "nftokenTaxon": 0,
+    "transferFee": 4200,
+    "sequence": 457,
+    "owner": "rK4UpLZAJEkwbE3qx2ZSVG5REWGHEiNdHp",
+    "uri": "68747470733A2F2F7468657368696C6C76657273652E636F6D2F6E66742F6A736F6E2F70756E6B2F3431382E6A736F6E",
+    "nftSerial": 457,
+    "issuedAt": 1670143680,
+    "ownerChangedAt": 1671836851,
+    "deletedAt": null,
+    "url": "https://theshillverse.com/nft/json/punk/418.json",
+    "metadata": {
+      "name": "Shill Punk #418",
+      "description": "Assassin Doge (Shill Punk #418) reporting for Duty!\nA collection of Punks on the XRPL.",
+      "image": "https://theshillverse.com/nft/img/punk/418.png",
+      "edition": 418,
+      "date": 1670134831294,
+      "actions": [],
+      "attributes": [
+        {
+          "trait_type": "Base",
+          "value": "Doge"
+        }
+      ]
+    },
+    "issuerDetails": {
+      "username": null,
+      "service": null
+    },
+    "ownerDetails": {
+      "username": null,
+      "service": null
     }
+  },
+  "accountDetails": {
+    "username": null,
+    "service": null
+  },
+  "ownerDetails": {
+    "username": null,
+    "service": null
+  },
+  "acceptedAccountDetails": {
+    "username": null,
+    "service": null
+  },
+  "issuerDetails": {
+    "username": null,
+    "service": null
   }
+}
   */
 
   useEffect(() => {
@@ -201,7 +237,7 @@ export default function NftOffer() {
                           <td style={{ minWidth: "95px" }}>{t("table.offer")}</td>
                           <td>{shortHash(data.offerIndex)} <CopyButton text={data.offerIndex} /></td>
                         </tr>
-                        {trWithAccount(data, 'account', sellerOrBuyer, "/nfts/")}
+                        {trWithAccount(data, 'account', sellerOrBuyer, "/explorer/")}
                         <tr>
                           <td>{data.flags.sellToken === true ? t("nft-offer.selling") : t("nft-offer.buying")} NFT</td>
                           <td><a href={"/explorer/" + data.nftokenID}>{shortHash(data.nftokenID)}</a></td>
@@ -222,10 +258,13 @@ export default function NftOffer() {
                           </tr>
                         }
                         {data.acceptedAt &&
-                          <tr>
-                            <td>{t("table.accepted")}</td>
-                            <td>{fullDateAndTime(data.acceptedAt)} <a href={"/explorer/" + data.acceptedTxHash}><LinkIcon /></a></td>
-                          </tr>
+                          <>
+                            <tr>
+                              <td>{t("table.accepted")}</td>
+                              <td>{fullDateAndTime(data.acceptedAt)} <a href={"/explorer/" + data.acceptedTxHash}><LinkIcon /></a></td>
+                            </tr>
+                            {data.acceptedAccount && trWithAccount(data, 'acceptedAccount', t("table.accepted-by"), "/explorer/")}
+                          </>
                         }
                         {data.canceledAt &&
                           <tr>

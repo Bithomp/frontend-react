@@ -334,6 +334,7 @@
     "name": "Имя",
     "transaction": "Транзакция",
     "owner": "Владелец",
+    "accepted-by": "Кто принял",
     "issuer": "Эмитент",
     "issuers": "Эмитенты",
     "broker": "Брокер",

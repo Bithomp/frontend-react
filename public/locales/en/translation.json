@@ -334,6 +334,7 @@
     "name": "Name",
     "transaction": "Transaction",
     "owner": "Owner",
+    "accepted-by": "Accepted by",
     "issuer": "Issuer",
     "issuers": "Issuers",
     "broker": "Broker",
