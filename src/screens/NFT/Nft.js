@@ -71,12 +71,26 @@ export default function Nft() {
         {
           "amount":"1500000000",
           "offerIndex":"7E2B5165926818732C3EC244ACD9B550294EF4B091713A99F6A083487D3ABA40",
-          "nftOfferIndex":"7E2B5165926818732C3EC244ACD9B550294EF4B091713A99F6A083487D3ABA40",
           "owner":"r9spUPhPBfB6kQeF6vPhwmtFwRhBh2JUCG",
           "expiration":null,
           "destination":null,
+          "createdAt": 1670451431,
           "createdLedgerIndex":75483425,
           "createdTxHash":"9573894AE03706B98909DBABD9D670AF6BACBB704AA053E7DC15AD9EB4F79208"
+        },
+        {
+          "amount": {
+            "currency": "534F4C4F00000000000000000000000000000000",
+            "issuer": "rsoLo2S1kiGeCcn6hCUXVrCpGMWLrRrLZz",
+            "value": "10000"
+          },
+          "offerIndex": "E992835C148C9EAA7A93EABDD397A84333F27F99DA386255378A3C16A8B0DEF3",
+          "owner": "r9spUPhPBfB6kQeF6vPhwmtFwRhBh2JUCG",
+          "expiration": null,
+          "destination": null,
+          "createdAt": 1670721431,
+          "createdLedgerIndex": 76344438,
+          "createdTxHash": "616CAAAC1C737C964C4A3B27DEAFE2F172D5A82FDD9342A1F5C677ACABC5AE7B"
         }
       ],
       "buyOffers":null

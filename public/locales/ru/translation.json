@@ -99,7 +99,7 @@
       "accounts": "Адреса",
       "usernames": "Псевдонимы",
       "nft": {
-        "created": "NFT создано",
+        "created": "NFT выпущено",
         "burned": "NFT сожжено",
         "owners": "Владельцев",
         "issuers": "NFT эмитентов",

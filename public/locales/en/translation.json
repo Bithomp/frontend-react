@@ -99,7 +99,7 @@
       "accounts": "Accounts",
       "usernames": "Usernames",
       "nft": {
-        "created": "NFT created",
+        "created": "NFT minted",
         "burned": "NFT burned",
         "owners": "Current owners",
         "issuers": "NFT issuers",
