@@ -15,7 +15,7 @@ export const nftLink = (nft, type) => {
   }
 
   if (nft[type + 'Details']) {
-    const showName = userOrServiceName(nft[type + 'Details'], { link: true });
+    const showName = userOrServiceName(nft[type + 'Details']);
     const { username } = nft[type + 'Details'];
     return <a href={link + (username || nft[type])}>
       {showName ? showName : <LinkIcon />}
@@ -66,13 +66,9 @@ export const addressUsernameOrServiceLink = (data, type, options = {}) => {
   return <a href={options.url + data[type]}>{data[type]}</a>;
 }
 
-export const userOrServiceName = (data, options) => {
+export const userOrServiceName = (data) => {
   if (data) {
     const { service, username } = data;
-    if (options?.link) {
-      if (username) return username;
-      if (service) return service;
-    }
     if (service) {
       return <b className='green'>{service}</b>;
     }

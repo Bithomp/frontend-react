@@ -299,7 +299,6 @@ export default function NftOffer() {
           </p>
         </>
       }
-
     </div>
   </>;
 };

@@ -259,7 +259,7 @@ export default function Sales({ list, defaultSaleTab = "all" }) {
             <th>{t("table.name")}</th>
             <th className='center hide-on-mobile'>{t("table.taxon")}</th>
             <th className='center hide-on-mobile'>{t("table.serial")}</th>
-            <th>NFT</th>
+            <th className='center'>NFT</th>
             <th className='hide-on-mobile'>{t("table.transaction")}</th>
             {saleTab !== "primary" && <th className='hide-on-mobile center'>{t("table.seller")}</th>}
             <th className='hide-on-mobile center'>{t("table.buyer")}</th>
