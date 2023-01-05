@@ -356,6 +356,8 @@
     "sales": "Sales count",
     "volume": "Sales volume",
     "price": "Price",
+    "external-url": "External URL",
+    "description": "Description",
     "text": {
       "no-expiration": "No expiration date",
       "sell": "Sell",
@@ -405,10 +407,14 @@
     }
   },
   "nft-offer": {
-    "desc": "Here you can search for NFT Offers, enter the Offer ID and press the search button.",
+    "desc": "Here you can search for NFT Offers, enter an Offer ID and press the search button.",
     "enter-offer-id": "Enter an NFT offer ID",
     "selling": "Selling",
     "buying": "Buying"
+  },
+  "nft": {
+    "desc": "Here you can search for NFTs, enter an NFT ID and press the search button.",
+    "enter-nft-id": "Enter an NFT ID"
   },
   "links": {
     "active-offers-same-account": "View active offers from that account",
