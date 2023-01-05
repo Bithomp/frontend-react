@@ -215,7 +215,7 @@ export default function Nft() {
       searchPlaceholderText={t("nft.enter-nft-id")}
       tab="nft"
     />
-    <div className="content-center nft">
+    <div className="content-center short-top nft">
       {id ? <>
         {loading ?
           <div className='center' style={{ marginTop: "80px" }}><span className="waiting"></span></div>
@@ -234,13 +234,12 @@ export default function Nft() {
                       {data.metadata?.name ? stripText(data.metadata.name) : ""}
                     </div>
                   </div>
-                  <div className="main-box column-right">
-                    <table>
+                  <div className="column-right">
+                    <table className='table-details'>
+                      <thead>
+                        <tr><th colSpan="100">META DATA</th></tr>
+                      </thead>
                       <tbody>
-                        <tr>
-                          <td style={{ minWidth: "95px" }}>NFT</td>
-                          <td>{shortHash(data.nftokenID)} <CopyButton text={data.nftokenID} /></td>
-                        </tr>
                         {data.metadata &&
                           <>
                             {data.metadata.name &&
@@ -263,8 +262,18 @@ export default function Nft() {
                             }
                           </>
                         }
+                      </tbody>
+                    </table>
+                    <table className='table-details'>
+                      <thead>
+                        <tr><th colSpan="100">LEDGER DATA</th></tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td>NFT ID</td>
+                          <td>{shortHash(data.nftokenID, 10)} <CopyButton text={data.nftokenID} /></td>
+                        </tr>
                         {trWithAccount(data, 'issuer', t("table.issuer"), "/explorer/")}
-                        {trWithAccount(data, 'owner', t("table.owner"), "/explorer/")}
                         <tr>
                           <td>{t("table.taxon")}</td>
                           <td>{data.nftokenTaxon}</td>
@@ -273,6 +282,7 @@ export default function Nft() {
                           <td>{t("table.serial")}</td>
                           <td>{data.sequence}</td>
                         </tr>
+                        {trWithAccount(data, 'owner', t("table.owner"), "/explorer/")}
                       </tbody>
                     </table>
                     <p>

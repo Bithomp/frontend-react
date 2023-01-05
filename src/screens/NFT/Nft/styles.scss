@@ -1,5 +1,4 @@
 .nft {
-  margin-top: 40px !important;
   max-width: 1000px !important;
   .column-left {
     display: inline-block;
@@ -20,13 +19,8 @@
   .column-right {
     display: inline-block;
     width: calc(60% - 32px);
-    padding: 5px 15px 0 15px;
+    padding: 0 15px;
     vertical-align: top;
-    table {
-      td {
-        padding: 15px 15px 0 0;
-      }
-    }
   }
   @media only screen and (max-width: 600px) {
     font-size: 14px;

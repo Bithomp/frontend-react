@@ -211,7 +211,7 @@ export default function NftOffer() {
       searchPlaceholderText={t("nft-offer.enter-offer-id")}
       tab="nft-offer"
     />
-    <div className="content-center nft-offer">
+    <div className="content-center short-top nft-offer">
       {id ? <>
         {loading ?
           <div className='center' style={{ marginTop: "80px" }}><span className="waiting"></span></div>
@@ -230,11 +230,11 @@ export default function NftOffer() {
                       {data.nftoken.metadata?.name ? data.nftoken.metadata.name : ""}
                     </div>
                   </div>
-                  <div className="main-box column-right">
-                    <table>
+                  <div className="column-right">
+                    <table className='table-details'>
                       <tbody>
                         <tr>
-                          <td style={{ minWidth: "95px" }}>{t("table.offer")}</td>
+                          <td>{t("table.offer")}</td>
                           <td>{shortHash(data.offerIndex)} <CopyButton text={data.offerIndex} /></td>
                         </tr>
                         {trWithAccount(data, 'account', sellerOrBuyer, "/explorer/")}
