@@ -8,7 +8,7 @@ import SearchBlock from '../../../components/SearchBlock';
 import CopyButton from '../../../components/CopyButton';
 
 import { onFailedRequest, onApiError, stripText } from '../../../utils';
-import { shortHash, userOrServiceLink } from '../../../utils/format';
+import { shortHash, userOrServiceLink, fullDateAndTime } from '../../../utils/format';
 import { nftImageStyle, nftUrl } from '../../../utils/nft';
 
 import './styles.scss';
@@ -168,6 +168,15 @@ export default function Nft() {
     }
   }
 
+  const audio = (nft) => {
+    const audioUrl = nftUrl(nft, 'audio');
+    if (audioUrl) {
+      return <audio src={audioUrl} controls style={{ display: 'block', margin: "20px auto" }}></audio>;
+    } else {
+      return <></>;
+    }
+  }
+
   //copied
   const loadingImage = (nft) => {
     if (errored) {
@@ -231,7 +240,7 @@ export default function Nft() {
                     {loadingImage(data)}
                     {imageOrVideo(data)}
                     <div className='column-left-bottom'>
-                      {data.metadata?.name ? stripText(data.metadata.name) : ""}
+                      {audio(data)}
                     </div>
                   </div>
                   <div className="column-right">
@@ -264,6 +273,7 @@ export default function Nft() {
                         }
                       </tbody>
                     </table>
+
                     <table className='table-details'>
                       <thead>
                         <tr><th colSpan="100">LEDGER DATA</th></tr>
@@ -285,6 +295,25 @@ export default function Nft() {
                         {trWithAccount(data, 'owner', t("table.owner"), "/explorer/")}
                       </tbody>
                     </table>
+
+                    <table className='table-details'>
+                      <thead>
+                        <tr><th colSpan="100">History</th></tr>
+                      </thead>
+                      <tbody>
+                        {data.deletedAt &&
+                          <tr>
+                            <td className='red'>Burned</td>
+                            <td>{fullDateAndTime(data.deletedAt)}</td>
+                          </tr>
+                        }
+                        <tr>
+                          <td>Minted</td>
+                          <td>{fullDateAndTime(data.issuedAt)}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+
                     <p>
                       <a href={"/nfts/" + data.owner}>{t("links.owned-nfts-same-account")}</a>
                     </p>

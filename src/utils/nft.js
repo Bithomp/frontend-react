@@ -19,8 +19,8 @@ const ipfsUrl = (url, type = 'image') => {
     url = url.replace(".ipfs.w3s.link", "");
     url = url.replace(".ipfs.nftstorage.link", "");
   } else if (url.slice(0, 4) === 'cid:') {
-    return 'https://wallet.xrplnft.art/ipfs/' + url.slice(4);
-    //url = url.slice(4);
+    return 'https://wallet.xrplnft.art/ipfs/' + url.slice(4); //centralised option
+    //url = url.slice(4); //decentralised option is too slow
   } else if (url.includes('?filename=')) {
     url = url.split('?filename=')[0];
   } else if (url.slice(0, 5) === 'hash:') {
@@ -39,8 +39,12 @@ const ipfsUrl = (url, type = 'image') => {
   }
 
   if (cid) {
-    url = cid + url.split(cid).pop();
-    return 'https://ipfs.bithomp.com/' + type + '/' + stripText(url);
+    url = stripText(cid + url.split(cid).pop());
+    if (type === 'image' || type === 'video') {
+      return 'https://ipfs.bithomp.com/' + type + '/' + url;
+    } else if (type === 'audio') {
+      return 'https://cloudflare-ipfs.com/ipfs/' + url;
+    }
   } else {
     return null;
   }
@@ -81,6 +85,9 @@ const metaUrl = (meta, type = 'image') => {
     if (isCorrectFileType(meta.animation_url, type)) return assetUrl(meta.animation_url, type);
     if (meta.content) return assetUrl(meta.content, type);
   }
+  if (type === 'audio') {
+    if (meta.audio) return assetUrl(meta.audio, type);
+  }
   return null;
 }
 
@@ -94,9 +101,12 @@ const isCorrectFileType = (url, nftType = 'image') => {
     if (url.slice(0, 10) === 'data:image') {
       return true;
     }
-  }
-  if (nftType === 'video') {
+  } else if (nftType === 'video') {
     if (type === '.MP4') {
+      return true;
+    }
+  } else if (nftType === 'audio') {
+    if (type === '.MP3') {
       return true;
     }
   }
@@ -126,6 +136,9 @@ export const nftImageStyle = (nft, style = {}) => {
     style.backgroundImage = "url('" + imageUrl + "')";
     if (imageUrl.slice(0, 10) === 'data:image') {
       style.imageRendering = 'pixelated';
+    }
+    if (nft.deletedAt) {
+      style.filter = 'grayscale(1)';
     }
   } else if (!nft.uri) {
     style.imageRendering = 'pixelated';

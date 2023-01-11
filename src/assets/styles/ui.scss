@@ -319,26 +319,26 @@ table {
 }
 
 .red {
-  color: var(--red);
+  color: var(--red) !important;
 }
 
 .blue,
 .blue a {
-  color: var(--accent-link);
+  color: var(--accent-link) !important;
 }
 
 .green,
 .green a {
-  color: var(--green);
+  color: var(--green) !important;
 }
 
 .orange,
 .orange a {
-  color: var(--orange);
+  color: var(--orange) !important;
 }
 
 .contrast {
-  color: var(--text-contrast);
+  color: var(--text-contrast) !important;
 }
 
 .background-secondary {
