@@ -8,10 +8,11 @@ import SearchBlock from '../../../components/SearchBlock';
 import CopyButton from '../../../components/CopyButton';
 
 import { onFailedRequest, onApiError, stripText } from '../../../utils';
-import { shortHash, userOrServiceLink, fullDateAndTime } from '../../../utils/format';
+import { shortHash, trWithAccount, trWithFlags, fullDateAndTime, amountFormat } from '../../../utils/format';
 import { nftImageStyle, nftUrl } from '../../../utils/nft';
 
 import './styles.scss';
+import { ReactComponent as LinkIcon } from "../../../assets/images/link.svg";
 
 export default function Nft() {
   const { t } = useTranslation();
@@ -186,29 +187,6 @@ export default function Nft() {
     }
   }
 
-  //copied
-  const trWithAccount = (data, valueName, tableName, url = "explorer") => {
-    if (!data || !data[valueName]) return null;
-    let link = <a href={url + data[valueName]}>{data[valueName]}</a>;
-    let userOrServicelink = userOrServiceLink(data, valueName, { url });
-    return userOrServicelink ?
-      <>
-        <tr>
-          <td>{tableName}</td>
-          <td>{userOrServicelink}</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>{link}</td>
-        </tr>
-      </>
-      :
-      <tr>
-        <td>{tableName}</td>
-        <td>{link}</td>
-      </tr>
-  }
-
   const externalUrl = (meta) => {
     let url = meta.external_url || meta.external_link;
     if (url) {
@@ -216,6 +194,66 @@ export default function Nft() {
       return <a href={url} target="_blank" rel="noreferrer nofollow">{url}</a>;
     }
     return null;
+  }
+
+  const eventType = (event) => {
+    if (event.owner) {
+      if (event.amount === "0") {
+        return "Transfer";
+      } else if (event.amount) {
+        return "Sale";
+      } else {
+        return "Mint";
+      }
+    } else {
+      return <span className="red">Burned</span>;
+    }
+  }
+
+  const ownerName = (nftEvent) => {
+    if (nftEvent.owner) {
+      if (nftEvent.amount === "0") {
+        return t("table.receiver");
+      } else if (nftEvent.amount) {
+        return t("table.buyer");
+      } else {
+        return t("table.minter");
+      }
+    }
+  }
+
+  const nftHistory = (history) => {
+    /*
+      "history": [
+        {
+          "owner": "rJcEbVWJ7xFjL8J9LsbxBMVSRY2C7DU7rz",
+          "changedAt": 1653941441,
+          "ledgerIndex": 2577883,
+          "txHash": "28261C06ECF7B0E8F5843213122DB62A4B8064C22AD5D947A97AF0F1E604123D"
+        }
+      ],
+    */
+    if (history) {
+      return history.map((nftEvent, i) =>
+        <tbody key={i}>
+          <tr>
+            <td className='bold'>{eventType(nftEvent)}</td>
+            <td>{fullDateAndTime(nftEvent['changedAt'])} <a href={"/explorer/" + nftEvent.txHash}><LinkIcon /></a></td>
+          </tr>
+          {(nftEvent.amount && nftEvent.amount !== "0") &&
+            <tr>
+              <td>Amount</td>
+              <td>{amountFormat(nftEvent.amount)}</td>
+            </tr>
+          }
+          {trWithAccount(nftEvent, 'owner', ownerName(nftEvent), "/explorer/")}
+          {i !== history.length - 1 &&
+            <tr><td colSpan="100"><hr /></td></tr>
+          }
+        </tbody>
+
+      );
+    }
   }
 
   return <>
@@ -315,6 +353,11 @@ export default function Nft() {
                             <td>unspecified</td>
                           </tr>
                         }
+                        {data.transferFee && <tr>
+                          <td>{t("table.transfer-fee")}</td>
+                          <td>{data.transferFee / 1000}%</td>
+                        </tr>}
+                        {trWithFlags(data.flags)}
                       </tbody>
                     </table>
 
@@ -322,25 +365,14 @@ export default function Nft() {
                       <thead>
                         <tr><th colSpan="100">History</th></tr>
                       </thead>
-                      <tbody>
-                        {data.deletedAt &&
-                          <tr>
-                            <td className='red'>Burned</td>
-                            <td>{fullDateAndTime(data.deletedAt)}</td>
-                          </tr>
-                        }
-                        <tr>
-                          <td>Minted</td>
-                          <td>{fullDateAndTime(data.issuedAt)}</td>
-                        </tr>
-                      </tbody>
+                      {nftHistory(data.history)}
                     </table>
 
                     <p>
                       <a href={"/nfts/" + data.owner}>{t("links.owned-nfts-same-account")}</a>
                     </p>
                     <p>
-                      <a href={"/nft-explorer?issuer=" + data.issuer}>{t("links.nfts-same-issuer")}</a>
+                      {t("links.nfts-same-issuer")}: <a href={"/nft-explorer?issuer=" + data.issuer}>{t("links.all")}</a>, <a href={"/top-nft-sales?issuer=" + data.issuer}>{t("links.top-sold")}</a>, <a href={"/latest-nft-sales?issuer=" + data.issuer}>{t("links.latest-sold")}</a>
                     </p>
                   </div>
                 </>

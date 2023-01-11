@@ -336,6 +336,8 @@
     "owner": "Owner",
     "accepted-by": "Accepted by",
     "issuer": "Issuer",
+    "minter": "Minter",
+    "receiver": "Receiver",
     "issuer-owner": "Issuer & Onwer",
     "issuers": "Issuers",
     "broker": "Broker",
@@ -360,6 +362,9 @@
     "external-url": "External URL",
     "description": "Description",
     "collection": "Collection",
+    "transfer-fee": "Roaylty",
+    "flag": "Flag",
+    "flags": "Flags",
     "text": {
       "no-expiration": "No expiration date",
       "sell": "Sell",
@@ -421,6 +426,9 @@
   "links": {
     "active-offers-same-account": "View active offers from that account",
     "nfts-same-issuer": "View NFTs with the same issuer",
-    "owned-nfts-same-account": "View NFTs owned by that account"
+    "owned-nfts-same-account": "View NFTs owned by that account",
+    "all": "all",
+    "top-sold": "top sold",
+    "latest-sold": "latest sold"
   }
 }

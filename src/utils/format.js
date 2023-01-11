@@ -4,6 +4,63 @@ import i18n from '../services/i18n';
 import { ReactComponent as LinkIcon } from "../assets/images/link.svg";
 import { stripText } from '.';
 
+//table
+export const trWithFlags = (flags) => {
+  /*
+  "flags": {
+    "burnable": false,
+    "onlyXRP": false,
+    "trustLine": false,
+    "transferable": true
+  },
+  */
+  let flagList = '';
+  let count = 0;
+  let name = i18n.t("table.flags");
+
+  for (let key in flags) {
+    if (flags[key]) {
+      //skip sellToken flag for tokenCreateOffer, we show it in the name
+      if (key === 'sellToken') {
+        continue;
+      }
+      count++;
+      flagList += key + ', ';
+    }
+  }
+  flagList = flagList.slice(0, -2); // remove the last comma
+
+  if (count === 1) {
+    name = i18n.t("table.flag");
+  }
+  return <tr>
+    <td>{name}</td>
+    <td>{flagList}</td>
+  </tr>
+}
+
+export const trWithAccount = (data, valueName, tableName, url = "/explorer/") => {
+  if (!data || !data[valueName]) return null;
+  let link = <a href={url + data[valueName]}>{data[valueName]}</a>;
+  let userOrServicelink = userOrServiceLink(data, valueName, { url });
+  return userOrServicelink ?
+    <>
+      <tr>
+        <td>{tableName}</td>
+        <td>{userOrServicelink}</td>
+      </tr>
+      <tr>
+        <td></td>
+        <td>{link}</td>
+      </tr>
+    </>
+    :
+    <tr>
+      <td>{tableName}</td>
+      <td>{link}</td>
+    </tr>
+}
+
 export const nftLink = (nft, type) => {
   if (!nft || !type || !nft[type]) return "";
 
@@ -94,7 +151,7 @@ export const txIdFormat = (txId) => {
   return txId;
 }
 
-export const shortHash = (id, n=6) => {
+export const shortHash = (id, n = 6) => {
   if (!id) return "";
   return id.substr(0, n) + "..." + id.substr(-n);
 }
@@ -105,6 +162,7 @@ export const shortAddress = (id) => {
 }
 
 export const amountFormat = (amount, options = {}) => {
+  if (!amount && amount !== "0" && amount !== 0) { return "" };
   const { value, currency, valuePrefix, issuer, type } = amountParced(amount);
   let showValue = value;
   if (value > 100) {

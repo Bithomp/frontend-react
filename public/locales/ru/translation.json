@@ -336,6 +336,8 @@
     "owner": "Владелец",
     "accepted-by": "Кто принял",
     "issuer": "Эмитент",
+    "minter": "Чеканщик",
+    "receiver": "Получатель",
     "issuer-owner": "Эмитент и Владелец",
     "issuers": "Эмитенты",
     "broker": "Брокер",
@@ -360,6 +362,9 @@
     "external-url": "Внешняя ссылка",
     "description": "Описание",
     "collection": "Коллекция",
+    "transfer-fee": "Pоялти",
+    "flag": "Атрибут",
+    "flags": "Атрибуты",
     "text": {
       "no-expiration": "Без срока действия",
       "sell": "Продажа",
@@ -421,6 +426,9 @@
   "links": {
     "active-offers-same-account": "Активные предложения от этого же аккаунта",
     "nfts-same-issuer": "NFT от этого же эмитента",
-    "owned-nfts-same-account": "NFT пренадлежащие этому аккаунту"
+    "owned-nfts-same-account": "NFT пренадлежащие этому аккаунту",
+    "all": "все",
+    "top-sold": "топ продажи",
+    "latest-sold": "последние продажи"
   }
 }

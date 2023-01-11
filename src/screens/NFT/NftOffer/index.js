@@ -8,7 +8,7 @@ import SearchBlock from '../../../components/SearchBlock';
 import CopyButton from '../../../components/CopyButton';
 
 import { onFailedRequest, onApiError } from '../../../utils';
-import { fullDateAndTime, amountFormat, shortHash, userOrServiceLink, expirationExpired } from '../../../utils/format';
+import { fullDateAndTime, amountFormat, shortHash, trWithAccount, expirationExpired } from '../../../utils/format';
 import { nftImageStyle, nftUrl } from '../../../utils/nft';
 
 import { ReactComponent as LinkIcon } from "../../../assets/images/link.svg";
@@ -81,7 +81,6 @@ export default function NftOffer() {
     "sequence": 457,
     "owner": "rK4UpLZAJEkwbE3qx2ZSVG5REWGHEiNdHp",
     "uri": "68747470733A2F2F7468657368696C6C76657273652E636F6D2F6E66742F6A736F6E2F70756E6B2F3431382E6A736F6E",
-    "nftSerial": 457,
     "issuedAt": 1670143680,
     "ownerChangedAt": 1671836851,
     "deletedAt": null,
@@ -183,28 +182,6 @@ export default function NftOffer() {
     }
   }
 
-  const trWithAccount = (data, valueName, tableName, url = "explorer") => {
-    if (!data || !data[valueName]) return null;
-    let link = <a href={url + data[valueName]}>{data[valueName]}</a>;
-    let userOrServicelink = userOrServiceLink(data, valueName, { url });
-    return userOrServicelink ?
-      <>
-        <tr>
-          <td>{tableName}</td>
-          <td>{userOrServicelink}</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>{link}</td>
-        </tr>
-      </>
-      :
-      <tr>
-        <td>{tableName}</td>
-        <td>{link}</td>
-      </tr>
-  }
-
   return <>
     {data && <SEO title={t("menu.nft-offer") + " " + data.offerIndex} />}
     <SearchBlock
@@ -281,7 +258,7 @@ export default function NftOffer() {
                       <a href={"/nfts/" + data.account}>{t("links.owned-nfts-same-account")}</a>
                     </p>
                     <p>
-                      <a href={"/nft-explorer?issuer=" + data.nftoken.issuer}>{t("links.nfts-same-issuer")}</a>
+                      {t("links.nfts-same-issuer")}: <a href={"/nft-explorer?issuer=" + data.nftoken.issuer}>{t("links.all")}</a>, <a href={"/top-nft-sales?issuer=" + data.nftoken.issuer}>{t("links.top-sold")}</a>, <a href={"/latest-nft-sales?issuer=" + data.nftoken.issuer}>{t("links.latest-sold")}</a>
                     </p>
                   </div>
                 </>
