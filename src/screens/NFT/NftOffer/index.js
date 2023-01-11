@@ -212,12 +212,12 @@ export default function NftOffer() {
                       <tbody>
                         <tr>
                           <td>{t("table.offer")}</td>
-                          <td>{shortHash(data.offerIndex)} <CopyButton text={data.offerIndex} /></td>
+                          <td>{shortHash(data.offerIndex, 10)} <CopyButton text={data.offerIndex} /></td>
                         </tr>
                         {trWithAccount(data, 'account', sellerOrBuyer, "/explorer/")}
                         <tr>
                           <td>{data.flags.sellToken === true ? t("nft-offer.selling") : t("nft-offer.buying")} NFT</td>
-                          <td><a href={"/explorer/" + data.nftokenID}>{shortHash(data.nftokenID)}</a></td>
+                          <td><a href={"/explorer/" + data.nftokenID}>{shortHash(data.nftokenID, 10)}</a></td>
                         </tr>
                         {trWithAccount(data, 'destination', t("table.destination"), "/explorer/")}
                         <tr>

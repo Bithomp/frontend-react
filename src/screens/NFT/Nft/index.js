@@ -8,7 +8,15 @@ import SearchBlock from '../../../components/SearchBlock';
 import CopyButton from '../../../components/CopyButton';
 
 import { onFailedRequest, onApiError, stripText } from '../../../utils';
-import { shortHash, trWithAccount, trWithFlags, fullDateAndTime, amountFormat } from '../../../utils/format';
+import {
+  shortHash,
+  trWithAccount,
+  trWithFlags,
+  fullDateAndTime,
+  amountFormat,
+  expirationExpired,
+  nftOfferLink
+} from '../../../utils/format';
 import { nftImageStyle, nftUrl } from '../../../utils/nft';
 
 import './styles.scss';
@@ -37,6 +45,7 @@ export default function Nft() {
     if (newdata) {
       if (newdata.flags) {
         newdata.history = newdata.history.sort((a, b) => (a.changedAt < b.changedAt) ? 1 : -1);
+        //sort SellOffers and buyOffers: non expired first, by amount seconds, iou amount 
         setData(newdata);
       } else {
         if (newdata.error) {
@@ -144,6 +153,15 @@ export default function Nft() {
 
   //copied
   const imageOrVideo = (nft) => {
+    /*
+    <img 
+      src={record.picture}
+      onError={({ currentTarget }) => {
+        currentTarget.onerror = null; // prevents looping
+        currentTarget.src="new_image_path_here";
+      }}
+    />
+    */
     let imageStyle = nftImageStyle(nft, nftPrev);
     if (!Object.keys(imageStyle).includes("backgroundImage")) {
       const nftVideoUrl = nftUrl(nft, 'video');
@@ -200,11 +218,11 @@ export default function Nft() {
   const eventType = (event) => {
     if (event.owner) {
       if (event.amount === "0") {
-        return "Transfer";
+        return "Transferred";
       } else if (event.amount) {
-        return "Sale";
+        return "Sold";
       } else {
-        return "Mint";
+        return "Minted";
       }
     } else {
       return <span className="red">Burned</span>;
@@ -239,11 +257,11 @@ export default function Nft() {
         <tbody key={i}>
           <tr>
             <td className='bold'>{eventType(nftEvent)}</td>
-            <td>{fullDateAndTime(nftEvent['changedAt'])} <a href={"/explorer/" + nftEvent.txHash}><LinkIcon /></a></td>
+            <td>{fullDateAndTime(nftEvent.changedAt)} <a href={"/explorer/" + nftEvent.txHash}><LinkIcon /></a></td>
           </tr>
           {(nftEvent.amount && nftEvent.amount !== "0") &&
             <tr>
-              <td>Amount</td>
+              <td>{t("table.price")}</td>
               <td>{amountFormat(nftEvent.amount)}</td>
             </tr>
           }
@@ -252,8 +270,63 @@ export default function Nft() {
             <tr><td colSpan="100"><hr /></td></tr>
           }
         </tbody>
-
       );
+    }
+  }
+
+  const nftOffers = (offers, type) => {
+    if (type !== 'sell' && type !== 'buy') {
+      return <tbody><tr><td colSpan="100">Error, no offer type</td></tr></tbody>;
+    }
+    /*
+      {
+        "amount": "1000000000",
+        "offerIndex": "D9C7F16C02CEBFF5D4D17F891503253AE6485F6863DEC25D2B095B919D478E06",
+        "owner": "rsr1kvnWTNNxaX24Ny2ccE3onPMukiEHY3",
+        "expiration": null,
+        "destination": null,
+        "createdLedgerIndex": 75640602,
+        "createdTxHash": "AF8A46B6C49DAF95B44BC34B8961D19B19B5D5C52071BEA3CF0DEE038BFCDEC1",
+        "createdAt": 1667249811
+      }
+    */
+
+    const buyerOrSeller = type === 'sell' ? t("table.seller") : t("table.buyer");
+
+    if (offers) {
+      return offers.map((offer, i) =>
+        <tbody key={i}>
+          {trWithAccount(offer, 'owner', buyerOrSeller, "/explorer/")}
+          <tr>
+            <td>{t("table.amount")}</td>
+            <td>{amountFormat(offer.amount)}</td>
+          </tr>
+          <tr>
+            <td>{t("table.placed")}</td>
+            <td>{fullDateAndTime(offer.createdAt)} <a href={"/explorer/" + offer.createdTxHash}><LinkIcon /></a></td>
+          </tr>
+          {offer.expiration &&
+            <tr>
+              <td>{expirationExpired(offer.expiration)}</td>
+              <td>{fullDateAndTime(offer.expiration, "expiration")}</td>
+            </tr>
+          }
+          {offer.destination &&
+            trWithAccount(offer, 'destination', t("table.destination"), "/explorer/")
+          }
+          <tr>
+            <td>{t("table.offer")}</td>
+            <td>{nftOfferLink(offer.offerIndex, 10)}</td>
+          </tr>
+          {i !== offers.length - 1 &&
+            <tr><td colSpan="100"><hr /></td></tr>
+          }
+        </tbody>
+      )
+    } else {
+      return <tbody>
+        <tr><td colSpan="100">No offers found</td></tr>
+      </tbody>;
     }
   }
 
@@ -354,7 +427,7 @@ export default function Nft() {
                             <td>unspecified</td>
                           </tr>
                         }
-                        {data.transferFee && <tr>
+                        {!!data.transferFee && <tr>
                           <td>{t("table.transfer-fee")}</td>
                           <td>{data.transferFee / 1000}%</td>
                         </tr>}
@@ -367,6 +440,20 @@ export default function Nft() {
                         <tr><th colSpan="100">History</th></tr>
                       </thead>
                       {nftHistory(data.history)}
+                    </table>
+
+                    <table className='table-details'>
+                      <thead>
+                        <tr><th colSpan="100">Sell offers</th></tr>
+                      </thead>
+                      {nftOffers(data.sellOffers, "sell")}
+                    </table>
+
+                    <table className='table-details'>
+                      <thead>
+                        <tr><th colSpan="100">Buy offers</th></tr>
+                      </thead>
+                      {nftOffers(data.buyOffers, "buy")}
                     </table>
 
                     <p>

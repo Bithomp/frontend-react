@@ -61,6 +61,11 @@ export const trWithAccount = (data, valueName, tableName, url = "/explorer/") =>
     </tr>
 }
 
+export const nftOfferLink = (nftOfferId, chars = 6) => {
+  if (!nftOfferId) return "";
+  return <a href={"/nft-offer/" + nftOfferId}>{shortHash(nftOfferId, chars)}</a>
+}
+
 export const nftLink = (nft, type) => {
   if (!nft || !type || !nft[type]) return "";
 
