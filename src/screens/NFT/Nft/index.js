@@ -33,9 +33,10 @@ export default function Nft() {
       onFailedRequest(error, setErrorMessage);
     });
     setLoading(false);
-    const newdata = response?.data;
+    let newdata = response?.data;
     if (newdata) {
       if (newdata.flags) {
+        newdata.history = newdata.history.sort((a, b) => (a.changedAt < b.changedAt) ? 1 : -1);
         setData(newdata);
       } else {
         if (newdata.error) {
