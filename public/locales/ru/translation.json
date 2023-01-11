@@ -336,6 +336,7 @@
     "owner": "Владелец",
     "accepted-by": "Кто принял",
     "issuer": "Эмитент",
+    "issuer-owner": "Эмитент и Владелец",
     "issuers": "Эмитенты",
     "broker": "Брокер",
     "seller": "Продавец",
@@ -358,6 +359,7 @@
     "price": "Цена",
     "external-url": "Внешняя ссылка",
     "description": "Описание",
+    "collection": "Коллекция",
     "text": {
       "no-expiration": "Без срока действия",
       "sell": "Продажа",

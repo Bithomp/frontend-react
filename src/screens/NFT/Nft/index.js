@@ -211,8 +211,8 @@ export default function Nft() {
 
   const externalUrl = (meta) => {
     let url = meta.external_url || meta.external_link;
-    url = stripText(url);
     if (url) {
+      url = stripText(url);
       return <a href={url} target="_blank" rel="noreferrer nofollow">{url}</a>;
     }
     return null;
@@ -263,6 +263,16 @@ export default function Nft() {
                                 <td>{stripText(data.metadata.description)}</td>
                               </tr>
                             }
+                            {data.metadata.collection &&
+                              <>
+                                {data.metadata.collection.name &&
+                                  <tr>
+                                    <td>{t("table.collection")}</td>
+                                    <td>{stripText(data.metadata.collection.name)}</td>
+                                  </tr>
+                                }
+                              </>
+                            }
                             {externalUrl(data.metadata) &&
                               <tr>
                                 <td>{t("table.external-url")}</td>
@@ -283,7 +293,14 @@ export default function Nft() {
                           <td>NFT ID</td>
                           <td>{shortHash(data.nftokenID, 10)} <CopyButton text={data.nftokenID} /></td>
                         </tr>
-                        {trWithAccount(data, 'issuer', t("table.issuer"), "/explorer/")}
+                        {data.issuer === data.owner ?
+                          trWithAccount(data, 'owner', t("table.issuer-owner"), "/explorer/")
+                          :
+                          <>
+                            {trWithAccount(data, 'owner', t("table.owner"), "/explorer/")}
+                            {trWithAccount(data, 'issuer', t("table.issuer"), "/explorer/")}
+                          </>
+                        }
                         <tr>
                           <td>{t("table.taxon")}</td>
                           <td>{data.nftokenTaxon}</td>
@@ -292,7 +309,12 @@ export default function Nft() {
                           <td>{t("table.serial")}</td>
                           <td>{data.sequence}</td>
                         </tr>
-                        {trWithAccount(data, 'owner', t("table.owner"), "/explorer/")}
+                        {!data.uri &&
+                          <tr>
+                            <td>URI</td>
+                            <td>unspecified</td>
+                          </tr>
+                        }
                       </tbody>
                     </table>
 

@@ -336,6 +336,7 @@
     "owner": "Owner",
     "accepted-by": "Accepted by",
     "issuer": "Issuer",
+    "issuer-owner": "Issuer & Onwer",
     "issuers": "Issuers",
     "broker": "Broker",
     "seller": "Seller",
@@ -358,6 +359,7 @@
     "price": "Price",
     "external-url": "External URL",
     "description": "Description",
+    "collection": "Collection",
     "text": {
       "no-expiration": "No expiration date",
       "sell": "Sell",
