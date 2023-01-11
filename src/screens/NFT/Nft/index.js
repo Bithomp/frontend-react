@@ -262,7 +262,7 @@ export default function Nft() {
           {(nftEvent.amount && nftEvent.amount !== "0") &&
             <tr>
               <td>{t("table.price")}</td>
-              <td>{amountFormat(nftEvent.amount)}</td>
+              <td>{amountFormat(nftEvent.amount, { tooltip: "right" })}</td>
             </tr>
           }
           {trWithAccount(nftEvent, 'owner', ownerName(nftEvent), "/explorer/")}
@@ -299,7 +299,7 @@ export default function Nft() {
           {trWithAccount(offer, 'owner', buyerOrSeller, "/explorer/")}
           <tr>
             <td>{t("table.amount")}</td>
-            <td>{amountFormat(offer.amount)}</td>
+            <td>{amountFormat(offer.amount, { tooltip: "right" })}</td>
           </tr>
           <tr>
             <td>{t("table.placed")}</td>
