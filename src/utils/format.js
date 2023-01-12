@@ -86,6 +86,23 @@ export const nftLink = (nft, type) => {
   return <a href={link + nft[type]}><LinkIcon /></a>
 }
 
+export const nftsExplorerLink = ({ owner, ownerDetails, issuer, issuerDetails }) => {
+  if (!owner && !issuer) return "";
+  let link = '';
+  const issuerUri = issuerDetails?.username ? issuerDetails.username : issuer;
+  const ownerUri = ownerDetails?.username ? ownerDetails.username : owner;
+  if (issuer && owner) {
+    link = "/nft-explorer?issuer=" + issuerUri + '&owner=' + ownerUri;
+  } else {
+    if (issuer) {
+      link = "/nft-explorer?issuer=" + issuerUri;
+    } else if (owner) {
+      link = "/nft-explorer?owner=" + ownerUri;
+    }
+  }
+  return <a href={link}><LinkIcon /></a>
+}
+
 export const usernameOrAddress = (data, type) => {
   if (!data || !type || !data[type]) return "";
   if (data[type + 'Details']) {
@@ -106,7 +123,11 @@ export const userOrServiceLink = (data, type, options = {}) => {
     const { username, service } = data[type + 'Details'];
     let link = username ? username : data[type];
     if (service) {
-      return <a href={options.url + link} className='bold green'>{service}</a>;
+      let serviceName = service;
+      if (options.short && serviceName.length > 18) {
+        serviceName = service.substring(0, 15).trim() + '...';
+      }
+      return <a href={options.url + link} className='bold green'>{serviceName}</a>;
     }
     if (username) {
       return <a href={options.url + link} className='bold blue'>{username}</a>;

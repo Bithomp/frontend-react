@@ -16,13 +16,14 @@ import Developer from "./screens/Developer";
 import Domains from './screens/Domains';
 import Ledger from './screens/Ledger';
 import LastLedgerInformation from './screens/LastLedgerInformation';
+import NftVolumes from "./screens/NFT/NftVolumes";
 import Nft from './screens/NFT/Nft';
 import Nfts from './screens/NFT/Nfts';
 import NftOffer from "./screens/NFT/NftOffer";
 import NftOffers from "./screens/NFT/NftOffers";
-import NftSalesLatest from './screens/NFT/NftSalesLatest';
 import NftSalesTop from './screens/NFT/NftSalesTop';
-import NftVolumes from "./screens/NFT/NftVolumes";
+import NftSalesLatest from './screens/NFT/NftSalesLatest';
+import NftDistribution from './screens/NFT/NftDistribution';
 import NftStatistics from './screens/NFT/NftStatistics';
 import Validators from './screens/Validators';
 import Amendments from './screens/Amendments';
@@ -114,6 +115,9 @@ export default function App() {
             <Route path="/nft-offers/:id" element={<NftOffers />} />
           </Route>
           <Route path="/latest-nft-sales" element={<NftSalesLatest />} />
+          <Route path="/nft-distribution/" element={<NftDistribution />}>
+            <Route path="/nft-distribution/:id" element={<NftDistribution />} />
+          </Route>
           <Route path="/top-nft-sales" element={<NftSalesTop />} />
           <Route path="/nft-volumes" element={<NftVolumes />} />
           <Route path="/nft-statistics" element={<NftStatistics />} />

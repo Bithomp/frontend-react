@@ -22,6 +22,7 @@
     "nft-offers": "NFT offers",
     "nft-sales-latest": "Latest NFT sales",
     "nft-sales-top": "TOP NFT sales",
+    "nft-distribution": "NFT distribution",
     "nft-volumes": "NFT sales volumes",
     "validators": "Validators",
     "amendments": "Amendments",
@@ -334,6 +335,7 @@
     "name": "Name",
     "transaction": "Transaction",
     "owner": "Owner",
+    "owners": "Owners",
     "accepted-by": "Accepted by",
     "issuer": "Issuer",
     "minter": "Minter",
@@ -365,6 +367,8 @@
     "transfer-fee": "Roaylty",
     "flag": "Flag",
     "flags": "Flags",
+    "count": "Amount",
+    "nfts": "NFTs",
     "text": {
       "no-expiration": "No expiration date",
       "sell": "Sell",
@@ -411,6 +415,10 @@
     "nft-offers": {
       "desc": "Here you can search for Buy and Sell Offers for (XLS-20) NFTs, type in the XRPL address to see what it offers.",
       "no-nft-offers": "We couldn't find any NFT Offers placed by that address."
+    },
+    "nft-distribution": {
+      "desc": "Here you can check the distribution of NFTs of a particilar NFT issuer. Enter the NFT issuer XRPL address or a username and press the search button",
+      "no-nfts": "We couldn't find any NFTs issued by that address."
     }
   },
   "nft-offer": {
@@ -422,6 +430,9 @@
   "nft": {
     "desc": "Here you can search for NFTs, enter an NFT ID and press the search button.",
     "enter-nft-id": "Enter an NFT ID"
+  },
+  "nft-distribution": {
+    "text0": "{{users}} accounts own {{nfts}} NFTs"
   },
   "links": {
     "active-offers-same-account": "View active offers from that account",

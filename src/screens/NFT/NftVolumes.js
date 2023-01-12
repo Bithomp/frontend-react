@@ -189,6 +189,7 @@ export default function NftVolumes() {
             {listTab === 'brokers' && <th>{t("table.broker")}</th>}
             <th className='right'>{t("table.sales")}</th>
             {listTab === 'currencies' && <th>{t("table.issuers")}</th>}
+            {listTab === 'issuers' && <th className='center'>{t("table.owners")}</th>}
             {listTab !== 'brokers' && <th className='center'>{t("tabs.top-sales")}</th>}
             {listTab !== 'brokers' && <th className='center hide-on-mobile'>{t("tabs.latest-sales")}</th>}
             <th>{t("table.volume")}</th>
@@ -209,6 +210,7 @@ export default function NftVolumes() {
                         {listTab === 'brokers' && <td>{addressUsernameOrServiceLink(volume, "broker", { short: true })}</td>}
                         <td className='right'>{shortNiceNumber(volume.sales, 0)}</td>
                         {listTab === 'currencies' && <td className='center'><a href={'/nft-volumes' + urlParams(volume) + '&list=issuers'}><LinkIcon /></a></td>}
+                        {listTab === 'issuers' && <td className='center'><a href={'/nft-distribution/' + usernameOrAddress(volume, 'issuer')}><LinkIcon /></a></td>}
                         {listTab !== 'brokers' && <td className='center'><a href={'/top-nft-sales' + urlParams(volume)}><LinkIcon /></a></td>}
                         {listTab !== 'brokers' && <td className='center hide-on-mobile'><a href={'/latest-nft-sales' + urlParams(volume)}><LinkIcon /></a></td>}
                         <td>{amountFormat(volume.amount, { tooltip: 'right' })}</td>
