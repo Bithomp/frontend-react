@@ -335,7 +335,7 @@
     "name": "Name",
     "transaction": "Transaction",
     "owner": "Owner",
-    "owners": "Owners",
+    "owners-now": "Owners (now)",
     "accepted-by": "Accepted by",
     "issuer": "Issuer",
     "minter": "Minter",
@@ -369,8 +369,22 @@
     "flags": "Flags",
     "count": "Amount",
     "nfts": "NFTs",
+    "minted": "Minted",
+    "transferred": "Transferred",
+    "burned": "Burned",
+    "attributes": "Attributes",
+    "metadata": "Metadata",
+    "ledger-data": "Ledger-data",
+    "history": "History",
+    "sell-offers": "Sell offers",
+    "buy-offers": "Buy offers",
+    "nfts-now": "NFTs (now)",
+    "traded-nfts": "Traded NFTs",
+    "buyers": "Buyers",
     "text": {
       "no-expiration": "No expiration date",
+      "no-offers": "No offers found",
+      "unspecified": "unspecified",
       "sell": "Sell",
       "buy": "Buy"
     }
@@ -417,7 +431,7 @@
       "no-nft-offers": "We couldn't find any NFT Offers placed by that address."
     },
     "nft-distribution": {
-      "desc": "Here you can check the distribution of NFTs of a particilar NFT issuer. Enter the NFT issuer XRPL address or a username and press the search button",
+      "desc": "Here you can check the distribution of NFTs of a particilar NFT issuer. Enter the NFT issuer XRPL address or a username and press the search button.",
       "no-nfts": "We couldn't find any NFTs issued by that address."
     }
   },

@@ -37,7 +37,8 @@ export default function Nft() {
       return;
     }
     setLoading(true);
-    const response = await axios('v2/nft/' + id + '?uri=true&metadata=true&history=true&sellOffers=true&buyOffers=true').catch(error => {
+    //&offersHistory=true&offersValidate=true
+    const response = await axios('v2/nft/' + id + '?uri=true&metadata=true&history=true&sellOffers=true&buyOffers=true&offersValidate=true').catch(error => {
       onFailedRequest(error, setErrorMessage);
     });
     setLoading(false);
@@ -45,7 +46,6 @@ export default function Nft() {
     if (newdata) {
       if (newdata.flags) {
         newdata.history = newdata.history.sort((a, b) => (a.changedAt < b.changedAt) ? 1 : -1);
-        //sort SellOffers and buyOffers: non expired first, by amount seconds, iou amount 
         setData(newdata);
       } else {
         if (newdata.error) {
@@ -218,14 +218,14 @@ export default function Nft() {
   const eventType = (event) => {
     if (event.owner) {
       if (event.amount === "0") {
-        return "Transferred";
+        return t("table.transferred");
       } else if (event.amount) {
-        return "Sold";
+        return t("table.sold");
       } else {
-        return "Minted";
+        return t("table.minted");
       }
     } else {
-      return <span className="red">Burned</span>;
+      return <span className="red">{t("table.burned")}</span>;
     }
   }
 
@@ -325,7 +325,7 @@ export default function Nft() {
       )
     } else {
       return <tbody>
-        <tr><td colSpan="100">No offers found</td></tr>
+        <tr><td colSpan="100">{t("table.text.no-offers")}</td></tr>
       </tbody>;
     }
   }
@@ -353,12 +353,29 @@ export default function Nft() {
                     {imageOrVideo(data)}
                     <div className='column-left-bottom'>
                       {audio(data)}
+                      {data.metadata?.attributes &&
+                        <table className='table-details hidden'>
+                          <thead>
+                            <tr>
+                              <th colSpan="100">{t("table.attributes")}</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {data.metadata.attributes.map((attr, i) =>
+                              <tr key={i}>
+                                <td>{attr.trait_type}</td>
+                                <td>{attr.value}</td>
+                              </tr>
+                            )}
+                          </tbody>
+                        </table>
+                      }
                     </div>
                   </div>
                   <div className="column-right">
                     <table className='table-details'>
                       <thead>
-                        <tr><th colSpan="100">META DATA</th></tr>
+                        <tr><th colSpan="100">{t("table.metadata")}</th></tr>
                       </thead>
                       <tbody>
                         {data.metadata &&
@@ -398,7 +415,7 @@ export default function Nft() {
 
                     <table className='table-details'>
                       <thead>
-                        <tr><th colSpan="100">LEDGER DATA</th></tr>
+                        <tr><th colSpan="100">{t("table.ledger-data")}</th></tr>
                       </thead>
                       <tbody>
                         <tr>
@@ -424,7 +441,7 @@ export default function Nft() {
                         {!data.uri &&
                           <tr>
                             <td>URI</td>
-                            <td>unspecified</td>
+                            <td>{t("table.text.unspecified")}</td>
                           </tr>
                         }
                         {!!data.transferFee && <tr>
@@ -437,21 +454,21 @@ export default function Nft() {
 
                     <table className='table-details'>
                       <thead>
-                        <tr><th colSpan="100">History</th></tr>
+                        <tr><th colSpan="100">{t("table.history")}</th></tr>
                       </thead>
                       {nftHistory(data.history)}
                     </table>
 
                     <table className='table-details'>
                       <thead>
-                        <tr><th colSpan="100">Sell offers</th></tr>
+                        <tr><th colSpan="100">{t("table.sell-offers")}</th></tr>
                       </thead>
                       {nftOffers(data.sellOffers, "sell")}
                     </table>
 
                     <table className='table-details'>
                       <thead>
-                        <tr><th colSpan="100">Buy offers</th></tr>
+                        <tr><th colSpan="100">{t("table.buy-offers")}</th></tr>
                       </thead>
                       {nftOffers(data.buyOffers, "buy")}
                     </table>
@@ -460,7 +477,10 @@ export default function Nft() {
                       <a href={"/nfts/" + data.owner}>{t("links.owned-nfts-same-account")}</a>
                     </p>
                     <p>
-                      {t("links.nfts-same-issuer")}: <a href={"/nft-explorer?issuer=" + data.issuer}>{t("links.all")}</a>, <a href={"/top-nft-sales?issuer=" + data.issuer}>{t("links.top-sold")}</a>, <a href={"/latest-nft-sales?issuer=" + data.issuer}>{t("links.latest-sold")}</a>
+                      {t("links.nfts-same-issuer")}:{" "}
+                      <a href={"/nft-explorer?issuer=" + data.issuer}>{t("links.all")}</a>,{" "}
+                      <a href={"/top-nft-sales?issuer=" + data.issuer}>{t("links.top-sold")}</a>,{" "}
+                      <a href={"/latest-nft-sales?issuer=" + data.issuer}>{t("links.latest-sold")}</a>
                     </p>
                   </div>
                 </>

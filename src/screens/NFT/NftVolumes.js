@@ -127,16 +127,17 @@ export default function NftVolumes() {
           },
           "volumes": [
             {
-              "amount": "1753767000",
-              "sales": 7
-            },
-            {
-              "amount": {
-                "currency": "434C554200000000000000000000000000000000",
-                "issuer": "r9pAKbAMx3wpMAS9XvvDzLYppokfKWTSq4",
-                "value": "2"
+              "amount": "2944063846633",
+              "sales": 1255,
+              "issuer": "rpbjkoncKiv1LkPWShzZksqYPzKXmUhTW7",
+              "issuerDetails": {
+                "username": "XPUNKS",
+                "service": "XPUNKS"
               },
-              "sales": 2
+              "buyers": 392,
+              "tradedNfts": 938,
+              "totalOwners": 1849,
+              "totalNfts": 6655
             }
           ]
         }
@@ -186,12 +187,13 @@ export default function NftVolumes() {
           <tr>
             <th className='center'>{t("table.index")}</th>
             {listTab === 'issuers' && <th>{t("table.issuer")}</th>}
+            {listTab === 'issuers' && <th className='right hide-on-mobile'>{t("table.nfts-now")}</th>}
+            {listTab === 'issuers' && <th className='right hide-on-mobile'>{t("table.owners-now")}</th>}
+            {listTab === 'issuers' && <th className='right hide-on-mobile'>{t("table.traded-nfts")}</th>}
             {listTab === 'brokers' && <th>{t("table.broker")}</th>}
-            <th className='right'>{t("table.sales")}</th>
             {listTab === 'currencies' && <th>{t("table.issuers")}</th>}
-            {listTab === 'issuers' && <th className='center'>{t("table.owners")}</th>}
-            {listTab !== 'brokers' && <th className='center'>{t("tabs.top-sales")}</th>}
-            {listTab !== 'brokers' && <th className='center hide-on-mobile'>{t("tabs.latest-sales")}</th>}
+            <th className='right'>{t("table.sales")}</th>
+            {listTab === 'issuers' && <th className='right hide-on-mobile'>{t("table.buyers")}</th>}
             <th>{t("table.volume")}</th>
           </tr>
         </thead>
@@ -207,12 +209,18 @@ export default function NftVolumes() {
                       <tr key={i}>
                         <td className='center'>{i + 1}</td>
                         {listTab === 'issuers' && <td>{addressUsernameOrServiceLink(volume, "issuer", { url: "/nft-explorer?issuer=", short: true })}</td>}
+                        {listTab === 'issuers' && <td className='right hide-on-mobile'>{shortNiceNumber(volume.totalNfts, 0)} <a href={'/nft-explorer?issuer=' + usernameOrAddress(volume, 'issuer')}><LinkIcon /></a></td>}
+                        {listTab === 'issuers' && <td className='right hide-on-mobile'>{shortNiceNumber(volume.totalOwners, 0)} <a href={'/nft-distribution/' + usernameOrAddress(volume, 'issuer')}><LinkIcon /></a></td>}
+                        {listTab === 'issuers' && <td className='right hide-on-mobile'>{shortNiceNumber(volume.tradedNfts, 0)}</td>}
                         {listTab === 'brokers' && <td>{addressUsernameOrServiceLink(volume, "broker", { short: true })}</td>}
-                        <td className='right'>{shortNiceNumber(volume.sales, 0)}</td>
                         {listTab === 'currencies' && <td className='center'><a href={'/nft-volumes' + urlParams(volume) + '&list=issuers'}><LinkIcon /></a></td>}
-                        {listTab === 'issuers' && <td className='center'><a href={'/nft-distribution/' + usernameOrAddress(volume, 'issuer')}><LinkIcon /></a></td>}
-                        {listTab !== 'brokers' && <td className='center'><a href={'/top-nft-sales' + urlParams(volume)}><LinkIcon /></a></td>}
-                        {listTab !== 'brokers' && <td className='center hide-on-mobile'><a href={'/latest-nft-sales' + urlParams(volume)}><LinkIcon /></a></td>}
+                        <td className='right'>
+                          {shortNiceNumber(volume.sales, 0)}
+                          {listTab !== 'brokers' &&
+                            <a href={'/top-nft-sales' + urlParams(volume)}> <LinkIcon /></a>
+                          }
+                        </td>
+                        {listTab === 'issuers' && <td className='right hide-on-mobile'>{shortNiceNumber(volume.buyers, 0)}</td>}
                         <td>{amountFormat(volume.amount, { tooltip: 'right' })}</td>
                       </tr>)
                   }
