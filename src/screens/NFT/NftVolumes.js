@@ -24,7 +24,7 @@ export default function NftVolumes() {
   const [listTab, setListTab] = useState(searchParams.get("list") || "issuers");
   const [currency] = useState(searchParams.get("currency"));
   const [currencyIssuer] = useState(searchParams.get("currencyIssuer"));
-  const [sortConfig, setSortConfig] = useState(null);
+  const [sortConfig, setSortConfig] = useState({});
 
   const listTabList = [
     { value: 'issuers', label: (t("tabs.issuers")) },
@@ -172,7 +172,7 @@ export default function NftVolumes() {
     let direction = 'descending';
     let sortA = 1;
     let sortB = -1;
-    if (sortConfig && sortConfig.key === key && sortConfig.direction === direction) {
+    if (sortConfig.key === key && sortConfig.direction === direction) {
       direction = 'ascending';
       sortA = -1;
       sortB = 1;
@@ -200,14 +200,14 @@ export default function NftVolumes() {
           <tr>
             <th className='center'>{t("table.index")}</th>
             {listTab === 'issuers' && <th>{t("table.issuer")}</th>}
-            {listTab === 'issuers' && <th className='right hide-on-mobile'>{t("table.nfts-now")} <b className="link" onClick={() => sortTable('totalNfts')}>⇅</b></th>}
-            {listTab === 'issuers' && <th className='right hide-on-mobile'>{t("table.owners-now")} <b className="link" onClick={() => sortTable('totalOwners')}>⇅</b></th>}
-            {listTab === 'issuers' && <th className='right hide-on-mobile'>{t("table.traded-nfts")} <b className="link" onClick={() => sortTable('tradedNfts')}>⇅</b></th>}
+            {listTab === 'issuers' && <th className='right hide-on-mobile'>{t("table.nfts-now")} <b className={"link" + (sortConfig.key === 'totalNfts' ? " orange" : "")} onClick={() => sortTable('totalNfts')}>⇅</b></th>}
+            {listTab === 'issuers' && <th className='right hide-on-mobile'>{t("table.owners-now")} <b className={"link" + (sortConfig.key === 'totalOwners' ? " orange" : "")} onClick={() => sortTable('totalOwners')}>⇅</b></th>}
+            {listTab === 'issuers' && <th className='right hide-on-mobile'>{t("table.traded-nfts")} <b className={"link" + (sortConfig.key === 'tradedNfts' ? " orange" : "")} onClick={() => sortTable('tradedNfts')}>⇅</b></th>}
             {listTab === 'brokers' && <th>{t("table.broker")}</th>}
             {listTab === 'currencies' && <th>{t("table.issuers")}</th>}
-            <th className='right'>{t("table.sales")} <b className="link" onClick={() => sortTable('sales')}>⇅</b></th>
-            {listTab === 'issuers' && <th className='right hide-on-mobile'>{t("table.buyers")} <b className="link" onClick={() => sortTable('buyers')}>⇅</b></th>}
-            <th>{t("table.volume")} <b className="link" onClick={() => sortTable('amount')}>⇅</b></th>
+            <th className='right'>{t("table.sales")} <b className={"link" + (sortConfig.key === 'sales' ? " orange" : "")} onClick={() => sortTable('sales')}>⇅</b></th>
+            {listTab === 'issuers' && <th className='right hide-on-mobile'>{t("table.buyers")} <b className={"link" + (sortConfig.key === 'buyers' ? " orange" : "")} onClick={() => sortTable('buyers')}>⇅</b></th>}
+            <th>{t("table.volume")} <b className={"link" + (sortConfig.key === 'amount' ? " orange" : "")} onClick={() => sortTable('amount')}>⇅</b></th>
           </tr>
         </thead>
         <tbody>
