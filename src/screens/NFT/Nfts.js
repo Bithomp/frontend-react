@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { useState, useEffect } from 'react';
 import { useParams, useSearchParams, useLocation, useNavigate } from "react-router-dom";
+import { CSVLink } from "react-csv";
 import axios from 'axios';
 import InfiniteScroll from 'react-infinite-scroll-component';
 
@@ -230,6 +231,55 @@ export default function Nfts() {
     contextStyle.marginTop = "20px";
   }
 
+  /*
+  {
+    "issuer": "rJxrRzDLjdUiahyLUESuPPR6ucBCUWoMfw",
+    "issuerDetails": {
+      "username": "3DAPES",
+      "service": "3DAPES"
+    },
+    "nfts": [
+      {
+        "flags": {
+          "burnable": false,
+          "onlyXRP": true,
+          "trustLine": false,
+          "transferable": true
+        },
+        "issuer": "rJxrRzDLjdUiahyLUESuPPR6ucBCUWoMfw",
+        "nftokenID": "000A2134C4E16036D649C037D2DE7C58780DE1D985EEB9860003062600000000",
+        "nftokenTaxon": 200637,
+        "transferFee": 8500,
+        "sequence": 0,
+        "owner": "rw5ZYt7SecZ44QLe8Tz6dSYMRuLa8LHv6S",
+        "uri": "68747470733A2F2F697066732E696F2F697066732F6261667962656963323779736F376C656C6534786277767464706F6E77716C6C766A68793667717A6C74666E673271357A6869717A61786F7A6B6D2F6D657461646174612E6A736F6E",
+        "url": "https://cloudflare-ipfs.com/ipfs/bafybeic27yso7lele4xbwvtdponwqllvjhy6gqzltfng2q5zhiqzaxozkm/metadata.json",
+        "nftSerial": 0,
+        "issuerDetails": {
+          "username": "3DAPES",
+          "service": "3DAPES"
+        },
+        "ownerDetails": {
+          "username": null,
+          "service": null
+        },
+        "metadata": {
+          "name": "Genesis Mint #001 - αlpha Ωmega"
+        }
+      },
+  */
+
+  let csvHeaders = [
+    { label: "NFT ID", key: "nftokenID" },
+    { label: t("table.issuer"), key: "issuer" },
+    { label: t("table.taxon"), key: "nftokenTaxon" },
+    { label: t("table.serial"), key: "sequence" },
+    { label: t("table.name"), key: "metadata.name" }
+  ];
+  if (nftExplorer) {
+    csvHeaders.push({ label: t("table.owner"), key: "owner" })
+  }
+
   return <>
     {nftExplorer ?
       <SEO title={t("menu.nft-explorer")} />
@@ -310,6 +360,9 @@ export default function Nfts() {
       </>}
       <div className='tabs-inline'>
         <Tabs tabList={tabList} tab={tab} setTab={setTab} />
+        <CSVLink data={data} headers={csvHeaders} filename='nfts_export.csv' className='button-action thin narrow'>
+          ⇩ CSV
+        </CSVLink>
       </div>
       {(id || issuer || owner) ?
         <InfiniteScroll

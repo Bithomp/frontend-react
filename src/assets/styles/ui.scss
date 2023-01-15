@@ -373,6 +373,9 @@ table {
     height: 30px;
     line-height: 28px;
   }
+  &.narrow {
+    min-width: unset;
+  }
 }
 
 .main-box {
