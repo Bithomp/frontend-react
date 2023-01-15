@@ -287,14 +287,24 @@ export default function Nft() {
         "destination": null,
         "createdLedgerIndex": 75640602,
         "createdTxHash": "AF8A46B6C49DAF95B44BC34B8961D19B19B5D5C52071BEA3CF0DEE038BFCDEC1",
-        "createdAt": 1667249811
+        "createdAt": 1667249811,
+        "valid": true
       }
     */
 
     const buyerOrSeller = type === 'sell' ? t("table.seller") : t("table.buyer");
 
+    let validExists = 0;
     if (offers) {
-      return offers.map((offer, i) =>
+      for (let i = 0; i < offers.length; i++) {
+        if (offers[i].valid === true) {
+          validExists++;
+        }
+      }
+    }
+
+    if (validExists) {
+      return offers.filter(function (offer) { return offer.valid; }).map((offer, i) =>
         <tbody key={i}>
           {trWithAccount(offer, 'owner', buyerOrSeller, "/explorer/")}
           <tr>
@@ -318,7 +328,7 @@ export default function Nft() {
             <td>{t("table.offer")}</td>
             <td>{nftOfferLink(offer.offerIndex, 10)}</td>
           </tr>
-          {i !== offers.length - 1 &&
+          {i !== validExists - 1 &&
             <tr><td colSpan="100"><hr /></td></tr>
           }
         </tbody>
