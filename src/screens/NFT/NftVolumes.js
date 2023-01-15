@@ -142,6 +142,7 @@ export default function NftVolumes() {
     setTabParams(listTabList, listTab, "issuers", setListTab, searchParams, "list");
     setTabParams(periodTabList, periodTab, "all", setPeriodTab, searchParams, "period");
     setTabParams(saleTabList, saleTab, "all", setSaleTab, searchParams, "sale");
+    setSortConfig({});
 
     if ((!currency || (currency.toLowerCase() !== 'xrp' && !isAddressOrUsername(currencyIssuer))) || listTab === 'currencies') {
       searchParams.delete("currency");
