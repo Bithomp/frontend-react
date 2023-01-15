@@ -210,6 +210,10 @@ export default function Nft() {
     let url = meta.external_url || meta.external_link;
     if (url) {
       url = stripText(url);
+      url = url.toLowerCase();
+      if (url.slice(0, 8) !== 'https://' && url.slice(0, 7) !== 'http://') {
+        url = 'https://' + url;
+      }
       return <a href={url} target="_blank" rel="noreferrer nofollow">{url}</a>;
     }
     return null;
