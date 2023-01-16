@@ -428,7 +428,7 @@ export default function Nfts() {
                         <td>{nft.metadata?.name}</td>
                         <td className='center'>{nft.sequence}</td>
                         {!taxon && <td className='center'>{nft.nftokenTaxon}</td>}
-                        <td className='center'><a href={"/explorer/" + nft.nftokenID}><LinkIcon /></a></td>
+                        <td className='center'><a href={"/nft/" + nft.nftokenID}><LinkIcon /></a></td>
                         {!issuer && <td className='center'>{nftLink(nft, 'issuer')}</td>}
                         {(!id && !owner) && <td className='center'>{nftLink(nft, 'owner')}</td>}
                       </tr>)

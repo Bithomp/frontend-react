@@ -131,7 +131,7 @@ export default function NftOffers() {
                       <tr key={i}>
                         <td className="center">{i + 1}</td>
                         <td className='center'><a href={"/nft-offer/" + offer.offerIndex}><LinkIcon /></a></td>
-                        <td className='center'><a href={"/explorer/" + offer.nftokenID}><LinkIcon /></a></td>
+                        <td className='center'><a href={"/nft/" + offer.nftokenID}><LinkIcon /></a></td>
                         <td>{offer.flags?.sellToken === true ? t("table.text.sell") : t("table.text.buy")}</td>
                         <td>{amountFormat(offer.amount, { tooltip: true })}</td>
                         <td>{fullDateAndTime(offer.createdAt)}</td>
@@ -163,7 +163,7 @@ export default function NftOffers() {
                             {t("table.offer")}: <a href={"/nft-offer/" + offer.offerIndex}><LinkIcon /></a>
                           </p>
                           <p>
-                            NFT: <a href={"/explorer/" + offer.nftokenID}><LinkIcon /></a>
+                            NFT: <a href={"/nft/" + offer.nftokenID}><LinkIcon /></a>
                           </p>
                           <p>
                             {t("table.type")}: {offer.flags?.sellToken === true ? t("table.text.sell") : t("table.text.buy")}

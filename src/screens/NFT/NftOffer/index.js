@@ -224,7 +224,7 @@ export default function NftOffer() {
                         {trWithAccount(data, 'account', sellerOrBuyer, "/explorer/")}
                         <tr>
                           <td>{data.flags.sellToken === true ? t("nft-offer.selling") : t("nft-offer.buying")} NFT</td>
-                          <td><a href={"/explorer/" + data.nftokenID}>{shortHash(data.nftokenID, 10)}</a></td>
+                          <td><a href={"/nft/" + data.nftokenID}>{shortHash(data.nftokenID, 10)}</a></td>
                         </tr>
                         {trWithAccount(data, 'destination', t("table.destination"), "/explorer/")}
                         <tr>

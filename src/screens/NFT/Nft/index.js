@@ -39,7 +39,7 @@ export default function Nft() {
       return;
     }
     setLoading(true);
-    //&offersHistory=true&offersValidate=true
+    //&offersHistory=true
     const response = await axios('v2/nft/' + id + '?uri=true&metadata=true&history=true&sellOffers=true&buyOffers=true&offersValidate=true').catch(error => {
       onFailedRequest(error, setErrorMessage);
     });

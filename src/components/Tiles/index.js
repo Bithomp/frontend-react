@@ -127,7 +127,7 @@ export default function Tiles({ nftList, type = 'name' }) {
           {nftList?.length > 0 && nftList.map((nft, i) =>
             <li className="hex" key={i}>
               <div className="hexIn">
-                <a className="hexLink" href={"/explorer/" + nft.nftoken.nftokenID}>
+                <a className="hexLink" href={"/nft/" + nft.nftoken.nftokenID}>
                   {loadingImage(nft.nftoken)}
                   {imageOrVideo(nft.nftoken)}
                   <div className="index">{i + 1}</div>
