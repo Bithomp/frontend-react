@@ -407,7 +407,9 @@
     "day": "Day",
     "currencies": "Currencies",
     "issuers": "Issuers",
-    "brokers": "Brokers"
+    "brokers": "Brokers",
+    "image": "Image",
+    "video": "Video"
   },
   "xumm": {
     "new-qr": "Get a new QR code"

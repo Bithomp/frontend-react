@@ -6,6 +6,7 @@ import axios from 'axios';
 import SEO from '../../../components/SEO';
 import SearchBlock from '../../../components/SearchBlock';
 import CopyButton from '../../../components/CopyButton';
+import Tabs from '../../../components/Tabs';
 
 import { onFailedRequest, onApiError, stripText } from '../../../utils';
 import {
@@ -33,6 +34,7 @@ export default function Nft() {
   const [loaded, setLoaded] = useState(false);
   const [errored, setErrored] = useState(false);
   const [showRawMetadata, setShowRawMetadata] = useState(false);
+  const [contentTab, setContentTab] = useState("image");
 
   const checkApi = async () => {
     if (!id) {
@@ -299,8 +301,18 @@ export default function Nft() {
     }
   }
 
-  const nftImage = (nft) => {
+  const nftImageAndVideo = (nft) => {
     const imageUrl = nftUrl(nft, 'image');
+    const videoUrl = nftUrl(nft, 'video');
+    const clUrl = {
+      image: nftUrl(nft, 'image', 'cl'),
+      video: nftUrl(nft, 'video', 'cl')
+    }
+
+    const contentTabList = [
+      { value: 'image', label: (t("tabs.image")) },
+      { value: 'video', label: (t("tabs.video")) }
+    ];
     let imageStyle = { width: "100%", height: "auto" };
     if (imageUrl) {
       if (imageUrl.slice(0, 10) === 'data:image') {
@@ -309,33 +321,54 @@ export default function Nft() {
       if (nft.deletedAt) {
         imageStyle.filter = 'grayscale(1)';
       }
-      return <img
-        style={imageStyle}
-        src={imageUrl}
-        onLoad={() => setLoaded(true)}
-        onError={({ currentTarget }) => {
-          currentTarget.onerror = () => {
-            setErrored(true);
-          };
-          currentTarget.src = nftUrl(nft, 'image', 'cl');
-        }}
-        alt={nft.metadata?.name}
-      />
-    } else {
-      return <></>;
     }
-  }
-
-  const nftVideo = (nft) => {
-    const videoUrl = nftUrl(nft, 'video');
-    let videoStyle = { width: "100%", height: "auto" };
-    if (videoUrl) {
-      return <video autoPlay playsInline muted loop style={videoStyle}>
-        <source src={videoUrl} type="video/mp4" />
-      </video>
-    } else {
-      return <></>;
-    }
+    return <>
+      {imageUrl && videoUrl &&
+        <div style={{ height: "31px", marginBottom: "10px" }}>
+          <span className='tabs-inline' style={{ float: "left" }}>
+            <Tabs
+              tabList={contentTabList}
+              tab={contentTab}
+              setTab={setContentTab}
+              name="content"
+              style={{ margin: 0 }}
+            />
+          </span>
+          <span style={{ float: "right", padding: "4px 0px" }}>
+            <a href={clUrl[contentTab]} target="_blank" rel="noreferrer">
+              {t("tabs." + contentTab)} IPFS
+            </a>
+          </span>
+        </div>
+      }
+      {(imageUrl || videoUrl) && loadingImage(nft)}
+      {imageUrl && contentTab === 'image' &&
+        <img
+          style={imageStyle}
+          src={imageUrl}
+          onLoad={() => setLoaded(true)}
+          onError={({ currentTarget }) => {
+            currentTarget.onerror = () => {
+              setErrored(true);
+            };
+            currentTarget.src = clUrl.image;
+          }}
+          alt={nft.metadata?.name}
+        />
+      }
+      {videoUrl && contentTab === 'video' &&
+        <video
+          autoPlay
+          playsInline
+          muted
+          loop
+          controls
+          style={{ width: "100%", height: "auto" }}
+        >
+          <source src={videoUrl} type="video/mp4" />
+        </video>
+      }
+    </>
   }
 
   const otherOwnedNftsTr = (owner) => {
@@ -377,12 +410,10 @@ export default function Nft() {
               <>{data.flags &&
                 <>
                   <div className="column-left">
-                    {loadingImage(data)}
-                    {nftImage(data)}
-                    {nftVideo(data)}
+                    {nftImageAndVideo(data)}
                     <div>
                       {nftAudio(data)}
-                      {data.metadata?.attributes &&
+                      {data.metadata?.attributes && data.metadata?.attributes[0] &&
                         <table className='table-details autowidth'>
                           <thead>
                             <tr>

@@ -1,12 +1,12 @@
 import './styles.scss';
 
-export default function Tabs({ tabList, tab, setTab, name = "radio" }) {
+export default function Tabs({ tabList, tab, setTab, name = "radio", style = {} }) {
 
   const Changed = (e) => {
     setTab(e.currentTarget.value);
   }
 
-  return <div className='tabs'>
+  return <div className='tabs' style={style}>
     <div className='tabs-list'>
       {tabList.map((tabItem) => (
         <input
