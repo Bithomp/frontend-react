@@ -381,12 +381,15 @@
     "nfts-now": "NFT (сейчас)",
     "traded-nfts": "NFT в торговле",
     "buyers": "Покупатели",
+    "raw-data": "JSON данные",
     "text": {
       "no-expiration": "Без срока действия",
       "no-offers": "Предложения не найдены",
       "unspecified": "не указан",
       "sell": "Продажа",
-      "buy": "Покупка"
+      "buy": "Покупка",
+      "show": "показать",
+      "hide": "скрыть"
     }
   },
   "tabs": {

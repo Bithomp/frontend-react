@@ -381,12 +381,15 @@
     "nfts-now": "NFTs (now)",
     "traded-nfts": "Traded NFTs",
     "buyers": "Buyers",
+    "raw-data": "Raw data",
     "text": {
       "no-expiration": "No expiration date",
       "no-offers": "No offers found",
       "unspecified": "unspecified",
       "sell": "Sell",
-      "buy": "Buy"
+      "buy": "Buy",
+      "show": "show",
+      "hide": "hide"
     }
   },
   "tabs": {

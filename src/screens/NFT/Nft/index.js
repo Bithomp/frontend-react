@@ -15,7 +15,8 @@ import {
   fullDateAndTime,
   amountFormat,
   expirationExpired,
-  nftOfferLink
+  nftOfferLink,
+  codeHighlight
 } from '../../../utils/format';
 import { nftImageStyle, nftUrl } from '../../../utils/nft';
 
@@ -31,6 +32,7 @@ export default function Nft() {
   const [errorMessage, setErrorMessage] = useState("");
   const [loaded, setLoaded] = useState(false);
   const [errored, setErrored] = useState(false);
+  const [showRawMetadata, setShowRawMetadata] = useState(false);
 
   const checkApi = async () => {
     if (!id) {
@@ -389,7 +391,9 @@ export default function Nft() {
                   <div className="column-right">
                     <table className='table-details'>
                       <thead>
-                        <tr><th colSpan="100">{t("table.metadata")}</th></tr>
+                        <tr>
+                          <th colSpan="100">{t("table.metadata")}</th>
+                        </tr>
                       </thead>
                       <tbody>
                         {data.metadata &&
@@ -422,10 +426,22 @@ export default function Nft() {
                                 <td>{externalUrl(data.metadata)}</td>
                               </tr>
                             }
+                            <tr>
+                              <td>{t("table.raw-data")}</td>
+                              <td>
+                                <span className='link' onClick={() => setShowRawMetadata(!showRawMetadata)}>
+                                  {showRawMetadata ? t("table.text.hide") : t("table.text.show")}
+                                </span>
+                              </td>
+                            </tr>
                           </>
                         }
                       </tbody>
                     </table>
+
+                    <div className={'slide ' + (showRawMetadata ? "opened" : "closed")}>
+                      {codeHighlight(data.metadata)}
+                    </div>
 
                     <table className='table-details'>
                       <thead>
