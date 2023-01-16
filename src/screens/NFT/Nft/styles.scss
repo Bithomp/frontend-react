@@ -6,7 +6,6 @@
     width: calc(40% - 10px);
     padding-right: 10px;
     table.table-details {
-      margin-top: 15px;
       border-collapse: separate;
       background-color: var(--background-main);
       td {
@@ -17,9 +16,6 @@
         }
         &:last-child {
           border-right-width: 5px;
-        }
-        hr {
-          border: 1px solid var(--button-additional);
         }
       }
       tr:last-child td {
