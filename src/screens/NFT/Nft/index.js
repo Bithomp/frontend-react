@@ -336,55 +336,53 @@ export default function Nft() {
                     </div>
                   </div>
                   <div className="column-right">
-                    <table className='table-details'>
-                      <thead>
-                        <tr>
-                          <th colSpan="100">{t("table.metadata")}</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {data.metadata &&
-                          <>
-                            {data.metadata.name &&
-                              <tr>
-                                <td>{t("table.name")}</td>
-                                <td>{stripText(data.metadata.name)}</td>
-                              </tr>
-                            }
-                            {data.metadata.description &&
-                              <tr>
-                                <td>{t("table.description")}</td>
-                                <td>{stripText(data.metadata.description)}</td>
-                              </tr>
-                            }
-                            {data.metadata.collection &&
-                              <>
-                                {data.metadata.collection.name &&
-                                  <tr>
-                                    <td>{t("table.collection")}</td>
-                                    <td>{stripText(data.metadata.collection.name)}</td>
-                                  </tr>
-                                }
-                              </>
-                            }
-                            {externalUrl(data.metadata) &&
-                              <tr>
-                                <td>{t("table.external-url")}</td>
-                                <td>{externalUrl(data.metadata)}</td>
-                              </tr>
-                            }
+                    {data.metadata &&
+                      <table className='table-details'>
+                        <thead>
+                          <tr>
+                            <th colSpan="100">{t("table.metadata")}</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {data.metadata.name &&
                             <tr>
-                              <td>{t("table.raw-data")}</td>
-                              <td>
-                                <span className='link' onClick={() => setShowRawMetadata(!showRawMetadata)}>
-                                  {showRawMetadata ? t("table.text.hide") : t("table.text.show")}
-                                </span>
-                              </td>
+                              <td>{t("table.name")}</td>
+                              <td>{stripText(data.metadata.name)}</td>
                             </tr>
-                          </>
-                        }
-                      </tbody>
-                    </table>
+                          }
+                          {data.metadata.description &&
+                            <tr>
+                              <td>{t("table.description")}</td>
+                              <td>{stripText(data.metadata.description)}</td>
+                            </tr>
+                          }
+                          {data.metadata.collection &&
+                            <>
+                              {data.metadata.collection.name &&
+                                <tr>
+                                  <td>{t("table.collection")}</td>
+                                  <td>{stripText(data.metadata.collection.name)}</td>
+                                </tr>
+                              }
+                            </>
+                          }
+                          {externalUrl(data.metadata) &&
+                            <tr>
+                              <td>{t("table.external-url")}</td>
+                              <td>{externalUrl(data.metadata)}</td>
+                            </tr>
+                          }
+                          <tr>
+                            <td>{t("table.raw-data")}</td>
+                            <td>
+                              <span className='link' onClick={() => setShowRawMetadata(!showRawMetadata)}>
+                                {showRawMetadata ? t("table.text.hide") : t("table.text.show")}
+                              </span>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    }
 
                     <div className={'slide ' + (showRawMetadata ? "opened" : "closed")}>
                       {codeHighlight(data.metadata)}

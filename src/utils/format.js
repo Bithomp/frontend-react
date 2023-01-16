@@ -33,6 +33,9 @@ export const trWithFlags = (flags) => {
   if (count === 1) {
     name = i18n.t("table.flag");
   }
+  if (count === 0) {
+    flagList = i18n.t("table.text.unspecified");
+  }
   return <tr>
     <td>{name}</td>
     <td>{flagList}</td>

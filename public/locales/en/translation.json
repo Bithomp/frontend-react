@@ -310,7 +310,9 @@
     "no-data": "No data available",
     "loading": "Loading...",
     "load-failed": "Failed to load",
-    "all-issuers": "All issuers"
+    "all-issuers": "All issuers",
+    "no-uri": "No URI specified",
+    "no-media": "No media found"
   },
   "error": {
     "Network Error": "It seems there is no internet connection ;("

@@ -46,6 +46,7 @@ export default function NftPreview({ nft }) {
       imageStyle.filter = 'grayscale(1)';
     }
   }
+  let errorStyle = { marginTop: "40px" };
   return <>
     {imageUrl && videoUrl &&
       <div style={{ height: "31px", marginBottom: "10px" }}>
@@ -92,7 +93,7 @@ export default function NftPreview({ nft }) {
         <source src={videoUrl} type="video/mp4" />
       </video>
     }
-    {!(imageUrl && videoUrl) &&
+    {!(imageUrl && videoUrl) && clUrl[contentTab] &&
       <span style={{ padding: "4px 0px" }}>
         <a href={clUrl[contentTab]} target="_blank" rel="noreferrer">
           {t("tabs." + contentTab)} IPFS
@@ -107,6 +108,15 @@ export default function NftPreview({ nft }) {
             {t("tabs.audio")} IPFS
           </a>
         </span>
+      </>
+    }
+    {(!nft.uri && !(nft.metadata)) ?
+      <div className="center bold" style={errorStyle}>{t("general.no-uri")}</div>
+      :
+      <>
+        {!(imageUrl || videoUrl || audioUrl) &&
+          <div className="center bold" style={errorStyle}>{t("general.no-media")}</div>
+        }
       </>
     }
     <div style={{ height: "15px" }}></div>
