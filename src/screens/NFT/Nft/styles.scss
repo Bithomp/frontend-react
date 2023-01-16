@@ -5,6 +5,27 @@
     position: relative;
     width: calc(40% - 10px);
     padding-right: 10px;
+    table.table-details {
+      margin-top: 15px;
+      border-collapse: separate;
+      background-color: var(--background-main);
+      td {
+        background-color: var(--background-secondary);
+        border: 2.5px solid var(--background-main);
+        &:first-child {
+          border-left-width: 5px;
+        }
+        &:last-child {
+          border-right-width: 5px;
+        }
+      }
+      tr:last-child td {
+        border-bottom-width: 5px;
+      }
+      thead tr th {
+        box-shadow: none;
+      }
+    }
   }
   .column-right {
     display: inline-block;
@@ -19,8 +40,8 @@
       margin: auto;
     }
     .column-right {
-      margin-top: 50px;
-      width: calc(100% - 32px);
+      width: 100%;
+      padding: 0;
     }
   }
 }

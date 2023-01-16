@@ -231,6 +231,9 @@ table {
         }
       }
     }
+    &.autowidth tbody tr td:first-child {
+      width: auto;
+    }
   }
   &.table-large {
     min-width: 760px;

@@ -334,6 +334,27 @@ export default function Nft() {
     }
   }
 
+  const otherOwnedNftsTr = (owner) => {
+    if (!owner) return <></>;
+    return <tr>
+      <td></td>
+      <td><a href={"/nfts/" + owner}>{t("links.owned-nfts-same-account")}</a></td>
+    </tr>
+  }
+
+  const otherIssuedNftsTr = (issuer) => {
+    if (!issuer) return <></>;
+    return <tr>
+      <td></td>
+      <td>
+        {t("links.nfts-same-issuer")}:{" "}
+        <a href={"/nft-explorer?issuer=" + issuer}>{t("links.all")}</a>,{" "}
+        <a href={"/top-nft-sales?issuer=" + issuer}>{t("links.top-sold")}</a>,{" "}
+        <a href={"/latest-nft-sales?issuer=" + issuer}>{t("links.latest-sold")}</a>
+      </td>
+    </tr>
+  }
+
   return <>
     {data && <SEO title={t("menu.nft") + " " + data.metadata?.name} />}
     <SearchBlock
@@ -358,7 +379,7 @@ export default function Nft() {
                     <div>
                       {nftAudio(data)}
                       {data.metadata?.attributes &&
-                        <table className='table-details'>
+                        <table className='table-details autowidth'>
                           <thead>
                             <tr>
                               <th colSpan="100">{t("table.attributes")}</th>
@@ -441,11 +462,17 @@ export default function Nft() {
                           <td>{shortHash(data.nftokenID, 10)} <CopyButton text={data.nftokenID} /></td>
                         </tr>
                         {data.issuer === data.owner ?
-                          trWithAccount(data, 'owner', t("table.issuer-owner"), "/explorer/")
+                          <>
+                            {trWithAccount(data, 'owner', t("table.issuer-owner"), "/explorer/")}
+                            {otherOwnedNftsTr(data.owner)}
+                            {otherIssuedNftsTr(data.issuer)}
+                          </>
                           :
                           <>
                             {trWithAccount(data, 'owner', t("table.owner"), "/explorer/")}
+                            {otherOwnedNftsTr(data.owner)}
                             {trWithAccount(data, 'issuer', t("table.issuer"), "/explorer/")}
+                            {otherIssuedNftsTr(data.issuer)}
                           </>
                         }
                         <tr>
@@ -490,16 +517,6 @@ export default function Nft() {
                       </thead>
                       {nftOffers(data.buyOffers, "buy")}
                     </table>
-
-                    <p>
-                      <a href={"/nfts/" + data.owner}>{t("links.owned-nfts-same-account")}</a>
-                    </p>
-                    <p>
-                      {t("links.nfts-same-issuer")}:{" "}
-                      <a href={"/nft-explorer?issuer=" + data.issuer}>{t("links.all")}</a>,{" "}
-                      <a href={"/top-nft-sales?issuer=" + data.issuer}>{t("links.top-sold")}</a>,{" "}
-                      <a href={"/latest-nft-sales?issuer=" + data.issuer}>{t("links.latest-sold")}</a>
-                    </p>
                   </div>
                 </>
               }

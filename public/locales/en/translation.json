@@ -453,8 +453,8 @@
   },
   "links": {
     "active-offers-same-account": "View active offers from that account",
-    "nfts-same-issuer": "View NFTs with the same issuer",
-    "owned-nfts-same-account": "View NFTs owned by that account",
+    "nfts-same-issuer": "NFTs with the same issuer",
+    "owned-nfts-same-account": "NFTs owned by that account",
     "all": "all",
     "top-sold": "top sold",
     "latest-sold": "latest sold"

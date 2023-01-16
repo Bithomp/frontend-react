@@ -453,7 +453,7 @@
   },
   "links": {
     "active-offers-same-account": "Активные предложения от этого же аккаунта",
-    "nfts-same-issuer": "NFT от этого же эмитента",
+    "nfts-same-issuer": "NFT эмитента",
     "owned-nfts-same-account": "NFT пренадлежащие этому аккаунту",
     "all": "все",
     "top-sold": "топ продажи",
