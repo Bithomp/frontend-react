@@ -5,7 +5,7 @@ import { nftUrl } from '../utils/nft';
 
 import Tabs from './Tabs';
 
-export default function NftImageAndVideo({nft}) {
+export default function NftPreview({ nft }) {
   const { t } = useTranslation();
   const [contentTab, setContentTab] = useState("image");
   const [loaded, setLoaded] = useState(false);
@@ -26,9 +26,12 @@ export default function NftImageAndVideo({nft}) {
 
   const imageUrl = nftUrl(nft, 'image');
   const videoUrl = nftUrl(nft, 'video');
+  const audioUrl = nftUrl(nft, 'audio');
+
   const clUrl = {
     image: nftUrl(nft, 'image', 'cl'),
-    video: nftUrl(nft, 'video', 'cl')
+    video: nftUrl(nft, 'video', 'cl'),
+    audio: nftUrl(nft, 'audio', 'cl')
   }
   const contentTabList = [
     { value: 'image', label: (t("tabs.image")) },
@@ -96,5 +99,16 @@ export default function NftImageAndVideo({nft}) {
         </a>
       </span>
     }
+    {audioUrl &&
+      <>
+        <audio src={audioUrl} controls style={{ display: 'block', margin: "20px auto" }}></audio>
+        <span style={{ padding: "4px 0px" }}>
+          <a href={clUrl.audio} target="_blank" rel="noreferrer">
+            {t("tabs.audio")} IPFS
+          </a>
+        </span>
+      </>
+    }
+    <div style={{ height: "15px" }}></div>
   </>
 }

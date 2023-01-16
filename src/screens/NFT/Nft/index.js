@@ -6,7 +6,7 @@ import axios from 'axios';
 import SEO from '../../../components/SEO';
 import SearchBlock from '../../../components/SearchBlock';
 import CopyButton from '../../../components/CopyButton';
-import NftImageAndVideo from '../../../components/NftImageAndVideo';
+import NftImageAndVideo from '../../../components/NftPreview';
 
 import { onFailedRequest, onApiError, stripText } from '../../../utils';
 import {
@@ -19,7 +19,6 @@ import {
   nftOfferLink,
   codeHighlight
 } from '../../../utils/format';
-import { nftUrl } from '../../../utils/nft';
 
 import './styles.scss';
 import { ReactComponent as LinkIcon } from "../../../assets/images/link.svg";
@@ -276,15 +275,6 @@ export default function Nft() {
     }
   }
 
-  const nftAudio = (nft) => {
-    const audioUrl = nftUrl(nft, 'audio');
-    if (audioUrl) {
-      return <audio src={audioUrl} controls style={{ display: 'block', margin: "20px auto" }}></audio>;
-    } else {
-      return <></>;
-    }
-  }
-
   const otherOwnedNftsTr = (owner) => {
     if (!owner) return <></>;
     return <tr>
@@ -326,7 +316,6 @@ export default function Nft() {
                   <div className="column-left">
                     <NftImageAndVideo nft={data} />
                     <div>
-                      {nftAudio(data)}
                       {data.metadata?.attributes && data.metadata?.attributes[0] &&
                         <table className='table-details autowidth'>
                           <thead>

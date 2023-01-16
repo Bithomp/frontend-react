@@ -18,6 +18,9 @@
         &:last-child {
           border-right-width: 5px;
         }
+        hr {
+          border: 1px solid var(--button-additional);
+        }
       }
       tr:last-child td {
         border-bottom-width: 5px;

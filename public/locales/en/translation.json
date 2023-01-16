@@ -409,7 +409,8 @@
     "issuers": "Issuers",
     "brokers": "Brokers",
     "image": "Image",
-    "video": "Video"
+    "video": "Video",
+    "audio": "Audio"
   },
   "xumm": {
     "new-qr": "Get a new QR code"
