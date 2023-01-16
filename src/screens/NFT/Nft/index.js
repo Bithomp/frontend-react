@@ -18,7 +18,7 @@ import {
   nftOfferLink,
   codeHighlight
 } from '../../../utils/format';
-import { nftImageStyle, nftUrl } from '../../../utils/nft';
+import { nftUrl } from '../../../utils/nft';
 
 import './styles.scss';
 import { ReactComponent as LinkIcon } from "../../../assets/images/link.svg";
