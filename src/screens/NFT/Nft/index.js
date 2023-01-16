@@ -308,7 +308,6 @@ export default function Nft() {
       image: nftUrl(nft, 'image', 'cl'),
       video: nftUrl(nft, 'video', 'cl')
     }
-
     const contentTabList = [
       { value: 'image', label: (t("tabs.image")) },
       { value: 'video', label: (t("tabs.video")) }
@@ -367,6 +366,13 @@ export default function Nft() {
         >
           <source src={videoUrl} type="video/mp4" />
         </video>
+      }
+      {!(imageUrl && videoUrl) &&
+        <span style={{ padding: "4px 0px" }}>
+          <a href={clUrl[contentTab]} target="_blank" rel="noreferrer">
+            {t("tabs." + contentTab)} IPFS
+          </a>
+        </span>
       }
     </>
   }
