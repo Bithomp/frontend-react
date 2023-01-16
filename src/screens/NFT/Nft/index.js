@@ -286,12 +286,16 @@ export default function Nft() {
     }
   }
 
-  //copied
   const loadingImage = () => {
+    const style = {
+      textAlign: "center",
+      marginTop: "40px",
+      marginBottom: "20px"
+    };
     if (errored) {
-      return <div className="img-status">{t("general.load-failed")}</div>;
+      return <div style={style}>{t("general.load-failed")}<br /></div>;
     } else if (!loaded) {
-      return <div className="img-status"><span className="waiting"></span><br />{t("general.loading")}</div>;
+      return <div style={style}><span className="waiting"></span><br />{t("general.loading")}</div>;
     }
   }
 

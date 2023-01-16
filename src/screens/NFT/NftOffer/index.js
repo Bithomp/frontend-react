@@ -174,11 +174,18 @@ export default function NftOffer() {
 
   const sellerOrBuyer = data?.flags?.sellToken === true ? t("table.seller") : t("table.buyer");
 
-  const loadingImage = (nft) => {
+  const loadingImage = () => {
+    const style = {
+      textAlign: "center",
+      position: "absolute",
+      paddingTop: "40px",
+      top: 0,
+      width: "100%"
+    };
     if (errored) {
-      return <div className="img-status" style={nftPrev}>{t("general.load-failed")}</div>;
+      return <div style={style}>{t("general.load-failed")}<br /></div>;
     } else if (!loaded) {
-      return <div className="img-status" style={nftPrev}><span className="waiting"></span><br />{t("general.loading")}</div>;
+      return <div style={style}><span className="waiting"></span><br />{t("general.loading")}</div>;
     }
   }
 
