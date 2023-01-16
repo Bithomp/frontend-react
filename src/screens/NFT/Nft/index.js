@@ -139,75 +139,6 @@ export default function Nft() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
-  //copied
-  const nftPrev = {
-    backgroundSize: "contain",
-    backgroundRepeat: "no-repeat",
-    position: "absolute",
-    backgroundPosition: "center",
-    top: 0,
-    bottom: 0,
-    left: 0,
-    right: 0,
-    paddingTop: "40px",
-    textAlign: "center"
-  }
-
-  //copied
-  const imageOrVideo = (nft) => {
-    /*
-    <img 
-      src={record.picture}
-      onError={({ currentTarget }) => {
-        currentTarget.onerror = null; // prevents looping
-        currentTarget.src="new_image_path_here";
-      }}
-    />
-    */
-    let imageStyle = nftImageStyle(nft, nftPrev);
-    if (!Object.keys(imageStyle).includes("backgroundImage")) {
-      const nftVideoUrl = nftUrl(nft, 'video');
-      if (nftVideoUrl) {
-        return <span style={nftPrev}>
-          <video autoPlay playsInline muted loop>
-            <source src={nftVideoUrl} type="video/mp4" />
-          </video>
-        </span>;
-      } else {
-        return <span className='background-secondary' style={nftPrev}></span>;
-      }
-    } else {
-      return <>
-        <span style={imageStyle}></span>
-        <img
-          style={{ display: "none" }}
-          src={nftUrl(nft, 'image')}
-          onLoad={() => setLoaded(true)}
-          onError={() => setErrored(true)}
-          alt={nft.metadata?.name}
-        />
-      </>;
-    }
-  }
-
-  const audio = (nft) => {
-    const audioUrl = nftUrl(nft, 'audio');
-    if (audioUrl) {
-      return <audio src={audioUrl} controls style={{ display: 'block', margin: "20px auto" }}></audio>;
-    } else {
-      return <></>;
-    }
-  }
-
-  //copied
-  const loadingImage = (nft) => {
-    if (errored) {
-      return <div className="img-status" style={nftPrev}>{t("general.load-failed")}</div>;
-    } else if (!loaded) {
-      return <div className="img-status" style={nftPrev}><span className="waiting"></span><br />{t("general.loading")}</div>;
-    }
-  }
-
   const externalUrl = (meta) => {
     let url = meta.external_url || meta.external_link;
     if (url) {
@@ -346,6 +277,63 @@ export default function Nft() {
     }
   }
 
+  const nftAudio = (nft) => {
+    const audioUrl = nftUrl(nft, 'audio');
+    if (audioUrl) {
+      return <audio src={audioUrl} controls style={{ display: 'block', margin: "20px auto" }}></audio>;
+    } else {
+      return <></>;
+    }
+  }
+
+  //copied
+  const loadingImage = () => {
+    if (errored) {
+      return <div className="img-status">{t("general.load-failed")}</div>;
+    } else if (!loaded) {
+      return <div className="img-status"><span className="waiting"></span><br />{t("general.loading")}</div>;
+    }
+  }
+
+  const nftImage = (nft) => {
+    const imageUrl = nftUrl(nft, 'image');
+    let imageStyle = { width: "100%", height: "auto" };
+    if (imageUrl) {
+      if (imageUrl.slice(0, 10) === 'data:image') {
+        imageStyle.imageRendering = 'pixelated';
+      }
+      if (nft.deletedAt) {
+        imageStyle.filter = 'grayscale(1)';
+      }
+      return <img
+        style={imageStyle}
+        src={imageUrl}
+        onLoad={() => setLoaded(true)}
+        onError={({ currentTarget }) => {
+          currentTarget.onerror = () => {
+            setErrored(true);
+          };
+          currentTarget.src = nftUrl(nft, 'image', 'cl');
+        }}
+        alt={nft.metadata?.name}
+      />
+    } else {
+      return <></>;
+    }
+  }
+
+  const nftVideo = (nft) => {
+    const videoUrl = nftUrl(nft, 'video');
+    let videoStyle = { width: "100%", height: "auto" };
+    if (videoUrl) {
+      return <video autoPlay playsInline muted loop style={videoStyle}>
+        <source src={videoUrl} type="video/mp4" />
+      </video>
+    } else {
+      return <></>;
+    }
+  }
+
   return <>
     {data && <SEO title={t("menu.nft") + " " + data.metadata?.name} />}
     <SearchBlock
@@ -364,13 +352,13 @@ export default function Nft() {
               <>{data.flags &&
                 <>
                   <div className="column-left">
-                    <div className="dummy"></div>
                     {loadingImage(data)}
-                    {imageOrVideo(data)}
-                    <div className='column-left-bottom'>
-                      {audio(data)}
+                    {nftImage(data)}
+                    {nftVideo(data)}
+                    <div>
+                      {nftAudio(data)}
                       {data.metadata?.attributes &&
-                        <table className='table-details hidden'>
+                        <table className='table-details'>
                           <thead>
                             <tr>
                               <th colSpan="100">{t("table.attributes")}</th>
