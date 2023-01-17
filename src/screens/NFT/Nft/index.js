@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { useState, useEffect } from 'react';
 import { useParams } from "react-router-dom";
+import { Buffer } from 'buffer';
 import axios from 'axios';
 
 import SEO from '../../../components/SEO';
@@ -419,17 +420,17 @@ export default function Nft() {
                           <td>{t("table.serial")}</td>
                           <td>{data.sequence}</td>
                         </tr>
-                        {!data.uri &&
-                          <tr>
-                            <td>URI</td>
-                            <td>{t("table.text.unspecified")}</td>
-                          </tr>
-                        }
                         {!!data.transferFee && <tr>
                           <td>{t("table.transfer-fee")}</td>
                           <td>{data.transferFee / 1000}%</td>
                         </tr>}
                         {trWithFlags(data.flags)}
+                        <tr>
+                          <td>URI</td>
+                          <td>
+                            {data.uri ? stripText(Buffer.from(data.uri, 'hex')) : t("table.text.unspecified")}
+                          </td>
+                        </tr>
                       </tbody>
                     </table>
 
