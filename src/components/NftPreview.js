@@ -69,14 +69,15 @@ export default function NftPreview({ nft }) {
     {(imageUrl || videoUrl) && loadingImage(nft)}
     {imageUrl && contentTab === 'image' &&
       <img
-        style={imageStyle}
+        style={{ ...imageStyle, display: (loaded ? "inline-block" : "none") }}
         src={imageUrl}
-        onLoad={() => setLoaded(true)}
+        onLoad={() => { setLoaded(true); setErrored(false) }}
         onError={({ currentTarget }) => {
-          currentTarget.onerror = () => {
+          if (currentTarget.src === imageUrl) {
+            currentTarget.src = clUrl.image;
+          } else {
             setErrored(true);
-          };
-          currentTarget.src = clUrl.image;
+          }
         }}
         alt={nft.metadata?.name}
       />

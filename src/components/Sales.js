@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { useState, useEffect } from 'react';
-import { useSearchParams, useNavigate } from "react-router-dom";
+import { useSearchParams, useNavigate, Link } from "react-router-dom";
 import axios from 'axios';
 
 import Tabs from './Tabs';
@@ -285,7 +285,7 @@ export default function Sales({ list, defaultSaleTab = "all" }) {
                     <td>{nft.nftoken?.metadata?.name ? stripText(nft.nftoken.metadata.name) : "---//---"}</td>
                     <td className='center hide-on-mobile'>{nft.nftoken.nftokenTaxon}</td>
                     <td className='center hide-on-mobile'>{nft.nftoken.sequence}</td>
-                    <td className='center'><a href={"/nft/" + nft.nftokenID}><LinkIcon /></a></td>
+                    <td className='center'><Link to={"/nft/" + nft.nftokenID}><LinkIcon /></Link></td>
                     <td className='center hide-on-mobile'><a href={"/explorer/" + nft.acceptedTxHash}><LinkIcon /></a></td>
                     {saleTab !== "primary" && <td className='center hide-on-mobile'>{nftLink(nft, 'seller')}</td>}
                     <td className='center hide-on-mobile'>{nftLink(nft, 'buyer')}</td>

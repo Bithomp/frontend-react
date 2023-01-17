@@ -1,5 +1,6 @@
 import { Buffer } from 'buffer';
 import i18n from '../services/i18n';
+import { Link } from 'react-router-dom';
 
 import { ReactComponent as LinkIcon } from "../assets/images/link.svg";
 import { stripText } from '.';
@@ -66,7 +67,7 @@ export const trWithAccount = (data, valueName, tableName, url = "/explorer/") =>
 
 export const nftOfferLink = (nftOfferId, chars = 6) => {
   if (!nftOfferId) return "";
-  return <a href={"/nft-offer/" + nftOfferId}>{shortHash(nftOfferId, chars)}</a>
+  return <Link to={"/nft-offer/" + nftOfferId}>{shortHash(nftOfferId, chars)}</Link>
 }
 
 export const nftLink = (nft, type) => {

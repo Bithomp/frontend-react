@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import axios from 'axios';
 
 import SEO from '../../components/SEO';
@@ -135,8 +135,8 @@ export default function NftOffers() {
                     {!errorMessage ? data.map((offer, i) =>
                       <tr key={i}>
                         <td className="center">{i + 1}</td>
-                        <td className='center'><a href={"/nft-offer/" + offer.offerIndex}><LinkIcon /></a></td>
-                        <td className='center'><a href={"/nft/" + offer.nftokenID}><LinkIcon /></a></td>
+                        <td className='center'><Link to={"/nft-offer/" + offer.offerIndex}><LinkIcon /></Link></td>
+                        <td className='center'><Link to={"/nft/" + offer.nftokenID}><LinkIcon /></Link></td>
                         <td>{offer.flags?.sellToken === true ? t("table.text.sell") : t("table.text.buy")}</td>
                         <td>{amountFormat(offer.amount, { tooltip: true })}</td>
                         <td>{fullDateAndTime(offer.createdAt)}</td>
@@ -170,10 +170,10 @@ export default function NftOffers() {
                         <td style={{ padding: "5px" }}>{i + 1}</td>
                         <td>
                           <p>
-                            {t("table.offer")}: <a href={"/nft-offer/" + offer.offerIndex}><LinkIcon /></a>
+                            {t("table.offer")}: <Link to={"/nft-offer/" + offer.offerIndex}><LinkIcon /></Link>
                           </p>
                           <p>
-                            NFT: <a href={"/nft/" + offer.nftokenID}><LinkIcon /></a>
+                            NFT: <Link to={"/nft/" + offer.nftokenID}><LinkIcon /></Link>
                           </p>
                           <p>
                             {t("table.type")}: {offer.flags?.sellToken === true ? t("table.text.sell") : t("table.text.buy")}

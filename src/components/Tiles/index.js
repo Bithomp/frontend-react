@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { useState } from 'react';
+import { Link } from "react-router-dom";
 
 import { stripText } from '../../utils';
 import { nftImageStyle, nftUrl } from '../../utils/nft';
@@ -98,7 +99,7 @@ export default function Tiles({ nftList, type = 'name' }) {
           {nftList[0] && nftList.map((nft, i) =>
             <li className="hex" key={i}>
               <div className="hexIn">
-                <a className="hexLink" href={"/nft/" + nft.nftokenID}>
+                <Link to={"/nft/" + nft.nftokenID} className="hexLink">
                   {loadingImage(nft)}
                   {imageOrVideo(nft)}
                   <div className="index">{i + 1}</div>
@@ -111,7 +112,7 @@ export default function Tiles({ nftList, type = 'name' }) {
                     {addressName(nft.issuerDetails, t("table.issuer"))}
                     {addressName(nft.ownerDetails, t("table.owner"))}
                   </div>
-                </a>
+                </Link>
               </div>
             </li>
           )}
@@ -127,7 +128,7 @@ export default function Tiles({ nftList, type = 'name' }) {
           {nftList?.length > 0 && nftList.map((nft, i) =>
             <li className="hex" key={i}>
               <div className="hexIn">
-                <a className="hexLink" href={"/nft/" + nft.nftoken.nftokenID}>
+                <Link className="hexLink" to={"/nft/" + nft.nftoken.nftokenID}>
                   {loadingImage(nft.nftoken)}
                   {imageOrVideo(nft.nftoken)}
                   <div className="index">{i + 1}</div>
@@ -143,7 +144,7 @@ export default function Tiles({ nftList, type = 'name' }) {
                     {addressName(nft.nftoken?.issuerDetails, t("table.issuer"))}
                     {addressName(nft.nftoken?.ownerDetails, t("table.owner"))}
                   </div>
-                </a>
+                </Link>
               </div>
             </li>
           )}

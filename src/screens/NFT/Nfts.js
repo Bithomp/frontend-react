@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { useState, useEffect } from 'react';
-import { useParams, useSearchParams, useLocation, useNavigate } from "react-router-dom";
+import { useParams, useSearchParams, useLocation, useNavigate, Link } from "react-router-dom";
 import { CSVLink } from "react-csv";
 import axios from 'axios';
 import InfiniteScroll from 'react-infinite-scroll-component';
@@ -433,7 +433,7 @@ export default function Nfts() {
                         <td>{nft.metadata?.name}</td>
                         <td className='center'>{nft.sequence}</td>
                         {!taxon && <td className='center'>{nft.nftokenTaxon}</td>}
-                        <td className='center'><a href={"/nft/" + nft.nftokenID}><LinkIcon /></a></td>
+                        <td className='center'><Link to={"/nft/" + nft.nftokenID}><LinkIcon /></Link></td>
                         {!issuer && <td className='center'>{nftLink(nft, 'issuer')}</td>}
                         {(!id && !owner) && <td className='center'>{nftLink(nft, 'owner')}</td>}
                       </tr>)

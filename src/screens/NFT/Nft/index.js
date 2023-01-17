@@ -320,7 +320,7 @@ export default function Nft() {
                   <div className="column-left">
                     <NftImageAndVideo nft={data} />
                     <div>
-                      {data.metadata?.attributes && data.metadata?.attributes[0] &&
+                      {data.metadata?.attributes && data.metadata?.attributes[0] && data.metadata?.attributes[0].trait_type &&
                         <table className='table-details autowidth'>
                           <thead>
                             <tr>

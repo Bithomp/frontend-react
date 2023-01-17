@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { useState, useEffect } from 'react';
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import axios from 'axios';
 
 import SEO from '../../../components/SEO';
@@ -169,7 +169,7 @@ export default function NftOffer() {
                         {trWithAccount(data, 'account', sellerOrBuyer, "/explorer/")}
                         <tr>
                           <td>{data.flags.sellToken === true ? t("nft-offer.selling") : t("nft-offer.buying")} NFT</td>
-                          <td><a href={"/nft/" + data.nftokenID}>{shortHash(data.nftokenID, 10)}</a></td>
+                          <td><Link to={"/nft/" + data.nftokenID}>{shortHash(data.nftokenID, 10)}</Link></td>
                         </tr>
                         {trWithAccount(data, 'destination', t("table.destination"), "/explorer/")}
                         <tr>
