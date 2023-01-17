@@ -130,15 +130,15 @@ export default function Header({ theme, switchTheme, setSignInFormOpen, account,
                 {displayName}
               </div>
               <div className="menu-dropdown-content">
-                <button onClick={copyToClipboard}>
+                <span onClick={copyToClipboard} className="link">
                   {isCopied ? t("button.copied") : t("button.copy-my-address")}
-                </button>
+                </span>
                 <a href={"/nfts/" + address}>{t("signin.actions.my-nfts")}</a>
                 <a href={"/nft-offers/" + address}>{t("signin.actions.my-nft-offers")}</a>
                 <a href={"/explorer/" + address + "?hw=xumm&xummtoken=" + xummUserToken}>{t("signin.actions.view")}</a>
                 {!username && <a href={"/username?address=" + address}>{t("menu.usernames")}</a>}
                 <a href={"/explorer/" + address + "?hw=xumm&xummtoken=" + xummUserToken + "&action=send"}>{t("signin.actions.send")}</a>
-                <button onClick={signOut}>{t("signin.signout")}</button>
+                <span onClick={signOut} className="link">{t("signin.signout")}</span>
               </div>
             </div> :
             <span onClick={() => { setSignInFormOpen(true) }} className="header-signin-link link">{t("signin.signin")}</span>
