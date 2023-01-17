@@ -306,7 +306,10 @@ export default function Nft() {
     <div className="content-center short-top nft">
       {id ? <>
         {loading ?
-          <div className='center' style={{ marginTop: "80px" }}><span className="waiting"></span></div>
+          <div className='center' style={{ marginTop: "80px" }}>
+            <span className="waiting"></span>
+            <br />{t("general.loading")}
+          </div>
           :
           <>
             {errorMessage ?

@@ -268,7 +268,12 @@ export default function Sales({ list, defaultSaleTab = "all" }) {
         </thead>
         <tbody>
           {loading ?
-            <tr className='center'><td colSpan="100"><span className="waiting"></span></td></tr>
+            <tr className='center'>
+              <td colSpan="100">
+                <span className="waiting"></span>
+                <br />{t("general.loading")}<br />
+              </td>
+            </tr>
             :
             <>
               {!errorMessage && data?.sales?.length ?
@@ -298,7 +303,10 @@ export default function Sales({ list, defaultSaleTab = "all" }) {
     {viewTab === "tiles" &&
       <>
         {loading ?
-          <div className='center' style={{ marginTop: "20px" }}><span className="waiting"></span></div>
+          <div className='center' style={{ marginTop: "20px" }}>
+            <span className="waiting"></span>
+            <br />{t("general.loading")}
+          </div>
           :
           <>
             {errorMessage ?

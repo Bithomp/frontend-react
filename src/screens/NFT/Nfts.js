@@ -419,7 +419,12 @@ export default function Nfts() {
               </thead>
               <tbody>
                 {loading ?
-                  <tr className='center'><td colSpan="100"><span className="waiting"></span></td></tr>
+                  <tr className='center'>
+                    <td colSpan="100">
+                      <span className="waiting"></span>
+                      <br />{t("general.loading")}
+                    </td>
+                  </tr>
                   :
                   <>
                     {!errorMessage ? filteredData.map((nft, i) =>
@@ -443,7 +448,10 @@ export default function Nfts() {
           {tab === "tiles" &&
             <>
               {loading ?
-                <div className='center' style={{ marginTop: "20px" }}><span className="waiting"></span></div>
+                <div className='center' style={{ marginTop: "20px" }}>
+                  <span className="waiting"></span>
+                  <br />{t("general.loading")}
+                </div>
                 :
                 <>
                   {errorMessage ?

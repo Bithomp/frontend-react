@@ -132,7 +132,12 @@ export default function LastLedgerInformation() {
 
         </p>
         <p className="center" style={{ position: "absolute", top: "calc(50% - 72px)", left: "calc(50% - 54px)" }}>
-          {!ledger && <span className="waiting"></span>}
+          {!ledger &&
+            <>
+              <span className="waiting"></span>
+              <br />{t("general.loading")}
+            </>
+          }
         </p>
       </div>
     </div>

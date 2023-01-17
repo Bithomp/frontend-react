@@ -141,7 +141,10 @@ export default function NftOffer() {
     <div className="content-center short-top nft-offer">
       {id ? <>
         {loading ?
-          <div className='center' style={{ marginTop: "80px" }}><span className="waiting"></span></div>
+          <div className='center' style={{ marginTop: "80px" }}>
+            <span className="waiting"></span>
+            <br />{t("general.loading")}
+          </div>
           :
           <>
             {errorMessage ?

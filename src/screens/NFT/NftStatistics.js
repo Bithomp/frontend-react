@@ -143,7 +143,12 @@ export default function LastLedgerInformation() {
           {t("nft-statistics.transferable")}: {niceNumber(nft?.transferable)}
         </p>
         <p className="center" style={{ position: "absolute", top: "calc(50% - 72px)", left: "calc(50% - 54px)" }}>
-          {!data && <span className="waiting"></span>}
+          {!data &&
+            <>
+              <span className="waiting"></span>
+              <br />{t("general.loading")}
+            </>
+          }
         </p>
       </div>
     </div>

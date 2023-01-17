@@ -124,7 +124,12 @@ export default function NftOffers() {
               </thead>
               <tbody>
                 {loading ?
-                  <tr className='center'><td colSpan="9"><span className="waiting"></span></td></tr>
+                  <tr className='center'>
+                    <td colSpan="100">
+                      <span className="waiting"></span>
+                      <br />{t("general.loading")}
+                    </td>
+                  </tr>
                   :
                   <>
                     {!errorMessage ? data.map((offer, i) =>
@@ -152,7 +157,12 @@ export default function NftOffers() {
               </thead>
               <tbody>
                 {loading ?
-                  <tr className='center'><td colSpan="100"><span className="waiting"></span></td></tr>
+                  <tr className='center'>
+                    <td colSpan="100">
+                      <span className="waiting"></span>
+                      <br />{t("general.loading")}
+                    </td>
+                  </tr>
                   :
                   <>
                     {!errorMessage ? data.map((offer, i) =>

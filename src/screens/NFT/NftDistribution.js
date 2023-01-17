@@ -104,7 +104,12 @@ export default function NftDistribution() {
           </thead>
           <tbody>
             {loading ?
-              <tr className='center'><td colSpan="9"><span className="waiting"></span></td></tr>
+              <tr className='center'>
+                <td colSpan="100">
+                  <span className="waiting"></span>
+                  <br />{t("general.loading")}
+                </td>
+              </tr>
               :
               <>
                 {!errorMessage ? data.owners?.map((user, i) =>

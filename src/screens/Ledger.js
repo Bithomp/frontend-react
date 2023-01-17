@@ -60,7 +60,7 @@ export default function Ledger() {
 
   return <>
     <SEO title={t("menu.ledger") + " " + ledgerVersion} />
-    {ledgerVersion &&
+    {ledgerVersion ?
       <div className="content-text">
         <h2 className="center">{t("menu.ledger")} #{ledgerVersion}<br />{data?.close_time ? fullDateAndTime(data.close_time) : <br />}</h2>
         <p className="center">
@@ -91,10 +91,20 @@ export default function Ledger() {
                 }
               </>
               :
-              <tr className='center'><td colSpan="4"><span className="waiting"></span></td></tr>
+              <tr className='center'>
+                <td colSpan="100">
+                  <span className="waiting"></span>
+                  <br />{t("general.loading")}
+                </td>
+              </tr>
             }
           </tbody>
         </table>
+      </div>
+      :
+      <div className='center' style={{ marginTop: "80px" }}>
+        <span className="waiting"></span>
+        <br />{t("general.loading")}
       </div>
     }
   </>;
