@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSearchParams, useParams } from 'react-router-dom';
+import axios from 'axios';
 
-import { isAddressOrUsername, isNftOfferValid, isNftIdValid } from '../../utils';
+import { isAddressOrUsername, isIdValid } from '../../utils';
 import { userOrServiceName } from '../../utils/format';
 
 import './styles.scss';
@@ -17,6 +18,7 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
   const { id } = useParams();
   const [searchItem, setSearchItem] = useState(id || userData?.address || "");
   const [addParams, setAddParams] = useState("");
+  const [searching, setSearching] = useState(false);
 
   useEffect(() => {
     if (userData?.address) {
@@ -51,7 +53,7 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
     }
   }
 
-  const onSearch = () => {
+  const onSearch = async () => {
     let searchFor = searchItem.trim();
     if (tab === "nfts" && isAddressOrUsername(searchFor)) {
       window.location = '/nfts/' + encodeURI(searchFor) + addParams;
@@ -68,16 +70,33 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
       return;
     }
 
-    if (tab === "nft" && isNftIdValid(searchFor)) {
+    if (tab === "nft" && isIdValid(searchFor)) {
       window.location = '/nft/' + encodeURI(searchFor);
       return;
     }
 
-    if (tab === "nft-offer" && isNftOfferValid(searchFor)) {
+    if (tab === "nft-offer" && isIdValid(searchFor)) {
       window.location = '/nft-offer/' + encodeURI(searchFor);
       return;
     }
 
+    //nft nftOffer
+    if (isIdValid(searchFor)) {
+      setSearching(true);
+      const response = await axios('v2/search/' + searchFor);
+      setSearching(false);
+      const data = response.data;
+      if (data.type === 'nftoken') {
+        window.location = '/nft/' + encodeURI(searchFor);
+        return;
+      }
+      if (data.type === 'nftokenOffer') {
+        window.location = '/nft-offer/' + encodeURI(searchFor);
+        return;
+      }
+    }
+
+    //tx, address etc
     window.location = '/explorer/' + encodeURI(searchFor);
     return;
   }
@@ -108,8 +127,18 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
       <div className="search-block">
         <div className="search-box">
           <div className='above-search-box'>
-            {userOrServiceName(userData)}
-            {tab === "nft-offer" && <b className='contrast'>{t("menu.nft-offer")}</b>}
+            {searching ?
+              <span className='contrast'>
+                {t("explorer.searching-tx-nft-nftoffer")}
+                <span className="waiting inline"></span>
+              </span>
+              :
+              <>
+                {userOrServiceName(userData)}
+                {tab === "nft-offer" && <b className='contrast'>{t("menu.nft-offer")}</b>}
+                {tab === "nft" && <b className='contrast'>NFT</b>}
+              </>
+            }
           </div>
           <input
             className="search-input"

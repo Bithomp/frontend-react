@@ -125,10 +125,7 @@ export const isAddressOrUsername = (x) => {
   return isAddressValid(x) || isUsernameValid(x);
 }
 
-export const isNftOfferValid = (x) => {
+export const isIdValid = (x) => {
   return /^[0-9a-zA-Z]{64}$/.test(x);
 }
 
-export const isNftIdValid = (x) => {
-  return /^[0-9a-zA-Z]{64}$/.test(x);
-}

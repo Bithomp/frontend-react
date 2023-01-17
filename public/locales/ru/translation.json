@@ -419,6 +419,7 @@
   },
   "explorer": {
     "enter-address": "Введите XRPL адрес или ник",
+    "searching-tx-nft-nftoffer": "Идет поиск по запрошенному ID",
     "menu": {
       "account": "Aдрес",
       "transactions": "Транзакции",

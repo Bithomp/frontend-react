@@ -405,6 +405,13 @@ table {
   height: 80px;
   -webkit-animation: spin 2s linear infinite;
   animation: spin 2s linear infinite;
+  &.inline {
+    width: 12px;
+    height: 12px;
+    border-width: 3px;
+    vertical-align: middle;
+    margin-left: 5px;
+  }
 }
 
 .hide-on-mobile {

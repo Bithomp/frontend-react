@@ -419,6 +419,7 @@
   },
   "explorer": {
     "enter-address": "Enter an XRPL address or a username",
+    "searching-tx-nft-nftoffer": "Searching for Tx / NFT ID / NFT Offer",
     "menu": {
       "account": "Account information",
       "transactions": "Transactions",
