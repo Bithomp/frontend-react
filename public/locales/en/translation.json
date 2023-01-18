@@ -392,6 +392,17 @@
       "buy": "Buy",
       "show": "show",
       "hide": "hide"
+    },
+    "filter": {
+      "valid": "Valid",
+      "invalid": "Invalid",
+      "active": "All active",
+      "historical": "Historical",
+      "all": "All"
+    },
+    "text-status": {
+      "NFT is not owned by the seller account": "NFT is not owned by seller",
+      "Offer is expired": "Expired"
     }
   },
   "tabs": {

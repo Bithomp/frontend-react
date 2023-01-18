@@ -32,6 +32,52 @@
     padding: 0 15px;
     vertical-align: top;
   }
+  .offer-history-filter-select {
+    float: right;
+    text-transform: initial;
+
+    .react-select__control {
+      border: none;
+      box-shadow: none;
+      min-height: unset;
+      min-width: 160px;
+      background-color: unset;
+      .react-select__input-container {
+        color: var(--text-main);
+      }
+    }
+    .react-select__menu {
+      border-radius: 0;
+      margin-top: 0;
+      z-index: 2;
+    }
+    .react-select__menu-list {
+      padding-top: 0;
+      padding-bottom: 0;
+    }
+    .react-select__option {
+      background-color: var(--background-secondary);
+      color: var(--text-main);
+      display: inline-block;
+      &:hover {
+        background-color: var(--background-main);
+      }
+    }
+    .react-select__dropdown-indicator {
+      padding: 0;
+      color: var(--accent-icon);
+      &:hover {
+        color: var(--accent-icon);
+      }
+    }
+    .react-select__indicator-separator {
+      display: none;
+    }
+    .react-select__single-value {
+      color: var(--text-main);
+      text-align: right;
+    }
+  }
   @media only screen and (max-width: 600px) {
     font-size: 14px;
     .column-left {

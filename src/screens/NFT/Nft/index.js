@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { useParams } from "react-router-dom";
 import { Buffer } from 'buffer';
 import axios from 'axios';
+import Select from "react-select";
 
 import SEO from '../../../components/SEO';
 import SearchBlock from '../../../components/SearchBlock';
@@ -25,7 +26,7 @@ import './styles.scss';
 import { ReactComponent as LinkIcon } from "../../../assets/images/link.svg";
 
 export default function Nft() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { id } = useParams();
 
   const [data, setData] = useState({});
@@ -33,13 +34,19 @@ export default function Nft() {
   const [errorMessage, setErrorMessage] = useState("");
   const [showRawMetadata, setShowRawMetadata] = useState(false);
 
+  const [sellOffersFilter, setSellOffersFilter] = useState('active-valid');
+  const [buyOffersFilter, setBuyOffersFilter] = useState('active-valid');
+  const [filteredSellOffers, setFilteredSellOffers] = useState([]);
+  const [filteredBuyOffers, setFilteredBuyOffers] = useState([]);
+  const [countBuyOffers, setCountBuyOffers] = useState(null);
+  const [countSellOffers, setCountSellOffers] = useState(null);
+
   const checkApi = async () => {
     if (!id) {
       return;
     }
     setLoading(true);
-    //&offersHistory=true
-    const response = await axios('v2/nft/' + id + '?uri=true&metadata=true&history=true&sellOffers=true&buyOffers=true&offersValidate=true').catch(error => {
+    const response = await axios('v2/nft/' + id + '?uri=true&metadata=true&history=true&sellOffers=true&buyOffers=true&offersValidate=true&offersHistory=true').catch(error => {
       onFailedRequest(error, setErrorMessage);
     });
     setLoading(false);
@@ -47,7 +54,15 @@ export default function Nft() {
     if (newdata) {
       if (newdata.flags) {
         newdata.history = newdata.history.sort((a, b) => (a.changedAt < b.changedAt) ? 1 : -1);
+        if (newdata.sellOffers) {
+          newdata.sellOffers = newdata.sellOffers.sort((a, b) => (a.createdAt < b.createdAt) ? 1 : -1);
+        }
+        if (newdata.buyOffers) {
+          newdata.buyOffers = newdata.buyOffers.sort((a, b) => (a.createdAt < b.createdAt) ? 1 : -1);
+        }
         setData(newdata);
+        countOffersByFilters(newdata.sellOffers, setCountSellOffers);
+        countOffersByFilters(newdata.buyOffers, setCountBuyOffers);
       } else {
         if (newdata.error) {
           onApiError(newdata.error, setErrorMessage);
@@ -57,6 +72,32 @@ export default function Nft() {
         }
       }
     }
+  }
+
+  const countOffersByFilters = (offers, setCount) => {
+    let count = {
+      all: 0,
+      active: 0,
+      "active-valid": 0,
+      "active-invalid": 0,
+      "historical": 0
+    }
+    if (offers && offers.length > 0) {
+      for (let i = 0; i < offers.length; i++) {
+        count.all++;
+        if (offers[i].valid || offers[i].valid === false) {
+          count.active++;
+          if (offers[i].valid) {
+            count["active-valid"]++;
+          } else {
+            count["active-invalid"]++;
+          }
+        } else {
+          count.historical++;
+        }
+      }
+    }
+    setCount(count);
   }
 
   /*
@@ -103,32 +144,7 @@ export default function Nft() {
           "txHash":"5F0162B9FB19F2D88F5EC38AEA9984B0BAD11E1CD960B135F4BA128BF980AA4D"
         }
       ],
-      "sellOffers":[
-        {
-          "amount":"1500000000",
-          "offerIndex":"7E2B5165926818732C3EC244ACD9B550294EF4B091713A99F6A083487D3ABA40",
-          "owner":"r9spUPhPBfB6kQeF6vPhwmtFwRhBh2JUCG",
-          "expiration":null,
-          "destination":null,
-          "createdAt": 1670451431,
-          "createdLedgerIndex":75483425,
-          "createdTxHash":"9573894AE03706B98909DBABD9D670AF6BACBB704AA053E7DC15AD9EB4F79208"
-        },
-        {
-          "amount": {
-            "currency": "534F4C4F00000000000000000000000000000000",
-            "issuer": "rsoLo2S1kiGeCcn6hCUXVrCpGMWLrRrLZz",
-            "value": "10000"
-          },
-          "offerIndex": "E992835C148C9EAA7A93EABDD397A84333F27F99DA386255378A3C16A8B0DEF3",
-          "owner": "r9spUPhPBfB6kQeF6vPhwmtFwRhBh2JUCG",
-          "expiration": null,
-          "destination": null,
-          "createdAt": 1670721431,
-          "createdLedgerIndex": 76344438,
-          "createdTxHash": "616CAAAC1C737C964C4A3B27DEAFE2F172D5A82FDD9342A1F5C677ACABC5AE7B"
-        }
-      ],
+      "sellOffers":[],
       "buyOffers":null
     }
   */
@@ -230,18 +246,29 @@ export default function Nft() {
 
     const buyerOrSeller = type === 'sell' ? t("table.seller") : t("table.buyer");
 
-    let validExists = 0;
-    if (offers) {
-      for (let i = 0; i < offers.length; i++) {
-        if (offers[i].valid === true) {
-          validExists++;
-        }
-      }
-    }
-
-    if (validExists) {
-      return offers.filter(function (offer) { return offer.valid; }).map((offer, i) =>
+    if (offers.length > 0) {
+      return offers.map((offer, i) =>
         <tbody key={i}>
+          {offer.validationErrors && offer.validationErrors.length > 0 &&
+            <tr>
+              <td>{t("table.status")}</td>
+              <td>
+                {offer.validationErrors.map((error, i) =>
+                  <span key={i} className='red'>
+                    {i18n.exists("table.text-status." + error) ? t("table.text-status." + error) : error}
+                  </span>
+                )}
+              </td>
+            </tr>
+          }
+          {(offer.canceledAt || offer.acceptedAt) &&
+            <tr>
+              <td>{t("table.status")}</td>
+              <td className='red'>
+                {offer.acceptedAt ? t("table.accepted") : t("table.canceled")}
+              </td>
+            </tr>
+          }
           {trWithAccount(offer, 'owner', buyerOrSeller, "/explorer/")}
           <tr>
             <td>{t("table.amount")}</td>
@@ -251,6 +278,18 @@ export default function Nft() {
             <td>{t("table.placed")}</td>
             <td>{fullDateAndTime(offer.createdAt)} <a href={"/explorer/" + offer.createdTxHash}><LinkIcon /></a></td>
           </tr>
+          {offer.acceptedAt &&
+            <tr>
+              <td>{t("table.accepted")}</td>
+              <td>{fullDateAndTime(offer.acceptedAt)} <a href={"/explorer/" + offer.acceptedTxHash}><LinkIcon /></a></td>
+            </tr>
+          }
+          {offer.canceledAt &&
+            <tr>
+              <td>{t("table.canceled")}</td>
+              <td>{fullDateAndTime(offer.canceledAt)} <a href={"/explorer/" + offer.canceledTxHash}><LinkIcon /></a></td>
+            </tr>
+          }
           {offer.expiration &&
             <tr>
               <td>{expirationExpired(offer.expiration)}</td>
@@ -264,7 +303,7 @@ export default function Nft() {
             <td>{t("table.offer")}</td>
             <td>{nftOfferLink(offer.offerIndex, 10)}</td>
           </tr>
-          {i !== validExists - 1 &&
+          {i !== offers.length - 1 &&
             <tr><td colSpan="100"><hr /></td></tr>
           }
         </tbody>
@@ -295,6 +334,89 @@ export default function Nft() {
         <a href={"/latest-nft-sales?issuer=" + issuer}>{t("links.latest-sold")}</a>
       </td>
     </tr>
+  }
+
+  const offerHistoryFilters = (type, defaultOption = false) => {
+    let countOffers = {
+      buy: countBuyOffers,
+      sell: countSellOffers
+    }
+    if (defaultOption) {
+      return { value: 'active-valid', label: t("table.filter.valid") + ' (' + countOffers[type]["active-valid"] + ')' };
+    }
+
+    let options = [
+      { value: 'active-valid', label: t("table.filter.valid") + ' (' + countOffers[type]["active-valid"] + ')' }
+    ];
+
+    if (countOffers[type]["active-invalid"] > 0) {
+      options.push({ value: 'active-invalid', label: t("table.filter.invalid") + ' (' + countOffers[type]["active-invalid"] + ')' });
+    }
+
+    if (countOffers[type].active > 0 && countOffers[type].active !== countOffers[type]["active-valid"] && countOffers[type].active !== countOffers[type]["active-invalid"]) {
+      options.push({ value: 'active', label: t("table.filter.active") + ' (' + countOffers[type].active + ')' });
+    }
+
+    if (countOffers[type].historical > 0) {
+      options.push({ value: 'historical', label: t("table.filter.historical") + ' (' + countOffers[type].historical + ')' });
+    }
+
+    if (countOffers[type].all !== countOffers[type]["active-valid"] && countOffers[type].all !== countOffers[type]["active-invalid"] && countOffers[type].all !== countOffers[type].active && countOffers[type].all !== countOffers[type].historical) {
+      options.push({ value: 'all', label: t("table.filter.all") + ' (' + countOffers[type].all + ')' });
+    }
+
+    return options;
+  }
+
+  const filterOffers = (unfilteredOffers, filter, setFilteredOffers) => {
+    if (!unfilteredOffers) {
+      setFilteredOffers([]);
+      return;
+    };
+    if (filter === 'all') {
+      setFilteredOffers(unfilteredOffers);
+    } else if (filter === 'historical') {
+      setFilteredOffers(unfilteredOffers.filter(function (offer) { return (offer.canceledAt || offer.acceptedAt); }));
+    } else if (filter === 'active') {
+      setFilteredOffers(unfilteredOffers.filter(function (offer) { return (offer.valid || offer.valid === false); }));
+    } else if (filter === 'active-valid') {
+      setFilteredOffers(unfilteredOffers.filter(function (offer) { return offer.valid; }));
+    } else if (filter === 'active-invalid') {
+      setFilteredOffers(unfilteredOffers.filter(function (offer) { return offer.valid === false; }));
+    }
+  }
+
+  useEffect(() => {
+    if (!data || !buyOffersFilter) return;
+    filterOffers(data.buyOffers, buyOffersFilter, setFilteredBuyOffers);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data, buyOffersFilter]);
+
+  useEffect(() => {
+    if (!data || !sellOffersFilter) return;
+    filterOffers(data.sellOffers, sellOffersFilter, setFilteredSellOffers);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data, sellOffersFilter]);
+
+  const offersFilter = (type) => {
+    let offersCount = countSellOffers;
+    let setFilter = setSellOffersFilter;
+    if (type === 'buy') {
+      setFilter = setBuyOffersFilter;
+      offersCount = countBuyOffers;
+    }
+    //dont show if there is no offers, or when all offers are valid
+    if (offersCount.all === 0 || offersCount.valid === offersCount.all) {
+      return <></>;
+    }
+    return <Select
+      options={offerHistoryFilters(type)}
+      defaultValue={offerHistoryFilters(type, true)}
+      onChange={(value) => setFilter(value.value)}
+      isSearchable={false}
+      className="offer-history-filter-select"
+      classNamePrefix="react-select"
+    />
   }
 
   return <>
@@ -439,23 +561,37 @@ export default function Nft() {
 
                     <table className='table-details'>
                       <thead>
-                        <tr><th colSpan="100">{t("table.history")}</th></tr>
+                        <tr>
+                          <th colSpan="100">
+                            {t("table.history")}
+                          </th>
+                        </tr>
                       </thead>
                       {nftHistory(data.history)}
                     </table>
 
                     <table className='table-details'>
                       <thead>
-                        <tr><th colSpan="100">{t("table.sell-offers")}</th></tr>
+                        <tr>
+                          <th colSpan="100">
+                            {t("table.sell-offers")}
+                            {countSellOffers && offersFilter("sell")}
+                          </th>
+                        </tr>
                       </thead>
-                      {nftOffers(data.sellOffers, "sell")}
+                      {nftOffers(filteredSellOffers, "sell")}
                     </table>
 
                     <table className='table-details'>
                       <thead>
-                        <tr><th colSpan="100">{t("table.buy-offers")}</th></tr>
+                        <tr>
+                          <th colSpan="100">
+                            {t("table.buy-offers")}
+                            {countBuyOffers && offersFilter("buy")}
+                          </th>
+                        </tr>
                       </thead>
-                      {nftOffers(data.buyOffers, "buy")}
+                      {nftOffers(filteredBuyOffers, "buy")}
                     </table>
                   </div>
                 </>
