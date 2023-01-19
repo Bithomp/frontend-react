@@ -402,7 +402,10 @@
     },
     "text-status": {
       "NFT is not owned by the seller account": "NFT не принадлежит продавцу",
-      "Offer is expired": "Истек срок валидности предложения"
+      "Offer is expired": "Истек срок валидности предложения",
+      "Unable to verify balance of the buyer account": "Не вышло проверить баланс у покупателя",
+      "Insufficient funds on the buyer account": "У покупателя недостаточно средств",
+      "Seller has no trustline for the token or it cannot be verified": "У продавца нет трастлайна или невозможно проверить"
     }
   },
   "tabs": {

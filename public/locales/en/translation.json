@@ -402,7 +402,10 @@
     },
     "text-status": {
       "NFT is not owned by the seller account": "NFT is not owned by seller",
-      "Offer is expired": "Expired"
+      "Offer is expired": "Expired",
+      "Unable to verify balance of the buyer account": "Unable to verify balance of the buyer account",
+      "Insufficient funds on the buyer account": "Insufficient funds on the buyer account",
+      "Seller has no trustline for the token or it cannot be verified": "Seller has no trustline for the token or it can not be verified"
     }
   },
   "tabs": {
