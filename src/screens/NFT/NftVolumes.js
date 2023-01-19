@@ -1,4 +1,4 @@
-import { useTranslation } from 'react-i18next';
+import { useTranslation, Trans } from 'react-i18next';
 import { useState, useEffect } from 'react';
 import { useSearchParams, useNavigate } from "react-router-dom";
 import axios from 'axios';
@@ -7,7 +7,13 @@ import SEO from '../../components/SEO';
 import Tabs from '../../components/Tabs';
 
 import { onFailedRequest, setTabParams, stripText, isAddressOrUsername } from '../../utils';
-import { amountFormat, shortNiceNumber, addressUsernameOrServiceLink, usernameOrAddress } from '../../utils/format';
+import {
+  amountFormat,
+  shortNiceNumber,
+  addressUsernameOrServiceLink,
+  usernameOrAddress,
+  persentFormat
+} from '../../utils/format';
 
 import { ReactComponent as LinkIcon } from "../../assets/images/link.svg";
 
@@ -17,12 +23,13 @@ export default function NftVolumes() {
 
   const [searchParams] = useSearchParams();
   const [data, setData] = useState([]);
+  const [rawData, setRawData] = useState({});
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [periodTab, setPeriodTab] = useState(searchParams.get("period") || "all");
   const [saleTab, setSaleTab] = useState(searchParams.get("sale") || "all");
   const [listTab, setListTab] = useState(searchParams.get("list") || "issuers");
-  const [currency] = useState(searchParams.get("currency"));
+  const [currency] = useState(searchParams.get("currency") || "xrp");
   const [currencyIssuer] = useState(searchParams.get("currencyIssuer"));
   const [sortConfig, setSortConfig] = useState({});
 
@@ -69,6 +76,7 @@ export default function NftVolumes() {
 
     const data = response?.data;
     if (data) {
+      setRawData(data);
       if (data.period) {
         if (data.volumes.length > 0) {
           setErrorMessage("");
@@ -76,7 +84,15 @@ export default function NftVolumes() {
             if (data.volumes[0].amount.value) {
               setData(data.volumes.sort((a, b) => (parseFloat(a.amount.value) < parseFloat(b.amount.value)) ? 1 : -1));
             } else {
-              setData(data.volumes.sort((a, b) => (parseFloat(a.amount) < parseFloat(b.amount)) ? 1 : -1));
+              let volumes = data.volumes;
+              if (listTab === 'brokers' && data.summary) {
+                volumes.push({
+                  broker: "no broker",
+                  sales: data.summary.all.sales - data.summary.brokers.sales,
+                  amount: data.summary.all.volume - data.summary.brokers.volume
+                });
+              }
+              setData(volumes.sort((a, b) => (parseFloat(a.amount) < parseFloat(b.amount)) ? 1 : -1));
             }
           } else if (listTab === 'currencies') {
             setData(data.volumes.sort((a, b) => (a.sales < b.sales) ? 1 : -1));
@@ -135,6 +151,21 @@ export default function NftVolumes() {
         }
       ]
     }
+    //brokers
+    {
+      "period": "day",
+      "saleType": "all",
+      "summary": {
+        "all": {
+          "volume": "15591.737407",
+          "sales": 49506
+        },
+        "brokers": {
+          "volume": "1168.622930",
+          "sales": 2106
+        }
+      },
+      "volumes": []
   */
 
   useEffect(() => {
@@ -196,6 +227,31 @@ export default function NftVolumes() {
         <Tabs tabList={periodTabList} tab={periodTab} setTab={setPeriodTab} name="period" />
         <Tabs tabList={saleTabList} tab={saleTab} setTab={setSaleTab} name="sale" />
       </div>
+      {listTab === 'brokers' &&
+        <p>
+          {t("nft-volumes.brokers.not-a-marketplace-list")}
+          <br /><br />
+          {rawData?.summary && !loading &&
+            <>
+              {t("nft-volumes.brokers.period." + periodTab)}{" "}
+              <Trans
+                i18nKey="nft-volumes.brokers.text0"
+                values={{
+                  allSales: shortNiceNumber(rawData.summary.all.sales, 0),
+                  allVolume: amountFormat(rawData.summary.all.volume, { tooltip: 'right', maxFractionDigits: 2 }),
+                  brokerSales: shortNiceNumber(rawData.summary.brokers.sales, 0),
+                  percentBrokerSales: persentFormat(rawData.summary.brokers.sales, rawData.summary.all.sales),
+                  brokerVolume: amountFormat(rawData.summary.brokers.volume, { tooltip: 'right', maxFractionDigits: 2 }),
+                  percentBrokerVolume: persentFormat(rawData.summary.brokers.volume, rawData.summary.all.volume)
+                }}
+              >
+                XRPL had {shortNiceNumber(rawData.summary.all.sales, 0)} NFT trades for {amountFormat(rawData.summary.all.volume, { tooltip: 'right', maxFractionDigits: 2 })},
+                from which {shortNiceNumber(rawData.summary.brokers.sales, 0)} ({persentFormat(rawData.summary.brokers.sales, rawData.summary.all.sales)}) of trades for {amountFormat(rawData.summary.brokers.volume, { tooltip: 'right', maxFractionDigits: 2 })} ({persentFormat(rawData.summary.brokers.volume, rawData.summary.all.volume)}) were through the brokerage model.
+              </Trans>
+            </>
+          }
+        </p>
+      }
       <table className="table-large shrink">
         <thead>
           <tr>
@@ -230,12 +286,23 @@ export default function NftVolumes() {
                         {listTab === 'currencies' && <td className='center'><a href={'/nft-volumes' + urlParams(volume) + '&list=issuers'}><LinkIcon /></a></td>}
                         <td className='right'>
                           {shortNiceNumber(volume.sales, 0)}
-                          {listTab !== 'brokers' &&
+                          {listTab === 'brokers' ?
+                            <>
+                              {rawData?.summary &&
+                                <> ({persentFormat(volume.sales, rawData.summary.all.sales)})</>
+                              }
+                            </>
+                            :
                             <a href={'/top-nft-sales' + urlParams(volume)}> <LinkIcon /></a>
                           }
                         </td>
                         {listTab === 'issuers' && <td className='right hide-on-mobile'>{shortNiceNumber(volume.buyers, 0)}</td>}
-                        <td>{amountFormat(volume.amount, { tooltip: 'right' })}</td>
+                        <td>
+                          {amountFormat(volume.amount, { tooltip: 'right', maxFractionDigits: 2 })}
+                          {listTab === 'brokers' && rawData?.summary &&
+                            <> ({persentFormat(volume.amount, rawData.summary.all.volume)})</>
+                          }
+                        </td>
                       </tr>)
                   }
                 </>

@@ -471,6 +471,20 @@
   "nft-distribution": {
     "text0": "{{users}} accounts own {{nfts}} NFTs"
   },
+  "nft-volumes": {
+    "brokers": {
+      "not-a-marketplace-list": "This is not a list of XRPL marketplaces, it is the list of broker accounts. Marketplaces can use different models (without broker transactions), some of them can use mixed models, where only some of their volume goes through the brokerage. If a marketplace stoped using the brokerage model, it will have volume in All time, but not in the last Day or Week.",
+      "no-broker": "No broker",
+      "period": {
+        "all": "",
+        "year": "For the last year",
+        "month": "For the last month",
+        "week": "For the last week",
+        "day": "For the last 24 hours"
+      },
+      "text0": "XRPL had {{allSales}} NFT trades for {{allVolume}}, from which {{brokerSales}} ({{percentBrokerSales}}) of trades for {{brokerVolume}} ({{percentBrokerVolume}}) were through the brokerage model."
+    }
+  },
   "links": {
     "active-offers-same-account": "View active offers from that account",
     "nfts-same-issuer": "NFTs with the same issuer",

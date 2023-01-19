@@ -144,6 +144,9 @@ export const addressUsernameOrServiceLink = (data, type, options = {}) => {
   if (!options.url) {
     options.url = "/explorer/";
   }
+  if (type === 'broker' && data?.broker === 'no broker') {
+    return <b>{i18n.t("nft-volumes.brokers.no-broker")}</b>;
+  }
   if (userOrServiceLink(data, type) !== "") {
     return userOrServiceLink(data, type, options);
   }
@@ -191,13 +194,30 @@ export const shortAddress = (id) => {
   return id.substr(0, 6) + "..." + id.substr(-6);
 }
 
+export const persentFormat = (small, big) => {
+  if (!small && small !== 0) return;
+  if (!big && big !== 0) return;
+  if (small.value && big.value) {
+    small = small.value;
+    big = big.value;
+  }
+  small = Number(small);
+  big = Number(big);
+  if (big === 0) return "0%";
+  return ((small / big) * 100).toFixed(2) + '%';
+}
+
 export const amountFormat = (amount, options = {}) => {
   if (!amount && amount !== "0" && amount !== 0) { return "" };
   const { value, currency, valuePrefix, issuer, type } = amountParced(amount);
   let showValue = value;
+
   if (value > 100) {
     showValue = niceNumber(value);
+  } else if (options.maxFractionDigits) {
+    showValue = niceNumber(value, options.maxFractionDigits);
   }
+
   if (type !== 'XRP' && options.tooltip) {
     // curency + " " - otherwise it is in the hex format
     return <>{showValue} {valuePrefix} <span className='tooltip'>{currency + " "}<span className={'tooltiptext ' + options.tooltip}>{issuer}</span></span></>
