@@ -63,9 +63,6 @@ export default function Header({ theme, switchTheme, setSignInFormOpen, account,
         </Link>
         <div className="header-menu-left">
           <div className="menu-dropdown">
-            <a href="/explorer/" className="menu-dropdown-button">{t("menu.explorer")}</a>
-          </div>
-          <div className="menu-dropdown">
             <div className="menu-dropdown-button">{t("menu.services")}</div>
             <div className="menu-dropdown-content">
               <Link to="/username">{t("menu.usernames")}</Link>
@@ -94,8 +91,7 @@ export default function Header({ theme, switchTheme, setSignInFormOpen, account,
               <Link to="/nft-distribution">{t("menu.nft-distribution")}</Link>
               <Link to="/nft-statistics">{t("menu.nft-statistics")}</Link>
               <a href="/nfts">{t("menu.nfts")}</a>
-              <a href="/nft-offers">{t("menu.nft-offers")}</a>
-              <Link to="/nft-offer">{t("menu.nft-offer")}</Link>
+              <Link to="/nft-offers">{t("menu.nft-offers")}</Link>
             </div>
           </div>
 
@@ -170,10 +166,7 @@ export default function Header({ theme, switchTheme, setSignInFormOpen, account,
             <span onClick={signOut} className="mobile-menu-item link">{t("signin.signout")}</span>
           </>
           :
-          <>
-            <span onClick={() => { setSignInFormOpen(true) }} className="mobile-menu-item link">{t("signin.signin")}</span>
-            <a href="/explorer/" className="mobile-menu-item">{t("menu.explorer")}</a>
-          </>
+          <span onClick={() => { setSignInFormOpen(true) }} className="mobile-menu-item link">{t("signin.signin")}</span>
         }
 
         <div className="mobile-menu-directory"><span>{t("menu.services")}</span></div>
@@ -233,13 +226,11 @@ export default function Header({ theme, switchTheme, setSignInFormOpen, account,
           {t("menu.nft-statistics")}
         </Link>
         <a href="/nfts" className="mobile-menu-item" onClick={mobileMenuToggle}> {t("menu.nfts")}</a>
-        <a href="/nft-offers" className="mobile-menu-item" onClick={mobileMenuToggle}> {t("menu.nft-offers")}</a>
         <Link
-          to="/nft-offer"
+          to="/nft-offers"
           className="mobile-menu-item"
-          onClick={mobileMenuToggle}
-        >
-          {t("menu.nft-offer")}
+          onClick={mobileMenuToggle}>
+          {t("menu.nft-offers")}
         </Link>
 
         <div className="mobile-menu-directory"><span>XRPL</span></div>

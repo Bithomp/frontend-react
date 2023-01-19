@@ -1,6 +1,5 @@
 {
   "menu": {
-    "explorer": "Эксплорер",
     "services": "Сервисы",
     "usernames": "Псевдоним",
     "project-registartion": "Регистрация XRPL проекта",
@@ -82,7 +81,7 @@
     }
   },
   "home": {
-    "search-placeholder": "Поиск по XRPL Адресу / Транзакции / Псевдониму / PayString / Токену",
+    "search-placeholder": "Поиск по XRPL Адресу / Транзакции / Псевдониму / PayString / NFT / Offer ID",
     "search-placeholder-short": "Адрес / Транзакция / Псевдоним",
     "scan-qr": "СКАНИРОВАТЬ КОД",
     "whales": {
@@ -432,6 +431,7 @@
     "new-qr": "Получить новый QR-код"
   },
   "explorer": {
+    "header": "XRPL Эксплорер",
     "enter-address": "Введите XRPL адрес или ник",
     "searching-tx-nft-nftoffer": "Идет поиск по запрошенному ID",
     "menu": {

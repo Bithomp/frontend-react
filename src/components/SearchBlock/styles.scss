@@ -20,6 +20,10 @@
     .above-search-box {
       position: absolute;
       bottom: 50px;
+      h1 {
+        font-size: inherit;
+        margin: 0;
+      }
     }
     .search-input {
       height: 40px;

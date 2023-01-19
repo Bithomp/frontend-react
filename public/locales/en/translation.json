@@ -1,6 +1,5 @@
 {
   "menu": {
-    "explorer": "Explorer",
     "services": "Services",
     "usernames": "Username registration",
     "project-registartion": "XRPL project registartion",
@@ -82,7 +81,7 @@
     }
   },
   "home": {
-    "search-placeholder": "Search by XRPL Address / Transaction / Username / PayString / Token",
+    "search-placeholder": "Search by XRPL Address / Transaction / NFT / Username / PayString / Offer / Currency hash",
     "search-placeholder-short": "Search by Address / Transaction / User",
     "scan-qr": "SCAN A CODE",
     "whales": {
@@ -432,6 +431,7 @@
     "new-qr": "Get a new QR code"
   },
   "explorer": {
+    "header": "XRP Ledger Explorer",
     "enter-address": "Enter an XRPL address or a username",
     "searching-tx-nft-nftoffer": "Searching for Tx / NFT ID / NFT Offer",
     "menu": {

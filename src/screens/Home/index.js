@@ -24,7 +24,7 @@ export default function Home({ theme, devNet }) {
 
   return (
     <>
-      <SearchBlock searchPlaceholderText={searchPlaceholderText} />
+      <SearchBlock searchPlaceholderText={searchPlaceholderText} tab="explorer" />
       {!devNet &&
         <div className="home-sponsored">
           <a href="https://bithomp.com/go/play-crypto" target="_blank" rel="noreferrer">

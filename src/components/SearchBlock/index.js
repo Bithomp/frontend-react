@@ -137,6 +137,7 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
                 {userOrServiceName(userData)}
                 {tab === "nft-offer" && <b className='contrast'>{t("menu.nft-offer")}</b>}
                 {tab === "nft" && <b className='contrast'>NFT</b>}
+                {tab === "explorer" && <h1 className='contrast'>{t("explorer.header")}</h1>}
               </>
             }
           </div>
