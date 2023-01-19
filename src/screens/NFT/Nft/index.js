@@ -406,7 +406,7 @@ export default function Nft() {
       offersCount = countBuyOffers;
     }
     //dont show if there is no offers, or when all offers are valid
-    if (offersCount.all === 0 || offersCount.valid === offersCount.all) {
+    if (offersCount.all === 0 || offersCount["active-valid"] === offersCount.all) {
       return <></>;
     }
     return <Select
