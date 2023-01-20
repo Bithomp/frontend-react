@@ -27,7 +27,7 @@ import './styles.scss';
 import { ReactComponent as LinkIcon } from "../../../assets/images/link.svg";
 
 export default function Nft() {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const { id } = useParams();
 
   const [data, setData] = useState({});
