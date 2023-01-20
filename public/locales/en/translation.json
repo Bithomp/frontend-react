@@ -425,7 +425,9 @@
     "brokers": "Brokers",
     "image": "Image",
     "video": "Video",
-    "audio": "Audio"
+    "audio": "Audio",
+    "owned-offers": "Owned offers",
+    "offers-for-owned-nfts": "Offers for owned nfts"
   },
   "xumm": {
     "new-qr": "Get a new QR code"

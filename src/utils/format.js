@@ -6,6 +6,29 @@ import { ReactComponent as LinkIcon } from "../assets/images/link.svg";
 import { stripText } from '.';
 
 //table
+export const trStatus = (data) => {
+  if (data.validationErrors && data.validationErrors.length > 0) {
+    return <tr>
+      <td>{i18n.t("table.status")}</td>
+      <td>
+        {data.validationErrors.map((error, i) =>
+          <span key={i} className='red'>
+            {i18n.exists("table.text-status." + error) ? i18n.t("table.text-status." + error) : error}
+          </span>
+        )}
+      </td>
+    </tr>
+  }
+  if (data.canceledAt || data.acceptedAt) {
+    return <tr>
+      <td>{i18n.t("table.status")}</td>
+      <td className='red'>
+        {data.acceptedAt ? i18n.t("table.accepted") : i18n.t("table.canceled")}
+      </td>
+    </tr>
+  }
+}
+
 export const trWithFlags = (flags) => {
   /*
   "flags": {
@@ -65,9 +88,19 @@ export const trWithAccount = (data, valueName, tableName, url = "/explorer/") =>
     </tr>
 }
 
-export const nftOfferLink = (nftOfferId, chars = 6) => {
+export const nftOfferLink = (nftOfferId, chars = 10) => {
   if (!nftOfferId) return "";
   return <Link to={"/nft-offer/" + nftOfferId}>{shortHash(nftOfferId, chars)}</Link>
+}
+
+export const nftIdLink = (nftId, chars = 10) => {
+  if (!nftId) return "";
+  return <Link to={"/nft/" + nftId}>{shortHash(nftId, chars)}</Link>
+}
+
+export const txIdLink = (txId, chars = 10) => {
+  if (!txId) return "";
+  return <a href={"/explorer/" + txId}>{shortHash(txId, chars)}</a>
 }
 
 export const nftLink = (nft, type) => {
@@ -176,6 +209,7 @@ export const ledgerLink = (id) => {
   return '';
 }
 
+//replace with txIdLink
 export const txIdFormat = (txId) => {
   txId = txId.toLowerCase();
   if (window.innerWidth < 800) {

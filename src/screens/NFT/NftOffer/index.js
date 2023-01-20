@@ -9,7 +9,15 @@ import CopyButton from '../../../components/CopyButton';
 import NftImageAndVideo from '../../../components/NftPreview';
 
 import { onFailedRequest, onApiError } from '../../../utils';
-import { fullDateAndTime, amountFormat, shortHash, trWithAccount, expirationExpired } from '../../../utils/format';
+import {
+  fullDateAndTime,
+  amountFormat,
+  shortHash,
+  trWithAccount,
+  expirationExpired,
+  trStatus,
+  nftIdLink
+} from '../../../utils/format';
 
 import { ReactComponent as LinkIcon } from "../../../assets/images/link.svg";
 import './styles.scss';
@@ -27,7 +35,7 @@ export default function NftOffer() {
       return;
     }
     setLoading(true);
-    const response = await axios('v2/nft/offer/' + id).catch(error => {
+    const response = await axios('v2/nft/offer/' + id + '?offersValidate=true').catch(error => {
       onFailedRequest(error, setErrorMessage);
     });
     setLoading(false);
@@ -156,12 +164,13 @@ export default function NftOffer() {
                     <NftImageAndVideo nft={data.nftoken} />
                     <div className='center'>
                       {data.nftoken.metadata?.name ? data.nftoken.metadata.name : ""}
-                      <br/><br/>
+                      <br /><br />
                     </div>
                   </div>
                   <div className="column-right">
                     <table className='table-details'>
                       <tbody>
+                        {trStatus(data)}
                         <tr>
                           <td>{t("table.offer")}</td>
                           <td>{shortHash(data.offerIndex, 10)} <CopyButton text={data.offerIndex} /></td>
@@ -169,7 +178,7 @@ export default function NftOffer() {
                         {trWithAccount(data, 'account', sellerOrBuyer, "/explorer/")}
                         <tr>
                           <td>{data.flags.sellToken === true ? t("nft-offer.selling") : t("nft-offer.buying")} NFT</td>
-                          <td><Link to={"/nft/" + data.nftokenID}>{shortHash(data.nftokenID, 10)}</Link></td>
+                          <td>{nftIdLink(data.nftokenID)}</td>
                         </tr>
                         {trWithAccount(data, 'destination', t("table.destination"), "/explorer/")}
                         <tr>

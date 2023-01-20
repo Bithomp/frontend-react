@@ -425,7 +425,9 @@
     "brokers": "Брокеры",
     "image": "Картинка",
     "video": "Видео",
-    "audio": "Аудио"
+    "audio": "Аудио",
+    "owned-offers": "Пренадлежащие",
+    "offers-for-owned-nfts": "Для принадлежащих NFT"
   },
   "xumm": {
     "new-qr": "Получить новый QR-код"

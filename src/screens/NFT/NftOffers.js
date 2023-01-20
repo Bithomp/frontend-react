@@ -1,19 +1,29 @@
 import { useTranslation } from 'react-i18next';
 import { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useSearchParams } from 'react-router-dom';
 import axios from 'axios';
 
 import SEO from '../../components/SEO';
 import SearchBlock from '../../components/SearchBlock';
+import Tabs from '../../components/Tabs';
 
-import { onFailedRequest } from '../../utils';
-import { amountFormat, fullDateAndTime, expirationExpired } from '../../utils/format';
+import { onFailedRequest, setTabParams } from '../../utils';
+import {
+  amountFormat,
+  fullDateAndTime,
+  expirationExpired,
+  nftLink,
+  nftOfferLink,
+  nftIdLink,
+  txIdLink
+} from '../../utils/format';
 
 import { ReactComponent as LinkIcon } from "../../assets/images/link.svg";
 
 export default function NftOffers() {
   const { t } = useTranslation();
   const { id } = useParams();
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -21,27 +31,45 @@ export default function NftOffers() {
   const [userData, setUserData] = useState({});
   const [showExpirationColumn, setShowExpirationColumn] = useState(false);
   const [showDestinationColumn, setShowDestinationColumn] = useState(false);
+  const [offerListTab, setOfferListTab] = useState(searchParams.get("offerList") || "owned");
+
+  const offerListTabList = [
+    { value: 'owned', label: t("tabs.owned-offers") },
+    { value: 'for-owned-nfts', label: t("tabs.offers-for-owned-nfts") }
+  ];
 
   const checkApi = async () => {
     if (!id) {
       return;
     }
 
-    const response = await axios('v2/address/' + id + '?username=true&service=true&nftOffers=true').catch(error => {
+    let offerListUrlPart = '';
+    if (offerListTab === 'for-owned-nfts') {
+      offerListUrlPart = '?list=counterOffers&offersValidate=true';
+    }
+
+    setLoading(true);
+    const response = await axios('v2/nft-offers/' + id + offerListUrlPart).catch(error => {
       onFailedRequest(error, setErrorMessage);
     });
     setLoading(false);
-    const newdata = response?.data;
+    let newdata = response?.data;
     if (newdata) {
-      if (newdata.address) {
+
+      if (newdata.owner) {
         setUserData({
-          username: newdata.username,
-          service: newdata.service?.name,
-          address: newdata.address
+          username: newdata.ownerDetails?.username,
+          service: newdata.ownerDetails?.service,
+          address: newdata.owner
         });
 
         if (newdata.nftOffers.length > 0) {
           setErrorMessage("");
+
+          if (offerListTab === 'for-owned-nfts') {
+            newdata.nftOffers = newdata.nftOffers.filter(function (offer) { return offer.valid; });
+          }
+
           setData(newdata.nftOffers.sort((a, b) => (a.createdAt < b.createdAt) ? 1 : -1));
         } else {
           setErrorMessage(t("explorer.nft-offers.no-nft-offers"));
@@ -58,44 +86,66 @@ export default function NftOffers() {
   }
 
   useEffect(() => {
+    let showDestination = false;
+    let showExpiration = false;
     if (data && data.length > 0) {
       for (let i = 0; i < data.length; i++) {
         if (data[i].destination) {
-          setShowDestinationColumn(true);
+          showDestination = true;
         }
         if (data[i].expiration) {
-          setShowExpirationColumn(true);
+          showExpiration = true;
         }
       }
     }
+    setShowDestinationColumn(showDestination);
+    setShowExpirationColumn(showExpiration);
   }, [data]);
 
   /*
   {
-    "address": "rHAfrQNDBohGbWuWTWzpJe1LQWyYVnbG2n",
+    "owner": "rDpLcKCi18ixgzJEseKbi2krRGTWZM69gX",
+    "list": "offers",
+    "ownerDetails": {
+      "username": null,
+      "service": null
+    },
     "nftOffers": [
       {
-        "nftokenID": "000D0000B9BD7D214128A91ECECE5FCFF9BDB0D043567C51368CA6C800020F2E",
-        "offerIndex": "0FD2A4B5D5275F5A0BE9313B1035007CC8B1BD2E9CE46FF198B2D7A202B49E30",
-        "createdLedgerIndex": 6765897,
-        "createdTxHash": "D5DEA2B5AABD3F0E70B6449C9A53CC38E58EC95FC11DC086158EFE5DD818768D",
-        "createdAt": 2342342342,
-        "owner": "rHAfrQNDBohGbWuWTWzpJe1LQWyYVnbG2n",
-        "destination": null,
+        "nftokenID": "0008177072631AFCCECFF285A11CDC6159CE3E5AB34920B98AE3FE8E00000421",
+        "offerIndex": "7EB78A66242F9F64BBF5117B75A9190CF173D7190AE5113CBF2C2AA3D6024038",
+        "createdAt": 1667702700,
+        "createdLedgerIndex": 75560558,
+        "createdTxHash": "89C4725397796B0B6EB6F095E90023A1DA63FBA7F4724793D6D32148FF97274B",
+        "account": "rDpLcKCi18ixgzJEseKbi2krRGTWZM69gX",
+        "owner": "rDpLcKCi18ixgzJEseKbi2krRGTWZM69gX",
+        "destination": "rpZqTPC8GvrSvEfFsUuHkmPCg29GdQuXhC",
         "expiration": null,
-        "amount": "100",
+        "amount": "200000000",
         "flags": {
           "sellToken": true
+        },
+        "accountDetails": {
+          "username": null,
+          "service": null
+        },
+        "ownerDetails": {
+          "username": null,
+          "service": null
+        },
+        "destinationDetails": {
+          "username": null,
+          "service": "onXRP"
         }
-      }
-    ]
-  }
+      },
   */
 
   useEffect(() => {
     checkApi();
+    setTabParams(offerListTabList, offerListTab, "owned", setOfferListTab, searchParams, "offerList");
+    setSearchParams(searchParams);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id]);
+  }, [id, offerListTab]);
 
   return <>
     <SEO title={t("menu.nft-offers") + " " + id} />
@@ -105,6 +155,7 @@ export default function NftOffers() {
       userData={userData}
     />
     <div className="content-text" style={{ marginTop: "20px" }}>
+      <Tabs tabList={offerListTabList} tab={offerListTab} setTab={setOfferListTab} name="offerList" />
       {id ?
         <>
           {window.innerWidth > 960 ?
@@ -138,10 +189,10 @@ export default function NftOffers() {
                         <td className='center'><Link to={"/nft-offer/" + offer.offerIndex}><LinkIcon /></Link></td>
                         <td className='center'><Link to={"/nft/" + offer.nftokenID}><LinkIcon /></Link></td>
                         <td>{offer.flags?.sellToken === true ? t("table.text.sell") : t("table.text.buy")}</td>
-                        <td>{amountFormat(offer.amount, { tooltip: true })}</td>
+                        <td>{amountFormat(offer.amount, { tooltip: true, maxFractionDigits: 2 })}</td>
                         <td>{fullDateAndTime(offer.createdAt)}</td>
                         {showExpirationColumn && <td>{offer.expiration ? fullDateAndTime(offer.expiration, "expiration") : t("table.text.no-expiration")}</td>}
-                        {showDestinationColumn && <td className='center'>{offer.destination ? <a href={"/explorer/" + offer.destination}><LinkIcon /></a> : ""}</td>}
+                        {showDestinationColumn && <td className='center'>{nftLink(offer, 'destination')}</td>}
                         <td className='center'><a href={"/explorer/" + offer.createdTxHash}><LinkIcon /></a></td>
                       </tr>)
                       :
@@ -170,10 +221,10 @@ export default function NftOffers() {
                         <td style={{ padding: "5px" }}>{i + 1}</td>
                         <td>
                           <p>
-                            {t("table.offer")}: <Link to={"/nft-offer/" + offer.offerIndex}><LinkIcon /></Link>
+                            {t("table.offer")}: {nftOfferLink(offer.offerIndex)}
                           </p>
                           <p>
-                            NFT: <Link to={"/nft/" + offer.nftokenID}><LinkIcon /></Link>
+                            NFT: {nftIdLink(offer.nftokenID)}
                           </p>
                           <p>
                             {t("table.type")}: {offer.flags?.sellToken === true ? t("table.text.sell") : t("table.text.buy")}
@@ -191,11 +242,11 @@ export default function NftOffers() {
                           }
                           {offer.destination &&
                             <p>
-                              {t("table.destination")}: <a href={"/explorer/" + offer.destination}><LinkIcon /></a>
+                              {t("table.destination")}: {nftLink(offer, 'destination')}
                             </p>
                           }
                           <p>
-                            {t("table.transaction")}: <a href={"/explorer/" + offer.createdTxHash}><LinkIcon /></a>
+                            {t("table.transaction")}: {txIdLink(offer.createdTxHash)}
                           </p>
                         </td>
                       </tr>)

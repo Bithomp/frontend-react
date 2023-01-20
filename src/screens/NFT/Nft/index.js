@@ -19,7 +19,8 @@ import {
   amountFormat,
   expirationExpired,
   nftOfferLink,
-  codeHighlight
+  codeHighlight,
+  trStatus
 } from '../../../utils/format';
 
 import './styles.scss';
@@ -249,26 +250,7 @@ export default function Nft() {
     if (offers.length > 0) {
       return offers.map((offer, i) =>
         <tbody key={i}>
-          {offer.validationErrors && offer.validationErrors.length > 0 &&
-            <tr>
-              <td>{t("table.status")}</td>
-              <td>
-                {offer.validationErrors.map((error, i) =>
-                  <span key={i} className='red'>
-                    {i18n.exists("table.text-status." + error) ? t("table.text-status." + error) : error}
-                  </span>
-                )}
-              </td>
-            </tr>
-          }
-          {(offer.canceledAt || offer.acceptedAt) &&
-            <tr>
-              <td>{t("table.status")}</td>
-              <td className='red'>
-                {offer.acceptedAt ? t("table.accepted") : t("table.canceled")}
-              </td>
-            </tr>
-          }
+          {trStatus(offer)}
           {trWithAccount(offer, 'owner', buyerOrSeller, "/explorer/")}
           <tr>
             <td>{t("table.amount")}</td>
@@ -301,7 +283,7 @@ export default function Nft() {
           }
           <tr>
             <td>{t("table.offer")}</td>
-            <td>{nftOfferLink(offer.offerIndex, 10)}</td>
+            <td>{nftOfferLink(offer.offerIndex)}</td>
           </tr>
           {i !== offers.length - 1 &&
             <tr><td colSpan="100"><hr /></td></tr>
