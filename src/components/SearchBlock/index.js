@@ -17,7 +17,6 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
   const [searchParams] = useSearchParams();
   const { id } = useParams();
   const [searchItem, setSearchItem] = useState(id || userData?.address || "");
-  const [addParams, setAddParams] = useState("");
   const [searching, setSearching] = useState(false);
 
   useEffect(() => {
@@ -25,13 +24,6 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
       setSearchItem(userData.address);
     }
   }, [userData]);
-
-  useEffect(() => {
-    let view = searchParams.get('view');
-    if (view) {
-      setAddParams("?view=" + view);
-    }
-  }, [searchParams]);
 
   const searchItemType = e => {
     if (e.key === 'Enter') {
@@ -53,6 +45,8 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
     }
   }
 
+  const addParams = '?' + searchParams.toString();
+
   const onSearch = async () => {
     let searchFor = searchItem.trim();
     if (tab === "nfts" && isAddressOrUsername(searchFor)) {
@@ -61,7 +55,7 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
     }
 
     if (tab === "nft-offers" && isAddressOrUsername(searchFor)) {
-      window.location = '/nft-offers/' + encodeURI(searchFor);
+      window.location = '/nft-offers/' + encodeURI(searchFor) + addParams;
       return;
     }
 

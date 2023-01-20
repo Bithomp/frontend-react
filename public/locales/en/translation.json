@@ -453,7 +453,8 @@
       "end": "Here are all the NFTs we could find."
     },
     "nft-offers": {
-      "desc": "Here you can search for Buy and Sell Offers for (XLS-20) NFTs, type in the XRPL address to see what it offers.",
+      "owned-desc": "Here you can search for Buy and Sell Offers for (XLS-20) NFTs, type in the XRPL address or username to see what it offers.",
+      "for-owned-nfts-desc": "Here you can search for Buy Offers for NFTs owned by account, type in the XRPL address or username to see received offers.",
       "no-nft-offers": "We couldn't find any NFT Offers placed by that address."
     },
     "nft-distribution": {

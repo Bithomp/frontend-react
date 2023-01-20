@@ -263,7 +263,7 @@ export default function NftOffers() {
         <>
           <h2 className='center'>{t("menu.nft-offers")}</h2>
           <p className='center'>
-            {t("explorer.nft-offers.desc")}
+            {t("explorer.nft-offers." + offerListTab + "-desc")}
           </p>
         </>
       }
