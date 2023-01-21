@@ -40,6 +40,7 @@ const ipfsUrl = (url, type = 'image', gateway = 'our') => {
 
   if (cid) {
     url = stripText(cid + url.split(cid).pop());
+    url = url.replace('#', '%23');
     if (gateway === 'our' && (type === 'image' || type === 'video')) {
       return 'https://ipfs.bithomp.com/' + type + '/' + url;
     } else if (gateway === 'cl' || type === 'audio') {

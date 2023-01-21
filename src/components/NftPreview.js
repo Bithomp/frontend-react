@@ -66,7 +66,7 @@ export default function NftPreview({ nft }) {
         </span>
       </div>
     }
-    {(imageUrl || videoUrl) && loadingImage(nft)}
+    {imageUrl && loadingImage(nft)}
     {imageUrl && contentTab === 'image' &&
       <img
         style={{ ...imageStyle, display: (loaded ? "inline-block" : "none") }}
@@ -82,7 +82,7 @@ export default function NftPreview({ nft }) {
         alt={nft.metadata?.name}
       />
     }
-    {videoUrl && contentTab === 'video' &&
+    {videoUrl && (contentTab === 'video' || !imageUrl) &&
       <video
         autoPlay
         playsInline
@@ -101,6 +101,15 @@ export default function NftPreview({ nft }) {
         </a>
       </span>
     }
+
+    {!imageUrl && contentTab === 'image' && clUrl['video'] &&
+      <span style={{ padding: "4px 0px" }}>
+        <a href={clUrl['video']} target="_blank" rel="noreferrer">
+          {t("tabs.video")} IPFS
+        </a>
+      </span>
+    }
+
     {audioUrl &&
       <>
         <audio src={audioUrl} controls style={{ display: 'block', margin: "20px auto" }}></audio>
