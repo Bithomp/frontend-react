@@ -41,7 +41,7 @@ const ipfsUrl = (url, type = 'image', gateway = 'our') => {
   if (cid) {
     url = stripText(cid + url.split(cid).pop());
     url = url.replace('#', '%23');
-    if (gateway === 'our' && (type === 'image' || type === 'video')) {
+    if (gateway === 'our' && (type === 'image' || type === 'video' || type === 'thumbnail')) {
       return 'https://ipfs.bithomp.com/' + type + '/' + url;
     } else if (gateway === 'cl' || type === 'audio') {
       return 'https://cloudflare-ipfs.com/ipfs/' + url;
@@ -65,7 +65,7 @@ const assetUrl = (uri, type = 'image', gateway = 'our') => {
     return ipfs;
   } else if (uri.slice(0, 8) === 'https://') {
     return stripText(uri);
-  } else if (type === 'image' && uri.slice(0, 10) === 'data:image') {
+  } else if ((type === 'image' || type === 'thumbnail') && uri.slice(0, 10) === 'data:image') {
     return stripText(uri);
   } else {
     return null;
@@ -74,13 +74,13 @@ const assetUrl = (uri, type = 'image', gateway = 'our') => {
 
 const metaUrl = (meta, type = 'image', gateway = 'our') => {
   if (!meta) return null;
-  if (type === 'image') {
+  if (type === 'image' || type === 'thumbnail') {
     if (meta.image) return assetUrl(meta.image, type, gateway);
     if (meta.image_url) return assetUrl(meta.image_url, type, gateway);
     if (isCorrectFileType(meta.animation, type)) return assetUrl(meta.animation, type, gateway);
     if (isCorrectFileType(meta.animation_url, type)) return assetUrl(meta.animation_url, type, gateway);
   }
-  if (type === 'video') {
+  if (type === 'video' || type === 'thumbnail') {
     if (meta.video) return assetUrl(meta.video, type, gateway);
     if (isCorrectFileType(meta.animation, type)) return assetUrl(meta.animation, type, gateway);
     if (isCorrectFileType(meta.animation_url, type)) return assetUrl(meta.animation_url, type, gateway);
@@ -95,8 +95,10 @@ const metaUrl = (meta, type = 'image', gateway = 'our') => {
 const isCorrectFileType = (url, nftType = 'image') => {
   if (!url) return false;
   let type = url.toString().slice(-4).toUpperCase();
-  if (nftType === 'image') {
-    if (type === '.JPG' || type === '.PNG' || type === '.GIF') {
+  if (nftType === 'thumbnail') {
+    return true;
+  } else if (nftType === 'image') {
+    if (type === '.JPG' || type === '.PNG' || type === '.GIF' || type === '.PDF') {
       return true;
     }
     if (url.slice(0, 10) === 'data:image') {

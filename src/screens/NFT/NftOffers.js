@@ -17,6 +17,7 @@ import {
   nftIdLink,
   txIdLink
 } from '../../utils/format';
+import { nftUrl } from '../../utils/nft';
 
 import { ReactComponent as LinkIcon } from "../../assets/images/link.svg";
 
@@ -43,9 +44,9 @@ export default function NftOffers() {
       return;
     }
 
-    let offerListUrlPart = '';
+    let offerListUrlPart = '?nftoken=true';
     if (offerListTab === 'for-owned-nfts') {
-      offerListUrlPart = '?list=counterOffers&offersValidate=true';
+      offerListUrlPart += '&list=counterOffers&offersValidate=true';
     }
 
     setLoading(true);
@@ -164,13 +165,13 @@ export default function NftOffers() {
                 <tr>
                   <th className='center'>{t("table.index")}</th>
                   <th className='center'>{t("table.offer")}</th>
-                  <th className='center'>NFT</th>
+                  <th>NFT</th>
+                  <th></th>
                   <th>{t("table.type")}</th>
                   <th>{t("table.amount")}</th>
                   <th>{t("table.placed")}</th>
                   {showExpirationColumn && <th>{t("table.expiration")}</th>}
                   {showDestinationColumn && <th className='center'>{t("table.destination")}</th>}
-                  <th className='center'>{t("table.transaction")}</th>
                 </tr>
               </thead>
               <tbody>
@@ -187,13 +188,28 @@ export default function NftOffers() {
                       <tr key={i}>
                         <td className="center">{i + 1}</td>
                         <td className='center'><Link to={"/nft-offer/" + offer.offerIndex}><LinkIcon /></Link></td>
-                        <td className='center'><Link to={"/nft/" + offer.nftokenID}><LinkIcon /></Link></td>
+                        <td>
+                          <Link to={"/nft/" + offer.nftokenID}>
+                            {offer.nftoken &&
+                              <img
+                                src={nftUrl(offer.nftoken, 'thumbnail')}
+                                width="32px"
+                                height="32px"
+                                style={{ borderRadius: "32px" }}
+                              />
+                            }
+                          </Link>
+                        </td>
+                        <td>
+                          <Link to={"/nft/" + offer.nftokenID}>
+                            {offer.nftoken?.metadata?.name ? offer.nftoken.metadata.name : <LinkIcon />}
+                          </Link>
+                        </td>
                         <td>{offer.flags?.sellToken === true ? t("table.text.sell") : t("table.text.buy")}</td>
                         <td>{amountFormat(offer.amount, { tooltip: true, maxFractionDigits: 2 })}</td>
                         <td>{fullDateAndTime(offer.createdAt)}</td>
                         {showExpirationColumn && <td>{offer.expiration ? fullDateAndTime(offer.expiration, "expiration") : t("table.text.no-expiration")}</td>}
                         {showDestinationColumn && <td className='center'>{nftLink(offer, 'destination')}</td>}
-                        <td className='center'><a href={"/explorer/" + offer.createdTxHash}><LinkIcon /></a></td>
                       </tr>)
                       :
                       <tr><td colSpan="9" className='center orange bold'>{errorMessage}</td></tr>
@@ -218,13 +234,34 @@ export default function NftOffers() {
                   <>
                     {!errorMessage ? data.map((offer, i) =>
                       <tr key={i}>
-                        <td style={{ padding: "5px" }}>{i + 1}</td>
+                        <td style={{ padding: "5px" }} className='center'>
+                          <p>{i + 1}</p>
+                          <p>
+                            <Link to={"/nft/" + offer.nftokenID}>
+                              {offer.nftoken &&
+                                <img
+                                  src={nftUrl(offer.nftoken, 'thumbnail')}
+                                  width="32px"
+                                  height="32px"
+                                  style={{ borderRadius: "32px" }}
+                                />
+                              }
+                            </Link>
+                          </p>
+                        </td>
                         <td>
                           <p>
                             {t("table.offer")}: {nftOfferLink(offer.offerIndex)}
                           </p>
                           <p>
-                            NFT: {nftIdLink(offer.nftokenID)}
+                            NFT:{" "}
+                            {offer.nftoken?.metadata?.name ?
+                              <Link to={"/nft/" + offer.nftokenID}>
+                                {offer.nftoken.metadata.name}
+                              </Link>
+                              :
+                              nftOfferLink(offer.offerIndex)
+                            }
                           </p>
                           <p>
                             {t("table.type")}: {offer.flags?.sellToken === true ? t("table.text.sell") : t("table.text.buy")}
@@ -245,9 +282,6 @@ export default function NftOffers() {
                               {t("table.destination")}: {nftLink(offer, 'destination')}
                             </p>
                           }
-                          <p>
-                            {t("table.transaction")}: {txIdLink(offer.createdTxHash)}
-                          </p>
                         </td>
                       </tr>)
                       :

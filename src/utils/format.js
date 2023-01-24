@@ -115,7 +115,28 @@ export const nftLink = (nft, type) => {
 
   if (nft[type + 'Details']) {
     const showName = userOrServiceName(nft[type + 'Details']);
-    const { username } = nft[type + 'Details'];
+    const { username, service } = nft[type + 'Details'];
+
+    if (type === "destination") {
+      if (service === "onXRP" || service === "xrp.cafe") {
+        let url = '';
+        if (service === "onXRP") {
+          url = "https://nft.onxrp.com/nft/";
+        } else if (service === "xrp.cafe") {
+          url = "https://xrp.cafe/nft/";
+        } else if (service === "xMart") {
+          url = "https://api.xmart.art/nft/";
+        } else if (service === "nftmaster") {
+          url = "https://nftmaster.com/nft/";
+        }
+        return <span>
+          {i18n.t("table.text.see-on")} <a href={url + nft.nftokenID} target="_blank" rel="noreferrer">
+            {showName}
+          </a>
+        </span>
+      }
+    }
+
     return <a href={link + (username || nft[type])}>
       {showName ? showName : <LinkIcon />}
     </a>

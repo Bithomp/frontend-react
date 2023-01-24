@@ -391,7 +391,8 @@
       "sell": "Sell",
       "buy": "Buy",
       "show": "show",
-      "hide": "hide"
+      "hide": "hide",
+      "see-on": "See on"
     },
     "filter": {
       "valid": "Valid",
