@@ -72,13 +72,21 @@ const assetUrl = (uri, type = 'image', gateway = 'our') => {
   }
 }
 
-const metaUrl = (meta, type = 'image', gateway = 'our') => {
-  if (!meta) return null;
+const metaUrl = (nft, type = 'image', gateway = 'our') => {
+  if (!nft.metadata) return null;
+  let meta = nft.metadata;
   if (type === 'image' || type === 'thumbnail') {
     if (meta.image) return assetUrl(meta.image, type, gateway);
     if (meta.image_url) return assetUrl(meta.image_url, type, gateway);
     if (isCorrectFileType(meta.animation, type)) return assetUrl(meta.animation, type, gateway);
     if (isCorrectFileType(meta.animation_url, type)) return assetUrl(meta.animation_url, type, gateway);
+    //sologenic
+    if (meta.content_type && meta.content_type.includes("image") && meta.file_extension && nft.uri) {
+      let decodedUri = Buffer.from(nft.uri, 'hex').toString();
+      if (decodedUri.toLowerCase().includes("metadata.json")) {
+        return assetUrl(decodedUri.replace("metadata.json", ("data." + meta.file_extension)), type, gateway);
+      }
+    }; 
   }
   if (type === 'video' || type === 'thumbnail') {
     if (meta.video) return assetUrl(meta.video, type, gateway);
@@ -118,7 +126,7 @@ const isCorrectFileType = (url, nftType = 'image') => {
 
 export const nftUrl = (nft, type = 'image', gateway = 'our') => {
   if (!nft) return null;
-  const url = metaUrl(nft.metadata, type, gateway);
+  const url = metaUrl(nft, type, gateway);
   if (url) {
     return url;
   } else {

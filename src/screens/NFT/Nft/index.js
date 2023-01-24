@@ -156,7 +156,7 @@ export default function Nft() {
   }, [id]);
 
   const externalUrl = (meta) => {
-    let url = meta.external_url || meta.external_link;
+    let url = meta.external_url || meta.external_link || (meta.minter?.includes("https://") && meta.minter);
     if (url) {
       url = stripText(url);
       url = url.toLowerCase();
@@ -452,27 +452,23 @@ export default function Nft() {
                           </tr>
                         </thead>
                         <tbody>
-                          {data.metadata.name &&
+                          {!!data.metadata.name &&
                             <tr>
                               <td>{t("table.name")}</td>
                               <td>{stripText(data.metadata.name)}</td>
                             </tr>
                           }
-                          {data.metadata.description &&
+                          {!!data.metadata.description &&
                             <tr>
                               <td>{t("table.description")}</td>
                               <td>{stripText(data.metadata.description)}</td>
                             </tr>
                           }
-                          {data.metadata.collection &&
-                            <>
-                              {data.metadata.collection.name &&
-                                <tr>
-                                  <td>{t("table.collection")}</td>
-                                  <td>{stripText(data.metadata.collection.name)}</td>
-                                </tr>
-                              }
-                            </>
+                          {!!data.metadata.collection && !!data.metadata.collection.name &&
+                            <tr>
+                              <td>{t("table.collection")}</td>
+                              <td>{stripText(data.metadata.collection.name)}</td>
+                            </tr>
                           }
                           {externalUrl(data.metadata) &&
                             <tr>
