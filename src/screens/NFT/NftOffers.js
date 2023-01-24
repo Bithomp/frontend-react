@@ -169,7 +169,7 @@ export default function NftOffers() {
                   <th>{t("table.amount")}</th>
                   <th>{t("table.placed")}</th>
                   {showExpirationColumn && <th>{t("table.expiration")}</th>}
-                  {showDestinationColumn && <th className='center'>{t("table.destination")}</th>}
+                  {showDestinationColumn && <th>{t("table.destination")}</th>}
                 </tr>
               </thead>
               <tbody>
@@ -208,7 +208,7 @@ export default function NftOffers() {
                         <td>{amountFormat(offer.amount, { tooltip: true, maxFractionDigits: 2 })}</td>
                         <td>{fullDateAndTime(offer.createdAt)}</td>
                         {showExpirationColumn && <td>{offer.expiration ? fullDateAndTime(offer.expiration, "expiration") : t("table.text.no-expiration")}</td>}
-                        {showDestinationColumn && <td className='center'>{nftLink(offer, 'destination')}</td>}
+                        {showDestinationColumn && <td>{nftLink(offer, 'destination')}</td>}
                       </tr>)
                       :
                       <tr><td colSpan="9" className='center orange bold'>{errorMessage}</td></tr>

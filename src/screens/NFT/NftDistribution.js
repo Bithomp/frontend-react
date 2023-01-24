@@ -2,6 +2,7 @@ import { useTranslation, Trans } from 'react-i18next';
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
+import { CSVLink } from "react-csv";
 
 import SEO from '../../components/SEO';
 import SearchBlock from '../../components/SearchBlock';
@@ -77,6 +78,12 @@ export default function NftDistribution() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
+  let csvHeaders = [
+    { label: t("table.owner"), key: "owner" },
+    { label: t("table.username"), key: "ownerDetails.username" },
+    { label: t("table.count"), key: "count" }
+  ];
+
   return <>
     <SEO title={t("menu.nft-distribution") + " " + id} />
     <SearchBlock
@@ -90,6 +97,15 @@ export default function NftDistribution() {
           <Trans i18nKey="nft-distribution.text0" values={{ users: data.totalOwners, nfts: data.totalNfts }}>
             {data.totalOwners} users own {data.totalNfts} NFTs
           </Trans>
+          <br /><br />
+          <CSVLink
+            data={data.owners}
+            headers={csvHeaders}
+            filename={'nft_destribution_' + data.issuer + '_UTC_' + (new Date().toJSON()) + '.csv'}
+            className='button-action thin narrow'
+          >
+            ⇩ CSV
+          </CSVLink>
         </p>
       }
       {id ?
