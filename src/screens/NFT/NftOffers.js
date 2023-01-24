@@ -13,9 +13,7 @@ import {
   fullDateAndTime,
   expirationExpired,
   nftLink,
-  nftOfferLink,
-  nftIdLink,
-  txIdLink
+  nftOfferLink
 } from '../../utils/format';
 import { nftUrl } from '../../utils/nft';
 
@@ -196,6 +194,7 @@ export default function NftOffers() {
                                 width="32px"
                                 height="32px"
                                 style={{ borderRadius: "32px" }}
+                                alt={offer.nftoken.metadata?.name}
                               />
                             }
                           </Link>
@@ -244,6 +243,7 @@ export default function NftOffers() {
                                   width="32px"
                                   height="32px"
                                   style={{ borderRadius: "32px" }}
+                                  alt={offer.nftoken.metadata?.name}
                                 />
                               }
                             </Link>
