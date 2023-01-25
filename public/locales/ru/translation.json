@@ -19,8 +19,7 @@
     "nfts": "Поиск NFT по адресу владельца",
     "nft-offer": "NFT предложение",
     "nft-offers": "NFT предложения",
-    "nft-sales-latest": "Последние NFT продажи",
-    "nft-sales-top": "ТОП NFT продажи",
+    "nft-sales": "NFT продажи",
     "nft-distribution": "NFT распределение",
     "nft-volumes": "Объёмы продаж NFT",
     "validators": "Валидаторы",
@@ -496,7 +495,6 @@
     "nfts-same-issuer": "NFT эмитента",
     "owned-nfts-same-account": "NFT пренадлежащие этому аккаунту",
     "all": "все",
-    "top-sold": "топ продажи",
-    "latest-sold": "последние продажи"
+    "sold": "проданные"
   }
 }

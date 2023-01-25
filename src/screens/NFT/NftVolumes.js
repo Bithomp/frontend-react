@@ -293,7 +293,7 @@ export default function NftVolumes() {
                               }
                             </>
                             :
-                            <a href={'/top-nft-sales' + urlParams(volume)}> <LinkIcon /></a>
+                            <a href={'/nft-sales' + urlParams(volume)}> <LinkIcon /></a>
                           }
                         </td>
                         {listTab === 'issuers' && <td className='right hide-on-mobile'>{shortNiceNumber(volume.buyers, 0)}</td>}

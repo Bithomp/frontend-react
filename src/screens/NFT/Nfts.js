@@ -298,8 +298,7 @@ export default function Nfts() {
       {nftExplorer && <>
         <h2 className='center'>{t("menu.nft-explorer") + " "}</h2>
         <p className='center'>
-          <a href={"/top-nft-sales" + issuerTaxonUrlPart} style={{ marginRight: "5px" }}>{t("menu.nft-sales-top")}</a>
-          <a href={"/latest-nft-sales" + issuerTaxonUrlPart}>{t("menu.nft-sales-latest")}</a>
+          <a href={"/nft-sales" + issuerTaxonUrlPart} style={{ marginRight: "5px" }}>{t("menu.nft-sales")}</a>
         </p>
         <div className='center'>
           <span className='halv'>

@@ -312,8 +312,7 @@ export default function Nft() {
       <td>
         {t("links.nfts-same-issuer")}:{" "}
         <a href={"/nft-explorer?issuer=" + issuer}>{t("links.all")}</a>,{" "}
-        <a href={"/top-nft-sales?issuer=" + issuer}>{t("links.top-sold")}</a>,{" "}
-        <a href={"/latest-nft-sales?issuer=" + issuer}>{t("links.latest-sold")}</a>
+        <a href={"/nft-sales?issuer=" + issuer}>{t("links.sold")}</a>
       </td>
     </tr>
   }

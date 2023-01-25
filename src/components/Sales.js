@@ -27,6 +27,7 @@ export default function Sales({ list, defaultSaleTab = "all" }) {
   const [periodTab, setPeriodTab] = useState(searchParams.get("period") || "all");
   const [currency] = useState(searchParams.get("currency"));
   const [currencyIssuer] = useState(searchParams.get("currencyIssuer"));
+  const [pageTab, setPageTab] = useState(searchParams.get("list") || list || "top");
 
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -43,8 +44,8 @@ export default function Sales({ list, defaultSaleTab = "all" }) {
   ];
 
   const pageTabList = [
-    { value: 'topSold', label: t("tabs.top-sales") },
-    { value: 'lastSold', label: t("tabs.latest-sales") }
+    { value: 'top', label: t("tabs.top-sales") },
+    { value: 'last', label: t("tabs.latest-sales") }
   ];
 
   const periodTabList = [
@@ -73,7 +74,12 @@ export default function Sales({ list, defaultSaleTab = "all" }) {
       }
     }
 
-    const response = await axios('v2/nft-sales?list=' + list + currencyUrlPart() + '&saleType=' + saleTab + collectionUrlPart + periodUrlPart).catch(error => {
+    let loadList = "topSold";
+    if (pageTab === 'last') {
+      loadList = "lastSold";
+    }
+
+    const response = await axios('v2/nft-sales?list=' + loadList + currencyUrlPart() + '&saleType=' + saleTab + collectionUrlPart + periodUrlPart).catch(error => {
       onFailedRequest(error, setErrorMessage);
     });
 
@@ -112,7 +118,7 @@ export default function Sales({ list, defaultSaleTab = "all" }) {
   useEffect(() => {
     checkApi();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [saleTab, issuer, taxon, periodTab]);
+  }, [saleTab, issuer, taxon, periodTab, pageTab]);
 
   useEffect(() => {
     if (isAddressOrUsername(data?.issuer)) {
@@ -130,24 +136,16 @@ export default function Sales({ list, defaultSaleTab = "all" }) {
     setTabParams(saleTabList, saleTab, defaultSaleTab, setSaleTab, searchParams, "sale");
     setTabParams(viewTabList, viewTab, "tiles", setViewTab, searchParams, "view");
     setTabParams(periodTabList, periodTab, "all", setPeriodTab, searchParams, "period");
+    setTabParams(pageTabList, pageTab, "top", setPageTab, searchParams, "list");
 
     if (!currency || (currency.toLowerCase() !== 'xrp' && !isAddressOrUsername(currencyIssuer))) {
       searchParams.delete("currency");
       searchParams.delete("currencyIssuer");
     }
 
-    let url;
-    if (list === 'topSold') {
-      url = '/top-nft-sales?';
-    } else if (list === 'lastSold') {
-      url = '/latest-nft-sales?';
-    } else {
-      return;
-    }
-
-    navigate(url + searchParams.toString(), { replace: true });
+    navigate('/nft-sales?' + searchParams.toString(), { replace: true });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [viewTab, saleTab, data, periodTab, currency, currencyIssuer]);
+  }, [viewTab, saleTab, data, periodTab, currency, currencyIssuer, pageTab]);
 
   const searchClick = () => {
     if (isAddressOrUsername(issuerInput)) {
@@ -179,26 +177,12 @@ export default function Sales({ list, defaultSaleTab = "all" }) {
     enterPress(e);
   }
 
-  const pageRedirect = (page) => {
-    let params = "?view=" + viewTab + "&sale=" + saleTab + currencyUrlPart();
-    if (periodTab !== 'all') {
-      params = params + "&period=" + periodTab;
-    }
-    let url = '';
-    if (page === "topSold") {
-      url = "/top-nft-sales" + params;
-    } else if (page === "lastSold") {
-      url = "/latest-nft-sales" + params;
-    }
-    window.location = url + issuerTaxonUrlPart;
-  }
-
   const issuerTaxonUrlPart = (data && issuer) ? ("&issuer=" + usernameOrAddress(data, 'issuer') + (taxon ? ("&taxon=" + taxon) : "")) : "";
 
   const currencyUrlPart = () => {
     if (!currency) {
-      if (list === 'lastSold') return "";
-      if (list === 'topSold') return "&currency=xrp";
+      if (pageTab === 'last') return "";
+      if (pageTab === 'top') return "&currency=xrp";
     }
 
     if (currency.toLowerCase() === 'xrp') {
@@ -244,18 +228,18 @@ export default function Sales({ list, defaultSaleTab = "all" }) {
       <input type="button" className="button-action" value={t("button.search")} onClick={searchClick} />
     </p>
     <div className='tabs-inline'>
-      <Tabs tabList={pageTabList} tab={list} setTab={pageRedirect} name="page" />
+      <Tabs tabList={pageTabList} tab={pageTab} setTab={setPageTab} name="page" />
       <Tabs tabList={viewTabList} tab={viewTab} setTab={setViewTab} name="view" />
-      {(list === 'topSold' || periodTab !== 'all') && <Tabs tabList={periodTabList} tab={periodTab} setTab={setPeriodTab} name="period" />}
+      <Tabs tabList={periodTabList} tab={periodTab} setTab={setPeriodTab} name="period" />
       <Tabs tabList={saleTabList} tab={saleTab} setTab={setSaleTab} name="sale" />
     </div>
     {viewTab === "list" &&
       <table className="table-large">
         <thead>
           <tr>
-            <th className='center'>{list === 'lastSold' ? t("table.time") : t("table.index")}</th>
+            <th className='center'>{pageTab === 'last' ? t("table.time") : t("table.index")}</th>
             <th>{t("table.amount")}</th>
-            {list === 'topSold' && <th className='hide-on-mobile'>{t("table.sold")}</th>}
+            {pageTab === 'top' && <th className='hide-on-mobile'>{t("table.sold")}</th>}
             <th>{t("table.name")}</th>
             <th className='center hide-on-mobile'>{t("table.taxon")}</th>
             <th className='center hide-on-mobile'>{t("table.serial")}</th>
@@ -279,9 +263,9 @@ export default function Sales({ list, defaultSaleTab = "all" }) {
               {!errorMessage && data?.sales?.length ?
                 data.sales.map((nft, i) =>
                   <tr key={i}>
-                    <td className='center'>{list === 'lastSold' ? timeOrDate(nft.acceptedAt) : (i + 1)}</td>
+                    <td className='center'>{pageTab === 'last' ? timeOrDate(nft.acceptedAt) : (i + 1)}</td>
                     <td>{amountFormat(nft.amount, { tooltip: 'right' })}</td>
-                    {list === 'topSold' && <td className='hide-on-mobile'>{timeOrDate(nft.acceptedAt)}</td>}
+                    {pageTab === 'top' && <td className='hide-on-mobile'>{timeOrDate(nft.acceptedAt)}</td>}
                     <td>{nft.nftoken?.metadata?.name ? stripText(nft.nftoken.metadata.name) : "---//---"}</td>
                     <td className='center hide-on-mobile'>{nft.nftoken.nftokenTaxon}</td>
                     <td className='center hide-on-mobile'>{nft.nftoken.sequence}</td>
@@ -312,7 +296,7 @@ export default function Sales({ list, defaultSaleTab = "all" }) {
             {errorMessage ?
               <div className='center orange bold'>{errorMessage}</div>
               :
-              <Tiles nftList={data?.sales} type={list} />
+              <Tiles nftList={data?.sales} type={pageTab} />
             }
           </>
         }

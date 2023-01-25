@@ -219,7 +219,7 @@ export default function NftOffer() {
                       <a href={"/nfts/" + data.account}>{t("links.owned-nfts-same-account")}</a>
                     </p>
                     <p>
-                      {t("links.nfts-same-issuer")}: <a href={"/nft-explorer?issuer=" + data.nftoken.issuer}>{t("links.all")}</a>, <a href={"/top-nft-sales?issuer=" + data.nftoken.issuer}>{t("links.top-sold")}</a>, <a href={"/latest-nft-sales?issuer=" + data.nftoken.issuer}>{t("links.latest-sold")}</a>
+                      {t("links.nfts-same-issuer")}: <a href={"/nft-explorer?issuer=" + data.nftoken.issuer}>{t("links.all")}</a>, <a href={"/nft-sales?issuer=" + data.nftoken.issuer}>{t("links.sold")}</a>
                     </p>
                   </div>
                 </>
