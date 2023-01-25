@@ -2,6 +2,7 @@ import { useTranslation } from 'react-i18next';
 import { useState, useEffect } from 'react';
 import { useSearchParams, useNavigate, Link } from "react-router-dom";
 import axios from 'axios';
+import { CSVLink } from "react-csv";
 
 import Tabs from './Tabs';
 import Tiles from './Tiles';
@@ -195,6 +196,20 @@ export default function Sales({ list, defaultSaleTab = "all" }) {
     return "";
   }
 
+  let csvHeaders = [
+    { label: t("table.accepted"), key: "acceptedAt" },
+    { label: (t("table.amount") + " (drops)"), key: "amount" },
+    { label: t("table.name"), key: "nftoken.metadata.name" },
+    { label: t("table.taxon"), key: "nftoken.nftokenTaxon" },
+    { label: t("table.serial"), key: "nftoken.sequence" },
+    { label: "NFT", key: "nftoken.nftokenID" },
+    { label: t("table.transaction"), key: "acceptedTxHash" },
+    { label: t("table.buyer"), key: "buyer" },
+    { label: t("table.seller"), key: "seller" },
+    { label: t("table.broker"), key: "broker" },
+    { label: t("table.sales"), key: "saleType" }
+  ];
+
   return <>
     <p className='center'><a href={"/nft-explorer?view=" + viewTab + issuerTaxonUrlPart}>{t("menu.nft-explorer")}</a></p>
     <div className='center'>
@@ -232,6 +247,17 @@ export default function Sales({ list, defaultSaleTab = "all" }) {
       <Tabs tabList={viewTabList} tab={viewTab} setTab={setViewTab} name="view" />
       <Tabs tabList={periodTabList} tab={periodTab} setTab={setPeriodTab} name="period" />
       <Tabs tabList={saleTabList} tab={saleTab} setTab={setSaleTab} name="sale" />
+      {data?.sales &&
+        <CSVLink
+          data={data.sales}
+          headers={csvHeaders}
+          filename={'nft_sales_export_UTC_' + (new Date().toJSON()) + '.csv'}
+          className='button-action thin narrow'
+          style={{ marginBottom: "15px" }}
+        >
+          ⇩ CSV
+        </CSVLink>
+      }
     </div>
     {viewTab === "list" &&
       <table className="table-large">
