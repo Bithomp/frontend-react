@@ -315,7 +315,7 @@ export default function NftVolumes() {
           }
         </p>
       }
-      {listTab === 'issuers' && window.innerWidth > 1000 ?
+      {(listTab !== 'issuers' || (listTab === 'issuers' && window.innerWidth > 1000)) ?
         <table className="table-large shrink">
           <thead>
             <tr>
