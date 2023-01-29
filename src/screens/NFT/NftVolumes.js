@@ -59,6 +59,9 @@ export default function NftVolumes() {
       apiUrl += '?list=currencies';
     } else if (listTab === 'issuers' || listTab === 'brokers') {
       apiUrl += '?list=' + listTab;
+      if (listTab === 'issuers') {
+        apiUrl += '&floorPrice=true';
+      }
       if (currency && currencyIssuer) {
         apiUrl += '&currency=' + stripText(currency) + '&currencyIssuer=' + stripText(currencyIssuer);
       } else {
@@ -147,7 +150,20 @@ export default function NftVolumes() {
           "buyers": 392,
           "tradedNfts": 938,
           "totalOwners": 1849,
-          "totalNfts": 6655
+          "totalNfts": 6655,
+          "floorPrice": {
+            "open": {
+              "amount": "350000000"
+            },
+            "private": {
+              "amount": "470000000",
+              "destination": "rpx9JThQ2y37FaGeeJP7PXDUVEXY3PHZSC",
+              "destinationDetails": {
+                "username": null,
+                "service": "xrp.cafe"
+              }
+            }
+          }
         }
       ]
     }
@@ -218,6 +234,53 @@ export default function NftVolumes() {
     }
   }
 
+  const showFloor = priceFloor => {
+    if (!priceFloor) return "";
+    let open = null;
+    let priv = null;
+
+    if (priceFloor.open?.amount?.value) {
+      open = Number(priceFloor.open.amount.value);
+    } else if (priceFloor.open?.amount) {
+      open = Number(priceFloor.open.amount);
+    }
+
+    if (priceFloor.private?.amount?.value) {
+      priv = Number(priceFloor.private.amount.value);
+    } else if (priceFloor.private?.amount) {
+      priv = Number(priceFloor.private.amount);
+    }
+
+    let floor = priv;
+    let priceColor = "orange";
+    if (open && priv) {
+      if (open <= priv) {
+        floor = open;
+        priceColor = "";
+      }
+    } else if (open) {
+      floor = open;
+      priceColor = "";
+    }
+
+    let output = amountFormat(floor, { tooltip: 'left', maxFractionDigits: 2 });
+    if (priceColor === 'orange') {
+      if (window.innerWidth > 1000) {
+        output = (
+          <span className={'tooltip ' + priceColor}>
+            {output}
+            <span className='tooltiptext left'>
+              {priceFloor.private?.destinationDetails?.service ? priceFloor.private.destinationDetails.service : "Private market"}
+            </span>
+          </span>
+        )
+      } else {
+        output = output + (priceFloor.private?.destinationDetails?.service ? (" (" + priceFloor.private.destinationDetails.service + ")") : "");
+      }
+    }
+    return output;
+  }
+
   return <>
     <SEO title={t("menu.nft-volumes")} />
     <div className="content-text">
@@ -252,67 +315,130 @@ export default function NftVolumes() {
           }
         </p>
       }
-      <table className="table-large shrink">
-        <thead>
-          <tr>
-            <th className='center'>{t("table.index")}</th>
-            {listTab === 'issuers' && <th>{t("table.issuer")}</th>}
-            {listTab === 'issuers' && <th className='right hide-on-mobile'>{t("table.nfts-now")} <b className={"link" + (sortConfig.key === 'totalNfts' ? " orange" : "")} onClick={() => sortTable('totalNfts')}>⇅</b></th>}
-            {listTab === 'issuers' && <th className='right hide-on-mobile'>{t("table.owners-now")} <b className={"link" + (sortConfig.key === 'totalOwners' ? " orange" : "")} onClick={() => sortTable('totalOwners')}>⇅</b></th>}
-            {listTab === 'issuers' && <th className='right hide-on-mobile'>{t("table.traded-nfts")} <b className={"link" + (sortConfig.key === 'tradedNfts' ? " orange" : "")} onClick={() => sortTable('tradedNfts')}>⇅</b></th>}
-            {listTab === 'brokers' && <th>{t("table.broker")}</th>}
-            {listTab === 'currencies' && <th>{t("table.issuers")}</th>}
-            <th className='right'>{t("table.sales")} <b className={"link" + (sortConfig.key === 'sales' ? " orange" : "")} onClick={() => sortTable('sales')}>⇅</b></th>
-            {listTab === 'issuers' && <th className='right hide-on-mobile'>{t("table.buyers")} <b className={"link" + (sortConfig.key === 'buyers' ? " orange" : "")} onClick={() => sortTable('buyers')}>⇅</b></th>}
-            <th>{t("table.volume")} <b className={"link" + (sortConfig.key === 'amount' ? " orange" : "")} onClick={() => sortTable('amount')}>⇅</b></th>
-          </tr>
-        </thead>
-        <tbody>
-          {loading ?
-            <tr className='center'><td colSpan="100"><span className="waiting"></span></td></tr>
-            :
-            <>
-              {(!errorMessage && data) ?
-                <>
-                  {data.length > 0 &&
-                    data.map((volume, i) =>
-                      <tr key={i}>
-                        <td className='center'>{i + 1}</td>
-                        {listTab === 'issuers' && <td>{addressUsernameOrServiceLink(volume, "issuer", { url: "/nft-explorer?issuer=", short: true })}</td>}
-                        {listTab === 'issuers' && <td className='right hide-on-mobile'>{shortNiceNumber(volume.totalNfts, 0)} <a href={'/nft-explorer?issuer=' + usernameOrAddress(volume, 'issuer')}><LinkIcon /></a></td>}
-                        {listTab === 'issuers' && <td className='right hide-on-mobile'>{shortNiceNumber(volume.totalOwners, 0)} <a href={'/nft-distribution/' + usernameOrAddress(volume, 'issuer')}><LinkIcon /></a></td>}
-                        {listTab === 'issuers' && <td className='right hide-on-mobile'>{shortNiceNumber(volume.tradedNfts, 0)}</td>}
-                        {listTab === 'brokers' && <td>{addressUsernameOrServiceLink(volume, "broker", { short: true })}</td>}
-                        {listTab === 'currencies' && <td className='center'><a href={'/nft-volumes' + urlParams(volume) + '&list=issuers'}><LinkIcon /></a></td>}
-                        <td className='right'>
-                          {shortNiceNumber(volume.sales, 0)}
-                          {listTab === 'brokers' ?
-                            <>
-                              {rawData?.summary &&
-                                <> ({persentFormat(volume.sales, rawData.summary.all.sales)})</>
-                              }
-                            </>
-                            :
-                            <a href={'/nft-sales' + urlParams(volume)}> <LinkIcon /></a>
-                          }
-                        </td>
-                        {listTab === 'issuers' && <td className='right hide-on-mobile'>{shortNiceNumber(volume.buyers, 0)}</td>}
-                        <td>
-                          {amountFormat(volume.amount, { tooltip: 'right', maxFractionDigits: 2 })}
-                          {listTab === 'brokers' && rawData?.summary &&
-                            <> ({persentFormat(volume.amount, rawData.summary.all.volume)})</>
-                          }
-                        </td>
-                      </tr>)
-                  }
-                </>
-                :
-                <tr><td colSpan="100" className='center orange bold'>{errorMessage}</td></tr>
-              }
-            </>
-          }
-        </tbody>
-      </table>
+      {listTab === 'issuers' && window.innerWidth > 1000 ?
+        <table className="table-large shrink">
+          <thead>
+            <tr>
+              <th className='center'>{t("table.index")}</th>
+              {listTab === 'issuers' && <th>{t("table.issuer")}</th>}
+              {listTab === 'issuers' && <th className='right hide-on-mobile'>{t("table.nfts-now")} <b className={"link" + (sortConfig.key === 'totalNfts' ? " orange" : "")} onClick={() => sortTable('totalNfts')}>⇅</b></th>}
+              {listTab === 'issuers' && <th className='right hide-on-mobile'>{t("table.owners-now")} <b className={"link" + (sortConfig.key === 'totalOwners' ? " orange" : "")} onClick={() => sortTable('totalOwners')}>⇅</b></th>}
+              {listTab === 'issuers' && <th className='right'>{t("table.floor-now")}</th>}
+              {listTab === 'issuers' && <th className='right hide-on-mobile'>{t("table.traded-nfts")} <b className={"link" + (sortConfig.key === 'tradedNfts' ? " orange" : "")} onClick={() => sortTable('tradedNfts')}>⇅</b></th>}
+              {listTab === 'brokers' && <th>{t("table.broker")}</th>}
+              {listTab === 'currencies' && <th>{t("table.issuers")}</th>}
+              <th className='right'>{t("table.sales")} <b className={"link" + (sortConfig.key === 'sales' ? " orange" : "")} onClick={() => sortTable('sales')}>⇅</b></th>
+              {listTab === 'issuers' && <th className='right hide-on-mobile'>{t("table.buyers")} <b className={"link" + (sortConfig.key === 'buyers' ? " orange" : "")} onClick={() => sortTable('buyers')}>⇅</b></th>}
+              <th className='right'>{t("table.volume")} <b className={"link" + (sortConfig.key === 'amount' ? " orange" : "")} onClick={() => sortTable('amount')}>⇅</b></th>
+            </tr>
+          </thead>
+          <tbody>
+            {loading ?
+              <tr className='center'><td colSpan="100"><span className="waiting"></span></td></tr>
+              :
+              <>
+                {(!errorMessage && data) ?
+                  <>
+                    {data.length > 0 &&
+                      data.map((volume, i) =>
+                        <tr key={i}>
+                          <td className='center'>{i + 1}</td>
+                          {listTab === 'issuers' && <td>{addressUsernameOrServiceLink(volume, "issuer", { short: true })}</td>}
+                          {listTab === 'issuers' && <td className='right hide-on-mobile'>{shortNiceNumber(volume.totalNfts, 0)} <a href={'/nft-explorer?issuer=' + usernameOrAddress(volume, 'issuer')}><LinkIcon /></a></td>}
+                          {listTab === 'issuers' && <td className='right hide-on-mobile'>{shortNiceNumber(volume.totalOwners, 0)} <a href={'/nft-distribution/' + usernameOrAddress(volume, 'issuer')}><LinkIcon /></a></td>}
+                          {listTab === 'issuers' && <td className='right'>{showFloor(volume.floorPrice)}</td>}
+                          {listTab === 'issuers' && <td className='right hide-on-mobile'>{shortNiceNumber(volume.tradedNfts, 0)}</td>}
+                          {listTab === 'brokers' && <td>{addressUsernameOrServiceLink(volume, "broker", { short: true })}</td>}
+                          {listTab === 'currencies' && <td className='center'><a href={'/nft-volumes' + urlParams(volume) + '&list=issuers'}><LinkIcon /></a></td>}
+                          <td className='right'>
+                            {shortNiceNumber(volume.sales, 0)}
+                            {listTab === 'brokers' ?
+                              <>
+                                {rawData?.summary &&
+                                  <> ({persentFormat(volume.sales, rawData.summary.all.sales)})</>
+                                }
+                              </>
+                              :
+                              <a href={'/nft-sales' + urlParams(volume)}> <LinkIcon /></a>
+                            }
+                          </td>
+                          {listTab === 'issuers' && <td className='right hide-on-mobile'>{shortNiceNumber(volume.buyers, 0)}</td>}
+                          <td className='right'>
+                            {amountFormat(volume.amount, { tooltip: 'right', maxFractionDigits: 2 })}
+                            {listTab === 'brokers' && rawData?.summary &&
+                              <> ({persentFormat(volume.amount, rawData.summary.all.volume)})</>
+                            }
+                          </td>
+                        </tr>)
+                    }
+                  </>
+                  :
+                  <tr><td colSpan="100" className='center orange bold'>{errorMessage}</td></tr>
+                }
+              </>
+            }
+          </tbody>
+        </table>
+        :
+        <table className="table-mobile">
+          <thead>
+          </thead>
+          <tbody>
+            {loading ?
+              <tr className='center'>
+                <td colSpan="100">
+                  <span className="waiting"></span>
+                  <br />{t("general.loading")}
+                </td>
+              </tr>
+              :
+              <>
+                {!errorMessage ? data.map((volume, i) =>
+                  <tr key={i}>
+                    <td style={{ padding: "5px" }} className='center'>
+                      <p>{i + 1}</p>
+                    </td>
+                    <td>
+                      <p>
+                        {t("table.issuer")}: {addressUsernameOrServiceLink(volume, "issuer")}
+                      </p>
+                      <p>
+                        {t("table.nfts-now")}:{" "}
+                        {shortNiceNumber(volume.totalNfts, 0)} <a href={'/nft-explorer?issuer=' + usernameOrAddress(volume, 'issuer')}><LinkIcon /></a>
+                      </p>
+                      <p>
+                        {t("table.owners-now")}:{" "}
+                        {shortNiceNumber(volume.totalOwners, 0)} <a href={'/nft-distribution/' + usernameOrAddress(volume, 'issuer')}><LinkIcon /></a>
+                      </p>
+                      {showFloor(volume.floorPrice) ?
+                        <p>
+                          {t("table.floor-now")}: {showFloor(volume.floorPrice)}
+                        </p>
+                        :
+                        ""
+                      }
+                      <p>
+                        {t("table.traded-nfts")}: {shortNiceNumber(volume.tradedNfts, 0)}
+                      </p>
+                      <p>
+                        {t("table.sales")}: {shortNiceNumber(volume.sales, 0)} <a href={'/nft-sales' + urlParams(volume)}> <LinkIcon /></a>
+                      </p>
+                      <p>
+                        {t("table.buyers")}: {shortNiceNumber(volume.buyers, 0)}
+                      </p>
+                      <p>
+                        {t("table.volume")}: {amountFormat(volume.amount, { tooltip: 'right', maxFractionDigits: 2 })}
+                      </p>
+                    </td>
+                  </tr>)
+                  :
+                  <tr><td colSpan="100" className='center orange bold'>{errorMessage}</td></tr>
+                }
+              </>
+            }
+          </tbody>
+        </table>
+      }
     </div>
   </>;
 };

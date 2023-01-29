@@ -267,7 +267,7 @@ export const amountFormat = (amount, options = {}) => {
   const { value, currency, valuePrefix, issuer, type } = amountParced(amount);
   let showValue = value;
 
-  if (value > 100) {
+  if (value >= 100) {
     showValue = niceNumber(value);
   } else if (options.maxFractionDigits) {
     showValue = niceNumber(value, options.maxFractionDigits);
