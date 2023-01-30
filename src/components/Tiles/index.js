@@ -12,10 +12,10 @@ const addressName = (details, name) => {
   if (!details) return "";
   const { username, service } = details;
   let label = "";
-  if (username) {
-    label = username;
-  } else if (service) {
+  if (service) {
     label = service;
+  } else if (username) {
+    label = username;
   }
   if (label) {
     return <><br />{name}: {label}</>;
