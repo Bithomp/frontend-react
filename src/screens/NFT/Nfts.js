@@ -129,7 +129,7 @@ export default function Nfts() {
           setData([...nftsData, ...newdata.nfts]);
         } else {
           if (marker === 'first') {
-            setErrorMessage(t("explorer.nfts.no-nfts"));
+            setErrorMessage(t("nfts.no-nfts"));
           } else {
             setHasMore(false);
           }
@@ -282,10 +282,10 @@ export default function Nfts() {
 
   return <>
     {nftExplorer ?
-      <SEO title={t("menu.nft-explorer")} />
+      <SEO title={t("nft-explorer.header")} />
       :
       <>
-        <SEO title={t("menu.nfts") + " " + id} />
+        <SEO title={t("nfts.header") + " " + id} />
         <SearchBlock
           searchPlaceholderText={t("explorer.enter-address")}
           tab="nfts"
@@ -296,15 +296,15 @@ export default function Nfts() {
 
     <div className="content-text" style={contextStyle}>
       {nftExplorer && <>
-        <h2 className='center'>{t("menu.nft-explorer") + " "}</h2>
+        <h2 className='center'>{t("nft-explorer.header") + " "}</h2>
         <p className='center'>
-          <a href={"/nft-sales" + issuerTaxonUrlPart} style={{ marginRight: "5px" }}>{t("menu.nft-sales")}</a>
+          <a href={"/nft-sales" + issuerTaxonUrlPart} style={{ marginRight: "5px" }}>{t("nft-sales.header")}</a>
         </p>
         <div className='center'>
           <span className='halv'>
             <span className='input-title'>{t("table.issuer")} {userOrServiceLink(rawData, 'issuer')}</span>
             <input
-              placeholder={t("explorer.nfts.search-by-issuer")}
+              placeholder={t("nfts.search-by-issuer")}
               value={issuerInput}
               onChange={(e) => { setIssuerInput(e.target.value) }}
               onKeyPress={enterPress}
@@ -316,7 +316,7 @@ export default function Nfts() {
           <span className='halv'>
             <span className='input-title'>{t("table.taxon")}</span>
             <input
-              placeholder={t("explorer.nfts.search-by-taxon")}
+              placeholder={t("nfts.search-by-taxon")}
               value={taxonInput}
               onChange={(e) => { setTaxonInput(e.target.value) }}
               onKeyPress={onTaxonInput}
@@ -331,7 +331,7 @@ export default function Nfts() {
           <span className='halv'>
             <span className='input-title'>{t("table.owner")} {userOrServiceLink(rawData, 'owner')}</span>
             <input
-              placeholder={t("explorer.nfts.search-by-owner")}
+              placeholder={t("nfts.search-by-owner")}
               value={ownerInput}
               onChange={(e) => { setOwnerInput(e.target.value) }}
               onKeyPress={enterPress}
@@ -343,7 +343,7 @@ export default function Nfts() {
           <span className='halv'>
             <span className='input-title'>{t("table.name")}</span>
             <input
-              placeholder={t("explorer.nfts.search-by-name")}
+              placeholder={t("nfts.search-by-name")}
               value={search}
               onChange={onSearchChange}
               className="input-text"
@@ -371,9 +371,9 @@ export default function Nfts() {
           next={checkApi}
           hasMore={hasMore}
           loader={!errorMessage &&
-            <p className="center">{t("explorer.nfts.load-more")}</p>
+            <p className="center">{t("nfts.load-more")}</p>
           }
-          endMessage={<p className="center">{t("explorer.nfts.end")}</p>}
+          endMessage={<p className="center">{t("nfts.end")}</p>}
         // below props only if you need pull down functionality
         //refreshFunction={this.refresh}
         //pullDownToRefresh
@@ -393,7 +393,7 @@ export default function Nfts() {
                 setSelectedIssuer={setIssuer}
               />
               <input
-                placeholder={t("explorer.nfts.search-by-name")}
+                placeholder={t("nfts.search-by-name")}
                 value={search}
                 onChange={onSearchChange}
                 className="input-text halv"
@@ -467,9 +467,9 @@ export default function Nfts() {
         <>
           {!nftExplorer &&
             <>
-              <h2 className='center'>{t("menu.nfts")}</h2>
+              <h2 className='center'>{t("nfts.header")}</h2>
               <p className='center'>
-                {t("explorer.nfts.desc")}
+                {t("nfts.desc")}
               </p>
             </>
           }

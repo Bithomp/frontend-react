@@ -71,7 +71,7 @@ export default function NftOffers() {
 
           setData(newdata.nftOffers.sort((a, b) => (a.createdAt < b.createdAt) ? 1 : -1));
         } else {
-          setErrorMessage(t("explorer.nft-offers.no-nft-offers"));
+          setErrorMessage(t("nft-offers.no-nft-offers"));
         }
       } else {
         if (newdata.error) {
@@ -147,7 +147,7 @@ export default function NftOffers() {
   }, [id, offerListTab]);
 
   return <>
-    <SEO title={t("menu.nft-offers") + " " + id} />
+    <SEO title={t("nft-offers.header") + " " + id} />
     <SearchBlock
       searchPlaceholderText={t("explorer.enter-address")}
       tab="nft-offers"
@@ -295,9 +295,9 @@ export default function NftOffers() {
         </>
         :
         <>
-          <h2 className='center'>{t("menu.nft-offers")}</h2>
+          <h2 className='center'>{t("nft-offers.header")}</h2>
           <p className='center'>
-            {t("explorer.nft-offers." + offerListTab + "-desc")}
+            {t("nft-offers." + offerListTab + "-desc")}
           </p>
         </>
       }

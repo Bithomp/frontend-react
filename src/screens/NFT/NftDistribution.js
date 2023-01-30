@@ -60,7 +60,7 @@ export default function NftDistribution() {
           setErrorMessage("");
           setData(newdata);
         } else {
-          setErrorMessage(t("explorer.nft-distribution.no-nfts"));
+          setErrorMessage(t("nft-distribution.no-nfts"));
         }
       } else {
         if (newdata.error) {
@@ -85,7 +85,7 @@ export default function NftDistribution() {
   ];
 
   return <>
-    <SEO title={t("menu.nft-distribution") + " " + id} />
+    <SEO title={t("nft-distribution.header") + " " + id} />
     <SearchBlock
       searchPlaceholderText={t("explorer.enter-address")}
       userData={userData}
@@ -155,9 +155,9 @@ export default function NftDistribution() {
         </table>
         :
         <>
-          <h2 className='center'>{t("menu.nft-distribution")}</h2>
+          <h2 className='center'>{t("nft-distribution.header")}</h2>
           <p className='center'>
-            {t("explorer.nft-distribution.desc")}
+            {t("nft-distribution.desc")}
           </p>
         </>
       }

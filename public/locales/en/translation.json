@@ -13,15 +13,15 @@
     "ledger": "Ledger transactions",
     "last-ledger-information": "Last ledger information",
     "last-ledger-transactions": "Last ledger transactions",
-    "nft-statistics": "NFT live statistics",
-    "nft-explorer": "NFT explorer",
-    "nft": "NFT page",
-    "nfts": "Account's NFTs",
-    "nft-offer": "NFT offer",
-    "nft-offers": "NFT offers",
-    "nft-sales": "NFT sales",
-    "nft-distribution": "NFT distribution",
-    "nft-volumes": "NFT sales volumes",
+    "nft": {
+      "explorer": "Explorer",
+      "volumes": "Volumes",
+      "sales": "Sales",
+      "distribution": "Distribution (holders)",
+      "statistics": "Live statistics",
+      "nfts": "Account's NFTs",
+      "offers": "Offers"
+    },
     "validators": "Validators",
     "amendments": "Amendments",
     "genesis": "Genesis accounts",
@@ -128,6 +128,7 @@
     "no-transactions": "We could not find any transactions to show."
   },
   "nft-statistics": {
+    "header": "NFT live statistics",
     "text0": "The information is a bit outdated, we need to catch up with <1>{{lag}}</1> ledgers.<br/>The data is provided for the ledger #{{crawlerIndex}}, ({{crawlerTime}}).<br/>The last validated ledger is #{{currentLedgerIndex}}, ({{currentLedgerTime}}).",
     "updated": "Updated",
     "ledger-index": "Ledger index",
@@ -444,41 +445,48 @@
       "account": "Account information",
       "transactions": "Transactions",
       "tokens": "Tokens"
-    },
-    "nfts": {
-      "desc": "Here you can search for NFTs (XLS-20), type in the XRPL address to see what NFTs it owns.",
-      "search-by-name": "Search by NFT name",
-      "search-by-issuer": "Search by NFT issuer",
-      "search-by-taxon": "Search by NFT taxon",
-      "search-by-owner": "Search by NFT owner",
-      "no-nfts": "We couldn't find any NFTs with your search parameters.",
-      "load-more": "We are looking for data on the XRPL... please wait...",
-      "end": "Here are all the NFTs we could find."
-    },
-    "nft-offers": {
-      "owned-desc": "Here you can search for Buy and Sell Offers for (XLS-20) NFTs, type in the XRPL address or username to see what it offers.",
-      "for-owned-nfts-desc": "Here you can search for Buy Offers for NFTs owned by account, type in the XRPL address or username to see received offers.",
-      "no-nft-offers": "We couldn't find any NFT Offers placed by that address."
-    },
-    "nft-distribution": {
-      "desc": "Here you can check the distribution of NFTs of a particilar NFT issuer. Enter the NFT issuer XRPL address or a username and press the search button.",
-      "no-nfts": "We couldn't find any NFTs issued by that address."
     }
   },
+  "nft-explorer": {
+    "header": "NFT explorer"
+  },
+  "nft-offers": {
+    "header": "NFT offers",
+    "owned-desc": "Here you can search for Buy and Sell Offers for (XLS-20) NFTs, type in the XRPL address or username to see what it offers.",
+    "for-owned-nfts-desc": "Here you can search for Buy Offers for NFTs owned by account, type in the XRPL address or username to see received offers.",
+    "no-nft-offers": "We couldn't find any NFT Offers placed by that address."
+  },
   "nft-offer": {
+    "header": "NFT offer",
     "desc": "Here you can search for NFT Offers, enter an Offer ID and press the search button.",
     "enter-offer-id": "Enter an NFT offer ID",
     "selling": "Selling",
     "buying": "Buying"
   },
+  "nfts": {
+    "header": "Account's NFTs",
+    "desc": "Here you can search for NFTs (XLS-20), type in the XRPL address to see what NFTs it owns.",
+    "search-by-name": "Search by NFT name",
+    "search-by-issuer": "Search by NFT issuer",
+    "search-by-taxon": "Search by NFT taxon",
+    "search-by-owner": "Search by NFT owner",
+    "no-nfts": "We couldn't find any NFTs with your search parameters.",
+    "load-more": "We are looking for data on the XRPL... please wait...",
+    "end": "Here are all the NFTs we could find."
+  },
   "nft": {
+    "header": "Account's NFTs",
     "desc": "Here you can search for NFTs, enter an NFT ID and press the search button.",
     "enter-nft-id": "Enter an NFT ID"
   },
   "nft-distribution": {
+    "header": "NFT distribution",
+    "desc": "Here you can check the distribution of NFTs of a particilar NFT issuer. Enter the NFT issuer XRPL address or a username and press the search button.",
+    "no-nfts": "We couldn't find any NFTs issued by that address.",
     "text0": "{{users}} accounts own {{nfts}} NFTs"
   },
   "nft-volumes": {
+    "header": "NFT sales volumes",
     "brokers": {
       "not-a-marketplace-list": "This is not a list of XRPL marketplaces, it is the list of broker accounts. Marketplaces can use different models (without broker transactions), some of them can use mixed models, where only some of their volume goes through the brokerage. If a marketplace stoped using the brokerage model, it will have volume in All time, but not in the last Day or Week.",
       "no-broker": "No broker",
@@ -491,6 +499,9 @@
       },
       "text0": "XRPL had {{allSales}} NFT trades for {{allVolume}}, from which {{brokerSales}} ({{percentBrokerSales}}) of trades for {{brokerVolume}} ({{percentBrokerVolume}}) were through the brokerage model."
     }
+  },
+  "nft-sales": {
+    "header": "NFT sales"
   },
   "links": {
     "active-offers-same-account": "View active offers from that account",

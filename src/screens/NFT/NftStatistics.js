@@ -84,8 +84,8 @@ export default function LastLedgerInformation() {
 
   return (
     <div className="content-text content-center">
-      <SEO title={t("menu.nft-statistics")} />
-      <h1 className="center">{t("menu.nft-statistics")}</h1>
+      <SEO title={t("nft-statistics.header")} />
+      <h1 className="center">{t("nft-statistics.header")}</h1>
       <div className="main-box">
         {lag ?
           <p className='orange'>

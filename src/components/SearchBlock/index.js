@@ -130,7 +130,7 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
               <>
                 {userOrServiceName(userData)}
                 {tab === "nft" && <h1 className='contrast'>NFT</h1>}
-                {tab === "nft-offer" && <h1 className='contrast'>{t("menu.nft-offer")}</h1>}
+                {tab === "nft-offer" && <h1 className='contrast'>{t("nft-offer.header")}</h1>}
                 {tab === "explorer" && <h1 className='contrast'>{t("explorer.header")}</h1>}
               </>
             }
@@ -158,7 +158,7 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
         <div className='explorer-tabs-block'>
           <div className='explorer-tabs'>
             {tab === "nfts" ? <b>NFTs</b> : <a href={"/nfts/" + searchItem + addParams}>NFTs</a>}
-            {tab === "nft-offers" ? <b>{t("menu.nft-offers")}</b> : <a href={"/nft-offers/" + searchItem}>{t("menu.nft-offers")}</a>}
+            {tab === "nft-offers" ? <b>{t("nft-offers.header")}</b> : <a href={"/nft-offers/" + searchItem}>{t("nft-offers.header")}</a>}
             <a href={"/explorer/" + searchItem}>{t("explorer.menu.account")}</a>
             <a href={"/explorer/" + searchItem} className='hide-on-mobile'>{t("explorer.menu.transactions")}</a>
             <a href={"/explorer/" + searchItem} className='hide-on-mobile'>{t("explorer.menu.tokens")}</a>

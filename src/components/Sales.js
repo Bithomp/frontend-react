@@ -211,12 +211,12 @@ export default function Sales({ list, defaultSaleTab = "all" }) {
   ];
 
   return <>
-    <p className='center'><a href={"/nft-explorer?view=" + viewTab + issuerTaxonUrlPart}>{t("menu.nft-explorer")}</a></p>
+    <p className='center'><a href={"/nft-explorer?view=" + viewTab + issuerTaxonUrlPart}>{t("nft-explorer.header")}</a></p>
     <div className='center'>
       <span className='halv'>
         <span className='input-title'>{t("table.issuer")} {userOrServiceLink(data, 'issuer')}</span>
         <input
-          placeholder={t("explorer.nfts.search-by-issuer")}
+          placeholder={t("nfts.search-by-issuer")}
           value={issuerInput}
           onChange={(e) => { setIssuerInput(e.target.value) }}
           onKeyPress={enterPress}
@@ -228,7 +228,7 @@ export default function Sales({ list, defaultSaleTab = "all" }) {
       <span className='halv'>
         <span className='input-title'>{t("table.taxon")}</span>
         <input
-          placeholder={t("explorer.nfts.search-by-taxon")}
+          placeholder={t("nfts.search-by-taxon")}
           value={taxonInput}
           onChange={(e) => { setTaxonInput(e.target.value) }}
           onKeyPress={onTaxonInput}

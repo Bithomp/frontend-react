@@ -84,13 +84,13 @@ export default function Header({ theme, switchTheme, setSignInFormOpen, account,
           <div className="menu-dropdown">
             <div className="menu-dropdown-button">NFT</div>
             <div className="menu-dropdown-content">
-              <a href="/nft-explorer">{t("menu.nft-explorer")}</a>
-              <Link to="/nft-volumes">{t("menu.nft-volumes")}</Link>
-              <a href="/nft-sales">{t("menu.nft-sales")}</a>
-              <Link to="/nft-distribution">{t("menu.nft-distribution")}</Link>
-              <Link to="/nft-statistics">{t("menu.nft-statistics")}</Link>
-              <a href="/nfts">{t("menu.nfts")}</a>
-              <Link to="/nft-offers">{t("menu.nft-offers")}</Link>
+              <a href="/nft-explorer">{t("menu.nft.explorer")}</a>
+              <Link to="/nft-volumes">{t("menu.nft.volumes")}</Link>
+              <a href="/nft-sales">{t("menu.nft.sales")}</a>
+              <a href="/nfts">{t("menu.nft.nfts")}</a>
+              <Link to="/nft-offers">{t("menu.nft.offers")}</Link>
+              <Link to="/nft-distribution">{t("menu.nft.distribution")}</Link>
+              <Link to="/nft-statistics">{t("menu.nft.statistics")}</Link>
             </div>
           </div>
 
@@ -188,40 +188,40 @@ export default function Header({ theme, switchTheme, setSignInFormOpen, account,
           {t("menu.api")}
         </a>
         <div className="mobile-menu-directory"><span>NFT</span></div>
-        <a href="/nft-explorer" className="mobile-menu-item" onClick={mobileMenuToggle}> {t("menu.nft-explorer")}</a>
+        <a href="/nft-explorer" className="mobile-menu-item" onClick={mobileMenuToggle}> {t("menu.nft.explorer")}</a>
         <Link
           to="/nft-volumes"
           className="mobile-menu-item"
           onClick={mobileMenuToggle}
         >
-          {t("menu.nft-volumes")}
+          {t("menu.nft.volumes")}
         </Link>
         <a
           href="/nft-sales"
           className="mobile-menu-item"
         >
-          {t("menu.nft-sales")}
+          {t("menu.nft.sales")}
         </a>
+        <a href="/nfts" className="mobile-menu-item">{t("menu.nft.nfts")}</a>
+        <Link
+          to="/nft-offers"
+          className="mobile-menu-item"
+          onClick={mobileMenuToggle}>
+          {t("menu.nft.offers")}
+        </Link>
         <Link
           to="/nft-distribution"
           className="mobile-menu-item"
           onClick={mobileMenuToggle}
         >
-          {t("menu.nft-distribution")}
+          {t("menu.nft.distribution")}
         </Link>
         <Link
           to="/nft-statistics"
           className="mobile-menu-item"
           onClick={mobileMenuToggle}
         >
-          {t("menu.nft-statistics")}
-        </Link>
-        <a href="/nfts" className="mobile-menu-item">{t("menu.nfts")}</a>
-        <Link
-          to="/nft-offers"
-          className="mobile-menu-item"
-          onClick={mobileMenuToggle}>
-          {t("menu.nft-offers")}
+          {t("menu.nft.statistics")}
         </Link>
 
         <div className="mobile-menu-directory"><span>XRPL</span></div>

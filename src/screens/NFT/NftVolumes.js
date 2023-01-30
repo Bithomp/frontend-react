@@ -282,9 +282,9 @@ export default function NftVolumes() {
   }
 
   return <>
-    <SEO title={t("menu.nft-volumes")} />
+    <SEO title={t("nft-volumes.header")} />
     <div className="content-text">
-      <h2 className="center">{t("menu.nft-volumes") + " "}</h2>
+      <h2 className="center">{t("nft-volumes.header") + " "}</h2>
       <div className='tabs-inline'>
         <Tabs tabList={listTabList} tab={listTab} setTab={setListTab} name="list" />
         <Tabs tabList={periodTabList} tab={periodTab} setTab={setPeriodTab} name="period" />
