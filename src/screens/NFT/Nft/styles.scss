@@ -3,8 +3,8 @@
   .column-left {
     display: inline-block;
     position: relative;
-    width: calc(40% - 10px);
-    padding-right: 10px;
+    width: calc(40% - 30px);
+    padding: 0 15px;
     table.table-details {
       border-collapse: separate;
       background-color: var(--background-main);
@@ -83,6 +83,7 @@
     .column-left {
       width: 100%;
       margin: auto;
+      padding: 0;
     }
     .column-right {
       width: 100%;
