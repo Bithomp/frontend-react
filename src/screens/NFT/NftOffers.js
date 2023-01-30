@@ -193,7 +193,7 @@ export default function NftOffers() {
                                 src={nftUrl(offer.nftoken, 'thumbnail')}
                                 width="32px"
                                 height="32px"
-                                style={{ borderRadius: "32px" }}
+                                style={{ borderRadius: "50% 20% / 10% 40%" }}
                                 alt={offer.nftoken.metadata?.name}
                               />
                             }
@@ -242,7 +242,7 @@ export default function NftOffers() {
                                   src={nftUrl(offer.nftoken, 'thumbnail')}
                                   width="32px"
                                   height="32px"
-                                  style={{ borderRadius: "32px" }}
+                                  style={{ borderRadius: "50% 20% / 10% 40%" }}
                                   alt={offer.nftoken.metadata?.name}
                                 />
                               }
