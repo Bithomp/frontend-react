@@ -11,6 +11,7 @@ import CopyButton from '../../../components/CopyButton';
 import NftPreview from '../../../components/NftPreview';
 
 import { onFailedRequest, onApiError, stripText } from '../../../utils';
+import { nftName } from '../../../utils/nft';
 import {
   shortHash,
   trWithAccount,
@@ -453,7 +454,7 @@ export default function Nft() {
                           {!!data.metadata.name &&
                             <tr>
                               <td>{t("table.name")}</td>
-                              <td>{stripText(data.metadata.name)}</td>
+                              <td>{nftName(data)}</td>
                             </tr>
                           }
                           {!!data.metadata.description &&

@@ -1,6 +1,18 @@
 import { Buffer } from 'buffer';
 import { stripText } from '.';
 
+export const nftName = (nft) => {
+  if (nft?.metadata?.name) {
+    return stripText(nft.metadata.name);
+  } else if (nft?.uri) {
+    let name = Buffer.from(nft.uri, 'hex');
+    if (name.includes('filename=')) {
+      name = name.split('filename=')[1];
+      return stripText(name);
+    }
+  }
+}
+
 export const isValidTaxon = (taxon) => {
   if (taxon !== 0 && !taxon) return false;
   taxon = Number(taxon);
@@ -102,7 +114,7 @@ const metaUrl = (nft, type = 'image', gateway = 'our') => {
       if (decodedUri.toLowerCase().includes("metadata.json")) {
         return assetUrl(decodedUri.replace("metadata.json", ("data." + meta.file_extension)), type, gateway);
       }
-    }; 
+    };
   }
   if (type === 'video' || type === 'thumbnail') {
     if (meta.video) return assetUrl(meta.video, type, gateway);
