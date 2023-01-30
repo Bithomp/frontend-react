@@ -279,9 +279,18 @@ export const amountFormat = (amount, options = {}) => {
     showValue = niceNumber(value, options.maxFractionDigits);
   }
 
+  //add issued by (issuerDetails.service / username)
   if (type !== 'XRP' && options.tooltip) {
     // curency + " " - otherwise it is in the hex format
-    return <>{showValue} {valuePrefix} <span className='tooltip'>{currency + " "}<span className={'tooltiptext ' + options.tooltip}>{issuer}</span></span></>
+    return <>
+      {showValue} {valuePrefix} {" "}
+      <span className='tooltip'>
+        <a href={"/explorer/" + issuer}>{currency} </a>
+        <span className={'tooltiptext ' + options.tooltip}>
+          {addressUsernameOrServiceLink(amount, 'issuer', { short: true })}
+        </span>
+      </span>
+    </>
   } else {
     //type: ['IOU', 'IOU demurraging', 'NFT']
     return showValue + " " + valuePrefix + " " + currency;

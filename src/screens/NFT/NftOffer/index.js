@@ -183,7 +183,7 @@ export default function NftOffer() {
                         {trWithAccount(data, 'destination', t("table.destination"), "/explorer/")}
                         <tr>
                           <td>{t("table.price")}</td>
-                          <td>{amountFormat(data.amount)}</td>
+                          <td>{amountFormat(data.amount, { tooltip: 'right' })}</td>
                         </tr>
                         <tr>
                           <td>{t("table.placed")}</td>
