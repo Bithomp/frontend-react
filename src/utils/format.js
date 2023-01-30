@@ -113,12 +113,14 @@ export const nftLink = (nft, type) => {
     link = "/nfts/";
   }
 
+  //nft-offers destination
   if (nft[type + 'Details']) {
     const showName = userOrServiceName(nft[type + 'Details']);
     const { username, service } = nft[type + 'Details'];
 
     if (type === "destination") {
-      if (service === "onXRP" || service === "xrp.cafe") {
+      const marketplaces = ['onXRP', 'xrp.cafe', 'xMart', 'nftmaster', 'XPmarket', 'Equilibrium Games'];
+      if (marketplaces.includes(service)) {
         let url = '';
         if (service === "onXRP") {
           url = "https://nft.onxrp.com/nft/";
@@ -128,6 +130,10 @@ export const nftLink = (nft, type) => {
           url = "https://api.xmart.art/nft/";
         } else if (service === "nftmaster") {
           url = "https://nftmaster.com/nft/";
+        } else if (service === "XPmarket") {
+          url = "https://xpmarket.com/nfts/item/";
+        } else if (service === "Equilibrium Games") {
+          url = "https://equilibrium-games.com/marketplace/nft/";
         }
         return <span>
           {i18n.t("table.text.see-on")} <a href={url + nft.nftokenID} target="_blank" rel="noreferrer">
