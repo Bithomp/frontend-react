@@ -429,6 +429,7 @@
     "image": "Image",
     "video": "Video",
     "audio": "Audio",
+    "model": "3D model",
     "owned-offers": "Owned offers",
     "offers-for-owned-nfts": "Offers for owned nfts"
   },

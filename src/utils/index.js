@@ -128,4 +128,3 @@ export const isAddressOrUsername = (x) => {
 export const isIdValid = (x) => {
   return /^[0-9a-zA-Z]{64}$/.test(x);
 }
-

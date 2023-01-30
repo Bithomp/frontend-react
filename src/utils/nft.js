@@ -11,9 +11,9 @@ const isValidCid = (hash) => {
   return /^Qm[a-zA-Z0-9]{44}$|^baf[a-zA-Z0-9]{56}$/.test(hash);
 }
 
-const ipfsUrl = (url, type = 'image', gateway = 'our') => {
-  if (!url) return null;
-  url = url.toString();
+const ipfsUrl = (uri, type = 'image', gateway = 'our') => {
+  if (!uri) return null;
+  let url = uri.toString();
   if (url.includes('.ipfs.w3s.link') || url.includes('.ipfs.nftstorage.link')) {
     url = url.replace("https://", "");
     url = url.replace(".ipfs.w3s.link", "");
@@ -25,6 +25,14 @@ const ipfsUrl = (url, type = 'image', gateway = 'our') => {
     url = url.split('?filename=')[0];
   } else if (url.slice(0, 5) === 'hash:') {
     url = url.slice(5);
+  }
+
+  //3d model
+  if (url.includes('QmUR2XyUZvGvsNMmLBA5joPduT4f95jSMGzzzmCkckKSF4/?object=')) {
+    url = url.split('QmUR2XyUZvGvsNMmLBA5joPduT4f95jSMGzzzmCkckKSF4/?object=')[1];
+    if (url.includes('&filename=')) {
+      url = url.split('&filename=')[0];
+    }
   }
 
   const urlParts = url.split('/');
@@ -43,7 +51,9 @@ const ipfsUrl = (url, type = 'image', gateway = 'our') => {
     url = url.replace('#', '%23');
     if (gateway === 'our' && (type === 'image' || type === 'video' || type === 'thumbnail')) {
       return 'https://ipfs.bithomp.com/' + type + '/' + url;
-    } else if (gateway === 'cl' || type === 'audio') {
+    } else if (gateway === 'cl' && type === 'model') {
+      return stripText(uri);
+    } else if (gateway === 'cl' || type === 'audio' || type === 'model') {
       return 'https://cloudflare-ipfs.com/ipfs/' + url;
     }
   } else {
@@ -53,10 +63,16 @@ const ipfsUrl = (url, type = 'image', gateway = 'our') => {
 
 const assetUrl = (uri, type = 'image', gateway = 'our') => {
   uri = uri.toString();
-  if (type === 'image' && isCorrectFileType(uri, 'video')) {
+  if (type === 'image' && (isCorrectFileType(uri, 'video') || isCorrectFileType(uri, 'audio') || isCorrectFileType(uri, 'model'))) {
     return null;
   }
-  if (type === 'video' && isCorrectFileType(uri, 'image')) {
+  if (type === 'video' && (isCorrectFileType(uri, 'image') || isCorrectFileType(uri, 'audio') || isCorrectFileType(uri, 'model'))) {
+    return null;
+  }
+  if (type === 'model' && (isCorrectFileType(uri, 'image') || isCorrectFileType(uri, 'audio') || isCorrectFileType(uri, 'video'))) {
+    return null;
+  }
+  if (type === 'audio' && (isCorrectFileType(uri, 'image') || isCorrectFileType(uri, 'model') || isCorrectFileType(uri, 'video'))) {
     return null;
   }
 
@@ -97,12 +113,16 @@ const metaUrl = (nft, type = 'image', gateway = 'our') => {
   if (type === 'audio') {
     if (meta.audio) return assetUrl(meta.audio, type, gateway);
   }
+  if (type === 'model') {
+    if (meta['3D_model']) return assetUrl(meta['3D_model'], type, gateway);
+  }
   return null;
 }
 
 const isCorrectFileType = (url, nftType = 'image') => {
   if (!url) return false;
-  let type = url.toString().slice(-4).toUpperCase();
+  url = url.toString();
+  let type = url.slice(-4).toUpperCase();
   if (nftType === 'thumbnail') {
     return true;
   } else if (nftType === 'image') {
@@ -118,6 +138,13 @@ const isCorrectFileType = (url, nftType = 'image') => {
     }
   } else if (nftType === 'audio') {
     if (type === '.MP3') {
+      return true;
+    }
+  } else if (nftType === 'model') {
+    if (url.includes('QmUR2XyUZvGvsNMmLBA5joPduT4f95jSMGzzzmCkckKSF4')) {
+      return true;
+    }
+    if (type === '.GLTF' || type === '.GLB' || type === '.OBJ' || type === '.3DS' || type === '.STL' || type === '.PLY' || type === '.3DM' || type === '.OFF') {
       return true;
     }
   }

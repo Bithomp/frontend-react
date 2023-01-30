@@ -8,7 +8,7 @@ import Select from "react-select";
 import SEO from '../../../components/SEO';
 import SearchBlock from '../../../components/SearchBlock';
 import CopyButton from '../../../components/CopyButton';
-import NftImageAndVideo from '../../../components/NftPreview';
+import NftPreview from '../../../components/NftPreview';
 
 import { onFailedRequest, onApiError, stripText } from '../../../utils';
 import {
@@ -421,7 +421,7 @@ export default function Nft() {
               <>{data.flags &&
                 <>
                   <div className="column-left">
-                    <NftImageAndVideo nft={data} />
+                    <NftPreview nft={data} />
                     <div>
                       {data.metadata?.attributes && data.metadata?.attributes[0] && data.metadata?.attributes[0].trait_type &&
                         <table className='table-details autowidth'>

@@ -429,6 +429,7 @@
     "image": "Картинка",
     "video": "Видео",
     "audio": "Аудио",
+    "model": "3D модель",
     "owned-offers": "Пренадлежащие",
     "offers-for-owned-nfts": "Для принадлежащих NFT"
   },

@@ -1,7 +1,10 @@
 import { useState } from "react";
 import { useTranslation } from 'react-i18next';
+import { Helmet } from "react-helmet-async";
 
 import { nftUrl } from '../utils/nft';
+
+import LoadingGif from "../assets/images/loading.gif";
 
 import Tabs from './Tabs';
 
@@ -11,12 +14,13 @@ export default function NftPreview({ nft }) {
   const [loaded, setLoaded] = useState(false);
   const [errored, setErrored] = useState(false);
 
+  const style = {
+    textAlign: "center",
+    marginTop: "40px",
+    marginBottom: "20px"
+  };
+
   const loadingImage = () => {
-    const style = {
-      textAlign: "center",
-      marginTop: "40px",
-      marginBottom: "20px"
-    };
     if (errored) {
       return <div style={style}>{t("general.load-failed")}<br /></div>;
     } else if (!loaded) {
@@ -27,16 +31,27 @@ export default function NftPreview({ nft }) {
   const imageUrl = nftUrl(nft, 'image');
   const videoUrl = nftUrl(nft, 'video');
   const audioUrl = nftUrl(nft, 'audio');
+  const modelUrl = nftUrl(nft, 'model');
+
+  let modelState = null;
 
   const clUrl = {
     image: nftUrl(nft, 'image', 'cl'),
     video: nftUrl(nft, 'video', 'cl'),
-    audio: nftUrl(nft, 'audio', 'cl')
+    audio: nftUrl(nft, 'audio', 'cl'),
+    model: nftUrl(nft, 'model', 'cl')
   }
-  const contentTabList = [
-    { value: 'image', label: (t("tabs.image")) },
-    { value: 'video', label: (t("tabs.video")) }
-  ];
+  const contentTabList = [];
+  if (imageUrl) {
+    contentTabList.push({ value: 'image', label: (t("tabs.image")) });
+  }
+  if (videoUrl) {
+    contentTabList.push({ value: 'video', label: (t("tabs.video")) });
+  }
+  if (modelUrl) {
+    contentTabList.push({ value: 'model', label: (t("tabs.model")) });
+  }
+
   let imageStyle = { width: "100%", height: "auto" };
   if (imageUrl) {
     if (imageUrl.slice(0, 10) === 'data:image') {
@@ -47,8 +62,20 @@ export default function NftPreview({ nft }) {
     }
   }
   let errorStyle = { marginTop: "40px" };
+  let defaultTab = contentTab;
+  let defaultUrl = clUrl[contentTab];
+  if (!imageUrl && contentTab === 'image') {
+    if (clUrl['video']) {
+      defaultTab = 'video';
+      defaultUrl = clUrl['video'];
+    } else if (clUrl['model']) {
+      defaultTab = 'model';
+      defaultUrl = clUrl['model'];
+    }
+  }
+
   return <>
-    {imageUrl && videoUrl &&
+    {contentTabList.length > 1 &&
       <div style={{ height: "31px", marginBottom: "10px" }}>
         <span className='tabs-inline' style={{ float: "left" }}>
           <Tabs
@@ -82,7 +109,7 @@ export default function NftPreview({ nft }) {
         alt={nft.metadata?.name}
       />
     }
-    {videoUrl && (contentTab === 'video' || !imageUrl) &&
+    {videoUrl && defaultTab === 'video' &&
       <video
         autoPlay
         playsInline
@@ -94,18 +121,36 @@ export default function NftPreview({ nft }) {
         <source src={videoUrl} type="video/mp4" />
       </video>
     }
-    {!(imageUrl && videoUrl) && clUrl[contentTab] &&
-      <span style={{ padding: "4px 0px" }}>
-        <a href={clUrl[contentTab]} target="_blank" rel="noreferrer">
-          {t("tabs." + contentTab)} IPFS
-        </a>
-      </span>
+    {modelUrl && defaultTab === 'model' &&
+      <>
+        {modelState === "loading" &&
+          <div style={style}><span className="waiting"></span><br />{t("general.loading")}</div>
+        }
+        {modelState !== "ready" &&
+          <>
+            <Helmet>
+              <script
+                type="module"
+                src={process.env.PUBLIC_URL + "/js/model-viewer.min.js"}
+              />
+            </Helmet>
+            <model-viewer
+              style={{ width: "100%" }}
+              src={modelUrl}
+              camera-controls
+              auto-rotate
+              ar
+              poster={LoadingGif}
+            >
+            </model-viewer>
+          </>
+        }
+      </>
     }
-
-    {!imageUrl && contentTab === 'image' && clUrl['video'] &&
+    {contentTabList.length < 2 && defaultUrl &&
       <span style={{ padding: "4px 0px" }}>
-        <a href={clUrl['video']} target="_blank" rel="noreferrer">
-          {t("tabs.video")} IPFS
+        <a href={defaultUrl} target="_blank" rel="noreferrer">
+          {t("tabs." + defaultTab)} IPFS
         </a>
       </span>
     }
@@ -124,7 +169,7 @@ export default function NftPreview({ nft }) {
       <div className="center bold" style={errorStyle}>{t("general.no-uri")}</div>
       :
       <>
-        {!(imageUrl || videoUrl || audioUrl) &&
+        {!(imageUrl || videoUrl || audioUrl || modelUrl) &&
           <div className="center bold" style={errorStyle}>{t("general.no-media")}</div>
         }
       </>
