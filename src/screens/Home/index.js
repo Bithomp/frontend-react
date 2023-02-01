@@ -12,7 +12,7 @@ import './styles.scss';
 import nexo from "../../assets/images/nexo.svg";
 import btcbit from "../../assets/images/btcbit.svg";
 //import xbit from "../../assets/images/xbit.png";
-import wolfbet from "../../assets/images/wolfbet.png";
+import { ReactComponent as Wolfbet } from "../../assets/images/wolfbet.svg";
 
 export default function Home({ theme, devNet }) {
   const { t } = useTranslation();
@@ -27,18 +27,18 @@ export default function Home({ theme, devNet }) {
       <SearchBlock searchPlaceholderText={searchPlaceholderText} tab="explorer" />
       {!devNet &&
         <div className="home-sponsored">
-          <a href="https://bithomp.com/go/play-crypto" target="_blank" rel="noreferrer">
-            <div className="sponsored-brand">
-              <img src={wolfbet} className="sponsored-brand-icon" alt="play crypto" />
-              <div className="sponsored-brand-title">XRP Casino</div>
-              <div className="sponsored-brand-text">XRP crypto casino & sportsbook.</div>
-            </div>
-          </a>
           <a href="https://bithomp.com/go/buy-xrp" target="_blank" rel="noreferrer">
             <div className="sponsored-brand">
               <img src={btcbit} className="sponsored-brand-icon" alt="buy xrp" />
               <div className="sponsored-brand-title">Buy XRP</div>
               <div className="sponsored-brand-text">Instantly buy and sell cryptocurrency with low commission.</div>
+            </div>
+          </a>
+          <a href="https://bithomp.com/go/play-crypto" target="_blank" rel="noreferrer">
+            <div className="sponsored-brand">
+              <Wolfbet className='sponsored-brand-icon' />
+              <div className="sponsored-brand-title">XRP Casino</div>
+              <div className="sponsored-brand-text">XRP crypto casino & sportsbook.</div>
             </div>
           </a>
           <a href="https://bithomp.com/go/earn-on-xrp" target="_blank" rel="noreferrer">
