@@ -135,7 +135,7 @@ export default function NftPreview({ nft }) {
               />
             </Helmet>
             <model-viewer
-              style={{ width: "100%" }}
+              class="model-viewer"
               src={modelUrl}
               camera-controls
               auto-rotate

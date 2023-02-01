@@ -5,6 +5,10 @@
     position: relative;
     width: calc(40% - 30px);
     padding: 0 15px;
+    .model-viewer {
+      width: 100%;
+      min-height: 370px;
+    }
     table.table-details {
       border-collapse: separate;
       background-color: var(--background-main);
