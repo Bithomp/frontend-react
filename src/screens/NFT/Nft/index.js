@@ -401,7 +401,7 @@ export default function Nft() {
   }
 
   return <>
-    {data && <SEO title={t("nft.header") + " " + data.metadata?.name} />}
+    {data && <SEO title={"NFT " + data.metadata?.name} />}
     <SearchBlock
       searchPlaceholderText={t("nft.enter-nft-id")}
       tab="nft"
@@ -580,7 +580,7 @@ export default function Nft() {
       </>
         :
         <>
-          <h2 className='center'>{t("nft.header")}</h2>
+          <h2 className='center'>NFT</h2>
           <p className='center'>
             {t("nft.desc")}
           </p>

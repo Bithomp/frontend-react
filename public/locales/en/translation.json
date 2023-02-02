@@ -476,7 +476,6 @@
     "end": "Here are all the NFTs we could find."
   },
   "nft": {
-    "header": "Account's NFTs",
     "desc": "Here you can search for NFTs, enter an NFT ID and press the search button.",
     "enter-nft-id": "Enter an NFT ID"
   },
