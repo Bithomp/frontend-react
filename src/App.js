@@ -32,6 +32,7 @@ import PrivacyPolicy from './screens/PrivacyPolicy';
 import TermsAndConditions from './screens/TermsAndConditions';
 import CustomerSupport from "./screens/CustomerSupport";
 import Press from "./screens/Press";
+import Donate from "./screens/Donate";
 import PageNotFound from './screens/PageNotFound';
 import Redirect from './screens/Redirect';
 
@@ -129,6 +130,7 @@ export default function App() {
           <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
           <Route path="/customer-support" element={<CustomerSupport />} />
           <Route path="/press" element={<Press />} />
+          <Route path="/donate" element={<Donate />} />
           <Route path="/error" element={<PageNotFound />} />
           <Route path="*" element={<Redirect />} />
         </Routes>
