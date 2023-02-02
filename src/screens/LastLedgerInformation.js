@@ -129,7 +129,6 @@ export default function LastLedgerInformation() {
           <span className='no-brake'>
             {niceNumber(ledger?.totalCoins && (100000000000 - ledger.totalCoins / 1000000), 6) + ' XRP'}
           </span>
-
         </p>
         <p className="center" style={{ position: "absolute", top: "calc(50% - 72px)", left: "calc(50% - 54px)" }}>
           {!ledger &&

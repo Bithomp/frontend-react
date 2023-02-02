@@ -17,7 +17,7 @@ const compare = (a, b) => {
   return a.domain > b.domain ? 1 : -1;
 }
 
-export default function Amendment() {
+export default function Validators() {
   const [data, setData] = useState(null);
   const { t } = useTranslation();
 
