@@ -141,6 +141,7 @@ export default function NftPreview({ nft }) {
               auto-rotate
               ar
               poster={LoadingGif}
+              autoplay
             >
             </model-viewer>
           </>
