@@ -53,6 +53,8 @@ export default function NftVolumes() {
     { value: 'primary', label: (t("tabs.primary-sales")) }
   ];
 
+  const controller = new AbortController();
+
   const checkApi = async () => {
     let apiUrl = 'v2/nft-volumes';
     if (listTab === 'currencies') {
@@ -72,8 +74,14 @@ export default function NftVolumes() {
     }
 
     setLoading(true);
-    const response = await axios(apiUrl + '&period=' + periodTab + '&saleType=' + saleTab).catch(error => {
-      onFailedRequest(error, setErrorMessage);
+    setRawData({});
+    setData({});
+    const response = await axios.get(apiUrl + '&period=' + periodTab + '&saleType=' + saleTab, {
+      signal: controller.signal
+    }).catch(error => {
+      if (error && error.message !== "canceled") {
+        onFailedRequest(error, setErrorMessage);
+      }
     });
     setLoading(false);
 
@@ -197,6 +205,11 @@ export default function NftVolumes() {
     }
 
     navigate('/nft-volumes?' + searchParams.toString(), { replace: true });
+
+    return () => {
+      controller.abort();
+    }
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [saleTab, periodTab, listTab, currency, currencyIssuer]);
 
@@ -291,29 +304,35 @@ export default function NftVolumes() {
         <Tabs tabList={saleTabList} tab={saleTab} setTab={setSaleTab} name="sale" />
       </div>
       {listTab === 'brokers' &&
-        <p>
-          {t("nft-volumes.brokers.not-a-marketplace-list")}
-          <br /><br />
-          {rawData?.summary && !loading &&
-            <>
-              {t("nft-volumes.brokers.period." + periodTab)}{" "}
-              <Trans
-                i18nKey="nft-volumes.brokers.text0"
-                values={{
-                  allSales: shortNiceNumber(rawData.summary.all.sales, 0),
-                  allVolume: amountFormat(rawData.summary.all.volume, { tooltip: 'right', maxFractionDigits: 2 }),
-                  brokerSales: shortNiceNumber(rawData.summary.brokers.sales, 0),
-                  percentBrokerSales: persentFormat(rawData.summary.brokers.sales, rawData.summary.all.sales),
-                  brokerVolume: amountFormat(rawData.summary.brokers.volume, { tooltip: 'right', maxFractionDigits: 2 }),
-                  percentBrokerVolume: persentFormat(rawData.summary.brokers.volume, rawData.summary.all.volume)
-                }}
-              >
-                XRPL had {shortNiceNumber(rawData.summary.all.sales, 0)} NFT trades for {amountFormat(rawData.summary.all.volume, { tooltip: 'right', maxFractionDigits: 2 })},
-                from which {shortNiceNumber(rawData.summary.brokers.sales, 0)} ({persentFormat(rawData.summary.brokers.sales, rawData.summary.all.sales)}) of trades for {amountFormat(rawData.summary.brokers.volume, { tooltip: 'right', maxFractionDigits: 2 })} ({persentFormat(rawData.summary.brokers.volume, rawData.summary.all.volume)}) were through the brokerage model.
-              </Trans>
-            </>
-          }
-        </p>
+        <>
+          <div className='flex'>
+            <div className="grey-box">
+              {t("nft-volumes.brokers.not-a-marketplace-list")}
+            </div>
+            <div className="grey-box">
+              {rawData?.summary && !loading &&
+                <>
+                  {t("nft-volumes.brokers.period." + periodTab)}{" "}
+                  <Trans
+                    i18nKey="nft-volumes.brokers.text0"
+                    values={{
+                      allSales: shortNiceNumber(rawData.summary.all.sales, 0),
+                      allVolume: amountFormat(rawData.summary.all.volume, { tooltip: 'right', maxFractionDigits: 2 }),
+                      brokerSales: shortNiceNumber(rawData.summary.brokers.sales, 0),
+                      percentBrokerSales: persentFormat(rawData.summary.brokers.sales, rawData.summary.all.sales),
+                      brokerVolume: amountFormat(rawData.summary.brokers.volume, { tooltip: 'right', maxFractionDigits: 2 }),
+                      percentBrokerVolume: persentFormat(rawData.summary.brokers.volume, rawData.summary.all.volume)
+                    }}
+                  >
+                    XRPL had {shortNiceNumber(rawData.summary.all.sales, 0)} NFT trades for {amountFormat(rawData.summary.all.volume, { tooltip: 'right', maxFractionDigits: 2 })},
+                    from which {shortNiceNumber(rawData.summary.brokers.sales, 0)} ({persentFormat(rawData.summary.brokers.sales, rawData.summary.all.sales)}) of trades for {amountFormat(rawData.summary.brokers.volume, { tooltip: 'right', maxFractionDigits: 2 })} ({persentFormat(rawData.summary.brokers.volume, rawData.summary.all.volume)}) were through the brokerage model.
+                  </Trans>
+                </>
+              }
+            </div>
+          </div>
+          <br />
+        </>
       }
       {(listTab !== 'issuers' || (listTab === 'issuers' && window.innerWidth > 1000)) ?
         <table className="table-large shrink">
