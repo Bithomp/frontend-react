@@ -509,5 +509,11 @@
     "owned-nfts-same-account": "NFTs owned by that account",
     "all": "all",
     "sold": "sold"
+  },
+  "donate": {
+    "help-us": "Help us in our mission to make the most user friendly XRPL explorer.",
+    "it-helps": "Your donation will help us to add capacity and continue to develop Bithomp.",
+    "address": "Our XRPL address for donations",
+    "dt": "Destination tag"
   }
 }
