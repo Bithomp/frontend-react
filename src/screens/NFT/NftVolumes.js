@@ -75,7 +75,7 @@ export default function NftVolumes() {
 
     setLoading(true);
     setRawData({});
-    setData({});
+    setData([]);
     const response = await axios.get(apiUrl + '&period=' + periodTab + '&saleType=' + saleTab, {
       signal: controller.signal
     }).catch(error => {
