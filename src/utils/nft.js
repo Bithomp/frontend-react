@@ -1,6 +1,29 @@
 import { Buffer } from 'buffer';
 import { stripText } from '.';
 
+import { Link } from 'react-router-dom';
+import { ReactComponent as LinkIcon } from "../assets/images/link.svg";
+
+export const nftThumbnail = (nft) => {
+  if (!nft || !nft.nftokenID) return "";
+  return <Link to={"/nft/" + nft.nftokenID}>
+    <img
+      src={nftUrl(nft, 'thumbnail')}
+      width="32px"
+      height="32px"
+      style={{ borderRadius: "50% 20% / 10% 40%" }}
+      alt={nft.metadata?.name}
+    />
+  </Link>
+}
+
+export const nftNameLink = (nft) => {
+  if (!nft) return "";
+  return <Link to={"/nft/" + nft.nftokenID}>
+    {nft?.metadata?.name ? nft.metadata.name : <LinkIcon />}
+  </Link>
+}
+
 export const nftName = (nft) => {
   if (nft?.metadata?.name) {
     return stripText(nft.metadata.name);

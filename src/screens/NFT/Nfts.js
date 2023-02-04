@@ -12,7 +12,7 @@ import Tiles from '../../components/Tiles';
 import IssuerSelect from '../../components/IssuerSelect';
 
 import { onFailedRequest, onApiError, isAddressOrUsername, setTabParams } from '../../utils';
-import { isValidTaxon } from '../../utils/nft';
+import { isValidTaxon, nftThumbnail, nftNameLink } from '../../utils/nft';
 import { nftLink, usernameOrAddress, userOrServiceLink } from '../../utils/format';
 
 import { ReactComponent as LinkIcon } from "../../assets/images/link.svg";
@@ -408,10 +408,10 @@ export default function Nfts() {
               <thead>
                 <tr>
                   <th className='center'>{t("table.index")}</th>
-                  <th>{t("table.name")}</th>
+                  <th>NFT</th>
+                  <th></th>
                   <th className='center'>{t("table.serial")}</th>
                   {!taxon && <th className='center'>{t("table.taxon")}</th>}
-                  <th className='center'>NFT</th>
                   {!issuer && <th className='center'>{t("table.issuer")}</th>}
                   {(!id && !owner) && <th className='center'>{t("table.owner")}</th>}
                 </tr>
@@ -429,10 +429,10 @@ export default function Nfts() {
                     {!errorMessage ? filteredData.map((nft, i) =>
                       <tr key={nft.nftokenID}>
                         <td className="center">{i + 1}</td>
-                        <td>{nft.metadata?.name}</td>
+                        <td>{nftThumbnail(nft)}</td>
+                        <td>{nftNameLink(nft)}</td>
                         <td className='center'>{nft.sequence}</td>
                         {!taxon && <td className='center'>{nft.nftokenTaxon}</td>}
-                        <td className='center'><Link to={"/nft/" + nft.nftokenID}><LinkIcon /></Link></td>
                         {!issuer && <td className='center'>{nftLink(nft, 'issuer')}</td>}
                         {(!id && !owner) && <td className='center'>{nftLink(nft, 'owner')}</td>}
                       </tr>)
