@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { isMobile } from "react-device-detect";
 import { useLocation } from 'react-router-dom';
-import { Buffer } from 'buffer';
 import axios from 'axios';
 
 import { server, devNet } from '../../utils';
@@ -34,11 +33,7 @@ export default function SignForm({ setSignRequest, setAccount, signRequest }) {
   useEffect(() => {
     //deeplink doesnt work on mobiles when it's not in the onClick event
     if (!isMobile && signRequest?.wallet === "xumm") {
-      if (!signRequest.request) {
-        XummLogin();
-      } else {
-        XummTxSend(signRequest.request);
-      }
+      XummTxSend();
     }
     //eslint-disable-next-line react-hooks/exhaustive-deps
   }, [signRequest]);
@@ -54,26 +49,21 @@ export default function SignForm({ setSignRequest, setAccount, signRequest }) {
     }
   }
 
-  const XummLogin = () => {
-    const tx = { TransactionType: "SignIn" };
-    XummTxSend(tx);
-  }
-
-  const XummTxSend = (tx, memo = null) => {
-    tx.Memos = [
-      {
-        "Memo": {
-          "MemoData": "626974686F6D702E636F6D"
-        }
+  const XummTxSend = () => {
+    //default login 
+    let tx = { TransactionType: "SignIn" };
+    if (signRequest.request) {
+      tx = signRequest.request;
+    }
+    const client = {
+      "Memo": {
+        "MemoData": "626974686F6D702E636F6D"
       }
-    ];
-    if (memo) {
-      const hex = Buffer.from(memo).toString('hex').toUpperCase();
-      tx.Memos.push({
-        "Memo": {
-          "MemoData": hex
-        }
-      });
+    };
+    if (tx.Memos) {
+      tx.Memos.push(client);
+    } else {
+      tx.Memos = [client]
     }
 
     let signInPayload = {
@@ -206,7 +196,7 @@ export default function SignForm({ setSignRequest, setAccount, signRequest }) {
           <>
             <div className='header'>{t("signin.choose-app")}</div>
             <div className='signin-apps'>
-              <img alt="xumm" className='signin-app-logo' src={xumm} onClick={XummLogin} />
+              <img alt="xumm" className='signin-app-logo' src={xumm} onClick={XummTxSend} />
               {signRequest.wallet !== "xumm" &&
                 <>
                   {notAvailable(ledger, "ledger")}
@@ -240,7 +230,7 @@ export default function SignForm({ setSignRequest, setAccount, signRequest }) {
                 }
                 <br />
                 {showXummQr ?
-                  <XummQr expiredQr={expiredQr} xummQrSrc={xummQrSrc} onReset={XummLogin} status={status} />
+                  <XummQr expiredQr={expiredQr} xummQrSrc={xummQrSrc} onReset={XummTxSend} status={status} />
                   :
                   <div className="orange bold center">{status}</div>
                 }
