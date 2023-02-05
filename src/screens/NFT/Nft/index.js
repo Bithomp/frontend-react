@@ -480,7 +480,7 @@ export default function Nft({ setSignRequest, account, signRequest }) {
             }
           })}
         >
-          <img src={xummImg} style={xummLogoStyle} />
+          <img src={xummImg} style={xummLogoStyle} alt="xumm" />
           {t("nft.cancel-for")} {amountFormat(bestSellOffer.amount)}
         </button>
         <br /><br />
@@ -507,7 +507,7 @@ export default function Nft({ setSignRequest, account, signRequest }) {
           }
         })}
       >
-        <img src={xummImg} style={xummLogoStyle} />
+        <img src={xummImg} style={xummLogoStyle} alt="xumm" />
         {t("nft.buy-for")} {amountFormat(bestSellOffer.amount)}
       </button>
       <br /><br />
