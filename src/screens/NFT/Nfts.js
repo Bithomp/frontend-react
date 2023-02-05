@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { useState, useEffect } from 'react';
-import { useParams, useSearchParams, useLocation, useNavigate, Link } from "react-router-dom";
+import { useParams, useSearchParams, useLocation, useNavigate } from "react-router-dom";
 import { CSVLink } from "react-csv";
 import axios from 'axios';
 import InfiniteScroll from 'react-infinite-scroll-component';
@@ -14,8 +14,6 @@ import IssuerSelect from '../../components/IssuerSelect';
 import { onFailedRequest, onApiError, isAddressOrUsername, setTabParams } from '../../utils';
 import { isValidTaxon, nftThumbnail, nftNameLink } from '../../utils/nft';
 import { nftLink, usernameOrAddress, userOrServiceLink } from '../../utils/format';
-
-import { ReactComponent as LinkIcon } from "../../assets/images/link.svg";
 
 export default function Nfts() {
   const { t } = useTranslation();
