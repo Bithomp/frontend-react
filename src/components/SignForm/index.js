@@ -17,7 +17,7 @@ import ledger from '../../assets/images/ledger-large.svg';
 import trezor from '../../assets/images/trezor-large.svg';
 import ellipal from '../../assets/images/ellipal-large.svg';
 
-export default function SignInForm({ setSignInFormOpen, setAccount, signInFormOpen }) {
+export default function SignForm({ setSignRequest, setAccount, signRequest }) {
   const { t } = useTranslation();
 
   const [screen, setScreen] = useState("choose-app");
@@ -30,11 +30,11 @@ export default function SignInForm({ setSignInFormOpen, setAccount, signInFormOp
 
   useEffect(() => {
     //deeplink doesnt work on mobiles when it's not in the onClick event
-    if (!isMobile && signInFormOpen === "xumm") {
+    if (!isMobile && signRequest?.wallet === "xumm") {
       XummLogin();
     }
     //eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [signInFormOpen]);
+  }, [signRequest]);
 
   const saveAddressData = async (address) => {
     //&service=true&verifiedDomain=true&blacklist=true&payString=true&twitterImageUrl=true&nickname=true
@@ -135,7 +135,7 @@ export default function SignInForm({ setSignInFormOpen, setAccount, signInFormOp
       //close the sign in form
       setXummQrSrc(qr);
       setScreen("choose-app");
-      setSignInFormOpen(false);
+      setSignRequest(null);
     }
   }
 
@@ -145,7 +145,7 @@ export default function SignInForm({ setSignInFormOpen, setAccount, signInFormOp
       xummCancel(xummUuid);
     }
     setScreen("choose-app");
-    setSignInFormOpen(false);
+    setSignRequest(null);
   }
 
   // temporary styles while hardware wallets are not connected
@@ -178,7 +178,7 @@ export default function SignInForm({ setSignInFormOpen, setAccount, signInFormOp
             <div className='header'>{t("signin.choose-app")}</div>
             <div className='signin-apps'>
               <img alt="xumm" className='signin-app-logo' src={xumm} onClick={XummLogin} />
-              {signInFormOpen !== "xumm" &&
+              {signRequest.wallet !== "xumm" &&
                 <>
                   {notAvailable(ledger, "ledger")}
                   {notAvailable(trezor, "trezor")}

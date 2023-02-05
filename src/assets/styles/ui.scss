@@ -365,6 +365,7 @@ table {
 
 .button-action {
   display: inline-block;
+  box-sizing: content-box;
   line-height: 38px;
   background-color: var(--accent-icon);
   border: 1px solid var(--accent-icon);
@@ -374,6 +375,9 @@ table {
   cursor: pointer;
   padding-left: 10px;
   padding-right: 10px;
+  padding-top: 0;
+  padding-bottom: 0;
+  font-size: 16px;
   &:hover {
     background-color: var(--background-menu);
     color: var(--text-contrast);

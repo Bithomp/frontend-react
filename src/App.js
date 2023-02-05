@@ -5,7 +5,7 @@ import axios from 'axios';
 
 import Header from './components/Header';
 import Footer from './components/Footer';
-import SignInForm from "./components/SignInForm";
+import SignForm from "./components/SignForm";
 import ScrollToTop from "./components/ScrollToTop";
 import BackgroundImage from './components/BackgroundImage';
 
@@ -42,7 +42,7 @@ export default function App() {
   const defaultDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
   const [theme, setTheme] = useLocalStorage('theme', defaultDark ? 'dark' : 'light');
   const [account, setAccount] = useLocalStorage('account', null);
-  const [signInFormOpen, setSignInFormOpen] = useState(false);
+  const [signRequest, setSignRequest] = useState(false);
 
   useEffect(() => {
     if (theme === 'dark') {
@@ -74,17 +74,17 @@ export default function App() {
       <Header
         theme={theme}
         switchTheme={switchTheme}
-        setSignInFormOpen={setSignInFormOpen}
+        setSignRequest={setSignRequest}
         account={account}
         signOut={signOut}
       />
       <div className="content">
         <ScrollToTop />
-        {signInFormOpen &&
-          <SignInForm
-            setSignInFormOpen={setSignInFormOpen}
+        {signRequest &&
+          <SignForm
+            setSignRequest={setSignRequest}
             setAccount={setAccount}
-            signInFormOpen={signInFormOpen}
+            signRequest={signRequest}
           />
         }
         <Routes>
@@ -92,7 +92,7 @@ export default function App() {
           <Route path="/index.html" element={<Home theme={theme} devNet={devNet} />} />
           <Route
             path="/username"
-            element={<Username setSignInFormOpen={setSignInFormOpen} account={account} setAccount={setAccount} signOut={signOut} />}
+            element={<Username setSignRequest={setSignRequest} account={account} setAccount={setAccount} signOut={signOut} />}
           />
           <Route path="/alerts" element={<Alerts />} />
           <Route path="/developer" element={<Developer />} />
@@ -101,8 +101,8 @@ export default function App() {
             <Route path="/ledger/:ledgerIndex" element={<Ledger />} />
           </Route>
           <Route path="/last-ledger-information" element={<LastLedgerInformation />} />
-          <Route path="/nft/" element={<Nft />}>
-            <Route path="/nft/:id" element={<Nft />} />
+          <Route path="/nft/" element={<Nft setSignRequest={setSignRequest} />}>
+            <Route path="/nft/:id" element={<Nft setSignRequest={setSignRequest} />} />
           </Route>
           <Route path="/nfts/" element={<Nfts />}>
             <Route path="/nfts/:id" element={<Nfts />} />

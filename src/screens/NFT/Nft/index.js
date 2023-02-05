@@ -28,7 +28,7 @@ import {
 import './styles.scss';
 import { ReactComponent as LinkIcon } from "../../../assets/images/link.svg";
 
-export default function Nft() {
+export default function Nft({ setSignRequest }) {
   const { t } = useTranslation();
   const { id } = useParams();
 
@@ -460,16 +460,14 @@ export default function Nft() {
         </a>
         <br /><br />
       </>;
-    } else {
-      //remove when xumm integrated
-      return "";
     }
 
+    return "";
     /*
     return <>
-      <div className='button-action wide center'>
-        Buy this NFT for {amountFormat(bestSellOffer.amount)}
-      </div>
+      <button className='button-action wide center' onClick={() => setSignRequest({ wallet: "xumm" })}>
+        {t("nft.buy-for")} {amountFormat(bestSellOffer.amount)}
+      </button>
       <br /><br />
     </>
     */

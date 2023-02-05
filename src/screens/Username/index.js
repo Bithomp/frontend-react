@@ -20,7 +20,7 @@ import './styles.scss';
 let interval;
 let ws = null;
 
-export default function Username({ setSignInFormOpen, account, setAccount, signOut }) {
+export default function Username({ setSignRequest, account, setAccount, signOut }) {
   const { t, i18n } = useTranslation();
 
   const [searchParams, setSearchParams] = useSearchParams();
@@ -525,7 +525,7 @@ export default function Username({ setSignInFormOpen, account, setAccount, signO
                       </div>
                     </> :
                     <>
-                      <p>{t("username.step0.enter-address-or")} <b className="link" onClick={() => setSignInFormOpen("xumm")}>{t("username.step0.sign-in")}</b>:</p>
+                      <p>{t("username.step0.enter-address-or")} <b className="link" onClick={() => setSignRequest({ wallet: "xumm" })}>{t("username.step0.sign-in")}</b>:</p>
                       <div className="input-validation">
                         <input placeholder={t("username.step0.your-address")} value={address} onChange={onAddressChange} className="input-text" ref={node => { addressRef = node; }} spellCheck="false" maxLength="36" />
                         {isAddressValid(address) && <img src={checkmark} className="validation-icon" alt="validated" />}

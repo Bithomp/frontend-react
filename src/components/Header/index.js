@@ -8,7 +8,7 @@ import logo from "../../assets/images/logo-animated.svg";
 import Switch from "./Switch";
 import './styles.scss';
 
-export default function Header({ theme, switchTheme, setSignInFormOpen, account, signOut }) {
+export default function Header({ theme, switchTheme, setSignRequest, account, signOut }) {
   const { t } = useTranslation();
 
   const [menuOpen, setMenuOpen] = useState(false);
@@ -136,7 +136,7 @@ export default function Header({ theme, switchTheme, setSignInFormOpen, account,
                 <span onClick={signOut} className="link">{t("signin.signout")}</span>
               </div>
             </div> :
-            <span onClick={() => { setSignInFormOpen(true) }} className="header-signin-link link">{t("signin.signin")}</span>
+            <span onClick={() => { setSignRequest(true) }} className="header-signin-link link">{t("signin.signin")}</span>
           }
           <Switch theme={theme} switchTheme={switchTheme} />
         </div>
@@ -165,7 +165,7 @@ export default function Header({ theme, switchTheme, setSignInFormOpen, account,
             <span onClick={signOut} className="mobile-menu-item link">{t("signin.signout")}</span>
           </>
           :
-          <span onClick={() => { setSignInFormOpen(true) }} className="mobile-menu-item link">{t("signin.signin")}</span>
+          <span onClick={() => { setSignRequest(true) }} className="mobile-menu-item link">{t("signin.signin")}</span>
         }
 
         <div className="mobile-menu-directory"><span>{t("menu.services")}</span></div>
