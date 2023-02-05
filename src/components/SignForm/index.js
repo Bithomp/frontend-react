@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { isMobile } from "react-device-detect";
 import { useLocation } from 'react-router-dom';
+import { Buffer } from 'buffer';
 import axios from 'axios';
 
 import { server, devNet } from '../../utils';
@@ -28,10 +29,16 @@ export default function SignForm({ setSignRequest, setAccount, signRequest }) {
   const [expiredQr, setExpiredQr] = useState(false);
   const location = useLocation();
 
+  const xummUserToken = localStorage.getItem('xummUserToken');
+
   useEffect(() => {
     //deeplink doesnt work on mobiles when it's not in the onClick event
     if (!isMobile && signRequest?.wallet === "xumm") {
-      XummLogin();
+      if (!signRequest.request) {
+        XummLogin();
+      } else {
+        XummTxSend(signRequest.request);
+      }
     }
     //eslint-disable-next-line react-hooks/exhaustive-deps
   }, [signRequest]);
@@ -48,14 +55,37 @@ export default function SignForm({ setSignRequest, setAccount, signRequest }) {
   }
 
   const XummLogin = () => {
+    const tx = { TransactionType: "SignIn" };
+    XummTxSend(tx);
+  }
+
+  const XummTxSend = (tx, memo = null) => {
+    tx.Memos = [
+      {
+        "Memo": {
+          "MemoData": "626974686F6D702E636F6D"
+        }
+      }
+    ];
+    if (memo) {
+      const hex = Buffer.from(memo).toString('hex').toUpperCase();
+      tx.Memos.push({
+        "Memo": {
+          "MemoData": hex
+        }
+      });
+    }
+
     let signInPayload = {
       options: {
         expire: 3
       },
-      txjson: {
-        TransactionType: "SignIn"
-      }
+      txjson: tx
     };
+
+    if (xummUserToken) {
+      signInPayload.user_token = xummUserToken;
+    }
 
     if (isMobile) {
       setStatus(t("signin.xumm.statuses.redirecting"));
@@ -128,15 +158,14 @@ export default function SignForm({ setSignRequest, setAccount, signRequest }) {
       }
     }
     */
+    //data.payload.tx_type: "SignIn"
     if (data.response && data.response.account) {
       saveAddressData(data.response.account);
     }
-    if (data.payload.tx_type === "SignIn") {
-      //close the sign in form
-      setXummQrSrc(qr);
-      setScreen("choose-app");
-      setSignRequest(null);
-    }
+    //close the sign in form
+    setXummQrSrc(qr);
+    setScreen("choose-app");
+    setSignRequest(null);
   }
 
   const SignInCancelAndClose = () => {
@@ -190,7 +219,9 @@ export default function SignForm({ setSignRequest, setAccount, signRequest }) {
         }
         {screen !== 'choose-app' &&
           <>
-            <div className='header'>{t("signin.login-with")} {capitalize(screen)}</div>
+            <div className='header'>
+              {signRequest?.request ? t("signin.sign-with") : t("signin.login-with")} {capitalize(screen)}
+            </div>
             {screen === 'xumm' ?
               <>
                 {!isMobile &&

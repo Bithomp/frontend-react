@@ -101,8 +101,8 @@ export default function App() {
             <Route path="/ledger/:ledgerIndex" element={<Ledger />} />
           </Route>
           <Route path="/last-ledger-information" element={<LastLedgerInformation />} />
-          <Route path="/nft/" element={<Nft setSignRequest={setSignRequest} />}>
-            <Route path="/nft/:id" element={<Nft setSignRequest={setSignRequest} />} />
+          <Route path="/nft/" element={<Nft setSignRequest={setSignRequest} signRequest={signRequest} account={account} />}>
+            <Route path="/nft/:id" element={<Nft setSignRequest={setSignRequest} signRequest={signRequest} account={account} />} />
           </Route>
           <Route path="/nfts/" element={<Nfts />}>
             <Route path="/nfts/:id" element={<Nfts />} />

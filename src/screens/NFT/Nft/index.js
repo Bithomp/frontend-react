@@ -27,8 +27,9 @@ import {
 
 import './styles.scss';
 import { ReactComponent as LinkIcon } from "../../../assets/images/link.svg";
+import xummImg from "../../../assets/images/xumm.png";
 
-export default function Nft({ setSignRequest }) {
+export default function Nft({ setSignRequest, account, signRequest }) {
   const { t } = useTranslation();
   const { id } = useParams();
 
@@ -153,9 +154,11 @@ export default function Nft({ setSignRequest }) {
   */
 
   useEffect(() => {
-    checkApi();
+    if (!signRequest) {
+      checkApi();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id]);
+  }, [id, signRequest]);
 
   const externalUrl = (meta) => {
     let url = meta.external_url || meta.external_link || (meta.minter?.includes("https://") && meta.minter);
@@ -453,6 +456,37 @@ export default function Nft({ setSignRequest }) {
 
     if (!bestSellOffer) return "";
 
+    const xummLogoStyle = {
+      width: "24px",
+      height: "24px",
+      borderRadius: "5px",
+      marginRight: "5px",
+      marginBottom: "5px",
+      verticalAlign: "middle"
+    };
+
+    if (data?.owner && account?.address && account.address === data.owner) {
+      return <>
+        <button
+          className='button-action wide center'
+          onClick={() => setSignRequest({
+            wallet: "xumm",
+            request: {
+              "TransactionType": "NFTokenCancelOffer",
+              "Account": data.owner,
+              "NFTokenOffers": [
+                bestSellOffer.offerIndex
+              ]
+            }
+          })}
+        >
+          <img src={xummImg} style={xummLogoStyle} />
+          {t("nft.cancel-for")} {amountFormat(bestSellOffer.amount)}
+        </button>
+        <br /><br />
+      </>
+    }
+
     if (mpUrl(bestSellOffer)) {
       return <>
         <a className='button-action wide center' href={mpUrl(bestSellOffer)} target="_blank" rel="noreferrer">
@@ -462,15 +496,22 @@ export default function Nft({ setSignRequest }) {
       </>;
     }
 
-    return "";
-    /*
     return <>
-      <button className='button-action wide center' onClick={() => setSignRequest({ wallet: "xumm" })}>
+      <button
+        className='button-action wide center'
+        onClick={() => setSignRequest({
+          wallet: "xumm",
+          request: {
+            "NFTokenSellOffer": bestSellOffer.offerIndex,
+            "TransactionType": "NFTokenAcceptOffer"
+          }
+        })}
+      >
+        <img src={xummImg} style={xummLogoStyle} />
         {t("nft.buy-for")} {amountFormat(bestSellOffer.amount)}
       </button>
       <br /><br />
     </>
-    */
   }
 
   return <>

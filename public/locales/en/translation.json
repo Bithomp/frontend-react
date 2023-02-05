@@ -55,6 +55,7 @@
     "signout": "Sign out",
     "choose-app": "Choose a signing app",
     "login-with": "Login with",
+    "sign-with": "Sign with",
     "xumm": {
       "open-app": "Open the Xumm app on your phone.",
       "change-settings": "Go to settings and choose a testnet node.",
@@ -478,6 +479,7 @@
   "nft": {
     "desc": "Here you can search for NFTs, enter an NFT ID and press the search button.",
     "enter-nft-id": "Enter an NFT ID",
+    "cancel-for": "Cancel Sell offer for",
     "buy-for": "Buy for",
     "on": "on"
   },
