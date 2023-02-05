@@ -103,6 +103,30 @@ export const txIdLink = (txId, chars = 10) => {
   return <a href={"/explorer/" + txId}>{shortHash(txId, chars)}</a>
 }
 
+export const mpUrl = (offer) => {
+  if (!offer || !offer.destination || !offer.destinationDetails) return "";
+  const service = offer.destinationDetails.service;
+  let url = '';
+  if (service === "onXRP") {
+    url = "https://nft.onxrp.com/nft/";
+  } else if (service === "xrp.cafe") {
+    url = "https://xrp.cafe/nft/";
+  } else if (service === "xMart") {
+    url = "https://api.xmart.art/nft/";
+  } else if (service === "nftmaster") {
+    url = "https://nftmaster.com/nft/";
+  } else if (service === "XPmarket") {
+    url = "https://xpmarket.com/nfts/item/";
+  } else if (service === "Equilibrium Games") {
+    url = "https://equilibrium-games.com/marketplace/nft/";
+  }
+  if (url) {
+    return url + offer.nftokenID;
+  } else {
+    return "";
+  }
+}
+
 export const nftLink = (nft, type) => {
   if (!nft || !type || !nft[type]) return "";
 
@@ -116,34 +140,17 @@ export const nftLink = (nft, type) => {
   //nft-offers destination
   if (nft[type + 'Details']) {
     const showName = userOrServiceName(nft[type + 'Details']);
-    const { username, service } = nft[type + 'Details'];
-
     if (type === "destination") {
-      const marketplaces = ['onXRP', 'xrp.cafe', 'xMart', 'nftmaster', 'XPmarket', 'Equilibrium Games'];
-      if (marketplaces.includes(service)) {
-        let url = '';
-        if (service === "onXRP") {
-          url = "https://nft.onxrp.com/nft/";
-        } else if (service === "xrp.cafe") {
-          url = "https://xrp.cafe/nft/";
-        } else if (service === "xMart") {
-          url = "https://api.xmart.art/nft/";
-        } else if (service === "nftmaster") {
-          url = "https://nftmaster.com/nft/";
-        } else if (service === "XPmarket") {
-          url = "https://xpmarket.com/nfts/item/";
-        } else if (service === "Equilibrium Games") {
-          url = "https://equilibrium-games.com/marketplace/nft/";
-        }
+      const url = mpUrl(nft);
+      if (url) {
         return <span>
-          {i18n.t("table.text.see-on")} <a href={url + nft.nftokenID} target="_blank" rel="noreferrer">
+          {i18n.t("table.text.see-on")} <a href={url} target="_blank" rel="noreferrer">
             {showName}
           </a>
         </span>
       }
     }
-
-    return <a href={link + (username || nft[type])}>
+    return <a href={link + (nft[type + 'Details'].username || nft[type])}>
       {showName ? showName : <LinkIcon />}
     </a>
   }

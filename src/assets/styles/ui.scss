@@ -386,6 +386,9 @@ table {
   &.narrow {
     min-width: unset;
   }
+  &.wide {
+    width: calc(100% - 22px);
+  }
 }
 
 .main-box {

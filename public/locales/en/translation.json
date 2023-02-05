@@ -477,7 +477,9 @@
   },
   "nft": {
     "desc": "Here you can search for NFTs, enter an NFT ID and press the search button.",
-    "enter-nft-id": "Enter an NFT ID"
+    "enter-nft-id": "Enter an NFT ID",
+    "buy-for": "Buy for",
+    "on": "on"
   },
   "nft-distribution": {
     "header": "NFT distribution",

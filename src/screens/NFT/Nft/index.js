@@ -21,7 +21,8 @@ import {
   expirationExpired,
   nftOfferLink,
   codeHighlight,
-  trStatus
+  trStatus,
+  mpUrl
 } from '../../../utils/format';
 
 import './styles.scss';
@@ -400,6 +401,80 @@ export default function Nft() {
     />
   }
 
+  const buyButton = (sellOffers) => {
+    if (!sellOffers) return "";
+    sellOffers = sellOffers.filter(function (offer) { return offer.valid; });
+    //best xrp offer available or an IOU offer, if it's only one IOU offer available
+    let bestSellOffer = null;
+    if (sellOffers.length) {
+      let iouOffers = [];
+      let xrpOffers = [];
+
+      for (let i = 0; i < sellOffers.length; i++) {
+        if (sellOffers[i].amount.value) {
+          iouOffers.push(sellOffers[i]);
+        } else {
+          xrpOffers.push(sellOffers[i]);
+        }
+      }
+
+      if (xrpOffers.length > 0) {
+        //sort cheapest on top
+        xrpOffers = xrpOffers.sort((a, b) => (parseFloat(a.amount) > parseFloat(b.amount)) ? 1 : -1);
+
+        for (let i = 0; i < xrpOffers.length; i++) {
+          //remove this hack later when offer has nftokenID in it.
+          xrpOffers[i].nftokenID = data.nftokenID;
+          if (mpUrl(xrpOffers[i]) || !xrpOffers[i].destination) {
+            //if known destination - (not a private offer) or on Open Market
+            bestSellOffer = xrpOffers[i];
+            break;
+          }
+        }
+      }
+
+      if (!bestSellOffer && iouOffers.length > 0) {
+        // if no XRP offers fits creterias above choose IOU if it's only one fits.
+        let iouFitOffers = [];
+        //check that if it's not a prvate offer
+        for (let i = 0; i < iouOffers.length; i++) {
+          if (mpUrl(iouOffers[i]) || !iouOffers[i].destination) {
+            iouFitOffers.push(iouOffers[i]);
+          }
+        }
+        // if only one which fits
+        if (iouFitOffers.length === 1) {
+          bestSellOffer = iouFitOffers[0];
+        }
+      }
+    } else {
+      return "";
+    }
+
+    if (!bestSellOffer) return "";
+
+    if (mpUrl(bestSellOffer)) {
+      return <>
+        <a className='button-action wide center' href={mpUrl(bestSellOffer)} target="_blank" rel="noreferrer">
+          {t("nft.buy-for")} {amountFormat(bestSellOffer.amount)} {t("nft.on")} {bestSellOffer.destinationDetails.service}
+        </a>
+        <br /><br />
+      </>;
+    } else {
+      //remove when xumm integrated
+      return "";
+    }
+
+    /*
+    return <>
+      <div className='button-action wide center'>
+        Buy this NFT for {amountFormat(bestSellOffer.amount)}
+      </div>
+      <br /><br />
+    </>
+    */
+  }
+
   return <>
     {data && <SEO title={"NFT " + data.metadata?.name} />}
     <SearchBlock
@@ -422,6 +497,7 @@ export default function Nft() {
                 <>
                   <div className="column-left">
                     <NftPreview nft={data} />
+                    {buyButton(data.sellOffers)}
                     <div>
                       {data.metadata?.attributes && data.metadata?.attributes[0] && data.metadata?.attributes[0].trait_type &&
                         <table className='table-details autowidth'>
