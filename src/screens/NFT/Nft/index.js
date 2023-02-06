@@ -428,8 +428,6 @@ export default function Nft({ setSignRequest, account, signRequest }) {
         xrpOffers = xrpOffers.sort((a, b) => (parseFloat(a.amount) > parseFloat(b.amount)) ? 1 : -1);
 
         for (let i = 0; i < xrpOffers.length; i++) {
-          //remove this hack later when offer has nftokenID in it.
-          xrpOffers[i].nftokenID = data.nftokenID;
           if (mpUrl(xrpOffers[i]) || !xrpOffers[i].destination) {
             //if known destination - (not a private offer) or on Open Market
             bestSellOffer = xrpOffers[i];
