@@ -30,6 +30,7 @@ export default function NftOffers() {
   const [userData, setUserData] = useState({});
   const [showExpirationColumn, setShowExpirationColumn] = useState(false);
   const [showDestinationColumn, setShowDestinationColumn] = useState(false);
+  const [showValidationColumn, setShowValidationColumn] = useState(false);
   const [offerListTab, setOfferListTab] = useState(searchParams.get("offerList") || "owned");
 
   const offerListTabList = [
@@ -87,8 +88,12 @@ export default function NftOffers() {
   useEffect(() => {
     let showDestination = false;
     let showExpiration = false;
+    let showValidation = false;
     if (data && data.length > 0) {
       for (let i = 0; i < data.length; i++) {
+        if (!data[i].valid) {
+          showValidation = true;
+        }
         if (data[i].destination && data[i].valid) {
           showDestination = true;
         }
@@ -99,6 +104,7 @@ export default function NftOffers() {
     }
     setShowDestinationColumn(showDestination);
     setShowExpirationColumn(showExpiration);
+    setShowValidationColumn(showValidation);
   }, [data]);
 
   /*
@@ -174,6 +180,7 @@ export default function NftOffers() {
                   <th>{t("table.placed")}</th>
                   {showExpirationColumn && <th>{t("table.expiration")}</th>}
                   {showDestinationColumn && <th>{t("table.destination")}</th>}
+                  {(showValidationColumn && offerListTab === 'owned') && <th className='center'>{t("table.status")}</th>}
                 </tr>
               </thead>
               <tbody>
@@ -197,6 +204,17 @@ export default function NftOffers() {
                         <td>{fullDateAndTime(offer.createdAt)}</td>
                         {showExpirationColumn && <td>{offer.expiration ? fullDateAndTime(offer.expiration, "expiration") : t("table.text.no-expiration")}</td>}
                         {showDestinationColumn && <td>{nftLink(offer, 'destination')}</td>}
+                        {(showValidationColumn && offerListTab === 'owned') &&
+                          <td className='center'>
+                            {offer.valid ?
+                              t("table.text.valid")
+                              :
+                              <span className='orange'>
+                                {t("table.text.invalid")}
+                              </span>
+                            }
+                          </td>
+                        }
                       </tr>)
                       :
                       <tr><td colSpan="9" className='center orange bold'>{errorMessage}</td></tr>
@@ -255,6 +273,11 @@ export default function NftOffers() {
                           {offer.destination &&
                             <p>
                               {t("table.destination")}: {nftLink(offer, 'destination')}
+                            </p>
+                          }
+                          {(offerListTab === 'owned' && !offer.valid) &&
+                            <p>
+                              {t("table.status")}: <span className='orange'>{t("table.text.invalid")}</span>
                             </p>
                           }
                         </td>

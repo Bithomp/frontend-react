@@ -396,7 +396,9 @@
       "buy": "Buy",
       "show": "show",
       "hide": "hide",
-      "see-on": "See on"
+      "see-on": "See on",
+      "valid": "valid",
+      "invalid": "invalid"
     },
     "filter": {
       "valid": "Valid",
@@ -444,7 +446,7 @@
     "enter-address": "Enter an XRPL address or a username",
     "searching-tx-nft-nftoffer": "Searching for Tx / NFT ID / NFT Offer",
     "menu": {
-      "account": "Account information",
+      "account": "Account",
       "transactions": "Transactions",
       "tokens": "Tokens"
     }
