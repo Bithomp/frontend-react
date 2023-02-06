@@ -140,7 +140,7 @@ export const nftLink = (nft, type) => {
   //nft-offers destination
   if (nft[type + 'Details']) {
     const showName = userOrServiceName(nft[type + 'Details']);
-    if (type === "destination") {
+    if (type === "destination" && nft.valid) {
       const url = mpUrl(nft);
       if (url) {
         return <span>

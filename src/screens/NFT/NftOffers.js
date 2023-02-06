@@ -42,9 +42,9 @@ export default function NftOffers() {
       return;
     }
 
-    let offerListUrlPart = '?nftoken=true';
+    let offerListUrlPart = '?nftoken=true&offersValidate=true';
     if (offerListTab === 'for-owned-nfts') {
-      offerListUrlPart += '&list=counterOffers&offersValidate=true';
+      offerListUrlPart += '&list=counterOffers';
     }
 
     setLoading(true);
@@ -89,7 +89,7 @@ export default function NftOffers() {
     let showExpiration = false;
     if (data && data.length > 0) {
       for (let i = 0; i < data.length; i++) {
-        if (data[i].destination) {
+        if (data[i].destination && data[i].valid) {
           showDestination = true;
         }
         if (data[i].expiration) {
@@ -135,7 +135,11 @@ export default function NftOffers() {
         "destinationDetails": {
           "username": null,
           "service": "onXRP"
-        }
+        },
+        "valid": false,
+        "validationErrors": [
+          "NFT is not owned by the seller account"
+        ]
       },
   */
 
