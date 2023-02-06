@@ -357,11 +357,14 @@ export default function Nfts() {
       </>}
       <div className='tabs-inline'>
         <Tabs tabList={tabList} tab={tab} setTab={setTab} />
-        {data && data.length > 0 &&
-          <CSVLink data={data} headers={csvHeaders} filename='nfts_export.csv' className='button-action thin narrow'>
-            ⇩ CSV
-          </CSVLink>
-        }
+        <CSVLink
+          data={data || []}
+          headers={csvHeaders}
+          filename='nfts_export.csv'
+          className={'button-action thin narrow' + (!(data && data.length > 0) ? ' disabled' : '')}
+        >
+          ⇩ CSV
+        </CSVLink>
       </div>
       {(id || issuer || owner) ?
         <InfiniteScroll

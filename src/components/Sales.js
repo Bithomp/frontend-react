@@ -247,17 +247,15 @@ export default function Sales({ list, defaultSaleTab = "all" }) {
       <Tabs tabList={viewTabList} tab={viewTab} setTab={setViewTab} name="view" />
       <Tabs tabList={periodTabList} tab={periodTab} setTab={setPeriodTab} name="period" />
       <Tabs tabList={saleTabList} tab={saleTab} setTab={setSaleTab} name="sale" />
-      {data?.sales &&
-        <CSVLink
-          data={data.sales}
-          headers={csvHeaders}
-          filename={'nft_sales_export_UTC_' + (new Date().toJSON()) + '.csv'}
-          className='button-action thin narrow'
-          style={{ marginBottom: "15px" }}
-        >
-          ⇩ CSV
-        </CSVLink>
-      }
+      <CSVLink
+        data={data?.sales || []}
+        headers={csvHeaders}
+        filename={'nft_sales_export_UTC_' + (new Date().toJSON()) + '.csv'}
+        className={'button-action thin narrow' + (!data?.sales ? ' disabled' : '')}
+        style={{ marginBottom: "15px" }}
+      >
+        ⇩ CSV
+      </CSVLink>
     </div>
     {viewTab === "list" &&
       <table className="table-large">
