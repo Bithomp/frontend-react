@@ -207,7 +207,7 @@ export default function NftOffer() {
                         {data.canceledAt &&
                           <tr>
                             <td>{t("table.canceled")}</td>
-                            <td>{fullDateAndTime(data.canceledAt)} <a href={"/explorer/" + data.canceledAt}><LinkIcon /></a></td>
+                            <td>{fullDateAndTime(data.canceledAt)} <a href={"/explorer/" + data.canceledTxHash}><LinkIcon /></a></td>
                           </tr>
                         }
                       </tbody>
