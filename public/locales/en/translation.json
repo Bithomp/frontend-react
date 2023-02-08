@@ -436,7 +436,10 @@
     "audio": "Audio",
     "model": "3D model",
     "owned-offers": "Owned offers",
-    "offers-for-owned-nfts": "Offers for owned nfts"
+    "offers-for-owned-nfts": "Offers for owned nfts",
+    "all": "All",
+    "buy": "Buy",
+    "sell": "Sell"
   },
   "xumm": {
     "new-qr": "Get a new QR code"
@@ -458,7 +461,7 @@
     "header": "NFT offers",
     "owned-desc": "Here you can search for Buy and Sell Offers for (XLS-20) NFTs, type in the XRPL address or username to see what it offers.",
     "for-owned-nfts-desc": "Here you can search for Buy Offers for NFTs owned by account, type in the XRPL address or username to see received offers.",
-    "no-nft-offers": "We couldn't find any NFT Offers placed by that address."
+    "no-nft-offers": "We couldn't find any NFT Offers."
   },
   "nft-offer": {
     "header": "NFT offer",

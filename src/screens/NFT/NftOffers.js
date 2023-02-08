@@ -24,18 +24,28 @@ export default function NftOffers() {
   const { id } = useParams();
   const [searchParams, setSearchParams] = useSearchParams();
 
-  const [data, setData] = useState([]);
+  const [offers, setOffers] = useState([]);
+  const [filteredOffers, setFilteredOffers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
   const [userData, setUserData] = useState({});
   const [showExpirationColumn, setShowExpirationColumn] = useState(false);
   const [showDestinationColumn, setShowDestinationColumn] = useState(false);
   const [showValidationColumn, setShowValidationColumn] = useState(false);
+  const [showTypeColumn, setShowTypeColumn] = useState(true);
   const [offerListTab, setOfferListTab] = useState(searchParams.get("offerList") || "owned");
+  const [offerTypeTab, setOfferTypeTab] = useState("all");
+  const [offersCount, setOffersCount] = useState({});
 
   const offerListTabList = [
     { value: 'owned', label: t("tabs.owned-offers") },
     { value: 'for-owned-nfts', label: t("tabs.offers-for-owned-nfts") }
+  ];
+
+  const offerTypeTabList = [
+    { value: 'all', label: (t("tabs.all") + (offersCount?.all ? (" (" + offersCount.all + ")") : "")) },
+    { value: 'buy', label: (t("tabs.buy") + (offersCount?.buy ? (" (" + offersCount.buy + ")") : "")) },
+    { value: 'sell', label: (t("tabs.sell") + (offersCount?.sell ? (" (" + offersCount.sell + ")") : "")) }
   ];
 
   const checkApi = async () => {
@@ -49,31 +59,39 @@ export default function NftOffers() {
     }
 
     setLoading(true);
+    setOffersCount({});
     const response = await axios('v2/nft-offers/' + id + offerListUrlPart).catch(error => {
       onFailedRequest(error, setErrorMessage);
     });
     setLoading(false);
     let newdata = response?.data;
     if (newdata) {
-
       if (newdata.owner) {
         setUserData({
           username: newdata.ownerDetails?.username,
           service: newdata.ownerDetails?.service,
           address: newdata.owner
         });
-
-        if (newdata.nftOffers.length > 0) {
-          setErrorMessage("");
-
-          if (offerListTab === 'for-owned-nfts') {
-            newdata.nftOffers = newdata.nftOffers.filter(function (offer) { return offer.valid; });
-          }
-
-          setData(newdata.nftOffers.sort((a, b) => (a.createdAt < b.createdAt) ? 1 : -1));
+        if (offerListTab === 'for-owned-nfts') {
+          newdata.nftOffers = newdata.nftOffers.filter(function (offer) { return offer.valid; });
         } else {
-          setErrorMessage(t("nft-offers.no-nft-offers"));
+          //count offers
+          let countSell = 0;
+          let countBuy = 0;
+          for (let i = 0; i < newdata.nftOffers.length; i++) {
+            if (newdata.nftOffers[i].flags?.sellToken === true) {
+              countSell++;
+            } else {
+              countBuy++;
+            }
+          }
+          setOffersCount({
+            all: newdata.nftOffers.length,
+            buy: countBuy,
+            sell: countSell
+          });
         }
+        setOffers(newdata.nftOffers.sort((a, b) => (a.createdAt < b.createdAt) ? 1 : -1));
       } else {
         if (newdata.error) {
           setErrorMessage(newdata.error);
@@ -89,15 +107,15 @@ export default function NftOffers() {
     let showDestination = false;
     let showExpiration = false;
     let showValidation = false;
-    if (data && data.length > 0) {
-      for (let i = 0; i < data.length; i++) {
-        if (!data[i].valid) {
+    if (filteredOffers && filteredOffers.length > 0) {
+      for (let i = 0; i < filteredOffers.length; i++) {
+        if (!filteredOffers[i].valid) {
           showValidation = true;
         }
-        if (data[i].destination && data[i].valid) {
+        if (filteredOffers[i].destination && filteredOffers[i].valid) {
           showDestination = true;
         }
-        if (data[i].expiration) {
+        if (filteredOffers[i].expiration) {
           showExpiration = true;
         }
       }
@@ -105,7 +123,26 @@ export default function NftOffers() {
     setShowDestinationColumn(showDestination);
     setShowExpirationColumn(showExpiration);
     setShowValidationColumn(showValidation);
-  }, [data]);
+  }, [filteredOffers]);
+
+  useEffect(() => {
+    let filtered = offers;
+    if (offerTypeTab === "buy") {
+      filtered = offers.filter(function (offer) { return offer.flags?.sellToken !== true; });
+      setShowTypeColumn(false);
+    } else if (offerTypeTab === "sell") {
+      filtered = offers.filter(function (offer) { return offer.flags?.sellToken === true; });
+      setShowTypeColumn(false);
+    } else {
+      setShowTypeColumn(true);
+    }
+    if (filtered.length === 0) {
+      setErrorMessage(t("nft-offers.no-nft-offers"));
+    } else {
+      setErrorMessage("");
+    }
+    setFilteredOffers(filtered);
+  }, [offers, offerTypeTab]);
 
   /*
   {
@@ -164,7 +201,12 @@ export default function NftOffers() {
       userData={userData}
     />
     <div className="content-text" style={{ marginTop: "20px" }}>
-      <Tabs tabList={offerListTabList} tab={offerListTab} setTab={setOfferListTab} name="offerList" />
+      <div className='tabs-inline'>
+        <Tabs tabList={offerListTabList} tab={offerListTab} setTab={setOfferListTab} name="offerList" />
+        {offerListTab === 'owned' &&
+          <Tabs tabList={offerTypeTabList} tab={offerTypeTab} setTab={setOfferTypeTab} name="offerType" />
+        }
+      </div>
       {id ?
         <>
           {window.innerWidth > 960 ?
@@ -175,7 +217,7 @@ export default function NftOffers() {
                   <th className='center'>{t("table.offer")}</th>
                   <th>NFT</th>
                   <th></th>
-                  <th>{t("table.type")}</th>
+                  {showTypeColumn && <th>{t("table.type")}</th>}
                   <th>{t("table.amount")}</th>
                   <th>{t("table.placed")}</th>
                   {showExpirationColumn && <th>{t("table.expiration")}</th>}
@@ -193,13 +235,13 @@ export default function NftOffers() {
                   </tr>
                   :
                   <>
-                    {!errorMessage ? data.map((offer, i) =>
+                    {!errorMessage ? filteredOffers.map((offer, i) =>
                       <tr key={i}>
                         <td className="center">{i + 1}</td>
                         <td className='center'><Link to={"/nft-offer/" + offer.offerIndex}><LinkIcon /></Link></td>
                         <td>{nftThumbnail(offer.nftoken)}</td>
                         <td>{nftNameLink(offer.nftoken)}</td>
-                        <td>{offer.flags?.sellToken === true ? t("table.text.sell") : t("table.text.buy")}</td>
+                        {showTypeColumn && <td>{offer.flags?.sellToken === true ? t("table.text.sell") : t("table.text.buy")}</td>}
                         <td>{amountFormat(offer.amount, { tooltip: true, maxFractionDigits: 2 })}</td>
                         <td>{fullDateAndTime(offer.createdAt)}</td>
                         {showExpirationColumn && <td>{offer.expiration ? fullDateAndTime(offer.expiration, "expiration") : t("table.text.no-expiration")}</td>}
@@ -238,7 +280,7 @@ export default function NftOffers() {
                   </tr>
                   :
                   <>
-                    {!errorMessage ? data.map((offer, i) =>
+                    {!errorMessage ? filteredOffers.map((offer, i) =>
                       <tr key={i}>
                         <td style={{ padding: "5px" }} className='center'>
                           <p>{i + 1}</p>
