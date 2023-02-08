@@ -422,8 +422,11 @@ export default function Nft({ setSignRequest, account, signRequest }) {
       }
 
       if (xrpOffers.length > 0) {
-        //without destination first
-        xrpOffers = xrpOffers.sort((a, b) => (a.destination > b.destination) ? 1 : -1);
+        //without destination firsts
+        xrpOffers = xrpOffers.sort((a, b) => {
+          if (!a.destination && b.destination) return 1;
+          if (a.destination && !b.destination) return -1;
+        });
         //sort cheapest on top
         xrpOffers = xrpOffers.sort((a, b) => (parseFloat(a.amount) > parseFloat(b.amount)) ? 1 : -1);
 
@@ -456,15 +459,6 @@ export default function Nft({ setSignRequest, account, signRequest }) {
 
     if (!bestSellOffer) return "";
 
-    const xummLogoStyle = {
-      width: "24px",
-      height: "24px",
-      borderRadius: "5px",
-      marginRight: "5px",
-      marginBottom: "5px",
-      verticalAlign: "middle"
-    };
-
     if (data?.owner && account?.address && account.address === data.owner) {
       return <>
         <button
@@ -480,7 +474,7 @@ export default function Nft({ setSignRequest, account, signRequest }) {
             }
           })}
         >
-          <img src={xummImg} style={xummLogoStyle} alt="xumm" />
+          <img src={xummImg} className='xumm-logo' alt="xumm" />
           {t("nft.cancel-for")} {amountFormat(bestSellOffer.amount)}
         </button>
         <br /><br />
@@ -507,7 +501,7 @@ export default function Nft({ setSignRequest, account, signRequest }) {
           }
         })}
       >
-        <img src={xummImg} style={xummLogoStyle} alt="xumm" />
+        <img src={xummImg} className='xumm-logo' alt="xumm" />
         {t("nft.buy-for")} {amountFormat(bestSellOffer.amount)}
       </button>
       <br /><br />
