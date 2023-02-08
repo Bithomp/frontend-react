@@ -426,6 +426,7 @@ export default function Nft({ setSignRequest, account, signRequest }) {
         xrpOffers = xrpOffers.sort((a, b) => {
           if (!a.destination && b.destination) return 1;
           if (a.destination && !b.destination) return -1;
+          return a.createdAt - b.createdAt;
         });
         //sort cheapest on top
         xrpOffers = xrpOffers.sort((a, b) => (parseFloat(a.amount) > parseFloat(b.amount)) ? 1 : -1);

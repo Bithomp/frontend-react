@@ -152,7 +152,7 @@ export default function NftOffers({ setSignRequest, signRequest }) {
       setErrorMessage("");
     }
     setFilteredOffers(filtered);
-  }, [offers, offerTypeTab]);
+  }, [offers, offerTypeTab, t]);
 
   /*
   {
@@ -220,7 +220,7 @@ export default function NftOffers({ setSignRequest, signRequest }) {
     <div className="content-text" style={{ marginTop: "20px" }}>
       <div className='tabs-inline'>
         <Tabs tabList={offerListTabList} tab={offerListTab} setTab={setOfferListTab} name="offerList" />
-        {offerListTab === 'owned' &&
+        {(offerListTab === 'owned' && (offersCount.all > 1)) &&
           <Tabs tabList={offerTypeTabList} tab={offerTypeTab} setTab={setOfferTypeTab} name="offerType" />
         }
         {!!offersCount.invalid &&
