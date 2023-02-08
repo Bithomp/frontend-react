@@ -378,6 +378,16 @@ table {
   padding-top: 0;
   padding-bottom: 0;
   font-size: 16px;
+
+  .xumm-logo {
+    width: 24px;
+    height: 24px;
+    border-radius: 5px;
+    margin-right: 5px;
+    margin-bottom: 5px;
+    vertical-align: middle;
+  }
+
   &:hover {
     background-color: var(--background-menu);
     color: var(--text-contrast);
@@ -386,6 +396,11 @@ table {
   &.thin {
     height: 29px;
     line-height: 28px;
+    .xumm-logo {
+      width: 18px;
+      height: 18px;
+      margin-bottom: 2px;
+    }
   }
   &.narrow {
     min-width: unset;

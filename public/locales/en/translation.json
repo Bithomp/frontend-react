@@ -461,7 +461,9 @@
     "header": "NFT offers",
     "owned-desc": "Here you can search for Buy and Sell Offers for (XLS-20) NFTs, type in the XRPL address or username to see what it offers.",
     "for-owned-nfts-desc": "Here you can search for Buy Offers for NFTs owned by account, type in the XRPL address or username to see received offers.",
-    "no-nft-offers": "We couldn't find any NFT Offers."
+    "no-nft-offers": "We couldn't find any NFT Offers.",
+    "cancel-offer_one": "Cancel the invalid offer",
+    "cancel-offer_other": "Cancel {{count}} invalid offers"
   },
   "nft-offer": {
     "header": "NFT offer",

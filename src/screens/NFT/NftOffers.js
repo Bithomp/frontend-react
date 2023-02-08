@@ -18,8 +18,9 @@ import {
 import { nftNameLink, nftThumbnail } from '../../utils/nft';
 
 import { ReactComponent as LinkIcon } from "../../assets/images/link.svg";
+import xummImg from "../../assets/images/xumm.png";
 
-export default function NftOffers() {
+export default function NftOffers({ setSignRequest, signRequest }) {
   const { t } = useTranslation();
   const { id } = useParams();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -36,6 +37,7 @@ export default function NftOffers() {
   const [offerListTab, setOfferListTab] = useState(searchParams.get("offerList") || "owned");
   const [offerTypeTab, setOfferTypeTab] = useState("all");
   const [offersCount, setOffersCount] = useState({});
+  const [invalidOffers, setInvalidOffers] = useState([]);
 
   const offerListTabList = [
     { value: 'owned', label: t("tabs.owned-offers") },
@@ -76,19 +78,27 @@ export default function NftOffers() {
           newdata.nftOffers = newdata.nftOffers.filter(function (offer) { return offer.valid; });
         } else {
           //count offers
-          let countSell = 0;
-          let countBuy = 0;
+          let sell = 0;
+          let buy = 0;
+          let invalid = 0;
+          let invalidList = [];
           for (let i = 0; i < newdata.nftOffers.length; i++) {
+            if (!newdata.nftOffers[i].valid) {
+              invalid++;
+              invalidList.push(newdata.nftOffers[i].offerIndex);
+            }
             if (newdata.nftOffers[i].flags?.sellToken === true) {
-              countSell++;
+              sell++;
             } else {
-              countBuy++;
+              buy++;
             }
           }
+          setInvalidOffers(invalidList);
           setOffersCount({
             all: newdata.nftOffers.length,
-            buy: countBuy,
-            sell: countSell
+            buy,
+            sell,
+            invalid
           });
         }
         setOffers(newdata.nftOffers.sort((a, b) => (a.createdAt < b.createdAt) ? 1 : -1));
@@ -193,6 +203,13 @@ export default function NftOffers() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, offerListTab]);
 
+  useEffect(() => {
+    if (!signRequest) {
+      checkApi();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [signRequest]);
+
   return <>
     <SEO title={t("nft-offers.header") + " " + id} />
     <SearchBlock
@@ -205,6 +222,23 @@ export default function NftOffers() {
         <Tabs tabList={offerListTabList} tab={offerListTab} setTab={setOfferListTab} name="offerList" />
         {offerListTab === 'owned' &&
           <Tabs tabList={offerTypeTabList} tab={offerTypeTab} setTab={setOfferTypeTab} name="offerType" />
+        }
+        {!!offersCount.invalid &&
+          <button
+            className='button-action thin narrow'
+            style={{ margin: "10px 10px 20px" }}
+            onClick={() => setSignRequest({
+              wallet: "xumm",
+              request: {
+                "TransactionType": "NFTokenCancelOffer",
+                "Account": userData?.address,
+                "NFTokenOffers": invalidOffers
+              }
+            })}
+          >
+            <img src={xummImg} className="xumm-logo" alt="xumm" />
+            {t('nft-offers.cancel-offer', { count: offersCount.invalid })}
+          </button>
         }
       </div>
       {id ?

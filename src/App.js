@@ -111,8 +111,8 @@ export default function App() {
           <Route path="/nft-offer/" element={<NftOffer />}>
             <Route path="/nft-offer/:id" element={<NftOffer />} />
           </Route>
-          <Route path="/nft-offers/" element={<NftOffers />}>
-            <Route path="/nft-offers/:id" element={<NftOffers />} />
+          <Route path="/nft-offers/" element={<NftOffers setSignRequest={setSignRequest} signRequest={signRequest} account={account} />}>
+            <Route path="/nft-offers/:id" element={<NftOffers setSignRequest={setSignRequest} signRequest={signRequest} account={account} />} />
           </Route>
           <Route path="/nft-sales" element={<NftSales />} />
           <Route path="/latest-nft-sales" element={<NftSales />} />
