@@ -314,7 +314,8 @@
     "load-failed": "Failed to load",
     "all-issuers": "All issuers",
     "no-uri": "No URI specified",
-    "no-media": "No media found"
+    "no-media": "No media found",
+    "viewer": "Viewer"
   },
   "error": {
     "Network Error": "It seems there is no internet connection ;("

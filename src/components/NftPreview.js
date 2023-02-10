@@ -32,6 +32,7 @@ export default function NftPreview({ nft }) {
   const videoUrl = nftUrl(nft, 'video');
   const audioUrl = nftUrl(nft, 'audio');
   const modelUrl = nftUrl(nft, 'model');
+  const viewerUrl = nftUrl(nft, 'viewer');
 
   let modelState = null;
 
@@ -165,6 +166,13 @@ export default function NftPreview({ nft }) {
           </a>
         </span>
       </>
+    }
+    {viewerUrl &&
+        <span style={{ padding: "4px 0px", float: "right" }}>
+          <a href={viewerUrl} target="_blank" rel="noreferrer">
+            {t("general.viewer")}
+          </a>
+        </span>
     }
     {(!nft.uri && !(nft.metadata)) ?
       <div className="center bold" style={errorStyle}>{t("general.no-uri")}</div>
