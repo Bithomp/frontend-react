@@ -363,7 +363,7 @@
     "expiration": "Expiration",
     "expired": "Expired",
     "destination": "Destination",
-    "sales": "Sales count",
+    "sales": "Sales",
     "volume": "Sales volume",
     "price": "Price",
     "external-url": "External URL",
@@ -389,6 +389,10 @@
     "raw-data": "Raw data",
     "username": "Username",
     "floor-now": "Floor (now)",
+    "related-lists": "Related lists",
+    "by-issuer": "By issuer",
+    "by-owner": "By owner",
+    "by-taxon": "By taxon",
     "text": {
       "no-expiration": "No expiration date",
       "no-offers": "No offers found",
@@ -489,7 +493,8 @@
     "enter-nft-id": "Enter an NFT ID",
     "cancel-for": "Cancel Sell offer for",
     "buy-for": "Buy for",
-    "on": "on"
+    "on": "on",
+    "holders": "Distribution (Holders)"
   },
   "nft-distribution": {
     "header": "NFT distribution",

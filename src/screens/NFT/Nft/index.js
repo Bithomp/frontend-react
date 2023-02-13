@@ -301,26 +301,6 @@ export default function Nft({ setSignRequest, account, signRequest }) {
     }
   }
 
-  const otherOwnedNftsTr = (owner) => {
-    if (!owner) return <></>;
-    return <tr>
-      <td></td>
-      <td><a href={"/nfts/" + owner}>{t("links.owned-nfts-same-account")}</a></td>
-    </tr>
-  }
-
-  const otherIssuedNftsTr = (issuer) => {
-    if (!issuer) return <></>;
-    return <tr>
-      <td></td>
-      <td>
-        {t("links.nfts-same-issuer")}:{" "}
-        <a href={"/nft-explorer?issuer=" + issuer}>{t("links.all")}</a>,{" "}
-        <a href={"/nft-sales?issuer=" + issuer}>{t("links.sold")}</a>
-      </td>
-    </tr>
-  }
-
   const offerHistoryFilters = (type, defaultOption = false) => {
     let countOffers = {
       buy: countBuyOffers,
@@ -613,15 +593,11 @@ export default function Nft({ setSignRequest, account, signRequest }) {
                         {data.issuer === data.owner ?
                           <>
                             {trWithAccount(data, 'owner', t("table.issuer-owner"), "/explorer/")}
-                            {otherOwnedNftsTr(data.owner)}
-                            {otherIssuedNftsTr(data.issuer)}
                           </>
                           :
                           <>
                             {trWithAccount(data, 'owner', t("table.owner"), "/explorer/")}
-                            {otherOwnedNftsTr(data.owner)}
                             {trWithAccount(data, 'issuer', t("table.issuer"), "/explorer/")}
-                            {otherIssuedNftsTr(data.issuer)}
                           </>
                         }
                         <tr>
@@ -641,6 +617,35 @@ export default function Nft({ setSignRequest, account, signRequest }) {
                           <td>URI</td>
                           <td>
                             {data.uri ? stripText(Buffer.from(data.uri, 'hex')) : t("table.text.unspecified")}
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+
+                    <table className='table-details'>
+                      <thead>
+                        <tr><th colSpan="100">{t("table.related-lists")}</th></tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td>{t("table.by-issuer")}</td>
+                          <td>
+                            <a href={"/nft-distribution/" + data.issuer}>{t("nft.holders")}</a>,{" "}
+                            <a href={"/nft-sales?issuer=" + data.issuer}>{t("table.sales")}</a>,{" "}
+                            <a href={"/nft-explorer?issuer=" + data.issuer}>{t("table.nfts")}</a>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>{t("table.by-taxon")}</td>
+                          <td>
+                            <a href={"/nft-sales?issuer=" + data.issuer + "&taxon=" + data.nftokenTaxon}>{t("table.sales")}</a>,{" "}
+                            <a href={"/nft-explorer?issuer=" + data.issuer + "&taxon=" + data.nftokenTaxon}>{t("table.nfts")}</a>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>{t("table.by-owner")}</td>
+                          <td>
+                            <a href={"/nft-explorer?owner=" + data.owner}>{t("table.nfts")}</a>
                           </td>
                         </tr>
                       </tbody>
