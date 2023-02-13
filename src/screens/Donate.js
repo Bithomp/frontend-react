@@ -16,7 +16,7 @@ export default function Donate() {
           <img
             src={donate}
             alt="donate"
-            style={{ float: "left", width: "300px", height: "300px" }}
+            style={{ float: "left", width: "300px", height: "300px", marginRight: "15px" }}
             className='hide-on-mobile'
           />
           <br className='hide-on-mobile' />
