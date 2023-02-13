@@ -505,6 +505,18 @@ table {
         border-color: transparent #333333 transparent transparent;
       }
     }
+    &.small {
+      font-size: 12px;
+      height: 24px;
+      right: 110%;
+      &.right {
+        right: unset;
+        left: 110%;
+      }
+      &:after {
+        top: 60%;
+      }
+    }
   }
   &:hover {
     .tooltiptext {

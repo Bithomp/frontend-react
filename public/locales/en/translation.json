@@ -527,5 +527,8 @@
     "it-helps": "Your donation will help us to add capacity and continue to develop Bithomp.",
     "address": "Our XRPL address for donations",
     "dt": "Destination tag"
+  },
+  "sponsored": {
+    "sponsored": "Sponsored"
   }
 }

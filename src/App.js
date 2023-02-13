@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 import useLocalStorage from 'use-local-storage';
 import axios from 'axios';
@@ -8,6 +8,7 @@ import Footer from './components/Footer';
 import SignForm from "./components/SignForm";
 import ScrollToTop from "./components/ScrollToTop";
 import BackgroundImage from './components/BackgroundImage';
+import TopLinks from './components/TopLinks';
 
 import Home from './screens/Home';
 import Username from './screens/Username';
@@ -43,6 +44,7 @@ export default function App() {
   const [theme, setTheme] = useLocalStorage('theme', defaultDark ? 'dark' : 'light');
   const [account, setAccount] = useLocalStorage('account', null);
   const [signRequest, setSignRequest] = useState(false);
+  const location = useLocation();
 
   useEffect(() => {
     if (theme === 'dark') {
@@ -69,6 +71,9 @@ export default function App() {
     axios.defaults.baseURL = server + '/api/cors/';
   }
 
+  const pagesWithNoTopAdds = ['/', '/username'];
+  const showTopAdds = !pagesWithNoTopAdds.includes(location.pathname);
+
   return (
     <div data-theme={theme} className="body" data-network={network}>
       <Header
@@ -79,6 +84,7 @@ export default function App() {
         signOut={signOut}
       />
       <div className="content">
+        {showTopAdds && <TopLinks />}
         <ScrollToTop />
         {signRequest &&
           <SignForm

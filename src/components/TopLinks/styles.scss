@@ -1,0 +1,16 @@
+.top-links {
+  height: 29px;
+  border-top: 1px solid var(--background-menu);
+  border-bottom: 1px solid var(--background-menu);
+  background-color: var(--background-header);
+  text-align: center;
+  line-height: 29px;
+  z-index: 1;
+  position: relative;
+  margin-top: -1px;
+  color: var(--text-contrast);
+  .top-link {
+    color: var(--text-contrast);
+    font-weight: 400;
+  }
+}
