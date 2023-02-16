@@ -576,13 +576,13 @@ export default function Username({ setSignRequest, account, setAccount, signOut 
       {step === 1 &&
         <>
           {xummUserToken ?
-            <p className='center'>
+            <div className='center'>
               {showXummQr ?
                 <XummQr expiredQr={expiredQr} xummQrSrc={xummQrSrc} onReset={xummPostPayment} status={status} />
                 :
                 <div className="orange bold">{status}</div>
               }
-            </p> :
+            </div> :
             <>
               <p>{t("username.step1.to-register")} <b>{register.bithompid}</b></p>
               <p>

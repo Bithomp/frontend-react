@@ -4,7 +4,7 @@ export default function TermsAndConditions() {
   return (
     <div className="content-text">
       <h1>Terms and Conditions</h1>
-      <p>Last updated: November 4, 2022</p>
+      <p>Last updated: February 16, 2023</p>
       <p>Please read these terms and conditions carefully before using Our Service.</p>
       <h1>Interpretation and Definitions</h1>
       <h2>Interpretation</h2>
@@ -25,7 +25,7 @@ export default function TermsAndConditions() {
           <p><strong>Device</strong> means any device that can access the Service such as a computer, a cellphone or a digital tablet.</p>
         </li>
         <li>
-          <p><strong>Service</strong> refers to the Website.</p>
+          <p><strong>Service</strong> refers to the Website, our APIs, mobile app, xApp, and any other software, tools, features, or functionalities provided on or in connection with our services; including without limitation using our services to view, explore, and create Tokens and use our tools, at your own discretion, to connect directly with others to purchase, sell, or transfer Tokens.</p>
         </li>
         <li>
           <p><strong>Terms and Conditions</strong> (also referred as &quot;Terms&quot;) mean these Terms and Conditions that form the entire agreement between You and the Company regarding the use of the Service.</p>
@@ -34,10 +34,16 @@ export default function TermsAndConditions() {
           <p><strong>Third-party Social Media Service</strong> means any services or content (including data, information, products or services) provided by a third-party that may be displayed, included or made available by the Service.</p>
         </li>
         <li>
-          <p><strong>Website</strong> refers to Bithomp, accessible from <a href="https://bithomp.com">https://bithomp.com</a></p>
+          <p><strong>Website</strong> refers to Bithomp website, accessible from <a href="https://bithomp.com">https://bithomp.com</a> and all the sub domains, like test.bithomp.com, dev.bithomp.com, docs.bithomp.com and others.</p>
         </li>
         <li>
           <p><strong>You</strong> means the individual accessing or using the Service, or the company, or other legal entity on behalf of which such individual is accessing or using the Service, as applicable.</p>
+        </li>
+        <li>
+          <p><strong>NFT</strong> means a non-fungible token or similar digital item implemented on a blockchain, which associated with certain content or data.</p>
+        </li>
+        <li>
+          <p><strong>Token</strong> means a fungible or non-fungable token or similar digital item implemented on the XRP Ledger, which associated with certain content or data, includes IOUs, NFTs.</p>
         </li>
       </ul>
       <h1>Acknowledgment</h1>
@@ -48,15 +54,22 @@ export default function TermsAndConditions() {
       <p>You represent and warrant that you acknowledge, understand, and accept the risk of the following:</p>
       <ul>
         <li>The XRP Ledger and its built-in decentralized exchange is independently maintained by a decentralized network of thousands of nodes who are not under the control of any single entity or groups of entities.</li>
+        <li>Service is not a wallet provider, exchange, financial institution, money services business, or creditor. Service provides a peer-to-peer web3 service that helps users discover and directly interact with each other and tokens available on the public XRP Ledger. Company does not have custody or control over the Tokens and we do not execute or effectuate purchases, transfers, or sales of Tokens. To use our Service, you must use a third-party wallet which allows you to engage in transactions on the XRP Ledger.</li>
         <li>Service doesn't hold anyones assets, tokens, private keys, have any order books or trading system.</li>
         <li>By using XUMM or a Hardware wallet within Our Service you're interacting directly with the XRP Ledger. All your actions are settled directly on the XRP Ledger.</li>
         <li>Company makes no representations or guarantees of accessibility at any time and for any length of time.</li>
         <li>Company does not manually curate the lists of assets that are displayed on Our Service. Any asset or token that is created on the XRP Ledger can be displayed.</li>
+        <li>The value of Tokens is subjective. Prices of Tokens are subject to volatility and fluctuations in the price of cryptocurrency can also materially and adversely affect Token prices. You acknowledge that you fully understand this subjectivity and volatility and that you may lose money.</li>
+        <li>Company is not party to any agreement between any users. You bear full responsibility for verifying the identity, legitimacy, and authenticity of Tokens that you purchase from third-party sellers using the Service and we make no claims about the identity, legitimacy, functionality, or authenticity of users or Tokens (and any content or data associated with such Tokens) visible on the Service.</li>
         <li>Company has no control over the development, operation, management, marketing, or any other activity of any of the assets that are displayed in Our Service. Any information displayed in Our Service regarding an asset or token is community-sourced and may be incomplete or inaccurate.</li>
         <li>You assume all risk of: (i) guarding and storing your crypto assets, tokens and private keys, (ii) auditing the quality, security, value, and merit of the assets that you transact, (iii) auditing the legality and legal compliance of your transactions of all assets with any counterparties, (iv) auditing counterparties with whom you create a trust line, and (v) using Service to perform any operation or transaction.</li>
+        <li>Company reserves the right to change or modify these Terms at any time and in our sole discretion. If we make material changes to these Terms, we will use reasonable efforts to provide notice of such changes, such as by providing notice through the Service or updating the “Last Updated” date at the beginning of these Terms. By continuing to access or use the Service, you confirm your acceptance of the revised Terms and all of the terms incorporated therein by reference effective as of the date these Terms are updated. It is your sole responsibility to review the Terms from time to time to view such changes and to ensure that you understand the terms and conditions that apply when you access or use the Service.</li>
       </ul>
       <p>Your access to and use of the Service is also conditioned on Your acceptance of and compliance with the Privacy Policy of the Company. Our Privacy Policy describes Our policies and procedures on the collection, use and disclosure of Your personal information when You use the Application or the Website and tells You about Your privacy rights and how the law protects You. Please read Our Privacy Policy carefully before using Our Service.</p>
 
+      <h1>Third-Party Content and Services</h1>
+      <p>As a peer-to-peer web3 service, Company helps you explore Tokens (including NFTs and their content) created by third parties. Company does not make any representations or warranties about this third-party content visible through our Service, including any content associated with NFTs displayed on the Service, and you bear responsibility for verifying the legitimacy, authenticity, and legality of NFTs that you purchase from third-party sellers. We also cannot guarantee that any NFTs visible on our Service will always remain visible and/or available to be bought, sold, or transferred.</p>
+      <p>NFTs may be subject to terms directly between buyers and sellers with respect to the use of the NFT content and benefits associated with a given NFT (“Purchase Terms”). For example, when you click on "External URL" to get more details about any of the NFTs visible on our Service, you may notice a third party link to the creator’s website. Such website may include Purchase Terms governing the use of the NFT that you will be required to comply with. Company is not a party to any such Purchase Terms, which are solely between the buyer and the seller. The buyer and seller are entirely responsible for communicating, promulgating, agreeing to, and enforcing Purchase Terms. You are solely responsible for reviewing such Purchase Terms.</p>
       <h1>Links to Other Websites</h1>
       <p>Our Service may contain links to third-party web sites or services that are not owned or controlled by the Company.</p>
       <p>The Company has no control over, and assumes no responsibility for, the content, privacy policies, or practices of any third party web sites or services. You further acknowledge and agree that the Company shall not be responsible or liable, directly or indirectly, for any damage or loss caused or alleged to be caused by or in connection with the use of or reliance on any such content, goods or services available on or through any such web sites or services.</p>

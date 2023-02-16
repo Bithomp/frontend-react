@@ -74,7 +74,11 @@
       "my-nfts": "My NFTs",
       "my-nft-offers": "My NFT offers"
     },
-    "not-available": "Not available"
+    "not-available": "Not available",
+    "confirm": {
+      "nft-accept-offer-header": "NFT purchase",
+      "nft-accept-offer": "I acknowledge that Bithomp is a peer-to-peer Web3 service, and it cannot verify or guarantee the legitimacy, authenticity, and legality of NFT that I purchase. I confirm that I've read the <1>Terms and conditions</1>, and I agree to all of them."
+    }
   },
   "footer": {
     "cookie": {
@@ -305,7 +309,8 @@
     "download": "Download",
     "copy": "Copy",
     "copied": "Copied",
-    "copy-my-address": "Copy my address"
+    "copy-my-address": "Copy my address",
+    "sign": "Sign"
   },
   "general": {
     "error": "Error",

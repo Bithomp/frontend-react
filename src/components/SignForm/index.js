@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
+import { useTranslation, Trans } from 'react-i18next';
 import { isMobile } from "react-device-detect";
-import { useLocation } from 'react-router-dom';
+import { useLocation, Link } from 'react-router-dom';
 import axios from 'axios';
 
 import { server, devNet } from '../../utils';
@@ -9,6 +9,7 @@ import { capitalize } from '../../utils/format';
 import { payloadXummPost, xummWsConnect, xummCancel, xummGetSignedData } from '../../utils/xumm';
 
 import XummQr from "../Xumm/Qr";
+import CheckBox from '../CheckBox';
 
 import './styles.scss';
 import qr from "../../assets/images/qr.gif";
@@ -20,13 +21,14 @@ import ellipal from '../../assets/images/ellipal-large.svg';
 export default function SignForm({ setSignRequest, setAccount, signRequest }) {
   const { t } = useTranslation();
 
+  const location = useLocation();
   const [screen, setScreen] = useState("choose-app");
   const [status, setStatus] = useState(t("signin.xumm.statuses.wait"));
   const [showXummQr, setShowXummQr] = useState(false);
   const [xummQrSrc, setXummQrSrc] = useState(qr);
   const [xummUuid, setXummUuid] = useState(null);
   const [expiredQr, setExpiredQr] = useState(false);
-  const location = useLocation();
+  const [agreedToRisks, setAgreedToRisks] = useState(false);
 
   const xummUserToken = localStorage.getItem('xummUserToken');
 
@@ -55,6 +57,12 @@ export default function SignForm({ setSignRequest, setAccount, signRequest }) {
     if (signRequest.request) {
       tx = signRequest.request;
     }
+
+    if (tx.TransactionType === "NFTokenAcceptOffer" && !agreedToRisks) {
+      setScreen("NFTokenAcceptOffer");
+      return;
+    }
+
     const client = {
       "Memo": {
         "MemoData": "626974686F6D702E636F6D"
@@ -188,56 +196,82 @@ export default function SignForm({ setSignRequest, setAccount, signRequest }) {
     </div>
   }
 
+  const buttonStyle = {
+    margin: "0 10px"
+  };
+
   return (
     <div className="sign-in-form">
       <div className="sign-in-body center">
         <div className='close-button' onClick={SignInCancelAndClose}></div>
-        {screen === 'choose-app' &&
+        {screen === 'NFTokenAcceptOffer' ?
           <>
-            <div className='header'>{t("signin.choose-app")}</div>
-            <div className='signin-apps'>
-              <img alt="xumm" className='signin-app-logo' src={xumm} onClick={XummTxSend} />
-              {signRequest.wallet !== "xumm" &&
-                <>
-                  {notAvailable(ledger, "ledger")}
-                  {notAvailable(trezor, "trezor")}
-                  {notAvailable(ellipal, "ellipal")}
-                </>
-              }
+            <div className='header'>{t("signin.confirm.nft-accept-offer-header")}</div>
+            <div style={{ textAlign: "left", margin: "30px" }}>
+              <CheckBox checked={agreedToRisks} setChecked={setAgreedToRisks} >
+                <Trans i18nKey="signin.confirm.nft-accept-offer">
+                  I acknowledge that Bithomp is a peer-to-peer Web3 service, and it cannot verify or guarantee the legitimacy, authenticity, and legality of NFT that I purchase.
+                  I confirm that I've read the <Link to="/terms-and-conditions" target="_blank">Terms and conditions</Link>, and I agree to all of them.
+                </Trans>
+              </CheckBox>
             </div>
+            <br />
+            <button type="button" className="button-action" onClick={SignInCancelAndClose} style={buttonStyle}>
+              {t("button.cancel")}
+            </button>
+            <button type="button" className={"button-action" + (agreedToRisks ? "" : " disabled")} onClick={XummTxSend} style={buttonStyle}>
+              {t("button.sign")}
+            </button>
           </>
-        }
-        {screen !== 'choose-app' &&
+          :
           <>
-            <div className='header'>
-              {signRequest?.request ? t("signin.sign-with") : t("signin.login-with")} {capitalize(screen)}
-            </div>
-            {screen === 'xumm' ?
+            {screen === 'choose-app' ?
               <>
-                {!isMobile &&
-                  <div className="signin-actions-list">
-                    1. {t("signin.xumm.open-app")}<br />
-                    {devNet ?
-                      <>
-                        2. {t("signin.xumm.change-settings")}<br />
-                        3. {t("signin.xumm.scan-qr")}
-                      </> :
-                      <>
-                        2. {t("signin.xumm.scan-qr")}
-                      </>
-                    }
-                  </div>
-                }
-                <br />
-                {showXummQr ?
-                  <XummQr expiredQr={expiredQr} xummQrSrc={xummQrSrc} onReset={XummTxSend} status={status} />
-                  :
-                  <div className="orange bold center">{status}</div>
-                }
+                <div className='header'>{t("signin.choose-app")}</div>
+                <div className='signin-apps'>
+                  <img alt="xumm" className='signin-app-logo' src={xumm} onClick={XummTxSend} />
+                  {signRequest.wallet !== "xumm" &&
+                    <>
+                      {notAvailable(ledger, "ledger")}
+                      {notAvailable(trezor, "trezor")}
+                      {notAvailable(ellipal, "ellipal")}
+                    </>
+                  }
+                </div>
               </>
               :
               <>
-                <div className="orange bold center" style={{ margin: "20px" }}>{status}</div>
+                <div className='header'>
+                  {signRequest?.request ? t("signin.sign-with") : t("signin.login-with")} {capitalize(screen)}
+                </div>
+                {screen === 'xumm' ?
+                  <>
+                    {!isMobile &&
+                      <div className="signin-actions-list">
+                        1. {t("signin.xumm.open-app")}<br />
+                        {devNet ?
+                          <>
+                            2. {t("signin.xumm.change-settings")}<br />
+                            3. {t("signin.xumm.scan-qr")}
+                          </> :
+                          <>
+                            2. {t("signin.xumm.scan-qr")}
+                          </>
+                        }
+                      </div>
+                    }
+                    <br />
+                    {showXummQr ?
+                      <XummQr expiredQr={expiredQr} xummQrSrc={xummQrSrc} onReset={XummTxSend} status={status} />
+                      :
+                      <div className="orange bold center">{status}</div>
+                    }
+                  </>
+                  :
+                  <>
+                    <div className="orange bold center" style={{ margin: "20px" }}>{status}</div>
+                  </>
+                }
               </>
             }
           </>
