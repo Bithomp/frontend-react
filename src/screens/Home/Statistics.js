@@ -106,13 +106,13 @@ export default function Statistics() {
 
   if (data) {
     const { validatedLedger, lastClose, validationQuorum, accounts, usernames, nftokens } = data;
-    closedAt = validatedLedger.ledgerTime * 1000;
+    closedAt = validatedLedger?.ledgerTime * 1000;
     closedAt = new Date(closedAt).toLocaleTimeString();
-    ledgerIndex = validatedLedger.ledgerIndex;
-    txCount = validatedLedger.transactionsCount;
+    ledgerIndex = validatedLedger?.ledgerIndex;
+    txCount = validatedLedger?.transactionsCount;
     quorum = validationQuorum;
     if (lastClose) {
-      txPerSecond = (validatedLedger.transactionsCount / lastClose.convergeTimeS).toFixed(2);
+      txPerSecond = (validatedLedger?.transactionsCount / lastClose.convergeTimeS).toFixed(2);
       proposers = lastClose.proposers;
     }
     createdAccounts = niceNumber(accounts.created);
