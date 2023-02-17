@@ -163,7 +163,7 @@ export default function Statistics() {
       </div>
       <div className='stat-piece'>
         <div className='stat-piece-header'>{t("home.stat.nft.issuers")}</div>
-        <div>{niceNumber(nft.issuers)}</div>
+        <div><Link to='/nft-volumes'>{niceNumber(nft.issuers)}</Link></div>
       </div>
       <div className='stat-piece'>
         <div className='stat-piece-header'>{t("home.stat.nft.owners")}</div>

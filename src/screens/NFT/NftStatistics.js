@@ -1,5 +1,6 @@
 import { useTranslation, Trans } from 'react-i18next';
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 
 import SEO from '../../components/SEO';
 
@@ -119,7 +120,7 @@ export default function LastLedgerInformation() {
           {t("nft-statistics.owners")}: {niceNumber(nft?.owners)}
         </p>
         <p>
-          {t("nft-statistics.issuers")}: {niceNumber(nft?.issuers)}
+          {t("nft-statistics.issuers")}: <Link to='/nft-volumes'>{niceNumber(nft?.issuers)}</Link>
         </p>
         <p>
           {t("nft-statistics.transfers")}: {niceNumber(nft?.transfers)}
