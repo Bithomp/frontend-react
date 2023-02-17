@@ -197,18 +197,13 @@ export default function NftOffers({ setSignRequest, signRequest }) {
   */
 
   useEffect(() => {
-    checkApi();
-    setTabParams(offerListTabList, offerListTab, "owned", setOfferListTab, searchParams, "offerList");
-    setSearchParams(searchParams);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id, offerListTab]);
-
-  useEffect(() => {
     if (!signRequest) {
       checkApi();
+      setTabParams(offerListTabList, offerListTab, "owned", setOfferListTab, searchParams, "offerList");
+      setSearchParams(searchParams);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [signRequest]);
+  }, [id, offerListTab, signRequest]);
 
   return <>
     <SEO title={t("nft-offers.header") + " " + id} />
