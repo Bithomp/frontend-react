@@ -29,7 +29,7 @@ export default function Nfts() {
   const [errorMessage, setErrorMessage] = useState("");
   const [viewTab, setViewTab] = useState(searchParams.get("view") || "tiles");
   const [listTab, setListTab] = useState(searchParams.get("list") || "nfts");
-  const [saleDestinationTab, setSaleDestinationTab] = useState(searchParams.get("saleDestination") || "all");
+  const [saleDestinationTab, setSaleDestinationTab] = useState(searchParams.get("saleDestination") || "publicAndKnownBrokers");
   const [saleCurrency] = useState(searchParams.get("saleCurrency") || "xrp");
   const [saleCurrencyIssuer] = useState(searchParams.get("saleCurrencyIssuer") || "");
   const [search, setSearch] = useState(searchParams.get("search") || "");
@@ -56,7 +56,7 @@ export default function Nfts() {
   ];
 
   const saleDestinationTabList = [
-    { value: 'all', label: t("tabs.all") },
+    { value: 'publicAndKnownBrokers', label: t("tabs.publicAndKnownBrokers") },
     { value: 'public', label: t("tabs.public") }
   ];
 
@@ -184,7 +184,7 @@ export default function Nfts() {
     setTabParams(viewTabList, viewTab, "tiles", setViewTab, searchParams, "view");
     setTabParams(listTabList, listTab, "nfts", setListTab, searchParams, "list");
     if (listTab === 'onSale') {
-      setTabParams(saleDestinationTabList, saleDestinationTab, "all", setSaleDestinationTab, searchParams, "saleDestination");
+      setTabParams(saleDestinationTabList, saleDestinationTab, "publicAndKnownBrokers", setSaleDestinationTab, searchParams, "saleDestination");
     } else {
       searchParams.delete("saleDestination");
       searchParams.delete("saleCurrency");

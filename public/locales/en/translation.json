@@ -451,6 +451,7 @@
     "buy": "Buy",
     "sell": "Sell",
     "public": "Public",
+    "publicAndKnownBrokers": "Public & MP",
     "onSale": "On sale for XRP"
   },
   "xumm": {
