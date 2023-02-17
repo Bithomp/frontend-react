@@ -356,6 +356,7 @@
     "seller": "Seller",
     "buyer": "Buyer",
     "sold": "Sold",
+    "sold_few": "Sold",
     "type": "Type",
     "status": "Status",
     "hash": "Hash",
@@ -398,6 +399,8 @@
     "by-issuer": "By issuer",
     "by-owner": "By owner",
     "by-taxon": "By taxon",
+    "all-nfts": "All NFTs",
+    "on-sale": "On sale",
     "text": {
       "no-expiration": "No expiration date",
       "no-offers": "No offers found",

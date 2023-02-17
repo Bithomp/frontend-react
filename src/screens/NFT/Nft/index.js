@@ -581,21 +581,24 @@ export default function Nft({ setSignRequest, account, signRequest }) {
                           <td>{t("table.by-issuer")}</td>
                           <td>
                             <a href={"/nft-distribution/" + data.issuer}>{t("nft.holders")}</a>,{" "}
-                            <a href={"/nft-sales?issuer=" + data.issuer}>{t("table.sales")}</a>,{" "}
-                            <a href={"/nft-explorer?issuer=" + data.issuer}>{t("table.nfts")}</a>
+                            <a href={"/nft-explorer?issuer=" + data.issuer}>{t("table.all-nfts")}</a>,{" "}
+                            <a href={"/nft-sales?issuer=" + data.issuer}>{t("table.sold_few")}</a>,{" "}
+                            <a href={"/nft-explorer?issuer=" + data.issuer + "&list=onSale"}>{t("table.on-sale")}</a>
                           </td>
                         </tr>
                         <tr>
                           <td>{t("table.by-taxon")}</td>
                           <td>
-                            <a href={"/nft-sales?issuer=" + data.issuer + "&taxon=" + data.nftokenTaxon}>{t("table.sales")}</a>,{" "}
-                            <a href={"/nft-explorer?issuer=" + data.issuer + "&taxon=" + data.nftokenTaxon}>{t("table.nfts")}</a>
+                            <a href={"/nft-explorer?issuer=" + data.issuer + "&taxon=" + data.nftokenTaxon}>{t("table.all-nfts")}</a>,{" "}
+                            <a href={"/nft-sales?issuer=" + data.issuer + "&taxon=" + data.nftokenTaxon}>{t("table.sold_few")}</a>,{" "}
+                            <a href={"/nft-explorer?issuer=" + data.issuer + "&taxon=" + data.nftokenTaxon + "&list=onSale"}>{t("table.on-sale")}</a>
                           </td>
                         </tr>
                         <tr>
                           <td>{t("table.by-owner")}</td>
                           <td>
-                            <a href={"/nft-explorer?owner=" + data.owner}>{t("table.nfts")}</a>
+                            <a href={"/nft-explorer?owner=" + data.owner}>{t("table.all-nfts")}</a>,{" "}
+                            <a href={"/nft-explorer?owner=" + data.owner + "&list=onSale"}>{t("table.on-sale")}</a>
                           </td>
                         </tr>
                       </tbody>
