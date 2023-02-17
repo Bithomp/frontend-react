@@ -106,7 +106,7 @@ export default function Tiles({ nftList, type = 'name' }) {
         return amountFormat(best.amount);
       }
     };
-    return "Private offer";
+    return "Private offer"; //shouldn't be the case
   }
 
   if (type === "name" || type === 'onSale') {

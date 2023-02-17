@@ -12,8 +12,8 @@ import Tiles from '../../components/Tiles';
 import IssuerSelect from '../../components/IssuerSelect';
 
 import { onFailedRequest, onApiError, isAddressOrUsername, setTabParams } from '../../utils';
-import { isValidTaxon, nftThumbnail, nftNameLink } from '../../utils/nft';
-import { nftLink, usernameOrAddress, userOrServiceLink } from '../../utils/format';
+import { isValidTaxon, nftThumbnail, nftNameLink, bestSellOffer, mpUrl } from '../../utils/nft';
+import { nftLink, usernameOrAddress, userOrServiceLink, amountFormat } from '../../utils/format';
 
 export default function Nfts() {
   const { t } = useTranslation();
@@ -294,6 +294,19 @@ export default function Nfts() {
       },
   */
 
+  const priceData = sellOffers => {
+    if (!sellOffers) return "";
+    const best = bestSellOffer(sellOffers);
+    if (best) {
+      if (mpUrl(best)) {
+        return amountFormat(best.amount, { tooltip: 'right' }) + " " + t("nft.on") + " " + best.destinationDetails.service;
+      } else {
+        return amountFormat(best.amount, { tooltip: 'right' });
+      }
+    };
+    return "Private offer"; //shouldn't be the case
+  }
+
   let csvHeaders = [
     { label: "NFT ID", key: "nftokenID" },
     { label: t("table.issuer"), key: "issuer" },
@@ -446,6 +459,7 @@ export default function Nfts() {
                   {!taxon && <th className='center'>{t("table.taxon")}</th>}
                   {!issuer && <th className='center'>{t("table.issuer")}</th>}
                   {(!id && !owner) && <th className='center'>{t("table.owner")}</th>}
+                  {listTab === 'onSale' && <th className='right'>{t("table.price")}</th>}
                 </tr>
               </thead>
               <tbody>
@@ -467,6 +481,7 @@ export default function Nfts() {
                         {!taxon && <td className='center'>{nft.nftokenTaxon}</td>}
                         {!issuer && <td className='center'>{nftLink(nft, 'issuer')}</td>}
                         {(!id && !owner) && <td className='center'>{nftLink(nft, 'owner')}</td>}
+                        {listTab === 'onSale' && <td className='right'>{priceData(nft.sellOffers)}</td>}
                       </tr>)
                       :
                       <tr><td colSpan="100" className='center orange bold'>{errorMessage}</td></tr>
