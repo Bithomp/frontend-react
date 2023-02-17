@@ -27,7 +27,10 @@ export default function Nfts() {
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState("first");
   const [errorMessage, setErrorMessage] = useState("");
-  const [tab, setTab] = useState(searchParams.get("view") || "tiles");
+  const [viewTab, setViewTab] = useState(searchParams.get("view") || "tiles");
+  const [listTab, setListTab] = useState(searchParams.get("list") || "nfts");
+  const [saleDestinationTab, setSaleDestinationTab] = useState(searchParams.get("saleDestination") || "all");
+  const [saleCurrency] = useState(searchParams.get("saleCurrency") || "xrp");
   const [search, setSearch] = useState(searchParams.get("search") || "");
   const [filteredData, setFilteredData] = useState([]);
   const [userData, setUserData] = useState({});
@@ -41,9 +44,19 @@ export default function Nfts() {
 
   const nftExplorer = location.pathname.includes("nft-explorer");
 
-  const tabList = [
+  const viewTabList = [
     { value: 'tiles', label: t("tabs.tiles") },
     { value: 'list', label: t("tabs.list") }
+  ];
+
+  const listTabList = [
+    { value: 'nfts', label: t("tabs.all") },
+    { value: 'onSale', label: t("tabs.onSale") }
+  ];
+
+  const saleDestinationTabList = [
+    { value: 'all', label: t("tabs.all") },
+    { value: 'public', label: t("tabs.public") }
   ];
 
   const checkApi = async (options) => {
@@ -61,33 +74,40 @@ export default function Nfts() {
       return;
     }
 
+    let listUrlPart = '?list=nfts';
     let ownerUrlPart = '';
     let collectionUrlPart = '';
     let markerUrlPart = '';
 
+    if (listTab === 'onSale') {
+      listUrlPart = '?list=onSale&destination=' + saleDestinationTab + '&order=priceLow&currency=' + saleCurrency;
+    }
+
     if (id || owner) {
-      ownerUrlPart = '/' + (id || owner);
-      //get issuer list for that owner here when usernames are supported
+      ownerUrlPart = '&owner=' + (id || owner);
+      const issuersJson = await axios('v2/nft-issuers?owner=' + (id || owner)).catch(error => {
+        onFailedRequest(error, (errorText) => { console.log(errorText) });
+      });
+      if (issuersJson?.data?.issuers) {
+        setIssuersList(issuersJson.data.issuers);
+      }
     }
 
     if (issuer) {
-      collectionUrlPart = '?issuer=' + issuer;
+      collectionUrlPart = '&issuer=' + issuer;
       if (taxon) {
         collectionUrlPart += '&taxon=' + taxon;
       }
-      if (marker && marker !== "first") {
-        markerUrlPart = "&marker=" + marker;
-      }
-    } else {
-      if (marker && marker !== "first") {
-        markerUrlPart = "?marker=" + marker;
-      }
+    }
+
+    if (marker && marker !== "first") {
+      markerUrlPart = "&marker=" + marker;
     }
 
     if (marker === "first") {
       setLoading(true);
     }
-    const response = await axios('v2/nfts' + ownerUrlPart + collectionUrlPart + markerUrlPart).catch(error => {
+    const response = await axios('v2/nfts' + listUrlPart + ownerUrlPart + collectionUrlPart + markerUrlPart).catch(error => {
       onFailedRequest(error, setErrorMessage);
     });
 
@@ -108,16 +128,9 @@ export default function Nfts() {
             service: newdata.ownerDetails?.service,
             address: newdata.owner
           });
-          //move to earlier when usernames are supported
-          const issuersJson = await axios('v2/nft-issuers?owner=' + newdata.owner).catch(error => {
-            onFailedRequest(error, (errorText) => { console.log(errorText) });
-          });
-          if (issuersJson?.data?.issuers) {
-            setIssuersList(issuersJson.data.issuers);
-          }
         }
 
-        if (newdata.nfts.length > 0) {
+        if (newdata.nfts?.length > 0) {
           setErrorMessage("");
           if (newdata.marker) {
             setHasMore(newdata.marker);
@@ -148,7 +161,7 @@ export default function Nfts() {
       checkApi({ restart: true });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id, issuer, taxon, owner]);
+  }, [id, issuer, taxon, owner, listTab, saleDestinationTab]);
 
   useEffect(() => {
     if (nftExplorer && isAddressOrUsername(rawData?.owner)) {
@@ -162,11 +175,18 @@ export default function Nfts() {
       }
     }
 
-    setTabParams(tabList, tab, "tiles", setTab, searchParams, "view");
+    setTabParams(viewTabList, viewTab, "tiles", setViewTab, searchParams, "view");
+    setTabParams(listTabList, listTab, "nfts", setListTab, searchParams, "list");
+    if (listTab === 'onSale') {
+      setTabParams(saleDestinationTabList, saleDestinationTab, "all", setSaleDestinationTab, searchParams, "saleDestination");
+    } else {
+      searchParams.delete("saleDestination");
+      searchParams.delete("saleCurrency");
+    }
 
     navigate(location.pathname + '?' + searchParams.toString(), { replace: true });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [tab, rawData]);
+  }, [viewTab, rawData, listTab, saleDestinationTab]);
 
   const onSearchChange = (e) => {
     let searchName = e.target.value;
@@ -222,7 +242,7 @@ export default function Nfts() {
     enterPress(e);
   }
 
-  const issuerTaxonUrlPart = "?view=" + tab + (rawData ? ("&issuer=" + usernameOrAddress(rawData, 'issuer') + (rawData.taxon ? ("&taxon=" + rawData.taxon) : "")) : "");
+  const issuerTaxonUrlPart = "?view=" + viewTab + (rawData ? ("&issuer=" + usernameOrAddress(rawData, 'issuer') + (rawData.taxon ? ("&taxon=" + rawData.taxon) : "")) : "");
 
   const contextStyle = { minHeight: "480px" };
   if (!nftExplorer) {
@@ -356,7 +376,11 @@ export default function Nfts() {
         </p>
       </>}
       <div className='tabs-inline'>
-        <Tabs tabList={tabList} tab={tab} setTab={setTab} />
+        <Tabs tabList={viewTabList} tab={viewTab} setTab={setViewTab} name='view' />
+        <Tabs tabList={listTabList} tab={listTab} setTab={setListTab} name='saleType' />
+        {listTab === 'onSale' &&
+          <Tabs tabList={saleDestinationTabList} tab={saleDestinationTab} setTab={setSaleDestinationTab} name='saleDestination' />
+        }
         <CSVLink
           data={data || []}
           headers={csvHeaders}
@@ -404,7 +428,7 @@ export default function Nfts() {
             </div>
           }
 
-          {tab === "list" &&
+          {viewTab === "list" &&
             <table className="table-large">
               <thead>
                 <tr>
@@ -445,7 +469,7 @@ export default function Nfts() {
               </tbody>
             </table>
           }
-          {tab === "tiles" &&
+          {viewTab === "tiles" &&
             <>
               {loading ?
                 <div className='center' style={{ marginTop: "20px" }}>

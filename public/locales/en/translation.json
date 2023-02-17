@@ -449,7 +449,9 @@
     "offers-for-owned-nfts": "Offers for owned nfts",
     "all": "All",
     "buy": "Buy",
-    "sell": "Sell"
+    "sell": "Sell",
+    "public": "Public",
+    "onSale": "On sale for XRP"
   },
   "xumm": {
     "new-qr": "Get a new QR code"
