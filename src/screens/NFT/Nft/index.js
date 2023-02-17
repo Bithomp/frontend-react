@@ -11,7 +11,7 @@ import CopyButton from '../../../components/CopyButton';
 import NftPreview from '../../../components/NftPreview';
 
 import { onFailedRequest, onApiError, stripText } from '../../../utils';
-import { nftName } from '../../../utils/nft';
+import { nftName, mpUrl, bestSellOffer } from '../../../utils/nft';
 import {
   shortHash,
   trWithAccount,
@@ -21,8 +21,7 @@ import {
   expirationExpired,
   nftOfferLink,
   codeHighlight,
-  trStatus,
-  mpUrl
+  trStatus
 } from '../../../utils/format';
 
 import './styles.scss';
@@ -388,57 +387,8 @@ export default function Nft({ setSignRequest, account, signRequest }) {
     if (!sellOffers) return "";
     sellOffers = sellOffers.filter(function (offer) { return offer.valid; });
     //best xrp offer available or an IOU offer, if it's only one IOU offer available
-    let bestSellOffer = null;
-    if (sellOffers.length) {
-      let iouOffers = [];
-      let xrpOffers = [];
-
-      for (let i = 0; i < sellOffers.length; i++) {
-        if (sellOffers[i].amount.value) {
-          iouOffers.push(sellOffers[i]);
-        } else {
-          xrpOffers.push(sellOffers[i]);
-        }
-      }
-
-      if (xrpOffers.length > 0) {
-        //without destination firsts
-        xrpOffers = xrpOffers.sort((a, b) => {
-          if (!a.destination && b.destination) return 1;
-          if (a.destination && !b.destination) return -1;
-          return a.createdAt - b.createdAt;
-        });
-        //sort cheapest on top
-        xrpOffers = xrpOffers.sort((a, b) => (parseFloat(a.amount) > parseFloat(b.amount)) ? 1 : -1);
-
-        for (let i = 0; i < xrpOffers.length; i++) {
-          if (mpUrl(xrpOffers[i]) || !xrpOffers[i].destination) {
-            //if known destination - (not a private offer) or on Open Market
-            bestSellOffer = xrpOffers[i];
-            break;
-          }
-        }
-      }
-
-      if (!bestSellOffer && iouOffers.length > 0) {
-        // if no XRP offers fits creterias above choose IOU if it's only one fits.
-        let iouFitOffers = [];
-        //check that if it's not a prvate offer
-        for (let i = 0; i < iouOffers.length; i++) {
-          if (mpUrl(iouOffers[i]) || !iouOffers[i].destination) {
-            iouFitOffers.push(iouOffers[i]);
-          }
-        }
-        // if only one which fits
-        if (iouFitOffers.length === 1) {
-          bestSellOffer = iouFitOffers[0];
-        }
-      }
-    } else {
-      return "";
-    }
-
-    if (!bestSellOffer) return "";
+    let best = bestSellOffer(sellOffers);
+    if (!best) return "";
 
     if (data?.owner && account?.address && account.address === data.owner) {
       return <>
@@ -450,22 +400,22 @@ export default function Nft({ setSignRequest, account, signRequest }) {
               "TransactionType": "NFTokenCancelOffer",
               "Account": data.owner,
               "NFTokenOffers": [
-                bestSellOffer.offerIndex
+                best.offerIndex
               ]
             }
           })}
         >
           <img src={xummImg} className='xumm-logo' alt="xumm" />
-          {t("nft.cancel-for")} {amountFormat(bestSellOffer.amount)}
+          {t("nft.cancel-for")} {amountFormat(best.amount)}
         </button>
         <br /><br />
       </>
     }
 
-    if (mpUrl(bestSellOffer)) {
+    if (mpUrl(best)) {
       return <>
-        <a className='button-action wide center' href={mpUrl(bestSellOffer)} target="_blank" rel="noreferrer">
-          {t("nft.buy-for")} {amountFormat(bestSellOffer.amount)} {t("nft.on")} {bestSellOffer.destinationDetails.service}
+        <a className='button-action wide center' href={mpUrl(best)} target="_blank" rel="noreferrer">
+          {t("nft.buy-for")} {amountFormat(best.amount)} {t("nft.on")} {best.destinationDetails.service}
         </a>
         <br /><br />
       </>;
@@ -477,13 +427,13 @@ export default function Nft({ setSignRequest, account, signRequest }) {
         onClick={() => setSignRequest({
           wallet: "xumm",
           request: {
-            "NFTokenSellOffer": bestSellOffer.offerIndex,
+            "NFTokenSellOffer": best.offerIndex,
             "TransactionType": "NFTokenAcceptOffer"
           }
         })}
       >
         <img src={xummImg} className='xumm-logo' alt="xumm" />
-        {t("nft.buy-for")} {amountFormat(bestSellOffer.amount)}
+        {t("nft.buy-for")} {amountFormat(best.amount)}
       </button>
       <br /><br />
     </>

@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 
 import { ReactComponent as LinkIcon } from "../assets/images/link.svg";
 import { stripText } from '.';
+import { mpUrl } from './nft';
 
 //table
 export const trStatus = (data) => {
@@ -101,30 +102,6 @@ export const nftIdLink = (nftId, chars = 10) => {
 export const txIdLink = (txId, chars = 10) => {
   if (!txId) return "";
   return <a href={"/explorer/" + txId}>{shortHash(txId, chars)}</a>
-}
-
-export const mpUrl = (offer) => {
-  if (!offer || !offer.destination || !offer.destinationDetails) return "";
-  const service = offer.destinationDetails.service;
-  let url = '';
-  if (service === "onXRP") {
-    url = "https://nft.onxrp.com/nft/";
-  } else if (service === "xrp.cafe") {
-    url = "https://xrp.cafe/nft/";
-  } else if (service === "xMart") {
-    url = "https://api.xmart.art/nft/";
-  } else if (service === "nftmaster") {
-    url = "https://nftmaster.com/nft/";
-  } else if (service === "XPmarket") {
-    url = "https://xpmarket.com/nfts/item/";
-  } else if (service === "Equilibrium Games") {
-    url = "https://equilibrium-games.com/marketplace/nft/";
-  }
-  if (url) {
-    return url + offer.nftokenID;
-  } else {
-    return "";
-  }
 }
 
 export const nftLink = (nft, type) => {

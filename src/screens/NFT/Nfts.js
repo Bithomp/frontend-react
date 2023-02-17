@@ -31,6 +31,7 @@ export default function Nfts() {
   const [listTab, setListTab] = useState(searchParams.get("list") || "nfts");
   const [saleDestinationTab, setSaleDestinationTab] = useState(searchParams.get("saleDestination") || "all");
   const [saleCurrency] = useState(searchParams.get("saleCurrency") || "xrp");
+  const [saleCurrencyIssuer] = useState(searchParams.get("saleCurrencyIssuer") || "");
   const [search, setSearch] = useState(searchParams.get("search") || "");
   const [filteredData, setFilteredData] = useState([]);
   const [userData, setUserData] = useState({});
@@ -80,7 +81,12 @@ export default function Nfts() {
     let markerUrlPart = '';
 
     if (listTab === 'onSale') {
-      listUrlPart = '?list=onSale&destination=' + saleDestinationTab + '&order=priceLow&currency=' + saleCurrency;
+      listUrlPart = '?list=onSale&destination=' + saleDestinationTab + '&order=priceLow';
+      if (saleCurrencyIssuer && saleCurrency) {
+        listUrlPart = listUrlPart + '&currency=' + saleCurrency + '&currencyIssuer=' + saleCurrencyIssuer;
+      } else {
+        listUrlPart = listUrlPart + '&currency=xrp';
+      }
     }
 
     if (id || owner) {
@@ -182,6 +188,7 @@ export default function Nfts() {
     } else {
       searchParams.delete("saleDestination");
       searchParams.delete("saleCurrency");
+      searchParams.delete("saleCurrencyIssuer");
     }
 
     navigate(location.pathname + '?' + searchParams.toString(), { replace: true });
@@ -481,7 +488,7 @@ export default function Nfts() {
                   {errorMessage ?
                     <div className='center orange bold'>{errorMessage}</div>
                     :
-                    <Tiles nftList={filteredData} />
+                    <Tiles nftList={filteredData} type={listTab === 'onSale' ? 'onSale' : 'name'} />
                   }
                 </>
               }

@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { Link } from "react-router-dom";
 
 import { stripText } from '../../utils';
-import { nftImageStyle, nftUrl } from '../../utils/nft';
+import { nftImageStyle, nftUrl, bestSellOffer, mpUrl } from '../../utils/nft';
 import { amountFormat, timeOrDate } from '../../utils/format';
 
 import './styles.scss';
@@ -92,7 +92,24 @@ export default function Tiles({ nftList, type = 'name' }) {
     }
   }
 
-  if (type === "name") {
+  const saleData = sellOffers => {
+    if (!sellOffers) return "";
+    const best = bestSellOffer(sellOffers);
+    if (best) {
+      if (mpUrl(best)) {
+        return <>
+          {amountFormat(best.amount)}
+          <br />
+          {t("nft.on")} {best.destinationDetails.service}
+        </>;
+      } else {
+        return amountFormat(best.amount);
+      }
+    };
+    return "Private offer";
+  }
+
+  if (type === "name" || type === 'onSale') {
     return <div className='tiles'>
       <div className="grid">
         <ul className="hexGrid">
@@ -104,7 +121,12 @@ export default function Tiles({ nftList, type = 'name' }) {
                   {imageOrVideo(nft)}
                   <div className="index">{i + 1}</div>
                   <div className='title'></div>
-                  <h1>{nft.metadata?.name ? shortName(nft.metadata.name) : ''}</h1>
+
+                  {type === 'name' ?
+                    <h1>{nft.metadata?.name ? shortName(nft.metadata.name) : ''}</h1>
+                    :
+                    <h1>{saleData(nft.sellOffers)}</h1>
+                  }
                   <div className='title-full'>
                     {nft.metadata?.name ? <>{t("table.name")}: {stripText(nft.metadata.name)}<br /></> : ""}
                     {t("table.serial")}: {nft.sequence}<br />

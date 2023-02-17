@@ -4,7 +4,97 @@ import { stripText } from '.';
 import { Link } from 'react-router-dom';
 import { ReactComponent as LinkIcon } from "../assets/images/link.svg";
 
-export const nftThumbnail = (nft) => {
+//identified NFT Market Places
+export const mpUrl = (offer) => {
+  if (!offer || !offer.destination || !offer.destinationDetails) return "";
+  const service = offer.destinationDetails.service;
+  let url = '';
+  if (service === "onXRP") {
+    url = "https://nft.onxrp.com/nft/";
+  } else if (service === "xrp.cafe") {
+    url = "https://xrp.cafe/nft/";
+  } else if (service === "xMart") {
+    url = "https://api.xmart.art/nft/";
+  } else if (service === "nftmaster") {
+    url = "https://nftmaster.com/nft/";
+  } else if (service === "XPmarket") {
+    url = "https://xpmarket.com/nfts/item/";
+  } else if (service === "Equilibrium Games") {
+    url = "https://equilibrium-games.com/marketplace/nft/";
+  }
+  if (url) {
+    return url + offer.nftokenID;
+  } else {
+    return "";
+  }
+}
+
+export const bestSellOffer = sellOffers => {
+  if (!sellOffers) return null;
+  //sellOffers = sellOffers.filter(function (offer) { return offer.valid; });
+  //best xrp offer available or an IOU offer, if it's only one IOU offer available
+  let bestSellOffer = null;
+  if (sellOffers.length) {
+    let iouOffers = [];
+    let xrpOffers = [];
+
+    for (let i = 0; i < sellOffers.length; i++) {
+      if (sellOffers[i].amount.value) {
+        iouOffers.push(sellOffers[i]);
+      } else {
+        xrpOffers.push(sellOffers[i]);
+      }
+    }
+
+    if (xrpOffers.length > 0) {
+      //without destination firsts
+      xrpOffers = xrpOffers.sort((a, b) => {
+        if (!a.destination && b.destination) return 1;
+        if (a.destination && !b.destination) return -1;
+        return a.createdAt - b.createdAt;
+      });
+      //sort cheapest on top
+      xrpOffers = xrpOffers.sort((a, b) => (parseFloat(a.amount) > parseFloat(b.amount)) ? 1 : -1);
+
+      for (let i = 0; i < xrpOffers.length; i++) {
+        if (mpUrl(xrpOffers[i]) || !xrpOffers[i].destination) {
+          //if known destination - (not a private offer) or on Open Market
+          bestSellOffer = xrpOffers[i];
+          break;
+        }
+      }
+    }
+
+    if (!bestSellOffer && iouOffers.length > 0) {
+      // if no XRP offers fits creterias above choose IOU if it's only one fits.
+      let iouFitOffers = [];
+      //check that if it's not a private offer (only MP and public)
+      for (let i = 0; i < iouOffers.length; i++) {
+        if (mpUrl(iouOffers[i]) || !iouOffers[i].destination) {
+          iouFitOffers.push(iouOffers[i]);
+        }
+      }
+      if (iouFitOffers.length > 1) {
+        //public offers firsts
+        iouFitOffers = iouFitOffers.sort((a, b) => {
+          if (!a.destination && b.destination) return 1;
+          if (a.destination && !b.destination) return -1;
+          return a.createdAt - b.createdAt;
+        });
+        //latest on top, need to test
+        //iouFitOffers = iouFitOffers.sort((a, b) => (parseFloat(a.createdAt) < parseFloat(b.createdAt)) ? 1 : -1);
+      }
+      if (iouFitOffers.length > 0) {
+        bestSellOffer = iouFitOffers[0];
+      }
+    }
+    return bestSellOffer;
+  } else {
+    return null;
+  }
+}
+
+export const nftThumbnail = nft => {
   if (!nft || !nft.nftokenID) return "";
   return <Link to={"/nft/" + nft.nftokenID}>
     <img
@@ -17,14 +107,14 @@ export const nftThumbnail = (nft) => {
   </Link>
 }
 
-export const nftNameLink = (nft) => {
+export const nftNameLink = nft => {
   if (!nft) return "";
   return <Link to={"/nft/" + nft.nftokenID}>
     {nft?.metadata?.name ? nft.metadata.name : <LinkIcon />}
   </Link>
 }
 
-export const nftName = (nft) => {
+export const nftName = nft => {
   if (nft?.metadata?.name) {
     return stripText(nft.metadata.name);
   } else if (nft?.uri) {
@@ -36,13 +126,13 @@ export const nftName = (nft) => {
   }
 }
 
-export const isValidTaxon = (taxon) => {
+export const isValidTaxon = taxon => {
   if (taxon !== 0 && !taxon) return false;
   taxon = Number(taxon);
   return Number.isInteger(taxon) && taxon > -1 && taxon < 2147483648;
 }
 
-const isValidCid = (hash) => {
+const isValidCid = hash => {
   return /^Qm[a-zA-Z0-9]{44}$|^baf[a-zA-Z0-9]{56}$/.test(hash);
 }
 
