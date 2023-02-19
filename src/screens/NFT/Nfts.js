@@ -81,6 +81,8 @@ export default function Nfts() {
     let markerUrlPart = '';
 
     if (listTab === 'onSale') {
+      //order: "offerCreatedNew", "offerCreatedOld", "priceLow", "priceHigh"
+      //destination: "public", "knownBrokers", "publicAndKnownBrokers", "all"
       listUrlPart = '?list=onSale&destination=' + saleDestinationTab + '&order=priceLow';
       if (saleCurrencyIssuer && saleCurrency) {
         listUrlPart = listUrlPart + '&currency=' + saleCurrency + '&currencyIssuer=' + saleCurrencyIssuer;
