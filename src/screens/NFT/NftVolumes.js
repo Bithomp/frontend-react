@@ -277,7 +277,7 @@ export default function NftVolumes() {
     }
 
     let output = amountFormat(floor, { tooltip: 'left', maxFractionDigits: 2 });
-    if (priceColor === 'orange') {
+    if (output && priceColor === 'orange') {
       if (window.innerWidth > 1000) {
         output = (
           <span className={'tooltip ' + priceColor}>
@@ -365,7 +365,13 @@ export default function NftVolumes() {
                           {listTab === 'issuers' && <td>{addressUsernameOrServiceLink(volume, "issuer", { short: true })}</td>}
                           {listTab === 'issuers' && <td className='right hide-on-mobile'>{shortNiceNumber(volume.totalNfts, 0)} <a href={'/nft-explorer?issuer=' + usernameOrAddress(volume, 'issuer')}><LinkIcon /></a></td>}
                           {listTab === 'issuers' && <td className='right hide-on-mobile'>{shortNiceNumber(volume.totalOwners, 0)} <a href={'/nft-distribution/' + usernameOrAddress(volume, 'issuer')}><LinkIcon /></a></td>}
-                          {listTab === 'issuers' && <td className='right'>{showFloor(volume.floorPrice)} <a href={'/nft-explorer?issuer=' + usernameOrAddress(volume, 'issuer') + '&list=onSale'}><LinkIcon /></a></td>}
+                          {listTab === 'issuers' &&
+                            <td className='right'>
+                              {showFloor(volume.floorPrice) &&
+                                <>{showFloor(volume.floorPrice)} <a href={'/nft-explorer?issuer=' + usernameOrAddress(volume, 'issuer') + '&list=onSale'}><LinkIcon /></a></>
+                              }
+                            </td>
+                          }
                           {listTab === 'issuers' && <td className='right hide-on-mobile'>{shortNiceNumber(volume.tradedNfts, 0)}</td>}
                           {listTab === 'brokers' && <td>{addressUsernameOrServiceLink(volume, "broker", { short: true })}</td>}
                           {listTab === 'currencies' && <td className='center'><a href={'/nft-volumes' + urlParams(volume) + '&list=issuers'}><LinkIcon /></a></td>}
