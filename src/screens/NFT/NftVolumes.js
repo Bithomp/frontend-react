@@ -412,6 +412,7 @@ export default function NftVolumes() {
             {loading ?
               <tr className='center'>
                 <td colSpan="100">
+                  <br />
                   <span className="waiting"></span>
                   <br />{t("general.loading")}
                 </td>
@@ -437,7 +438,7 @@ export default function NftVolumes() {
                       </p>
                       {showFloor(volume.floorPrice) ?
                         <p>
-                          {t("table.floor-now")}: {showFloor(volume.floorPrice)}
+                          {t("table.floor-now")}: {showFloor(volume.floorPrice)} <a href={'/nft-explorer?issuer=' + usernameOrAddress(volume, 'issuer') + '&list=onSale'}><LinkIcon /></a>
                         </p>
                         :
                         ""
