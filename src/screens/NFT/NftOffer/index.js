@@ -20,9 +20,10 @@ import {
 } from '../../../utils/format';
 
 import { ReactComponent as LinkIcon } from "../../../assets/images/link.svg";
+import xummImg from "../../../assets/images/xumm.png";
 import './styles.scss';
 
-export default function NftOffer() {
+export default function NftOffer({ setSignRequest, signRequest, account }) {
   const { t } = useTranslation();
   const { id } = useParams();
 
@@ -134,9 +135,11 @@ export default function NftOffer() {
   */
 
   useEffect(() => {
-    checkApi();
+    if (!signRequest) {
+      checkApi();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id]);
+  }, [id, signRequest]);
 
   const sellerOrBuyer = data?.flags?.sellToken === true ? t("table.seller") : t("table.buyer");
 
@@ -166,6 +169,29 @@ export default function NftOffer() {
                       {data.nftoken.metadata?.name ? data.nftoken.metadata.name : ""}
                       <br /><br />
                     </div>
+
+                    {((data?.owner && account?.address && account.address === data.owner) || data?.validationErrors?.includes('Offer is expired')) &&
+                      <>
+                        <button
+                          className='button-action wide center'
+                          onClick={() => setSignRequest({
+                            wallet: "xumm",
+                            request: {
+                              "TransactionType": "NFTokenCancelOffer",
+                              "Account": data.owner,
+                              "NFTokenOffers": [
+                                data.offerIndex
+                              ]
+                            }
+                          })}
+                        >
+                          <img src={xummImg} className='xumm-logo' alt="xumm" />
+                          {t("nft.cancel-for")} {amountFormat(data.amount)}
+                        </button>
+                        <br /><br />
+                      </>
+                    }
+
                   </div>
                   <div className="column-right">
                     <table className='table-details'>

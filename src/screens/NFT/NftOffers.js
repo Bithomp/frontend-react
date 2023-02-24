@@ -89,12 +89,9 @@ export default function NftOffers({ setSignRequest, signRequest, account }) {
             if (!newdata.nftOffers[i].valid) {
               invalid++;
               invalidList.push(newdata.nftOffers[i].offerIndex);
-              for (let j = 0; j < newdata.nftOffers[i].validationErrors.length; j++) {
-                if (newdata.nftOffers[i].validationErrors[j] === 'Offer is expired') {
-                  expired++;
-                  expiredList.push(newdata.nftOffers[i].offerIndex);
-                  break;
-                }
+              if (newdata.nftOffers[i].validationErrors.includes('Offer is expired')) {
+                expired++;
+                expiredList.push(newdata.nftOffers[i].offerIndex);
               }
             }
             if (newdata.nftOffers[i].flags?.sellToken === true) {
