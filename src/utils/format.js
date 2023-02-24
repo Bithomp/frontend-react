@@ -104,7 +104,7 @@ export const txIdLink = (txId, chars = 10) => {
   return <a href={"/explorer/" + txId}>{shortHash(txId, chars)}</a>
 }
 
-export const nftLink = (nft, type) => {
+export const nftLink = (nft, type, options = {}) => {
   if (!nft || !type || !nft[type]) return "";
 
   let link = "/explorer/";
@@ -112,6 +112,11 @@ export const nftLink = (nft, type) => {
     link = "/nft-explorer?issuer=";
   } else if (type === "owner" || type === "seller" || type === "buyer") {
     link = "/nfts/";
+  }
+
+  let defaultContent = <LinkIcon />;
+  if (options.address === 'short') {
+    defaultContent = shortAddress(nft[type]);
   }
 
   //nft-offers destination
@@ -128,10 +133,10 @@ export const nftLink = (nft, type) => {
       }
     }
     return <a href={link + (nft[type + 'Details'].username || nft[type])}>
-      {showName ? showName : <LinkIcon />}
+      {showName ? showName : defaultContent}
     </a>
   }
-  return <a href={link + nft[type]}><LinkIcon /></a>
+  return <a href={link + nft[type]}>{defaultContent}</a>
 }
 
 export const nftsExplorerLink = ({ owner, ownerDetails, issuer, issuerDetails }) => {

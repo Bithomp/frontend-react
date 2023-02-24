@@ -172,8 +172,12 @@ export default function Nfts() {
   }, [id, issuer, taxon, owner, listTab, saleDestinationTab]);
 
   useEffect(() => {
-    if (nftExplorer && isAddressOrUsername(rawData?.owner)) {
-      searchParams.set("owner", usernameOrAddress(rawData, 'owner'));
+    if (nftExplorer) {
+      if (isAddressOrUsername(rawData?.owner)) {
+        searchParams.set("owner", usernameOrAddress(rawData, 'owner'));
+      } else {
+        searchParams.delete("owner");
+      }
     }
 
     if (isAddressOrUsername(rawData?.issuer)) {
@@ -460,7 +464,7 @@ export default function Nfts() {
                   <th className='center'>{t("table.serial")}</th>
                   {!taxon && <th className='center'>{t("table.taxon")}</th>}
                   {!issuer && <th className='center'>{t("table.issuer")}</th>}
-                  {(!id && !owner) && <th className='center'>{t("table.owner")}</th>}
+                  {(!id && !owner) && <th className='right'>{t("table.owner")}</th>}
                   {listTab === 'onSale' && <th className='right'>{t("table.price")}</th>}
                 </tr>
               </thead>
@@ -482,7 +486,7 @@ export default function Nfts() {
                         <td className='center'>{nft.sequence}</td>
                         {!taxon && <td className='center'>{nft.nftokenTaxon}</td>}
                         {!issuer && <td className='center'>{nftLink(nft, 'issuer')}</td>}
-                        {(!id && !owner) && <td className='center'>{nftLink(nft, 'owner')}</td>}
+                        {(!id && !owner) && <td className='right'>{nftLink(nft, 'owner', { address: 'short' })}</td>}
                         {listTab === 'onSale' && <td className='right'>{priceData(nft.sellOffers)}</td>}
                       </tr>)
                       :
