@@ -414,7 +414,7 @@ export default function NftVolumes() {
                 <td colSpan="100">
                   <br />
                   <span className="waiting"></span>
-                  <br />{t("general.loading")}
+                  <br />{t("general.loading")}<br />
                 </td>
               </tr>
               :

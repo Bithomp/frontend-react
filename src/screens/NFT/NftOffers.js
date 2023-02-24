@@ -20,7 +20,7 @@ import { nftNameLink, nftThumbnail } from '../../utils/nft';
 import { ReactComponent as LinkIcon } from "../../assets/images/link.svg";
 import xummImg from "../../assets/images/xumm.png";
 
-export default function NftOffers({ setSignRequest, signRequest }) {
+export default function NftOffers({ setSignRequest, signRequest, account }) {
   const { t } = useTranslation();
   const { id } = useParams();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -38,6 +38,7 @@ export default function NftOffers({ setSignRequest, signRequest }) {
   const [offerTypeTab, setOfferTypeTab] = useState("all");
   const [offersCount, setOffersCount] = useState({});
   const [invalidOffers, setInvalidOffers] = useState([]);
+  const [expiredOffers, setExpiredOffers] = useState([]);
 
   const offerListTabList = [
     { value: 'owned', label: t("tabs.owned-offers") },
@@ -81,11 +82,20 @@ export default function NftOffers({ setSignRequest, signRequest }) {
           let sell = 0;
           let buy = 0;
           let invalid = 0;
+          let expired = 0;
           let invalidList = [];
+          let expiredList = [];
           for (let i = 0; i < newdata.nftOffers.length; i++) {
             if (!newdata.nftOffers[i].valid) {
               invalid++;
               invalidList.push(newdata.nftOffers[i].offerIndex);
+              for (let j = 0; j < newdata.nftOffers[i].validationErrors.length; j++) {
+                if (newdata.nftOffers[i].validationErrors[j] === 'Offer is expired') {
+                  expired++;
+                  expiredList.push(newdata.nftOffers[i].offerIndex);
+                  break;
+                }
+              }
             }
             if (newdata.nftOffers[i].flags?.sellToken === true) {
               sell++;
@@ -94,11 +104,13 @@ export default function NftOffers({ setSignRequest, signRequest }) {
             }
           }
           setInvalidOffers(invalidList);
+          setExpiredOffers(expiredList);
           setOffersCount({
             all: newdata.nftOffers.length,
             buy,
             sell,
-            invalid
+            invalid,
+            expired
           });
         }
         setOffers(newdata.nftOffers.sort((a, b) => (a.createdAt < b.createdAt) ? 1 : -1));
@@ -218,7 +230,7 @@ export default function NftOffers({ setSignRequest, signRequest }) {
         {(offerListTab === 'owned' && (offersCount.all > 1)) &&
           <Tabs tabList={offerTypeTabList} tab={offerTypeTab} setTab={setOfferTypeTab} name="offerType" />
         }
-        {!!offersCount.invalid &&
+        {!!offersCount.expired && userData?.address &&
           <button
             className='button-action thin narrow'
             style={{ margin: "10px 10px 20px" }}
@@ -227,12 +239,17 @@ export default function NftOffers({ setSignRequest, signRequest }) {
               request: {
                 "TransactionType": "NFTokenCancelOffer",
                 "Account": userData?.address,
-                "NFTokenOffers": invalidOffers
+                "NFTokenOffers": (account?.address && account.address === userData.address) ? invalidOffers : expiredOffers
               }
             })}
           >
             <img src={xummImg} className="xumm-logo" alt="xumm" />
-            {t('nft-offers.cancel-offer', { count: offersCount.invalid })}
+            {
+              (account?.address && account.address === userData.address) ?
+                t('nft-offers.cancel-invalid-offer', { count: offersCount.invalid })
+                :
+                t('nft-offers.cancel-expired-offer', { count: offersCount.expired })
+            }
           </button>
         }
       </div>
@@ -259,7 +276,7 @@ export default function NftOffers({ setSignRequest, signRequest }) {
                   <tr className='center'>
                     <td colSpan="100">
                       <span className="waiting"></span>
-                      <br />{t("general.loading")}
+                      <br />{t("general.loading")}<br />
                     </td>
                   </tr>
                   :
@@ -304,7 +321,8 @@ export default function NftOffers({ setSignRequest, signRequest }) {
                     <td colSpan="100">
                       <br />
                       <span className="waiting"></span>
-                      <br />{t("general.loading")}
+                      <br />{t("general.loading")}<br />
+                      <br />
                     </td>
                   </tr>
                   :
