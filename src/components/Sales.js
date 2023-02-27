@@ -269,9 +269,9 @@ export default function Sales({ list, defaultSaleTab = "all" }) {
             <th className='center hide-on-mobile'>{t("table.taxon")}</th>
             <th className='center hide-on-mobile'>{t("table.serial")}</th>
             <th className='hide-on-mobile'>{t("table.transaction")}</th>
-            {saleTab !== "primary" && <th className='hide-on-mobile center'>{t("table.seller")}</th>}
+            {saleTab !== "primary" && <th className='hide-on-mobile right'>{t("table.seller")}</th>}
             <th className='hide-on-mobile right'>{t("table.buyer")}</th>
-            {!issuer && <th className='hide-on-mobile center'>{t("table.issuer")}</th>}
+            {!issuer && <th className='hide-on-mobile right'>{t("table.issuer")}</th>}
           </tr>
         </thead>
         <tbody>
@@ -295,9 +295,9 @@ export default function Sales({ list, defaultSaleTab = "all" }) {
                     <td className='center hide-on-mobile'>{nft.nftoken.nftokenTaxon}</td>
                     <td className='center hide-on-mobile'>{nft.nftoken.sequence}</td>
                     <td className='center hide-on-mobile'><a href={"/explorer/" + nft.acceptedTxHash}><LinkIcon /></a></td>
-                    {saleTab !== "primary" && <td className='center hide-on-mobile'>{nftLink(nft, 'seller')}</td>}
+                    {saleTab !== "primary" && <td className='right hide-on-mobile'>{nftLink(nft, 'seller', { address: 'short' })}</td>}
                     <td className='right hide-on-mobile'>{nftLink(nft, 'buyer', { address: 'short' })}</td>
-                    {!issuer && <td className='center hide-on-mobile'>{nftLink(nft.nftoken, 'issuer')}</td>}
+                    {!issuer && <td className='right hide-on-mobile'>{nftLink(nft.nftoken, 'issuer', { address: 'short' })}</td>}
                   </tr>
                 )
                 :
