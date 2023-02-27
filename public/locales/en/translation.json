@@ -531,7 +531,9 @@
     }
   },
   "nft-sales": {
-    "header": "NFT sales"
+    "header": "NFT sales",
+    "load-more": "We are looking for data on the XRPL... please wait...",
+    "end": "The end of the list."
   },
   "links": {
     "active-offers-same-account": "View active offers from that account",
