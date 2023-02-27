@@ -8,7 +8,7 @@ import Tabs from './Tabs';
 import Tiles from './Tiles';
 
 import { stripText, onFailedRequest, onApiError, isAddressOrUsername, setTabParams } from '../utils';
-import { isValidTaxon } from '../utils/nft';
+import { isValidTaxon, nftThumbnail, nftNameLink } from '../utils/nft';
 import { amountFormat, nftLink, timeOrDate, userOrServiceLink, usernameOrAddress } from '../utils/format';
 
 import { ReactComponent as LinkIcon } from "../assets/images/link.svg";
@@ -261,16 +261,16 @@ export default function Sales({ list, defaultSaleTab = "all" }) {
       <table className="table-large">
         <thead>
           <tr>
-            <th className='center'>{pageTab === 'last' ? t("table.time") : t("table.index")}</th>
+            <th className='center'>{t("table.index")}</th>
+            <th className='center'>{t("table.sold")}</th>
             <th>{t("table.amount")}</th>
-            {pageTab === 'top' && <th className='hide-on-mobile'>{t("table.sold")}</th>}
-            <th>{t("table.name")}</th>
+            <th>NFT</th>
+            <th></th>
             <th className='center hide-on-mobile'>{t("table.taxon")}</th>
             <th className='center hide-on-mobile'>{t("table.serial")}</th>
-            <th className='center'>NFT</th>
             <th className='hide-on-mobile'>{t("table.transaction")}</th>
             {saleTab !== "primary" && <th className='hide-on-mobile center'>{t("table.seller")}</th>}
-            <th className='hide-on-mobile center'>{t("table.buyer")}</th>
+            <th className='hide-on-mobile right'>{t("table.buyer")}</th>
             {!issuer && <th className='hide-on-mobile center'>{t("table.issuer")}</th>}
           </tr>
         </thead>
@@ -287,16 +287,16 @@ export default function Sales({ list, defaultSaleTab = "all" }) {
               {!errorMessage && data?.sales?.length ?
                 data.sales.map((nft, i) =>
                   <tr key={i}>
-                    <td className='center'>{pageTab === 'last' ? timeOrDate(nft.acceptedAt) : (i + 1)}</td>
+                    <td className='center'>{i + 1}</td>
+                    <td className='center'>{timeOrDate(nft.acceptedAt)}</td>
                     <td>{amountFormat(nft.amount, { tooltip: 'right' })}</td>
-                    {pageTab === 'top' && <td className='hide-on-mobile'>{timeOrDate(nft.acceptedAt)}</td>}
-                    <td>{nft.nftoken?.metadata?.name ? stripText(nft.nftoken.metadata.name) : "---//---"}</td>
+                    <td>{nftThumbnail(nft.nftoken)}</td>
+                    <td>{nftNameLink(nft.nftoken)}</td>
                     <td className='center hide-on-mobile'>{nft.nftoken.nftokenTaxon}</td>
                     <td className='center hide-on-mobile'>{nft.nftoken.sequence}</td>
-                    <td className='center'><Link to={"/nft/" + nft.nftokenID}><LinkIcon /></Link></td>
                     <td className='center hide-on-mobile'><a href={"/explorer/" + nft.acceptedTxHash}><LinkIcon /></a></td>
                     {saleTab !== "primary" && <td className='center hide-on-mobile'>{nftLink(nft, 'seller')}</td>}
-                    <td className='center hide-on-mobile'>{nftLink(nft, 'buyer')}</td>
+                    <td className='right hide-on-mobile'>{nftLink(nft, 'buyer', { address: 'short' })}</td>
                     {!issuer && <td className='center hide-on-mobile'>{nftLink(nft.nftoken, 'issuer')}</td>}
                   </tr>
                 )
