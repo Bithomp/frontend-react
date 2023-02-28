@@ -52,8 +52,8 @@ export const onApiError = (error, showErrorFunction) => {
   }
 }
 
-//const networks = ['mainnet', 'staging', 'testnet', 'devnet', 'beta', 'xls20', 'amm'];
-//const devNetworks = ['testnet', 'devnet', 'beta', 'xls20', 'amm'];
+//const networks = ['mainnet', 'staging', 'testnet', 'devnet', 'beta', 'amm'];
+//const devNetworks = ['testnet', 'devnet', 'beta', 'amm'];
 
 export const network = process.env.REACT_APP_NETWORK_NAME ? process.env.REACT_APP_NETWORK_NAME : "mainnet";
 export const devNet = ['mainnet', 'staging'].includes(network) ? false : network;
@@ -75,9 +75,6 @@ const Server = () => {
       break;
     case 'beta':
       server = "https://beta.bithomp.com";
-      break;
-    case 'xls20':
-      server = "https://xls20.bithomp.com";
       break;
     case 'amm':
       server = "https://amm.bithomp.com";
