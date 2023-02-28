@@ -61,7 +61,7 @@ export default function NftOffers({ setSignRequest, signRequest, account }) {
     if (offerListTab === 'for-owned-nfts') {
       offerListUrlPart += '&list=counterOffers';
     } else if (offerListTab === 'privately-offered-to-address') {
-      offerListUrlPart += '&list=destinationOffers';
+      offerListUrlPart += '&list=privatelyOfferedToAddress';
     }
 
     setLoading(true);
@@ -141,9 +141,6 @@ export default function NftOffers({ setSignRequest, signRequest, account }) {
           showExpiration = true;
         }
       }
-    }
-    if (offerListTab === 'privately-offered-to-address') {
-      showDestination = false;
     }
     setShowDestinationColumn(showDestination);
     setShowExpirationColumn(showExpiration);
@@ -269,7 +266,7 @@ export default function NftOffers({ setSignRequest, signRequest, account }) {
                   <th>{t("table.amount")}</th>
                   <th>{t("table.placed")}</th>
                   {showExpirationColumn && <th>{t("table.expiration")}</th>}
-                  {showDestinationColumn && <th>{t("table.destination")}</th>}
+                  {(showDestinationColumn && offerListTab !== 'privately-offered-to-address') && <th>{t("table.destination")}</th>}
                   {showValidationColumn && <th className='center'>{t("table.status")}</th>}
                 </tr>
               </thead>
@@ -292,7 +289,7 @@ export default function NftOffers({ setSignRequest, signRequest, account }) {
                         <td>{amountFormat(offer.amount, { tooltip: true, maxFractionDigits: 2 })}</td>
                         <td>{fullDateAndTime(offer.createdAt)}</td>
                         {showExpirationColumn && <td>{offer.expiration ? fullDateAndTime(offer.expiration, "expiration") : t("table.text.no-expiration")}</td>}
-                        {showDestinationColumn && <td>{nftLink(offer, 'destination')}</td>}
+                        {(showDestinationColumn && offerListTab !== 'privately-offered-to-address') && <td>{nftLink(offer, 'destination')}</td>}
                         {showValidationColumn &&
                           <td className='center'>
                             {offer.valid ?
