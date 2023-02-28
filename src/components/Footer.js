@@ -62,6 +62,7 @@ export default function Footer() {
 
         <div className="footer-menu-column">
           <span className="footer-menu-header">{t("menu.community.title")}</span>
+          <a href="https://www.trsryxrpl.com/course/tools-and-resources-for-xrpl-holders/" target="_blank" rel="noreferrer">{t("menu.community.treasury")}</a>
           <a href="https://xumm.app" target="_blank" rel="noreferrer">{t("menu.community.xumm")}</a>
           <a href="https://foundation.xrpl.org" target="_blank" rel="noreferrer">{t("menu.community.xrplf")}</a>
           <a href="https://xrpl.org" target="_blank" rel="noreferrer">{t("menu.community.xrpl")}</a>

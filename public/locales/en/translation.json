@@ -38,7 +38,8 @@
       "xumm": "Xumm wallet",
       "xrplf": "XRPL foundation",
       "xrpl": "XRPL website",
-      "xrpchat": "XRP chat"
+      "xrpchat": "XRP chat",
+      "treasury": "Treasury: Bithomp"
     },
     "sponsored": {
       "title": "Sponsored",
@@ -478,6 +479,7 @@
     "header": "NFT offers",
     "owned-desc": "Here you can search for Buy and Sell Offers for (XLS-20) NFTs, type in the XRPL address or username to see what it offers.",
     "for-owned-nfts-desc": "Here you can search for Buy Offers for NFTs owned by account, type in the XRPL address or username to see received offers.",
+    "privately-offered-to-address-desc": "Here you can search for Offers privately created for an account (with destination), it is often used for NFT transfers (price 0 XRP), type in the XRPL address or username to see received offers.",
     "no-nft-offers": "We couldn't find any NFT Offers.",
     "cancel-invalid-offer_one": "Cancel the invalid offer",
     "cancel-invalid-offer_other": "Cancel {{count}} invalid offers",
