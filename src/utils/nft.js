@@ -96,12 +96,14 @@ export const bestSellOffer = sellOffers => {
 
 export const nftThumbnail = nft => {
   if (!nft || !nft.nftokenID) return "";
+  const imageSrc = nftUrl(nft, 'thumbnail');
+  if (!imageSrc) return "";
   return <Link to={"/nft/" + nft.nftokenID}>
     <img
-      src={nftUrl(nft, 'thumbnail')}
+      src={imageSrc}
       width="32px"
       height="32px"
-      style={{ borderRadius: "50% 20% / 10% 40%" }}
+      style={{ borderRadius: "50% 20% / 10% 40%", verticalAlign: "middle" }}
       alt={nft.metadata?.name}
     />
   </Link>

@@ -192,6 +192,24 @@ export default function NftOffer({ setSignRequest, signRequest, account }) {
                       </>
                     }
 
+                    {(data?.destination && account?.address && account.address === data.destination && data.valid && data.flags?.sellToken) &&
+                      <>
+                        <button
+                          className='button-action wide center'
+                          onClick={() => setSignRequest({
+                            wallet: "xumm",
+                            request: {
+                              "TransactionType": "NFTokenAcceptOffer",
+                              "NFTokenSellOffer": data.offerIndex,
+                            }
+                          })}
+                        >
+                          <img src={xummImg} className='xumm-logo' alt="xumm" />
+                          {t("nft.buy-for")} {amountFormat(data.amount)}
+                        </button>
+                        <br /><br />
+                      </>
+                    }
                   </div>
                   <div className="column-right">
                     <table className='table-details'>

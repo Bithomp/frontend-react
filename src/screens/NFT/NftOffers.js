@@ -42,7 +42,8 @@ export default function NftOffers({ setSignRequest, signRequest, account }) {
 
   const offerListTabList = [
     { value: 'owned', label: t("tabs.owned-offers") },
-    { value: 'for-owned-nfts', label: t("tabs.offers-for-owned-nfts") }
+    { value: 'for-owned-nfts', label: t("tabs.offers-for-owned-nfts") },
+    { value: 'privately-offered-to-address', label: t("tabs.privately-offered-to-address") }
   ];
 
   const offerTypeTabList = [
@@ -59,6 +60,8 @@ export default function NftOffers({ setSignRequest, signRequest, account }) {
     let offerListUrlPart = '?nftoken=true&offersValidate=true';
     if (offerListTab === 'for-owned-nfts') {
       offerListUrlPart += '&list=counterOffers';
+    } else if (offerListTab === 'privately-offered-to-address') {
+      offerListUrlPart += '&list=privatelyOfferedToAddress';
     }
 
     setLoading(true);
@@ -259,13 +262,12 @@ export default function NftOffers({ setSignRequest, signRequest, account }) {
                   <th className='center'>{t("table.index")}</th>
                   <th className='center'>{t("table.offer")}</th>
                   <th>NFT</th>
-                  <th></th>
                   {showTypeColumn && <th>{t("table.type")}</th>}
                   <th>{t("table.amount")}</th>
                   <th>{t("table.placed")}</th>
                   {showExpirationColumn && <th>{t("table.expiration")}</th>}
-                  {showDestinationColumn && <th>{t("table.destination")}</th>}
-                  {(showValidationColumn && offerListTab === 'owned') && <th className='center'>{t("table.status")}</th>}
+                  {(showDestinationColumn && offerListTab !== 'privately-offered-to-address') && <th>{t("table.destination")}</th>}
+                  {showValidationColumn && <th className='center'>{t("table.status")}</th>}
                 </tr>
               </thead>
               <tbody>
@@ -282,14 +284,13 @@ export default function NftOffers({ setSignRequest, signRequest, account }) {
                       <tr key={i}>
                         <td className="center">{i + 1}</td>
                         <td className='center'><Link to={"/nft-offer/" + offer.offerIndex}><LinkIcon /></Link></td>
-                        <td>{nftThumbnail(offer.nftoken)}</td>
-                        <td>{nftNameLink(offer.nftoken)}</td>
+                        <td>{nftThumbnail(offer.nftoken)} {nftNameLink(offer.nftoken)}</td>
                         {showTypeColumn && <td>{offer.flags?.sellToken === true ? t("table.text.sell") : t("table.text.buy")}</td>}
                         <td>{amountFormat(offer.amount, { tooltip: true, maxFractionDigits: 2 })}</td>
                         <td>{fullDateAndTime(offer.createdAt)}</td>
                         {showExpirationColumn && <td>{offer.expiration ? fullDateAndTime(offer.expiration, "expiration") : t("table.text.no-expiration")}</td>}
-                        {showDestinationColumn && <td>{nftLink(offer, 'destination')}</td>}
-                        {(showValidationColumn && offerListTab === 'owned') &&
+                        {(showDestinationColumn && offerListTab !== 'privately-offered-to-address') && <td>{nftLink(offer, 'destination')}</td>}
+                        {showValidationColumn &&
                           <td className='center'>
                             {offer.valid ?
                               t("table.text.valid")
@@ -361,7 +362,7 @@ export default function NftOffers({ setSignRequest, signRequest, account }) {
                               {t("table.destination")}: {nftLink(offer, 'destination')}
                             </p>
                           }
-                          {(offerListTab === 'owned' && !offer.valid) &&
+                          {!offer.valid &&
                             <p>
                               {t("table.status")}: <span className='orange'>{t("table.text.invalid")}</span>
                             </p>
