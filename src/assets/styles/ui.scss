@@ -563,7 +563,7 @@ pre {
     transition: max-height 0.5s ease-out;
   }
   &.opened {
-    max-height: 5000px;
+    max-height: 20000px;
     transition: max-height 0.5s ease-in;
   }
 }

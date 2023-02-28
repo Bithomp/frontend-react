@@ -35,6 +35,12 @@
     width: calc(60% - 32px);
     padding: 0 15px;
     vertical-align: top;
+    .slide {
+      pre {
+        white-space: pre;
+        overflow: scroll;
+      }
+    }
   }
   .offer-history-filter-select {
     float: right;
