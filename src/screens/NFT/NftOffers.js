@@ -142,6 +142,9 @@ export default function NftOffers({ setSignRequest, signRequest, account }) {
         }
       }
     }
+    if (offerListTab === 'privately-offered-to-address') {
+      showDestination = false;
+    }
     setShowDestinationColumn(showDestination);
     setShowExpirationColumn(showExpiration);
     setShowValidationColumn(showValidation);
@@ -262,7 +265,6 @@ export default function NftOffers({ setSignRequest, signRequest, account }) {
                   <th className='center'>{t("table.index")}</th>
                   <th className='center'>{t("table.offer")}</th>
                   <th>NFT</th>
-                  <th></th>
                   {showTypeColumn && <th>{t("table.type")}</th>}
                   <th>{t("table.amount")}</th>
                   <th>{t("table.placed")}</th>
@@ -285,8 +287,7 @@ export default function NftOffers({ setSignRequest, signRequest, account }) {
                       <tr key={i}>
                         <td className="center">{i + 1}</td>
                         <td className='center'><Link to={"/nft-offer/" + offer.offerIndex}><LinkIcon /></Link></td>
-                        <td>{nftThumbnail(offer.nftoken)}</td>
-                        <td>{nftNameLink(offer.nftoken)}</td>
+                        <td>{nftThumbnail(offer.nftoken)} {nftNameLink(offer.nftoken)}</td>
                         {showTypeColumn && <td>{offer.flags?.sellToken === true ? t("table.text.sell") : t("table.text.buy")}</td>}
                         <td>{amountFormat(offer.amount, { tooltip: true, maxFractionDigits: 2 })}</td>
                         <td>{fullDateAndTime(offer.createdAt)}</td>

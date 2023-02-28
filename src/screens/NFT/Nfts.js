@@ -111,7 +111,6 @@ export default function Nfts() {
     if (marker && marker !== "first") {
       markerUrlPart = "&marker=" + marker;
     }
-
     if (marker === "first") {
       setLoading(true);
     }
@@ -460,7 +459,6 @@ export default function Nfts() {
                 <tr>
                   <th className='center'>{t("table.index")}</th>
                   <th>NFT</th>
-                  <th></th>
                   <th className='center'>{t("table.serial")}</th>
                   {!taxon && <th className='center'>{t("table.taxon")}</th>}
                   {!issuer && <th className='center'>{t("table.issuer")}</th>}
@@ -481,8 +479,7 @@ export default function Nfts() {
                     {!errorMessage ? filteredData.map((nft, i) =>
                       <tr key={nft.nftokenID}>
                         <td className="center">{i + 1}</td>
-                        <td>{nftThumbnail(nft)}</td>
-                        <td>{nftNameLink(nft)}</td>
+                        <td>{nftThumbnail(nft)} {nftNameLink(nft)}</td>
                         <td className='center'>{nft.sequence}</td>
                         {!taxon && <td className='center'>{nft.nftokenTaxon}</td>}
                         {!issuer && <td className='center'>{nftLink(nft, 'issuer')}</td>}

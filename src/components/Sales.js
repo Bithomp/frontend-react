@@ -307,7 +307,6 @@ export default function Sales({ list, defaultSaleTab = "all" }) {
               <th className='center'>{t("table.sold")}</th>
               <th>{t("table.amount")}</th>
               <th>NFT</th>
-              <th></th>
               <th className='center hide-on-mobile'>{t("table.taxon")}</th>
               <th className='center hide-on-mobile'>{t("table.serial")}</th>
               <th className='hide-on-mobile'>{t("table.transaction")}</th>
@@ -332,8 +331,7 @@ export default function Sales({ list, defaultSaleTab = "all" }) {
                       <td className='center'>{i + 1}</td>
                       <td className='center'>{timeOrDate(nft.acceptedAt)}</td>
                       <td>{amountFormat(nft.amount, { tooltip: 'right' })}</td>
-                      <td>{nftThumbnail(nft.nftoken)}</td>
-                      <td>{nftNameLink(nft.nftoken)}</td>
+                      <td>{nftThumbnail(nft.nftoken)} {nftNameLink(nft.nftoken)}</td>
                       <td className='center hide-on-mobile'>{nft.nftoken.nftokenTaxon}</td>
                       <td className='center hide-on-mobile'>{nft.nftoken.sequence}</td>
                       <td className='center hide-on-mobile'><a href={"/explorer/" + nft.acceptedTxHash}><LinkIcon /></a></td>
