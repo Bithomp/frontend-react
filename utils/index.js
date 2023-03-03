@@ -1,5 +1,39 @@
 import i18next from '../services/i18n';
-import axios from 'axios';
+import axios from 'axios'
+import { useState, useEffect } from "react"
+
+export const useLocalStorage = (key, initialValue = null) => {
+  const [value, setValue] = useState(null);
+
+  const parse = (value) => {
+    try {
+      return JSON.parse(value)
+    } catch {
+      return value
+    }
+  }
+
+  useEffect(() => {
+    const data = localStorage.getItem(key);
+    if (!data) {
+      if (typeof initialValue === "function") {
+        setValue(initialValue());
+      } else {
+        setValue(initialValue);
+      }
+    } else {
+      setValue(parse(data));
+    }
+  }, []);
+
+  useEffect(() => {
+    if (value !== initialValue) {
+      localStorage.setItem(key, JSON.stringify(value));
+    }
+  }, [value]);
+
+  return [value, setValue];
+}
 
 export const setTabParams = (tabList, tab, defaultTab, setTab, searchParameters, paramName) => {
   const existTab = tabList.some(t => t.value === tab);
@@ -11,11 +45,6 @@ export const setTabParams = (tabList, tab, defaultTab, setTab, searchParameters,
   } else {
     searchParameters.set(paramName, tab);
   }
-}
-
-//not in use yet
-export const isDarkTheme = () => {
-  return document.querySelector('[data-theme="dark"]');
 }
 
 export const stripText = (text) => {
@@ -55,7 +84,7 @@ export const onApiError = (error, showErrorFunction) => {
 //const networks = ['mainnet', 'staging', 'testnet', 'devnet', 'beta', 'amm'];
 //const devNetworks = ['testnet', 'devnet', 'beta', 'amm'];
 
-export const network = process.env.REACT_APP_NETWORK_NAME ? process.env.REACT_APP_NETWORK_NAME : "mainnet";
+export const network = process.env.NEXT_PUBLIC_NETWORK_NAME ? process.env.NEXT_PUBLIC_NETWORK_NAME : "mainnet";
 export const devNet = ['mainnet', 'staging'].includes(network) ? false : network;
 
 const Server = () => {

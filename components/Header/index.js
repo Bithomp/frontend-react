@@ -1,21 +1,21 @@
-import { Link } from "react-router-dom";
-import { useTranslation } from 'react-i18next';
-import { useState } from 'react';
+import Link from 'next/link'
+import Image from 'next/image'
+import { useTranslation } from 'react-i18next'
+import { useState } from 'react'
 
-import { devNet } from '../../utils';
+import { devNet, useLocalStorage } from '../../utils';
 
-import logo from "../../assets/images/logo-animated.svg";
 import Switch from "./Switch";
-import './styles.scss';
 
-export default function Header({ theme, switchTheme, setSignRequest, account, signOut }) {
+export default function Header({ setSignRequest, account, signOut }) {
   const { t } = useTranslation();
 
   const [menuOpen, setMenuOpen] = useState(false);
   const [isCopied, setIsCopied] = useState(false);
+  const [xummUserToken] = useLocalStorage('xummUserToken')
 
   let address, hashicon, displayName, username;
-  if (account) {
+  if (account && account.address) {
     address = account.address;
     hashicon = account.hashicon;
     username = account.username;
@@ -25,8 +25,6 @@ export default function Header({ theme, switchTheme, setSignRequest, account, si
       displayName = address.substr(0, 8) + "..." + address.substr(-8);
     }
   }
-
-  const xummUserToken = localStorage.getItem('xummUserToken');
 
   const mobileMenuToggle = e => {
     // remove scrollbar when menu is open
@@ -58,16 +56,16 @@ export default function Header({ theme, switchTheme, setSignRequest, account, si
   return (
     <>
       <header>
-        <Link to="/">
-          <img src={logo} className="header-logo" alt="logo" />
+        <Link href="/">
+          <Image src="/images/logo-animated.svg" className="header-logo" alt="logo" width={160} height={46} />
         </Link>
         <div className="header-menu-left">
           <div className="menu-dropdown">
             <div className="menu-dropdown-button">{t("menu.services")}</div>
             <div className="menu-dropdown-content">
-              <Link to="/username">{t("menu.usernames")}</Link>
+              <Link href="/username">{t("menu.usernames")}</Link>
               <a href="/explorer/submit.html">{t("menu.project-registartion")}</a>
-              {!devNet && <Link to="/alerts">{t("menu.price-alerts")}</Link>}
+              {!devNet && <Link href="/alerts">{t("menu.price-alerts")}</Link>}
               <a href="https://docs.bithomp.com">{t("menu.api")}</a>
             </div>
           </div>
@@ -85,23 +83,23 @@ export default function Header({ theme, switchTheme, setSignRequest, account, si
             <div className="menu-dropdown-button">NFT</div>
             <div className="menu-dropdown-content">
               <a href="/nft-explorer">{t("menu.nft.explorer")}</a>
-              <Link to="/nft-volumes">{t("menu.nft.volumes")}</Link>
+              <Link href="/nft-volumes">{t("menu.nft.volumes")}</Link>
               <a href="/nft-sales">{t("menu.nft.sales")}</a>
               <a href="/nfts">{t("menu.nft.nfts")}</a>
-              <Link to="/nft-offers">{t("menu.nft.offers")}</Link>
-              <Link to="/nft-distribution">{t("menu.nft.distribution")}</Link>
-              <Link to="/nft-statistics">{t("menu.nft.statistics")}</Link>
+              <Link href="/nft-offers">{t("menu.nft.offers")}</Link>
+              <Link href="/nft-distribution">{t("menu.nft.distribution")}</Link>
+              <Link href="/nft-statistics">{t("menu.nft.statistics")}</Link>
             </div>
           </div>
 
           <div className="menu-dropdown">
             <div className="menu-dropdown-button">XRPL</div>
             <div className="menu-dropdown-content">
-              <Link to="/last-ledger-information">{t("menu.last-ledger-information")}</Link>
-              <Link to="/ledger">{t("menu.last-ledger-transactions")}</Link>
-              <Link to="/validators">{t("menu.validators")}</Link>
-              <Link to="/amendments">{t("menu.amendments")}</Link>
-              {!devNet && <Link to="/genesis">{t("menu.genesis")}</Link>}
+              <Link href="/last-ledger-information">{t("menu.last-ledger-information")}</Link>
+              <Link href="/ledger">{t("menu.last-ledger-transactions")}</Link>
+              <Link href="/validators">{t("menu.validators")}</Link>
+              <Link href="/amendments">{t("menu.amendments")}</Link>
+              {!devNet && <Link href="/genesis">{t("menu.genesis")}</Link>}
             </div>
           </div>
 
@@ -117,6 +115,7 @@ export default function Header({ theme, switchTheme, setSignRequest, account, si
           </div>
         </div>
         <div className="header-menu-right">
+
           {displayName ?
             <div className="menu-dropdown">
               <div className="menu-dropdown-button">
@@ -129,15 +128,15 @@ export default function Header({ theme, switchTheme, setSignRequest, account, si
                 </span>
                 <a href={"/nfts/" + address}>{t("signin.actions.my-nfts")}</a>
                 <a href={"/nft-offers/" + address}>{t("signin.actions.my-nft-offers")}</a>
-                <a href={"/explorer/" + address + "?hw=xumm&xummtoken=" + xummUserToken}>{t("signin.actions.view")}</a>
+                {xummUserToken && <a href={"/explorer/" + address + "?hw=xumm&xummtoken=" + xummUserToken}>{t("signin.actions.view")}</a>}
                 {!username && <a href={"/username?address=" + address}>{t("menu.usernames")}</a>}
-                <a href={"/explorer/" + address + "?hw=xumm&xummtoken=" + xummUserToken + "&action=send"}>{t("signin.actions.send")}</a>
+                {xummUserToken && <a href={"/explorer/" + address + "?hw=xumm&xummtoken=" + xummUserToken + "&action=send"}>{t("signin.actions.send")}</a>}
                 <span onClick={signOut} className="link">{t("signin.signout")}</span>
               </div>
             </div> :
             <span onClick={() => { setSignRequest(true) }} className="header-signin-link link">{t("signin.signin")}</span>
           }
-          <Switch theme={theme} switchTheme={switchTheme} />
+          <Switch />
         </div>
         <div className="header-burger">
           <input type="checkbox" id="header-burger" checked={menuOpen} onChange={mobileMenuToggle} />
@@ -146,21 +145,24 @@ export default function Header({ theme, switchTheme, setSignRequest, account, si
           </label>
         </div>
       </header>
+      {/*
       <div className="mobile-menu">
         {displayName ?
           <>
-            <a href={"/explorer/" + address + "?hw=xumm&xummtoken=" + xummUserToken} className="mobile-menu-item">
-              <img src={hashicon} alt="user icon" className="user-icon" />
-              {displayName}
-            </a>
+            {xummUserToken &&
+              <a href={"/explorer/" + address + "?hw=xumm&xummtoken=" + xummUserToken} className="mobile-menu-item">
+                <img src={hashicon} alt="user icon" className="user-icon" />
+                {displayName}
+              </a>
+            }
             <span onClick={copyToClipboard} className="mobile-menu-item link">
               {isCopied ? t("button.copied") : t("button.copy-my-address")}
             </span>
             <a href={"/nfts/" + address} className="mobile-menu-item">{t("signin.actions.my-nfts")}</a>
             <a href={"/nft-offers/" + address} className="mobile-menu-item">{t("signin.actions.my-nft-offers")}</a>
-            <a href={"/explorer/" + address + "?hw=xumm&xummtoken=" + xummUserToken} className="mobile-menu-item">{t("signin.actions.view")}</a>
+            {xummUserToken && <a href={"/explorer/" + address + "?hw=xumm&xummtoken=" + xummUserToken} className="mobile-menu-item">{t("signin.actions.view")}</a>}
             {!username && <a href={"/username?address=" + address} className="mobile-menu-item">{t("menu.usernames")}</a>}
-            <a href={"/explorer/" + address + "?hw=xumm&xummtoken=" + xummUserToken + "&action=send"} className="mobile-menu-item">{t("signin.actions.send")}</a>
+            {xummUserToken && <a href={"/explorer/" + address + "?hw=xumm&xummtoken=" + xummUserToken + "&action=send"} className="mobile-menu-item">{t("signin.actions.send")}</a>}
             <span onClick={signOut} className="mobile-menu-item link">{t("signin.signout")}</span>
           </>
           :
@@ -170,7 +172,7 @@ export default function Header({ theme, switchTheme, setSignRequest, account, si
         <div className="mobile-menu-directory"><span>{t("menu.services")}</span></div>
         {!displayName &&
           <Link
-            to="/username"
+            href="/username"
             className="mobile-menu-item"
             onClick={mobileMenuToggle}
           >
@@ -179,7 +181,7 @@ export default function Header({ theme, switchTheme, setSignRequest, account, si
         }
         <a href="/explorer/submit.html" className="mobile-menu-item">{t("menu.project-registartion")}</a>
         {!devNet &&
-          <Link to="/alerts" className="mobile-menu-item" onClick={mobileMenuToggle}>
+          <Link href="/alerts" className="mobile-menu-item" onClick={mobileMenuToggle}>
             {t("menu.price-alerts")}
           </Link>
         }
@@ -189,7 +191,7 @@ export default function Header({ theme, switchTheme, setSignRequest, account, si
         <div className="mobile-menu-directory"><span>NFT</span></div>
         <a href="/nft-explorer" className="mobile-menu-item" onClick={mobileMenuToggle}> {t("menu.nft.explorer")}</a>
         <Link
-          to="/nft-volumes"
+          href="/nft-volumes"
           className="mobile-menu-item"
           onClick={mobileMenuToggle}
         >
@@ -203,20 +205,20 @@ export default function Header({ theme, switchTheme, setSignRequest, account, si
         </a>
         <a href="/nfts" className="mobile-menu-item">{t("menu.nft.nfts")}</a>
         <Link
-          to="/nft-offers"
+          href="/nft-offers"
           className="mobile-menu-item"
           onClick={mobileMenuToggle}>
           {t("menu.nft.offers")}
         </Link>
         <Link
-          to="/nft-distribution"
+          href="/nft-distribution"
           className="mobile-menu-item"
           onClick={mobileMenuToggle}
         >
           {t("menu.nft.distribution")}
         </Link>
         <Link
-          to="/nft-statistics"
+          href="/nft-statistics"
           className="mobile-menu-item"
           onClick={mobileMenuToggle}
         >
@@ -225,35 +227,35 @@ export default function Header({ theme, switchTheme, setSignRequest, account, si
 
         <div className="mobile-menu-directory"><span>XRPL</span></div>
         <Link
-          to="/last-ledger-information"
+          href="/last-ledger-information"
           className="mobile-menu-item"
           onClick={mobileMenuToggle}
         >
           {t("menu.last-ledger-information")}
         </Link>
         <Link
-          to="/ledger"
+          href="/ledger"
           className="mobile-menu-item"
           onClick={mobileMenuToggle}
         >
           {t("menu.last-ledger-transactions")}
         </Link>
         <Link
-          to="/validators"
+          href="/validators"
           className="mobile-menu-item"
           onClick={mobileMenuToggle}
         >
           {t("menu.validators")}
         </Link>
         <Link
-          to="amendments"
+          href="amendments"
           className="mobile-menu-item"
           onClick={mobileMenuToggle}
         >
           {t("menu.amendments")}
         </Link>
         {!devNet &&
-          <Link to="/genesis" className="mobile-menu-item" onClick={mobileMenuToggle}>
+          <Link href="/genesis" className="mobile-menu-item" onClick={mobileMenuToggle}>
             {t("menu.genesis")}
           </Link>
         }
@@ -265,6 +267,7 @@ export default function Header({ theme, switchTheme, setSignRequest, account, si
           </>
         }
       </div>
+      */}
     </>
   );
 };

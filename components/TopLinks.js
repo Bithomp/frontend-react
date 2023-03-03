@@ -1,7 +1,5 @@
 import { useTranslation } from 'react-i18next';
 
-import './styles.scss';
-
 export default function TopLinks() {
   const { t } = useTranslation();
 

@@ -3,12 +3,12 @@ import { useState, useEffect } from "react";
 import useLocalStorage from 'use-local-storage';
 import axios from 'axios';
 
-import Header from './components/Header';
+import Header from '../components/Header';
 import Footer from './components/Footer';
 import SignForm from "./components/SignForm";
-import ScrollToTop from "./components/ScrollToTop";
+import ScrollToTop from "../components/ScrollToTop";
 import BackgroundImage from './components/BackgroundImage';
-import TopLinks from './components/TopLinks';
+import TopLinks from '../components/TopLinks';
 
 import Home from './screens/Home';
 import Username from './screens/Username';
@@ -28,7 +28,6 @@ import NftStatistics from './screens/NFT/NftStatistics';
 import Validators from './screens/Validators';
 import Amendments from './screens/Amendments';
 import Genesis from "./screens/Genesis";
-import Disclaimer from './screens/Disclaimer';
 import PrivacyPolicy from './screens/PrivacyPolicy';
 import TermsAndConditions from './screens/TermsAndConditions';
 import CustomerSupport from "./screens/CustomerSupport";
@@ -131,7 +130,6 @@ export default function App() {
           <Route path="/validators" element={<Validators />} />
           <Route path="/amendments" element={<Amendments />} />
           <Route path="/genesis" element={<Genesis />} />
-          <Route path="/disclaimer" element={<Disclaimer />} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
           <Route path="/customer-support" element={<CustomerSupport />} />

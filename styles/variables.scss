@@ -1,4 +1,4 @@
-:root {
+body {
   --background-header: #002C37;
   --background-block: #002C37;
   --background-main: white;
@@ -21,8 +21,7 @@
   --green: #14913E;
   --orange: #FCAC45;
 }
-
-[data-theme='dark'] {
+body.dark {
   --background-header: #031B21;
   --background-block: #031B21;
   --background-main: #090909;
