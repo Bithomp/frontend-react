@@ -94,21 +94,23 @@ export default function NftPreview({ nft }) {
         </span>
       </div>
     }
-    {imageUrl && loadingImage(nft)}
     {imageUrl && contentTab === 'image' &&
-      <img
-        style={{ ...imageStyle, display: (loaded ? "inline-block" : "none") }}
-        src={imageUrl}
-        onLoad={() => { setLoaded(true); setErrored(false) }}
-        onError={({ currentTarget }) => {
-          if (currentTarget.src === imageUrl) {
-            currentTarget.src = clUrl.image;
-          } else {
-            setErrored(true);
-          }
-        }}
-        alt={nft.metadata?.name}
-      />
+      <>
+        {loadingImage(nft)}
+        <img
+          style={{ ...imageStyle, display: (loaded ? "inline-block" : "none") }}
+          src={imageUrl}
+          onLoad={() => { setLoaded(true); setErrored(false) }}
+          onError={({ currentTarget }) => {
+            if (currentTarget.src === imageUrl && imageUrl !== clUrl.image) {
+              currentTarget.src = clUrl.image;
+            } else {
+              setErrored(true);
+            }
+          }}
+          alt={nft.metadata?.name}
+        />
+      </>
     }
     {videoUrl && defaultTab === 'video' &&
       <video
@@ -157,7 +159,7 @@ export default function NftPreview({ nft }) {
       </span>
     }
 
-    {audioUrl &&
+    {defaultTab !== 'model' && defaultTab !== 'video' && audioUrl &&
       <>
         <audio src={audioUrl} controls style={{ display: 'block', margin: "20px auto" }}></audio>
         <span style={{ padding: "4px 0px" }}>
@@ -168,11 +170,11 @@ export default function NftPreview({ nft }) {
       </>
     }
     {viewerUrl &&
-        <span style={{ padding: "4px 0px", float: "right" }}>
-          <a href={viewerUrl} target="_blank" rel="noreferrer">
-            {t("general.viewer")}
-          </a>
-        </span>
+      <span style={{ padding: "4px 0px", float: "right" }}>
+        <a href={viewerUrl} target="_blank" rel="noreferrer">
+          {t("general.viewer")}
+        </a>
+      </span>
     }
     {(!nft.uri && !(nft.metadata)) ?
       <div className="center bold" style={errorStyle}>{t("general.no-uri")}</div>
