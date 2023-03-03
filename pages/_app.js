@@ -5,10 +5,10 @@ import axios from 'axios'
 import { appWithTranslation } from 'next-i18next'
 
 import Header from '../components/Header'
-//import Footer from '../components/Footer'
+import Footer from '../components/Footer'
 import SignForm from "../components/SignForm"
 import ScrollToTop from "../components/ScrollToTop"
-//import BackgroundImage from '../components/BackgroundImage'
+import BackgroundImage from '../components/BackgroundImage'
 import TopLinks from '../components/TopLinks'
 
 import { network, devNet, server, useLocalStorage } from '../utils'
@@ -61,6 +61,8 @@ const MyApp = ({ Component, pageProps }) => {
             {showTopAdds && <TopLinks />}
             <Component {...pageProps} />
           </div>
+          <BackgroundImage />
+          <Footer />
         </div>
       </ThemeProvider>
     </>

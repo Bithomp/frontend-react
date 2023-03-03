@@ -1,4 +1,4 @@
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next'
 import { useState, useEffect } from 'react';
 import { useParams } from "react-router-dom";
 import { Buffer } from 'buffer';

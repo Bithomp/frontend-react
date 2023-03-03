@@ -27,6 +27,7 @@
     "react-protected-mailto": "^1.0.3",
     "react-select": "^5.3.0",
     "sass": "^1.50.1",
+    "universal-cookie": "^4.0.4",
     "web-vitals": "^2.1.0"
   },
   "scripts": {

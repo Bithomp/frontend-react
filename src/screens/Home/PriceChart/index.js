@@ -1,7 +1,7 @@
 import Chart from 'react-apexcharts';
 import axios from 'axios';
 import { useState, useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next'
 
 import zoomicon from "../../../assets/images/zoom.svg";
 import zoominicon from "../../../assets/images/zoom-in.svg";

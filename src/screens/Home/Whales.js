@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next'
 import axios from 'axios';
 
 import { wssServer, devNet } from '../../utils';

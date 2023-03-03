@@ -1,10 +1,8 @@
-import { Link } from "react-router-dom";
-import { useTranslation } from 'react-i18next';
-import useLocalStorage from 'use-local-storage';
+import Link from 'next/link'
+import Image from 'next/image'
+import { useTranslation } from 'next-i18next'
 
-import { devNet } from '../utils';
-
-import logo from "../assets/images/logo-animated.svg";
+import { devNet, useLocalStorage } from '../utils'
 
 import LanguageSelect from "./LanguageSelect";
 import SocialIcons from "./SocialIcons";
@@ -81,7 +79,7 @@ export default function Footer() {
       </div>
 
       <div className="footer-brand">
-        <img src={logo} className="footer-logo" alt="logo" />
+        <Image src="/images/logo-animated.svg" className="footer-logo" alt="logo" width={139} height={40} />
         <div className="footer-brand-text">
           Copyright © {year} Bithomp AB<br />
           Kivra: 559342-2867<br />

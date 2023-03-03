@@ -1,6 +1,6 @@
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next'
 import { useState } from 'react';
-import { Link } from "react-router-dom";
+import Link from 'next/link'
 
 import { stripText } from '../../utils';
 import { nftImageStyle, nftUrl, bestSellOffer, mpUrl } from '../../utils/nft';
