@@ -2,6 +2,7 @@ import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { useState, useEffect } from "react"
 import axios from 'axios'
+import { appWithTranslation } from 'next-i18next'
 
 import Header from '../components/Header'
 //import Footer from '../components/Footer'
@@ -15,10 +16,9 @@ import { network, devNet, server, useLocalStorage } from '../utils'
 import '../styles/ui.scss'
 import { ThemeProvider } from "../components/ThemeContext"
 
-export default function MyApp({ Component, pageProps }) {
+const MyApp = ({ Component, pageProps }) => {
   const [account, setAccount] = useLocalStorage('account', null)
   const [signRequest, setSignRequest] = useState(false)
-
 
   const signOut = () => {
     localStorage.removeItem('xummUserToken')
@@ -56,3 +56,5 @@ export default function MyApp({ Component, pageProps }) {
     </>
   )
 }
+
+export default appWithTranslation(MyApp)

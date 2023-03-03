@@ -1,6 +1,6 @@
-import i18next from '../services/i18n';
 import axios from 'axios'
 import { useState, useEffect } from "react"
+import { i18n } from '../next-i18next.config'
 
 export const useLocalStorage = (key, initialValue = null) => {
   const [value, setValue] = useState(null);
@@ -66,16 +66,16 @@ export const submitTransaction = async (blob, callback) => {
 }
 
 export const onFailedRequest = (error, showErrorFunction) => {
-  if (i18next.exists("error." + error.message)) {
-    showErrorFunction(i18next.t("error." + error.message));
+  if (i18n.exists("error." + error.message)) {
+    showErrorFunction(i18n.t("error." + error.message));
   } else {
     showErrorFunction(error.message);
   }
 }
 
 export const onApiError = (error, showErrorFunction) => {
-  if (i18next.exists("error-api." + error)) {
-    showErrorFunction(i18next.t("error-api." + error));
+  if (i18n.exists("error-api." + error)) {
+    showErrorFunction(i18n.t("error-api." + error));
   } else {
     showErrorFunction(error);
   }

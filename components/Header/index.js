@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import Image from 'next/image'
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from 'next-i18next'
 import { useState } from 'react'
 
 import { devNet, useLocalStorage } from '../../utils';
@@ -8,7 +8,7 @@ import { devNet, useLocalStorage } from '../../utils';
 import Switch from "./Switch";
 
 export default function Header({ setSignRequest, account, signOut }) {
-  const { t } = useTranslation();
+  const { t } = useTranslation('common');
 
   const [menuOpen, setMenuOpen] = useState(false);
   const [isCopied, setIsCopied] = useState(false);
@@ -57,7 +57,7 @@ export default function Header({ setSignRequest, account, signOut }) {
     <>
       <header>
         <Link href="/">
-          <Image src="/images/logo-animated.svg" className="header-logo" alt="logo" width={160} height={46} />
+          <Image src="/images/logo-animated.svg" className="header-logo" alt="logo" width={160} height={46} priority />
         </Link>
         <div className="header-menu-left">
           <div className="menu-dropdown">
