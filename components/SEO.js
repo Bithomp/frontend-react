@@ -1,6 +1,6 @@
 import { Helmet } from 'react-helmet-async';
 
-const network = process.env.REACT_APP_NETWORK_NAME ? process.env.REACT_APP_NETWORK_NAME : "mainnet";
+const network = process.env.NEXT_PUBLIC_NETWORK_NAME ? process.env.NEXT_PUBLIC_NETWORK_NAME : "mainnet";
 
 const Title = (title) => {
   if (network === 'mainnet') {

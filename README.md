@@ -8,7 +8,7 @@ In the project directory, you can run:
 
 ### `yarn start`
 
-`REACT_APP_NETWORK_NAME=mainnet yarn start`
+`NEXT_PUBLIC_NETWORK_NAME=mainnet yarn start`
 
 mainnet | staging | testnet | devnet | beta | amm
 
@@ -38,7 +38,7 @@ It correctly bundles React in production mode and optimizes the build for the be
 The build is minified and the filenames include the hashes.\
 Your app is ready to be deployed!
 
-`REACT_APP_NETWORK_NAME=mainnet yarn build`
+`NEXT_PUBLIC_NETWORK_NAME=mainnet yarn build`
 
 | mainnet | staging | testnet | devnet | beta | amm
 
@@ -50,7 +50,7 @@ See the section about [deployment](https://facebook.github.io/create-react-app/d
 `cd frontend-react`
 `git pull` (if exists)
 `yarn install`
-`REACT_APP_NETWORK_NAME=testnet yarn build`
+`NEXT_PUBLIC_NETWORK_NAME=testnet yarn build`
 
 ### `yarn eject`
 

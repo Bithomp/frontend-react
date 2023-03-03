@@ -118,7 +118,7 @@ export const server = Server();
 const WssServer = () => {
   let token = '';
   if (process.env.NODE_ENV === 'development') {
-    token = '?x-bithomp-token=' + process.env.REACT_APP_BITHOMP_API_TEST_KEY;
+    token = '?x-bithomp-token=' + process.env.NEXT_PUBLIC_BITHOMP_API_TEST_KEY;
   }
   return server.replace("https://", "wss://") + '/wss/' + token;
 }

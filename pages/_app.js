@@ -27,7 +27,7 @@ const MyApp = ({ Component, pageProps }) => {
   }
 
   if (process.env.NODE_ENV === 'development') {
-    axios.defaults.headers.common['x-bithomp-token'] = process.env.REACT_APP_BITHOMP_API_TEST_KEY
+    axios.defaults.headers.common['x-bithomp-token'] = process.env.NEXT_PUBLIC_BITHOMP_API_TEST_KEY
     axios.defaults.baseURL = server + '/api/'
   } else {
     axios.defaults.baseURL = server + '/api/cors/'
