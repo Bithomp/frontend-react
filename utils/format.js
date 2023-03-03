@@ -1,8 +1,8 @@
-import { Buffer } from 'buffer';
-import i18n from '../services/i18n';
-import { Link } from 'react-router-dom';
+import { Buffer } from 'buffer'
+import { i18n } from '../next-i18next.config'
+import Link from 'next/link'
 
-import { ReactComponent as LinkIcon } from "../assets/images/link.svg";
+import { ReactComponent as LinkIcon } from "../public/images/link.svg";
 import { stripText } from '.';
 import { mpUrl } from './nft';
 
@@ -91,12 +91,12 @@ export const trWithAccount = (data, valueName, tableName, url = "/explorer/") =>
 
 export const nftOfferLink = (nftOfferId, chars = 10) => {
   if (!nftOfferId) return "";
-  return <Link to={"/nft-offer/" + nftOfferId}>{shortHash(nftOfferId, chars)}</Link>
+  return <Link href={"/nft-offer/" + nftOfferId}>{shortHash(nftOfferId, chars)}</Link>
 }
 
 export const nftIdLink = (nftId, chars = 10) => {
   if (!nftId) return "";
-  return <Link to={"/nft/" + nftId}>{shortHash(nftId, chars)}</Link>
+  return <Link href={"/nft/" + nftId}>{shortHash(nftId, chars)}</Link>
 }
 
 export const txIdLink = (txId, chars = 10) => {

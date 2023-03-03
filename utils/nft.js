@@ -1,8 +1,8 @@
-import { Buffer } from 'buffer';
-import { stripText } from '.';
+import { Buffer } from 'buffer'
+import { stripText } from '.'
 
-import { Link } from 'react-router-dom';
-import { ReactComponent as LinkIcon } from "../assets/images/link.svg";
+import Link from 'next/link'
+import { ReactComponent as LinkIcon } from "../public/images/link.svg";
 
 //identified NFT Market Places
 export const mpUrl = (offer) => {
@@ -98,7 +98,7 @@ export const nftThumbnail = nft => {
   if (!nft || !nft.nftokenID) return "";
   const imageSrc = nftUrl(nft, 'thumbnail');
   if (!imageSrc) return "";
-  return <Link to={"/nft/" + nft.nftokenID}>
+  return <Link href={"/nft/" + nft.nftokenID}>
     <img
       src={imageSrc}
       width="32px"
@@ -111,7 +111,7 @@ export const nftThumbnail = nft => {
 
 export const nftNameLink = nft => {
   if (!nft) return "";
-  return <Link to={"/nft/" + nft.nftokenID}>
+  return <Link href={"/nft/" + nft.nftokenID}>
     {nft?.metadata?.name ? nft.metadata.name : <LinkIcon />}
   </Link>
 }

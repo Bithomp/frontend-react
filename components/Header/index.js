@@ -145,7 +145,6 @@ export default function Header({ setSignRequest, account, signOut }) {
           </label>
         </div>
       </header>
-      {/*
       <div className="mobile-menu">
         {displayName ?
           <>
@@ -267,7 +266,6 @@ export default function Header({ setSignRequest, account, signOut }) {
           </>
         }
       </div>
-      */}
     </>
   );
 };

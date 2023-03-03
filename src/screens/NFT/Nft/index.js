@@ -5,10 +5,10 @@ import { Buffer } from 'buffer';
 import axios from 'axios';
 import Select from "react-select";
 
-import SEO from '../../../components/SEO';
-import SearchBlock from '../../../components/SearchBlock';
-import CopyButton from '../../../components/CopyButton';
-import NftPreview from '../../../components/NftPreview';
+import SEO from '../../../../components/components/SEO';
+import SearchBlock from '../../../../components/components/SearchBlock';
+import CopyButton from '../../../../components/components/CopyButton';
+import NftPreview from '../../../../components/components/NftPreview';
 
 import { onFailedRequest, onApiError, stripText } from '../../../utils';
 import { nftName, mpUrl, bestSellOffer } from '../../../utils/nft';

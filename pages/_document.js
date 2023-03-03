@@ -1,10 +1,10 @@
-import { Html, Head, Main, NextScript } from 'next/document';
+import { Html, Head, Main, NextScript } from 'next/document'
 
 export default function Document() {
 
   const getInitialProps = async ctx => {
-    const initialProps = await getInitialProps(ctx);
-    return { ...initialProps };
+    const initialProps = await getInitialProps(ctx)
+    return { ...initialProps }
   }
 
   return (

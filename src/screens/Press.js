@@ -1,5 +1,5 @@
 import { Trans, useTranslation } from 'react-i18next';
-import { Link } from 'react-router-dom';
+import Link from 'next/link'
 
 import press from '../assets/images/press.png';
 
@@ -13,7 +13,7 @@ export default function Press() {
       <p>
         <Trans i18nKey="press">
           This is the official logo for Bithomp to use by media and press professionals for print and web (svg, png, eps, pdf, for dark and light backgrounds).
-          For media inquiries, please <Link to="/customer-support">contact us</Link>.
+          For media inquiries, please <Link href="/customer-support">contact us</Link>.
         </Trans>
       </p>
       <p className="center">

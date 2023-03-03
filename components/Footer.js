@@ -24,9 +24,9 @@ export default function Footer() {
       <div className="footer-menu">
         <div className="footer-menu-column">
           <span className="footer-menu-header">{t("menu.services")}</span>
-          <Link to="/username">{t("menu.usernames")}</Link>
+          <Link href="/username">{t("menu.usernames")}</Link>
           <a href="/explorer/submit.html">{t("menu.project-registartion")}</a>
-          {!devNet && <Link to="/alerts">{t("menu.price-alerts")}</Link>}
+          {!devNet && <Link href="/alerts">{t("menu.price-alerts")}</Link>}
           <a href="https://docs.bithomp.com">{t("menu.api")}</a>
         </div>
 
@@ -47,16 +47,16 @@ export default function Footer() {
         </div>
         <div className="footer-menu-column">
           <span className="footer-menu-header">{t("menu.legal")}</span>
-          <Link to="/disclaimer">{t("menu.disclaimer")}</Link>
-          <Link to="/privacy-policy">{t("menu.privacy-policy")}</Link>
-          <Link to="/terms-and-conditions">{t("menu.terms-and-conditions")}</Link>
+          <Link href="/disclaimer">{t("menu.disclaimer")}</Link>
+          <Link href="/privacy-policy">{t("menu.privacy-policy")}</Link>
+          <Link href="/terms-and-conditions">{t("menu.terms-and-conditions")}</Link>
         </div>
         <div className="footer-menu-column">
           <span className="footer-menu-header">Bithomp</span>
           <a href="https://shop.xrplmerch.com/product-category/bithomp/" target="_blank" rel="noreferrer">{t("menu.merch")}</a>
-          <Link to="/customer-support">{t("menu.customer-support")}</Link>
-          <Link to="/press">{t("menu.press")}</Link>
-          <Link to="/donate">{t("menu.donate")} <span className="red">❤</span></Link>
+          <Link href="/customer-support">{t("menu.customer-support")}</Link>
+          <Link href="/press">{t("menu.press")}</Link>
+          <Link href="/donate">{t("menu.donate")} <span className="red">❤</span></Link>
         </div>
 
         <div className="footer-menu-column">
@@ -95,7 +95,7 @@ export default function Footer() {
         <div className="footer-cookie center">
           {t("footer.cookie.we-use-cookie")}
           {" "}
-          <Link to="/privacy-policy" className="hover-oposite">{t("footer.cookie.read-more")}</Link>.
+          <Link href="/privacy-policy" className="hover-oposite">{t("footer.cookie.read-more")}</Link>.
           <br />
           <input
             type="button"

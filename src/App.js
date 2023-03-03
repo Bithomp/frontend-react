@@ -4,10 +4,10 @@ import useLocalStorage from 'use-local-storage';
 import axios from 'axios';
 
 import Header from '../components/Header';
-import Footer from './components/Footer';
-import SignForm from "./components/SignForm";
+import Footer from '../components/components/Footer';
+import SignForm from "../components/SignForm";
 import ScrollToTop from "../components/ScrollToTop";
-import BackgroundImage from './components/BackgroundImage';
+import BackgroundImage from '../components/BackgroundImage';
 import TopLinks from '../components/TopLinks';
 
 import Home from './screens/Home';

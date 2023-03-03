@@ -3,8 +3,8 @@ import { useState, useEffect } from 'react';
 import { useSearchParams, useNavigate } from "react-router-dom";
 import axios from 'axios';
 
-import SEO from '../../components/SEO';
-import Tabs from '../../components/Tabs';
+import SEO from '../../../components/components/SEO';
+import Tabs from '../../../components/components/Tabs';
 
 import { onFailedRequest, setTabParams, stripText, isAddressOrUsername } from '../../utils';
 import {

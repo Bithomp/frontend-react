@@ -8,10 +8,10 @@ import { Buffer } from 'buffer';
 import { isAddressValid, isUsernameValid, server, wssServer, onFailedRequest, devNet } from '../../utils';
 import { payloadXummPost, xummWsConnect, xummCancel } from '../../utils/xumm';
 
-import CountrySelect from '../../components/CountrySelect';
-import CheckBox from '../../components/CheckBox';
-import Receipt from '../../components/Receipt';
-import XummQr from "../../components/Xumm/Qr";
+import CountrySelect from '../../../components/components/CountrySelect';
+import CheckBox from '../../../components/CheckBox';
+import Receipt from '../../../components/components/Receipt';
+import XummQr from "../../../components/Xumm/Qr";
 
 import qr from "../../assets/images/qr.gif";
 import checkmark from "../../assets/images/checkmark.svg";
@@ -546,13 +546,13 @@ export default function Username({ setSignRequest, account, setAccount, signOut 
 
                   <CheckBox checked={agreeToSiteTerms} setChecked={setAgreeToSiteTerms} >
                     <Trans i18nKey="username.step0.agree-terms-site">
-                      I agree with the <Link to="/terms-and-conditions" target="_blank">Terms and conditions</Link>.
+                      I agree with the <Link href="/terms-and-conditions" target="_blank">Terms and conditions</Link>.
                     </Trans>
                   </CheckBox>
 
                   <CheckBox checked={agreeToPrivacyPolicy} setChecked={setAgreeToPrivacyPolicy} >
                     <Trans i18nKey="username.step0.agree-privacy-policy">
-                      I agree with the <Link to="/privacy-policy" target="_blank">Privacy policy</Link>.
+                      I agree with the <Link href="/privacy-policy" target="_blank">Privacy policy</Link>.
                     </Trans>
                   </CheckBox>
 

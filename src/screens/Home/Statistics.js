@@ -127,7 +127,7 @@ export default function Statistics() {
     <div className='statistics-block'>
       <div className='stat-piece'>
         <div className='stat-piece-header'>{t("home.stat.ledger-index")}</div>
-        <div><Link to={`ledger/${ledgerIndex}`}>#{ledgerIndex}</Link></div>
+        <div><Link href={`ledger/${ledgerIndex}`}>#{ledgerIndex}</Link></div>
       </div>
       <div className='stat-piece'>
         <div className='stat-piece-header'>{t("home.stat.close-time")}</div>
@@ -139,7 +139,7 @@ export default function Statistics() {
       </div>
       <div className='stat-piece'>
         <div className='stat-piece-header'>{t("home.stat.quorum")}</div>
-        <div>{quorum} (<Link to="validators">{proposers} {t("home.stat.proposers")}</Link>)</div>
+        <div>{quorum} (<Link href="validators">{proposers} {t("home.stat.proposers")}</Link>)</div>
       </div>
       <div className='stat-piece'>
         <div className='stat-piece-header'>{t("home.stat.accounts")}</div>
@@ -163,7 +163,7 @@ export default function Statistics() {
       </div>
       <div className='stat-piece'>
         <div className='stat-piece-header'>{t("home.stat.nft.issuers")}</div>
-        <div><Link to='/nft-volumes'>{niceNumber(nft.issuers)}</Link></div>
+        <div><Link href='/nft-volumes'>{niceNumber(nft.issuers)}</Link></div>
       </div>
       <div className='stat-piece'>
         <div className='stat-piece-header'>{t("home.stat.nft.owners")}</div>

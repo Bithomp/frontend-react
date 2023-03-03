@@ -4,7 +4,7 @@ import axios from 'axios';
 
 import { fullDateAndTime } from '../utils/format';
 
-import SEO from '../components/SEO';
+import SEO from '../../components/components/SEO';
 
 export default function Domains() {
   const [data, setData] = useState(null);

@@ -1,8 +1,8 @@
 import { useTranslation, Trans } from 'react-i18next';
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import Link from 'next/link'
 
-import SEO from '../../components/SEO';
+import SEO from '../../../components/components/SEO';
 
 import { wssServer } from '../../utils';
 import { niceNumber, fullDateAndTime, ledgerLink } from '../../utils/format';
@@ -120,7 +120,7 @@ export default function LastLedgerInformation() {
           {t("nft-statistics.owners")}: {niceNumber(nft?.owners)}
         </p>
         <p>
-          {t("nft-statistics.issuers")}: <Link to='/nft-volumes'>{niceNumber(nft?.issuers)}</Link>
+          {t("nft-statistics.issuers")}: <Link href='/nft-volumes'>{niceNumber(nft?.issuers)}</Link>
         </p>
         <p>
           {t("nft-statistics.transfers")}: {niceNumber(nft?.transfers)}

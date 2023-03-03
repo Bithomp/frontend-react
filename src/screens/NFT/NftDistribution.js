@@ -4,8 +4,8 @@ import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import { CSVLink } from "react-csv";
 
-import SEO from '../../components/SEO';
-import SearchBlock from '../../components/SearchBlock';
+import SEO from '../../../components/components/SEO';
+import SearchBlock from '../../../components/components/SearchBlock';
 
 import { onFailedRequest } from '../../utils';
 import { nftsExplorerLink, addressUsernameOrServiceLink } from '../../utils/format';

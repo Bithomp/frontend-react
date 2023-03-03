@@ -1,8 +1,8 @@
 import { useTranslation } from 'react-i18next';
 import donate from '../assets/images/donate.png';
 
-import CopyButton from '../components/CopyButton';
-import SEO from '../components/SEO';
+import CopyButton from '../../components/components/CopyButton';
+import SEO from '../../components/components/SEO';
 
 export default function Donate() {
   const { t } = useTranslation();

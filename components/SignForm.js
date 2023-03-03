@@ -1,27 +1,27 @@
 import { useState, useEffect } from 'react';
-import { useTranslation, Trans } from 'react-i18next';
-import { isMobile } from "react-device-detect";
-import { useLocation, Link } from 'react-router-dom';
-import axios from 'axios';
+import { useTranslation, Trans } from 'next-i18next'
+import { isMobile } from "react-device-detect"
+import { useRouter } from 'next/router'
+import Link from 'next/link'
+import axios from 'axios'
+import Image from 'next/image'
 
-import { server, devNet } from '../../utils';
-import { capitalize } from '../../utils/format';
-import { payloadXummPost, xummWsConnect, xummCancel, xummGetSignedData } from '../../utils/xumm';
+import { server, devNet } from '../utils';
+import { capitalize } from '../utils/format';
+import { payloadXummPost, xummWsConnect, xummCancel, xummGetSignedData } from '../utils/xumm';
 
-import XummQr from "../Xumm/Qr";
-import CheckBox from '../CheckBox';
+import XummQr from "./Xumm/Qr";
+import CheckBox from './CheckBox';
 
-import './styles.scss';
-import qr from "../../assets/images/qr.gif";
-import xumm from '../../assets/images/xumm-large.svg';
-import ledger from '../../assets/images/ledger-large.svg';
-import trezor from '../../assets/images/trezor-large.svg';
-import ellipal from '../../assets/images/ellipal-large.svg';
+const qr = "/images/qr.gif";
+const ledger = '/images/ledger-large.svg';
+const trezor = '/images/trezor-large.svg';
+const ellipal = '/images/ellipal-large.svg';
 
 export default function SignForm({ setSignRequest, setAccount, signRequest }) {
-  const { t } = useTranslation();
+  const { t } = useTranslation()
+  const router = useRouter()
 
-  const location = useLocation();
   const [screen, setScreen] = useState("choose-app");
   const [status, setStatus] = useState(t("signin.xumm.statuses.wait"));
   const [showXummQr, setShowXummQr] = useState(false);
@@ -90,7 +90,7 @@ export default function SignForm({ setSignRequest, setAccount, signRequest }) {
       //return to the same page
       // app: server + location.pathname + "?uuid={id}" + (location.search ? "&" + location.search.substr(1) : "")
       signInPayload.options.return_url = {
-        app: server + location.pathname + location.search
+        app: server + router.pathname + router.search
       };
     } else {
       setShowXummQr(true);
@@ -211,7 +211,7 @@ export default function SignForm({ setSignRequest, setAccount, signRequest }) {
               <CheckBox checked={agreedToRisks} setChecked={setAgreedToRisks} >
                 <Trans i18nKey="signin.confirm.nft-accept-offer">
                   I acknowledge that Bithomp is a peer-to-peer Web3 service, and it cannot verify or guarantee the legitimacy, authenticity, and legality of NFT that I purchase.
-                  I confirm that I've read the <Link to="/terms-and-conditions" target="_blank">Terms and conditions</Link>, and I agree to all of them.
+                  I confirm that I've read the <Link href="/terms-and-conditions" target="_blank">Terms and conditions</Link>, and I agree to all of them.
                 </Trans>
               </CheckBox>
             </div>
@@ -229,7 +229,7 @@ export default function SignForm({ setSignRequest, setAccount, signRequest }) {
               <>
                 <div className='header'>{t("signin.choose-app")}</div>
                 <div className='signin-apps'>
-                  <img alt="xumm" className='signin-app-logo' src={xumm} onClick={XummTxSend} />
+                  <Image alt="xumm" className='signin-app-logo' src='/images/xumm-large.svg' onClick={XummTxSend} width={150} height={24} />
                   {signRequest.wallet !== "xumm" &&
                     <>
                       {notAvailable(ledger, "ledger")}

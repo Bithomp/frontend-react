@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { useState, useEffect } from 'react';
-import SEO from '../components/SEO';
+import SEO from '../../components/components/SEO';
 import axios from 'axios';
 
 import { fullDateAndTime } from '../utils/format';

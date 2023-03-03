@@ -1,8 +1,8 @@
 import { useTranslation } from 'react-i18next';
 import { useLocation } from "react-router-dom";
 
-import SEO from '../../components/SEO';
-import Sales from '../../components/Sales';
+import SEO from '../../../components/components/SEO';
+import Sales from '../../../components/components/Sales';
 
 export default function NftSales() {
   const location = useLocation();

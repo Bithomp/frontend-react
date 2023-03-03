@@ -6,8 +6,8 @@ import { appWithTranslation } from 'next-i18next'
 
 import Header from '../components/Header'
 //import Footer from '../components/Footer'
-//import SignForm from "../components/SignForm"
-//import ScrollToTop from "../components/ScrollToTop"
+import SignForm from "../components/SignForm"
+import ScrollToTop from "../components/ScrollToTop"
 //import BackgroundImage from '../components/BackgroundImage'
 import TopLinks from '../components/TopLinks'
 
@@ -19,6 +19,7 @@ import { ThemeProvider } from "../components/ThemeContext"
 const MyApp = ({ Component, pageProps }) => {
   const [account, setAccount] = useLocalStorage('account', null)
   const [signRequest, setSignRequest] = useState(false)
+  const router = useRouter()
 
   const signOut = () => {
     localStorage.removeItem('xummUserToken')
@@ -32,14 +33,13 @@ const MyApp = ({ Component, pageProps }) => {
     axios.defaults.baseURL = server + '/api/cors/'
   }
 
-  const router = useRouter();
   const pagesWithNoTopAdds = ['/', '/username', '/disclaimer']
   const showTopAdds = !pagesWithNoTopAdds.includes(router.pathname)
 
   return (
     <>
       <Head>
-        <meta name="viewport" content="viewport-fit=cover" />
+        <meta name="viewport" content="width=device-width,initial-scale=1" />
         <meta charSet="utf-8" />
       </Head>
       <ThemeProvider>
@@ -49,8 +49,18 @@ const MyApp = ({ Component, pageProps }) => {
             account={account}
             signOut={signOut}
           />
-          {showTopAdds && <TopLinks />}
-          <Component {...pageProps} />
+          <ScrollToTop />
+          {signRequest &&
+            <SignForm
+              setSignRequest={setSignRequest}
+              setAccount={setAccount}
+              signRequest={signRequest}
+            />
+          }
+          <div className="content">
+            {showTopAdds && <TopLinks />}
+            <Component {...pageProps} />
+          </div>
         </div>
       </ThemeProvider>
     </>

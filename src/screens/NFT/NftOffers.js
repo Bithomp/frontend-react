@@ -3,9 +3,9 @@ import { useState, useEffect } from 'react';
 import { useParams, Link, useSearchParams } from 'react-router-dom';
 import axios from 'axios';
 
-import SEO from '../../components/SEO';
-import SearchBlock from '../../components/SearchBlock';
-import Tabs from '../../components/Tabs';
+import SEO from '../../../components/components/SEO';
+import SearchBlock from '../../../components/components/SearchBlock';
+import Tabs from '../../../components/components/Tabs';
 
 import { onFailedRequest, setTabParams } from '../../utils';
 import {
@@ -283,7 +283,7 @@ export default function NftOffers({ setSignRequest, signRequest, account }) {
                     {!errorMessage ? filteredOffers.map((offer, i) =>
                       <tr key={i}>
                         <td className="center">{i + 1}</td>
-                        <td className='center'><Link to={"/nft-offer/" + offer.offerIndex}><LinkIcon /></Link></td>
+                        <td className='center'><Link href={"/nft-offer/" + offer.offerIndex}><LinkIcon /></Link></td>
                         <td>{nftThumbnail(offer.nftoken)} {nftNameLink(offer.nftoken)}</td>
                         {showTypeColumn && <td>{offer.flags?.sellToken === true ? t("table.text.sell") : t("table.text.buy")}</td>}
                         <td>{amountFormat(offer.amount, { tooltip: true, maxFractionDigits: 2 })}</td>

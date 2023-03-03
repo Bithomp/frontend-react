@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useParams } from "react-router-dom";
 
-import SEO from '../components/SEO';
+import SEO from '../../components/components/SEO';
 
 import { txIdFormat, fullDateAndTime, ledgerLink } from '../utils/format';
 
