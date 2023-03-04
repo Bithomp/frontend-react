@@ -1,7 +1,14 @@
-import { Trans, useTranslation } from 'react-i18next';
+import { useTranslation, Trans } from 'next-i18next'
 import Link from 'next/link'
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
-import press from '../assets/images/press.png';
+export async function getStaticProps({ locale }) {
+  return {
+    props: {
+      ...(await serverSideTranslations(locale, ['common'])),
+    }
+  }
+}
 
 export default function Press() {
   const { t } = useTranslation();
@@ -9,7 +16,7 @@ export default function Press() {
   return (
     <div className="content-text content-center">
       <h1 className="center">{t("menu.press")}</h1>
-      <img src={press} alt="press" style={{ "width": "100%" }} />
+      <img src="/images/press.png" alt="press" style={{ "width": "100%" }} />
       <p>
         <Trans i18nKey="press">
           This is the official logo for Bithomp to use by media and press professionals for print and web (svg, png, eps, pdf, for dark and light backgrounds).
@@ -19,7 +26,7 @@ export default function Press() {
       <p className="center">
         <a
           className="button-action"
-          href={process.env.PUBLIC_URL + '/download/bithomp-press.zip'}
+          href='/download/bithomp-press.zip'
         >
           {t("button.download")}
         </a>

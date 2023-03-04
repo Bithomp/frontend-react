@@ -28,13 +28,8 @@ import NftStatistics from './screens/NFT/NftStatistics';
 import Validators from './screens/Validators';
 import Amendments from './screens/Amendments';
 import Genesis from "./screens/Genesis";
-import PrivacyPolicy from './screens/PrivacyPolicy';
-import TermsAndConditions from './screens/TermsAndConditions';
 import CustomerSupport from "./screens/CustomerSupport";
-import Press from "./screens/Press";
 import Donate from "./screens/Donate";
-import PageNotFound from './screens/PageNotFound';
-import Redirect from './screens/Redirect';
 
 import { network, devNet, server } from './utils';
 
@@ -130,13 +125,8 @@ export default function App() {
           <Route path="/validators" element={<Validators />} />
           <Route path="/amendments" element={<Amendments />} />
           <Route path="/genesis" element={<Genesis />} />
-          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-          <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
           <Route path="/customer-support" element={<CustomerSupport />} />
-          <Route path="/press" element={<Press />} />
           <Route path="/donate" element={<Donate />} />
-          <Route path="/error" element={<PageNotFound />} />
-          <Route path="*" element={<Redirect />} />
         </Routes>
       </div>
       <BackgroundImage />
