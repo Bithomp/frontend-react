@@ -13,13 +13,15 @@ export default function Receipt({ item, details }) {
   }
 
   const onPrint = () => {
-    const darkPage = document.querySelector('[data-theme="dark"]');
-    if (darkPage) {
-      darkPage.setAttribute("data-theme", "light");
-      window.print();
-      darkPage.setAttribute("data-theme", "dark");
+    const isDarkPage = document.body.classList.contains('dark');
+    if (isDarkPage) {
+      body.classList.remove("dark")
+      body.classList.add("light")
+      window.print()
+      body.classList.remove("light")
+      body.classList.add("dark")
     } else {
-      window.print();
+      window.print()
     }
   }
 

@@ -182,7 +182,7 @@
   100%  { background-color: var(--background-main); color: var(--text-main); }
 }
 
-[data-theme="dark"] {
+body.dark {
   .home-sponsored {
     .sponsored-brand {
       svg.sponsored-brand-icon {

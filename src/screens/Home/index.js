@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { useTranslation } from 'next-i18next'
 import useLocalStorage from 'use-local-storage';
 
-import SearchBlock from '../../components/SearchBlock';
 import Converter from "./Converter";
 import PriceChart from "./PriceChart";
 import Statistics from "./Statistics";
@@ -24,7 +23,6 @@ export default function Home({ theme, devNet }) {
 
   return (
     <>
-      <SearchBlock searchPlaceholderText={searchPlaceholderText} tab="explorer" />
       {!devNet &&
         <div className="home-sponsored">
           <a href="https://bithomp.com/go/buy-xrp" target="_blank" rel="noreferrer">

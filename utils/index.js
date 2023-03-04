@@ -1,39 +1,51 @@
 import axios from 'axios'
-import { useState, useEffect } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { i18n } from '../next-i18next.config'
 
-export const useLocalStorage = (key, initialValue = null) => {
-  const [value, setValue] = useState(null);
-
-  const parse = (value) => {
+export const useLocalStorage = (key, initialValue) => {
+  const initialize = (key) => {
     try {
-      return JSON.parse(value)
+      const item = localStorage.getItem(key);
+      if (item && item !== "undefined") {
+        return JSON.parse(item);
+      }
+
+      localStorage.setItem(key, JSON.stringify(initialValue));
+      return initialValue;
     } catch {
-      return value
+      return initialValue;
     }
-  }
+  };
+
+  const [state, setState] = useState(null);
 
   useEffect(() => {
-    const data = localStorage.getItem(key);
-    if (!data) {
-      if (typeof initialValue === "function") {
-        setValue(initialValue());
-      } else {
-        setValue(initialValue);
-      }
-    } else {
-      setValue(parse(data));
-    }
+    setState(initialize(key));
   }, []);
 
-  useEffect(() => {
-    if (value !== initialValue) {
-      localStorage.setItem(key, JSON.stringify(value));
-    }
-  }, [value]);
+  const setValue = useCallback(
+    (value) => {
+      try {
+        const valueToStore = value instanceof Function ? value(storedValue) : value;
+        setState(valueToStore);
+        localStorage.setItem(key, JSON.stringify(valueToStore));
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    [key, setState]
+  );
 
-  return [value, setValue];
-}
+  const remove = useCallback(() => {
+    try {
+      localStorage.removeItem(key);
+    } catch {
+      console.log(error);
+    }
+  }, [key]);
+
+  return [state, setValue, remove];
+};
 
 export const setTabParams = (tabList, tab, defaultTab, setTab, searchParameters, paramName) => {
   const existTab = tabList.some(t => t.value === tab);

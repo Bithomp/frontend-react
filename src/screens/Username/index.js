@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useTranslation, Trans } from 'next-i18next'
 import { useSearchParams, Link } from "react-router-dom";
-import { isMobile } from "react-device-detect";
+import dynamic from 'next/dynamic'
+const { isMobile } = dynamic(() => import('react-device-detect'), { ssr: false })
 import axios from 'axios';
 import { Buffer } from 'buffer';
 

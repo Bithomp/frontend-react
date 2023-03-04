@@ -1,21 +1,21 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react'
 import { useTranslation } from 'next-i18next'
-import { useSearchParams, useParams } from 'react-router-dom';
+import { useRouter } from 'next/router'
 import axios from 'axios';
+import { useSearchParams } from 'next/navigation'
 
-import { isAddressOrUsername, isIdValid } from '../../utils';
-import { userOrServiceName } from '../../utils/format';
+import { isAddressOrUsername, isIdValid } from '../utils'
+import { userOrServiceName } from '../utils/format'
 
-import './styles.scss';
-import search from '../../assets/images/search.svg'
 //import { ReactComponent as Qr } from "../../assets/images/qr.svg";
 
 const searchItemRe = /^[~]{0,1}[a-zA-Z0-9-_.]*[+]{0,1}[a-zA-Z0-9-_.]*[$]{0,1}[a-zA-Z0-9-.]*[a-zA-Z0-9]*$/i;
 
 export default function SearchBlock({ searchPlaceholderText, tab = null, userData = {} }) {
   const { t } = useTranslation();
-  const [searchParams] = useSearchParams();
-  const { id } = useParams();
+  const searchParams = useSearchParams();
+  const router = useRouter()
+  const { id } = router.query
   const [searchItem, setSearchItem] = useState(id || userData?.address || "");
   const [searching, setSearching] = useState(false);
 
@@ -48,6 +48,7 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
   const addParams = '?' + searchParams.toString();
 
   const onSearch = async () => {
+    {/*
     let searchFor = searchItem.trim();
     if (tab === "nfts" && isAddressOrUsername(searchFor)) {
       window.location = '/nfts/' + encodeURI(searchFor) + addParams;
@@ -93,6 +94,7 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
     //tx, address etc
     window.location = '/explorer/' + encodeURI(searchFor);
     return;
+  */}
   }
 
   /*
@@ -144,7 +146,7 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
             spellCheck="false"
           />
           <div className="search-button" onClick={onSearch}>
-            <img src={search} className="search-icon" alt="search" />
+            <img src="/images/search.svg" className="search-icon" alt="search" />
           </div>
           {/*
           <a className="search-scan-qr" href="/explorer/?scanqr">

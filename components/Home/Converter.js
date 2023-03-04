@@ -1,11 +1,10 @@
 import axios from 'axios';
 import { useState, useEffect } from 'react';
-import { isMobile } from "react-device-detect";
+import dynamic from 'next/dynamic'
+const { isMobile } = dynamic(() => import('react-device-detect'), { ssr: false })
+import Image from 'next/image'
 
-import CurrencySelect from "../../../components/CurrencySelect";
-
-import './styles.scss';
-import { ReactComponent as XrpBlack } from "../../../assets/images/xrp-black.svg";
+import CurrencySelect from "../CurrencySelect";
 
 export default function Converter({ selectedCurrency, setSelectedCurrency, chartPeriod }) {
   const [data, setData] = useState({});
@@ -54,6 +53,7 @@ export default function Converter({ selectedCurrency, setSelectedCurrency, chart
 
   return <>
     <h2>{rate}</h2>
+
     <div>
       <input
         className="converter-amount"
@@ -66,10 +66,11 @@ export default function Converter({ selectedCurrency, setSelectedCurrency, chart
         min="0"
       />
       <div className="converter-xrp">
-        <XrpBlack style={{ height: '18px', width: '18px' }} />
+        <Image height={18} width={18} src="/images/xrp-black.svg" alt="xrp logo" />
         <span className="converter-xrp-text">XRP</span>
       </div>
     </div>
+          
     <div>
       <input
         className="converter-amount"

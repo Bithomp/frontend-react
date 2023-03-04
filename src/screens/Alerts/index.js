@@ -3,7 +3,8 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import moment from "moment";
 import momentDurationFormatSetup from "moment-duration-format";
-import { isMobile } from "react-device-detect";
+import dynamic from 'next/dynamic'
+const { isMobile } = dynamic(() => import('react-device-detect'), { ssr: false })
 
 import './styles.scss';
 

@@ -1,17 +1,20 @@
-import Chart from 'react-apexcharts';
+//import Chart from 'react-apexcharts';
 import axios from 'axios';
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'next-i18next'
+import dynamic from 'next/dynamic'
+const Chart = dynamic(() => import('react-apexcharts'), { ssr: false })
 
-import zoomicon from "../../../assets/images/zoom.svg";
-import zoominicon from "../../../assets/images/zoom-in.svg";
-import zoomouticon from "../../../assets/images/zoom-out.svg";
-import panicon from "../../../assets/images/panning.svg";
+const zoomicon = "/images/zoom.svg";
+const zoominicon = "/images/zoom-in.svg";
+const zoomouticon = "/images/zoom-out.svg";
+const panicon = "/images/panning.svg";
 
-import './styles.scss';
+import { useTheme } from "../ThemeContext"
 
-export default function PriceChart({ currency, theme, chartPeriod, setChartPeriod }) {
+export default function PriceChart({ currency, chartPeriod, setChartPeriod }) {
   const { i18n } = useTranslation();
+  const { theme } = useTheme();
 
   const [data, setData] = useState({ data: [[]] });
 
