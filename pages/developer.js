@@ -1,13 +1,23 @@
-import { useState } from 'react';
+import { useState } from 'react'
 import { useTranslation, Trans } from 'next-i18next'
-import axios from 'axios';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
+import axios from 'axios'
 
-import checkmark from "../assets/images/checkmark.svg";
+import { isEmailValid, isUrlValid, onFailedRequest } from '../utils'
+import SEO from '../components/SEO'
 
-import { isEmailValid, isUrlValid, onFailedRequest } from '../utils';
+export async function getStaticProps({ locale }) {
+  return {
+    props: {
+      ...(await serverSideTranslations(locale, ['common'])),
+    }
+  }
+}
+
+const checkmark = "/images/checkmark.svg";
 
 export default function Developer() {
-  const { t } = useTranslation();
+  const { t } = useTranslation()
 
   const [errorMessage, setErrorMessage] = useState("");
   const [step, setStep] = useState(0);
@@ -107,7 +117,8 @@ export default function Developer() {
     }
   }
 
-  return (
+  return <>
+    <SEO title={t("menu.developer")} />
     <div className="content-center">
       <h1 className="center">{t("developer.header")}</h1>
       {!step && <>
@@ -151,5 +162,5 @@ export default function Developer() {
         </p>
       }
     </div>
-  );
+  </>
 };

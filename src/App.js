@@ -11,7 +11,6 @@ import BackgroundImage from '../components/Layout/BackgroundImage';
 import TopLinks from '../components/Layout/TopLinks';
 
 import Username from './screens/Username';
-import Developer from "./screens/Developer";
 import Domains from './screens/Domains';
 import Ledger from './screens/Ledger';
 import LastLedgerInformation from './screens/LastLedgerInformation';
@@ -89,7 +88,6 @@ export default function App() {
             path="/username"
             element={<Username setSignRequest={setSignRequest} account={account} setAccount={setAccount} signOut={signOut} />}
           />
-          <Route path="/developer" element={<Developer />} />
           <Route path="/domains" element={<Domains />} />
           <Route path="/ledger/" element={<Ledger />}>
             <Route path="/ledger/:ledgerIndex" element={<Ledger />} />
