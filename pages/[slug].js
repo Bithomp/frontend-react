@@ -1,5 +1,6 @@
 import { useRouter } from "next/router"
 import { useEffect } from "react"
+import { useTranslation, Trans } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 export async function getStaticProps({ locale }) {
@@ -19,6 +20,7 @@ export const getStaticPaths = async () => {
 
 export default function Custom404() {
   const router = useRouter()
+  const { t } = useTranslation()
   const { slug } = router.query
 
   useEffect(() => {
@@ -28,7 +30,14 @@ export default function Custom404() {
     }
   })
 
-  return <center style={{ height: "400px", lineHeight: "200px" }}>
-    404 | The page <b>/{slug}</b> is not found
-  </center>
+  return (
+    <div className="content-text center">
+      <h1>{t("page-not-found.header")}</h1>
+      <p>
+        <Trans i18nKey="page-not-found.text">
+          Click <a href="/" className="bold">here</a> to check our landing page.
+        </Trans>
+      </p>
+    </div>
+  );
 }

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useTranslation, Trans } from 'react-i18next';
+import { useTranslation, Trans } from 'next-i18next'
 import axios from 'axios';
 
 import checkmark from "../assets/images/checkmark.svg";

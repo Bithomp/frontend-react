@@ -1,4 +1,4 @@
-import { useTranslation, Trans } from 'react-i18next';
+import { useTranslation, Trans } from 'next-i18next'
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import moment from "moment";

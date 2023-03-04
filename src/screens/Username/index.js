@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useTranslation, Trans } from 'react-i18next';
+import { useTranslation, Trans } from 'next-i18next'
 import { useSearchParams, Link } from "react-router-dom";
 import { isMobile } from "react-device-detect";
 import axios from 'axios';
@@ -10,7 +10,7 @@ import { payloadXummPost, xummWsConnect, xummCancel } from '../../utils/xumm';
 
 import CountrySelect from '../../../components/components/CountrySelect';
 import CheckBox from '../../../components/CheckBox';
-import Receipt from '../../../components/components/Receipt';
+import Receipt from '../../../components/Receipt';
 import XummQr from "../../../components/Xumm/Qr";
 
 import qr from "../../assets/images/qr.gif";

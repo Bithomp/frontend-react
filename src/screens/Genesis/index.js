@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useTranslation, Trans } from 'react-i18next';
+import { useTranslation, Trans } from 'next-i18next'
 import { isMobile } from "react-device-detect";
 
 import { niceNumber } from '../../utils/format';

@@ -1,4 +1,4 @@
-import { useTranslation, Trans } from 'react-i18next';
+import { useTranslation, Trans } from 'next-i18next'
 
 import Mailto from 'react-protected-mailto';
 import SocialIcons from '../../components/components/SocialIcons';

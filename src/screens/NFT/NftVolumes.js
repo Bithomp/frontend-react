@@ -1,4 +1,4 @@
-import { useTranslation, Trans } from 'react-i18next';
+import { useTranslation, Trans } from 'next-i18next'
 import { useState, useEffect } from 'react';
 import { useSearchParams, useNavigate } from "react-router-dom";
 import axios from 'axios';
