@@ -3,9 +3,9 @@ import Image from 'next/image'
 import { useTranslation } from 'next-i18next'
 import { useState } from 'react'
 
-import { devNet, useLocalStorage } from '../../utils';
+import { devNet, useLocalStorage } from '../../utils'
 
-import Switch from "./Switch";
+import Switch from "./Switch"
 
 export default function Header({ setSignRequest, account, signOut }) {
   const { t } = useTranslation('common');

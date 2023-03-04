@@ -1,4 +1,13 @@
-import Mailto from 'react-protected-mailto';
+import Mailto from 'react-protected-mailto'
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
+
+export async function getStaticProps({ locale }) {
+  return {
+    props: {
+      ...(await serverSideTranslations(locale, ['common'])),
+    }
+  }
+}
 
 export default function Disclaimer() {
   return (
