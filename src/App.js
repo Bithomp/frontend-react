@@ -29,7 +29,6 @@ import Validators from './screens/Validators';
 import Amendments from './screens/Amendments';
 import Genesis from "./screens/Genesis";
 import CustomerSupport from "./screens/CustomerSupport";
-import Donate from "./screens/Donate";
 
 import { network, devNet, server } from './utils';
 
@@ -126,7 +125,6 @@ export default function App() {
           <Route path="/amendments" element={<Amendments />} />
           <Route path="/genesis" element={<Genesis />} />
           <Route path="/customer-support" element={<CustomerSupport />} />
-          <Route path="/donate" element={<Donate />} />
         </Routes>
       </div>
       <BackgroundImage />

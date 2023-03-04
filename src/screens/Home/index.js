@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useTranslation } from 'next-i18next'
 import useLocalStorage from 'use-local-storage';
 
-import SearchBlock from '../../../components/components/SearchBlock';
+import SearchBlock from '../../components/SearchBlock';
 import Converter from "./Converter";
 import PriceChart from "./PriceChart";
 import Statistics from "./Statistics";

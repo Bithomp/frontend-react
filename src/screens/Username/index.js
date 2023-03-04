@@ -8,7 +8,7 @@ import { Buffer } from 'buffer';
 import { isAddressValid, isUsernameValid, server, wssServer, onFailedRequest, devNet } from '../../utils';
 import { payloadXummPost, xummWsConnect, xummCancel } from '../../utils/xumm';
 
-import CountrySelect from '../../../components/components/CountrySelect';
+import CountrySelect from '../../components/CountrySelect';
 import CheckBox from '../../../components/CheckBox';
 import Receipt from '../../../components/Receipt';
 import XummQr from "../../../components/Xumm/Qr";

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useTranslation } from 'next-i18next'
-import { Helmet } from "react-helmet-async";
+import Head from "next/head"
 
 import { nftUrl } from '../utils/nft';
 
@@ -131,12 +131,12 @@ export default function NftPreview({ nft }) {
         }
         {modelState !== "ready" &&
           <>
-            <Helmet>
+            <Head>
               <script
                 type="module"
                 src={process.env.PUBLIC_URL + "/js/model-viewer.min.js"}
               />
-            </Helmet>
+            </Head>
             <model-viewer
               class="model-viewer"
               src={modelUrl}

@@ -1,11 +1,21 @@
 import { useTranslation } from 'next-i18next'
-import donate from '../assets/images/donate.png';
+import Image from 'next/image'
 
-import CopyButton from '../../components/components/CopyButton';
-import SEO from '../../components/components/SEO';
+import CopyButton from '../components/CopyButton'
+import SEO from '../components/SEO'
+
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
+
+export async function getStaticProps({ locale }) {
+  return {
+    props: {
+      ...(await serverSideTranslations(locale, ['common'])),
+    }
+  }
+}
 
 export default function Donate() {
-  const { t } = useTranslation();
+  const { t } = useTranslation()
 
   return <>
     <SEO title={t("menu.donate") + " ❤"} />
@@ -13,10 +23,12 @@ export default function Donate() {
       <h2 className="center">{t("menu.donate")} <span className="red">❤</span></h2>
       <div className="flex">
         <div className="grey-box" >
-          <img
-            src={donate}
+          <Image
+            src="/images/donate.png"
             alt="donate"
-            style={{ float: "left", width: "300px", height: "300px", marginRight: "15px" }}
+            width={300}
+            height={300}
+            style={{ float: "left", marginRight: "15px" }}
             className='hide-on-mobile'
           />
           <br className='hide-on-mobile' />

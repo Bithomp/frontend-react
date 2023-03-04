@@ -1,5 +1,7 @@
-import Head from 'next/head'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
+import { useTranslation } from 'next-i18next'
+
+import SEO from '../components/SEO'
 
 export async function getStaticProps({ locale }) {
   return {
@@ -10,12 +12,14 @@ export async function getStaticProps({ locale }) {
 }
 
 export default function Home() {
+  const { t } = useTranslation()
+
   return (
     <>
-      <Head>
-        <title>XRP Explorer | Scan the XRPL network.</title>
-        <meta name="description" content="Explore XRP Ledger, check transactions for statuses, addresses for balances, NFTs, offers, tokens, escrows and checks." />
-      </Head>
+      <SEO
+        title="XRP Explorer | Scan the XRPL network."
+        description="Explore XRP Ledger, check transactions for statuses, addresses for balances, NFTs, offers, tokens, escrows and checks."
+      />
     </>
   )
 }

@@ -5,11 +5,11 @@ import { CSVLink } from "react-csv";
 import axios from 'axios';
 import InfiniteScroll from 'react-infinite-scroll-component';
 
-import SEO from '../../../components/components/SEO';
-import SearchBlock from '../../../components/components/SearchBlock';
-import Tabs from '../../../components/components/Tabs';
-import Tiles from '../../../components/components/Tiles';
-import IssuerSelect from '../../../components/components/IssuerSelect';
+import SEO from '../../components/SEO';
+import SearchBlock from '../../components/SearchBlock';
+import Tabs from '../../components/Tabs';
+import Tiles from '../../components/Tiles';
+import IssuerSelect from '../../components/IssuerSelect';
 
 import { onFailedRequest, onApiError, isAddressOrUsername, setTabParams } from '../../utils';
 import { isValidTaxon, nftThumbnail, nftNameLink, bestSellOffer, mpUrl } from '../../utils/nft';

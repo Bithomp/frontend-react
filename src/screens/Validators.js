@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import moment from "moment";
 
-import SEO from '../../components/components/SEO';
+import SEO from '../components/SEO';
 
 import { fullDateAndTime } from '../utils/format';
 

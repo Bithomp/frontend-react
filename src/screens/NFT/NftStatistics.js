@@ -2,7 +2,7 @@ import { useTranslation, Trans } from 'next-i18next'
 import { useState, useEffect } from 'react';
 import Link from 'next/link'
 
-import SEO from '../../../components/components/SEO';
+import SEO from '../../components/SEO';
 
 import { wssServer } from '../../utils';
 import { niceNumber, fullDateAndTime, ledgerLink } from '../../utils/format';

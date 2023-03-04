@@ -21,7 +21,6 @@
     "react-csv": "^2.2.2",
     "react-device-detect": "^2.2.2",
     "react-dom": "^18.2.0",
-    "react-helmet-async": "^1.3.0",
     "react-i18next": "^12.2.0",
     "react-infinite-scroll-component": "^6.1.0",
     "react-protected-mailto": "^1.0.3",

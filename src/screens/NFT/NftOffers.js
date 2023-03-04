@@ -3,9 +3,9 @@ import { useState, useEffect } from 'react';
 import { useParams, Link, useSearchParams } from 'react-router-dom';
 import axios from 'axios';
 
-import SEO from '../../../components/components/SEO';
-import SearchBlock from '../../../components/components/SearchBlock';
-import Tabs from '../../../components/components/Tabs';
+import SEO from '../../components/SEO';
+import SearchBlock from '../../components/SearchBlock';
+import Tabs from '../../components/Tabs';
 
 import { onFailedRequest, setTabParams } from '../../utils';
 import {

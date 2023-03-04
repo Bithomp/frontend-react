@@ -1,6 +1,8 @@
 import { useTranslation, Trans } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
+import SEO from '../components/SEO'
+
 export async function getStaticProps({ locale }) {
   return {
     props: {
@@ -10,8 +12,11 @@ export async function getStaticProps({ locale }) {
 }
 
 export default function Eror404() {
-  const { t } = useTranslation();
+  const { t } = useTranslation()
+
   return (
+    <>
+    <SEO title={t("page-not-found.header")} />
     <div className="content-text center">
       <h1>{t("page-not-found.header")}</h1>
       <p>
@@ -20,5 +25,6 @@ export default function Eror404() {
         </Trans>
       </p>
     </div>
-  );
-};
+    </>
+  )
+}

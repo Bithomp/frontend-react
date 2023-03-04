@@ -3,10 +3,10 @@ import { useState, useEffect } from 'react';
 import { useParams } from "react-router-dom";
 import axios from 'axios';
 
-import SEO from '../../../../components/components/SEO';
-import SearchBlock from '../../../../components/components/SearchBlock';
-import CopyButton from '../../../../components/components/CopyButton';
-import NftImageAndVideo from '../../../../components/components/NftPreview';
+import SEO from '../../../components/SEO';
+import SearchBlock from '../../../components/SearchBlock';
+import CopyButton from '../../../components/CopyButton';
+import NftImageAndVideo from '../../../components/NftPreview';
 
 import { onFailedRequest, onApiError } from '../../../utils';
 import {
