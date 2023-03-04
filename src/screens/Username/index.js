@@ -10,7 +10,7 @@ import { isAddressValid, isUsernameValid, server, wssServer, onFailedRequest, de
 import { payloadXummPost, xummWsConnect, xummCancel } from '../../utils/xumm';
 
 import CountrySelect from '../../components/CountrySelect';
-import CheckBox from '../../../components/CheckBox';
+import CheckBox from '../../../components/UI/CheckBox';
 import Receipt from '../../../components/Receipt';
 import XummQr from "../../../components/Xumm/Qr";
 

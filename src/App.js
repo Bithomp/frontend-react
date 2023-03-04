@@ -3,12 +3,12 @@ import { useState, useEffect } from "react";
 import useLocalStorage from 'use-local-storage';
 import axios from 'axios';
 
-import Header from '../components/Header';
+import Header from '../components/Layout/Header';
 import Footer from '../components/components/Footer';
 import SignForm from "../components/SignForm";
-import ScrollToTop from "../components/ScrollToTop";
-import BackgroundImage from '../components/BackgroundImage';
-import TopLinks from '../components/TopLinks';
+import ScrollToTop from "../components/Layout/ScrollToTop";
+import BackgroundImage from '../components/Layout/BackgroundImage';
+import TopLinks from '../components/Layout/TopLinks';
 
 import Home from './screens/Home';
 import Username from './screens/Username';

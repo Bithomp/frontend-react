@@ -4,7 +4,7 @@ import dynamic from 'next/dynamic'
 const { isMobile } = dynamic(() => import('react-device-detect'), { ssr: false })
 import Image from 'next/image'
 
-import CurrencySelect from "../CurrencySelect";
+import CurrencySelect from "../UI/CurrencySelect";
 
 export default function Converter({ selectedCurrency, setSelectedCurrency, chartPeriod }) {
   const [data, setData] = useState({});

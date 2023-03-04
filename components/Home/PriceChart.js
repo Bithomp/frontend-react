@@ -10,7 +10,7 @@ const zoominicon = "/images/zoom-in.svg";
 const zoomouticon = "/images/zoom-out.svg";
 const panicon = "/images/panning.svg";
 
-import { useTheme } from "../ThemeContext"
+import { useTheme } from "../Layout/ThemeContext"
 
 export default function PriceChart({ currency, chartPeriod, setChartPeriod }) {
   const { i18n } = useTranslation();

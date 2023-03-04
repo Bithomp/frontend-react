@@ -1,6 +1,6 @@
 import { renderToStaticMarkup } from 'react-dom/server';
 
-import { devNet } from '../utils';
+import { devNet } from '../../utils';
 
 function svgImage(network) {
   return (

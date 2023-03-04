@@ -11,7 +11,7 @@ import { capitalize } from '../utils/format';
 import { payloadXummPost, xummWsConnect, xummCancel, xummGetSignedData } from '../utils/xumm';
 
 import XummQr from "./Xumm/Qr";
-import CheckBox from './CheckBox';
+import CheckBox from './UI/CheckBox';
 
 const qr = "/images/qr.gif";
 const ledger = '/images/ledger-large.svg';

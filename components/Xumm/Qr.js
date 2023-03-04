@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'next-i18next'
 
-import ProgressBar from "../Header/ProgressBar";
+import ProgressBar from "../Layout/Header/ProgressBar";
 
 export default function XummQR({ expiredQr, xummQrSrc, onReset, status }) {
   const { t } = useTranslation();

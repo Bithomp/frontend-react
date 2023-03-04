@@ -4,8 +4,8 @@ import { useRouter } from 'next/router'
 import axios from 'axios';
 import { useSearchParams } from 'next/navigation'
 
-import { isAddressOrUsername, isIdValid } from '../utils'
-import { userOrServiceName } from '../utils/format'
+import { isAddressOrUsername, isIdValid } from '../../utils'
+import { userOrServiceName } from '../../utils/format'
 
 //import { ReactComponent as Qr } from "../../assets/images/qr.svg";
 

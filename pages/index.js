@@ -5,7 +5,7 @@ import { useState } from 'react'
 import { useLocalStorage } from '../utils'
 
 import SEO from '../components/SEO'
-import SearchBlock from '../components/SearchBlock';
+import SearchBlock from '../components/Layout/SearchBlock';
 import Whales from '../components/Home/Whales';
 import Converter from "../components/Home/Converter";
 import PriceChart from "../components/Home/PriceChart";

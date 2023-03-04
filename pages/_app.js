@@ -4,17 +4,17 @@ import { useState, useEffect } from "react"
 import axios from 'axios'
 import { appWithTranslation } from 'next-i18next'
 
-import Header from '../components/Header'
-import Footer from '../components/Footer'
+import Header from '../components/Layout/Header'
+import Footer from '../components/Layout/Footer'
 import SignForm from "../components/SignForm"
-import ScrollToTop from "../components/ScrollToTop"
-import BackgroundImage from '../components/BackgroundImage'
-import TopLinks from '../components/TopLinks'
+import ScrollToTop from "../components/Layout/ScrollToTop"
+import BackgroundImage from '../components/Layout/BackgroundImage'
+import TopLinks from '../components/Layout/TopLinks'
 
 import { network, devNet, server, useLocalStorage } from '../utils'
 
 import '../styles/ui.scss'
-import { ThemeProvider } from "../components/ThemeContext"
+import { ThemeProvider } from "../components/Layout/ThemeContext"
 
 const MyApp = ({ Component, pageProps }) => {
   const [account, setAccount] = useLocalStorage('account', null)

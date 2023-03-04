@@ -2,7 +2,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { useTranslation } from 'next-i18next'
 
-import { devNet, useLocalStorage } from '../utils'
+import { devNet, useLocalStorage } from '../../utils'
 
 import LanguageSelect from "./LanguageSelect";
 import SocialIcons from "./SocialIcons";
