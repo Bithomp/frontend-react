@@ -10,9 +10,7 @@ import ScrollToTop from "../components/Layout/ScrollToTop";
 import BackgroundImage from '../components/Layout/BackgroundImage';
 import TopLinks from '../components/Layout/TopLinks';
 
-import Home from './screens/Home';
 import Username from './screens/Username';
-import Alerts from "./screens/Alerts";
 import Developer from "./screens/Developer";
 import Domains from './screens/Domains';
 import Ledger from './screens/Ledger';
@@ -87,13 +85,10 @@ export default function App() {
           />
         }
         <Routes>
-          <Route path="/" element={<Home theme={theme} devNet={devNet} />} />
-          <Route path="/index.html" element={<Home theme={theme} devNet={devNet} />} />
           <Route
             path="/username"
             element={<Username setSignRequest={setSignRequest} account={account} setAccount={setAccount} signOut={signOut} />}
           />
-          <Route path="/alerts" element={<Alerts />} />
           <Route path="/developer" element={<Developer />} />
           <Route path="/domains" element={<Domains />} />
           <Route path="/ledger/" element={<Ledger />}>

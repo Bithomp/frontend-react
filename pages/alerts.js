@@ -1,26 +1,35 @@
 import { useTranslation, Trans } from 'next-i18next'
-import { useState, useEffect } from 'react';
-import axios from 'axios';
-import moment from "moment";
-import momentDurationFormatSetup from "moment-duration-format";
+import { useState, useEffect } from 'react'
+import axios from 'axios'
+import moment from "moment"
+import momentDurationFormatSetup from "moment-duration-format"
 import dynamic from 'next/dynamic'
 const { isMobile } = dynamic(() => import('react-device-detect'), { ssr: false })
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
-import './styles.scss';
+import SEO from '../components/SEO'
 
-momentDurationFormatSetup(moment);
+export async function getStaticProps({ locale }) {
+  return {
+    props: {
+      ...(await serverSideTranslations(locale, ['common'])),
+    }
+  }
+}
+
+momentDurationFormatSetup(moment)
 
 function localDateAndTime(timestamp) {
-  let params = { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric' };
+  let params = { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric' }
   if (isMobile) {
-    params = { month: '2-digit', day: '2-digit',  hour: 'numeric', minute: 'numeric' };
+    params = { month: '2-digit', day: '2-digit', hour: 'numeric', minute: 'numeric' }
   }
-  return new Date(timestamp * 1000).toLocaleString([], params);
+  return new Date(timestamp * 1000).toLocaleString([], params)
 }
 
 export default function Alerts() {
-  const { t } = useTranslation();
-  const [data, setData] = useState({});
+  const { t } = useTranslation()
+  const [data, setData] = useState({})
 
   useEffect(() => {
     async function fetchData() {
@@ -38,17 +47,19 @@ export default function Alerts() {
             "rate_new":0.2885
           },
       */
-      const response = await axios('v2/price/xrp/alerts');
+      const response = await axios('v2/price/xrp/alerts')
       setData(response.data);
     }
     fetchData();
-  }, [setData]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   function duration(seconds) {
-    return moment.duration(seconds, "seconds").format("h[" + t("units.hours-short") + "], m[" + t("units.minutes-short") + "]", { trim: "both" });
+    return moment.duration(seconds, "seconds").format("h[" + t("units.hours-short") + "], m[" + t("units.minutes-short") + "]", { trim: "both" })
   }
 
-  return (
+  return <>
+    <SEO title={t("menu.price-alerts")} />
     <div className="page-alerts content-center">
       <h1 className='center'>{t("menu.price-alerts")}</h1>
       <p>
@@ -90,5 +101,5 @@ export default function Alerts() {
         </tbody>
       </table>
     </div>
-  );
-};
+  </>
+}
