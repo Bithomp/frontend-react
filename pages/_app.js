@@ -33,7 +33,7 @@ const MyApp = ({ Component, pageProps }) => {
     axios.defaults.baseURL = server + '/api/cors/'
   }
 
-  const pagesWithNoTopAdds = ['/', '/username', '/disclaimer']
+  const pagesWithNoTopAdds = ['/', '/username', '/disclaimer', '/privacy-policy', 'terms-and-conditions']
   const showTopAdds = !pagesWithNoTopAdds.includes(router.pathname)
 
   return (

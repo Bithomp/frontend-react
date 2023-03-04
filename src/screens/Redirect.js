@@ -1,5 +1,4 @@
-import { useLocation } from "react-router-dom";
-import { Navigate } from "react-router-dom";
+import { useLocation, Navigate } from "react-router-dom";
 
 export default function Redirect() {
   const { pathname } = useLocation();

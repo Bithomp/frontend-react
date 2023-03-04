@@ -12,11 +12,13 @@ export default function LanguageSelect() {
   const { pathname, asPath, query } = router
 
   const handleLangChange = e => {
-    const lang = e.target.value;
-    moment.locale(lang);
-    cookies.set('NEXT_LOCALE', lang, { path: '/' })
-    router.push({ pathname, query }, asPath, { locale: lang })
-  };
+    const lang = e.target.value
+    if (i18n.language !== lang) {
+      moment.locale(lang)
+      cookies.set('NEXT_LOCALE', lang, { path: '/' })
+      router.push({ pathname, query }, asPath, { locale: lang })
+    }
+  }
 
   moment.locale(i18n.language)
   cookies.set('NEXT_LOCALE', i18n.language, { path: '/' })
