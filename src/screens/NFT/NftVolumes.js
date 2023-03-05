@@ -15,7 +15,7 @@ import {
   persentFormat
 } from '../../utils/format';
 
-import { ReactComponent as LinkIcon } from "../../assets/images/link.svg";
+import { ReactComponent as LinkIcon } from "../../public/images/link.svg";
 
 export default function NftVolumes() {
   const { t } = useTranslation();

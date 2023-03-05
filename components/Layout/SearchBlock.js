@@ -7,7 +7,7 @@ import { useSearchParams } from 'next/navigation'
 import { isAddressOrUsername, isIdValid } from '../../utils'
 import { userOrServiceName } from '../../utils/format'
 
-//import { ReactComponent as Qr } from "../../assets/images/qr.svg";
+//import { ReactComponent as Qr } from "../../public/images/qr.svg";
 
 const searchItemRe = /^[~]{0,1}[a-zA-Z0-9-_.]*[+]{0,1}[a-zA-Z0-9-_.]*[$]{0,1}[a-zA-Z0-9-.]*[a-zA-Z0-9]*$/i;
 

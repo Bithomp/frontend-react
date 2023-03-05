@@ -1,13 +1,22 @@
 import { useTranslation, Trans } from 'next-i18next'
-import { useState, useEffect } from 'react';
-import axios from 'axios';
-import moment from "moment";
+import { useState, useEffect } from 'react'
+import axios from 'axios'
+import moment from "moment"
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
-import SEO from '../components/SEO';
+import SEO from '../components/SEO'
 
-import { fullDateAndTime } from '../utils/format';
+import { fullDateAndTime } from '../utils/format'
 
-import { ReactComponent as LinkIcon } from "../assets/images/link.svg";
+import LinkIcon from "../public/images/link.svg"
+
+export async function getStaticProps({ locale }) {
+  return {
+    props: {
+      ...(await serverSideTranslations(locale, ['common'])),
+    }
+  }
+}
 
 const compare = (a, b) => {
   // nulls sort after anything else

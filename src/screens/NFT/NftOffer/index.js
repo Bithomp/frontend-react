@@ -19,8 +19,8 @@ import {
   nftIdLink
 } from '../../../utils/format';
 
-import { ReactComponent as LinkIcon } from "../../../assets/images/link.svg";
-import xummImg from "../../../assets/images/xumm.png";
+import { ReactComponent as LinkIcon } from "../../../public/images/link.svg";
+import xummImg from "../../../public/images/xumm.png";
 import './styles.scss';
 
 export default function NftOffer({ setSignRequest, signRequest, account }) {

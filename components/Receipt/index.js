@@ -2,7 +2,7 @@ import { useTranslation } from 'next-i18next'
 
 import { fullDateAndTime } from '../../utils/format';
 
-import { ReactComponent as Logo } from "../../assets/images/logo.svg";
+import { ReactComponent as Logo } from "../../public/images/logo.svg";
 import './styles.scss';
 
 export default function Receipt({ item, details }) {

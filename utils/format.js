@@ -2,7 +2,7 @@ import { Buffer } from 'buffer'
 import { i18n } from '../next-i18next.config'
 import Link from 'next/link'
 
-import { ReactComponent as LinkIcon } from "../public/images/link.svg";
+import LinkIcon from "../public/images/link.svg"
 import { stripText } from '.';
 import { mpUrl } from './nft';
 

@@ -2,16 +2,11 @@ import { useState } from 'react';
 import { useTranslation } from 'next-i18next'
 import useLocalStorage from 'use-local-storage';
 
-import Converter from "./Converter";
-import PriceChart from "./PriceChart";
-import Statistics from "./Statistics";
-import Whales from './Whales';
-
 import './styles.scss';
-import nexo from "../../assets/images/nexo.svg";
-import btcbit from "../../assets/images/btcbit.svg";
-//import xbit from "../../assets/images/xbit.png";
-import { ReactComponent as Wolfbet } from "../../assets/images/wolfbet.svg";
+import nexo from "../../public/images/nexo.svg";
+import btcbit from "../../public/images/btcbit.svg";
+//import xbit from "../../public/images/xbit.png";
+import { ReactComponent as Wolfbet } from "../../public/images/wolfbet.svg";
 
 export default function Home({ theme, devNet }) {
   const { t } = useTranslation();

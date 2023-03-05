@@ -2,7 +2,7 @@ import { Buffer } from 'buffer'
 import { stripText } from '.'
 
 import Link from 'next/link'
-import { ReactComponent as LinkIcon } from "../public/images/link.svg";
+import LinkIcon from "../public/images/link.svg"
 
 //identified NFT Market Places
 export const mpUrl = (offer) => {

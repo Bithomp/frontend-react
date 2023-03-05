@@ -17,8 +17,8 @@ import {
 } from '../../utils/format';
 import { nftNameLink, nftThumbnail } from '../../utils/nft';
 
-import { ReactComponent as LinkIcon } from "../../assets/images/link.svg";
-import xummImg from "../../assets/images/xumm.png";
+import { ReactComponent as LinkIcon } from "../../public/images/link.svg";
+import xummImg from "../../public/images/xumm.png";
 
 export default function NftOffers({ setSignRequest, signRequest, account }) {
   const { t } = useTranslation();

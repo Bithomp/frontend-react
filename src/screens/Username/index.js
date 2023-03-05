@@ -14,8 +14,8 @@ import CheckBox from '../../../components/UI/CheckBox';
 import Receipt from '../../../components/Receipt';
 import XummQr from "../../../components/Xumm/Qr";
 
-import qr from "../../assets/images/qr.gif";
-import checkmark from "../../assets/images/checkmark.svg";
+import qr from "../../public/images/qr.gif";
+import checkmark from "../../public/images/checkmark.svg";
 import './styles.scss';
 
 let interval;

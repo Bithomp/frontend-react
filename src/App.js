@@ -11,7 +11,6 @@ import BackgroundImage from '../components/Layout/BackgroundImage';
 import TopLinks from '../components/Layout/TopLinks';
 
 import Username from './screens/Username';
-import Ledger from './screens/Ledger';
 import NftVolumes from "./screens/NFT/NftVolumes";
 import Nft from './screens/NFT/Nft';
 import Nfts from './screens/NFT/Nfts';
@@ -20,12 +19,11 @@ import NftOffers from "./screens/NFT/NftOffers";
 import NftSales from './screens/NFT/NftSales';
 import NftDistribution from './screens/NFT/NftDistribution';
 import NftStatistics from './screens/NFT/NftStatistics';
-import Validators from './screens/Validators';
 import Amendments from './screens/Amendments';
 import Genesis from "./screens/Genesis";
 import CustomerSupport from "./screens/CustomerSupport";
 
-import { network, devNet, server } from './utils';
+import { network, server } from './utils';
 
 export default function App() {
   const defaultDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -86,9 +84,6 @@ export default function App() {
             path="/username"
             element={<Username setSignRequest={setSignRequest} account={account} setAccount={setAccount} signOut={signOut} />}
           />
-          <Route path="/ledger/" element={<Ledger />}>
-            <Route path="/ledger/:ledgerIndex" element={<Ledger />} />
-          </Route>
           <Route path="/nft/" element={<Nft setSignRequest={setSignRequest} signRequest={signRequest} account={account} />}>
             <Route path="/nft/:id" element={<Nft setSignRequest={setSignRequest} signRequest={signRequest} account={account} />} />
           </Route>
@@ -110,7 +105,7 @@ export default function App() {
           </Route>
           <Route path="/nft-volumes" element={<NftVolumes />} />
           <Route path="/nft-statistics" element={<NftStatistics />} />
-          <Route path="/validators" element={<Validators />} />
+
           <Route path="/amendments" element={<Amendments />} />
           <Route path="/genesis" element={<Genesis />} />
           <Route path="/customer-support" element={<CustomerSupport />} />

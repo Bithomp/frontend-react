@@ -1,16 +1,33 @@
 import { useTranslation } from 'next-i18next'
-import { useState, useEffect } from 'react';
-import axios from 'axios';
-import { useParams } from "react-router-dom";
+import { useState, useEffect } from 'react'
+import axios from 'axios'
+import { useRouter } from 'next/router'
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
-import SEO from '../components/SEO';
+import SEO from '../../components/SEO'
 
-import { txIdFormat, fullDateAndTime, ledgerLink } from '../utils/format';
+import { txIdFormat, fullDateAndTime, ledgerLink } from '../../utils/format';
+
+export async function getStaticProps({ locale }) {
+  return {
+    props: {
+      ...(await serverSideTranslations(locale, ['common'])),
+    }
+  }
+}
+
+export async function getStaticPaths() {
+  return {
+    paths: [],
+    fallback: 'blocking'
+  }
+}
 
 export default function Ledger() {
   const [data, setData] = useState(null);
   const { t } = useTranslation();
-  const { ledgerIndex } = useParams();
+  const router = useRouter()
+  const { ledgerIndex } = router.query
   const [ledgerVersion, setLedgerVersion] = useState(ledgerIndex);
 
   const checkApi = async (ledgerI) => {

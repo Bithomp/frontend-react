@@ -12,7 +12,7 @@ import { stripText, onFailedRequest, onApiError, isAddressOrUsername, setTabPara
 import { isValidTaxon, nftThumbnail, nftNameLink } from '../utils/nft';
 import { amountFormat, nftLink, timeOrDate, userOrServiceLink, usernameOrAddress } from '../utils/format';
 
-import { ReactComponent as LinkIcon } from "../assets/images/link.svg";
+import LinkIcon from "../public/images/link.svg"
 
 export default function Sales({ list, defaultSaleTab = "all" }) {
   const [data, setData] = useState(null);

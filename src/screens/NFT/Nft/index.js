@@ -25,8 +25,8 @@ import {
 } from '../../../utils/format';
 
 import './styles.scss';
-import { ReactComponent as LinkIcon } from "../../../assets/images/link.svg";
-import xummImg from "../../../assets/images/xumm.png";
+import { ReactComponent as LinkIcon } from "../../../public/images/link.svg";
+import xummImg from "../../../public/images/xumm.png";
 
 export default function Nft({ setSignRequest, account, signRequest }) {
   const { t } = useTranslation();

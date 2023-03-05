@@ -4,7 +4,7 @@ import Head from "next/head"
 
 import { nftUrl } from '../utils/nft';
 
-import LoadingGif from "../assets/images/loading.gif";
+import LoadingGif from "../public/images/loading.gif";
 
 import Tabs from './Tabs';
 
