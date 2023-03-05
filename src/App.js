@@ -11,7 +11,6 @@ import BackgroundImage from '../components/Layout/BackgroundImage';
 import TopLinks from '../components/Layout/TopLinks';
 
 import Username from './screens/Username';
-import Domains from './screens/Domains';
 import Ledger from './screens/Ledger';
 import LastLedgerInformation from './screens/LastLedgerInformation';
 import NftVolumes from "./screens/NFT/NftVolumes";
@@ -88,7 +87,6 @@ export default function App() {
             path="/username"
             element={<Username setSignRequest={setSignRequest} account={account} setAccount={setAccount} signOut={signOut} />}
           />
-          <Route path="/domains" element={<Domains />} />
           <Route path="/ledger/" element={<Ledger />}>
             <Route path="/ledger/:ledgerIndex" element={<Ledger />} />
           </Route>

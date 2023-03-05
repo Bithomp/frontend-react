@@ -1,10 +1,19 @@
 import { useTranslation } from 'next-i18next'
-import { useState, useEffect } from 'react';
-import axios from 'axios';
+import { useState, useEffect } from 'react'
+import axios from 'axios'
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
+
+import SEO from '../components/SEO'
 
 import { fullDateAndTime } from '../utils/format';
 
-import SEO from '../components/SEO';
+export async function getStaticProps({ locale }) {
+  return {
+    props: {
+      ...(await serverSideTranslations(locale, ['common'])),
+    }
+  }
+}
 
 export default function Domains() {
   const [data, setData] = useState(null);
