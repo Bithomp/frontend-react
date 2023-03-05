@@ -1,6 +1,7 @@
 import { Buffer } from 'buffer'
 import { i18n } from '../next-i18next.config'
 import Link from 'next/link'
+import { useState, useEffect } from "react"
 
 import LinkIcon from "../public/images/link.svg"
 import { stripText } from '.';
@@ -409,8 +410,22 @@ export const timeFormat = (timestamp) => {
   return new Date(timestamp * 1000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
 }
 
-export const dateFormat = (timestamp) => {
-  return new Date(timestamp * 1000).toLocaleDateString();
+export const dateFormat = (timestamp, stringParams = {}, params = {}) => {
+  const [formattedDate, setFormattedDate] = useState(null)
+  useEffect(() => {
+    if (timestamp) {
+      if (params.type?.toUpperCase() !== 'ISO') {
+        timestamp = timestamp * 1000
+      }
+      if (stringParams) {
+        timestamp = new Date(timestamp).toLocaleDateString([], stringParams)
+      } else {
+        timestamp = new Date(timestamp).toLocaleDateString()
+      }
+      setFormattedDate(timestamp)
+    }
+  })
+  return formattedDate
 }
 
 export const timeOrDate = (timestamp) => {

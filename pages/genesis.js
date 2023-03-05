@@ -1,16 +1,25 @@
-import { useState, useEffect } from 'react';
-import axios from 'axios';
+import { useState, useEffect } from 'react'
+import axios from 'axios'
 import { useTranslation, Trans } from 'next-i18next'
 import dynamic from 'next/dynamic'
 const { isMobile } = dynamic(() => import('react-device-detect'), { ssr: false })
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
-import { niceNumber } from '../../utils/format';
+export async function getStaticProps({ locale }) {
+  return {
+    props: {
+      ...(await serverSideTranslations(locale, ['common'])),
+    }
+  }
+}
 
-import './styles.scss';
+import SEO from '../components/SEO'
+
+import { niceNumber, dateFormat } from '../utils/format'
 
 export default function Genesis() {
-  const { t } = useTranslation();
-  const [data, setData] = useState({});
+  const { t } = useTranslation()
+  const [data, setData] = useState({})
 
   useEffect(() => {
     async function fetchData() {
@@ -40,11 +49,9 @@ export default function Genesis() {
   }, [setData]);
 
   const timestampFormatParams = { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric' };
-  const lastUpdate = (timestamp, params) => {
-    return timestamp ? new Date(timestamp * 1000).toLocaleDateString([], params) : '';
-  }
 
-  return (
+  return <>
+    <SEO title={t("menu.genesis")} />
     <div className="page-genesis content-text">
       <h1 className="center">{t("menu.genesis")}</h1>
 
@@ -71,13 +78,13 @@ export default function Genesis() {
               <tr><td>{t("genesis.account-count")}</td><td>136</td></tr>
               <tr>
                 <td>{t("genesis.inception")}</td>
-                <td>{new Date("2013-01-01T03:21:00Z").toLocaleString([], timestampFormatParams)}</td>
+                <td>{dateFormat("2013-01-01T03:21:00Z", timestampFormatParams, { type: "ISO" })}</td>
               </tr>
               <tr><td>{t("genesis.xrp-balance")}</td><td>{niceNumber(99999999999.996320, 6)}</td></tr>
               <tr><td colSpan="2"><hr /></td></tr>
               <tr>
                 <td>{t("genesis.balance-update")}</td>
-                <td>{lastUpdate(data.balance_update, timestampFormatParams)}</td>
+                <td>{dateFormat(data.balance_update, timestampFormatParams)}</td>
               </tr>
               <tr>
                 <td>{t("genesis.xrp-balance")}</td>
@@ -111,7 +118,7 @@ export default function Genesis() {
                     {niceNumber(account.genesis_balance)}
                   </p>
                   <p>
-                    {t("genesis.xrp-balance")} {lastUpdate(data.balance_update, {})}<br />
+                    {t("genesis.xrp-balance")} {dateFormat(data.balance_update)}<br />
                     {niceNumber(account.balance)}
                   </p>
                   {account.rippletrade &&
@@ -138,7 +145,7 @@ export default function Genesis() {
               <th>{t("genesis.genesis-index")}</th>
               <th>{t("genesis.address")}</th>
               <th>{t("genesis.genesis-balance")}</th>
-              <th>{t("genesis.xrp-balance")} {lastUpdate(data.balance_update, {})}</th>
+              <th>{t("genesis.xrp-balance")} {dateFormat(data.balance_update)}</th>
               <th>Rippletrade</th>
               <th>{t("genesis.nickname")}</th>
             </tr>
@@ -158,5 +165,5 @@ export default function Genesis() {
         </table>
       }
     </div>
-  );
+  </>
 };

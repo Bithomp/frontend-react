@@ -1,9 +1,5 @@
 import { useTranslation } from 'next-i18next'
 import Image from 'next/image'
-
-import CopyButton from '../components/CopyButton'
-import SEO from '../components/SEO'
-
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 export async function getStaticProps({ locale }) {
@@ -13,6 +9,9 @@ export async function getStaticProps({ locale }) {
     }
   }
 }
+
+import CopyButton from '../components/UI/CopyButton'
+import SEO from '../components/SEO'
 
 export default function Donate() {
   const { t } = useTranslation()

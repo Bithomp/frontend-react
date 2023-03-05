@@ -606,18 +606,21 @@ body.dark {
   }
 }
 
+//common ui
 @import "./components/header.scss";
 @import "./components/switch.scss";
 @import "./components/signForm.scss";
 @import "./components/checkbox.scss";
 @import "./components/topLinks.scss";
 @import "./components/searchBlock.scss";
+@import "./components/footer.scss";
 
-@import "./components/index.scss";
+//home page
 @import "./components/currencySelect.scss";
 @import "./components/converter.scss";
 @import "./components/priceChart.scss";
 
-@import "./components/alerts.scss";
-
-@import "./components/footer.scss";
+//pages
+@import "./pages/index.scss";
+@import "./pages/alerts.scss";
+@import "./pages/genesis.scss";
