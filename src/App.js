@@ -19,7 +19,6 @@ import NftOffers from "./screens/NFT/NftOffers";
 import NftSales from './screens/NFT/NftSales';
 import NftDistribution from './screens/NFT/NftDistribution';
 import NftStatistics from './screens/NFT/NftStatistics';
-import Amendments from './screens/Amendments';
 import Genesis from "./screens/Genesis";
 import CustomerSupport from "./screens/CustomerSupport";
 
@@ -106,7 +105,6 @@ export default function App() {
           <Route path="/nft-volumes" element={<NftVolumes />} />
           <Route path="/nft-statistics" element={<NftStatistics />} />
 
-          <Route path="/amendments" element={<Amendments />} />
           <Route path="/genesis" element={<Genesis />} />
           <Route path="/customer-support" element={<CustomerSupport />} />
         </Routes>

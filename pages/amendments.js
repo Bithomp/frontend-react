@@ -1,9 +1,18 @@
 import { useTranslation } from 'next-i18next'
-import { useState, useEffect } from 'react';
-import SEO from '../components/SEO';
-import axios from 'axios';
+import { useState, useEffect } from 'react'
+import SEO from '../components/SEO'
+import axios from 'axios'
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
-import { fullDateAndTime } from '../utils/format';
+import { fullDateAndTime } from '../utils/format'
+
+export async function getStaticProps({ locale }) {
+  return {
+    props: {
+      ...(await serverSideTranslations(locale, ['common'])),
+    }
+  }
+}
 
 export default function Amendment() {
   const [majorityAmendments, setMajorityAmendments] = useState(null);
