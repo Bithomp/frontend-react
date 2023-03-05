@@ -1,16 +1,25 @@
 import { useTranslation, Trans } from 'next-i18next'
 import { useState, useEffect } from 'react';
 import Link from 'next/link'
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
-import SEO from '../../components/SEO';
+import SEO from '../components/SEO'
 
-import { wssServer } from '../../utils';
-import { niceNumber, fullDateAndTime, ledgerLink } from '../../utils/format';
+export async function getStaticProps({ locale }) {
+  return {
+    props: {
+      ...(await serverSideTranslations(locale, ['common'])),
+    }
+  }
+}
+
+import { wssServer } from '../utils'
+import { niceNumber, fullDateAndTime, ledgerLink } from '../utils/format'
 
 let ws = null;
 
 export default function LastLedgerInformation() {
-  const { t } = useTranslation();
+  const { t } = useTranslation()
 
   const [data, setData] = useState(null);
 

@@ -18,7 +18,6 @@ import NftOffer from "./screens/NFT/NftOffer";
 import NftOffers from "./screens/NFT/NftOffers";
 import NftSales from './screens/NFT/NftSales';
 import NftDistribution from './screens/NFT/NftDistribution';
-import NftStatistics from './screens/NFT/NftStatistics';
 
 import { network, server } from './utils';
 
@@ -101,8 +100,6 @@ export default function App() {
             <Route path="/nft-distribution/:id" element={<NftDistribution />} />
           </Route>
           <Route path="/nft-volumes" element={<NftVolumes />} />
-
-          <Route path="/nft-statistics" element={<NftStatistics />} />
         </Routes>
       </div>
       <BackgroundImage />
