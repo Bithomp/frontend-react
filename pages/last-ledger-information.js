@@ -1,13 +1,25 @@
 import { useTranslation } from 'next-i18next'
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react'
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
+import Link from 'next/link'
 
-import { wssServer } from '../utils';
-import { niceNumber, ledgerLink } from '../utils/format';
+export async function getStaticProps({ locale }) {
+  return {
+    props: {
+      ...(await serverSideTranslations(locale, ['common'])),
+    }
+  }
+}
+
+import { wssServer } from '../utils'
+import { niceNumber, ledgerLink } from '../utils/format'
+
+import SEO from '../components/SEO'
 
 let ws = null;
 
 export default function LastLedgerInformation() {
-  const { t } = useTranslation();
+  const { t } = useTranslation()
 
   const [ledger, setLedger] = useState(null);
   const [update, setUpdate] = useState(true);
@@ -83,7 +95,8 @@ export default function LastLedgerInformation() {
     closedAt = new Date(closedAt).toLocaleTimeString();
   }
 
-  return (
+  return <>
+    <SEO title={t("menu.last-ledger-information")} />
     <div className="content-text content-center">
       <h1 className="center">{t("menu.last-ledger-information")}</h1>
       <div className="main-box">
@@ -99,12 +112,12 @@ export default function LastLedgerInformation() {
           {t("last-ledger-information.ledger-interval")}: {ledger?.lastClose?.convergeTimeS && ledger?.lastClose.convergeTimeS + ' ' + t("units.seconds-short")}
         </p>
         <p>
-          {t("last-ledger-information.transactions")}: {ledger?.validatedLedger.transactionsCount}</p>
+          {t("last-ledger-information.transactions")}: {ledger?.validatedLedger.transactionsCount && <Link href={"ledger/" + ledger.validatedLedger.ledgerIndex}>{ledger.validatedLedger.transactionsCount}</Link>}</p>
         <p>
           {t("last-ledger-information.transaction-speed")}: {ledger?.lastClose && (ledger.validatedLedger.transactionsCount / ledger.lastClose.convergeTimeS).toFixed(2)}
         </p>
         <p>
-          {t("last-ledger-information.proposers")}: {ledger?.lastClose?.proposers}
+          {t("last-ledger-information.proposers")}: {ledger?.lastClose?.proposers && <Link href="validators">{ledger.lastClose.proposers}</Link>}
         </p>
         <p>
           {t("last-ledger-information.validation-quorum")}: {ledger?.validationQuorum}
@@ -140,5 +153,5 @@ export default function LastLedgerInformation() {
         </p>
       </div>
     </div>
-  );
+  </>
 };

@@ -12,7 +12,6 @@ import TopLinks from '../components/Layout/TopLinks';
 
 import Username from './screens/Username';
 import Ledger from './screens/Ledger';
-import LastLedgerInformation from './screens/LastLedgerInformation';
 import NftVolumes from "./screens/NFT/NftVolumes";
 import Nft from './screens/NFT/Nft';
 import Nfts from './screens/NFT/Nfts';
@@ -90,7 +89,6 @@ export default function App() {
           <Route path="/ledger/" element={<Ledger />}>
             <Route path="/ledger/:ledgerIndex" element={<Ledger />} />
           </Route>
-          <Route path="/last-ledger-information" element={<LastLedgerInformation />} />
           <Route path="/nft/" element={<Nft setSignRequest={setSignRequest} signRequest={signRequest} account={account} />}>
             <Route path="/nft/:id" element={<Nft setSignRequest={setSignRequest} signRequest={signRequest} account={account} />} />
           </Route>
