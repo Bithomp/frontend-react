@@ -20,7 +20,6 @@ import NftSales from './screens/NFT/NftSales';
 import NftDistribution from './screens/NFT/NftDistribution';
 import NftStatistics from './screens/NFT/NftStatistics';
 import Genesis from "./screens/Genesis";
-import CustomerSupport from "./screens/CustomerSupport";
 
 import { network, server } from './utils';
 
@@ -106,7 +105,6 @@ export default function App() {
           <Route path="/nft-statistics" element={<NftStatistics />} />
 
           <Route path="/genesis" element={<Genesis />} />
-          <Route path="/customer-support" element={<CustomerSupport />} />
         </Routes>
       </div>
       <BackgroundImage />

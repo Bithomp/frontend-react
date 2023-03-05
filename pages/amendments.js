@@ -1,10 +1,11 @@
 import { useTranslation } from 'next-i18next'
 import { useState, useEffect } from 'react'
-import SEO from '../components/SEO'
 import axios from 'axios'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 import { fullDateAndTime } from '../utils/format'
+
+import SEO from '../components/SEO'
 
 export async function getStaticProps({ locale }) {
   return {

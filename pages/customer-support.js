@@ -1,12 +1,23 @@
 import { useTranslation, Trans } from 'next-i18next'
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
+import Mailto from 'react-protected-mailto'
 
-import Mailto from 'react-protected-mailto';
-import SocialIcons from '../components/SocialIcons';
+import SocialIcons from '../components/Layout/SocialIcons'
+import SEO from '../components/SEO'
+
+export async function getStaticProps({ locale }) {
+  return {
+    props: {
+      ...(await serverSideTranslations(locale, ['common'])),
+    }
+  }
+}
 
 export default function Contact() {
   const { t } = useTranslation();
 
-  return (
+  return <>
+    <SEO title={t("menu.customer-support")} />
     <div className="content-text">
       <h1>{t("menu.customer-support")}</h1>
       <p>
@@ -47,5 +58,5 @@ export default function Contact() {
       <h2>{t("customer-support.follow-us")}</h2>
       <SocialIcons />
     </div>
-  );
+  </>
 };
