@@ -1,27 +1,38 @@
 import { useTranslation, Trans } from 'next-i18next'
-import { useState, useEffect } from 'react';
-import { useSearchParams, useNavigate } from "react-router-dom";
-import axios from 'axios';
+import { useState, useEffect } from 'react'
+import axios from 'axios'
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
+import { useSearchParams } from 'next/navigation'
+import { useRouter } from 'next/router'
 
-import SEO from '../../components/SEO';
-import Tabs from '../../components/Tabs';
+export async function getStaticProps({ locale }) {
+  return {
+    props: {
+      ...(await serverSideTranslations(locale, ['common'])),
+    }
+  }
+}
 
-import { onFailedRequest, setTabParams, stripText, isAddressOrUsername } from '../../utils';
+import SEO from '../components/SEO'
+import Tabs from '../components/Tabs'
+
+import { onFailedRequest, setTabParams, stripText, isAddressOrUsername, useWidth } from '../utils'
 import {
   amountFormat,
   shortNiceNumber,
   addressUsernameOrServiceLink,
   usernameOrAddress,
   persentFormat
-} from '../../utils/format';
+} from '../utils/format';
 
-import { ReactComponent as LinkIcon } from "../../public/images/link.svg";
+import LinkIcon from "../public/images/link.svg"
 
 export default function NftVolumes() {
-  const { t } = useTranslation();
-  const navigate = useNavigate();
+  const { t } = useTranslation()
+  const router = useRouter()
+  const searchParams = useSearchParams()
+  const windowWidth = useWidth()
 
-  const [searchParams] = useSearchParams();
   const [data, setData] = useState([]);
   const [rawData, setRawData] = useState({});
   const [loading, setLoading] = useState(false);
@@ -194,9 +205,9 @@ export default function NftVolumes() {
 
   useEffect(() => {
     checkApi();
-    setTabParams(listTabList, listTab, "issuers", setListTab, searchParams, "list");
-    setTabParams(periodTabList, periodTab, "all", setPeriodTab, searchParams, "period");
-    setTabParams(saleTabList, saleTab, "all", setSaleTab, searchParams, "sale");
+    setTabParams(router, listTabList, listTab, "issuers", setListTab, searchParams, "list");
+    setTabParams(router, periodTabList, periodTab, "all", setPeriodTab, searchParams, "period");
+    setTabParams(router, saleTabList, saleTab, "all", setSaleTab, searchParams, "sale");
     setSortConfig({});
 
     if ((!currency || (currency.toLowerCase() !== 'xrp' && !isAddressOrUsername(currencyIssuer))) || listTab === 'currencies') {
@@ -204,7 +215,10 @@ export default function NftVolumes() {
       searchParams.delete("currencyIssuer");
     }
 
-    navigate('/nft-volumes?' + searchParams.toString(), { replace: true });
+    router.replace('/nft-volumes?' + searchParams.toString(), undefined, { shallow: true })
+    //Use replace to prevent adding a new URL entry into the history (otherwise just use push)
+    //use shallow: true allows you to change the URL without running data fetching methods. 
+    //This will cause a re-render but will not refresh the page per se.
 
     return () => {
       controller.abort();
@@ -278,7 +292,7 @@ export default function NftVolumes() {
 
     let output = amountFormat(floor, { tooltip: 'left', maxFractionDigits: 2 });
     if (output && priceColor === 'orange') {
-      if (window.innerWidth > 1000) {
+      if (windowWidth > 1000) {
         output = (
           <span className={'tooltip ' + priceColor}>
             {output}
@@ -334,7 +348,7 @@ export default function NftVolumes() {
           <br />
         </>
       }
-      {(listTab !== 'issuers' || (listTab === 'issuers' && window.innerWidth > 1000)) ?
+      {(listTab !== 'issuers' || (listTab === 'issuers' && windowWidth > 1000)) ?
         <table className="table-large shrink">
           <thead>
             <tr>
@@ -353,7 +367,13 @@ export default function NftVolumes() {
           </thead>
           <tbody>
             {loading ?
-              <tr className='center'><td colSpan="100"><span className="waiting"></span></td></tr>
+              <tr className='center'>
+                <td colSpan="100">
+                  <span className="waiting"></span>
+                  <br />{t("general.loading")}<br />
+                  <br/>
+                </td>
+              </tr>
               :
               <>
                 {(!errorMessage && data) ?
@@ -415,6 +435,7 @@ export default function NftVolumes() {
                   <br />
                   <span className="waiting"></span>
                   <br />{t("general.loading")}<br />
+                  <br/>
                 </td>
               </tr>
               :

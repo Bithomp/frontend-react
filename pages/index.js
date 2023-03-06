@@ -2,7 +2,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useTranslation } from 'next-i18next'
 import { useState } from 'react'
 
-import { useLocalStorage } from '../utils'
+import { useLocalStorage, useWidth } from '../utils'
 
 import SEO from '../components/SEO'
 import SearchBlock from '../components/Layout/SearchBlock';
@@ -21,14 +21,10 @@ export async function getStaticProps({ locale }) {
 
 export default function Home({ devNet }) {
   const { t } = useTranslation()
+  const windowWidth = useWidth()
 
   const [selectedCurrency, setSelectedCurrency] = useLocalStorage('currency', 'usd')
   const [chartPeriod, setChartPeriod] = useState('one_day')
-
-  let searchPlaceholderText = t("home.search-placeholder")
-  if (typeof window !== 'undefined' && window.innerWidth < 500) {
-    searchPlaceholderText = t("home.search-placeholder")
-  }
 
   return (
     <>
@@ -36,7 +32,7 @@ export default function Home({ devNet }) {
         title="XRP Explorer | Scan the XRPL network."
         description="Explore XRP Ledger, check transactions for statuses, addresses for balances, NFTs, offers, tokens, escrows and checks."
       />
-      <SearchBlock searchPlaceholderText={searchPlaceholderText} tab="explorer" />
+      <SearchBlock searchPlaceholderText={windowWidth < 500 ? t("home.search-placeholder-short") : t("home.search-placeholder")} tab="explorer" />
       {!devNet &&
         <div className="home-sponsored">
           <a href="https://bithomp.com/go/buy-xrp" target="_blank" rel="noreferrer">

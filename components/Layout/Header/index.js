@@ -1,17 +1,17 @@
 import Link from 'next/link'
-import Image from 'next/image'
 import { useTranslation } from 'next-i18next'
 import { useState } from 'react'
 
 import { devNet, useLocalStorage } from '../../../utils'
 
 import Switch from "./Switch"
+import LogoAnimated from '../LogoAnimated'
 
 export default function Header({ setSignRequest, account, signOut }) {
-  const { t } = useTranslation('common');
+  const { t } = useTranslation('common')
 
-  const [menuOpen, setMenuOpen] = useState(false);
-  const [isCopied, setIsCopied] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false)
+  const [isCopied, setIsCopied] = useState(false)
   const [xummUserToken] = useLocalStorage('xummUserToken')
 
   let address, hashicon, displayName, username;
@@ -56,9 +56,7 @@ export default function Header({ setSignRequest, account, signOut }) {
   return (
     <>
       <header>
-        <Link href="/">
-          <Image src="/images/logo-animated.svg" className="header-logo" alt="logo" width={160} height={46} priority />
-        </Link>
+        <Link href="/"><div className='header-logo'><LogoAnimated /></div></Link>
         <div className="header-menu-left">
           <div className="menu-dropdown">
             <div className="menu-dropdown-button">{t("menu.services")}</div>

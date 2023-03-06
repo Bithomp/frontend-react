@@ -7,7 +7,7 @@ import SEO from '../../components/SEO';
 import SearchBlock from '../../components/SearchBlock';
 import Tabs from '../../components/Tabs';
 
-import { onFailedRequest, setTabParams } from '../../utils';
+import { onFailedRequest, setTabParams, useWindowSize } from '../../utils';
 import {
   amountFormat,
   fullDateAndTime,
@@ -17,14 +17,15 @@ import {
 } from '../../utils/format';
 import { nftNameLink, nftThumbnail } from '../../utils/nft';
 
-import { ReactComponent as LinkIcon } from "../../public/images/link.svg";
+import LinkIcon from "../public/images/link.svg"
 import xummImg from "../../public/images/xumm.png";
 
 export default function NftOffers({ setSignRequest, signRequest, account }) {
-  const { t } = useTranslation();
-  const { id } = useParams();
-  const [searchParams, setSearchParams] = useSearchParams();
+  const { t } = useTranslation()
+  const { id } = useParams()
+  const size = useWindowSize()
 
+  const [searchParams, setSearchParams] = useSearchParams();
   const [offers, setOffers] = useState([]);
   const [filteredOffers, setFilteredOffers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -211,7 +212,7 @@ export default function NftOffers({ setSignRequest, signRequest, account }) {
   useEffect(() => {
     if (!signRequest) {
       checkApi();
-      setTabParams(offerListTabList, offerListTab, "owned", setOfferListTab, searchParams, "offerList");
+      setTabParams(router, offerListTabList, offerListTab, "owned", setOfferListTab, searchParams, "offerList");
       setSearchParams(searchParams);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -255,7 +256,7 @@ export default function NftOffers({ setSignRequest, signRequest, account }) {
       </div>
       {id ?
         <>
-          {window.innerWidth > 960 ?
+          {size.width > 960 ?
             <table className="table-large">
               <thead>
                 <tr>

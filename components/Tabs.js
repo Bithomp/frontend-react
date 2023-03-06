@@ -1,5 +1,3 @@
-import './styles.scss';
-
 export default function Tabs({ tabList, tab, setTab, name = "radio", style = {} }) {
 
   const Changed = (e) => {

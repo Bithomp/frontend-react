@@ -7,6 +7,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import SEO from '../components/SEO'
 
 import { fullDateAndTime } from '../utils/format'
+import { useWidth } from '../utils'
 
 import LinkIcon from "../public/images/link.svg"
 
@@ -27,8 +28,9 @@ const compare = (a, b) => {
 }
 
 export default function Validators() {
-  const [data, setData] = useState(null);
-  const { t } = useTranslation();
+  const [data, setData] = useState(null)
+  const { t } = useTranslation()
+  const windowWidth = useWidth()
 
   const checkApi = async () => {
     const response = await axios('v2/unl');
@@ -87,7 +89,7 @@ export default function Validators() {
           </div>
           <br />
 
-          {window.innerWidth < 960 ?
+          {windowWidth < 960 ?
             <table className="table-mobile">
               <thead>
               </thead>

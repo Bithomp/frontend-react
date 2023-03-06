@@ -186,10 +186,10 @@ export default function Nfts() {
       }
     }
 
-    setTabParams(viewTabList, viewTab, "tiles", setViewTab, searchParams, "view");
-    setTabParams(listTabList, listTab, "nfts", setListTab, searchParams, "list");
+    setTabParams(router, viewTabList, viewTab, "tiles", setViewTab, searchParams, "view");
+    setTabParams(router, listTabList, listTab, "nfts", setListTab, searchParams, "list");
     if (listTab === 'onSale') {
-      setTabParams(saleDestinationTabList, saleDestinationTab, "publicAndKnownBrokers", setSaleDestinationTab, searchParams, "saleDestination");
+      setTabParams(router, saleDestinationTabList, saleDestinationTab, "publicAndKnownBrokers", setSaleDestinationTab, searchParams, "saleDestination");
     } else {
       searchParams.delete("saleDestination");
       searchParams.delete("saleCurrency");

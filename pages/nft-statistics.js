@@ -3,8 +3,6 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
-import SEO from '../components/SEO'
-
 export async function getStaticProps({ locale }) {
   return {
     props: {
@@ -12,6 +10,8 @@ export async function getStaticProps({ locale }) {
     }
   }
 }
+
+import SEO from '../components/SEO'
 
 import { wssServer } from '../utils'
 import { niceNumber, fullDateAndTime, ledgerLink } from '../utils/format'

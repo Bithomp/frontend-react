@@ -48,7 +48,6 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
   const addParams = '?' + searchParams.toString();
 
   const onSearch = async () => {
-    {/*
     let searchFor = searchItem.trim();
     if (tab === "nfts" && isAddressOrUsername(searchFor)) {
       window.location = '/nfts/' + encodeURI(searchFor) + addParams;
@@ -94,7 +93,6 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
     //tx, address etc
     window.location = '/explorer/' + encodeURI(searchFor);
     return;
-  */}
   }
 
   /*

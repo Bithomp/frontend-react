@@ -7,12 +7,13 @@ import { CSVLink } from "react-csv";
 import SEO from '../../components/SEO';
 import SearchBlock from '../../components/SearchBlock';
 
-import { onFailedRequest } from '../../utils';
+import { onFailedRequest, useWidth } from '../../utils';
 import { nftsExplorerLink, addressUsernameOrServiceLink } from '../../utils/format';
 
 export default function NftDistribution() {
-  const { t } = useTranslation();
-  const { id } = useParams();
+  const { t } = useTranslation()
+  const { id } = useParams()
+  const windowWidth = useWidth()
 
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -109,7 +110,7 @@ export default function NftDistribution() {
         </p>
       }
       {id ?
-        <table className={"table-large" + (window.innerWidth < 640 ? "" : " shrink")}>
+        <table className={"table-large" + (windowWidth < 640 ? "" : " shrink")}>
           <thead>
             <tr>
               <th className='center'>{t("table.index")}</th>
@@ -132,7 +133,7 @@ export default function NftDistribution() {
                   <tr key={i}>
                     <td className="center">{i + 1}</td>
                     <td className='center'>{user.count}</td>
-                    <td>{addressUsernameOrServiceLink({ owner: user.owner, ownerDetails: user.ownerDetails }, 'owner', { short: (window.innerWidth < 640) })}</td>
+                    <td>{addressUsernameOrServiceLink({ owner: user.owner, ownerDetails: user.ownerDetails }, 'owner', { short: (windowWidth < 640) })}</td>
                     <td className='center'>
                       {
                         nftsExplorerLink(

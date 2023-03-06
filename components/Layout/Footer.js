@@ -4,8 +4,9 @@ import { useTranslation } from 'next-i18next'
 
 import { devNet, useLocalStorage } from '../../utils'
 
-import LanguageSelect from "./LanguageSelect";
-import SocialIcons from "./SocialIcons";
+import LanguageSelect from "./LanguageSelect"
+import SocialIcons from "./SocialIcons"
+import LogoAnimated from './LogoAnimated'
 
 export default function Footer() {
   const year = new Date().getFullYear();
@@ -79,7 +80,7 @@ export default function Footer() {
       </div>
 
       <div className="footer-brand">
-        <Image src="/images/logo-animated.svg" className="footer-logo" alt="logo" width={139} height={40} />
+        <div className="footer-logo"><LogoAnimated /></div>
         <div className="footer-brand-text">
           Copyright © {year} Bithomp AB<br />
           Kivra: 559342-2867<br />

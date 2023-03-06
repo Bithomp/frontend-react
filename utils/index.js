@@ -2,6 +2,29 @@ import axios from 'axios'
 import { useCallback, useEffect, useState } from "react"
 import { i18n } from '../next-i18next.config'
 
+export const removeQueryParam = (router, param) => {
+  const { pathname, query } = router
+  const params = new URLSearchParams(query)
+  params.delete(param)
+  router.replace(
+    { pathname, query: params.toString() },
+    undefined,
+    { shallow: true }
+  )
+}
+
+export const useWidth = () => {
+  const [width, setWidth] = useState(0)
+  const handleResize = () => setWidth(window.innerWidth)
+  useEffect(() => {
+    handleResize()
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+  return width
+}
+
 export const useLocalStorage = (key, initialValue) => {
   const initialize = (key) => {
     try {
@@ -47,13 +70,13 @@ export const useLocalStorage = (key, initialValue) => {
   return [state, setValue, remove];
 };
 
-export const setTabParams = (tabList, tab, defaultTab, setTab, searchParameters, paramName) => {
+export const setTabParams = (router, tabList, tab, defaultTab, setTab, searchParameters, paramName) => {
   const existTab = tabList.some(t => t.value === tab);
   if (!existTab) {
     setTab(defaultTab);
-    searchParameters.delete(paramName);
+    removeQueryParam(router, paramName)
   } else if (tab === defaultTab) {
-    searchParameters.delete(paramName);
+    removeQueryParam(router, paramName)
   } else {
     searchParameters.set(paramName, tab);
   }

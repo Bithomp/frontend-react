@@ -11,7 +11,6 @@ import BackgroundImage from '../components/Layout/BackgroundImage';
 import TopLinks from '../components/Layout/TopLinks';
 
 import Username from './screens/Username';
-import NftVolumes from "./screens/NFT/NftVolumes";
 import Nft from './screens/NFT/Nft';
 import Nfts from './screens/NFT/Nfts';
 import NftOffer from "./screens/NFT/NftOffer";
@@ -99,7 +98,6 @@ export default function App() {
           <Route path="/nft-distribution/" element={<NftDistribution />}>
             <Route path="/nft-distribution/:id" element={<NftDistribution />} />
           </Route>
-          <Route path="/nft-volumes" element={<NftVolumes />} />
         </Routes>
       </div>
       <BackgroundImage />
