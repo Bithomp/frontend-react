@@ -138,7 +138,7 @@ export default function NftPreview({ nft }) {
               />
             </Head>
             <model-viewer
-              class="model-viewer"
+              className="model-viewer"
               src={modelUrl}
               camera-controls
               auto-rotate
