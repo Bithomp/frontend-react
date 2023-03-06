@@ -205,9 +205,31 @@ export default function NftVolumes() {
 
   useEffect(() => {
     checkApi();
-    setTabParams(router, listTabList, listTab, "issuers", setListTab, searchParams, "list");
-    setTabParams(router, periodTabList, periodTab, "all", setPeriodTab, searchParams, "period");
-    setTabParams(router, saleTabList, saleTab, "all", setSaleTab, searchParams, "sale");
+
+    setTabParams(router, [
+      {
+        tabList: listTabList, 
+        tab: listTab, 
+        defaultTab: "issuers",
+        setTab: setListTab,
+        paramName: "list"
+      },
+      {
+        tabList: periodTabList, 
+        tab: periodTab, 
+        defaultTab: "all",
+        setTab: setPeriodTab,
+        paramName: "period"
+      },
+      {
+        tabList: saleTabList, 
+        tab: saleTab, 
+        defaultTab: "all",
+        setTab: setSaleTab,
+        paramName: "sale"
+      }
+    ])
+    
     setSortConfig({});
 
     if ((!currency || (currency.toLowerCase() !== 'xrp' && !isAddressOrUsername(currencyIssuer))) || listTab === 'currencies') {
@@ -393,7 +415,7 @@ export default function NftVolumes() {
                             </td>
                           }
                           {listTab === 'issuers' && <td className='right hide-on-mobile'>{shortNiceNumber(volume.tradedNfts, 0)}</td>}
-                          {listTab === 'brokers' && <td>{addressUsernameOrServiceLink(volume, "broker", { short: true })}</td>}
+                          {listTab === 'brokers' && <td>{addressUsernameOrServiceLink(volume, "broker", { short: true, noBroker: t("nft-volumes.brokers.no-broker") })}</td>}
                           {listTab === 'currencies' && <td className='center'><a href={'/nft-volumes' + urlParams(volume) + '&list=issuers'}><LinkIcon /></a></td>}
                           <td className='right'>
                             {shortNiceNumber(volume.sales, 0)}

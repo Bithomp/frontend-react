@@ -186,15 +186,38 @@ export default function Nfts() {
       }
     }
 
-    setTabParams(router, viewTabList, viewTab, "tiles", setViewTab, searchParams, "view");
-    setTabParams(router, listTabList, listTab, "nfts", setListTab, searchParams, "list");
+    let tabsToSet = [
+      {
+        tabList: listTabList,
+        tab: listTab,
+        defaultTab: "nfts",
+        setTab: setListTab,
+        paramName: "list"
+      },
+      {
+        tabList: viewTabList,
+        tab: viewTab,
+        defaultTab: "tiles",
+        setTab: setViewTab,
+        paramName: "view"
+      }
+    ]
+
     if (listTab === 'onSale') {
-      setTabParams(router, saleDestinationTabList, saleDestinationTab, "publicAndKnownBrokers", setSaleDestinationTab, searchParams, "saleDestination");
+      tabsToSet.push({
+        tabList: saleDestinationTabList,
+        tab: saleDestinationTab,
+        defaultTab: "publicAndKnownBrokers",
+        setTab: setSaleDestinationTab,
+        paramName: "saleDestination"
+      })
     } else {
       searchParams.delete("saleDestination");
       searchParams.delete("saleCurrency");
       searchParams.delete("saleCurrencyIssuer");
     }
+
+    setTabParams(router, tabsToSet)
 
     navigate(location.pathname + '?' + searchParams.toString(), { replace: true });
     // eslint-disable-next-line react-hooks/exhaustive-deps

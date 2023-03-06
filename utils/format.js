@@ -4,8 +4,8 @@ import Link from 'next/link'
 import { useState, useEffect } from "react"
 
 import LinkIcon from "../public/images/link.svg"
-import { stripText } from '.';
-import { mpUrl } from './nft';
+import { stripText } from '.'
+import { mpUrl } from './nft'
 
 //table
 export const trStatus = (data) => {
@@ -192,18 +192,18 @@ export const userOrServiceLink = (data, type, options = {}) => {
 
 export const addressUsernameOrServiceLink = (data, type, options = {}) => {
   if (!options.url) {
-    options.url = "/explorer/";
+    options.url = "/explorer/"
   }
   if (type === 'broker' && data?.broker === 'no broker') {
-    return <b>{i18n.t("nft-volumes.brokers.no-broker")}</b>;
+    return <b>{options.noBroker}</b>
   }
   if (userOrServiceLink(data, type) !== "") {
-    return userOrServiceLink(data, type, options);
+    return userOrServiceLink(data, type, options)
   }
   if (options.short) {
-    return <a href={options.url + data[type]}>{shortAddress(data[type])}</a>;
+    return <a href={options.url + data[type]}>{shortAddress(data[type])}</a>
   }
-  return <a href={options.url + data[type]}>{data[type]}</a>;
+  return <a href={options.url + data[type]}>{data[type]}</a>
 }
 
 export const userOrServiceName = (data) => {

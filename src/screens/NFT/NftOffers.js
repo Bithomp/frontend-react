@@ -211,12 +211,20 @@ export default function NftOffers({ setSignRequest, signRequest, account }) {
 
   useEffect(() => {
     if (!signRequest) {
-      checkApi();
-      setTabParams(router, offerListTabList, offerListTab, "owned", setOfferListTab, searchParams, "offerList");
-      setSearchParams(searchParams);
+      checkApi()
+      setTabParams(router, [
+        {
+          tabList: offerListTabList,
+          tab: offerListTab,
+          defaultTab: "owned",
+          setTab: setOfferListTab,
+          paramName: "offerList"
+        }
+      ])
+      setSearchParams(searchParams)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id, offerListTab, signRequest]);
+  }, [id, offerListTab, signRequest])
 
   return <>
     <SEO title={t("nft-offers.header") + " " + id} />

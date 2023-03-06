@@ -2,17 +2,6 @@ import axios from 'axios'
 import { useCallback, useEffect, useState } from "react"
 import { i18n } from '../next-i18next.config'
 
-export const removeQueryParam = (router, param) => {
-  const { pathname, query } = router
-  const params = new URLSearchParams(query)
-  params.delete(param)
-  router.replace(
-    { pathname, query: params.toString() },
-    undefined,
-    { shallow: true }
-  )
-}
-
 export const useWidth = () => {
   const [width, setWidth] = useState(0)
   const handleResize = () => setWidth(window.innerWidth)
@@ -70,16 +59,37 @@ export const useLocalStorage = (key, initialValue) => {
   return [state, setValue, remove];
 };
 
-export const setTabParams = (router, tabList, tab, defaultTab, setTab, searchParameters, paramName) => {
+const shallRemoveParam = (tabList, tab, defaultTab, setTab) => {
   const existTab = tabList.some(t => t.value === tab);
   if (!existTab) {
     setTab(defaultTab);
-    removeQueryParam(router, paramName)
-  } else if (tab === defaultTab) {
-    removeQueryParam(router, paramName)
+    return true
   } else {
-    searchParameters.set(paramName, tab);
+    return tab === defaultTab
   }
+}
+
+export const setTabParams = (router, tabs) => {
+  let removeList = []
+
+  for (let i = 0; i < tabs.length; i++) {
+    const { tabList, tab, defaultTab, setTab, paramName } = tabs[i]
+    if (shallRemoveParam(tabList, tab, defaultTab, setTab)) {
+      removeList.push(paramName)
+    } else {
+      //set
+      router.query[paramName] = tab
+    }
+  }
+
+  const { query, pathname } = router;
+
+  let params = new URLSearchParams(query)
+  for (let i = 0; i < removeList.length; i++) {
+    params.delete(removeList[i])
+  }
+
+  router.replace({ pathname, query: params.toString() })
 }
 
 export const stripText = (text) => {

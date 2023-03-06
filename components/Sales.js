@@ -167,10 +167,36 @@ export default function Sales({ list, defaultSaleTab = "all" }) {
       searchParams.delete("taxon");
     }
 
-    setTabParams(router, saleTabList, saleTab, defaultSaleTab, setSaleTab, searchParams, "sale");
-    setTabParams(router, viewTabList, viewTab, "tiles", setViewTab, searchParams, "view");
-    setTabParams(router, periodTabList, periodTab, "all", setPeriodTab, searchParams, "period");
-    setTabParams(router, pageTabList, pageTab, "top", setPageTab, searchParams, "list");
+    setTabParams(router, [
+      {
+        tabList: saleTabList, 
+        tab: saleTab, 
+        defaultTab: defaultSaleTab,
+        setTab: setSaleTab,
+        paramName: "sale"
+      },
+      {
+        tabList: viewTabList, 
+        tab: viewTab, 
+        defaultTab: "tiles",
+        setTab: setViewTab,
+        paramName: "view"
+      },
+      {
+        tabList: periodTabList, 
+        tab: periodTab, 
+        defaultTab: "all",
+        setTab: setPeriodTab,
+        paramName: "period"
+      },
+      {
+        tabList: pageTabList, 
+        tab: pageTab, 
+        defaultTab: "top",
+        setTab: setPageTab,
+        paramName: "list"
+      }
+    ])
 
     if (!currency || (currency.toLowerCase() !== 'xrp' && !isAddressOrUsername(currencyIssuer))) {
       searchParams.delete("currency");
