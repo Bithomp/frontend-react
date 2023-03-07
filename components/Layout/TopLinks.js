@@ -28,7 +28,7 @@ export default function TopLinks() {
           rel="noreferrer"
           className='top-link'
         >
-          XRP Casino
+          XRP Play
         </a>
         <span className='tooltiptext right small'>
           {t("sponsored.sponsored")}

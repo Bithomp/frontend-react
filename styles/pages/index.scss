@@ -181,13 +181,3 @@
   50%  { background-color: var(--background-contrast); color: var(--text-oposite); }
   100%  { background-color: var(--background-main); color: var(--text-main); }
 }
-
-body.dark {
-  .home-sponsored {
-    .sponsored-brand {
-      svg.sponsored-brand-icon {
-        fill: white;
-      }
-    }
-  }
-}

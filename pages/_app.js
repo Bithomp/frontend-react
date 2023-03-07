@@ -1,6 +1,6 @@
 import Head from 'next/head'
 import { useRouter } from 'next/router'
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import axios from 'axios'
 import { appWithTranslation } from 'next-i18next'
 
@@ -33,8 +33,11 @@ const MyApp = ({ Component, pageProps }) => {
     axios.defaults.baseURL = server + '/api/cors/'
   }
 
+  let showTopAds = false; //change here if you want to see top ads
   const pagesWithNoTopAdds = ['/', '/username', '/disclaimer', '/privacy-policy', '/terms-and-conditions', '/press', '/404']
-  const showTopAdds = !pagesWithNoTopAdds.includes(router.pathname)
+  if (showTopAds) {
+    showTopAds = !pagesWithNoTopAdds.includes(router.pathname)
+  }
 
   return (
     <>
@@ -58,7 +61,7 @@ const MyApp = ({ Component, pageProps }) => {
             />
           }
           <div className="content">
-            {showTopAdds && <TopLinks />}
+            {showTopAds && <TopLinks />}
             <Component {...pageProps} devNet={devNet} />
           </div>
           <BackgroundImage />
