@@ -1,6 +1,7 @@
 import { useTranslation } from 'next-i18next'
 import { useState, useEffect } from 'react';
-import { useSearchParams, useNavigate } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
+import { useRouter } from 'next/router'
 import axios from 'axios';
 import { CSVLink } from "react-csv";
 import InfiniteScroll from 'react-infinite-scroll-component';
@@ -8,13 +9,16 @@ import InfiniteScroll from 'react-infinite-scroll-component';
 import Tabs from './Tabs';
 import Tiles from './Tiles';
 
-import { stripText, onFailedRequest, onApiError, isAddressOrUsername, setTabParams } from '../utils';
+import { stripText, isAddressOrUsername, setTabParams, addAndRemoveQueryParams } from '../utils';
 import { isValidTaxon, nftThumbnail, nftNameLink } from '../utils/nft';
 import { amountFormat, nftLink, timeOrDate, userOrServiceLink, usernameOrAddress } from '../utils/format';
 
 import LinkIcon from "../public/images/link.svg"
 
 export default function Sales({ list, defaultSaleTab = "all" }) {
+  const { t } = useTranslation();
+  const router = useRouter()
+
   const [data, setData] = useState(null);
   const [sales, setSales] = useState([]);
   const [searchParams] = useSearchParams();
@@ -32,9 +36,6 @@ export default function Sales({ list, defaultSaleTab = "all" }) {
   const [currencyIssuer] = useState(searchParams.get("currencyIssuer"));
   const [pageTab, setPageTab] = useState(searchParams.get("list") || list || "top");
   const [hasMore, setHasMore] = useState("first");
-
-  const { t } = useTranslation();
-  const navigate = useNavigate();
 
   const viewTabList = [
     { value: 'tiles', label: t("tabs.tiles") },
@@ -104,7 +105,7 @@ export default function Sales({ list, defaultSaleTab = "all" }) {
     }
 
     const response = await axios('v2/nft-sales?list=' + loadList + currencyUrlPart() + '&saleType=' + saleTab + collectionUrlPart + periodUrlPart + markerUrlPart).catch(error => {
-      onFailedRequest(error, setErrorMessage);
+      setErrorMessage(t("error." + error.message));
     });
 
     const newdata = response.data;
@@ -140,7 +141,7 @@ export default function Sales({ list, defaultSaleTab = "all" }) {
         }
       } else {
         if (newdata.error) {
-          onApiError(newdata.error, setErrorMessage);
+          setErrorMessage(t("error-api." + newdata.error))
         } else {
           setErrorMessage("Error");
           console.log(newdata);
@@ -155,16 +156,21 @@ export default function Sales({ list, defaultSaleTab = "all" }) {
   }, [saleTab, issuer, taxon, periodTab, pageTab]);
 
   useEffect(() => {
+    let queryAddList = [];
+    let queryRemoveList = [];
     if (isAddressOrUsername(data?.issuer)) {
-      searchParams.set("issuer", usernameOrAddress(data, 'issuer'));
+      queryAddList.push({
+        name: "issuer",
+        value: usernameOrAddress(data, 'issuer')
+      })
       if (isValidTaxon(data?.taxon)) {
-        searchParams.set("taxon", data.taxon);
+        queryAddList.push({name: "taxon", value: data.taxon})
       } else {
-        searchParams.delete("taxon");
+        queryRemoveList.push("taxon");
       }
     } else {
-      searchParams.delete("issuer");
-      searchParams.delete("taxon");
+      queryRemoveList.push("issuer");
+      queryRemoveList.push("taxon");
     }
 
     setTabParams(router, [
@@ -199,11 +205,12 @@ export default function Sales({ list, defaultSaleTab = "all" }) {
     ])
 
     if (!currency || (currency.toLowerCase() !== 'xrp' && !isAddressOrUsername(currencyIssuer))) {
-      searchParams.delete("currency");
-      searchParams.delete("currencyIssuer");
+      queryRemoveList.push("currency")
+      queryRemoveList.push("currencyIssuer")
     }
 
-    navigate('/nft-sales?' + searchParams.toString(), { replace: true });
+    addAndRemoveQueryParams(router, queryAddList, queryRemoveList)
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [viewTab, saleTab, data, periodTab, currency, currencyIssuer, pageTab]);
 

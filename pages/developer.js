@@ -3,7 +3,7 @@ import { useTranslation, Trans } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import axios from 'axios'
 
-import { isEmailValid, isUrlValid, onFailedRequest } from '../utils'
+import { isEmailValid, isUrlValid } from '../utils'
 import SEO from '../components/SEO'
 
 export async function getStaticProps({ locale }) {
@@ -98,7 +98,7 @@ export default function Developer() {
 
     const postData = { email, url, description };
     const apiData = await axios.post('v2/developer/register', postData).catch(error => {
-      onFailedRequest(error, setErrorMessage);
+      setErrorMessage(t("error." + error.message))
     });
 
     const data = apiData?.data;

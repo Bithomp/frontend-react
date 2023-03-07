@@ -7,7 +7,7 @@ import { CSVLink } from "react-csv";
 import SEO from '../../components/SEO';
 import SearchBlock from '../../components/SearchBlock';
 
-import { onFailedRequest, useWidth } from '../../utils';
+import { useWidth } from '../../utils';
 import { nftsExplorerLink, addressUsernameOrServiceLink } from '../../utils/format';
 
 export default function NftDistribution() {
@@ -45,7 +45,7 @@ export default function NftDistribution() {
           },
       */
     const response = await axios('v2/nft-count/' + id + '?list=owners').catch(error => {
-      onFailedRequest(error, setErrorMessage);
+      setErrorMessage(t("error." + error.message))
     });
     setLoading(false);
     const newdata = response?.data;

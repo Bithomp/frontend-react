@@ -8,7 +8,6 @@ import SearchBlock from '../../../components/SearchBlock';
 import CopyButton from '../../../components/CopyButton';
 import NftImageAndVideo from '../../../components/NftPreview';
 
-import { onFailedRequest, onApiError } from '../../../utils';
 import {
   fullDateAndTime,
   amountFormat,
@@ -37,7 +36,7 @@ export default function NftOffer({ setSignRequest, signRequest, account }) {
     }
     setLoading(true);
     const response = await axios('v2/nft/offer/' + id + '?offersValidate=true').catch(error => {
-      onFailedRequest(error, setErrorMessage);
+      setErrorMessage(t("error." + error.message))
     });
     setLoading(false);
     const newdata = response?.data;
@@ -46,7 +45,7 @@ export default function NftOffer({ setSignRequest, signRequest, account }) {
         setData(newdata);
       } else {
         if (newdata.error) {
-          onApiError(newdata.error, setErrorMessage);
+          setErrorMessage(t("error-api." + newdata.error))
         } else {
           setErrorMessage("Error");
           console.log(newdata);

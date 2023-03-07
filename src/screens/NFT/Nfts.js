@@ -1,6 +1,7 @@
 import { useTranslation } from 'next-i18next'
 import { useState, useEffect } from 'react';
-import { useParams, useSearchParams, useLocation, useNavigate } from "react-router-dom";
+import { useParams, useSearchParams, useLocation } from "react-router-dom";
+import { useRouter } from 'next/router'
 import { CSVLink } from "react-csv";
 import axios from 'axios';
 import InfiniteScroll from 'react-infinite-scroll-component';
@@ -11,15 +12,15 @@ import Tabs from '../../components/Tabs';
 import Tiles from '../../components/Tiles';
 import IssuerSelect from '../../components/IssuerSelect';
 
-import { onFailedRequest, onApiError, isAddressOrUsername, setTabParams } from '../../utils';
+import { isAddressOrUsername, setTabParams, addAndRemoveQueryParams, addQueryParams } from '../../utils';
 import { isValidTaxon, nftThumbnail, nftNameLink, bestSellOffer, mpUrl } from '../../utils/nft';
 import { nftLink, usernameOrAddress, userOrServiceLink, amountFormat } from '../../utils/format';
 
 export default function Nfts() {
   const { t } = useTranslation();
   const { id } = useParams();
-  const navigate = useNavigate();
   const location = useLocation();
+  const router = useRouter()
 
   const [searchParams] = useSearchParams();
   const [data, setData] = useState([]);
@@ -94,7 +95,7 @@ export default function Nfts() {
     if (id || owner) {
       ownerUrlPart = '&owner=' + (id || owner);
       const issuersJson = await axios('v2/nft-issuers?owner=' + (id || owner)).catch(error => {
-        onFailedRequest(error, (errorText) => { console.log(errorText) });
+        console.log(t("error." + error.message))
       });
       if (issuersJson?.data?.issuers) {
         setIssuersList(issuersJson.data.issuers);
@@ -115,7 +116,7 @@ export default function Nfts() {
       setLoading(true);
     }
     const response = await axios('v2/nfts' + listUrlPart + ownerUrlPart + collectionUrlPart + markerUrlPart).catch(error => {
-      onFailedRequest(error, setErrorMessage);
+      setErrorMessage(t("error." + error.message))
     });
 
     setLoading(false);
@@ -154,7 +155,7 @@ export default function Nfts() {
         }
       } else {
         if (newdata.error) {
-          onApiError(newdata.error, setErrorMessage);
+          setErrorMessage(t("error-api." + newdata.error))
         } else {
           setErrorMessage("Error");
           console.log(newdata);
@@ -171,18 +172,29 @@ export default function Nfts() {
   }, [id, issuer, taxon, owner, listTab, saleDestinationTab]);
 
   useEffect(() => {
+    let queryAddList = [];
+    let queryRemoveList = [];
     if (nftExplorer) {
       if (isAddressOrUsername(rawData?.owner)) {
-        searchParams.set("owner", usernameOrAddress(rawData, 'owner'));
+        queryAddList.push({
+          name: "owner",
+          value: usernameOrAddress(rawData, 'owner')
+        })
       } else {
-        searchParams.delete("owner");
+        queryRemoveList.push("owner");
       }
     }
 
     if (isAddressOrUsername(rawData?.issuer)) {
-      searchParams.set("issuer", usernameOrAddress(rawData, 'issuer'));
+      queryAddList.push({
+        name: "issuer",
+        value: usernameOrAddress(rawData, 'issuer')
+      })
       if (isValidTaxon(rawData?.taxon)) {
-        searchParams.set("taxon", rawData.taxon);
+        queryAddList.push({
+          name: "taxon",
+          value: rawData.taxon
+        })
       }
     }
 
@@ -212,14 +224,14 @@ export default function Nfts() {
         paramName: "saleDestination"
       })
     } else {
-      searchParams.delete("saleDestination");
-      searchParams.delete("saleCurrency");
-      searchParams.delete("saleCurrencyIssuer");
+      queryRemoveList.push("saleDestination");
+      queryRemoveList.push("saleCurrency");
+      queryRemoveList.push("saleCurrencyIssuer");
     }
 
     setTabParams(router, tabsToSet)
+    addAndRemoveQueryParams(router, queryAddList, queryRemoveList)
 
-    navigate(location.pathname + '?' + searchParams.toString(), { replace: true });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [viewTab, rawData, listTab, saleDestinationTab]);
 
@@ -227,9 +239,13 @@ export default function Nfts() {
     let searchName = e.target.value;
     setSearch(searchName);
     if (searchName) {
-      searchParams.set("search", searchName);
+      addQueryParams([
+        {
+          name: "search",
+          value: searchName
+        }
+      ])
     }
-    navigate(location.pathname + '?' + searchParams.toString(), { replace: true });
   }
 
   useEffect(() => {

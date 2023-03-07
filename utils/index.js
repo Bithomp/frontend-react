@@ -1,6 +1,5 @@
 import axios from 'axios'
 import { useCallback, useEffect, useState } from "react"
-import { i18n } from '../next-i18next.config'
 
 export const useWidth = () => {
   const [width, setWidth] = useState(0)
@@ -82,14 +81,30 @@ export const setTabParams = (router, tabs) => {
     }
   }
 
-  const { query, pathname } = router;
+  removeQueryParams(router, removeList)
+}
 
+export const removeQueryParams = (router, removeList) => {
+  const { query, pathname } = router
   let params = new URLSearchParams(query)
   for (let i = 0; i < removeList.length; i++) {
     params.delete(removeList[i])
   }
-
   router.replace({ pathname, query: params.toString() })
+}
+
+export const addQueryParams = (router, addList) => {
+  for (let i = 0; i < addList.length; i++) {
+    router.query[addList.name] = addList.value
+  }
+  router.replace(router)
+}
+
+export const addAndRemoveQueryParams = (router, addList, removeList) => {
+  for (let i = 0; i < addList.length; i++) {
+    router.query[addList.name] = addList.value
+  }
+  removeQueryParams(router, removeList)
 }
 
 export const stripText = (text) => {
@@ -102,27 +117,11 @@ export const submitTransaction = async (blob, callback) => {
   blob = JSON.stringify(blob);
 
   const response = await axios.post('v2/transaction/submit', blob).catch(error => {
-    onFailedRequest(error, (error) => { console.log("submitTransaction error:", error) });
+    console.log("submitTransaction error:", error.message)
   });
 
   if (response) {
     callback(response);
-  }
-}
-
-export const onFailedRequest = (error, showErrorFunction) => {
-  if (i18n.exists("error." + error.message)) {
-    showErrorFunction(i18n.t("error." + error.message));
-  } else {
-    showErrorFunction(error.message);
-  }
-}
-
-export const onApiError = (error, showErrorFunction) => {
-  if (i18n.exists("error-api." + error)) {
-    showErrorFunction(i18n.t("error-api." + error));
-  } else {
-    showErrorFunction(error);
   }
 }
 

@@ -1,12 +1,13 @@
 import { useState, useEffect } from 'react';
 import { useTranslation, Trans } from 'next-i18next'
 import { useSearchParams, Link } from "react-router-dom";
+import { useRouter } from 'next/router'
 import dynamic from 'next/dynamic'
 const { isMobile } = dynamic(() => import('react-device-detect'), { ssr: false })
 import axios from 'axios';
 import { Buffer } from 'buffer';
 
-import { isAddressValid, isUsernameValid, server, wssServer, onFailedRequest, devNet } from '../../utils';
+import { isAddressValid, isUsernameValid, server, wssServer, devNet, addAndRemoveQueryParams, addQueryParams } from '../../utils';
 import { payloadXummPost, xummWsConnect, xummCancel } from '../../utils/xumm';
 
 import CountrySelect from '../../components/CountrySelect';
@@ -22,9 +23,10 @@ let interval;
 let ws = null;
 
 export default function Username({ setSignRequest, account, setAccount, signOut }) {
-  const { t, i18n } = useTranslation();
+  const { t, i18n } = useTranslation()
+  const router = useRouter()
 
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
   const [address, setAddress] = useState("");
   const [username, setUsername] = useState("");
   const [receipt, setReceipt] = useState(false);
@@ -50,32 +52,37 @@ export default function Username({ setSignRequest, account, setAccount, signOut 
   const xummUserToken = localStorage.getItem('xummUserToken');
 
   useEffect(() => {
+    let queryAddList = [];
+    let queryRemoveList = [];
     let getAddress = searchParams.get("address");
     let getUsername = searchParams.get("username");
     let getReceipt = searchParams.get("receipt");
     if (account) {
       if (account.address) {
         setAddress(account.address);
-        searchParams.set("address", account.address);
+        queryAddList.push({
+          name: "address",
+          value: account.address
+        })
       }
     } else {
       if (isAddressValid(getAddress)) {
         setAddress(getAddress);
       } else {
-        searchParams.delete("address");
+        queryRemoveList.push("address");
       }
     }
     if (isUsernameValid(getUsername)) {
       setUsername(getUsername);
     } else {
-      searchParams.delete("username");
+      queryRemoveList.push("username");
     }
     if (getReceipt === "true") {
       setReceipt(true);
     } else {
-      searchParams.delete("receipt");
+      queryRemoveList.push("receipt");
     }
-    setSearchParams(searchParams);
+    addAndRemoveQueryParams(router, queryAddList, queryRemoveList)
 
     //on component unmount
     return () => {
@@ -90,8 +97,10 @@ export default function Username({ setSignRequest, account, setAccount, signOut 
   useEffect(() => {
     if (account?.address) {
       setAddress(account.address);
-      searchParams.set("address", account.address);
-      setSearchParams(searchParams);
+      addQueryParams([{
+        name: address,
+        value: account.address
+      }])
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [account]);
@@ -112,26 +121,36 @@ export default function Username({ setSignRequest, account, setAccount, signOut 
     let address = e.target.value;
     address = address.replace(/[^0-9a-zA-Z.]/g, "");
     setAddress(address);
+    let queryAddList = [];
+    let queryRemoveList = [];
     if (isAddressValid(address)) {
-      searchParams.set("address", address);
+      queryAddList.push({
+        name: "address",
+        value: address
+      })
       setErrorMessage("");
     } else {
-      searchParams.delete("address");
+      queryRemoveList.push("address");
     }
-    setSearchParams(searchParams);
+    addAndRemoveQueryParams(router, queryAddList, queryRemoveList)
   }
 
   const onUsernameChange = (e) => {
     let username = e.target.value;
     username = username.replace(/[^0-9a-zA-Z.]/g, "");
     setUsername(username);
+    let queryAddList = [];
+    let queryRemoveList = [];
     if (isUsernameValid(username)) {
-      searchParams.set("username", username);
+      queryAddList.push({
+        name: "username",
+        value: username
+      })
       setErrorMessage("");
     } else {
-      searchParams.delete("username");
+      queryRemoveList.push("username");
     }
-    setSearchParams(searchParams);
+    addAndRemoveQueryParams(router, queryAddList, queryRemoveList)
   }
 
   const onCancel = () => {
@@ -193,7 +212,7 @@ export default function Username({ setSignRequest, account, setAccount, signOut 
       countryCode,
     };
     const apiData = await axios.post('v1/bithompid', postData).catch(error => {
-      onFailedRequest(error, setErrorMessage);
+      setErrorMessage(t("error." + error.message))
     });
 
     const data = apiData?.data;
@@ -441,7 +460,7 @@ export default function Username({ setSignRequest, account, setAccount, signOut 
 
   const checkPayment = async (username, address, destinationTag) => {
     const response = await axios('v1/bithompid/' + username + '/status?address=' + address + '&dt=' + destinationTag).catch(error => {
-      onFailedRequest(error, setErrorMessage);
+      setErrorMessage(t("error." + error.message))
     });
     const data = response.data;
     if (data) {

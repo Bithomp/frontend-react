@@ -324,7 +324,8 @@
     "viewer": "Просмотрщик"
   },
   "error": {
-    "Network Error": "Похоже, что у вас пропал интернет :("
+    "Network Error": "Похоже, что у вас пропал интернет :(",
+    "Request failed with status code 429": "Вы нам шлете слишком много запросов, попробуйте вернуться позже."
   },
   "error-api": {
     "Issuer username is not valid": "Эмитент с таким ником не найден",

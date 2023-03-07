@@ -2,21 +2,26 @@ import { useTranslation, Trans } from 'next-i18next'
 import { useState, useEffect } from 'react'
 import axios from 'axios'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import { useSearchParams } from 'next/navigation'
 import { useRouter } from 'next/router'
 
-export async function getStaticProps({ locale }) {
+export const getServerSideProps = async ({ query, locale }) => {
+  const { period, sale, list, currency, currencyIssuer } = query
   return {
     props: {
+      period: period || "all",
+      sale: sale || "all",
+      list: list || "issuers",
+      currency: currency || "xrp",
+      currencyIssuer: currencyIssuer || "",
       ...(await serverSideTranslations(locale, ['common'])),
-    }
+    },
   }
 }
 
 import SEO from '../components/SEO'
 import Tabs from '../components/Tabs'
 
-import { onFailedRequest, setTabParams, stripText, isAddressOrUsername, useWidth } from '../utils'
+import { setTabParams, stripText, isAddressOrUsername, useWidth, removeQueryParams } from '../utils'
 import {
   amountFormat,
   shortNiceNumber,
@@ -27,21 +32,21 @@ import {
 
 import LinkIcon from "../public/images/link.svg"
 
-export default function NftVolumes() {
+export default function NftVolumes({ period, sale, list, currency, currencyIssuer }) {
   const { t } = useTranslation()
   const router = useRouter()
-  const searchParams = useSearchParams()
+
+  const { isReady } = router
+
   const windowWidth = useWidth()
 
   const [data, setData] = useState([]);
   const [rawData, setRawData] = useState({});
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-  const [periodTab, setPeriodTab] = useState(searchParams.get("period") || "all");
-  const [saleTab, setSaleTab] = useState(searchParams.get("sale") || "all");
-  const [listTab, setListTab] = useState(searchParams.get("list") || "issuers");
-  const [currency] = useState(searchParams.get("currency") || "xrp");
-  const [currencyIssuer] = useState(searchParams.get("currencyIssuer"));
+  const [periodTab, setPeriodTab] = useState(period);
+  const [saleTab, setSaleTab] = useState(sale);
+  const [listTab, setListTab] = useState(list);
   const [sortConfig, setSortConfig] = useState({});
 
   const listTabList = [
@@ -91,43 +96,44 @@ export default function NftVolumes() {
       signal: controller.signal
     }).catch(error => {
       if (error && error.message !== "canceled") {
-        onFailedRequest(error, setErrorMessage);
+        setErrorMessage(t("error." + error.message))
+        setLoading(false) //keep here for fast tab clickers
       }
     });
-    setLoading(false);
 
-    const data = response?.data;
-    if (data) {
-      setRawData(data);
-      if (data.period) {
-        if (data.volumes.length > 0) {
+    const newdata = response?.data;
+    if (newdata) {
+      setRawData(newdata);
+      setLoading(false); //keep here for fast tab clickers
+      if (newdata.period) {
+        if (newdata.volumes.length > 0) {
           setErrorMessage("");
           if (listTab === 'issuers' || listTab === 'brokers') {
-            if (data.volumes[0].amount.value) {
-              setData(data.volumes.sort((a, b) => (parseFloat(a.amount.value) < parseFloat(b.amount.value)) ? 1 : -1));
+            if (newdata.volumes[0].amount.value) {
+              setData(newdata.volumes.sort((a, b) => (parseFloat(a.amount.value) < parseFloat(b.amount.value)) ? 1 : -1));
             } else {
-              let volumes = data.volumes;
-              if (listTab === 'brokers' && data.summary) {
+              let volumes = newdata.volumes;
+              if (listTab === 'brokers' && newdata.summary) {
                 volumes.push({
                   broker: "no broker",
-                  sales: data.summary.all.sales - data.summary.brokers.sales,
-                  amount: data.summary.all.volume - data.summary.brokers.volume
+                  sales: newdata.summary.all.sales - newdata.summary.brokers.sales,
+                  amount: newdata.summary.all.volume - newdata.summary.brokers.volume
                 });
               }
               setData(volumes.sort((a, b) => (parseFloat(a.amount) < parseFloat(b.amount)) ? 1 : -1));
             }
           } else if (listTab === 'currencies') {
-            setData(data.volumes.sort((a, b) => (a.sales < b.sales) ? 1 : -1));
+            setData(newdata.volumes.sort((a, b) => (a.sales < b.sales) ? 1 : -1));
           }
         } else {
           setErrorMessage(t("general.no-data"));
         }
       } else {
-        if (data.error) {
-          setErrorMessage(data.error);
+        if (newdata.error) {
+          setErrorMessage(newdata.error);
         } else {
           setErrorMessage("Error");
-          console.log(data);
+          console.log(newdata);
         }
       }
     }
@@ -205,49 +211,41 @@ export default function NftVolumes() {
 
   useEffect(() => {
     checkApi();
-
     setTabParams(router, [
       {
-        tabList: listTabList, 
-        tab: listTab, 
+        tabList: listTabList,
+        tab: listTab,
         defaultTab: "issuers",
         setTab: setListTab,
         paramName: "list"
       },
       {
-        tabList: periodTabList, 
-        tab: periodTab, 
+        tabList: periodTabList,
+        tab: periodTab,
         defaultTab: "all",
         setTab: setPeriodTab,
         paramName: "period"
       },
       {
-        tabList: saleTabList, 
-        tab: saleTab, 
+        tabList: saleTabList,
+        tab: saleTab,
         defaultTab: "all",
         setTab: setSaleTab,
         paramName: "sale"
       }
     ])
-    
+
     setSortConfig({});
 
     if ((!currency || (currency.toLowerCase() !== 'xrp' && !isAddressOrUsername(currencyIssuer))) || listTab === 'currencies') {
-      searchParams.delete("currency");
-      searchParams.delete("currencyIssuer");
+      removeQueryParams(router, ["currency", "currencyIssuer"])
     }
-
-    router.replace('/nft-volumes?' + searchParams.toString(), undefined, { shallow: true })
-    //Use replace to prevent adding a new URL entry into the history (otherwise just use push)
-    //use shallow: true allows you to change the URL without running data fetching methods. 
-    //This will cause a re-render but will not refresh the page per se.
-
     return () => {
       controller.abort();
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [saleTab, periodTab, listTab, currency, currencyIssuer]);
+  }, [isReady, saleTab, periodTab, listTab, currency, currencyIssuer]);
 
   const urlParams = (volume) => {
     let urlPart = "?period=" + periodTab + "&sale=" + saleTab;
@@ -391,9 +389,10 @@ export default function NftVolumes() {
             {loading ?
               <tr className='center'>
                 <td colSpan="100">
+                  <br />
                   <span className="waiting"></span>
                   <br />{t("general.loading")}<br />
-                  <br/>
+                  <br />
                 </td>
               </tr>
               :
@@ -457,7 +456,7 @@ export default function NftVolumes() {
                   <br />
                   <span className="waiting"></span>
                   <br />{t("general.loading")}<br />
-                  <br/>
+                  <br />
                 </td>
               </tr>
               :

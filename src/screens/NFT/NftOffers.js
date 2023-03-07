@@ -7,7 +7,7 @@ import SEO from '../../components/SEO';
 import SearchBlock from '../../components/SearchBlock';
 import Tabs from '../../components/Tabs';
 
-import { onFailedRequest, setTabParams, useWindowSize } from '../../utils';
+import { setTabParams, useWindowSize } from '../../utils';
 import {
   amountFormat,
   fullDateAndTime,
@@ -68,7 +68,7 @@ export default function NftOffers({ setSignRequest, signRequest, account }) {
     setLoading(true);
     setOffersCount({});
     const response = await axios('v2/nft-offers/' + id + offerListUrlPart).catch(error => {
-      onFailedRequest(error, setErrorMessage);
+      setErrorMessage(t("error." + error.message))
     });
     setLoading(false);
     let newdata = response?.data;

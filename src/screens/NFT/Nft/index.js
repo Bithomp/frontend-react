@@ -10,7 +10,7 @@ import SearchBlock from '../../../components/SearchBlock';
 import CopyButton from '../../../components/CopyButton';
 import NftPreview from '../../../components/NftPreview';
 
-import { onFailedRequest, onApiError, stripText } from '../../../utils';
+import { stripText } from '../../../utils';
 import { nftName, mpUrl, bestSellOffer } from '../../../utils/nft';
 import {
   shortHash,
@@ -50,7 +50,7 @@ export default function Nft({ setSignRequest, account, signRequest }) {
     }
     setLoading(true);
     const response = await axios('v2/nft/' + id + '?uri=true&metadata=true&history=true&sellOffers=true&buyOffers=true&offersValidate=true&offersHistory=true').catch(error => {
-      onFailedRequest(error, setErrorMessage);
+      setErrorMessage(t("error." + error.message))
     });
     setLoading(false);
     let newdata = response?.data;
@@ -68,7 +68,7 @@ export default function Nft({ setSignRequest, account, signRequest }) {
         countOffersByFilters(newdata.buyOffers, setCountBuyOffers);
       } else {
         if (newdata.error) {
-          onApiError(newdata.error, setErrorMessage);
+          setErrorMessage(t("error-api." + newdata.error))
         } else {
           setErrorMessage("Error");
           console.log(newdata);
