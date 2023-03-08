@@ -3,7 +3,25 @@ import { useEffect } from "react"
 import { useTranslation, Trans } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
-export async function getStaticProps({ locale }) {
+export async function getStaticProps({ locale, params }) {
+  const { slug } = params
+  //redirects
+  if (slug === 'top-nft-sales') {
+    return {
+      redirect: {
+        destination: '/nft-sales',
+        permanent: true
+      }
+    }
+  }
+  if (slug === 'latest-nft-sales') {
+    return {
+      redirect: {
+        destination: '/nft-sales?list=last',
+        permanent: true
+      }
+    }
+  }
   return {
     props: {
       ...(await serverSideTranslations(locale, ['common'])),
