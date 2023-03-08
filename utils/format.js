@@ -398,9 +398,12 @@ export const capitalize = (word) => {
 export const fullDateAndTime = (timestamp, type = null) => {
   //used also in CSV file names as text
   if (!timestamp) return '';
-  let dateAndTime = new Date(timestamp * 1000).toLocaleString();
+
+  timestamp = timestamp * 1000
+
+  let dateAndTime = new Date(timestamp).toLocaleString();
   if (type === 'expiration') {
-    return new Date(timestamp * 1000) < new Date() ? <span className='orange'>{dateAndTime}</span> : dateAndTime;
+    return new Date(timestamp) < new Date() ? <span className='orange'>{dateAndTime}</span> : dateAndTime;
   } else {
     return dateAndTime;
   }

@@ -1,12 +1,10 @@
 import { useTranslation } from 'next-i18next'
-import { useState } from 'react';
+import { useState } from 'react'
 import Link from 'next/link'
 
-import { stripText } from '../../utils';
-import { nftImageStyle, nftUrl, bestSellOffer, mpUrl } from '../../utils/nft';
-import { amountFormat, timeOrDate } from '../../utils/format';
-
-import './styles.scss';
+import { stripText } from '../utils'
+import { nftImageStyle, nftUrl, bestSellOffer, mpUrl } from '../utils/nft'
+import { amountFormat, timeOrDate } from '../utils/format'
 
 const addressName = (details, name) => {
   if (!details) return "";
@@ -150,7 +148,7 @@ export default function Tiles({ nftList, type = 'name' }) {
           {nftList?.length > 0 && nftList.map((nft, i) =>
             <li className="hex" key={i}>
               <div className="hexIn">
-                <Link className="hexLink" to={"/nft/" + nft.nftoken.nftokenID}>
+                <Link href={"/nft/" + nft.nftoken.nftokenID} className="hexLink" >
                   {loadingImage(nft.nftoken)}
                   {imageOrVideo(nft.nftoken)}
                   <div className="index">{i + 1}</div>

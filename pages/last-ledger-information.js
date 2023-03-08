@@ -117,7 +117,7 @@ export default function LastLedgerInformation() {
           {t("last-ledger-information.transaction-speed")}: {ledger?.lastClose && (ledger.validatedLedger.transactionsCount / ledger.lastClose.convergeTimeS).toFixed(2)}
         </p>
         <p>
-          {t("last-ledger-information.proposers")}: {ledger?.lastClose?.proposers && <Link href="validators">{ledger.lastClose.proposers}</Link>}
+          {t("last-ledger-information.proposers")}: {ledger?.lastClose?.proposers && <Link href="/validators">{ledger.lastClose.proposers}</Link>}
         </p>
         <p>
           {t("last-ledger-information.validation-quorum")}: {ledger?.validationQuorum}

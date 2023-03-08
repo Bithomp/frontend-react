@@ -7,7 +7,20 @@ module.exports = {
       test: /\.svg$/,
       use: ["@svgr/webpack"]
     });
-
     return config;
+  },
+  async redirects() {
+    return [
+      {
+        source: '/top-nft-sales',
+        destination: '/nft-sales',
+        permanent: true,
+      },
+      {
+        source: '/latest-nft-sales',
+        destination: '/nft-sales?list=last',
+        permanent: true,
+      },
+    ]
   },
 };

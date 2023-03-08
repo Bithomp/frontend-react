@@ -245,7 +245,7 @@ export default function Header({ setSignRequest, account, signOut }) {
           {t("menu.validators")}
         </Link>
         <Link
-          href="amendments"
+          href="/amendments"
           className="mobile-menu-item"
           onClick={mobileMenuToggle}
         >
