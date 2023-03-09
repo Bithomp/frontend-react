@@ -2,11 +2,6 @@ import { Html, Head, Main, NextScript } from 'next/document'
 
 export default function Document() {
 
-  const getInitialProps = async ctx => {
-    const initialProps = await getInitialProps(ctx)
-    return { ...initialProps }
-  }
-
   return (
     <Html>
       <Head>

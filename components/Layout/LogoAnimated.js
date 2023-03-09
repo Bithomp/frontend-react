@@ -1,4 +1,4 @@
-export default function svgImage(network) {
+export default function svgImage() {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" id="A" viewBox="0 0 181 52" fill="#63a6b9">
     <style jsx>

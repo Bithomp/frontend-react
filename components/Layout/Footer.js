@@ -1,5 +1,4 @@
 import Link from 'next/link'
-import Image from 'next/image'
 import { useTranslation } from 'next-i18next'
 
 import { devNet, useLocalStorage } from '../../utils'
@@ -32,8 +31,8 @@ export default function Footer() {
         {devNet &&
           <div className="footer-menu-column">
             <span className="footer-menu-header">{t("menu.tools")}</span>
-            <a href="/create/">{t("menu.account-generation")}</a>
-            <a href="/faucet/">{t("menu.faucet")}</a>
+            <Link href="/create/">{t("menu.account-generation")}</Link>
+            <Link href="/faucet/">{t("menu.faucet")}</Link>
           </div>
         }
         <div className="footer-menu-column">

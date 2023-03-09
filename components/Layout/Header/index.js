@@ -26,7 +26,7 @@ export default function Header({ setSignRequest, account, signOut }) {
     }
   }
 
-  const mobileMenuToggle = e => {
+  const mobileMenuToggle = () => {
     // remove scrollbar when menu is open
     if (!menuOpen) {
       document.getElementsByClassName("mobile-menu")[0].style.transform = "translateX(0)";
@@ -71,8 +71,8 @@ export default function Header({ setSignRequest, account, signOut }) {
             <div className="menu-dropdown">
               <div className="menu-dropdown-button">{t("menu.tools")}</div>
               <div className="menu-dropdown-content">
-                <a href="/create/">{t("menu.account-generation")}</a>
-                <a href="/faucet/">{t("menu.faucet")}</a>
+                <Link href="/create/">{t("menu.account-generation")}</Link>
+                <Link href="/faucet/">{t("menu.faucet")}</Link>
               </div>
             </div>
           }
@@ -80,10 +80,10 @@ export default function Header({ setSignRequest, account, signOut }) {
           <div className="menu-dropdown">
             <div className="menu-dropdown-button">NFT</div>
             <div className="menu-dropdown-content">
-              <a href="/nft-explorer">{t("menu.nft.explorer")}</a>
+              <Link href="/nft-explorer">{t("menu.nft.explorer")}</Link>
               <Link href="/nft-volumes">{t("menu.nft.volumes")}</Link>
-              <a href="/nft-sales">{t("menu.nft.sales")}</a>
-              <a href="/nfts">{t("menu.nft.nfts")}</a>
+              <Link href="/nft-sales">{t("menu.nft.sales")}</Link>
+              <Link href="/nfts">{t("menu.nft.nfts")}</Link>
               <Link href="/nft-offers">{t("menu.nft.offers")}</Link>
               <Link href="/nft-distribution">{t("menu.nft.distribution")}</Link>
               <Link href="/nft-statistics">{t("menu.nft.statistics")}</Link>
@@ -124,10 +124,10 @@ export default function Header({ setSignRequest, account, signOut }) {
                 <span onClick={copyToClipboard} className="link">
                   {isCopied ? t("button.copied") : t("button.copy-my-address")}
                 </span>
-                <a href={"/nfts/" + address}>{t("signin.actions.my-nfts")}</a>
-                <a href={"/nft-offers/" + address}>{t("signin.actions.my-nft-offers")}</a>
+                <Link href={"/nfts/" + address}>{t("signin.actions.my-nfts")}</Link>
+                <Link href={"/nft-offers/" + address}>{t("signin.actions.my-nft-offers")}</Link>
                 {xummUserToken && <a href={"/explorer/" + address + "?hw=xumm&xummtoken=" + xummUserToken}>{t("signin.actions.view")}</a>}
-                {!username && <a href={"/username?address=" + address}>{t("menu.usernames")}</a>}
+                {!username && <Link href={"/username?address=" + address}>{t("menu.usernames")}</Link>}
                 {xummUserToken && <a href={"/explorer/" + address + "?hw=xumm&xummtoken=" + xummUserToken + "&action=send"}>{t("signin.actions.send")}</a>}
                 <span onClick={signOut} className="link">{t("signin.signout")}</span>
               </div>
@@ -155,10 +155,10 @@ export default function Header({ setSignRequest, account, signOut }) {
             <span onClick={copyToClipboard} className="mobile-menu-item link">
               {isCopied ? t("button.copied") : t("button.copy-my-address")}
             </span>
-            <a href={"/nfts/" + address} className="mobile-menu-item">{t("signin.actions.my-nfts")}</a>
-            <a href={"/nft-offers/" + address} className="mobile-menu-item">{t("signin.actions.my-nft-offers")}</a>
+            <Link href={"/nfts/" + address} className="mobile-menu-item">{t("signin.actions.my-nfts")}</Link>
+            <Link href={"/nft-offers/" + address} className="mobile-menu-item">{t("signin.actions.my-nft-offers")}</Link>
             {xummUserToken && <a href={"/explorer/" + address + "?hw=xumm&xummtoken=" + xummUserToken} className="mobile-menu-item">{t("signin.actions.view")}</a>}
-            {!username && <a href={"/username?address=" + address} className="mobile-menu-item">{t("menu.usernames")}</a>}
+            {!username && <Link href={"/username?address=" + address} className="mobile-menu-item">{t("menu.usernames")}</Link>}
             {xummUserToken && <a href={"/explorer/" + address + "?hw=xumm&xummtoken=" + xummUserToken + "&action=send"} className="mobile-menu-item">{t("signin.actions.send")}</a>}
             <span onClick={signOut} className="mobile-menu-item link">{t("signin.signout")}</span>
           </>
@@ -182,11 +182,11 @@ export default function Header({ setSignRequest, account, signOut }) {
             {t("menu.price-alerts")}
           </Link>
         }
-        <a href="https://docs.bithomp.com" className="mobile-menu-item">
+        <Link href="https://docs.bithomp.com" className="mobile-menu-item">
           {t("menu.api")}
-        </a>
+        </Link>
         <div className="mobile-menu-directory"><span>NFT</span></div>
-        <a href="/nft-explorer" className="mobile-menu-item" onClick={mobileMenuToggle}> {t("menu.nft.explorer")}</a>
+        <Link href="/nft-explorer" className="mobile-menu-item" onClick={mobileMenuToggle}> {t("menu.nft.explorer")}</Link>
         <Link
           href="/nft-volumes"
           className="mobile-menu-item"
@@ -194,13 +194,13 @@ export default function Header({ setSignRequest, account, signOut }) {
         >
           {t("menu.nft.volumes")}
         </Link>
-        <a
+        <Link
           href="/nft-sales"
           className="mobile-menu-item"
         >
           {t("menu.nft.sales")}
-        </a>
-        <a href="/nfts" className="mobile-menu-item">{t("menu.nft.nfts")}</a>
+        </Link>
+        <Link href="/nfts" className="mobile-menu-item">{t("menu.nft.nfts")}</Link>
         <Link
           href="/nft-offers"
           className="mobile-menu-item"
@@ -259,8 +259,8 @@ export default function Header({ setSignRequest, account, signOut }) {
         {devNet &&
           <>
             <div className="mobile-menu-directory"><span>{t("menu.tools")}</span></div>
-            <a href="/create/" className="mobile-menu-item">{t("menu.account-generation")}</a>
-            <a href="/faucet/" className="mobile-menu-item">{t("menu.faucet")}</a>
+            <Link href="/create/" className="mobile-menu-item">{t("menu.account-generation")}</Link>
+            <Link href="/faucet/" className="mobile-menu-item">{t("menu.faucet")}</Link>
           </>
         }
       </div>

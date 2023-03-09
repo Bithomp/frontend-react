@@ -10,7 +10,6 @@ const copyTextToClipboard = async (text) => {
 }
 
 export default function CopyButton({ text }) {
-  if (!text) return ""
   const { t } = useTranslation();
 
   const [isCopied, setIsCopied] = useState(false);
@@ -19,7 +18,7 @@ export default function CopyButton({ text }) {
 
   useEffect(() => {
     setShow(true);
-  });
+  }, []);
 
   const handleCopyClick = () => {
     copyTextToClipboard(text)
@@ -37,6 +36,8 @@ export default function CopyButton({ text }) {
         console.log(err);
       });
   }
+
+  if (!text) return ""
 
   return <>
     {show &&

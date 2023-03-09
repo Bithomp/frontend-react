@@ -34,7 +34,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "prepare": "husky install",
+    "pre-commit": "next lint"
   },
   "browserslist": {
     "production": [
@@ -50,6 +52,7 @@
   },
   "devDependencies": {
     "eslint": "8.35.0",
-    "eslint-config-next": "13.2.3"
+    "eslint-config-next": "13.2.3",
+    "husky": "^8.0.3"
   }
 }

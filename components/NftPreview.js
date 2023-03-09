@@ -135,6 +135,7 @@ export default function NftPreview({ nft }) {
               <script
                 type="module"
                 src={process.env.PUBLIC_URL + "/js/model-viewer.min.js"}
+                defer
               />
             </Head>
             <model-viewer

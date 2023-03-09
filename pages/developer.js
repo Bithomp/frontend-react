@@ -142,9 +142,9 @@ export default function Developer() {
 
         <p>
           <Trans i18nKey="developer.text0">
-            The request won't be approved:<br />
+            The request will be rejected:<br />
             - if you use your private email<br />
-            - if you want to use API for something that our API doesn't support<br />
+            - if you want to use API for something that our API does not support<br />
             - if you want to use it for something that already supported by <a href="https://xrpl.org/get-started-using-javascript.html">xrpl.js</a>.
           </Trans>
         </p>

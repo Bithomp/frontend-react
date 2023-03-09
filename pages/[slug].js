@@ -2,6 +2,7 @@ import { useRouter } from "next/router"
 import { useEffect } from "react"
 import { useTranslation, Trans } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
+import Link from 'next/link'
 
 export async function getStaticProps({ locale, params }) {
   const { slug } = params
@@ -53,7 +54,7 @@ export default function Custom404() {
       <h1>{t("page-not-found.header")}</h1>
       <p>
         <Trans i18nKey="page-not-found.text">
-          Click <a href="/" className="bold">here</a> to check our landing page.
+          Click <Link href="/" className="bold">here</Link> to check our landing page.
         </Trans>
       </p>
     </div>

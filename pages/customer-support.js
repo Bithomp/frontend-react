@@ -37,7 +37,7 @@ export default function Contact() {
         <li>{t("customer-support.wrong-tag")}</li>
         <li>
           <Trans i18nKey="customer-support.text2">
-            If you're missing 10 XRP in your wallet, please read about the <a href="https://xrpl.org/reserves.html">base reserve</a>.
+            If you are missing 10 XRP in your wallet, please read about the <a href="https://xrpl.org/reserves.html">base reserve</a>.
           </Trans>
         </li>
         <li>{t("customer-support.paper-wallet")}</li>
