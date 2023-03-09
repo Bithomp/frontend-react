@@ -68,20 +68,19 @@ const shallRemoveParam = (tabList, tab, defaultTab, setTab) => {
   }
 }
 
-export const setTabParams = (router, tabs) => {
-  let removeList = []
-
+export const setTabParams = (router, tabs, addList = [], removeList = []) => {
   for (let i = 0; i < tabs.length; i++) {
     const { tabList, tab, defaultTab, setTab, paramName } = tabs[i]
     if (shallRemoveParam(tabList, tab, defaultTab, setTab)) {
       removeList.push(paramName)
     } else {
-      //set
-      router.query[paramName] = tab
+      addList.push({
+        name: paramName,
+        value: tab
+      })
     }
   }
-
-  removeQueryParams(router, removeList)
+  addAndRemoveQueryParams(router, addList, removeList)
 }
 
 export const removeQueryParams = (router, removeList) => {
@@ -90,19 +89,20 @@ export const removeQueryParams = (router, removeList) => {
   for (let i = 0; i < removeList.length; i++) {
     params.delete(removeList[i])
   }
-  router.replace({ pathname, query: params.toString() })
+  router.replace({ pathname, query: params.toString() }, null, { shallow: true })
 }
 
 export const addQueryParams = (router, addList) => {
   for (let i = 0; i < addList.length; i++) {
     router.query[addList.name] = addList.value
   }
-  router.replace(router)
+  router.replace(router, null, { shallow: true })
 }
 
 export const addAndRemoveQueryParams = (router, addList, removeList) => {
   for (let i = 0; i < addList.length; i++) {
-    router.query[addList.name] = addList.value
+    const { name, value } = addList[i]
+    router.query[name] = value
   }
   removeQueryParams(router, removeList)
 }

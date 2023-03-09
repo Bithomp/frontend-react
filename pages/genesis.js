@@ -20,6 +20,12 @@ import { niceNumber, dateFormat } from '../utils/format'
 export default function Genesis() {
   const { t } = useTranslation()
   const [data, setData] = useState({})
+  const [rendered, setRendered] = useState(false)
+
+  useEffect(() => {
+    setRendered(true)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   useEffect(() => {
     async function fetchData() {
@@ -78,13 +84,13 @@ export default function Genesis() {
               <tr><td>{t("genesis.account-count")}</td><td>136</td></tr>
               <tr>
                 <td>{t("genesis.inception")}</td>
-                <td>{dateFormat("2013-01-01T03:21:00Z", timestampFormatParams, { type: "ISO" })}</td>
+                <td>{rendered && dateFormat("2013-01-01T03:21:00Z", timestampFormatParams, { type: "ISO" })}</td>
               </tr>
               <tr><td>{t("genesis.xrp-balance")}</td><td>{niceNumber(99999999999.996320, 6)}</td></tr>
               <tr><td colSpan="2"><hr /></td></tr>
               <tr>
                 <td>{t("genesis.balance-update")}</td>
-                <td>{dateFormat(data.balance_update, timestampFormatParams)}</td>
+                <td>{rendered && dateFormat(data.balance_update, timestampFormatParams)}</td>
               </tr>
               <tr>
                 <td>{t("genesis.xrp-balance")}</td>
@@ -118,7 +124,7 @@ export default function Genesis() {
                     {niceNumber(account.genesis_balance)}
                   </p>
                   <p>
-                    {t("genesis.xrp-balance")} {dateFormat(data.balance_update)}<br />
+                    {t("genesis.xrp-balance")} {rendered && dateFormat(data.balance_update)}<br />
                     {niceNumber(account.balance)}
                   </p>
                   {account.rippletrade &&
@@ -145,7 +151,7 @@ export default function Genesis() {
               <th>{t("genesis.genesis-index")}</th>
               <th>{t("genesis.address")}</th>
               <th>{t("genesis.genesis-balance")}</th>
-              <th>{t("genesis.xrp-balance")} {dateFormat(data.balance_update)}</th>
+              <th>{t("genesis.xrp-balance")} {rendered && dateFormat(data.balance_update)}</th>
               <th>Rippletrade</th>
               <th>{t("genesis.nickname")}</th>
             </tr>

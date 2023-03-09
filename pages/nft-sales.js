@@ -6,6 +6,10 @@ import { CSVLink } from "react-csv"
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
+import { stripText, isAddressOrUsername, setTabParams, addAndRemoveQueryParams } from '../utils'
+import { isValidTaxon, nftThumbnail, nftNameLink } from '../utils/nft'
+import { amountFormat, nftLink, userOrServiceLink, usernameOrAddress, timeOrDate } from '../utils/format'
+
 export const getServerSideProps = async ({ query, locale }) => {
   const { view, sale, list, currency, currencyIssuer, issuer, taxon, period } = query
   return {
@@ -26,10 +30,6 @@ export const getServerSideProps = async ({ query, locale }) => {
 import SEO from '../components/SEO'
 import Tabs from '../components/Tabs'
 import Tiles from '../components/Tiles'
-
-import { stripText, isAddressOrUsername, setTabParams, addAndRemoveQueryParams } from '../utils'
-import { isValidTaxon, nftThumbnail, nftNameLink } from '../utils/nft'
-import { amountFormat, nftLink, timeOrDate, userOrServiceLink, usernameOrAddress } from '../utils/format'
 
 import LinkIcon from "../public/images/link.svg"
 
@@ -59,7 +59,8 @@ export default function NftSales({ view, sale, list, currency, currencyIssuer, i
     const time = new Date(Date.now()).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })
     setDateAndTimeNow(date + ' at ' + time)
     setRendered(true)
-  }, [setDateAndTimeNow])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const viewTabList = [
     { value: 'tiles', label: t("tabs.tiles") },
@@ -197,6 +198,11 @@ export default function NftSales({ view, sale, list, currency, currencyIssuer, i
       queryRemoveList.push("taxon");
     }
 
+    if (!currency || (currency.toLowerCase() !== 'xrp' && !isAddressOrUsername(currencyIssuer))) {
+      queryRemoveList.push("currency")
+      queryRemoveList.push("currencyIssuer")
+    }
+
     setTabParams(router, [
       {
         tabList: saleTabList,
@@ -226,15 +232,12 @@ export default function NftSales({ view, sale, list, currency, currencyIssuer, i
         setTab: setPageTab,
         paramName: "list"
       }
-    ])
-
-    if (!currency || (currency.toLowerCase() !== 'xrp' && !isAddressOrUsername(currencyIssuer))) {
-      queryRemoveList.push("currency")
-      queryRemoveList.push("currencyIssuer")
-    }
+    ],
+      queryAddList,
+      queryRemoveList
+    )
 
     addAndRemoveQueryParams(router, queryAddList, queryRemoveList)
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [viewTab, saleTab, data, periodTab, currency, currencyIssuer, pageTab]);
 
