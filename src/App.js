@@ -15,7 +15,6 @@ import Nft from './screens/NFT/Nft';
 import Nfts from './screens/NFT/Nfts';
 import NftOffer from "./screens/NFT/NftOffer";
 import NftOffers from "./screens/NFT/NftOffers";
-import NftDistribution from './screens/NFT/NftDistribution';
 
 import { network, server } from './utils';
 
@@ -81,10 +80,12 @@ export default function App() {
           <Route path="/nft/" element={<Nft setSignRequest={setSignRequest} signRequest={signRequest} account={account} />}>
             <Route path="/nft/:id" element={<Nft setSignRequest={setSignRequest} signRequest={signRequest} account={account} />} />
           </Route>
+
           <Route path="/nfts/" element={<Nfts />}>
             <Route path="/nfts/:id" element={<Nfts />} />
           </Route>
           <Route path="/nft-explorer" element={<Nfts />} />
+
           <Route path="/nft-offer/" element={<NftOffer setSignRequest={setSignRequest} signRequest={signRequest} account={account} />}>
             <Route path="/nft-offer/:id" element={<NftOffer setSignRequest={setSignRequest} signRequest={signRequest} account={account} />} />
           </Route>
@@ -92,9 +93,6 @@ export default function App() {
             <Route path="/nft-offers/:id" element={<NftOffers setSignRequest={setSignRequest} signRequest={signRequest} account={account} />} />
           </Route>
 
-          <Route path="/nft-distribution/" element={<NftDistribution />}>
-            <Route path="/nft-distribution/:id" element={<NftDistribution />} />
-          </Route>
         </Routes>
       </div>
       <BackgroundImage />

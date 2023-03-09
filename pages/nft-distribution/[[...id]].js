@@ -1,18 +1,35 @@
 import { useTranslation, Trans } from 'next-i18next'
 import { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
-import axios from 'axios';
-import { CSVLink } from "react-csv";
-
-import SEO from '../../components/SEO';
-import SearchBlock from '../../components/SearchBlock';
+import axios from 'axios'
+import { CSVLink } from "react-csv"
+import { useRouter } from 'next/router'
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 import { useWidth } from '../../utils';
 import { nftsExplorerLink, addressUsernameOrServiceLink } from '../../utils/format';
 
+export async function getStaticProps({ locale }) {
+  return {
+    props: {
+      ...(await serverSideTranslations(locale, ['common'])),
+    }
+  }
+}
+
+export async function getStaticPaths() {
+  return {
+    paths: [],
+    fallback: 'blocking'
+  }
+}
+
+import SEO from '../../components/SEO'
+import SearchBlock from '../../components/Layout/SearchBlock'
+
 export default function NftDistribution() {
   const { t } = useTranslation()
-  const { id } = useParams()
+  const router = useRouter()
+  const { id } = router.query
   const windowWidth = useWidth()
 
   const [data, setData] = useState([]);

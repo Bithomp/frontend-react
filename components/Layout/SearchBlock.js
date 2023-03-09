@@ -50,27 +50,27 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
   const onSearch = async () => {
     let searchFor = searchItem.trim();
     if (tab === "nfts" && isAddressOrUsername(searchFor)) {
-      window.location = '/nfts/' + encodeURI(searchFor) + addParams;
+      router.push('/nfts/' + encodeURI(searchFor) + addParams)
       return;
     }
 
     if (tab === "nft-offers" && isAddressOrUsername(searchFor)) {
-      window.location = '/nft-offers/' + encodeURI(searchFor) + addParams;
+      router.push('/nft-offers/' + encodeURI(searchFor) + addParams)
       return;
     }
 
     if (tab === "nft-distribution" && isAddressOrUsername(searchFor)) {
-      window.location = '/nft-distribution/' + encodeURI(searchFor);
+      router.push('/nft-distribution/' + encodeURI(searchFor))
       return;
     }
 
     if (tab === "nft" && isIdValid(searchFor)) {
-      window.location = '/nft/' + encodeURI(searchFor);
+      router.push('/nft/' + encodeURI(searchFor))
       return;
     }
 
     if (tab === "nft-offer" && isIdValid(searchFor)) {
-      window.location = '/nft-offer/' + encodeURI(searchFor);
+      router.push('/nft-offer/' + encodeURI(searchFor))
       return;
     }
 
@@ -81,17 +81,17 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
       setSearching(false);
       const data = response.data;
       if (data.type === 'nftoken') {
-        window.location = '/nft/' + encodeURI(searchFor);
+        router.push('/nft/' + encodeURI(searchFor))
         return;
       }
       if (data.type === 'nftokenOffer') {
-        window.location = '/nft-offer/' + encodeURI(searchFor);
+        router.push('/nft-offer/' + encodeURI(searchFor))
         return;
       }
     }
 
     //tx, address etc
-    window.location = '/explorer/' + encodeURI(searchFor);
+    router.push('/explorer/' + encodeURI(searchFor))
     return;
   }
 
