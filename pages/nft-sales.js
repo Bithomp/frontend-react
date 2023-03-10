@@ -6,7 +6,7 @@ import { CSVLink } from "react-csv"
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
-import { stripText, isAddressOrUsername, setTabParams, addAndRemoveQueryParams } from '../utils'
+import { stripText, isAddressOrUsername, setTabParams } from '../utils'
 import { isValidTaxon, nftThumbnail, nftNameLink } from '../utils/nft'
 import { amountFormat, nftLink, userOrServiceLink, usernameOrAddress, timeOrDate } from '../utils/format'
 
@@ -237,7 +237,6 @@ export default function NftSales({ view, sale, list, currency, currencyIssuer, i
       queryRemoveList
     )
 
-    addAndRemoveQueryParams(router, queryAddList, queryRemoveList)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [viewTab, saleTab, data, periodTab, currency, currencyIssuer, pageTab]);
 

@@ -15,6 +15,7 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
   const { t } = useTranslation();
   const searchParams = useSearchParams();
   const router = useRouter()
+
   const { id } = router.query
   const [searchItem, setSearchItem] = useState(id || userData?.address || "");
   const [searching, setSearching] = useState(false);
@@ -45,32 +46,49 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
     }
   }
 
-  const addParams = '?' + searchParams.toString();
+  // a stupid hack to remove id param
+  let addParams = ''
+  if (searchParams) {
+    let searchPart = searchParams.toString()
+    let searchId = searchParams.get("id")
+    if (searchId) {
+      if (searchPart.indexOf("id=" + searchId + "&") !== -1) {
+        searchPart = searchPart.replace("id=" + searchId + "&", "")
+      } else if (searchPart.indexOf("&id=" + searchId) !== -1) {
+        searchPart = searchPart.replace("&id=" + searchId, "")
+      } else {
+        searchPart = searchPart.replace("id=" + searchId, "")
+      }
+    }
+    if (searchPart) {
+      addParams = '?' + searchPart;
+    }
+  }
 
   const onSearch = async () => {
     let searchFor = searchItem.trim();
     if (tab === "nfts" && isAddressOrUsername(searchFor)) {
-      router.push('/nfts/' + encodeURI(searchFor) + addParams)
+      window.location = "../nfts/" + encodeURI(searchFor) + addParams
       return;
     }
 
     if (tab === "nft-offers" && isAddressOrUsername(searchFor)) {
-      router.push('/nft-offers/' + encodeURI(searchFor) + addParams)
+      window.location = "../nft-offers/" + encodeURI(searchFor) + addParams
       return;
     }
 
     if (tab === "nft-distribution" && isAddressOrUsername(searchFor)) {
-      router.push('/nft-distribution/' + encodeURI(searchFor))
+      window.location = "../nft-distribution/" + encodeURI(searchFor)
       return;
     }
 
     if (tab === "nft" && isIdValid(searchFor)) {
-      router.push('/nft/' + encodeURI(searchFor))
+      window.location = "../nft/" + encodeURI(searchFor)
       return;
     }
 
     if (tab === "nft-offer" && isIdValid(searchFor)) {
-      router.push('/nft-offer/' + encodeURI(searchFor))
+      window.location = "../nft-offer/" + encodeURI(searchFor)
       return;
     }
 
@@ -91,7 +109,7 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
     }
 
     //tx, address etc
-    router.push('/explorer/' + encodeURI(searchFor))
+    window.location = '/explorer/' + encodeURI(searchFor)
     return;
   }
 

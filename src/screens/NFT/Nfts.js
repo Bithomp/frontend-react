@@ -12,7 +12,7 @@ import Tabs from '../../components/Tabs';
 import Tiles from '../../components/Tiles';
 import IssuerSelect from '../../components/IssuerSelect';
 
-import { isAddressOrUsername, setTabParams, addAndRemoveQueryParams, addQueryParams } from '../../utils';
+import { isAddressOrUsername, setTabParams, addQueryParams } from '../../utils';
 import { isValidTaxon, nftThumbnail, nftNameLink, bestSellOffer, mpUrl } from '../../utils/nft';
 import { nftLink, usernameOrAddress, userOrServiceLink, amountFormat } from '../../utils/format';
 
@@ -229,9 +229,7 @@ export default function Nfts() {
       queryRemoveList.push("saleCurrencyIssuer");
     }
 
-    setTabParams(router, tabsToSet)
-    addAndRemoveQueryParams(router, queryAddList, queryRemoveList)
-
+    setTabParams(router, tabsToSet, queryAddList, queryRemoveList)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [viewTab, rawData, listTab, saleDestinationTab]);
 

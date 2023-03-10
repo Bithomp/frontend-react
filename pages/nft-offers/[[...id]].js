@@ -1,31 +1,44 @@
 import { useTranslation } from 'next-i18next'
-import { useState, useEffect } from 'react';
-import { useParams, Link, useSearchParams } from 'react-router-dom';
-import axios from 'axios';
+import { useState, useEffect } from 'react'
+import axios from 'axios'
+import { useRouter } from 'next/router'
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
+import Image from 'next/image'
+import Link from 'next/link'
 
-import SEO from '../../components/SEO';
-import SearchBlock from '../../components/SearchBlock';
-import Tabs from '../../components/Tabs';
-
-import { setTabParams, useWindowSize } from '../../utils';
+import { setTabParams, useWidth } from '../../utils'
 import {
   amountFormat,
   fullDateAndTime,
   expirationExpired,
   nftLink,
   nftOfferLink
-} from '../../utils/format';
-import { nftNameLink, nftThumbnail } from '../../utils/nft';
+} from '../../utils/format'
+import { nftNameLink, nftThumbnail } from '../../utils/nft'
 
-import LinkIcon from "../public/images/link.svg"
-import xummImg from "../../public/images/xumm.png";
+export const getServerSideProps = async ({ query, locale }) => {
+  const { offerList } = query
+  return {
+    props: {
+      offerList: offerList || "owned",
+      ...(await serverSideTranslations(locale, ['common'])),
+    },
+  }
+}
 
-export default function NftOffers({ setSignRequest, signRequest, account }) {
+import SEO from '../../components/SEO'
+import SearchBlock from '../../components/Layout/SearchBlock'
+import Tabs from '../../components/Tabs'
+
+import LinkIcon from "../../public/images/link.svg"
+const xummImg = "/images/xumm.png"
+
+export default function NftOffers({ setSignRequest, signRequest, account, offerList }) {
   const { t } = useTranslation()
-  const { id } = useParams()
-  const size = useWindowSize()
+  const router = useRouter()
+  const { id } = router.query
+  const windowWidth = useWidth()
 
-  const [searchParams, setSearchParams] = useSearchParams();
   const [offers, setOffers] = useState([]);
   const [filteredOffers, setFilteredOffers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -35,7 +48,7 @@ export default function NftOffers({ setSignRequest, signRequest, account }) {
   const [showDestinationColumn, setShowDestinationColumn] = useState(false);
   const [showValidationColumn, setShowValidationColumn] = useState(false);
   const [showTypeColumn, setShowTypeColumn] = useState(true);
-  const [offerListTab, setOfferListTab] = useState(searchParams.get("offerList") || "owned");
+  const [offerListTab, setOfferListTab] = useState(offerList);
   const [offerTypeTab, setOfferTypeTab] = useState("all");
   const [offersCount, setOffersCount] = useState({});
   const [invalidOffers, setInvalidOffers] = useState([]);
@@ -221,10 +234,9 @@ export default function NftOffers({ setSignRequest, signRequest, account }) {
           paramName: "offerList"
         }
       ])
-      setSearchParams(searchParams)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id, offerListTab, signRequest])
+  }, [offerListTab, signRequest])
 
   return <>
     <SEO title={t("nft-offers.header") + " " + id} />
@@ -252,7 +264,7 @@ export default function NftOffers({ setSignRequest, signRequest, account }) {
               }
             })}
           >
-            <img src={xummImg} className="xumm-logo" alt="xumm" />
+            <Image src={xummImg} className='xumm-logo' alt="xumm" height={24} width={24} />
             {
               (account?.address && account.address === userData.address) ?
                 t('nft-offers.cancel-invalid-offer', { count: offersCount.invalid })
@@ -264,7 +276,7 @@ export default function NftOffers({ setSignRequest, signRequest, account }) {
       </div>
       {id ?
         <>
-          {size.width > 960 ?
+          {windowWidth > 960 ?
             <table className="table-large">
               <thead>
                 <tr>
