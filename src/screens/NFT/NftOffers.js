@@ -298,7 +298,7 @@ export default function NftOffers({ setSignRequest, signRequest, account }) {
                         <td>{amountFormat(offer.amount, { tooltip: true, maxFractionDigits: 2 })}</td>
                         <td>{fullDateAndTime(offer.createdAt)}</td>
                         {showExpirationColumn && <td>{offer.expiration ? fullDateAndTime(offer.expiration, "expiration") : t("table.text.no-expiration")}</td>}
-                        {(showDestinationColumn && offerListTab !== 'privately-offered-to-address') && <td>{nftLink(offer, 'destination')}</td>}
+                        {(showDestinationColumn && offerListTab !== 'privately-offered-to-address') && <td>{nftLink(offer, 'destination', { seeOn: t("table.text.see-on") })}</td>}
                         {showValidationColumn &&
                           <td className='center'>
                             {offer.valid ?
@@ -363,12 +363,12 @@ export default function NftOffers({ setSignRequest, signRequest, account }) {
                           </p>
                           {offer.expiration &&
                             <p>
-                              {expirationExpired(offer.expiration)}: {fullDateAndTime(offer.expiration, "expiration")}
+                              {expirationExpired(t, offer.expiration)}: {fullDateAndTime(offer.expiration, "expiration")}
                             </p>
                           }
                           {offer.destination &&
                             <p>
-                              {t("table.destination")}: {nftLink(offer, 'destination')}
+                              {t("table.destination")}: {nftLink(offer, 'destination', { seeOn: t("table.text.see-on") })}
                             </p>
                           }
                           {!offer.valid &&

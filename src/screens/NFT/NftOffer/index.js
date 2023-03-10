@@ -213,7 +213,7 @@ export default function NftOffer({ setSignRequest, signRequest, account }) {
                   <div className="column-right">
                     <table className='table-details'>
                       <tbody>
-                        {trStatus(data)}
+                        {trStatus(t, data)}
                         <tr>
                           <td>{t("table.offer")}</td>
                           <td>{shortHash(data.offerIndex, 10)} <CopyButton text={data.offerIndex} /></td>
@@ -234,7 +234,7 @@ export default function NftOffer({ setSignRequest, signRequest, account }) {
                         </tr>
                         {data.expiration &&
                           <tr>
-                            <td>{expirationExpired(data.expiration)}</td>
+                            <td>{expirationExpired(t, data.expiration)}</td>
                             <td>{fullDateAndTime(data.expiration, "expiration")}</td>
                           </tr>
                         }

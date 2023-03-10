@@ -1,17 +1,15 @@
 import { useTranslation } from 'next-i18next'
-import { useState, useEffect } from 'react';
-import { useParams } from "react-router-dom";
-import { Buffer } from 'buffer';
-import axios from 'axios';
-import Select from "react-select";
+import { useState, useEffect } from 'react'
+import { Buffer } from 'buffer'
+import axios from 'axios'
+import Select from "react-select"
+import { useRouter } from 'next/router'
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
+import Image from 'next/image'
+import Link from 'next/link'
 
-import SEO from '../../../components/SEO';
-import SearchBlock from '../../../components/SearchBlock';
-import CopyButton from '../../../components/CopyButton';
-import NftPreview from '../../../components/NftPreview';
-
-import { stripText } from '../../../utils';
-import { nftName, mpUrl, bestSellOffer } from '../../../utils/nft';
+import { stripText } from '../../utils';
+import { nftName, mpUrl, bestSellOffer } from '../../utils/nft';
 import {
   shortHash,
   trWithAccount,
@@ -22,16 +20,37 @@ import {
   nftOfferLink,
   codeHighlight,
   trStatus
-} from '../../../utils/format';
+} from '../../utils/format';
 
-import './styles.scss';
-import { ReactComponent as LinkIcon } from "../../../public/images/link.svg";
-import xummImg from "../../../public/images/xumm.png";
+export async function getStaticProps({ locale }) {
+  return {
+    props: {
+      ...(await serverSideTranslations(locale, ['common'])),
+    }
+  }
+}
+
+export async function getStaticPaths() {
+  return {
+    paths: [],
+    fallback: 'blocking'
+  }
+}
+
+import SEO from '../../components/SEO'
+import SearchBlock from '../../components/Layout/SearchBlock'
+import CopyButton from '../../components/UI/CopyButton'
+import NftPreview from '../../components/NftPreview'
+
+import LinkIcon from "../../public/images/link.svg";
+const xummImg = "/images/xumm.png";
 
 export default function Nft({ setSignRequest, account, signRequest }) {
   const { t } = useTranslation();
-  const { id } = useParams();
+  const router = useRouter()
+  const { id } = router.query
 
+  const [rendered, setRendered] = useState(false)
   const [data, setData] = useState({});
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
@@ -43,6 +62,11 @@ export default function Nft({ setSignRequest, account, signRequest }) {
   const [filteredBuyOffers, setFilteredBuyOffers] = useState([]);
   const [countBuyOffers, setCountBuyOffers] = useState(null);
   const [countSellOffers, setCountSellOffers] = useState(null);
+
+  useEffect(() => {
+    setRendered(true)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const checkApi = async () => {
     if (!id) {
@@ -213,7 +237,7 @@ export default function Nft({ setSignRequest, account, signRequest }) {
         <tbody key={i}>
           <tr>
             <td className='bold'>{eventType(nftEvent)}</td>
-            <td>{fullDateAndTime(nftEvent.changedAt)} <a href={"/explorer/" + nftEvent.txHash}><LinkIcon /></a></td>
+            <td>{rendered && fullDateAndTime(nftEvent.changedAt)} <Link href={"/explorer/" + nftEvent.txHash}><LinkIcon /></Link></td>
           </tr>
           {(nftEvent.amount && nftEvent.amount !== "0") &&
             <tr>
@@ -253,7 +277,7 @@ export default function Nft({ setSignRequest, account, signRequest }) {
     if (offers.length > 0) {
       return offers.map((offer, i) =>
         <tbody key={i}>
-          {trStatus(offer)}
+          {trStatus(t, offer)}
           {trWithAccount(offer, 'owner', buyerOrSeller, "/explorer/")}
           <tr>
             <td>{t("table.amount")}</td>
@@ -261,23 +285,23 @@ export default function Nft({ setSignRequest, account, signRequest }) {
           </tr>
           <tr>
             <td>{t("table.placed")}</td>
-            <td>{fullDateAndTime(offer.createdAt)} <a href={"/explorer/" + offer.createdTxHash}><LinkIcon /></a></td>
+            <td>{fullDateAndTime(offer.createdAt)} <Link href={"/explorer/" + offer.createdTxHash}><LinkIcon /></Link></td>
           </tr>
           {offer.acceptedAt &&
             <tr>
               <td>{t("table.accepted")}</td>
-              <td>{fullDateAndTime(offer.acceptedAt)} <a href={"/explorer/" + offer.acceptedTxHash}><LinkIcon /></a></td>
+              <td>{fullDateAndTime(offer.acceptedAt)} <Link href={"/explorer/" + offer.acceptedTxHash}><LinkIcon /></Link></td>
             </tr>
           }
           {offer.canceledAt &&
             <tr>
               <td>{t("table.canceled")}</td>
-              <td>{fullDateAndTime(offer.canceledAt)} <a href={"/explorer/" + offer.canceledTxHash}><LinkIcon /></a></td>
+              <td>{fullDateAndTime(offer.canceledAt)} <Link href={"/explorer/" + offer.canceledTxHash}><LinkIcon /></Link></td>
             </tr>
           }
           {offer.expiration &&
             <tr>
-              <td>{expirationExpired(offer.expiration)}</td>
+              <td>{expirationExpired(t, offer.expiration)}</td>
               <td>{fullDateAndTime(offer.expiration, "expiration")}</td>
             </tr>
           }
@@ -405,7 +429,7 @@ export default function Nft({ setSignRequest, account, signRequest }) {
             }
           })}
         >
-          <img src={xummImg} className='xumm-logo' alt="xumm" />
+          <Image src={xummImg} className='xumm-logo' alt="xumm" height={24} width={24} />
           {t("nft.cancel-for")} {amountFormat(best.amount)}
         </button>
         <br /><br />
@@ -432,7 +456,7 @@ export default function Nft({ setSignRequest, account, signRequest }) {
           }
         })}
       >
-        <img src={xummImg} className='xumm-logo' alt="xumm" />
+        <Image src={xummImg} className='xumm-logo' alt="xumm" height={24} width={24} />
         {t("nft.buy-for")} {amountFormat(best.amount)}
       </button>
       <br /><br />
@@ -562,7 +586,7 @@ export default function Nft({ setSignRequest, account, signRequest }) {
                           <td>{t("table.transfer-fee")}</td>
                           <td>{data.transferFee / 1000}%</td>
                         </tr>}
-                        {trWithFlags(data.flags)}
+                        {trWithFlags(t, data.flags)}
                         <tr>
                           <td>URI</td>
                           <td>
@@ -580,25 +604,25 @@ export default function Nft({ setSignRequest, account, signRequest }) {
                         <tr>
                           <td>{t("table.by-issuer")}</td>
                           <td>
-                            <a href={"/nft-distribution/" + data.issuer}>{t("nft.holders")}</a>,{" "}
-                            <a href={"/nft-explorer?issuer=" + data.issuer}>{t("table.all-nfts")}</a>,{" "}
-                            <a href={"/nft-sales?issuer=" + data.issuer}>{t("table.sold_few")}</a>,{" "}
-                            <a href={"/nft-explorer?issuer=" + data.issuer + "&list=onSale"}>{t("table.on-sale")}</a>
+                            <Link href={"/nft-distribution/" + data.issuer}>{t("nft.holders")}</Link>,{" "}
+                            <Link href={"/nft-explorer?issuer=" + data.issuer}>{t("table.all-nfts")}</Link>,{" "}
+                            <Link href={"/nft-sales?issuer=" + data.issuer}>{t("table.sold_few")}</Link>,{" "}
+                            <Link href={"/nft-explorer?issuer=" + data.issuer + "&list=onSale"}>{t("table.on-sale")}</Link>
                           </td>
                         </tr>
                         <tr>
                           <td>{t("table.by-taxon")}</td>
                           <td>
-                            <a href={"/nft-explorer?issuer=" + data.issuer + "&taxon=" + data.nftokenTaxon}>{t("table.all-nfts")}</a>,{" "}
-                            <a href={"/nft-sales?issuer=" + data.issuer + "&taxon=" + data.nftokenTaxon}>{t("table.sold_few")}</a>,{" "}
-                            <a href={"/nft-explorer?issuer=" + data.issuer + "&taxon=" + data.nftokenTaxon + "&list=onSale"}>{t("table.on-sale")}</a>
+                            <Link href={"/nft-explorer?issuer=" + data.issuer + "&taxon=" + data.nftokenTaxon}>{t("table.all-nfts")}</Link>,{" "}
+                            <Link href={"/nft-sales?issuer=" + data.issuer + "&taxon=" + data.nftokenTaxon}>{t("table.sold_few")}</Link>,{" "}
+                            <Link href={"/nft-explorer?issuer=" + data.issuer + "&taxon=" + data.nftokenTaxon + "&list=onSale"}>{t("table.on-sale")}</Link>
                           </td>
                         </tr>
                         <tr>
                           <td>{t("table.by-owner")}</td>
                           <td>
-                            <a href={"/nft-explorer?owner=" + data.owner}>{t("table.all-nfts")}</a>,{" "}
-                            <a href={"/nft-explorer?owner=" + data.owner + "&list=onSale"}>{t("table.on-sale")}</a>
+                            <Link href={"/nft-explorer?owner=" + data.owner}>{t("table.all-nfts")}</Link>,{" "}
+                            <Link href={"/nft-explorer?owner=" + data.owner + "&list=onSale"}>{t("table.on-sale")}</Link>
                           </td>
                         </tr>
                       </tbody>

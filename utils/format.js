@@ -1,5 +1,4 @@
 import { Buffer } from 'buffer'
-import { i18n } from '../next-i18next.config'
 import Link from 'next/link'
 
 import LinkIcon from "../public/images/link.svg"
@@ -7,14 +6,14 @@ import { stripText } from '.'
 import { mpUrl } from './nft'
 
 //table
-export const trStatus = (data) => {
+export const trStatus = (t, data) => {
   if (data.validationErrors && data.validationErrors.length > 0) {
     return <tr>
-      <td>{i18n.t("table.status")}</td>
+      <td>{t("table.status")}</td>
       <td>
         {data.validationErrors.map((error, i) =>
           <span key={i} className='red'>
-            {i18n.exists("table.text-status." + error) ? i18n.t("table.text-status." + error) : error}
+            {t("table.text-status." + error)}
           </span>
         )}
       </td>
@@ -22,15 +21,15 @@ export const trStatus = (data) => {
   }
   if (data.canceledAt || data.acceptedAt) {
     return <tr>
-      <td>{i18n.t("table.status")}</td>
+      <td>{t("table.status")}</td>
       <td className='red'>
-        {data.acceptedAt ? i18n.t("table.accepted") : i18n.t("table.canceled")}
+        {data.acceptedAt ? t("table.accepted") : t("table.canceled")}
       </td>
     </tr>
   }
 }
 
-export const trWithFlags = (flags) => {
+export const trWithFlags = (t, flags) => {
   /*
   "flags": {
     "burnable": false,
@@ -41,7 +40,7 @@ export const trWithFlags = (flags) => {
   */
   let flagList = '';
   let count = 0;
-  let name = i18n.t("table.flags");
+  let name = t("table.flags");
 
   for (let key in flags) {
     if (flags[key]) {
@@ -56,10 +55,10 @@ export const trWithFlags = (flags) => {
   flagList = flagList.slice(0, -2); // remove the last comma
 
   if (count === 1) {
-    name = i18n.t("table.flag");
+    name = t("table.flag");
   }
   if (count === 0) {
-    flagList = i18n.t("table.text.unspecified");
+    flagList = t("table.text.unspecified");
   }
   return <tr>
     <td>{name}</td>
@@ -126,7 +125,7 @@ export const nftLink = (nft, type, options = {}) => {
       const url = mpUrl(nft);
       if (url) {
         return <span>
-          {i18n.t("table.text.see-on")} <a href={url} target="_blank" rel="noreferrer">
+          {options?.seeOn} <a href={url} target="_blank" rel="noreferrer">
             {showName}
           </a>
         </span>
@@ -431,8 +430,8 @@ export const timeOrDate = (timestamp) => {
   return (new Date(timestamp * 1000)).setHours(0, 0, 0, 0) === (new Date()).setHours(0, 0, 0, 0) ? timeFormat(timestamp) : dateFormat(timestamp);
 }
 
-export const expirationExpired = (timestamp) => {
-  return new Date(timestamp * 1000) < new Date() ? i18n.t("table.expired") : i18n.t("table.expiration");
+export const expirationExpired = (t, timestamp) => {
+  return new Date(timestamp * 1000) < new Date() ? t("table.expired") : t("table.expiration");
 }
 
 //need to make dynamic fraction digits

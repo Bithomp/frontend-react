@@ -62,7 +62,13 @@ const MyApp = ({ Component, pageProps }) => {
           }
           <div className="content">
             {showTopAds && <TopLinks />}
-            <Component {...pageProps} devNet={devNet} />
+            <Component
+              {...pageProps}
+              devNet={devNet}
+              setSignRequest={setSignRequest}
+              account={account}
+              signRequest={signRequest}
+            />
           </div>
           <BackgroundImage />
           <Footer />
