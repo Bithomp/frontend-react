@@ -298,15 +298,15 @@ export default function NftVolumes({ period, sale, list, currency, currencyIssue
       priv = Number(priceFloor.private.amount);
     }
 
-    let floor = priv;
+    let floor = priceFloor.private?.amount;
     let priceColor = "orange";
     if (open && priv) {
       if (open <= priv) {
-        floor = open;
+        floor = priceFloor.open?.amount;
         priceColor = "";
       }
     } else if (open) {
-      floor = open;
+      floor = priceFloor.open?.amount;
       priceColor = "";
     }
 
