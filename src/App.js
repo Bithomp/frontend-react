@@ -8,8 +8,7 @@ import Footer from '../components/components/Footer';
 import BackgroundImage from '../components/Layout/BackgroundImage';
 
 import Username from './screens/Username';
-import Nfts from './screens/NFT/Nfts';
-import NftOffers from "./screens/NFT/NftOffers";
+import Nfts from '../pages/nfts/[[...id]]';
 
 import { network, server } from './utils';
 
@@ -60,14 +59,12 @@ export default function App() {
             element={<Username setSignRequest={setSignRequest} account={account} setAccount={setAccount} signOut={signOut} />}
           />
 
-          <Route path="/nfts/" element={<Nfts />}>
+          <Route path="/nfts/" element={<Nfts signRequest={signRequest} />}>
             <Route path="/nfts/:id" element={<Nfts />} />
           </Route>
+
           <Route path="/nft-explorer" element={<Nfts />} />
 
-          <Route path="/nft-offers/" element={<NftOffers setSignRequest={setSignRequest} signRequest={signRequest} account={account} />}>
-            <Route path="/nft-offers/:id" element={<NftOffers setSignRequest={setSignRequest} signRequest={signRequest} account={account} />} />
-          </Route>
         </Routes>
       </div>
       <BackgroundImage />

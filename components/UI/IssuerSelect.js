@@ -2,9 +2,7 @@ import Select from 'react-select';
 import { useTranslation } from "react-i18next";
 import { useState, useEffect } from 'react';
 
-import '../assets/styles/components/issuerSelect.scss';
-
-export default function CurrencySelect({ issuersList, selectedIssuer, setSelectedIssuer }) {
+export default function IssuerSelect({ issuersList, selectedIssuer, setSelectedIssuer }) {
   const { t } = useTranslation();
 
   let emptyOption = { value: '', label: t("general.all-issuers"), username: ""};
@@ -71,6 +69,7 @@ export default function CurrencySelect({ issuersList, selectedIssuer, setSelecte
       isSearchable={true}
       className="issuer-select"
       classNamePrefix="react-select"
+      instanceId="issuer-select"
     />
   );
 };

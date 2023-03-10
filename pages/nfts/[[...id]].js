@@ -1,50 +1,71 @@
 import { useTranslation } from 'next-i18next'
-import { useState, useEffect } from 'react';
-import { useParams, useSearchParams, useLocation } from "react-router-dom";
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
-import { CSVLink } from "react-csv";
-import axios from 'axios';
-import InfiniteScroll from 'react-infinite-scroll-component';
-
-import SEO from '../../components/SEO';
-import SearchBlock from '../../components/SearchBlock';
-import Tabs from '../../components/Tabs';
-import Tiles from '../../components/Tiles';
-import IssuerSelect from '../../components/IssuerSelect';
+import { CSVLink } from "react-csv"
+import axios from 'axios'
+import InfiniteScroll from 'react-infinite-scroll-component'
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
+import Link from 'next/link'
 
 import { isAddressOrUsername, setTabParams, addQueryParams } from '../../utils';
 import { isValidTaxon, nftThumbnail, nftNameLink, bestSellOffer, mpUrl } from '../../utils/nft';
 import { nftLink, usernameOrAddress, userOrServiceLink, amountFormat } from '../../utils/format';
 
-export default function Nfts() {
-  const { t } = useTranslation();
-  const { id } = useParams();
-  const location = useLocation();
-  const router = useRouter()
+export const getServerSideProps = async ({ query, locale }) => {
+  const { view, list, saleDestination, saleCurrency, saleCurrencyIssuer, search, issuer, owner, taxon } = query
+  return {
+    props: {
+      view: view || "tiles",
+      list: list || "nfts",
+      saleDestination: saleDestination || "publicAndKnownBrokers",
+      saleCurrency: saleCurrency || "xrp",
+      saleCurrencyIssuer: saleCurrencyIssuer || "",
+      searchQuery: search || "",
+      issuerQuery: issuer || "",
+      ownerQuery: owner || "",
+      taxonQuery: taxon || "",
+      ...(await serverSideTranslations(locale, ['common'])),
+    },
+  }
+}
 
-  const [searchParams] = useSearchParams();
+import SEO from '../../components/SEO';
+import SearchBlock from '../../components/Layout/SearchBlock';
+import Tabs from '../../components/Tabs';
+import Tiles from '../../components/Tiles';
+import IssuerSelect from '../../components/UI/IssuerSelect';
+
+export default function Nfts({ view, list, saleDestination, saleCurrency, saleCurrencyIssuer, searchQuery, issuerQuery, ownerQuery, taxonQuery }) {
+  const { t } = useTranslation();
+  const router = useRouter()
+  const { id } = router.query
+
+  const [rendered, setRendered] = useState(false)
   const [data, setData] = useState([]);
   const [rawData, setRawData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState("first");
   const [errorMessage, setErrorMessage] = useState("");
-  const [viewTab, setViewTab] = useState(searchParams.get("view") || "tiles");
-  const [listTab, setListTab] = useState(searchParams.get("list") || "nfts");
-  const [saleDestinationTab, setSaleDestinationTab] = useState(searchParams.get("saleDestination") || "publicAndKnownBrokers");
-  const [saleCurrency] = useState(searchParams.get("saleCurrency") || "xrp");
-  const [saleCurrencyIssuer] = useState(searchParams.get("saleCurrencyIssuer") || "");
-  const [search, setSearch] = useState(searchParams.get("search") || "");
+  const [viewTab, setViewTab] = useState(view);
+  const [listTab, setListTab] = useState(list);
+  const [saleDestinationTab, setSaleDestinationTab] = useState(saleDestination);
+  const [search, setSearch] = useState(searchQuery);
   const [filteredData, setFilteredData] = useState([]);
   const [userData, setUserData] = useState({});
   const [issuersList, setIssuersList] = useState([]);
-  const [issuer, setIssuer] = useState(searchParams.get("issuer") || "");
-  const [owner, setOwner] = useState(searchParams.get("owner") || "");
-  const [taxon, setTaxon] = useState(searchParams.get("taxon") || "");
-  const [issuerInput, setIssuerInput] = useState(searchParams.get("issuer") || "");
-  const [ownerInput, setOwnerInput] = useState(searchParams.get("owner") || "");
-  const [taxonInput, setTaxonInput] = useState(searchParams.get("taxon") || "");
+  const [issuer, setIssuer] = useState(issuerQuery);
+  const [owner, setOwner] = useState(ownerQuery);
+  const [taxon, setTaxon] = useState(taxonQuery);
+  const [issuerInput, setIssuerInput] = useState(issuerQuery);
+  const [ownerInput, setOwnerInput] = useState(ownerQuery);
+  const [taxonInput, setTaxonInput] = useState(taxonQuery);
 
-  const nftExplorer = location.pathname.includes("nft-explorer");
+  const nftExplorer = id?.includes("nft-explorer");
+
+  useEffect(() => {
+    setRendered(true)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const viewTabList = [
     { value: 'tiles', label: t("tabs.tiles") },
@@ -169,7 +190,7 @@ export default function Nfts() {
       checkApi({ restart: true });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id, issuer, taxon, owner, listTab, saleDestinationTab]);
+  }, [issuer, taxon, owner, listTab, saleDestinationTab]);
 
   useEffect(() => {
     let queryAddList = [];
@@ -378,7 +399,7 @@ export default function Nfts() {
       {nftExplorer && <>
         <h2 className='center'>{t("nft-explorer.header") + " "}</h2>
         <p className='center'>
-          <a href={"/nft-sales" + issuerTaxonUrlPart} style={{ marginRight: "5px" }}>{t("nft-sales.header")}</a>
+          <Link href={"/nft-sales" + issuerTaxonUrlPart} style={{ marginRight: "5px" }}>{t("nft-sales.header")}</Link>
         </p>
         <div className='center'>
           <span className='halv'>
@@ -443,14 +464,16 @@ export default function Nfts() {
         {listTab === 'onSale' &&
           <Tabs tabList={saleDestinationTabList} tab={saleDestinationTab} setTab={setSaleDestinationTab} name='saleDestination' />
         }
-        <CSVLink
-          data={data || []}
-          headers={csvHeaders}
-          filename='nfts_export.csv'
-          className={'button-action thin narrow' + (!(data && data.length > 0) ? ' disabled' : '')}
-        >
-          ⇩ CSV
-        </CSVLink>
+        {rendered &&
+          <CSVLink
+            data={data || []}
+            headers={csvHeaders}
+            filename='nfts_export.csv'
+            className={'button-action thin narrow' + (!(data && data.length > 0) ? ' disabled' : '')}
+          >
+            ⇩ CSV
+          </CSVLink>
+        }
       </div>
       {(id || issuer || owner) ?
         <InfiniteScroll

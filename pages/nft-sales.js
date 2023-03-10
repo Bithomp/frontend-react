@@ -37,6 +37,7 @@ export default function NftSales({ view, sale, list, currency, currencyIssuer, i
   const { t } = useTranslation();
   const router = useRouter()
 
+  const [rendered, setRendered] = useState(false)
   const [data, setData] = useState(null);
   const [sales, setSales] = useState([]);
   const [viewTab, setViewTab] = useState(view);
@@ -52,7 +53,6 @@ export default function NftSales({ view, sale, list, currency, currencyIssuer, i
   const [pageTab, setPageTab] = useState(list);
   const [hasMore, setHasMore] = useState("first");
   const [dateAndTimeNow, setDateAndTimeNow] = useState('')
-  const [rendered, setRendered] = useState(false)
 
   useEffect(() => {
     const date = new Date(Date.now()).toLocaleDateString([], { year: 'numeric', month: 'short', day: '2-digit' })
@@ -343,7 +343,7 @@ export default function NftSales({ view, sale, list, currency, currencyIssuer, i
         <Tabs tabList={periodTabList} tab={periodTab} setTab={setPeriodTab} name="period" />
         <Tabs tabList={saleTabList} tab={saleTab} setTab={setSaleTab} name="sale" />
         {rendered &&
-          < CSVLink
+          <CSVLink
             data={sales}
             headers={csvHeaders}
             filename={'nft sales export ' + dateAndTimeNow + '.csv'}
