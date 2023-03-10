@@ -65,9 +65,11 @@ const MyApp = ({ Component, pageProps }) => {
             <Component
               {...pageProps}
               devNet={devNet}
+              signRequest={signRequest}
               setSignRequest={setSignRequest}
               account={account}
-              signRequest={signRequest}
+              setAccount={setAccount}
+              signOut={signOut}
             />
           </div>
           <BackgroundImage />

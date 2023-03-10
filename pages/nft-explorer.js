@@ -1,5 +1,5 @@
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import NftsComponent from '../../components/NftsComponent';
+import NftsComponent from '../components/NftsComponent';
 
 export const getServerSideProps = async ({ query, locale }) => {
   const { view, list, saleDestination, saleCurrency, saleCurrencyIssuer, search, issuer, owner, taxon } = query
@@ -30,6 +30,6 @@ export default function Nfts({ view, list, saleDestination, saleCurrency, saleCu
     issuerQuery={issuerQuery}
     ownerQuery={ownerQuery}
     taxonQuery={taxonQuery}
-    nftExplorer={false}
+    nftExplorer={true}
   />
 };
