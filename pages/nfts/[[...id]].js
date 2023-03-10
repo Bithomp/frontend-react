@@ -7,7 +7,7 @@ import InfiniteScroll from 'react-infinite-scroll-component'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import Link from 'next/link'
 
-import { isAddressOrUsername, setTabParams, addQueryParams } from '../../utils';
+import { isAddressOrUsername, setTabParams, addQueryParams, removeQueryParams } from '../../utils';
 import { isValidTaxon, nftThumbnail, nftNameLink, bestSellOffer, mpUrl } from '../../utils/nft';
 import { nftLink, usernameOrAddress, userOrServiceLink, amountFormat } from '../../utils/format';
 
@@ -216,7 +216,12 @@ export default function Nfts({ view, list, saleDestination, saleCurrency, saleCu
           name: "taxon",
           value: rawData.taxon
         })
+      } else {
+        queryRemoveList.push("taxon")
       }
+    } else {
+      queryRemoveList.push("issuer")
+      queryRemoveList.push("taxon")
     }
 
     let tabsToSet = [
@@ -258,12 +263,14 @@ export default function Nfts({ view, list, saleDestination, saleCurrency, saleCu
     let searchName = e.target.value;
     setSearch(searchName);
     if (searchName) {
-      addQueryParams([
+      addQueryParams(router, [
         {
           name: "search",
           value: searchName
         }
       ])
+    } else {
+      removeQueryParams(router, ["search"])
     }
   }
 
@@ -497,11 +504,13 @@ export default function Nfts({ view, list, saleDestination, saleCurrency, saleCu
         >
           {!nftExplorer &&
             <div className='center' style={{ marginBottom: "10px" }}>
-              <IssuerSelect
-                issuersList={issuersList}
-                selectedIssuer={issuer}
-                setSelectedIssuer={setIssuer}
-              />
+              {rendered &&
+                <IssuerSelect
+                  issuersList={issuersList}
+                  selectedIssuer={issuer}
+                  setSelectedIssuer={setIssuer}
+                />
+              }
               <input
                 placeholder={t("nfts.search-by-name")}
                 value={search}

@@ -97,10 +97,12 @@ export default function Username({ setSignRequest, account, setAccount, signOut 
   useEffect(() => {
     if (account?.address) {
       setAddress(account.address);
-      addQueryParams([{
-        name: address,
-        value: account.address
-      }])
+      addQueryParams(router, [
+        {
+          name: address,
+          value: account.address
+        }
+      ])
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [account]);

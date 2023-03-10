@@ -92,9 +92,11 @@ export const removeQueryParams = (router, removeList) => {
   router.replace({ pathname, query: params.toString() }, null, { shallow: true })
 }
 
-export const addQueryParams = (router, addList) => {
+export const addQueryParams = (router, addList = []) => {
+  if (!addList.length) return;
   for (let i = 0; i < addList.length; i++) {
-    router.query[addList.name] = addList.value
+    const { name, value } = addList[i]
+    router.query[name] = value
   }
   router.replace(router, null, { shallow: true })
 }
