@@ -1,12 +1,10 @@
 import { useTranslation } from 'next-i18next'
-import { useState, useEffect } from 'react';
-import { useParams } from "react-router-dom";
-import axios from 'axios';
-
-import SEO from '../../../components/SEO';
-import SearchBlock from '../../../components/SearchBlock';
-import CopyButton from '../../../components/CopyButton';
-import NftImageAndVideo from '../../../components/NftPreview';
+import { useState, useEffect } from 'react'
+import axios from 'axios'
+import { useRouter } from 'next/router'
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
+import Image from 'next/image'
+import Link from 'next/link'
 
 import {
   fullDateAndTime,
@@ -16,15 +14,35 @@ import {
   expirationExpired,
   trStatus,
   nftIdLink
-} from '../../../utils/format';
+} from '../../utils/format'
 
-import { ReactComponent as LinkIcon } from "../../../public/images/link.svg";
-import xummImg from "../../../public/images/xumm.png";
-import './styles.scss';
+export async function getStaticProps({ locale }) {
+  return {
+    props: {
+      ...(await serverSideTranslations(locale, ['common'])),
+    }
+  }
+}
+
+export async function getStaticPaths() {
+  return {
+    paths: [],
+    fallback: 'blocking'
+  }
+}
+
+import SEO from '../../components/SEO'
+import SearchBlock from '../../components/Layout/SearchBlock'
+import CopyButton from '../../components/UI/CopyButton'
+import NftImageAndVideo from '../../components/NftPreview'
+
+import LinkIcon from "../../public/images/link.svg"
+const xummImg = "/images/xumm.png"
 
 export default function NftOffer({ setSignRequest, signRequest, account }) {
-  const { t } = useTranslation();
-  const { id } = useParams();
+  const { t } = useTranslation()
+  const router = useRouter()
+  const { id } = router.query
 
   const [data, setData] = useState({});
   const [loading, setLoading] = useState(false);
@@ -184,7 +202,7 @@ export default function NftOffer({ setSignRequest, signRequest, account }) {
                             }
                           })}
                         >
-                          <img src={xummImg} className='xumm-logo' alt="xumm" />
+                          <Image src={xummImg} className='xumm-logo' alt="xumm" height={24} width={24} />
                           {t("nft.cancel-for")} {amountFormat(data.amount)}
                         </button>
                         <br /><br />
@@ -203,7 +221,7 @@ export default function NftOffer({ setSignRequest, signRequest, account }) {
                             }
                           })}
                         >
-                          <img src={xummImg} className='xumm-logo' alt="xumm" />
+                          <Image src={xummImg} className='xumm-logo' alt="xumm" height={24} width={24} />
                           {t("nft.buy-for")} {amountFormat(data.amount)}
                         </button>
                         <br /><br />
@@ -230,7 +248,7 @@ export default function NftOffer({ setSignRequest, signRequest, account }) {
                         </tr>
                         <tr>
                           <td>{t("table.placed")}</td>
-                          <td>{fullDateAndTime(data.createdAt)} <a href={"/explorer/" + data.createdTxHash}><LinkIcon /></a></td>
+                          <td>{fullDateAndTime(data.createdAt)} <Link href={"/explorer/" + data.createdTxHash}><LinkIcon /></Link></td>
                         </tr>
                         {data.expiration &&
                           <tr>
@@ -242,7 +260,7 @@ export default function NftOffer({ setSignRequest, signRequest, account }) {
                           <>
                             <tr>
                               <td>{t("table.accepted")}</td>
-                              <td>{fullDateAndTime(data.acceptedAt)} <a href={"/explorer/" + data.acceptedTxHash}><LinkIcon /></a></td>
+                              <td>{fullDateAndTime(data.acceptedAt)} <Link href={"/explorer/" + data.acceptedTxHash}><LinkIcon /></Link></td>
                             </tr>
                             {data.acceptedAccount && trWithAccount(data, 'acceptedAccount', t("table.accepted-by"), "/explorer/")}
                           </>
@@ -250,19 +268,19 @@ export default function NftOffer({ setSignRequest, signRequest, account }) {
                         {data.canceledAt &&
                           <tr>
                             <td>{t("table.canceled")}</td>
-                            <td>{fullDateAndTime(data.canceledAt)} <a href={"/explorer/" + data.canceledTxHash}><LinkIcon /></a></td>
+                            <td>{fullDateAndTime(data.canceledAt)} <Link href={"/explorer/" + data.canceledTxHash}><LinkIcon /></Link></td>
                           </tr>
                         }
                       </tbody>
                     </table>
                     <p>
-                      <a href={"/nft-offers/" + data.account}>{t("links.active-offers-same-account")}</a>
+                      <Link href={"/nft-offers/" + data.account}>{t("links.active-offers-same-account")}</Link>
                     </p>
                     <p>
-                      <a href={"/nfts/" + data.account}>{t("links.owned-nfts-same-account")}</a>
+                      <Link href={"/nfts/" + data.account}>{t("links.owned-nfts-same-account")}</Link>
                     </p>
                     <p>
-                      {t("links.nfts-same-issuer")}: <a href={"/nft-explorer?issuer=" + data.nftoken.issuer}>{t("links.all")}</a>, <a href={"/nft-sales?issuer=" + data.nftoken.issuer}>{t("links.sold")}</a>
+                      {t("links.nfts-same-issuer")}: <Link href={"/nft-explorer?issuer=" + data.nftoken.issuer}>{t("links.all")}</Link>, <Link href={"/nft-sales?issuer=" + data.nftoken.issuer}>{t("links.sold")}</Link>
                     </p>
                   </div>
                 </>
