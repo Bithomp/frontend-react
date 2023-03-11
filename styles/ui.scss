@@ -614,12 +614,16 @@ body.dark {
 @import "./components/topLinks.scss";
 @import "./components/searchBlock.scss";
 @import "./components/tabs.scss";
-@import "./components/tiles.scss";
 @import "./components/issuerSelect.scss";
 @import "./components/footer.scss";
 
+//components
+@import "./components/tiles.scss";
+@import "./components/receipt.scss";
+
 //home page
 @import "./components/currencySelect.scss";
+@import "./components/countrySelect.scss";
 @import "./components/converter.scss";
 @import "./components/priceChart.scss";
 
@@ -628,4 +632,5 @@ body.dark {
 @import "./pages/nft.scss";
 @import "./pages/nft-offer.scss";
 @import "./pages/alerts.scss";
+@import "./pages/username.scss";
 @import "./pages/genesis.scss";

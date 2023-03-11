@@ -1,9 +1,8 @@
 import { useTranslation } from 'next-i18next'
 
-import { fullDateAndTime } from '../../utils/format';
+import { fullDateAndTime } from '../utils/format'
 
-import { ReactComponent as Logo } from "../../public/images/logo.svg";
-import './styles.scss';
+import Logo from "../public/images/logo.svg"
 
 export default function Receipt({ item, details }) {
   const { t } = useTranslation();
@@ -114,6 +113,5 @@ export default function Receipt({ item, details }) {
         <input type="button" value={t("button.print")} className="button-action" onClick={onPrint} />
       </p>
     </>
-
   );
 };

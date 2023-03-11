@@ -1,11 +1,10 @@
 import Select from 'react-select'
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'next-i18next'
-import countries from "i18n-iso-countries";
-import axios from 'axios';
-import useLocalStorage from 'use-local-storage';
+import countries from "i18n-iso-countries"
+import axios from 'axios'
 
-import '../assets/styles/components/countrySelect.scss';
+import { useLocalStorage } from '../../utils'
 
 export default function CountrySelect({ setCountryCode }) {
   const { i18n } = useTranslation();

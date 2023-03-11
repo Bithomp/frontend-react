@@ -1,32 +1,44 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react'
 import { useTranslation, Trans } from 'next-i18next'
-import { useSearchParams, Link } from "react-router-dom";
+import Link from 'next/link'
 import { useRouter } from 'next/router'
 import dynamic from 'next/dynamic'
 const { isMobile } = dynamic(() => import('react-device-detect'), { ssr: false })
-import axios from 'axios';
-import { Buffer } from 'buffer';
+import axios from 'axios'
+import { Buffer } from 'buffer'
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
-import { isAddressValid, isUsernameValid, server, wssServer, devNet, addAndRemoveQueryParams, addQueryParams } from '../../utils';
-import { payloadXummPost, xummWsConnect, xummCancel } from '../../utils/xumm';
+import { isAddressValid, isUsernameValid, server, wssServer, devNet, addAndRemoveQueryParams, addQueryParams } from '../utils'
+import { payloadXummPost, xummWsConnect, xummCancel } from '../utils/xumm'
 
-import CountrySelect from '../../components/CountrySelect';
-import CheckBox from '../../../components/UI/CheckBox';
-import Receipt from '../../../components/Receipt';
-import XummQr from "../../../components/Xumm/Qr";
+export const getServerSideProps = async ({ query, locale }) => {
+  const { address, username, receipt } = query
+  return {
+    props: {
+      addressQuery: address || "",
+      usernameQuery: username || "",
+      receiptQuery: receipt || "false",
+      ...(await serverSideTranslations(locale, ['common'])),
+    },
+  }
+}
 
-import qr from "../../public/images/qr.gif";
-import checkmark from "../../public/images/checkmark.svg";
-import './styles.scss';
+import CountrySelect from '../components/UI/CountrySelect'
+import CheckBox from '../components/UI/CheckBox'
+import Receipt from '../components/Receipt'
+import XummQr from "../components/Xumm/Qr"
+import SEO from '../components/SEO'
+
+const qr = "images/qr.gif";
+const checkmark = "/images/checkmark.svg";
 
 let interval;
 let ws = null;
 
-export default function Username({ setSignRequest, account, setAccount, signOut }) {
+export default function Username({ setSignRequest, account, setAccount, signOut, addressQuery, usernameQuery, receiptQuery }) {
   const { t, i18n } = useTranslation()
   const router = useRouter()
 
-  const [searchParams] = useSearchParams();
   const [address, setAddress] = useState("");
   const [username, setUsername] = useState("");
   const [receipt, setReceipt] = useState(false);
@@ -45,18 +57,15 @@ export default function Username({ setSignRequest, account, setAccount, signOut 
   const [showXummQr, setShowXummQr] = useState(false);
   const [expiredQr, setExpiredQr] = useState(false);
   const [xummQrSrc, setXummQrSrc] = useState(qr);
+  const [xummUserToken, setXummUserToken] = useState(null);
 
   let addressRef;
   let usernameRef;
 
-  const xummUserToken = localStorage.getItem('xummUserToken');
-
   useEffect(() => {
+    setXummUserToken(localStorage.getItem('xummUserToken'))
     let queryAddList = [];
     let queryRemoveList = [];
-    let getAddress = searchParams.get("address");
-    let getUsername = searchParams.get("username");
-    let getReceipt = searchParams.get("receipt");
     if (account) {
       if (account.address) {
         setAddress(account.address);
@@ -66,18 +75,18 @@ export default function Username({ setSignRequest, account, setAccount, signOut 
         })
       }
     } else {
-      if (isAddressValid(getAddress)) {
-        setAddress(getAddress);
+      if (isAddressValid(addressQuery)) {
+        setAddress(addressQuery);
       } else {
         queryRemoveList.push("address");
       }
     }
-    if (isUsernameValid(getUsername)) {
-      setUsername(getUsername);
+    if (isUsernameValid(usernameQuery)) {
+      setUsername(usernameQuery);
     } else {
       queryRemoveList.push("username");
     }
-    if (getReceipt === "true") {
+    if (receiptQuery === "true") {
       setReceipt(true);
     } else {
       queryRemoveList.push("receipt");
@@ -492,7 +501,8 @@ export default function Username({ setSignRequest, account, setAccount, signOut 
     }
   }
 
-  return (
+  return <>
+    <SEO title={t("menu.usernames")} />
     <div className="page-username content-center">
       <h1 className="center">{t("menu.usernames")}</h1>
       {!step &&
@@ -658,5 +668,5 @@ export default function Username({ setSignRequest, account, setAccount, signOut 
         </p>
       }
     </div>
-  );
+  </>
 };
