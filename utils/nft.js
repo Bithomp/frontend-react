@@ -242,6 +242,7 @@ const metaUrl = (nft, type = 'image', gateway = 'our') => {
   }
   if (type === 'model') {
     if (meta['3D_model']) return assetUrl(meta['3D_model'], type, gateway);
+    if (meta['3d_model']) return assetUrl(meta['3d_model'], type, gateway);
   }
   if (type === 'viewer') {
     if (isCorrectFileType(meta.animation, type)) return assetUrl(meta.animation, type, gateway);

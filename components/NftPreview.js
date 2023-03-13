@@ -2,17 +2,17 @@ import { useState } from "react";
 import { useTranslation } from 'next-i18next'
 import Head from "next/head"
 
-import { nftUrl } from '../utils/nft';
+import { stripText } from "../utils"
+import { nftUrl } from '../utils/nft'
 
-import LoadingGif from "../public/images/loading.gif";
-
-import Tabs from './Tabs';
+import Tabs from './Tabs'
+import LoadingGif from "../public/images/loading.gif"
 
 export default function NftPreview({ nft }) {
-  const { t } = useTranslation();
-  const [contentTab, setContentTab] = useState("image");
-  const [loaded, setLoaded] = useState(false);
-  const [errored, setErrored] = useState(false);
+  const { t } = useTranslation()
+  const [contentTab, setContentTab] = useState("image")
+  const [loaded, setLoaded] = useState(false)
+  const [errored, setErrored] = useState(false)
 
   const style = {
     textAlign: "center",
@@ -72,6 +72,55 @@ export default function NftPreview({ nft }) {
     } else if (clUrl['model']) {
       defaultTab = 'model';
       defaultUrl = clUrl['model'];
+    }
+  }
+
+  //add attributes for the 3D model viewer 
+  let modelAttr = []
+  if (nft.metadata && (nft.metadata['3D_attributes'] || nft.metadata['3d_attributes'])) {
+    modelAttr = nft.metadata['3D_attributes'] || nft.metadata['3d_attributes']
+    const supportedAttr = [
+      'environment-image',
+      'exposure',
+      'shadow-intensity',
+      'shadow-softness',
+      'camera-orbit',
+      'camera-target',
+      'skybox-image',
+      'auto-rotate-delay',
+      'rotation-per-second',
+      'field-of-view',
+      'max-camera-orbit',
+      'min-camera-orbit',
+      'max-field-of-view',
+      'min-field-of-view',
+      'disable-zoom',
+      'orbit-sensitivity',
+      'animation-name',
+      'animation-crossfade-duration',
+      'variant-name',
+      'orientation',
+      'scale'
+    ]
+    if (Array.isArray(modelAttr)) {
+      for (let i = 0; i < modelAttr.length; i++) {
+        if (supportedAttr.includes(modelAttr[i].attribute)) {
+          modelAttr[i].value = stripText(modelAttr[i].value)
+        } else {
+          delete modelAttr[i]
+        }
+      }
+    } else if (typeof modelAttr === 'object') {
+      let metaModelAttr = modelAttr
+      modelAttr = []
+      Object.keys(metaModelAttr).forEach(e => {
+        if (supportedAttr.includes(e)) {
+          modelAttr.push({
+            "attribute": e,
+            "value": stripText(metaModelAttr[e])
+          })
+        }
+      })
     }
   }
 
@@ -146,6 +195,12 @@ export default function NftPreview({ nft }) {
               ar
               poster={LoadingGif}
               autoplay
+              {
+              ...modelAttr?.reduce((prev, curr) => {
+                prev[curr.attribute] = curr.value
+                return prev;
+              }, {})
+              }
             >
             </model-viewer>
           </>

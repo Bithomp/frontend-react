@@ -497,8 +497,8 @@ export default function Nft({ setSignRequest, account, signRequest }) {
                           <tbody>
                             {data.metadata.attributes.map((attr, i) =>
                               <tr key={i}>
-                                <td>{attr.trait_type}</td>
-                                <td>{attr.value}</td>
+                                <td>{stripText(attr.trait_type)}</td>
+                                <td>{stripText(attr.value)}</td>
                               </tr>
                             )}
                           </tbody>
