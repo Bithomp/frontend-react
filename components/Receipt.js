@@ -2,23 +2,23 @@ import { useTranslation } from 'next-i18next'
 
 import { fullDateAndTime } from '../utils/format'
 
+import { useTheme } from "./Layout/ThemeContext"
+
 import Logo from "../public/images/logo.svg"
 
 export default function Receipt({ item, details }) {
-  const { t } = useTranslation();
+  const { t } = useTranslation()
+  const { theme } = useTheme();
 
   if (!details) {
     return;
   }
 
   const onPrint = () => {
-    const isDarkPage = document.body.classList.contains('dark');
-    if (isDarkPage) {
-      body.classList.remove("dark")
-      body.classList.add("light")
+    if (theme === 'dark') {
+      global.window.__setPreferredTheme("light")
       window.print()
-      body.classList.remove("light")
-      body.classList.add("dark")
+      global.window.__setPreferredTheme("dark")
     } else {
       window.print()
     }
@@ -71,7 +71,7 @@ export default function Receipt({ item, details }) {
         <div className="receipt-body">
           <div className="receipt-details">
             <div className="receipt-header">
-              <Logo style={{ width: "40%" }} />
+              <Logo style={{ width: "40%" }} id="receiptLogo" />
               <div>{timestamp}</div>
             </div>
             <table>

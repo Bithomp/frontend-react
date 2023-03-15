@@ -444,11 +444,13 @@ export default function Username({ setSignRequest, account, setAccount, signOut,
       setErrorMessage("");
       clearInterval(interval);
 
-      setAccount({
-        address: account.address,
-        hashicon: account.hashicon,
-        username: data.bid.bithompid
-      })
+      if (account) {
+        setAccount({
+          address: account.address,
+          hashicon: account.hashicon,
+          username: data.bid.bithompid
+        })
+      }
 
       if (ws) ws.close();
       return;

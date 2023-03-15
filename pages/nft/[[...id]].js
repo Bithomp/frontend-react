@@ -404,6 +404,7 @@ export default function Nft({ setSignRequest, account, signRequest }) {
       isSearchable={false}
       className="offer-history-filter-select"
       classNamePrefix="react-select"
+      instanceId="offer-history-filter-select"
     />
   }
 

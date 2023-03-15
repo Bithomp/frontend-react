@@ -72,6 +72,7 @@ export default function CountrySelect({ setCountryCode }) {
       isSearchable={true}
       className="country-select"
       classNamePrefix="react-select"
+      instanceId="country-select"
     />
   );
 };

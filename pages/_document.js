@@ -27,14 +27,16 @@ export default function Document() {
                     localStorage.setItem("theme", JSON.stringify(window.__theme));
                   } catch (err) {}
                 };
-                const darkQuery = window.matchMedia("(prefers-color-scheme: dark)");
-                darkQuery.addListener(function (event) {
-                  window.__setPreferredTheme(event.matches ? "dark" : "light");
-                });
                 let preferredTheme;
                 try {
                   preferredTheme = JSON.parse(localStorage.getItem("theme"));
                 } catch (err) {}
+                const darkQuery = window.matchMedia("(prefers-color-scheme: dark)");
+                if (!preferredTheme) {
+                  darkQuery.addListener(function (event) {
+                    window.__setPreferredTheme(event.matches ? "dark" : "light");
+                  });
+                }
                 setTheme(preferredTheme || (darkQuery.matches ? "dark" : "light"));
               })();
             `
