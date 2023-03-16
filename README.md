@@ -18,19 +18,7 @@ Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 The page will reload when you make changes.\
 You may also see any lint errors in the console.
 
-### `yarn test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
 ### `yarn build`
-
-* the subfolder is specified in:
-`package.json`, `"homepage": "/react"`,
-`/src/services/i18n.js`, `loadPath: '/react/locales/{{lng}}/{{ns}}.json'`,
-
-It can also be added here to make it work locally.
-`/src/index.js`, `<BrowserRouter basename='/react/'>`
 
 Builds the app for production to the `build` folder.\
 It correctly bundles React in production mode and optimizes the build for the best performance.
