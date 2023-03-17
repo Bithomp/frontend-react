@@ -10,4 +10,13 @@ module.exports = {
     return config;
   },
   compress: false,
+  async redirects() {
+    return [
+      {
+        source: '/go/:path*',
+        destination: '/api/go/:path*',
+        permanent: true
+      }
+    ]
+  },
 };
