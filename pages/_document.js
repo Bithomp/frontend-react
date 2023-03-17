@@ -7,7 +7,6 @@ export default function Document() {
       <Head>
         <link rel="icon" href="/favicon.ico" />
         <meta name="theme-color" content="#000000" />
-        <meta name="monetization" content="$ilp.uphold.com/3dJnef2dZfna" />
         <link rel="apple-touch-icon" href="/logo192.png" />
         <link rel="manifest" href="/manifest.json" />
       </Head>
