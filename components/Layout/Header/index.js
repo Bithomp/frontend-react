@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { useTranslation } from 'next-i18next'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 import { devNet, useLocalStorage } from '../../../utils'
 
@@ -10,9 +10,14 @@ import LogoAnimated from '../LogoAnimated'
 export default function Header({ setSignRequest, account, signOut }) {
   const { t } = useTranslation('common')
 
+  const [rendered, setRendered] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false)
   const [isCopied, setIsCopied] = useState(false)
   const [xummUserToken] = useLocalStorage('xummUserToken')
+
+  useEffect(() => {
+    setRendered(true);
+  }, []);
 
   let address, hashicon, displayName, username;
   if (account && account.address) {
@@ -28,7 +33,7 @@ export default function Header({ setSignRequest, account, signOut }) {
 
   const mobileMenuToggle = () => {
     // remove scrollbar when menu is open
-    if (typeof window != 'undefined' && window.document) {
+    if (rendered) {
       if (!menuOpen) {
         document.getElementsByClassName("mobile-menu")[0].style.transform = "translateX(0)";
         document.body.style.overflow = "hidden";
