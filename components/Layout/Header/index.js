@@ -28,16 +28,18 @@ export default function Header({ setSignRequest, account, signOut }) {
 
   const mobileMenuToggle = () => {
     // remove scrollbar when menu is open
-    if (!menuOpen) {
-      document.getElementsByClassName("mobile-menu")[0].style.transform = "translateX(0)";
-      document.body.style.overflow = "hidden";
-      document.getElementsByClassName("theme-switch")[0].style.display = "block";
-    } else {
-      document.getElementsByClassName("mobile-menu")[0].style.transform = "translateX(100%)";
-      document.body.style.overflow = "auto";
-      document.getElementsByClassName("theme-switch")[0].style.display = "none";
+    if (typeof window != 'undefined' && window.document) {
+      if (!menuOpen) {
+        document.getElementsByClassName("mobile-menu")[0].style.transform = "translateX(0)";
+        document.body.style.overflow = "hidden";
+        document.getElementsByClassName("theme-switch")[0].style.display = "block";
+      } else {
+        document.getElementsByClassName("mobile-menu")[0].style.transform = "translateX(100%)";
+        document.body.style.overflow = "auto";
+        document.getElementsByClassName("theme-switch")[0].style.display = "none";
+      }
+      setMenuOpen(!menuOpen);
     }
-    setMenuOpen(!menuOpen);
   };
 
   const copyToClipboard = () => {
