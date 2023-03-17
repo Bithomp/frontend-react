@@ -203,10 +203,17 @@ export default function Header({ setSignRequest, account, signOut }) {
         <Link
           href="/nft-sales"
           className="mobile-menu-item"
+          onClick={mobileMenuToggle}
         >
           {t("menu.nft.sales")}
         </Link>
-        <Link href="/nfts" className="mobile-menu-item">{t("menu.nft.nfts")}</Link>
+        <Link
+          href="/nfts"
+          className="mobile-menu-item"
+          onClick={mobileMenuToggle}
+        >
+          {t("menu.nft.nfts")}
+        </Link>
         <Link
           href="/nft-offers"
           className="mobile-menu-item"
