@@ -88,9 +88,9 @@ export default function SignForm({ setSignRequest, setAccount, signRequest }) {
     if (isMobile) {
       setStatus(t("signin.xumm.statuses.redirecting"));
       //return to the same page
-      // app: server + location.pathname + "?uuid={id}" + (location.search ? "&" + location.search.substr(1) : "")
+      //you can add "?uuid={id}"
       signInPayload.options.return_url = {
-        app: server + router.pathname + router.search
+        app: server + router.asPath
       };
     } else {
       setShowXummQr(true);
