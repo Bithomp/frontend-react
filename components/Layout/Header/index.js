@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { useTranslation } from 'next-i18next'
 import { useState, useEffect } from 'react'
 
-import { devNet, useLocalStorage } from '../../../utils'
+import { devNet } from '../../../utils'
 
 import Switch from "./Switch"
 import LogoAnimated from '../LogoAnimated'
@@ -13,11 +13,12 @@ export default function Header({ setSignRequest, account, signOut }) {
   const [rendered, setRendered] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false)
   const [isCopied, setIsCopied] = useState(false)
-  const [xummUserToken] = useLocalStorage('xummUserToken')
+  const [xummUserToken, setXummUserToken] = useState(null)
 
   useEffect(() => {
-    setRendered(true);
-  }, []);
+    setRendered(true)
+    setXummUserToken(localStorage.getItem('xummUserToken'))
+  }, [])
 
   let address, hashicon, displayName, username;
   if (account && account.address) {
@@ -120,7 +121,6 @@ export default function Header({ setSignRequest, account, signOut }) {
           </div>
         </div>
         <div className="header-menu-right">
-
           {displayName ?
             <div className="menu-dropdown">
               <div className="menu-dropdown-button">
