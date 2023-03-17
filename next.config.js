@@ -14,7 +14,7 @@ module.exports = {
     return [
       {
         source: '/go/:path*',
-        destination: '/api/go/:path*',
+        destination: 'https://bithomp.com/api/go/:path*',
         permanent: true
       }
     ]
