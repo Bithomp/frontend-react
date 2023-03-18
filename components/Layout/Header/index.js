@@ -13,7 +13,7 @@ export default function Header({ setSignRequest, account, signOut }) {
   const [rendered, setRendered] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false)
   const [isCopied, setIsCopied] = useState(false)
-  const [xummUserToken] = useLocalStorage('xummUserToken', true);
+  const [xummUserToken] = useLocalStorage('xummUserToken', null);
 
   useEffect(() => {
     setRendered(true)
@@ -152,19 +152,24 @@ export default function Header({ setSignRequest, account, signOut }) {
       <div className="mobile-menu">
         {displayName ?
           <>
-            {xummUserToken &&
+            {xummUserToken ?
               <a href={"/explorer/" + address + "?hw=xumm&xummtoken=" + xummUserToken} className="mobile-menu-item">
                 <img src={hashicon} alt="user icon" className="user-icon" />
                 {displayName}
               </a>
+              :
+              <span className="mobile-menu-item">
+                <img src={hashicon} alt="user icon" className="user-icon" />
+                {displayName}
+              </span>
             }
             <span onClick={copyToClipboard} className="mobile-menu-item link">
               {isCopied ? t("button.copied") : t("button.copy-my-address")}
             </span>
-            <Link href={"/nfts/" + address} className="mobile-menu-item">{t("signin.actions.my-nfts")}</Link>
-            <Link href={"/nft-offers/" + address} className="mobile-menu-item">{t("signin.actions.my-nft-offers")}</Link>
+            <Link href={"/nfts/" + address} className="mobile-menu-item" onClick={mobileMenuToggle}>{t("signin.actions.my-nfts")}</Link>
+            <Link href={"/nft-offers/" + address} className="mobile-menu-item" onClick={mobileMenuToggle}>{t("signin.actions.my-nft-offers")}</Link>
             {xummUserToken && <a href={"/explorer/" + address + "?hw=xumm&xummtoken=" + xummUserToken} className="mobile-menu-item">{t("signin.actions.view")}</a>}
-            {!username && <Link href={"/username?address=" + address} className="mobile-menu-item">{t("menu.usernames")}</Link>}
+            {!username && <Link href={"/username?address=" + address} className="mobile-menu-item" onClick={mobileMenuToggle}>{t("menu.usernames")}</Link>}
             {xummUserToken && <a href={"/explorer/" + address + "?hw=xumm&xummtoken=" + xummUserToken + "&action=send"} className="mobile-menu-item">{t("signin.actions.send")}</a>}
             <span onClick={signOut} className="mobile-menu-item link">{t("signin.signout")}</span>
           </>
@@ -174,13 +179,7 @@ export default function Header({ setSignRequest, account, signOut }) {
 
         <div className="mobile-menu-directory"><span>{t("menu.services")}</span></div>
         {!displayName &&
-          <Link
-            href="/username"
-            className="mobile-menu-item"
-            onClick={mobileMenuToggle}
-          >
-            {t("menu.usernames")}
-          </Link>
+          <Link href="/username" className="mobile-menu-item" onClick={mobileMenuToggle}>{t("menu.usernames")}</Link>
         }
         <a href="/explorer/submit.html" className="mobile-menu-item">{t("menu.project-registartion")}</a>
         {!devNet &&
@@ -188,32 +187,12 @@ export default function Header({ setSignRequest, account, signOut }) {
             {t("menu.price-alerts")}
           </Link>
         }
-        <Link href="https://docs.bithomp.com" className="mobile-menu-item">
-          {t("menu.api")}
-        </Link>
+        <Link href="https://docs.bithomp.com" className="mobile-menu-item">{t("menu.api")}</Link>
         <div className="mobile-menu-directory"><span>NFT</span></div>
         <Link href="/nft-explorer" className="mobile-menu-item" onClick={mobileMenuToggle}> {t("menu.nft.explorer")}</Link>
-        <Link
-          href="/nft-volumes"
-          className="mobile-menu-item"
-          onClick={mobileMenuToggle}
-        >
-          {t("menu.nft.volumes")}
-        </Link>
-        <Link
-          href="/nft-sales"
-          className="mobile-menu-item"
-          onClick={mobileMenuToggle}
-        >
-          {t("menu.nft.sales")}
-        </Link>
-        <Link
-          href="/nfts"
-          className="mobile-menu-item"
-          onClick={mobileMenuToggle}
-        >
-          {t("menu.nft.nfts")}
-        </Link>
+        <Link href="/nft-volumes" className="mobile-menu-item" onClick={mobileMenuToggle}>{t("menu.nft.volumes")}</Link>
+        <Link href="/nft-sales" className="mobile-menu-item" onClick={mobileMenuToggle}>{t("menu.nft.sales")}</Link>
+        <Link href="/nfts" className="mobile-menu-item" onClick={mobileMenuToggle}>{t("menu.nft.nfts")}</Link>
         <Link
           href="/nft-offers"
           className="mobile-menu-item"
