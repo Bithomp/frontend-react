@@ -21,12 +21,20 @@ export const useLocalStorage = (key, initialValue) => {
         return JSON.parse(item);
       }
 
-      localStorage.setItem(key, JSON.stringify(initialValue));
-      return initialValue;
+      if (typeof initialValue !== "undefined") {
+        localStorage.setItem(key, JSON.stringify(initialValue));
+        return initialValue;
+      } else {
+        return null
+      }
     } catch {
-      return initialValue;
+      if (typeof initialValue !== "undefined") {
+        return initialValue
+      } else {
+        return null
+      }
     }
-  };
+  }
 
   const [state, setState] = useState(null);
 
@@ -98,7 +106,8 @@ export const addQueryParams = (router, addList = []) => {
     const { name, value } = addList[i]
     router.query[name] = value
   }
-  router.replace(router, null, { shallow: true })
+  const { query, pathname } = router
+  router.replace({ pathname, query }, null, { shallow: true })
 }
 
 export const addAndRemoveQueryParams = (router, addList, removeList) => {

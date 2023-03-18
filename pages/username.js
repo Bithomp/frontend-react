@@ -57,7 +57,7 @@ export default function Username({ setSignRequest, account, setAccount, signOut,
   const [showXummQr, setShowXummQr] = useState(false);
   const [expiredQr, setExpiredQr] = useState(false);
   const [xummQrSrc, setXummQrSrc] = useState(qr);
-  const [xummUserToken, setXummUserToken] = useState(null);
+  const [xummUserToken, setXummUserToken] = useState(null)
 
   let addressRef;
   let usernameRef;
@@ -108,11 +108,12 @@ export default function Username({ setSignRequest, account, setAccount, signOut,
       setAddress(account.address);
       addQueryParams(router, [
         {
-          name: address,
+          name: "address",
           value: account.address
         }
       ])
     }
+    setXummUserToken(localStorage.getItem('xummUserToken'))
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [account]);
 
@@ -486,7 +487,9 @@ export default function Username({ setSignRequest, account, setAccount, signOut,
     ws = new WebSocket(wssServer);
 
     ws.onopen = () => {
-      ws.send(JSON.stringify({ command: "subscribe", bids: [{ bithompid, address, destinationTag }], "id": 1 }));
+      if (ws.readyState === 1) {
+        ws.send(JSON.stringify({ command: "subscribe", bids: [{ bithompid, address, destinationTag }], "id": 1 }));
+      }
     }
 
     ws.onmessage = evt => {

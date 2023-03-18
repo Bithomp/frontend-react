@@ -17,7 +17,7 @@ import '../styles/ui.scss'
 import { ThemeProvider } from "../components/Layout/ThemeContext"
 
 const MyApp = ({ Component, pageProps }) => {
-  const [account, setAccount] = useLocalStorage('account', null)
+  const [account, setAccount] = useLocalStorage('account')
   const [signRequest, setSignRequest] = useState(false)
   const router = useRouter()
 

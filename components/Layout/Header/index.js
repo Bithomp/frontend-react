@@ -13,7 +13,7 @@ export default function Header({ setSignRequest, account, signOut }) {
   const [rendered, setRendered] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false)
   const [isCopied, setIsCopied] = useState(false)
-  const [xummUserToken] = useLocalStorage('xummUserToken', null);
+  const [xummUserToken] = useLocalStorage('xummUserToken');
 
   useEffect(() => {
     setRendered(true)
