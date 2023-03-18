@@ -11,6 +11,7 @@ import ScrollToTop from "../components/Layout/ScrollToTop"
 import BackgroundImage from '../components/Layout/BackgroundImage'
 import TopLinks from '../components/Layout/TopLinks'
 
+import { IsSsrMobileContext } from '../utils/mobile'
 import { network, devNet, server, useLocalStorage } from '../utils'
 
 import '../styles/ui.scss'
@@ -45,37 +46,39 @@ const MyApp = ({ Component, pageProps }) => {
         <meta name="viewport" content="width=device-width,initial-scale=1" />
         <meta charSet="utf-8" />
       </Head>
-      <ThemeProvider>
-        <div className="body" data-network={network}>
-          <Header
-            setSignRequest={setSignRequest}
-            account={account}
-            signOut={signOut}
-          />
-          <ScrollToTop />
-          {signRequest &&
-            <SignForm
-              setSignRequest={setSignRequest}
-              setAccount={setAccount}
-              signRequest={signRequest}
-            />
-          }
-          <div className="content">
-            {showTopAds && <TopLinks />}
-            <Component
-              {...pageProps}
-              devNet={devNet}
-              signRequest={signRequest}
+      <IsSsrMobileContext.Provider value={pageProps.isSsrMobile}>
+        <ThemeProvider>
+          <div className="body" data-network={network}>
+            <Header
               setSignRequest={setSignRequest}
               account={account}
-              setAccount={setAccount}
               signOut={signOut}
             />
+            <ScrollToTop />
+            {signRequest &&
+              <SignForm
+                setSignRequest={setSignRequest}
+                setAccount={setAccount}
+                signRequest={signRequest}
+              />
+            }
+            <div className="content">
+              {showTopAds && <TopLinks />}
+              <Component
+                {...pageProps}
+                devNet={devNet}
+                signRequest={signRequest}
+                setSignRequest={setSignRequest}
+                account={account}
+                setAccount={setAccount}
+                signOut={signOut}
+              />
+            </div>
+            <BackgroundImage />
+            <Footer />
           </div>
-          <BackgroundImage />
-          <Footer />
-        </div>
-      </ThemeProvider>
+        </ThemeProvider>
+      </IsSsrMobileContext.Provider>
     </>
   )
 }

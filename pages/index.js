@@ -3,17 +3,20 @@ import { useTranslation } from 'next-i18next'
 import { useState } from 'react'
 
 import { useLocalStorage, useWidth } from '../utils'
+import { useIsMobile, getIsSsrMobile } from "../utils/mobile"
 
 import SEO from '../components/SEO'
-import SearchBlock from '../components/Layout/SearchBlock';
-import Whales from '../components/Home/Whales';
-import Converter from "../components/Home/Converter";
-import PriceChart from "../components/Home/PriceChart";
-import Statistics from "../components/Home/Statistics";
+import SearchBlock from '../components/Layout/SearchBlock'
+import Whales from '../components/Home/Whales'
+import Converter from "../components/Home/Converter"
+import PriceChart from "../components/Home/PriceChart"
+import Statistics from "../components/Home/Statistics"
 
-export async function getStaticProps({ locale }) {
+export async function getServerSideProps(context) {
+  const { locale } = context
   return {
     props: {
+      isSsrMobile: getIsSsrMobile(context),
       ...(await serverSideTranslations(locale, ['common'])),
     }
   }
@@ -22,6 +25,7 @@ export async function getStaticProps({ locale }) {
 export default function Home({ devNet }) {
   const { t } = useTranslation()
   const windowWidth = useWidth()
+  const isMobile = useIsMobile()
 
   const [selectedCurrency, setSelectedCurrency] = useLocalStorage('currency', 'usd')
   const [chartPeriod, setChartPeriod] = useState('one_day')
@@ -54,7 +58,7 @@ export default function Home({ devNet }) {
       {!devNet && selectedCurrency &&
         <>
           <div className="home-converter">
-            <Converter selectedCurrency={selectedCurrency} setSelectedCurrency={setSelectedCurrency} chartPeriod={chartPeriod} />
+            <Converter selectedCurrency={selectedCurrency} setSelectedCurrency={setSelectedCurrency} chartPeriod={chartPeriod} isMobile={isMobile} />
           </div>
           <div className="home-price-chart">
             <PriceChart currency={selectedCurrency} chartPeriod={chartPeriod} setChartPeriod={setChartPeriod} />

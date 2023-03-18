@@ -1,14 +1,22 @@
 import { useState, useEffect } from 'react';
 import { useTranslation, Trans } from 'next-i18next'
-import { isMobile } from "react-device-detect"
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 import axios from 'axios'
 import Image from 'next/image'
 
+import { useIsMobile, getIsSsrMobile } from "../utils/mobile"
 import { server, devNet } from '../utils';
 import { capitalize } from '../utils/format';
 import { payloadXummPost, xummWsConnect, xummCancel, xummGetSignedData } from '../utils/xumm';
+
+export async function getServerSideProps(context) {
+  return {
+    props: {
+      isSsrMobile: getIsSsrMobile(context)
+    }
+  }
+}
 
 import XummQr from "./Xumm/Qr";
 import CheckBox from './UI/CheckBox';
@@ -21,6 +29,7 @@ const ellipal = '/images/ellipal-large.svg';
 export default function SignForm({ setSignRequest, setAccount, signRequest }) {
   const { t } = useTranslation()
   const router = useRouter()
+  const isMobile = useIsMobile()
 
   const [screen, setScreen] = useState("choose-app");
   const [status, setStatus] = useState(t("signin.xumm.statuses.wait"));

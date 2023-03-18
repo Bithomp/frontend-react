@@ -3,32 +3,36 @@ import { useState, useEffect } from 'react'
 import axios from 'axios'
 import moment from "moment"
 import momentDurationFormatSetup from "moment-duration-format"
-import dynamic from 'next/dynamic'
-const { isMobile } = dynamic(() => import('react-device-detect'), { ssr: false })
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
-import SEO from '../components/SEO'
+import { useIsMobile, getIsSsrMobile } from "../utils/mobile"
 
-export async function getStaticProps({ locale }) {
+export async function getServerSideProps(context) {
+  const { locale } = context
   return {
     props: {
+      isSsrMobile: getIsSsrMobile(context),
       ...(await serverSideTranslations(locale, ['common'])),
     }
   }
 }
 
-momentDurationFormatSetup(moment)
+import SEO from '../components/SEO'
 
-function localDateAndTime(timestamp) {
-  let params = { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric' }
-  if (isMobile) {
-    params = { month: '2-digit', day: '2-digit', hour: 'numeric', minute: 'numeric' }
-  }
-  return new Date(timestamp * 1000).toLocaleString([], params)
-}
+momentDurationFormatSetup(moment)
 
 export default function Alerts() {
   const { t } = useTranslation()
+  const isMobile = useIsMobile()
+
+  function localDateAndTime(timestamp) {
+    let params = { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric' }
+    if (isMobile) {
+      params = { month: '2-digit', day: '2-digit', hour: 'numeric', minute: 'numeric' }
+    }
+    return new Date(timestamp * 1000).toLocaleString([], params)
+  }
+
   const [data, setData] = useState({})
 
   useEffect(() => {

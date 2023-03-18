@@ -1,12 +1,10 @@
-import axios from 'axios';
-import { useState, useEffect } from 'react';
-import dynamic from 'next/dynamic'
-const { isMobile } = dynamic(() => import('react-device-detect'), { ssr: false })
+import axios from 'axios'
+import { useState, useEffect } from 'react'
 import Image from 'next/image'
 
-import CurrencySelect from "../UI/CurrencySelect";
+import CurrencySelect from "../UI/CurrencySelect"
 
-export default function Converter({ selectedCurrency, setSelectedCurrency, chartPeriod }) {
+export default function Converter({ selectedCurrency, setSelectedCurrency, chartPeriod, isMobile }) {
   const [data, setData] = useState({});
   const [xrpValue, setXrpValue] = useState('1');
   const [fiatValue, setFiatValue] = useState('');

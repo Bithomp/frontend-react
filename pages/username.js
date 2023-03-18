@@ -2,19 +2,20 @@ import { useState, useEffect } from 'react'
 import { useTranslation, Trans } from 'next-i18next'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import dynamic from 'next/dynamic'
-const { isMobile } = dynamic(() => import('react-device-detect'), { ssr: false })
 import axios from 'axios'
 import { Buffer } from 'buffer'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
+import { useIsMobile, getIsSsrMobile } from "../utils/mobile"
 import { isAddressValid, isUsernameValid, server, wssServer, devNet, addAndRemoveQueryParams, addQueryParams } from '../utils'
 import { payloadXummPost, xummWsConnect, xummCancel } from '../utils/xumm'
 
-export const getServerSideProps = async ({ query, locale }) => {
+export const getServerSideProps = async (context) => {
+  const { query, locale } = context
   const { address, username, receipt } = query
   return {
     props: {
+      isSsrMobile: getIsSsrMobile(context),
       addressQuery: address || "",
       usernameQuery: username || "",
       receiptQuery: receipt || "false",
@@ -38,6 +39,7 @@ let ws = null;
 export default function Username({ setSignRequest, account, setAccount, signOut, addressQuery, usernameQuery, receiptQuery }) {
   const { t, i18n } = useTranslation()
   const router = useRouter()
+  const isMobile = useIsMobile()
 
   const [address, setAddress] = useState("");
   const [username, setUsername] = useState("");
@@ -92,6 +94,8 @@ export default function Username({ setSignRequest, account, setAccount, signOut,
       queryRemoveList.push("receipt");
     }
     addAndRemoveQueryParams(router, queryAddList, queryRemoveList)
+
+    console.log("isMobile", isMobile) //delete
 
     //on component unmount
     return () => {

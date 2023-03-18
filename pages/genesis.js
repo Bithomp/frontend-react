@@ -1,13 +1,16 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
 import { useTranslation, Trans } from 'next-i18next'
-import dynamic from 'next/dynamic'
-const { isMobile } = dynamic(() => import('react-device-detect'), { ssr: false })
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
-export async function getStaticProps({ locale }) {
+import { useIsMobile, getIsSsrMobile } from "../utils/mobile"
+import { niceNumber, dateFormat } from '../utils/format'
+
+export async function getServerSideProps(context) {
+  const { locale } = context
   return {
     props: {
+      isSsrMobile: getIsSsrMobile(context),
       ...(await serverSideTranslations(locale, ['common'])),
     }
   }
@@ -15,10 +18,10 @@ export async function getStaticProps({ locale }) {
 
 import SEO from '../components/SEO'
 
-import { niceNumber, dateFormat } from '../utils/format'
-
 export default function Genesis() {
   const { t } = useTranslation()
+  const isMobile = useIsMobile()
+
   const [data, setData] = useState({})
   const [rendered, setRendered] = useState(false)
 
