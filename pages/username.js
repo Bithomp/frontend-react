@@ -122,6 +122,17 @@ export default function Username({ setSignRequest, account, setAccount, signOut,
   }, [account]);
 
   useEffect(() => {
+    if (step > 0) {
+      window.scrollTo({
+        top: 0,
+        left: 0,
+        behavior: 'smooth'
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [step]);
+
+  useEffect(() => {
     setErrorMessage("");
   }, [i18n.language]);
 
