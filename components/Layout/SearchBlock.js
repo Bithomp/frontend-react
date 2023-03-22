@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useTranslation } from 'next-i18next'
 import { useRouter } from 'next/router'
 import axios from 'axios';
@@ -15,10 +15,17 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
   const { t } = useTranslation();
   const searchParams = useSearchParams();
   const router = useRouter()
+  const searchInput = useRef(null)
 
   const { id } = router.query
   const [searchItem, setSearchItem] = useState(id || userData?.address || "");
   const [searching, setSearching] = useState(false);
+
+  useEffect(() => {
+    if (searchInput.current) {
+      searchInput.current.focus()
+    }
+  }, []);
 
   useEffect(() => {
     if (userData?.address) {
@@ -154,6 +161,7 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
             }
           </div>
           <input
+            ref={searchInput}
             className="search-input"
             placeholder={searchPlaceholderText}
             value={searchItem}
