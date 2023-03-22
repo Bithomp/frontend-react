@@ -95,8 +95,6 @@ export default function Username({ setSignRequest, account, setAccount, signOut,
     }
     addAndRemoveQueryParams(router, queryAddList, queryRemoveList)
 
-    console.log("isMobile", isMobile) //delete
-
     //on component unmount
     return () => {
       setUpdate(false);
@@ -614,7 +612,8 @@ export default function Username({ setSignRequest, account, setAccount, signOut,
                 </>
               }
 
-            </> :
+            </>
+            :
             <p className='bordered' style={{ padding: "20px" }}>
               {t("username.step0.already-registered")}: <b>{account.username}</b>.
               <br />
@@ -634,7 +633,8 @@ export default function Username({ setSignRequest, account, setAccount, signOut,
                 :
                 <div className="orange bold">{status}</div>
               }
-            </div> :
+            </div>
+            :
             <>
               <p>{t("username.step1.to-register")} <b>{register.bithompid}</b></p>
               <p>
