@@ -186,6 +186,11 @@ export default function Username({ setSignRequest, account, setAccount, signOut,
     setAgreeToPageTerms(false)
     setAgreeToPrivacyPolicy(false)
     setAgreeToSiteTerms(false)
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: 'smooth'
+    })
   }
 
   const onSubmit = async () => {
