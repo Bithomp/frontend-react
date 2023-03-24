@@ -5,18 +5,10 @@ import Link from 'next/link'
 import axios from 'axios'
 import Image from 'next/image'
 
-import { useIsMobile, getIsSsrMobile } from "../utils/mobile"
-import { server, devNet } from '../utils';
-import { capitalize } from '../utils/format';
-import { payloadXummPost, xummWsConnect, xummCancel, xummGetSignedData } from '../utils/xumm';
-
-export async function getServerSideProps(context) {
-  return {
-    props: {
-      isSsrMobile: getIsSsrMobile(context)
-    }
-  }
-}
+import { useIsMobile } from "../utils/mobile"
+import { server, devNet } from '../utils'
+import { capitalize } from '../utils/format'
+import { payloadXummPost, xummWsConnect, xummCancel, xummGetSignedData } from '../utils/xumm'
 
 import XummQr from "./Xumm/Qr";
 import CheckBox from './UI/CheckBox';
@@ -44,10 +36,10 @@ export default function SignForm({ setSignRequest, setAccount, signRequest }) {
   useEffect(() => {
     //deeplink doesnt work on mobiles when it's not in the onClick event
     if (!isMobile && signRequest?.wallet === "xumm") {
-      XummTxSend();
+      XummTxSend()
     }
     //eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [signRequest]);
+  }, [signRequest])
 
   const saveAddressData = async (address) => {
     //&service=true&verifiedDomain=true&blacklist=true&payString=true&twitterImageUrl=true&nickname=true
@@ -290,6 +282,6 @@ export default function SignForm({ setSignRequest, setAccount, signRequest }) {
           </>
         }
       </div>
-    </div >
-  );
-};
+    </div>
+  )
+}

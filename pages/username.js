@@ -5,6 +5,7 @@ import { useRouter } from 'next/router'
 import axios from 'axios'
 import { Buffer } from 'buffer'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
+import { getIsSsrMobile } from "../utils/mobile"
 
 import { isAddressValid, isUsernameValid, server, wssServer, devNet, addAndRemoveQueryParams, addQueryParams } from '../utils'
 
@@ -13,6 +14,7 @@ export const getServerSideProps = async (context) => {
   const { address, username, receipt } = query
   return {
     props: {
+      isSsrMobile: getIsSsrMobile(context),
       addressQuery: address || "",
       usernameQuery: username || "",
       receiptQuery: receipt || "false",
