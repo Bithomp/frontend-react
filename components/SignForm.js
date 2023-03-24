@@ -116,17 +116,16 @@ export default function SignForm({ setSignRequest, setAccount, signRequest }) {
     xummWsConnect(data.refs.websocket_status, xummWsConnected);
     if (data.pushed) {
       setStatus(t("signin.xumm.statuses.check-push"));
-    } else {
-      if (isMobile) {
-        if (data.next && data.next.always) {
-          window.location = data.next.always;
-        } else {
-          console.log("payload next.always is missing");
-        }
+    }
+    if (isMobile) {
+      if (data.next && data.next.always) {
+        window.location = data.next.always;
       } else {
-        setShowXummQr(true);
-        setStatus(t("signin.xumm.scan-qr"));
+        console.log("payload next.always is missing");
       }
+    } else {
+      setShowXummQr(true);
+      setStatus(t("signin.xumm.scan-qr"));
     }
   }
 
