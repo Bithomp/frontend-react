@@ -226,7 +226,8 @@
       "about-confirmation": "You will see a confirmation as soon as we receive your payment."
     },
     "step2": {
-      "text0": "Congratulations! Your username <1>{{ username }}</1> has been succesfully registered."
+      "text0": "Congratulations! Your username <1>{{ username }}</1> has been succesfully registered.",
+      "one-more": "Register one more"
     }
   },
   "alerts": {

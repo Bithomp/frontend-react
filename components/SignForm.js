@@ -100,7 +100,11 @@ export default function SignForm({ setSignRequest, setAccount, signRequest }) {
       //you can add "?uuid={id}"
       signInPayload.options.return_url = {
         app: server + router.asPath
-      };
+      }
+      //for username receipts
+      if (tx.TransactionType === "Payment") {
+        signInPayload.options.return_url.app += '&receipt=true'
+      }
     } else {
       setShowXummQr(true);
     }
