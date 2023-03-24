@@ -80,10 +80,6 @@ export default function SignForm({ setSignRequest, setAccount, signRequest }) {
         expire: 3
       },
       txjson: tx
-    };
-
-    if (xummUserToken) {
-      signInPayload.user_token = xummUserToken;
     }
 
     if (isMobile) {
@@ -98,10 +94,13 @@ export default function SignForm({ setSignRequest, setAccount, signRequest }) {
         signInPayload.options.return_url.app += '&receipt=true'
       }
     } else {
-      setShowXummQr(true);
+      if (xummUserToken) {
+        signInPayload.user_token = xummUserToken
+      }
+      setShowXummQr(true)
     }
-    payloadXummPost(signInPayload, onPayloadResponse);
-    setScreen("xumm");
+    payloadXummPost(signInPayload, onPayloadResponse)
+    setScreen("xumm")
   }
 
   const onPayloadResponse = (data) => {
