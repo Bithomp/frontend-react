@@ -495,50 +495,58 @@ export default function Username({ setSignRequest, account, setAccount, signOut,
                 </p>
                 :
                 <>
-                  {account?.address ?
+                  {onRegistartion ?
                     <>
-                      <p>{t("username.step0.your-address")} (<b className='link' onClick={signOut}>{t("username.step0.sign-out")}</b>):</p>
-                      <div className="input-validation">
-                        <input placeholder={t("username.step0.your-address")} value={address} className="input-text" spellCheck="false" readOnly />
-                        <img src={checkmark} className="validation-icon" alt="validated" />
-                      </div>
+                      <div class="center"><span className="waiting"></span><br />{t("general.loading")}</div>
                     </>
                     :
                     <>
-                      <p>{t("username.step0.enter-address-or")} <b className="link" onClick={() => setSignRequest({ wallet: "xumm" })}>{t("username.step0.sign-in")}</b>:</p>
+                      {account?.address ?
+                        <>
+                          <p>{t("username.step0.your-address")} (<b className='link' onClick={signOut}>{t("username.step0.sign-out")}</b>):</p>
+                          <div className="input-validation">
+                            <input placeholder={t("username.step0.your-address")} value={address} className="input-text" spellCheck="false" readOnly />
+                            <img src={checkmark} className="validation-icon" alt="validated" />
+                          </div>
+                        </>
+                        :
+                        <>
+                          <p>{t("username.step0.enter-address-or")} <b className="link" onClick={() => setSignRequest({ wallet: "xumm" })}>{t("username.step0.sign-in")}</b>:</p>
+                          <div className="input-validation">
+                            <input placeholder={t("username.step0.your-address")} value={address} onChange={onAddressChange} className="input-text" ref={node => { addressRef = node; }} spellCheck="false" maxLength="36" />
+                            {isAddressValid(address) && <img src={checkmark} className="validation-icon" alt="validated" />}
+                          </div>
+                        </>
+                      }
+                      <p>{t("username.step0.enter-username")}:</p>
                       <div className="input-validation">
-                        <input placeholder={t("username.step0.your-address")} value={address} onChange={onAddressChange} className="input-text" ref={node => { addressRef = node; }} spellCheck="false" maxLength="36" />
-                        {isAddressValid(address) && <img src={checkmark} className="validation-icon" alt="validated" />}
+                        <input placeholder={t("username.step0.your-username")} value={username} onChange={onUsernameChange} className="input-text" ref={node => { usernameRef = node; }} spellCheck="false" maxLength="18" />
+                        {isUsernameValid(username) && <img src={checkmark} className="validation-icon" alt="validated" />}
                       </div>
+                      <p>{t("username.step0.enter-country")}:</p>
+                      <CountrySelect setCountryCode={setCountryCode} />
+
+                      <CheckBox checked={agreeToPageTerms} setChecked={setAgreeToPageTerms} >
+                        {t("username.step0.agree-terms-page")}
+                      </CheckBox>
+
+                      <CheckBox checked={agreeToSiteTerms} setChecked={setAgreeToSiteTerms} >
+                        <Trans i18nKey="username.step0.agree-terms-site">
+                          I agree with the <Link href="/terms-and-conditions" target="_blank">Terms and conditions</Link>.
+                        </Trans>
+                      </CheckBox>
+
+                      <CheckBox checked={agreeToPrivacyPolicy} setChecked={setAgreeToPrivacyPolicy} >
+                        <Trans i18nKey="username.step0.agree-privacy-policy">
+                          I agree with the <Link href="/privacy-policy" target="_blank">Privacy policy</Link>.
+                        </Trans>
+                      </CheckBox>
+
+                      <p className="center">
+                        <input type="button" value={t("button.continue")} className="button-action" onClick={onSubmit} />
+                      </p>
                     </>
                   }
-                  <p>{t("username.step0.enter-username")}:</p>
-                  <div className="input-validation">
-                    <input placeholder={t("username.step0.your-username")} value={username} onChange={onUsernameChange} className="input-text" ref={node => { usernameRef = node; }} spellCheck="false" maxLength="18" />
-                    {isUsernameValid(username) && <img src={checkmark} className="validation-icon" alt="validated" />}
-                  </div>
-                  <p>{t("username.step0.enter-country")}:</p>
-                  <CountrySelect setCountryCode={setCountryCode} />
-
-                  <CheckBox checked={agreeToPageTerms} setChecked={setAgreeToPageTerms} >
-                    {t("username.step0.agree-terms-page")}
-                  </CheckBox>
-
-                  <CheckBox checked={agreeToSiteTerms} setChecked={setAgreeToSiteTerms} >
-                    <Trans i18nKey="username.step0.agree-terms-site">
-                      I agree with the <Link href="/terms-and-conditions" target="_blank">Terms and conditions</Link>.
-                    </Trans>
-                  </CheckBox>
-
-                  <CheckBox checked={agreeToPrivacyPolicy} setChecked={setAgreeToPrivacyPolicy} >
-                    <Trans i18nKey="username.step0.agree-privacy-policy">
-                      I agree with the <Link href="/privacy-policy" target="_blank">Privacy policy</Link>.
-                    </Trans>
-                  </CheckBox>
-
-                  <p className="center">
-                    <input type="button" value={t("button.continue")} className="button-action" onClick={onSubmit} />
-                  </p>
                 </>
               }
             </>
