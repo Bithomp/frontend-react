@@ -45,7 +45,7 @@ export default function SignForm({ setSignRequest, setAccount, signRequest }) {
     //&service=true&verifiedDomain=true&blacklist=true&payString=true&twitterImageUrl=true&nickname=true
     const response = await axios("v2/address/" + address + '?username=true&hashicon=true');
     if (response.data) {
-      const { address, hashicon, username } = response.data;
+      const { hashicon, username } = response.data;
       setAccount({ address, hashicon, username });
     } else {
       setAccount(null);
@@ -134,7 +134,7 @@ export default function SignForm({ setSignRequest, setAccount, signRequest }) {
     } else if (obj.signed) {
       setShowXummQr(false);
       setStatus(t("signin.xumm.statuses.wait"));
-      xummGetSignedData(obj.payload_uuidv4, afterSumbit);
+      xummGetSignedData(obj.payload_uuidv4, afterSubmit);
     } else if (obj.expires_in_seconds) {
       if (obj.expires_in_seconds <= 0) {
         setExpiredQr(true);
@@ -143,7 +143,7 @@ export default function SignForm({ setSignRequest, setAccount, signRequest }) {
     }
   }
 
-  const afterSumbit = (data) => {
+  const afterSubmit = (data) => {
     /*
     {
       "application": {

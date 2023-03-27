@@ -33,7 +33,7 @@ const checkmark = "/images/checkmark.svg";
 let interval;
 let ws = null;
 
-export default function Username({ setSignRequest, account, setAccount, signOut, addressQuery, usernameQuery, receiptQuery }) {
+export default function Username({ setSignRequest, account, signOut, addressQuery, usernameQuery, receiptQuery }) {
   const { t, i18n } = useTranslation()
   const router = useRouter()
 
@@ -60,15 +60,7 @@ export default function Username({ setSignRequest, account, setAccount, signOut,
     setXummUserToken(localStorage.getItem('xummUserToken'))
     let queryAddList = [];
     let queryRemoveList = [];
-    if (account) {
-      if (account.address) {
-        setAddress(account.address);
-        queryAddList.push({
-          name: "address",
-          value: account.address
-        })
-      }
-    } else {
+    if (!account) {
       if (isAddressValid(addressQuery)) {
         setAddress(addressQuery);
       } else {
@@ -383,18 +375,10 @@ export default function Username({ setSignRequest, account, setAccount, signOut,
     */
     if (data.bid.status === 'Completed') {
       setStep(2);
+      setOnRegistartion(false)
       setUpdate(false);
       setErrorMessage("");
       clearInterval(interval);
-
-      if (account) {
-        setAccount({
-          address: account.address,
-          hashicon: account.hashicon,
-          username: data.bid.bithompid
-        })
-      }
-
       if (ws) ws.close();
       return;
     }
@@ -484,61 +468,66 @@ export default function Username({ setSignRequest, account, setAccount, signOut,
               </p>
             </>
           }
-
           {(!account?.username || onRegistartion) ?
             <>
-              {devNet ?
-                <p>
-                  <Trans i18nKey="username.step0.text4">
-                    Usernames are now used cross-chain, <a href="https://bithomp.com/username" target="_blank" rel='noreferrer'>Register a username for an address on the XRPL mainnet</a> and it will be also available on bithomp dev explorers.
-                  </Trans>
-                </p>
+              {account?.username && onRegistartion ?
+                <div className='center'><span className="waiting"></span><br />{t("general.loading")}</div>
                 :
                 <>
-                  {account?.address ?
-                    <>
-                      <p>{t("username.step0.your-address")} (<b className='link' onClick={signOut}>{t("username.step0.sign-out")}</b>):</p>
-                      <div className="input-validation">
-                        <input placeholder={t("username.step0.your-address")} value={address} className="input-text" spellCheck="false" readOnly />
-                        <img src={checkmark} className="validation-icon" alt="validated" />
-                      </div>
-                    </>
+                  {devNet ?
+                    <p>
+                      <Trans i18nKey="username.step0.text4">
+                        Usernames are now used cross-chain, <a href="https://bithomp.com/username" target="_blank" rel='noreferrer'>Register a username for an address on the XRPL mainnet</a> and it will be also available on bithomp dev explorers.
+                      </Trans>
+                    </p>
                     :
                     <>
-                      <p>{t("username.step0.enter-address-or")} <b className="link" onClick={() => setSignRequest({ wallet: "xumm" })}>{t("username.step0.sign-in")}</b>:</p>
+                      {account?.address ?
+                        <>
+                          <p>{t("username.step0.your-address")} (<b className='link' onClick={signOut}>{t("username.step0.sign-out")}</b>):</p>
+                          <div className="input-validation">
+                            <input placeholder={t("username.step0.your-address")} value={address} className="input-text" spellCheck="false" readOnly />
+                            <img src={checkmark} className="validation-icon" alt="validated" />
+                          </div>
+                        </>
+                        :
+                        <>
+                          <p>{t("username.step0.enter-address-or")} <b className="link" onClick={() => setSignRequest({ wallet: "xumm" })}>{t("username.step0.sign-in")}</b>:</p>
+                          <div className="input-validation">
+                            <input placeholder={t("username.step0.your-address")} value={address} onChange={onAddressChange} className="input-text" ref={node => { addressRef = node; }} spellCheck="false" maxLength="36" />
+                            {isAddressValid(address) && <img src={checkmark} className="validation-icon" alt="validated" />}
+                          </div>
+                        </>
+                      }
+                      <p>{t("username.step0.enter-username")}:</p>
                       <div className="input-validation">
-                        <input placeholder={t("username.step0.your-address")} value={address} onChange={onAddressChange} className="input-text" ref={node => { addressRef = node; }} spellCheck="false" maxLength="36" />
-                        {isAddressValid(address) && <img src={checkmark} className="validation-icon" alt="validated" />}
+                        <input placeholder={t("username.step0.your-username")} value={username} onChange={onUsernameChange} className="input-text" ref={node => { usernameRef = node; }} spellCheck="false" maxLength="18" />
+                        {isUsernameValid(username) && <img src={checkmark} className="validation-icon" alt="validated" />}
                       </div>
+                      <p>{t("username.step0.enter-country")}:</p>
+                      <CountrySelect setCountryCode={setCountryCode} />
+
+                      <CheckBox checked={agreeToPageTerms} setChecked={setAgreeToPageTerms} >
+                        {t("username.step0.agree-terms-page")}
+                      </CheckBox>
+
+                      <CheckBox checked={agreeToSiteTerms} setChecked={setAgreeToSiteTerms} >
+                        <Trans i18nKey="username.step0.agree-terms-site">
+                          I agree with the <Link href="/terms-and-conditions" target="_blank">Terms and conditions</Link>.
+                        </Trans>
+                      </CheckBox>
+
+                      <CheckBox checked={agreeToPrivacyPolicy} setChecked={setAgreeToPrivacyPolicy} >
+                        <Trans i18nKey="username.step0.agree-privacy-policy">
+                          I agree with the <Link href="/privacy-policy" target="_blank">Privacy policy</Link>.
+                        </Trans>
+                      </CheckBox>
+
+                      <p className="center">
+                        <input type="button" value={t("button.continue")} className="button-action" onClick={onSubmit} />
+                      </p>
                     </>
                   }
-                  <p>{t("username.step0.enter-username")}:</p>
-                  <div className="input-validation">
-                    <input placeholder={t("username.step0.your-username")} value={username} onChange={onUsernameChange} className="input-text" ref={node => { usernameRef = node; }} spellCheck="false" maxLength="18" />
-                    {isUsernameValid(username) && <img src={checkmark} className="validation-icon" alt="validated" />}
-                  </div>
-                  <p>{t("username.step0.enter-country")}:</p>
-                  <CountrySelect setCountryCode={setCountryCode} />
-
-                  <CheckBox checked={agreeToPageTerms} setChecked={setAgreeToPageTerms} >
-                    {t("username.step0.agree-terms-page")}
-                  </CheckBox>
-
-                  <CheckBox checked={agreeToSiteTerms} setChecked={setAgreeToSiteTerms} >
-                    <Trans i18nKey="username.step0.agree-terms-site">
-                      I agree with the <Link href="/terms-and-conditions" target="_blank">Terms and conditions</Link>.
-                    </Trans>
-                  </CheckBox>
-
-                  <CheckBox checked={agreeToPrivacyPolicy} setChecked={setAgreeToPrivacyPolicy} >
-                    <Trans i18nKey="username.step0.agree-privacy-policy">
-                      I agree with the <Link href="/privacy-policy" target="_blank">Privacy policy</Link>.
-                    </Trans>
-                  </CheckBox>
-
-                  <p className="center">
-                    <input type="button" value={t("button.continue")} className="button-action" onClick={onSubmit} />
-                  </p>
                 </>
               }
             </>
