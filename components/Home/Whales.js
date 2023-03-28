@@ -81,21 +81,28 @@ export default function Whales({ currency }) {
      }
   */
 
-  if (!data?.length) {
-    return "";
-  }
-
   return <>
     <h2 className="center">{t("home.whales.header")}</h2>
     <div className='whale-transactions-block'>
-      {data.map(tx => (
-        <div key={tx.hash} className={"tx-row" + (difference?.includes(tx) ? " just-added" : "")}>
-          <span className='tx-time'>{timeFormat(tx.timestamp)}</span>
-          <span className='tx-link'><a href={'/explorer/' + tx.hash}>{txIdFormat(tx.hash)}</a></span>
-          <span className='tx-amount'>{shortNiceNumber(tx.amountXRP, 0, 1)} XRP</span>
-          <span className='tx-amount-fiat'>{devNet ? t("home.whales.no-value") : (tx.amountFiats ? shortNiceNumber(tx.amountFiats[currency?.toLowerCase()], 0, 1, currency) : "")}</span>
+      {data?.length ?
+        <>
+          {data.map(tx => (
+            <div key={tx.hash} className={"tx-row" + (difference?.includes(tx) ? " just-added" : "")}>
+              <span className='tx-time'>{timeFormat(tx.timestamp)}</span>
+              <span className='tx-link'><a href={'/explorer/' + tx.hash}>{txIdFormat(tx.hash)}</a></span>
+              <span className='tx-amount'>{shortNiceNumber(tx.amountXRP, 0, 1)} XRP</span>
+              <span className='tx-amount-fiat'>{devNet ? t("home.whales.no-value") : (tx.amountFiats ? shortNiceNumber(tx.amountFiats[currency?.toLowerCase()], 0, 1, currency) : "")}</span>
+            </div>
+          ))}
+        </>
+        :
+        <div className='center'>
+          <br /><br /><br /><br />
+          <span className="waiting"></span>
+          <br />{t("general.loading")}
+          <br />
         </div>
-      ))}
+      }
     </div>
   </>;
 }
