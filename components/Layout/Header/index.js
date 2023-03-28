@@ -76,8 +76,8 @@ export default function Header({ setSignRequest, account, signOut }) {
             <div className="menu-dropdown">
               <div className="menu-dropdown-button">{t("menu.tools")}</div>
               <div className="menu-dropdown-content">
-                <Link href="/create/" locale={false}>{t("menu.account-generation")}</Link>
-                <Link href="/faucet/" locale={false}>{t("menu.faucet")}</Link>
+                <a href={"/create/"}>{t("menu.account-generation")}</a>
+                <a href={"/faucet/"}>{t("menu.faucet")}</a>
               </div>
             </div>
           }
@@ -250,8 +250,8 @@ export default function Header({ setSignRequest, account, signOut }) {
           {devNet &&
             <>
               <div className="mobile-menu-directory"><span>{t("menu.tools")}</span></div>
-              <Link href="/create/" className="mobile-menu-item" locale={false}>{t("menu.account-generation")}</Link>
-              <Link href="/faucet/" className="mobile-menu-item" locale={false}>{t("menu.faucet")}</Link>
+              <a href={"/create/"} className="mobile-menu-item">{t("menu.account-generation")}</a>
+              <a href={"/faucet/"} className="mobile-menu-item">{t("menu.faucet")}</a>
             </>
           }
         </div>

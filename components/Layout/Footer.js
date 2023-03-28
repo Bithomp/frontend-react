@@ -31,8 +31,8 @@ export default function Footer() {
         {devNet &&
           <div className="footer-menu-column">
             <span className="footer-menu-header">{t("menu.tools")}</span>
-            <Link href="/create/" locale={false}>{t("menu.account-generation")}</Link>
-            <Link href="/faucet/" locale={false}>{t("menu.faucet")}</Link>
+            <a href={"/create/"}>{t("menu.account-generation")}</a>
+            <a href={"/faucet/"}>{t("menu.faucet")}</a>
           </div>
         }
         <div className="footer-menu-column">
