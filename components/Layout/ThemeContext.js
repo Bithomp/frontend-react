@@ -2,10 +2,10 @@ import { useState, useEffect, useContext, createContext } from "react";
 
 const ThemeContext = createContext("light");
 
-export function ThemeProvider({ children }) {
-  const [theme, setTheme] = useState(global.window?.__theme || "light");
+export function ThemeProvider({ theme, children }) {
+  const [currentTheme, setTheme] = useState(theme || global.window?.__theme || "light");
   const toggleTheme = () => {
-    global.window.__setPreferredTheme(theme === "light" ? "dark" : "light");
+    global.window.__setPreferredTheme(currentTheme === "light" ? "dark" : "light");
   };
 
   useEffect(() => {
@@ -13,7 +13,7 @@ export function ThemeProvider({ children }) {
   }, []);
 
   return (
-    <ThemeContext.Provider value={{ theme, toggleTheme }}>
+    <ThemeContext.Provider value={{ currentTheme, toggleTheme }}>
       {children}
     </ThemeContext.Provider>
   );

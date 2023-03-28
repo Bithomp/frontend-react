@@ -13,9 +13,11 @@ import PriceChart from "../components/Home/PriceChart"
 import Statistics from "../components/Home/Statistics"
 
 export async function getServerSideProps(context) {
-  const { locale } = context
+  const { locale, req } = context
+  const theme = req.cookies.theme ?? null
   return {
     props: {
+      theme,
       isSsrMobile: getIsSsrMobile(context),
       ...(await serverSideTranslations(locale, ['common'])),
     }

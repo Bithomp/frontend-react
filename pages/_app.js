@@ -47,7 +47,7 @@ const MyApp = ({ Component, pageProps }) => {
         <meta charSet="utf-8" />
       </Head>
       <IsSsrMobileContext.Provider value={pageProps.isSsrMobile}>
-        <ThemeProvider>
+        <ThemeProvider theme={pageProps.theme}>
           <div className="body" data-network={network}>
             <Header
               setSignRequest={setSignRequest}
