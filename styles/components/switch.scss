@@ -1,0 +1,29 @@
+.theme-switch {
+  display: inline-block;
+  vertical-align: middle;
+  z-index: 2;
+  .switch-container {
+    display: flex;
+    margin-left: auto;
+    width: 52px;
+    height: 30px;
+    background-color: var(--background-menu);
+    border: 1px solid var(--background-header);
+    border-radius: 30px;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 7px;
+    cursor: pointer;
+    position: relative;
+    box-sizing: border-box;
+    transition: background-color .5s;
+    .switch-icon {
+      opacity: 0.2;
+      transition: opacity .5s;
+    }
+    &.dark .sun,
+    &.light .moon {
+      opacity: 1;
+    }
+  }
+}
