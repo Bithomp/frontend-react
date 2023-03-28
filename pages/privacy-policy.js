@@ -20,7 +20,7 @@ export default function PrivacyPolicy() {
       <SEO title={t("menu.privacy-policy")} />
       <div className="content-text">
         <h1>Privacy Policy</h1>
-        <p>Last updated: March 3, 2023</p>
+        <p>Last updated: March 28, 2023</p>
         <p>This Privacy Policy describes Our policies and procedures on the collection, use and disclosure of Your information when You use the Service and tells You about Your privacy rights and how the law protects You.</p>
         <p>We use Your Personal data to provide and improve the Service. By using the Service, You agree to the collection and use of information in accordance with this Privacy Policy.</p>
         <h1>Interpretation and Definitions</h1>
@@ -127,11 +127,11 @@ export default function PrivacyPolicy() {
         <h4>Cookies</h4>
         <ul>
           <li><strong>NEXT_LOCALE</strong> - the prefered Service language (ex: "en").</li>
+          <li><strong>theme</strong> - the prefered theme of the Service (ex: "light").</li>
         </ul>
         <h4>Local storage</h4>
         <ul>
           <li><strong>showCookie</strong> - show or hide the cookie message. (ex. true).</li>
-          <li><strong>theme</strong> - the prefered theme of the Service (ex: "light").</li>
           <li><strong>currency</strong> - the prefered Service currency (ex: "sek").</li>
           <li><strong>country</strong> - country of residence (ex: "SE").</li>
           <li><strong>account</strong> - Logged in user data: XRPL address, hashicon, bithomp username. (ex. {"{'address': 'rhphEJQoxuquJmuJgtLbGyBW2NK6s6nQSW', 'hashicon': 'data:image/png;base64,iV+IKg2dQrggg==', 'username': 'Bithomp'}"})</li>

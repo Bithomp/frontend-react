@@ -4,7 +4,7 @@ import 'moment/locale/ru' // Add more langauges
 import { useRouter } from 'next/router'
 import Cookies from 'universal-cookie'
 
-const cookies = new Cookies();
+const cookies = new Cookies()
 
 export default function LanguageSelect() {
   const { t, i18n } = useTranslation();

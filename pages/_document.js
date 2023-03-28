@@ -14,6 +14,21 @@ export default function Document() {
         <script
           dangerouslySetInnerHTML={{
             __html: `(function () {
+                function getCookie(cname) {
+                  let name = cname + "=";
+                  let decodedCookie = decodeURIComponent(document.cookie);
+                  let ca = decodedCookie.split(';');
+                  for(let i = 0; i <ca.length; i++) {
+                    let c = ca[i];
+                    while (c.charAt(0) == ' ') {
+                      c = c.substring(1);
+                    }
+                    if (c.indexOf(name) == 0) {
+                      return c.substring(name.length, c.length);
+                    }
+                  }
+                  return "";
+                }
                 function setTheme(newTheme) {
                   document.body.className = newTheme;
                   window.__theme = newTheme;
@@ -23,12 +38,12 @@ export default function Document() {
                 window.__setPreferredTheme = function (newTheme) {
                   setTheme(newTheme);
                   try {
-                    localStorage.setItem("theme", JSON.stringify(window.__theme));
+                    document.cookie = "theme=" + JSON.stringify(window.__theme);
                   } catch (err) {}
                 };
                 let preferredTheme;
                 try {
-                  preferredTheme = JSON.parse(localStorage.getItem("theme"));
+                  preferredTheme = JSON.parse(getCookie("theme"));
                 } catch (err) {}
                 const darkQuery = window.matchMedia("(prefers-color-scheme: dark)");
                 if (!preferredTheme) {
