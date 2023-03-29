@@ -1,22 +1,22 @@
-import { useState, useEffect, useContext, createContext } from "react";
+import { useState, useEffect, useContext, createContext } from "react"
 
-const ThemeContext = createContext("light");
+const ThemeContext = createContext("light")
 
-export function ThemeProvider({ theme, children }) {
-  const [currentTheme, setTheme] = useState(theme || global.window?.__theme || "light");
+export function ThemeProvider({ cookieTheme, children }) {
+  const [theme, setTheme] = useState(cookieTheme || global.window?.__theme || "light")
   const toggleTheme = () => {
-    global.window.__setPreferredTheme(currentTheme === "light" ? "dark" : "light");
-  };
+    global.window.__setPreferredTheme(theme === "light" ? "dark" : "light")
+  }
 
   useEffect(() => {
     global.window.__onThemeChange = setTheme;
-  }, []);
+  }, [])
 
   return (
-    <ThemeContext.Provider value={{ currentTheme, toggleTheme }}>
+    <ThemeContext.Provider value={{ theme, toggleTheme }}>
       {children}
     </ThemeContext.Provider>
-  );
+  )
 }
 
-export const useTheme = () => useContext(ThemeContext);
+export const useTheme = () => useContext(ThemeContext)

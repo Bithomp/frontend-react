@@ -1,19 +1,38 @@
-import { Html, Head, Main, NextScript } from 'next/document'
+import Document, { Html, Head, Main, NextScript } from 'next/document'
 
-export default function Document() {
+class MyDocument extends Document {
+  static async getInitialProps(ctx) {
+    const originalRenderPage = ctx.renderPage
 
-  return (
-    <Html>
-      <Head>
-        <link rel="icon" href="/favicon.ico" />
-        <meta name="theme-color" content="#000000" />
-        <link rel="apple-touch-icon" href="/logo192.png" />
-        <link rel="manifest" href="/manifest.json" />
-      </Head>
-      <body>
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `(function () {
+    // Run the React rendering logic synchronously
+    ctx.renderPage = () =>
+      originalRenderPage({
+        // Useful for wrapping the whole react tree
+        enhanceApp: (App) => App,
+        // Useful for wrapping in a per-page basis
+        enhanceComponent: (Component) => Component,
+      })
+
+    // Run the parent `getInitialProps`, it now includes the custom `renderPage`
+    const initialProps = await Document.getInitialProps(ctx)
+    const cookieTheme = ctx.req?.cookies?.theme ?? null
+
+    return { ...initialProps, cookieTheme }
+  }
+
+  render() {
+    return (
+      <Html>
+        <Head>
+          <link rel="icon" href="/favicon.ico" />
+          <meta name="theme-color" content="#000000" />
+          <link rel="apple-touch-icon" href="/logo192.png" />
+          <link rel="manifest" href="/manifest.json" />
+        </Head>
+        <body className={this.props.cookieTheme}>
+          <script
+            dangerouslySetInnerHTML={{
+              __html: `(function () {
                 function getCookie(cname) {
                   let name = cname + "=";
                   let decodedCookie = decodeURIComponent(document.cookie);
@@ -54,11 +73,14 @@ export default function Document() {
                 setTheme(preferredTheme || (darkQuery.matches ? "dark" : "light"));
               })();
             `
-          }}
-        />
-        <Main />
-        <NextScript />
-      </body>
-    </Html>
-  )
+            }}
+          />
+          <Main />
+          <NextScript />
+        </body>
+      </Html>
+    )
+  }
 }
+
+export default MyDocument
