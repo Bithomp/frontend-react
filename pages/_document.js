@@ -69,8 +69,10 @@ class MyDocument extends Document {
                   darkQuery.addListener(function (event) {
                     window.__setPreferredTheme(event.matches ? "dark" : "light");
                   });
+                  preferredTheme = darkQuery.matches ? "dark" : "light";
+                  window.__setPreferredTheme(preferredTheme);
                 }
-                setTheme(preferredTheme || (darkQuery.matches ? "dark" : "light"));
+                setTheme(preferredTheme);
               })();
             `
             }}

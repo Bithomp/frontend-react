@@ -2,8 +2,8 @@ import { useState, useEffect, useContext, createContext } from "react"
 
 const ThemeContext = createContext("light")
 
-export function ThemeProvider({ cookieTheme, children }) {
-  const [theme, setTheme] = useState(cookieTheme || global.window?.__theme || "light")
+export function ThemeProvider({ children }) {
+  const [theme, setTheme] = useState(global.window?.__theme || "light")
   const toggleTheme = () => {
     global.window.__setPreferredTheme(theme === "light" ? "dark" : "light")
   }
