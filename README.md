@@ -1,14 +1,14 @@
-# Getting Started with Create React App
+# React + Next
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Bithomp Frontend
 
 ## Available Scripts
 
 In the project directory, you can run:
 
-### `yarn start`
+### `yarn dev`
 
-`NEXT_PUBLIC_NETWORK_NAME=mainnet yarn start`
+`NEXT_PUBLIC_NETWORK_NAME=mainnet yarn dev`
 
 mainnet | staging | testnet | devnet | beta | amm
 
@@ -20,62 +20,29 @@ You may also see any lint errors in the console.
 
 ### `yarn build`
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+Builds the app for production.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### `yarn start`
 
-`NEXT_PUBLIC_NETWORK_NAME=mainnet yarn build`
+Runs the app in production
 
-| mainnet | staging | testnet | devnet | beta | amm
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### Deployment (first time)
 
 `cd <folder for projects>`
-`npm install -g yarn` (first time)
-`git clone https://github.com/Bithomp/frontend-react` (first time)
+`npm install -g yarn`
+`git clone git clone --single-branch https://github.com/Bithomp/frontend-react.git`
 `cd frontend-react`
-`git pull` (if exists)
-`yarn install`
-`NEXT_PUBLIC_NETWORK_NAME=testnet yarn build`
+`mv .env .env.local`
+`nano .env.local` //remove # for the correct env and save the changes
+`yarn`
+`yarn build`
+`pm2 start yarn --name "frontend-react" -- start` // otherwise: -- start:next
+`pm2 logs frontend-react [--lines 1000]` //verify it runs properly 
+`pm2 save`
 
-### `yarn eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `yarn build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+### Update
+`cd <folder for projects>/frontend-react`
+`git pull`
+`yarn` // if packages were updated
+`yarn build`
+`pm2 restart frontend-react`
