@@ -29,20 +29,35 @@ Runs the app in production
 ### Deployment (first time)
 
 `cd <folder for projects>`
+
 `npm install -g yarn`
+
 `git clone git clone --single-branch https://github.com/Bithomp/frontend-react.git`
+
 `cd frontend-react`
+
 `mv .env .env.local`
+
 `nano .env.local` //remove # for the correct env and save the changes
+
 `yarn`
+
 `yarn build`
+
 `pm2 start yarn --name "frontend-react" -- start` // otherwise: -- start:next
-`pm2 logs frontend-react [--lines 1000]` //verify it runs properly 
+
+`pm2 logs frontend-react [--lines 1000]` //verify it runs properly
+
 `pm2 save`
 
 ### Update
+
 `cd <folder for projects>/frontend-react`
+
 `git pull`
+
 `yarn` // if packages were updated
+
 `yarn build`
+
 `pm2 restart frontend-react`
