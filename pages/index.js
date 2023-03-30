@@ -1,8 +1,9 @@
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useTranslation } from 'next-i18next'
 import { useState } from 'react'
+import { SiteLinksSearchBoxJsonLd, LogoJsonLd, SocialProfileJsonLd } from 'next-seo'
 
-import { useLocalStorage, useWidth } from '../utils'
+import { useLocalStorage, useWidth, server } from '../utils'
 import { useIsMobile, getIsSsrMobile } from "../utils/mobile"
 
 import SEO from '../components/SEO'
@@ -32,9 +33,38 @@ export default function Home({ devNet }) {
 
   return (
     <>
+      <LogoJsonLd
+        logo={server + '/images/logo.svg'}
+        url={server}
+      />
+      <SiteLinksSearchBoxJsonLd
+        url={server}
+        potentialActions={[
+          {
+            target: server + '/explorer/q',
+            queryInput: 'Search for XRPL addresses, transactions, nfts, offers',
+          }
+        ]}
+      />
+      <SocialProfileJsonLd
+        type="Organization"
+        name="Bithomp"
+        url={server}
+        sameAs={[
+          'http://instagram.com/bithomp',
+          'https://twitter.com/bithomp',
+          'https://www.youtube.com/@bithomp',
+          'https://www.linkedin.com/company/bithomp/'
+        ]}
+      />
       <SEO
         title="XRP Explorer | Scan the XRPL network."
         description="Explore XRP Ledger, check transactions for statuses, addresses for balances, NFTs, offers, tokens, escrows and checks."
+        image={{
+          width: 1200,
+          height: 337,
+          file: 'logo.svg'
+        }}
       />
       <SearchBlock searchPlaceholderText={windowWidth < 500 ? t("home.search-placeholder-short") : t("home.search-placeholder")} tab="explorer" />
       {!devNet &&

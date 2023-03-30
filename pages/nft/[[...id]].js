@@ -8,8 +8,8 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import Image from 'next/image'
 import Link from 'next/link'
 
-import { stripText } from '../../utils';
-import { nftName, mpUrl, bestSellOffer } from '../../utils/nft';
+import { stripText } from '../../utils'
+import { nftName, mpUrl, bestSellOffer, nftUrl } from '../../utils/nft'
 import {
   shortHash,
   trWithAccount,
@@ -20,20 +20,18 @@ import {
   nftOfferLink,
   codeHighlight,
   trStatus
-} from '../../utils/format';
+} from '../../utils/format'
 
-export async function getStaticProps({ locale }) {
+export async function getServerSideProps(context) {
+  const { locale, query } = context
+  const res = await axios('v2/nft/' + query.id + '?uri=true&metadata=true')
+  const pageMeta = res?.data
+  console.log("pageMeta", pageMeta)//delete
   return {
     props: {
-      ...(await serverSideTranslations(locale, ['common'])),
+      pageMeta,
+      ...(await serverSideTranslations(locale, ['common']))
     }
-  }
-}
-
-export async function getStaticPaths() {
-  return {
-    paths: [],
-    fallback: 'blocking'
   }
 }
 
@@ -45,7 +43,7 @@ import NftPreview from '../../components/NftPreview'
 import LinkIcon from "../../public/images/link.svg";
 const xummImg = "/images/xumm.png";
 
-export default function Nft({ setSignRequest, account, signRequest }) {
+export default function Nft({ setSignRequest, account, signRequest, pageMeta }) {
   const { t } = useTranslation();
   const router = useRouter()
   const { id } = router.query
@@ -465,7 +463,13 @@ export default function Nft({ setSignRequest, account, signRequest }) {
   }
 
   return <>
-    {data && <SEO title={"NFT " + data.metadata?.name} />}
+    <SEO
+      title={"NFT " + pageMeta.metadata?.name}
+      description={"NFT description: " + pageMeta.metadata?.description}
+      image={{
+        file: nftUrl(pageMeta, 'image')
+      }}
+    />
     <SearchBlock
       searchPlaceholderText={t("nft.enter-nft-id")}
       tab="nft"
@@ -681,4 +685,4 @@ export default function Nft({ setSignRequest, account, signRequest }) {
       }
     </div>
   </>;
-};
+}
