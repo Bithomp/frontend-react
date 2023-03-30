@@ -23,14 +23,10 @@ import {
 } from '../../utils/format'
 
 export async function getServerSideProps(context) {
-  const { locale, query, req } = context
+  const { locale, query } = context
   let pageMeta = null
   if (query?.id) {
-    const res = await axios({
-      method: 'get',
-      url: server + '/api/cors/v2/nft/' + query.id + '?uri=true&metadata=true',
-      headers: req.headers
-    })
+    const res = await axios(server + '/api/cors/v2/nft/' + query.id + '?uri=true&metadata=true')
     pageMeta = res?.data
   }
   return {
