@@ -32,7 +32,7 @@ Runs the app in production
 
 `npm install -g yarn`
 
-`git clone git clone --single-branch https://github.com/Bithomp/frontend-react.git`
+`git clone --single-branch https://github.com/Bithomp/frontend-react.git`
 
 `cd frontend-react`
 
@@ -46,7 +46,7 @@ Runs the app in production
 
 `pm2 start yarn --name "frontend-react" -- start` // otherwise: -- start:next
 
-`pm2 logs frontend-react [--lines 1000]` //verify it runs properly
+`pm2 logs frontend-react --lines 1000` //verify it runs properly
 
 `pm2 save`
 
