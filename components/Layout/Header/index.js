@@ -69,6 +69,7 @@ export default function Header({ setSignRequest, account, signOut }) {
               <Link href="/username">{t("menu.usernames")}</Link>
               <a href="/explorer/submit.html">{t("menu.project-registartion")}</a>
               {!devNet && <Link href="/alerts">{t("menu.price-alerts")}</Link>}
+              {!devNet && <a href={"/submit/"}>{t("menu.submit-offline-tx")}</a>}
               <a href="https://docs.bithomp.com">{t("menu.api")}</a>
             </div>
           </div>

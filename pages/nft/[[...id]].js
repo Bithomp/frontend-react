@@ -26,7 +26,6 @@ export async function getServerSideProps(context) {
   const { locale, query } = context
   const res = await axios('v2/nft/' + query.id + '?uri=true&metadata=true')
   const pageMeta = res?.data
-  console.log("pageMeta", pageMeta)//delete
   return {
     props: {
       pageMeta,
