@@ -269,11 +269,10 @@ export const amountFormat = (amount, options = {}) => {
 
   //add issued by (issuerDetails.service / username)
   if (type !== 'XRP' && options.tooltip) {
-    // curency + " " - otherwise it is in the hex format
     return <>
       {showValue} {valuePrefix} {" "}
       <span className='tooltip'>
-        <a href={"/explorer/" + issuer}>{currency} </a>
+        <a href={"/explorer/" + issuer}>{currency}</a>
         <span className={'tooltiptext ' + options.tooltip}>
           {addressUsernameOrServiceLink(amount, 'issuer', { short: true })}
         </span>
@@ -379,7 +378,8 @@ const amountParced = (amount) => {
     value = amount / 1000000;
     currency = "XRP";
   }
-  currency = stripText(currency);
+  // curency + " " - otherwise it is in the hex format
+  currency = stripText(currency + " ")
   return {
     type,
     value,
