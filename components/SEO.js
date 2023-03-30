@@ -2,26 +2,17 @@ import { NextSeo } from 'next-seo'
 
 import { server, network } from '../utils'
 
-const Title = (title) => {
-  if (network === 'mainnet') {
-    return 'XRPL ' + title
-  } else {
-    return 'XRPL ' + network.toUpperCase() + ": " + title
-  }
-}
-
-export default function SEO({ title, description, image }) {
-  title = Title(title)
+export default function SEO({ title, description, image, page }) {
+  const networkText = network !== 'mainnet' ? ("(" + network + ")") : ""
   description = description || title
-  const descriptionShow = Title(description)
 
   let openGraph = {
     type: 'website',
     url: server,
     title,
-    description: descriptionShow,
+    description,
     //locale: 'en_EN',
-    site_name: "XRPL " + network.toUpperCase() + ' explorer',
+    site_name: "XRPL " + (page ? (page + " ") : "") + networkText,
   }
 
   if (image) {
@@ -49,7 +40,7 @@ export default function SEO({ title, description, image }) {
   return (
     <NextSeo
       title={title}
-      description={descriptionShow}
+      description={description}
       openGraph={openGraph}
       twitter={twitter}
     />
