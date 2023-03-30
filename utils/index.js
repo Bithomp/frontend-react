@@ -1,5 +1,6 @@
 import axios from 'axios'
 import { useCallback, useEffect, useState } from "react"
+import sanitizeHtml from 'sanitize-html'
 
 export const useWidth = () => {
   const [width, setWidth] = useState(0)
@@ -119,8 +120,12 @@ export const addAndRemoveQueryParams = (router, addList, removeList) => {
 }
 
 export const stripText = (text) => {
-  let doc = new DOMParser().parseFromString(text, 'text/html');
-  return doc.body.textContent || "";
+  if (typeof text !== 'string') return ""
+  const clean = sanitizeHtml(text, {
+    allowedTags: [],
+    allowedAttributes: {}
+  })
+  return clean || "";
 }
 
 //not in use yet

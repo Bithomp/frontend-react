@@ -8,7 +8,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import Image from 'next/image'
 import Link from 'next/link'
 
-import { stripText } from '../../utils'
+import { stripText, server } from '../../utils'
 import { nftName, mpUrl, bestSellOffer, nftUrl } from '../../utils/nft'
 import {
   shortHash,
@@ -24,8 +24,11 @@ import {
 
 export async function getServerSideProps(context) {
   const { locale, query } = context
-  const res = await axios('v2/nft/' + query.id + '?uri=true&metadata=true')
-  const pageMeta = res?.data
+  let pageMeta = null
+  if (query?.id) {
+    const res = await axios(server + '/api/cors/v2/nft/' + query.id + '?uri=true&metadata=true')
+    pageMeta = res?.data
+  }
   return {
     props: {
       pageMeta,
@@ -70,7 +73,7 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta }) 
       return;
     }
     setLoading(true);
-    const response = await axios('v2/nft/' + id + '?uri=true&metadata=true&history=true&sellOffers=true&buyOffers=true&offersValidate=true&offersHistory=true').catch(error => {
+    const response = await axios('/v2/nft/' + id + '?uri=true&metadata=true&history=true&sellOffers=true&buyOffers=true&offersValidate=true&offersHistory=true').catch(error => {
       setErrorMessage(t("error." + error.message))
     });
     setLoading(false);
