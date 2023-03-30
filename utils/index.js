@@ -119,8 +119,9 @@ export const addAndRemoveQueryParams = (router, addList, removeList) => {
 }
 
 export const stripText = (text) => {
-  //do not strip in react
-  return text
+  // otherwise Buffer or HEX are not converted :)
+  // no strip needed in react
+  return (text + " ")
 }
 
 //not in use yet
