@@ -41,8 +41,8 @@ export default function Home({ devNet }) {
         url={server}
         potentialActions={[
           {
-            target: server + '/explorer/q',
-            queryInput: 'Search for XRPL addresses, transactions, nfts, offers',
+            target: server + '/explorer/{search_term_string}',
+            queryInput: 'required name=search_term_string',
           }
         ]}
       />
