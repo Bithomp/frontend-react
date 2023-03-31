@@ -119,9 +119,11 @@ export const addAndRemoveQueryParams = (router, addList, removeList) => {
 }
 
 export const stripText = (text) => {
+  if (!text) return ""
   // otherwise Buffer or HEX are not converted :)
-  // no strip needed in react
-  return (text + " ")
+  if (typeof text !== 'string') text = text + " "
+  if (text.includes('�')) return null
+  return text
 }
 
 //not in use yet

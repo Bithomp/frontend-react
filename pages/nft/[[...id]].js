@@ -602,7 +602,7 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta }) 
                         <tr>
                           <td>URI</td>
                           <td>
-                            {data.uri ? stripText(Buffer.from(data.uri, 'hex')) : t("table.text.unspecified")}
+                            {data.uri ? (stripText(Buffer.from(data.uri, 'hex')) ?? data.uri) : t("table.text.unspecified")}
                           </td>
                         </tr>
                       </tbody>
