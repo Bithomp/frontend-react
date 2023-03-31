@@ -1,5 +1,6 @@
 import axios from 'axios'
 import { useCallback, useEffect, useState } from "react"
+import { Buffer } from 'buffer'
 
 export const useWidth = () => {
   const [width, setWidth] = useState(0)
@@ -120,10 +121,16 @@ export const addAndRemoveQueryParams = (router, addList, removeList) => {
 
 export const stripText = (text) => {
   if (!text) return ""
-  // otherwise Buffer or HEX are not converted :)
-  if (typeof text !== 'string') text = text + " "
-  if (text.includes('�')) return null
+  text = text.toString() //For buffer/hex
   return text
+}
+
+export const decode = (code) => {
+  if (!code) return null
+  const decodedHex = Buffer.from(code, 'hex')
+  const decodedString = decodedHex.toString()
+  if (!decodedString.includes('�')) return stripText(decodedString)
+  return stripText(code)
 }
 
 //not in use yet

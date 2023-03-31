@@ -1,6 +1,5 @@
 import { useTranslation } from 'next-i18next'
 import { useState, useEffect } from 'react'
-import { Buffer } from 'buffer'
 import axios from 'axios'
 import Select from "react-select"
 import { useRouter } from 'next/router'
@@ -8,7 +7,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import Image from 'next/image'
 import Link from 'next/link'
 
-import { stripText, server } from '../../utils'
+import { stripText, server, decode } from '../../utils'
 import { nftName, mpUrl, bestSellOffer, nftUrl } from '../../utils/nft'
 import {
   shortHash,
@@ -602,7 +601,7 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta }) 
                         <tr>
                           <td>URI</td>
                           <td>
-                            {data.uri ? (stripText(Buffer.from(data.uri, 'hex')) ?? data.uri) : t("table.text.unspecified")}
+                            {data.uri ? decode(data.uri) : t("table.text.unspecified")}
                           </td>
                         </tr>
                       </tbody>
