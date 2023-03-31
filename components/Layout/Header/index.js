@@ -187,6 +187,7 @@ export default function Header({ setSignRequest, account, signOut }) {
               {t("menu.price-alerts")}
             </Link>
           }
+          {!devNet && <a href={"/submit/"} className="mobile-menu-item">{t("menu.submit-offline-tx")}</a>}
           <Link href="https://docs.bithomp.com" className="mobile-menu-item">{t("menu.api")}</Link>
           <div className="mobile-menu-directory"><span>NFT</span></div>
           <Link href="/nft-explorer" className="mobile-menu-item" onClick={mobileMenuToggle}> {t("menu.nft.explorer")}</Link>
