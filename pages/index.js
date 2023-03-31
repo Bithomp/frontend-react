@@ -41,8 +41,8 @@ export default function Home({ devNet }) {
         url={server}
         potentialActions={[
           {
-            target: server + '/explorer/{search_term_string}',
-            queryInput: 'required name=search_term_string',
+            target: server + '/explorer/?r',
+            queryInput: 'search_term_string',
           }
         ]}
       />
