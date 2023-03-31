@@ -25,9 +25,13 @@ import {
 export async function getServerSideProps(context) {
   const { locale, query } = context
   let pageMeta = null
-  if (query?.id) {
-    const res = await axios(server + '/api/cors/v2/nft/' + query.id + '?uri=true&metadata=true')
-    pageMeta = res?.data
+  try {
+    if (query?.id) {
+      const res = await axios(server + '/api/cors/v2/nft/' + query.id + '?uri=true&metadata=true')
+      pageMeta = res?.data
+    }
+  } catch (error) {
+    console.error(error)
   }
   return {
     props: {
@@ -467,8 +471,8 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta }) 
   return <>
     <SEO
       page="NFT"
-      title={pageMeta.metadata?.name || pageMeta.nftokenID}
-      description={pageMeta.metadata?.description}
+      title={pageMeta?.metadata?.name || pageMeta?.nftokenID}
+      description={pageMeta?.metadata?.description}
       image={{
         file: nftUrl(pageMeta, 'image')
       }}

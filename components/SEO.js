@@ -9,7 +9,7 @@ export default function SEO({ title, description, image, page }) {
   let openGraph = {
     type: 'website',
     url: server,
-    title,
+    title: title || page,
     description,
     //locale: 'en_EN',
     site_name: "XRPL " + (page ? (page + " ") : "") + networkText,
