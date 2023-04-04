@@ -8,6 +8,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 
 import { stripText, server, decode } from '../../utils'
+import { getIsSsrMobile } from "../../utils/mobile"
 import { nftName, mpUrl, bestSellOffer, nftUrl } from '../../utils/nft'
 import {
   shortHash,
@@ -36,6 +37,7 @@ export async function getServerSideProps(context) {
   }
   return {
     props: {
+      isSsrMobile: getIsSsrMobile(context),
       pageMeta,
       ...(await serverSideTranslations(locale, ['common']))
     }
@@ -521,7 +523,7 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta }) 
                   </div>
                   <div className="column-right">
                     <SocialShare
-                      quote={data?.metadata?.name || "XRPL NFT"}
+                      title={data?.metadata?.name || "XRPL NFT"}
                       description={pageMeta?.metadata?.description || ""}
                       hashtag="NFT"
                       image={imageUrl}

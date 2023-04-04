@@ -13,21 +13,24 @@ import {
   TumblrShareButton, TumblrIcon,
   HatenaShareButton, HatenaIcon,
   InstapaperShareButton, InstapaperIcon,
-  PocketShareButton, PocketIcon
+  PocketShareButton, PocketIcon,
+  WorkplaceShareButton, WorkplaceIcon
 } from 'react-share'
 
 import { network } from '../utils'
+import { useIsMobile } from "../utils/mobile"
 
 import CopyButton from './UI/CopyButton'
 
 const iconStyle = { marginRight: "5px", marginTop: "3px" }
 
-export default function SocialShare({ t, quote, hashtag, description, image }) {
+export default function SocialShare({ t, title, hashtag, description, image }) {
+
+  const isMobile = useIsMobile()
 
   const networkText = network !== 'mainnet' ? (" (" + network + ")") : ""
   const source = "Bithomp" + networkText
   const size = 32
-  const title = quote
   let url = ''
   if (typeof window !== 'undefined') {
     url = window.location.href
@@ -47,7 +50,7 @@ export default function SocialShare({ t, quote, hashtag, description, image }) {
           <td>
             <FacebookShareButton
               url={url}
-              quote={quote}
+              quote={title}
               hashtag={hashtag}
               style={iconStyle}
             >
@@ -103,7 +106,7 @@ export default function SocialShare({ t, quote, hashtag, description, image }) {
               url={url}
               title={title}
               via='bithomp'
-              hashtags={[hashtag, 'Bithomp']}
+              hashtags={[hashtag, 'XRPL']}
               related={['bithomp', 'bithompAlerts']}
               style={iconStyle}
             >
@@ -118,14 +121,16 @@ export default function SocialShare({ t, quote, hashtag, description, image }) {
               <RedditIcon size={size} round />
             </RedditShareButton>
 
-            <ViberShareButton
-              url={url}
-              title={title}
-              separator=' '
-              style={iconStyle}
-            >
-              <ViberIcon size={size} round />
-            </ViberShareButton>
+            {isMobile &&
+              <ViberShareButton
+                url={url}
+                title={title}
+                separator=' '
+                style={iconStyle}
+              >
+                <ViberIcon size={size} round />
+              </ViberShareButton>
+            }
 
             <LineShareButton
               url={url}
@@ -150,7 +155,7 @@ export default function SocialShare({ t, quote, hashtag, description, image }) {
               url={url}
               title={title}
               caption={description}
-              tags={[hashtag, 'Bithomp']}
+              tags={[hashtag, 'XRPL']}
               posttype='link'
               style={iconStyle}
             >
@@ -181,6 +186,15 @@ export default function SocialShare({ t, quote, hashtag, description, image }) {
             >
               <PocketIcon size={size} round />
             </PocketShareButton>
+
+            <WorkplaceShareButton
+              url={url}
+              quote={title}
+              style={iconStyle}
+              hashtag={hashtag}
+            >
+              <WorkplaceIcon size={size} round />
+            </WorkplaceShareButton>
           </td>
         </tr>
       </tbody>
