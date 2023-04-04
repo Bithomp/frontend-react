@@ -21,7 +21,7 @@ export const getServerSideProps = async ({ query, locale }) => {
       currencyIssuer: currencyIssuer || "",
       issuerQuery: issuer || "",
       taxonQuery: taxon || "",
-      period: period || "all",
+      period: period || "week",
       ...(await serverSideTranslations(locale, ['common'])),
     },
   }
@@ -221,7 +221,7 @@ export default function NftSales({ view, sale, list, currency, currencyIssuer, i
       {
         tabList: periodTabList,
         tab: periodTab,
-        defaultTab: "all",
+        defaultTab: "week",
         setTab: setPeriodTab,
         paramName: "period"
       },

@@ -8,7 +8,7 @@ export const getServerSideProps = async ({ query, locale }) => {
   const { period, sale, list, currency, currencyIssuer } = query
   return {
     props: {
-      period: period || "all",
+      period: period || "week",
       sale: sale || "all",
       list: list || "issuers",
       currency: currency || "xrp",
@@ -222,7 +222,7 @@ export default function NftVolumes({ period, sale, list, currency, currencyIssue
       {
         tabList: periodTabList,
         tab: periodTab,
-        defaultTab: "all",
+        defaultTab: "week",
         setTab: setPeriodTab,
         paramName: "period"
       },
