@@ -39,6 +39,16 @@ export default function CopyButton({ text }) {
 
   if (!text) return ""
 
+  const notCopiedStyle = {
+    outline: "none", 
+    marginBottom: "-3px"
+  }
+
+  const copiedStyle = {
+    ...notCopiedStyle,
+    fill: "#FCAC45"
+  }
+
   return <>
     {show &&
       <span className="tooltip">
@@ -50,7 +60,7 @@ export default function CopyButton({ text }) {
           height="20px"
           className="change-fill"
           fill="#00B1C1"
-          style={isCopied ? { outline: "none", fill: "#FCAC45" } : { outline: "none" }}
+          style={isCopied ? copiedStyle : notCopiedStyle}
           onClick={handleCopyClick}
         >
           <g>

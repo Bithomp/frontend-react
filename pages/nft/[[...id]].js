@@ -21,6 +21,8 @@ import {
   trStatus
 } from '../../utils/format'
 
+import SocialShare from '../../components/SocialShare'
+
 export async function getServerSideProps(context) {
   const { locale, query } = context
   let pageMeta = null
@@ -467,14 +469,14 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta }) 
     </>
   }
 
+  const imageUrl = nftUrl(pageMeta, 'image')
+
   return <>
     <SEO
       page="NFT"
       title={pageMeta?.metadata?.name || pageMeta?.nftokenID}
       description={pageMeta?.metadata?.description}
-      image={{
-        file: nftUrl(pageMeta, 'image')
-      }}
+      image={{ file: imageUrl }}
     />
     <SearchBlock
       searchPlaceholderText={t("nft.enter-nft-id")}
@@ -518,6 +520,13 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta }) 
                     </div>
                   </div>
                   <div className="column-right">
+                    <SocialShare
+                      quote={data?.metadata?.name || "XRPL NFT"}
+                      description={pageMeta?.metadata?.description || ""}
+                      hashtag="NFT"
+                      image={imageUrl}
+                      t={t}
+                    />
                     {data.metadata &&
                       <table className='table-details'>
                         <thead>
