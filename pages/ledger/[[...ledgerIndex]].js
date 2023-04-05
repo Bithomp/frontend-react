@@ -8,18 +8,12 @@ import SEO from '../../components/SEO'
 
 import { txIdFormat, fullDateAndTime, ledgerLink } from '../../utils/format';
 
-export async function getStaticProps({ locale }) {
+export async function getServerSideProps(context) {
+  const { locale } = context
   return {
     props: {
-      ...(await serverSideTranslations(locale, ['common'])),
+      ...(await serverSideTranslations(locale, ['common']))
     }
-  }
-}
-
-export async function getStaticPaths() {
-  return {
-    paths: [],
-    fallback: 'blocking'
   }
 }
 
