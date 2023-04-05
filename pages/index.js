@@ -62,8 +62,8 @@ export default function Home({ devNet }) {
         description="Explore XRP Ledger, check transactions for statuses, addresses for balances, NFTs, offers, tokens, escrows and checks."
         image={{
           width: 1200,
-          height: 337,
-          file: 'logo.svg'
+          height: 630,
+          file: 'og-logo.png'
         }}
       />
       <SearchBlock searchPlaceholderText={windowWidth < 500 ? t("home.search-placeholder-short") : t("home.search-placeholder")} tab="explorer" />
