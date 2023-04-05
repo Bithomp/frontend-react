@@ -20,7 +20,7 @@ export default function PrivacyPolicy() {
       <SEO title={t("menu.privacy-policy")} />
       <div className="content-text">
         <h1>Privacy Policy</h1>
-        <p>Last updated: March 28, 2023</p>
+        <p>Last updated: April 5, 2023</p>
         <p>This Privacy Policy describes Our policies and procedures on the collection, use and disclosure of Your information when You use the Service and tells You about Your privacy rights and how the law protects You.</p>
         <p>We use Your Personal data to provide and improve the Service. By using the Service, You agree to the collection and use of information in accordance with this Privacy Policy.</p>
         <h1>Interpretation and Definitions</h1>
@@ -148,7 +148,7 @@ export default function PrivacyPolicy() {
           <li><a href="https://support.mozilla.org/en-US/kb/enable-and-disable-cookies-website-preferences">Mozilla Firefox</a></li>
           <li><a href="https://support.microsoft.com/en-gb/help/17442/windows-internet-explorer-delete-manage-cookies">Microsoft Internet Explorer</a></li>
           <li><a href="https://www.opera.com/help/tutorials/security/privacy/">Opera</a></li>
-          <li><a href="https://support.apple.com/kb/ph21411?locale=en_US">Apple Safari</a></li>
+          <li><a href="https://support.apple.com/en-ie/guide/safari/sfri11471/mac">Apple Safari</a></li>
         </ul>
         <p>For any other web browser, please visit your web browser's official web pages.</p>
         <h2>Use of Your Personal Data</h2>
