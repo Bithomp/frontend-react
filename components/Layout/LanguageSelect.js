@@ -1,6 +1,6 @@
 import { useTranslation } from 'next-i18next'
 import moment from "moment"
-import 'moment/locale/ru' // Add more langauges
+import 'moment/locale/ru' // Add more languages
 import { useRouter } from 'next/router'
 import Cookies from 'universal-cookie'
 
