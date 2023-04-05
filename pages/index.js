@@ -80,7 +80,7 @@ export default function Home({ devNet }) {
             <div className="sponsored-brand">
               <img src="/images/nexo.svg" className="sponsored-brand-icon" alt="earn on xrp" />
               <div className="sponsored-brand-title">Earn on XRP</div>
-              <div className="sponsored-brand-text">Make your XRP work for you.<br />Start earning daily interest.</div>
+              <div className="sponsored-brand-text">Earn up to 12% APR on XRP.</div>
             </div>
           </a>
         </div>
