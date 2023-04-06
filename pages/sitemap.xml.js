@@ -1,8 +1,8 @@
 import { server } from '../utils'
 
 const pages = [
-  { loc: "explorer", changefreq: "montly", priority: "1" },
-  { loc: "username", changefreq: "montly", priority: "1" },
+  { loc: "explorer", changefreq: "monthly", priority: "1" },
+  { loc: "username", changefreq: "monthly", priority: "1" },
   { loc: "nft-explorer", changefreq: "daily", priority: "1" },
 
   { loc: "nft-sales", changefreq: "daily", priority: "0.9" },
