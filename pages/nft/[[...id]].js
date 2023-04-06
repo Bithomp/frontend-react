@@ -25,15 +25,19 @@ import {
 import SocialShare from '../../components/SocialShare'
 
 export async function getServerSideProps(context) {
-  const { locale, query } = context
+  const { locale, query, req } = context
   let pageMeta = null
-  try {
-    if (query?.id) {
-      const res = await axios(server + '/api/cors/v2/nft/' + query.id + '?uri=true&metadata=true')
+  if (query?.id) {
+    try {
+      const res = await axios({
+        method: 'get',
+        url: server + '/api/cors/v2/nft/' + query.id + '?uri=true&metadata=true',
+        headers: req.headers
+      })
       pageMeta = res?.data
+    } catch (error) {
+      console.error(error)
     }
-  } catch (error) {
-    console.error(error)
   }
   return {
     props: {
