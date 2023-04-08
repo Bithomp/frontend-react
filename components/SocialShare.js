@@ -51,7 +51,7 @@ export default function SocialShare({ t, title, hashtag, description, image }) {
             <FacebookShareButton
               url={url}
               quote={title}
-              hashtag={hashtag}
+              hashtag={'#' + hashtag}
               style={iconStyle}
             >
               <FacebookIcon size={size} round />
