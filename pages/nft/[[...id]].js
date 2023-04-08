@@ -28,11 +28,16 @@ export async function getServerSideProps(context) {
   const { locale, query, req } = context
   let pageMeta = null
   if (query?.id) {
+    let headers = null
+    if (process.env.NODE_ENV !== 'development') {
+      //otherwise can not verify ssl serts
+      headers = req.headers
+    }
     try {
       const res = await axios({
         method: 'get',
         url: server + '/api/cors/v2/nft/' + query.id + '?uri=true&metadata=true',
-        headers: req.headers
+        headers
       })
       pageMeta = res?.data
     } catch (error) {
