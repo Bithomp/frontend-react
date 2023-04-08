@@ -11,7 +11,7 @@ export default function SEO({ title, description, image, page }) {
 
   let openGraph = {
     type: 'website',
-    url: server,
+    url: server + (router.locale !== 'en' ? ("/" + router.locale) : "") + router.asPath,
     title: title || page,
     description,
     locale: router.locale,
