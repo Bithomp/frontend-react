@@ -17,7 +17,7 @@ export const getServerSideProps = async ({ query, locale }) => {
       view: view || "tiles",
       sale: sale || "all",
       list: list || "top",
-      currency: currency || "xrp",
+      currency: currency || "",
       currencyIssuer: currencyIssuer || "",
       issuerQuery: issuer || "",
       taxonQuery: taxon || "",
