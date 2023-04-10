@@ -61,3 +61,7 @@ Runs the app in production
 `yarn build`
 
 `pm2 restart frontend-react`
+
+### Clean up if run on small VPS
+
+`yarn cache clean`
