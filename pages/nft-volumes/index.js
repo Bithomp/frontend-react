@@ -18,19 +18,19 @@ export const getServerSideProps = async ({ query, locale }) => {
   }
 }
 
-import SEO from '../components/SEO'
-import Tabs from '../components/Tabs'
+import SEO from '../../components/SEO'
+import Tabs from '../../components/Tabs'
 
-import { setTabParams, stripText, isAddressOrUsername, useWidth, removeQueryParams } from '../utils'
+import { setTabParams, stripText, isAddressOrUsername, useWidth, removeQueryParams } from '../../utils'
 import {
   amountFormat,
   shortNiceNumber,
   addressUsernameOrServiceLink,
   usernameOrAddress,
   persentFormat
-} from '../utils/format';
+} from '../../utils/format';
 
-import LinkIcon from "../public/images/link.svg"
+import LinkIcon from "../../public/images/link.svg"
 
 export default function NftVolumes({ period, sale, list, currency, currencyIssuer }) {
   const { t } = useTranslation()
