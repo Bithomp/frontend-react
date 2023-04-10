@@ -433,7 +433,9 @@ export default function Username({ setSignRequest, account, signOut, addressQuer
   }
 
   return <>
-    <SEO title={t("menu.usernames")} />
+    <SEO
+      title={t("menu.usernames") + (usernameQuery ? (" " + usernameQuery) : "") + (addressQuery ? (" " + addressQuery) : "") }
+    />
     <div className="page-username content-center">
       <h1 className="center">{t("menu.usernames")}</h1>
       {!step &&

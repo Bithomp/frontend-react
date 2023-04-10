@@ -47,9 +47,12 @@ export default function SEO({ title, description, image, page, images }) {
     cardType: 'summary'
   }
 
+  // don't add the slash after language, otherwise redirects and it is bad for SEO
+  let path = router.asPath !== "/" ? router.asPath : ""
+
   let languageAlternates = [
-    { hrefLang: 'en', href: server + router.asPath },
-    { hrefLang: 'ru', href: server + '/ru' + router.asPath }
+    { hrefLang: 'en', href: server + path },
+    { hrefLang: 'ru', href: server + '/ru' + path }
   ]
 
   return (

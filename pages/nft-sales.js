@@ -303,7 +303,9 @@ export default function NftSales({ view, sale, list, currency, currencyIssuer, i
   ];
 
   return <>
-    <SEO title={t("nft-sales.header")} />
+    <SEO 
+      title={t("nft-sales.header") + (issuerQuery ? (" " + issuerQuery) : "")}
+    />
     <div className="content-text" style={{ minHeight: "480px" }}>
       <h2 className="center">{t("nft-sales.header") + " "}</h2>
       <p className='center'><a href={"/nft-explorer?view=" + viewTab + issuerTaxonUrlPart}>{t("nft-explorer.header")}</a></p>
