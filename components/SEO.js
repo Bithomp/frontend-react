@@ -47,17 +47,10 @@ export default function SEO({ title, description, image, page, images }) {
     cardType: 'summary'
   }
 
-  let languageAlternates = []
-
-  if (router.locale === 'en') {
-    languageAlternates.push(
-      { hrefLang: 'ru', href: server + '/ru' + router.asPath }
-    )
-  } else if (router.locale === 'ru') {
-    languageAlternates.push(
-      { hrefLang: 'en', href: server + router.asPath }
-    )
-  }
+  let languageAlternates = [
+    { hrefLang: 'en', href: server + router.asPath },
+    { hrefLang: 'ru', href: server + '/ru' + router.asPath }
+  ]
 
   return (
     <NextSeo
