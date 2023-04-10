@@ -3,7 +3,7 @@ import { useRouter } from 'next/router'
 
 import { server, network } from '../utils'
 
-export default function SEO({ title, description, image, page }) {
+export default function SEO({ title, description, image, page, images }) {
   const router = useRouter()
 
   const networkText = network !== 'mainnet' ? ("(" + network + ")") : ""
@@ -19,19 +19,26 @@ export default function SEO({ title, description, image, page }) {
   }
 
   if (image) {
-    const { file, width, height } = image
-    let url = file
-    if (file?.indexOf("http") !== 0) {
-      url = server + '/images/' + file
+    images = [image]
+  }
+  
+  if (images) {
+    openGraph.images = []
+    for (let i = 0; i < images.length; i++) {
+      const { file, width, height } = images[i]
+      let url = file
+      if (file?.indexOf("http") !== 0) {
+        url = server + '/images/' + file
+      }
+      openGraph.images.push(
+        {
+          url,
+          width,
+          height,
+          alt: `Image for ${title} ${i}`,
+        }
+      )
     }
-    openGraph.images = [
-      {
-        url,
-        width,
-        height,
-        alt: `image for ${title}`,
-      },
-    ]
   }
 
   let twitter = {

@@ -58,13 +58,27 @@ export default function Home({ devNet }) {
         ]}
       />
       <SEO
-        title="XRP Explorer | Scan the XRPL network."
-        description="Explore XRP Ledger, check transactions for statuses, addresses for balances, NFTs, offers, tokens, escrows and checks."
-        image={{
-          width: 1200,
-          height: 630,
-          file: 'og-logo.png'
-        }}
+        title={t("home.title")}
+        description={t("home.description")}
+        images={
+          [
+            {
+              width: 1200,
+              height: 630,
+              file: 'og-logo.png'
+            },
+            {
+              width: 512,
+              height: 512,
+              file: server + '/logo512.png'
+            },
+            {
+              width: 192,
+              height: 192,
+              file: server + '/logo192.png'
+            }
+          ]
+        }
       />
       <SearchBlock searchPlaceholderText={windowWidth < 500 ? t("home.search-placeholder-short") : t("home.search-placeholder")} tab="explorer" />
       {!devNet &&

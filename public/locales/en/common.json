@@ -89,6 +89,8 @@
     }
   },
   "home": {
+    "title": "XRP Explorer | Scan the XRP Ledger",
+    "description": "XRP price chart | Statistics | NFT explorer | Wallet address look up",
     "search-placeholder": "Search by XRPL Address / Transaction / NFT / Username / PayString / Offer / Currency hash",
     "search-placeholder-short": "Search by Address / Transaction / User",
     "scan-qr": "SCAN A CODE",
