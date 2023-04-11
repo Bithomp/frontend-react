@@ -349,6 +349,8 @@
     "date": "Date",
     "amount": "Amount",
     "name": "Name",
+    "sender": "Sender",
+    "memo": "Memo",
     "transaction": "Transaction",
     "owner": "Owner",
     "owners-now": "Owners (now)",
