@@ -557,7 +557,8 @@
     "help-us": "Help us in our mission to make the most user friendly XRPL explorer.",
     "it-helps": "Your donation will help us to add capacity and continue to develop Bithomp.",
     "address": "Our XRPL address for donations",
-    "dt": "Destination tag"
+    "dt": "Destination tag",
+    "donate-with-xumm": "Donate with XUMM"
   },
   "sponsored": {
     "sponsored": "Sponsored"

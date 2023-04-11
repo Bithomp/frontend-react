@@ -21,8 +21,6 @@ export async function getServerSideProps(context) {
 import CopyButton from '../components/UI/CopyButton'
 import SEO from '../components/SEO'
 
-const showTable = false
-
 export default function Donate() {
   const { t } = useTranslation()
   const isMobile = useIsMobile()
@@ -87,11 +85,24 @@ export default function Donate() {
           {t("donate.dt")}:
           <br />
           <b>1</b> <CopyButton text="1" />
+
+          {isMobile &&
+            <>
+              <br /><br />
+              <a
+                className='button-action wide center'
+                href="xumm://xumm.app/detect/request:rPPHhfSQbHt1t2XPHWAK1HTcjqDg56TzZy?dt=1&deeplink=true&afterQr=true"
+              >
+                <Image src="/images/xumm.png" className='xumm-logo' alt="xumm" height={24} width={24} />
+                {t("donate.donate-with-xumm")}
+              </a>
+            </>
+          }
         </div>
       </div>
-      <br /><br />
+      <br />
 
-      {showTable && data?.transactions && <>
+      {data?.transactions && <>
         {isMobile ?
           <table className="table-mobile">
             <thead>
@@ -112,10 +123,12 @@ export default function Donate() {
                       {t("table.amount")}<br />
                       {amountFormat(tx.amount)}
                     </p>
-                    <p>
-                      {t("table.memo")}<br />
-                      {tx.memos && tx.memos.length > 0 && stripText(tx.memos[0]?.data)}
-                    </p>
+                    {tx.memos && tx.memos.length > 0 &&
+                      <p>
+                        {t("table.memo")}<br />
+                        {stripText(tx.memos[0]?.data)}
+                      </p>
+                    }
                   </td>
                 </tr>
               ))}
