@@ -60,7 +60,12 @@ export default function Donate() {
   }, [setData])
 
   return <>
-    <SEO title={t("menu.donate") + " ❤"} />
+    <SEO
+      title={t("menu.donate") + " ❤"}
+      description={t("donate.help-us")}
+      image={{ height: 300, width: 300, file: 'donate.png' }}
+      websiteName="Bithomp"
+    />
     <div className="content-text content-center">
       <h2 className="center">{t("menu.donate")} <span className="red">❤</span></h2>
       <div className="flex">

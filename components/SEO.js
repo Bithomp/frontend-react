@@ -3,7 +3,7 @@ import { useRouter } from 'next/router'
 
 import { server, network } from '../utils'
 
-export default function SEO({ title, description, image, page, images }) {
+export default function SEO({ title, description, image, page, images, websiteName }) {
   const router = useRouter()
 
   const networkText = network !== 'mainnet' ? ("(" + network + ")") : ""
@@ -15,7 +15,7 @@ export default function SEO({ title, description, image, page, images }) {
     title: title || page,
     description,
     locale: router.locale,
-    site_name: "XRPL " + (page ? (page + " ") : "") + networkText,
+    site_name: websiteName || "XRPL " + (page ? (page + " ") : "") + networkText,
   }
 
   if (image) {
@@ -35,7 +35,7 @@ export default function SEO({ title, description, image, page, images }) {
           url,
           width,
           height,
-          alt: `Image for ${title} ${i}`,
+          alt: `Image for ${title} ${i > 0 ? i : ""}`,
         }
       )
     }
