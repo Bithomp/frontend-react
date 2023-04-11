@@ -84,6 +84,11 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
       return;
     }
 
+    if (tab === "nft-volumes" && isAddressOrUsername(searchFor)) {
+      window.location = "../nft-volumes/" + encodeURI(searchFor) + addParams
+      return;
+    }
+
     if (tab === "nft-distribution" && isAddressOrUsername(searchFor)) {
       window.location = "../nft-distribution/" + encodeURI(searchFor)
       return;
@@ -139,7 +144,7 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
   searchItem.charAt(0) == "X"
   */
 
-  const showTabs = tab && ['nfts', 'nft-offers'].includes(tab);
+  const showTabs = tab && ['nfts', 'nft-offers', 'nft-volumes'].includes(tab);
 
   return (
     <>
@@ -185,9 +190,10 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
           <div className='explorer-tabs'>
             {tab === "nfts" ? <b>NFTs</b> : <a href={"/nfts/" + searchItem + addParams}>NFTs</a>}
             {tab === "nft-offers" ? <b>{t("nft-offers.header")}</b> : <a href={"/nft-offers/" + searchItem}>{t("nft-offers.header")}</a>}
+            {tab === "nft-volumes" &&  <b>{t("nft-volumes.header")}</b>}
             <a href={"/explorer/" + searchItem}>{t("explorer.menu.account")}</a>
-            <a href={"/explorer/" + searchItem} className='hide-on-mobile'>{t("explorer.menu.transactions")}</a>
-            <a href={"/explorer/" + searchItem} className='hide-on-mobile'>{t("explorer.menu.tokens")}</a>
+            {tab !== "nft-volumes" && <a href={"/explorer/" + searchItem} className='hide-on-mobile'>{t("explorer.menu.transactions")}</a>}
+            {tab !== "nft-volumes" && <a href={"/explorer/" + searchItem} className='hide-on-mobile'>{t("explorer.menu.tokens")}</a>}
           </div>
           <div className='explorer-tabs-shadow'></div>
         </div>
