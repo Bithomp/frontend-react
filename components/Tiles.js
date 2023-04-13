@@ -4,7 +4,7 @@ import Link from 'next/link'
 
 import { stripText } from '../utils'
 import { nftImageStyle, nftUrl, bestSellOffer, mpUrl } from '../utils/nft'
-import { amountFormat, timeOrDate } from '../utils/format'
+import { amountFormat, timeOrDate, niceNumber } from '../utils/format'
 
 const addressName = (details, name) => {
   if (!details) return "";
@@ -21,7 +21,17 @@ const addressName = (details, name) => {
   return "";
 }
 
-export default function Tiles({ nftList, type = 'name' }) {
+const convertedAmount = (nft, convertCurrency) => {
+  if (nft?.amountInConvertCurrencies && nft.amountInConvertCurrencies[convertCurrency]) {
+    return <>
+      {niceNumber(nft.amountInConvertCurrencies[convertCurrency], 2, convertCurrency)}
+      <br />
+    </>
+  }
+  return null
+}
+
+export default function Tiles({ nftList, type = 'name', convertCurrency }) {
   const { t } = useTranslation();
 
   const [loaded, setLoaded] = useState([]);
@@ -154,7 +164,7 @@ export default function Tiles({ nftList, type = 'name' }) {
                   <div className="index">{i + 1}</div>
                   <div className='title'></div>
                   <h1>
-                    {amountFormat(nft.amount)}<br />
+                    {convertedAmount(nft, convertCurrency) || amountFormat(nft.amount)}
                     {timeOrDate(nft.acceptedAt)}
                   </h1>
                   <div className='title-full'>

@@ -8,10 +8,16 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 import { stripText, isAddressOrUsername, setTabParams } from '../utils'
 import { isValidTaxon, nftThumbnail, nftNameLink } from '../utils/nft'
-import { amountFormat, nftLink, userOrServiceLink, usernameOrAddress, timeOrDate } from '../utils/format'
+import {
+  amountFormat,
+  nftLink,
+  userOrServiceLink,
+  usernameOrAddress,
+  timeOrDate
+} from '../utils/format'
 
 export const getServerSideProps = async ({ query, locale }) => {
-  const { view, sale, list, currency, currencyIssuer, issuer, taxon, period } = query
+  const { view, sale, list, currency, currencyIssuer, issuer, taxon, period, sortCurrency } = query
   return {
     props: {
       view: view || "tiles",
@@ -22,6 +28,7 @@ export const getServerSideProps = async ({ query, locale }) => {
       issuerQuery: issuer || "",
       taxonQuery: taxon || "",
       period: period || "week",
+      sortCurrencyQuery: sortCurrency || "",
       ...(await serverSideTranslations(locale, ['common'])),
     },
   }
@@ -33,7 +40,18 @@ import Tiles from '../components/Tiles'
 
 import LinkIcon from "../public/images/link.svg"
 
-export default function NftSales({ view, sale, list, currency, currencyIssuer, issuerQuery, taxonQuery, period }) {
+export default function NftSales({
+  view,
+  sale,
+  list,
+  currency,
+  currencyIssuer,
+  issuerQuery,
+  taxonQuery,
+  period,
+  sortCurrencyQuery,
+  selectedCurrency
+}) {
   const { t } = useTranslation();
   const router = useRouter()
 
@@ -53,6 +71,8 @@ export default function NftSales({ view, sale, list, currency, currencyIssuer, i
   const [pageTab, setPageTab] = useState(list);
   const [hasMore, setHasMore] = useState("first");
   const [dateAndTimeNow, setDateAndTimeNow] = useState('')
+
+  const sortCurrency = sortCurrencyQuery.toLowerCase() || selectedCurrency
 
   useEffect(() => {
     const date = new Date(Date.now()).toLocaleDateString([], { year: 'numeric', month: 'short', day: '2-digit' })
@@ -129,9 +149,9 @@ export default function NftSales({ view, sale, list, currency, currencyIssuer, i
       setLoading(true);
     }
 
-    const response = await axios('v2/nft-sales?list=' + loadList + currencyUrlPart() + '&saleType=' + saleTab + collectionUrlPart + periodUrlPart + markerUrlPart).catch(error => {
+    const response = await axios('v2/nft-sales?list=' + loadList + currencyUrlPart() + '&saleType=' + saleTab + collectionUrlPart + periodUrlPart + markerUrlPart + "&convertCurrencies=" + sortCurrency + "&sortCurrency=" + sortCurrency).catch(error => {
       setErrorMessage(t("error." + error.message));
-    });
+    })
 
     const newdata = response.data;
     setLoading(false);
@@ -176,9 +196,11 @@ export default function NftSales({ view, sale, list, currency, currencyIssuer, i
   }
 
   useEffect(() => {
-    checkApi({ restart: true });
+    if (sortCurrency) {
+      checkApi({ restart: true })
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [saleTab, issuer, taxon, periodTab, pageTab]);
+  }, [saleTab, issuer, taxon, periodTab, pageTab, sortCurrency]);
 
   useEffect(() => {
     let queryAddList = [];
@@ -273,10 +295,7 @@ export default function NftSales({ view, sale, list, currency, currencyIssuer, i
   const issuerTaxonUrlPart = (data && issuer) ? ("&issuer=" + usernameOrAddress(data, 'issuer') + (taxon ? ("&taxon=" + taxon) : "")) : "";
 
   const currencyUrlPart = () => {
-    if (!currency) {
-      if (pageTab === 'last') return "";
-      if (pageTab === 'top') return "&currency=xrp";
-    }
+    if (!currency) return ""
 
     if (currency.toLowerCase() === 'xrp') {
       return "&currency=xrp";
@@ -285,7 +304,7 @@ export default function NftSales({ view, sale, list, currency, currencyIssuer, i
         return '&currency=' + stripText(currency) + "&currencyIssuer=" + stripText(currencyIssuer);
       }
     }
-    return "";
+    return ""
   }
 
   let csvHeaders = [
@@ -303,7 +322,7 @@ export default function NftSales({ view, sale, list, currency, currencyIssuer, i
   ];
 
   return <>
-    <SEO 
+    <SEO
       title={t("nft-sales.header") + (issuerQuery ? (" " + issuerQuery) : "")}
     />
     <div className="content-text" style={{ minHeight: "480px" }}>
@@ -427,7 +446,7 @@ export default function NftSales({ view, sale, list, currency, currencyIssuer, i
                 {errorMessage ?
                   <div className='center orange bold'>{errorMessage}</div>
                   :
-                  <Tiles nftList={sales} type={pageTab} />
+                  <Tiles nftList={sales} type={pageTab} convertCurrency={sortCurrency} />
                 }
               </>
             }
