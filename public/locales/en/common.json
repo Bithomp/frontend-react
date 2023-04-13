@@ -332,7 +332,7 @@
     "Request failed with status code 429": "You are sending us too many requests, try later!"
   },
   "error-api": {
-    "Issuer username is not valid": "Invalid issuer's username",
+    "Issuer username is not found or invalid": "Invalid issuer's username",
     "Issuer address is not valid": "Invalid issuer's address",
     "Owner username is not found or invalid": "Invalid owner's username",
     "Owner address is not valid": "Invalid owner's address",

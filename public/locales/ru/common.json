@@ -332,7 +332,7 @@
     "Request failed with status code 429": "Вы нам шлете слишком много запросов, попробуйте вернуться позже."
   },
   "error-api": {
-    "Issuer username is not valid": "Эмитент с таким ником не найден",
+    "Issuer username is not found or invalid": "Эмитент с таким ником не найден",
     "Issuer address is not valid": "Неверный адрес эмитента",
     "Owner username is not found or invalid": "Не верный ник владельца",
     "Owner address is not valid": "Не верный адрес владельца",
