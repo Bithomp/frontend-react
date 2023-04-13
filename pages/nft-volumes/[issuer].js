@@ -24,14 +24,14 @@ import SearchBlock from '../../components/Layout/SearchBlock'
 
 import { setTabParams, stripText, isAddressOrUsername, useWidth, removeQueryParams } from '../../utils'
 import {
-  amountFormat,
+  niceNumber,
   shortNiceNumber,
   usernameOrAddress
 } from '../../utils/format';
 
 import LinkIcon from "../../public/images/link.svg"
 
-export default function NftVolumes({ period, sale, currency, currencyIssuer, issuer }) {
+export default function NftVolumes({ period, sale, currency, currencyIssuer, issuer, selectedCurrency }) {
   const { t } = useTranslation()
   const router = useRouter()
   const { isReady } = router
@@ -64,7 +64,7 @@ export default function NftVolumes({ period, sale, currency, currencyIssuer, iss
 
   const checkApi = async () => {
     if (!issuer) return;
-    let apiUrl = 'v2/nft-volumes-issuer/' + issuer + '?list=taxons'
+    let apiUrl = 'v2/nft-volumes-issuer/' + issuer + '?list=taxons&convertCurrencies=' + selectedCurrency
 
     if (currency && currencyIssuer) {
       apiUrl += '&currency=' + stripText(currency) + '&currencyIssuer=' + stripText(currencyIssuer);
@@ -94,14 +94,10 @@ export default function NftVolumes({ period, sale, currency, currencyIssuer, iss
       setRawData(newdata)
       setLoading(false) //keep here for fast tab clickers
       if (newdata.period) {
-        if (newdata.volumes.length > 0) {
-          setErrorMessage("");
-          if (newdata.volumes[0].amount.value) {
-            setData(newdata.volumes.sort((a, b) => (parseFloat(a.amount.value) < parseFloat(b.amount.value)) ? 1 : -1));
-          } else {
-            let volumes = newdata.volumes
-            setData(volumes.sort((a, b) => (parseFloat(a.amount) < parseFloat(b.amount)) ? 1 : -1))
-          }
+        if (newdata.taxons?.length > 0) {
+          setErrorMessage("")
+          let volumes = newdata.taxons
+          setData(volumes.sort((a, b) => (parseFloat(a.volumesInConvertCurrencies[selectedCurrency]) < parseFloat(b.volumesInConvertCurrencies[selectedCurrency])) ? 1 : -1))
         } else {
           setErrorMessage(t("general.no-data"))
         }
@@ -119,29 +115,41 @@ export default function NftVolumes({ period, sale, currency, currencyIssuer, iss
   /*
     {
       "period": "week",
-      "currency": "xrp",
       "saleType": "all",
       "issuer": "ra59pDJcuqKJcQws7Xpuu1S8UYKmKnpUkW",
       "issuerDetails": {
         "username": "xSPECTAR",
         "service": "xSPECTAR"
       },
-      "volumes": [
+      "taxons": [
         {
-          "taxon": 2,
-          "amount": "34761105001",
-          "sales": 4
-        },
-        {
-          "taxon": 1,
-          "amount": "23238622299",
-          "sales": 86
+          "taxon": 168380,
+          "volumes": [
+            {
+              "amount": {
+                "currency": "MRM",
+                "issuer": "rNjQ9HZYiBk1WhuscDkmJRSc3gbrBqqAaQ",
+                "value": "200000000"
+              },
+              "sales": 1
+            }
+          ],
+          "sales": 1,
+          "buyers": 1,
+          "tradedNfts": 1,
+          "owners": 1,
+          "nfts": 1,
+          "volumesInConvertCurrencies": {
+            "usd": "4.4172",
+            "xrp": "12"
+          }
         }
       ]
     }
   */
 
   useEffect(() => {
+    if (!selectedCurrency) return
     checkApi();
     setTabParams(router, [
       {
@@ -170,7 +178,7 @@ export default function NftVolumes({ period, sale, currency, currencyIssuer, iss
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isReady, saleTab, periodTab, currency, currencyIssuer]);
+  }, [isReady, saleTab, periodTab, currency, currencyIssuer, selectedCurrency]);
 
   const urlParams = (volume) => {
     let urlPart = "?period=" + periodTab + "&sale=" + saleTab
@@ -186,21 +194,21 @@ export default function NftVolumes({ period, sale, currency, currencyIssuer, iss
   }
 
   const sortTable = key => {
-    if (!data || !data[0] || !data[0][key]) return;
-    let direction = 'descending';
-    let sortA = 1;
-    let sortB = -1;
-    if (sortConfig.key === key && sortConfig.direction === direction) {
-      direction = 'ascending';
-      sortA = -1;
-      sortB = 1;
-    }
-    setSortConfig({ key, direction });
+    if (!data || !data[0] || !(data[0][key] || data[0].volumesInConvertCurrencies[selectedCurrency])) return
+    let direction = 'descending'
+    let sortA = 1
+    let sortB = -1
 
-    if (key === 'amount' && data[0].amount.value) {
-      setData(data.sort((a, b) => (parseFloat(a.amount.value) < parseFloat(b.amount.value)) ? sortA : sortB));
+    if (sortConfig.key === key && sortConfig.direction === direction) {
+      direction = 'ascending'
+      sortA = -1
+      sortB = 1
+    }
+    setSortConfig({ key, direction })
+    if (key === 'amount') {
+      setData(data.sort((a, b) => (parseFloat(a.volumesInConvertCurrencies[selectedCurrency]) < parseFloat(b.volumesInConvertCurrencies[selectedCurrency])) ? sortA : sortB))
     } else {
-      setData(data.sort((a, b) => (parseFloat(a[key]) < parseFloat(b[key])) ? sortA : sortB));
+      setData(data.sort((a, b) => (parseFloat(a[key]) < parseFloat(b[key])) ? sortA : sortB))
     }
   }
 
@@ -223,13 +231,13 @@ export default function NftVolumes({ period, sale, currency, currencyIssuer, iss
           <thead>
             <tr>
               <th className='center'>{t("table.index")}</th>
-              <th>{t("table.taxon")}</th>
-              <th className='right hide-on-mobile'>{t("table.nfts-now")} <b className={"link" + (sortConfig.key === 'totalNfts' ? " orange" : "")} onClick={() => sortTable('totalNfts')}>⇅</b></th>
-              {/* <th className='right hide-on-mobile'>{t("table.owners-now")} <b className={"link" + (sortConfig.key === 'totalOwners' ? " orange" : "")} onClick={() => sortTable('totalOwners')}>⇅</b></th> */}
-              {/* <th className='right hide-on-mobile'>{t("table.traded-nfts")} <b className={"link" + (sortConfig.key === 'tradedNfts' ? " orange" : "")} onClick={() => sortTable('tradedNfts')}>⇅</b></th> */}
-              <th className='right'>{t("table.sales")} (XRP) <b className={"link" + (sortConfig.key === 'sales' ? " orange" : "")} onClick={() => sortTable('sales')}>⇅</b></th>
-              {/* <th className='right hide-on-mobile'>{t("table.buyers")} <b className={"link" + (sortConfig.key === 'buyers' ? " orange" : "")} onClick={() => sortTable('buyers')}>⇅</b></th> */}
-              <th className='right'>{t("table.volume")} (XRP only) <b className={"link" + (sortConfig.key === 'amount' ? " orange" : "")} onClick={() => sortTable('amount')}>⇅</b></th>
+              <th className='right'>{t("table.taxon")} <b className={"link" + (sortConfig.key === 'taxon' ? " orange" : "")} onClick={() => sortTable('taxon')}>⇅</b></th>
+              <th className='right'>{t("table.nfts-now")} <b className={"link" + (sortConfig.key === 'nfts' ? " orange" : "")} onClick={() => sortTable('nfts')}>⇅</b></th>
+              <th className='right'>{t("table.owners-now")} <b className={"link" + (sortConfig.key === 'owners' ? " orange" : "")} onClick={() => sortTable('owners')}>⇅</b></th>
+              <th className='right'>{t("table.traded-nfts")} <b className={"link" + (sortConfig.key === 'tradedNfts' ? " orange" : "")} onClick={() => sortTable('tradedNfts')}>⇅</b></th>
+              <th className='right'>{t("table.sales")} <b className={"link" + (sortConfig.key === 'sales' ? " orange" : "")} onClick={() => sortTable('sales')}>⇅</b></th>
+              <th className='right'>{t("table.buyers")} <b className={"link" + (sortConfig.key === 'buyers' ? " orange" : "")} onClick={() => sortTable('buyers')}>⇅</b></th>
+              <th className='right'>{t("table.volume")} <b className={"link" + (sortConfig.key === 'amount' ? " orange" : "")} onClick={() => sortTable('amount')}>⇅</b></th>
             </tr>
           </thead>
           <tbody>
@@ -250,17 +258,17 @@ export default function NftVolumes({ period, sale, currency, currencyIssuer, iss
                       data.map((volume, i) =>
                         <tr key={i}>
                           <td className='center'>{i + 1}</td>
-                          <td>{volume.taxon}</td>
-                          <td className='center hide-on-mobile'>{shortNiceNumber(volume.totalNfts, 0)} <a href={'/nft-explorer?issuer=' + usernameOrAddress(rawData, 'issuer') + "&taxon=" + volume.taxon}><LinkIcon /></a></td>
-                          {/* <td className='right hide-on-mobile'>{shortNiceNumber(volume.totalOwners, 0)} <a href={'/nft-distribution/' + usernameOrAddress(rawData, 'issuer') + "?taxon=" + volume.taxon}><LinkIcon /></a></td> */}
-                          {/* <td className='right hide-on-mobile'>{shortNiceNumber(volume.tradedNfts, 0)}</td> */}
+                          <td className='right'>{volume.taxon}</td>
+                          <td className='center'>{shortNiceNumber(volume.nfts, 0)} <a href={'/nft-explorer?issuer=' + usernameOrAddress(rawData, 'issuer') + "&taxon=" + volume.taxon}><LinkIcon /></a></td>
+                          <td className='right'>{shortNiceNumber(volume.owners, 0)} {/* <a href={'/nft-distribution/' + usernameOrAddress(rawData, 'issuer') + "?taxon=" + volume.taxon}><LinkIcon /></a> */}</td>
+                          <td className='right'>{shortNiceNumber(volume.tradedNfts, 0)}</td>
                           <td className='right'>
                             {shortNiceNumber(volume.sales, 0)}
                             <a href={'/nft-sales' + urlParams(volume)}> <LinkIcon /></a>
                           </td>
-                          {/* <td className='right hide-on-mobile'>{shortNiceNumber(volume.buyers, 0)}</td> */}
+                          <td className='right'>{shortNiceNumber(volume.buyers, 0)}</td>
                           <td className='right'>
-                            {amountFormat(volume.amount, { tooltip: 'right', maxFractionDigits: 2 })}
+                            {niceNumber(volume.volumesInConvertCurrencies[selectedCurrency], 2, selectedCurrency)}
                           </td>
                         </tr>)
                     }
@@ -299,27 +307,23 @@ export default function NftVolumes({ period, sale, currency, currencyIssuer, iss
                       </p>
                       <p>
                         {t("table.nfts-now")}:{" "}
-                        {shortNiceNumber(volume.totalNfts, 0)} <a href={'/nft-explorer?issuer=' + usernameOrAddress(rawData, 'issuer') + "&taxon=" + volume.taxon}><LinkIcon /></a>
+                        {shortNiceNumber(volume.nfts, 0)} <a href={'/nft-explorer?issuer=' + usernameOrAddress(rawData, 'issuer') + "&taxon=" + volume.taxon}><LinkIcon /></a>
                       </p>
-                      {/*
                       <p>
                         {t("table.owners-now")}:{" "}
-                        {shortNiceNumber(volume.totalOwners, 0)} <a href={'/nft-distribution/' + usernameOrAddress(rawData, 'issuer') + "?taxon=" + volume.taxon}><LinkIcon /></a>
+                        {shortNiceNumber(volume.owners, 0)} {/* <a href={'/nft-distribution/' + usernameOrAddress(rawData, 'issuer') + "?taxon=" + volume.taxon}><LinkIcon /></a> */}
                       </p>
                       <p>
                         {t("table.traded-nfts")}: {shortNiceNumber(volume.tradedNfts, 0)}
                       </p>
-                      */}
                       <p>
-                        {t("table.sales")} (XRP): {shortNiceNumber(volume.sales, 0)} <a href={'/nft-sales' + urlParams(volume)}> <LinkIcon /></a>
+                        {t("table.sales")}: {shortNiceNumber(volume.sales, 0)} <a href={'/nft-sales' + urlParams(volume)}> <LinkIcon /></a>
                       </p>
-                      {/*
                       <p>
                         {t("table.buyers")}: {shortNiceNumber(volume.buyers, 0)}
                       </p>
-                      */}
                       <p>
-                        {t("table.volume")} (XRP only): {amountFormat(volume.amount, { tooltip: 'right', maxFractionDigits: 2 })}
+                        {t("table.volume")}: {niceNumber(volume.volumesInConvertCurrencies[selectedCurrency], 2, selectedCurrency)}
                       </p>
                     </td>
                   </tr>)
