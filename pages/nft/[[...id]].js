@@ -200,7 +200,7 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta }) 
   }, [id, signRequest]);
 
   const externalUrl = (meta) => {
-    let url = meta.external_url || meta.external_link || (meta.minter?.includes("https://") && meta.minter);
+    let url = meta.external_url || meta.external_link || meta.externalUrl || meta.externalURL || (meta.minter?.includes("https://") && meta.minter);
     if (url) {
       url = stripText(url);
       if (url.toLowerCase().slice(0, 8) !== 'https://' && url.slice(0, 7).toLowerCase() !== 'http://') {
