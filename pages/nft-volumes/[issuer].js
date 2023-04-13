@@ -5,14 +5,15 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useRouter } from 'next/router'
 
 export const getServerSideProps = async ({ query, locale }) => {
-  const { period, sale, currency, currencyIssuer, issuer } = query
+  const { period, sale, currency, currencyIssuer, issuer, sortCurrency } = query
   return {
     props: {
       period: period || "week",
       sale: sale || "all",
       issuer: issuer || "",
-      currency: currency || "xrp", //only XRP for now
+      currency: currency || "",
       currencyIssuer: currencyIssuer || "",
+      sortCurrency: sortCurrency || "",
       ...(await serverSideTranslations(locale, ['common'])),
     },
   }
@@ -31,7 +32,7 @@ import {
 
 import LinkIcon from "../../public/images/link.svg"
 
-export default function NftVolumes({ period, sale, currency, currencyIssuer, issuer, selectedCurrency }) {
+export default function NftVolumes({ period, sale, currency, currencyIssuer, issuer, selectedCurrency, sortCurrency }) {
   const { t } = useTranslation()
   const router = useRouter()
   const { isReady } = router
@@ -45,6 +46,8 @@ export default function NftVolumes({ period, sale, currency, currencyIssuer, iss
   const [periodTab, setPeriodTab] = useState(period)
   const [saleTab, setSaleTab] = useState(sale)
   const [sortConfig, setSortConfig] = useState({})
+
+  const convertCurrency = sortCurrency || selectedCurrency
 
   const periodTabList = [
     { value: 'all', label: t("tabs.all-time") },
@@ -64,7 +67,7 @@ export default function NftVolumes({ period, sale, currency, currencyIssuer, iss
 
   const checkApi = async () => {
     if (!issuer) return;
-    let apiUrl = 'v2/nft-volumes-issuer/' + issuer + '?list=taxons&convertCurrencies=' + selectedCurrency
+    let apiUrl = 'v2/nft-volumes-issuer/' + issuer + '?list=taxons&convertCurrencies=' + convertCurrency
 
     if (currency && currencyIssuer) {
       apiUrl += '&currency=' + stripText(currency) + '&currencyIssuer=' + stripText(currencyIssuer);
@@ -97,7 +100,7 @@ export default function NftVolumes({ period, sale, currency, currencyIssuer, iss
         if (newdata.taxons?.length > 0) {
           setErrorMessage("")
           let volumes = newdata.taxons
-          setData(volumes.sort((a, b) => (parseFloat(a.volumesInConvertCurrencies[selectedCurrency]) < parseFloat(b.volumesInConvertCurrencies[selectedCurrency])) ? 1 : -1))
+          setData(volumes.sort((a, b) => (parseFloat(a.volumesInConvertCurrencies[convertCurrency]) < parseFloat(b.volumesInConvertCurrencies[convertCurrency])) ? 1 : -1))
         } else {
           setErrorMessage(t("general.no-data"))
         }
@@ -149,7 +152,7 @@ export default function NftVolumes({ period, sale, currency, currencyIssuer, iss
   */
 
   useEffect(() => {
-    if (!selectedCurrency) return
+    if (!convertCurrency) return
     checkApi();
     setTabParams(router, [
       {
@@ -178,7 +181,7 @@ export default function NftVolumes({ period, sale, currency, currencyIssuer, iss
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isReady, saleTab, periodTab, currency, currencyIssuer, selectedCurrency]);
+  }, [isReady, saleTab, periodTab, currency, currencyIssuer, convertCurrency]);
 
   const urlParams = (volume) => {
     let urlPart = "?period=" + periodTab + "&sale=" + saleTab
@@ -194,7 +197,7 @@ export default function NftVolumes({ period, sale, currency, currencyIssuer, iss
   }
 
   const sortTable = key => {
-    if (!data || !data[0] || !(data[0][key] || data[0].volumesInConvertCurrencies[selectedCurrency])) return
+    if (!data || !data[0] || !(data[0][key] || data[0].volumesInConvertCurrencies[convertCurrency])) return
     let direction = 'descending'
     let sortA = 1
     let sortB = -1
@@ -206,7 +209,7 @@ export default function NftVolumes({ period, sale, currency, currencyIssuer, iss
     }
     setSortConfig({ key, direction })
     if (key === 'amount') {
-      setData(data.sort((a, b) => (parseFloat(a.volumesInConvertCurrencies[selectedCurrency]) < parseFloat(b.volumesInConvertCurrencies[selectedCurrency])) ? sortA : sortB))
+      setData(data.sort((a, b) => (parseFloat(a.volumesInConvertCurrencies[convertCurrency]) < parseFloat(b.volumesInConvertCurrencies[convertCurrency])) ? sortA : sortB))
     } else {
       setData(data.sort((a, b) => (parseFloat(a[key]) < parseFloat(b[key])) ? sortA : sortB))
     }
@@ -268,7 +271,7 @@ export default function NftVolumes({ period, sale, currency, currencyIssuer, iss
                           </td>
                           <td className='right'>{shortNiceNumber(volume.buyers, 0)}</td>
                           <td className='right'>
-                            {niceNumber(volume.volumesInConvertCurrencies[selectedCurrency], 2, selectedCurrency)}
+                            {niceNumber(volume.volumesInConvertCurrencies[convertCurrency], 2, convertCurrency)}
                           </td>
                         </tr>)
                     }
@@ -323,7 +326,7 @@ export default function NftVolumes({ period, sale, currency, currencyIssuer, iss
                         {t("table.buyers")}: {shortNiceNumber(volume.buyers, 0)}
                       </p>
                       <p>
-                        {t("table.volume")}: {niceNumber(volume.volumesInConvertCurrencies[selectedCurrency], 2, selectedCurrency)}
+                        {t("table.volume")}: {niceNumber(volume.volumesInConvertCurrencies[convertCurrency], 2, convertCurrency)}
                       </p>
                     </td>
                   </tr>)
