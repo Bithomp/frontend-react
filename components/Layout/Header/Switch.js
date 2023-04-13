@@ -3,14 +3,14 @@ import { useTheme } from "../ThemeContext"
 import Image from 'next/image'
 
 export default function Switch() {
-  const [mount, setMount] = useState(false);
-  const { theme, toggleTheme } = useTheme();
+  const [rendered, setRendered] = useState(false)
+  const { theme, toggleTheme } = useTheme()
 
   useEffect(() => {
-    setMount(true);
-  }, []);
+    setRendered(true)
+  }, [])
 
-  if (!mount) return null;
+  if (!rendered) return null
 
   return (
     <div className="theme-switch">
@@ -19,5 +19,5 @@ export default function Switch() {
         <Image src="/images/moon.svg" className="switch-icon moon" alt="dark mode" height={15} width={15} />
       </div>
     </div>
-  );
-};
+  )
+}

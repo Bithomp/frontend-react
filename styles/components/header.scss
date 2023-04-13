@@ -4,7 +4,7 @@ header {
   width: 100%;
   background-color: var(--background-header);
   border-bottom: 1px solid var(--background-menu);
-  z-index: 3;
+  z-index: 4;
   transition: background-color .5s;
   .header-logo {
     max-width: 160px;
@@ -203,6 +203,7 @@ header {
     }
 
     .header-menu-right {
+      right: 60px;
       .header-signin-link,
       .theme-switch {
         display: none;

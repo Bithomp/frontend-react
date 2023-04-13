@@ -3,7 +3,7 @@ import { useTranslation } from 'next-i18next'
 import { useState } from 'react'
 import { SiteLinksSearchBoxJsonLd, LogoJsonLd, SocialProfileJsonLd } from 'next-seo'
 
-import { useLocalStorage, useWidth, server } from '../utils'
+import { useWidth, server } from '../utils'
 import { useIsMobile, getIsSsrMobile } from "../utils/mobile"
 
 import SEO from '../components/SEO'
@@ -23,12 +23,11 @@ export async function getServerSideProps(context) {
   }
 }
 
-export default function Home({ devNet }) {
+export default function Home({ devNet, selectedCurrency, setSelectedCurrency }) {
   const { t } = useTranslation()
   const windowWidth = useWidth()
   const isMobile = useIsMobile()
 
-  const [selectedCurrency, setSelectedCurrency] = useLocalStorage('currency', 'usd')
   const [chartPeriod, setChartPeriod] = useState('one_day')
 
   return (

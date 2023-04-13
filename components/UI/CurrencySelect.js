@@ -2,50 +2,11 @@ import Select from 'react-select'
 import { useState } from 'react'
 import Image from 'next/image'
 
+import { fiatCurrencyList } from '../../utils';
+
 export default function CurrencySelect({ setSelectedCurrency, selectedCurrency }) {
 
-  const currencies = [
-    { value: 'usd', label: 'USD' },
-    { value: 'eur', label: 'EUR' },
-    { value: 'jpy', label: 'JPY' },
-    { value: 'gbp', label: 'GBP' },
-    { value: 'aud', label: 'AUD' },
-    { value: 'cad', label: 'CAD' },
-    { value: 'chf', label: 'CHF' },
-    { value: 'cny', label: 'CNY' },
-    { value: 'hkd', label: 'HKD' },
-    { value: 'nzd', label: 'NZD' },
-    { value: 'sek', label: 'SEK' },
-    { value: 'krw', label: 'KRW' },
-    { value: 'sgd', label: 'SGD' },
-    { value: 'nok', label: 'NOK' },
-    { value: 'mxn', label: 'MXN' },
-    { value: 'inr', label: 'INR' },
-    { value: 'rub', label: 'RUB' },
-    { value: 'zar', label: 'ZAR' },
-    { value: 'try', label: 'TRY' },
-    { value: 'brl', label: 'BRL' },
-    { value: 'twd', label: 'TWD' },
-    { value: 'dkk', label: 'DKK' },
-    { value: 'pln', label: 'PLN' },
-    { value: 'thb', label: 'THB' },
-    { value: 'idr', label: 'IDR' },
-    { value: 'huf', label: 'HUF' },
-    { value: 'czk', label: 'CZK' },
-    { value: 'ils', label: 'ILS' },
-    { value: 'clp', label: 'CLP' },
-    { value: 'php', label: 'PHP' },
-    { value: 'aed', label: 'AED' },
-    { value: 'sar', label: 'SAR' },
-    { value: 'myr', label: 'MYR' },
-    { value: 'ars', label: 'ARS' },
-    { value: 'bdt', label: 'BDT' },
-    { value: 'bhd', label: 'BHD' },
-    { value: 'kwd', label: 'KWD' },
-    { value: 'ngn', label: 'NGN' },
-    { value: 'uah', label: 'UAH' },
-    { value: 'vnd', label: 'VND' },
-  ];
+  const currencies = fiatCurrencyList
 
   let defaultOption = { value: 'usd', label: 'USD' };
   for (let i = 0; i < currencies.length; i++) {
@@ -58,9 +19,9 @@ export default function CurrencySelect({ setSelectedCurrency, selectedCurrency }
   const [selectCurrency, setSelectCurrency] = useState(defaultOption);
 
   const onCurrencyChange = value => {
-    setSelectCurrency(value);
-    setSelectedCurrency(value.value);
-  };
+    setSelectCurrency(value)
+    setSelectedCurrency(value.value)
+  }
 
   return (
     <Select

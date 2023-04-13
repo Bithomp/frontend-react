@@ -19,6 +19,7 @@ import { ThemeProvider } from "../components/Layout/ThemeContext"
 
 const MyApp = ({ Component, pageProps }) => {
   const [account, setAccount] = useLocalStorage('account')
+  const [selectedCurrency, setSelectedCurrency] = useLocalStorage('currency', 'usd')
   const [signRequest, setSignRequest] = useState(false)
   const router = useRouter()
 
@@ -53,6 +54,8 @@ const MyApp = ({ Component, pageProps }) => {
               setSignRequest={setSignRequest}
               account={account}
               signOut={signOut}
+              selectedCurrency={selectedCurrency}
+              setSelectedCurrency={setSelectedCurrency}
             />
             <ScrollToTop />
             {signRequest &&
@@ -72,6 +75,8 @@ const MyApp = ({ Component, pageProps }) => {
                 account={account}
                 setAccount={setAccount}
                 signOut={signOut}
+                selectedCurrency={selectedCurrency}
+                setSelectedCurrency={setSelectedCurrency}
               />
             </div>
             <BackgroundImage />

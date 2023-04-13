@@ -5,9 +5,10 @@ import { useState, useEffect } from 'react'
 import { devNet, useLocalStorage } from '../../../utils'
 
 import Switch from "./Switch"
+import CurrencySwitch from "./CurrencySwitch"
 import LogoAnimated from '../LogoAnimated'
 
-export default function Header({ setSignRequest, account, signOut }) {
+export default function Header({ setSignRequest, account, signOut, selectedCurrency, setSelectedCurrency }) {
   const { t } = useTranslation('common')
 
   const [rendered, setRendered] = useState(false);
@@ -37,10 +38,12 @@ export default function Header({ setSignRequest, account, signOut }) {
       document.getElementsByClassName("mobile-menu")[0].style.transform = "translateX(0)";
       document.body.style.overflow = "hidden";
       document.getElementsByClassName("theme-switch")[0].style.display = "block";
+      document.getElementsByClassName("currency-switch")[0].getElementsByClassName("menu-dropdown")[0].style.display = "block";
     } else {
       document.getElementsByClassName("mobile-menu")[0].style.transform = "translateX(100%)";
       document.body.style.overflow = "auto";
       document.getElementsByClassName("theme-switch")[0].style.display = "none";
+      document.getElementsByClassName("currency-switch")[0].getElementsByClassName("menu-dropdown")[0].style.display = "none";
     }
     setMenuOpen(!menuOpen);
   };
@@ -140,6 +143,7 @@ export default function Header({ setSignRequest, account, signOut }) {
             <span onClick={() => { setSignRequest(true) }} className="header-signin-link link">{t("signin.signin")}</span>
           }
           <Switch />
+          <CurrencySwitch selectedCurrency={selectedCurrency} setSelectedCurrency={setSelectedCurrency} />
         </div>
         <div className="header-burger">
           <input type="checkbox" id="header-burger" checked={menuOpen} onChange={mobileMenuToggle} />
