@@ -113,7 +113,7 @@ export default function NftDistribution() {
       {data?.totalNfts &&
         <p className='center'>
           <Trans i18nKey="nft-distribution.text0" values={{ users: data.totalOwners, nfts: data.totalNfts }}>
-            {data.totalOwners} users own {data.totalNfts} NFTs
+            {{users: data.totalOwners}} users own {{nfts: data.totalNfts}} NFTs
           </Trans>
           <br /><br />
           <CSVLink
