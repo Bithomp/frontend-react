@@ -6,12 +6,13 @@ import axios from 'axios'
 import Image from 'next/image'
 
 import { useIsMobile } from "../utils/mobile"
-import { server, devNet } from '../utils'
+import { server, devNet, typeNumberOnly } from '../utils'
 import { capitalize } from '../utils/format'
 import { payloadXummPost, xummWsConnect, xummCancel, xummGetSignedData } from '../utils/xumm'
 
-import XummQr from "./Xumm/Qr";
-import CheckBox from './UI/CheckBox';
+import XummQr from "./Xumm/Qr"
+import CheckBox from './UI/CheckBox'
+import ExpirationSelect from './UI/expirationSelect';
 
 const qr = "/images/qr.gif";
 const ledger = '/images/ledger-large.svg';
@@ -54,23 +55,28 @@ export default function SignForm({ setSignRequest, setAccount, signRequest }) {
 
   const XummTxSend = () => {
     //default login 
-    let tx = { TransactionType: "SignIn" };
+    let tx = { TransactionType: "SignIn" }
     if (signRequest.request) {
-      tx = signRequest.request;
+      tx = signRequest.request
     }
 
     if (tx.TransactionType === "NFTokenAcceptOffer" && !agreedToRisks) {
-      setScreen("NFTokenAcceptOffer");
-      return;
+      setScreen("NFTokenAcceptOffer")
+      return
+    }
+
+    if (tx.TransactionType === "NFTokenCreateOffer" && !agreedToRisks) {
+      setScreen("NFTokenCreateOffer")
+      return
     }
 
     const client = {
       "Memo": {
         "MemoData": "626974686F6D702E636F6D"
       }
-    };
+    }
     if (tx.Memos) {
-      tx.Memos.push(client);
+      tx.Memos.push(client)
     } else {
       tx.Memos = [client]
     }
@@ -201,21 +207,71 @@ export default function SignForm({ setSignRequest, setAccount, signRequest }) {
 
   const buttonStyle = {
     margin: "0 10px"
-  };
+  }
+
+  const onAmountChange = (e) => {
+    let newRequest = signRequest
+    newRequest.request.Amount = (e.target.value * 1000000).toString()
+    setSignRequest(newRequest)
+  }
+
+  const onExpirationChange = (daysCount) => {
+    if (daysCount) {
+      let newRequest = signRequest
+      let myDate = new Date()
+      myDate.setDate(myDate.getDate() + daysCount)
+      newRequest.request.Expiration = Math.floor(myDate / 1000) - 946684800 //rippe epoch
+      setSignRequest(newRequest)
+    }
+  }
 
   return (
     <div className="sign-in-form">
       <div className="sign-in-body center">
         <div className='close-button' onClick={SignInCancelAndClose}></div>
-        {screen === 'NFTokenAcceptOffer' ?
+        {(screen === 'NFTokenAcceptOffer' || screen === 'NFTokenCreateOffer') ?
           <>
-            <div className='header'>{t("signin.confirm.nft-accept-offer-header")}</div>
-            <div style={{ textAlign: "left", margin: "30px" }}>
+            <div className='header'>
+              {screen === 'NFTokenAcceptOffer' && t("signin.confirm.nft-accept-offer-header")}
+              {screen === 'NFTokenCreateOffer' &&
+                (signRequest.request.Flags === 1 ?
+                  t("signin.confirm.nft-create-sell-offer-header")
+                  :
+                  t("signin.confirm.nft-create-buy-offer-header")
+                )
+              }
+            </div>
+
+            {screen === 'NFTokenCreateOffer' &&
+              <div className='center'>
+                <br />
+                <span className='quarter'>
+                  <span className='input-title'>{t("signin.amount.set-price")}</span>
+                  <input
+                    placeholder={t("signin.amount.enter-amount")}
+                    onChange={onAmountChange}
+                    onKeyPress={typeNumberOnly}
+                    className="input-text"
+                    spellCheck="false"
+                    maxLength="35"
+                  />
+                </span>
+                <span className='quarter'>
+                  <span className='input-title'>{t("signin.expiration")}</span>
+                  <ExpirationSelect onChange={onExpirationChange} />
+                </span>
+              </div>
+            }
+            <div className='terms-checkbox'>
               <CheckBox checked={agreedToRisks} setChecked={setAgreedToRisks} >
-                <Trans i18nKey="signin.confirm.nft-accept-offer">
-                  I acknowledge that Bithomp is a peer-to-peer Web3 service, and it cannot verify or guarantee the legitimacy, authenticity, and legality of NFT that I purchase.
-                  I confirm that I've read the <Link href="/terms-and-conditions" target="_blank">Terms and conditions</Link>, and I agree to all of them.
-                </Trans>
+                {screen === 'NFTokenCreateOffer' && signRequest.request.Flags === 1 ?
+                  t("signin.confirm.nft-create-sell-offer")
+                  :
+                  <Trans i18nKey="signin.confirm.nft-accept-offer">
+                    I admit that Bithomp gives me access to a decentralised marketplace, and it cannot verify or guarantee the authenticity and legitimacy of any NFTs.
+                    I confirm that I've read the <Link href="/terms-and-conditions" target="_blank">Terms and conditions</Link>, and I agree with all the terms to buy, sell or use any NFTs on Bithomp.
+                  </Trans>
+                }
               </CheckBox>
             </div>
             <br />

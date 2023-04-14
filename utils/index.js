@@ -168,6 +168,44 @@ export const stripText = (text) => {
   return text
 }
 
+export const typeNumberOnly = (e) => {
+  //do not allow dot or comma to be first
+  if (e.target.selectionStart === 0 && (e.key === ',' || e.key === '.')) {
+    e.preventDefault()
+    return
+  }
+  if (e.key === ',') {
+    e.preventDefault()
+    if (e.target.value.indexOf('.') !== -1) {
+      return
+    } else {
+      e.target.value += '.'
+      return
+    }
+  }
+  const pattern = /^[,.0-9]+$/
+  if (!pattern.test(e.key)) {
+    e.preventDefault();
+    return
+  }
+  if (e.key === '.' && e.target.value.indexOf('.') !== -1) {
+    e.preventDefault()
+    return
+  }
+  //maximum 6 digits after the dot
+  //maximum 10 digits after the dot
+  if (e.target.value.indexOf('.') !== -1) {
+    const splitedByDot = e.target.value.split(".")
+    if (splitedByDot[0].length > 9 || splitedByDot[1].length > 5) {
+      e.preventDefault()
+      return
+    }
+  } else if (e.target.value.length > 9) {
+    e.preventDefault()
+    return
+  }
+}
+
 export const decode = (code) => {
   if (!code) return null
   const decodedHex = Buffer.from(code, 'hex')

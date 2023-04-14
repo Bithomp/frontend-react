@@ -2,7 +2,6 @@ import { useTranslation } from 'next-i18next'
 import { useState, useEffect } from 'react'
 import axios from 'axios'
 import Select from "react-select"
-import { useRouter } from 'next/router'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -27,7 +26,8 @@ import SocialShare from '../../components/SocialShare'
 export async function getServerSideProps(context) {
   const { locale, query, req } = context
   let pageMeta = null
-  if (query?.id) {
+  const id = query?.id ? (Array.isArray(query?.id) ? query.id[0] : query.id) : ""
+  if (id) {
     let headers = null
     if (process.env.NODE_ENV !== 'development') {
       //otherwise can not verify ssl serts
@@ -36,7 +36,7 @@ export async function getServerSideProps(context) {
     try {
       const res = await axios({
         method: 'get',
-        url: server + '/api/cors/v2/nft/' + query.id + '?uri=true&metadata=true',
+        url: server + '/api/cors/v2/nft/' + id + '?uri=true&metadata=true',
         headers
       })
       pageMeta = res?.data
@@ -44,8 +44,10 @@ export async function getServerSideProps(context) {
       console.error(error)
     }
   }
+
   return {
     props: {
+      id,
       isSsrMobile: getIsSsrMobile(context),
       pageMeta,
       ...(await serverSideTranslations(locale, ['common']))
@@ -61,10 +63,8 @@ import NftPreview from '../../components/NftPreview'
 import LinkIcon from "../../public/images/link.svg";
 const xummImg = "/images/xumm.png";
 
-export default function Nft({ setSignRequest, account, signRequest, pageMeta }) {
-  const { t } = useTranslation();
-  const router = useRouter()
-  const { id } = router.query
+export default function Nft({ setSignRequest, account, signRequest, pageMeta, id }) {
+  const { t } = useTranslation()
 
   const [rendered, setRendered] = useState(false)
   const [data, setData] = useState({});
@@ -425,8 +425,8 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta }) 
   }
 
   const buyButton = (sellOffers) => {
-    if (!sellOffers) return "";
-    sellOffers = sellOffers.filter(function (offer) { return offer.valid; });
+    if (!sellOffers) return ""
+    sellOffers = sellOffers.filter(function (offer) { return offer.valid; })
     //best xrp offer available or an IOU offer, if it's only one IOU offer available
     let best = bestSellOffer(sellOffers);
     if (!best) return "";
@@ -480,6 +480,41 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta }) 
     </>
   }
 
+  const makeOfferButton = (sellOffers) => {
+    if (!id) return ""
+    //if signed in and user is the nft's owner -> make a sell offer, otherwise make a buy offer (no flag)
+    const sell = data?.owner && account?.address && account.address === data.owner
+
+    let request = {
+      "TransactionType": "NFTokenCreateOffer",
+      "Account": data.owner,
+      "NFTokenID": id
+    }
+
+    if (sell) {
+      if (sellOffers) {
+        sellOffers = sellOffers.filter(function (offer) { return offer.valid })
+        // do not show button, when there are active valid sell offers
+        if (sellOffers.length) return ""
+      }
+      request.Flags = 1
+    }
+
+    return <>
+      <button
+        className='button-action wide center'
+        onClick={() => setSignRequest({
+          wallet: "xumm",
+          request
+        })}
+      >
+        <Image src={xummImg} className='xumm-logo' alt="xumm" height={24} width={24} />
+        {sell ? t("nft.list-for-sale") : t("nft.make-offer")}
+      </button>
+      <br /><br />
+    </>
+  }
+
   const imageUrl = nftUrl(pageMeta, 'image')
 
   return <>
@@ -510,6 +545,7 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta }) 
                   <div className="column-left">
                     <NftPreview nft={data} />
                     {buyButton(data.sellOffers)}
+                    {makeOfferButton(data.sellOffers)}
                     <div>
                       {data.metadata?.attributes && data.metadata?.attributes[0] && data.metadata?.attributes[0].trait_type &&
                         <table className='table-details autowidth'>

@@ -30,6 +30,14 @@
       top: 0;
       left: 0;
     }
+    .terms-checkbox {
+      text-align: justify;
+      margin: 20px 60px;
+      @media only screen and (max-width: 480px) {
+        text-align: left;
+        margin: 20px 40px;
+      }
+    }
     .signin-apps {
       margin-top: 80px;
       .signin-app-logo {
