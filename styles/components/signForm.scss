@@ -33,6 +33,24 @@
       top: 0;
       left: 0;
     }
+    .quarter {
+      position: relative;
+      &.xrpOnly {
+        input {
+          width: 124px;
+          padding-right: 40px;
+          @media only screen and (max-width: 480px) {
+            width: calc(100% - 52px);
+          }
+        }
+        &:after {
+          content: "XRP";
+          position: absolute;
+          right: 10px;
+          bottom: 9px;
+        }
+      }
+    }
     .terms-checkbox {
       text-align: justify;
       margin: 20px 60px;

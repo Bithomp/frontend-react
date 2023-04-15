@@ -75,7 +75,8 @@ export default function SignForm({ setSignRequest, setAccount, signRequest }) {
         "MemoData": "626974686F6D702E636F6D"
       }
     }
-    if (tx.Memos) {
+
+    if (tx.Memos && tx.Memos.length && tx.Memos[0]?.Memo?.MemoData !== client.Memo.MemoData) {
       tx.Memos.push(client)
     } else {
       tx.Memos = [client]
@@ -245,7 +246,7 @@ export default function SignForm({ setSignRequest, setAccount, signRequest }) {
             {screen === 'NFTokenCreateOffer' &&
               <div className='center'>
                 <br />
-                <span className='quarter'>
+                <span className='quarter xrpOnly'>
                   <span className='input-title'>{t("signin.amount.set-price")}</span>
                   <input
                     placeholder={t("signin.amount.enter-amount")}

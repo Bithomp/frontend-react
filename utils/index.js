@@ -195,6 +195,10 @@ export const typeNumberOnly = (e) => {
   //maximum 6 digits after the dot
   //maximum 10 digits after the dot
   if (e.target.value.indexOf('.') !== -1) {
+    if (e.target.value.length > 12) {
+      e.preventDefault()
+      return
+    }
     const splitedByDot = e.target.value.split(".")
     if (splitedByDot[0].length > 9 || splitedByDot[1].length > 5) {
       e.preventDefault()
