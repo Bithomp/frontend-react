@@ -154,10 +154,6 @@ input {
       max-width: 378px;
       width: calc(100% - 44px);
     }
-    &.quarter {
-      margin: 5px;
-      max-width: 176px;
-    }
     &:hover, &:focus {
       border: 1px solid var(--accent-icon);
       transition: border-color 0.5s;
@@ -208,6 +204,12 @@ span.quarter {
   display: inline-block;
   input {
     width: 154px;
+  }
+  @media only screen and (max-width: 400px) {
+    width: calc(100% - 80px);
+    input {
+      width: calc(100% - 22px);
+    }
   }
 }
 

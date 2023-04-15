@@ -52,6 +52,16 @@
   "settings": {
     "language": "Язык"
   },
+  "components": {
+    "expiration-select": {
+      "1d": "1 день",
+      "3d": "3 дня",
+      "7d": "7 дней",
+      "14d": "14 дней",
+      "30d": "30 дней",
+      "90d": "90 дней"
+    }
+  },
   "signin": {
     "signin": "Войти",
     "signout": "Выйти",

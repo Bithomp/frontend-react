@@ -7,11 +7,12 @@ export default function ExpirationSelect({ onChange }) {
   let emptyOption = { value: 0, label: t("general.no-expiration")}
   let expirationsArray = [
     emptyOption,
-    {value: 1, label: '1 day'},
-    {value: 3, label: '3 days'},
-    {value: 7, label: '7 days'},
-    {value: 30, label: '30 days'},
-    {value: 90, label: '90 days'}
+    {value: 1, label: t("components.expiration-select.1d")},
+    {value: 3, label: t("components.expiration-select.3d")},
+    {value: 7, label: t("components.expiration-select.7d")},
+    {value: 14, label: t("components.expiration-select.14d")},
+    {value: 30, label: t("components.expiration-select.30d")},
+    {value: 90, label: t("components.expiration-select.90d")},
   ]
 
   return (

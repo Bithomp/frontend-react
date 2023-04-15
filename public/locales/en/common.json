@@ -52,6 +52,16 @@
   "settings": {
     "language": "Language"
   },
+  "components": {
+    "expiration-select": {
+      "1d": "1 day",
+      "3d": "3 days",
+      "7d": "7 days",
+      "14d": "14 days",
+      "30d": "30 days",
+      "90d": "90 days"
+    }
+  },
   "signin": {
     "signin": "Sign in",
     "signout": "Sign out",
