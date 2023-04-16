@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react'
 import Image from 'next/image'
 
 import CurrencySelect from "../UI/CurrencySelect"
-import { typeNumberOnly } from '../../utils'
+import { typeNumberOnly, typeNumberOnlyMobile } from '../../utils'
 
 export default function Converter({ selectedCurrency, setSelectedCurrency, chartPeriod, isMobile }) {
   const [data, setData] = useState({});
@@ -20,9 +20,9 @@ export default function Converter({ selectedCurrency, setSelectedCurrency, chart
     }
     fetchData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedCurrency, chartPeriod]);
+  }, [selectedCurrency, chartPeriod])
 
-  const onXrpAmountChange = (e) => {
+  const onXrpAmountChange = e => {
     let xrpAmount = e.target.value
     if (xrpAmount) {
       xrpAmount = xrpAmount * 1
@@ -31,7 +31,7 @@ export default function Converter({ selectedCurrency, setSelectedCurrency, chart
     setFiatValue((xrpAmount * data[selectedCurrency]).toFixed(2))
   }
 
-  const onFiatAmountChange = (e) => {
+  const onFiatAmountChange = e => {
     let fiatAmount = e.target.value
     if (fiatAmount) {
       fiatAmount = fiatAmount * 1
@@ -50,10 +50,9 @@ export default function Converter({ selectedCurrency, setSelectedCurrency, chart
         className="converter-amount"
         value={xrpValue}
         onChange={onXrpAmountChange}
-        onKeyPress={isMobile ? null : typeNumberOnly}
+        onKeyPress={isMobile ? typeNumberOnlyMobile : typeNumberOnly}
         type={isMobile ? "number" : "text"}
         min="0"
-        pattern="^([0-9]*[,.])?[0-9]*$"
         inputMode="decimal"
       />
       <div className="converter-xrp">
@@ -67,10 +66,9 @@ export default function Converter({ selectedCurrency, setSelectedCurrency, chart
         className="converter-amount"
         value={fiatValue}
         onChange={onFiatAmountChange}
-        onKeyPress={isMobile ? null : typeNumberOnly}
+        onKeyPress={isMobile ? typeNumberOnlyMobile : typeNumberOnly}
         type={isMobile ? "number" : "text"}
         min="0"
-        pattern="^([0-9]*[,.])?[0-9]*$"
         inputMode="decimal"
       />
       <div className="converter-currency-select">
