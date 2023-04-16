@@ -264,8 +264,6 @@ export default function SignForm({ setSignRequest, setAccount, signRequest }) {
                     maxLength="35"
                     min="0"
                     type={isMobile ? "number" : "text"}
-                    pattern="^([0-9]*[,.])?[0-9]*$"
-                    inputMode="decimal"
                   />
                 </span>
                 <span className='quarter'>
