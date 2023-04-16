@@ -1,7 +1,6 @@
 import { useTranslation } from 'next-i18next'
 import { useState, useEffect } from 'react'
 import axios from 'axios'
-import { useRouter } from 'next/router'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -17,19 +16,38 @@ import {
 } from '../../utils/format'
 
 import { delay } from '../../utils'
+import { getIsSsrMobile } from "../../utils/mobile"
 
-export async function getStaticProps({ locale }) {
-  return {
-    props: {
-      ...(await serverSideTranslations(locale, ['common'])),
+export async function getServerSideProps(context) {
+  const { locale, query } = context
+  const id = query?.id ? (Array.isArray(query?.id) ? query.id[0] : query.id) : ""
+  /*
+  let pageMeta = null
+  if (id) {
+    let headers = null
+    if (process.env.NODE_ENV !== 'development') {
+      //otherwise can not verify ssl serts
+      headers = req.headers
+    }
+    try {
+      const res = await axios({
+        method: 'get',
+        url: server + '/api/cors/v2/nft/offer/' + id,
+        headers
+      })
+      pageMeta = res?.data
+    } catch (error) {
+      console.error(error)
     }
   }
-}
-
-export async function getStaticPaths() {
+  */
   return {
-    paths: [],
-    fallback: 'blocking'
+    props: {
+      id,
+      isSsrMobile: getIsSsrMobile(context),
+      //pageMeta,
+      ...(await serverSideTranslations(locale, ['common']))
+    }
   }
 }
 
@@ -41,10 +59,8 @@ import NftImageAndVideo from '../../components/NftPreview'
 import LinkIcon from "../../public/images/link.svg"
 const xummImg = "/images/xumm.png"
 
-export default function NftOffer({ setSignRequest, signRequest, account }) {
+export default function NftOffer({ setSignRequest, signRequest, account, id }) {
   const { t } = useTranslation()
-  const router = useRouter()
-  const { id } = router.query
 
   const [data, setData] = useState({})
   const [loading, setLoading] = useState(false)
