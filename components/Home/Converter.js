@@ -48,7 +48,7 @@ export default function Converter({ selectedCurrency, setSelectedCurrency, chart
         onChange={onXrpAmountChange}
         onKeyPress={isMobile ? typeNumberOnlyMobile : typeNumberOnly}
         type={isMobile ? "number" : "text"}
-        pattern="[0-9]*"
+        pattern="^([0-9]*[,])?[0-9]*$"
         inputMode="decimal"
         min="0"
       />
@@ -65,7 +65,7 @@ export default function Converter({ selectedCurrency, setSelectedCurrency, chart
         onChange={onFiatAmountChange}
         onKeyPress={isMobile ? typeNumberOnlyMobile : typeNumberOnly}
         type={isMobile ? "number" : "text"}
-        pattern="[0-9]*"
+        pattern="^([0-9]*[,])?[0-9]*$"
         inputMode="decimal"
         min="0"
       />

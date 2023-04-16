@@ -179,12 +179,7 @@ export const stripText = (text) => {
 }
 
 export const typeNumberOnlyMobile = e => {
-  if (e.key === ',') {
-    e.preventDefault()
-    e.target.value += '.'
-    return;
-  }
-  const pattern = /^[,.0-9]+$/
+  const pattern = /^([0-9]*[,])?[0-9]*$/
   if (!pattern.test(e.key)) {
     e.preventDefault()
   }
