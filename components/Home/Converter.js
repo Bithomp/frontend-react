@@ -23,13 +23,19 @@ export default function Converter({ selectedCurrency, setSelectedCurrency, chart
   }, [selectedCurrency, chartPeriod]);
 
   const onXrpAmountChange = (e) => {
-    let xrpAmount = parseFloat(e.target.value)
+    let xrpAmount = e.target.value
+    if (xrpAmount) {
+      xrpAmount = xrpAmount * 1
+    }
     setXrpValue(xrpAmount)
     setFiatValue((xrpAmount * data[selectedCurrency]).toFixed(2))
   }
 
   const onFiatAmountChange = (e) => {
-    let fiatAmount = parseFloat(e.target.value)
+    let fiatAmount = e.target.value
+    if (fiatAmount) {
+      fiatAmount = fiatAmount * 1
+    }
     setFiatValue(fiatAmount)
     setXrpValue((fiatAmount / data[selectedCurrency]).toFixed(2))
   }
