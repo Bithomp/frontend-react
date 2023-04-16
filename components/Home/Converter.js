@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react'
 import Image from 'next/image'
 
 import CurrencySelect from "../UI/CurrencySelect"
+import { typeNumberOnly } from '../../utils'
 
 export default function Converter({ selectedCurrency, setSelectedCurrency, chartPeriod, isMobile }) {
   const [data, setData] = useState({});
@@ -35,19 +36,7 @@ export default function Converter({ selectedCurrency, setSelectedCurrency, chart
     setXrpValue((fiatAmount / data[selectedCurrency]).toFixed(2));
   }
 
-  const typeNumberOnly = e => {
-    if (e.key === ',') {
-      e.preventDefault();
-      e.target.value += '.';
-      return;
-    }
-    const pattern = /^[,.0-9]+$/;
-    if (!pattern.test(e.key)) {
-      e.preventDefault();
-    }
-  }
-
-  const rate = data[selectedCurrency] ? '1 XRP = ' + data[selectedCurrency] + ' ' + selectedCurrency.toUpperCase() : <br/>;
+  const rate = data[selectedCurrency] ? '1 XRP = ' + data[selectedCurrency] + ' ' + selectedCurrency.toUpperCase() : <br/>
 
   return <>
     <h2>{rate}</h2>

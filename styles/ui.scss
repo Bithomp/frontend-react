@@ -198,6 +198,21 @@ span.halv {
   display: inline-block;
 }
 
+span.quarter {
+  margin: 5px;
+  width: 176px;
+  display: inline-block;
+  input {
+    width: 154px;
+  }
+  @media only screen and (max-width: 400px) {
+    width: calc(100% - 80px);
+    input {
+      width: calc(100% - 22px);
+    }
+  }
+}
+
 button {
   font-family: inherit;
   transition: color 0.5s;
@@ -616,6 +631,7 @@ body.dark {
 @import "./components/searchBlock.scss";
 @import "./components/tabs.scss";
 @import "./components/issuerSelect.scss";
+@import "./components/expirationSelect.scss";
 @import "./components/footer.scss";
 
 //components
