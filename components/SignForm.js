@@ -6,7 +6,7 @@ import axios from 'axios'
 import Image from 'next/image'
 
 import { useIsMobile } from "../utils/mobile"
-import { server, devNet, typeNumberOnly, typeNumberOnlyMobile } from '../utils'
+import { server, devNet, typeNumberOnly } from '../utils'
 import { capitalize } from '../utils/format'
 import { payloadXummPost, xummWsConnect, xummCancel, xummGetSignedData } from '../utils/xumm'
 
@@ -258,12 +258,12 @@ export default function SignForm({ setSignRequest, setAccount, signRequest }) {
                   <input
                     placeholder={t("signin.amount.enter-amount")}
                     onChange={onAmountChange}
-                    onKeyPress={isMobile ? typeNumberOnlyMobile : typeNumberOnly}
+                    onKeyPress={typeNumberOnly}
                     className="input-text"
                     spellCheck="false"
                     maxLength="35"
                     min="0"
-                    type={isMobile ? "number" : "text"}
+                    type="text"
                     inputMode="decimal"
                   />
                 </span>

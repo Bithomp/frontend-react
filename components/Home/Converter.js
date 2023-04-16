@@ -3,9 +3,9 @@ import { useState, useEffect } from 'react'
 import Image from 'next/image'
 
 import CurrencySelect from "../UI/CurrencySelect"
-import { typeNumberOnly, typeNumberOnlyMobile } from '../../utils'
+import { typeNumberOnly } from '../../utils'
 
-export default function Converter({ selectedCurrency, setSelectedCurrency, chartPeriod, isMobile }) {
+export default function Converter({ selectedCurrency, setSelectedCurrency, chartPeriod }) {
   const [data, setData] = useState({});
   const [xrpValue, setXrpValue] = useState('1');
   const [fiatValue, setFiatValue] = useState('');
@@ -50,8 +50,8 @@ export default function Converter({ selectedCurrency, setSelectedCurrency, chart
         className="converter-amount"
         value={xrpValue}
         onChange={onXrpAmountChange}
-        onKeyPress={isMobile ? typeNumberOnlyMobile : typeNumberOnly}
-        type={isMobile ? "number" : "text"}
+        onKeyPress={typeNumberOnly}
+        type="text"
         min="0"
         inputMode="decimal"
       />
@@ -66,8 +66,8 @@ export default function Converter({ selectedCurrency, setSelectedCurrency, chart
         className="converter-amount"
         value={fiatValue}
         onChange={onFiatAmountChange}
-        onKeyPress={isMobile ? typeNumberOnlyMobile : typeNumberOnly}
-        type={isMobile ? "number" : "text"}
+        onKeyPress={typeNumberOnly}
+        type="text"
         min="0"
         inputMode="decimal"
       />

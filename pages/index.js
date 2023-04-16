@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { SiteLinksSearchBoxJsonLd, LogoJsonLd, SocialProfileJsonLd } from 'next-seo'
 
 import { useWidth, server } from '../utils'
-import { useIsMobile, getIsSsrMobile } from "../utils/mobile"
+import { getIsSsrMobile } from "../utils/mobile"
 
 import SEO from '../components/SEO'
 import SearchBlock from '../components/Layout/SearchBlock'
@@ -26,7 +26,6 @@ export async function getServerSideProps(context) {
 export default function Home({ devNet, selectedCurrency, setSelectedCurrency }) {
   const { t } = useTranslation()
   const windowWidth = useWidth()
-  const isMobile = useIsMobile()
 
   const [chartPeriod, setChartPeriod] = useState('one_day')
 
@@ -101,7 +100,7 @@ export default function Home({ devNet, selectedCurrency, setSelectedCurrency }) 
       {!devNet && selectedCurrency &&
         <>
           <div className="home-converter">
-            <Converter selectedCurrency={selectedCurrency} setSelectedCurrency={setSelectedCurrency} chartPeriod={chartPeriod} isMobile={isMobile} />
+            <Converter selectedCurrency={selectedCurrency} setSelectedCurrency={setSelectedCurrency} chartPeriod={chartPeriod} />
           </div>
           <div className="home-price-chart">
             <PriceChart currency={selectedCurrency} chartPeriod={chartPeriod} setChartPeriod={setChartPeriod} />
