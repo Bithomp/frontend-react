@@ -178,6 +178,18 @@ export const stripText = (text) => {
   return text
 }
 
+const typeNumberOnlyMobile = e => {
+  if (e.key === ',') {
+    e.preventDefault()
+    e.target.value += '.'
+    return;
+  }
+  const pattern = /^[,.0-9]+$/
+  if (!pattern.test(e.key)) {
+    e.preventDefault()
+  }
+}
+
 export const typeNumberOnly = (e) => {
   //do not allow dot or comma to be first
   if (e.target.selectionStart === 0 && (e.key === ',' || e.key === '.')) {
