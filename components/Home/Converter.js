@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react'
 import Image from 'next/image'
 
 import CurrencySelect from "../UI/CurrencySelect"
-import { typeNumberOnly, typeNumberOnlyMobile } from '../../utils'
+import { typeNumberOnly } from '../../utils'
 
 export default function Converter({ selectedCurrency, setSelectedCurrency, chartPeriod, isMobile }) {
   const [data, setData] = useState({});
@@ -44,9 +44,9 @@ export default function Converter({ selectedCurrency, setSelectedCurrency, chart
         className="converter-amount"
         value={xrpValue}
         onChange={onXrpAmountChange}
-        onKeyPress={isMobile ? typeNumberOnlyMobile : typeNumberOnly}
+        onKeyPress={isMobile ? null : typeNumberOnly}
         type={isMobile ? "number" : "text"}
-        pattern="^([0-9]*[,])?[0-9]*$"
+        pattern="^([0-9]*[,.])?[0-9]*$"
         inputMode="decimal"
         min="0"
       />
@@ -61,9 +61,9 @@ export default function Converter({ selectedCurrency, setSelectedCurrency, chart
         className="converter-amount"
         value={fiatValue}
         onChange={onFiatAmountChange}
-        onKeyPress={isMobile ? typeNumberOnlyMobile : typeNumberOnly}
+        onKeyPress={isMobile ? null : typeNumberOnly}
         type={isMobile ? "number" : "text"}
-        pattern="^([0-9]*[,])?[0-9]*$"
+        pattern="^([0-9]*[,.])?[0-9]*$"
         inputMode="decimal"
         min="0"
       />
