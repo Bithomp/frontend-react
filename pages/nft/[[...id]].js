@@ -6,7 +6,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import Image from 'next/image'
 import Link from 'next/link'
 
-import { stripText, server, decode } from '../../utils'
+import { stripText, server, decode, delay } from '../../utils'
 import { getIsSsrMobile } from "../../utils/mobile"
 import { nftName, mpUrl, bestSellOffer, nftUrl } from '../../utils/nft'
 import {
@@ -84,16 +84,20 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  const checkApi = async () => {
-    if (!id) {
-      return;
+  const checkApi = async (opts) => {
+    if (!id) return
+    setLoading(true)
+
+    let noCache = ""
+    if (opts?.noCache) {
+      noCache = "&timestamp=" + Date.now()
     }
-    setLoading(true);
-    const response = await axios('/v2/nft/' + id + '?uri=true&metadata=true&history=true&sellOffers=true&buyOffers=true&offersValidate=true&offersHistory=true').catch(error => {
+
+    const response = await axios('/v2/nft/' + id + '?uri=true&metadata=true&history=true&sellOffers=true&buyOffers=true&offersValidate=true&offersHistory=true' + noCache).catch(error => {
       setErrorMessage(t("error." + error.message))
-    });
-    setLoading(false);
-    let newdata = response?.data;
+    })
+    setLoading(false)
+    let newdata = response?.data
     if (newdata) {
       if (newdata.flags) {
         newdata.history = newdata.history.sort((a, b) => (a.changedAt < b.changedAt) ? 1 : -1);
@@ -194,10 +198,17 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
 
   useEffect(() => {
     if (!signRequest) {
-      checkApi();
+      if (!data?.nftokenID) {
+        // no token - first time fetching - allow right away
+        checkApi()
+      } else {
+        //wait for changes
+        setLoading(true)
+        delay(3000, checkApi, { noCache: true }).catch(console.error)
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id, signRequest]);
+  }, [id, signRequest])
 
   const externalUrl = (meta) => {
     let url = meta.external_url || meta.external_link || meta.externalUrl || meta.externalURL || (meta.minter?.includes("https://") && meta.minter);
@@ -299,10 +310,12 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
             <td>{t("table.amount")}</td>
             <td>{amountFormat(offer.amount, { tooltip: "right" })}</td>
           </tr>
-          <tr>
-            <td>{t("table.placed")}</td>
-            <td>{fullDateAndTime(offer.createdAt)} <Link href={"/explorer/" + offer.createdTxHash}><LinkIcon /></Link></td>
-          </tr>
+          {offer.createdAt &&
+            <tr>
+              <td>{t("table.placed")}</td>
+              <td>{fullDateAndTime(offer.createdAt)} <Link href={"/explorer/" + offer.createdTxHash}><LinkIcon /></Link></td>
+            </tr>
+          }
           {offer.acceptedAt &&
             <tr>
               <td>{t("table.accepted")}</td>

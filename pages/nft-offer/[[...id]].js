@@ -16,7 +16,7 @@ import {
   nftIdLink
 } from '../../utils/format'
 
-//import { delay } from '../../utils'
+import { delay } from '../../utils'
 
 export async function getStaticProps({ locale }) {
   return {
@@ -46,29 +46,31 @@ export default function NftOffer({ setSignRequest, signRequest, account }) {
   const router = useRouter()
   const { id } = router.query
 
-  const [data, setData] = useState({});
-  const [loading, setLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
+  const [data, setData] = useState({})
+  const [loading, setLoading] = useState(false)
+  const [errorMessage, setErrorMessage] = useState("")
 
-  const checkApi = async () => {
-    if (!id) {
-      return;
+  const checkApi = async (opts) => {
+    if (!id) return
+    setLoading(true)
+    let noCache = ""
+    if (opts?.noCache) {
+      noCache = "&timestamp=" + Date.now()
     }
-    setLoading(true);
-    const response = await axios('v2/nft/offer/' + id + '?offersValidate=true').catch(error => {
+    const response = await axios('v2/nft/offer/' + id + '?offersValidate=true' + noCache).catch(error => {
       setErrorMessage(t("error." + error.message))
-    });
-    setLoading(false);
-    const newdata = response?.data;
+    })
+    setLoading(false)
+    const newdata = response?.data
     if (newdata) {
       if (newdata.offerIndex) {
-        setData(newdata);
+        setData(newdata)
       } else {
         if (newdata.error) {
           setErrorMessage(t("error-api." + newdata.error))
         } else {
-          setErrorMessage("Error");
-          console.log(newdata);
+          setErrorMessage("Error")
+          console.log(newdata)
         }
       }
     }
@@ -155,21 +157,17 @@ export default function NftOffer({ setSignRequest, signRequest, account }) {
 
   useEffect(() => {
     if (!signRequest) {
-      checkApi()
-      /*
-      //commented for now, to remove delays on updates when closing the sign window
       if (!data?.nftokenID) {
         // no token - first time fetching - allow right away
         checkApi()
+      } else if (data?.canceledAt) {
+        //do not send request if it is canceled
+        return
       } else {
         //wait for changes
-        //not in use now, as sign will redirect to transaction page for now in the components/SignForm
-        //we should better discard the cache, send no-cache request
-        //if canceled - do not send a request (no data will be updated)
-        //setLoading(true)
-        //delay(5000, checkApi).catch(console.error) //may be 4 seconds is enough?
+        setLoading(true)
+        delay(3000, checkApi, { noCache: true }).catch(console.error)
       }
-      */
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, signRequest])

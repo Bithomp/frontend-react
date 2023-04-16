@@ -100,6 +100,9 @@ export default function SignForm({ setSignRequest, setAccount, signRequest }) {
       if (tx.TransactionType === "Payment") {
         signInPayload.options.return_url.app += '&receipt=true'
       }
+
+      //app which signed
+      //signInPayload.options.return_url.app += '&signed=xumm'
     } else {
       if (xummUserToken) {
         signInPayload.user_token = xummUserToken
@@ -168,19 +171,12 @@ export default function SignForm({ setSignRequest, setAccount, signRequest }) {
     */
     //data.payload.tx_type: "SignIn"
     if (data.response && data.response.account) {
-      saveAddressData(data.response.account);
+      saveAddressData(data.response.account)
     }
     //close the sign in form
-    setXummQrSrc(qr);
-
-    //redirect to transaction for now... as pages are cached or info delayed.
-    const redirectToTx = ['NFTokenCancelOffer', 'NFTokenAcceptOffer', "NFTokenCreateOffer"]
-    if (redirectToTx.includes(signRequest.request.TransactionType)) {
-      window.location.href = '/explorer/' + data.response.txid
-    }
-
-    setScreen("choose-app");
-    setSignRequest(null);
+    setXummQrSrc(qr)
+    setScreen("choose-app")
+    setSignRequest(null)
   }
 
   const SignInCancelAndClose = () => {

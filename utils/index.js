@@ -2,14 +2,14 @@ import axios from 'axios'
 import { useCallback, useEffect, useState } from "react"
 import { Buffer } from 'buffer'
 
-export const delay = async (milliseconds, callback) => {
+export const delay = async (milliseconds, callback, options) => {
   const delayFunction = () => {
     return new Promise(resolve => {
       setTimeout(resolve, milliseconds)
     })
   }
   await delayFunction()
-  callback()
+  callback(options)
 }
 
 export const fiatCurrencyList = [
