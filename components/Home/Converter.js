@@ -46,10 +46,10 @@ export default function Converter({ selectedCurrency, setSelectedCurrency, chart
         className="converter-amount"
         value={xrpValue}
         onChange={onXrpAmountChange}
-        onKeyPress={typeNumberOnly}
+        onKeyPress={isMobile ? null : typeNumberOnly}
         type={isMobile ? "number" : "text"}
-        //pattern="[0-9]*"
-        //inputMode="decimal"
+        pattern="[0-9]*"
+        inputMode="decimal"
         min="0"
       />
       <div className="converter-xrp">

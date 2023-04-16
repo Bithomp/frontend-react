@@ -258,10 +258,14 @@ export default function SignForm({ setSignRequest, setAccount, signRequest }) {
                   <input
                     placeholder={t("signin.amount.enter-amount")}
                     onChange={onAmountChange}
-                    onKeyPress={typeNumberOnly}
+                    onKeyPress={isMobile ? null : typeNumberOnly}
                     className="input-text"
                     spellCheck="false"
                     maxLength="35"
+                    min="0"
+                    type={isMobile ? "number" : "text"}
+                    pattern="[0-9]*"
+                    inputMode="decimal"
                   />
                 </span>
                 <span className='quarter'>
