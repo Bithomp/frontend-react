@@ -498,6 +498,8 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
         if (sellOffers.length) return ""
       }
       request.Flags = 1
+    } else {
+      request.Owner = data.owner
     }
 
     return <>

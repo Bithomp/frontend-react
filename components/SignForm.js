@@ -172,6 +172,13 @@ export default function SignForm({ setSignRequest, setAccount, signRequest }) {
     }
     //close the sign in form
     setXummQrSrc(qr);
+
+    //redirect to transaction for now... as pages are cached or info delayed.
+    const redirectToTx = ['NFTokenCancelOffer', 'NFTokenAcceptOffer', "NFTokenCreateOffer"]
+    if (redirectToTx.includes(signRequest.request.TransactionType)) {
+      window.location.href = '/explorer/' + data.response.txid
+    }
+
     setScreen("choose-app");
     setSignRequest(null);
   }

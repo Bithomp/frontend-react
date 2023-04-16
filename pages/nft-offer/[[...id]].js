@@ -16,6 +16,8 @@ import {
   nftIdLink
 } from '../../utils/format'
 
+//import { delay } from '../../utils'
+
 export async function getStaticProps({ locale }) {
   return {
     props: {
@@ -153,10 +155,24 @@ export default function NftOffer({ setSignRequest, signRequest, account }) {
 
   useEffect(() => {
     if (!signRequest) {
-      checkApi();
+      checkApi()
+      /*
+      //commented for now, to remove delays on updates when closing the sign window
+      if (!data?.nftokenID) {
+        // no token - first time fetching - allow right away
+        checkApi()
+      } else {
+        //wait for changes
+        //not in use now, as sign will redirect to transaction page for now in the components/SignForm
+        //we should better discard the cache, send no-cache request
+        //if canceled - do not send a request (no data will be updated)
+        //setLoading(true)
+        //delay(5000, checkApi).catch(console.error) //may be 4 seconds is enough?
+      }
+      */
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id, signRequest]);
+  }, [id, signRequest])
 
   const sellerOrBuyer = data?.flags?.sellToken === true ? t("table.seller") : t("table.buyer");
 
@@ -187,7 +203,7 @@ export default function NftOffer({ setSignRequest, signRequest, account }) {
                       <br /><br />
                     </div>
 
-                    {((data?.owner && account?.address && account.address === data.owner) || data?.validationErrors?.includes('Offer is expired')) &&
+                    {!data.canceledAt && ((data?.owner && account?.address && account.address === data.owner) || data?.validationErrors?.includes('Offer is expired')) &&
                       <>
                         <button
                           className='button-action wide center'

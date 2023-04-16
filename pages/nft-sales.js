@@ -65,18 +65,18 @@ export default function NftSales({ view, sale, list, currency, currencyIssuer, i
   const viewTabList = [
     { value: 'tiles', label: t("tabs.tiles") },
     { value: 'list', label: t("tabs.list") }
-  ];
+  ]
 
   const saleTabList = [
     { value: 'all', label: t("tabs.all-sales") },
     { value: 'secondary', label: (t("tabs.secondary-sales") + (total?.secondary ? (" (" + total.secondary + ")") : "")) },
     { value: 'primary', label: (t("tabs.primary-sales") + (total?.primary ? (" (" + total.primary + ")") : "")) }
-  ];
+  ]
 
   const pageTabList = [
     { value: 'top', label: t("tabs.top-sales") },
     { value: 'last', label: t("tabs.latest-sales") }
-  ];
+  ]
 
   const periodTabList = [
     { value: 'all', label: t("tabs.all-time") },
@@ -84,7 +84,7 @@ export default function NftSales({ view, sale, list, currency, currencyIssuer, i
     { value: 'month', label: t("tabs.month") },
     { value: 'week', label: t("tabs.week") },
     { value: 'day', label: t("tabs.day") }
-  ];
+  ]
 
   const checkApi = async (options) => {
     let marker = hasMore;
@@ -303,11 +303,22 @@ export default function NftSales({ view, sale, list, currency, currencyIssuer, i
   ];
 
   return <>
-    <SEO 
-      title={t("nft-sales.header") + (issuerQuery ? (" " + issuerQuery) : "")}
+    <SEO
+      title={
+        'NFT '
+        + (saleTab === 'secondary' ? t("tabs.secondary-sales") : "")
+        + (saleTab === 'primary' ? t("tabs.primary-sales") : "")
+        + " " + (list === "top" ? t("tabs.top-sales") : t("tabs.latest-sales"))
+        + (issuerInput ? (" " + issuerInput) : "")
+        + (taxonInput ? (" " + taxonInput) : "")
+        + (currency ? (" " + currency) : "")
+        + (currencyIssuer ? (" " + currencyIssuer) : "")
+        + (viewTab === "list" ? (" " + t("tabs.list")) : "")
+        + (periodTab ? (" (" + periodTab + ")") : "")
+      }
     />
     <div className="content-text" style={{ minHeight: "480px" }}>
-      <h2 className="center">{t("nft-sales.header") + " "}</h2>
+      <h2 className="center">{t("nft-sales.header")}</h2>
       <p className='center'><a href={"/nft-explorer?view=" + viewTab + issuerTaxonUrlPart}>{t("nft-explorer.header")}</a></p>
       <div className='center'>
         <span className='halv'>
