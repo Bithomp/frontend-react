@@ -53,6 +53,8 @@ export default function Converter({ selectedCurrency, setSelectedCurrency, chart
         onKeyPress={isMobile ? null : typeNumberOnly}
         type={isMobile ? "number" : "text"}
         min="0"
+        pattern="^([0-9]*[,.])?[0-9]*$"
+        inputMode="decimal"
       />
       <div className="converter-xrp">
         <Image height={18} width={18} src="/images/xrp-black.svg" alt="xrp logo" />
@@ -68,6 +70,8 @@ export default function Converter({ selectedCurrency, setSelectedCurrency, chart
         onKeyPress={isMobile ? null : typeNumberOnly}
         type={isMobile ? "number" : "text"}
         min="0"
+        pattern="^([0-9]*[,.])?[0-9]*$"
+        inputMode="decimal"
       />
       <div className="converter-currency-select">
         <CurrencySelect setSelectedCurrency={setSelectedCurrency} selectedCurrency={selectedCurrency} />
