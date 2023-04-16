@@ -12,12 +12,12 @@ import { payloadXummPost, xummWsConnect, xummCancel, xummGetSignedData } from '.
 
 import XummQr from "./Xumm/Qr"
 import CheckBox from './UI/CheckBox'
-import ExpirationSelect from './UI/expirationSelect';
+import ExpirationSelect from './UI/ExpirationSelect'
 
-const qr = "/images/qr.gif";
-const ledger = '/images/ledger-large.svg';
-const trezor = '/images/trezor-large.svg';
-const ellipal = '/images/ellipal-large.svg';
+const qr = "/images/qr.gif"
+const ledger = '/images/ledger-large.svg'
+const trezor = '/images/trezor-large.svg'
+const ellipal = '/images/ellipal-large.svg'
 
 export default function SignForm({ setSignRequest, setAccount, signRequest }) {
   const { t } = useTranslation()
