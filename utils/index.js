@@ -178,7 +178,7 @@ export const stripText = (text) => {
   return text
 }
 
-const typeNumberOnlyMobile = e => {
+export const typeNumberOnlyMobile = e => {
   if (e.key === ',') {
     e.preventDefault()
     e.target.value += '.'
@@ -190,7 +190,7 @@ const typeNumberOnlyMobile = e => {
   }
 }
 
-export const typeNumberOnly = (e) => {
+export const typeNumberOnly = e => {
   //do not allow dot or comma to be first
   if (e.target.selectionStart === 0 && (e.key === ',' || e.key === '.')) {
     e.preventDefault()
