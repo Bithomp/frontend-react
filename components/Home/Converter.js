@@ -48,8 +48,8 @@ export default function Converter({ selectedCurrency, setSelectedCurrency, chart
         onChange={onXrpAmountChange}
         onKeyPress={typeNumberOnly}
         type={isMobile ? "number" : "text"}
-        pattern="[0-9]*"
-        inputMode="decimal"
+        //pattern="[0-9]*"
+        //inputMode="decimal"
         min="0"
       />
       <div className="converter-xrp">
