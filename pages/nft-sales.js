@@ -10,6 +10,7 @@ import { stripText, isAddressOrUsername, setTabParams } from '../utils'
 import { isValidTaxon, nftThumbnail, nftNameLink } from '../utils/nft'
 import {
   amountFormat,
+  convertedAmount,
   nftLink,
   userOrServiceLink,
   usernameOrAddress,
@@ -309,6 +310,7 @@ export default function NftSales({
 
   let csvHeaders = [
     { label: t("table.accepted"), key: "acceptedAt" },
+    { label: (t("table.amount") + " (" + sortCurrency + ")"), key: "amountInConvertCurrencies." + sortCurrency },
     { label: (t("table.amount") + " (drops)"), key: "amount" },
     { label: t("table.name"), key: "nftoken.metadata.name" },
     { label: t("table.taxon"), key: "nftoken.nftokenTaxon" },
@@ -319,7 +321,7 @@ export default function NftSales({
     { label: t("table.seller"), key: "seller" },
     { label: t("table.broker"), key: "broker" },
     { label: t("table.sales"), key: "saleType" }
-  ];
+  ]
 
   return <>
     <SEO
@@ -391,6 +393,7 @@ export default function NftSales({
               <tr>
                 <th className='center'>{t("table.index")}</th>
                 <th className='center'>{t("table.sold")}</th>
+                <th>{t("table.amount")} ({sortCurrency?.toUpperCase()})</th>
                 <th>{t("table.amount")}</th>
                 <th>NFT</th>
                 <th className='center hide-on-mobile'>{t("table.taxon")}</th>
@@ -416,6 +419,7 @@ export default function NftSales({
                       <tr key={i}>
                         <td className='center'>{i + 1}</td>
                         <td className='center'>{timeOrDate(nft.acceptedAt)}</td>
+                        <td>{convertedAmount(nft, sortCurrency)}</td>
                         <td>{amountFormat(nft.amount, { tooltip: 'right' })}</td>
                         <td>{nftThumbnail(nft.nftoken)} {nftNameLink(nft.nftoken)}</td>
                         <td className='center hide-on-mobile'>{nft.nftoken.nftokenTaxon}</td>

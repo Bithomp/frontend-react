@@ -243,6 +243,16 @@ export const shortAddress = (id) => {
   return id.substr(0, 6) + "..." + id.substr(-6);
 }
 
+export const convertedAmount = (nft, convertCurrency) => {
+  if (nft?.amountInConvertCurrencies && nft.amountInConvertCurrencies[convertCurrency]) {
+    return <>
+      {niceNumber(nft.amountInConvertCurrencies[convertCurrency], 2, convertCurrency)}
+      <br />
+    </>
+  }
+  return null
+}
+
 export const persentFormat = (small, big) => {
   if (!small && small !== 0) return;
   if (!big && big !== 0) return;

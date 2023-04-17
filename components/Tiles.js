@@ -4,31 +4,21 @@ import Link from 'next/link'
 
 import { stripText } from '../utils'
 import { nftImageStyle, nftUrl, bestSellOffer, mpUrl } from '../utils/nft'
-import { amountFormat, timeOrDate, niceNumber } from '../utils/format'
+import { amountFormat, timeOrDate, convertedAmount } from '../utils/format'
 
 const addressName = (details, name) => {
-  if (!details) return "";
-  const { username, service } = details;
-  let label = "";
+  if (!details) return ""
+  const { username, service } = details
+  let label = ""
   if (service) {
-    label = service;
+    label = service
   } else if (username) {
-    label = username;
+    label = username
   }
   if (label) {
-    return <><br />{name}: {label}</>;
+    return <><br />{name}: {label}</>
   }
-  return "";
-}
-
-const convertedAmount = (nft, convertCurrency) => {
-  if (nft?.amountInConvertCurrencies && nft.amountInConvertCurrencies[convertCurrency]) {
-    return <>
-      {niceNumber(nft.amountInConvertCurrencies[convertCurrency], 2, convertCurrency)}
-      <br />
-    </>
-  }
-  return null
+  return ""
 }
 
 export default function Tiles({ nftList, type = 'name', convertCurrency }) {
@@ -168,11 +158,11 @@ export default function Tiles({ nftList, type = 'name', convertCurrency }) {
                     {timeOrDate(nft.acceptedAt)}
                   </h1>
                   <div className='title-full'>
-                    {nft.nftoken?.metadata?.name ? <>{t("table.name")}: {stripText(nft.nftoken.metadata.name)}<br /></> : ""}
-                    {t("table.serial")}: {nft.nftoken?.sequence}<br />
-                    {t("table.taxon")}: {nft.nftoken?.nftokenTaxon}
+                    {nft.nftoken?.metadata?.name ? <>{t("table.name")}: {stripText(nft.nftoken.metadata.name)}</> : ""}
                     {addressName(nft.nftoken?.issuerDetails, t("table.issuer"))}
-                    {addressName(nft.nftoken?.ownerDetails, t("table.owner"))}
+                    <div>
+                      {t("table.price")}: {amountFormat(nft.amount)}
+                    </div>
                   </div>
                 </Link>
               </div>
