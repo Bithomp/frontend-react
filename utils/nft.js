@@ -235,6 +235,7 @@ const metaUrl = (nft, type = 'image', gateway = 'our') => {
     if (meta.video) return assetUrl(meta.video, type, gateway);
     if (isCorrectFileType(meta.animation, type)) return assetUrl(meta.animation, type, gateway);
     if (isCorrectFileType(meta.animation_url, type)) return assetUrl(meta.animation_url, type, gateway);
+    if (meta.movie) return assetUrl(meta.movie, type, gateway);
     if (meta.content) return assetUrl(meta.content, type, gateway);
   }
   if (type === 'audio') {

@@ -3,8 +3,9 @@ import { useState, useEffect } from 'react'
 import Image from 'next/image'
 
 import CurrencySelect from "../UI/CurrencySelect"
+import { typeNumberOnly } from '../../utils'
 
-export default function Converter({ selectedCurrency, setSelectedCurrency, chartPeriod, isMobile }) {
+export default function Converter({ selectedCurrency, setSelectedCurrency, chartPeriod }) {
   const [data, setData] = useState({});
   const [xrpValue, setXrpValue] = useState('1');
   const [fiatValue, setFiatValue] = useState('');
@@ -19,35 +20,27 @@ export default function Converter({ selectedCurrency, setSelectedCurrency, chart
     }
     fetchData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedCurrency, chartPeriod]);
+  }, [selectedCurrency, chartPeriod])
 
-  const onXrpAmountChange = (e) => {
-    let xrpAmount = e.target.value;
-    xrpAmount = xrpAmount.replace(',', '.');
-    setXrpValue(xrpAmount);
-    setFiatValue((xrpAmount * data[selectedCurrency]).toFixed(2));
-  }
-
-  const onFiatAmountChange = (e) => {
-    let fiatAmount = e.target.value;
-    fiatAmount = fiatAmount.replace(',', '.');
-    setFiatValue(fiatAmount);
-    setXrpValue((fiatAmount / data[selectedCurrency]).toFixed(2));
-  }
-
-  const typeNumberOnly = e => {
-    if (e.key === ',') {
-      e.preventDefault();
-      e.target.value += '.';
-      return;
+  const onXrpAmountChange = e => {
+    let xrpAmount = e.target.value
+    if (xrpAmount) {
+      xrpAmount = xrpAmount * 1
     }
-    const pattern = /^[,.0-9]+$/;
-    if (!pattern.test(e.key)) {
-      e.preventDefault();
-    }
+    setXrpValue(xrpAmount)
+    setFiatValue((xrpAmount * data[selectedCurrency]).toFixed(2))
   }
 
-  const rate = data[selectedCurrency] ? '1 XRP = ' + data[selectedCurrency] + ' ' + selectedCurrency.toUpperCase() : <br/>;
+  const onFiatAmountChange = e => {
+    let fiatAmount = e.target.value
+    if (fiatAmount) {
+      fiatAmount = fiatAmount * 1
+    }
+    setFiatValue(fiatAmount)
+    setXrpValue((fiatAmount / data[selectedCurrency]).toFixed(2))
+  }
+
+  const rate = data[selectedCurrency] ? '1 XRP = ' + data[selectedCurrency] + ' ' + selectedCurrency.toUpperCase() : <br/>
 
   return <>
     <h2>{rate}</h2>
@@ -58,10 +51,9 @@ export default function Converter({ selectedCurrency, setSelectedCurrency, chart
         value={xrpValue}
         onChange={onXrpAmountChange}
         onKeyPress={typeNumberOnly}
-        type={isMobile ? "number" : "text"}
-        pattern="[0-9]*"
-        inputMode="decimal"
+        type="text"
         min="0"
+        inputMode="decimal"
       />
       <div className="converter-xrp">
         <Image height={18} width={18} src="/images/xrp-black.svg" alt="xrp logo" />
@@ -75,10 +67,9 @@ export default function Converter({ selectedCurrency, setSelectedCurrency, chart
         value={fiatValue}
         onChange={onFiatAmountChange}
         onKeyPress={typeNumberOnly}
-        type={isMobile ? "number" : "text"}
-        pattern="[0-9]*"
-        inputMode="decimal"
+        type="text"
         min="0"
+        inputMode="decimal"
       />
       <div className="converter-currency-select">
         <CurrencySelect setSelectedCurrency={setSelectedCurrency} selectedCurrency={selectedCurrency} />

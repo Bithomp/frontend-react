@@ -22,10 +22,10 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
   const [searching, setSearching] = useState(false);
 
   useEffect(() => {
-    if (searchInput.current) {
+    if (!id && searchInput.current) {
       searchInput.current.focus()
     }
-  }, []);
+  }, [id, searchInput])
 
   useEffect(() => {
     if (userData?.address) {

@@ -52,12 +52,27 @@
   "settings": {
     "language": "Language"
   },
+  "components": {
+    "expiration-select": {
+      "1d": "1 day",
+      "3d": "3 days",
+      "7d": "7 days",
+      "14d": "14 days",
+      "30d": "30 days",
+      "90d": "90 days"
+    }
+  },
   "signin": {
     "signin": "Sign in",
     "signout": "Sign out",
     "choose-app": "Choose a signing app",
     "login-with": "Login with",
     "sign-with": "Sign with",
+    "amount": {
+      "set-price": "Set a price",
+      "enter-amount": "Enter amount"
+    },
+    "expiration": "Expiration",
     "xumm": {
       "open-app": "Open the Xumm app on your phone.",
       "change-settings": "Go to settings and choose a testnet node.",
@@ -79,7 +94,10 @@
     "not-available": "Not available",
     "confirm": {
       "nft-accept-offer-header": "NFT purchase",
-      "nft-accept-offer": "I acknowledge that Bithomp is a peer-to-peer Web3 service, and it cannot verify or guarantee the legitimacy, authenticity, and legality of NFT that I purchase. I confirm that I've read the <1>Terms and conditions</1>, and I agree to all of them."
+      "nft-create-sell-offer-header": "List for sale",
+      "nft-create-buy-offer-header": "Create Buy offer",
+      "nft-accept-offer": "I admit that Bithomp gives me access to a decentralised marketplace, and it cannot verify or guarantee the authenticity and legitimacy of any NFTs. I confirm that I've read the <1>Terms and conditions</1>, and I agree with all the terms to buy, sell or use any NFTs on Bithomp.",
+      "nft-create-sell-offer": "I understand, once my listing is signed, the NFT can be purchased instantly."
     }
   },
   "footer": {
@@ -323,6 +341,7 @@
     "loading": "Loading...",
     "load-failed": "Failed to load",
     "all-issuers": "All issuers",
+    "no-expiration": "Never",
     "no-uri": "No URI specified",
     "no-media": "No media found",
     "viewer": "Viewer"
@@ -332,7 +351,7 @@
     "Request failed with status code 429": "You are sending us too many requests, try later!"
   },
   "error-api": {
-    "Issuer username is not valid": "Invalid issuer's username",
+    "Issuer username is not found or invalid": "Invalid issuer's username",
     "Issuer address is not valid": "Invalid issuer's address",
     "Owner username is not found or invalid": "Invalid owner's username",
     "Owner address is not valid": "Invalid owner's address",
@@ -518,6 +537,8 @@
     "cancel-for": "Cancel Sell offer for",
     "buy-for": "Buy for",
     "on": "on",
+    "make-offer": "Make offer",
+    "list-for-sale": "List for sale",
     "holders": "Distribution (Holders)"
   },
   "nft-distribution": {

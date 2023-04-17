@@ -2,6 +2,16 @@ import axios from 'axios'
 import { useCallback, useEffect, useState } from "react"
 import { Buffer } from 'buffer'
 
+export const delay = async (milliseconds, callback, options) => {
+  const delayFunction = () => {
+    return new Promise(resolve => {
+      setTimeout(resolve, milliseconds)
+    })
+  }
+  await delayFunction()
+  callback(options)
+}
+
 export const fiatCurrencyList = [
   { value: 'usd', label: 'USD' },
   { value: 'eur', label: 'EUR' },
@@ -166,6 +176,48 @@ export const stripText = (text) => {
   if (!text) return ""
   text = text.toString() //For buffer/hex
   return text
+}
+
+export const typeNumberOnly = e => {
+  //do not allow dot or comma to be first
+  if (e.target.selectionStart === 0 && (e.key === ',' || e.key === '.')) {
+    e.preventDefault()
+    return
+  }
+  if (e.key === ',' || e.key === '.') {
+    e.preventDefault()
+    if (e.target.value.indexOf('.') !== -1) {
+      return
+    } else {
+      e.target.value += '.'
+      return
+    }
+  }
+  const pattern = /^[,.0-9]+$/
+  if (!pattern.test(e.key)) {
+    e.preventDefault();
+    return
+  }
+  if (e.key === '.' && e.target.value.indexOf('.') !== -1) {
+    e.preventDefault()
+    return
+  }
+  //maximum 6 digits after the dot
+  //maximum 10 digits after the dot
+  if (e.target.value.indexOf('.') !== -1) {
+    if (e.target.value.length > 12) {
+      e.preventDefault()
+      return
+    }
+    const splitedByDot = e.target.value.split(".")
+    if (splitedByDot[0].length > 9 || splitedByDot[1].length > 5) {
+      e.preventDefault()
+      return
+    }
+  } else if (e.target.value.length > 9) {
+    e.preventDefault()
+    return
+  }
 }
 
 export const decode = (code) => {
