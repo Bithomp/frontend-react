@@ -8,10 +8,17 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 import { stripText, isAddressOrUsername, setTabParams } from '../utils'
 import { isValidTaxon, nftThumbnail, nftNameLink } from '../utils/nft'
-import { amountFormat, nftLink, userOrServiceLink, usernameOrAddress, timeOrDate } from '../utils/format'
+import {
+  amountFormat,
+  convertedAmount,
+  nftLink,
+  userOrServiceLink,
+  usernameOrAddress,
+  timeOrDate
+} from '../utils/format'
 
 export const getServerSideProps = async ({ query, locale }) => {
-  const { view, sale, list, currency, currencyIssuer, issuer, taxon, period } = query
+  const { view, sale, list, currency, currencyIssuer, issuer, taxon, period, sortCurrency } = query
   return {
     props: {
       view: view || "tiles",
@@ -22,6 +29,7 @@ export const getServerSideProps = async ({ query, locale }) => {
       issuerQuery: issuer || "",
       taxonQuery: taxon || "",
       period: period || "week",
+      sortCurrencyQuery: sortCurrency || "",
       ...(await serverSideTranslations(locale, ['common'])),
     },
   }
@@ -33,7 +41,18 @@ import Tiles from '../components/Tiles'
 
 import LinkIcon from "../public/images/link.svg"
 
-export default function NftSales({ view, sale, list, currency, currencyIssuer, issuerQuery, taxonQuery, period }) {
+export default function NftSales({
+  view,
+  sale,
+  list,
+  currency,
+  currencyIssuer,
+  issuerQuery,
+  taxonQuery,
+  period,
+  sortCurrencyQuery,
+  selectedCurrency
+}) {
   const { t } = useTranslation();
   const router = useRouter()
 
@@ -53,6 +72,8 @@ export default function NftSales({ view, sale, list, currency, currencyIssuer, i
   const [pageTab, setPageTab] = useState(list);
   const [hasMore, setHasMore] = useState("first");
   const [dateAndTimeNow, setDateAndTimeNow] = useState('')
+
+  const sortCurrency = sortCurrencyQuery.toLowerCase() || selectedCurrency
 
   useEffect(() => {
     const date = new Date(Date.now()).toLocaleDateString([], { year: 'numeric', month: 'short', day: '2-digit' })
@@ -129,9 +150,9 @@ export default function NftSales({ view, sale, list, currency, currencyIssuer, i
       setLoading(true);
     }
 
-    const response = await axios('v2/nft-sales?list=' + loadList + currencyUrlPart() + '&saleType=' + saleTab + collectionUrlPart + periodUrlPart + markerUrlPart).catch(error => {
+    const response = await axios('v2/nft-sales?list=' + loadList + currencyUrlPart() + '&saleType=' + saleTab + collectionUrlPart + periodUrlPart + markerUrlPart + "&convertCurrencies=" + sortCurrency + "&sortCurrency=" + sortCurrency).catch(error => {
       setErrorMessage(t("error." + error.message));
-    });
+    })
 
     const newdata = response.data;
     setLoading(false);
@@ -176,9 +197,11 @@ export default function NftSales({ view, sale, list, currency, currencyIssuer, i
   }
 
   useEffect(() => {
-    checkApi({ restart: true });
+    if (sortCurrency) {
+      checkApi({ restart: true })
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [saleTab, issuer, taxon, periodTab, pageTab]);
+  }, [saleTab, issuer, taxon, periodTab, pageTab, sortCurrency]);
 
   useEffect(() => {
     let queryAddList = [];
@@ -273,10 +296,7 @@ export default function NftSales({ view, sale, list, currency, currencyIssuer, i
   const issuerTaxonUrlPart = (data && issuer) ? ("&issuer=" + usernameOrAddress(data, 'issuer') + (taxon ? ("&taxon=" + taxon) : "")) : "";
 
   const currencyUrlPart = () => {
-    if (!currency) {
-      if (pageTab === 'last') return "";
-      if (pageTab === 'top') return "&currency=xrp";
-    }
+    if (!currency) return ""
 
     if (currency.toLowerCase() === 'xrp') {
       return "&currency=xrp";
@@ -285,11 +305,12 @@ export default function NftSales({ view, sale, list, currency, currencyIssuer, i
         return '&currency=' + stripText(currency) + "&currencyIssuer=" + stripText(currencyIssuer);
       }
     }
-    return "";
+    return ""
   }
 
   let csvHeaders = [
     { label: t("table.accepted"), key: "acceptedAt" },
+    { label: (t("table.amount") + " (" + sortCurrency + ")"), key: "amountInConvertCurrencies." + sortCurrency },
     { label: (t("table.amount") + " (drops)"), key: "amount" },
     { label: t("table.name"), key: "nftoken.metadata.name" },
     { label: t("table.taxon"), key: "nftoken.nftokenTaxon" },
@@ -300,7 +321,7 @@ export default function NftSales({ view, sale, list, currency, currencyIssuer, i
     { label: t("table.seller"), key: "seller" },
     { label: t("table.broker"), key: "broker" },
     { label: t("table.sales"), key: "saleType" }
-  ];
+  ]
 
   return <>
     <SEO
@@ -383,6 +404,7 @@ export default function NftSales({ view, sale, list, currency, currencyIssuer, i
               <tr>
                 <th className='center'>{t("table.index")}</th>
                 <th className='center'>{t("table.sold")}</th>
+                <th>{t("table.amount")} ({sortCurrency?.toUpperCase()})</th>
                 <th>{t("table.amount")}</th>
                 <th>NFT</th>
                 <th className='center hide-on-mobile'>{t("table.taxon")}</th>
@@ -408,6 +430,7 @@ export default function NftSales({ view, sale, list, currency, currencyIssuer, i
                       <tr key={i}>
                         <td className='center'>{i + 1}</td>
                         <td className='center'>{timeOrDate(nft.acceptedAt)}</td>
+                        <td>{convertedAmount(nft, sortCurrency)}</td>
                         <td>{amountFormat(nft.amount, { tooltip: 'right' })}</td>
                         <td>{nftThumbnail(nft.nftoken)} {nftNameLink(nft.nftoken)}</td>
                         <td className='center hide-on-mobile'>{nft.nftoken.nftokenTaxon}</td>
@@ -438,7 +461,7 @@ export default function NftSales({ view, sale, list, currency, currencyIssuer, i
                 {errorMessage ?
                   <div className='center orange bold'>{errorMessage}</div>
                   :
-                  <Tiles nftList={sales} type={pageTab} />
+                  <Tiles nftList={sales} type={pageTab} convertCurrency={sortCurrency} />
                 }
               </>
             }
