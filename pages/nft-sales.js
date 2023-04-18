@@ -320,7 +320,8 @@ export default function NftSales({
     { label: t("table.buyer"), key: "buyer" },
     { label: t("table.seller"), key: "seller" },
     { label: t("table.broker"), key: "broker" },
-    { label: t("table.sales"), key: "saleType" }
+    { label: t("table.sales"), key: "saleType" },
+    { label: t("table.marketplace"), key: "marketplace" }
   ]
 
   return <>

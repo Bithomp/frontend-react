@@ -44,11 +44,11 @@ export default function Tiles({ nftList, type = 'name', convertCurrency }) {
   */
 
   const shortName = (name) => {
-    name = stripText(name);
+    name = stripText(name)
     if (name?.length > 18) {
-      return name.slice(0, name.slice(0, 18).lastIndexOf(" ")) + '...';
+      return name.slice(0, name.slice(0, 18).lastIndexOf(" ")) + '...'
     }
-    return name;
+    return name
   }
 
   const loadingImage = (nft) => {
@@ -158,11 +158,16 @@ export default function Tiles({ nftList, type = 'name', convertCurrency }) {
                     {timeOrDate(nft.acceptedAt)}
                   </h1>
                   <div className='title-full'>
-                    {nft.nftoken?.metadata?.name ? <>{t("table.name")}: {stripText(nft.nftoken.metadata.name)}</> : ""}
+                    {nft.nftoken?.metadata?.name ? <>{t("table.name")}: {shortName(nft.nftoken.metadata.name)}</> : ""}
                     {addressName(nft.nftoken?.issuerDetails, t("table.issuer"))}
-                    <div>
-                      {t("table.price")}: {amountFormat(nft.amount)}
-                    </div>
+                    <br />
+                    {t("table.price")}: {amountFormat(nft.amount)}
+                    {nft.marketplace &&
+                      <>
+                        <br />
+                        {t("table.marketplace")}: {nft.marketplace}
+                      </>
+                    }
                   </div>
                 </Link>
               </div>
