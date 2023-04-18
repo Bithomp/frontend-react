@@ -351,10 +351,15 @@
     "Request failed with status code 429": "You are sending us too many requests, try later!"
   },
   "error-api": {
-    "Issuer username is not found or invalid": "Invalid issuer's username",
-    "Issuer address is not valid": "Invalid issuer's address",
-    "Owner username is not found or invalid": "Invalid owner's username",
-    "Owner address is not valid": "Invalid owner's address",
+    "issuer username is not found or invalid": "Invalid issuer's username",
+    "issuer is invalid": "Invalid issuer's address",
+    "owner username is not found or invalid": "Invalid owner's username",
+    "owner is invalid": "Invalid owner's address",
+    "destination username is not found or invalid": "Invalid destination's username",
+    "destination is invalid": "Invalid destination's address",
+    "currency is invalid": "Invalid currency",
+    "currencyIssuer username is not found or invalid": "Invalid currency issuer's username",
+    "currencyIssuer is invalid": "Invalid currency issuer's address",
     "Token information is not found": "We couldn't find any information for that ID"
   },
   "units": {
