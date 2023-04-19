@@ -535,6 +535,11 @@ table {
         top: 60%;
       }
     }
+    &.table-large {
+      &:after {
+        top: 19%;
+      }
+    }
   }
   &:hover {
     .tooltiptext {

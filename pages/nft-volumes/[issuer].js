@@ -27,7 +27,8 @@ import { setTabParams, stripText, isAddressOrUsername, useWidth, removeQueryPara
 import {
   niceNumber,
   shortNiceNumber,
-  usernameOrAddress
+  usernameOrAddress,
+  amountFormat
 } from '../../utils/format';
 
 import LinkIcon from "../../public/images/link.svg"
@@ -133,6 +134,9 @@ export default function NftVolumes({ period, sale, currency, currencyIssuer, iss
                 "currency": "MRM",
                 "issuer": "rNjQ9HZYiBk1WhuscDkmJRSc3gbrBqqAaQ",
                 "value": "200000000"
+              },
+              "amountInConvertCurrencies": {
+                "usd": "131.53812270977"
               },
               "sales": 1
             }
@@ -271,9 +275,36 @@ export default function NftVolumes({ period, sale, currency, currencyIssuer, iss
                           </td>
                           <td className='right'>{shortNiceNumber(volume.buyers, 0)}</td>
                           <td className='right'>
-                            {niceNumber(volume.volumesInConvertCurrencies[convertCurrency], 2, convertCurrency)}
+                            <span className='tooltip'>
+                              {niceNumber(volume.volumesInConvertCurrencies[convertCurrency], 2, convertCurrency)}
+                              <table className="tooltiptext left table-large shrink" style={{ width: "390px", transition: "none" }}>
+                                <thead>
+                                  <tr>
+                                    <th className='center'>{t("table.index")}</th>
+                                    <th className='right'>{t("table.sales")}</th>
+                                    <th className='right'>{t("table.volume")}</th>
+                                    <th className='right'>{t("table.volume")} ({convertCurrency?.toUpperCase()})</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  {volume.volumes.map((vol, j) =>
+                                    <tr key={j}>
+                                      <td className='center'>{j + 1}</td>
+                                      <td className='right'>{vol.sales}</td>
+                                      <td className='right'>
+                                        {amountFormat(vol.amount)}
+                                      </td>
+                                      <td className='right'>
+                                        {niceNumber(vol.amountInConvertCurrencies[convertCurrency], 2, convertCurrency)}
+                                      </td>
+                                    </tr>
+                                  )}
+                                </tbody>
+                              </table>
+                            </span>
                           </td>
-                        </tr>)
+                        </tr>
+                      )
                     }
                   </>
                   :
@@ -328,6 +359,30 @@ export default function NftVolumes({ period, sale, currency, currencyIssuer, iss
                       <p>
                         {t("table.volume")}: {niceNumber(volume.volumesInConvertCurrencies[convertCurrency], 2, convertCurrency)}
                       </p>
+                      <table className="tooltiptext left table-mobile" style={{ width: "calc(100% - 20px)", margin: "20px 20px 20px 0px" }}>
+                        <thead>
+                          <tr>
+                            <th className='center'>{t("table.index")}</th>
+                            <th className='right'>{t("table.sales")}</th>
+                            <th className='right'>{t("table.volume")}</th>
+                            <th className='right'>{t("table.volume")} ({convertCurrency?.toUpperCase()})</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {volume.volumes.map((vol, j) =>
+                            <tr key={j}>
+                              <td className='center'>{j + 1}</td>
+                              <td className='right'>{vol.sales}</td>
+                              <td className='right'>
+                                {amountFormat(vol.amount)}
+                              </td>
+                              <td className='right'>
+                                {niceNumber(vol.amountInConvertCurrencies[convertCurrency], 2, convertCurrency)}
+                              </td>
+                            </tr>
+                          )}
+                        </tbody>
+                      </table>
                     </td>
                   </tr>)
                   :
