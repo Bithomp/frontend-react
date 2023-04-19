@@ -266,7 +266,7 @@ export default function NftVolumes({ period, sale, currency, currencyIssuer, iss
                         <tr key={i}>
                           <td className='center'>{i + 1}</td>
                           <td className='right'>{volume.taxon}</td>
-                          <td className='center'>{shortNiceNumber(volume.nfts, 0)} <a href={'/nft-explorer?issuer=' + usernameOrAddress(rawData, 'issuer') + "&taxon=" + volume.taxon}><LinkIcon /></a></td>
+                          <td className='right'>{shortNiceNumber(volume.nfts, 0)} <a href={'/nft-explorer?issuer=' + usernameOrAddress(rawData, 'issuer') + "&taxon=" + volume.taxon}><LinkIcon /></a></td>
                           <td className='right'>{shortNiceNumber(volume.owners, 0)} {/* <a href={'/nft-distribution/' + usernameOrAddress(rawData, 'issuer') + "?taxon=" + volume.taxon}><LinkIcon /></a> */}</td>
                           <td className='right'>{shortNiceNumber(volume.tradedNfts, 0)}</td>
                           <td className='right'>
@@ -277,7 +277,7 @@ export default function NftVolumes({ period, sale, currency, currencyIssuer, iss
                           <td className='right'>
                             <span className='tooltip'>
                               {niceNumber(volume.volumesInConvertCurrencies[convertCurrency], 2, convertCurrency)}
-                              <table className="tooltiptext left table-large shrink" style={{ width: "390px", transition: "none" }}>
+                              <table className="tooltiptext left table-large shrink" style={{ width: "400px", transition: "none" }}>
                                 <thead>
                                   <tr>
                                     <th className='center'>{t("table.index")}</th>

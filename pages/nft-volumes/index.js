@@ -247,16 +247,16 @@ export default function NftVolumes({ period, sale, list, currency, currencyIssue
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isReady, saleTab, periodTab, listTab, currency, currencyIssuer]);
 
-  const urlParams = (volume) => {
+  const urlParams = (volume, options) => {
     let urlPart = "?period=" + periodTab + "&sale=" + saleTab;
-    if (volume?.amount) {
+    if (volume?.amount && !options?.excludeCurrency) {
       if (volume.amount.currency) {
         urlPart = urlPart + "&currency=" + volume.amount.currency + '&currencyIssuer=' + volume.amount.issuer;
       } else {
         urlPart = urlPart + "&currency=xrp";
       }
     }
-    if (volume?.issuer) {
+    if (volume?.issuer && !options?.excludeIssuer) {
       urlPart = urlPart + "&issuer=" + usernameOrAddress(volume, "issuer");
     }
     return urlPart;
@@ -434,6 +434,7 @@ export default function NftVolumes({ period, sale, list, currency, currencyIssue
                             {listTab === 'brokers' && rawData?.summary &&
                               <> ({persentFormat(volume.amount, rawData.summary.all.volume)})</>
                             }
+                            {listTab === 'issuers' && <a href={'/nft-volumes/' + usernameOrAddress(volume, 'issuer') + urlParams(volume, { excludeIssuer: true, excludeCurrency: true })}><LinkIcon /></a>}
                           </td>
                         </tr>)
                     }
@@ -496,6 +497,10 @@ export default function NftVolumes({ period, sale, list, currency, currencyIssue
                       </p>
                       <p>
                         {t("table.volume")}: {amountFormat(volume.amount, { tooltip: 'right', maxFractionDigits: 2 })}
+                        {listTab === 'brokers' && rawData?.summary &&
+                          <> ({persentFormat(volume.amount, rawData.summary.all.volume)})</>
+                        }
+                        {listTab === 'issuers' && <a href={'/nft-volumes/' + usernameOrAddress(volume, 'issuer') + urlParams(volume, { excludeIssuer: true, excludeCurrency: true })}><LinkIcon /></a>}
                       </p>
                     </td>
                   </tr>)
