@@ -5,14 +5,15 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useRouter } from 'next/router'
 
 export const getServerSideProps = async ({ query, locale }) => {
-  const { period, sale, list, currency, currencyIssuer } = query
+  const { period, sale, list, currency, currencyIssuer, sortCurrency } = query
   return {
     props: {
       period: period || "week",
       sale: sale || "all",
       list: list || "issuers",
-      currency: currency || "xrp",
+      currency: currency || "",
       currencyIssuer: currencyIssuer || "",
+      sortCurrency: sortCurrency || "",
       ...(await serverSideTranslations(locale, ['common'])),
     },
   }
@@ -32,7 +33,7 @@ import {
 
 import LinkIcon from "../../public/images/link.svg"
 
-export default function NftVolumes({ period, sale, list, currency, currencyIssuer }) {
+export default function NftVolumes({ period, sale, list, currency, currencyIssuer, selectedCurrency, sortCurrency }) {
   const { t } = useTranslation()
   const router = useRouter()
 
@@ -40,20 +41,22 @@ export default function NftVolumes({ period, sale, list, currency, currencyIssue
 
   const windowWidth = useWidth()
 
-  const [data, setData] = useState([]);
-  const [rawData, setRawData] = useState({});
-  const [loading, setLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
-  const [periodTab, setPeriodTab] = useState(period);
-  const [saleTab, setSaleTab] = useState(sale);
-  const [listTab, setListTab] = useState(list);
-  const [sortConfig, setSortConfig] = useState({});
+  const [data, setData] = useState([])
+  const [rawData, setRawData] = useState({})
+  const [loading, setLoading] = useState(false)
+  const [errorMessage, setErrorMessage] = useState("")
+  const [periodTab, setPeriodTab] = useState(period)
+  const [saleTab, setSaleTab] = useState(sale)
+  const [listTab, setListTab] = useState(list)
+  const [sortConfig, setSortConfig] = useState({})
+
+  const convertCurrency = sortCurrency || selectedCurrency
 
   const listTabList = [
     { value: 'issuers', label: (t("tabs.issuers")) },
     { value: 'brokers', label: (t("tabs.brokers")) },
     { value: 'currencies', label: (t("tabs.currencies")) }
-  ];
+  ]
 
   const periodTabList = [
     { value: 'all', label: t("tabs.all-time") },
@@ -61,37 +64,37 @@ export default function NftVolumes({ period, sale, list, currency, currencyIssue
     { value: 'month', label: t("tabs.month") },
     { value: 'week', label: t("tabs.week") },
     { value: 'day', label: t("tabs.day") }
-  ];
+  ]
 
   const saleTabList = [
     { value: 'all', label: t("tabs.all-sales") },
     { value: 'secondary', label: (t("tabs.secondary-sales")) },
     { value: 'primary', label: (t("tabs.primary-sales")) }
-  ];
+  ]
 
-  const controller = new AbortController();
+  const controller = new AbortController()
 
   const checkApi = async () => {
-    let apiUrl = 'v2/nft-volumes';
+    let apiUrl = 'v2/nft-volumes'
     if (listTab === 'currencies') {
-      apiUrl += '?list=currencies';
+      apiUrl += '?list=currencies'
     } else if (listTab === 'issuers' || listTab === 'brokers') {
-      apiUrl += '?list=' + listTab;
+      apiUrl += '?list=' + listTab
       if (listTab === 'issuers') {
-        apiUrl += '&floorPrice=true';
+        apiUrl += '&floorPrice=true&convertCurrencies=' + convertCurrency + '&sortCurrency=' + convertCurrency // only for issuers for now! add for brojkers and currencies too.
       }
       if (currency && currencyIssuer) {
-        apiUrl += '&currency=' + stripText(currency) + '&currencyIssuer=' + stripText(currencyIssuer);
-      } else {
-        apiUrl += '&currency=xrp';
+        apiUrl += '&currency=' + stripText(currency) + '&currencyIssuer=' + stripText(currencyIssuer)
+      } else if (currency?.toLowerCase() === 'xrp') {
+        apiUrl += '&currency=xrp'
       }
     } else {
-      return;
+      return
     }
 
-    setLoading(true);
-    setRawData({});
-    setData([]);
+    setLoading(true)
+    setRawData({})
+    setData([])
     const response = await axios.get(apiUrl + '&period=' + periodTab + '&saleType=' + saleTab, {
       signal: controller.signal
     }).catch(error => {
@@ -99,7 +102,7 @@ export default function NftVolumes({ period, sale, list, currency, currencyIssue
         setErrorMessage(t("error." + error.message))
         setLoading(false) //keep here for fast tab clickers
       }
-    });
+    })
 
     const newdata = response?.data;
     if (newdata) {
@@ -210,7 +213,8 @@ export default function NftVolumes({ period, sale, list, currency, currencyIssue
   */
 
   useEffect(() => {
-    checkApi();
+    if (!convertCurrency) return
+    checkApi()
     setTabParams(router, [
       {
         tabList: listTabList,
@@ -245,7 +249,7 @@ export default function NftVolumes({ period, sale, list, currency, currencyIssue
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isReady, saleTab, periodTab, listTab, currency, currencyIssuer]);
+  }, [isReady, saleTab, periodTab, listTab, currency, currencyIssuer, convertCurrency])
 
   const urlParams = (volume, options) => {
     let urlPart = "?period=" + periodTab + "&sale=" + saleTab;
