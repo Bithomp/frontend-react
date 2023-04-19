@@ -18,7 +18,8 @@ import {
   expirationExpired,
   nftOfferLink,
   codeHighlight,
-  trStatus
+  trStatus,
+  cancelNftOfferButton
 } from '../../utils/format'
 
 import SocialShare from '../../components/SocialShare'
@@ -341,6 +342,13 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
             <td>{t("table.offer")}</td>
             <td>{nftOfferLink(offer.offerIndex)}</td>
           </tr>
+          {((account?.address && offer.owner && account.address === offer.owner) || offer?.validationErrors?.includes('Offer is expired')) &&
+            <tr>
+              <td colSpan="2">
+                {cancelNftOfferButton(t, setSignRequest, account.address, offer, type)}
+              </td>
+            </tr>
+          }
           {i !== offers.length - 1 &&
             <tr><td colSpan="100"><hr /></td></tr>
           }
@@ -437,31 +445,17 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
     />
   }
 
-  const buyButton = (sellOffers) => {
+  const buyButton = sellOffers => {
     if (!sellOffers) return ""
     sellOffers = sellOffers.filter(function (offer) { return offer.valid; })
     //best xrp offer available or an IOU offer, if it's only one IOU offer available
-    let best = bestSellOffer(sellOffers);
-    if (!best) return "";
+    //we should get the best IOU offer too... and show both XRP and IOU
+    let best = bestSellOffer(sellOffers)
+    if (!best) return ""
 
     if (data?.owner && account?.address && account.address === data.owner) {
       return <>
-        <button
-          className='button-action wide center'
-          onClick={() => setSignRequest({
-            wallet: "xumm",
-            request: {
-              "TransactionType": "NFTokenCancelOffer",
-              "Account": data.owner,
-              "NFTokenOffers": [
-                best.offerIndex
-              ]
-            }
-          })}
-        >
-          <Image src={xummImg} className='xumm-logo' alt="xumm" height={24} width={24} />
-          {t("nft.cancel-for")} {amountFormat(best.amount)}
-        </button>
+        {cancelNftOfferButton(t, setSignRequest, data.owner, best, "sell")}
         <br /><br />
       </>
     }
@@ -472,7 +466,7 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
           {t("nft.buy-for")} {amountFormat(best.amount)} {t("nft.on")} {best.destinationDetails.service}
         </a>
         <br /><br />
-      </>;
+      </>
     }
 
     return <>
@@ -507,7 +501,7 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
     if (sell) {
       if (sellOffers) {
         sellOffers = sellOffers.filter(function (offer) { return offer.valid })
-        // do not show button, when there are active valid sell offers
+        // do not show "make sell offer" button, when there are active valid sell offers
         if (sellOffers.length) return ""
       }
       request.Flags = 1

@@ -540,7 +540,8 @@
   "nft": {
     "desc": "Here you can search for NFTs, enter an NFT ID and press the search button.",
     "enter-nft-id": "Enter an NFT ID",
-    "cancel-for": "Cancel Sell offer for",
+    "cancel-sell-offer-for": "Cancel Sell offer for",
+    "cancel-buy-offer-for": "Cancel Buy offer for",
     "buy-for": "Buy for",
     "on": "on",
     "make-offer": "Make offer",

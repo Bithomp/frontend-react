@@ -1,9 +1,27 @@
 import { Buffer } from 'buffer'
 import Link from 'next/link'
+import Image from 'next/image'
 
 import LinkIcon from "../public/images/link.svg"
 import { stripText } from '.'
 import { mpUrl } from './nft'
+
+export const cancelNftOfferButton = (t, setSignRequest, account, offer, type = "buy") => {
+  return <button
+    className='button-action wide center'
+    onClick={() => setSignRequest({
+      wallet: "xumm",
+      request: {
+        "TransactionType": "NFTokenCancelOffer",
+        "Account": account,
+        "NFTokenOffers": [offer.offerIndex]
+      }
+    })}
+  >
+    <Image src="/images/xumm.png" className='xumm-logo' alt="xumm" height={24} width={24} />
+    {type === "sell" ? t("nft.cancel-sell-offer-for") : t("nft.cancel-buy-offer-for")} {amountFormat(offer.amount)}
+  </button>
+}
 
 //table
 export const trStatus = (t, data) => {

@@ -12,7 +12,8 @@ import {
   trWithAccount,
   expirationExpired,
   trStatus,
-  nftIdLink
+  nftIdLink,
+  cancelNftOfferButton
 } from '../../utils/format'
 
 import { delay } from '../../utils'
@@ -219,22 +220,7 @@ export default function NftOffer({ setSignRequest, signRequest, account, id }) {
 
                     {!data.canceledAt && ((data?.owner && account?.address && account.address === data.owner) || data?.validationErrors?.includes('Offer is expired')) &&
                       <>
-                        <button
-                          className='button-action wide center'
-                          onClick={() => setSignRequest({
-                            wallet: "xumm",
-                            request: {
-                              "TransactionType": "NFTokenCancelOffer",
-                              "Account": data.owner,
-                              "NFTokenOffers": [
-                                data.offerIndex
-                              ]
-                            }
-                          })}
-                        >
-                          <Image src={xummImg} className='xumm-logo' alt="xumm" height={24} width={24} />
-                          {t("nft.cancel-for")} {amountFormat(data.amount)}
-                        </button>
+                        {cancelNftOfferButton(t, setSignRequest, data.owner, data, "sell")}
                         <br /><br />
                       </>
                     }
