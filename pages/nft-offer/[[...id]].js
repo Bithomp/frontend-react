@@ -218,7 +218,11 @@ export default function NftOffer({ setSignRequest, signRequest, account, id }) {
                       <br /><br />
                     </div>
 
-                    {!data.canceledAt && ((data?.owner && account?.address && account.address === data.owner) || data?.validationErrors?.includes('Offer is expired')) &&
+                    {!data.canceledAt && (
+                      (data?.owner && account?.address && account.address === data.owner)
+                      || data?.validationErrors?.includes('Offer is expired')
+                      || (account?.address && data?.destination === account.address)
+                    ) &&
                       <>
                         {cancelNftOfferButton(t, setSignRequest, data.owner, data, "sell")}
                         <br /><br />

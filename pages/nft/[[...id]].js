@@ -342,7 +342,12 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
             <td>{t("table.offer")}</td>
             <td>{nftOfferLink(offer.offerIndex)}</td>
           </tr>
-          {((account?.address && offer.owner && account.address === offer.owner) || offer?.validationErrors?.includes('Offer is expired')) &&
+          {
+            (
+              (account?.address && offer.owner && account.address === offer.owner)
+              || offer.validationErrors?.includes('Offer is expired')
+              || (account?.address && offer.destination === account.address)
+            ) &&
             <tr>
               <td colSpan="2">
                 {cancelNftOfferButton(t, setSignRequest, account.address, offer, type)}
