@@ -7,6 +7,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 
 import { stripText, server, decode, delay } from '../../utils'
+import { convertedAmount } from '../../utils/format'
 import { getIsSsrMobile } from "../../utils/mobile"
 import { nftName, mpUrl, bestSellOffer, nftUrl } from '../../utils/nft'
 import {
@@ -27,8 +28,9 @@ import SocialShare from '../../components/SocialShare'
 export async function getServerSideProps(context) {
   const { locale, query, req } = context
   let pageMeta = null
-  const id = query?.id ? (Array.isArray(query?.id) ? query.id[0] : query.id) : ""
-  if (id) {
+  const { sortCurrency, id } = query
+  const nftId = id ? (Array.isArray(id) ? id[0] : id) : ""
+  if (nftId) {
     let headers = null
     if (process.env.NODE_ENV !== 'development') {
       //otherwise can not verify ssl serts
@@ -37,7 +39,7 @@ export async function getServerSideProps(context) {
     try {
       const res = await axios({
         method: 'get',
-        url: server + '/api/cors/v2/nft/' + id + '?uri=true&metadata=true',
+        url: server + '/api/cors/v2/nft/' + nftId + '?uri=true&metadata=true',
         headers
       })
       pageMeta = res?.data
@@ -48,9 +50,10 @@ export async function getServerSideProps(context) {
 
   return {
     props: {
-      id,
+      id: nftId,
       isSsrMobile: getIsSsrMobile(context),
       pageMeta,
+      sortCurrency: sortCurrency || "",
       ...(await serverSideTranslations(locale, ['common']))
     }
   }
@@ -64,21 +67,23 @@ import NftPreview from '../../components/NftPreview'
 import LinkIcon from "../../public/images/link.svg";
 const xummImg = "/images/xumm.png";
 
-export default function Nft({ setSignRequest, account, signRequest, pageMeta, id }) {
+export default function Nft({ setSignRequest, account, signRequest, pageMeta, id, selectedCurrency, sortCurrency }) {
   const { t } = useTranslation()
 
   const [rendered, setRendered] = useState(false)
-  const [data, setData] = useState({});
-  const [loading, setLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
-  const [showRawMetadata, setShowRawMetadata] = useState(false);
+  const [data, setData] = useState({})
+  const [loading, setLoading] = useState(false)
+  const [errorMessage, setErrorMessage] = useState("")
+  const [showRawMetadata, setShowRawMetadata] = useState(false)
 
-  const [sellOffersFilter, setSellOffersFilter] = useState('active-valid');
-  const [buyOffersFilter, setBuyOffersFilter] = useState('active-valid');
-  const [filteredSellOffers, setFilteredSellOffers] = useState([]);
-  const [filteredBuyOffers, setFilteredBuyOffers] = useState([]);
-  const [countBuyOffers, setCountBuyOffers] = useState(null);
-  const [countSellOffers, setCountSellOffers] = useState(null);
+  const [sellOffersFilter, setSellOffersFilter] = useState('active-valid')
+  const [buyOffersFilter, setBuyOffersFilter] = useState('active-valid')
+  const [filteredSellOffers, setFilteredSellOffers] = useState([])
+  const [filteredBuyOffers, setFilteredBuyOffers] = useState([])
+  const [countBuyOffers, setCountBuyOffers] = useState(null)
+  const [countSellOffers, setCountSellOffers] = useState(null)
+
+  const convertCurrency = sortCurrency || selectedCurrency
 
   useEffect(() => {
     setRendered(true)
@@ -94,7 +99,11 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
       noCache = "&timestamp=" + Date.now()
     }
 
-    const response = await axios('/v2/nft/' + id + '?uri=true&metadata=true&history=true&sellOffers=true&buyOffers=true&offersValidate=true&offersHistory=true' + noCache).catch(error => {
+    const response = await axios(
+      '/v2/nft/' + id
+      + '?uri=true&metadata=true&history=true&sellOffers=true&buyOffers=true&offersValidate=true&offersHistory=true'
+      + noCache + '&convertCurrencies=' + convertCurrency
+    ).catch(error => {
       setErrorMessage(t("error." + error.message))
     })
     setLoading(false)
@@ -198,6 +207,7 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
   */
 
   useEffect(() => {
+    if (!convertCurrency) return;
     if (!signRequest) {
       if (!data?.nftokenID) {
         // no token - first time fetching - allow right away
@@ -209,7 +219,7 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id, signRequest])
+  }, [id, signRequest, convertCurrency])
 
   const externalUrl = (meta) => {
     let url = meta.external_url || meta.external_link || meta.externalUrl || meta.externalURL || (meta.minter?.includes("https://") && meta.minter);
@@ -270,10 +280,21 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
           {(nftEvent.amount && nftEvent.amount !== "0") &&
             <tr>
               <td>{t("table.price")}</td>
-              <td>{amountFormat(nftEvent.amount, { tooltip: "right" })}</td>
+              <td>
+                {amountFormat(nftEvent.amount, { tooltip: "right" })}
+                {nftEvent.amountInConvertCurrencies[convertCurrency] &&
+                  <>(≈ {convertedAmount(nftEvent, convertCurrency)})</>
+                }
+              </td>
             </tr>
           }
           {trWithAccount(nftEvent, 'owner', ownerName(nftEvent), "/explorer/")}
+          {nftEvent.marketplace &&
+            <tr>
+              <td>{t("table.sold-on")}</td>
+              <td>{nftEvent.marketplace}</td>
+            </tr>
+          }
           {i !== history.length - 1 &&
             <tr><td colSpan="100"><hr /></td></tr>
           }
@@ -284,7 +305,7 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
 
   const nftOffers = (offers, type) => {
     if (type !== 'sell' && type !== 'buy') {
-      return <tbody><tr><td colSpan="100">Error, no offer type</td></tr></tbody>;
+      return <tbody><tr><td colSpan="100">Error, no offer type</td></tr></tbody>
     }
     /*
       {
@@ -300,7 +321,7 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
       }
     */
 
-    const buyerOrSeller = type === 'sell' ? t("table.seller") : t("table.buyer");
+    const buyerOrSeller = type === 'sell' ? t("table.seller") : t("table.buyer")
 
     if (offers.length > 0) {
       return offers.map((offer, i) =>
@@ -362,7 +383,7 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
     } else {
       return <tbody>
         <tr><td colSpan="100">{t("table.text.no-offers")}</td></tr>
-      </tbody>;
+      </tbody>
     }
   }
 
