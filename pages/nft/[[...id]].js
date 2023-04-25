@@ -493,7 +493,7 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
   }
 
   const makeOfferButton = (sellOffers) => {
-    if (!id) return ""
+    if (!id || data.deletedAt) return "" //if removed do not offer to add an offer
     //if signed in and user is the nft's owner -> make a sell offer, otherwise make a buy offer (no flag)
     const sell = data?.owner && account?.address && account.address === data.owner
 
