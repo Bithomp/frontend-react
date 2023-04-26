@@ -405,7 +405,7 @@ export default function NftVolumes({ period, sale, list, currency, currencyIssue
                           <td className='center'>{i + 1}</td>
                           {listTab === 'issuers' && <td>{addressUsernameOrServiceLink(volume, "issuer", { short: true })}</td>}
                           {listTab === 'issuers' && <td className='right hide-on-mobile'>{shortNiceNumber(volume.totalNfts, 0)} <a href={'/nft-explorer?issuer=' + usernameOrAddress(volume, 'issuer')}><LinkIcon /></a></td>}
-                          {listTab === 'issuers' && <td className='right hide-on-mobile'>{shortNiceNumber(volume.totalOwners, 0)} <a href={'/nft-distribution/' + usernameOrAddress(volume, 'issuer')}><LinkIcon /></a></td>}
+                          {listTab === 'issuers' && <td className='right hide-on-mobile'>{shortNiceNumber(volume.totalOwners, 0)} <a href={'/nft-distribution?issuer=' + usernameOrAddress(volume, 'issuer')}><LinkIcon /></a></td>}
                           {listTab === 'issuers' &&
                             <td className='right'>
                               {showFloor(volume.floorPrice) &&
@@ -477,7 +477,7 @@ export default function NftVolumes({ period, sale, list, currency, currencyIssue
                       </p>
                       <p>
                         {t("table.owners-now")}:{" "}
-                        {shortNiceNumber(volume.totalOwners, 0)} <a href={'/nft-distribution/' + usernameOrAddress(volume, 'issuer')}><LinkIcon /></a>
+                        {shortNiceNumber(volume.totalOwners, 0)} <a href={'/nft-distribution?issuer=' + usernameOrAddress(volume, 'issuer')}><LinkIcon /></a>
                       </p>
                       {showFloor(volume.floorPrice) ?
                         <p>

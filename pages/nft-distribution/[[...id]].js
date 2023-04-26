@@ -2,44 +2,52 @@ import { useTranslation, Trans } from 'next-i18next'
 import { useState, useEffect } from 'react';
 import axios from 'axios'
 import { CSVLink } from "react-csv"
-import { useRouter } from 'next/router'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
+import { useRouter } from 'next/router'
 
-import { useWidth } from '../../utils';
-import { nftsExplorerLink, addressUsernameOrServiceLink } from '../../utils/format';
+import { useWidth, isAddressOrUsername, addAndRemoveQueryParams } from '../../utils'
+import { isValidTaxon } from '../../utils/nft'
+import {
+  nftsExplorerLink,
+  addressUsernameOrServiceLink,
+  userOrServiceLink
+} from '../../utils/format'
 
-export async function getStaticProps({ locale }) {
+export async function getServerSideProps(context) {
+  const { locale, query } = context
+  const { taxon, id, issuer } = query
+  const idQuery = id ? (Array.isArray(id) ? id[0] : id) : ""
+  let issuerQuery = isAddressOrUsername(idQuery) ? idQuery : issuer
+  issuerQuery = isAddressOrUsername(issuerQuery) ? issuerQuery : ""
+
   return {
     props: {
-      ...(await serverSideTranslations(locale, ['common'])),
+      idQuery,
+      issuerQuery,
+      taxonQuery: taxon || "",
+      ...(await serverSideTranslations(locale, ['common']))
     }
   }
 }
 
-export async function getStaticPaths() {
-  return {
-    paths: [],
-    fallback: 'blocking'
-  }
-}
-
 import SEO from '../../components/SEO'
-import SearchBlock from '../../components/Layout/SearchBlock'
 
-export default function NftDistribution() {
+export default function NftDistribution({ issuerQuery, taxonQuery, idQuery }) {
   const { t } = useTranslation()
-  const router = useRouter()
-  const { id } = router.query
   const windowWidth = useWidth()
+  const router = useRouter()
 
-  const [data, setData] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [errorMessage, setErrorMessage] = useState("");
-  const [userData, setUserData] = useState({});
+  const [data, setData] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [errorMessage, setErrorMessage] = useState("")
+  const [taxon, setTaxon] = useState(taxonQuery)
+  const [issuer, setIssuer] = useState(issuerQuery)
+  const [issuerInput, setIssuerInput] = useState(issuerQuery)
+  const [taxonInput, setTaxonInput] = useState(taxonQuery)
 
   const checkApi = async () => {
-    if (!id) {
-      return;
+    if (!issuer) {
+      return
     }
     /*
       {
@@ -61,19 +69,19 @@ export default function NftDistribution() {
             "count": 500
           },
       */
-    const response = await axios('v2/nft-count/' + id + '?list=owners').catch(error => {
+    let taxonUrlPart = ""
+    if (taxon > -1) {
+      taxonUrlPart = '&taxon=' + taxon
+    }
+    const response = await axios(
+      'v2/nft-count/' + issuer + '?list=owners' + taxonUrlPart
+    ).catch(error => {
       setErrorMessage(t("error." + error.message))
     });
     setLoading(false);
     const newdata = response?.data;
     if (newdata) {
       if (newdata.issuer) {
-        setUserData({
-          username: newdata.issuerDetails.username,
-          service: newdata.issuerDetails.service,
-          address: newdata.issuer
-        });
-
         if (newdata.owners.length > 0) {
           setErrorMessage("");
           setData(newdata);
@@ -92,28 +100,102 @@ export default function NftDistribution() {
   }
 
   useEffect(() => {
-    checkApi();
+    if (!issuer) return
+    checkApi()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id]);
+  }, [issuer, taxon])
 
   let csvHeaders = [
     { label: t("table.owner"), key: "owner" },
     { label: t("table.username"), key: "ownerDetails.username" },
     { label: t("table.count"), key: "count" }
-  ];
+  ]
+
+  const searchClick = () => {
+    let queryAddList = []
+    let queryRemoveList = []
+    if (isAddressOrUsername(issuerInput)) {
+      setIssuer(issuerInput)
+      if (!idQuery) {
+        queryAddList.push({
+          name: "issuer",
+          value: issuerInput
+        })
+      }
+      if (isValidTaxon(taxonInput)) {
+        setTaxon(taxonInput)
+        queryAddList.push({
+          name: "taxon",
+          value: taxonInput
+        })
+      } else {
+        setTaxonInput("")
+        setTaxon("")
+        queryRemoveList.push("taxon")
+      }
+    } else {
+      setIssuerInput("")
+      setIssuer("")
+      setTaxonInput("")
+      setTaxon("")
+      queryRemoveList.push("issuer")
+      queryRemoveList.push("taxon")
+    }
+    addAndRemoveQueryParams(router, queryAddList, queryRemoveList)
+  }
+
+  const enterPress = e => {
+    if (e.key === 'Enter') {
+      searchClick()
+    }
+  }
+
+  const onTaxonInput = e => {
+    if (!/^\d+$/.test(e.key)) {
+      e.preventDefault()
+    }
+    enterPress(e)
+  }
 
   return <>
-    <SEO title={t("nft-distribution.header") + " " + id} />
-    <SearchBlock
-      searchPlaceholderText={t("explorer.enter-address")}
-      userData={userData}
-      tab="nft-distribution"
-    />
+    <SEO title={t("nft-distribution.header") + " " + issuer + (taxon ? (" " + taxon) : "")} />
     <div className="content-text" style={{ marginTop: "20px" }}>
+      <h1 className='center'>{t("nft-distribution.header")}</h1>
+      <div className='center'>
+        <span className='halv'>
+          <span className='input-title'>{t("table.issuer")} {userOrServiceLink(data, 'issuer')}</span>
+          <input
+            placeholder={t("nfts.search-by-issuer")}
+            value={issuerInput}
+            onChange={(e) => { setIssuerInput(e.target.value) }}
+            onKeyPress={enterPress}
+            className="input-text"
+            spellCheck="false"
+            maxLength="35"
+          />
+        </span>
+        <span className='halv'>
+          <span className='input-title'>{t("table.taxon")}</span>
+          <input
+            placeholder={t("nfts.search-by-taxon")}
+            value={taxonInput}
+            onChange={(e) => { setTaxonInput(e.target.value) }}
+            onKeyPress={onTaxonInput}
+            className="input-text"
+            spellCheck="false"
+            maxLength="35"
+            disabled={issuerInput ? false : true}
+          />
+        </span>
+      </div>
+      <p className="center" style={{ marginBottom: "20px" }}>
+        <input type="button" className="button-action" value={t("button.search")} onClick={searchClick} />
+      </p>
+
       {data?.totalNfts &&
         <p className='center'>
           <Trans i18nKey="nft-distribution.text0" values={{ users: data.totalOwners, nfts: data.totalNfts }}>
-            {{users: data.totalOwners}} users own {{nfts: data.totalNfts}} NFTs
+            {{ users: data.totalOwners }} users own {{ nfts: data.totalNfts }} NFTs
           </Trans>
           <br /><br />
           <CSVLink
@@ -126,7 +208,7 @@ export default function NftDistribution() {
           </CSVLink>
         </p>
       }
-      {id ?
+      {issuer ?
         <table className={"table-large" + (windowWidth < 640 ? "" : " shrink")}>
           <thead>
             <tr>
@@ -172,12 +254,9 @@ export default function NftDistribution() {
           </tbody>
         </table>
         :
-        <>
-          <h2 className='center'>{t("nft-distribution.header")}</h2>
-          <p className='center'>
-            {t("nft-distribution.desc")}
-          </p>
-        </>
+        <p className='center'>
+          {t("nft-distribution.desc")}
+        </p>
       }
     </div>
   </>;

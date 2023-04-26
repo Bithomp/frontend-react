@@ -18,13 +18,13 @@ import { niceNumber, fullDateAndTime, ledgerLink } from '../utils/format'
 
 let ws = null;
 
-export default function LastLedgerInformation() {
+export default function NftStatistics() {
   const { t } = useTranslation()
 
-  const [data, setData] = useState(null);
+  const [data, setData] = useState(null)
 
   const connect = () => {
-    ws = new WebSocket(wssServer);
+    ws = new WebSocket(wssServer)
 
     ws.onopen = () => {
       ws.send(JSON.stringify({ command: "subscribe", streams: ["nftokens"], id: 1 }));
