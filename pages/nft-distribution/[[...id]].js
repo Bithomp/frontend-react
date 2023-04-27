@@ -158,7 +158,9 @@ export default function NftDistribution({ issuerQuery, taxonQuery, idQuery }) {
   }
 
   return <>
-    <SEO title={t("nft-distribution.header") + " " + issuer + (taxon ? (" " + taxon) : "")} />
+    <SEO
+      title={t("nft-distribution.header") + (issuer ? (" " + issuer) : "") + (taxon ? (" " + taxon) : "")}
+    />
     <div className="content-text" style={{ marginTop: "20px" }}>
       <h1 className='center'>{t("nft-distribution.header")}</h1>
       <div className='center'>
