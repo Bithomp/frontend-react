@@ -23,7 +23,7 @@ import SEO from '../../components/SEO'
 import Tabs from '../../components/Tabs'
 import SearchBlock from '../../components/Layout/SearchBlock'
 
-import { setTabParams, stripText, isAddressOrUsername, useWidth, removeQueryParams } from '../../utils'
+import { setTabParams, stripText, isAddressOrUsername, useWidth } from '../../utils'
 import {
   niceNumber,
   shortNiceNumber,
@@ -157,8 +157,11 @@ export default function NftVolumes({ period, sale, currency, currencyIssuer, iss
 
   useEffect(() => {
     if (!convertCurrency) return
-    checkApi();
-    setTabParams(router, [
+    checkApi()
+
+    let queryAddList = []
+    let queryRemoveList = []
+    const tabsToSet = [
       {
         tabList: periodTabList,
         tab: periodTab,
@@ -173,13 +176,14 @@ export default function NftVolumes({ period, sale, currency, currencyIssuer, iss
         setTab: setSaleTab,
         paramName: "sale"
       }
-    ])
-
-    setSortConfig({});
-
-    if ((!currency || (currency.toLowerCase() !== 'xrp' && !isAddressOrUsername(currencyIssuer)))) {
-      removeQueryParams(router, ["currency", "currencyIssuer"])
+    ]
+    if ((!currency || (currency.toLowerCase() !== 'xrp' && !isAddressOrUsername(currencyIssuer))) || listTab === 'currencies') {
+      queryRemoveList = ["currency", "currencyIssuer"]
     }
+    setTabParams(router, tabsToSet, queryAddList, queryRemoveList)
+
+    setSortConfig({})
+
     return () => {
       controller.abort();
     }

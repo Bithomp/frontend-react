@@ -22,7 +22,7 @@ export const getServerSideProps = async ({ query, locale }) => {
 import SEO from '../../components/SEO'
 import Tabs from '../../components/Tabs'
 
-import { setTabParams, stripText, isAddressOrUsername, useWidth, removeQueryParams } from '../../utils'
+import { setTabParams, stripText, isAddressOrUsername, useWidth } from '../../utils'
 import {
   amountFormat,
   shortNiceNumber,
@@ -165,7 +165,10 @@ export default function NftVolumes({ period, sale, list, currency, currencyIssue
   useEffect(() => {
     if (!convertCurrency) return
     checkApi()
-    setTabParams(router, [
+
+    let queryAddList = []
+    let queryRemoveList = []
+    const tabsToSet = [
       {
         tabList: listTabList,
         tab: listTab,
@@ -187,15 +190,16 @@ export default function NftVolumes({ period, sale, list, currency, currencyIssue
         setTab: setSaleTab,
         paramName: "sale"
       }
-    ])
-
-    setSortConfig({});
-
+    ]
     if ((!currency || (currency.toLowerCase() !== 'xrp' && !isAddressOrUsername(currencyIssuer))) || listTab === 'currencies') {
-      removeQueryParams(router, ["currency", "currencyIssuer"])
+      queryRemoveList = ["currency", "currencyIssuer"]
     }
+    setTabParams(router, tabsToSet, queryAddList, queryRemoveList)
+
+    setSortConfig({})
+
     return () => {
-      controller.abort();
+      controller.abort()
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -416,7 +420,7 @@ export default function NftVolumes({ period, sale, list, currency, currencyIssue
                             {listTab === 'brokers' && rawData?.summary &&
                               <> ({persentFormat(volume.amount, rawData.summary.all.volume)})</>
                             }
-                            {listTab === 'issuers' && <a href={'/nft-volumes/' + usernameOrAddress(volume, 'issuer') + urlParams(volume, { excludeIssuer: true, excludeCurrency: true })}><LinkIcon /></a>}
+                            {listTab === 'issuers' && <a href={'/nft-volumes/' + usernameOrAddress(volume, 'issuer') + urlParams(volume, { excludeIssuer: true, excludeCurrency: true })}> <LinkIcon /></a>}
                           </td>
                         </tr>
                       )
@@ -483,7 +487,7 @@ export default function NftVolumes({ period, sale, list, currency, currencyIssue
                         {listTab === 'brokers' && rawData?.summary &&
                           <> ({persentFormat(volume.amount, rawData.summary.all.volume)})</>
                         }
-                        {listTab === 'issuers' && <a href={'/nft-volumes/' + usernameOrAddress(volume, 'issuer') + urlParams(volume, { excludeIssuer: true, excludeCurrency: true })}><LinkIcon /></a>}
+                        {listTab === 'issuers' && <a href={'/nft-volumes/' + usernameOrAddress(volume, 'issuer') + urlParams(volume, { excludeIssuer: true, excludeCurrency: true })}> <LinkIcon /></a>}
                       </p>
                     </td>
                   </tr>)
