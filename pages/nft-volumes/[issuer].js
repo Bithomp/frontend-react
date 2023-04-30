@@ -68,10 +68,10 @@ export default function NftVolumes({ period, sale, currency, currencyIssuer, iss
 
   const checkApi = async () => {
     if (!issuer) return;
-    let apiUrl = 'v2/nft-volumes-issuer/' + issuer + '?list=taxons&convertCurrencies=' + convertCurrency
+    let apiUrl = 'v2/nft-volumes-extended?issuer=' + issuer + '&list=taxons&convertCurrencies=' + convertCurrency + '&sortCurrency=' + convertCurrency
 
     if (currency && currencyIssuer) {
-      apiUrl += '&currency=' + stripText(currency) + '&currencyIssuer=' + stripText(currencyIssuer);
+      apiUrl += '&currency=' + stripText(currency) + '&currencyIssuer=' + stripText(currencyIssuer)
     } else if (currency.toLowerCase() === 'xrp') {
       apiUrl += '&currency=xrp';
     }
