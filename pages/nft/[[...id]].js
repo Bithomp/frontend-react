@@ -555,8 +555,8 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
   return <>
     <SEO
       page="NFT"
-      title={pageMeta?.metadata?.name || pageMeta?.nftokenID}
-      description={pageMeta?.metadata?.description}
+      title={pageMeta?.metadata?.name || pageMeta?.nftokenID || "NFT"}
+      description={pageMeta?.metadata?.description || (!pageMeta?.nftokenID ? t("nft.desc") : "")}
       image={{ file: imageUrl }}
     />
     <SearchBlock
