@@ -29,8 +29,8 @@ export default function Amendment() {
     }
   }
 
-  const amendmentLink = (name) => {
-    return name ? <a href={"https://xrpl.org/known-amendments.html#" + name.toLowerCase()}>{name}</a> : t("amendment.unknown");
+  const amendmentLink = (name, hash) => {
+    return name ? <a href={"https://xrpl.org/known-amendments.html#" + name.toLowerCase()}>{name}</a> : hash;
   }
 
   /*
@@ -70,7 +70,7 @@ export default function Amendment() {
             <tbody>
               {majorityAmendments.map(a =>
                 <tr key={a.amendment}>
-                  <td className="brake">{amendmentLink(a.name)}</td>
+                  <td className="brake">{amendmentLink(a.name, a.amendment)}</td>
                   <td className='center'>{a.introduced}</td>
                   <td>{fullDateAndTime(a.majority)}</td>
                   <td>{fullDateAndTime(a.majority + 14 * 86400 + 3)}</td>
@@ -93,7 +93,7 @@ export default function Amendment() {
             <tbody>
               {enabledAmendments.map(a =>
                 <tr key={a.amendment}>
-                  <td>{amendmentLink(a.name)}</td>
+                  <td>{amendmentLink(a.name, a.amendment)}</td>
                   <td className='center'>{a.introduced}</td>
                 </tr>
               )}
