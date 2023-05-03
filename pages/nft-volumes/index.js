@@ -295,66 +295,117 @@ export default function NftVolumes({ period, sale, list, currency, currencyIssue
     }
   }
 
+  const bestFloor = priceFloor => {
+    if (!priceFloor) return {}
+    let open = null
+    let priv = null
+
+    if (priceFloor.open?.amount?.value) {
+      open = Number(priceFloor.open.amount.value)
+    } else if (priceFloor.open?.amount) {
+      open = Number(priceFloor.open.amount)
+    }
+
+    if (priceFloor.private?.amount?.value) {
+      priv = Number(priceFloor.private.amount.value)
+    } else if (priceFloor.private?.amount) {
+      priv = Number(priceFloor.private.amount)
+    }
+
+    if (!open && !priv) return {}
+
+    let floor = priceFloor.private?.amount
+    let priceColor = "orange"
+    let service = priceFloor.private?.destinationDetails.service || "Private market"
+    if (open && priv) {
+      if (open <= priv) {
+        floor = priceFloor.open?.amount
+        priceColor = ""
+        service = ""
+      }
+    } else if (open) {
+      floor = priceFloor.open?.amount
+      priceColor = ""
+      service = ""
+    }
+    return {
+      floor,
+      priceColor,
+      service
+    }
+  }
+
+  const trWithPriceAndMarketPlace = (j, priceFloor) => {
+    const { floor, service } = bestFloor(priceFloor)
+    if (!floor) return;
+    return <tr key={j}>
+      <td className='center'>{j + 1}</td>
+      <td className='right'>{amountFormat(floor, { maxFractionDigits: 2 })}</td>
+      <td className='right'>{service}</td>
+    </tr>
+  }
+
   const showFloor = volume => {
     const volumes = volume.volumes
     if (!volumes) return ""
 
     let floors = []
+    let xrpIndex = -1
     for (let i = 0; i < volumes.length; i++) {
       if (volumes[i].floorPrice) {
         floors.push(volumes[i].floorPrice)
+      }
+      if (volumes[i].amount && !volumes[i].amount.currency) {
+        xrpIndex = i
       }
     }
 
     if (floors.length < 1) return ""
 
-    if (floors.length === 1) {
-      let priceFloor = volumes[0].floorPrice
-      let open = null;
-      let priv = null;
+    let priceFloor = volumes[0].floorPrice
+    // if not only one, and if we found xrp there, then show XRP, otherwise it's teh first one or the only one.
+    if (floors.length !== 1 && xrpIndex !== -1) {
+      priceFloor = volumes[xrpIndex].floorPrice
+    }
 
-      if (priceFloor.open?.amount?.value) {
-        open = Number(priceFloor.open.amount.value);
-      } else if (priceFloor.open?.amount) {
-        open = Number(priceFloor.open.amount);
-      }
+    const { floor, priceColor } = bestFloor(priceFloor)
 
-      if (priceFloor.private?.amount?.value) {
-        priv = Number(priceFloor.private.amount.value);
-      } else if (priceFloor.private?.amount) {
-        priv = Number(priceFloor.private.amount);
+    let output = amountFormat(floor, { tooltip: 'left', maxFractionDigits: 2 });
+    if (output && priceColor === 'orange') {
+      let tableWithFloors = <table
+        className={windowWidth > 1000 ? "tooltiptext left table-large shrink" : "table-mobile"}
+        style={windowWidth > 1000 ? { width: "300px", transition: "none" } : { width: "calc(100% - 22px)", margin: "10px 0" }}
+      >
+        <thead>
+          <tr>
+            <th className='center'>{t("table.index")}</th>
+            <th className='right'>{t("table.price")}</th>
+            <th className='right'>{t("table.marketplace")}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {volumes.map((vol, j) =>
+            trWithPriceAndMarketPlace(j, vol.floorPrice)
+          )}
+        </tbody>
+      </table>
+      if (windowWidth > 1000) {
+        output = <span className={'tooltip ' + priceColor}>
+          {output}
+          {tableWithFloors}
+        </span>
+      } else {
+        return <>
+          {output}
+          <a href={'/nft-explorer?issuer=' + usernameOrAddress(volume, 'issuer') + '&list=onSale'}><LinkIcon /></a>
+          {tableWithFloors}
+        </>
       }
-
-      let floor = priceFloor.private?.amount;
-      let priceColor = "orange";
-      if (open && priv) {
-        if (open <= priv) {
-          floor = priceFloor.open?.amount;
-          priceColor = "";
-        }
-      } else if (open) {
-        floor = priceFloor.open?.amount;
-        priceColor = "";
-      }
-
-      let output = amountFormat(floor, { tooltip: 'left', maxFractionDigits: 2 });
-      if (output && priceColor === 'orange') {
-        if (windowWidth > 1000) {
-          output = (
-            <span className={'tooltip ' + priceColor}>
-              {output}
-              <span className='tooltiptext left'>
-                {priceFloor.private?.destinationDetails?.service ? priceFloor.private.destinationDetails.service : "Private market"}
-              </span>
-            </span>
-          )
-        } else {
-          output = output + (priceFloor.private?.destinationDetails?.service ? (" (" + priceFloor.private.destinationDetails.service + ")") : "");
-        }
-      }
+    }
+    if (output) {
       return <>{output} <a href={'/nft-explorer?issuer=' + usernameOrAddress(volume, 'issuer') + '&list=onSale'}><LinkIcon /></a></>
     } else {
-      return "many"
+      return ""
     }
   }
 
