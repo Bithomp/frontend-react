@@ -252,8 +252,9 @@ export const txIdFormat = (txId) => {
 }
 
 export const shortHash = (id, n = 6) => {
-  if (!id) return "";
-  return id.substr(0, n) + "..." + id.substr(-n);
+  if (!id) return ""
+  id = id.toString()
+  return id.substr(0, n) + "..." + id.substr(-n)
 }
 
 export const shortAddress = (id) => {

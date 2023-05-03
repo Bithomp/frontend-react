@@ -224,7 +224,7 @@
       "enter-address-or": "Введите ваш XRPL адрес или",
       "sign-in": "войдите с Xumm",
       "sign-out": "выйти",
-      "your-address": "Ваш XRPL address",
+      "your-address": "Ваш XRPL адрес",
       "enter-username": "Введите псевдоним, который бы вы хотели зарегистрировать",
       "your-username": "Псевдоним",
       "enter-country": "Выберите вашу страну проживания (для нашего бухгалтера)",
@@ -368,6 +368,7 @@
   },
   "table": {
     "index": "№",
+    "address": "Адрес",
     "time": "Время",
     "date": "Дата",
     "amount": "Сумма",

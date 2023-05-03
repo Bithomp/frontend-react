@@ -6,7 +6,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 import SEO from '../../components/SEO'
 
-import { txIdFormat, fullDateAndTime, ledgerLink } from '../../utils/format';
+import { fullDateAndTime, ledgerLink, shortHash, addressUsernameOrServiceLink } from '../../utils/format';
 
 export async function getServerSideProps(context) {
   const { locale } = context
@@ -53,6 +53,7 @@ export default function Ledger() {
     "totalDrops": "99987053011898778",
     "transactions": [
       {
+        "address": "rxxx",
         "type": "nftokenAcceptOffer",
         "id": "F8E5691555ACCC15757A988337E2ACEBFF454DF2AD4B46C7CEF7748B58F53845",
         "outcome": {
@@ -83,6 +84,7 @@ export default function Ledger() {
             <tr>
               <th>{t("table.index")}</th>
               <th>{t("table.type")}</th>
+              <th className='hide-on-mobile'>{t("table.address")}</th>
               <th className='hide-on-mobile'>{t("table.status")}</th>
               <th>{t("table.hash")}</th>
             </tr>
@@ -94,8 +96,9 @@ export default function Ledger() {
                   <tr key={tx.id}>
                     <td className='center'>{tx.outcome.indexInLedger}</td>
                     <td>{tx.type}</td>
+                    <td className='hide-on-mobile'>{addressUsernameOrServiceLink(tx, "address")}</td>
                     <td className='hide-on-mobile'>{tx.outcome.result}</td>
-                    <td><a href={"/explorer/" + tx.id}>{txIdFormat(tx.id)}</a></td>
+                    <td><a href={"/explorer/" + tx.id}>{shortHash(tx.id, 10)}</a></td>
                   </tr>
                 ) :
                   <tr><td colSpan="4">{t("ledger.no-transactions")}</td></tr>
