@@ -295,51 +295,67 @@ export default function NftVolumes({ period, sale, list, currency, currencyIssue
     }
   }
 
-  const showFloor = priceFloor => {
-    if (!priceFloor) return "";
-    let open = null;
-    let priv = null;
+  const showFloor = volume => {
+    const volumes = volume.volumes
+    if (!volumes) return ""
 
-    if (priceFloor.open?.amount?.value) {
-      open = Number(priceFloor.open.amount.value);
-    } else if (priceFloor.open?.amount) {
-      open = Number(priceFloor.open.amount);
+    let floors = []
+    for (let i = 0; i < volumes.length; i++) {
+      if (volumes[i].floorPrice) {
+        floors.push(volumes[i].floorPrice)
+      }
     }
 
-    if (priceFloor.private?.amount?.value) {
-      priv = Number(priceFloor.private.amount.value);
-    } else if (priceFloor.private?.amount) {
-      priv = Number(priceFloor.private.amount);
-    }
+    if (floors.length < 1) return ""
 
-    let floor = priceFloor.private?.amount;
-    let priceColor = "orange";
-    if (open && priv) {
-      if (open <= priv) {
+    if (floors.length === 1) {
+      let priceFloor = volumes[0].floorPrice
+      let open = null;
+      let priv = null;
+
+      if (priceFloor.open?.amount?.value) {
+        open = Number(priceFloor.open.amount.value);
+      } else if (priceFloor.open?.amount) {
+        open = Number(priceFloor.open.amount);
+      }
+
+      if (priceFloor.private?.amount?.value) {
+        priv = Number(priceFloor.private.amount.value);
+      } else if (priceFloor.private?.amount) {
+        priv = Number(priceFloor.private.amount);
+      }
+
+      let floor = priceFloor.private?.amount;
+      let priceColor = "orange";
+      if (open && priv) {
+        if (open <= priv) {
+          floor = priceFloor.open?.amount;
+          priceColor = "";
+        }
+      } else if (open) {
         floor = priceFloor.open?.amount;
         priceColor = "";
       }
-    } else if (open) {
-      floor = priceFloor.open?.amount;
-      priceColor = "";
-    }
 
-    let output = amountFormat(floor, { tooltip: 'left', maxFractionDigits: 2 });
-    if (output && priceColor === 'orange') {
-      if (windowWidth > 1000) {
-        output = (
-          <span className={'tooltip ' + priceColor}>
-            {output}
-            <span className='tooltiptext left'>
-              {priceFloor.private?.destinationDetails?.service ? priceFloor.private.destinationDetails.service : "Private market"}
+      let output = amountFormat(floor, { tooltip: 'left', maxFractionDigits: 2 });
+      if (output && priceColor === 'orange') {
+        if (windowWidth > 1000) {
+          output = (
+            <span className={'tooltip ' + priceColor}>
+              {output}
+              <span className='tooltiptext left'>
+                {priceFloor.private?.destinationDetails?.service ? priceFloor.private.destinationDetails.service : "Private market"}
+              </span>
             </span>
-          </span>
-        )
-      } else {
-        output = output + (priceFloor.private?.destinationDetails?.service ? (" (" + priceFloor.private.destinationDetails.service + ")") : "");
+          )
+        } else {
+          output = output + (priceFloor.private?.destinationDetails?.service ? (" (" + priceFloor.private.destinationDetails.service + ")") : "");
+        }
       }
+      return <>{output} <a href={'/nft-explorer?issuer=' + usernameOrAddress(volume, 'issuer') + '&list=onSale'}><LinkIcon /></a></>
+    } else {
+      return "many"
     }
-    return output;
   }
 
   return <>
@@ -433,9 +449,7 @@ export default function NftVolumes({ period, sale, list, currency, currencyIssue
                           {listTab === 'issuers' && issuersExtended && <td className='right hide-on-mobile'>{shortNiceNumber(volume.statistics?.owners, 0)} <a href={'/nft-distribution/' + usernameOrAddress(volume, 'issuer')}><LinkIcon /></a></td>}
                           {listTab === 'issuers' && issuersExtended &&
                             <td className='right'>
-                              {showFloor(volume.floorPrice) &&
-                                <>{showFloor(volume.floorPrice)} <a href={'/nft-explorer?issuer=' + usernameOrAddress(volume, 'issuer') + '&list=onSale'}><LinkIcon /></a></>
-                              }
+                              {showFloor(volume)}
                             </td>
                           }
                           {listTab === 'issuers' && issuersExtended && <td className='right hide-on-mobile'>{shortNiceNumber(volume.statistics?.tradedNfts, 0)}</td>}
@@ -533,9 +547,9 @@ export default function NftVolumes({ period, sale, list, currency, currencyIssue
                             {t("table.owners-now")}:{" "}
                             {shortNiceNumber(volume.statistics?.owners, 0)} <a href={'/nft-distribution/' + usernameOrAddress(volume, 'issuer')}><LinkIcon /></a>
                           </p>
-                          {showFloor(volume.floorPrice) ?
+                          {showFloor(volume) ?
                             <p>
-                              {t("table.floor-now")}: {showFloor(volume.floorPrice)} <a href={'/nft-explorer?issuer=' + usernameOrAddress(volume, 'issuer') + '&list=onSale'}><LinkIcon /></a>
+                              {t("table.floor-now")}: {showFloor(volume)}
                             </p>
                             :
                             ""
