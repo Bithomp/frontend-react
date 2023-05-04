@@ -21,6 +21,8 @@ export const mpUrl = (offer) => {
     url = "https://xpmarket.com/nfts/item/";
   } else if (service === "Equilibrium Games") {
     url = "https://equilibrium-games.com/marketplace/nft/";
+  } else if (service === "CollaterArt") {
+    url = "https://collaterart.com/Mainnet/" + offer.owner +"/";
   }
   if (url) {
     return url + offer.nftokenID;
