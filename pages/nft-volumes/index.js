@@ -110,17 +110,58 @@ export default function NftVolumes({ period, sale, list, currency, currencyIssue
       if (newdata.period) {
         let list = newdata[listTab]
         if (list.length > 0) {
-          setErrorMessage("");
+          setErrorMessage("")
           if (listTab === 'brokers' && newdata.summary) {
+            const sumAllVolumes = newdata.summary.all.volumes
+            const sumBrokersVolumes = newdata.summary.brokers.volumes
+            let sumAllNoBroker = []
+
+            for (let i = 0; i < sumAllVolumes.length; i++) {
+              let foundCurrency = false
+              for (let j = 0; j < sumBrokersVolumes.length; j++) {
+                if (sumAllVolumes[i].amount.currency === sumBrokersVolumes[j].amount.currency && sumAllVolumes[i].amount.issuer === sumBrokersVolumes[j].amount.issuer) {
+                  foundCurrency = true
+                  let noBrokerObj = {
+                    sales: sumAllVolumes[i].sales - sumBrokersVolumes[j].sales,
+                    amountInConvertCurrencies: {}
+                  }
+                  if (sumAllVolumes[i].amount.currency) {
+                    noBrokerObj.amount = {
+                      currency: sumAllVolumes[i].amount.currency,
+                      issuer: sumAllVolumes[i].amount.issuer,
+                      value: sumAllVolumes[i].amount.value - sumBrokersVolumes[j].amount.value
+                    }
+                  } else {
+                    noBrokerObj.amount = sumAllVolumes[i].amount - sumBrokersVolumes[j].amount
+                  }
+                  noBrokerObj.amountInConvertCurrencies[convertCurrency] = sumAllVolumes[i].amountInConvertCurrencies[convertCurrency] - sumBrokersVolumes[j].amountInConvertCurrencies[convertCurrency]
+                  if (noBrokerObj.sales > 0) {
+                    sumAllNoBroker.push(noBrokerObj)
+                  }
+                }
+              }
+              if (!foundCurrency) {
+                sumAllNoBroker.push(sumAllVolumes[i])
+              }
+            }
+
+            sumAllNoBroker = sumAllNoBroker.sort(function (a, b) {
+              if (a.amountInConvertCurrencies[convertCurrency] === "" || a.amountInConvertCurrencies[convertCurrency] === null) return 1
+              if (b.amountInConvertCurrencies[convertCurrency] === "" || b.amountInConvertCurrencies[convertCurrency] === null) return -1
+              if (a.amountInConvertCurrencies[convertCurrency] === b.amountInConvertCurrencies[convertCurrency]) return 0
+              return (parseFloat(a.amountInConvertCurrencies[convertCurrency]) < parseFloat(b.amountInConvertCurrencies[convertCurrency])) ? 1 : -1
+            })
+
             list.push({
               broker: "no broker",
               sales: newdata.summary.all.sales - newdata.summary.brokers.sales,
-              amount: newdata.summary.all.volume - newdata.summary.brokers.volume
+              volumes: sumAllNoBroker,
+              volumesInConvertCurrencies: {
+                usd: newdata.summary.all.volumesInConvertCurrencies[convertCurrency] - newdata.summary.brokers.volumesInConvertCurrencies[convertCurrency]
+              }
             })
           }
-          setData(list)
-          //it should sort on the backend already
-          //setData(list.sort((a, b) => (parseFloat(a.volumesInConvertCurrencies[convertCurrency]) < parseFloat(b.volumesInConvertCurrencies[convertCurrency])) ? 1 : -1))
+          setData(list.sort((a, b) => (parseFloat(a.volumesInConvertCurrencies[convertCurrency]) < parseFloat(b.volumesInConvertCurrencies[convertCurrency])) ? 1 : -1))
         } else {
           setErrorMessage(t("general.no-data"))
         }
@@ -163,12 +204,12 @@ export default function NftVolumes({ period, sale, list, currency, currencyIssue
       ]
     }
 
-    //issuers 
-{
+  //issuers 
+  {
     "list": "issuers",
     "period": "week",
     "convertCurrencies": [
-        "usd"
+      "usd"
     ],
     "sortCurrency": "usd",
     "saleType": "all",
@@ -176,6 +217,19 @@ export default function NftVolumes({ period, sale, list, currency, currencyIssue
     "marker": "72B5607D00000001",
     "issuers": [
       {
+        "floorPrices": [{
+          "open": {
+            "amount": "1999000000"
+          },
+          "private": {
+            "amount": "925000000",
+            "destination": "rpZqTPC8GvrSvEfFsUuHkmPCg29GdQuXhC",
+            "destinationDetails": {
+              "username": null,
+              "service": "onXRP"
+            }
+          }
+        }],
         "issuer": "rpbjkoncKiv1LkPWShzZksqYPzKXmUhTW7",
         "issuerDetails": {
           "username": "XPUNKS",
@@ -197,19 +251,6 @@ export default function NftVolumes({ period, sale, list, currency, currencyIssue
             "sales": 21,
             "amountInConvertCurrencies": {
               "usd": "11517.57666125"
-            },
-            "floorPrice": {
-              "open": {
-                "amount": "1999000000"
-              },
-              "private": {
-                "amount": "925000000",
-                "destination": "rpZqTPC8GvrSvEfFsUuHkmPCg29GdQuXhC",
-                "destinationDetails": {
-                  "username": null,
-                  "service": "onXRP"
-                }
-              }
             }
           }
         ]
@@ -346,27 +387,9 @@ export default function NftVolumes({ period, sale, list, currency, currencyIssue
   }
 
   const showFloor = volume => {
-    const volumes = volume.volumes
-    if (!volumes) return ""
-
-    let floors = []
-    let xrpIndex = -1
-    for (let i = 0; i < volumes.length; i++) {
-      if (volumes[i].floorPrice) {
-        floors.push(volumes[i].floorPrice)
-      }
-      if (volumes[i].amount && !volumes[i].amount.currency) {
-        xrpIndex = i
-      }
-    }
-
-    if (floors.length < 1) return ""
-
-    let priceFloor = volumes[0].floorPrice
-    // if not only one, and if we found xrp there, then show XRP, otherwise it's teh first one or the only one.
-    if (floors.length !== 1 && xrpIndex !== -1) {
-      priceFloor = volumes[xrpIndex].floorPrice
-    }
+    const floorPrices = volume.floorPrices
+    if (!floorPrices || floorPrices.length < 1) return ""
+    let priceFloor = floorPrices[0]
 
     const { floor, priceColor } = bestFloor(priceFloor)
 
@@ -384,8 +407,8 @@ export default function NftVolumes({ period, sale, list, currency, currencyIssue
           </tr>
         </thead>
         <tbody>
-          {volumes.map((vol, j) =>
-            trWithPriceAndMarketPlace(j, vol.floorPrice)
+          {floorPrices.map((vol, j) =>
+            trWithPriceAndMarketPlace(j, vol)
           )}
         </tbody>
       </table>
@@ -437,19 +460,9 @@ export default function NftVolumes({ period, sale, list, currency, currencyIssue
               {rawData?.summary && !loading &&
                 <>
                   {t("nft-volumes.brokers.period." + periodTab)}{" "}
-                  <Trans
-                    i18nKey="nft-volumes.brokers.text0"
-                    values={{
-                      allSales: shortNiceNumber(rawData.summary.all.sales, 0),
-                      allVolume: amountFormat(rawData.summary.all.volume, { tooltip: 'right', maxFractionDigits: 2 }),
-                      brokerSales: shortNiceNumber(rawData.summary.brokers.sales, 0),
-                      percentBrokerSales: persentFormat(rawData.summary.brokers.sales, rawData.summary.all.sales),
-                      brokerVolume: amountFormat(rawData.summary.brokers.volume, { tooltip: 'right', maxFractionDigits: 2 }),
-                      percentBrokerVolume: persentFormat(rawData.summary.brokers.volume, rawData.summary.all.volume)
-                    }}
-                  >
-                    XRPL had {shortNiceNumber(rawData.summary.all.sales, 0)} NFT trades for {amountFormat(rawData.summary.all.volume, { tooltip: 'right', maxFractionDigits: 2 })},
-                    from which {shortNiceNumber(rawData.summary.brokers.sales, 0)} ({persentFormat(rawData.summary.brokers.sales, rawData.summary.all.sales)}) of trades for {amountFormat(rawData.summary.brokers.volume, { tooltip: 'right', maxFractionDigits: 2 })} ({persentFormat(rawData.summary.brokers.volume, rawData.summary.all.volume)}) were through the brokerage model.
+                  <Trans i18nKey="nft-volumes.brokers.text0">
+                    XRPL had {{ allSales: shortNiceNumber(rawData.summary.all.sales, 0) }} NFT trades for {{ allVolume: niceNumber(rawData.summary.all.volumesInConvertCurrencies[convertCurrency], 0, convertCurrency) }},
+                    from which {{ brokerSales: shortNiceNumber(rawData.summary.brokers.sales, 0) }} ({{ percentBrokerSales: persentFormat(rawData.summary.brokers.sales, rawData.summary.all.sales) }}) of trades for {{ brokerVolume: niceNumber(rawData.summary.brokers.volumesInConvertCurrencies[convertCurrency], 0, convertCurrency) }} ({{ percentBrokerVolume: persentFormat(rawData.summary.brokers.volumesInConvertCurrencies[convertCurrency], rawData.summary.all.volumesInConvertCurrencies[convertCurrency]) }}) were through the brokerage model.
                   </Trans>
                 </>
               }
@@ -508,7 +521,7 @@ export default function NftVolumes({ period, sale, list, currency, currencyIssue
                           {listTab === 'currencies' && <td className='center'><a href={'/nft-volumes' + urlParams(volume) + '&list=issuers'}><LinkIcon /></a></td>}
                           <td className='right'>
                             {shortNiceNumber(volume.sales, 0)}
-                            {listTab === 'brokers' ?
+                            {(listTab === 'brokers' || listTab === 'marketplaces') ?
                               <>
                                 {rawData?.summary &&
                                   <> ({persentFormat(volume.sales, rawData.summary.all.sales)})</>
@@ -532,12 +545,12 @@ export default function NftVolumes({ period, sale, list, currency, currencyIssue
                                   </tr>
                                 </thead>
                                 <tbody>
-                                  {volume.volumes.map((vol, j) =>
+                                  {volume.volumes?.map((vol, j) =>
                                     <tr key={j}>
                                       <td className='center'>{j + 1}</td>
                                       <td className='right'>{vol.sales}</td>
                                       <td className='right'>
-                                        {amountFormat(vol.amount)}
+                                        {amountFormat(vol.amount, { maxFractionDigits: 2 })}
                                       </td>
                                       <td className='right'>
                                         {niceNumber(vol.amountInConvertCurrencies[convertCurrency], 2, convertCurrency)}
@@ -547,8 +560,8 @@ export default function NftVolumes({ period, sale, list, currency, currencyIssue
                                 </tbody>
                               </table>
                             </span>
-                            {listTab === 'brokers' && rawData?.summary &&
-                              <> ({persentFormat(volume.amount, rawData.summary.all.volume)})</>
+                            {(listTab === 'brokers' || listTab === 'marketplaces') && rawData?.summary &&
+                              <> ({persentFormat(volume.volumesInConvertCurrencies[convertCurrency], rawData.summary.all.volumesInConvertCurrencies[convertCurrency])})</>
                             }
                             {listTab === 'issuers' && <a href={'/nft-volumes/' + usernameOrAddress(volume, 'issuer') + urlParams(volume, { excludeIssuer: true, excludeCurrency: true })}> <LinkIcon /></a>}
                           </td>
@@ -636,7 +649,7 @@ export default function NftVolumes({ period, sale, list, currency, currencyIssue
                                 <td className='center'>{j + 1}</td>
                                 <td className='right'>{vol.sales}</td>
                                 <td className='right'>
-                                  {amountFormat(vol.amount)}
+                                  {amountFormat(vol.amount, { maxFractionDigits: 2 })}
                                 </td>
                                 <td className='right'>
                                   {niceNumber(vol.amountInConvertCurrencies[convertCurrency], 2, convertCurrency)}

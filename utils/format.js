@@ -285,14 +285,14 @@ export const persentFormat = (small, big) => {
 }
 
 export const amountFormat = (amount, options = {}) => {
-  if (!amount && amount !== "0" && amount !== 0) { return "" };
-  const { value, currency, valuePrefix, issuer, type } = amountParced(amount);
+  if (!amount && amount !== "0" && amount !== 0) { return "" }
+  const { value, currency, valuePrefix, issuer, type } = amountParced(amount)
   let showValue = value;
 
   if (value >= 100) {
-    showValue = niceNumber(value);
+    showValue = niceNumber(value)
   } else if (options.maxFractionDigits) {
-    showValue = niceNumber(value, options.maxFractionDigits);
+    showValue = niceNumber(value, options.maxFractionDigits)
   }
 
   //add issued by (issuerDetails.service / username)
@@ -318,6 +318,7 @@ const amountParced = (amount) => {
   }
 
   const xls14NftValue = (value) => {
+    value = value.toString()
     if (value.includes("e-")) {
       let power = Number(value.slice(-2));
       const number = value.slice(0, -4);
@@ -328,7 +329,7 @@ const amountParced = (amount) => {
         return Number(number) / Math.pow(10, powCalc);
       }
     }
-    if (value.toString().includes('0.0000000000000000000000000000000000000000000000000000000000000000000000')) {
+    if (value.includes('0.0000000000000000000000000000000000000000000000000000000000000000000000')) {
       value = value.replace('0.0', '');
       return value.replace(/^0+/, '')
     }
@@ -468,7 +469,7 @@ export const niceNumber = (n, fractionDigits = 0, currency = null) => {
     if (n.includes('x')) { //in case of placeholders xxx
       return n;
     } else {
-      n = Number(n);
+      n = Number(n)
     }
   }
   if (n) {
@@ -477,12 +478,12 @@ export const niceNumber = (n, fractionDigits = 0, currency = null) => {
       minimumFractionDigits: fractionDigits
     }
     if (currency) {
-      options.style = "currency";
-      options.currency = currency.toUpperCase();
+      options.style = "currency"
+      options.currency = currency.toUpperCase()
     }
-    return n.toLocaleString(undefined, options);
+    return n.toLocaleString(undefined, options)
   } else {
-    return n;
+    return n
   }
 }
 
