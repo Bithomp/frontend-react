@@ -380,7 +380,7 @@ export default function NftVolumes({ period, sale, list, currency, currencyIssue
     const { floor, service } = bestFloor(priceFloor)
     if (!floor) return;
     return <tr key={j}>
-      <td className='center'>{j + 1}</td>
+      {/* <td className='center'>{j + 1}</td> */}
       <td className='right'>{amountFormat(floor, { maxFractionDigits: 2 })}</td>
       <td className='right'>{service}</td>
     </tr>
@@ -401,7 +401,7 @@ export default function NftVolumes({ period, sale, list, currency, currencyIssue
       >
         <thead>
           <tr>
-            <th className='center'>{t("table.index")}</th>
+            {/* <th className='center'>{t("table.index")}</th> */}
             <th className='right'>{t("table.price")}</th>
             <th className='right'>{t("table.marketplace")}</th>
           </tr>

@@ -68,7 +68,7 @@ export default function NftVolumes({ period, sale, currency, currencyIssuer, iss
 
   const checkApi = async () => {
     if (!issuer) return;
-    let apiUrl = 'v2/nft-volumes-extended?issuer=' + issuer + '&list=taxons&convertCurrencies=' + convertCurrency + '&sortCurrency=' + convertCurrency
+    let apiUrl = 'v2/nft-volumes-extended?issuer=' + issuer + '&list=taxons&convertCurrencies=' + convertCurrency + '&sortCurrency=' + convertCurrency + '&statistics=true'
 
     if (currency && currencyIssuer) {
       apiUrl += '&currency=' + stripText(currency) + '&currencyIssuer=' + stripText(currencyIssuer)
@@ -142,10 +142,12 @@ export default function NftVolumes({ period, sale, currency, currencyIssuer, iss
             }
           ],
           "sales": 1,
-          "buyers": 1,
-          "tradedNfts": 1,
-          "owners": 1,
-          "nfts": 1,
+          "statistics": {
+            "buyers": 34,
+            "tradedNfts": 91,
+            "owners": 243,
+            "nfts": 1521
+          },
           "volumesInConvertCurrencies": {
             "usd": "4.4172",
             "xrp": "12"
@@ -270,14 +272,14 @@ export default function NftVolumes({ period, sale, currency, currencyIssuer, iss
                         <tr key={i}>
                           <td className='center'>{i + 1}</td>
                           <td className='right'>{volume.taxon}</td>
-                          <td className='right'>{shortNiceNumber(volume.nfts, 0)} <a href={'/nft-explorer?issuer=' + usernameOrAddress(rawData, 'issuer') + "&taxon=" + volume.taxon}><LinkIcon /></a></td>
-                          <td className='right'>{shortNiceNumber(volume.owners, 0)} {/* <a href={'/nft-distribution/' + usernameOrAddress(rawData, 'issuer') + "?taxon=" + volume.taxon}><LinkIcon /></a> */}</td>
-                          <td className='right'>{shortNiceNumber(volume.tradedNfts, 0)}</td>
+                          <td className='right'>{shortNiceNumber(volume.statistics.nfts, 0)} <a href={'/nft-explorer?issuer=' + usernameOrAddress(rawData, 'issuer') + "&taxon=" + volume.taxon}><LinkIcon /></a></td>
+                          <td className='right'>{shortNiceNumber(volume.statistics.owners, 0)} {/* <a href={'/nft-distribution/' + usernameOrAddress(rawData, 'issuer') + "?taxon=" + volume.taxon}><LinkIcon /></a> */}</td>
+                          <td className='right'>{shortNiceNumber(volume.statistics.tradedNfts, 0)}</td>
                           <td className='right'>
                             {shortNiceNumber(volume.sales, 0)}
                             <a href={'/nft-sales' + urlParams(volume)}> <LinkIcon /></a>
                           </td>
-                          <td className='right'>{shortNiceNumber(volume.buyers, 0)}</td>
+                          <td className='right'>{shortNiceNumber(volume.statistics.buyers, 0)}</td>
                           <td className='right'>
                             <span className='tooltip'>
                               {niceNumber(volume.volumesInConvertCurrencies[convertCurrency], 2, convertCurrency)}
@@ -345,20 +347,20 @@ export default function NftVolumes({ period, sale, currency, currencyIssuer, iss
                       </p>
                       <p>
                         {t("table.nfts-now")}:{" "}
-                        {shortNiceNumber(volume.nfts, 0)} <a href={'/nft-explorer?issuer=' + usernameOrAddress(rawData, 'issuer') + "&taxon=" + volume.taxon}><LinkIcon /></a>
+                        {shortNiceNumber(volume.statistics.nfts, 0)} <a href={'/nft-explorer?issuer=' + usernameOrAddress(rawData, 'issuer') + "&taxon=" + volume.taxon}><LinkIcon /></a>
                       </p>
                       <p>
                         {t("table.owners-now")}:{" "}
-                        {shortNiceNumber(volume.owners, 0)} {/* <a href={'/nft-distribution/' + usernameOrAddress(rawData, 'issuer') + "?taxon=" + volume.taxon}><LinkIcon /></a> */}
+                        {shortNiceNumber(volume.statistics.owners, 0)} {/* <a href={'/nft-distribution/' + usernameOrAddress(rawData, 'issuer') + "?taxon=" + volume.taxon}><LinkIcon /></a> */}
                       </p>
                       <p>
-                        {t("table.traded-nfts")}: {shortNiceNumber(volume.tradedNfts, 0)}
+                        {t("table.traded-nfts")}: {shortNiceNumber(volume.statistics.tradedNfts, 0)}
                       </p>
                       <p>
                         {t("table.sales")}: {shortNiceNumber(volume.sales, 0)} <a href={'/nft-sales' + urlParams(volume)}> <LinkIcon /></a>
                       </p>
                       <p>
-                        {t("table.buyers")}: {shortNiceNumber(volume.buyers, 0)}
+                        {t("table.buyers")}: {shortNiceNumber(volume.statistics.buyers, 0)}
                       </p>
                       <p>
                         {t("table.volume")}: {niceNumber(volume.volumesInConvertCurrencies[convertCurrency], 2, convertCurrency)}
