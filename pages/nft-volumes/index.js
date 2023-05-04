@@ -631,9 +631,10 @@ export default function NftVolumes({ period, sale, list, currency, currencyIssue
                           {t("table.buyers")}: {shortNiceNumber(volume.statistics?.buyers, 0)}
                         </p>
                       }
-                      <p>
+                      <div>
                         {t("table.volume")}: {niceNumber(volume.volumesInConvertCurrencies[convertCurrency], 2, convertCurrency)}
                         {listTab === 'issuers' && <a href={'/nft-volumes/' + usernameOrAddress(volume, 'issuer') + urlParams(volume, { excludeIssuer: true, excludeCurrency: true })}> <LinkIcon /></a>}
+
                         <table className="table-mobile" style={{ width: "calc(100% - 22px)", margin: "10px 0" }}>
                           <thead>
                             <tr>
@@ -661,7 +662,7 @@ export default function NftVolumes({ period, sale, list, currency, currencyIssue
                         {listTab === 'brokers' && rawData?.summary &&
                           <> ({persentFormat(volume.amount, rawData.summary.all.volume)})</>
                         }
-                      </p>
+                      </div>
                     </td>
                   </tr>)
                   :
