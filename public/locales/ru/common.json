@@ -437,6 +437,7 @@
     "social-share": "Поделиться",
     "marketplace": "Маркетплейс",
     "text": {
+      "show-extended-statistics": "Показать расширенную статистику",
       "no-expiration": "Без срока действия",
       "no-offers": "Предложения не найдены",
       "unspecified": "не указан",
@@ -478,6 +479,7 @@
     "day": "День",
     "currencies": "Токены",
     "issuers": "Эмитенты",
+    "marketplaces": "Маркетплейсы",
     "brokers": "Брокеры",
     "image": "Картинка",
     "video": "Видео",
@@ -567,7 +569,7 @@
         "week": "За последнюю неделю",
         "day": "За последние 24 часа"
       },
-      "text0": "на XRPL было {{allSales}} NFT продаж в общую сумму {{allVolume}}, из которых {{brokerSales}} ({{percentBrokerSales}}) продаж на сумму {{brokerVolume}} ({{percentBrokerVolume}}) были совершены через брокерную модель."
+      "text0": "на XRPL было {{allSales}} NFT продаж в общую сумму {{allVolume}}, из которых {{brokerSales}} {{percentBrokerSales}} продаж на сумму {{brokerVolume}} {{percentBrokerVolume}} были совершены через брокерную модель."
     }
   },
   "nft-sales": {

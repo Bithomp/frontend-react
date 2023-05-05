@@ -437,6 +437,7 @@
     "social-share": "Sharing is caring",
     "marketplace": "Marketplace",
     "text": {
+      "show-extended-statistics": "Show extended statistics",
       "no-expiration": "No expiration date",
       "no-offers": "No offers found",
       "unspecified": "unspecified",
@@ -478,6 +479,7 @@
     "day": "Day",
     "currencies": "Currencies",
     "issuers": "Issuers",
+    "marketplaces": "Marketplaces",
     "brokers": "Brokers",
     "image": "Image",
     "video": "Video",
@@ -567,7 +569,7 @@
         "week": "For the last week",
         "day": "For the last 24 hours"
       },
-      "text0": "XRPL had {{allSales}} NFT trades for {{allVolume}}, from which {{brokerSales}} ({{percentBrokerSales}}) of trades for {{brokerVolume}} ({{percentBrokerVolume}}) were through the brokerage model."
+      "text0": "XRPL had {{allSales}} NFT trades for {{allVolume}}, from which {{brokerSales}} {{percentBrokerSales}} of trades for {{brokerVolume}} {{percentBrokerVolume}} were through the brokerage model."
     }
   },
   "nft-sales": {
