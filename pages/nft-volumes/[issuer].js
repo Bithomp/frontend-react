@@ -273,7 +273,7 @@ export default function NftVolumes({ period, sale, currency, currencyIssuer, iss
                           <td className='center'>{i + 1}</td>
                           <td className='right'>{volume.taxon}</td>
                           <td className='right'>{shortNiceNumber(volume.statistics.nfts, 0)} <a href={'/nft-explorer?issuer=' + usernameOrAddress(rawData, 'issuer') + "&taxon=" + volume.taxon}><LinkIcon /></a></td>
-                          <td className='right'>{shortNiceNumber(volume.statistics.owners, 0)} {/* <a href={'/nft-distribution/' + usernameOrAddress(rawData, 'issuer') + "?taxon=" + volume.taxon}><LinkIcon /></a> */}</td>
+                          <td className='right'>{shortNiceNumber(volume.statistics.owners, 0)} <a href={'/nft-distribution/' + usernameOrAddress(rawData, 'issuer') + "?taxon=" + volume.taxon}><LinkIcon /></a></td>
                           <td className='right'>{shortNiceNumber(volume.statistics.tradedNfts, 0)}</td>
                           <td className='right'>
                             {shortNiceNumber(volume.sales, 0)}
