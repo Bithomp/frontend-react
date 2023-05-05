@@ -335,7 +335,12 @@ export default function NftVolumes({ period, sale, list, currency, currencyIssue
     }
     setSortConfig({ key, direction })
     if (key === 'amount') {
-      setData(data.sort((a, b) => (parseFloat(a.volumesInConvertCurrencies[convertCurrency]) < parseFloat(b.volumesInConvertCurrencies[convertCurrency])) ? sortA : sortB))
+      setData(data.sort(function (a, b) {
+        if (a.volumesInConvertCurrencies[convertCurrency] === "" || a.volumesInConvertCurrencies[convertCurrency] === null) return 1
+        if (b.volumesInConvertCurrencies[convertCurrency] === "" || b.volumesInConvertCurrencies[convertCurrency] === null) return -1
+        if (a.volumesInConvertCurrencies[convertCurrency] === b.volumesInConvertCurrencies[convertCurrency]) return 0
+        return (parseFloat(a.volumesInConvertCurrencies[convertCurrency]) < parseFloat(b.volumesInConvertCurrencies[convertCurrency])) ? sortA : sortB
+      }))
     } else {
       setData(data.sort((a, b) => (parseFloat(a[key]) < parseFloat(b[key])) ? sortA : sortB))
     }
@@ -467,7 +472,7 @@ export default function NftVolumes({ period, sale, list, currency, currencyIssue
                   {t("nft-volumes.brokers.period." + periodTab)}{" "}
                   <Trans i18nKey="nft-volumes.brokers.text0">
                     XRPL had {{ allSales: shortNiceNumber(rawData.summary.all.sales, 0) }} NFT trades for {{ allVolume: niceNumber(rawData.summary.all.volumesInConvertCurrencies[convertCurrency], 0, convertCurrency) }},
-                    from which {{ brokerSales: shortNiceNumber(rawData.summary.brokers?.sales, 0) }} ({{ percentBrokerSales: persentFormat(rawData.summary.brokers?.sales, rawData.summary.all.sales) }}) of trades for {{ brokerVolume: niceNumber(rawData.summary.brokers?.volumesInConvertCurrencies[convertCurrency], 0, convertCurrency) }} ({{ percentBrokerVolume: persentFormat(rawData.summary.brokers?.volumesInConvertCurrencies[convertCurrency], rawData.summary.all.volumesInConvertCurrencies[convertCurrency]) }}) were through the brokerage model.
+                    from which {{ brokerSales: shortNiceNumber(rawData.summary.brokers?.sales, 0) }} {{ percentBrokerSales: persentFormat(rawData.summary.brokers?.sales, rawData.summary.all.sales) }} of trades for {{ brokerVolume: niceNumber(rawData.summary.brokers?.volumesInConvertCurrencies[convertCurrency], 0, convertCurrency) }} {{ percentBrokerVolume: persentFormat(rawData.summary.brokers?.volumesInConvertCurrencies[convertCurrency], rawData.summary.all.volumesInConvertCurrencies[convertCurrency]) }} were through the brokerage model.
                   </Trans>
                 </>
               }
@@ -527,10 +532,10 @@ export default function NftVolumes({ period, sale, list, currency, currencyIssue
                           {listTab === 'currencies' && <td className='center'><a href={'/nft-volumes' + urlParams(volume) + '&list=issuers'}><LinkIcon /></a></td>}
                           <td className='right'>
                             {shortNiceNumber(volume.sales, 0)}
-                            {(listTab === 'brokers' || listTab === 'marketplaces') ?
+                            {listTab !== 'issuers' ?
                               <>
                                 {rawData?.summary &&
-                                  <> ({persentFormat(volume.sales, rawData.summary.all.sales)})</>
+                                  <> {persentFormat(volume.sales, rawData.summary.all.sales)}</>
                                 }
                               </>
                               :
@@ -573,8 +578,8 @@ export default function NftVolumes({ period, sale, list, currency, currencyIssue
                                 </table>
                               }
                             </span>
-                            {(listTab === 'brokers' || listTab === 'marketplaces') && rawData?.summary &&
-                              <> ({persentFormat(volume.volumesInConvertCurrencies[convertCurrency], rawData.summary.all.volumesInConvertCurrencies[convertCurrency])})</>
+                            {listTab !== 'issuers' && rawData?.summary &&
+                              <> {persentFormat(volume.volumesInConvertCurrencies[convertCurrency], rawData.summary.all.volumesInConvertCurrencies[convertCurrency])}</>
                             }
                             {listTab === 'issuers' && <a href={'/nft-volumes/' + usernameOrAddress(volume, 'issuer') + urlParams(volume, { excludeIssuer: true, excludeCurrency: true })}> <LinkIcon /></a>}
                           </td>
@@ -625,9 +630,9 @@ export default function NftVolumes({ period, sale, list, currency, currencyIssue
                             {shortNiceNumber(volume.statistics?.owners, 0)} <a href={'/nft-distribution/' + usernameOrAddress(volume, 'issuer')}><LinkIcon /></a>
                           </p>
                           {showFloor(volume) ?
-                            <p>
+                            <div>
                               {t("table.floor-now")}: {showFloor(volume)}
-                            </p>
+                            </div>
                             :
                             ""
                           }
@@ -672,8 +677,8 @@ export default function NftVolumes({ period, sale, list, currency, currencyIssue
                             )}
                           </tbody>
                         </table>
-                        {listTab === 'brokers' && rawData?.summary &&
-                          <> ({persentFormat(volume.amount, rawData.summary.all.volume)})</>
+                        {listTab !== 'issuers' && rawData?.summary &&
+                          <> {persentFormat(volume.amount, rawData.summary.all.volume)}</>
                         }
                       </div>
                     </td>

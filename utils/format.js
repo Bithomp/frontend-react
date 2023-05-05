@@ -281,7 +281,7 @@ export const persentFormat = (small, big) => {
   small = Number(small);
   big = Number(big);
   if (big === 0) return "0%";
-  return ((small / big) * 100).toFixed(2) + '%';
+  return "(" + ((small / big) * 100).toFixed(2) + '%)';
 }
 
 export const amountFormat = (amount, options = {}) => {

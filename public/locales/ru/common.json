@@ -568,7 +568,7 @@
         "week": "За последнюю неделю",
         "day": "За последние 24 часа"
       },
-      "text0": "на XRPL было {{allSales}} NFT продаж в общую сумму {{allVolume}}, из которых {{brokerSales}} ({{percentBrokerSales}}) продаж на сумму {{brokerVolume}} ({{percentBrokerVolume}}) были совершены через брокерную модель."
+      "text0": "на XRPL было {{allSales}} NFT продаж в общую сумму {{allVolume}}, из которых {{brokerSales}} {{percentBrokerSales}} продаж на сумму {{brokerVolume}} {{percentBrokerVolume}} были совершены через брокерную модель."
     }
   },
   "nft-sales": {

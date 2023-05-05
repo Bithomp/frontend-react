@@ -568,7 +568,7 @@
         "week": "For the last week",
         "day": "For the last 24 hours"
       },
-      "text0": "XRPL had {{allSales}} NFT trades for {{allVolume}}, from which {{brokerSales}} ({{percentBrokerSales}}) of trades for {{brokerVolume}} ({{percentBrokerVolume}}) were through the brokerage model."
+      "text0": "XRPL had {{allSales}} NFT trades for {{allVolume}}, from which {{brokerSales}} {{percentBrokerSales}} of trades for {{brokerVolume}} {{percentBrokerVolume}} were through the brokerage model."
     }
   },
   "nft-sales": {
