@@ -161,7 +161,12 @@ export default function NftVolumes({ period, sale, list, currency, currencyIssue
               }
             })
           }
-          setData(list.sort((a, b) => (parseFloat(a.volumesInConvertCurrencies[convertCurrency]) < parseFloat(b.volumesInConvertCurrencies[convertCurrency])) ? 1 : -1))
+          setData(list.sort(function (a, b) {
+            if (a.volumesInConvertCurrencies[convertCurrency] === null) return 1
+            if (b.volumesInConvertCurrencies[convertCurrency] === null) return -1
+            if (a.volumesInConvertCurrencies[convertCurrency] === b.volumesInConvertCurrencies[convertCurrency]) return 0
+            return (parseFloat(a.volumesInConvertCurrencies[convertCurrency]) < parseFloat(b.volumesInConvertCurrencies[convertCurrency])) ? 1 : -1
+          }))
         } else {
           setErrorMessage(t("general.no-data"))
         }
@@ -304,9 +309,9 @@ export default function NftVolumes({ period, sale, list, currency, currencyIssue
 
   const urlParams = (volume, options) => {
     let urlPart = "?period=" + periodTab + "&sale=" + saleTab;
-    if (volume?.amount && !options?.excludeCurrency) {
-      if (volume.amount.currency) {
-        urlPart = urlPart + "&currency=" + volume.amount.currency + '&currencyIssuer=' + volume.amount.issuer;
+    if (volume?.volumes && volume?.volumes.length === 1 && !options?.excludeCurrency) {
+      if (volume.volumes[0].amount.currency) {
+        urlPart = urlPart + "&currency=" + volume.volumes[0].amount.currency + '&currencyIssuer=' + volume.volumes[0].amount.issuer;
       } else {
         urlPart = urlPart + "&currency=xrp";
       }
@@ -462,7 +467,7 @@ export default function NftVolumes({ period, sale, list, currency, currencyIssue
                   {t("nft-volumes.brokers.period." + periodTab)}{" "}
                   <Trans i18nKey="nft-volumes.brokers.text0">
                     XRPL had {{ allSales: shortNiceNumber(rawData.summary.all.sales, 0) }} NFT trades for {{ allVolume: niceNumber(rawData.summary.all.volumesInConvertCurrencies[convertCurrency], 0, convertCurrency) }},
-                    from which {{ brokerSales: shortNiceNumber(rawData.summary.brokers.sales, 0) }} ({{ percentBrokerSales: persentFormat(rawData.summary.brokers.sales, rawData.summary.all.sales) }}) of trades for {{ brokerVolume: niceNumber(rawData.summary.brokers.volumesInConvertCurrencies[convertCurrency], 0, convertCurrency) }} ({{ percentBrokerVolume: persentFormat(rawData.summary.brokers.volumesInConvertCurrencies[convertCurrency], rawData.summary.all.volumesInConvertCurrencies[convertCurrency]) }}) were through the brokerage model.
+                    from which {{ brokerSales: shortNiceNumber(rawData.summary.brokers?.sales, 0) }} ({{ percentBrokerSales: persentFormat(rawData.summary.brokers?.sales, rawData.summary.all.sales) }}) of trades for {{ brokerVolume: niceNumber(rawData.summary.brokers?.volumesInConvertCurrencies[convertCurrency], 0, convertCurrency) }} ({{ percentBrokerVolume: persentFormat(rawData.summary.brokers?.volumesInConvertCurrencies[convertCurrency], rawData.summary.all.volumesInConvertCurrencies[convertCurrency]) }}) were through the brokerage model.
                   </Trans>
                 </>
               }
@@ -486,7 +491,8 @@ export default function NftVolumes({ period, sale, list, currency, currencyIssue
               {listTab === 'currencies' && <th>{t("table.issuers")}</th>}
               <th className='right'>{t("table.sales")} <b className={"link" + (sortConfig.key === 'sales' ? " orange" : "")} onClick={() => sortTable('sales')}>⇅</b></th>
               {listTab === 'issuers' && issuersExtended && <th className='right hide-on-mobile'>{t("table.buyers")} <b className={"link" + (sortConfig.key === 'buyers' ? " orange" : "")} onClick={() => sortTable('buyers')}>⇅</b></th>}
-              <th className='right'>{t("table.volume")} <b className={"link" + (sortConfig.key === 'amount' ? " orange" : "")} onClick={() => sortTable('amount')}>⇅</b></th>
+              {(listTab === 'currencies' || (currency && currencyIssuer) || currency === 'xrp') && <th className='right'>{t("table.volume")}</th>}
+              <th className='right'>{t("table.volume")} ({convertCurrency?.toUpperCase()}) <b className={"link" + (sortConfig.key === 'amount' ? " orange" : "")} onClick={() => sortTable('amount')}>⇅</b></th>
             </tr>
           </thead>
           <tbody>
@@ -532,33 +538,40 @@ export default function NftVolumes({ period, sale, list, currency, currencyIssue
                             }
                           </td>
                           {listTab === 'issuers' && issuersExtended && <td className='right hide-on-mobile'>{shortNiceNumber(volume.statistics?.buyers, 0)}</td>}
+                          {(listTab === 'currencies' || (currency && currencyIssuer) || currency === 'xrp') &&
+                            <td className='right'>
+                              {amountFormat(volume.volumes[0].amount, { maxFractionDigits: 2 })}
+                            </td>
+                          }
                           <td className='right'>
                             <span className='tooltip'>
                               {niceNumber(volume.volumesInConvertCurrencies[convertCurrency], 2, convertCurrency)}
-                              <table className="tooltiptext left table-large shrink" style={{ width: "490px", transition: "none" }}>
-                                <thead>
-                                  <tr>
-                                    <th className='center'>{t("table.index")}</th>
-                                    <th className='right'>{t("table.sales")}</th>
-                                    <th className='right'>{t("table.volume")}</th>
-                                    <th className='right'>{t("table.volume")} ({convertCurrency?.toUpperCase()})</th>
-                                  </tr>
-                                </thead>
-                                <tbody>
-                                  {volume.volumes?.map((vol, j) =>
-                                    <tr key={j}>
-                                      <td className='center'>{j + 1}</td>
-                                      <td className='right'>{vol.sales}</td>
-                                      <td className='right'>
-                                        {amountFormat(vol.amount, { maxFractionDigits: 2 })}
-                                      </td>
-                                      <td className='right'>
-                                        {niceNumber(vol.amountInConvertCurrencies[convertCurrency], 2, convertCurrency)}
-                                      </td>
+                              {listTab !== 'currencies' &&
+                                <table className="tooltiptext left table-large shrink" style={{ width: "490px", transition: "none" }}>
+                                  <thead>
+                                    <tr>
+                                      <th className='center'>{t("table.index")}</th>
+                                      <th className='right'>{t("table.sales")}</th>
+                                      <th className='right'>{t("table.volume")}</th>
+                                      <th className='right'>{t("table.volume")} ({convertCurrency?.toUpperCase()})</th>
                                     </tr>
-                                  )}
-                                </tbody>
-                              </table>
+                                  </thead>
+                                  <tbody>
+                                    {volume.volumes?.map((vol, j) =>
+                                      <tr key={j}>
+                                        <td className='center'>{j + 1}</td>
+                                        <td className='right'>{vol.sales}</td>
+                                        <td className='right'>
+                                          {amountFormat(vol.amount, { maxFractionDigits: 2 })}
+                                        </td>
+                                        <td className='right'>
+                                          {niceNumber(vol.amountInConvertCurrencies[convertCurrency], 2, convertCurrency)}
+                                        </td>
+                                      </tr>
+                                    )}
+                                  </tbody>
+                                </table>
+                              }
                             </span>
                             {(listTab === 'brokers' || listTab === 'marketplaces') && rawData?.summary &&
                               <> ({persentFormat(volume.volumesInConvertCurrencies[convertCurrency], rawData.summary.all.volumesInConvertCurrencies[convertCurrency])})</>
