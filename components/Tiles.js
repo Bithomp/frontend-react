@@ -155,6 +155,7 @@ export default function Tiles({ nftList, type = 'name', convertCurrency }) {
                   <div className='title'></div>
                   <h1>
                     {convertedAmount(nft, convertCurrency) || amountFormat(nft.amount)}
+                    <br />
                     {timeOrDate(nft.acceptedAt)}
                   </h1>
                   <div className='title-full'>

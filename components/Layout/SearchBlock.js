@@ -89,11 +89,6 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
       return;
     }
 
-    if (tab === "nft-distribution" && isAddressOrUsername(searchFor)) {
-      window.location = "../nft-distribution/" + encodeURI(searchFor)
-      return;
-    }
-
     if (tab === "nft" && isIdValid(searchFor)) {
       window.location = "../nft/" + encodeURI(searchFor)
       return;

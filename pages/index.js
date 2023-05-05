@@ -81,6 +81,13 @@ export default function Home({ devNet, selectedCurrency, setSelectedCurrency }) 
       <SearchBlock searchPlaceholderText={windowWidth < 500 ? t("home.search-placeholder-short") : t("home.search-placeholder")} tab="explorer" />
       {!devNet &&
         <div className="home-sponsored">
+          <a href="https://bithomp.com/go/play-xrp" target="_blank" rel="noreferrer">
+            <div className="sponsored-brand">
+              <img src="/images/xbit.png" className="sponsored-brand-icon" alt="play xrp" />
+              <div className="sponsored-brand-title">Play XRP</div>
+              <div className="sponsored-brand-text">Register with <i>BITHOMP25</i> and boost up your bonus.</div>
+            </div>
+          </a>
           <a href="https://bithomp.com/go/buy-xrp" target="_blank" rel="noreferrer">
             <div className="sponsored-brand">
               <img src="/images/btcbit.svg" className="sponsored-brand-icon" alt="buy xrp" />

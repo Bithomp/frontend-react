@@ -179,8 +179,7 @@
     "name": "Name",
     "introduction": "Introduction",
     "majority": "Majority",
-    "eta": "Estimated activation time",
-    "unknown": "unknown"
+    "eta": "Estimated activation time"
   },
   "validators": {
     "updated": "updated",
@@ -369,6 +368,7 @@
   },
   "table": {
     "index": "Index",
+    "address": "Address",
     "time": "Time",
     "date": "Date",
     "amount": "Amount",
@@ -389,6 +389,7 @@
     "buyer": "Buyer",
     "sold": "Sold",
     "sold_few": "Sold",
+    "sold-on": "Sold on",
     "type": "Type",
     "status": "Status",
     "hash": "Hash",

@@ -153,7 +153,7 @@ export default function SignForm({ setSignRequest, setAccount, signRequest }) {
     }
   }
 
-  const afterSubmit = (data) => {
+  const afterSubmit = data => {
     /*
     {
       "application": {
@@ -173,6 +173,10 @@ export default function SignForm({ setSignRequest, setAccount, signRequest }) {
     if (data.response && data.response.account) {
       saveAddressData(data.response.account)
     }
+
+    //check if we have a ledger index in the response
+    //check if ledger index is already included in the crawler through a web-socket
+
     //close the sign in form
     setXummQrSrc(qr)
     setScreen("choose-app")

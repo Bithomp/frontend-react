@@ -2,7 +2,17 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import NftsComponent from '../../components/NftsComponent';
 
 export const getServerSideProps = async ({ query, locale }) => {
-  const { view, list, saleDestination, saleCurrency, saleCurrencyIssuer, search, issuer, owner, taxon } = query
+  const { 
+    view, 
+    list, 
+    saleDestination, 
+    saleCurrency, 
+    saleCurrencyIssuer, 
+    search, 
+    issuer, 
+    owner, 
+    taxon
+  } = query
   return {
     props: {
       view: view || "tiles",
@@ -19,7 +29,17 @@ export const getServerSideProps = async ({ query, locale }) => {
   }
 }
 
-export default function Nfts({ view, list, saleDestination, saleCurrency, saleCurrencyIssuer, searchQuery, issuerQuery, ownerQuery, taxonQuery }) {
+export default function Nfts({ 
+  view, 
+  list, 
+  saleDestination, 
+  saleCurrency, 
+  saleCurrencyIssuer, 
+  searchQuery, 
+  issuerQuery, 
+  ownerQuery, 
+  taxonQuery 
+}) {
   return <NftsComponent
     view={view}
     list={list}

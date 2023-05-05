@@ -47,7 +47,7 @@ export default function NftsComponent({
   const [issuersList, setIssuersList] = useState([]);
   const [issuer, setIssuer] = useState(issuerQuery);
   const [owner, setOwner] = useState(ownerQuery);
-  const [taxon, setTaxon] = useState(taxonQuery);
+  const [taxon, setTaxon] = useState(taxonQuery)
   const [issuerInput, setIssuerInput] = useState(issuerQuery);
   const [ownerInput, setOwnerInput] = useState(ownerQuery);
   const [taxonInput, setTaxonInput] = useState(taxonQuery);
@@ -298,15 +298,15 @@ export default function NftsComponent({
 
   const enterPress = e => {
     if (e.key === 'Enter') {
-      searchClick();
+      searchClick()
     }
   }
 
-  const onTaxonInput = (e) => {
+  const onTaxonInput = e => {
     if (!/^\d+$/.test(e.key)) {
-      e.preventDefault();
+      e.preventDefault()
     }
-    enterPress(e);
+    enterPress(e)
   }
 
   const issuerTaxonUrlPart = "?view=" + viewTab + (rawData ? ("&issuer=" + usernameOrAddress(rawData, 'issuer') + (rawData.taxon ? ("&taxon=" + rawData.taxon) : "")) : "");
