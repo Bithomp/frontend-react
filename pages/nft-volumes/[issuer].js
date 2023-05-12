@@ -56,15 +56,15 @@ export default function NftVolumes({ period, sale, currency, currencyIssuer, iss
     { value: 'month', label: t("tabs.month") },
     { value: 'week', label: t("tabs.week") },
     { value: 'day', label: t("tabs.day") }
-  ];
+  ]
 
   const saleTabList = [
     { value: 'all', label: t("tabs.all-sales") },
     { value: 'secondary', label: (t("tabs.secondary-sales")) },
     { value: 'primary', label: (t("tabs.primary-sales")) }
-  ];
+  ]
 
-  const controller = new AbortController();
+  const controller = new AbortController()
 
   const checkApi = async () => {
     if (!issuer) return;

@@ -493,7 +493,9 @@
     "sell": "Sell",
     "public": "Public",
     "publicAndKnownBrokers": "Public & MP",
-    "onSale": "On sale for XRP"
+    "onSale": "On sale for XRP",
+    "all-tokens": "All tokens",
+    "xrp-only": "XRP only"
   },
   "xumm": {
     "new-qr": "Get a new QR code"

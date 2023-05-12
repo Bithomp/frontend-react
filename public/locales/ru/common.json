@@ -493,7 +493,9 @@
     "sell": "Продажа",
     "public": "Публичные",
     "publicAndKnownBrokers": "Публичные и на MП",
-    "onSale": "На продаже за XRP"
+    "onSale": "На продаже за XRP",
+    "all-tokens": "Все токены",
+    "xrp-only": "Только XRP"
   },
   "xumm": {
     "new-qr": "Получить новый QR-код"
