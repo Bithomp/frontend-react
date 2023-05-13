@@ -471,6 +471,39 @@ export default function NftVolumes({ period, sale, list, currency, currencyIssue
         }
         <Tabs tabList={saleTabList} tab={saleTab} setTab={setSaleTab} name="sale" />
       </div>
+      {listTab !== 'currencies' &&
+        <>
+          <div className='flex'>
+            <div className="grey-box">
+              {t("nft-volumes." + listTab + ".desc")}
+            </div>
+            <div className="grey-box">
+              {loading ?
+                t("general.loading")
+                :
+                <>
+                  {rawData?.summary &&
+                    <>
+                      {t("nft-volumes.period." + periodTab)}{" "}
+                      {listTab === 'brokers' ?
+                        <Trans i18nKey="nft-volumes.brokers.text0">
+                          XRPL had {{ allSales: shortNiceNumber(rawData.summary.all.sales, 0) }} <b>{{ currency: (currencyIssuer ? currency : currencyTab).toUpperCase() }}</b> NFT {{ saleType: saleTab === 'all' ? "" : (t("tabs." + saleTab + "-sales")).toLocaleLowerCase() }} sales for {{ allVolume: niceNumber(rawData.summary.all.volumesInConvertCurrencies[convertCurrency], 0, convertCurrency) }},
+                          from which <b>{{ brokerSales: shortNiceNumber(rawData.summary.brokers?.sales, 0) }}</b> {{ percentBrokerSales: persentFormat(rawData.summary.brokers?.sales, rawData.summary.all.sales) }} of trades for <b>{{ brokerVolume: niceNumber(rawData.summary.brokers?.volumesInConvertCurrencies[convertCurrency], 0, convertCurrency) }}</b> {{ percentBrokerVolume: persentFormat(rawData.summary.brokers?.volumesInConvertCurrencies[convertCurrency], rawData.summary.all.volumesInConvertCurrencies[convertCurrency]) }} were through the brokerage model.
+                        </Trans>
+                        :
+                        <Trans i18nKey="nft-volumes.text0">
+                          XRPL had {{ allSales: shortNiceNumber(rawData.summary.all.sales, 0) }} {{ currency: (currencyIssuer ? currency : currencyTab).toUpperCase() }} NFT {{ saleType: saleTab === 'all' ? "" : (t("tabs." + saleTab + "-sales")).toLocaleLowerCase() }} sales for {{ allVolume: niceNumber(rawData.summary.all.volumesInConvertCurrencies[convertCurrency], 0, convertCurrency) }}.
+                        </Trans>
+                      }
+                    </>
+                  }
+                </>
+              }
+            </div>
+          </div>
+          <br />
+        </>
+      }
       {listTab === 'issuers' &&
         <center>
           <div style={{ display: "inline-block", marginBottom: "20px", marginTop: "-20px" }}>
@@ -479,27 +512,6 @@ export default function NftVolumes({ period, sale, list, currency, currencyIssue
             </CheckBox>
           </div>
         </center>
-      }
-      {listTab === 'brokers' &&
-        <>
-          <div className='flex'>
-            <div className="grey-box">
-              {t("nft-volumes.brokers.not-a-marketplace-list")}
-            </div>
-            <div className="grey-box">
-              {rawData?.summary && !loading &&
-                <>
-                  {t("nft-volumes.brokers.period." + periodTab)}{" "}
-                  <Trans i18nKey="nft-volumes.brokers.text0">
-                    XRPL had {{ allSales: shortNiceNumber(rawData.summary.all.sales, 0) }} NFT trades for {{ allVolume: niceNumber(rawData.summary.all.volumesInConvertCurrencies[convertCurrency], 0, convertCurrency) }},
-                    from which {{ brokerSales: shortNiceNumber(rawData.summary.brokers?.sales, 0) }} {{ percentBrokerSales: persentFormat(rawData.summary.brokers?.sales, rawData.summary.all.sales) }} of trades for {{ brokerVolume: niceNumber(rawData.summary.brokers?.volumesInConvertCurrencies[convertCurrency], 0, convertCurrency) }} {{ percentBrokerVolume: persentFormat(rawData.summary.brokers?.volumesInConvertCurrencies[convertCurrency], rawData.summary.all.volumesInConvertCurrencies[convertCurrency]) }} were through the brokerage model.
-                  </Trans>
-                </>
-              }
-            </div>
-          </div>
-          <br />
-        </>
       }
       {(windowWidth > 1000 || !['issuers', 'marketplaces'].includes(listTab)) ?
         <table className="table-large shrink">

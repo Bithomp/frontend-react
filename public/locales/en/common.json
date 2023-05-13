@@ -473,10 +473,10 @@
     "top-sales": "TOP sales",
     "latest-sales": "Latest sales",
     "all-time": "All time",
-    "year": "Year",
-    "month": "Month",
-    "week": "Week",
-    "day": "Day",
+    "year": "365 days",
+    "month": "30 days",
+    "week": "7 days",
+    "day": "24 hours",
     "currencies": "Currencies",
     "issuers": "Issuers",
     "marketplaces": "Marketplaces",
@@ -561,17 +561,24 @@
   },
   "nft-volumes": {
     "header": "NFT sales volumes",
+    "period": {
+      "all": "",
+      "year": "For the last 365 days",
+      "month": "For the last 30 days",
+      "week": "For the last 7 days",
+      "day": "For the last 24 hours"
+    },
+    "text0": "XRPL had {{allSales}} {{currency}} NFT {{saleType}} sales for {{allVolume}}.",
     "brokers": {
-      "not-a-marketplace-list": "This is not a list of XRPL marketplaces, it is the list of broker accounts. Marketplaces can use different models (without broker transactions), some of them can use mixed models, where only some of their volume goes through the brokerage. If a marketplace stoped using the brokerage model, it will have volume in All time, but not in the last Day or Week.",
+      "desc": "This is the list of NFT broker accounts. You can find here volumes of offer matching bots. Marketplaces use mixed trade models, here you can see only the volumes through the brokerage model.",
       "no-broker": "No broker",
-      "period": {
-        "all": "",
-        "year": "For the last year",
-        "month": "For the last month",
-        "week": "For the last week",
-        "day": "For the last 24 hours"
-      },
-      "text0": "XRPL had {{allSales}} NFT trades for {{allVolume}}, from which {{brokerSales}} {{percentBrokerSales}} of trades for {{brokerVolume}} {{percentBrokerVolume}} were through the brokerage model."
+      "text0": "XRPL had {{allSales}} <3>{{currency}}</3> NFT {{saleType}} sales for {{allVolume}}, from which <9>{{brokerSales}}</9> {{percentBrokerSales}} of trades for <13>{{brokerVolume}}</13> {{percentBrokerVolume}} were through the brokerage model."
+    },
+    "marketplaces": {
+      "desc": "This is the list of NFT Marketplaces on XRPL. The volumes here do not include the primary sales (mints) which were done within 2 transactions (payment and NFT transfer)."
+    },
+    "issuers": {
+      "desc": "This the list of NFT issuers on XRPL. To see volumes of NFT collections identified by issuer and taxon click on the link in the Sales volume column."
     }
   },
   "nft-sales": {
