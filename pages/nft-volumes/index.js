@@ -325,18 +325,21 @@ export default function NftVolumes({ period, sale, list, currency, currencyIssue
   }, [isReady, saleTab, periodTab, listTab, currency, currencyIssuer, convertCurrency, issuersExtended, currencyTab])
 
   const urlParams = (volume, options) => {
-    let urlPart = "?period=" + periodTab + "&sale=" + saleTab;
+    let urlPart = "?period=" + periodTab + "&sale=" + saleTab
     if (volume?.volumes && volume?.volumes.length === 1 && !options?.excludeCurrency) {
       if (volume.volumes[0].amount.currency) {
-        urlPart = urlPart + "&currency=" + volume.volumes[0].amount.currency + '&currencyIssuer=' + volume.volumes[0].amount.issuer;
+        urlPart = urlPart + "&currency=" + volume.volumes[0].amount.currency + '&currencyIssuer=' + volume.volumes[0].amount.issuer
       } else {
-        urlPart = urlPart + "&currency=xrp";
+        urlPart = urlPart + "&currency=xrp"
       }
     }
     if (volume?.issuer && !options?.excludeIssuer) {
-      urlPart = urlPart + "&issuer=" + usernameOrAddress(volume, "issuer");
+      urlPart = urlPart + "&issuer=" + usernameOrAddress(volume, "issuer")
     }
-    return urlPart;
+    if (volume?.marketplace) {
+      urlPart += "&marketplace=" + volume.marketplace
+    }
+    return urlPart
   }
 
   const sortTable = key => {
@@ -567,7 +570,7 @@ export default function NftVolumes({ period, sale, list, currency, currencyIssue
                             {rawData?.summary &&
                               <> {persentFormat(volume.sales, rawData.summary.all.sales)}</>
                             }
-                            {listTab === 'issuers' &&
+                            {listTab !== 'brokers' &&
                               <a href={'/nft-sales' + urlParams(volume)}> <LinkIcon /></a>
                             }
                           </td>
@@ -679,7 +682,7 @@ export default function NftVolumes({ period, sale, list, currency, currencyIssue
                         {rawData?.summary &&
                           <> {persentFormat(volume.sales, rawData.summary.all.sales)}</>
                         }
-                        {listTab === 'issuers' &&
+                        {listTab !== 'brokers' &&
                           <a href={'/nft-sales' + urlParams(volume)}> <LinkIcon /></a>
                         }
                       </p>

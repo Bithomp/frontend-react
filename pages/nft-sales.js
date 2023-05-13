@@ -18,7 +18,7 @@ import {
 } from '../utils/format'
 
 export const getServerSideProps = async ({ query, locale }) => {
-  const { view, sale, list, currency, currencyIssuer, issuer, taxon, period, sortCurrency } = query
+  const { view, sale, list, currency, currencyIssuer, issuer, taxon, period, sortCurrency, marketplace } = query
   return {
     props: {
       view: view || "tiles",
@@ -30,6 +30,7 @@ export const getServerSideProps = async ({ query, locale }) => {
       taxonQuery: taxon || "",
       period: period || "week",
       sortCurrencyQuery: sortCurrency || "",
+      marketplace: marketplace || "",
       ...(await serverSideTranslations(locale, ['common'])),
     },
   }
@@ -51,7 +52,8 @@ export default function NftSales({
   taxonQuery,
   period,
   sortCurrencyQuery,
-  selectedCurrency
+  selectedCurrency,
+  marketplace
 }) {
   const { t } = useTranslation();
   const router = useRouter()
@@ -112,6 +114,7 @@ export default function NftSales({
     let salesData = sales;
     let markerUrlPart = '';
     let periodUrlPart = '';
+    let marketplaceUrlPart = '';
 
     if (options?.restart) {
       marker = "first";
@@ -126,71 +129,78 @@ export default function NftSales({
       return;
     }
 
+    if (marketplace) {
+      marketplaceUrlPart = '&marketplace=' + marketplace
+    }
+
     if (periodTab) {
-      periodUrlPart = '&period=' + periodTab;
+      periodUrlPart = '&period=' + periodTab
     }
 
     let collectionUrlPart = '';
     if (issuer) {
-      collectionUrlPart = '&issuer=' + issuer;
+      collectionUrlPart = '&issuer=' + issuer
       if (taxon) {
-        collectionUrlPart += '&taxon=' + taxon;
+        collectionUrlPart += '&taxon=' + taxon
       }
     }
 
-    let loadList = "topSold";
+    let loadList = "topSold"
     if (pageTab === 'last') {
-      loadList = "lastSold";
+      loadList = "lastSold"
     }
 
     if (marker && marker !== "first") {
-      markerUrlPart = "&marker=" + marker;
+      markerUrlPart = "&marker=" + marker
     }
     if (marker === "first") {
-      setLoading(true);
+      setLoading(true)
     }
 
-    const response = await axios('v2/nft-sales?list=' + loadList + currencyUrlPart() + '&saleType=' + saleTab + collectionUrlPart + periodUrlPart + markerUrlPart + "&convertCurrencies=" + sortCurrency + "&sortCurrency=" + sortCurrency).catch(error => {
-      setErrorMessage(t("error." + error.message));
+    const response = await axios(
+      'v2/nft-sales?list=' + loadList + currencyUrlPart() + '&saleType=' + saleTab + collectionUrlPart + periodUrlPart + markerUrlPart
+      + "&convertCurrencies=" + sortCurrency + "&sortCurrency=" + sortCurrency + marketplaceUrlPart
+    ).catch(error => {
+      setErrorMessage(t("error." + error.message))
     })
 
-    const newdata = response.data;
-    setLoading(false);
+    const newdata = response.data
+    setLoading(false)
 
     if (newdata) {
-      setData(newdata);
+      setData(newdata)
       if (newdata.issuer || newdata.owner) {
-        setTotal(newdata.total);
+        setTotal(newdata.total)
       } else {
-        setTotal({});
+        setTotal({})
       }
 
       if (newdata.issuer) {
-        setIssuerInput(newdata.issuer);
+        setIssuerInput(newdata.issuer)
       }
 
       if (newdata.sales) {
         if (newdata.sales.length > 0) {
-          setErrorMessage("");
+          setErrorMessage("")
           if (newdata.marker) {
-            setHasMore(newdata.marker);
+            setHasMore(newdata.marker)
           } else {
-            setHasMore(false);
+            setHasMore(false)
           }
-          setSales([...salesData, ...newdata.sales]);
+          setSales([...salesData, ...newdata.sales])
         } else {
           if (marker === 'first') {
-            setErrorMessage(t("general.no-data"));
+            setErrorMessage(t("general.no-data"))
           } else {
-            setHasMore(false);
+            setHasMore(false)
           }
         }
       } else {
         if (newdata.error) {
           setErrorMessage(t("error-api." + newdata.error))
         } else {
-          setErrorMessage("Error");
-          console.log(newdata);
+          setErrorMessage("Error")
+          console.log(newdata)
         }
       }
     }
@@ -201,7 +211,7 @@ export default function NftSales({
       checkApi({ restart: true })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [saleTab, issuer, taxon, periodTab, pageTab, sortCurrency]);
+  }, [saleTab, issuer, taxon, periodTab, pageTab, sortCurrency])
 
   useEffect(() => {
     let queryAddList = [];
