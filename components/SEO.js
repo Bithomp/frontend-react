@@ -6,7 +6,7 @@ import { server, network } from '../utils'
 export default function SEO({ title, description, image, page, images, websiteName }) {
   const router = useRouter()
 
-  const networkText = network !== 'mainnet' ? ("(" + network + ")") : ""
+  const networkText = network !== 'mainnet' ? (" (" + network + ")") : ""
   description = description || title
 
   let openGraph = {
@@ -15,7 +15,7 @@ export default function SEO({ title, description, image, page, images, websiteNa
     title: title || page,
     description,
     locale: router.locale,
-    site_name: websiteName || "XRPL " + (page ? (page + " ") : "") + networkText,
+    site_name: websiteName || "XRPL " + (page ? page : "") + networkText,
   }
 
   if (image) {
@@ -57,7 +57,7 @@ export default function SEO({ title, description, image, page, images, websiteNa
 
   return (
     <NextSeo
-      title={title}
+      title={title + networkText}
       description={description}
       openGraph={openGraph}
       twitter={twitter}
