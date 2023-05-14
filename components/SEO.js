@@ -58,7 +58,7 @@ export default function SEO({ title, description, image, page, images, websiteNa
   return (
     <NextSeo
       title={title + networkText}
-      description={description}
+      description={description + networkText}
       openGraph={openGraph}
       twitter={twitter}
       languageAlternates={languageAlternates}
