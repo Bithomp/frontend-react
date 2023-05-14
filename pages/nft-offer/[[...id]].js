@@ -312,7 +312,7 @@ export default function NftOffer({ setSignRequest, signRequest, account, id }) {
       </>
         :
         <>
-          <h2 className='center'>{t("nft-offer.header")}</h2>
+          <h1 className='center'>{t("nft-offer.header")}</h1>
           <p className='center'>
             {t("nft-offer.desc")}
           </p>

@@ -67,7 +67,7 @@ export default function Donate() {
       websiteName="Bithomp"
     />
     <div className="content-text content-center">
-      <h2 className="center">{t("menu.donate")} <span className="red">❤</span></h2>
+      <h1 className="center">{t("menu.donate")} <span className="red">❤</span></h1>
       <div className="flex">
         <div className="grey-box" >
           <Image

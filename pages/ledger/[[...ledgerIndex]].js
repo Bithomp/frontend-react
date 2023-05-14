@@ -71,10 +71,10 @@ export default function Ledger() {
   }, []);
 
   return <>
-    <SEO title={t("menu.ledger") + " " + ledgerVersion} />
+    <SEO title={t("menu.ledger") + (ledgerVersion ? (" " + ledgerVersion) : "")} />
     {ledgerVersion ?
       <div className="content-text">
-        <h2 className="center">{t("menu.ledger")} #{ledgerVersion}<br />{data?.close_time ? fullDateAndTime(data.close_time) : <br />}</h2>
+        <h1 className="center">{t("menu.ledger")} #{ledgerVersion}<br />{data?.close_time ? fullDateAndTime(data.close_time) : <br />}</h1>
         <p className="center">
           {t("ledger.past-ledgers")}: {ledgerLink(ledgerVersion - 1)}
           , {ledgerLink(ledgerVersion - 2)}, {ledgerLink(ledgerVersion - 3)}.

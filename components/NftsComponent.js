@@ -398,7 +398,7 @@ export default function NftsComponent({
 
     <div className="content-text" style={contextStyle}>
       {nftExplorer && <>
-        <h2 className='center'>{t("nft-explorer.header") + " "}</h2>
+        <h1 className='center'>{t("nft-explorer.header") + " "}</h1>
         <p className='center'>
           <Link href={"/nft-sales" + issuerTaxonUrlPart} style={{ marginRight: "5px" }}>{t("nft-sales.header")}</Link>
         </p>
@@ -580,7 +580,7 @@ export default function NftsComponent({
         <>
           {!nftExplorer &&
             <>
-              <h2 className='center'>{t("nfts.header")}</h2>
+              <h1 className='center'>{t("nfts.header")}</h1>
               <p className='center'>
                 {t("nfts.desc")}
               </p>

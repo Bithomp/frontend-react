@@ -55,7 +55,7 @@ export default function Domains() {
     <div className="content-text">
       {data?.domains ?
         <>
-          <h2 className="center">{t("menu.domains")}</h2>
+          <h1 className="center">{t("menu.domains")}</h1>
           <table className="table-large">
             <thead>
               <tr>

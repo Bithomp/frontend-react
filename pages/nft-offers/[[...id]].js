@@ -239,7 +239,7 @@ export default function NftOffers({ setSignRequest, signRequest, account, offerL
   }, [offerListTab, signRequest])
 
   return <>
-    <SEO title={t("nft-offers.header") + " " + id} />
+    <SEO title={t("nft-offers.header") + (id ? (" " + id) : "")} />
     <SearchBlock
       searchPlaceholderText={t("explorer.enter-address")}
       tab="nft-offers"
@@ -401,7 +401,7 @@ export default function NftOffers({ setSignRequest, signRequest, account, offerL
         </>
         :
         <>
-          <h2 className='center'>{t("nft-offers.header")}</h2>
+          <h1 className='center'>{t("nft-offers.header")}</h1>
           <p className='center'>
             {t("nft-offers." + offerListTab + "-desc")}
           </p>

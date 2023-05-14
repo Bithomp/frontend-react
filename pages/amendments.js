@@ -57,7 +57,7 @@ export default function Amendment() {
     <div className="content-text">
       {majorityAmendments?.length ?
         <>
-          <h2 className="center">{t("amendment.soon")}</h2>
+          <h1 className="center">{t("amendment.soon")}</h1>
           <table className="table-large">
             <thead>
               <tr>
@@ -82,7 +82,7 @@ export default function Amendment() {
       }
       {enabledAmendments?.length ?
         <>
-          <h2 className="center">{t("amendment.enabled")}</h2>
+          <h1 className="center">{t("amendment.enabled")}</h1>
           <table className="table-large">
             <thead>
               <tr>

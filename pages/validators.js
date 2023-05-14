@@ -75,7 +75,7 @@ export default function Validators() {
     <div className="content-text">
       {data?.validators?.length ?
         <>
-          <h2 className="center">{t("validators.unl")} ({t("validators.updated")} {moment((data.updatedAt - 1) * 1000, "unix").fromNow()})</h2>
+          <h1 className="center">{t("validators.unl")} ({t("validators.updated")} {moment((data.updatedAt - 1) * 1000, "unix").fromNow()})</h1>
           <div className="flex center">
             <div className="grey-box">
               {data &&
@@ -164,7 +164,7 @@ export default function Validators() {
         </> : <>
           {data?.error &&
             <>
-              <h2 className="center">{t("validators.unl")}</h2>
+              <h1 className="center">{t("validators.unl")}</h1>
               <div className="flex center">
                 <div className="grey-box">
                   {data.error && <b>{t("general.error")}: <span className='red'>{data.error}</span>.</b>}

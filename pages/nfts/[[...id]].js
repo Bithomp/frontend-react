@@ -52,4 +52,4 @@ export default function Nfts({
     taxonQuery={taxonQuery}
     nftExplorer={false}
   />
-};
+}

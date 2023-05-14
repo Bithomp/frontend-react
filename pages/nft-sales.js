@@ -350,7 +350,7 @@ export default function NftSales({
       }
     />
     <div className="content-text" style={{ minHeight: "480px" }}>
-      <h2 className="center">{t("nft-sales.header")}</h2>
+      <h1 className="center">{t("nft-sales.header")}</h1>
       <p className='center'><a href={"/nft-explorer?view=" + viewTab + issuerTaxonUrlPart}>{t("nft-explorer.header")}</a></p>
       <div className='center'>
         <span className='halv'>

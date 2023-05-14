@@ -207,7 +207,7 @@ export default function Nft({ signRequest, id, selectedCurrency, sortCurrency })
       </>
         :
         <>
-          <h2 className='center'>NFT</h2>
+          <h1 className='center'>NFT</h1>
           <p className='center'>
             {t("account.desc")}
           </p>
