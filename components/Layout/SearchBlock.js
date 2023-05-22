@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
-import Select, { components } from 'react-select'
+import Select from 'react-select'
 import { useTranslation } from 'next-i18next'
 import { useRouter } from 'next/router'
 import axios from 'axios';
@@ -145,29 +145,10 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
 
   const showTabs = tab && ['nfts', 'nft-offers', 'nft-volumes'].includes(tab)
 
-  const NoOptionsMessage = props => {
-    //do now show empty dropdown
-    if (!props.inputValue) {
-      return null
-    }
-    return (
-      <components.NoOptionsMessage {...props}>
-        <span>{searchPlaceholderText}</span>
-      </components.NoOptionsMessage>
-    )
-  }
-
   const handleInputChange = (inputValue, action) => {
     if (action.action !== "input-blur" && action.action !== "menu-close") {
       setSearchItem(inputValue)
     }
-  }
-
-  const selectStyles = {
-    noOptionsMessage: (base) => ({
-      ...base,
-      textAlign: "left"
-    })
   }
 
   return (
@@ -190,7 +171,6 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
             }
           </div>
           <Select
-            components={{ NoOptionsMessage }}
             ref={searchInput}
             className="issuer-select search-input search-input-select"
             placeholder={searchPlaceholderText}
@@ -198,7 +178,6 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
             onChange={validateSearchItem}
             spellCheck="false"
             isClearable={true}
-            styles={selectStyles}
             /*
             options={[
               {
@@ -217,6 +196,7 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
             isSearchable={true}
             classNamePrefix="react-select"
             instanceId="issuer-select"
+            noOptionsMessage={() => null}
           />
 
           <div className="search-button" onClick={onSearch}>
