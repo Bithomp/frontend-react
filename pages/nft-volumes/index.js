@@ -160,13 +160,14 @@ export default function NftVolumes({ period, sale, list, currency, currencyIssue
               return (parseFloat(a.amountInConvertCurrencies[convertCurrency]) < parseFloat(b.amountInConvertCurrencies[convertCurrency])) ? 1 : -1
             })
 
+            let volumesInConvertCurrencies = {}
+            volumesInConvertCurrencies[convertCurrency] = newdata.summary.all.volumesInConvertCurrencies[convertCurrency] - newdata.summary.brokers.volumesInConvertCurrencies[convertCurrency]
+
             list.push({
               broker: "no broker",
               sales: newdata.summary.all.sales - newdata.summary.brokers.sales,
               volumes: sumAllNoBroker,
-              volumesInConvertCurrencies: {
-                usd: newdata.summary.all.volumesInConvertCurrencies[convertCurrency] - newdata.summary.brokers.volumesInConvertCurrencies[convertCurrency]
-              }
+              volumesInConvertCurrencies
             })
           }
           setData(list.sort(function (a, b) {
