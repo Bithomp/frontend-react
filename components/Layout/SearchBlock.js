@@ -46,7 +46,7 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
       return
     }
 
-    if (e?.target?.value && e.target.value.length > 1) {
+    if (e?.target?.value && e.target.value.length > 1 && e.key?.length === 1) {
       const suggestionsResponse = await axios('v2/address/search/' + e.target.value + e.key)
       if (suggestionsResponse) {
         const suggestions = suggestionsResponse.data
@@ -58,6 +58,7 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
   }
 
   const searchOnChange = e => {
+    if (!e) return
     onSearch(e.username || e.address)
   }
 
@@ -189,7 +190,18 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
             spellCheck="false"
             isClearable={true}
             options={searchSuggestions}
-            getOptionLabel={(option) => <>{option.address} - <b className='green'>{option.service}</b> <b className='blue'>{option.username}</b></>}
+            getOptionLabel={
+              (option) => <>
+                {option.address}
+                {(option.username || option.service) ? " - " : ""}
+                <b className='blue'>{option.username}</b>
+                {option.service ? <>
+                  {option.username ? " (" : ""}
+                  <b className='green'>{option.service}</b>
+                  {option.username ? ")" : ""}
+                </> : ""}
+              </>
+            }
             getOptionValue={(option) => (option.username || option.address)}
             inputValue={searchItem}
             onInputChange={searchOnInputChange}
