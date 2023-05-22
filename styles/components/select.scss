@@ -9,8 +9,11 @@
     &:hover {
       border-color: var(--accent-icon);
     }
-    .react-select__input-container {
-      color: var(--text-main);
+    .react-select__value-container {
+      text-align: left;
+      .react-select__input-container {
+        color: var(--text-main);
+      }
     }
   }
 
