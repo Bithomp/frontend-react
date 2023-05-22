@@ -40,6 +40,7 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
       onSearch()
     }
 
+    // We should allow spaces here... or even non-latin characters, so that validation can be removed, together with searchItemRe 
     if (!searchItemRe.test(e.key)) {
       e.preventDefault()
       return
@@ -51,21 +52,13 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
         const suggestions = suggestionsResponse.data
         if (suggestions?.addresses?.length > 0) {
           setSearchSuggestions(suggestions.addresses)
-          console.log(suggestions.addresses) //delete
         }
       }
     }
   }
 
-  const validateSearchItem = e => {
-    if (!e?.target?.value) return
-    let item = e.target.value
-    item = item.trim()
-    if (searchItemRe.test(item)) {
-      setSearchItem(item)
-    } else {
-      setSearchItem("")
-    }
+  const searchOnChange = e => {
+    onSearch(e.username || e.address)
   }
 
   // a stupid hack to remove id param
@@ -87,8 +80,12 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
     }
   }
 
-  const onSearch = async () => {
+  const onSearch = async (si) => {
     let searchFor = searchItem.trim()
+    if (typeof si === 'string') {
+      searchFor = si
+    }
+
     if (!searchFor) return
 
     if (tab === "nfts" && isAddressOrUsername(searchFor)) {
@@ -158,7 +155,7 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
 
   const showTabs = tab && ['nfts', 'nft-offers', 'nft-volumes'].includes(tab)
 
-  const handleInputChange = (inputValue, action) => {
+  const searchOnInputChange = (inputValue, action) => {
     if (action.action !== "input-blur" && action.action !== "menu-close") {
       setSearchItem(inputValue)
     }
@@ -188,14 +185,14 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
             className="issuer-select search-input search-input-select"
             placeholder={searchPlaceholderText}
             onKeyDown={searchKeyDown}
-            onChange={validateSearchItem}
+            onChange={searchOnChange}
             spellCheck="false"
             isClearable={true}
             options={searchSuggestions}
-            getOptionLabel={(option) => (option.service || option.username || option.address)}
+            getOptionLabel={(option) => <>{option.address} - <b className='green'>{option.service}</b> <b className='blue'>{option.username}</b></>}
             getOptionValue={(option) => (option.username || option.address)}
             inputValue={searchItem}
-            onInputChange={handleInputChange}
+            onInputChange={searchOnInputChange}
             isSearchable={true}
             classNamePrefix="react-select"
             instanceId="issuer-select"
