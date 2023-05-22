@@ -99,7 +99,7 @@ export default function Home({ devNet, selectedCurrency, setSelectedCurrency }) 
             <div className="sponsored-brand">
               <img src="/images/nexo.svg" className="sponsored-brand-icon" alt="earn on xrp" />
               <div className="sponsored-brand-title">Earn on XRP</div>
-              <div className="sponsored-brand-text">Earn up to 12% APR on XRP.</div>
+              <div className="sponsored-brand-text">Earn up to 8% APR on XRP.</div>
             </div>
           </a>
         </div>
