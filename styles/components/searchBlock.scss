@@ -11,7 +11,7 @@
     margin-right: 20px;
     width: calc(100% - 40px);
     max-width: 760px;
-    z-index: 1;
+    z-index: 3;
     @media only screen and (max-width: 1024px) {
       margin-left: 10px;
       margin-right: 10px;
@@ -46,13 +46,24 @@
         padding-right: 44px;
         max-width: calc(100% - 56px);
       }
+      &.search-input-select {
+        height: unset;
+        border: unset;
+        padding: unset;
+        width: 100%;
+        max-width: 100%;
+        margin: 0;
+        .react-select__indicators {
+          display: none;
+        }
+      }
     }
     .search-button {
       position: absolute;
       width: 34px;
       height: 34px;
-      top: 5px;
-      right: 5px;
+      top: 3px;
+      right: 3px;
       background-color: var(--accent-icon);
       cursor: pointer;
       transition: opacity 0.5s;

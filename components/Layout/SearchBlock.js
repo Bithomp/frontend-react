@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
+import Select from 'react-select'
 import { useTranslation } from 'next-i18next'
 import { useRouter } from 'next/router'
 import axios from 'axios';
@@ -9,17 +10,19 @@ import { userOrServiceName } from '../../utils/format'
 
 //import { ReactComponent as Qr } from "../../public/images/qr.svg";
 
-const searchItemRe = /^[~]{0,1}[a-zA-Z0-9-_.]*[+]{0,1}[a-zA-Z0-9-_.]*[$]{0,1}[a-zA-Z0-9-.]*[a-zA-Z0-9]*$/i;
+const searchItemRe = /^[~]{0,1}[a-zA-Z0-9-_.]*[+]{0,1}[a-zA-Z0-9-_.]*[$]{0,1}[a-zA-Z0-9-.]*[a-zA-Z0-9]*$/i
+let typingTimer
 
 export default function SearchBlock({ searchPlaceholderText, tab = null, userData = {} }) {
-  const { t } = useTranslation();
-  const searchParams = useSearchParams();
+  const { t } = useTranslation()
+  const searchParams = useSearchParams()
   const router = useRouter()
   const searchInput = useRef(null)
 
   const { id } = router.query
-  const [searchItem, setSearchItem] = useState(id || userData?.address || "");
-  const [searching, setSearching] = useState(false);
+  const [searchItem, setSearchItem] = useState(id || userData?.address || "")
+  const [searching, setSearching] = useState(false)
+  const [searchSuggestions, setSearchSuggestions] = useState([])
 
   useEffect(() => {
     if (!id && searchInput.current) {
@@ -33,24 +36,38 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
     }
   }, [userData]);
 
-  const searchItemType = e => {
+  const searchKeyDown = e => {
     if (e.key === 'Enter') {
-      onSearch();
+      onSearch()
+      return
     }
 
+    // We should allow spaces here... or even non-latin characters, so that validation can be removed, together with searchItemRe 
     if (!searchItemRe.test(e.key)) {
-      e.preventDefault();
+      e.preventDefault()
+      return
+    }
+
+    if (e?.target?.value && e.target.value.length > 1) {
+      clearTimeout(typingTimer)
+      setSearchSuggestions([])
+      typingTimer = setTimeout(async () => {
+        if (e?.target?.value && e.target.value.length > 2) {
+          const suggestionsResponse = await axios('v2/address/search/' + e.target.value)
+          if (suggestionsResponse) {
+            const suggestions = suggestionsResponse.data
+            if (suggestions?.addresses?.length > 0) {
+              setSearchSuggestions(suggestions.addresses)
+            }
+          }
+        }
+      }, 500) // 0.5 sec
     }
   }
 
-  const validateSearchItem = e => {
-    let item = e.target.value;
-    item = item.trim();
-    if (searchItemRe.test(item)) {
-      setSearchItem(item);
-    } else {
-      setSearchItem("");
-    }
+  const searchOnChange = e => {
+    if (!e) return
+    onSearch(e.username || e.address)
   }
 
   // a stupid hack to remove id param
@@ -72,52 +89,58 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
     }
   }
 
-  const onSearch = async () => {
-    let searchFor = searchItem.trim();
+  const onSearch = async (si) => {
+    let searchFor = searchItem.trim()
+    if (typeof si === 'string') {
+      searchFor = si
+    }
+
+    if (!searchFor) return
+
     if (tab === "nfts" && isAddressOrUsername(searchFor)) {
       window.location = "../nfts/" + encodeURI(searchFor) + addParams
-      return;
+      return
     }
 
     if (tab === "nft-offers" && isAddressOrUsername(searchFor)) {
       window.location = "../nft-offers/" + encodeURI(searchFor) + addParams
-      return;
+      return
     }
 
     if (tab === "nft-volumes" && isAddressOrUsername(searchFor)) {
       window.location = "../nft-volumes/" + encodeURI(searchFor) + addParams
-      return;
+      return
     }
 
     if (tab === "nft" && isIdValid(searchFor)) {
       window.location = "../nft/" + encodeURI(searchFor)
-      return;
+      return
     }
 
     if (tab === "nft-offer" && isIdValid(searchFor)) {
       window.location = "../nft-offer/" + encodeURI(searchFor)
-      return;
+      return
     }
 
     //nft nftOffer
     if (isIdValid(searchFor)) {
-      setSearching(true);
-      const response = await axios('v2/search/' + searchFor);
-      setSearching(false);
-      const data = response.data;
+      setSearching(true)
+      const response = await axios('v2/search/' + searchFor)
+      setSearching(false)
+      const data = response.data
       if (data.type === 'nftoken') {
         router.push('/nft/' + encodeURI(searchFor))
-        return;
+        return
       }
       if (data.type === 'nftokenOffer') {
         router.push('/nft-offer/' + encodeURI(searchFor))
-        return;
+        return
       }
     }
 
     //tx, address etc
     window.location = '/explorer/' + encodeURI(searchFor)
-    return;
+    return
   }
 
   /*
@@ -139,7 +162,13 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
   searchItem.charAt(0) == "X"
   */
 
-  const showTabs = tab && ['nfts', 'nft-offers', 'nft-volumes'].includes(tab);
+  const showTabs = tab && ['nfts', 'nft-offers', 'nft-volumes'].includes(tab)
+
+  const searchOnInputChange = (inputValue, action) => {
+    if (action.action !== "input-blur" && action.action !== "menu-close") {
+      setSearchItem(inputValue)
+    }
+  }
 
   return (
     <>
@@ -160,15 +189,36 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
               </>
             }
           </div>
-          <input
+          <Select
             ref={searchInput}
-            className="search-input"
+            className="issuer-select search-input search-input-select"
             placeholder={searchPlaceholderText}
-            value={searchItem}
-            onKeyPress={searchItemType}
-            onChange={validateSearchItem}
+            onKeyDown={searchKeyDown}
+            onChange={searchOnChange}
             spellCheck="false"
+            isClearable={true}
+            options={searchSuggestions}
+            getOptionLabel={
+              (option) => <>
+                {option.address}
+                {(option.username || option.service) ? " - " : ""}
+                <b className='blue'>{option.username}</b>
+                {option.service ? <>
+                  {option.username ? " (" : ""}
+                  <b className='green'>{option.service}</b>
+                  {option.username ? ")" : ""}
+                </> : ""}
+              </>
+            }
+            getOptionValue={(option) => (option.username || option.address)}
+            inputValue={searchItem}
+            onInputChange={searchOnInputChange}
+            isSearchable={true}
+            classNamePrefix="react-select"
+            instanceId="issuer-select"
+            noOptionsMessage={() => null}
           />
+
           <div className="search-button" onClick={onSearch}>
             <img src="/images/search.svg" className="search-icon" alt="search" />
           </div>
@@ -185,7 +235,7 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
           <div className='explorer-tabs'>
             {tab === "nfts" ? <b>NFTs</b> : <a href={"/nfts/" + searchItem + addParams}>NFTs</a>}
             {tab === "nft-offers" ? <b>{t("nft-offers.header")}</b> : <a href={"/nft-offers/" + searchItem}>{t("nft-offers.header")}</a>}
-            {tab === "nft-volumes" &&  <b>{t("menu.nft.volumes")}</b>}
+            {tab === "nft-volumes" && <b>{t("menu.nft.volumes")}</b>}
             <a href={"/explorer/" + searchItem}>{t("explorer.menu.account")}</a>
             {tab !== "nft-volumes" && <a href={"/explorer/" + searchItem} className='hide-on-mobile'>{t("explorer.menu.transactions")}</a>}
             {tab !== "nft-volumes" && <a href={"/explorer/" + searchItem} className='hide-on-mobile'>{t("explorer.menu.tokens")}</a>}
