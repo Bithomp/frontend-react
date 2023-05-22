@@ -10,7 +10,8 @@ import { userOrServiceName } from '../../utils/format'
 
 //import { ReactComponent as Qr } from "../../public/images/qr.svg";
 
-const searchItemRe = /^[~]{0,1}[a-zA-Z0-9-_.]*[+]{0,1}[a-zA-Z0-9-_.]*[$]{0,1}[a-zA-Z0-9-.]*[a-zA-Z0-9]*$/i;
+const searchItemRe = /^[~]{0,1}[a-zA-Z0-9-_.]*[+]{0,1}[a-zA-Z0-9-_.]*[$]{0,1}[a-zA-Z0-9-.]*[a-zA-Z0-9]*$/i
+let typingTimer
 
 export default function SearchBlock({ searchPlaceholderText, tab = null, userData = {} }) {
   const { t } = useTranslation()
@@ -35,9 +36,10 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
     }
   }, [userData]);
 
-  const searchKeyDown = async (e) => {
+  const searchKeyDown = e => {
     if (e.key === 'Enter') {
       onSearch()
+      return
     }
 
     // We should allow spaces here... or even non-latin characters, so that validation can be removed, together with searchItemRe 
@@ -46,14 +48,20 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
       return
     }
 
-    if (e?.target?.value && e.target.value.length > 1 && e.key?.length === 1) {
-      const suggestionsResponse = await axios('v2/address/search/' + e.target.value + e.key)
-      if (suggestionsResponse) {
-        const suggestions = suggestionsResponse.data
-        if (suggestions?.addresses?.length > 0) {
-          setSearchSuggestions(suggestions.addresses)
+    if (e?.target?.value && e.target.value.length > 1) {
+      clearTimeout(typingTimer)
+      setSearchSuggestions([])
+      typingTimer = setTimeout(async () => {
+        if (e?.target?.value && e.target.value.length > 2) {
+          const suggestionsResponse = await axios('v2/address/search/' + e.target.value)
+          if (suggestionsResponse) {
+            const suggestions = suggestionsResponse.data
+            if (suggestions?.addresses?.length > 0) {
+              setSearchSuggestions(suggestions.addresses)
+            }
+          }
         }
-      }
+      }, 500) // 0.5 sec
     }
   }
 
