@@ -13,14 +13,15 @@ import { userOrServiceName } from '../../utils/format'
 const searchItemRe = /^[~]{0,1}[a-zA-Z0-9-_.]*[+]{0,1}[a-zA-Z0-9-_.]*[$]{0,1}[a-zA-Z0-9-.]*[a-zA-Z0-9]*$/i;
 
 export default function SearchBlock({ searchPlaceholderText, tab = null, userData = {} }) {
-  const { t } = useTranslation();
-  const searchParams = useSearchParams();
+  const { t } = useTranslation()
+  const searchParams = useSearchParams()
   const router = useRouter()
   const searchInput = useRef(null)
 
   const { id } = router.query
-  const [searchItem, setSearchItem] = useState(id || userData?.address || "");
-  const [searching, setSearching] = useState(false);
+  const [searchItem, setSearchItem] = useState(id || userData?.address || "")
+  const [searching, setSearching] = useState(false)
+  const [searchSuggestions, setSearchSuggestions] = useState([])
 
   useEffect(() => {
     if (!id && searchInput.current) {
@@ -34,13 +35,25 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
     }
   }, [userData]);
 
-  const searchItemType = e => {
+  const searchKeyDown = async (e) => {
     if (e.key === 'Enter') {
       onSearch()
     }
 
     if (!searchItemRe.test(e.key)) {
       e.preventDefault()
+      return
+    }
+
+    if (e?.target?.value && e.target.value.length > 1) {
+      const suggestionsResponse = await axios('v2/address/search/' + e.target.value + e.key)
+      if (suggestionsResponse) {
+        const suggestions = suggestionsResponse.data
+        if (suggestions?.addresses?.length > 0) {
+          setSearchSuggestions(suggestions.addresses)
+          console.log(suggestions.addresses) //delete
+        }
+      }
     }
   }
 
@@ -76,52 +89,52 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
 
   const onSearch = async () => {
     let searchFor = searchItem.trim()
-    if (!searchFor) return;
+    if (!searchFor) return
 
     if (tab === "nfts" && isAddressOrUsername(searchFor)) {
       window.location = "../nfts/" + encodeURI(searchFor) + addParams
-      return;
+      return
     }
 
     if (tab === "nft-offers" && isAddressOrUsername(searchFor)) {
       window.location = "../nft-offers/" + encodeURI(searchFor) + addParams
-      return;
+      return
     }
 
     if (tab === "nft-volumes" && isAddressOrUsername(searchFor)) {
       window.location = "../nft-volumes/" + encodeURI(searchFor) + addParams
-      return;
+      return
     }
 
     if (tab === "nft" && isIdValid(searchFor)) {
       window.location = "../nft/" + encodeURI(searchFor)
-      return;
+      return
     }
 
     if (tab === "nft-offer" && isIdValid(searchFor)) {
       window.location = "../nft-offer/" + encodeURI(searchFor)
-      return;
+      return
     }
 
     //nft nftOffer
     if (isIdValid(searchFor)) {
-      setSearching(true);
-      const response = await axios('v2/search/' + searchFor);
-      setSearching(false);
-      const data = response.data;
+      setSearching(true)
+      const response = await axios('v2/search/' + searchFor)
+      setSearching(false)
+      const data = response.data
       if (data.type === 'nftoken') {
         router.push('/nft/' + encodeURI(searchFor))
-        return;
+        return
       }
       if (data.type === 'nftokenOffer') {
         router.push('/nft-offer/' + encodeURI(searchFor))
-        return;
+        return
       }
     }
 
     //tx, address etc
     window.location = '/explorer/' + encodeURI(searchFor)
-    return;
+    return
   }
 
   /*
@@ -174,25 +187,15 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
             ref={searchInput}
             className="issuer-select search-input search-input-select"
             placeholder={searchPlaceholderText}
-            onKeyDown={searchItemType}
+            onKeyDown={searchKeyDown}
             onChange={validateSearchItem}
             spellCheck="false"
             isClearable={true}
-            /*
-            options={[
-              {
-                value: 'one',
-                label: "one"
-              },
-              {
-                value: 'two',
-                label: "two"
-              }
-            ]}
-            */
+            options={searchSuggestions}
+            getOptionLabel={(option) => (option.service || option.username || option.address)}
+            getOptionValue={(option) => (option.username || option.address)}
             inputValue={searchItem}
             onInputChange={handleInputChange}
-            //defaultValue={searchItem ? { value: searchItem, label: searchItem } : null}
             isSearchable={true}
             classNamePrefix="react-select"
             instanceId="issuer-select"
