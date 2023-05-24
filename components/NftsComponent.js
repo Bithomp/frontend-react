@@ -6,7 +6,7 @@ import axios from 'axios'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import Link from 'next/link'
 
-import { isAddressOrUsername, setTabParams, addQueryParams, removeQueryParams } from '../utils';
+import { isAddressOrUsername, setTabParams } from '../utils';
 import { isValidTaxon, nftThumbnail, nftNameLink, bestSellOffer, mpUrl } from '../utils/nft';
 import { nftLink, usernameOrAddress, userOrServiceLink, amountFormat } from '../utils/format';
 
@@ -16,15 +16,15 @@ import Tabs from './Tabs';
 import Tiles from './Tiles';
 import IssuerSelect from './UI/IssuerSelect';
 
-export default function NftsComponent({ 
-  view, 
-  list, 
-  saleDestination, 
-  saleCurrency, 
-  saleCurrencyIssuer, 
-  searchQuery, 
-  issuerQuery, 
-  ownerQuery, 
+export default function NftsComponent({
+  view,
+  list,
+  saleDestination,
+  saleCurrency,
+  saleCurrencyIssuer,
+  searchQuery,
+  issuerQuery,
+  ownerQuery,
   taxonQuery,
   nftExplorer
 }) {
@@ -33,24 +33,24 @@ export default function NftsComponent({
   const { id } = router.query
 
   const [rendered, setRendered] = useState(false)
-  const [data, setData] = useState([]);
-  const [rawData, setRawData] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [hasMore, setHasMore] = useState("first");
-  const [errorMessage, setErrorMessage] = useState("");
-  const [viewTab, setViewTab] = useState(view);
-  const [listTab, setListTab] = useState(list);
-  const [saleDestinationTab, setSaleDestinationTab] = useState(saleDestination);
-  const [search, setSearch] = useState(searchQuery);
-  const [filteredData, setFilteredData] = useState([]);
-  const [userData, setUserData] = useState({});
-  const [issuersList, setIssuersList] = useState([]);
-  const [issuer, setIssuer] = useState(issuerQuery);
-  const [owner, setOwner] = useState(ownerQuery);
+  const [data, setData] = useState([])
+  const [rawData, setRawData] = useState(null)
+  const [loading, setLoading] = useState(false)
+  const [hasMore, setHasMore] = useState("first")
+  const [errorMessage, setErrorMessage] = useState("")
+  const [viewTab, setViewTab] = useState(view)
+  const [listTab, setListTab] = useState(list)
+  const [saleDestinationTab, setSaleDestinationTab] = useState(saleDestination)
+  const [search, setSearch] = useState(searchQuery)
+  const [userData, setUserData] = useState({})
+  const [issuersList, setIssuersList] = useState([])
+  const [issuer, setIssuer] = useState(issuerQuery)
+  const [owner, setOwner] = useState(ownerQuery)
   const [taxon, setTaxon] = useState(taxonQuery)
-  const [issuerInput, setIssuerInput] = useState(issuerQuery);
-  const [ownerInput, setOwnerInput] = useState(ownerQuery);
-  const [taxonInput, setTaxonInput] = useState(taxonQuery);
+  const [issuerInput, setIssuerInput] = useState(issuerQuery)
+  const [ownerInput, setOwnerInput] = useState(ownerQuery)
+  const [taxonInput, setTaxonInput] = useState(taxonQuery)
+  const [searchInput, setSearchInput] = useState(searchQuery)
 
   useEffect(() => {
     setRendered(true)
@@ -76,111 +76,117 @@ export default function NftsComponent({
     let marker = hasMore;
     let nftsData = data;
     if (options?.restart) {
-      marker = "first";
-      setHasMore("first");
-      setLoading(true);
-      setData([]);
-      nftsData = [];
+      marker = "first"
+      setHasMore("first")
+      setLoading(true)
+      setData([])
+      nftsData = []
     }
 
-    if (!(isAddressOrUsername(id) || isAddressOrUsername(issuer) || isAddressOrUsername(owner)) || !marker || (marker === "first" && nftsData.length)) {
-      return;
+    if (!(isAddressOrUsername(id) || isAddressOrUsername(issuer) || isAddressOrUsername(owner) || search) || !marker || (marker === "first" && nftsData.length)) {
+      return
     }
 
-    let listUrlPart = '?list=nfts';
-    let ownerUrlPart = '';
-    let collectionUrlPart = '';
-    let markerUrlPart = '';
+    let listUrlPart = '?list=nfts'
+    let ownerUrlPart = ''
+    let collectionUrlPart = ''
+    let markerUrlPart = ''
+    let searchPart = ''
 
     if (listTab === 'onSale') {
       //order: "offerCreatedNew", "offerCreatedOld", "priceLow", "priceHigh"
       //destination: "public", "knownBrokers", "publicAndKnownBrokers", "all"
-      listUrlPart = '?list=onSale&destination=' + saleDestinationTab + '&order=priceLow';
+      listUrlPart = '?list=onSale&destination=' + saleDestinationTab + '&order=priceLow'
       if (saleCurrencyIssuer && saleCurrency) {
-        listUrlPart = listUrlPart + '&currency=' + saleCurrency + '&currencyIssuer=' + saleCurrencyIssuer;
+        listUrlPart = listUrlPart + '&currency=' + saleCurrency + '&currencyIssuer=' + saleCurrencyIssuer
       } else {
-        listUrlPart = listUrlPart + '&currency=xrp';
+        listUrlPart = listUrlPart + '&currency=xrp'
       }
     }
 
     if (id || owner) {
-      ownerUrlPart = '&owner=' + (id || owner);
+      ownerUrlPart = '&owner=' + (id || owner)
       const issuersJson = await axios('v2/nft-issuers?owner=' + (id || owner)).catch(error => {
         console.log(t("error." + error.message))
-      });
+      })
       if (issuersJson?.data?.issuers) {
-        setIssuersList(issuersJson.data.issuers);
+        setIssuersList(issuersJson.data.issuers)
       }
     }
 
     if (issuer) {
-      collectionUrlPart = '&issuer=' + issuer;
+      collectionUrlPart = '&issuer=' + issuer
       if (taxon) {
-        collectionUrlPart += '&taxon=' + taxon;
+        collectionUrlPart += '&taxon=' + taxon
       }
     }
 
+    if (search) {
+      searchPart = '&search=' + search + '&searchLocations=metadata.name,metadata.description'
+    }
+
     if (marker && marker !== "first") {
-      markerUrlPart = "&marker=" + marker;
+      markerUrlPart = "&marker=" + marker
     }
     if (marker === "first") {
-      setLoading(true);
+      setLoading(true)
     }
-    const response = await axios('v2/nfts' + listUrlPart + ownerUrlPart + collectionUrlPart + markerUrlPart).catch(error => {
-      setErrorMessage(t("error." + error.message))
-    });
+    const response = await axios('v2/nfts' + listUrlPart + ownerUrlPart + collectionUrlPart + markerUrlPart + searchPart)
+      .catch(error => {
+        setErrorMessage(t("error." + error.message))
+      })
 
-    setLoading(false);
-    const newdata = response?.data;
+    setLoading(false)
+    const newdata = response?.data
     if (newdata) {
-      setRawData(newdata);
-      if (newdata.owner || newdata.issuer) {
+      setRawData(newdata)
+      if (newdata.owner || newdata.issuer || newdata.search) {
 
         if (newdata.issuer) {
-          setIssuerInput(newdata.issuer);
+          setIssuerInput(newdata.issuer)
         }
 
         if (newdata.owner) {
-          setOwnerInput(newdata.owner);
+          setOwnerInput(newdata.owner)
           setUserData({
             username: newdata.ownerDetails?.username,
             service: newdata.ownerDetails?.service,
             address: newdata.owner
-          });
+          })
         }
 
         if (newdata.nfts?.length > 0) {
-          setErrorMessage("");
+          setErrorMessage("")
           if (newdata.marker) {
-            setHasMore(newdata.marker);
+            setHasMore(newdata.marker)
           } else {
-            setHasMore(false);
+            setHasMore(false)
           }
-          setData([...nftsData, ...newdata.nfts]);
+          setData([...nftsData, ...newdata.nfts])
         } else {
           if (marker === 'first') {
-            setErrorMessage(t("nfts.no-nfts"));
+            setErrorMessage(t("nfts.no-nfts"))
           } else {
-            setHasMore(false);
+            setHasMore(false)
           }
         }
       } else {
         if (newdata.error) {
           setErrorMessage(t("error-api." + newdata.error))
         } else {
-          setErrorMessage("Error");
-          console.log(newdata);
+          setErrorMessage("Error 4")
+          console.log(newdata)
         }
       }
     }
   }
 
   useEffect(() => {
-    if (id || issuer || owner) {
-      checkApi({ restart: true });
+    if (id || issuer || owner || (search && listTab !== 'onSale')) {
+      checkApi({ restart: true })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [issuer, taxon, owner, listTab, saleDestinationTab]);
+  }, [issuer, taxon, owner, listTab, saleDestinationTab, search])
 
   useEffect(() => {
     let queryAddList = [];
@@ -212,6 +218,15 @@ export default function NftsComponent({
     } else {
       queryRemoveList.push("issuer")
       queryRemoveList.push("taxon")
+    }
+
+    if (rawData?.search) {
+      queryAddList.push({
+        name: "search",
+        value: rawData.search
+      })
+    } else {
+      queryRemoveList.push("search")
     }
 
     let tabsToSet = [
@@ -247,31 +262,11 @@ export default function NftsComponent({
 
     setTabParams(router, tabsToSet, queryAddList, queryRemoveList)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [viewTab, rawData, listTab, saleDestinationTab]);
+  }, [viewTab, rawData, listTab, saleDestinationTab])
 
-  const onSearchChange = (e) => {
-    let searchName = e.target.value;
-    setSearch(searchName);
-    if (searchName) {
-      addQueryParams(router, [
-        {
-          name: "search",
-          value: searchName
-        }
-      ])
-    } else {
-      removeQueryParams(router, ["search"])
-    }
+  const onSearchChange = e => {
+    setSearchInput(e.target.value)
   }
-
-  useEffect(() => {
-    if (search) {
-      const name = search.toLocaleLowerCase();
-      setFilteredData(data.filter(nft => nft.metadata?.name?.toString().toLocaleLowerCase().includes(name)));
-    } else {
-      setFilteredData(data);
-    }
-  }, [data, search]);
 
   const searchClick = () => {
     if (isAddressOrUsername(issuerInput)) {
@@ -294,6 +289,9 @@ export default function NftsComponent({
       setOwnerInput("");
       setOwner("");
     }
+    if (searchInput) {
+      setSearch(searchInput)
+    }
   }
 
   const enterPress = e => {
@@ -311,9 +309,9 @@ export default function NftsComponent({
 
   const issuerTaxonUrlPart = "?view=" + viewTab + (rawData ? ("&issuer=" + usernameOrAddress(rawData, 'issuer') + (rawData.taxon ? ("&taxon=" + rawData.taxon) : "")) : "");
 
-  const contextStyle = { minHeight: "480px" };
+  const contextStyle = { minHeight: "480px" }
   if (!nftExplorer) {
-    contextStyle.marginTop = "20px";
+    contextStyle.marginTop = "20px"
   }
 
   /*
@@ -355,15 +353,15 @@ export default function NftsComponent({
   */
 
   const priceData = sellOffers => {
-    if (!sellOffers) return "";
-    const best = bestSellOffer(sellOffers);
+    if (!sellOffers) return ""
+    const best = bestSellOffer(sellOffers)
     if (best) {
       if (mpUrl(best)) {
-        return amountFormat(best.amount, { tooltip: 'right' }) + " " + t("nft.on") + " " + best.destinationDetails.service;
+        return amountFormat(best.amount, { tooltip: 'right' }) + " " + t("nft.on") + " " + best.destinationDetails.service
       } else {
-        return amountFormat(best.amount, { tooltip: 'right' });
+        return amountFormat(best.amount, { tooltip: 'right' })
       }
-    };
+    }
     return "Private offer"; //shouldn't be the case
   }
 
@@ -373,19 +371,19 @@ export default function NftsComponent({
     { label: t("table.taxon"), key: "nftokenTaxon" },
     { label: t("table.serial"), key: "sequence" },
     { label: t("table.name"), key: "metadata.name" }
-  ];
+  ]
   if (nftExplorer) {
     csvHeaders.push({ label: t("table.owner"), key: "owner" })
   }
 
   return <>
     {nftExplorer ?
-      <SEO 
-        title={t("nft-explorer.header") + (issuerQuery ? (" " + issuerQuery) : "")} 
+      <SEO
+        title={t("nft-explorer.header") + (issuerQuery ? (" " + issuerQuery) : "")}
       />
       :
       <>
-        <SEO 
+        <SEO
           title={t("nfts.header") + (id ? (" " + id) : "")}
         />
         <SearchBlock
@@ -446,12 +444,12 @@ export default function NftsComponent({
             <span className='input-title'>{t("table.name")}</span>
             <input
               placeholder={t("nfts.search-by-name")}
-              value={search}
+              value={searchInput}
               onChange={onSearchChange}
               className="input-text"
               spellCheck="false"
               maxLength="18"
-              disabled={(id || ownerInput || issuerInput) ? false : true}
+              disabled={listTab === 'onSale'}
             />
           </span>
         </div>
@@ -476,9 +474,9 @@ export default function NftsComponent({
           </CSVLink>
         }
       </div>
-      {(id || issuer || owner) ?
+      {(id || issuer || owner || search) ?
         <InfiniteScroll
-          dataLength={filteredData.length}
+          dataLength={data.length}
           next={checkApi}
           hasMore={hasMore}
           loader={!errorMessage &&
@@ -512,6 +510,7 @@ export default function NftsComponent({
                 className="input-text halv"
                 spellCheck="false"
                 maxLength="18"
+                disabled={listTab === 'onSale'}
               />
             </div>
           }
@@ -539,7 +538,7 @@ export default function NftsComponent({
                   </tr>
                   :
                   <>
-                    {!errorMessage ? filteredData.map((nft, i) =>
+                    {!errorMessage ? data.map((nft, i) =>
                       <tr key={nft.nftokenID}>
                         <td className="center">{i + 1}</td>
                         <td>{nftThumbnail(nft)} {nftNameLink(nft)}</td>
@@ -569,7 +568,7 @@ export default function NftsComponent({
                   {errorMessage ?
                     <div className='center orange bold'>{errorMessage}</div>
                     :
-                    <Tiles nftList={filteredData} type={listTab === 'onSale' ? 'onSale' : 'name'} />
+                    <Tiles nftList={data} type={listTab === 'onSale' ? 'onSale' : 'name'} />
                   }
                 </>
               }
@@ -589,5 +588,5 @@ export default function NftsComponent({
         </>
       }
     </div>
-  </>;
-};
+  </>
+}
