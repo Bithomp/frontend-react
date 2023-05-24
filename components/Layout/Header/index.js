@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { useTranslation } from 'next-i18next'
 import { useState, useEffect } from 'react'
 
-import { devNet, useLocalStorage } from '../../../utils'
+import { devNet } from '../../../utils'
 
 import Switch from "./Switch"
 import CurrencySwitch from "./CurrencySwitch"
@@ -11,13 +11,14 @@ import LogoAnimated from '../LogoAnimated'
 export default function Header({ setSignRequest, account, signOut, selectedCurrency, setSelectedCurrency }) {
   const { t } = useTranslation('common')
 
-  const [rendered, setRendered] = useState(false);
+  const [rendered, setRendered] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
   const [isCopied, setIsCopied] = useState(false)
-  const [xummUserToken] = useLocalStorage('xummUserToken');
+  const [xummUserToken, setXummUserToken] = useState(null)
 
   useEffect(() => {
     setRendered(true)
+    setXummUserToken(localStorage.getItem('xummUserToken'))
   }, [])
 
   let address, hashicon, displayName, username;
@@ -263,5 +264,5 @@ export default function Header({ setSignRequest, account, signOut, selectedCurre
         </div>
       }
     </>
-  );
-};
+  )
+}
