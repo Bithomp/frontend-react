@@ -83,7 +83,7 @@ export default function NftsComponent({
       nftsData = []
     }
 
-    if (!(isAddressOrUsername(id) || isAddressOrUsername(issuer) || isAddressOrUsername(owner) || search) || !marker || (marker === "first" && nftsData.length)) {
+    if (!(isAddressOrUsername(id) || isAddressOrUsername(issuer) || isAddressOrUsername(owner) || (search && listTab !== 'onSale')) || !marker || (marker === "first" && nftsData.length)) {
       return
     }
 
@@ -476,7 +476,7 @@ export default function NftsComponent({
           </CSVLink>
         }
       </div>
-      {(id || issuer || owner || search) ?
+      {(id || issuer || owner || (search && listTab !== 'onSale')) ?
         <InfiniteScroll
           dataLength={data.length}
           next={checkApi}
