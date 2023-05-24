@@ -62,6 +62,10 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
           if (e?.target?.value && e.target.value.length > 2) {
             setSearchingSuggestions(true)
             const suggestionsResponse = await axios('v2/address/search/' + e.target.value)
+              .catch(error => {
+                setSearchingSuggestions(false)
+                console.log(error.message)
+              })
             if (suggestionsResponse) {
               const suggestions = suggestionsResponse.data
               if (suggestions?.addresses?.length > 0) {

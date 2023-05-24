@@ -122,7 +122,8 @@ export default function NftsComponent({
     }
 
     if (search) {
-      searchPart = '&search=' + search + '&searchLocations=metadata.name,metadata.description'
+      searchPart = '&search=' + search + '&searchLocations=metadata.name'
+      //'&searchLocations=metadata.name,metadata.description'
     }
 
     if (marker && marker !== "first") {
@@ -450,6 +451,7 @@ export default function NftsComponent({
               spellCheck="false"
               maxLength="18"
               disabled={listTab === 'onSale'}
+              onKeyPress={enterPress}
             />
           </span>
         </div>
@@ -503,15 +505,6 @@ export default function NftsComponent({
                   setSelectedIssuer={setIssuer}
                 />
               }
-              <input
-                placeholder={t("nfts.search-by-name")}
-                value={search}
-                onChange={onSearchChange}
-                className="input-text halv"
-                spellCheck="false"
-                maxLength="18"
-                disabled={listTab === 'onSale'}
-              />
             </div>
           }
 
