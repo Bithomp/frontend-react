@@ -224,7 +224,7 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
                 </> : ""}
               </>
             }
-            getOptionValue={(option) => (option.username || option.address)}
+            getOptionValue={(option) => (option.address + option.username + option.service)}
             inputValue={searchItem}
             onInputChange={searchOnInputChange}
             isSearchable={true}
