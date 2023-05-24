@@ -504,6 +504,7 @@
     "header": "XRPL Эксплорер",
     "enter-address": "Введите XRPL адрес или ник",
     "searching-tx-nft-nftoffer": "Идет поиск по запрошенному ID",
+    "searching-for-addresses": "Идет поиск адресов...",
     "menu": {
       "account": "Aдрес",
       "transactions": "Транзакции",

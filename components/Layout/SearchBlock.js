@@ -23,6 +23,7 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
   const [searchItem, setSearchItem] = useState(id || userData?.address || "")
   const [searching, setSearching] = useState(false)
   const [searchSuggestions, setSearchSuggestions] = useState([])
+  const [searchingSuggestions, setSearchingSuggestions] = useState(false)
 
   useEffect(() => {
     if (!id && searchInput.current) {
@@ -58,6 +59,7 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
         setSearchSuggestions([])
         typingTimer = setTimeout(async () => {
           if (e?.target?.value && e.target.value.length > 2) {
+            setSearchingSuggestions(true)
             const suggestionsResponse = await axios('v2/address/search/' + e.target.value)
             if (suggestionsResponse) {
               const suggestions = suggestionsResponse.data
@@ -65,10 +67,10 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
                 setSearchSuggestions(suggestions.addresses)
               }
             }
+            setSearchingSuggestions(false)
           }
         }, 500) // 0.5 sec
       }
-
     }
   }
 
@@ -227,7 +229,10 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
             isSearchable={true}
             classNamePrefix="react-select"
             instanceId="issuer-select"
-            noOptionsMessage={() => null}
+            noOptionsMessage={
+              () => searchingSuggestions ? t("explorer.searching-for-addresses") : null
+              //({ inputValue }) => inputValue.length > 3
+            }
           />
 
           <div className="search-button" onClick={onSearch}>

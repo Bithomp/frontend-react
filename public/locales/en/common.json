@@ -504,6 +504,7 @@
     "header": "XRP Ledger Explorer",
     "enter-address": "Enter an XRPL address or a username",
     "searching-tx-nft-nftoffer": "Searching for Tx / NFT ID / NFT Offer",
+    "searching-for-addresses": "Searching for addresses...",
     "menu": {
       "account": "Account",
       "transactions": "Transactions",
