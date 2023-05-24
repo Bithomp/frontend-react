@@ -98,8 +98,8 @@ export default function Home({ devNet, selectedCurrency, setSelectedCurrency }) 
           <a href="https://bithomp.com/go/earn-on-xrp" target="_blank" rel="noreferrer">
             <div className="sponsored-brand">
               <img src="/images/nexo.svg" className="sponsored-brand-icon" alt="earn on xrp" />
-              <div className="sponsored-brand-title">Earn on XRP</div>
-              <div className="sponsored-brand-text">Earn up to 8% APR on XRP.</div>
+              <div className="sponsored-brand-title">Earn 16% APR</div>
+              <div className="sponsored-brand-text">Get up to $10,000 in rewards.</div>
             </div>
           </a>
         </div>
