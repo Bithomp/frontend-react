@@ -34,7 +34,7 @@ export default function CurrencySelect({ setSelectedCurrency, selectedCurrency }
           <span style={{}}>
             <Image
               alt="country flag"
-              src={"/images/flags/" + e.value.slice(0, 2) + ".svg"}
+              src={"/images/flags/" + e.value.slice(0, 2) + (e.value === "krw" ? ".png" : ".svg")}
               width={24}
               height={18}
             />

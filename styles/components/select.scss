@@ -40,6 +40,10 @@
     }
   }
 
+  .react-select__option--is-focused:not(.react-select__option--is-selected) {
+    background-color: var(--background-main);
+  }
+
   .react-select__dropdown-indicator {
     color: var(--accent-icon);
     &:hover {

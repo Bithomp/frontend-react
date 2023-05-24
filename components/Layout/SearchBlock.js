@@ -38,36 +38,47 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
 
   const searchKeyDown = e => {
     if (e.key === 'Enter') {
+      e.preventDefault()
       onSearch()
       return
     }
 
-    // We should allow spaces here... or even non-latin characters, so that validation can be removed, together with searchItemRe 
-    if (!searchItemRe.test(e.key)) {
-      e.preventDefault()
-      return
-    }
+    //if printable character entered
+    if ([...e.key].length === 1 && !e.ctrlKey && !e.metaKey) {
 
-    if (e?.target?.value && e.target.value.length > 1) {
-      clearTimeout(typingTimer)
-      setSearchSuggestions([])
-      typingTimer = setTimeout(async () => {
-        if (e?.target?.value && e.target.value.length > 2) {
-          const suggestionsResponse = await axios('v2/address/search/' + e.target.value)
-          if (suggestionsResponse) {
-            const suggestions = suggestionsResponse.data
-            if (suggestions?.addresses?.length > 0) {
-              setSearchSuggestions(suggestions.addresses)
+      // We should allow spaces here... or even non-latin characters, so that validation can be removed, together with searchItemRe 
+      if (!searchItemRe.test(e.key)) {
+        e.preventDefault()
+        return
+      }
+
+      //if more than 3 characters - search for suggestions
+      if (e?.target?.value && e.target.value.length > 1) {
+        clearTimeout(typingTimer)
+        setSearchSuggestions([])
+        typingTimer = setTimeout(async () => {
+          if (e?.target?.value && e.target.value.length > 2) {
+            const suggestionsResponse = await axios('v2/address/search/' + e.target.value)
+            if (suggestionsResponse) {
+              const suggestions = suggestionsResponse.data
+              if (suggestions?.addresses?.length > 0) {
+                setSearchSuggestions(suggestions.addresses)
+              }
             }
           }
-        }
-      }, 500) // 0.5 sec
+        }, 500) // 0.5 sec
+      }
+
     }
   }
 
-  const searchOnChange = e => {
-    if (!e) return
-    onSearch(e.username || e.address)
+  const searchOnChange = (option) => {
+    if (!option) return
+    if (option.username && !option.username.includes("-")) {
+      onSearch(option.username)
+    } else {
+      onSearch(option.address)
+    }
   }
 
   // a stupid hack to remove id param
