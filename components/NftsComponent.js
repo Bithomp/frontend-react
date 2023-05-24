@@ -381,11 +381,13 @@ export default function NftsComponent({
     {nftExplorer ?
       <SEO
         title={t("nft-explorer.header") + (issuerQuery ? (" " + issuerQuery) : "")}
+        description={issuer || search || t("nfts.desc")}
       />
       :
       <>
         <SEO
           title={t("nfts.header") + (id ? (" " + id) : "")}
+          description={t("nfts.desc")}
         />
         <SearchBlock
           searchPlaceholderText={t("explorer.enter-address")}
