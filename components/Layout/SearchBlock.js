@@ -5,7 +5,7 @@ import { useRouter } from 'next/router'
 import axios from 'axios';
 import { useSearchParams } from 'next/navigation'
 
-import { isAddressOrUsername, isIdValid } from '../../utils'
+import { isAddressOrUsername, isIdValid, useWidth } from '../../utils'
 import { userOrServiceName } from '../../utils/format'
 
 //import { ReactComponent as Qr } from "../../public/images/qr.svg";
@@ -18,6 +18,7 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
   const searchParams = useSearchParams()
   const router = useRouter()
   const searchInput = useRef(null)
+  const windowWidth = useWidth()
 
   const { id } = router.query
   const [searchItem, setSearchItem] = useState(id || userData?.address || "")
@@ -213,8 +214,8 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
             options={searchSuggestions}
             getOptionLabel={
               (option) => <>
-                {option.address}
-                {(option.username || option.service) ? " - " : ""}
+                <span style={windowWidth < 400 ? { fontSize: "14px" } : {}}>{option.address}</span>
+                {(option.username || option.service) ? (windowWidth > 400 ? " - " : " ") : ""}
                 <b className='blue'>{option.username}</b>
                 {option.service ? <>
                   {option.username ? " (" : ""}
