@@ -290,9 +290,7 @@ export default function NftsComponent({
       setOwnerInput("");
       setOwner("");
     }
-    if (searchInput) {
-      setSearch(searchInput)
-    }
+    setSearch(searchInput)
   }
 
   const enterPress = e => {
