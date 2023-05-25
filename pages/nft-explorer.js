@@ -2,7 +2,18 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import NftsComponent from '../components/NftsComponent';
 
 export const getServerSideProps = async ({ query, locale }) => {
-  const { view, list, saleDestination, saleCurrency, saleCurrencyIssuer, search, issuer, owner, taxon } = query
+  const {
+    view,
+    list,
+    saleDestination,
+    saleCurrency,
+    saleCurrencyIssuer,
+    search,
+    issuer,
+    owner,
+    taxon,
+    serial
+  } = query
   return {
     props: {
       view: view || "tiles",
@@ -14,12 +25,24 @@ export const getServerSideProps = async ({ query, locale }) => {
       issuerQuery: issuer || "",
       ownerQuery: owner || "",
       taxonQuery: taxon || "",
+      serialQuery: serial || "",
       ...(await serverSideTranslations(locale, ['common'])),
     },
   }
 }
 
-export default function Nfts({ view, list, saleDestination, saleCurrency, saleCurrencyIssuer, searchQuery, issuerQuery, ownerQuery, taxonQuery }) {
+export default function Nfts({
+  view,
+  list,
+  saleDestination,
+  saleCurrency,
+  saleCurrencyIssuer,
+  searchQuery,
+  issuerQuery,
+  ownerQuery,
+  taxonQuery,
+  serialQuery
+}) {
   return <NftsComponent
     view={view}
     list={list}
@@ -30,6 +53,7 @@ export default function Nfts({ view, list, saleDestination, saleCurrency, saleCu
     issuerQuery={issuerQuery}
     ownerQuery={ownerQuery}
     taxonQuery={taxonQuery}
+    serialQuery={serialQuery}
     nftExplorer={true}
   />
 };

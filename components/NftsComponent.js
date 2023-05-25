@@ -26,6 +26,7 @@ export default function NftsComponent({
   issuerQuery,
   ownerQuery,
   taxonQuery,
+  serialQuery,
   nftExplorer
 }) {
   const { t } = useTranslation();
@@ -92,6 +93,7 @@ export default function NftsComponent({
     let collectionUrlPart = ''
     let markerUrlPart = ''
     let searchPart = ''
+    let serialPart = ''
 
     if (listTab === 'onSale') {
       //order: "offerCreatedNew", "offerCreatedOld", "priceLow", "priceHigh"
@@ -124,6 +126,15 @@ export default function NftsComponent({
     if (search) {
       searchPart = '&search=' + search + '&searchLocations=metadata.name'
       //'&searchLocations=metadata.name,metadata.description'
+      if (search.length < 3) {
+        setErrorMessage(t("error-api.search is too short"))
+        setLoading(false)
+        return
+      }
+    }
+
+    if (serialQuery.match(/^-?\d+$/)) {
+      serialPart = '&serial=' + serialQuery
     }
 
     if (marker && marker !== "first") {
@@ -132,7 +143,7 @@ export default function NftsComponent({
     if (marker === "first") {
       setLoading(true)
     }
-    const response = await axios('v2/nfts' + listUrlPart + ownerUrlPart + collectionUrlPart + markerUrlPart + searchPart)
+    const response = await axios('v2/nfts' + listUrlPart + ownerUrlPart + collectionUrlPart + markerUrlPart + searchPart + serialPart)
       .catch(error => {
         setErrorMessage(t("error." + error.message))
       })

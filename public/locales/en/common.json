@@ -350,6 +350,7 @@
     "Request failed with status code 429": "You are sending us too many requests, try later!"
   },
   "error-api": {
+    "search is too short": "The name to search is too short",
     "issuer username is not found or invalid": "Invalid issuer's username",
     "issuer is invalid": "Invalid issuer's address",
     "owner username is not found or invalid": "Invalid owner's username",

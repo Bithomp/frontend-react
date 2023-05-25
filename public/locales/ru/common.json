@@ -350,6 +350,7 @@
     "Request failed with status code 429": "Вы нам шлете слишком много запросов, попробуйте вернуться позже."
   },
   "error-api": {
+    "search is too short": "Слишком короткое имя для поиска",
     "issuer username is not found or invalid": "Эмитент с таким ником не найден",
     "issuer is invalid": "Неверный адрес эмитента",
     "owner username is not found or invalid": "Неверный ник владельца",

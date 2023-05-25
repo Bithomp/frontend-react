@@ -276,41 +276,41 @@ const Server = () => {
 export const server = Server();
 
 const WssServer = () => {
-  let token = '';
+  let token = ''
   if (process.env.NODE_ENV === 'development') {
-    token = '?x-bithomp-token=' + process.env.NEXT_PUBLIC_BITHOMP_API_TEST_KEY;
+    token = '?x-bithomp-token=' + process.env.NEXT_PUBLIC_BITHOMP_API_TEST_KEY
   }
-  return server.replace("https://", "wss://") + '/wss/' + token;
+  return server.replace("https://", "wss://") + '/wss/' + token
 }
-export const wssServer = WssServer();
+export const wssServer = WssServer()
 
-export const isEmailValid = (x) => {
-  let re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-  return x && re.test(x);
+export const isEmailValid = x => {
+  let re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+  return x && re.test(x)
 }
 
-export const isUrlValid = (x) => {
+export const isUrlValid = x => {
   let re = new RegExp('^(https?:\\/\\/)?' + // protocol
     '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // domain name
     '((\\d{1,3}\\.){3}\\d{1,3}))' + // OR ip (v4) address
     '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + // port and path
     '(\\?[;&a-z\\d%_.~+=-]*)?' + // query string
     '(\\#[-a-z\\d_]*)?$', 'i'); // fragment locator
-  return !!re.test(x);
+  return !!re.test(x)
 }
 
-export const isAddressValid = (x) => {
-  return /^r[0-9a-zA-Z]{24,35}$/.test(x);
+export const isAddressValid = x => {
+  return /^r[0-9a-zA-Z]{24,35}$/.test(x)
 }
 
-export const isUsernameValid = (x) => {
-  return x && /^(?=.{3,18}$)[0-9a-zA-Z]{1,18}[-]{0,1}[0-9a-zA-Z]{1,18}$/.test(x);
+export const isUsernameValid = x => {
+  return x && /^(?=.{3,18}$)[0-9a-zA-Z]{1,18}[-]{0,1}[0-9a-zA-Z]{1,18}$/.test(x)
 }
 
-export const isAddressOrUsername = (x) => {
-  return isAddressValid(x) || isUsernameValid(x);
+export const isAddressOrUsername = x => {
+  return isAddressValid(x) || isUsernameValid(x)
 }
 
-export const isIdValid = (x) => {
-  return /^[0-9a-zA-Z]{64}$/.test(x);
+export const isIdValid = x => {
+  return /^[0-9a-zA-Z]{64}$/.test(x)
 }
