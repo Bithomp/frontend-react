@@ -188,6 +188,28 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
     }
   }
 
+  const searchOnFocus = () => {
+    const selectInstance = searchInput?.current?.select
+    if (!selectInstance?.hasValue()) return // No value, nothing to select.
+
+    const textElem = selectInstance.controlRef.querySelector("[class*=singleValue]") // Element which has the text.
+
+    // Following code is from https://stackoverflow.com/a/4183448/6612182
+    if (window.getSelection && document.createRange) {
+      // Every browser
+      const sel = window.getSelection()
+      const range = document.createRange()
+      range.selectNodeContents(textElem)
+      sel.removeAllRanges()
+      sel.addRange(range)
+    } else if (document.selection && document.body.createTextRange) {
+      // Microsoft
+      const textRange = document.body.createTextRange()
+      textRange.moveToElementText(textElem)
+      textRange.select()
+    }
+  }
+
   return (
     <>
       <div className="search-block">
@@ -213,8 +235,9 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
             placeholder={searchPlaceholderText}
             onKeyDown={searchKeyDown}
             onChange={searchOnChange}
+            onBlur={e => e.preventDefault()}
+            onFocus={searchOnFocus}
             spellCheck="false"
-            isClearable={true}
             options={searchSuggestions}
             getOptionLabel={
               (option) => <>

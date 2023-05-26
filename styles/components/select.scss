@@ -15,6 +15,9 @@
         color: var(--text-main);
       }
     }
+    .react-select__input {
+      position: absolute;
+    }
   }
 
   .react-select__control--is-focused {
