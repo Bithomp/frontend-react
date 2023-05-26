@@ -38,14 +38,6 @@ body {
   height: 100%;
 }
 
-body.dark {
-  #logo, #receiptLogo {
-    path, rect {
-      fill: white;
-    }
-  }
-}
-
 .body {
   display: flex;
   min-height: 100%;
@@ -54,6 +46,20 @@ body.dark {
   background-color: var(--background-main);
   transition: background-color .5s, color .5s;
   color: var(--text-main);
+  @media (prefers-color-scheme: dark) {
+    #logo.adaptive, #receiptLogo.adaptive {
+      path, rect {
+        fill: white;
+      }
+    }
+  }
+  &.dark {
+    #logo, #receiptLogo {
+      path, rect {
+        fill: white;
+      }
+    }
+  }
 }
 
 .background {

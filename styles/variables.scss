@@ -20,27 +20,53 @@ body {
   --red: #D23A1C;
   --green: #14913E;
   --orange: #FCAC45;
+  &.dark {
+    --background-header: #031B21;
+    --background-block: #031B21;
+    --background-main: #090909;
+    --background-footer: #1C1C1C;
+    --background-menu: black;
+    --background-secondary: #101010;
+    --background-contrast: white;
+    --button-additional: #1C1C1C;
+    --background-input: black;
+    --background-input-readonly: #333333;
+    --text-main: white;
+    --text-secondary: #999999;
+    --text-contrast: white;
+    --text-oposite: black;
+    --accent-link: #66D0DA;
+    --accent-link-hover: white;
+    --accent-icon: #00B1C1;
+    --unaccent-icon: rgba(0, 177, 193, .5);
+    --red: #E48977;
+    --green: #62C683;
+    --orange: #FAD29E;
+  }
 }
-body.dark {
-  --background-header: #031B21;
-  --background-block: #031B21;
-  --background-main: #090909;
-  --background-footer: #1C1C1C;
-  --background-menu: black;
-  --background-secondary: #101010;
-  --background-contrast: white;
-  --button-additional: #1C1C1C;
-  --background-input: black;
-  --background-input-readonly: #333333;
-  --text-main: white;
-  --text-secondary: #999999;
-  --text-contrast: white;
-  --text-oposite: black;
-  --accent-link: #66D0DA;
-  --accent-link-hover: white;
-  --accent-icon: #00B1C1;
-  --unaccent-icon: rgba(0, 177, 193, .5);
-  --red: #E48977;
-  --green: #62C683;
-  --orange: #FAD29E;
+
+@media (prefers-color-scheme: dark) {
+  body.adaptive {
+    --background-header: #031B21;
+    --background-block: #031B21;
+    --background-main: #090909;
+    --background-footer: #1C1C1C;
+    --background-menu: black;
+    --background-secondary: #101010;
+    --background-contrast: white;
+    --button-additional: #1C1C1C;
+    --background-input: black;
+    --background-input-readonly: #333333;
+    --text-main: white;
+    --text-secondary: #999999;
+    --text-contrast: white;
+    --text-oposite: black;
+    --accent-link: #66D0DA;
+    --accent-link-hover: white;
+    --accent-icon: #00B1C1;
+    --unaccent-icon: rgba(0, 177, 193, .5);
+    --red: #E48977;
+    --green: #62C683;
+    --orange: #FAD29E;
+  }
 }
