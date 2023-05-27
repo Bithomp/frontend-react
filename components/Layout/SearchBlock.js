@@ -38,7 +38,7 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
     }
   }, [userData]);
 
-  const searchKeyDown = e => {
+  const searchOnKeyUp = e => {
     if (e.key === 'Enter') {
       e.preventDefault()
       onSearch()
@@ -46,7 +46,8 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
     }
 
     //if printable character entered
-    if ([...e.key].length === 1 && !e.ctrlKey && !e.metaKey) {
+    // e.key === 'Unidentified' - for android chrome
+    if (e.key === 'Unidentified' || ([...e.key].length === 1 && !e.ctrlKey && !e.metaKey)) {
 
       // We should allow spaces here... or even non-latin characters, so that validation can be removed, together with searchItemRe 
       if (!searchItemRe.test(e.key)) {
@@ -227,38 +228,40 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
               </>
             }
           </div>
-          <Select
-            ref={searchInput}
-            className="issuer-select search-input search-input-select"
-            placeholder={searchPlaceholderText}
-            onKeyDown={searchKeyDown}
-            onChange={searchOnChange}
-            onFocus={searchOnFocus}
-            spellCheck="false"
-            options={searchSuggestions}
-            getOptionLabel={
-              (option) => <>
-                <span style={windowWidth < 400 ? { fontSize: "14px" } : {}}>{option.address}</span>
-                {(option.username || option.service) ? (windowWidth > 400 ? " - " : " ") : ""}
-                <b className='blue'>{option.username}</b>
-                {option.service ? <>
-                  {option.username ? " (" : ""}
-                  <b className='green'>{option.service}</b>
-                  {option.username ? ")" : ""}
-                </> : ""}
-              </>
-            }
-            getOptionValue={(option) => (option.address + option.username + option.service)}
-            inputValue={searchItem}
-            onInputChange={searchOnInputChange}
-            isSearchable={true}
-            classNamePrefix="react-select"
-            instanceId="issuer-select"
-            noOptionsMessage={
-              () => searchingSuggestions ? t("explorer.searching-for-addresses") : null
-              //({ inputValue }) => inputValue.length > 3
-            }
-          />
+          <div onKeyUp={searchOnKeyUp}>
+            <Select
+              ref={searchInput}
+              className="issuer-select search-input search-input-select"
+              placeholder={searchPlaceholderText}
+              onChange={searchOnChange}
+              onFocus={searchOnFocus}
+              spellCheck="false"
+              options={searchSuggestions}
+              getOptionLabel={
+                (option) => <>
+                  <span style={windowWidth < 400 ? { fontSize: "14px" } : {}}>{option.address}</span>
+                  {(option.username || option.service) ? (windowWidth > 400 ? " - " : " ") : ""}
+                  <b className='blue'>{option.username}</b>
+                  {option.service ? <>
+                    {option.username ? " (" : ""}
+                    <b className='green'>{option.service}</b>
+                    {option.username ? ")" : ""}
+                  </> : ""}
+                </>
+              }
+              getOptionValue={(option) => (option.address + option.username + option.service)}
+              inputValue={searchItem}
+              onInputChange={searchOnInputChange}
+              isSearchable={true}
+              classNamePrefix="react-select"
+              instanceId="issuer-select"
+              noOptionsMessage={
+                () => searchingSuggestions ? t("explorer.searching-for-addresses") : null
+                //({ inputValue }) => inputValue.length > 3
+              }
+            />
+          </div>
+
 
           <div className="search-button" onClick={onSearch}>
             <img src="/images/search.svg" className="search-icon" alt="search" />
