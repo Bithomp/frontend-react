@@ -6,7 +6,7 @@ import axios from 'axios';
 import { useSearchParams } from 'next/navigation'
 
 import { isAddressOrUsername, isIdValid, useWidth } from '../../utils'
-import { userOrServiceName } from '../../utils/format'
+import { userOrServiceName, amountFormat } from '../../utils/format'
 
 //import { ReactComponent as Qr } from "../../public/images/qr.svg";
 
@@ -240,13 +240,29 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
               getOptionLabel={
                 (option) => <>
                   <span style={windowWidth < 400 ? { fontSize: "14px" } : {}}>{option.address}</span>
-                  {(option.username || option.service) ? (windowWidth > 400 ? " - " : " ") : ""}
+                  {(option.username || option.service || option.globalid || option.xumm) ? (windowWidth > 400 ? " - " : " ") : ""}
                   <b className='blue'>{option.username}</b>
-                  {option.service ? <>
+                  {option.service && <>
                     {option.username ? " (" : ""}
                     <b className='green'>{option.service}</b>
                     {option.username ? ")" : ""}
-                  </> : ""}
+                  </>}
+                  {(option.username || option.service) && option.xumm && <>, </>}
+                  {option.xumm &&
+                    <>
+                      Xaman <span className='orange'>
+                        {option.xumm.includes("+") ? option.xumm.replace(/\+/g, " (") + ")" : option.xumm}
+                      </span>
+                    </>
+                  }
+                  {option.globalid &&
+                    <>
+                      , GlobaliD <span className='purple'>{option.globalid}</span>
+                    </>
+                  }
+                  {option.balance &&
+                    <> [<b>{amountFormat(option.balance, { maxFractionDigits: 2 }).trim()}</b>]</>
+                  }
                 </>
               }
               getOptionValue={(option) => (option.address + option.username + option.service)}

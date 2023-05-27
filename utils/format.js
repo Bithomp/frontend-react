@@ -310,7 +310,7 @@ export const amountFormat = (amount, options = {}) => {
   }
 }
 
-const amountParced = (amount) => {
+const amountParced = amount => {
   if (!amount && amount !== 0) {
     return false;
   }
@@ -416,8 +416,8 @@ const amountParced = (amount) => {
   }
 }
 
-export const capitalize = (word) => {
-  return word.charAt(0).toUpperCase() + word.slice(1);
+export const capitalize = word => {
+  return word.charAt(0).toUpperCase() + word.slice(1)
 }
 
 export const fullDateAndTime = (timestamp, type = null) => {
