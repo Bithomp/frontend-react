@@ -26,6 +26,24 @@ Builds the app for production.
 
 Runs the app in production
 
+## Run the app localy
+
+`cd <folder for projects>` // create a folder and open terminal/console there.
+
+`npm install -g yarn` // install yarn if you do not have it yet
+
+`git clone --single-branch https://github.com/Bithomp/frontend-react.git` // copy the repository
+
+`cd frontend-react` // open the folder with the repo in the terminal/console
+
+`mv .env .env.local` // rename .env into .env.local
+
+`nano .env.local` // open the file .env.local and remove # for the env you have api key for and before the last line with the key, enter your API key
+
+`yarn` // install packgaes
+
+`yarn dev` // run project in dev mode, you will see on the localhost:3000 
+
 ### Deployment (first time)
 
 `cd <folder for projects>`
