@@ -1,0 +1,18 @@
+{
+  "menu": {
+    "services": "Servicios 2",
+    "usernames": "Registro de nombre de usuario 2",
+    "project-registartion": "Registro de proyecto XRPL 2",
+    "price-alerts": "Alertas de precio XRP 2",
+    "submit-offline-tx": "Enviar transacción fuera de línea 2",
+    "api": "API de Bithomp 2",
+    "tools": "Herramientas 2",
+    "account-generation": "Generación de cuenta 2",
+    "faucet": "Grifo 2",
+    "networks": "Redes 2",
+    "domains": "Dominios 2",
+    "ledger": "Transacciones del libro mayor 2",
+    "last-ledger-information": "Última información del libro mayor 2",
+    "last-ledger-transactions": "Últimas transacciones del libro mayor 2"
+  }
+}
