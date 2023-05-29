@@ -253,11 +253,14 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
                       Xaman <span className='orange'>
                         {option.xumm.includes("+") ? option.xumm.replace(/\+/g, " (") + ")" : option.xumm}
                       </span>
+                      {option.xummVerified && <> ✅</>}
                     </>
                   }
+                  {(option.username || option.service || option.xumm) && option.globalid && <>, </>}
                   {option.globalid &&
                     <>
-                      , GlobaliD <span className='purple'>{option.globalid}</span>
+                      GlobaliD <span className='purple'>{option.globalid}</span>
+                      {option.globalidStatus && <> ✔️</>}
                     </>
                   }
                   {option.balance &&
@@ -265,7 +268,9 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
                   }
                 </>
               }
-              getOptionValue={(option) => (option.address + option.username + option.service)}
+              getOptionValue={
+                option => (option.address + option.username + option.service + option.xumm + option.globalid)
+              }
               inputValue={searchItem}
               onInputChange={searchOnInputChange}
               isSearchable={true}
