@@ -1,6 +1,9 @@
 import { useTranslation } from 'next-i18next'
 import moment from "moment"
-import 'moment/locale/ru' // Add more languages
+import 'moment/locale/ru' // "ru"
+import 'moment/locale/es' // "es"
+import 'moment/locale/nn' // "nn"
+import 'moment/locale/ca' // "ca"
 import { useRouter } from 'next/router'
 import Cookies from 'universal-cookie'
 
@@ -39,5 +42,5 @@ export default function LanguageSelect() {
     )
   //}
 
-  return null
+  //return null
 };
