@@ -567,7 +567,7 @@
       "week": "Para los últimos 7 días",
       "day": "Para los últimas 24 horas"
     },
-    "text0": "el XRPL tuvo {{allSales}} {{currency}} en ventas {{saleType}} NFT por valor de {{allVolume}}.",
+    "text0": "el XRPL tuvo {{allSales}} {{currency}} en ventas en el mercado {{saleType}} NFT por valor de {{allVolume}}.",
     "brokers": {
       "desc": "Este es un listado de cuentas de broker NFT. Puedes encontrar aquí los volúmenes de los bots de cruces. Los mercados utilizan modelos mixtos para comerciar, aquí puedes ver solo volúmenes a través del modelo de broker.",
       "no-broker": "Sin broker",
@@ -577,7 +577,7 @@
       "desc": "Esta es la lista de Mercados NFT en XRPL. Los volúmenes aquí no incluyen las ventas primarias (acuñaciones) las cuales fueron hechas en 2 transacciones (pago y transferencia de NFT)."
     },
     "issuers": {
-      "desc": "Esta es la lista de los emisores de NFTs en XRPL. Para ver los volúmenes de colecciones de NFTs identificados por emisor y taxón haz click en el enlace en la columna de Volumen de ventas."
+      "desc": "Esta es la lista de los emisores de NFTs en XRPL. Para ver los volúmenes de colecciones de NFTs identificados por emisor y taxón haz click en el enlace en la columna de Volumen en ventas."
     }
   },
   "nft-sales": {
