@@ -401,7 +401,7 @@
     "expired": "Caducado",
     "destination": "Destinatario",
     "sales": "Ventas",
-    "volume": "Volumen de ventas",
+    "volume": "Volumen en ventas",
     "price": "Precio",
     "external-url": "URL Externa",
     "description": "Descripción",
@@ -559,7 +559,7 @@
     "text0": "{{users}} cuentas poseen {{nfts}} NFTs"
   },
   "nft-volumes": {
-    "header": "Volúmenes de ventas NFT",
+    "header": "Volúmenes en ventas NFT",
     "period": {
       "all": "",
       "year": "Para los últimos 365 días",
@@ -567,7 +567,7 @@
       "week": "Para los últimos 7 días",
       "day": "Para los últimas 24 horas"
     },
-    "text0": "XRPL tuvo {{allSales}} {{currency}} ventas {{saleType}} NFT por {{allVolume}}.",
+    "text0": "el XRPL tuvo {{allSales}} {{currency}} en ventas {{saleType}} NFT por valor de {{allVolume}}.",
     "brokers": {
       "desc": "Este es un listado de cuentas de broker NFT. Puedes encontrar aquí los volúmenes de los bots de cruces. Los mercados utilizan modelos mixtos para comerciar, aquí puedes ver solo volúmenes a través del modelo de broker.",
       "no-broker": "Sin broker",
