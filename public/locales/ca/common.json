@@ -31,7 +31,7 @@
     "privacy-policy": "Política de privadesa",
     "terms-and-conditions": "Termes i condicions del servei",
     "customer-support": "Atenció al client",
-    "press": "Prem",
+    "press": "Premsa",
     "merch": "Botiga de marxandatge",
     "donate": "Fes una donació",
     "community": {
@@ -211,7 +211,7 @@
     },
     "step0": {
       "text0": "Bithomp <1>àlies</1> és un àlies <3>públic</3> per la teva adreça XRPL.",
-      "text1": "L'àlies serà associat amb la teva adreça a l'explorador de bithomp i en serveis de tercers que usin la <1>API</1> de bithomp. Després del registre esdevindrà públic - <3>tothom</3> ho podrà veure. La teva adreça XRPL serà accesible per:",
+      "text1": "L'àlies serà associat amb la teva adreça a l'explorador de bithomp i en serveis de tercers que usin la <1>API</1> de bithomp. Després del registre esdevindrà públic - <3>tothom</3> ho podrà veure. La teva adreça XRPL serà accesible així:",
       "text2": "L'àlies <1>no pot ser canviat o eliminat</1>.",
       "only-one-for-address": "Per cada adreça XRPL només pots registrar un àlies.",
       "address-you-control": "Només pots registrar àlies per adreces XRPL que controlis (en tens els números secrets o les 12/24 paraules de recuperació). No pots registrar àlies per adreces custodiades (que tenen una Etiqueta de destinació) per part d'una casa de canvi / un servei / un moneder.",
