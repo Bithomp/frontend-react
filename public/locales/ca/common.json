@@ -1,0 +1,605 @@
+{
+  "menu": {
+    "services": "Serveis",
+    "usernames": "Registre d'àlies",
+    "project-registartion": "Registre de projectes XRPL",
+    "price-alerts": "Alertes XRP",
+    "submit-offline-tx": "Envia una transacció fora de línia",
+    "api": "API Bithomp",
+    "tools": "Eines",
+    "account-generation": "Generació d'un compte",
+    "faucet": "Aixeta",
+    "networks": "Xarxes",
+    "domains": "Dominis",
+    "ledger": "Transaccions del Ledger",
+    "last-ledger-information": "Informació de l'últim Ledger",
+    "last-ledger-transactions": "Transaccions de l'últim Ledger",
+    "nft": {
+      "explorer": "Explorador",
+      "volumes": "Volums",
+      "sales": "Vendes",
+      "distribution": "Distribució (holders)",
+      "statistics": "Estadístiques en viu",
+      "nfts": "NFTs del compte",
+      "offers": "Ofertes"
+    },
+    "validators": "Validadors",
+    "amendments": "Esmenes",
+    "genesis": "Comptes gènesi",
+    "legal": "Legal",
+    "disclaimer": "Exempció de responsabilitats",
+    "privacy-policy": "Política de privadesa",
+    "terms-and-conditions": "Termes i condicions del servei",
+    "customer-support": "Atenció al client",
+    "press": "Prem",
+    "merch": "Botiga de marxandatge",
+    "donate": "Fes una donació",
+    "community": {
+      "title": "Comunitat",
+      "xumm": "Moneder Xumm",
+      "xrplf": "Fundació XRPL",
+      "xrpl": "Pàgina web XRPL",
+      "xrpchat": "Xat XRP",
+      "treasury": "Treasury: Bithomp"
+    },
+    "sponsored": {
+      "title": "Patrocinat",
+      "buy": "Compra XRP",
+      "earn": "Guanya amb XRP",
+      "play": "Juga amb XRP"
+    }
+  },
+  "components": {
+    "expiration-select": {
+      "1d": "1 dia",
+      "3d": "3 dies",
+      "7d": "7 dies",
+      "14d": "14 dies",
+      "30d": "30 dies",
+      "90d": "90 dies"
+    }
+  },
+  "signin": {
+    "signin": "Inicia sessió",
+    "signout": "Tanca sessió",
+    "choose-app": "Tria una aplicació per iniciar sessió",
+    "login-with": "Inicia sessió amb",
+    "sign-with": "Signa amb",
+    "amount": {
+      "set-price": "Estableix un preu",
+      "enter-amount": "Introdueix una quantitat"
+    },
+    "expiration": "Venciment",
+    "xumm": {
+      "open-app": "Obre l'aplicació Xumm al mòbil.",
+      "change-settings": "Ves a paràmetres i tria un node d'una xarxa de proves.",
+      "scan-qr": "Escaneja aquest codi QR amb l'aplicació Xumm.",
+      "statuses": {
+        "redirecting": "Redirigint a Xumm...",
+        "wait": "Si us plau, espera...",
+        "check-push": "Comprova que t'apareix una notificació emergent al mòbil.",
+        "check-app": "Si us plau, segueix les instruccions a l'aplicació Xumm.",
+        "expired": "El codi QR ha expirat, genera'n un de nou."
+      }
+    },
+    "actions": {
+      "view": "Veure l'explorador",
+      "send": "Envia XRP",
+      "my-nfts": "Els meus NFTs",
+      "my-nft-offers": "Les meves ofertes d'NFTs"
+    },
+    "not-available": "No disponible",
+    "confirm": {
+      "nft-accept-offer-header": "Compra NFT",
+      "nft-create-sell-offer-header": "Llista per vendre",
+      "nft-create-buy-offer-header": "Crea una oferta de Compra",
+      "nft-accept-offer": "Accepto que Bithomp em dona accés a un mercat descentralitzat i que no pot verificar o garantir l'autenticitat o legitimitat dels NFTs. Confirmo que he llegit els <1>Termes i condicions del servei</1>, i accepto tots els termes de compra, venda o ús d'NFTs a Bithomp.",
+      "nft-create-sell-offer": "Ho entenc, un cop he signat l'NFT pot ser comprat immediatament."
+    }
+  },
+  "footer": {
+    "cookie": {
+      "we-use-cookie": "Fem servir galetes i tecnologia similar per millorar l'experiència de l'usuari al nostre web.",
+      "read-more": "Llegeix-ne més"
+    }
+  },
+  "home": {
+    "title": "Explorador XRP | Escaneja l'XRP Ledger",
+    "description": "Gràfica de preu d'XRP | Estadístiques | Explorador d'NFTs | Cerca d'adreces dels moneders",
+    "search-placeholder": "Cerca per Adreça XRPL / Transacció / NFT / Àlies / PayString / Oferta / Hash",
+    "search-placeholder-short": "Cerca per Adreça / Transacció / Àlies",
+    "scan-qr": "ESCANEJA UN CODI",
+    "whales": {
+      "header": "Les transaccions més significatives de les darreres 24 hores",
+      "no-value": "sense valor"
+    },
+    "stat": {
+      "header": "Estadístiques XRPL en viu",
+      "ledger-index": "Índex del Ledger",
+      "close-time": "Hora de tancament",
+      "transactions": "Transaccions",
+      "txs-per-sec": "txs/s",
+      "quorum": "Quòrum de validació",
+      "proposers": "proposants",
+      "accounts": "Comptes",
+      "usernames": "Àlies",
+      "nft": {
+        "created": "NFTs encunyats",
+        "burned": "NFTs eliminats",
+        "owners": "Propietaris d'NFTs",
+        "issuers": "Encunyadors d'NFTs",
+        "transfers": "Transferències d'NFTs",
+        "for-sale": "NFTs en venda"
+      }
+    }
+  },
+  "last-ledger-information": {
+    "ledger-hash": "Ledger hash",
+    "ledger": "Ledger",
+    "ledger-closed-at": "Ledger tancat a les",
+    "ledger-interval": "Interval del Ledger",
+    "transactions": "Transaccions",
+    "transaction-speed": "Transaccions per segon",
+    "proposers": "Proposants",
+    "validation-quorum": "Quòrum de validació",
+    "base-fee": "Comissió base",
+    "base-reserve": "Reserves base",
+    "increment-reserve": "Increment de les reserves",
+    "total-supply": "Total d'XRP existent",
+    "total-burned": "Total d'XRP eliminat"
+  },
+  "ledger": {
+    "past-ledgers": "Veure transaccions en els ledgers previs",
+    "no-transactions": "No hem pogut torbar cap tipus de transacció per mostrar-te."
+  },
+  "nft-statistics": {
+    "header": "Estadístiques d'NFTs en viu",
+    "text0": "La informació està una mica desactualitzada, necessitem posar-nos al dia de <1>{{lag}}</1> ledgers.<br/>Les dades són subministrades pel ledger #{{crawlerIndex}}, ({{crawlerTime}}).<br/>L'últim ledger validat és el #{{currentLedgerIndex}}, ({{currentLedgerTime}}).",
+    "updated": "Actualitzat",
+    "ledger-index": "Índex del Ledger",
+    "created": "Encunyat",
+    "burned": "Eliminat",
+    "exist": "Actualment existeix",
+    "burnable": "Eliminable per l'encunyador",
+    "only-xrp": "Només pot ser venut per XRP",
+    "transferable": "Pot ser transferit a qualsevol",
+    "owners": "Propietaris actuals",
+    "issuers": "Total d'encunyadors",
+    "transfers": "Transferències d'NFTs",
+    "for-sale": "NFTs en venda",
+    "for-sale-without-destination": "NFTs en venda per qualsevol comprador",
+    "for-sale-with-destination": "NFTs en venda amb comprador específic"
+  },
+  "amendment": {
+    "soon": "Esmenes amb majoria",
+    "enabled": "Esmenes activades",
+    "name": "Nom",
+    "introduction": "Introducció",
+    "majority": "Majoria",
+    "eta": "Temps estimat d'activació"
+  },
+  "validators": {
+    "updated": "Actualitzat",
+    "unl": "Validadors de l'UNL",
+    "domain": "Domini",
+    "domain-legacy": "Domini (antiga verificació)",
+    "public-key": "Clau pública",
+    "sequence": "Seqüència",
+    "address": "Adreça XRPL",
+    "no-domain": "domini no especificat",
+    "text0": "La llista de validadors <1>{{url}}</1> té la seqüència {{sequence}} i venciment el {{expiration}}.<br/>Inclou {{validatorCount}} els validadors llistats a continuació."
+  },
+  "username": {
+    "memo": "Registre d'àlies Bithomp",
+    "error": {
+      "address-empty": "Si us plau, introdueix la teva adreça XRPL.",
+      "address-invalid": "Si us plau, introdueix una adreça XRPL vàlida.",
+      "address-hosted": {
+        "on": "a",
+        "hosted": "L'adreça introduïda és custodiada per {{serviceName}}, pots registrar àlies només per moneders d'autocustòdia (hardware wallets, Xumm, etc). Si ets una casa de canvi, si us plau, contacta'ns."
+      },
+      "address-done": "L'adreça ja té un àlies registrat.",
+      "username-empty": "Si us plau, introdueix l'àlies que vols registrar.",
+      "username-invalid": "L'àlies hauria de ser de menys de 18 caràcters, i els símbols no estan permesos.",
+      "username-taken": "L'àlies <b>{{username}}</b> ja està agafat :(",
+      "username-reserved": "L'àlies <b>{{username}}</b> està reservat, contacta amb el servei d'atenció al client.",
+      "username-hold": "L'àlies <b>{{username}}</b> està en espera per a ser registrat per un altre compte de l'XRPL. Ho pots tornar a intentar d'aquí a 24 hores.",
+      "agree-terms-page": "Si us plau, accepta els termes i les condicions del servei especificats en aquesta pàgina.",
+      "agree-terms-site": "Si us plau, accepta els termes i les condicions del servei del web.",
+      "agree-privacy-policy": "Si us plau, accepta la nostra política de privacitat.",
+      "payment-partly": "Si us plau, envia la quantitat restant, de moment només hem rebut {{received}} {{currency}} però <b>{{required}} {{currency}}</b> és el total requerit."
+    },
+    "step0": {
+      "text0": "Bithomp <1>àlies</1> és un àlies <3>públic</3> per la teva adreça XRPL.",
+      "text1": "L'àlies serà associat amb la teva adreça a l'explorador de bithomp i en serveis de tercers que usin la <1>API</1> de bithomp. Després del registre esdevindrà públic - <3>tothom</3> ho podrà veure. La teva adreça XRPL serà accesible per:",
+      "text2": "L'àlies <1>no pot ser canviat o eliminat</1>.",
+      "only-one-for-address": "Per cada adreça XRPL només pots registrar un àlies.",
+      "address-you-control": "Només pots registrar àlies per adreces XRPL que controlis (en tens els números secrets o les 12/24 paraules de recuperació). No pots registrar àlies per adreces custodiades (que tenen una Etiqueta de destinació) per part d'una casa de canvi / un servei / un moneder.",
+      "pay-from-your-address": "Per provar que tens el control de l'adreça de l'XRPL hauràs de fer una pagament des d'aquesta adreça (per la qual vols assignar un àlies). Pagaments fets des d'altres adreces es consideraran donacions i no seran reemborsats.",
+      "text3": "El pagament és per 100 Corones Sueques denominat en XRP. El pagament per l'àlies és <1>no reemborsable</1>. Si pagues més del requerit, la quantitat excedent es considerarà una donació i no serà reemborsada.",
+      "text4": "Els àlies ara s'utilitzen a través de diverses xarxes, <1>registra un àlies a la xarxa principal de l'XRPL</1> i estarà també disponible a la xarxa bithomp dev explorers (en qüestió d'1 hora).",
+      "enter-address-or": "Introdueix la teva adreça XRPL o",
+      "sign-in": "Inicia sessió amb Xumm",
+      "sign-out": "Tanca sessió",
+      "your-address": "La teva adreça XRPL",
+      "enter-username": "Introdueix l'àlies que t'agradaria tenir",
+      "your-username": "Àlies",
+      "enter-country": "País de residència (per la nostra comptabilitat)",
+      "agree-terms-page": "Entenc i accepto els termes i les condicions del servei especificats més amunt.",
+      "agree-terms-site": "Accepto els <1>Termes i condicions del servei</1>.",
+      "agree-privacy-policy": "Accepto la <1>Política de privacitat</1>.",
+      "already-registered": "El teu compte ja té un àlies registrat",
+      "sign-out-to-register-another-one": "<0>Tanca sessió</0> des d'aquest compte per registrar un altre àlies per a una adreça diferent."
+    },
+    "step1": {
+      "to-register": "Per registrar el teu àlies públic:",
+      "from-your-address": "Has de fer un pagament des de l'adreça:",
+      "text0": "Els pagaments fets per part teva <1>des de qualsevol altra adreça</1> o amb una <3>Etiqueta de destinació equivocada</3> no seran acceptats pel servei, seran acceptats com a donacions i <5>no seran reemborsats</5>.",
+      "payment-instructions": "Instruccions de pagament",
+      "address": "Adreça XRPL:",
+      "tag": "Etiqueta de destinació:",
+      "amount": "Quantitat:",
+      "awaiting": "Esperant el pagament",
+      "about-confirmation": "Veuràs la confirmació tan bon punt rebem el pagament."
+    },
+    "step2": {
+      "text0": "Enhorabona! El teu àlies <1>{{ username }}</1> s'ha registrat amb èxit.",
+      "one-more": "Registra'n un altre"
+    }
+  },
+  "alerts": {
+    "text0": "Rep una notificació quan el preu de XRP/USD o XRP/BTC de <1>Bitstamp</1> canviï més d'un 5% en una hora o més d'un 10% en un dia.",
+    "text1": "Segueix el canal de Telegram: <1>bithomp</1> o el comtpe de twitter: <3>Alertesbithomp</3>.",
+    "last-alerts": "Últimes 50 alertes",
+    "date-and-time": "Data i hora",
+    "currency-pair": "Parell de divises",
+    "change-duration": "Duració de l'intercanvi",
+    "change": "Intercanvia",
+    "old-rate": "Taxa de canvi antiga",
+    "new-rate": "Nova taxa de canvi"
+  },
+  "genesis": {
+    "text0": "El ledger <1>32570</1> és el primer ledger disponible, correspon aproximadament a la primera setmana d'història de l'XRPL, <3>els ledgers de l'1 al 32569 es van  perdre a causa d'un contratemps el 2012</3>.",
+    "ledger-continue": "Com que l'estat de l'XRPL es registra en cada versió del ledger, el ledger pot continuar sense disposar de la part de la història perduda.",
+    "ledger-index": "Índex del Ledger",
+    "account-count": "Recompte del compte",
+    "inception": "Inici",
+    "xrp-balance": "Balanç d'XRP",
+    "balance-update": "Actualització del balanç",
+    "details": "Detalls",
+    "address": "Adreça",
+    "genesis-balance": "Balanç gènesi d'XRP",
+    "rippletrade-username": "Àlies de Rippletrade",
+    "nickname": " Àlies",
+    "genesis-index": "Índex gènesi"
+  },
+  "developer": {
+    "header": "Sol·licitud de la clau de l'API Bithomp",
+    "email": "L'adreça de correu electrònic de La teva empresa/Universitat:",
+    "url": "L'URL del teu Web/aplicació:",
+    "description": "Descripció del projecte i detalls de l'ús de l'API:",
+    "text0": "La sol·licitud no serà aprovada:<1/>- si utilitzes el teu correu electrònic privat<3/>- si vols utilitzar l'API per alguna cosa que la nostra API no suporta<5/>- si la vols utilitzar per alguna cosa que el <7>xrpl.js</7> ja suporta.",
+    "success": "Gràcies. Hauries de rebre el teu token de l'api per correu electrònic en 48 hores.",
+    "error": {
+      "email-empty": "Si us plau, introdueix el teu correu electrònic.",
+      "email-invalid": "Si us plau, introdueix una adreça de correu electrònic vàlida.",
+      "url-empty": "Si us plau, introdueix l'URL de la teva pàgina web/applicació.",
+      "url-invalid": "Si us plau, introdueix una URL vàlida.",
+      "description-empty": "Si us plau, afegeix una descripció del teu projecte.",
+      "description-invalid": "Si us plau, escriu una descripció detallada del teu projecte."
+    }
+  },
+  "customer-support": {
+    "text0": "Bithomp és un explorador <1>públic</1> de l'XRP Ledger.",
+    "no-help": "No podem bloquejar comptes, fer reemborsaments, cancel·lar transaccions o canviar/afegir Etiquetes de destinació. No fem investigacions i no et podem ajudar a recuperar els teus fons si els perds o te'ls roben.",
+    "text1": "Si t'han robat els fons o si ets víctima d'una estafa pots denunciar-ho <1>aquí</1>.",
+    "status-failed": "Si la teva transacció té l'estatus \"failed\" però els fons han estat substrets del deu balanç, llavors contacta el servei / moneder /casa de canvi utilitzat per fer la transacció.",
+    "status-success": "Si la teva transacció té l'estatus\"success\" però no l'has rebuda, llavors contacta el servei / moneder /suport de la casa de canvi utilitzats.",
+    "wrong-tag": "Si envies una transacció sense una Etiqueta de destinació o amb una Etiqueta de destinació equivocada, llavors llegeix (2) i (3) més amunt.",
+    "text2": "Si trobes a faltar 10 XRP al teu moneder, si us plau, llegeix sobre les <1>reserves base</1>.",
+    "paper-wallet": "Si vols enviar XRP des d'un moneder de paper, has d'importar-lo primer a un moneder de software, pots usar l'aplicació mòbil Xumm per fer-ho (importa les claus secretes com a \"family seed\").",
+    "flare": "Si tens alguna pregunta relacionada amb \"Flare\" t'has de dirigir a la comunitat de Flare.",
+    "text3": "Si tens alguna proposta de <1>col·laboració o publicitat</1> llavors pots contactar-nos per correu electrònic: <3/>. També ens pots contactar amb preguntes sobre el registre d'àlies bithomp o l'explorador de transaccions bithomp.",
+    "no-answer": "A causa del temps limitat de què disposem no responem correus electrònics relacionats amb algun dels punts 1-7.",
+    "submit-info": "Envia informació sobre el teu servei d'XRPL",
+    "text4": "Si tens un servei públic a l'XRPL i vols que la teva adreça XRPL sigui reconeguda a Bithomp, envia la teva informació <1>aquí</1>. També ens pots contactar per correu electrònic aquí: <3/> si vols accelerar el procés.",
+    "follow-us": "Segueix-nos a les xarxes socials"
+  },
+  "press": "Aquest és el logo oficial de Bithomp per ser utilitzat pels mitjans i professionals de la premsa per a impressió o pels webs (svg, png, eps, pdf, per fons foscos o clars). Per preguntes relacionades amb els mitjans de comunicació, si us plau <1>contacta'ns</1>.",
+  "page-not-found": {
+    "header": "No s'ha trobat la pàgina sol·licitada.",
+    "text": "Clica <1>aquí</1> per veure la nostra pàgina d'aterratge."
+  },
+  "receipt": {
+    "quantity": "quantitat",
+    "items": "ítems",
+    "price": "preu",
+    "total": "total",
+    "paid": "pagat",
+    "order-id": "id de l'ordre"
+  },
+  "button": {
+    "continue": "Continua",
+    "cancel": "Cancel·la",
+    "accept": "Accepta",
+    "submit": "Envia",
+    "search": "Cerca",
+    "print": "Imprimeix",
+    "download": "Descarrega",
+    "copy": "Copia",
+    "copied": "Copiat",
+    "copy-my-address": "Copia la meva adreça",
+    "sign": "Signa"
+  },
+  "general": {
+    "error": "Error",
+    "no-data": "No hi ha informació disponible",
+    "loading": "Carregant...",
+    "load-failed": "Ha fallat la càrrega",
+    "all-issuers": "Tots els emissors",
+    "no-expiration": "Mai",
+    "no-uri": "No s'ha especificat cap URI",
+    "no-media": "No s'han trobat mitjans",
+    "viewer": "Visualitzador"
+  },
+  "error": {
+    "Network Error": "Sembla que no hi ha connexió a internet ;(", 
+    "Request failed with status code 429": "Ens estàs enviant massa sol·licituds, intenta-ho de nou més tard!"
+  },
+  "error-api": {
+    "search is too short": "El nom que s'ha de cercar és massa curt",
+    "issuer username is not found or invalid": "L'àlies de l'encunyador no és vàlid",
+    "issuer is invalid": "L'adreça de l'encunyador no és vàlida",
+    "owner username is not found or invalid": "L'àlies del propietari no és vàlid",
+    "owner is invalid": "L'adreça del propietari no és vàlida",
+    "destination username is not found or invalid": "L'àlies de la destinació no és vàlid",
+    "destination is invalid": "L'adreça de destinació no és vàlida",
+    "currency is invalid": "La moneda no és vàlida",
+    "currencyIssuer username is not found or invalid": "L'àlies de l'encunyador no és vàlid",
+    "currencyIssuer is invalid": "L'adreça de l'encunyador de la moneda no és vàlida",
+    "Token information is not found": "No hem pogut trobar informació sobre aquest ID"
+  },
+  "units": {
+    "seconds-short": "s",
+    "minutes-short": "m",
+    "hours-short": "h"
+  },
+  "table": {
+    "index": "Índex",
+    "address": "Adreça",
+    "time": "Hora",
+    "date": "Data",
+    "amount": "Quantitat",
+    "name": "Nom",
+    "sender": "Remitent",
+    "memo": "Memo",
+    "transaction": "Transacció",
+    "owner": "Propietari",
+    "owners-now": "Propietaris (ara)",
+    "accepted-by": "Acceptat per",
+    "issuer": "Encunyador",
+    "minter": "Encunyador autoritzat",
+    "receiver": "Recipient",
+    "issuer-owner": "Encunyador i propietari",
+    "issuers": "Encunyadors",
+    "broker": "Broker",
+    "seller": "Venedor",
+    "buyer": "Comprador",
+    "sold": "Venut",
+    "sold_few": "Venut",
+    "sold-on": "Venut a",
+    "type": "Tipus",
+    "status": "Estatus",
+    "hash": "Hash",
+    "serial": "Serial",
+    "taxon": "Taxó",
+    "placed": "Col·locat",
+    "accepted": "Acceptat",
+    "canceled": "Cancel·lat",
+    "offer": "Oferta",
+    "expiration": "Venciment",
+    "expired": "Vençut",
+    "destination": "Destinació",
+    "sales": "Vendes",
+    "volume": "Volum de vendes",
+    "price": "Preu",
+    "external-url": "URL externa",
+    "description": "Descripció",
+    "collection": "Col·lecció",
+    "transfer-fee": "Drets d'autor",
+    "flag": "Senyalador",
+    "flags": "Senyaladors",
+    "count": "Quantitat",
+    "nfts": "NFTs",
+    "minted": "Encunyat",
+    "transferred": "Transferit",
+    "burned": "Eliminat",
+    "attributes": "Atributs",
+    "metadata": "Metadata",
+    "ledger-data": "Dades del Ledger",
+    "history": "Història",
+    "sell-offers": "Ofertes de venda",
+    "buy-offers": "Ofertes de compra",
+    "nfts-now": "NFTs (ara)",
+    "traded-nfts": "NFTs negociats",
+    "buyers": "Compradors",
+    "raw-data": "Dades en brut",
+    "username": "Àlies",
+    "floor-now": "Preu mínim (ara)",
+    "related-lists": "Llistes relacionades",
+    "by-issuer": "Per encunyador",
+    "by-owner": "Per propietari",
+    "by-taxon": "Per taxó",
+    "all-nfts": "Tots els NFTs",
+    "on-sale": "En venda",
+    "social-share": "Compartir és cuidar",
+    "marketplace": "Mercat",
+    "text": {
+      "show-extended-statistics": "Mostra estadístiques ampliades",
+      "no-expiration": "Sense data de venciment",
+      "no-offers": "No s'han trobat ofertes",
+      "unspecified": "No especificat",
+      "sell": "Ven",
+      "buy": "Compra",
+      "show": "Mostra",
+      "hide": "Amaga",
+      "see-on": "Veure a",
+      "valid": "vàlid",
+      "invalid": "invàlid"
+    },
+    "filter": {
+      "valid": "Vàlid",
+      "invalid": "Invàlid",
+      "active": "Tots actius",
+      "historical": "Històric",
+      "all": "Tots"
+    },
+    "text-status": {
+      "NFT is not owned by the seller account": "L'NFT no és propietat del venedor",
+      "Offer is expired": "Vençuda",
+      "Unable to verify balance of the buyer account": "No és possible verificar el balanç del compte comprador",
+      "Insufficient funds on the buyer account": "El compte comprador no té prou fons",
+      "Seller has no trustline for the token or it cannot be verified": "El venedor no té establerta una trustline pel token o no es pot verificar que la tingui"
+    }
+  },
+  "tabs": {
+    "list": "Llista",
+    "tiles": "Mosaic",
+    "secondary-sales": "Secundàries",
+    "primary-sales": "Primàries",
+    "all-sales": "Totes les vendes",
+    "top-sales": "TOP de vendes",
+    "latest-sales": "Últimes vendes",
+    "all-time": "Qualsevol moment",
+    "year": "365 dies",
+    "month": "30 dies",
+    "week": "7 dies",
+    "day": "24 hores",
+    "currencies": "Monedes",
+    "issuers": "Encunyadors",
+    "marketplaces": "Mercats",
+    "brokers": "Brokers",
+    "image": "Imatge",
+    "video": "Vídeo",
+    "audio": "Àudio",
+    "model": "Model 3D",
+    "owned-offers": "En propietat",
+    "offers-for-owned-nfts": "Per NFTs en propietat",
+    "privately-offered-to-address": "Privades (pròximament)",
+    "all": "Tots",
+    "buy": "Compra",
+    "sell": "Ven",
+    "public": "Públic",
+    "publicAndKnownBrokers": "Públic & MP",
+    "onSale": "En venda per XRP",
+    "all-tokens": "Tots els tokens",
+    "xrp-only": "Només XRP"
+  },
+  "xumm": {
+    "new-qr": "Obtenir un codi QR nou"
+  },
+  "explorer": {
+    "header": "Explorador XRPL",
+    "enter-address": "Introdueix un adreça XRPL o un àlies",
+    "searching-tx-nft-nftoffer": "Cercant per Tx / NFT ID / Oferta NFT",
+    "searching-for-addresses": "Cercant per adreces...",
+    "menu": {
+      "account": "Compte",
+      "transactions": "Transaccions",
+      "tokens": "Tokens"
+    }
+  },
+  "nft-explorer": {
+    "header": "Explorador d'NFTs"
+  },
+  "nft-offers": {
+    "header": "Ofertes d'NFTs",
+    "owned-desc": "Aquí pots cercar Ofertes de Compra i Ofertes de Venda per NFTs, escriu l'adreça XRPL o l'àlies per verue què ofereix.",
+    "for-owned-nfts-desc": "Aquí pots cercar Ofertes de Compra d'NFTs propietat d'un compte específic, escriu l'adreça XRPL o l'àlies per veure les ofertes rebudes.",
+    "privately-offered-to-address-desc": "Aquí pots cercar Ofertes creades específicament per a un compte (amb destinació especificada), s'utilitza habitualment per transferències d'NFTs (preu 0 XRP), escriu l'adreça XRPL o l'àlies per veure les ofertes rebudes.",
+    "no-nft-offers": "No hem pogut trobar cap Oferta per NFTs.",
+    "cancel-invalid-offer_one": "Cancel·la l'oferta no vàlida",
+    "cancel-invalid-offer_other": "Cancel·la {{count}} les ofertes no vàlides",
+    "cancel-expired-offer_one": "Cancel·la l'oferta vençuda",
+    "cancel-expired-offer_other": "Cancel·la {{count}} les ofertes vençudes"
+  },
+  "nft-offer": {
+    "header": "Ofertes d'NFTs",
+    "desc": "Aquí pots cercar ofertes d'NFTs, introdueix l'ID d'una oferta i clica cercar.",
+    "enter-offer-id": "Introdueix l'ID d'un oferta NFT",
+    "selling": "Venent",
+    "buying": "Comprant"
+  },
+  "nfts": {
+    "header": "NFTs del compte",
+    "desc": "Aquí pots cercar NFTs, escriu l'adreça XRPL per veure quins NFTs té en propietat.",
+    "search-by-name": "Cerca per nom de l'NFT",
+    "search-by-issuer": "Cerca per l'encunyador de l'NFT",
+    "search-by-taxon": "Cerca per taxó de l'NFT",
+    "search-by-owner": "Cerca per propietari de l'NFT",
+    "no-nfts": "No hem pogut trobar NFTs amb aquests paràmetres de cerca.",
+    "load-more": "Estem cercant les dades a l'XRPL... Si us plau, espera...",
+    "end": "Aquests són els NFTs que hem trobat."
+  },
+  "nft": {
+    "desc": "Aquí pots cercar NFT's, introdueix l'ID d'un NFT i clica cercar.",
+    "enter-nft-id": "Introdueix l'ID d'un NFT",
+    "cancel-sell-offer-for": "Cancel·la l'oferta de Venda per",
+    "cancel-buy-offer-for": "Cancel·la l'oferta de Compra per",
+    "buy-for": "Compra per",
+    "on": "a",
+    "make-offer": "Fes oferta",
+    "list-for-sale": "Llista per vendre",
+    "holders": "Distribució (Holders)"
+  },
+  "nft-distribution": {
+    "header": "Distribució d'NFTs",
+    "desc": "Aquí pots veure la distribució d'NFTS d'un encunyador en particular. Introdueix l'adreça XRPL o l'àlies de l'encunyador d'NFTs i clica cercar.",
+    "no-nfts": "No hem pogut trobar NFTs encunyats per aquesta adreça.",
+    "text0": "{{users}} comptes són propietaris de {{nfts}} NFTs"
+  },
+  "nft-volumes": {
+    "header": "Volum de vendes d'NFTs",
+    "period": {
+      "all": "",
+      "year": "Dels últims 365 dies",
+      "month": "Dels últims 30 dies",
+      "week": "Dels últims 7 dies",
+      "day": "De les últimes 24 hores"
+    },
+    "text0": "L'XRPL ha tingut {{allSales}} {{currency}} NFT {{saleType}} vendes per {{allVolume}}.",
+    "brokers": {
+      "desc": "Aquesta és la llista de comptes brokers d'NFTs. Aquí pots trobar volums d'ofertes corresponents a bots. Els mercats fan servir models de negociació mixtes, aquí només pots veure els volums relacionats amb el model corresponent als brokers.",
+      "no-broker": "No broker",
+      "text0": "L'XRPL ha tingut {{allSales}} <3>{{currency}}</3> NFT {{saleType}} vendes per {{allVolume}}, de les quals <9>{{brokerSales}}</9> {{percentBrokerSales}} de les negociacions per <13>{{brokerVolume}}</13> {{percentBrokerVolume}} han estat a través del model corresponent als brokers."
+    },
+    "marketplaces": {
+      "desc": "Aquesta és la llista de mercats d'NFTs a l'XRPL. Els volums aquí mostrats no inclouen les vendes primàries (encunyacions) les quals hagin estat fetes en 2 transaccions (pagament i transferència de l'NFT)."
+    },
+    "issuers": {
+      "desc": "Aquesta és la llista d'encunyadors d'NFTS a l'XRPL. Per veure volums de col·leccions d'NFTs per encunyador i taxó clica l'enllaç a la columna de Vendes per volum."
+    }
+  },
+  "nft-sales": {
+    "header": "Vendes d'NFTs",
+    "load-more": "Estem cercant dades a l'XRPL... si us plau, espera...",
+    "end": "Final de la llista."
+  },
+  "links": {
+    "active-offers-same-account": "Veure ofertes actives per aquest compte",
+    "nfts-same-issuer": "NFTs amb el mateix encunyador",
+    "owned-nfts-same-account": "NFTs propietat d'aquest compte",
+    "all": "Tot",
+    "sold": "venut"
+  },
+  "donate": {
+    "help-us": "Si us plau, ajuda'ns en la nostra missió de fer l'explorador d'XRPL més fàcil d'usar de tots.",
+    "it-helps": "La teva donació ens ajudarà a afegir capacitat i continuar desenvolupant Bithomp.",
+    "address": "La nostra adreça XRPL per donacions",
+    "dt": "Etiqueta de destinació",
+    "donate-with-xumm": "Fes una donació amb XUMM"
+  },
+  "sponsored": {
+    "sponsored": "Patrocinat"
+  }
+}
