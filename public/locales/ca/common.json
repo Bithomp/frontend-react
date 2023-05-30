@@ -459,7 +459,8 @@
       "Offer is expired": "Vençuda",
       "Unable to verify balance of the buyer account": "No és possible verificar el balanç del compte comprador",
       "Insufficient funds on the buyer account": "El compte comprador no té prou fons",
-      "Seller has no trustline for the token or it cannot be verified": "El venedor no té establerta una trustline pel token o no es pot verificar que la tingui"
+      "Seller has no trustline for the token or it cannot be verified": "El venedor no té establerta una trustline pel token o no es pot verificar que la tingui",
+      "NFT Issuer has no trustline for the token to accept royalty or it cannot be verified": "NFT Issuer has no trustline for the token to accept royalty or it cannot be verified"
     }
   },
   "tabs": {

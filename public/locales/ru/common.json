@@ -459,7 +459,8 @@
       "Offer is expired": "Истек срок валидности предложения",
       "Unable to verify balance of the buyer account": "Не вышло проверить баланс у покупателя",
       "Insufficient funds on the buyer account": "У покупателя недостаточно средств",
-      "Seller has no trustline for the token or it cannot be verified": "У продавца нет трастлайна или невозможно проверить"
+      "Seller has no trustline for the token or it cannot be verified": "У продавца нет трастлайна или это невозможно проверить",
+      "NFT Issuer has no trustline for the token to accept royalty or it cannot be verified": "У NFT эмитета нет трастлайна для токена чтобы принять роялти или это невозможно проверить"
     }
   },
   "tabs": {
