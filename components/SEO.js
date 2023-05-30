@@ -53,8 +53,7 @@ export default function SEO({ title, description, image, page, images, websiteNa
   let languageAlternates = [
     { hrefLang: 'en', href: server + path },
     { hrefLang: 'ru', href: server + '/ru' + path },
-    { hrefLang: 'es', href: server + '/es' + path },
-    { hrefLang: 'es-ES', href: server + '/es-ES' + path }
+    { hrefLang: 'es', href: server + '/es' + path }
   ]
 
   return (

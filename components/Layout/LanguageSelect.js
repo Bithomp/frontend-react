@@ -7,7 +7,7 @@ import Cookies from 'universal-cookie'
 const cookies = new Cookies()
 
 export default function LanguageSelect() {
-  const { t, i18n } = useTranslation();
+  const { i18n } = useTranslation()
   const router = useRouter()
   const { pathname, asPath, query } = router
 
@@ -27,11 +27,10 @@ export default function LanguageSelect() {
   //if (i18n.language !== 'en') {
     return (
       <div className="language-select">
-        {t("settings.language")}:{" "}
+        Language:{" "}
         <select onChange={handleLangChange} value={i18n.language}>
           <option value="en">English</option>
           <option value="es">Español</option>
-          <option value="es-ES">Español - España</option>
           <option value="ru">Русский</option>
         </select>
       </div>
