@@ -562,16 +562,16 @@
     "header": "Volum de vendes d'NFTs",
     "period": {
       "all": "",
-      "year": "Dels últims 365 dies",
-      "month": "Dels últims 30 dies",
-      "week": "Dels últims 7 dies",
-      "day": "De les últimes 24 hores"
+      "year": "Els últims 365 dies",
+      "month": "Els últims 30 dies",
+      "week": "Els últims 7 dies",
+      "day": "Les últimes 24 hores"
     },
-    "text0": "L'XRPL ha tingut {{allSales}} {{currency}} NFT {{saleType}} vendes per {{allVolume}}.",
+    "text0": "l'XRPL ha tingut {{allSales}} {{currency}} en vendes {{saleType}} d'NFTs per un valor de {{allVolume}}.",
     "brokers": {
       "desc": "Aquesta és la llista de comptes brokers d'NFTs. Aquí pots trobar volums d'ofertes corresponents a bots. Els mercats fan servir models de negociació mixtes, aquí només pots veure els volums relacionats amb el model corresponent als brokers.",
       "no-broker": "No broker",
-      "text0": "L'XRPL ha tingut {{allSales}} <3>{{currency}}</3> NFT {{saleType}} vendes per {{allVolume}}, de les quals <9>{{brokerSales}}</9> {{percentBrokerSales}} de les negociacions per <13>{{brokerVolume}}</13> {{percentBrokerVolume}} han estat a través del model corresponent als brokers."
+      "text0": "l'XRPL ha tingut {{allSales}} <3>{{currency}}</3> NFT {{saleType}} vendes per {{allVolume}}, de les quals <9>{{brokerSales}}</9> {{percentBrokerSales}} de les negociacions per <13>{{brokerVolume}}</13> {{percentBrokerVolume}} han estat a través del model corresponent als brokers."
     },
     "marketplaces": {
       "desc": "Aquesta és la llista de mercats d'NFTs a l'XRPL. Els volums aquí mostrats no inclouen les vendes primàries (encunyacions) les quals hagin estat fetes en 2 transaccions (pagament i transferència de l'NFT)."
