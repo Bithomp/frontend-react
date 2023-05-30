@@ -253,8 +253,8 @@
     "last-alerts": "Últimes 50 alertes",
     "date-and-time": "Data i hora",
     "currency-pair": "Parell de divises",
-    "change-duration": "Duració de l'intercanvi",
-    "change": "canvi",
+    "change-duration": "Duració del canvi",
+    "change": "canvia",
     "old-rate": "Taxa de canvi antiga",
     "new-rate": "Nova taxa de canvi"
   },
