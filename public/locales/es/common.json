@@ -295,17 +295,17 @@
     "text1": "Si tus fondos fueron robados o si te convertiste en una víctima de un fraude/timo, puedes reportarlo <1>aquí</1>.",
     "status-failed": "Si tu transacción tiene el estado de \"fallido\" pero tus fondos fueron tomados de tu balance entonces contacta con el servicio / cartera / exchange con el cual hiciste esa transacción.",
     "status-success": "Si tu transacción tiene el estado de \"realizado\" pero no se ha recibido, contacta con el soporte de la cartera / servicio / exchange del destinatario.",
-    "wrong-tag": "Si enviaste una transacción sin tag de destino or con un tag de destino erróneo entonces lee arriba (2) y (3).",
+    "wrong-tag": "Si enviaste una transacción sin tag de destino or con un tag de destino erróneo entonces lee arriba los puntos (2) y (3).",
     "text2": "Si echas en falta 10 XRP en tu cartera, por favor lee acerca de la <1>reserva inicial</1>.",
     "paper-wallet": "Si quieres enviar XRP desde una cartera de papel, necesitas importarla a una cartera de software primero, puedes usar la app móvil de Xumm para ello (importa el secreto como una \"semilla familiar\").",
     "flare": "Si tienes preguntas sobre \"Flare\" debes gestionarlas con la comunidad de Flare.",
-    "text3": "Si tienes una propuesta de <1>asociación or márketing</1> no puedes contactar por correo electrónico: <3/>. También puedes contactarnos para cuestiones sobre el registro de nombres de usuario de bithomp o el explorador de transacciones de bithomp.",
+    "text3": "Si tienes una propuesta de <1>colaboración o márketing</1> puedes contactarnos por correo electrónico: <3/>. También puedes contactarnos para cuestiones sobre el registro de nombres de usuario de bithomp o el explorador de transacciones de bithomp.",
     "no-answer": "Debido a que nuestro tiempo es limitado no respondemos correos relacionados con los puntos 1-7.",
     "submit-info": "Enviar información sobre tu servicio XRPL",
-    "text4": "Si tienes un servicio público XRPL y quieres que tu dirección XRP sea reconocida por Bithomp envía tu información <1>aquí</1>. También nos puedes contactarpo por correo electrónico: <3/> si quieres acelerar el proceso.",
-    "follow-us": "Síguenos en las redes sociales"
+    "text4": "Si tienes un servicio público XRPL y quieres que tu dirección XRP sea reconocida por Bithomp envía tu información <1>aquí</1>. También nos puedes contactar por correo electrónico: <3/> si quieres acelerar el proceso.",
+    "follow-us": "Síguenos en nuestras redes sociales"
   },
-  "press": "Este es el logo oficial de Bithomp para su uso en los medios y prensa profesionales para imprimir y uso web (svg, png, eps, pdf, para fondos oscuros y claros). Para peticiones dde los medios, por favor <1>contáctanos</1>.",
+  "press": "Este es el logo oficial de Bithomp para su uso en los medios y prensa profesionales, para imprimir y uso web (svg, png, eps, pdf, para fondos oscuros y claros). Para peticiones de los medios, por favor <1>contáctanos</1>.",
   "page-not-found": {
     "header": "No se ha encontrado la página solicitada.",
     "text": "Haz click <1>aquí</1> para ver nuestra página de inicio."
@@ -401,7 +401,7 @@
     "expired": "Caducado",
     "destination": "Destinatario",
     "sales": "Ventas",
-    "volume": "Volumen de ventas",
+    "volume": "Volumen en ventas",
     "price": "Precio",
     "external-url": "URL Externa",
     "description": "Descripción",
@@ -559,7 +559,7 @@
     "text0": "{{users}} cuentas poseen {{nfts}} NFTs"
   },
   "nft-volumes": {
-    "header": "Volúmenes de ventas NFT",
+    "header": "Volúmenes en ventas NFT",
     "period": {
       "all": "",
       "year": "Para los últimos 365 días",
@@ -567,7 +567,7 @@
       "week": "Para los últimos 7 días",
       "day": "Para los últimas 24 horas"
     },
-    "text0": "XRPL tuvo {{allSales}} {{currency}} ventas {{saleType}} NFT por {{allVolume}}.",
+    "text0": "el XRPL tuvo {{allSales}} {{currency}} en ventas {{saleType}} NFT por valor de {{allVolume}}.",
     "brokers": {
       "desc": "Este es un listado de cuentas de broker NFT. Puedes encontrar aquí los volúmenes de los bots de cruces. Los mercados utilizan modelos mixtos para comerciar, aquí puedes ver solo volúmenes a través del modelo de broker.",
       "no-broker": "Sin broker",
