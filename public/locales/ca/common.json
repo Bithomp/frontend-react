@@ -155,14 +155,14 @@
   "nft-statistics": {
     "header": "Estadístiques d'NFTs en viu",
     "text0": "La informació està una mica desactualitzada, necessitem posar-nos al dia de <1>{{lag}}</1> ledgers.<br/>Les dades són subministrades pel ledger #{{crawlerIndex}}, ({{crawlerTime}}).<br/>L'últim ledger validat és el #{{currentLedgerIndex}}, ({{currentLedgerTime}}).",
-    "updated": "Actualitzat",
+    "updated": "Última actualització",
     "ledger-index": "Índex del Ledger",
-    "created": "Encunyat",
-    "burned": "Eliminat",
-    "exist": "Actualment existeix",
-    "burnable": "Eliminable per l'encunyador",
-    "only-xrp": "Només pot ser venut per XRP",
-    "transferable": "Pot ser transferit a qualsevol",
+    "created": "Encunyats",
+    "burned": "Eliminats",
+    "exist": "Actualment n'existeixen",
+    "burnable": "Eliminables per l'encunyador",
+    "only-xrp": "Només poden ser venuts per XRP",
+    "transferable": "Poden ser transferits a qualsevol",
     "owners": "Propietaris actuals",
     "issuers": "Total d'encunyadors",
     "transfers": "Transferències d'NFTs",
@@ -253,8 +253,8 @@
     "last-alerts": "Últimes 50 alertes",
     "date-and-time": "Data i hora",
     "currency-pair": "Parell de divises",
-    "change-duration": "Duració de l'intercanvi",
-    "change": "canvi",
+    "change-duration": "Duració del canvi",
+    "change": "canvia",
     "old-rate": "Taxa de canvi antiga",
     "new-rate": "Nova taxa de canvi"
   },
@@ -514,7 +514,7 @@
   },
   "nft-offers": {
     "header": "Ofertes d'NFTs",
-    "owned-desc": "Aquí pots cercar Ofertes de Compra i Ofertes de Venda per NFTs, escriu l'adreça XRPL o l'àlies per verue què ofereix.",
+    "owned-desc": "Aquí pots cercar Ofertes de Compra i Ofertes de Venda per NFTs, escriu l'adreça XRPL o l'àlies per veure què ofereix.",
     "for-owned-nfts-desc": "Aquí pots cercar Ofertes de Compra d'NFTs propietat d'un compte específic, escriu l'adreça XRPL o l'àlies per veure les ofertes rebudes.",
     "privately-offered-to-address-desc": "Aquí pots cercar Ofertes creades específicament per a un compte (amb destinació especificada), s'utilitza habitualment per transferències d'NFTs (preu 0 XRP), escriu l'adreça XRPL o l'àlies per veure les ofertes rebudes.",
     "no-nft-offers": "No hem pogut trobar cap Oferta per NFTs.",
@@ -562,16 +562,16 @@
     "header": "Volum de vendes d'NFTs",
     "period": {
       "all": "",
-      "year": "Dels últims 365 dies",
-      "month": "Dels últims 30 dies",
-      "week": "Dels últims 7 dies",
-      "day": "De les últimes 24 hores"
+      "year": "Els últims 365 dies",
+      "month": "Els últims 30 dies",
+      "week": "Els últims 7 dies",
+      "day": "Les últimes 24 hores"
     },
-    "text0": "L'XRPL ha tingut {{allSales}} {{currency}} NFT {{saleType}} vendes per {{allVolume}}.",
+    "text0": "l'XRPL ha tingut {{allSales}} {{currency}} en vendes {{saleType}} d'NFTs per un valor de {{allVolume}}.",
     "brokers": {
       "desc": "Aquesta és la llista de comptes brokers d'NFTs. Aquí pots trobar volums d'ofertes corresponents a bots. Els mercats fan servir models de negociació mixtes, aquí només pots veure els volums relacionats amb el model corresponent als brokers.",
       "no-broker": "No broker",
-      "text0": "L'XRPL ha tingut {{allSales}} <3>{{currency}}</3> NFT {{saleType}} vendes per {{allVolume}}, de les quals <9>{{brokerSales}}</9> {{percentBrokerSales}} de les negociacions per <13>{{brokerVolume}}</13> {{percentBrokerVolume}} han estat a través del model corresponent als brokers."
+      "text0": "l'XRPL ha tingut {{allSales}} <3>{{currency}}</3> en vendes {{saleType}} d'NFTs per un valor de {{allVolume}}, de les quals <9>{{brokerSales}}</9> {{percentBrokerSales}} de les negociacions per <13>{{brokerVolume}}</13> {{percentBrokerVolume}} han estat a través del model corresponent als brokers."
     },
     "marketplaces": {
       "desc": "Aquesta és la llista de mercats d'NFTs a l'XRPL. Els volums aquí mostrats no inclouen les vendes primàries (encunyacions) les quals hagin estat fetes en 2 transaccions (pagament i transferència de l'NFT)."
