@@ -514,7 +514,7 @@
   },
   "nft-offers": {
     "header": "Ofertes d'NFTs",
-    "owned-desc": "Aquí pots cercar Ofertes de Compra i Ofertes de Venda per NFTs, escriu l'adreça XRPL o l'àlies per verue què ofereix.",
+    "owned-desc": "Aquí pots cercar Ofertes de Compra i Ofertes de Venda per NFTs, escriu l'adreça XRPL o l'àlies per veure què ofereix.",
     "for-owned-nfts-desc": "Aquí pots cercar Ofertes de Compra d'NFTs propietat d'un compte específic, escriu l'adreça XRPL o l'àlies per veure les ofertes rebudes.",
     "privately-offered-to-address-desc": "Aquí pots cercar Ofertes creades específicament per a un compte (amb destinació especificada), s'utilitza habitualment per transferències d'NFTs (preu 0 XRP), escriu l'adreça XRPL o l'àlies per veure les ofertes rebudes.",
     "no-nft-offers": "No hem pogut trobar cap Oferta per NFTs.",
