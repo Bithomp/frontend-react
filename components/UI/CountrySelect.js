@@ -8,16 +8,17 @@ import { useLocalStorage } from '../../utils'
 
 export default function CountrySelect({ setCountryCode }) {
   const { i18n } = useTranslation();
-  const languageData = require('i18n-iso-countries/langs/' + i18n.language + '.json');
+  const lang = i18n.language.slice(0, 2)
+  const languageData = require('i18n-iso-countries/langs/' + lang + '.json');
   countries.registerLocale(languageData);
-  const countryObj = countries.getNames(i18n.language, { select: "official" });
+  const countryObj = countries.getNames(lang, { select: "official" });
   const countryArr = Object.entries(countryObj).map(([key, value]) => {
     return {
       label: value,
       value: key
     };
   });
-  countryArr.sort((a, b) => a.label.localeCompare(b.label, i18n.language));
+  countryArr.sort((a, b) => a.label.localeCompare(b.label, lang));
 
   const [savedCountry, setSavedCounty] = useLocalStorage('country');
   const [selectCountry, setSelectCountry] = useState({ value: '', label: '' });
@@ -26,8 +27,8 @@ export default function CountrySelect({ setCountryCode }) {
     if (savedCountry) {
       setSelectCountry({
         value: savedCountry,
-        label: countries.getName(savedCountry, i18n.language, { select: "official" })
-      });
+        label: countries.getName(savedCountry, lang, { select: "official" })
+      })
       setCountryCode(savedCountry);
     } else {
       async function fetchData() {
@@ -37,7 +38,7 @@ export default function CountrySelect({ setCountryCode }) {
           const countryCode = json.country.toUpperCase();
           setSelectCountry({
             value: countryCode,
-            label: countries.getName(countryCode, i18n.language, { select: "official" })
+            label: countries.getName(countryCode, lang, { select: "official" })
           });
           setSavedCounty(countryCode);
           setCountryCode(countryCode);
@@ -46,17 +47,18 @@ export default function CountrySelect({ setCountryCode }) {
       fetchData();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [])
 
   useEffect(() => {
+    const lang = i18n.language.slice(0,2)
     if (selectCountry.value) {
       setSelectCountry({
         value: selectCountry.value,
-        label: countries.getName(selectCountry.value, i18n.language, { select: "official" })
-      });
+        label: countries.getName(selectCountry.value, lang, { select: "official" })
+      })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [i18n.language]);
+  }, [i18n.language])
 
   const onCountryChange = (item) => {
     setSelectCountry(item);

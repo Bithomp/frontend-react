@@ -49,9 +49,6 @@
       "play": "Play XRP"
     }
   },
-  "settings": {
-    "language": "Language"
-  },
   "components": {
     "expiration-select": {
       "1d": "1 day",
