@@ -187,7 +187,7 @@
     "sequence": "Seqüència",
     "address": "Adreça XRPL",
     "no-domain": "domini no especificat",
-    "text0": "La llista de validadors <1>{{url}}</1> té la seqüència {{sequence}} i venciment el {{expiration}}.<br/>Inclou {{validatorCount}} els validadors llistats a continuació."
+    "text0": "La llista de validadors <1>{{url}}</1> té la seqüència {{sequence}} i venciment el {{expiration}}.<br/>Inclou {{validatorCount}} validadors, llistats a continuació."
   },
   "username": {
     "memo": "Registre d'àlies Bithomp",
