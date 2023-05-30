@@ -145,7 +145,7 @@
     "transaction-speed": "Transacciones por segundo",
     "proposers": "Validadores",
     "validation-quorum": "Cuórum de validación",
-    "base-fee": "Comisión inicial",
+    "base-fee": "Comisión mínima",
     "base-reserve": "Reserva inicial",
     "increment-reserve": "Reserva incremental",
     "total-supply": "Distribución total",
@@ -214,7 +214,7 @@
     },
     "step0": {
       "text0": "El <1>nombre de usuario</1> de Bithomp es un nombre de usuario <3>público</3> para tu dirección XRPL.",
-      "text1": "El nombre de usuario será asociado con tu dirección en el explorador de bithomp y en servicios de terceros que utilicen la <1>API</1> de bithomp. Tras del registro, será público - <3>cualquiera</3> podrá verlo. Tu dirección XRPL será accesible a través de:",
+      "text1": "El nombre de usuario será asociado a tu dirección en el explorador de bithomp y en servicios de terceros que utilicen la <1>API</1> de bithomp. Tras del registro, tu nombre de usuario será público - <3>cualquiera</3> podrá verlo. Tu dirección XRPL será accesible a través de:",
       "text2": "El nombre de usuario <1>no puede ser cambiado o borrado</1>.",
       "only-one-for-address": "Para cada dirección XRPL solo puedes reigistrar un nombre de usuario.",
       "address-you-control": "Solo puedes registrar nombres de usuario para direcciones XRPL que controles (eres dueño del secreto o las 12/24 paralabras de recuperación). No puedes registrar un nombre de usuario para una dirección alojada (la cual tiene un tag de destino) en un exchange / servicio / cartera.",
@@ -438,7 +438,7 @@
     "social-share": "Compartir es vivir",
     "marketplace": "Mercado",
     "text": {
-      "show-extended-statistics": "Mostrar estadísticas extendidas",
+      "show-extended-statistics": "Mostrar estadísticas ampliadas",
       "no-expiration": "Sin fecha de caducidad",
       "no-offers": "Ofertas no encontradas",
       "unspecified": "no especificado",
@@ -467,7 +467,7 @@
   },
   "tabs": {
     "list": "Lista",
-    "tiles": "Azulejos",
+    "tiles": "Imágenes",
     "secondary-sales": "Secundario",
     "primary-sales": "Primario",
     "all-sales": "Todas las ventas",
