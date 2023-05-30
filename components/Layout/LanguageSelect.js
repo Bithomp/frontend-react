@@ -32,6 +32,7 @@ export default function LanguageSelect() {
           <option value="en">English</option>
           <option value="es">Español</option>
           <option value="ru">Русский</option>
+          <option value="nn">Norsk</option>
           <option value="ca">Català</option>
         </select>
       </div>

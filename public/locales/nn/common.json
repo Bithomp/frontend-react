@@ -1,0 +1,605 @@
+{
+  "menu": {
+    "services": "Tjenester",
+    "usernames": "Brukernavn registrering",
+    "project-registartion": "XRPL prosjekt registrering",
+    "price-alerts": "XRP prisvarsler",
+    "submit-offline-tx": "Send frakoblet transaksjon",
+    "api": "Bithomp API",
+    "tools": "Verktøy",
+    "account-generation": "Kontogenerering", 
+    "faucet": "Faucet",
+    "networks": "Nettverk",
+    "domains": "Domener",
+    "ledger": "Ledger transaksjoner",
+    "last-ledger-information": "Siste ledger informasjon",
+    "last-ledger-transactions": "Siste ledger transaksjoner",
+    "nft": {
+      "explorer": "Utforsker",
+      "volumes": "Volum",
+      "sales": "Salg",
+      "distribution": "Distribusjon (holdere)",
+      "statistics": "Live statistikk",
+      "nfts": "Kontoens NFT-er",
+      "offers": "Bud"
+    },
+    "validators": "Validatorer",
+    "amendments": "Endringer",
+    "genesis": "Genesis kontoer",
+    "legal": "Juridisk",
+    "disclaimer": "Ansvarsfraskrivelse",
+    "privacy-policy": "Personvernerklæring",
+    "terms-and-conditions": "Vilkår og betingelser",
+    "customer-support": "Kundeservice", 
+    "press": "Trykk",
+    "merch": "Varebutikk",
+    "donate": "Doner",
+    "community": {
+      "title": "Fellesskap",
+      "xumm": "Xumm lommebok",
+      "xrplf": "XRPL foundation",
+      "xrpl": "XRPL nettside",
+      "xrpchat": "XRP chat",
+      "treasury": "Treasury: Bithomp"
+    },
+    "sponsored": {
+      "title": "Sponset",
+      "buy": "Kjøp XRP",
+      "earn": "Tjen på XRP",
+      "play": "Play XRP"
+    }
+  },
+  "components": {
+    "expiration-select": {
+      "1d": "1 dag",
+      "3d": "3 dager",
+      "7d": "7 dager",
+      "14d": "14 dager",
+      "d": " dager",
+      "90d": "90 dager"
+    }
+  },
+  "signin": {
+    "signin": "Logg inn",
+    "signout": "Logg ut",
+    "choose-app": "Velg en signeringsapp",
+    "login-with": "Logg inn med",
+    "sign-with": "Signer med",
+    "amount": {
+      "set-price": "Sett en pris",
+      "enter-amount": "Tast inn beløp"
+    },
+    "expiration": "Utløp",
+    "xumm": {
+      "open-app": "Åpne Xumm-appen på telefonen din.",
+      "change-settings": "Gå til innstillinger og velg en testnettnode.",
+      "scan-qr": "Skann denne QR-koden med Xumm-appen.",
+      "statuses": {
+        "redirecting": "Omdirigerer til Xumm...", 
+        "wait": "Vennligst vent...",
+        "check-push": "Sjekk en push-varsling på mobilen din.",
+        "check-app": "Vennligst følg instruksjonene i Xumm-appen.",
+        "expired": "QR-koden er utløpt, be om en ny."
+      }
+    },
+    "actions": {
+      "view": "Utforsker-visning",
+      "send": "Send XRP",
+      "my-nfts": "Mine NFT-er",
+      "my-nft-offers": "Mine NFT bud"
+    },
+    "not-available": "ikke tilgjengelig",
+    "confirm": {
+      "nft-accept-offer-header": "NFT kjøp", 
+      "nft-create-sell-offer-header": "Liste for salg",
+      "nft-create-buy-offer-header": "Lag kjøps bud",
+      "nft-accept-offer": "Jeg innrømmer at Bithomp gir meg tilgang til en desentralisert markedsplass, og de kan ikke verifisere eller garantere ektheten og legitimiteten til noen NFT-er. Jeg bekrefter at jeg har lest <1>vilkårene og betingelsene</1>, og jeg godtar alle vilkårene for å kjøpe, selge eller bruke NFT-er på Bithomp.",
+      "nft-create-sell-offer": "Jeg forstår at når oppføringen min er signert, kan NFT kjøpes umiddelbart."
+    }
+  },
+  "footer": {
+    "cookie": {
+      "we-use-cookie": "Vi bruker cookies og lignende teknologier for å forbedre opplevelsen din på nettstedet vårt.",
+      "read-more": "Les mer"
+    }
+  },
+  "home": {
+    "title": "XRP Utforsker | Skann XRP Ledger",
+    "description": "XRP-prisdiagram | Statistikk | NFT utforsker | Slå opp lommebokadressen",
+    "search-placeholder": "Søk etter XRPL-adresse / Transaksjon / NFT / Brukernavn / PayString / Offer / Valuta-hash",
+    "search-placeholder-short": "Søk etter adresse / transaksjon / bruker",
+    "scan-qr": "SKANN EN KODE",
+    "whales": {
+      "header": "De viktigste transaksjonene de siste 24 timene.",
+      "no-value": "ingen verdi"
+    },
+    "stat": {
+      "header": "XRPL live statistikk",
+      "ledger-index": "Ledger indeks",
+      "close-time": "Lukke tid",
+      "transactions": "Transaksjoner",
+      "txs-per-sec": "txs/s",
+      "quorum": "Validering quorum",
+      "proposers": "forslagsstillere",
+      "accounts": "kontoer",
+      "usernames": "Brukernavn",
+      "nft": {
+        "created": "NFT minted",
+        "burned": "NFT brent",
+        "owners": "Nåværende eiere",
+        "issuers": "NFT-utstedere",
+        "transfers": "NFT-overføringer",
+        "for-sale": "NFT-er til salgs"
+      }
+    }
+  },
+  "last-ledger-information": {
+    "ledger-hash": "Ledger hash",
+    "ledger": "Ledger",
+    "ledger-closed-at": "Ledger stengt",
+    "ledger-interval": "Ledger intervall",
+    "transactions": "Transaksjoner",
+    "transaction-speed": "Transaksjoner per sekund.",
+    "proposers": "Forslagsstillere",
+    "validation-quorum": "Validering quorum",
+    "base-fee": "Grunnavgift",
+    "base-reserve": "Grunnreserve",
+    "increment-reserve": "Øke reserve", 
+    "total-supply": "Total forsyning",
+    "total-burned": "Total brent"
+  },
+  "ledger": {
+    "past-ledgers": "Se transaksjoner i de forrige ledgers",
+    "no-transactions": "Vi kunne ikke finne noen transaksjoner å vise."
+  },
+  "nft-statistics": {
+    "header": "NFT live statistikk",
+    "text0": "Informasjonen er litt utdatert, vi må ta igjen <1>{{lag}}</1> ledgers.<br/>Dataene er gitt for ledger #{{crawlerIndex}}, ({{crawlerTime}}).<br/>Den siste validerte ledger er #{{currentLedgerIndex}}, ({{currentLedgerTime}}).",
+    "updated": "Oppdatert",
+    "ledger-index": "Ledger indeks",
+    "created": "Minted",
+    "burned": "Brent",
+    "exist": "Finnes for øyeblikket",
+    "burnable": "Brennbart av minter",
+    "only-xrp": "Kan bare selges for XRP",
+    "transferable": "Kan overføres til hvem som helst.",
+    "owners": "Nåværende eiere",
+    "issuers": "Totale utstedere",
+    "transfers": "NFT-overføringer",
+    "for-sale": "NFT-er til salgs",
+    "for-sale-without-destination": "NFT-er for offentlig salg",
+    "for-sale-with-destination": "NFT-er for direkte salg"
+  },
+  "amendment": {
+    "soon": "Endringer med flertall",
+    "enabled": "Aktiverte endringer",
+    "name": "Navn",
+    "introduction": "Introduksjon",
+    "majority": "Flertall",
+    "eta": "Estimert aktiveringstid"
+  },
+  "validators": {
+    "updated": "Oppdatert",
+    "unl": "UNL-validatorer",
+    "domain": "Domene",
+    "domain-legacy": "Domene (gammel bekreftelse)",
+    "public-key": "Offentlig nøkkel",
+    "sequence": "Sekvens",
+    "address": "XRPL adresse",
+    "no-domain": "ingen domene spesifisert",
+    "text0": "Validatorlisten <1>{{url}}</1> har sekvens {{sequence}} og utløper {{expiration}}.<br/>Den inkluderer {{validatorCount}} validatorer som er oppført nedenfor."
+  },
+  "username": {
+    "memo": "Bithomp brukernavn registrering",
+    "error": {
+      "address-empty": "Vennligst skriv inn din XRPL-adresse.",
+      "address-invalid": "Vennligst skriv inn en gyldig XRPL-adresse.",
+      "address-hosted": {
+        "on": "på",
+        "hosted": "Den angitte adressen er hosted {{serviceName}}, du kan kun registrere brukernavn for non-hosted lommebøker (hardware lommebøker, Xumm, osv.). Hvis du er en børs operatør, vennligst kontakt oss."
+      },
+      "address-done": "Adressen har allerede et registrert brukernavn.",
+      "username-empty": "Vennligst skriv inn brukernavnet du vil registrere",
+      "username-invalid": "Brukernavnet skal være kortere enn 18 tegn, ingen symboler tillatt..",
+      "username-taken": "Brukernavnet <b>{{username}}</b> er allerede i bruk. :(",
+      "username-reserved": "Brukernavnet <b>{{username}}</b> er reservert, kontakt vår support.",
+      "username-hold": "Brukernavnet <b>{{username}}</b> er på vent for registrering av en annen XRPL-konto. Du kan prøve igjen om 24 timer.",
+      "agree-terms-page": "Vennligst godta vilkårene og betingelsene som er spesifisert på denne siden.", 
+      "agree-terms-site": "Vennligst godta nettstedets vilkår og betingelser.",
+      "agree-privacy-policy": "Vennligst godta våre retningslinjer for personvern.",
+      "payment-partly": "Vennligst send resten av beløpet, så langt har vi bare mottatt {{received}} {{currency}} når <b>{{required}}{{currency}}</b> er nødvendig."
+    },
+    "step0": {
+      "text0": "Bithomp <1>Brukernavn</1> is a <3>public</3> brukernavn for din XRPL-adresse.",
+      "text1": "Brukernavnet vil bli assosiert med adressen din på bithomp explorer og i tredjepartstjenester som bruker bithomp<1>API</1>. Etter registreringen vil den bli offentlig - <3>hvem som helst</3> vil kunne se det. XRPL-adressen din vil være tilgjengelig gjennom:",
+      "text2": "Brukernavnet<1>kan ikke endres eller slettes</1>.",
+      "only-one-for-address": "For hver XRPL-adresse kan du kun registrere ett brukernavn.",
+      "address-you-control": "Du kan bare registrere brukernavn for XRPL-adresser du kontrollerer (hvor du har hemmelighet eller gjenopprettings ord 12/24). Du kan ikke registrere et brukernavn for en vertsadresse (som har en destinasjonskode) i en børs/tjeneste/lommebok.",
+      "pay-from-your-address": "For å bevise at du har kontroll over XRPL-adressen, må du foreta en betaling fra den adressen (som du vil tilordne et brukernavn til). Betalinger fra andre adresser vil bli regnet som donasjoner og vil ikke bli refundert.",
+      "text3": "Betalingen er 100 svenske kronor denominert i XRP.. Betalingen for brukernavnet kan <1>ikke refunderes</1>. Hvis du betaler mer enn forespurt, vil det overskridende beløpet bli regnet som donasjon og vil ikke bli refundert.",
+      "text4": "Brukernavn brukes nå cross-chain, <1>registrer et brukernavn på XRPL mainnet</1> og den vil være tilgjengelig på bithomp dev explorers (innen 1 time).",
+      "enter-address-or": "Skriv inn din XRPL-adresse eller",
+      "sign-in": "Logg inn med Xumm",
+      "sign-out": "Logg ut",
+      "your-address": "Din XRPL-adresse",
+      "enter-username": "Skriv inn brukernavnet du vil ha",
+      "your-username": "Brukernavn",
+      "enter-country": "Bostedslandet ditt (for vårt regnskap)",
+      "agree-terms-page": "Jeg forstår og godtar vilkårene og betingelsene som er spesifisert ovenfor.",
+      "agree-terms-site": "jeg godtar<1>vilkårene og betingelsene</1>.",
+      "agree-privacy-policy": "Jeg godtar <1>personvernreglene</1>.",
+      "already-registered": "Kontoen din har allerede et registrert brukernavn",
+      "sign-out-to-register-another-one": "<0>Logg ut</0> fra denne kontoen for å registrere et brukernavn for en annen adresse." 
+    },
+    "step1": {
+      "to-register": "For å registrere ditt offentlige brukernavn:",
+      "from-your-address": "må du foreta en betaling fra adressen:",
+      "text0": "Betalinger utført av deg<1>fra andre adresser</1>eller med<3>feil destinasjonskode</3>vil ikke bli akseptert for tjenesten, den vil bli akseptert som en donasjon og<5>vil ikke bli refundert</5>.",
+      "payment-instructions": "Betalingsinstruksjoner",
+      "address": "XRPL-adresse:",
+      "tag": "Destinasjonskode:",
+      "amount": "Beløp:",
+      "awaiting": "Venter på betalingen din",
+      "about-confirmation": "Du vil se en bekreftelse så snart vi mottar betalingen din."
+    },
+    "step2": {
+      "text0": "Gratulerer! Brukernavnet ditt <1>{{ username }}</1>har blitt registrert.",
+      "one-more": "Registrer et til"
+    }
+  },
+  "alerts": {
+    "text0": "Bli varslet når XRP/USD eller XRP/BTC markedspris endres med<1>Bitstamp</1>mer enn 5 % innen en time eller mer enn 10 % innen en dag.",
+    "text1": "Følg Telegram-kanalen: <1>bithomp</1>eller twitter-kontoen: <3>bithompAlerts</3>.",
+    "last-alerts": "Siste  varsler",
+    "date-and-time": "Dato & tid",
+    "currency-pair": "Valutapar",
+    "change-duration": "Endre varighet",
+    "change": "Endre",
+    "old-rate": "Gammel pris",
+    "new-rate": "Ny pris"
+  },
+  "genesis": {
+    "text0": "Ledger <1>0</1> er den tidligste Ledger som er tilgjengelig, omtrent i den første uken av XRPL-historien, <3> gikk ledger 1 til 9 tapt på grunn av et uhell i 2012</3>.",
+    "ledger-continue": "Fordi XRP Ledger's tilstand registreres i hver Ledger versjon, kan ledgeren fortsette uten den manglende historikken.",
+    "ledger-index": "Ledger indeks",
+    "account-count": "Konto antall",
+    "inception": "Oppstart",
+    "xrp-balance": "XRP Saldo",
+    "balance-update": "Saldo oppdatering",
+    "details": "Detaljer",
+    "address": "Adresse",
+    "genesis-balance": "Genesis XRP Saldo",
+    "rippletrade-username": "Rippletrade brukernavn",
+    "nickname": "Kallenavn",
+    "genesis-index": "Genesis indeks"
+  },
+  "developer": {
+    "header": "Bithomp API nøkkelforespørsel",
+    "email": "Din bedrifts/universitets e-postadresse:",
+    "url": "Din webside/app URL:",
+    "description": "Prosjektbeskrivelse og API-bruksdetaljer:",
+    "text0": "Forespørselen vil ikke bli godkjent:<1/>-hvis du bruker din private e-post<3/>-Hvis du vil bruke API til noe som vår API ikke støtter<5/>-hvis du vil bruke den til noe som allerede støttes av<7>xrpl.js</7>.",
+    "success": "Takk. Du bør motta din api token på e-post innen  timer.",
+    "error": {
+      "email-empty": "Vennligst skriv inn E-postadressen din.",
+      "email-invalid": "Vennligst skriv inn en gyldig e-post adresse.",
+      "url-empty": "Vennligst skriv inn din nettside/app URL.",
+      "url-invalid": "Vennligst skriv inn en gyldig URL.", 
+      "description-empty": "Legg til en beskrivelse av ditt prosjekt",
+      "description-invalid": "Vennligst skriv en detaljert beskrivelse av ditt prosjekt."
+    }
+  },
+  "customer-support": {
+    "text0": "Bithomp er en utforsker av den <1>offentlige</1> XRP Ledger.",
+    "no-help": "Vi kan ikke fryse kontoer, foreta refusjoner, kansellere transaksjoner eller endre/legge til destinasjonskoder. Vi foretar ikke etterforskning, og vi kan ikke hjelpe deg med å gjenopprette dine tapte eller stjålne midler.",
+    "text1": "Hvis midlene dine ble stjålet eller hvis du ble et offer for svindel kan du rapportere det<1>her</1>.",
+    "status-failed": "Hvis transaksjonen din har statusen \"mislyktes\", men midlene dine ble tatt fra saldoen din, kontakt tjenesten / lommeboken / børsen som du brukte til å utføre denne transaksjonen.",
+    "status-success": "Hvis transaksjonen din har status \"suksess\" men ikke ble mottatt, ta kontakt med mottakerens lommebok / tjeneste / børs brukerstøtte.",
+    "wrong-tag": "Hvis du sendte en transaksjon uten en destinasjonskode eller med feil destinasjonskode, les (2) og (3) ovenfor.",
+    "text2": "Hvis du mangler 10 XRP i lommeboken din, vennligst les om <1>base reserve</1>.",
+    "paper-wallet": "Hvis du vil sende XRP fra en papir lommebok, må du først importere den til en programvare lommebok, du kan bruke Xumm mobilapp til det (importer hemmelighet som en \"family seed\").",
+    "flare": "Hvis du har et spørsmål om \"Flare\" må du adressere det til Flare-fellesskapet.",
+    "text3": "Hvis du har et<1>partnerskap eller markedsførings</1>forslag kan du kontakte oss på e-post: <3/>. Du kan også kontakte oss med spørsmål om bithomp registrering av brukernavn eller bithomp transaksjons utforsker.",
+    "no-answer": "På grunn av vår begrensede tid svarer vi ikke på e-poster knyttet til 1-",
+    "submit-info": "Send inn informasjon om XRPL-tjenesten din",
+    "text4": "Hvis du har en offentlig XRPL-tjeneste og du vil at XRP-adressene dine skal gjenkjennes på Bithomp, send inn informasjonen din <1>her</1>. Du kan også kontakte oss på e-post: <3/> hvis du vil fremskynde prosessen.",
+    "follow-us": "Følg oss på sosiale medier"
+  },
+  "press": "Dette er den offisielle logoen for Bithomp som skal brukes av media- og pressefolk for trykk og nett (svg, png, eps, pdf, for mørke og lyse bakgrunner). For mediehenvendelser, vennligst <1>kontakt oss</1>.",
+  "page-not-found": {
+    "header": "Den forespurte siden ble ikke funnet.",
+    "text": "Klikk <1>her</1> for å sjekke landingssiden vår."
+  },
+  "receipt": {
+    "quantity": "mengde.",
+    "items": "gjenstander",
+    "price": "pris",
+    "total": "totalt",
+    "paid": "betalt",
+    "order-id": "bestillings id"
+  },
+  "button": {
+    "continue": "fortsett",
+    "cancel": "Avbryt",
+    "accept": "Godta",
+    "submit": "Send inn",
+    "search": "Søk",
+    "print": "Print",
+    "download": "Last ned",
+    "copy": "Kopier",
+    "copied": "Kopiert",
+    "copy-my-address": "Kopier min adresse", 
+    "sign": "Signer"
+  },
+  "general": {
+    "error": "Feil",
+    "no-data": "Ingen data tilgjengelig",
+    "loading": "Laster...",
+    "load-failed": "Kunne ikke laste",
+    "all-issuers": "Alle utstedere",
+    "no-expiration": "Aldri",
+    "no-uri": "Ingen URI spesifisert",
+    "no-media": "Ingen media funnet",
+    "viewer": "Visningsverktøy"
+  },
+  "error": {
+    "Network Error": "Det ser ut til at det ikke er noen internettforbindelse ;(",
+    "Request failed with status code 4": "Du sender oss for mange forespørsler, prøv senere!"
+  },
+  "error-api": {
+    "search is too short": "Navnet for å søke er for kort",
+    "issuer username is not found or invalid": "utsteders brukernavn ugyldig",
+    "issuer is invalid": "utsteders adresse ugyldig",
+    "owner username is not found or invalid": "Eiers brukernavn ugyldig",
+    "owner is invalid": "Eiers adresse ugyldig",
+    "destination username is not found or invalid": "Destinasjonsbrukernavn ugyldig",
+    "destination is invalid": "Ugyldig destinasjonsadresse",
+    "currency is invalid": "Valuta ugyldig",
+    "currencyIssuer username is not found or invalid": "Ugyldig brukernavn for valutautsteder",
+    "currencyIssuer is invalid": "valutautsteders adresse ugyldig",
+    "Token information is not found": "Vi fant ingen informasjon for den ID-en"
+  },
+  "units": {
+    "seconds-short": "s",
+    "minutes-short": "m",
+    "hours-short": "t"
+  },
+  "table": {
+    "index": "Indeks",
+    "address": "Adresse",
+    "time": "Tid",
+    "date": "Dato",
+    "amount": "Beløp",
+    "name": "Navn",
+    "sender": "Sender",
+    "memo": "Memo",
+    "transaction": "Transaksjon",
+    "owner": "Eier",
+    "owners-now": "Eiere (nå)",
+    "accepted-by": "Godtatt av",
+    "issuer": "Utsteder",
+    "minter": "Minter",
+    "receiver": "Mottaker",
+    "issuer-owner": "Utsteder & Eier",
+    "issuers": "Utstedere",
+    "broker": "Megler",
+    "seller": "Selger",
+    "buyer": "Kjøper",
+    "sold": "Solgt",
+    "sold_few": "Solgt",
+    "sold-on": "Solgt på",
+    "type": "Type",
+    "status": "Status",
+    "hash": "Hash",
+    "serial": "Serial",
+    "taxon": "Taxon",
+    "placed": "Plassert",
+    "accepted": "Godtatt",
+    "canceled": "Avbrutt",
+    "offer": "tilbud",
+    "expiration": "Utløp",
+    "expired": "Utløpt",
+    "destination": "Destinasjon",
+    "sales": "Salg",
+    "volume": "Salgsvolum",
+    "price": "Pris",
+    "external-url": "Ekstern URL",
+    "description": "Beskrivelse",
+    "collection": "Samling",
+    "transfer-fee": "Royalty",
+    "flag": "Flagg",
+    "flags": "Flagg",
+    "count": "Beløp",
+    "nfts": "NFT-er",
+    "minted": "Minted",
+    "transferred": "Overført",
+    "burned": "Brent",
+    "attributes": "Egenskaper",
+    "metadata": "Metadata",
+    "ledger-data": "Ledger-data",
+    "history": "Historie",
+    "sell-offers": "salgsbud",
+    "buy-offers": "kjøpsbud",
+    "nfts-now": "NFT-er (nå)",
+    "traded-nfts": "Handlede NFT-er",
+    "buyers": "Kjøpere",
+    "raw-data": "Rådata",
+    "username": "Brukernavn",
+    "floor-now": "Gulv (nå)",
+    "related-lists": "Relaterte lister",
+    "by-issuer": "Av utsteder",
+    "by-owner": "Av eier",
+    "by-taxon": "Av taxon",
+    "all-nfts": "Alle NFT-er",
+    "on-sale": "På salg",
+    "social-share": "Deling er gleding",
+    "marketplace": "Markedsplass",
+    "text": {
+      "show-extended-statistics": "Vis utvidet statistikk",
+      "no-expiration": "Ingen utløpsdato",
+      "no-offers": "Ingen tilbud funnet",
+      "unspecified": "uspesifisert",
+      "sell": "Selg",
+      "buy": "Kjøp",
+      "show": "Vis",
+      "hide": "gjem",
+      "see-on": "Se på",
+      "valid": "gyldig",
+      "invalid": "Ugyldig"
+    },
+    "filter": {
+      "valid": "Gyldig",
+      "invalid": "Ugyldig",
+      "active": "Alle aktive",
+      "historical": "Historisk",
+      "all": "Alle" 
+    },
+    "text-status": {
+      "NFT is not owned by the seller account": "NFT eies ikke av selger",
+      "Offer is expired": "Utløpt",
+      "Unable to verify balance of the buyer account": "Kan ikke bekrefte saldoen på kjøperkontoen",
+      "Insufficient funds on the buyer account": "Kjøperen har ikke nok midler",
+      "Seller has no trustline for the token or it cannot be verified": "Selger har ingen trustline for tokenet, eller det kan ikke bekreftes"
+    }
+  },
+  "tabs": {
+    "list": "Liste",
+    "tiles": "Tiles",
+    "secondary-sales": "Sekundær",
+    "primary-sales": "Primær",
+    "all-sales": "Alle salg",
+    "top-sales": "TOPP Salg",
+    "latest-sales": "Siste salg",
+    "all-time": "All tid",
+    "year": "5 dager",
+    "month": " dager",
+    "week": "7 dager",
+    "day": "24 timer",
+    "currencies": "Valutaer",
+    "issuers": "Utstedere",
+    "marketplaces": "Markedsplasser",
+    "brokers": "Meglere",
+    "image": "Bilde",
+    "video": "Video",
+    "audio": "Audio",
+    "model": "3D modell",
+    "owned-offers": "Eid",
+    "offers-for-owned-nfts": "For eide NFT-er",
+    "privately-offered-to-address": "Privat (innkommende)",
+    "all": "Alle",
+    "buy": "Kjøp",
+    "sell": "Selg",
+    "public": "Offentlig",
+    "publicAndKnownBrokers": "offentlig & MP",
+    "onSale": "Til salgs for XRP",
+    "all-tokens": "Alle tokens",
+    "xrp-only": "Kun XRP"
+  },
+  "xumm": {
+    "new-qr": "Få en ny QR-kode"
+  },
+  "explorer": {
+    "header": "XRP Ledger Utforsker",
+    "enter-address": "Skriv inn en XRPL-adresse eller et brukernavn",
+    "searching-tx-nft-nftoffer": "Søker etter Tx / NFT ID / NFT bud",
+    "searching-for-addresses": "Søker etter adresser...",
+    "menu": {
+      "account": "Konto",
+      "transactions": "Transaksjoner",
+      "tokens": "Tokens"
+    }
+  },
+  "nft-explorer": {
+    "header": "NFT utforsker"
+  },
+  "nft-offers": {
+    "header": "NFT tilbud",
+    "owned-desc": "Her kan du søke etter kjøps- og salgstilbud for NFT-er, skriv inn XRPL-adressen eller brukernavnet for å se hva det tilbyr.",
+    "for-owned-nfts-desc": "Her kan du søke etter kjøpstilbud for NFT-er eid av konto, skriv inn XRPL-adressen eller brukernavnet for å se mottatte tilbud.",
+    "privately-offered-to-address-desc": "Her kan du søke etter Tilbud privat opprettet for en konto (med destinasjon), det brukes ofte til NFT-overføringer (pris 0 XRP), skriv inn XRPL-adresse eller brukernavn for å se mottatte tilbud.",
+    "no-nft-offers": "Vi kunne ikke finne noen NFT-tilbud.",
+    "cancel-invalid-offer_one": "Kanseller det ugyldige tilbudet",
+    "cancel-invalid-offer_other": "Avbryt {{count}} ugyldige tilbud",
+    "cancel-expired-offer_one": "Avbryt det utløpte tilbudet",
+    "cancel-expired-offer_other": "Avbryt {{count}} utløpte tilbud"
+  },
+  "nft-offer": {
+    "header": "NFT tilbud",
+    "desc": "Her kan du søke etter NFT-tilbud, angi tilbuds-ID og trykk på søkeknappen.",
+    "enter-offer-id": "Skriv inn en NFT tilbuds-ID",
+    "selling": "Selger",
+    "buying": "Kjøper"
+  },
+  "nfts": {
+    "header": "Kontoens NFT-er",
+    "desc": "Her kan du søke etter NFT-er, skriv inn XRPL-adressen for å se hvilke NFT-er den eier.",
+    "search-by-name": "Søk etter NFT-navn", 
+    "search-by-issuer": "Søk etter NFT-utsteder",
+    "search-by-taxon": "Søk etter NFT taxon", 
+    "search-by-owner": "Søk etter NFT eier",
+    "no-nfts": "Vi kunne ikke finne noen NFT-er med søkeparameterne dine.",
+    "load-more": "Vi ser etter data på XRPL... vennligst vent...",
+    "end": "Her er alle NFT-ene vi kunne finne."
+  },
+  "nft": {
+    "desc": "Her kan du søke etter NFT-er, skrive inn en NFT-ID og trykk på søkeknappen.",
+    "enter-nft-id": "Skriv inn en NFT-ID",
+    "cancel-sell-offer-for": "Avbryt salgsbud for",
+    "cancel-buy-offer-for": "Avbryt kjøpsbud", 
+    "buy-for": "Kjøp for",
+    "on": "på",
+    "make-offer": "Lag bud",
+    "list-for-sale": "Legg til salgs",
+    "holders": "Distribusjon (holdere)"
+  },
+  "nft-distribution": {
+    "header": "NFT distribusjon",
+    "desc": "Her kan du sjekke distribusjonen av NFT-er til en bestemt NFT-utsteder. Skriv inn NFT-utstederens XRPL-adresse eller et brukernavn og trykk på søkeknappen.",
+    "no-nfts": "Vi kunne ikke finne noen NFT-er utstedt av den adressen.",
+    "text0": "{{users}} kontoer eier {{nfts}} NFT-er"
+  },
+  "nft-volumes": {
+    "header": "NFT salgsvolum",
+    "period": {
+      "all": "",
+      "year": "For de siste 5 dagene",
+      "month": "For de siste 30 dagene",
+      "week": "For de siste 7 dagene",
+      "day": "For de siste 24 timene"
+    },
+    "text0": "XRPL hadde {{allSales}} {{currency}} NFT {{saleType}} salg for {{allVolume}}.",
+    "brokers": {
+      "desc": "Dette er listen over NFT-meglerkontoer. Du kan finne volume av tilbudsmatchende boter her. Markedsplasser bruker blandede handelsmodeller, her kan du kun se volumene gjennom meglermodellen.",
+      "no-broker": "Ingen megler",
+      "text0": "XRPL hadde {{allSales}} <3>{{currency}}</3> NFT {{saleType}} salg for {{allVolume}}, hvor <9>{{brokerSales}}</9> {{percentBrokerSales}} av handler <13>{{brokerVolume}}</13> {{percentBrokerVolume}} var gjennom meglermodellen."
+    },
+    "marketplaces": {
+      "desc": "Dette er listen over NFT-markedsplasser på XRPL. Volumene her inkluderer ikke de primære salgene (mints) som ble utført innen 2 transaksjoner (betaling og NFT-overføring)."
+    },
+    "issuers": {
+      "desc": "Dette er listen over NFT-utstedere på XRPL. For å se volumer av NFT-samlinger identifisert av utsteder og taxon, klikk på lenken i Salgsvolum-kolonnen."
+    }
+  },
+  "nft-sales": {
+    "header": "NFT salg",
+    "load-more": "Vi ser etter data på XRPL... vennligst vent...",
+    "end": "Slutten av listen."
+  },
+  "links": {
+    "active-offers-same-account": "Se aktive tilbud fra den kontoen",
+    "nfts-same-issuer": "NFT-er med samme utsteder",
+    "owned-nfts-same-account": "NFT-er som eies av den kontoen",
+    "all": "alle",
+    "sold": "Solgt"
+  },
+  "donate": {
+    "help-us": "Hjelp oss i vårt oppdrag i å lage den mest brukervennlige XRPL utforsker.",
+    "it-helps": "Din donasjon vil hjelpe oss å øke kapasitet og fortsette å utvikle Bithomp.",
+    "address": "Vår XRPL-adresse for donasjoner",
+    "dt": "Destination tag",
+    "donate-with-xumm": "Doner medXUMM"
+  },
+  "sponsored": {
+    "sponsored": "Sponset" 
+  }
+}
