@@ -71,26 +71,26 @@
     },
     "expiration": "Istek",
     "xumm": {
-      "open-app": "Open the Xumm app on your phone.",
-      "change-settings": "Go to settings and choose a testnet node.",
-      "scan-qr": "Scan this QR code with the Xumm app.",
+      "open-app": "Otvori Xumm aplikaciju na tvojem mobitelu.",
+      "change-settings": "Idi na postavke i odaberi testni čvor.",
+      "scan-qr": "Skeniraj ovaj QR s Xumm app-om.",
       "statuses": {
-        "redirecting": "Redirecting to Xumm...",
-        "wait": "Please wait...",
-        "check-push": "Check a push notification on your mobile.",
-        "check-app": "Please follow instructions in the Xumm app.",
-        "expired": "The QR code is expired, request a new one."
+        "redirecting": "Preusmjeravam na Xumm...",
+        "wait": "Molimo pričekajte...",
+        "check-push": "Provjeri push notifikaciju na tvojem mobitelu.",
+        "check-app": "Molimo pratite upute u Xumm applikaciji.",
+        "expired": "QR kod je istekao, zatraži novi."
       }
     },
     "actions": {
-      "view": "Explorer view",
-      "send": "Send XRP",
-      "my-nfts": "My NFTs",
-      "my-nft-offers": "My NFT offers"
+      "view": "Preglednik",
+      "send": "Pošalji XRP",
+      "my-nfts": "Moji NFTovi",
+      "my-nft-offers": "Moje NFT ponude"
     },
-    "not-available": "Not available",
+    "not-available": "Nije dostupno",
     "confirm": {
-      "nft-accept-offer-header": "NFT purchase",
+      "nft-accept-offer-header": "NFT kupnja",
       "nft-create-sell-offer-header": "List for sale",
       "nft-create-buy-offer-header": "Create Buy offer",
       "nft-accept-offer": "I admit that Bithomp gives me access to a decentralised marketplace, and it cannot verify or guarantee the authenticity and legitimacy of any NFTs. I confirm that I've read the <1>Terms and conditions</1>, and I agree with all the terms to buy, sell or use any NFTs on Bithomp.",
