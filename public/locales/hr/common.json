@@ -16,7 +16,7 @@
     "last-ledger-transactions": "Zadnje ledger transakcije",
     "nft": {
       "explorer": "Istraži",
-      "volumes": "Volumes",
+      "volumes": "Volumeni",
       "sales": "Prodaje",
       "distribution": "Distribucija (holderi)",
       "statistics": "Statistike uživo",
@@ -91,66 +91,66 @@
     "not-available": "Nije dostupno",
     "confirm": {
       "nft-accept-offer-header": "NFT kupnja",
-      "nft-create-sell-offer-header": "List for sale",
-      "nft-create-buy-offer-header": "Create Buy offer",
-      "nft-accept-offer": "I admit that Bithomp gives me access to a decentralised marketplace, and it cannot verify or guarantee the authenticity and legitimacy of any NFTs. I confirm that I've read the <1>Terms and conditions</1>, and I agree with all the terms to buy, sell or use any NFTs on Bithomp.",
-      "nft-create-sell-offer": "I understand, once my listing is signed, the NFT can be purchased instantly."
+      "nft-create-sell-offer-header": "Lista za prodaju",
+      "nft-create-buy-offer-header": "Kreiraj ponudu za kupnju",
+      "nft-accept-offer": "Slažem se s time da mi Bithomp daje pristup decentraliziranom mjestu za prodaju, i ne može provjeriti niti garantirati autentičnost niti jednog NFTa. Potvrđujem da sam pročitao <1>Uvjete korištenja</1>, i slažem se sa svim uvjetima za kupiti, prodati ili koristiti bilo koji NFT na Bithomp-u.",
+      "nft-create-sell-offer": "Razumijem da jednom kad je moja ponuda potpisana, NFT prodaja može biti trenutačna."
     }
   },
   "footer": {
     "cookie": {
-      "we-use-cookie": "We use cookies and similar technologies to improve your experience on our site.",
-      "read-more": "Read more"
+      "we-use-cookie": "Koristimo kolačiće i slične tehnologije u svrhu poboljšenja korisničkog iskustva na našoj web stranici.",
+      "read-more": "Pročitaj više"
     }
   },
   "home": {
-    "title": "XRP Explorer | Scan the XRP Ledger",
-    "description": "XRP price chart | Statistics | NFT explorer | Wallet address look up",
-    "search-placeholder": "Search by XRPL Address / Transaction / NFT / Username / PayString / Offer / Currency hash",
-    "search-placeholder-short": "Search by Address / Transaction / User",
-    "scan-qr": "SCAN A CODE",
+    "title": "XRP Pretraživač | Istraži XRP Ledger",
+    "description": "XRP grafovi cijene | Statistike | NFT istraživač | Provjeri svoj wallet",
+    "search-placeholder": "Pretraži po XRPL adresi / Transakcija / NFT / Korisničko ime / PayString / Ponuda / Valutna oznaka (hash)",
+    "search-placeholder-short": "Pretraži po adresi / Transakcija / Korisnik",
+    "scan-qr": "SKENIRAJ KOD",
     "whales": {
-      "header": "The most significant transactions for the last 24 hours",
-      "no-value": "no value"
+      "header": "Najznačajnije transakcije u zadnjih 24 sata",
+      "no-value": "bez vrijednosti"
     },
     "stat": {
-      "header": "XRPL live statistics",
-      "ledger-index": "Ledger index",
-      "close-time": "Close time",
-      "transactions": "Transactions",
+      "header": "XRPL live statistike",
+      "ledger-index": "Ledger indeks",
+      "close-time": "Vrijeme zatvaranja",
+      "transactions": "Transakcije",
       "txs-per-sec": "txs/s",
-      "quorum": "Validation quorum",
-      "proposers": "proposers",
-      "accounts": "Accounts",
-      "usernames": "Usernames",
+      "quorum": "Kvorum validatora",
+      "proposers": "predlagatelji",
+      "accounts": "Računi",
+      "usernames": "Korisnička imena",
       "nft": {
-        "created": "NFT minted",
-        "burned": "NFT burned",
-        "owners": "Current owners",
-        "issuers": "NFT issuers",
-        "transfers": "NFT transfers",
-        "for-sale": "NFTs for sale"
+        "created": "NFT stvoreno",
+        "burned": "NFT uništeno",
+        "owners": "Trenutni vlasnici",
+        "issuers": "NFT izdavači",
+        "transfers": "NFT transferi",
+        "for-sale": "NFTovi na prodaji"
       }
     }
   },
   "last-ledger-information": {
-    "ledger-hash": "Ledger hash",
+    "ledger-hash": "Ledger oznaka (hash)",
     "ledger": "Ledger",
-    "ledger-closed-at": "Ledger closed at",
+    "ledger-closed-at": "Ledger zatvoren u",
     "ledger-interval": "Ledger interval",
-    "transactions": "Transactions",
-    "transaction-speed": "Transactions per second",
-    "proposers": "Proposers",
-    "validation-quorum": "Validation quorum",
-    "base-fee": "Base fee",
-    "base-reserve": "Base reserve",
-    "increment-reserve": "Increment reserve",
-    "total-supply": "Total supply",
-    "total-burned": "Total burned"
+    "transactions": "Transakcije",
+    "transaction-speed": "Transakcija po sekundi",
+    "proposers": "Predlagatelji",
+    "validation-quorum": "Kvorum validatora",
+    "base-fee": "Bazna naknada",
+    "base-reserve": "Bazna rezerva",
+    "increment-reserve": "Inkrementalna rezerva",
+    "total-supply": "Ukupna opskrba",
+    "total-burned": "Ukupno uništeno"
   },
   "ledger": {
-    "past-ledgers": "View transactions in the previous ledgers",
-    "no-transactions": "We could not find any transactions to show."
+    "past-ledgers": "Pogledaj transakcije u prethodnim ledgerima",
+    "no-transactions": "Nismo pronašli transakcije za prikazati."
   },
   "nft-statistics": {
     "header": "NFT live statistics",
