@@ -118,7 +118,7 @@ export default function Developer() {
   }
 
   return <>
-    <SEO title={t("menu.developer")} />
+    <SEO title={t("developer.header")} />
     <div className="content-center">
       <h1 className="center">{t("developer.header")}</h1>
       {!step && <>

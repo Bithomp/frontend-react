@@ -774,7 +774,7 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
       </>
         :
         <>
-          <h1 className='center'>NFT</h1>
+          <h2 className='center'>NFT</h2>
           <p className='center'>
             {t("nft.desc")}
           </p>

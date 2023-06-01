@@ -192,7 +192,11 @@ export default function NftOffer({ setSignRequest, signRequest, account, id }) {
   const sellerOrBuyer = data?.flags?.sellToken === true ? t("table.seller") : t("table.buyer");
 
   return <>
-    {data && <SEO title={t("nft-offer.header") + " " + data.offerIndex} />}
+    {data &&
+      <SEO
+        title={t("nft-offer.header") + (data.offerIndex ? (" " + data.offerIndex) : "")}
+      />
+    }
     <SearchBlock
       searchPlaceholderText={t("nft-offer.enter-offer-id")}
       tab="nft-offer"
@@ -312,7 +316,7 @@ export default function NftOffer({ setSignRequest, signRequest, account, id }) {
       </>
         :
         <>
-          <h1 className='center'>{t("nft-offer.header")}</h1>
+          <h2 className='center'>{t("nft-offer.header")}</h2>
           <p className='center'>
             {t("nft-offer.desc")}
           </p>

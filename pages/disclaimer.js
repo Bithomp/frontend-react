@@ -1,4 +1,5 @@
 import Mailto from 'react-protected-mailto'
+import Head from 'next/head'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useTranslation } from 'next-i18next'
 
@@ -17,6 +18,9 @@ export default function Disclaimer() {
 
   return (
     <>
+      <Head>
+        <meta name="robots" content="noindex" />
+      </Head>
       <SEO title={t("menu.disclaimer")} />
       <div className="content-text">
         <h1>Disclaimer</h1>

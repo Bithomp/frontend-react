@@ -105,7 +105,7 @@
   },
   "home": {
     "title": "XRP Explorer | Scan the XRP Ledger",
-    "description": "XRP price chart | Statistics | NFT explorer | Wallet address look up",
+    "description": "XRP price chart | XRPL Statistics | NFT explorer | Wallet address lookup | XRPL NFT volumes | Buy and Sell NFT | XRP Services",
     "search-placeholder": "Search by XRPL Address / Transaction / NFT / Username / PayString / Offer / Currency hash",
     "search-placeholder-short": "Search by Address / Transaction / User",
     "scan-qr": "SCAN A CODE",

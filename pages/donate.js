@@ -62,7 +62,7 @@ export default function Donate() {
   return <>
     <SEO
       title={t("menu.donate") + " ❤"}
-      description={t("donate.help-us")}
+      description={t("donate.help-us") + " " + t("donate.it-helps")}
       image={{ height: 300, width: 300, file: 'donate.png' }}
       websiteName="Bithomp"
     />
