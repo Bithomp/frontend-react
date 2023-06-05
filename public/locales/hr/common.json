@@ -514,33 +514,33 @@
     "header": "NFT explorer"
   },
   "nft-offers": {
-    "header": "NFT offers",
-    "owned-desc": "Here you can search for Buy and Sell Offers for NFTs, type in the XRPL address or username to see what it offers.",
-    "for-owned-nfts-desc": "Here you can search for Buy Offers for NFTs owned by account, type in the XRPL address or username to see received offers.",
-    "privately-offered-to-address-desc": "Here you can search for Offers privately created for an account (with destination), it is often used for NFT transfers (price 0 XRP), type in the XRPL address or username to see received offers.",
-    "no-nft-offers": "We couldn't find any NFT Offers.",
-    "cancel-invalid-offer_one": "Cancel the invalid offer",
-    "cancel-invalid-offer_other": "Cancel {{count}} invalid offers",
-    "cancel-expired-offer_one": "Cancel the expired offer",
-    "cancel-expired-offer_other": "Cancel {{count}} expired offers"
+    "header": "NFT ponude",
+    "owned-desc": "Ovdje možete pretražiti kupopordajne ponude za NFTove, unesite XRPL adresu ili korisničko ime za vidjeti što se nudi.",
+    "for-owned-nfts-desc": "Ovdje možete pretražiti ponude za kupnju za NFTova, unesite XRPL adresu ili korisničko ime za vidjeti pristigle ponude.",
+    "privately-offered-to-address-desc": "Ovdje možete pretražiti privatne ponude XRPL računa (s destinacijskom oznakom), to je često korišteno kod NFT transfera (cijena 0 XRP), unesite XRPL adresu ili korisničko ime za vidjeti pristigle ponude.",
+    "no-nft-offers": "Nismo pronašli niti jednu NFT ponudu.",
+    "cancel-invalid-offer_one": "Poništi nevaljalu ponudu",
+    "cancel-invalid-offer_other": "Poništi {{count}} nevaljalih ponuda",
+    "cancel-expired-offer_one": "Poništi isteklu ponudu",
+    "cancel-expired-offer_other": "Poništi {{count}} isteklih ponuda"
   },
   "nft-offer": {
-    "header": "NFT offer",
-    "desc": "Here you can search for NFT Offers, enter an Offer ID and press the search button.",
-    "enter-offer-id": "Enter an NFT offer ID",
-    "selling": "Selling",
-    "buying": "Buying"
+    "header": "NFT ponuda",
+    "desc": "Ovdje možete pretražiti NFT ponude, unesite ID ponude i stisnite dugme za pretragu.",
+    "enter-offer-id": "Unesite ID NFT ponude",
+    "selling": "Prodaja",
+    "buying": "Kupnja"
   },
   "nfts": {
-    "header": "Account's NFTs",
-    "desc": "Here you can search for NFTs, type in the XRPL address to see what NFTs it owns.",
-    "search-by-name": "Search by NFT name",
-    "search-by-issuer": "Search by NFT issuer",
-    "search-by-taxon": "Search by NFT taxon",
-    "search-by-owner": "Search by NFT owner",
-    "no-nfts": "We couldn't find any NFTs with your search parameters.",
-    "load-more": "We are looking for data on the XRPL... please wait...",
-    "end": "Here are all the NFTs we could find."
+    "header": "NFTovi računa",
+    "desc": "Ovdje možete pretražiti NFTove, unesite XRPL adresu za vidjeti koje NFTove posjeduje.",
+    "search-by-name": "Pretraga po nazivu NFTa",
+    "search-by-issuer": "Pretraga po izdavatelju NFTa",
+    "search-by-taxon": "Pretraga po NFT taxonu",
+    "search-by-owner": "Pretraga po NFT vlasniku",
+    "no-nfts": "Nismo pronašli niti jedan NFT sa vašim parametrima za pretragu.",
+    "load-more": "Tražimo podatke na XRPLu... molimo pričekajte...",
+    "end": "Ovdje su svi NFTovi koje smo uspjeli pronaći."
   },
   "nft": {
     "desc": "Here you can search for NFTs, enter an NFT ID and press the search button.",
