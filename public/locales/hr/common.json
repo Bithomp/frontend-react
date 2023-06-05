@@ -543,64 +543,64 @@
     "end": "Ovdje su svi NFTovi koje smo uspjeli pronaći."
   },
   "nft": {
-    "desc": "Here you can search for NFTs, enter an NFT ID and press the search button.",
-    "enter-nft-id": "Enter an NFT ID",
-    "cancel-sell-offer-for": "Cancel Sell offer for",
-    "cancel-buy-offer-for": "Cancel Buy offer for",
-    "buy-for": "Buy for",
-    "on": "on",
-    "make-offer": "Make offer",
-    "list-for-sale": "List for sale",
-    "holders": "Distribution (Holders)"
+    "desc": "Ovdje možete pronaći NFTove, unesite NFT ID i kliknite dugme za pretragu.",
+    "enter-nft-id": "Unesi NFT ID",
+    "cancel-sell-offer-for": "Poništi prodajnu ponudu za",
+    "cancel-buy-offer-for": "Poništi kupovnu ponudu za",
+    "buy-for": "Kupi za",
+    "on": "na",
+    "make-offer": "Izradi ponudu",
+    "list-for-sale": "Lista za prodaju",
+    "holders": "Distribucija (Holders)"
   },
   "nft-distribution": {
-    "header": "NFT distribution",
-    "desc": "Here you can check the distribution of NFTs of a particilar NFT issuer. Enter the NFT issuer XRPL address or a username and press the search button.",
-    "no-nfts": "We couldn't find any NFTs issued by that address.",
-    "text0": "{{users}} accounts own {{nfts}} NFTs"
+    "header": "NFT distribucija",
+    "desc": "Ovdje možete provjeriti distribuciju NFTova od jednog NFT izdavača. Unesite izdavačevu XRPL adresu ili korisničko ime i stisnite dugme za pretragu.",
+    "no-nfts": "Nismo pronašli niti jedan NFT kojemu je izdavač ta adresa.",
+    "text0": "{{users}} računi posjeduju {{nfts}} NFTa"
   },
   "nft-volumes": {
-    "header": "NFT sales volumes",
+    "header": "NFT prodajni volumen",
     "period": {
       "all": "",
-      "year": "For the last 365 days",
-      "month": "For the last 30 days",
-      "week": "For the last 7 days",
-      "day": "For the last 24 hours"
+      "year": "Za zadnjih 365 dana",
+      "month": "Za zadnjih 30 dana",
+      "week": "Za zadnjih 7 dana",
+      "day": "Za zadnja 24 sata"
     },
-    "text0": "XRPL had {{allSales}} {{currency}} NFT {{saleType}} sales for {{allVolume}}.",
+    "text0": "XRPL je imao {{allSales}} {{currency}} NFT prodaja za {{allVolume}}.",
     "brokers": {
-      "desc": "This is the list of NFT broker accounts. You can find here volumes of offer matching bots. Marketplaces use mixed trade models, here you can see only the volumes through the brokerage model.",
-      "no-broker": "No broker",
-      "text0": "XRPL had {{allSales}} <3>{{currency}}</3> NFT {{saleType}} sales for {{allVolume}}, from which <9>{{brokerSales}}</9> {{percentBrokerSales}} of trades for <13>{{brokerVolume}}</13> {{percentBrokerVolume}} were through the brokerage model."
+      "desc": "Ovo je lista NFT broker računa. Ovdje možete pronaći volumen ponuda botova. Marketplace koriste miksane modele prodaje, ovdje možete vidjeti samo volumen koji je potekao kroz model brokera.",
+      "no-broker": "Nema brokera",
+      "text0": "XRPL je imao {{allSales}} <3>{{currency}}</3> NFT {{saleType}} prodaja za {{allVolume}}, od kojih <9>{{brokerSales}}</9> {{percentBrokerSales}} prodaja <13>{{brokerVolume}}</13> {{percentBrokerVolume}} su bili kroz model brokera."
     },
     "marketplaces": {
-      "desc": "This is the list of NFT Marketplaces on XRPL. The volumes here do not include the primary sales (mints) which were done within 2 transactions (payment and NFT transfer)."
+      "desc": "Ovo je lista NFT Marketplacea na XRPL-u. Volumeni ovdje ne uključuju primarne prodaje (mints) koje su napravljene unutar 2 transakcije (plaćanje/payment i NFT transfer)."
     },
     "issuers": {
-      "desc": "This the list of NFT issuers on XRPL. To see volumes of NFT collections identified by issuer and taxon click on the link in the Sales volume column."
+      "desc": "Ovo je lista NFT izdavatelja na XRPL-u. Da bi vidjeli volumene NFT kolekcija indentificiranih po izdavatelju i taxonu kliknite na link u Prodajni volumen stupcu."
     }
   },
   "nft-sales": {
-    "header": "NFT sales",
-    "load-more": "We are looking for data on the XRPL... please wait...",
-    "end": "The end of the list."
+    "header": "NFT prodaje",
+    "load-more": "Tražimo podatke na XRPLu... molimo pričekajte...",
+    "end": "Kraj liste."
   },
   "links": {
-    "active-offers-same-account": "View active offers from that account",
-    "nfts-same-issuer": "NFTs with the same issuer",
-    "owned-nfts-same-account": "NFTs owned by that account",
-    "all": "all",
-    "sold": "sold"
+    "active-offers-same-account": "Vidi aktivne ponude od tog računa",
+    "nfts-same-issuer": "NFTovi sa istim izdavateljom",
+    "owned-nfts-same-account": "NFTovi koje taj račun posjeduje",
+    "all": "sve",
+    "sold": "prodano"
   },
   "donate": {
-    "help-us": "Help us in our mission to make the most user friendly XRPL explorer.",
-    "it-helps": "Your donation will help us to add capacity and continue to develop Bithomp.",
-    "address": "Our XRPL address for donations",
-    "dt": "Destination tag",
-    "donate-with-xumm": "Donate with XUMM"
+    "help-us": "Pomozite nam u našoj misiji da napravimo naj user-friendly XRPL pretraživač.",
+    "it-helps": "Vaša donacija će pomoći dodati nove kapacitete i u razvoju Bithomp-a.",
+    "address": "Naša XRPL adresa za donacije",
+    "dt": "Destinacijska oznaka",
+    "donate-with-xumm": "Doniraj pomoću Xumm-a"
   },
   "sponsored": {
-    "sponsored": "Sponsored"
+    "sponsored": "Sponzorirano"
   }
 }
