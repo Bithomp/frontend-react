@@ -7,7 +7,7 @@
     "submit-offline-tx": "Pošalji offline transakciju",
     "api": "Bithomp API",
     "tools": "Alati",
-    "account-generation": "Account generiranje",
+    "account-generation": "Generiranje računa",
     "faucet": "Faucet",
     "networks": "Mreže",
     "domains": "Domene",
@@ -20,7 +20,7 @@
       "sales": "Prodaje",
       "distribution": "Distribucija (holderi)",
       "statistics": "Statistike uživo",
-      "nfts": "NFTovi korisničkog računa",
+      "nfts": "NFTovi računa",
       "offers": "Ponude"
     },
     "validators": "Validatori",
@@ -105,7 +105,7 @@
   },
   "home": {
     "title": "XRP Pretraživač | Istraži XRP Ledger",
-    "description": "XRP grafovi cijene | Statistike | NFT istraživač | Provjeri svoj wallet",
+    "description": "XRP grafovi cijene | Statistike | NFT pretraživač | Provjeri svoj wallet",
     "search-placeholder": "Pretraži po XRPL adresi / Transakcija / NFT / Korisničko ime / PayString / Ponuda / Valutna oznaka (hash)",
     "search-placeholder-short": "Pretraži po adresi / Transakcija / Korisnik",
     "scan-qr": "SKENIRAJ KOD",
@@ -129,7 +129,7 @@
         "owners": "Trenutni vlasnici",
         "issuers": "NFT izdavači",
         "transfers": "NFT transferi",
-        "for-sale": "NFTovi na prodaji"
+        "for-sale": "NFTovi na rasprodaji"
       }
     }
   },
