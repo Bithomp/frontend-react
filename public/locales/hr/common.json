@@ -1,0 +1,606 @@
+{
+  "menu": {
+    "services": "Usluge",
+    "usernames": "Registracija korisničkog imena",
+    "project-registartion": "Registracija XRPL projekta",
+    "price-alerts": "Upozorenja na promjenu XRP cijene",
+    "submit-offline-tx": "Pošalji offline transakciju",
+    "api": "Bithomp API",
+    "tools": "Alati",
+    "account-generation": "Generiranje računa",
+    "faucet": "Faucet",
+    "networks": "Mreže",
+    "domains": "Domene",
+    "ledger": "Ledger transakcije",
+    "last-ledger-information": "Zadnje ledger informacije",
+    "last-ledger-transactions": "Zadnje ledger transakcije",
+    "nft": {
+      "explorer": "Istraži",
+      "volumes": "Volumeni",
+      "sales": "Prodaje",
+      "distribution": "Distribucija (holderi)",
+      "statistics": "Statistike uživo",
+      "nfts": "NFTovi računa",
+      "offers": "Ponude"
+    },
+    "validators": "Validatori",
+    "amendments": "Amandmani",
+    "genesis": "Izvorni (genesis) računi",
+    "legal": "Legal",
+    "disclaimer": "Izjava o odricanju",
+    "privacy-policy": "Privatnost podataka",
+    "terms-and-conditions": "Uvjeti korištenja",
+    "customer-support": "Korisnička podrška",
+    "press": "Press",
+    "merch": "Merch shop",
+    "donate": "Doniraj",
+    "community": {
+      "title": "Zajednica",
+      "xumm": "Xumm wallet",
+      "xrplf": "XRPL zaklada",
+      "xrpl": "XRPL websajt",
+      "xrpchat": "XRP chat",
+      "treasury": "Riznica: Bithomp"
+    },
+    "sponsored": {
+      "title": "Sponzorirano",
+      "buy": "Kupi XRP",
+      "earn": "Zaradi na XRPu",
+      "play": "Igraj XRP"
+    }
+  },
+  "components": {
+    "expiration-select": {
+      "1d": "1 dan",
+      "3d": "3 dana",
+      "7d": "7 dana",
+      "14d": "14 dana",
+      "30d": "30 dana",
+      "90d": "90 dana"
+    }
+  },
+  "signin": {
+    "signin": "Prijava",
+    "signout": "Odjava",
+    "choose-app": "Odaberi app za prijavu",
+    "login-with": "Prijava s",
+    "sign-with": "Potpiši s",
+    "amount": {
+      "set-price": "Postavi cijenu",
+      "enter-amount": "Unesi cijenu"
+    },
+    "expiration": "Istek",
+    "xumm": {
+      "open-app": "Otvori Xumm aplikaciju na tvojem mobitelu.",
+      "change-settings": "Idi na postavke i odaberi testni čvor.",
+      "scan-qr": "Skeniraj ovaj QR s Xumm app-om.",
+      "statuses": {
+        "redirecting": "Preusmjeravam na Xumm...",
+        "wait": "Molimo pričekajte...",
+        "check-push": "Provjeri push notifikaciju na tvojem mobitelu.",
+        "check-app": "Molimo pratite upute u Xumm applikaciji.",
+        "expired": "QR kod je istekao, zatraži novi."
+      }
+    },
+    "actions": {
+      "view": "Preglednik",
+      "send": "Pošalji XRP",
+      "my-nfts": "Moji NFTovi",
+      "my-nft-offers": "Moje NFT ponude"
+    },
+    "not-available": "Nije dostupno",
+    "confirm": {
+      "nft-accept-offer-header": "NFT kupnja",
+      "nft-create-sell-offer-header": "Lista za prodaju",
+      "nft-create-buy-offer-header": "Kreiraj ponudu za kupnju",
+      "nft-accept-offer": "Slažem se s time da mi Bithomp daje pristup decentraliziranom mjestu za prodaju, i ne može provjeriti niti garantirati autentičnost niti jednog NFTa. Potvrđujem da sam pročitao <1>Uvjete korištenja</1>, i slažem se sa svim uvjetima za kupiti, prodati ili koristiti bilo koji NFT na Bithomp-u.",
+      "nft-create-sell-offer": "Razumijem da jednom kad je moja ponuda potpisana, NFT prodaja može biti trenutačna."
+    }
+  },
+  "footer": {
+    "cookie": {
+      "we-use-cookie": "Koristimo kolačiće i slične tehnologije u svrhu poboljšenja korisničkog iskustva na našoj web stranici.",
+      "read-more": "Pročitaj više"
+    }
+  },
+  "home": {
+    "title": "XRP Pretraživač | Istraži XRP Ledger",
+    "description": "XRP grafovi cijene | Statistike | NFT pretraživač | Provjeri svoj wallet",
+    "search-placeholder": "Pretraži po XRPL adresi / Transakcija / NFT / Korisničko ime / PayString / Ponuda / Valutna oznaka (hash)",
+    "search-placeholder-short": "Pretraži po adresi / Transakcija / Korisnik",
+    "scan-qr": "SKENIRAJ KOD",
+    "whales": {
+      "header": "Najznačajnije transakcije u zadnjih 24 sata",
+      "no-value": "bez vrijednosti"
+    },
+    "stat": {
+      "header": "XRPL live statistike",
+      "ledger-index": "Ledger indeks",
+      "close-time": "Vrijeme zatvaranja",
+      "transactions": "Transakcije",
+      "txs-per-sec": "txs/s",
+      "quorum": "Kvorum validatora",
+      "proposers": "predlagatelji",
+      "accounts": "Računi",
+      "usernames": "Korisnička imena",
+      "nft": {
+        "created": "NFT kreirano",
+        "burned": "NFT uništeno",
+        "owners": "Trenutni vlasnici",
+        "issuers": "NFT izdavači",
+        "transfers": "NFT transferi",
+        "for-sale": "NFTovi na rasprodaji"
+      }
+    }
+  },
+  "last-ledger-information": {
+    "ledger-hash": "Ledger oznaka (hash)",
+    "ledger": "Ledger",
+    "ledger-closed-at": "Ledger zatvoren u",
+    "ledger-interval": "Ledger interval",
+    "transactions": "Transakcije",
+    "transaction-speed": "Transakcija po sekundi",
+    "proposers": "Predlagatelji",
+    "validation-quorum": "Kvorum validatora",
+    "base-fee": "Bazna naknada",
+    "base-reserve": "Bazna rezerva",
+    "increment-reserve": "Inkrementalna rezerva",
+    "total-supply": "Ukupna opskrba",
+    "total-burned": "Ukupno uništeno"
+  },
+  "ledger": {
+    "past-ledgers": "Pogledaj transakcije u prethodnim ledgerima",
+    "no-transactions": "Nismo pronašli transakcije za prikazati."
+  },
+  "nft-statistics": {
+    "header": "NFT live statistike",
+    "text0": "Podaci su malo zastarijeli, moramo još dohvatiti <1>{{lag}}</1> stranica ledger knjige.<br/>Podaci su dobiveni ledger stranicom #{{crawlerIndex}}, ({{crawlerTime}}).<br/>Zadnji verificirani ledger stranica je #{{currentLedgerIndex}} , ({{currentLedgerTime}}).",
+    "updated": "Ažurirano",
+    "ledger-index": "Index ledger stranice",
+    "created": "Stvoreno",
+    "burned": "Uništeno",
+    "exist": "Trenutno postoji",
+    "burnable": "Može se uništiti od strane stvaratelja",
+    "only-xrp": "Može se prodati samo za XRP",
+    "transferable": "Može se transferirati bilo kome",
+    "owners": "Trenutni vlasnici",
+    "issuers": "Ukupno izdavatelja",
+    "transfers": "NFT transferi",
+    "for-sale": "NFTovi za prodaju",
+    "for-sale-without-destination": "NFTovi za javnu prodaju",
+    "for-sale-with-destination": "NFTovi za direktnu prodaju"
+  },
+  "amendment": {
+    "soon": "Amandmani sa večinom",
+    "enabled": "Omogućeni amandmani",
+    "name": "Ime",
+    "introduction": "Uvod",
+    "majority": "Večina",
+    "eta": "Procijenjeno vrijeme aktivacije"
+  },
+  "validators": {
+    "updated": "ažurirano",
+    "unl": "UNL validatori",
+    "domain": "Domena",
+    "domain-legacy": "Domena (stara verifikacija)",
+    "public-key": "Javni ključ",
+    "sequence": "Sekvenca",
+    "address": "XRPL adresa",
+    "no-domain": "nema domene",
+    "text0": "Lista validatora <1>{{url}}</1> ima sekvencu {{sequence}} i istek {{expiration}}.<br/>Uključuje {{validatorCount}} validatora koji su ispisani ispod."
+  },
+  "username": {
+    "memo": "Bithomp registracija korisničkog imena",
+    "error": {
+      "address-empty": "Molimo unesite vašu XRP adresu.",
+      "address-invalid": "Molimo unesite valjanu XRP adresu.",
+      "address-hosted": {
+        "on": "na",
+        "hosted": "Unesena adresa koristi poslužitelj {{serviceName}}, možete registrirati korisničko ime samo s adresa koje ne koriste poslužitelje (hardverski novčanici, Xumm, itd.). Ako vodite mjenjačnicu kripto valuta molimo kontaktirajte nas."
+      },
+      "address-done": "Adresa već ima registrirano korisničko ime.",
+      "username-empty": "Molimo unesite korisničko ime koje želite registrirati.",
+      "username-invalid": "Korisničko ime bi trebalo biti kraće od 18 karatktera, bez simbola.",
+      "username-taken": "Korisničko ime <b>{{username}}</b> je već zauzeto. :(",
+      "username-reserved": "Korisničko ime <b>{{username}}</b> je rezervirano, kontaktirajte nas.",
+      "username-hold": "Korisničko ime <b>{{username}}</b> je rezervirano za registraciju sa nekim drugim XRPL računom. Možete probati ponovno za 24 sata.",
+      "agree-terms-page": "Molimo prihvatite uvjete korištenja navedene na ovoj stranici.",
+      "agree-terms-site": "Molimo prihvatite uvjete korištenja ove web stranice.",
+      "agree-privacy-policy": "Molimo prihvatite privatnost podataka.",
+      "payment-partly": "Molimo pošaljite ostatak iznosa, za sad smo dobili {{received}} {{currency}} a <b>{{required}} {{currency}}</b> je potrebno."
+    },
+    "step0": {
+      "text0": "Bithomp <1>username</1> je <3>public</3> korisničko ime za tvoju XRPL adresu.",
+      "text1": "Korisničko ime će biti asocirano sa tvojom adresom na bithomp server i u servisima trećih strana koje koriste bithomp <1>API</1>. Nakon registracije će postati javno - <3>svi</3> će moći vidjeti. Tvoja XRPL adresa će biti dostupna preko:",
+      "text2": "Korisničko ime <1>ne može biti promijenjeno niti obrisano</1>.",
+      "only-one-for-address": "Za svaku XRPL adresu možete registrirati samo jedno korisničko ime.",
+      "address-you-control": "Možeš registrirati korisnička imena samo XRPL adresa koje kontroliraš (ti imaš tajni ključ ili tajnu frazu od 12/24 riječi). Ne možeš registrirati korisničko ime za adresu koja se nalazi na mjenjačnici / servisu / novčaniku a ima destinacijski tag.",
+      "pay-from-your-address": "Da bi dokazao da posjeduješ kontrolu nad XRPL adresom morati ćeš uplatiti sa te adrese (za koju želiš dodati korisničko ime). Plaćanja s drugih adresa ćemo brojiti kao donacije i povrat sredstava nije moguć.",
+      "text3": "Plaćanje je za 100 Švedskih kruna u protuvrijednosti u XRP-u. Uplata za to korisničko ime <1>nije povratna</1>. Ako platite više nago je zatraženo, ekstra iznos ćemo brojati kao donaciju i neće biti moguć povrat.",
+      "text4": "Korisnička imena se sad koriste na više lanaca, <1>registriraj korisničko ime na glavnoj XRPL mreži</1> i biti će dostupna na bithomp razvojnom pregledniku (unutar jednog sata).",
+      "enter-address-or": "Unesite vašu XRPL adresu ili",
+      "sign-in": "Prijavite se pomoću Xumm-a",
+      "sign-out": "odjava",
+      "your-address": "Vaša XRPL adresa",
+      "enter-username": "Unesite korisničko ime koje želite imati",
+      "your-username": "Korisničko ime",
+      "enter-country": "Vaša država prebivališta (za naše knjigovodstvo)",
+      "agree-terms-page": "Razumijem i slažem se sa uvjetima korištenja navedenim iznad.",
+      "agree-terms-site": "Slažem se sa <1>Uvjetima korištenja</1>.",
+      "agree-privacy-policy": "Slažem se sa <1>Privatnosti podataka</1>.",
+      "already-registered": "Vaš korisnički račun već ima registrirano korisničko ime",
+      "sign-out-to-register-another-one": "<0>Odjavi se</0> sa ovog korisničkog računa da biste mogli registrirati ime s druge adrese."
+    },
+    "step1": {
+      "to-register": "Da biste registriali korisničko ime:",
+      "from-your-address": "Morate uplatiti sa adrese:",
+      "text0": "Uplata koja je napravljena <1>iz bilo koje druge adrese</1> ili s <3>krivom destinacijskom oznakom</3> nećemo prihvatiti, uplata će biti prihvaćena kao donacija <5>te ju nećemo refudirati</5>.",
+      "payment-instructions": "Upute za plaćanje",
+      "address": "XRPL adresa:",
+      "tag": "Destinacijska oznaka:",
+      "amount": "Iznos:",
+      "awaiting": "Čekam uplatu",
+      "about-confirmation": "Vidjeti ćete potvrdu čim zaprimimo vašu uplatu."
+    },
+    "step2": {
+      "text0": "Čestitamo! Tvoje korisničko ime <1>{{ username }}</1> je uspješno registrirano.",
+      "one-more": "Registriraj još jednu"
+    }
+  },
+  "alerts": {
+    "text0": "Budite obaviješteni kad se XRP/USD ili XRP/BTC cijena kod <1>Bitstamp-a</1> primijeni za više od 5% unutar jednog sata ili više od 10% unutar jednog dana.",
+    "text1": "Prati Telagram kanal: <1>bithomp</1> ili twitter: <3>bithompAlerts</3>.",
+    "last-alerts": "Zadnjih 50 alarma",
+    "date-and-time": "Datum i vrijeme",
+    "currency-pair": "Par",
+    "change-duration": "Promijeni razdoblje",
+    "change": "Primijeni",
+    "old-rate": "Stari tečaj",
+    "new-rate": "Novi tečaj"
+  },
+  "genesis": {
+    "text0": "Ledger <1>32570</1> je najraniji dostupni ledger, cca prvi tjedan u povijesti postojanja XRPL-a, <3>ledgeri 1 do 32569 su izgubljeni u havariji 2012</3>.",
+    "ledger-continue": "Jer je XRPL-ovo stanje zabilježeno sa svakom ledger verzijom, ledger može nastaviti bez pune povijesti.",
+    "ledger-index": "Ledger indeks",
+    "account-count": "Broj adresa",
+    "inception": "Začetak",
+    "xrp-balance": "XRP stanje",
+    "balance-update": "Ažurirano stanje",
+    "details": "Detalji",
+    "address": "Adresa",
+    "genesis-balance": "XRP stanje izvora",
+    "rippletrade-username": "Rippletrade korisničko ime",
+    "nickname": " Nickname",
+    "genesis-index": "Index izvora"
+  },
+  "developer": {
+    "header": "Bithomp API ključ zahtjev",
+    "email": "Email adresa poduzeća/ustanove/fakulteta:",
+    "url": "Vaš URL do web stranice ili app-a:",
+    "description": "Opis projekta i korištenja API-ja:",
+    "text0": "Zahtjev neće biti odobren:<1/>- ako koristite svoj privatni email<3/>- ako želite koristiti API za nešto što API ne podržava<5/>- ako želite koristiti za nešto što već podržava <7>xrpl.js</7>.",
+    "success": "Hvala vam. Trebali bi dobiti api token unutar 48 sati.",
+    "error": {
+      "email-empty": "Molimo unesite email adresu.",
+      "email-invalid": "Molimo unesite ispravnu email adresu.",
+      "url-empty": "Molimo unesite URL web stranice ili app-a.",
+      "url-invalid": "Unesite valjani URL.",
+      "description-empty": "Molimo dodajte opis projekta.",
+      "description-invalid": "Molimo dodajte detaljni opis projekta."
+    }
+  },
+  "customer-support": {
+    "text0": "Bithomp je pretraživač (engl. explorer) <1>javnog</1> XRP Ledgera.",
+    "no-help": "Mi ne možemo zamrznuti adrese, napraviti povrate, poništiti transakcije ili promijeniti/dodati destinacijske oznake. Mi ne radimo forenziku i ne možemo vam pomoći vratiti izgubljene novčiće.",
+    "text1": "Ako ste žrtva krađe ili obmane, možete to prijaviti <1>ovdje</1>.",
+    "status-failed": "Ako tvoja transakcija ima status \"neuspjelo\" a vaši su novčići uzeti sa vašeg računa, kontaktirajte servis / novčanik / mjenjačnicu koju ste koristili za izradu te transakcije.",
+    "status-success": "Ako tvoja transakcija ima status \"uspješno\" ali niste stiglo na destinaciju, molimo kontaktirajte podršku servisa / novčanika / mjenjačnice.",
+    "wrong-tag": "Ako ste poslali transakciju bez destinacijske oznake ili s krivom oznakom, onda pročitajte (2) i (3) iznad.",
+    "text2": "Ako vam nedostaje 10 XRP-a u vašem novčaniku, molimo pročitajte o <1>baznoj rezervi</1>.",
+    "paper-wallet": "Ako želite poslati XRP sa vašeg papirnatog novčanika, morate ga prvo importiratiu sofverski novčanik, za to možete koristiti Xumm mobilnu aplikaciju (import tajnog ključa kao \"obiteljski ključ\").",
+    "flare": "Ako imate pitanje o \"Flare\"-u morate postaviti upit Flare zajednici.",
+    "text3": "Ako imate zahtjev za <1>partnerstvo ili marketing</1> možete nas kontaktirati na email: <3/>. Isto tako možete nas kontaktirati sa upitima za bithomp korisničko ime ili bithomp pretraživač transakcija.",
+    "no-answer": "Da bi obavljali efikasnu korisničku podršku i orijentirali se na kompliciranije upite, ne odgovaramo na upite vezane za točke 1-7.",
+    "submit-info": "Pošalji informacije o vašom XRPL servisu/usluzi",
+    "text4": "Ako imate javnu XRPL uslugu i želite da vaša XRPL adresa bude prepoznatljiva na Bithomp-u, pošaljite informacije <1>ovdje</1>. Isto nas tako možete kontaktirati na email: <3/> ako želite da se proces ubrza.",
+    "follow-us": "Pratite nas na socijalnim mrežama"
+  },
+  "press": "Ovo je službeni logotip za Bithomp koji se može koristiti u publikacijama i na webu (svg, png, eps, pdf, za tamne i svijetle pozadine). Za medijske upite molim vas <1>kontaktirajte nas</1>.",
+  "page-not-found": {
+    "header": "Stranica nije pronađena.",
+    "text": "Kliknite <1>ovdje</1> za pregled naše početne stranice."
+  },
+  "receipt": {
+    "quantity": "qty.",
+    "items": "stavki",
+    "price": "cijena",
+    "total": "ukupno",
+    "paid": "plaćeno",
+    "order-id": "id narudžbe"
+  },
+  "button": {
+    "continue": "Nastavi",
+    "cancel": "Poništi",
+    "accept": "Prihvati",
+    "submit": "Pošalji",
+    "search": "Traži",
+    "print": "Print",
+    "download": "Preuzmi",
+    "copy": "Kopiraj",
+    "copied": "Kopirano",
+    "copy-my-address": "Kopiraj moju adresu",
+    "sign": "Potpiši"
+  },
+  "general": {
+    "error": "Greška",
+    "no-data": "Nema dostupnih podataka",
+    "loading": "Učitavam...",
+    "load-failed": "Neuspjelo učitavanje",
+    "all-issuers": "Svi issueri",
+    "no-expiration": "Nikad",
+    "no-uri": "Nema URIja",
+    "no-media": "Nema medija",
+    "viewer": "Preglednik"
+  },
+  "error": {
+    "Network Error": "Nema internetske veze ;(", 
+    "Request failed with status code 429": "Šaljete nam previše zahtjeva, pokušajte malo kasnije."
+  },
+  "error-api": {
+    "search is too short": "Ime za pretragu je premalo.",
+    "issuer username is not found or invalid": "Neispravno kor. ime issuera",
+    "issuer is invalid": "Neispravna adresa issuera",
+    "owner username is not found or invalid": "Neispravno ime vlasnika",
+    "owner is invalid": "Neispravna adresa vlasnika",
+    "destination username is not found or invalid": "Neispravno destinacijsko kor. ime",
+    "destination is invalid": "Neispravna destinacijska adresa",
+    "currency is invalid": "Neispravni novčić (valuta)",
+    "currencyIssuer username is not found or invalid": "Neispravno ima issuera novčića",
+    "currencyIssuer is invalid": "Neispravna adresa issuera novčića",
+    "Token information is not found": "Nispo pronašli podatke za taj ID"
+  },
+  "units": {
+    "seconds-short": "s",
+    "minutes-short": "m",
+    "hours-short": "h"
+  },
+  "table": {
+    "index": "Indeks",
+    "address": "Adresa",
+    "time": "Vrijeme",
+    "date": "Datum",
+    "amount": "Iznos",
+    "name": "Ime",
+    "sender": "Pošaljitelj",
+    "memo": "Memo",
+    "transaction": "Transakcija",
+    "owner": "Vlasnik",
+    "owners-now": "Vlasnici (sad)",
+    "accepted-by": "Prihvaćeno od",
+    "issuer": "Izdavač",
+    "minter": "Izraditelj",
+    "receiver": "Primatelj",
+    "issuer-owner": "Izdavač & Vlasnik",
+    "issuers": "Izdavači",
+    "broker": "Broker",
+    "seller": "Prodavač",
+    "buyer": "Kupac",
+    "sold": "Prodano",
+    "sold_few": "Prodano",
+    "sold-on": "Prodano na",
+    "type": "Tip",
+    "status": "Status",
+    "hash": "Hash",
+    "serial": "Serial",
+    "taxon": "Taxon",
+    "placed": "Postavljeno",
+    "accepted": "Privaćeno",
+    "canceled": "Poništeno",
+    "offer": "Ponuda",
+    "expiration": "Rok isteka",
+    "expired": "Isteklo",
+    "destination": "Destination",
+    "sales": "Prodaje",
+    "volume": "Volumen prodaja",
+    "price": "Cijena",
+    "external-url": "Eksterni URL",
+    "description": "Opis",
+    "collection": "Kolekcija",
+    "transfer-fee": "Naknada",
+    "flag": "Zastavica",
+    "flags": "Zastavice",
+    "count": "Iznos",
+    "nfts": "NFTovi",
+    "minted": "Izrađeno",
+    "transferred": "Transferirano",
+    "burned": "Uništeno",
+    "attributes": "Atributi",
+    "metadata": "Metapodaci",
+    "ledger-data": "Ledger-podaci",
+    "history": "Povijest",
+    "sell-offers": "Ponude prodaje",
+    "buy-offers": "Ponude kupnje",
+    "nfts-now": "NFTovi (sad)",
+    "traded-nfts": "Trgovani NFTovi",
+    "buyers": "Kupci",
+    "raw-data": "Čisti podaci",
+    "username": "Korisničko ime",
+    "floor-now": "Dno (sad)",
+    "related-lists": "Povezane liste",
+    "by-issuer": "Po izdavaču",
+    "by-owner": "Po vlasniku",
+    "by-taxon": "Po taxonu",
+    "all-nfts": "Svi NFTovi",
+    "on-sale": "Na rasprodaji",
+    "social-share": "Dijeljenje je zakon",
+    "marketplace": "Marketplace",
+    "text": {
+      "show-extended-statistics": "Pošalji detaljnije statistike",
+      "no-expiration": "Nema datuma isteka",
+      "no-offers": "Nema ponuda",
+      "unspecified": "nespecificirano",
+      "sell": "Prodaj",
+      "buy": "Kupi",
+      "show": "prikaži",
+      "hide": "sakri",
+      "see-on": "Vidi na",
+      "valid": "ispravno",
+      "invalid": "neispravno"
+    },
+    "filter": {
+      "valid": "Ispravni",
+      "invalid": "Neispravni",
+      "active": "Svi aktivni",
+      "historical": "Povijesni",
+      "all": "Svi"
+    },
+    "text-status": {
+      "NFT is not owned by the seller account": "Prodavač nije vlasnik NFTa",
+      "Offer is expired": "Isteklo",
+      "Unable to verify balance of the buyer account": "Ne mogu provjeriti iznos računa kupca",
+      "Insufficient funds on the buyer account": "Kupac nema dovoljno novaca",
+      "Seller has no trustline for the token or it cannot be verified": "Prodavač nema trustline za novčić ili se to ne može provjeriti",
+      "NFT Issuer has no trustline for the token to accept royalty or it cannot be verified": "NFT izdavatelj nema trustline za novčić da bi prihvatio naknadu ili se to ne može provjeriti"
+    }
+  },
+  "tabs": {
+    "list": "Lista",
+    "tiles": "Pločice",
+    "secondary-sales": "Sekundarne",
+    "primary-sales": "Primarne",
+    "all-sales": "Sve prodaje",
+    "top-sales": "TOP prodaje",
+    "latest-sales": "Zadnje prodaje",
+    "all-time": "Sve vrijeme",
+    "year": "365 dana",
+    "month": "30 dana",
+    "week": "7 dana",
+    "day": "24 sata",
+    "currencies": "Currencies",
+    "issuers": "Izdavači",
+    "marketplaces": "Tržnica",
+    "brokers": "Brokeri",
+    "image": "Slika",
+    "video": "Video",
+    "audio": "Audio",
+    "model": "3D model",
+    "owned-offers": "Posjedujuće",
+    "offers-for-owned-nfts": "Za posjedujuće NFTs",
+    "privately-offered-to-address": "Privatno (dolazno)",
+    "all": "Sve",
+    "buy": "Kupi",
+    "sell": "Prodaj",
+    "public": "Javno",
+    "publicAndKnownBrokers": "Javno & MP",
+    "onSale": "Na rasprodaji za XRP",
+    "all-tokens": "Svi novčići",
+    "xrp-only": "Samo XRP"
+  },
+  "xumm": {
+    "new-qr": "Generiraj novi QR"
+  },
+  "explorer": {
+    "header": "XRP Ledger Tražilica",
+    "enter-address": "Unesi XRPL adresu ili korisničko ime",
+    "searching-tx-nft-nftoffer": "Tražim Tx / NFT ID / NFT Ponudu",
+    "searching-for-addresses": "Tražim adrese...",
+    "menu": {
+      "account": "Korisnički račun",
+      "transactions": "Transakcije",
+      "tokens": "Novčići"
+    }
+  },
+  "nft-explorer": {
+    "header": "NFT explorer"
+  },
+  "nft-offers": {
+    "header": "NFT ponude",
+    "owned-desc": "Ovdje možete pretražiti kupopordajne ponude za NFTove, unesite XRPL adresu ili korisničko ime za vidjeti što se nudi.",
+    "for-owned-nfts-desc": "Ovdje možete pretražiti ponude za kupnju za NFTova, unesite XRPL adresu ili korisničko ime za vidjeti pristigle ponude.",
+    "privately-offered-to-address-desc": "Ovdje možete pretražiti privatne ponude XRPL računa (s destinacijskom oznakom), to je često korišteno kod NFT transfera (cijena 0 XRP), unesite XRPL adresu ili korisničko ime za vidjeti pristigle ponude.",
+    "no-nft-offers": "Nismo pronašli niti jednu NFT ponudu.",
+    "cancel-invalid-offer_one": "Poništi nevaljalu ponudu",
+    "cancel-invalid-offer_other": "Poništi {{count}} nevaljalih ponuda",
+    "cancel-expired-offer_one": "Poništi isteklu ponudu",
+    "cancel-expired-offer_other": "Poništi {{count}} isteklih ponuda"
+  },
+  "nft-offer": {
+    "header": "NFT ponuda",
+    "desc": "Ovdje možete pretražiti NFT ponude, unesite ID ponude i stisnite dugme za pretragu.",
+    "enter-offer-id": "Unesite ID NFT ponude",
+    "selling": "Prodaja",
+    "buying": "Kupnja"
+  },
+  "nfts": {
+    "header": "NFTovi računa",
+    "desc": "Ovdje možete pretražiti NFTove, unesite XRPL adresu za vidjeti koje NFTove posjeduje.",
+    "search-by-name": "Pretraga po nazivu NFTa",
+    "search-by-issuer": "Pretraga po izdavatelju NFTa",
+    "search-by-taxon": "Pretraga po NFT taxonu",
+    "search-by-owner": "Pretraga po NFT vlasniku",
+    "no-nfts": "Nismo pronašli niti jedan NFT sa vašim parametrima za pretragu.",
+    "load-more": "Tražimo podatke na XRPLu... molimo pričekajte...",
+    "end": "Ovdje su svi NFTovi koje smo uspjeli pronaći."
+  },
+  "nft": {
+    "desc": "Ovdje možete pronaći NFTove, unesite NFT ID i kliknite dugme za pretragu.",
+    "enter-nft-id": "Unesi NFT ID",
+    "cancel-sell-offer-for": "Poništi prodajnu ponudu za",
+    "cancel-buy-offer-for": "Poništi kupovnu ponudu za",
+    "buy-for": "Kupi za",
+    "on": "na",
+    "make-offer": "Izradi ponudu",
+    "list-for-sale": "Lista za prodaju",
+    "holders": "Distribucija (Holders)"
+  },
+  "nft-distribution": {
+    "header": "NFT distribucija",
+    "desc": "Ovdje možete provjeriti distribuciju NFTova od jednog NFT izdavača. Unesite izdavačevu XRPL adresu ili korisničko ime i stisnite dugme za pretragu.",
+    "no-nfts": "Nismo pronašli niti jedan NFT kojemu je izdavač ta adresa.",
+    "text0": "{{users}} računi posjeduju {{nfts}} NFTa"
+  },
+  "nft-volumes": {
+    "header": "NFT prodajni volumen",
+    "period": {
+      "all": "",
+      "year": "Za zadnjih 365 dana",
+      "month": "Za zadnjih 30 dana",
+      "week": "Za zadnjih 7 dana",
+      "day": "Za zadnja 24 sata"
+    },
+    "text0": "XRPL je imao {{allSales}} {{currency}} NFT prodaja za {{allVolume}}.",
+    "brokers": {
+      "desc": "Ovo je lista NFT broker računa. Ovdje možete pronaći volumen ponuda botova. Marketplace koriste miksane modele prodaje, ovdje možete vidjeti samo volumen koji je potekao kroz model brokera.",
+      "no-broker": "Nema brokera",
+      "text0": "XRPL je imao {{allSales}} <3>{{currency}}</3> NFT {{saleType}} prodaja za {{allVolume}}, od kojih <9>{{brokerSales}}</9> {{percentBrokerSales}} prodaja <13>{{brokerVolume}}</13> {{percentBrokerVolume}} su bili kroz model brokera."
+    },
+    "marketplaces": {
+      "desc": "Ovo je lista NFT Marketplacea na XRPL-u. Volumeni ovdje ne uključuju primarne prodaje (mints) koje su napravljene unutar 2 transakcije (plaćanje/payment i NFT transfer)."
+    },
+    "issuers": {
+      "desc": "Ovo je lista NFT izdavatelja na XRPL-u. Da bi vidjeli volumene NFT kolekcija indentificiranih po izdavatelju i taxonu kliknite na link u Prodajni volumen stupcu."
+    }
+  },
+  "nft-sales": {
+    "header": "NFT prodaje",
+    "load-more": "Tražimo podatke na XRPLu... molimo pričekajte...",
+    "end": "Kraj liste."
+  },
+  "links": {
+    "active-offers-same-account": "Vidi aktivne ponude od tog računa",
+    "nfts-same-issuer": "NFTovi sa istim izdavateljom",
+    "owned-nfts-same-account": "NFTovi koje taj račun posjeduje",
+    "all": "sve",
+    "sold": "prodano"
+  },
+  "donate": {
+    "help-us": "Pomozite nam u našoj misiji da napravimo naj user-friendly XRPL pretraživač.",
+    "it-helps": "Vaša donacija će pomoći dodati nove kapacitete i u razvoju Bithomp-a.",
+    "address": "Naša XRPL adresa za donacije",
+    "dt": "Destinacijska oznaka",
+    "donate-with-xumm": "Doniraj pomoću Xumm-a"
+  },
+  "sponsored": {
+    "sponsored": "Sponzorirano"
+  }
+}
