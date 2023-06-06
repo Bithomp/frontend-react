@@ -107,7 +107,7 @@
     "title": "XRP Pretraživač | Istraži XRP Ledger",
     "description": "XRP grafovi cijene | Statistike | NFT pretraživač | Provjeri svoj wallet",
     "search-placeholder": "Pretraži po XRPL adresi / Transakciji / NFTu / Korisničkom imenu / PayStringu / Ponudi",
-    "search-placeholder-short": "Pretraži po adresi / Transakcija / Korisnik",
+    "search-placeholder-short": "Pretraži po adresi / Transakciji / Korisniku",
     "scan-qr": "SKENIRAJ KOD",
     "whales": {
       "header": "Najznačajnije transakcije u zadnjih 24 sata",
