@@ -106,7 +106,7 @@
   "home": {
     "title": "XRP Pretraživač | Istraži XRP Ledger",
     "description": "XRP grafovi cijene | Statistike | NFT pretraživač | Provjeri svoj wallet",
-    "search-placeholder": "Pretraži po XRPL adresi / Transakcija / NFT / Korisničko ime / PayString / Ponuda / Valutna oznaka (hash)",
+    "search-placeholder": "Pretraži po XRPL adresi / Transakcija / NFT / Korisničko ime / PayString / Ponuda",
     "search-placeholder-short": "Pretraži po adresi / Transakcija / Korisnik",
     "scan-qr": "SKENIRAJ KOD",
     "whales": {
