@@ -55,6 +55,7 @@ export default function SEO({ title, description, image, page, images, websiteNa
     { hrefLang: 'ru', href: server + '/ru' + path },
     { hrefLang: 'es', href: server + '/es' + path },
     { hrefLang: 'ca', href: server + '/ca' + path },
+    { hrefLang: 'hr', href: server + '/hr' + path },
     { hrefLang: 'nn', href: server + '/nn' + path }
   ]
 
