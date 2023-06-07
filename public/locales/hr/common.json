@@ -33,7 +33,7 @@
     "customer-support": "Korisnička podrška",
     "press": "Press",
     "merch": "Merch shop",
-    "donate": "Doniraj",
+    "donate": "Donacija",
     "community": {
       "title": "Zajednica",
       "xumm": "Xumm wallet",
@@ -594,8 +594,8 @@
     "sold": "prodano"
   },
   "donate": {
-    "help-us": "Pomozite nam u našoj misiji da napravimo naj user-friendly XRPL pretraživač.",
-    "it-helps": "Vaša donacija će pomoći dodati nove kapacitete i u razvoju Bithomp-a.",
+    "help-us": "Pomozite nam u našoj misiji da napravimo najbolji user-friendly XRPL pretraživač.",
+    "it-helps": "Vaša donacija će pomoći dodati nove kapacitete te u razvoju Bithomp-a.",
     "address": "Naša XRPL adresa za donacije",
     "dt": "Destinacijska oznaka",
     "donate-with-xumm": "Doniraj pomoću Xumm-a"
