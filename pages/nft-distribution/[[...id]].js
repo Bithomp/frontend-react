@@ -14,9 +14,9 @@ import {
 } from '../../utils/format'
 
 export async function getServerSideProps(context) {
-  const { locale, query } = context
-  const { taxon, id, issuer } = query
-  const idQuery = id ? (Array.isArray(id) ? id[0] : id) : ""
+  const { locale, query, params } = context
+  const { taxon, issuer } = query
+  const idQuery = params.id ? params.id : ""
   let issuerQuery = isAddressOrUsername(idQuery) ? idQuery : issuer
   issuerQuery = isAddressOrUsername(issuerQuery) ? issuerQuery : ""
 
@@ -261,5 +261,5 @@ export default function NftDistribution({ issuerQuery, taxonQuery, idQuery }) {
         </p>
       }
     </div>
-  </>;
-};
+  </>
+}

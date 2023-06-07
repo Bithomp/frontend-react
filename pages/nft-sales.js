@@ -480,5 +480,5 @@ export default function NftSales({
         }
       </InfiniteScroll>
     </div >
-  </>;
-};
+  </>
+}

@@ -26,10 +26,10 @@ import {
 import SocialShare from '../../components/SocialShare'
 
 export async function getServerSideProps(context) {
-  const { locale, query, req } = context
+  const { locale, query, req, params } = context
   let pageMeta = null
-  const { sortCurrency, id } = query
-  const nftId = id ? (Array.isArray(id) ? id[0] : id) : ""
+  const { sortCurrency } = query
+  const nftId = params.id ? params.id : ""
   if (nftId) {
     let headers = null
     if (process.env.NODE_ENV !== 'development') {

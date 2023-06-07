@@ -1,5 +1,4 @@
 import Mailto from 'react-protected-mailto'
-import Head from 'next/head'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useTranslation } from 'next-i18next'
 
@@ -18,10 +17,10 @@ export default function PrivacyPolicy() {
 
   return (
     <>
-      <Head>
-        <meta name="robots" content="noindex" />
-      </Head>
-      <SEO title={t("menu.privacy-policy")} />
+      <SEO
+        title={t("menu.privacy-policy")}
+        noindex={true}
+      />
       <div className="content-text">
         <h1>Privacy Policy</h1>
         <p>Last updated: April 5, 2023</p>

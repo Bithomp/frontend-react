@@ -20,8 +20,8 @@ import { delay } from '../../utils'
 import { getIsSsrMobile } from "../../utils/mobile"
 
 export async function getServerSideProps(context) {
-  const { locale, query } = context
-  const id = query?.id ? (Array.isArray(query?.id) ? query.id[0] : query.id) : ""
+  const { locale, params } = context
+  const id = params.id ? params.id : ""
   /*
   let pageMeta = null
   if (id) {
@@ -323,5 +323,5 @@ export default function NftOffer({ setSignRequest, signRequest, account, id }) {
         </>
       }
     </div>
-  </>;
-};
+  </>
+}

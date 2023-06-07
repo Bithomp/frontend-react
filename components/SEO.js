@@ -3,15 +3,17 @@ import { useRouter } from 'next/router'
 
 import { server, network } from '../utils'
 
-export default function SEO({ title, description, image, page, images, websiteName }) {
+export default function SEO({ title, description, image, page, images, websiteName, noindex }) {
   const router = useRouter()
 
   const networkText = network !== 'mainnet' ? (" (" + network + ")") : ""
   description = description || title
 
+  const canonical = server + (router.locale !== 'en' ? ("/" + router.locale) : "") + router.asPath
+
   let openGraph = {
     type: 'website',
-    url: server + (router.locale !== 'en' ? ("/" + router.locale) : "") + router.asPath,
+    url: canonical,
     title: title || page,
     description,
     locale: router.locale,
@@ -20,8 +22,19 @@ export default function SEO({ title, description, image, page, images, websiteNa
 
   if (image) {
     images = [image]
+  } else if (!images) {
+    images = [{
+      file: server + '/logo512.png',
+      width: 512,
+      height: 512
+    },
+    {
+      file: server + '/logo192.png',
+      width: 192,
+      height: 192
+    }]
   }
-  
+
   if (images) {
     openGraph.images = []
     for (let i = 0; i < images.length; i++) {
@@ -66,6 +79,8 @@ export default function SEO({ title, description, image, page, images, websiteNa
       openGraph={openGraph}
       twitter={twitter}
       languageAlternates={languageAlternates}
+      canonical={canonical}
+      noindex={noindex ? true : false}
     />
   )
 }

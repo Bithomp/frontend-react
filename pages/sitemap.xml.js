@@ -31,16 +31,14 @@ const pages = [
   { loc: "developer", changefreq: "yearly", priority: "0.4" },
   { loc: "press", changefreq: "yearly", priority: "0.4" },
 
-  { loc: "explorer/submit.html", changefreq: "yearly", priority: "0.2" },
-
-  { loc: "disclaimer", changefreq: "yearly", priority: "0" },
-  { loc: "privacy-policy", changefreq: "yearly", priority: "0" },
-  { loc: "terms-and-conditions", changefreq: "yearly", priority: "0" },
+  { loc: "explorer/submit.html", changefreq: "yearly", priority: "0.2" }
 ]
 
 function generateSiteMap(posts) {
+  const locales = ['en', 'ru', 'es', 'ca', 'nn', 'hr']
+  const oldPages = ['explorer/', 'submit/', 'paperwallet', 'explorer/submit.html']
   return `<?xml version="1.0" encoding="UTF-8"?>
-   <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+   <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
      ${posts
       .map(({ loc, changefreq, priority }) => {
         return `
@@ -48,6 +46,14 @@ function generateSiteMap(posts) {
             <loc>${`${server}/${loc}`}</loc>
             <changefreq>${changefreq}</changefreq>
             <priority>${priority}</priority>
+            ${!oldPages.includes(loc) ? locales
+              .map((locale) => {
+                return `<xhtml:link rel="alternate" hreflang="${locale}" href="${`${server}${locale === 'en' ? '' : '/'+ locale}/${loc}`}"/>`
+              })
+              .join('')
+              : 
+              ""
+            }
           </url>
         `
       })

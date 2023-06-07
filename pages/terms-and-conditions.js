@@ -1,5 +1,4 @@
 import Mailto from 'react-protected-mailto'
-import Head from 'next/head'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import SEO from '../components/SEO'
 import { useTranslation } from 'next-i18next'
@@ -17,10 +16,10 @@ export default function TermsAndConditions() {
 
   return (
     <>
-      <Head>
-        <meta name="robots" content="noindex" />
-      </Head>
-      <SEO title={t("menu.terms-and-conditions")} />
+      <SEO
+        title={t("menu.terms-and-conditions")}
+        noindex={true}
+      />
       <div className="content-text">
         <h1>Terms and Conditions</h1>
         <p>Last updated: February 16, 2023</p>
