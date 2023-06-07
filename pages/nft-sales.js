@@ -346,7 +346,7 @@ export default function NftSales({
         + (currency ? (" " + currency) : "")
         + (currencyIssuer ? (" " + currencyIssuer) : "")
         + (viewTab === "list" ? (" " + t("tabs.list")) : "")
-        + (periodTab ? (" (" + periodTab + ")") : "")
+        + (periodTab ? (" (" + (periodTab === 'all' ? t("tabs.all-time") : t("tabs." + periodTab)) + ")") : "")
       }
     />
     <div className="content-text" style={{ minHeight: "480px" }}>

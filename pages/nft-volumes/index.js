@@ -464,7 +464,17 @@ export default function NftVolumes({ period, sale, list, currency, currencyIssue
   }
 
   return <>
-    <SEO title={t("nft-volumes.header")} />
+    <SEO
+      title={
+        t("nft-volumes.header") + ' '
+        + (saleTab === 'secondary' ? t("tabs.secondary-sales") : "")
+        + (saleTab === 'primary' ? t("tabs.primary-sales") : "")
+        + (currency ? (" " + currency) : "")
+        + (currencyIssuer ? (" " + currencyIssuer) : "")
+        + (listTab === "list" ? (" " + t("tabs.list")) : "")
+        + (periodTab ? (" (" + (periodTab === 'all' ? t("tabs.all-time") : t("tabs." + periodTab)) + ")") : "")
+      }
+    />
     <div className="content-text">
       <h1 className="center">{t("nft-volumes.header") + " "}</h1>
       <div className='tabs-inline'>
