@@ -69,6 +69,7 @@ export default function SEO({ title, description, image, page, images, websiteNa
     { hrefLang: 'es', href: server + '/es' + path },
     { hrefLang: 'ca', href: server + '/ca' + path },
     { hrefLang: 'hr', href: server + '/hr' + path },
+    { hrefLang: 'da', href: server + '/da' + path },
     { hrefLang: 'nn', href: server + '/nn' + path }
   ]
 
