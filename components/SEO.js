@@ -9,7 +9,7 @@ export default function SEO({ title, description, image, page, images, websiteNa
   const networkText = network !== 'mainnet' ? (" (" + network + ")") : ""
   description = description || title
 
-  const canonical = server + (router.locale !== 'en' ? ("/" + router.locale) : "") + router.asPath
+  const canonical = server + (router.locale !== 'en' ? ("/" + router.locale) : "") + (router.asPath === "/" ? "" : router.asPath)
 
   let openGraph = {
     type: 'website',
