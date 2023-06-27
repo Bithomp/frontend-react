@@ -1,4 +1,4 @@
-import { useTranslation } from 'next-i18next'
+import { useTranslation, Trans } from 'next-i18next'
 import { useState, useEffect } from 'react'
 import axios from 'axios'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
@@ -19,12 +19,18 @@ export async function getServerSideProps(context) {
     headers = req.headers
   }
   try {
-    const res = await axios({
-      method: 'get',
-      url: server + '/api/cors/xrpl/v1/ledger/' + ledgerIndex,
-      headers
-    })
-    pageMeta = res?.data
+    if (ledgerIndex === "" || ledgerIndex > 32569) {
+      const res = await axios({
+        method: 'get',
+        url: server + '/api/cors/xrpl/v1/ledger/' + ledgerIndex,
+        headers
+      })
+      pageMeta = res?.data
+    } else {
+      pageMeta = {
+        ledgerVersion: ledgerIndex
+      }
+    }
   } catch (error) {
     console.error(error)
   }
@@ -83,7 +89,9 @@ export default function Ledger({ pageMeta }) {
 
   useEffect(() => {
     setRendered(true)
-    checkApi()
+    if (ledgerVersion === "" || ledgerVersion > 32569) {
+      checkApi()
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -91,45 +99,68 @@ export default function Ledger({ pageMeta }) {
     <SEO title={t("menu.ledger") + ledgerVersion} />
     <div className="content-text">
       <h1 className="center">{t("menu.ledger")} #{ledgerVersion}<br />{(rendered && pageMeta?.close_time) ? fullDateAndTime(pageMeta.close_time) : <br />}</h1>
-      <p className="center">
-        {t("ledger.past-ledgers")}: {ledgerLink(ledgerVersion - 1)}
-        , {ledgerLink(ledgerVersion - 2)}, {ledgerLink(ledgerVersion - 3)}.
-      </p>
-      <table className="table-large">
-        <thead>
-          <tr>
-            <th>{t("table.index")}</th>
-            <th>{t("table.type")}</th>
-            <th className='hide-on-mobile'>{t("table.address")}</th>
-            <th className='hide-on-mobile'>{t("table.status")}</th>
-            <th>{t("table.hash")}</th>
-          </tr>
-        </thead>
-        <tbody>
-          {data ?
-            <>
-              {data.transactions ? data.transactions.map((tx) =>
-                <tr key={tx.id}>
-                  <td className='center'>{tx.outcome.indexInLedger}</td>
-                  <td>{tx.type}</td>
-                  <td className='hide-on-mobile'>{addressUsernameOrServiceLink(tx, "address")}</td>
-                  <td className='hide-on-mobile'>{tx.outcome.result}</td>
-                  <td><a href={"/explorer/" + tx.id}>{shortHash(tx.id, 10)}</a></td>
-                </tr>
-              ) :
-                <tr><td colSpan="4">{t("ledger.no-transactions")}</td></tr>
-              }
-            </>
-            :
-            <tr className='center'>
-              <td colSpan="100">
-                <span className="waiting"></span>
-                <br />{t("general.loading")}
-              </td>
-            </tr>
+      {ledgerVersion > 32569 ?
+        <>
+          {ledgerVersion > 32572 &&
+            <p className="center">
+              {t("ledger.past-ledgers")}: {ledgerLink(ledgerVersion - 1)}
+              , {ledgerLink(ledgerVersion - 2)}, {ledgerLink(ledgerVersion - 3)}.
+            </p>
           }
-        </tbody>
-      </table>
+          <table className="table-large">
+            <thead>
+              <tr>
+                <th>{t("table.index")}</th>
+                <th>{t("table.type")}</th>
+                <th className='hide-on-mobile'>{t("table.address")}</th>
+                <th className='hide-on-mobile'>{t("table.status")}</th>
+                <th>{t("table.hash")}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {data ?
+                <>
+                  {data.transactions ? data.transactions.map((tx) =>
+                    <tr key={tx.id}>
+                      <td className='center'>{tx.outcome.indexInLedger}</td>
+                      <td>{tx.type}</td>
+                      <td className='hide-on-mobile'>{addressUsernameOrServiceLink(tx, "address")}</td>
+                      <td className='hide-on-mobile'>{tx.outcome.result}</td>
+                      <td><a href={"/explorer/" + tx.id}>{shortHash(tx.id, 10)}</a></td>
+                    </tr>
+                  ) :
+                    <tr><td colSpan="4">{t("ledger.no-transactions")}</td></tr>
+                  }
+                </>
+                :
+                <tr className='center'>
+                  <td colSpan="100">
+                    <span className="waiting"></span>
+                    <br />{t("general.loading")}
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </>
+        :
+        <div className='flex'>
+          <div className="grey-box">
+            <Trans i18nKey="genesis.text0">
+              The ledger <b>32570</b> is the earliest ledger available, approximately the first week of XRPL history,
+              <a
+                href="https://web.archive.org/web/20171211225452/https://forum.ripple.com/viewtopic.php?f=2&t=3613"
+                rel="noreferrer"
+                target="_blank"
+              >
+                ledgers 1 through 32569 were lost due to a mishap in 2012
+              </a>.
+            </Trans>
+            <br /><br />
+            {t("genesis.ledger-continue")}
+          </div>
+        </div>
+      }
     </div>
   </>
 }
