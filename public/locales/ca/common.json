@@ -343,7 +343,7 @@
     "viewer": "Visualitzador"
   },
   "error": {
-    "Network Error": "Sembla que no hi ha connexió a internet ;(", 
+    "Network Error": "Sembla que no hi ha connexió a internet ;(",
     "Request failed with status code 429": "Ens estàs enviant massa sol·licituds, intenta-ho de nou més tard!"
   },
   "error-api": {
@@ -508,7 +508,10 @@
       "account": "Compte",
       "transactions": "Transaccions",
       "tokens": "Tokens"
-    }
+    },
+    "different-network": "This transaction is from the <1>{{networkNameOrId}}</1> network",
+    "check-tx-on-different-explorer": "check the details <1><0>here</0></1>.",
+    "not-supported-network": "which is not supported."
   },
   "nft-explorer": {
     "header": "Explorador d'NFTs"

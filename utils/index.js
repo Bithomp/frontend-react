@@ -12,6 +12,37 @@ export const delay = async (milliseconds, callback, options) => {
   callback(options)
 }
 
+//https://github.com/XRPLF/CTID/blob/main/ctid.js#L24C31-L24C31 by Richard
+export const decodeCTID = ctid => {
+  let ctidValue
+  if (typeof (ctid) === 'string') {
+    if (!/^[0-9A-F]+$/.test(ctid))
+      throw new Error("ctid must be a hexadecimal string or BigInt")
+
+    if (ctid.length !== 16)
+      throw new Error("ctid must be exactly 16 nibbles and start with a C")
+
+    ctidValue = BigInt('0x' + ctid)
+  }
+  else if (typeof (ctid) === 'bigint')
+    ctidValue = ctid;
+  else
+    throw new Error("ctid must be a hexadecimal string or BigInt")
+
+  if (ctidValue > 0xFFFFFFFFFFFFFFFFn ||
+    (ctidValue & 0xF000000000000000n) != 0xC000000000000000n)
+    throw new Error("ctid must be exactly 16 nibbles and start with a C")
+
+  const ledgerIndex = Number((ctidValue >> 32n) & 0xFFFFFFFn)
+  const txIndex = Number((ctidValue >> 16n) & 0xFFFFn)
+  const networkId = Number(ctidValue & 0xFFFFn)
+  return {
+    networkId,
+    ledgerIndex,
+    txIndex
+  }
+}
+
 export const fiatCurrencyList = [
   { value: 'usd', label: 'USD' },
   { value: 'eur', label: 'EUR' },
@@ -247,33 +278,25 @@ export const submitTransaction = async (blob, callback) => {
 export const network = process.env.NEXT_PUBLIC_NETWORK_NAME ? process.env.NEXT_PUBLIC_NETWORK_NAME : "mainnet";
 export const devNet = ['mainnet', 'staging'].includes(network) ? false : network;
 
-const Server = () => {
-  let server = "https://test.bithomp.com";
-  switch (network) {
-    case 'mainnet':
-      server = "https://bithomp.com";
-      break;
-    case 'staging':
-      server = "https://staging.bithomp.com";
-      break;
-    case 'testnet':
-      server = "https://test.bithomp.com";
-      break;
-    case 'devnet':
-      server = "https://dev.bithomp.com";
-      break;
-    case 'beta':
-      server = "https://beta.bithomp.com";
-      break;
-    case 'amm':
-      server = "https://amm.bithomp.com";
-      break;
-    default:
-      break;
-  }
-  return server;
+const networks = {
+  mainnet: { id: 0, server: "https://bithomp.com" },
+  staging: { id: 2, server: "https://staging.bithomp.com" },
+  testnet: { id: 1, server: "https://test.bithomp.com" },
+  devnet: { id: 2, server: "https://dev.bithomp.com" },
+  beta: { id: 21338, server: "https://beta.bithomp.com" },
+  amm: { id: 25, server: "https://amm.bithomp.com" }
 }
-export const server = Server();
+
+export const server = networks[network]?.server
+export const networkId = networks[network]?.id
+
+export const networksIds = {
+  0: { server: "https://bithomp.com", name: "mainnet" },
+  1: { server: "https://test.bithomp.com", name: "testnet" },
+  2: { server: "https://dev.bithomp.com", name: "devnet" },
+  25: { server: "https://amm.bithomp.com", nam: "amm" },
+  21338: { server: "https://beta.bithomp.com", name: "hooks-v3" }
+}
 
 const WssServer = () => {
   let token = ''
@@ -313,4 +336,8 @@ export const isAddressOrUsername = x => {
 
 export const isIdValid = x => {
   return /^[0-9a-zA-Z]{64}$/.test(x)
+}
+
+export const isValidCTID = x => {
+  return /^[cC]{1}[a-fA-F0-9]{15}$/.test(x)
 }

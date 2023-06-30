@@ -7,7 +7,7 @@
     "submit-offline-tx": "Send frakoblet transaksjon",
     "api": "Bithomp API",
     "tools": "Verktøy",
-    "account-generation": "Kontogenerering", 
+    "account-generation": "Kontogenerering",
     "faucet": "Faucet",
     "networks": "Nettverk",
     "domains": "Domener",
@@ -30,7 +30,7 @@
     "disclaimer": "Ansvarsfraskrivelse",
     "privacy-policy": "Personvernerklæring",
     "terms-and-conditions": "Vilkår og betingelser",
-    "customer-support": "Kundeservice", 
+    "customer-support": "Kundeservice",
     "press": "Trykk",
     "merch": "Varebutikk",
     "donate": "Doner",
@@ -75,7 +75,7 @@
       "change-settings": "Gå til innstillinger og velg en testnettnode.",
       "scan-qr": "Skann denne QR-koden med Xumm-appen.",
       "statuses": {
-        "redirecting": "Omdirigerer til Xumm...", 
+        "redirecting": "Omdirigerer til Xumm...",
         "wait": "Vennligst vent...",
         "check-push": "Sjekk en push-varsling på mobilen din.",
         "check-app": "Vennligst følg instruksjonene i Xumm-appen.",
@@ -90,7 +90,7 @@
     },
     "not-available": "ikke tilgjengelig",
     "confirm": {
-      "nft-accept-offer-header": "NFT kjøp", 
+      "nft-accept-offer-header": "NFT kjøp",
       "nft-create-sell-offer-header": "Liste for salg",
       "nft-create-buy-offer-header": "Lag kjøps bud",
       "nft-accept-offer": "Jeg innrømmer at Bithomp gir meg tilgang til en desentralisert markedsplass, og de kan ikke verifisere eller garantere ektheten og legitimiteten til noen NFT-er. Jeg bekrefter at jeg har lest <1>vilkårene og betingelsene</1>, og jeg godtar alle vilkårene for å kjøpe, selge eller bruke NFT-er på Bithomp.",
@@ -144,7 +144,7 @@
     "validation-quorum": "Validering quorum",
     "base-fee": "Grunnavgift",
     "base-reserve": "Grunnreserve",
-    "increment-reserve": "Øke reserve", 
+    "increment-reserve": "Øke reserve",
     "total-supply": "Total forsyning",
     "total-burned": "Total brent"
   },
@@ -204,7 +204,7 @@
       "username-taken": "Brukernavnet <b>{{username}}</b> er allerede i bruk. :(",
       "username-reserved": "Brukernavnet <b>{{username}}</b> er reservert, kontakt vår support.",
       "username-hold": "Brukernavnet <b>{{username}}</b> er på vent for registrering av en annen XRPL-konto. Du kan prøve igjen om 24 timer.",
-      "agree-terms-page": "Vennligst godta vilkårene og betingelsene som er spesifisert på denne siden.", 
+      "agree-terms-page": "Vennligst godta vilkårene og betingelsene som er spesifisert på denne siden.",
       "agree-terms-site": "Vennligst godta nettstedets vilkår og betingelser.",
       "agree-privacy-policy": "Vennligst godta våre retningslinjer for personvern.",
       "payment-partly": "Vennligst send resten av beløpet, så langt har vi bare mottatt {{received}} {{currency}} når <b>{{required}}{{currency}}</b> er nødvendig."
@@ -229,7 +229,7 @@
       "agree-terms-site": "jeg godtar<1>vilkårene og betingelsene</1>.",
       "agree-privacy-policy": "Jeg godtar <1>personvernreglene</1>.",
       "already-registered": "Kontoen din har allerede et registrert brukernavn",
-      "sign-out-to-register-another-one": "<0>Logg ut</0> fra denne kontoen for å registrere et brukernavn for en annen adresse." 
+      "sign-out-to-register-another-one": "<0>Logg ut</0> fra denne kontoen for å registrere et brukernavn for en annen adresse."
     },
     "step1": {
       "to-register": "For å registrere ditt offentlige brukernavn:",
@@ -284,7 +284,7 @@
       "email-empty": "Vennligst skriv inn E-postadressen din.",
       "email-invalid": "Vennligst skriv inn en gyldig e-post adresse.",
       "url-empty": "Vennligst skriv inn din nettside/app URL.",
-      "url-invalid": "Vennligst skriv inn en gyldig URL.", 
+      "url-invalid": "Vennligst skriv inn en gyldig URL.",
       "description-empty": "Legg til en beskrivelse av ditt prosjekt",
       "description-invalid": "Vennligst skriv en detaljert beskrivelse av ditt prosjekt."
     }
@@ -328,7 +328,7 @@
     "download": "Last ned",
     "copy": "Kopier",
     "copied": "Kopiert",
-    "copy-my-address": "Kopier min adresse", 
+    "copy-my-address": "Kopier min adresse",
     "sign": "Signer"
   },
   "general": {
@@ -452,7 +452,7 @@
       "invalid": "Ugyldig",
       "active": "Alle aktive",
       "historical": "Historisk",
-      "all": "Alle" 
+      "all": "Alle"
     },
     "text-status": {
       "NFT is not owned by the seller account": "NFT eies ikke av selger",
@@ -508,7 +508,10 @@
       "account": "Konto",
       "transactions": "Transaksjoner",
       "tokens": "Tokens"
-    }
+    },
+    "different-network": "This transaction is from the <1>{{networkNameOrId}}</1> network",
+    "check-tx-on-different-explorer": "check the details <1><0>here</0></1>.",
+    "not-supported-network": "which is not supported."
   },
   "nft-explorer": {
     "header": "NFT utforsker"
@@ -534,9 +537,9 @@
   "nfts": {
     "header": "Kontoens NFT-er",
     "desc": "Her kan du søke etter NFT-er, skriv inn XRPL-adressen for å se hvilke NFT-er den eier.",
-    "search-by-name": "Søk etter NFT-navn", 
+    "search-by-name": "Søk etter NFT-navn",
     "search-by-issuer": "Søk etter NFT-utsteder",
-    "search-by-taxon": "Søk etter NFT taxon", 
+    "search-by-taxon": "Søk etter NFT taxon",
     "search-by-owner": "Søk etter NFT eier",
     "no-nfts": "Vi kunne ikke finne noen NFT-er med søkeparameterne dine.",
     "load-more": "Vi ser etter data på XRPL... vennligst vent...",
@@ -546,7 +549,7 @@
     "desc": "Her kan du søke etter NFT-er, skrive inn en NFT-ID og trykk på søkeknappen.",
     "enter-nft-id": "Skriv inn en NFT-ID",
     "cancel-sell-offer-for": "Avbryt salgsbud for",
-    "cancel-buy-offer-for": "Avbryt kjøpsbud", 
+    "cancel-buy-offer-for": "Avbryt kjøpsbud",
     "buy-for": "Kjøp for",
     "on": "på",
     "make-offer": "Lag bud",
@@ -601,6 +604,6 @@
     "donate-with-xumm": "Doner medXUMM"
   },
   "sponsored": {
-    "sponsored": "Sponset" 
+    "sponsored": "Sponset"
   }
 }

@@ -508,7 +508,10 @@
       "account": "Aдрес",
       "transactions": "Транзакции",
       "tokens": "Токены"
-    }
+    },
+    "different-network": "Эта транзакция из <1>{{networkNameOrId}}</1> сети",
+    "check-tx-on-different-explorer": "данные можно посмотреть <1><0>здесь</0></1>.",
+    "not-supported-network": "которая не поддерживается."
   },
   "nft-explorer": {
     "header": "NFT эксплорер"

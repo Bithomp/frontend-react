@@ -508,7 +508,10 @@
       "account": "Konto",
       "transactions": "Transaktioner",
       "tokens": "Tokens"
-    }
+    },
+    "different-network": "This transaction is from the <1>{{networkNameOrId}}</1> network",
+    "check-tx-on-different-explorer": "check the details <1><0>here</0></1>.",
+    "not-supported-network": "which is not supported."
   },
   "nft-explorer": {
     "header": "NFT explorer"

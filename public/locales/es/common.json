@@ -343,7 +343,7 @@
     "viewer": "Vista"
   },
   "error": {
-    "Network Error": "Parece que no hay conexión a internet ;(", 
+    "Network Error": "Parece que no hay conexión a internet ;(",
     "Request failed with status code 429": "¡Nos estáis mandando demasiadas peticiones, prueba más tarde!"
   },
   "error-api": {
@@ -508,7 +508,10 @@
       "account": "Cuenta",
       "transactions": "Transacciones",
       "tokens": "Tokens"
-    }
+    },
+    "different-network": "This transaction is from the <1>{{networkNameOrId}}</1> network",
+    "check-tx-on-different-explorer": "check the details <1><0>here</0></1>.",
+    "not-supported-network": "which is not supported."
   },
   "nft-explorer": {
     "header": "Explorador NFT"

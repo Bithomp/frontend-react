@@ -343,7 +343,7 @@
     "viewer": "Viewer"
   },
   "error": {
-    "Network Error": "It seems there is no internet connection ;(", 
+    "Network Error": "It seems there is no internet connection ;(",
     "Request failed with status code 429": "You are sending us too many requests, try later!"
   },
   "error-api": {
@@ -508,7 +508,10 @@
       "account": "Account",
       "transactions": "Transactions",
       "tokens": "Tokens"
-    }
+    },
+    "different-network": "This transaction is from the <1>{{networkNameOrId}}</1> network",
+    "check-tx-on-different-explorer": "check the details <1><0>here</0></1>.",
+    "not-supported-network": "which is not supported."
   },
   "nft-explorer": {
     "header": "NFT explorer"

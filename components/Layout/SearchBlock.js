@@ -1,11 +1,11 @@
 import { useState, useEffect, useRef } from 'react'
 import Select from 'react-select'
-import { useTranslation } from 'next-i18next'
+import { useTranslation, Trans } from 'next-i18next'
 import { useRouter } from 'next/router'
 import axios from 'axios';
 import { useSearchParams } from 'next/navigation'
 
-import { isAddressOrUsername, isIdValid, useWidth } from '../../utils'
+import { isAddressOrUsername, isIdValid, useWidth, isValidCTID, decodeCTID, networkId, networksIds } from '../../utils'
 import { userOrServiceName, amountFormat } from '../../utils/format'
 
 //import { ReactComponent as Qr } from "../../public/images/qr.svg";
@@ -25,6 +25,7 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
   const [searching, setSearching] = useState(false)
   const [searchSuggestions, setSearchSuggestions] = useState([])
   const [searchingSuggestions, setSearchingSuggestions] = useState(false)
+  const [errorMessage, setErrorMessage] = useState("")
 
   useEffect(() => {
     if (!id && searchInput.current) {
@@ -52,6 +53,10 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
       // We should allow spaces here... or even non-latin characters, so that validation can be removed, together with searchItemRe 
       if (!searchItemRe.test(e.key)) {
         e.preventDefault()
+        return
+      }
+
+      if (isValidCTID(e.target.value)) {
         return
       }
 
@@ -109,6 +114,7 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
   }
 
   const onSearch = async (si) => {
+    setErrorMessage("")
     let searchFor = searchItem.trim()
     if (typeof si === 'string') {
       searchFor = si
@@ -157,6 +163,42 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
       }
     }
 
+    if (isValidCTID(searchFor)) {
+      try {
+        const { networkId: CTIDnetworkId } = decodeCTID(searchFor)
+        if (networkId === CTIDnetworkId) {
+          // we are on the correct explorer
+          window.location = '/explorer/' + searchFor
+        } else if (networksIds[CTIDnetworkId]) {
+          setErrorMessage(
+            <>
+              <Trans i18nKey="explorer.different-network">
+                This transaction is from the <b>{{ networkNameOrId: networksIds[CTIDnetworkId].name }}</b> network
+              </Trans>,{" "}
+              <Trans i18nKey="explorer.check-tx-on-different-explorer">
+                check the details <a href={networksIds[CTIDnetworkId].server + "/explorer/" + searchFor}>
+                  <u>here</u>
+                </a>
+              </Trans>
+            </>
+          )
+          return
+        } else {
+          setErrorMessage(
+            <>
+              <Trans i18nKey="explorer.different-network">
+                This transaction is from the <b>{{ networkNameOrId: CTIDnetworkId }}</b> network
+              </Trans>, {t("explorer.not-supported-network")}
+            </>
+          )
+          return
+        }
+      } catch (error) {
+        setErrorMessage(error)
+        return
+      }
+    }
+
     //tx, address etc
     window.location = '/explorer/' + encodeURI(searchFor)
     return
@@ -165,16 +207,16 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
   /*
   PayID
   searchItem.indexOf("$") > -1
-
+  
   username
   <18 
-
+  
   CurrencyCode, XLS14
   searchItem.length == 40
-
+  
   TX, NFT, NFT Offer
   searchItem.length == 64
-
+  
   X-address
   searchItem.length > 36
   searchItem.charAt(0) == "T"
@@ -283,10 +325,14 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
             />
           </div>
 
-
           <div className="search-button" onClick={onSearch}>
             <img src="/images/search.svg" className="search-icon" alt="search" />
           </div>
+          {errorMessage &&
+            <div className='orange' style={{ position: "absolute", bottom: "-50px", minHeight: "42px", textAlign: "left" }}>
+              {errorMessage}
+            </div>
+          }
           {/*
           <a className="search-scan-qr" href="/explorer/?scanqr">
             <Qr className="search-scan-qr-icon" />
@@ -309,5 +355,5 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
         </div>
       }
     </>
-  );
-};
+  )
+}
