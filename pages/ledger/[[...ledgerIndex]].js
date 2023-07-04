@@ -9,9 +9,10 @@ import { server } from '../../utils'
 import { fullDateAndTime, ledgerLink, shortHash, addressUsernameOrServiceLink } from '../../utils/format';
 
 export async function getServerSideProps(context) {
-  const { locale, req, params } = context
+  const { locale, req, query } = context
   let pageMeta = null
-  const ledgerIndex = params.ledgerIndex ? params.ledgerIndex : ""
+  //keep it from query instead of params, anyway it is an array sometimes
+  const ledgerIndex = query.ledgerIndex ? (Array.isArray(query.ledgerIndex) ? query.ledgerIndex[0] : query.ledgerIndex) : ""
 
   let headers = null
   if (process.env.NODE_ENV !== 'development') {

@@ -14,9 +14,10 @@ import {
 } from '../../utils/format'
 
 export async function getServerSideProps(context) {
-  const { locale, query, params } = context
-  const { taxon, issuer } = query
-  const idQuery = params.id ? params.id : ""
+  const { locale, query } = context
+  const { taxon, issuer, id } = query
+  //keep query instead of params, anyway it is an array sometimes
+  const idQuery = id ? (Array.isArray(id) ? id[0] : id) : ""
   let issuerQuery = isAddressOrUsername(idQuery) ? idQuery : issuer
   issuerQuery = isAddressOrUsername(issuerQuery) ? issuerQuery : ""
 

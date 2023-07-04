@@ -8,10 +8,11 @@ import { server, delay } from '../../utils'
 import { getIsSsrMobile } from "../../utils/mobile"
 
 export async function getServerSideProps(context) {
-  const { locale, query, req, params } = context
+  const { locale, query, req } = context
   let pageMeta = null
-  const { sortCurrency } = query
-  const account = params.id ? params.id : ""
+  const { sortCurrency, id } = query
+  //keep it from query instead of params, anyway it is an array sometimes
+  const account = id ? (Array.isArray(id) ? id[0] : id) : ""
   if (account) {
     let headers = null
     if (process.env.NODE_ENV !== 'development') {

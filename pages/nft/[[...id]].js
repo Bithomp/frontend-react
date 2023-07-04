@@ -26,10 +26,11 @@ import {
 import SocialShare from '../../components/SocialShare'
 
 export async function getServerSideProps(context) {
-  const { locale, query, req, params } = context
+  const { locale, query, req } = context
   let pageMeta = null
-  const { sortCurrency } = query
-  const nftId = params.id ? params.id : ""
+  const { sortCurrency, id } = query
+  //keep it from query instead of params, anyway it is an array sometimes in params too.
+  const nftId = id ? (Array.isArray(id) ? id[0] : id) : ""
   if (nftId) {
     let headers = null
     if (process.env.NODE_ENV !== 'development') {
