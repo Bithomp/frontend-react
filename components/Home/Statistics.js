@@ -1,22 +1,22 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useTranslation } from 'next-i18next'
-import axios from 'axios';
+import axios from 'axios'
 
-import { wssServer, devNet } from '../../utils';
-import { niceNumber } from '../../utils/format';
+import { wssServer, devNet } from '../../utils'
+import { niceNumber } from '../../utils/format'
 
-let ws = null;
+let ws = null
 
 export default function Statistics() {
-  const [data, setData] = useState(null);
-  const { t } = useTranslation();
+  const [data, setData] = useState(null)
+  const { t } = useTranslation()
 
   const checkStatApi = async () => {
-    const response = await axios('v2/statistics');
-    const data = response.data;
+    const response = await axios('v2/statistics')
+    const data = response.data
     if (data) {
-      setData(data);
+      setData(data)
     }
   }
 
@@ -24,12 +24,12 @@ export default function Statistics() {
     ws = new WebSocket(wssServer);
 
     ws.onopen = () => {
-      ws.send(JSON.stringify({ command: "subscribe", streams: ["statistics"], id: 1 }));
+      ws.send(JSON.stringify({ command: "subscribe", streams: ["statistics"], id: 1 }))
     }
 
     ws.onmessage = evt => {
-      const message = JSON.parse(evt.data);
-      setData(message);
+      const message = JSON.parse(evt.data)
+      setData(message)
 
       /* 
       {
@@ -53,7 +53,9 @@ export default function Statistics() {
         },
         usernames: 1,
         accounts: {
-          created: 1
+          created: 1,
+          blackholed: 5,
+          deleted: 34
         },
         "nftokens":{
           "created": 138633,
@@ -73,28 +75,28 @@ export default function Statistics() {
     }
 
     ws.onclose = () => {
-      connect();
+      connect()
     }
   }
 
   useEffect(() => {
-    checkStatApi();
-    connect();
+    checkStatApi()
+    connect()
     return () => {
-      setData(null);
-      if (ws) ws.close();
+      setData(null)
+      if (ws) ws.close()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [])
 
-  let closedAt = 'xx:xx:xx';
-  let ledgerIndex = 'xxxxxxxx';
-  let txPerSecond = 'x.xx';
-  let txCount = 'x';
-  let quorum = 'x';
-  let proposers = 'x';
-  let createdAccounts = 'xxxx';
-  let registeredUsernames = 'xx';
+  let closedAt = 'xx:xx:xx'
+  let ledgerIndex = 'xxxxxxxx'
+  let txPerSecond = 'x.xx'
+  let txCount = 'x'
+  let quorum = 'x'
+  let proposers = 'x'
+  let createdAccounts = 'xxxx'
+  let registeredUsernames = 'xx'
   let nft = {
     created: 'xxx',
     burned: 'xxx',
@@ -102,23 +104,23 @@ export default function Statistics() {
     issuers: 'xxx',
     transfers: 'xxx',
     forSaleWithoutDestination: 'xxx'
-  };
+  }
 
   if (data) {
-    const { validatedLedger, lastClose, validationQuorum, accounts, usernames, nftokens } = data;
-    closedAt = validatedLedger?.ledgerTime * 1000;
-    closedAt = new Date(closedAt).toLocaleTimeString();
-    ledgerIndex = validatedLedger?.ledgerIndex;
-    txCount = validatedLedger?.transactionsCount;
-    quorum = validationQuorum;
+    const { validatedLedger, lastClose, validationQuorum, accounts, usernames, nftokens } = data
+    closedAt = validatedLedger?.ledgerTime * 1000
+    closedAt = new Date(closedAt).toLocaleTimeString()
+    ledgerIndex = validatedLedger?.ledgerIndex
+    txCount = validatedLedger?.transactionsCount
+    quorum = validationQuorum
     if (lastClose) {
-      txPerSecond = (validatedLedger?.transactionsCount / lastClose.convergeTimeS).toFixed(2);
-      proposers = lastClose.proposers;
+      txPerSecond = (validatedLedger?.transactionsCount / lastClose.convergeTimeS).toFixed(2)
+      proposers = lastClose.proposers
     }
-    createdAccounts = niceNumber(accounts.created);
-    registeredUsernames = niceNumber(usernames);
+    createdAccounts = niceNumber(accounts.created - accounts.deleted)
+    registeredUsernames = niceNumber(usernames)
     if (nftokens) {
-      nft = nftokens;
+      nft = nftokens
     }
   }
 
@@ -178,5 +180,5 @@ export default function Statistics() {
         <div>{niceNumber(nft.forSaleWithoutDestination)}</div>
       </div>
     </div>
-  </>;
+  </>
 }
