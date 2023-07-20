@@ -278,7 +278,6 @@
     "email": "Dirección de correo electrónico de tu empresa/universidad:",
     "url": "URL de tu app/sitio web:",
     "description": "Descripción del proyecto y detalles del uso de la API:",
-    "text0": "La petición no será aprobada si no:<1/>- Si usas un correo eléctronico privado<3/>- si quieres usar la API para algo que no soporta nuestra API<5/>- si quieres usarla para algo ya sporotado por <7>xrpl.js</7>.",
     "success": "Gracias. Recibiras tu token por correo electrónico en un plazo de 48 horas.",
     "error": {
       "email-empty": "Por favor, introduce tu correo electrónico.",

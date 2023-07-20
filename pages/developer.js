@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useTranslation, Trans } from 'next-i18next'
+import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import axios from 'axios'
 
@@ -139,15 +139,6 @@ export default function Developer() {
           <input placeholder="To show bithomp usernames in my live XRPL Graph of whales..." value={description} onChange={onDescriptionChange} className="input-text" ref={node => { descriptionRef = node; }} />
           {isDescriptionValid(description) && <img src={checkmark} className="validation-icon" alt="validated" />}
         </div>
-
-        <p>
-          <Trans i18nKey="developer.text0">
-            The request will be rejected:<br />
-            - if you use your private email<br />
-            - if you want to use API for something that our API does not support<br />
-            - if you want to use it for something that already supported by <a href="https://xrpl.org/get-started-using-javascript.html">xrpl.js</a>.
-          </Trans>
-        </p>
       </>}
 
       {step === 1 &&

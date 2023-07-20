@@ -278,7 +278,6 @@
     "email": "L'adreça de correu electrònic de La teva empresa/Universitat:",
     "url": "L'URL del teu Web/aplicació:",
     "description": "Descripció del projecte i detalls de l'ús de l'API:",
-    "text0": "La sol·licitud no serà aprovada:<1/>- si utilitzes el teu correu electrònic privat<3/>- si vols utilitzar l'API per alguna cosa que la nostra API no suporta<5/>- si la vols utilitzar per alguna cosa que el <7>xrpl.js</7> ja suporta.",
     "success": "Gràcies. Hauries de rebre el teu token de l'api per correu electrònic en 48 hores.",
     "error": {
       "email-empty": "Si us plau, introdueix el teu correu electrònic.",

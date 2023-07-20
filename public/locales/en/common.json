@@ -275,10 +275,9 @@
   },
   "developer": {
     "header": "Bithomp API key request",
-    "email": "Your company/university e-mail address:",
+    "email": "Your e-mail address:",
     "url": "Your website/app URL:",
     "description": "Project description and API use details:",
-    "text0": "The request won't be approved:<1/>- if you use your private email<3/>- if you want to use API for something that our API doesn't support<5/>- if you want to use it for something that already supported by <7>xrpl.js</7>.",
     "success": "Thank you. Your should receive your api token by email within 48 hours.",
     "error": {
       "email-empty": "Please enter your e-mail address.",

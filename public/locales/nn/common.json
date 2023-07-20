@@ -278,7 +278,6 @@
     "email": "Din bedrifts/universitets e-postadresse:",
     "url": "Din webside/app URL:",
     "description": "Prosjektbeskrivelse og API-bruksdetaljer:",
-    "text0": "Forespørselen vil ikke bli godkjent:<1/>-hvis du bruker din private e-post<3/>-Hvis du vil bruke API til noe som vår API ikke støtter<5/>-hvis du vil bruke den til noe som allerede støttes av<7>xrpl.js</7>.",
     "success": "Takk. Du bør motta din api token på e-post innen  timer.",
     "error": {
       "email-empty": "Vennligst skriv inn E-postadressen din.",

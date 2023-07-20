@@ -278,7 +278,6 @@
     "email": "Din virksomheds/universitetets e-mailadresse:",
     "url": "Dit websted/app-URL:",
     "description": "Projektbeskrivelse og API-brugsdetaljer",
-    "text0": "Anmodningen vil ikke blive godkendt:<1/>- hvis du bruger din private e-mail<3/>- hvis du vil bruge API til noget, som vores API ikke understøtter<5/>- hvis du vil bruge det for noget, der allerede understøttes af <7>xrpl.js</7>.",
     "success": "Tak skal du have. Du bør modtage dit api-token via e-mail inden for 48 timer.",
     "error": {
       "email-empty": "Indtast venligst din e-mailadresse.",
