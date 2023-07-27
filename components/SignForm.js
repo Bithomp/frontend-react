@@ -82,6 +82,8 @@ export default function SignForm({ setSignRequest, setAccount, signRequest }) {
       tx.Memos = [client]
     }
 
+    tx.SourceTag = 42697468
+
     let signInPayload = {
       options: {
         expire: 3
