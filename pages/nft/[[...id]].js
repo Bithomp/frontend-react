@@ -234,17 +234,25 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
     return null;
   }
 
-  const eventType = (event) => {
+  const eventType = event => {
     if (event.owner) {
       if (event.amount === "0") {
-        return t("table.transferred");
+        return t("table.transferred")
       } else if (event.amount) {
-        return t("table.sold");
+        return t("table.sold")
       } else {
-        return t("table.minted");
+        return t("table.minted")
       }
     } else {
-      return <span className="red">{t("table.burned")}</span>;
+      return <span className="red">{t("table.burned")}</span>
+    }
+  }
+
+  const marketPlaceUsage = event => {
+    if (event.amount) {
+      return t("table.sold-on")
+    } else {
+      return t("table.minted-on")
     }
   }
 
@@ -292,7 +300,7 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
           {trWithAccount(nftEvent, 'owner', ownerName(nftEvent), "/explorer/")}
           {nftEvent.marketplace &&
             <tr>
-              <td>{t("table.sold-on")}</td>
+              <td>{marketPlaceUsage(nftEvent)}</td>
               <td>{nftEvent.marketplace}</td>
             </tr>
           }
