@@ -97,7 +97,7 @@ export default function Ledger({ pageMeta }) {
   }, [])
 
   return <>
-    <SEO title={t("menu.ledger") + ledgerVersion} />
+    <SEO title={t("menu.ledger") + ' ' + ledgerVersion} />
     <div className="content-text">
       <h1 className="center">{t("menu.ledger")} #{ledgerVersion}<br />{(rendered && pageMeta?.close_time) ? fullDateAndTime(pageMeta.close_time) : <br />}</h1>
       {ledgerVersion > 32569 ?
