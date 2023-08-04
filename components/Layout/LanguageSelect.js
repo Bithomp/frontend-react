@@ -31,7 +31,7 @@ export default function LanguageSelect() {
   return (
     <div className="language-select">
       Language:{" "}
-      <select onChange={handleLangChange} value={i18n.language}>
+      <select onChange={handleLangChange} value={i18n.language} name="language-select">
         <option value="en">English</option>
         <option value="es">Español</option>
         <option value="ru">Русский</option>
