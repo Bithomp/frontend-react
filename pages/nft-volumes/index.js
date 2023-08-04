@@ -72,7 +72,7 @@ export default function NftVolumes({ period, sale, list, currency, currencyIssue
   ]
 
   const saleTabList = [
-    { value: 'all', label: t("tabs.all-sales") },
+    { value: 'all-sales', label: t("tabs.all-sales") },
     { value: 'secondary', label: (t("tabs.secondary-sales")) },
     { value: 'primary', label: (t("tabs.primary-sales")) }
   ]
@@ -197,6 +197,22 @@ export default function NftVolumes({ period, sale, list, currency, currencyIssue
       "period": "all",
       "convertCurrencies": ["usd","xrp"],
       "saleType": "all",
+      "summary": {
+        "all": {
+          "nftokens": {
+            "minted": 1230,
+            "mintedAndBurned": 1287,
+            "burned": 10000
+          },
+          "marketplaces": {
+            "nftokens": {
+              "minted": 123,
+              "mintedAndBurned": 12,
+              "burned": 1000
+            },
+          }
+        }
+      },
       "marketplaces": [
         {
           "marketplace": "onchainmarketplace.net",
@@ -213,7 +229,12 @@ export default function NftVolumes({ period, sale, list, currency, currencyIssue
                 "xrp":"514.011896390483742716"
               }
             }
-          ]
+          ],
+          "nftokens": {
+            "minted": 12,
+            "mintedAndBurned": 1,
+            "burned": 10
+          },
         }
       ]
     }
@@ -361,6 +382,11 @@ export default function NftVolumes({ period, sale, list, currency, currencyIssue
         if (b.volumesInConvertCurrencies[convertCurrency] === "" || b.volumesInConvertCurrencies[convertCurrency] === null) return -1
         if (a.volumesInConvertCurrencies[convertCurrency] === b.volumesInConvertCurrencies[convertCurrency]) return 0
         return (parseFloat(a.volumesInConvertCurrencies[convertCurrency]) < parseFloat(b.volumesInConvertCurrencies[convertCurrency])) ? sortA : sortB
+      }))
+    } else if (sortConfig.key?.includes(".")) {
+      const keys = sortConfig.key.split(".")
+      setData(data.sort(function (a, b) {
+        return (parseFloat(a[keys[0]]?.[keys[1]]) < parseFloat(b[keys[0]]?.[keys[1]])) ? sortA : sortB
       }))
     } else {
       setData(data.sort((a, b) => (parseFloat(a[key]) < parseFloat(b[key])) ? sortA : sortB))
@@ -533,6 +559,7 @@ export default function NftVolumes({ period, sale, list, currency, currencyIssue
             <tr>
               <th className='center'>{t("table.index")}</th>
               {listTab === 'marketplaces' && <th>{t("table.marketplace")}</th>}
+              {listTab === 'marketplaces' && <th className='right'>{t("table.minted")}</th>}
               {listTab === 'issuers' && <th>{t("table.issuer")}</th>}
               {listTab === 'issuers' && issuersExtended && <th className='right hide-on-mobile'>{t("table.nfts-now")} <b className={"link" + (sortConfig.key === 'nfts' ? " orange" : "")} onClick={() => sortTable('nfts')}>⇅</b></th>}
               {listTab === 'issuers' && issuersExtended && <th className='right hide-on-mobile'>{t("table.owners-now")} <b className={"link" + (sortConfig.key === 'owners' ? " orange" : "")} onClick={() => sortTable('owners')}>⇅</b></th>}
@@ -565,6 +592,11 @@ export default function NftVolumes({ period, sale, list, currency, currencyIssue
                         <tr key={i}>
                           <td className='center'>{i + 1}</td>
                           {listTab === 'marketplaces' && <td>{volume.marketplace}</td>}
+                          {listTab === 'marketplaces' &&
+                            <td className='right'>
+                              {shortNiceNumber(volume.nftokens?.minted, 0)}
+                            </td>
+                          }
                           {listTab === 'issuers' && <td>{addressUsernameOrServiceLink(volume, "issuer", { short: true })}</td>}
                           {listTab === 'issuers' && issuersExtended && <td className='right hide-on-mobile'>{shortNiceNumber(volume.statistics?.nfts, 0)} <a href={'/nft-explorer?issuer=' + usernameOrAddress(volume, 'issuer')}><LinkIcon /></a></td>}
                           {listTab === 'issuers' && issuersExtended && <td className='right hide-on-mobile'>{shortNiceNumber(volume.statistics?.owners, 0)} <a href={'/nft-distribution/' + usernameOrAddress(volume, 'issuer')}><LinkIcon /></a></td>}
@@ -656,9 +688,15 @@ export default function NftVolumes({ period, sale, list, currency, currencyIssue
                       <b>{i + 1}</b>
                     </td>
                     <td>
-                      {listTab === 'marketplaces' && <p>
-                        {t("table.marketplace")}: {volume.marketplace}
-                      </p>
+                      {listTab === 'marketplaces' &&
+                        <p>
+                          {t("table.marketplace")}: {volume.marketplace}
+                        </p>
+                      }
+                      {listTab === 'marketplaces' &&
+                        <p>
+                          {t("table.minted")}: {shortNiceNumber(volume.nftokens?.minted, 0)}
+                        </p>
                       }
                       {listTab === 'issuers' && <>
                         <p>
