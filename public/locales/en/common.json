@@ -5,10 +5,6 @@
     "project-registartion": "XRPL project registration",
     "price-alerts": "XRP price alerts",
     "submit-offline-tx": "Submit offline transaction",
-    "api": "Bithomp API",
-    "tools": "Tools",
-    "account-generation": "Account generation",
-    "faucet": "Faucet",
     "networks": "Networks",
     "domains": "Domains",
     "ledger": "Ledger transactions",
@@ -22,6 +18,13 @@
       "statistics": "Live statistics",
       "nfts": "Account's NFTs",
       "offers": "Offers"
+    },
+    "developers": {
+      "developers": "Developers",
+      "account-generation": "Account generation",
+      "faucet": "Faucet",
+      "api": "API",
+      "api-key-request": "API key request"
     },
     "validators": "Validators",
     "amendments": "Amendments",

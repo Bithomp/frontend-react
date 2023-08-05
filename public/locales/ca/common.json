@@ -5,10 +5,6 @@
     "project-registartion": "Registre de projectes XRPL",
     "price-alerts": "Alertes XRP",
     "submit-offline-tx": "Envia una transacció fora de línia",
-    "api": "API Bithomp",
-    "tools": "Eines",
-    "account-generation": "Generació d'un compte",
-    "faucet": "Aixeta",
     "networks": "Xarxes",
     "domains": "Dominis",
     "ledger": "Transaccions del Ledger",
@@ -22,6 +18,13 @@
       "statistics": "Estadístiques en viu",
       "nfts": "NFTs del compte",
       "offers": "Ofertes"
+    },
+    "developers": {
+      "developers": "Developers",
+      "account-generation": "Generació d'un compte",
+      "faucet": "Aixeta",
+      "api": "API",
+      "api-key-request": "Sol·licitud de la clau de l'API Bithomp"
     },
     "validators": "Validadors",
     "amendments": "Esmenes",

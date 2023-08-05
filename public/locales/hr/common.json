@@ -5,10 +5,6 @@
     "project-registartion": "Registracija XRPL projekta",
     "price-alerts": "Upozorenja na promjenu XRP cijene",
     "submit-offline-tx": "Pošalji offline transakciju",
-    "api": "Bithomp API",
-    "tools": "Alati",
-    "account-generation": "Generiranje računa",
-    "faucet": "Faucet",
     "networks": "Mreže",
     "domains": "Domene",
     "ledger": "Ledger transakcije",
@@ -22,6 +18,13 @@
       "statistics": "Statistike uživo",
       "nfts": "NFTovi računa",
       "offers": "Ponude"
+    },
+    "developers": {
+      "developers": "Developers",
+      "account-generation": "Generiranje računa",
+      "faucet": "Faucet",
+      "api": "API",
+      "api-key-request": "API ključ zahtjev"
     },
     "validators": "Validatori",
     "amendments": "Amandmani",

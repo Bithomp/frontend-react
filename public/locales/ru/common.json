@@ -5,10 +5,6 @@
     "project-registartion": "Регистрация XRPL проекта",
     "price-alerts": "Мониторинг XRP цены",
     "submit-offline-tx": "Отправить офлайн транзакцию",
-    "api": "Bithomp API",
-    "tools": "Инструменты",
-    "account-generation": "Генерация аккаунта",
-    "faucet": "Раздача тестовых XRP",
     "networks": "Сети",
     "domains": "Домены",
     "ledger": "Транзакции леджера",
@@ -22,6 +18,13 @@
       "statistics": "Онлайн статистика",
       "nfts": "Поиск NFT по адресу владельца",
       "offers": "Предложения"
+    },
+    "developers": {
+      "developers": "Разработчикам",
+      "account-generation": "Генерация аккаунта",
+      "faucet": "Раздача тестовых XRP",
+      "api": "API",
+      "api-key-request": "Запрос API ключа"
     },
     "validators": "Валидаторы",
     "amendments": "Поправки",

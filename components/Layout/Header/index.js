@@ -74,18 +74,9 @@ export default function Header({ setSignRequest, account, signOut, selectedCurre
               <a href="/explorer/submit.html">{t("menu.project-registartion")}</a>
               {!devNet && <Link href="/alerts">{t("menu.price-alerts")}</Link>}
               {!devNet && <a href={"/submit/"}>{t("menu.submit-offline-tx")}</a>}
-              <a href="https://docs.bithomp.com">{t("menu.api")}</a>
+              <a href="https://docs.bithomp.com">{t("menu.developers.api")}</a>
             </div>
           </div>
-          {devNet &&
-            <div className="menu-dropdown">
-              <div className="menu-dropdown-button">{t("menu.tools")}</div>
-              <div className="menu-dropdown-content">
-                <a href={"/create/"}>{t("menu.account-generation")}</a>
-                <a href={"/faucet/"}>{t("menu.faucet")}</a>
-              </div>
-            </div>
-          }
 
           <div className="menu-dropdown">
             <div className="menu-dropdown-button">NFT</div>
@@ -108,6 +99,22 @@ export default function Header({ setSignRequest, account, signOut, selectedCurre
               <Link href="/validators">{t("menu.validators")}</Link>
               <Link href="/amendments">{t("menu.amendments")}</Link>
               {!devNet && <Link href="/genesis">{t("menu.genesis")}</Link>}
+            </div>
+          </div>
+
+          <div className="menu-dropdown">
+            <div className="menu-dropdown-button">{t("menu.developers.developers")}</div>
+            <div className="menu-dropdown-content">
+              {devNet &&
+                <>
+                  <a href={"/create/"}>{t("menu.developers.account-generation")}</a>
+                  <a href={"/faucet/"}>{t("menu.developers.faucet")}</a>
+                  <a href={"/tools/"}>Bithomp tools</a>
+                </>
+              }
+              <a href="https://docs.bithomp.com">{t("menu.developers.api")}</a>
+              <Link href="/developer">{t("menu.developers.api-key-request")}</Link>
+              <a href="https://github.com/Bithomp">Github</a>
             </div>
           </div>
 
@@ -193,7 +200,7 @@ export default function Header({ setSignRequest, account, signOut, selectedCurre
             </Link>
           }
           {!devNet && <a href={"/submit/"} className="mobile-menu-item">{t("menu.submit-offline-tx")}</a>}
-          <Link href="https://docs.bithomp.com" className="mobile-menu-item">{t("menu.api")}</Link>
+
           <div className="mobile-menu-directory"><span>NFT</span></div>
           <Link href="/nft-explorer" className="mobile-menu-item" onClick={mobileMenuToggle}> {t("menu.nft.explorer")}</Link>
           <Link href="/nft-volumes" className="mobile-menu-item" onClick={mobileMenuToggle}>{t("menu.nft.volumes")}</Link>
@@ -254,13 +261,21 @@ export default function Header({ setSignRequest, account, signOut, selectedCurre
               {t("menu.genesis")}
             </Link>
           }
+
+          <div className="mobile-menu-directory"><span>{t("menu.developers.developers")}</span></div>
           {devNet &&
             <>
-              <div className="mobile-menu-directory"><span>{t("menu.tools")}</span></div>
-              <a href={"/create/"} className="mobile-menu-item">{t("menu.account-generation")}</a>
-              <a href={"/faucet/"} className="mobile-menu-item">{t("menu.faucet")}</a>
+              <a href={"/create/"} className="mobile-menu-item">{t("menu.developers.account-generation")}</a>
+              <a href={"/faucet/"} className="mobile-menu-item">{t("menu.developers.faucet")}</a>
+              <a href={"/tools/"} className="mobile-menu-item">Bithomp tools</a>
             </>
           }
+          <Link href="https://docs.bithomp.com" className="mobile-menu-item">{t("menu.developers.api")}</Link>
+          <Link href="/developer" className="mobile-menu-item" onClick={mobileMenuToggle}>
+            {t("menu.developers.api-key-request")}
+          </Link>
+          <a href="https://github.com/Bithomp" className="mobile-menu-item">Github</a>
+
         </div>
       }
     </>

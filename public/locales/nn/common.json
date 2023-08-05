@@ -5,10 +5,6 @@
     "project-registartion": "XRPL prosjekt registrering",
     "price-alerts": "XRP prisvarsler",
     "submit-offline-tx": "Send frakoblet transaksjon",
-    "api": "Bithomp API",
-    "tools": "Verktøy",
-    "account-generation": "Kontogenerering",
-    "faucet": "Faucet",
     "networks": "Nettverk",
     "domains": "Domener",
     "ledger": "Ledger transaksjoner",
@@ -22,6 +18,13 @@
       "statistics": "Live statistikk",
       "nfts": "Kontoens NFT-er",
       "offers": "Bud"
+    },
+    "developers": {
+      "developers": "Developers",
+      "account-generation": "Kontogenerering",
+      "faucet": "Faucet",
+      "api": "API",
+      "api-key-request": "API nøkkelforespørsel"
     },
     "validators": "Validatorer",
     "amendments": "Endringer",

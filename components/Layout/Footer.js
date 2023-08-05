@@ -25,16 +25,22 @@ export default function Footer() {
           <Link href="/username">{t("menu.usernames")}</Link>
           <a href="/explorer/submit.html">{t("menu.project-registartion")}</a>
           {!devNet && <Link href="/alerts">{t("menu.price-alerts")}</Link>}
-          <a href="https://docs.bithomp.com">{t("menu.api")}</a>
         </div>
 
-        {devNet &&
-          <div className="footer-menu-column">
-            <span className="footer-menu-header">{t("menu.tools")}</span>
-            <a href={"/create/"}>{t("menu.account-generation")}</a>
-            <a href={"/faucet/"}>{t("menu.faucet")}</a>
-          </div>
-        }
+
+        <div className="footer-menu-column">
+          <span className="footer-menu-header">{t("menu.developers.developers")}</span>
+          {devNet &&
+            <>
+              <a href={"/create/"}>{t("menu.developers.account-generation")}</a>
+              <a href={"/faucet/"}>{t("menu.developers.faucet")}</a>
+              <a href={"/tools/"}>Bithomp tools</a>
+            </>
+          }
+          <a href="https://docs.bithomp.com">{t("menu.developers.api")}</a>
+          <Link href="/developer">{t("menu.developers.api-key-request")}</Link>
+          <a href="https://github.com/Bithomp">Github</a>
+        </div>
         <div className="footer-menu-column">
           <span className="footer-menu-header">{t("menu.networks")}</span>
           {devNet && <a href="https://bithomp.com">Mainnet</a>}
