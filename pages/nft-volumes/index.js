@@ -693,9 +693,9 @@ export default function NftVolumes({ period, sale, list, currency, currencyIssue
                           {t("table.marketplace")}: {volume.marketplace}
                         </p>
                       }
-                      {listTab === 'marketplaces' &&
+                      {listTab === 'marketplaces' && (volume.nftokens?.minted || volume.nftokens?.minted === 0) &&
                         <p>
-                          {t("table.minted")}: {shortNiceNumber(volume.nftokens?.minted, 0)}
+                          {t("table.minted")}: {shortNiceNumber(volume.nftokens?.minted, 0)} {t("table.nfts")}
                         </p>
                       }
                       {listTab === 'issuers' && <>
@@ -783,5 +783,5 @@ export default function NftVolumes({ period, sale, list, currency, currencyIssue
         </table>
       }
     </div>
-  </>;
-};
+  </>
+}
