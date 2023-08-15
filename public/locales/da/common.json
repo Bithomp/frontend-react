@@ -1,6 +1,7 @@
 {
   "menu": {
-    "services": "Tjenester",
+    "personal": "Privat",
+    "business": "Erhverv",
     "usernames": "Registrering af brugernavn",
     "project-registartion": "XRPL projekt registrering",
     "price-alerts": "XRP-pris varsler",
@@ -20,7 +21,7 @@
       "offers": "Tilbud"
     },
     "developers": {
-      "developers": "Developers",
+      "developers": "Udviklere",
       "account-generation": "Kontogenerering",
       "faucet": "Faucet",
       "api": "API",

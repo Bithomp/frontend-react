@@ -68,13 +68,26 @@ export default function Header({ setSignRequest, account, signOut, selectedCurre
         <Link href="/"><div className='header-logo'><LogoAnimated /></div></Link>
         <div className="header-menu-left">
           <div className="menu-dropdown">
-            <div className="menu-dropdown-button">{t("menu.services")}</div>
+            <div className="menu-dropdown-button">{t("menu.personal")}</div>
+            <div className="menu-dropdown-content">
+              <Link href="/username">{t("menu.usernames")}</Link>
+              {displayName ?
+                <Link href={"/nfts/" + address}>{t("signin.actions.my-nfts")}</Link>
+                :
+                <span onClick={() => { setSignRequest({ redirect: "nfts" }) }} className="link">{t("signin.actions.my-nfts")}</span>
+              }
+              {!devNet && <Link href="/alerts">{t("menu.price-alerts")}</Link>}
+              {!devNet && <a href={"/submit/"}>{t("menu.submit-offline-tx")}</a>}
+            </div>
+          </div>
+
+          <div className="menu-dropdown">
+            <div className="menu-dropdown-button">{t("menu.business")}</div>
             <div className="menu-dropdown-content">
               <Link href="/username">{t("menu.usernames")}</Link>
               <a href="/explorer/submit.html">{t("menu.project-registartion")}</a>
-              {!devNet && <Link href="/alerts">{t("menu.price-alerts")}</Link>}
-              {!devNet && <a href={"/submit/"}>{t("menu.submit-offline-tx")}</a>}
               <a href="https://docs.bithomp.com">{t("menu.developers.api")}</a>
+              <Link href="/press">{t("menu.press")}</Link>
             </div>
           </div>
 
@@ -189,17 +202,25 @@ export default function Header({ setSignRequest, account, signOut, selectedCurre
             <span onClick={() => { setSignRequest(true) }} className="mobile-menu-item link">{t("signin.signin")}</span>
           }
 
-          <div className="mobile-menu-directory"><span>{t("menu.services")}</span></div>
+          <div className="mobile-menu-directory"><span>{t("menu.personal")}</span></div>
           {!displayName &&
             <Link href="/username" className="mobile-menu-item" onClick={mobileMenuToggle}>{t("menu.usernames")}</Link>
           }
-          <a href="/explorer/submit.html" className="mobile-menu-item">{t("menu.project-registartion")}</a>
+          {!displayName &&
+            <span onClick={() => { setSignRequest({ redirect: "nfts" }) }} className="mobile-menu-item link">{t("signin.actions.my-nfts")}</span>
+          }
           {!devNet &&
             <Link href="/alerts" className="mobile-menu-item" onClick={mobileMenuToggle}>
               {t("menu.price-alerts")}
             </Link>
           }
           {!devNet && <a href={"/submit/"} className="mobile-menu-item">{t("menu.submit-offline-tx")}</a>}
+
+          <div className="mobile-menu-directory"><span>{t("menu.business")}</span></div>
+          {!displayName &&
+            <Link href="/username" className="mobile-menu-item" onClick={mobileMenuToggle}>{t("menu.usernames")}</Link>
+          }
+          <a href="/explorer/submit.html" className="mobile-menu-item">{t("menu.project-registartion")}</a>
 
           <div className="mobile-menu-directory"><span>NFT</span></div>
           <Link href="/nft-explorer" className="mobile-menu-item" onClick={mobileMenuToggle}> {t("menu.nft.explorer")}</Link>

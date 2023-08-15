@@ -91,6 +91,14 @@ export default function SignForm({ setSignRequest, setAccount, signRequest }) {
       txjson: tx
     }
 
+    if (signRequest.redirect) {
+      signInPayload.custom_meta = {
+        blob: {
+          redirect: signRequest.redirect
+        }
+      }
+    }
+
     if (isMobile) {
       setStatus(t("signin.xumm.statuses.redirecting"));
       //return to the same page
@@ -172,8 +180,13 @@ export default function SignForm({ setSignRequest, setAccount, signRequest }) {
     }
     */
     //data.payload.tx_type: "SignIn"
+
+    //if redirect 
     if (data.response && data.response.account) {
       saveAddressData(data.response.account)
+      if (data.custom_meta?.blob?.redirect === "nfts") {
+        window.location.href = server + "/nfts/" + data.response.account
+      }
     }
 
     //check if we have a ledger index in the response

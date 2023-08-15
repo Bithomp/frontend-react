@@ -1,6 +1,7 @@
 {
   "menu": {
-    "services": "Services",
+    "personal": "Personal",
+    "business": "Business",
     "usernames": "Username registration",
     "project-registartion": "XRPL project registration",
     "price-alerts": "XRP price alerts",

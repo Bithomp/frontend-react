@@ -1,6 +1,7 @@
 {
   "menu": {
-    "services": "Serveis",
+    "personal": "Personal",
+    "business": "Business",
     "usernames": "Registre d'àlies",
     "project-registartion": "Registre de projectes XRPL",
     "price-alerts": "Alertes XRP",

@@ -1,6 +1,7 @@
 {
   "menu": {
-    "services": "Usluge",
+    "personal": "Personal",
+    "business": "Business",
     "usernames": "Registracija korisničkog imena",
     "project-registartion": "Registracija XRPL projekta",
     "price-alerts": "Upozorenja na promjenu XRP cijene",

@@ -1,6 +1,7 @@
 {
   "menu": {
-    "services": "Servicios",
+    "personal": "Particulares",
+    "business": "Empresas",
     "usernames": "Registro de nombre de usuario",
     "project-registartion": "Registro de proyecto XRPL",
     "price-alerts": "Alertas de precio XRP",
@@ -20,7 +21,7 @@
       "offers": "Ofertas"
     },
     "developers": {
-      "developers": "Developers",
+      "developers": "Programadores",
       "account-generation": "Generación de cuenta",
       "faucet": "Grifo",
       "api": "API",

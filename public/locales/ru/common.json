@@ -1,6 +1,7 @@
 {
   "menu": {
-    "services": "Сервисы",
+    "personal": "Личный",
+    "business": "Корпоративный",
     "usernames": "Псевдоним",
     "project-registartion": "Регистрация XRPL проекта",
     "price-alerts": "Мониторинг XRP цены",

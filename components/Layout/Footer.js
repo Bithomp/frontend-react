@@ -21,12 +21,11 @@ export default function Footer() {
     <footer>
       <div className="footer-menu">
         <div className="footer-menu-column">
-          <span className="footer-menu-header">{t("menu.services")}</span>
+          <span className="footer-menu-header">{t("menu.personal")}</span>
           <Link href="/username">{t("menu.usernames")}</Link>
           <a href="/explorer/submit.html">{t("menu.project-registartion")}</a>
           {!devNet && <Link href="/alerts">{t("menu.price-alerts")}</Link>}
         </div>
-
 
         <div className="footer-menu-column">
           <span className="footer-menu-header">{t("menu.developers.developers")}</span>
