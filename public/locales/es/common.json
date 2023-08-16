@@ -3,7 +3,9 @@
     "personal": "Particulares",
     "business": {
       "business": "Empresas",
-      "advertise": "Advertise"
+      "advertise": "Advertise",
+      "eaas": "Explorer as a Service",
+      "build-unl": "Build UNL"
     },
     "usernames": "Registro de nombre de usuario",
     "project-registartion": "Registro de proyecto XRPL",

@@ -11,6 +11,7 @@ const pages = [
   { loc: "nft-volumes", changefreq: "always", priority: "0.9" },
 
   { loc: "advertise", changefreq: "yearly", priority: "0.8" },
+  { loc: "eaas", changefreq: "yearly", priority: "0.8" },
 
   { loc: "nfts", changefreq: "daily", priority: "0.7" },
   { loc: "nft", changefreq: "daily", priority: "0.7" },
@@ -25,7 +26,8 @@ const pages = [
   { loc: "last-ledger-information", changefreq: "always", priority: "0.7" },
   { loc: "paperwallet/", changefreq: "yearly", priority: "0.7" },
 
-  { loc: "genesis", changefreq: "daily", priority: "0.6" },
+  { loc: "genesis", changefreq: "weekly", priority: "0.6" },
+  { loc: "build-unl", changefreq: "yearly", priority: "0.6" },
 
   { loc: "submit/", changefreq: "yearly", priority: "0.5" },
 

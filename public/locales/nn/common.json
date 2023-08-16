@@ -3,7 +3,9 @@
     "personal": "Privat",
     "business": {
       "business": "Bedrift",
-      "advertise": "Advertise"
+      "advertise": "Advertise",
+      "eaas": "Explorer as a Service",
+      "build-unl": "Build UNL"
     },
     "usernames": "Brukernavn registrering",
     "project-registartion": "XRPL prosjekt registrering",

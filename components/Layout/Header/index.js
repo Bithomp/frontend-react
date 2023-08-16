@@ -89,6 +89,8 @@ export default function Header({ setSignRequest, account, signOut, selectedCurre
                 <Link href="/username">{t("menu.usernames")}</Link>
                 <a href="/explorer/submit.html">{t("menu.project-registartion")}</a>
                 <a href="https://docs.bithomp.com">{t("menu.developers.api")}</a>
+                <Link href="/eaas">{t("menu.business.eaas")}</Link>
+                <Link href="/build-unl">{t("menu.business.build-unl")}</Link>
                 <Link href="/press">{t("menu.press")}</Link>
               </div>
             </div>
@@ -131,6 +133,8 @@ export default function Header({ setSignRequest, account, signOut, selectedCurre
               <a href="https://docs.bithomp.com">{t("menu.developers.api")}</a>
               <Link href="/developer">{t("menu.developers.api-key-request")}</Link>
               <a href="https://github.com/Bithomp">Github</a>
+              <Link href="/eaas">{t("menu.business.eaas")}</Link>
+              <Link href="/build-unl">{t("menu.business.build-unl")}</Link>
             </div>
           </div>
 
@@ -229,6 +233,12 @@ export default function Header({ setSignRequest, account, signOut, selectedCurre
                 <Link href="/username" className="mobile-menu-item" onClick={mobileMenuToggle}>{t("menu.usernames")}</Link>
               }
               <a href="/explorer/submit.html" className="mobile-menu-item">{t("menu.project-registartion")}</a>
+              <Link href="/eaas" className="mobile-menu-item" onClick={mobileMenuToggle}>
+                {t("menu.business.eaas")}
+              </Link>
+              <Link href="/build-unl" className="mobile-menu-item" onClick={mobileMenuToggle}>
+                {t("menu.business.build-unl")}
+              </Link>
             </>
           }
 
@@ -299,6 +309,12 @@ export default function Header({ setSignRequest, account, signOut, selectedCurre
               <a href={"/create/"} className="mobile-menu-item">{t("menu.developers.account-generation")}</a>
               <a href={"/faucet/"} className="mobile-menu-item">{t("menu.developers.faucet")}</a>
               <a href={"/tools/"} className="mobile-menu-item">Bithomp tools</a>
+              <Link href="/eaas" className="mobile-menu-item" onClick={mobileMenuToggle}>
+                {t("menu.business.eaas")}
+              </Link>
+              <Link href="/build-unl" className="mobile-menu-item" onClick={mobileMenuToggle}>
+                {t("menu.business.build-unl")}
+              </Link>
             </>
           }
           <Link href="https://docs.bithomp.com" className="mobile-menu-item">{t("menu.developers.api")}</Link>

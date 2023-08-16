@@ -3,7 +3,9 @@
     "personal": "Личный",
     "business": {
       "business": "Корпоративный",
-      "advertise": "Размещение рекламы"
+      "advertise": "Размещение рекламы",
+      "eaas": "Explorer как сервис (EaaS)",
+      "build-unl": "Создать UNL"
     },
     "usernames": "Псевдоним",
     "project-registartion": "Регистрация XRPL проекта",

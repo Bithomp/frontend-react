@@ -3,7 +3,9 @@
     "personal": "Personal",
     "business": {
       "business": "Business",
-      "advertise": "Advertise"
+      "advertise": "Advertise",
+      "eaas": "Explorer as a Service",
+      "build-unl": "Build UNL"
     },
     "usernames": "Registracija korisničkog imena",
     "project-registartion": "Registracija XRPL projekta",
