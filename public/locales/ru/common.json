@@ -1,7 +1,10 @@
 {
   "menu": {
     "personal": "Личный",
-    "business": "Корпоративный",
+    "business": {
+      "business": "Корпоративный",
+      "advertise": "Размещение рекламы"
+    },
     "usernames": "Псевдоним",
     "project-registartion": "Регистрация XRPL проекта",
     "price-alerts": "Мониторинг XRP цены",
@@ -25,7 +28,7 @@
       "account-generation": "Генерация аккаунта",
       "faucet": "Раздача тестовых XRP",
       "api": "API",
-      "api-key-request": "Запрос API ключа"
+      "api-key-request": "API ключ"
     },
     "validators": "Валидаторы",
     "amendments": "Поправки",

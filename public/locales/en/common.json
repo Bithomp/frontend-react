@@ -1,7 +1,10 @@
 {
   "menu": {
     "personal": "Personal",
-    "business": "Business",
+    "business": {
+      "business": "Business",
+      "advertise": "Advertise"
+    },
     "usernames": "Username registration",
     "project-registartion": "XRPL project registration",
     "price-alerts": "XRP price alerts",
@@ -25,7 +28,7 @@
       "account-generation": "Account generation",
       "faucet": "Faucet",
       "api": "API",
-      "api-key-request": "API key request"
+      "api-key-request": "API key"
     },
     "validators": "Validators",
     "amendments": "Amendments",

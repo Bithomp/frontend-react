@@ -126,6 +126,5 @@ export default function TermsAndConditions() {
         <p>If you have any questions about these Terms and Conditions, You can contact us by email: <Mailto email='support@bithomp.com' headers={{ subject: 'Terms and conditions' }} /></p>
       </div >
     </>
-
-  );
-};
+  )
+}

@@ -1,7 +1,10 @@
 {
   "menu": {
     "personal": "Particulares",
-    "business": "Empresas",
+    "business": {
+      "business": "Empresas",
+      "advertise": "Advertise"
+    },
     "usernames": "Registro de nombre de usuario",
     "project-registartion": "Registro de proyecto XRPL",
     "price-alerts": "Alertas de precio XRP",
@@ -25,7 +28,7 @@
       "account-generation": "Generación de cuenta",
       "faucet": "Grifo",
       "api": "API",
-      "api-key-request": "Petición de clave (key) para la API de Bithomp"
+      "api-key-request": "API key"
     },
     "validators": "Validadores",
     "amendments": "Enmiendas",

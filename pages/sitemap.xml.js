@@ -10,6 +10,8 @@ const pages = [
   { loc: "nft-statistics", changefreq: "always", priority: "0.9" },
   { loc: "nft-volumes", changefreq: "always", priority: "0.9" },
 
+  { loc: "advertise", changefreq: "yearly", priority: "0.8" },
+
   { loc: "nfts", changefreq: "daily", priority: "0.7" },
   { loc: "nft", changefreq: "daily", priority: "0.7" },
   { loc: "nft-distribution", changefreq: "daily", priority: "0.7" },

@@ -81,15 +81,18 @@ export default function Header({ setSignRequest, account, signOut, selectedCurre
             </div>
           </div>
 
-          <div className="menu-dropdown">
-            <div className="menu-dropdown-button">{t("menu.business")}</div>
-            <div className="menu-dropdown-content">
-              <Link href="/username">{t("menu.usernames")}</Link>
-              <a href="/explorer/submit.html">{t("menu.project-registartion")}</a>
-              <a href="https://docs.bithomp.com">{t("menu.developers.api")}</a>
-              <Link href="/press">{t("menu.press")}</Link>
+          {!devNet &&
+            <div className="menu-dropdown">
+              <div className="menu-dropdown-button">{t("menu.business.business")}</div>
+              <div className="menu-dropdown-content">
+                <Link href="/advertise">{t("menu.business.advertise")}</Link>
+                <Link href="/username">{t("menu.usernames")}</Link>
+                <a href="/explorer/submit.html">{t("menu.project-registartion")}</a>
+                <a href="https://docs.bithomp.com">{t("menu.developers.api")}</a>
+                <Link href="/press">{t("menu.press")}</Link>
+              </div>
             </div>
-          </div>
+          }
 
           <div className="menu-dropdown">
             <div className="menu-dropdown-button">NFT</div>
@@ -216,11 +219,18 @@ export default function Header({ setSignRequest, account, signOut, selectedCurre
           }
           {!devNet && <a href={"/submit/"} className="mobile-menu-item">{t("menu.submit-offline-tx")}</a>}
 
-          <div className="mobile-menu-directory"><span>{t("menu.business")}</span></div>
-          {!displayName &&
-            <Link href="/username" className="mobile-menu-item" onClick={mobileMenuToggle}>{t("menu.usernames")}</Link>
+          {!devNet &&
+            <>
+              <div className="mobile-menu-directory"><span>{t("menu.business.business")}</span></div>
+              <Link href="/advertise" className="mobile-menu-item" onClick={mobileMenuToggle}>
+                {t("menu.business.advertise")}
+              </Link>
+              {!displayName &&
+                <Link href="/username" className="mobile-menu-item" onClick={mobileMenuToggle}>{t("menu.usernames")}</Link>
+              }
+              <a href="/explorer/submit.html" className="mobile-menu-item">{t("menu.project-registartion")}</a>
+            </>
           }
-          <a href="/explorer/submit.html" className="mobile-menu-item">{t("menu.project-registartion")}</a>
 
           <div className="mobile-menu-directory"><span>NFT</span></div>
           <Link href="/nft-explorer" className="mobile-menu-item" onClick={mobileMenuToggle}> {t("menu.nft.explorer")}</Link>

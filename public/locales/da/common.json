@@ -1,7 +1,10 @@
 {
   "menu": {
     "personal": "Privat",
-    "business": "Erhverv",
+    "business": {
+      "business": "Erhverv",
+      "advertise": "Advertise"
+    },
     "usernames": "Registrering af brugernavn",
     "project-registartion": "XRPL projekt registrering",
     "price-alerts": "XRP-pris varsler",
@@ -25,7 +28,7 @@
       "account-generation": "Kontogenerering",
       "faucet": "Faucet",
       "api": "API",
-      "api-key-request": "API nøgleanmodning"
+      "api-key-request": "API key"
     },
     "validators": "Validatorer",
     "amendments": "Ændringer",

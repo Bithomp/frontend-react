@@ -1,7 +1,10 @@
 {
   "menu": {
     "personal": "Personal",
-    "business": "Business",
+    "business": {
+      "business": "Business",
+      "advertise": "Advertise"
+    },
     "usernames": "Registracija korisničkog imena",
     "project-registartion": "Registracija XRPL projekta",
     "price-alerts": "Upozorenja na promjenu XRP cijene",
@@ -25,7 +28,7 @@
       "account-generation": "Generiranje računa",
       "faucet": "Faucet",
       "api": "API",
-      "api-key-request": "API ključ zahtjev"
+      "api-key-request": "API ključ"
     },
     "validators": "Validatori",
     "amendments": "Amandmani",
