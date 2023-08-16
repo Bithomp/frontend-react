@@ -1,6 +1,9 @@
 {
   "menu": {
-    "personal": "Personal",
+    "personal": {
+      "personal": "Personal",
+      "search-on-xrpl": "Search on XRPL"
+    },
     "business": {
       "business": "Business",
       "advertise": "Advertise",

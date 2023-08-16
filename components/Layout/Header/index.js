@@ -68,8 +68,9 @@ export default function Header({ setSignRequest, account, signOut, selectedCurre
         <Link href="/"><div className='header-logo'><LogoAnimated /></div></Link>
         <div className="header-menu-left">
           <div className="menu-dropdown">
-            <div className="menu-dropdown-button">{t("menu.personal")}</div>
+            <div className="menu-dropdown-button">{t("menu.personal.personal")}</div>
             <div className="menu-dropdown-content">
+              <a href={"/explorer/"}>{t("menu.personal.search-on-xrpl")}</a>
               <Link href="/username">{t("menu.usernames")}</Link>
               {displayName ?
                 <Link href={"/nfts/" + address}>{t("signin.actions.my-nfts")}</Link>
@@ -209,7 +210,8 @@ export default function Header({ setSignRequest, account, signOut, selectedCurre
             <span onClick={() => { setSignRequest(true) }} className="mobile-menu-item link">{t("signin.signin")}</span>
           }
 
-          <div className="mobile-menu-directory"><span>{t("menu.personal")}</span></div>
+          <div className="mobile-menu-directory"><span>{t("menu.personal.personal")}</span></div>
+          <a href={"/explorer/"} className="mobile-menu-item">{t("menu.personal.search-on-xrpl")}</a>
           {!displayName &&
             <Link href="/username" className="mobile-menu-item" onClick={mobileMenuToggle}>{t("menu.usernames")}</Link>
           }

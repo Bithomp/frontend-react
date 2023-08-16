@@ -1,6 +1,9 @@
 {
   "menu": {
-    "personal": "Личный",
+    "personal": {
+      "personal": "Личный",
+      "search-on-xrpl": "Поиск по XRPL"
+    },
     "business": {
       "business": "Корпоративный",
       "advertise": "Размещение рекламы",
