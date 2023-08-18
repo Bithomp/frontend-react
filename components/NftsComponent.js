@@ -476,9 +476,13 @@ export default function NftsComponent({
       </>}
       <div className='tabs-inline'>
         <Tabs tabList={viewTabList} tab={viewTab} setTab={setViewTab} name='view' />
-        <Tabs tabList={listTabList} tab={listTab} setTab={setListTab} name='saleType' />
-        {listTab === 'onSale' &&
-          <Tabs tabList={saleDestinationTabList} tab={saleDestinationTab} setTab={setSaleDestinationTab} name='saleDestination' />
+        {!burnedPeriod &&
+          <>
+            <Tabs tabList={listTabList} tab={listTab} setTab={setListTab} name='saleType' />
+            {listTab === 'onSale' &&
+              <Tabs tabList={saleDestinationTabList} tab={saleDestinationTab} setTab={setSaleDestinationTab} name='saleDestination' />
+            }
+          </>
         }
         {rendered &&
           <CSVLink
