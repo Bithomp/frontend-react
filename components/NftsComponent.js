@@ -94,11 +94,13 @@ export default function NftsComponent({
     let searchPart = ''
     let serialPart = ''
     let mintAndBurnPart = ''
+    let orderPart = ''
 
     if (listTab === 'onSale') {
       //order: "offerCreatedNew", "offerCreatedOld", "priceLow", "priceHigh"
       //destination: "public", "knownBrokers", "publicAndKnownBrokers", "all"
-      listUrlPart = '?list=onSale&destination=' + saleDestinationTab + '&order=priceLow'
+      listUrlPart = '?list=onSale&destination=' + saleDestinationTab
+      orderPart = '&order=priceLow'
       if (saleCurrencyIssuer && saleCurrency) {
         listUrlPart = listUrlPart + '&currency=' + saleCurrency + '&currencyIssuer=' + saleCurrencyIssuer
       } else {
@@ -155,7 +157,18 @@ export default function NftsComponent({
       setLoading(true)
     }
 
-    const response = await axios('v2/nfts' + listUrlPart + ownerUrlPart + collectionUrlPart + markerUrlPart + searchPart + serialPart + mintAndBurnPart)
+    if (!ownerUrlPart && !collectionUrlPart && !searchPart && !serialPart && !mintAndBurnPart) {
+      // reverse and show only with meta
+      //on the first load when no params
+      if (listTab === 'onSale') {
+        orderPart = '&order=offerCreatedNew'
+      } else {
+        searchPart = '&search=___&searchLocations=metadata.name'
+        orderPart = '&order=mintedNew'
+      }
+    }
+
+    const response = await axios('v2/nfts' + listUrlPart + ownerUrlPart + collectionUrlPart + markerUrlPart + searchPart + serialPart + mintAndBurnPart + orderPart)
       .catch(error => {
         setErrorMessage(t("error." + error.message))
       })
@@ -236,7 +249,7 @@ export default function NftsComponent({
       queryRemoveList.push("taxon")
     }
 
-    if (rawData?.search) {
+    if (rawData?.search && rawData.search !== '___') {
       queryAddList.push({
         name: "search",
         value: rawData.search
