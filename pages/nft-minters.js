@@ -243,17 +243,17 @@ export default function NftMinters({ period }) {
                             <td>{minter.marketplace}</td>
                             <td className='right'>
                               {shortNiceNumber(minter.minted, 0)} {persentFormat(minter.minted, rawData.summary.minted)}
-                              <Link href={'/nfts' + urlParams(minter) + "&mintedPeriod=" + periodTab}> <LinkIcon /></Link>
+                              <Link href={'/nft-explorer' + urlParams(minter) + "&mintedPeriod=" + periodTab}> <LinkIcon /></Link>
                             </td>
                             {periodTab !== "all" &&
                               <td className='right'>
                                 {shortNiceNumber(minter.mintedAndBurned, 0)}
-                                <Link href={'/nfts' + urlParams(minter) + "&mintedPeriod=" + periodTab + "&burnedPeriod=" + periodTab}> <LinkIcon /></Link>
+                                <Link href={'/nft-explorer' + urlParams(minter) + "&mintedPeriod=" + periodTab + "&burnedPeriod=" + periodTab}> <LinkIcon /></Link>
                               </td>
                             }
                             <td className='right'>
                               {shortNiceNumber(minter.burned, 0)}
-                              <Link href={'/nfts' + urlParams(minter) + "&burnedPeriod=" + periodTab}> <LinkIcon /></Link>
+                              <Link href={'/nft-explorer' + urlParams(minter) + "&burnedPeriod=" + periodTab}> <LinkIcon /></Link>
                             </td>
                           </tr>
                         )
@@ -293,14 +293,17 @@ export default function NftMinters({ period }) {
                         </p>
                         <p>
                           {t("table.minted-total", { ns: "nft-minters" })}: {shortNiceNumber(minter.minted, 0)} {persentFormat(minter.minted, rawData.summary.minted)}
+                          <Link href={'/nft-explorer' + urlParams(minter) + "&mintedPeriod=" + periodTab}> <LinkIcon /></Link>
                         </p>
                         {periodTab !== "all" &&
                           <p>
                             {t("table.minted-and-burned", { ns: "nft-minters" })}: {shortNiceNumber(minter.mintedAndBurned, 0)}
+                            <Link href={'/nft-explorer' + urlParams(minter) + "&mintedPeriod=" + periodTab + "&burnedPeriod=" + periodTab}> <LinkIcon /></Link>
                           </p>
                         }
                         <p>
                           {t("table.burned-total", { ns: "nft-minters" })}: {shortNiceNumber(minter.burned, 0)}
+                          <Link href={'/nft-explorer' + urlParams(minter) + "&burnedPeriod=" + periodTab}> <LinkIcon /></Link>
                         </p>
                       </td>
                     </tr>)
