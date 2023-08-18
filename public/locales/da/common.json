@@ -23,6 +23,7 @@
       "explorer": "Explorer",
       "volumes": "Mængder",
       "sales": "Salg",
+      "minters": "Minters",
       "distribution": "Distribution (indehavere)",
       "statistics": "Live statistik",
       "nfts": "Kontoens NFT'er",
@@ -375,6 +376,13 @@
     "minutes-short": "m",
     "hours-short": "h"
   },
+  "period": {
+    "all": "",
+    "year": "For de sidste 365 dage",
+    "month": "For de sidste 30 dage",
+    "week": "For de sidste 7 dage",
+    "day": "I de sidste 24 timer"
+  },
   "table": {
     "index": "Indeks",
     "address": "Addresse",
@@ -576,13 +584,6 @@
   },
   "nft-volumes": {
     "header": "NFT salgsmængder",
-    "period": {
-      "all": "",
-      "year": "For de sidste 365 dage",
-      "month": "For de sidste 30 dage",
-      "week": "For de sidste 7 dage",
-      "day": "I de sidste 24 timer"
-    },
     "text0": "XRPL havde {{allSales}} {{currency}} NFT {{saleType}} salg for {{allVolume}}.",
     "brokers": {
       "desc": "Dette er listen over NFT-mæglerkonti. Du kan her finde mængder af tilbudsmatchende bots. Markedspladser bruger blandede handelsmodeller, her kan du kun se mængderne gennem mæglermodellen.",

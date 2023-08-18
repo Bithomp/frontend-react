@@ -12,7 +12,10 @@ export const getServerSideProps = async ({ query, locale }) => {
     issuer,
     owner,
     taxon,
-    serial
+    serial,
+    mintedByMarketplace,
+    mintedPeriod,
+    burnedPeriod
   } = query
   return {
     props: {
@@ -26,6 +29,9 @@ export const getServerSideProps = async ({ query, locale }) => {
       ownerQuery: owner || "",
       taxonQuery: taxon || "",
       serialQuery: serial || "",
+      mintedByMarketplace: mintedByMarketplace || "",
+      mintedPeriod: mintedPeriod || "",
+      burnedPeriod: burnedPeriod || "",
       ...(await serverSideTranslations(locale, ['common'])),
     },
   }
@@ -41,7 +47,10 @@ export default function Nfts({
   issuerQuery,
   ownerQuery,
   taxonQuery,
-  serialQuery
+  serialQuery,
+  mintedByMarketplace,
+  mintedPeriod,
+  burnedPeriod
 }) {
   return <NftsComponent
     view={view}
@@ -54,6 +63,9 @@ export default function Nfts({
     ownerQuery={ownerQuery}
     taxonQuery={taxonQuery}
     serialQuery={serialQuery}
+    mintedByMarketplace={mintedByMarketplace}
+    mintedPeriod={mintedPeriod}
+    burnedPeriod={burnedPeriod}
     nftExplorer={false}
   />
 }

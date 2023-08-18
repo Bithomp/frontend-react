@@ -23,6 +23,7 @@
       "explorer": "Explorer",
       "volumes": "Volumes",
       "sales": "Sales",
+      "minters": "Minters",
       "distribution": "Distribution (holders)",
       "statistics": "Live statistics",
       "nfts": "Account's NFTs",
@@ -375,6 +376,13 @@
     "minutes-short": "m",
     "hours-short": "h"
   },
+  "period": {
+    "all": "",
+    "year": "For the last 365 days",
+    "month": "For the last 30 days",
+    "week": "For the last 7 days",
+    "day": "For the last 24 hours"
+  },
   "table": {
     "index": "Index",
     "address": "Address",
@@ -576,13 +584,6 @@
   },
   "nft-volumes": {
     "header": "NFT sales volumes",
-    "period": {
-      "all": "",
-      "year": "For the last 365 days",
-      "month": "For the last 30 days",
-      "week": "For the last 7 days",
-      "day": "For the last 24 hours"
-    },
     "text0": "XRPL had {{allSales}} {{currency}} NFT {{saleType}} sales for {{allVolume}}.",
     "brokers": {
       "desc": "This is the list of NFT broker accounts. You can find here volumes of offer matching bots. Marketplaces use mixed trade models, here you can see only the volumes through the brokerage model.",

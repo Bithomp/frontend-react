@@ -103,6 +103,7 @@ export default function Header({ setSignRequest, account, signOut, selectedCurre
               <Link href="/nft-explorer">{t("menu.nft.explorer")}</Link>
               <Link href="/nft-volumes">{t("menu.nft.volumes")}</Link>
               <Link href="/nft-sales">{t("menu.nft.sales")}</Link>
+              <Link href="/nft-minters">{t("menu.nft.minters")}</Link>
               <Link href="/nfts">{t("menu.nft.nfts")}</Link>
               <Link href="/nft-offers">{t("menu.nft.offers")}</Link>
               <Link href="/nft-distribution">{t("menu.nft.distribution")}</Link>
@@ -248,6 +249,7 @@ export default function Header({ setSignRequest, account, signOut, selectedCurre
           <Link href="/nft-explorer" className="mobile-menu-item" onClick={mobileMenuToggle}> {t("menu.nft.explorer")}</Link>
           <Link href="/nft-volumes" className="mobile-menu-item" onClick={mobileMenuToggle}>{t("menu.nft.volumes")}</Link>
           <Link href="/nft-sales" className="mobile-menu-item" onClick={mobileMenuToggle}>{t("menu.nft.sales")}</Link>
+          <Link href="/nft-minters" className="mobile-menu-item" onClick={mobileMenuToggle}>{t("menu.nft.minters")}</Link>
           <Link href="/nfts" className="mobile-menu-item" onClick={mobileMenuToggle}>{t("menu.nft.nfts")}</Link>
           <Link
             href="/nft-offers"

@@ -23,6 +23,7 @@
       "explorer": "Explorador",
       "volumes": "Volúmenes",
       "sales": "Ventas",
+      "minters": "Minters",
       "distribution": "Distribución (dueños)",
       "statistics": "Estadísticas en vivo",
       "nfts": "NFTs de la cuenta",
@@ -375,6 +376,13 @@
     "minutes-short": "m",
     "hours-short": "h"
   },
+  "period": {
+    "all": "",
+    "year": "Para los últimos 365 días",
+    "month": "Para los últimos 30 días",
+    "week": "Para los últimos 7 días",
+    "day": "Para los últimas 24 horas"
+  },
   "table": {
     "index": "Índice",
     "address": "Dirección",
@@ -576,13 +584,6 @@
   },
   "nft-volumes": {
     "header": "Volúmenes en ventas NFT",
-    "period": {
-      "all": "",
-      "year": "Para los últimos 365 días",
-      "month": "Para los últimos 30 días",
-      "week": "Para los últimos 7 días",
-      "day": "Para los últimas 24 horas"
-    },
     "text0": "el XRPL tuvo {{allSales}} {{currency}} en ventas en el mercado {{saleType}} NFT por valor de {{allVolume}}.",
     "brokers": {
       "desc": "Este es un listado de cuentas de broker NFT. Puedes encontrar aquí los volúmenes de los bots de cruces. Los mercados utilizan modelos mixtos para comerciar, aquí puedes ver solo volúmenes a través del modelo de broker.",

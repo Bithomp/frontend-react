@@ -524,7 +524,7 @@ export default function NftVolumes({ period, sale, list, currency, currencyIssue
                 <>
                   {rawData?.summary &&
                     <>
-                      {t("nft-volumes.period." + periodTab)}{" "}
+                      {t("period." + periodTab)}{" "}
                       {listTab === 'brokers' ?
                         <Trans i18nKey="nft-volumes.brokers.text0">
                           XRPL had {{ allSales: shortNiceNumber(rawData.summary.all.sales, 0) }} <b>{{ currency: (currencyIssuer ? currency : currencyTab).toUpperCase() }}</b> NFT {{ saleType: saleTab === 'all' ? "" : (t("tabs." + saleTab + "-sales")).toLocaleLowerCase() }} sales for {{ allVolume: niceNumber(rawData.summary.all.volumesInConvertCurrencies[convertCurrency], 0, convertCurrency) }},

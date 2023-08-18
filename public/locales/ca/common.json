@@ -23,6 +23,7 @@
       "explorer": "Explorador",
       "volumes": "Volums",
       "sales": "Vendes",
+      "minters": "Minters",
       "distribution": "Distribució (holders)",
       "statistics": "Estadístiques en viu",
       "nfts": "NFTs del compte",
@@ -375,6 +376,13 @@
     "minutes-short": "m",
     "hours-short": "h"
   },
+  "period": {
+    "all": "",
+    "year": "Els últims 365 dies",
+    "month": "Els últims 30 dies",
+    "week": "Els últims 7 dies",
+    "day": "Les últimes 24 hores"
+  },
   "table": {
     "index": "Índex",
     "address": "Adreça",
@@ -576,13 +584,6 @@
   },
   "nft-volumes": {
     "header": "Volum de vendes d'NFTs",
-    "period": {
-      "all": "",
-      "year": "Els últims 365 dies",
-      "month": "Els últims 30 dies",
-      "week": "Els últims 7 dies",
-      "day": "Les últimes 24 hores"
-    },
     "text0": "l'XRPL ha tingut {{allSales}} {{currency}} en vendes {{saleType}} d'NFTs per un valor de {{allVolume}}.",
     "brokers": {
       "desc": "Aquesta és la llista de comptes brokers d'NFTs. Aquí pots trobar volums d'ofertes corresponents a bots. Els mercats fan servir models de negociació mixtes, aquí només pots veure els volums relacionats amb el model corresponent als brokers.",

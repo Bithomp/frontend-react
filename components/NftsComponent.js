@@ -27,7 +27,10 @@ export default function NftsComponent({
   ownerQuery,
   taxonQuery,
   serialQuery,
-  nftExplorer
+  nftExplorer,
+  mintedByMarketplace,
+  mintedPeriod,
+  burnedPeriod
 }) {
   const { t } = useTranslation();
   const router = useRouter()
@@ -84,16 +87,13 @@ export default function NftsComponent({
       nftsData = []
     }
 
-    if (!(isAddressOrUsername(id) || isAddressOrUsername(issuer) || isAddressOrUsername(owner) || (search && listTab !== 'onSale')) || !marker || (marker === "first" && nftsData.length)) {
-      return
-    }
-
-    let listUrlPart = '?list=nfts'
+    let listUrlPart = '?list=nfts&includeDeleted=true'
     let ownerUrlPart = ''
     let collectionUrlPart = ''
     let markerUrlPart = ''
     let searchPart = ''
     let serialPart = ''
+    let mintAndBurnPart = ''
 
     if (listTab === 'onSale') {
       //order: "offerCreatedNew", "offerCreatedOld", "priceLow", "priceHigh"
@@ -104,6 +104,17 @@ export default function NftsComponent({
       } else {
         listUrlPart = listUrlPart + '&currency=xrp'
       }
+    }
+
+    if (mintedByMarketplace) {
+      mintAndBurnPart += '&mintedByMarketplace=' + mintedByMarketplace
+    }
+
+    if (burnedPeriod) {
+      mintAndBurnPart += '&deletedAt=' + burnedPeriod
+    }
+    if (burnedPeriod) {
+      mintAndBurnPart += '&createdAt=' + mintedPeriod
     }
 
     if (id || owner) {
@@ -143,7 +154,8 @@ export default function NftsComponent({
     if (marker === "first") {
       setLoading(true)
     }
-    const response = await axios('v2/nfts' + listUrlPart + ownerUrlPart + collectionUrlPart + markerUrlPart + searchPart + serialPart)
+
+    const response = await axios('v2/nfts' + listUrlPart + ownerUrlPart + collectionUrlPart + markerUrlPart + searchPart + serialPart + mintAndBurnPart)
       .catch(error => {
         setErrorMessage(t("error." + error.message))
       })
@@ -152,8 +164,9 @@ export default function NftsComponent({
     const newdata = response?.data
     if (newdata) {
       setRawData(newdata)
-      if (newdata.owner || newdata.issuer || newdata.search) {
-
+      if (newdata.error) {
+        setErrorMessage(t("error-api." + newdata.error))
+      } else {
         if (newdata.issuer) {
           setIssuerInput(newdata.issuer)
         }
@@ -182,21 +195,12 @@ export default function NftsComponent({
             setHasMore(false)
           }
         }
-      } else {
-        if (newdata.error) {
-          setErrorMessage(t("error-api." + newdata.error))
-        } else {
-          setErrorMessage("Error 4")
-          console.log(newdata)
-        }
       }
     }
   }
 
   useEffect(() => {
-    if (id || issuer || owner || (search && listTab !== 'onSale')) {
-      checkApi({ restart: true })
-    }
+    checkApi({ restart: true })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [issuer, taxon, owner, listTab, saleDestinationTab, search])
 
@@ -487,110 +491,98 @@ export default function NftsComponent({
           </CSVLink>
         }
       </div>
-      {(id || issuer || owner || (search && listTab !== 'onSale')) ?
-        <InfiniteScroll
-          dataLength={data.length}
-          next={checkApi}
-          hasMore={hasMore}
-          loader={!errorMessage &&
-            <p className="center">{t("nfts.load-more")}</p>
-          }
-          endMessage={<p className="center">{t("nfts.end")}</p>}
-        // below props only if you need pull down functionality
-        //refreshFunction={this.refresh}
-        //pullDownToRefresh
-        //pullDownToRefreshThreshold={50}
-        //</>pullDownToRefreshContent={
-        //  <h3 style={{ textAlign: 'center' }}>&#8595; Pull down to refresh</h3>
-        //}
-        //releaseToRefreshContent={
-        //  <h3 style={{ textAlign: 'center' }}>&#8593; Release to refresh</h3>
-        //}
-        >
-          {!nftExplorer &&
-            <div className='center' style={{ marginBottom: "10px" }}>
-              {rendered &&
-                <IssuerSelect
-                  issuersList={issuersList}
-                  selectedIssuer={issuer}
-                  setSelectedIssuer={setIssuer}
-                />
-              }
-            </div>
-          }
 
-          {viewTab === "list" &&
-            <table className="table-large">
-              <thead>
-                <tr>
-                  <th className='center'>{t("table.index")}</th>
-                  <th>NFT</th>
-                  <th className='center'>{t("table.serial")}</th>
-                  {!taxon && <th className='center'>{t("table.taxon")}</th>}
-                  {!issuer && <th className='center'>{t("table.issuer")}</th>}
-                  {(!id && !owner) && <th className='right'>{t("table.owner")}</th>}
-                  {listTab === 'onSale' && <th className='right'>{t("table.price")}</th>}
-                </tr>
-              </thead>
-              <tbody>
-                {loading ?
-                  <tr className='center'>
-                    <td colSpan="100">
-                      <span className="waiting"></span>
-                      <br />{t("general.loading")}
-                    </td>
-                  </tr>
-                  :
-                  <>
-                    {!errorMessage ? data.map((nft, i) =>
-                      <tr key={nft.nftokenID}>
-                        <td className="center">{i + 1}</td>
-                        <td>{nftThumbnail(nft)} {nftNameLink(nft)}</td>
-                        <td className='center'>{nft.sequence}</td>
-                        {!taxon && <td className='center'>{nft.nftokenTaxon}</td>}
-                        {!issuer && <td className='center'>{nftLink(nft, 'issuer')}</td>}
-                        {(!id && !owner) && <td className='right'>{nftLink(nft, 'owner', { address: 'short' })}</td>}
-                        {listTab === 'onSale' && <td className='right'>{priceData(nft.sellOffers)}</td>}
-                      </tr>)
-                      :
-                      <tr><td colSpan="100" className='center orange bold'>{errorMessage}</td></tr>
-                    }
-                  </>
-                }
-              </tbody>
-            </table>
-          }
-          {viewTab === "tiles" &&
-            <>
+      <InfiniteScroll
+        dataLength={data.length}
+        next={checkApi}
+        hasMore={hasMore}
+        loader={!errorMessage &&
+          <p className="center">{t("nfts.load-more")}</p>
+        }
+        endMessage={<p className="center">{t("nfts.end")}</p>}
+      // below props only if you need pull down functionality
+      //refreshFunction={this.refresh}
+      //pullDownToRefresh
+      //pullDownToRefreshThreshold={50}
+      //</>pullDownToRefreshContent={
+      //  <h3 style={{ textAlign: 'center' }}>&#8595; Pull down to refresh</h3>
+      //}
+      //releaseToRefreshContent={
+      //  <h3 style={{ textAlign: 'center' }}>&#8593; Release to refresh</h3>
+      //}
+      >
+        {!nftExplorer && (id || owner) &&
+          <div className='center' style={{ marginBottom: "10px" }}>
+            {rendered &&
+              <IssuerSelect
+                issuersList={issuersList}
+                selectedIssuer={issuer}
+                setSelectedIssuer={setIssuer}
+              />
+            }
+          </div>
+        }
+
+        {viewTab === "list" &&
+          <table className="table-large">
+            <thead>
+              <tr>
+                <th className='center'>{t("table.index")}</th>
+                <th>NFT</th>
+                <th className='center'>{t("table.serial")}</th>
+                {!taxon && <th className='center'>{t("table.taxon")}</th>}
+                {!issuer && <th className='center'>{t("table.issuer")}</th>}
+                {(!id && !owner) && <th className='right'>{t("table.owner")}</th>}
+                {listTab === 'onSale' && <th className='right'>{t("table.price")}</th>}
+              </tr>
+            </thead>
+            <tbody>
               {loading ?
-                <div className='center' style={{ marginTop: "20px" }}>
-                  <span className="waiting"></span>
-                  <br />{t("general.loading")}
-                </div>
+                <tr className='center'>
+                  <td colSpan="100">
+                    <span className="waiting"></span>
+                    <br />{t("general.loading")}
+                  </td>
+                </tr>
                 :
                 <>
-                  {errorMessage ?
-                    <div className='center orange bold'>{errorMessage}</div>
+                  {!errorMessage ? data.map((nft, i) =>
+                    <tr key={nft.nftokenID}>
+                      <td className="center">{i + 1}</td>
+                      <td>{nftThumbnail(nft)} {nftNameLink(nft)}</td>
+                      <td className='center'>{nft.sequence}</td>
+                      {!taxon && <td className='center'>{nft.nftokenTaxon}</td>}
+                      {!issuer && <td className='center'>{nftLink(nft, 'issuer')}</td>}
+                      {(!id && !owner) && <td className='right'>{nftLink(nft, 'owner', { address: 'short' })}</td>}
+                      {listTab === 'onSale' && <td className='right'>{priceData(nft.sellOffers)}</td>}
+                    </tr>)
                     :
-                    <Tiles nftList={data} type={listTab === 'onSale' ? 'onSale' : 'name'} />
+                    <tr><td colSpan="100" className='center orange bold'>{errorMessage}</td></tr>
                   }
                 </>
               }
-            </>
-          }
-        </InfiniteScroll>
-        :
-        <>
-          {!nftExplorer &&
-            <>
-              <h1 className='center'>{t("nfts.header")}</h1>
-              <p className='center'>
-                {t("nfts.desc")}
-              </p>
-            </>
-          }
-        </>
-      }
+            </tbody>
+          </table>
+        }
+        {viewTab === "tiles" &&
+          <>
+            {loading ?
+              <div className='center' style={{ marginTop: "20px" }}>
+                <span className="waiting"></span>
+                <br />{t("general.loading")}
+              </div>
+              :
+              <>
+                {errorMessage ?
+                  <div className='center orange bold'>{errorMessage}</div>
+                  :
+                  <Tiles nftList={data} type={listTab === 'onSale' ? 'onSale' : 'name'} />
+                }
+              </>
+            }
+          </>
+        }
+      </InfiniteScroll>
     </div>
   </>
 }

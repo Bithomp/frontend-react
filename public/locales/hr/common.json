@@ -23,6 +23,7 @@
       "explorer": "Istraži",
       "volumes": "Volumeni",
       "sales": "Prodaje",
+      "minters": "Minters",
       "distribution": "Distribucija (holderi)",
       "statistics": "Statistike uživo",
       "nfts": "NFTovi računa",
@@ -375,6 +376,13 @@
     "minutes-short": "m",
     "hours-short": "h"
   },
+  "period": {
+    "all": "",
+    "year": "Za zadnjih 365 dana",
+    "month": "Za zadnjih 30 dana",
+    "week": "Za zadnjih 7 dana",
+    "day": "Za zadnja 24 sata"
+  },
   "table": {
     "index": "Indeks",
     "address": "Adresa",
@@ -576,13 +584,6 @@
   },
   "nft-volumes": {
     "header": "NFT prodajni volumen",
-    "period": {
-      "all": "",
-      "year": "Za zadnjih 365 dana",
-      "month": "Za zadnjih 30 dana",
-      "week": "Za zadnjih 7 dana",
-      "day": "Za zadnja 24 sata"
-    },
     "text0": "XRPL je imao {{allSales}} {{currency}} NFT prodaja za {{allVolume}}.",
     "brokers": {
       "desc": "Ovo je lista NFT broker računa. Ovdje možete pronaći volumen ponuda botova. Marketplace koriste miksane modele prodaje, ovdje možete vidjeti samo volumen koji je potekao kroz model brokera.",
