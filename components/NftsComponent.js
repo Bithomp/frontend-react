@@ -115,8 +115,8 @@ export default function NftsComponent({
     if (burnedPeriod) {
       mintAndBurnPart += '&deletedAt=' + burnedPeriod
     }
-    if (burnedPeriod) {
-      mintAndBurnPart += '&createdAt=' + mintedPeriod
+    if (mintedPeriod) {
+      mintAndBurnPart += '&issuedAt=' + mintedPeriod
     }
 
     if (id || owner) {
