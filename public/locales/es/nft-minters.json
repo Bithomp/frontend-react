@@ -1,0 +1,11 @@
+{
+  "header": "Acuñadores NFT",
+  "desc": "Aquí puedes encontrar la lista de todos los acuñadores NFT identificados en XRPL. Si quieres que tu proyecto sea reconocido, añade una nota con tu sitio web en las transacciones de acuñación.",
+  "summary-period": "En el XRPL se acuñaron <1>{{minted}}</1> NFTs, de los cuales <3>{{mintedAndBurned}}</3> NFTs {{percentMintedAndBurned}} fueron quemados durante el mismo periodo de tiempo, en total se quemaron durante el mismo periodo: <7>{{burned}}</7> NFTs.",
+  "summary-all": "En el XRPL se acuñaron <1>{{minted}}</1> NFTs, de los cuales se quemaron <3>{{mintedAndBurned}}</3> NFTs {{percentMintedAndBurned}}.",
+  "table": {
+    "minted-total": "Acuñados totales",
+    "minted-and-burned": "Acuñado y quemado",
+    "burned-total": "Quemados totales"
+  }
+}

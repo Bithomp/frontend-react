@@ -6,9 +6,9 @@
     },
     "business": {
       "business": "Empresas",
-      "advertise": "Advertise",
-      "eaas": "Explorer as a Service",
-      "build-unl": "Build UNL"
+      "advertise": "Anúnciate",
+      "eaas": "Explorador como Servicio",
+      "build-unl": "Construcción de UNL"
     },
     "usernames": "Registro de nombre de usuario",
     "project-registartion": "Registro de proyecto XRPL",
@@ -23,18 +23,18 @@
       "explorer": "Explorador",
       "volumes": "Volúmenes",
       "sales": "Ventas",
-      "minters": "Minters",
+      "minters": "Acuñadores",
       "distribution": "Distribución (dueños)",
       "statistics": "Estadísticas en vivo",
       "nfts": "NFTs de la cuenta",
       "offers": "Ofertas"
     },
     "developers": {
-      "developers": "Programadores",
+      "developers": "Desarrolladores",
       "account-generation": "Generación de cuenta",
       "faucet": "Grifo",
-      "api": "API documentation",
-      "api-key-request": "API key"
+      "api": "Documentación API",
+      "api-key-request": "Clave API"
     },
     "validators": "Validadores",
     "amendments": "Enmiendas",
@@ -73,7 +73,7 @@
     }
   },
   "signin": {
-    "signin": "Contectar",
+    "signin": "Conectar",
     "signout": "Desconectar",
     "choose-app": "Elige una app para conectarte.",
     "login-with": "Conectarse con",
@@ -407,7 +407,7 @@
     "sold": "Vendido",
     "sold_few": "Vendido",
     "sold-on": "Vendido en",
-    "minted-on": "Minted on",
+    "minted-on": "Acuñado en",
     "type": "Tipo",
     "status": "Estado",
     "hash": "Hash",
@@ -480,7 +480,7 @@
       "Unable to verify balance of the buyer account": "No es posible verificar el balance de la cuenta del comprador",
       "Insufficient funds on the buyer account": "El comprador no tiene suficientes fondos",
       "Seller has no trustline for the token or it cannot be verified": "El vendedor no tiene una línea de confianza (trustline) para el token o no se puede verificar",
-      "NFT Issuer has no trustline for the token to accept royalty or it cannot be verified": "NFT Issuer has no trustline for the token to accept royalty or it cannot be verified"
+      "NFT Issuer has no trustline for the token to accept royalty or it cannot be verified": "El emisor del NFT no tiene una línea de confianza del token para aceptar las regalías o no puede ser verificado"
     }
   },
   "tabs": {
@@ -529,9 +529,9 @@
       "transactions": "Transacciones",
       "tokens": "Tokens"
     },
-    "different-network": "This transaction is from the <1>{{networkNameOrId}}</1> network",
-    "check-tx-on-different-explorer": "check the details <1><0>here</0></1>.",
-    "not-supported-network": "which is not supported."
+    "different-network": "Esta transacción es de la red <1>{{networkNameOrId}}</1>",
+    "check-tx-on-different-explorer": "comprueba los detalles <1><0>aquí</0></1>.",
+    "not-supported-network": "que no está soportada."
   },
   "nft-explorer": {
     "header": "Explorador NFT"
