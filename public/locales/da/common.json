@@ -456,6 +456,7 @@
     "marketplace": "Markedsplads",
     "text": {
       "show-extended-statistics": "Vis udvidet statistik",
+      "include-burned-nfts": "Include burned NFTs",
       "no-expiration": "Ingen udløbsdato",
       "no-offers": "Ingen tilbud fundet",
       "unspecified": "uspecificeret",

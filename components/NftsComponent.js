@@ -6,15 +6,16 @@ import axios from 'axios'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import Link from 'next/link'
 
-import { isAddressOrUsername, setTabParams } from '../utils';
-import { isValidTaxon, nftThumbnail, nftNameLink, bestSellOffer, mpUrl } from '../utils/nft';
-import { nftLink, usernameOrAddress, userOrServiceLink, amountFormat } from '../utils/format';
+import { isAddressOrUsername, setTabParams } from '../utils'
+import { isValidTaxon, nftThumbnail, nftNameLink, bestSellOffer, mpUrl } from '../utils/nft'
+import { nftLink, usernameOrAddress, userOrServiceLink, amountFormat } from '../utils/format'
 
-import SEO from './SEO';
-import SearchBlock from './Layout/SearchBlock';
-import Tabs from './Tabs';
-import Tiles from './Tiles';
-import IssuerSelect from './UI/IssuerSelect';
+import SEO from './SEO'
+import SearchBlock from './Layout/SearchBlock'
+import Tabs from './Tabs'
+import Tiles from './Tiles'
+import IssuerSelect from './UI/IssuerSelect'
+import CheckBox from './UI/CheckBox'
 
 export default function NftsComponent({
   view,
@@ -30,7 +31,8 @@ export default function NftsComponent({
   nftExplorer,
   mintedByMarketplace,
   mintedPeriod,
-  burnedPeriod
+  burnedPeriod,
+  includeBurnedQuery
 }) {
   const { t } = useTranslation();
   const router = useRouter()
@@ -55,6 +57,7 @@ export default function NftsComponent({
   const [ownerInput, setOwnerInput] = useState(ownerQuery)
   const [taxonInput, setTaxonInput] = useState(taxonQuery)
   const [searchInput, setSearchInput] = useState(searchQuery)
+  const [includeBurned, setIncludeBurned] = useState(includeBurnedQuery)
 
   useEffect(() => {
     setRendered(true)
@@ -87,7 +90,7 @@ export default function NftsComponent({
       nftsData = []
     }
 
-    let listUrlPart = '?list=nfts&includeDeleted=true'
+    let listUrlPart = '?list=nfts'
     let ownerUrlPart = ''
     let collectionUrlPart = ''
     let markerUrlPart = ''
@@ -95,6 +98,10 @@ export default function NftsComponent({
     let serialPart = ''
     let mintAndBurnPart = ''
     let orderPart = ''
+
+    if (includeBurned) {
+      listUrlPart += '&includeDeleted=true'
+    }
 
     if (listTab === 'onSale') {
       //order: "offerCreatedNew", "offerCreatedOld", "priceLow", "priceHigh"
@@ -215,7 +222,7 @@ export default function NftsComponent({
   useEffect(() => {
     checkApi({ restart: true })
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [issuer, taxon, owner, listTab, saleDestinationTab, search])
+  }, [issuer, taxon, owner, listTab, saleDestinationTab, search, includeBurned])
 
   useEffect(() => {
     let queryAddList = [];
@@ -284,14 +291,23 @@ export default function NftsComponent({
         paramName: "saleDestination"
       })
     } else {
-      queryRemoveList.push("saleDestination");
-      queryRemoveList.push("saleCurrency");
-      queryRemoveList.push("saleCurrencyIssuer");
+      queryRemoveList.push("saleDestination")
+      queryRemoveList.push("saleCurrency")
+      queryRemoveList.push("saleCurrencyIssuer")
+    }
+
+    if (includeBurned) {
+      queryAddList.push({
+        name: "includeBurned",
+        value: true
+      })
+    } else {
+      queryRemoveList.push("includeBurned")
     }
 
     setTabParams(router, tabsToSet, queryAddList, queryRemoveList)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [viewTab, rawData, listTab, saleDestinationTab])
+  }, [viewTab, rawData, listTab, saleDestinationTab, includeBurned])
 
   const onSearchChange = e => {
     setSearchInput(e.target.value)
@@ -508,6 +524,16 @@ export default function NftsComponent({
           </CSVLink>
         }
       </div>
+
+      {!burnedPeriod &&
+        <center>
+          <div style={{ display: "inline-block", marginBottom: "20px", marginTop: "-20px" }}>
+            <CheckBox checked={includeBurned} setChecked={setIncludeBurned}>
+              {t("table.text.include-burned-nfts")}
+            </CheckBox>
+          </div>
+        </center>
+      }
 
       <InfiniteScroll
         dataLength={data.length}

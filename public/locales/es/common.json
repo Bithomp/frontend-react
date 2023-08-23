@@ -456,6 +456,7 @@
     "marketplace": "Mercado",
     "text": {
       "show-extended-statistics": "Mostrar estadísticas ampliadas",
+      "include-burned-nfts": "Include burned NFTs",
       "no-expiration": "Sin fecha de caducidad",
       "no-offers": "Ofertas no encontradas",
       "unspecified": "no especificado",

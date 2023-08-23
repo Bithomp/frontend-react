@@ -456,6 +456,7 @@
     "marketplace": "Маркетплейс",
     "text": {
       "show-extended-statistics": "Показать расширенную статистику",
+      "include-burned-nfts": "Включить сожжёные NFT",
       "no-expiration": "Без срока действия",
       "no-offers": "Предложения не найдены",
       "unspecified": "не указан",
