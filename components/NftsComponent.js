@@ -525,7 +525,7 @@ export default function NftsComponent({
         }
       </div>
 
-      {!burnedPeriod &&
+      {!burnedPeriod && listTab !== 'onSale' &&
         <center>
           <div style={{ display: "inline-block", marginBottom: "20px", marginTop: "-20px" }}>
             <CheckBox checked={includeBurned} setChecked={setIncludeBurned}>
