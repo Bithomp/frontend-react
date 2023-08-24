@@ -294,7 +294,11 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
                     <b className='green'>{option.service}</b>
                     {option.username ? ")" : ""}
                   </>}
-                  {(option.username || option.service) && option.xumm && <>, </>}
+                  {(option.username || option.service) && option.verifiedDomain && <>, </>}
+                  {option.verifiedDomain &&
+                    <span className='green'> {option.verifiedDomain}</span>
+                  }
+                  {(option.username || option.service || option.verifiedDomain) && option.xumm && <>, </>}
                   {option.xumm &&
                     <>
                       Xaman <span className='orange'>
@@ -303,7 +307,7 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
                       {option.xummVerified && <> ✅</>}
                     </>
                   }
-                  {(option.username || option.service || option.xumm) && option.globalid && <>, </>}
+                  {(option.username || option.service || option.verifiedDomain || option.xumm) && option.globalid && <>, </>}
                   {option.globalid &&
                     <>
                       GlobaliD <span className='purple'>{option.globalid}</span>
@@ -316,7 +320,7 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
                 </>
               }
               getOptionValue={
-                option => (option.address + option.username + option.service + option.xumm + option.globalid)
+                option => (option.address + option.username + option.service + option.xumm + option.globalid + option.verifiedDomain)
               }
               inputValue={searchItem}
               onInputChange={searchOnInputChange}
