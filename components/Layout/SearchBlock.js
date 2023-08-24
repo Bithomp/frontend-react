@@ -37,9 +37,39 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
     if (userData?.address) {
       setSearchItem(userData.address);
     }
-  }, [userData]);
+  }, [userData])
+
+  const requestSuggestions = value => {
+    if (isValidCTID(value)) {
+      return
+    }
+
+    //if more than 3 characters - search for suggestions
+    if (value && value.length > 1) {
+      clearTimeout(typingTimer)
+      setSearchSuggestions([])
+      typingTimer = setTimeout(async () => {
+        if (value && value.length > 2) {
+          setSearchingSuggestions(true)
+          const suggestionsResponse = await axios('v2/address/search/' + value)
+            .catch(error => {
+              setSearchingSuggestions(false)
+              console.log(error.message)
+            })
+          if (suggestionsResponse) {
+            const suggestions = suggestionsResponse.data
+            if (suggestions?.addresses?.length > 0) {
+              setSearchSuggestions(suggestions.addresses)
+            }
+          }
+          setSearchingSuggestions(false)
+        }
+      }, 500) // 0.5 sec
+    }
+  }
 
   const searchOnKeyUp = e => {
+
     if (e.key === 'Enter') {
       e.preventDefault()
       onSearch()
@@ -56,32 +86,7 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
         return
       }
 
-      if (isValidCTID(e.target.value)) {
-        return
-      }
-
-      //if more than 3 characters - search for suggestions
-      if (e?.target?.value && e.target.value.length > 1) {
-        clearTimeout(typingTimer)
-        setSearchSuggestions([])
-        typingTimer = setTimeout(async () => {
-          if (e?.target?.value && e.target.value.length > 2) {
-            setSearchingSuggestions(true)
-            const suggestionsResponse = await axios('v2/address/search/' + e.target.value)
-              .catch(error => {
-                setSearchingSuggestions(false)
-                console.log(error.message)
-              })
-            if (suggestionsResponse) {
-              const suggestions = suggestionsResponse.data
-              if (suggestions?.addresses?.length > 0) {
-                setSearchSuggestions(suggestions.addresses)
-              }
-            }
-            setSearchingSuggestions(false)
-          }
-        }, 500) // 0.5 sec
-      }
+      requestSuggestions(e?.target?.value)
     }
   }
 
