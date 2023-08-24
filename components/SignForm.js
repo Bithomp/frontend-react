@@ -6,7 +6,7 @@ import axios from 'axios'
 import Image from 'next/image'
 
 import { useIsMobile } from "../utils/mobile"
-import { server, devNet, typeNumberOnly } from '../utils'
+import { server, devNet, typeNumberOnly, delay } from '../utils'
 import { capitalize } from '../utils/format'
 import { payloadXummPost, xummWsConnect, xummCancel, xummGetSignedData } from '../utils/xumm'
 
@@ -67,6 +67,11 @@ export default function SignForm({ setSignRequest, setAccount, signRequest }) {
 
     if (tx.TransactionType === "NFTokenCreateOffer" && !agreedToRisks) {
       setScreen("NFTokenCreateOffer")
+      return
+    }
+
+    if (tx.TransactionType === "NFTokenBurn" && !agreedToRisks) {
+      setScreen("NFTokenBurn")
       return
     }
 
@@ -192,6 +197,10 @@ export default function SignForm({ setSignRequest, setAccount, signRequest }) {
     //check if we have a ledger index in the response
     //check if ledger index is already included in the crawler through a web-socket
 
+    delay(3000, closeSignInFormAndRefresh) //deleay 3 seconds while we do not the ledger number
+  }
+
+  const closeSignInFormAndRefresh = () => {
     //close the sign in form
     setXummQrSrc(qr)
     setScreen("choose-app")
@@ -252,9 +261,10 @@ export default function SignForm({ setSignRequest, setAccount, signRequest }) {
     <div className="sign-in-form">
       <div className="sign-in-body center">
         <div className='close-button' onClick={SignInCancelAndClose}></div>
-        {(screen === 'NFTokenAcceptOffer' || screen === 'NFTokenCreateOffer') ?
+        {(screen === 'NFTokenAcceptOffer' || screen === 'NFTokenCreateOffer' || screen === 'NFTokenBurn') ?
           <>
             <div className='header'>
+              {screen === 'NFTokenBurn' && t("signin.confirm.nft-burn-header")}
               {screen === 'NFTokenAcceptOffer' && t("signin.confirm.nft-accept-offer-header")}
               {screen === 'NFTokenCreateOffer' &&
                 (signRequest.request.Flags === 1 ?
@@ -288,15 +298,22 @@ export default function SignForm({ setSignRequest, setAccount, signRequest }) {
                 </span>
               </div>
             }
+
             <div className='terms-checkbox'>
               <CheckBox checked={agreedToRisks} setChecked={setAgreedToRisks} >
-                {screen === 'NFTokenCreateOffer' && signRequest.request.Flags === 1 ?
-                  t("signin.confirm.nft-create-sell-offer")
+                {screen === 'NFTokenBurn' ?
+                  t("signin.confirm.nft-burn")
                   :
-                  <Trans i18nKey="signin.confirm.nft-accept-offer">
-                    I admit that Bithomp gives me access to a decentralised marketplace, and it cannot verify or guarantee the authenticity and legitimacy of any NFTs.
-                    I confirm that I've read the <Link href="/terms-and-conditions" target="_blank">Terms and conditions</Link>, and I agree with all the terms to buy, sell or use any NFTs on Bithomp.
-                  </Trans>
+                  <>
+                    {screen === 'NFTokenCreateOffer' && signRequest.request.Flags === 1 ?
+                      t("signin.confirm.nft-create-sell-offer")
+                      :
+                      <Trans i18nKey="signin.confirm.nft-accept-offer">
+                        I admit that Bithomp gives me access to a decentralised marketplace, and it cannot verify or guarantee the authenticity and legitimacy of any NFTs.
+                        I confirm that I've read the <Link href="/terms-and-conditions" target="_blank">Terms and conditions</Link>, and I agree with all the terms to buy, sell or use any NFTs on Bithomp.
+                      </Trans>
+                    }
+                  </>
                 }
               </CheckBox>
             </div>

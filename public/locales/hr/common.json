@@ -107,7 +107,9 @@
       "nft-create-sell-offer-header": "Lista za prodaju",
       "nft-create-buy-offer-header": "Kreiraj ponudu za kupnju",
       "nft-accept-offer": "Slažem se s time da mi Bithomp daje pristup decentraliziranom mjestu za prodaju, i ne može provjeriti niti garantirati autentičnost niti jednog NFTa. Potvrđujem da sam pročitao <1>Uvjete korištenja</1>, i slažem se sa svim uvjetima za kupiti, prodati ili koristiti bilo koji NFT na Bithomp-u.",
-      "nft-create-sell-offer": "Razumijem da jednom kad je moja ponuda potpisana, NFT prodaja može biti trenutačna."
+      "nft-create-sell-offer": "Razumijem da jednom kad je moja ponuda potpisana, NFT prodaja može biti trenutačna.",
+      "nft-burn-header": "NFT burning",
+      "nft-burn": "I understand that NFT will be permanently deleted, meaning, it can no longer be owned, transferred, purchased, or sold. This action can not be undone."
     }
   },
   "footer": {
@@ -575,7 +577,8 @@
     "on": "na",
     "make-offer": "Izradi ponudu",
     "list-for-sale": "Lista za prodaju",
-    "holders": "Distribucija (Holders)"
+    "holders": "Distribucija (Holders)",
+    "burn": "Burn that NFT"
   },
   "nft-distribution": {
     "header": "NFT distribucija",

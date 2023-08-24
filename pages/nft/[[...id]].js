@@ -522,7 +522,7 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
     </>
   }
 
-  const makeOfferButton = (sellOffers) => {
+  const makeOfferButton = sellOffers => {
     if (!id || data.deletedAt) return "" //if removed do not offer to add an offer
     //if signed in and user is the nft's owner -> make a sell offer, otherwise make a buy offer (no flag)
     const sell = data?.owner && account?.address && account.address === data.owner
@@ -559,6 +559,34 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
     </>
   }
 
+  const burnButton = () => {
+    if (!id || data.deletedAt) return "" //if it is already burned do not offer to burn
+
+    //if not signed, or signed but not an owner - do not show burn button 
+    // may we should show it for burnable nfts (with a flag) for the minters also? ! 
+    if (!(data?.owner && account?.address && account.address === data.owner)) return ""
+
+    let request = {
+      "TransactionType": "NFTokenBurn",
+      "Account": data.owner,
+      "NFTokenID": id
+    }
+
+    return <>
+      <button
+        className='button-action wide center'
+        onClick={() => setSignRequest({
+          wallet: "xumm",
+          request
+        })}
+      >
+        <Image src={xummImg} className='xumm-logo' alt="xumm" height={24} width={24} />
+        {t("nft.burn")} ️‍🔥
+      </button>
+      <br /><br />
+    </>
+  }
+
   const imageUrl = nftUrl(pageMeta, 'image')
 
   return <>
@@ -590,6 +618,7 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
                     <NftPreview nft={data} />
                     {buyButton(data.sellOffers)}
                     {makeOfferButton(data.sellOffers)}
+                    {burnButton()}
                     <div>
                       {data.metadata?.attributes && data.metadata?.attributes[0] && data.metadata?.attributes[0].trait_type &&
                         <table className='table-details autowidth'>

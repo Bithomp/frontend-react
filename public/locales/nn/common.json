@@ -107,7 +107,9 @@
       "nft-create-sell-offer-header": "Liste for salg",
       "nft-create-buy-offer-header": "Lag kjøps bud",
       "nft-accept-offer": "Jeg innrømmer at Bithomp gir meg tilgang til en desentralisert markedsplass, og de kan ikke verifisere eller garantere ektheten og legitimiteten til noen NFT-er. Jeg bekrefter at jeg har lest <1>vilkårene og betingelsene</1>, og jeg godtar alle vilkårene for å kjøpe, selge eller bruke NFT-er på Bithomp.",
-      "nft-create-sell-offer": "Jeg forstår at når oppføringen min er signert, kan NFT kjøpes umiddelbart."
+      "nft-create-sell-offer": "Jeg forstår at når oppføringen min er signert, kan NFT kjøpes umiddelbart.",
+      "nft-burn-header": "NFT burning",
+      "nft-burn": "I understand that NFT will be permanently deleted, meaning, it can no longer be owned, transferred, purchased, or sold. This action can not be undone."
     }
   },
   "footer": {
@@ -575,7 +577,8 @@
     "on": "på",
     "make-offer": "Lag bud",
     "list-for-sale": "Legg til salgs",
-    "holders": "Distribusjon (holdere)"
+    "holders": "Distribusjon (holdere)",
+    "burn": "Burn that NFT"
   },
   "nft-distribution": {
     "header": "NFT distribusjon",

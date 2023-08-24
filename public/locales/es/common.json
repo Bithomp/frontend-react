@@ -107,7 +107,9 @@
       "nft-create-sell-offer-header": "Listar para vender",
       "nft-create-buy-offer-header": "Crear oferta de Compra",
       "nft-accept-offer": "Admito que Bithomp me da acceso a un mercado descentralizado, y que no puede ser verificada o garantizada la autenticidad y legitimidad de ningún NFT. Confirmo que he leido los <1>Términos y condiciones</1>, y estoy conforme con todos los términos de compra, venta o uso de cualquier NFT en Bithomp.",
-      "nft-create-sell-offer": "Comprendo, que una vez firmado el listado, el NFT puede ser adquirido instantaneamente."
+      "nft-create-sell-offer": "Comprendo, que una vez firmado el listado, el NFT puede ser adquirido instantaneamente.",
+      "nft-burn-header": "NFT burning",
+      "nft-burn": "I understand that NFT will be permanently deleted, meaning, it can no longer be owned, transferred, purchased, or sold. This action can not be undone."
     }
   },
   "footer": {
@@ -575,7 +577,8 @@
     "on": "en",
     "make-offer": "Hacer una oferta",
     "list-for-sale": "Listar para vender",
-    "holders": "Distribución (Poseedores)"
+    "holders": "Distribución (Poseedores)",
+    "burn": "Burn that NFT"
   },
   "nft-distribution": {
     "header": "Distribución NFT",
