@@ -168,7 +168,7 @@ export default function SignForm({ setSignRequest, setAccount, signRequest }) {
     }
   }
 
-  const afterSubmit = data => {
+  const afterSubmit = async data => {
     /*
     {
       "application": {
@@ -187,21 +187,53 @@ export default function SignForm({ setSignRequest, setAccount, signRequest }) {
     //data.payload.tx_type: "SignIn"
 
     //if redirect 
-    if (data.response && data.response.account) {
+    if (data.response?.account) {
       saveAddressData(data.response.account)
       if (data.custom_meta?.blob?.redirect === "nfts") {
         window.location.href = server + "/nfts/" + data.response.account
       }
     }
 
-    //check if we have a ledger index in the response
-    //check if ledger index is already included in the crawler through a web-socket
+    // For NFT transaction, lets wait for crawler to finish it's job
+    if (data.payload?.tx_type.includes("NFToken")) {
+      if (data.response?.txid) {
+        const response = await axios("xrpl/transaction/" + data.response.txid)
+        if (response.data) {
+          const { validated, inLedger } = response.data
+          if (validated) {
+            checkCrawlerStatus(inLedger)
+          }
+        } else {
+          //if no info on transaction, delay 3 sec
+          delay(3000, closeSignInFormAndRefresh)
+        }
+      } else {
+        //if no tx data, delay 3 sec
+        delay(3000, closeSignInFormAndRefresh)
+      }
+    } else {
+      // no checks or delays for non NFT transactions
+      closeSignInFormAndRefresh()
+    }
+  }
 
-    delay(3000, closeSignInFormAndRefresh) //deleay 3 seconds while we do not the ledger number
+  const checkCrawlerStatus = async inLedger => {
+    const crawlerResponse = await axios("v2/statistics/nftokens/crawler")
+    if (crawlerResponse.data) {
+      const { ledgerIndex } = crawlerResponse.data
+      // if crawler 10 ledgers behind, update right away
+      // the backend suppose to return info directly from ledger when crawler 30 seconds behind
+      // othewrwise wait until crawler catch up with the ledger where this transaction was included
+      if (ledgerIndex >= inLedger || (inLedger - 10) > ledgerIndex) {
+        closeSignInFormAndRefresh()
+      } else {
+        //check again in 1 second if crawler ctached up with the ledger where transaction was included
+        delay(1000, checkCrawlerStatus, inLedger)
+      }
+    }
   }
 
   const closeSignInFormAndRefresh = () => {
-    //close the sign in form
     setXummQrSrc(qr)
     setScreen("choose-app")
     setSignRequest(null)
