@@ -201,8 +201,11 @@ export default function SignForm({ setSignRequest, setAccount, signRequest }) {
         if (response.data) {
           const { validated, inLedger, ledger_index } = response.data
           const includedInLedger = inLedger || ledger_index
-          if (validated) {
+          if (validated && includedInLedger) {
             checkCrawlerStatus(includedInLedger)
+          } else {
+            //if not validated or if no ledger info received, delay for 3 seconds
+            delay(3000, closeSignInFormAndRefresh)
           }
         } else {
           //if no info on transaction, delay 3 sec
