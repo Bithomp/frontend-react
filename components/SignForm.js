@@ -199,9 +199,10 @@ export default function SignForm({ setSignRequest, setAccount, signRequest }) {
       if (data.response?.txid) {
         const response = await axios("xrpl/transaction/" + data.response.txid)
         if (response.data) {
-          const { validated, inLedger } = response.data
+          const { validated, inLedger, ledger_index } = response.data
+          const includedInLedger = inLedger || ledger_index
           if (validated) {
-            checkCrawlerStatus(inLedger)
+            checkCrawlerStatus(includedInLedger)
           }
         } else {
           //if no info on transaction, delay 3 sec
