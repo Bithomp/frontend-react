@@ -77,10 +77,10 @@ export default function NftMinters({ period }) {
         if (list.length > 0) {
           setErrorMessage("")
           setData(list.sort(function (a, b) {
-            if (a.minted === null) return 1
-            if (b.minted === null) return -1
-            if (a.minted === b.minted) return 0
-            return a.minted < b.minted ? 1 : -1
+            if (a.mintedWithMetadata === null) return 1
+            if (b.mintedWithMetadata === null) return -1
+            if (a.mintedWithMetadata === b.mintedWithMetadata) return 0
+            return a.mintedWithMetadata < b.mintedWithMetadata ? 1 : -1
           }))
         } else {
           setErrorMessage(t("general.no-data"))
@@ -101,6 +101,7 @@ export default function NftMinters({ period }) {
       "period": "all",
       "summary": {
         "minted": 1873080,
+        "mintedWithMetadata": 1240000,
         "mintedAndBurned": 306224,
         "burned": 306224
       },
@@ -108,12 +109,14 @@ export default function NftMinters({ period }) {
         {
           "marketplace": "unknown",
           "minted": 616658,
+          "mintedWithMetadata": 234000,
           "mintedAndBurned": 186176,
           "burned": 186176
         },
         {
           "marketplace": "onxrp.com",
           "minted": 299713,
+          "mintedWithMetadata": 120000,
           "mintedAndBurned": 22778,
           "burned": 22778
         },
@@ -218,6 +221,7 @@ export default function NftMinters({ period }) {
                 <th className='center'>{t("table.index")}</th>
                 <th>{t("table.minter")} <b className={"link" + (sortConfig.key === 'marketplace' ? " orange" : "")} onClick={() => sortTable('marketplace')}>⇅</b></th>
                 <th className='right'>{t("table.minted-total", { ns: "nft-minters" })} <b className={"link" + (sortConfig.key === 'minted' ? " orange" : "")} onClick={() => sortTable('minted')}>⇅</b></th>
+                <th className='right'>{t("table.minted-with-metadata", { ns: "nft-minters" })} <b className={"link" + (sortConfig.key === 'mintedWithMetadata' ? " orange" : "")} onClick={() => sortTable('mintedWithMetadata')}>⇅</b></th>
                 {periodTab !== "all" && <th className='right'>{t("table.minted-and-burned", { ns: "nft-minters" })} <b className={"link" + (sortConfig.key === 'mintedAndBurned' ? " orange" : "")} onClick={() => sortTable('mintedAndBurned')}>⇅</b></th>}
                 <th className='right'>{t("table.burned-total", { ns: "nft-minters" })} <b className={"link" + (sortConfig.key === 'burned' ? " orange" : "")} onClick={() => sortTable('burned')}>⇅</b></th>
               </tr>
@@ -245,9 +249,12 @@ export default function NftMinters({ period }) {
                               {shortNiceNumber(minter.minted, 0)} {persentFormat(minter.minted, rawData.summary.minted)}
                               <Link href={'/nft-explorer' + urlParams(minter) + "&mintedPeriod=" + periodTab}> <LinkIcon /></Link>
                             </td>
+                            <td className='right'>
+                              {shortNiceNumber(minter.mintedWithMetadata, 0)} {minter.mintedWithMetadata ? persentFormat(minter.mintedWithMetadata, minter.minted) : ""}
+                            </td>
                             {periodTab !== "all" &&
                               <td className='right'>
-                                {shortNiceNumber(minter.mintedAndBurned, 0)}
+                                {shortNiceNumber(minter.mintedAndBurned, 0)} {minter.mintedAndBurned ? persentFormat(minter.mintedAndBurned, minter.minted) : ""}
                                 <Link href={'/nft-explorer' + urlParams(minter) + "&mintedPeriod=" + periodTab + "&burnedPeriod=" + periodTab}> <LinkIcon /></Link>
                               </td>
                             }
@@ -295,9 +302,12 @@ export default function NftMinters({ period }) {
                           {t("table.minted-total", { ns: "nft-minters" })}: {shortNiceNumber(minter.minted, 0)} {persentFormat(minter.minted, rawData.summary.minted)}
                           <Link href={'/nft-explorer' + urlParams(minter) + "&mintedPeriod=" + periodTab}> <LinkIcon /></Link>
                         </p>
+                        <p>
+                          {t("table.minted-with-metadata", { ns: "nft-minters" })}: {shortNiceNumber(minter.mintedWithMetadata, 0)} {minter.mintedWithMetadata ? persentFormat(minter.mintedWithMetadata, minter.minted) : ""}
+                        </p>
                         {periodTab !== "all" &&
                           <p>
-                            {t("table.minted-and-burned", { ns: "nft-minters" })}: {shortNiceNumber(minter.mintedAndBurned, 0)}
+                            {t("table.minted-and-burned", { ns: "nft-minters" })}: {shortNiceNumber(minter.mintedAndBurned, 0)} {minter.mintedAndBurned ? persentFormat(minter.mintedAndBurned, minter.minted) : ""}
                             <Link href={'/nft-explorer' + urlParams(minter) + "&mintedPeriod=" + periodTab + "&burnedPeriod=" + periodTab}> <LinkIcon /></Link>
                           </p>
                         }

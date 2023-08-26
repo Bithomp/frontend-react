@@ -5,6 +5,7 @@
   "summary-all": "на XRPL отчеканено <1>{{minted}}</1> NFT, из которых <3>{{mintedAndBurned}}</3> NFT {{percentMintedAndBurned}} были сожжены.",
   "table": {
     "minted-total": "Всего отчеканено",
+    "minted-with-metadata": "Отчеканенные NFT с метаданными",
     "minted-and-burned": "Отчеканено и сожжено",
     "burned-total": "Всего сожжено"
   }

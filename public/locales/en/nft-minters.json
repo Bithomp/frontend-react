@@ -5,6 +5,7 @@
   "summary-all": "XRPL had <1>{{minted}}</1> NFTs, from which <3>{{mintedAndBurned}}</3> NFTs {{percentMintedAndBurned}} were burned.",
   "table": {
     "minted-total": "Total minted",
+    "minted-with-metadata": "Minted NFTs with metadata",
     "minted-and-burned": "Minted and burned",
     "burned-total": "Total burned"
   }

@@ -5,6 +5,7 @@
   "summary-all": "En el XRPL se acuñaron <1>{{minted}}</1> NFTs, de los cuales se quemaron <3>{{mintedAndBurned}}</3> NFTs {{percentMintedAndBurned}}.",
   "table": {
     "minted-total": "Acuñados totales",
+    "minted-with-metadata": "Minted NFTs with metadata",
     "minted-and-burned": "Acuñado y quemado",
     "burned-total": "Quemados totales"
   }
