@@ -16,7 +16,8 @@ export const getServerSideProps = async ({ query, locale }) => {
     mintedByMarketplace,
     mintedPeriod,
     burnedPeriod,
-    includeBurned
+    includeBurned,
+    includeWithoutMetadata
   } = query
   return {
     props: {
@@ -33,7 +34,8 @@ export const getServerSideProps = async ({ query, locale }) => {
       mintedByMarketplace: mintedByMarketplace || "",
       mintedPeriod: mintedPeriod || "",
       burnedPeriod: burnedPeriod || "",
-      includeBurned: includeBurned || false,
+      includeBurnedQuery: includeBurned || false,
+      includeWithoutMetadataQuery: includeWithoutMetadata || false,
       ...(await serverSideTranslations(locale, ['common'])),
     },
   }
@@ -53,7 +55,8 @@ export default function Nfts({
   mintedByMarketplace,
   mintedPeriod,
   burnedPeriod,
-  includeBurned
+  includeBurnedQuery,
+  includeWithoutMetadataQuery
 }) {
   return <NftsComponent
     view={view}
@@ -69,7 +72,8 @@ export default function Nfts({
     mintedByMarketplace={mintedByMarketplace}
     mintedPeriod={mintedPeriod}
     burnedPeriod={burnedPeriod}
-    includeBurnedQuery={includeBurned}
+    includeBurnedQuery={includeBurnedQuery}
+    includeWithoutMetadataQuery={includeWithoutMetadataQuery}
     nftExplorer={true}
   />
 };

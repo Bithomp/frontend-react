@@ -458,6 +458,7 @@
     "marketplace": "Marketplace",
     "text": {
       "show-extended-statistics": "Pošalji detaljnije statistike",
+      "include-without-metadata": "Include NFTs without metadata",
       "include-burned-nfts": "Include burned NFTs",
       "no-expiration": "Nema datuma isteka",
       "no-offers": "Nema ponuda",

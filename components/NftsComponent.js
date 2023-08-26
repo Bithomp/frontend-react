@@ -6,7 +6,7 @@ import axios from 'axios'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import Link from 'next/link'
 
-import { isAddressOrUsername, setTabParams } from '../utils'
+import { isAddressOrUsername, setTabParams, useWidth } from '../utils'
 import { isValidTaxon, nftThumbnail, nftNameLink, bestSellOffer, mpUrl } from '../utils/nft'
 import { nftLink, usernameOrAddress, userOrServiceLink, amountFormat } from '../utils/format'
 
@@ -32,10 +32,12 @@ export default function NftsComponent({
   mintedByMarketplace,
   mintedPeriod,
   burnedPeriod,
-  includeBurnedQuery
+  includeBurnedQuery,
+  includeWithoutMetadataQuery
 }) {
-  const { t } = useTranslation();
+  const { t } = useTranslation()
   const router = useRouter()
+  const windowWidth = useWidth()
   const { id } = router.query
 
   const [rendered, setRendered] = useState(false)
@@ -58,6 +60,7 @@ export default function NftsComponent({
   const [taxonInput, setTaxonInput] = useState(taxonQuery)
   const [searchInput, setSearchInput] = useState(searchQuery)
   const [includeBurned, setIncludeBurned] = useState(includeBurnedQuery)
+  const [includeWithoutMetadata, setIncludeWithoutMetadata] = useState(includeWithoutMetadataQuery)
 
   useEffect(() => {
     setRendered(true)
@@ -170,9 +173,13 @@ export default function NftsComponent({
       if (listTab === 'onSale') {
         orderPart = '&order=offerCreatedNew'
       } else {
-        searchPart = '&search=___&searchLocations=metadata.name'
         orderPart = '&order=mintedNew'
       }
+    }
+
+    //includeWithoutMetadata
+    if (listTab !== 'onSale' && !includeWithoutMetadata && !searchPart) {
+      searchPart = '&search=___&searchLocations=metadata.name'
     }
 
     const response = await axios('v2/nfts' + listUrlPart + ownerUrlPart + collectionUrlPart + markerUrlPart + searchPart + serialPart + mintAndBurnPart + orderPart)
@@ -222,7 +229,7 @@ export default function NftsComponent({
   useEffect(() => {
     checkApi({ restart: true })
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [issuer, taxon, owner, listTab, saleDestinationTab, search, includeBurned])
+  }, [issuer, taxon, owner, listTab, saleDestinationTab, search, includeBurned, includeWithoutMetadata])
 
   useEffect(() => {
     let queryAddList = [];
@@ -305,9 +312,18 @@ export default function NftsComponent({
       queryRemoveList.push("includeBurned")
     }
 
+    if (includeWithoutMetadata) {
+      queryAddList.push({
+        name: "includeWithoutMetadata",
+        value: true
+      })
+    } else {
+      queryRemoveList.push("includeWithoutMetadata")
+    }
+
     setTabParams(router, tabsToSet, queryAddList, queryRemoveList)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [viewTab, rawData, listTab, saleDestinationTab, includeBurned])
+  }, [viewTab, rawData, listTab, saleDestinationTab, includeBurned, includeWithoutMetadata])
 
   const onSearchChange = e => {
     setSearchInput(e.target.value)
@@ -419,6 +435,14 @@ export default function NftsComponent({
     csvHeaders.push({ label: t("table.owner"), key: "owner" })
   }
 
+  const checkBoxStyles = {
+    display: "inline-block",
+    marginTop: windowWidth > 500 ? "-20px" : 0,
+    marginBottom: "20px",
+    marginRight: "20px",
+    marginLeft: "20px"
+  }
+
   return <>
     {nftExplorer ?
       <SEO
@@ -525,15 +549,22 @@ export default function NftsComponent({
         }
       </div>
 
-      {!burnedPeriod && listTab !== 'onSale' &&
-        <center>
-          <div style={{ display: "inline-block", marginBottom: "20px", marginTop: "-20px" }}>
+      <center>
+        {!burnedPeriod && listTab !== 'onSale' &&
+          <div style={checkBoxStyles}>
             <CheckBox checked={includeBurned} setChecked={setIncludeBurned}>
               {t("table.text.include-burned-nfts")}
             </CheckBox>
           </div>
-        </center>
-      }
+        }
+        {listTab !== 'onSale' &&
+          <div style={checkBoxStyles}>
+            <CheckBox checked={includeWithoutMetadata} setChecked={setIncludeWithoutMetadata}>
+              {t("table.text.include-without-metadata")}
+            </CheckBox>
+          </div>
+        }
+      </center>
 
       <InfiniteScroll
         dataLength={data.length}

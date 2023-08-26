@@ -458,6 +458,7 @@
     "marketplace": "Marketplace",
     "text": {
       "show-extended-statistics": "Show extended statistics",
+      "include-without-metadata": "Include NFTs without metadata",
       "include-burned-nfts": "Include burned NFTs",
       "no-expiration": "No expiration date",
       "no-offers": "No offers found",

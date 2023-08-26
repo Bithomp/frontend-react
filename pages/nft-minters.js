@@ -149,7 +149,7 @@ export default function NftMinters({ period }) {
   }, [isReady, periodTab])
 
   const urlParams = (minter) => {
-    let urlPart = "?mintedByMarketplace=" + minter?.marketplace + '&includeBurned=true'
+    let urlPart = "?mintedByMarketplace=" + minter?.marketplace + '&includeBurned=true&includeWithoutMetadata=true'
     return urlPart
   }
 
