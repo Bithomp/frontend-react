@@ -169,7 +169,7 @@ export default function NftsComponent({
 
     if (!ownerUrlPart && !collectionUrlPart && !searchPart && !serialPart && !mintAndBurnPart) {
       // reverse and show only with meta
-      //on the first load when no params
+      // on the first load when no params
       if (listTab === 'onSale') {
         orderPart = '&order=offerCreatedNew'
       } else {
@@ -179,7 +179,7 @@ export default function NftsComponent({
 
     //includeWithoutMetadata
     if (listTab !== 'onSale' && !includeWithoutMetadata && !searchPart) {
-      searchPart = '&search=___&searchLocations=metadata.name'
+      searchPart = '&hasMetadata=true'
     }
 
     const response = await axios('v2/nfts' + listUrlPart + ownerUrlPart + collectionUrlPart + markerUrlPart + searchPart + serialPart + mintAndBurnPart + orderPart)
@@ -263,7 +263,7 @@ export default function NftsComponent({
       queryRemoveList.push("taxon")
     }
 
-    if (rawData?.search && rawData.search !== '___') {
+    if (rawData?.search) {
       queryAddList.push({
         name: "search",
         value: rawData.search
