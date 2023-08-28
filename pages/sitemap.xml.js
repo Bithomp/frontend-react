@@ -29,6 +29,7 @@ const pages = [
 
   { loc: "genesis", changefreq: "weekly", priority: "0.6" },
   { loc: "build-unl", changefreq: "yearly", priority: "0.6" },
+  { loc: "domains", changefreq: "always", priority: "0.6" },
 
   { loc: "submit/", changefreq: "yearly", priority: "0.5" },
 

@@ -3,75 +3,102 @@ import { useState, useEffect } from 'react'
 import axios from 'axios'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
-import SEO from '../components/SEO'
+import { trWithAccount } from '../utils/format'
 
-import { fullDateAndTime } from '../utils/format';
+import SEO from '../components/SEO'
 
 export async function getStaticProps({ locale }) {
   return {
     props: {
-      ...(await serverSideTranslations(locale, ['common'])),
+      ...(await serverSideTranslations(locale, ['common', 'domains'])),
     }
   }
 }
 
 export default function Domains() {
-  const [data, setData] = useState(null);
-  const { t } = useTranslation();
+  const { t } = useTranslation()
+
+  const [data, setData] = useState(null)
+  const [sortConfig, setSortConfig] = useState({})
+
+  const sortTable = key => {
+    if (!data) return
+    let direction = 'descending'
+    let sortA = 1
+    let sortB = -1
+
+    if (sortConfig.key === key && sortConfig.direction === direction) {
+      direction = 'ascending'
+      sortA = -1
+      sortB = 1
+    }
+    setSortConfig({ key, direction })
+    setData(data.sort(function (a, b) {
+      return a[key] < b[key] ? sortA : sortB
+    }))
+  }
 
   const checkApi = async () => {
-    const response = await axios('xrpl/domains');
-    const data = response.data;
-    if (data) {
-      setData(data);
+    const response = await axios('xrpl/domains')
+    const data = response.data
+    if (data?.domains) {
+      setData(data.domains.sort(function (a, b) {
+        return a.domain < b.domain ? -1 : 1
+      }))
     }
   }
 
   /*
-    {
-      "total": 147,
-      "domains": [
-        {
-          "domain": "bithomp.com",
-          "validToml": true,
-          "lastTomlCheck": 1664931614,
-          "addresses": [
-            {
-              "address": "rsuUjfWxrACCAwGQDsNeZUhpzXf1n1NK5Z",
-              "inToml": 1664931614,
-              "verified": true,
-              "domainSet": 1664966283,
-              "lastInterest":1664966284
-            },
+  {
+    "total": 97,
+    "domains": [
+      {
+        "domain": "bithomp.com",
+        "validToml": true,
+        "lastTomlCheck": 1693184438,
+        "addresses": [
+          {
+            "address": "rsuUjfWxrACCAwGQDsNeZUhpzXf1n1NK5Z",
+            "inToml": 1693184438,
+            "verified": true,
+            "domainSet": 1693253151,
+            "lastInterest": 1693173887
+          },
   */
 
   useEffect(() => {
-    checkApi();
+    checkApi()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [])
 
   return <>
     <SEO title={t("menu.domains")} />
     <div className="content-text">
-      {data?.domains ?
+      {data ?
         <>
           <h1 className="center">{t("menu.domains")}</h1>
           <table className="table-large">
             <thead>
               <tr>
-                <th>{t("domains.domain")}</th>
-                <th>{t("domains.toml-valid")}</th>
-                <th>{t("domains.last-check")}</th>
-                <th>{t("domains.addresses")}</th>
+                <th>{t("table.domain", { ns: 'domains' })} <b className={"link" + (sortConfig.key === 'domain' ? " orange" : "")} onClick={() => sortTable('domain')}>⇅</b></th>
+                <th className='center'>{t("table.addresses", { ns: 'domains' })}</th>
               </tr>
             </thead>
             <tbody>
-              {data?.domains?.map((d, i) =>
+              {data?.map((d, i) =>
                 <tr key={i}>
-                  <td>{d.domain}</td>
-                  <td>{d.validToml}</td>
-                  <td>{fullDateAndTime(d.lastTomlCheck)}</td>
-                  <td>{d.addresses.length}</td>
+                  <td><a href={"https://" + d.domain}>{d.domain}</a></td>
+                  <td>
+                    <table>
+                      <tbody>
+                        {d.addresses.map((a, j) =>
+                          <tr key={j}>
+                            {trWithAccount(a, 'address', (d.addresses.length > 1 ? (j + 1) + ". " : "---"), "/explorer/")}
+                          </tr>
+                        )}
+                      </tbody>
+                    </table>
+                  </td>
                 </tr>
               )}
             </tbody>
@@ -79,5 +106,5 @@ export default function Domains() {
         </> : ""
       }
     </div>
-  </>;
-};
+  </>
+}
