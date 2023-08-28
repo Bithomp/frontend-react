@@ -371,7 +371,8 @@
     "currency is invalid": "Неверная валюта",
     "currencyIssuer username is not found or invalid": "Неверный ник эмитента токена",
     "currencyIssuer is invalid": "Неверный адрес эмитента токена",
-    "Token information is not found": "Нам не удалось найти каких-либо данных по этому ID"
+    "Token information is not found": "Нам не удалось найти каких-либо данных по этому ID",
+    "No nfts information is found": "Хм, что-то пошло не так. Попробуйте поискать что-то другое."
   },
   "units": {
     "seconds-short": "с",

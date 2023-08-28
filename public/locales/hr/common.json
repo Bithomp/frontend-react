@@ -371,7 +371,8 @@
     "currency is invalid": "Neispravni novčić (valuta)",
     "currencyIssuer username is not found or invalid": "Neispravno ima issuera novčića",
     "currencyIssuer is invalid": "Neispravna adresa issuera novčića",
-    "Token information is not found": "Nispo pronašli podatke za taj ID"
+    "Token information is not found": "Nispo pronašli podatke za taj ID",
+    "No nfts information is found": "Sorry, an error occured, please to search for somethig else."
   },
   "units": {
     "seconds-short": "s",

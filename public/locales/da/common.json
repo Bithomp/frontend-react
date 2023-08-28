@@ -371,7 +371,8 @@
     "currency is invalid": "Ugyldig valuta",
     "currencyIssuer username is not found or invalid": "Ugyldigt valutaudsteders brugernavn",
     "currencyIssuer is invalid": "Ugyldig valutaudsteders adresse",
-    "Token information is not found": "Vi kunne ikke finde nogen oplysninger for det ID"
+    "Token information is not found": "Vi kunne ikke finde nogen oplysninger for det ID",
+    "No nfts information is found": "Sorry, an error occured, please to search for somethig else."
   },
   "units": {
     "seconds-short": "s",

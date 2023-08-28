@@ -371,7 +371,8 @@
     "currency is invalid": "Invalid currency",
     "currencyIssuer username is not found or invalid": "Invalid currency issuer's username",
     "currencyIssuer is invalid": "Invalid currency issuer's address",
-    "Token information is not found": "We couldn't find any information for that ID"
+    "Token information is not found": "We couldn't find any information for that ID",
+    "No nfts information is found": "Sorry, an error occured, please to search for somethig else."
   },
   "units": {
     "seconds-short": "s",

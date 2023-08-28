@@ -371,7 +371,8 @@
     "currency is invalid": "La moneda no és vàlida",
     "currencyIssuer username is not found or invalid": "L'àlies de l'encunyador no és vàlid",
     "currencyIssuer is invalid": "L'adreça de l'encunyador de la moneda no és vàlida",
-    "Token information is not found": "No hem pogut trobar informació sobre aquest ID"
+    "Token information is not found": "No hem pogut trobar informació sobre aquest ID",
+    "No nfts information is found": "Sorry, an error occured, please to search for somethig else."
   },
   "units": {
     "seconds-short": "s",
