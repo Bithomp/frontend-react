@@ -60,9 +60,9 @@ export default function Genesis() {
   const timestampFormatParams = { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric' };
 
   return <>
-    <SEO title={t("menu.genesis")} />
+    <SEO title={t("menu.xrpl.genesis")} />
     <div className="page-genesis content-text">
-      <h1 className="center">{t("menu.genesis")}</h1>
+      <h1 className="center">{t("menu.xrpl.genesis")}</h1>
 
       <div className='flex'>
         <div className="grey-box">

@@ -15,10 +15,7 @@
     "price-alerts": "XRP price alerts",
     "submit-offline-tx": "Submit offline transaction",
     "networks": "Networks",
-    "domains": "Domains",
     "ledger": "Ledger transactions",
-    "last-ledger-information": "Last ledger information",
-    "last-ledger-transactions": "Last ledger transactions",
     "nft": {
       "explorer": "Explorer",
       "volumes": "Volumes",
@@ -29,6 +26,14 @@
       "nfts": "Account's NFTs",
       "offers": "Offers"
     },
+    "xrpl": {
+      "last-ledger-information": "Last ledger information",
+      "last-ledger-transactions": "Last ledger transactions",
+      "verified-domains": "Verified domains",
+      "validators": "Validators",
+      "amendments": "Amendments",
+      "genesis": "Genesis accounts"
+    },
     "developers": {
       "developers": "Developers",
       "account-generation": "Account generation",
@@ -36,9 +41,6 @@
       "api": "API documentation",
       "api-key-request": "API key"
     },
-    "validators": "Validators",
-    "amendments": "Amendments",
-    "genesis": "Genesis accounts",
     "legal": "Legal",
     "disclaimer": "Disclaimer",
     "privacy-policy": "Privacy policy",
@@ -103,6 +105,7 @@
     },
     "not-available": "Not available",
     "confirm": {
+      "set-domain": "Setting a domain",
       "nft-accept-offer-header": "NFT purchase",
       "nft-create-sell-offer-header": "List for sale",
       "nft-create-buy-offer-header": "Create Buy offer",
@@ -110,6 +113,10 @@
       "nft-create-sell-offer": "I understand, once my listing is signed, the NFT can be purchased instantly.",
       "nft-burn-header": "NFT burning",
       "nft-burn": "I understand that NFT will be permanently deleted, meaning, it can no longer be owned, transferred, purchased, or sold. This action can not be undone."
+    },
+    "set-account": {
+      "domain": "Domain",
+      "enter-domain": "Enter domain"
     }
   },
   "footer": {

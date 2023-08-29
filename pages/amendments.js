@@ -53,7 +53,7 @@ export default function Amendment() {
   }, []);
 
   return <>
-    <SEO title={t("menu.amendments")} />
+    <SEO title={t("menu.xrpl.amendments")} />
     <div className="content-text">
       {majorityAmendments?.length ?
         <>

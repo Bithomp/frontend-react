@@ -15,10 +15,7 @@
     "price-alerts": "Alertas de precio XRP",
     "submit-offline-tx": "Enviar transacción offline",
     "networks": "Redes",
-    "domains": "Dominios",
     "ledger": "Transacciones del libro contable",
-    "last-ledger-information": "Información del último libro contable",
-    "last-ledger-transactions": "Transacciones del último libro contable",
     "nft": {
       "explorer": "Explorador",
       "volumes": "Volúmenes",
@@ -29,6 +26,14 @@
       "nfts": "NFTs de la cuenta",
       "offers": "Ofertas"
     },
+    "xrpl": {
+      "last-ledger-information": "Información del último libro contable",
+      "last-ledger-transactions": "Transacciones del último libro contable",
+      "verified-domains": "Verified domains",
+      "validators": "Validadores",
+      "amendments": "Enmiendas",
+      "genesis": "Cuentas iniciales"
+    },
     "developers": {
       "developers": "Desarrolladores",
       "account-generation": "Generación de cuenta",
@@ -36,9 +41,6 @@
       "api": "Documentación API",
       "api-key-request": "Clave API"
     },
-    "validators": "Validadores",
-    "amendments": "Enmiendas",
-    "genesis": "Cuentas iniciales",
     "legal": "Legal",
     "disclaimer": "Advertencia",
     "privacy-policy": "Política de privacidad",
@@ -103,6 +105,7 @@
     },
     "not-available": "No disponible",
     "confirm": {
+      "set-domain": "Setting a domain",
       "nft-accept-offer-header": "Comprar NFT",
       "nft-create-sell-offer-header": "Listar para vender",
       "nft-create-buy-offer-header": "Crear oferta de Compra",
@@ -110,6 +113,10 @@
       "nft-create-sell-offer": "Comprendo, que una vez firmado el listado, el NFT puede ser adquirido instantaneamente.",
       "nft-burn-header": "Quemando el NFT",
       "nft-burn": "Entiendo que el NFT será eliminado permanéntemente, queriendo decir que no podrá ser poseido,trasnsferido, comprado o vendido. Esta acción es irreversible."
+    },
+    "set-account": {
+      "domain": "Domain",
+      "enter-domain": "Enter domain"
     }
   },
   "footer": {

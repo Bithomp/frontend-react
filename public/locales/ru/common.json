@@ -15,10 +15,7 @@
     "price-alerts": "Мониторинг XRP цены",
     "submit-offline-tx": "Отправить офлайн транзакцию",
     "networks": "Сети",
-    "domains": "Домены",
     "ledger": "Транзакции леджера",
-    "last-ledger-information": "Информация с последнего леджера",
-    "last-ledger-transactions": "Транзакции последнего леджера",
     "nft": {
       "explorer": "Эксплорер",
       "volumes": "Объёмы",
@@ -29,6 +26,14 @@
       "nfts": "Поиск NFT по адресу владельца",
       "offers": "Предложения"
     },
+    "xrpl": {
+      "last-ledger-information": "Информация с последнего леджера",
+      "last-ledger-transactions": "Транзакции последнего леджера",
+      "verified-domains": "Проверенные домены",
+      "validators": "Валидаторы",
+      "amendments": "Поправки",
+      "genesis": "Генезис аккаунты"
+    },
     "developers": {
       "developers": "Разработчикам",
       "account-generation": "Генерация аккаунта",
@@ -36,9 +41,6 @@
       "api": "API документация",
       "api-key-request": "API ключ"
     },
-    "validators": "Валидаторы",
-    "amendments": "Поправки",
-    "genesis": "Генезис аккаунты",
     "legal": "Документы",
     "disclaimer": "Отказ от ответственности",
     "privacy-policy": "Политика конфиденциальности",
@@ -103,6 +105,7 @@
     },
     "not-available": "Не доступно",
     "confirm": {
+      "set-domain": "Установка домена",
       "nft-accept-offer-header": "Покупка NFT",
       "nft-create-sell-offer-header": "Выставление на продажу",
       "nft-create-buy-offer-header": "Предложение покупки",
@@ -110,6 +113,10 @@
       "nft-create-sell-offer": "Я понимаю, что как только я подпишу это выставление на продажу, этот NFT может быть куплен моментально.",
       "nft-burn-header": "Сжигание NFT",
       "nft-burn": "Я понимаю, что этот NFT будет навсегда уничтожен, и это означает, что им нельзя будет владеть, его нельзя будет пересылать, покупать или продавать. Данное действие не обратимо."
+    },
+    "set-account": {
+      "domain": "Домен",
+      "enter-domain": "Введите домен"
     }
   },
   "footer": {

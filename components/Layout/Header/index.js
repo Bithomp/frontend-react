@@ -114,11 +114,12 @@ export default function Header({ setSignRequest, account, signOut, selectedCurre
           <div className="menu-dropdown">
             <div className="menu-dropdown-button">XRPL</div>
             <div className="menu-dropdown-content">
-              <Link href="/last-ledger-information">{t("menu.last-ledger-information")}</Link>
-              <Link href="/ledger">{t("menu.last-ledger-transactions")}</Link>
-              <Link href="/validators">{t("menu.validators")}</Link>
-              <Link href="/amendments">{t("menu.amendments")}</Link>
-              {!devNet && <Link href="/genesis">{t("menu.genesis")}</Link>}
+              <Link href="/last-ledger-information">{t("menu.xrpl.last-ledger-information")}</Link>
+              <Link href="/ledger">{t("menu.xrpl.last-ledger-transactions")}</Link>
+              <Link href="/domains">{t("menu.xrpl.verified-domains")}</Link>
+              <Link href="/validators">{t("menu.xrpl.validators")}</Link>
+              <Link href="/amendments">{t("menu.xrpl.amendments")}</Link>
+              {!devNet && <Link href="/genesis">{t("menu.xrpl.genesis")}</Link>}
             </div>
           </div>
 
@@ -278,32 +279,39 @@ export default function Header({ setSignRequest, account, signOut, selectedCurre
             className="mobile-menu-item"
             onClick={mobileMenuToggle}
           >
-            {t("menu.last-ledger-information")}
+            {t("menu.xrpl.last-ledger-information")}
           </Link>
           <Link
             href="/ledger"
             className="mobile-menu-item"
             onClick={mobileMenuToggle}
           >
-            {t("menu.last-ledger-transactions")}
+            {t("menu.xrpl.last-ledger-transactions")}
+          </Link>
+          <Link
+            href="/domains"
+            className="mobile-menu-item"
+            onClick={mobileMenuToggle}
+          >
+            {t("menu.xrpl.verified-domains")}
           </Link>
           <Link
             href="/validators"
             className="mobile-menu-item"
             onClick={mobileMenuToggle}
           >
-            {t("menu.validators")}
+            {t("menu.xrpl.validators")}
           </Link>
           <Link
             href="/amendments"
             className="mobile-menu-item"
             onClick={mobileMenuToggle}
           >
-            {t("menu.amendments")}
+            {t("menu.xrpl.amendments")}
           </Link>
           {!devNet &&
             <Link href="/genesis" className="mobile-menu-item" onClick={mobileMenuToggle}>
-              {t("menu.genesis")}
+              {t("menu.xrpl.genesis")}
             </Link>
           }
 

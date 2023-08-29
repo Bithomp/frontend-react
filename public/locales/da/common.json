@@ -15,10 +15,7 @@
     "price-alerts": "XRP-pris varsler",
     "submit-offline-tx": "Indsend offline transaktion",
     "networks": "Netværk",
-    "domains": "Domæner",
     "ledger": "Ledger transaktioner",
-    "last-ledger-information": "Sidste ledger information",
-    "last-ledger-transactions": "Sidste ledger transaktioner",
     "nft": {
       "explorer": "Explorer",
       "volumes": "Mængder",
@@ -29,6 +26,14 @@
       "nfts": "Kontoens NFT'er",
       "offers": "Tilbud"
     },
+    "xrpl": {
+      "last-ledger-information": "Sidste ledger information",
+      "last-ledger-transactions": "Sidste ledger transaktioner",
+      "verified-domains": "Verified domains",
+      "validators": "Validatorer",
+      "amendments": "Ændringer",
+      "genesis": "Genesis konti"
+    },
     "developers": {
       "developers": "Udviklere",
       "account-generation": "Kontogenerering",
@@ -36,9 +41,6 @@
       "api": "API documentation",
       "api-key-request": "API key"
     },
-    "validators": "Validatorer",
-    "amendments": "Ændringer",
-    "genesis": "Genesis konti",
     "legal": "Juridisk",
     "disclaimer": "Ansvarsfraskrivelse",
     "privacy-policy": "Privatlivspolitik",
@@ -103,6 +105,7 @@
     },
     "not-available": "Ikke tilgængelig",
     "confirm": {
+      "set-domain": "Setting a domain",
       "nft-accept-offer-header": "NFT køb",
       "nft-create-sell-offer-header": "Sat til salg",
       "nft-create-buy-offer-header": "Lag kjøpstilbud",
@@ -110,6 +113,10 @@
       "nft-create-sell-offer": "Jeg forstår, når min fortegnelse er underskrevet, kan NFT købes med det samme.",
       "nft-burn-header": "NFT burning",
       "nft-burn": "I understand that NFT will be permanently deleted, meaning, it can no longer be owned, transferred, purchased, or sold. This action can not be undone."
+    },
+    "set-account": {
+      "domain": "Domain",
+      "enter-domain": "Enter domain"
     }
   },
   "footer": {

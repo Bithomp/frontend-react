@@ -15,10 +15,7 @@
     "price-alerts": "XRP prisvarsler",
     "submit-offline-tx": "Send frakoblet transaksjon",
     "networks": "Nettverk",
-    "domains": "Domener",
     "ledger": "Ledger transaksjoner",
-    "last-ledger-information": "Siste ledger informasjon",
-    "last-ledger-transactions": "Siste ledger transaksjoner",
     "nft": {
       "explorer": "Utforsker",
       "volumes": "Volum",
@@ -29,6 +26,14 @@
       "nfts": "Kontoens NFT-er",
       "offers": "Bud"
     },
+    "xrpl": {
+      "last-ledger-information": "Siste ledger informasjon",
+      "last-ledger-transactions": "Siste ledger transaksjoner",
+      "verified-domains": "Verified domains",
+      "validators": "Validatorer",
+      "amendments": "Endringer",
+      "genesis": "Genesis kontoer"
+    },
     "developers": {
       "developers": "Utviklere",
       "account-generation": "Kontogenerering",
@@ -36,9 +41,6 @@
       "api": "API documentation",
       "api-key-request": "API key"
     },
-    "validators": "Validatorer",
-    "amendments": "Endringer",
-    "genesis": "Genesis kontoer",
     "legal": "Juridisk",
     "disclaimer": "Ansvarsfraskrivelse",
     "privacy-policy": "Personvernerklæring",
@@ -103,6 +105,7 @@
     },
     "not-available": "ikke tilgjengelig",
     "confirm": {
+      "set-domain": "Setting a domain",
       "nft-accept-offer-header": "NFT kjøp",
       "nft-create-sell-offer-header": "Liste for salg",
       "nft-create-buy-offer-header": "Lag kjøps bud",
@@ -110,6 +113,10 @@
       "nft-create-sell-offer": "Jeg forstår at når oppføringen min er signert, kan NFT kjøpes umiddelbart.",
       "nft-burn-header": "NFT burning",
       "nft-burn": "I understand that NFT will be permanently deleted, meaning, it can no longer be owned, transferred, purchased, or sold. This action can not be undone."
+    },
+    "set-account": {
+      "domain": "Domain",
+      "enter-domain": "Enter domain"
     }
   },
   "footer": {

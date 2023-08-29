@@ -71,7 +71,7 @@ export default function Validators() {
   }, []);
 
   return <>
-    <SEO title={t("menu.validators")} />
+    <SEO title={t("menu.xrpl.validators")} />
     <div className="content-text">
       {data?.validators?.length ?
         <>

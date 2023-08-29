@@ -303,7 +303,6 @@ export default function SignForm({ setSignRequest, setAccount, signRequest }) {
       setAgreedToRisks(true)
     } else {
       setAgreedToRisks(false)
-      setStatus(t("signin.set-account.statuses.invalid-domain"))
     }
   }
 
@@ -333,7 +332,7 @@ export default function SignForm({ setSignRequest, setAccount, signRequest }) {
                   t("signin.confirm.nft-create-buy-offer-header")
                 )
               }
-              {screen === 'setDomain' && t("signin.confirm.setDomain")}
+              {screen === 'setDomain' && t("signin.confirm.set-domain")}
             </div>
 
             {screen === 'NFTokenCreateOffer' &&
@@ -364,7 +363,7 @@ export default function SignForm({ setSignRequest, setAccount, signRequest }) {
               <div className='center'>
                 <br />
                 <span className='halv'>
-                  <span className='input-title'>{t("signin.set-account.set-domain")}</span>
+                  <span className='input-title'>{t("signin.set-account.domain")}</span>
                   <input
                     placeholder={t("signin.set-account.enter-domain")}
                     onChange={onDomainChange}

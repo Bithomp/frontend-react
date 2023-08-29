@@ -15,10 +15,7 @@
     "price-alerts": "Upozorenja na promjenu XRP cijene",
     "submit-offline-tx": "Pošalji offline transakciju",
     "networks": "Mreže",
-    "domains": "Domene",
     "ledger": "Ledger transakcije",
-    "last-ledger-information": "Zadnje ledger informacije",
-    "last-ledger-transactions": "Zadnje ledger transakcije",
     "nft": {
       "explorer": "Istraži",
       "volumes": "Volumeni",
@@ -29,6 +26,14 @@
       "nfts": "NFTovi računa",
       "offers": "Ponude"
     },
+    "xrpl": {
+      "last-ledger-information": "Zadnje ledger informacije",
+      "last-ledger-transactions": "Zadnje ledger transakcije",
+      "verified-domains": "Verified domains",
+      "validators": "Validatori",
+      "amendments": "Amandmani",
+      "genesis": "Izvorni (genesis) računi"
+    },
     "developers": {
       "developers": "Developers",
       "account-generation": "Generiranje računa",
@@ -36,9 +41,6 @@
       "api": "API documentation",
       "api-key-request": "API ključ"
     },
-    "validators": "Validatori",
-    "amendments": "Amandmani",
-    "genesis": "Izvorni (genesis) računi",
     "legal": "Legal",
     "disclaimer": "Izjava o odricanju",
     "privacy-policy": "Privatnost podataka",
@@ -103,6 +105,7 @@
     },
     "not-available": "Nije dostupno",
     "confirm": {
+      "set-domain": "Setting a domain",
       "nft-accept-offer-header": "NFT kupnja",
       "nft-create-sell-offer-header": "Lista za prodaju",
       "nft-create-buy-offer-header": "Kreiraj ponudu za kupnju",
@@ -110,6 +113,10 @@
       "nft-create-sell-offer": "Razumijem da jednom kad je moja ponuda potpisana, NFT prodaja može biti trenutačna.",
       "nft-burn-header": "NFT burning",
       "nft-burn": "I understand that NFT will be permanently deleted, meaning, it can no longer be owned, transferred, purchased, or sold. This action can not be undone."
+    },
+    "set-account": {
+      "domain": "Domain",
+      "enter-domain": "Enter domain"
     }
   },
   "footer": {
