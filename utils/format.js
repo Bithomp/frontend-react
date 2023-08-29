@@ -1,6 +1,7 @@
 import { Buffer } from 'buffer'
 import Link from 'next/link'
 import Image from 'next/image'
+import React from "react"
 
 import LinkIcon from "../public/images/link.svg"
 import { stripText } from '.'
@@ -84,12 +85,12 @@ export const trWithFlags = (t, flags) => {
   </tr>
 }
 
-export const trWithAccount = (data, valueName, tableName, url = "/explorer/") => {
+export const trWithAccount = (data, valueName, tableName, url = "/explorer/", i = 0) => {
   if (!data || !data[valueName]) return null;
   let link = <a href={url + data[valueName]}>{data[valueName]}</a>;
   let userOrServicelink = userOrServiceLink(data, valueName, { url });
   return userOrServicelink ?
-    <>
+    <React.Fragment key={i}>
       <tr>
         <td>{tableName}</td>
         <td>{userOrServicelink}</td>
@@ -98,9 +99,9 @@ export const trWithAccount = (data, valueName, tableName, url = "/explorer/") =>
         <td></td>
         <td>{link}</td>
       </tr>
-    </>
+    </React.Fragment>
     :
-    <tr>
+    <tr key={i}>
       <td>{tableName}</td>
       <td>{link}</td>
     </tr>

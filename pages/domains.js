@@ -86,15 +86,13 @@ export default function Domains() {
             </thead>
             <tbody>
               {data?.map((d, i) =>
-                <tr key={i}>
+                <tr key={i} style={{ borderBottom: "1px solid var(--accent-link)" }}>
                   <td><a href={"https://" + d.domain}>{d.domain}</a></td>
                   <td>
                     <table>
                       <tbody>
                         {d.addresses.map((a, j) =>
-                          <tr key={j}>
-                            {trWithAccount(a, 'address', (d.addresses.length > 1 ? (j + 1) + ". " : "---"), "/explorer/")}
-                          </tr>
+                          trWithAccount(a, 'address', (d.addresses.length > 1 ? (j + 1) + ". " : <>&nbsp;&nbsp;&nbsp;</>), "/explorer/", j)
                         )}
                       </tbody>
                     </table>
