@@ -65,8 +65,8 @@ import SearchBlock from '../../components/Layout/SearchBlock'
 import CopyButton from '../../components/UI/CopyButton'
 import NftPreview from '../../components/NftPreview'
 
-import LinkIcon from "../../public/images/link.svg";
-const xummImg = "/images/xumm.png";
+import LinkIcon from "../../public/images/link.svg"
+const xummImg = "/images/xumm.png"
 
 export default function Nft({ setSignRequest, account, signRequest, pageMeta, id, selectedCurrency, sortCurrency }) {
   const { t } = useTranslation()

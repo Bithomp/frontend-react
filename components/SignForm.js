@@ -6,7 +6,7 @@ import axios from 'axios'
 import Image from 'next/image'
 
 import { useIsMobile } from "../utils/mobile"
-import { server, devNet, typeNumberOnly, delay } from '../utils'
+import { server, devNet, typeNumberOnly, delay, isDomainValid, encode } from '../utils'
 import { capitalize } from '../utils/format'
 import { payloadXummPost, xummWsConnect, xummCancel, xummGetSignedData } from '../utils/xumm'
 
@@ -24,15 +24,15 @@ export default function SignForm({ setSignRequest, setAccount, signRequest }) {
   const router = useRouter()
   const isMobile = useIsMobile()
 
-  const [screen, setScreen] = useState("choose-app");
-  const [status, setStatus] = useState(t("signin.xumm.statuses.wait"));
-  const [showXummQr, setShowXummQr] = useState(false);
-  const [xummQrSrc, setXummQrSrc] = useState(qr);
-  const [xummUuid, setXummUuid] = useState(null);
-  const [expiredQr, setExpiredQr] = useState(false);
-  const [agreedToRisks, setAgreedToRisks] = useState(false);
+  const [screen, setScreen] = useState("choose-app")
+  const [status, setStatus] = useState(t("signin.xumm.statuses.wait"))
+  const [showXummQr, setShowXummQr] = useState(false)
+  const [xummQrSrc, setXummQrSrc] = useState(qr)
+  const [xummUuid, setXummUuid] = useState(null)
+  const [expiredQr, setExpiredQr] = useState(false)
+  const [agreedToRisks, setAgreedToRisks] = useState(false)
 
-  const xummUserToken = localStorage.getItem('xummUserToken');
+  const xummUserToken = localStorage.getItem('xummUserToken')
 
   useEffect(() => {
     //deeplink doesnt work on mobiles when it's not in the onClick event
@@ -44,12 +44,12 @@ export default function SignForm({ setSignRequest, setAccount, signRequest }) {
 
   const saveAddressData = async (address) => {
     //&service=true&verifiedDomain=true&blacklist=true&payString=true&twitterImageUrl=true&nickname=true
-    const response = await axios("v2/address/" + address + '?username=true&hashicon=true');
+    const response = await axios("v2/address/" + address + '?username=true&hashicon=true')
     if (response.data) {
       const { hashicon, username } = response.data;
-      setAccount({ address, hashicon, username });
+      setAccount({ address, hashicon, username })
     } else {
-      setAccount(null);
+      setAccount(null)
     }
   }
 
@@ -72,6 +72,11 @@ export default function SignForm({ setSignRequest, setAccount, signRequest }) {
 
     if (tx.TransactionType === "NFTokenBurn" && !agreedToRisks) {
       setScreen("NFTokenBurn")
+      return
+    }
+
+    if (signRequest.action === 'setDomain' && !agreedToRisks) {
+      setScreen("setDomain")
       return
     }
 
@@ -189,8 +194,11 @@ export default function SignForm({ setSignRequest, setAccount, signRequest }) {
     //if redirect 
     if (data.response?.account) {
       saveAddressData(data.response.account)
-      if (data.custom_meta?.blob?.redirect === "nfts") {
+      const redirectName = data.custom_meta?.blob?.redirect
+      if (redirectName === "nfts") {
         window.location.href = server + "/nfts/" + data.response.account
+      } else if (redirectName === "account") {
+        window.location.href = server + "/explorer/" + data.response.account
       }
     }
 
@@ -277,10 +285,26 @@ export default function SignForm({ setSignRequest, setAccount, signRequest }) {
     margin: "0 10px"
   }
 
-  const onAmountChange = (e) => {
+  const onAmountChange = e => {
     let newRequest = signRequest
     newRequest.request.Amount = (e.target.value * 1000000).toString()
     setSignRequest(newRequest)
+  }
+
+  const onDomainChange = e => {
+    setStatus("")
+    let newRequest = signRequest
+    let domain = e.target.value
+    domain = domain.trim()
+    domain = String(domain).toLowerCase()
+    if (isDomainValid(domain)) {
+      newRequest.request.Domain = encode(domain)
+      setSignRequest(newRequest)
+      setAgreedToRisks(true)
+    } else {
+      setAgreedToRisks(false)
+      setStatus(t("signin.set-account.statuses.invalid-domain"))
+    }
   }
 
   const onExpirationChange = (daysCount) => {
@@ -297,7 +321,7 @@ export default function SignForm({ setSignRequest, setAccount, signRequest }) {
     <div className="sign-in-form">
       <div className="sign-in-body center">
         <div className='close-button' onClick={SignInCancelAndClose}></div>
-        {(screen === 'NFTokenAcceptOffer' || screen === 'NFTokenCreateOffer' || screen === 'NFTokenBurn') ?
+        {(screen === 'NFTokenAcceptOffer' || screen === 'NFTokenCreateOffer' || screen === 'NFTokenBurn' || screen === 'setDomain') ?
           <>
             <div className='header'>
               {screen === 'NFTokenBurn' && t("signin.confirm.nft-burn-header")}
@@ -309,6 +333,7 @@ export default function SignForm({ setSignRequest, setAccount, signRequest }) {
                   t("signin.confirm.nft-create-buy-offer-header")
                 )
               }
+              {screen === 'setDomain' && t("signin.confirm.setDomain")}
             </div>
 
             {screen === 'NFTokenCreateOffer' &&
@@ -335,24 +360,42 @@ export default function SignForm({ setSignRequest, setAccount, signRequest }) {
               </div>
             }
 
-            <div className='terms-checkbox'>
-              <CheckBox checked={agreedToRisks} setChecked={setAgreedToRisks} >
-                {screen === 'NFTokenBurn' ?
-                  t("signin.confirm.nft-burn")
-                  :
-                  <>
-                    {screen === 'NFTokenCreateOffer' && signRequest.request.Flags === 1 ?
-                      t("signin.confirm.nft-create-sell-offer")
-                      :
-                      <Trans i18nKey="signin.confirm.nft-accept-offer">
-                        I admit that Bithomp gives me access to a decentralised marketplace, and it cannot verify or guarantee the authenticity and legitimacy of any NFTs.
-                        I confirm that I've read the <Link href="/terms-and-conditions" target="_blank">Terms and conditions</Link>, and I agree with all the terms to buy, sell or use any NFTs on Bithomp.
-                      </Trans>
-                    }
-                  </>
-                }
-              </CheckBox>
-            </div>
+            {screen === 'setDomain' &&
+              <div className='center'>
+                <br />
+                <span className='halv'>
+                  <span className='input-title'>{t("signin.set-account.set-domain")}</span>
+                  <input
+                    placeholder={t("signin.set-account.enter-domain")}
+                    onChange={onDomainChange}
+                    className="input-text"
+                    spellCheck="false"
+                  />
+                </span>
+              </div>
+            }
+
+            {screen !== 'setDomain' &&
+              <div className='terms-checkbox'>
+                <CheckBox checked={agreedToRisks} setChecked={setAgreedToRisks} >
+                  {screen === 'NFTokenBurn' ?
+                    t("signin.confirm.nft-burn")
+                    :
+                    <>
+                      {screen === 'NFTokenCreateOffer' && signRequest.request.Flags === 1 ?
+                        t("signin.confirm.nft-create-sell-offer")
+                        :
+                        <Trans i18nKey="signin.confirm.nft-accept-offer">
+                          I admit that Bithomp gives me access to a decentralised marketplace, and it cannot verify or guarantee the authenticity and legitimacy of any NFTs.
+                          I confirm that I've read the <Link href="/terms-and-conditions" target="_blank">Terms and conditions</Link>, and I agree with all the terms to buy, sell or use any NFTs on Bithomp.
+                        </Trans>
+                      }
+                    </>
+                  }
+                </CheckBox>
+              </div>
+            }
+
             <br />
             <button type="button" className="button-action" onClick={SignInCancelAndClose} style={buttonStyle}>
               {t("button.cancel")}
@@ -402,7 +445,7 @@ export default function SignForm({ setSignRequest, setAccount, signRequest }) {
                     {showXummQr ?
                       <XummQr expiredQr={expiredQr} xummQrSrc={xummQrSrc} onReset={XummTxSend} status={status} />
                       :
-                      <div className="orange bold center">{status}</div>
+                      <div className="orange bold center" style={{ margin: "20px" }}>{status}</div>
                     }
                   </>
                   :

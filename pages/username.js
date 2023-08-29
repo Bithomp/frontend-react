@@ -3,11 +3,19 @@ import { useTranslation, Trans } from 'next-i18next'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import axios from 'axios'
-import { Buffer } from 'buffer'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { getIsSsrMobile } from "../utils/mobile"
 
-import { isAddressValid, isUsernameValid, server, wssServer, devNet, addAndRemoveQueryParams, addQueryParams } from '../utils'
+import { 
+  isAddressValid, 
+  isUsernameValid, 
+  server, 
+  wssServer, 
+  devNet, 
+  addAndRemoveQueryParams, 
+  addQueryParams,
+  encode
+ } from '../utils'
 
 export const getServerSideProps = async (context) => {
   const { query, locale } = context
@@ -307,7 +315,7 @@ export default function Username({ setSignRequest, account, signOut, addressQuer
               Memos: [
                 {
                   "Memo": {
-                    "MemoData": Buffer.from(t("username.memo") + ": " + data.bithompid).toString('hex').toUpperCase()
+                    "MemoData": encode(t("username.memo") + ": " + data.bithompid)
                   }
                 }
               ]

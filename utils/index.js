@@ -251,12 +251,16 @@ export const typeNumberOnly = e => {
   }
 }
 
-export const decode = (code) => {
+export const decode = code => {
   if (!code) return null
   const decodedHex = Buffer.from(code, 'hex')
   const decodedString = decodedHex.toString()
   if (!decodedString.includes('�')) return stripText(decodedString)
   return stripText(code)
+}
+
+export const encode = code => {
+  return Buffer.from(code).toString('hex').toUpperCase()
 }
 
 //not in use yet
@@ -318,8 +322,13 @@ export const isUrlValid = x => {
     '((\\d{1,3}\\.){3}\\d{1,3}))' + // OR ip (v4) address
     '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + // port and path
     '(\\?[;&a-z\\d%_.~+=-]*)?' + // query string
-    '(\\#[-a-z\\d_]*)?$', 'i'); // fragment locator
+    '(\\#[-a-z\\d_]*)?$', 'i') // fragment locator
   return !!re.test(x)
+}
+
+export const isDomainValid = x => {
+  var re = /^((?:(?:(?:\w[\.\-\+]?)*)\w)+)((?:(?:(?:\w[\.\-\+]?){0,62})\w)+)\.(\w{2,6})$/
+  return re.test(x)
 }
 
 export const isAddressValid = x => {
