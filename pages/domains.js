@@ -4,6 +4,7 @@ import axios from 'axios'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 import { trWithAccount } from '../utils/format'
+import { useWidth } from '../utils'
 
 import SEO from '../components/SEO'
 
@@ -17,6 +18,7 @@ export async function getStaticProps({ locale }) {
 
 export default function Domains() {
   const { t } = useTranslation()
+  const windowWidth = useWidth()
 
   const [data, setData] = useState(null)
   const [sortConfig, setSortConfig] = useState({})
@@ -77,31 +79,61 @@ export default function Domains() {
       {data ?
         <>
           <h1 className="center">{t("menu.domains")}</h1>
-          <table className="table-large">
-            <thead>
-              <tr>
-                <th>{t("table.domain", { ns: 'domains' })} <b className={"link" + (sortConfig.key === 'domain' ? " orange" : "")} onClick={() => sortTable('domain')}>⇅</b></th>
-                <th className='center'>{t("table.addresses", { ns: 'domains' })}</th>
-              </tr>
-            </thead>
-            <tbody>
-              {data?.map((d, i) =>
-                <tr key={i} style={{ borderBottom: "1px solid var(--accent-link)" }}>
-                  <td><a href={"https://" + d.domain}>{d.domain}</a></td>
-                  <td>
-                    <table>
-                      <tbody>
-                        {d.addresses.map((a, j) =>
-                          trWithAccount(a, 'address', (d.addresses.length > 1 ? (j + 1) + ". " : <>&nbsp;&nbsp;&nbsp;</>), "/explorer/", j)
-                        )}
-                      </tbody>
-                    </table>
-                  </td>
+          {windowWidth > 1000 ?
+            <table className="table-large shrink">
+              <thead>
+                <tr>
+                  <th>{t("table.domain", { ns: 'domains' })} <b className={"link" + (sortConfig.key === 'domain' ? " orange" : "")} onClick={() => sortTable('domain')}>⇅</b></th>
+                  <th className='center'>{t("table.addresses", { ns: 'domains' })}</th>
                 </tr>
-              )}
-            </tbody>
-          </table>
-        </> : ""
+              </thead>
+              <tbody>
+                {data?.map((d, i) =>
+                  <tr key={i} style={{ borderBottom: "1px solid var(--accent-link)" }}>
+                    <td><a href={"https://" + d.domain}>{d.domain}</a></td>
+                    <td>
+                      <table>
+                        <tbody>
+                          {d.addresses.map((a, j) =>
+                            trWithAccount(a, 'address', (d.addresses.length > 1 ? (j + 1) + ". " : <>&nbsp;&nbsp;&nbsp;</>), "/explorer/", j)
+                          )}
+                        </tbody>
+                      </table>
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+            :
+            <table className="table-mobile">
+              <thead>
+              </thead>
+              <tbody>
+                {data?.map((d, i) =>
+                  <tr key={i}>
+                    <td style={{ padding: "5px" }} className='center'>
+                      <b>{i + 1}</b>
+                    </td>
+                    <td>
+                      <p>
+                        <a href={"https://" + d.domain}>{d.domain}</a>
+                      </p>
+                      <table className='table-mobile' style={{ width: "calc(100% - 22px)", margin: "10px 0" }}>
+                        <tbody>
+                          {d.addresses.map((a, j) =>
+                            trWithAccount(a, 'address', (d.addresses.length > 1 ? (j + 1) + ". " : <>&nbsp;&nbsp;&nbsp;</>), "/explorer/", j)
+                          )}
+                        </tbody>
+                      </table>
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          }
+        </>
+        :
+        ""
       }
     </div>
   </>
