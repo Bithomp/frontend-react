@@ -1,4 +1,5 @@
 import Head from 'next/head'
+import Script from 'next/script'
 import { useRouter } from 'next/router'
 import { useState } from "react"
 import axios from 'axios'
@@ -50,6 +51,19 @@ const MyApp = ({ Component, pageProps }) => {
       <IsSsrMobileContext.Provider value={pageProps.isSsrMobile}>
         <ThemeProvider>
           <div className="body" data-network={network}>
+            {process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID &&
+              <>
+                <Script src={"https://www.googletagmanager.com/gtag/js?id=" + process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID} />
+                <Script id="google-analytics">
+                  {`
+                    window.dataLayer = window.dataLayer || [];
+                    function gtag(){dataLayer.push(arguments);}
+                    gtag('js', new Date());
+                    gtag('config', "` + process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID + '");'
+                  }
+                </Script>
+              </>
+            }
             <Header
               setSignRequest={setSignRequest}
               account={account}
