@@ -23,7 +23,7 @@ export default function PrivacyPolicy() {
       />
       <div className="content-text">
         <h1>Privacy Policy</h1>
-        <p>Last updated: April 5, 2023</p>
+        <p>Last updated: August 30, 2023</p>
         <p>This Privacy Policy describes Our policies and procedures on the collection, use and disclosure of Your information when You use the Service and tells You about Your privacy rights and how the law protects You.</p>
         <p>We use Your Personal data to provide and improve the Service. By using the Service, You agree to the collection and use of information in accordance with this Privacy Policy.</p>
         <h1>Interpretation and Definitions</h1>
@@ -122,6 +122,24 @@ export default function PrivacyPolicy() {
             <p>Purpose: These Cookies allow us to remember choices You make when You use the Website, such as remembering your login details or language preference. The purpose of these Cookies is to provide You with a more personal experience and to avoid You having to re-enter your preferences every time You use the Website.</p>
           </li>
         </ul>
+
+        <h3>Processing of Personal Data</h3>
+        <p>Personal Data is also collected for the following purposes and using the following services:</p>
+        <h4>Tag Management</h4>
+        <p>
+          This type of service helps the Owner to manage the tags or scripts needed on this Application in a centralized
+          fashion.
+          <br />
+          This results in the Users' Data flowing through these services, potentially resulting in the retention of this
+          Data.
+        </p>
+        <h4>Google Tag Manager</h4>
+        <p>
+          Google Tag Manager is a tag management service provided by Google LLC or by Google Ireland Limited,
+          depending on how the Owner manages the Data processing.
+          Personal Data processed: Trackers; Usage Data.
+          Place of processing: United States – <a href="https://policies.google.com/privacy">Privacy Policy</a>; Ireland – <a href="https://policies.google.com/privacy">Privacy Policy</a>.
+        </p>
         <h3>Cookies and Local storage in use</h3>
         <h4>Third party Cookies</h4>
         <ul>
@@ -131,6 +149,8 @@ export default function PrivacyPolicy() {
         <ul>
           <li><strong>NEXT_LOCALE</strong> - the prefered Service language (ex: "en").</li>
           <li><strong>theme</strong> - the prefered theme of the Service (ex: "light").</li>
+          <li><strong>_ga</strong> - the main cookie used by Google Analytics, enables a service to distinguish one visitor from another and lasts for 2 years.</li>
+          <li><strong>_ga_*</strong> - A unique _ga cookie for the property.</li>
         </ul>
         <h4>Local storage</h4>
         <ul>
