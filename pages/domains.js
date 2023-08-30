@@ -23,6 +23,7 @@ export default function Domains({ setSignRequest }) {
 
   const [data, setData] = useState(null)
   const [sortConfig, setSortConfig] = useState({})
+  const [loading, setLoading] = useState(false)
 
   const sortTable = key => {
     if (!data) return
@@ -42,12 +43,14 @@ export default function Domains({ setSignRequest }) {
   }
 
   const checkApi = async () => {
+    setLoading(true)
     const response = await axios('xrpl/domains')
     const data = response.data
     if (data?.domains) {
       setData(data.domains.sort(function (a, b) {
         return a.domain < b.domain ? -1 : 1
       }))
+      setLoading(false)
     }
   }
 
@@ -77,77 +80,86 @@ export default function Domains({ setSignRequest }) {
   return <>
     <SEO title={t("menu.xrpl.verified-domains")} />
     <div className="content-text">
-      {data ?
-        <>
-          <h1 className="center">{t("menu.xrpl.verified-domains")}</h1>
-          <div className='flex'>
-            <div className="grey-box">
-              <p>
-                {t("domain-verification-desc", { ns: 'domains' })}
-              </p>
-              <p>
-                {t("reason-to-verify", { ns: 'domains' })}
-              </p>
-              <p>
-                {t("two-sides-verification", { ns: 'domains' })}
-              </p>
-              <p>
-                {t("desc", { ns: 'domains' })}
-              </p>
-            </div>
-            <div className="grey-box">
-              <h4>
-                {t("domain-claims-address", { ns: 'domains' })}
-              </h4>
-              <p>
-                {t("serve-toml", { ns: 'domains' })}
-                <br />
-                {"https://{DOMAIN}/.well-known/xrp-ledger.toml"}
-                <br />
-                {t("address-in-toml", { ns: 'domains' })}
-              </p>
-              <p>
-                <a href="https://xrpl.org/xrp-ledger-toml.html">
-                  {t("read-about-toml", { ns: 'domains' })}
-                </a>.
-              </p>
-              <h4>
-                {t("address-claims-domain", { ns: 'domains' })}
-              </h4>
-              <p>
-                <Trans i18nKey="set-domain" ns="domains">
-                  You should <a href="https://xrpl.org/accountset.html">set a domain for your XRPL address</a> which should match the domain your TOML file is served from.
-                </Trans>
-                <br /><br />
-                <button
-                  className='button-action center'
-                  onClick={() => setSignRequest({
-                    wallet: "xumm",
-                    action: "setDomain",
-                    redirect: "account",
-                    request: {
-                      "TransactionType": "AccountSet"
-                    }
-                  })}
-                >
-                  <Image src="/images/xumm.png" className='xumm-logo' alt="xumm" height={24} width={24} />
-                  {t("button.set-domain", { ns: 'domains' })}
-                </button>
-              </p>
-            </div>
-          </div>
-          <br />
 
-          {windowWidth > 1000 ?
-            <table className="table-large shrink">
-              <thead>
-                <tr>
-                  <th>{t("table.index")}</th>
-                  <th>{t("table.domain", { ns: 'domains' })} <b className={"link" + (sortConfig.key === 'domain' ? " orange" : "")} onClick={() => sortTable('domain')}>⇅</b></th>
-                  <th className='center'>{t("table.addresses", { ns: 'domains' })}</th>
-                </tr>
-              </thead>
-              <tbody>
+      <h1 className="center">{t("menu.xrpl.verified-domains")}</h1>
+      <div className='flex'>
+        <div className="grey-box">
+          <p>
+            {t("domain-verification-desc", { ns: 'domains' })}
+          </p>
+          <p>
+            {t("reason-to-verify", { ns: 'domains' })}
+          </p>
+          <p>
+            {t("two-sides-verification", { ns: 'domains' })}
+          </p>
+          <p>
+            {t("desc", { ns: 'domains' })}
+          </p>
+        </div>
+        <div className="grey-box">
+          <h4>
+            {t("domain-claims-address", { ns: 'domains' })}
+          </h4>
+          <p>
+            {t("serve-toml", { ns: 'domains' })}
+            <br />
+            {"https://{DOMAIN}/.well-known/xrp-ledger.toml"}
+            <br />
+            {t("address-in-toml", { ns: 'domains' })}
+          </p>
+          <p>
+            <a href="https://xrpl.org/xrp-ledger-toml.html">
+              {t("read-about-toml", { ns: 'domains' })}
+            </a>.
+          </p>
+          <h4>
+            {t("address-claims-domain", { ns: 'domains' })}
+          </h4>
+          <p>
+            <Trans i18nKey="set-domain" ns="domains">
+              You should <a href="https://xrpl.org/accountset.html">set a domain for your XRPL address</a> which should match the domain your TOML file is served from.
+            </Trans>
+            <br /><br />
+            <button
+              className='button-action center'
+              onClick={() => setSignRequest({
+                wallet: "xumm",
+                action: "setDomain",
+                redirect: "account",
+                request: {
+                  "TransactionType": "AccountSet"
+                }
+              })}
+            >
+              <Image src="/images/xumm.png" className='xumm-logo' alt="xumm" height={24} width={24} />
+              {t("button.set-domain", { ns: 'domains' })}
+            </button>
+          </p>
+        </div>
+      </div>
+      <br />
+      {windowWidth > 1000 ?
+        <table className="table-large shrink">
+          <thead>
+            <tr>
+              <th>{t("table.index")}</th>
+              <th>{t("table.domain", { ns: 'domains' })} <b className={"link" + (sortConfig.key === 'domain' ? " orange" : "")} onClick={() => sortTable('domain')}>⇅</b></th>
+              <th className='center'>{t("table.addresses", { ns: 'domains' })}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {loading ?
+              <tr className='center'>
+                <td colSpan="100">
+                  <br />
+                  <span className="waiting"></span>
+                  <br />{t("general.loading")}<br />
+                  <br />
+                </td>
+              </tr>
+              :
+              <>
                 {data?.map((d, i) =>
                   <tr key={i} style={{ borderBottom: "1px solid var(--accent-link)" }}>
                     <td>{i + 1}</td>
@@ -163,13 +175,26 @@ export default function Domains({ setSignRequest }) {
                     </td>
                   </tr>
                 )}
-              </tbody>
-            </table>
-            :
-            <table className="table-mobile">
-              <thead>
-              </thead>
-              <tbody>
+              </>
+            }
+          </tbody>
+        </table>
+        :
+        <table className="table-mobile">
+          <thead>
+          </thead>
+          <tbody>
+            {loading ?
+              <tr className='center'>
+                <td colSpan="100">
+                  <br />
+                  <span className="waiting"></span>
+                  <br />{t("general.loading")}<br />
+                  <br />
+                </td>
+              </tr>
+              :
+              <>
                 {data?.map((d, i) =>
                   <tr key={i}>
                     <td style={{ padding: "5px" }} className='center'>
@@ -189,12 +214,10 @@ export default function Domains({ setSignRequest }) {
                     </td>
                   </tr>
                 )}
-              </tbody>
-            </table>
-          }
-        </>
-        :
-        ""
+              </>
+            }
+          </tbody>
+        </table>
       }
     </div>
   </>

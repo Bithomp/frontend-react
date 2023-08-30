@@ -10,7 +10,7 @@
   "address-claims-domain": "The domain should be claimed by the address.",
   "set-domain": "You should <1>set a domain for your XRPL address</1> which should match the domain your TOML file is served from.",
   "button": {
-    "set-domain": "Set a domain for your XRPL account"
+    "set-domain": "Set a domain"
   },
   "table": {
     "domain": "Domain",
