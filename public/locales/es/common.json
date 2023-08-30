@@ -29,7 +29,7 @@
     "xrpl": {
       "last-ledger-information": "Información del último libro contable",
       "last-ledger-transactions": "Transacciones del último libro contable",
-      "verified-domains": "Verified domains",
+      "verified-domains": "Dominios verificados",
       "validators": "Validadores",
       "amendments": "Enmiendas",
       "genesis": "Cuentas iniciales"
@@ -115,8 +115,8 @@
       "nft-burn": "Entiendo que el NFT será eliminado permanéntemente, queriendo decir que no podrá ser poseido,trasnsferido, comprado o vendido. Esta acción es irreversible."
     },
     "set-account": {
-      "domain": "Domain",
-      "enter-domain": "Enter domain"
+      "domain": "Dominio",
+      "enter-domain": "Introduce un dominio"
     }
   },
   "footer": {
@@ -379,7 +379,7 @@
     "currencyIssuer username is not found or invalid": "Divisa del nombre de usuario del emisor inválida",
     "currencyIssuer is invalid": "Divisa de la cuenta del emisor inválida.",
     "Token information is not found": "No pudimos encontrar ninguna información para este ID",
-    "No nfts information is found": "Sorry, an error occured, please to search for somethig else."
+    "No nfts information is found": "Lo senstimos, ha ocurrido un error, por favor, busca algo más."
   },
   "units": {
     "seconds-short": "s",
@@ -466,8 +466,8 @@
     "marketplace": "Mercado",
     "text": {
       "show-extended-statistics": "Mostrar estadísticas ampliadas",
-      "include-without-metadata": "Include NFTs without metadata",
-      "include-burned-nfts": "Include burned NFTs",
+      "include-without-metadata": "Incluir NFTs sin metadata",
+      "include-burned-nfts": "Incluir NFTs quemados",
       "no-expiration": "Sin fecha de caducidad",
       "no-offers": "Ofertas no encontradas",
       "unspecified": "no especificado",
