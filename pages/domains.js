@@ -84,6 +84,9 @@ export default function Domains({ setSignRequest }) {
       <h1 className="center">{t("menu.xrpl.verified-domains")}</h1>
       <div className='flex'>
         <div className="grey-box">
+          <h4>
+            {t("domain-verification", { ns: 'domains' })}
+          </h4>
           <p>
             {t("domain-verification-desc", { ns: 'domains' })}
           </p>
@@ -93,11 +96,6 @@ export default function Domains({ setSignRequest }) {
           <p>
             {t("two-sides-verification", { ns: 'domains' })}
           </p>
-          <p>
-            {t("desc", { ns: 'domains' })}
-          </p>
-        </div>
-        <div className="grey-box">
           <h4>
             {t("domain-claims-address", { ns: 'domains' })}
           </h4>
@@ -113,6 +111,11 @@ export default function Domains({ setSignRequest }) {
               {t("read-about-toml", { ns: 'domains' })}
             </a>.
           </p>
+          <p>
+            <a href="https://dallipay.com/xrpltomleditor/">TOML editor</a> by <a href="https://twitter.com/SchlaubiD">SchlaubiD</a>.
+          </p>
+        </div>
+        <div className="grey-box">
           <h4>
             {t("address-claims-domain", { ns: 'domains' })}
           </h4>
@@ -135,6 +138,18 @@ export default function Domains({ setSignRequest }) {
               <Image src="/images/xumm.png" className='xumm-logo' alt="xumm" height={24} width={24} />
               {t("button.set-domain", { ns: 'domains' })}
             </button>
+          </p>
+          <h4>
+            {t("verify", { ns: 'domains' })}
+          </h4>
+          <p>
+            <Trans i18nKey="verify-desc" ns="domains">
+              You can verify that everything is set properly with the tool: <a href="https://xrpl.org/xrp-ledger-toml-checker.html">TOML Checker</a>. The list on this page updates from 3am to 4am (Stockholm time), if you domain is verifed in the Checker tool, but it is not on our list within 24h, then it's possible that we can not parse your TOML file.
+            </Trans>
+          </p>
+          <br />
+          <p>
+            {t("desc", { ns: 'domains' })}
           </p>
         </div>
       </div>
