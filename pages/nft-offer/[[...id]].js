@@ -299,10 +299,10 @@ export default function NftOffer({ setSignRequest, signRequest, account, id }) {
                       </tbody>
                     </table>
                     <p>
-                      <Link href={"/nft-offers/" + data.account}>{t("links.active-offers-same-account")}</Link>
+                      <a href={"/nft-offers/" + data.account}>{t("links.active-offers-same-account")}</a>
                     </p>
                     <p>
-                      <Link href={"/nfts/" + data.account}>{t("links.owned-nfts-same-account")}</Link>
+                      <a href={"/nfts/" + data.account}>{t("links.owned-nfts-same-account")}</a>
                     </p>
                     <p>
                       {t("links.nfts-same-issuer")}: <Link href={"/nft-explorer?issuer=" + data.nftoken.issuer}>{t("links.all")}</Link>, <Link href={"/nft-sales?issuer=" + data.nftoken.issuer}>{t("links.sold")}</Link>
