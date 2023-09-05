@@ -373,6 +373,7 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
             <td>{nftOfferLink(offer.offerIndex)}</td>
           </tr>
           {
+            !offer.canceledAt &&
             (
               (account?.address && offer.owner && account.address === offer.owner)
               || offer.validationErrors?.includes('Offer is expired')
