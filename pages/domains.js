@@ -47,9 +47,7 @@ export default function Domains({ setSignRequest }) {
     const response = await axios('xrpl/domains')
     const data = response.data
     if (data?.domains) {
-      setData(data.domains.sort(function (a, b) {
-        return a.domain < b.domain ? -1 : 1
-      }))
+      setData(data.domains.reverse())
       setLoading(false)
     }
   }
@@ -178,7 +176,9 @@ export default function Domains({ setSignRequest }) {
                 {data?.map((d, i) =>
                   <tr key={i} style={{ borderBottom: "1px solid var(--accent-link)" }}>
                     <td>{i + 1}</td>
-                    <td><a href={"https://" + d.domain}>{d.domain}</a></td>
+                    <td>
+                      <a href={"https://" + d.domain}>{d.domain}</a>
+                    </td>
                     <td>
                       <table>
                         <tbody>
