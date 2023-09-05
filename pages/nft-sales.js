@@ -41,6 +41,7 @@ import Tabs from '../components/Tabs'
 import Tiles from '../components/Tiles'
 
 import LinkIcon from "../public/images/link.svg"
+import DownloadIcon from "../public/images/download.svg"
 
 export default function NftSales({
   view,
@@ -396,7 +397,7 @@ export default function NftSales({
             style={{ marginBottom: "15px" }}
             href="#"
           >
-            ⇩ CSV
+            <DownloadIcon /> CSV
           </CSVLink>
         }
       </div>

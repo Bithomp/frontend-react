@@ -17,6 +17,8 @@ import Tiles from './Tiles'
 import IssuerSelect from './UI/IssuerSelect'
 import CheckBox from './UI/CheckBox'
 
+import DownloadIcon from "../public/images/download.svg"
+
 export default function NftsComponent({
   view,
   list,
@@ -544,7 +546,7 @@ export default function NftsComponent({
             filename='nfts_export.csv'
             className={'button-action thin narrow' + (!(data && data.length > 0) ? ' disabled' : '')}
           >
-            ⇩ CSV
+            <DownloadIcon /> CSV
           </CSVLink>
         }
       </div>

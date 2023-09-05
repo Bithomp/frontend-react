@@ -13,6 +13,8 @@ import {
   userOrServiceLink
 } from '../../utils/format'
 
+import DownloadIcon from "../../public/images/download.svg"
+
 export async function getServerSideProps(context) {
   const { locale, query } = context
   const { taxon, issuer, id } = query
@@ -207,7 +209,7 @@ export default function NftDistribution({ issuerQuery, taxonQuery, idQuery }) {
             filename={'nft_destribution_' + data.issuer + '_UTC_' + (new Date().toJSON()) + '.csv'}
             className='button-action thin narrow'
           >
-            ⇩ CSV
+            <DownloadIcon/> CSV
           </CSVLink>
         </p>
       }
