@@ -39,7 +39,7 @@ export default function RichList() {
   const controller = new AbortController()
 
   const checkApi = async () => {
-    let apiUrl = 'v2/address/richlist'
+    let apiUrl = 'v2/addresses/richlist'
 
     setLoading(true)
     //setRawData({})
@@ -122,7 +122,6 @@ export default function RichList() {
               <tr>
                 <th className='center'>{t("table.index")}</th>
                 <th>{t("table.address")}</th>
-                <th className='right'>{t("table.service", { ns: "rich-list" })}</th>
                 <th className='right'>{t("table.balance")}</th>
               </tr>
             </thead>
@@ -150,9 +149,6 @@ export default function RichList() {
                                   {trWithAccount(r, 'address')}
                                 </tbody>
                               </table>
-                            </td>
-                            <td className='right'>
-                              {r.service}
                             </td>
                             <td className='right'>
                               {amountFormat(r.balance)}

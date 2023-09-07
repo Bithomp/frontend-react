@@ -1,8 +1,5 @@
 {
   "header": "XRPL Rich List",
   "desc": "Here you can find the TOP 100 accounts by XRP balance.",
-  "summary": "The page is under development.",
-  "table": {
-    "service": "Service"
-  }
+  "summary": "The page is under development."
 }
