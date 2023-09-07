@@ -401,6 +401,7 @@
     "amount": "Quantitat",
     "name": "Nom",
     "sender": "Remitent",
+    "balance": "Balanç",
     "memo": "Memo",
     "transaction": "Transacció",
     "owner": "Propietari",

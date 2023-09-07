@@ -401,6 +401,7 @@
     "amount": "Amount",
     "name": "Name",
     "sender": "Sender",
+    "balance": "Balance",
     "memo": "Memo",
     "transaction": "Transaction",
     "owner": "Owner",

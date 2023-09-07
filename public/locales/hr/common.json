@@ -401,6 +401,7 @@
     "amount": "Iznos",
     "name": "Ime",
     "sender": "Pošaljitelj",
+    "balance": "Stanje",
     "memo": "Memo",
     "transaction": "Transakcija",
     "owner": "Vlasnik",

@@ -401,6 +401,7 @@
     "amount": "Beløp",
     "name": "Navn",
     "sender": "Sender",
+    "balance": "Saldo",
     "memo": "Memo",
     "transaction": "Transaksjon",
     "owner": "Eier",

@@ -402,6 +402,7 @@
     "name": "Nombre",
     "sender": "Remitente",
     "memo": "Memo",
+    "balance": "Balance",
     "transaction": "Transacción",
     "owner": "Dueño",
     "owners-now": "Dueños (ahora)",

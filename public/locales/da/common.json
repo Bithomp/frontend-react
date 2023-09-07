@@ -401,6 +401,7 @@
     "amount": "Beløb",
     "name": "Navn",
     "sender": "Afsender",
+    "balance": "Saldo",
     "memo": "Memo",
     "transaction": "Transaktion",
     "owner": "Ejer",

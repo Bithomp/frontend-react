@@ -23,7 +23,7 @@ import {
   shortNiceNumber,
   persentFormat,
   niceNumber
-} from '../utils/format';
+} from '../utils/format'
 
 import LinkIcon from "../public/images/link.svg"
 
@@ -178,7 +178,7 @@ export default function NftMinters({ period }) {
       }
     />
     <div className="content-text">
-      <h1 className="center">{t("header", { ns: "nft-minters" }) + " "}</h1>
+      <h1 className="center">{t("header", { ns: "nft-minters" })}</h1>
       <div className='tabs-inline'>
         <Tabs tabList={periodTabList} tab={periodTab} setTab={setPeriodTab} name="period" />
       </div>
@@ -325,6 +325,6 @@ export default function NftMinters({ period }) {
             </tbody>
           </table>
       }
-    </div >
+    </div>
   </>
 }
