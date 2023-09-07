@@ -19,7 +19,8 @@ import SEO from '../components/SEO'
 import { useWidth } from '../utils'
 import {
   trWithAccount,
-  amountFormat
+  amountFormat,
+  userOrServiceLink
 } from '../utils/format'
 
 export default function RichList() {
@@ -190,11 +191,13 @@ export default function RichList() {
                       </td>
                       <td>
                         <p>
-                          {t("table.address")}: {r.address}
+                          {t("table.address")}: <a href={"/explorer/" + r.address}>{r.address}</a> {userOrServiceLink(r, 'address')}
                         </p>
-                        <p>
-                          {t("table.service", { ns: "rich-list" })}: {r.service}
-                        </p>
+                        {r.service &&
+                          <p>
+                            {t("table.service", { ns: "rich-list" })}: {r.service}
+                          </p>
+                        }
                         <p>
                           {t("table.balance")}: {amountFormat(r.balance)}
                         </p>
