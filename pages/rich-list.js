@@ -89,7 +89,6 @@ export default function RichList() {
 
   useEffect(() => {
     checkApi()
-    setSortConfig({})
     return () => {
       controller.abort()
     }
