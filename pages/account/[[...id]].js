@@ -74,24 +74,23 @@ export default function Nft({ signRequest, id, selectedCurrency, sortCurrency })
     }
 
     const response = await axios(
-      //?username=true&service=true&verifiedDomain=true&parent=true&hashicon=true&nickname=true&inception=true&flare=true&blacklist=true&payString=true&ledgerInfo=true&twitterImageUrl=true
-      '/v2/nft/' + id
-      + '?uri=true&metadata=true&history=true&sellOffers=true&buyOffers=true&offersValidate=true&offersHistory=true'
-      + noCache + '&convertCurrencies=' + convertCurrency
+      '/v2/address/' + id
+      + '?username=true&service=true&verifiedDomain=true&parent=true&hashicon=true&nickname=true&inception=true&flare=true&blacklist=true&payString=true&ledgerInfo=true&twitterImageUrl=true'
+      + noCache
     ).catch(error => {
       setErrorMessage(t("error." + error.message))
     })
     setLoading(false)
     let newdata = response?.data
     if (newdata) {
-      if (newdata.flags) {
+      if (newdata.address) {
         setData(newdata)
       } else {
         if (newdata.error) {
           setErrorMessage(t("error-api." + newdata.error))
         } else {
-          setErrorMessage("Error");
-          console.log(newdata);
+          setErrorMessage("Error")
+          console.log(newdata)
         }
       }
     }
@@ -135,7 +134,7 @@ export default function Nft({ signRequest, id, selectedCurrency, sortCurrency })
             {errorMessage ?
               <div className='center orange bold'>{errorMessage}</div>
               :
-              <>{data.flags &&
+              <>{data.address &&
                 <>
                   <div className="column-left">
                     Icon here
