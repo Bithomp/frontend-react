@@ -27,6 +27,7 @@
       "offers": "Ponude"
     },
     "xrpl": {
+      "rich-list": "Rich list",
       "last-ledger-information": "Zadnje ledger informacije",
       "last-ledger-transactions": "Zadnje ledger transakcije",
       "verified-domains": "Verified domains",

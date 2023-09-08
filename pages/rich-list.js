@@ -20,7 +20,8 @@ import { useWidth } from '../utils'
 import {
   trWithAccount,
   amountFormat,
-  userOrServiceLink
+  userOrServiceLink,
+  niceNumber
 } from '../utils/format'
 
 export default function RichList() {
@@ -32,7 +33,7 @@ export default function RichList() {
   const windowWidth = useWidth()
 
   const [data, setData] = useState([])
-  //const [rawData, setRawData] = useState({})
+  const [rawData, setRawData] = useState({})
   const [loading, setLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState("")
 
@@ -42,7 +43,7 @@ export default function RichList() {
     let apiUrl = 'v2/addresses/richlist'
 
     setLoading(true)
-    //setRawData({})
+    setRawData({})
     setData([])
 
     const response = await axios.get(apiUrl, {
@@ -56,7 +57,7 @@ export default function RichList() {
     const newdata = response?.data;
 
     if (newdata) {
-      //setRawData(newdata)
+      setRawData(newdata)
       setLoading(false) //keep here for fast tab clickers
       if (newdata.addresses) {
         let list = newdata.addresses
@@ -79,12 +80,19 @@ export default function RichList() {
 
   /*
     {
+      "summary": {
+        "maxCoins": "100000000000000000",
+        "totalCoins": "99988432439120264",
+        "activeAccounts": 4771977
+      },
       "addresses": [
         {
           "address": "rMQ98K56yXJbDGv49ZSmW51sLn94Xe1mu1",
-          "username":null,
-          "service":"Ripple",
-          "balance":"1960027032479644"
+          "balance": "1960027032479644",
+          "addressDetails": {
+              "username": null,
+              "service": "Ripple"
+          }
         },
   */
 
@@ -109,7 +117,7 @@ export default function RichList() {
             t("general.loading")
             :
             <Trans i18nKey="summary" ns="rich-list">
-              There are as many accounts.
+              There are <b>{{ activeAccounts: niceNumber(rawData?.summary?.activeAccounts) }}</b> active accounts, total available: <b>{{ totalCoins: amountFormat(rawData?.summary?.totalCoins) }}</b>
             </Trans>
           }
         </div >

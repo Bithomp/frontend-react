@@ -27,6 +27,7 @@
       "offers": "Предложения"
     },
     "xrpl": {
+      "rich-list": "ТОП адресов по XRP балансу",
       "last-ledger-information": "Информация с последнего леджера",
       "last-ledger-transactions": "Транзакции последнего леджера",
       "verified-domains": "Проверенные домены",

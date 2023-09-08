@@ -26,10 +26,11 @@ const pages = [
   { loc: "validators", changefreq: "daily", priority: "0.7" },
   { loc: "last-ledger-information", changefreq: "always", priority: "0.7" },
   { loc: "paperwallet/", changefreq: "yearly", priority: "0.7" },
+  { loc: "domains", changefreq: "always", priority: "0.7" },
+  { loc: "rich-list", changefreq: "always", priority: "0.7" },
 
   { loc: "genesis", changefreq: "weekly", priority: "0.6" },
   { loc: "build-unl", changefreq: "yearly", priority: "0.6" },
-  { loc: "domains", changefreq: "always", priority: "0.6" },
 
   { loc: "submit/", changefreq: "yearly", priority: "0.5" },
 

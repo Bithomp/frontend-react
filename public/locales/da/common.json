@@ -27,6 +27,7 @@
       "offers": "Tilbud"
     },
     "xrpl": {
+      "rich-list": "Rich list",
       "last-ledger-information": "Sidste ledger information",
       "last-ledger-transactions": "Sidste ledger transaktioner",
       "verified-domains": "Verified domains",

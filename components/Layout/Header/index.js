@@ -114,6 +114,7 @@ export default function Header({ setSignRequest, account, signOut, selectedCurre
           <div className="menu-dropdown">
             <div className="menu-dropdown-button">XRPL</div>
             <div className="menu-dropdown-content">
+              <Link href="/rich-list">{t("menu.xrpl.rich-list")}</Link>
               <Link href="/last-ledger-information">{t("menu.xrpl.last-ledger-information")}</Link>
               <Link href="/ledger">{t("menu.xrpl.last-ledger-transactions")}</Link>
               <Link href="/domains">{t("menu.xrpl.verified-domains")}</Link>
@@ -274,6 +275,13 @@ export default function Header({ setSignRequest, account, signOut, selectedCurre
           </Link>
 
           <div className="mobile-menu-directory"><span>XRPL</span></div>
+          <Link
+            href="/rich-list"
+            className="mobile-menu-item"
+            onClick={mobileMenuToggle}
+          >
+            {t("menu.xrpl.rich-list")}
+          </Link>
           <Link
             href="/last-ledger-information"
             className="mobile-menu-item"

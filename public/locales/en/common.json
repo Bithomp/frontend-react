@@ -27,6 +27,7 @@
       "offers": "Offers"
     },
     "xrpl": {
+      "rich-list": "Rich list",
       "last-ledger-information": "Last ledger information",
       "last-ledger-transactions": "Last ledger transactions",
       "verified-domains": "Verified domains",

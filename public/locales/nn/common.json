@@ -27,6 +27,7 @@
       "offers": "Bud"
     },
     "xrpl": {
+      "rich-list": "Rich list",
       "last-ledger-information": "Siste ledger informasjon",
       "last-ledger-transactions": "Siste ledger transaksjoner",
       "verified-domains": "Verified domains",
