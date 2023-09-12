@@ -11,7 +11,7 @@ export const getServerSideProps = async ({ query, locale }) => {
       period: period || "week",
       sale: sale || "secondary",
       list: list || "issuers",
-      currency: currency || "xrp",
+      currency: currency || "",
       currencyIssuer: currencyIssuer || "",
       sortCurrency: sortCurrency || "",
       ...(await serverSideTranslations(locale, ['common'])),
