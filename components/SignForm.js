@@ -60,7 +60,7 @@ export default function SignForm({ setSignRequest, setAccount, signRequest }) {
       tx = signRequest.request
     }
 
-    if (tx.TransactionType === "NFTokenAcceptOffer" && !agreedToRisks) {
+    if (tx.TransactionType === "NFTokenAcceptOffer" && !agreedToRisks && signRequest.offerAmount !== "0") {
       setScreen("NFTokenAcceptOffer")
       return
     }

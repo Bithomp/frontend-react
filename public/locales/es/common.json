@@ -584,6 +584,8 @@
     "enter-nft-id": "Introduce el ID del NFT",
     "cancel-sell-offer-for": "Cancelar oferta de Venta por",
     "cancel-buy-offer-for": "Cancelar oferta de Compra por",
+    "cancel-transfer": "Cancel NFT transfer",
+    "accept-transfer": "Accept NFT transfer",
     "buy-for": "Comprar por",
     "on": "en",
     "make-offer": "Hacer una oferta",

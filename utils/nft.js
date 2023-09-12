@@ -31,38 +31,38 @@ export const mpUrl = (offer) => {
   }
 }
 
-export const bestSellOffer = sellOffers => {
-  if (!sellOffers) return null;
+export const bestSellOffer = (sellOffers, loggedInAddress) => {
+  if (!sellOffers) return null
   //sellOffers = sellOffers.filter(function (offer) { return offer.valid; });
   //best xrp offer available or an IOU offer, if it's only one IOU offer available
-  let bestSellOffer = null;
+  let bestSellOffer = null
   if (sellOffers.length) {
-    let iouOffers = [];
-    let xrpOffers = [];
+    let iouOffers = []
+    let xrpOffers = []
 
     for (let i = 0; i < sellOffers.length; i++) {
       if (sellOffers[i].amount.value) {
-        iouOffers.push(sellOffers[i]);
+        iouOffers.push(sellOffers[i])
       } else {
-        xrpOffers.push(sellOffers[i]);
+        xrpOffers.push(sellOffers[i])
       }
     }
 
     if (xrpOffers.length > 0) {
       //without destination firsts
       xrpOffers = xrpOffers.sort((a, b) => {
-        if (!a.destination && b.destination) return 1;
-        if (a.destination && !b.destination) return -1;
-        return a.createdAt - b.createdAt;
-      });
+        if (!a.destination && b.destination) return 1
+        if (a.destination && !b.destination) return -1
+        return a.createdAt - b.createdAt
+      })
       //sort cheapest on top
-      xrpOffers = xrpOffers.sort((a, b) => (parseFloat(a.amount) > parseFloat(b.amount)) ? 1 : -1);
+      xrpOffers = xrpOffers.sort((a, b) => (parseFloat(a.amount) > parseFloat(b.amount)) ? 1 : -1)
 
       for (let i = 0; i < xrpOffers.length; i++) {
-        if (mpUrl(xrpOffers[i]) || !xrpOffers[i].destination) {
-          //if known destination - (not a private offer) or on Open Market
-          bestSellOffer = xrpOffers[i];
-          break;
+        if (mpUrl(xrpOffers[i]) || !xrpOffers[i].destination || (loggedInAddress && xrpOffers[i].destination === loggedInAddress)) {
+          //if known destination - (not a private offer) or on Open Market, or destination is loggedinUser
+          bestSellOffer = xrpOffers[i]
+          break
         }
       }
     }
@@ -70,27 +70,27 @@ export const bestSellOffer = sellOffers => {
     if (!bestSellOffer && iouOffers.length > 0) {
       // if no XRP offers fits creterias above choose IOU if it's only one fits.
       let iouFitOffers = [];
-      //check that if it's not a private offer (only MP and public)
+      //check that if it's not a private offer (only MP and public), or destination is the loggedInUser
       for (let i = 0; i < iouOffers.length; i++) {
-        if (mpUrl(iouOffers[i]) || !iouOffers[i].destination) {
+        if (mpUrl(iouOffers[i]) || !iouOffers[i].destination || (loggedInAddress && iouOffers[i].destination === loggedInAddress)) {
           iouFitOffers.push(iouOffers[i]);
         }
       }
       if (iouFitOffers.length > 1) {
         //public offers firsts
         iouFitOffers = iouFitOffers.sort((a, b) => {
-          if (!a.destination && b.destination) return 1;
-          if (a.destination && !b.destination) return -1;
+          if (!a.destination && b.destination) return 1
+          if (a.destination && !b.destination) return -1
           return a.createdAt - b.createdAt;
-        });
+        })
         //latest on top, need to test
-        //iouFitOffers = iouFitOffers.sort((a, b) => (parseFloat(a.createdAt) < parseFloat(b.createdAt)) ? 1 : -1);
+        //iouFitOffers = iouFitOffers.sort((a, b) => (parseFloat(a.createdAt) < parseFloat(b.createdAt)) ? 1 : -1)
       }
       if (iouFitOffers.length > 0) {
-        bestSellOffer = iouFitOffers[0];
+        bestSellOffer = iouFitOffers[0]
       }
     }
-    return bestSellOffer;
+    return bestSellOffer
   } else {
     return null;
   }

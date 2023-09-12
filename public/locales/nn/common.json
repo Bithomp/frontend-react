@@ -584,6 +584,8 @@
     "enter-nft-id": "Skriv inn en NFT-ID",
     "cancel-sell-offer-for": "Avbryt salgsbud for",
     "cancel-buy-offer-for": "Avbryt kjøpsbud",
+    "cancel-transfer": "Cancel NFT transfer",
+    "accept-transfer": "Accept NFT transfer",
     "buy-for": "Kjøp for",
     "on": "på",
     "make-offer": "Lag bud",

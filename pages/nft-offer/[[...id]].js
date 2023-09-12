@@ -2,7 +2,6 @@ import { useTranslation } from 'next-i18next'
 import { useState, useEffect } from 'react'
 import axios from 'axios'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import Image from 'next/image'
 import Link from 'next/link'
 
 import {
@@ -13,7 +12,8 @@ import {
   expirationExpired,
   trStatus,
   nftIdLink,
-  cancelNftOfferButton
+  cancelNftOfferButton,
+  acceptNftSellOfferButton
 } from '../../utils/format'
 
 import { delay } from '../../utils'
@@ -59,7 +59,6 @@ import CopyButton from '../../components/UI/CopyButton'
 import NftImageAndVideo from '../../components/NftPreview'
 
 import LinkIcon from "../../public/images/link.svg"
-const xummImg = "/images/xumm.png"
 
 export default function NftOffer({ setSignRequest, signRequest, account, id }) {
   const { t } = useTranslation()
@@ -223,32 +222,20 @@ export default function NftOffer({ setSignRequest, signRequest, account, id }) {
                       <br /><br />
                     </div>
 
-                    {!data.canceledAt && !data.acceptedAt && (
-                      (data?.owner && account?.address && account.address === data.owner)
-                      || data?.validationErrors?.includes('Offer is expired')
-                      || (account?.address && data?.destination === account.address)
-                    ) &&
+                    {(data?.destination && account?.address && account.address === data.destination && data.valid && data.flags?.sellToken) &&
                       <>
-                        {cancelNftOfferButton(t, setSignRequest, data.owner, data, "sell")}
+                        {acceptNftSellOfferButton(t, setSignRequest, data)}
                         <br /><br />
                       </>
                     }
 
-                    {(data?.destination && account?.address && account.address === data.destination && data.valid && data.flags?.sellToken) &&
+                    {!data.canceledAt && !data.acceptedAt && ( // if not canceled or accepted
+                      (data?.owner && account?.address && account.address === data.owner) // if I'm the owner
+                      || data?.validationErrors?.includes('Offer is expired') // if expired
+                      || (account?.address && data?.destination === account.address) // if the offer is for me
+                    ) &&
                       <>
-                        <button
-                          className='button-action wide center'
-                          onClick={() => setSignRequest({
-                            wallet: "xumm",
-                            request: {
-                              "TransactionType": "NFTokenAcceptOffer",
-                              "NFTokenSellOffer": data.offerIndex,
-                            }
-                          })}
-                        >
-                          <Image src={xummImg} className='xumm-logo' alt="xumm" height={24} width={24} />
-                          {t("nft.buy-for")} {amountFormat(data.amount)}
-                        </button>
+                        {cancelNftOfferButton(t, setSignRequest, data.owner, data, "sell")}
                         <br /><br />
                       </>
                     }
@@ -261,12 +248,12 @@ export default function NftOffer({ setSignRequest, signRequest, account, id }) {
                           <td>{t("table.offer")}</td>
                           <td>{shortHash(data.offerIndex, 10)} <CopyButton text={data.offerIndex} /></td>
                         </tr>
-                        {trWithAccount(data, 'account', sellerOrBuyer, "/explorer/")}
+                        {trWithAccount(data, 'account', sellerOrBuyer, "/explorer/", 0)}
                         <tr>
                           <td>{data.flags.sellToken === true ? t("nft-offer.selling") : t("nft-offer.buying")} NFT</td>
                           <td>{nftIdLink(data.nftokenID)}</td>
                         </tr>
-                        {trWithAccount(data, 'destination', t("table.destination"), "/explorer/")}
+                        {trWithAccount(data, 'destination', t("table.destination"), "/explorer/", 0)}
                         <tr>
                           <td>{t("table.price")}</td>
                           <td>{amountFormat(data.amount, { tooltip: 'right' })}</td>
@@ -287,7 +274,7 @@ export default function NftOffer({ setSignRequest, signRequest, account, id }) {
                               <td>{t("table.accepted")}</td>
                               <td>{fullDateAndTime(data.acceptedAt)} <a href={"/explorer/" + data.acceptedTxHash}><LinkIcon /></a></td>
                             </tr>
-                            {data.acceptedAccount && trWithAccount(data, 'acceptedAccount', t("table.accepted-by"), "/explorer/")}
+                            {data.acceptedAccount && trWithAccount(data, 'acceptedAccount', t("table.accepted-by"), "/explorer/", 0)}
                           </>
                         }
                         {data.canceledAt &&

@@ -20,7 +20,8 @@ import {
   nftOfferLink,
   codeHighlight,
   trStatus,
-  cancelNftOfferButton
+  cancelNftOfferButton,
+  acceptNftSellOfferButton
 } from '../../utils/format'
 
 import SocialShare from '../../components/SocialShare'
@@ -297,7 +298,7 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
               </td>
             </tr>
           }
-          {trWithAccount(nftEvent, 'owner', ownerName(nftEvent), "/explorer/")}
+          {trWithAccount(nftEvent, 'owner', ownerName(nftEvent), "/explorer/", "owner")}
           {nftEvent.marketplace &&
             <tr>
               <td>{marketPlaceUsage(nftEvent)}</td>
@@ -336,7 +337,7 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
       return offers.map((offer, i) =>
         <tbody key={i}>
           {trStatus(t, offer)}
-          {trWithAccount(offer, 'owner', buyerOrSeller, "/explorer/")}
+          {trWithAccount(offer, 'owner', buyerOrSeller, "/explorer/", "nft-seller")}
           <tr>
             <td>{t("table.amount")}</td>
             <td>{amountFormat(offer.amount, { tooltip: "right" })}</td>
@@ -366,12 +367,19 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
             </tr>
           }
           {offer.destination &&
-            trWithAccount(offer, 'destination', t("table.destination"), "/explorer/")
+            trWithAccount(offer, 'destination', t("table.destination"), "/explorer/", "destination")
           }
           <tr>
             <td>{t("table.offer")}</td>
             <td>{nftOfferLink(offer.offerIndex)}</td>
           </tr>
+          {(offer.destination && account?.address && account.address === offer.destination && offer.valid && type === 'sell') &&
+            <tr>
+              <td colSpan="2">
+                {acceptNftSellOfferButton(t, setSignRequest, offer)}
+              </td>
+            </tr>
+          }
           {
             !offer.canceledAt && !offer.acceptedAt &&
             (
@@ -486,7 +494,7 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
     sellOffers = sellOffers.filter(function (offer) { return offer.valid; })
     //best xrp offer available or an IOU offer, if it's only one IOU offer available
     //we should get the best IOU offer too... and show both XRP and IOU
-    let best = bestSellOffer(sellOffers)
+    let best = bestSellOffer(sellOffers, account?.address)
     if (!best) return ""
 
     if (data?.owner && account?.address && account.address === data.owner) {
@@ -506,19 +514,7 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
     }
 
     return <>
-      <button
-        className='button-action wide center'
-        onClick={() => setSignRequest({
-          wallet: "xumm",
-          request: {
-            "NFTokenSellOffer": best.offerIndex,
-            "TransactionType": "NFTokenAcceptOffer"
-          }
-        })}
-      >
-        <Image src={xummImg} className='xumm-logo' alt="xumm" height={24} width={24} />
-        {t("nft.buy-for")} {amountFormat(best.amount)}
-      </button>
+      {acceptNftSellOfferButton(t, setSignRequest, best)}
       <br /><br />
     </>
   }
@@ -709,12 +705,12 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
                         </tr>
                         {data.issuer === data.owner ?
                           <>
-                            {trWithAccount(data, 'owner', t("table.issuer-owner"), "/explorer/")}
+                            {trWithAccount(data, 'owner', t("table.issuer-owner"), "/explorer/", "ownerAndIssuer")}
                           </>
                           :
                           <>
-                            {trWithAccount(data, 'owner', t("table.owner"), "/explorer/")}
-                            {trWithAccount(data, 'issuer', t("table.issuer"), "/explorer/")}
+                            {trWithAccount(data, 'owner', t("table.owner"), "/explorer/", "owner")}
+                            {trWithAccount(data, 'issuer', t("table.issuer"), "/explorer/", "issuer")}
                           </>
                         }
                         <tr>

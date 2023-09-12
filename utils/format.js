@@ -7,6 +7,25 @@ import LinkIcon from "../public/images/link.svg"
 import { stripText } from '.'
 import { mpUrl } from './nft'
 
+const xummImg = "/images/xumm.png"
+
+export const acceptNftSellOfferButton = (t, setSignRequest, offer) => {
+  return <button
+    className='button-action wide center'
+    onClick={() => setSignRequest({
+      wallet: "xumm",
+      offerAmount: offer.amount,
+      request: {
+        "TransactionType": "NFTokenAcceptOffer",
+        "NFTokenSellOffer": offer.offerIndex,
+      }
+    })}
+  >
+    <Image src={xummImg} className='xumm-logo' alt="xumm" height={24} width={24} />
+    {offer.amount === "0" ? t("nft.accept-transfer") : t("nft.buy-for") + " " + amountFormat(offer.amount)}
+  </button>
+}
+
 export const cancelNftOfferButton = (t, setSignRequest, account, offer, type = "buy") => {
   return <button
     className='button-action wide center'
@@ -19,8 +38,13 @@ export const cancelNftOfferButton = (t, setSignRequest, account, offer, type = "
       }
     })}
   >
-    <Image src="/images/xumm.png" className='xumm-logo' alt="xumm" height={24} width={24} />
-    {type === "sell" ? t("nft.cancel-sell-offer-for") : t("nft.cancel-buy-offer-for")} {amountFormat(offer.amount)}
+    <Image src={xummImg} className='xumm-logo' alt="xumm" height={24} width={24} />
+    {offer.amount === "0" ? t("nft.cancel-transfer")
+      :
+      <>
+        {type === "sell" ? t("nft.cancel-sell-offer-for") : t("nft.cancel-buy-offer-for")} {amountFormat(offer.amount)}
+      </>
+    }
   </button>
 }
 
@@ -86,9 +110,9 @@ export const trWithFlags = (t, flags) => {
 }
 
 export const trWithAccount = (data, valueName, tableName, url = "/explorer/", i = 0) => {
-  if (!data || !data[valueName]) return null;
-  let link = <a href={url + data[valueName]}>{data[valueName]}</a>;
-  let userOrServicelink = userOrServiceLink(data, valueName, { url });
+  if (!data || !data[valueName]) return null
+  let link = <a href={url + data[valueName]}>{data[valueName]}</a>
+  let userOrServicelink = userOrServiceLink(data, valueName, { url })
   return userOrServicelink ?
     <React.Fragment key={i}>
       <tr>
@@ -101,7 +125,7 @@ export const trWithAccount = (data, valueName, tableName, url = "/explorer/", i 
       </tr>
     </React.Fragment>
     :
-    <tr key={i}>
+    <tr key={i} td={i}>
       <td>{tableName}</td>
       <td>{link}</td>
     </tr>

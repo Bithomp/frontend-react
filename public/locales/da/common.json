@@ -584,6 +584,8 @@
     "enter-nft-id": "Indtast et NFT-id",
     "cancel-sell-offer-for": "Annuller Sælg tilbud for",
     "cancel-buy-offer-for": "Annuller Køb tilbud for",
+    "cancel-transfer": "Cancel NFT transfer",
+    "accept-transfer": "Accept NFT transfer",
     "buy-for": "Køb for",
     "on": "på",
     "make-offer": "Lag tilbud",

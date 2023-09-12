@@ -584,6 +584,8 @@
     "enter-nft-id": "Enter an NFT ID",
     "cancel-sell-offer-for": "Cancel Sell offer for",
     "cancel-buy-offer-for": "Cancel Buy offer for",
+    "cancel-transfer": "Cancel NFT transfer",
+    "accept-transfer": "Accept NFT transfer",
     "buy-for": "Buy for",
     "on": "on",
     "make-offer": "Make offer",

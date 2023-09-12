@@ -584,6 +584,8 @@
     "enter-nft-id": "Введите идентификатор NFT",
     "cancel-sell-offer-for": "Отменить предложение на",
     "cancel-buy-offer-for": "Отменить предложение на",
+    "cancel-transfer": "Отменить передачу NFT",
+    "accept-transfer": "Принять передачу NFT",
     "buy-for": "Купить за",
     "on": "на",
     "make-offer": "Предложить цену",
