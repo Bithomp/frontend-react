@@ -178,8 +178,8 @@ export default function NftOffer({ setSignRequest, signRequest, account, id }) {
       if (!data?.nftokenID) {
         // no token - first time fetching - allow right away
         checkApi()
-      } else if (data?.canceledAt) {
-        //do not send request if it is canceled
+      } else if (data?.canceledAt || data?.acceptedAt) {
+        //do not send request if it is Canceled or Accepted
         return
       } else {
         //wait for changes
@@ -223,7 +223,7 @@ export default function NftOffer({ setSignRequest, signRequest, account, id }) {
                       <br /><br />
                     </div>
 
-                    {!data.canceledAt && (
+                    {!data.canceledAt && !data.acceptedAt && (
                       (data?.owner && account?.address && account.address === data.owner)
                       || data?.validationErrors?.includes('Offer is expired')
                       || (account?.address && data?.destination === account.address)
