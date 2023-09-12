@@ -284,7 +284,7 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
         <tbody key={i}>
           <tr>
             <td className='bold'>{eventType(nftEvent)}</td>
-            <td>{rendered && fullDateAndTime(nftEvent.changedAt)} <Link href={"/explorer/" + nftEvent.txHash}><LinkIcon /></Link></td>
+            <td>{rendered && fullDateAndTime(nftEvent.changedAt)} <a href={"/explorer/" + nftEvent.txHash}><LinkIcon /></a></td>
           </tr>
           {(nftEvent.amount && nftEvent.amount !== "0") &&
             <tr>
@@ -344,19 +344,19 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
           {offer.createdAt &&
             <tr>
               <td>{t("table.placed")}</td>
-              <td>{fullDateAndTime(offer.createdAt)} <Link href={"/explorer/" + offer.createdTxHash}><LinkIcon /></Link></td>
+              <td>{fullDateAndTime(offer.createdAt)} <a href={"/explorer/" + offer.createdTxHash}><LinkIcon /></a></td>
             </tr>
           }
           {offer.acceptedAt &&
             <tr>
               <td>{t("table.accepted")}</td>
-              <td>{fullDateAndTime(offer.acceptedAt)} <Link href={"/explorer/" + offer.acceptedTxHash}><LinkIcon /></Link></td>
+              <td>{fullDateAndTime(offer.acceptedAt)} <a href={"/explorer/" + offer.acceptedTxHash}><LinkIcon /></a></td>
             </tr>
           }
           {offer.canceledAt &&
             <tr>
               <td>{t("table.canceled")}</td>
-              <td>{fullDateAndTime(offer.canceledAt)} <Link href={"/explorer/" + offer.canceledTxHash}><LinkIcon /></Link></td>
+              <td>{fullDateAndTime(offer.canceledAt)} <a href={"/explorer/" + offer.canceledTxHash}><LinkIcon /></a></td>
             </tr>
           }
           {offer.expiration &&

@@ -273,7 +273,7 @@ export default function NftOffer({ setSignRequest, signRequest, account, id }) {
                         </tr>
                         <tr>
                           <td>{t("table.placed")}</td>
-                          <td>{fullDateAndTime(data.createdAt)} <Link href={"/explorer/" + data.createdTxHash}><LinkIcon /></Link></td>
+                          <td>{fullDateAndTime(data.createdAt)} <a href={"/explorer/" + data.createdTxHash}><LinkIcon /></a></td>
                         </tr>
                         {data.expiration &&
                           <tr>
@@ -285,7 +285,7 @@ export default function NftOffer({ setSignRequest, signRequest, account, id }) {
                           <>
                             <tr>
                               <td>{t("table.accepted")}</td>
-                              <td>{fullDateAndTime(data.acceptedAt)} <Link href={"/explorer/" + data.acceptedTxHash}><LinkIcon /></Link></td>
+                              <td>{fullDateAndTime(data.acceptedAt)} <a href={"/explorer/" + data.acceptedTxHash}><LinkIcon /></a></td>
                             </tr>
                             {data.acceptedAccount && trWithAccount(data, 'acceptedAccount', t("table.accepted-by"), "/explorer/")}
                           </>
@@ -293,7 +293,7 @@ export default function NftOffer({ setSignRequest, signRequest, account, id }) {
                         {data.canceledAt &&
                           <tr>
                             <td>{t("table.canceled")}</td>
-                            <td>{fullDateAndTime(data.canceledAt)} <Link href={"/explorer/" + data.canceledTxHash}><LinkIcon /></Link></td>
+                            <td>{fullDateAndTime(data.canceledAt)} <a href={"/explorer/" + data.canceledTxHash}><LinkIcon /></a></td>
                           </tr>
                         }
                       </tbody>

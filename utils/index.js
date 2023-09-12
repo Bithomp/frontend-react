@@ -307,7 +307,7 @@ const WssServer = () => {
   if (process.env.NODE_ENV === 'development') {
     token = '?x-bithomp-token=' + process.env.NEXT_PUBLIC_BITHOMP_API_TEST_KEY
   }
-  return server.replace("https://", "wss://") + '/wss/' + token
+  return server?.replace("https://", "wss://") + '/wss/' + token
 }
 export const wssServer = WssServer()
 
