@@ -5,7 +5,16 @@ import { useRouter } from 'next/router'
 import axios from 'axios';
 import { useSearchParams } from 'next/navigation'
 
-import { isAddressOrUsername, isIdValid, useWidth, isValidCTID, decodeCTID, networkId, networksIds } from '../../utils'
+import {
+  isAddressOrUsername,
+  isIdValid,
+  useWidth,
+  isValidCTID,
+  decodeCTID,
+  networkId,
+  networksIds,
+  isValidNftXls20
+} from '../../utils'
 import { userOrServiceName, amountFormat } from '../../utils/format'
 
 //import { ReactComponent as Qr } from "../../public/images/qr.svg";
@@ -45,7 +54,7 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
     }
 
     //if more than 3 characters - search for suggestions
-    if (value && value.length > 1) {
+    if (value && value.length > 1 && value.length < 36) {
       clearTimeout(typingTimer)
       setSearchSuggestions([])
       typingTimer = setTimeout(async () => {
@@ -120,7 +129,12 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
 
   const onSearch = async (si) => {
     setErrorMessage("")
-    let searchFor = searchItem.trim()
+    let searchFor = null
+
+    if (typeof searchItem === 'string') {
+      searchFor = searchItem.trim()
+    }
+
     if (typeof si === 'string') {
       searchFor = si
     }
@@ -142,17 +156,20 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
       return
     }
 
-    if (tab === "nft" && isIdValid(searchFor)) {
+    if (tab === "nft" && isValidNftXls20(searchFor)) {
       window.location = "../nft/" + encodeURI(searchFor)
       return
     }
 
+    /*
+    // we need to write a better check for nftokenOffer
     if (tab === "nft-offer" && isIdValid(searchFor)) {
       window.location = "../nft-offer/" + encodeURI(searchFor)
       return
     }
+    */
 
-    //nft nftOffer
+    //nft nftOffer (nft uri?)
     if (isIdValid(searchFor)) {
       setSearching(true)
       const response = await axios('v2/search/' + searchFor)
