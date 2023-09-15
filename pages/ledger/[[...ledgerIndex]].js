@@ -98,10 +98,10 @@ export default function Ledger({ pageMeta }) {
 
   const ledgerNavigation = <p className='center'>
     {ledgerVersion > 32572 &&
-      <a href={"/ledger/" + (ledgerVersion - 1)} style={{ marginRight: "10px" }}>⬅</a>
+      <a href={"/ledger/" + (ledgerVersion - 1)} style={{ marginRight: "10px" }}>←</a>
     }
     #{ledgerVersion}
-    <a href={"/ledger/" + (ledgerVersion + 1)} style={{ marginLeft: "10px" }}>⮕</a>
+    <a href={"/ledger/" + (ledgerVersion + 1)} style={{ marginLeft: "10px" }}>→</a>
   </p>
 
   return <>
