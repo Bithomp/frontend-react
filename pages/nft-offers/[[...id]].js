@@ -17,10 +17,11 @@ import {
 import { nftNameLink, nftThumbnail } from '../../utils/nft'
 
 export const getServerSideProps = async ({ query, locale }) => {
-  const { offerList } = query
+  const { offerList, id } = query
   return {
     props: {
       offerList: offerList || "owned",
+      id: id ? (Array.isArray(id) ? id[0] : id) : "",
       ...(await serverSideTranslations(locale, ['common'])),
     },
   }
@@ -33,10 +34,9 @@ import Tabs from '../../components/Tabs'
 import LinkIcon from "../../public/images/link.svg"
 const xummImg = "/images/xumm.png"
 
-export default function NftOffers({ setSignRequest, signRequest, account, offerList }) {
+export default function NftOffers({ setSignRequest, signRequest, account, offerList, id }) {
   const { t } = useTranslation()
   const router = useRouter()
-  const { id } = router.query
   const windowWidth = useWidth()
 
   const [offers, setOffers] = useState([]);
@@ -236,7 +236,7 @@ export default function NftOffers({ setSignRequest, signRequest, account, offerL
       ])
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [offerListTab, signRequest])
+  }, [id, offerListTab, signRequest])
 
   return <>
     <SEO title={t("nft-offers.header") + (id ? (" " + id) : "")} />

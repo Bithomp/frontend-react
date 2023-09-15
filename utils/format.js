@@ -112,6 +112,9 @@ export const trWithFlags = (t, flags) => {
 export const trWithAccount = (data, valueName, tableName, url = "/explorer/", i = 0) => {
   if (!data || !data[valueName]) return null
   let link = <a href={url + data[valueName]}>{data[valueName]}</a>
+  if (url !== "/explorer/") {
+    link = <Link href={url + data[valueName]}>{data[valueName]}</Link>
+  }
   let userOrServicelink = userOrServiceLink(data, valueName, { url })
   return userOrServicelink ?
     <React.Fragment key={i}>
@@ -147,25 +150,25 @@ export const txIdLink = (txId, chars = 10) => {
 }
 
 export const nftLink = (nft, type, options = {}) => {
-  if (!nft || !type || !nft[type]) return "";
+  if (!nft || !type || !nft[type]) return ""
 
-  let link = "/explorer/";
+  let link = "/explorer/"
   if (type === "issuer") {
-    link = "/nft-explorer?issuer=";
+    link = "/nft-explorer?issuer="
   } else if (type === "owner" || type === "seller" || type === "buyer") {
-    link = "/nfts/";
+    link = "/nfts/"
   }
 
-  let defaultContent = <LinkIcon />;
+  let defaultContent = <LinkIcon />
   if (options.address === 'short') {
-    defaultContent = shortAddress(nft[type]);
+    defaultContent = shortAddress(nft[type])
   }
 
   //nft-offers destination
   if (nft[type + 'Details']) {
-    const showName = userOrServiceName(nft[type + 'Details']);
+    const showName = userOrServiceName(nft[type + 'Details'])
     if (type === "destination" && nft.valid) {
-      const url = mpUrl(nft);
+      const url = mpUrl(nft)
       if (url) {
         return <span>
           {options?.seeOn} <a href={url} target="_blank" rel="noreferrer">
@@ -174,11 +177,22 @@ export const nftLink = (nft, type, options = {}) => {
         </span>
       }
     }
-    return <a href={link + (nft[type + 'Details'].username || nft[type])}>
-      {showName ? showName : defaultContent}
-    </a>
+    if (link === "/explorer/") {
+      return <a href={link + (nft[type + 'Details'].username || nft[type])}>
+        {showName ? showName : defaultContent}
+      </a>
+    } else {
+      return <Link href={link + (nft[type + 'Details'].username || nft[type])}>
+        {showName ? showName : defaultContent}
+      </Link>
+    }
+
   }
-  return <a href={link + nft[type]}>{defaultContent}</a>
+  if (link === "/explorer/") {
+    return <a href={link + nft[type]}>{defaultContent}</a>
+  } else {
+    return <Link href={link + nft[type]}>{defaultContent}</Link>
+  }
 }
 
 export const nftsExplorerLink = ({ owner, ownerDetails, issuer, issuerDetails }) => {
@@ -195,7 +209,7 @@ export const nftsExplorerLink = ({ owner, ownerDetails, issuer, issuerDetails })
       link = "/nft-explorer?owner=" + ownerUri;
     }
   }
-  return <a href={link}><LinkIcon /></a>
+  return <Link href={link}><LinkIcon /></Link>
 }
 
 export const usernameOrAddress = (data, type) => {
@@ -210,25 +224,33 @@ export const usernameOrAddress = (data, type) => {
 }
 
 export const userOrServiceLink = (data, type, options = {}) => {
-  if (!data || !type || !data[type]) return "";
+  if (!data || !type || !data[type]) return ""
   if (!options.url) {
-    options.url = "/explorer/";
+    options.url = "/explorer/"
   }
   if (data[type + 'Details']) {
-    const { username, service } = data[type + 'Details'];
-    let link = username ? username : data[type];
+    const { username, service } = data[type + 'Details']
+    let link = username ? username : data[type]
     if (service) {
       let serviceName = service;
       if (options.short && serviceName.length > 18) {
-        serviceName = service.substring(0, 15).trim() + '...';
+        serviceName = service.substring(0, 15).trim() + '...'
       }
-      return <a href={options.url + link} className='bold green'>{serviceName}</a>;
+      if (options.url === "/explorer/") {
+        return <a href={options.url + link} className='bold green'>{serviceName}</a>
+      } else {
+        return <Link href={options.url + link} className='bold green'>{serviceName}</Link>
+      }
     }
     if (username) {
-      return <a href={options.url + link} className='bold blue'>{username}</a>;
+      if (options.url === "/explorer/") {
+        return <a href={options.url + link} className='bold blue'>{username}</a>
+      } else {
+        return <Link href={options.url + link} className='bold blue'>{username}</Link>
+      }
     }
   }
-  return "";
+  return ""
 }
 
 export const addressUsernameOrServiceLink = (data, type, options = {}) => {
@@ -242,9 +264,17 @@ export const addressUsernameOrServiceLink = (data, type, options = {}) => {
     return userOrServiceLink(data, type, options)
   }
   if (options.short) {
-    return <a href={options.url + data[type]}>{shortAddress(data[type])}</a>
+    if (options.url === "/explorer/") {
+      return <a href={options.url + data[type]}>{shortAddress(data[type])}</a>
+    } else {
+      return <Link href={options.url + data[type]}>{shortAddress(data[type])}</Link>
+    }
   }
-  return <a href={options.url + data[type]}>{data[type]}</a>
+  if (options.url === "/explorer/") {
+    return <a href={options.url + data[type]}>{data[type]}</a>
+  } else {
+    return <Link href={options.url + data[type]}>{data[type]}</Link>
+  }
 }
 
 export const userOrServiceName = (data) => {

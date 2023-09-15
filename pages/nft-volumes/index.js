@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react'
 import axios from 'axios'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useRouter } from 'next/router'
+import Link from 'next/link'
 
 export const getServerSideProps = async ({ query, locale }) => {
   const { period, sale, list, currency, currencyIssuer, sortCurrency } = query
@@ -477,13 +478,13 @@ export default function NftVolumes({ period, sale, list, currency, currencyIssue
       } else {
         return <>
           {output}
-          <a href={'/nft-explorer?issuer=' + usernameOrAddress(volume, 'issuer') + '&list=onSale'}><LinkIcon /></a>
+          <Link href={'/nft-explorer?issuer=' + usernameOrAddress(volume, 'issuer') + '&list=onSale'}><LinkIcon /></Link>
           {tableWithFloors}
         </>
       }
     }
     if (output) {
-      return <>{output} <a href={'/nft-explorer?issuer=' + usernameOrAddress(volume, 'issuer') + '&list=onSale'}><LinkIcon /></a></>
+      return <>{output} <Link href={'/nft-explorer?issuer=' + usernameOrAddress(volume, 'issuer') + '&list=onSale'}><LinkIcon /></Link></>
     } else {
       return ""
     }
@@ -598,8 +599,8 @@ export default function NftVolumes({ period, sale, list, currency, currencyIssue
                             </td>
                           }
                           {listTab === 'issuers' && <td>{addressUsernameOrServiceLink(volume, "issuer", { short: true })}</td>}
-                          {listTab === 'issuers' && issuersExtended && <td className='right hide-on-mobile'>{shortNiceNumber(volume.statistics?.nfts, 0)} <a href={'/nft-explorer?issuer=' + usernameOrAddress(volume, 'issuer')}><LinkIcon /></a></td>}
-                          {listTab === 'issuers' && issuersExtended && <td className='right hide-on-mobile'>{shortNiceNumber(volume.statistics?.owners, 0)} <a href={'/nft-distribution/' + usernameOrAddress(volume, 'issuer')}><LinkIcon /></a></td>}
+                          {listTab === 'issuers' && issuersExtended && <td className='right hide-on-mobile'>{shortNiceNumber(volume.statistics?.nfts, 0)} <Link href={'/nft-explorer?issuer=' + usernameOrAddress(volume, 'issuer')}><LinkIcon /></Link></td>}
+                          {listTab === 'issuers' && issuersExtended && <td className='right hide-on-mobile'>{shortNiceNumber(volume.statistics?.owners, 0)} <Link href={'/nft-distribution/' + usernameOrAddress(volume, 'issuer')}><LinkIcon /></Link></td>}
                           {listTab === 'issuers' && issuersExtended &&
                             <td className='right'>
                               {showFloor(volume)}
@@ -607,14 +608,14 @@ export default function NftVolumes({ period, sale, list, currency, currencyIssue
                           }
                           {listTab === 'issuers' && issuersExtended && <td className='right hide-on-mobile'>{shortNiceNumber(volume.statistics?.tradedNfts, 0)}</td>}
                           {listTab === 'brokers' && <td>{addressUsernameOrServiceLink(volume, "broker", { short: true, noBroker: t("nft-volumes.brokers.no-broker") })}</td>}
-                          {listTab === 'currencies' && <td className='center'><a href={'/nft-volumes' + urlParams(volume) + '&list=issuers'}><LinkIcon /></a></td>}
+                          {listTab === 'currencies' && <td className='center'><Link href={'/nft-volumes' + urlParams(volume) + '&list=issuers'}><LinkIcon /></Link></td>}
                           <td className='right'>
                             {shortNiceNumber(volume.sales, 0)}
                             {rawData?.summary &&
                               <> {persentFormat(volume.sales, rawData.summary.all.sales)}</>
                             }
                             {listTab !== 'brokers' &&
-                              <a href={'/nft-sales' + urlParams(volume)}> <LinkIcon /></a>
+                              <Link href={'/nft-sales' + urlParams(volume)}> <LinkIcon /></Link>
                             }
                           </td>
                           {listTab === 'issuers' && issuersExtended && <td className='right hide-on-mobile'>{shortNiceNumber(volume.statistics?.buyers, 0)}</td>}
@@ -653,7 +654,7 @@ export default function NftVolumes({ period, sale, list, currency, currencyIssue
                                 </table>
                               }
                             </span> {persentFormat(volume.volumesInConvertCurrencies[convertCurrency], rawData.summary.all.volumesInConvertCurrencies[convertCurrency])}
-                            {listTab === 'issuers' && <a href={'/nft-volumes/' + usernameOrAddress(volume, 'issuer') + urlParams(volume, { excludeIssuer: true, excludeCurrency: true })}> <LinkIcon /></a>}
+                            {listTab === 'issuers' && <Link href={'/nft-volumes/' + usernameOrAddress(volume, 'issuer') + urlParams(volume, { excludeIssuer: true, excludeCurrency: true })}> <LinkIcon /></Link>}
                           </td>
                         </tr>
                       )
@@ -706,11 +707,11 @@ export default function NftVolumes({ period, sale, list, currency, currencyIssue
                           <>
                             <p>
                               {t("table.nfts-now")}:{" "}
-                              {shortNiceNumber(volume.statistics?.nfts, 0)} <a href={'/nft-explorer?issuer=' + usernameOrAddress(volume, 'issuer')}><LinkIcon /></a>
+                              {shortNiceNumber(volume.statistics?.nfts, 0)} <Link href={'/nft-explorer?issuer=' + usernameOrAddress(volume, 'issuer')}><LinkIcon /></Link>
                             </p>
                             <p>
                               {t("table.owners-now")}:{" "}
-                              {shortNiceNumber(volume.statistics?.owners, 0)} <a href={'/nft-distribution/' + usernameOrAddress(volume, 'issuer')}><LinkIcon /></a>
+                              {shortNiceNumber(volume.statistics?.owners, 0)} <Link href={'/nft-distribution/' + usernameOrAddress(volume, 'issuer')}><LinkIcon /></Link>
                             </p>
                             {showFloor(volume) ?
                               <div>
@@ -732,7 +733,7 @@ export default function NftVolumes({ period, sale, list, currency, currencyIssue
                           <> {persentFormat(volume.sales, rawData.summary.all.sales)}</>
                         }
                         {listTab !== 'brokers' &&
-                          <a href={'/nft-sales' + urlParams(volume)}> <LinkIcon /></a>
+                          <Link href={'/nft-sales' + urlParams(volume)}> <LinkIcon /></Link>
                         }
                       </p>
                       {issuersExtended &&
@@ -745,7 +746,7 @@ export default function NftVolumes({ period, sale, list, currency, currencyIssue
                         {rawData?.summary &&
                           <> {persentFormat(volume.volumesInConvertCurrencies[convertCurrency], rawData.summary.all.volumesInConvertCurrencies[convertCurrency])}</>
                         }
-                        {listTab === 'issuers' && <a href={'/nft-volumes/' + usernameOrAddress(volume, 'issuer') + urlParams(volume, { excludeIssuer: true, excludeCurrency: true })}> <LinkIcon /></a>}
+                        {listTab === 'issuers' && <Link href={'/nft-volumes/' + usernameOrAddress(volume, 'issuer') + urlParams(volume, { excludeIssuer: true, excludeCurrency: true })}> <LinkIcon /></Link>}
 
                         <table className="table-mobile" style={{ width: "calc(100% - 22px)", margin: "10px 0" }}>
                           <thead>

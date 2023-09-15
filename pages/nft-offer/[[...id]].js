@@ -286,7 +286,7 @@ export default function NftOffer({ setSignRequest, signRequest, account, id }) {
                       </tbody>
                     </table>
                     <p>
-                      <a href={"/nft-offers/" + data.account}>{t("links.active-offers-same-account")}</a>
+                      <Link href={"/nft-offers/" + data.account}>{t("links.active-offers-same-account")}</Link>
                     </p>
                     <p>
                       <Link href={"/nfts/" + data.account}>{t("links.owned-nfts-same-account")}</Link>

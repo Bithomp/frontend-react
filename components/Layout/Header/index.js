@@ -165,7 +165,7 @@ export default function Header({ setSignRequest, account, signOut, selectedCurre
                   {isCopied ? t("button.copied") : t("button.copy-my-address")}
                 </span>
                 <Link href={"/nfts/" + address}>{t("signin.actions.my-nfts")}</Link>
-                <a href={"/nft-offers/" + address}>{t("signin.actions.my-nft-offers")}</a>
+                <Link href={"/nft-offers/" + address}>{t("signin.actions.my-nft-offers")}</Link>
                 {xummUserToken && <a href={"/explorer/" + address + "?hw=xumm&xummtoken=" + xummUserToken}>{t("signin.actions.view")}</a>}
                 {!username && <Link href={"/username?address=" + address}>{t("menu.usernames")}</Link>}
                 {xummUserToken && <a href={"/explorer/" + address + "?hw=xumm&xummtoken=" + xummUserToken + "&action=send"}>{t("signin.actions.send")}</a>}
@@ -203,7 +203,7 @@ export default function Header({ setSignRequest, account, signOut, selectedCurre
                 {isCopied ? t("button.copied") : t("button.copy-my-address")}
               </span>
               <Link href={"/nfts/" + address} className="mobile-menu-item" onClick={mobileMenuToggle}>{t("signin.actions.my-nfts")}</Link>
-              <a href={"/nft-offers/" + address} className="mobile-menu-item" onClick={mobileMenuToggle}>{t("signin.actions.my-nft-offers")}</a>
+              <Link href={"/nft-offers/" + address} className="mobile-menu-item" onClick={mobileMenuToggle}>{t("signin.actions.my-nft-offers")}</Link>
               {xummUserToken && <a href={"/explorer/" + address + "?hw=xumm&xummtoken=" + xummUserToken} className="mobile-menu-item">{t("signin.actions.view")}</a>}
               {!username && <Link href={"/username?address=" + address} className="mobile-menu-item" onClick={mobileMenuToggle}>{t("menu.usernames")}</Link>}
               {xummUserToken && <a href={"/explorer/" + address + "?hw=xumm&xummtoken=" + xummUserToken + "&action=send"} className="mobile-menu-item">{t("signin.actions.send")}</a>}
