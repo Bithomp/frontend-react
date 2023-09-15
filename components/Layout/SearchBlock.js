@@ -169,13 +169,13 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
     }
     */
 
-    //nft nftOffer (nft uri?)
+    //nft nftOffer uriToken
     if (isIdValid(searchFor)) {
       setSearching(true)
       const response = await axios('v2/search/' + searchFor)
       setSearching(false)
       const data = response.data
-      if (data.type === 'nftoken') {
+      if (data.type === 'nftoken' || data.type === 'uriToken') {
         router.push('/nft/' + encodeURI(searchFor))
         return
       }
