@@ -262,7 +262,7 @@ export const userOrServiceName = (data) => {
 
 export const ledgerLink = id => {
   if (id) {
-    return <a href={"/ledger/" + id}>#{id}</a>
+    return <Link href={"/ledger/" + id}>#{id}</Link>
   }
   return ''
 }

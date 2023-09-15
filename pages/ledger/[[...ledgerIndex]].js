@@ -2,6 +2,7 @@ import { useTranslation, Trans } from 'next-i18next'
 import { useState, useEffect } from 'react'
 import axios from 'axios'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
+import Link from 'next/link'
 
 import SEO from '../../components/SEO'
 
@@ -94,14 +95,14 @@ export default function Ledger({ pageMeta }) {
       checkApi()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [ledgerVersion])
 
   const ledgerNavigation = <p className='center'>
     {ledgerVersion > 32572 &&
-      <a href={"/ledger/" + (ledgerVersion - 1)} style={{ marginRight: "10px" }}>←</a>
+      <Link href={"/ledger/" + (ledgerVersion - 1)} style={{ marginRight: "10px" }}>←</Link>
     }
     #{ledgerVersion}
-    <a href={"/ledger/" + (ledgerVersion + 1)} style={{ marginLeft: "10px" }}>→</a>
+    <Link href={"/ledger/" + (ledgerVersion + 1)} style={{ marginLeft: "10px" }}>→</Link>
   </p>
 
   return <>
