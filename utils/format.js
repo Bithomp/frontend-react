@@ -260,11 +260,11 @@ export const userOrServiceName = (data) => {
   return "";
 }
 
-export const ledgerLink = (id) => {
+export const ledgerLink = id => {
   if (id) {
-    return <a href={"/ledger/" + id}>#{id}</a>;
+    return <a href={"/ledger/" + id}>#{id}</a>
   }
-  return '';
+  return ''
 }
 
 //replace with txIdLink

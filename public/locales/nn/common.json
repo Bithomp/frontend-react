@@ -171,10 +171,6 @@
     "total-supply": "Total forsyning",
     "total-burned": "Total brent"
   },
-  "ledger": {
-    "past-ledgers": "Se transaksjoner i de forrige ledgers",
-    "no-transactions": "Vi kunne ikke finne noen transaksjoner å vise."
-  },
   "nft-statistics": {
     "header": "NFT live statistikk",
     "text0": "Informasjonen er litt utdatert, vi må ta igjen <1>{{lag}}</1> ledgers.<br/>Dataene er gitt for ledger #{{crawlerIndex}}, ({{crawlerTime}}).<br/>Den siste validerte ledger er #{{currentLedgerIndex}}, ({{currentLedgerTime}}).",

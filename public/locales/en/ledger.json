@@ -1,0 +1,6 @@
+{
+  "no-transactions": "We could not find any transactions to show.",
+  "ledger-not-found": "We can not find that ledger yet",
+  "earliest-ledger": "The ledger <1>32570</1> is the earliest ledger available, approximately the first week of XRPL history, <3>ledgers 1 through 32569 were lost due to a mishap in 2012</3>.",
+  "ledger-continue": "Because the XRP Ledger's state is recorded in every ledger version, the ledger can continue without the missing history."
+}

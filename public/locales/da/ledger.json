@@ -1,0 +1,6 @@
+{
+  "no-transactions": "Vi kunne ikke finde nogen transaktioner at vise.",
+  "ledger-not-found": "We can not find that ledger yet",
+  "earliest-ledger": "Ledger <1>32570</1> er den tidligste tilgængelige ledger, ca. den første uge af XRPL-historien, <3>gik ledger 1 til 32569 tabt på grund af et uheld i 2012.",
+  "ledger-continue": "Fordi XRP ledger's tilstand registreres i hver ledger, kan ledgeren fortsætte uden den manglende historik."
+}

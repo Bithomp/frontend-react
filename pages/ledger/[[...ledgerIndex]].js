@@ -6,7 +6,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import SEO from '../../components/SEO'
 
 import { server } from '../../utils'
-import { fullDateAndTime, ledgerLink, shortHash, addressUsernameOrServiceLink } from '../../utils/format';
+import { fullDateAndTime, shortHash, addressUsernameOrServiceLink } from '../../utils/format';
 
 export async function getServerSideProps(context) {
   const { locale, req, query } = context
@@ -39,7 +39,7 @@ export async function getServerSideProps(context) {
   return {
     props: {
       pageMeta,
-      ...(await serverSideTranslations(locale, ['common']))
+      ...(await serverSideTranslations(locale, ['common', 'ledger']))
     }
   }
 }
@@ -52,12 +52,12 @@ export default function Ledger({ pageMeta }) {
   const ledgerVersion = pageMeta.ledgerVersion
 
   const checkApi = async () => {
-    const response = await axios('xrpl/v1/ledger/' + ledgerVersion + '?transactions=true&expand=true');
-    const data = response.data;
+    const response = await axios('xrpl/v1/ledger/' + ledgerVersion + '?transactions=true&expand=true')
+    const data = response.data
 
     if (data) {
-      data.transactions?.sort((a, b) => (a.outcome.indexInLedger > b.outcome.indexInLedger) ? 1 : -1);
-      setData(data);
+      data.transactions?.sort((a, b) => (a.outcome.indexInLedger > b.outcome.indexInLedger) ? 1 : -1)
+      setData(data)
     }
   }
 
@@ -96,18 +96,21 @@ export default function Ledger({ pageMeta }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  const ledgerNavigation = <p className='center'>
+    {ledgerVersion > 32572 &&
+      <a href={"/ledger/" + (ledgerVersion - 1)} style={{ marginRight: "10px" }}>⬅</a>
+    }
+    #{ledgerVersion}
+    <a href={"/ledger/" + (ledgerVersion + 1)} style={{ marginLeft: "10px" }}>⮕</a>
+  </p>
+
   return <>
     <SEO title={t("menu.ledger") + ' ' + ledgerVersion} />
     <div className="content-text">
       <h1 className="center">{t("menu.ledger")} #{ledgerVersion}<br />{(rendered && pageMeta?.close_time) ? fullDateAndTime(pageMeta.close_time) : <br />}</h1>
       {ledgerVersion > 32569 ?
         <>
-          {ledgerVersion > 32572 &&
-            <p className="center">
-              {t("ledger.past-ledgers")}: {ledgerLink(ledgerVersion - 1)}
-              , {ledgerLink(ledgerVersion - 2)}, {ledgerLink(ledgerVersion - 3)}.
-            </p>
-          }
+          {ledgerNavigation}
           <table className="table-large">
             <thead>
               <tr>
@@ -130,7 +133,7 @@ export default function Ledger({ pageMeta }) {
                       <td><a href={"/explorer/" + tx.id}>{shortHash(tx.id, 10)}</a></td>
                     </tr>
                   ) :
-                    <tr><td colSpan="4">{t("ledger.no-transactions")}</td></tr>
+                    <tr><td colSpan="4">{t("no-transactions", { ns: "ledger" })}</td></tr>
                   }
                 </>
                 :
@@ -143,22 +146,31 @@ export default function Ledger({ pageMeta }) {
               }
             </tbody>
           </table>
+          {ledgerNavigation}
         </>
         :
         <div className='flex'>
           <div className="grey-box">
-            <Trans i18nKey="genesis.text0">
-              The ledger <b>32570</b> is the earliest ledger available, approximately the first week of XRPL history,
-              <a
-                href="https://web.archive.org/web/20171211225452/https://forum.ripple.com/viewtopic.php?f=2&t=3613"
-                rel="noreferrer"
-                target="_blank"
-              >
-                ledgers 1 through 32569 were lost due to a mishap in 2012
-              </a>.
-            </Trans>
-            <br /><br />
-            {t("genesis.ledger-continue")}
+            {!ledgerVersion && ledgerVersion !== "" ?
+              <p className='center'>
+                {t("ledger-not-found", { ns: "ledger" })}
+              </p>
+              :
+              <>
+                <Trans i18nKey="earliest-ledger" ns="ledger">
+                  The ledger <b>32570</b> is the earliest ledger available, approximately the first week of XRPL history,
+                  <a
+                    href="https://web.archive.org/web/20171211225452/https://forum.ripple.com/viewtopic.php?f=2&t=3613"
+                    rel="noreferrer"
+                    target="_blank"
+                  >
+                    ledgers 1 through 32569 were lost due to a mishap in 2012
+                  </a>.
+                </Trans>
+                <br /><br />
+                {t("ledger-continue", { ns: "ledger" })}
+              </>
+            }
           </div>
         </div>
       }

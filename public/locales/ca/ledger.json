@@ -1,0 +1,6 @@
+{
+  "no-transactions": "No hem pogut torbar cap tipus de transacció per mostrar-te.",
+  "ledger-not-found": "We can not find that ledger yet",
+  "earliest-ledger": "El ledger <1>32570</1> és el primer ledger disponible, correspon aproximadament a la primera setmana d'història de l'XRPL, <3>els ledgers de l'1 al 32569 es van  perdre a causa d'un contratemps el 2012</3>.",
+  "ledger-continue": "Com que l'estat de l'XRPL es registra en cada versió del ledger, el ledger pot continuar sense disposar de la part de la història perduda."
+}

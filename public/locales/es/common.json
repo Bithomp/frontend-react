@@ -171,10 +171,6 @@
     "total-supply": "Distribución total",
     "total-burned": "Quemado en total"
   },
-  "ledger": {
-    "past-ledgers": "Ver transacciones de anteriores libros contables",
-    "no-transactions": "No encontramos ninguna transacción que mostrar."
-  },
   "nft-statistics": {
     "header": "Estadísticas NFT en vivo",
     "text0": "La información está un poco desactualizada, necesitamos ponernos al día con <1>{{lag}}</1> los libros contables.<br/>Los datos proviene del libro contable #{{crawlerIndex}}, ({{crawlerTime}}).<br/>El último libro contable validado es #{{currentLedgerIndex}}, ({{currentLedgerTime}}).",

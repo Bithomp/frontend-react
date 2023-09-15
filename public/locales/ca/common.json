@@ -171,10 +171,6 @@
     "total-supply": "Total d'XRP existent",
     "total-burned": "Total d'XRP eliminat"
   },
-  "ledger": {
-    "past-ledgers": "Veure transaccions en els ledgers previs",
-    "no-transactions": "No hem pogut torbar cap tipus de transacció per mostrar-te."
-  },
   "nft-statistics": {
     "header": "Estadístiques d'NFTs en viu",
     "text0": "La informació està una mica desactualitzada, necessitem posar-nos al dia de <1>{{lag}}</1> ledgers.<br/>Les dades són subministrades pel ledger #{{crawlerIndex}}, ({{crawlerTime}}).<br/>L'últim ledger validat és el #{{currentLedgerIndex}}, ({{currentLedgerTime}}).",

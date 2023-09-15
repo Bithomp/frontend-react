@@ -171,10 +171,6 @@
     "total-supply": "Ukupna opskrba",
     "total-burned": "Ukupno uništeno"
   },
-  "ledger": {
-    "past-ledgers": "Pogledaj transakcije u prethodnim ledgerima",
-    "no-transactions": "Nismo pronašli transakcije za prikazati."
-  },
   "nft-statistics": {
     "header": "NFT live statistike",
     "text0": "Podaci su malo zastarijeli, moramo još dohvatiti <1>{{lag}}</1> stranica ledger knjige.<br/>Podaci su dobiveni ledger stranicom #{{crawlerIndex}}, ({{crawlerTime}}).<br/>Zadnji verificirani ledger stranica je #{{currentLedgerIndex}} , ({{currentLedgerTime}}).",
