@@ -35,12 +35,12 @@ export default function NftsComponent({
   mintedPeriod,
   burnedPeriod,
   includeBurnedQuery,
-  includeWithoutMetadataQuery
+  includeWithoutMetadataQuery,
+  id
 }) {
   const { t } = useTranslation()
   const router = useRouter()
   const windowWidth = useWidth()
-  const { id } = router.query
 
   const [rendered, setRendered] = useState(false)
   const [data, setData] = useState([])
@@ -231,7 +231,7 @@ export default function NftsComponent({
   useEffect(() => {
     checkApi({ restart: true })
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [issuer, taxon, owner, listTab, saleDestinationTab, search, includeBurned, includeWithoutMetadata])
+  }, [id, issuer, taxon, owner, listTab, saleDestinationTab, search, includeBurned, includeWithoutMetadata])
 
   useEffect(() => {
     let queryAddList = [];

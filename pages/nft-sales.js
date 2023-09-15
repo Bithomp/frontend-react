@@ -5,6 +5,7 @@ import axios from 'axios'
 import { CSVLink } from "react-csv"
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
+import Link from 'next/link'
 
 import { stripText, isAddressOrUsername, setTabParams } from '../utils'
 import { isValidTaxon, nftThumbnail, nftNameLink } from '../utils/nft'
@@ -352,7 +353,7 @@ export default function NftSales({
     />
     <div className="content-text" style={{ minHeight: "480px" }}>
       <h1 className="center">{t("nft-sales.header")}</h1>
-      <p className='center'><a href={"/nft-explorer?view=" + viewTab + issuerTaxonUrlPart}>{t("nft-explorer.header")}</a></p>
+      <p className='center'><Link href={"/nft-explorer?view=" + viewTab + issuerTaxonUrlPart}>{t("nft-explorer.header")}</Link></p>
       <div className='center'>
         <span className='halv'>
           <span className='input-title'>{t("table.issuer")} {userOrServiceLink(data, 'issuer')}</span>
