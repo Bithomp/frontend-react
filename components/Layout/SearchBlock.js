@@ -4,6 +4,7 @@ import { useTranslation, Trans } from 'next-i18next'
 import { useRouter } from 'next/router'
 import axios from 'axios';
 import { useSearchParams } from 'next/navigation'
+import Link from 'next/link'
 
 import {
   isAddressOrUsername,
@@ -370,8 +371,8 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
       {showTabs &&
         <div className='explorer-tabs-block'>
           <div className='explorer-tabs'>
-            {tab === "nfts" ? <b>NFTs</b> : <a href={"/nfts/" + searchItem + addParams}>NFTs</a>}
-            {tab === "nft-offers" ? <b>{t("nft-offers.header")}</b> : <a href={"/nft-offers/" + searchItem}>{t("nft-offers.header")}</a>}
+            {tab === "nfts" ? <b>NFTs</b> : <Link href={"/nfts/" + searchItem + addParams}>NFTs</Link>}
+            {tab === "nft-offers" ? <b>{t("nft-offers.header")}</b> : <Link href={"/nft-offers/" + searchItem}>{t("nft-offers.header")}</Link>}
             {tab === "nft-volumes" && <b>{t("menu.nft.volumes")}</b>}
             <a href={"/explorer/" + searchItem}>{t("explorer.menu.account")}</a>
             {tab !== "nft-volumes" && <a href={"/explorer/" + searchItem} className='hide-on-mobile'>{t("explorer.menu.transactions")}</a>}
