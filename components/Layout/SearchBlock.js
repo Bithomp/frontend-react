@@ -3,7 +3,7 @@ import Select from 'react-select'
 import { useTranslation, Trans } from 'next-i18next'
 import { useRouter } from 'next/router'
 import axios from 'axios';
-import { useSearchParams } from 'next/navigation'
+import { useSearchParams, redirect } from 'next/navigation'
 import Link from 'next/link'
 
 import {
@@ -86,7 +86,7 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
       return
     }
 
-    //if printable character entered
+    // if printable character entered
     // e.key === 'Unidentified' - for android chrome
     if (e.key === 'Unidentified' || ([...e.key].length === 1 && !e.ctrlKey && !e.metaKey)) {
 
@@ -143,32 +143,19 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
     if (!searchFor) return
 
     if (tab === "nfts" && isAddressOrUsername(searchFor)) {
-      window.location = "../nfts/" + encodeURI(searchFor) + addParams
+      redirect("/nfts/" + encodeURI(searchFor) + addParams)
       return
     }
 
     if (tab === "nft-offers" && isAddressOrUsername(searchFor)) {
-      window.location = "../nft-offers/" + encodeURI(searchFor) + addParams
-      return
-    }
-
-    if (tab === "nft-volumes" && isAddressOrUsername(searchFor)) {
-      window.location = "../nft-volumes/" + encodeURI(searchFor) + addParams
+      redirect("/nft-offers/" + encodeURI(searchFor) + addParams)
       return
     }
 
     if (tab === "nft" && isValidNftXls20(searchFor)) {
-      window.location = "../nft/" + encodeURI(searchFor)
+      redirect("/nft/" + encodeURI(searchFor))
       return
     }
-
-    /*
-    // we need to write a better check for nftokenOffer
-    if (tab === "nft-offer" && isIdValid(searchFor)) {
-      window.location = "../nft-offer/" + encodeURI(searchFor)
-      return
-    }
-    */
 
     //nft nftOffer uriToken
     if (isIdValid(searchFor)) {
