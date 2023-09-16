@@ -498,7 +498,7 @@
     "tiles": "Tiles",
     "secondary-sales": "Sekundær",
     "primary-sales": "Primær",
-    "all-sales": "Alle salg",
+    "primaryAndSecondary-sales": "Alle salg",
     "top-sales": "TOP salg",
     "latest-sales": "Seneste salg",
     "all-time": "All tid",

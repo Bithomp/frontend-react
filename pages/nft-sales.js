@@ -93,7 +93,7 @@ export default function NftSales({
   ]
 
   const saleTabList = [
-    { value: 'all', label: t("tabs.all-sales") },
+    { value: 'all', label: t("tabs.primaryAndSecondary-sales") },
     { value: 'secondary', label: (t("tabs.secondary-sales") + (total?.secondary ? (" (" + total.secondary + ")") : "")) },
     { value: 'primary', label: (t("tabs.primary-sales") + (total?.primary ? (" (" + total.primary + ")") : "")) }
   ]

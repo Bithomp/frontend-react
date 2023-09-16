@@ -498,7 +498,7 @@
     "tiles": "Pločice",
     "secondary-sales": "Sekundarne",
     "primary-sales": "Primarne",
-    "all-sales": "Sve prodaje",
+    "primaryAndSecondary-sales": "Sve prodaje",
     "top-sales": "TOP prodaje",
     "latest-sales": "Zadnje prodaje",
     "all-time": "Sve vrijeme",

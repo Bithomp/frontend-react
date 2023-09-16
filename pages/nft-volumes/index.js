@@ -73,7 +73,7 @@ export default function NftVolumes({ period, sale, list, currency, currencyIssue
   ]
 
   const saleTabList = [
-    { value: 'all-sales', label: t("tabs.all-sales") },
+    { value: 'primaryAndSecondary', label: t("tabs.primaryAndSecondary-sales") },
     { value: 'secondary', label: (t("tabs.secondary-sales")) },
     { value: 'primary', label: (t("tabs.primary-sales")) }
   ]

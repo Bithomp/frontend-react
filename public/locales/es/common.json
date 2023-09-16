@@ -498,7 +498,7 @@
     "tiles": "Imágenes",
     "secondary-sales": "Secundario",
     "primary-sales": "Primario",
-    "all-sales": "Todas las ventas",
+    "primaryAndSecondary-sales": "Todas las ventas",
     "top-sales": "TOP ventas",
     "latest-sales": "Últimas ventas",
     "all-time": "Desde siempre",

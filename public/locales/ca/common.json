@@ -498,7 +498,7 @@
     "tiles": "Mosaic",
     "secondary-sales": "Secundàries",
     "primary-sales": "Primàries",
-    "all-sales": "Totes les vendes",
+    "primaryAndSecondary-sales": "Totes les vendes",
     "top-sales": "TOP de vendes",
     "latest-sales": "Últimes vendes",
     "all-time": "Qualsevol moment",
