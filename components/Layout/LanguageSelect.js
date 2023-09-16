@@ -6,6 +6,7 @@ import 'moment/locale/ca' // "ca"
 import 'moment/locale/hr' // "hr"
 import 'moment/locale/da' // "da"
 import 'moment/locale/nn' // "nn"
+import 'moment/locale/ja' // "ja"
 import { useRouter } from 'next/router'
 import Cookies from 'universal-cookie'
 
@@ -39,6 +40,7 @@ export default function LanguageSelect() {
         <option value="hr">Hrvatski</option>
         <option value="da">Dansk</option>
         <option value="nn">Norsk</option>
+        <option value="ja">日本語</option>
       </select>
     </div>
   )
