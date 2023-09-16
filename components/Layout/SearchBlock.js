@@ -3,7 +3,7 @@ import Select from 'react-select'
 import { useTranslation, Trans } from 'next-i18next'
 import { useRouter } from 'next/router'
 import axios from 'axios';
-import { useSearchParams, redirect } from 'next/navigation'
+import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 
 import {
@@ -143,17 +143,17 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
     if (!searchFor) return
 
     if (tab === "nfts" && isAddressOrUsername(searchFor)) {
-      redirect("/nfts/" + encodeURI(searchFor) + addParams)
+      router.push("/nfts/" + encodeURI(searchFor) + addParams)
       return
     }
 
     if (tab === "nft-offers" && isAddressOrUsername(searchFor)) {
-      redirect("/nft-offers/" + encodeURI(searchFor) + addParams)
+      router.push("/nft-offers/" + encodeURI(searchFor) + addParams)
       return
     }
 
     if (tab === "nft" && isValidNftXls20(searchFor)) {
-      redirect("/nft/" + encodeURI(searchFor))
+      router.push("/nft/" + encodeURI(searchFor))
       return
     }
 
