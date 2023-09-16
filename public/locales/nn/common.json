@@ -472,7 +472,7 @@
       "buy": "Kjøp",
       "show": "Vis",
       "hide": "gjem",
-      "see-on": "Se på",
+      "see-on": "Se på <1><0>{{marketplace}}</0></1>",
       "valid": "gyldig",
       "invalid": "Ugyldig"
     },

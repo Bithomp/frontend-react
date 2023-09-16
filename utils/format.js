@@ -2,6 +2,7 @@ import { Buffer } from 'buffer'
 import Link from 'next/link'
 import Image from 'next/image'
 import React from "react"
+import { Trans } from 'next-i18next'
 
 import LinkIcon from "../public/images/link.svg"
 import { stripText } from '.'
@@ -166,14 +167,19 @@ export const nftLink = (nft, type, options = {}) => {
 
   //nft-offers destination
   if (nft[type + 'Details']) {
-    const showName = userOrServiceName(nft[type + 'Details'])
+    const { service, username } = nft[type + 'Details']
+
     if (type === "destination" && nft.valid) {
       const url = mpUrl(nft)
       if (url) {
         return <span>
-          {options?.seeOn} <a href={url} target="_blank" rel="noreferrer">
-            {showName}
-          </a>
+          <Trans i18nKey="table.text.see-on">
+            See on <a href={url} target="_blank" rel="noreferrer">
+              <b className={service ? 'green' : (username ? 'blue' : '')}>
+                {{ marketplace: service || username || "" }}
+              </b>
+            </a>
+          </Trans>
         </span>
       }
     }
@@ -277,17 +283,17 @@ export const addressUsernameOrServiceLink = (data, type, options = {}) => {
   }
 }
 
-export const userOrServiceName = (data) => {
+export const userOrServiceName = data => {
   if (data) {
-    const { service, username } = data;
+    const { service, username } = data
     if (service) {
-      return <b className='green'>{service}</b>;
+      return <b className='green'>{service}</b>
     }
     if (username) {
-      return <b className='blue'>{username}</b>;
+      return <b className='blue'>{username}</b>
     }
   }
-  return "";
+  return ""
 }
 
 export const ledgerLink = id => {

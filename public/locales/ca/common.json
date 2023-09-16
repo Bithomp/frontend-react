@@ -472,7 +472,7 @@
       "buy": "Compra",
       "show": "Mostra",
       "hide": "Amaga",
-      "see-on": "Veure a",
+      "see-on": "Veure a <1><0>{{marketplace}}</0></1>",
       "valid": "vàlid",
       "invalid": "invàlid"
     },
