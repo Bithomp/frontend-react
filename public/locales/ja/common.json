@@ -1,0 +1,635 @@
+{
+  "menu": {
+    "personal": {
+      "personal": "個人向け",
+      "search-on-xrpl": "XRPLの検索"
+    },
+    "business": {
+      "business": "ビジネス向け",
+      "advertise": "広告掲載",
+      "eaas": "Explorer as a Service",
+      "build-unl": "UNLの作成"
+    },
+    "usernames": "ユーザネームの登録",
+    "project-registartion": "XRPLプロジェクトの登録",
+    "price-alerts": "XRP価格アラート",
+    "submit-offline-tx": "オフライントランザクションを送信",
+    "networks": "ネットワーク",
+    "ledger": "レジャーのトランザクション",
+    "nft": {
+      "explorer": "エクスプローラ",
+      "volumes": "取引量",
+      "sales": "販売",
+      "minters": "発行者",
+      "distribution": "保有者分布",
+      "statistics": "リアルタイム情報",
+      "nfts": "アカウントのNFT",
+      "offers": "オファー"
+    },
+    "xrpl": {
+      "rich-list": "リッチリスト",
+      "last-ledger-information": "現在のレジャー情報",
+      "last-ledger-transactions": "現在のトランザクション情報",
+      "verified-domains": "検証済みドメイン",
+      "validators": "バリデータ",
+      "amendments": "Amendments",
+      "genesis": "ジェネシスアカウント"
+    },
+    "developers": {
+      "developers": "開発者",
+      "account-generation": "アカウントの作成",
+      "faucet": "Faucet",
+      "api": "APIドキュメント",
+      "api-key-request": "APIキー"
+    },
+    "legal": "Legal",
+    "disclaimer": "免責事項",
+    "privacy-policy": "プライバシーポリシー",
+    "terms-and-conditions": "利用規約",
+    "customer-support": "カスタマサポート",
+    "press": "プレス",
+    "merch": "グッズ販売",
+    "donate": "寄付",
+    "community": {
+      "title": "コミュニティ",
+      "xumm": "Xummウォレット",
+      "xrplf": "XRPL財団",
+      "xrpl": "XRPLウェブサイト",
+      "xrpchat": "XRP chat",
+      "treasury": "Treasury: Bithomp"
+    },
+    "sponsored": {
+      "title": "スポンサー",
+      "buy": "Buy XRP",
+      "earn": "Earn on XRP",
+      "play": "Play XRP"
+    }
+  },
+  "components": {
+    "expiration-select": {
+      "1d": "1日",
+      "3d": "3日",
+      "7d": "7日",
+      "14d": "14日",
+      "30d": "30日",
+      "90d": "90日"
+    }
+  },
+  "signin": {
+    "signin": "サインイン",
+    "signout": "サインアウト",
+    "choose-app": "サインインするアプリを選択",
+    "login-with": "Login with",
+    "sign-with": "Sign with",
+    "amount": {
+      "set-price": "価格を設定",
+      "enter-amount": "金額を入力"
+    },
+    "expiration": "有効期限",
+    "xumm": {
+      "open-app": "スマートフォンでXummアプリを開きます。",
+      "change-settings": "設定からテストネットノードを選択してください。",
+      "scan-qr": "XummアプリでQRコードをスキャンします。",
+      "statuses": {
+        "redirecting": "Xummへリダイレクトしています...",
+        "wait": "しばらくお待ちください...",
+        "check-push": "スマートフォンのプッシュ通知を確認してください。",
+        "check-app": "Xummアプリの指示に従ってください。",
+        "expired": "QRコードの有効期限が切れました。新しいQRコードをリクエストしてください。"
+      }
+    },
+    "actions": {
+      "view": "エクスプローラで確認",
+      "send": "XRPを送信",
+      "my-nfts": "NFTを確認",
+      "my-nft-offers": "NFTオファーの確認"
+    },
+    "not-available": "利用不可",
+    "confirm": {
+      "set-domain": "ドメインの設定",
+      "nft-accept-offer-header": "NFT purchase",
+      "nft-create-sell-offer-header": "出品(販売)",
+      "nft-create-buy-offer-header": "購入オファーを作成",
+      "nft-accept-offer": "Bithompは分散型マーケットプレイスへのアクセスを提供するものであり、いかなるNFTの信憑性及び正当性を検証又は保証するものではないことを認めます。私は、<1>利用規約</1>を読み、BithompでNFTを売買または使用するすべての条件に同意します。",
+      "nft-create-sell-offer": "署名後、このNFTは第三者により即座に購入可能となることを理解しています。",
+      "nft-burn-header": "NFTをバーン",
+      "nft-burn": "NFTが永久的に削除され、所有、譲渡、購入、売却ができなくなることを理解しています。この措置は取り消すことができません。"
+    },
+    "set-account": {
+      "domain": "ドメイン",
+      "enter-domain": "ドメインを入力"
+    }
+  },
+  "footer": {
+    "cookie": {
+      "we-use-cookie": "本サイトでは、お客様の当社サイトでの体験を向上させるために、クッキーと同様の技術を使用しています。",
+      "read-more": "詳しく見る"
+    }
+  },
+  "home": {
+    "title": "XRPエクスプローラ | XRP Ledgerを検索",
+    "description": "XRP価格アラート | XRPL統計情報 | NFTエクスプローラ | ウォレットアドレス検索 | XRPL NFT 情報 | NFTのトレード | XRPサービス",
+    "search-placeholder": "XRPLアドレス/トランザクション/NFT/ユーザネーム/PayString/オファー/通貨のハッシュで検索",
+    "search-placeholder-short": "アドレス/トランザクション/ユーザで検索",
+    "scan-qr": "QRコードをスキャン",
+    "whales": {
+      "header": "直近24時間の代表的なトランザクション",
+      "no-value": "値なし"
+    },
+    "stat": {
+      "header": "XRPLリアルタイム情報",
+      "ledger-index": "レジャーインデックス",
+      "close-time": "クローズ時間",
+      "transactions": "トランザクション数",
+      "txs-per-sec": "tx/秒",
+      "quorum": "バリデーション定足数",
+      "proposers": "提出者数",
+      "accounts": "アカウント",
+      "usernames": "ユーザネーム",
+      "nft": {
+        "created": "NFTミント数",
+        "burned": "NFTバーン数",
+        "owners": "現在の保有者",
+        "issuers": "NFT発行者数",
+        "transfers": "NFTトランスファー数",
+        "for-sale": "販売中のNFT数"
+      }
+    }
+  },
+  "last-ledger-information": {
+    "ledger-hash": "レジャーハッシュ",
+    "ledger": "レジャー",
+    "ledger-closed-at": "レジャーのクローズ時刻",
+    "ledger-interval": "レジャーのインターバル",
+    "transactions": "トランザクション数",
+    "transaction-speed": "秒間トランザクション数",
+    "proposers": "提出者数",
+    "validation-quorum": "定足数",
+    "base-fee": "基本手数料",
+    "base-reserve": "基本準備金",
+    "increment-reserve": "所有者準備金",
+    "total-supply": "供給量",
+    "total-burned": "合計バーン"
+  },
+  "nft-statistics": {
+    "header": "NFT リアルタイム情報",
+    "text0": "この情報は少し古く、<1>{{lag}}</1>レジャー分追いつく必要があります。<br/>表示中のデータはレジャー#{{crawlerIndex}}, ({{crawlerTime}})のものです。<br/>最後に検証されたレジャーインデックスは#{{currentLedgerIndex}}, ({{currentLedgerTime}})です。",
+    "updated": "最終更新",
+    "ledger-index": "レジャーインデックス",
+    "created": "ミント数",
+    "burned": "バーン数",
+    "exist": "レジャーに存在するNFT",
+    "burnable": "発行者によりバーン可能",
+    "only-xrp": "XRPでのみ取引可能",
+    "transferable": "二次流通可能",
+    "owners": "現在の保有者数",
+    "issuers": "合計発行者数",
+    "transfers": "NFTの送信数",
+    "for-sale": "販売中のNFT",
+    "for-sale-without-destination": "パブリックに販売中のNFT",
+    "for-sale-with-destination": "直接販売中のNFT"
+  },
+  "amendment": {
+    "soon": "大多数の支持を得ているAmendments",
+    "enabled": "有効なAmendments",
+    "name": "名前",
+    "introduction": "導入",
+    "majority": "大多数",
+    "eta": "推定有効時刻"
+  },
+  "validators": {
+    "updated": "最終更新",
+    "unl": "UNLバリデータ",
+    "domain": "ドメイン",
+    "domain-legacy": "ドメイン (古い検証方法)",
+    "public-key": "公開鍵",
+    "sequence": "シーケンス",
+    "address": "XRPLアドレス",
+    "no-domain": "ドメイン未指定",
+    "text0": "バリデータリスト <1>{{url}}</1> はシーケンス {{sequence}} と、有効期限 {{expiration}} が設定されています。<br/>次の{{validatorCount}}バリデータを含んでいます。"
+  },
+  "username": {
+    "memo": "Bithompユーザネームの登録",
+    "error": {
+      "address-empty": "XRPLアドレスを入力してください。",
+      "address-invalid": "正しいXRPLアドレスを入力してください。",
+      "address-hosted": {
+        "on": "on",
+        "hosted": "入力されたアドレスは {{serviceName}} でホストされています。ホストされていないウォレット（ハードウェアウォレット、Xummなど）のみユーザネームを登録できます。取引所の運営者の方は、こちらまでご連絡ください。"
+      },
+      "address-done": "このアドレスは既にユーザネームが登録済みです。",
+      "username-empty": "登録したいユーザーネームを入力してください。",
+      "username-invalid": "ユーザー名は18文字以内で、記号は使用できません。",
+      "username-taken": "ユーザネーム <b>{{username}}</b> は既に使われています:(",
+      "username-reserved": "ユーザネーム <b>{{username}}</b> は予約されています。サポートに連絡してください。",
+      "username-hold": "ユーザネーム <b>{{username}}</b> は他のアカウントによって登録処理中です。24時間後に再度試してみてください。",
+      "agree-terms-page": "記載されている利用規約への同意が必要です。",
+      "agree-terms-site": "本サイトの利用規約への同意が必要です。",
+      "agree-privacy-policy": "プライバシーポリシーへの同意が必要です。",
+      "payment-partly": "<b>{{currency}} {{required}}</b>が必要ですが、{{received}} {{currency}}しか受け取っていません。残りの金額を送金してください。"
+    },
+    "step0": {
+      "text0": "Bithomp<1>ユーザネーム</1>はあなたのXRPLアドレスの<3>公開ユーザ名</3>です。",
+      "text1": "ユーザネームはbithompエクスプローラやbithomp <1>API</1>を使用する他のサービスであなたのアドレスと関連付けられます。登録後は公開され、<3>誰でも</3>見ることができます。あなたのXRPLアドレスは次のリンクアクセス可能になります: ",
+      "text2": "ユーザネームは<1>変更・削除できません</1>。",
+      "only-one-for-address": "各XRPLアドレスに登録できるユーザネームは1つだけです。",
+      "address-you-control": "あなた自身が管理する（シークレットまたは12/24のリカバリワードを持っている）XRPLアドレスに対してのみユーザネームを登録できます。取引所/サービス/ウォレット内でホストされている(宛先タグを持っている)アドレスのユーザネームは登録できません。",
+      "pay-from-your-address": "XRPLアドレスを管理していることを証明するには、そのアドレス（ユーザネームを割り当てたいアドレス）から支払いを行う必要があります。他のアドレスからの支払いは寄付としてカウントされるため、返金されません。",
+      "text3": "支払いは100スウェーデンクローナのXRP建です。ユーザネームへの支払いは<1>返金されません</1>。要求額を超える金額を支払った場合、超えた金額は寄付としてカウントされ、返金されません。",
+      "text4": "<1>XRPLメインネット</1>でユーザネームを登録すると、bithompの開発者エクスプローラで利用可能になります（1時間以内）。",
+      "enter-address-or": "XRPLアドレスを入力するか",
+      "sign-in": "Xummでサインインしてください",
+      "sign-out": "サインアウト",
+      "your-address": "あなたのXRPLアドレス",
+      "enter-username": "希望するユーザネームを入力してください",
+      "your-username": "ユーザネーム",
+      "enter-country": "居住国（集計のため）",
+      "agree-terms-page": "上記の利用規約を理解し、同意します。",
+      "agree-terms-site": "<1>利用規約</1>に同意します。",
+      "agree-privacy-policy": "<1>プライバシーポリシー</1>に同意します。",
+      "already-registered": "既に登録済みのユーザネームです。",
+      "sign-out-to-register-another-one": "<0>このアカウントからサインアウト</0>して、別のアドレスのユーザネームを登録します。"
+    },
+    "step1": {
+      "to-register": "次の公開ユーザネームを登録します: ",
+      "from-your-address": "次のアドレスから支払いを行ってください: ",
+      "text0": "<1>他のアドレス</1>から、または<3>間違った宛先タグ</3>を使用して行われた支払いは、本サービスでは認められず、寄付として扱われ、<5>返金されません</5>。",
+      "payment-instructions": "支払い方法",
+      "address": "XRPLアドレス:",
+      "tag": "宛先タグ:",
+      "amount": "金額:",
+      "awaiting": "支払い完了を待っています",
+      "about-confirmation": "支払いが確認され次第、確認画面が表示されます。"
+    },
+    "step2": {
+      "text0": "おめでとうございます！あなたのユーザネーム<1>{{ユーザー名}}</1>が登録されました。",
+      "one-more": "もう1件登録"
+    }
+  },
+  "alerts": {
+    "text0": "<1>Bitstamp</1>によるXRP/USDまたはXRP/BTCの市場価格が、1時間以内に5%以上、または1日以内に10%以上変動した場合にアラートを受け取ります。",
+    "text1": "テレグラムのチャンネル <1>bithomp</1> またはツイッターアカウント <3>bithompAlerts</3> をフォローしてください。",
+    "last-alerts": "直近50アラート",
+    "date-and-time": "日付",
+    "currency-pair": "通貨ペア",
+    "change-duration": "変動期間",
+    "change": "変動",
+    "old-rate": "変動前レート",
+    "new-rate": "変動後レート"
+  },
+  "genesis": {
+    "text0": "レジャー<1>32570</1>は、XRPLの歴史のおよそ1週間目、利用可能な最も古いレジャーです。<3>レジャー1から32569までは、2012年の不慮の事故で失われました</3>。",
+    "ledger-continue": "XRP Ledgerのステートはすべてのレジャーのバージョンに記録されているため、レジャーは失われた履歴がなくても継続することができます。",
+    "ledger-index": "レジャーインデックス",
+    "account-count": "アカウント数",
+    "inception": "開始日",
+    "xrp-balance": "XRP残高",
+    "balance-update": "残高更新日",
+    "details": "詳細",
+    "address": "アドレス",
+    "genesis-balance": "ジェネシス残高",
+    "rippletrade-username": "Rippletradeユーザ名",
+    "nickname": "ニックネーム",
+    "genesis-index": "ジェネシスインデックス"
+  },
+  "developer": {
+    "header": "Bithomp APIキーのリクエスト",
+    "email": "メールアドレス:",
+    "url": "ウェブサイトまたはアプリのURL:",
+    "description": "プロジェクトの説明とAPI の利用目的:",
+    "success": "ありがとうございました。48時間以内にAPIトークンをメールでお送りします。",
+    "error": {
+      "email-empty": "メールアドレスを入力してください。",
+      "email-invalid": "有効なメールアドレスを入力してください。",
+      "url-empty": "ウェブサイトまたはアプリのURLを入力してください。",
+      "url-invalid": "有効なURLを入力してください。",
+      "description-empty": "プロジェクトの説明を追加してください。",
+      "description-invalid": "プロジェクトの詳細を入力してください。"
+    }
+  },
+  "customer-support": {
+    "text0": "Bithompは<1>パブリック</1>なXRP Ledgerのエクスプローラです。",
+    "no-help": "アカウントの凍結、払い戻し、トランザクションのキャンセル、宛先タグの変更/追加はできません。また、紛失または盗難に遭われた資金を取り戻すための調査は行っておりません。",
+    "text1": "資金が盗まれた場合、または詐欺の被害に遭った場合は、<1>こちら</1>から報告することができます。",
+    "status-failed": "トランザクションのステータスが「失敗」であるにもかかわらず、残高から資金が引き落とされた場合は、使用したサービス/ウォレット/取引所サポートにお問い合わせください。",
+    "status-success": "トランザクションのステータスが「成功」であるにもかかわらず、資金が届いていない場合は、受取人のウォレット/サービス/取引所サポートにお問い合わせください。",
+    "wrong-tag": "宛先タグを付けずにトランザクションを送信した場合、または宛先タグを間違えて送信した場合は、上記（2）と（3）をご覧ください。",
+    "text2": "もしあなたのウォレットに10XRPがない場合は、<1>基本準備金</1>をご覧ください。",
+    "paper-wallet": "ペーパーウォレットからXRPを送金する場合は、初めにソフトウェアウォレットにインポートする必要があります。その際はXummモバイルアプリをご利用ください（シークレットを\"シークレットキー\"としてインポートします）。",
+    "flare": "Flareについて質問がある場合は、Flareコミュニティで質問してください。",
+    "text3": "<1>パートナーシップまたはマーケティング</1>のご提案については、メールにてご連絡ください: <3/>。 また、bithompユーザネームの登録やbithompトランザクションエクスプローラに関するご質問もお問い合わせください。",
+    "no-answer": "時間的な都合上、1-7に関するメールにはお答えしておりません。",
+    "submit-info": "XRPLサービスに関する情報を送信",
+    "text4": "パブリックXRPLサービスをお持ちで、Bithomp上でXRPアドレスを表示したい場合は、<1>こちら</1>から情報を送信してください。また、お急ぎの場合、メールでお問い合わせいただくことも可能です: <3/> ",
+    "follow-us": "SNSでのフォローをお願いします！"
+  },
+  "press": "これはメディアやプレス関係者が印刷物やウェブで使用可能なBithompの公式ロゴです(svg、png、eps、pdf、ダーク背景用、ライト背景用)。メディアからのお問い合わせは<1>カスタマサポート</1>まで。",
+  "page-not-found": {
+    "header": "リクエストされたページが見つかりません。",
+    "text": "<1>こちら</1>をクリックするとトップページへ遷移します。"
+  },
+  "receipt": {
+    "quantity": "qty.",
+    "items": "items",
+    "price": "price",
+    "total": "total",
+    "paid": "paid",
+    "order-id": "order id"
+  },
+  "button": {
+    "continue": "続行",
+    "cancel": "キャンセル",
+    "accept": "承認",
+    "submit": "送信",
+    "search": "検索",
+    "print": "印刷",
+    "download": "ダウンロード",
+    "copy": "コピー",
+    "copied": "コピーしました",
+    "copy-my-address": "アドレスをコピー",
+    "sign": "署名"
+  },
+  "general": {
+    "error": "エラー",
+    "no-data": "データがありません",
+    "loading": "読み込み中...",
+    "load-failed": "読み込みに失敗しました",
+    "all-issuers": "全ての発行者",
+    "no-expiration": "無期限",
+    "no-uri": "URIが指定されていません",
+    "no-media": "メディアが見つかりません",
+    "viewer": "ビュワー"
+  },
+  "error": {
+    "Network Error": "インターネットに接続していないようです ;(",
+    "Request failed with status code 429": "リクエストの送信数が多すぎます、後ほどお試しください！"
+  },
+  "error-api": {
+    "search is too short": "検索する名前が短すぎます",
+    "issuer username is not found or invalid": "発行者のユーザネームが存在しないか無効です",
+    "issuer is invalid": "発行者のアドレスが無効です",
+    "owner username is not found or invalid": "保有者のユーザネームが存在しないか無効です",
+    "owner is invalid": "保有者のアドレスが無効です",
+    "destination username is not found or invalid": "宛先のユーザネームが存在しないか無効です。",
+    "destination is invalid": "宛先のアドレスが無効です",
+    "currency is invalid": "通貨名が無効です",
+    "currencyIssuer username is not found or invalid": "通貨発行者のユーザネームが存在しないか無効です",
+    "currencyIssuer is invalid": "通貨発行者のアドレスが無効です",
+    "Token information is not found": "IDに関する情報は見つかりませんでした",
+    "No nfts information is found": "申し訳ありません、エラーが発生しました。別の方法で検索してください。"
+  },
+  "units": {
+    "seconds-short": "秒",
+    "minutes-short": "分",
+    "hours-short": "時間"
+  },
+  "period": {
+    "all": "",
+    "year": "直近365日間",
+    "month": "直近30日間",
+    "week": "直近7日間",
+    "day": "直近24時間"
+  },
+  "table": {
+    "index": "#",
+    "address": "アドレス",
+    "time": "Time",
+    "date": "日付",
+    "amount": "金額",
+    "name": "名前",
+    "sender": "送信者",
+    "balance": "残高",
+    "memo": "メモ",
+    "transaction": "トランザクション",
+    "owner": "保有者",
+    "owners-now": "保有者数 (現在)",
+    "accepted-by": "承認者",
+    "issuer": "発行者",
+    "minter": "発行者",
+    "receiver": "受取人",
+    "issuer-owner": "発行者 & 保有者",
+    "issuers": "発行者",
+    "broker": "ブローカー",
+    "seller": "売却者",
+    "buyer": "購入者",
+    "sold": "販売",
+    "sold_few": "販売実績",
+    "sold-on": "販売サイト",
+    "minted-on": "ミントサイト",
+    "type": "種類",
+    "status": "ステータス",
+    "hash": "Hash",
+    "serial": "シリアル番号",
+    "taxon": "Taxon",
+    "placed": "作成日時",
+    "accepted": "承認済み",
+    "canceled": "キャンセル済",
+    "offer": "オファー",
+    "expiration": "有効期限",
+    "expired": "有効期限切れ",
+    "destination": "宛先",
+    "sales": "取引",
+    "volume": "取引量",
+    "price": "価格",
+    "external-url": "外部URL",
+    "description": "説明",
+    "collection": "コレクション",
+    "transfer-fee": "ロイヤリティ",
+    "flag": "フラグ",
+    "flags": "フラグ",
+    "count": "数量",
+    "nfts": "NFT",
+    "minted": "ミント",
+    "transferred": "トランスファー",
+    "burned": "バーン",
+    "attributes": "プロパティ",
+    "metadata": "メタデータ",
+    "ledger-data": "レジャーデータ",
+    "history": "履歴",
+    "sell-offers": "売却オファー",
+    "buy-offers": "購入オファー",
+    "nfts-now": "NFT数 (現在)",
+    "traded-nfts": "取引されたNFT",
+    "buyers": "購入者数",
+    "raw-data": "実際のデータ",
+    "username": "ユーザネーム",
+    "floor-now": "フロア価格 (現在)",
+    "related-lists": "関連リスト",
+    "by-issuer": "発行者情報",
+    "by-owner": "保有者情報",
+    "by-taxon": "Taxon情報",
+    "all-nfts": "全てのNFT",
+    "on-sale": "販売中",
+    "social-share": "共有",
+    "marketplace": "マーケットプレイス",
+    "text": {
+      "show-extended-statistics": "詳細な統計情報の表示",
+      "include-without-metadata": "メタデータなしのNFTを含む",
+      "include-burned-nfts": "バーン済みのNFTを含む",
+      "no-expiration": "有効期限なし",
+      "no-offers": "オファーがありません",
+      "unspecified": "未指定",
+      "sell": "売却",
+      "buy": "購入",
+      "show": "表示",
+      "hide": "隠す",
+      "see-on": "See on",
+      "valid": "有効",
+      "invalid": "無効"
+    },
+    "filter": {
+      "valid": "有効",
+      "invalid": "無効",
+      "active": "アクティブ",
+      "historical": "履歴",
+      "all": "全て"
+    },
+    "text-status": {
+      "NFT is not owned by the seller account": "NFTは販売者が所有していません",
+      "Offer is expired": "有効期限切れです。",
+      "Unable to verify balance of the buyer account": "購入者アカウントの残高を確認できません",
+      "Insufficient funds on the buyer account": "資金不足",
+      "Seller has no trustline for the token or it cannot be verified": "Selle販売者はトークンのトラストラインを保有していないか、保有を確認できません。",
+      "NFT Issuer has no trustline for the token to accept royalty or it cannot be verified": "NFT発行者がロイヤリティを受け入れるトークンのトラストラインを保有していないか、保有を確認できません。"
+    }
+  },
+  "tabs": {
+    "list": "リスト",
+    "tiles": "タイル",
+    "secondary-sales": "二次販売",
+    "primary-sales": "一次販売",
+    "all-sales": "全ての取引",
+    "top-sales": "上位の販売",
+    "latest-sales": "直近の販売",
+    "all-time": "全期間",
+    "year": "365日間",
+    "month": "30日間",
+    "week": "7日間",
+    "day": "24時間",
+    "currencies": "通貨",
+    "issuers": "発行者",
+    "marketplaces": "マーケットプレイス",
+    "brokers": "ブローカー",
+    "image": "画像",
+    "video": "ビデオ",
+    "audio": "音声",
+    "model": "3Dモデル",
+    "owned-offers": "自身のオファー",
+    "offers-for-owned-nfts": "所有NFTへのオファー",
+    "privately-offered-to-address": "プライベート(着信)",
+    "all": "全て",
+    "buy": "購入",
+    "sell": "売却",
+    "public": "パブリック",
+    "publicAndKnownBrokers": "パブリック & MP",
+    "onSale": "XRPで販売中",
+    "all-tokens": "全トークン",
+    "xrp-only": "XRPのみ"
+  },
+  "xumm": {
+    "new-qr": "新しいQRコードを取得"
+  },
+  "explorer": {
+    "header": "XRP Ledgerエクスプローラ",
+    "enter-address": "XRPLアドレスまたはユーザネームを入力してください。",
+    "searching-tx-nft-nftoffer": "トランザクション/NFT ID/NFT Offerで検索しています。",
+    "searching-for-addresses": "アドレスを検索しています...",
+    "menu": {
+      "account": "アカウント",
+      "transactions": "トランザクション",
+      "tokens": "トークン"
+    },
+    "different-network": "このトランザクションは<1>{networkNameOrId}}</1>ネットワークからのものです。",
+    "check-tx-on-different-explorer": "詳細は<1><0>こちら</0></1>をご覧ください。",
+    "not-supported-network": "これはサポートされていません"
+  },
+  "nft-explorer": {
+    "header": "NFTエクスプローラ"
+  },
+  "nft-offers": {
+    "header": "NFTのオファー",
+    "owned-desc": "XRPLのアドレスまたはユーザネームを入力して、NFTの売買オファーを検索できます。",
+    "for-owned-nfts-desc": "XRPLアドレスまたはユーザネームを入力して、自身が保有するNFTへのオファーが表示されます。",
+    "privately-offered-to-address-desc": "アカウント（宛先を含む）に対してプライベートに作成されたオファーを検索することができます。これは、NFTのトランスファー(価格:0XRP)によく使用されます。受け取ったオファーを確認するにはXRPLアドレスまたはユーザネームを入力します。",
+    "no-nft-offers": "NFTのオファーは見つかりませんでした。",
+    "cancel-invalid-offer_one": "無効なオファーをキャンセル",
+    "cancel-invalid-offer_other": "{{count}}個の無効なオファーをキャンセル",
+    "cancel-expired-offer_one": "期限切れのオファーをキャンセル",
+    "cancel-expired-offer_other": "{{count}}個の期限切れのオファーをキャンセル"
+  },
+  "nft-offer": {
+    "header": "NFTのオファー",
+    "desc": "NFTのオファーIDを入力して、NFTのオファーを検索できます。",
+    "enter-offer-id": "NFTのオファーIDを入力",
+    "selling": "売却する",
+    "buying": "購入する"
+  },
+  "nfts": {
+    "header": "アカウントのNFT",
+    "desc": "XRPLアドレスを入力して、アカウントが保有するNFTを検索できます。",
+    "search-by-name": "NFT名で検索",
+    "search-by-issuer": "NFT発行者で検索",
+    "search-by-taxon": "NFT Taxonで検索",
+    "search-by-owner": "NFT保有者で検索",
+    "no-nfts": "検索条件に該当するNFTは見つかりませんでした。",
+    "load-more": "XRPLからデータを探しています...しばらくお待ちください...",
+    "end": "取得できた全てのNFTを表示しています。"
+  },
+  "nft": {
+    "desc": "NFT IDを入力して、NFTを検索できます。",
+    "enter-nft-id": "NFT IDを入力",
+    "cancel-sell-offer-for": "Cancel Sell offer for",
+    "cancel-buy-offer-for": "Cancel Buy offer for",
+    "cancel-transfer": "NFTのトランスファーをキャンセル",
+    "accept-transfer": "NFTのトランスファーを受け入れる",
+    "buy-for": "Buy for",
+    "on": "on",
+    "make-offer": "オファーを作成",
+    "list-for-sale": "出品(販売)",
+    "holders": "分布 (保有者)",
+    "burn": "このNFTをバーン"
+  },
+  "nft-distribution": {
+    "header": "NFTの分布",
+    "desc": "ここでは、特定のNFT発行者のNFTの分布を確認することができます。NFT発行者のXRPLアドレスまたはユーザネームを入力し、検索ボタンを押してください。",
+    "no-nfts": "そのアドレスから発行されたNFTは見つかりませんでした。",
+    "text0": "{{users}} アカウントが {{nfts}} NFTを保有しています。"
+  },
+  "nft-volumes": {
+    "header": "NFTの取引量",
+    "text0": "XRPLは{{saleType}}にて{{allSales}} {{currency}} NFT({{allVolume}})の取引が行われました。",
+    "brokers": {
+      "desc": "NFTブローカーアカウントのリストです。ここでは、オファーマッチングボットの取引量を確認できます。マーケットプレイスではさまざまな取引モデルを使用していますが、ここではブローカーモデルによる取引量のみを見ることができます。",
+      "no-broker": "非ブローカー",
+      "text0": "XRPLは{{saleType}}にて{{allSales}}<3>{{currency}}</3> NFT/{{allVolume}}の売上があり、そのうちの<9>{{brokerSales}}</9> {{percentBrokerSales}}/<13>{{brokerVolume}}</13> {{percentBrokerVolume}}はブローカー取引によるものでした。"
+    },
+    "marketplaces": {
+      "desc": "XRPLのNFTマーケットプレイス一覧です。ここでの取引量には、2つの取引（支払いとNFT送金）内で行われた一次販売(ミント)は含まれていません。"
+    },
+    "issuers": {
+      "desc": "XRPLのNFT発行者リストです。発行者とTaxon毎に分類されたNFTコレクションの販売量を見るには、販売量欄のリンクをクリックしてください。"
+    }
+  },
+  "nft-sales": {
+    "header": "NFTの販売",
+    "load-more": "XRPLからデータを探しています...しばらくお待ちください...",
+    "end": "リストの末尾."
+  },
+  "links": {
+    "active-offers-same-account": "このアカウントからの有効なオファーを表示",
+    "nfts-same-issuer": "同じ発行者のNFT",
+    "owned-nfts-same-account": "このアカウントが所有するNFT",
+    "all": "全て",
+    "sold": "販売中"
+  },
+  "donate": {
+    "help-us": "最も使いやすいXRPLエクスプローラを作るという私たちのミッションにご協力ください。",
+    "it-helps": "皆様からの寄付は、Bithompの設備増強と継続的な開発に役立てられます。",
+    "address": "寄付用XRPLアドレス",
+    "dt": "宛先タグ",
+    "donate-with-xumm": "Xummで寄付"
+  },
+  "sponsored": {
+    "sponsored": "スポンサー"
+  }
+}
