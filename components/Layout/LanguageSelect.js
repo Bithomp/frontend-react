@@ -1,12 +1,12 @@
 import { useTranslation } from 'next-i18next'
 import moment from "moment"
-import 'moment/locale/es' // "es"
 import 'moment/locale/ru' // "ru"
+import 'moment/locale/es' // "es"
+import 'moment/locale/ja' // "ja"
 import 'moment/locale/ca' // "ca"
 import 'moment/locale/hr' // "hr"
 import 'moment/locale/da' // "da"
 import 'moment/locale/nn' // "nn"
-import 'moment/locale/ja' // "ja"
 import { useRouter } from 'next/router'
 import Cookies from 'universal-cookie'
 
@@ -34,13 +34,13 @@ export default function LanguageSelect() {
       Language:{" "}
       <select onChange={handleLangChange} value={i18n.language} name="language-select">
         <option value="en">English</option>
-        <option value="es">Español</option>
         <option value="ru">Русский</option>
+        <option value="es">Español</option>
+        <option value="ja">日本語</option>
         <option value="ca">Català</option>
         <option value="hr">Hrvatski</option>
         <option value="da">Dansk</option>
         <option value="nn">Norsk</option>
-        <option value="ja">日本語</option>
       </select>
     </div>
   )
