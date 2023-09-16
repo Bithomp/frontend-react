@@ -393,7 +393,6 @@
   "table": {
     "index": "Indeks",
     "address": "Adresa",
-    "time": "Vrijeme",
     "date": "Datum",
     "amount": "Iznos",
     "name": "Ime",

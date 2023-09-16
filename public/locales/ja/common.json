@@ -393,7 +393,6 @@
   "table": {
     "index": "#",
     "address": "アドレス",
-    "time": "Time",
     "date": "日付",
     "amount": "金額",
     "name": "名前",

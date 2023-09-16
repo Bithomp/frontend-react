@@ -393,7 +393,6 @@
   "table": {
     "index": "№",
     "address": "Адрес",
-    "time": "Время",
     "date": "Дата",
     "amount": "Сумма",
     "name": "Имя",

@@ -393,7 +393,6 @@
   "table": {
     "index": "Indeks",
     "address": "Addresse",
-    "time": "Tid",
     "date": "Dato",
     "amount": "Beløb",
     "name": "Navn",

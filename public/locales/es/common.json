@@ -393,7 +393,6 @@
   "table": {
     "index": "Índice",
     "address": "Dirección",
-    "time": "Hora",
     "date": "Fecha",
     "amount": "Cantidad",
     "name": "Nombre",

@@ -393,7 +393,6 @@
   "table": {
     "index": "Index",
     "address": "Address",
-    "time": "Time",
     "date": "Date",
     "amount": "Amount",
     "name": "Name",
