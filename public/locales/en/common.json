@@ -213,10 +213,7 @@
     "error": {
       "address-empty": "Please enter your XRPL address.",
       "address-invalid": "Please enter a valid XRPL address.",
-      "address-hosted": {
-        "on": "on",
-        "hosted": "Entered address is hosted {{serviceName}}, you can register usernames only for non-hosted wallets (hardware wallets, Xumm, etc). If you are an exchange operator, please contact us."
-      },
+      "address-hosted": "Entered address is hosted on {{service}}, you can register usernames only for non-hosted wallets (hardware wallets, Xumm, etc). If you are an exchange operator, please contact us.",
       "address-done": "The address already has a registered username.",
       "username-empty": "Please enter username you want to register.",
       "username-invalid": "Username should be shorter than 18 characters, no symbols allowed.",

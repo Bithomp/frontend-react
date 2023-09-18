@@ -213,10 +213,7 @@
     "error": {
       "address-empty": "Molimo unesite vašu XRP adresu.",
       "address-invalid": "Molimo unesite valjanu XRP adresu.",
-      "address-hosted": {
-        "on": "na",
-        "hosted": "Unesena adresa koristi poslužitelj {{serviceName}}, možete registrirati korisničko ime samo s adresa koje ne koriste poslužitelje (hardverski novčanici, Xumm, itd.). Ako vodite mjenjačnicu kripto valuta molimo kontaktirajte nas."
-      },
+      "address-hosted": "Unesena adresa koristi poslužitelj na {{service}}, možete registrirati korisničko ime samo s adresa koje ne koriste poslužitelje (hardverski novčanici, Xumm, itd.). Ako vodite mjenjačnicu kripto valuta molimo kontaktirajte nas.",
       "address-done": "Adresa već ima registrirano korisničko ime.",
       "username-empty": "Molimo unesite korisničko ime koje želite registrirati.",
       "username-invalid": "Korisničko ime bi trebalo biti kraće od 18 karatktera, bez simbola.",

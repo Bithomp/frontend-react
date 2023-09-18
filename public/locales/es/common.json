@@ -213,10 +213,7 @@
     "error": {
       "address-empty": "Por favor, introduce tu dirección XRPL.",
       "address-invalid": "Por favor, introduce una dirección XRPL válida.",
-      "address-hosted": {
-        "on": "on",
-        "hosted": "La dirección introducida está alojada en {{serviceName}}, solo puedes registrar nombres de usuario para carteras no alojadas (carteras hardware, Xumm, etc). Si eres un operador de un exchange, por favor, contactanos."
-      },
+      "address-hosted": "La dirección introducida está alojada en {{service}}, solo puedes registrar nombres de usuario para carteras no alojadas (carteras hardware, Xumm, etc). Si eres un operador de un exchange, por favor, contactanos.",
       "address-done": "La dirección tiene ya un nombre de usuario registrado.",
       "username-empty": "Por favor, introduce el nombre de usuario que quieres registrar.",
       "username-invalid": "El nombre de usuario debe tener menos de 18 caracteres, los simbolos no están permitidos.",

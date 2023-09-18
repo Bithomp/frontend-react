@@ -6,16 +6,16 @@ import axios from 'axios'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { getIsSsrMobile } from "../utils/mobile"
 
-import { 
-  isAddressValid, 
-  isUsernameValid, 
-  server, 
-  wssServer, 
-  devNet, 
-  addAndRemoveQueryParams, 
+import {
+  isAddressValid,
+  isUsernameValid,
+  server,
+  wssServer,
+  devNet,
+  addAndRemoveQueryParams,
   addQueryParams,
   encode
- } from '../utils'
+} from '../utils'
 
 export const getServerSideProps = async (context) => {
   const { query, locale } = context
@@ -242,24 +242,21 @@ export default function Username({ setSignRequest, account, signOut, addressQuer
     };
     const apiData = await axios.post('v1/bithompid', postData).catch(error => {
       setErrorMessage(t("error." + error.message))
-    });
+    })
 
-    const data = apiData?.data;
+    const data = apiData?.data
 
     if (data?.invoiceId) {
-      let serviceName = '';
+      let serviceName = 'XRPL'
       if (data.userInfo) {
         if (data.userInfo.name) {
-          serviceName = data.userInfo.name;
+          serviceName = data.userInfo.name
         } else {
-          serviceName = data.userInfo.domain;
-        }
-        if (serviceName) {
-          serviceName = " " + t("username.error.address-hosted.on") + " <b>" + serviceName + "</b>";
+          serviceName = data.userInfo.domain
         }
       }
-      setErrorMessage(t("username.error.address-hosted.hosted", { serviceName }));
-      return;
+      setErrorMessage(t("username.error.address-hosted", { service: serviceName }))
+      return
     }
 
     if (data?.error) {
@@ -442,7 +439,7 @@ export default function Username({ setSignRequest, account, signOut, addressQuer
 
   return <>
     <SEO
-      title={t("menu.usernames") + (usernameQuery ? (" " + usernameQuery) : "") + (addressQuery ? (" " + addressQuery) : "") }
+      title={t("menu.usernames") + (usernameQuery ? (" " + usernameQuery) : "") + (addressQuery ? (" " + addressQuery) : "")}
     />
     <div className="page-username content-center">
       <h1 className="center">{t("menu.usernames")}</h1>

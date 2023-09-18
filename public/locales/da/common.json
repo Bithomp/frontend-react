@@ -213,10 +213,7 @@
     "error": {
       "address-empty": "Indtast venligst din XRPL-adresse.",
       "address-invalid": "Indtast venligst en gyldig XRPL-adresse.",
-      "address-hosted": {
-        "on": "på",
-        "hosted": "Den indtastede adresse er hosted {{serviceName}}, du kan kun registrere brugernavne for ikke-hostede wallets (hardware wallets, Xumm osv.). Hvis du er børsoperatør, bedes du kontakte os."
-      },
+      "address-hosted": "Den indtastede adresse er hosted på {{service}}, du kan kun registrere brugernavne for ikke-hostede wallets (hardware wallets, Xumm osv.). Hvis du er børsoperatør, bedes du kontakte os.",
       "address-done": "Adressen har allerede et registreret brugernavn.",
       "username-empty": "Indtast venligst det brugernavn, du vil registrere.",
       "username-invalid": "Brugernavn skal være kortere end 18 tegn, ingen symboler tilladt.",

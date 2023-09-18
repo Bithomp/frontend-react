@@ -213,10 +213,7 @@
     "error": {
       "address-empty": "Vennligst skriv inn din XRPL-adresse.",
       "address-invalid": "Vennligst skriv inn en gyldig XRPL-adresse.",
-      "address-hosted": {
-        "on": "på",
-        "hosted": "Den angitte adressen er hosted {{serviceName}}, du kan kun registrere brukernavn for non-hosted lommebøker (hardware lommebøker, Xumm, osv.). Hvis du er en børs operatør, vennligst kontakt oss."
-      },
+      "address-hosted": "Den angitte adressen er hosted {{service}}, du kan kun registrere brukernavn for non-hosted lommebøker (hardware lommebøker, Xumm, osv.). Hvis du er en børs operatør, vennligst kontakt oss.",
       "address-done": "Adressen har allerede et registrert brukernavn.",
       "username-empty": "Vennligst skriv inn brukernavnet du vil registrere",
       "username-invalid": "Brukernavnet skal være kortere enn 18 tegn, ingen symboler tillatt..",

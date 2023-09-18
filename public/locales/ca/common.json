@@ -213,10 +213,7 @@
     "error": {
       "address-empty": "Si us plau, introdueix la teva adreça XRPL.",
       "address-invalid": "Si us plau, introdueix una adreça XRPL vàlida.",
-      "address-hosted": {
-        "on": "a",
-        "hosted": "L'adreça introduïda és custodiada per {{serviceName}}, pots registrar àlies només per moneders d'autocustòdia (hardware wallets, Xumm, etc). Si ets una casa de canvi, si us plau, contacta'ns."
-      },
+      "address-hosted": "L'adreça introduïda és custodiada per a {{service}}, pots registrar àlies només per moneders d'autocustòdia (hardware wallets, Xumm, etc). Si ets una casa de canvi, si us plau, contacta'ns.",
       "address-done": "L'adreça ja té un àlies registrat.",
       "username-empty": "Si us plau, introdueix l'àlies que vols registrar.",
       "username-invalid": "L'àlies hauria de ser de menys de 18 caràcters, i els símbols no estan permesos.",
