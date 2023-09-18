@@ -577,8 +577,8 @@
   "nft": {
     "desc": "Aquí puedes buscar por NFTs, introduce un ID de NFT y presiona el botón de buscar.",
     "enter-nft-id": "Introduce el ID del NFT",
-    "cancel-sell-offer-for": "Cancelar oferta de Venta por",
-    "cancel-buy-offer-for": "Cancelar oferta de Compra por",
+    "cancel-sell-offer-for": "Cancelar oferta de Venta por {{amount}}",
+    "cancel-buy-offer-for": "Cancelar oferta de Compra por {{amount}}",
     "cancel-transfer": "Cancelar transferencia NFT",
     "accept-transfer": "Aceptar transferencia NFT",
     "buy-for": "Comprar por",

@@ -577,8 +577,8 @@
   "nft": {
     "desc": "Ovdje možete pronaći NFTove, unesite NFT ID i kliknite dugme za pretragu.",
     "enter-nft-id": "Unesi NFT ID",
-    "cancel-sell-offer-for": "Poništi prodajnu ponudu za",
-    "cancel-buy-offer-for": "Poništi kupovnu ponudu za",
+    "cancel-sell-offer-for": "Poništi prodajnu ponudu za {{amount}}",
+    "cancel-buy-offer-for": "Poništi kupovnu ponudu za {{amount}}",
     "cancel-transfer": "Cancel NFT transfer",
     "accept-transfer": "Accept NFT transfer",
     "buy-for": "Kupi za",

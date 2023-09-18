@@ -577,8 +577,8 @@
   "nft": {
     "desc": "NFT IDを入力して、NFTを検索できます。",
     "enter-nft-id": "NFT IDを入力",
-    "cancel-sell-offer-for": "Cancel Sell offer for",
-    "cancel-buy-offer-for": "Cancel Buy offer for",
+    "cancel-sell-offer-for": "Cancel Sell offer for {{amount}}",
+    "cancel-buy-offer-for": "Cancel Buy offer for {{amount}}",
     "cancel-transfer": "NFTのトランスファーをキャンセル",
     "accept-transfer": "NFTのトランスファーを受け入れる",
     "buy-for": "Buy for",

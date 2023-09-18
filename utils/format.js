@@ -43,7 +43,7 @@ export const cancelNftOfferButton = (t, setSignRequest, account, offer, type = "
     {offer.amount === "0" ? t("nft.cancel-transfer")
       :
       <>
-        {type === "sell" ? t("nft.cancel-sell-offer-for") : t("nft.cancel-buy-offer-for")} {amountFormat(offer.amount)}
+        {type === "sell" ? t("nft.cancel-sell-offer-for", { amount: amountFormat(offer.amount) }) : t("nft.cancel-buy-offer-for", { amount: amountFormat(offer.amount) })}
       </>
     }
   </button>

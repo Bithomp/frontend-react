@@ -577,8 +577,8 @@
   "nft": {
     "desc": "Her kan du søke etter NFT-er, skrive inn en NFT-ID og trykk på søkeknappen.",
     "enter-nft-id": "Skriv inn en NFT-ID",
-    "cancel-sell-offer-for": "Avbryt salgsbud for",
-    "cancel-buy-offer-for": "Avbryt kjøpsbud",
+    "cancel-sell-offer-for": "Avbryt salgsbud for {{amount}}",
+    "cancel-buy-offer-for": "Avbryt kjøpsbud {{amount}}",
     "cancel-transfer": "Cancel NFT transfer",
     "accept-transfer": "Accept NFT transfer",
     "buy-for": "Kjøp for",
