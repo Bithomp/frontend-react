@@ -7,7 +7,7 @@
   "serve-toml": "Tu servidor web debe tener un fichero xrp-ledger.toml, disponible en la siguiente URL:",
   "address-in-toml": "La dirección que quieres verificar debe ser especificada debajo del campo [[ACCOUNTS]].",
   "read-about-toml": "Lee más sobre TOML XRPL",
-  "by": "por",
+  "toml-editor": "<0>TOML editor</0> por <2>SchlaubiD</2>",
   "address-claims-domain": "El dominio debe ser reclamando por la dirección.",
   "set-domain": "Debes <1>añadir el dominio a tu dirección XRPL</1> que coincida con el dominio de tu archivo TOML.",
   "verify": "Verificar",

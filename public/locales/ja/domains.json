@@ -7,7 +7,7 @@
   "serve-toml": "Webサーバは、次のURLから入手できるxrp-ledger.tomlファイルを配信する必要があります:",
   "address-in-toml": "検証したいアドレスは、[[ACCOUNTS]]項目で指定する必要があります。",
   "read-about-toml": "XRPL TOMLについて詳しく読む",
-  "by": "by",
+  "toml-editor": "<0>TOML editor</0> by <2>SchlaubiD</2>",
   "address-claims-domain": "ドメインはアドレスによって指定されている必要があります。",
   "set-domain": "XRPLアドレスに<1>ドメインを設定</1>します。これはTOMLファイルが配信されるドメインと一致する必要があります。",
   "verify": "検証",
