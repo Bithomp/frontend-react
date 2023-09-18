@@ -418,7 +418,7 @@ export default function NftsComponent({
     const best = bestSellOffer(sellOffers)
     if (best) {
       if (mpUrl(best)) {
-        return amountFormat(best.amount, { tooltip: 'right' }) + " " + t("nft.on") + " " + best.destinationDetails.service
+        return t("nft.amount-on-service", { amount: amountFormat(best.amount, { tooltip: 'right' }), service: best.destinationDetails.service })
       } else {
         return amountFormat(best.amount, { tooltip: 'right' })
       }

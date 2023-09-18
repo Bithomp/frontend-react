@@ -506,7 +506,7 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
     if (mpUrl(best)) {
       return <>
         <a className='button-action wide center' href={mpUrl(best)} target="_blank" rel="noreferrer">
-          {t("nft.buy-for")} {amountFormat(best.amount)} {t("nft.on")} {best.destinationDetails.service}
+          {t("nft.buy-for-amount-on", { amount: amountFormat(best.amount), service: best.destinationDetails.service })}
         </a>
         <br /><br />
       </>

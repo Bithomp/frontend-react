@@ -98,7 +98,7 @@ export default function Tiles({ nftList, type = 'name', convertCurrency }) {
         return <>
           {amountFormat(best.amount)}
           <br />
-          {t("nft.on")} {best.destinationDetails.service}
+          {t("nft.on-service", { service: best.destinationDetails.service })}
         </>;
       } else {
         return amountFormat(best.amount);

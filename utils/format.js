@@ -23,7 +23,7 @@ export const acceptNftSellOfferButton = (t, setSignRequest, offer) => {
     })}
   >
     <Image src={xummImg} className='xumm-logo' alt="xumm" height={24} width={24} />
-    {offer.amount === "0" ? t("nft.accept-transfer") : t("nft.buy-for") + " " + amountFormat(offer.amount)}
+    {offer.amount === "0" ? t("nft.accept-transfer") : t("nft.buy-for-amount", { amount: amountFormat(offer.amount) })}
   </button>
 }
 
@@ -183,6 +183,7 @@ export const nftLink = (nft, type, options = {}) => {
         </span>
       }
     }
+    const showName = userOrServiceName(nft[type + 'Details'])
     if (link === "/explorer/") {
       return <a href={link + (nft[type + 'Details'].username || nft[type])}>
         {showName ? showName : defaultContent}
