@@ -4,7 +4,7 @@ import axios from 'axios'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import Link from 'next/link'
 
-import { server, delay } from '../../utils'
+import { server } from '../../utils'
 import { getIsSsrMobile } from "../../utils/mobile"
 
 export async function getServerSideProps(context) {
@@ -103,9 +103,8 @@ export default function Nft({ signRequest, id, selectedCurrency, sortCurrency })
         // no token - first time fetching - allow right away
         checkApi()
       } else {
-        //wait for changes
         setLoading(true)
-        delay(3000, checkApi, { noCache: true }).catch(console.error)
+        checkApi({ noCache: true })
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

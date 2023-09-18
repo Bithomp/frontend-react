@@ -16,7 +16,6 @@ import {
   acceptNftSellOfferButton
 } from '../../utils/format'
 
-import { delay } from '../../utils'
 import { getIsSsrMobile } from "../../utils/mobile"
 
 export async function getServerSideProps(context) {
@@ -181,9 +180,8 @@ export default function NftOffer({ setSignRequest, signRequest, account, id }) {
         //do not send request if it is Canceled or Accepted
         return
       } else {
-        //wait for changes
         setLoading(true)
-        delay(3000, checkApi, { noCache: true }).catch(console.error)
+        checkApi({ noCache: true })
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

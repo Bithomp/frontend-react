@@ -6,7 +6,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import Image from 'next/image'
 import Link from 'next/link'
 
-import { stripText, server, decode, delay } from '../../utils'
+import { stripText, server, decode } from '../../utils'
 import { convertedAmount } from '../../utils/format'
 import { getIsSsrMobile } from "../../utils/mobile"
 import { nftName, mpUrl, bestSellOffer, nftUrl } from '../../utils/nft'
@@ -215,9 +215,8 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
         // no token - first time fetching - allow right away
         checkApi()
       } else {
-        //wait for changes
         setLoading(true)
-        delay(3000, checkApi, { noCache: true }).catch(console.error)
+        checkApi({ noCache: true })
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
