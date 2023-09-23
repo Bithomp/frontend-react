@@ -129,8 +129,8 @@
   "home": {
     "title": "Pencarian XRP | Telusuri XRP Ledger",
     "description": "Grafik harga XRP | Statistik XRPL | Penjelajah NFT | Pencarian alamat dompet | Volume NFT XRPL | Beli dan Jual NFT | Layanan XRP",
-    "search-placeholder": "Cari berdasarkan Alamat XRPL / Transaksi / NFT / Nama Pengguna / PayString / Penawaran / Hash Mata Uang",
-    "search-placeholder-short": "Cari berdasarkan Alamat / Transaksi / Pengguna",
+    "search-placeholder": "Cari berdasarkan Alamat XRPL / Transaksi / NFT / Nama Pengguna / PayString / Penawaran",
+    "search-placeholder-short": "Cari berdasarkan Alamat / Transaksi",
     "scan-qr": "PINDAI KODE",
     "whales": {
       "header": "Transaksi paling signifikan dalam 24 jam terakhir",
@@ -248,7 +248,7 @@
       "agree-privacy-policy": "Saya setuju dengan <1>Kebijakan Privasi</1> kami.",
       "already-registered": "Akun Anda sudah memiliki nama pengguna terdaftar",
       "sign-out-to-register-another-one": "<0>Keluar</0> dari akun ini untuk mendaftarkan nama pengguna untuk alamat yang berbeda."
-	},
+    },
     "step1": {
       "to-register": "Untuk mendaftarkan nama pengguna publik Anda:",
       "from-your-address": "Anda perlu melakukan pembayaran dari alamat:",
@@ -349,7 +349,7 @@
     "sign": "Tanda tangan"
   },
   "general": {
-   "error": "Kesalahan",
+    "error": "Kesalahan",
     "no-data": "Tidak ada data tersedia",
     "loading": "Memuat...",
     "load-failed": "Gagal memuat",
@@ -604,7 +604,7 @@
       "text0": "XRPL memiliki {{allSales}} NFT <3>{{currency}}</3> {{saleType}} dengan volume penjualan {{allVolume}}, dari mana <9>{{brokerSales}}</9> {{percentBrokerSales}} perdagangan dengan volume <13>{{brokerVolume}}</13> {{percentBrokerVolume}} dilakukan melalui model broker."
     },
     "marketplaces": {
-       "desc": "Ini adalah daftar Pasar NFT di XRPL. Volume di sini tidak termasuk penjualan utama (mint) yang dilakukan dalam 2 transaksi (pembayaran dan transfer NFT)."
+      "desc": "Ini adalah daftar Pasar NFT di XRPL. Volume di sini tidak termasuk penjualan utama (mint) yang dilakukan dalam 2 transaksi (pembayaran dan transfer NFT)."
     },
     "issuers": {
       "desc": "Ini adalah daftar penerbit NFT di XRPL. Untuk melihat volume koleksi NFT yang diidentifikasi oleh penerbit dan taksonomi, klik tautan dalam kolom Volume Penjualan."
@@ -616,7 +616,7 @@
     "end": "Akhir daftar."
   },
   "links": {
-   "active-offers-same-account": "Lihat penawaran aktif dari akun tersebut",
+    "active-offers-same-account": "Lihat penawaran aktif dari akun tersebut",
     "nfts-same-issuer": "NFT dengan penerbit yang sama",
     "owned-nfts-same-account": "NFT yang dimiliki oleh akun tersebut",
     "all": "semua",
