@@ -86,9 +86,14 @@ Runs the app in production
 
 ### Language tanslation credits
 
-Spanish - @Ekiserrepe
-Croatian - @zgrguric
-Catalan - @EnigmaRidworld
-Japanese - @develoQ
+Spanish -  [@Ekiserrepe](https://github.com/Ekiserrepe)
 
-Thank's @wojake as well
+Croatian - [@zgrguric](https://github.com/zgrguric)
+
+Catalan - [@EnigmaRidworld](https://github.com/EnigmaRidworld)
+
+Japanese - [@develoQ](https://github.com/develoQ)
+
+Indonesian - [@suuf24](https://github.com/suuf24)
+
+Thank's [@wojake](https://github.com/wojake) as well
