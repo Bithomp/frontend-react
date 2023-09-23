@@ -215,7 +215,6 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
         // no token - first time fetching - allow right away
         checkApi()
       } else {
-        setLoading(true)
         checkApi({ noCache: true })
       }
     }

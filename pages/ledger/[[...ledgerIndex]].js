@@ -16,10 +16,10 @@ export async function getServerSideProps(context) {
   const ledgerIndex = query.ledgerIndex ? (Array.isArray(query.ledgerIndex) ? query.ledgerIndex[0] : query.ledgerIndex) : ""
 
   let headers = null
-  if (process.env.NODE_ENV !== 'development') {
-    //otherwise can not verify ssl serts
-    headers = req.headers
-  }
+  //if (process.env.NODE_ENV !== 'development') {
+  //otherwise can not verify ssl serts
+  headers = req.headers
+  //}
   try {
     if (ledgerIndex === "" || ledgerIndex > 32569) {
       const res = await axios({
@@ -49,17 +49,21 @@ export async function getServerSideProps(context) {
 export default function Ledger({ ledgerIndex, pageMeta }) {
   const [data, setData] = useState(null)
   const [rendered, setRendered] = useState(false)
+  const [loading, setLoading] = useState(false)
   const { t } = useTranslation()
 
-  const ledgerVersion = pageMeta.ledgerVersion || ledgerIndex
+  const [ledgerVersion, setLedgerVersion] = useState(pageMeta?.ledgerVersion || ledgerIndex || "")
 
   const checkApi = async () => {
+    setLoading(true)
     const response = await axios('xrpl/v1/ledger/' + ledgerVersion + '?transactions=true&expand=true')
     const data = response.data
+    setLoading(false)
 
     if (data) {
       data.transactions?.sort((a, b) => (a.outcome.indexInLedger > b.outcome.indexInLedger) ? 1 : -1)
       setData(data)
+      setLedgerVersion(data.ledgerVersion)
     }
   }
 
@@ -100,10 +104,10 @@ export default function Ledger({ ledgerIndex, pageMeta }) {
 
   const ledgerNavigation = <p className='center'>
     {ledgerVersion > 32572 &&
-      <Link href={"/ledger/" + (ledgerVersion - 1)} style={{ marginRight: "10px" }}>←</Link>
+      <Link href={"/ledger/" + (Number(ledgerVersion) - 1)} style={{ marginRight: "10px" }} onClick={() => setLedgerVersion(ledgerVersion - 1)}>←</Link>
     }
     #{ledgerVersion}
-    <Link href={"/ledger/" + (ledgerVersion + 1)} style={{ marginLeft: "10px" }}>→</Link>
+    <Link href={"/ledger/" + (Number(ledgerVersion) + 1)} style={{ marginLeft: "10px" }} onClick={() => setLedgerVersion(ledgerVersion + 1)}>→</Link>
   </p>
 
   return <>
@@ -124,7 +128,7 @@ export default function Ledger({ ledgerIndex, pageMeta }) {
               </tr>
             </thead>
             <tbody>
-              {data ?
+              {(!loading && data) ?
                 <>
                   {data.transactions ? data.transactions.map((tx) =>
                     <tr key={tx.id}>
