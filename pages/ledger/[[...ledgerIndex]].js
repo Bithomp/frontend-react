@@ -16,10 +16,10 @@ export async function getServerSideProps(context) {
   const ledgerIndex = query.ledgerIndex ? (Array.isArray(query.ledgerIndex) ? query.ledgerIndex[0] : query.ledgerIndex) : ""
 
   let headers = null
-  //if (process.env.NODE_ENV !== 'development') {
-  //otherwise can not verify ssl serts
-  headers = req.headers
-  //}
+  if (process.env.NODE_ENV !== 'development') {
+    //otherwise can not verify ssl serts
+    headers = req.headers
+  }
   try {
     if (ledgerIndex === "" || ledgerIndex > 32569) {
       const res = await axios({
