@@ -39,18 +39,19 @@ export async function getServerSideProps(context) {
 
   return {
     props: {
+      ledgerIndex,
       pageMeta,
       ...(await serverSideTranslations(locale, ['common', 'ledger']))
     }
   }
 }
 
-export default function Ledger({ pageMeta }) {
+export default function Ledger({ ledgerIndex, pageMeta }) {
   const [data, setData] = useState(null)
   const [rendered, setRendered] = useState(false)
   const { t } = useTranslation()
 
-  const ledgerVersion = pageMeta.ledgerVersion
+  const ledgerVersion = pageMeta.ledgerVersion || ledgerIndex
 
   const checkApi = async () => {
     const response = await axios('xrpl/v1/ledger/' + ledgerVersion + '?transactions=true&expand=true')
