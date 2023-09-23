@@ -14,10 +14,12 @@ export async function getServerSideProps(context) {
   //keep it from query instead of params, anyway it is an array sometimes
   const account = id ? (Array.isArray(id) ? id[0] : id) : ""
   if (account) {
-    let headers = null
-    if (process.env.NODE_ENV !== 'development') {
-      //otherwise can not verify ssl serts
-      headers = req.headers
+    let headers = {}
+    if (req.headers["x-real-ip"]) {
+      headers["x-real-ip"] = req.headers["x-real-ip"]
+    }
+    if (req.headers["x-forwarded-for"]) {
+      headers["x-forwarded-for"] = req.headers["x-forwarded-for"]
     }
     try {
       const res = await axios({
