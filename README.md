@@ -83,3 +83,12 @@ Runs the app in production
 ### Clean up if run on small VPS
 
 `yarn cache clean`
+
+### Language tanslation credits
+
+Spanish - @Ekiserrepe
+Croatian - @zgrguric
+Catalan - @EnigmaRidworld
+Japanese - @develoQ
+
+Thank's @wojake as well

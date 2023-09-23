@@ -2,6 +2,7 @@ import { useTranslation } from 'next-i18next'
 import moment from "moment"
 import 'moment/locale/ru' // "ru"
 import 'moment/locale/es' // "es"
+import 'moment/locale/id' // "id"
 import 'moment/locale/ja' // "ja"
 import 'moment/locale/ca' // "ca"
 import 'moment/locale/hr' // "hr"
@@ -36,6 +37,7 @@ export default function LanguageSelect() {
         <option value="en">English</option>
         <option value="ru">Русский</option>
         <option value="es">Español</option>
+        <option value="id">Bahasa Indonesia</option>
         <option value="ja">日本語</option>
         <option value="ca">Català</option>
         <option value="hr">Hrvatski</option>
