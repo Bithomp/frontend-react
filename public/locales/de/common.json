@@ -1,0 +1,633 @@
+{
+  "menu": {
+    "personal": {
+      "personal": "Private",
+      "search-on-xrpl": "Auf XRPL suchen"
+    },
+    "business": {
+      "business": "Firmen",
+      "advertise": "Werbung",
+      "eaas": "Explorer als Dienst",
+      "build-unl": "UNL erstellen"
+    },
+    "usernames": "Benutzernamen registrieren",
+    "project-registartion": "XRPL Projekt registrieren",
+    "price-alerts": "XRP Preisalarme",
+    "submit-offline-tx": "Offline Transaktion einreichen",
+    "networks": "Netzwerke",
+    "ledger": "Ledger Transaktionen",
+    "nft": {
+      "explorer": "Explorer",
+      "volumes": "Volumen",
+      "sales": "Verkäufe",
+      "minters": "Minter",
+      "distribution": "Verteilung (Halter)",
+      "statistics": "Live Statistiken",
+      "nfts": "NFTs eines Kontos",
+      "offers": "Angebote"
+    },
+    "xrpl": {
+      "rich-list": "Reichstenliste",
+      "last-ledger-information": "Aktuellste Ledger Informationen",
+      "last-ledger-transactions": "Aktuellste Ledger Transaktionen",
+      "verified-domains": "Überprüfte Domains",
+      "validators": "Validatoren",
+      "amendments": "Änderungen",
+      "genesis": "Genesis Konten"
+    },
+    "developers": {
+      "developers": "Entwickler",
+      "account-generation": "Kontoerstellung",
+      "faucet": "Wasserhahn",
+      "api": "API Dokumentation",
+      "api-key-request": "API key"
+    },
+    "legal": "Rechtliches",
+    "disclaimer": "Haftungsausschluss",
+    "privacy-policy": "Datenschutz",
+    "terms-and-conditions": "AGB",
+    "customer-support": "Kundensupport",
+    "press": "Presse",
+    "merch": "Merch Shop",
+    "donate": "Spenden",
+    "community": {
+      "title": "Community",
+      "xumm": "Xumm Wallet",
+      "xrplf": "XRPL Foundation",
+      "xrpl": "XRPL Webseite",
+      "xrpchat": "XRP Chat",
+      "treasury": "Treasury: Bithomp"
+    },
+    "sponsored": {
+      "title": "Gesponsert",
+      "buy": "XRP kaufen",
+      "earn": "Mit XRP verdienen",
+      "play": "Mit XRP wetten"
+    }
+  },
+  "components": {
+    "expiration-select": {
+      "1d": "1 Tag",
+      "3d": "3 Tage",
+      "7d": "7 Tage",
+      "14d": "14 Tage",
+      "30d": "30 Tage",
+      "90d": "90 Tage"
+    }
+  },
+  "signin": {
+    "signin": "Einloggen",
+    "signout": "Ausloggen",
+    "choose-app": "App zum Einloggen wählen",
+    "login-with": "Einloggen mit",
+    "sign-with": "Signieren mit",
+    "amount": {
+      "set-price": "Preis festlegen",
+      "enter-amount": "Betrag eingeben"
+    },
+    "expiration": "Ablauf",
+    "xumm": {
+      "open-app": "Öffnen Sie die Xumm App auf Ihrem Telefon.",
+      "change-settings": "Gehen Sie in die Einstellungen und wählen Sie einen Testnetz Knoten.",
+      "scan-qr": "Scannen Sie diesen QR-Code mit der Xumm App.",
+      "statuses": {
+        "redirecting": "Weiterleiten zu Xumm...",
+        "wait": "Bitte warten...",
+        "check-push": "Prüfen Sie die Push-Benachrichtigung auf Ihrem Telefon.",
+        "check-app": "Bitte folgen Sie den Instruktionen in der Xumm App.",
+        "expired": "Der QR-Code ist abgelaufen. Beantragen Sie einen neuen."
+      }
+    },
+    "actions": {
+      "view": "Explorer Ansicht",
+      "send": "XRP senden",
+      "my-nfts": "Meine NFTs",
+      "my-nft-offers": "Meine NFT Angebote"
+    },
+    "not-available": "Nicht verfügbar",
+    "confirm": {
+      "set-domain": "Eine Domain definieren",
+      "nft-accept-offer-header": "NFT Kauf",
+      "nft-create-sell-offer-header": "Liste zum Verkauf",
+      "nft-create-buy-offer-header": "Kaufangebot erstellen",
+      "nft-accept-offer": "Ich anerkenne, dass Bithomp mir einen Zugriff auf einen dezentralen Marktplatz gewährt und dabei die Echtheit und Legitimität keiner NFTs garantiert werden können. Ich bestätige, dass ich die <1>AGB</1> gelesen habe und ich stimme allen Bedingungen zum Kauf, Verkauf oder Nutzung von NFTs auf Bithomp zu.",
+      "nft-create-sell-offer": "Ich verstehe, dass der NFT sofort gekauft werden kann, sobald mein Angebot signiert ist.",
+      "nft-burn-header": "NFT vernichten",
+      "nft-burn": "Ich verstehe, dass NFT dauerhaft vernichtet wird, was bedeutet, dass es nicht mehr besessen, übertragen, gekauft oder verkauft werden kann. Diese Aktion kann nicht rückgängig gemacht werden."
+    },
+    "set-account": {
+      "domain": "Domain",
+      "enter-domain": "Domain eingeben"
+    }
+  },
+  "footer": {
+    "cookie": {
+      "we-use-cookie": "Wir verwenden Cookies und ähnliche Technologien, um Ihr Erlebnis auf unserer Website zu verbessern.",
+      "read-more": "Mehr lesen"
+    }
+  },
+  "home": {
+    "title": "XRP Explorer | XRP Ledger durchsuchen",
+    "description": "XRP Preisdiagramm | XRPL Statistiken | NFT Explorer | Wallet Adresssuche | XRPL NFT Volumen | NFT kaufen und verkaufen | XRP Services",
+    "search-placeholder": "Suche nach XRPL-Adresse / Transaktion / NFT / Benutzername / PayString / Angebot / Währung Hash",
+    "search-placeholder-short": "Search by Address / Transaction / User",
+    "scan-qr": "CODE SCANNEN",
+    "whales": {
+      "header": "Die signifikantesten Transaktionen der letzten 24 Stunden",
+      "no-value": "kein Wert"
+    },
+    "stat": {
+      "header": "XRPL Live Statistiken",
+      "ledger-index": "Ledger Index",
+      "close-time": "Schliesszeit",
+      "transactions": "Transaktionen",
+      "txs-per-sec": "Trans/s",
+      "quorum": "Quorum Validatoren",
+      "proposers": "Antragsteller",
+      "accounts": "Konten",
+      "usernames": "Benutzernamen",
+      "nft": {
+        "created": "NFT erstellt",
+        "burned": "NFT vernichtet",
+        "owners": "Aktuelle Besitzer",
+        "issuers": "NFT Ersteller",
+        "transfers": "NFT Transfers",
+        "for-sale": "NFTs zum Verkauf"
+      }
+    }
+  },
+  "last-ledger-information": {
+    "ledger-hash": "Ledger Hash",
+    "ledger": "Ledger",
+    "ledger-closed-at": "Ledger bestätigt um",
+    "ledger-interval": "Ledger Intervall",
+    "transactions": "Transaktionen",
+    "transaction-speed": "Transaktionen pro Sekunde",
+    "proposers": "Antragsteller",
+    "validation-quorum": "Quorum Validatoren",
+    "base-fee": "Basisgebühr",
+    "base-reserve": "Basis Reserve",
+    "increment-reserve": "Zunahme Reserve",
+    "total-supply": "Totales Angebot",
+    "total-burned": "Total vernichtet"
+  },
+  "nft-statistics": {
+    "header": "NFT Live Statistiken",
+    "text0": "Die Informationen sind ein wenig veraltet. Wir müssen <1>{{lag}}</1> Einträge auf dem Ledger aufholen.<br/>Die Daten sind verfügbar für den Ledger Index #{{crawlerIndex}}, ({{crawlerTime}}).<br/>Der letzte Validierte Ledger ist #{{currentLedgerIndex}}, ({{currentLedgerTime}}).",
+    "updated": "Aktualisiert",
+    "ledger-index": "Ledger Index",
+    "created": "Minted",
+    "burned": "Vernichtet",
+    "exist": "Aktuell existieren",
+    "burnable": "Vernichtbar durch Ersteller",
+    "only-xrp": "Kann nur für XRP verkauft werden",
+    "transferable": "Kann zu allen übertragen werden",
+    "owners": "Aktuelle Besitzer",
+    "issuers": "Total Ersteller",
+    "transfers": "NFT transferiert",
+    "for-sale": "NFTs zum Verkauf",
+    "for-sale-without-destination": "NFTs zum öffentlichen Verkauf",
+    "for-sale-with-destination": "NFTs zum direkten Verkauf"
+  },
+  "amendment": {
+    "soon": "Änderung mit einer Mehrheit",
+    "enabled": "Aktivierte Änderungen",
+    "name": "Name",
+    "introduction": "Aktivierung",
+    "majority": "Mehrheit",
+    "eta": "Geschäftze Aktivierung"
+  },
+  "validators": {
+    "updated": "Aktualisiert",
+    "unl": "UNL Validatoren",
+    "domain": "Domain",
+    "domain-legacy": "Domain (alte Verifizierung)",
+    "public-key": "Public Key",
+    "sequence": "Sequenz",
+    "address": "XRPL Adresse",
+    "no-domain": "keine Domain angegeben",
+    "text0": "Die Liste der Validatoren <1>{{url}}</1> hat die Sequenz {{sequence}} und läuft am {{expiration}} ab.<br/>Sie beinhaltet {{validatorCount}} nachfolgend aufgelistete Validatoren."
+  },
+  "username": {
+    "memo": "Bithomp Benutzernamen registrieren",
+    "error": {
+      "address-empty": "Bitte geben Sie Ihre XRPL Adresse ein.",
+      "address-invalid": "Bitte geben Sie eine gültige XRPL Adresse ein.",
+      "address-hosted": "Die eingegebene Adresse wird von {{service}} betrieben. Benuternamen können nur für eigene Wallets (Hardware Wallets, Xumm, etc.) registriert werden. Bitte kontaktieren Sie uns, falls Sie ein Betreiber einer Börse sind.",
+      "address-done": "Für diese Adresse wurde bereits ein Benutzername registriert.",
+      "username-empty": "Bitte geben Sie den Benutzernamen ein, welches Sie registrieren möchten.",
+      "username-invalid": "Benutzernamen sollten kürzer als 18 Zeichen sein. Symbole sind nicht erlaubt.",
+      "username-taken": "Der Benutzername <b>{{username}}</b> ist bereits registriert :(",
+      "username-reserved": "Der Benutzername <b>{{username}}</b> ist reserviert. Kontaktieren Sie unseren Support.",
+      "username-hold": "Der Benutzername <b>{{username}}</b> ist auf der Warteliste zur Registrierung einer anderen XRPL Adresse. Sie können den Vorgang in 24 Stunden erneut versuchen.",
+      "agree-terms-page": "Bitte bestätigen Sie die AGB auf dieser Seite.",
+      "agree-terms-site": "Bitte bestätigen Sie die AGB der Webseite.",
+      "agree-privacy-policy": "Bitte bestätigen Sie unsere Datenschutzbestimmungen.",
+      "payment-partly": "Bitte überweisen Sie den Rest des Betrages. Bis jetzt haben wir erst {{received}} {{currency}} erhalten, obwohl <b>{{required}} {{currency}}</b> erwartet wird."
+    },
+    "step0": {
+      "text0": "Bithomp <1>username</1> ist ein <3>public</3> Benutzername für Ihre XRPL Adresse.",
+      "text1": "Der Benutzername wird im Bithomp Explorer und in Drittanbieter Diensten, welche die Bithomp <1>API</1> nutzen, mit Ihrer Adresse assoziiert. Nach der Registrierung wird dieser öffentlich - <3>jeder</3> wird ihn sehen können. Ihre XRPL Adresse wird zugänglich sein mit::",
+      "text2": "Der Benutzername <1>kann nicht geändert oder gelöscht werden</1>.",
+      "only-one-for-address": "Für jede XRPL Adresse kann nur ein Benutzername registriert werden.",
+      "address-you-control": "Sie können einen Benutzernamen nur für die XRPL Adressen registrieren, welche Sie kontrollieren (Sie haben das Geheimnis/Seed oder die 12/24 Wörter zur Wiederherstellung). Sie können keinen Benutzernamen für gehostete Adressen registrieren (welche einen Destinnation Tag haben) wie bei einer Börse / Dienst / Wallet.",
+      "pay-from-your-address": "Um zu beweisen, dass Sie diese XRPL Adresse kontrollieren, müssen Sie eine Zahlung von dieser Adresse ausführen (welcher Sie einen Benutzernamen zuweisen möchten). Zahlungen von anderen Adressen werden als Spenden betrachtet und nicht zurückerstattet.",
+      "text3": "Die Zahlung ist für 100 Swedischen Kronen in XRP umgerechnet. Die Zahlung für den Benutzernamen ist <1>nicht zurückerstattbar</1>. Falls Sie mehr als notwendig überweisen, wird der zuviel überwiesene Betrag als Spende betrachtet und nicht zurückerstattet.",
+      "text4": "Benutzernamen sind jetzt netzwerkübergreifend. <1>Registrieren Sie einen Benutzernamen auf dem XRPL Mainnet</1> und er wird in den bithomp Dev Explorer innert einer Stunde verfügbar sein.",
+      "enter-address-or": "Gebenn Sie Ihre XRPL Adresse ein oder",
+      "sign-in": "Loggen Sie sich mit Xumm ein",
+      "sign-out": "Ausloggen",
+      "your-address": "Ihre XRPL Adresse",
+      "enter-username": "Geben Sie den Benutzernamen ein, welchen Sie gerne haben möchten",
+      "your-username": "Benutzername",
+      "enter-country": "Ihr Wohnsitzland (für unsere Buchhaltung)",
+      "agree-terms-page": "Ich verstehe und stimme den oben genannten AGB zu.",
+      "agree-terms-site": "Ich stimmen den <1>AGB</1> zu.",
+      "agree-privacy-policy": "Ich stimmen den <1>Datenschutzbestimmungen</1> zu.",
+      "already-registered": "Ihr Konto hat bereits einen registrierten Benutzernamen",
+      "sign-out-to-register-another-one": "<0>Ausloggen</0> von diesem Konto, um einen Benutzernamen für eine andere Adresse zu registrieren."
+    },
+    "step1": {
+      "to-register": "Um Ihren öffentlichen Benutzernamen zu registrieren:",
+      "from-your-address": "Müssen Sie eine Zahlung von nachfolgender Adresse ausführen:",
+      "text0": "Von Ihnen gemachte Zahlungen <1>von einer anderen Adresse</1> oder mit einem <3>falschen DestinationTag</3> werden nicht akzeptiert für den Service. Falsche Zahlungen werden als Spenden akzeptiert und <5>nicht zurückerstattet</5>.",
+      "payment-instructions": "Zahlungsanweisungen",
+      "address": "XRPL Adresse:",
+      "tag": "DestinationTag:",
+      "amount": "Betrag:",
+      "awaiting": "Erwarte Ihre Zahlung",
+      "about-confirmation": "Sie werden eine Bestätigung sehen, sobald wir Ihre Überweisung erhalten haben."
+    },
+    "step2": {
+      "text0": "Glückwunsch! Ihr Benutzername <1>{{ username }}</1> wurde erfolgreich registriert.",
+      "one-more": "Weiteren registrieren"
+    }
+  },
+  "alerts": {
+    "text0": "Benachrichtigung erhalten, wenn der Marktpreis von <1>Bitstamp</1> für XRP/USD oder XRP/BTC sich um mehr als 5% innert einer Stunde oder mehr als 10% innnert eines Tages verändert.",
+    "text1": "Dem Telegram Kanal <1>bithomp</1> oder dem Twitter Account <3>bithompAlerts</3> folgen.",
+    "last-alerts": "Letzte 50 Benachrichtigungen",
+    "date-and-time": "Datum & Zeit",
+    "currency-pair": "Währungspaar",
+    "change-duration": "Dauer ändern",
+    "change": "Ändern",
+    "old-rate": "Alter Kurs",
+    "new-rate": "Neuer Kurs"
+  },
+  "genesis": {
+    "text0": "Der Ledger <1>32570</1> ist der früheste verfügbare Ledger. Ungefähr in der ersten Woche der XRPL Geschichte wurden die <3>Ledger 1 bis 32569 in 2012 durch eine Panne verloren</3>.",
+    "ledger-continue": "Weil der Zustand des XRP Ledger mit jeder Ledgerversion aufgezeichnet wird, kann der Ledger trotz fehlender Geschichte weitergeführt werden.",
+    "ledger-index": "Ledger Index",
+    "account-count": "Anzahl Konten",
+    "inception": "Beginn",
+    "xrp-balance": "XRP Kontostand",
+    "balance-update": "Kontostand Akualisierung",
+    "details": "Details",
+    "address": "Adresse",
+    "genesis-balance": "Genesis XRP Kontostand",
+    "rippletrade-username": "Rippletrade Benutzernamen",
+    "nickname": " Nickname",
+    "genesis-index": "Genesis Index"
+  },
+  "developer": {
+    "header": "Bithomp API key Anfrage",
+    "email": "Ihre E-Mail Adresse:",
+    "url": "Ihre Webseite/App URL:",
+    "description": "Beschreibung Ihres Projekts und Details zur API Verwendung:",
+    "success": "Vielen Dank. Sie sollten Ihren API Token per E-Mail innert 48 Stunden erhalten.",
+    "error": {
+      "email-empty": "Bitte geben Sie Ihre E-Mail Adresse ein.",
+      "email-invalid": "Bitte geben Sie eine gültige E-Mail Adresse einn.",
+      "url-empty": "Bitte geben Sie Ihre Webseite/App URL ein.",
+      "url-invalid": "Bitte geben Sie eine gültige URL ein.",
+      "description-empty": "Bitte fügen Sie eine Beschreibung Ihres Projekts hinzu.",
+      "description-invalid": "Bitte schreiben Sie eine detaillierte Beschreibung Ihres Projekts."
+    }
+  },
+  "customer-support": {
+    "text0": "Bithomp ist ein Explorer des <1>öffentlichen</1> XRP Ledgers.",
+    "no-help": "Wir können keine Konten einfrieren, keine Rückerstattungen durchführen, keine Transactionen abbrechen, ändern oder DestinationTags hinzufügen. Wir führen keine Nachforschungen durch und wir können Ihnen nicht dabei helfen, verlorene oder gestolene Mittel zurückzuerhalten.",
+    "text1": "Falls Ihnen Mittel gestohlen wurden oder falls Sie Opfer eines Betrugs/Scams wurden, können Sie dies <1>hier</1> melden.",
+    "status-failed": "Falls Ihre Transaktion den Status \"fehlgeschlagen\" hat aber Ihre Mittel von Ihrem Konto abgezogen wurden, kontaktieren Sie bitte den Support des Service / Walletbetreiber / Börse welche Sie zur Durchführung der Transaktion genutzt haben.",
+    "status-success": "Falls Ihre Transaktion den Status \"erfolgreich\" hat aber nicht beim Empfänger angekommen sind, kontaktieren Sie den Support des Services / Walletbetreibers / Börse des Empfängers.",
+    "wrong-tag": "Falls Sie eine Transaktion ohne DestinationTag oder mit einem falschen DestinationTag gesendet haben, lesen Sie bitte (2) und (3) oberhalb.",
+    "text2": "Falls Sie 10 XRP in Ihrer Wallet vermissen, lesen Sie bitte über <1>Basis Reserve</1>.",
+    "paper-wallet": "Falls Sie XRP von Ihrer Papierwallet senden möchten, müssen Sie diese zuerst in eine Software-Wallet importieren. Sie können dafür die Xumm Mobile App verwenden (Geheimnis als \"Familien-Seed\" importieren).",
+    "flare": "Bei Fragen zu \"Flare\" wenden Sie sich bitte an die Flare Community.",
+    "text3": "Für Vorschläge zu <1>Partnerschaften oder Marketing</1> kontaktieren Sie uns bitte per E-Mail: <3/>. Sie können uns auch zu Fragen über bithomp Benutzernamen oder dem bithomp Transaktion Explorer kontaktieren.",
+    "no-answer": "Aufgrund unserer begrenzten verfügbaren Zeit antworten wir nicht auf E-Mails mit Bezug zu 1-7.",
+    "submit-info": "Informationen über Ihren XRPL Service schicken",
+    "text4": "Falls Sie einen öffentlichen XRPL Service anbieten und möchten, dass Ihre XRPL Adressen auf Bithomp erkannt werden, senden Sie uns Ihre Innformationen <1>hier</1>. Sie können uns auch per E-Mail kontaktieren: <3/> falls Sie den Vorgang beschleunigen möchten.",
+    "follow-us": "Folgen Sie uns auf Social Media"
+  },
+  "press": "Dies ist das offizielle Logo für Print und Web von Bithomp für mediale, profesionelle Pressezwecke (svg, png, eps, pdf, for dark and light backgrounds). Für mediale Anfragen <1>kontaktieren Sie uns</1> bitte.",
+  "page-not-found": {
+    "header": "Die angefragen Seite wurde nicht gefunden.",
+    "text": "Klicken Sie <1>hier</1> um unsere Landingpage zu überprüfen."
+  },
+  "receipt": {
+    "quantity": "Anz.",
+    "items": "Artikel",
+    "price": "Preis",
+    "total": "Total",
+    "paid": "bezahlt",
+    "order-id": "Bestellung Id"
+  },
+  "button": {
+    "continue": "Fortfahren",
+    "cancel": "Abbrechen",
+    "accept": "Akzeptieren",
+    "submit": "Abschicken",
+    "search": "Suchen",
+    "print": "Drucken",
+    "download": "Download",
+    "copy": "Kopieren",
+    "copied": "Kopiert",
+    "copy-my-address": "Meine Adresse kopieren",
+    "sign": "Signieren"
+  },
+  "general": {
+    "error": "Fehler",
+    "no-data": "Keine Daten verfügbar",
+    "loading": "Lade...",
+    "load-failed": "Laden fehlgeschlagen",
+    "all-issuers": "Alle Emittenten",
+    "no-expiration": "Nie",
+    "no-uri": "Keine URI angegeben",
+    "no-media": "Kein Medien gefunden",
+    "viewer": "Betrachtungsprogramm"
+  },
+  "error": {
+    "Network Error": "Es scheint keine Internetverbindung zu bestehen ;(",
+    "Request failed with status code 429": "Sie senden uns zu viele Anfragen. Versuchen Sie es später erneut!"
+  },
+  "error-api": {
+    "search is too short": "Der zu suchende Name ist zu kurz",
+    "issuer username is not found or invalid": "Ungültiger Benutzername des Emittenten",
+    "issuer is invalid": "Ungültige Adresse des Emittenten",
+    "owner username is not found or invalid": "Ungültiger Benutzername des Besitzers",
+    "owner is invalid": "Ungültige Adresse des Besitzers",
+    "destination username is not found or invalid": "Ungültiger Benutzername des Empfängers",
+    "destination is invalid": "Ungültige Adresse des Empfängers",
+    "currency is invalid": "Ungültige Währung",
+    "currencyIssuer username is not found or invalid": "Ungültiger Benutzername des Währungsemittenten",
+    "currencyIssuer is invalid": "Ungültiger Adresse des Währungsemittenten",
+    "Token information is not found": "Wir konnten für diese ID keine Informationen finden",
+    "No nfts information is found": "Entschuldigung, ein Fehler ist aufgetreten. Bitte suchen Sie nach etwas anderem."
+  },
+  "units": {
+    "seconds-short": "s",
+    "minutes-short": "m",
+    "hours-short": "h"
+  },
+  "period": {
+    "all": "",
+    "year": "Für die letzten 365 Tage",
+    "month": "Für die letzten 30 Tage",
+    "week": "Für die letzten 7 Tage",
+    "day": "Für die letzten 24 Stunden"
+  },
+  "table": {
+    "index": "Index",
+    "address": "Adresse",
+    "date": "Datum",
+    "amount": "Betrag",
+    "name": "Name",
+    "sender": "Absender",
+    "balance": "Kontostand",
+    "memo": "Memo",
+    "transaction": "Transaktion",
+    "owner": "Besitzer",
+    "owners-now": "Besitzer (jetzt)",
+    "accepted-by": "Akzeptiert von",
+    "issuer": "Emittent",
+    "minter": "Minter",
+    "receiver": "Empfänger",
+    "issuer-owner": "Emittent & Besitzer",
+    "issuers": "Emittenten",
+    "broker": "Vermittler",
+    "seller": "Verkäufer",
+    "buyer": "Käufer",
+    "sold": "Verkauft",
+    "sold_few": "Verkauft",
+    "sold-on": "Verkauft auf",
+    "minted-on": "Minted auf",
+    "type": "Typ",
+    "status": "Status",
+    "hash": "Hash",
+    "serial": "Serie",
+    "taxon": "Taxon",
+    "placed": "Platziert",
+    "accepted": "Akzeptiert",
+    "canceled": "Abgebrochen",
+    "offer": "Angebot",
+    "expiration": "Ablauf",
+    "expired": "Abgelaufen",
+    "destination": "Ziel",
+    "sales": "Verkäufe",
+    "volume": "Verkaufsvolumen",
+    "price": "Preis",
+    "external-url": "Externe URL",
+    "description": "Beschreibung",
+    "collection": "Kollektion",
+    "transfer-fee": "Abgabe",
+    "flag": "Markierung",
+    "flags": "Markierungen",
+    "count": "Betrag",
+    "nfts": "NFTs",
+    "minted": "Minted",
+    "transferred": "Transferiert",
+    "burned": "Vernichtet",
+    "attributes": "Attribute",
+    "metadata": "Metadaten",
+    "ledger-data": "Ledger-Daten",
+    "history": "Geschichte",
+    "sell-offers": "Verkaufsangebote",
+    "buy-offers": "Kaufangebote",
+    "nfts-now": "NFTs (jetzt)",
+    "traded-nfts": "Gehandelte NFTs",
+    "buyers": "Käufer",
+    "raw-data": "Rohdaten",
+    "username": "Benutzername",
+    "floor-now": "Tiefster (jetzt)",
+    "related-lists": "Zugehörige Listen",
+    "by-issuer": "nach Emittent",
+    "by-owner": "nach Besitzer",
+    "by-taxon": "nach Taxon",
+    "all-nfts": "Alle NFTs",
+    "on-sale": "Zum Verkauf",
+    "social-share": "Teilen ist Kümmern",
+    "marketplace": "Marktplatz",
+    "text": {
+      "show-extended-statistics": "Erweiterte Statistiken anzeigen",
+      "include-without-metadata": "NFTs ohne Metadaten einbeziehen",
+      "include-burned-nfts": "Vernichtete NFTs einbeziehen",
+      "no-expiration": "Kein Ablaufdatum",
+      "no-offers": "Keine Angebote gefunden",
+      "unspecified": "nicht spezifiziert",
+      "sell": "Verkaufen",
+      "buy": "Kaufen",
+      "show": "anzeigen",
+      "hide": "verbergen",
+      "see-on": "Anzeigen auf <1><0>{{marketplace}}</0></1>",
+      "valid": "gültig",
+      "invalid": "ungültig"
+    },
+    "filter": {
+      "valid": "Gültig",
+      "invalid": "Ungültig",
+      "active": "Alle aktiven",
+      "historical": "Historisch",
+      "all": "Alle"
+    },
+    "text-status": {
+      "NFT is not owned by the seller account": "NFT wird nicht von Verkäufer gehalten",
+      "Offer is expired": "Abgelaufen",
+      "Unable to verify balance of the buyer account": "Kontostand des Käuferkontos kann nicht überprüft werden",
+      "Insufficient funds on the buyer account": "Der Käufer hat ein zu geringes Saldo",
+      "Seller has no trustline for the token or it cannot be verified": "Verkäufer hat keine Trustline für den Token oder es kann nicht überprüft werden",
+      "NFT Issuer has no trustline for the token to accept royalty or it cannot be verified": "NFT Emittent hat keine Trustline für den Token um die Gebühr zu akzaptieren oder es kann nicht überprüft werden"
+    }
+  },
+  "tabs": {
+    "list": "Liste",
+    "tiles": "Kachel",
+    "secondary-sales": "Sekundär",
+    "primary-sales": "Primär",
+    "primaryAndSecondary-sales": "Alle Verkäufe",
+    "top-sales": "TOP Verkäufe",
+    "latest-sales": "Letzte Verkäufe",
+    "all-time": "Seit jeher",
+    "year": "365 Tage",
+    "month": "30 Tage",
+    "week": "7 Tage",
+    "day": "24 Stunden",
+    "currencies": "Währungen",
+    "issuers": "Emittenten",
+    "marketplaces": "Marktplätze",
+    "brokers": "Vermittler",
+    "image": "Bild",
+    "video": "Video",
+    "audio": "Audio",
+    "model": "3D Modell",
+    "owned-offers": "Gehalten",
+    "offers-for-owned-nfts": "Für gehaltene NFTs",
+    "privately-offered-to-address": "Private (eingehend)",
+    "all": "Alle",
+    "buy": "Kaufen",
+    "sell": "Verkaufen",
+    "public": "Öffentlich",
+    "publicAndKnownBrokers": "Öffentlich & MP",
+    "onSale": "Zum Verkauf für XRP",
+    "all-tokens": "Alle Tokens",
+    "xrp-only": "nur XRP"
+  },
+  "xumm": {
+    "new-qr": "Neuen QR-Code erhalten"
+  },
+  "explorer": {
+    "header": "XRP Ledger Explorer",
+    "enter-address": "Geben Sie eine XRPL Adresse oder einen Benutzernamen ein",
+    "searching-tx-nft-nftoffer": "Suchen nach Trans / NFT ID / NFT Angebot",
+    "searching-for-addresses": "Suche nach Adressen...",
+    "menu": {
+      "account": "Konto",
+      "transactions": "Transaktionen",
+      "tokens": "Tokens"
+    },
+    "different-network": "Diese Transaktion ist aus dem Netzwerk <1>{{networkNameOrId}}</1>",
+    "check-tx-on-different-explorer": "Überprüfen Sie Details <1><0>hier</0></1>.",
+    "not-supported-network": "was nicht unterstützt wird."
+  },
+  "nft-explorer": {
+    "header": "NFT Explorer"
+  },
+  "nft-offers": {
+    "header": "NFT Angebote",
+    "owned-desc": "Hier können Sie nach Kauf- und Verkaufsangeboten für NFTs suchen, die XRPL Adresse oder den Benutzernamen eingeben, um zu sehen, was angeboten wird.",
+    "for-owned-nfts-desc": "Hier können Sie nach Kaufangeboten für NFTs im Besitz eines Kontos suchen, die XRPL Adresse oder den Benutzernamen eingeben, um erhaltene Angebote anzuzeigen.",
+    "privately-offered-to-address-desc": "Hier können Sie nach Angeboten suchen, die privat für ein Konto (mit Ziel) erstellt wurden. Es wird häufig für NFT-Transfers verwendet (Preis 0 XRP). Geben Sie die XRPL Adresse oder den Benutzernamen ein, um erhaltene Angebote anzuzeigen.",
+    "no-nft-offers": "Wir konnten keine NFT Angebote finden.",
+    "cancel-invalid-offer_one": "Stornieren Sie das ungültige Angebot",
+    "cancel-invalid-offer_other": "Stornieren Sie {{count}} ungültige Angebote",
+    "cancel-expired-offer_one": "Stornieren Sie das abgelaufene Angebot",
+    "cancel-expired-offer_other": "Stornieren Sie {{count}} abgelaufene Angebote"
+  },
+  "nft-offer": {
+    "header": "NFT Angebot",
+    "desc": "Hier können Sie nach NFT Angeboten suchen, eine Angebots-ID eingeben und auf die Suchschaltfläche klicken.",
+    "enter-offer-id": "Geben Sie eine NFT Angebots-ID ein",
+    "selling": "Verkaufen",
+    "buying": "Kaufen"
+  },
+  "nfts": {
+    "header": "NFTs des Kontos",
+    "desc": "Hier können Sie nach NFTs suchen, die XRPL Adresse eingeben, um zu sehen, welche NFTs es besitzt.",
+    "search-by-name": "Suche nach NFT Name",
+    "search-by-issuer": "Suche nach NFT Emittent",
+    "search-by-taxon": "Suche nach NFT Taxon",
+    "search-by-owner": "Suche nach NFT Besitzer",
+    "no-nfts": "Wir konnten keine NFTs mit Ihren Suchparametern finden.",
+    "load-more": "Wir suchen nach Daten auf dem XRP Ledger... bitte warten...",
+    "end": "Hier sind alle NFTs die wir finden konnten."
+  },
+  "nft": {
+    "desc": "Hier können Sie nach NFTs suchen, eine NFT ID eingeben und den Suchknopf drücken.",
+    "enter-nft-id": "Eine NFT ID eingeben",
+    "cancel-sell-offer-for": "Verkaufsangebot für {{amount}} abbrechen",
+    "cancel-buy-offer-for": "Kaufangebot für {{amount}} abbrechen",
+    "cancel-transfer": "NFT Transfer abbrechen",
+    "accept-transfer": "NFT Transfer akzeptieren",
+    "buy-for-amount-on": "Für {{amount}} auf {{service}} kaufen",
+    "buy-for-amount": "Kaufen für {{amount}}",
+    "amount-on-service": "{{amount}} auf {{service}}",
+    "on-service": "auf {{service}}",
+    "make-offer": "Angebot machen",
+    "list-for-sale": "Zum Verkauf anbieten",
+    "holders": "Verteilung (Halter)",
+    "burn": "NFT vernichten"
+  },
+  "nft-distribution": {
+    "header": "NFT Verteilung",
+    "desc": "Hier können Sie die Verteilung von NFTs eines bestimmten NFT Emittenten überprüfen. Geben Sie die XRPL Adresse des NFT Emittenten oder einen Benutzernamen ein und klicken Sie auf die Suchschaltfläche.",
+    "no-nfts": "Wir konnten keine von dieser Adresse emittierten NFTs finden",
+    "text0": "{{users}} Konten besitzen {{nfts}} NFTs"
+  },
+  "nft-volumes": {
+    "header": "NFT Verkaufsvolumen",
+    "text0": "XRPL hatte {{allSales}} {{currency}} NFT {{saleType}} Verkäufe für {{allVolume}}.",
+    "brokers": {
+      "desc": "Dies ist die Liste der NFT Vermittlerkonten. Hier finden Sie zahlreiche Angebots-Matching-Bots. Marktplätze verwenden gemischte Handelsmodelle, hier können Sie nur die Volumen durch das Vermittler-Modell sehen.",
+      "no-broker": "Kein Vermittler",
+      "text0": "XRPL hatte {{allSales}} <3>{{currency}}</3> NFT {{saleType}} Verkäufe für {{allVolume}}, davon <9>{{brokerSales}}</9> {{percentBrokerSales}} der Geschäfte für <13>{{brokerVolume}}</13> {{percentBrokerVolume}} erfolgten über das Vermittler-Modell."
+    },
+    "marketplaces": {
+      "desc": "Dies ist die Liste der NFT Marktplätze auf XRPL. In den Volumen sind hier die Primärverkäufe (Mints) nicht enthalten, die innerhalb von 2 Transaktionen (Zahlung und NFT Transfer) getätigt wurden."
+    },
+    "issuers": {
+      "desc": "Dies ist die Liste der NFT Emittenten auf XRPL. Um die Volumen der NFT Kollektionen nach Emittenten und Taxon anzuzeigen, klicken Sie auf den Link in der Spalte Volumen"
+    }
+  },
+  "nft-sales": {
+    "header": "NFT Verkäufe",
+    "load-more": "Wir suchen nach Daten auf dem XRP Ledger... bitte warten...",
+    "end": "Das Ende der Liste."
+  },
+  "links": {
+    "active-offers-same-account": "Aktive Angebote von diesem Konto anzeigen",
+    "nfts-same-issuer": "NFTs des selben Emittenten",
+    "owned-nfts-same-account": "NFTs besessen von diesem Konto",
+    "all": "alle",
+    "sold": "verkauft"
+  },
+  "donate": {
+    "help-us": "Helfen Sie uns bei unserer Mission, den benutzerfreundlichsten XRPL Explorer zu entwickeln.",
+    "it-helps": "Ihre Spende wird uns helfen, mehr Kapazitäten hinzuzufügen und Bithomp weiterzuentwickeln.",
+    "address": "Unsere XRPL Adresse für Spenden",
+    "dt": "DestinationTag",
+    "donate-with-xumm": "Spenden mit XUMM"
+  },
+  "sponsored": {
+    "sponsored": "Gesponsert"
+  }
+}
