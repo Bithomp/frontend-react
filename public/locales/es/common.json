@@ -2,7 +2,7 @@
   "menu": {
     "personal": {
       "personal": "Particulares",
-      "search-on-xrpl": "Search on XRPL"
+      "search-on-xrpl": "Buscar en XRPL"
     },
     "business": {
       "business": "Empresas",
@@ -27,7 +27,7 @@
       "offers": "Ofertas"
     },
     "xrpl": {
-      "rich-list": "Rich list",
+      "rich-list": "Lista de ricos",
       "last-ledger-information": "Información del último libro contable",
       "last-ledger-transactions": "Transacciones del último libro contable",
       "verified-domains": "Dominios verificados",
