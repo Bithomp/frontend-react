@@ -1,6 +1,7 @@
 import { useTranslation } from 'next-i18next'
 import moment from "moment"
 import 'moment/locale/ru' // "ru"
+import 'moment/locale/de' // "de"
 import 'moment/locale/es' // "es"
 import 'moment/locale/id' // "id"
 import 'moment/locale/ja' // "ja"
@@ -36,6 +37,7 @@ export default function LanguageSelect() {
       <select onChange={handleLangChange} value={i18n.language} name="language-select">
         <option value="en">English</option>
         <option value="ru">Русский</option>
+        <option value="de">Deutsch</option>
         <option value="es">Español</option>
         <option value="id">Bahasa Indonesia</option>
         <option value="ja">日本語</option>

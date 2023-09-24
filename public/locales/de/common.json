@@ -129,8 +129,8 @@
   "home": {
     "title": "XRP Explorer | XRP Ledger durchsuchen",
     "description": "XRP Preisdiagramm | XRPL Statistiken | NFT Explorer | Wallet Adresssuche | XRPL NFT Volumen | NFT kaufen und verkaufen | XRP Services",
-    "search-placeholder": "Suche nach XRPL-Adresse / Transaktion / NFT / Benutzername / PayString / Angebot / Währung Hash",
-    "search-placeholder-short": "Search by Address / Transaction / User",
+    "search-placeholder": "Suche nach XRPL-Adresse / Transaktion / NFT / Benutzername / PayString / Angebot",
+    "search-placeholder-short": "Suche nach XRPL-Adresse / Transaktion",
     "scan-qr": "CODE SCANNEN",
     "whales": {
       "header": "Die signifikantesten Transaktionen der letzten 24 Stunden",
