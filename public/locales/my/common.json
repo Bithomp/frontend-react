@@ -1,0 +1,630 @@
+{
+	"menu": {
+		"personal": {
+			"personal": "Peribadi",
+			"search-on-xrpl": "Cari di XRPL"
+		},
+		"business": {
+			"business": "Perniagaan",
+			"advertise": "Iklankan",
+			"eaas": "Peneroka sebagai Perkhidmatan",
+			"build-unl": "Bangunkan UNL"
+		},
+		"usernames": "Pendaftaran Nama Pengguna",
+		"project-registartion": "Pendaftaran Projek XRPL",
+		"price-alerts": "Peringatan Harga XRP",
+		"submit-offline-tx": "Hantar Transaksi Offline",
+		"networks": "Rangkaian",
+		"ledger": "Transaksi Ledger",
+		"nft": {
+			"explorer": "Peneroka",
+			"volumes": "Isipadu",
+			"sales": "Jualan",
+			"minters": "Minters",
+			"distribution": "Pembahagian (Pemegang)",
+			"statistics": "Statistik Langsung",
+			"nfts": "NFT Akaun",
+			"offers": "Tawaran"
+		},
+		"xrpl": {
+			"rich-list": "Senarai Akaun-Akaun Terkaya",
+			"last-ledger-information": "Maklumat Ledger Terakhir",
+			"last-ledger-transactions": "Transaksi Ledger Terakhir",
+			"verified-domains": "Domain Disahkan",
+			"validators": "Node Pengesah",
+			"amendments": "Pindaan",
+			"genesis": "Akaun Genesis"
+		},
+		"developers": {
+			"developers": "Pembangun",
+			"account-generation": "Penghasilan Akaun",
+			"faucet": "Faucet",
+			"api": "Dokumentasi API",
+			"api-key-request": "Permintaan Kunci API"
+		},
+		"legal": "Undang-undang",
+		"disclaimer": "Penafian",
+		"privacy-policy": "Dasar Privasi",
+		"terms-and-conditions": "Terma dan Syarat",
+		"customer-support": "Sokongan Pelanggan",
+		"press": "Media",
+		"merch": "Kedai Merch",
+		"donate": "Sumbangan",
+		"community": {
+			"title": "Komuniti",
+			"xumm": "Wallet Xumm",
+			"xrplf": "Yayasan XRPL",
+			"xrpl": "Laman web XRPL",
+			"xrpchat": "Perbualan XRP",
+			"treasury": "Kewangan: Bithomp"
+		},
+		"sponsored": {
+			"title": "Ditaja",
+			"buy": "Beli XRP",
+			"earn": "Peroleh dari XRP",
+			"play": "Mainkan XRP"
+		}
+	},
+	"components": {
+		"expiration-select": {
+			"1d": "1 hari",
+			"3d": "3 hari",
+			"7d": "7 hari",
+			"14d": "14 hari",
+			"30d": "30 hari",
+			"90d": "90 hari"
+		}
+	},
+	"signin": {
+		"signin": "Log Masuk",
+		"signout": "Log Keluar",
+		"choose-app": "Pilih aplikasi log masuk",
+		"login-with": "Log masuk dengan",
+		"sign-with": "Tanda dengan",
+		"amount": {
+			"set-price": "Tetapkan harga",
+			"enter-amount": "Masukkan jumlah"
+		},
+		"expiration": "Tempoh luput",
+		"xumm": {
+			"open-app": "Buka aplikasi Xumm di telefon anda.",
+			"change-settings": "Pergi ke tetapan dan pilih nod ujian.",
+			"scan-qr": "Imbas kod QR ini dengan aplikasi Xumm.",
+			"statuses": {
+				"redirecting": "Mengalihkan ke Xumm...",
+				"wait": "Sila tunggu...",
+				"check-push": "Semak pemberitahuan dorong pada telefon bimbit anda.",
+				"check-app": "Sila ikuti arahan dalam aplikasi Xumm.",
+				"expired": "Kod QR telah tamat tempoh, minta yang baru."
+			}
+		},
+		"actions": {
+			"view": "Paparan Peneroka",
+			"send": "Hantar XRP",
+			"my-nfts": "NFT Saya",
+			"my-nft-offers": "Tawaran NFT Saya"
+		},
+		"not-available": "Tidak Tersedia",
+		"confirm": {
+			"set-domain": "Menetapkan Domain",
+			"nft-accept-offer-header": "Pembelian NFT",
+			"nft-create-sell-offer-header": "Senarai untuk Dijual",
+			"nft-create-buy-offer-header": "Cipta Tawaran Beli",
+			"nft-accept-offer": "Saya mengakui bahawa Bithomp memberi saya akses kepada pasaran terdesentralisasi, dan ia tidak boleh mengesahkan atau menjamin keaslian dan keabsahan mana-mana NFT. Saya mengesahkan bahawa saya telah membaca <1>Terma dan Syarat</1>, dan saya bersetuju dengan semua terma untuk membeli, menjual, atau menggunakan mana-mana NFT di Bithomp.",
+			"nft-create-sell-offer": "Saya faham, apabila senarai saya ditandatangani, NFT boleh dibeli dengan segera.",
+			"nft-burn-header": "Pemusnahan NFT",
+			"nft-burn": "Saya faham bahawa NFT akan dihapuskan secara kekal, bermaksud, ia tidak boleh lagi dimiliki, dipindahkan, dibeli, atau dijual. Tindakan ini tidak dapat dibatalkan."
+		},
+		"set-account": {
+			"domain": "Domain",
+			"enter-domain": "Masukkan domain"
+		}
+	},
+	"footer": {
+		"cookie": {
+			"we-use-cookie": "Kami menggunakan kuki dan teknologi serupa untuk meningkatkan pengalaman anda di laman web kami.",
+			"read-more": "Baca lebih lanjut"
+		}
+	},
+	"home": {
+		"title": "Peneroka XRP | Imbas XRPL Ledger",
+		"description": "Carta harga XRP | Statistik XRPL | Peneroka NFT | Carian alamat dompet | Jilid NFT XRPL | Beli dan Jual NFT | Perkhidmatan XRP",
+		"search-placeholder": "Cari Menggunakan Alamat XRPL / Transaksi / NFT / Nama Pengguna / PayString / Tawaran / Hash Mata Wang",
+		"search-placeholder-short": "Cari Menggunakan Alamat / Transaksi / Pengguna",
+		"scan-qr": "IMBAS KOD",
+		"whales": {
+			"header": "Transaksi paling signifikan dalam 24 jam terakhir",
+			"no-value": "tiada nilai"
+		},
+		"stat": {
+			"header": "Statistik Langsung XRPL",
+			"ledger-index": "Indeks Ledger",
+			"close-time": "Masa Tutup",
+			"transactions": "Transaksi",
+			"txs-per-sec": "txs/s",
+			"quorum": "Kuorum Pengesahan",
+			"proposers": "Pempropos",
+			"accounts": "Akaun",
+			"usernames": "Nama Pengguna",
+			"nft": {
+				"created": "NFT dimintak",
+				"burned": "NFT dibakar",
+				"owners": "Pemilik semasa",
+				"issuers": "Penerbit NFT",
+				"transfers": "Pemindahan NFT",
+				"for-sale": "NFT untuk dijual"
+			}
+		}
+	},
+	"last-ledger-information": {
+		"ledger-hash": "Hash Ledger",
+		"ledger": "Ledger",
+		"ledger-closed-at": "Ledger ditutup pada",
+		"ledger-interval": "Interval Ledger",
+		"transactions": "Transaksi",
+		"transaction-speed": "Transaksi per saat",
+		"proposers": "Pempropos",
+		"validation-quorum": "Kuorum Pengesahan",
+		"base-fee": "Yuran Asas",
+		"base-reserve": "Simpanan Asas",
+		"increment-reserve": "Penambahan Simpanan",
+		"total-supply": "Bekalan Keseluruhan",
+		"total-burned": "Jumlah Pemusnahan"
+	},
+	"nft-statistics": {
+		"header": "Statistik Langsung NFT",
+		"text0": "Maklumat ini agak usang, kami perlu mengejar <1>{{lag}}</1> ledger.<br/>Data disediakan untuk ledger #{{crawlerIndex}}, ({{crawlerTime}}).<br/>Ledger yang terakhir disahkan adalah #{{currentLedgerIndex}}, ({{currentLedgerTime}}).",
+		"updated": "Dikemaskini",
+		"ledger-index": "Indeks Ledger",
+		"created": "Dimintak",
+		"burned": "Dibakar",
+		"exist": "Sedia ada",
+		"burnable": "Boleh dibakar oleh penerbit",
+		"only-xrp": "Hanya boleh dijual dengan XRP",
+		"transferable": "Boleh dipindahkan kepada sesiapa sahaja",
+		"owners": "Pemilik semasa",
+		"issuers": "Jumlah penerbit",
+		"transfers": "Pemindahan NFT",
+		"for-sale": "NFT untuk dijual",
+		"for-sale-without-destination": "NFT untuk dijual secara awam",
+		"for-sale-with-destination": "NFT untuk dijual terus"
+	},
+	"amendment": {
+		"soon": "Pindaan dengan majoriti",
+		"enabled": "Pindaan diaktifkan",
+		"name": "Nama",
+		"introduction": "Pengenalan",
+		"majority": "Majoriti",
+		"eta": "Masa Pengaktifan Anggaran"
+	},
+	"validators": {
+		"updated": "dikemaskini",
+		"unl": "Pengesah UNL",
+		"domain": "Domain",
+		"domain-legacy": "Domain (pengesahan lama)",
+		"public-key": "Kunci Awam",
+		"sequence": "Rantaian",
+		"address": "Alamat XRPL",
+		"no-domain": "tiada domain yang dinyatakan",
+		"text0": "Senarai pengesah <1>{{url}}</1> mempunyai rantaian {{sequence}} dan tamat tempoh pada {{expiration}}.<br/>Ia merangkumi {{validatorCount}} pengesah yang disenaraikan di bawah."
+	},
+	"username": {
+		"memo": "Pendaftaran Nama Pengguna Bithomp",
+		"error": {
+			"address-empty": "Sila masukkan alamat XRPL anda.",
+			"address-invalid": "Sila masukkan alamat XRPL yang sah.",
+			"address-hosted": "Alamat yang dimasukkan dihoskan di {{service}}, anda hanya boleh mendaftarkan nama pengguna untuk dompet yang tidak dihoskan (dompet perkakasan, Xumm, dll). Jika anda pengendali pertukaran, sila hubungi kami.",
+			"address-done": "Alamat tersebut sudah memiliki nama pengguna yang didaftarkan.",
+			"username-empty": "Sila masukkan nama pengguna yang ingin anda daftarkan.",
+			"username-invalid": "Nama pengguna hendaklah kurang daripada 18 aksara, tidak ada simbol yang dibenarkan.",
+			"username-taken": "Nama pengguna <b>{{username}}</b> sudah diambil :(",
+			"username-reserved": "Nama pengguna <b>{{username}}</b> adalah tempahan, hubungi sokongan kami.",
+			"username-hold": "Nama pengguna <b>{{username}}</b> ditahan untuk pendaftaran oleh akaun XRPL lain. Anda boleh mencuba lagi dalam 24 jam.",
+			"agree-terms-page": "Sila bersetuju dengan terma dan syarat yang dinyatakan di halaman ini.",
+			"agree-terms-site": "Saya bersetuju dengan <1>Terma dan Syarat</1> laman web.",
+			"agree-privacy-policy": "Saya bersetuju dengan <1>Dasar Privasi</1> kami.",
+			"payment-partly": "Sila hantar baki jumlah, sejauh ini kami hanya menerima {{received}} {{currency}} apabila <b>{{required}} {{currency}}</b> diperlukan."
+		},
+		"step0": {
+			"text0": "Bithomp <1>nama pengguna</1> adalah nama pengguna awam untuk alamat XRPL anda.",
+			"text1": "Nama pengguna akan dikaitkan dengan alamat anda di peneroka bithomp dan dalam perkhidmatan pihak ketiga yang menggunakan bithomp <1>API</1>. Selepas pendaftaran, ia akan menjadi awam - <3>sesiapa pun</3> akan dapat melihatnya. Alamat XRPL anda akan dapat diakses oleh:",
+			"text2": "Nama pengguna <1>tidak boleh diubah atau dipadamkan</1>.",
+			"only-one-for-address": "Untuk setiap alamat XRPL, anda hanya boleh mendaftarkan satu nama pengguna.",
+			"address-you-control": "Anda hanya boleh mendaftarkan nama pengguna untuk alamat XRPL yang anda kawal (anda mempunyai kata laluan atau 12/24 perkataan pemulihan). Anda tidak boleh mendaftarkan nama pengguna untuk alamat yang dihoskan (yang mempunyai tag destinasi) dalam pertukaran / perkhidmatan / dompet.",
+			"pay-from-your-address": "Untuk membuktikan bahawa anda mengawal alamat XRPL, anda perlu membuat pembayaran dari alamat tersebut (yang ingin anda tetapkan nama pengguna). Pembayaran dari alamat lain akan dianggap sebagai sumbangan dan tidak akan dikembalikan.",
+			"text3": "Bayaran adalah sebanyak 100 krona Sweden dalam denominasi XRP. Bayaran untuk nama pengguna adalah <1>tidak boleh dikembalikan</1>. Jika anda membayar lebih daripada yang diminta, jumlah yang melebihi akan dianggap sebagai sumbangan dan tidak akan dikembalikan.",
+			"text4": "Nama pengguna kini digunakan merentasi rangkaian, <1>daftarkan nama pengguna di rangkaian utama XRPL</1> dan ia akan tersedia di peneroka bithomp dev (dalam masa 1 jam).",
+			"enter-address-or": "Masukkan alamat XRPL anda atau",
+			"sign-in": "Log masuk dengan Xumm",
+			"sign-out": "log keluar",
+			"your-address": "Alamat XRPL anda",
+			"enter-username": "Masukkan nama pengguna yang ingin anda miliki",
+			"your-username": "Nama Pengguna",
+			"enter-country": "Negara tempat tinggal anda (untuk akaun perakaunan kami)",
+			"agree-terms-page": "Saya memahami dan bersetuju dengan terma dan syarat yang dinyatakan di atas.",
+			"agree-terms-site": "Saya bersetuju dengan <1>Terma dan Syarat</1> laman web.",
+			"agree-privacy-policy": "Saya bersetuju dengan <1>Dasar Privasi</1> kami.",
+			"already-registered": "Akaun anda sudah mempunyai nama pengguna yang didaftarkan",
+			"sign-out-to-register-another-one": "<0>Log keluar</0> daripada akaun ini untuk mendaftarkan nama pengguna untuk alamat yang berbeza."
+		},
+		"step1": {
+			"to-register": "Untuk mendaftarkan nama pengguna awam anda:",
+			"from-your-address": "Anda perlu membuat pembayaran dari alamat:",
+			"text0": "Pembayaran yang dibuat oleh anda <1>dari mana-mana alamat lain</1> atau dengan <3>tag destinasi yang salah</3> tidak akan diterima untuk perkhidmatan ini, ia akan diterima sebagai sumbangan dan <5>tidak akan dikembalikan</5>.",
+			"payment-instructions": "Arahan Pembayaran",
+			"address": "Alamat XRPL:",
+			"tag": "Tag Destinasi:",
+			"amount": "Jumlah:",
+			"awaiting": "Menunggu pembayaran anda",
+			"about-confirmation": "Anda akan melihat pengesahan sebaik sahaja kami menerima pembayaran anda."
+		},
+		"step2": {
+			"text0": "Tahniah! Nama pengguna anda <1>{{ username }}</1> telah didaftarkan dengan berjaya.",
+			"one-more": "Daftarkan satu lagi"
+		}
+	},
+	"alerts": {
+		"text0": "Dapatkan pemberitahuan apabila harga pasaran XRP/USD atau XRP/BTC oleh <1>Bitstamp</1> berubah lebih daripada 5% dalam satu jam atau lebih daripada 10% dalam satu hari.",
+		"text1": "Ikuti saluran Telegram: <1>bithomp</1> atau akaun Twitter: <3>bithompAlerts</3>.",
+		"last-alerts": "50 pemberitahuan terakhir",
+		"date-and-time": "Tarikh & Masa",
+		"currency-pair": "Pasangan Mata Wang",
+		"change-duration": "Tempoh Perubahan",
+		"change": "Perubahan",
+		"old-rate": "Kadar Lama",
+		"new-rate": "Kadar Baharu"
+	},
+	"genesis": {
+		"text0": "Ledger <1>32570</1> adalah ledger terawal yang tersedia, iaitu kira-kira minggu pertama sejarah XRPL, <3>ledger 1 hingga 32569 hilang disebabkan kecelakaan pada tahun 2012</3>.",
+		"ledger-continue": "Kerana keadaan XRP Ledger direkodkan dalam setiap versi ledger, ledger boleh diteruskan tanpa sejarah yang hilang.",
+		"ledger-index": "Indeks Ledger",
+		"account-count": "Bilangan Akaun",
+		"inception": "Pengasas",
+		"xrp-balance": "Baki XRP",
+		"balance-update": "Kemas kini Baki",
+		"details": "Butiran",
+		"address": "Alamat",
+		"genesis-balance": "Baki Genesis XRP",
+		"rippletrade-username": "Nama pengguna Rippletrade",
+		"nickname": "Nama panggilan",
+		"genesis-index": "Indeks Genesis"
+	},
+	"developer": {
+		"header": "Permintaan Kunci API Bithomp",
+		"email": "Alamat e-mel anda:",
+		"url": "URL laman web/aplikasi anda:",
+		"description": "Keterangan projek dan butiran penggunaan API:",
+		"success": "Terima kasih. Anda sepatutnya menerima token API anda melalui e-mel dalam masa 48 jam.",
+		"error": {
+			"email-empty": "Sila masukkan alamat e-mel anda.",
+			"email-invalid": "Sila masukkan alamat e-mel yang sah.",
+			"url-empty": "Sila masukkan URL laman web/aplikasi anda.",
+			"url-invalid": "Sila masukkan URL yang sah.",
+			"description-empty": "Sila tambah keterangan projek anda.",
+			"description-invalid": "Sila tulis keterangan yang terperinci mengenai projek anda."
+		}
+	},
+	"customer-support": {
+		"text0": "Bithomp adalah penjelajah Ledger XRP <1>awam</1>.",
+		"no-help": "Kami tidak boleh membekukan akaun, membuat pengembalian, membatalkan transaksi, atau mengubah/menambahkan tag destinasi. Kami tidak menjalankan siasatan dan tidak dapat membantu anda memulihkan dana yang hilang atau dicuri.",
+		"text1": "Jika dana anda dicuri atau jika anda menjadi mangsa penipuan, anda boleh melaporkannya <1>di sini</1>.",
+		"status-failed": "Jika transaksi anda mempunyai status \"gagal\" tetapi dana anda telah dikeluarkan dari baki anda, sila hubungi perkhidmatan/wallet/pertukaran yang anda gunakan untuk membuat transaksi ini.",
+		"status-success": "Jika transaksi anda mempunyai status \"berjaya\" tetapi dana tersebut tidak diterima, sila hubungi sokongan wallet/perkhidmatan/pertukaran penerima.",
+		"wrong-tag": "Jika anda menghantar transaksi tanpa tag destinasi atau dengan tag destinasi yang salah, baca (2) dan (3) di atas.",
+		"text2": "Jika anda kehilangan 10 XRP dalam wallet anda, sila baca mengenai <1>reserv asas</1>.",
+		"paper-wallet": "Jika anda ingin menghantar XRP dari wallet kertas, anda perlu mengimpornya ke wallet perisian terlebih dahulu, anda boleh menggunakan aplikasi mudah alih Xumm untuk itu (impor rahsia sebagai \"benih keluarga\").",
+		"flare": "Jika anda mempunyai soalan mengenai \"Flare\", anda perlu menghubunginya kepada komuniti Flare.",
+		"text3": "Jika anda mempunyai cadangan <1>rakan kongsi atau pemasaran</1>, anda boleh menghubungi kami melalui e-mel: <3/>. Anda juga boleh menghubungi kami jika ada soalan mengenai pendaftaran nama pengguna bithomp atau penjelajah transaksi bithomp.",
+		"no-answer": "Kerana masa terhad kami, kami tidak akan menjawab e-mel yang berkaitan dengan 1-7.",
+		"submit-info": "Kemukakan maklumat mengenai perkhidmatan XRPL anda",
+		"text4": "Jika anda mempunyai perkhidmatan XRPL awam dan ingin alamat XRP anda dikenali di Bithomp, kemukakan maklumat anda <1>di sini</1>. Anda juga boleh menghubungi kami melalui e-mel: <3/> jika anda ingin mempercepatkan proses tersebut.",
+		"follow-us": "Ikuti kami di media sosial"
+	},
+	"press": "Ini adalah logo rasmi untuk Bithomp yang digunakan oleh media dan profesional media untuk cetakan dan web (svg, png, eps, pdf, untuk latar belakang gelap dan terang). Untuk pertanyaan media, sila <1>hubungi kami</1>.",
+	"page-not-found": {
+		"header": "Halaman yang diminta tidak ditemui.",
+		"text": "Klik <1>di sini</1> untuk memeriksa halaman muka kami."
+	},
+	"receipt": {
+		"quantity": "kuan.",
+		"items": "item",
+		"price": "harga",
+		"total": "jumlah",
+		"paid": "dibayar",
+		"order-id": "ID pesanan"
+	},
+	"button": {
+		"continue": "Teruskan",
+		"cancel": "Batal",
+		"accept": "Terima",
+		"submit": "Hantar",
+		"search": "Cari",
+		"print": "Cetak",
+		"download": "Muat turun",
+		"copy": "Salin",
+		"copied": "Disalin",
+		"copy-my-address": "Salin alamat saya",
+		"sign": "Tandatangan"
+	},
+	"general": {
+		"error": "Ralat",
+		"no-data": "Tiada data yang tersedia",
+		"loading": "Memuatkan...",
+		"load-failed": "Gagal memuatkan",
+		"all-issuers": "Semua penerbit",
+		"no-expiration": "Tidak pernah",
+		"no-uri": "Tiada URI yang ditentukan",
+		"no-media": "Tiada media dijumpai",
+		"viewer": "Penyemak"
+	},
+	"error": {
+		"Network Error": "Nampaknya tiada sambungan internet ;(",
+		"Request failed with status code 429": "Anda menghantar terlalu banyak permintaan kepada kami, cuba lagi nanti!"
+	},
+	"error-api": {
+		"search is too short": "Nama yang ingin dicari terlalu pendek",
+		"issuer username is not found or invalid": "Nama pengguna penerbit tidak sah atau tidak dijumpai",
+		"issuer is invalid": "Alamat penerbit tidak sah",
+		"owner username is not found or invalid": "Nama pengguna pemilik tidak sah atau tidak dijumpai",
+		"owner is invalid": "Alamat pemilik tidak sah",
+		"destination username is not found or invalid": "Nama pengguna destinasi tidak sah atau tidak dijumpai",
+		"destination is invalid": "Alamat destinasi tidak sah",
+		"currency is invalid": "Mata wang tidak sah",
+		"currencyIssuer username is not found or invalid": "Nama pengguna penerbit mata wang tidak sah atau tidak dijumpai",
+		"currencyIssuer is invalid": "Alamat penerbit mata wang tidak sah",
+		"Token information is not found": "Kami tidak dapat menemui maklumat untuk ID itu",
+		"No nfts information is found": "Maaf, terdapat ralat, sila cari yang lain."
+	},
+	"units": {
+		"seconds-short": "s",
+		"minutes-short": "m",
+		"hours-short": "j"
+	},
+	"period": {
+		"all": "",
+		"year": "Selama 365 hari yang lalu",
+		"month": "Selama 30 hari yang lalu",
+		"week": "Selama 7 hari yang lalu",
+		"day": "Selama 24 jam yang lalu"
+	},
+	"table": {
+		"index": "Indeks",
+		"address": "Alamat",
+		"date": "Tarikh",
+		"amount": "Jumlah",
+		"name": "Nama",
+		"sender": "Pengirim",
+		"balance": "Baki",
+		"memo": "Memo",
+		"transaction": "Transaksi",
+		"owner": "Pemilik",
+		"owners-now": "Pemilik (kini)",
+		"accepted-by": "Diterima oleh",
+		"issuer": "Penerbit",
+		"minter": "Pemintal",
+		"receiver": "Penerima",
+		"issuer-owner": "Penerbit & Pemilik",
+		"issuers": "Penerbit",
+		"broker": "Broker",
+		"seller": "Penjual",
+		"buyer": "Pembeli",
+		"sold": "Terjual",
+		"sold_few": "Terjual",
+		"sold-on": "Terjual pada",
+		"minted-on": "Dibentuk pada",
+		"type": "Jenis",
+		"status": "Status",
+		"hash": "Hash",
+		"serial": "Serial",
+		"taxon": "Takson",
+		"placed": "Ditempatkan",
+		"accepted": "Diterima",
+		"canceled": "Dibatalkan",
+		"offer": "Tawaran",
+		"expiration": "Tempoh sah",
+		"expired": "Telah luput tempohnya",
+		"destination": "Destinasi",
+		"sales": "Jualan",
+		"volume": "Jumlah jualan",
+		"price": "Harga",
+		"external-url": "URL luar",
+		"description": "Keterangan",
+		"collection": "Koleksi",
+		"transfer-fee": "Royalti",
+		"flag": "Bendera",
+		"flags": "Bendera",
+		"count": "Jumlah",
+		"nfts": "NFT",
+		"minted": "Dibentuk",
+		"transferred": "Dipindahkan",
+		"burned": "Dibakar",
+		"attributes": "Atribut",
+		"metadata": "Metadata",
+		"ledger-data": "Data Ledger",
+		"history": "Sejarah",
+		"sell-offers": "Tawaran jualan",
+		"buy-offers": "Tawaran belian",
+		"nfts-now": "NFT (kini)",
+		"traded-nfts": "NFT yang diniagakan",
+		"buyers": "Pembeli",
+		"raw-data": "Data mentah",
+		"username": "Nama pengguna",
+		"floor-now": "Lantai (kini)",
+		"related-lists": "Senarai berkaitan",
+		"by-issuer": "Menurut penerbit",
+		"by-owner": "Menurut pemilik",
+		"by-taxon": "Menurut takson",
+		"all-nfts": "Semua NFT",
+		"on-sale": "Dijual",
+		"social-share": "Kongsi adalah menjaga",
+		"marketplace": "Pasaran",
+		"text": {
+			"show-extended-statistics": "Paparkan statistik lanjutan",
+			"include-without-metadata": "Sertakan NFT tanpa metadata",
+			"include-burned-nfts": "Sertakan NFT yang dibakar",
+			"no-expiration": "Tiada tarikh luput",
+			"no-offers": "Tiada tawaran dijumpai",
+			"unspecified": "tidak ditentukan",
+			"sell": "Jual",
+			"buy": "Beli",
+			"show": "papar",
+			"hide": "sembunyi",
+			"see-on": "Lihat di <1><0>{{marketplace}}</0></1>",
+			"valid": "sah",
+			"invalid": "tidak sah"
+		},
+		"filter": {
+			"valid": "Sah",
+			"invalid": "Tidak sah",
+			"active": "Semua aktif",
+			"historical": "Sejarah",
+			"all": "Semua"
+		},
+		"text-status": {
+			"NFT is not owned by the seller account": "NFT tidak dimiliki oleh akaun penjual",
+			"Offer is expired": "Telah luput tempohnya",
+			"Unable to verify balance of the buyer account": "Tidak dapat mengesahkan baki akaun pembeli",
+			"Insufficient funds on the buyer account": "Pembeli tidak mempunyai dana yang mencukupi",
+			"Seller has no trustline for the token or it cannot be verified": "Penjual tidak mempunyai trustline untuk token atau ia tidak dapat disahkan",
+			"NFT Issuer has no trustline for the token to accept royalty or it cannot be verified": "Penerbit NFT tidak mempunyai trustline untuk menerima royalti token atau ia tidak dapat disahkan"
+		}
+	},
+	"tabs": {
+		"list": "Senarai",
+		"tiles": "Tiles",
+		"secondary-sales": "Jualan sekunder",
+		"primary-sales": "Jualan utama",
+		"primaryAndSecondary-sales": "Semua jualan",
+		"top-sales": "Jualan TERATAS",
+		"latest-sales": "Jualan terbaru",
+		"all-time": "Sepanjang masa",
+		"year": "365 hari",
+		"month": "30 hari",
+		"week": "7 hari",
+		"day": "24 jam",
+		"currencies": "Mata wang",
+		"issuers": "Penerbit",
+		"marketplaces": "Pasaran",
+		"brokers": "Broker",
+		"image": "Imej",
+		"video": "Video",
+		"audio": "Audio",
+		"model": "Model 3D",
+		"owned-offers": "Tawaran yang dimiliki",
+		"offers-for-owned-nfts": "Untuk NFT yang dimiliki",
+		"privately-offered-to-address": "Swasta (masuk)",
+		"all": "Semua",
+		"buy": "Beli",
+		"sell": "Jual",
+		"public": "Awam",
+		"publicAndKnownBrokers": "Awam & MP",
+		"onSale": "Dijual untuk XRP",
+		"all-tokens": "Semua token",
+		"xrp-only": "Hanya XRP"
+	},
+	"xumm": {
+		"new-qr": "Dapatkan kod QR baru"
+	},
+	"explorer": {
+		"header": "Penjelajah Ledger XRP",
+		"enter-address": "Masukkan alamat XRPL atau nama pengguna",
+		"searching-tx-nft-nftoffer": "Mencari Tx / NFT ID / Tawaran NFT",
+		"searching-for-addresses": "Mencari alamat...",
+		"menu": {
+			"account": "Akaun",
+			"transactions": "Transaksi",
+			"tokens": "Token"
+		},
+		"different-network": "Transaksi ini adalah dari rangkaian <1>{{networkNameOrId}}</1>",
+		"check-tx-on-different-explorer": "periksa butiran <1><0>di sini</0></1>.",
+		"not-supported-network": "yang tidak disokong."
+	},
+	"nft-explorer": {
+		"header": "Penjelajah NFT"
+	},
+	"nft-offers": {
+		"header": "Tawaran NFT",
+		"owned-desc": "Di sini anda boleh mencari Tawaran Beli dan Jualan untuk NFT, taip alamat XRPL atau nama pengguna untuk melihat tawaran apa yang ada.",
+		"for-owned-nfts-desc": "Di sini anda boleh mencari Tawaran Beli untuk NFT yang dimiliki oleh akaun, taip alamat XRPL atau nama pengguna untuk melihat tawaran yang diterima.",
+		"privately-offered-to-address-desc": "Di sini anda boleh mencari Tawaran yang dicipta secara peribadi untuk sebuah akaun (dengan destinasi), ia sering digunakan untuk pemindahan NFT (harga 0 XRP), taip alamat XRPL atau nama pengguna untuk melihat tawaran yang diterima.",
+		"no-nft-offers": "Kami tidak dapat menemui sebarang Tawaran NFT.",
+		"cancel-invalid-offer_one": "Batalkan tawaran yang tidak sah",
+		"cancel-invalid-offer_other": "Batalkan {{count}} tawaran yang tidak sah",
+		"cancel-expired-offer_one": "Batalkan tawaran yang telah tamat tempoh",
+		"cancel-expired-offer_other": "Batalkan {{count}} tawaran yang telah tamat tempoh"
+	},
+	"nft-offer": {
+		"header": "Tawaran NFT",
+		"desc": "Di sini anda boleh mencari Tawaran NFT, masukkan ID Tawaran NFT dan tekan butang carian."
+	},
+	"nfts": {
+		"header": "NFT akaun",
+		"desc": "Di sini anda boleh mencari NFT, taip alamat XRPL untuk melihat NFT apa yang dimiliki olehnya.",
+		"search-by-name": "Cari berdasarkan nama NFT",
+		"search-by-issuer": "Cari berdasarkan penerbit NFT",
+		"search-by-taxon": "Cari berdasarkan takson NFT",
+		"search-by-owner": "Cari berdasarkan pemilik NFT",
+		"no-nfts": "Kami tidak dapat menemui sebarang NFT dengan parameter carian anda.",
+		"load-more": "Kami mencari data pada XRPL... sila tunggu...",
+		"end": "Inilah semua NFT yang dapat kami temui."
+	},
+	"nft": {
+		"desc": "Di sini anda boleh mencari NFT, masukkan ID NFT dan tekan butang carian.",
+		"enter-nft-id": "Masukkan ID NFT",
+		"cancel-sell-offer-for": "Batalkan Tawaran Jualan untuk {{amount}}",
+		"cancel-buy-offer-for": "Batalkan Tawaran Belian untuk {{amount}}",
+		"cancel-transfer": "Batalkan Pemindahan NFT",
+		"accept-transfer": "Terima Pemindahan NFT",
+		"buy-for-amount-on": "Beli sebanyak {{amount}} di {{service}}",
+		"buy-for-amount": "Beli sebanyak {{amount}}",
+		"amount-on-service": "{{amount}} di {{service}}",
+		"on-service": "di {{service}}",
+		"make-offer": "Buat Tawaran",
+		"list-for-sale": "Senaraikan untuk dijual",
+		"holders": "Pembahagian (Pemilik)",
+		"burn": "Bakar NFT itu"
+	},
+	"nft-distribution": {
+		"header": "Pembahagian NFT",
+		"desc": "Di sini anda boleh menyemak pembahagian NFT oleh penerbit NFT tertentu. Masukkan alamat XRPL penerbit NFT atau nama pengguna dan tekan butang carian.",
+		"no-nfts": "Kami tidak dapat menemui sebarang NFT yang dikeluarkan oleh alamat tersebut.",
+		"text0": "{{users}} akaun memiliki {{nfts}} NFT"
+	},
+	"nft-volumes": {
+		"header": "Jualan NFT",
+		"text0": "XRPL mempunyai {{allSales}} NFT {{currency}} {{saleType}} jualan sebanyak {{allVolume}}.",
+		"brokers": {
+			"desc": "Ini adalah senarai akaun broker NFT. Anda boleh mencari di sini jumlah bot padanan tawaran. Pasaran menggunakan model perdagangan campuran, di sini anda hanya boleh melihat jumlah perdagangan melalui model perantaraan.",
+			"no-broker": "Tiada broker",
+			"text0": "XRPL mempunyai {{allSales}} NFT {{currency}} {{saleType}} jualan sebanyak {{allVolume}}, dari jumlah tersebut, <9>{{brokerSales}}</9> {{percentBrokerSales}} daripada perdagangan dengan jumlah sebanyak <13>{{brokerVolume}}</13> {{percentBrokerVolume}} adalah melalui model perantaraan."
+		},
+		"marketplaces": {
+			"desc": "Ini adalah senarai Pasaran NFT di XRPL. Jumlah di sini tidak termasuk jualan utama (mints) yang dilakukan dalam 2 transaksi (pembayaran dan pemindahan NFT)."
+		},
+		"issuers": {
+			"desc": "Ini adalah senarai penerbit NFT di XRPL. Untuk melihat jumlah koleksi NFT yang dikenal pasti mengikut penerbit dan takson, klik pautan dalam jadual Jualan."
+		}
+	},
+	"nft-sales": {
+		"header": "Jualan NFT",
+		"load-more": "Kami mencari data pada XRPL... sila tunggu...",
+		"end": "Akhir senarai."
+	},
+	"links": {
+		"active-offers-same-account": "Lihat tawaran aktif daripada akaun tersebut",
+		"nfts-same-issuer": "NFT dengan penerbit yang sama",
+		"owned-nfts-same-account": "NFT yang dimiliki oleh akaun tersebut",
+		"all": "semua",
+		"sold": "terjual"
+	},
+	"donate": {
+		"help-us": "Bantu kami dalam misi kami untuk membuat peneroka XRPL yang paling mesra pengguna.",
+		"it-helps": "Sumbangan anda akan membantu kami menambah kapasiti dan terus membangunkan Bithomp.",
+		"address": "Alamat XRPL kami untuk sumbangan",
+		"dt": "Tag destinasi",
+		"donate-with-xumm": "Sumbang dengan XUMM"
+	},
+	"sponsored": {
+		"sponsored": "Disponsor"
+	}
+}
