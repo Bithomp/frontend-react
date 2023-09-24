@@ -150,7 +150,7 @@
         "created": "NFT erstellt",
         "burned": "NFT vernichtet",
         "owners": "Aktuelle Besitzer",
-        "issuers": "NFT Ersteller",
+        "issuers": "NFT Emittenten",
         "transfers": "NFT Transfers",
         "for-sale": "NFTs zum Verkauf"
       }
@@ -179,11 +179,11 @@
     "created": "Minted",
     "burned": "Vernichtet",
     "exist": "Aktuell existieren",
-    "burnable": "Vernichtbar durch Ersteller",
+    "burnable": "Vernichtbar durch Emittenten",
     "only-xrp": "Kann nur für XRP verkauft werden",
     "transferable": "Kann zu allen übertragen werden",
     "owners": "Aktuelle Besitzer",
-    "issuers": "Total Ersteller",
+    "issuers": "Total Emittenten",
     "transfers": "NFT transferiert",
     "for-sale": "NFTs zum Verkauf",
     "for-sale-without-destination": "NFTs zum öffentlichen Verkauf",
@@ -232,10 +232,10 @@
       "only-one-for-address": "Für jede XRPL Adresse kann nur ein Benutzername registriert werden.",
       "address-you-control": "Sie können einen Benutzernamen nur für die XRPL Adressen registrieren, welche Sie kontrollieren (Sie haben das Geheimnis/Seed oder die 12/24 Wörter zur Wiederherstellung). Sie können keinen Benutzernamen für gehostete Adressen registrieren (welche einen Destinnation Tag haben) wie bei einer Börse / Dienst / Wallet.",
       "pay-from-your-address": "Um zu beweisen, dass Sie diese XRPL Adresse kontrollieren, müssen Sie eine Zahlung von dieser Adresse ausführen (welcher Sie einen Benutzernamen zuweisen möchten). Zahlungen von anderen Adressen werden als Spenden betrachtet und nicht zurückerstattet.",
-      "text3": "Die Zahlung ist für 100 Swedischen Kronen in XRP umgerechnet. Die Zahlung für den Benutzernamen ist <1>nicht zurückerstattbar</1>. Falls Sie mehr als notwendig überweisen, wird der zuviel überwiesene Betrag als Spende betrachtet und nicht zurückerstattet.",
+      "text3": "Die Zahlung ist für 100 Swedische Kronen in XRP umgerechnet. Die Zahlung für den Benutzernamen ist <1>nicht zurückerstattbar</1>. Falls Sie mehr als notwendig überweisen, wird der zuviel überwiesene Betrag als Spende betrachtet und nicht zurückerstattet.",
       "text4": "Benutzernamen sind jetzt netzwerkübergreifend. <1>Registrieren Sie einen Benutzernamen auf dem XRPL Mainnet</1> und er wird in den bithomp Dev Explorer innert einer Stunde verfügbar sein.",
-      "enter-address-or": "Gebenn Sie Ihre XRPL Adresse ein oder",
-      "sign-in": "Loggen Sie sich mit Xumm ein",
+      "enter-address-or": "Geben Sie Ihre XRPL Adresse ein oder",
+      "sign-in": "loggen Sie sich mit Xumm ein",
       "sign-out": "Ausloggen",
       "your-address": "Ihre XRPL Adresse",
       "enter-username": "Geben Sie den Benutzernamen ein, welchen Sie gerne haben möchten",
@@ -264,13 +264,13 @@
     }
   },
   "alerts": {
-    "text0": "Benachrichtigung erhalten, wenn der Marktpreis von <1>Bitstamp</1> für XRP/USD oder XRP/BTC sich um mehr als 5% innert einer Stunde oder mehr als 10% innnert eines Tages verändert.",
+    "text0": "Benachrichtigung erhalten, wenn der Marktpreis von <1>Bitstamp</1> für XRP/USD oder XRP/BTC sich um mehr als 5% innert einer Stunde oder mehr als 10% innert eines Tages verändert.",
     "text1": "Dem Telegram Kanal <1>bithomp</1> oder dem Twitter Account <3>bithompAlerts</3> folgen.",
     "last-alerts": "Letzte 50 Benachrichtigungen",
     "date-and-time": "Datum & Zeit",
     "currency-pair": "Währungspaar",
-    "change-duration": "Dauer ändern",
-    "change": "Ändern",
+    "change-duration": "Dauer Veränderung",
+    "change": "Veränderung",
     "old-rate": "Alter Kurs",
     "new-rate": "Neuer Kurs"
   },
@@ -306,10 +306,10 @@
   },
   "customer-support": {
     "text0": "Bithomp ist ein Explorer des <1>öffentlichen</1> XRP Ledgers.",
-    "no-help": "Wir können keine Konten einfrieren, keine Rückerstattungen durchführen, keine Transactionen abbrechen, ändern oder DestinationTags hinzufügen. Wir führen keine Nachforschungen durch und wir können Ihnen nicht dabei helfen, verlorene oder gestolene Mittel zurückzuerhalten.",
+    "no-help": "Wir können keine Konten einfrieren, keine Rückerstattungen durchführen, keine Transaktionen abbrechen, ändern oder DestinationTags hinzufügen. Wir führen keine Nachforschungen durch und wir können Ihnen nicht dabei helfen, verlorene oder gestohlene Mittel zurückzuerhalten.",
     "text1": "Falls Ihnen Mittel gestohlen wurden oder falls Sie Opfer eines Betrugs/Scams wurden, können Sie dies <1>hier</1> melden.",
     "status-failed": "Falls Ihre Transaktion den Status \"fehlgeschlagen\" hat aber Ihre Mittel von Ihrem Konto abgezogen wurden, kontaktieren Sie bitte den Support des Service / Walletbetreiber / Börse welche Sie zur Durchführung der Transaktion genutzt haben.",
-    "status-success": "Falls Ihre Transaktion den Status \"erfolgreich\" hat aber nicht beim Empfänger angekommen sind, kontaktieren Sie den Support des Services / Walletbetreibers / Börse des Empfängers.",
+    "status-success": "Falls Ihre Transaktion den Status \"erfolgreich\" hat aber nicht beim Empfänger angekommen ist, kontaktieren Sie den Support des Services / Walletbetreibers / Börse des Empfängers.",
     "wrong-tag": "Falls Sie eine Transaktion ohne DestinationTag oder mit einem falschen DestinationTag gesendet haben, lesen Sie bitte (2) und (3) oberhalb.",
     "text2": "Falls Sie 10 XRP in Ihrer Wallet vermissen, lesen Sie bitte über <1>Basis Reserve</1>.",
     "paper-wallet": "Falls Sie XRP von Ihrer Papierwallet senden möchten, müssen Sie diese zuerst in eine Software-Wallet importieren. Sie können dafür die Xumm Mobile App verwenden (Geheimnis als \"Familien-Seed\" importieren).",
@@ -317,10 +317,10 @@
     "text3": "Für Vorschläge zu <1>Partnerschaften oder Marketing</1> kontaktieren Sie uns bitte per E-Mail: <3/>. Sie können uns auch zu Fragen über bithomp Benutzernamen oder dem bithomp Transaktion Explorer kontaktieren.",
     "no-answer": "Aufgrund unserer begrenzten verfügbaren Zeit antworten wir nicht auf E-Mails mit Bezug zu 1-7.",
     "submit-info": "Informationen über Ihren XRPL Service schicken",
-    "text4": "Falls Sie einen öffentlichen XRPL Service anbieten und möchten, dass Ihre XRPL Adressen auf Bithomp erkannt werden, senden Sie uns Ihre Innformationen <1>hier</1>. Sie können uns auch per E-Mail kontaktieren: <3/> falls Sie den Vorgang beschleunigen möchten.",
+    "text4": "Falls Sie einen öffentlichen XRPL Service anbieten und möchten, dass Ihre XRPL Adressen auf Bithomp erkannt werden, senden Sie uns Ihre Informationen <1>hier</1>. Sie können uns auch per E-Mail kontaktieren: <3/> falls Sie den Vorgang beschleunigen möchten.",
     "follow-us": "Folgen Sie uns auf Social Media"
   },
-  "press": "Dies ist das offizielle Logo für Print und Web von Bithomp für mediale, profesionelle Pressezwecke (svg, png, eps, pdf, for dark and light backgrounds). Für mediale Anfragen <1>kontaktieren Sie uns</1> bitte.",
+  "press": "Dies ist das offizielle Logo für Print und Web von Bithomp für mediale, profesionelle Pressezwecke (svg, png, eps, pdf, für dunkle und helle Hintergründe). Für mediale Anfragen <1>kontaktieren Sie uns</1> bitte.",
   "page-not-found": {
     "header": "Die angefragen Seite wurde nicht gefunden.",
     "text": "Klicken Sie <1>hier</1> um unsere Landingpage zu überprüfen."
@@ -491,7 +491,7 @@
   },
   "tabs": {
     "list": "Liste",
-    "tiles": "Kachel",
+    "tiles": "Kacheln",
     "secondary-sales": "Sekundär",
     "primary-sales": "Primär",
     "primaryAndSecondary-sales": "Alle Verkäufe",
