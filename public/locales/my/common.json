@@ -129,8 +129,8 @@
 	"home": {
 		"title": "Peneroka XRP | Imbas XRPL Ledger",
 		"description": "Carta harga XRP | Statistik XRPL | Peneroka NFT | Carian alamat dompet | Jilid NFT XRPL | Beli dan Jual NFT | Perkhidmatan XRP",
-		"search-placeholder": "Cari Menggunakan Alamat XRPL / Transaksi / NFT / Nama Pengguna / PayString / Tawaran / Hash Mata Wang",
-		"search-placeholder-short": "Cari Menggunakan Alamat / Transaksi / Pengguna",
+		"search-placeholder": "Cari Menggunakan Alamat XRPL / Transaksi / NFT / Nama Pengguna / PayString / Tawaran",
+		"search-placeholder-short": "Cari Menggunakan Alamat / Transaksi",
 		"scan-qr": "IMBAS KOD",
 		"whales": {
 			"header": "Transaksi paling signifikan dalam 24 jam terakhir",
