@@ -1,0 +1,23 @@
+{
+  "domain-verification": "도메인을 증명합니다",
+  "domain-verification-desc": "도메인 검증은 동일한 조직이 특정 XRP 원장 주소와 특정 도메인을 관리하고 있음을 증명하는 것을 목표로 합니다.",
+  "reason-to-verify": "투명성을 위해 신뢰할 수 있는 XRPL 서비스 제공업체로 자리매김하기 위해 도메인의 유효성을 검사하는 것이 좋습니다.",
+  "two-sides-verification": "누구나 자신의 XRPL 주소에 도메인을 설정할 수 있으므로 도메인 확인을 위해서는 도메인과 주소 간의 양방향 관계가 필요합니다.",
+  "domain-claims-address": "주소는 도메인에서 소유권을 주장해야 합니다.",
+  "serve-toml": "웹 서버는 다음 URL에서 사용할 수 있는 xrp-ledger.toml 파일을 제공해야 합니다:",
+  "address-in-toml": "확인하려는 주소는 [계정] 항목에 지정해야 합니다",
+  "read-about-toml": "XRPL TOML에 대해서 더 알아보세요",
+  "toml-editor": "<0>TOML editor</0> by <2>SchlaubiD</2>",
+  "address-claims-domain": "다음 주소로 도메인 소유권을 저장합니다",
+  "set-domain": "You should <1>set a domain for your XRPL address</1> which should match the domain your TOML file is served from.",
+  "verify": "인증",
+  "verify-desc": "이 도구를 사용하여 모든 것이 올바르게 설정되었는지 확인할 수 있습니다: <1>TOML 검사기</1>. 이 페이지의 목록은 오전 3시부터 4시(스톡홀름 시간)까지 업데이트되며, 확인 도구에서 도메인이 확인되었지만 24시간 이내에 목록에 없는 경우 TOML 파일을 구문 분석할 수 없는 것일 수 있습니다.",
+  "desc": "아래에서 XRPL에서 확인된 모든 도메인 목록을 확인할 수 있습니다",
+  "button": {
+    "set-domain": "도메인을 설정합니다"
+  },
+  "table": {
+    "domain": "도메인",
+    "addresses": "주소"
+  }
+}
