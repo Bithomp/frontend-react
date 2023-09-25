@@ -554,8 +554,11 @@
 		"cancel-expired-offer_other": "Batalkan {{count}} tawaran yang telah tamat tempoh"
 	},
 	"nft-offer": {
+		"buying": "Buying",
+		"desc": "Di sini anda boleh mencari Tawaran NFT, masukkan ID Tawaran NFT dan tekan butang carian.",
+		"enter-offer-id": "Enter an NFT offer ID",
 		"header": "Tawaran NFT",
-		"desc": "Di sini anda boleh mencari Tawaran NFT, masukkan ID Tawaran NFT dan tekan butang carian."
+		"selling": "Selling"
 	},
 	"nfts": {
 		"header": "NFT akaun",
