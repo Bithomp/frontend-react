@@ -1,7 +1,7 @@
 {
   "domain-verification": "Domänenüberprüfung",
   "domain-verification-desc": "Mit der Domänenüberprüfung soll nachgewiesen werden, dass dieselbe Organisation eine bestimmte XRP Ledger Adresse und eine bestimmte Domäne kontrolliert.",
-  "reason-to-verify": "Im Interesse der Transparenz möchten Sie möglicherweise Ihre Domain validieren um sich als vertrauenswürdiger Anbieter von XRPL Diensten zu etablieren.",
+  "reason-to-verify": "Im Interesse der Transparenz möchten Sie möglicherweise Ihre Domain validieren, um sich als vertrauenswürdiger Anbieter von XRPL Diensten zu etablieren.",
   "two-sides-verification": "Da jeder eine beliebige Domäne für seine XRPL Adresse festlegen kann, ist für die Domänenverifizierung eine wechselseitige Beziehung zwischen der Domäne und der Adresse erforderlich.",
   "domain-claims-address": "Die Adresse sollte von der Domain beansprucht werden",
   "serve-toml": "Ihr Webserver sollte eine Datei xrp-ledger.toml bereitstellen, welche unter folgender URL verfügbar ist:",

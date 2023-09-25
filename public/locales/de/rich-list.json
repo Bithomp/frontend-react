@@ -1,5 +1,5 @@
 {
-  "header": "XRPL Rich List",
+  "header": "XRPL Reichstenliste",
   "desc": "Hier finden Sie die TOP 100 Konten nach XRP Kontostand.",
   "summary": "Es gibt <1>{{activeAccounts}}</1> aktive Konten. Insgesamt verfügbar: <3>{{totalCoins}}</3>"
 }
