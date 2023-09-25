@@ -96,4 +96,6 @@ Japanese - [@develoQ](https://github.com/develoQ)
 
 Indonesian - [@suuf24](https://github.com/suuf24)
 
-Thank's [@wojake](https://github.com/wojake) as well
+German - [@rsteimen](https://github.com/rsteimen)
+
+Malay - [@wojake](https://github.com/wojake)
