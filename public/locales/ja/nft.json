@@ -2,6 +2,6 @@
   "desc": "NFT IDを入力して、NFTを検索できます。",
   "enter-nft-id": "NFT IDを入力",
   "holders": "分布 (保有者)",
-  "nft-id-decoded-data": "NFT ID decoded data",
-  "nft-not-found-on-that-network": "This NFT wasn't found on the <1>{{network}}</1> network."
+  "nft-id-decoded-data": "NFT IDからの解析データ",
+  "nft-not-found-on-that-network": "このNFTは<1>{{network}}</1>では見つかりませんでした。"
 }
