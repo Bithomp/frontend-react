@@ -242,7 +242,7 @@
       "your-username": "사용자명",
       "enter-country": "국가를 선택하세요",
       "agree-terms-page": "위에 명시된 이용 약관을 이해하고 동의합니다",
-      "agree-terms-site": "I agree with the <1>Terms and conditions</1>.",
+      "agree-terms-site": "저는 <1> 이용 약관에 <1> 동의합니다.",
       "agree-privacy-policy": "<1>개인정보보호정책</1>에 동의합니다.",
       "already-registered": "이미 가입된 사용자명입니다",
       "sign-out-to-register-another-one": "<0>이 계정에서 로그아웃하고</0> 다른 주소의 아이디를 등록합니다."
@@ -591,7 +591,7 @@
     "header": "NFT 분배",
     "desc": "여기에서 특정 NFT 발행자의 NFT 분포를 확인할 수 있습니다. NFT 발행자 XRPL 주소 또는 사용자 이름을 입력하고 검색 버튼을 누릅니다",
     "no-nfts": "해당 주소에서 발행된 NFT를 찾을 수 없습니다",
-    "text0": "{users}} 계정이 {{nfts}} NFT를 보유하고 있습니다."
+    "text0": "{{users}} 계정이 {{nfts}} NFT를 보유하고 있습니다."
   },
   "nft-volumes": {
     "header": "NFT 판매량",
