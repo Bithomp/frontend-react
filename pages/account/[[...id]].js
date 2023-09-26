@@ -190,7 +190,6 @@ export default function Nft({ signRequest, id, selectedCurrency, sortCurrency })
                         <tr>
                           <td>{t("table.by-issuer")}</td>
                           <td>
-                            <Link href={"/nft-distribution?issuer=" + data.issuer}>{t("nft.holders")}</Link>,{" "}
                             <Link href={"/nft-explorer?issuer=" + data.issuer}>{t("table.all-nfts")}</Link>,{" "}
                             <Link href={"/nft-sales?issuer=" + data.issuer}>{t("table.sold_few")}</Link>,{" "}
                             <Link href={"/nft-explorer?issuer=" + data.issuer + "&list=onSale"}>{t("table.on-sale")}</Link>

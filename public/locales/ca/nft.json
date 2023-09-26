@@ -1,0 +1,7 @@
+{
+  "desc": "Aquí pots cercar NFT's, introdueix l'ID d'un NFT i clica cercar.",
+  "enter-nft-id": "Introdueix l'ID d'un NFT",
+  "holders": "Distribució (Holders)",
+  "nft-id-decoded-data": "NFT ID decoded data",
+  "nft-not-found-on-that-network": "This NFT wasn't found on the <1>{{network}}</1> network."
+}

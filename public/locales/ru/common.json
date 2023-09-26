@@ -344,7 +344,18 @@
     "copy": "Копировать",
     "copied": "Скопировано",
     "copy-my-address": "Копировать адрес",
-    "sign": "Подписать"
+    "sign": "Подписать",
+    "nft": {
+      "cancel-sell-offer-for": "Отменить офер продажи на {{amount}}",
+      "cancel-buy-offer-for": "Отменить офер покупки на {{amount}}",
+      "cancel-transfer": "Отменить передачу NFT",
+      "accept-transfer": "Принять передачу NFT",
+      "buy-for-amount-on": "Buy for {{amount}} on {{service}}",
+      "buy-for-amount": "Купить за {{amount}}",
+      "make-offer": "Предложить цену",
+      "list-for-sale": "Выставить на продажу",
+      "burn": "Сжечь этот NFT"
+    }
   },
   "general": {
     "error": "Ошибка",
@@ -568,24 +579,10 @@
     "search-by-taxon": "Поиск по NFT таксону",
     "search-by-owner": "Поиск по владельцу NFT",
     "no-nfts": "Мы не смогли найти ни одного NFT по вашему запросу.",
+    "on-service": "на {{service}}",
+    "amount-on-service": "{{amount}} на {{service}}",
     "load-more": "Пожалуйста, подождите. Мы ищем для вас информацию на XRPL.",
     "end": "Это все NFT, которые нам удалось найти."
-  },
-  "nft": {
-    "desc": "Здесь можно посмотреть информацию по NFT, введите идентификатор NFT и намите кнопку поиска.",
-    "enter-nft-id": "Введите идентификатор NFT",
-    "cancel-sell-offer-for": "Отменить офер продажи на {{amount}}",
-    "cancel-buy-offer-for": "Отменить офер покупки на {{amount}}",
-    "cancel-transfer": "Отменить передачу NFT",
-    "accept-transfer": "Принять передачу NFT",
-    "buy-for-amount-on": "Buy for {{amount}} on {{service}}",
-    "buy-for-amount": "Купить за {{amount}}",
-    "amount-on-service": "{{amount}} на {{service}}",
-    "on-service": "на {{service}}",
-    "make-offer": "Предложить цену",
-    "list-for-sale": "Выставить на продажу",
-    "holders": "Распределение (Держатели)",
-    "burn": "Сжечь этот NFT"
   },
   "nft-distribution": {
     "header": "NFT распределение",

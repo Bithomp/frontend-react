@@ -344,7 +344,18 @@
     "copy": "Kopieren",
     "copied": "Kopiert",
     "copy-my-address": "Meine Adresse kopieren",
-    "sign": "Signieren"
+    "sign": "Signieren",
+    "nft": {
+      "cancel-sell-offer-for": "Verkaufsangebot für {{amount}} abbrechen",
+      "cancel-buy-offer-for": "Kaufangebot für {{amount}} abbrechen",
+      "cancel-transfer": "NFT Transfer abbrechen",
+      "accept-transfer": "NFT Transfer akzeptieren",
+      "buy-for-amount-on": "Für {{amount}} auf {{service}} kaufen",
+      "buy-for-amount": "Kaufen für {{amount}}",
+      "make-offer": "Angebot machen",
+      "list-for-sale": "Zum Verkauf anbieten",
+      "burn": "NFT vernichten"
+    }
   },
   "general": {
     "error": "Fehler",
@@ -568,24 +579,10 @@
     "search-by-taxon": "Suche nach NFT Taxon",
     "search-by-owner": "Suche nach NFT Besitzer",
     "no-nfts": "Wir konnten keine NFTs mit Ihren Suchparametern finden.",
+    "on-service": "auf {{service}}",
+    "amount-on-service": "{{amount}} auf {{service}}",
     "load-more": "Wir suchen nach Daten auf dem XRP Ledger... bitte warten...",
     "end": "Hier sind alle NFTs die wir finden konnten."
-  },
-  "nft": {
-    "desc": "Hier können Sie nach NFTs suchen, eine NFT ID eingeben und den Suchknopf drücken.",
-    "enter-nft-id": "Eine NFT ID eingeben",
-    "cancel-sell-offer-for": "Verkaufsangebot für {{amount}} abbrechen",
-    "cancel-buy-offer-for": "Kaufangebot für {{amount}} abbrechen",
-    "cancel-transfer": "NFT Transfer abbrechen",
-    "accept-transfer": "NFT Transfer akzeptieren",
-    "buy-for-amount-on": "Für {{amount}} auf {{service}} kaufen",
-    "buy-for-amount": "Kaufen für {{amount}}",
-    "amount-on-service": "{{amount}} auf {{service}}",
-    "on-service": "auf {{service}}",
-    "make-offer": "Angebot machen",
-    "list-for-sale": "Zum Verkauf anbieten",
-    "holders": "Verteilung (Halter)",
-    "burn": "NFT vernichten"
   },
   "nft-distribution": {
     "header": "NFT Verteilung",

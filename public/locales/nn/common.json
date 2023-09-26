@@ -344,7 +344,18 @@
     "copy": "Kopier",
     "copied": "Kopiert",
     "copy-my-address": "Kopier min adresse",
-    "sign": "Signer"
+    "sign": "Signer",
+    "nft": {
+      "cancel-sell-offer-for": "Avbryt salgsbud for {{amount}}",
+      "cancel-buy-offer-for": "Avbryt kjøpsbud {{amount}}",
+      "cancel-transfer": "Cancel NFT transfer",
+      "accept-transfer": "Accept NFT transfer",
+      "buy-for-amount-on": "Kjøp for {{amount}} på {{service}}",
+      "buy-for-amount": "Kjøp for {{amount}}",
+      "make-offer": "Lag bud",
+      "list-for-sale": "Legg til salgs",
+      "burn": "Burn that NFT"
+    }
   },
   "general": {
     "error": "Feil",
@@ -568,24 +579,10 @@
     "search-by-taxon": "Søk etter NFT taxon",
     "search-by-owner": "Søk etter NFT eier",
     "no-nfts": "Vi kunne ikke finne noen NFT-er med søkeparameterne dine.",
+    "on-service": "på {{service}}",
+    "amount-on-service": "{{amount}} på {{service}}",
     "load-more": "Vi ser etter data på XRPL... vennligst vent...",
     "end": "Her er alle NFT-ene vi kunne finne."
-  },
-  "nft": {
-    "desc": "Her kan du søke etter NFT-er, skrive inn en NFT-ID og trykk på søkeknappen.",
-    "enter-nft-id": "Skriv inn en NFT-ID",
-    "cancel-sell-offer-for": "Avbryt salgsbud for {{amount}}",
-    "cancel-buy-offer-for": "Avbryt kjøpsbud {{amount}}",
-    "cancel-transfer": "Cancel NFT transfer",
-    "accept-transfer": "Accept NFT transfer",
-    "buy-for-amount-on": "Kjøp for {{amount}} på {{service}}",
-    "buy-for-amount": "Kjøp for {{amount}}",
-    "amount-on-service": "{{amount}} på {{service}}",
-    "on-service": "på {{service}}",
-    "make-offer": "Lag bud",
-    "list-for-sale": "Legg til salgs",
-    "holders": "Distribusjon (holdere)",
-    "burn": "Burn that NFT"
   },
   "nft-distribution": {
     "header": "NFT distribusjon",

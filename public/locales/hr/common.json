@@ -344,7 +344,18 @@
     "copy": "Kopiraj",
     "copied": "Kopirano",
     "copy-my-address": "Kopiraj moju adresu",
-    "sign": "Potpiši"
+    "sign": "Potpiši",
+    "nft": {
+      "cancel-sell-offer-for": "Poništi prodajnu ponudu za {{amount}}",
+      "cancel-buy-offer-for": "Poništi kupovnu ponudu za {{amount}}",
+      "cancel-transfer": "Cancel NFT transfer",
+      "accept-transfer": "Accept NFT transfer",
+      "buy-for-amount-on": "Kupi za {{amount}} na {{service}}",
+      "buy-for-amount": "Kupi za {{amount}}",
+      "make-offer": "Izradi ponudu",
+      "list-for-sale": "Lista za prodaju",
+      "burn": "Burn that NFT"
+    }
   },
   "general": {
     "error": "Greška",
@@ -568,24 +579,10 @@
     "search-by-taxon": "Pretraga po NFT taxonu",
     "search-by-owner": "Pretraga po NFT vlasniku",
     "no-nfts": "Nismo pronašli niti jedan NFT sa vašim parametrima za pretragu.",
+    "on-service": "na {{service}}",
+    "amount-on-service": "{{amount}} na {{service}}",
     "load-more": "Tražimo podatke na XRPLu... molimo pričekajte...",
     "end": "Ovdje su svi NFTovi koje smo uspjeli pronaći."
-  },
-  "nft": {
-    "desc": "Ovdje možete pronaći NFTove, unesite NFT ID i kliknite dugme za pretragu.",
-    "enter-nft-id": "Unesi NFT ID",
-    "cancel-sell-offer-for": "Poništi prodajnu ponudu za {{amount}}",
-    "cancel-buy-offer-for": "Poništi kupovnu ponudu za {{amount}}",
-    "cancel-transfer": "Cancel NFT transfer",
-    "accept-transfer": "Accept NFT transfer",
-    "buy-for-amount-on": "Kupi za {{amount}} na {{service}}",
-    "buy-for-amount": "Kupi za {{amount}}",
-    "amount-on-service": "{{amount}} na {{service}}",
-    "on-service": "na {{service}}",
-    "make-offer": "Izradi ponudu",
-    "list-for-sale": "Lista za prodaju",
-    "holders": "Distribucija (Holders)",
-    "burn": "Burn that NFT"
   },
   "nft-distribution": {
     "header": "NFT distribucija",

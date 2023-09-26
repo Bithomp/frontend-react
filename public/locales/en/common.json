@@ -344,7 +344,18 @@
     "copy": "Copy",
     "copied": "Copied",
     "copy-my-address": "Copy my address",
-    "sign": "Sign"
+    "sign": "Sign",
+    "nft": {
+      "cancel-sell-offer-for": "Cancel Sell offer for {{amount}}",
+      "cancel-buy-offer-for": "Cancel Buy offer for {{amount}}",
+      "cancel-transfer": "Cancel NFT transfer",
+      "accept-transfer": "Accept NFT transfer",
+      "buy-for-amount-on": "Buy for {{amount}} on {{service}}",
+      "buy-for-amount": "Buy for {{amount}}",
+      "make-offer": "Make offer",
+      "list-for-sale": "List for sale",
+      "burn": "Burn that NFT"
+    }
   },
   "general": {
     "error": "Error",
@@ -568,24 +579,10 @@
     "search-by-taxon": "Search by NFT taxon",
     "search-by-owner": "Search by NFT owner",
     "no-nfts": "We couldn't find any NFTs with your search parameters.",
+    "on-service": "on {{service}}",
+    "amount-on-service": "{{amount}} on {{service}}",
     "load-more": "We are looking for data on the XRPL... please wait...",
     "end": "Here are all the NFTs we could find."
-  },
-  "nft": {
-    "desc": "Here you can search for NFTs, enter an NFT ID and press the search button.",
-    "enter-nft-id": "Enter an NFT ID",
-    "cancel-sell-offer-for": "Cancel Sell offer for {{amount}}",
-    "cancel-buy-offer-for": "Cancel Buy offer for {{amount}}",
-    "cancel-transfer": "Cancel NFT transfer",
-    "accept-transfer": "Accept NFT transfer",
-    "buy-for-amount-on": "Buy for {{amount}} on {{service}}",
-    "buy-for-amount": "Buy for {{amount}}",
-    "amount-on-service": "{{amount}} on {{service}}",
-    "on-service": "on {{service}}",
-    "make-offer": "Make offer",
-    "list-for-sale": "List for sale",
-    "holders": "Distribution (Holders)",
-    "burn": "Burn that NFT"
   },
   "nft-distribution": {
     "header": "NFT distribution",

@@ -1,0 +1,7 @@
+{
+  "desc": "Di sini Anda dapat mencari NFT, masukkan ID NFT dan tekan tombol pencarian.",
+  "enter-nft-id": "Masukkan ID NFT",
+  "holders": "Distribusi (Pemilik)",
+  "nft-id-decoded-data": "NFT ID decoded data",
+  "nft-not-found-on-that-network": "This NFT wasn't found on the <1>{{network}}</1> network."
+}

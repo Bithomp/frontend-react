@@ -344,7 +344,18 @@
     "copy": "Salin",
     "copied": "Tersalin",
     "copy-my-address": "Salin alamat saya",
-    "sign": "Tanda tangan"
+    "sign": "Tanda tangan",
+    "nft": {
+      "cancel-sell-offer-for": "Batalkan Penawaran Jual untuk {{amount}}",
+      "cancel-buy-offer-for": "Batalkan Penawaran Beli untuk {{amount}}",
+      "cancel-transfer": "Batalkan Transfer NFT",
+      "accept-transfer": "Terima Transfer NFT",
+      "buy-for-amount-on": "Beli seharga {{amount}} di {{service}}",
+      "buy-for-amount": "Beli seharga {{amount}}",
+      "make-offer": "Buat Penawaran",
+      "list-for-sale": "Daftar untuk dijual",
+      "burn": "Hapus NFT ini"
+    }
   },
   "general": {
     "error": "Kesalahan",
@@ -568,24 +579,10 @@
     "search-by-taxon": "Cari berdasarkan taksonomi NFT",
     "search-by-owner": "Cari berdasarkan pemilik NFT",
     "no-nfts": "Kami tidak dapat menemukan NFT dengan parameter pencarian Anda.",
+    "on-service": "di {{service}}",
+    "amount-on-service": "{{amount}} di {{service}}",
     "load-more": "Kami sedang mencari data di XRPL... harap tunggu...",
     "end": "Ini adalah semua NFT yang dapat kami temukan."
-  },
-  "nft": {
-    "desc": "Di sini Anda dapat mencari NFT, masukkan ID NFT dan tekan tombol pencarian.",
-    "enter-nft-id": "Masukkan ID NFT",
-    "cancel-sell-offer-for": "Batalkan Penawaran Jual untuk {{amount}}",
-    "cancel-buy-offer-for": "Batalkan Penawaran Beli untuk {{amount}}",
-    "cancel-transfer": "Batalkan Transfer NFT",
-    "accept-transfer": "Terima Transfer NFT",
-    "buy-for-amount-on": "Beli seharga {{amount}} di {{service}}",
-    "buy-for-amount": "Beli seharga {{amount}}",
-    "amount-on-service": "{{amount}} di {{service}}",
-    "on-service": "di {{service}}",
-    "make-offer": "Buat Penawaran",
-    "list-for-sale": "Daftar untuk dijual",
-    "holders": "Distribusi (Pemilik)",
-    "burn": "Hapus NFT ini"
   },
   "nft-distribution": {
     "header": "Distribusi NFT",

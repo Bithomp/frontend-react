@@ -1,4 +1,4 @@
-import { useTranslation } from 'next-i18next'
+import { useTranslation, Trans } from 'next-i18next'
 import { useState, useEffect } from 'react'
 import axios from 'axios'
 import Select from "react-select"
@@ -6,7 +6,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import Image from 'next/image'
 import Link from 'next/link'
 
-import { stripText, server, decode } from '../../utils'
+import { stripText, server, decode, network } from '../../utils'
 import { convertedAmount } from '../../utils/format'
 import { getIsSsrMobile } from "../../utils/mobile"
 import { nftName, mpUrl, bestSellOffer, nftUrl } from '../../utils/nft'
@@ -58,7 +58,7 @@ export async function getServerSideProps(context) {
       isSsrMobile: getIsSsrMobile(context),
       pageMeta,
       sortCurrency: sortCurrency || "",
-      ...(await serverSideTranslations(locale, ['common']))
+      ...(await serverSideTranslations(locale, ['common', 'nft']))
     }
   }
 }
@@ -79,6 +79,7 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
   const [loading, setLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState("")
   const [showRawMetadata, setShowRawMetadata] = useState(false)
+  const [notFoundInTheNetwork, setNotFoundInTheNetwork] = useState(false)
 
   const [sellOffersFilter, setSellOffersFilter] = useState('active-valid')
   const [buyOffersFilter, setBuyOffersFilter] = useState('active-valid')
@@ -121,7 +122,11 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
         if (newdata.buyOffers) {
           newdata.buyOffers = newdata.buyOffers.sort((a, b) => (a.createdAt < b.createdAt) ? 1 : -1);
         }
-        setData(newdata);
+        setData(newdata)
+        //notFoundInTheNetwork
+        if (!newdata.owner && !newdata.deletedAt && !newdata.url && !newdata.metadata) {
+          setNotFoundInTheNetwork(true)
+        }
         countOffersByFilters(newdata.sellOffers, setCountSellOffers);
         countOffersByFilters(newdata.buyOffers, setCountBuyOffers);
       } else {
@@ -507,7 +512,7 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
     if (mpUrl(best)) {
       return <>
         <a className='button-action wide center' href={mpUrl(best)} target="_blank" rel="noreferrer">
-          {t("nft.buy-for-amount-on", { amount: amountFormat(best.amount), service: best.destinationDetails.service })}
+          {t("button.nft.buy-for-amount-on", { amount: amountFormat(best.amount), service: best.destinationDetails.service })}
         </a>
         <br /><br />
       </>
@@ -552,7 +557,7 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
         })}
       >
         <Image src={xummImg} className='xumm-logo' alt="xumm" height={24} width={24} />
-        {sell ? t("nft.list-for-sale") : t("nft.make-offer")}
+        {sell ? t("button.nft.list-for-sale") : t("button.nft.make-offer")}
       </button>
       <br /><br />
     </>
@@ -580,7 +585,7 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
         })}
       >
         <Image src={xummImg} className='xumm-logo' alt="xumm" height={24} width={24} />
-        {t("nft.burn")} ️‍🔥
+        {t("button.nft.burn")} ️‍🔥
       </button>
       <br /><br />
     </>
@@ -592,11 +597,11 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
     <SEO
       page="NFT"
       title={pageMeta?.metadata?.name || pageMeta?.nftokenID || "NFT"}
-      description={pageMeta?.metadata?.description || (!pageMeta?.nftokenID ? t("nft.desc") : "")}
+      description={pageMeta?.metadata?.description || (!pageMeta?.nftokenID ? t("desc", { ns: 'nft' }) : "")}
       image={{ file: imageUrl }}
     />
     <SearchBlock
-      searchPlaceholderText={t("nft.enter-nft-id")}
+      searchPlaceholderText={t("enter-nft-id", { ns: 'nft' })}
       tab="nft"
     />
     <div className="content-center short-top nft">
@@ -613,11 +618,22 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
               :
               <>{data.flags &&
                 <>
+
                   <div className="column-left">
-                    <NftPreview nft={data} />
-                    {buyButton(data.sellOffers)}
-                    {makeOfferButton(data.sellOffers)}
-                    {burnButton()}
+                    {!notFoundInTheNetwork ?
+                      <>
+                        <NftPreview nft={data} />
+                        {buyButton(data.sellOffers)}
+                        {makeOfferButton(data.sellOffers)}
+                        {burnButton()}
+                      </>
+                      :
+                      <div className='orange'>
+                        <Trans i18nKey="nft-not-found-on-that-network" ns="nft">
+                          This NFT wasn't found on the <b>{{ network }}</b> network.
+                        </Trans>
+                      </div>
+                    }
                     <div>
                       {data.metadata?.attributes && data.metadata?.attributes[0] && data.metadata?.attributes[0].trait_type &&
                         <table className='table-details autowidth'>
@@ -638,14 +654,17 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
                       }
                     </div>
                   </div>
+
                   <div className="column-right">
-                    <SocialShare
-                      title={data?.metadata?.name || "XRPL NFT"}
-                      description={pageMeta?.metadata?.description || ""}
-                      hashtag="NFT"
-                      image={imageUrl}
-                      t={t}
-                    />
+                    {!notFoundInTheNetwork &&
+                      <SocialShare
+                        title={data?.metadata?.name || "XRPL NFT"}
+                        description={pageMeta?.metadata?.description || ""}
+                        hashtag="NFT"
+                        image={imageUrl}
+                        t={t}
+                      />
+                    }
                     {data.metadata &&
                       <table className='table-details'>
                         <thead>
@@ -696,7 +715,11 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
 
                     <table className='table-details'>
                       <thead>
-                        <tr><th colSpan="100">{t("table.ledger-data")}</th></tr>
+                        <tr>
+                          <th colSpan="100">
+                            {notFoundInTheNetwork ? t("nft-id-decoded-data", { ns: 'nft' }) : t("table.ledger-data")}
+                          </th>
+                        </tr>
                       </thead>
                       <tbody>
                         <tr>
@@ -726,81 +749,87 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
                           <td>{data.transferFee / 1000}%</td>
                         </tr>}
                         {trWithFlags(t, data.flags)}
-                        <tr>
-                          <td>URI</td>
-                          <td>
-                            {data.uri ? decode(data.uri) : t("table.text.unspecified")}
-                          </td>
-                        </tr>
+                        {!notFoundInTheNetwork &&
+                          <tr>
+                            <td>URI</td>
+                            <td>
+                              {data.uri ? decode(data.uri) : t("table.text.unspecified")}
+                            </td>
+                          </tr>
+                        }
                       </tbody>
                     </table>
 
-                    <table className='table-details'>
-                      <thead>
-                        <tr><th colSpan="100">{t("table.related-lists")}</th></tr>
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <td>{t("table.by-issuer")}</td>
-                          <td>
-                            <Link href={"/nft-distribution?issuer=" + data.issuer}>{t("nft.holders")}</Link>,{" "}
-                            <Link href={"/nft-explorer?issuer=" + data.issuer}>{t("table.all-nfts")}</Link>,{" "}
-                            <Link href={"/nft-sales?issuer=" + data.issuer}>{t("table.sold_few")}</Link>,{" "}
-                            <Link href={"/nft-explorer?issuer=" + data.issuer + "&list=onSale"}>{t("table.on-sale")}</Link>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>{t("table.by-taxon")}</td>
-                          <td>
-                            <Link href={"/nft-explorer?issuer=" + data.issuer + "&taxon=" + data.nftokenTaxon}>{t("table.all-nfts")}</Link>,{" "}
-                            <Link href={"/nft-sales?issuer=" + data.issuer + "&taxon=" + data.nftokenTaxon}>{t("table.sold_few")}</Link>,{" "}
-                            <Link href={"/nft-explorer?issuer=" + data.issuer + "&taxon=" + data.nftokenTaxon + "&list=onSale"}>{t("table.on-sale")}</Link>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>{t("table.by-owner")}</td>
-                          <td>
-                            <Link href={"/nft-explorer?owner=" + data.owner}>{t("table.all-nfts")}</Link>,{" "}
-                            <Link href={"/nft-explorer?owner=" + data.owner + "&list=onSale"}>{t("table.on-sale")}</Link>
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
+                    {!notFoundInTheNetwork &&
+                      <>
+                        <table className='table-details'>
+                          <thead>
+                            <tr><th colSpan="100">{t("table.related-lists")}</th></tr>
+                          </thead>
+                          <tbody>
+                            <tr>
+                              <td>{t("table.by-issuer")}</td>
+                              <td>
+                                <Link href={"/nft-distribution?issuer=" + data.issuer}>{t("holders", { ns: 'nft' })}</Link>,{" "}
+                                <Link href={"/nft-explorer?issuer=" + data.issuer}>{t("table.all-nfts")}</Link>,{" "}
+                                <Link href={"/nft-sales?issuer=" + data.issuer}>{t("table.sold_few")}</Link>,{" "}
+                                <Link href={"/nft-explorer?issuer=" + data.issuer + "&list=onSale"}>{t("table.on-sale")}</Link>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>{t("table.by-taxon")}</td>
+                              <td>
+                                <Link href={"/nft-explorer?issuer=" + data.issuer + "&taxon=" + data.nftokenTaxon}>{t("table.all-nfts")}</Link>,{" "}
+                                <Link href={"/nft-sales?issuer=" + data.issuer + "&taxon=" + data.nftokenTaxon}>{t("table.sold_few")}</Link>,{" "}
+                                <Link href={"/nft-explorer?issuer=" + data.issuer + "&taxon=" + data.nftokenTaxon + "&list=onSale"}>{t("table.on-sale")}</Link>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td>{t("table.by-owner")}</td>
+                              <td>
+                                <Link href={"/nft-explorer?owner=" + data.owner}>{t("table.all-nfts")}</Link>,{" "}
+                                <Link href={"/nft-explorer?owner=" + data.owner + "&list=onSale"}>{t("table.on-sale")}</Link>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
 
-                    <table className='table-details'>
-                      <thead>
-                        <tr>
-                          <th colSpan="100">
-                            {t("table.history")}
-                          </th>
-                        </tr>
-                      </thead>
-                      {nftHistory(data.history)}
-                    </table>
+                        <table className='table-details'>
+                          <thead>
+                            <tr>
+                              <th colSpan="100">
+                                {t("table.history")}
+                              </th>
+                            </tr>
+                          </thead>
+                          {nftHistory(data.history)}
+                        </table>
 
-                    <table className='table-details'>
-                      <thead>
-                        <tr>
-                          <th colSpan="100">
-                            {t("table.sell-offers")}
-                            {countSellOffers && offersFilter("sell")}
-                          </th>
-                        </tr>
-                      </thead>
-                      {nftOffers(filteredSellOffers, "sell")}
-                    </table>
+                        <table className='table-details'>
+                          <thead>
+                            <tr>
+                              <th colSpan="100">
+                                {t("table.sell-offers")}
+                                {countSellOffers && offersFilter("sell")}
+                              </th>
+                            </tr>
+                          </thead>
+                          {nftOffers(filteredSellOffers, "sell")}
+                        </table>
 
-                    <table className='table-details'>
-                      <thead>
-                        <tr>
-                          <th colSpan="100">
-                            {t("table.buy-offers")}
-                            {countBuyOffers && offersFilter("buy")}
-                          </th>
-                        </tr>
-                      </thead>
-                      {nftOffers(filteredBuyOffers, "buy")}
-                    </table>
+                        <table className='table-details'>
+                          <thead>
+                            <tr>
+                              <th colSpan="100">
+                                {t("table.buy-offers")}
+                                {countBuyOffers && offersFilter("buy")}
+                              </th>
+                            </tr>
+                          </thead>
+                          {nftOffers(filteredBuyOffers, "buy")}
+                        </table>
+                      </>
+                    }
                   </div>
                 </>
               }
@@ -813,10 +842,10 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
         <>
           <h2 className='center'>NFT</h2>
           <p className='center'>
-            {t("nft.desc")}
+            {t("desc", { ns: 'nft' })}
           </p>
         </>
       }
-    </div>
+    </div >
   </>;
 }

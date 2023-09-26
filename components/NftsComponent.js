@@ -418,12 +418,12 @@ export default function NftsComponent({
     const best = bestSellOffer(sellOffers)
     if (best) {
       if (mpUrl(best)) {
-        return t("nft.amount-on-service", { amount: amountFormat(best.amount, { tooltip: 'right' }), service: best.destinationDetails.service })
+        return t("nfts.amount-on-service", { amount: amountFormat(best.amount, { tooltip: 'right' }), service: best.destinationDetails.service })
       } else {
         return amountFormat(best.amount, { tooltip: 'right' })
       }
     }
-    return "Private offer"; //shouldn't be the case
+    return "Private offer" //shouldn't be the case
   }
 
   let csvHeaders = [

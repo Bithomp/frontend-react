@@ -344,7 +344,18 @@
     "copy": "コピー",
     "copied": "コピーしました",
     "copy-my-address": "アドレスをコピー",
-    "sign": "署名"
+    "sign": "署名",
+    "nft": {
+      "cancel-sell-offer-for": "{{amount}}の売却オファーをキャンセル",
+      "cancel-buy-offer-for": "{{amount}}の購入オファーをキャンセル",
+      "cancel-transfer": "NFTのトランスファーをキャンセル",
+      "accept-transfer": "NFTのトランスファーを受け入れる",
+      "buy-for-amount-on": "{{service}}で{{amount}}で購入",
+      "buy-for-amount": "{{amount}}で購入",
+      "make-offer": "オファーを作成",
+      "list-for-sale": "出品(販売)",
+      "burn": "このNFTをバーン"
+    }
   },
   "general": {
     "error": "エラー",
@@ -568,24 +579,10 @@
     "search-by-taxon": "NFT Taxonで検索",
     "search-by-owner": "NFT保有者で検索",
     "no-nfts": "検索条件に該当するNFTは見つかりませんでした。",
+    "on-service": "{{service}}",
+    "amount-on-service": "{{service}}にて{{amount}}",
     "load-more": "XRPLからデータを探しています...しばらくお待ちください...",
     "end": "取得できた全てのNFTを表示しています。"
-  },
-  "nft": {
-    "desc": "NFT IDを入力して、NFTを検索できます。",
-    "enter-nft-id": "NFT IDを入力",
-    "cancel-sell-offer-for": "{{amount}}の売却オファーをキャンセル",
-    "cancel-buy-offer-for": "{{amount}}の購入オファーをキャンセル",
-    "cancel-transfer": "NFTのトランスファーをキャンセル",
-    "accept-transfer": "NFTのトランスファーを受け入れる",
-    "buy-for-amount-on": "{{service}}で{{amount}}で購入",
-    "buy-for-amount": "{{amount}}で購入",
-    "amount-on-service": "{{service}}にて{{amount}}",
-    "on-service": "{{service}}",
-    "make-offer": "オファーを作成",
-    "list-for-sale": "出品(販売)",
-    "holders": "分布 (保有者)",
-    "burn": "このNFTをバーン"
   },
   "nft-distribution": {
     "header": "NFTの分布",

@@ -344,7 +344,18 @@
     "copy": "복사",
     "copied": "복사되었습니다",
     "copy-my-address": "주소를 복사하세요",
-    "sign": "서명"
+    "sign": "서명",
+    "nft": {
+      "cancel-sell-offer-for": "{{amount}}에 대한 판매 오퍼 취소",
+      "cancel-buy-offer-for": "{{amount}}에 대한 구매 오퍼 취소",
+      "cancel-transfer": "NFT 변환 취소",
+      "accept-transfer": "NFT 변환 허용",
+      "buy-for-amount-on": "{{service}}에서 {{amount}}에 구매",
+      "buy-for-amount": "{{amount}} 구매",
+      "make-offer": "오퍼를 만드세요",
+      "list-for-sale": "판매 리스트",
+      "burn": "NFT를 소각하세요"
+    }
   },
   "general": {
     "error": "오류",
@@ -568,24 +579,10 @@
     "search-by-taxon": "NFT 분류군 탐색",
     "search-by-owner": "NFT 소유자 탐색",
     "no-nfts": "귀하의 검색 매개변수로 어떤 NFT도 찾을 수 없습니다",
+    "on-service": "{{service}}에서",
+    "amount-on-service": "{{service}}에서 {{amount}}",
     "load-more": "XRPL에 대한 데이터를 찾을 수 없습니다. 잠시만 기다려주세요",
     "end": "저희가 찾을 수 있는 모든 NFT는 다음과 같습니다"
-  },
-  "nft": {
-    "desc": "여기에서 NFT를 검색하고 NFT ID를 입력한 다음 검색 버튼을 누를 수 있습니다",
-    "enter-nft-id": "NFT ID 입력하세요",
-    "cancel-sell-offer-for": "{{amount}}에 대한 판매 오퍼 취소",
-    "cancel-buy-offer-for": "{{amount}}에 대한 구매 오퍼 취소",
-    "cancel-transfer": "NFT 변환 취소",
-    "accept-transfer": "NFT 변환 허용",
-    "buy-for-amount-on": "{{service}}에서 {{amount}}에 구매",
-    "buy-for-amount": "{{amount}} 구매",
-    "amount-on-service": "{{service}}에서 {{amount}}",
-    "on-service": "{{service}}에서",
-    "make-offer": "오퍼를 만드세요",
-    "list-for-sale": "판매 리스트",
-    "holders": "배포 (홀더)",
-    "burn": "NFT를 소각하세요"
   },
   "nft-distribution": {
     "header": "NFT 분배",

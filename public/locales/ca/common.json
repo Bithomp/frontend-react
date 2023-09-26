@@ -344,7 +344,18 @@
     "copy": "Copia",
     "copied": "Copiat",
     "copy-my-address": "Copia la meva adreça",
-    "sign": "Signa"
+    "sign": "Signa",
+    "nft": {
+      "cancel-sell-offer-for": "Cancel·la l'oferta de Venda per {{amount}}",
+      "cancel-buy-offer-for": "Cancel·la l'oferta de Compra per {{amount}}",
+      "cancel-transfer": "Cancel NFT transfer",
+      "accept-transfer": "Accept NFT transfer",
+      "buy-for-amount-on": "Compra per {{amount}} a {{service}}",
+      "buy-for-amount": "Compra per {{amount}}",
+      "make-offer": "Fes oferta",
+      "list-for-sale": "Llista per vendre",
+      "burn": "Burn that NFT"
+    }
   },
   "general": {
     "error": "Error",
@@ -568,24 +579,10 @@
     "search-by-taxon": "Cerca per taxó de l'NFT",
     "search-by-owner": "Cerca per propietari de l'NFT",
     "no-nfts": "No hem pogut trobar NFTs amb aquests paràmetres de cerca.",
+    "on-service": "a {{service}}",
+    "amount-on-service": "{{amount}} a {{service}}",
     "load-more": "Estem cercant les dades a l'XRPL... Si us plau, espera...",
     "end": "Aquests són els NFTs que hem trobat."
-  },
-  "nft": {
-    "desc": "Aquí pots cercar NFT's, introdueix l'ID d'un NFT i clica cercar.",
-    "enter-nft-id": "Introdueix l'ID d'un NFT",
-    "cancel-sell-offer-for": "Cancel·la l'oferta de Venda per {{amount}}",
-    "cancel-buy-offer-for": "Cancel·la l'oferta de Compra per {{amount}}",
-    "cancel-transfer": "Cancel NFT transfer",
-    "accept-transfer": "Accept NFT transfer",
-    "buy-for-amount-on": "Compra per {{amount}} a {{service}}",
-    "buy-for-amount": "Compra per {{amount}}",
-    "amount-on-service": "{{amount}} a {{service}}",
-    "on-service": "a {{service}}",
-    "make-offer": "Fes oferta",
-    "list-for-sale": "Llista per vendre",
-    "holders": "Distribució (Holders)",
-    "burn": "Burn that NFT"
   },
   "nft-distribution": {
     "header": "Distribució d'NFTs",

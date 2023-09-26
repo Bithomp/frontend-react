@@ -1,0 +1,7 @@
+{
+  "desc": "Ovdje možete pronaći NFTove, unesite NFT ID i kliknite dugme za pretragu.",
+  "enter-nft-id": "Unesi NFT ID",
+  "holders": "Distribucija (Holders)",
+  "nft-id-decoded-data": "NFT ID decoded data",
+  "nft-not-found-on-that-network": "This NFT wasn't found on the <1>{{network}}</1> network."
+}
