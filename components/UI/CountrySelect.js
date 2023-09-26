@@ -1,5 +1,5 @@
 import Select from 'react-select'
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react'
 import { useTranslation } from 'next-i18next'
 import countries from "i18n-iso-countries"
 import axios from 'axios'
@@ -7,21 +7,25 @@ import axios from 'axios'
 import { useLocalStorage } from '../../utils'
 
 export default function CountrySelect({ setCountryCode }) {
-  const { i18n } = useTranslation();
-  const lang = i18n.language.slice(0, 2)
-  const languageData = require('i18n-iso-countries/langs/' + lang + '.json');
-  countries.registerLocale(languageData);
-  const countryObj = countries.getNames(lang, { select: "official" });
+  const { i18n } = useTranslation()
+  let lang = i18n.language.slice(0, 2)
+  const notSupportedLanguages = ['my'] // supported "en", "ru", "ja", "ko" etc
+  if (notSupportedLanguages.includes(lang)) {
+    lang = "en"
+  }
+  const languageData = require('i18n-iso-countries/langs/' + lang + '.json')
+  countries.registerLocale(languageData)
+  const countryObj = countries.getNames(lang, { select: "official" })
   const countryArr = Object.entries(countryObj).map(([key, value]) => {
     return {
       label: value,
       value: key
-    };
-  });
-  countryArr.sort((a, b) => a.label.localeCompare(b.label, lang));
+    }
+  })
+  countryArr.sort((a, b) => a.label.localeCompare(b.label, lang))
 
-  const [savedCountry, setSavedCounty] = useLocalStorage('country');
-  const [selectCountry, setSelectCountry] = useState({ value: '', label: '' });
+  const [savedCountry, setSavedCounty] = useLocalStorage('country')
+  const [selectCountry, setSelectCountry] = useState({ value: '', label: '' })
 
   useEffect(() => {
     if (savedCountry) {
@@ -29,22 +33,22 @@ export default function CountrySelect({ setCountryCode }) {
         value: savedCountry,
         label: countries.getName(savedCountry, lang, { select: "official" })
       })
-      setCountryCode(savedCountry);
+      setCountryCode(savedCountry)
     } else {
       async function fetchData() {
         const response = await axios('client/info');
         const json = response.data;
         if (json && json.country) {
-          const countryCode = json.country.toUpperCase();
+          const countryCode = json.country.toUpperCase()
           setSelectCountry({
             value: countryCode,
             label: countries.getName(countryCode, lang, { select: "official" })
           });
-          setSavedCounty(countryCode);
-          setCountryCode(countryCode);
+          setSavedCounty(countryCode)
+          setCountryCode(countryCode)
         }
       }
-      fetchData();
+      fetchData()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
