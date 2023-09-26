@@ -42,7 +42,7 @@ const pages = [
 ]
 
 function generateSiteMap(posts) {
-  const locales = ['en', 'ru', 'de', 'es', 'id', 'ja', 'ca', 'hr', 'da', 'nn', 'my']
+  const locales = ['en', 'ko', 'ru', 'de', 'es', 'id', 'ja', 'ca', 'hr', 'da', 'nn', 'my']
   const oldPages = ['explorer/', 'submit/', 'paperwallet', 'explorer/submit.html', 'advertise', 'eaas', 'build-unl'] //and not translated pages
   return `<?xml version="1.0" encoding="UTF-8"?>
    <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
