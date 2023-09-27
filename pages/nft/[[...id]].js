@@ -761,7 +761,7 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
                         {data.amount !== null &&
                           <tr>
                             <td>{t("table.price")}</td>
-                            <td>{data.amount !== null ? data.amount : t("table.text.unspecified")}</td>
+                            <td>{data.amount !== null ? amountFormat(data.amount, { tooltip: "right" }) : t("table.text.unspecified")}</td>
                           </tr>
                         }
                         {data.destination &&
