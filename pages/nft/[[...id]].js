@@ -115,13 +115,16 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
     let newdata = response?.data
     if (newdata) {
       if (newdata.flags) {
-        newdata.history = newdata.history.sort((a, b) => (a.changedAt < b.changedAt) ? 1 : -1);
+        if (newdata.history) {
+          newdata.history = newdata.history.sort((a, b) => (a.changedAt < b.changedAt) ? 1 : -1)
+        }
         if (newdata.sellOffers) {
-          newdata.sellOffers = newdata.sellOffers.sort((a, b) => (a.createdAt < b.createdAt) ? 1 : -1);
+          newdata.sellOffers = newdata.sellOffers.sort((a, b) => (a.createdAt < b.createdAt) ? 1 : -1)
         }
         if (newdata.buyOffers) {
-          newdata.buyOffers = newdata.buyOffers.sort((a, b) => (a.createdAt < b.createdAt) ? 1 : -1);
+          newdata.buyOffers = newdata.buyOffers.sort((a, b) => (a.createdAt < b.createdAt) ? 1 : -1)
         }
+
         setData(newdata)
         //notFoundInTheNetwork
         if (!newdata.owner && !newdata.deletedAt && !newdata.url && !newdata.metadata) {
@@ -168,6 +171,7 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
 
   /*
     {
+      "type": "xls20", //"xls35"
       "flags": {
         "burnable":false,
         "onlyXRP":false,
@@ -724,8 +728,14 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
                       <tbody>
                         <tr>
                           <td>NFT ID</td>
-                          <td>{shortHash(data.nftokenID, 10)} <CopyButton text={data.nftokenID} /></td>
+                          <td>{shortHash((data.nftokenID || data.uriTokenID), 10)} <CopyButton text={data.nftokenID || data.uriTokenID} /></td>
                         </tr>
+                        {data.type !== 'xls20' &&
+                          <tr>
+                            <td>{t("table.type")}</td>
+                            <td>{data.type?.toUpperCase()}</td>
+                          </tr>
+                        }
                         {data.issuer === data.owner ?
                           <>
                             {trWithAccount(data, 'owner', t("table.issuer-owner"), "/explorer/", "ownerAndIssuer")}
@@ -736,14 +746,33 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
                             {trWithAccount(data, 'issuer', t("table.issuer"), "/explorer/", "issuer")}
                           </>
                         }
-                        <tr>
-                          <td>{t("table.taxon")}</td>
-                          <td>{data.nftokenTaxon}</td>
-                        </tr>
-                        <tr>
-                          <td>{t("table.serial")}</td>
-                          <td>{data.sequence}</td>
-                        </tr>
+                        {data.type === 'xls20' &&
+                          <>
+                            <tr>
+                              <td>{t("table.taxon")}</td>
+                              <td>{data.nftokenTaxon}</td>
+                            </tr>
+                            <tr>
+                              <td>{t("table.serial")}</td>
+                              <td>{data.sequence}</td>
+                            </tr>
+                          </>
+                        }
+                        {data.amount !== null &&
+                          <tr>
+                            <td>{t("table.price")}</td>
+                            <td>{data.amount !== null ? data.amount : t("table.text.unspecified")}</td>
+                          </tr>
+                        }
+                        {data.destination &&
+                          trWithAccount(data, 'destination', t("table.destination"), "/explorer/", "destination")
+                        }
+                        {data.digest &&
+                          <tr>
+                            <td>{t("table.digest", { ns: "nft" })}</td>
+                            <td>{data.digest}</td>
+                          </tr>
+                        }
                         {!!data.transferFee && <tr>
                           <td>{t("table.transfer-fee")}</td>
                           <td>{data.transferFee / 1000}%</td>
@@ -760,7 +789,7 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
                       </tbody>
                     </table>
 
-                    {!notFoundInTheNetwork &&
+                    {!notFoundInTheNetwork && data.type === 'xls20' &&
                       <>
                         <table className='table-details'>
                           <thead>

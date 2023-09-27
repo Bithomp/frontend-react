@@ -3,5 +3,8 @@
   "enter-nft-id": "NFT IDを入力",
   "holders": "分布 (保有者)",
   "nft-id-decoded-data": "NFT IDからの解析データ",
-  "nft-not-found-on-that-network": "このNFTは<1>{{network}}</1>では見つかりませんでした。"
+  "nft-not-found-on-that-network": "このNFTは<1>{{network}}</1>では見つかりませんでした。",
+  "table": {
+    "digest": "Digest"
+  }
 }

@@ -3,5 +3,8 @@
   "enter-nft-id": "Введите идентификатор NFT",
   "holders": "Распределение (Держатели)",
   "nft-id-decoded-data": "Декодированные данные NFT ID",
-  "nft-not-found-on-that-network": "Мы не нашли этот NFT в сети <1>{{network}}</1>."
+  "nft-not-found-on-that-network": "Мы не нашли этот NFT в сети <1>{{network}}</1>.",
+  "table": {
+    "digest": "Дайджест"
+  }
 }

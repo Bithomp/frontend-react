@@ -3,5 +3,8 @@
   "enter-nft-id": "Indtast et NFT-id",
   "holders": "Distribution (Holders)",
   "nft-id-decoded-data": "NFT ID decoded data",
-  "nft-not-found-on-that-network": "This NFT wasn't found on the <1>{{network}}</1> network."
+  "nft-not-found-on-that-network": "This NFT wasn't found on the <1>{{network}}</1> network.",
+  "table": {
+    "digest": "Digest"
+  }
 }

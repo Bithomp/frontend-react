@@ -79,30 +79,30 @@ export const trWithFlags = (t, flags) => {
     "burnable": false,
     "onlyXRP": false,
     "trustLine": false,
-    "transferable": true
+    "transferable": true //"xls-35" has only burnable
   },
   */
-  let flagList = '';
-  let count = 0;
-  let name = t("table.flags");
+  let flagList = ''
+  let count = 0
+  let name = t("table.flags")
 
   for (let key in flags) {
     if (flags[key]) {
       //skip sellToken flag for tokenCreateOffer, we show it in the name
       if (key === 'sellToken') {
-        continue;
+        continue
       }
-      count++;
-      flagList += key + ', ';
+      count++
+      flagList += key + ', '
     }
   }
-  flagList = flagList.slice(0, -2); // remove the last comma
+  flagList = flagList.slice(0, -2) // remove the last comma
 
   if (count === 1) {
-    name = t("table.flag");
+    name = t("table.flag")
   }
   if (count === 0) {
-    flagList = t("table.text.unspecified");
+    flagList = t("table.text.unspecified")
   }
   return <tr>
     <td>{name}</td>
