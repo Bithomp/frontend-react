@@ -57,12 +57,6 @@
       "xrpl": "XRPL 웹사이트",
       "xrpchat": "XRP 쳇",
       "treasury": "재무: Bithomp"
-    },
-    "sponsored": {
-      "title": "지원받음",
-      "buy": "XRP 구매",
-      "earn": "XRP 수익창출",
-      "play": "XRP 플레이"
     }
   },
   "components": {

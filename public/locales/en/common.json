@@ -57,12 +57,6 @@
       "xrpl": "XRPL website",
       "xrpchat": "XRP chat",
       "treasury": "Treasury: Bithomp"
-    },
-    "sponsored": {
-      "title": "Sponsored",
-      "buy": "Buy XRP",
-      "earn": "Earn on XRP",
-      "play": "Play XRP"
     }
   },
   "components": {

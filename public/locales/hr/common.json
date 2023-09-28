@@ -57,12 +57,6 @@
       "xrpl": "XRPL websajt",
       "xrpchat": "XRP chat",
       "treasury": "Riznica: Bithomp"
-    },
-    "sponsored": {
-      "title": "Sponzorirano",
-      "buy": "Kupi XRP",
-      "earn": "Zaradi na XRPu",
-      "play": "Igraj XRP"
     }
   },
   "components": {

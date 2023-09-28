@@ -57,12 +57,6 @@
       "xrpl": "XRPLウェブサイト",
       "xrpchat": "XRP chat",
       "treasury": "Treasury: Bithomp"
-    },
-    "sponsored": {
-      "title": "スポンサー",
-      "buy": "Buy XRP",
-      "earn": "Earn on XRP",
-      "play": "Play XRP"
     }
   },
   "components": {

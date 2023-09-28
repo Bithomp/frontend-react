@@ -57,12 +57,6 @@
       "xrpl": "Pàgina web XRPL",
       "xrpchat": "Xat XRP",
       "treasury": "Treasury: Bithomp"
-    },
-    "sponsored": {
-      "title": "Patrocinat",
-      "buy": "Compra XRP",
-      "earn": "Guanya amb XRP",
-      "play": "Juga amb XRP"
     }
   },
   "components": {

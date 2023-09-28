@@ -57,12 +57,6 @@
       "xrpl": "XRPL веб-сайт",
       "xrpchat": "XRP чат",
       "treasury": "Treasury: Bithomp"
-    },
-    "sponsored": {
-      "title": "Реклама",
-      "buy": "Купить XRP",
-      "earn": "XRP вклады",
-      "play": "Играть с XRP"
     }
   },
   "components": {

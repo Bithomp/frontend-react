@@ -57,12 +57,6 @@
       "xrpl": "XRPL Webseite",
       "xrpchat": "XRP Chat",
       "treasury": "Treasury: Bithomp"
-    },
-    "sponsored": {
-      "title": "Gesponsert",
-      "buy": "XRP kaufen",
-      "earn": "Mit XRP verdienen",
-      "play": "Mit XRP wetten"
     }
   },
   "components": {

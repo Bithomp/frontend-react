@@ -57,12 +57,6 @@
 			"xrpl": "Laman web XRPL",
 			"xrpchat": "Perbualan XRP",
 			"treasury": "Kewangan: Bithomp"
-		},
-		"sponsored": {
-			"title": "Ditaja",
-			"buy": "Beli XRP",
-			"earn": "Peroleh dari XRP",
-			"play": "Mainkan XRP"
 		}
 	},
 	"components": {

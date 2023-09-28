@@ -57,12 +57,6 @@
       "xrpl": "XRPL nettsted",
       "xrpchat": "XRP chat",
       "treasury": "Treasury: Bithomp"
-    },
-    "sponsored": {
-      "title": "Sponsoreret",
-      "buy": "Køb XRP",
-      "earn": "Tjen på XRP",
-      "play": "Spil XRP"
     }
   },
   "components": {

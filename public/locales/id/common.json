@@ -57,12 +57,6 @@
       "xrpl": "Situs XRPL",
       "xrpchat": "Obrolan XRP",
       "treasury": "Kekayaan: Bithomp"
-    },
-    "sponsored": {
-      "title": "Disponsori",
-      "buy": "Beli XRP",
-      "earn": "Dapatkan dari XRP",
-      "play": "Mainkan XRP"
     }
   },
   "components": {
