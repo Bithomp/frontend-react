@@ -2,9 +2,14 @@ import { useState, useEffect } from "react"
 
 import { fiatCurrencyList } from "../../../utils"
 
-export default function CurrencySwitch({ selectedCurrency, setSelectedCurrency }) {
+export default function CurrencySwitch({ 
+  selectedCurrency, 
+  setSelectedCurrency, 
+  currencySwitchOpen, 
+  setCurrencySwitchOpen,
+  setLangSwitchOpen
+ }) {
   const [rendered, setRendered] = useState(false)
-  const [open, setOpen] = useState(false)
 
   useEffect(() => {
     setRendered(true)
@@ -18,7 +23,7 @@ export default function CurrencySwitch({ selectedCurrency, setSelectedCurrency }
 
   const onCurrencySelect = (currency) => {
     setSelectedCurrency(currency)
-    setOpen(false)
+    setCurrencySwitchOpen(false)
   }
 
   const td = (currencyList, i) => {
@@ -51,13 +56,18 @@ export default function CurrencySwitch({ selectedCurrency, setSelectedCurrency }
     </table>
   }
 
+  const switchOnClick = () => {
+    setCurrencySwitchOpen(!currencySwitchOpen)
+    setLangSwitchOpen(false)
+  }
+
   return (
-    <div className="currency-switch">
+    <div className="top-switch">
       <div className="menu-dropdown">
-        <div className="switch-container menu-dropdown-button contrast" onClick={() => setOpen(!open)}>
+        <div className="switch-container menu-dropdown-button contrast" onClick={switchOnClick}>
           {selectedCurrency.toUpperCase()}
         </div>
-        {open &&
+        {currencySwitchOpen &&
           <div className="menu-dropdown-content">
             {currencyTable()}
           </div>

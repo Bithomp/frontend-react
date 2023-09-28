@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react'
 import { devNet } from '../../../utils'
 
 import Switch from "./Switch"
+import LangSwitch from "./LangSwitch"
 import CurrencySwitch from "./CurrencySwitch"
 import LogoAnimated from '../LogoAnimated'
 
@@ -14,6 +15,9 @@ export default function Header({ setSignRequest, account, signOut, selectedCurre
   const [rendered, setRendered] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
   const [isCopied, setIsCopied] = useState(false)
+  const [langSwitchOpen, setLangSwitchOpen] = useState(false)
+  const [currencySwitchOpen, setCurrencySwitchOpen] = useState(false)
+
   const [xummUserToken, setXummUserToken] = useState(null)
 
   useEffect(() => {
@@ -39,12 +43,14 @@ export default function Header({ setSignRequest, account, signOut, selectedCurre
       document.getElementsByClassName("mobile-menu")[0].style.transform = "translateX(0)";
       document.body.style.overflow = "hidden";
       document.getElementsByClassName("theme-switch")[0].style.display = "block";
-      document.getElementsByClassName("currency-switch")[0].getElementsByClassName("menu-dropdown")[0].style.display = "block";
+      document.getElementsByClassName("top-switch")[0].getElementsByClassName("menu-dropdown")[0].style.display = "block";
+      document.getElementsByClassName("top-switch")[1].getElementsByClassName("menu-dropdown")[0].style.display = "block";
     } else {
       document.getElementsByClassName("mobile-menu")[0].style.transform = "translateX(100%)";
       document.body.style.overflow = "auto";
       document.getElementsByClassName("theme-switch")[0].style.display = "none";
-      document.getElementsByClassName("currency-switch")[0].getElementsByClassName("menu-dropdown")[0].style.display = "none";
+      document.getElementsByClassName("top-switch")[0].getElementsByClassName("menu-dropdown")[0].style.display = "none";
+      document.getElementsByClassName("top-switch")[1].getElementsByClassName("menu-dropdown")[0].style.display = "none";
     }
     setMenuOpen(!menuOpen);
   };
@@ -174,8 +180,19 @@ export default function Header({ setSignRequest, account, signOut, selectedCurre
             </div> :
             <span onClick={() => { setSignRequest(true) }} className="header-signin-link link">{t("signin.signin")}</span>
           }
-          <Switch />
-          <CurrencySwitch selectedCurrency={selectedCurrency} setSelectedCurrency={setSelectedCurrency} />
+          <Switch setCurrencySwitchOpen={setCurrencySwitchOpen} setLangSwitchOpen={setLangSwitchOpen} />
+          <LangSwitch
+            langSwitchOpen={langSwitchOpen}
+            setLangSwitchOpen={setLangSwitchOpen}
+            setCurrencySwitchOpen={setCurrencySwitchOpen}
+          />
+          <CurrencySwitch
+            selectedCurrency={selectedCurrency}
+            setSelectedCurrency={setSelectedCurrency}
+            currencySwitchOpen={currencySwitchOpen}
+            setCurrencySwitchOpen={setCurrencySwitchOpen}
+            setLangSwitchOpen={setLangSwitchOpen}
+          />
         </div>
         <div className="header-burger">
           <input type="checkbox" id="header-burger" checked={menuOpen} onChange={mobileMenuToggle} />

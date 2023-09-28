@@ -17,7 +17,6 @@ header {
     position: relative;
     display: inline-block;
     .menu-dropdown-button {
-      margin: 0 10px;
       color: white;
       cursor: pointer;
       transition: color .5s;
@@ -91,6 +90,12 @@ header {
     top: 24px;
     display: flex;
     align-items: center;
+    > div {
+      margin: 0 5px;
+      &:last-child {
+        margin-right: 0;
+      }
+    }
     a, .link {
       margin-right: 20px;
       vertical-align: middle;
@@ -215,6 +220,9 @@ header {
 
     .header-logo {
       margin-left: 20px;
+      max-width: 120px;
+      margin-top: 21px;
+      max-height: 39px;
     }
 
     .header-burger {

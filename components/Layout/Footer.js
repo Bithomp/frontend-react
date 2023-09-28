@@ -3,7 +3,6 @@ import { useTranslation } from 'next-i18next'
 
 import { devNet, useLocalStorage } from '../../utils'
 
-import LanguageSelect from "./LanguageSelect"
 import SocialIcons from "./SocialIcons"
 import LogoAnimated from './LogoAnimated'
 
@@ -79,9 +78,6 @@ export default function Footer() {
           <a href="/go/playxrp" target="_blank" rel="noreferrer">{t("menu.sponsored.play")}</a>
         </div>}
 
-        <div className="footer-language-select">
-          <LanguageSelect />
-        </div>
       </div>
 
       <div className="footer-brand">
