@@ -44,10 +44,6 @@ export default function Advertise() {
         <h3>NFT Explorer Header Text Ad</h3>
         <p>Place your advertisement on the top of all our NFT Explorer pages to connect with the NFT community's users.</p>
         <Image src="/images/advertise/new-pages-header.png" alt="NFT Explorer Header Text Ad" width="750" height="395" />
-        <br /><br />
-        <h3>NFT Explorer Footer Text Ad</h3>
-        <p>Place your advertisement on the bottom of all our NFT Explorer pages to connect with the NFT community's users.</p>
-        <Image src="/images/advertise/new-pages-footer.png" alt="NFT Explorer Footer Text Ad" width="750" height="280" />
         <br /><br /><br />
         <p className='center bold'>Contact us to advertise <Mailto email='support@bithomp.com' headers={{ subject: 'Advertise' }} />.</p>
       </div>
