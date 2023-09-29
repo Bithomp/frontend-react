@@ -10,7 +10,7 @@
       "eaas": "Explorer sebagai Layanan",
       "build-unl": "Bangun UNL"
     },
-    "usernames": "Pendaftaran Nama Pengguna",
+    "usernames": "Pendaftaran Username",
     "project-registartion": "Pendaftaran Proyek XRPL",
     "price-alerts": "Peringatan Harga XRP",
     "submit-offline-tx": "Kirim Transaksi Offline",
@@ -123,7 +123,7 @@
   "home": {
     "title": "Pencarian XRP | Telusuri XRP Ledger",
     "description": "Grafik harga XRP | Statistik XRPL | Penjelajah NFT | Pencarian alamat dompet | Volume NFT XRPL | Beli dan Jual NFT | Layanan XRP",
-    "search-placeholder": "Cari berdasarkan Alamat XRPL / Transaksi / NFT / Nama Pengguna / PayString / Penawaran",
+    "search-placeholder": "Cari berdasarkan Alamat XRPL / Transaksi / NFT / Username / PayString / Penawaran",
     "search-placeholder-short": "Cari berdasarkan Alamat / Transaksi",
     "scan-qr": "PINDAI KODE",
     "whales": {
@@ -139,14 +139,14 @@
       "quorum": "Quorum validasi",
       "proposers": "Pengusul",
       "accounts": "Akun",
-      "usernames": "Nama pengguna",
+      "usernames": "Username",
       "nft": {
         "created": "NFT dicetak",
         "burned": "NFT dihapus",
         "owners": "Pemilik saat ini",
         "issuers": "Penerbit NFT",
         "transfers": "Transfer NFT",
-        "for-sale": "NFT untuk dijual"
+        "for-sale": "NFT yang Dijual"
       }
     }
   },
@@ -179,9 +179,9 @@
     "owners": "Pemilik Saat Ini",
     "issuers": "Total Penerbit",
     "transfers": "Transfer NFT",
-    "for-sale": "NFT untuk Dijual",
-    "for-sale-without-destination": "NFT untuk Dijual Publik",
-    "for-sale-with-destination": "NFT untuk Dijual Langsung"
+    "for-sale": "NFT yang Dijual",
+    "for-sale-without-destination": "NFT yang Dijual Publik",
+    "for-sale-with-destination": "NFT yang Dijual Langsung"
   },
   "amendment": {
     "soon": "Amandemen dengan Mayoritas",
@@ -203,46 +203,46 @@
     "text0": "Daftar validator <1>{{url}}</1> memiliki urutan {{sequence}} dan berakhir pada {{expiration}}.<br/>Daftar ini mencakup {{validatorCount}} validator yang tercantum di bawah ini."
   },
   "username": {
-    "memo": "Pendaftaran Nama Pengguna Bithomp",
+    "memo": "Pendaftaran Username Bithomp",
     "error": {
       "address-empty": "Silakan masukkan alamat XRPL Anda.",
       "address-invalid": "Silakan masukkan alamat XRPL yang valid.",
-      "address-hosted": "Alamat yang dimasukkan di-hosting di {{service}}, Anda hanya dapat mendaftarkan nama pengguna untuk dompet yang tidak di-hosting (dompet perangkat keras, Xumm, dll). Jika Anda adalah operator pertukaran, silakan hubungi kami.",
-      "address-done": "Alamat tersebut sudah memiliki nama pengguna terdaftar.",
-      "username-empty": "Silakan masukkan nama pengguna yang ingin Anda daftarkan.",
-      "username-invalid": "Nama pengguna harus lebih pendek dari 18 karakter, tidak ada simbol yang diizinkan.",
-      "username-taken": "Nama pengguna <b>{{username}}</b> sudah ada :(",
-      "username-reserved": "Nama pengguna <b>{{username}}</b> sudah dipesan, hubungi dukungan kami.",
-      "username-hold": "Nama pengguna <b>{{username}}</b> ditahan untuk pendaftaran oleh akun XRPL lainnya. Anda dapat mencoba lagi dalam 24 jam.",
+      "address-hosted": "Alamat yang dimasukkan di-hosting di {{service}}, Anda hanya dapat mendaftarkan username untuk dompet yang tidak di-hosting (dompet perangkat keras, Xumm, dll). Jika Anda adalah operator pertukaran, silakan hubungi kami.",
+      "address-done": "Alamat tersebut sudah memiliki username terdaftar.",
+      "username-empty": "Silakan masukkan username yang ingin Anda daftarkan.",
+      "username-invalid": "Username harus lebih pendek dari 18 karakter, tidak ada simbol yang diizinkan.",
+      "username-taken": "Username <b>{{username}}</b> sudah ada :(",
+      "username-reserved": "Username <b>{{username}}</b> sudah dipesan, hubungi dukungan kami.",
+      "username-hold": "Username <b>{{username}}</b> ditahan untuk pendaftaran oleh akun XRPL lainnya. Anda dapat mencoba lagi dalam 24 jam.",
       "agree-terms-page": "Harap setujui syarat dan ketentuan yang ditentukan pada halaman ini.",
       "agree-terms-site": "Harap setujui syarat dan ketentuan situs web ini.",
       "agree-privacy-policy": "Harap setujui Kebijakan Privasi kami.",
       "payment-partly": "Silakan kirim sisa jumlahnya, sejauh ini kami hanya menerima {{received}} {{currency}} saat <b>{{required}} {{currency}}</b> dibutuhkan."
     },
     "step0": {
-      "text0": "Bithomp <1>nama pengguna</1> adalah nama pengguna <3>publik</3> untuk alamat XRPL Anda.",
-      "text1": "Nama pengguna akan terkait dengan alamat Anda di penjelajah bithomp dan dalam layanan pihak ketiga yang menggunakan <1>API</1> bithomp. Setelah pendaftaran, nama pengguna akan menjadi publik - <3>siapa pun</3> akan dapat melihatnya. Alamat XRPL Anda akan dapat diakses oleh:",
-      "text2": "Nama pengguna <1>tidak dapat diubah atau dihapus</1>.",
-      "only-one-for-address": "Untuk setiap alamat XRPL, Anda hanya dapat mendaftarkan satu nama pengguna.",
-      "address-you-control": "Anda hanya dapat mendaftarkan nama pengguna untuk alamat XRPL yang Anda kendalikan (Anda memiliki kata sandi atau kata pemulihan 12/24 kata). Anda tidak dapat mendaftarkan nama pengguna untuk alamat yang di-hosting (yang memiliki tag tujuan) dalam pertukaran / layanan / dompet.",
-      "pay-from-your-address": "Untuk membuktikan bahwa Anda mengendalikan alamat XRPL, Anda perlu melakukan pembayaran dari alamat tersebut (yang ingin Anda berikan nama pengguna). Pembayaran dari alamat lain akan dianggap sumbangan dan tidak akan dikembalikan.",
-      "text3": "Pembayaran ini sebesar 100 kronor Swedia dalam denominasi XRP. Pembayaran untuk nama pengguna <1>tidak dapat dikembalikan</1>. Jika Anda membayar lebih dari yang diminta, jumlah yang melebihi akan dianggap sumbangan dan tidak akan dikembalikan.",
-      "text4": "Nama pengguna sekarang digunakan lintas rantai, <1>daftarkan nama pengguna di jaringan utama XRPL</1> dan akan tersedia di penjelajah pengembang bithomp (dalam waktu 1 jam).",
+      "text0": "Bithomp <1>username</1> adalah username <3>publik</3> untuk alamat XRPL Anda.",
+      "text1": "Username akan terkait dengan alamat Anda di penjelajah bithomp dan dalam layanan pihak ketiga yang menggunakan <1>API</1> bithomp. Setelah pendaftaran, username akan menjadi publik - <3>siapa pun</3> akan dapat melihatnya. Alamat XRPL Anda akan dapat diakses oleh:",
+      "text2": "Username <1>tidak dapat diubah atau dihapus</1>.",
+      "only-one-for-address": "Untuk setiap alamat XRPL, Anda hanya dapat mendaftarkan satu username.",
+      "address-you-control": "Anda hanya dapat mendaftarkan username untuk alamat XRPL yang Anda kendalikan (Anda memiliki kata sandi atau kata pemulihan 12/24 kata). Anda tidak dapat mendaftarkan username untuk alamat yang di-hosting (yang memiliki tag tujuan) dalam pertukaran / layanan / dompet.",
+      "pay-from-your-address": "Untuk membuktikan bahwa Anda mengendalikan alamat XRPL, Anda perlu melakukan pembayaran dari alamat tersebut (yang ingin Anda berikan username). Pembayaran dari alamat lain akan dianggap sumbangan dan tidak akan dikembalikan.",
+      "text3": "Pembayaran ini sebesar 100 kronor Swedia dalam denominasi XRP. Pembayaran untuk username <1>tidak dapat dikembalikan</1>. Jika Anda membayar lebih dari yang diminta, jumlah yang melebihi akan dianggap sumbangan dan tidak akan dikembalikan.",
+      "text4": "Username sekarang digunakan lintas rantai, <1>daftarkan username di jaringan utama XRPL</1> dan akan tersedia di penjelajah pengembang bithomp (dalam waktu 1 jam).",
       "enter-address-or": "Masukkan alamat XRPL Anda atau",
       "sign-in": "Masuk dengan Xumm",
       "sign-out": "keluar",
       "your-address": "Alamat XRPL Anda",
-      "enter-username": "Masukkan nama pengguna yang ingin Anda miliki",
-      "your-username": "Nama Pengguna",
+      "enter-username": "Masukkan username yang ingin Anda miliki",
+      "your-username": "Username",
       "enter-country": "Negara tempat tinggal Anda (untuk akuntansi kami)",
       "agree-terms-page": "Saya memahami dan menyetujui syarat dan ketentuan yang telah dijelaskan di atas.",
       "agree-terms-site": "Saya setuju dengan <1>Syarat dan Ketentuan</1> situs web ini.",
       "agree-privacy-policy": "Saya setuju dengan <1>Kebijakan Privasi</1> kami.",
-      "already-registered": "Akun Anda sudah memiliki nama pengguna terdaftar",
-      "sign-out-to-register-another-one": "<0>Keluar</0> dari akun ini untuk mendaftarkan nama pengguna untuk alamat yang berbeda."
+      "already-registered": "Akun Anda sudah memiliki username terdaftar",
+      "sign-out-to-register-another-one": "<0>Keluar</0> dari akun ini untuk mendaftarkan username untuk alamat yang berbeda."
     },
     "step1": {
-      "to-register": "Untuk mendaftarkan nama pengguna publik Anda:",
+      "to-register": "Untuk mendaftarkan username publik Anda:",
       "from-your-address": "Anda perlu melakukan pembayaran dari alamat:",
       "text0": "Pembayaran yang dilakukan oleh Anda <1>dari alamat lain</1> atau dengan <3>tag tujuan yang salah</3> tidak akan diterima untuk layanan ini, itu akan diterima sebagai sumbangan dan <5>tidak akan dikembalikan</5>.",
       "payment-instructions": "Instruksi Pembayaran",
@@ -253,7 +253,7 @@
       "about-confirmation": "Anda akan melihat konfirmasi segera setelah kami menerima pembayaran Anda."
     },
     "step2": {
-      "text0": "Selamat! Nama pengguna Anda <1>{{ username }}</1> telah berhasil didaftarkan.",
+      "text0": "Selamat! Username Anda <1>{{ username }}</1> telah berhasil didaftarkan.",
       "one-more": "Daftarkan satu lagi"
     }
   },
@@ -279,7 +279,7 @@
     "details": "Detail",
     "address": "Alamat",
     "genesis-balance": "Saldo XRP Genesis",
-    "rippletrade-username": "Nama Pengguna Rippletrade",
+    "rippletrade-username": "Username Rippletrade",
     "nickname": "Nama Panggilan",
     "genesis-index": "Indeks Genesis"
   },
@@ -308,7 +308,7 @@
     "text2": "Jika Anda kehilangan 10 XRP dalam dompet Anda, harap baca tentang <1>cadangan dasar</1>.",
     "paper-wallet": "Jika Anda ingin mengirim XRP dari dompet kertas, Anda perlu mengimpornya ke dompet perangkat lunak terlebih dahulu, Anda dapat menggunakan aplikasi seluler Xumm untuk itu (impor sebagai \"kata sandi keluarga\").",
     "flare": "Jika Anda memiliki pertanyaan tentang \"Flare\", Anda perlu mengajukannya kepada komunitas Flare.",
-    "text3": "Jika Anda memiliki proposal <1>kemitraan atau pemasaran</1>, Anda dapat menghubungi kami melalui surel: <3/>. Anda juga dapat menghubungi kami untuk pertanyaan tentang pendaftaran nama pengguna bithomp atau penjelajah transaksi bithomp.",
+    "text3": "Jika Anda memiliki proposal <1>kemitraan atau pemasaran</1>, Anda dapat menghubungi kami melalui surel: <3/>. Anda juga dapat menghubungi kami untuk pertanyaan tentang pendaftaran username bithomp atau penjelajah transaksi bithomp.",
     "no-answer": "Karena waktu yang terbatas, kami tidak menjawab surel terkait dengan 1-7.",
     "submit-info": "Kirim informasi tentang layanan XRPL Anda",
     "text4": "Jika Anda memiliki layanan XRPL publik dan ingin agar alamat XRP Anda dikenali di Bithomp, kirimkan informasi Anda <1>di sini</1>. Anda juga dapat menghubungi kami melalui surel: <3/> jika Anda ingin mempercepat prosesnya.",
@@ -368,14 +368,14 @@
   },
   "error-api": {
     "search is too short": "Nama yang akan dicari terlalu pendek",
-    "issuer username is not found or invalid": "Nama pengguna penerbit tidak valid atau tidak ditemukan",
+    "issuer username is not found or invalid": "Username penerbit tidak valid atau tidak ditemukan",
     "issuer is invalid": "Alamat penerbit tidak valid",
-    "owner username is not found or invalid": "Nama pengguna pemilik tidak valid atau tidak ditemukan",
+    "owner username is not found or invalid": "Username pemilik tidak valid atau tidak ditemukan",
     "owner is invalid": "Alamat pemilik tidak valid",
-    "destination username is not found or invalid": "Nama pengguna tujuan tidak valid atau tidak ditemukan",
+    "destination username is not found or invalid": "Username tujuan tidak valid atau tidak ditemukan",
     "destination is invalid": "Alamat tujuan tidak valid",
     "currency is invalid": "Mata uang tidak valid",
-    "currencyIssuer username is not found or invalid": "Nama pengguna penerbit mata uang tidak valid atau tidak ditemukan",
+    "currencyIssuer username is not found or invalid": "Username penerbit mata uang tidak valid atau tidak ditemukan",
     "currencyIssuer is invalid": "Alamat penerbit mata uang tidak valid",
     "Token information is not found": "Kami tidak dapat menemukan informasi apa pun untuk ID tersebut",
     "No nfts information is found": "Maaf, terjadi kesalahan, silakan cari yang lain."
@@ -453,7 +453,7 @@
     "traded-nfts": "NFT yang Diperdagangkan",
     "buyers": "Pembeli",
     "raw-data": "Data Mentah",
-    "username": "Nama Pengguna",
+    "username": "Username",
     "floor-now": "Harga Terendah (saat ini)",
     "related-lists": "Daftar Terkait",
     "by-issuer": "Menurut Penerbit",
@@ -532,7 +532,7 @@
   },
   "explorer": {
     "header": "Penjelajah XRP Ledger",
-    "enter-address": "Masukkan alamat XRPL atau nama pengguna",
+    "enter-address": "Masukkan alamat XRPL atau username",
     "searching-tx-nft-nftoffer": "Mencari Tx / ID NFT / Tawaran NFT",
     "searching-for-addresses": "Mencari alamat...",
     "menu": {
@@ -549,9 +549,9 @@
   },
   "nft-offers": {
     "header": "Penawaran NFT",
-    "owned-desc": "Di sini Anda dapat mencari Penawaran Beli dan Jual untuk NFT, ketik alamat XRPL atau nama pengguna untuk melihat apa yang ditawarkan.",
-    "for-owned-nfts-desc": "Di sini Anda dapat mencari Penawaran Beli untuk NFT yang dimiliki oleh akun, ketik alamat XRPL atau nama pengguna untuk melihat penawaran yang diterima.",
-    "privately-offered-to-address-desc": "Di sini Anda dapat mencari Penawaran yang dibuat secara pribadi untuk sebuah akun (dengan tujuan), ini sering digunakan untuk transfer NFT (harga 0 XRP), ketik alamat XRPL atau nama pengguna untuk melihat penawaran yang diterima.",
+    "owned-desc": "Di sini Anda dapat mencari Penawaran Beli dan Jual untuk NFT, ketik alamat XRPL atau username untuk melihat apa yang ditawarkan.",
+    "for-owned-nfts-desc": "Di sini Anda dapat mencari Penawaran Beli untuk NFT yang dimiliki oleh akun, ketik alamat XRPL atau username untuk melihat penawaran yang diterima.",
+    "privately-offered-to-address-desc": "Di sini Anda dapat mencari Penawaran yang dibuat secara pribadi untuk sebuah akun (dengan tujuan), ini sering digunakan untuk transfer NFT (harga 0 XRP), ketik alamat XRPL atau username untuk melihat penawaran yang diterima.",
     "no-nft-offers": "Kami tidak dapat menemukan Penawaran NFT apa pun.",
     "cancel-invalid-offer_one": "Batal penawaran yang tidak valid",
     "cancel-invalid-offer_other": "Batal {{count}} penawaran yang tidak valid",
@@ -580,7 +580,7 @@
   },
   "nft-distribution": {
     "header": "Distribusi NFT",
-    "desc": "Di sini Anda dapat memeriksa distribusi NFT dari penerbit NFT tertentu. Masukkan alamat XRPL penerbit NFT atau nama pengguna dan tekan tombol pencarian.",
+    "desc": "Di sini Anda dapat memeriksa distribusi NFT dari penerbit NFT tertentu. Masukkan alamat XRPL penerbit NFT atau username dan tekan tombol pencarian.",
     "no-nfts": "Kami tidak dapat menemukan NFT yang diterbitkan oleh alamat tersebut.",
     "text0": "{{users}} akun memiliki {{nfts}} NFT"
   },
