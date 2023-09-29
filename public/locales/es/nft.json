@@ -2,8 +2,8 @@
   "desc": "Aquí puedes buscar por NFTs, introduce un ID de NFT y presiona el botón de buscar.",
   "enter-nft-id": "Introduce el ID del NFT",
   "holders": "Distribución (Poseedores)",
-  "nft-id-decoded-data": "NFT ID decoded data",
-  "nft-not-found-on-that-network": "This NFT wasn't found on the <1>{{network}}</1> network.",
+  "nft-id-decoded-data": "NFT ID Información Decodificada",
+  "nft-not-found-on-that-network": "Este NFT no se ha encontrado en la red <1>{{network}}</1>.",
   "table": {
     "digest": "Digest"
   }
