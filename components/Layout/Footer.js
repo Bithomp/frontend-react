@@ -44,7 +44,7 @@ export default function Footer() {
           {devNet && <a href="https://bithomp.com">Mainnet</a>}
           {devNet !== 'testnet' && <a href="https://test.bithomp.com">Testnet</a>}
           {devNet !== 'devnet' && <a href="https://dev.bithomp.com">Devnet</a>}
-          {devNet !== 'beta' && <a href="https://beta.bithomp.com">Xahau Testnet</a>}
+          {devNet !== 'beta' && devNet !== 'xahau-testnet' && <a href="https://beta.bithomp.com">Xahau Testnet</a>}
           {devNet !== 'amm' && <a href="https://amm.bithomp.com">AMM</a>}
         </div>
         <div className="footer-menu-column">
