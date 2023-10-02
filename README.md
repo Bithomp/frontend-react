@@ -10,7 +10,7 @@ In the project directory, you can run:
 
 `NEXT_PUBLIC_NETWORK_NAME=mainnet yarn dev`
 
-mainnet | staging | testnet | devnet | beta | xahau-testnet | amm | xahau
+mainnet | staging | testnet | devnet | xahau-testnet | amm | xahau
 
 Runs the app in the development mode.\
 Open [http://localhost:3000](http://localhost:3000) to view it in your browser.

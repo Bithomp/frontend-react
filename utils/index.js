@@ -276,8 +276,8 @@ export const submitTransaction = async (blob, callback) => {
   }
 }
 
-//const networks = ['mainnet', 'staging', 'testnet', 'devnet', 'beta', 'amm', 'xahau-testnet', 'xahau'];
-//const devNetworks = ['testnet', 'devnet', 'beta', 'amm', 'xahau-testnet'];
+//const networks = ['mainnet', 'staging', 'testnet', 'devnet', 'amm', 'xahau-testnet', 'xahau'];
+//const devNetworks = ['testnet', 'devnet', 'amm', 'xahau-testnet'];
 
 export const network = process.env.NEXT_PUBLIC_NETWORK_NAME ? process.env.NEXT_PUBLIC_NETWORK_NAME : "mainnet";
 export const devNet = ['mainnet', 'staging', 'xahau'].includes(network) ? false : network;
@@ -287,7 +287,6 @@ const networks = {
   staging: { id: 2, server: "https://staging.bithomp.com" },
   testnet: { id: 1, server: "https://test.bithomp.com" },
   devnet: { id: 2, server: "https://dev.bithomp.com" },
-  beta: { id: 21338, server: "https://beta.bithomp.com" },
   "xahau-testnet": { id: 21338, server: "https://test.xahauexplorer.com" },
   xahau: { id: 21337, server: "https://xahauexplorer.com" },
   amm: { id: 25, server: "https://amm.bithomp.com" }
@@ -302,7 +301,7 @@ export const networksIds = {
   2: { server: "https://dev.bithomp.com", name: "devnet" },
   25: { server: "https://amm.bithomp.com", nam: "amm" },
   21337: { server: "https://xahauexplorer.com", name: "xahau" },
-  21338: { server: "https://beta.bithomp.com", name: "xahau-testnet" }
+  21338: { server: "https://test.xahauexplorer.com", name: "xahau-testnet" }
 }
 
 const WssServer = () => {
