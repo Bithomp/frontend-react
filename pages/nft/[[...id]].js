@@ -692,11 +692,21 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
                               <td>{stripText(data.metadata.description)}</td>
                             </tr>
                           }
-                          {!!data.metadata.collection && !!data.metadata.collection.name &&
-                            <tr>
-                              <td>{t("table.collection")}</td>
-                              <td>{stripText(data.metadata.collection.name)}</td>
-                            </tr>
+                          {!!data.metadata.collection &&
+                            <>
+                              {!!data.metadata.collection.name &&
+                                <tr>
+                                  <td>{t("table.collection")}</td>
+                                  <td>{stripText(data.metadata.collection.name)}</td>
+                                </tr>
+                              }
+                              {!!data.metadata.collection.description && data.metadata.collection.description !== data.metadata.description &&
+                                <tr>
+                                  <td>{t("table.description")}</td>
+                                  <td>{stripText(data.metadata.collection.description)}</td>
+                                </tr>
+                              }
+                            </>
                           }
                           {externalUrl(data.metadata) &&
                             <tr>
