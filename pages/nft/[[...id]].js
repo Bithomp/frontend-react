@@ -99,6 +99,9 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
     if (!id) return
     setLoading(true)
 
+    setSellOffersFilter('active-valid')
+    setBuyOffersFilter('active-valid')
+
     let noCache = ""
     if (opts?.noCache) {
       noCache = "&timestamp=" + Date.now()
