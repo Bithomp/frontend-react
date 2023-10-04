@@ -6,7 +6,7 @@
   "table": {
     "minted-total": "전체 발행량",
     "minted-with-metadata": "메타 데이터 - 발행된 NFT",
-    "minted-and-burned": "발행 및 매각",
-    "burned-total": "전체 매각량"
+    "minted-and-burned": "발행 및 소각",
+    "burned-total": "전체 소각량"
   }
 }

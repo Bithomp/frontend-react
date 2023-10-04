@@ -2,8 +2,8 @@
   "desc": "여기에서 NFT를 검색하고 NFT ID를 입력한 다음 검색 버튼을 누를 수 있습니다",
   "enter-nft-id": "NFT ID 입력하세요",
   "holders": "배포 (홀더)",
-  "nft-id-decoded-data": "NFT ID decoded data",
-  "nft-not-found-on-that-network": "This NFT wasn't found on the <1>{{network}}</1> network.",
+  "nft-id-decoded-data": "NFT ID 디코딩 데이터",
+  "nft-not-found-on-that-network": "이 NFT는 <1>{{network}}</1> 네트워크에서 찾을 수 없습니다.",
   "table": {
     "digest": "Digest"
   }

@@ -23,8 +23,8 @@
       "minters": "채굴자",
       "distribution": "분배 (홀더)",
       "statistics": "실시간 통계",
-      "nfts": "계정상 NFT",
-      "offers": "오퍼"
+      "nfts": "계정의 NFT",
+      "offers": "제안"
     },
     "xrpl": {
       "rich-list": "Rich-리스트",
@@ -42,10 +42,10 @@
       "api": "API 문서화",
       "api-key-request": "API 키"
     },
-    "legal": "합법",
+    "legal": "정책",
     "disclaimer": "면책조항",
-    "privacy-policy": "정책",
-    "terms-and-conditions": "기간 및 조건",
+    "privacy-policy": "개인정보처리방침",
+    "terms-and-conditions": "이용약관",
     "customer-support": "고객지원",
     "press": "언론",
     "merch": "MD샵",
@@ -53,10 +53,10 @@
     "community": {
       "title": "커뮤니티",
       "xumm": "Xumm 월렛",
-      "xrplf": "XRPL 설립",
+      "xrplf": "XRPL 재단",
       "xrpl": "XRPL 웹사이트",
-      "xrpchat": "XRP 쳇",
-      "treasury": "재무: Bithomp"
+      "xrpchat": "XRP 챗",
+      "treasury": "Treasury: Bithomp"
     }
   },
   "components": {
@@ -70,11 +70,11 @@
     }
   },
   "signin": {
-    "signin": "가입",
-    "signout": "탈퇴",
-    "choose-app": "가입할 앱을 선택하세요",
-    "login-with": "로그인",
-    "sign-with": "가입",
+    "signin": "로그인",
+    "signout": "로그아웃",
+    "choose-app": "사용할 앱을 선택하세요",
+    "login-with": "로그인하기",
+    "sign-with": "서명하기",
     "amount": {
       "set-price": "가격을 설정하세요",
       "enter-amount": "금액을 압력하세요"
@@ -96,14 +96,14 @@
       "view": "보기",
       "send": "전송",
       "my-nfts": "내 NFT",
-      "my-nft-offers": "내 NFT 오퍼"
+      "my-nft-offers": "내 NFT 제안"
     },
     "not-available": "유효하지 않습니다",
     "confirm": {
       "set-domain": "도메인을 설정합니다",
       "nft-accept-offer-header": "NFT 구매",
       "nft-create-sell-offer-header": "출품(판매)",
-      "nft-create-buy-offer-header": "구매 오퍼를 준비하세요",
+      "nft-create-buy-offer-header": "구매 제안을 준비하세요",
       "nft-accept-offer": "Bithomp는 탈중앙화 마켓플레이스에 대한 액세스를 제공하는 것일 뿐, NFT의 진위 여부 및 정당성을 검증하거나 보증하는 것이 아님을 인정합니다. 본인은 <1>이용약관</1>을 읽었으며, Bithomp에서 NFT를 구매, 판매 또는 사용하는 모든 조건에 동의합니다.",
       "nft-create-sell-offer": "리스팅에 서명하면 NFT를 즉시 구매할 수 있다는 것을 알고 있습니다",
       "nft-burn-header": "NFT 소각",
@@ -123,7 +123,7 @@
   "home": {
     "title": "XRP 탐색기가 XRP 레저를 감지했습니다",
     "description": "XRP 가격 차트 | XRP 통계 | NFT 탐색기 | 지갑 주소 조회 | XRPL NFT 거래량 | NFT 구매 및 판매 | XRP 서비스",
-    "search-placeholder": "XRPL 주소/거래/NFT/사용자명/페이스트링/ 오퍼/통화 해시로 검색하기",
+    "search-placeholder": "XRPL 주소/거래/NFT/사용자명/페이스트링/제안/통화 해시로 검색하기",
     "search-placeholder-short": "주소/거래/사용자별 검색",
     "scan-qr": "QR코드를 스캔하세요",
     "whales": {
@@ -340,13 +340,13 @@
     "copy-my-address": "주소를 복사하세요",
     "sign": "서명",
     "nft": {
-      "cancel-sell-offer-for": "{{amount}}에 대한 판매 오퍼 취소",
-      "cancel-buy-offer-for": "{{amount}}에 대한 구매 오퍼 취소",
+      "cancel-sell-offer-for": "{{amount}}에 대한 판매 제안 취소",
+      "cancel-buy-offer-for": "{{amount}}에 대한 구매 제안 취소",
       "cancel-transfer": "NFT 변환 취소",
       "accept-transfer": "NFT 변환 허용",
       "buy-for-amount-on": "{{service}}에서 {{amount}}에 구매",
       "buy-for-amount": "{{amount}} 구매",
-      "make-offer": "오퍼를 만드세요",
+      "make-offer": "제안하기",
       "list-for-sale": "판매 리스트",
       "burn": "NFT를 소각하세요"
     }
@@ -388,7 +388,7 @@
   "period": {
     "all": "",
     "year": "최근 1년",
-    "month": "최근 한 달",
+    "month": "최근 한달",
     "week": "최근 일주일",
     "day": "최근 24시간"
   },
@@ -425,7 +425,7 @@
     "placed": "대체됨",
     "accepted": "승인되었습니다",
     "canceled": "취소되었습니다",
-    "offer": "오퍼",
+    "offer": "제안",
     "expiration": "만료",
     "expired": "만료되었습니다",
     "destination": "대상",
@@ -447,9 +447,9 @@
     "metadata": "메타데이터",
     "ledger-data": "원장-데이터",
     "history": "기록",
-    "sell-offers": "오퍼 판매",
-    "buy-offers": "오퍼 구매",
-    "nfts-now": "NFTs (현재)",
+    "sell-offers": "판매 제안",
+    "buy-offers": "구매 제안",
+    "nfts-now": "NFT (현재)",
     "traded-nfts": "거래된 NFT",
     "buyers": "구매자",
     "raw-data": "최초 데이터",
@@ -461,14 +461,14 @@
     "by-taxon": "분류군에 의한",
     "all-nfts": "모든 NFT",
     "on-sale": "판매 중",
-    "social-share": "공유는 배려입니다",
+    "social-share": "공유하기",
     "marketplace": "마켓 플레이스",
     "text": {
       "show-extended-statistics": "확장된 실시간 데이터를 보여줍니다",
       "include-without-metadata": "메타데이터가 없는 NFT가 포함되어 있습니다",
       "include-burned-nfts": "소각된 NFT가 포함되어 있습니다",
       "no-expiration": "만료기한이 없습니다",
-      "no-offers": "오퍼를 찾을 수 없습니다",
+      "no-offers": "제안을 찾을 수 없습니다",
       "unspecified": "지정되지 않은 상태",
       "sell": "판매",
       "buy": "구매",
@@ -509,15 +509,15 @@
     "day": "24시간",
     "currencies": "통화",
     "issuers": "발행자",
-    "marketplaces": "마캣 플레이스",
+    "marketplaces": "마켓플레이스",
     "brokers": "브로커",
     "image": "이미지",
     "video": "비디오",
     "audio": "오디오",
     "model": "3D 모델",
     "owned-offers": "소유한 상태",
-    "offers-for-owned-nfts": "소유한 NFT를 위한 오퍼",
-    "privately-offered-to-address": "비공개로 수신된 오퍼",
+    "offers-for-owned-nfts": "소유 NFT 제안",
+    "privately-offered-to-address": "비공개 수신 제안",
     "all": "전체",
     "buy": "구매",
     "sell": "판매",
@@ -533,7 +533,7 @@
   "explorer": {
     "header": "XRP 레저 탐색기",
     "enter-address": "XRPL 주소 또는 사용자명으로 로그인하세요",
-    "searching-tx-nft-nftoffer": "Tx/NFT ID/NFT 오퍼 검색하기",
+    "searching-tx-nft-nftoffer": "Tx/NFT ID/NFT 제안 검색하기",
     "searching-for-addresses": "주소를 찾고 있습니다",
     "menu": {
       "account": "계정",
@@ -548,25 +548,25 @@
     "header": "NFT 탐색기"
   },
   "nft-offers": {
-    "header": "NFT 오퍼",
-    "owned-desc": "여기에서 NFT에 대한 구매 및 판매 오퍼를 검색하고 XRPL 주소 또는 사용자 이름을 입력해 오퍼를 확인할 수 있습니다",
-    "for-owned-nfts-desc": "여기에서 계정별로 소유한 NFT에 대한 구매 오퍼를 검색하고 XRPL 주소 또는 사용자 이름을 입력하면 수신된 오퍼를 확인할 수 있습니다",
-    "privately-offered-to-address-desc": "여기에서 계정에 대해 비공개로 생성된 오퍼(목적지 포함)를 검색할 수 있으며, 종종 NFT 전송(가격 0 XRP)에 사용되며, XRPL 주소 또는 사용자명을 입력하면 수신된 오퍼를 확인할 수 있습니다",
-    "no-nft-offers": "NFT 오퍼를 찾지 못했습니다",
-    "cancel-invalid-offer_one": "유효하지 않은 오퍼를 취소합니다",
-    "cancel-invalid-offer_other": "유효하지 않은 {{count}}개의 오퍼 취소",
-    "cancel-expired-offer_one": "만료된 오퍼를 취소합니다",
-    "cancel-expired-offer_other": "만료된 {{count}}개의 오퍼 취소"
+    "header": "NFT 제안",
+    "owned-desc": "여기에서 NFT에 대한 구매 및 판매 제안을 검색하고 XRPL 주소 또는 사용자 이름을 입력해 제안을 확인할 수 있습니다",
+    "for-owned-nfts-desc": "여기에서 계정별로 소유한 NFT에 대한 구매 제안을 검색하고 XRPL 주소 또는 사용자 이름을 입력하면 수신된 제안을 확인할 수 있습니다",
+    "privately-offered-to-address-desc": "여기에서 계정에 대해 비공개로 생성된 제안(목적지 포함)을 검색할 수 있으며, 종종 NFT 전송(가격 0 XRP)에 사용되며, XRPL 주소 또는 사용자명을 입력하면 수신된 제안을 확인할 수 있습니다",
+    "no-nft-offers": "NFT 제안을 찾지 못했습니다",
+    "cancel-invalid-offer_one": "유효하지 않은 제안을 취소합니다",
+    "cancel-invalid-offer_other": "유효하지 않은 {{count}}개의 제안 취소",
+    "cancel-expired-offer_one": "만료된 제안을 취소합니다",
+    "cancel-expired-offer_other": "만료된 {{count}}개의 제안 취소"
   },
   "nft-offer": {
-    "header": "NFT 오퍼",
-    "desc": "NFT의 오퍼 ID를 입력하여 NFT의 오퍼를 검색할 수 있습니다.",
-    "enter-offer-id": "NFT 오퍼 ID를 입력하세요",
+    "header": "NFT 제안",
+    "desc": "NFT의 제안 ID를 입력하여 NFT의 제안을 검색할 수 있습니다.",
+    "enter-offer-id": "NFT 제안 ID를 입력하세요",
     "selling": "판매",
     "buying": "구매"
   },
   "nfts": {
-    "header": "계정의 NFTs",
+    "header": "계정의 NFT",
     "desc": "여기에서 NFT를 검색하고 XRPL 주소를 입력해 어떤 NFT를 보유하고 있는지 확인할 수 있습니다.",
     "search-by-name": "NFT 이름으로 검색하세요",
     "search-by-issuer": "NFT 발행자 탐색",
@@ -588,7 +588,7 @@
     "header": "NFT 판매량",
     "text0": "XRPL은 {{saleType}}에서 {{allSales}} {{currency}} NFT({{allVolume}}) 거래가 이루어졌습니다.",
     "brokers": {
-      "desc": "NFT 브로커 계좌 목록입니다. 여기에서 오퍼 매칭 봇의 거래량을 확인할 수 있습니다. 마켓플레이스는 혼합 거래 모델을 사용하므로 여기에서는 중개 모델을 통한 거래량만 볼 수 있습니다",
+      "desc": "NFT 브로커 계좌 목록입니다. 여기에서 제안 매칭 봇의 거래량을 확인할 수 있습니다. 마켓플레이스는 혼합 거래 모델을 사용하므로 여기에서는 중개 모델을 통한 거래량만 볼 수 있습니다",
       "no-broker": "브로커 없음",
       "text0": "XRPL은 {{saleType}}에서 {{allSales}}<3>{{currency}}</3> NFT/{{allVolume}}의 매출이 있었으며, 그 중 <9>{{{brokerSales}}</9> {{percentBrokerSales}}/<13>{{brokerVolume}}</13> {{percentBrokerVolume}}은 브로커 거래로 인한 매출입니다."
     },
@@ -605,7 +605,7 @@
     "end": "리스트가 끝났습니다"
   },
   "links": {
-    "active-offers-same-account": "해당 계정의 활성화된 오퍼 보기",
+    "active-offers-same-account": "해당 계정의 활성화된 제안 보기",
     "nfts-same-issuer": "동일한 발행자의 NFT",
     "owned-nfts-same-account": "해당 계정에 의해 소유된 NFT",
     "all": "전체",
