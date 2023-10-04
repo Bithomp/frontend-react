@@ -29,7 +29,7 @@ class MyDocument extends Document {
           <link rel="apple-touch-icon" href="/logo192.png" />
           <link rel="manifest" href="/manifest.json" />
         </Head>
-        <body className={this.props.cookieTheme} data-networkName={process.env.NEXT_PUBLIC_NETWORK_NAME}>
+        <body className={this.props.cookieTheme} data-networkname={process.env.NEXT_PUBLIC_NETWORK_NAME}>
           <script
             dangerouslySetInnerHTML={{
               __html: `(function () {
