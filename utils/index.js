@@ -279,8 +279,15 @@ export const submitTransaction = async (blob, callback) => {
 //const networks = ['mainnet', 'staging', 'testnet', 'devnet', 'amm', 'xahau-testnet', 'xahau'];
 //const devNetworks = ['testnet', 'devnet', 'amm', 'xahau-testnet'];
 
-export const network = process.env.NEXT_PUBLIC_NETWORK_NAME ? process.env.NEXT_PUBLIC_NETWORK_NAME : "mainnet";
-export const devNet = ['mainnet', 'staging', 'xahau'].includes(network) ? false : network;
+export const capitalize = str => {
+  if (!str) return ""
+  return str.charAt(0).toUpperCase() + str.slice(1)
+}
+
+export const network = process.env.NEXT_PUBLIC_NETWORK_NAME ? process.env.NEXT_PUBLIC_NETWORK_NAME : "mainnet"
+export const devNet = ['mainnet', 'staging', 'xahau'].includes(network) ? false : network
+export const ledgerName = network.includes('xahau') ? "Xahau" : "XRP Ledger"
+export const testNetworkName = capitalize(devNet && devNet.includes("testnet") ? "testnet" : devNet)
 
 const networks = {
   mainnet: { id: 0, server: "https://bithomp.com" },

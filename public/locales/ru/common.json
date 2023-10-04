@@ -531,7 +531,7 @@
     "new-qr": "Получить новый QR-код"
   },
   "explorer": {
-    "header": "XRPL Эксплорер",
+    "header": "{{ledgerName}} Эксплорер {{testNetworkName}}",
     "enter-address": "Введите XRPL адрес или ник",
     "searching-tx-nft-nftoffer": "Идет поиск по запрошенному ID",
     "searching-for-addresses": "Идет поиск адресов...",

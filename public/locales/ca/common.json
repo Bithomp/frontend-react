@@ -531,7 +531,7 @@
     "new-qr": "Obtenir un codi QR nou"
   },
   "explorer": {
-    "header": "Explorador XRPL",
+    "header": "Explorador {{ledgerName}} {{testNetworkName}}",
     "enter-address": "Introdueix un adreça XRPL o un àlies",
     "searching-tx-nft-nftoffer": "Cercant per Tx / NFT ID / Oferta NFT",
     "searching-for-addresses": "Cercant per adreces...",

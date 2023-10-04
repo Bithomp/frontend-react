@@ -531,7 +531,7 @@
     "new-qr": "Dapatkan kode QR baru"
   },
   "explorer": {
-    "header": "Penjelajah XRP Ledger",
+    "header": "Penjelajah {{ledgerName}} {{testNetworkName}}",
     "enter-address": "Masukkan alamat XRPL atau username",
     "searching-tx-nft-nftoffer": "Mencari Tx / ID NFT / Tawaran NFT",
     "searching-for-addresses": "Mencari alamat...",

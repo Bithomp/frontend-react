@@ -531,7 +531,7 @@
     "new-qr": "Få en ny QR-kode"
   },
   "explorer": {
-    "header": "XRP Ledger Utforsker",
+    "header": "{{ledgerName}} Utforsker {{testNetworkName}}",
     "enter-address": "Skriv inn en XRPL-adresse eller et brukernavn",
     "searching-tx-nft-nftoffer": "Søker etter Tx / NFT ID / NFT bud",
     "searching-for-addresses": "Søker etter adresser...",

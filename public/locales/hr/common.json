@@ -531,7 +531,7 @@
     "new-qr": "Generiraj novi QR"
   },
   "explorer": {
-    "header": "XRP Ledger Tražilica",
+    "header": "{{ledgerName}} Tražilica {{testNetworkName}}",
     "enter-address": "Unesi XRPL adresu ili korisničko ime",
     "searching-tx-nft-nftoffer": "Tražim Tx / NFT ID / NFT Ponudu",
     "searching-for-addresses": "Tražim adrese...",

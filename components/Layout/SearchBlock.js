@@ -14,7 +14,9 @@ import {
   decodeCTID,
   networkId,
   networksIds,
-  isValidNftXls20
+  isValidNftXls20,
+  ledgerName,
+  testNetworkName
 } from '../../utils'
 import { userOrServiceName, amountFormat } from '../../utils/format'
 
@@ -276,7 +278,13 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
                 {userOrServiceName(userData)}
                 {tab === "nft" && <h1 className='contrast'>NFT</h1>}
                 {tab === "nft-offer" && <h1 className='contrast'>{t("nft-offer.header")}</h1>}
-                {tab === "explorer" && <h1 className='contrast'>{t("explorer.header")}</h1>}
+                {tab === "explorer" &&
+                  <h1 className='contrast'>
+                    <Trans i18nKey="explorer.header">
+                      {{ ledgerName }} Explorer {{ testNetworkName: testNetworkName ? ("(" + testNetworkName + ")") : "" }}
+                    </Trans>
+                  </h1>
+                }
               </>
             }
           </div>

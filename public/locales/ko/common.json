@@ -531,7 +531,7 @@
     "new-qr": "새로운 QR코드를 사용하세요"
   },
   "explorer": {
-    "header": "XRP 레저 탐색기",
+    "header": "{{ledgerName}} 탐색기 {{testNetworkName}}",
     "enter-address": "XRPL 주소 또는 사용자명으로 로그인하세요",
     "searching-tx-nft-nftoffer": "Tx/NFT ID/NFT 제안 검색하기",
     "searching-for-addresses": "주소를 찾고 있습니다",
