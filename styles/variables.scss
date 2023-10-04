@@ -46,3 +46,13 @@ body.dark {
   --orange: #FAD29E;
   --purple: #EE82EE;
 }
+
+body[data-networkName*="xahau"] {
+  --background-header: #0E233F;
+  --background-block: #0E233F;
+  --background-footer: #061322;
+  &.dark {
+    --background-header: #061322;
+    --background-block: #061322;
+  }
+}
