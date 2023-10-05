@@ -6,15 +6,15 @@
   "nft-not-found-on-that-network": "Мы не нашли этот NFT в сети <1>{{network}}</1>.",
   "table": {
     "uri": "URI",
-    "digest": "Digest",
-    "attention": "Attention",
+    "digest": "Дайджест",
+    "attention": "Внимание",
     "attention-texts": {
-      "no-uri": "That NFT lacks an URI, it is incompatible with commonly accepted standards.",
-      "no-metadata": "The given URI is missing the metadata for that NFT. It goes against commonly accepted standards.",
-      "not-transferable": "This NFT is not transferable; it can only be transferred to and from the issuer.",
-      "burnable": "The issuer (or an entity authorized by the issuer) can destroy the NFT.",
-      "no-digest": "There is no Digest provided for that NFT. The NFT integrity cannot be verified.",
-      "invalid-digest": "The NFT integrity check failed. The Digest does not match the NFT metadata."
+      "no-uri": "В NFT отсутствует URI, что противоречит общепринятым стандартам.",
+      "no-metadata": "В данном URI отсутствуют метаданные для этого NFT. Это противоречит общепринятым стандартам.",
+      "not-transferable": "Этот NFT нельзя передовать; его лишь можно получить от эмитента или вернуть эмитенту.",
+      "burnable": "Эмитент (или организация, уполномоченная эмитентом) может уничтожить NFT.",
+      "no-digest": "У этого NFT нет Дайджеста. Целостность NFT не может быть проверена.",
+      "invalid-digest": "Проверка целостности NFT не удалась. Дайджест не соответствует метаданным NFT."
     }
   }
 }

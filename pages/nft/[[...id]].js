@@ -1,6 +1,7 @@
 import { useTranslation, Trans } from 'next-i18next'
 import { useState, useEffect } from 'react'
 import axios from 'axios'
+import { sha512 } from 'crypto-hash'
 import Select from "react-select"
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import Image from 'next/image'
@@ -71,6 +72,10 @@ import NftPreview from '../../components/NftPreview'
 import LinkIcon from "../../public/images/link.svg"
 const xummImg = "/images/xumm.png"
 
+const hasJsonMeta = nft => {
+  return nft.metadata && nft.metadata.attributes?.metaSource?.toLowerCase() !== "bithomp"
+}
+
 export default function Nft({ setSignRequest, account, signRequest, pageMeta, id, selectedCurrency, sortCurrency }) {
   const { t } = useTranslation()
 
@@ -87,6 +92,7 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
   const [filteredBuyOffers, setFilteredBuyOffers] = useState([])
   const [countBuyOffers, setCountBuyOffers] = useState(null)
   const [countSellOffers, setCountSellOffers] = useState(null)
+  const [isValidDigest, setIsValidDigest] = useState(false)
 
   const convertCurrency = sortCurrency || selectedCurrency
 
@@ -94,6 +100,16 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
     setRendered(true)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  useEffect(() => {
+    if (!data || !hasJsonMeta(data) || !data.digest) return
+    const checkDigest = async (metadata, digest) => {
+      let ourDigest = await sha512(JSON.stringify(metadata).trim())
+      ourDigest = ourDigest.toString().slice(0, 64)
+      setIsValidDigest(digest.toUpperCase() === ourDigest.toUpperCase())
+    }
+    checkDigest(data.metadata, data.digest)
+  }, [data])
 
   const checkApi = async (opts) => {
     if (!id) return
@@ -638,10 +654,6 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
 
   const imageUrl = nftUrl(pageMeta, 'image')
 
-  const hasJsonMeta = nft => {
-    return nft.metadata && nft.metadata.attributes?.metaSource?.toLowerCase() !== "bithomp"
-  }
-
   const typeName = type => {
     if (typeof type !== 'string') return ""
     if (type.substring(0, 3).toLowerCase() === "xls" && type.charAt(4) !== "-") {
@@ -836,12 +848,6 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
                         {data.destination &&
                           trWithAccount(data, 'destination', t("table.destination"), "/explorer/", "destination")
                         }
-                        {data.digest &&
-                          <tr>
-                            <td>{t("table.digest", { ns: "nft" })}</td>
-                            <td>{data.digest}</td>
-                          </tr>
-                        }
                         {!!data.transferFee && <tr>
                           <td>{t("table.transfer-fee")}</td>
                           <td>{data.transferFee / 1000}%</td>
@@ -855,13 +861,26 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
                             </td>
                           </tr>
                         }
+                        {data.digest &&
+                          <tr>
+                            <td>{t("table.digest", { ns: "nft" })}</td>
+                            <td>
+                              {isValidDigest ?
+                                <span className='green'>{t("table.text.valid")}</span>
+                                :
+                                data.digest
+                              }
+                              {" "}
+                              <CopyButton text={data.digest} /></td>
+                          </tr>
+                        }
                         {!notFoundInTheNetwork && (
                           !data.uri ||
                           !data.metadata ||
                           !hasJsonMeta(data) ||
                           (data.type === 'xls20' && !data.flags.transferable) ||
                           data.flags.burnable ||
-                          (data.type === 'xls35' && data.uri && !data.digest)
+                          (data.type === 'xls35' && data.uri && hasJsonMeta(data) && (!data.digest || !isValidDigest))
                         ) &&
                           <tr>
                             <td><b>{t("table.attention", { ns: 'nft' })}</b></td>
@@ -882,10 +901,13 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
                               {data.flags.burnable &&
                                 <p className='orange'>{t("table.attention-texts.burnable", { ns: 'nft' })}</p>
                               }
-                              {data.type === 'xls35' &&
+                              {data.type === 'xls35' && data.uri && hasJsonMeta(data) &&
                                 <>
-                                  {data.uri && hasJsonMeta(data) && !data.digest &&
+                                  {!data.digest &&
                                     <p className='orange'>{t("table.attention-texts.no-digest", { ns: 'nft' })}</p>
+                                  }
+                                  {data.digest && !isValidDigest &&
+                                    <p className='orange'>{t("table.attention-texts.invalid-digest", { ns: 'nft' })}</p>
                                   }
                                 </>
                               }
