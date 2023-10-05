@@ -372,16 +372,16 @@ export const convertedAmount = (nft, convertCurrency) => {
 }
 
 export const persentFormat = (small, big) => {
-  if (!small && small !== 0) return;
-  if (!big && big !== 0) return;
+  if (!small && small !== 0) return
+  if (!big && big !== 0) return
   if (small.value && big.value) {
-    small = small.value;
-    big = big.value;
+    small = small.value
+    big = big.value
   }
-  small = Number(small);
-  big = Number(big);
-  if (big === 0) return "0%";
-  return "(" + ((small / big) * 100).toFixed(2) + '%)';
+  small = Number(small)
+  big = Number(big)
+  if (big === 0) return "0%"
+  return "(" + Math.floor((small * 100 / big) * 100) / 100 + '%)'
 }
 
 export const amountFormat = (amount, options = {}) => {
