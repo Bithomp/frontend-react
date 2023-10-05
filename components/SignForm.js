@@ -324,7 +324,13 @@ export default function SignForm({ setSignRequest, setAccount, signRequest }) {
           <>
             <div className='header'>
               {screen === 'NFTokenBurn' && t("signin.confirm.nft-burn-header")}
-              {screen === 'NFTokenAcceptOffer' && t("signin.confirm.nft-accept-offer-header")}
+              {screen === 'NFTokenAcceptOffer' &&
+                (signRequest.offerType === 'buy' ?
+                  t("signin.confirm.nft-accept-buy-offer-header")
+                  :
+                  t("signin.confirm.nft-accept-sell-offer-header")
+                )
+              }
               {screen === 'NFTokenCreateOffer' &&
                 (signRequest.request.Flags === 1 ?
                   t("signin.confirm.nft-create-sell-offer-header")

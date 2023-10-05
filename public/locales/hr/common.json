@@ -101,7 +101,8 @@
     "not-available": "Nije dostupno",
     "confirm": {
       "set-domain": "Setting a domain",
-      "nft-accept-offer-header": "NFT kupnja",
+      "nft-accept-sell-offer-header": "NFT kupnja",
+      "nft-accept-buy-offer-header": "Selling NFT",
       "nft-create-sell-offer-header": "Lista za prodaju",
       "nft-create-buy-offer-header": "Kreiraj ponudu za kupnju",
       "nft-accept-offer": "Slažem se s time da mi Bithomp daje pristup decentraliziranom mjestu za prodaju, i ne može provjeriti niti garantirati autentičnost niti jednog NFTa. Potvrđujem da sam pročitao <1>Uvjete korištenja</1>, i slažem se sa svim uvjetima za kupiti, prodati ili koristiti bilo koji NFT na Bithomp-u.",

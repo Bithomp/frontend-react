@@ -101,7 +101,8 @@
 		"not-available": "Tidak Tersedia",
 		"confirm": {
 			"set-domain": "Menetapkan Domain",
-			"nft-accept-offer-header": "Pembelian NFT",
+			"nft-accept-sell-offer-header": "Pembelian NFT",
+			"nft-accept-buy-offer-header": "Selling NFT",
 			"nft-create-sell-offer-header": "Senarai untuk Dijual",
 			"nft-create-buy-offer-header": "Cipta Tawaran Beli",
 			"nft-accept-offer": "Saya mengakui bahawa Bithomp memberi saya akses kepada pasaran terdesentralisasi, dan ia tidak boleh mengesahkan atau menjamin keaslian dan keabsahan mana-mana NFT. Saya mengesahkan bahawa saya telah membaca <1>Terma dan Syarat</1>, dan saya bersetuju dengan semua terma untuk membeli, menjual, atau menggunakan mana-mana NFT di Bithomp.",

@@ -101,7 +101,8 @@
     "not-available": "Nicht verfügbar",
     "confirm": {
       "set-domain": "Eine Domain definieren",
-      "nft-accept-offer-header": "NFT Kauf",
+      "nft-accept-sell-offer-header": "NFT Kauf",
+      "nft-accept-buy-offer-header": "Selling NFT",
       "nft-create-sell-offer-header": "Liste zum Verkauf",
       "nft-create-buy-offer-header": "Kaufangebot erstellen",
       "nft-accept-offer": "Ich anerkenne, dass Bithomp mir einen Zugriff auf einen dezentralen Marktplatz gewährt und dabei die Echtheit und Legitimität keiner NFTs garantiert werden können. Ich bestätige, dass ich die <1>AGB</1> gelesen habe und ich stimme allen Bedingungen zum Kauf, Verkauf oder Nutzung von NFTs auf Bithomp zu.",

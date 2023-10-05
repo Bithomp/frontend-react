@@ -7,7 +7,7 @@ import InfiniteScroll from 'react-infinite-scroll-component'
 import Link from 'next/link'
 
 import { isAddressOrUsername, setTabParams, useWidth } from '../utils'
-import { isValidTaxon, nftThumbnail, nftNameLink, bestSellOffer, mpUrl } from '../utils/nft'
+import { isValidTaxon, nftThumbnail, nftNameLink, bestNftOffer, mpUrl } from '../utils/nft'
 import { nftLink, usernameOrAddress, userOrServiceLink, amountFormat } from '../utils/format'
 
 import SEO from './SEO'
@@ -36,7 +36,8 @@ export default function NftsComponent({
   burnedPeriod,
   includeBurnedQuery,
   includeWithoutMetadataQuery,
-  id
+  id,
+  account
 }) {
   const { t } = useTranslation()
   const router = useRouter()
@@ -415,7 +416,7 @@ export default function NftsComponent({
 
   const priceData = sellOffers => {
     if (!sellOffers) return ""
-    const best = bestSellOffer(sellOffers)
+    const best = bestNftOffer(sellOffers, account, 'sell')
     if (best) {
       if (mpUrl(best)) {
         return t("nfts.amount-on-service", { amount: amountFormat(best.amount, { tooltip: 'right' }), service: best.destinationDetails.service })
@@ -652,7 +653,7 @@ export default function NftsComponent({
                 {errorMessage ?
                   <div className='center orange bold'>{errorMessage}</div>
                   :
-                  <Tiles nftList={data} type={listTab === 'onSale' ? 'onSale' : 'name'} />
+                  <Tiles nftList={data} type={listTab === 'onSale' ? 'onSale' : 'name'} account={account} />
                 }
               </>
             }

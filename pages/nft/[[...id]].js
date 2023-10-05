@@ -10,7 +10,7 @@ import Link from 'next/link'
 import { stripText, server, decode, network } from '../../utils'
 import { convertedAmount } from '../../utils/format'
 import { getIsSsrMobile } from "../../utils/mobile"
-import { nftName, mpUrl, bestSellOffer, nftUrl } from '../../utils/nft'
+import { nftName, mpUrl, bestNftOffer, nftUrl } from '../../utils/nft'
 import {
   shortHash,
   trWithAccount,
@@ -22,7 +22,8 @@ import {
   codeHighlight,
   trStatus,
   cancelNftOfferButton,
-  acceptNftSellOfferButton
+  acceptNftSellOfferButton,
+  acceptNftBuyOfferButton
 } from '../../utils/format'
 
 import SocialShare from '../../components/SocialShare'
@@ -401,12 +402,23 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
             <td>{t("table.offer")}</td>
             <td>{nftOfferLink(offer.offerIndex)}</td>
           </tr>
-          {(offer.destination && account?.address && account.address === offer.destination && offer.valid && type === 'sell') &&
-            <tr>
-              <td colSpan="2">
-                {acceptNftSellOfferButton(t, setSignRequest, offer)}
-              </td>
-            </tr>
+          {offer.valid &&
+            <>
+              {type === 'sell' &&
+                <tr>
+                  <td colSpan="2">
+                    {buyButton([offer])}
+                  </td>
+                </tr>
+              }
+              {type === 'buy' &&
+                <tr>
+                  <td colSpan="2">
+                    {sellButton([offer])}
+                  </td>
+                </tr>
+              }
+            </>
           }
           {
             !offer.canceledAt && !offer.acceptedAt &&
@@ -417,7 +429,7 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
             ) &&
             <tr>
               <td colSpan="2">
-                {cancelNftOfferButton(t, setSignRequest, account.address, offer, type)}
+                {cancelNftOfferButton(t, setSignRequest, account.address, offer, type, "xls20")}
               </td>
             </tr>
           }
@@ -532,28 +544,15 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
       if (!sellOffers) return ""
       // here we discard xls20 expired offers and all the invalid ones for different reasons
       sellOffers = sellOffers.filter(function (offer) { return offer.valid; })
-      //best xrp offer available or an IOU offer, if it's only one IOU offer available
+      //best xrp offer available or an IOU offer
       //we should get the best IOU offer too... and show both XRP and IOU
-      best = bestSellOffer(sellOffers, account?.address)
+      best = bestNftOffer(sellOffers, account?.address, 'sell')
     }
 
     if (!best) return ""
 
-    /*
-    permitions to cancel (xls20)
-    The account that originally created the NFTokenOffer;
-    The account in the Destination field of the NFTokenOffer, if one is present; or
-    Any account if the NFTokenOffer specifies an expiration time and the close time of the parent ledger in which the NFTokenCancelOffer is included is greater than the expiration time.
-
-    permitions to cancel (xls35)
-    owner
-    */
-
-    //cancel sell offer, 1. if I'm the NFTOffer Owner 2. If I'm a destination account (xls20) 3. NOT for expired, as they filtered away here
-    if (
-      (best.owner && account?.address && account.address === best.owner) ||
-      (best.destination && account?.address && account.address === best.destination && data.type === 'xls20')
-    ) {
+    //show cancel button only if it is my own offer, otherwise it should be buy button
+    if (best.owner && account?.address && account.address === best.owner) {
       return <>
         {cancelNftOfferButton(t, setSignRequest, account.address, best, "sell", data.type)}
         <br /><br />
@@ -578,6 +577,43 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
     ) {
       return <>
         {acceptNftSellOfferButton(t, setSignRequest, best, data.type)}
+        <br /><br />
+      </>
+    }
+
+    return ""
+  }
+
+  const sellButton = buyOffers => {
+    let best = null
+
+    if (data.type === 'xls35') {
+      // there is no sell button, but there list for sale button "create sell offer"
+      return ""
+    } else {
+      //'xls20'
+      if (!buyOffers) return ""
+      // here we discard xls20 expired offers and all the invalid ones for different reasons
+      buyOffers = buyOffers.filter(function (offer) { return offer.valid; })
+      //best xrp offer available or an IOU offer
+      //we should get the best IOU offer too... and show both XRP and IOU
+      best = bestNftOffer(buyOffers, account?.address, 'buy')
+    }
+
+    if (!best) return ""
+
+    //show cancel button only if it is my own offer, otherwise it should be buy button
+    if (best.owner && account?.address && account.address === best.owner) {
+      return <>
+        {cancelNftOfferButton(t, setSignRequest, account.address, best, "buy", data.type)}
+        <br /><br />
+      </>
+    }
+
+    //show sell button only for the NFT owner
+    if (data.owner && account?.address && account.address === data.owner) {
+      return <>
+        {acceptNftBuyOfferButton(t, setSignRequest, best, data.type)}
         <br /><br />
       </>
     }
@@ -693,6 +729,7 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
                       <>
                         <NftPreview nft={data} />
                         {/* add here the ones are ready for xls35 */}
+                        {sellButton(data.buyOffers)}
                         {data.type === 'xls20' &&
                           <>
                             {buyButton(data.sellOffers)}

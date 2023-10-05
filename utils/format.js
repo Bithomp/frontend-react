@@ -10,6 +10,24 @@ import { mpUrl } from './nft'
 
 const xummImg = "/images/xumm.png"
 
+export const acceptNftBuyOfferButton = (t, setSignRequest, offer) => {
+  return <button
+    className='button-action wide center'
+    onClick={() => setSignRequest({
+      wallet: "xumm",
+      offerAmount: offer.amount,
+      offerType: 'buy',
+      request: {
+        "TransactionType": "NFTokenAcceptOffer",
+        "NFTokenSellOffer": offer.offerIndex,
+      }
+    })}
+  >
+    <Image src={xummImg} className='xumm-logo' alt="xumm" height={24} width={24} />
+    {t("button.nft.sell-for-amount", { amount: amountFormat(offer.amount) })}
+  </button>
+}
+
 export const acceptNftSellOfferButton = (t, setSignRequest, offer, nftType = 'xls20') => {
   let request = null
   if (nftType === 'xls35') {
@@ -29,6 +47,7 @@ export const acceptNftSellOfferButton = (t, setSignRequest, offer, nftType = 'xl
     onClick={() => setSignRequest({
       wallet: "xumm",
       offerAmount: offer.amount,
+      offerType: 'sell',
       request
     })}
   >

@@ -31,20 +31,20 @@ export const mpUrl = (offer) => {
   }
 }
 
-export const bestSellOffer = (sellOffers, loggedInAddress) => {
-  if (!sellOffers) return null
-  //sellOffers = sellOffers.filter(function (offer) { return offer.valid; });
+export const bestNftOffer = (nftOffers, loggedInAddress, type = 'sell') => {
+  if (!nftOffers) return null
+  //nftOffers = nftOffers.filter(function (offer) { return offer.valid; });
   //best xrp offer available or an IOU offer, if it's only one IOU offer available
-  let bestSellOffer = null
-  if (sellOffers.length) {
+  let bestNftOffer = null
+  if (nftOffers.length) {
     let iouOffers = []
     let xrpOffers = []
 
-    for (let i = 0; i < sellOffers.length; i++) {
-      if (sellOffers[i].amount.value) {
-        iouOffers.push(sellOffers[i])
+    for (let i = 0; i < nftOffers.length; i++) {
+      if (nftOffers[i].amount.value) {
+        iouOffers.push(nftOffers[i])
       } else {
-        xrpOffers.push(sellOffers[i])
+        xrpOffers.push(nftOffers[i])
       }
     }
 
@@ -55,19 +55,26 @@ export const bestSellOffer = (sellOffers, loggedInAddress) => {
         if (a.destination && !b.destination) return -1
         return a.createdAt - b.createdAt
       })
-      //sort cheapest on top
-      xrpOffers = xrpOffers.sort((a, b) => (parseFloat(a.amount) > parseFloat(b.amount)) ? 1 : -1)
+
+      if (type = 'buy') {
+        //sort most expansive on top
+        xrpOffers = xrpOffers.sort((a, b) => (parseFloat(a.amount) < parseFloat(b.amount)) ? 1 : -1)
+      } else {
+        //sell orders
+        //sort cheapest on top
+        xrpOffers = xrpOffers.sort((a, b) => (parseFloat(a.amount) > parseFloat(b.amount)) ? 1 : -1)
+      }
 
       for (let i = 0; i < xrpOffers.length; i++) {
         if (mpUrl(xrpOffers[i]) || !xrpOffers[i].destination || (loggedInAddress && xrpOffers[i].destination === loggedInAddress)) {
           //if known destination - (not a private offer) or on Open Market, or destination is loggedinUser
-          bestSellOffer = xrpOffers[i]
+          bestNftOffer = xrpOffers[i]
           break
         }
       }
     }
 
-    if (!bestSellOffer && iouOffers.length > 0) {
+    if (!bestNftOffer && iouOffers.length > 0) {
       // if no XRP offers fits creterias above choose IOU if it's only one fits.
       let iouFitOffers = [];
       //check that if it's not a private offer (only MP and public), or destination is the loggedInUser
@@ -87,12 +94,12 @@ export const bestSellOffer = (sellOffers, loggedInAddress) => {
         //iouFitOffers = iouFitOffers.sort((a, b) => (parseFloat(a.createdAt) < parseFloat(b.createdAt)) ? 1 : -1)
       }
       if (iouFitOffers.length > 0) {
-        bestSellOffer = iouFitOffers[0]
+        bestNftOffer = iouFitOffers[0]
       }
     }
-    return bestSellOffer
+    return bestNftOffer
   } else {
-    return null;
+    return null
   }
 }
 

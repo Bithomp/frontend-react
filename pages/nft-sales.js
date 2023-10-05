@@ -55,7 +55,8 @@ export default function NftSales({
   period,
   sortCurrencyQuery,
   selectedCurrency,
-  marketplace
+  marketplace,
+  account
 }) {
   const { t } = useTranslation();
   const router = useRouter()
@@ -474,7 +475,7 @@ export default function NftSales({
                 {errorMessage ?
                   <div className='center orange bold'>{errorMessage}</div>
                   :
-                  <Tiles nftList={sales} type={pageTab} convertCurrency={sortCurrency} />
+                  <Tiles nftList={sales} type={pageTab} convertCurrency={sortCurrency} account={account} />
                 }
               </>
             }

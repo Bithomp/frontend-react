@@ -3,7 +3,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 
 import { stripText } from '../utils'
-import { nftImageStyle, nftUrl, bestSellOffer, mpUrl } from '../utils/nft'
+import { nftImageStyle, nftUrl, bestNftOffer, mpUrl } from '../utils/nft'
 import { amountFormat, timeOrDate, convertedAmount } from '../utils/format'
 
 const addressName = (details, name) => {
@@ -21,7 +21,7 @@ const addressName = (details, name) => {
   return ""
 }
 
-export default function Tiles({ nftList, type = 'name', convertCurrency }) {
+export default function Tiles({ nftList, type = 'name', convertCurrency, account }) {
   const { t } = useTranslation();
 
   const [loaded, setLoaded] = useState([]);
@@ -92,7 +92,7 @@ export default function Tiles({ nftList, type = 'name', convertCurrency }) {
 
   const saleData = sellOffers => {
     if (!sellOffers) return "";
-    const best = bestSellOffer(sellOffers);
+    const best = bestNftOffer(sellOffers, account, 'sell');
     if (best) {
       if (mpUrl(best)) {
         return <>

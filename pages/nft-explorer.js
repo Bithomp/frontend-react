@@ -59,7 +59,8 @@ export default function Nfts({
   burnedPeriod,
   includeBurnedQuery,
   includeWithoutMetadataQuery,
-  id
+  id,
+  account
 }) {
   return <NftsComponent
     view={view}
@@ -79,5 +80,6 @@ export default function Nfts({
     includeWithoutMetadataQuery={includeWithoutMetadataQuery}
     nftExplorer={true}
     id={id}
+    account={account}
   />
 };

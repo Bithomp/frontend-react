@@ -101,7 +101,8 @@
     "not-available": "ikke tilgjengelig",
     "confirm": {
       "set-domain": "Setting a domain",
-      "nft-accept-offer-header": "NFT kjøp",
+      "nft-accept-sell-offer-header": "NFT kjøp",
+      "nft-accept-buy-offer-header": "Selling NFT",
       "nft-create-sell-offer-header": "Liste for salg",
       "nft-create-buy-offer-header": "Lag kjøps bud",
       "nft-accept-offer": "Jeg innrømmer at Bithomp gir meg tilgang til en desentralisert markedsplass, og de kan ikke verifisere eller garantere ektheten og legitimiteten til noen NFT-er. Jeg bekrefter at jeg har lest <1>vilkårene og betingelsene</1>, og jeg godtar alle vilkårene for å kjøpe, selge eller bruke NFT-er på Bithomp.",
