@@ -502,16 +502,44 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
   }
 
   const buyButton = sellOffers => {
-    if (!sellOffers) return ""
-    sellOffers = sellOffers.filter(function (offer) { return offer.valid; })
-    //best xrp offer available or an IOU offer, if it's only one IOU offer available
-    //we should get the best IOU offer too... and show both XRP and IOU
-    let best = bestSellOffer(sellOffers, account?.address)
+    let best = null
+    if (data.type === 'xls35') {
+      if (!data.amount) return ""
+      best = {
+        amount: data.amount,
+        owner: data.owner,
+        destination: data.destination,
+        uriTokenID: data.uriTokenID
+      }
+    } else {
+      //'xls20'
+      if (!sellOffers) return ""
+      // here we discard xls20 expired offers and all the invalid ones for different reasons
+      sellOffers = sellOffers.filter(function (offer) { return offer.valid; })
+      //best xrp offer available or an IOU offer, if it's only one IOU offer available
+      //we should get the best IOU offer too... and show both XRP and IOU
+      best = bestSellOffer(sellOffers, account?.address)
+    }
+
     if (!best) return ""
 
-    if (data?.owner && account?.address && account.address === data.owner) {
+    /*
+    permitions to cancel (xls20)
+    The account that originally created the NFTokenOffer;
+    The account in the Destination field of the NFTokenOffer, if one is present; or
+    Any account if the NFTokenOffer specifies an expiration time and the close time of the parent ledger in which the NFTokenCancelOffer is included is greater than the expiration time.
+
+    permitions to cancel (xls35)
+    owner
+    */
+
+    //cancel sell offer, 1. if I'm the NFTOffer Owner 2. If I'm a destination account (xls20) 3. NOT for expired, as they filtered away here
+    if (
+      (best.owner && account?.address && account.address === best.owner) ||
+      (best.destination && account?.address && account.address === best.destination && data.type === 'xls20')
+    ) {
       return <>
-        {cancelNftOfferButton(t, setSignRequest, data.owner, best, "sell")}
+        {cancelNftOfferButton(t, setSignRequest, account.address, best, "sell", data.type)}
         <br /><br />
       </>
     }
@@ -525,10 +553,20 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
       </>
     }
 
-    return <>
-      {acceptNftSellOfferButton(t, setSignRequest, best)}
-      <br /><br />
-    </>
+    //1. check if owner is above - will show Cancel, 
+    //2. if known destination, we have checked it above mpURL (xls20 brokers)
+    //3. check there is no destination, or destination is me (xls20 private offers, xls35)
+    if (
+      !best.destination ||
+      (best.destination && account?.address && account.address === best.destination)
+    ) {
+      return <>
+        {acceptNftSellOfferButton(t, setSignRequest, best, data.type)}
+        <br /><br />
+      </>
+    }
+
+    return ""
   }
 
   const makeOfferButton = sellOffers => {
@@ -600,6 +638,18 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
 
   const imageUrl = nftUrl(pageMeta, 'image')
 
+  const hasJsonMeta = nft => {
+    return nft.metadata && nft.metadata.attributes?.metaSource?.toLowerCase() !== "bithomp"
+  }
+
+  const typeName = type => {
+    if (typeof type !== 'string') return ""
+    if (type.substring(0, 3).toLowerCase() === "xls" && type.charAt(4) !== "-") {
+      return "XLS-" + type.substring(3)
+    }
+    return type
+  }
+
   return <>
     <SEO
       page="NFT"
@@ -630,9 +680,15 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
                     {!notFoundInTheNetwork ?
                       <>
                         <NftPreview nft={data} />
-                        {buyButton(data.sellOffers)}
-                        {makeOfferButton(data.sellOffers)}
-                        {burnButton()}
+                        {/* add here the ones are ready for xls35 */}
+                        {data.type === 'xls20' &&
+                          <>
+                            {buyButton(data.sellOffers)}
+                            {/* buyButton is the only one ready for xls35, but it is not tested */}
+                            {makeOfferButton(data.sellOffers)}
+                            {burnButton()}
+                          </>
+                        }
                       </>
                       :
                       <div className='orange'>
@@ -746,7 +802,7 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
                         {data.type !== 'xls20' &&
                           <tr>
                             <td>{t("table.type")}</td>
-                            <td>{data.type?.toUpperCase()}</td>
+                            <td>{typeName(data.type)}</td>
                           </tr>
                         }
                         {data.issuer === data.owner ?
@@ -793,9 +849,46 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
                         {trWithFlags(t, data.flags)}
                         {!notFoundInTheNetwork &&
                           <tr>
-                            <td>URI</td>
+                            <td>{t("table.uri", { ns: 'nft' })}</td>
                             <td>
                               {data.uri ? decode(data.uri) : t("table.text.unspecified")}
+                            </td>
+                          </tr>
+                        }
+                        {!notFoundInTheNetwork && (
+                          !data.uri ||
+                          !data.metadata ||
+                          !hasJsonMeta(data) ||
+                          (data.type === 'xls20' && !data.flags.transferable) ||
+                          data.flags.burnable ||
+                          (data.type === 'xls35' && data.uri && !data.digest)
+                        ) &&
+                          <tr>
+                            <td><b>{t("table.attention", { ns: 'nft' })}</b></td>
+                            <td>
+                              {!data.uri &&
+                                <p className='orange'>{t("table.attention-texts.no-uri", { ns: 'nft' })}</p>
+                              }
+                              {data.uri && !hasJsonMeta(data) &&
+                                <p className='orange'>{t("table.attention-texts.no-metadata", { ns: 'nft' })}</p>
+                              }
+                              {data.type === 'xls20' &&
+                                <>
+                                  {!data.flags.transferable &&
+                                    <p className='orange'>{t("table.attention-texts.not-transferable", { ns: 'nft' })}</p>
+                                  }
+                                </>
+                              }
+                              {data.flags.burnable &&
+                                <p className='orange'>{t("table.attention-texts.burnable", { ns: 'nft' })}</p>
+                              }
+                              {data.type === 'xls35' &&
+                                <>
+                                  {data.uri && hasJsonMeta(data) && !data.digest &&
+                                    <p className='orange'>{t("table.attention-texts.no-digest", { ns: 'nft' })}</p>
+                                  }
+                                </>
+                              }
                             </td>
                           </tr>
                         }

@@ -10,16 +10,26 @@ import { mpUrl } from './nft'
 
 const xummImg = "/images/xumm.png"
 
-export const acceptNftSellOfferButton = (t, setSignRequest, offer) => {
+export const acceptNftSellOfferButton = (t, setSignRequest, offer, nftType = 'xls20') => {
+  let request = null
+  if (nftType === 'xls35') {
+    request = {
+      "Amount": offer.amount,
+      "TransactionType": "URITokenBuy",
+      "URITokenID": offer.uriTokenID
+    }
+  } else {
+    request = {
+      "TransactionType": "NFTokenAcceptOffer",
+      "NFTokenSellOffer": offer.offerIndex,
+    }
+  }
   return <button
     className='button-action wide center'
     onClick={() => setSignRequest({
       wallet: "xumm",
       offerAmount: offer.amount,
-      request: {
-        "TransactionType": "NFTokenAcceptOffer",
-        "NFTokenSellOffer": offer.offerIndex,
-      }
+      request
     })}
   >
     <Image src={xummImg} className='xumm-logo' alt="xumm" height={24} width={24} />
@@ -27,16 +37,27 @@ export const acceptNftSellOfferButton = (t, setSignRequest, offer) => {
   </button>
 }
 
-export const cancelNftOfferButton = (t, setSignRequest, account, offer, type = "buy") => {
+export const cancelNftOfferButton = (t, setSignRequest, account, offer, type = "buy", nftType = 'xls20') => {
+  let request = null
+  if (nftType === 'xls35') {
+    request = {
+      "Account": account,
+      "TransactionType": "URITokenCancelSellOffer",
+      "URITokenID": offer.uriTokenID
+    }
+  } else {
+    request = {
+      "TransactionType": "NFTokenCancelOffer",
+      "Account": account,
+      "NFTokenOffers": [offer.offerIndex]
+    }
+  }
+
   return <button
     className='button-action wide center'
     onClick={() => setSignRequest({
       wallet: "xumm",
-      request: {
-        "TransactionType": "NFTokenCancelOffer",
-        "Account": account,
-        "NFTokenOffers": [offer.offerIndex]
-      }
+      request
     })}
   >
     <Image src={xummImg} className='xumm-logo' alt="xumm" height={24} width={24} />

@@ -64,6 +64,7 @@ export const payloadXummPost = async (payload, callback) => {
       } else {
         console.log("payloadXummPost error: no data or no refs in data");
         callback({ error: "no data or no refs in data" });
+        console.log(data);
       }
     }
   }

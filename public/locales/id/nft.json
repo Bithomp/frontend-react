@@ -5,6 +5,16 @@
   "nft-id-decoded-data": "Data NFT ID yang telah diterjemahkan",
   "nft-not-found-on-that-network": "NFT ini tidak ditemukan pada jaringan <1>{{network}}</1>.",
   "table": {
-    "digest": "Digest"
+    "uri": "URI",
+    "digest": "Digest",
+    "attention": "Attention",
+    "attention-texts": {
+      "no-uri": "That NFT lacks an URI, it is incompatible with commonly accepted standards.",
+      "no-metadata": "The given URI is missing the metadata for that NFT. It goes against commonly accepted standards.",
+      "not-transferable": "This NFT is not transferable; it can only be transferred to and from the issuer.",
+      "burnable": "The issuer (or an entity authorized by the issuer) can destroy the NFT.",
+      "no-digest": "There is no Digest provided for that NFT. The NFT integrity cannot be verified.",
+      "invalid-digest": "The NFT integrity check failed. The Digest does not match the NFT metadata."
+    }
   }
 }
