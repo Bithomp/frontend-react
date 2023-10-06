@@ -536,7 +536,9 @@
       "main": "{{ledgerName}} Explorer {{testNetworkName}}",
       "account": "Account information",
       "nft": "NFT",
-      "nft-offer": "NFT tilbud"
+      "nfts": "NFTs",
+      "nft-offer": "NFT tilbud",
+      "nft-offers": "NFT tilbud"
     },
     "enter-address": "Indtast en XRPL-adresse eller et brugernavn",
     "searching-tx-nft-nftoffer": "Søger efter Tx / NFT ID / NFT tilbud",

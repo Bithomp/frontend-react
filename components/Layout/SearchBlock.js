@@ -144,6 +144,11 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
 
     if (!searchFor) return
 
+    if (tab === "account" && isAddressOrUsername(searchFor)) {
+      router.push("/account/" + encodeURI(searchFor) + addParams)
+      return
+    }
+
     if (tab === "nfts" && isAddressOrUsername(searchFor)) {
       router.push("/nfts/" + encodeURI(searchFor) + addParams)
       return
@@ -263,6 +268,18 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
     }
   }
 
+  const explorerHeader = tab => {
+    if (tab === "explorer") {
+      return <Trans i18nKey="explorer.header.main">
+        {{ ledgerName }} Explorer {{ testNetworkName: testNetworkName ? ("(" + testNetworkName + ")") : "" }}
+      </Trans>
+    }
+    if (['account', 'nft', 'nfts', 'nft-offer', 'nft-offers'].includes(tab)) {
+      return t("explorer.header." + tab)
+    }
+    return ""
+  }
+
   return (
     <>
       <div className="search-block">
@@ -274,19 +291,7 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
                 <span className="waiting inline"></span>
               </span>
               :
-              <>
-                {userOrServiceName(userData)}
-                {tab === "account" && <h1 className='contrast'>{t("explorer.header.account")}</h1>}
-                {tab === "nft" && <h1 className='contrast'>{t("explorer.header.nft")}</h1>}
-                {tab === "nft-offer" && <h1 className='contrast'>{t("explorer.header.nft-offer")}</h1>}
-                {tab === "explorer" &&
-                  <h1 className='contrast'>
-                    <Trans i18nKey="explorer.header.main">
-                      {{ ledgerName }} Explorer {{ testNetworkName: testNetworkName ? ("(" + testNetworkName + ")") : "" }}
-                    </Trans>
-                  </h1>
-                }
-              </>
+              <h1 className='contrast'>{explorerHeader(tab)} {userOrServiceName(userData)}</h1>
             }
           </div>
           <div onKeyUp={searchOnKeyUp}>

@@ -536,7 +536,9 @@
       "main": "{{ledgerName}}エクスプローラ {{testNetworkName}}",
       "account": "Account information",
       "nft": "NFT",
-      "nft-offer": "NFTのオファー"
+      "nfts": "NFTs",
+      "nft-offer": "NFTのオファー",
+      "nft-offers": "NFTのオファー"
     },
     "enter-address": "XRPLアドレスまたはユーザネームを入力してください。",
     "searching-tx-nft-nftoffer": "トランザクション/NFT ID/NFT Offerで検索しています。",

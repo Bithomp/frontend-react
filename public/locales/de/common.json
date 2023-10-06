@@ -536,7 +536,9 @@
       "main": "{{ledgerName}} Explorer {{testNetworkName}}",
       "account": "Account information",
       "nft": "NFT",
-      "nft-offer": "NFT Angebot"
+      "nfts": "NFTs",
+      "nft-offer": "NFT Angebot",
+      "nft-offers": "NFT Angebote"
     },
     "enter-address": "Geben Sie eine XRPL Adresse oder einen Benutzernamen ein",
     "searching-tx-nft-nftoffer": "Suchen nach Trans / NFT ID / NFT Angebot",

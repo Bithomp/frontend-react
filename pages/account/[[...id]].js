@@ -64,6 +64,11 @@ export default function Account({ pageMeta, signRequest, id, selectedCurrency })
   const [data, setData] = useState({})
   const [loading, setLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState("")
+  const [userData, setUserData] = useState({
+    username: pageMeta?.username,
+    service: pageMeta?.service?.name,
+    address: pageMeta?.address || id
+  })
 
   const checkApi = async (opts) => {
     if (!id) return
@@ -87,6 +92,11 @@ export default function Account({ pageMeta, signRequest, id, selectedCurrency })
     if (newdata) {
       if (newdata.address) {
         setData(newdata)
+        setUserData({
+          username: newdata.username,
+          service: newdata.service?.name,
+          address: newdata.address
+        })
       } else {
         if (newdata.error) {
           setErrorMessage(t("error-api." + newdata.error))
@@ -120,13 +130,14 @@ export default function Account({ pageMeta, signRequest, id, selectedCurrency })
   return <>
     <SEO
       page="Account"
-      title={pageMeta?.service?.name || pageMeta?.username || pageMeta?.address || id}
+      title={t("explorer.header.account") + " " + (pageMeta?.service?.name || pageMeta?.username || pageMeta?.address || id)}
       description={"Account details, transactions, NFTs, Tokens for " + (pageMeta?.service?.name || pageMeta?.username) + " " + (pageMeta?.address || id)}
       image={{ file: avatarSrc(pageMeta) }}
     />
     <SearchBlock
-      searchPlaceholderText={t("account.enter-address")}
+      searchPlaceholderText={t("explorer.enter-address")}
       tab="account"
+      userData={userData}
     />
     <div className="content-center short-top account">
       {id ? <>

@@ -536,7 +536,9 @@
       "main": "{{ledgerName}} Эксплорер {{testNetworkName}}",
       "account": "Информация об адресе",
       "nft": "NFT",
-      "nft-offer": "NFT офер"
+      "nfts": "NFTs",
+      "nft-offer": "NFT офер",
+      "nft-offers": "NFT оферы"
     },
     "enter-address": "Введите XRPL адрес или ник",
     "searching-tx-nft-nftoffer": "Идет поиск по запрошенному ID",

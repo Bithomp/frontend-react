@@ -536,7 +536,9 @@
       "main": "Explorador {{ledgerName}} {{testNetworkName}}",
       "account": "Account information",
       "nft": "NFT",
-      "nft-offer": "Ofertas NFT"
+      "nfts": "NFTs",
+      "nft-offer": "Ofertas NFT",
+      "nft-offers": "Ofertas NFT"
     },
     "enter-address": "Introduce una dirección XRPL o nombre de usuario",
     "searching-tx-nft-nftoffer": "Buscando for Tx / NFT ID / Oferta NFT",

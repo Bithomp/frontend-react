@@ -536,7 +536,9 @@
       "main": "Penjelajah {{ledgerName}} {{testNetworkName}}",
       "account": "Account information",
       "nft": "NFT",
-      "nft-offer": "Tawaran NFT"
+      "nfts": "NFTs",
+      "nft-offer": "Tawaran NFT",
+      "nft-offers": "Tawaran NFT"
     },
 		"enter-address": "Masukkan alamat XRPL atau nama pengguna",
 		"searching-tx-nft-nftoffer": "Mencari Tx / NFT ID / Tawaran NFT",
