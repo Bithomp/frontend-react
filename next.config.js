@@ -9,6 +9,9 @@ module.exports = {
     });
     return config;
   },
+  images: {
+    domains: ['cdn.bithomp.com', 'pbs.twimg.com'],
+  },
   compress: false,
   async redirects() {
     return [

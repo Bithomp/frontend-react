@@ -235,7 +235,7 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
   searchItem.charAt(0) == "X"
   */
 
-  const showTabs = tab && ['nfts', 'nft-offers', 'nft-volumes'].includes(tab)
+  const showTabs = tab && ['nfts', 'nft-offers', 'nft-volumes', 'account'].includes(tab)
 
   const searchOnInputChange = (inputValue, action) => {
     if (action.action !== "input-blur" && action.action !== "menu-close") {

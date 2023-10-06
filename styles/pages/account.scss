@@ -1,0 +1,53 @@
+.account {
+  max-width: 1000px !important;
+  .column-left {
+    display: inline-block;
+    position: relative;
+    width: calc(23% - 30px);
+    padding: 0 15px;
+    table.table-details {
+      border-collapse: separate;
+      background-color: var(--background-main);
+      td {
+        background-color: var(--background-secondary);
+        border: 2.5px solid var(--background-main);
+        &:first-child {
+          border-left-width: 5px;
+        }
+        &:last-child {
+          border-right-width: 5px;
+        }
+      }
+      tr:last-child td {
+        border-bottom-width: 5px;
+      }
+      thead tr th {
+        box-shadow: none;
+      }
+    }
+  }
+  .column-right {
+    display: inline-block;
+    width: calc(77% - 32px);
+    padding: 0 15px;
+    vertical-align: top;
+    .slide {
+      pre {
+        white-space: pre;
+        overflow: scroll;
+      }
+    }
+  }
+  @media only screen and (max-width: 600px) {
+    font-size: 14px;
+    .column-left {
+      width: 100%;
+      margin: auto;
+      padding: 0;
+    }
+    .column-right {
+      width: 100%;
+      padding: 0;
+    }
+  }
+}

@@ -31,7 +31,7 @@ import SocialShare from '../../components/SocialShare'
 export async function getServerSideProps(context) {
   const { locale, query, req } = context
   let pageMeta = null
-  const { sortCurrency, id } = query
+  const { id } = query
   //keep it from query instead of params, anyway it is an array sometimes in params too.
   const nftId = id ? (Array.isArray(id) ? id[0] : id) : ""
   if (nftId) {
@@ -59,7 +59,6 @@ export async function getServerSideProps(context) {
       id: nftId,
       isSsrMobile: getIsSsrMobile(context),
       pageMeta,
-      sortCurrency: sortCurrency || "",
       ...(await serverSideTranslations(locale, ['common', 'nft']))
     }
   }
@@ -77,7 +76,7 @@ const hasJsonMeta = nft => {
   return nft.metadata && nft.metadata.attributes?.metaSource?.toLowerCase() !== "bithomp"
 }
 
-export default function Nft({ setSignRequest, account, signRequest, pageMeta, id, selectedCurrency, sortCurrency }) {
+export default function Nft({ setSignRequest, account, signRequest, pageMeta, id, selectedCurrency }) {
   const { t } = useTranslation()
 
   const [rendered, setRendered] = useState(false)
@@ -94,8 +93,6 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
   const [countBuyOffers, setCountBuyOffers] = useState(null)
   const [countSellOffers, setCountSellOffers] = useState(null)
   const [isValidDigest, setIsValidDigest] = useState(false)
-
-  const convertCurrency = sortCurrency || selectedCurrency
 
   useEffect(() => {
     setRendered(true)
@@ -127,7 +124,7 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
     const response = await axios(
       '/v2/nft/' + id
       + '?uri=true&metadata=true&history=true&sellOffers=true&buyOffers=true&offersValidate=true&offersHistory=true'
-      + noCache + '&convertCurrencies=' + convertCurrency
+      + noCache + '&convertCurrencies=' + selectedCurrency
     ).catch(error => {
       setErrorMessage(t("error." + error.message))
     })
@@ -240,7 +237,7 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
   */
 
   useEffect(() => {
-    if (!convertCurrency) return;
+    if (!selectedCurrency) return;
     if (!signRequest) {
       if (!data?.nftokenID) {
         // no token - first time fetching - allow right away
@@ -250,7 +247,7 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id, signRequest, convertCurrency])
+  }, [id, signRequest, selectedCurrency])
 
   const externalUrl = (meta) => {
     let url = meta.external_url || meta.external_link || meta.externalUrl || meta.externalURL || (meta.minter?.includes("https://") && meta.minter);
@@ -321,8 +318,8 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
               <td>{t("table.price")}</td>
               <td>
                 {amountFormat(nftEvent.amount, { tooltip: "right" })}
-                {nftEvent.amountInConvertCurrencies[convertCurrency] &&
-                  <> (≈ {convertedAmount(nftEvent, convertCurrency)})</>
+                {nftEvent.amountInConvertCurrencies[selectedCurrency] &&
+                  <> (≈ {convertedAmount(nftEvent, selectedCurrency)})</>
                 }
               </td>
             </tr>
@@ -553,7 +550,9 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
     if (!best) return ""
 
     //show cancel button only if it is my own offer, otherwise it should be buy button
-    if (best.owner && account?.address && account.address === best.owner) {
+    //show cancel button only if it's one valid offer, will work in single offers buttons
+    //and won't confuse which order is canceling, when there a few orders for the same price with different destinations (marketplaces)
+    if (best.owner && account?.address && account.address === best.owner && sellOffers.length === 1) {
       return <>
         {cancelNftOfferButton(t, setSignRequest, account.address, best, "sell", data.type)}
         <br /><br />
@@ -604,7 +603,8 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
     if (!best) return ""
 
     //show cancel button only if it is my own offer, otherwise it should be buy button
-    if (best.owner && account?.address && account.address === best.owner) {
+    //show cancel button only if it's one offer, it will work in individual offer's buttons and won't confuse which order is canceled when there are a few orders for the same price
+    if (best.owner && account?.address && account.address === best.owner && buyOffers.length === 1) {
       return <>
         {cancelNftOfferButton(t, setSignRequest, account.address, best, "buy", data.type)}
         <br /><br />

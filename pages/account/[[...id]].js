@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react'
 import axios from 'axios'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import Link from 'next/link'
+import Image from 'next/image'
 
 import { server } from '../../utils'
 import { getIsSsrMobile } from "../../utils/mobile"
@@ -10,7 +11,7 @@ import { getIsSsrMobile } from "../../utils/mobile"
 export async function getServerSideProps(context) {
   const { locale, query, req } = context
   let pageMeta = null
-  const { sortCurrency, id } = query
+  const { id } = query
   //keep it from query instead of params, anyway it is an array sometimes
   const account = id ? (Array.isArray(id) ? id[0] : id) : ""
   if (account) {
@@ -24,7 +25,7 @@ export async function getServerSideProps(context) {
     try {
       const res = await axios({
         method: 'get',
-        //&hashicon=true&inception=true&blacklist=true&ledgerInfo=true&twitterImageUrl=true
+        //&inception=true&blacklist=true&ledgerInfo=true
         // we need an image endpoint like xumm to return image by address
         // 1) if in blacklist - alert image 
         // 2) if valid twitter - image from twitter
@@ -32,7 +33,8 @@ export async function getServerSideProps(context) {
         // 4) if xummPro or xummCurratedAssets - from xumm 
         // 5) otherwise show hashicon 
         // should be good for seo for other websites to use our pictures / links
-        url: server + '/api/cors/v2/address/' + account + '?username=true&service=true',
+        // for now we can have hashicon and twitter
+        url: server + '/api/cors/v2/address/' + account + '?username=true&service=true&twitterImageUrl=true',
         headers
       })
       pageMeta = res?.data
@@ -46,7 +48,6 @@ export async function getServerSideProps(context) {
       id: account,
       isSsrMobile: getIsSsrMobile(context),
       pageMeta,
-      sortCurrency: sortCurrency || "",
       ...(await serverSideTranslations(locale, ['common']))
     }
   }
@@ -57,14 +58,12 @@ import SearchBlock from '../../components/Layout/SearchBlock'
 import CopyButton from '../../components/UI/CopyButton'
 
 // setSignRequest, account, pageMeta
-export default function Nft({ signRequest, id, selectedCurrency, sortCurrency }) {
+export default function Account({ pageMeta, signRequest, id, selectedCurrency }) {
   const { t } = useTranslation()
 
   const [data, setData] = useState({})
   const [loading, setLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState("")
-
-  const convertCurrency = sortCurrency || selectedCurrency
 
   const checkApi = async (opts) => {
     if (!id) return
@@ -75,9 +74,10 @@ export default function Nft({ signRequest, id, selectedCurrency, sortCurrency })
       noCache = "&timestamp=" + Date.now()
     }
 
+    //&hashicon=true
     const response = await axios(
       '/v2/address/' + id
-      + '?username=true&service=true&verifiedDomain=true&parent=true&hashicon=true&nickname=true&inception=true&flare=true&blacklist=true&payString=true&ledgerInfo=true&twitterImageUrl=true'
+      + '?username=true&service=true&verifiedDomain=true&parent=true&nickname=true&inception=true&flare=true&blacklist=true&payString=true&ledgerInfo=true&twitterImageUrl=true'
       + noCache
     ).catch(error => {
       setErrorMessage(t("error." + error.message))
@@ -99,9 +99,9 @@ export default function Nft({ signRequest, id, selectedCurrency, sortCurrency })
   }
 
   useEffect(() => {
-    if (!convertCurrency) return;
+    if (!selectedCurrency) return;
     if (!signRequest) {
-      if (!data?.nftokenID) {
+      if (!data?.address) {
         // no token - first time fetching - allow right away
         checkApi()
       } else {
@@ -110,20 +110,25 @@ export default function Nft({ signRequest, id, selectedCurrency, sortCurrency })
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id, signRequest, convertCurrency])
+  }, [id, signRequest, selectedCurrency])
+
+  const avatarSrc = data => {
+    if (!data) return ""
+    return data?.service?.twitterImageUrl || ('https://cdn.bithomp.com/avatar/' + data?.address)
+  }
 
   return <>
     <SEO
-      //page={"Account " + id}
-      title={"Account " + id}
-    //description={pageMeta?.metadata?.description}
-    //image={{ file: imageUrl }}
+      page="Account"
+      title={pageMeta?.service?.name || pageMeta?.username || pageMeta?.address || id}
+      description={"Account details, transactions, NFTs, Tokens for " + (pageMeta?.service?.name || pageMeta?.username) + " " + (pageMeta?.address || id)}
+      image={{ file: avatarSrc(pageMeta) }}
     />
     <SearchBlock
       searchPlaceholderText={t("account.enter-address")}
       tab="account"
     />
-    <div className="content-center short-top nft">
+    <div className="content-center short-top account">
       {id ? <>
         {loading ?
           <div className='center' style={{ marginTop: "80px" }}>
@@ -138,7 +143,13 @@ export default function Nft({ signRequest, id, selectedCurrency, sortCurrency })
               <>{data.address &&
                 <>
                   <div className="column-left">
-                    Icon here
+                    <Image
+                      alt="avatar"
+                      style={{ width: "100%", height: "auto", display: "inline-block" }}
+                      src={avatarSrc(data)}
+                      width="200"
+                      height="200"
+                    />
                     <div>
                       <table className='table-details autowidth'>
                         <thead>
@@ -190,9 +201,7 @@ export default function Nft({ signRequest, id, selectedCurrency, sortCurrency })
                         <tr>
                           <td>{t("table.by-issuer")}</td>
                           <td>
-                            <Link href={"/nft-explorer?issuer=" + data.issuer}>{t("table.all-nfts")}</Link>,{" "}
-                            <Link href={"/nft-sales?issuer=" + data.issuer}>{t("table.sold_few")}</Link>,{" "}
-                            <Link href={"/nft-explorer?issuer=" + data.issuer + "&list=onSale"}>{t("table.on-sale")}</Link>
+                            <Link href={"/nft-explorer?issuer=" + data.issuer}>{t("table.all-nfts")}</Link>
                           </td>
                         </tr>
                       </tbody>
@@ -207,7 +216,7 @@ export default function Nft({ signRequest, id, selectedCurrency, sortCurrency })
       </>
         :
         <>
-          <h1 className='center'>NFT</h1>
+          <h1 className='center'>Account</h1>
           <p className='center'>
             {t("account.desc")}
           </p>
