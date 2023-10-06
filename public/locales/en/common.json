@@ -533,7 +533,12 @@
     "new-qr": "Get a new QR code"
   },
   "explorer": {
-    "header": "{{ledgerName}} Explorer {{testNetworkName}}",
+    "header": {
+      "main": "{{ledgerName}} Explorer {{testNetworkName}}",
+      "account": "Account information",
+      "nft": "NFT",
+      "nft-offer": "NFT offer"
+    },
     "enter-address": "Enter an XRPL address or a username",
     "searching-tx-nft-nftoffer": "Searching for Tx / NFT ID / NFT Offer",
     "searching-for-addresses": "Searching for addresses...",

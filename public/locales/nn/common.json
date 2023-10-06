@@ -532,7 +532,12 @@
     "new-qr": "Få en ny QR-kode"
   },
   "explorer": {
-    "header": "{{ledgerName}} Utforsker {{testNetworkName}}",
+    "header": {
+      "main": "{{ledgerName}} Utforsker {{testNetworkName}}",
+      "account": "Account information",
+      "nft": "NFT",
+      "nft-offer": "NFT tilbud"
+    },
     "enter-address": "Skriv inn en XRPL-adresse eller et brukernavn",
     "searching-tx-nft-nftoffer": "Søker etter Tx / NFT ID / NFT bud",
     "searching-for-addresses": "Søker etter adresser...",

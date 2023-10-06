@@ -276,11 +276,12 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
               :
               <>
                 {userOrServiceName(userData)}
-                {tab === "nft" && <h1 className='contrast'>NFT</h1>}
-                {tab === "nft-offer" && <h1 className='contrast'>{t("nft-offer.header")}</h1>}
+                {tab === "account" && <h1 className='contrast'>{t("explorer.header.account")}</h1>}
+                {tab === "nft" && <h1 className='contrast'>{t("explorer.header.nft")}</h1>}
+                {tab === "nft-offer" && <h1 className='contrast'>{t("explorer.header.nft-offer")}</h1>}
                 {tab === "explorer" &&
                   <h1 className='contrast'>
-                    <Trans i18nKey="explorer.header">
+                    <Trans i18nKey="explorer.header.main">
                       {{ ledgerName }} Explorer {{ testNetworkName: testNetworkName ? ("(" + testNetworkName + ")") : "" }}
                     </Trans>
                   </h1>

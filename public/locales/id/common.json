@@ -532,7 +532,12 @@
     "new-qr": "Dapatkan kode QR baru"
   },
   "explorer": {
-    "header": "Penjelajah {{ledgerName}} {{testNetworkName}}",
+    "header": {
+      "main": "Penjelajah {{ledgerName}} {{testNetworkName}}",
+      "account": "Account information",
+      "nft": "NFT",
+      "nft-offer": "Penawaran NFT"
+    },
     "enter-address": "Masukkan alamat XRPL atau username",
     "searching-tx-nft-nftoffer": "Mencari Tx / ID NFT / Tawaran NFT",
     "searching-for-addresses": "Mencari alamat...",

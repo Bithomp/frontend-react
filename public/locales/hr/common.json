@@ -532,7 +532,12 @@
     "new-qr": "Generiraj novi QR"
   },
   "explorer": {
-    "header": "{{ledgerName}} Tražilica {{testNetworkName}}",
+    "header": {
+      "main": "{{ledgerName}} Tražilica {{testNetworkName}}",
+      "account": "Account information",
+      "nft": "NFT",
+      "nft-offer": "NFT ponuda"
+    },
     "enter-address": "Unesi XRPL adresu ili korisničko ime",
     "searching-tx-nft-nftoffer": "Tražim Tx / NFT ID / NFT Ponudu",
     "searching-for-addresses": "Tražim adrese...",

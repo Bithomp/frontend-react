@@ -532,7 +532,12 @@
     "new-qr": "Получить новый QR-код"
   },
   "explorer": {
-    "header": "{{ledgerName}} Эксплорер {{testNetworkName}}",
+    "header": {
+      "main": "{{ledgerName}} Эксплорер {{testNetworkName}}",
+      "account": "Информация об адресе",
+      "nft": "NFT",
+      "nft-offer": "NFT офер"
+    },
     "enter-address": "Введите XRPL адрес или ник",
     "searching-tx-nft-nftoffer": "Идет поиск по запрошенному ID",
     "searching-for-addresses": "Идет поиск адресов...",

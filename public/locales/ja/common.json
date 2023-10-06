@@ -532,7 +532,12 @@
     "new-qr": "新しいQRコードを取得"
   },
   "explorer": {
-    "header": "{{ledgerName}}エクスプローラ {{testNetworkName}}",
+    "header": {
+      "main": "{{ledgerName}}エクスプローラ {{testNetworkName}}",
+      "account": "Account information",
+      "nft": "NFT",
+      "nft-offer": "NFTのオファー"
+    },
     "enter-address": "XRPLアドレスまたはユーザネームを入力してください。",
     "searching-tx-nft-nftoffer": "トランザクション/NFT ID/NFT Offerで検索しています。",
     "searching-for-addresses": "アドレスを検索しています...",

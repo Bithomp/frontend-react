@@ -532,7 +532,12 @@
 		"new-qr": "Dapatkan kod QR baru"
 	},
 	"explorer": {
-		"header": "Penjelajah {{ledgerName}} {{testNetworkName}}",
+    "header": {
+      "main": "Penjelajah {{ledgerName}} {{testNetworkName}}",
+      "account": "Account information",
+      "nft": "NFT",
+      "nft-offer": "Tawaran NFT"
+    },
 		"enter-address": "Masukkan alamat XRPL atau nama pengguna",
 		"searching-tx-nft-nftoffer": "Mencari Tx / NFT ID / Tawaran NFT",
 		"searching-for-addresses": "Mencari alamat...",
@@ -560,10 +565,10 @@
 		"cancel-expired-offer_other": "Batalkan {{count}} tawaran yang telah tamat tempoh"
 	},
 	"nft-offer": {
+		"header": "Tawaran NFT",
 		"buying": "Membeli",
 		"desc": "Di sini anda boleh mencari Tawaran NFT, masukkan ID Tawaran NFT dan tekan butang carian.",
 		"enter-offer-id": "Masukkan ID tawaran NFT",
-		"header": "Tawaran NFT",
 		"selling": "Menjual"
 	},
 	"nfts": {
