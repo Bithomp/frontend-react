@@ -420,8 +420,9 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
               }
             </>
           }
+          {/* buyButton already have a cancel option, but only for valid offers */}
           {
-            !offer.canceledAt && !offer.acceptedAt &&
+            !offer.valid && !offer.canceledAt && !offer.acceptedAt &&
             (
               (account?.address && offer.owner && account.address === offer.owner)
               || offer.validationErrors?.includes('Offer is expired')
