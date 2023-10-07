@@ -552,7 +552,7 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
     //show cancel button only if it is my own offer, otherwise it should be buy button
     //show cancel button only if it's one valid offer, will work in single offers buttons
     //and won't confuse which order is canceling, when there a few orders for the same price with different destinations (marketplaces)
-    if (best.owner && account?.address && account.address === best.owner && sellOffers.length === 1) {
+    if (best.owner && account?.address && account.address === best.owner && (sellOffers?.length === 1 || data.type === 'xls35')) {
       return <>
         {cancelNftOfferButton(t, setSignRequest, account.address, best, "sell", data.type)}
         <br /><br />
@@ -623,7 +623,7 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
   }
 
   const makeOfferButton = sellOffers => {
-    //if removed do not offer to add an offer
+    // if removed do not offer to add an offer
     // if not transferable, do not show button to create offers
     if (!id || data.deletedAt || !data.flags.transferable) return ""
     //if signed in and user is the nft's owner -> make a sell offer, otherwise make a buy offer (no flag)
@@ -661,17 +661,53 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
     </>
   }
 
+  const xls35SellOfferButton = () => {
+    //signed in and user is the nft's owner, and it is xls35
+    if (!id || !data?.owner || !account?.address || account.address !== data.owner || data.type !== "xls35") return ""
+
+    //"Destination" - optional
+    let request = {
+      "Account": data.owner,
+      "TransactionType": "URITokenCreateSellOffer",
+      "URITokenID": id
+    }
+
+    return <>
+      <button
+        className='button-action wide center'
+        onClick={() => setSignRequest({
+          wallet: "xumm",
+          request
+        })}
+      >
+        <Image src={xummImg} className='xumm-logo' alt="xumm" height={24} width={24} />
+        {t("button.nft.list-for-sale")}
+      </button>
+      <br /><br />
+    </>
+  }
+
   const burnButton = () => {
     if (!id || data.deletedAt) return "" //if it is already burned do not offer to burn
 
-    //if not signed, or signed but not an owner - do not show burn button 
-    // may we should show it for burnable nfts (with a flag) for the minters also? ! 
+    // if not signed, or signed but not an owner - do not show burn button 
+    // may be we should show it for burnable nfts (with a flag) for the minters also?
     if (!(data?.owner && account?.address && account.address === data.owner)) return ""
 
-    let request = {
-      "TransactionType": "NFTokenBurn",
-      "Account": data.owner,
-      "NFTokenID": id
+    let request = null
+
+    if (data.type === 'xls35') {
+      request = {
+        "Account": data.owner,
+        "TransactionType": "URITokenBurn",
+        "URITokenID": id
+      }
+    } else {
+      request = {
+        "TransactionType": "NFTokenBurn",
+        "Account": data.owner,
+        "NFTokenID": id
+      }
     }
 
     return <>
@@ -729,16 +765,15 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
                     {!notFoundInTheNetwork ?
                       <>
                         <NftPreview nft={data} />
-                        {/* add here the ones are ready for xls35 */}
                         {sellButton(data.buyOffers)}
+                        {buyButton(data.sellOffers)}
                         {data.type === 'xls20' &&
-                          <>
-                            {buyButton(data.sellOffers)}
-                            {/* buyButton is the only one ready for xls35, but it is not tested */}
-                            {makeOfferButton(data.sellOffers)}
-                            {burnButton()}
-                          </>
+                          makeOfferButton(data.sellOffers)
                         }
+                        {data.type === 'xls35' &&
+                          xls35SellOfferButton()
+                        }
+                        {burnButton()}
                       </>
                       :
                       <div className='orange'>

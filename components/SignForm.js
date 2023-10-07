@@ -6,7 +6,7 @@ import axios from 'axios'
 import Image from 'next/image'
 
 import { useIsMobile } from "../utils/mobile"
-import { server, devNet, typeNumberOnly, delay, isDomainValid, encode } from '../utils'
+import { server, devNet, typeNumberOnly, delay, isDomainValid, encode, networkId } from '../utils'
 import { capitalize } from '../utils/format'
 import { payloadXummPost, xummWsConnect, xummCancel, xummGetSignedData } from '../utils/xumm'
 
@@ -65,7 +65,8 @@ export default function SignForm({ setSignRequest, setAccount, signRequest }) {
       return
     }
 
-    if (tx.TransactionType === "NFTokenCreateOffer" && !agreedToRisks) {
+    if ((tx.TransactionType === "NFTokenCreateOffer" || tx.TransactionType === "URITokenCreateSellOffer") &&
+      !agreedToRisks) {
       setScreen("NFTokenCreateOffer")
       return
     }
@@ -93,6 +94,11 @@ export default function SignForm({ setSignRequest, setAccount, signRequest }) {
     }
 
     tx.SourceTag = 42697468
+
+    //add network ID to transactions for xahau-testnet and xahau
+    if (networkId === 21338 || networkId === 21337) {
+      tx.NetworkID = networkId
+    }
 
     let signInPayload = {
       options: {
@@ -316,6 +322,8 @@ export default function SignForm({ setSignRequest, setAccount, signRequest }) {
     }
   }
 
+  const xls35Sell = signRequest.request.TransactionType === "URITokenCreateSellOffer"
+
   return (
     <div className="sign-in-form">
       <div className="sign-in-body center">
@@ -332,7 +340,7 @@ export default function SignForm({ setSignRequest, setAccount, signRequest }) {
                 )
               }
               {screen === 'NFTokenCreateOffer' &&
-                (signRequest.request.Flags === 1 ?
+                ((signRequest.request.Flags === 1 || xls35Sell) ?
                   t("signin.confirm.nft-create-sell-offer-header")
                   :
                   t("signin.confirm.nft-create-buy-offer-header")
@@ -344,7 +352,7 @@ export default function SignForm({ setSignRequest, setAccount, signRequest }) {
             {screen === 'NFTokenCreateOffer' &&
               <div className='center'>
                 <br />
-                <span className='quarter xrpOnly'>
+                <span className={(xls35Sell ? 'halv' : 'quarter') + ' xrpOnly'}>
                   <span className='input-title'>{t("signin.amount.set-price")}</span>
                   <input
                     placeholder={t("signin.amount.enter-amount")}
@@ -358,10 +366,12 @@ export default function SignForm({ setSignRequest, setAccount, signRequest }) {
                     inputMode="decimal"
                   />
                 </span>
-                <span className='quarter'>
-                  <span className='input-title'>{t("signin.expiration")}</span>
-                  <ExpirationSelect onChange={onExpirationChange} />
-                </span>
+                {!xls35Sell &&
+                  <span className='quarter'>
+                    <span className='input-title'>{t("signin.expiration")}</span>
+                    <ExpirationSelect onChange={onExpirationChange} />
+                  </span>
+                }
               </div>
             }
 
@@ -387,7 +397,8 @@ export default function SignForm({ setSignRequest, setAccount, signRequest }) {
                     t("signin.confirm.nft-burn")
                     :
                     <>
-                      {screen === 'NFTokenCreateOffer' && signRequest.request.Flags === 1 ?
+                      {screen === 'NFTokenCreateOffer' &&
+                        (signRequest.request.Flags === 1 || xls35Sell) ?
                         t("signin.confirm.nft-create-sell-offer")
                         :
                         <Trans i18nKey="signin.confirm.nft-accept-offer">

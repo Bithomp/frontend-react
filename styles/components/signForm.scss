@@ -20,7 +20,7 @@
     outline-offset: -15px;
     position: fixed;
     width: 480px;
-    height: 520px; //bigger on devnets
+    height: 540px; //bigger on devnets
     margin-top: -240px;
     margin-left: -240px;
     top: 50%;
@@ -33,12 +33,31 @@
       top: 0;
       left: 0;
     }
+    .halv {
+      @media only screen and (max-width: 400px) {
+        width: calc(100% - 80px);
+      }
+      &.xrpOnly {
+        input {
+          @media only screen and (max-width: 480px) {
+            padding-right: 40px;
+          }
+        }
+      }
+    }
     .quarter {
-      position: relative;
       &.xrpOnly {
         input {
           width: 124px;
           padding-right: 40px;
+        }
+      }
+    }
+    .halv,
+    .quarter {
+      position: relative;
+      &.xrpOnly {
+        input {
           @media only screen and (max-width: 480px) {
             width: calc(100% - 52px);
           }
