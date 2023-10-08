@@ -5,7 +5,7 @@ import React from "react"
 import { Trans } from 'next-i18next'
 
 import LinkIcon from "../public/images/link.svg"
-import { stripText } from '.'
+import { stripText, nativeCurrency } from '.'
 import { mpUrl } from './nft'
 
 const xummImg = "/images/xumm.png"
@@ -505,7 +505,7 @@ const amountParced = amount => {
   } else {
     type = "XRP";
     value = amount / 1000000;
-    currency = "XRP";
+    currency = nativeCurrency;
   }
   // curency + " " - otherwise it is in the hex format
   currency = stripText(currency + " ")

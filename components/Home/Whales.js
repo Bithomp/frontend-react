@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useTranslation } from 'next-i18next'
 import axios from 'axios';
 
-import { wssServer, devNet } from '../../utils';
+import { wssServer, devNet, nativeCurrency } from '../../utils';
 import { shortNiceNumber, timeFormat, txIdFormat } from '../../utils/format';
 
 let ws = null;
@@ -90,7 +90,7 @@ export default function Whales({ currency }) {
             <div key={tx.hash} className={"tx-row" + (difference?.includes(tx) ? " just-added" : "")}>
               <span className='tx-time'>{timeFormat(tx.timestamp)}</span>
               <span className='tx-link'><a href={'/explorer/' + tx.hash}>{txIdFormat(tx.hash)}</a></span>
-              <span className='tx-amount'>{shortNiceNumber(tx.amountXRP, 0, 1)} XRP</span>
+              <span className='tx-amount'>{shortNiceNumber(tx.amountXRP, 0, 1)} {nativeCurrency}</span>
               <span className='tx-amount-fiat'>{devNet ? t("home.whales.no-value") : (tx.amountFiats ? shortNiceNumber(tx.amountFiats[currency?.toLowerCase()], 0, 1, currency) : "")}</span>
             </div>
           ))}

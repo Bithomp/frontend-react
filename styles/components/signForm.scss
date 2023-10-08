@@ -56,17 +56,27 @@
     .halv,
     .quarter {
       position: relative;
-      &.xrpOnly {
+      &.xrpOnly,
+      &.xahOnly {
         input {
           @media only screen and (max-width: 480px) {
             width: calc(100% - 52px);
           }
         }
         &:after {
-          content: "XRP";
           position: absolute;
           right: 10px;
           bottom: 9px;
+        }
+      }
+      &.xrpOnly {
+        &:after {
+          content: "XRP";
+        }
+      }
+      &.xahOnly {
+        &:after {
+          content: "XAH";
         }
       }
     }

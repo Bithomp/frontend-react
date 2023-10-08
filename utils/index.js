@@ -290,17 +290,18 @@ export const ledgerName = network.includes('xahau') ? "Xahau" : "XRP Ledger"
 export const testNetworkName = capitalize(devNet && devNet.includes("testnet") ? "testnet" : devNet)
 
 const networks = {
-  mainnet: { id: 0, server: "https://bithomp.com" },
-  staging: { id: 2, server: "https://staging.bithomp.com" },
-  testnet: { id: 1, server: "https://test.bithomp.com" },
-  devnet: { id: 2, server: "https://dev.bithomp.com" },
-  "xahau-testnet": { id: 21338, server: "https://test.xahauexplorer.com" },
-  xahau: { id: 21337, server: "https://xahauexplorer.com" },
-  amm: { id: 25, server: "https://amm.bithomp.com" }
+  mainnet: { id: 0, server: "https://bithomp.com", nativeCurrency: "XRP" },
+  staging: { id: 2, server: "https://staging.bithomp.com", nativeCurrency: "XRP" },
+  testnet: { id: 1, server: "https://test.bithomp.com", nativeCurrency: "XRP" },
+  devnet: { id: 2, server: "https://dev.bithomp.com", nativeCurrency: "XRP" },
+  "xahau-testnet": { id: 21338, server: "https://test.xahauexplorer.com", nativeCurrency: "XAH" },
+  xahau: { id: 21337, server: "https://xahauexplorer.com", nativeCurrency: "XAH" },
+  amm: { id: 25, server: "https://amm.bithomp.com", nativeCurrency: "XRP" }
 }
 
 export const server = networks[network]?.server
 export const networkId = networks[network]?.id
+export const nativeCurrency = networks[network]?.nativeCurrency
 
 export const networksIds = {
   0: { server: "https://bithomp.com", name: "mainnet" },

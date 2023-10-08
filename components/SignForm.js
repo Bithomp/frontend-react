@@ -352,7 +352,7 @@ export default function SignForm({ setSignRequest, setAccount, signRequest }) {
             {screen === 'NFTokenCreateOffer' &&
               <div className='center'>
                 <br />
-                <span className={(xls35Sell ? 'halv' : 'quarter') + ' xrpOnly'}>
+                <span className={xls35Sell ? 'halv xahOnly' : 'quarter xrpOnly'}>
                   <span className='input-title'>{t("signin.amount.set-price")}</span>
                   <input
                     placeholder={t("signin.amount.enter-amount")}
