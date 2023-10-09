@@ -347,7 +347,7 @@
       "accept-transfer": "NFTのトランスファーを受け入れる",
       "buy-for-amount-on": "{{service}}で{{amount}}で購入",
       "buy-for-amount": "{{amount}}で購入",
-      "sell-for-amount": "Sell for {{amount}}",
+      "sell-for-amount": "{{amount}}で売却",
       "make-offer": "オファーを作成",
       "list-for-sale": "出品(販売)",
       "burn": "このNFTをバーン"
@@ -381,7 +381,7 @@
     "currencyIssuer is invalid": "通貨発行者のアドレスが無効です",
     "Token information is not found": "IDに関する情報は見つかりませんでした",
     "No nfts information is found": "申し訳ありません、エラーが発生しました。別の方法で検索してください。",
-    "Address is not valid": "Invalid address"
+    "Address is not valid": "アドレスが無効です。"
   },
   "units": {
     "seconds-short": "秒",
