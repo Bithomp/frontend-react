@@ -6,6 +6,9 @@ import Link from 'next/link'
 import Image from 'next/image'
 
 import { server } from '../../utils'
+import {
+  codeHighlight
+} from '../../utils/format'
 import { getIsSsrMobile } from "../../utils/mobile"
 
 export async function getServerSideProps(context) {
@@ -82,7 +85,7 @@ export default function Account({ pageMeta, signRequest, id, selectedCurrency })
     //&hashicon=true
     const response = await axios(
       '/v2/address/' + id
-      + '?username=true&service=true&verifiedDomain=true&parent=true&nickname=true&inception=true&flare=true&blacklist=true&payString=true&ledgerInfo=true&twitterImageUrl=true'
+      + '?username=true&service=true&verifiedDomain=true&parent=true&nickname=true&inception=true&flare=true&blacklist=true&payString=true&ledgerInfo=true&twitterImageUrl=true&xummMeta=true'
       + noCache
     ).catch(error => {
       setErrorMessage(t("error." + error.message))
@@ -124,7 +127,58 @@ export default function Account({ pageMeta, signRequest, id, selectedCurrency })
 
   const avatarSrc = data => {
     if (!data) return ""
-    return data?.service?.twitterImageUrl || ('https://cdn.bithomp.com/avatar/' + data?.address)
+
+    if (data.blacklist?.blacklisted) {
+      return "/images/fraud-alert.png"
+    }
+
+    let gravatarUrl = null
+    if (data.ledgerInfo?.emailHash) {
+      gravatarUrl = 'https://secure.gravatar.com/avatar/' + data.ledgerInfo?.emailHash + '?d=mm&s=200'
+    }
+
+    let xummAvatarUrl = null
+    if (data.xummMeta?.xummPro || data.xummMeta?.curated_asset) {
+      xummAvatarUrl = data.xummMeta?.avatar
+    }
+
+    return data.service?.twitterImageUrl || gravatarUrl || xummAvatarUrl || ('https://cdn.bithomp.com/avatar/' + data.address)
+  }
+
+  const accountNameTr = data => {
+    if (!data) return ""
+
+    let output = []
+
+    if (data.service?.name) {
+      output.push(<tr key="0">
+        <td>Service</td>
+        <td className='green bold'>{data.service.name}</td>
+      </tr>)
+    }
+
+    if (data.username) {
+      if (data.username.toLowerCase() !== data.service?.name?.toLowerCase()) {
+        output.push(<tr key="1">
+          <td>Username</td>
+          <td className='blue bold'>{data.username}</td>
+        </tr>)
+      }
+    } else if (!data.service?.name) {
+      output.push(<tr key="1">
+        <td>Username</td>
+        <td><Link href={"/username?address=" + data.address}>register</Link></td>
+      </tr>)
+    }
+
+    if (data.nickname && data.nickname.toLowerCase() !== data.username?.toLowerCase() && data.nickname.toLowerCase() !== data.service?.name?.toLowerCase()) {
+      output.push(<tr key="2">
+        <td>Nickname</td>
+        <td className='orange bold'>{data.nickname}</td>
+      </tr>)
+    }
+
+    return output
   }
 
   return <>
@@ -162,17 +216,17 @@ export default function Account({ pageMeta, signRequest, id, selectedCurrency })
                       height="200"
                     />
                     <div>
+                      <div className='center'>
+                        Time machine<br /><br />
+                      </div>
                       <table className='table-details autowidth'>
                         <thead>
                           <tr>
-                            <th colSpan="100">{t("table.attributes")}</th>
+                            <th colSpan="100">Account details</th>
                           </tr>
                         </thead>
                         <tbody>
-                          <tr>
-                            <td>Attribute</td>
-                            <td>Value</td>
-                          </tr>
+                          {accountNameTr(data)}
                         </tbody>
                       </table>
                     </div>
@@ -187,7 +241,7 @@ export default function Account({ pageMeta, signRequest, id, selectedCurrency })
                       <tbody>
                         <tr>
                           <td>Data</td>
-                          <td>Data details</td>
+                          <td>{codeHighlight(data)}</td>
                         </tr>
                       </tbody>
                     </table>

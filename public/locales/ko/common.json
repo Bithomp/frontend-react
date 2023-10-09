@@ -347,6 +347,7 @@
       "accept-transfer": "NFT 변환 허용",
       "buy-for-amount-on": "{{service}}에서 {{amount}}에 구매",
       "buy-for-amount": "{{amount}} 구매",
+      "sell-for-amount": "Sell for {{amount}}",
       "make-offer": "제안하기",
       "list-for-sale": "판매 리스트",
       "burn": "NFT를 소각하세요"
@@ -379,7 +380,8 @@
     "currencyIssuer username is not found or invalid": "유효하지 않은 통화 발행자의 사용자명임니다",
     "currencyIssuer is invalid": "유효하지 않은 통화 발행자의 주소입니다",
     "Token information is not found": "해당 ID에 대한 정보를 찾을 수 없습니다",
-    "No nfts information is found": "죄송합니다. 오류가 발생했습니다. 다시 시도해주세요"
+    "No nfts information is found": "죄송합니다. 오류가 발생했습니다. 다시 시도해주세요",
+    "Address is not valid": "Invalid address"
   },
   "units": {
     "seconds-short": "초",

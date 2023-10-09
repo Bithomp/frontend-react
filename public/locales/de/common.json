@@ -347,6 +347,7 @@
       "accept-transfer": "NFT Transfer akzeptieren",
       "buy-for-amount-on": "Für {{amount}} auf {{service}} kaufen",
       "buy-for-amount": "Kaufen für {{amount}}",
+      "sell-for-amount": "Sell for {{amount}}",
       "make-offer": "Angebot machen",
       "list-for-sale": "Zum Verkauf anbieten",
       "burn": "NFT vernichten"
@@ -379,7 +380,8 @@
     "currencyIssuer username is not found or invalid": "Ungültiger Benutzername des Währungsemittenten",
     "currencyIssuer is invalid": "Ungültiger Adresse des Währungsemittenten",
     "Token information is not found": "Wir konnten für diese ID keine Informationen finden",
-    "No nfts information is found": "Entschuldigung, ein Fehler ist aufgetreten. Bitte suchen Sie nach etwas anderem."
+    "No nfts information is found": "Entschuldigung, ein Fehler ist aufgetreten. Bitte suchen Sie nach etwas anderem.",
+    "Address is not valid": "Invalid address"
   },
   "units": {
     "seconds-short": "s",

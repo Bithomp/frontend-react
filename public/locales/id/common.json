@@ -347,6 +347,7 @@
       "accept-transfer": "Terima Transfer NFT",
       "buy-for-amount-on": "Beli seharga {{amount}} di {{service}}",
       "buy-for-amount": "Beli seharga {{amount}}",
+      "sell-for-amount": "Sell for {{amount}}",
       "make-offer": "Buat Penawaran",
       "list-for-sale": "Daftar untuk dijual",
       "burn": "Hapus NFT ini"
@@ -379,7 +380,8 @@
     "currencyIssuer username is not found or invalid": "Username penerbit mata uang tidak valid atau tidak ditemukan",
     "currencyIssuer is invalid": "Alamat penerbit mata uang tidak valid",
     "Token information is not found": "Kami tidak dapat menemukan informasi apa pun untuk ID tersebut",
-    "No nfts information is found": "Maaf, terjadi kesalahan, silakan cari yang lain."
+    "No nfts information is found": "Maaf, terjadi kesalahan, silakan cari yang lain.",
+    "Address is not valid": "Invalid address"
   },
   "units": {
     "seconds-short": "d",

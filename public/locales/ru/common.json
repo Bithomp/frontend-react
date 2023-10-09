@@ -347,6 +347,7 @@
       "accept-transfer": "Принять передачу NFT",
       "buy-for-amount-on": "Buy for {{amount}} on {{service}}",
       "buy-for-amount": "Купить за {{amount}}",
+      "sell-for-amount": "Продать за {{amount}}",
       "make-offer": "Предложить цену",
       "list-for-sale": "Выставить на продажу",
       "burn": "Сжечь этот NFT"
@@ -379,7 +380,8 @@
     "currencyIssuer username is not found or invalid": "Неверный ник эмитента токена",
     "currencyIssuer is invalid": "Неверный адрес эмитента токена",
     "Token information is not found": "Нам не удалось найти каких-либо данных по этому ID",
-    "No nfts information is found": "Хм, что-то пошло не так. Попробуйте поискать что-то другое."
+    "No nfts information is found": "Хм, что-то пошло не так. Попробуйте поискать что-то другое.",
+    "Address is not valid": "Неверный адрес"
   },
   "units": {
     "seconds-short": "с",

@@ -347,6 +347,7 @@
       "accept-transfer": "Aceptar transferencia NFT",
       "buy-for-amount-on": "Comprar por {{amount}} en {{service}}",
       "buy-for-amount": "Comprar por {{amount}}",
+      "sell-for-amount": "Sell for {{amount}}",
       "make-offer": "Hacer una oferta",
       "list-for-sale": "Listar para vender",
       "burn": "Quemar ese NFT"
@@ -379,7 +380,8 @@
     "currencyIssuer username is not found or invalid": "Divisa del nombre de usuario del emisor inválida",
     "currencyIssuer is invalid": "Divisa de la cuenta del emisor inválida.",
     "Token information is not found": "No pudimos encontrar ninguna información para este ID",
-    "No nfts information is found": "Lo senstimos, ha ocurrido un error, por favor, busca algo más."
+    "No nfts information is found": "Lo senstimos, ha ocurrido un error, por favor, busca algo más.",
+    "Address is not valid": "Invalid address"
   },
   "units": {
     "seconds-short": "s",

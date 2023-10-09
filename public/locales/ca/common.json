@@ -347,6 +347,7 @@
       "accept-transfer": "Accept NFT transfer",
       "buy-for-amount-on": "Compra per {{amount}} a {{service}}",
       "buy-for-amount": "Compra per {{amount}}",
+      "sell-for-amount": "Sell for {{amount}}",
       "make-offer": "Fes oferta",
       "list-for-sale": "Llista per vendre",
       "burn": "Burn that NFT"
@@ -379,7 +380,8 @@
     "currencyIssuer username is not found or invalid": "L'àlies de l'encunyador no és vàlid",
     "currencyIssuer is invalid": "L'adreça de l'encunyador de la moneda no és vàlida",
     "Token information is not found": "No hem pogut trobar informació sobre aquest ID",
-    "No nfts information is found": "Sorry, an error occured, please to search for somethig else."
+    "No nfts information is found": "Sorry, an error occured, please to search for somethig else.",
+    "Address is not valid": "Invalid address"
   },
   "units": {
     "seconds-short": "s",

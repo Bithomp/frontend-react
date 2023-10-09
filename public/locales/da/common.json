@@ -347,6 +347,7 @@
       "accept-transfer": "Accept NFT transfer",
       "buy-for-amount-on": "Køb for {{amount}} på {{service}}",
       "buy-for-amount": "Køb for {{amount}}",
+      "sell-for-amount": "Sell for {{amount}}",
       "make-offer": "Lag tilbud",
       "list-for-sale": "tilføje til salg",
       "burn": "Burn that NFT"
@@ -379,7 +380,8 @@
     "currencyIssuer username is not found or invalid": "Ugyldigt valutaudsteders brugernavn",
     "currencyIssuer is invalid": "Ugyldig valutaudsteders adresse",
     "Token information is not found": "Vi kunne ikke finde nogen oplysninger for det ID",
-    "No nfts information is found": "Sorry, an error occured, please to search for somethig else."
+    "No nfts information is found": "Sorry, an error occured, please to search for somethig else.",
+    "Address is not valid": "Invalid address"
   },
   "units": {
     "seconds-short": "s",
