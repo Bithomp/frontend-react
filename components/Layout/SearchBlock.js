@@ -313,7 +313,7 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
                     <b className='green'>{option.service}</b>
                     {option.username ? ")" : ""}
                   </>}
-                  {(option.username || option.service) && option.verifiedDomain && <>, </>}
+                  {(option.username || option.service) && (option.verifiedDomain || option.serviceDomain) && <>, </>}
                   {option.verifiedDomain ?
                     <span className='green bold'> {option.verifiedDomain}</span>
                     :
