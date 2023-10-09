@@ -322,7 +322,7 @@ export default function SignForm({ setSignRequest, setAccount, signRequest }) {
     }
   }
 
-  const xls35Sell = signRequest.request.TransactionType === "URITokenCreateSellOffer"
+  const xls35Sell = signRequest?.request?.TransactionType === "URITokenCreateSellOffer"
 
   return (
     <div className="sign-in-form">
