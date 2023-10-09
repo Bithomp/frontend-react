@@ -6,9 +6,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 
 import { server } from '../../utils'
-import {
-  codeHighlight
-} from '../../utils/format'
+//import { codeHighlight } from '../../utils/format'
 import { getIsSsrMobile } from "../../utils/mobile"
 
 export async function getServerSideProps(context) {
@@ -150,28 +148,42 @@ export default function Account({ pageMeta, signRequest, id, selectedCurrency })
 
     let output = []
 
-    if (data.service?.name) {
-      output.push(<tr key="0">
-        <td>Service</td>
-        <td className='green bold'>{data.service.name}</td>
-      </tr>)
-    }
-
     if (data.username) {
-      if (data.username.toLowerCase() !== data.service?.name?.toLowerCase()) {
-        output.push(<tr key="1">
-          <td>Username</td>
-          <td className='blue bold'>{data.username}</td>
-        </tr>)
-      }
+      output.push(<tr key="0">
+        <td>Username</td>
+        <td className='blue bold'>{data.username} <CopyButton text={server + "/account/" + data.username}></CopyButton></td>
+      </tr>)
     } else if (!data.service?.name) {
-      output.push(<tr key="1">
+      //if no username and no service - show register link
+      output.push(<tr key="0">
         <td>Username</td>
         <td><Link href={"/username?address=" + data.address}>register</Link></td>
       </tr>)
     }
 
-    if (data.nickname && data.nickname.toLowerCase() !== data.username?.toLowerCase() && data.nickname.toLowerCase() !== data.service?.name?.toLowerCase()) {
+    let thirdPartyService = null
+    if (data.xummMeta?.thirdPartyProfiles?.length) {
+      for (let i = 0; i < data.xummMeta.thirdPartyProfiles.length; i++) {
+        const excludeList = ["xumm.app", "xrpl", "bithomp.com"]
+        if (!excludeList.includes(data.xummMeta.thirdPartyProfiles[i].source)) {
+          thirdPartyService = data.xummMeta.thirdPartyProfiles[i].accountAlias
+          break
+        }
+      }
+    }
+
+    if (data.service?.name || thirdPartyService) {
+      output.push(<tr key="1">
+        <td>Service</td>
+        {data.service?.name ?
+          <td className='green bold'>{data.service.name}</td>
+          :
+          <td><span className='bold'>{thirdPartyService}</span> (unverified)</td>
+        }
+      </tr>)
+    }
+
+    if (data.nickname) {
       output.push(<tr key="2">
         <td>Nickname</td>
         <td className='orange bold'>{data.nickname}</td>
@@ -222,11 +234,13 @@ export default function Account({ pageMeta, signRequest, id, selectedCurrency })
                       <table className='table-details autowidth'>
                         <thead>
                           <tr>
-                            <th colSpan="100">Account details</th>
+                            <th colSpan="100">Statuses</th>
                           </tr>
                         </thead>
                         <tbody>
-                          {accountNameTr(data)}
+                          <tr>
+                            <td>XUMM Pro</td><td>{data?.xummMeta?.xummPro ? "Yes" : "No"}</td>
+                          </tr>
                         </tbody>
                       </table>
                     </div>
@@ -235,14 +249,21 @@ export default function Account({ pageMeta, signRequest, id, selectedCurrency })
                     <table className='table-details'>
                       <thead>
                         <tr>
-                          <th colSpan="100">{t("table.metadata")}</th>
+                          <th colSpan="100">Public data</th>
                         </tr>
                       </thead>
                       <tbody>
                         <tr>
-                          <td>Data</td>
-                          <td>{codeHighlight(data)}</td>
+                          <td>{t("table.address")}</td>
+                          <td>{data.address} <CopyButton text={data.address}></CopyButton></td>
                         </tr>
+                        {accountNameTr(data)}
+                        {/*
+                          <tr>
+                            <td>Data</td>
+                            <td>{codeHighlight(data)}</td>
+                          </tr>
+                        */}
                       </tbody>
                     </table>
 
@@ -252,25 +273,12 @@ export default function Account({ pageMeta, signRequest, id, selectedCurrency })
                       </thead>
                       <tbody>
                         <tr>
-                          <td>Account</td>
-                          <td>{id} <CopyButton text={id} /></td>
+                          <td>Activated</td>
+                          <td>{data?.ledgerInfo?.activated ? "Yes" : "No"}</td>
                         </tr>
                       </tbody>
                     </table>
 
-                    <table className='table-details'>
-                      <thead>
-                        <tr><th colSpan="100">{t("table.related-lists")}</th></tr>
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <td>{t("table.by-issuer")}</td>
-                          <td>
-                            <Link href={"/nft-explorer?issuer=" + data.issuer}>{t("table.all-nfts")}</Link>
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
                   </div>
                 </>
               }
@@ -281,9 +289,9 @@ export default function Account({ pageMeta, signRequest, id, selectedCurrency })
       </>
         :
         <>
-          <h1 className='center'>Account</h1>
+          <h1 className='center'>{t("explorer.header.account")}</h1>
           <p className='center'>
-            {t("account.desc")}
+            Here you will be able to see all the information about the account, including the transactions, tokens, NFTs, and more.
           </p>
         </>
       }
