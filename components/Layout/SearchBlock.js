@@ -314,10 +314,12 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
                     {option.username ? ")" : ""}
                   </>}
                   {(option.username || option.service) && option.verifiedDomain && <>, </>}
-                  {option.verifiedDomain &&
-                    <span className='green'> {option.verifiedDomain}</span>
+                  {option.verifiedDomain ?
+                    <span className='green bold'> {option.verifiedDomain}</span>
+                    :
+                    (option.serviceDomain && <span className='green'> {option.serviceDomain}</span>)
                   }
-                  {(option.username || option.service || option.verifiedDomain) && option.xumm && <>, </>}
+                  {(option.username || option.service || option.verifiedDomain || option.serviceDomain) && option.xumm && <>, </>}
                   {option.xumm &&
                     <>
                       Xaman <span className='orange'>
@@ -326,7 +328,7 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
                       {option.xummVerified && <> ✅</>}
                     </>
                   }
-                  {(option.username || option.service || option.verifiedDomain || option.xumm) && option.globalid && <>, </>}
+                  {(option.username || option.service || option.verifiedDomain || option.serviceDomain || option.xumm) && option.globalid && <>, </>}
                   {option.globalid &&
                     <>
                       GlobaliD <span className='purple'>{option.globalid}</span>
@@ -339,7 +341,7 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
                 </>
               }
               getOptionValue={
-                option => (option.address + option.username + option.service + option.xumm + option.globalid + option.verifiedDomain)
+                option => (option.address + option.username + option.service + option.xumm + option.globalid + option.verifiedDomain + option.serviceDomain)
               }
               inputValue={searchItem}
               onInputChange={searchOnInputChange}
