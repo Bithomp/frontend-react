@@ -10,7 +10,7 @@ module.exports = {
     return config;
   },
   images: {
-    domains: ['cdn.bithomp.com', 'pbs.twimg.com'],
+    domains: ['cdn.bithomp.com', 'pbs.twimg.com', 'secure.gravatar.com', 'xumm.app'],
   },
   compress: false,
   async redirects() {
