@@ -290,18 +290,19 @@ export const ledgerName = network.includes('xahau') ? "Xahau" : "XRP Ledger"
 export const testNetworkName = capitalize(devNet && devNet.includes("testnet") ? "testnet" : devNet)
 
 const networks = {
-  mainnet: { id: 0, server: "https://bithomp.com", nativeCurrency: "XRP" },
-  staging: { id: 2, server: "https://staging.bithomp.com", nativeCurrency: "XRP" },
-  testnet: { id: 1, server: "https://test.bithomp.com", nativeCurrency: "XRP" },
-  devnet: { id: 2, server: "https://dev.bithomp.com", nativeCurrency: "XRP" },
-  "xahau-testnet": { id: 21338, server: "https://test.xahauexplorer.com", nativeCurrency: "XAH" },
-  xahau: { id: 21337, server: "https://xahauexplorer.com", nativeCurrency: "XAH" },
-  amm: { id: 25, server: "https://amm.bithomp.com", nativeCurrency: "XRP" }
+  mainnet: { id: 0, server: "https://bithomp.com", nativeCurrency: "XRP", getCoinsUrl: "/go/buy-first-xrp" },
+  staging: { id: 2, server: "https://staging.bithomp.com", nativeCurrency: "XRP", getCoinsUrl: "/faucet/" },
+  testnet: { id: 1, server: "https://test.bithomp.com", nativeCurrency: "XRP", getCoinsUrl: "/faucet/" },
+  devnet: { id: 2, server: "https://dev.bithomp.com", nativeCurrency: "XRP", getCoinsUrl: "/faucet/" },
+  "xahau-testnet": { id: 21338, server: "https://test.xahauexplorer.com", nativeCurrency: "XAH", getCoinsUrl: "/faucet/" },
+  xahau: { id: 21337, server: "https://xahauexplorer.com", nativeCurrency: "XAH", getCoinsUrl: null },
+  amm: { id: 25, server: "https://amm.bithomp.com", nativeCurrency: "XRP", getCoinsUrl: "/faucet/" }
 }
 
 export const server = networks[network]?.server
 export const networkId = networks[network]?.id
 export const nativeCurrency = networks[network]?.nativeCurrency
+export const getCoinsUrl = networks[network]?.getCoinsUrl
 
 export const networksIds = {
   0: { server: "https://bithomp.com", name: "mainnet" },

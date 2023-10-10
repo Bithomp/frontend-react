@@ -5,7 +5,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import Link from 'next/link'
 import Image from 'next/image'
 
-import { server } from '../../utils'
+import { server, getCoinsUrl, nativeCurrency } from '../../utils'
 //import { codeHighlight } from '../../utils/format'
 import { getIsSsrMobile } from "../../utils/mobile"
 
@@ -149,10 +149,12 @@ export default function Account({ pageMeta, signRequest, id, selectedCurrency })
     let output = []
 
     if (data.username) {
-      output.push(<tr key="0">
-        <td>Username</td>
-        <td className='blue bold'>{data.username} <CopyButton text={server + "/account/" + data.username}></CopyButton></td>
-      </tr>)
+      if (data.ledgerInfo?.activated) {
+        output.push(<tr key="0">
+          <td>Username</td>
+          <td className='blue bold'>{data.username} <CopyButton text={server + "/account/" + data.username}></CopyButton></td>
+        </tr>)
+      }
     } else if (!data.service?.name) {
       //if no username and no service - show register link
       output.push(<tr key="0">
@@ -228,7 +230,7 @@ export default function Account({ pageMeta, signRequest, id, selectedCurrency })
                       height="200"
                     />
                     <div>
-                      <div className='center'>
+                      <div className='center hidden'>
                         Time machine<br /><br />
                       </div>
                       <table className='table-details autowidth'>
@@ -273,8 +275,29 @@ export default function Account({ pageMeta, signRequest, id, selectedCurrency })
                       </thead>
                       <tbody>
                         <tr>
-                          <td>Activated</td>
-                          <td>{data?.ledgerInfo?.activated ? "Yes" : "No"}</td>
+                          <td className='bold'>Status</td>
+                          {data?.ledgerInfo?.activated ?
+                            <td>Last active (here you will see the last submitted transaction and the time passed)</td>
+                            :
+                            <td>
+                              <span className='orange'>
+                                {/* Reserves are different and currency codes also */}
+                                {data?.ledgerInfo?.deleted ?
+                                  "This account has been deactivated and is no longer active. It can be restored by sending at least 10 XRP to the address."
+                                  :
+                                  "Not activated yet. The owner with full access to the account can activate it by sending at least 10 XRP to the address."
+                                }
+                              </span>
+                              {getCoinsUrl &&
+                                <>
+                                  {" "}
+                                  <a href={getCoinsUrl} target="_blank" rel="noopener noreferrer">Get your first {nativeCurrency}.</a>
+                                </>
+                              }
+                              <br />
+                              <a href="https://xrpl.org/reserves.html" target="_blank" rel="noopener noreferrer">Learn more about reserves.</a>
+                            </td>
+                          }
                         </tr>
                       </tbody>
                     </table>
