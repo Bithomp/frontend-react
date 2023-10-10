@@ -347,7 +347,7 @@
       "accept-transfer": "Aceptar transferencia NFT",
       "buy-for-amount-on": "Comprar por {{amount}} en {{service}}",
       "buy-for-amount": "Comprar por {{amount}}",
-      "sell-for-amount": "Sell for {{amount}}",
+      "sell-for-amount": "Vender por {{amount}}",
       "make-offer": "Hacer una oferta",
       "list-for-sale": "Listar para vender",
       "burn": "Quemar ese NFT"
