@@ -7,14 +7,14 @@
   "table": {
     "uri": "URI",
     "digest": "Digest",
-    "attention": "Attention",
+    "attention": "注意",
     "attention-texts": {
-      "no-uri": "That NFT lacks an URI, it is incompatible with commonly accepted standards.",
-      "no-metadata": "The given URI is missing the metadata for that NFT. It goes against commonly accepted standards.",
-      "not-transferable": "This NFT is not transferable; it can only be transferred to and from the issuer.",
-      "burnable": "The issuer (or an entity authorized by the issuer) can destroy the NFT.",
-      "no-digest": "There is no Digest provided for that NFT. The NFT integrity cannot be verified.",
-      "invalid-digest": "The NFT integrity check failed. The Digest does not match the NFT metadata."
+      "no-uri": "URIが設定されていません。一般的に採用されている規格との互換性がありません。",
+      "no-metadata": "URIにメタデータが設定されていません。一般的に採用されている規格に反しています。",
+      "not-transferable": "このNFTは売買・譲渡不可に設定されています。発行者との間でのみ売買・譲渡が可能です。",
+      "burnable": "発行者(または発行者が承認した主体)はこのNFTをバーンすることができます。",
+      "no-digest": "Digestが設定されていません。NFTの整合性を検証できません。",
+      "invalid-digest": "NFTの整合性チェックに失敗しました。DigestがNFTのメタデータと一致しません。"
     }
   }
 }
