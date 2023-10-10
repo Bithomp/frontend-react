@@ -23,6 +23,22 @@ export default function TopLinks() {
 
       <span className='tooltip'>
         <a
+          href="https://bithomp.com/go/top-exchange"
+          target="_blank"
+          rel="noreferrer"
+          className='top-link'
+        >
+          Exchange crypto
+        </a>
+        <span className='tooltiptext right small'>
+          {t("sponsored.sponsored")}
+        </span>
+      </span>
+
+      <span style={{ padding: "0 10px" }}>|</span>
+
+      <span className='tooltip'>
+        <a
           href="https://bithomp.com/go/top-play"
           target="_blank"
           rel="noreferrer"

@@ -79,31 +79,37 @@ export default function Home({ devNet, selectedCurrency, setSelectedCurrency }) 
         }
       />
       <SearchBlock searchPlaceholderText={windowWidth < 500 ? t("home.search-placeholder-short") : t("home.search-placeholder")} tab="explorer" />
-      {!devNet &&
-        <div className="home-sponsored">
-          <a href="https://bithomp.com/go/play-xrp" target="_blank" rel="noreferrer">
-            <div className="sponsored-brand">
-              <img src="/images/xbit.png" className="sponsored-brand-icon" alt="play xrp" />
-              <div className="sponsored-brand-title">Play XRP</div>
-              <div className="sponsored-brand-text">Register with <i>BITHOMP25</i> and boost up your bonus.</div>
-            </div>
-          </a>
-          <a href="https://bithomp.com/go/buy-xrp" target="_blank" rel="noreferrer">
-            <div className="sponsored-brand">
-              <img src="/images/btcbit.svg" className="sponsored-brand-icon" alt="buy xrp" />
-              <div className="sponsored-brand-title">Buy XRP</div>
-              <div className="sponsored-brand-text">Instantly buy and sell cryptocurrency with low commission.</div>
-            </div>
-          </a>
-          <a href="https://bithomp.com/go/earn-on-xrp" target="_blank" rel="noreferrer">
-            <div className="sponsored-brand">
-              <img src="/images/nexo.svg" className="sponsored-brand-icon" alt="earn on xrp" />
-              <div className="sponsored-brand-title">Earn on XRP</div>
-              <div className="sponsored-brand-text">Earn 8% per year on XRP.</div>
-            </div>
-          </a>
-        </div>
-      }
+      <div className="home-sponsored">
+        <a href="https://bithomp.com/go/play-xrp" target="_blank" rel="noreferrer">
+          <div className="sponsored-brand">
+            <img src="/images/xbit.png" className="sponsored-brand-icon" alt="play xrp" />
+            <div className="sponsored-brand-title">Play XRP</div>
+            <div className="sponsored-brand-text">Register with <i>BITHOMP25</i> and boost up your bonus.</div>
+          </div>
+        </a>
+        <a href="https://bithomp.com/go/main-exchange" target="_blank" rel="noreferrer">
+          <div className="sponsored-brand easybit">
+            <img src="/images/easybit.svg" className="sponsored-brand-icon" alt="exchange crypto" />
+            <div className="sponsored-brand-title">Exchange crypto</div>
+            <div className="sponsored-brand-text">The simplest method to exchange crypto at the best rates.</div>
+          </div>
+        </a>
+        <a href="https://bithomp.com/go/buy-xrp" target="_blank" rel="noreferrer">
+          <div className="sponsored-brand">
+            <img src="/images/btcbit.svg" className="sponsored-brand-icon" alt="buy xrp" />
+            <div className="sponsored-brand-title">Buy XRP</div>
+            <div className="sponsored-brand-text">Instantly buy and sell cryptocurrency with low commission.</div>
+          </div>
+        </a>
+        <a href="https://bithomp.com/go/earn-on-xrp" target="_blank" rel="noreferrer">
+          <div className="sponsored-brand">
+            <img src="/images/nexo.svg" className="sponsored-brand-icon" alt="earn on xrp" />
+            <div className="sponsored-brand-title">Earn on XRP</div>
+            <div className="sponsored-brand-text">Earn 8% per year on XRP.</div>
+          </div>
+        </a>
+      </div>
+
       {!devNet && selectedCurrency &&
         <>
           <div className="home-converter">
