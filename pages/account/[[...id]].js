@@ -280,14 +280,20 @@ export default function Account({ pageMeta, signRequest, id, selectedCurrency })
                             <td>Last active (here you will see the last submitted transaction and the time passed)</td>
                             :
                             <td>
-                              <span className='orange'>
-                                {/* Reserves are different and currency codes also */}
-                                {data?.ledgerInfo?.deleted ?
-                                  "This account has been deactivated and is no longer active. It can be restored by sending at least 10 XRP to the address."
-                                  :
-                                  "Not activated yet. The owner with full access to the account can activate it by sending at least 10 XRP to the address."
-                                }
-                              </span>
+                              {/* Reserves are different and currency codes also */}
+                              {data?.ledgerInfo?.deleted ?
+                                <>
+                                  <span className='red bold'>Account deleted.</span>
+                                  <br />
+                                  <span className='orange'>
+                                    This account has been deactivated and is no longer active. It can be restored by sending at least 10 XRP to the address.
+                                  </span>
+                                </>
+                                :
+                                <span className='orange'>
+                                  Not activated yet. The owner with full access to the account can activate it by sending at least 10 XRP to the address.
+                                </span>
+                              }
                               {getCoinsUrl &&
                                 <>
                                   {" "}
