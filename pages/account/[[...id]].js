@@ -148,19 +148,20 @@ export default function Account({ pageMeta, signRequest, id, selectedCurrency })
 
     let output = []
 
-    if (data.username) {
-      if (data.ledgerInfo?.activated) {
+    if (data.ledgerInfo?.activated) {
+      //show username registartion link and usernsmes only for active accounts
+      if (data.username) {
         output.push(<tr key="0">
           <td>Username</td>
           <td className='blue bold'>{data.username} <CopyButton text={server + "/account/" + data.username}></CopyButton></td>
         </tr>)
+      } else if (!data.service?.name) {
+        //if no username and no service - show register link
+        output.push(<tr key="0">
+          <td>Username</td>
+          <td><Link href={"/username?address=" + data.address}>register</Link></td>
+        </tr>)
       }
-    } else if (!data.service?.name) {
-      //if no username and no service - show register link
-      output.push(<tr key="0">
-        <td>Username</td>
-        <td><Link href={"/username?address=" + data.address}>register</Link></td>
-      </tr>)
     }
 
     let thirdPartyService = null
