@@ -948,8 +948,6 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
                           </tr>
                         }
                         {!notFoundInTheNetwork && (
-                          !data.uri ||
-                          !data.metadata ||
                           !hasJsonMeta(data) ||
                           (data.type === 'xls20' && !data.flags.transferable) ||
                           data.flags.burnable ||
