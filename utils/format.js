@@ -414,55 +414,55 @@ export const amountFormat = (amount, options = {}) => {
 
 const amountParced = amount => {
   if (!amount && amount !== 0) {
-    return false;
+    return false
   }
 
   const xls14NftValue = (value) => {
     value = value.toString()
     if (value.includes("e-")) {
-      let power = Number(value.slice(-2));
-      const number = value.slice(0, -4);
-      const numberLength = number.length;
-      power = power + (16 - numberLength);
+      let power = Number(value.slice(-2))
+      const number = value.slice(0, -4)
+      const numberLength = number.length
+      power = power + (16 - numberLength)
       if (power > 84 && power < 97) {
-        const powCalc = 15 - (96 - power);
-        return Number(number) / Math.pow(10, powCalc);
+        const powCalc = 15 - (96 - power)
+        return Number(number) / Math.pow(10, powCalc)
       }
     }
     if (value.includes('0.0000000000000000000000000000000000000000000000000000000000000000000000')) {
-      value = value.replace('0.0', '');
+      value = value.replace('0.0', '')
       return value.replace(/^0+/, '')
     }
-    return false;
+    return false
   }
 
-  let currency = '';
-  let value = '';
-  let valuePrefix = '';
-  let type = '';
-  let issuer = null;
+  let currency = ''
+  let value = ''
+  let valuePrefix = ''
+  let type = ''
+  let issuer = null
 
   if (amount.value) {
-    currency = amount.currency;
-    value = amount.value;
-    issuer = amount.issuer;
-    type = 'IOU';
-    const xls14NftVal = xls14NftValue(value);
-    let realXls14 = false;
-    let firstTwoNumbers = currency.substr(0, 2);
+    currency = amount.currency
+    value = amount.value
+    issuer = amount.issuer
+    type = 'IOU'
+    const xls14NftVal = xls14NftValue(value)
+    let realXls14 = false
+    let firstTwoNumbers = currency.substr(0, 2)
     if (currency.length > 3) {
       if (firstTwoNumbers === '01') {
         // deprecated demurraging/interest-bearing
         type = 'IOU demurraging';
-        let currencyText = Buffer.from(currency.substr(2, 8), 'hex');
-        currencyText = currencyText.substr(0, 3);
-        let profit = currency.substr(16, 16);
+        let currencyText = Buffer.from(currency.substr(2, 8), 'hex')
+        currencyText = currencyText.substr(0, 3)
+        let profit = currency.substr(16, 16)
         if (profit === 'C1F76FF6ECB0BAC6' || profit === 'C1F76FF6ECB0CCCD') {
-          valuePrefix = '(-0.5%pa)';
+          valuePrefix = '(-0.5%pa)'
         } else if (profit === '41F76FF6ECB0BAC6' || profit === '41F76FF6ECB0CCCD') {
-          valuePrefix = '(+0.5%pa)';
+          valuePrefix = '(+0.5%pa)'
         } else if (profit === 'C1E76FF6ECB0BAC6') {
-          valuePrefix = '(+1%pa)';
+          valuePrefix = '(+1%pa)'
         } else {
           /*
             $realprofit = 1 - (exp(31536000 / hex2double($profit)));
@@ -474,38 +474,41 @@ const amountParced = amount => {
             }
             $output .= ' (' . $plus . $realprofit . '%pa)';
           */
-          valuePrefix = "(??%pa)";
+          valuePrefix = "(??%pa)"
         }
         currency = currencyText;
       } else if (firstTwoNumbers === '02') {
-        currency = Buffer.from(currency.substring(16), 'hex');
+        currency = Buffer.from(currency.substring(16), 'hex')
         if (xls14NftVal) {
-          realXls14 = true;
+          realXls14 = true
         }
+      } else if (firstTwoNumbers === '03') {
+        //AMM LP token, 03 + 19 bytes of sha512
+        currency = "LP token"
       } else {
-        currency = Buffer.from(currency, 'hex');
+        currency = Buffer.from(currency, 'hex')
       }
     }
 
     if (currency.toString().toLowerCase() === "xrp") {
-      currency = "FakeXRP";
+      currency = "FakeXRP"
     }
 
     if (xls14NftVal) {
-      type = 'NFT';
+      type = 'NFT'
       if (realXls14) {
         //real xls-14
-        valuePrefix = "NFT (XLS-14)";
+        valuePrefix = "NFT (XLS-14)"
       } else {
         //a parody of xls-14
-        valuePrefix = "NFT (XLS-14?)";
+        valuePrefix = "NFT (XLS-14?)"
       }
-      value = xls14NftVal;
+      value = xls14NftVal
     }
   } else {
-    type = "XRP";
-    value = amount / 1000000;
-    currency = nativeCurrency;
+    type = "XRP"
+    value = amount / 1000000
+    currency = nativeCurrency
   }
   // curency + " " - otherwise it is in the hex format
   currency = stripText(currency + " ")
