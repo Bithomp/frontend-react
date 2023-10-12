@@ -126,7 +126,9 @@ export default function UNLreport() {
       <h1 className="center">{t("header", { ns: "unl-report" })}</h1>
       <div className='flex'>
         <div className="grey-box center">
-          {t("desc", { ns: 'unl-report' })}
+          <Trans i18nKey="desc" ns="unl-report">
+            Here you can find UNL report for Ledger <b>{{ ledgerIndex: rawData?.ledger_index || "" }}</b>, ledger entry: 61E32E...6F28DC.
+          </Trans>
           <br /><br />
           {loading ?
             t("general.loading")
