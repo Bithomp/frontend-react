@@ -123,7 +123,7 @@
     }
   },
   "home": {
-    "title": "Explorador XRP | Escanear el XRP Ledger",
+    "title": "Explorador {{explorerName}} | Escanear el {{nativeCurrency}} Ledger",
     "description": "Gráfica de precio XRP | Estadísticas | Explorador NFT | Buscar dirección de cartera",
     "search-placeholder": "Buscar por Dirección XRPL / Transacción / NFT / Nombre de usuario / PayString / Oferta",
     "search-placeholder-short": "Dirección / Transacción / Usuario",
@@ -133,7 +133,7 @@
       "no-value": "sin valor"
     },
     "stat": {
-      "header": "Estadísticas XRPL en vivo",
+      "header": "Estadísticas {{ledgerName}} en vivo",
       "ledger-index": "Índice Libro contable",
       "close-time": "Hora de cierre",
       "transactions": "Transacciones",
@@ -536,7 +536,7 @@
   },
   "explorer": {
     "header": {
-      "main": "Explorador {{ledgerName}} {{testNetworkName}}",
+      "main": "Explorador {{explorerName}}",
       "account": "Account information",
       "nft": "NFT",
       "nfts": "NFTs",

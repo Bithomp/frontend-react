@@ -123,7 +123,7 @@
     }
   },
   "home": {
-    "title": "XRPエクスプローラ | XRP Ledgerを検索",
+    "title": "{{explorerName}}エクスプローラ | {{nativeCurrency}} Ledgerを検索",
     "description": "XRP価格アラート | XRPL統計情報 | NFTエクスプローラ | ウォレットアドレス検索 | XRPL NFT 情報 | NFTのトレード | XRPサービス",
     "search-placeholder": "XRPLアドレス/トランザクション/NFT/ユーザネーム/PayString/オファー/通貨のハッシュで検索",
     "search-placeholder-short": "アドレス/トランザクション/ユーザで検索",
@@ -133,7 +133,7 @@
       "no-value": "値なし"
     },
     "stat": {
-      "header": "XRPLリアルタイム情報",
+      "header": "{{ledgerName}}リアルタイム情報",
       "ledger-index": "レジャーインデックス",
       "close-time": "クローズ時間",
       "transactions": "トランザクション数",
@@ -536,7 +536,7 @@
   },
   "explorer": {
     "header": {
-      "main": "{{ledgerName}}エクスプローラ {{testNetworkName}}",
+      "main": "{{explorerName}}エクスプローラ",
       "account": "Account information",
       "nft": "NFT",
       "nfts": "NFTs",

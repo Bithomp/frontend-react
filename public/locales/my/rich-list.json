@@ -1,5 +1,5 @@
 {
-  "header": "Senarai Kaya XRPL",
+  "header": "Senarai Kaya {{ledgerName}}",
   "desc": "Di sini anda boleh mencari 100 akaun TERATAS mengikut baki XRP.",
   "summary": "Terdapat <1>{{activeAccounts}}</1> akaun aktif, jumlah keseluruhan yang tersedia: <3>{{totalCoins}}</3>"
 }

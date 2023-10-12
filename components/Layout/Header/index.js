@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { useTranslation } from 'next-i18next'
 import { useState, useEffect } from 'react'
 
-import { devNet, xahauNetwork } from '../../../utils'
+import { devNet, xahauNetwork, ledgerName } from '../../../utils'
 
 import Switch from "./Switch"
 import LangSwitch from "./LangSwitch"
@@ -118,7 +118,7 @@ export default function Header({ setSignRequest, account, signOut, selectedCurre
           </div>
 
           <div className="menu-dropdown">
-            <div className="menu-dropdown-button">XRPL</div>
+            <div className="menu-dropdown-button">{ledgerName}</div>
             <div className="menu-dropdown-content">
               <Link href="/rich-list">{t("menu.xrpl.rich-list")}</Link>
               <Link href="/last-ledger-information">{t("menu.xrpl.last-ledger-information")}</Link>
@@ -292,7 +292,7 @@ export default function Header({ setSignRequest, account, signOut, selectedCurre
             {t("menu.nft.statistics")}
           </Link>
 
-          <div className="mobile-menu-directory"><span>XRPL</span></div>
+          <div className="mobile-menu-directory"><span>{ledgerName}</span></div>
           <Link
             href="/rich-list"
             className="mobile-menu-item"

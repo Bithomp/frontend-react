@@ -123,7 +123,7 @@
     }
   },
   "home": {
-    "title": "XRP Pretraživač | Istraži XRP Ledger",
+    "title": "{{explorerName}} Pretraživač | Istraži {{nativeCurrency}} Ledger",
     "description": "XRP grafovi cijene | Statistike | NFT pretraživač | Provjeri svoj wallet",
     "search-placeholder": "Pretraži po XRPL adresi / Transakciji / NFTu / Korisničkom imenu / PayStringu / Ponudi",
     "search-placeholder-short": "Pretraži po adresi / Transakciji / Korisniku",
@@ -133,7 +133,7 @@
       "no-value": "bez vrijednosti"
     },
     "stat": {
-      "header": "XRPL live statistike",
+      "header": "{{ledgerName}} live statistike",
       "ledger-index": "Ledger indeks",
       "close-time": "Vrijeme zatvaranja",
       "transactions": "Transakcije",
@@ -536,7 +536,7 @@
   },
   "explorer": {
     "header": {
-      "main": "{{ledgerName}} Tražilica {{testNetworkName}}",
+      "main": "{{explorerName}} Tražilica",
       "account": "Account information",
       "nft": "NFT",
       "nfts": "NFTs",

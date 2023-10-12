@@ -15,8 +15,7 @@ import {
   networkId,
   networksIds,
   isValidNftXls20,
-  ledgerName,
-  testNetworkName
+  explorerName
 } from '../../utils'
 import { userOrServiceName, amountFormat } from '../../utils/format'
 
@@ -270,9 +269,7 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
 
   const explorerHeader = tab => {
     if (tab === "explorer") {
-      return <Trans i18nKey="explorer.header.main">
-        {{ ledgerName }} Explorer {{ testNetworkName: testNetworkName ? ("(" + testNetworkName + ")") : "" }}
-      </Trans>
+      return t("explorer.header.main", { explorerName })
     }
     if (['account', 'nft', 'nfts', 'nft-offer', 'nft-offers'].includes(tab)) {
       return t("explorer.header." + tab)

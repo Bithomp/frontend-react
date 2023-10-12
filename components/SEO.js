@@ -1,12 +1,11 @@
 import { NextSeo } from 'next-seo'
 import { useRouter } from 'next/router'
 
-import { server, network } from '../utils'
+import { server, explorerName } from '../utils'
 
-export default function SEO({ title, description, image, page, images, websiteName, noindex }) {
+export default function SEO({ title, titleWithNetwork, description, image, page, images, websiteName, noindex }) {
   const router = useRouter()
 
-  const networkText = network !== 'mainnet' ? (" (" + network + ")") : ""
   description = description || title
 
   const canonical = server + (router.locale !== 'en' ? ("/" + router.locale) : "") + (router.asPath === "/" ? "" : router.asPath)
@@ -17,7 +16,7 @@ export default function SEO({ title, description, image, page, images, websiteNa
     title: title || page,
     description,
     locale: router.locale,
-    site_name: websiteName || "XRPL " + (page ? page : "") + networkText,
+    site_name: websiteName || explorerName + " " + (page ? page : ""),
   }
 
   if (image) {
@@ -81,8 +80,8 @@ export default function SEO({ title, description, image, page, images, websiteNa
 
   return (
     <NextSeo
-      title={title + networkText}
-      description={description + networkText}
+      title={titleWithNetwork ? title : (explorerName + " " + title)}
+      description={description + " " + explorerName}
       openGraph={openGraph}
       twitter={twitter}
       languageAlternates={languageAlternates}

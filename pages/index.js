@@ -3,7 +3,7 @@ import { useTranslation } from 'next-i18next'
 import { useState } from 'react'
 import { SiteLinksSearchBoxJsonLd, LogoJsonLd, SocialProfileJsonLd } from 'next-seo'
 
-import { useWidth, server, xahauNetwork } from '../utils'
+import { useWidth, server, xahauNetwork, explorerName, nativeCurrency } from '../utils'
 import { getIsSsrMobile } from "../utils/mobile"
 
 import SEO from '../components/SEO'
@@ -56,7 +56,8 @@ export default function Home({ devNet, selectedCurrency, setSelectedCurrency }) 
         ]}
       />
       <SEO
-        title={t("home.title")}
+        title={t("home.title", { explorerName, nativeCurrency })}
+        titleWithNetwork="true"
         description={t("home.description")}
         images={
           [

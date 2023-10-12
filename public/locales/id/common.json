@@ -123,7 +123,7 @@
     }
   },
   "home": {
-    "title": "Pencarian XRP | Telusuri XRP Ledger",
+    "title": "Pencarian {{explorerName}} | Telusuri {{nativeCurrency}} Ledger",
     "description": "Grafik harga XRP | Statistik XRPL | Penjelajah NFT | Pencarian alamat dompet | Volume NFT XRPL | Beli dan Jual NFT | Layanan XRP",
     "search-placeholder": "Cari berdasarkan Alamat XRPL / Transaksi / NFT / Username / PayString / Penawaran",
     "search-placeholder-short": "Cari berdasarkan Alamat / Transaksi",
@@ -133,7 +133,7 @@
       "no-value": "tidak ada nilai"
     },
     "stat": {
-      "header": "Statistik live XRPL",
+      "header": "Statistik live {{ledgerName}}",
       "ledger-index": "Indeks ledger",
       "close-time": "Waktu penutupan",
       "transactions": "Transaksi",
@@ -536,7 +536,7 @@
   },
   "explorer": {
     "header": {
-      "main": "Penjelajah {{ledgerName}} {{testNetworkName}}",
+      "main": "Penjelajah {{explorerName}}",
       "account": "Account information",
       "nft": "NFT",
       "nfts": "NFTs",

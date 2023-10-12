@@ -123,7 +123,7 @@
     }
   },
   "home": {
-    "title": "XRP Utforsker | Skann XRP Ledger",
+    "title": "{{explorerName}} Utforsker | Skann {{nativeCurrency}} Ledger",
     "description": "XRP-prisdiagram | Statistikk | NFT utforsker | Slå opp lommebokadressen",
     "search-placeholder": "Søk etter XRPL-adresse / Transaksjon / NFT / Brukernavn / PayString / Offer / Valuta-hash",
     "search-placeholder-short": "Søk etter adresse / transaksjon / bruker",
@@ -133,7 +133,7 @@
       "no-value": "ingen verdi"
     },
     "stat": {
-      "header": "XRPL live statistikk",
+      "header": "{{ledgerName}} live statistikk",
       "ledger-index": "Ledger indeks",
       "close-time": "Lukke tid",
       "transactions": "Transaksjoner",
@@ -536,7 +536,7 @@
   },
   "explorer": {
     "header": {
-      "main": "{{ledgerName}} Utforsker {{testNetworkName}}",
+      "main": "{{explorerName}} Utforsker",
       "account": "Account information",
       "nft": "NFT",
       "nfts": "NFTs",

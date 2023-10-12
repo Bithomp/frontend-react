@@ -123,7 +123,7 @@
     }
   },
   "home": {
-    "title": "Explorador XRP | Escaneja l'XRP Ledger",
+    "title": "Explorador {{explorerName}} | Escaneja l'{{nativeCurrency}} Ledger",
     "description": "Gràfica de preu d'XRP | Estadístiques | Explorador d'NFTs | Cerca d'adreces dels moneders",
     "search-placeholder": "Cerca per Adreça XRPL / Transacció / NFT / Àlies / PayString / Oferta / Hash",
     "search-placeholder-short": "Cerca per Adreça / Transacció / Àlies",
@@ -133,7 +133,7 @@
       "no-value": "sense valor"
     },
     "stat": {
-      "header": "Estadístiques XRPL en viu",
+      "header": "Estadístiques {{ledgerName}} en viu",
       "ledger-index": "Índex del Ledger",
       "close-time": "Hora de tancament",
       "transactions": "Transaccions",
@@ -536,7 +536,7 @@
   },
   "explorer": {
     "header": {
-      "main": "Explorador {{ledgerName}} {{testNetworkName}}",
+      "main": "Explorador {{explorerName}}",
       "account": "Account information",
       "nft": "NFT",
       "nfts": "NFTs",

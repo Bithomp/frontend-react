@@ -3,7 +3,7 @@ import Link from 'next/link'
 import { useTranslation } from 'next-i18next'
 import axios from 'axios'
 
-import { wssServer, devNet } from '../../utils'
+import { wssServer, devNet, ledgerName } from '../../utils'
 import { niceNumber } from '../../utils/format'
 
 let ws = null
@@ -125,7 +125,7 @@ export default function Statistics() {
   }
 
   return <>
-    <h2 className="center">{t("home.stat.header")}</h2>
+    <h2 className="center">{t("home.stat.header", { ledgerName })}</h2>
     <div className='statistics-block'>
       <div className='stat-piece'>
         <div className='stat-piece-header'>{t("home.stat.ledger-index")}</div>

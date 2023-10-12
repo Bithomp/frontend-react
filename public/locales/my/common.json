@@ -123,7 +123,7 @@
 		}
 	},
 	"home": {
-		"title": "Peneroka XRP | Imbas XRPL Ledger",
+		"title": "Peneroka {{explorerName}} | Imbas {{nativeCurrency}} Ledger",
 		"description": "Carta harga XRP | Statistik XRPL | Peneroka NFT | Carian alamat dompet | Jilid NFT XRPL | Beli dan Jual NFT | Perkhidmatan XRP",
 		"search-placeholder": "Cari Menggunakan Alamat XRPL / Transaksi / NFT / Nama Pengguna / PayString / Tawaran",
 		"search-placeholder-short": "Cari Menggunakan Alamat / Transaksi",
@@ -133,7 +133,7 @@
 			"no-value": "tiada nilai"
 		},
 		"stat": {
-			"header": "Statistik Langsung XRPL",
+			"header": "Statistik Langsung {{ledgerName}}",
 			"ledger-index": "Indeks Ledger",
 			"close-time": "Masa Tutup",
 			"transactions": "Transaksi",
@@ -536,7 +536,7 @@
 	},
 	"explorer": {
     "header": {
-      "main": "Penjelajah {{ledgerName}} {{testNetworkName}}",
+      "main": "Penjelajah {{explorerName}}",
       "account": "Account information",
       "nft": "NFT",
       "nfts": "NFTs",

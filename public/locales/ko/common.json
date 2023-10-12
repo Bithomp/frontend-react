@@ -123,7 +123,7 @@
     }
   },
   "home": {
-    "title": "XRP 탐색기가 XRP 레저를 감지했습니다",
+    "title": "{{explorerName}} 탐색기가 {{nativeCurrency}} 레저를 감지했습니다",
     "description": "XRP 가격 차트 | XRP 통계 | NFT 탐색기 | 지갑 주소 조회 | XRPL NFT 거래량 | NFT 구매 및 판매 | XRP 서비스",
     "search-placeholder": "XRPL 주소/거래/NFT/사용자명/페이스트링/제안/통화 해시로 검색하기",
     "search-placeholder-short": "주소/거래/사용자별 검색",
@@ -133,7 +133,7 @@
       "no-value": "값 없음"
     },
     "stat": {
-      "header": "XRPL 실시간 통계",
+      "header": "{{ledgerName}} 실시간 통계",
       "ledger-index": "원장 지표",
       "close-time": "폐쇄시간",
       "transactions": "거래",
@@ -536,7 +536,7 @@
   },
   "explorer": {
     "header": {
-      "main": "{{ledgerName}} 탐색기 {{testNetworkName}}",
+      "main": "{{explorerName}} 탐색기",
       "account": "Account information",
       "nft": "NFT",
       "nfts": "NFTs",

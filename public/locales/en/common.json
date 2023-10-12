@@ -123,7 +123,7 @@
     }
   },
   "home": {
-    "title": "XRP Explorer | Scan the XRP Ledger",
+    "title": "{{explorerName}} Explorer | Scan the {{nativeCurrency}} Ledger",
     "description": "XRP price chart | XRPL Statistics | NFT explorer | Wallet address lookup | XRPL NFT volumes | Buy and Sell NFT | XRP Services",
     "search-placeholder": "Search by XRPL Address / Transaction / NFT / Username / PayString / Offer / Currency hash",
     "search-placeholder-short": "Search by Address / Transaction / User",
@@ -133,7 +133,7 @@
       "no-value": "no value"
     },
     "stat": {
-      "header": "XRPL live statistics",
+      "header": "{{ledgerName}} live statistics",
       "ledger-index": "Ledger index",
       "close-time": "Close time",
       "transactions": "Transactions",
@@ -536,7 +536,7 @@
   },
   "explorer": {
     "header": {
-      "main": "{{ledgerName}} Explorer {{testNetworkName}}",
+      "main": "{{explorerName}} Explorer",
       "account": "Account information",
       "nft": "NFT",
       "nfts": "NFTs",

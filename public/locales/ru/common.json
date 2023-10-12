@@ -27,7 +27,7 @@
       "offers": "Оферы"
     },
     "xrpl": {
-      "rich-list": "ТОП адресов по XRP балансу",
+      "rich-list": "ТОП адресов по балансу",
       "last-ledger-information": "Информация с последнего леджера",
       "last-ledger-transactions": "Транзакции последнего леджера",
       "verified-domains": "Проверенные домены",
@@ -39,7 +39,7 @@
     "developers": {
       "developers": "Разработчикам",
       "account-generation": "Генерация аккаунта",
-      "faucet": "Раздача тестовых XRP",
+      "faucet": "Раздача тестовых монет",
       "api": "API документация",
       "api-key-request": "API ключ"
     },
@@ -123,7 +123,7 @@
     }
   },
   "home": {
-    "title": "XRP Блок Эксплорер",
+    "title": "{{explorerName}} Блок Эксплорер",
     "description": "Курс XRP, график цены XRP, статистика по XRP леджеру, NFT эксплорер, проверка адреса XRP кошелька, объёмы продаж XRPL NFT, покупка и продажа NFT, XRP сервисы",
     "search-placeholder": "Поиск по XRPL Адресу / Транзакции / Псевдониму / PayString / NFT / Offer ID",
     "search-placeholder-short": "Адрес / Транзакция / Псевдоним",
@@ -133,7 +133,7 @@
       "no-value": "без цены"
     },
     "stat": {
-      "header": "Последние данные с XRPL",
+      "header": "Последние данные с {{ledgerName}}",
       "ledger-index": "№ леджера",
       "close-time": "Время",
       "transactions": "Транзакций в леджере",
@@ -536,7 +536,7 @@
   },
   "explorer": {
     "header": {
-      "main": "{{ledgerName}} Эксплорер {{testNetworkName}}",
+      "main": "{{explorerName}} Эксплорер",
       "account": "Информация об адресе",
       "nft": "NFT",
       "nfts": "NFTs",
