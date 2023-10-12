@@ -17,12 +17,12 @@ import CopyButton from '../components/UI/CopyButton'
 
 import { useWidth } from '../utils'
 import {
-  trWithAccount,
   userOrServiceLink,
   niceNumber,
   shortHash,
   codeHighlight
 } from '../utils/format'
+import Link from 'next/link'
 
 export default function UNLreport() {
   const { t } = useTranslation(['common', 'unl-report'])
@@ -147,7 +147,7 @@ export default function UNLreport() {
               <tr>
                 <th className='center'>{t("table.index")}</th>
                 <th className='left'>{t("table.public-key")}</th>
-                <th className='center'>{t("table.address")}</th>
+                <th className='right'>{t("table.address")}</th>
               </tr>
             </thead>
             <tbody>
@@ -171,12 +171,8 @@ export default function UNLreport() {
                             <td className='left'>
                               {shortHash(av.ActiveValidator.PublicKey)} <CopyButton text={av.ActiveValidator.PublicKey} />
                             </td>
-                            <td>
-                              <table>
-                                <tbody>
-                                  {trWithAccount(av.ActiveValidator, 'Account')}
-                                </tbody>
-                              </table>
+                            <td className='right'>
+                              <Link href={"/account/" + av.ActiveValidator.Account}>{av.ActiveValidator.Account}</Link>
                             </td>
                           </tr>
                         )
@@ -212,7 +208,7 @@ export default function UNLreport() {
                       </td>
                       <td>
                         <p>
-                          {t("table.address")}: <a href={"/explorer/" + av.ActiveValidator.Account}>{av.ActiveValidator.Account}</a> {userOrServiceLink(av.ActiveValidator, 'Account')}
+                          {t("table.address")}: <Link href={"/account/" + av.ActiveValidator.Account}>{av.ActiveValidator.Account}</Link> {userOrServiceLink(av.ActiveValidator, 'Account')}
                         </p>
                         {/* r.service &&
                           <p>

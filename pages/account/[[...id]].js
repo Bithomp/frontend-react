@@ -6,7 +6,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 
 import { server, getCoinsUrl, nativeCurrency } from '../../utils'
-//import { codeHighlight } from '../../utils/format'
+import { amountFormat } from '../../utils/format'
 import { getIsSsrMobile } from "../../utils/mobile"
 
 export async function getServerSideProps(context) {
@@ -275,10 +275,16 @@ export default function Account({ pageMeta, signRequest, id, selectedCurrency })
                         <tr><th colSpan="100">{t("table.ledger-data")}</th></tr>
                       </thead>
                       <tbody>
+                        {data?.ledgerInfo?.balance &&
+                          <tr>
+                            <td>{t("table.balance")}</td>
+                            <td>{amountFormat(data.ledgerInfo.balance)}</td>
+                          </tr>
+                        }
                         <tr>
                           <td className='bold'>Status</td>
                           {data?.ledgerInfo?.activated ?
-                            <td>Last active (here you will see the last submitted transaction and the time passed)</td>
+                            <td>Active {/* Last active (here you will see the last submitted transaction and the time passed) */}</td>
                             :
                             <td>
                               {/* Reserves are different and currency codes also */}
