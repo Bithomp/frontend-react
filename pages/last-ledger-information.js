@@ -11,7 +11,7 @@ export async function getStaticProps({ locale }) {
   }
 }
 
-import { wssServer } from '../utils'
+import { wssServer, nativeCurrency } from '../utils'
 import { niceNumber, ledgerLink } from '../utils/format'
 
 import SEO from '../components/SEO'
@@ -123,24 +123,24 @@ export default function LastLedgerInformation() {
           {t("last-ledger-information.validation-quorum")}: {ledger?.validationQuorum}
         </p>
         <p>
-          {t("last-ledger-information.base-fee")}: {ledger?.validatedLedger.baseFeeXRP && (ledger.validatedLedger.baseFeeXRP * 1).toFixed(6) + ' XRP'}
+          {t("last-ledger-information.base-fee")}: {ledger?.validatedLedger.baseFeeXRP && (ledger.validatedLedger.baseFeeXRP * 1).toFixed(6) + ' ' + nativeCurrency}
         </p>
         <p>
-          {t("last-ledger-information.base-reserve")}: {ledger?.validatedLedger.reserveBaseXRP && ledger.validatedLedger.reserveBaseXRP + ' XRP'}
+          {t("last-ledger-information.base-reserve")}: {ledger?.validatedLedger.reserveBaseXRP && ledger.validatedLedger.reserveBaseXRP + ' ' + nativeCurrency}
         </p>
         <p>
-          {t("last-ledger-information.increment-reserve")}: {ledger?.validatedLedger.reserveIncrementXRP && ledger.validatedLedger.reserveIncrementXRP + ' XRP'}
+          {t("last-ledger-information.increment-reserve")}: {ledger?.validatedLedger.reserveIncrementXRP && ledger.validatedLedger.reserveIncrementXRP + ' ' + nativeCurrency}
         </p>
         <p>
           {t("last-ledger-information.total-supply") + ": "}
           <span className='no-brake'>
-            {niceNumber(ledger?.totalCoins && (ledger.totalCoins / 1000000), 6) + ' XRP'}
+            {niceNumber(ledger?.totalCoins && (ledger.totalCoins / 1000000), 6) + ' ' + nativeCurrency}
           </span>
         </p>
         <p>
           {t("last-ledger-information.total-burned") + ": "}
           <span className='no-brake'>
-            {niceNumber(ledger?.totalCoins && (100000000000 - ledger.totalCoins / 1000000), 6) + ' XRP'}
+            {niceNumber(ledger?.totalCoins && (100000000000 - ledger.totalCoins / 1000000), 6) + ' ' + nativeCurrency}
           </span>
         </p>
         <p className="center" style={{ position: "absolute", top: "calc(50% - 72px)", left: "calc(50% - 54px)" }}>
