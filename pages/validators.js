@@ -113,7 +113,7 @@ export default function Validators() {
                         </>
                       }
                       <p>
-                        {t("validators.public-key")}<br />
+                        {t("table.public-key")}<br />
                         {v.publicKey.substr(0, 14) + "..." + v.publicKey.substr(-14)}
                       </p>
                       <p>
@@ -133,7 +133,7 @@ export default function Validators() {
                 <tr>
                   <th> </th>
                   <th>{t("validators.domain")}</th>
-                  <th>{t("validators.public-key")}</th>
+                  <th>{t("table.public-key")}</th>
                   <th className='center'>{t("validators.sequence")}</th>
                   <th>{t("validators.address")}</th>
                 </tr>
@@ -155,7 +155,7 @@ export default function Validators() {
                     </td>
                     <td>{v.publicKey}</td>
                     <td className='center'>{v.sequence}</td>
-                    <td className='center'><a href={"/explorer/" + v.address}><LinkIcon/></a></td>
+                    <td className='center'><a href={"/explorer/" + v.address}><LinkIcon /></a></td>
                   </tr>
                 )}
               </tbody>

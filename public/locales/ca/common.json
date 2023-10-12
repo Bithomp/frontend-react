@@ -33,6 +33,7 @@
       "verified-domains": "Verified domains",
       "validators": "Validadors",
       "amendments": "Esmenes",
+      "unl-report": "UNL report",
       "genesis": "Comptes gènesi"
     },
     "developers": {
@@ -197,7 +198,6 @@
     "unl": "Validadors de l'UNL",
     "domain": "Domini",
     "domain-legacy": "Domini (antiga verificació)",
-    "public-key": "Clau pública",
     "sequence": "Seqüència",
     "address": "Adreça XRPL",
     "no-domain": "domini no especificat",
@@ -466,6 +466,7 @@
     "on-sale": "En venda",
     "social-share": "Compartir és cuidar",
     "marketplace": "Mercat",
+    "public-key": "Clau pública",
     "text": {
       "show-extended-statistics": "Mostra estadístiques ampliades",
       "include-without-metadata": "Include NFTs without metadata",

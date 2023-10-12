@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { useTranslation } from 'next-i18next'
 import { useState, useEffect } from 'react'
 
-import { devNet } from '../../../utils'
+import { devNet, xahauNetwork } from '../../../utils'
 
 import Switch from "./Switch"
 import LangSwitch from "./LangSwitch"
@@ -126,6 +126,7 @@ export default function Header({ setSignRequest, account, signOut, selectedCurre
               <Link href="/domains">{t("menu.xrpl.verified-domains")}</Link>
               <Link href="/validators">{t("menu.xrpl.validators")}</Link>
               <Link href="/amendments">{t("menu.xrpl.amendments")}</Link>
+              {xahauNetwork && <Link href="/unl-report">{t("menu.xrpl.unl-report")}</Link>}
               {!devNet && <Link href="/genesis">{t("menu.xrpl.genesis")}</Link>}
             </div>
           </div>
@@ -334,6 +335,15 @@ export default function Header({ setSignRequest, account, signOut, selectedCurre
           >
             {t("menu.xrpl.amendments")}
           </Link>
+          {xahauNetwork &&
+            <Link
+              href="/unl-report"
+              className="mobile-menu-item"
+              onClick={mobileMenuToggle}
+            >
+              {t("menu.xrpl.unl-report")}
+            </Link>
+          }
           {!devNet &&
             <Link href="/genesis" className="mobile-menu-item" onClick={mobileMenuToggle}>
               {t("menu.xrpl.genesis")}

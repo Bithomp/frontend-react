@@ -33,6 +33,7 @@
       "verified-domains": "검증된 도메인",
       "validators": "벨리데이터",
       "amendments": "수정사항",
+      "unl-report": "UNL report",
       "genesis": "Genesis 계정"
     },
     "developers": {
@@ -197,7 +198,6 @@
     "unl": "UNL 벨리데이터",
     "domain": "도메인",
     "domain-legacy": "도메인 (증명 오래됨)",
-    "public-key": "공개 키",
     "sequence": "절차",
     "address": "XRPL 주소",
     "no-domain": "도메인이 표시되지 않습니다",
@@ -466,6 +466,7 @@
     "on-sale": "판매 중",
     "social-share": "공유하기",
     "marketplace": "마켓 플레이스",
+    "public-key": "공개 키",
     "text": {
       "show-extended-statistics": "확장된 실시간 데이터를 보여줍니다",
       "include-without-metadata": "메타데이터가 없는 NFT가 포함되어 있습니다",

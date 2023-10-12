@@ -33,6 +33,7 @@
 			"verified-domains": "Domain Disahkan",
 			"validators": "Node Pengesah",
 			"amendments": "Pindaan",
+			"unl-report": "UNL report",
 			"genesis": "Akaun Genesis"
 		},
 		"developers": {
@@ -197,7 +198,6 @@
 		"unl": "Pengesah UNL",
 		"domain": "Domain",
 		"domain-legacy": "Domain (pengesahan lama)",
-		"public-key": "Kunci Awam",
 		"sequence": "Rantaian",
 		"address": "Alamat XRPL",
 		"no-domain": "tiada domain yang dinyatakan",
@@ -466,6 +466,7 @@
 		"on-sale": "Dijual",
 		"social-share": "Kongsi adalah menjaga",
 		"marketplace": "Pasaran",
+		"public-key": "Kunci Awam",
 		"text": {
 			"show-extended-statistics": "Paparkan statistik lanjutan",
 			"include-without-metadata": "Sertakan NFT tanpa metadata",

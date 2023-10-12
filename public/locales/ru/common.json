@@ -33,6 +33,7 @@
       "verified-domains": "Проверенные домены",
       "validators": "Валидаторы",
       "amendments": "Поправки",
+      "unl-report": "UNL репорт",
       "genesis": "Генезис аккаунты"
     },
     "developers": {
@@ -197,7 +198,6 @@
     "unl": "UNL валидаторы",
     "domain": "Домен",
     "domain-legacy": "Домен (старая верификация)",
-    "public-key": "Публичный ключ",
     "sequence": "Версия",
     "address": "XRPL адрес",
     "no-domain": "домен не указан",
@@ -466,6 +466,7 @@
     "on-sale": "На продаже",
     "social-share": "Поделиться",
     "marketplace": "Маркетплейс",
+    "public-key": "Публичный ключ",
     "text": {
       "show-extended-statistics": "Показать расширенную статистику",
       "include-without-metadata": "Включить NFT без метаданных",

@@ -33,6 +33,7 @@
       "verified-domains": "Überprüfte Domains",
       "validators": "Validatoren",
       "amendments": "Änderungen",
+      "unl-report": "UNL report",
       "genesis": "Genesis Konten"
     },
     "developers": {
@@ -197,7 +198,6 @@
     "unl": "UNL Validatoren",
     "domain": "Domain",
     "domain-legacy": "Domain (alte Verifizierung)",
-    "public-key": "Public Key",
     "sequence": "Sequenz",
     "address": "XRPL Adresse",
     "no-domain": "keine Domain angegeben",
@@ -466,6 +466,7 @@
     "on-sale": "Zum Verkauf",
     "social-share": "Teilen ist Kümmern",
     "marketplace": "Marktplatz",
+    "public-key": "Public Key",
     "text": {
       "show-extended-statistics": "Erweiterte Statistiken anzeigen",
       "include-without-metadata": "NFTs ohne Metadaten einbeziehen",

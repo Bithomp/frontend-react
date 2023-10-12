@@ -286,7 +286,8 @@ export const capitalize = str => {
 
 export const network = process.env.NEXT_PUBLIC_NETWORK_NAME ? process.env.NEXT_PUBLIC_NETWORK_NAME : "mainnet"
 export const devNet = ['mainnet', 'staging', 'xahau'].includes(network) ? false : network
-export const ledgerName = network.includes('xahau') ? "Xahau" : "XRP Ledger"
+export const xahauNetwork = network.includes('xahau')
+export const ledgerName = xahauNetwork ? "Xahau" : "XRP Ledger"
 export const testNetworkName = capitalize(devNet && devNet.includes("testnet") ? "testnet" : devNet)
 
 const networks = {

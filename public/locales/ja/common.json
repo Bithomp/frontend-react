@@ -33,6 +33,7 @@
       "verified-domains": "検証済みドメイン",
       "validators": "バリデータ",
       "amendments": "Amendments",
+      "unl-report": "UNL report",
       "genesis": "ジェネシスアカウント"
     },
     "developers": {
@@ -197,7 +198,6 @@
     "unl": "UNLバリデータ",
     "domain": "ドメイン",
     "domain-legacy": "ドメイン (古い検証方法)",
-    "public-key": "公開鍵",
     "sequence": "シーケンス",
     "address": "XRPLアドレス",
     "no-domain": "ドメイン未指定",
@@ -466,6 +466,7 @@
     "on-sale": "販売中",
     "social-share": "共有",
     "marketplace": "マーケットプレイス",
+    "public-key": "公開鍵",
     "text": {
       "show-extended-statistics": "詳細な統計情報の表示",
       "include-without-metadata": "メタデータなしのNFTを含む",

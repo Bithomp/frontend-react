@@ -33,6 +33,7 @@
       "verified-domains": "Verified domains",
       "validators": "Validatori",
       "amendments": "Amandmani",
+      "unl-report": "UNL report",
       "genesis": "Izvorni (genesis) računi"
     },
     "developers": {
@@ -197,7 +198,6 @@
     "unl": "UNL validatori",
     "domain": "Domena",
     "domain-legacy": "Domena (stara verifikacija)",
-    "public-key": "Javni ključ",
     "sequence": "Sekvenca",
     "address": "XRPL adresa",
     "no-domain": "nema domene",
@@ -466,6 +466,7 @@
     "on-sale": "Na rasprodaji",
     "social-share": "Dijeljenje je zakon",
     "marketplace": "Marketplace",
+    "public-key": "Javni ključ",
     "text": {
       "show-extended-statistics": "Pošalji detaljnije statistike",
       "include-without-metadata": "Include NFTs without metadata",

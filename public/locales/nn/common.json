@@ -33,6 +33,7 @@
       "verified-domains": "Verified domains",
       "validators": "Validatorer",
       "amendments": "Endringer",
+      "unl-report": "UNL report",
       "genesis": "Genesis kontoer"
     },
     "developers": {
@@ -197,7 +198,6 @@
     "unl": "UNL-validatorer",
     "domain": "Domene",
     "domain-legacy": "Domene (gammel bekreftelse)",
-    "public-key": "Offentlig nøkkel",
     "sequence": "Sekvens",
     "address": "XRPL adresse",
     "no-domain": "ingen domene spesifisert",
@@ -466,6 +466,7 @@
     "on-sale": "På salg",
     "social-share": "Deling er gleding",
     "marketplace": "Markedsplass",
+    "public-key": "Offentlig nøkkel",
     "text": {
       "show-extended-statistics": "Vis utvidet statistikk",
       "include-without-metadata": "Include NFTs without metadata",
