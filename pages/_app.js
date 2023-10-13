@@ -13,7 +13,7 @@ import BackgroundImage from '../components/Layout/BackgroundImage'
 import TopLinks from '../components/Layout/TopLinks'
 
 import { IsSsrMobileContext } from '../utils/mobile'
-import { network, devNet, server, useLocalStorage } from '../utils'
+import { network, devNet, server, useLocalStorage, xahauNetwork } from '../utils'
 
 import '../styles/ui.scss'
 import { ThemeProvider } from "../components/Layout/ThemeContext"
@@ -36,7 +36,7 @@ const MyApp = ({ Component, pageProps }) => {
     axios.defaults.baseURL = server + '/api/cors/'
   }
 
-  let showTopAds = true //change here if you want to see TOP ADS
+  let showTopAds = !xahauNetwork //change here if you want to see TOP ADS
   const pagesWithNoTopAdds = ['/', '/username', '/disclaimer', '/privacy-policy', '/terms-and-conditions', '/press', '/404']
   if (showTopAds) {
     showTopAds = !pagesWithNoTopAdds.includes(router.pathname)
