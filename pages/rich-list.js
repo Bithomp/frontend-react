@@ -16,7 +16,7 @@ export const getServerSideProps = async ({ query, locale }) => {
 
 import SEO from '../components/SEO'
 
-import { useWidth, ledgerName } from '../utils'
+import { useWidth, ledgerName, nativeCurrency } from '../utils'
 import {
   trWithAccount,
   amountFormat,
@@ -110,7 +110,7 @@ export default function RichList() {
       <h1 className="center">{t("header", { ns: "rich-list", ledgerName })}</h1>
       <div className='flex'>
         <div className="grey-box">
-          {t("desc", { ns: 'rich-list' })}
+          {t("desc", { ns: 'rich-list', nativeCurrency })}
         </div>
         <div className="grey-box">
           {loading ?
