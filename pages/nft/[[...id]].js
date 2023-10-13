@@ -249,8 +249,8 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, signRequest, selectedCurrency])
 
-  const externalUrl = (meta) => {
-    let url = meta.external_url || meta.external_link || meta.externalUrl || meta.externalURL || (meta.minter?.includes("https://") && meta.minter);
+  const externalUrl = meta => {
+    let url = meta.external_url || meta.external_link || meta.externalUrl || meta.externalURL || (meta.minter?.includes("https://") && meta.minter) || meta.External_Link;
     if (url) {
       url = stripText(url);
       if (url.toLowerCase().slice(0, 8) !== 'https://' && url.slice(0, 7).toLowerCase() !== 'http://') {
@@ -259,6 +259,15 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
       return <a href={url} target="_blank" rel="noreferrer nofollow">{url}</a>;
     }
     return null;
+  }
+
+  const nftDescription = meta => {
+    if (meta.description) {
+      return stripText(meta.description)
+    } else if (meta.Description) {
+      return stripText(meta.Description)
+    }
+    return null
   }
 
   const eventType = event => {
@@ -738,7 +747,7 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
   return <>
     <SEO
       page="NFT"
-      title={pageMeta?.metadata?.name || pageMeta?.nftokenID || "NFT"}
+      title={nftName(pageMeta) || pageMeta?.nftokenID || "NFT"}
       description={pageMeta?.metadata?.description || (!pageMeta?.nftokenID ? t("desc", { ns: 'nft' }) : "")}
       image={{ file: imageUrl }}
     />
@@ -760,7 +769,6 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
               :
               <>{data.flags &&
                 <>
-
                   <div className="column-left">
                     {!notFoundInTheNetwork ?
                       <>
@@ -821,16 +829,16 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
                           </tr>
                         </thead>
                         <tbody>
-                          {!!data.metadata.name &&
+                          {nftName(data) &&
                             <tr>
                               <td>{t("table.name")}</td>
                               <td>{nftName(data)}</td>
                             </tr>
                           }
-                          {!!data.metadata.description &&
+                          {nftDescription(data.metadata) &&
                             <tr>
                               <td>{t("table.description")}</td>
-                              <td>{stripText(data.metadata.description)}</td>
+                              <td>{nftDescription(data.metadata)}</td>
                             </tr>
                           }
                           {!!data.metadata.collection &&

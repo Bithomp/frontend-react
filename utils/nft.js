@@ -128,6 +128,8 @@ export const nftNameLink = nft => {
 export const nftName = nft => {
   if (nft?.metadata?.name) {
     return stripText(nft.metadata.name);
+  } else if (nft?.metadata?.Name) {
+    return stripText(nft.metadata.Name);
   } else if (nft?.uri) {
     let name = Buffer.from(nft.uri, 'hex');
     if (name.includes('filename=')) {
