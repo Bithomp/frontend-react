@@ -5,7 +5,8 @@ import Mailto from 'react-protected-mailto'
 import SocialIcons from '../components/Layout/SocialIcons'
 import SEO from '../components/SEO'
 
-export async function getStaticProps({ locale }) {
+export async function getServerSideProps(context) {
+  const { locale } = context
   return {
     props: {
       ...(await serverSideTranslations(locale, ['common'])),
