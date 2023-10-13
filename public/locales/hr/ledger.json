@@ -1,6 +1,7 @@
 {
   "no-transactions": "Nismo pronašli transakcije za prikazati.",
   "ledger-not-found": "We can not find that ledger yet",
-  "earliest-ledger": "Ledger <1>32570</1> je najraniji dostupni ledger, cca prvi tjedan u povijesti postojanja XRPL-a, <3>ledgeri 1 do 32569 su izgubljeni u havariji 2012</3>.",
-  "ledger-continue": "Jer je XRPL-ovo stanje zabilježeno sa svakom ledger verzijom, ledger može nastaviti bez pune povijesti."
+  "earliest-ledger": "Ledger <1>{{minLedger}}</1> je najraniji dostupni ledger.",
+  "earliest-ledger-mainnet": "Ledger <1>32570</1> je najraniji dostupni ledger, cca prvi tjedan u povijesti postojanja XRPL-a, <3>ledgeri 1 do 32569 su izgubljeni u havariji 2012</3>.",
+  "ledger-continue": "Jer je {{ledgerName}}-ovo stanje zabilježeno sa svakom ledger verzijom, ledger može nastaviti bez pune povijesti."
 }

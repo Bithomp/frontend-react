@@ -1,6 +1,7 @@
 {
   "no-transactions": "Kami tidak dapat menemui sebarang transaksi untuk dipaparkan.",
   "ledger-not-found": "Kami tidak dapat menemui ledger tersebut lagi",
-  "earliest-ledger": "Ledger <1>32570</1> adalah ledger awal yang tersedia, kira-kira seminggu pertama dalam sejarah XRPL, <3>ledgers 1 hingga 32569 hilang akibat kejadian yang tidak diingini pada tahun 2012</3>.",
-  "ledger-continue": "Kerana keadaan XRP Ledger direkodkan dalam setiap versi ledger, ledger boleh berterusan tanpa sejarah yang hilang."
+  "earliest-ledger": "Ledger <1>{{minLedger}}</1> adalah ledger awal yang tersedia.",
+  "earliest-ledger-mainnet": "Ledger <1>32570</1> adalah ledger awal yang tersedia, kira-kira seminggu pertama dalam sejarah XRPL, <3>ledgers 1 hingga 32569 hilang akibat kejadian yang tidak diingini pada tahun 2012</3>.",
+  "ledger-continue": "Kerana keadaan {{ledgerName}} direkodkan dalam setiap versi ledger, ledger boleh berterusan tanpa sejarah yang hilang."
 }

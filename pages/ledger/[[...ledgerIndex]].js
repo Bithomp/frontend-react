@@ -6,8 +6,10 @@ import Link from 'next/link'
 
 import SEO from '../../components/SEO'
 
-import { server } from '../../utils'
-import { fullDateAndTime, shortHash, addressUsernameOrServiceLink } from '../../utils/format';
+import { server, network, ledgerName } from '../../utils'
+import { fullDateAndTime, shortHash, addressUsernameOrServiceLink } from '../../utils/format'
+
+const minLedger = network === "mainnet" ? 32570 : 3
 
 export async function getServerSideProps(context) {
   const { locale, req, query } = context
@@ -24,7 +26,7 @@ export async function getServerSideProps(context) {
   }
 
   try {
-    if (ledgerIndex === "" || ledgerIndex > 32569) {
+    if (ledgerIndex === "" || ledgerIndex >= minLedger) {
       const res = await axios({
         method: 'get',
         url: server + '/api/cors/xrpl/v1/ledger/' + ledgerIndex,
@@ -99,14 +101,14 @@ export default function Ledger({ ledgerIndex, pageMeta }) {
 
   useEffect(() => {
     setRendered(true)
-    if (ledgerVersion === "" || ledgerVersion > 32569) {
+    if (ledgerVersion === "" || ledgerVersion >= minLedger) {
       checkApi()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ledgerVersion])
 
   const ledgerNavigation = <p className='center'>
-    {ledgerVersion > 32572 &&
+    {ledgerVersion >= (minLedger + 1) &&
       <Link href={"/ledger/" + (Number(ledgerVersion) - 1)} style={{ marginRight: "10px" }} onClick={() => setLedgerVersion(ledgerVersion - 1)}>←</Link>
     }
     #{ledgerVersion}
@@ -117,7 +119,7 @@ export default function Ledger({ ledgerIndex, pageMeta }) {
     <SEO title={t("menu.ledger") + ' ' + ledgerVersion} />
     <div className="content-text">
       <h1 className="center">{t("menu.ledger")} #{ledgerVersion}<br />{(rendered && pageMeta?.close_time) ? fullDateAndTime(pageMeta.close_time) : <br />}</h1>
-      {ledgerVersion > 32569 ?
+      {ledgerVersion >= minLedger ?
         <>
           {ledgerNavigation}
           <table className="table-large">
@@ -166,18 +168,27 @@ export default function Ledger({ ledgerIndex, pageMeta }) {
               </p>
               :
               <>
-                <Trans i18nKey="earliest-ledger" ns="ledger">
-                  The ledger <b>32570</b> is the earliest ledger available, approximately the first week of XRPL history,
-                  <a
-                    href="https://web.archive.org/web/20171211225452/https://forum.ripple.com/viewtopic.php?f=2&t=3613"
-                    rel="noreferrer"
-                    target="_blank"
-                  >
-                    ledgers 1 through 32569 were lost due to a mishap in 2012
-                  </a>.
-                </Trans>
-                <br /><br />
-                {t("ledger-continue", { ns: "ledger" })}
+                {network === "mainnet" ?
+                  <>
+                    <Trans i18nKey="earliest-ledger-mainnet" ns="ledger">
+                      The ledger <b>32570</b> is the earliest ledger available, approximately the first week of XRPL history,
+                      <a
+                        href="https://web.archive.org/web/20171211225452/https://forum.ripple.com/viewtopic.php?f=2&t=3613"
+                        rel="noreferrer"
+                        target="_blank"
+                      >
+                        ledgers 1 through 32569 were lost due to a mishap in 2012
+                      </a>.
+                    </Trans>
+                    <br /><br />
+                  </>
+                  :
+                  <Trans i18nKey="earliest-ledger" ns="ledger">
+                    The ledger <b>{{ minLedger }}</b> is the earliest ledger available.
+                  </Trans>
+                }
+                <br />
+                {t("ledger-continue", { ns: "ledger", ledgerName })}
               </>
             }
           </div>
