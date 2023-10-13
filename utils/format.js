@@ -365,7 +365,7 @@ export const shortAddress = (id) => {
 }
 
 export const convertedAmount = (nft, convertCurrency) => {
-  if (nft?.amountInConvertCurrencies && nft.amountInConvertCurrencies[convertCurrency]) {
+  if (nft?.amountInConvertCurrencies && nft.amountInConvertCurrencies?.[convertCurrency]) {
     return niceNumber(nft.amountInConvertCurrencies[convertCurrency], 2, convertCurrency)
   }
   return null

@@ -327,7 +327,7 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
               <td>{t("table.price")}</td>
               <td>
                 {amountFormat(nftEvent.amount, { tooltip: "right" })}
-                {nftEvent.amountInConvertCurrencies[selectedCurrency] &&
+                {nftEvent.amountInConvertCurrencies?.[selectedCurrency] &&
                   <> (≈ {convertedAmount(nftEvent, selectedCurrency)})</>
                 }
               </td>
