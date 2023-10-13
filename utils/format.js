@@ -359,9 +359,9 @@ export const shortHash = (id, n = 6) => {
   return id.substr(0, n) + "..." + id.substr(-n)
 }
 
-export const shortAddress = (id) => {
-  if (!id) return "";
-  return id.substr(0, 6) + "..." + id.substr(-6);
+export const shortAddress = id => {
+  if (!id) return ""
+  return id.substr(0, 6) + "..." + id.substr(-6)
 }
 
 export const convertedAmount = (nft, convertCurrency) => {

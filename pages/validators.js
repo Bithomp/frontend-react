@@ -6,10 +6,10 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 import SEO from '../components/SEO'
 
-import { fullDateAndTime } from '../utils/format'
+import { fullDateAndTime, shortHash } from '../utils/format'
 import { useWidth } from '../utils'
 
-import LinkIcon from "../public/images/link.svg"
+import CopyButton from '../components/UI/CopyButton'
 
 export async function getStaticProps({ locale }) {
   return {
@@ -114,13 +114,13 @@ export default function Validators() {
                       }
                       <p>
                         {t("table.public-key")}<br />
-                        {v.publicKey.substr(0, 14) + "..." + v.publicKey.substr(-14)}
+                        {shortHash(v.publicKey)} <CopyButton text={v.publicKey} />
                       </p>
                       <p>
                         {t("validators.sequence")}: {v.sequence}
                       </p>
                       <p>
-                        {t("validators.address")}<br />
+                        {t("validators.address")} <CopyButton text={v.address} /><br />
                         <a href={"/explorer/" + v.address}>{v.address}</a>
                       </p>
                     </td>
@@ -153,9 +153,9 @@ export default function Validators() {
                         </>
                       }
                     </td>
-                    <td>{v.publicKey}</td>
+                    <td><CopyButton text={v.publicKey} /> {shortHash(v.publicKey)}</td>
                     <td className='center'>{v.sequence}</td>
-                    <td className='center'><a href={"/explorer/" + v.address}><LinkIcon /></a></td>
+                    <td className='left'><CopyButton text={v.address} /> <a href={"/explorer/" + v.address}>{v.address}</a></td>
                   </tr>
                 )}
               </tbody>
