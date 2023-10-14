@@ -2,7 +2,7 @@
   "menu": {
     "personal": {
       "personal": "Privat",
-      "search-on-xrpl": "Search on XRPL"
+      "search-on-ledgerName": "Search on {{ledgerName}}"
     },
     "business": {
       "business": "Bedrift",

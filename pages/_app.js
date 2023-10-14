@@ -94,7 +94,10 @@ const MyApp = ({ Component, pageProps }) => {
               />
             </div>
             <BackgroundImage />
-            <Footer />
+            <Footer
+              setSignRequest={setSignRequest}
+              account={account}
+            />
           </div>
         </ThemeProvider>
       </IsSsrMobileContext.Provider>

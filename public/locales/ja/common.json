@@ -2,7 +2,7 @@
   "menu": {
     "personal": {
       "personal": "個人向け",
-      "search-on-xrpl": "XRPLの検索"
+      "search-on-ledgerName": "{{ledgerName}}の検索"
     },
     "business": {
       "business": "ビジネス向け",

@@ -76,7 +76,7 @@ export default function Header({ setSignRequest, account, signOut, selectedCurre
           <div className="menu-dropdown">
             <div className="menu-dropdown-button">{t("menu.personal.personal")}</div>
             <div className="menu-dropdown-content">
-              <a href={"/explorer/"}>{t("menu.personal.search-on-xrpl")}</a>
+              <a href={"/explorer/"}>{t("menu.personal.search-on-ledgerName", { ledgerName })}</a>
               <Link href="/username">{t("menu.usernames")}</Link>
               {displayName ?
                 <Link href={"/nfts/" + address} legacyBehavior>{t("signin.actions.my-nfts")}</Link>
@@ -152,11 +152,11 @@ export default function Header({ setSignRequest, account, signOut, selectedCurre
           <div className="menu-dropdown">
             <div className="menu-dropdown-button">{t("menu.networks")}</div>
             <div className="menu-dropdown-content">
-              {devNet && <a href="https://bithomp.com">Mainnet</a>}
-              {devNet !== 'testnet' && <a href="https://test.bithomp.com">Testnet</a>}
-              {devNet !== 'devnet' && <a href="https://dev.bithomp.com">Devnet</a>}
+              {devNet && <a href="https://bithomp.com">XRPL Mainnet</a>}
+              {devNet !== 'testnet' && <a href="https://test.bithomp.com">XRPL Testnet</a>}
+              {devNet !== 'devnet' && <a href="https://dev.bithomp.com">XRPL Devnet</a>}
+              {devNet !== 'amm' && <a href="https://amm.bithomp.com">XRPL AMM</a>}
               {devNet !== 'xahau-testnet' && <a href="https://test.xahauexplorer.com">Xahau Testnet</a>}
-              {devNet !== 'amm' && <a href="https://amm.bithomp.com">AMM</a>}
             </div>
           </div>
         </div>
@@ -232,7 +232,7 @@ export default function Header({ setSignRequest, account, signOut, selectedCurre
           }
 
           <div className="mobile-menu-directory"><span>{t("menu.personal.personal")}</span></div>
-          <a href={"/explorer/"} className="mobile-menu-item">{t("menu.personal.search-on-xrpl")}</a>
+          <a href={"/explorer/"} className="mobile-menu-item">{t("menu.personal.search-on-ledgerName", { ledgerName })}</a>
           {!displayName &&
             <Link href="/username" className="mobile-menu-item" onClick={mobileMenuToggle}>{t("menu.usernames")}</Link>
           }

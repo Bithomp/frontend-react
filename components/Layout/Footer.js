@@ -1,12 +1,12 @@
 import Link from 'next/link'
 import { useTranslation } from 'next-i18next'
 
-import { devNet, useLocalStorage } from '../../utils'
+import { devNet, useLocalStorage, ledgerName } from '../../utils'
 
 import SocialIcons from "./SocialIcons"
 import LogoAnimated from './LogoAnimated'
 
-export default function Footer() {
+export default function Footer({ account, setSignRequest }) {
   const year = new Date().getFullYear();
   const { t } = useTranslation();
 
@@ -21,9 +21,15 @@ export default function Footer() {
       <div className="footer-menu">
         <div className="footer-menu-column">
           <span className="footer-menu-header">{t("menu.personal.personal")}</span>
+          <a href={"/explorer/"}>{t("menu.personal.search-on-ledgerName", { ledgerName })}</a>
           <Link href="/username">{t("menu.usernames")}</Link>
-          <a href="/explorer/submit.html">{t("menu.project-registartion")}</a>
+          {account?.address ?
+            <Link href={"/nfts/" + account.address} legacyBehavior>{t("signin.actions.my-nfts")}</Link>
+            :
+            <span onClick={() => { setSignRequest({ redirect: "nfts" }) }} className="link">{t("signin.actions.my-nfts")}</span>
+          }
           {!devNet && <Link href="/alerts">{t("menu.price-alerts")}</Link>}
+          {!devNet && <a href={"/submit/"}>{t("menu.submit-offline-tx")}</a>}
         </div>
 
         <div className="footer-menu-column">
@@ -41,11 +47,11 @@ export default function Footer() {
         </div>
         <div className="footer-menu-column">
           <span className="footer-menu-header">{t("menu.networks")}</span>
-          {devNet && <a href="https://bithomp.com">Mainnet</a>}
-          {devNet !== 'testnet' && <a href="https://test.bithomp.com">Testnet</a>}
-          {devNet !== 'devnet' && <a href="https://dev.bithomp.com">Devnet</a>}
+          {devNet && <a href="https://bithomp.com">XRPL Mainnet</a>}
+          {devNet !== 'testnet' && <a href="https://test.bithomp.com">XRPL Testnet</a>}
+          {devNet !== 'devnet' && <a href="https://dev.bithomp.com">XRPL Devnet</a>}
+          {devNet !== 'amm' && <a href="https://amm.bithomp.com">XRPL AMM</a>}
           {devNet !== 'xahau-testnet' && <a href="https://test.xahauexplorer.com">Xahau Testnet</a>}
-          {devNet !== 'amm' && <a href="https://amm.bithomp.com">AMM</a>}
         </div>
         <div className="footer-menu-column">
           <span className="footer-menu-header">{t("menu.legal")}</span>

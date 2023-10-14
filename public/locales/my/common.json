@@ -2,7 +2,7 @@
 	"menu": {
 		"personal": {
 			"personal": "Peribadi",
-			"search-on-xrpl": "Cari di XRPL"
+			"search-on-ledgerName": "Cari di {{ledgerName}}"
 		},
 		"business": {
 			"business": "Perniagaan",

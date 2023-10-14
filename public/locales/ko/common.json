@@ -2,7 +2,7 @@
   "menu": {
     "personal": {
       "personal": "개인",
-      "search-on-xrpl": "XRPL에서 탐색하기"
+      "search-on-ledgerName": "{{ledgerName}}에서 탐색하기"
     },
     "business": {
       "business": "사업",
