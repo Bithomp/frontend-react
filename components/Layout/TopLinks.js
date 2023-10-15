@@ -14,7 +14,8 @@ export default function TopLinks() {
         >
           Buy XRP
         </a>
-        <span className='tooltiptext small'>
+        {/* important to have it here right, otherwise brakes UI on mobiles */}
+        <span className='tooltiptext right small'>
           {t("sponsored.sponsored")}
         </span>
       </span>
@@ -46,7 +47,8 @@ export default function TopLinks() {
         >
           XRP Play
         </a>
-        <span className='tooltiptext right small'>
+        {/* important to have it here left, otherwise brakes UI on mobiles */}
+        <span className='tooltiptext left small'>
           {t("sponsored.sponsored")}
         </span>
       </span>
