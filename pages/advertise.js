@@ -35,15 +35,15 @@ export default function Advertise() {
         </p>
         <h3>Home Page Banner Ad</h3>
         <p>Banner ads on the Bithomp site can raise brand recognition and user retention.</p>
-        <Image src="/images/advertise/home-page-banner.png" alt="Home Page Banner Ad" width="750" height="395" />
+        <Image src="/images/advertise/home-page-banner.png" alt="Home Page Banner Ad" width="0" height="0" sizes="100vw" style={{ width: "100%", height: 'auto' }} />
         <br /><br />
         <h3>Account and Transaction Explorer Text Ad</h3>
         <p>Each XRPL account and transaction explorer page features a clean, unobtrusive display of your sponsored ad text.</p>
-        <Image src="/images/advertise/old-pages-footer.png" alt="Transaction Explorer Text Ad" width="750" height="395" />
+        <Image src="/images/advertise/old-pages-footer.png" alt="Transaction Explorer Text Ad" width="0" height="0" sizes="100vw" style={{ width: "100%", height: 'auto' }} />
         <br /><br />
         <h3>NFT Explorer Header Text Ad</h3>
         <p>Place your advertisement on the top of all our NFT Explorer pages to connect with the NFT community's users.</p>
-        <Image src="/images/advertise/new-pages-header.png" alt="NFT Explorer Header Text Ad" width="750" height="395" />
+        <Image src="/images/advertise/new-pages-header.png" alt="NFT Explorer Header Text Ad" width="0" height="0" sizes="100vw" style={{ width: "100%", height: 'auto' }} />
         <br /><br /><br />
         <p className='center bold'>Contact us to advertise <Mailto email='support@bithomp.com' headers={{ subject: 'Advertise' }} />.</p>
       </div>
