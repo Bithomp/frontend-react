@@ -88,20 +88,18 @@ export default function Header({ setSignRequest, account, signOut, selectedCurre
             </div>
           </div>
 
-          {!devNet &&
-            <div className="menu-dropdown">
-              <div className="menu-dropdown-button">{t("menu.business.business")}</div>
-              <div className="menu-dropdown-content">
-                <Link href="/advertise">{t("menu.business.advertise")}</Link>
-                <Link href="/username">{t("menu.usernames")}</Link>
-                <a href="/explorer/submit.html">{t("menu.project-registartion")}</a>
-                <a href="https://docs.bithomp.com">{t("menu.developers.api")}</a>
-                <Link href="/eaas">{t("menu.business.eaas")}</Link>
-                <Link href="/build-unl">{t("menu.business.build-unl")}</Link>
-                <Link href="/press">{t("menu.press")}</Link>
-              </div>
+          <div className="menu-dropdown">
+            <div className="menu-dropdown-button">{t("menu.business.business")}</div>
+            <div className="menu-dropdown-content">
+              <Link href="/advertise">{t("menu.business.advertise")}</Link>
+              <Link href="/username">{t("menu.usernames")}</Link>
+              <a href="https://bithomp.com/explorer/submit.html" target="_blank" rel="noreferrer">{t("menu.project-registartion")}</a>
+              <a href="https://docs.bithomp.com">{t("menu.developers.api")}</a>
+              <Link href="/eaas">{t("menu.business.eaas")}</Link>
+              <Link href="/build-unl">{t("menu.business.build-unl")}</Link>
+              <Link href="/press">{t("menu.press")}</Link>
             </div>
-          }
+          </div>
 
           <div className="menu-dropdown">
             <div className="menu-dropdown-button">NFT</div>

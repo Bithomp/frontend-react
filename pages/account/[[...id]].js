@@ -304,11 +304,11 @@ export default function Account({ pageMeta, signRequest, id, selectedCurrency })
                               {getCoinsUrl &&
                                 <>
                                   {" "}
-                                  <a href={getCoinsUrl} target="_blank" rel="noopener noreferrer">Get your first {nativeCurrency}.</a>
+                                  <a href={getCoinsUrl} target="_blank" rel="noreferrer">Get your first {nativeCurrency}.</a>
                                 </>
                               }
                               <br />
-                              <a href="https://xrpl.org/reserves.html" target="_blank" rel="noopener noreferrer">Learn more about reserves.</a>
+                              <a href="https://xrpl.org/reserves.html" target="_blank" rel="noreferrer">Learn more about reserves.</a>
                             </td>
                           }
                         </tr>

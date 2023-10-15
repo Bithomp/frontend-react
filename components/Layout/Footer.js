@@ -33,6 +33,14 @@ export default function Footer({ account, setSignRequest }) {
         </div>
 
         <div className="footer-menu-column">
+          <span className="footer-menu-header">{t("menu.business.business")}</span>
+          <Link href="/advertise">{t("menu.business.advertise")}</Link>
+          <Link href="/username">{t("menu.usernames")}</Link>
+          <a href="https://bithomp.com/explorer/submit.html" target="_blank" rel="noreferrer">{t("menu.project-registartion")}</a>
+          <Link href="/eaas">{t("menu.business.eaas")}</Link>
+        </div>
+
+        <div className="footer-menu-column">
           <span className="footer-menu-header">{t("menu.developers.developers")}</span>
           {devNet &&
             <>
@@ -44,6 +52,7 @@ export default function Footer({ account, setSignRequest }) {
           <a href="https://docs.bithomp.com">{t("menu.developers.api")}</a>
           <Link href="/developer">{t("menu.developers.api-key-request")}</Link>
           <a href="https://github.com/Bithomp">Github</a>
+          <Link href="/build-unl">{t("menu.business.build-unl")}</Link>
         </div>
         <div className="footer-menu-column">
           <span className="footer-menu-header">{t("menu.networks")}</span>
@@ -67,16 +76,6 @@ export default function Footer({ account, setSignRequest }) {
           <Link href="/press">{t("menu.press")}</Link>
           <Link href="/donate">{t("menu.donate")} <span className="red">❤</span></Link>
         </div>
-
-        <div className="footer-menu-column">
-          <span className="footer-menu-header">{t("menu.community.title")}</span>
-          <a href="https://www.trsryxrpl.com/course/tools-and-resources-for-xrpl-holders/" target="_blank" rel="noreferrer">{t("menu.community.treasury")}</a>
-          <a href="https://xumm.app" target="_blank" rel="noreferrer">{t("menu.community.xumm")}</a>
-          <a href="https://foundation.xrpl.org" target="_blank" rel="noreferrer">{t("menu.community.xrplf")}</a>
-          <a href="https://xrpl.org" target="_blank" rel="noreferrer">{t("menu.community.xrpl")}</a>
-          <a href="https://www.xrpchat.com" target="_blank" rel="noreferrer">{t("menu.community.xrpchat")}</a>
-        </div>
-
       </div>
 
       <div className="footer-brand">

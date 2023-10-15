@@ -11,7 +11,7 @@
       "build-unl": "Build UNL"
     },
     "usernames": "Brukernavn registrering",
-    "project-registartion": "XRPL prosjekt registrering",
+    "project-registartion": "Prosjekt registrering",
     "price-alerts": "XRP prisvarsler",
     "submit-offline-tx": "Send frakoblet transaksjon",
     "networks": "Nettverk",
@@ -50,15 +50,7 @@
     "customer-support": "Kundeservice",
     "press": "Trykk",
     "merch": "Varebutikk",
-    "donate": "Doner",
-    "community": {
-      "title": "Fellesskap",
-      "xumm": "Xumm lommebok",
-      "xrplf": "XRPL foundation",
-      "xrpl": "XRPL nettside",
-      "xrpchat": "XRP chat",
-      "treasury": "Treasury: Bithomp"
-    }
+    "donate": "Doner"
   },
   "components": {
     "expiration-select": {

@@ -11,7 +11,7 @@
       "build-unl": "UNLの作成"
     },
     "usernames": "ユーザネームの登録",
-    "project-registartion": "XRPLプロジェクトの登録",
+    "project-registartion": "プロジェクトの登録",
     "price-alerts": "XRP価格アラート",
     "submit-offline-tx": "オフライントランザクションを送信",
     "networks": "ネットワーク",
@@ -50,15 +50,7 @@
     "customer-support": "カスタマサポート",
     "press": "プレス",
     "merch": "グッズ販売",
-    "donate": "寄付",
-    "community": {
-      "title": "コミュニティ",
-      "xumm": "Xummウォレット",
-      "xrplf": "XRPL財団",
-      "xrpl": "XRPLウェブサイト",
-      "xrpchat": "XRP chat",
-      "treasury": "Treasury: Bithomp"
-    }
+    "donate": "寄付"
   },
   "components": {
     "expiration-select": {

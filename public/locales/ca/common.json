@@ -11,7 +11,7 @@
       "build-unl": "Build UNL"
     },
     "usernames": "Registre d'àlies",
-    "project-registartion": "Registre de projectes XRPL",
+    "project-registartion": "Registre de projectes",
     "price-alerts": "Alertes XRP",
     "submit-offline-tx": "Envia una transacció fora de línia",
     "networks": "Xarxes",
@@ -50,15 +50,7 @@
     "customer-support": "Atenció al client",
     "press": "Premsa",
     "merch": "Botiga de marxandatge",
-    "donate": "Fes una donació",
-    "community": {
-      "title": "Comunitat",
-      "xumm": "Moneder Xumm",
-      "xrplf": "Fundació XRPL",
-      "xrpl": "Pàgina web XRPL",
-      "xrpchat": "Xat XRP",
-      "treasury": "Treasury: Bithomp"
-    }
+    "donate": "Fes una donació"
   },
   "components": {
     "expiration-select": {

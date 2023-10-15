@@ -11,7 +11,7 @@
       "build-unl": "Build UNL"
     },
     "usernames": "Registracija korisničkog imena",
-    "project-registartion": "Registracija XRPL projekta",
+    "project-registartion": "Registracija projekta",
     "price-alerts": "Upozorenja na promjenu XRP cijene",
     "submit-offline-tx": "Pošalji offline transakciju",
     "networks": "Mreže",
@@ -50,15 +50,7 @@
     "customer-support": "Korisnička podrška",
     "press": "Press",
     "merch": "Merch shop",
-    "donate": "Donacija",
-    "community": {
-      "title": "Zajednica",
-      "xumm": "Xumm wallet",
-      "xrplf": "XRPL zaklada",
-      "xrpl": "XRPL websajt",
-      "xrpchat": "XRP chat",
-      "treasury": "Riznica: Bithomp"
-    }
+    "donate": "Donacija"
   },
   "components": {
     "expiration-select": {

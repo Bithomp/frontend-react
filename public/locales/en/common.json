@@ -11,7 +11,7 @@
       "build-unl": "Build UNL"
     },
     "usernames": "Username registration",
-    "project-registartion": "XRPL project registration",
+    "project-registartion": "Project registration",
     "price-alerts": "XRP price alerts",
     "submit-offline-tx": "Submit offline transaction",
     "networks": "Networks",
@@ -50,15 +50,7 @@
     "customer-support": "Customer support",
     "press": "Press",
     "merch": "Merch shop",
-    "donate": "Donate",
-    "community": {
-      "title": "Community",
-      "xumm": "Xumm wallet",
-      "xrplf": "XRPL foundation",
-      "xrpl": "XRPL website",
-      "xrpchat": "XRP chat",
-      "treasury": "Treasury: Bithomp"
-    }
+    "donate": "Donate"
   },
   "components": {
     "expiration-select": {

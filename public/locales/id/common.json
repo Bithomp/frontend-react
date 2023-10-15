@@ -11,7 +11,7 @@
       "build-unl": "Bangun UNL"
     },
     "usernames": "Pendaftaran Username",
-    "project-registartion": "Pendaftaran Proyek XRPL",
+    "project-registartion": "Pendaftaran Proyek",
     "price-alerts": "Peringatan Harga XRP",
     "submit-offline-tx": "Kirim Transaksi Offline",
     "networks": "Jaringan",
@@ -50,15 +50,7 @@
     "customer-support": "Dukungan Pelanggan",
     "press": "Pers",
     "merch": "Toko Merchandise",
-    "donate": "Donasi",
-    "community": {
-      "title": "Komunitas",
-      "xumm": "Dompet Xumm",
-      "xrplf": "Yayasan XRPL",
-      "xrpl": "Situs XRPL",
-      "xrpchat": "Obrolan XRP",
-      "treasury": "Kekayaan: Bithomp"
-    }
+    "donate": "Donasi"
   },
   "components": {
     "expiration-select": {
