@@ -4,30 +4,36 @@ import { stripText } from '.'
 import Link from 'next/link'
 import LinkIcon from "../public/images/link.svg"
 
+//partner market places (destinations)
+export const partnerMarketplaces = {
+  'rpZqTPC8GvrSvEfFsUuHkmPCg29GdQuXhC': { name: "onXRP", feeText: "1,5%", fee: 0.015, multiplier: 1.015 }, //onxrp mainnet
+  'rn6CYo6uSxR6fP7jWg3c8SL5jrqTc2GjCS': { name: "onXRP", feeText: "1,5%", fee: 0.015, multiplier: 1.015 }, //onxrp testnet
+}
+
 //identified NFT Market Places
-export const mpUrl = (offer) => {
-  if (!offer || !offer.destination || !offer.destinationDetails) return "";
-  const service = offer.destinationDetails.service;
-  let url = '';
+export const mpUrl = offer => {
+  if (!offer || !offer.destination || !offer.destinationDetails) return ""
+  const service = offer.destinationDetails.service
+  let url = ''
   if (service === "onXRP") {
-    url = "https://nft.onxrp.com/nft/";
+    url = "https://nft.onxrp.com/nft/"
   } else if (service === "xrp.cafe") {
-    url = "https://xrp.cafe/nft/";
+    url = "https://xrp.cafe/nft/"
   } else if (service === "xMart") {
-    url = "https://api.xmart.art/nft/";
+    url = "https://api.xmart.art/nft/"
   } else if (service === "nftmaster") {
-    url = "https://nftmaster.com/nft/";
+    url = "https://nftmaster.com/nft/"
   } else if (service === "XPmarket") {
-    url = "https://xpmarket.com/nfts/item/";
+    url = "https://xpmarket.com/nfts/item/"
   } else if (service === "Equilibrium Games") {
-    url = "https://equilibrium-games.com/marketplace/nft/";
+    url = "https://equilibrium-games.com/marketplace/nft/"
   } else if (service === "CollaterArt") {
-    url = "https://collaterart.com/Mainnet/" + offer.owner + "/";
+    url = "https://collaterart.com/Mainnet/" + offer.owner + "/"
   }
   if (url) {
-    return url + offer.nftokenID;
+    return url + offer.nftokenID
   } else {
-    return "";
+    return ""
   }
 }
 
@@ -49,11 +55,18 @@ export const bestNftOffer = (nftOffers, loggedInAddress, type = 'sell') => {
     }
 
     if (xrpOffers.length > 0) {
-      //without destination firsts
+      //sorting marketplaces, partner marketplaces first otherwise created latest first
+      xrpOffers = xrpOffers.sort((a, b) => {
+        if (partnerMarketplaces?.[a.destination] && !partnerMarketplaces?.[b.destination]) return 1
+        if (!partnerMarketplaces?.[a.destination] && partnerMarketplaces?.[b.destination]) return -1
+        return a.createdAt - b.createdAt
+      })
+
+      //without destination firsts (without a marketplace) 
       xrpOffers = xrpOffers.sort((a, b) => {
         if (!a.destination && b.destination) return 1
         if (a.destination && !b.destination) return -1
-        return a.createdAt - b.createdAt
+        return 0
       })
 
       if (type = 'buy') {

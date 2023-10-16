@@ -72,39 +72,45 @@ export const payloadXummPost = async (payload, callback) => {
 
 export const xummWsConnect = (wsUri, callback) => {
   if (xummWs) {
-    xummWs.close();
+    xummWs.close()
     xummWs = new WebSocket(wsUri);
   } else {
     xummWs = new WebSocket(wsUri);
   }
   xummWs.onopen = function () {
     //console.log("xummWs connected");
-  };
+  }
   xummWs.onclose = function () {
     //console.log("xummWs disconnected");
-  };
+  }
   xummWs.onmessage = function (evt) {
-    const obj = JSON.parse(evt.data);
+    const obj = JSON.parse(evt.data)
     if (obj.opened) {
       //nothing
     } else if (obj.signed) {
-      xummWs.close();
+      xummWs.close()
     } else if (obj.hasOwnProperty('expires_in_seconds')) {
       if (obj.expires_in_seconds <= 0) {
-        xummWs.close();
+        xummWs.close()
       }
     } else if (obj.expired) {
-      xummWs.close();
+      xummWs.close()
     } else if (obj.message) {
       if (!obj.message.includes("Welcome")) {
-        console.log("xummWs message:", obj.message);
+        console.log("xummWs message:", obj.message)
       }
     } else {
-      console.log("xummWs response:", evt.data);
+      if (obj.signed === false) {
+        xummWs.close()
+        callback({ status: "canceled" })
+        return
+      } else {
+        console.log("xummWs response:", evt.data)
+      }
     }
-    callback(obj);
+    callback(obj)
   };
   xummWs.onerror = function (evt) {
-    console.log("xummWs error:", evt.data);
-  };
+    console.log("xummWs error:", evt.data)
+  }
 }

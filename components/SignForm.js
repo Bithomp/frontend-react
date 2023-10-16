@@ -7,7 +7,7 @@ import Image from 'next/image'
 
 import { useIsMobile } from "../utils/mobile"
 import { server, devNet, typeNumberOnly, delay, isDomainValid, encode, networkId } from '../utils'
-import { capitalize } from '../utils/format'
+import { amountFormat, capitalize } from '../utils/format'
 import { payloadXummPost, xummWsConnect, xummCancel, xummGetSignedData } from '../utils/xumm'
 
 import XummQr from "./Xumm/Qr"
@@ -139,7 +139,7 @@ export default function SignForm({ setSignRequest, setAccount, signRequest }) {
     setScreen("xumm")
   }
 
-  const onPayloadResponse = (data) => {
+  const onPayloadResponse = data => {
     if (!data || data.error) {
       setShowXummQr(false);
       setStatus(data.error);
@@ -164,17 +164,20 @@ export default function SignForm({ setSignRequest, setAccount, signRequest }) {
     }
   }
 
-  const xummWsConnected = (obj) => {
-    if (obj.opened) {
-      setStatus(t("signin.xumm.statuses.check-app"));
+  const xummWsConnected = obj => {
+    if (obj.status === "canceled") {
+      //cancel button pressed in xaman app
+      closeSignInFormAndRefresh()
+    } else if (obj.opened) {
+      setStatus(t("signin.xumm.statuses.check-app"))
     } else if (obj.signed) {
-      setShowXummQr(false);
-      setStatus(t("signin.xumm.statuses.wait"));
-      xummGetSignedData(obj.payload_uuidv4, afterSubmit);
+      setShowXummQr(false)
+      setStatus(t("signin.xumm.statuses.wait"))
+      xummGetSignedData(obj.payload_uuidv4, afterSubmit)
     } else if (obj.expires_in_seconds) {
       if (obj.expires_in_seconds <= 0) {
-        setExpiredQr(true);
-        setStatus(t("signin.xumm.statuses.expired"));
+        setExpiredQr(true)
+        setStatus(t("signin.xumm.statuses.expired"))
       }
     }
   }
@@ -350,31 +353,57 @@ export default function SignForm({ setSignRequest, setAccount, signRequest }) {
             </div>
 
             {screen === 'NFTokenCreateOffer' &&
-              <div className='center'>
-                <br />
-                <span className={xls35Sell ? 'halv xahOnly' : 'quarter xrpOnly'}>
-                  <span className='input-title'>{t("signin.amount.set-price")}</span>
-                  <input
-                    placeholder={t("signin.amount.enter-amount")}
-                    onChange={onAmountChange}
-                    onKeyPress={typeNumberOnly}
-                    className="input-text"
-                    spellCheck="false"
-                    maxLength="35"
-                    min="0"
-                    type="text"
-                    inputMode="decimal"
-                  />
-                </span>
-                {!xls35Sell &&
-                  <span className='quarter'>
-                    <span className='input-title'>{t("signin.expiration")}</span>
-                    <ExpirationSelect onChange={onExpirationChange} />
-                  </span>
+              <>
+                {signRequest.request.Amount ?
+                  <>
+                    <p className='left' style={{ width: "360px", margin: "20px auto" }}>
+                      You're making a counter offer, which should to be accepted automatically within 5 minutes.
+                      If it's not accepted you can cancel it at any time.
+                    </p>
+                    <table style={{ textAlign: "left", margin: "20px auto", width: "360px" }}>
+                      <tbody>
+                        <tr>
+                          <td>NFT price</td>
+                          <td className='right'> {amountFormat(signRequest.broker?.nftPrice)}</td>
+                        </tr>
+                        <tr>
+                          <td>onXRP fee (1.5%)</td>
+                          <td className='right'> {amountFormat(signRequest.broker?.fee)} </td>
+                        </tr>
+                        <tr>
+                          <td>Total</td>
+                          <td className='right'> <b>{amountFormat(signRequest.request.Amount)}</b></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </>
+                  :
+                  <div className='center'>
+                    <br />
+                    <span className={xls35Sell ? 'halv xahOnly' : 'quarter xrpOnly'}>
+                      <span className='input-title'>{t("signin.amount.set-price")}</span>
+                      <input
+                        placeholder={t("signin.amount.enter-amount")}
+                        onChange={onAmountChange}
+                        onKeyPress={typeNumberOnly}
+                        className="input-text"
+                        spellCheck="false"
+                        maxLength="35"
+                        min="0"
+                        type="text"
+                        inputMode="decimal"
+                      />
+                    </span>
+                    {!xls35Sell &&
+                      <span className='quarter'>
+                        <span className='input-title'>{t("signin.expiration")}</span>
+                        <ExpirationSelect onChange={onExpirationChange} />
+                      </span>
+                    }
+                  </div>
                 }
-              </div>
+              </>
             }
-
             {screen === 'setDomain' &&
               <div className='center'>
                 <br />

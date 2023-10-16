@@ -7,10 +7,10 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import Image from 'next/image'
 import Link from 'next/link'
 
-import { stripText, server, decode, network } from '../../utils'
+import { stripText, server, decode, network, devNet } from '../../utils'
 import { convertedAmount } from '../../utils/format'
 import { getIsSsrMobile } from "../../utils/mobile"
-import { nftName, mpUrl, bestNftOffer, nftUrl } from '../../utils/nft'
+import { nftName, mpUrl, bestNftOffer, nftUrl, partnerMarketplaces } from '../../utils/nft'
 import {
   shortHash,
   trWithAccount,
@@ -569,6 +569,49 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
     }
 
     if (mpUrl(best)) {
+      //Partner marketplaces - place counter offers
+      //testing on devnets ONLY for now.
+      if (devNet && partnerMarketplaces[best.destination]) {
+        const { multiplier, fee, name } = partnerMarketplaces[best.destination]
+        let request = {
+          "TransactionType": "NFTokenCreateOffer",
+          "Account": data.owner,
+          "NFTokenID": id,
+          "Destination": best.destination,
+          "Owner": data.owner,
+          "Amount": (Math.ceil(best.amount * multiplier * 1000000) / 1000000).toString()
+        }
+
+        if (best.amount.value) {
+          request.Amount = {
+            value: (Math.ceil(best.amount.value * multiplier * 1000000) / 1000000).toString(),
+            currency: best.amount.currency,
+            issuer: best.amount.issuer
+          }
+        } else {
+          request.Amount = (Math.ceil(best.amount * multiplier * 1000000) / 1000000).toString()
+        }
+
+        return <>
+          <button
+            className='button-action wide center'
+            onClick={() => setSignRequest({
+              wallet: "xumm",
+              request,
+              broker: {
+                name,
+                fee: best.amount * fee,
+                nftPrice: best.amount
+              }
+            })}
+          >
+            <Image src={xummImg} className='xumm-logo' alt="xumm" height={24} width={24} />
+            {t("button.nft.buy-for-amount", { amount: amountFormat(best.amount * multiplier) })}
+          </button>
+          <br /><br />
+        </>
+      }
+
       return <>
         <a className='button-action wide center' href={mpUrl(best)} target="_blank" rel="noreferrer">
           {t("button.nft.buy-for-amount-on", { amount: amountFormat(best.amount), service: best.destinationDetails.service })}
