@@ -3,7 +3,7 @@ import { useTranslation } from 'next-i18next'
 import { useState } from 'react'
 import { SiteLinksSearchBoxJsonLd, LogoJsonLd, SocialProfileJsonLd } from 'next-seo'
 
-import { useWidth, server, xahauNetwork, explorerName, nativeCurrency } from '../utils'
+import { useWidth, server, xahauNetwork, explorerName, nativeCurrency, devNet } from '../utils'
 import { getIsSsrMobile } from "../utils/mobile"
 
 import SEO from '../components/SEO'
@@ -23,14 +23,14 @@ export async function getServerSideProps(context) {
   }
 }
 
-export default function Home({ devNet, selectedCurrency, setSelectedCurrency }) {
+export default function Home({ selectedCurrency, setSelectedCurrency }) {
   const { t } = useTranslation()
   const windowWidth = useWidth()
 
   const [chartPeriod, setChartPeriod] = useState('one_day')
 
   //change here when do you want to see ads
-  const showAds = !xahauNetwork
+  const showAds = !devNet
 
   return (
     <>
