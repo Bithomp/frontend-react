@@ -4,7 +4,8 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 import SEO from '../components/SEO'
 
-export async function getStaticProps({ locale }) {
+export async function getServerSideProps(context) {
+  const { locale } = context
   return {
     props: {
       ...(await serverSideTranslations(locale, ['common'])),

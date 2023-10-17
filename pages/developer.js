@@ -6,7 +6,8 @@ import axios from 'axios'
 import { isEmailValid, isUrlValid } from '../utils'
 import SEO from '../components/SEO'
 
-export async function getStaticProps({ locale }) {
+export async function getServerSideProps(context) {
+  const { locale } = context
   return {
     props: {
       ...(await serverSideTranslations(locale, ['common'])),
