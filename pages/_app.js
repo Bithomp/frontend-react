@@ -13,7 +13,7 @@ import BackgroundImage from '../components/Layout/BackgroundImage'
 import TopLinks from '../components/Layout/TopLinks'
 
 import { IsSsrMobileContext } from '../utils/mobile'
-import { network, devNet, server, useLocalStorage } from '../utils'
+import { network, server, useLocalStorage } from '../utils'
 
 import '../styles/ui.scss'
 import { ThemeProvider } from "../components/Layout/ThemeContext"
@@ -36,7 +36,7 @@ const MyApp = ({ Component, pageProps }) => {
     axios.defaults.baseURL = server + '/api/cors/'
   }
 
-  let showTopAds = !devNet //change here when you want to see TOP ADS
+  let showTopAds = network === 'mainnet' //change here when you want to see TOP ADS
   const pagesWithNoTopAdds = ['/', '/username', '/disclaimer', '/privacy-policy', '/terms-and-conditions', '/press', '/404']
   if (showTopAds) {
     showTopAds = !pagesWithNoTopAdds.includes(router.pathname)

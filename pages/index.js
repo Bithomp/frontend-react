@@ -30,7 +30,7 @@ export default function Home({ selectedCurrency, setSelectedCurrency }) {
   const [chartPeriod, setChartPeriod] = useState('one_day')
 
   //change here when do you want to see ads
-  const showAds = !devNet
+  const showAds = !devNet && !xahauNetwork
 
   return (
     <>

@@ -27,6 +27,7 @@
       "offers": "Bud"
     },
     "xrpl": {
+      "governance": "Governance",
       "rich-list": "Rich list",
       "last-ledger-information": "Siste ledger informasjon",
       "last-ledger-transactions": "Siste ledger transaksjoner",

@@ -27,6 +27,7 @@
       "offers": "Оферы"
     },
     "xrpl": {
+      "governance": "Управление",
       "rich-list": "ТОП адресов по балансу",
       "last-ledger-information": "Информация с последнего леджера",
       "last-ledger-transactions": "Транзакции последнего леджера",

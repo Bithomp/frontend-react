@@ -27,6 +27,7 @@
       "offers": "Ofertas"
     },
     "xrpl": {
+      "governance": "Governance",
       "rich-list": "Lista de ricos",
       "last-ledger-information": "Información del último libro contable",
       "last-ledger-transactions": "Transacciones del último libro contable",

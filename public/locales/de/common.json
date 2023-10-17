@@ -27,6 +27,7 @@
       "offers": "Angebote"
     },
     "xrpl": {
+      "governance": "Governance",
       "rich-list": "Reichstenliste",
       "last-ledger-information": "Aktuellste Ledger Informationen",
       "last-ledger-transactions": "Aktuellste Ledger Transaktionen",

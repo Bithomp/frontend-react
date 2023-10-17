@@ -27,6 +27,7 @@
       "offers": "Ofertes"
     },
     "xrpl": {
+      "governance": "Governance",
       "rich-list": "Rich list",
       "last-ledger-information": "Informació de l'últim Ledger",
       "last-ledger-transactions": "Transaccions de l'últim Ledger",

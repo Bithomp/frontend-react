@@ -27,6 +27,7 @@
 			"offers": "Tawaran"
 		},
 		"xrpl": {
+			"governance": "Governance",
 			"rich-list": "Senarai Akaun-Akaun Terkaya",
 			"last-ledger-information": "Maklumat Ledger Terakhir",
 			"last-ledger-transactions": "Transaksi Ledger Terakhir",

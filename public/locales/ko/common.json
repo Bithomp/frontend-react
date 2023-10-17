@@ -27,6 +27,7 @@
       "offers": "제안"
     },
     "xrpl": {
+      "governance": "Governance",
       "rich-list": "Rich-리스트",
       "last-ledger-information": "최근 원장 정보",
       "last-ledger-transactions": "최근 거래 정보",

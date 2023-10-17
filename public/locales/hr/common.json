@@ -27,6 +27,7 @@
       "offers": "Ponude"
     },
     "xrpl": {
+      "governance": "Governance",
       "rich-list": "Rich list",
       "last-ledger-information": "Zadnje ledger informacije",
       "last-ledger-transactions": "Zadnje ledger transakcije",

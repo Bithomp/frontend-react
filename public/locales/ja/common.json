@@ -27,6 +27,7 @@
       "offers": "オファー"
     },
     "xrpl": {
+      "governance": "Governance",
       "rich-list": "リッチリスト",
       "last-ledger-information": "現在のレジャー情報",
       "last-ledger-transactions": "現在のトランザクション情報",
