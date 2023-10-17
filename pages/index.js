@@ -92,6 +92,7 @@ export default function Home({ selectedCurrency, setSelectedCurrency }) {
               <div className="sponsored-brand-text">Register with <i>BITHOMP25</i> and boost up your bonus.</div>
             </div>
           </a>
+          {/*
           <a href="https://bithomp.com/go/main-exchange" target="_blank" rel="noreferrer">
             <div className="sponsored-brand easybit">
               <img src="/images/easybit.svg" className="sponsored-brand-icon" alt="exchange crypto" />
@@ -99,6 +100,7 @@ export default function Home({ selectedCurrency, setSelectedCurrency }) {
               <div className="sponsored-brand-text">The simplest method to exchange crypto at the best rates.</div>
             </div>
           </a>
+          */}
           <a href="https://bithomp.com/go/buy-xrp" target="_blank" rel="noreferrer">
             <div className="sponsored-brand">
               <img src="/images/btcbit.svg" className="sponsored-brand-icon" alt="buy xrp" />

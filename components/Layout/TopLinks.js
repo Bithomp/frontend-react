@@ -22,6 +22,7 @@ export default function TopLinks() {
 
       <span style={{ padding: "0 10px" }}>|</span>
 
+      {/*
       <span className='tooltip'>
         <a
           href="https://bithomp.com/go/top-exchange"
@@ -37,6 +38,7 @@ export default function TopLinks() {
       </span>
 
       <span style={{ padding: "0 10px" }}>|</span>
+      */}
 
       <span className='tooltip'>
         <a
