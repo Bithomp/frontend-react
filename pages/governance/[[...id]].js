@@ -162,7 +162,7 @@ export default function Governance({ id }) {
   }, [isReady, id])
 
   return <>
-    <SEO title={t("header", { ns: "governance" })} />
+    <SEO title={t("header", { ns: "governance", ledgerName })} />
     <div className="content-text">
       <h1 className="center">
         {t("header", { ns: "governance", ledgerName })}
