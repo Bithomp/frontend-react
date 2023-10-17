@@ -175,7 +175,7 @@ export default function Governance({ id }) {
             :
             <>
               <Trans i18nKey="summary" ns="governance">
-                There are <b>{{ countL1Tables: govData?.memberCount }}</b> tables.
+                There are <b>{{ countTables: govData?.memberCount }}</b> seats.
               </Trans>
               {govData?.rewardRate &&
                 <>
