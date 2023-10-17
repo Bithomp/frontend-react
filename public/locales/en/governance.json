@@ -1,5 +1,6 @@
 {
-  "header": "Governance",
-  "desc": "Here you can see {{ledgerName}} Governance Game.",
-  "summary": "There are <1>{{ countL1Tables }}</1> L1 tables. Reward rate: <3>{{ rewardRate }}</3>. Reward duration: <5>{{ rewardDuration }}</5>."
+  "header": "{{ledgerName}} Governance Game",
+  "summary": "There are <1>{{ countL1Tables }}</1> tables.",
+  "reward-rate": "Reward rate: <1>{{ rewardRate }}</1>.",
+  "reward-duration": "Reward duration: <1>{{ rewardDuration }}</1>."
 }

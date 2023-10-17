@@ -4,21 +4,27 @@ import axios from 'axios'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useRouter } from 'next/router'
 import { Buffer } from 'buffer'
+import Link from 'next/link'
 
-export const getServerSideProps = async ({ locale }) => {
+export const getServerSideProps = async (context) => {
+  const { locale, query } = context
+  const { id } = query
+  //keep it from query instead of params, anyway it is an array sometimes
+  const account = id ? (Array.isArray(id) ? id[0] : id) : ""
   return {
     props: {
+      id: account,
       ...(await serverSideTranslations(locale, ['common', 'governance'])),
     },
   }
 }
 
-import SEO from '../components/SEO'
+import SEO from '../../components/SEO'
 
-import { useWidth, ledgerName } from '../utils'
-import { codeHighlight } from '../utils/format'
+import { useWidth, ledgerName } from '../../utils'
+import { codeHighlight } from '../../utils/format'
 
-export default function Governance() {
+export default function Governance({ id }) {
   const { t } = useTranslation(['common', 'governance'])
   const router = useRouter()
 
@@ -36,7 +42,11 @@ export default function Governance() {
   const controller = new AbortController()
 
   const checkApi = async () => {
-    let apiUrl = '/xrpl/objects/rHb9CJAWyB4rj91VRWn96DkukG4bwdtyTh'
+    if (!id) {
+      //genesis account
+      id = 'rHb9CJAWyB4rj91VRWn96DkukG4bwdtyTh'
+    }
+    let apiUrl = '/xrpl/objects/' + id
 
     setLoading(true)
     setRawData({})
@@ -149,27 +159,50 @@ export default function Governance() {
       controller.abort()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isReady])
+  }, [isReady, id])
 
   return <>
     <SEO title={t("header", { ns: "governance" })} />
     <div className="content-text">
-      <h1 className="center">{t("header", { ns: "governance" })}</h1>
+      <h1 className="center">
+        {t("header", { ns: "governance", ledgerName })}
+        {id ? <><br /><br />{id}</> : ""}
+      </h1>
       <div className='flex'>
         <div className="grey-box center">
-          {t("desc", { ns: "governance", ledgerName })}
-          <br /><br />
           {loading ?
             t("general.loading")
             :
-            <Trans i18nKey="summary" ns="governance">
-              There are <b>{{ countL1Tables: govData?.memberCount }}</b> L1 tables.
-              Reward rate: <b>{{ rewardRate: govData?.rewardRate }}</b>.
-              Reward duration: <b>{{ rewardDuration: govData?.rewardDuration }}</b>.
-            </Trans>
+            <>
+              <Trans i18nKey="summary" ns="governance">
+                There are <b>{{ countL1Tables: govData?.memberCount }}</b> tables.
+              </Trans>
+              {govData?.rewardRate &&
+                <>
+                  {" "}
+                  <Trans i18nKey="reward-rate" ns="governance">
+                    Reward rate: <b>{{ rewardRate: govData.rewardRate }}</b>.
+                  </Trans>
+                </>
+              }
+              {govData?.rewardDuration &&
+                <>
+                  {" "}
+                  <Trans i18nKey="reward-duration" ns="governance">
+                    Reward duration: <b>{{ rewardDuration: govData.rewardDuration }}</b>.
+                  </Trans>
+                </>
+              }
+            </>
           }
         </div >
       </div >
+      {!id &&
+        <div className='center'>
+          <br />
+          <Link href="r4FRPZbLnyuVeGiSi1Ap6uaaPvPXYZh1XN">Table 6: r4FRPZbLnyuVeGiSi1Ap6uaaPvPXYZh1XN</Link>
+        </div>
+      }
       <br />
       {
         (windowWidth > 1000) ?
