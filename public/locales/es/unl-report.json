@@ -1,0 +1,5 @@
+{
+  "header": "Reporte UNL",
+  "desc": "Aquí puedes ver el reporte UNL para el libro contable <1>#{{ledgerIndex}}</1>, entrada del libro contable: 61E32E...6F28DC.",
+  "summary": "Hay activos <1>{{activeValidators}}</1> validadores."
+}
