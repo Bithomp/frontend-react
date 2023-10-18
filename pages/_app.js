@@ -1,7 +1,7 @@
 import Head from 'next/head'
 import Script from 'next/script'
 import { useRouter } from 'next/router'
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import axios from 'axios'
 import { appWithTranslation } from 'next-i18next'
 
@@ -21,6 +21,7 @@ import { ThemeProvider } from "../components/Layout/ThemeContext"
 const MyApp = ({ Component, pageProps }) => {
   const [account, setAccount] = useLocalStorage('account')
   const [selectedCurrency, setSelectedCurrency] = useLocalStorage('currency', 'usd')
+  const [countryCode, setCountryCode] = useState('')
   const [signRequest, setSignRequest] = useState(false)
   const router = useRouter()
 
@@ -36,11 +37,24 @@ const MyApp = ({ Component, pageProps }) => {
     axios.defaults.baseURL = server + '/api/cors/'
   }
 
-  let showTopAds = false //network === 'mainnet' //change here when you want to see TOP ADS
+  const showAds = network === 'mainnet' // no ads on xahau
+  let showTopAds = false //showAds //change here when you want to see TOP ADS
   const pagesWithNoTopAdds = ['/', '/username', '/disclaimer', '/privacy-policy', '/terms-and-conditions', '/press', '/404']
   if (showTopAds) {
     showTopAds = !pagesWithNoTopAdds.includes(router.pathname)
   }
+
+  useEffect(() => {
+    async function fetchData() {
+      /* {"ip":"176.28.256.49","country":"SE"} */
+      const response = await axios('client/info')
+      setCountryCode(response?.data?.country)
+    }
+    if (showAds) {
+      fetchData()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   return (
     <>
@@ -90,6 +104,8 @@ const MyApp = ({ Component, pageProps }) => {
                 signOut={signOut}
                 selectedCurrency={selectedCurrency}
                 setSelectedCurrency={setSelectedCurrency}
+                showAds={showAds}
+                countryCode={countryCode}
               />
             </div>
             <BackgroundImage />
