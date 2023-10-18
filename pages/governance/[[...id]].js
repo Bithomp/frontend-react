@@ -181,7 +181,7 @@ export default function Governance({ id }) {
                 <>
                   {" "}
                   <Trans i18nKey="reward-rate" ns="governance">
-                    Reward rate: <b>{{ rewardRate: govData.rewardRate }}</b>.
+                    Reward rate: <b>{{ rewardRate: (Math.round((((1 + govData.rewardRate) ** 12) - 1) * 10000) / 100) + " % pa" }}</b>.
                   </Trans>
                 </>
               }
@@ -189,9 +189,9 @@ export default function Governance({ id }) {
                 <>
                   {" "}
                   <Trans i18nKey="reward-duration" ns="governance">
-                    Reward duration: <b>{{ rewardDuration: govData.rewardDuration }}</b> seconds ({{
-                      rewardDurationConverted: duration(t, govData.rewardDuration, { seconds: true })
-                    }}).
+                    Reward duration: <b>{{ rewardDuration: duration(t, govData.rewardDuration, { seconds: true }) }}</b> ({{
+                      rewardDurationSeconds: govData.rewardDuration
+                    }} seconds).
                   </Trans>
                 </>
               }
