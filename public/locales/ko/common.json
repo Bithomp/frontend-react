@@ -12,7 +12,7 @@
     },
     "usernames": "사용자명을 등록하세요",
     "project-registartion": "프로젝트 등록하세요",
-    "price-alerts": "XRP 가격 알림",
+    "price-alerts": "{{nativeCurrency}} 가격 알림",
     "submit-offline-tx": "오프라인 거래 제출",
     "networks": "네트워크",
     "ledger": "레저 거래",
@@ -379,7 +379,8 @@
   "units": {
     "seconds-short": "초",
     "minutes-short": "분",
-    "hours-short": "시"
+    "hours-short": "시",
+    "days-short": "일"
   },
   "period": {
     "all": "",

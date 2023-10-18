@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { useTranslation } from 'next-i18next'
 import { useState, useEffect } from 'react'
 
-import { devNet, xahauNetwork, ledgerName } from '../../../utils'
+import { devNet, xahauNetwork, ledgerName, nativeCurrency } from '../../../utils'
 
 import Switch from "./Switch"
 import LangSwitch from "./LangSwitch"
@@ -83,7 +83,7 @@ export default function Header({ setSignRequest, account, signOut, selectedCurre
                 :
                 <span onClick={() => { setSignRequest({ redirect: "nfts" }) }} className="link">{t("signin.actions.my-nfts")}</span>
               }
-              {!devNet && <Link href="/alerts">{t("menu.price-alerts")}</Link>}
+              {!devNet && !xahauNetwork && <Link href="/alerts">{t("menu.price-alerts", { nativeCurrency })}</Link>}
               {!devNet && <a href={"/submit/"}>{t("menu.submit-offline-tx")}</a>}
             </div>
           </div>
@@ -238,9 +238,9 @@ export default function Header({ setSignRequest, account, signOut, selectedCurre
           {!displayName &&
             <span onClick={() => { setSignRequest({ redirect: "nfts" }) }} className="mobile-menu-item link">{t("signin.actions.my-nfts")}</span>
           }
-          {!devNet &&
+          {!devNet && !xahauNetwork &&
             <Link href="/alerts" className="mobile-menu-item" onClick={mobileMenuToggle}>
-              {t("menu.price-alerts")}
+              {t("menu.price-alerts", { nativeCurrency })}
             </Link>
           }
           {!devNet && <a href={"/submit/"} className="mobile-menu-item">{t("menu.submit-offline-tx")}</a>}

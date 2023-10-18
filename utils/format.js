@@ -3,12 +3,16 @@ import Link from 'next/link'
 import Image from 'next/image'
 import React from "react"
 import { Trans } from 'next-i18next'
+import moment from 'moment'
+import momentDurationFormatSetup from "moment-duration-format"
 
 import LinkIcon from "../public/images/link.svg"
 import { stripText, nativeCurrency } from '.'
 import { mpUrl } from './nft'
 
 const xummImg = "/images/xumm.png"
+
+momentDurationFormatSetup(moment)
 
 export const acceptNftBuyOfferButton = (t, setSignRequest, offer) => {
   return <button
@@ -564,6 +568,21 @@ export const timeOrDate = (timestamp) => {
 
 export const expirationExpired = (t, timestamp) => {
   return new Date(timestamp * 1000) < new Date() ? t("table.expired") : t("table.expiration");
+}
+
+export const duration = (t, seconds, options) => {
+  /*
+    years:   Y or y
+    months:  M
+    weeks:   W or w
+    days:    D or d
+    hours:   H or h
+    minutes: m
+    seconds: s
+    ms:      S
+  */
+  if (!seconds) return ""
+  return moment.duration(seconds, "seconds").format("d[" + t("units.days-short") + "] h[" + t("units.hours-short") + "] m[" + t("units.minutes-short") + "]" + (options?.seconds ? (" s[" + t("units.seconds-short") + "]") : ""), { trim: "both" })
 }
 
 //need to make dynamic fraction digits

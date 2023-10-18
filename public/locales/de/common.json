@@ -12,7 +12,7 @@
     },
     "usernames": "Benutzernamen registrieren",
     "project-registartion": "Projekt registrieren",
-    "price-alerts": "XRP Preisalarme",
+    "price-alerts": "{{nativeCurrency}} Preisalarme",
     "submit-offline-tx": "Offline Transaktion einreichen",
     "networks": "Netzwerke",
     "ledger": "Ledger Transaktionen",
@@ -379,7 +379,8 @@
   "units": {
     "seconds-short": "s",
     "minutes-short": "m",
-    "hours-short": "h"
+    "hours-short": "h",
+    "days-short": "d"
   },
   "period": {
     "all": "",

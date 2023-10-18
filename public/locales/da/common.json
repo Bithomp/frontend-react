@@ -12,7 +12,7 @@
     },
     "usernames": "Registrering af brugernavn",
     "project-registartion": "Projekt registrering",
-    "price-alerts": "XRP-pris varsler",
+    "price-alerts": "{{nativeCurrency}}-pris varsler",
     "submit-offline-tx": "Indsend offline transaktion",
     "networks": "Netværk",
     "ledger": "Ledger transaktioner",
@@ -379,7 +379,8 @@
   "units": {
     "seconds-short": "s",
     "minutes-short": "m",
-    "hours-short": "h"
+    "hours-short": "h",
+    "days-short": "d"
   },
   "period": {
     "all": "",

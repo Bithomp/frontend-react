@@ -21,8 +21,8 @@ export const getServerSideProps = async (context) => {
 
 import SEO from '../../components/SEO'
 
-import { useWidth, ledgerName } from '../../utils'
-import { codeHighlight } from '../../utils/format'
+import { useWidth, ledgerName, xlfToSeconds } from '../../utils'
+import { codeHighlight, duration } from '../../utils/format'
 
 export default function Governance({ id }) {
   const { t } = useTranslation(['common', 'governance'])
@@ -83,7 +83,7 @@ export default function Governance({ id }) {
               } else if (hookParameters[j].HookParameter.HookParameterName === "495252") {
                 governanceData.rewardRate = hookParameters[j].HookParameter.HookParameterValue
               } else if (hookParameters[j].HookParameter.HookParameterName === "495244") {
-                governanceData.rewardDuration = hookParameters[j].HookParameter.HookParameterValue
+                governanceData.rewardDuration = xlfToSeconds(hookParameters[j].HookParameter.HookParameterValue)
               } else if (hookParameters[j].HookParameter.HookParameterName.substring(0, 4) === "4953") {
                 parameters.push({
                   name: "Seat " + parseInt(hookParameters[j].HookParameter.HookParameterName.substring(4), 16),
@@ -189,7 +189,9 @@ export default function Governance({ id }) {
                 <>
                   {" "}
                   <Trans i18nKey="reward-duration" ns="governance">
-                    Reward duration: <b>{{ rewardDuration: govData.rewardDuration }}</b>.
+                    Reward duration: <b>{{ rewardDuration: govData.rewardDuration }}</b> seconds ({{
+                      rewardDurationConverted: duration(t, govData.rewardDuration, { seconds: true })
+                    }}).
                   </Trans>
                 </>
               }

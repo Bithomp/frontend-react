@@ -12,7 +12,7 @@
     },
     "usernames": "Registracija korisničkog imena",
     "project-registartion": "Registracija projekta",
-    "price-alerts": "Upozorenja na promjenu XRP cijene",
+    "price-alerts": "Upozorenja na promjenu {{nativeCurrency}} cijene",
     "submit-offline-tx": "Pošalji offline transakciju",
     "networks": "Mreže",
     "ledger": "Ledger transakcije",
@@ -379,7 +379,8 @@
   "units": {
     "seconds-short": "s",
     "minutes-short": "m",
-    "hours-short": "h"
+    "hours-short": "h",
+    "days-short": "d"
   },
   "period": {
     "all": "",

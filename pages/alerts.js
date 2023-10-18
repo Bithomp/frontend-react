@@ -1,11 +1,11 @@
 import { useTranslation, Trans } from 'next-i18next'
 import { useState, useEffect } from 'react'
 import axios from 'axios'
-import moment from "moment"
-import momentDurationFormatSetup from "moment-duration-format"
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
+import { nativeCurrency } from "../utils"
 import { useIsMobile, getIsSsrMobile } from "../utils/mobile"
+import { duration } from "../utils/format"
 
 export async function getServerSideProps(context) {
   const { locale } = context
@@ -18,8 +18,6 @@ export async function getServerSideProps(context) {
 }
 
 import SEO from '../components/SEO'
-
-momentDurationFormatSetup(moment)
 
 export default function Alerts() {
   const { t } = useTranslation()
@@ -58,14 +56,10 @@ export default function Alerts() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  function duration(seconds) {
-    return moment.duration(seconds, "seconds").format("h[" + t("units.hours-short") + "], m[" + t("units.minutes-short") + "]", { trim: "both" })
-  }
-
   return <>
-    <SEO title={t("menu.price-alerts")} />
+    <SEO title={t("menu.price-alerts", { nativeCurrency })} />
     <div className="page-alerts content-center">
-      <h1 className='center'>{t("menu.price-alerts")}</h1>
+      <h1 className='center'>{t("menu.price-alerts", { nativeCurrency })}</h1>
       <p>
         <Trans i18nKey="alerts.text0">
           Get notified when XRP/USD or XRP/BTC market price by <a href="https://www.bitstamp.net/">Bitstamp</a> changes for more than 5% within an hour or more than 10% within a day.
@@ -96,7 +90,7 @@ export default function Alerts() {
               <td>{i + 1}</td>
               <td>{localDateAndTime(alert.timestamp_new)}</td>
               <td>XRP/{isMobile && " "}{alert.currency.toUpperCase()}</td>
-              <td>{duration(alert.timestamp_new - alert.timestamp_old)}</td>
+              <td>{duration(t, alert.timestamp_new - alert.timestamp_old)}</td>
               <td>{alert.change}</td>
               <td>{alert.rate_old}</td>
               <td>{alert.rate_new}</td>

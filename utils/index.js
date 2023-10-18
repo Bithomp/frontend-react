@@ -12,6 +12,58 @@ export const delay = async (milliseconds, callback, options) => {
   callback(options)
 }
 
+// for XLF decoding
+const changeEndianness = string => {
+  const result = []
+  let len = string.length - 2
+  while (len >= 0) {
+    result.push(string.substr(len, 2))
+    len -= 2
+  }
+  return result.join('')
+}
+
+const getXflExponent = xfl => {
+  if (xfl < 0n)
+    throw "Invalid XFL"
+  if (xfl == 0n)
+    return 0n
+  return ((xfl >> 54n) & 0xFFn) - 97n
+}
+
+const getXflMantissa = xfl => {
+  if (xfl < 0n)
+    throw "Invalid XFL"
+  if (xfl == 0n)
+    return 0n;
+  return xfl - ((xfl >> 54n) << 54n)
+}
+
+// for XFL decoding
+const isXflNegative = xfl => {
+  if (xfl < 0n)
+    throw "Invalid XFL"
+  if (xfl == 0n)
+    return false
+  return ((xfl >> 62n) & 1n) == 0n
+}
+
+const xflToString = xfl => {
+  if (xfl < 0n)
+    throw "Invalid XFL"
+  if (xfl == 0n)
+    return "<zero>"
+  let number = Number(getXflMantissa(xfl)) * Math.pow(10, Number(getXflExponent(xfl)))
+  return isXflNegative(xfl) ? (-1 * number) : number
+}
+
+export const xlfToSeconds = hex => {
+  if (!hex) return null
+  hex = changeEndianness(hex)
+  hex = BigInt('0x' + hex)
+  return xflToString(hex)
+}
+
 //https://github.com/XRPLF/CTID/blob/main/ctid.js#L24C31-L24C31 by Richard
 export const decodeCTID = ctid => {
   let ctidValue

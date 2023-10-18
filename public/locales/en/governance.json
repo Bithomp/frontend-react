@@ -2,5 +2,5 @@
   "header": "{{ledgerName}} Governance Game",
   "summary": "There are <1>{{ countTables }}</1> seats.",
   "reward-rate": "Reward rate: <1>{{ rewardRate }}</1>.",
-  "reward-duration": "Reward duration: <1>{{ rewardDuration }}</1>."
+  "reward-duration": "Reward duration: <1>{{ rewardDuration }}</1> seconds ({{ rewardDurationConverted }})."
 }

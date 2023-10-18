@@ -12,7 +12,7 @@
     },
     "usernames": "Псевдоним",
     "project-registartion": "Регистрация проекта",
-    "price-alerts": "Мониторинг XRP цены",
+    "price-alerts": "Мониторинг {{nativeCurrency}} цены",
     "submit-offline-tx": "Отправить офлайн транзакцию",
     "networks": "Сети",
     "ledger": "Транзакции леджера",
@@ -379,7 +379,8 @@
   "units": {
     "seconds-short": "с",
     "minutes-short": "м",
-    "hours-short": "ч"
+    "hours-short": "ч",
+    "days-short": "д"
   },
   "period": {
     "all": "За все время",

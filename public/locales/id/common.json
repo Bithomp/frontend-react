@@ -12,7 +12,7 @@
     },
     "usernames": "Pendaftaran Username",
     "project-registartion": "Pendaftaran Proyek",
-    "price-alerts": "Peringatan Harga XRP",
+    "price-alerts": "Peringatan Harga {{nativeCurrency}}",
     "submit-offline-tx": "Kirim Transaksi Offline",
     "networks": "Jaringan",
     "ledger": "Transaksi Ledger",
@@ -379,7 +379,8 @@
   "units": {
     "seconds-short": "d",
     "minutes-short": "m",
-    "hours-short": "j"
+    "hours-short": "j",
+    "days-short": "h"
   },
   "period": {
     "all": "",

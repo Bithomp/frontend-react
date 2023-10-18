@@ -12,7 +12,7 @@
     },
     "usernames": "ユーザネームの登録",
     "project-registartion": "プロジェクトの登録",
-    "price-alerts": "XRP価格アラート",
+    "price-alerts": "{{nativeCurrency}}価格アラート",
     "submit-offline-tx": "オフライントランザクションを送信",
     "networks": "ネットワーク",
     "ledger": "レジャーのトランザクション",
@@ -379,7 +379,8 @@
   "units": {
     "seconds-short": "秒",
     "minutes-short": "分",
-    "hours-short": "時間"
+    "hours-short": "時間",
+    "days-short": "日"
   },
   "period": {
     "all": "",

@@ -12,7 +12,7 @@
     },
     "usernames": "Registre d'àlies",
     "project-registartion": "Registre de projectes",
-    "price-alerts": "Alertes XRP",
+    "price-alerts": "Alertes {{nativeCurrency}}",
     "submit-offline-tx": "Envia una transacció fora de línia",
     "networks": "Xarxes",
     "ledger": "Transaccions del Ledger",
@@ -379,7 +379,8 @@
   "units": {
     "seconds-short": "s",
     "minutes-short": "m",
-    "hours-short": "h"
+    "hours-short": "h",
+    "days-short": "d"
   },
   "period": {
     "all": "",

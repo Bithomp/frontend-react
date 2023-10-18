@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { useTranslation } from 'next-i18next'
 
-import { devNet, useLocalStorage, ledgerName } from '../../utils'
+import { devNet, useLocalStorage, ledgerName, nativeCurrency, xahauNetwork } from '../../utils'
 
 import SocialIcons from "./SocialIcons"
 import LogoAnimated from './LogoAnimated'
@@ -28,7 +28,7 @@ export default function Footer({ account, setSignRequest }) {
             :
             <span onClick={() => { setSignRequest({ redirect: "nfts" }) }} className="link">{t("signin.actions.my-nfts")}</span>
           }
-          {!devNet && <Link href="/alerts">{t("menu.price-alerts")}</Link>}
+          {!devNet && !xahauNetwork && <Link href="/alerts">{t("menu.price-alerts", { nativeCurrency })}</Link>}
           {!devNet && <a href={"/submit/"}>{t("menu.submit-offline-tx")}</a>}
         </div>
 
