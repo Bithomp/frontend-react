@@ -3,7 +3,6 @@ import { useState, useEffect } from 'react'
 import axios from 'axios'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useRouter } from 'next/router'
-import { Buffer } from 'buffer'
 import Link from 'next/link'
 
 export const getServerSideProps = async (context) => {
@@ -21,7 +20,7 @@ export const getServerSideProps = async (context) => {
 
 import SEO from '../../components/SEO'
 
-import { useWidth, ledgerName, xlfToSeconds } from '../../utils'
+import { ledgerName, xlfToSeconds } from '../../utils'
 import { codeHighlight, duration } from '../../utils/format'
 
 export default function Governance({ id }) {
@@ -30,10 +29,7 @@ export default function Governance({ id }) {
 
   const { isReady } = router
 
-  const windowWidth = useWidth()
-
   const [rawData, setRawData] = useState({})
-  const [data, setData] = useState([])
   const [govData, setGovData] = useState({})
   const [loading, setLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState("")
@@ -46,11 +42,10 @@ export default function Governance({ id }) {
       //genesis account
       id = 'rHb9CJAWyB4rj91VRWn96DkukG4bwdtyTh'
     }
-    let apiUrl = '/xrpl/objects/' + id
+    let apiUrl = 'xrpl/accountNamespace/' + id + '/0000000000000000000000000000000000000000000000000000000000000000'
 
     setLoading(true)
     setRawData({})
-    setData([])
     setGovData({})
 
     const response = await axios.get(apiUrl, {
@@ -61,46 +56,118 @@ export default function Governance({ id }) {
         setLoading(false) //keep here for fast tab clickers
       }
     })
-    const newdata = response?.data?.[0]
-
+    const newdata = response?.data
     if (newdata) {
       setRawData(newdata)
       setLoading(false) //keep here for fast tab clickers
-      if (newdata.Hooks) {
+      if (newdata.namespace_entries) {
         setErrorMessage("")
-        for (let i = 0; i < newdata.Hooks.length; i++) {
-          if (newdata.Hooks[i].Hook.HookHash === "78CA3F5BD3D4F7B32A6BEBB3844380A9345C9BA496EFEB30314BDDF405D7B4B3") {
-            const hookParameters = newdata.Hooks[i].Hook.HookParameters
-            let parameters = []
-            let governanceData = {
-              rewardRate: null,
-              rewardDuration: null,
-              memberCount: null
+        const entries = newdata.namespace_entries
+        let governanceData = {
+          rewardRate: null,
+          rewardDuration: null,
+          memberCount: null,
+          members: [],
+          parameters: [],
+          votes: {
+            seat: [],
+            hook: [],
+            reward: {
+              rate: [],
+              delay: []
             }
-            for (let j = 0; j < hookParameters.length; j++) {
-              if (hookParameters[j].HookParameter.HookParameterName === "494D43") {
-                governanceData.memberCount = parseInt(hookParameters[j].HookParameter.HookParameterValue, 16)
-              } else if (hookParameters[j].HookParameter.HookParameterName === "495252") {
-                governanceData.rewardRate = xlfToSeconds(hookParameters[j].HookParameter.HookParameterValue)
-              } else if (hookParameters[j].HookParameter.HookParameterName === "495244") {
-                governanceData.rewardDuration = xlfToSeconds(hookParameters[j].HookParameter.HookParameterValue)
-              } else if (hookParameters[j].HookParameter.HookParameterName.substring(0, 4) === "4953") {
-                parameters.push({
-                  name: "Seat " + parseInt(hookParameters[j].HookParameter.HookParameterName.substring(4), 16),
-                  value: hookParameters[j].HookParameter.HookParameterValue
-                })
-              } else {
-                parameters.push({
-                  name: Buffer.from(hookParameters[j].HookParameter.HookParameterName, 'hex').toString(),
-                  value: hookParameters[j].HookParameter.HookParameterValue
-                })
-              }
+          },
+          count: {
+            seat: [],
+            hook: [],
+            reward: {
+              rate: [],
+              delay: []
             }
-            setGovData(governanceData)
-            setData(parameters)
-            break
           }
         }
+        for (let j = 0; j < entries.length; j++) {
+          const firstLetter = entries[j].HookStateKey.substring(0, 2)
+          if (entries[j].HookStateKey === "0000000000000000000000000000000000000000000000000000000000004D43") {
+            governanceData.memberCount = parseInt(entries[j].HookStateData, 16)
+          } else if (entries[j].HookStateKey === "0000000000000000000000000000000000000000000000000000000000005252") {
+            governanceData.rewardRate = xlfToSeconds(entries[j].HookStateData)
+          } else if (entries[j].HookStateKey === "0000000000000000000000000000000000000000000000000000000000005244") {
+            governanceData.rewardDuration = xlfToSeconds(entries[j].HookStateData)
+          } else if (entries[j].HookStateKey.substring(0, 62) === "00000000000000000000000000000000000000000000000000000000000000") {
+            //members
+            const seat = parseInt(entries[j].HookStateKey.substring(62), 16)
+            governanceData.members[seat] = {
+              key: "Seat " + seat,
+              value: entries[j].HookStateData
+            }
+          } else if (firstLetter === "56" || firstLetter === "43") {
+            //votes and counts
+            const secondLetter = entries[j].HookStateKey.substring(2, 4)
+            let val = {
+              key: entries[j].HookStateKey,
+              value: entries[j].HookStateData,
+              targetLayer: entries[j].HookStateKey.substring(7, 8)
+            }
+            if (firstLetter === "56") {
+              //votes
+              val.voter = entries[j].HookStateKey.substring(24)
+            } else {
+              //counts
+              val.address = entries[j].HookStateKey.substring(24)
+            }
+            if (secondLetter === "53") {
+              //seat
+              val.seat = parseInt(entries[j].HookStateKey.substring(4, 6), 16)
+              if (firstLetter === "56") {
+                //votes
+                governanceData.votes.seat.push(val)
+              } else {
+                //count
+                val.value = parseInt(val.value, 16)
+                governanceData.count.seat.push(val)
+              }
+            } else if (secondLetter === "48") {
+              //hook
+              if (firstLetter === "56") {
+                governanceData.votes.hook.push(val)
+              } else {
+                val.value = parseInt(val.value, 16)
+                governanceData.count.hook.push(val)
+              }
+            } else if (secondLetter === "52") {
+              //reward
+              const thirdLetter = entries[j].HookStateKey.substring(4, 6)
+              if (thirdLetter === "52") {
+                //rate
+                if (firstLetter === "56") {
+                  val.value = xlfToSeconds(val.value)
+                  governanceData.votes.reward.rate.push(val)
+                } else {
+                  val.rate = xlfToSeconds(entries[j].HookStateKey.substring(48))
+                  val.value = parseInt(val.value, 16)
+                  governanceData.count.reward.rate.push(val)
+                }
+              } else if (thirdLetter === "44") {
+                //delay
+                if (firstLetter === "56") {
+                  val.value = xlfToSeconds(val.value)
+                  governanceData.votes.reward.delay.push(val)
+                } else {
+                  val.delay = parseInt(entries[j].HookStateKey.substring(48))
+                  val.value = parseInt(val.value, 16)
+                  governanceData.count.reward.delay.push(val)
+                }
+              }
+            }
+          } else {
+            governanceData.parameters.push({
+              key: entries[j].HookStateKey,
+              value: entries[j].HookStateData
+            })
+          }
+        }
+        setGovData(governanceData)
       } else {
         if (newdata.error) {
           setErrorMessage(newdata.error)
@@ -113,44 +180,19 @@ export default function Governance({ id }) {
   }
 
   /*
-    [
-      {
-        "Account": "rHb9CJAWyB4rj91VRWn96DkukG4bwdtyTh",
-        "Flags": 0,
-        "Hooks": [
-          {
-            "Hook": {
-              "HookHash": "78CA3F5BD3D4F7B32A6BEBB3844380A9345C9BA496EFEB30314BDDF405D7B4B3",
-              "HookParameters": [
-                {
-                  "HookParameter": {
-                    "HookParameterName": "495252",
-                    "HookParameterValue": "55554025A6D7CB53"
-                  }
-                },
-                {
-                  "HookParameter": {
-                    "HookParameterName": "494D43",
-                    "HookParameterValue": "08"
-                  }
-                }
-              ]
-            }
-          },
-          {
-            "Hook": {
-              "HookHash": "610F33B8EBF7EC795F822A454FB852156AEFE50BE0CB8326338A81CD74801864",
-              "HookParameters": []
-            }
-          }
-        ],
-        "LedgerEntryType": "Hook",
-        "OwnerNode": "0",
-        "PreviousTxnID": "4349F9C72C5C9A562299D82E46CDFFEEB9BA75F4E544DE38555FBCB53E7F310A",
-        "PreviousTxnLgrSeq": 3,
-        "index": "469372BEE8814EC52CA2AECB5374AB57A47B53627E3C0E2ACBE3FDC78DBFEC7B"
-      }
-    ]
+    {
+      "account": "rHb9CJAWyB4rj91VRWn96DkukG4bwdtyTh",
+      "ledger_hash": "8B7B8254C1C01A300804DFB9885E63DB483BD9BA6676A31651DD35326877AE5B",
+      "ledger_index": 259854,
+      "namespace_entries": [
+        {
+          "Flags": 0,
+          "HookStateData": "00",
+          "HookStateKey": "00000000000000000000000088CECA8ED635F79573136EAAA2B70F07C2F2B9D8",
+          "LedgerEntryType": "HookState",
+          "OwnerNode": "0",
+          "index": "0895F253FDCBFAF5A7DAE54AB2BF04A81595D360799036CAF36D2B0542C08DC7"
+        },
   */
 
   useEffect(() => {
@@ -160,6 +202,12 @@ export default function Governance({ id }) {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isReady, id])
+
+  const rewardRateHuman = rewardRate => {
+    if (!rewardRate) return "0 % pa"
+    if (rewardRate === "<zero>") return rewardRate
+    return (Math.round((((1 + rewardRate) ** 12) - 1) * 10000) / 100) + " % pa"
+  }
 
   return <>
     <SEO title={t("header", { ns: "governance", ledgerName })} />
@@ -181,7 +229,7 @@ export default function Governance({ id }) {
                 <>
                   {" "}
                   <Trans i18nKey="reward-rate" ns="governance">
-                    Reward rate: <b>{{ rewardRate: (Math.round((((1 + govData.rewardRate) ** 12) - 1) * 10000) / 100) + " % pa" }}</b>.
+                    Reward rate: <b>{{ rewardRate: rewardRateHuman(govData.rewardRate) }}</b>.
                   </Trans>
                 </>
               }
@@ -206,84 +254,498 @@ export default function Governance({ id }) {
         </div>
       }
       <br />
-      {
-        (windowWidth > 1000) ?
-          <table className="table-large shrink">
-            <thead>
-              <tr>
-                <th className='left'>{t("table.name")}</th>
-                <th className='right'>{t("table.address")}</th>
-              </tr>
-            </thead>
-            <tbody>
-              {loading ?
-                <tr className='right'>
-                  <td colSpan="100">
-                    <br />
-                    <span className="waiting"></span>
-                    <br />{t("general.loading")}<br />
-                    <br />
-                  </td>
-                </tr>
-                :
+      <h4 className='center'>Members</h4>
+      <table className="table-large shrink">
+        <thead>
+          <tr>
+            <th className='left'>{t("table.name")}</th>
+            <th className='right'>{t("table.address")}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {loading ?
+            <tr className='right'>
+              <td colSpan="100">
+                <br />
+                <span className="waiting"></span>
+                <div className='center'>
+                  <br />
+                  {t("general.loading")}
+                </div>
+                <br />
+              </td>
+            </tr>
+            :
+            <>
+              {(!errorMessage && govData?.members) ?
                 <>
-                  {(!errorMessage && data) ?
-                    <>
-                      {data.length > 0 &&
-                        data.map((p, i) =>
-                          <tr key={i}>
-                            <td className='left'>
-                              {p.name}
-                            </td>
-                            <td className='right'>
-                              {p.value}
-                            </td>
-                          </tr>
-                        )
-                      }
-                    </>
-                    :
-                    <tr><td colSpan="100" className='center orange bold'>{errorMessage}</td></tr>
+                  {govData.members.length &&
+                    govData.members.map((p, i) =>
+                      <tr key={i}>
+                        <td className='left'>
+                          {p.key}
+                        </td>
+                        <td className='right'>
+                          {p.value}
+                        </td>
+                      </tr>
+                    )
                   }
                 </>
-              }
-            </tbody>
-          </table>
-          :
-          <table className="table-mobile">
-            <thead>
-            </thead>
-            <tbody>
-              {loading ?
-                <tr className='center'>
-                  <td colSpan="100">
-                    <br />
-                    <span className="waiting"></span>
-                    <br />{t("general.loading")}<br />
-                    <br />
-                  </td>
-                </tr>
                 :
+                <tr><td colSpan="100" className='center orange bold'>{errorMessage}</td></tr>
+              }
+            </>
+          }
+        </tbody>
+      </table>
+      <br />
+      <h4 className='center'>Votes Seats</h4>
+      <table className="table-large shrink">
+        <thead>
+          <tr>
+            <th className='left'>Voter</th>
+            <th className='left'>Target layer</th>
+            <th className='left'>Seat</th>
+            <th className='right'>{t("table.address")}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {loading ?
+            <tr className='right'>
+              <td colSpan="100">
+                <br />
+                <span className="waiting"></span>
+                <div className='center'>
+                  <br />
+                  {t("general.loading")}
+                </div>
+                <br />
+              </td>
+            </tr>
+            :
+            <>
+              {(!errorMessage && govData?.votes?.seat) ?
                 <>
-                  {!errorMessage ? data.map((av, i) =>
-                    <tr key={i}>
-                      <td style={{ padding: "0 10px" }}>
-                        <p>
-                          {t("table.name")}: {av.name}
-                        </p>
-                        <p>
-                          {t("table.address")}: {av.value}
-                        </p>
-                      </td>
-                    </tr>)
-                    :
-                    <tr><td colSpan="100" className='center orange bold'>{errorMessage}</td></tr>
+                  {govData.votes.seat.length > 0 &&
+                    govData.votes.seat.map((p, i) =>
+                      <tr key={i}>
+                        <td className='left'>
+                          {p.voter}
+                        </td>
+                        <td className='left'>
+                          {p.targetLayer}
+                        </td>
+                        <td className='left'>
+                          {p.seat}
+                        </td>
+                        <td className='right'>
+                          {p.value}
+                        </td>
+                      </tr>
+                    )
                   }
                 </>
+                :
+                <tr><td colSpan="100" className='center orange bold'>{errorMessage}</td></tr>
               }
-            </tbody>
-          </table>
-      }
+            </>
+          }
+        </tbody>
+      </table>
+      <br />
+      <h4 className='center'>Votes Reward Rate</h4>
+      <table className="table-large shrink">
+        <thead>
+          <tr>
+            <th className='left'>Voter</th>
+            <th className='left'>Target layer</th>
+            <th className='right'>Rate</th>
+          </tr>
+        </thead>
+        <tbody>
+          {loading ?
+            <tr className='right'>
+              <td colSpan="100">
+                <br />
+                <span className="waiting"></span>
+                <div className='center'>
+                  <br />
+                  {t("general.loading")}
+                </div>
+                <br />
+              </td>
+            </tr>
+            :
+            <>
+              {(!errorMessage && govData?.votes?.reward?.rate) ?
+                <>
+                  {govData.votes.reward.rate.length > 0 &&
+                    govData.votes.reward.rate.map((p, i) =>
+                      <tr key={i}>
+                        <td className='left'>
+                          {p.voter}
+                        </td>
+                        <td className='left'>
+                          {p.targetLayer}
+                        </td>
+                        <td className='right'>
+                          {rewardRateHuman(p.value)}
+                        </td>
+                      </tr>
+                    )
+                  }
+                </>
+                :
+                <tr><td colSpan="100" className='center orange bold'>{errorMessage}</td></tr>
+              }
+            </>
+          }
+        </tbody>
+      </table>
+      <br />
+      <h4 className='center'>Votes Reward Delay</h4>
+      <table className="table-large shrink">
+        <thead>
+          <tr>
+            <th className='left'>Voter</th>
+            <th className='left'>Target layer</th>
+            <th className='right'>Delay</th>
+          </tr>
+        </thead>
+        <tbody>
+          {loading ?
+            <tr className='right'>
+              <td colSpan="100">
+                <br />
+                <span className="waiting"></span>
+                <div className='center'>
+                  <br />
+                  {t("general.loading")}
+                </div>
+                <br />
+              </td>
+            </tr>
+            :
+            <>
+              {(!errorMessage && govData?.votes?.reward?.delay) ?
+                <>
+                  {govData.votes.reward.delay.length > 0 &&
+                    govData.votes.reward.delay.map((p, i) =>
+                      <tr key={i}>
+                        <td className='left'>
+                          {p.voter}
+                        </td>
+                        <td className='left'>
+                          {p.targetLayer}
+                        </td>
+                        <td className='right'>
+                          {p.value} seconds
+                        </td>
+                      </tr>
+                    )
+                  }
+                </>
+                :
+                <tr><td colSpan="100" className='center orange bold'>{errorMessage}</td></tr>
+              }
+            </>
+          }
+        </tbody>
+      </table>
+      <br />
+      <h4 className='center'>Votes Hooks</h4>
+      <table className="table-large shrink">
+        <thead>
+          <tr>
+            <th className='left'>Key</th>
+            <th className='right'>Value</th>
+          </tr>
+        </thead>
+        <tbody>
+          {loading ?
+            <tr className='right'>
+              <td colSpan="100">
+                <br />
+                <span className="waiting"></span>
+                <div className='center'>
+                  <br />
+                  {t("general.loading")}
+                </div>
+                <br />
+              </td>
+            </tr>
+            :
+            <>
+              {(!errorMessage && govData?.votes?.hook) ?
+                <>
+                  {govData.votes.hook.length > 0 &&
+                    govData.votes.hook.map((p, i) =>
+                      <tr key={i}>
+                        <td className='left'>
+                          {p.key}
+                        </td>
+                        <td className='right'>
+                          {p.value}
+                        </td>
+                      </tr>
+                    )
+                  }
+                </>
+                :
+                <tr><td colSpan="100" className='center orange bold'>{errorMessage}</td></tr>
+              }
+            </>
+          }
+        </tbody>
+      </table>
+      <br />
+      <br />
+      <h4 className='center'>Votes Seats Count</h4>
+      <table className="table-large shrink">
+        <thead>
+          <tr>
+            <th className='left'>Address</th>
+            <th className='left'>Target layer</th>
+            <th className='left'>Seat</th>
+            <th className='right'>Votes</th>
+          </tr>
+        </thead>
+        <tbody>
+          {loading ?
+            <tr className='right'>
+              <td colSpan="100">
+                <br />
+                <span className="waiting"></span>
+                <div className='center'>
+                  <br />
+                  {t("general.loading")}
+                </div>
+                <br />
+              </td>
+            </tr>
+            :
+            <>
+              {(!errorMessage && govData?.count?.seat) ?
+                <>
+                  {govData.count.seat.length > 0 &&
+                    govData.count.seat.map((p, i) =>
+                      <tr key={i}>
+                        <td className='left'>
+                          {p.address}
+                        </td>
+                        <td className='left'>
+                          {p.targetLayer}
+                        </td>
+                        <td className='left'>
+                          {p.seat}
+                        </td>
+                        <td className='right'>
+                          {p.value}
+                        </td>
+                      </tr>
+                    )
+                  }
+                </>
+                :
+                <tr><td colSpan="100" className='center orange bold'>{errorMessage}</td></tr>
+              }
+            </>
+          }
+        </tbody>
+      </table>
+      <br />
+      <h4 className='center'>Votes Reward Rate Count</h4>
+      <table className="table-large shrink">
+        <thead>
+          <tr>
+            <th className='left'>Rate</th>
+            <th className='left'>Target layer</th>
+            <th className='right'>Count</th>
+          </tr>
+        </thead>
+        <tbody>
+          {loading ?
+            <tr className='right'>
+              <td colSpan="100">
+                <br />
+                <span className="waiting"></span>
+                <div className='center'>
+                  <br />
+                  {t("general.loading")}
+                </div>
+                <br />
+              </td>
+            </tr>
+            :
+            <>
+              {(!errorMessage && govData?.count?.reward?.rate) ?
+                <>
+                  {govData.count.reward.rate.length > 0 &&
+                    govData.count.reward.rate.map((p, i) =>
+                      <tr key={i}>
+                        <td className='left'>
+                          {rewardRateHuman(p.rate)}
+                        </td>
+                        <td className='left'>
+                          {p.targetLayer}
+                        </td>
+                        <td className='right'>
+                          {p.value}
+                        </td>
+                      </tr>
+                    )
+                  }
+                </>
+                :
+                <tr><td colSpan="100" className='center orange bold'>{errorMessage}</td></tr>
+              }
+            </>
+          }
+        </tbody>
+      </table>
+      <br />
+      <h4 className='center'>Votes Reward Delay Count</h4>
+      <table className="table-large shrink">
+        <thead>
+          <tr>
+            <th className='left'>Delay</th>
+            <th className='left'>Target layer</th>
+            <th className='right'>Count</th>
+          </tr>
+        </thead>
+        <tbody>
+          {loading ?
+            <tr className='right'>
+              <td colSpan="100">
+                <br />
+                <span className="waiting"></span>
+                <div className='center'>
+                  <br />
+                  {t("general.loading")}
+                </div>
+                <br />
+              </td>
+            </tr>
+            :
+            <>
+              {(!errorMessage && govData?.count?.reward?.delay) ?
+                <>
+                  {govData.count.reward.delay.length > 0 &&
+                    govData.count.reward.delay.map((p, i) =>
+                      <tr key={i}>
+                        <td className='left'>
+                          {p.delay} seconds
+                        </td>
+                        <td className='left'>
+                          {p.targetLayer}
+                        </td>
+                        <td className='right'>
+                          {p.value}
+                        </td>
+                      </tr>
+                    )
+                  }
+                </>
+                :
+                <tr><td colSpan="100" className='center orange bold'>{errorMessage}</td></tr>
+              }
+            </>
+          }
+        </tbody>
+      </table>
+      <br />
+      <h4 className='center'>Votes Hooks Count</h4>
+      <table className="table-large shrink">
+        <thead>
+          <tr>
+            <th className='left'>Key</th>
+            <th className='right'>Value</th>
+          </tr>
+        </thead>
+        <tbody>
+          {loading ?
+            <tr className='right'>
+              <td colSpan="100">
+                <br />
+                <span className="waiting"></span>
+                <div className='center'>
+                  <br />
+                  {t("general.loading")}
+                </div>
+                <br />
+              </td>
+            </tr>
+            :
+            <>
+              {(!errorMessage && govData?.count?.hook) ?
+                <>
+                  {govData.count.hook.length > 0 &&
+                    govData.count.hook.map((p, i) =>
+                      <tr key={i}>
+                        <td className='left'>
+                          {p.key}
+                        </td>
+                        <td className='right'>
+                          {p.value}
+                        </td>
+                      </tr>
+                    )
+                  }
+                </>
+                :
+                <tr><td colSpan="100" className='center orange bold'>{errorMessage}</td></tr>
+              }
+            </>
+          }
+        </tbody>
+      </table>
+      <br />
+      <h4 className='center'>Parameters</h4>
+      <table className="table-large shrink">
+        <thead>
+          <tr>
+            <th className='left'>Key</th>
+            <th className='right'>Value</th>
+          </tr>
+        </thead>
+        <tbody>
+          {loading ?
+            <tr className='right'>
+              <td colSpan="100">
+                <br />
+                <span className="waiting"></span>
+                <div className='center'>
+                  <br />
+                  {t("general.loading")}
+                </div>
+                <br />
+              </td>
+            </tr>
+            :
+            <>
+              {(!errorMessage && govData?.members) ?
+                <>
+                  {govData.parameters.length &&
+                    govData.parameters.map((p, i) =>
+                      <tr key={i}>
+                        <td className='left'>
+                          {p.key}
+                        </td>
+                        <td className='right'>
+                          {p.value}
+                        </td>
+                      </tr>
+                    )
+                  }
+                </>
+                :
+                <tr><td colSpan="100" className='center orange bold'>{errorMessage}</td></tr>
+              }
+            </>
+          }
+        </tbody>
+      </table>
       <div className='center'>
         <br />
         {t("table.raw-data")}: <span className='link' onClick={() => setShowRawData(!showRawData)}>
