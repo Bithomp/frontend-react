@@ -81,7 +81,7 @@ export default function Governance({ id }) {
               if (hookParameters[j].HookParameter.HookParameterName === "494D43") {
                 governanceData.memberCount = parseInt(hookParameters[j].HookParameter.HookParameterValue, 16)
               } else if (hookParameters[j].HookParameter.HookParameterName === "495252") {
-                governanceData.rewardRate = hookParameters[j].HookParameter.HookParameterValue
+                governanceData.rewardRate = xlfToSeconds(hookParameters[j].HookParameter.HookParameterValue)
               } else if (hookParameters[j].HookParameter.HookParameterName === "495244") {
                 governanceData.rewardDuration = xlfToSeconds(hookParameters[j].HookParameter.HookParameterValue)
               } else if (hookParameters[j].HookParameter.HookParameterName.substring(0, 4) === "4953") {
