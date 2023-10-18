@@ -1,0 +1,15 @@
+{
+  "text0": "Bithomp je pretraživač (engl. explorer) <1>javnog</1> {{nativeCurrency}} Ledgera.",
+  "no-help": "Mi ne možemo zamrznuti adrese, napraviti povrate, poništiti transakcije ili promijeniti/dodati destinacijske oznake. Mi ne radimo forenziku i ne možemo vam pomoći vratiti izgubljene novčiće.",
+  "text1": "Ako ste žrtva krađe ili obmane, možete to prijaviti <1>ovdje</1>.",
+  "status-failed": "Ako tvoja transakcija ima status \"neuspjelo\" a vaši su novčići uzeti sa vašeg računa, kontaktirajte servis / novčanik / mjenjačnicu koju ste koristili za izradu te transakcije.",
+  "status-success": "Ako tvoja transakcija ima status \"uspješno\" ali niste stiglo na destinaciju, molimo kontaktirajte podršku servisa / novčanika / mjenjačnice.",
+  "wrong-tag": "Ako ste poslali transakciju bez destinacijske oznake ili s krivom oznakom, onda pročitajte (2) i (3) iznad.",
+  "text2": "Ako vam nedostaje 10 XRP-a u vašem novčaniku, molimo pročitajte o <1>baznoj rezervi</1>.",
+  "paper-wallet": "Ako želite poslati XRP sa vašeg papirnatog novčanika, morate ga prvo importiratiu sofverski novčanik, za to možete koristiti Xumm mobilnu aplikaciju (import tajnog ključa kao \"obiteljski ključ\").",
+  "text3": "Ako imate zahtjev za <1>partnerstvo ili marketing</1> možete nas kontaktirati na email: <3/>. Isto tako možete nas kontaktirati sa upitima za bithomp korisničko ime ili bithomp pretraživač transakcija.",
+  "no-answer": "Da bi obavljali efikasnu korisničku podršku i orijentirali se na kompliciranije upite, ne odgovaramo na upite vezane za točke 1-6.",
+  "submit-info": "Pošalji informacije o vašom XRPL servisu/usluzi",
+  "text4": "Ako imate javnu XRPL uslugu i želite da vaša XRPL adresa bude prepoznatljiva na Bithomp-u, pošaljite informacije <1>ovdje</1>. Isto nas tako možete kontaktirati na email: <3/> ako želite da se proces ubrza.",
+  "follow-us": "Pratite nas na socijalnim mrežama"
+}

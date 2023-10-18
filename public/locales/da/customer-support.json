@@ -1,0 +1,15 @@
+{
+  "text0": "Bithomp er en udforsker af den <1>offentlige</1> {{nativeCurrency}} Ledger.",
+  "no-help": "Vi kan ikke fryse konti, foretage tilbagebetalinger, annullere transaktioner eller ændre/tilføje destinationstags. Vi foretager ikke undersøgelser, og vi kan ikke hjælpe dig med at inddrive dine mistede eller stjålne midler.",
+  "text1": "Hvis dine midler blev stjålet, eller hvis du blev et offer for svindel/fidus, kan du rapportere det <1>her</1>.",
+  "status-failed": "Hvis din transaktion har statussen \"mislykket\", men dine midler blev taget fra din saldo, skal du kontakte den service / wallet / børs, som du brugte til at foretage denne transaktion.",
+  "status-success": "Hvis din transaktion har statussen \"succes\", men den ikke blev modtaget, skal du kontakte modtagerens wallet / service / børs support.",
+  "wrong-tag": "Hvis du sendte en transaktion uden et destinationsmærke eller med et forkert destinationsmærke, så læs (2) og (3) ovenfor.",
+  "text2": "Hvis du mangler 10 XRP i din pung, så læs venligst om <1>basisreserven</1>.",
+  "paper-wallet": "Hvis du vil sende XRP fra en papir wallet, skal du først importere den til en software wallet, du kan bruge Xumm mobilapp til det (importer hemmelighed som en \"family seed\").",
+  "text3": "Hvis du har et <1>partnerskab eller markedsføringsforslag</1>, kan du kontakte os via e-mail: <3/>. Du kan også kontakte os med spørgsmål om bithomp brugernavnregistrering eller bithomp transaktionsudforsker.",
+  "no-answer": "På grund af vores begrænsede tid besvarer vi ikke e-mails relateret til 1-6.",
+  "submit-info": "Indsend oplysninger om din XRPL-tjeneste",
+  "text4": "Hvis du har en offentlig XRPL-tjeneste, og du ønsker, at dine XRP-adresser skal genkendes på Bithomp, indsend dine oplysninger <1>her</1>. Du kan også kontakte os på e-mail: <3/> hvis du vil fremskynde processen.",
+  "follow-us": "Følg os på sociale medier"
+}

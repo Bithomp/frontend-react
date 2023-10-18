@@ -292,22 +292,6 @@
       "description-invalid": "Silakan tulis deskripsi yang terperinci tentang proyek Anda."
     }
   },
-  "customer-support": {
-    "text0": "Bithomp adalah penjelajah XRP Ledger <1>publik</1>.",
-    "no-help": "Kami tidak dapat membekukan akun, melakukan pengembalian dana, membatalkan transaksi, atau mengubah/menambahkan tag tujuan. Kami tidak melakukan penyelidikan dan kami tidak dapat membantu Anda untuk memulihkan dana yang hilang atau dicuri.",
-    "text1": "Jika dana Anda dicuri atau jika Anda menjadi korban penipuan/scam, Anda dapat melaporkannya <1>di sini</1>.",
-    "status-failed": "Jika transaksi Anda memiliki status \"gagal\" tetapi dana Anda diambil dari saldo Anda, maka hubungi layanan/dompet/pertukaran yang Anda gunakan untuk melakukan transaksi ini.",
-    "status-success": "Jika transaksi Anda memiliki status \"berhasil\" tetapi tidak diterima, maka hubungi dukungan dompet/pertukaran layanan penerima.",
-    "wrong-tag": "Jika Anda mengirimkan transaksi tanpa tag tujuan atau dengan tag tujuan yang salah, maka baca (2) dan (3) di atas.",
-    "text2": "Jika Anda kehilangan 10 XRP dalam dompet Anda, harap baca tentang <1>cadangan dasar</1>.",
-    "paper-wallet": "Jika Anda ingin mengirim XRP dari dompet kertas, Anda perlu mengimpornya ke dompet perangkat lunak terlebih dahulu, Anda dapat menggunakan aplikasi seluler Xumm untuk itu (impor sebagai \"kata sandi keluarga\").",
-    "flare": "Jika Anda memiliki pertanyaan tentang \"Flare\", Anda perlu mengajukannya kepada komunitas Flare.",
-    "text3": "Jika Anda memiliki proposal <1>kemitraan atau pemasaran</1>, Anda dapat menghubungi kami melalui surel: <3/>. Anda juga dapat menghubungi kami untuk pertanyaan tentang pendaftaran username bithomp atau penjelajah transaksi bithomp.",
-    "no-answer": "Karena waktu yang terbatas, kami tidak menjawab surel terkait dengan 1-7.",
-    "submit-info": "Kirim informasi tentang layanan XRPL Anda",
-    "text4": "Jika Anda memiliki layanan XRPL publik dan ingin agar alamat XRP Anda dikenali di Bithomp, kirimkan informasi Anda <1>di sini</1>. Anda juga dapat menghubungi kami melalui surel: <3/> jika Anda ingin mempercepat prosesnya.",
-    "follow-us": "Ikuti kami di media sosial"
-  },
   "press": "Ini adalah logo resmi Bithomp yang digunakan oleh profesional media dan pers untuk cetak dan web (svg, png, eps, pdf, untuk latar belakang gelap dan terang). Untuk pertanyaan media, silakan <1>hubungi kami</1>.",
   "page-not-found": {
     "header": "Halaman yang diminta tidak ditemukan.",

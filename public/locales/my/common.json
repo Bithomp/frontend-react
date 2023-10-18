@@ -292,22 +292,6 @@
 			"description-invalid": "Sila tulis keterangan yang terperinci mengenai projek anda."
 		}
 	},
-	"customer-support": {
-		"text0": "Bithomp adalah penjelajah Ledger XRP <1>awam</1>.",
-		"no-help": "Kami tidak boleh membekukan akaun, membuat pengembalian, membatalkan transaksi, atau mengubah/menambahkan tag destinasi. Kami tidak menjalankan siasatan dan tidak dapat membantu anda memulihkan dana yang hilang atau dicuri.",
-		"text1": "Jika dana anda dicuri atau jika anda menjadi mangsa penipuan, anda boleh melaporkannya <1>di sini</1>.",
-		"status-failed": "Jika transaksi anda mempunyai status \"gagal\" tetapi dana anda telah dikeluarkan dari baki anda, sila hubungi perkhidmatan/wallet/pertukaran yang anda gunakan untuk membuat transaksi ini.",
-		"status-success": "Jika transaksi anda mempunyai status \"berjaya\" tetapi dana tersebut tidak diterima, sila hubungi sokongan wallet/perkhidmatan/pertukaran penerima.",
-		"wrong-tag": "Jika anda menghantar transaksi tanpa tag destinasi atau dengan tag destinasi yang salah, baca (2) dan (3) di atas.",
-		"text2": "Jika anda kehilangan 10 XRP dalam wallet anda, sila baca mengenai <1>reserv asas</1>.",
-		"paper-wallet": "Jika anda ingin menghantar XRP dari wallet kertas, anda perlu mengimpornya ke wallet perisian terlebih dahulu, anda boleh menggunakan aplikasi mudah alih Xumm untuk itu (impor rahsia sebagai \"benih keluarga\").",
-		"flare": "Jika anda mempunyai soalan mengenai \"Flare\", anda perlu menghubunginya kepada komuniti Flare.",
-		"text3": "Jika anda mempunyai cadangan <1>rakan kongsi atau pemasaran</1>, anda boleh menghubungi kami melalui e-mel: <3/>. Anda juga boleh menghubungi kami jika ada soalan mengenai pendaftaran nama pengguna bithomp atau penjelajah transaksi bithomp.",
-		"no-answer": "Kerana masa terhad kami, kami tidak akan menjawab e-mel yang berkaitan dengan 1-7.",
-		"submit-info": "Kemukakan maklumat mengenai perkhidmatan XRPL anda",
-		"text4": "Jika anda mempunyai perkhidmatan XRPL awam dan ingin alamat XRP anda dikenali di Bithomp, kemukakan maklumat anda <1>di sini</1>. Anda juga boleh menghubungi kami melalui e-mel: <3/> jika anda ingin mempercepatkan proses tersebut.",
-		"follow-us": "Ikuti kami di media sosial"
-	},
 	"press": "Ini adalah logo rasmi untuk Bithomp yang digunakan oleh media dan profesional media untuk cetakan dan web (svg, png, eps, pdf, untuk latar belakang gelap dan terang). Untuk pertanyaan media, sila <1>hubungi kami</1>.",
 	"page-not-found": {
 		"header": "Halaman yang diminta tidak ditemui.",

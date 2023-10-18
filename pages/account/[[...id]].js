@@ -59,7 +59,7 @@ import SearchBlock from '../../components/Layout/SearchBlock'
 import CopyButton from '../../components/UI/CopyButton'
 
 // setSignRequest, account, pageMeta
-export default function Account({ pageMeta, signRequest, id, selectedCurrency }) {
+export default function Account({ pageMeta, signRequest, id, selectedCurrency, networkInfo }) {
   const { t } = useTranslation()
 
   const [data, setData] = useState({})
@@ -244,6 +244,10 @@ export default function Account({ pageMeta, signRequest, id, selectedCurrency })
                           <tr>
                             <td>XUMM Pro</td><td>{data?.xummMeta?.xummPro ? "Yes" : "No"}</td>
                           </tr>
+                          <tr>
+                            <td>Base fee</td><td>{networkInfo?.reserveBase}</td>
+                          </tr>
+                          {/* add on the customer-support page when in drops */}
                         </tbody>
                       </table>
                     </div>
@@ -275,12 +279,6 @@ export default function Account({ pageMeta, signRequest, id, selectedCurrency })
                         <tr><th colSpan="100">{t("table.ledger-data")}</th></tr>
                       </thead>
                       <tbody>
-                        {data?.ledgerInfo?.balance &&
-                          <tr>
-                            <td>{t("table.balance")}</td>
-                            <td>{amountFormat(data.ledgerInfo.balance)}</td>
-                          </tr>
-                        }
                         <tr>
                           <td className='bold'>Status</td>
                           {data?.ledgerInfo?.activated ?
@@ -288,6 +286,7 @@ export default function Account({ pageMeta, signRequest, id, selectedCurrency })
                             :
                             <td>
                               {/* Reserves are different and currency codes also */}
+                              {/* Also show blackholed status */}
                               {data?.ledgerInfo?.deleted ?
                                 <>
                                   <span className='red bold'>Account deleted.</span>
@@ -312,6 +311,12 @@ export default function Account({ pageMeta, signRequest, id, selectedCurrency })
                             </td>
                           }
                         </tr>
+                        {data?.ledgerInfo?.balance &&
+                          <tr>
+                            <td>{t("table.balance")}</td>
+                            <td>{amountFormat(data.ledgerInfo.balance)}</td>
+                          </tr>
+                        }
                       </tbody>
                     </table>
 

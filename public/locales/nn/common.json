@@ -292,22 +292,6 @@
       "description-invalid": "Vennligst skriv en detaljert beskrivelse av ditt prosjekt."
     }
   },
-  "customer-support": {
-    "text0": "Bithomp er en utforsker av den <1>offentlige</1> XRP Ledger.",
-    "no-help": "Vi kan ikke fryse kontoer, foreta refusjoner, kansellere transaksjoner eller endre/legge til destinasjonskoder. Vi foretar ikke etterforskning, og vi kan ikke hjelpe deg med å gjenopprette dine tapte eller stjålne midler.",
-    "text1": "Hvis midlene dine ble stjålet eller hvis du ble et offer for svindel kan du rapportere det<1>her</1>.",
-    "status-failed": "Hvis transaksjonen din har statusen \"mislyktes\", men midlene dine ble tatt fra saldoen din, kontakt tjenesten / lommeboken / børsen som du brukte til å utføre denne transaksjonen.",
-    "status-success": "Hvis transaksjonen din har status \"suksess\" men ikke ble mottatt, ta kontakt med mottakerens lommebok / tjeneste / børs brukerstøtte.",
-    "wrong-tag": "Hvis du sendte en transaksjon uten en destinasjonskode eller med feil destinasjonskode, les (2) og (3) ovenfor.",
-    "text2": "Hvis du mangler 10 XRP i lommeboken din, vennligst les om <1>base reserve</1>.",
-    "paper-wallet": "Hvis du vil sende XRP fra en papir lommebok, må du først importere den til en programvare lommebok, du kan bruke Xumm mobilapp til det (importer hemmelighet som en \"family seed\").",
-    "flare": "Hvis du har et spørsmål om \"Flare\" må du adressere det til Flare-fellesskapet.",
-    "text3": "Hvis du har et<1>partnerskap eller markedsførings</1>forslag kan du kontakte oss på e-post: <3/>. Du kan også kontakte oss med spørsmål om bithomp registrering av brukernavn eller bithomp transaksjons utforsker.",
-    "no-answer": "På grunn av vår begrensede tid svarer vi ikke på e-poster knyttet til 1-",
-    "submit-info": "Send inn informasjon om XRPL-tjenesten din",
-    "text4": "Hvis du har en offentlig XRPL-tjeneste og du vil at XRP-adressene dine skal gjenkjennes på Bithomp, send inn informasjonen din <1>her</1>. Du kan også kontakte oss på e-post: <3/> hvis du vil fremskynde prosessen.",
-    "follow-us": "Følg oss på sosiale medier"
-  },
   "press": "Dette er den offisielle logoen for Bithomp som skal brukes av media- og pressefolk for trykk og nett (svg, png, eps, pdf, for mørke og lyse bakgrunner). For mediehenvendelser, vennligst <1>kontakt oss</1>.",
   "page-not-found": {
     "header": "Den forespurte siden ble ikke funnet.",

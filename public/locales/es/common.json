@@ -292,22 +292,6 @@
       "description-invalid": "Por favor, escribe una descripción detallada de tu proyecto."
     }
   },
-  "customer-support": {
-    "text0": "Bithomp es un explorador <1>público</1> del XRP Ledger.",
-    "no-help": "No podemos congelar cuentas, realizar reembolsos, cancelar transacciones o cambiar/añadir tags de destino. No hacemos investigaciones y no te podemos ayudar a recuperar tus fondos perdidos o robados.",
-    "text1": "Si tus fondos fueron robados o si te convertiste en una víctima de un fraude/timo, puedes reportarlo <1>aquí</1>.",
-    "status-failed": "Si tu transacción tiene el estado de \"fallido\" pero tus fondos fueron tomados de tu balance entonces contacta con el servicio / cartera / exchange con el cual hiciste esa transacción.",
-    "status-success": "Si tu transacción tiene el estado de \"realizado\" pero no se ha recibido, contacta con el soporte de la cartera / servicio / exchange del destinatario.",
-    "wrong-tag": "Si enviaste una transacción sin tag de destino or con un tag de destino erróneo entonces lee arriba los puntos (2) y (3).",
-    "text2": "Si echas en falta 10 XRP en tu cartera, por favor lee acerca de la <1>reserva inicial</1>.",
-    "paper-wallet": "Si quieres enviar XRP desde una cartera de papel, necesitas importarla a una cartera de software primero, puedes usar la app móvil de Xumm para ello (importa el secreto como una \"semilla familiar\").",
-    "flare": "Si tienes preguntas sobre \"Flare\" debes gestionarlas con la comunidad de Flare.",
-    "text3": "Si tienes una propuesta de <1>colaboración o márketing</1> puedes contactarnos por correo electrónico: <3/>. También puedes contactarnos para cuestiones sobre el registro de nombres de usuario de bithomp o el explorador de transacciones de bithomp.",
-    "no-answer": "Debido a que nuestro tiempo es limitado no respondemos correos relacionados con los puntos 1-7.",
-    "submit-info": "Enviar información sobre tu servicio XRPL",
-    "text4": "Si tienes un servicio público XRPL y quieres que tu dirección XRP sea reconocida por Bithomp envía tu información <1>aquí</1>. También nos puedes contactar por correo electrónico: <3/> si quieres acelerar el proceso.",
-    "follow-us": "Síguenos en nuestras redes sociales"
-  },
   "press": "Este es el logo oficial de Bithomp para su uso en los medios y prensa profesionales, para imprimir y uso web (svg, png, eps, pdf, para fondos oscuros y claros). Para peticiones de los medios, por favor <1>contáctanos</1>.",
   "page-not-found": {
     "header": "No se ha encontrado la página solicitada.",

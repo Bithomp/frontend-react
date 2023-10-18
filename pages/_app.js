@@ -23,6 +23,8 @@ const MyApp = ({ Component, pageProps }) => {
   const [selectedCurrency, setSelectedCurrency] = useLocalStorage('currency', 'usd')
   const [countryCode, setCountryCode] = useState('')
   const [signRequest, setSignRequest] = useState(false)
+  const [networkInfo, setNetworkInfo] = useState({})
+
   const router = useRouter()
 
   const signOut = () => {
@@ -46,13 +48,17 @@ const MyApp = ({ Component, pageProps }) => {
 
   useEffect(() => {
     async function fetchData() {
-      /* {"ip":"176.28.256.49","country":"SE"} */
-      const response = await axios('client/info')
-      setCountryCode(response?.data?.country)
+      if (showAds) {
+        /* {"ip":"176.28.256.49","country":"SE"} */
+        const clientInfo = await axios('client/info')
+        setCountryCode(clientInfo?.data?.country)
+      }
+
+      const networkInfoData = await axios('v2/server')
+      setNetworkInfo(networkInfoData?.data)
     }
-    if (showAds) {
-      fetchData()
-    }
+
+    fetchData()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -106,6 +112,7 @@ const MyApp = ({ Component, pageProps }) => {
                 setSelectedCurrency={setSelectedCurrency}
                 showAds={showAds}
                 countryCode={countryCode}
+                networkInfo={networkInfo}
               />
             </div>
             <BackgroundImage />
