@@ -196,61 +196,6 @@
     "no-domain": "ingen domene spesifisert",
     "text0": "Validatorlisten <1>{{url}}</1> har sekvens {{sequence}} og utløper {{expiration}}.<br/>Den inkluderer {{validatorCount}} validatorer som er oppført nedenfor."
   },
-  "username": {
-    "memo": "Bithomp brukernavn registrering",
-    "error": {
-      "address-empty": "Vennligst skriv inn din XRPL-adresse.",
-      "address-invalid": "Vennligst skriv inn en gyldig XRPL-adresse.",
-      "address-hosted": "Den angitte adressen er hosted {{service}}, du kan kun registrere brukernavn for non-hosted lommebøker (hardware lommebøker, Xumm, osv.). Hvis du er en børs operatør, vennligst kontakt oss.",
-      "address-done": "Adressen har allerede et registrert brukernavn.",
-      "username-empty": "Vennligst skriv inn brukernavnet du vil registrere",
-      "username-invalid": "Brukernavnet skal være kortere enn 18 tegn, ingen symboler tillatt..",
-      "username-taken": "Brukernavnet <b>{{username}}</b> er allerede i bruk. :(",
-      "username-reserved": "Brukernavnet <b>{{username}}</b> er reservert, kontakt vår support.",
-      "username-hold": "Brukernavnet <b>{{username}}</b> er på vent for registrering av en annen XRPL-konto. Du kan prøve igjen om 24 timer.",
-      "agree-terms-page": "Vennligst godta vilkårene og betingelsene som er spesifisert på denne siden.",
-      "agree-terms-site": "Vennligst godta nettstedets vilkår og betingelser.",
-      "agree-privacy-policy": "Vennligst godta våre retningslinjer for personvern.",
-      "payment-partly": "Vennligst send resten av beløpet, så langt har vi bare mottatt {{received}} {{currency}} når <b>{{required}}{{currency}}</b> er nødvendig."
-    },
-    "step0": {
-      "text0": "Bithomp <1>Brukernavn</1> is a <3>public</3> brukernavn for din XRPL-adresse.",
-      "text1": "Brukernavnet vil bli assosiert med adressen din på bithomp explorer og i tredjepartstjenester som bruker bithomp<1>API</1>. Etter registreringen vil den bli offentlig - <3>hvem som helst</3> vil kunne se det. XRPL-adressen din vil være tilgjengelig gjennom:",
-      "text2": "Brukernavnet<1>kan ikke endres eller slettes</1>.",
-      "only-one-for-address": "For hver XRPL-adresse kan du kun registrere ett brukernavn.",
-      "address-you-control": "Du kan bare registrere brukernavn for XRPL-adresser du kontrollerer (hvor du har hemmelighet eller gjenopprettings ord 12/24). Du kan ikke registrere et brukernavn for en vertsadresse (som har en destinasjonskode) i en børs/tjeneste/lommebok.",
-      "pay-from-your-address": "For å bevise at du har kontroll over XRPL-adressen, må du foreta en betaling fra den adressen (som du vil tilordne et brukernavn til). Betalinger fra andre adresser vil bli regnet som donasjoner og vil ikke bli refundert.",
-      "text3": "Betalingen er 100 svenske kronor denominert i XRP.. Betalingen for brukernavnet kan <1>ikke refunderes</1>. Hvis du betaler mer enn forespurt, vil det overskridende beløpet bli regnet som donasjon og vil ikke bli refundert.",
-      "text4": "Brukernavn brukes nå cross-chain, <1>registrer et brukernavn på XRPL mainnet</1> og den vil være tilgjengelig på bithomp dev explorers (innen 1 time).",
-      "enter-address-or": "Skriv inn din XRPL-adresse eller",
-      "sign-in": "Logg inn med Xumm",
-      "sign-out": "Logg ut",
-      "your-address": "Din XRPL-adresse",
-      "enter-username": "Skriv inn brukernavnet du vil ha",
-      "your-username": "Brukernavn",
-      "enter-country": "Bostedslandet ditt (for vårt regnskap)",
-      "agree-terms-page": "Jeg forstår og godtar vilkårene og betingelsene som er spesifisert ovenfor.",
-      "agree-terms-site": "jeg godtar<1>vilkårene og betingelsene</1>.",
-      "agree-privacy-policy": "Jeg godtar <1>personvernreglene</1>.",
-      "already-registered": "Kontoen din har allerede et registrert brukernavn",
-      "sign-out-to-register-another-one": "<0>Logg ut</0> fra denne kontoen for å registrere et brukernavn for en annen adresse."
-    },
-    "step1": {
-      "to-register": "For å registrere ditt offentlige brukernavn:",
-      "from-your-address": "må du foreta en betaling fra adressen:",
-      "text0": "Betalinger utført av deg<1>fra andre adresser</1>eller med<3>feil destinasjonskode</3>vil ikke bli akseptert for tjenesten, den vil bli akseptert som en donasjon og<5>vil ikke bli refundert</5>.",
-      "payment-instructions": "Betalingsinstruksjoner",
-      "address": "XRPL-adresse:",
-      "tag": "Destinasjonskode:",
-      "amount": "Beløp:",
-      "awaiting": "Venter på betalingen din",
-      "about-confirmation": "Du vil se en bekreftelse så snart vi mottar betalingen din."
-    },
-    "step2": {
-      "text0": "Gratulerer! Brukernavnet ditt <1>{{ username }}</1>har blitt registrert.",
-      "one-more": "Registrer et til"
-    }
-  },
   "alerts": {
     "text0": "Bli varslet når XRP/USD eller XRP/BTC markedspris endres med<1>Bitstamp</1>mer enn 5 % innen en time eller mer enn 10 % innen en dag.",
     "text1": "Følg Telegram-kanalen: <1>bithomp</1>eller twitter-kontoen: <3>bithompAlerts</3>.",

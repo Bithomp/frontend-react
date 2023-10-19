@@ -1,0 +1,55 @@
+{
+  "memo": "Pendaftaran Username Bithomp",
+  "error": {
+    "address-empty": "Silakan masukkan alamat XRPL Anda.",
+    "address-invalid": "Silakan masukkan alamat XRPL yang valid.",
+    "address-hosted": "Alamat yang dimasukkan di-hosting di {{service}}, Anda hanya dapat mendaftarkan username untuk dompet yang tidak di-hosting (dompet perangkat keras, Xumm, dll). Jika Anda adalah operator pertukaran, silakan hubungi kami.",
+    "address-done": "Alamat tersebut sudah memiliki username terdaftar.",
+    "username-empty": "Silakan masukkan username yang ingin Anda daftarkan.",
+    "username-invalid": "Username harus lebih pendek dari 18 karakter, tidak ada simbol yang diizinkan.",
+    "username-taken": "Username <b>{{username}}</b> sudah ada :(",
+    "username-reserved": "Username <b>{{username}}</b> sudah dipesan, hubungi dukungan kami.",
+    "username-hold": "Username <b>{{username}}</b> ditahan untuk pendaftaran oleh akun XRPL lainnya. Anda dapat mencoba lagi dalam 24 jam.",
+    "agree-terms-page": "Harap setujui syarat dan ketentuan yang ditentukan pada halaman ini.",
+    "agree-terms-site": "Harap setujui syarat dan ketentuan situs web ini.",
+    "agree-privacy-policy": "Harap setujui Kebijakan Privasi kami.",
+    "payment-partly": "Silakan kirim sisa jumlahnya, sejauh ini kami hanya menerima {{received}} {{currency}} saat <b>{{required}} {{currency}}</b> dibutuhkan."
+  },
+  "step0": {
+    "text0": "Bithomp <1>username</1> adalah username <3>publik</3> untuk alamat {{ledgerName}} Anda.",
+    "text1": "Username akan terkait dengan alamat Anda di penjelajah bithomp dan dalam layanan pihak ketiga yang menggunakan <1>API</1> bithomp. Setelah pendaftaran, username akan menjadi publik - <3>siapa pun</3> akan dapat melihatnya. Alamat XRPL Anda akan dapat diakses oleh:",
+    "text2": "Username <1>tidak dapat diubah atau dihapus</1>.",
+    "only-one-for-address": "Untuk setiap alamat XRPL, Anda hanya dapat mendaftarkan satu username.",
+    "address-you-control": "Anda hanya dapat mendaftarkan username untuk alamat XRPL yang Anda kendalikan (Anda memiliki kata sandi atau kata pemulihan 12/24 kata). Anda tidak dapat mendaftarkan username untuk alamat yang di-hosting (yang memiliki tag tujuan) dalam pertukaran / layanan / dompet.",
+    "pay-from-your-address": "Untuk membuktikan bahwa Anda mengendalikan alamat XRPL, Anda perlu melakukan pembayaran dari alamat tersebut (yang ingin Anda berikan username). Pembayaran dari alamat lain akan dianggap sumbangan dan tidak akan dikembalikan.",
+    "text3": "Pembayaran ini sebesar 100 kronor Swedia dalam denominasi XRP. Pembayaran untuk username <1>tidak dapat dikembalikan</1>. Jika Anda membayar lebih dari yang diminta, jumlah yang melebihi akan dianggap sumbangan dan tidak akan dikembalikan.",
+    "text4": "Username sekarang digunakan lintas rantai, <1>daftarkan username di jaringan utama XRPL</1> dan akan tersedia di penjelajah bithomp (dalam waktu 1 jam).",
+    "enter-address-or": "Masukkan alamat XRPL Anda atau",
+    "sign-in": "Masuk dengan Xumm",
+    "sign-out": "keluar",
+    "your-address": "Alamat XRPL Anda",
+    "enter-username": "Masukkan username yang ingin Anda miliki",
+    "your-username": "Username",
+    "enter-country": "Negara tempat tinggal Anda (untuk akuntansi kami)",
+    "agree-terms-page": "Saya memahami dan menyetujui syarat dan ketentuan yang telah dijelaskan di atas.",
+    "agree-terms-site": "Saya setuju dengan <1>Syarat dan Ketentuan</1> situs web ini.",
+    "agree-privacy-policy": "Saya setuju dengan <1>Kebijakan Privasi</1> kami.",
+    "already-registered": "Akun Anda sudah memiliki username terdaftar",
+    "sign-out-to-register-another-one": "<0>Keluar</0> dari akun ini untuk mendaftarkan username untuk alamat yang berbeda."
+  },
+  "step1": {
+    "to-register": "Untuk mendaftarkan username publik Anda:",
+    "from-your-address": "Anda perlu melakukan pembayaran dari alamat:",
+    "text0": "Pembayaran yang dilakukan oleh Anda <1>dari alamat lain</1> atau dengan <3>tag tujuan yang salah</3> tidak akan diterima untuk layanan ini, itu akan diterima sebagai sumbangan dan <5>tidak akan dikembalikan</5>.",
+    "payment-instructions": "Instruksi Pembayaran",
+    "address": "Alamat XRPL:",
+    "tag": "Tag Tujuan:",
+    "amount": "Jumlah:",
+    "awaiting": "Menunggu pembayaran Anda",
+    "about-confirmation": "Anda akan melihat konfirmasi segera setelah kami menerima pembayaran Anda."
+  },
+  "step2": {
+    "text0": "Selamat! Username Anda <1>{{ username }}</1> telah berhasil didaftarkan.",
+    "one-more": "Daftarkan satu lagi"
+  }
+}

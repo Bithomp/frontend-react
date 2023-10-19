@@ -11,10 +11,11 @@ import {
   isUsernameValid,
   server,
   wssServer,
-  devNet,
   addAndRemoveQueryParams,
   addQueryParams,
-  encode
+  encode,
+  network,
+  ledgerName
 } from '../utils'
 
 export const getServerSideProps = async (context) => {
@@ -26,7 +27,7 @@ export const getServerSideProps = async (context) => {
       addressQuery: address || "",
       usernameQuery: username || "",
       receiptQuery: receipt || "false",
-      ...(await serverSideTranslations(locale, ['common'])),
+      ...(await serverSideTranslations(locale, ['common', 'username'])),
     },
   }
 }
@@ -40,6 +41,8 @@ const checkmark = "/images/checkmark.svg";
 
 let interval;
 let ws = null;
+
+const serviceAvailable = network === "mainnet" || network === "staging"
 
 export default function Username({ setSignRequest, account, signOut, addressQuery, usernameQuery, receiptQuery }) {
   const { t, i18n } = useTranslation()
@@ -195,42 +198,42 @@ export default function Username({ setSignRequest, account, signOut, addressQuer
 
   const onSubmit = async () => {
     if (!address) {
-      setErrorMessage(t("username.error.address-empty"));
+      setErrorMessage(t("error.address-empty", { ns: "username" }));
       addressRef?.focus();
       return;
     }
 
     if (!isAddressValid(address)) {
-      setErrorMessage(t("username.error.address-invalid"));
+      setErrorMessage(t("error.address-invalid", { ns: "username" }));
       addressRef?.focus();
       return;
     }
 
     if (!username) {
-      setErrorMessage(t("username.error.username-empty"));
+      setErrorMessage(t("error.username-empty", { ns: "username" }));
       usernameRef?.focus();
       return;
     }
 
     if (!isUsernameValid(username)) {
-      setErrorMessage(t("username.error.username-invalid"));
+      setErrorMessage(t("error.username-invalid", { ns: "username" }));
       usernameRef?.focus();
       return;
     }
 
     if (!receipt) {
       if (!agreeToPageTerms) {
-        setErrorMessage(t("username.error.agree-terms-page"));
+        setErrorMessage(t("error.agree-terms-page", { ns: "username" }));
         return;
       }
 
       if (!agreeToSiteTerms) {
-        setErrorMessage(t("username.error.agree-terms-site"));
+        setErrorMessage(t("error.agree-terms-site", { ns: "username" }));
         return;
       }
 
       if (!agreeToPrivacyPolicy) {
-        setErrorMessage(t("username.error.agree-privacy-policy"));
+        setErrorMessage(t("error.agree-privacy-policy", { ns: "username" }));
         return;
       }
     }
@@ -255,7 +258,7 @@ export default function Username({ setSignRequest, account, signOut, addressQuer
           serviceName = data.userInfo.domain
         }
       }
-      setErrorMessage(t("username.error.address-hosted", { service: serviceName }))
+      setErrorMessage(t("error.address-hosted", { service: serviceName, ns: "username" }))
       return
     }
 
@@ -263,26 +266,26 @@ export default function Username({ setSignRequest, account, signOut, addressQuer
       let addressInput = addressRef;
       let usernameInput = usernameRef;
       if (data.error === 'Username is already registered') {
-        setErrorMessage(t("username.error.username-taken", { username }));
+        setErrorMessage(t("error.username-taken", { username, ns: "username" }));
         usernameInput?.focus();
         return;
       }
       if (data.error === 'Username can not be registered') {
-        setErrorMessage(t("username.error.username-reserved", { username }));
+        setErrorMessage(t("error.username-reserved", { username, ns: "username" }));
         usernameInput?.focus();
         return;
       }
       if (data.error === 'Bithompid is on registration') {
-        setErrorMessage(t("username.error.username-hold", { username }));
+        setErrorMessage(t("error.username-hold", { username, ns: "username" }));
         return;
       }
       if (data.error === "Address is invalid") {
-        setErrorMessage(t("username.error.address-invalid"));
+        setErrorMessage(t("error.address-invalid", { ns: "username" }));
         addressInput?.focus();
         return;
       }
       if (data.error === 'Sorry, you already have a registered username on that address. Try another address') {
-        setErrorMessage(t("username.error.address-done"));
+        setErrorMessage(t("error.address-done", { ns: "username" }));
         addressInput?.focus();
         return;
       }
@@ -312,7 +315,7 @@ export default function Username({ setSignRequest, account, signOut, addressQuer
               Memos: [
                 {
                   "Memo": {
-                    "MemoData": encode(t("username.memo") + ": " + data.bithompid)
+                    "MemoData": encode(t("memo", { ns: "username" }) + ": " + data.bithompid)
                   }
                 }
               ]
@@ -388,7 +391,7 @@ export default function Username({ setSignRequest, account, signOut, addressQuer
       return;
     }
     if (data.bid.status === "Partly paid") {
-      setPaymentErrorMessage(t("username.error.payment-partly", { received: data.bid.totalReceivedAmount, required: data.bid.price, currency: data.bid.currency }));
+      setPaymentErrorMessage(t("error.payment-partly", { received: data.bid.totalReceivedAmount, required: data.bid.price, currency: data.bid.currency, ns: "username" }));
       return;
     }
     if (data.bid.status === "Timeout") {
@@ -446,14 +449,14 @@ export default function Username({ setSignRequest, account, signOut, addressQuer
       {!step &&
         <>
           <p>
-            <Trans i18nKey="username.step0.text0">
-              Bithomp <b>username</b> is a <b>public</b> username for your XRPL address.
+            <Trans ns="username" i18nKey="step0.text0">
+              Bithomp <b>username</b> is a <b>public</b> username for your {{ ledgerName }} address.
             </Trans>
           </p>
-          {!devNet &&
+          {serviceAvailable &&
             <>
               <p className="brake">
-                <Trans i18nKey="username.step0.text1">
+                <Trans ns="username" i18nKey="step0.text1">
                   The username will be assosiated with your address on the bithomp explorer and in third-party services which use bithomp <a href="https://docs.bithomp.com">API</a>.
                   After the registration it will become public - <b>anyone</b> will be able to see it.
                   Your XRPL address will be accessable by:
@@ -461,15 +464,15 @@ export default function Username({ setSignRequest, account, signOut, addressQuer
                 {" " + server}/explorer/{isUsernameValid(username) ? username : <i>username</i>}
               </p>
               <p>
-                <Trans i18nKey="username.step0.text2">
+                <Trans ns="username" i18nKey="step0.text2">
                   The username <b>can not be changed or deleted</b>.
                 </Trans>
               </p>
-              <p>{t("username.step0.only-one-for-address")}</p>
-              <p>{t("username.step0.address-you-control")}</p>
-              <p>{t("username.step0.pay-from-your-address")}</p>
+              <p>{t("step0.only-one-for-address", { ns: "username" })}</p>
+              <p>{t("step0.address-you-control", { ns: "username" })}</p>
+              <p>{t("step0.pay-from-your-address", { ns: "username" })}</p>
               <p>
-                <Trans i18nKey="username.step0.text3">
+                <Trans ns="username" i18nKey="step0.text3">
                   The payment is for 100 Swedish kronor denominated in XRP. The payment for the username is <b>not refundable</b>. If you pay more than requested, the exceeding amount will be counted as donation and won't be refunded.
                 </Trans>
               </p>
@@ -481,51 +484,51 @@ export default function Username({ setSignRequest, account, signOut, addressQuer
                 <div className='center'><span className="waiting"></span><br />{t("general.loading")}</div>
                 :
                 <>
-                  {devNet ?
+                  {!serviceAvailable ?
                     <p>
-                      <Trans i18nKey="username.step0.text4">
-                        Usernames are now used cross-chain, <a href="https://bithomp.com/username" target="_blank" rel='noreferrer'>Register a username for an address on the XRPL mainnet</a> and it will be also available on bithomp dev explorers.
+                      <Trans ns="username" i18nKey="step0.text4">
+                        Usernames are now used cross-chain, <a href="https://bithomp.com/username" target="_blank" rel='noreferrer'>register a username for an address on the XRPL mainnet</a> and it will be also available on other bithomp explorers.
                       </Trans>
                     </p>
                     :
                     <>
                       {account?.address ?
                         <>
-                          <p>{t("username.step0.your-address")} (<b className='link' onClick={signOut}>{t("username.step0.sign-out")}</b>):</p>
+                          <p>{t("step0.your-address", { ns: "username" })} (<b className='link' onClick={signOut}>{t("step0.sign-out", { ns: "username" })}</b>):</p>
                           <div className="input-validation">
-                            <input placeholder={t("username.step0.your-address")} value={address} className="input-text" spellCheck="false" readOnly />
+                            <input placeholder={t("step0.your-address", { ns: "username" })} value={address} className="input-text" spellCheck="false" readOnly />
                             <img src={checkmark} className="validation-icon" alt="validated" />
                           </div>
                         </>
                         :
                         <>
-                          <p>{t("username.step0.enter-address-or")} <b className="link" onClick={() => setSignRequest({ wallet: "xumm" })}>{t("username.step0.sign-in")}</b>:</p>
+                          <p>{t("step0.enter-address-or", { ns: "username" })} <b className="link" onClick={() => setSignRequest({ wallet: "xumm" })}>{t("step0.sign-in", { ns: "username" })}</b>:</p>
                           <div className="input-validation">
-                            <input placeholder={t("username.step0.your-address")} value={address} onChange={onAddressChange} className="input-text" ref={node => { addressRef = node; }} spellCheck="false" maxLength="36" />
+                            <input placeholder={t("step0.your-address", { ns: "username" })} value={address} onChange={onAddressChange} className="input-text" ref={node => { addressRef = node; }} spellCheck="false" maxLength="36" />
                             {isAddressValid(address) && <img src={checkmark} className="validation-icon" alt="validated" />}
                           </div>
                         </>
                       }
-                      <p>{t("username.step0.enter-username")}:</p>
+                      <p>{t("step0.enter-username", { ns: "username" })}:</p>
                       <div className="input-validation">
-                        <input placeholder={t("username.step0.your-username")} value={username} onChange={onUsernameChange} className="input-text" ref={node => { usernameRef = node; }} spellCheck="false" maxLength="18" />
+                        <input placeholder={t("step0.your-username", { ns: "username" })} value={username} onChange={onUsernameChange} className="input-text" ref={node => { usernameRef = node; }} spellCheck="false" maxLength="18" />
                         {isUsernameValid(username) && <img src={checkmark} className="validation-icon" alt="validated" />}
                       </div>
-                      <p>{t("username.step0.enter-country")}:</p>
+                      <p>{t("step0.enter-country", { ns: "username" })}:</p>
                       <CountrySelect setCountryCode={setCountryCode} />
 
                       <CheckBox checked={agreeToPageTerms} setChecked={setAgreeToPageTerms} >
-                        {t("username.step0.agree-terms-page")}
+                        {t("step0.agree-terms-page", { ns: "username" })}
                       </CheckBox>
 
                       <CheckBox checked={agreeToSiteTerms} setChecked={setAgreeToSiteTerms} >
-                        <Trans i18nKey="username.step0.agree-terms-site">
+                        <Trans ns="username" i18nKey="step0.agree-terms-site">
                           I agree with the <Link href="/terms-and-conditions" target="_blank">Terms and conditions</Link>.
                         </Trans>
                       </CheckBox>
 
                       <CheckBox checked={agreeToPrivacyPolicy} setChecked={setAgreeToPrivacyPolicy} >
-                        <Trans i18nKey="username.step0.agree-privacy-policy">
+                        <Trans ns="username" i18nKey="step0.agree-privacy-policy">
                           I agree with the <Link href="/privacy-policy" target="_blank">Privacy policy</Link>.
                         </Trans>
                       </CheckBox>
@@ -540,9 +543,9 @@ export default function Username({ setSignRequest, account, signOut, addressQuer
             </>
             :
             <p className='bordered' style={{ padding: "20px" }}>
-              {t("username.step0.already-registered")}: <b>{account.username}</b>.
+              {t("step0.already-registered", { ns: "username" })}: <b>{account.username}</b>.
               <br />
-              <Trans i18nKey="username.step0.sign-out-to-register-another-one">
+              <Trans ns="username" i18nKey="step0.sign-out-to-register-another-one">
                 <b className='link' onClick={signOut}>Sign out</b> from this account to register a username for a different address.
               </Trans>
             </p>
@@ -551,37 +554,37 @@ export default function Username({ setSignRequest, account, signOut, addressQuer
       }
       {step === 1 &&
         <>
-          <p>{t("username.step1.to-register")} <b>{register.bithompid}</b></p>
+          <p>{t("step1.to-register", { ns: "username" })} <b>{register.bithompid}</b></p>
           <p>
-            {t("username.step1.from-your-address")} <b>{register.sourceAddress}</b>.
+            {t("step1.from-your-address", { ns: "username" })} <b>{register.sourceAddress}</b>.
             <br />
-            <Trans i18nKey="username.step1.text0">
+            <Trans ns="username" i18nKey="step1.text0">
               Payments made by you <b className="red">from any other addresses</b> or with a <b className="red">wrong destination tag</b> won't be accepted for the service, it will be accepted as a donation and <b className="red">won't be refunded</b>.
             </Trans>
           </p>
 
-          <h3>{t("username.step1.payment-instructions")}</h3>
+          <h3>{t("step1.payment-instructions", { ns: "username" })}</h3>
           <div className='payment-instructions bordered'>
-            {t("username.step1.address")}<br /><b>{register.destinationAddress}</b>
+            {t("step1.address", { ns: "username" })}<br /><b>{register.destinationAddress}</b>
             <br /><br />
-            {t("username.step1.tag")}<br /><b className="red">{register.destinationTag}</b>
+            {t("step1.tag", { ns: "username" })}<br /><b className="red">{register.destinationTag}</b>
             <br /><br />
-            {t("username.step1.amount")}<br /><b>{register.amount} {register.currency}</b>
+            {t("step1.amount", { ns: "username" })}<br /><b>{register.amount} {register.currency}</b>
           </div>
 
-          <h3>{t("username.step1.awaiting")}</h3>
+          <h3>{t("step1.awaiting", { ns: "username" })}</h3>
           <div className='payment-awaiting bordered center'>
             <div className="waiting"></div>
             <br /><br />
             <p className="red center" dangerouslySetInnerHTML={{ __html: paymentErrorMessage || "&nbsp;" }} />
-            {t("username.step1.about-confirmation")}
+            {t("step1.about-confirmation", { ns: "username" })}
           </div>
         </>
       }
       {step === 2 &&
         <>
           <p className="center">
-            <Trans i18nKey="username.step2.text0" values={{ username: register.bithompid }}>
+            <Trans ns="username" i18nKey="step2.text0" values={{ username: register.bithompid }}>
               Congratulations! Your username <b className="blue">{{ username }}</b> has been succesfully registered.
             </Trans>
           </p>
@@ -593,7 +596,7 @@ export default function Username({ setSignRequest, account, signOut, addressQuer
           <Receipt item="username" details={bidData} />
           <br />
           <div className='center'>
-            <span className="link" onClick={oneMore}>{t("username.step2.one-more")}</span>
+            <span className="link" onClick={oneMore}>{t("step2.one-more", { ns: "username" })}</span>
           </div>
         </>
       }
@@ -605,4 +608,4 @@ export default function Username({ setSignRequest, account, signOut, addressQuer
       }
     </div>
   </>
-};
+}

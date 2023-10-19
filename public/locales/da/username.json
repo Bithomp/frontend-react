@@ -1,0 +1,55 @@
+{
+  "memo": "Bithomp brugernavn registrering",
+  "error": {
+    "address-empty": "Indtast venligst din XRPL-adresse.",
+    "address-invalid": "Indtast venligst en gyldig XRPL-adresse.",
+    "address-hosted": "Den indtastede adresse er hosted på {{service}}, du kan kun registrere brugernavne for ikke-hostede wallets (hardware wallets, Xumm osv.). Hvis du er børsoperatør, bedes du kontakte os.",
+    "address-done": "Adressen har allerede et registreret brugernavn.",
+    "username-empty": "Indtast venligst det brugernavn, du vil registrere.",
+    "username-invalid": "Brugernavn skal være kortere end 18 tegn, ingen symboler tilladt.",
+    "username-taken": "Brugernavnet <b>{{username}}</b> er allerede taget :(",
+    "username-reserved": "Brugernavnet <b>{{username}}</b> er reserveret, kontakt vores support.",
+    "username-hold": "Brugernavnet <b>{{username}}</b> er tilbageholdt til registrering af en anden XRPL-konto. Du kan prøve igen om 24 timer.",
+    "agree-terms-page": "Acceptér venligst de vilkår og betingelser, der er angivet på denne side.",
+    "agree-terms-site": "Acceptér venligst hjemmesidens vilkår og betingelser",
+    "agree-privacy-policy": "Accepter venligst vores privatlivspolitik.",
+    "payment-partly": "Send venligst resten af ​​beløbet, indtil videre har vi kun modtaget {{received}} {{currency}}, når <b>{{required}} {{currency}}</b> er påkrævet."
+  },
+  "step0": {
+    "text0": "Bithomp <1>brugernavn</1> er et <3>offentligt</3> brugernavn til din {{ledgerName}}-adresse.",
+    "text1": "Brugernavnet vil blive knyttet til din adresse på bithomp explorer og i tredjepartstjenester, der bruger bithomp <1>API</1>. Efter registreringen bliver den offentlig - <3>alle</3> vil kunne se den. Din XRPL-adresse vil være tilgængelig af:",
+    "text2": "Brugernavnet <1>kan ikke ændres eller slettes</1>.",
+    "only-one-for-address": "For hver XRPL-adresse kan du kun registrere ét brugernavn.",
+    "address-you-control": "Du kan kun registrere brugernavne til XRPL-adresser, du kontrollerer (du har en hemmelighed eller gendannelse 12/24 ord). Du kan ikke registrere et brugernavn til en hosted adresse (som har et destinationsmærke) i en børs / tjeneste / wallet.",
+    "pay-from-your-address": "For at bevise, at du har kontrol over XRPL-adressen, skal du foretage en betaling fra den adresse (som du vil tildele et brugernavn til). Betalinger fra andre adresser vil blive talt som donationer og vil ikke blive refunderet.",
+    "text3": "Betalingen er for 100 svenske kroner denomineret i XRP. Betalingen for brugernavnet kan <1>ikke refunderes</1>. Hvis du betaler mere end anmodet, vil det overskydende beløb blive talt som donation og vil ikke blive refunderet.",
+    "text4": "Brugernavne bruges nu på tværs af kæder, <1>registrer et brugernavn på XRPL mainnet</1> og det vil være tilgængeligt på bithomp explorers (inden for 1 time).",
+    "enter-address-or": "Indtast din XRPL-adresse eller",
+    "sign-in": "Log ind med Xumm",
+    "sign-out": "Log ud",
+    "your-address": "Din XRPL-adresse",
+    "enter-username": "Indtast det brugernavn, du gerne vil have",
+    "your-username": "brugernavn",
+    "enter-country": "Dit bopælsland (til vores regnskab)",
+    "agree-terms-page": "Jeg forstår og accepterer ovenstående vilkår og betingelser.",
+    "agree-terms-site": "Jeg accepterer <1>Vilkår og betingelser</1>.",
+    "agree-privacy-policy": "Jeg er enig i <1>privatlivspolitikken</1>.",
+    "already-registered": "Din konto har allerede et registreret brugernavn",
+    "sign-out-to-register-another-one": "<0>Log ud</0> fra denne konto for at registrere et brugernavn til en anden adresse."
+  },
+  "step1": {
+    "to-register": "For at registrere dit offentlige brugernavn:",
+    "from-your-address": "Du skal foretage en betaling fra adressen:",
+    "text0": "Betalinger foretaget af dig <1>fra andre adresser</1> eller med et <3>forkert destinationstag</3> accepteres ikke for tjenesten, det accepteres som en donation og <5>refunderes ikke</5>.",
+    "payment-instructions": "Betalingsinstruktioner",
+    "address": "XRPL addresse:",
+    "tag": "Destination tag:",
+    "amount": "Beløb:",
+    "awaiting": "Afventer din betaling",
+    "about-confirmation": "Du vil se en bekræftelse, så snart vi modtager din betaling."
+  },
+  "step2": {
+    "text0": "Tillykke! Dit brugernavn <1>{{username}}</1> er blevet registreret.",
+    "one-more": "Registrer en mere"
+  }
+}

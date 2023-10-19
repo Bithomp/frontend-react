@@ -196,61 +196,6 @@
     "no-domain": "nema domene",
     "text0": "Lista validatora <1>{{url}}</1> ima sekvencu {{sequence}} i istek {{expiration}}.<br/>Uključuje {{validatorCount}} validatora koji su ispisani ispod."
   },
-  "username": {
-    "memo": "Bithomp registracija korisničkog imena",
-    "error": {
-      "address-empty": "Molimo unesite vašu XRP adresu.",
-      "address-invalid": "Molimo unesite valjanu XRP adresu.",
-      "address-hosted": "Unesena adresa koristi poslužitelj na {{service}}, možete registrirati korisničko ime samo s adresa koje ne koriste poslužitelje (hardverski novčanici, Xumm, itd.). Ako vodite mjenjačnicu kripto valuta molimo kontaktirajte nas.",
-      "address-done": "Adresa već ima registrirano korisničko ime.",
-      "username-empty": "Molimo unesite korisničko ime koje želite registrirati.",
-      "username-invalid": "Korisničko ime bi trebalo biti kraće od 18 karatktera, bez simbola.",
-      "username-taken": "Korisničko ime <b>{{username}}</b> je već zauzeto. :(",
-      "username-reserved": "Korisničko ime <b>{{username}}</b> je rezervirano, kontaktirajte nas.",
-      "username-hold": "Korisničko ime <b>{{username}}</b> je rezervirano za registraciju sa nekim drugim XRPL računom. Možete probati ponovno za 24 sata.",
-      "agree-terms-page": "Molimo prihvatite uvjete korištenja navedene na ovoj stranici.",
-      "agree-terms-site": "Molimo prihvatite uvjete korištenja ove web stranice.",
-      "agree-privacy-policy": "Molimo prihvatite privatnost podataka.",
-      "payment-partly": "Molimo pošaljite ostatak iznosa, za sad smo dobili {{received}} {{currency}} a <b>{{required}} {{currency}}</b> je potrebno."
-    },
-    "step0": {
-      "text0": "Bithomp <1>username</1> je <3>public</3> korisničko ime za tvoju XRPL adresu.",
-      "text1": "Korisničko ime će biti asocirano sa tvojom adresom na bithomp server i u servisima trećih strana koje koriste bithomp <1>API</1>. Nakon registracije će postati javno - <3>svi</3> će moći vidjeti. Tvoja XRPL adresa će biti dostupna preko:",
-      "text2": "Korisničko ime <1>ne može biti promijenjeno niti obrisano</1>.",
-      "only-one-for-address": "Za svaku XRPL adresu možete registrirati samo jedno korisničko ime.",
-      "address-you-control": "Možeš registrirati korisnička imena samo XRPL adresa koje kontroliraš (ti imaš tajni ključ ili tajnu frazu od 12/24 riječi). Ne možeš registrirati korisničko ime za adresu koja se nalazi na mjenjačnici / servisu / novčaniku a ima destinacijski tag.",
-      "pay-from-your-address": "Da bi dokazao da posjeduješ kontrolu nad XRPL adresom morati ćeš uplatiti sa te adrese (za koju želiš dodati korisničko ime). Plaćanja s drugih adresa ćemo brojiti kao donacije i povrat sredstava nije moguć.",
-      "text3": "Plaćanje je za 100 Švedskih kruna u protuvrijednosti u XRP-u. Uplata za to korisničko ime <1>nije povratna</1>. Ako platite više nago je zatraženo, ekstra iznos ćemo brojati kao donaciju i neće biti moguć povrat.",
-      "text4": "Korisnička imena se sad koriste na više lanaca, <1>registriraj korisničko ime na glavnoj XRPL mreži</1> i biti će dostupna na bithomp razvojnom pregledniku (unutar jednog sata).",
-      "enter-address-or": "Unesite vašu XRPL adresu ili",
-      "sign-in": "Prijavite se pomoću Xumm-a",
-      "sign-out": "odjava",
-      "your-address": "Vaša XRPL adresa",
-      "enter-username": "Unesite korisničko ime koje želite imati",
-      "your-username": "Korisničko ime",
-      "enter-country": "Vaša država prebivališta (za naše knjigovodstvo)",
-      "agree-terms-page": "Razumijem i slažem se sa uvjetima korištenja navedenim iznad.",
-      "agree-terms-site": "Slažem se sa <1>Uvjetima korištenja</1>.",
-      "agree-privacy-policy": "Slažem se sa <1>Privatnosti podataka</1>.",
-      "already-registered": "Vaš korisnički račun već ima registrirano korisničko ime",
-      "sign-out-to-register-another-one": "<0>Odjavi se</0> sa ovog korisničkog računa da biste mogli registrirati ime s druge adrese."
-    },
-    "step1": {
-      "to-register": "Da biste registriali korisničko ime:",
-      "from-your-address": "Morate uplatiti sa adrese:",
-      "text0": "Uplata koja je napravljena <1>iz bilo koje druge adrese</1> ili s <3>krivom destinacijskom oznakom</3> nećemo prihvatiti, uplata će biti prihvaćena kao donacija <5>te ju nećemo refudirati</5>.",
-      "payment-instructions": "Upute za plaćanje",
-      "address": "XRPL adresa:",
-      "tag": "Destinacijska oznaka:",
-      "amount": "Iznos:",
-      "awaiting": "Čekam uplatu",
-      "about-confirmation": "Vidjeti ćete potvrdu čim zaprimimo vašu uplatu."
-    },
-    "step2": {
-      "text0": "Čestitamo! Tvoje korisničko ime <1>{{ username }}</1> je uspješno registrirano.",
-      "one-more": "Registriraj još jednu"
-    }
-  },
   "alerts": {
     "text0": "Budite obaviješteni kad se XRP/USD ili XRP/BTC cijena kod <1>Bitstamp-a</1> primijeni za više od 5% unutar jednog sata ili više od 10% unutar jednog dana.",
     "text1": "Prati Telagram kanal: <1>bithomp</1> ili twitter: <3>bithompAlerts</3>.",

@@ -3,7 +3,7 @@ import Link from 'next/link'
 import { useTranslation } from 'next-i18next'
 import axios from 'axios'
 
-import { wssServer, devNet, ledgerName } from '../../utils'
+import { wssServer, ledgerName } from '../../utils'
 import { niceNumber } from '../../utils/format'
 
 let ws = null
@@ -147,12 +147,10 @@ export default function Statistics() {
         <div className='stat-piece-header'>{t("home.stat.accounts")}</div>
         <div>{createdAccounts}</div>
       </div>
-      {!devNet &&
-        <div className='stat-piece'>
-          <div className='stat-piece-header'>{t("home.stat.usernames")}</div>
-          <div>{registeredUsernames}</div>
-        </div>
-      }
+      <div className='stat-piece'>
+        <div className='stat-piece-header'>{t("home.stat.usernames")}</div>
+        <div>{registeredUsernames}</div>
+      </div>
     </div>
     <div className='statistics-block'>
       <div className='stat-piece'>

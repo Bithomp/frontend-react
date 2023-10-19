@@ -1,0 +1,55 @@
+{
+  "memo": "Bithomp Benutzernamen registrieren",
+  "error": {
+    "address-empty": "Bitte geben Sie Ihre XRPL Adresse ein.",
+    "address-invalid": "Bitte geben Sie eine gültige XRPL Adresse ein.",
+    "address-hosted": "Die eingegebene Adresse wird von {{service}} betrieben. Benuternamen können nur für eigene Wallets (Hardware Wallets, Xumm, etc.) registriert werden. Bitte kontaktieren Sie uns, falls Sie ein Betreiber einer Börse sind.",
+    "address-done": "Für diese Adresse wurde bereits ein Benutzername registriert.",
+    "username-empty": "Bitte geben Sie den Benutzernamen ein, welches Sie registrieren möchten.",
+    "username-invalid": "Benutzernamen sollten kürzer als 18 Zeichen sein. Symbole sind nicht erlaubt.",
+    "username-taken": "Der Benutzername <b>{{username}}</b> ist bereits registriert :(",
+    "username-reserved": "Der Benutzername <b>{{username}}</b> ist reserviert. Kontaktieren Sie unseren Support.",
+    "username-hold": "Der Benutzername <b>{{username}}</b> ist auf der Warteliste zur Registrierung einer anderen XRPL Adresse. Sie können den Vorgang in 24 Stunden erneut versuchen.",
+    "agree-terms-page": "Bitte bestätigen Sie die AGB auf dieser Seite.",
+    "agree-terms-site": "Bitte bestätigen Sie die AGB der Webseite.",
+    "agree-privacy-policy": "Bitte bestätigen Sie unsere Datenschutzbestimmungen.",
+    "payment-partly": "Bitte überweisen Sie den Rest des Betrages. Bis jetzt haben wir erst {{received}} {{currency}} erhalten, obwohl <b>{{required}} {{currency}}</b> erwartet wird."
+  },
+  "step0": {
+    "text0": "Bithomp <1>username</1> ist ein <3>public</3> Benutzername für Ihre {{ledgerName}} Adresse.",
+    "text1": "Der Benutzername wird im Bithomp Explorer und in Drittanbieter Diensten, welche die Bithomp <1>API</1> nutzen, mit Ihrer Adresse assoziiert. Nach der Registrierung wird dieser öffentlich - <3>jeder</3> wird ihn sehen können. Ihre XRPL Adresse wird zugänglich sein mit::",
+    "text2": "Der Benutzername <1>kann nicht geändert oder gelöscht werden</1>.",
+    "only-one-for-address": "Für jede XRPL Adresse kann nur ein Benutzername registriert werden.",
+    "address-you-control": "Sie können einen Benutzernamen nur für die XRPL Adressen registrieren, welche Sie kontrollieren (Sie haben das Geheimnis/Seed oder die 12/24 Wörter zur Wiederherstellung). Sie können keinen Benutzernamen für gehostete Adressen registrieren (welche einen Destinnation Tag haben) wie bei einer Börse / Dienst / Wallet.",
+    "pay-from-your-address": "Um zu beweisen, dass Sie diese XRPL Adresse kontrollieren, müssen Sie eine Zahlung von dieser Adresse ausführen (welcher Sie einen Benutzernamen zuweisen möchten). Zahlungen von anderen Adressen werden als Spenden betrachtet und nicht zurückerstattet.",
+    "text3": "Die Zahlung ist für 100 Swedische Kronen in XRP umgerechnet. Die Zahlung für den Benutzernamen ist <1>nicht zurückerstattbar</1>. Falls Sie mehr als notwendig überweisen, wird der zuviel überwiesene Betrag als Spende betrachtet und nicht zurückerstattet.",
+    "text4": "Benutzernamen sind jetzt netzwerkübergreifend. <1>Registrieren Sie einen Benutzernamen auf dem XRPL Mainnet</1> und er wird in den bithomp Explorer innert einer Stunde verfügbar sein.",
+    "enter-address-or": "Geben Sie Ihre XRPL Adresse ein oder",
+    "sign-in": "loggen Sie sich mit Xumm ein",
+    "sign-out": "Ausloggen",
+    "your-address": "Ihre XRPL Adresse",
+    "enter-username": "Geben Sie den Benutzernamen ein, welchen Sie gerne haben möchten",
+    "your-username": "Benutzername",
+    "enter-country": "Ihr Wohnsitzland (für unsere Buchhaltung)",
+    "agree-terms-page": "Ich verstehe und stimme den oben genannten AGB zu.",
+    "agree-terms-site": "Ich stimmen den <1>AGB</1> zu.",
+    "agree-privacy-policy": "Ich stimmen den <1>Datenschutzbestimmungen</1> zu.",
+    "already-registered": "Ihr Konto hat bereits einen registrierten Benutzernamen",
+    "sign-out-to-register-another-one": "<0>Ausloggen</0> von diesem Konto, um einen Benutzernamen für eine andere Adresse zu registrieren."
+  },
+  "step1": {
+    "to-register": "Um Ihren öffentlichen Benutzernamen zu registrieren:",
+    "from-your-address": "Müssen Sie eine Zahlung von nachfolgender Adresse ausführen:",
+    "text0": "Von Ihnen gemachte Zahlungen <1>von einer anderen Adresse</1> oder mit einem <3>falschen DestinationTag</3> werden nicht akzeptiert für den Service. Falsche Zahlungen werden als Spenden akzeptiert und <5>nicht zurückerstattet</5>.",
+    "payment-instructions": "Zahlungsanweisungen",
+    "address": "XRPL Adresse:",
+    "tag": "DestinationTag:",
+    "amount": "Betrag:",
+    "awaiting": "Erwarte Ihre Zahlung",
+    "about-confirmation": "Sie werden eine Bestätigung sehen, sobald wir Ihre Überweisung erhalten haben."
+  },
+  "step2": {
+    "text0": "Glückwunsch! Ihr Benutzername <1>{{ username }}</1> wurde erfolgreich registriert.",
+    "one-more": "Weiteren registrieren"
+  }
+}

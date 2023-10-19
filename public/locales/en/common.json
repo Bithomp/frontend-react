@@ -196,61 +196,6 @@
     "no-domain": "no domain specified",
     "text0": "The validator list <1>{{url}}</1> has sequence {{sequence}} and expiration on {{expiration}}.<br/>It includes {{validatorCount}} validators which are listed below."
   },
-  "username": {
-    "memo": "Bithomp username registration",
-    "error": {
-      "address-empty": "Please enter your XRPL address.",
-      "address-invalid": "Please enter a valid XRPL address.",
-      "address-hosted": "Entered address is hosted on {{service}}, you can register usernames only for non-hosted wallets (hardware wallets, Xumm, etc). If you are an exchange operator, please contact us.",
-      "address-done": "The address already has a registered username.",
-      "username-empty": "Please enter username you want to register.",
-      "username-invalid": "Username should be shorter than 18 characters, no symbols allowed.",
-      "username-taken": "The username <b>{{username}}</b> is already taken :(",
-      "username-reserved": "The username <b>{{username}}</b> is reserved, contact our support.",
-      "username-hold": "The username <b>{{username}}</b> is on hold for registration by another XRPL account. You can try again in 24 hours.",
-      "agree-terms-page": "Please agree to the terms and conditions specified on this page.",
-      "agree-terms-site": "Please agree to the website's terms and conditions.",
-      "agree-privacy-policy": "Please agree to our Privacy Policy.",
-      "payment-partly": "Please send the rest of the amount, so far we only received {{received}} {{currency}} when <b>{{required}} {{currency}}</b> is required."
-    },
-    "step0": {
-      "text0": "Bithomp <1>username</1> is a <3>public</3> username for your XRPL address.",
-      "text1": "The username will be assosiated with your address on the bithomp explorer and in third-party services which use bithomp <1>API</1>. After the registration it will become public - <3>anyone</3> will be able to see it. Your XRPL address will be accessable by:",
-      "text2": "The username <1>can not be changed or deleted</1>.",
-      "only-one-for-address": "For each XRPL address you can register only one username.",
-      "address-you-control": "You can only register usernames for XRPL addresses you control (you have a secret or recovery 12/24 words). You can not register a username for a hosted address (which has a destination tag) within an exchange / service / wallet.",
-      "pay-from-your-address": "To prove that you're in control of the XRPL address you will need to make a payment from that address (for which you want to assign a username). Payments from other addresses will be counted as donations and won't be refunded.",
-      "text3": "The payment is for 100 Swedish kronor denominated in XRP. The payment for the username is <1>not refundable</1>. If you pay more than requested, the exceeding amount will be counted as donation and won't be refunded.",
-      "text4": "Usernames are now used cross-chain, <1>register a username on the XRPL mainnet</1> and it will be available on bithomp dev explorers (within 1 hour).",
-      "enter-address-or": "Enter your XRPL address or",
-      "sign-in": "Sign in with Xumm",
-      "sign-out": "sign out",
-      "your-address": "Your XRPL address",
-      "enter-username": "Enter the username you would like to have",
-      "your-username": "Username",
-      "enter-country": "Your country of residence (for our accounting)",
-      "agree-terms-page": "I understand and agree to the terms and conditions specified above.",
-      "agree-terms-site": "I agree with the <1>Terms and conditions</1>.",
-      "agree-privacy-policy": "I agree with the <1>Privacy policy</1>.",
-      "already-registered": "You account already have a registered username",
-      "sign-out-to-register-another-one": "<0>Sign out</0> from this account to register a username for a different address."
-    },
-    "step1": {
-      "to-register": "To register your public username:",
-      "from-your-address": "You need to make a payment from the address:",
-      "text0": "Payments made by you <1>from any other addresses</1> or with a <3>wrong destination tag</3> won't be accepted for the service, it will be accepted as a donation and <5>won't be refunded</5>.",
-      "payment-instructions": "Payment instructions",
-      "address": "XRPL address:",
-      "tag": "Destination tag:",
-      "amount": "Amount:",
-      "awaiting": "Awaiting your payment",
-      "about-confirmation": "You will see a confirmation as soon as we receive your payment."
-    },
-    "step2": {
-      "text0": "Congratulations! Your username <1>{{ username }}</1> has been succesfully registered.",
-      "one-more": "Register one more"
-    }
-  },
   "alerts": {
     "text0": "Get notified when XRP/USD or XRP/BTC market price by <1>Bitstamp</1> changes for more than 5% within an hour or more than 10% within a day.",
     "text1": "Follow the Telegram channel: <1>bithomp</1> or the twitter account: <3>bithompAlerts</3>.",

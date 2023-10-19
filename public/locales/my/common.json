@@ -196,61 +196,6 @@
 		"no-domain": "tiada domain yang dinyatakan",
 		"text0": "Senarai pengesah <1>{{url}}</1> mempunyai rantaian {{sequence}} dan tamat tempoh pada {{expiration}}.<br/>Ia merangkumi {{validatorCount}} pengesah yang disenaraikan di bawah."
 	},
-	"username": {
-		"memo": "Pendaftaran Nama Pengguna Bithomp",
-		"error": {
-			"address-empty": "Sila masukkan alamat XRPL anda.",
-			"address-invalid": "Sila masukkan alamat XRPL yang sah.",
-			"address-hosted": "Alamat yang dimasukkan dihoskan di {{service}}, anda hanya boleh mendaftarkan nama pengguna untuk dompet yang tidak dihoskan (dompet perkakasan, Xumm, dll). Jika anda pengendali pertukaran, sila hubungi kami.",
-			"address-done": "Alamat tersebut sudah memiliki nama pengguna yang didaftarkan.",
-			"username-empty": "Sila masukkan nama pengguna yang ingin anda daftarkan.",
-			"username-invalid": "Nama pengguna hendaklah kurang daripada 18 aksara, tidak ada simbol yang dibenarkan.",
-			"username-taken": "Nama pengguna <b>{{username}}</b> sudah diambil :(",
-			"username-reserved": "Nama pengguna <b>{{username}}</b> adalah tempahan, hubungi sokongan kami.",
-			"username-hold": "Nama pengguna <b>{{username}}</b> ditahan untuk pendaftaran oleh akaun XRPL lain. Anda boleh mencuba lagi dalam 24 jam.",
-			"agree-terms-page": "Sila bersetuju dengan terma dan syarat yang dinyatakan di halaman ini.",
-			"agree-terms-site": "Saya bersetuju dengan <1>Terma dan Syarat</1> laman web.",
-			"agree-privacy-policy": "Saya bersetuju dengan <1>Dasar Privasi</1> kami.",
-			"payment-partly": "Sila hantar baki jumlah, sejauh ini kami hanya menerima {{received}} {{currency}} apabila <b>{{required}} {{currency}}</b> diperlukan."
-		},
-		"step0": {
-			"text0": "Bithomp <1>nama pengguna</1> adalah nama pengguna awam untuk alamat XRPL anda.",
-			"text1": "Nama pengguna akan dikaitkan dengan alamat anda di peneroka bithomp dan dalam perkhidmatan pihak ketiga yang menggunakan bithomp <1>API</1>. Selepas pendaftaran, ia akan menjadi awam - <3>sesiapa pun</3> akan dapat melihatnya. Alamat XRPL anda akan dapat diakses oleh:",
-			"text2": "Nama pengguna <1>tidak boleh diubah atau dipadamkan</1>.",
-			"only-one-for-address": "Untuk setiap alamat XRPL, anda hanya boleh mendaftarkan satu nama pengguna.",
-			"address-you-control": "Anda hanya boleh mendaftarkan nama pengguna untuk alamat XRPL yang anda kawal (anda mempunyai kata laluan atau 12/24 perkataan pemulihan). Anda tidak boleh mendaftarkan nama pengguna untuk alamat yang dihoskan (yang mempunyai tag destinasi) dalam pertukaran / perkhidmatan / dompet.",
-			"pay-from-your-address": "Untuk membuktikan bahawa anda mengawal alamat XRPL, anda perlu membuat pembayaran dari alamat tersebut (yang ingin anda tetapkan nama pengguna). Pembayaran dari alamat lain akan dianggap sebagai sumbangan dan tidak akan dikembalikan.",
-			"text3": "Bayaran adalah sebanyak 100 krona Sweden dalam denominasi XRP. Bayaran untuk nama pengguna adalah <1>tidak boleh dikembalikan</1>. Jika anda membayar lebih daripada yang diminta, jumlah yang melebihi akan dianggap sebagai sumbangan dan tidak akan dikembalikan.",
-			"text4": "Nama pengguna kini digunakan merentasi rangkaian, <1>daftarkan nama pengguna di rangkaian utama XRPL</1> dan ia akan tersedia di peneroka bithomp dev (dalam masa 1 jam).",
-			"enter-address-or": "Masukkan alamat XRPL anda atau",
-			"sign-in": "Log masuk dengan Xumm",
-			"sign-out": "log keluar",
-			"your-address": "Alamat XRPL anda",
-			"enter-username": "Masukkan nama pengguna yang ingin anda miliki",
-			"your-username": "Nama Pengguna",
-			"enter-country": "Negara tempat tinggal anda (untuk akaun perakaunan kami)",
-			"agree-terms-page": "Saya memahami dan bersetuju dengan terma dan syarat yang dinyatakan di atas.",
-			"agree-terms-site": "Saya bersetuju dengan <1>Terma dan Syarat</1> laman web.",
-			"agree-privacy-policy": "Saya bersetuju dengan <1>Dasar Privasi</1> kami.",
-			"already-registered": "Akaun anda sudah mempunyai nama pengguna yang didaftarkan",
-			"sign-out-to-register-another-one": "<0>Log keluar</0> daripada akaun ini untuk mendaftarkan nama pengguna untuk alamat yang berbeza."
-		},
-		"step1": {
-			"to-register": "Untuk mendaftarkan nama pengguna awam anda:",
-			"from-your-address": "Anda perlu membuat pembayaran dari alamat:",
-			"text0": "Pembayaran yang dibuat oleh anda <1>dari mana-mana alamat lain</1> atau dengan <3>tag destinasi yang salah</3> tidak akan diterima untuk perkhidmatan ini, ia akan diterima sebagai sumbangan dan <5>tidak akan dikembalikan</5>.",
-			"payment-instructions": "Arahan Pembayaran",
-			"address": "Alamat XRPL:",
-			"tag": "Tag Destinasi:",
-			"amount": "Jumlah:",
-			"awaiting": "Menunggu pembayaran anda",
-			"about-confirmation": "Anda akan melihat pengesahan sebaik sahaja kami menerima pembayaran anda."
-		},
-		"step2": {
-			"text0": "Tahniah! Nama pengguna anda <1>{{ username }}</1> telah didaftarkan dengan berjaya.",
-			"one-more": "Daftarkan satu lagi"
-		}
-	},
 	"alerts": {
 		"text0": "Dapatkan pemberitahuan apabila harga pasaran XRP/USD atau XRP/BTC oleh <1>Bitstamp</1> berubah lebih daripada 5% dalam satu jam atau lebih daripada 10% dalam satu hari.",
 		"text1": "Ikuti saluran Telegram: <1>bithomp</1> atau akaun Twitter: <3>bithompAlerts</3>.",

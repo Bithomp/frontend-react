@@ -196,61 +196,6 @@
     "no-domain": "domini no especificat",
     "text0": "La llista de validadors <1>{{url}}</1> té la seqüència {{sequence}} i venciment el {{expiration}}.<br/>Inclou {{validatorCount}} validadors, llistats a continuació."
   },
-  "username": {
-    "memo": "Registre d'àlies Bithomp",
-    "error": {
-      "address-empty": "Si us plau, introdueix la teva adreça XRPL.",
-      "address-invalid": "Si us plau, introdueix una adreça XRPL vàlida.",
-      "address-hosted": "L'adreça introduïda és custodiada per a {{service}}, pots registrar àlies només per moneders d'autocustòdia (hardware wallets, Xumm, etc). Si ets una casa de canvi, si us plau, contacta'ns.",
-      "address-done": "L'adreça ja té un àlies registrat.",
-      "username-empty": "Si us plau, introdueix l'àlies que vols registrar.",
-      "username-invalid": "L'àlies hauria de ser de menys de 18 caràcters, i els símbols no estan permesos.",
-      "username-taken": "L'àlies <b>{{username}}</b> ja està agafat :(",
-      "username-reserved": "L'àlies <b>{{username}}</b> està reservat, contacta amb el servei d'atenció al client.",
-      "username-hold": "L'àlies <b>{{username}}</b> està en espera per a ser registrat per un altre compte de l'XRPL. Ho pots tornar a intentar d'aquí a 24 hores.",
-      "agree-terms-page": "Si us plau, accepta els termes i les condicions del servei especificats en aquesta pàgina.",
-      "agree-terms-site": "Si us plau, accepta els termes i les condicions del servei del web.",
-      "agree-privacy-policy": "Si us plau, accepta la nostra política de privacitat.",
-      "payment-partly": "Si us plau, envia la quantitat restant, de moment només hem rebut {{received}} {{currency}} però <b>{{required}} {{currency}}</b> és el total requerit."
-    },
-    "step0": {
-      "text0": "Bithomp <1>àlies</1> és un àlies <3>públic</3> per la teva adreça XRPL.",
-      "text1": "L'àlies serà associat amb la teva adreça a l'explorador de bithomp i en serveis de tercers que usin la <1>API</1> de bithomp. Després del registre esdevindrà públic - <3>tothom</3> ho podrà veure. La teva adreça XRPL serà accesible així:",
-      "text2": "L'àlies <1>no pot ser canviat o eliminat</1>.",
-      "only-one-for-address": "Per cada adreça XRPL només pots registrar un àlies.",
-      "address-you-control": "Només pots registrar àlies per adreces XRPL que controlis (en tens els números secrets o les 12/24 paraules de recuperació). No pots registrar àlies per adreces custodiades (que tenen una Etiqueta de destinació) per part d'una casa de canvi / un servei / un moneder.",
-      "pay-from-your-address": "Per provar que tens el control de l'adreça de l'XRPL hauràs de fer una pagament des d'aquesta adreça (per la qual vols assignar un àlies). Pagaments fets des d'altres adreces es consideraran donacions i no seran reemborsats.",
-      "text3": "El pagament és per 100 Corones Sueques denominat en XRP. El pagament per l'àlies és <1>no reemborsable</1>. Si pagues més del requerit, la quantitat excedent es considerarà una donació i no serà reemborsada.",
-      "text4": "Els àlies ara s'utilitzen a través de diverses xarxes, <1>registra un àlies a la xarxa principal de l'XRPL</1> i estarà també disponible a la xarxa bithomp dev explorers (en qüestió d'1 hora).",
-      "enter-address-or": "Introdueix la teva adreça XRPL o",
-      "sign-in": "Inicia sessió amb Xumm",
-      "sign-out": "Tanca sessió",
-      "your-address": "La teva adreça XRPL",
-      "enter-username": "Introdueix l'àlies que t'agradaria tenir",
-      "your-username": "Àlies",
-      "enter-country": "País de residència (per la nostra comptabilitat)",
-      "agree-terms-page": "Entenc i accepto els termes i les condicions del servei especificats més amunt.",
-      "agree-terms-site": "Accepto els <1>Termes i condicions del servei</1>.",
-      "agree-privacy-policy": "Accepto la <1>Política de privacitat</1>.",
-      "already-registered": "El teu compte ja té un àlies registrat",
-      "sign-out-to-register-another-one": "<0>Tanca sessió</0> des d'aquest compte per registrar un altre àlies per a una adreça diferent."
-    },
-    "step1": {
-      "to-register": "Per registrar el teu àlies públic:",
-      "from-your-address": "Has de fer un pagament des de l'adreça:",
-      "text0": "Els pagaments fets per part teva <1>des de qualsevol altra adreça</1> o amb una <3>Etiqueta de destinació equivocada</3> no seran acceptats pel servei, seran acceptats com a donacions i <5>no seran reemborsats</5>.",
-      "payment-instructions": "Instruccions de pagament",
-      "address": "Adreça XRPL:",
-      "tag": "Etiqueta de destinació:",
-      "amount": "Quantitat:",
-      "awaiting": "Esperant el pagament",
-      "about-confirmation": "Veuràs la confirmació tan bon punt rebem el pagament."
-    },
-    "step2": {
-      "text0": "Enhorabona! El teu àlies <1>{{ username }}</1> s'ha registrat amb èxit.",
-      "one-more": "Registra'n un altre"
-    }
-  },
   "alerts": {
     "text0": "Rep una notificació quan el preu de XRP/USD o XRP/BTC de <1>Bitstamp</1> canviï més d'un 5% en una hora o més d'un 10% en un dia.",
     "text1": "Segueix el canal de Telegram: <1>bithomp</1> o el comtpe de twitter: <3>Alertesbithomp</3>.",
