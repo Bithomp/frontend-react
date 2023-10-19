@@ -6,9 +6,9 @@ import CurrencySelect from "../UI/CurrencySelect"
 import { typeNumberOnly } from '../../utils'
 
 export default function Converter({ selectedCurrency, setSelectedCurrency, chartPeriod }) {
-  const [data, setData] = useState({});
-  const [xrpValue, setXrpValue] = useState('1');
-  const [fiatValue, setFiatValue] = useState('');
+  const [data, setData] = useState({})
+  const [xrpValue, setXrpValue] = useState('1')
+  const [fiatValue, setFiatValue] = useState('')
 
   useEffect(() => {
     async function fetchData() {
@@ -16,7 +16,7 @@ export default function Converter({ selectedCurrency, setSelectedCurrency, chart
         'v2/rates/current/' + selectedCurrency,
       );
       setData(response.data);
-      setFiatValue((xrpValue * response.data[selectedCurrency]).toFixed(2));
+      setFiatValue((xrpValue * response.data[selectedCurrency]).toFixed(2))
     }
     fetchData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -40,11 +40,10 @@ export default function Converter({ selectedCurrency, setSelectedCurrency, chart
     setXrpValue((fiatAmount / data[selectedCurrency]).toFixed(2))
   }
 
-  const rate = data[selectedCurrency] ? '1 XRP = ' + data[selectedCurrency] + ' ' + selectedCurrency.toUpperCase() : <br/>
+  const rate = data[selectedCurrency] ? '1 XRP = ' + data[selectedCurrency] + ' ' + selectedCurrency.toUpperCase() : <br />
 
   return <>
     <h2>{rate}</h2>
-
     <div>
       <input
         className="converter-amount"
@@ -60,7 +59,6 @@ export default function Converter({ selectedCurrency, setSelectedCurrency, chart
         <span className="converter-xrp-text">XRP</span>
       </div>
     </div>
-          
     <div>
       <input
         className="converter-amount"
@@ -75,5 +73,5 @@ export default function Converter({ selectedCurrency, setSelectedCurrency, chart
         <CurrencySelect setSelectedCurrency={setSelectedCurrency} selectedCurrency={selectedCurrency} />
       </div>
     </div>
-  </>;
-};
+  </>
+}

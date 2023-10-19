@@ -58,8 +58,9 @@ import SEO from '../../components/SEO'
 import SearchBlock from '../../components/Layout/SearchBlock'
 import CopyButton from '../../components/UI/CopyButton'
 
-// setSignRequest, account, pageMeta
+// setSignRequest, account
 export default function Account({ pageMeta, signRequest, id, selectedCurrency, networkInfo }) {
+  //"reserveBase":"1000000","reserveIncrement":"200000"
   const { t } = useTranslation()
 
   const [data, setData] = useState({})

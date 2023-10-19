@@ -1,32 +1,42 @@
 import Select from 'react-select'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Image from 'next/image'
 
-import { fiatCurrencyList } from '../../utils';
+import { fiatCurrencyList } from '../../utils'
 
 export default function CurrencySelect({ setSelectedCurrency, selectedCurrency }) {
-
   const currencies = fiatCurrencyList
 
   let defaultOption = { value: 'usd', label: 'USD' };
   for (let i = 0; i < currencies.length; i++) {
     if (currencies[i].value.toLowerCase() === selectedCurrency.toLowerCase()) {
-      defaultOption = currencies[i];
-      break;
+      defaultOption = currencies[i]
+      break
     }
   }
 
-  const [selectCurrency, setSelectCurrency] = useState(defaultOption);
+  const [selectedOption, setSelectedOption] = useState(defaultOption)
 
   const onCurrencyChange = value => {
-    setSelectCurrency(value)
+    setSelectedOption(value)
     setSelectedCurrency(value.value)
   }
+
+  useEffect(() => {
+    for (let i = 0; i < currencies.length; i++) {
+      if (currencies[i].value.toLowerCase() === selectedCurrency.toLowerCase()) {
+        setSelectedOption(currencies[i])
+        break
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedCurrency])
 
   return (
     <Select
       options={currencies}
-      defaultValue={selectCurrency}
+      defaultValue={defaultOption}
+      value={selectedOption}
       onChange={onCurrencyChange}
       isSearchable={true}
       getOptionLabel={e => (
@@ -46,5 +56,5 @@ export default function CurrencySelect({ setSelectedCurrency, selectedCurrency }
       classNamePrefix="react-select"
       instanceId="currency-select"
     />
-  );
-};
+  )
+}
