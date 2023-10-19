@@ -131,7 +131,6 @@ export default function Governance({ id }) {
               //hook
               val.topic = parseInt(entries[j].HookStateKey.substring(4, 6))
               if (firstLetter === "56") {
-                val.address = entries[j].HookStateKey.substring(24)
                 governanceData.votes.hook.push(val)
               } else {
                 val.value = parseInt(val.value, 16)
@@ -460,9 +459,9 @@ export default function Governance({ id }) {
       <table className="table-large shrink">
         <thead>
           <tr>
+            <th className='right'>Voter</th>
             <th className='right'>Topic</th>
             <th className='right'>Target layer</th>
-            <th className='right'>Address</th>
             <th className='right'>Value</th>
           </tr>
         </thead>
@@ -487,13 +486,13 @@ export default function Governance({ id }) {
                     govData.votes.hook.map((p, i) =>
                       <tr key={i}>
                         <td className='left'>
+                          {p.voter}
+                        </td>
+                        <td className='left'>
                           {p.topic}
                         </td>
                         <td className='left'>
                           {p.targetLayer}
-                        </td>
-                        <td className='left'>
-                          {p.address}
                         </td>
                         <td className='right'>
                           {p.value}
