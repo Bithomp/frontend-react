@@ -343,7 +343,8 @@
   },
   "error": {
     "Network Error": "Es scheint keine Internetverbindung zu bestehen ;(",
-    "Request failed with status code 429": "Sie senden uns zu viele Anfragen. Versuchen Sie es später erneut!"
+    "Request failed with status code 429": "Sie senden uns zu viele Anfragen. Versuchen Sie es später erneut!",
+    "Request failed with status code 404": "Such API call is not allowed on that network"
   },
   "error-api": {
     "search is too short": "Der zu suchende Name ist zu kurz",

@@ -328,7 +328,6 @@ export const submitTransaction = async (blob, callback) => {
   }
 }
 
-//const networks = ['mainnet', 'staging', 'testnet', 'devnet', 'amm', 'xahau-testnet', 'xahau'];
 //const devNetworks = ['testnet', 'devnet', 'amm', 'xahau-testnet'];
 
 export const capitalize = str => {
@@ -336,7 +335,7 @@ export const capitalize = str => {
   return str.charAt(0).toUpperCase() + str.slice(1)
 }
 
-export const network = process.env.NEXT_PUBLIC_NETWORK_NAME ? process.env.NEXT_PUBLIC_NETWORK_NAME : "mainnet"
+export const network = process.env.NEXT_PUBLIC_NETWORK_NAME
 export const devNet = ['mainnet', 'staging', 'xahau'].includes(network) ? false : network
 export const xahauNetwork = network.includes('xahau')
 
@@ -398,6 +397,17 @@ const networks = {
     ledgerName: "XAHAU"
   }
 }
+
+// show error if network is not found
+if (!networks[network]) {
+  if (network) {
+    throw new Error("Network not found: " + network + ' it can be one of those: ' + Object.keys(networks).join(', '))
+  } else {
+    throw new Error("Network needs to be defined in .env.local file")
+  }
+}
+
+
 
 export const server = networks[network]?.server
 export const networkId = networks[network]?.id

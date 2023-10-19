@@ -343,7 +343,8 @@
   },
   "error": {
     "Network Error": "Det ser ut til at det ikke er noen internettforbindelse ;(",
-    "Request failed with status code 4": "Du sender oss for mange forespørsler, prøv senere!"
+    "Request failed with status code 429": "Du sender oss for mange forespørsler, prøv senere!",
+    "Request failed with status code 404": "Such API call is not allowed on that network"
   },
   "error-api": {
     "search is too short": "Navnet for å søke er for kort",

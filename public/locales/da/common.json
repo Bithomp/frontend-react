@@ -343,7 +343,8 @@
   },
   "error": {
     "Network Error": "Det ser ud til, at der ikke er nogen internetforbindelse ;(",
-    "Request failed with status code 429": "Du sender os for mange anmodninger, prøv senere!"
+    "Request failed with status code 429": "Du sender os for mange anmodninger, prøv senere!",
+    "Request failed with status code 404": "Such API call is not allowed on that network"
   },
   "error-api": {
     "search is too short": "Navnet til at søge er for kort",
@@ -358,7 +359,7 @@
     "currencyIssuer is invalid": "Ugyldig valutaudsteders adresse",
     "Token information is not found": "Vi kunne ikke finde nogen oplysninger for det ID",
     "No nfts information is found": "Sorry, an error occured, please to search for somethig else.",
-    "Address is not valid": "Invalid address"
+    "Address is not valid": "Ugyldig adresse"
   },
   "units": {
     "seconds-short": "s",

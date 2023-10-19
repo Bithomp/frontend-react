@@ -343,7 +343,8 @@
   },
   "error": {
     "Network Error": "Nema internetske veze ;(",
-    "Request failed with status code 429": "Šaljete nam previše zahtjeva, pokušajte malo kasnije."
+    "Request failed with status code 429": "Šaljete nam previše zahtjeva, pokušajte malo kasnije.",
+    "Request failed with status code 404": "Such API call is not allowed on that network"
   },
   "error-api": {
     "search is too short": "Ime za pretragu je premalo.",

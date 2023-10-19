@@ -343,7 +343,8 @@
   },
   "error": {
     "Network Error": "Sembla que no hi ha connexió a internet ;(",
-    "Request failed with status code 429": "Ens estàs enviant massa sol·licituds, intenta-ho de nou més tard!"
+    "Request failed with status code 429": "Ens estàs enviant massa sol·licituds, intenta-ho de nou més tard!",
+    "Request failed with status code 404": "No s'ha trobat"
   },
   "error-api": {
     "search is too short": "El nom que s'ha de cercar és massa curt",
@@ -358,7 +359,7 @@
     "currencyIssuer is invalid": "L'adreça de l'encunyador de la moneda no és vàlida",
     "Token information is not found": "No hem pogut trobar informació sobre aquest ID",
     "No nfts information is found": "Sorry, an error occured, please to search for somethig else.",
-    "Address is not valid": "Invalid address"
+    "Address is not valid": "L'adreça no és vàlida"
   },
   "units": {
     "seconds-short": "s",
