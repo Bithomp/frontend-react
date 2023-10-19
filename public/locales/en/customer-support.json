@@ -5,11 +5,11 @@
   "status-failed": "If your transaction has a status \"failed\" but your funds were taken from your balance then contact the service / wallet / exchange which you used to make this transaction.",
   "status-success": "If your transaction has a status \"success\" but it wasn't received then contact the recipient's wallet / service / exchange support.",
   "wrong-tag": "If you sent a transaction without a destination tag or with a wrong destination tag then read (2) and (3) above.",
-  "text2": "If you're missing 10 XRP in your wallet, please read about the <1>base reserve</1>.",
-  "paper-wallet": "If you want to send XRP from a paper wallet, you need to import it to a software wallet first, you can use Xumm mobile app for that (import secret as a \"family seed\").",
+  "text2": "If you're missing {{baseReserve}} in your wallet, please read about the <3>base reserve</3>.",
+  "paper-wallet": "If you want to send {{nativeCurrency}} from a paper wallet, you need to import it to a software wallet first, you can use Xumm mobile app for that (import secret as a \"family seed\").",
   "text3": "If you have a <1>partnership or marketing</1> proposals then you can contact us by email: <3/>. You can also contact us with questions about the bithomp username registration or bithomp transaction explorer.",
   "no-answer": "Due to our limited time we do not answer to emails related to 1-6.",
-  "submit-info": "Submit information about your XRPL service",
-  "text4": "If you have a public XRPL service and you want your XRP addresses to be recognised on Bithomp submit your information <1>here</1>. You can also contact us by email: <3/> if you want to speed up the process.",
+  "submit-info": "Submit information about your service",
+  "text4": "If you have a public service and you want your addresses to be recognised on Bithomp submit your information <1>here</1>. You can also contact us by email: <3/> if you want to speed up the process.",
   "follow-us": "Follow us on social media"
 }

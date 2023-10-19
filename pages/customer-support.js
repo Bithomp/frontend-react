@@ -5,6 +5,7 @@ import Mailto from 'react-protected-mailto'
 import SocialIcons from '../components/Layout/SocialIcons'
 import SEO from '../components/SEO'
 import { nativeCurrency } from '../utils'
+import { amountFormat } from '../utils/format'
 
 export async function getServerSideProps(context) {
   const { locale } = context
@@ -15,7 +16,7 @@ export async function getServerSideProps(context) {
   }
 }
 
-export default function Contact() {
+export default function Contact({ networkInfo }) {
   const { t } = useTranslation();
 
   return <>
@@ -39,10 +40,10 @@ export default function Contact() {
         <li>{t("wrong-tag", { ns: "customer-support" })}</li>
         <li>
           <Trans ns="customer-support" i18nKey="text2">
-            If you are missing 10 XRP in your wallet, please read about the <a href="https://xrpl.org/reserves.html">base reserve</a>.
+            If you are missing {{ baseReserve: amountFormat(networkInfo?.reserveBase) }} in your wallet, please read about the <a href="https://xrpl.org/reserves.html">base reserve</a>.
           </Trans>
         </li>
-        <li>{t("paper-wallet", { ns: "customer-support" })}</li>
+        <li>{t("paper-wallet", { ns: "customer-support", nativeCurrency })}</li>
         <li>
           <Trans ns="customer-support" i18nKey="text3">
             If you have a <b>partnership or marketing</b> proposals then you can contact us by email: <Mailto email='support@bithomp.com' headers={{ subject: 'Bithomp contact page' }} />. You can also contact us with questions about the bithomp username registration or bithomp transaction explorer.
@@ -53,7 +54,7 @@ export default function Contact() {
       <h2>{t("submit-info", { ns: "customer-support" })}</h2>
       <p>
         <Trans ns="customer-support" i18nKey="text4">
-          If you have a public XRPL service and you want your XRP addresses to be recognised on Bithomp submit your information <a href="https://bithomp.com/explorer/submit.html">here</a>. You can also contact us by email: <Mailto email='support@bithomp.com' headers={{ subject: 'New XRPL Service' }} /> if you want to speed up the process.
+          If you have a public service and you want your addresses to be recognised on Bithomp submit your information <a href="https://bithomp.com/explorer/submit.html">here</a>. You can also contact us by email: <Mailto email='support@bithomp.com' headers={{ subject: 'New XRPL Service' }} /> if you want to speed up the process.
         </Trans>
       </p>
       <h2>{t("follow-us", { ns: "customer-support" })}</h2>

@@ -244,10 +244,6 @@ export default function Account({ pageMeta, signRequest, id, selectedCurrency, n
                           <tr>
                             <td>XUMM Pro</td><td>{data?.xummMeta?.xummPro ? "Yes" : "No"}</td>
                           </tr>
-                          <tr>
-                            <td>Base fee</td><td>{networkInfo?.reserveBase}</td>
-                          </tr>
-                          {/* add on the customer-support page when in drops */}
                         </tbody>
                       </table>
                     </div>
@@ -285,19 +281,18 @@ export default function Account({ pageMeta, signRequest, id, selectedCurrency, n
                             <td>Active {/* Last active (here you will see the last submitted transaction and the time passed) */}</td>
                             :
                             <td>
-                              {/* Reserves are different and currency codes also */}
                               {/* Also show blackholed status */}
                               {data?.ledgerInfo?.deleted ?
                                 <>
                                   <span className='red bold'>Account deleted.</span>
                                   <br />
                                   <span className='orange'>
-                                    This account has been deactivated and is no longer active. It can be restored by sending at least 10 XRP to the address.
+                                    This account has been deactivated and is no longer active. It can be restored by sending at least {amountFormat(networkInfo?.reserveBase)} to the address.
                                   </span>
                                 </>
                                 :
                                 <span className='orange'>
-                                  Not activated yet. The owner with full access to the account can activate it by sending at least 10 XRP to the address.
+                                  Not activated yet. The owner with full access to the account can activate it by sending at least {amountFormat(networkInfo?.reserveBase)} to the address.
                                 </span>
                               }
                               {getCoinsUrl &&

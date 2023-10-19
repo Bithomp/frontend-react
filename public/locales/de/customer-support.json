@@ -5,11 +5,11 @@
   "status-failed": "Falls Ihre Transaktion den Status \"fehlgeschlagen\" hat aber Ihre Mittel von Ihrem Konto abgezogen wurden, kontaktieren Sie bitte den Support des Service / Walletbetreiber / Börse welche Sie zur Durchführung der Transaktion genutzt haben.",
   "status-success": "Falls Ihre Transaktion den Status \"erfolgreich\" hat aber nicht beim Empfänger angekommen ist, kontaktieren Sie den Support des Services / Walletbetreibers / Börse des Empfängers.",
   "wrong-tag": "Falls Sie eine Transaktion ohne DestinationTag oder mit einem falschen DestinationTag gesendet haben, lesen Sie bitte (2) und (3) oberhalb.",
-  "text2": "Falls Sie 10 XRP in Ihrer Wallet vermissen, lesen Sie bitte über <1>Basis Reserve</1>.",
-  "paper-wallet": "Falls Sie XRP von Ihrer Papierwallet senden möchten, müssen Sie diese zuerst in eine Software-Wallet importieren. Sie können dafür die Xumm Mobile App verwenden (Geheimnis als \"Familien-Seed\" importieren).",
+  "text2": "Falls Sie {{baseReserve}} in Ihrer Wallet vermissen, lesen Sie bitte über <3>Basis Reserve</3>.",
+  "paper-wallet": "Falls Sie {{nativeCurrency}} von Ihrer Papierwallet senden möchten, müssen Sie diese zuerst in eine Software-Wallet importieren. Sie können dafür die Xumm Mobile App verwenden (Geheimnis als \"Familien-Seed\" importieren).",
   "text3": "Für Vorschläge zu <1>Partnerschaften oder Marketing</1> kontaktieren Sie uns bitte per E-Mail: <3/>. Sie können uns auch zu Fragen über bithomp Benutzernamen oder dem bithomp Transaktion Explorer kontaktieren.",
   "no-answer": "Aufgrund unserer begrenzten verfügbaren Zeit antworten wir nicht auf E-Mails mit Bezug zu 1-6.",
-  "submit-info": "Informationen über Ihren XRPL Service schicken",
-  "text4": "Falls Sie einen öffentlichen XRPL Service anbieten und möchten, dass Ihre XRPL Adressen auf Bithomp erkannt werden, senden Sie uns Ihre Informationen <1>hier</1>. Sie können uns auch per E-Mail kontaktieren: <3/> falls Sie den Vorgang beschleunigen möchten.",
+  "submit-info": "Informationen über Ihren Service schicken",
+  "text4": "Falls Sie einen öffentlichen Service anbieten und möchten, dass Ihre Adressen auf Bithomp erkannt werden, senden Sie uns Ihre Informationen <1>hier</1>. Sie können uns auch per E-Mail kontaktieren: <3/> falls Sie den Vorgang beschleunigen möchten.",
   "follow-us": "Folgen Sie uns auf Social Media"
 }
