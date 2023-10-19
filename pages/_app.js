@@ -40,7 +40,7 @@ const MyApp = ({ Component, pageProps }) => {
   }
 
   const showAds = network === 'mainnet' // no ads on xahau
-  let showTopAds = false //showAds //change here when you want to see TOP ADS
+  let showTopAds = showAds //showAds -when on the mainnet //change here when you want to see TOP ADS
   const pagesWithNoTopAdds = ['/', '/username', '/disclaimer', '/privacy-policy', '/terms-and-conditions', '/press', '/404']
   if (showTopAds) {
     showTopAds = !pagesWithNoTopAdds.includes(router.pathname)
@@ -100,7 +100,11 @@ const MyApp = ({ Component, pageProps }) => {
               />
             }
             <div className="content">
-              {showTopAds && <TopLinks />}
+              {showTopAds &&
+                <TopLinks
+                  countryCode={countryCode}
+                />
+              }
               <Component
                 {...pageProps}
                 signRequest={signRequest}

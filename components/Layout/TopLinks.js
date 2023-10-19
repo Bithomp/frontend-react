@@ -1,8 +1,34 @@
 import { useTranslation } from 'next-i18next'
 
-export default function TopLinks() {
-  const { t } = useTranslation();
+export default function TopLinks({ countryCode }) {
+  const { t } = useTranslation()
 
+  {/* it is important to have "tooltiptext right" on the first ad, otherwise brakes UI on mobiles, too wide to the left */ }
+  {/* it is important to have "tooltiptext left" on the last ad, otherwise brakes UI on mobiles, too wide to the right */ }
+
+  let moonpayCountries = ['US', 'BR', 'NG']
+  if (moonpayCountries.includes(countryCode)) {
+    return <div className="top-links">
+      <span className='tooltip'>
+        <a
+          href="https://bithomp.com/go/exchange-m"
+          target="_blank"
+          rel="noreferrer"
+          className='top-link'
+          style={{ color: "yellow" }}
+        >
+          Fast and simple way to Buy and Sell crypto.
+        </a>
+        <span className='tooltiptext right small'>
+          {t("sponsored.sponsored")}
+        </span>
+      </span>
+    </div>
+  }
+
+  return ""
+
+  {/*
   return (
     <div className="top-links">
       <span className='tooltip'>
@@ -14,7 +40,6 @@ export default function TopLinks() {
         >
           Buy XRP
         </a>
-        {/* important to have it here right, otherwise brakes UI on mobiles */}
         <span className='tooltiptext right small'>
           {t("sponsored.sponsored")}
         </span>
@@ -22,7 +47,6 @@ export default function TopLinks() {
 
       <span style={{ padding: "0 10px" }}>|</span>
 
-      {/*
       <span className='tooltip'>
         <a
           href="https://bithomp.com/go/top-exchange"
@@ -38,8 +62,7 @@ export default function TopLinks() {
       </span>
 
       <span style={{ padding: "0 10px" }}>|</span>
-      */}
-
+      
       <span className='tooltip'>
         <a
           href="https://bithomp.com/go/top-play"
@@ -49,11 +72,11 @@ export default function TopLinks() {
         >
           XRP Play
         </a>
-        {/* important to have it here left, otherwise brakes UI on mobiles */}
         <span className='tooltiptext left small'>
           {t("sponsored.sponsored")}
         </span>
       </span>
     </div>
-  );
-};
+  )
+  */}
+}
