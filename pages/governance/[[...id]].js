@@ -280,430 +280,449 @@ export default function Governance({ id }) {
         </tbody>
       </table>
       <br />
-      <h4 className='center'>Seat votes</h4>
-      <table className="table-large shrink">
-        <thead>
-          <tr>
-            <th>Voter</th>
-            <th className='center'>Target layer</th>
-            <th className='center'>Seat</th>
-            <th>{t("table.address")}</th>
-          </tr>
-        </thead>
-        <tbody>
-          {loading ?
-            <tr className='right'>
-              <td colSpan="100">
-                <br />
-                <div className='center'>
-                  <span className="waiting"></span>
-                  <br />
-                  {t("general.loading")}
-                </div>
-                <br />
-              </td>
-            </tr>
-            :
-            <>
-              {(!errorMessage && data?.votes?.seat) ?
+      <div className='flex flex-center'>
+        <div>
+          <h4 className='center'>Seat votes</h4>
+          <table className="table-large shrink">
+            <thead>
+              <tr>
+                <th>Voter</th>
+                <th className='center'>Target layer</th>
+                <th className='center'>Seat</th>
+                <th>{t("table.address")}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {loading ?
+                <tr className='right'>
+                  <td colSpan="100">
+                    <br />
+                    <div className='center'>
+                      <span className="waiting"></span>
+                      <br />
+                      {t("general.loading")}
+                    </div>
+                    <br />
+                  </td>
+                </tr>
+                :
                 <>
-                  {data.votes.seat.length > 0 &&
-                    data.votes.seat.map((p, i) =>
-                      <tr key={i}>
-                        <td>
-                          {tableLink(p.voter)}
-                        </td>
-                        <td className='center'>
-                          {p.targetLayer}
-                        </td>
-                        <td className='center'>
-                          {p.seat}
-                        </td>
-                        <td>
-                          {p.value}
-                        </td>
-                      </tr>
-                    )
+                  {(!errorMessage && data?.votes?.seat) ?
+                    <>
+                      {data.votes.seat.length > 0 &&
+                        data.votes.seat.map((p, i) =>
+                          <tr key={i}>
+                            <td>
+                              {tableLink(p.voter)}
+                            </td>
+                            <td className='center'>
+                              {p.targetLayer}
+                            </td>
+                            <td className='center'>
+                              {p.seat}
+                            </td>
+                            <td>
+                              {p.value}
+                            </td>
+                          </tr>
+                        )
+                      }
+                    </>
+                    :
+                    <tr><td colSpan="100" className='center orange bold'>{errorMessage}</td></tr>
                   }
                 </>
-                :
-                <tr><td colSpan="100" className='center orange bold'>{errorMessage}</td></tr>
               }
-            </>
-          }
-        </tbody>
-      </table>
-      <br />
-      <h4 className='center'>Reward rate votes</h4>
-      <table className="table-large shrink">
-        <thead>
-          <tr>
-            <th>Voter</th>
-            <th className='center'>Target layer</th>
-            <th className='right'>Rate</th>
-            <th className='right'>Value</th>
-          </tr>
-        </thead>
-        <tbody>
-          {loading ?
-            <tr className='right'>
-              <td colSpan="100">
-                <br />
-                <div className='center'>
-                  <span className="waiting"></span>
-                  <br />
-                  {t("general.loading")}
-                </div>
-                <br />
-              </td>
-            </tr>
-            :
-            <>
-              {(!errorMessage && data?.votes?.reward?.rate) ?
+            </tbody>
+          </table>
+        </div>
+        <div>
+          <h4 className='center'>Seat votes count</h4>
+          <table className="table-large shrink">
+            <thead>
+              <tr>
+                <th>Address</th>
+                <th className='center'>Target layer</th>
+                <th className='center'>Seat</th>
+                <th className='right'>Votes</th>
+              </tr>
+            </thead>
+            <tbody>
+              {loading ?
+                <tr className='right'>
+                  <td colSpan="100">
+                    <br />
+                    <div className='center'>
+                      <span className="waiting"></span>
+                      <br />
+                      {t("general.loading")}
+                    </div>
+                    <br />
+                  </td>
+                </tr>
+                :
                 <>
-                  {data.votes.reward.rate.length > 0 &&
-                    data.votes.reward.rate.map((p, i) =>
-                      <tr key={i}>
-                        <td>
-                          {tableLink(p.voter)}
-                        </td>
-                        <td className='center'>
-                          {p.targetLayer}
-                        </td>
-                        <td className='right'>
-                          {rewardRateHuman(p.value)}
-                        </td>
-                        <td className='right'>
-                          {p.value}
-                        </td>
-                      </tr>
-                    )
+                  {(!errorMessage && data?.count?.seat) ?
+                    <>
+                      {data.count.seat.length > 0 &&
+                        data.count.seat.map((p, i) =>
+                          <tr key={i}>
+                            <td>
+                              {p.address}
+                            </td>
+                            <td className='center'>
+                              {p.targetLayer}
+                            </td>
+                            <td className='center'>
+                              {p.seat}
+                            </td>
+                            <td className='right'>
+                              {p.value}
+                            </td>
+                          </tr>
+                        )
+                      }
+                    </>
+                    :
+                    <tr><td colSpan="100" className='center orange bold'>{errorMessage}</td></tr>
                   }
                 </>
-                :
-                <tr><td colSpan="100" className='center orange bold'>{errorMessage}</td></tr>
               }
-            </>
-          }
-        </tbody>
-      </table>
+            </tbody>
+          </table>
+        </div>
+      </div>
       <br />
-      <h4 className='center'>Reward delay votes</h4>
-      <table className="table-large shrink">
-        <thead>
-          <tr>
-            <th>Voter</th>
-            <th className='center'>Target layer</th>
-            <th className='right'>Delay</th>
-          </tr>
-        </thead>
-        <tbody>
-          {loading ?
-            <tr className='right'>
-              <td colSpan="100">
-                <br />
-                <div className='center'>
-                  <span className="waiting"></span>
-                  <br />
-                  {t("general.loading")}
-                </div>
-                <br />
-              </td>
-            </tr>
-            :
-            <>
-              {(!errorMessage && data?.votes?.reward?.delay) ?
+      <div className='flex flex-center'>
+        <div>
+          <h4 className='center'>Reward rate votes</h4>
+          <table className="table-large shrink">
+            <thead>
+              <tr>
+                <th>Voter</th>
+                <th className='center'>Target layer</th>
+                <th className='right'>Rate</th>
+                <th className='right'>Value</th>
+              </tr>
+            </thead>
+            <tbody>
+              {loading ?
+                <tr className='right'>
+                  <td colSpan="100">
+                    <br />
+                    <div className='center'>
+                      <span className="waiting"></span>
+                      <br />
+                      {t("general.loading")}
+                    </div>
+                    <br />
+                  </td>
+                </tr>
+                :
                 <>
-                  {data.votes.reward.delay.length > 0 &&
-                    data.votes.reward.delay.map((p, i) =>
-                      <tr key={i}>
-                        <td>
-                          {tableLink(p.voter)}
-                        </td>
-                        <td className='center'>
-                          {p.targetLayer}
-                        </td>
-                        <td className='right'>
-                          {p.value} seconds
-                        </td>
-                      </tr>
-                    )
+                  {(!errorMessage && data?.votes?.reward?.rate) ?
+                    <>
+                      {data.votes.reward.rate.length > 0 &&
+                        data.votes.reward.rate.map((p, i) =>
+                          <tr key={i}>
+                            <td>
+                              {tableLink(p.voter)}
+                            </td>
+                            <td className='center'>
+                              {p.targetLayer}
+                            </td>
+                            <td className='right'>
+                              {rewardRateHuman(p.value)}
+                            </td>
+                            <td className='right'>
+                              {p.value}
+                            </td>
+                          </tr>
+                        )
+                      }
+                    </>
+                    :
+                    <tr><td colSpan="100" className='center orange bold'>{errorMessage}</td></tr>
                   }
                 </>
-                :
-                <tr><td colSpan="100" className='center orange bold'>{errorMessage}</td></tr>
               }
-            </>
-          }
-        </tbody>
-      </table>
-      <br />
-      <h4 className='center'>Hook votes</h4>
-      <table className="table-large shrink">
-        <thead>
-          <tr>
-            <th>Voter</th>
-            <th className='center'>Topic</th>
-            <th className='center'>Target layer</th>
-            <th>Value</th>
-          </tr>
-        </thead>
-        <tbody>
-          {loading ?
-            <tr className='right'>
-              <td colSpan="100">
-                <br />
-                <div className='center'>
-                  <span className="waiting"></span>
-                  <br />
-                  {t("general.loading")}
-                </div>
-                <br />
-              </td>
-            </tr>
-            :
-            <>
-              {(!errorMessage && data?.votes?.hook) ?
+            </tbody>
+          </table>
+        </div>
+        <div>
+          <h4 className='center'>Reward rate votes count</h4>
+          <table className="table-large shrink">
+            <thead>
+              <tr>
+                <th className='right'>Rate</th>
+                <th className='right'>Value</th>
+                <th className='center'>Target layer</th>
+                <th className='right'>Count</th>
+              </tr>
+            </thead>
+            <tbody>
+              {loading ?
+                <tr className='right'>
+                  <td colSpan="100">
+                    <br />
+                    <div className='center'>
+                      <span className="waiting"></span>
+                      <br />
+                      {t("general.loading")}
+                    </div>
+                    <br />
+                  </td>
+                </tr>
+                :
                 <>
-                  {data.votes.hook.length > 0 &&
-                    data.votes.hook.map((p, i) =>
-                      <tr key={i}>
-                        <td>
-                          {tableLink(p.voter)}
-                        </td>
-                        <td className='center'>
-                          {p.topic}
-                        </td>
-                        <td className='center'>
-                          {p.targetLayer}
-                        </td>
-                        <td>
-                          {p.value}
-                        </td>
-                      </tr>
-                    )
+                  {(!errorMessage && data?.count?.reward?.rate) ?
+                    <>
+                      {data.count.reward.rate.length > 0 &&
+                        data.count.reward.rate.map((p, i) =>
+                          <tr key={i}>
+                            <td className='right'>
+                              {rewardRateHuman(p.rate)}
+                            </td>
+                            <td className='right'>
+                              {p.rate}
+                            </td>
+                            <td className='center'>
+                              {p.targetLayer}
+                            </td>
+                            <td className='right'>
+                              {p.value}
+                            </td>
+                          </tr>
+                        )
+                      }
+                    </>
+                    :
+                    <tr><td colSpan="100" className='center orange bold'>{errorMessage}</td></tr>
                   }
                 </>
-                :
-                <tr><td colSpan="100" className='center orange bold'>{errorMessage}</td></tr>
               }
-            </>
-          }
-        </tbody>
-      </table>
+            </tbody>
+          </table>
+        </div>
+      </div>
       <br />
-      <br />
-      <h4 className='center'>Seat votes count</h4>
-      <table className="table-large shrink">
-        <thead>
-          <tr>
-            <th>Address</th>
-            <th className='center'>Target layer</th>
-            <th className='center'>Seat</th>
-            <th className='right'>Votes</th>
-          </tr>
-        </thead>
-        <tbody>
-          {loading ?
-            <tr className='right'>
-              <td colSpan="100">
-                <br />
-                <div className='center'>
-                  <span className="waiting"></span>
-                  <br />
-                  {t("general.loading")}
-                </div>
-                <br />
-              </td>
-            </tr>
-            :
-            <>
-              {(!errorMessage && data?.count?.seat) ?
+      <div className='flex flex-center'>
+        <div>
+          <h4 className='center'>Reward delay votes</h4>
+          <table className="table-large shrink">
+            <thead>
+              <tr>
+                <th>Voter</th>
+                <th className='center'>Target layer</th>
+                <th className='right'>Delay</th>
+              </tr>
+            </thead>
+            <tbody>
+              {loading ?
+                <tr className='right'>
+                  <td colSpan="100">
+                    <br />
+                    <div className='center'>
+                      <span className="waiting"></span>
+                      <br />
+                      {t("general.loading")}
+                    </div>
+                    <br />
+                  </td>
+                </tr>
+                :
                 <>
-                  {data.count.seat.length > 0 &&
-                    data.count.seat.map((p, i) =>
-                      <tr key={i}>
-                        <td>
-                          {p.address}
-                        </td>
-                        <td className='center'>
-                          {p.targetLayer}
-                        </td>
-                        <td className='center'>
-                          {p.seat}
-                        </td>
-                        <td className='right'>
-                          {p.value}
-                        </td>
-                      </tr>
-                    )
+                  {(!errorMessage && data?.votes?.reward?.delay) ?
+                    <>
+                      {data.votes.reward.delay.length > 0 &&
+                        data.votes.reward.delay.map((p, i) =>
+                          <tr key={i}>
+                            <td>
+                              {tableLink(p.voter)}
+                            </td>
+                            <td className='center'>
+                              {p.targetLayer}
+                            </td>
+                            <td className='right'>
+                              {p.value} seconds
+                            </td>
+                          </tr>
+                        )
+                      }
+                    </>
+                    :
+                    <tr><td colSpan="100" className='center orange bold'>{errorMessage}</td></tr>
                   }
                 </>
-                :
-                <tr><td colSpan="100" className='center orange bold'>{errorMessage}</td></tr>
               }
-            </>
-          }
-        </tbody>
-      </table>
-      <br />
-      <h4 className='center'>Reward rate votes count</h4>
-      <table className="table-large shrink">
-        <thead>
-          <tr>
-            <th className='right'>Rate</th>
-            <th className='right'>Value</th>
-            <th className='center'>Target layer</th>
-            <th className='right'>Count</th>
-          </tr>
-        </thead>
-        <tbody>
-          {loading ?
-            <tr className='right'>
-              <td colSpan="100">
-                <br />
-                <div className='center'>
-                  <span className="waiting"></span>
-                  <br />
-                  {t("general.loading")}
-                </div>
-                <br />
-              </td>
-            </tr>
-            :
-            <>
-              {(!errorMessage && data?.count?.reward?.rate) ?
+            </tbody>
+          </table>
+        </div>
+        <div>
+          <h4 className='center'>Reward delay votes count</h4>
+          <table className="table-large shrink">
+            <thead>
+              <tr>
+                <th className='right'>Delay</th>
+                <th className='center'>Target layer</th>
+                <th className='right'>Count</th>
+              </tr>
+            </thead>
+            <tbody>
+              {loading ?
+                <tr className='right'>
+                  <td colSpan="100">
+                    <br />
+                    <div className='center'>
+                      <span className="waiting"></span>
+                      <br />
+                      {t("general.loading")}
+                    </div>
+                    <br />
+                  </td>
+                </tr>
+                :
                 <>
-                  {data.count.reward.rate.length > 0 &&
-                    data.count.reward.rate.map((p, i) =>
-                      <tr key={i}>
-                        <td className='right'>
-                          {rewardRateHuman(p.rate)}
-                        </td>
-                        <td className='right'>
-                          {p.rate}
-                        </td>
-                        <td className='center'>
-                          {p.targetLayer}
-                        </td>
-                        <td className='right'>
-                          {p.value}
-                        </td>
-                      </tr>
-                    )
+                  {(!errorMessage && data?.count?.reward?.delay) ?
+                    <>
+                      {data.count.reward.delay.length > 0 &&
+                        data.count.reward.delay.map((p, i) =>
+                          <tr key={i}>
+                            <td className='right'>
+                              {p.delay} seconds
+                            </td>
+                            <td className='center'>
+                              {p.targetLayer}
+                            </td>
+                            <td className='right'>
+                              {p.value}
+                            </td>
+                          </tr>
+                        )
+                      }
+                    </>
+                    :
+                    <tr><td colSpan="100" className='center orange bold'>{errorMessage}</td></tr>
                   }
                 </>
-                :
-                <tr><td colSpan="100" className='center orange bold'>{errorMessage}</td></tr>
               }
-            </>
-          }
-        </tbody>
-      </table>
+            </tbody>
+          </table>
+        </div>
+      </div>
       <br />
-      <h4 className='center'>Reward delay votes count</h4>
-      <table className="table-large shrink">
-        <thead>
-          <tr>
-            <th className='right'>Delay</th>
-            <th className='center'>Target layer</th>
-            <th className='right'>Count</th>
-          </tr>
-        </thead>
-        <tbody>
-          {loading ?
-            <tr className='right'>
-              <td colSpan="100">
-                <br />
-                <div className='center'>
-                  <span className="waiting"></span>
-                  <br />
-                  {t("general.loading")}
-                </div>
-                <br />
-              </td>
-            </tr>
-            :
-            <>
-              {(!errorMessage && data?.count?.reward?.delay) ?
+      <div className='flex flex-center'>
+        <div>
+          <h4 className='center'>Hook votes</h4>
+          <table className="table-large shrink">
+            <thead>
+              <tr>
+                <th>Voter</th>
+                <th className='center'>Topic</th>
+                <th className='center'>Target layer</th>
+                <th>Value</th>
+              </tr>
+            </thead>
+            <tbody>
+              {loading ?
+                <tr className='right'>
+                  <td colSpan="100">
+                    <br />
+                    <div className='center'>
+                      <span className="waiting"></span>
+                      <br />
+                      {t("general.loading")}
+                    </div>
+                    <br />
+                  </td>
+                </tr>
+                :
                 <>
-                  {data.count.reward.delay.length > 0 &&
-                    data.count.reward.delay.map((p, i) =>
-                      <tr key={i}>
-                        <td className='right'>
-                          {p.delay} seconds
-                        </td>
-                        <td className='center'>
-                          {p.targetLayer}
-                        </td>
-                        <td className='right'>
-                          {p.value}
-                        </td>
-                      </tr>
-                    )
+                  {(!errorMessage && data?.votes?.hook) ?
+                    <>
+                      {data.votes.hook.length > 0 &&
+                        data.votes.hook.map((p, i) =>
+                          <tr key={i}>
+                            <td>
+                              {tableLink(p.voter)}
+                            </td>
+                            <td className='center'>
+                              {p.topic}
+                            </td>
+                            <td className='center'>
+                              {p.targetLayer}
+                            </td>
+                            <td>
+                              {p.value}
+                            </td>
+                          </tr>
+                        )
+                      }
+                    </>
+                    :
+                    <tr><td colSpan="100" className='center orange bold'>{errorMessage}</td></tr>
                   }
                 </>
-                :
-                <tr><td colSpan="100" className='center orange bold'>{errorMessage}</td></tr>
               }
-            </>
-          }
-        </tbody>
-      </table>
-      <br />
-      <h4 className='center'>Hook votes count</h4>
-      <table className="table-large shrink">
-        <thead>
-          <tr>
-            <th>Key</th>
-            <th className='center'>Topic</th>
-            <th className='center'>Target layer</th>
-            <th className='right'>Count</th>
-          </tr>
-        </thead>
-        <tbody>
-          {loading ?
-            <tr className='right'>
-              <td colSpan="100">
-                <br />
-                <div className='center'>
-                  <span className="waiting"></span>
-                  <br />
-                  {t("general.loading")}
-                </div>
-                <br />
-              </td>
-            </tr>
-            :
-            <>
-              {(!errorMessage && data?.count?.hook) ?
+            </tbody>
+          </table>
+        </div>
+        <div>
+          <h4 className='center'>Hook votes count</h4>
+          <table className="table-large shrink">
+            <thead>
+              <tr>
+                <th>Key</th>
+                <th className='center'>Topic</th>
+                <th className='center'>Target layer</th>
+                <th className='right'>Count</th>
+              </tr>
+            </thead>
+            <tbody>
+              {loading ?
+                <tr className='right'>
+                  <td colSpan="100">
+                    <br />
+                    <div className='center'>
+                      <span className="waiting"></span>
+                      <br />
+                      {t("general.loading")}
+                    </div>
+                    <br />
+                  </td>
+                </tr>
+                :
                 <>
-                  {data.count.hook.length > 0 &&
-                    data.count.hook.map((p, i) =>
-                      <tr key={i}>
-                        <td>
-                          {p.key}
-                        </td>
-                        <td className='center'>
-                          {p.topic}
-                        </td>
-                        <td className='center'>
-                          {p.targetLayer}
-                        </td>
-                        <td className='right'>
-                          {p.value}
-                        </td>
-                      </tr>
-                    )
+                  {(!errorMessage && data?.count?.hook) ?
+                    <>
+                      {data.count.hook.length > 0 &&
+                        data.count.hook.map((p, i) =>
+                          <tr key={i}>
+                            <td>
+                              {p.key}
+                            </td>
+                            <td className='center'>
+                              {p.topic}
+                            </td>
+                            <td className='center'>
+                              {p.targetLayer}
+                            </td>
+                            <td className='right'>
+                              {p.value}
+                            </td>
+                          </tr>
+                        )
+                      }
+                    </>
+                    :
+                    <tr><td colSpan="100" className='center orange bold'>{errorMessage}</td></tr>
                   }
                 </>
-                :
-                <tr><td colSpan="100" className='center orange bold'>{errorMessage}</td></tr>
               }
-            </>
-          }
-        </tbody>
-      </table>
+            </tbody>
+          </table>
+        </div>
+      </div>
       <br />
       <h4 className='center'>Parameters</h4>
       <table className="table-large shrink">
