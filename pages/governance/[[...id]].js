@@ -20,21 +20,15 @@ export const getServerSideProps = async (context) => {
 
 import SEO from '../../components/SEO'
 
+import { useIsMobile } from "../../utils/mobile"
 import { ledgerName } from '../../utils'
-import { duration } from '../../utils/format'
+import { duration, shortAddress, shortHash } from '../../utils/format'
 
 const l2Tables = [
   'rwyypATD1dQxDbdQjMvrqnsHr2cQw5rjMh',
   'r4FRPZbLnyuVeGiSi1Ap6uaaPvPXYZh1XN',
   'r6QZ6zfK37ZSec5hWiQDtbTxUaU2NWG3F'
 ]
-
-const tableLink = address => {
-  if (l2Tables.includes(address)) {
-    return <Link href={address}>{address}</Link>
-  }
-  return address
-}
 
 const rewardRateHuman = rewardRate => {
   if (!rewardRate) return "0 % pa"
@@ -45,6 +39,7 @@ const rewardRateHuman = rewardRate => {
 export default function Governance({ id }) {
   const { t } = useTranslation(['common', 'governance'])
   const router = useRouter()
+  const isMobile = useIsMobile()
 
   const { isReady } = router
 
@@ -53,6 +48,17 @@ export default function Governance({ id }) {
   const [errorMessage, setErrorMessage] = useState("")
 
   const controller = new AbortController()
+
+  const tableLink = (address, options) => {
+    let name = address
+    if (isMobile && options?.short) {
+      name = shortAddress(address)
+    }
+    if (l2Tables.includes(address)) {
+      return <Link href={address}>{name}</Link>
+    }
+    return name
+  }
 
   const checkApi = async () => {
     if (!id) {
@@ -221,8 +227,8 @@ export default function Governance({ id }) {
     <div className="content-text">
       <h1 className="center">
         {t("header", { ns: "governance", ledgerName })}
-        {id ? <><br /><br />{id}</> : ""}
       </h1>
+      {id ? <h4 className='center'>{id}</h4> : ""}
       <div className='flex'>
         <div className="grey-box center">
           {loading ?
@@ -334,7 +340,7 @@ export default function Governance({ id }) {
                         data.votes.seat.map((p, i) =>
                           <tr key={i}>
                             <td>
-                              {tableLink(p.voter)}
+                              {tableLink(p.voter, { short: true })}
                             </td>
                             <td className='center'>
                               {p.targetLayer}
@@ -343,7 +349,7 @@ export default function Governance({ id }) {
                               {p.seat}
                             </td>
                             <td>
-                              {p.value}
+                              {tableLink(p.value, { short: true })}
                             </td>
                           </tr>
                         )
@@ -447,7 +453,7 @@ export default function Governance({ id }) {
                         data.votes.reward.rate.map((p, i) =>
                           <tr key={i}>
                             <td>
-                              {tableLink(p.voter)}
+                              {tableLink(p.voter, { short: true })}
                             </td>
                             <td className='center'>
                               {p.targetLayer}
@@ -774,7 +780,7 @@ export default function Governance({ id }) {
                     data.parameters.map((p, i) =>
                       <tr key={i}>
                         <td>
-                          {p.key}
+                          {isMobile ? shortHash(p.key) : p.key}
                         </td>
                         <td className='right'>
                           {p.value}
