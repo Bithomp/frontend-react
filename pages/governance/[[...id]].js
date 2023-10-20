@@ -29,6 +29,13 @@ const l2Tables = [
   'r6QZ6zfK37ZSec5hWiQDtbTxUaU2NWG3F'
 ]
 
+const tableLink = address => {
+  if (l2Tables.includes(address)) {
+    return <Link href={address}>{address}</Link>
+  }
+  return address
+}
+
 const rewardRateHuman = rewardRate => {
   if (!rewardRate) return "0 % pa"
   if (rewardRate < 0 || rewardRate > 1) return "Invalid rate"
@@ -259,10 +266,7 @@ export default function Governance({ id }) {
                           {p.key}
                         </td>
                         <td>
-                          {l2Tables.includes(p.value) ?
-                            <Link href={p.value}>{p.value}</Link> :
-                            p.value
-                          }
+                          {tableLink(p.value)}
                         </td>
                       </tr>
                     )
@@ -307,7 +311,7 @@ export default function Governance({ id }) {
                     data.votes.seat.map((p, i) =>
                       <tr key={i}>
                         <td>
-                          {p.voter}
+                          {tableLink(p.voter)}
                         </td>
                         <td className='center'>
                           {p.targetLayer}
@@ -361,7 +365,7 @@ export default function Governance({ id }) {
                     data.votes.reward.rate.map((p, i) =>
                       <tr key={i}>
                         <td>
-                          {p.voter}
+                          {tableLink(p.voter)}
                         </td>
                         <td className='center'>
                           {p.targetLayer}
@@ -414,7 +418,7 @@ export default function Governance({ id }) {
                     data.votes.reward.delay.map((p, i) =>
                       <tr key={i}>
                         <td>
-                          {p.voter}
+                          {tableLink(p.voter)}
                         </td>
                         <td className='center'>
                           {p.targetLayer}
@@ -465,7 +469,7 @@ export default function Governance({ id }) {
                     data.votes.hook.map((p, i) =>
                       <tr key={i}>
                         <td>
-                          {p.voter}
+                          {tableLink(p.voter)}
                         </td>
                         <td className='center'>
                           {p.topic}
