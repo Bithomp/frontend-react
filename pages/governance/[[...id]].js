@@ -31,7 +31,7 @@ const l2Tables = [
 
 const rewardRateHuman = rewardRate => {
   if (!rewardRate) return "0 % pa"
-  if (rewardRate === "<zero>") return rewardRate
+  if (rewardRate < 0 || rewardRate > 1) return "Invalid rate"
   return (Math.round((((1 + rewardRate) ** 12) - 1) * 10000) / 100) + " % pa"
 }
 
@@ -337,6 +337,7 @@ export default function Governance({ id }) {
             <th>Voter</th>
             <th className='center'>Target layer</th>
             <th className='right'>Rate</th>
+            <th className='right'>Value</th>
           </tr>
         </thead>
         <tbody>
@@ -367,6 +368,9 @@ export default function Governance({ id }) {
                         </td>
                         <td className='right'>
                           {rewardRateHuman(p.value)}
+                        </td>
+                        <td className='right'>
+                          {p.value}
                         </td>
                       </tr>
                     )
@@ -544,6 +548,7 @@ export default function Governance({ id }) {
         <thead>
           <tr>
             <th className='right'>Rate</th>
+            <th className='right'>Value</th>
             <th className='center'>Target layer</th>
             <th className='right'>Count</th>
           </tr>
@@ -570,6 +575,9 @@ export default function Governance({ id }) {
                       <tr key={i}>
                         <td className='right'>
                           {rewardRateHuman(p.rate)}
+                        </td>
+                        <td className='right'>
+                          {p.rate}
                         </td>
                         <td className='center'>
                           {p.targetLayer}
