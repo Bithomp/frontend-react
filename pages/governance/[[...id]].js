@@ -77,6 +77,27 @@ export default function Governance({ id }) {
       setLoading(false) //keep here for fast tab clickers
       if (newdata.members) {
         setErrorMessage("")
+        //sort by vote count
+        if (newdata.count && newdata.votes) {
+          newdata.count = {
+            seat: newdata.count.seat.sort((a, b) => (a.value < b.value) ? 1 : -1),
+            hook: newdata.count.hook.sort((a, b) => (a.value < b.value) ? 1 : -1),
+            reward: {
+              rate: newdata.count.reward.rate.sort((a, b) => (a.value < b.value) ? 1 : -1),
+              delay: newdata.count.reward.delay.sort((a, b) => (a.value < b.value) ? 1 : -1)
+            }
+          }
+          newdata.votes = {
+            seat: newdata.votes.seat.sort((a, b) => (a.seat > b.seat) ? 1 : -1),
+            hook: newdata.votes.hook.sort((a, b) => (a.topic > b.topic) ? 1 : -1),
+            reward: {
+              rate: newdata.votes.reward.rate.sort((a, b) => (a.value < b.value) ? 1 : -1),
+              delay: newdata.votes.reward.delay.sort((a, b) => (a.value < b.value) ? 1 : -1)
+            }
+          }
+          newdata.parameters = newdata.parameters.sort((a, b) => (a.value > b.value) ? 1 : -1)
+        }
+        //newdata.nftOffers.sort((a, b) => (a.createdAt < b.createdAt) ? 1 : -1)
         setData(newdata)
       } else {
         if (newdata.error) {
