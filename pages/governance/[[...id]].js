@@ -22,7 +22,7 @@ import SEO from '../../components/SEO'
 
 import { useIsMobile } from "../../utils/mobile"
 import { ledgerName } from '../../utils'
-import { duration, shortAddress, shortHash } from '../../utils/format'
+import { duration, shortAddress, shortHash, userOrServiceLink } from '../../utils/format'
 
 const l2Tables = [
   'rwyypATD1dQxDbdQjMvrqnsHr2cQw5rjMh',
@@ -35,6 +35,9 @@ const rewardRateHuman = rewardRate => {
   if (rewardRate < 0 || rewardRate > 1) return "Invalid rate"
   return (Math.round((((1 + rewardRate) ** 12) - 1) * 10000) / 100) + " % pa"
 }
+
+import LinkIcon from "../../public/images/link.svg"
+import CopyButton from '../../components/UI/CopyButton'
 
 export default function Governance({ id }) {
   const { t } = useTranslation(['common', 'governance'])
@@ -49,15 +52,13 @@ export default function Governance({ id }) {
 
   const controller = new AbortController()
 
-  const tableLink = (address, options) => {
-    let name = address
-    if (isMobile && options?.short) {
-      name = shortAddress(address)
-    }
+  const mainTable = !id || id === 'rHb9CJAWyB4rj91VRWn96DkukG4bwdtyTh'
+
+  const tableLink = (address) => {
     if (l2Tables.includes(address)) {
-      return <Link href={address}>{name}</Link>
+      return <Link href={address}>L2 <LinkIcon /></Link>
     }
-    return name
+    return "L1"
   }
 
   const checkApi = async () => {
@@ -222,6 +223,33 @@ export default function Governance({ id }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isReady, id])
 
+  const addressOption = isMobile ? { short: true } : {}
+
+  const addressLinkWithACopyButton = (data, name, options) => {
+    const address = options?.short ? shortAddress(data[name]) : data[name]
+    return <>
+      {options?.copy &&
+        <>
+          <CopyButton text={data[name]} />
+          {" "}
+        </>
+      }
+      {userOrServiceLink(data, name, options) ?
+        <>
+          {isMobile ?
+            userOrServiceLink(data, name, options)
+            :
+            <>
+              {address} - {userOrServiceLink(data, name, options)}
+            </>
+          }
+        </>
+        :
+        address
+      }
+    </>
+  }
+
   return <>
     <SEO title={t("header", { ns: "governance", ledgerName })} />
     <div className="content-text">
@@ -267,6 +295,9 @@ export default function Governance({ id }) {
           <tr>
             <th className='center'>Seat</th>
             <th>{t("table.address")}</th>
+            {mainTable &&
+              <th>Layer</th>
+            }
           </tr>
         </thead>
         <tbody>
@@ -293,8 +324,13 @@ export default function Governance({ id }) {
                           {p.key}
                         </td>
                         <td>
-                          {tableLink(p.value)}
+                          {addressLinkWithACopyButton(p, 'value', { copy: true })}
                         </td>
+                        {mainTable &&
+                          <td>
+                            {tableLink(p.value)}
+                          </td>
+                        }
                       </tr>
                     )
                   }
@@ -340,7 +376,7 @@ export default function Governance({ id }) {
                         data.votes.seat.map((p, i) =>
                           <tr key={i}>
                             <td>
-                              {tableLink(p.voter, { short: true })}
+                              {addressLinkWithACopyButton(p, 'voter', addressOption)}
                             </td>
                             <td className='center'>
                               {p.targetLayer}
@@ -349,7 +385,7 @@ export default function Governance({ id }) {
                               {p.seat}
                             </td>
                             <td>
-                              {tableLink(p.value, { short: true })}
+                              {addressLinkWithACopyButton(p, 'value', { ...addressOption, copy: true })}
                             </td>
                           </tr>
                         )
@@ -395,7 +431,7 @@ export default function Governance({ id }) {
                         data.count.seat.map((p, i) =>
                           <tr key={i}>
                             <td>
-                              {p.address}
+                              {addressLinkWithACopyButton(p, 'address', addressOption)}
                             </td>
                             <td className='center'>
                               {p.targetLayer}
@@ -453,7 +489,7 @@ export default function Governance({ id }) {
                         data.votes.reward.rate.map((p, i) =>
                           <tr key={i}>
                             <td>
-                              {tableLink(p.voter, { short: true })}
+                              {addressLinkWithACopyButton(p, 'voter', addressOption)}
                             </td>
                             <td className='center'>
                               {p.targetLayer}
@@ -565,7 +601,7 @@ export default function Governance({ id }) {
                         data.votes.reward.delay.map((p, i) =>
                           <tr key={i}>
                             <td>
-                              {tableLink(p.voter)}
+                              {addressLinkWithACopyButton(p, 'voter', addressOption)}
                             </td>
                             <td className='center'>
                               {p.targetLayer}
@@ -671,7 +707,7 @@ export default function Governance({ id }) {
                         data.votes.hook.map((p, i) =>
                           <tr key={i}>
                             <td>
-                              {tableLink(p.voter)}
+                              {addressLinkWithACopyButton(p, 'voter', addressOption)}
                             </td>
                             <td className='center'>
                               {p.topic}
@@ -680,7 +716,7 @@ export default function Governance({ id }) {
                               {p.targetLayer}
                             </td>
                             <td>
-                              {p.value}
+                              {isMobile ? shortHash(p.value) : p.value}
                             </td>
                           </tr>
                         )
@@ -726,7 +762,7 @@ export default function Governance({ id }) {
                         data.count.hook.map((p, i) =>
                           <tr key={i}>
                             <td>
-                              {p.key}
+                              {isMobile ? shortHash(p.key) : p.key}
                             </td>
                             <td className='center'>
                               {p.topic}
@@ -750,52 +786,56 @@ export default function Governance({ id }) {
           </table>
         </div>
       </div>
-      <br />
-      <h4 className='center'>Parameters</h4>
-      <table className="table-large shrink">
-        <thead>
-          <tr>
-            <th>Key</th>
-            <th className='right'>Value</th>
-          </tr>
-        </thead>
-        <tbody>
-          {loading ?
-            <tr className='right'>
-              <td colSpan="100">
-                <br />
-                <div className='center'>
-                  <span className="waiting"></span>
-                  <br />
-                  {t("general.loading")}
-                </div>
-                <br />
-              </td>
-            </tr>
-            :
-            <>
-              {(!errorMessage && data?.members) ?
+      {data?.parameters?.length > 0 &&
+        <>
+          <br />
+          <h4 className='center'>Parameters</h4>
+          <table className="table-large shrink">
+            <thead>
+              <tr>
+                <th>Key</th>
+                <th className='right'>Value</th>
+              </tr>
+            </thead>
+            <tbody>
+              {loading ?
+                <tr className='right'>
+                  <td colSpan="100">
+                    <br />
+                    <div className='center'>
+                      <span className="waiting"></span>
+                      <br />
+                      {t("general.loading")}
+                    </div>
+                    <br />
+                  </td>
+                </tr>
+                :
                 <>
-                  {data.parameters.length &&
-                    data.parameters.map((p, i) =>
-                      <tr key={i}>
-                        <td>
-                          {isMobile ? shortHash(p.key) : p.key}
-                        </td>
-                        <td className='right'>
-                          {p.value}
-                        </td>
-                      </tr>
-                    )
+                  {(!errorMessage && data?.parameters) ?
+                    <>
+                      {data.parameters.length > 0 &&
+                        data.parameters.map((p, i) =>
+                          <tr key={i}>
+                            <td>
+                              {isMobile ? shortHash(p.key) : p.key}
+                            </td>
+                            <td className='right'>
+                              {p.value}
+                            </td>
+                          </tr>
+                        )
+                      }
+                    </>
+                    :
+                    <tr><td colSpan="100" className='center orange bold'>{errorMessage}</td></tr>
                   }
                 </>
-                :
-                <tr><td colSpan="100" className='center orange bold'>{errorMessage}</td></tr>
               }
-            </>
-          }
-        </tbody>
-      </table>
+            </tbody>
+          </table>
+        </>
+      }
     </div>
   </>
 }
