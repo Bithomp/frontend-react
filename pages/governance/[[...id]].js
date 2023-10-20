@@ -20,8 +20,20 @@ export const getServerSideProps = async (context) => {
 
 import SEO from '../../components/SEO'
 
-import { ledgerName, xlfToSeconds } from '../../utils'
-import { codeHighlight, duration } from '../../utils/format'
+import { ledgerName } from '../../utils'
+import { duration } from '../../utils/format'
+
+const l2Tables = [
+  'rwyypATD1dQxDbdQjMvrqnsHr2cQw5rjMh',
+  'r4FRPZbLnyuVeGiSi1Ap6uaaPvPXYZh1XN',
+  'r6QZ6zfK37ZSec5hWiQDtbTxUaU2NWG3F'
+]
+
+const rewardRateHuman = rewardRate => {
+  if (!rewardRate) return "0 % pa"
+  if (rewardRate === "<zero>") return rewardRate
+  return (Math.round((((1 + rewardRate) ** 12) - 1) * 10000) / 100) + " % pa"
+}
 
 export default function Governance({ id }) {
   const { t } = useTranslation(['common', 'governance'])
@@ -29,11 +41,9 @@ export default function Governance({ id }) {
 
   const { isReady } = router
 
-  const [rawData, setRawData] = useState({})
-  const [govData, setGovData] = useState({})
+  const [data, setData] = useState({})
   const [loading, setLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState("")
-  const [showRawData, setShowRawData] = useState(false)
 
   const controller = new AbortController()
 
@@ -42,11 +52,10 @@ export default function Governance({ id }) {
       //genesis account
       id = 'rHb9CJAWyB4rj91VRWn96DkukG4bwdtyTh'
     }
-    let apiUrl = 'xrpl/accountNamespace/' + id + '/0000000000000000000000000000000000000000000000000000000000000000'
+    let apiUrl = 'v2/governance/' + id
 
     setLoading(true)
-    setRawData({})
-    setGovData({})
+    setData({})
 
     const response = await axios.get(apiUrl, {
       signal: controller.signal
@@ -58,117 +67,10 @@ export default function Governance({ id }) {
     })
     const newdata = response?.data
     if (newdata) {
-      setRawData(newdata)
       setLoading(false) //keep here for fast tab clickers
-      if (newdata.namespace_entries) {
+      if (newdata.members) {
         setErrorMessage("")
-        const entries = newdata.namespace_entries
-        let governanceData = {
-          rewardRate: null,
-          rewardDuration: null,
-          memberCount: null,
-          members: [],
-          parameters: [],
-          votes: {
-            seat: [],
-            hook: [],
-            reward: {
-              rate: [],
-              delay: []
-            }
-          },
-          count: {
-            seat: [],
-            hook: [],
-            reward: {
-              rate: [],
-              delay: []
-            }
-          }
-        }
-        for (let j = 0; j < entries.length; j++) {
-          const firstLetter = entries[j].HookStateKey.substring(0, 2)
-          if (entries[j].HookStateKey === "0000000000000000000000000000000000000000000000000000000000004D43") {
-            governanceData.memberCount = parseInt(entries[j].HookStateData, 16)
-          } else if (entries[j].HookStateKey === "0000000000000000000000000000000000000000000000000000000000005252") {
-            governanceData.rewardRate = xlfToSeconds(entries[j].HookStateData)
-          } else if (entries[j].HookStateKey === "0000000000000000000000000000000000000000000000000000000000005244") {
-            governanceData.rewardDuration = xlfToSeconds(entries[j].HookStateData)
-          } else if (entries[j].HookStateKey.substring(0, 62) === "00000000000000000000000000000000000000000000000000000000000000") {
-            //members
-            const seat = parseInt(entries[j].HookStateKey.substring(62), 16)
-            governanceData.members[seat] = {
-              key: "Seat " + seat,
-              value: entries[j].HookStateData
-            }
-          } else if (firstLetter === "56" || firstLetter === "43") {
-            //votes and counts
-            const secondLetter = entries[j].HookStateKey.substring(2, 4)
-            let val = {
-              key: entries[j].HookStateKey,
-              value: entries[j].HookStateData,
-              targetLayer: entries[j].HookStateKey.substring(7, 8)
-            }
-            if (firstLetter === "56") {
-              //votes
-              val.voter = entries[j].HookStateKey.substring(24)
-            } else {
-              //counts
-              val.address = entries[j].HookStateKey.substring(24)
-            }
-            if (secondLetter === "53") {
-              //seat
-              val.seat = parseInt(entries[j].HookStateKey.substring(4, 6), 16)
-              if (firstLetter === "56") {
-                //votes
-                governanceData.votes.seat.push(val)
-              } else {
-                //count
-                val.value = parseInt(val.value, 16)
-                governanceData.count.seat.push(val)
-              }
-            } else if (secondLetter === "48") {
-              //hook
-              val.topic = parseInt(entries[j].HookStateKey.substring(4, 6))
-              if (firstLetter === "56") {
-                governanceData.votes.hook.push(val)
-              } else {
-                val.value = parseInt(val.value, 16)
-                governanceData.count.hook.push(val)
-              }
-            } else if (secondLetter === "52") {
-              //reward
-              const thirdLetter = entries[j].HookStateKey.substring(4, 6)
-              if (thirdLetter === "52") {
-                //rate
-                if (firstLetter === "56") {
-                  val.value = xlfToSeconds(val.value)
-                  governanceData.votes.reward.rate.push(val)
-                } else {
-                  val.rate = xlfToSeconds(entries[j].HookStateKey.substring(48))
-                  val.value = parseInt(val.value, 16)
-                  governanceData.count.reward.rate.push(val)
-                }
-              } else if (thirdLetter === "44") {
-                //delay
-                if (firstLetter === "56") {
-                  val.value = xlfToSeconds(val.value)
-                  governanceData.votes.reward.delay.push(val)
-                } else {
-                  val.delay = parseInt(entries[j].HookStateKey.substring(48))
-                  val.value = parseInt(val.value, 16)
-                  governanceData.count.reward.delay.push(val)
-                }
-              }
-            }
-          } else {
-            governanceData.parameters.push({
-              key: entries[j].HookStateKey,
-              value: entries[j].HookStateData
-            })
-          }
-        }
-        setGovData(governanceData)
+        setData(newdata)
       } else {
         if (newdata.error) {
           setErrorMessage(newdata.error)
@@ -182,18 +84,100 @@ export default function Governance({ id }) {
 
   /*
     {
-      "account": "rHb9CJAWyB4rj91VRWn96DkukG4bwdtyTh",
-      "ledger_hash": "8B7B8254C1C01A300804DFB9885E63DB483BD9BA6676A31651DD35326877AE5B",
-      "ledger_index": 259854,
-      "namespace_entries": [
+      "rewardRate": 0.003333333333333333,
+      "rewardDuration": 2600000,
+      "memberCount": 9,
+      "members": [
         {
-          "Flags": 0,
-          "HookStateData": "00",
-          "HookStateKey": "00000000000000000000000088CECA8ED635F79573136EAAA2B70F07C2F2B9D8",
-          "LedgerEntryType": "HookState",
-          "OwnerNode": "0",
-          "index": "0895F253FDCBFAF5A7DAE54AB2BF04A81595D360799036CAF36D2B0542C08DC7"
-        },
+          "key": 0,
+          "value": "rD74dUPRFNfgnY2NzrxxYRXN4BrfGSN6Mv"
+        }
+      ],
+      "votes": {
+        "seat": [
+          {
+            "key": "5653130100000000000000003C04E36FA4EEFC7F60CD7BF0D966DCADF183EA88",
+            "value": "rGcK1jLkmSvWfiSW58cZZehCVxxMQUYpSz",
+            "targetLayer": "1",
+            "voter": "ra7MQw7YoMjUw6thxmSGE6jpAEY3LTHxev",
+            "seat": 19
+          }
+        ],
+        "hook": [
+          {
+            "key": "564801010000000000000000AB383381108A6BAA758168D5204C351534DE0D11",
+            "value": "8D88E66BF2DA605E74BC4E3BB8945948F6EC5D9AD4BDE4568C95B200BBD4E0A5",
+            "targetLayer": "1",
+            "voter": "rGcK1jLkmSvWfiSW58cZZehCVxxMQUYpSz",
+            "topic": 1
+          }
+        ],
+        "reward": {
+          "rate": [
+            {
+              "key": "565252010000000000000000EF6606A681D2ECB99EA04FC0229C23153D76BC59",
+              "value": 0.00333333333333333,
+              "targetLayer": "1",
+              "voter": "r4FF5jjJMS2XqWDyTYStWrgARsj3FjaJ2J"
+            }
+          ],
+          "delay": [
+            {
+              "key": "5652440100000000000000003C04E36FA4EEFC7F60CD7BF0D966DCADF183EA88",
+              "value": 60,
+              "targetLayer": "1",
+              "voter": "ra7MQw7YoMjUw6thxmSGE6jpAEY3LTHxev"
+            }
+          ]
+        }
+      },
+      "count": {
+        "seat": [
+          {
+            "key": "435308010000000000000000ECB683302AEF5DA5515D2A74F5CD20D5974B36D7",
+            "value": 1,
+            "targetLayer": "1",
+            "address": "r42dfTCpeAFcNnjSuvDszkFPJE4z6jMMJ4",
+            "seat": 8
+          }
+        ],
+        "hook": [
+          {
+            "key": "43480101F2DA605E74BC4E3BB8945948F6EC5D9AD4BDE4568C95B200BBD4E0A5",
+            "value": 1,
+            "targetLayer": "1",
+            "address": "rHFyskWsfqqhdTVfHVBagsEvuXxLJ4vsXy",
+            "topic": 1
+          }
+        ],
+        "reward": {
+          "rate": [
+            {
+              "key": "43525201000000000000000000000000000000000000000052554025A6D7CB53",
+              "value": 2,
+              "targetLayer": "1",
+              "address": "rrrrrrrrrrrrrpZfdWaH5NW4982mSX",
+              "rate": 0.00333333333333333
+            }
+          ],
+          "delay": [
+            {
+              "key": "4352440100000000000000000000000000000000000000000000A7DCF750D554",
+              "value": 7,
+              "targetLayer": "1",
+              "address": "rrrrrrrrrrrrrrrwRzQG1jSrGzrxT",
+              "delay": 0
+            }
+          ]
+        }
+      },
+      "parameters": [
+        {
+          "key": "00000000000000000000000088CECA8ED635F79573136EAAA2B70F07C2F2B9D8",
+          "value": "00"
+        }
+      ]
+    }
   */
 
   useEffect(() => {
@@ -203,12 +187,6 @@ export default function Governance({ id }) {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isReady, id])
-
-  const rewardRateHuman = rewardRate => {
-    if (!rewardRate) return "0 % pa"
-    if (rewardRate === "<zero>") return rewardRate
-    return (Math.round((((1 + rewardRate) ** 12) - 1) * 10000) / 100) + " % pa"
-  }
 
   return <>
     <SEO title={t("header", { ns: "governance", ledgerName })} />
@@ -224,43 +202,37 @@ export default function Governance({ id }) {
             :
             <>
               <Trans i18nKey="summary" ns="governance">
-                There are <b>{{ countTables: govData?.memberCount }}</b> seats.
+                There are <b>{{ countTables: data?.memberCount }}</b> seats.
               </Trans>
-              {govData?.rewardRate &&
+              {data?.rewardRate &&
                 <>
                   {" "}
                   <Trans i18nKey="reward-rate" ns="governance">
-                    Reward rate: <b>{{ rewardRate: rewardRateHuman(govData.rewardRate) }}</b>.
+                    Reward rate: <b>{{ rewardRate: rewardRateHuman(data.rewardRate) }}</b>.
                   </Trans>
                 </>
               }
-              {govData?.rewardDuration &&
+              {data?.rewardDuration &&
                 <>
                   {" "}
                   <Trans i18nKey="reward-duration" ns="governance">
-                    Reward duration: <b>{{ rewardDuration: duration(t, govData.rewardDuration, { seconds: true }) }}</b> ({{
-                      rewardDurationSeconds: govData.rewardDuration
+                    Reward duration: <b>{{ rewardDuration: duration(t, data.rewardDuration, { seconds: true }) }}</b> ({{
+                      rewardDurationSeconds: data.rewardDuration
                     }} seconds).
                   </Trans>
                 </>
               }
             </>
           }
-        </div >
-      </div >
-      {!id &&
-        <div className='center'>
-          <br />
-          <Link href="r4FRPZbLnyuVeGiSi1Ap6uaaPvPXYZh1XN">Table 6: r4FRPZbLnyuVeGiSi1Ap6uaaPvPXYZh1XN</Link>
         </div>
-      }
+      </div>
       <br />
       <h4 className='center'>Members</h4>
       <table className="table-large shrink">
         <thead>
           <tr>
-            <th className='left'>{t("table.name")}</th>
-            <th className='right'>{t("table.address")}</th>
+            <th className='center'>Seat</th>
+            <th>{t("table.address")}</th>
           </tr>
         </thead>
         <tbody>
@@ -268,8 +240,8 @@ export default function Governance({ id }) {
             <tr className='right'>
               <td colSpan="100">
                 <br />
-                <span className="waiting"></span>
                 <div className='center'>
+                  <span className="waiting"></span>
                   <br />
                   {t("general.loading")}
                 </div>
@@ -278,16 +250,19 @@ export default function Governance({ id }) {
             </tr>
             :
             <>
-              {(!errorMessage && govData?.members) ?
+              {(!errorMessage && data?.members) ?
                 <>
-                  {govData.members.length &&
-                    govData.members.map((p, i) =>
+                  {data.members.length &&
+                    data.members.map((p, i) =>
                       <tr key={i}>
-                        <td className='left'>
+                        <td className='center'>
                           {p.key}
                         </td>
-                        <td className='right'>
-                          {p.value}
+                        <td>
+                          {l2Tables.includes(p.value) ?
+                            <Link href={p.value}>{p.value}</Link> :
+                            p.value
+                          }
                         </td>
                       </tr>
                     )
@@ -301,14 +276,14 @@ export default function Governance({ id }) {
         </tbody>
       </table>
       <br />
-      <h4 className='center'>Votes Seats</h4>
+      <h4 className='center'>Seat votes</h4>
       <table className="table-large shrink">
         <thead>
           <tr>
-            <th className='left'>Voter</th>
-            <th className='left'>Target layer</th>
-            <th className='left'>Seat</th>
-            <th className='right'>{t("table.address")}</th>
+            <th>Voter</th>
+            <th className='center'>Target layer</th>
+            <th className='center'>Seat</th>
+            <th>{t("table.address")}</th>
           </tr>
         </thead>
         <tbody>
@@ -316,8 +291,8 @@ export default function Governance({ id }) {
             <tr className='right'>
               <td colSpan="100">
                 <br />
-                <span className="waiting"></span>
                 <div className='center'>
+                  <span className="waiting"></span>
                   <br />
                   {t("general.loading")}
                 </div>
@@ -326,21 +301,21 @@ export default function Governance({ id }) {
             </tr>
             :
             <>
-              {(!errorMessage && govData?.votes?.seat) ?
+              {(!errorMessage && data?.votes?.seat) ?
                 <>
-                  {govData.votes.seat.length > 0 &&
-                    govData.votes.seat.map((p, i) =>
+                  {data.votes.seat.length > 0 &&
+                    data.votes.seat.map((p, i) =>
                       <tr key={i}>
-                        <td className='left'>
+                        <td>
                           {p.voter}
                         </td>
-                        <td className='left'>
+                        <td className='center'>
                           {p.targetLayer}
                         </td>
-                        <td className='left'>
+                        <td className='center'>
                           {p.seat}
                         </td>
-                        <td className='right'>
+                        <td>
                           {p.value}
                         </td>
                       </tr>
@@ -355,12 +330,12 @@ export default function Governance({ id }) {
         </tbody>
       </table>
       <br />
-      <h4 className='center'>Votes Reward Rate</h4>
+      <h4 className='center'>Reward rate votes</h4>
       <table className="table-large shrink">
         <thead>
           <tr>
-            <th className='left'>Voter</th>
-            <th className='left'>Target layer</th>
+            <th>Voter</th>
+            <th className='center'>Target layer</th>
             <th className='right'>Rate</th>
           </tr>
         </thead>
@@ -369,8 +344,8 @@ export default function Governance({ id }) {
             <tr className='right'>
               <td colSpan="100">
                 <br />
-                <span className="waiting"></span>
                 <div className='center'>
+                  <span className="waiting"></span>
                   <br />
                   {t("general.loading")}
                 </div>
@@ -379,15 +354,15 @@ export default function Governance({ id }) {
             </tr>
             :
             <>
-              {(!errorMessage && govData?.votes?.reward?.rate) ?
+              {(!errorMessage && data?.votes?.reward?.rate) ?
                 <>
-                  {govData.votes.reward.rate.length > 0 &&
-                    govData.votes.reward.rate.map((p, i) =>
+                  {data.votes.reward.rate.length > 0 &&
+                    data.votes.reward.rate.map((p, i) =>
                       <tr key={i}>
-                        <td className='left'>
+                        <td>
                           {p.voter}
                         </td>
-                        <td className='left'>
+                        <td className='center'>
                           {p.targetLayer}
                         </td>
                         <td className='right'>
@@ -405,12 +380,12 @@ export default function Governance({ id }) {
         </tbody>
       </table>
       <br />
-      <h4 className='center'>Votes Reward Delay</h4>
+      <h4 className='center'>Reward delay votes</h4>
       <table className="table-large shrink">
         <thead>
           <tr>
-            <th className='left'>Voter</th>
-            <th className='left'>Target layer</th>
+            <th>Voter</th>
+            <th className='center'>Target layer</th>
             <th className='right'>Delay</th>
           </tr>
         </thead>
@@ -419,8 +394,8 @@ export default function Governance({ id }) {
             <tr className='right'>
               <td colSpan="100">
                 <br />
-                <span className="waiting"></span>
                 <div className='center'>
+                  <span className="waiting"></span>
                   <br />
                   {t("general.loading")}
                 </div>
@@ -429,15 +404,15 @@ export default function Governance({ id }) {
             </tr>
             :
             <>
-              {(!errorMessage && govData?.votes?.reward?.delay) ?
+              {(!errorMessage && data?.votes?.reward?.delay) ?
                 <>
-                  {govData.votes.reward.delay.length > 0 &&
-                    govData.votes.reward.delay.map((p, i) =>
+                  {data.votes.reward.delay.length > 0 &&
+                    data.votes.reward.delay.map((p, i) =>
                       <tr key={i}>
-                        <td className='left'>
+                        <td>
                           {p.voter}
                         </td>
-                        <td className='left'>
+                        <td className='center'>
                           {p.targetLayer}
                         </td>
                         <td className='right'>
@@ -455,14 +430,14 @@ export default function Governance({ id }) {
         </tbody>
       </table>
       <br />
-      <h4 className='center'>Votes Hooks</h4>
+      <h4 className='center'>Hook votes</h4>
       <table className="table-large shrink">
         <thead>
           <tr>
-            <th className='right'>Voter</th>
-            <th className='right'>Topic</th>
-            <th className='right'>Target layer</th>
-            <th className='right'>Value</th>
+            <th>Voter</th>
+            <th className='center'>Topic</th>
+            <th className='center'>Target layer</th>
+            <th>Value</th>
           </tr>
         </thead>
         <tbody>
@@ -470,8 +445,8 @@ export default function Governance({ id }) {
             <tr className='right'>
               <td colSpan="100">
                 <br />
-                <span className="waiting"></span>
                 <div className='center'>
+                  <span className="waiting"></span>
                   <br />
                   {t("general.loading")}
                 </div>
@@ -480,21 +455,21 @@ export default function Governance({ id }) {
             </tr>
             :
             <>
-              {(!errorMessage && govData?.votes?.hook) ?
+              {(!errorMessage && data?.votes?.hook) ?
                 <>
-                  {govData.votes.hook.length > 0 &&
-                    govData.votes.hook.map((p, i) =>
+                  {data.votes.hook.length > 0 &&
+                    data.votes.hook.map((p, i) =>
                       <tr key={i}>
-                        <td className='left'>
+                        <td>
                           {p.voter}
                         </td>
-                        <td className='left'>
+                        <td className='center'>
                           {p.topic}
                         </td>
-                        <td className='left'>
+                        <td className='center'>
                           {p.targetLayer}
                         </td>
-                        <td className='right'>
+                        <td>
                           {p.value}
                         </td>
                       </tr>
@@ -510,13 +485,13 @@ export default function Governance({ id }) {
       </table>
       <br />
       <br />
-      <h4 className='center'>Votes Seats Count</h4>
+      <h4 className='center'>Seat votes count</h4>
       <table className="table-large shrink">
         <thead>
           <tr>
-            <th className='left'>Address</th>
-            <th className='left'>Target layer</th>
-            <th className='left'>Seat</th>
+            <th>Address</th>
+            <th className='center'>Target layer</th>
+            <th className='center'>Seat</th>
             <th className='right'>Votes</th>
           </tr>
         </thead>
@@ -525,8 +500,8 @@ export default function Governance({ id }) {
             <tr className='right'>
               <td colSpan="100">
                 <br />
-                <span className="waiting"></span>
                 <div className='center'>
+                  <span className="waiting"></span>
                   <br />
                   {t("general.loading")}
                 </div>
@@ -535,18 +510,18 @@ export default function Governance({ id }) {
             </tr>
             :
             <>
-              {(!errorMessage && govData?.count?.seat) ?
+              {(!errorMessage && data?.count?.seat) ?
                 <>
-                  {govData.count.seat.length > 0 &&
-                    govData.count.seat.map((p, i) =>
+                  {data.count.seat.length > 0 &&
+                    data.count.seat.map((p, i) =>
                       <tr key={i}>
-                        <td className='left'>
+                        <td>
                           {p.address}
                         </td>
-                        <td className='left'>
+                        <td className='center'>
                           {p.targetLayer}
                         </td>
-                        <td className='left'>
+                        <td className='center'>
                           {p.seat}
                         </td>
                         <td className='right'>
@@ -564,12 +539,12 @@ export default function Governance({ id }) {
         </tbody>
       </table>
       <br />
-      <h4 className='center'>Votes Reward Rate Count</h4>
+      <h4 className='center'>Reward rate votes count</h4>
       <table className="table-large shrink">
         <thead>
           <tr>
-            <th className='left'>Rate</th>
-            <th className='left'>Target layer</th>
+            <th className='right'>Rate</th>
+            <th className='center'>Target layer</th>
             <th className='right'>Count</th>
           </tr>
         </thead>
@@ -578,8 +553,8 @@ export default function Governance({ id }) {
             <tr className='right'>
               <td colSpan="100">
                 <br />
-                <span className="waiting"></span>
                 <div className='center'>
+                  <span className="waiting"></span>
                   <br />
                   {t("general.loading")}
                 </div>
@@ -588,15 +563,15 @@ export default function Governance({ id }) {
             </tr>
             :
             <>
-              {(!errorMessage && govData?.count?.reward?.rate) ?
+              {(!errorMessage && data?.count?.reward?.rate) ?
                 <>
-                  {govData.count.reward.rate.length > 0 &&
-                    govData.count.reward.rate.map((p, i) =>
+                  {data.count.reward.rate.length > 0 &&
+                    data.count.reward.rate.map((p, i) =>
                       <tr key={i}>
-                        <td className='left'>
+                        <td className='right'>
                           {rewardRateHuman(p.rate)}
                         </td>
-                        <td className='left'>
+                        <td className='center'>
                           {p.targetLayer}
                         </td>
                         <td className='right'>
@@ -614,12 +589,12 @@ export default function Governance({ id }) {
         </tbody>
       </table>
       <br />
-      <h4 className='center'>Votes Reward Delay Count</h4>
+      <h4 className='center'>Reward delay votes count</h4>
       <table className="table-large shrink">
         <thead>
           <tr>
-            <th className='left'>Delay</th>
-            <th className='left'>Target layer</th>
+            <th className='right'>Delay</th>
+            <th className='center'>Target layer</th>
             <th className='right'>Count</th>
           </tr>
         </thead>
@@ -628,8 +603,8 @@ export default function Governance({ id }) {
             <tr className='right'>
               <td colSpan="100">
                 <br />
-                <span className="waiting"></span>
                 <div className='center'>
+                  <span className="waiting"></span>
                   <br />
                   {t("general.loading")}
                 </div>
@@ -638,15 +613,15 @@ export default function Governance({ id }) {
             </tr>
             :
             <>
-              {(!errorMessage && govData?.count?.reward?.delay) ?
+              {(!errorMessage && data?.count?.reward?.delay) ?
                 <>
-                  {govData.count.reward.delay.length > 0 &&
-                    govData.count.reward.delay.map((p, i) =>
+                  {data.count.reward.delay.length > 0 &&
+                    data.count.reward.delay.map((p, i) =>
                       <tr key={i}>
-                        <td className='left'>
+                        <td className='right'>
                           {p.delay} seconds
                         </td>
-                        <td className='left'>
+                        <td className='center'>
                           {p.targetLayer}
                         </td>
                         <td className='right'>
@@ -664,13 +639,13 @@ export default function Governance({ id }) {
         </tbody>
       </table>
       <br />
-      <h4 className='center'>Votes Hooks Count</h4>
+      <h4 className='center'>Hook votes count</h4>
       <table className="table-large shrink">
         <thead>
           <tr>
-            <th className='left'>Key</th>
-            <th className='left'>Topic</th>
-            <th className='left'>Target layer</th>
+            <th>Key</th>
+            <th className='center'>Topic</th>
+            <th className='center'>Target layer</th>
             <th className='right'>Count</th>
           </tr>
         </thead>
@@ -679,8 +654,8 @@ export default function Governance({ id }) {
             <tr className='right'>
               <td colSpan="100">
                 <br />
-                <span className="waiting"></span>
                 <div className='center'>
+                  <span className="waiting"></span>
                   <br />
                   {t("general.loading")}
                 </div>
@@ -689,18 +664,18 @@ export default function Governance({ id }) {
             </tr>
             :
             <>
-              {(!errorMessage && govData?.count?.hook) ?
+              {(!errorMessage && data?.count?.hook) ?
                 <>
-                  {govData.count.hook.length > 0 &&
-                    govData.count.hook.map((p, i) =>
+                  {data.count.hook.length > 0 &&
+                    data.count.hook.map((p, i) =>
                       <tr key={i}>
-                        <td className='left'>
+                        <td>
                           {p.key}
                         </td>
-                        <td className='left'>
+                        <td className='center'>
                           {p.topic}
                         </td>
-                        <td className='left'>
+                        <td className='center'>
                           {p.targetLayer}
                         </td>
                         <td className='right'>
@@ -722,7 +697,7 @@ export default function Governance({ id }) {
       <table className="table-large shrink">
         <thead>
           <tr>
-            <th className='left'>Key</th>
+            <th>Key</th>
             <th className='right'>Value</th>
           </tr>
         </thead>
@@ -731,8 +706,8 @@ export default function Governance({ id }) {
             <tr className='right'>
               <td colSpan="100">
                 <br />
-                <span className="waiting"></span>
                 <div className='center'>
+                  <span className="waiting"></span>
                   <br />
                   {t("general.loading")}
                 </div>
@@ -741,12 +716,12 @@ export default function Governance({ id }) {
             </tr>
             :
             <>
-              {(!errorMessage && govData?.members) ?
+              {(!errorMessage && data?.members) ?
                 <>
-                  {govData.parameters.length &&
-                    govData.parameters.map((p, i) =>
+                  {data.parameters.length &&
+                    data.parameters.map((p, i) =>
                       <tr key={i}>
-                        <td className='left'>
+                        <td>
                           {p.key}
                         </td>
                         <td className='right'>
@@ -763,16 +738,6 @@ export default function Governance({ id }) {
           }
         </tbody>
       </table>
-      <div className='center'>
-        <br />
-        {t("table.raw-data")}: <span className='link' onClick={() => setShowRawData(!showRawData)}>
-          {showRawData ? t("table.text.hide") : t("table.text.show")}
-        </span>
-        <br /><br />
-      </div>
-      <div className={'slide ' + (showRawData ? "opened" : "closed")}>
-        {codeHighlight(rawData)}
-      </div>
     </div>
   </>
 }
