@@ -17,7 +17,7 @@ import {
   floatToXlfHex,
   rewardRateHuman
 } from '../utils'
-import { amountFormat, capitalize } from '../utils/format'
+import { amountFormat, capitalize, duration } from '../utils/format'
 import { payloadXummPost, xummWsConnect, xummCancel, xummGetSignedData } from '../utils/xumm'
 
 import XummQr from "./Xumm/Qr"
@@ -45,6 +45,7 @@ export default function SignForm({ setSignRequest, setAccount, signRequest }) {
   const [agreedToRisks, setAgreedToRisks] = useState(false)
 
   const [rewardRate, setRewardRate] = useState(0.00333333333333333)
+  const [rewardDelay, setRewardDelay] = useState(2600000)
 
   const xummUserToken = localStorage.getItem('xummUserToken')
 
@@ -340,6 +341,7 @@ export default function SignForm({ setSignRequest, setAccount, signRequest }) {
     setStatus("")
     let newRequest = signRequest
     let delay = e.target.value
+    setRewardDelay(delay)
     delay = delay.trim()
     let n = Math.floor(Number(delay))
     if (n !== Infinity && String(n) === delay && n > 0) {
@@ -369,6 +371,7 @@ export default function SignForm({ setSignRequest, setAccount, signRequest }) {
       setSignRequest(newRequest)
       setAgreedToRisks(true)
     } else {
+      setStatus("Delay should be a positive integer")
       setAgreedToRisks(false)
     }
   }
@@ -523,14 +526,23 @@ export default function SignForm({ setSignRequest, setAccount, signRequest }) {
               <div className='center'>
                 <br />
                 <span className='halv'>
-                  <span className='input-title'>Reward delay</span>
+                  <span className='input-title'>Reward delay (in seconds)</span>
                   <input
                     placeholder="Enter the Reward delay (in seconds)"
                     onChange={onRewardDelayChange}
                     className="input-text"
                     spellCheck="false"
+                    value={rewardDelay}
                   />
                 </span>
+                <div>
+                  <br />
+                  {status ?
+                    <b className="orange">{status}</b>
+                    :
+                    <b>= {duration(t, rewardDelay, { seconds: true })}</b>
+                  }
+                </div>
               </div>
             }
 
