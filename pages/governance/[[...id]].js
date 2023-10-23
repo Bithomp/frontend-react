@@ -33,7 +33,8 @@ import {
 const l2Tables = [
   'rwyypATD1dQxDbdQjMvrqnsHr2cQw5rjMh',
   'r4FRPZbLnyuVeGiSi1Ap6uaaPvPXYZh1XN',
-  'r6QZ6zfK37ZSec5hWiQDtbTxUaU2NWG3F'
+  'r6QZ6zfK37ZSec5hWiQDtbTxUaU2NWG3F',
+  'rGcK1jLkmSvWfiSW58cZZehCVxxMQUYpSz'
 ]
 
 const rewardRateHuman = rewardRate => {
