@@ -22,7 +22,7 @@ export const getServerSideProps = async (context) => {
 import SEO from '../../components/SEO'
 
 import { useIsMobile } from "../../utils/mobile"
-import { ledgerName } from '../../utils'
+import { ledgerName, rewardRateHuman } from '../../utils'
 import {
   duration,
   shortAddress,
@@ -30,12 +30,6 @@ import {
   addressUsernameOrServiceLink,
   userOrServiceName
 } from '../../utils/format'
-
-const rewardRateHuman = rewardRate => {
-  if (!rewardRate) return "0 % pa"
-  if (rewardRate < 0 || rewardRate > 1) return "Invalid rate"
-  return (Math.round((((1 + rewardRate) ** 12) - 1) * 10000) / 100) + " % pa"
-}
 
 import LinkIcon from "../../public/images/link.svg"
 import CopyButton from '../../components/UI/CopyButton'
@@ -67,6 +61,7 @@ export default function Governance({ id, setSignRequest, signRequest }) {
   const controller = new AbortController()
 
   const mainTable = !id || id === 'rHb9CJAWyB4rj91VRWn96DkukG4bwdtyTh'
+  const tableAddress = id || 'rHb9CJAWyB4rj91VRWn96DkukG4bwdtyTh'
 
   const tableLink = (p) => {
     if (p.layer === 2) {
@@ -481,7 +476,7 @@ export default function Governance({ id, setSignRequest, signRequest }) {
               wallet: "xumm",
               request: {
                 "TransactionType": "Invoke",
-                "Destination": id || "rHb9CJAWyB4rj91VRWn96DkukG4bwdtyTh",
+                "Destination": tableAddress,
                 "HookParameters": [
                   {
                     HookParameter:
@@ -523,7 +518,7 @@ export default function Governance({ id, setSignRequest, signRequest }) {
                 <th>Voter</th>
                 <th className='center'>Target layer</th>
                 <th className='right'>Rate</th>
-                <th className='right'>Value</th>
+                <th>Value</th>
               </tr>
             </thead>
             <tbody>
@@ -555,7 +550,9 @@ export default function Governance({ id, setSignRequest, signRequest }) {
                             <td className='right'>
                               {rewardRateHuman(p.value)}
                             </td>
-                            <td className='right'>
+                            <td>
+                              <CopyButton text={p.value} />
+                              {" "}
                               {p.value}
                             </td>
                           </tr>
@@ -624,6 +621,21 @@ export default function Governance({ id, setSignRequest, signRequest }) {
               }
             </tbody>
           </table>
+          <br />
+          <button
+            className='button-action wide center'
+            onClick={() => setSignRequest({
+              wallet: "xumm",
+              action: "castVoteRewardRate",
+              request: {
+                "TransactionType": "Invoke",
+                "Destination": tableAddress
+              }
+            })}
+          >
+            <Image src={xummImg} className='xumm-logo' alt="xumm" height={24} width={24} />
+            Vote on the Reward rate
+          </button>
         </div>
       </div>
       <br />
@@ -737,7 +749,7 @@ export default function Governance({ id, setSignRequest, signRequest }) {
               action: "castVoteRewardDelay",
               request: {
                 "TransactionType": "Invoke",
-                "Destination": id || "rHb9CJAWyB4rj91VRWn96DkukG4bwdtyTh"
+                "Destination": tableAddress
               }
             })}
           >

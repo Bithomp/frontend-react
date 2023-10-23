@@ -514,3 +514,10 @@ export const floatToXlfHex = fl => {
   fl = changeEndianness(fl)
   return fl.toUpperCase()
 }
+
+export const rewardRateHuman = rewardRate => {
+  rewardRate = parseFloat(rewardRate)
+  if (!rewardRate) return "0 % pa"
+  if (rewardRate < 0 || rewardRate > 1) return "Invalid rate"
+  return (Math.round((((1 + rewardRate) ** 12) - 1) * 10000) / 100) + " % pa"
+}

@@ -14,7 +14,8 @@ import {
   isDomainValid,
   encode,
   networkId,
-  floatToXlfHex
+  floatToXlfHex,
+  rewardRateHuman
 } from '../utils'
 import { amountFormat, capitalize } from '../utils/format'
 import { payloadXummPost, xummWsConnect, xummCancel, xummGetSignedData } from '../utils/xumm'
@@ -28,18 +29,22 @@ const ledger = '/images/ledger-large.svg'
 const trezor = '/images/trezor-large.svg'
 const ellipal = '/images/ellipal-large.svg'
 
+const voteTxs = ['castVoteRewardDelay', 'castVoteRewardRate']
+
 export default function SignForm({ setSignRequest, setAccount, signRequest }) {
   const { t } = useTranslation()
   const router = useRouter()
   const isMobile = useIsMobile()
 
   const [screen, setScreen] = useState("choose-app")
-  const [status, setStatus] = useState(t("signin.xumm.statuses.wait"))
+  const [status, setStatus] = useState("")
   const [showXummQr, setShowXummQr] = useState(false)
   const [xummQrSrc, setXummQrSrc] = useState(qr)
   const [xummUuid, setXummUuid] = useState(null)
   const [expiredQr, setExpiredQr] = useState(false)
   const [agreedToRisks, setAgreedToRisks] = useState(false)
+
+  const [rewardRate, setRewardRate] = useState(0.00333333333333333)
 
   const xummUserToken = localStorage.getItem('xummUserToken')
 
@@ -90,8 +95,8 @@ export default function SignForm({ setSignRequest, setAccount, signRequest }) {
       return
     }
 
-    if (signRequest.action === 'castVoteRewardDelay' && !agreedToRisks) {
-      setScreen("castVoteRewardDelay")
+    if (signRequest.action && voteTxs.includes(signRequest.action) && !agreedToRisks) {
+      setScreen(signRequest.action)
       return
     }
 
@@ -128,6 +133,8 @@ export default function SignForm({ setSignRequest, setAccount, signRequest }) {
         }
       }
     }
+
+    setStatus(t("signin.xumm.statuses.wait"))
 
     if (isMobile) {
       setStatus(t("signin.xumm.statuses.redirecting"));
@@ -366,6 +373,44 @@ export default function SignForm({ setSignRequest, setAccount, signRequest }) {
     }
   }
 
+  const onRewardRateChange = e => {
+    setStatus("")
+    let newRequest = signRequest
+    let rate = e.target.value
+    setRewardRate(rate)
+    rate = rate.trim()
+    if (rate >= 0 && rate <= 1) {
+      newRequest.request.HookParameters = [
+        {
+          HookParameter:
+          {
+            HookParameterName: "4C",    // L - layer
+            HookParameterValue: "01",   // 01 for L1 table, 02 for L2 table
+          }
+        },
+        {
+          HookParameter:
+          {
+            HookParameterName: "54",    // T - topic type
+            HookParameterValue: "5252", // H/48 S/53 R/52 [0x00-0x09] or RR/RD
+          }
+        },
+        {
+          HookParameter:
+          {
+            HookParameterName: "56",                  // V - vote data
+            HookParameterValue: floatToXlfHex(rate), // "0000A7DCF750D554" - 60 seconds
+          }
+        }
+      ]
+      setSignRequest(newRequest)
+      setAgreedToRisks(true)
+    } else {
+      setStatus("Rate should be a number from 0 to 1")
+      setAgreedToRisks(false)
+    }
+  }
+
   const onExpirationChange = (daysCount) => {
     if (daysCount) {
       let newRequest = signRequest
@@ -378,8 +423,8 @@ export default function SignForm({ setSignRequest, setAccount, signRequest }) {
 
   const xls35Sell = signRequest?.request?.TransactionType === "URITokenCreateSellOffer"
 
-  const askInfoScreens = ['NFTokenAcceptOffer', 'NFTokenCreateOffer', 'NFTokenBurn', 'setDomain', 'castVoteRewardDelay']
-  const noCheckboxScreens = ['setDomain', 'castVoteRewardDelay']
+  const askInfoScreens = ['NFTokenAcceptOffer', 'NFTokenCreateOffer', 'NFTokenBurn', 'setDomain', 'castVoteRewardDelay', 'castVoteRewardRate']
+  const noCheckboxScreens = ['setDomain', 'castVoteRewardDelay', 'castVoteRewardRate']
 
   return (
     <div className="sign-in-form">
@@ -404,7 +449,7 @@ export default function SignForm({ setSignRequest, setAccount, signRequest }) {
                 )
               }
               {screen === 'setDomain' && t("signin.confirm.set-domain")}
-              {screen === 'castVoteRewardDelay' && "Cast a vote"}
+              {voteTxs.includes(screen) && "Cast a vote"}
             </div>
 
             {screen === 'NFTokenCreateOffer' &&
@@ -478,14 +523,38 @@ export default function SignForm({ setSignRequest, setAccount, signRequest }) {
               <div className='center'>
                 <br />
                 <span className='halv'>
-                  <span className='input-title'>Vote on the Reward delay</span>
+                  <span className='input-title'>Reward delay</span>
                   <input
-                    placeholder="Enter the Reward Delay (in seconds)"
+                    placeholder="Enter the Reward delay (in seconds)"
                     onChange={onRewardDelayChange}
                     className="input-text"
                     spellCheck="false"
                   />
                 </span>
+              </div>
+            }
+
+            {screen === 'castVoteRewardRate' &&
+              <div className='center'>
+                <br />
+                <span className='halv'>
+                  <span className='input-title'>Reward rate (per month compounding)<br />A number from 0 to 1, where 1 would be 100%</span>
+                  <input
+                    placeholder="Enter the Reward rate (a number from 0 to 1)"
+                    onChange={onRewardRateChange}
+                    className="input-text"
+                    spellCheck="false"
+                    value={rewardRate}
+                  />
+                </span>
+                <div>
+                  <br />
+                  {status ?
+                    <b className="orange">{status}</b>
+                    :
+                    <b>≈ {rewardRateHuman(rewardRate)}</b>
+                  }
+                </div>
               </div>
             }
 
