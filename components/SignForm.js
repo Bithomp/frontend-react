@@ -6,7 +6,16 @@ import axios from 'axios'
 import Image from 'next/image'
 
 import { useIsMobile } from "../utils/mobile"
-import { server, devNet, typeNumberOnly, delay, isDomainValid, encode, networkId } from '../utils'
+import {
+  server,
+  devNet,
+  typeNumberOnly,
+  delay,
+  isDomainValid,
+  encode,
+  networkId,
+  floatToXlfHex
+} from '../utils'
 import { amountFormat, capitalize } from '../utils/format'
 import { payloadXummPost, xummWsConnect, xummCancel, xummGetSignedData } from '../utils/xumm'
 
@@ -78,6 +87,11 @@ export default function SignForm({ setSignRequest, setAccount, signRequest }) {
 
     if (signRequest.action === 'setDomain' && !agreedToRisks) {
       setScreen("setDomain")
+      return
+    }
+
+    if (signRequest.action === 'castVoteRewardDelay' && !agreedToRisks) {
+      setScreen("castVoteRewardDelay")
       return
     }
 
@@ -315,6 +329,43 @@ export default function SignForm({ setSignRequest, setAccount, signRequest }) {
     }
   }
 
+  const onRewardDelayChange = e => {
+    setStatus("")
+    let newRequest = signRequest
+    let delay = e.target.value
+    delay = delay.trim()
+    let n = Math.floor(Number(delay))
+    if (n !== Infinity && String(n) === delay && n > 0) {
+      newRequest.request.HookParameters = [
+        {
+          HookParameter:
+          {
+            HookParameterName: "4C",    // L - layer
+            HookParameterValue: "01",   // 01 for L1 table, 02 for L2 table
+          }
+        },
+        {
+          HookParameter:
+          {
+            HookParameterName: "54",    // T - topic type
+            HookParameterValue: "5244", // H/48 S/53 R/52 [0x00-0x09] or RR/RD
+          }
+        },
+        {
+          HookParameter:
+          {
+            HookParameterName: "56",                  // V - vote data
+            HookParameterValue: floatToXlfHex(delay), // "0000A7DCF750D554" - 60 seconds
+          }
+        }
+      ]
+      setSignRequest(newRequest)
+      setAgreedToRisks(true)
+    } else {
+      setAgreedToRisks(false)
+    }
+  }
+
   const onExpirationChange = (daysCount) => {
     if (daysCount) {
       let newRequest = signRequest
@@ -327,11 +378,14 @@ export default function SignForm({ setSignRequest, setAccount, signRequest }) {
 
   const xls35Sell = signRequest?.request?.TransactionType === "URITokenCreateSellOffer"
 
+  const askInfoScreens = ['NFTokenAcceptOffer', 'NFTokenCreateOffer', 'NFTokenBurn', 'setDomain', 'castVoteRewardDelay']
+  const noCheckboxScreens = ['setDomain', 'castVoteRewardDelay']
+
   return (
     <div className="sign-in-form">
       <div className="sign-in-body center">
         <div className='close-button' onClick={SignInCancelAndClose}></div>
-        {(screen === 'NFTokenAcceptOffer' || screen === 'NFTokenCreateOffer' || screen === 'NFTokenBurn' || screen === 'setDomain') ?
+        {askInfoScreens.includes(screen) ?
           <>
             <div className='header'>
               {screen === 'NFTokenBurn' && t("signin.confirm.nft-burn-header")}
@@ -350,6 +404,7 @@ export default function SignForm({ setSignRequest, setAccount, signRequest }) {
                 )
               }
               {screen === 'setDomain' && t("signin.confirm.set-domain")}
+              {screen === 'castVoteRewardDelay' && "Cast a vote"}
             </div>
 
             {screen === 'NFTokenCreateOffer' &&
@@ -419,7 +474,22 @@ export default function SignForm({ setSignRequest, setAccount, signRequest }) {
               </div>
             }
 
-            {screen !== 'setDomain' &&
+            {screen === 'castVoteRewardDelay' &&
+              <div className='center'>
+                <br />
+                <span className='halv'>
+                  <span className='input-title'>Vote on the Reward delay</span>
+                  <input
+                    placeholder="Enter the Reward Delay (in seconds)"
+                    onChange={onRewardDelayChange}
+                    className="input-text"
+                    spellCheck="false"
+                  />
+                </span>
+              </div>
+            }
+
+            {!noCheckboxScreens.includes(screen) &&
               <div className='terms-checkbox'>
                 <CheckBox checked={agreedToRisks} setChecked={setAgreedToRisks} >
                   {screen === 'NFTokenBurn' ?

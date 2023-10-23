@@ -427,3 +427,90 @@ export const isValidNftXls20 = x => {
   if (isIdValid(x) && x.substring(0, 3) === '000') return true
   return false
 }
+
+const makeXfl = (exponent, mantissa) => {
+  const minMantissa = 1000000000000000n
+  const maxMantissa = 9999999999999999n
+  const minExponent = -96
+  const maxExponent = 80
+
+  // convert types as needed
+  if (typeof (exponent) != 'bigint')
+    exponent = BigInt(exponent);
+
+  if (typeof (mantissa) != 'bigint')
+    mantissa = BigInt(mantissa);
+
+  // canonical zero
+  if (mantissa == 0n)
+    return 0n;
+
+  // normalize
+  let is_negative = mantissa < 0;
+  if (is_negative)
+    mantissa *= -1n;
+
+  while (mantissa > maxMantissa) {
+    mantissa /= 10n;
+    exponent++;
+  }
+  while (mantissa < minMantissa) {
+    mantissa *= 10n;
+    exponent--;
+  }
+
+  // canonical zero on mantissa underflow
+  if (mantissa == 0)
+    return 0n;
+
+  // under and overflows
+  if (exponent > maxExponent || exponent < minExponent)
+    return -1; // note this is an "invalid" XFL used to propagate errors
+
+  exponent += 97n;
+
+  let xfl = (!is_negative ? 1n : 0n);
+  xfl <<= 8n;
+  xfl |= BigInt(exponent);
+  xfl <<= 54n;
+  xfl |= BigInt(mantissa);
+
+  return xfl;
+}
+
+const floatToXfl = fl => {
+  let e = 0
+  let d = "" + parseFloat("" + fl)
+  d = d.toLowerCase()
+  let s = d.split('e')
+  if (s.length == 2) {
+    e = parseInt(s[1])
+    d = s[0]
+  }
+  s = d.split('.')
+  if (s.length == 2) {
+    d = d.replace('.', '')
+    e -= s[1].length
+  }
+  else if (s.length > 2)
+    d = 0n;
+  return makeXfl(e, d)
+}
+
+const changeEndianness = string => {
+  const result = []
+  let len = string.length - 2
+  while (len >= 0) {
+    result.push(string.substr(len, 2))
+    len -= 2
+  }
+  return result.join('')
+}
+
+export const floatToXlfHex = fl => {
+  if (!fl) return null
+  fl = floatToXfl(fl)
+  fl = fl.toString(16)
+  fl = changeEndianness(fl)
+  return fl.toUpperCase()
+}
