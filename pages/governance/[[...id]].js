@@ -648,6 +648,7 @@ export default function Governance({ id, setSignRequest, signRequest }) {
                 <th>Voter</th>
                 <th className='center'>Target layer</th>
                 <th className='right'>Delay</th>
+                <th className='right'>In seconds</th>
               </tr>
             </thead>
             <tbody>
@@ -677,7 +678,10 @@ export default function Governance({ id, setSignRequest, signRequest }) {
                               {p.targetLayer}
                             </td>
                             <td className='right'>
-                              {p.value} seconds
+                              {duration(t, p.value, { seconds: true })}
+                            </td>
+                            <td className='right'>
+                              {p.value} <CopyButton text={p.value} />
                             </td>
                           </tr>
                         )
@@ -697,6 +701,7 @@ export default function Governance({ id, setSignRequest, signRequest }) {
             <thead>
               <tr>
                 <th className='right'>Delay</th>
+                <th className='right'>In seconds</th>
                 <th className='center'>Target layer</th>
                 <th className='right'>Votes</th>
               </tr>
@@ -722,7 +727,10 @@ export default function Governance({ id, setSignRequest, signRequest }) {
                         data.count.reward.delay.map((p, i) =>
                           <tr key={i}>
                             <td className='right'>
-                              {p.delay} seconds
+                              {duration(t, p.delay, { seconds: true })}
+                            </td>
+                            <td className='right'>
+                              {p.delay}
                             </td>
                             <td className='center'>
                               {p.targetLayer}
@@ -801,6 +809,8 @@ export default function Governance({ id, setSignRequest, signRequest }) {
                               {p.targetLayer}
                             </td>
                             <td>
+                              <CopyButton text={p.value} />
+                              {" "}
                               {isMobile ? shortHash(p.value) : p.value}
                             </td>
                           </tr>
