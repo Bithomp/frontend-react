@@ -465,7 +465,7 @@ export default function Governance({ id, setSignRequest }) {
               wallet: "xumm",
               request: {
                 "TransactionType": "Invoke",
-                "Destination": "rHb9CJAWyB4rj91VRWn96DkukG4bwdtyTh",
+                "Destination": id || "rHb9CJAWyB4rj91VRWn96DkukG4bwdtyTh",
                 "HookParameters": [
                   {
                     HookParameter:
