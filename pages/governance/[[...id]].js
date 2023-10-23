@@ -44,7 +44,7 @@ const xummImg = "/images/xumm.png"
 
 const seatAddress = (addressData, addessName, addressOption) => {
   if (addressData[addessName] === "rrrrrrrrrrrrrrrrrrrrrhoLvTp") {
-    return <b>Vocate</b>
+    return <b>Vacate the seat</b>
   }
   return <>
     <CopyButton text={addressData[addessName]} />
@@ -507,7 +507,7 @@ export default function Governance({ id, setSignRequest }) {
             })}
           >
             <Image src={xummImg} className='xumm-logo' alt="xumm" height={24} width={24} />
-            Vote to vocate 7 seat in L1
+            Vote to vacate seat 7 in L1
           </button>
         </div>
       </div>
