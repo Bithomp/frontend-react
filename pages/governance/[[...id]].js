@@ -622,6 +622,43 @@ export default function Governance({ id, setSignRequest }) {
               }
             </tbody>
           </table>
+          <br />
+          <button
+            className='button-action wide center'
+            onClick={() => setSignRequest({
+              wallet: "xumm",
+              request: {
+                "TransactionType": "Invoke",
+                "Destination": id || "rHb9CJAWyB4rj91VRWn96DkukG4bwdtyTh",
+                "HookParameters": [
+                  {
+                    HookParameter:
+                    {
+                      HookParameterName: "4C",    // L - layer
+                      HookParameterValue: "01",   // 01 for L1 table, 02 for L2 table
+                    }
+                  },
+                  {
+                    HookParameter:
+                    {
+                      HookParameterName: "54",    // T - topic type
+                      HookParameterValue: "5244", // H/48 S/53 R/52 [0x00-0x09] or RR/RD
+                    }
+                  },
+                  {
+                    HookParameter:
+                    {
+                      HookParameterName: "56",    // V - vote data
+                      HookParameterValue: "0000A7DCF750D554"
+                    }
+                  }
+                ]
+              }
+            })}
+          >
+            <Image src={xummImg} className='xumm-logo' alt="xumm" height={24} width={24} />
+            Vote to set Reward Delay to 60 seconds
+          </button>
         </div>
       </div>
       <br />
