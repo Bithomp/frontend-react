@@ -60,6 +60,7 @@ export default function Governance({ id, setSignRequest }) {
   const { isReady } = router
 
   const [data, setData] = useState({})
+  const [majority, setMajority] = useState({})
   const [loading, setLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState("")
 
@@ -102,6 +103,7 @@ export default function Governance({ id, setSignRequest }) {
 
     setLoading(true)
     setData({})
+    setMajority({})
 
     const response = await axios.get(apiUrl, {
       signal: controller.signal
@@ -116,6 +118,14 @@ export default function Governance({ id, setSignRequest }) {
       setLoading(false) //keep here for fast tab clickers
       if (newdata.members) {
         setErrorMessage("")
+        let majObj = {
+          voteL1: Math.floor(newdata.memberCount * 0.8), //80% of seats
+          fromL1ToL2: Math.floor(newdata.memberCount * 0.5), //50% of seats
+          reward: newdata.memberCount, // 100% of seats
+          hook: newdata.memberCount // 100% of seats
+        }
+        if (majObj.fromL1ToL2 < 2) majObj.fromL1ToL2 = 2 //minimum 2 votes
+        setMajority(majObj)
         //sort by vote count
         if (newdata.count && newdata.votes) {
           const members = newdata.members
@@ -449,7 +459,7 @@ export default function Governance({ id, setSignRequest }) {
                               {p.seat}
                             </td>
                             <td className='right'>
-                              {p.value}
+                              {p.value} / {(mainTable || p.targetLayer === 2) ? majority.voteL1 : majority.fromL1ToL2}
                             </td>
                           </tr>
                         )
@@ -566,7 +576,7 @@ export default function Governance({ id, setSignRequest }) {
                 <th className='right'>Rate</th>
                 <th className='right'>Value</th>
                 <th className='center'>Target layer</th>
-                <th className='right'>Count</th>
+                <th className='right'>Votes</th>
               </tr>
             </thead>
             <tbody>
@@ -599,7 +609,7 @@ export default function Governance({ id, setSignRequest }) {
                               {p.targetLayer}
                             </td>
                             <td className='right'>
-                              {p.value}
+                              {p.value} / {mainTable ? majority.reward : majority.fromL1ToL2}
                             </td>
                           </tr>
                         )
@@ -674,7 +684,7 @@ export default function Governance({ id, setSignRequest }) {
               <tr>
                 <th className='right'>Delay</th>
                 <th className='center'>Target layer</th>
-                <th className='right'>Count</th>
+                <th className='right'>Votes</th>
               </tr>
             </thead>
             <tbody>
@@ -704,7 +714,7 @@ export default function Governance({ id, setSignRequest }) {
                               {p.targetLayer}
                             </td>
                             <td className='right'>
-                              {p.value}
+                              {p.value} / {mainTable ? majority.reward : majority.fromL1ToL2}
                             </td>
                           </tr>
                         )
@@ -784,7 +794,7 @@ export default function Governance({ id, setSignRequest }) {
                 <th>Key</th>
                 <th className='center'>Topic</th>
                 <th className='center'>Target layer</th>
-                <th className='right'>Count</th>
+                <th className='right'>Votes</th>
               </tr>
             </thead>
             <tbody>
@@ -817,7 +827,7 @@ export default function Governance({ id, setSignRequest }) {
                               {p.targetLayer}
                             </td>
                             <td className='right'>
-                              {p.value}
+                              {p.value} / {mainTable ? majority.hook : majority.fromL1ToL2}
                             </td>
                           </tr>
                         )
