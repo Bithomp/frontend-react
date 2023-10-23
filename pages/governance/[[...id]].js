@@ -22,7 +22,13 @@ import SEO from '../../components/SEO'
 
 import { useIsMobile } from "../../utils/mobile"
 import { ledgerName } from '../../utils'
-import { duration, shortAddress, shortHash, userOrServiceLink } from '../../utils/format'
+import {
+  duration,
+  shortAddress,
+  shortHash,
+  addressUsernameOrServiceLink,
+  userOrServiceName
+} from '../../utils/format'
 
 const l2Tables = [
   'rwyypATD1dQxDbdQjMvrqnsHr2cQw5rjMh',
@@ -61,6 +67,25 @@ export default function Governance({ id }) {
     return "L1"
   }
 
+  const seatNumber = (members, address) => {
+    if (members?.length > 0) {
+      const seat = members.find(m => m.value === address)
+      if (seat) {
+        return seat.key
+      }
+    }
+    return "not found"
+  }
+
+  const seatNumberAndName = (addressData, addessName, options) => {
+    const seat = seatNumber(data?.members, addressData[addessName])
+    if (seat === "not found") return seat
+    const coloredName = userOrServiceName(addressData[addessName + "Details"])
+    return <>
+      Seat {seat}{!options?.short && <> - {coloredName || shortAddress(addressData[addessName])}</>}
+    </>
+  }
+
   const checkApi = async () => {
     if (!id) {
       //genesis account
@@ -86,6 +111,7 @@ export default function Governance({ id }) {
         setErrorMessage("")
         //sort by vote count
         if (newdata.count && newdata.votes) {
+          const members = newdata.members
           newdata.count = {
             seat: newdata.count.seat.sort((a, b) => (a.value < b.value) ? 1 : -1),
             hook: newdata.count.hook.sort((a, b) => (a.value < b.value) ? 1 : -1),
@@ -95,11 +121,11 @@ export default function Governance({ id }) {
             }
           }
           newdata.votes = {
-            seat: newdata.votes.seat.sort((a, b) => (a.seat > b.seat) ? 1 : -1),
-            hook: newdata.votes.hook.sort((a, b) => (a.topic > b.topic) ? 1 : -1),
+            seat: newdata.votes.seat.sort((a, b) => (a.seat > b.seat) ? 1 : ((a.seat < b.seat) ? -1 : (seatNumber(members, a.voter) > seatNumber(members, b.voter)) ? 1 : -1)),
+            hook: newdata.votes.hook.sort((a, b) => (a.topic > b.topic) ? 1 : ((a.topic < b.topic) ? -1 : (seatNumber(members, a.voter) > seatNumber(members, b.voter)) ? 1 : -1)),
             reward: {
-              rate: newdata.votes.reward.rate.sort((a, b) => (a.value < b.value) ? 1 : -1),
-              delay: newdata.votes.reward.delay.sort((a, b) => (a.value < b.value) ? 1 : -1)
+              rate: newdata.votes.reward.rate.sort((a, b) => (a.value < b.value) ? 1 : ((a.value > b.value) ? -1 : (seatNumber(members, a.voter) > seatNumber(members, b.voter)) ? 1 : -1)),
+              delay: newdata.votes.reward.delay.sort((a, b) => (a.value < b.value) ? 1 : ((a.value > b.value) ? -1 : (seatNumber(members, a.voter) > seatNumber(members, b.voter)) ? 1 : -1)),
             }
           }
           newdata.parameters = newdata.parameters.sort((a, b) => (a.value > b.value) ? 1 : -1)
@@ -225,31 +251,6 @@ export default function Governance({ id }) {
 
   const addressOption = isMobile ? { short: true } : {}
 
-  const addressLinkWithACopyButton = (data, name, options) => {
-    const address = options?.short ? shortAddress(data[name]) : data[name]
-    return <>
-      {options?.copy &&
-        <>
-          <CopyButton text={data[name]} />
-          {" "}
-        </>
-      }
-      {userOrServiceLink(data, name, options) ?
-        <>
-          {isMobile ?
-            userOrServiceLink(data, name, options)
-            :
-            <>
-              {address} - {userOrServiceLink(data, name, options)}
-            </>
-          }
-        </>
-        :
-        address
-      }
-    </>
-  }
-
   return <>
     <SEO title={t("header", { ns: "governance", ledgerName })} />
     <div className="content-text">
@@ -324,7 +325,9 @@ export default function Governance({ id }) {
                           {p.key}
                         </td>
                         <td>
-                          {addressLinkWithACopyButton(p, 'value', { copy: true })}
+                          <CopyButton text={p.value} />
+                          {" "}
+                          {addressUsernameOrServiceLink(p, 'value')}
                         </td>
                         {mainTable &&
                           <td>
@@ -376,7 +379,7 @@ export default function Governance({ id }) {
                         data.votes.seat.map((p, i) =>
                           <tr key={i}>
                             <td>
-                              {addressLinkWithACopyButton(p, 'voter', addressOption)}
+                              {seatNumberAndName(p, 'voter', addressOption)}
                             </td>
                             <td className='center'>
                               {p.targetLayer}
@@ -385,7 +388,9 @@ export default function Governance({ id }) {
                               {p.seat}
                             </td>
                             <td>
-                              {addressLinkWithACopyButton(p, 'value', { ...addressOption, copy: true })}
+                              <CopyButton text={p.value} />
+                              {" "}
+                              {addressUsernameOrServiceLink(p, 'value', addressOption)}
                             </td>
                           </tr>
                         )
@@ -431,7 +436,9 @@ export default function Governance({ id }) {
                         data.count.seat.map((p, i) =>
                           <tr key={i}>
                             <td>
-                              {addressLinkWithACopyButton(p, 'address', addressOption)}
+                              <CopyButton text={p.value} />
+                              {" "}
+                              {addressUsernameOrServiceLink(p, 'address', addressOption)}
                             </td>
                             <td className='center'>
                               {p.targetLayer}
@@ -489,7 +496,7 @@ export default function Governance({ id }) {
                         data.votes.reward.rate.map((p, i) =>
                           <tr key={i}>
                             <td>
-                              {addressLinkWithACopyButton(p, 'voter', addressOption)}
+                              {seatNumberAndName(p, 'voter', addressOption)}
                             </td>
                             <td className='center'>
                               {p.targetLayer}
@@ -601,7 +608,7 @@ export default function Governance({ id }) {
                         data.votes.reward.delay.map((p, i) =>
                           <tr key={i}>
                             <td>
-                              {addressLinkWithACopyButton(p, 'voter', addressOption)}
+                              {seatNumberAndName(p, 'voter', addressOption)}
                             </td>
                             <td className='center'>
                               {p.targetLayer}
@@ -707,7 +714,7 @@ export default function Governance({ id }) {
                         data.votes.hook.map((p, i) =>
                           <tr key={i}>
                             <td>
-                              {addressLinkWithACopyButton(p, 'voter', addressOption)}
+                              {seatNumberAndName(p, 'voter', addressOption)}
                             </td>
                             <td className='center'>
                               {p.topic}
