@@ -4,6 +4,7 @@ import axios from 'axios'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
+import Image from 'next/image'
 
 export const getServerSideProps = async (context) => {
   const { locale, query } = context
@@ -30,13 +31,6 @@ import {
   userOrServiceName
 } from '../../utils/format'
 
-const l2Tables = [
-  'rwyypATD1dQxDbdQjMvrqnsHr2cQw5rjMh',
-  'r4FRPZbLnyuVeGiSi1Ap6uaaPvPXYZh1XN',
-  'r6QZ6zfK37ZSec5hWiQDtbTxUaU2NWG3F',
-  'rGcK1jLkmSvWfiSW58cZZehCVxxMQUYpSz'
-]
-
 const rewardRateHuman = rewardRate => {
   if (!rewardRate) return "0 % pa"
   if (rewardRate < 0 || rewardRate > 1) return "Invalid rate"
@@ -46,7 +40,9 @@ const rewardRateHuman = rewardRate => {
 import LinkIcon from "../../public/images/link.svg"
 import CopyButton from '../../components/UI/CopyButton'
 
-export default function Governance({ id }) {
+const xummImg = "/images/xumm.png"
+
+export default function Governance({ id, setSignRequest }) {
   const { t } = useTranslation(['common', 'governance'])
   const router = useRouter()
   const isMobile = useIsMobile()
@@ -61,9 +57,9 @@ export default function Governance({ id }) {
 
   const mainTable = !id || id === 'rHb9CJAWyB4rj91VRWn96DkukG4bwdtyTh'
 
-  const tableLink = (address) => {
-    if (l2Tables.includes(address)) {
-      return <Link href={address}>L2 <LinkIcon /></Link>
+  const tableLink = (p) => {
+    if (p.layer === 2) {
+      return <Link href={p.value}>L2 <LinkIcon /></Link>
     }
     return "L1"
   }
@@ -152,7 +148,8 @@ export default function Governance({ id }) {
       "members": [
         {
           "key": 0,
-          "value": "rD74dUPRFNfgnY2NzrxxYRXN4BrfGSN6Mv"
+          "value": "rD74dUPRFNfgnY2NzrxxYRXN4BrfGSN6Mv",
+          "layer": 1
         }
       ],
       "votes": {
@@ -332,7 +329,7 @@ export default function Governance({ id }) {
                         </td>
                         {mainTable &&
                           <td>
-                            {tableLink(p.value)}
+                            {tableLink(p)}
                           </td>
                         }
                       </tr>
@@ -461,6 +458,43 @@ export default function Governance({ id }) {
               }
             </tbody>
           </table>
+          <br />
+          <button
+            className='button-action wide center'
+            onClick={() => setSignRequest({
+              wallet: "xumm",
+              request: {
+                "TransactionType": "Invoke",
+                "Destination": "r4FRPZbLnyuVeGiSi1Ap6uaaPvPXYZh1XN",
+                "HookParameters": [
+                  {
+                    HookParameter:
+                    {
+                      HookParameterName: "4C",    // L - layer
+                      HookParameterValue: "01",   // 01 for L1 table, 02 for L2 table
+                    }
+                  },
+                  {
+                    HookParameter:
+                    {
+                      HookParameterName: "54",    // T - topic type
+                      HookParameterValue: "5307", // H/48 S/53 R/52 [0x00-0x09] or RR/RD
+                    }
+                  },
+                  {
+                    HookParameter:
+                    {
+                      HookParameterName: "56",    // V - vote data
+                      HookParameterValue: "0000000000000000000000000000000000000000"
+                    }
+                  }
+                ]
+              }
+            })}
+          >
+            <Image src={xummImg} className='xumm-logo' alt="xumm" height={24} width={24} />
+            Vote to vocate 7 seat in L1
+          </button>
         </div>
       </div>
       <br />
@@ -844,6 +878,6 @@ export default function Governance({ id }) {
           </table>
         </>
       }
-    </div>
+    </div >
   </>
 }
