@@ -42,6 +42,16 @@ import CopyButton from '../../components/UI/CopyButton'
 
 const xummImg = "/images/xumm.png"
 
+const seatAddress = (addressData, addessName, addressOption) => {
+  if (addressData[addessName] === "rrrrrrrrrrrrrrrrrrrrrhoLvTp") {
+    return <b>Vocate</b>
+  }
+  return <>
+    <CopyButton text={addressData[addessName]} />
+    {" "}
+    {addressUsernameOrServiceLink(addressData, addessName, addressOption)}
+  </>
+}
 export default function Governance({ id, setSignRequest }) {
   const { t } = useTranslation(['common', 'governance'])
   const router = useRouter()
@@ -323,9 +333,7 @@ export default function Governance({ id, setSignRequest }) {
                           {p.key}
                         </td>
                         <td>
-                          <CopyButton text={p.value} />
-                          {" "}
-                          {addressUsernameOrServiceLink(p, 'value')}
+                          {seatAddress(p, 'value')}
                         </td>
                         {mainTable &&
                           <td>
@@ -386,9 +394,7 @@ export default function Governance({ id, setSignRequest }) {
                               {p.seat}
                             </td>
                             <td>
-                              <CopyButton text={p.value} />
-                              {" "}
-                              {addressUsernameOrServiceLink(p, 'value', addressOption)}
+                              {seatAddress(p, 'value', addressOption)}
                             </td>
                           </tr>
                         )
@@ -434,9 +440,7 @@ export default function Governance({ id, setSignRequest }) {
                         data.count.seat.map((p, i) =>
                           <tr key={i}>
                             <td>
-                              <CopyButton text={p.value} />
-                              {" "}
-                              {addressUsernameOrServiceLink(p, 'address', addressOption)}
+                              {seatAddress(p, 'address', addressOption)}
                             </td>
                             <td className='center'>
                               {p.targetLayer}
