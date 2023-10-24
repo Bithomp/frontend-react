@@ -268,7 +268,7 @@ export default function Governance({ id, setSignRequest, signRequest }) {
 
   return <>
     <SEO title={t("header", { ns: "governance", ledgerName })} />
-    <div className="content-text">
+    <div className="page-governance content-text">
       <h1 className='center'>
         {t("header", { ns: "governance", ledgerName })}
       </h1>
@@ -358,7 +358,7 @@ export default function Governance({ id, setSignRequest, signRequest }) {
       </table>
       <br />
       <div className='flex flex-center'>
-        <div>
+        <div className='div-with-table'>
           <h4 className='center'>Seat votes</h4>
           <table className="table-large shrink">
             <thead>
@@ -386,7 +386,7 @@ export default function Governance({ id, setSignRequest, signRequest }) {
                 <>
                   {(!errorMessage && data?.votes?.seat) ?
                     <>
-                      {data.votes.seat.length > 0 &&
+                      {data.votes.seat.length > 0 ?
                         data.votes.seat.map((p, i) =>
                           <tr key={i}>
                             <td>
@@ -405,6 +405,10 @@ export default function Governance({ id, setSignRequest, signRequest }) {
                             </td>
                           </tr>
                         )
+                        :
+                        <tr>
+                          <td colSpan={100} className='center'>There are no votes</td>
+                        </tr>
                       }
                     </>
                     :
@@ -415,65 +419,70 @@ export default function Governance({ id, setSignRequest, signRequest }) {
             </tbody>
           </table>
         </div>
-        <div>
-          <h4 className='center'>Seat votes count</h4>
-          <table className="table-large shrink">
-            <thead>
-              <tr>
-                <th>Address</th>
-                {!mainTable &&
-                  <th className='center'>Target</th>
-                }
-                <th className='center'>Seat</th>
-                <th className='right'>Votes</th>
-              </tr>
-            </thead>
-            <tbody>
-              {loading ?
-                <tr className='right'>
-                  <td colSpan="100">
-                    <br />
-                    <div className='center'>
-                      <span className="waiting"></span>
-                      <br />
-                      {t("general.loading")}
-                    </div>
-                    <br />
-                  </td>
-                </tr>
-                :
-                <>
-                  {(!errorMessage && data?.count?.seat) ?
+        <div className='div-with-table'>
+          {data?.count?.seat?.length > 0 &&
+            <>
+              <h4 className='center'>Seat votes count</h4>
+              <table className="table-large shrink">
+                <thead>
+                  <tr>
+                    <th>Address</th>
+                    {!mainTable &&
+                      <th className='center'>Target</th>
+                    }
+                    <th className='center'>Seat</th>
+                    <th className='right'>Votes</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {loading ?
+                    <tr className='right'>
+                      <td colSpan="100">
+                        <br />
+                        <div className='center'>
+                          <span className="waiting"></span>
+                          <br />
+                          {t("general.loading")}
+                        </div>
+                        <br />
+                      </td>
+                    </tr>
+                    :
                     <>
-                      {data.count.seat.length > 0 &&
-                        data.count.seat.map((p, i) =>
-                          <tr key={i}>
-                            <td>
-                              {seatAddress(p, 'address', addressOption)}
-                            </td>
-                            {!mainTable &&
-                              <td className='center'>
-                                L{p.targetLayer}
-                              </td>
-                            }
-                            <td className='center'>
-                              {p.seat}
-                            </td>
-                            <td className='right'>
-                              {p.value} / {(mainTable || p.targetLayer === 2) ? majority.voteL1 : majority.fromL1ToL2}
-                            </td>
-                          </tr>
-                        )
+                      {(!errorMessage && data?.count?.seat) ?
+                        <>
+                          {data.count.seat.length > 0 &&
+                            data.count.seat.map((p, i) =>
+                              <tr key={i}>
+                                <td>
+                                  {seatAddress(p, 'address', addressOption)}
+                                </td>
+                                {!mainTable &&
+                                  <td className='center'>
+                                    L{p.targetLayer}
+                                  </td>
+                                }
+                                <td className='center'>
+                                  {p.seat}
+                                </td>
+                                <td className='right'>
+                                  {p.value} / {(mainTable || p.targetLayer === 2) ? majority.voteL1 : majority.fromL1ToL2}
+                                </td>
+                              </tr>
+                            )
+                          }
+                        </>
+                        :
+                        <tr><td colSpan="100" className='center orange bold'>{errorMessage}</td></tr>
                       }
                     </>
-                    :
-                    <tr><td colSpan="100" className='center orange bold'>{errorMessage}</td></tr>
                   }
-                </>
-              }
-            </tbody>
-          </table>
-          <br />
+                </tbody>
+              </table>
+              <br />
+            </>
+          }
+          {!data?.count?.seat?.length > 0 && <h4 className='center'>Cast a first vote</h4>}
           <button
             className='button-action wide center'
             onClick={() => setSignRequest({
@@ -514,7 +523,7 @@ export default function Governance({ id, setSignRequest, signRequest }) {
       </div>
       <br />
       <div className='flex flex-center'>
-        <div>
+        <div className='div-with-table'>
           <h4 className='center'>Reward rate votes</h4>
           <table className="table-large shrink">
             <thead>
@@ -544,7 +553,7 @@ export default function Governance({ id, setSignRequest, signRequest }) {
                 <>
                   {(!errorMessage && data?.votes?.reward?.rate) ?
                     <>
-                      {data.votes.reward.rate.length > 0 &&
+                      {data.votes.reward.rate.length > 0 ?
                         data.votes.reward.rate.map((p, i) =>
                           <tr key={i}>
                             <td>
@@ -565,6 +574,10 @@ export default function Governance({ id, setSignRequest, signRequest }) {
                             </td>
                           </tr>
                         )
+                        :
+                        <tr>
+                          <td colSpan={100} className='center'>There are no votes</td>
+                        </tr>
                       }
                     </>
                     :
@@ -575,65 +588,70 @@ export default function Governance({ id, setSignRequest, signRequest }) {
             </tbody>
           </table>
         </div>
-        <div>
-          <h4 className='center'>Reward rate votes count</h4>
-          <table className="table-large shrink">
-            <thead>
-              <tr>
-                <th className='right'>Rate</th>
-                <th className='right'>Value</th>
-                {!mainTable &&
-                  <th className='center'>Target</th>
-                }
-                <th className='right'>Votes</th>
-              </tr>
-            </thead>
-            <tbody>
-              {loading ?
-                <tr className='right'>
-                  <td colSpan="100">
-                    <br />
-                    <div className='center'>
-                      <span className="waiting"></span>
-                      <br />
-                      {t("general.loading")}
-                    </div>
-                    <br />
-                  </td>
-                </tr>
-                :
-                <>
-                  {(!errorMessage && data?.count?.reward?.rate) ?
+        <div className='div-with-table'>
+          {data?.count?.reward?.rate?.length > 0 &&
+            <>
+              <h4 className='center'>Reward rate votes count</h4>
+              <table className="table-large shrink">
+                <thead>
+                  <tr>
+                    <th className='right'>Rate</th>
+                    <th className='right'>Value</th>
+                    {!mainTable &&
+                      <th className='center'>Target</th>
+                    }
+                    <th className='right'>Votes</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {loading ?
+                    <tr className='right'>
+                      <td colSpan="100">
+                        <br />
+                        <div className='center'>
+                          <span className="waiting"></span>
+                          <br />
+                          {t("general.loading")}
+                        </div>
+                        <br />
+                      </td>
+                    </tr>
+                    :
                     <>
-                      {data.count.reward.rate.length > 0 &&
-                        data.count.reward.rate.map((p, i) =>
-                          <tr key={i}>
-                            <td className='right'>
-                              {rewardRateHuman(p.rate)}
-                            </td>
-                            <td className='right'>
-                              {p.rate}
-                            </td>
-                            {!mainTable &&
-                              <td className='center'>
-                                L{p.targetLayer}
-                              </td>
-                            }
-                            <td className='right'>
-                              {p.value} / {mainTable ? majority.reward : majority.fromL1ToL2}
-                            </td>
-                          </tr>
-                        )
+                      {(!errorMessage && data?.count?.reward?.rate) ?
+                        <>
+                          {data.count.reward.rate.length > 0 &&
+                            data.count.reward.rate.map((p, i) =>
+                              <tr key={i}>
+                                <td className='right'>
+                                  {rewardRateHuman(p.rate)}
+                                </td>
+                                <td className='right'>
+                                  {p.rate}
+                                </td>
+                                {!mainTable &&
+                                  <td className='center'>
+                                    L{p.targetLayer}
+                                  </td>
+                                }
+                                <td className='right'>
+                                  {p.value} / {mainTable ? majority.reward : majority.fromL1ToL2}
+                                </td>
+                              </tr>
+                            )
+                          }
+                        </>
+                        :
+                        <tr><td colSpan="100" className='center orange bold'>{errorMessage}</td></tr>
                       }
                     </>
-                    :
-                    <tr><td colSpan="100" className='center orange bold'>{errorMessage}</td></tr>
                   }
-                </>
-              }
-            </tbody>
-          </table>
-          <br />
+                </tbody>
+              </table>
+              <br />
+            </>
+          }
+          {!data?.count?.reward?.rate?.length > 0 && <h4 className='center'>Cast a first vote</h4>}
           <button
             className='button-action wide center'
             onClick={() => setSignRequest({
@@ -652,7 +670,7 @@ export default function Governance({ id, setSignRequest, signRequest }) {
       </div>
       <br />
       <div className='flex flex-center'>
-        <div>
+        <div className='div-with-table'>
           <h4 className='center'>Reward delay votes</h4>
           <table className="table-large shrink">
             <thead>
@@ -682,7 +700,7 @@ export default function Governance({ id, setSignRequest, signRequest }) {
                 <>
                   {(!errorMessage && data?.votes?.reward?.delay) ?
                     <>
-                      {data.votes.reward.delay.length > 0 &&
+                      {data.votes.reward.delay.length > 0 ?
                         data.votes.reward.delay.map((p, i) =>
                           <tr key={i}>
                             <td>
@@ -701,6 +719,10 @@ export default function Governance({ id, setSignRequest, signRequest }) {
                             </td>
                           </tr>
                         )
+                        :
+                        <tr>
+                          <td colSpan={100} className='center'>There are no votes</td>
+                        </tr>
                       }
                     </>
                     :
@@ -711,65 +733,70 @@ export default function Governance({ id, setSignRequest, signRequest }) {
             </tbody>
           </table>
         </div>
-        <div>
-          <h4 className='center'>Reward delay votes count</h4>
-          <table className="table-large shrink">
-            <thead>
-              <tr>
-                <th className='right'>Delay</th>
-                <th className='right'>In seconds</th>
-                {!mainTable &&
-                  <th className='center'>Target</th>
-                }
-                <th className='right'>Votes</th>
-              </tr>
-            </thead>
-            <tbody>
-              {loading ?
-                <tr className='right'>
-                  <td colSpan="100">
-                    <br />
-                    <div className='center'>
-                      <span className="waiting"></span>
-                      <br />
-                      {t("general.loading")}
-                    </div>
-                    <br />
-                  </td>
-                </tr>
-                :
-                <>
-                  {(!errorMessage && data?.count?.reward?.delay) ?
+        <div className='div-with-table'>
+          {data?.count?.reward?.delay?.length > 0 &&
+            <>
+              <h4 className='center'>Reward delay votes count</h4>
+              <table className="table-large shrink">
+                <thead>
+                  <tr>
+                    <th className='right'>Delay</th>
+                    <th className='right'>In seconds</th>
+                    {!mainTable &&
+                      <th className='center'>Target</th>
+                    }
+                    <th className='right'>Votes</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {loading ?
+                    <tr className='right'>
+                      <td colSpan="100">
+                        <br />
+                        <div className='center'>
+                          <span className="waiting"></span>
+                          <br />
+                          {t("general.loading")}
+                        </div>
+                        <br />
+                      </td>
+                    </tr>
+                    :
                     <>
-                      {data.count.reward.delay.length > 0 &&
-                        data.count.reward.delay.map((p, i) =>
-                          <tr key={i}>
-                            <td className='right'>
-                              {duration(t, p.delay, { seconds: true })}
-                            </td>
-                            <td className='right'>
-                              {p.delay}
-                            </td>
-                            {!mainTable &&
-                              <td className='center'>
-                                L{p.targetLayer}
-                              </td>
-                            }
-                            <td className='right'>
-                              {p.value} / {mainTable ? majority.reward : majority.fromL1ToL2}
-                            </td>
-                          </tr>
-                        )
+                      {(!errorMessage && data?.count?.reward?.delay) ?
+                        <>
+                          {data.count.reward.delay.length > 0 &&
+                            data.count.reward.delay.map((p, i) =>
+                              <tr key={i}>
+                                <td className='right'>
+                                  {duration(t, p.delay, { seconds: true })}
+                                </td>
+                                <td className='right'>
+                                  {p.delay}
+                                </td>
+                                {!mainTable &&
+                                  <td className='center'>
+                                    L{p.targetLayer}
+                                  </td>
+                                }
+                                <td className='right'>
+                                  {p.value} / {mainTable ? majority.reward : majority.fromL1ToL2}
+                                </td>
+                              </tr>
+                            )
+                          }
+                        </>
+                        :
+                        <tr><td colSpan="100" className='center orange bold'>{errorMessage}</td></tr>
                       }
                     </>
-                    :
-                    <tr><td colSpan="100" className='center orange bold'>{errorMessage}</td></tr>
                   }
-                </>
-              }
-            </tbody>
-          </table>
-          <br />
+                </tbody>
+              </table>
+              <br />
+            </>
+          }
+          {!data?.count?.reward?.delay?.length > 0 && <h4 className='center'>Cast a first vote</h4>}
           <button
             className='button-action wide center'
             onClick={() => setSignRequest({
@@ -788,7 +815,7 @@ export default function Governance({ id, setSignRequest, signRequest }) {
       </div>
       <br />
       <div className='flex flex-center'>
-        <div>
+        <div className='div-with-table'>
           <h4 className='center'>Hook votes</h4>
           <table className="table-large shrink">
             <thead>
@@ -818,7 +845,7 @@ export default function Governance({ id, setSignRequest, signRequest }) {
                 <>
                   {(!errorMessage && data?.votes?.hook) ?
                     <>
-                      {data.votes.hook.length > 0 &&
+                      {data.votes.hook.length > 0 ?
                         data.votes.hook.map((p, i) =>
                           <tr key={i}>
                             <td>
@@ -835,10 +862,14 @@ export default function Governance({ id, setSignRequest, signRequest }) {
                             <td>
                               <CopyButton text={p.value} />
                               {" "}
-                              {isMobile ? shortHash(p.value) : p.value}
+                              {shortHash(p.value, 16)}
                             </td>
                           </tr>
                         )
+                        :
+                        <tr>
+                          <td colSpan={100} className='center'>There are no votes</td>
+                        </tr>
                       }
                     </>
                     :
@@ -849,66 +880,71 @@ export default function Governance({ id, setSignRequest, signRequest }) {
             </tbody>
           </table>
         </div>
-        <div>
-          <h4 className='center'>Hook votes count</h4>
-          <table className="table-large shrink">
-            <thead>
-              <tr>
-                <th>Key</th>
-                <th className='center'>Topic</th>
-                {!mainTable &&
-                  <th className='center'>Target</th>
-                }
-                <th className='right'>Votes</th>
-              </tr>
-            </thead>
-            <tbody>
-              {loading ?
-                <tr className='right'>
-                  <td colSpan="100">
-                    <br />
-                    <div className='center'>
-                      <span className="waiting"></span>
-                      <br />
-                      {t("general.loading")}
-                    </div>
-                    <br />
-                  </td>
+        {data?.count?.hook?.length > 0 &&
+          <div className='div-with-table'>
+            <h4 className='center'>Hook votes count</h4>
+            <table className="table-large shrink">
+              <thead>
+                <tr>
+                  <th>Key</th>
+                  <th className='center'>Topic</th>
+                  {!mainTable &&
+                    <th className='center'>Target</th>
+                  }
+                  <th className='right'>Votes</th>
                 </tr>
-                :
-                <>
-                  {(!errorMessage && data?.count?.hook) ?
-                    <>
-                      {data.count.hook.length > 0 &&
-                        data.count.hook.map((p, i) =>
-                          <tr key={i}>
-                            <td>
-                              {isMobile ? shortHash(p.key) : p.key}
-                            </td>
-                            <td className='center'>
-                              {p.topic}
-                            </td>
-                            {!mainTable &&
-                              <td className='center'>
-                                L{p.targetLayer}
+              </thead>
+              <tbody>
+                {loading ?
+                  <tr className='right'>
+                    <td colSpan="100">
+                      <br />
+                      <div className='center'>
+                        <span className="waiting"></span>
+                        <br />
+                        {t("general.loading")}
+                      </div>
+                      <br />
+                    </td>
+                  </tr>
+                  :
+                  <>
+                    {(!errorMessage && data.count.hook) ?
+                      <>
+                        {data.count.hook.length > 0 &&
+                          data.count.hook.map((p, i) =>
+                            <tr key={i}>
+                              <td>
+                                <CopyButton text={p.key} />
+                                {" "}
+                                {shortHash(p.key, 24)}
                               </td>
-                            }
-                            <td className='right'>
-                              {p.value} / {mainTable ? majority.hook : majority.fromL1ToL2}
-                            </td>
-                          </tr>
-                        )
-                      }
-                    </>
-                    :
-                    <tr><td colSpan="100" className='center orange bold'>{errorMessage}</td></tr>
-                  }
-                </>
-              }
-            </tbody>
-          </table>
-        </div>
+                              <td className='center'>
+                                {p.topic}
+                              </td>
+                              {!mainTable &&
+                                <td className='center'>
+                                  L{p.targetLayer}
+                                </td>
+                              }
+                              <td className='right'>
+                                {p.value} / {mainTable ? majority.hook : majority.fromL1ToL2}
+                              </td>
+                            </tr>
+                          )
+                        }
+                      </>
+                      :
+                      <tr><td colSpan="100" className='center orange bold'>{errorMessage}</td></tr>
+                    }
+                  </>
+                }
+              </tbody>
+            </table>
+          </div>
+        }
       </div>
+
       {data?.parameters?.length > 0 &&
         <>
           <br />
@@ -959,6 +995,6 @@ export default function Governance({ id, setSignRequest, signRequest }) {
           </table>
         </>
       }
-    </div >
+    </div>
   </>
 }

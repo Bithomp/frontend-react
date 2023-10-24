@@ -1,0 +1,12 @@
+.page-governance {
+  table {
+    &.table-large {
+      &.shrink {
+        min-width: 580px;
+        @media screen and (max-width: 800px) {
+          min-width: 100%;
+        }
+      }
+    }
+  }
+}

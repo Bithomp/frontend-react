@@ -359,7 +359,7 @@ table {
     justify-content: center;
   }
   @media screen and (max-width: 800px) {
-    div {
+    .div-with-table {
       width: 100%;
     }
   }
@@ -697,3 +697,4 @@ body.dark {
 @import "./pages/alerts.scss";
 @import "./pages/username.scss";
 @import "./pages/genesis.scss";
+@import "./pages/governance.scss";
