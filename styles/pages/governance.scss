@@ -1,8 +1,14 @@
 .page-governance {
+  .div-with-table {
+    min-width: 640px;
+    @media screen and (max-width: 800px) {
+      min-width: 100%;
+    }
+  }
   table {
     &.table-large {
       &.shrink {
-        min-width: 580px;
+        min-width: 640px;
         @media screen and (max-width: 800px) {
           min-width: 100%;
         }

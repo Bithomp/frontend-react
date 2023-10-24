@@ -533,7 +533,7 @@ export default function Governance({ id, setSignRequest, signRequest }) {
                   <th className='center'>Target</th>
                 }
                 <th className='right'>Rate</th>
-                <th>Value</th>
+                <th className='right'>Value</th>
               </tr>
             </thead>
             <tbody>
@@ -567,10 +567,10 @@ export default function Governance({ id, setSignRequest, signRequest }) {
                             <td className='right'>
                               {rewardRateHuman(p.value)}
                             </td>
-                            <td>
-                              <CopyButton text={p.value} />
-                              {" "}
+                            <td className='right'>
                               {p.value}
+                              {" "}
+                              <CopyButton text={p.value} />
                             </td>
                           </tr>
                         )
@@ -825,7 +825,7 @@ export default function Governance({ id, setSignRequest, signRequest }) {
                 {!mainTable &&
                   <th className='center'>Target</th>
                 }
-                <th>Value</th>
+                <th className='right'>Value</th>
               </tr>
             </thead>
             <tbody>
@@ -859,10 +859,11 @@ export default function Governance({ id, setSignRequest, signRequest }) {
                                 L{p.targetLayer}
                               </td>
                             }
-                            <td>
-                              <CopyButton text={p.value} />
-                              {" "}
+                            <td className='right'>
+
                               {shortHash(p.value, 16)}
+                              {" "}
+                              <CopyButton text={p.value} />
                             </td>
                           </tr>
                         )
@@ -917,7 +918,7 @@ export default function Governance({ id, setSignRequest, signRequest }) {
                               <td>
                                 <CopyButton text={p.key} />
                                 {" "}
-                                {shortHash(p.key, 24)}
+                                {shortHash(p.key, 16)}
                               </td>
                               <td className='center'>
                                 {p.topic}
