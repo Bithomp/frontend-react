@@ -269,40 +269,38 @@ export default function Governance({ id, setSignRequest, signRequest }) {
   return <>
     <SEO title={t("header", { ns: "governance", ledgerName })} />
     <div className="content-text">
-      <h1 className="center">
+      <h1 className='center'>
         {t("header", { ns: "governance", ledgerName })}
       </h1>
       {id ? <h4 className='center'>{id}</h4> : ""}
-      <div className='flex'>
-        <div className="grey-box center">
-          {loading ?
-            t("general.loading")
-            :
-            <>
-              <Trans i18nKey="summary" ns="governance">
-                There are <b>{{ countTables: data?.memberCount }}</b> seats.
-              </Trans>
-              {data?.rewardRate &&
-                <>
-                  {" "}
-                  <Trans i18nKey="reward-rate" ns="governance">
-                    Reward rate: <b>{{ rewardRate: rewardRateHuman(data.rewardRate) }}</b>.
-                  </Trans>
-                </>
-              }
-              {data?.rewardDuration &&
-                <>
-                  {" "}
-                  <Trans i18nKey="reward-duration" ns="governance">
-                    Reward duration: <b>{{ rewardDuration: duration(t, data.rewardDuration, { seconds: true }) }}</b> ({{
-                      rewardDurationSeconds: data.rewardDuration
-                    }} seconds).
-                  </Trans>
-                </>
-              }
-            </>
-          }
-        </div>
+      <div className='center'>
+        {loading ?
+          t("general.loading")
+          :
+          <>
+            <Trans i18nKey="summary" ns="governance">
+              There are <b>{{ countTables: data?.memberCount }}</b> seats.
+            </Trans>
+            {data?.rewardRate &&
+              <>
+                {" "}
+                <Trans i18nKey="reward-rate" ns="governance">
+                  Reward rate: <b>{{ rewardRate: rewardRateHuman(data.rewardRate) }}</b>.
+                </Trans>
+              </>
+            }
+            {data?.rewardDuration &&
+              <>
+                {" "}
+                <Trans i18nKey="reward-duration" ns="governance">
+                  Reward duration: <b>{{ rewardDuration: duration(t, data.rewardDuration, { seconds: true }) }}</b> ({{
+                    rewardDurationSeconds: data.rewardDuration
+                  }} seconds).
+                </Trans>
+              </>
+            }
+          </>
+        }
       </div>
       <br />
       <h4 className='center'>Members</h4>
@@ -366,7 +364,7 @@ export default function Governance({ id, setSignRequest, signRequest }) {
             <thead>
               <tr>
                 <th>Voter</th>
-                <th className='center'>Target layer</th>
+                {!mainTable && <th className='center'>Target</th>}
                 <th className='center'>Seat</th>
                 <th>{t("table.address")}</th>
               </tr>
@@ -394,9 +392,11 @@ export default function Governance({ id, setSignRequest, signRequest }) {
                             <td>
                               {seatNumberAndName(p, 'voter', addressOption)}
                             </td>
-                            <td className='center'>
-                              {p.targetLayer}
-                            </td>
+                            {!mainTable &&
+                              <td className='center'>
+                                L{p.targetLayer}
+                              </td>
+                            }
                             <td className='center'>
                               {p.seat}
                             </td>
@@ -421,7 +421,9 @@ export default function Governance({ id, setSignRequest, signRequest }) {
             <thead>
               <tr>
                 <th>Address</th>
-                <th className='center'>Target layer</th>
+                {!mainTable &&
+                  <th className='center'>Target</th>
+                }
                 <th className='center'>Seat</th>
                 <th className='right'>Votes</th>
               </tr>
@@ -449,9 +451,11 @@ export default function Governance({ id, setSignRequest, signRequest }) {
                             <td>
                               {seatAddress(p, 'address', addressOption)}
                             </td>
-                            <td className='center'>
-                              {p.targetLayer}
-                            </td>
+                            {!mainTable &&
+                              <td className='center'>
+                                L{p.targetLayer}
+                              </td>
+                            }
                             <td className='center'>
                               {p.seat}
                             </td>
@@ -516,7 +520,9 @@ export default function Governance({ id, setSignRequest, signRequest }) {
             <thead>
               <tr>
                 <th>Voter</th>
-                <th className='center'>Target layer</th>
+                {!mainTable &&
+                  <th className='center'>Target</th>
+                }
                 <th className='right'>Rate</th>
                 <th>Value</th>
               </tr>
@@ -544,9 +550,11 @@ export default function Governance({ id, setSignRequest, signRequest }) {
                             <td>
                               {seatNumberAndName(p, 'voter', addressOption)}
                             </td>
-                            <td className='center'>
-                              {p.targetLayer}
-                            </td>
+                            {!mainTable &&
+                              <td className='center'>
+                                L{p.targetLayer}
+                              </td>
+                            }
                             <td className='right'>
                               {rewardRateHuman(p.value)}
                             </td>
@@ -574,7 +582,9 @@ export default function Governance({ id, setSignRequest, signRequest }) {
               <tr>
                 <th className='right'>Rate</th>
                 <th className='right'>Value</th>
-                <th className='center'>Target layer</th>
+                {!mainTable &&
+                  <th className='center'>Target</th>
+                }
                 <th className='right'>Votes</th>
               </tr>
             </thead>
@@ -604,9 +614,11 @@ export default function Governance({ id, setSignRequest, signRequest }) {
                             <td className='right'>
                               {p.rate}
                             </td>
-                            <td className='center'>
-                              {p.targetLayer}
-                            </td>
+                            {!mainTable &&
+                              <td className='center'>
+                                L{p.targetLayer}
+                              </td>
+                            }
                             <td className='right'>
                               {p.value} / {mainTable ? majority.reward : majority.fromL1ToL2}
                             </td>
@@ -646,7 +658,9 @@ export default function Governance({ id, setSignRequest, signRequest }) {
             <thead>
               <tr>
                 <th>Voter</th>
-                <th className='center'>Target layer</th>
+                {!mainTable &&
+                  <th className='center'>Target</th>
+                }
                 <th className='right'>Delay</th>
                 <th className='right'>In seconds</th>
               </tr>
@@ -674,9 +688,11 @@ export default function Governance({ id, setSignRequest, signRequest }) {
                             <td>
                               {seatNumberAndName(p, 'voter', addressOption)}
                             </td>
-                            <td className='center'>
-                              {p.targetLayer}
-                            </td>
+                            {!mainTable &&
+                              <td className='center'>
+                                L{p.targetLayer}
+                              </td>
+                            }
                             <td className='right'>
                               {duration(t, p.value, { seconds: true })}
                             </td>
@@ -702,7 +718,9 @@ export default function Governance({ id, setSignRequest, signRequest }) {
               <tr>
                 <th className='right'>Delay</th>
                 <th className='right'>In seconds</th>
-                <th className='center'>Target layer</th>
+                {!mainTable &&
+                  <th className='center'>Target</th>
+                }
                 <th className='right'>Votes</th>
               </tr>
             </thead>
@@ -732,9 +750,11 @@ export default function Governance({ id, setSignRequest, signRequest }) {
                             <td className='right'>
                               {p.delay}
                             </td>
-                            <td className='center'>
-                              {p.targetLayer}
-                            </td>
+                            {!mainTable &&
+                              <td className='center'>
+                                L{p.targetLayer}
+                              </td>
+                            }
                             <td className='right'>
                               {p.value} / {mainTable ? majority.reward : majority.fromL1ToL2}
                             </td>
@@ -775,7 +795,9 @@ export default function Governance({ id, setSignRequest, signRequest }) {
               <tr>
                 <th>Voter</th>
                 <th className='center'>Topic</th>
-                <th className='center'>Target layer</th>
+                {!mainTable &&
+                  <th className='center'>Target</th>
+                }
                 <th>Value</th>
               </tr>
             </thead>
@@ -805,9 +827,11 @@ export default function Governance({ id, setSignRequest, signRequest }) {
                             <td className='center'>
                               {p.topic}
                             </td>
-                            <td className='center'>
-                              {p.targetLayer}
-                            </td>
+                            {!mainTable &&
+                              <td className='center'>
+                                L{p.targetLayer}
+                              </td>
+                            }
                             <td>
                               <CopyButton text={p.value} />
                               {" "}
@@ -832,7 +856,9 @@ export default function Governance({ id, setSignRequest, signRequest }) {
               <tr>
                 <th>Key</th>
                 <th className='center'>Topic</th>
-                <th className='center'>Target layer</th>
+                {!mainTable &&
+                  <th className='center'>Target</th>
+                }
                 <th className='right'>Votes</th>
               </tr>
             </thead>
@@ -862,9 +888,11 @@ export default function Governance({ id, setSignRequest, signRequest }) {
                             <td className='center'>
                               {p.topic}
                             </td>
-                            <td className='center'>
-                              {p.targetLayer}
-                            </td>
+                            {!mainTable &&
+                              <td className='center'>
+                                L{p.targetLayer}
+                              </td>
+                            }
                             <td className='right'>
                               {p.value} / {mainTable ? majority.hook : majority.fromL1ToL2}
                             </td>

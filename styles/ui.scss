@@ -284,6 +284,9 @@ table {
     min-width: 760px;
     &.shrink {
       min-width: unset;
+      @media screen and (max-width: 800px) {
+        width: 100%;
+      }
     }
     margin: auto;
     border: 1px solid var(--accent-link);
@@ -354,6 +357,11 @@ table {
   flex-wrap: wrap;
   &.flex-center {
     justify-content: center;
+  }
+  @media screen and (max-width: 800px) {
+    div {
+      width: 100%;
+    }
   }
 }
 
