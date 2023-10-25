@@ -38,7 +38,7 @@ const xummImg = "/images/xumm.png"
 
 const seatAddress = (addressData, addessName, addressOption) => {
   if (addressData[addessName] === "rrrrrrrrrrrrrrrrrrrrrhoLvTp") {
-    return <b>Vacate the seat</b>
+    return "Vacate the seat"
   }
   return <>
     <CopyButton text={addressData[addessName]} />
@@ -46,6 +46,7 @@ const seatAddress = (addressData, addessName, addressOption) => {
     {addressUsernameOrServiceLink(addressData, addessName, addressOption)}
   </>
 }
+
 export default function Governance({ id, setSignRequest, signRequest }) {
   const { t } = useTranslation(['common', 'governance'])
   const router = useRouter()
@@ -62,6 +63,20 @@ export default function Governance({ id, setSignRequest, signRequest }) {
 
   const mainTable = !id || id === 'rHb9CJAWyB4rj91VRWn96DkukG4bwdtyTh'
   const tableAddress = id || 'rHb9CJAWyB4rj91VRWn96DkukG4bwdtyTh'
+
+  const showMajority = (data, typeName) => {
+    if (!typeName) return ""
+    const needVotes = (mainTable || data.targetLayer !== "1") ? majority[typeName] : majority.fromL1ToL2
+    if (data.value >= needVotes) return <span className='green'>{data.value} / {needVotes}</span>
+    return <>{data.value} / {needVotes}</>
+  }
+
+  const reachedMajority = (data, typeName) => {
+    if (!typeName) return ""
+    const needVotes = (mainTable || data.targetLayer !== "1") ? majority[typeName] : majority.fromL1ToL2
+    if (data.value >= needVotes) return true
+    return false
+  }
 
   const tableLink = (p) => {
     if (p.layer === 2) {
@@ -125,8 +140,8 @@ export default function Governance({ id, setSignRequest, signRequest }) {
         if (newdata.count && newdata.votes) {
           const members = newdata.members
           newdata.count = {
-            seat: newdata.count.seat.sort((a, b) => (a.value < b.value) ? 1 : -1),
-            hook: newdata.count.hook.sort((a, b) => (a.value < b.value) ? 1 : -1),
+            seat: newdata.count.seat.sort((a, b) => (a.value < b.value) ? 1 : ((a.value > b.value) ? -1 : (a.seat > b.seat) ? 1 : -1)),
+            hook: newdata.count.hook.sort((a, b) => (a.value < b.value) ? 1 : ((a.value > b.value) ? -1 : (a.targetLayer > b.targetLayer) ? 1 : ((a.targetLayer < b.targetLayer) ? -1 : (a.topic > b.topic) ? 1 : -1))),
             reward: {
               rate: newdata.count.reward.rate.sort((a, b) => (a.value < b.value) ? 1 : -1),
               delay: newdata.count.reward.delay.sort((a, b) => (a.value < b.value) ? 1 : -1)
@@ -463,7 +478,7 @@ export default function Governance({ id, setSignRequest, signRequest }) {
                         <>
                           {data.count.seat.length > 0 &&
                             data.count.seat.map((p, i) =>
-                              <tr key={i}>
+                              <tr key={i} className={reachedMajority(p, 'voteL1') ? "bold" : ""}>
                                 <td>
                                   {seatAddress(p, 'address', addressOption)}
                                 </td>
@@ -476,7 +491,7 @@ export default function Governance({ id, setSignRequest, signRequest }) {
                                   {p.seat}
                                 </td>
                                 <td className='right'>
-                                  {p.value} / {(mainTable || p.targetLayer === 2) ? majority.voteL1 : majority.fromL1ToL2}
+                                  {showMajority(p, 'voteL1')}
                                 </td>
                               </tr>
                             )
@@ -633,7 +648,7 @@ export default function Governance({ id, setSignRequest, signRequest }) {
                         <>
                           {data.count.reward.rate.length > 0 &&
                             data.count.reward.rate.map((p, i) =>
-                              <tr key={i}>
+                              <tr key={i} className={reachedMajority(p, 'reward') ? "bold" : ""}>
                                 <td className='right'>
                                   {rewardRateHuman(p.rate)}
                                 </td>
@@ -646,7 +661,7 @@ export default function Governance({ id, setSignRequest, signRequest }) {
                                   </td>
                                 }
                                 <td className='right'>
-                                  {p.value} / {(mainTable || p.targetLayer !== "1") ? majority.reward : majority.fromL1ToL2}
+                                  {showMajority(p, 'reward')}
                                 </td>
                               </tr>
                             )
@@ -779,7 +794,7 @@ export default function Governance({ id, setSignRequest, signRequest }) {
                         <>
                           {data.count.reward.delay.length > 0 &&
                             data.count.reward.delay.map((p, i) =>
-                              <tr key={i}>
+                              <tr key={i} className={reachedMajority(p, 'reward') ? "bold" : ""}>
                                 <td className='right'>
                                   {duration(t, p.delay, { seconds: true })}
                                 </td>
@@ -792,7 +807,7 @@ export default function Governance({ id, setSignRequest, signRequest }) {
                                   </td>
                                 }
                                 <td className='right'>
-                                  {p.value} / {(mainTable || p.targetLayer !== "1") ? majority.reward : majority.fromL1ToL2}
+                                  {showMajority(p, 'reward')}
                                 </td>
                               </tr>
                             )
@@ -929,7 +944,7 @@ export default function Governance({ id, setSignRequest, signRequest }) {
                         <>
                           {data.count.hook.length > 0 &&
                             data.count.hook.map((p, i) =>
-                              <tr key={i}>
+                              <tr key={i} className={reachedMajority(p, 'hook') ? "bold" : ""}>
                                 <td>
                                   ...{p.key.substr(p.key.length - 16)}
                                 </td>
@@ -942,7 +957,7 @@ export default function Governance({ id, setSignRequest, signRequest }) {
                                   </td>
                                 }
                                 <td className='right'>
-                                  {p.value} / {(mainTable || p.targetLayer !== "1") ? majority.hook : majority.fromL1ToL2}
+                                  {showMajority(p, 'hook')}
                                 </td>
                               </tr>
                             )
