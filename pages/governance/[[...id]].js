@@ -646,7 +646,7 @@ export default function Governance({ id, setSignRequest, signRequest }) {
                                   </td>
                                 }
                                 <td className='right'>
-                                  {p.value} / {mainTable ? majority.reward : majority.fromL1ToL2}
+                                  {p.value} / {(mainTable || p.targetLayer !== "1") ? majority.reward : majority.fromL1ToL2}
                                 </td>
                               </tr>
                             )
@@ -792,7 +792,7 @@ export default function Governance({ id, setSignRequest, signRequest }) {
                                   </td>
                                 }
                                 <td className='right'>
-                                  {p.value} / {mainTable ? majority.reward : majority.fromL1ToL2}
+                                  {p.value} / {(mainTable || p.targetLayer !== "1") ? majority.reward : majority.fromL1ToL2}
                                 </td>
                               </tr>
                             )
@@ -942,7 +942,7 @@ export default function Governance({ id, setSignRequest, signRequest }) {
                                   </td>
                                 }
                                 <td className='right'>
-                                  {p.value} / {mainTable ? majority.hook : majority.fromL1ToL2}
+                                  {p.value} / {(mainTable || p.targetLayer !== "1") ? majority.hook : majority.fromL1ToL2}
                                 </td>
                               </tr>
                             )
