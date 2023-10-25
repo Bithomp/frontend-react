@@ -48,7 +48,7 @@
     .quarter {
       &.xrpOnly {
         input {
-          width: 124px;
+          width: 132px;
           padding-right: 40px;
         }
       }
@@ -82,7 +82,7 @@
     }
     .terms-checkbox {
       text-align: left;
-      margin: 20px 60px;
+      margin: 20px 52px;
       font-size: 14px;
       @media only screen and (max-width: 480px) {
         text-align: left;

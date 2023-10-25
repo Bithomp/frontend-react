@@ -420,7 +420,7 @@ export default function Governance({ id, setSignRequest, signRequest }) {
           </table>
         </div>
         <div className='div-with-table'>
-          {data?.count?.seat?.length > 0 &&
+          {data?.count?.seat?.length > 0 ?
             <>
               <h4 className='center'>Seat votes count</h4>
               <table className="table-large shrink">
@@ -481,8 +481,9 @@ export default function Governance({ id, setSignRequest, signRequest }) {
               </table>
               <br />
             </>
+            :
+            <h4 className='center'>Cast a first vote</h4>
           }
-          {!data?.count?.seat?.length > 0 && <h4 className='center'>Cast a first vote</h4>}
           <button
             className='button-action wide center'
             onClick={() => setSignRequest({
@@ -589,7 +590,7 @@ export default function Governance({ id, setSignRequest, signRequest }) {
           </table>
         </div>
         <div className='div-with-table'>
-          {data?.count?.reward?.rate?.length > 0 &&
+          {data?.count?.reward?.rate?.length > 0 ?
             <>
               <h4 className='center'>Reward rate votes count</h4>
               <table className="table-large shrink">
@@ -650,8 +651,9 @@ export default function Governance({ id, setSignRequest, signRequest }) {
               </table>
               <br />
             </>
+            :
+            <h4 className='center'>Cast a first vote</h4>
           }
-          {!data?.count?.reward?.rate?.length > 0 && <h4 className='center'>Cast a first vote</h4>}
           <button
             className='button-action wide center'
             onClick={() => setSignRequest({
@@ -734,7 +736,7 @@ export default function Governance({ id, setSignRequest, signRequest }) {
           </table>
         </div>
         <div className='div-with-table'>
-          {data?.count?.reward?.delay?.length > 0 &&
+          {data?.count?.reward?.delay?.length > 0 ?
             <>
               <h4 className='center'>Reward delay votes count</h4>
               <table className="table-large shrink">
@@ -795,8 +797,9 @@ export default function Governance({ id, setSignRequest, signRequest }) {
               </table>
               <br />
             </>
+            :
+            <h4 className='center'>Cast a first vote</h4>
           }
-          {!data?.count?.reward?.delay?.length > 0 && <h4 className='center'>Cast a first vote</h4>}
           <button
             className='button-action wide center'
             onClick={() => setSignRequest({
@@ -881,69 +884,90 @@ export default function Governance({ id, setSignRequest, signRequest }) {
             </tbody>
           </table>
         </div>
-        {data?.count?.hook?.length > 0 &&
-          <div className='div-with-table'>
-            <h4 className='center'>Hook votes count</h4>
-            <table className="table-large shrink">
-              <thead>
-                <tr>
-                  <th>Key</th>
-                  <th className='center'>Topic</th>
-                  {!mainTable &&
-                    <th className='center'>Target</th>
-                  }
-                  <th className='right'>Votes</th>
-                </tr>
-              </thead>
-              <tbody>
-                {loading ?
-                  <tr className='right'>
-                    <td colSpan="100">
-                      <br />
-                      <div className='center'>
-                        <span className="waiting"></span>
-                        <br />
-                        {t("general.loading")}
-                      </div>
-                      <br />
-                    </td>
-                  </tr>
-                  :
-                  <>
-                    {(!errorMessage && data.count.hook) ?
-                      <>
-                        {data.count.hook.length > 0 &&
-                          data.count.hook.map((p, i) =>
-                            <tr key={i}>
-                              <td>
-                                <CopyButton text={p.key} />
-                                {" "}
-                                {shortHash(p.key, 16)}
-                              </td>
-                              <td className='center'>
-                                {p.topic}
-                              </td>
-                              {!mainTable &&
-                                <td className='center'>
-                                  L{p.targetLayer}
-                                </td>
-                              }
-                              <td className='right'>
-                                {p.value} / {mainTable ? majority.hook : majority.fromL1ToL2}
-                              </td>
-                            </tr>
-                          )
-                        }
-                      </>
-                      :
-                      <tr><td colSpan="100" className='center orange bold'>{errorMessage}</td></tr>
+
+        <div className='div-with-table'>
+          {data?.count?.hook?.length > 0 ?
+            <>
+              <h4 className='center'>Hook votes count</h4>
+              <table className="table-large shrink">
+                <thead>
+                  <tr>
+                    <th>Key</th>
+                    <th className='center'>Topic</th>
+                    {!mainTable &&
+                      <th className='center'>Target</th>
                     }
-                  </>
-                }
-              </tbody>
-            </table>
-          </div>
-        }
+                    <th className='right'>Votes</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {loading ?
+                    <tr className='right'>
+                      <td colSpan="100">
+                        <br />
+                        <div className='center'>
+                          <span className="waiting"></span>
+                          <br />
+                          {t("general.loading")}
+                        </div>
+                        <br />
+                      </td>
+                    </tr>
+                    :
+                    <>
+                      {(!errorMessage && data.count.hook) ?
+                        <>
+                          {data.count.hook.length > 0 &&
+                            data.count.hook.map((p, i) =>
+                              <tr key={i}>
+                                <td>
+                                  <CopyButton text={p.key} />
+                                  {" "}
+                                  {shortHash(p.key, 16)}
+                                </td>
+                                <td className='center'>
+                                  {p.topic}
+                                </td>
+                                {!mainTable &&
+                                  <td className='center'>
+                                    L{p.targetLayer}
+                                  </td>
+                                }
+                                <td className='right'>
+                                  {p.value} / {mainTable ? majority.hook : majority.fromL1ToL2}
+                                </td>
+                              </tr>
+                            )
+                          }
+                        </>
+                        :
+                        <tr><td colSpan="100" className='center orange bold'>{errorMessage}</td></tr>
+                      }
+                    </>
+                  }
+                </tbody>
+              </table>
+              <br />
+            </>
+            :
+            <h4 className='center'>Cast a first vote</h4>
+          }
+          <button
+            className='button-action wide center'
+            onClick={() => setSignRequest({
+              wallet: "xumm",
+              action: "castVoteHook",
+              layer: mainTable ? 1 : 2,
+              request: {
+                "TransactionType": "Invoke",
+                "Destination": tableAddress
+              }
+            })}
+          >
+            <Image src={xummImg} className='xumm-logo' alt="xumm" height={24} width={24} />
+            Vote on the Hook
+          </button>
+        </div>
       </div>
 
       {data?.parameters?.length > 0 &&

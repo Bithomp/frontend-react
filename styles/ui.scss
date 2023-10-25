@@ -220,10 +220,10 @@ span.halv {
 
 span.quarter {
   margin: 5px;
-  width: 176px;
+  width: 184px;
   display: inline-block;
   input {
-    width: 154px;
+    width: 162px;
   }
   @media only screen and (max-width: 400px) {
     width: calc(100% - 80px);
@@ -676,7 +676,7 @@ body.dark {
 @import "./components/searchBlock.scss";
 @import "./components/tabs.scss";
 @import "./components/issuerSelect.scss";
-@import "./components/expirationSelect.scss";
+@import "./components/simpleSelect.scss";
 @import "./components/footer.scss";
 
 //components

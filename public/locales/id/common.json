@@ -61,6 +61,10 @@
       "14d": "14 hari",
       "30d": "30 hari",
       "90d": "90 hari"
+    },
+    "target-table-select": {
+      "01": "Main table",
+      "02": "Your table"
     }
   },
   "signin": {
@@ -74,6 +78,7 @@
       "enter-amount": "Masukkan jumlah"
     },
     "expiration": "Kedaluwarsa",
+    "target-table": "Target table",
     "xumm": {
       "open-app": "Buka aplikasi Xumm di ponsel Anda.",
       "change-settings": "Buka pengaturan dan pilih node testnet.",

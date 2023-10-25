@@ -61,7 +61,11 @@
 			"14d": "14 hari",
 			"30d": "30 hari",
 			"90d": "90 hari"
-		}
+		},
+    "target-table-select": {
+      "01": "Main table",
+      "02": "Your table"
+    }
 	},
 	"signin": {
 		"signin": "Log Masuk",
@@ -74,6 +78,7 @@
 			"enter-amount": "Masukkan jumlah"
 		},
 		"expiration": "Tempoh luput",
+		"target-table": "Target table",
 		"xumm": {
 			"open-app": "Buka aplikasi Xumm di telefon anda.",
 			"change-settings": "Pergi ke tetapan dan pilih nod ujian.",

@@ -1,6 +1,6 @@
 @import "./select.scss";
 
-.expiration-select {
+.simple-select {
   @include react-select;
   max-width: 400px;
   display: inline-block;
@@ -11,8 +11,9 @@
   }
 }
 
-.quarter {
-  .expiration-select {
+.quarter,
+.halv {
+  .simple-select {
     width: 100%;
   }
 }

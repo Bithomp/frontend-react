@@ -4,6 +4,7 @@ import { useRouter } from 'next/router'
 import Link from 'next/link'
 import axios from 'axios'
 import Image from 'next/image'
+import Select from 'react-select'
 
 import { useIsMobile } from "../utils/mobile"
 import {
@@ -23,13 +24,16 @@ import { payloadXummPost, xummWsConnect, xummCancel, xummGetSignedData } from '.
 import XummQr from "./Xumm/Qr"
 import CheckBox from './UI/CheckBox'
 import ExpirationSelect from './UI/ExpirationSelect'
+import TargetTableSelect from './UI/TargetTableSelect'
 
 const qr = "/images/qr.gif"
 const ledger = '/images/ledger-large.svg'
 const trezor = '/images/trezor-large.svg'
 const ellipal = '/images/ellipal-large.svg'
 
-const voteTxs = ['castVoteRewardDelay', 'castVoteRewardRate']
+const voteTxs = ['castVoteRewardDelay', 'castVoteRewardRate', 'castVoteHook']
+const askInfoScreens = [...voteTxs, 'NFTokenAcceptOffer', 'NFTokenCreateOffer', 'NFTokenBurn', 'setDomain']
+const noCheckboxScreens = [...voteTxs, 'setDomain']
 
 export default function SignForm({ setSignRequest, setAccount, signRequest }) {
   const { t } = useTranslation()
@@ -43,9 +47,10 @@ export default function SignForm({ setSignRequest, setAccount, signRequest }) {
   const [xummUuid, setXummUuid] = useState(null)
   const [expiredQr, setExpiredQr] = useState(false)
   const [agreedToRisks, setAgreedToRisks] = useState(false)
+  const [hookData, setHookData] = useState({})
 
-  const [rewardRate, setRewardRate] = useState(0.00333333333333333)
-  const [rewardDelay, setRewardDelay] = useState(2600000)
+  const [rewardRate, setRewardRate] = useState()
+  const [rewardDelay, setRewardDelay] = useState()
 
   const xummUserToken = localStorage.getItem('xummUserToken')
 
@@ -54,6 +59,7 @@ export default function SignForm({ setSignRequest, setAccount, signRequest }) {
     if (!isMobile && signRequest?.wallet === "xumm") {
       XummTxSend()
     }
+    setHookData({})
     //eslint-disable-next-line react-hooks/exhaustive-deps
   }, [signRequest])
 
@@ -99,6 +105,32 @@ export default function SignForm({ setSignRequest, setAccount, signRequest }) {
     if (signRequest.action && voteTxs.includes(signRequest.action) && !agreedToRisks) {
       setScreen(signRequest.action)
       return
+    }
+
+    if (signRequest.action === 'castVoteHook' && agreedToRisks && hookData.value) {
+      tx.HookParameters = [
+        {
+          HookParameter:
+          {
+            HookParameterName: "4C",                    // L - layer
+            HookParameterValue: hookData.targetLayer || ("0" + signRequest.layer)  // 01 for L1 table, 02 for L2 table
+          }
+        },
+        {
+          HookParameter:
+          {
+            HookParameterName: "54",                             // T - topic type
+            HookParameterValue: "480" + (hookData.topic || "0") // H/48 [0x00-0x09]
+          }
+        },
+        {
+          HookParameter:
+          {
+            HookParameterName: "56",            // V - vote data
+            HookParameterValue: hookData.value
+          }
+        }
+      ]
     }
 
     const client = {
@@ -414,7 +446,7 @@ export default function SignForm({ setSignRequest, setAccount, signRequest }) {
     }
   }
 
-  const onExpirationChange = (daysCount) => {
+  const onExpirationChange = daysCount => {
     if (daysCount) {
       let newRequest = signRequest
       let myDate = new Date()
@@ -424,10 +456,33 @@ export default function SignForm({ setSignRequest, setAccount, signRequest }) {
     }
   }
 
-  const xls35Sell = signRequest?.request?.TransactionType === "URITokenCreateSellOffer"
+  const onTargetLayerSelect = layer => {
+    let hookObj = hookData
+    hookObj.targetLayer = layer
+    setHookData(hookObj)
+  }
 
-  const askInfoScreens = ['NFTokenAcceptOffer', 'NFTokenCreateOffer', 'NFTokenBurn', 'setDomain', 'castVoteRewardDelay', 'castVoteRewardRate']
-  const noCheckboxScreens = ['setDomain', 'castVoteRewardDelay', 'castVoteRewardRate']
+  const onTopicSelect = topic => {
+    let hookObj = hookData
+    hookObj.topic = topic.value
+    setHookData(hookObj)
+  }
+
+  const onHookValueChange = value => {
+    setStatus("")
+    setAgreedToRisks(false)
+    if (!value) return
+    if (value.length !== 64) {
+      setStatus("Invalid Hook value")
+      return
+    }
+    setAgreedToRisks(true)
+    let hookObj = hookData
+    hookObj.value = value
+    setHookData(hookObj)
+  }
+
+  const xls35Sell = signRequest?.request?.TransactionType === "URITokenCreateSellOffer"
 
   return (
     <div className="sign-in-form">
@@ -528,7 +583,7 @@ export default function SignForm({ setSignRequest, setAccount, signRequest }) {
                 <span className='halv'>
                   <span className='input-title'>Reward delay (in seconds)</span>
                   <input
-                    placeholder="Enter the Reward delay (in seconds)"
+                    placeholder="2600000"
                     onChange={onRewardDelayChange}
                     className="input-text"
                     spellCheck="false"
@@ -552,7 +607,7 @@ export default function SignForm({ setSignRequest, setAccount, signRequest }) {
                 <span className='halv'>
                   <span className='input-title'>Reward rate (per month compounding)<br />A number from 0 to 1, where 1 would be 100%</span>
                   <input
-                    placeholder="Enter the Reward rate (a number from 0 to 1)"
+                    placeholder="0.00333333333333333"
                     onChange={onRewardRateChange}
                     className="input-text"
                     spellCheck="false"
@@ -566,6 +621,56 @@ export default function SignForm({ setSignRequest, setAccount, signRequest }) {
                     :
                     <b>≈ {rewardRateHuman(rewardRate)}</b>
                   }
+                </div>
+              </div>
+            }
+
+            {screen === 'castVoteHook' &&
+              <div className='center'>
+                <br />
+                <div>
+                  {signRequest.layer === 2 &&
+                    <span className='quarter'>
+                      <span className='input-title'>{t("signin.target-table")}</span>
+                      <TargetTableSelect onChange={onTargetLayerSelect} layer={signRequest.layer} />
+                    </span>
+                  }
+                  <span className={signRequest.layer === 2 ? 'quarter' : 'halv'}>
+                    <span className='input-title'>Topic</span>
+                    <Select
+                      options={[
+                        { value: 0, label: "0" },
+                        { value: 1, label: "1" },
+                        { value: 2, label: "2" },
+                        { value: 3, label: "3" },
+                        { value: 4, label: "4" },
+                        { value: 5, label: "5" },
+                        { value: 6, label: "6" },
+                        { value: 7, label: "7" },
+                        { value: 8, label: "8" },
+                        { value: 9, label: "9" }
+                      ]}
+                      defaultValue={{ value: 0, label: "0" }}
+                      onChange={onTopicSelect}
+                      isSearchable={false}
+                      className="simple-select"
+                      classNamePrefix="react-select"
+                      instanceId="simple-select"
+                    />
+                  </span>
+                </div>
+                <span className='halv'>
+                  <span className='input-title'>Hook</span>
+                  <input
+                    placeholder="Enter hook value"
+                    onChange={e => onHookValueChange(e.target.value)}
+                    className="input-text"
+                    spellCheck="false"
+                  />
+                </span>
+                <div>
+                  <br />
+                  {status ? <b className="orange">{status}</b> : <br />}
                 </div>
               </div>
             }

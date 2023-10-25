@@ -61,6 +61,10 @@
       "14d": "14일",
       "30d": "30일",
       "90d": "90일"
+    },
+    "target-table-select": {
+      "01": "Main table",
+      "02": "Your table"
     }
   },
   "signin": {
@@ -74,6 +78,7 @@
       "enter-amount": "금액을 압력하세요"
     },
     "expiration": "만료",
+    "target-table": "Target table",
     "xumm": {
       "open-app": "Xumm 앱을 여세요",
       "change-settings": "설정에 가서 테스트넷 노드를 고르세요",

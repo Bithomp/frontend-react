@@ -61,6 +61,10 @@
       "14d": "14 dager",
       "d": " dager",
       "90d": "90 dager"
+    },
+    "target-table-select": {
+      "01": "Main table",
+      "02": "Your table"
     }
   },
   "signin": {
@@ -74,6 +78,7 @@
       "enter-amount": "Tast inn beløp"
     },
     "expiration": "Utløp",
+    "target-table": "Target table",
     "xumm": {
       "open-app": "Åpne Xumm-appen på telefonen din.",
       "change-settings": "Gå til innstillinger og velg en testnettnode.",

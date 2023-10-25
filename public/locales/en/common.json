@@ -61,6 +61,10 @@
       "14d": "14 days",
       "30d": "30 days",
       "90d": "90 days"
+    },
+    "target-table-select": {
+      "01": "Main table",
+      "02": "Your table"
     }
   },
   "signin": {
@@ -74,6 +78,7 @@
       "enter-amount": "Enter amount"
     },
     "expiration": "Expiration",
+    "target-table": "Target table",
     "xumm": {
       "open-app": "Open the Xumm app on your phone.",
       "change-settings": "Go to settings and choose a testnet node.",
