@@ -513,37 +513,16 @@ export default function Governance({ id, setSignRequest, signRequest }) {
             className='button-action wide center'
             onClick={() => setSignRequest({
               wallet: "xumm",
+              action: "castVoteSeat",
+              layer: mainTable ? 1 : 2,
               request: {
                 "TransactionType": "Invoke",
-                "Destination": tableAddress,
-                "HookParameters": [
-                  {
-                    HookParameter:
-                    {
-                      HookParameterName: "4C",    // L - layer
-                      HookParameterValue: "01",   // 01 for L1 table, 02 for L2 table
-                    }
-                  },
-                  {
-                    HookParameter:
-                    {
-                      HookParameterName: "54",    // T - topic type
-                      HookParameterValue: "5307", // H/48 S/53 R/52 [0x00-0x09] or RR/RD
-                    }
-                  },
-                  {
-                    HookParameter:
-                    {
-                      HookParameterName: "56",    // V - vote data
-                      HookParameterValue: "0000000000000000000000000000000000000000"
-                    }
-                  }
-                ]
+                "Destination": tableAddress
               }
             })}
           >
             <Image src={xummImg} className='xumm-logo' alt="xumm" height={24} width={24} />
-            Vote to vacate seat 7 in L1
+            Vote on seat
           </button>
         </div>
       </div>

@@ -1,6 +1,7 @@
 import axios from 'axios'
 import { useCallback, useEffect, useState } from "react"
 import { Buffer } from 'buffer'
+import { decodeAccountID, isValidClassicAddress } from 'ripple-address-codec'
 
 export const delay = async (milliseconds, callback, options) => {
   const delayFunction = () => {
@@ -403,7 +404,7 @@ export const isDomainValid = x => {
 }
 
 export const isAddressValid = x => {
-  return /^r[0-9a-zA-Z]{24,35}$/.test(x)
+  return isValidClassicAddress(x)
 }
 
 export const isUsernameValid = x => {
@@ -520,4 +521,9 @@ export const rewardRateHuman = rewardRate => {
   if (!rewardRate) return "0 % pa"
   if (rewardRate < 0 || rewardRate > 1) return "Invalid rate"
   return (Math.round((((1 + rewardRate) ** 12) - 1) * 10000) / 100) + " % pa"
+}
+
+export const encodeAddressR = address => {
+  if (!address) return null
+  return decodeAccountID(address).toString("hex").toUpperCase()
 }

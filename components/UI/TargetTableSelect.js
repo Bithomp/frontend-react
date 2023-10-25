@@ -5,8 +5,8 @@ export default function TargetTableSelect({ onChange, layer = 1 }) {
   const { t } = useTranslation()
 
   const array = [
-    { value: "01", label: t("components.target-table-select.01") },
-    { value: "02", label: t("components.target-table-select.02") }
+    { value: 1, label: t("components.target-table-select.01") },
+    { value: 2, label: t("components.target-table-select.02") }
   ]
 
   return (

@@ -16,7 +16,9 @@ import {
   encode,
   networkId,
   floatToXlfHex,
-  rewardRateHuman
+  rewardRateHuman,
+  encodeAddressR,
+  isAddressValid
 } from '../utils'
 import { amountFormat, capitalize, duration } from '../utils/format'
 import { payloadXummPost, xummWsConnect, xummCancel, xummGetSignedData } from '../utils/xumm'
@@ -31,7 +33,7 @@ const ledger = '/images/ledger-large.svg'
 const trezor = '/images/trezor-large.svg'
 const ellipal = '/images/ellipal-large.svg'
 
-const voteTxs = ['castVoteRewardDelay', 'castVoteRewardRate', 'castVoteHook']
+const voteTxs = ['castVoteRewardDelay', 'castVoteRewardRate', 'castVoteHook', 'castVoteSeat']
 const askInfoScreens = [...voteTxs, 'NFTokenAcceptOffer', 'NFTokenCreateOffer', 'NFTokenBurn', 'setDomain']
 const noCheckboxScreens = [...voteTxs, 'setDomain']
 
@@ -48,6 +50,9 @@ export default function SignForm({ setSignRequest, setAccount, signRequest }) {
   const [expiredQr, setExpiredQr] = useState(false)
   const [agreedToRisks, setAgreedToRisks] = useState(false)
   const [hookData, setHookData] = useState({})
+  const [seatData, setSeatData] = useState({})
+  const [targetLayer, setTargetLayer] = useState(signRequest?.layer)
+  const [erase, setErase] = useState(false)
 
   const [rewardRate, setRewardRate] = useState()
   const [rewardDelay, setRewardDelay] = useState()
@@ -60,6 +65,8 @@ export default function SignForm({ setSignRequest, setAccount, signRequest }) {
       XummTxSend()
     }
     setHookData({})
+    setSeatData({})
+    setErase(false)
     //eslint-disable-next-line react-hooks/exhaustive-deps
   }, [signRequest])
 
@@ -107,27 +114,53 @@ export default function SignForm({ setSignRequest, setAccount, signRequest }) {
       return
     }
 
-    if (signRequest.action === 'castVoteHook' && agreedToRisks && hookData.value) {
+    if (signRequest.action === 'castVoteHook' && agreedToRisks && (hookData.value || erase)) {
       tx.HookParameters = [
         {
           HookParameter:
           {
-            HookParameterName: "4C",                    // L - layer
-            HookParameterValue: hookData.targetLayer || ("0" + signRequest.layer)  // 01 for L1 table, 02 for L2 table
+            HookParameterName: "4C",         // L - layer
+            HookParameterValue: "0" + targetLayer  // 01 for L1 table, 02 for L2 table
           }
         },
         {
           HookParameter:
           {
             HookParameterName: "54",                             // T - topic type
-            HookParameterValue: "480" + (hookData.topic || "0") // H/48 [0x00-0x09]
+            HookParameterValue: "480" + (hookData.topic || "2")  // H/48 [0x00-0x09]
           }
         },
         {
           HookParameter:
           {
-            HookParameterName: "56",            // V - vote data
-            HookParameterValue: hookData.value
+            HookParameterName: "56", // V - vote data
+            HookParameterValue: erase ? "0000000000000000000000000000000000000000000000000000000000000000" : hookData.value
+          }
+        }
+      ]
+    }
+
+    if (signRequest.action === 'castVoteSeat' && agreedToRisks && (seatData.address || erase)) {
+      tx.HookParameters = [
+        {
+          HookParameter:
+          {
+            HookParameterName: "4C",               // L - layer
+            HookParameterValue: "0" + targetLayer  // 01 for L1 table, 02 for L2 table
+          }
+        },
+        {
+          HookParameter:
+          {
+            HookParameterName: "54",                           // T - topic type
+            HookParameterValue: "53" + (seatData.seat || "13") // S - seat, seat number 0-13 (19)
+          }
+        },
+        {
+          HookParameter:
+          {
+            HookParameterName: "56", // V - vote data
+            HookParameterValue: erase ? "0000000000000000000000000000000000000000" : encodeAddressR(seatData.address)
           }
         }
       ]
@@ -389,7 +422,7 @@ export default function SignForm({ setSignRequest, setAccount, signRequest }) {
           HookParameter:
           {
             HookParameterName: "54",    // T - topic type
-            HookParameterValue: "5244", // H/48 S/53 R/52 [0x00-0x09] or RR/RD
+            HookParameterValue: "5244", // RD - reward delay
           }
         },
         {
@@ -427,14 +460,14 @@ export default function SignForm({ setSignRequest, setAccount, signRequest }) {
           HookParameter:
           {
             HookParameterName: "54",    // T - topic type
-            HookParameterValue: "5252", // H/48 S/53 R/52 [0x00-0x09] or RR/RD
+            HookParameterValue: "5252", // RR - reward rate
           }
         },
         {
           HookParameter:
           {
             HookParameterName: "56",                  // V - vote data
-            HookParameterValue: floatToXlfHex(rate), // "0000A7DCF750D554" - 60 seconds
+            HookParameterValue: floatToXlfHex(rate),
           }
         }
       ]
@@ -451,15 +484,29 @@ export default function SignForm({ setSignRequest, setAccount, signRequest }) {
       let newRequest = signRequest
       let myDate = new Date()
       myDate.setDate(myDate.getDate() + daysCount)
-      newRequest.request.Expiration = Math.floor(myDate / 1000) - 946684800 //rippe epoch
+      newRequest.request.Expiration = Math.floor(myDate / 1000) - 946684800 //ripple epoch
       setSignRequest(newRequest)
     }
   }
 
-  const onTargetLayerSelect = layer => {
-    let hookObj = hookData
-    hookObj.targetLayer = layer
-    setHookData(hookObj)
+  const onSeatSelect = data => {
+    let seatObj = seatData
+    seatObj.seat = data.value
+    setSeatData(seatObj)
+  }
+
+  const onSeatValueChange = value => {
+    setStatus("")
+    setAgreedToRisks(false)
+    if (!value) return
+    if (!isAddressValid(value)) {
+      setStatus("Invalid address")
+      return
+    }
+    setAgreedToRisks(true)
+    let seatObj = seatData
+    seatObj.address = value
+    setSeatData(seatObj)
   }
 
   const onTopicSelect = topic => {
@@ -480,6 +527,16 @@ export default function SignForm({ setSignRequest, setAccount, signRequest }) {
     let hookObj = hookData
     hookObj.value = value
     setHookData(hookObj)
+  }
+
+  const onEraseCheck = () => {
+    setStatus("")
+    if (!erase) {
+      setAgreedToRisks(true)
+    } else {
+      setAgreedToRisks(false)
+    }
+    setErase(!erase)
   }
 
   const xls35Sell = signRequest?.request?.TransactionType === "URITokenCreateSellOffer"
@@ -625,6 +682,75 @@ export default function SignForm({ setSignRequest, setAccount, signRequest }) {
               </div>
             }
 
+            {screen === 'castVoteSeat' &&
+              <div className='center'>
+                <br />
+                <div>
+                  {signRequest.layer === 2 &&
+                    <span className='quarter'>
+                      <span className='input-title'>{t("signin.target-table")}</span>
+                      <TargetTableSelect onChange={(layer) => setTargetLayer(layer)} layer={signRequest.layer} />
+                    </span>
+                  }
+                  <span className={signRequest.layer === 2 ? 'quarter' : 'halv'}>
+                    <span className='input-title'>Seat</span>
+                    <Select
+                      options={[
+                        { value: "00", label: "0" },
+                        { value: "01", label: "1" },
+                        { value: "02", label: "2" },
+                        { value: "03", label: "3" },
+                        { value: "04", label: "4" },
+                        { value: "05", label: "5" },
+                        { value: "06", label: "6" },
+                        { value: "07", label: "7" },
+                        { value: "08", label: "8" },
+                        { value: "09", label: "9" },
+                        { value: "0A", label: "10" },
+                        { value: "OB", label: "11" },
+                        { value: "0C", label: "12" },
+                        { value: "0D", label: "13" },
+                        { value: "0E", label: "14" },
+                        { value: "0F", label: "15" },
+                        { value: "10", label: "16" },
+                        { value: "11", label: "17" },
+                        { value: "12", label: "18" },
+                        { value: "13", label: "19" },
+                      ]}
+                      defaultValue={{ value: "13", label: "19" }}
+                      onChange={onSeatSelect}
+                      isSearchable={false}
+                      className="simple-select"
+                      classNamePrefix="react-select"
+                      instanceId="seat-select"
+                    />
+                  </span>
+                </div>
+
+                <div className='terms-checkbox'>
+                  <CheckBox checked={erase} setChecked={onEraseCheck}>
+                    Vacate the seat
+                  </CheckBox>
+                </div>
+
+                {!erase &&
+                  <span className='halv'>
+                    <span className='input-title'>Address</span>
+                    <input
+                      placeholder="Enter address"
+                      onChange={e => onSeatValueChange(e.target.value)}
+                      className="input-text"
+                      spellCheck="false"
+                    />
+                  </span>
+                }
+                <div>
+                  <br />
+                  {status ? <b className="orange">{status}</b> : <br />}
+                </div>
+              </div>
+            }
+
             {screen === 'castVoteHook' &&
               <div className='center'>
                 <br />
@@ -632,7 +758,7 @@ export default function SignForm({ setSignRequest, setAccount, signRequest }) {
                   {signRequest.layer === 2 &&
                     <span className='quarter'>
                       <span className='input-title'>{t("signin.target-table")}</span>
-                      <TargetTableSelect onChange={onTargetLayerSelect} layer={signRequest.layer} />
+                      <TargetTableSelect onChange={(layer) => setTargetLayer(layer)} layer={signRequest.layer} />
                     </span>
                   }
                   <span className={signRequest.layer === 2 ? 'quarter' : 'halv'}>
@@ -650,24 +776,31 @@ export default function SignForm({ setSignRequest, setAccount, signRequest }) {
                         { value: 8, label: "8" },
                         { value: 9, label: "9" }
                       ]}
-                      defaultValue={{ value: 0, label: "0" }}
+                      defaultValue={{ value: 2, label: "2" }}
                       onChange={onTopicSelect}
                       isSearchable={false}
                       className="simple-select"
                       classNamePrefix="react-select"
-                      instanceId="simple-select"
+                      instanceId="hook-topic-select"
                     />
                   </span>
                 </div>
-                <span className='halv'>
-                  <span className='input-title'>Hook</span>
-                  <input
-                    placeholder="Enter hook value"
-                    onChange={e => onHookValueChange(e.target.value)}
-                    className="input-text"
-                    spellCheck="false"
-                  />
-                </span>
+                <div className='terms-checkbox'>
+                  <CheckBox checked={erase} setChecked={onEraseCheck}>
+                    Erase the hook
+                  </CheckBox>
+                </div>
+                {!erase &&
+                  <span className='halv'>
+                    <span className='input-title'>Hook</span>
+                    <input
+                      placeholder="Enter hook value"
+                      onChange={e => onHookValueChange(e.target.value)}
+                      className="input-text"
+                      spellCheck="false"
+                    />
+                  </span>
+                }
                 <div>
                   <br />
                   {status ? <b className="orange">{status}</b> : <br />}
