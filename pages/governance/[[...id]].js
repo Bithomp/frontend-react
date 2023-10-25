@@ -134,7 +134,7 @@ export default function Governance({ id, setSignRequest, signRequest }) {
           }
           newdata.votes = {
             seat: newdata.votes.seat.sort((a, b) => (a.seat > b.seat) ? 1 : ((a.seat < b.seat) ? -1 : (seatNumber(members, a.voter) > seatNumber(members, b.voter)) ? 1 : -1)),
-            hook: newdata.votes.hook.sort((a, b) => (a.topic > b.topic) ? 1 : ((a.topic < b.topic) ? -1 : (seatNumber(members, a.voter) > seatNumber(members, b.voter)) ? 1 : -1)),
+            hook: newdata.votes.hook.sort((a, b) => (a.targetLayer > b.targetLayer) ? 1 : ((a.targetLayer < b.targetLayer) ? -1 : ((a.topic > b.topic) ? 1 : ((a.topic < b.topic) ? -1 : (seatNumber(members, a.voter) > seatNumber(members, b.voter)) ? 1 : -1)))),
             reward: {
               rate: newdata.votes.reward.rate.sort((a, b) => (a.value < b.value) ? 1 : ((a.value > b.value) ? -1 : (seatNumber(members, a.voter) > seatNumber(members, b.voter)) ? 1 : -1)),
               delay: newdata.votes.reward.delay.sort((a, b) => (a.value < b.value) ? 1 : ((a.value > b.value) ? -1 : (seatNumber(members, a.voter) > seatNumber(members, b.voter)) ? 1 : -1)),
@@ -302,6 +302,16 @@ export default function Governance({ id, setSignRequest, signRequest }) {
           </>
         }
       </div>
+      {!mainTable &&
+        <div className='center'>
+          <br /><br />
+          <button
+            className='button-action center'
+            onClick={() => router.push("/governance")}
+          >
+            <b>Show the Main Table</b></button>
+        </div>
+      }
       <br />
       <h4 className='center'>Members</h4>
       <table className="table-large shrink">
@@ -828,7 +838,7 @@ export default function Governance({ id, setSignRequest, signRequest }) {
                 {!mainTable &&
                   <th className='center'>Target</th>
                 }
-                <th className='right'>Value</th>
+                <th className='right'>Hook</th>
               </tr>
             </thead>
             <tbody>
@@ -892,7 +902,7 @@ export default function Governance({ id, setSignRequest, signRequest }) {
               <table className="table-large shrink">
                 <thead>
                   <tr>
-                    <th>Key</th>
+                    <th>Hook</th>
                     <th className='center'>Topic</th>
                     {!mainTable &&
                       <th className='center'>Target</th>
@@ -921,9 +931,7 @@ export default function Governance({ id, setSignRequest, signRequest }) {
                             data.count.hook.map((p, i) =>
                               <tr key={i}>
                                 <td>
-                                  <CopyButton text={p.key} />
-                                  {" "}
-                                  {shortHash(p.key, 16)}
+                                  ...{p.key.substr(p.key.length - 16)}
                                 </td>
                                 <td className='center'>
                                   {p.topic}
