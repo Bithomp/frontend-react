@@ -595,7 +595,7 @@ export default function SignForm({ setSignRequest, setAccount, signRequest }) {
                   {status ?
                     <b className="orange">{status}</b>
                     :
-                    <b>= {duration(t, rewardDelay, { seconds: true })}</b>
+                    rewardDelay ? <b>= {duration(t, rewardDelay, { seconds: true })}</b> : <br />
                   }
                 </div>
               </div>
@@ -619,7 +619,7 @@ export default function SignForm({ setSignRequest, setAccount, signRequest }) {
                   {status ?
                     <b className="orange">{status}</b>
                     :
-                    <b>≈ {rewardRateHuman(rewardRate)}</b>
+                    rewardRate ? <b>≈ {rewardRateHuman(rewardRate)}</b> : <br />
                   }
                 </div>
               </div>
