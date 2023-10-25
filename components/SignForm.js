@@ -457,7 +457,7 @@ export default function SignForm({ setSignRequest, setAccount, signRequest }) {
 
             {screen === 'NFTokenCreateOffer' &&
               <>
-                {signRequest.request.Amount ?
+                {signRequest.broker?.nftPrice ?
                   <>
                     <p className='left' style={{ width: "360px", margin: "20px auto" }}>
                       You're making a counter offer, which should to be accepted automatically within 5 minutes.
@@ -467,7 +467,7 @@ export default function SignForm({ setSignRequest, setAccount, signRequest }) {
                       <tbody>
                         <tr>
                           <td>NFT price</td>
-                          <td className='right'> {amountFormat(signRequest.broker?.nftPrice)}</td>
+                          <td className='right'> {amountFormat(signRequest.broker.nftPrice)}</td>
                         </tr>
                         <tr>
                           <td>onXRP fee (1.5%)</td>
