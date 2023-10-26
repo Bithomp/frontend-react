@@ -522,89 +522,91 @@ export default function Governance({ id, setSignRequest, signRequest, account })
             </tbody>
           </table>
         </div>
-        <div className='div-with-table'>
-          {data?.count?.seat?.length > 0 ?
-            <>
-              <h4 className='center'>Seat votes count</h4>
-              <table className="table-large shrink">
-                <thead>
-                  <tr>
-                    <th>Address</th>
-                    {!mainTable &&
-                      <th className='center'>Target</th>
-                    }
-                    <th className='center'>Seat</th>
-                    <th className='right'>Votes</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {loading ?
-                    <tr className='right'>
-                      <td colSpan="100">
-                        <br />
-                        <div className='center'>
-                          <span className="waiting"></span>
-                          <br />
-                          {t("general.loading")}
-                        </div>
-                        <br />
-                      </td>
-                    </tr>
-                    :
-                    <>
-                      {(!errorMessage && data?.count?.seat) ?
-                        <>
-                          {data.count.seat.length > 0 &&
-                            data.count.seat.map((p, i) =>
-                              <tr key={i} className={reachedMajority(p, 'voteL1') ? "bold" : ""}>
-                                <td>
-                                  {seatAddress(p, 'address', addressOption)}
-                                </td>
-                                {!mainTable &&
-                                  <td className='center'>
-                                    L{p.targetLayer}
-                                  </td>
-                                }
-                                <td className='center'>
-                                  {p.seat}
-                                </td>
-                                <td className='right'>
-                                  {showMajority(p, 'voteL1')}
-                                </td>
-                              </tr>
-                            )
-                          }
-                        </>
-                        :
-                        <tr><td colSpan="100" className='center orange bold'>{errorMessage}</td></tr>
+        {(canVote || data?.count?.seat?.length > 0) &&
+          <div className='div-with-table'>
+            {data?.count?.seat?.length > 0 ?
+              <>
+                <h4 className='center'>Seat votes count</h4>
+                <table className="table-large shrink">
+                  <thead>
+                    <tr>
+                      <th>Address</th>
+                      {!mainTable &&
+                        <th className='center'>Target</th>
                       }
-                    </>
+                      <th className='center'>Seat</th>
+                      <th className='right'>Votes</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {loading ?
+                      <tr className='right'>
+                        <td colSpan="100">
+                          <br />
+                          <div className='center'>
+                            <span className="waiting"></span>
+                            <br />
+                            {t("general.loading")}
+                          </div>
+                          <br />
+                        </td>
+                      </tr>
+                      :
+                      <>
+                        {(!errorMessage && data?.count?.seat) ?
+                          <>
+                            {data.count.seat.length > 0 &&
+                              data.count.seat.map((p, i) =>
+                                <tr key={i} className={reachedMajority(p, 'voteL1') ? "bold" : ""}>
+                                  <td>
+                                    {seatAddress(p, 'address', addressOption)}
+                                  </td>
+                                  {!mainTable &&
+                                    <td className='center'>
+                                      L{p.targetLayer}
+                                    </td>
+                                  }
+                                  <td className='center'>
+                                    {p.seat}
+                                  </td>
+                                  <td className='right'>
+                                    {showMajority(p, 'voteL1')}
+                                  </td>
+                                </tr>
+                              )
+                            }
+                          </>
+                          :
+                          <tr><td colSpan="100" className='center orange bold'>{errorMessage}</td></tr>
+                        }
+                      </>
+                    }
+                  </tbody>
+                </table>
+                <br />
+              </>
+              :
+              canVote && <h4 className='center'>Cast a first vote</h4>
+            }
+            {canVote &&
+              <button
+                className='button-action wide center'
+                onClick={() => setSignRequest({
+                  wallet: "xumm",
+                  action: "castVoteSeat",
+                  layer: mainTable ? 1 : 2,
+                  request: {
+                    "TransactionType": "Invoke",
+                    "Destination": tableAddress
                   }
-                </tbody>
-              </table>
-              <br />
-            </>
-            :
-            <h4 className='center'>Cast a first vote</h4>
-          }
-          {canVote &&
-            <button
-              className='button-action wide center'
-              onClick={() => setSignRequest({
-                wallet: "xumm",
-                action: "castVoteSeat",
-                layer: mainTable ? 1 : 2,
-                request: {
-                  "TransactionType": "Invoke",
-                  "Destination": tableAddress
-                }
-              })}
-            >
-              <Image src={xummImg} className='xumm-logo' alt="xumm" height={24} width={24} />
-              Vote on seat
-            </button>
-          }
-        </div>
+                })}
+              >
+                <Image src={xummImg} className='xumm-logo' alt="xumm" height={24} width={24} />
+                Vote on seat
+              </button>
+            }
+          </div>
+        }
       </div>
       <br />
       <div className='flex flex-center'>
@@ -673,88 +675,90 @@ export default function Governance({ id, setSignRequest, signRequest, account })
             </tbody>
           </table>
         </div>
-        <div className='div-with-table'>
-          {data?.count?.reward?.rate?.length > 0 ?
-            <>
-              <h4 className='center'>Reward rate votes count</h4>
-              <table className="table-large shrink">
-                <thead>
-                  <tr>
-                    <th className='right'>Rate</th>
-                    <th className='right'>Value</th>
-                    {!mainTable &&
-                      <th className='center'>Target</th>
-                    }
-                    <th className='right'>Votes</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {loading ?
-                    <tr className='right'>
-                      <td colSpan="100">
-                        <br />
-                        <div className='center'>
-                          <span className="waiting"></span>
-                          <br />
-                          {t("general.loading")}
-                        </div>
-                        <br />
-                      </td>
-                    </tr>
-                    :
-                    <>
-                      {(!errorMessage && data?.count?.reward?.rate) ?
-                        <>
-                          {data.count.reward.rate.length > 0 &&
-                            data.count.reward.rate.map((p, i) =>
-                              <tr key={i} className={reachedMajority(p, 'reward') ? "bold" : ""}>
-                                <td className='right'>
-                                  {rewardRateHuman(p.rate)}
-                                </td>
-                                <td className='right'>
-                                  {p.rate}
-                                </td>
-                                {!mainTable &&
-                                  <td className='center'>
-                                    L{p.targetLayer}
-                                  </td>
-                                }
-                                <td className='right'>
-                                  {showMajority(p, 'reward')}
-                                </td>
-                              </tr>
-                            )
-                          }
-                        </>
-                        :
-                        <tr><td colSpan="100" className='center orange bold'>{errorMessage}</td></tr>
+        {(canVote || data?.count?.reward?.rate?.length > 0) &&
+          <div className='div-with-table'>
+            {data?.count?.reward?.rate?.length > 0 ?
+              <>
+                <h4 className='center'>Reward rate votes count</h4>
+                <table className="table-large shrink">
+                  <thead>
+                    <tr>
+                      <th className='right'>Rate</th>
+                      <th className='right'>Value</th>
+                      {!mainTable &&
+                        <th className='center'>Target</th>
                       }
-                    </>
+                      <th className='right'>Votes</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {loading ?
+                      <tr className='right'>
+                        <td colSpan="100">
+                          <br />
+                          <div className='center'>
+                            <span className="waiting"></span>
+                            <br />
+                            {t("general.loading")}
+                          </div>
+                          <br />
+                        </td>
+                      </tr>
+                      :
+                      <>
+                        {(!errorMessage && data?.count?.reward?.rate) ?
+                          <>
+                            {data.count.reward.rate.length > 0 &&
+                              data.count.reward.rate.map((p, i) =>
+                                <tr key={i} className={reachedMajority(p, 'reward') ? "bold" : ""}>
+                                  <td className='right'>
+                                    {rewardRateHuman(p.rate)}
+                                  </td>
+                                  <td className='right'>
+                                    {p.rate}
+                                  </td>
+                                  {!mainTable &&
+                                    <td className='center'>
+                                      L{p.targetLayer}
+                                    </td>
+                                  }
+                                  <td className='right'>
+                                    {showMajority(p, 'reward')}
+                                  </td>
+                                </tr>
+                              )
+                            }
+                          </>
+                          :
+                          <tr><td colSpan="100" className='center orange bold'>{errorMessage}</td></tr>
+                        }
+                      </>
+                    }
+                  </tbody>
+                </table>
+                <br />
+              </>
+              :
+              canVote && <h4 className='center'>Cast a first vote</h4>
+            }
+            {canVote &&
+              <button
+                className='button-action wide center'
+                onClick={() => setSignRequest({
+                  wallet: "xumm",
+                  action: "castVoteRewardRate",
+                  request: {
+                    "TransactionType": "Invoke",
+                    "Destination": tableAddress
                   }
-                </tbody>
-              </table>
-              <br />
-            </>
-            :
-            <h4 className='center'>Cast a first vote</h4>
-          }
-          {canVote &&
-            <button
-              className='button-action wide center'
-              onClick={() => setSignRequest({
-                wallet: "xumm",
-                action: "castVoteRewardRate",
-                request: {
-                  "TransactionType": "Invoke",
-                  "Destination": tableAddress
-                }
-              })}
-            >
-              <Image src={xummImg} className='xumm-logo' alt="xumm" height={24} width={24} />
-              Vote on the Reward rate
-            </button>
-          }
-        </div>
+                })}
+              >
+                <Image src={xummImg} className='xumm-logo' alt="xumm" height={24} width={24} />
+                Vote on the Reward rate
+              </button>
+            }
+          </div>
+        }
       </div>
       <br />
       <div className='flex flex-center'>
@@ -821,88 +825,90 @@ export default function Governance({ id, setSignRequest, signRequest, account })
             </tbody>
           </table>
         </div>
-        <div className='div-with-table'>
-          {data?.count?.reward?.delay?.length > 0 ?
-            <>
-              <h4 className='center'>Reward delay votes count</h4>
-              <table className="table-large shrink">
-                <thead>
-                  <tr>
-                    <th className='right'>Delay</th>
-                    <th className='right'>In seconds</th>
-                    {!mainTable &&
-                      <th className='center'>Target</th>
-                    }
-                    <th className='right'>Votes</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {loading ?
-                    <tr className='right'>
-                      <td colSpan="100">
-                        <br />
-                        <div className='center'>
-                          <span className="waiting"></span>
-                          <br />
-                          {t("general.loading")}
-                        </div>
-                        <br />
-                      </td>
-                    </tr>
-                    :
-                    <>
-                      {(!errorMessage && data?.count?.reward?.delay) ?
-                        <>
-                          {data.count.reward.delay.length > 0 &&
-                            data.count.reward.delay.map((p, i) =>
-                              <tr key={i} className={reachedMajority(p, 'reward') ? "bold" : ""}>
-                                <td className='right'>
-                                  {duration(t, p.delay, { seconds: true })}
-                                </td>
-                                <td className='right'>
-                                  {p.delay}
-                                </td>
-                                {!mainTable &&
-                                  <td className='center'>
-                                    L{p.targetLayer}
-                                  </td>
-                                }
-                                <td className='right'>
-                                  {showMajority(p, 'reward')}
-                                </td>
-                              </tr>
-                            )
-                          }
-                        </>
-                        :
-                        <tr><td colSpan="100" className='center orange bold'>{errorMessage}</td></tr>
+        {(canVote || data?.count?.reward?.delay?.length > 0) &&
+          <div className='div-with-table'>
+            {data?.count?.reward?.delay?.length > 0 ?
+              <>
+                <h4 className='center'>Reward delay votes count</h4>
+                <table className="table-large shrink">
+                  <thead>
+                    <tr>
+                      <th className='right'>Delay</th>
+                      <th className='right'>In seconds</th>
+                      {!mainTable &&
+                        <th className='center'>Target</th>
                       }
-                    </>
+                      <th className='right'>Votes</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {loading ?
+                      <tr className='right'>
+                        <td colSpan="100">
+                          <br />
+                          <div className='center'>
+                            <span className="waiting"></span>
+                            <br />
+                            {t("general.loading")}
+                          </div>
+                          <br />
+                        </td>
+                      </tr>
+                      :
+                      <>
+                        {(!errorMessage && data?.count?.reward?.delay) ?
+                          <>
+                            {data.count.reward.delay.length > 0 &&
+                              data.count.reward.delay.map((p, i) =>
+                                <tr key={i} className={reachedMajority(p, 'reward') ? "bold" : ""}>
+                                  <td className='right'>
+                                    {duration(t, p.delay, { seconds: true })}
+                                  </td>
+                                  <td className='right'>
+                                    {p.delay}
+                                  </td>
+                                  {!mainTable &&
+                                    <td className='center'>
+                                      L{p.targetLayer}
+                                    </td>
+                                  }
+                                  <td className='right'>
+                                    {showMajority(p, 'reward')}
+                                  </td>
+                                </tr>
+                              )
+                            }
+                          </>
+                          :
+                          <tr><td colSpan="100" className='center orange bold'>{errorMessage}</td></tr>
+                        }
+                      </>
+                    }
+                  </tbody>
+                </table>
+                <br />
+              </>
+              :
+              canVote && <h4 className='center'>Cast a first vote</h4>
+            }
+            {canVote &&
+              <button
+                className='button-action wide center'
+                onClick={() => setSignRequest({
+                  wallet: "xumm",
+                  action: "castVoteRewardDelay",
+                  request: {
+                    "TransactionType": "Invoke",
+                    "Destination": tableAddress
                   }
-                </tbody>
-              </table>
-              <br />
-            </>
-            :
-            <h4 className='center'>Cast a first vote</h4>
-          }
-          {canVote &&
-            <button
-              className='button-action wide center'
-              onClick={() => setSignRequest({
-                wallet: "xumm",
-                action: "castVoteRewardDelay",
-                request: {
-                  "TransactionType": "Invoke",
-                  "Destination": tableAddress
-                }
-              })}
-            >
-              <Image src={xummImg} className='xumm-logo' alt="xumm" height={24} width={24} />
-              Vote on the Reward delay
-            </button>
-          }
-        </div>
+                })}
+              >
+                <Image src={xummImg} className='xumm-logo' alt="xumm" height={24} width={24} />
+                Vote on the Reward delay
+              </button>
+            }
+          </div>
+        }
       </div>
       <br />
       <div className='flex flex-center'>
@@ -972,89 +978,91 @@ export default function Governance({ id, setSignRequest, signRequest, account })
           </table>
         </div>
 
-        <div className='div-with-table'>
-          {data?.count?.hook?.length > 0 ?
-            <>
-              <h4 className='center'>Hook votes count</h4>
-              <table className="table-large shrink">
-                <thead>
-                  <tr>
-                    <th>Hook</th>
-                    {!mainTable &&
-                      <th className='center'>Target</th>
-                    }
-                    <th className='center'>Place</th>
-                    <th className='right'>Votes</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {loading ?
-                    <tr className='right'>
-                      <td colSpan="100">
-                        <br />
-                        <div className='center'>
-                          <span className="waiting"></span>
-                          <br />
-                          {t("general.loading")}
-                        </div>
-                        <br />
-                      </td>
-                    </tr>
-                    :
-                    <>
-                      {(!errorMessage && data.count.hook) ?
-                        <>
-                          {data.count.hook.length > 0 &&
-                            data.count.hook.map((p, i) =>
-                              <tr key={i} className={reachedMajority(p, 'hook') ? "bold" : ""}>
-                                <td>
-                                  ...{p.key.substr(p.key.length - 16)}
-                                </td>
-                                {!mainTable &&
-                                  <td className='center'>
-                                    L{p.targetLayer}
-                                  </td>
-                                }
-                                <td className='center'>
-                                  {p.topic}
-                                </td>
-                                <td className='right'>
-                                  {showMajority(p, 'hook')}
-                                </td>
-                              </tr>
-                            )
-                          }
-                        </>
-                        :
-                        <tr><td colSpan="100" className='center orange bold'>{errorMessage}</td></tr>
+        {(canVote || data?.count?.hook?.length > 0) &&
+          <div className='div-with-table'>
+            {data?.count?.hook?.length > 0 ?
+              <>
+                <h4 className='center'>Hook votes count</h4>
+                <table className="table-large shrink">
+                  <thead>
+                    <tr>
+                      <th>Hook</th>
+                      {!mainTable &&
+                        <th className='center'>Target</th>
                       }
-                    </>
+                      <th className='center'>Place</th>
+                      <th className='right'>Votes</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {loading ?
+                      <tr className='right'>
+                        <td colSpan="100">
+                          <br />
+                          <div className='center'>
+                            <span className="waiting"></span>
+                            <br />
+                            {t("general.loading")}
+                          </div>
+                          <br />
+                        </td>
+                      </tr>
+                      :
+                      <>
+                        {(!errorMessage && data.count.hook) ?
+                          <>
+                            {data.count.hook.length > 0 &&
+                              data.count.hook.map((p, i) =>
+                                <tr key={i} className={reachedMajority(p, 'hook') ? "bold" : ""}>
+                                  <td>
+                                    ...{p.key.substr(p.key.length - 16)}
+                                  </td>
+                                  {!mainTable &&
+                                    <td className='center'>
+                                      L{p.targetLayer}
+                                    </td>
+                                  }
+                                  <td className='center'>
+                                    {p.topic}
+                                  </td>
+                                  <td className='right'>
+                                    {showMajority(p, 'hook')}
+                                  </td>
+                                </tr>
+                              )
+                            }
+                          </>
+                          :
+                          <tr><td colSpan="100" className='center orange bold'>{errorMessage}</td></tr>
+                        }
+                      </>
+                    }
+                  </tbody>
+                </table>
+                <br />
+              </>
+              :
+              canVote && <h4 className='center'>Cast a first vote</h4>
+            }
+            {canVote &&
+              <button
+                className='button-action wide center'
+                onClick={() => setSignRequest({
+                  wallet: "xumm",
+                  action: "castVoteHook",
+                  layer: mainTable ? 1 : 2,
+                  request: {
+                    "TransactionType": "Invoke",
+                    "Destination": tableAddress
                   }
-                </tbody>
-              </table>
-              <br />
-            </>
-            :
-            <h4 className='center'>Cast a first vote</h4>
-          }
-          {canVote &&
-            <button
-              className='button-action wide center'
-              onClick={() => setSignRequest({
-                wallet: "xumm",
-                action: "castVoteHook",
-                layer: mainTable ? 1 : 2,
-                request: {
-                  "TransactionType": "Invoke",
-                  "Destination": tableAddress
-                }
-              })}
-            >
-              <Image src={xummImg} className='xumm-logo' alt="xumm" height={24} width={24} />
-              Vote on the Hook
-            </button>
-          }
-        </div>
+                })}
+              >
+                <Image src={xummImg} className='xumm-logo' alt="xumm" height={24} width={24} />
+                Vote on the Hook
+              </button>
+            }
+          </div>
+        }
       </div>
 
       {data?.parameters?.length > 0 &&
