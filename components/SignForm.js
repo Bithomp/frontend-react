@@ -509,7 +509,7 @@ export default function SignForm({ setSignRequest, setAccount, signRequest }) {
     setSeatData(seatObj)
   }
 
-  const onTopicSelect = topic => {
+  const onPlaceSelect = topic => {
     let hookObj = hookData
     hookObj.topic = topic.value
     setHookData(hookObj)
@@ -762,7 +762,7 @@ export default function SignForm({ setSignRequest, setAccount, signRequest }) {
                     </span>
                   }
                   <span className={signRequest.layer === 2 ? 'quarter' : 'halv'}>
-                    <span className='input-title'>Topic</span>
+                    <span className='input-title'>Place</span>
                     <Select
                       options={[
                         { value: 0, label: "0" },
@@ -777,7 +777,7 @@ export default function SignForm({ setSignRequest, setAccount, signRequest }) {
                         { value: 9, label: "9" }
                       ]}
                       defaultValue={{ value: 2, label: "2" }}
-                      onChange={onTopicSelect}
+                      onChange={onPlaceSelect}
                       isSearchable={false}
                       className="simple-select"
                       classNamePrefix="react-select"

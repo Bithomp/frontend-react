@@ -58,8 +58,11 @@ export default function Governance({ id, setSignRequest, signRequest }) {
   const [majority, setMajority] = useState({})
   const [loading, setLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState("")
+  const [loadingHooksList, setLoadingHooksList] = useState(false)
+  const [hookList, setHookList] = useState([])
 
   const controller = new AbortController()
+  const controller2 = new AbortController()
 
   const mainTable = !id || id === 'rHb9CJAWyB4rj91VRWn96DkukG4bwdtyTh'
   const tableAddress = id || 'rHb9CJAWyB4rj91VRWn96DkukG4bwdtyTh'
@@ -112,8 +115,29 @@ export default function Governance({ id, setSignRequest, signRequest }) {
     let apiUrl = 'v2/governance/' + id
 
     setLoading(true)
+    setLoadingHooksList(true)
     setData({})
     setMajority({})
+    setHookList([])
+
+    const accountObjectsData = await axios.get('xrpl/objects/' + id, {
+      signal: controller2.signal
+    }).catch(error => {
+      if (error && error.message !== "canceled") {
+        setErrorMessage(t("error." + error.message))
+        setLoadingHooksList(false)
+      }
+    })
+    const accountObjects = accountObjectsData?.data
+    if (accountObjects) {
+      setLoadingHooksList(false)
+      const accountObjectWithHooks = accountObjects.find(o => o.LedgerEntryType === "Hook")
+      if (accountObjectWithHooks?.Hooks?.length > 0) {
+        const hooks = accountObjectWithHooks.Hooks
+        const hookHashes = hooks.map(h => h.Hook.HookHash)
+        setHookList(hookHashes)
+      }
+    }
 
     const response = await axios.get(apiUrl, {
       signal: controller.signal
@@ -275,6 +299,7 @@ export default function Governance({ id, setSignRequest, signRequest }) {
     }
     return () => {
       controller.abort()
+      controller2.abort()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isReady, id, signRequest])
@@ -328,59 +353,111 @@ export default function Governance({ id, setSignRequest, signRequest }) {
         </div>
       }
       <br />
-      <h4 className='center'>Members</h4>
-      <table className="table-large shrink">
-        <thead>
-          <tr>
-            <th className='center'>Seat</th>
-            <th>{t("table.address")}</th>
-            {mainTable &&
-              <th>Layer</th>
-            }
-          </tr>
-        </thead>
-        <tbody>
-          {loading ?
-            <tr className='right'>
-              <td colSpan="100">
-                <br />
-                <div className='center'>
-                  <span className="waiting"></span>
-                  <br />
-                  {t("general.loading")}
-                </div>
-                <br />
-              </td>
-            </tr>
-            :
-            <>
-              {(!errorMessage && data?.members) ?
+      <div className='flex flex-center'>
+        <div className='div-with-table'>
+          <h4 className='center'>Members</h4>
+          <table className="table-large shrink">
+            <thead>
+              <tr>
+                <th className='center'>Seat</th>
+                <th>{t("table.address")}</th>
+                {mainTable &&
+                  <th>Layer</th>
+                }
+              </tr>
+            </thead>
+            <tbody>
+              {loading ?
+                <tr className='right'>
+                  <td colSpan="100">
+                    <br />
+                    <div className='center'>
+                      <span className="waiting"></span>
+                      <br />
+                      {t("general.loading")}
+                    </div>
+                    <br />
+                  </td>
+                </tr>
+                :
                 <>
-                  {data.members.length &&
-                    data.members.map((p, i) =>
-                      <tr key={i}>
-                        <td className='center'>
-                          {p.key}
-                        </td>
-                        <td>
-                          {seatAddress(p, 'value')}
-                        </td>
-                        {mainTable &&
-                          <td>
-                            {tableLink(p)}
-                          </td>
-                        }
-                      </tr>
-                    )
+                  {(!errorMessage && data?.members) ?
+                    <>
+                      {data.members.length &&
+                        data.members.map((p, i) =>
+                          <tr key={i}>
+                            <td className='center'>
+                              {p.key}
+                            </td>
+                            <td>
+                              {seatAddress(p, 'value')}
+                            </td>
+                            {mainTable &&
+                              <td>
+                                {tableLink(p)}
+                              </td>
+                            }
+                          </tr>
+                        )
+                      }
+                    </>
+                    :
+                    <tr><td colSpan="100" className='center orange bold'>{errorMessage}</td></tr>
                   }
                 </>
-                :
-                <tr><td colSpan="100" className='center orange bold'>{errorMessage}</td></tr>
               }
-            </>
-          }
-        </tbody>
-      </table>
+            </tbody>
+          </table>
+        </div>
+        <div className='div-with-table'>
+          <h4 className='center'>Hooks</h4>
+          <table className="table-large shrink">
+            <thead>
+              <tr>
+                <th className='center'>Place</th>
+                <th className='right'>Hook</th>
+              </tr>
+            </thead>
+            <tbody>
+              {loadingHooksList ?
+                <tr className='right'>
+                  <td colSpan="100">
+                    <br />
+                    <div className='center'>
+                      <span className="waiting"></span>
+                      <br />
+                      {t("general.loading")}
+                    </div>
+                    <br />
+                  </td>
+                </tr>
+                :
+                <>
+                  {hookList.length > 0 ?
+                    <>
+                      {hookList.map((p, i) =>
+                        <tr key={i}>
+                          <td className='center'>
+                            {i}
+                          </td>
+                          <td className='right'>
+                            {isMobile ? shortHash(p, 16) : p}
+                            {" "}
+                            <CopyButton text={p} />
+                          </td>
+                        </tr>
+                      )
+                      }
+                    </>
+                    :
+                    <tr><td colSpan="100" className='center orange bold'>{errorMessage}</td></tr>
+                  }
+                </>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
       <br />
       <div className='flex flex-center'>
         <div className='div-with-table'>
@@ -828,10 +905,10 @@ export default function Governance({ id, setSignRequest, signRequest }) {
             <thead>
               <tr>
                 <th>Voter</th>
-                <th className='center'>Topic</th>
                 {!mainTable &&
                   <th className='center'>Target</th>
                 }
+                <th className='center'>Place</th>
                 <th className='right'>Hook</th>
               </tr>
             </thead>
@@ -858,16 +935,15 @@ export default function Governance({ id, setSignRequest, signRequest }) {
                             <td>
                               {seatNumberAndName(p, 'voter', addressOption)}
                             </td>
-                            <td className='center'>
-                              {p.topic}
-                            </td>
                             {!mainTable &&
                               <td className='center'>
                                 L{p.targetLayer}
                               </td>
                             }
+                            <td className='center'>
+                              {p.topic}
+                            </td>
                             <td className='right'>
-
                               {shortHash(p.value, 16)}
                               {" "}
                               <CopyButton text={p.value} />
@@ -897,10 +973,10 @@ export default function Governance({ id, setSignRequest, signRequest }) {
                 <thead>
                   <tr>
                     <th>Hook</th>
-                    <th className='center'>Topic</th>
                     {!mainTable &&
                       <th className='center'>Target</th>
                     }
+                    <th className='center'>Place</th>
                     <th className='right'>Votes</th>
                   </tr>
                 </thead>
@@ -927,14 +1003,14 @@ export default function Governance({ id, setSignRequest, signRequest }) {
                                 <td>
                                   ...{p.key.substr(p.key.length - 16)}
                                 </td>
-                                <td className='center'>
-                                  {p.topic}
-                                </td>
                                 {!mainTable &&
                                   <td className='center'>
                                     L{p.targetLayer}
                                   </td>
                                 }
+                                <td className='center'>
+                                  {p.topic}
+                                </td>
                                 <td className='right'>
                                   {showMajority(p, 'hook')}
                                 </td>
