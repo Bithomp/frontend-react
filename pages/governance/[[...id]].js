@@ -47,7 +47,7 @@ const seatAddress = (addressData, addessName, addressOption) => {
   </>
 }
 
-export default function Governance({ id, setSignRequest, signRequest }) {
+export default function Governance({ id, setSignRequest, signRequest, account }) {
   const { t } = useTranslation(['common', 'governance'])
   const router = useRouter()
   const isMobile = useIsMobile()
@@ -305,6 +305,7 @@ export default function Governance({ id, setSignRequest, signRequest }) {
   }, [isReady, id, signRequest])
 
   const addressOption = isMobile ? { short: true } : {}
+  const canVote = account?.address && data?.members?.find(m => m.value === account.address)
 
   return <>
     <SEO title={t("header", { ns: "governance", ledgerName })} />
@@ -586,21 +587,23 @@ export default function Governance({ id, setSignRequest, signRequest }) {
             :
             <h4 className='center'>Cast a first vote</h4>
           }
-          <button
-            className='button-action wide center'
-            onClick={() => setSignRequest({
-              wallet: "xumm",
-              action: "castVoteSeat",
-              layer: mainTable ? 1 : 2,
-              request: {
-                "TransactionType": "Invoke",
-                "Destination": tableAddress
-              }
-            })}
-          >
-            <Image src={xummImg} className='xumm-logo' alt="xumm" height={24} width={24} />
-            Vote on seat
-          </button>
+          {canVote &&
+            <button
+              className='button-action wide center'
+              onClick={() => setSignRequest({
+                wallet: "xumm",
+                action: "castVoteSeat",
+                layer: mainTable ? 1 : 2,
+                request: {
+                  "TransactionType": "Invoke",
+                  "Destination": tableAddress
+                }
+              })}
+            >
+              <Image src={xummImg} className='xumm-logo' alt="xumm" height={24} width={24} />
+              Vote on seat
+            </button>
+          }
         </div>
       </div>
       <br />
@@ -735,20 +738,22 @@ export default function Governance({ id, setSignRequest, signRequest }) {
             :
             <h4 className='center'>Cast a first vote</h4>
           }
-          <button
-            className='button-action wide center'
-            onClick={() => setSignRequest({
-              wallet: "xumm",
-              action: "castVoteRewardRate",
-              request: {
-                "TransactionType": "Invoke",
-                "Destination": tableAddress
-              }
-            })}
-          >
-            <Image src={xummImg} className='xumm-logo' alt="xumm" height={24} width={24} />
-            Vote on the Reward rate
-          </button>
+          {canVote &&
+            <button
+              className='button-action wide center'
+              onClick={() => setSignRequest({
+                wallet: "xumm",
+                action: "castVoteRewardRate",
+                request: {
+                  "TransactionType": "Invoke",
+                  "Destination": tableAddress
+                }
+              })}
+            >
+              <Image src={xummImg} className='xumm-logo' alt="xumm" height={24} width={24} />
+              Vote on the Reward rate
+            </button>
+          }
         </div>
       </div>
       <br />
@@ -881,20 +886,22 @@ export default function Governance({ id, setSignRequest, signRequest }) {
             :
             <h4 className='center'>Cast a first vote</h4>
           }
-          <button
-            className='button-action wide center'
-            onClick={() => setSignRequest({
-              wallet: "xumm",
-              action: "castVoteRewardDelay",
-              request: {
-                "TransactionType": "Invoke",
-                "Destination": tableAddress
-              }
-            })}
-          >
-            <Image src={xummImg} className='xumm-logo' alt="xumm" height={24} width={24} />
-            Vote on the Reward delay
-          </button>
+          {canVote &&
+            <button
+              className='button-action wide center'
+              onClick={() => setSignRequest({
+                wallet: "xumm",
+                action: "castVoteRewardDelay",
+                request: {
+                  "TransactionType": "Invoke",
+                  "Destination": tableAddress
+                }
+              })}
+            >
+              <Image src={xummImg} className='xumm-logo' alt="xumm" height={24} width={24} />
+              Vote on the Reward delay
+            </button>
+          }
         </div>
       </div>
       <br />
@@ -1030,21 +1037,23 @@ export default function Governance({ id, setSignRequest, signRequest }) {
             :
             <h4 className='center'>Cast a first vote</h4>
           }
-          <button
-            className='button-action wide center'
-            onClick={() => setSignRequest({
-              wallet: "xumm",
-              action: "castVoteHook",
-              layer: mainTable ? 1 : 2,
-              request: {
-                "TransactionType": "Invoke",
-                "Destination": tableAddress
-              }
-            })}
-          >
-            <Image src={xummImg} className='xumm-logo' alt="xumm" height={24} width={24} />
-            Vote on the Hook
-          </button>
+          {canVote &&
+            <button
+              className='button-action wide center'
+              onClick={() => setSignRequest({
+                wallet: "xumm",
+                action: "castVoteHook",
+                layer: mainTable ? 1 : 2,
+                request: {
+                  "TransactionType": "Invoke",
+                  "Destination": tableAddress
+                }
+              })}
+            >
+              <Image src={xummImg} className='xumm-logo' alt="xumm" height={24} width={24} />
+              Vote on the Hook
+            </button>
+          }
         </div>
       </div>
 
