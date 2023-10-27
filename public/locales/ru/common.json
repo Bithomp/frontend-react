@@ -63,8 +63,8 @@
       "90d": "90 дней"
     },
     "target-table-select": {
-      "01": "Main table",
-      "02": "Your table"
+      "01": "Главный стол",
+      "02": "Мой стол"
     }
   },
   "signin": {
