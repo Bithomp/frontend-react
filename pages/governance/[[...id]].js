@@ -131,7 +131,7 @@ export default function Governance({ id, setSignRequest, signRequest, account })
     const accountObjects = accountObjectsData?.data
     if (accountObjects) {
       setLoadingHooksList(false)
-      const accountObjectWithHooks = accountObjects.find(o => o.LedgerEntryType === "Hook")
+      const accountObjectWithHooks = accountObjects.length > 0 ? accountObjects.find(o => o.LedgerEntryType === "Hook") : []
       if (accountObjectWithHooks?.Hooks?.length > 0) {
         const hooks = accountObjectWithHooks.Hooks
         const hookHashes = hooks.map(h => h.Hook.HookHash)
