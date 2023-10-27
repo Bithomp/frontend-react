@@ -422,7 +422,7 @@ export default function SignForm({ setSignRequest, setAccount, signRequest }) {
           HookParameter:
           {
             HookParameterName: "54",    // T - topic type
-            HookParameterValue: "5244", // RD - reward delay
+            HookParameterValue: "5244", // RD - Reward delay
           }
         },
         {

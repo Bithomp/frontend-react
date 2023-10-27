@@ -197,7 +197,8 @@ export default function Governance({ id, setSignRequest, signRequest, account })
   /*
     {
       "rewardRate": 0.003333333333333333,
-      "rewardDuration": 2600000,
+      "rewardDelay": 2600000,
+      "rewardDuration": 2600000, //deprecated
       "memberCount": 9,
       "members": [
         {
@@ -330,12 +331,12 @@ export default function Governance({ id, setSignRequest, signRequest, account })
                 </Trans>
               </>
             }
-            {data?.rewardDuration &&
+            {(data?.rewardDelay || data?.rewardDuration) &&
               <>
                 {" "}
-                <Trans i18nKey="reward-duration" ns="governance">
-                  Reward duration: <b>{{ rewardDuration: duration(t, data.rewardDuration, { seconds: true }) }}</b> ({{
-                    rewardDurationSeconds: data.rewardDuration
+                <Trans i18nKey="reward-delay" ns="governance">
+                  Reward delay: <b>{{ rewardDelay: duration(t, data.rewardDelay || data.rewardDuration, { seconds: true }) }}</b> ({{
+                    rewardDelaySeconds: data.rewardDelay || data.rewardDuration
                   }} seconds).
                 </Trans>
               </>
@@ -350,20 +351,20 @@ export default function Governance({ id, setSignRequest, signRequest, account })
             className='button-action center'
             onClick={() => router.push("/governance")}
           >
-            <b>Show the Main Table</b></button>
+            <b>{t("button.show-main-table", { ns: 'governance' })}</b></button>
         </div>
       }
       <br />
       <div className='flex flex-center'>
         <div className='div-with-table'>
-          <h4 className='center'>Members</h4>
+          <h4 className='center'>{t("table.members", { ns: 'governance' })}</h4>
           <table className="table-large shrink">
             <thead>
               <tr>
-                <th className='center'>Seat</th>
+                <th className='center'>{t("table.seat", { ns: 'governance' })}</th>
                 <th>{t("table.address")}</th>
                 {mainTable &&
-                  <th>Layer</th>
+                  <th>{t("table.layer", { ns: 'governance' })}</th>
                 }
               </tr>
             </thead>
@@ -411,12 +412,12 @@ export default function Governance({ id, setSignRequest, signRequest, account })
           </table>
         </div>
         <div className='div-with-table'>
-          <h4 className='center'>Hooks</h4>
+          <h4 className='center'>{t("table.hooks", { ns: 'governance' })}</h4>
           <table className="table-large shrink">
             <thead>
               <tr>
-                <th className='center'>Place</th>
-                <th className='right'>Hook</th>
+                <th className='center'>{t("table.place", { ns: 'governance' })}</th>
+                <th className='right'>{t("table.hook", { ns: 'governance' })}</th>
               </tr>
             </thead>
             <tbody>
@@ -462,13 +463,13 @@ export default function Governance({ id, setSignRequest, signRequest, account })
       <br />
       <div className='flex flex-center'>
         <div className='div-with-table'>
-          <h4 className='center'>Seat votes</h4>
+          <h4 className='center'>{t("table.seat-votes", { ns: 'governance' })}</h4>
           <table className="table-large shrink">
             <thead>
               <tr>
                 <th>Voter</th>
-                {!mainTable && <th className='center'>Target</th>}
-                <th className='center'>Seat</th>
+                {!mainTable && <th className='center'>{t("table.target", { ns: 'governance' })}</th>}
+                <th className='center'>{t("table.seat", { ns: 'governance' })}</th>
                 <th>{t("table.address")}</th>
               </tr>
             </thead>
@@ -510,7 +511,7 @@ export default function Governance({ id, setSignRequest, signRequest, account })
                         )
                         :
                         <tr>
-                          <td colSpan={100} className='center'>There are no votes</td>
+                          <td colSpan={100} className='center'>{t("table.text.no-votes", { ns: 'governance' })}</td>
                         </tr>
                       }
                     </>
@@ -526,16 +527,16 @@ export default function Governance({ id, setSignRequest, signRequest, account })
           <div className='div-with-table'>
             {data?.count?.seat?.length > 0 ?
               <>
-                <h4 className='center'>Seat votes count</h4>
+                <h4 className='center'>{t("table.seat-votes-count", { ns: 'governance' })}</h4>
                 <table className="table-large shrink">
                   <thead>
                     <tr>
-                      <th>Address</th>
+                      <th>{t("table.address")}</th>
                       {!mainTable &&
-                        <th className='center'>Target</th>
+                        <th className='center'>{t("table.target", { ns: 'governance' })}</th>
                       }
-                      <th className='center'>Seat</th>
-                      <th className='right'>Votes</th>
+                      <th className='center'>{t("table.seat", { ns: 'governance' })}</th>
+                      <th className='right'>{t("table.votes", { ns: 'governance' })}</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -586,7 +587,7 @@ export default function Governance({ id, setSignRequest, signRequest, account })
                 <br />
               </>
               :
-              canVote && <h4 className='center'>Cast a first vote</h4>
+              canVote && <h4 className='center'>{t("table.cast-first-vote", { ns: 'governance' })}</h4>
             }
             {canVote &&
               <button
@@ -602,7 +603,7 @@ export default function Governance({ id, setSignRequest, signRequest, account })
                 })}
               >
                 <Image src={xummImg} className='xumm-logo' alt="xumm" height={24} width={24} />
-                Vote on seat
+                {t("button.vote-seat", { ns: 'governance' })}
               </button>
             }
           </div>
@@ -611,16 +612,16 @@ export default function Governance({ id, setSignRequest, signRequest, account })
       <br />
       <div className='flex flex-center'>
         <div className='div-with-table'>
-          <h4 className='center'>Reward rate votes</h4>
+          <h4 className='center'>{t("table.reward-rate-votes", { ns: 'governance' })}</h4>
           <table className="table-large shrink">
             <thead>
               <tr>
-                <th>Voter</th>
+                <th>{t("table.voter", { ns: 'governance' })}</th>
                 {!mainTable &&
-                  <th className='center'>Target</th>
+                  <th className='center'>{t("table.target", { ns: 'governance' })}</th>
                 }
-                <th className='right'>Rate</th>
-                <th className='right'>Value</th>
+                <th className='right'>{t("table.rate", { ns: 'governance' })}</th>
+                <th className='right'>{t("table.value", { ns: 'governance' })}</th>
               </tr>
             </thead>
             <tbody>
@@ -663,7 +664,7 @@ export default function Governance({ id, setSignRequest, signRequest, account })
                         )
                         :
                         <tr>
-                          <td colSpan={100} className='center'>There are no votes</td>
+                          <td colSpan={100} className='center'>{t("table.text.no-votes", { ns: 'governance' })}</td>
                         </tr>
                       }
                     </>
@@ -679,16 +680,16 @@ export default function Governance({ id, setSignRequest, signRequest, account })
           <div className='div-with-table'>
             {data?.count?.reward?.rate?.length > 0 ?
               <>
-                <h4 className='center'>Reward rate votes count</h4>
+                <h4 className='center'>{t("table.reward-rate-votes-count", { ns: 'governance' })}</h4>
                 <table className="table-large shrink">
                   <thead>
                     <tr>
-                      <th className='right'>Rate</th>
-                      <th className='right'>Value</th>
+                      <th className='right'>{t("table.rate", { ns: 'governance' })}</th>
+                      <th className='right'>{t("table.value", { ns: 'governance' })}</th>
                       {!mainTable &&
-                        <th className='center'>Target</th>
+                        <th className='center'>{t("table.target", { ns: 'governance' })}</th>
                       }
-                      <th className='right'>Votes</th>
+                      <th className='right'>{t("table.votes", { ns: 'governance' })}</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -739,7 +740,7 @@ export default function Governance({ id, setSignRequest, signRequest, account })
                 <br />
               </>
               :
-              canVote && <h4 className='center'>Cast a first vote</h4>
+              canVote && <h4 className='center'>{t("table.cast-first-vote", { ns: 'governance' })}</h4>
             }
             {canVote &&
               <button
@@ -754,7 +755,7 @@ export default function Governance({ id, setSignRequest, signRequest, account })
                 })}
               >
                 <Image src={xummImg} className='xumm-logo' alt="xumm" height={24} width={24} />
-                Vote on the Reward rate
+                {t("button.vote-reward-rate", { ns: 'governance' })}
               </button>
             }
           </div>
@@ -763,16 +764,16 @@ export default function Governance({ id, setSignRequest, signRequest, account })
       <br />
       <div className='flex flex-center'>
         <div className='div-with-table'>
-          <h4 className='center'>Reward delay votes</h4>
+          <h4 className='center'>{t("table.reward-delay-votes", { ns: 'governance' })}</h4>
           <table className="table-large shrink">
             <thead>
               <tr>
-                <th>Voter</th>
+                <th>{t("table.voter", { ns: 'governance' })}</th>
                 {!mainTable &&
-                  <th className='center'>Target</th>
+                  <th className='center'>{t("table.target", { ns: 'governance' })}</th>
                 }
-                <th className='right'>Delay</th>
-                <th className='right'>In seconds</th>
+                <th className='right'>{t("table.delay", { ns: 'governance' })}</th>
+                <th className='right'>{t("table.in-seconds", { ns: 'governance' })}</th>
               </tr>
             </thead>
             <tbody>
@@ -813,7 +814,7 @@ export default function Governance({ id, setSignRequest, signRequest, account })
                         )
                         :
                         <tr>
-                          <td colSpan={100} className='center'>There are no votes</td>
+                          <td colSpan={100} className='center'>{t("table.text.no-votes", { ns: 'governance' })}</td>
                         </tr>
                       }
                     </>
@@ -829,16 +830,16 @@ export default function Governance({ id, setSignRequest, signRequest, account })
           <div className='div-with-table'>
             {data?.count?.reward?.delay?.length > 0 ?
               <>
-                <h4 className='center'>Reward delay votes count</h4>
+                <h4 className='center'>{t("table.reward-delay-votes-count", { ns: 'governance' })}</h4>
                 <table className="table-large shrink">
                   <thead>
                     <tr>
-                      <th className='right'>Delay</th>
-                      <th className='right'>In seconds</th>
+                      <th className='right'>{t("table.delay", { ns: 'governance' })}</th>
+                      <th className='right'>{t("table.in-seconds", { ns: 'governance' })}</th>
                       {!mainTable &&
-                        <th className='center'>Target</th>
+                        <th className='center'>{t("table.target", { ns: 'governance' })}</th>
                       }
-                      <th className='right'>Votes</th>
+                      <th className='right'>{t("table.votes", { ns: 'governance' })}</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -889,7 +890,7 @@ export default function Governance({ id, setSignRequest, signRequest, account })
                 <br />
               </>
               :
-              canVote && <h4 className='center'>Cast a first vote</h4>
+              canVote && <h4 className='center'>{t("table.cast-first-vote", { ns: 'governance' })}</h4>
             }
             {canVote &&
               <button
@@ -904,7 +905,7 @@ export default function Governance({ id, setSignRequest, signRequest, account })
                 })}
               >
                 <Image src={xummImg} className='xumm-logo' alt="xumm" height={24} width={24} />
-                Vote on the Reward delay
+                {t("button.vote-reward-delay", { ns: 'governance' })}
               </button>
             }
           </div>
@@ -913,16 +914,16 @@ export default function Governance({ id, setSignRequest, signRequest, account })
       <br />
       <div className='flex flex-center'>
         <div className='div-with-table'>
-          <h4 className='center'>Hook votes</h4>
+          <h4 className='center'>{t("table.hook-votes", { ns: 'governance' })}</h4>
           <table className="table-large shrink">
             <thead>
               <tr>
                 <th>Voter</th>
                 {!mainTable &&
-                  <th className='center'>Target</th>
+                  <th className='center'>{t("table.target", { ns: 'governance' })}</th>
                 }
-                <th className='center'>Place</th>
-                <th className='right'>Hook</th>
+                <th className='center'>{t("table.place", { ns: 'governance' })}</th>
+                <th className='right'>{t("table.hook", { ns: 'governance' })}</th>
               </tr>
             </thead>
             <tbody>
@@ -965,7 +966,7 @@ export default function Governance({ id, setSignRequest, signRequest, account })
                         )
                         :
                         <tr>
-                          <td colSpan={100} className='center'>There are no votes</td>
+                          <td colSpan={100} className='center'>{t("table.text.no-votes", { ns: 'governance' })}</td>
                         </tr>
                       }
                     </>
@@ -982,16 +983,16 @@ export default function Governance({ id, setSignRequest, signRequest, account })
           <div className='div-with-table'>
             {data?.count?.hook?.length > 0 ?
               <>
-                <h4 className='center'>Hook votes count</h4>
+                <h4 className='center'>{t("table.hook-votes-count", { ns: 'governance' })}</h4>
                 <table className="table-large shrink">
                   <thead>
                     <tr>
                       <th>Hook</th>
                       {!mainTable &&
-                        <th className='center'>Target</th>
+                        <th className='center'>{t("table.target", { ns: 'governance' })}</th>
                       }
-                      <th className='center'>Place</th>
-                      <th className='right'>Votes</th>
+                      <th className='center'>{t("table.place", { ns: 'governance' })}</th>
+                      <th className='right'>{t("table.votes", { ns: 'governance' })}</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -1042,7 +1043,7 @@ export default function Governance({ id, setSignRequest, signRequest, account })
                 <br />
               </>
               :
-              canVote && <h4 className='center'>Cast a first vote</h4>
+              canVote && <h4 className='center'>{t("table.cast-first-vote", { ns: 'governance' })}</h4>
             }
             {canVote &&
               <button
@@ -1058,7 +1059,7 @@ export default function Governance({ id, setSignRequest, signRequest, account })
                 })}
               >
                 <Image src={xummImg} className='xumm-logo' alt="xumm" height={24} width={24} />
-                Vote on the Hook
+                {t("button.vote-hook", { ns: 'governance' })}
               </button>
             }
           </div>
