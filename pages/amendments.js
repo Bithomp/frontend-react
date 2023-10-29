@@ -31,7 +31,7 @@ export default function Amendment() {
   }
 
   const amendmentLink = (name, hash) => {
-    return name ? <a href={"https://xrpl.org/known-amendments.html#" + name.toLowerCase()}>{name}</a> : hash;
+    return name ? <a href={"https://xrpl.org/known-amendments.html#" + name.toLowerCase()}>{name}</a> : shortHash(hash)
   }
 
   /*
