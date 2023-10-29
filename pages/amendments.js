@@ -3,9 +3,10 @@ import { useState, useEffect } from 'react'
 import axios from 'axios'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
-import { fullDateAndTime } from '../utils/format'
+import { fullDateAndTime, shortHash } from '../utils/format'
 
 import SEO from '../components/SEO'
+import CopyButton from '../components/UI/CopyButton'
 
 export async function getStaticProps({ locale }) {
   return {
@@ -58,7 +59,7 @@ export default function Amendment() {
       {majorityAmendments?.length ?
         <>
           <h1 className="center">{t("amendment.soon")}</h1>
-          <table className="table-large">
+          <table className="table-large shrink">
             <thead>
               <tr>
                 <th>{t("amendment.name")}</th>
@@ -83,18 +84,20 @@ export default function Amendment() {
       {enabledAmendments?.length ?
         <>
           <h1 className="center">{t("amendment.enabled")}</h1>
-          <table className="table-large">
+          <table className="table-large shrink">
             <thead>
               <tr>
                 <th>{t("amendment.name")}</th>
-                <th>{t("amendment.introduction")}</th>
+                <th>{t("table.hash")}</th>
+                <th className='right'>{t("amendment.introduction")}</th>
               </tr>
             </thead>
             <tbody>
               {enabledAmendments.map(a =>
                 <tr key={a.amendment}>
                   <td>{amendmentLink(a.name, a.amendment)}</td>
-                  <td className='center'>{a.introduced}</td>
+                  <td><CopyButton text={a.amendment} /> {shortHash(a.amendment)}</td>
+                  <td className='right'>{a.introduced}</td>
                 </tr>
               )}
             </tbody>
