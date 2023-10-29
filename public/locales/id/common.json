@@ -293,7 +293,8 @@
     "error": {
       "email-empty": "Silakan masukkan alamat surel Anda.",
       "email-invalid": "Silakan masukkan alamat surel yang valid.",
-      "password-empty": "Silakan masukkan kata sandi Anda."
+      "password-empty": "Silakan masukkan kata sandi Anda.",
+      "password-invalid": "Silakan masukkan kata sandi yang valid."
     }
   },
   "error": {

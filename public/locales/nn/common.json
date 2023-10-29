@@ -293,7 +293,8 @@
     "error": {
       "email-empty": "Vennligst skriv inn E-postadressen din.",
       "email-invalid": "Vennligst skriv inn en gyldig e-post adresse.",
-      "password-empty": "Vennligst skriv inn passordet ditt."
+      "password-empty": "Vennligst skriv inn passordet ditt.",
+      "password-invalid": "Invalid password."
     }
   },
   "error": {

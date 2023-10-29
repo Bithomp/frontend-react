@@ -293,7 +293,8 @@
     "error": {
       "email-empty": "Si us plau, introdueix el teu correu electrònic.",
       "email-invalid": "Si us plau, introdueix una adreça de correu electrònic vàlida.",
-      "password-empty": "Si us plau, introdueix la teva contrasenya."
+      "password-empty": "Si us plau, introdueix la teva contrasenya.",
+      "password-invalid": "Si us plau, introdueix una contrasenya vàlida."
     }
   },
   "error": {

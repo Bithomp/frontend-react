@@ -293,7 +293,8 @@
     "error": {
       "email-empty": "Bitte geben Sie Ihre E-Mail Adresse ein.",
       "email-invalid": "Bitte geben Sie eine gültige E-Mail Adresse einn.",
-      "password-empty": "Bitte geben Sie Ihr Passwort ein."
+      "password-empty": "Bitte geben Sie Ihr Passwort ein.",
+      "password-invalid": "Bitte geben Sie ein gültiges Passwort ein."
     }
   },
   "error": {

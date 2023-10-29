@@ -293,7 +293,8 @@
     "error": {
       "email-empty": "Indtast venligst din e-mailadresse.",
       "email-invalid": "Indtast venligst en gyldig e-mailadresse.",
-      "password-empty": "Indtast venligst dit kodeord."
+      "password-empty": "Indtast venligst dit kodeord.",
+      "password-invalid": "Invalid password."
     }
   },
   "error": {

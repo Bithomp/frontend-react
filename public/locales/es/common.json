@@ -293,7 +293,8 @@
     "error": {
       "email-empty": "Por favor, introduce tu correo electrónico.",
       "email-invalid": "Por favor, introduce un correo eléctronico válido.",
-      "password-empty": "Por favor, introduce tu contraseña."
+      "password-empty": "Por favor, introduce tu contraseña.",
+      "password-invalid": "Por favor, introduce una contraseña válida."
     }
   },
   "error": {

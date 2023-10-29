@@ -30,7 +30,7 @@ export default function Admin() {
   const [authToken, setAuthToken] = useState("") // our site auth token
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
-  const [step, setStep] = useState(0)
+  const [step, setStep] = useState(-1)
   const [loggedUserData, setLoggedUserData] = useState(null)
 
   const checkApi = async () => {
@@ -60,9 +60,9 @@ export default function Admin() {
     const sessionToken = JSON.parse(localStorage.getItem('sessionToken'))
     if (!sessionToken) {
       checkApi()
+      setStep(0)
     } else {
       setStep(2)
-      console.log("sessionToken", sessionToken) //delete
       axios.defaults.headers.common['Authorization'] = "Bearer " + sessionToken
       getLoggedUserData()
     }
@@ -119,7 +119,7 @@ export default function Admin() {
 
     setErrorMessage("")
 
-    if (step == 0) {
+    if (step === 0) {
       const formData = await axios.put(
         'partner/auth',
         { email, authToken, "cf-turnstile-response": token },
@@ -157,7 +157,11 @@ export default function Admin() {
         { email, password, authToken },
         { baseUrl: '/api/' }
       ).catch(error => {
-        if (error && error.message !== "canceled") {
+        if (error?.response?.data?.error === "Invalid password") {
+          setErrorMessage(t("form.error.password-invalid"))
+        } else if (error?.response?.data?.error) {
+          setErrorMessage(error.response.data.error)
+        } else if (error && error.message !== "canceled") {
           setErrorMessage(t("error." + error.message))
         }
       })
@@ -178,6 +182,17 @@ export default function Admin() {
         getLoggedUserData()
       }
     }
+  }
+
+  const onLogOut = () => {
+    localStorage.removeItem('sessionToken')
+    setStep(0)
+    setErrorMessage("")
+    setToken("")
+    setAuthToken("")
+    setPassword("")
+    setLoggedUserData(null)
+    checkApi()
   }
 
   return <>
@@ -217,21 +232,24 @@ export default function Admin() {
           </div>
         }
 
-        <br />
         {step === 0 &&
-          <div style={{ height: "65px" }}>
-            <Turnstile
-              siteKey={siteKey}
-              style={{ margin: "auto" }}
-              options={{
-                theme,
-                language: turnstileSypportedLanguages.includes(i18n.language) ? i18n.language : 'en',
-              }}
-              onSuccess={setToken}
-            />
-          </div>
+          <>
+            <br />
+            <div style={{ height: "65px" }}>
+              <Turnstile
+                siteKey={siteKey}
+                style={{ margin: "auto" }}
+                options={{
+                  theme,
+                  language: turnstileSypportedLanguages.includes(i18n.language) ? i18n.language : 'en',
+                }}
+                onSuccess={setToken}
+              />
+            </div>
+          </>
         }
 
+        <br />
         {errorMessage ?
           <div className='center orange bold'>
             {errorMessage}
@@ -239,15 +257,17 @@ export default function Admin() {
           :
           <br />
         }
-        <br />
 
         {(step === 0 || step === 1) &&
-          <button
-            className={"button-action" + ((!token || !email || !isEmailValid(email)) ? " disabled" : "")}
-            onClick={onLogin}
-          >
-            Submit
-          </button>
+          <>
+            <br />
+            <button
+              className={"button-action" + ((!token || !email || !isEmailValid(email)) ? " disabled" : "")}
+              onClick={onLogin}
+            >
+              Submit
+            </button>
+          </>
         }
 
         {step === 2 &&
@@ -266,6 +286,13 @@ export default function Admin() {
                 </tbody>
               </table>
             }
+            <br />
+            <button
+              className={"button-action"}
+              onClick={onLogOut}
+            >
+              log out
+            </button>
           </div>
         }
       </div>

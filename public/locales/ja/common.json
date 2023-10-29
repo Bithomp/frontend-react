@@ -293,7 +293,8 @@
     "error": {
       "email-empty": "メールアドレスを入力してください。",
       "email-invalid": "有効なメールアドレスを入力してください。",
-      "password-empty": "パスワードを入力してください。"
+      "password-empty": "パスワードを入力してください。",
+      "password-invalid": "Invalid password."
     }
   },
   "error": {

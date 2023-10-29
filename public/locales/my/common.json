@@ -293,7 +293,8 @@
     "error": {
 			"email-empty": "Sila masukkan alamat e-mel anda.",
 			"email-invalid": "Sila masukkan alamat e-mel yang sah.",
-			"password-empty": "Sila masukkan kata laluan anda."
+			"password-empty": "Sila masukkan kata laluan anda.",
+			"password-invalid": "Sila masukkan kata laluan yang sah."
     }
   },
 	"error": {

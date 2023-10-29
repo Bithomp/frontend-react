@@ -293,7 +293,8 @@
     "error": {
       "email-empty": "Molimo unesite email adresu.",
       "email-invalid": "Molimo unesite ispravnu email adresu.",
-      "password-empty": "Molimo unesite lozinku."
+      "password-empty": "Molimo unesite lozinku.",
+      "password-invalid": "Invalid password."
     }
   },
   "error": {
