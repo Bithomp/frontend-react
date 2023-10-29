@@ -234,8 +234,6 @@
     "description": "Descripción del proyecto y detalles del uso de la API:",
     "success": "Gracias. Recibiras tu token por correo electrónico en un plazo de 48 horas.",
     "error": {
-      "email-empty": "Por favor, introduce tu correo electrónico.",
-      "email-invalid": "Por favor, introduce un correo eléctronico válido.",
       "url-empty": "Por favor, introduce la URL de tu sitio web/app.",
       "url-invalid": "Por favor, introduce una URL válida.",
       "description-empty": "Por favor, introduce una descripción de tu proyecto.",
@@ -290,6 +288,13 @@
     "no-uri": "URI no especificada",
     "no-media": "No se ha encontrado contenido",
     "viewer": "Vista"
+  },
+  "form": {
+    "error": {
+      "email-empty": "Por favor, introduce tu correo electrónico.",
+      "email-invalid": "Por favor, introduce un correo eléctronico válido.",
+      "password-empty": "Por favor, introduce tu contraseña."
+    }
   },
   "error": {
     "Network Error": "Parece que no hay conexión a internet ;(",

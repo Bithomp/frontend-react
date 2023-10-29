@@ -234,8 +234,6 @@
     "description": "Projektbeskrivelse og API-brugsdetaljer",
     "success": "Tak skal du have. Du bør modtage dit api-token via e-mail inden for 48 timer.",
     "error": {
-      "email-empty": "Indtast venligst din e-mailadresse.",
-      "email-invalid": "Indtast venligst en gyldig e-mailadresse.",
       "url-empty": "Indtast venligst dit websted/app-URL.",
       "url-invalid": "Indtast venligst en gyldig URL.",
       "description-empty": "Tilføj venligst en beskrivelse af dit projekt.",
@@ -290,6 +288,13 @@
     "no-uri": "Ingen URI angivet",
     "no-media": "Ingen medier fundet",
     "viewer": "Visningsværktøj"
+  },
+  "form": {
+    "error": {
+      "email-empty": "Indtast venligst din e-mailadresse.",
+      "email-invalid": "Indtast venligst en gyldig e-mailadresse.",
+      "password-empty": "Indtast venligst dit kodeord."
+    }
   },
   "error": {
     "Network Error": "Det ser ud til, at der ikke er nogen internetforbindelse ;(",

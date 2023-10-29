@@ -234,8 +234,6 @@
     "description": "Deskripsi Proyek dan Detail Penggunaan API:",
     "success": "Terima kasih. Anda akan menerima token API Anda melalui email dalam 48 jam.",
     "error": {
-      "email-empty": "Silakan masukkan alamat surel Anda.",
-      "email-invalid": "Silakan masukkan alamat surel yang valid.",
       "url-empty": "Silakan masukkan URL situs/aplikasi Anda.",
       "url-invalid": "Silakan masukkan URL yang valid.",
       "description-empty": "Silakan tambahkan deskripsi proyek Anda.",
@@ -290,6 +288,13 @@
     "no-uri": "Tidak ada URI yang ditentukan",
     "no-media": "Tidak ada media ditemukan",
     "viewer": "Pelihat"
+  },
+  "form": {
+    "error": {
+      "email-empty": "Silakan masukkan alamat surel Anda.",
+      "email-invalid": "Silakan masukkan alamat surel yang valid.",
+      "password-empty": "Silakan masukkan kata sandi Anda."
+    }
   },
   "error": {
     "Network Error": "Sepertinya tidak ada koneksi internet ;(",

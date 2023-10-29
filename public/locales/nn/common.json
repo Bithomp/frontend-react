@@ -234,8 +234,6 @@
     "description": "Prosjektbeskrivelse og API-bruksdetaljer:",
     "success": "Takk. Du bør motta din api token på e-post innen  timer.",
     "error": {
-      "email-empty": "Vennligst skriv inn E-postadressen din.",
-      "email-invalid": "Vennligst skriv inn en gyldig e-post adresse.",
       "url-empty": "Vennligst skriv inn din nettside/app URL.",
       "url-invalid": "Vennligst skriv inn en gyldig URL.",
       "description-empty": "Legg til en beskrivelse av ditt prosjekt",
@@ -290,6 +288,13 @@
     "no-uri": "Ingen URI spesifisert",
     "no-media": "Ingen media funnet",
     "viewer": "Visningsverktøy"
+  },
+  "form": {
+    "error": {
+      "email-empty": "Vennligst skriv inn E-postadressen din.",
+      "email-invalid": "Vennligst skriv inn en gyldig e-post adresse.",
+      "password-empty": "Vennligst skriv inn passordet ditt."
+    }
   },
   "error": {
     "Network Error": "Det ser ut til at det ikke er noen internettforbindelse ;(",

@@ -234,8 +234,6 @@
 		"description": "Keterangan projek dan butiran penggunaan API:",
 		"success": "Terima kasih. Anda sepatutnya menerima token API anda melalui e-mel dalam masa 48 jam.",
 		"error": {
-			"email-empty": "Sila masukkan alamat e-mel anda.",
-			"email-invalid": "Sila masukkan alamat e-mel yang sah.",
 			"url-empty": "Sila masukkan URL laman web/aplikasi anda.",
 			"url-invalid": "Sila masukkan URL yang sah.",
 			"description-empty": "Sila tambah keterangan projek anda.",
@@ -291,6 +289,13 @@
 		"no-media": "Tiada media dijumpai",
 		"viewer": "Penyemak"
 	},
+  "form": {
+    "error": {
+			"email-empty": "Sila masukkan alamat e-mel anda.",
+			"email-invalid": "Sila masukkan alamat e-mel yang sah.",
+			"password-empty": "Sila masukkan kata laluan anda."
+    }
+  },
 	"error": {
 		"Network Error": "Nampaknya tiada sambungan internet ;(",
 		"Request failed with status code 429": "Anda menghantar terlalu banyak permintaan kepada kami, cuba lagi nanti!",

@@ -234,8 +234,6 @@
     "description": "Descripció del projecte i detalls de l'ús de l'API:",
     "success": "Gràcies. Hauries de rebre el teu token de l'api per correu electrònic en 48 hores.",
     "error": {
-      "email-empty": "Si us plau, introdueix el teu correu electrònic.",
-      "email-invalid": "Si us plau, introdueix una adreça de correu electrònic vàlida.",
       "url-empty": "Si us plau, introdueix l'URL de la teva pàgina web/applicació.",
       "url-invalid": "Si us plau, introdueix una URL vàlida.",
       "description-empty": "Si us plau, afegeix una descripció del teu projecte.",
@@ -290,6 +288,13 @@
     "no-uri": "No s'ha especificat cap URI",
     "no-media": "No s'han trobat mitjans",
     "viewer": "Visualitzador"
+  },
+  "form": {
+    "error": {
+      "email-empty": "Si us plau, introdueix el teu correu electrònic.",
+      "email-invalid": "Si us plau, introdueix una adreça de correu electrònic vàlida.",
+      "password-empty": "Si us plau, introdueix la teva contrasenya."
+    }
   },
   "error": {
     "Network Error": "Sembla que no hi ha connexió a internet ;(",

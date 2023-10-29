@@ -234,8 +234,6 @@
     "description": "Opis projekta i korištenja API-ja:",
     "success": "Hvala vam. Trebali bi dobiti api token unutar 48 sati.",
     "error": {
-      "email-empty": "Molimo unesite email adresu.",
-      "email-invalid": "Molimo unesite ispravnu email adresu.",
       "url-empty": "Molimo unesite URL web stranice ili app-a.",
       "url-invalid": "Unesite valjani URL.",
       "description-empty": "Molimo dodajte opis projekta.",
@@ -290,6 +288,13 @@
     "no-uri": "Nema URIja",
     "no-media": "Nema medija",
     "viewer": "Preglednik"
+  },
+  "form": {
+    "error": {
+      "email-empty": "Molimo unesite email adresu.",
+      "email-invalid": "Molimo unesite ispravnu email adresu.",
+      "password-empty": "Molimo unesite lozinku."
+    }
   },
   "error": {
     "Network Error": "Nema internetske veze ;(",

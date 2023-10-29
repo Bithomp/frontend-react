@@ -62,13 +62,13 @@ export default function Developer() {
 
   const onSubmit = async () => {
     if (!email) {
-      setErrorMessage(t("developer.error.email-empty"));
+      setErrorMessage(t("form.error.email-empty"));
       emailRef?.focus();
       return;
     }
 
     if (!isEmailValid(email)) {
-      setErrorMessage(t("developer.error.email-invalid"));
+      setErrorMessage(t("form.error.email-invalid"));
       emailRef?.focus();
       return;
     }

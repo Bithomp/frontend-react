@@ -234,8 +234,6 @@
     "description": "プロジェクトの説明とAPI の利用目的:",
     "success": "ありがとうございました。48時間以内にAPIトークンをメールでお送りします。",
     "error": {
-      "email-empty": "メールアドレスを入力してください。",
-      "email-invalid": "有効なメールアドレスを入力してください。",
       "url-empty": "ウェブサイトまたはアプリのURLを入力してください。",
       "url-invalid": "有効なURLを入力してください。",
       "description-empty": "プロジェクトの説明を追加してください。",
@@ -290,6 +288,13 @@
     "no-uri": "URIが指定されていません",
     "no-media": "メディアが見つかりません",
     "viewer": "ビュワー"
+  },
+  "form": {
+    "error": {
+      "email-empty": "メールアドレスを入力してください。",
+      "email-invalid": "有効なメールアドレスを入力してください。",
+      "password-empty": "パスワードを入力してください。"
+    }
   },
   "error": {
     "Network Error": "インターネットに接続していないようです ;(",

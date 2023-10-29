@@ -234,8 +234,6 @@
     "description": "Project description and API use details:",
     "success": "Thank you. Your should receive your api token by email within 48 hours.",
     "error": {
-      "email-empty": "Please enter your e-mail address.",
-      "email-invalid": "Please enter a valid e-mail address.",
       "url-empty": "Please enter your site/app URL.",
       "url-invalid": "Please enter a valid URL.",
       "description-empty": "Please add a description of your project.",
@@ -290,6 +288,13 @@
     "no-uri": "No URI specified",
     "no-media": "No media found",
     "viewer": "Viewer"
+  },
+  "form": {
+    "error": {
+      "email-empty": "Please enter your e-mail address.",
+      "email-invalid": "Please enter a valid e-mail address.",
+      "password-empty": "Please enter your password."
+    }
   },
   "error": {
     "Network Error": "It seems there is no internet connection ;(",
