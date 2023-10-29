@@ -57,7 +57,7 @@ export default function Admin() {
   }
 
   useEffect(() => {
-    const sessionToken = JSON.parse(localStorage.getItem('sessionToken'))
+    const sessionToken = localStorage.getItem('sessionToken')
     if (!sessionToken) {
       checkApi()
       setStep(0)
