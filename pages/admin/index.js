@@ -95,7 +95,8 @@ export default function Admin() {
 
   const onEmailChange = e => {
     let x = e.target.value
-    x = x.trim()
+    // our backend doesnt like yet Upper Case for some reason :)
+    x = x.trim().toLowerCase()
     setEmail(x)
     if (isEmailValid(x)) {
       setErrorMessage("")
@@ -291,7 +292,7 @@ export default function Admin() {
               className={"button-action"}
               onClick={onLogOut}
             >
-              log out
+              Log out
             </button>
           </div>
         }
