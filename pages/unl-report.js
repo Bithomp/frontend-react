@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react'
 import axios from 'axios'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useRouter } from 'next/router'
+import { encodeNodePublic } from 'ripple-address-codec'
 
 export const getServerSideProps = async ({ locale }) => {
   return {
@@ -120,6 +121,12 @@ export default function UNLreport() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isReady])
 
+  const convertToValidatorHash = hash => {
+    const buf = Buffer.from(hash, 'hex')
+    const converted = encodeNodePublic(buf)
+    return converted
+  }
+
   return <>
     <SEO title={t("header", { ns: "unl-report" })} />
     <div className="content-text">
@@ -169,10 +176,10 @@ export default function UNLreport() {
                           <tr key={i}>
                             <td className='center'>{i + 1}</td>
                             <td className='left'>
-                              {shortHash(av.ActiveValidator.PublicKey)} <CopyButton text={av.ActiveValidator.PublicKey} />
+                              <CopyButton text={convertToValidatorHash(av.ActiveValidator.PublicKey)} /> {shortHash(convertToValidatorHash(av.ActiveValidator.PublicKey))}
                             </td>
                             <td className='right'>
-                              <Link href={"/account/" + av.ActiveValidator.Account}>{av.ActiveValidator.Account}</Link>
+                              <Link href={"/account/" + av.ActiveValidator.Account}>{av.ActiveValidator.Account}</Link> <CopyButton text={av.ActiveValidator.Account} />
                             </td>
                           </tr>
                         )
@@ -216,7 +223,7 @@ export default function UNLreport() {
                           </p>
                         */ }
                         <p>
-                          {t("table.public-key")}: {shortHash(av.ActiveValidator.PublicKey)}
+                          {t("table.public-key")}: {shortHash(convertToValidatorHash(av.ActiveValidator.PublicKey))}
                           {" "}
                           <CopyButton text={av.ActiveValidator.PublicKey} />
                         </p>
