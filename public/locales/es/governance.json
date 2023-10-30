@@ -1,0 +1,40 @@
+{
+  "header": "{{ledgerName}} Governance Game",
+  "summary": "Hay <1>{{ countTables }}</1> sillones.",
+  "reward-rate": "Ratio de recompensa: <1>{{ rewardRate }}</1>.",
+  "reward-delay": "Retraso de la recompensa: <1>{{ rewardDelay }}</1> ({{ rewardDelaySeconds }} segundos).",
+  "button": {
+    "show-main-table": "Mostrar La Mesa Principal",
+    "vote-seat": "Vota por un sillón",
+    "vote-reward-rate": "Vota por un ratio de recompensa",
+    "vote-reward-delay": "Vota por un Retraso de la recompensa",
+    "vote-hook": "Vota por un hook"
+  },
+  "table": {
+    "cast-first-vote": "Realizar el primer voto",
+    "members": "Miembros",
+    "seat": "Sillón",
+    "layer": "Nivel",
+    "hooks": "Hooks",
+    "place": "Sitio",
+    "hook": "Hook",
+    "target": "Objetivo",
+    "votes": "Votos",
+    "voter": "Votante",
+    "rate": "Ratio",
+    "value": "Valor",
+    "delay": "Retraso",
+    "in-seconds": "En segundos",
+    "seat-votes": "Votos de sillones",
+    "seat-votes-count": "Conteo de votos de sillones",
+    "reward-rate-votes": "Votos de Ratio de recompensa",
+    "reward-rate-votes-count": "Conteo de votos de Ratio de recompensa",
+    "reward-delay-votes": "Votos de Retraso de la recompensa",
+    "reward-delay-votes-count": "Conteo de los votos de Retraso de la recompensa",
+    "hook-votes": "Votos del Hook ",
+    "hook-votes-count": "Conteo de votos del Hook",
+    "text": {
+      "no-votes": "No hay votos."
+    }
+  }
+}
