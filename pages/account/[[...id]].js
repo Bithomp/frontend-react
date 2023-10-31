@@ -26,16 +26,7 @@ export async function getServerSideProps(context) {
     try {
       const res = await axios({
         method: 'get',
-        //&inception=true&blacklist=true&ledgerInfo=true
-        // we need an image endpoint like xumm to return image by address
-        // 1) if in blacklist - alert image 
-        // 2) if valid twitter - image from twitter
-        // 3) if gravatar - image from gravatar 
-        // 4) if xummPro or xummCurratedAssets - from xumm 
-        // 5) otherwise show hashicon 
-        // should be good for seo for other websites to use our pictures / links
-        // for now we can have hashicon and twitter
-        url: server + '/api/cors/v2/address/' + account + '?username=true&service=true&twitterImageUrl=true',
+        url: server + '/api/cors/v2/address/' + account + '?username=true&service=true&twitterImageUrl=true&blacklist=true',
         headers
       })
       pageMeta = res?.data
@@ -60,12 +51,12 @@ import CopyButton from '../../components/UI/CopyButton'
 
 // setSignRequest, account
 export default function Account({ pageMeta, signRequest, id, selectedCurrency, networkInfo }) {
-  //"reserveBase":"1000000","reserveIncrement":"200000"
   const { t } = useTranslation()
 
   const [data, setData] = useState({})
   const [loading, setLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState("")
+  const [ledgerTimestamp, setLedgerTimestamp] = useState("")
   const [userData, setUserData] = useState({
     username: pageMeta?.username,
     service: pageMeta?.service?.name,
@@ -77,6 +68,7 @@ export default function Account({ pageMeta, signRequest, id, selectedCurrency, n
     setLoading(true)
 
     let noCache = ""
+
     if (opts?.noCache) {
       noCache = "&timestamp=" + Date.now()
     }
@@ -86,6 +78,7 @@ export default function Account({ pageMeta, signRequest, id, selectedCurrency, n
       '/v2/address/' + id
       + '?username=true&service=true&verifiedDomain=true&parent=true&nickname=true&inception=true&flare=true&blacklist=true&payString=true&ledgerInfo=true&twitterImageUrl=true&xummMeta=true'
       + noCache
+      + (ledgerTimestamp ? ('&ledgerTimestamp=' + ledgerTimestamp) : "")
     ).catch(error => {
       setErrorMessage(t("error." + error.message))
     })
@@ -111,6 +104,10 @@ export default function Account({ pageMeta, signRequest, id, selectedCurrency, n
   }
 
   useEffect(() => {
+    //TODO: add validation
+    //if a valid TimeStamp '/^[0-9-:TZ]+$/' 
+    setLedgerTimestamp("") //DELETE, We need a component for that
+
     if (!selectedCurrency) return;
     if (!signRequest) {
       if (!data?.address) {
@@ -122,9 +119,22 @@ export default function Account({ pageMeta, signRequest, id, selectedCurrency, n
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id, signRequest, selectedCurrency])
+  }, [id, signRequest, selectedCurrency, ledgerTimestamp])
 
   const avatarSrc = data => {
+    /*
+      1) if in blacklist - alert image
+      2) if bithomp image, show it 
+      3) if valid twitter - image from twitter
+      4) if gravatar - image from gravatar 
+      5) if xummPro or xummCurratedAssets - from xumm 
+      6) otherwise show hashicon 
+
+      our cdn image:
+      1) if in blacklist - alert image
+      3) if valid twitter - image from twitter
+      6) otherwise show hashicon
+    */
     if (!data) return ""
 
     if (data.blacklist?.blacklisted) {
@@ -315,7 +325,6 @@ export default function Account({ pageMeta, signRequest, id, selectedCurrency, n
                         }
                       </tbody>
                     </table>
-
                   </div>
                 </>
               }
