@@ -218,11 +218,10 @@
     "ledger-index": "Índice del libro contable",
     "account-count": "Número de cuentas",
     "inception": "Creación",
-    "xrp-balance": "Balance XRP",
     "balance-update": "Actualización del balance",
     "details": "Detalles",
     "address": "Dirección",
-    "genesis-balance": "Balance de XRP inicial",
+    "genesis-balance": "Balance inicial",
     "rippletrade-username": "Nombre de usuario Rippletrade",
     "nickname": " Apodo",
     "genesis-index": "Índice inicial"

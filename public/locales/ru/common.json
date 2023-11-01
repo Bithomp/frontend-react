@@ -218,11 +218,10 @@
     "ledger-index": "Индекс леджера",
     "account-count": "Кол-во адресов",
     "inception": "Зарождение",
-    "xrp-balance": "Баланс XRP",
     "balance-update": "Баланс обновлен",
     "details": "Данные",
     "address": "Адрес",
-    "genesis-balance": "Генезис баланс XRP",
+    "genesis-balance": "Генезис баланс",
     "rippletrade-username": "Rippletrade псевдоним",
     "nickname": "Псевдоним",
     "genesis-index": "Генезис индекс"

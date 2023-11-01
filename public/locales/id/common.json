@@ -218,11 +218,10 @@
     "ledger-index": "Indeks Ledger",
     "account-count": "Jumlah Akun",
     "inception": "Awal",
-    "xrp-balance": "Saldo XRP",
     "balance-update": "Pembaruan Saldo",
     "details": "Detail",
     "address": "Alamat",
-    "genesis-balance": "Saldo XRP Genesis",
+    "genesis-balance": "Saldo Genesis",
     "rippletrade-username": "Username Rippletrade",
     "nickname": "Nama Panggilan",
     "genesis-index": "Indeks Genesis"

@@ -218,11 +218,10 @@
     "ledger-index": "Ledger Index",
     "account-count": "Anzahl Konten",
     "inception": "Beginn",
-    "xrp-balance": "XRP Kontostand",
     "balance-update": "Kontostand Akualisierung",
     "details": "Details",
     "address": "Adresse",
-    "genesis-balance": "Genesis XRP Kontostand",
+    "genesis-balance": "Genesis Kontostand",
     "rippletrade-username": "Rippletrade Benutzernamen",
     "nickname": " Nickname",
     "genesis-index": "Genesis Index"

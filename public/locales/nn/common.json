@@ -218,11 +218,10 @@
     "ledger-index": "Ledger indeks",
     "account-count": "Konto antall",
     "inception": "Oppstart",
-    "xrp-balance": "XRP Saldo",
     "balance-update": "Saldo oppdatering",
     "details": "Detaljer",
     "address": "Adresse",
-    "genesis-balance": "Genesis XRP Saldo",
+    "genesis-balance": "Genesis Saldo",
     "rippletrade-username": "Rippletrade brukernavn",
     "nickname": "Kallenavn",
     "genesis-index": "Genesis indeks"

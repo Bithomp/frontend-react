@@ -218,11 +218,10 @@
     "ledger-index": "Índex del Ledger",
     "account-count": "Recompte del compte",
     "inception": "Inici",
-    "xrp-balance": "Balanç d'XRP",
     "balance-update": "Actualització del balanç",
     "details": "Detalls",
     "address": "Adreça",
-    "genesis-balance": "Balanç gènesi d'XRP",
+    "genesis-balance": "Balanç gènesi",
     "rippletrade-username": "Àlies de Rippletrade",
     "nickname": " Àlies",
     "genesis-index": "Índex gènesi"

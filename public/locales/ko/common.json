@@ -218,11 +218,10 @@
     "ledger-index": "원장 지표",
     "account-count": "계정 수",
     "inception": "인셉션",
-    "xrp-balance": "XRP 잔액",
     "balance-update": "잔액 업데이트",
     "details": "상세정보",
     "address": "주소",
-    "genesis-balance": "Genesis XRP 잔액",
+    "genesis-balance": "Genesis 잔액",
     "rippletrade-username": "Rippletrade 사용자명",
     "nickname": "별명",
     "genesis-index": "Genesis 지표"

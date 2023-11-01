@@ -3,7 +3,7 @@ import Link from 'next/link'
 import { useTranslation } from 'next-i18next'
 import axios from 'axios'
 
-import { wssServer, ledgerName } from '../../utils'
+import { wssServer, ledgerName, xahauNetwork } from '../../utils'
 import { niceNumber } from '../../utils/format'
 
 let ws = null
@@ -152,31 +152,34 @@ export default function Statistics() {
         <div>{registeredUsernames}</div>
       </div>
     </div>
-    <div className='statistics-block'>
-      <div className='stat-piece'>
-        <div className='stat-piece-header'>{t("home.stat.nft.created")}</div>
-        <div>{niceNumber(nft.created)}</div>
+    {/* Hide NFT stats for XAHAU while they are not ready yet */}
+    {!xahauNetwork &&
+      <div className='statistics-block'>
+        <div className='stat-piece'>
+          <div className='stat-piece-header'>{t("home.stat.nft.created")}</div>
+          <div>{niceNumber(nft.created)}</div>
+        </div>
+        <div className='stat-piece'>
+          <div className='stat-piece-header'>{t("home.stat.nft.burned")}</div>
+          <div>{niceNumber(nft.burned)}</div>
+        </div>
+        <div className='stat-piece'>
+          <div className='stat-piece-header'>{t("home.stat.nft.issuers")}</div>
+          <div><Link href='/nft-volumes'>{niceNumber(nft.issuers)}</Link></div>
+        </div>
+        <div className='stat-piece'>
+          <div className='stat-piece-header'>{t("home.stat.nft.owners")}</div>
+          <div>{niceNumber(nft.owners)} </div>
+        </div>
+        <div className='stat-piece'>
+          <div className='stat-piece-header'>{t("home.stat.nft.transfers")}</div>
+          <div>{niceNumber(nft.transfers)}</div>
+        </div>
+        <div className='stat-piece'>
+          <div className='stat-piece-header'>{t("home.stat.nft.for-sale")}</div>
+          <div>{niceNumber(nft.forSaleWithoutDestination)}</div>
+        </div>
       </div>
-      <div className='stat-piece'>
-        <div className='stat-piece-header'>{t("home.stat.nft.burned")}</div>
-        <div>{niceNumber(nft.burned)}</div>
-      </div>
-      <div className='stat-piece'>
-        <div className='stat-piece-header'>{t("home.stat.nft.issuers")}</div>
-        <div><Link href='/nft-volumes'>{niceNumber(nft.issuers)}</Link></div>
-      </div>
-      <div className='stat-piece'>
-        <div className='stat-piece-header'>{t("home.stat.nft.owners")}</div>
-        <div>{niceNumber(nft.owners)} </div>
-      </div>
-      <div className='stat-piece'>
-        <div className='stat-piece-header'>{t("home.stat.nft.transfers")}</div>
-        <div>{niceNumber(nft.transfers)}</div>
-      </div>
-      <div className='stat-piece'>
-        <div className='stat-piece-header'>{t("home.stat.nft.for-sale")}</div>
-        <div>{niceNumber(nft.forSaleWithoutDestination)}</div>
-      </div>
-    </div>
+    }
   </>
 }

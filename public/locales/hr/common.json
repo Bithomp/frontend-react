@@ -218,11 +218,10 @@
     "ledger-index": "Ledger indeks",
     "account-count": "Broj adresa",
     "inception": "Začetak",
-    "xrp-balance": "XRP stanje",
     "balance-update": "Ažurirano stanje",
     "details": "Detalji",
     "address": "Adresa",
-    "genesis-balance": "XRP stanje izvora",
+    "genesis-balance": "Stanje izvora",
     "rippletrade-username": "Rippletrade korisničko ime",
     "nickname": " Nickname",
     "genesis-index": "Index izvora"
