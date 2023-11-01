@@ -78,11 +78,17 @@ export default function Header({ setSignRequest, account, signOut, selectedCurre
             <div className="menu-dropdown-content">
               <a href={"/explorer/"}>{t("menu.personal.search-on-ledgerName", { ledgerName })}</a>
               <Link href="/username">{t("menu.usernames")}</Link>
-              {displayName ?
-                <Link href={"/nfts/" + address} legacyBehavior>{t("signin.actions.my-nfts")}</Link>
-                :
-                <span onClick={() => { setSignRequest({ redirect: "nfts" }) }} className="link">{t("signin.actions.my-nfts")}</span>
+              {/* Hide MY NFTS for XAHAU while they are not ready yet */}
+              {!xahauNetwork &&
+                <>
+                  {displayName ?
+                    <Link href={"/nfts/" + address} legacyBehavior>{t("signin.actions.my-nfts")}</Link>
+                    :
+                    <span onClick={() => { setSignRequest({ redirect: "nfts" }) }} className="link">{t("signin.actions.my-nfts")}</span>
+                  }
+                </>
               }
+              {/* Hide Price Alerts for XAHAU while they are not ready yet */}
               {!devNet && !xahauNetwork && <Link href="/alerts">{t("menu.price-alerts", { nativeCurrency })}</Link>}
               {!devNet && <a href={"/submit/"}>{t("menu.submit-offline-tx")}</a>}
             </div>
@@ -170,7 +176,10 @@ export default function Header({ setSignRequest, account, signOut, selectedCurre
                 <span onClick={copyToClipboard} className="link">
                   {isCopied ? t("button.copied") : t("button.copy-my-address")}
                 </span>
-                <Link href={"/nfts/" + address}>{t("signin.actions.my-nfts")}</Link>
+                {/* Hide My NFTS for XAHAU while they are not ready yet */}
+                {!xahauNetwork &&
+                  <Link href={"/nfts/" + address}>{t("signin.actions.my-nfts")}</Link>
+                }
                 <Link href={"/nft-offers/" + address}>{t("signin.actions.my-nft-offers")}</Link>
                 {xummUserToken && <a href={"/explorer/" + address + "?hw=xumm&xummtoken=" + xummUserToken}>{t("signin.actions.view")}</a>}
                 {!username && <Link href={"/username?address=" + address}>{t("menu.usernames")}</Link>}
@@ -219,7 +228,12 @@ export default function Header({ setSignRequest, account, signOut, selectedCurre
               <span onClick={copyToClipboard} className="mobile-menu-item link">
                 {isCopied ? t("button.copied") : t("button.copy-my-address")}
               </span>
-              <Link href={"/nfts/" + address} className="mobile-menu-item" onClick={mobileMenuToggle}>{t("signin.actions.my-nfts")}</Link>
+
+              {/* Hide MY NFTS for XAHAU while they are not ready yet */}
+              {!xahauNetwork &&
+                <Link href={"/nfts/" + address} className="mobile-menu-item" onClick={mobileMenuToggle}>{t("signin.actions.my-nfts")}</Link>
+              }
+
               <Link href={"/nft-offers/" + address} className="mobile-menu-item" onClick={mobileMenuToggle}>{t("signin.actions.my-nft-offers")}</Link>
               {xummUserToken && <a href={"/explorer/" + address + "?hw=xumm&xummtoken=" + xummUserToken} className="mobile-menu-item">{t("signin.actions.view")}</a>}
               {!username && <Link href={"/username?address=" + address} className="mobile-menu-item" onClick={mobileMenuToggle}>{t("menu.usernames")}</Link>}
@@ -235,9 +249,15 @@ export default function Header({ setSignRequest, account, signOut, selectedCurre
           {!displayName &&
             <Link href="/username" className="mobile-menu-item" onClick={mobileMenuToggle}>{t("menu.usernames")}</Link>
           }
-          {!displayName &&
-            <span onClick={() => { setSignRequest({ redirect: "nfts" }) }} className="mobile-menu-item link">{t("signin.actions.my-nfts")}</span>
+          {/* Hide MY NFTS for XAHAU while they are not ready yet */}
+          {!xahauNetwork &&
+            <>
+              {!displayName &&
+                <span onClick={() => { setSignRequest({ redirect: "nfts" }) }} className="mobile-menu-item link">{t("signin.actions.my-nfts")}</span>
+              }
+            </>
           }
+          {/* Hide Price Alerts for XAHAU while they are not ready yet */}
           {!devNet && !xahauNetwork &&
             <Link href="/alerts" className="mobile-menu-item" onClick={mobileMenuToggle}>
               {t("menu.price-alerts", { nativeCurrency })}

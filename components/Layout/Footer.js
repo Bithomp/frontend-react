@@ -23,11 +23,17 @@ export default function Footer({ account, setSignRequest }) {
           <span className="footer-menu-header">{t("menu.personal.personal")}</span>
           <a href={"/explorer/"}>{t("menu.personal.search-on-ledgerName", { ledgerName })}</a>
           <Link href="/username">{t("menu.usernames")}</Link>
-          {account?.address ?
-            <Link href={"/nfts/" + account.address} legacyBehavior>{t("signin.actions.my-nfts")}</Link>
-            :
-            <span onClick={() => { setSignRequest({ redirect: "nfts" }) }} className="link">{t("signin.actions.my-nfts")}</span>
+          {/* Hide MY NFTS for XAHAU while they are not ready yet */}
+          {!xahauNetwork &&
+            <>
+              {account?.address ?
+                <Link href={"/nfts/" + account.address} legacyBehavior>{t("signin.actions.my-nfts")}</Link>
+                :
+                <span onClick={() => { setSignRequest({ redirect: "nfts" }) }} className="link">{t("signin.actions.my-nfts")}</span>
+              }
+            </>
           }
+          {/* Hide Price Alerts for XAHAU while they are not ready yet */}
           {!devNet && !xahauNetwork && <Link href="/alerts">{t("menu.price-alerts", { nativeCurrency })}</Link>}
           {!devNet && <a href={"/submit/"}>{t("menu.submit-offline-tx")}</a>}
         </div>
