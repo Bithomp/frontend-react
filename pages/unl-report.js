@@ -3,7 +3,6 @@ import { useState, useEffect } from 'react'
 import axios from 'axios'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useRouter } from 'next/router'
-import { encodeNodePublic } from 'ripple-address-codec'
 
 export const getServerSideProps = async ({ locale }) => {
   return {
@@ -21,7 +20,7 @@ import {
   userOrServiceLink,
   niceNumber,
   shortHash,
-  codeHighlight
+  addressUsernameOrServiceLink
 } from '../utils/format'
 import Link from 'next/link'
 
@@ -37,12 +36,11 @@ export default function UNLreport() {
   const [data, setData] = useState([])
   const [loading, setLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState("")
-  const [showRawData, setShowRawData] = useState(false)
 
   const controller = new AbortController()
 
   const checkApi = async () => {
-    let apiUrl = 'xrpl/ledgerEntry/61E32E7A24A238F1C619D5F9DDCC41A94B33B66C0163F7EFCC8A19C9FD6F28DC'
+    let apiUrl = 'v2/unl-report'
 
     setLoading(true)
     setRawData({})
@@ -61,9 +59,9 @@ export default function UNLreport() {
     if (newdata) {
       setRawData(newdata)
       setLoading(false) //keep here for fast tab clickers
-      if (newdata.index) {
+      if (newdata.ledgerEntry) {
         setErrorMessage("")
-        setData(newdata.node.ActiveValidators)
+        setData(newdata.activeValidators)
       } else {
         if (newdata.error) {
           setErrorMessage(newdata.error)
@@ -77,39 +75,24 @@ export default function UNLreport() {
 
   /*
     {
-      "index": "61E32E7A24A238F1C619D5F9DDCC41A94B33B66C0163F7EFCC8A19C9FD6F28DC",
-      "ledger_hash": "082C7468B15FC93DF216FE1B58CA326F7DF42A753F0399C027F747E572DFA913",
-      "ledger_index": 7322707,
-      "node": {
-        "ActiveValidators": [
-          {
-            "ActiveValidator": {
-              "Account": "rGhk2uLd8ShzX2Zrcgn8sQk1LWBG4jjEwf",
-              "PublicKey": "ED3ABC6740983BFB13FFD9728EBCC365A2877877D368FC28990819522300C92A69"
-            }
-          },
-          {
-            "ActiveValidator": {
-              "Account": "rnr4kwS1VkJhvjVRuq2fbWZtEdN2HbpVVu",
-              "PublicKey": "ED49F82B2FFD537F224A1E0A10DEEFC3C25CE3882979E6B327C9F18603D21F0A22"
-            }
-          }
-        ],
-        "Flags": 0,
-        "ImportVLKeys": [
-          {
-            "ImportVLKey": {
-              "Account": "rBxZvQBY551DJ21g9AC1Qc9ASQowqcskbF",
-              "PublicKey": "ED264807102805220DA0F312E71FC2C69E1552C9C5790F6C25E3729DEB573D5860"
-            }
-          }
-        ],
-        "LedgerEntryType": "UNLReport",
-        "PreviousTxnID": "F11F033948A947445058ED1E1454DE31FC646BFE648587983CBFB9608D3D50C1",
-        "PreviousTxnLgrSeq": 7322624,
-        "index": "61E32E7A24A238F1C619D5F9DDCC41A94B33B66C0163F7EFCC8A19C9FD6F28DC"
-      },
-      "validated": true
+      "ledgerEntry": "61E32E7A24A238F1C619D5F9DDCC41A94B33B66C0163F7EFCC8A19C9FD6F28DC",
+      "ledgerHash": "082C7468B15FC93DF216FE1B58CA326F7DF42A753F0399C027F747E572DFA913",
+      "ledgerIndex": 7322707,
+      activeValidators: [
+      {
+        "account": "rGhk2uLd8ShzX2Zrcgn8sQk1LWBG4jjEwf",
+        "publicKey": "DECODED",
+        accountDetails,
+      }
+      ],
+      importVLKeys: [
+        {
+          "account": "rGhk2uLd8ShzX2Zrcgn8sQk1LWBG4jjEwf",
+          "publicKey": "DECODED",
+          accountDetails,
+        }
+      ],
+      validated: true
     }
   */
 
@@ -121,12 +104,6 @@ export default function UNLreport() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isReady])
 
-  const convertToValidatorHash = hash => {
-    const buf = Buffer.from(hash, 'hex')
-    const converted = encodeNodePublic(buf)
-    return converted
-  }
-
   return <>
     <SEO title={t("header", { ns: "unl-report" })} />
     <div className="content-text">
@@ -134,7 +111,7 @@ export default function UNLreport() {
       <div className='flex'>
         <div className="grey-box center">
           <Trans i18nKey="desc" ns="unl-report">
-            Here you can find UNL report for Ledger <b>{{ ledgerIndex: rawData?.ledger_index || "" }}</b>, ledger entry: 61E32E...6F28DC.
+            Here you can find UNL report for Ledger <b>{{ ledgerIndex: rawData?.ledgerIndex || "" }}</b>, ledger entry: 61E32E...6F28DC.
           </Trans>
           <br /><br />
           {loading ?
@@ -154,7 +131,7 @@ export default function UNLreport() {
               <tr>
                 <th className='center'>{t("table.index")}</th>
                 <th className='left'>{t("table.public-key")}</th>
-                <th className='right'>{t("table.address")}</th>
+                <th>{t("table.address")}</th>
               </tr>
             </thead>
             <tbody>
@@ -176,10 +153,10 @@ export default function UNLreport() {
                           <tr key={i}>
                             <td className='center'>{i + 1}</td>
                             <td className='left'>
-                              <CopyButton text={convertToValidatorHash(av.ActiveValidator.PublicKey)} /> {shortHash(convertToValidatorHash(av.ActiveValidator.PublicKey))}
+                              <CopyButton text={av.publicKey} /> {shortHash(av.publicKey)}
                             </td>
-                            <td className='right'>
-                              <Link href={"/account/" + av.ActiveValidator.Account}>{av.ActiveValidator.Account}</Link> <CopyButton text={av.ActiveValidator.Account} />
+                            <td>
+                              <CopyButton text={av.account} /> {addressUsernameOrServiceLink(av, 'account')}
                             </td>
                           </tr>
                         )
@@ -215,17 +192,12 @@ export default function UNLreport() {
                       </td>
                       <td>
                         <p>
-                          {t("table.address")}: <Link href={"/account/" + av.ActiveValidator.Account}>{av.ActiveValidator.Account}</Link> {userOrServiceLink(av.ActiveValidator, 'Account')}
+                          {t("table.address")}: <Link href={"/account/" + av.account}>{av.account}</Link> {userOrServiceLink(av, 'account')}
                         </p>
-                        {/* r.service &&
-                          <p>
-                            {t("table.service", { ns: "unl-report" })}: {r.service}
-                          </p>
-                        */ }
                         <p>
-                          {t("table.public-key")}: {shortHash(convertToValidatorHash(av.ActiveValidator.PublicKey))}
+                          {t("table.public-key")}: {shortHash(av.publicKey)}
                           {" "}
-                          <CopyButton text={av.ActiveValidator.PublicKey} />
+                          <CopyButton text={av.publicKey} />
                         </p>
                       </td>
                     </tr>)
@@ -237,16 +209,6 @@ export default function UNLreport() {
             </tbody>
           </table>
       }
-      <div className='center'>
-        <br />
-        {t("table.raw-data")}: <span className='link' onClick={() => setShowRawData(!showRawData)}>
-          {showRawData ? t("table.text.hide") : t("table.text.show")}
-        </span>
-        <br /><br />
-      </div>
-      <div className={'slide ' + (showRawData ? "opened" : "closed")}>
-        {codeHighlight(rawData)}
-      </div>
     </div>
   </>
 }
