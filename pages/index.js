@@ -23,7 +23,7 @@ export async function getServerSideProps(context) {
   }
 }
 
-export default function Home({ selectedCurrency, setSelectedCurrency, showAds, countryCode }) {
+export default function Home({ selectedCurrency, setSelectedCurrency, showAds }) {
   const { t } = useTranslation()
   const windowWidth = useWidth()
 
@@ -89,17 +89,6 @@ export default function Home({ selectedCurrency, setSelectedCurrency, showAds, c
               <div className="sponsored-brand-text">Register with <i>BITHOMP</i> and boost up your bonus.</div>
             </div>
           </a>
-
-          {countryCode === "KR" &&
-            <a href="https://bithomp.com/go/xrpl-korea" target="_blank" rel="noreferrer">
-              <div className="sponsored-brand">
-                <img src="/images/xrplkorea.svg" className="sponsored-brand-icon" alt="XRPL Korea crypto" />
-                <div className="sponsored-brand-title">XRPL 한국</div>
-                <div className="sponsored-brand-text">XRP & XRPL 한국 공식 커뮤니티 참여하기</div>
-              </div>
-            </a>
-          }
-
           {/*
           <a href="https://bithomp.com/go/main-exchange" target="_blank" rel="noreferrer">
             <div className="sponsored-brand easybit">
