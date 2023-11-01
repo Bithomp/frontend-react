@@ -86,7 +86,7 @@ export default function Home({ selectedCurrency, setSelectedCurrency, showAds, c
             <div className="sponsored-brand">
               <img src="/images/xbit.png" className="sponsored-brand-icon" alt="play xrp" />
               <div className="sponsored-brand-title">Play XRP</div>
-              <div className="sponsored-brand-text">Register with <i>BITHOMP25</i> and boost up your bonus.</div>
+              <div className="sponsored-brand-text">Register with <i>BITHOMP</i> and boost up your bonus.</div>
             </div>
           </a>
 
