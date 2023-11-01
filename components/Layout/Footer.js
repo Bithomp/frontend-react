@@ -1,7 +1,14 @@
 import Link from 'next/link'
 import { useTranslation } from 'next-i18next'
 
-import { devNet, useLocalStorage, ledgerName, nativeCurrency, xahauNetwork } from '../../utils'
+import {
+  devNet,
+  useLocalStorage,
+  ledgerName,
+  nativeCurrency,
+  xahauNetwork,
+  network
+} from '../../utils'
 
 import SocialIcons from "./SocialIcons"
 import LogoAnimated from './LogoAnimated'
@@ -62,11 +69,12 @@ export default function Footer({ account, setSignRequest }) {
         </div>
         <div className="footer-menu-column">
           <span className="footer-menu-header">{t("menu.networks")}</span>
-          {devNet && <a href="https://bithomp.com">XRPL Mainnet</a>}
-          {devNet !== 'testnet' && <a href="https://test.bithomp.com">XRPL Testnet</a>}
-          {devNet !== 'devnet' && <a href="https://dev.bithomp.com">XRPL Devnet</a>}
-          {devNet !== 'amm' && <a href="https://amm.bithomp.com">XRPL AMM</a>}
-          {devNet !== 'xahau-testnet' && <a href="https://test.xahauexplorer.com">Xahau Testnet</a>}
+          {network !== 'mainnet' && <a href="https://bithomp.com">XRPL Mainnet</a>}
+          {network !== 'xahau' && <a href="https://xahauexplorer.com">XAHAU Mainnet</a>}
+          {network !== 'testnet' && <a href="https://test.bithomp.com">XRPL Testnet</a>}
+          {network !== 'xahau-testnet' && <a href="https://test.xahauexplorer.com">XAHAU Testnet</a>}
+          {network !== 'devnet' && <a href="https://dev.bithomp.com">XRPL Devnet</a>}
+          {network !== 'amm' && <a href="https://amm.bithomp.com">XRPL AMM</a>}
         </div>
         <div className="footer-menu-column">
           <span className="footer-menu-header">{t("menu.legal")}</span>
