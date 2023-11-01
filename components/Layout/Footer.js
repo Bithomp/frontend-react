@@ -69,10 +69,10 @@ export default function Footer({ account, setSignRequest }) {
         </div>
         <div className="footer-menu-column">
           <span className="footer-menu-header">{t("menu.networks")}</span>
-          {network !== 'mainnet' && <a href="https://bithomp.com">XRPL Mainnet</a>}
           {network !== 'xahau' && <a href="https://xahauexplorer.com">XAHAU Mainnet</a>}
-          {network !== 'testnet' && <a href="https://test.bithomp.com">XRPL Testnet</a>}
           {network !== 'xahau-testnet' && <a href="https://test.xahauexplorer.com">XAHAU Testnet</a>}
+          {network !== 'mainnet' && <a href="https://bithomp.com">XRPL Mainnet</a>}
+          {network !== 'testnet' && <a href="https://test.bithomp.com">XRPL Testnet</a>}
           {network !== 'devnet' && <a href="https://dev.bithomp.com">XRPL Devnet</a>}
           {network !== 'amm' && <a href="https://amm.bithomp.com">XRPL AMM</a>}
         </div>
