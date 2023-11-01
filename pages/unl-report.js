@@ -19,7 +19,8 @@ import { useWidth } from '../utils'
 import {
   userOrServiceLink,
   niceNumber,
-  shortHash
+  shortHash,
+  addressUsernameOrServiceLink
 } from '../utils/format'
 import Link from 'next/link'
 
@@ -130,7 +131,7 @@ export default function UNLreport() {
               <tr>
                 <th className='center'>{t("table.index")}</th>
                 <th className='left'>{t("table.public-key")}</th>
-                <th className='right'>{t("table.address")}</th>
+                <th>{t("table.address")}</th>
               </tr>
             </thead>
             <tbody>
@@ -154,10 +155,8 @@ export default function UNLreport() {
                             <td className='left'>
                               <CopyButton text={av.publicKey} /> {shortHash(av.publicKey)}
                             </td>
-                            <td className='right'>
-                              <Link href={"/account/" + av.account}>{av.account}</Link> <CopyButton text={av.account} />
-                              <br />
-                              {userOrServiceLink(av, 'account')}
+                            <td>
+                              <CopyButton text={av.account} /> {addressUsernameOrServiceLink(av, 'account')}
                             </td>
                           </tr>
                         )
