@@ -6,7 +6,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 import SEO from '../components/SEO'
 
-import { fullDateAndTime, shortHash } from '../utils/format'
+import { addressUsernameOrServiceLink, fullDateAndTime, shortHash } from '../utils/format'
 import { useWidth } from '../utils'
 
 import CopyButton from '../components/UI/CopyButton'
@@ -121,7 +121,7 @@ export default function Validators() {
                       </p>
                       <p>
                         {t("validators.address")} <CopyButton text={v.address} /><br />
-                        <a href={"/explorer/" + v.address}>{v.address}</a>
+                        {addressUsernameOrServiceLink(v, 'address')}
                       </p>
                     </td>
                   </tr>
@@ -155,7 +155,7 @@ export default function Validators() {
                     </td>
                     <td><CopyButton text={v.publicKey} /> {shortHash(v.publicKey)}</td>
                     <td className='center'>{v.sequence}</td>
-                    <td className='left'><CopyButton text={v.address} /> <a href={"/explorer/" + v.address}>{v.address}</a></td>
+                    <td className='left'><CopyButton text={v.address} /> {addressUsernameOrServiceLink(v, 'address')}</td>
                   </tr>
                 )}
               </tbody>
