@@ -138,7 +138,7 @@ export default function Header({ setSignRequest, account, signOut, selectedCurre
               <Link href="/validators">{t("menu.xrpl.validators")}</Link>
               <Link href="/amendments">{t("menu.xrpl.amendments")}</Link>
               {xahauNetwork && <Link href="/unl-report">{t("menu.xrpl.unl-report")}</Link>}
-              {!devNet && <Link href="/genesis">{t("menu.xrpl.genesis")}</Link>}
+              <Link href="/genesis">{t("menu.xrpl.genesis")}</Link>
             </div>
           </div>
 
@@ -389,11 +389,9 @@ export default function Header({ setSignRequest, account, signOut, selectedCurre
               {t("menu.xrpl.unl-report")}
             </Link>
           }
-          {!devNet &&
-            <Link href="/genesis" className="mobile-menu-item" onClick={mobileMenuToggle}>
-              {t("menu.xrpl.genesis")}
-            </Link>
-          }
+          <Link href="/genesis" className="mobile-menu-item" onClick={mobileMenuToggle}>
+            {t("menu.xrpl.genesis")}
+          </Link>
 
           <div className="mobile-menu-directory"><span>{t("menu.developers.developers")}</span></div>
           {devNet &&
