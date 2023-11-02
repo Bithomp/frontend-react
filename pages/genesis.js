@@ -4,8 +4,8 @@ import { useTranslation, Trans } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 import { useIsMobile, getIsSsrMobile } from "../utils/mobile"
-import { niceNumber, dateFormat, addressUsernameOrServiceLink } from '../utils/format'
-import { network, nativeCurrency } from '../utils'
+import { niceNumber, dateFormat, addressUsernameOrServiceLink, amountFormat } from '../utils/format'
+import { nativeCurrency, network } from '../utils'
 
 export async function getServerSideProps(context) {
   const { locale } = context
@@ -89,7 +89,7 @@ export default function Genesis() {
                   <td>{t("genesis.inception")}</td>
                   <td>{rendered && dateFormat("2013-01-01T03:21:00Z", timestampFormatParams, { type: "ISO" })}</td>
                 </tr>
-                <tr><td>{t("table.balance")}</td><td>{niceNumber(99999999999.996320, 6)}</td></tr>
+                <tr><td>{t("table.balance")}</td><td>{niceNumber(99999999999.996320, 6)} {nativeCurrency}</td></tr>
                 <tr><td colSpan="2"><hr /></td></tr>
                 <tr>
                   <td>{t("genesis.balance-update")}</td>
@@ -97,7 +97,7 @@ export default function Genesis() {
                 </tr>
                 <tr>
                   <td>{t("table.balance")}</td>
-                  <td>{data.balance_all && niceNumber(data.balance_all, 6)}</td>
+                  <td>{data.balance_all && niceNumber(data.balance_all, 6)} {nativeCurrency}</td>
                 </tr>
               </tbody>
             </table>
@@ -125,11 +125,11 @@ export default function Genesis() {
                   </p>
                   <p>
                     {t("genesis.genesis-balance")}<br />
-                    {niceNumber(account.genesis_balance)} {nativeCurrency}
+                    {amountFormat(account.genesis_balance)}
                   </p>
                   <p>
                     {t("table.balance")} {rendered && dateFormat(data.balance_update)}<br />
-                    {niceNumber(account.balance)} {nativeCurrency}
+                    {amountFormat(account.balance)}
                   </p>
                 </td>
               </tr>
@@ -151,8 +151,8 @@ export default function Genesis() {
               <tr key={i}>
                 <td className='center'>{account.genesis_index}</td>
                 <td>{addressUsernameOrServiceLink(account, 'address')}</td>
-                <td className='right'>{niceNumber(account.genesis_balance)} {nativeCurrency}</td>
-                <td className='right'>{niceNumber(account.balance)} {nativeCurrency}</td>
+                <td className='right'>{amountFormat(account.genesis_balance)}</td>
+                <td className='right'>{amountFormat(account.balance)}</td>
               </tr>
             ))}
           </tbody>
