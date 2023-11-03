@@ -243,6 +243,9 @@ const metaUrl = (nft, type = 'image', gateway = 'our') => {
   if (!nft.metadata) return null;
   let meta = nft.metadata;
   if (type === 'image' || type === 'thumbnail') {
+    //XLS-35
+    if (meta.content?.url) return assetUrl(meta.content.url, type, gateway);
+    //XLS-20
     if (meta.image) return assetUrl(meta.image, type, gateway);
     if (meta.image_url) return assetUrl(meta.image_url, type, gateway);
     if (isCorrectFileType(meta.animation, type)) return assetUrl(meta.animation, type, gateway);
