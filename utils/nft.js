@@ -139,7 +139,11 @@ export const nftNameLink = nft => {
 }
 
 export const nftName = nft => {
-  if (nft?.metadata?.name) {
+  //xls-35
+  if (nft?.metadata?.details?.title) {
+    return stripText(nft.metadata.details.title);
+    //xls-20
+  } else if (nft?.metadata?.name) {
     return stripText(nft.metadata.name);
   } else if (nft?.metadata?.Name) {
     return stripText(nft.metadata.Name);
