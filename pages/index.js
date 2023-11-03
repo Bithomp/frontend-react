@@ -115,14 +115,16 @@ export default function Home({ selectedCurrency, setSelectedCurrency, showAds })
         </div>
       }
 
-      {!devNet && selectedCurrency && !xahauNetwork &&
+      {!devNet && selectedCurrency &&
         <>
           <div className="home-converter">
             <Converter selectedCurrency={selectedCurrency} setSelectedCurrency={setSelectedCurrency} chartPeriod={chartPeriod} />
           </div>
-          <div className="home-price-chart">
-            <PriceChart currency={selectedCurrency} chartPeriod={chartPeriod} setChartPeriod={setChartPeriod} />
-          </div>
+          {!xahauNetwork &&
+            <div className="home-price-chart">
+              <PriceChart currency={selectedCurrency} chartPeriod={chartPeriod} setChartPeriod={setChartPeriod} />
+            </div>
+          }
         </>
       }
 

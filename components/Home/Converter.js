@@ -3,11 +3,11 @@ import { useState, useEffect } from 'react'
 import Image from 'next/image'
 
 import CurrencySelect from "../UI/CurrencySelect"
-import { typeNumberOnly } from '../../utils'
+import { typeNumberOnly, nativeCurrency } from '../../utils'
 
 export default function Converter({ selectedCurrency, setSelectedCurrency, chartPeriod }) {
   const [data, setData] = useState({})
-  const [xrpValue, setXrpValue] = useState('1')
+  const [nativeTokenValue, setNativeTokenValue] = useState('1')
   const [fiatValue, setFiatValue] = useState('')
 
   useEffect(() => {
@@ -16,7 +16,7 @@ export default function Converter({ selectedCurrency, setSelectedCurrency, chart
         'v2/rates/current/' + selectedCurrency,
       );
       setData(response.data);
-      setFiatValue((xrpValue * response.data[selectedCurrency]).toFixed(2))
+      setFiatValue((nativeTokenValue * response.data[selectedCurrency]).toFixed(2))
     }
     fetchData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -27,7 +27,7 @@ export default function Converter({ selectedCurrency, setSelectedCurrency, chart
     if (xrpAmount) {
       xrpAmount = xrpAmount * 1
     }
-    setXrpValue(xrpAmount)
+    setNativeTokenValue(xrpAmount)
     setFiatValue((xrpAmount * data[selectedCurrency]).toFixed(2))
   }
 
@@ -37,17 +37,22 @@ export default function Converter({ selectedCurrency, setSelectedCurrency, chart
       fiatAmount = fiatAmount * 1
     }
     setFiatValue(fiatAmount)
-    setXrpValue((fiatAmount / data[selectedCurrency]).toFixed(2))
+    setNativeTokenValue((fiatAmount / data[selectedCurrency]).toFixed(2))
   }
 
-  const rate = data[selectedCurrency] ? '1 XRP = ' + data[selectedCurrency] + ' ' + selectedCurrency.toUpperCase() : <br />
+  const rate = data[selectedCurrency] ? '1 ' + nativeCurrency + ' = ' + data[selectedCurrency] + ' ' + selectedCurrency.toUpperCase() : <br />
+
+  const nativeCurrenciesImages = {
+    'XRP': '/images/currencies/xrp.svg',
+    'XAH': '/images/currencies/xah.png'
+  }
 
   return <>
     <h2>{rate}</h2>
     <div>
       <input
         className="converter-amount"
-        value={xrpValue}
+        value={nativeTokenValue}
         onChange={onXrpAmountChange}
         onKeyPress={typeNumberOnly}
         type="text"
@@ -55,8 +60,8 @@ export default function Converter({ selectedCurrency, setSelectedCurrency, chart
         inputMode="decimal"
       />
       <div className="converter-xrp">
-        <Image height={18} width={18} src="/images/xrp-black.svg" alt="xrp logo" />
-        <span className="converter-xrp-text">XRP</span>
+        <Image height={18} width={18} src={nativeCurrenciesImages[nativeCurrency]} alt="xrp logo" />
+        <span className="converter-xrp-text">{nativeCurrency}</span>
       </div>
     </div>
     <div>
