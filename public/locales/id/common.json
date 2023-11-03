@@ -122,8 +122,8 @@
   },
   "home": {
     "title": "Pencarian {{explorerName}} | Telusuri {{nativeCurrency}} Ledger",
-    "description": "Grafik harga XRP | Statistik XRPL | Penjelajah NFT | Pencarian alamat dompet | Volume NFT XRPL | Beli dan Jual NFT | Layanan XRP",
-    "search-placeholder": "Cari berdasarkan Alamat XRPL / Transaksi / NFT / Username / PayString / Penawaran",
+    "description": "Grafik harga {{nativeCurrency}} | Statistik {{explorerName}} | Penjelajah NFT | Pencarian alamat dompet | Volume NFT {{explorerName}} | Beli dan Jual NFT | Layanan {{explorerName}}",
+    "search-placeholder": "Cari berdasarkan Alamat / Transaksi / NFT / Username / PayString / Penawaran",
     "search-placeholder-short": "Cari berdasarkan Alamat / Transaksi",
     "scan-qr": "PINDAI KODE",
     "whales": {

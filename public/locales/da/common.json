@@ -122,8 +122,8 @@
   },
   "home": {
     "title": "{{explorerName}} Explorer | Scan {{nativeCurrency}} Ledger",
-    "description": "XRP-prisdiagram | Statistik | NFT explorer | Slå op wallet adresse ",
-    "search-placeholder": "Søg efter XRPL-adresse / Transaktion / NFT / Brugernavn / PayString / Tilbud / Valutahash",
+    "description": "{{nativeCurrency}}-prisdiagram | Statistik | NFT explorer | Slå op wallet adresse ",
+    "search-placeholder": "Søg efter adresse / Transaktion / NFT / Brugernavn / PayString / Tilbud / Valutahash",
     "search-placeholder-short": "Søg efter adresse / transaktion / bruger",
     "scan-qr": "SCAN EN KODE",
     "whales": {

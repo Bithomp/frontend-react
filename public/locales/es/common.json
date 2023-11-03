@@ -122,8 +122,8 @@
   },
   "home": {
     "title": "Explorador {{explorerName}} | Escanear el {{nativeCurrency}} Ledger",
-    "description": "Gráfica de precio XRP | Estadísticas | Explorador NFT | Buscar dirección de cartera",
-    "search-placeholder": "Buscar por Dirección XRPL / Transacción / NFT / Nombre de usuario / PayString / Oferta",
+    "description": "Gráfica de precio {{nativeCurrency}} | Estadísticas | Explorador NFT | Buscar dirección de cartera",
+    "search-placeholder": "Buscar por Dirección / Transacción / NFT / Nombre de usuario / PayString / Oferta",
     "search-placeholder-short": "Dirección / Transacción / Usuario",
     "scan-qr": "ESCANEA UN CÓDIGO",
     "whales": {

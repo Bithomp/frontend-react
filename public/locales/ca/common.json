@@ -122,8 +122,8 @@
   },
   "home": {
     "title": "Explorador {{explorerName}} | Escaneja l'{{nativeCurrency}} Ledger",
-    "description": "Gràfica de preu d'XRP | Estadístiques | Explorador d'NFTs | Cerca d'adreces dels moneders",
-    "search-placeholder": "Cerca per Adreça XRPL / Transacció / NFT / Àlies / PayString / Oferta / Hash",
+    "description": "Gràfica de preu d'{{nativeCurrency}} | Estadístiques | Explorador d'NFTs | Cerca d'adreces dels moneders",
+    "search-placeholder": "Cerca per Adreça / Transacció / NFT / Àlies / PayString / Oferta / Hash",
     "search-placeholder-short": "Cerca per Adreça / Transacció / Àlies",
     "scan-qr": "ESCANEJA UN CODI",
     "whales": {

@@ -122,8 +122,8 @@
   },
   "home": {
     "title": "{{explorerName}} Pretraživač | Istraži {{nativeCurrency}} Ledger",
-    "description": "XRP grafovi cijene | Statistike | NFT pretraživač | Provjeri svoj wallet",
-    "search-placeholder": "Pretraži po XRPL adresi / Transakciji / NFTu / Korisničkom imenu / PayStringu / Ponudi",
+    "description": "{{nativeCurrency}} grafovi cijene | Statistike | NFT pretraživač | Provjeri svoj wallet",
+    "search-placeholder": "Pretraži po adresi / Transakciji / NFTu / Korisničkom imenu / PayStringu / Ponudi",
     "search-placeholder-short": "Pretraži po adresi / Transakciji / Korisniku",
     "scan-qr": "SKENIRAJ KOD",
     "whales": {

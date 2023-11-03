@@ -122,8 +122,8 @@
   },
   "home": {
     "title": "{{explorerName}} Блок Эксплорер",
-    "description": "Курс XRP, график цены XRP, статистика по XRP леджеру, NFT эксплорер, проверка адреса XRP кошелька, объёмы продаж XRPL NFT, покупка и продажа NFT, XRP сервисы",
-    "search-placeholder": "Поиск по XRPL Адресу / Транзакции / Псевдониму / PayString / NFT / Offer ID",
+    "description": "Курс {{nativeCurrency}}, график цены {{nativeCurrency}}, статистика по {{nativeCurrency}} леджеру, NFT эксплорер, проверка адреса {{nativeCurrency}} кошелька, объёмы продаж {{explorerName}} NFT, покупка и продажа NFT, {{explorerName}} сервисы",
+    "search-placeholder": "Поиск по Адресу / Транзакции / Псевдониму / PayString / NFT / Offer ID",
     "search-placeholder-short": "Адрес / Транзакция / Псевдоним",
     "scan-qr": "СКАНИРОВАТЬ КОД",
     "whales": {

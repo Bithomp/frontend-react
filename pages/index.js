@@ -58,7 +58,7 @@ export default function Home({ selectedCurrency, setSelectedCurrency, showAds })
       <SEO
         title={t("home.title", { explorerName, nativeCurrency })}
         titleWithNetwork="true"
-        description={t("home.description")}
+        description={t("home.description", { explorerName, nativeCurrency })}
         images={
           [
             {

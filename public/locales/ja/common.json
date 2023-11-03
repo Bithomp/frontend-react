@@ -122,8 +122,8 @@
   },
   "home": {
     "title": "{{explorerName}}エクスプローラ | {{nativeCurrency}} Ledgerを検索",
-    "description": "XRP価格アラート | XRPL統計情報 | NFTエクスプローラ | ウォレットアドレス検索 | XRPL NFT 情報 | NFTのトレード | XRPサービス",
-    "search-placeholder": "XRPLアドレス/トランザクション/NFT/ユーザネーム/PayString/オファー/通貨のハッシュで検索",
+    "description": "{{nativeCurrency}}価格アラート | {{explorerName}}統計情報 | NFTエクスプローラ | ウォレットアドレス検索 | {{explorerName}} NFT 情報 | NFTのトレード | {{explorerName}}サービス",
+    "search-placeholder": "アドレス/トランザクション/NFT/ユーザネーム/PayString/オファー/通貨のハッシュで検索",
     "search-placeholder-short": "アドレス/トランザクション/ユーザで検索",
     "scan-qr": "QRコードをスキャン",
     "whales": {
