@@ -7,14 +7,14 @@
   "table": {
     "uri": "URI",
     "digest": "Digest",
-    "attention": "Attention",
+    "attention": "Pozornost",
     "attention-texts": {
-      "no-uri": "That NFT lacks an URI, it is incompatible with commonly accepted standards.",
-      "no-metadata": "The given URI is missing the metadata for that NFT. It goes against commonly accepted standards.",
-      "not-transferable": "This NFT is not transferable; it can only be transferred to and from the issuer.",
-      "burnable": "The issuer (or an entity authorized by the issuer) can destroy the NFT.",
-      "no-digest": "There is no Digest provided for that NFT. The NFT integrity cannot be verified.",
-      "invalid-digest": "The NFT integrity check failed. The Digest does not match the NFT metadata."
+      "no-uri": "Taj NFT nema URI, to nije kompatibilno sa opće prihvaćenim standardima.",
+      "no-metadata": "Uneseni URI nema metapodataka za taj NFT. To je protivno opće prihvaćenim standardima.",
+      "not-transferable": "Ovaj NFT se ne može premjestiti na drugi račun; samo se može premjestiti na i od izdavača NFT-a.",
+      "burnable": "Samo izdavač (ili entitet koji je autoriziran od strane izdavača) može može uništiti NFT.",
+      "no-digest": "Nema unesenog engl.Digest za taj NFT. NFT integritet ne može biti provjeren.",
+      "invalid-digest": "Provjera NFT integriteta nije uspjela. Digest(engl.) se ne podudara s onime iz metapodataka."
     }
   }
 }
