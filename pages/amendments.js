@@ -4,7 +4,7 @@ import axios from 'axios'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 import { fullDateAndTime, shortHash } from '../utils/format'
-import { useWidth } from '../utils'
+import { useWidth, devNet } from '../utils'
 
 import SEO from '../components/SEO'
 import CopyButton from '../components/UI/CopyButton'
@@ -19,24 +19,110 @@ export async function getStaticProps({ locale }) {
 
 export default function Amendment() {
   const windowWidth = useWidth()
+  const { t } = useTranslation(['common', 'amendments'])
   const [majorityAmendments, setMajorityAmendments] = useState(null)
   const [enabledAmendments, setEnabledAmendments] = useState(null)
-  const { t } = useTranslation(['common', 'amendments'])
+  const [newAmendments, setNewAmendments] = useState(null)
+  const [obsoleteAmendments, setObsoleteAmendments] = useState(null)
+  const [notAvailableAmendments, setNotAvailableAmendments] = useState(null)
 
-  const [disabledAmendments, setDisabledAmendments] = useState(null)
+  const [loadedFeatures, setLoadedFeatures] = useState(false)
+  const [validations, setValidations] = useState(null)
+  const [threshold, setThreshold] = useState(null)
 
-  //enabled
-  //voting
-  //reached majority
+  //in production we can split "disabled" to "new", "obsolete"
   //obsolete
+  //new
+
+  //in production features has names, votes count, thershold
 
   const checkApi = async () => {
     const response = await axios('v2/amendment')
-    const data = response.data //.sort(a => (!a.introduced) ? -1 : 1)
+    const data = response.data //.sort(a => (!a.introduced) ? -1 : 1) // empty versions on top
+
+    let disabled = [] //withoutMajourity
+    let enabled = []
+    let majority = []
+
     if (data) {
-      setDisabledAmendments(data.filter(a => a.enabled === false))
-      setMajorityAmendments(data.filter(a => !!a.majority))
-      setEnabledAmendments(data.filter(a => a.enabled === true))
+      for (let i = 0; i < data.length; i++) {
+        if (data[i].enabled) {
+          enabled.push(data[i])
+        } else if (!!data[i].majority) {
+          majority.push(data[i])
+        } else {
+          disabled.push(data[i])
+        }
+      }
+      setMajorityAmendments(majority)
+      setEnabledAmendments(enabled)
+    }
+
+    if (!devNet) {
+      const response2 = await axios('v2/features')
+      //here 1) we can get names for sure
+      //split disabled to new (withMajority and Without Majourity) and obsolete
+      let newdata = response2.data
+      if (newdata.result?.features) {
+        setLoadedFeatures(true)
+        const features = newdata.result.features
+
+        let voting = [] // the list of amendments that are voting
+
+        Object.keys(features).forEach(key => {
+          if (!features[key].enabled && features[key].vetoed !== 'Obsolete') {
+            voting.push(key)
+            setValidations(features[key].validations)
+            setThreshold(features[key].threshold)
+          }
+        })
+
+        //add possible missing names and vetoed status (obsolete)
+        for (let i = 0; i < disabled.length; i++) {
+          if (features[disabled[i].amendment]) {
+            disabled[i].name = features[disabled[i].amendment].name
+            disabled[i].vetoed = features[disabled[i].amendment].vetoed
+            disabled[i].count = features[disabled[i].amendment].count
+          }
+        }
+        //with more votes on top
+        disabled.sort((a, b) => (a.count > b.count) ? -1 : 1)
+
+        //add possible missing names
+        for (let i = 0; i < enabled.length; i++) {
+          if (features[enabled[i].amendment]) {
+            enabled[i].name = features[enabled[i].amendment].name
+          }
+        }
+
+        //add possible missing names and count
+        for (let i = 0; i < majority.length; i++) {
+          if (features[majority[i].amendment]) {
+            majority[i].name = features[majority[i].amendment].name
+            majority[i].count = features[majority[i].amendment].count
+          }
+        }
+
+        let obsoleteArray = []
+        let newArray = []
+        let notAvailableArray = []
+
+        //split disabled (without majourity) to new and obsolete
+        for (let i = 0; i < disabled.length; i++) {
+          if (disabled[i].vetoed === 'Obsolete') {
+            obsoleteArray.push(disabled[i])
+          } else if (voting.includes(disabled[i].amendment)) {
+            newArray.push(disabled[i])
+          } else {
+            notAvailableArray.push(disabled[i])
+          }
+        }
+        setNotAvailableAmendments(notAvailableArray)
+        setObsoleteAmendments(obsoleteArray)
+        setNewAmendments(newArray)
+        setEnabledAmendments(enabled)
+        setMajorityAmendments(majority)
+      }
     }
   }
 
@@ -93,6 +179,36 @@ export default function Amendment() {
           </table>
         </>
       }
+      {loadedFeatures && newAmendments?.length > 0 &&
+        <>
+          <h1 className="center">{t("new", { ns: 'amendments' })}</h1>
+          <table className="table-large">
+            <thead>
+              <tr>
+                <th className='center'>{t("table.index")}</th>
+                <th>{t("table.name")}</th>
+                <th className='right'>{t("version", { ns: 'amendments' })}</th>
+                <th className='right'>{threshold} / {validations}</th>
+                <th className='right'>{t("table.hash")}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {newAmendments.map((a, i) =>
+                <tr key={a.amendment}>
+                  <td className='center'>{i + 1}</td>
+                  <td>{amendmentLink(a.name, a.amendment)}</td>
+                  <td className='right'>{a.introduced}</td>
+                  <td className='right'>{a.count}</td>
+                  <td className='right'>
+                    {windowWidth > 1000 ? <>{shortHash(a.amendment)} </> : ""}
+                    <CopyButton text={a.amendment} />
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </>
+      }
       {enabledAmendments?.length > 0 &&
         <>
           <h1 className="center">{t("enabled", { ns: 'amendments' })}</h1>
@@ -121,9 +237,10 @@ export default function Amendment() {
           </table>
         </>
       }
-      {disabledAmendments?.length > 0 &&
+
+      {obsoleteAmendments?.length > 0 &&
         <>
-          <h1 className="center">Disabled amendments</h1>
+          <h1 className="center">{t("obsolete", { ns: 'amendments' })}</h1>
           <table className="table-large">
             <thead>
               <tr>
@@ -134,10 +251,10 @@ export default function Amendment() {
               </tr>
             </thead>
             <tbody>
-              {disabledAmendments.map((a, i) =>
+              {obsoleteAmendments.map((a, i) =>
                 <tr key={a.amendment}>
                   <td className='center'>{i + 1}</td>
-                  <td className="brake">{amendmentLink(a.name, a.amendment)}</td>
+                  <td>{amendmentLink(a.name, a.amendment)}</td>
                   <td className='right'>{a.introduced}</td>
                   <td className='right'>
                     {windowWidth > 1000 ? <>{shortHash(a.amendment)} </> : ""}
@@ -149,6 +266,33 @@ export default function Amendment() {
           </table>
         </>
       }
+
+      {loadedFeatures && notAvailableAmendments?.length > 0 &&
+        <>
+          <h1 className="center">{t("not-available", { ns: 'amendments' })}</h1>
+          <table className="table-large">
+            <thead>
+              <tr>
+                <th className='center'>{t("table.index")}</th>
+                <th>{t("table.name")}</th>
+                <th className='right'>{t("table.hash")}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {notAvailableAmendments.map((a, i) =>
+                <tr key={a.amendment}>
+                  <td className='center'>{i + 1}</td>
+                  <td className="brake">{a.name}</td>
+                  <td className='right'>
+                    {windowWidth > 1000 ? <>{shortHash(a.amendment)} </> : ""}
+                    <CopyButton text={a.amendment} />
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </>
+      }
     </div>
-  </>;
-};
+  </>
+}

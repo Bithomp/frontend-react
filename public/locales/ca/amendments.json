@@ -1,5 +1,8 @@
 {
   "soon": "Esmenes amb majoria",
+  "new": "New amendments",
+  "not-available": "Not available amendments",
+  "obsolete": "Obsolete amendments",
   "enabled": "Esmenes activades",
   "majority": "Majoria",
   "eta": "Temps estimat d'activació",

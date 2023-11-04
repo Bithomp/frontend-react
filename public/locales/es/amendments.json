@@ -1,5 +1,8 @@
 {
   "soon": "Enmiendas con una mayoría",
+  "new": "New amendments",
+  "not-available": "Not available amendments",
+  "obsolete": "Obsolete amendments",
   "enabled": "Enmiendas activadas",
   "majority": "Mayoría",
   "eta": "Estimación de tiempo en ser activada",

@@ -1,5 +1,8 @@
 {
   "soon": "Endringer med flertall",
+  "new": "New amendments",
+  "not-available": "Not available amendments",
+  "obsolete": "Obsolete amendments",
   "enabled": "Aktiverte endringer",
   "majority": "Flertall",
   "eta": "Estimert aktiveringstid",

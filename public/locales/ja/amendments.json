@@ -1,5 +1,8 @@
 {
   "soon": "大多数の支持を得ているAmendments",
+  "new": "New amendments",
+  "not-available": "Not available amendments",
+  "obsolete": "Obsolete amendments",
   "enabled": "有効なAmendments",
   "majority": "大多数",
   "eta": "推定有効時刻",
