@@ -183,14 +183,6 @@
     "for-sale-without-destination": "NFTs for public sale",
     "for-sale-with-destination": "NFTs for direct sale"
   },
-  "amendment": {
-    "soon": "Amendments with a majority",
-    "enabled": "Enabled amendments",
-    "name": "Name",
-    "introduction": "Introduction",
-    "majority": "Majority",
-    "eta": "Estimated activation time"
-  },
   "validators": {
     "updated": "updated",
     "unl": "UNL validators",

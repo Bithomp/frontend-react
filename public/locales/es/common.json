@@ -183,14 +183,6 @@
     "for-sale-without-destination": "NFTs en venta pública",
     "for-sale-with-destination": "NFTs por venta directa"
   },
-  "amendment": {
-    "soon": "Enmiendas con una mayoría",
-    "enabled": "Enmiendas activadas",
-    "name": "Nombre",
-    "introduction": "Incluido en",
-    "majority": "Mayoría",
-    "eta": "Estimación de tiempo en ser activada"
-  },
   "validators": {
     "updated": "actualizado",
     "unl": "validadores UNL",

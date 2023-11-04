@@ -183,14 +183,6 @@
     "for-sale-without-destination": "NFT'er til offentligt salg",
     "for-sale-with-destination": "NFT'er til direkte salg"
   },
-  "amendment": {
-    "soon": "Ændringer med flertal",
-    "enabled": "Aktiverede ændringer",
-    "name": "Navn",
-    "introduction": "Introduktion",
-    "majority": "Flertal",
-    "eta": "Estimeret aktiveringstid"
-  },
   "validators": {
     "updated": "opdateret",
     "unl": "UNL validatorer",

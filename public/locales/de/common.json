@@ -183,14 +183,6 @@
     "for-sale-without-destination": "NFTs zum öffentlichen Verkauf",
     "for-sale-with-destination": "NFTs zum direkten Verkauf"
   },
-  "amendment": {
-    "soon": "Änderung mit einer Mehrheit",
-    "enabled": "Aktivierte Änderungen",
-    "name": "Name",
-    "introduction": "Aktivierung",
-    "majority": "Mehrheit",
-    "eta": "Geschäftze Aktivierung"
-  },
   "validators": {
     "updated": "Aktualisiert",
     "unl": "UNL Validatoren",

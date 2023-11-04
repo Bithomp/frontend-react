@@ -183,14 +183,6 @@
     "for-sale-without-destination": "NFTovi za javnu prodaju",
     "for-sale-with-destination": "NFTovi za direktnu prodaju"
   },
-  "amendment": {
-    "soon": "Amandmani sa večinom",
-    "enabled": "Omogućeni amandmani",
-    "name": "Ime",
-    "introduction": "Uvod",
-    "majority": "Večina",
-    "eta": "Procijenjeno vrijeme aktivacije"
-  },
   "validators": {
     "updated": "ažurirano",
     "unl": "UNL validatori",

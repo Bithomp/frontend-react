@@ -183,14 +183,6 @@
     "for-sale-without-destination": "NFT, публичная продажа",
     "for-sale-with-destination": "NFT, частная продажа"
   },
-  "amendment": {
-    "soon": "Поправки, набравшие большинство",
-    "enabled": "Включенные поправки",
-    "name": "Имя",
-    "introduction": "Внесена",
-    "majority": "Большинство",
-    "eta": "Расчетное время активации"
-  },
   "validators": {
     "updated": "обновлено",
     "unl": "UNL валидаторы",

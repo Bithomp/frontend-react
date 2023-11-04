@@ -183,14 +183,6 @@
     "for-sale-without-destination": "NFT yang Dijual Publik",
     "for-sale-with-destination": "NFT yang Dijual Langsung"
   },
-  "amendment": {
-    "soon": "Amandemen dengan Mayoritas",
-    "enabled": "Amandemen Aktif",
-    "name": "Nama",
-    "introduction": "Pengantar",
-    "majority": "Mayoritas",
-    "eta": "Waktu Aktivasi Estimasi"
-  },
   "validators": {
     "updated": "diperbarui",
     "unl": "Validator UNL",

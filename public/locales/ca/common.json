@@ -183,14 +183,6 @@
     "for-sale-without-destination": "NFTs en venda per qualsevol comprador",
     "for-sale-with-destination": "NFTs en venda amb comprador específic"
   },
-  "amendment": {
-    "soon": "Esmenes amb majoria",
-    "enabled": "Esmenes activades",
-    "name": "Nom",
-    "introduction": "Introducció",
-    "majority": "Majoria",
-    "eta": "Temps estimat d'activació"
-  },
   "validators": {
     "updated": "Actualitzat",
     "unl": "Validadors de l'UNL",

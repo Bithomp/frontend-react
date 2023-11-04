@@ -183,14 +183,6 @@
     "for-sale-without-destination": "パブリックに販売中のNFT",
     "for-sale-with-destination": "直接販売中のNFT"
   },
-  "amendment": {
-    "soon": "大多数の支持を得ているAmendments",
-    "enabled": "有効なAmendments",
-    "name": "名前",
-    "introduction": "導入",
-    "majority": "大多数",
-    "eta": "推定有効時刻"
-  },
   "validators": {
     "updated": "最終更新",
     "unl": "UNLバリデータ",

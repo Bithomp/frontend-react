@@ -183,14 +183,6 @@
     "for-sale-without-destination": "공적 판매를 위한 NFT",
     "for-sale-with-destination": "직접판매용 NFT"
   },
-  "amendment": {
-    "soon": "과반수가 찬성하는 수정안",
-    "enabled": "활성화된 수정사항",
-    "name": "사용자명",
-    "introduction": "도입",
-    "majority": "다수",
-    "eta": "예상되는 활성화 시간"
-  },
   "validators": {
     "updated": "업데이트됨",
     "unl": "UNL 벨리데이터",
