@@ -1,14 +1,14 @@
 {
   "menu": {
     "personal": {
-      "personal": "Personal",
-      "search-on-ledgerName": "Search on {{ledgerName}}"
+      "personal": "Osobno",
+      "search-on-ledgerName": "Traži na {{ledgerName}}"
     },
     "business": {
       "business": "Business",
-      "advertise": "Advertise",
-      "eaas": "Explorer as a Service",
-      "build-unl": "Build UNL"
+      "advertise": "Oglašavanje",
+      "eaas": "Pretraživač kao servis",
+      "build-unl": "Izradi UNL"
     },
     "usernames": "Registracija korisničkog imena",
     "project-registartion": "Registracija projekta",
@@ -27,18 +27,18 @@
       "offers": "Ponude"
     },
     "xrpl": {
-      "governance": "Governance",
+      "governance": "Uprava",
       "rich-list": "Rich list",
       "last-ledger-information": "Zadnje ledger informacije",
       "last-ledger-transactions": "Zadnje ledger transakcije",
-      "verified-domains": "Verified domains",
+      "verified-domains": "Verificirane domene",
       "validators": "Validatori",
       "amendments": "Amandmani",
       "unl-report": "UNL report",
       "genesis": "Izvorni (genesis) računi"
     },
     "developers": {
-      "developers": "Developers",
+      "developers": "Razvojni programeri",
       "account-generation": "Generiranje računa",
       "faucet": "Faucet",
       "api": "API documentation",
@@ -99,9 +99,9 @@
     },
     "not-available": "Nije dostupno",
     "confirm": {
-      "set-domain": "Setting a domain",
+      "set-domain": "Postavljanje domene",
       "nft-accept-sell-offer-header": "NFT kupnja",
-      "nft-accept-buy-offer-header": "Selling NFT",
+      "nft-accept-buy-offer-header": "Prodajni NFTovi",
       "nft-create-sell-offer-header": "Lista za prodaju",
       "nft-create-buy-offer-header": "Kreiraj ponudu za kupnju",
       "nft-accept-offer": "Slažem se s time da mi Bithomp daje pristup decentraliziranom mjestu za prodaju, i ne može provjeriti niti garantirati autentičnost niti jednog NFTa. Potvrđujem da sam pročitao <1>Uvjete korištenja</1>, i slažem se sa svim uvjetima za kupiti, prodati ili koristiti bilo koji NFT na Bithomp-u.",
@@ -110,8 +110,8 @@
       "nft-burn": "I understand that NFT will be permanently deleted, meaning, it can no longer be owned, transferred, purchased, or sold. This action can not be undone."
     },
     "set-account": {
-      "domain": "Domain",
-      "enter-domain": "Enter domain"
+      "domain": "Domena",
+      "enter-domain": "Unesi domenu"
     }
   },
   "footer": {
