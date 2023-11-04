@@ -23,7 +23,7 @@ export const acceptNftBuyOfferButton = (t, setSignRequest, offer) => {
       offerType: 'buy',
       request: {
         "TransactionType": "NFTokenAcceptOffer",
-        "NFTokenSellOffer": offer.offerIndex,
+        "NFTokenBuyOffer": offer.offerIndex
       }
     })}
   >
