@@ -193,8 +193,8 @@ export default function Amendment() {
               <tr>
                 <th className='center'>{t("table.index")}</th>
                 <th>{t("table.name")}</th>
-                <th className='right'>{t("version", { ns: 'amendments' })}</th>
                 <th className='right'>{threshold} / {validations}</th>
+                <th className='right'>{t("version", { ns: 'amendments' })}</th>
                 <th className='right'>{t("table.hash")}</th>
               </tr>
             </thead>
@@ -203,8 +203,8 @@ export default function Amendment() {
                 <tr key={a.amendment}>
                   <td className='center'>{i + 1}</td>
                   <td>{amendmentLink(a)}</td>
+                  <td className='right'>{a.count > threshold ? <b className='green'>{a.count}</b> : a.count}</td>
                   <td className='right'>{a.introduced}</td>
-                  <td className='right'>{a.count}</td>
                   <td className='right'>
                     {windowWidth > 1000 ? <>{shortHash(a.amendment)} </> : ""}
                     <CopyButton text={a.amendment} />
