@@ -17,6 +17,16 @@ export async function getStaticProps({ locale }) {
   }
 }
 
+const amendmentLink = a => {
+  if (a.name) {
+    if (a.introduced) {
+      return <a href={"https://xrpl.org/known-amendments.html#" + a.name.toLowerCase()}>{a.name}</a>
+    }
+    return a.name
+  }
+  return shortHash(a.amendment)
+}
+
 export default function Amendment() {
   const windowWidth = useWidth()
   const { t } = useTranslation(['common', 'amendments'])
@@ -126,10 +136,6 @@ export default function Amendment() {
     }
   }
 
-  const amendmentLink = (name, hash) => {
-    return name ? <a href={"https://xrpl.org/known-amendments.html#" + name.toLowerCase()}>{name}</a> : shortHash(hash)
-  }
-
   /*
   [
     {
@@ -169,7 +175,7 @@ export default function Amendment() {
               {majorityAmendments.map((a, i) =>
                 <tr key={a.amendment}>
                   <td className='center'>{i + 1}</td>
-                  <td className="brake">{amendmentLink(a.name, a.amendment)}</td>
+                  <td className="brake">{amendmentLink(a)}</td>
                   <td className='right'>{a.introduced}</td>
                   <td>{fullDateAndTime(a.majority)}</td>
                   <td>{fullDateAndTime(a.majority + 14 * 86400 + 3)}</td>
@@ -196,7 +202,7 @@ export default function Amendment() {
               {newAmendments.map((a, i) =>
                 <tr key={a.amendment}>
                   <td className='center'>{i + 1}</td>
-                  <td>{amendmentLink(a.name, a.amendment)}</td>
+                  <td>{amendmentLink(a)}</td>
                   <td className='right'>{a.introduced}</td>
                   <td className='right'>{a.count}</td>
                   <td className='right'>
@@ -225,7 +231,7 @@ export default function Amendment() {
               {enabledAmendments.map((a, i) =>
                 <tr key={a.amendment}>
                   <td className='center'>{i + 1}</td>
-                  <td>{amendmentLink(a.name, a.amendment)}</td>
+                  <td>{amendmentLink(a)}</td>
                   <td className='right'>{a.introduced}</td>
                   <td className='right'>
                     {windowWidth > 1000 ? <>{shortHash(a.amendment)} </> : ""}
@@ -254,7 +260,7 @@ export default function Amendment() {
               {obsoleteAmendments.map((a, i) =>
                 <tr key={a.amendment}>
                   <td className='center'>{i + 1}</td>
-                  <td>{amendmentLink(a.name, a.amendment)}</td>
+                  <td>{amendmentLink(a)}</td>
                   <td className='right'>{a.introduced}</td>
                   <td className='right'>
                     {windowWidth > 1000 ? <>{shortHash(a.amendment)} </> : ""}
@@ -282,7 +288,7 @@ export default function Amendment() {
               {notAvailableAmendments.map((a, i) =>
                 <tr key={a.amendment}>
                   <td className='center'>{i + 1}</td>
-                  <td className="brake">{a.name}</td>
+                  <td className="brake">{amendmentLink(a)}</td>
                   <td className='right'>
                     {windowWidth > 1000 ? <>{shortHash(a.amendment)} </> : ""}
                     <CopyButton text={a.amendment} />
