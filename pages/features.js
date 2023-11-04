@@ -14,6 +14,8 @@ export const getServerSideProps = async ({ locale }) => {
 
 import SEO from '../components/SEO'
 import CopyButton from '../components/UI/CopyButton'
+import { shortHash } from '../utils/format'
+import { useWidth } from '../utils'
 
 const featureLink = name => {
   return <a href={"https://xrpl.org/known-amendments.html#" + name.toLowerCase()}>{name}</a>
@@ -22,6 +24,7 @@ const featureLink = name => {
 export default function Features() {
   const { t } = useTranslation(['common'])
   const router = useRouter()
+  const windowWidth = useWidth()
 
   const { isReady } = router
 
@@ -30,6 +33,7 @@ export default function Features() {
 
   const [enabled, setEnabled] = useState([])
   const [disabled, setDisabled] = useState([])
+  const [obsolete, setObsolete] = useState([])
 
   const [validations, setValidations] = useState(null)
   const [threshold, setThreshold] = useState(null)
@@ -57,15 +61,20 @@ export default function Features() {
         setErrorMessage("")
         let enabledArray = []
         let disabledArray = []
+        let obsoleteArray = []
         const features = newdata.result.features
 
         Object.keys(features).forEach(key => {
           if (features[key].enabled) {
             enabledArray.push({ ...features[key], hash: key })
           } else {
-            disabledArray.push({ ...features[key], hash: key })
-            setValidations(features[key].validations)
-            setThreshold(features[key].threshold)
+            if (features[key].vetoed === 'Obsolete') {
+              obsoleteArray.push({ ...features[key], hash: key })
+            } else {
+              disabledArray.push({ ...features[key], hash: key })
+              setValidations(features[key].validations)
+              setThreshold(features[key].threshold)
+            }
           }
         })
 
@@ -73,6 +82,7 @@ export default function Features() {
 
         setDisabled(disabledArray)
         setEnabled(enabledArray)
+        setObsolete(obsoleteArray)
       } else {
         if (newdata.error) {
           setErrorMessage(newdata.error)
@@ -115,14 +125,14 @@ export default function Features() {
   return <>
     <SEO title="Features" />
     <div className="content-text">
-      <h1 className="center">Features</h1>
-      <table className="table-large shrink">
+      <h1 className="center">New features</h1>
+      <table className="table-large">
         <thead>
           <tr>
             <th className='center'>{t("table.index")}</th>
             <th>{t("table.name")}</th>
-            <th className='center'>{t("table.hash")}</th>
-            <th className='right'>{threshold} / {validations}</th>
+            <th className='right'>Threshold {threshold} / {validations}</th>
+            <th className='right'>{t("table.hash")}</th>
           </tr>
         </thead>
         <tbody>
@@ -144,9 +154,12 @@ export default function Features() {
                       <tr key={i}>
                         <td className='center'>{i + 1}</td>
                         <td>{featureLink(f.name)}</td>
-                        <td className='center'><CopyButton text={f.hash} /></td>
                         <td className='right'>
                           {f.count > f.threshold ? <b class="green">{f.count}</b> : f.count}
+                        </td>
+                        <td className='right'>
+                          {windowWidth > 1000 ? <> {shortHash(f.hash)} </> : ""}
+                          <CopyButton text={f.hash} />
                         </td>
                       </tr>
                     )
@@ -161,12 +174,12 @@ export default function Features() {
       </table>
       <br />
       <h1 className="center">Enabled features</h1>
-      <table className="table-large shrink">
+      <table className="table-large">
         <thead>
           <tr>
             <th className='center'>{t("table.index")}</th>
             <th>{t("table.name")}</th>
-            <th className='center'>{t("table.hash")}</th>
+            <th className='right'>{t("table.hash")}</th>
           </tr>
         </thead>
         <tbody>
@@ -188,7 +201,7 @@ export default function Features() {
                       <tr key={i}>
                         <td className='center'>{i + 1}</td>
                         <td>{featureLink(f.name)}</td>
-                        <td className='center'><CopyButton text={f.hash} /></td>
+                        <td className='right'>{shortHash(f.hash)} <CopyButton text={f.hash} /></td>
                       </tr>
                     )
                   }
@@ -200,6 +213,51 @@ export default function Features() {
           }
         </tbody>
       </table>
+
+      {obsolete.length > 0 &&
+        <>
+          <br />
+          <h1 className="center">Obsolete features</h1>
+          <table className="table-large">
+            <thead>
+              <tr>
+                <th className='center'>{t("table.index")}</th>
+                <th>{t("table.name")}</th>
+                <th className='right'>{t("table.hash")}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {loading ?
+                <tr className='right'>
+                  <td colSpan="100">
+                    <br />
+                    <span className="waiting"></span>
+                    <br />{t("general.loading")}<br />
+                    <br />
+                  </td>
+                </tr>
+                :
+                <>
+                  {!errorMessage ?
+                    <>
+                      {obsolete.map((f, i) =>
+                        <tr key={i}>
+                          <td className='center'>{i + 1}</td>
+                          <td>{featureLink(f.name)}</td>
+                          <td className='right'>{shortHash(f.hash)} <CopyButton text={f.hash} /></td>
+                        </tr>
+                      )
+                      }
+                    </>
+                    :
+                    <tr><td colSpan="100" className='center orange bold'>{errorMessage}</td></tr>
+                  }
+                </>
+              }
+            </tbody>
+          </table>
+        </>
+      }
     </div>
   </>
 }
