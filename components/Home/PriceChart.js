@@ -1,27 +1,37 @@
-//import Chart from 'react-apexcharts';
-import axios from 'axios';
-import { useState, useEffect } from 'react';
+//import Chart from 'react-apexcharts'
+import axios from 'axios'
+import { useState, useEffect } from 'react'
 import { useTranslation } from 'next-i18next'
 import dynamic from 'next/dynamic'
-const Chart = dynamic(() => import('react-apexcharts'), { ssr: false })
-
-const zoomicon = "/images/zoom.svg";
-const zoominicon = "/images/zoom-in.svg";
-const zoomouticon = "/images/zoom-out.svg";
-const panicon = "/images/panning.svg";
 
 import { useTheme } from "../Layout/ThemeContext"
+import { nativeCurrency } from '../../utils'
+
+const Chart = dynamic(() => import('react-apexcharts'), { ssr: false })
+const zoomicon = "/images/zoom.svg"
+const zoominicon = "/images/zoom-in.svg"
+const zoomouticon = "/images/zoom-out.svg"
+const panicon = "/images/panning.svg"
 
 export default function PriceChart({ currency, chartPeriod, setChartPeriod }) {
   const { i18n } = useTranslation();
   const { theme } = useTheme();
 
-  const [data, setData] = useState({ data: [[]] });
+  const [data, setData] = useState({ data: [[]] })
 
-  const supportedLanguages = ["en", "ru"];
-  let chartLang = "en";
+  const supportedLanguages = ["en", "ru"]
+  let chartLang = "en"
   if (supportedLanguages.includes(i18n.language)) {
-    chartLang = i18n.language;
+    chartLang = i18n.language
+  }
+
+  const xAxisLabelsFormatterDetailed = val => {
+    return new Date(val).toLocaleDateString(undefined, {
+      month: 'short',
+      day: 'numeric',
+      hour: 'numeric',
+      minute: '2-digit'
+    })
   }
 
   const [options, setOptions] = useState({
@@ -176,7 +186,7 @@ export default function PriceChart({ currency, chartPeriod, setChartPeriod }) {
           tickAmount: 5,
         },
         title: {
-          text: 'XRP/' + currency.toUpperCase(),
+          text: nativeCurrency + '/' + currency.toUpperCase(),
           align: 'center'
         },
         chart: {
@@ -213,7 +223,13 @@ export default function PriceChart({ currency, chartPeriod, setChartPeriod }) {
         },
         tooltip: {
           x: {
-            format: 'd MMM yyyy'
+            formatter: val => {
+              return new Date(val).toLocaleDateString(undefined, {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric'
+              })
+            }
           },
           y: {
             formatter: (val) => val.toFixed(digitsAfterDot) + ' ' + currency.toUpperCase()
@@ -228,69 +244,55 @@ export default function PriceChart({ currency, chartPeriod, setChartPeriod }) {
           width: 3
         },
         //colors: ['#006B7D'],
-      };
+      }
 
       switch (chartPeriod) {
         case 'one_day':
-          newOptions.xaxis = {
-            min: dayAgo,
-            max: now,
-          };
-          newOptions.tooltip.x.format = 'd MMM, H:mm';
-          break;
+          newOptions.xaxis.min = dayAgo
+          newOptions.xaxis.max = now
+          newOptions.tooltip.x.formatter = xAxisLabelsFormatterDetailed
+          break
         case 'one_week':
-          newOptions.xaxis = {
-            min: weekAgo,
-            max: now,
-          };
+          newOptions.xaxis.min = weekAgo
+          newOptions.xaxis.max = now
           if (detailedDayAndWeekChartAvailable) {
-            newOptions.tooltip.x.format = 'd MMM, H:mm';
+            newOptions.tooltip.x.formatter = xAxisLabelsFormatterDetailed
           }
-          break;
+          break
         case 'one_month':
-          newOptions.xaxis = {
-            min: monthAgo,
-            max: now,
-          };
-          break;
+          newOptions.xaxis.min = monthAgo
+          newOptions.xaxis.max = now
+          break
         case 'six_months':
-          newOptions.xaxis = {
-            min: halfAnYearAgo,
-            max: now,
-          };
-          break;
+          newOptions.xaxis.min = halfAnYearAgo
+          newOptions.xaxis.max = now
+          break
         case 'one_year':
-          newOptions.xaxis = {
-            min: yearAgo,
-            max: now,
-          };
-          break;
+          newOptions.xaxis.min = yearAgo
+          newOptions.xaxis.max = now
+          break
         case 'ytd':
-          newOptions.xaxis = {
-            min: thisYearStart,
-            max: now,
-          };
-          break;
+          newOptions.xaxis.min = thisYearStart
+          newOptions.xaxis.max = now
+          break
         case 'all':
-          newOptions.xaxis = {
-            min: undefined,
-            max: undefined,
-          };
-          break;
+          newOptions.xaxis.min = undefined
+          newOptions.xaxis.max = undefined
+          break
         default:
-          break;
-      };
-      setOptions(newOptions);
-      setData(response.data);
+          break
+      }
+      setOptions(newOptions)
+      setData(response.data)
     }
-    fetchData();
+    fetchData()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currency, chartPeriod, theme, detailedDayAndWeekChartAvailable]);
+  }, [currency, chartPeriod, theme, detailedDayAndWeekChartAvailable])
 
   const series = [{
     name: '',
-    data: data.data,
-  }];
+    data: data.data
+  }]
 
   return <>
     <div className="chart-toolbar">
@@ -303,5 +305,5 @@ export default function PriceChart({ currency, chartPeriod, setChartPeriod }) {
       <button onClick={() => setChartPeriod('all')} className={(chartPeriod === 'all' ? 'active' : '')}>ALL</button>
     </div>
     <Chart type="line" series={series} options={options} />
-  </>;
-};
+  </>
+}
