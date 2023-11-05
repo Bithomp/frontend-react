@@ -3,7 +3,7 @@ import { useTranslation } from 'next-i18next'
 import { useState } from 'react'
 import { SiteLinksSearchBoxJsonLd, LogoJsonLd, SocialProfileJsonLd } from 'next-seo'
 
-import { useWidth, server, xahauNetwork, explorerName, nativeCurrency, devNet } from '../utils'
+import { useWidth, server, explorerName, nativeCurrency, devNet } from '../utils'
 import { getIsSsrMobile } from "../utils/mobile"
 
 import SEO from '../components/SEO'
@@ -120,11 +120,9 @@ export default function Home({ selectedCurrency, setSelectedCurrency, showAds })
           <div className="home-converter">
             <Converter selectedCurrency={selectedCurrency} setSelectedCurrency={setSelectedCurrency} chartPeriod={chartPeriod} />
           </div>
-          {!xahauNetwork &&
-            <div className="home-price-chart">
-              <PriceChart currency={selectedCurrency} chartPeriod={chartPeriod} setChartPeriod={setChartPeriod} />
-            </div>
-          }
+          <div className="home-price-chart">
+            <PriceChart currency={selectedCurrency} chartPeriod={chartPeriod} setChartPeriod={setChartPeriod} />
+          </div>
         </>
       }
 
