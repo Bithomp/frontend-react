@@ -82,10 +82,10 @@ export default function Whales({ currency }) {
   */
 
   return <>
-    <h2 className="center">{t("home.whales.header")}</h2>
-    <div className='whale-transactions-block'>
-      {data?.length ?
-        <>
+    {data?.length > 0 &&
+      <>
+        <h2 className="center">{t("home.whales.header")}</h2>
+        <div className='whale-transactions-block'>
           {data.map(tx => (
             <div key={tx.hash} className={"tx-row" + (difference?.includes(tx) ? " just-added" : "")}>
               <span className='tx-time'>{timeFormat(tx.timestamp)}</span>
@@ -94,15 +94,8 @@ export default function Whales({ currency }) {
               <span className='tx-amount-fiat'>{devNet ? t("home.whales.no-value") : (tx.amountFiats ? shortNiceNumber(tx.amountFiats[currency?.toLowerCase()], 0, 1, currency) : "")}</span>
             </div>
           ))}
-        </>
-        :
-        <div className='center'>
-          <br /><br /><br /><br />
-          <span className="waiting"></span>
-          <br />{t("general.loading")}
-          <br />
         </div>
-      }
-    </div>
-  </>;
+      </>
+    }
+  </>
 }
