@@ -18,6 +18,7 @@ export async function getServerSideProps(context) {
 }
 
 import SEO from '../components/SEO'
+import CopyButton from '../components/UI/CopyButton'
 
 export default function Genesis() {
   const { t } = useTranslation()
@@ -121,7 +122,7 @@ export default function Genesis() {
                 <td>
                   <p>
                     {t("genesis.address")}<br />
-                    {addressUsernameOrServiceLink(account, 'address')}
+                    {addressUsernameOrServiceLink(account, 'address')} <CopyButton text={account.address} />
                   </p>
                   <p>
                     {t("genesis.genesis-balance")}<br />
@@ -150,7 +151,7 @@ export default function Genesis() {
             {data?.genesis?.map((account, i) => (
               <tr key={i}>
                 <td className='center'>{account.genesis_index}</td>
-                <td>{addressUsernameOrServiceLink(account, 'address')}</td>
+                <td><CopyButton text={account.address} /> {addressUsernameOrServiceLink(account, 'address')}</td>
                 <td className='right'>{amountFormat(account.genesis_balance)}</td>
                 <td className='right'>{amountFormat(account.balance)}</td>
               </tr>
