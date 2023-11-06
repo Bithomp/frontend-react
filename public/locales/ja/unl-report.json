@@ -1,0 +1,5 @@
+{
+  "header": "UNLレポート",
+  "desc": "こちらはレジャー<1>#{{ledgerIndex}}</1>におけるUNLレポート(ledger entry: 61E32E…6F28DC)です。",
+  "summary": "現在<1>{{activeValidators}}</1>のアクティブなバリデータが確認されています。"
+}
