@@ -421,7 +421,8 @@
       "Unable to verify balance of the buyer account": "No es posible verificar el balance de la cuenta del comprador",
       "Insufficient funds on the buyer account": "El comprador no tiene suficientes fondos",
       "Seller has no trustline for the token or it cannot be verified": "El vendedor no tiene una línea de confianza (trustline) para el token o no se puede verificar",
-      "NFT Issuer has no trustline for the token to accept royalty or it cannot be verified": "El emisor del NFT no tiene una línea de confianza del token para aceptar las regalías o no puede ser verificado"
+      "NFT Issuer has no trustline for the token to accept royalty or it cannot be verified": "El emisor del NFT no tiene una línea de confianza del token para aceptar las regalías o no puede ser verificado",
+      "NFT is already belongs to the buyer": "El NFT ya pertenece al comprador"
     }
   },
   "tabs": {

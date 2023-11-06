@@ -421,7 +421,8 @@
       "Unable to verify balance of the buyer account": "Tidak dapat memverifikasi saldo akun pembeli",
       "Insufficient funds on the buyer account": "Pembeli tidak memiliki cukup dana",
       "Seller has no trustline for the token or it cannot be verified": "Penjual tidak memiliki trustline untuk token atau tidak dapat diverifikasi",
-      "NFT Issuer has no trustline for the token to accept royalty or it cannot be verified": "Penerbit NFT tidak memiliki trustline untuk token untuk menerima royalti atau tidak dapat diverifikasi"
+      "NFT Issuer has no trustline for the token to accept royalty or it cannot be verified": "Penerbit NFT tidak memiliki trustline untuk token untuk menerima royalti atau tidak dapat diverifikasi",
+      "NFT is already belongs to the buyer": "NFT sudah dimiliki oleh pembeli"
     }
   },
   "tabs": {

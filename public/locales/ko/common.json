@@ -418,10 +418,11 @@
     "text-status": {
       "NFT is not owned by the seller account": "판매자가 NFT를 소유하고 있지 않습니다",
       "Offer is expired": "만료되었습니다",
-      "Unable to verify balance of the buyer account": "",
+      "Unable to verify balance of the buyer account": "구매자 계정의 잔액을 확인할 수 없습니다",
       "Insufficient funds on the buyer account": "구매자가 자금이 부족합니다",
-      "Seller has no trustline for the token or it cannot be verified": "판매자가 토큰에 대한 트러스트 라인이 없거나 확인할 수 없습니다.",
-      "NFT Issuer has no trustline for the token to accept royalty or it cannot be verified": "NFT 발행자가 로열티를 받을 수 있는 토큰에 대한 트러스트 라인이 없거나 확인할 수 없습니다"
+      "Seller has no trustline for the token or it cannot be verified": "판매자가 토큰에 대한 트러스트 라인이 없거나 확인할 수 없습니다",
+      "NFT Issuer has no trustline for the token to accept royalty or it cannot be verified": "NFT 발행자가 로열티를 받을 수 있는 토큰에 대한 트러스트 라인이 없거나 확인할 수 없습니다",
+      "NFT is already belongs to the buyer": "NFT는 이미 구매자의 것입니다"
     }
   },
   "tabs": {

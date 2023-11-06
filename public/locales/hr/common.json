@@ -421,7 +421,8 @@
       "Unable to verify balance of the buyer account": "Ne mogu provjeriti iznos računa kupca",
       "Insufficient funds on the buyer account": "Kupac nema dovoljno novaca",
       "Seller has no trustline for the token or it cannot be verified": "Prodavač nema trustline za novčić ili se to ne može provjeriti",
-      "NFT Issuer has no trustline for the token to accept royalty or it cannot be verified": "NFT izdavatelj nema trustline za novčić da bi prihvatio naknadu ili se to ne može provjeriti"
+      "NFT Issuer has no trustline for the token to accept royalty or it cannot be verified": "NFT izdavatelj nema trustline za novčić da bi prihvatio naknadu ili se to ne može provjeriti",
+      "NFT is already belongs to the buyer": "NFT već pripada kupcu"
     }
   },
   "tabs": {

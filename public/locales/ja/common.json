@@ -421,7 +421,8 @@
       "Unable to verify balance of the buyer account": "購入者アカウントの残高を確認できません",
       "Insufficient funds on the buyer account": "資金不足",
       "Seller has no trustline for the token or it cannot be verified": "Selle販売者はトークンのトラストラインを保有していないか、保有を確認できません。",
-      "NFT Issuer has no trustline for the token to accept royalty or it cannot be verified": "NFT発行者がロイヤリティを受け入れるトークンのトラストラインを保有していないか、保有を確認できません。"
+      "NFT Issuer has no trustline for the token to accept royalty or it cannot be verified": "NFT発行者がロイヤリティを受け入れるトークンのトラストラインを保有していないか、保有を確認できません。",
+      "NFT is already belongs to the buyer": "NFTは既に購入者のものです。"
     }
   },
   "tabs": {
