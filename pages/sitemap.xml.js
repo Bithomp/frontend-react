@@ -1,4 +1,4 @@
-import { server } from '../utils'
+import { server, xahauNetwork } from '../utils'
 
 const pages = [
   { loc: "explorer/", changefreq: "monthly", priority: "1" },
@@ -22,7 +22,7 @@ const pages = [
   { loc: "ledger", changefreq: "always", priority: "0.7" },
   { loc: "donate", changefreq: "daily", priority: "0.7" },
   { loc: "alerts", changefreq: "daily", priority: "0.7" },
-  { loc: "amendments", changefreq: "daily", priority: "0.7" },
+  { loc: "amendments", changefreq: "hourly", priority: "0.7" },
   { loc: "validators", changefreq: "daily", priority: "0.7" },
   { loc: "last-ledger-information", changefreq: "always", priority: "0.7" },
   { loc: "paperwallet/", changefreq: "yearly", priority: "0.7" },
@@ -40,6 +40,13 @@ const pages = [
 
   { loc: "explorer/submit.html", changefreq: "yearly", priority: "0.2" }
 ]
+
+if (xahauNetwork) {
+  pages.push(
+    { loc: "governance", changefreq: "hourly", priority: "0.9" },
+    { loc: "unl-report", changefreq: "always", priority: "0.8" },
+  )
+}
 
 function generateSiteMap(posts) {
   const locales = ['en', 'ko', 'ru', 'de', 'es', 'id', 'ja', 'ca', 'hr', 'da', 'nn', 'my']
