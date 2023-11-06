@@ -467,7 +467,7 @@ export default function Governance({ id, setSignRequest, signRequest, account })
           <table className="table-large shrink">
             <thead>
               <tr>
-                <th>Voter</th>
+                <th>{t("table.voter", { ns: 'governance' })}</th>
                 {!mainTable && <th className='center'>{t("table.target", { ns: 'governance' })}</th>}
                 <th className='center'>{t("table.seat", { ns: 'governance' })}</th>
                 <th>{t("table.address")}</th>
@@ -918,7 +918,7 @@ export default function Governance({ id, setSignRequest, signRequest, account })
           <table className="table-large shrink">
             <thead>
               <tr>
-                <th>Voter</th>
+                <th>{t("table.voter", { ns: 'governance' })}</th>
                 {!mainTable &&
                   <th className='center'>{t("table.target", { ns: 'governance' })}</th>
                 }
