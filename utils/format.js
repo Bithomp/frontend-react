@@ -394,13 +394,17 @@ export const amountFormat = (amount, options = {}) => {
   let showValue = value;
 
   if (value >= 100) {
-    showValue = niceNumber(value)
+    if (options.minFractionDigits) {
+      showValue = niceNumber(value, options.minFractionDigits)
+    } else {
+      showValue = niceNumber(value)
+    }
   } else if (options.maxFractionDigits) {
     showValue = niceNumber(value, options.maxFractionDigits)
   }
 
   //add issued by (issuerDetails.service / username)
-  if (type !== 'XRP' && options.tooltip) {
+  if (type !== nativeCurrency && options.tooltip) {
     return <>
       {showValue} {valuePrefix} {" "}
       <span className='tooltip'>
@@ -494,8 +498,8 @@ const amountParced = amount => {
       }
     }
 
-    if (currency.toString().toLowerCase() === "xrp") {
-      currency = "FakeXRP"
+    if (currency.toString().toUpperCase() === nativeCurrency) {
+      currency = "Fake" + nativeCurrency
     }
 
     if (xls14NftVal) {
@@ -510,7 +514,7 @@ const amountParced = amount => {
       value = xls14NftVal
     }
   } else {
-    type = "XRP"
+    type = nativeCurrency
     value = amount / 1000000
     currency = nativeCurrency
   }

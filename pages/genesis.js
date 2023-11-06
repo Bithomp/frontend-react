@@ -4,8 +4,8 @@ import { useTranslation, Trans } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 import { useIsMobile, getIsSsrMobile } from "../utils/mobile"
-import { niceNumber, dateFormat, addressUsernameOrServiceLink, amountFormat } from '../utils/format'
-import { nativeCurrency, network } from '../utils'
+import { dateFormat, addressUsernameOrServiceLink, amountFormat } from '../utils/format'
+import { network } from '../utils'
 
 export async function getServerSideProps(context) {
   const { locale } = context
@@ -89,7 +89,7 @@ export default function Genesis() {
                   <td>{t("genesis.inception")}</td>
                   <td>{rendered && dateFormat("2013-01-01T03:21:00Z", timestampFormatParams, { type: "ISO" })}</td>
                 </tr>
-                <tr><td>{t("table.balance")}</td><td>{niceNumber(99999999999.996320, 6)} {nativeCurrency}</td></tr>
+                <tr><td>{t("table.balance")}</td><td>{amountFormat(99999999999996320, { minFractionDigits: 6 })}</td></tr>
                 <tr><td colSpan="2"><hr /></td></tr>
                 <tr>
                   <td>{t("genesis.balance-update")}</td>
@@ -97,7 +97,7 @@ export default function Genesis() {
                 </tr>
                 <tr>
                   <td>{t("table.balance")}</td>
-                  <td>{data.balance_all && niceNumber(data.balance_all, 6)} {nativeCurrency}</td>
+                  <td>{data.balance_all && amountFormat(data.balance_all, { minFractionDigits: 6 })}</td>
                 </tr>
               </tbody>
             </table>
