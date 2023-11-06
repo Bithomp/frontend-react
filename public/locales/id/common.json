@@ -71,8 +71,8 @@
     "signin": "Masuk",
     "signout": "Keluar",
     "choose-app": "Pilih aplikasi masuk",
-    "login-with": "Masuk dengan",
-    "sign-with": "Tanda tangan dengan",
+    "login-with": "Masuk dengan {{appName}}",
+    "sign-with": "Tanda tangan dengan {{appName}}",
     "amount": {
       "set-price": "Tetapkan harga",
       "enter-amount": "Masukkan jumlah"

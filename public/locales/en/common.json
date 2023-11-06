@@ -71,8 +71,8 @@
     "signin": "Sign in",
     "signout": "Sign out",
     "choose-app": "Choose a signing app",
-    "login-with": "Login with",
-    "sign-with": "Sign with",
+    "login-with": "Login with {{appName}}",
+    "sign-with": "Sign with {{appName}}",
     "amount": {
       "set-price": "Set a price",
       "enter-amount": "Enter amount"

@@ -71,8 +71,8 @@
     "signin": "Inicia sessió",
     "signout": "Tanca sessió",
     "choose-app": "Tria una aplicació per iniciar sessió",
-    "login-with": "Inicia sessió amb",
-    "sign-with": "Signa amb",
+    "login-with": "Inicia sessió amb {{appName}}",
+    "sign-with": "Signa amb {{appName}}",
     "amount": {
       "set-price": "Estableix un preu",
       "enter-amount": "Introdueix una quantitat"

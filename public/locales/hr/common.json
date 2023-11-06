@@ -71,8 +71,8 @@
     "signin": "Prijava",
     "signout": "Odjava",
     "choose-app": "Odaberi app za prijavu",
-    "login-with": "Prijava s",
-    "sign-with": "Potpiši s",
+    "login-with": "Prijava s {{appName}}",
+    "sign-with": "Potpiši s {{appName}}",
     "amount": {
       "set-price": "Postavi cijenu",
       "enter-amount": "Unesi cijenu"

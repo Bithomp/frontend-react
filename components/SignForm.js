@@ -857,7 +857,7 @@ export default function SignForm({ setSignRequest, setAccount, signRequest }) {
               :
               <>
                 <div className='header'>
-                  {signRequest?.request ? t("signin.sign-with") : t("signin.login-with")} {capitalize(screen)}
+                  {signRequest?.request ? t("signin.sign-with", { appName: capitalize(screen) }) : t("signin.login-with", { appName: capitalize(screen) })}
                 </div>
                 {screen === 'xumm' ?
                   <>

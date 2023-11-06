@@ -71,8 +71,8 @@
 		"signin": "Log Masuk",
 		"signout": "Log Keluar",
 		"choose-app": "Pilih aplikasi log masuk",
-		"login-with": "Log masuk dengan",
-		"sign-with": "Tanda dengan",
+		"login-with": "Log masuk dengan {{appName}}",
+		"sign-with": "Tanda dengan {{appName}}",
 		"amount": {
 			"set-price": "Tetapkan harga",
 			"enter-amount": "Masukkan jumlah"

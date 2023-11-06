@@ -71,8 +71,8 @@
     "signin": "Logg inn",
     "signout": "Logg ut",
     "choose-app": "Velg en signeringsapp",
-    "login-with": "Logg inn med",
-    "sign-with": "Signer med",
+    "login-with": "Logg inn med {{appName}}",
+    "sign-with": "Signer med {{appName}}",
     "amount": {
       "set-price": "Sett en pris",
       "enter-amount": "Tast inn beløp"

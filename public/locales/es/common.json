@@ -71,8 +71,8 @@
     "signin": "Conectar",
     "signout": "Desconectar",
     "choose-app": "Elige una app para conectarte.",
-    "login-with": "Conectarse con",
-    "sign-with": "Firmar con",
+    "login-with": "Conectarse con {{appName}}",
+    "sign-with": "Firmar con {{appName}}",
     "amount": {
       "set-price": "Poner un precio",
       "enter-amount": "Introducir cantidad"

@@ -71,8 +71,8 @@
     "signin": "Log ind",
     "signout": "Log ud",
     "choose-app": "Vælg en signeringsapp",
-    "login-with": "Login med",
-    "sign-with": "Signer med",
+    "login-with": "Login med {{appName}}",
+    "sign-with": "Signer med {{appName}}",
     "amount": {
       "set-price": "Sæt en pris",
       "enter-amount": "Indtast beløb"
