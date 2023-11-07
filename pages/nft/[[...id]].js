@@ -1039,74 +1039,82 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
                       </tbody>
                     </table>
 
-                    {!notFoundInTheNetwork && data.type === 'xls20' &&
+                    {!notFoundInTheNetwork &&
                       <>
-                        <table className='table-details'>
-                          <thead>
-                            <tr><th colSpan="100">{t("table.related-lists")}</th></tr>
-                          </thead>
-                          <tbody>
-                            <tr>
-                              <td>{t("table.by-issuer")}</td>
-                              <td>
-                                <Link href={"/nft-distribution?issuer=" + data.issuer}>{t("holders", { ns: 'nft' })}</Link>,{" "}
-                                <Link href={"/nft-explorer?issuer=" + data.issuer}>{t("table.all-nfts")}</Link>,{" "}
-                                <Link href={"/nft-sales?issuer=" + data.issuer}>{t("table.sold_few")}</Link>,{" "}
-                                <Link href={"/nft-explorer?issuer=" + data.issuer + "&list=onSale"}>{t("table.on-sale")}</Link>
-                              </td>
-                            </tr>
-                            <tr>
-                              <td>{t("table.by-taxon")}</td>
-                              <td>
-                                <Link href={"/nft-explorer?issuer=" + data.issuer + "&taxon=" + data.nftokenTaxon}>{t("table.all-nfts")}</Link>,{" "}
-                                <Link href={"/nft-sales?issuer=" + data.issuer + "&taxon=" + data.nftokenTaxon}>{t("table.sold_few")}</Link>,{" "}
-                                <Link href={"/nft-explorer?issuer=" + data.issuer + "&taxon=" + data.nftokenTaxon + "&list=onSale"}>{t("table.on-sale")}</Link>
-                              </td>
-                            </tr>
-                            <tr>
-                              <td>{t("table.by-owner")}</td>
-                              <td>
-                                <Link href={"/nft-explorer?owner=" + data.owner}>{t("table.all-nfts")}</Link>,{" "}
-                                <Link href={"/nft-explorer?owner=" + data.owner + "&list=onSale"}>{t("table.on-sale")}</Link>
-                              </td>
-                            </tr>
-                          </tbody>
-                        </table>
+                        {data.type === 'xls20' &&
+                          <table className='table-details'>
+                            <thead>
+                              <tr><th colSpan="100">{t("table.related-lists")}</th></tr>
+                            </thead>
+                            <tbody>
+                              <tr>
+                                <td>{t("table.by-issuer")}</td>
+                                <td>
+                                  <Link href={"/nft-distribution?issuer=" + data.issuer}>{t("holders", { ns: 'nft' })}</Link>,{" "}
+                                  <Link href={"/nft-explorer?issuer=" + data.issuer}>{t("table.all-nfts")}</Link>,{" "}
+                                  <Link href={"/nft-sales?issuer=" + data.issuer}>{t("table.sold_few")}</Link>,{" "}
+                                  <Link href={"/nft-explorer?issuer=" + data.issuer + "&list=onSale"}>{t("table.on-sale")}</Link>
+                                </td>
+                              </tr>
+                              <tr>
+                                <td>{t("table.by-taxon")}</td>
+                                <td>
+                                  <Link href={"/nft-explorer?issuer=" + data.issuer + "&taxon=" + data.nftokenTaxon}>{t("table.all-nfts")}</Link>,{" "}
+                                  <Link href={"/nft-sales?issuer=" + data.issuer + "&taxon=" + data.nftokenTaxon}>{t("table.sold_few")}</Link>,{" "}
+                                  <Link href={"/nft-explorer?issuer=" + data.issuer + "&taxon=" + data.nftokenTaxon + "&list=onSale"}>{t("table.on-sale")}</Link>
+                                </td>
+                              </tr>
+                              <tr>
+                                <td>{t("table.by-owner")}</td>
+                                <td>
+                                  <Link href={"/nft-explorer?owner=" + data.owner}>{t("table.all-nfts")}</Link>,{" "}
+                                  <Link href={"/nft-explorer?owner=" + data.owner + "&list=onSale"}>{t("table.on-sale")}</Link>
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        }
 
-                        <table className='table-details'>
-                          <thead>
-                            <tr>
-                              <th colSpan="100">
-                                {t("table.history")}
-                              </th>
-                            </tr>
-                          </thead>
-                          {nftHistory(data.history)}
-                        </table>
+                        {data.type === 'xls20' &&
+                          <table className='table-details'>
+                            <thead>
+                              <tr>
+                                <th colSpan="100">
+                                  {t("table.history")}
+                                </th>
+                              </tr>
+                            </thead>
+                            {nftHistory(data.history)}
+                          </table>
+                        }
 
-                        <table className='table-details'>
-                          <thead>
-                            <tr>
-                              <th colSpan="100">
-                                {t("table.sell-offers")}
-                                {countSellOffers && offersFilter("sell")}
-                              </th>
-                            </tr>
-                          </thead>
-                          {nftOffers(filteredSellOffers, "sell")}
-                        </table>
+                        {data.type === 'xls20' &&
+                          <table className='table-details'>
+                            <thead>
+                              <tr>
+                                <th colSpan="100">
+                                  {t("table.sell-offers")}
+                                  {countSellOffers && offersFilter("sell")}
+                                </th>
+                              </tr>
+                            </thead>
+                            {nftOffers(filteredSellOffers, "sell")}
+                          </table>
+                        }
 
-                        <table className='table-details'>
-                          <thead>
-                            <tr>
-                              <th colSpan="100">
-                                {t("table.buy-offers")}
-                                {countBuyOffers && offersFilter("buy")}
-                              </th>
-                            </tr>
-                          </thead>
-                          {nftOffers(filteredBuyOffers, "buy")}
-                        </table>
+                        {data.type === 'xls20' &&
+                          <table className='table-details'>
+                            <thead>
+                              <tr>
+                                <th colSpan="100">
+                                  {t("table.buy-offers")}
+                                  {countBuyOffers && offersFilter("buy")}
+                                </th>
+                              </tr>
+                            </thead>
+                            {nftOffers(filteredBuyOffers, "buy")}
+                          </table>
+                        }
                       </>
                     }
                   </div>
