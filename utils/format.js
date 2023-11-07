@@ -394,10 +394,14 @@ export const amountFormat = (amount, options = {}) => {
   let showValue = value;
 
   if (value >= 100) {
-    if (options.minFractionDigits) {
-      showValue = niceNumber(value, options.minFractionDigits)
+    if (options.short) {
+      showValue = shortNiceNumber(value, 2, 1)
     } else {
-      showValue = niceNumber(value)
+      if (options.minFractionDigits) {
+        showValue = niceNumber(value, options.minFractionDigits)
+      } else {
+        showValue = niceNumber(value)
+      }
     }
   } else if (options.maxFractionDigits) {
     showValue = niceNumber(value, options.maxFractionDigits)

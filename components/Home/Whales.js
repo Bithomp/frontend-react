@@ -2,8 +2,8 @@ import { useState, useEffect } from 'react';
 import { useTranslation } from 'next-i18next'
 import axios from 'axios';
 
-import { wssServer, devNet, nativeCurrency } from '../../utils';
-import { shortNiceNumber, timeFormat, txIdFormat } from '../../utils/format';
+import { wssServer, devNet } from '../../utils';
+import { amountFormat, shortNiceNumber, timeFormat, txIdFormat } from '../../utils/format';
 
 let ws = null;
 
@@ -65,7 +65,6 @@ export default function Whales({ currency }) {
       "hash":"59850C23F37E86A675F99C0DF29C3468C6F5BB53BDB7B9C73E6AB012DCE9D402",
       "timestamp":1663143343,
       "amount":"1000",
-      "amountXRP":1000,
       "amountFiats":{
         "aed":"1240",
         "ars":"47980"
@@ -90,8 +89,8 @@ export default function Whales({ currency }) {
             <div key={tx.hash} className={"tx-row" + (difference?.includes(tx) ? " just-added" : "")}>
               <span className='tx-time'>{timeFormat(tx.timestamp)}</span>
               <span className='tx-link'><a href={'/explorer/' + tx.hash}>{txIdFormat(tx.hash)}</a></span>
-              <span className='tx-amount'>{shortNiceNumber(tx.amountXRP, 0, 1)} {nativeCurrency}</span>
-              <span className='tx-amount-fiat'>{devNet ? t("home.whales.no-value") : (tx.amountFiats ? shortNiceNumber(tx.amountFiats[currency?.toLowerCase()], 0, 1, currency) : "")}</span>
+              <span className='tx-amount'>{amountFormat(tx.amount, { short: true, maxFractionDigits: 2 })}</span>
+              <span className='tx-amount-fiat'>{devNet ? t("home.whales.no-value") : (tx.amountFiats ? shortNiceNumber(tx.amountFiats[currency?.toLowerCase()], 2, 1, currency) : "")}</span>
             </div>
           ))}
         </div>
