@@ -127,7 +127,8 @@ export default function Validators() {
                   </tr>
                 ))}
               </tbody>
-            </table> :
+            </table>
+            :
             <table className="table-large">
               <thead>
                 <tr>
@@ -153,7 +154,7 @@ export default function Validators() {
                         </>
                       }
                     </td>
-                    <td><CopyButton text={v.publicKey} /> {shortHash(v.publicKey)}</td>
+                    <td><CopyButton text={v.publicKey} /> {windowWidth > 1240 ? v.publicKey : shortHash(v.publicKey)}</td>
                     <td className='center'>{v.sequence}</td>
                     <td className='left'><CopyButton text={v.address} /> {addressUsernameOrServiceLink(v, 'address')}</td>
                   </tr>
@@ -161,7 +162,9 @@ export default function Validators() {
               </tbody>
             </table>
           }
-        </> : <>
+        </>
+        :
+        <>
           {data?.error &&
             <>
               <h1 className="center">{t("validators.unl")}</h1>
