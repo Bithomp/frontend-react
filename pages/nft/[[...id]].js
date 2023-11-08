@@ -1077,18 +1077,16 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
                           </table>
                         }
 
-                        {data.type === 'xls20' &&
-                          <table className='table-details'>
-                            <thead>
-                              <tr>
-                                <th colSpan="100">
-                                  {t("table.history")}
-                                </th>
-                              </tr>
-                            </thead>
-                            {nftHistory(data.history)}
-                          </table>
-                        }
+                        <table className='table-details'>
+                          <thead>
+                            <tr>
+                              <th colSpan="100">
+                                {t("table.history")}
+                              </th>
+                            </tr>
+                          </thead>
+                          {nftHistory(data.history)}
+                        </table>
 
                         <table className='table-details'>
                           <thead>
