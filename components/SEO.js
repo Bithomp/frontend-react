@@ -1,7 +1,7 @@
 import { NextSeo } from 'next-seo'
 import { useRouter } from 'next/router'
 
-import { server, explorerName } from '../utils'
+import { server, explorerName, xahauNetwork } from '../utils'
 
 export default function SEO({ title, titleWithNetwork, description, image, page, images, websiteName, noindex }) {
   const router = useRouter()
@@ -57,6 +57,10 @@ export default function SEO({ title, titleWithNetwork, description, image, page,
     handle: '@bithomp',
     site: server,
     cardType: 'summary'
+  }
+
+  if (xahauNetwork) {
+    twitter.handle = '@XahauExplorer'
   }
 
   // don't add the slash after language, otherwise redirects and it is bad for SEO
