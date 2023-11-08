@@ -93,7 +93,7 @@ export default function Alerts() {
             <tr key={i}>
               <td>{i + 1}</td>
               <td>{localDateAndTime(alert.timestamp_new)}</td>
-              <td>XRP/{isMobile && " "}{alert.currency.toUpperCase()}</td>
+              <td>{nativeCurrency}/{isMobile && " "}{alert.currency.toUpperCase()}</td>
               <td>{duration(t, alert.timestamp_new - alert.timestamp_old)}</td>
               <td>{alert.change}</td>
               <td>{alert.rate_old}</td>
