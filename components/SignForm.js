@@ -115,6 +115,16 @@ export default function SignForm({ setSignRequest, setAccount, signRequest }) {
     }
 
     if (signRequest.action === 'castVoteHook' && agreedToRisks && (hookData.value || erase)) {
+
+      let hookTopic = "2" //default
+      if (!hookData.topic) {
+        if (hookData.topic === 0) {
+          hookTopic = "0"
+        }
+      } else {
+        hookTopic = hookData.topic
+      }
+
       tx.HookParameters = [
         {
           HookParameter:
@@ -126,8 +136,8 @@ export default function SignForm({ setSignRequest, setAccount, signRequest }) {
         {
           HookParameter:
           {
-            HookParameterName: "54",                             // T - topic type
-            HookParameterValue: "480" + (hookData.topic || "2")  // H/48 [0x00-0x09]
+            HookParameterName: "54",              // T - topic type
+            HookParameterValue: "480" + hookTopic // H/48 [0x00-0x09]
           }
         },
         {

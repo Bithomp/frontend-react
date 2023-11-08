@@ -338,7 +338,7 @@ const networks = {
     ledgerName: "XAHAU"
   },
   xahau: {
-    d: 21337,
+    id: 21337,
     server: "https://xahauexplorer.com",
     nativeCurrency: "XAH",
     getCoinsUrl: null,
