@@ -502,7 +502,7 @@ const amountParced = amount => {
       }
     }
 
-    if (currency.toString().toUpperCase() === nativeCurrency) {
+    if (currency.toString().toUpperCase() === nativeCurrency && amount.issuer) {
       currency = "Fake" + nativeCurrency
     }
 
