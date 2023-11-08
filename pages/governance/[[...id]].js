@@ -47,6 +47,17 @@ const seatAddress = (addressData, addessName, addressOption) => {
   </>
 }
 
+const hookHash = value => {
+  if (value === "0000000000000000000000000000000000000000000000000000000000000000") {
+    return "Vacate the place"
+  }
+  return <>
+    {shortHash(value, 16)}
+    {" "}
+    <CopyButton text={value} />
+  </>
+}
+
 export default function Governance({ id, setSignRequest, signRequest, account }) {
   const { t } = useTranslation(['common', 'governance'])
   const router = useRouter()
@@ -958,9 +969,7 @@ export default function Governance({ id, setSignRequest, signRequest, account })
                               {p.topic}
                             </td>
                             <td className='right'>
-                              {shortHash(p.value, 16)}
-                              {" "}
-                              <CopyButton text={p.value} />
+                              {hookHash(p.value)}
                             </td>
                           </tr>
                         )
@@ -1016,7 +1025,14 @@ export default function Governance({ id, setSignRequest, signRequest, account })
                               data.count.hook.map((p, i) =>
                                 <tr key={i} className={reachedMajority(p, 'hook') ? "bold" : ""}>
                                   <td>
-                                    ...{p.key.substr(p.key.length - 16)}
+                                    {
+                                      p.key.substr(8) === "00000000000000000000000000000000000000000000000000000000" ?
+                                        "Vacate the place"
+                                        :
+                                        <>
+                                          ...{p.key.substr(p.key.length - 16)}
+                                        </>
+                                    }
                                   </td>
                                   {!mainTable &&
                                     <td className='center'>
