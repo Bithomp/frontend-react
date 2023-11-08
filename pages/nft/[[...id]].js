@@ -404,10 +404,12 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
           {offer.destination &&
             trWithAccount(offer, 'destination', t("table.destination"), "/explorer/", "destination")
           }
-          <tr>
-            <td>{t("table.offer")}</td>
-            <td>{nftOfferLink(offer.offerIndex)}</td>
-          </tr>
+          {offer.offerIndex &&
+            <tr>
+              <td>{t("table.offer")}</td>
+              <td>{nftOfferLink(offer.offerIndex)}</td>
+            </tr>
+          }
           {offer.valid &&
             <>
               {type === 'sell' &&
@@ -1088,19 +1090,17 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
                           </table>
                         }
 
-                        {data.type === 'xls20' &&
-                          <table className='table-details'>
-                            <thead>
-                              <tr>
-                                <th colSpan="100">
-                                  {t("table.sell-offers")}
-                                  {countSellOffers && offersFilter("sell")}
-                                </th>
-                              </tr>
-                            </thead>
-                            {nftOffers(filteredSellOffers, "sell")}
-                          </table>
-                        }
+                        <table className='table-details'>
+                          <thead>
+                            <tr>
+                              <th colSpan="100">
+                                {t("table.sell-offers")}
+                                {countSellOffers && offersFilter("sell")}
+                              </th>
+                            </tr>
+                          </thead>
+                          {nftOffers(filteredSellOffers, "sell")}
+                        </table>
 
                         {data.type === 'xls20' &&
                           <table className='table-details'>
