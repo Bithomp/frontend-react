@@ -395,7 +395,7 @@ export const amountFormat = (amount, options = {}) => {
 
   if (value >= 100) {
     if (options.short) {
-      showValue = shortNiceNumber(value, 2, 1)
+      showValue = shortNiceNumber(value, 0, 1)
     } else {
       if (options.minFractionDigits) {
         showValue = niceNumber(value, options.minFractionDigits)
