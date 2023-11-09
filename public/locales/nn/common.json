@@ -190,7 +190,6 @@
     "domain-legacy": "Domene (gammel bekreftelse)",
     "sequence": "Sekvens",
     "address": "XRPL adresse",
-    "no-domain": "ingen domene spesifisert",
     "text0": "Validatorlisten <1>{{url}}</1> har sekvens {{sequence}} og utløper {{expiration}}.<br/>Den inkluderer {{validatorCount}} validatorer som er oppført nedenfor."
   },
   "alerts": {

@@ -190,7 +190,6 @@
     "domain-legacy": "Domain (verifikasi lama)",
     "sequence": "Urutan",
     "address": "Alamat XRPL",
-    "no-domain": "tidak ada domain yang ditentukan",
     "text0": "Daftar validator <1>{{url}}</1> memiliki urutan {{sequence}} dan berakhir pada {{expiration}}.<br/>Daftar ini mencakup {{validatorCount}} validator yang tercantum di bawah ini."
   },
   "alerts": {

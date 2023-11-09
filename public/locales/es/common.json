@@ -190,7 +190,6 @@
     "domain-legacy": "Dominio (antigua verificación)",
     "sequence": "Secuencia",
     "address": "Dirección XRPL",
-    "no-domain": "dominio no especificado",
     "text0": "La lista de validadores <1>{{url}}</1> tiene la secuencia {{sequence}} y fecha de caducidad el {{expiration}}.<br/>Incluye {{validatorCount}} los validadores que hay listados debajo."
   },
   "alerts": {

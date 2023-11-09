@@ -190,7 +190,6 @@
     "domain-legacy": "Domena (stara verifikacija)",
     "sequence": "Sekvenca",
     "address": "XRPL adresa",
-    "no-domain": "nema domene",
     "text0": "Lista validatora <1>{{url}}</1> ima sekvencu {{sequence}} i istek {{expiration}}.<br/>Uključuje {{validatorCount}} validatora koji su ispisani ispod."
   },
   "alerts": {

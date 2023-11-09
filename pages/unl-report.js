@@ -185,22 +185,24 @@ export default function UNLreport() {
                 </tr>
                 :
                 <>
-                  {!errorMessage ? data.map((av, i) =>
-                    <tr key={i}>
-                      <td style={{ padding: "5px" }} className='center'>
-                        <b>{i + 1}</b>
-                      </td>
-                      <td>
-                        <p>
-                          {t("table.address")}: <Link href={"/account/" + av.account}>{av.account}</Link> {userOrServiceLink(av, 'account')}
-                        </p>
-                        <p>
-                          {t("table.public-key")}: {shortHash(av.publicKey)}
-                          {" "}
-                          <CopyButton text={av.publicKey} />
-                        </p>
-                      </td>
-                    </tr>)
+                  {!errorMessage ?
+                    data.map((av, i) =>
+                      <tr key={i}>
+                        <td style={{ padding: "5px" }} className='center'>
+                          <b>{i + 1}</b>
+                        </td>
+                        <td>
+                          <p>
+                            {t("table.address")}: <Link href={"/account/" + av.account}>{av.account}</Link> {userOrServiceLink(av, 'account')}
+                          </p>
+                          <p>
+                            {t("table.public-key")}: {shortHash(av.publicKey)}
+                            {" "}
+                            <CopyButton text={av.publicKey} />
+                          </p>
+                        </td>
+                      </tr>
+                    )
                     :
                     <tr><td colSpan="100" className='center orange bold'>{errorMessage}</td></tr>
                   }
