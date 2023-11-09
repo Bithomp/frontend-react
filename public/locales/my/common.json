@@ -223,7 +223,7 @@
 		"email": "Alamat e-mel anda:",
 		"url": "URL laman web/aplikasi anda:",
 		"description": "Keterangan projek dan butiran penggunaan API:",
-		"success": "Terima kasih. Anda sepatutnya menerima token API anda melalui e-mel dalam masa 48 jam.",
+    "success": "Thank you. The API token was sent to your e-mail.",
 		"error": {
 			"url-empty": "Sila masukkan URL laman web/aplikasi anda.",
 			"url-invalid": "Sila masukkan URL yang sah.",

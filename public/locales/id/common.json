@@ -223,7 +223,7 @@
     "email": "Alamat surel Anda:",
     "url": "URL situs/aplikasi Anda:",
     "description": "Deskripsi Proyek dan Detail Penggunaan API:",
-    "success": "Terima kasih. Anda akan menerima token API Anda melalui email dalam 48 jam.",
+    "success": "Thank you. The API token was sent to your e-mail.",
     "error": {
       "url-empty": "Silakan masukkan URL situs/aplikasi Anda.",
       "url-invalid": "Silakan masukkan URL yang valid.",

@@ -223,7 +223,7 @@
     "email": "L'adreça de correu electrònic de La teva empresa/Universitat:",
     "url": "L'URL del teu Web/aplicació:",
     "description": "Descripció del projecte i detalls de l'ús de l'API:",
-    "success": "Gràcies. Hauries de rebre el teu token de l'api per correu electrònic en 48 hores.",
+    "success": "Thank you. The API token was sent to your e-mail.",
     "error": {
       "url-empty": "Si us plau, introdueix l'URL de la teva pàgina web/applicació.",
       "url-invalid": "Si us plau, introdueix una URL vàlida.",

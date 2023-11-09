@@ -223,7 +223,7 @@
     "email": "メールアドレス:",
     "url": "ウェブサイトまたはアプリのURL:",
     "description": "プロジェクトの説明とAPI の利用目的:",
-    "success": "ありがとうございました。48時間以内にAPIトークンをメールでお送りします。",
+    "success": "Thank you. The API token was sent to your e-mail.",
     "error": {
       "url-empty": "ウェブサイトまたはアプリのURLを入力してください。",
       "url-invalid": "有効なURLを入力してください。",

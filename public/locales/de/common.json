@@ -223,7 +223,7 @@
     "email": "Ihre E-Mail Adresse:",
     "url": "Ihre Webseite/App URL:",
     "description": "Beschreibung Ihres Projekts und Details zur API Verwendung:",
-    "success": "Vielen Dank. Sie sollten Ihren API Token per E-Mail innert 48 Stunden erhalten.",
+    "success": "Thank you. The API token was sent to your e-mail.",
     "error": {
       "url-empty": "Bitte geben Sie Ihre Webseite/App URL ein.",
       "url-invalid": "Bitte geben Sie eine gültige URL ein.",

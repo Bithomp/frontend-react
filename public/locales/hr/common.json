@@ -223,7 +223,7 @@
     "email": "Email adresa poduzeća/ustanove/fakulteta:",
     "url": "Vaš URL do web stranice ili app-a:",
     "description": "Opis projekta i korištenja API-ja:",
-    "success": "Hvala vam. Trebali bi dobiti api token unutar 48 sati.",
+    "success": "Thank you. The API token was sent to your e-mail.",
     "error": {
       "url-empty": "Molimo unesite URL web stranice ili app-a.",
       "url-invalid": "Unesite valjani URL.",

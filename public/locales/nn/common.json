@@ -223,7 +223,7 @@
     "email": "Din bedrifts/universitets e-postadresse:",
     "url": "Din webside/app URL:",
     "description": "Prosjektbeskrivelse og API-bruksdetaljer:",
-    "success": "Takk. Du bør motta din api token på e-post innen  timer.",
+    "success": "Thank you. The API token was sent to your e-mail.",
     "error": {
       "url-empty": "Vennligst skriv inn din nettside/app URL.",
       "url-invalid": "Vennligst skriv inn en gyldig URL.",
