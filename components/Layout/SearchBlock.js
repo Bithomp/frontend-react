@@ -215,6 +215,11 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
       }
     }
 
+    if (searchFor.includes("/") || searchFor.includes("\\")) {
+      setErrorMessage(t("explorer.no-slashes"))
+      return
+    }
+
     //tx, address etc
     window.location = '/explorer/' + encodeURI(searchFor)
     return
@@ -223,16 +228,16 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
   /*
   PayID
   searchItem.indexOf("$") > -1
-  
+   
   username
   <18 
-  
+   
   CurrencyCode, XLS14
   searchItem.length == 40
-  
+   
   TX, NFT, NFT Offer
   searchItem.length == 64
-  
+   
   X-address
   searchItem.length > 36
   searchItem.charAt(0) == "T"

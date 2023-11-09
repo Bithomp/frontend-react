@@ -489,7 +489,8 @@
     },
     "different-network": "このトランザクションは<1>{{networkNameOrId}}</1>ネットワークからのものです。",
     "check-tx-on-different-explorer": "詳細は<1><0>こちら</0></1>をご覧ください。",
-    "not-supported-network": "これはサポートされていません"
+    "not-supported-network": "これはサポートされていません",
+    "no-slashes": "The search should not contain slashes."
   },
   "nft-explorer": {
     "header": "NFTエクスプローラ"

@@ -489,7 +489,8 @@
 		},
 		"different-network": "Transaksi ini adalah dari rangkaian <1>{{networkNameOrId}}</1>",
 		"check-tx-on-different-explorer": "periksa butiran <1><0>di sini</0></1>.",
-		"not-supported-network": "yang tidak disokong."
+		"not-supported-network": "yang tidak disokong.",
+    "no-slashes": "The search should not contain slashes."
 	},
 	"nft-explorer": {
 		"header": "Penjelajah NFT"

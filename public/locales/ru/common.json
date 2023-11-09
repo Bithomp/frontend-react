@@ -489,7 +489,8 @@
     },
     "different-network": "Эта транзакция из <1>{{networkNameOrId}}</1> сети",
     "check-tx-on-different-explorer": "данные можно посмотреть <1><0>здесь</0></1>.",
-    "not-supported-network": "которая не поддерживается."
+    "not-supported-network": "которая не поддерживается.",
+    "no-slashes": "В поисковой строке не должно быть слешей."
   },
   "nft-explorer": {
     "header": "NFT эксплорер"

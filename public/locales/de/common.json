@@ -489,7 +489,8 @@
     },
     "different-network": "Diese Transaktion ist aus dem Netzwerk <1>{{networkNameOrId}}</1>",
     "check-tx-on-different-explorer": "Überprüfen Sie Details <1><0>hier</0></1>.",
-    "not-supported-network": "was nicht unterstützt wird."
+    "not-supported-network": "was nicht unterstützt wird.",
+    "no-slashes": "The search should not contain slashes."
   },
   "nft-explorer": {
     "header": "NFT Explorer"
