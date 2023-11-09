@@ -291,7 +291,13 @@
   "error": {
     "Network Error": "Sembla que no hi ha connexió a internet ;(",
     "Request failed with status code 429": "Ens estàs enviant massa sol·licituds, intenta-ho de nou més tard!",
-    "Request failed with status code 404": "No s'ha trobat"
+    "Request failed with status code 404": "No s'ha trobat",
+    "Request failed with status code 403": "It seems you're logged out, please log in again"
+  },
+  "errors": {
+    "token": {
+      "required": "Please login to continue"
+    }
   },
   "error-api": {
     "search is too short": "El nom que s'ha de cercar és massa curt",

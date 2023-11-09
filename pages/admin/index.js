@@ -8,6 +8,7 @@ import { useTheme } from '../../components/Layout/ThemeContext'
 import SEO from '../../components/SEO'
 
 import { isEmailValid } from '../../utils'
+import CopyButton from '../../components/UI/CopyButton'
 
 export const getServerSideProps = async (context) => {
   const { locale } = context
@@ -32,6 +33,8 @@ export default function Admin() {
   const [password, setPassword] = useState("")
   const [step, setStep] = useState(-1)
   const [loggedUserData, setLoggedUserData] = useState(null)
+  const [projectData, setProjectData] = useState(null)
+  const [apiData, setApiData] = useState(null)
 
   const checkApi = async () => {
     /*
@@ -70,16 +73,23 @@ export default function Admin() {
   }, [])
 
   const getLoggedUserData = async () => {
-    const userData = await axios.get(
+    const data = await axios.get(
       'partner/user',
       { baseUrl: '/api/' }
     ).catch(error => {
+      if (error.response.data.error === "errors.token.required") {
+        onLogOut()
+        return
+      }
       if (error && error.message !== "canceled") {
-        setErrorMessage(t("error." + error.message))
+        setErrorMessage(t(error.response.data.error || "error." + error.message))
       }
     })
 
-    setLoggedUserData(userData?.data)
+    if (data?.data) {
+      setLoggedUserData(data.data)
+      getProjectData()
+    }
     /*
       {
         "id": 2,
@@ -87,6 +97,52 @@ export default function Admin() {
         "updated_at": "2023-10-13T10:22:08.000Z",
         "email": "bakshayev@gmail.com"
       }
+    */
+  }
+
+  const getProjectData = async () => {
+    const data = await axios.get(
+      'partner/partner',
+      { baseUrl: '/api/' }
+    ).catch(error => {
+      if (error && error.message !== "canceled") {
+        setErrorMessage(t(error.response.data.error || "error." + error.message))
+      }
+    })
+
+    if (data?.data) {
+      setProjectData(data.data)
+      getApiData()
+    }
+    /*
+    {
+      "id": 444,
+      "created_at": "2023-11-09T10:43:55.000Z",
+      "updated_at": "2023-11-09T10:43:55.000Z",
+      "name": "slavka.com",
+      "email": "bjorn@dzen.net"
+    }
+    */
+  }
+
+  const getApiData = async () => {
+    const data = await axios.get(
+      'partner/partner/accessToken',
+      { baseUrl: '/api/' }
+    ).catch(error => {
+      if (error && error.message !== "canceled") {
+        setErrorMessage(t(error.response.data.error || "error." + error.message))
+      }
+    })
+
+    setApiData(data?.data)
+    /*
+    {
+      "token": "werwerw-werwer-werc",
+      "locked": false,
+      "domain": "slavkino.narod.ru",
+      "tier": "free"
+    }
     */
   }
 
@@ -198,10 +254,11 @@ export default function Admin() {
 
   return <>
     <SEO title={t("header", { ns: "admin" })} />
-    <div className="page-admin content-text">
+    <div className="page-admin content-center" style={{ maxWidth: "1040px" }}>
       <h1 className='center'>
         {t("header", { ns: "admin" })}
       </h1>
+      <br />
       <div className='center' style={{ height: "300px" }}>
 
         {(step === 0 || step === 1) &&
@@ -251,10 +308,19 @@ export default function Admin() {
         }
 
         {step === 2 &&
-          <div className="center">
+          <div className="flex">
             {loggedUserData &&
               <table className='table-large shrink'>
+                <thead>
+                  <tr>
+                    <th colSpan="2" className='center'>Logged user data</th>
+                  </tr>
+                </thead>
                 <tbody>
+                  <tr>
+                    <td className='right'>Name</td>
+                    <td className='left'>{loggedUserData.name || loggedUserData.email}</td>
+                  </tr>
                   <tr>
                     <td className='right'>User ID</td>
                     <td className='left'>{loggedUserData.id}</td>
@@ -265,18 +331,81 @@ export default function Admin() {
                   </tr>
                   <tr>
                     <td className='right'>Registered</td>
-                    <td className='left'> {new Date(loggedUserData.created_at).toLocaleString()}</td>
+                    <td className='left'>{new Date(loggedUserData.created_at).toLocaleString()}</td>
                   </tr>
                   <tr>
                     <td className='right'>Last update</td>
-                    <td className='left'> {new Date(loggedUserData.updated_at).toLocaleString()}</td>
+                    <td className='left'>{new Date(loggedUserData.updated_at).toLocaleString()}</td>
+                  </tr>
+                </tbody>
+              </table>
+            }
+
+            {projectData &&
+              <table className='table-large shrink'>
+                <thead>
+                  <tr>
+                    <th colSpan="2" className='center'>Project data</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td className='right'>Name</td>
+                    <td className='left'>{projectData.name}</td>
+                  </tr>
+                  <tr>
+                    <td className='right'>Project ID</td>
+                    <td className='left'>{projectData.id}</td>
+                  </tr>
+                  <tr>
+                    <td className='right'>E-mail</td>
+                    <td className='left'><b>{projectData.email}</b></td>
+                  </tr>
+                  <tr>
+                    <td className='right'>Registered</td>
+                    <td className='left'>{new Date(projectData.created_at).toLocaleString()}</td>
+                  </tr>
+                  <tr>
+                    <td className='right'>Last update</td>
+                    <td className='left'>{new Date(projectData.updated_at).toLocaleString()}</td>
+                  </tr>
+                </tbody>
+              </table>
+            }
+
+            {apiData &&
+              <table className='table-large shrink'>
+                <thead>
+                  <tr>
+                    <th colSpan="2" className='center'>API data</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td className='right'>Token</td>
+                    <td className='left'>{apiData.token} <CopyButton text={apiData.token} /> </td>
+                  </tr>
+                  <tr>
+                    <td className='right'>Status</td>
+                    <td className='left'>{apiData.locked ? "locked" : "active"}</td>
+                  </tr>
+                  <tr>
+                    <td className='right'>Domain</td>
+                    <td className='left'><b>{apiData.domain}</b></td>
+                  </tr>
+                  <tr>
+                    <td className='right'>Tier</td>
+                    <td className='left'>{apiData.tier}</td>
+                  </tr>
+                  <tr>
+                    <td className='right'><br /></td>
+                    <td className='left'><br /></td>
                   </tr>
                 </tbody>
               </table>
             }
           </div>
         }
-
         <br />
         {errorMessage ?
           <div className='center orange bold'>
