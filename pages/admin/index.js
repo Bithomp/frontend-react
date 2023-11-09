@@ -264,7 +264,7 @@ export default function Admin() {
                     <td className='left'><b>{loggedUserData.email}</b></td>
                   </tr>
                   <tr>
-                    <td className='right'>Registartion</td>
+                    <td className='right'>Registered</td>
                     <td className='left'> {new Date(loggedUserData.created_at).toLocaleString()}</td>
                   </tr>
                   <tr>
