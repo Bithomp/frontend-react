@@ -189,7 +189,6 @@
 		"domain": "Domain",
 		"domain-legacy": "Domain (pengesahan lama)",
 		"sequence": "Rantaian",
-		"address": "Alamat XRPL",
 		"text0": "Senarai pengesah <1>{{url}}</1> mempunyai rantaian {{sequence}} dan tamat tempoh pada {{expiration}}.<br/>Ia merangkumi {{validatorCount}} pengesah yang disenaraikan di bawah."
 	},
 	"alerts": {

@@ -189,7 +189,6 @@
     "domain": "ドメイン",
     "domain-legacy": "ドメイン (古い検証方法)",
     "sequence": "シーケンス",
-    "address": "XRPLアドレス",
     "text0": "バリデータリスト <1>{{url}}</1> はシーケンス {{sequence}} と、有効期限 {{expiration}} が設定されています。<br/>次の{{validatorCount}}バリデータを含んでいます。"
   },
   "alerts": {

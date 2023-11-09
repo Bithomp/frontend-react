@@ -189,7 +189,6 @@
     "domain": "Domain",
     "domain-legacy": "Domain (old verification)",
     "sequence": "Sequence",
-    "address": "XRPL address",
     "text0": "The validator list <1>{{url}}</1> has sequence {{sequence}} and expiration on {{expiration}}.<br/>It includes {{validatorCount}} validators which are listed below."
   },
   "alerts": {

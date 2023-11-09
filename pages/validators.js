@@ -186,6 +186,9 @@ export default function Validators() {
                         <p>
                           {t("validators.sequence")}: {v.sequence}
                         </p>
+                        <p>
+                          Version: {v.serverVersion}
+                        </p>
                         {xahauNetwork &&
                           <p>
                             {t("validators.address")} <CopyButton text={v.address} /><br />
@@ -211,8 +214,9 @@ export default function Validators() {
               <th>{t("validators.domain")}</th>
               <th className='center'>UNL/nUNL</th>
               <th className='center'>{t("validators.sequence")}</th>
+              <th className='left'>Version</th>
               {xahauNetwork &&
-                <th>{t("validators.address")}</th>
+                <th>{t("table.address")}</th>
               }
             </tr>
           </thead>
@@ -249,6 +253,7 @@ export default function Validators() {
                       </td>
                       <td className='center'>{v.unl ? (v.nUnl ? "❌" : "✔️") : ""}</td>
                       <td className='center'>{v.sequence}</td>
+                      <td className='left'>{v.serverVersion}</td>
                       {xahauNetwork &&
                         <td className='left'><CopyButton text={v.address} /> {addressUsernameOrServiceLink(v, 'address')}</td>
                       }
