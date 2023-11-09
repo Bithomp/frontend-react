@@ -297,6 +297,9 @@
   "errors": {
     "token": {
       "required": "Please login to continue"
+    },
+    "partner": {
+      "not_found": "Projects not found"
     }
   },
   "error-api": {
