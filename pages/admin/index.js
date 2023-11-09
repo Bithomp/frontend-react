@@ -250,6 +250,33 @@ export default function Admin() {
           </>
         }
 
+        {step === 2 &&
+          <div className="center">
+            {loggedUserData &&
+              <table className='table-large shrink'>
+                <tbody>
+                  <tr>
+                    <td className='right'>User ID</td>
+                    <td className='left'>{loggedUserData.id}</td>
+                  </tr>
+                  <tr>
+                    <td className='right'>E-mail</td>
+                    <td className='left'><b>{loggedUserData.email}</b></td>
+                  </tr>
+                  <tr>
+                    <td className='right'>Registartion</td>
+                    <td className='left'> {new Date(loggedUserData.created_at).toLocaleString()}</td>
+                  </tr>
+                  <tr>
+                    <td className='right'>Last update</td>
+                    <td className='left'> {new Date(loggedUserData.updated_at).toLocaleString()}</td>
+                  </tr>
+                </tbody>
+              </table>
+            }
+          </div>
+        }
+
         <br />
         {errorMessage ?
           <div className='center orange bold'>
@@ -272,21 +299,7 @@ export default function Admin() {
         }
 
         {step === 2 &&
-          <div className="center">
-            {loggedUserData &&
-              <table className='table-large shrink'>
-                <tbody>
-                  <tr>
-                    <td className='right'>User ID</td>
-                    <td className='left'><b>{loggedUserData.id}</b></td>
-                  </tr>
-                  <tr>
-                    <td className='right'>Signed</td>
-                    <td> {loggedUserData.created_at}</td>
-                  </tr>
-                </tbody>
-              </table>
-            }
+          <>
             <br />
             <button
               className={"button-action"}
@@ -294,7 +307,7 @@ export default function Admin() {
             >
               Log out
             </button>
-          </div>
+          </>
         }
       </div>
     </div>
