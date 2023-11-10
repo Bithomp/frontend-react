@@ -7,7 +7,7 @@ import { useTheme } from '../../components/Layout/ThemeContext'
 
 import SEO from '../../components/SEO'
 
-import { isEmailValid } from '../../utils'
+import { isEmailValid, isUrlValid } from '../../utils'
 import CopyButton from '../../components/UI/CopyButton'
 
 export const getServerSideProps = async (context) => {
@@ -35,6 +35,8 @@ export default function Admin() {
   const [loggedUserData, setLoggedUserData] = useState(null)
   const [projectData, setProjectData] = useState(null)
   const [apiData, setApiData] = useState(null)
+  const [domain, setDomain] = useState("")
+  const [apiDescription, setApiDescription] = useState("")
 
   const checkApi = async () => {
     /*
@@ -128,6 +130,50 @@ export default function Admin() {
   const getApiData = async () => {
     const data = await axios.get(
       'partner/partner/accessToken',
+      { baseUrl: '/api/' }
+    ).catch(error => {
+      if (error && error.message !== "canceled") {
+        setErrorMessage(t(error.response.data.error || "error." + error.message))
+      }
+    })
+
+    setApiData(data?.data)
+    /*
+    {
+      "token": "werwerw-werwer-werc",
+      "locked": false,
+      "domain": "slavkino.narod.ru",
+      "tier": "free"
+    }
+    */
+  }
+
+  const requestApiKey = async () => {
+    setErrorMessage("")
+
+    if (!domain) {
+      setErrorMessage(t("form.error.domain-empty"))
+      return
+    }
+
+    if (!isUrlValid(domain)) {
+      setErrorMessage(t("form.error.domain-invalid"))
+      return
+    }
+
+    if (!apiDescription) {
+      setErrorMessage(t("form.error.description-empty"))
+      return
+    }
+
+    if (apiDescription.length < 10) {
+      setErrorMessage(t("form.error.description-short"))
+      return
+    }
+
+    const data = await axios.post(
+      'partner/partner/accessToken',
+      { domain, description: apiDescription },
       { baseUrl: '/api/' }
     ).catch(error => {
       if (error && error.message !== "canceled") {
@@ -318,7 +364,7 @@ export default function Admin() {
                 </thead>
                 <tbody>
                   <tr>
-                    <td className='right'>Name</td>
+                    <td className='right'>{t("table.name")}</td>
                     <td className='left'>{loggedUserData.name || loggedUserData.email}</td>
                   </tr>
                   <tr>
@@ -350,8 +396,8 @@ export default function Admin() {
                 </thead>
                 <tbody>
                   <tr>
-                    <td className='right'>Name</td>
-                    <td className='left'>{projectData.name}</td>
+                    <td className='right'>{t("table.name")}</td>
+                    <td className='left'>{projectData.name || projectData.email}</td>
                   </tr>
                   <tr>
                     <td className='right'>Project ID</td>
@@ -373,14 +419,18 @@ export default function Admin() {
               </table>
             }
 
-            {apiData &&
-              <table className='table-large shrink'>
-                <thead>
-                  <tr>
-                    <th colSpan="2" className='center'>API data</th>
-                  </tr>
-                </thead>
+            <table className='table-large shrink'>
+              <thead>
+                <tr>
+                  <th colSpan="2" className='center'>API data</th>
+                </tr>
+              </thead>
+              {apiData ?
                 <tbody>
+                  <tr>
+                    <td className='right'>ID</td>
+                    <td className='left'>{apiData.id}</td>
+                  </tr>
                   <tr>
                     <td className='right'>Token</td>
                     <td className='left'>{apiData.token} <CopyButton text={apiData.token} /> </td>
@@ -390,20 +440,55 @@ export default function Admin() {
                     <td className='left'>{apiData.locked ? "locked" : "active"}</td>
                   </tr>
                   <tr>
-                    <td className='right'>Domain</td>
+                    <td className='right'>{t("table.domain")}</td>
                     <td className='left'><b>{apiData.domain}</b></td>
                   </tr>
                   <tr>
                     <td className='right'>Tier</td>
                     <td className='left'>{apiData.tier}</td>
                   </tr>
+                </tbody>
+                :
+                <tbody>
                   <tr>
-                    <td className='right'><br /></td>
-                    <td className='left'><br /></td>
+                    <td className='right'>{t("table.domain")}</td>
+                    <td className='left'>
+                      <input
+                        placeholder="Enter website domain"
+                        value={domain}
+                        onChange={(e) => { setDomain(e.target.value) }}
+                        className="input-text"
+                        spellCheck="false"
+                        maxLength="30"
+                      />
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className='right'>Description</td>
+                    <td className='left'>
+                      <input
+                        placeholder="Enter API description"
+                        value={apiDescription}
+                        onChange={(e) => { setApiDescription(e.target.value) }}
+                        className="input-text"
+                        maxLength="60"
+                      />
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className='center' colSpan="2">
+                      <button
+                        className={"button-action"}
+                        onClick={requestApiKey}
+                      >
+                        Request API key
+                      </button>
+                      <br />
+                    </td>
                   </tr>
                 </tbody>
-              </table>
-            }
+              }
+            </table>
           </div>
         }
         <br />

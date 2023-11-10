@@ -273,6 +273,10 @@
   },
   "form": {
     "error": {
+      "domain-empty": "Введите домен.",
+      "domain-invalid": "Неверный домен.",
+      "description-empty": "Введите описание.",
+      "description-short": "Описание слишком короткое.",
       "email-empty": "Введите адрес электронной почты.",
       "email-invalid": "Проверьте правильность адреса электронной почты.",
       "password-empty": "Введите пароль.",
@@ -291,6 +295,9 @@
     },
     "partner": {
       "not_found": "Проекты не найдены."
+    },
+    "access_token": {
+      "not_found": "Нет созданных API ключей."
     }
   },
   "error-api": {

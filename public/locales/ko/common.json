@@ -273,6 +273,10 @@
   },
   "form": {
     "error": {
+      "domain-empty": "Please enter web domain.",
+      "domain-invalid": "Please enter a valid web domain.",
+      "description-empty": "Please enter a description.",
+      "description-short": "Description is too short.",
       "email-empty": "이메일을 입력하세요",
       "email-invalid": "유효한 이메일 주소를 입력하세요",
       "password-empty": "비밀번호를 입력하세요",
@@ -290,7 +294,10 @@
       "required": "Please login to continue"
     },
     "partner": {
-      "not_found": "Projects not found"
+      "not_found": "There are no projects"
+    },
+    "access_token": {
+      "not_found": "There are no API keys."
     }
   },
   "error-api": {

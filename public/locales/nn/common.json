@@ -273,6 +273,10 @@
   },
   "form": {
     "error": {
+      "domain-empty": "Please enter web domain.",
+      "domain-invalid": "Please enter a valid web domain.",
+      "description-empty": "Please enter a description.",
+      "description-short": "Please enter a longer description.",
       "email-empty": "Vennligst skriv inn E-postadressen din.",
       "email-invalid": "Vennligst skriv inn en gyldig e-post adresse.",
       "password-empty": "Vennligst skriv inn passordet ditt.",
@@ -290,7 +294,10 @@
       "required": "Please login to continue"
     },
     "partner": {
-      "not_found": "Projects not found"
+      "not_found": "There are no projects"
+    },
+    "access_token": {
+      "not_found": "There are no API keys."
     }
   },
   "error-api": {

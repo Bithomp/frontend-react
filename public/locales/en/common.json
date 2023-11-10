@@ -273,6 +273,10 @@
   },
   "form": {
     "error": {
+      "domain-empty": "Please enter web domain.",
+      "domain-invalid": "Please enter a valid web domain.",
+      "description-empty": "Please enter a description.",
+      "description-short": "Description is too short.",
       "email-empty": "Please enter your e-mail address.",
       "email-invalid": "Please enter a valid e-mail address.",
       "password-empty": "Please enter your password.",
@@ -290,7 +294,10 @@
       "required": "Please login to continue"
     },
     "partner": {
-      "not_found": "Projects not found"
+      "not_found": "There are no projects"
+    },
+    "access_token": {
+      "not_found": "There are no API keys."
     }
   },
   "error-api": {
