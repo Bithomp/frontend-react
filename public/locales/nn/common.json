@@ -184,9 +184,6 @@
     "for-sale-with-destination": "NFT-er for direkte salg"
   },
   "validators": {
-    "updated": "Oppdatert",
-    "unl": "UNL-validatorer",
-    "domain": "Domene",
     "domain-legacy": "Domene (gammel bekreftelse)",
     "sequence": "Sekvens",
     "text0": "Validatorlisten <1>{{url}}</1> har sekvens {{sequence}} og utløper {{expiration}}.<br/>Den inkluderer {{validatorCount}} validatorer som er oppført nedenfor."
@@ -329,6 +326,8 @@
     "day": "For de siste 24 timene"
   },
   "table": {
+    "version": "Versjon",
+    "domain": "Domene",
     "index": "Indeks",
     "address": "Adresse",
     "date": "Dato",

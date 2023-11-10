@@ -17,7 +17,6 @@
     "set-domain": "도메인을 설정합니다"
   },
   "table": {
-    "domain": "도메인",
     "addresses": "주소"
   }
 }

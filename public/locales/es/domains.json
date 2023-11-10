@@ -17,7 +17,6 @@
     "set-domain": "Añadir un dominio"
   },
   "table": {
-    "domain": "Dominio",
     "addresses": "Direcciones"
   }
 }

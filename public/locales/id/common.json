@@ -184,9 +184,6 @@
     "for-sale-with-destination": "NFT yang Dijual Langsung"
   },
   "validators": {
-    "updated": "diperbarui",
-    "unl": "Validator UNL",
-    "domain": "Domain",
     "domain-legacy": "Domain (verifikasi lama)",
     "sequence": "Urutan",
     "text0": "Daftar validator <1>{{url}}</1> memiliki urutan {{sequence}} dan berakhir pada {{expiration}}.<br/>Daftar ini mencakup {{validatorCount}} validator yang tercantum di bawah ini."
@@ -329,6 +326,8 @@
     "day": "Selama 24 jam terakhir"
   },
   "table": {
+    "version": "Versi",
+    "domain": "Domain",
     "index": "Indeks",
     "address": "Alamat",
     "date": "Tanggal",

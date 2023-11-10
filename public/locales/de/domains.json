@@ -17,7 +17,6 @@
     "set-domain": "Domain festlegen"
   },
   "table": {
-    "domain": "Domain",
     "addresses": "Adressen"
   }
 }

@@ -184,9 +184,6 @@
     "for-sale-with-destination": "NFTovi za direktnu prodaju"
   },
   "validators": {
-    "updated": "ažurirano",
-    "unl": "UNL validatori",
-    "domain": "Domena",
     "domain-legacy": "Domena (stara verifikacija)",
     "sequence": "Sekvenca",
     "text0": "Lista validatora <1>{{url}}</1> ima sekvencu {{sequence}} i istek {{expiration}}.<br/>Uključuje {{validatorCount}} validatora koji su ispisani ispod."
@@ -329,6 +326,8 @@
     "day": "Za zadnja 24 sata"
   },
   "table": {
+    "version": "Verzija",
+    "domain": "Domena",
     "index": "Indeks",
     "address": "Adresa",
     "date": "Datum",

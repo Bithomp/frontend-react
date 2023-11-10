@@ -184,9 +184,6 @@
     "for-sale-with-destination": "NFTs zum direkten Verkauf"
   },
   "validators": {
-    "updated": "Aktualisiert",
-    "unl": "UNL Validatoren",
-    "domain": "Domain",
     "domain-legacy": "Domain (alte Verifizierung)",
     "sequence": "Sequenz",
     "text0": "Die Liste der Validatoren <1>{{url}}</1> hat die Sequenz {{sequence}} und läuft am {{expiration}} ab.<br/>Sie beinhaltet {{validatorCount}} nachfolgend aufgelistete Validatoren."
@@ -329,6 +326,8 @@
     "day": "Für die letzten 24 Stunden"
   },
   "table": {
+    "version": "Version",
+    "domain": "Domain",
     "index": "Index",
     "address": "Adresse",
     "date": "Datum",

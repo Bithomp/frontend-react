@@ -184,9 +184,6 @@
     "for-sale-with-destination": "NFTs en venda amb comprador específic"
   },
   "validators": {
-    "updated": "Actualitzat",
-    "unl": "Validadors de l'UNL",
-    "domain": "Domini",
     "domain-legacy": "Domini (antiga verificació)",
     "sequence": "Seqüència",
     "text0": "La llista de validadors <1>{{url}}</1> té la seqüència {{sequence}} i venciment el {{expiration}}.<br/>Inclou {{validatorCount}} validadors, llistats a continuació."
@@ -329,6 +326,8 @@
     "day": "Les últimes 24 hores"
   },
   "table": {
+    "version": "Versió",
+    "domain": "Domini",
     "index": "Índex",
     "address": "Adreça",
     "date": "Data",

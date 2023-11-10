@@ -184,9 +184,6 @@
     "for-sale-with-destination": "직접판매용 NFT"
   },
   "validators": {
-    "updated": "업데이트됨",
-    "unl": "UNL 벨리데이터",
-    "domain": "도메인",
     "domain-legacy": "도메인 (증명 오래됨)",
     "sequence": "절차",
     "text0": "벨리데이터 목록 <1>{{url}}</1>에는 {{sequence}} 시퀀스와 {{expiration}} 만료가 있습니다.<br/>이 목록에는 아래에 나열된 {{validatorCount}} 벨리데이터가 포함되어 있습니다."
@@ -329,6 +326,8 @@
     "day": "최근 24시간"
   },
   "table": {
+    "version": "버전",
+    "domain": "도메인",
     "index": "지표",
     "address": "주소",
     "date": "날짜",

@@ -184,9 +184,6 @@
     "for-sale-with-destination": "直接販売中のNFT"
   },
   "validators": {
-    "updated": "最終更新",
-    "unl": "UNLバリデータ",
-    "domain": "ドメイン",
     "domain-legacy": "ドメイン (古い検証方法)",
     "sequence": "シーケンス",
     "text0": "バリデータリスト <1>{{url}}</1> はシーケンス {{sequence}} と、有効期限 {{expiration}} が設定されています。<br/>次の{{validatorCount}}バリデータを含んでいます。"
@@ -329,6 +326,8 @@
     "day": "直近24時間"
   },
   "table": {
+    "version": "バージョン",
+    "domain": "ドメイン",
     "index": "#",
     "address": "アドレス",
     "date": "日付",

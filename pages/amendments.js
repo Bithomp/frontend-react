@@ -8,6 +8,9 @@ import { useWidth, devNet } from '../utils'
 
 import SEO from '../components/SEO'
 import CopyButton from '../components/UI/CopyButton'
+import Link from 'next/link'
+
+import LinkIcon from "../public/images/link.svg"
 
 export async function getStaticProps({ locale }) {
   return {
@@ -166,7 +169,7 @@ export default function Amendment() {
               <tr>
                 <th className='center'>{t("table.index")}</th>
                 <th>{t("table.name")}</th>
-                <th className='right'>{t("version", { ns: 'amendments' })}</th>
+                <th className='right'>{t("table.version")}</th>
                 <th>{t("majority", { ns: 'amendments' })}</th>
                 <th>{t("eta", { ns: 'amendments' })}</th>
               </tr>
@@ -194,7 +197,7 @@ export default function Amendment() {
                 <th className='center'>{t("table.index")}</th>
                 <th>{t("table.name")}</th>
                 <th className='right'>{threshold} / {validations}</th>
-                <th className='right'>{t("version", { ns: 'amendments' })}</th>
+                <th className='right'>{t("table.version")}</th>
                 <th className='right'>{t("table.hash")}</th>
               </tr>
             </thead>
@@ -203,7 +206,10 @@ export default function Amendment() {
                 <tr key={a.amendment}>
                   <td className='center'>{i + 1}</td>
                   <td>{amendmentLink(a)}</td>
-                  <td className='right'>{a.count > threshold ? <b className='green'>{a.count}</b> : a.count}</td>
+                  <td className='right'>
+                    {a.count > threshold ? <b className='green'>{a.count}</b> : a.count}
+                    <Link href={"validators?amendment=" + a.name}> <LinkIcon /></Link>
+                  </td>
                   <td className='right'>{a.introduced}</td>
                   <td className='right'>
                     {windowWidth > 1000 ? <>{shortHash(a.amendment)} </> : ""}
@@ -223,7 +229,7 @@ export default function Amendment() {
               <tr>
                 <th className='center'>{t("table.index")}</th>
                 <th>{t("table.name")}</th>
-                <th className='right'>{t("version", { ns: 'amendments' })}</th>
+                <th className='right'>{t("table.version")}</th>
                 <th className='right'>{t("table.hash")}</th>
               </tr>
             </thead>
@@ -252,7 +258,7 @@ export default function Amendment() {
               <tr>
                 <th className='center'>{t("table.index")}</th>
                 <th>{t("table.name")}</th>
-                <th className='right'>{t("version", { ns: 'amendments' })}</th>
+                <th className='right'>{t("table.version")}</th>
                 <th className='right'>{t("table.hash")}</th>
               </tr>
             </thead>

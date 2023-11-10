@@ -159,7 +159,7 @@ export default function Domains({ setSignRequest }) {
           <thead>
             <tr>
               <th>{t("table.index")}</th>
-              <th>{t("table.domain", { ns: 'domains' })} <b className={"link" + (sortConfig.key === 'domain' ? " orange" : "")} onClick={() => sortTable('domain')}>⇅</b></th>
+              <th>{t("table.domain")} <b className={"link" + (sortConfig.key === 'domain' ? " orange" : "")} onClick={() => sortTable('domain')}>⇅</b></th>
               <th className='center'>{t("table.addresses", { ns: 'domains' })}</th>
             </tr>
           </thead>

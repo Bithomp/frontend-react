@@ -184,9 +184,6 @@
 		"for-sale-with-destination": "NFT untuk dijual terus"
 	},
 	"validators": {
-		"updated": "dikemaskini",
-		"unl": "Pengesah UNL",
-		"domain": "Domain",
 		"domain-legacy": "Domain (pengesahan lama)",
 		"sequence": "Rantaian",
 		"text0": "Senarai pengesah <1>{{url}}</1> mempunyai rantaian {{sequence}} dan tamat tempoh pada {{expiration}}.<br/>Ia merangkumi {{validatorCount}} pengesah yang disenaraikan di bawah."
@@ -329,6 +326,8 @@
 		"day": "Selama 24 jam yang lalu"
 	},
 	"table": {
+		"version": "Versi",
+		"domain": "Domain",
 		"index": "Indeks",
 		"address": "Alamat",
 		"date": "Tarikh",

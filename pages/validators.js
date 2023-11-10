@@ -6,14 +6,16 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 import SEO from '../components/SEO'
 
-import { addressUsernameOrServiceLink, fullDateAndTime, shortHash } from '../utils/format'
+import { addressUsernameOrServiceLink, amountFormat, fullDateAndTime, shortHash } from '../utils/format'
 import { useWidth, xahauNetwork } from '../utils'
 
 import CopyButton from '../components/UI/CopyButton'
 
-export async function getStaticProps({ locale }) {
+export const getServerSideProps = async ({ query, locale }) => {
+  const { amendment } = query
   return {
     props: {
+      amendment: amendment || null,
       ...(await serverSideTranslations(locale, ['common'])),
     }
   }
@@ -27,10 +29,11 @@ const compare = (a, b) => {
   return a.domain > b.domain ? 1 : -1;
 }
 
-export default function Validators() {
+export default function Validators({ amendment }) {
   const [validators, setValidators] = useState(null)
   const [loading, setLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState(null)
+  const [unlValidatorsCount, setUnlValidatorsCount] = useState(0)
   const { t } = useTranslation()
   const windowWidth = useWidth()
 
@@ -46,6 +49,7 @@ export default function Validators() {
     let dataU = response.data
     if (dataU) {
       dataU.validators?.sort(compare)
+      setUnlValidatorsCount(dataU.validators?.length)
 
       const responseV = await axios('v2/validators')
       const dataV = responseV.data
@@ -121,17 +125,23 @@ export default function Validators() {
   useEffect(() => {
     checkApi();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [])
+
+  const listAmendments = amendments => {
+    return amendments.map((a, i) => (
+      <span key={i} className={a === amendment ? "orange bold" : ""}>{a}{i !== amendments.length - 1 && ", "}</span>
+    ))
+  }
 
   return <>
     <SEO title={t("menu.xrpl.validators")} />
     <div className="content-text">
-      <h1 className="center">{t("validators.validators")} ({t("validators.updated")} {moment((validators?.updatedAt - 1) * 1000, "unix").fromNow()})</h1>
+      <h1 className="center">{t("menu.xrpl.validators")}</h1>
       <div className="flex center">
         <div className="grey-box">
           {validators &&
             <Trans i18nKey="validators.text0">
-              The validator list <b>{{ url: validators.url }}</b> has sequence {{ sequence: validators.sequence }} and expiration on {{ expiration: fullDateAndTime(validators.expiration) }}.<br />It includes {{ validatorCount: validators.validators.length }} validators which are listed below.
+              The validator list <b>{{ url: validators.url }}</b> has sequence {{ sequence: validators.sequence }} and expiration on {{ expiration: fullDateAndTime(validators.expiration) }}.<br />It includes {{ validatorCount: unlValidatorsCount }} validators which are listed below.
             </Trans>
           }
           <br />
@@ -163,7 +173,7 @@ export default function Validators() {
                       <td>
                         {v.domain ?
                           <p>
-                            {t("validators.domain")}<br />
+                            {t("table.domain")}<br />
                             <a href={"https://" + v.domain}>{v.domain}</a>
                           </p> :
                           <>
@@ -175,10 +185,24 @@ export default function Validators() {
                             }
                           </>
                         }
-                        {v.unl && <p>
-                          UNL/nUNL: {v.nUnl ? "❌" : "✔️"}
-                        </p>
+                        {v.unl &&
+                          <p>
+                            UNL: ✔️
+                          </p>
                         }
+                        {v.nUnl &&
+                          <p>
+                            nUNL: ❌
+                          </p>
+                        }
+                        <p>
+                          {v.amendments?.length > 0 &&
+                            <>
+                              Votes for:{" "}
+                              {listAmendments(v.amendments)}
+                            </>
+                          }
+                        </p>
                         <p>
                           {t("table.public-key")}<br />
                           {shortHash(v.publicKey)} <CopyButton text={v.publicKey} />
@@ -187,7 +211,16 @@ export default function Validators() {
                           {t("validators.sequence")}: {v.sequence}
                         </p>
                         <p>
-                          Version: {v.serverVersion}
+                          Base reserve: {amountFormat(v.reserveBase)}
+                        </p>
+                        <p>
+                          Increment reserve: {amountFormat(v.reserveIncrement)}
+                        </p>
+                        <p>
+                          {t("table.version")}: {v.serverVersion}
+                        </p>
+                        <p>
+                          Last seen: {moment((v.lastSeenTime - 1) * 1000, "unix").fromNow()}
                         </p>
                         {xahauNetwork &&
                           <p>
@@ -211,10 +244,12 @@ export default function Validators() {
             <tr>
               <th> </th>
               <th className='center'>{t("table.hash")}</th>
-              <th>{t("validators.domain")}</th>
+              <th>{t("table.domain")}</th>
               <th className='center'>UNL/nUNL</th>
               <th className='center'>{t("validators.sequence")}</th>
-              <th className='left'>Version</th>
+              <th className='right'>Reserves</th>
+              <th className='left'>{t("table.version")}</th>
+              <th className='right'>Last seen</th>
               {xahauNetwork &&
                 <th>{t("table.address")}</th>
               }
@@ -250,10 +285,16 @@ export default function Validators() {
                             }
                           </>
                         }
+                        <br />
+                        {v.amendments?.length > 0 && listAmendments(v.amendments)}
                       </td>
                       <td className='center'>{v.unl ? (v.nUnl ? "❌" : "✔️") : ""}</td>
                       <td className='center'>{v.sequence}</td>
+                      <td className='right'>{v.reserveIncrement / 1000000} / {v.reserveBase / 1000000}</td>
                       <td className='left'>{v.serverVersion}</td>
+                      <td className='right'>
+                        {moment((v.lastSeenTime - 1) * 1000, "unix").fromNow()}
+                      </td>
                       {xahauNetwork &&
                         <td className='left'><CopyButton text={v.address} /> {addressUsernameOrServiceLink(v, 'address')}</td>
                       }
