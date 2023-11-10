@@ -1,0 +1,9 @@
+{
+  "table": {
+    "votes-for": "Votes for",
+    "last-seen": "Last seen",
+    "reserves": "Reserves"
+  },
+  "domain-legacy": "Dominio (antigua verificación)",
+  "text0": "La lista de validadores <1>{{url}}</1> tiene la secuencia {{sequence}} y fecha de caducidad el {{expiration}}.<br/>Incluye {{validatorCount}} los validadores que hay listados debajo."
+}

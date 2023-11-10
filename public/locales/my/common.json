@@ -183,11 +183,6 @@
 		"for-sale-without-destination": "NFT untuk dijual secara awam",
 		"for-sale-with-destination": "NFT untuk dijual terus"
 	},
-	"validators": {
-		"domain-legacy": "Domain (pengesahan lama)",
-		"sequence": "Rantaian",
-		"text0": "Senarai pengesah <1>{{url}}</1> mempunyai rantaian {{sequence}} dan tamat tempoh pada {{expiration}}.<br/>Ia merangkumi {{validatorCount}} pengesah yang disenaraikan di bawah."
-	},
 	"alerts": {
 		"text0": "Dapatkan pemberitahuan apabila harga pasaran XRP/USD atau XRP/BTC oleh <1>Bitstamp</1> berubah lebih daripada 5% dalam satu jam atau lebih daripada 10% dalam satu hari.",
 		"text1": "Ikuti saluran Telegram: <1>bithomp</1> atau akaun Twitter: <3>bithompAlerts</3>.",
@@ -326,6 +321,7 @@
 		"day": "Selama 24 jam yang lalu"
 	},
 	"table": {
+		"sequence": "Rantaian",
 		"version": "Versi",
 		"domain": "Domain",
 		"index": "Indeks",

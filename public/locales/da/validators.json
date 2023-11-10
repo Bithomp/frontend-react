@@ -1,0 +1,9 @@
+{
+  "table": {
+    "votes-for": "Votes for",
+    "last-seen": "Last seen",
+    "reserves": "Reserves"
+  },
+  "domain-legacy": "Domæne (gammel bekræftelse)",
+  "text0": "Validatorlisten <1>{{url}}</1> har sekvensen {{sequence}} og udløber den {{expiration}}.<br/>Den inkluderer {{validatorCount}} validatorer, som er anført nedenfor."
+}

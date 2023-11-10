@@ -183,11 +183,6 @@
     "for-sale-without-destination": "NFTs en venda per qualsevol comprador",
     "for-sale-with-destination": "NFTs en venda amb comprador específic"
   },
-  "validators": {
-    "domain-legacy": "Domini (antiga verificació)",
-    "sequence": "Seqüència",
-    "text0": "La llista de validadors <1>{{url}}</1> té la seqüència {{sequence}} i venciment el {{expiration}}.<br/>Inclou {{validatorCount}} validadors, llistats a continuació."
-  },
   "alerts": {
     "text0": "Rep una notificació quan el preu de XRP/USD o XRP/BTC de <1>Bitstamp</1> canviï més d'un 5% en una hora o més d'un 10% en un dia.",
     "text1": "Segueix el canal de Telegram: <1>bithomp</1> o el comtpe de twitter: <3>Alertesbithomp</3>.",
@@ -326,6 +321,7 @@
     "day": "Les últimes 24 hores"
   },
   "table": {
+    "sequence": "Seqüència",
     "version": "Versió",
     "domain": "Domini",
     "index": "Índex",

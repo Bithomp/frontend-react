@@ -183,11 +183,6 @@
     "for-sale-without-destination": "NFTovi za javnu prodaju",
     "for-sale-with-destination": "NFTovi za direktnu prodaju"
   },
-  "validators": {
-    "domain-legacy": "Domena (stara verifikacija)",
-    "sequence": "Sekvenca",
-    "text0": "Lista validatora <1>{{url}}</1> ima sekvencu {{sequence}} i istek {{expiration}}.<br/>Uključuje {{validatorCount}} validatora koji su ispisani ispod."
-  },
   "alerts": {
     "text0": "Budite obaviješteni kad se XRP/USD ili XRP/BTC cijena kod <1>Bitstamp-a</1> primijeni za više od 5% unutar jednog sata ili više od 10% unutar jednog dana.",
     "text1": "Prati Telagram kanal: <1>bithomp</1> ili twitter: <3>bithompAlerts</3>.",
@@ -326,6 +321,7 @@
     "day": "Za zadnja 24 sata"
   },
   "table": {
+    "sequence": "Sekvenca",
     "version": "Verzija",
     "domain": "Domena",
     "index": "Indeks",

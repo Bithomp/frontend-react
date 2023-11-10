@@ -1,0 +1,9 @@
+{
+  "table": {
+    "votes-for": "Votes for",
+    "last-seen": "Last seen",
+    "reserves": "Reserves"
+  },
+  "domain-legacy": "도메인 (증명 오래됨)",
+  "text0": "벨리데이터 목록 <1>{{url}}</1>에는 {{sequence}} 시퀀스와 {{expiration}} 만료가 있습니다.<br/>이 목록에는 아래에 나열된 {{validatorCount}} 벨리데이터가 포함되어 있습니다."
+}

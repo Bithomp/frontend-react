@@ -98,8 +98,6 @@ export default function Amendment() {
             disabled[i].count = features[disabled[i].amendment].count
           }
         }
-        //with more votes on top
-        disabled.sort((a, b) => (a.count > b.count) ? -1 : 1)
 
         //add possible missing names
         for (let i = 0; i < enabled.length; i++) {
@@ -130,6 +128,10 @@ export default function Amendment() {
             notAvailableArray.push(disabled[i])
           }
         }
+
+        //with more votes on top
+        newArray.sort((a, b) => (a.count > b.count) ? -1 : 1)
+
         setNotAvailableAmendments(notAvailableArray)
         setObsoleteAmendments(obsoleteArray)
         setNewAmendments(newArray)

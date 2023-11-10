@@ -183,11 +183,6 @@
     "for-sale-without-destination": "NFT-er for offentlig salg",
     "for-sale-with-destination": "NFT-er for direkte salg"
   },
-  "validators": {
-    "domain-legacy": "Domene (gammel bekreftelse)",
-    "sequence": "Sekvens",
-    "text0": "Validatorlisten <1>{{url}}</1> har sekvens {{sequence}} og utløper {{expiration}}.<br/>Den inkluderer {{validatorCount}} validatorer som er oppført nedenfor."
-  },
   "alerts": {
     "text0": "Bli varslet når XRP/USD eller XRP/BTC markedspris endres med<1>Bitstamp</1>mer enn 5 % innen en time eller mer enn 10 % innen en dag.",
     "text1": "Følg Telegram-kanalen: <1>bithomp</1>eller twitter-kontoen: <3>bithompAlerts</3>.",
@@ -326,6 +321,7 @@
     "day": "For de siste 24 timene"
   },
   "table": {
+    "sequence": "Sekvens",
     "version": "Versjon",
     "domain": "Domene",
     "index": "Indeks",

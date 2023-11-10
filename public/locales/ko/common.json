@@ -183,11 +183,6 @@
     "for-sale-without-destination": "공적 판매를 위한 NFT",
     "for-sale-with-destination": "직접판매용 NFT"
   },
-  "validators": {
-    "domain-legacy": "도메인 (증명 오래됨)",
-    "sequence": "절차",
-    "text0": "벨리데이터 목록 <1>{{url}}</1>에는 {{sequence}} 시퀀스와 {{expiration}} 만료가 있습니다.<br/>이 목록에는 아래에 나열된 {{validatorCount}} 벨리데이터가 포함되어 있습니다."
-  },
   "alerts": {
     "text0": "<1>Bitstamp</1>에서 XRP/USD 또는 XRP/BTC의 시장 가격이 1시간 이내에 5% 이상 또는 1일 이내에 10% 이상 변동하면 알림을 받을 수 있습니다.",
     "text1": "텔레그램 채널 <1>bithomp</1> 또는 트위터 계정 <3>bithompAlerts</3>를 팔로우하세요.",
@@ -326,6 +321,7 @@
     "day": "최근 24시간"
   },
   "table": {
+    "sequence": "절차",
     "version": "버전",
     "domain": "도메인",
     "index": "지표",

@@ -183,11 +183,6 @@
     "for-sale-without-destination": "NFTs zum öffentlichen Verkauf",
     "for-sale-with-destination": "NFTs zum direkten Verkauf"
   },
-  "validators": {
-    "domain-legacy": "Domain (alte Verifizierung)",
-    "sequence": "Sequenz",
-    "text0": "Die Liste der Validatoren <1>{{url}}</1> hat die Sequenz {{sequence}} und läuft am {{expiration}} ab.<br/>Sie beinhaltet {{validatorCount}} nachfolgend aufgelistete Validatoren."
-  },
   "alerts": {
     "text0": "Benachrichtigung erhalten, wenn der Marktpreis von <1>Bitstamp</1> für XRP/USD oder XRP/BTC sich um mehr als 5% innert einer Stunde oder mehr als 10% innert eines Tages verändert.",
     "text1": "Dem Telegram Kanal <1>bithomp</1> oder dem Twitter Account <3>bithompAlerts</3> folgen.",
@@ -326,6 +321,7 @@
     "day": "Für die letzten 24 Stunden"
   },
   "table": {
+    "sequence": "Sequenz",
     "version": "Version",
     "domain": "Domain",
     "index": "Index",

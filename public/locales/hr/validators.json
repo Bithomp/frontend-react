@@ -1,0 +1,9 @@
+{
+  "table": {
+    "votes-for": "Votes for",
+    "last-seen": "Last seen",
+    "reserves": "Reserves"
+  },
+  "domain-legacy": "Domena (stara verifikacija)",
+  "text0": "Lista validatora <1>{{url}}</1> ima sekvencu {{sequence}} i istek {{expiration}}.<br/>Uključuje {{validatorCount}} validatora koji su ispisani ispod."
+}

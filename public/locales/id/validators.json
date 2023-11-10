@@ -1,0 +1,9 @@
+{
+  "table": {
+    "votes-for": "Votes for",
+    "last-seen": "Last seen",
+    "reserves": "Reserves"
+  },
+  "domain-legacy": "Domain (verifikasi lama)",
+  "text0": "Daftar validator <1>{{url}}</1> memiliki urutan {{sequence}} dan berakhir pada {{expiration}}.<br/>Daftar ini mencakup {{validatorCount}} validator yang tercantum di bawah ini."
+}

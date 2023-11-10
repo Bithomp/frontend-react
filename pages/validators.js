@@ -16,7 +16,7 @@ export const getServerSideProps = async ({ query, locale }) => {
   return {
     props: {
       amendment: amendment || null,
-      ...(await serverSideTranslations(locale, ['common'])),
+      ...(await serverSideTranslations(locale, ['common', 'validators'])),
     }
   }
 }
@@ -140,7 +140,7 @@ export default function Validators({ amendment }) {
       <div className="flex center">
         <div className="grey-box">
           {validators &&
-            <Trans i18nKey="validators.text0">
+            <Trans i18nKey="text0" ns='validators'>
               The validator list <b>{{ url: validators.url }}</b> has sequence {{ sequence: validators.sequence }} and expiration on {{ expiration: fullDateAndTime(validators.expiration) }}.<br />It includes {{ validatorCount: unlValidatorsCount }} validators which are listed below.
             </Trans>
           }
@@ -179,7 +179,7 @@ export default function Validators({ amendment }) {
                           <>
                             {v.domainLegacy &&
                               <p>
-                                {t("validators.domain-legacy")}<br />
+                                {t("domain-legacy", { ns: 'validators' })}<br />
                                 <a href={"https://" + v.domainLegacy}>{v.domainLegacy}</a>
                               </p>
                             }
@@ -198,7 +198,8 @@ export default function Validators({ amendment }) {
                         <p>
                           {v.amendments?.length > 0 &&
                             <>
-                              Votes for:{" "}
+                              {t("table.votes-for", { ns: 'validators' })}:
+                              <br />
                               {listAmendments(v.amendments)}
                             </>
                           }
@@ -208,23 +209,23 @@ export default function Validators({ amendment }) {
                           {shortHash(v.publicKey)} <CopyButton text={v.publicKey} />
                         </p>
                         <p>
-                          {t("validators.sequence")}: {v.sequence}
+                          {t("table.sequence")}: {v.sequence}
                         </p>
                         <p>
-                          Base reserve: {amountFormat(v.reserveBase)}
+                          {t("last-ledger-information.base-reserve")}: {amountFormat(v.reserveBase)}
                         </p>
                         <p>
-                          Increment reserve: {amountFormat(v.reserveIncrement)}
+                          {t("last-ledger-information.increment-reserve")}: {amountFormat(v.reserveIncrement)}
                         </p>
                         <p>
                           {t("table.version")}: {v.serverVersion}
                         </p>
                         <p>
-                          Last seen: {moment((v.lastSeenTime - 1) * 1000, "unix").fromNow()}
+                          {t("table.last-seen", { ns: 'validators' })}: {moment((v.lastSeenTime - 1) * 1000, "unix").fromNow()}
                         </p>
                         {xahauNetwork &&
                           <p>
-                            {t("validators.address")} <CopyButton text={v.address} /><br />
+                            {t("table.address")} <CopyButton text={v.address} /><br />
                             {addressUsernameOrServiceLink(v, 'address')}
                           </p>
                         }
@@ -246,10 +247,10 @@ export default function Validators({ amendment }) {
               <th className='center'>{t("table.hash")}</th>
               <th>{t("table.domain")}</th>
               <th className='center'>UNL/nUNL</th>
-              <th className='center'>{t("validators.sequence")}</th>
-              <th className='right'>Reserves</th>
+              <th className='center'>{t("table.sequence")}</th>
+              <th className='right'>{t("table.reserves", { ns: 'validators' })}</th>
               <th className='left'>{t("table.version")}</th>
-              <th className='right'>Last seen</th>
+              <th className='right'>{t("table.last-seen", { ns: 'validators' })}</th>
               {xahauNetwork &&
                 <th>{t("table.address")}</th>
               }
