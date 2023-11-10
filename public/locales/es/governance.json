@@ -32,9 +32,6 @@
     "reward-delay-votes": "Votos de Retraso de la recompensa",
     "reward-delay-votes-count": "Conteo de los votos de Retraso de la recompensa",
     "hook-votes": "Votos del Hook ",
-    "hook-votes-count": "Conteo de votos del Hook",
-    "text": {
-      "no-votes": "No hay votos."
-    }
+    "hook-votes-count": "Conteo de votos del Hook"
   }
 }

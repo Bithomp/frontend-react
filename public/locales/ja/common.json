@@ -408,7 +408,8 @@
       "hide": "隠す",
       "see-on": "<1><0>{{marketplace}}</0></1>で見る",
       "valid": "有効",
-      "invalid": "無効"
+      "invalid": "無効",
+      "no-votes": "投票はありません。"
     },
     "filter": {
       "valid": "有効",

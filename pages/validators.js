@@ -133,6 +133,7 @@ export default function Validators({ amendment }) {
   }, [])
 
   const listAmendments = amendments => {
+    if (!amendments?.length) return <b>{t("table.text.no-votes")}</b>
     return amendments.map((a, i) => (
       <span key={i} className={a === amendment ? "orange bold" : ""}>{a}{i !== amendments.length - 1 && ", "}</span>
     ))
@@ -201,13 +202,9 @@ export default function Validators({ amendment }) {
                           </p>
                         }
                         <p>
-                          {v.amendments?.length > 0 &&
-                            <>
-                              {t("table.votes-for", { ns: 'validators' })}:
-                              <br />
-                              {listAmendments(v.amendments)}
-                            </>
-                          }
+                          {t("table.votes-for", { ns: 'validators' })}:
+                          <br />
+                          {listAmendments(v.amendments)}
                         </p>
                         <p>
                           {t("table.public-key")}<br />
@@ -292,7 +289,7 @@ export default function Validators({ amendment }) {
                           </>
                         }
                         <br />
-                        {v.amendments?.length > 0 && listAmendments(v.amendments)}
+                        {listAmendments(v.amendments)}
                       </td>
                       <td className='center'>{v.unl ? (v.nUnl ? "❌" : "✔️") : ""}</td>
                       <td className='center'>{v.sequence}</td>

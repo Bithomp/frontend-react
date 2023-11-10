@@ -408,7 +408,8 @@
 			"hide": "sembunyi",
 			"see-on": "Lihat di <1><0>{{marketplace}}</0></1>",
 			"valid": "sah",
-			"invalid": "tidak sah"
+			"invalid": "tidak sah",
+			"no-votes": "Tiada undian."
 		},
 		"filter": {
 			"valid": "Sah",

@@ -408,7 +408,8 @@
       "hide": "sembunyikan",
       "see-on": "Lihat di <1><0>{{marketplace}}</0></1>",
       "valid": "valid",
-      "invalid": "tidak valid"
+      "invalid": "tidak valid",
+      "no-votes": "Tidak ada suara."
     },
     "filter": {
       "valid": "Valid",

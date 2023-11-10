@@ -408,7 +408,8 @@
       "hide": "숨기기",
       "see-on": "See on <1><0>{{marketplace}}</0></1>",
       "valid": "유효함",
-      "invalid": "유효하지 않음"
+      "invalid": "유효하지 않음",
+      "no-votes": "투표가 없습니다"
     },
     "filter": {
       "valid": "유효함",

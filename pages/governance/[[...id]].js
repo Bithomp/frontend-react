@@ -522,7 +522,7 @@ export default function Governance({ id, setSignRequest, signRequest, account })
                         )
                         :
                         <tr>
-                          <td colSpan={100} className='center'>{t("table.text.no-votes", { ns: 'governance' })}</td>
+                          <td colSpan={100} className='center'>{t("table.text.no-votes")}</td>
                         </tr>
                       }
                     </>
@@ -675,7 +675,7 @@ export default function Governance({ id, setSignRequest, signRequest, account })
                         )
                         :
                         <tr>
-                          <td colSpan={100} className='center'>{t("table.text.no-votes", { ns: 'governance' })}</td>
+                          <td colSpan={100} className='center'>{t("table.text.no-votes")}</td>
                         </tr>
                       }
                     </>
@@ -825,7 +825,7 @@ export default function Governance({ id, setSignRequest, signRequest, account })
                         )
                         :
                         <tr>
-                          <td colSpan={100} className='center'>{t("table.text.no-votes", { ns: 'governance' })}</td>
+                          <td colSpan={100} className='center'>{t("table.text.no-votes")}</td>
                         </tr>
                       }
                     </>
@@ -975,7 +975,7 @@ export default function Governance({ id, setSignRequest, signRequest, account })
                         )
                         :
                         <tr>
-                          <td colSpan={100} className='center'>{t("table.text.no-votes", { ns: 'governance' })}</td>
+                          <td colSpan={100} className='center'>{t("table.text.no-votes")}</td>
                         </tr>
                       }
                     </>

@@ -408,7 +408,8 @@
       "hide": "verbergen",
       "see-on": "Anzeigen auf <1><0>{{marketplace}}</0></1>",
       "valid": "gültig",
-      "invalid": "ungültig"
+      "invalid": "ungültig",
+      "no-votes": "Keine Stimmen."
     },
     "filter": {
       "valid": "Gültig",

@@ -408,7 +408,8 @@
       "hide": "Amaga",
       "see-on": "Veure a <1><0>{{marketplace}}</0></1>",
       "valid": "vàlid",
-      "invalid": "invàlid"
+      "invalid": "invàlid",
+      "no-votes": "No s'han trobat vots."
     },
     "filter": {
       "valid": "Vàlid",

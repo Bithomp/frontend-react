@@ -408,7 +408,8 @@
       "hide": "sakri",
       "see-on": "Vidi na <1><0>{{marketplace}}</0></1>",
       "valid": "ispravno",
-      "invalid": "neispravno"
+      "invalid": "neispravno",
+      "no-votes": "Nema glasova."
     },
     "filter": {
       "valid": "Ispravni",

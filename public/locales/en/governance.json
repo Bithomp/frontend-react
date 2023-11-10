@@ -32,9 +32,6 @@
     "reward-delay-votes": "Reward delay votes",
     "reward-delay-votes-count": "Reward delay votes count",
     "hook-votes": "Hook votes",
-    "hook-votes-count": "Hook votes count",
-    "text": {
-      "no-votes": "There are no votes."
-    }
+    "hook-votes-count": "Hook votes count"
   }
 }

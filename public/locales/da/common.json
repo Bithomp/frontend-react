@@ -408,7 +408,8 @@
       "hide": "Gem",
       "see-on": "Se på <1><0>{{marketplace}}</0></1>",
       "valid": "gyldig",
-      "invalid": "ugyldig"
+      "invalid": "ugyldig",
+      "no-votes": "Ingen stemmer."
     },
     "filter": {
       "valid": "Gyldig",
