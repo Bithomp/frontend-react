@@ -268,7 +268,8 @@
     "no-expiration": "Aldrig",
     "no-uri": "Ingen URI angivet",
     "no-media": "Ingen medier fundet",
-    "viewer": "Visningsværktøj"
+    "viewer": "Visningsværktøj",
+    "developer-mode": "Udviklertilstand"
   },
   "form": {
     "error": {

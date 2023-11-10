@@ -268,7 +268,8 @@
     "no-expiration": "무기한",
     "no-uri": "URI가 지정되지 않았습니다",
     "no-media": "미디어를 찾을 수 없습니다",
-    "viewer": "뷰어"
+    "viewer": "뷰어",
+    "developer-mode": "개발자 모드"
   },
   "form": {
     "error": {

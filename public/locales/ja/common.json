@@ -268,7 +268,8 @@
     "no-expiration": "無期限",
     "no-uri": "URIが指定されていません",
     "no-media": "メディアが見つかりません",
-    "viewer": "ビュワー"
+    "viewer": "ビュワー",
+    "developer-mode": "開発者モード"
   },
   "form": {
     "error": {

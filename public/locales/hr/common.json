@@ -268,7 +268,8 @@
     "no-expiration": "Nikad",
     "no-uri": "Nema URIja",
     "no-media": "Nema medija",
-    "viewer": "Preglednik"
+    "viewer": "Preglednik",
+    "developer-mode": "Developer mode"
   },
   "form": {
     "error": {

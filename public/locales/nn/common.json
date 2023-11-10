@@ -268,7 +268,8 @@
     "no-expiration": "Aldri",
     "no-uri": "Ingen URI spesifisert",
     "no-media": "Ingen media funnet",
-    "viewer": "Visningsverktøy"
+    "viewer": "Visningsverktøy",
+    "developer-mode": "Utviklermodus"
   },
   "form": {
     "error": {

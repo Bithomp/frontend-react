@@ -5,6 +5,7 @@ import moment from "moment"
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 import SEO from '../components/SEO'
+import CheckBox from '../components/UI/CheckBox'
 
 import { addressUsernameOrServiceLink, amountFormat, fullDateAndTime, shortHash } from '../utils/format'
 import { useWidth, xahauNetwork } from '../utils'
@@ -34,6 +35,7 @@ export default function Validators({ amendment }) {
   const [loading, setLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState(null)
   const [unlValidatorsCount, setUnlValidatorsCount] = useState(0)
+  const [developerMode, setDeveloperMode] = useState(false)
   const { t } = useTranslation()
   const windowWidth = useWidth()
 
@@ -139,6 +141,14 @@ export default function Validators({ amendment }) {
     ))
   }
 
+  const checkBoxStyles = {
+    display: "inline-block",
+    marginTop: windowWidth > 500 ? "-20px" : 0,
+    marginBottom: "20px",
+    marginRight: "20px",
+    marginLeft: "20px"
+  }
+
   return <>
     <SEO title={t("menu.xrpl.validators")} />
     <div className="content-text">
@@ -154,6 +164,15 @@ export default function Validators({ amendment }) {
           {validators?.error && <b><br />Validation error: <span className='red'>{validators?.error}</span>.</b>}
         </div>
       </div>
+
+      {windowWidth >= 960 &&
+        <div style={{ width: "200px", margin: "auto" }}>
+          <CheckBox checked={developerMode} setChecked={setDeveloperMode} style={checkBoxStyles}>
+            {t("general.developer-mode")}
+          </CheckBox>
+        </div>
+      }
+
       <br />
 
       {windowWidth < 960 ?
@@ -246,10 +265,11 @@ export default function Validators({ amendment }) {
           <thead>
             <tr>
               <th> </th>
-              <th className='center'>{t("table.hash")}</th>
               <th>{t("table.domain")}</th>
               <th className='center'>UNL/nUNL</th>
-              <th className='center'>{t("table.sequence")}</th>
+              {developerMode &&
+                <th className='center'>{t("table.sequence")}</th>
+              }
               <th className='right'>{t("table.reserves", { ns: 'validators' })}</th>
               <th className='left'>{t("table.version")}</th>
               <th className='right'>{t("table.last-seen", { ns: 'validators' })}</th>
@@ -274,25 +294,44 @@ export default function Validators({ amendment }) {
                   validators.validators.map((v, i) =>
                     <tr key={v.publicKey}>
                       <td>{i + 1}</td>
-                      <td className='center'><CopyButton text={v.publicKey} /></td>
                       <td>
+                        {developerMode && <>
+                          <CopyButton text={v.publicKey} />
+                          {" "}
+                          {windowWidth > 1240 ? v.publicKey : shortHash(v.publicKey)}
+                          <br />
+                        </>}
                         {v.domain ?
-                          <a href={"https://" + v.domain}>{v.domain}</a> :
+                          <>
+                            <a href={"https://" + v.domain}>{v.domain}</a>
+                            <br />
+                          </>
+                          :
                           <>
                             {v.domainLegacy ?
-                              <a href={"https://" + v.domainLegacy} className="green">{v.domainLegacy}</a>
-                              :
                               <>
-                                {windowWidth > 1420 ? v.publicKey : shortHash(v.publicKey)}
+                                <a href={"https://" + v.domainLegacy} className="green">{v.domainLegacy}</a>
+                                <br />
                               </>
+                              :
+                              (!developerMode ?
+                                <>
+                                  {windowWidth > 1240 ? v.publicKey : shortHash(v.publicKey)}
+                                  <br />
+                                </>
+                                :
+                                ""
+                              )
                             }
                           </>
                         }
-                        <br />
+
                         {listAmendments(v.amendments)}
                       </td>
                       <td className='center'>{v.unl ? (v.nUnl ? "❌" : "✔️") : ""}</td>
-                      <td className='center'>{v.sequence}</td>
+                      {developerMode &&
+                        <td className='center'>{v.sequence}</td>
+                      }
                       <td className='right'>
                         {(v.reserveIncrement && v.reserveBase) ?
                           <>
@@ -301,7 +340,6 @@ export default function Validators({ amendment }) {
                           :
                           ""
                         }
-
                       </td>
                       <td className='left'>{v.serverVersion}</td>
                       <td className='right'>
@@ -320,6 +358,6 @@ export default function Validators({ amendment }) {
           </tbody>
         </table>
       }
-    </div>
+    </div >
   </>
 }

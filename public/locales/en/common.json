@@ -268,7 +268,8 @@
     "no-expiration": "Never",
     "no-uri": "No URI specified",
     "no-media": "No media found",
-    "viewer": "Viewer"
+    "viewer": "Viewer",
+    "developer-mode": "Developer mode"
   },
   "form": {
     "error": {

@@ -268,7 +268,8 @@
 		"no-expiration": "Tidak pernah",
 		"no-uri": "Tiada URI yang ditentukan",
 		"no-media": "Tiada media dijumpai",
-		"viewer": "Penyemak"
+		"viewer": "Penyemak",
+		"developer-mode": "Mod Pembangun"
 	},
   "form": {
     "error": {

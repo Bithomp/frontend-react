@@ -268,7 +268,8 @@
     "no-expiration": "Mai",
     "no-uri": "No s'ha especificat cap URI",
     "no-media": "No s'han trobat mitjans",
-    "viewer": "Visualitzador"
+    "viewer": "Visualitzador",
+    "developer-mode": "Mode desenvolupador"
   },
   "form": {
     "error": {
