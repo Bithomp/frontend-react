@@ -137,7 +137,7 @@ export default function Validators({ amendment }) {
   const listAmendments = amendments => {
     if (!amendments?.length) return <b>{t("table.text.no-votes")}</b>
     return amendments.map((a, i) => (
-      <span key={i} className={a === amendment ? "orange bold" : ""}>{a}{i !== amendments.length - 1 && ", "}</span>
+      <span key={i} className={a === amendment ? "purple bold" : "orange"}>{a}{i !== amendments.length - 1 && ", "}</span>
     ))
   }
 
