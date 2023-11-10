@@ -51,6 +51,11 @@ export default function Validators({ amendment }) {
       dataU.validators?.sort(compare)
       setUnlValidatorsCount(dataU.validators?.length)
 
+      //in case some of the validators down...
+      for (let i = 0; i < dataU.validators.length; i++) {
+        dataU.validators[i].unl = true
+      }
+
       const responseV = await axios('v2/validators')
       const dataV = responseV.data
       if (dataV) {
@@ -212,16 +217,16 @@ export default function Validators({ amendment }) {
                           {t("table.sequence")}: {v.sequence}
                         </p>
                         <p>
-                          {t("last-ledger-information.base-reserve")}: {amountFormat(v.reserveBase)}
+                          {t("last-ledger-information.base-reserve")}: {v.reserveBase ? amountFormat(v.reserveBase) : "N/A"}
                         </p>
                         <p>
-                          {t("last-ledger-information.increment-reserve")}: {amountFormat(v.reserveIncrement)}
+                          {t("last-ledger-information.increment-reserve")}: {v.reserveIncrement ? amountFormat(v.reserveIncrement) : "N/A"}
                         </p>
                         <p>
-                          {t("table.version")}: {v.serverVersion}
+                          {t("table.version")}: {v.serverVersion ? v.serverVersion : "N/A"}
                         </p>
                         <p>
-                          {t("table.last-seen", { ns: 'validators' })}: {moment((v.lastSeenTime - 1) * 1000, "unix").fromNow()}
+                          {t("table.last-seen", { ns: 'validators' })}: {v.lastSeenTime ? moment((v.lastSeenTime - 1) * 1000, "unix").fromNow() : "N/A"}
                         </p>
                         {xahauNetwork &&
                           <p>
@@ -291,10 +296,19 @@ export default function Validators({ amendment }) {
                       </td>
                       <td className='center'>{v.unl ? (v.nUnl ? "❌" : "✔️") : ""}</td>
                       <td className='center'>{v.sequence}</td>
-                      <td className='right'>{v.reserveIncrement / 1000000} / {v.reserveBase / 1000000}</td>
+                      <td className='right'>
+                        {(v.reserveIncrement && v.reserveBase) ?
+                          <>
+                            {v.reserveIncrement / 1000000} / {v.reserveBase / 1000000}
+                          </>
+                          :
+                          ""
+                        }
+
+                      </td>
                       <td className='left'>{v.serverVersion}</td>
                       <td className='right'>
-                        {moment((v.lastSeenTime - 1) * 1000, "unix").fromNow()}
+                        {v.lastSeenTime ? moment((v.lastSeenTime - 1) * 1000, "unix").fromNow() : "N/A"}
                       </td>
                       {xahauNetwork &&
                         <td className='left'><CopyButton text={v.address} /> {addressUsernameOrServiceLink(v, 'address')}</td>
