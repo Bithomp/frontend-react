@@ -198,7 +198,7 @@ export default function Validators({ amendment }) {
                       <td>
                         {v.domain ?
                           <p>
-                            {t("table.domain")}<br />
+                            {t("table.domain")}:<br />
                             <a href={"https://" + v.domain}>{v.domain}</a>
                           </p> :
                           <>
@@ -226,7 +226,7 @@ export default function Validators({ amendment }) {
                           {listAmendments(v.amendments)}
                         </p>
                         <p>
-                          {t("table.public-key")}<br />
+                          {t("table.public-key")}:<br />
                           {shortHash(v.publicKey)} <CopyButton text={v.publicKey} />
                         </p>
                         <p>
