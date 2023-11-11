@@ -405,6 +405,13 @@ table {
   color: var(--purple) !important;
 }
 
+.grey,
+.gray,
+.grey a,
+.gray a {
+  color: var(--text-secondary) !important;
+}
+
 .contrast {
   color: var(--text-contrast) !important;
 }
