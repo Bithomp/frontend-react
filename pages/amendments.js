@@ -171,9 +171,11 @@ export default function Amendment() {
               <tr>
                 <th className='center'>{t("table.index")}</th>
                 <th>{t("table.name")}</th>
-                <th className='right'>{t("table.version")}</th>
                 <th>{t("majority", { ns: 'amendments' })}</th>
                 <th>{t("eta", { ns: 'amendments' })}</th>
+                <th className='right'>{threshold} / {validations}</th>
+                <th className='right'>{t("table.version")}</th>
+                <th className='right'>{t("table.hash")}</th>
               </tr>
             </thead>
             <tbody>
@@ -181,9 +183,17 @@ export default function Amendment() {
                 <tr key={a.amendment}>
                   <td className='center'>{i + 1}</td>
                   <td className="brake">{amendmentLink(a)}</td>
-                  <td className='right'>{a.introduced}</td>
                   <td>{fullDateAndTime(a.majority)}</td>
-                  <td>{fullDateAndTime(a.majority + 14 * 86400 + 3)}</td>
+                  <td>{fullDateAndTime(a.majority + 14 * 86400 + 903)}</td>
+                  <td className='right'>
+                    {a.count > threshold ? <b className='green'>{a.count}</b> : a.count}
+                    <Link href={"validators?amendment=" + a.name}> <LinkIcon /></Link>
+                  </td>
+                  <td className='right'>{a.introduced}</td>
+                  <td className='right'>
+                    {windowWidth > 1000 ? <>{shortHash(a.amendment)} </> : ""}
+                    <CopyButton text={a.amendment} />
+                  </td>
                 </tr>
               )}
             </tbody>
