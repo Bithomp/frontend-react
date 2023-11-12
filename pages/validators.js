@@ -12,6 +12,8 @@ import { useWidth, xahauNetwork } from '../utils'
 
 import CopyButton from '../components/UI/CopyButton'
 
+import VerifiedIcon from "../public/images/verified.svg"
+
 export const getServerSideProps = async ({ query, locale }) => {
   const { amendment } = query
   return {
@@ -141,6 +143,22 @@ export default function Validators({ amendment }) {
     ))
   }
 
+  const verifiedSign = (domainVerified, domain) => {
+    if (!domainVerified || !domain) return ""
+    return <span className='tooltip'>
+      <a
+        href={"https://" + domain + "/.well-known/" + (xahauNetwork ? "xahau.toml" : "xrp-ledger.toml")}
+        target="_blank"
+        rel="noreferrer"
+      >
+        <VerifiedIcon style={{ marginLeft: "5px" }} />
+      </a>
+      <span className='tooltiptext right no-brake'>
+        {t("table.text.domain-verified-toml", { ns: 'validators' })}
+      </span>
+    </span>
+  }
+
   const checkBoxStyles = {
     display: "inline-block",
     marginTop: windowWidth > 500 ? "-20px" : 0,
@@ -199,13 +217,23 @@ export default function Validators({ amendment }) {
                         {v.domain ?
                           <p>
                             {t("table.domain")}:<br />
-                            <a href={"https://" + v.domain}>{v.domain}</a>
-                          </p> :
+                            <a
+                              href={"https://" + v.domain}
+                            >
+                              {v.domain}
+                            </a>
+                            {verifiedSign(v.domainVerified, v.domain)}
+                          </p>
+                          :
                           <>
                             {v.domainLegacy &&
                               <p>
                                 {t("domain-legacy", { ns: 'validators' })}<br />
-                                <a href={"https://" + v.domainLegacy}>{v.domainLegacy}</a>
+                                <a
+                                  href={"https://" + v.domainLegacy}
+                                >
+                                  {verifiedSign(v.domainVerified, v.domainLegacy)}
+                                </a>
                               </p>
                             }
                           </>
@@ -303,14 +331,25 @@ export default function Validators({ amendment }) {
                         </>}
                         {v.domain ?
                           <>
-                            <a href={"https://" + v.domain}>{v.domain}</a>
+                            <a
+                              href={"https://" + v.domain}
+                            >
+                              {v.domain}
+                            </a>
+                            {verifiedSign(v.domainVerified, v.domain)}
                             <br />
                           </>
                           :
                           <>
                             {v.domainLegacy ?
                               <>
-                                <a href={"https://" + v.domainLegacy} className="green">{v.domainLegacy}</a>
+                                <a
+                                  href={"https://" + v.domainLegacy}
+                                  className="green"
+                                >
+                                  {v.domainLegacy}
+                                </a>
+                                {verifiedSign(v.domainVerified, v.domainLegacy)}
                                 <br />
                               </>
                               :

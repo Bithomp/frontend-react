@@ -2,7 +2,10 @@
   "table": {
     "votes-for": "Votes for",
     "last-seen": "Last seen",
-    "reserves": "Reserves"
+    "reserves": "Reserves",
+    "text": {
+      "domain-verified-toml": "Verified domain (TOML file)"
+    }
   },
   "domain-legacy": "ドメイン (古い検証方法)",
   "text0": "バリデータリスト <1>{{url}}</1> はシーケンス {{sequence}} と、有効期限 {{expiration}} が設定されています。<br/>次の{{validatorCount}}バリデータを含んでいます。"

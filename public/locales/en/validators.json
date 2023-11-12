@@ -2,7 +2,10 @@
   "table": {
     "votes-for": "Votes for",
     "last-seen": "Last seen",
-    "reserves": "Reserves"
+    "reserves": "Reserves",
+    "text": {
+      "domain-verified-toml": "Verified domain (TOML file)"
+    }
   },
   "domain-legacy": "Domain (old verification)",
   "text0": "The validator list <1>{{url}}</1> has sequence {{sequence}} and expiration on {{expiration}}.<br/>It includes {{validatorCount}} validators which are listed below."

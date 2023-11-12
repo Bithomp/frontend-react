@@ -2,7 +2,10 @@
   "table": {
     "votes-for": "Votes for",
     "last-seen": "Last seen",
-    "reserves": "Reserves"
+    "reserves": "Reserves",
+    "text": {
+      "domain-verified-toml": "Verified domain (TOML file)"
+    }
   },
   "domain-legacy": "Domini (antiga verificació)",
   "text0": "La llista de validadors <1>{{url}}</1> té la seqüència {{sequence}} i venciment el {{expiration}}.<br/>Inclou {{validatorCount}} validadors, llistats a continuació."
