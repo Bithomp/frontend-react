@@ -232,7 +232,7 @@ export default function Validators({ amendment }) {
                                 <a
                                   href={"https://" + v.domainLegacy}
                                 >
-                                  {verifiedSign(v.domainVerified, v.domainLegacy)}
+                                  {verifiedSign(v.domainLegacyVerified, v.domainLegacy)}
                                 </a>
                               </p>
                             }
@@ -349,7 +349,7 @@ export default function Validators({ amendment }) {
                                 >
                                   {v.domainLegacy}
                                 </a>
-                                {verifiedSign(v.domainVerified, v.domainLegacy)}
+                                {verifiedSign(v.domainLegacyVerified, v.domainLegacy)}
                                 <br />
                               </>
                               :
