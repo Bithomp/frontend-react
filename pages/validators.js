@@ -3,6 +3,9 @@ import { useState, useEffect } from 'react'
 import axios from 'axios'
 import moment from "moment"
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
+import ReactCountryFlag from "react-country-flag"
+import countries from "i18n-iso-countries"
+import { useTheme } from '../components/Layout/ThemeContext'
 
 import SEO from '../components/SEO'
 import CheckBox from '../components/UI/CheckBox'
@@ -38,8 +41,55 @@ export default function Validators({ amendment }) {
   const [errorMessage, setErrorMessage] = useState(null)
   const [unlValidatorsCount, setUnlValidatorsCount] = useState(0)
   const [developerMode, setDeveloperMode] = useState(false)
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const windowWidth = useWidth()
+  const { theme } = useTheme()
+
+  const twitterLink = twitter => {
+    if (!twitter) return ""
+    twitter = twitter.replace("@", "")
+    return <a href={"https://twitter.com/" + twitter}>
+      {" "}
+      <span className='tooltip'>
+        <svg width="12" height="12.27" viewBox="0 0 1200 1227" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path
+            d="M714.163 519.284L1160.89 0H1055.03L667.137 450.887L357.328 0H0L468.492 681.821L0 1226.37H105.866L515.491 750.218L842.672 1226.37H1200L714.137 519.284H714.163ZM569.165 687.828L521.697 619.934L144.011 79.6944H306.615L611.412 515.685L658.88 583.579L1055.08 1150.3H892.476L569.165 687.854V687.828Z"
+            fill={theme === "dark" ? "#fff" : "#000"}
+          />
+        </svg>
+        <span className='tooltiptext right no-brake'>
+          {twitter}
+        </span>
+      </span>
+    </a>
+  }
+
+  let lang = i18n.language.slice(0, 2)
+  const notSupportedLanguages = ['my'] // supported "en", "ru", "ja", "ko" etc
+  if (notSupportedLanguages.includes(lang)) {
+    lang = "en"
+  }
+  const languageData = require('i18n-iso-countries/langs/' + lang + '.json')
+  countries.registerLocale(languageData)
+
+  const displayFlag = (country, typeName, em = 1.5) => {
+    if (!country) return ""
+    if (country.length === 2) {
+      if (country.toLowerCase() === "uk") country = "gb"
+      return <span className='tooltip'>
+        <ReactCountryFlag
+          countryCode={country}
+          style={{
+            fontSize: em + 'em',
+            lineHeight: em + 'em',
+          }}
+        />
+        <span className='tooltiptext right no-brake'>
+          {typeName}: {countries.getName(country, lang, { select: "official" })}
+        </span>
+      </span>
+    }
+  }
 
   const checkApi = async () => {
     setLoading(true)
@@ -214,6 +264,16 @@ export default function Validators({ amendment }) {
                     <tr key={i}>
                       <td style={{ padding: "5px" }}>{i + 1}</td>
                       <td>
+                        {v.principals?.[0]?.name &&
+                          <>
+                            <br />
+                            {displayFlag(v.ownerCountry, t("table.owner-country", { ns: 'validators' }))}
+                            {v.principals?.[0]?.name && <b> {v.principals[0].name}</b>}
+                            {twitterLink(v.principals?.[0]?.twitter)}
+                            <br />
+                          </>
+                        }
+
                         {v.domain ?
                           <p>
                             {t("table.domain")}:<br />
@@ -232,8 +292,9 @@ export default function Validators({ amendment }) {
                                 <a
                                   href={"https://" + v.domainLegacy}
                                 >
-                                  {verifiedSign(v.domainLegacyVerified, v.domainLegacy)}
+                                  {v.domainLegacy}
                                 </a>
+                                {verifiedSign(v.domainLegacyVerified, v.domainLegacy)}
                               </p>
                             }
                           </>
@@ -266,6 +327,21 @@ export default function Validators({ amendment }) {
                         <p>
                           {t("last-ledger-information.increment-reserve")}: {v.reserveIncrement ? amountFormat(v.reserveIncrement) : "N/A"}
                         </p>
+                        {v.serverCountry?.length === 2 &&
+                          <p>
+                            {t("table.server-country", { ns: 'validators' })}:
+                            {" "}
+                            {countries.getName(v.serverCountry, lang, { select: "official" })}
+                            {" "}
+                            <ReactCountryFlag
+                              countryCode={v.serverCountry}
+                              style={{
+                                fontSize: '1.5em',
+                                lineHeight: '1.5em',
+                              }}
+                            />
+                          </p>
+                        }
                         <p>
                           {t("table.version")}: {v.serverVersion ? v.serverVersion : "N/A"}
                         </p>
@@ -293,12 +369,13 @@ export default function Validators({ amendment }) {
           <thead>
             <tr>
               <th> </th>
-              <th>{t("table.domain")}</th>
+              <th>{t("table.validator", { ns: 'validators' })}</th>
               <th className='center'>UNL/nUNL</th>
               {developerMode &&
                 <th className='center'>{t("table.sequence")}</th>
               }
               <th className='right'>{t("table.reserves", { ns: 'validators' })}</th>
+              <th className='center'>Server</th>
               <th className='left'>{t("table.version")}</th>
               <th className='right'>{t("table.last-seen", { ns: 'validators' })}</th>
               {xahauNetwork &&
@@ -329,6 +406,12 @@ export default function Validators({ amendment }) {
                           {windowWidth > 1240 ? v.publicKey : shortHash(v.publicKey)}
                           <br />
                         </>}
+
+                        {displayFlag(v.ownerCountry, t("table.owner-country", { ns: 'validators' }))}
+                        {v.principals?.[0]?.name && <b> {v.principals[0].name}</b>}
+                        {twitterLink(v.principals?.[0]?.twitter)}
+                        {v.ownerCountry && <br />}
+
                         {v.domain ?
                           <>
                             <a
@@ -379,6 +462,9 @@ export default function Validators({ amendment }) {
                           :
                           ""
                         }
+                      </td>
+                      <td className='center'>
+                        {displayFlag(v.serverCountry, t("table.server-country", { ns: 'validators' }))}
                       </td>
                       <td className='left'>{v.serverVersion}</td>
                       <td className='right'>

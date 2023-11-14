@@ -1,5 +1,7 @@
 {
   "table": {
+    "validator": "Валидатор",
+    "server-country": "Страна сервера",
     "votes-for": "Голосует за",
     "last-seen": "Видили",
     "reserves": "Резервы",
