@@ -2,6 +2,7 @@
   "table": {
     "validator": "Валидатор",
     "server-country": "Страна сервера",
+    "owner-country": "Страна владельца",
     "votes-for": "Голосует за",
     "last-seen": "Видили",
     "reserves": "Резервы",

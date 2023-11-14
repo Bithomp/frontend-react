@@ -2,6 +2,7 @@
   "table": {
     "validator": "Validator",
     "server-country": "Server (land)",
+    "owner-country": "Owner country",
     "votes-for": "Votes for",
     "last-seen": "Last seen",
     "reserves": "Reserves",
