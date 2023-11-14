@@ -28,7 +28,7 @@
     },
     "xrpl": {
       "governance": "Governance",
-      "rich-list": "Rich list",
+      "distribution": "{{nativeCurrency}} distribution",
       "last-ledger-information": "Sidste ledger information",
       "last-ledger-transactions": "Sidste ledger transaktioner",
       "verified-domains": "Verified domains",

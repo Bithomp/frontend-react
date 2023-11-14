@@ -28,7 +28,7 @@
 		},
 		"xrpl": {
 			"governance": "Governance",
-			"rich-list": "Senarai Akaun-Akaun Terkaya",
+			"distribution": "{{nativeCurrency}} distribution",
 			"last-ledger-information": "Maklumat Ledger Terakhir",
 			"last-ledger-transactions": "Transaksi Ledger Terakhir",
 			"verified-domains": "Domain Disahkan",

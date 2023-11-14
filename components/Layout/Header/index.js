@@ -127,7 +127,7 @@ export default function Header({ setSignRequest, account, signOut, selectedCurre
             <div className="menu-dropdown-button">{ledgerName}</div>
             <div className="menu-dropdown-content">
               {xahauNetwork && <Link href="/governance">{t("menu.xrpl.governance")}</Link>}
-              <Link href="/rich-list">{t("menu.xrpl.rich-list")}</Link>
+              <Link href="/distribution">{t("menu.xrpl.distribution", { nativeCurrency })}</Link>
               <Link href="/last-ledger-information">{t("menu.xrpl.last-ledger-information")}</Link>
               <Link href="/ledger">{t("menu.xrpl.last-ledger-transactions")}</Link>
               {/* Hide Verified Domains for XAHAU while they are not ready yet */}
@@ -332,11 +332,11 @@ export default function Header({ setSignRequest, account, signOut, selectedCurre
             </Link>
           }
           <Link
-            href="/rich-list"
+            href="/distribution"
             className="mobile-menu-item"
             onClick={mobileMenuToggle}
           >
-            {t("menu.xrpl.rich-list")}
+            {t("menu.xrpl.distribution", { nativeCurrency })}
           </Link>
           <Link
             href="/last-ledger-information"

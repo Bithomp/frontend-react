@@ -27,7 +27,7 @@ const pages = [
   { loc: "last-ledger-information", changefreq: "always", priority: "0.7" },
   { loc: "paperwallet/", changefreq: "yearly", priority: "0.7" },
   { loc: "domains", changefreq: "always", priority: "0.7" },
-  { loc: "rich-list", changefreq: "always", priority: "0.7" },
+  { loc: "distribution", changefreq: "always", priority: "0.7" },
 
   { loc: "genesis", changefreq: "weekly", priority: "0.6" },
   { loc: "build-unl", changefreq: "yearly", priority: "0.6" },

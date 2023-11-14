@@ -1,5 +1,4 @@
 {
-  "header": "{{ledgerName}} Reichstenliste",
   "desc": "Hier finden Sie die TOP 100 Konten nach {{nativeCurrency}} Kontostand.",
   "summary": "Es gibt <1>{{activeAccounts}}</1> aktive Konten. Insgesamt verfügbar: <3>{{totalCoins}}</3>"
 }

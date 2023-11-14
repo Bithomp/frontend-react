@@ -28,7 +28,7 @@
     },
     "xrpl": {
       "governance": "Gobierno",
-      "rich-list": "Lista de ricos",
+      "distribution": "{{nativeCurrency}} distribution",
       "last-ledger-information": "Información del último libro contable",
       "last-ledger-transactions": "Transacciones del último libro contable",
       "verified-domains": "Dominios verificados",
