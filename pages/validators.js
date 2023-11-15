@@ -352,7 +352,7 @@ export default function Validators({ amendment }) {
                           {v.principals?.map((p, i) => (
                             <span key={i}>
                               {p.name && <b> {p.name}</b>}
-                              {twitterLink(p.twitter)}
+                              {twitterLink(p.twitter || p.x)}
                               {i !== v.principals.length - 1 ? ", " : <br />}
                             </span>
                           ))}
@@ -497,7 +497,7 @@ export default function Validators({ amendment }) {
                         {v.principals?.map((p, i) => (
                           <span key={i}>
                             {p.name && <b>{p.name}</b>}
-                            {twitterLink(p.twitter)}
+                            {twitterLink(p.twitter || p.x)}
                             {i !== v.principals.length - 1 ? ", " : <br />}
                           </span>
                         ))}
