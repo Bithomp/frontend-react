@@ -86,6 +86,11 @@ const compare = (a, b) => {
     return (a.domain.toLowerCase() > b.domain.toLowerCase()) ? 1 : -1
   }
 
+  //by legacy domain
+  if (a.domainLegacy && b.domainLegacy) {
+    return (a.domainLegacy.toLowerCase() > b.domainLegacy.toLowerCase()) ? 1 : -1
+  }
+
   //by lastSeenTime
   if (a.lastSeenTime > (b.lastSeenTime + 10)) return -1
   if ((a.lastSeenTime + 10) < b.lastSeenTime) return 1
