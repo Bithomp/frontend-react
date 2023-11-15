@@ -27,82 +27,6 @@ export const getServerSideProps = async ({ query, locale }) => {
   }
 }
 
-const compare = (a, b) => {
-  //in the negative UNL
-  if (a.nUnl && !b.nUnl) return -1
-  if (!a.nUnl && b.nUnl) return 1
-
-  //in the UNL
-  if (a.unl && !b.unl) return -1
-  if (!a.unl && b.unl) return 1
-
-  //with verified Domains
-  if (a.domainVerified && !b.domainVerified) return -1
-  if (!a.domainVerified && b.domainVerified) return 1
-
-  //with Domains
-  if (a.domain && !b.domain) return -1
-  if (!a.domain && b.domain) return 1
-
-  //with verified Legacy domains
-  if (a.domainLegacyVerified && !b.domainLegacyVerified) return -1
-  if (!a.domainLegacyVerified && b.domainLegacyVerified) return 1
-
-  //with Legacy domains
-  if (a.domainLegacy && !b.domainLegacy) return -1
-  if (!a.domainLegacy && b.domainLegacy) return 1
-
-  //with principals
-  if (a.principals && !b.principals) return -1
-  if (!a.principals && b.principals) return 1
-
-  //with principal names
-  if (a.principals?.[0].name && !b.principals?.[0].name) return -1
-  if (!a.principals?.[0].name && b.principals?.[0].name) return 1
-
-  //by principal name
-  if (a.principals?.[0]?.name && b.principals?.[0]?.name) {
-    return (a.principals[0].name.toLowerCase() > b.principals[0].name.toLowerCase()) ? 1 : -1
-  }
-
-  //with both countries
-  if ((a.ownerCountry && a.serverCountry) && (!b.ownerCountry || !b.serverCountry)) return -1
-  if ((!a.ownerCountry || !a.serverCountry) && (b.ownerCountry && b.serverCountry)) return 1
-
-  //with owner country
-  if (a.ownerCountry && !b.ownerCountry) return -1
-  if (!a.ownerCountry && b.ownerCountry) return 1
-
-  //with server country
-  if (a.serverCountry && !b.serverCountry) return -1
-  if (!a.serverCountry && b.serverCountry) return 1
-
-  //by votes
-  if (a.amendments && !b.amendments) return -1
-  if (!a.amendments && b.amendments) return 1
-
-  //by domain
-  if (a.domain && b.domain) {
-    return (a.domain.toLowerCase() > b.domain.toLowerCase()) ? 1 : -1
-  }
-
-  //by legacy domain
-  if (a.domainLegacy && b.domainLegacy) {
-    return (a.domainLegacy.toLowerCase() > b.domainLegacy.toLowerCase()) ? 1 : -1
-  }
-
-  //by lastSeenTime
-  if (a.lastSeenTime > (b.lastSeenTime + 10)) return -1
-  if ((a.lastSeenTime + 10) < b.lastSeenTime) return 1
-
-  //by serverVersion
-  if (a.serverVersion > b.serverVersion) return -1
-  if (a.serverVersion < b.serverVersion) return 1
-
-  //by lasSeenTime, serverVersion, publicKey
-  return a.publicKey > b.publicKey ? 1 : -1
-}
-
 const fixCountry = country => {
   //accept UK as a country code for GB
   return country?.toUpperCase() === "UK" ? "GB" : country
@@ -117,6 +41,89 @@ export default function Validators({ amendment }) {
   const { t, i18n } = useTranslation()
   const windowWidth = useWidth()
   const { theme } = useTheme()
+
+  const compare = (a, b) => {
+    if (!amendment) {
+      //in the negative UNL
+      if (a.nUnl && !b.nUnl) return -1
+      if (!a.nUnl && b.nUnl) return 1
+    }
+
+    //in the UNL
+    if (a.unl && !b.unl) return -1
+    if (!a.unl && b.unl) return 1
+
+    if (amendment) {
+      if (a.amendments?.includes(amendment) && !b.amendments?.includes(amendment)) return -1
+      if (!a.amendments?.includes(amendment) && b.amendments?.includes(amendment)) return 1
+    }
+
+    //with verified Domains
+    if (a.domainVerified && !b.domainVerified) return -1
+    if (!a.domainVerified && b.domainVerified) return 1
+
+    //with Domains
+    if (a.domain && !b.domain) return -1
+    if (!a.domain && b.domain) return 1
+
+    //with verified Legacy domains
+    if (a.domainLegacyVerified && !b.domainLegacyVerified) return -1
+    if (!a.domainLegacyVerified && b.domainLegacyVerified) return 1
+
+    //with Legacy domains
+    if (a.domainLegacy && !b.domainLegacy) return -1
+    if (!a.domainLegacy && b.domainLegacy) return 1
+
+    //with principals
+    if (a.principals && !b.principals) return -1
+    if (!a.principals && b.principals) return 1
+
+    //with principal names
+    if (a.principals?.[0].name && !b.principals?.[0].name) return -1
+    if (!a.principals?.[0].name && b.principals?.[0].name) return 1
+
+    //by principal name
+    if (a.principals?.[0]?.name && b.principals?.[0]?.name) {
+      return (a.principals[0].name.toLowerCase() > b.principals[0].name.toLowerCase()) ? 1 : -1
+    }
+
+    //with both countries
+    if ((a.ownerCountry && a.serverCountry) && (!b.ownerCountry || !b.serverCountry)) return -1
+    if ((!a.ownerCountry || !a.serverCountry) && (b.ownerCountry && b.serverCountry)) return 1
+
+    //with owner country
+    if (a.ownerCountry && !b.ownerCountry) return -1
+    if (!a.ownerCountry && b.ownerCountry) return 1
+
+    //with server country
+    if (a.serverCountry && !b.serverCountry) return -1
+    if (!a.serverCountry && b.serverCountry) return 1
+
+    //by votes
+    if (a.amendments && !b.amendments) return -1
+    if (!a.amendments && b.amendments) return 1
+
+    //by domain
+    if (a.domain && b.domain) {
+      return (a.domain.toLowerCase() > b.domain.toLowerCase()) ? 1 : -1
+    }
+
+    //by legacy domain
+    if (a.domainLegacy && b.domainLegacy) {
+      return (a.domainLegacy.toLowerCase() > b.domainLegacy.toLowerCase()) ? 1 : -1
+    }
+
+    //by lastSeenTime
+    if (a.lastSeenTime > (b.lastSeenTime + 10)) return -1
+    if ((a.lastSeenTime + 10) < b.lastSeenTime) return 1
+
+    //by serverVersion
+    if (a.serverVersion > b.serverVersion) return -1
+    if (a.serverVersion < b.serverVersion) return 1
+
+    //by lasSeenTime, serverVersion, publicKey
+    return a.publicKey > b.publicKey ? 1 : -1
+  }
 
   const twitterLink = twitter => {
     if (!twitter) return ""
