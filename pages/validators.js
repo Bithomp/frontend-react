@@ -35,6 +35,11 @@ const compare = (a, b) => {
   return a.domain > b.domain ? 1 : -1;
 }
 
+const fixCountry = country => {
+  //accept UK as a country code for GB
+  return country?.toUpperCase() === "UK" ? "GB" : country
+}
+
 export default function Validators({ amendment }) {
   const [validators, setValidators] = useState(null)
   const [loading, setLoading] = useState(false)
@@ -75,7 +80,7 @@ export default function Validators({ amendment }) {
   const displayFlag = (country, typeName, em = 1.5) => {
     if (!country) return ""
     if (country.length === 2) {
-      if (country.toLowerCase() === "uk") country = "gb"
+      country = fixCountry(country)
       return <span className='tooltip'>
         <ReactCountryFlag
           countryCode={country}
@@ -332,10 +337,10 @@ export default function Validators({ amendment }) {
                           <p>
                             {t("table.server-country", { ns: 'validators' })}:
                             {" "}
-                            {countries.getName(v.serverCountry, lang, { select: "official" })}
+                            {countries.getName(fixCountry(v.serverCountry), lang, { select: "official" })}
                             {" "}
                             <ReactCountryFlag
-                              countryCode={v.serverCountry}
+                              countryCode={fixCountry(v.serverCountry)}
                               style={{
                                 fontSize: '1.5em',
                                 lineHeight: '1.5em',
