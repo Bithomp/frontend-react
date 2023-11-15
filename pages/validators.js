@@ -264,15 +264,16 @@ export default function Validators({ amendment }) {
                     <tr key={i}>
                       <td style={{ padding: "5px" }}>{i + 1}</td>
                       <td>
-                        {v.principals?.[0]?.name &&
-                          <>
-                            <br />
-                            {displayFlag(v.ownerCountry, t("table.owner-country", { ns: 'validators' }))}
-                            {v.principals?.[0]?.name && <b> {v.principals[0].name}</b>}
-                            {twitterLink(v.principals?.[0]?.twitter)}
-                            <br />
-                          </>
-                        }
+                        <p>
+                          {displayFlag(v.ownerCountry, t("table.owner-country", { ns: 'validators' }))}
+                          {v.principals?.map((p, i) => (
+                            <span key={i}>
+                              {p.name && <b> {p.name}</b>}
+                              {twitterLink(p.twitter)}
+                              {i !== v.principals.length - 1 ? ", " : <br />}
+                            </span>
+                          ))}
+                        </p>
 
                         {v.domain ?
                           <p>
@@ -408,9 +409,14 @@ export default function Validators({ amendment }) {
                         </>}
 
                         {displayFlag(v.ownerCountry, t("table.owner-country", { ns: 'validators' }))}
-                        {v.principals?.[0]?.name && <b> {v.principals[0].name}</b>}
-                        {twitterLink(v.principals?.[0]?.twitter)}
-                        {v.principals?.[0]?.name && <br />}
+
+                        {v.principals?.map((p, i) => (
+                          <span key={i}>
+                            {p.name && <b> {p.name}</b>}
+                            {twitterLink(p.twitter)}
+                            {i !== v.principals.length - 1 ? ", " : <br />}
+                          </span>
+                        ))}
 
                         {v.domain ?
                           <>
