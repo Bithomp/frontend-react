@@ -410,7 +410,7 @@ export default function Validators({ amendment }) {
                         {displayFlag(v.ownerCountry, t("table.owner-country", { ns: 'validators' }))}
                         {v.principals?.[0]?.name && <b> {v.principals[0].name}</b>}
                         {twitterLink(v.principals?.[0]?.twitter)}
-                        {v.ownerCountry && <br />}
+                        {v.principals?.[0]?.name && <br />}
 
                         {v.domain ?
                           <>
