@@ -28,11 +28,63 @@ export const getServerSideProps = async ({ query, locale }) => {
 }
 
 const compare = (a, b) => {
-  // nulls sort after anything else
-  if (!a.domain) {
-    return 1;
+  //in the negative UNL
+  if (a.nUnl && !b.nUnl) return -1
+  if (!a.nUnl && b.nUnl) return 1
+
+  //in the UNL
+  if (a.unl && !b.unl) return -1
+  if (!a.unl && b.unl) return 1
+
+  //with verified Domains
+  if (a.domainVerified && !b.domainVerified) return -1
+  if (!a.domainVerified && b.domainVerified) return 1
+
+  //with Domains
+  if (a.domain && !b.domain) return -1
+  if (!a.domain && b.domain) return 1
+
+  //with verified Legacy domains
+  if (a.domainLegacyVerified && !b.domainLegacyVerified) return -1
+  if (!a.domainLegacyVerified && b.domainLegacyVerified) return 1
+
+  //with Legacy domains
+  if (a.domainLegacy && !b.domainLegacy) return -1
+  if (!a.domainLegacy && b.domainLegacy) return 1
+
+  //with principals
+  if (a.principals && !b.principals) return -1
+  if (!a.principals && b.principals) return 1
+
+  //with principal names
+  if (a.principals?.[0].name && !b.principals?.[0].name) return -1
+  if (!a.principals?.[0].name && b.principals?.[0].name) return 1
+
+  //by principal name
+  if (a.principals?.[0]?.name && b.principals?.[0]?.name) {
+    return (a.principals[0].name.toLowerCase() > b.principals[0].name.toLowerCase()) ? 1 : -1
   }
-  return a.domain > b.domain ? 1 : -1;
+
+  //with both countries
+  if ((a.ownerCountry && a.serverCountry) && (!b.ownerCountry || !b.serverCountry)) return -1
+  if ((!a.ownerCountry || !a.serverCountry) && (b.ownerCountry && b.serverCountry)) return 1
+
+  //with owner country
+  if (a.ownerCountry && !b.ownerCountry) return -1
+  if (!a.ownerCountry && b.ownerCountry) return 1
+
+  //with server country
+  if (a.serverCountry && !b.serverCountry) return -1
+  if (!a.serverCountry && b.serverCountry) return 1
+
+  //by votes
+  if (a.amendments && !b.amendments) return -1
+  if (!a.amendments && b.amendments) return 1
+
+  //by domain
+  if (a.domain && b.domain) {
+    return (a.domain.toLowerCase() > b.domain.toLowerCase()) ? 1 : -1
+  }
 }
 
 const fixCountry = country => {
@@ -117,8 +169,6 @@ export default function Validators({ amendment }) {
       const responseV = await axios('v2/validators')
       const dataV = responseV.data
       if (dataV) {
-        dataV.sort(compare)
-
         for (let i = 0; i < dataV.length; i++) {
           const v = dataV[i]
           const index = dataU.validators.findIndex(x => x.publicKey === v.publicKey)
@@ -131,6 +181,7 @@ export default function Validators({ amendment }) {
             dataU.validators[index] = v
           }
         }
+        dataU.validators.sort(compare)
         setValidators(dataU)
         setLoading(false)
       }
