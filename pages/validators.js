@@ -104,7 +104,6 @@ export default function Validators({ amendment }) {
         setLoading(false) //keep here for fast tab clickers
       }
     })
-    setLoading(false)
     let dataU = response.data
     if (dataU) {
       dataU.validators?.sort(compare)
@@ -133,6 +132,7 @@ export default function Validators({ amendment }) {
           }
         }
         setValidators(dataU)
+        setLoading(false)
       }
     }
   }
@@ -228,13 +228,20 @@ export default function Validators({ amendment }) {
       <h1 className="center">{t("menu.xrpl.validators")}</h1>
       <div className="flex center">
         <div className="grey-box">
-          {validators &&
-            <Trans i18nKey="text0" ns='validators'>
-              The validator list <b>{{ url: validators.url }}</b> has sequence {{ sequence: validators.sequence }} and expiration on {{ expiration: fullDateAndTime(validators.expiration) }}.<br />It includes {{ validatorCount: unlValidatorsCount }} validators which are listed below.
-            </Trans>
+          {!loading ? <>
+            {validators &&
+              <Trans i18nKey="text0" ns='validators'>
+                The validator list <b>{{ url: validators.url }}</b> has sequence {{ sequence: validators.sequence }} and expiration on {{ expiration: fullDateAndTime(validators.expiration) }}.<br />It includes {{ validatorCount: unlValidatorsCount }} validators which are listed below.
+              </Trans>
+            }
+            <br />
+            {validators?.error && <b><br />Validation error: <span className='red'>{validators?.error}</span>.</b>}
+          </>
+            :
+            <>
+              <br />{t("general.loading")}<br />
+            </>
           }
-          <br />
-          {validators?.error && <b><br />Validation error: <span className='red'>{validators?.error}</span>.</b>}
         </div>
       </div>
 
