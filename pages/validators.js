@@ -85,6 +85,17 @@ const compare = (a, b) => {
   if (a.domain && b.domain) {
     return (a.domain.toLowerCase() > b.domain.toLowerCase()) ? 1 : -1
   }
+
+  //by lastSeenTime
+  if (a.lastSeenTime > (b.lastSeenTime + 10)) return -1
+  if ((a.lastSeenTime + 10) < b.lastSeenTime) return 1
+
+  //by serverVersion
+  if (a.serverVersion > b.serverVersion) return -1
+  if (a.serverVersion < b.serverVersion) return 1
+
+  //by lasSeenTime, serverVersion, publicKey
+  return a.publicKey > b.publicKey ? 1 : -1
 }
 
 const fixCountry = country => {
@@ -273,6 +284,15 @@ export default function Validators({ amendment }) {
     marginLeft: "20px"
   }
 
+  moment.relativeTimeThreshold('ss', 5)
+
+  const showTime = time => {
+    if (!time) return "N/A"
+    console.log(Math.floor(Date.now() / 1000) - 10)
+    console.log(time)
+    return <span className={(Math.floor(Date.now() / 1000) - 10) > time ? 'red bold' : ''}>{moment(time * 1000, "unix").fromNow()}</span>
+  }
+
   return <>
     <SEO title={t("menu.xrpl.validators")} />
     <div className="content-text">
@@ -410,7 +430,7 @@ export default function Validators({ amendment }) {
                           {t("table.version")}: {v.serverVersion ? v.serverVersion : "N/A"}
                         </p>
                         <p>
-                          {t("table.last-seen", { ns: 'validators' })}: {v.lastSeenTime ? moment((v.lastSeenTime - 1) * 1000, "unix").fromNow() : "N/A"}
+                          {t("table.last-seen", { ns: 'validators' })}: {showTime(v.lastSeenTime)}
                         </p>
                         {xahauNetwork &&
                           <p>
@@ -540,7 +560,7 @@ export default function Validators({ amendment }) {
                       </td>
                       <td className='left'>{v.serverVersion}</td>
                       <td className='right'>
-                        {v.lastSeenTime ? moment((v.lastSeenTime - 1) * 1000, "unix").fromNow() : "N/A"}
+                        {showTime(v.lastSeenTime)}
                       </td>
                       {xahauNetwork &&
                         <td className='left'><CopyButton text={v.address} /> {addressUsernameOrServiceLink(v, 'address')}</td>
