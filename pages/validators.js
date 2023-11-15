@@ -304,7 +304,7 @@ export default function Validators({ amendment }) {
     if (!time) return "N/A"
     console.log(Math.floor(Date.now() / 1000) - 10)
     console.log(time)
-    return <span className={(Math.floor(Date.now() / 1000) - 10) > time ? 'red bold' : ''}>{moment(time * 1000, "unix").fromNow()}</span>
+    return <span className={(Math.floor(Date.now() / 1000) - 10) > time ? 'red bold' : ''}>{moment((time - 1) * 1000, "unix").fromNow()}</span>
   }
 
   return <>
