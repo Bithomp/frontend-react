@@ -263,9 +263,9 @@ export default function Validators({ amendment }) {
   */
 
   useEffect(() => {
-    checkApi();
+    checkApi()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [developerMode])
 
   const listAmendments = amendments => {
     if (!amendments?.length) return <span className='grey'>{t("table.text.no-votes")}</span>
