@@ -7,7 +7,9 @@
     "last-seen": "Last seen",
     "reserves": "Reserves",
     "text": {
-      "domain-verified-toml": "Verified domain (TOML file)"
+      "domain-verified-toml": "Verified domain (TOML file)",
+      "unl": "In the Unique Node List (UNL)",
+      "negative-unl": "in the Negative UNL"
     }
   },
   "domain-legacy": "Domena (stara verifikacija)",

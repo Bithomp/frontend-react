@@ -152,9 +152,11 @@ export default function Validators({ amendment }) {
             lineHeight: em + 'em',
           }}
         />
-        <span className='tooltiptext right no-brake'>
-          {typeName}: {countries.getName(country, lang, { select: "official" })}
-        </span>
+        {country.toLowerCase() !== "eu" &&
+          <span className='tooltiptext right no-brake'>
+            {typeName}: {countries.getName(country, lang, { select: "official" })}
+          </span>
+        }
       </span>
     }
   }
@@ -244,7 +246,7 @@ export default function Validators({ amendment }) {
     "networkID": 21337,
     "serverVersion": "2023.10.30",
     "manifest": "JAAAAAJxIe1UNqpG5b1tEabtbAp8kabGHJv2ItbCdacS9U6KurBEs3MhAgvHm/oM30yzCgqnPApMCEzu7X4CxXzUKztRi7lL2mwtdkYwRAIgTv24hfijwiRJQeX2HdUvubbG4KDXddLJ2bEXfiiCLM8CIAROHLtXZUKfSQPACuu9KsOBF5KNsf2e5Ql9QpdDjAgcdwtnYXRlaHViLm5ldHASQFJMUsxD52N/1UxU39WZ8PGimEJY0rkSpvXzDsh7L64lv+7wK+h4HpMP2o7nI6qyWFUzAFHR1a9vX/hiqhUqtgE=",
-    "nUnl": true
+    "negative-unl": true
   }
   */
 
@@ -542,7 +544,27 @@ export default function Validators({ amendment }) {
 
                         {listAmendments(v.amendments)}
                       </td>
-                      <td className='center'>{v.unl ? (v.nUnl ? "❌" : "✔️") : ""}</td>
+                      <td className='center'>
+                        {v.unl ?
+                          (v.nUnl ?
+                            <span className='tooltip'>
+                              ❌
+                              <span className='tooltiptext right no-brake'>
+                                {t("table.text.negative-unl", { ns: 'validators' })}
+                              </span>
+                            </span>
+                            :
+                            <span className='tooltip'>
+                              ✔️
+                              <span className='tooltiptext right no-brake'>
+                                {t("table.text.unl", { ns: 'validators' })}
+                              </span>
+                            </span>
+                          )
+                          :
+                          ""
+                        }
+                      </td>
                       {developerMode &&
                         <td className='center'>{v.sequence}</td>
                       }
