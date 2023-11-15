@@ -421,14 +421,17 @@ export default function Validators({ amendment }) {
                         </>}
 
                         {displayFlag(v.ownerCountry, t("table.owner-country", { ns: 'validators' }))}
+                        {v.ownerCountry && " "}
 
                         {v.principals?.map((p, i) => (
                           <span key={i}>
-                            {p.name && <b> {p.name}</b>}
+                            {p.name && <b>{p.name}</b>}
                             {twitterLink(p.twitter)}
                             {i !== v.principals.length - 1 ? ", " : <br />}
                           </span>
                         ))}
+
+                        {!v.principals?.length && <br />}
 
                         {v.domain ?
                           <>
