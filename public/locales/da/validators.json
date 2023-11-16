@@ -1,8 +1,16 @@
 {
   "table": {
+    "validator": "Validator",
+    "server-country": "Server (land)",
+    "owner-country": "Owner country",
     "votes-for": "Votes for",
     "last-seen": "Last seen",
-    "reserves": "Reserves"
+    "reserves": "Reserves",
+    "text": {
+      "domain-verified-toml": "Verified domain (TOML file)",
+      "unl": "In the Unique Node List (UNL)",
+      "negative-unl": "in the Negative UNL"
+    }
   },
   "domain-legacy": "Domæne (gammel bekræftelse)",
   "text0": "Validatorlisten <1>{{url}}</1> har sekvensen {{sequence}} og udløber den {{expiration}}.<br/>Den inkluderer {{validatorCount}} validatorer, som er anført nedenfor."

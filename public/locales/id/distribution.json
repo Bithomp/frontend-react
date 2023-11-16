@@ -1,5 +1,4 @@
 {
-  "header": "Daftar Kekayaan {{ledgerName}}",
   "desc": "Di sini Anda dapat menemukan 100 akun TERATAS berdasarkan saldo {{nativeCurrency}}.",
   "summary": "Terdapat <1>{{activeAccounts}}</1> akun aktif, total yang tersedia: <3>{{totalCoins}}</3>"
 }

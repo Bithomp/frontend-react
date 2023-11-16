@@ -28,7 +28,7 @@
     },
     "xrpl": {
       "governance": "Governance",
-      "rich-list": "Reichstenliste",
+      "distribution": "{{nativeCurrency}} distribution",
       "last-ledger-information": "Aktuellste Ledger Informationen",
       "last-ledger-transactions": "Aktuellste Ledger Transaktionen",
       "verified-domains": "Überprüfte Domains",

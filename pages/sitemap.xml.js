@@ -4,6 +4,8 @@ const pages = [
   { loc: "explorer/", changefreq: "monthly", priority: "1" },
   { loc: "username", changefreq: "monthly", priority: "1" },
   { loc: "nft-explorer", changefreq: "daily", priority: "1" },
+  { loc: "amendments", changefreq: "always", priority: "1" },
+  { loc: "validators", changefreq: "always", priority: "1" },
 
   { loc: "nft-sales", changefreq: "daily", priority: "0.9" },
   { loc: "", changefreq: "hourly", priority: "0.9" },
@@ -22,12 +24,10 @@ const pages = [
   { loc: "ledger", changefreq: "always", priority: "0.7" },
   { loc: "donate", changefreq: "daily", priority: "0.7" },
   { loc: "alerts", changefreq: "daily", priority: "0.7" },
-  { loc: "amendments", changefreq: "hourly", priority: "0.7" },
-  { loc: "validators", changefreq: "daily", priority: "0.7" },
   { loc: "last-ledger-information", changefreq: "always", priority: "0.7" },
   { loc: "paperwallet/", changefreq: "yearly", priority: "0.7" },
   { loc: "domains", changefreq: "always", priority: "0.7" },
-  { loc: "rich-list", changefreq: "always", priority: "0.7" },
+  { loc: "distribution", changefreq: "always", priority: "0.7" },
 
   { loc: "genesis", changefreq: "weekly", priority: "0.6" },
   { loc: "build-unl", changefreq: "yearly", priority: "0.6" },

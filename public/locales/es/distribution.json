@@ -1,5 +1,4 @@
 {
-  "header": "Lista de Ricos {{ledgerName}}",
   "desc": "Aquí puedes encontrar el TOP 100 de cuentas por balance {{nativeCurrency}}.",
   "summary": "Hay <1>{{activeAccounts}}</1> cuentas activas, total disponible: <3>{{totalCoins}}</3>"
 }

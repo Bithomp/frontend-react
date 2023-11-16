@@ -1,8 +1,16 @@
 {
   "table": {
+    "validator": "Validador",
+    "server-country": "Server country",
+    "owner-country": "Owner country",
     "votes-for": "Votes for",
     "last-seen": "Last seen",
-    "reserves": "Reserves"
+    "reserves": "Reserves",
+    "text": {
+      "domain-verified-toml": "Verified domain (TOML file)",
+      "unl": "In the Unique Node List (UNL)",
+      "negative-unl": "in the Negative UNL"
+    }
   },
   "domain-legacy": "Domain (pengesahan lama)",
   "text0": "Senarai pengesah <1>{{url}}</1> mempunyai rantaian {{sequence}} dan tamat tempoh pada {{expiration}}.<br/>Ia merangkumi {{validatorCount}} pengesah yang disenaraikan di bawah."

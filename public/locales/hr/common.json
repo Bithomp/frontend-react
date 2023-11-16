@@ -28,7 +28,7 @@
     },
     "xrpl": {
       "governance": "Uprava",
-      "rich-list": "Rich list",
+      "distribution": "{{nativeCurrency}} distribution",
       "last-ledger-information": "Zadnje ledger informacije",
       "last-ledger-transactions": "Zadnje ledger transakcije",
       "verified-domains": "Verificirane domene",

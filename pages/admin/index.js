@@ -229,7 +229,8 @@ export default function Admin() {
         { baseUrl: '/api/' }
       ).catch(error => {
         if (error && error.message !== "canceled") {
-          setErrorMessage(t("error." + error.message))
+          setErrorMessage(t(error.response.data.error || "error." + error.message))
+          //{"error":"Authentication token is invalid"}
         }
       })
 
