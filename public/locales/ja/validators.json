@@ -5,7 +5,7 @@
     "owner-country": "Owner country",
     "votes-for": "支持",
     "last-seen": "最終更新",
-    "reserves": "準備金"
+    "reserves": "準備金",
     "text": {
       "domain-verified-toml": "Verified domain (TOML file)",
       "unl": "In the Unique Node List (UNL)",

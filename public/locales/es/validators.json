@@ -5,7 +5,7 @@
     "owner-country": "Owner country",
     "votes-for": "Votos para",
     "last-seen": "Última vez visto",
-    "reserves": "Reservas"
+    "reserves": "Reservas",
     "text": {
       "domain-verified-toml": "Verified domain (TOML file)",
       "unl": "In the Unique Node List (UNL)",
