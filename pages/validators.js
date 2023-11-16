@@ -11,7 +11,7 @@ import SEO from '../components/SEO'
 import CheckBox from '../components/UI/CheckBox'
 
 import { addressUsernameOrServiceLink, amountFormat, fullDateAndTime, shortHash } from '../utils/format'
-import { useWidth, xahauNetwork } from '../utils'
+import { devNet, useWidth, xahauNetwork } from '../utils'
 
 import CopyButton from '../components/UI/CopyButton'
 
@@ -38,6 +38,7 @@ export default function Validators({ amendment }) {
   const [errorMessage, setErrorMessage] = useState(null)
   const [unlValidatorsCount, setUnlValidatorsCount] = useState(0)
   const [developerMode, setDeveloperMode] = useState(false)
+  const [showServer, setShowServer] = useState(true)
   const { t, i18n } = useTranslation()
   const windowWidth = useWidth()
   const { theme } = useTheme()
@@ -52,6 +53,10 @@ export default function Validators({ amendment }) {
     //in the UNL
     if (a.unl && !b.unl) return -1
     if (!a.unl && b.unl) return 1
+
+    //alive
+    if (a.lastSeenTime && !b.lastSeenTime) return -1
+    if (!a.lastSeenTime && b.lastSeenTime) return 1
 
     if (amendment) {
       if (a.amendments?.includes(amendment) && !b.amendments?.includes(amendment)) return -1
@@ -193,9 +198,13 @@ export default function Validators({ amendment }) {
 
       const responseV = await axios('v2/validators')
       const dataV = responseV.data
+      let foundServerCountry = false
       if (dataV) {
         for (let i = 0; i < dataV.length; i++) {
           const v = dataV[i]
+          if (v.serverCountry) {
+            foundServerCountry = true
+          }
           const index = dataU.validators.findIndex(x => x.publicKey === v.publicKey)
           if (index === -1) {
             dataU.validators.push(v)
@@ -207,6 +216,7 @@ export default function Validators({ amendment }) {
           }
         }
         dataU.validators.sort(compare)
+        setShowServer(foundServerCountry)
         setValidators(dataU)
         setLoading(false)
       }
@@ -298,13 +308,11 @@ export default function Validators({ amendment }) {
     marginLeft: "20px"
   }
 
-  moment.relativeTimeThreshold('ss', 5)
+  moment.relativeTimeThreshold('ss', devNet ? 36 : 6)
 
   const showTime = time => {
     if (!time) return "N/A"
-    console.log(Math.floor(Date.now() / 1000) - 10)
-    console.log(time)
-    return <span className={(Math.floor(Date.now() / 1000) - 10) > time ? 'red bold' : ''}>{moment((time - 1) * 1000, "unix").fromNow()}</span>
+    return <span className={(Math.floor(Date.now() / 1000) - (devNet ? 40 : 10)) > time ? 'red bold' : ''}>{moment((time - 1) * 1000, "unix").fromNow()}</span>
   }
 
   return <>
@@ -473,10 +481,12 @@ export default function Validators({ amendment }) {
                 <th className='center'>{t("table.sequence")}</th>
               }
               <th className='right'>{t("table.reserves", { ns: 'validators' })}</th>
-              <th className='center'>Server</th>
+              {showServer &&
+                <th className='center'>Server</th>
+              }
               <th className='left'>{t("table.version")}</th>
               <th className='right'>{t("table.last-seen", { ns: 'validators' })}</th>
-              {xahauNetwork &&
+              {(xahauNetwork || developerMode) &&
                 <th>{t("table.address")}</th>
               }
             </tr>
@@ -589,14 +599,16 @@ export default function Validators({ amendment }) {
                           ""
                         }
                       </td>
-                      <td className='center'>
-                        {displayFlag(v.serverCountry, t("table.server-country", { ns: 'validators' }))}
-                      </td>
+                      {showServer &&
+                        <td className='center'>
+                          {displayFlag(v.serverCountry, t("table.server-country", { ns: 'validators' }))}
+                        </td>
+                      }
                       <td className='left'>{v.serverVersion}</td>
                       <td className='right'>
                         {showTime(v.lastSeenTime)}
                       </td>
-                      {xahauNetwork &&
+                      {(xahauNetwork || developerMode) &&
                         <td className='left'><CopyButton text={v.address} /> {addressUsernameOrServiceLink(v, 'address')}</td>
                       }
                     </tr>
