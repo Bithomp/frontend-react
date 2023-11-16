@@ -28,7 +28,7 @@
     },
     "xrpl": {
       "governance": "Governance",
-      "distribution": "{{nativeCurrency}} distribution",
+      "distribution": "{{nativeCurrency}} Verteilung",
       "last-ledger-information": "Aktuellste Ledger Informationen",
       "last-ledger-transactions": "Aktuellste Ledger Transaktionen",
       "verified-domains": "Überprüfte Domains",
@@ -39,10 +39,10 @@
     },
     "developers": {
       "developers": "Entwickler",
-      "account-generation": "Kontoerstellung",
+      "account-generation": "Wallet erstellen",
       "faucet": "Wasserhahn",
       "api": "API Dokumentation",
-      "api-key-request": "API key"
+      "api-key-request": "API Key"
     },
     "legal": "Rechtliches",
     "disclaimer": "Haftungsausschluss",
@@ -63,8 +63,8 @@
       "90d": "90 Tage"
     },
     "target-table-select": {
-      "01": "Main table",
-      "02": "My table"
+      "01": "Haupttisch",
+      "02": "Mein Tisch"
     }
   },
   "signin": {
@@ -78,7 +78,7 @@
       "enter-amount": "Betrag eingeben"
     },
     "expiration": "Ablauf",
-    "target-table": "Target table",
+    "target-table": "Zieltisch",
     "xumm": {
       "open-app": "Öffnen Sie die Xumm App auf Ihrem Telefon.",
       "change-settings": "Gehen Sie in die Einstellungen und wählen Sie einen Testnetz Knoten.",
@@ -101,7 +101,7 @@
     "confirm": {
       "set-domain": "Eine Domain definieren",
       "nft-accept-sell-offer-header": "NFT Kauf",
-      "nft-accept-buy-offer-header": "Selling NFT",
+      "nft-accept-buy-offer-header": "NFT verkaufen",
       "nft-create-sell-offer-header": "Liste zum Verkauf",
       "nft-create-buy-offer-header": "Kaufangebot erstellen",
       "nft-accept-offer": "Ich anerkenne, dass Bithomp mir einen Zugriff auf einen dezentralen Marktplatz gewährt und dabei die Echtheit und Legitimität keiner NFTs garantiert werden können. Ich bestätige, dass ich die <1>AGB</1> gelesen habe und ich stimme allen Bedingungen zum Kauf, Verkauf oder Nutzung von NFTs auf Bithomp zu.",
@@ -209,11 +209,11 @@
     "genesis-index": "Genesis Index"
   },
   "developer": {
-    "header": "Bithomp API key Anfrage",
+    "header": "Bithomp API Key Anfrage",
     "email": "Ihre E-Mail Adresse:",
     "url": "Ihre Webseite/App URL:",
     "description": "Beschreibung Ihres Projekts und Details zur API Verwendung:",
-    "success": "Thank you. The API token was sent to your e-mail.",
+    "success": "Besten Dank. Der API Token wurde an Ihre E-Mail Adresse geschickt.",
     "error": {
       "url-empty": "Bitte geben Sie Ihre Webseite/App URL ein.",
       "url-invalid": "Bitte geben Sie eine gültige URL ein.",
@@ -253,7 +253,7 @@
       "accept-transfer": "NFT Transfer akzeptieren",
       "buy-for-amount-on": "Für {{amount}} auf {{service}} kaufen",
       "buy-for-amount": "Kaufen für {{amount}}",
-      "sell-for-amount": "Sell for {{amount}}",
+      "sell-for-amount": "Verkaufen füror {{amount}}",
       "make-offer": "Angebot machen",
       "list-for-sale": "Zum Verkauf anbieten",
       "burn": "NFT vernichten"
@@ -273,10 +273,10 @@
   },
   "form": {
     "error": {
-      "domain-empty": "Please enter web domain.",
-      "domain-invalid": "Please enter a valid web domain.",
-      "description-empty": "Please enter a description.",
-      "description-short": "Description is too short.",
+      "domain-empty": "Bitte geben Sie die Domain ein.",
+      "domain-invalid": "Bitte geben Sie eine gültige Domain ein.",
+      "description-empty": "Bitte geben Sie eine Beschreibung ein",
+      "description-short": "Die Beschreibung ist zu kurz.",
       "email-empty": "Bitte geben Sie Ihre E-Mail Adresse ein.",
       "email-invalid": "Bitte geben Sie eine gültige E-Mail Adresse einn.",
       "password-empty": "Bitte geben Sie Ihr Passwort ein.",
@@ -286,18 +286,18 @@
   "error": {
     "Network Error": "Es scheint keine Internetverbindung zu bestehen ;(",
     "Request failed with status code 429": "Sie senden uns zu viele Anfragen. Versuchen Sie es später erneut!",
-    "Request failed with status code 404": "Such API call is not allowed on that network",
-    "Request failed with status code 403": "It seems you're logged out, please log in again"
+    "Request failed with status code 404": "Dieser API Aufruf ist auf diesem Netzwerk nicht erlaubt",
+    "Request failed with status code 403": "Es sieht so aus, als wären Sie abgemeldet. Bitte loggen Sie sich erneut ein"
   },
   "errors": {
     "token": {
-      "required": "Please login to continue"
+      "required": "Bitte einloggen um fortzufahren"
     },
     "partner": {
-      "not_found": "There are no projects"
+      "not_found": "Keine Projekte vorhanden"
     },
     "access_token": {
-      "not_found": "There are no API keys."
+      "not_found": "Keine API Keys vorhanden."
     }
   },
   "error-api": {
@@ -313,7 +313,7 @@
     "currencyIssuer is invalid": "Ungültiger Adresse des Währungsemittenten",
     "Token information is not found": "Wir konnten für diese ID keine Informationen finden",
     "No nfts information is found": "Entschuldigung, ein Fehler ist aufgetreten. Bitte suchen Sie nach etwas anderem.",
-    "Address is not valid": "Invalid address"
+    "Address is not valid": "Ungültige Adresse"
   },
   "units": {
     "seconds-short": "s",
@@ -475,7 +475,7 @@
   "explorer": {
     "header": {
       "main": "{{explorerName}} Explorer",
-      "account": "Account information",
+      "account": "Kontoinformation",
       "nft": "NFT",
       "nfts": "NFTs",
       "nft-offer": "NFT Angebot",
@@ -492,7 +492,7 @@
     "different-network": "Diese Transaktion ist aus dem Netzwerk <1>{{networkNameOrId}}</1>",
     "check-tx-on-different-explorer": "Überprüfen Sie Details <1><0>hier</0></1>.",
     "not-supported-network": "was nicht unterstützt wird.",
-    "no-slashes": "The search should not contain slashes."
+    "no-slashes": "Die Suche sollte keine Schrägstriche enthalten."
   },
   "nft-explorer": {
     "header": "NFT Explorer"

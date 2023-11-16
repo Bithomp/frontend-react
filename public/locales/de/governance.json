@@ -1,0 +1,37 @@
+{
+  "header": "{{ledgerName}} Governance Game",
+  "summary": "Es gibt <1>{{ countTables }}</1> Sitze.",
+  "reward-rate": "Vergütungssatz: <1>{{ rewardRate }}</1>.",
+  "reward-delay": "Verzögerung Vergütung: <1>{{ rewardDelay }}</1> ({{ rewardDelaySeconds }} Sekunden).",
+  "button": {
+    "show-main-table": "Haupttisch anzeigen",
+    "vote-seat": "Für einen Sitz abstimmen",
+    "vote-reward-rate": "Für einen Vergütungssatz abstimmen",
+    "vote-reward-delay": "Für Verzögerung der Vergütung abstimmen",
+    "vote-hook": "Für einen Hook abstimmen"
+  },
+  "table": {
+    "cast-first-vote": "Die erste Stimme abgeben",
+    "members": "Teilnehmer",
+    "seat": "Sitz",
+    "layer": "Layer",
+    "hooks": "Hooks",
+    "place": "Platz",
+    "hook": "Hook",
+    "target": "Ziel",
+    "votes": "Stimmen",
+    "voter": "Wähler",
+    "rate": "Satz",
+    "value": "Wert",
+    "delay": "Verzögerung",
+    "in-seconds": "In Sekunden",
+    "seat-votes": "Sitzwahl",
+    "seat-votes-count": "Sitzwahl Stimmenzahl",
+    "reward-rate-votes": "Vergütungssatz Abstimmungen",
+    "reward-rate-votes-count": "Vergütungssatz Stimmenzahl",
+    "reward-delay-votes": "Verzögerung Vergütung Abstimmungen",
+    "reward-delay-votes-count": "Verzögerung Vergütung Stimmenzahl",
+    "hook-votes": "Hook Abstimmungen",
+    "hook-votes-count": "Hook Stimmenzahl"
+  }
+}
