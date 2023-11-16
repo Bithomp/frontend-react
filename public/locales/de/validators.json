@@ -1,15 +1,15 @@
 {
   "table": {
-    "validator": "Validador",
-    "server-country": "Server country",
-    "owner-country": "Owner country",
-    "votes-for": "Votes for",
-    "last-seen": "Last seen",
-    "reserves": "Reserves",
+    "validator": "Validator",
+    "server-country": "Land Server",
+    "owner-country": "Land Inhaber",
+    "votes-for": "Stimmen für",
+    "last-seen": "Zuletzt gesehen",
+    "reserves": "Rückstellungen",
     "text": {
-      "domain-verified-toml": "Verified domain (TOML file)",
-      "unl": "In the Unique Node List (UNL)",
-      "negative-unl": "in the Negative UNL"
+      "domain-verified-toml": "Verifizierte Domain (TOML Datei)",
+      "unl": "In der Unique Node List (UNL)",
+      "negative-unl": "in der negativen UNL"
     }
   },
   "domain-legacy": "Domain (alte Verifizierung)",

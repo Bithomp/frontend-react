@@ -1,9 +1,9 @@
 {
   "soon": "Änderung mit einer Mehrheit",
-  "new": "New amendments",
-  "not-available": "Not available amendments",
-  "obsolete": "Obsolete amendments",
+  "new": "Neue Änderungen",
+  "not-available": "Nicht verfügbare Änderungen",
+  "obsolete": "Obsolete Änderungen",
   "enabled": "Aktivierte Änderungen",
   "majority": "Mehrheit",
-  "eta": "Geschäftze Aktivierung"
+  "eta": "Geschätzte Aktivierung"
 }

@@ -1,0 +1,5 @@
+{
+  "header": "UNL Report",
+  "desc": "Hier können Sie den UNL Report für den Ledger <1>#{{ledgerIndex}}</1> sehen, ledger entry: 61E32E...6F28DC.",
+  "summary": "Es sind <1>{{activeValidators}}</1> aktive Validatoren vorhanden."
+}
