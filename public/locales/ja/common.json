@@ -71,8 +71,8 @@
     "signin": "サインイン",
     "signout": "サインアウト",
     "choose-app": "サインインするアプリを選択",
-    "login-with": "Login with {{appName}}",
-    "sign-with": "Sign with {{appName}}",
+    "login-with": "{{appName}}でログイン",
+    "sign-with": "{{appName}}で署名",
     "amount": {
       "set-price": "価格を設定",
       "enter-amount": "金額を入力"
