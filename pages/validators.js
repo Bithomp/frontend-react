@@ -1,5 +1,5 @@
 import { useTranslation, Trans } from 'next-i18next'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, memo } from 'react'
 import axios from 'axios'
 import moment from "moment"
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
@@ -31,6 +31,15 @@ const fixCountry = country => {
   //accept UK as a country code for GB
   return country?.toUpperCase() === "UK" ? "GB" : country
 }
+
+moment.relativeTimeThreshold('ss', devNet ? 36 : 6)
+
+const showTime = ({ time }) => {
+  if (!time) return "N/A"
+  return <span className={(Math.floor(Date.now() / 1000) - (devNet ? 40 : 10)) > time ? 'red bold' : ''}>{moment((time - 1) * 1000, "unix").fromNow()}</span>
+}
+
+const ShowTimeMemo = memo(showTime)
 
 export default function Validators({ amendment }) {
   const [validators, setValidators] = useState(null)
@@ -275,7 +284,7 @@ export default function Validators({ amendment }) {
   useEffect(() => {
     checkApi()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [developerMode])
+  }, [])
 
   const listAmendments = amendments => {
     if (!amendments?.length) return <span className='grey'>{t("table.text.no-votes")}</span>
@@ -306,13 +315,6 @@ export default function Validators({ amendment }) {
     marginBottom: "20px",
     marginRight: "20px",
     marginLeft: "20px"
-  }
-
-  moment.relativeTimeThreshold('ss', devNet ? 36 : 6)
-
-  const showTime = time => {
-    if (!time) return "N/A"
-    return <span className={(Math.floor(Date.now() / 1000) - (devNet ? 40 : 10)) > time ? 'red bold' : ''}>{moment((time - 1) * 1000, "unix").fromNow()}</span>
   }
 
   return <>
@@ -375,7 +377,7 @@ export default function Validators({ amendment }) {
                             <span key={i}>
                               {p.name && <b> {p.name}</b>}
                               {twitterLink(p.twitter || p.x)}
-                              {i !== v.principals.length - 1 ? ", " : <br />}
+                              <br />
                             </span>
                           ))}
                         </p>
@@ -452,7 +454,7 @@ export default function Validators({ amendment }) {
                           {t("table.version")}: {v.serverVersion ? v.serverVersion : "N/A"}
                         </p>
                         <p>
-                          {t("table.last-seen", { ns: 'validators' })}: {showTime(v.lastSeenTime)}
+                          {t("table.last-seen", { ns: 'validators' })}: <ShowTimeMemo time={v.lastSeenTime} />
                         </p>
                         {xahauNetwork &&
                           <p>
@@ -606,7 +608,7 @@ export default function Validators({ amendment }) {
                       }
                       <td className='left'>{v.serverVersion}</td>
                       <td className='right'>
-                        {showTime(v.lastSeenTime)}
+                        <ShowTimeMemo time={v.lastSeenTime} />
                       </td>
                       {(xahauNetwork || developerMode) &&
                         <td className='left'><CopyButton text={v.address} /> {addressUsernameOrServiceLink(v, 'address')}</td>
