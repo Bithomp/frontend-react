@@ -2,6 +2,9 @@
   "table": {
     "validator": "Валидатор",
     "server-country": "Страна сервера",
+    "server-location": "Местоположение сервера",
+    "cloud-private": "Частный сервер / облако",
+    "network-asn": "Сеть ASN",
     "owner-country": "Страна владельца",
     "votes-for": "Голосует за",
     "last-seen": "Видили",
@@ -9,7 +12,7 @@
     "text": {
       "domain-verified-toml": "Верифицированный домен (TOML файл)",
       "unl": "в UNL (Unique Node List)",
-      "nUnl": "в негативном UNL"
+      "negative-unl": "в негативном UNL"
     }
   },
   "domain-legacy": "Домен (старая верификация)",

@@ -2,6 +2,9 @@
   "table": {
     "validator": "Validador",
     "server-country": "Server country",
+    "server-location": "Server location",
+    "cloud-private": "Cloud/private",
+    "network-asn": "Network ASN",
     "owner-country": "Owner country",
     "votes-for": "Votos para",
     "last-seen": "Última vez visto",

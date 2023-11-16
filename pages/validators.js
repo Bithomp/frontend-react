@@ -450,6 +450,24 @@ export default function Validators({ amendment }) {
                             />
                           </p>
                         }
+
+                        {v.serverLocation && <p>
+                          {t("table.server-location", { ns: 'validators' })}: {v.serverLocation}
+                        </p>
+                        }
+
+                        {v.serverCloud?.toString() && <p>
+                          {t("table.cloud-private", { ns: 'validators' })}:
+                          {v.serverCloud === true && <span style={{ fontSize: "1.5em" }}> ☁️</span>}
+                          {v.serverCloud === false && <span style={{ fontSize: "1.5em" }}> 🏠</span>}
+                        </p>
+                        }
+
+                        {v.serverLocation && <p>
+                          {t("table.network-asn", { ns: 'validators' })}: {v.networkASN}
+                        </p>
+                        }
+
                         <p>
                           {t("table.version")}: {v.serverVersion ? v.serverVersion : "N/A"}
                         </p>
@@ -488,7 +506,7 @@ export default function Validators({ amendment }) {
               }
               <th className='left'>{t("table.version")}</th>
               <th className='right'>{t("table.last-seen", { ns: 'validators' })}</th>
-              {(xahauNetwork || developerMode) &&
+              {(xahauNetwork || (developerMode && windowWidth > 1560)) &&
                 <th>{t("table.address")}</th>
               }
             </tr>
@@ -602,15 +620,26 @@ export default function Validators({ amendment }) {
                         }
                       </td>
                       {showServer &&
-                        <td className='center'>
+                        <td className={developerMode ? 'right' : 'center'}>
+                          {developerMode && <>
+                            {v.serverLocation && <>{v.serverLocation} </>}
+                          </>
+                          }
                           {displayFlag(v.serverCountry, t("table.server-country", { ns: 'validators' }))}
+                          {developerMode && <>
+                            <br />
+                            {v.serverCloud === true && <span style={{ fontSize: "1.5em" }}>☁️</span>}
+                            {v.serverCloud === false && <span style={{ fontSize: "1.5em" }}>🏠</span>}
+                            {v.networkASN && <> {v.networkASN}</>}
+                          </>
+                          }
                         </td>
                       }
                       <td className='left'>{v.serverVersion}</td>
                       <td className='right'>
                         <ShowTimeMemo time={v.lastSeenTime} />
                       </td>
-                      {(xahauNetwork || developerMode) &&
+                      {(xahauNetwork || (developerMode && windowWidth > 1560)) &&
                         <td className='left'><CopyButton text={v.address} /> {addressUsernameOrServiceLink(v, 'address')}</td>
                       }
                     </tr>
