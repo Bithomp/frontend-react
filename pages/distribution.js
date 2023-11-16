@@ -9,14 +9,14 @@ export const getServerSideProps = async ({ query, locale }) => {
   return {
     props: {
       period: period || "week",
-      ...(await serverSideTranslations(locale, ['common', 'rich-list'])),
+      ...(await serverSideTranslations(locale, ['common', 'distribution'])),
     },
   }
 }
 
 import SEO from '../components/SEO'
 
-import { useWidth, ledgerName, nativeCurrency } from '../utils'
+import { useWidth, nativeCurrency } from '../utils'
 import {
   trWithAccount,
   amountFormat,
@@ -24,8 +24,8 @@ import {
   niceNumber
 } from '../utils/format'
 
-export default function RichList() {
-  const { t } = useTranslation(['common', 'rich-list'])
+export default function Distribution() {
+  const { t } = useTranslation(['common', 'distribution'])
   const router = useRouter()
 
   const { isReady } = router
@@ -105,18 +105,18 @@ export default function RichList() {
   }, [isReady])
 
   return <>
-    <SEO title={t("menu.xrpl.rich-list")} />
+    <SEO title={t("menu.xrpl.distribution", { nativeCurrency })} />
     <div className="content-text">
-      <h1 className="center">{t("header", { ns: "rich-list", ledgerName })}</h1>
+      <h1 className="center">{t("menu.xrpl.distribution", { nativeCurrency })}</h1>
       <div className='flex'>
         <div className="grey-box">
-          {t("desc", { ns: 'rich-list', nativeCurrency })}
+          {t("desc", { ns: 'distribution', nativeCurrency })}
         </div>
         <div className="grey-box">
           {loading ?
             t("general.loading")
             :
-            <Trans i18nKey="summary" ns="rich-list">
+            <Trans i18nKey="summary" ns="distribution">
               There are <b>{{ activeAccounts: niceNumber(rawData?.summary?.activeAccounts) }}</b> active accounts, total available: <b>{{ totalCoins: amountFormat(rawData?.summary?.totalCoins) }}</b>
             </Trans>
           }
@@ -199,7 +199,7 @@ export default function RichList() {
                         </p>
                         {r.service &&
                           <p>
-                            {t("table.service", { ns: "rich-list" })}: {r.service}
+                            {t("table.service", { ns: "distribution" })}: {r.service}
                           </p>
                         }
                         <p>

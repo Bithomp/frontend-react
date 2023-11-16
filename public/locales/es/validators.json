@@ -1,8 +1,16 @@
 {
   "table": {
+    "validator": "Validador",
+    "server-country": "Server country",
+    "owner-country": "Owner country",
     "votes-for": "Votos para",
     "last-seen": "Última vez visto",
     "reserves": "Reservas"
+    "text": {
+      "domain-verified-toml": "Verified domain (TOML file)",
+      "unl": "In the Unique Node List (UNL)",
+      "negative-unl": "in the Negative UNL"
+    }
   },
   "domain-legacy": "Dominio (antigua verificación)",
   "text0": "La lista de validadores <1>{{url}}</1> tiene la secuencia {{sequence}} y fecha de caducidad el {{expiration}}.<br/>Incluye {{validatorCount}} los validadores que hay listados debajo."

@@ -3523,6 +3523,11 @@ react-apexcharts@^1.4.0:
   dependencies:
     prop-types "^15.5.7"
 
+react-country-flag@^3.1.0:
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/react-country-flag/-/react-country-flag-3.1.0.tgz#f0c4c332934a77d3e894ba4800634f7a887e53d4"
+  integrity sha512-JWQFw1efdv9sTC+TGQvTKXQg1NKbDU2mBiAiRWcKM9F1sK+/zjhP2yGmm8YDddWyZdXVkR8Md47rPMJmo4YO5g==
+
 react-csv@^2.2.2:
   version "2.2.2"
   resolved "https://registry.yarnpkg.com/react-csv/-/react-csv-2.2.2.tgz#5bbf0d72a846412221a14880f294da9d6def9bfb"

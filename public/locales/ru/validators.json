@@ -1,8 +1,16 @@
 {
   "table": {
+    "validator": "Валидатор",
+    "server-country": "Страна сервера",
+    "owner-country": "Страна владельца",
     "votes-for": "Голосует за",
     "last-seen": "Видили",
-    "reserves": "Резервы"
+    "reserves": "Резервы",
+    "text": {
+      "domain-verified-toml": "Верифицированный домен (TOML файл)",
+      "unl": "в UNL (Unique Node List)",
+      "nUnl": "в негативном UNL"
+    }
   },
   "domain-legacy": "Домен (старая верификация)",
   "text0": "Список валидаторов <1>{{url}}</1> с порядковым номером {{sequence}} истекает {{expiration}}.<br/>В данном списке {{validatorCount}} валидаторов, которые перечислены ниже."

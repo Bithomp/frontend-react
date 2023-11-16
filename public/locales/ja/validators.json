@@ -1,8 +1,16 @@
 {
   "table": {
-    "votes-for": "Votes for",
-    "last-seen": "Last seen",
-    "reserves": "Reserves"
+    "validator": "Validador",
+    "server-country": "Server country",
+    "owner-country": "Owner country",
+    "votes-for": "支持",
+    "last-seen": "最終更新",
+    "reserves": "準備金"
+    "text": {
+      "domain-verified-toml": "Verified domain (TOML file)",
+      "unl": "In the Unique Node List (UNL)",
+      "negative-unl": "in the Negative UNL"
+    }
   },
   "domain-legacy": "ドメイン (古い検証方法)",
   "text0": "バリデータリスト <1>{{url}}</1> はシーケンス {{sequence}} と、有効期限 {{expiration}} が設定されています。<br/>次の{{validatorCount}}バリデータを含んでいます。"

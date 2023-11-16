@@ -19,6 +19,11 @@ module.exports = {
         source: '/go/:path*',
         destination: 'https://bithomp.com/api/go/:path*',
         permanent: true
+      },
+      {
+        source: '/rich-list',
+        destination: '/distribution',
+        permanent: true
       }
     ]
   },

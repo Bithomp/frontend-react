@@ -3,14 +3,19 @@ import { useState, useEffect } from 'react'
 import axios from 'axios'
 import moment from "moment"
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
+import ReactCountryFlag from "react-country-flag"
+import countries from "i18n-iso-countries"
+import { useTheme } from '../components/Layout/ThemeContext'
 
 import SEO from '../components/SEO'
 import CheckBox from '../components/UI/CheckBox'
 
 import { addressUsernameOrServiceLink, amountFormat, fullDateAndTime, shortHash } from '../utils/format'
-import { useWidth, xahauNetwork } from '../utils'
+import { devNet, useWidth, xahauNetwork } from '../utils'
 
 import CopyButton from '../components/UI/CopyButton'
+
+import VerifiedIcon from "../public/images/verified.svg"
 
 export const getServerSideProps = async ({ query, locale }) => {
   const { amendment } = query
@@ -22,12 +27,9 @@ export const getServerSideProps = async ({ query, locale }) => {
   }
 }
 
-const compare = (a, b) => {
-  // nulls sort after anything else
-  if (!a.domain) {
-    return 1;
-  }
-  return a.domain > b.domain ? 1 : -1;
+const fixCountry = country => {
+  //accept UK as a country code for GB
+  return country?.toUpperCase() === "UK" ? "GB" : country
 }
 
 export default function Validators({ amendment }) {
@@ -36,8 +38,145 @@ export default function Validators({ amendment }) {
   const [errorMessage, setErrorMessage] = useState(null)
   const [unlValidatorsCount, setUnlValidatorsCount] = useState(0)
   const [developerMode, setDeveloperMode] = useState(false)
-  const { t } = useTranslation()
+  const [showServer, setShowServer] = useState(true)
+  const { t, i18n } = useTranslation()
   const windowWidth = useWidth()
+  const { theme } = useTheme()
+
+  const compare = (a, b) => {
+    if (!amendment) {
+      //in the negative UNL
+      if (a.nUnl && !b.nUnl) return -1
+      if (!a.nUnl && b.nUnl) return 1
+    }
+
+    //in the UNL
+    if (a.unl && !b.unl) return -1
+    if (!a.unl && b.unl) return 1
+
+    //alive
+    if (a.lastSeenTime && !b.lastSeenTime) return -1
+    if (!a.lastSeenTime && b.lastSeenTime) return 1
+
+    if (amendment) {
+      if (a.amendments?.includes(amendment) && !b.amendments?.includes(amendment)) return -1
+      if (!a.amendments?.includes(amendment) && b.amendments?.includes(amendment)) return 1
+    }
+
+    //with verified Domains
+    if (a.domainVerified && !b.domainVerified) return -1
+    if (!a.domainVerified && b.domainVerified) return 1
+
+    //with Domains
+    if (a.domain && !b.domain) return -1
+    if (!a.domain && b.domain) return 1
+
+    //with verified Legacy domains
+    if (a.domainLegacyVerified && !b.domainLegacyVerified) return -1
+    if (!a.domainLegacyVerified && b.domainLegacyVerified) return 1
+
+    //with Legacy domains
+    if (a.domainLegacy && !b.domainLegacy) return -1
+    if (!a.domainLegacy && b.domainLegacy) return 1
+
+    //with principals
+    if (a.principals && !b.principals) return -1
+    if (!a.principals && b.principals) return 1
+
+    //with principal names
+    if (a.principals?.[0].name && !b.principals?.[0].name) return -1
+    if (!a.principals?.[0].name && b.principals?.[0].name) return 1
+
+    //by principal name
+    if (a.principals?.[0]?.name && b.principals?.[0]?.name) {
+      return (a.principals[0].name.toLowerCase() > b.principals[0].name.toLowerCase()) ? 1 : -1
+    }
+
+    //with both countries
+    if ((a.ownerCountry && a.serverCountry) && (!b.ownerCountry || !b.serverCountry)) return -1
+    if ((!a.ownerCountry || !a.serverCountry) && (b.ownerCountry && b.serverCountry)) return 1
+
+    //with owner country
+    if (a.ownerCountry && !b.ownerCountry) return -1
+    if (!a.ownerCountry && b.ownerCountry) return 1
+
+    //with server country
+    if (a.serverCountry && !b.serverCountry) return -1
+    if (!a.serverCountry && b.serverCountry) return 1
+
+    //by votes
+    if (a.amendments && !b.amendments) return -1
+    if (!a.amendments && b.amendments) return 1
+
+    //by domain
+    if (a.domain && b.domain) {
+      return (a.domain.toLowerCase() > b.domain.toLowerCase()) ? 1 : -1
+    }
+
+    //by legacy domain
+    if (a.domainLegacy && b.domainLegacy) {
+      return (a.domainLegacy.toLowerCase() > b.domainLegacy.toLowerCase()) ? 1 : -1
+    }
+
+    //by lastSeenTime
+    if (a.lastSeenTime > (b.lastSeenTime + 10)) return -1
+    if ((a.lastSeenTime + 10) < b.lastSeenTime) return 1
+
+    //by serverVersion
+    if (a.serverVersion > b.serverVersion) return -1
+    if (a.serverVersion < b.serverVersion) return 1
+
+    //by lasSeenTime, serverVersion, publicKey
+    return a.publicKey > b.publicKey ? 1 : -1
+  }
+
+  const twitterLink = twitter => {
+    if (!twitter) return ""
+    twitter = twitter.replace("@", "")
+    return <a href={"https://twitter.com/" + twitter}>
+      {" "}
+      <span className='tooltip'>
+        <svg width="12" height="12.27" viewBox="0 0 1200 1227" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path
+            d="M714.163 519.284L1160.89 0H1055.03L667.137 450.887L357.328 0H0L468.492 681.821L0 1226.37H105.866L515.491 750.218L842.672 1226.37H1200L714.137 519.284H714.163ZM569.165 687.828L521.697 619.934L144.011 79.6944H306.615L611.412 515.685L658.88 583.579L1055.08 1150.3H892.476L569.165 687.854V687.828Z"
+            fill={theme === "dark" ? "#fff" : "#000"}
+          />
+        </svg>
+        <span className='tooltiptext right no-brake'>
+          {twitter}
+        </span>
+      </span>
+    </a>
+  }
+
+  let lang = i18n.language.slice(0, 2)
+  const notSupportedLanguages = ['my'] // supported "en", "ru", "ja", "ko" etc
+  if (notSupportedLanguages.includes(lang)) {
+    lang = "en"
+  }
+  const languageData = require('i18n-iso-countries/langs/' + lang + '.json')
+  countries.registerLocale(languageData)
+
+  const displayFlag = (country, typeName, em = 1.5) => {
+    if (!country) return ""
+    if (country.length === 2) {
+      country = fixCountry(country)
+      return <span className='tooltip'>
+        <ReactCountryFlag
+          countryCode={country}
+          style={{
+            fontSize: em + 'em',
+            lineHeight: em + 'em',
+          }}
+        />
+        {country.toLowerCase() !== "eu" &&
+          <span className='tooltiptext right no-brake'>
+            {typeName}: {countries.getName(country, lang, { select: "official" })}
+          </span>
+        }
+      </span>
+    }
+  }
 
   const checkApi = async () => {
     setLoading(true)
@@ -47,7 +186,6 @@ export default function Validators({ amendment }) {
         setLoading(false) //keep here for fast tab clickers
       }
     })
-    setLoading(false)
     let dataU = response.data
     if (dataU) {
       dataU.validators?.sort(compare)
@@ -60,11 +198,13 @@ export default function Validators({ amendment }) {
 
       const responseV = await axios('v2/validators')
       const dataV = responseV.data
+      let foundServerCountry = false
       if (dataV) {
-        dataV.sort(compare)
-
         for (let i = 0; i < dataV.length; i++) {
           const v = dataV[i]
+          if (v.serverCountry) {
+            foundServerCountry = true
+          }
           const index = dataU.validators.findIndex(x => x.publicKey === v.publicKey)
           if (index === -1) {
             dataU.validators.push(v)
@@ -75,7 +215,10 @@ export default function Validators({ amendment }) {
             dataU.validators[index] = v
           }
         }
+        dataU.validators.sort(compare)
+        setShowServer(foundServerCountry)
         setValidators(dataU)
+        setLoading(false)
       }
     }
   }
@@ -125,20 +268,36 @@ export default function Validators({ amendment }) {
     "networkID": 21337,
     "serverVersion": "2023.10.30",
     "manifest": "JAAAAAJxIe1UNqpG5b1tEabtbAp8kabGHJv2ItbCdacS9U6KurBEs3MhAgvHm/oM30yzCgqnPApMCEzu7X4CxXzUKztRi7lL2mwtdkYwRAIgTv24hfijwiRJQeX2HdUvubbG4KDXddLJ2bEXfiiCLM8CIAROHLtXZUKfSQPACuu9KsOBF5KNsf2e5Ql9QpdDjAgcdwtnYXRlaHViLm5ldHASQFJMUsxD52N/1UxU39WZ8PGimEJY0rkSpvXzDsh7L64lv+7wK+h4HpMP2o7nI6qyWFUzAFHR1a9vX/hiqhUqtgE=",
-    "nUnl": true
+    "negative-unl": true
   }
   */
 
   useEffect(() => {
-    checkApi();
+    checkApi()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [developerMode])
 
   const listAmendments = amendments => {
     if (!amendments?.length) return <span className='grey'>{t("table.text.no-votes")}</span>
     return amendments.map((a, i) => (
       <span key={i} className={a === amendment ? "purple bold" : "orange"}>{a}{i !== amendments.length - 1 && ", "}</span>
     ))
+  }
+
+  const verifiedSign = (domainVerified, domain) => {
+    if (!domainVerified || !domain) return ""
+    return <span className='tooltip'>
+      <a
+        href={"https://" + domain + "/.well-known/" + (xahauNetwork ? "xahau.toml" : "xrp-ledger.toml")}
+        target="_blank"
+        rel="noreferrer"
+      >
+        <VerifiedIcon style={{ marginLeft: "5px" }} />
+      </a>
+      <span className='tooltiptext right no-brake'>
+        {t("table.text.domain-verified-toml", { ns: 'validators' })}
+      </span>
+    </span>
   }
 
   const checkBoxStyles = {
@@ -149,19 +308,33 @@ export default function Validators({ amendment }) {
     marginLeft: "20px"
   }
 
+  moment.relativeTimeThreshold('ss', devNet ? 36 : 6)
+
+  const showTime = time => {
+    if (!time) return "N/A"
+    return <span className={(Math.floor(Date.now() / 1000) - (devNet ? 40 : 10)) > time ? 'red bold' : ''}>{moment((time - 1) * 1000, "unix").fromNow()}</span>
+  }
+
   return <>
     <SEO title={t("menu.xrpl.validators")} />
     <div className="content-text">
       <h1 className="center">{t("menu.xrpl.validators")}</h1>
       <div className="flex center">
         <div className="grey-box">
-          {validators &&
-            <Trans i18nKey="text0" ns='validators'>
-              The validator list <b>{{ url: validators.url }}</b> has sequence {{ sequence: validators.sequence }} and expiration on {{ expiration: fullDateAndTime(validators.expiration) }}.<br />It includes {{ validatorCount: unlValidatorsCount }} validators which are listed below.
-            </Trans>
+          {!loading ? <>
+            {validators &&
+              <Trans i18nKey="text0" ns='validators'>
+                The validator list <b>{{ url: validators.url }}</b> has sequence {{ sequence: validators.sequence }} and expiration on {{ expiration: fullDateAndTime(validators.expiration) }}.<br />It includes {{ validatorCount: unlValidatorsCount }} validators which are listed below.
+              </Trans>
+            }
+            <br />
+            {validators?.error && <b><br />Validation error: <span className='red'>{validators?.error}</span>.</b>}
+          </>
+            :
+            <>
+              <br />{t("general.loading")}<br />
+            </>
           }
-          <br />
-          {validators?.error && <b><br />Validation error: <span className='red'>{validators?.error}</span>.</b>}
         </div>
       </div>
 
@@ -196,16 +369,38 @@ export default function Validators({ amendment }) {
                     <tr key={i}>
                       <td style={{ padding: "5px" }}>{i + 1}</td>
                       <td>
+                        <p>
+                          {displayFlag(v.ownerCountry, t("table.owner-country", { ns: 'validators' }))}
+                          {v.principals?.map((p, i) => (
+                            <span key={i}>
+                              {p.name && <b> {p.name}</b>}
+                              {twitterLink(p.twitter || p.x)}
+                              {i !== v.principals.length - 1 ? ", " : <br />}
+                            </span>
+                          ))}
+                        </p>
+
                         {v.domain ?
                           <p>
                             {t("table.domain")}:<br />
-                            <a href={"https://" + v.domain}>{v.domain}</a>
-                          </p> :
+                            <a
+                              href={"https://" + v.domain}
+                            >
+                              {v.domain}
+                            </a>
+                            {verifiedSign(v.domainVerified, v.domain)}
+                          </p>
+                          :
                           <>
                             {v.domainLegacy &&
                               <p>
                                 {t("domain-legacy", { ns: 'validators' })}<br />
-                                <a href={"https://" + v.domainLegacy}>{v.domainLegacy}</a>
+                                <a
+                                  href={"https://" + v.domainLegacy}
+                                >
+                                  {v.domainLegacy}
+                                </a>
+                                {verifiedSign(v.domainLegacyVerified, v.domainLegacy)}
                               </p>
                             }
                           </>
@@ -238,11 +433,26 @@ export default function Validators({ amendment }) {
                         <p>
                           {t("last-ledger-information.increment-reserve")}: {v.reserveIncrement ? amountFormat(v.reserveIncrement) : "N/A"}
                         </p>
+                        {v.serverCountry?.length === 2 &&
+                          <p>
+                            {t("table.server-country", { ns: 'validators' })}:
+                            {" "}
+                            {countries.getName(fixCountry(v.serverCountry), lang, { select: "official" })}
+                            {" "}
+                            <ReactCountryFlag
+                              countryCode={fixCountry(v.serverCountry)}
+                              style={{
+                                fontSize: '1.5em',
+                                lineHeight: '1.5em',
+                              }}
+                            />
+                          </p>
+                        }
                         <p>
                           {t("table.version")}: {v.serverVersion ? v.serverVersion : "N/A"}
                         </p>
                         <p>
-                          {t("table.last-seen", { ns: 'validators' })}: {v.lastSeenTime ? moment((v.lastSeenTime - 1) * 1000, "unix").fromNow() : "N/A"}
+                          {t("table.last-seen", { ns: 'validators' })}: {showTime(v.lastSeenTime)}
                         </p>
                         {xahauNetwork &&
                           <p>
@@ -265,15 +475,18 @@ export default function Validators({ amendment }) {
           <thead>
             <tr>
               <th> </th>
-              <th>{t("table.domain")}</th>
+              <th>{t("table.validator", { ns: 'validators' })}</th>
               <th className='center'>UNL/nUNL</th>
               {developerMode &&
                 <th className='center'>{t("table.sequence")}</th>
               }
               <th className='right'>{t("table.reserves", { ns: 'validators' })}</th>
+              {showServer &&
+                <th className='center'>Server</th>
+              }
               <th className='left'>{t("table.version")}</th>
               <th className='right'>{t("table.last-seen", { ns: 'validators' })}</th>
-              {xahauNetwork &&
+              {(xahauNetwork || developerMode) &&
                 <th>{t("table.address")}</th>
               }
             </tr>
@@ -301,16 +514,41 @@ export default function Validators({ amendment }) {
                           {windowWidth > 1240 ? v.publicKey : shortHash(v.publicKey)}
                           <br />
                         </>}
+
+                        {displayFlag(v.ownerCountry, t("table.owner-country", { ns: 'validators' }))}
+                        {v.ownerCountry && " "}
+
+                        {v.principals?.map((p, i) => (
+                          <span key={i}>
+                            {p.name && <b>{p.name}</b>}
+                            {twitterLink(p.twitter || p.x)}
+                            {i !== v.principals.length - 1 ? ", " : <br />}
+                          </span>
+                        ))}
+
+                        {!v.principals?.length && <br />}
+
                         {v.domain ?
                           <>
-                            <a href={"https://" + v.domain}>{v.domain}</a>
+                            <a
+                              href={"https://" + v.domain}
+                            >
+                              {v.domain}
+                            </a>
+                            {verifiedSign(v.domainVerified, v.domain)}
                             <br />
                           </>
                           :
                           <>
                             {v.domainLegacy ?
                               <>
-                                <a href={"https://" + v.domainLegacy} className="green">{v.domainLegacy}</a>
+                                <a
+                                  href={"https://" + v.domainLegacy}
+                                  className="green"
+                                >
+                                  {v.domainLegacy}
+                                </a>
+                                {verifiedSign(v.domainLegacyVerified, v.domainLegacy)}
                                 <br />
                               </>
                               :
@@ -328,7 +566,27 @@ export default function Validators({ amendment }) {
 
                         {listAmendments(v.amendments)}
                       </td>
-                      <td className='center'>{v.unl ? (v.nUnl ? "❌" : "✔️") : ""}</td>
+                      <td className='center'>
+                        {v.unl ?
+                          (v.nUnl ?
+                            <span className='tooltip'>
+                              ❌
+                              <span className='tooltiptext right no-brake'>
+                                {t("table.text.negative-unl", { ns: 'validators' })}
+                              </span>
+                            </span>
+                            :
+                            <span className='tooltip'>
+                              ✔️
+                              <span className='tooltiptext right no-brake'>
+                                {t("table.text.unl", { ns: 'validators' })}
+                              </span>
+                            </span>
+                          )
+                          :
+                          ""
+                        }
+                      </td>
                       {developerMode &&
                         <td className='center'>{v.sequence}</td>
                       }
@@ -341,11 +599,16 @@ export default function Validators({ amendment }) {
                           ""
                         }
                       </td>
+                      {showServer &&
+                        <td className='center'>
+                          {displayFlag(v.serverCountry, t("table.server-country", { ns: 'validators' }))}
+                        </td>
+                      }
                       <td className='left'>{v.serverVersion}</td>
                       <td className='right'>
-                        {v.lastSeenTime ? moment((v.lastSeenTime - 1) * 1000, "unix").fromNow() : "N/A"}
+                        {showTime(v.lastSeenTime)}
                       </td>
-                      {xahauNetwork &&
+                      {(xahauNetwork || developerMode) &&
                         <td className='left'><CopyButton text={v.address} /> {addressUsernameOrServiceLink(v, 'address')}</td>
                       }
                     </tr>
