@@ -1,9 +1,9 @@
 {
-  "soon": "Amandemen dengan Mayoritas",
-  "new": "New amendments",
-  "not-available": "Not available amendments",
-  "obsolete": "Obsolete amendments",
+  "soon": "Amandemen dengan mayoritas",
+  "new": "Amandemen baru",
+  "not-available": "Amandemen tidak tersedia",
+  "obsolete": "Amandemen kadaluwarsa",
   "enabled": "Amandemen Aktif",
   "majority": "Mayoritas",
-  "eta": "Waktu Aktivasi Estimasi"
+  "eta": "Perkiraan Waktu Estimasi"
 }
