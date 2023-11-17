@@ -33,6 +33,10 @@
     "reward-delay-votes": "Verzögerung Vergütung Abstimmungen",
     "reward-delay-votes-count": "Verzögerung Vergütung Stimmenzahl",
     "hook-votes": "Hook Abstimmungen",
-    "hook-votes-count": "Hook Stimmenzahl"
+    "hook-votes-count": "Hook Stimmenzahl",
+    "text": {
+      "vacate-seat": "Vacate the seat",
+      "vacate-place": "Vacate the place"
+    }
   }
 }

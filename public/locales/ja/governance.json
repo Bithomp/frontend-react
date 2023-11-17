@@ -33,6 +33,10 @@
     "reward-delay-votes": "報酬間隔(Reward delay)への投票",
     "reward-delay-votes-count": "報酬間隔(Reward delay)への投票数",
     "hook-votes": "Hookへの投票",
-    "hook-votes-count": "Hookへの投票数"
+    "hook-votes-count": "Hookへの投票数",
+    "text": {
+      "vacate-seat": "Vacate the seat",
+      "vacate-place": "Vacate the place"
+    }
   }
 }

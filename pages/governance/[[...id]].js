@@ -36,28 +36,6 @@ import CopyButton from '../../components/UI/CopyButton'
 
 const xummImg = "/images/xumm.png"
 
-const seatAddress = (addressData, addessName, addressOption) => {
-  if (addressData[addessName] === "rrrrrrrrrrrrrrrrrrrrrhoLvTp") {
-    return "Vacate the seat"
-  }
-  return <>
-    <CopyButton text={addressData[addessName]} />
-    {" "}
-    {addressUsernameOrServiceLink(addressData, addessName, addressOption)}
-  </>
-}
-
-const hookHash = value => {
-  if (value === "0000000000000000000000000000000000000000000000000000000000000000") {
-    return "Vacate the place"
-  }
-  return <>
-    {shortHash(value, 16)}
-    {" "}
-    <CopyButton text={value} />
-  </>
-}
-
 export default function Governance({ id, setSignRequest, signRequest, account }) {
   const { t } = useTranslation(['common', 'governance'])
   const router = useRouter()
@@ -107,6 +85,28 @@ export default function Governance({ id, setSignRequest, signRequest, account })
       }
     }
     return "not found"
+  }
+
+  const seatAddress = (addressData, addessName, addressOption) => {
+    if (addressData[addessName] === "rrrrrrrrrrrrrrrrrrrrrhoLvTp") {
+      return t("table.text.vacate-seat", { ns: "governance" })
+    }
+    return <>
+      <CopyButton text={addressData[addessName]} />
+      {" "}
+      {addressUsernameOrServiceLink(addressData, addessName, addressOption)}
+    </>
+  }
+
+  const hookHash = value => {
+    if (value === "0000000000000000000000000000000000000000000000000000000000000000") {
+      return t("table.text.vacate-place", { ns: "governance" })
+    }
+    return <>
+      {shortHash(value, 16)}
+      {" "}
+      <CopyButton text={value} />
+    </>
   }
 
   const seatNumberAndName = (addressData, addessName, options) => {
@@ -1033,7 +1033,7 @@ export default function Governance({ id, setSignRequest, signRequest, account })
                                   <td>
                                     {
                                       p.key.substr(8) === "00000000000000000000000000000000000000000000000000000000" ?
-                                        "Vacate the place"
+                                        t("table.text.vacate-place", { ns: 'governance' })
                                         :
                                         <>
                                           ...{p.key.substr(p.key.length - 16)}

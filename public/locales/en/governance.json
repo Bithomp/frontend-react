@@ -33,6 +33,10 @@
     "reward-delay-votes": "Reward delay votes",
     "reward-delay-votes-count": "Reward delay votes count",
     "hook-votes": "Hook votes",
-    "hook-votes-count": "Hook votes count"
+    "hook-votes-count": "Hook votes count",
+    "text": {
+      "vacate-seat": "Vacate the seat",
+      "vacate-place": "Vacate the place"
+    }
   }
 }
