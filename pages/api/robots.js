@@ -1,4 +1,4 @@
-export default function robots(req, res) {
+export default function Robots(req, res) {
   res.setHeader("Content-Type", "text/plain")
   //let allow indexing all networks for now
   res.send('User-agent: *\nDisallow: /api/\nDisallow: /go/')
