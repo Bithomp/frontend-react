@@ -1,6 +1,6 @@
 {
   "table": {
-    "validator": "Validador",
+    "validator": "Validator",
     "server-country": "Server country",
     "server-location": "Server location",
     "cloud-private": "Cloud/private",
