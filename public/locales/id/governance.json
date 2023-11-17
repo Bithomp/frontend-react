@@ -1,0 +1,37 @@
+{
+  "header": "Governance Game {{ledgerName}}",
+  "summary": "Terdapat <1>{{ countTables }}</1> posisi.",
+  "reward-rate": "Tingkat Hadiah: <1>{{ rewardRate }}</1>.",
+  "reward-delay": "Penundaan Hadiah: <1>{{ rewardDelay }}</1> ({{ rewardDelaySeconds }} detik).",
+  "button": {
+    "show-main-table": "Tampilkan Tabel Utama",
+    "vote-seat": "Usulkan sebuah posisi",
+    "vote-reward-rate": "Usulkan Tingkat Hadiah",
+    "vote-reward-delay": "Usulkan Penundaan Hadiah",
+    "vote-hook": "Usulkan sebuah Hook"
+  },
+  "table": {
+    "cast-first-vote": "Lakukan usulan pertama",
+    "members": "Anggota",
+    "seat": "Posisi",
+    "layer": "Layer",
+    "hooks": "Hooks",
+    "place": "Tempat",
+    "hook": "Hook",
+    "target": "Target",
+    "votes": "Usulan",
+    "voter": "Pemilih",
+    "rate": "Tingkat",
+    "value": "Nilai",
+    "delay": "Penundaan",
+    "in-seconds": "Dalam detik",
+    "seat-votes": "Usulan Posisi",
+    "seat-votes-count": "Jumlah Usulan Posisi",
+    "reward-rate-votes": "Usulan Tingkat Hadiah",
+    "reward-rate-votes-count": "Jumlah Usulan Tingkat Hadiah",
+    "reward-delay-votes": "Usulan Penundaan Hadiah",
+    "reward-delay-votes-count": "Jumlah Usulan Penundaan Hadiah",
+    "hook-votes": "Usulan Hook",
+    "hook-votes-count": "Jumlah Usulan Hook"
+  }
+}
