@@ -295,7 +295,8 @@ const networks = {
     nativeCurrency: "XRP",
     getCoinsUrl: "/go/buy-first-xrp",
     explorerName: "XRP",
-    ledgerName: "XRPL"
+    ledgerName: "XRPL",
+    minLedger: 32570
   },
   staging: {
     id: 2,
@@ -303,7 +304,8 @@ const networks = {
     nativeCurrency: "XRP",
     getCoinsUrl: "/faucet/",
     explorerName: "XRP Staging",
-    ledgerName: "XRPL"
+    ledgerName: "XRPL",
+    minLedger: 32570
   },
   testnet: {
     id: 1,
@@ -311,7 +313,8 @@ const networks = {
     nativeCurrency: "XRP",
     getCoinsUrl: "/faucet/",
     explorerName: "XRP TESTNET",
-    ledgerName: "XRPL"
+    ledgerName: "XRPL",
+    minLedger: 1
   },
   devnet: {
     id: 2,
@@ -319,7 +322,8 @@ const networks = {
     nativeCurrency: "XRP",
     getCoinsUrl: "/faucet/",
     explorerName: "XRP DEVNET",
-    ledgerName: "XRPL"
+    ledgerName: "XRPL",
+    minLedger: 1
   },
   amm: {
     id: 25,
@@ -327,7 +331,8 @@ const networks = {
     nativeCurrency: "XRP",
     getCoinsUrl: "/faucet/",
     explorerName: "XRP AMM",
-    ledgerName: "XRPL"
+    ledgerName: "XRPL",
+    minLedger: 1
   },
   "xahau-testnet": {
     id: 21338,
@@ -335,7 +340,8 @@ const networks = {
     nativeCurrency: "XAH",
     getCoinsUrl: "/faucet/",
     explorerName: "XAHAU TESTNET",
-    ledgerName: "XAHAU"
+    ledgerName: "XAHAU",
+    minLedger: 3
   },
   xahau: {
     id: 21337,
@@ -343,7 +349,8 @@ const networks = {
     nativeCurrency: "XAH",
     getCoinsUrl: null,
     explorerName: "XAHAU",
-    ledgerName: "XAHAU"
+    ledgerName: "XAHAU",
+    minLedger: 1
   }
 }
 
@@ -356,14 +363,13 @@ if (!networks[network]) {
   }
 }
 
-
-
 export const server = networks[network]?.server
 export const networkId = networks[network]?.id
 export const nativeCurrency = networks[network]?.nativeCurrency
 export const getCoinsUrl = networks[network]?.getCoinsUrl
 export const explorerName = networks[network]?.explorerName
 export const ledgerName = networks[network]?.ledgerName
+export const minLedger = networks[network]?.minLedger
 
 export const networksIds = {
   0: { server: "https://bithomp.com", name: "mainnet" },

@@ -6,10 +6,8 @@ import Link from 'next/link'
 
 import SEO from '../../components/SEO'
 
-import { server, network, ledgerName } from '../../utils'
+import { server, network, ledgerName, minLedger } from '../../utils'
 import { fullDateAndTime, shortHash, addressUsernameOrServiceLink } from '../../utils/format'
-
-const minLedger = network === "mainnet" ? 32570 : 3
 
 export async function getServerSideProps(context) {
   const { locale, req, query } = context
