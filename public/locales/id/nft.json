@@ -7,14 +7,14 @@
   "table": {
     "uri": "URI",
     "digest": "Digest",
-    "attention": "Attention",
+    "attention": "Perhatian",
     "attention-texts": {
-      "no-uri": "That NFT lacks an URI, it is incompatible with commonly accepted standards.",
-      "no-metadata": "The given URI is missing the metadata for that NFT. It goes against commonly accepted standards.",
-      "not-transferable": "This NFT is not transferable; it can only be transferred to and from the issuer.",
-      "burnable": "The issuer (or an entity authorized by the issuer) can destroy the NFT.",
-      "no-digest": "There is no Digest provided for that NFT. The NFT integrity cannot be verified.",
-      "invalid-digest": "The NFT integrity check failed. The Digest does not match the NFT metadata."
+      "no-uri": "NFT ini tidak memiliki URI, tidak kompatibel dengan standar umum.",
+      "no-metadata": "URI yang diberikan tidak menyertakan metadata NFT tersebut. Hal ini melanggar standar umum.",
+      "not-transferable": "NFT ini tidak dapat ditransfer; hanya dapat ditransfer kepada penerbit dan dari penerbit.",
+      "burnable": "Penerbit (atau entitas yang diizinkan oleh penerbit) dapat menghapus NFT ini.",
+      "no-digest": "Tidak ada Digest yang disediakan untuk NFT ini. Integritas NFT tidak dapat diverifikasi.",
+      "invalid-digest": "Pemeriksaan integritas NFT tidak berhasil. Digest tidak cocok dengan metadata NFT."
     }
   }
 }
