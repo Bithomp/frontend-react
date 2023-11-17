@@ -111,10 +111,15 @@ export default function Governance({ id, setSignRequest, signRequest, account })
 
   const seatNumberAndName = (addressData, addessName, options) => {
     const seat = seatNumber(data?.members, addressData[addessName])
-    if (seat === "not found") return seat
     const coloredName = userOrServiceName(addressData[addessName + "Details"])
+    if (seat === "not found") {
+      return <>
+        <span className='orange'>{t("table.no-seat", { ns: 'governance' })}</span>
+        {!options?.short && <> - {coloredName || shortAddress(addressData[addessName])}</>}
+      </>
+    }
     return <>
-      Seat {seat}{!options?.short && <> - {coloredName || shortAddress(addressData[addessName])}</>}
+      {t("table.seat", { ns: 'governance' })} {seat}{!options?.short && <> - {coloredName || shortAddress(addressData[addessName])}</>}
     </>
   }
 
