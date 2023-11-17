@@ -1,20 +1,20 @@
 {
   "table": {
-    "validator": "Validador",
-    "server-country": "Server country",
-    "server-location": "Server location",
-    "cloud-private": "Cloud/private",
-    "network-asn": "Network ASN",
-    "owner-country": "Owner country",
-    "votes-for": "Votes for",
-    "last-seen": "Last seen",
-    "reserves": "Reserves",
+    "validator": "Validator",
+    "server-country": "Negara Server",
+    "server-location": "Lokasi Server",
+    "cloud-private": "Cloud/pribadi",
+    "network-asn": "ASN Jaringan",
+    "owner-country": "Negara Pemilik",
+    "votes-for": "Usulan untuk",
+    "last-seen": "Terakhir dilihat",
+    "reserves": "Cadangan",
     "text": {
-      "domain-verified-toml": "Verified domain (TOML file)",
-      "unl": "In the Unique Node List (UNL)",
-      "negative-unl": "in the Negative UNL"
+      "domain-verified-toml": "Domain terverifikasi (file TOML)",
+      "unl": "Dalam Daftar Node Unik (UNL)",
+      "negative-unl": "dalam Daftar Node Negatif (Negative UNL)"
     }
   },
-  "domain-legacy": "Domain (verifikasi lama)",
+  "domain-legacy": "Domain (verifikasi lampau)",
   "text0": "Daftar validator <1>{{url}}</1> memiliki urutan {{sequence}} dan berakhir pada {{expiration}}.<br/>Daftar ini mencakup {{validatorCount}} validator yang tercantum di bawah ini."
 }
