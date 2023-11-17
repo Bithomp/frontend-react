@@ -170,6 +170,7 @@ export default function Governance({ id, setSignRequest, signRequest, account })
           hook: newdata.memberCount // 100% of seats
         }
         if (majObj.fromL1ToL2 < 2) majObj.fromL1ToL2 = 2 //minimum 2 votes
+        if (majObj.voteL1 < 2) majObj.voteL1 = 2 //minimum 2 votes
         setMajority(majObj)
         //sort by vote count
         if (newdata.count && newdata.votes) {
