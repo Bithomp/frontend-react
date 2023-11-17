@@ -1,0 +1,5 @@
+{
+  "header": "Laporan UNL",
+  "desc": "Di sini Anda dapat melihat laporan UNL untuk Ledger <1>#{{ledgerIndex}}</1>, entri ledger: 61E32E...6F28DC.",
+  "summary": "Terdapat <1>{{activeValidators}}</1> validator aktif."
+}
