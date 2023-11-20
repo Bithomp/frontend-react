@@ -1,11 +1,11 @@
 {
   "table": {
     "validator": "Validator",
-    "server-country": "Land Server",
-    "server-location": "Server location",
-    "cloud-private": "Cloud/private",
-    "network-asn": "Network ASN",
-    "owner-country": "Land Inhaber",
+    "server-country": "Serverland",
+    "server-location": "Serverstandort",
+    "cloud-private": "Cloud/Privat",
+    "network-asn": "Netzwerk ASN",
+    "owner-country": "Land Eigentümer",
     "votes-for": "Stimmen für",
     "last-seen": "Zuletzt gesehen",
     "reserves": "Rückstellungen",
