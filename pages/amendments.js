@@ -158,7 +158,11 @@ export default function Amendment() {
   useEffect(() => {
     checkApi();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [])
+
+  const showHash = (hash) => {
+    return windowWidth > 1140 ? <>{hash} </> : (windowWidth > 800 ? <>{shortHash(hash)} </> : "")
+  }
 
   return <>
     <SEO title={t("menu.xrpl.amendments")} />
@@ -191,7 +195,7 @@ export default function Amendment() {
                   </td>
                   <td className='right'>{a.introduced}</td>
                   <td className='right'>
-                    {windowWidth > 1000 ? <>{shortHash(a.amendment)} </> : ""}
+                    {showHash(a.amendment)}
                     <CopyButton text={a.amendment} />
                   </td>
                 </tr>
@@ -224,7 +228,7 @@ export default function Amendment() {
                   </td>
                   <td className='right'>{a.introduced}</td>
                   <td className='right'>
-                    {windowWidth > 1000 ? <>{shortHash(a.amendment)} </> : ""}
+                    {showHash(a.amendment)}
                     <CopyButton text={a.amendment} />
                   </td>
                 </tr>
@@ -252,7 +256,7 @@ export default function Amendment() {
                   <td>{amendmentLink(a)}</td>
                   <td className='right'>{a.introduced}</td>
                   <td className='right'>
-                    {windowWidth > 1000 ? <>{shortHash(a.amendment)} </> : ""}
+                    {showHash(a.amendment)}
                     <CopyButton text={a.amendment} />
                   </td>
                 </tr>
@@ -281,7 +285,7 @@ export default function Amendment() {
                   <td>{amendmentLink(a)}</td>
                   <td className='right'>{a.introduced}</td>
                   <td className='right'>
-                    {windowWidth > 1000 ? <>{shortHash(a.amendment)} </> : ""}
+                    {showHash(a.amendment)}
                     <CopyButton text={a.amendment} />
                   </td>
                 </tr>
@@ -308,7 +312,7 @@ export default function Amendment() {
                   <td className='center'>{i + 1}</td>
                   <td className="brake">{amendmentLink(a)}</td>
                   <td className='right'>
-                    {windowWidth > 1000 ? <>{shortHash(a.amendment)} </> : ""}
+                    {showHash(a.amendment)}
                     <CopyButton text={a.amendment} />
                   </td>
                 </tr>
