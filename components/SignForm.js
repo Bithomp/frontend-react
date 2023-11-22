@@ -58,6 +58,7 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
   const [rewardDelay, setRewardDelay] = useState()
 
   const xummUserToken = localStorage.getItem('xummUserToken')
+  let nftOfferCheckCount = 0
 
   useEffect(() => {
     //deeplink doesnt work on mobiles when it's not in the onClick event
@@ -352,6 +353,7 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
           if (responseData.status && responseData.data?.[0]?.Index) {
             // Index is the offer ID
             // check if the offer was accepted
+            nftOfferCheckCount = 0
             checkIfNftOfferAccepted(responseData.data[0].Index)
           }
         }
@@ -394,6 +396,11 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
       // if crawler 10 ledgers behind, update right away
       // the backend suppose to return info directly from ledger when crawler 30 seconds behind
       // othewrwise wait until crawler catch up with the ledger where this transaction was included
+
+      if (devNet) {
+        console.log("crawler index: ", ledgerIndex, "tx index: ", inLedger) //delete
+      }
+
       if (ledgerIndex >= inLedger || (inLedger - 10) > ledgerIndex) {
         closeSignInFormAndRefresh()
       } else {
@@ -403,7 +410,6 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
     }
   }
 
-  let nftOfferCheckCount = 0
   const checkIfNftOfferAccepted = async offerId => {
     //check if it was accepted by a broker
     const response = await axios("v2/nft/offer/" + offerId).catch(error => {
@@ -411,12 +417,14 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
       delay(3000, closeSignInFormAndRefresh)
     })
     if (response?.data) {
-      const { acceptedLedgerIndex, canceledAt } = response.data
-      if (acceptedLedgerIndex || canceledAt) {
+      const { acceptedLedgerIndex, canceledLedgerIndex } = response.data
+      const inLedger = acceptedLedgerIndex || canceledLedgerIndex
+      if (inLedger) {
         //already accepted by broker or canceled by broker / user
-        closeSignInFormAndRefresh()
+        //check when this ledger crawled
+        checkCrawlerStatus(inLedger)
         if (devNet) {
-          console.log("accepted right away")//delete
+          console.log("already in ledger, wait for ceawler") //delete
         }
       } else if (nftOfferCheckCount < 5) {
         //if not accepted or canceled, check again in 1 second
