@@ -330,9 +330,6 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
           //not sumbitted to the broker, we can cancel it here... or not
           closeSignInFormAndRefresh()
         })
-        if (devNet) {
-          console.log("received from broker", response?.data) //delete
-        }
         if (response?.data) {
           /*
             {
