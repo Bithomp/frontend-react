@@ -608,7 +608,7 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
             })}
           >
             <Image src={xummImg} className='xumm-logo' alt="xumm" height={24} width={24} />
-            {t("button.nft.buy-for-amount", { amount: amountFormat(best.amount * multiplier) })}
+            {t("button.nft.buy-for-amount", { amount: amountFormat((Math.ceil(best.amount * multiplier * 1000000) / 1000000)) })}
           </button>
           <br /><br />
         </>

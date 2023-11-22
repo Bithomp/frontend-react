@@ -210,6 +210,14 @@ export default function SignForm({ setSignRequest, setAccount, signRequest }) {
       }
     }
 
+    if (signRequest.broker) {
+      signInPayload.custom_meta = {
+        blob: {
+          broker: signRequest.broker.name
+        }
+      }
+    }
+
     setStatus(t("signin.xumm.statuses.wait"))
 
     if (isMobile) {
@@ -308,6 +316,46 @@ export default function SignForm({ setSignRequest, setAccount, signRequest }) {
       }
     }
 
+    //if broker, notify about the offer 
+    if (data.custom_meta?.blob?.broker) {
+
+      if (data.custom_meta.blob.broker === "onXRP") {
+        const response = await axios("onxrp/transaction/broker/" + data.response.txid).catch(error => {
+          console.log(error)
+          //not sumbitted to the broker, we can cancel it here... or not
+          closeSignInFormAndRefresh()
+        })
+        if (devNet) {
+          console.log("received from broker", response?.data) //delete
+        }
+        if (response?.data) {
+          /*
+            {
+              "status": true,
+              "code": 200,
+              "message": "Data Fetch Successfully",
+              "data": [
+                {
+                  "Amount": "8880000",
+                  "Destination": "rn6CYo6uSxR6fP7jWg3c8SL5jrqTc2GjCS",
+                  "NFTokenID": "00081B580D828F028B88C7A78C67A2A9719DDB0A902A927EA72C172100000588",
+                  "Owner": "rDzvW4ddvvDXhJNEGFWGkPQ9SYuUeMjKU5",
+                  "Index": "E8E06CE995ABAA2D30AAE21725DFB4D27268F501113E4333120B6CC7E009171A",
+                  "Date": "2023-11-07T10:18:31.000Z"
+                }
+              ]
+            }
+          */
+          const responseData = response.data
+          if (responseData.status && responseData.data?.Index) {
+            // Index is the offer ID
+            // check if the offer was accepted
+            checkIfNftOfferAccepted(responseData.data.Index)
+          }
+        }
+      }
+    }
+
     // For NFT transaction, lets wait for crawler to finish it's job
     if (data.payload?.tx_type.includes("NFToken")) {
       if (data.response?.txid) {
@@ -347,6 +395,38 @@ export default function SignForm({ setSignRequest, setAccount, signRequest }) {
       } else {
         //check again in 1 second if crawler ctached up with the ledger where transaction was included
         delay(1000, checkCrawlerStatus, inLedger)
+      }
+    }
+  }
+
+  let nftOfferCheckCount = 0
+  const checkIfNftOfferAccepted = async offerId => {
+    //check if it was accepted by a broker
+    const response = await axios("nft/offer/" + offerId).catch(error => {
+      console.log(error)
+      delay(3000, closeSignInFormAndRefresh)
+    })
+    if (response.data) {
+      const { acceptedLedgerIndex, canceledAt } = response.data
+      if (acceptedLedgerIndex || canceledAt) {
+        //already accepted by broker or canceled by broker / user
+        closeSignInFormAndRefresh()
+        if (devNet) {
+          console.log("accepted right away")//delete
+        }
+      } else if (nftOfferCheckCount < 5) {
+        //if not accepted or canceled, check again in 1 second
+        nftOfferCheckCount++
+        delay(1000, checkIfNftOfferAccepted, offerId)
+        if (devNet) {
+          console.log("delay 1s")//delete
+        }
+      } else {
+        //if not accepted or canceled after 5 checks, close the form
+        closeSignInFormAndRefresh()
+        if (devNet) {
+          console.log("delay 5s gone")//delete
+        }
       }
     }
   }
@@ -582,7 +662,7 @@ export default function SignForm({ setSignRequest, setAccount, signRequest }) {
                 {signRequest.broker?.nftPrice ?
                   <>
                     <p className='left' style={{ width: "360px", margin: "20px auto" }}>
-                      You're making a counter offer, which should to be accepted automatically within 5 minutes.
+                      You're making a counter offer, which should to be accepted automatically within 1 minute.
                       If it's not accepted you can cancel it at any time.
                     </p>
                     <table style={{ textAlign: "left", margin: "20px auto", width: "360px" }}>

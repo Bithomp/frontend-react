@@ -391,7 +391,7 @@ export const persentFormat = (small, big) => {
 export const amountFormat = (amount, options = {}) => {
   if (!amount && amount !== "0" && amount !== 0) { return "" }
   const { value, currency, valuePrefix, issuer, type } = amountParced(amount)
-  let showValue = value;
+  let showValue = value
 
   if (value >= 100) {
     if (options.short) {
