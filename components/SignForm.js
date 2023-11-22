@@ -37,7 +37,7 @@ const voteTxs = ['castVoteRewardDelay', 'castVoteRewardRate', 'castVoteHook', 'c
 const askInfoScreens = [...voteTxs, 'NFTokenAcceptOffer', 'NFTokenCreateOffer', 'NFTokenBurn', 'setDomain']
 const noCheckboxScreens = [...voteTxs, 'setDomain']
 
-export default function SignForm({ setSignRequest, setAccount, signRequest }) {
+export default function SignForm({ setSignRequest, account, setAccount, signRequest }) {
   const { t } = useTranslation()
   const router = useRouter()
   const isMobile = useIsMobile()
@@ -190,6 +190,10 @@ export default function SignForm({ setSignRequest, setAccount, signRequest }) {
 
     tx.SourceTag = 42697468
 
+    if (!tx.Account && account?.address) {
+      tx.Account = account.address
+    }
+
     //add network ID to transactions for xahau-testnet and xahau
     if (networkId === 21338 || networkId === 21337) {
       tx.NetworkID = networkId
@@ -311,16 +315,17 @@ export default function SignForm({ setSignRequest, setAccount, signRequest }) {
       const redirectName = data.custom_meta?.blob?.redirect
       if (redirectName === "nfts") {
         window.location.href = server + "/nfts/" + data.response.account
+        return
       } else if (redirectName === "account") {
         window.location.href = server + "/explorer/" + data.response.account
+        return
       }
     }
 
     //if broker, notify about the offer 
     if (data.custom_meta?.blob?.broker) {
-
       if (data.custom_meta.blob.broker === "onXRP") {
-        const response = await axios("onxrp/transaction/broker/" + data.response.txid).catch(error => {
+        const response = await axios("/v2/onxrp/transaction/broker/" + data.response.txid).catch(error => {
           console.log(error)
           //not sumbitted to the broker, we can cancel it here... or not
           closeSignInFormAndRefresh()
@@ -347,13 +352,14 @@ export default function SignForm({ setSignRequest, setAccount, signRequest }) {
             }
           */
           const responseData = response.data
-          if (responseData.status && responseData.data?.Index) {
+          if (responseData.status && responseData.data?.[0]?.Index) {
             // Index is the offer ID
             // check if the offer was accepted
-            checkIfNftOfferAccepted(responseData.data.Index)
+            checkIfNftOfferAccepted(responseData.data[0].Index)
           }
         }
       }
+      return
     }
 
     // For NFT transaction, lets wait for crawler to finish it's job
@@ -377,6 +383,7 @@ export default function SignForm({ setSignRequest, setAccount, signRequest }) {
         //if no tx data, delay 3 sec
         delay(3000, closeSignInFormAndRefresh)
       }
+      return
     } else {
       // no checks or delays for non NFT transactions
       closeSignInFormAndRefresh()
@@ -402,11 +409,11 @@ export default function SignForm({ setSignRequest, setAccount, signRequest }) {
   let nftOfferCheckCount = 0
   const checkIfNftOfferAccepted = async offerId => {
     //check if it was accepted by a broker
-    const response = await axios("nft/offer/" + offerId).catch(error => {
+    const response = await axios("v2/nft/offer/" + offerId).catch(error => {
       console.log(error)
       delay(3000, closeSignInFormAndRefresh)
     })
-    if (response.data) {
+    if (response?.data) {
       const { acceptedLedgerIndex, canceledAt } = response.data
       if (acceptedLedgerIndex || canceledAt) {
         //already accepted by broker or canceled by broker / user

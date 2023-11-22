@@ -577,7 +577,6 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
         const { multiplier, fee, name } = partnerMarketplaces[best.destination]
         let request = {
           "TransactionType": "NFTokenCreateOffer",
-          "Account": data.owner,
           "NFTokenID": id,
           "Destination": best.destination,
           "Owner": data.owner,
@@ -685,7 +684,7 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
 
     let request = {
       "TransactionType": "NFTokenCreateOffer",
-      "Account": data.owner,
+      "Account": sell ? data.owner : null,
       "NFTokenID": id
     }
 
