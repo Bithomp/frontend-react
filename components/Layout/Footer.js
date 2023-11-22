@@ -40,8 +40,7 @@ export default function Footer({ account, setSignRequest }) {
               }
             </>
           }
-          {/* Hide Price Alerts for XAHAU while they are not ready yet */}
-          {!devNet && !xahauNetwork && <Link href="/alerts">{t("menu.price-alerts", { nativeCurrency })}</Link>}
+          {!devNet && <Link href="/alerts">{t("menu.price-alerts", { nativeCurrency })}</Link>}
           {!devNet && <a href={"/submit/"}>{t("menu.submit-offline-tx")}</a>}
         </div>
 

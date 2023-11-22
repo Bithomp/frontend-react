@@ -2,7 +2,7 @@ import { useTranslation } from 'next-i18next'
 import { useState } from 'react'
 import Link from 'next/link'
 
-import { stripText } from '../utils'
+import { stripText, xahauNetwork } from '../utils'
 import { nftImageStyle, nftUrl, bestNftOffer, mpUrl } from '../utils/nft'
 import { amountFormat, timeOrDate, convertedAmount } from '../utils/format'
 
@@ -19,6 +19,28 @@ const addressName = (details, name) => {
     return <><br />{name}: {label}</>
   }
   return ""
+}
+
+const shortName = (name) => {
+  name = stripText(name)
+  if (name?.length > 18) {
+    name = name.slice(0, name.slice(0, 18).lastIndexOf(" ")) + '...'
+    if (name.length > 21) {
+      name = name.slice(0, 18) + '...'
+    }
+  }
+  return name
+}
+
+const getName = (nft, options) => {
+  let name = nft.metadata?.name
+  if (!name) {
+    name = nft.metadata?.details?.title
+  }
+  if (options?.short) {
+    return shortName(name)
+  }
+  return stripText(name)
 }
 
 export default function Tiles({ nftList, type = 'name', convertCurrency, account }) {
@@ -43,18 +65,11 @@ export default function Tiles({ nftList, type = 'name', convertCurrency, account
     }
   */
 
-  const shortName = (name) => {
-    name = stripText(name)
-    if (name?.length > 18) {
-      return name.slice(0, name.slice(0, 18).lastIndexOf(" ")) + '...'
-    }
-    return name
-  }
-
-  const loadingImage = (nft) => {
-    if (errored.includes(nft.nftokenID)) {
+  const loadingImage = nft => {
+    const nftId = nft.nftokenID || nft.uriTokenID
+    if (errored.includes(nftId)) {
       return <div className="img-status">{t("general.load-failed")}</div>;
-    } else if (!loaded.includes(nft.nftokenID)) {
+    } else if (!loaded.includes(nftId)) {
       return <div className="img-status">{t("general.loading")}</div>;
     }
   }
@@ -82,9 +97,9 @@ export default function Tiles({ nftList, type = 'name', convertCurrency, account
         <img
           style={{ display: 'none' }}
           src={nftUrl(nft, 'image')}
-          onLoad={() => setLoaded([...loaded, nft.nftokenID])}
-          onError={() => setErrored([...errored, nft.nftokenID])}
-          alt={nft.metadata?.name}
+          onLoad={() => setLoaded([...loaded, (nft.nftokenID || nft.uriTokenID)])}
+          onError={() => setErrored([...errored, (nft.nftokenID || nft.uriTokenID)])}
+          alt={getName(nft)}
         />
       </>;
     }
@@ -114,21 +129,24 @@ export default function Tiles({ nftList, type = 'name', convertCurrency, account
           {nftList[0] && nftList.map((nft, i) =>
             <li className="hex" key={i}>
               <div className="hexIn">
-                <Link href={"/nft/" + nft.nftokenID} className="hexLink">
+                <Link href={"/nft/" + (nft.nftokenID || nft.uriTokenID)} className="hexLink">
                   {loadingImage(nft)}
                   {imageOrVideo(nft)}
                   <div className="index">{i + 1}</div>
                   <div className='title'></div>
 
                   {type === 'name' ?
-                    <h1>{nft.metadata?.name ? shortName(nft.metadata.name) : ''}</h1>
+                    <h1>{getName(nft, { short: true })}</h1>
                     :
                     <h1>{saleData(nft.sellOffers)}</h1>
                   }
                   <div className='title-full'>
-                    {nft.metadata?.name ? <>{t("table.name")}: {stripText(nft.metadata.name)}<br /></> : ""}
-                    {t("table.serial")}: {nft.sequence}<br />
-                    {t("table.taxon")}: {nft.nftokenTaxon}
+                    {getName(nft) ? <>{t("table.name")}: {getName(nft)}<br /></> : ""}
+                    {!xahauNetwork && <>
+                      {t("table.serial")}: {nft.sequence}<br />
+                      {t("table.taxon")}: {nft.nftokenTaxon}
+                    </>}
+
                     {addressName(nft.issuerDetails, t("table.issuer"))}
                     {addressName(nft.ownerDetails, t("table.owner"))}
                   </div>
@@ -159,7 +177,7 @@ export default function Tiles({ nftList, type = 'name', convertCurrency, account
                     {timeOrDate(nft.acceptedAt)}
                   </h1>
                   <div className='title-full'>
-                    {nft.nftoken?.metadata?.name ? <>{t("table.name")}: {shortName(nft.nftoken.metadata.name)}</> : ""}
+                    {getName(nft.nftoken) ? <>{t("table.name")}: {getName(nft.nftoken, { short: true })}</> : ""}
                     {addressName(nft.nftoken?.issuerDetails, t("table.issuer"))}
                     <br />
                     {t("table.price")}: {amountFormat(nft.amount)}
@@ -178,5 +196,5 @@ export default function Tiles({ nftList, type = 'name', convertCurrency, account
       </div>
     </div>
   }
-  return "";
-};
+  return ""
+}

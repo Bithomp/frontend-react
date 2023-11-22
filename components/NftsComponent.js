@@ -6,7 +6,7 @@ import axios from 'axios'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import Link from 'next/link'
 
-import { isAddressOrUsername, setTabParams, useWidth } from '../utils'
+import { isAddressOrUsername, setTabParams, useWidth, xahauNetwork } from '../utils'
 import { isValidTaxon, nftThumbnail, nftNameLink, bestNftOffer, mpUrl } from '../utils/nft'
 import { nftLink, usernameOrAddress, userOrServiceLink, amountFormat } from '../utils/format'
 
@@ -97,6 +97,11 @@ export default function NftsComponent({
     }
 
     let listUrlPart = '?list=nfts'
+
+    if (xahauNetwork) {
+      listUrlPart = '?list=uritokens'
+    }
+
     let ownerUrlPart = ''
     let collectionUrlPart = ''
     let markerUrlPart = ''
@@ -159,7 +164,7 @@ export default function NftsComponent({
       }
     }
 
-    if (serialQuery.match(/^-?\d+$/)) {
+    if (serialQuery.match(/^-?\d+$/) && !xahauNetwork) {
       serialPart = '&serial=' + serialQuery
     }
 
@@ -185,7 +190,9 @@ export default function NftsComponent({
       searchPart = '&hasMetadata=true'
     }
 
-    const response = await axios('v2/nfts' + listUrlPart + ownerUrlPart + collectionUrlPart + markerUrlPart + searchPart + serialPart + mintAndBurnPart + orderPart)
+    const nftEndpoint = xahauNetwork ? 'v2/uritokens' : 'v2/nfts'
+
+    const response = await axios(nftEndpoint + listUrlPart + ownerUrlPart + collectionUrlPart + markerUrlPart + searchPart + serialPart + mintAndBurnPart + orderPart)
       .catch(error => {
         setErrorMessage(t("error." + error.message))
       })
@@ -210,14 +217,19 @@ export default function NftsComponent({
           })
         }
 
-        if (newdata.nfts?.length > 0) {
+        let nftList = newdata.nfts
+        if (xahauNetwork) {
+          nftList = newdata.uritokens
+        }
+
+        if (nftList?.length > 0) {
           setErrorMessage("")
           if (newdata.marker) {
             setHasMore(newdata.marker)
           } else {
             setHasMore(false)
           }
-          setData([...nftsData, ...newdata.nfts])
+          setData([...nftsData, ...nftList])
         } else {
           if (marker === 'first') {
             setErrorMessage(t("nfts.no-nfts"))
@@ -473,7 +485,7 @@ export default function NftsComponent({
           <Link href={"/nft-sales" + issuerTaxonUrlPart} style={{ marginRight: "5px" }}>{t("nft-sales.header")}</Link>
         </p>
         <div className='center'>
-          <span className='halv'>
+          <span className={xahauNetwork ? 'whole' : 'halv'}>
             <span className='input-title'>{t("table.issuer")} {userOrServiceLink(rawData, 'issuer')}</span>
             <input
               placeholder={t("nfts.search-by-issuer")}
@@ -485,19 +497,21 @@ export default function NftsComponent({
               maxLength="35"
             />
           </span>
-          <span className='halv'>
-            <span className='input-title'>{t("table.taxon")}</span>
-            <input
-              placeholder={t("nfts.search-by-taxon")}
-              value={taxonInput}
-              onChange={(e) => { setTaxonInput(e.target.value) }}
-              onKeyPress={onTaxonInput}
-              className="input-text"
-              spellCheck="false"
-              maxLength="35"
-              disabled={issuerInput ? false : true}
-            />
-          </span>
+          {!xahauNetwork &&
+            <span className='halv'>
+              <span className='input-title'>{t("table.taxon")}</span>
+              <input
+                placeholder={t("nfts.search-by-taxon")}
+                value={taxonInput}
+                onChange={(e) => { setTaxonInput(e.target.value) }}
+                onKeyPress={onTaxonInput}
+                className="input-text"
+                spellCheck="false"
+                maxLength="35"
+                disabled={issuerInput ? false : true}
+              />
+            </span>
+          }
         </div>
         <div className='center'>
           <span className='halv'>
@@ -532,7 +546,7 @@ export default function NftsComponent({
       </>}
       <div className='tabs-inline'>
         <Tabs tabList={viewTabList} tab={viewTab} setTab={setViewTab} name='view' />
-        {!burnedPeriod &&
+        {(!burnedPeriod && !xahauNetwork) &&
           <>
             <Tabs tabList={listTabList} tab={listTab} setTab={setListTab} name='saleType' />
             {listTab === 'onSale' &&
@@ -606,8 +620,8 @@ export default function NftsComponent({
               <tr>
                 <th className='center'>{t("table.index")}</th>
                 <th>NFT</th>
-                <th className='center'>{t("table.serial")}</th>
-                {!taxon && <th className='center'>{t("table.taxon")}</th>}
+                {!xahauNetwork && <th className='center'>{t("table.serial")}</th>}
+                {(!taxon && !xahauNetwork) && <th className='center'>{t("table.taxon")}</th>}
                 {!issuer && <th className='center'>{t("table.issuer")}</th>}
                 {(!id && !owner) && <th className='right'>{t("table.owner")}</th>}
                 {listTab === 'onSale' && <th className='right'>{t("table.price")}</th>}
@@ -627,8 +641,8 @@ export default function NftsComponent({
                     <tr key={nft.nftokenID}>
                       <td className="center">{i + 1}</td>
                       <td>{nftThumbnail(nft)} {nftNameLink(nft)}</td>
-                      <td className='center'>{nft.sequence}</td>
-                      {!taxon && <td className='center'>{nft.nftokenTaxon}</td>}
+                      {!xahauNetwork && <td className='center'>{nft.sequence}</td>}
+                      {(!taxon && !xahauNetwork) && <td className='center'>{nft.nftokenTaxon}</td>}
                       {!issuer && <td className='center'>{nftLink(nft, 'issuer')}</td>}
                       {(!id && !owner) && <td className='right'>{nftLink(nft, 'owner', { address: 'short' })}</td>}
                       {listTab === 'onSale' && <td className='right'>{priceData(nft.sellOffers)}</td>}

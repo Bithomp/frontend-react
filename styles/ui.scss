@@ -211,6 +211,22 @@ input {
   padding-bottom: 5px;
 }
 
+span.whole {
+  margin: 5px;
+  max-width: 766px;
+  width: calc(100% - 12px);
+  display: inline-block;
+  input {
+    &.input-text {
+      max-width: 744px;
+    }
+  }
+  @media only screen and (max-width: 816px) {
+    width: calc(100% - 44px);
+    max-width: 378px;
+  }
+}
+
 span.halv {
   margin: 5px;
   max-width: 378px;

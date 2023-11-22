@@ -1042,21 +1042,32 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
 
                     {!notFoundInTheNetwork &&
                       <>
-                        {data.type === 'xls20' &&
-                          <table className='table-details'>
-                            <thead>
-                              <tr><th colSpan="100">{t("table.related-lists")}</th></tr>
-                            </thead>
-                            <tbody>
-                              <tr>
-                                <td>{t("table.by-issuer")}</td>
-                                <td>
-                                  <Link href={"/nft-distribution?issuer=" + data.issuer}>{t("holders", { ns: 'nft' })}</Link>,{" "}
-                                  <Link href={"/nft-explorer?issuer=" + data.issuer}>{t("table.all-nfts")}</Link>,{" "}
-                                  <Link href={"/nft-sales?issuer=" + data.issuer}>{t("table.sold_few")}</Link>,{" "}
-                                  <Link href={"/nft-explorer?issuer=" + data.issuer + "&list=onSale"}>{t("table.on-sale")}</Link>
-                                </td>
-                              </tr>
+
+                        <table className='table-details'>
+                          <thead>
+                            <tr><th colSpan="100">{t("table.related-lists")}</th></tr>
+                          </thead>
+                          <tbody>
+                            <tr>
+                              <td>{t("table.by-issuer")}</td>
+                              <td>
+                                {data.type === 'xls20' &&
+                                  <>
+                                    <Link href={"/nft-distribution?issuer=" + data.issuer}>{t("holders", { ns: 'nft' })}</Link>
+                                    ,{" "}
+                                  </>
+                                }
+                                <Link href={"/nft-explorer?issuer=" + data.issuer}>{t("table.all-nfts")}</Link>
+                                {data.type === 'xls20' &&
+                                  <>
+                                    ,{" "}
+                                    <Link href={"/nft-sales?issuer=" + data.issuer}>{t("table.sold_few")}</Link>,{" "}
+                                    <Link href={"/nft-explorer?issuer=" + data.issuer + "&list=onSale"}>{t("table.on-sale")}</Link>
+                                  </>
+                                }
+                              </td>
+                            </tr>
+                            {data.type === 'xls20' &&
                               <tr>
                                 <td>{t("table.by-taxon")}</td>
                                 <td>
@@ -1065,16 +1076,20 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
                                   <Link href={"/nft-explorer?issuer=" + data.issuer + "&taxon=" + data.nftokenTaxon + "&list=onSale"}>{t("table.on-sale")}</Link>
                                 </td>
                               </tr>
-                              <tr>
-                                <td>{t("table.by-owner")}</td>
-                                <td>
-                                  <Link href={"/nft-explorer?owner=" + data.owner}>{t("table.all-nfts")}</Link>,{" "}
-                                  <Link href={"/nft-explorer?owner=" + data.owner + "&list=onSale"}>{t("table.on-sale")}</Link>
-                                </td>
-                              </tr>
-                            </tbody>
-                          </table>
-                        }
+                            }
+                            <tr>
+                              <td>{t("table.by-owner")}</td>
+                              <td>
+                                <Link href={"/nft-explorer?owner=" + data.owner}>{t("table.all-nfts")}</Link>
+                                {data.type === 'xls20' &&
+                                  <>,{" "}
+                                    <Link href={"/nft-explorer?owner=" + data.owner + "&list=onSale"}>{t("table.on-sale")}</Link>
+                                  </>
+                                }
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
 
                         {data.history?.length > 0 &&
                           <table className='table-details'>
