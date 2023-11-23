@@ -112,6 +112,17 @@
     "set-account": {
       "domain": "Domain",
       "enter-domain": "Domain eingeben"
+    },
+    "status": {
+      "awaiting-crawler": "Awaiting for our crawler to catch up with the tx ledger",
+      "awaiting-broker": "Awaiting for {{serviceName}} to accept the offer",
+      "failed-broker": "Failed to notify {{serviceName}} about the offer. You can cancel it."
+    },
+    "nft-offer": {
+      "counteroffer": "You're making a counteroffer, which should to be accepted automatically within 20 seconds. If it's not accepted you can cancel it at any time.",
+      "nft-price": "NFT price",
+      "fee": "{{serviceName}} fee ({{feeText}})",
+      "total": "Total"
     }
   },
   "footer": {

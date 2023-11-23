@@ -571,10 +571,10 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
     }
 
     if (mpUrl(best)) {
-      //Partner marketplaces - place counter offers
+      //Partner marketplaces - place counteroffers
       //testing on devnets ONLY for now.
       if (devNet && partnerMarketplaces[best.destination]) {
-        const { multiplier, fee, name } = partnerMarketplaces[best.destination]
+        const { multiplier, fee, name, feeText } = partnerMarketplaces[best.destination]
         let request = {
           "TransactionType": "NFTokenCreateOffer",
           "NFTokenID": id,
@@ -602,7 +602,8 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
               broker: {
                 name,
                 fee: best.amount * fee,
-                nftPrice: best.amount
+                nftPrice: best.amount,
+                feeText
               }
             })}
           >

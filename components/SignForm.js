@@ -53,12 +53,12 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
   const [seatData, setSeatData] = useState({})
   const [targetLayer, setTargetLayer] = useState(signRequest?.layer)
   const [erase, setErase] = useState(false)
+  const [awaiting, setAwaiting] = useState(false)
 
   const [rewardRate, setRewardRate] = useState()
   const [rewardDelay, setRewardDelay] = useState()
 
   const xummUserToken = localStorage.getItem('xummUserToken')
-  let nftOfferCheckCount = 0
 
   useEffect(() => {
     //deeplink doesnt work on mobiles when it's not in the onClick event
@@ -251,26 +251,26 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
 
   const onPayloadResponse = data => {
     if (!data || data.error) {
-      setShowXummQr(false);
-      setStatus(data.error);
-      return;
+      setShowXummQr(false)
+      setStatus(data.error)
+      return
     }
-    setXummUuid(data.uuid);
-    setXummQrSrc(data.refs.qr_png);
-    setExpiredQr(false);
-    xummWsConnect(data.refs.websocket_status, xummWsConnected);
+    setXummUuid(data.uuid)
+    setXummQrSrc(data.refs.qr_png)
+    setExpiredQr(false)
+    xummWsConnect(data.refs.websocket_status, xummWsConnected)
     if (data.pushed) {
-      setStatus(t("signin.xumm.statuses.check-push"));
+      setStatus(t("signin.xumm.statuses.check-push"))
     }
     if (isMobile) {
       if (data.next && data.next.always) {
-        window.location = data.next.always;
+        window.location = data.next.always
       } else {
-        console.log("payload next.always is missing");
+        console.log("payload next.always is missing")
       }
     } else {
       setShowXummQr(true);
-      setStatus(t("signin.xumm.scan-qr"));
+      setStatus(t("signin.xumm.scan-qr"))
     }
   }
 
@@ -289,6 +289,30 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
         setExpiredQr(true)
         setStatus(t("signin.xumm.statuses.expired"))
       }
+    }
+  }
+
+  const checkTxInCrawler = async txid => {
+    setAwaiting(true)
+    setStatus(t("signin.status.awaiting-crawler"))
+    if (txid) {
+      const response = await axios("xrpl/transaction/" + txid)
+      if (response.data) {
+        const { validated, inLedger, ledger_index } = response.data
+        const includedInLedger = inLedger || ledger_index
+        if (validated && includedInLedger) {
+          checkCrawlerStatus(includedInLedger)
+        } else {
+          //if not validated or if no ledger info received, delay for 3 seconds
+          delay(3000, closeSignInFormAndRefresh)
+        }
+      } else {
+        //if no info on transaction, delay 3 sec
+        delay(3000, closeSignInFormAndRefresh)
+      }
+    } else {
+      //if no tx data, delay 3 sec
+      delay(3000, closeSignInFormAndRefresh)
     }
   }
 
@@ -325,12 +349,15 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
 
     //if broker, notify about the offer 
     if (data.custom_meta?.blob?.broker) {
+      setStatus(t("signin.status.awaiting-broker", { serviceName: data.custom_meta.blob.broker }))
       if (data.custom_meta.blob.broker === "onXRP") {
+        setAwaiting(true)
         const response = await axios("/v2/onxrp/transaction/broker/" + data.response.txid).catch(error => {
           console.log(error)
-          //not sumbitted to the broker, we can cancel it here... or not
-          closeSignInFormAndRefresh()
+          setStatus(t("signin.status.failed-broker", { serviceName: data.custom_meta.blob.broker }))
+          closeSignInFormAndRefresh() //setAwaiting false inside
         })
+        setAwaiting(false)
         if (response?.data) {
           /*
             {
@@ -350,12 +377,16 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
             }
           */
           const responseData = response.data
-          if (responseData.status && responseData.data?.[0]?.Index) {
-            // Index is the offer ID
-            // check if the offer was accepted
-            nftOfferCheckCount = 0
-            checkIfNftOfferAccepted(responseData.data[0].Index)
+          if (responseData.status && responseData.data?.hash) {
+            // hash of the offer accept transaction
+            checkTxInCrawler(responseData.data.hash)
+          } else {
+            setStatus(t("signin.status.failed-broker", { serviceName: data.custom_meta.blob.broker }))
+            closeSignInFormAndRefresh()
           }
+        } else {
+          setStatus(t("signin.status.failed-broker", { serviceName: data.custom_meta.blob.broker }))
+          closeSignInFormAndRefresh()
         }
       }
       return
@@ -363,25 +394,7 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
 
     // For NFT transaction, lets wait for crawler to finish it's job
     if (data.payload?.tx_type.includes("NFToken")) {
-      if (data.response?.txid) {
-        const response = await axios("xrpl/transaction/" + data.response.txid)
-        if (response.data) {
-          const { validated, inLedger, ledger_index } = response.data
-          const includedInLedger = inLedger || ledger_index
-          if (validated && includedInLedger) {
-            checkCrawlerStatus(includedInLedger)
-          } else {
-            //if not validated or if no ledger info received, delay for 3 seconds
-            delay(3000, closeSignInFormAndRefresh)
-          }
-        } else {
-          //if no info on transaction, delay 3 sec
-          delay(3000, closeSignInFormAndRefresh)
-        }
-      } else {
-        //if no tx data, delay 3 sec
-        delay(3000, closeSignInFormAndRefresh)
-      }
+      checkTxInCrawler(data.response?.txid)
       return
     } else {
       // no checks or delays for non NFT transactions
@@ -397,10 +410,6 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
       // the backend suppose to return info directly from ledger when crawler 30 seconds behind
       // othewrwise wait until crawler catch up with the ledger where this transaction was included
 
-      if (devNet) {
-        console.log("crawler index: ", ledgerIndex, "tx index: ", inLedger) //delete
-      }
-
       if (ledgerIndex >= inLedger || (inLedger - 10) > ledgerIndex) {
         closeSignInFormAndRefresh()
       } else {
@@ -410,43 +419,12 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
     }
   }
 
-  const checkIfNftOfferAccepted = async offerId => {
-    //check if it was accepted by a broker
-    const response = await axios("v2/nft/offer/" + offerId).catch(error => {
-      console.log(error)
-      delay(3000, closeSignInFormAndRefresh)
-    })
-    if (response?.data) {
-      const { acceptedLedgerIndex, canceledLedgerIndex } = response.data
-      const inLedger = acceptedLedgerIndex || canceledLedgerIndex
-      if (inLedger) {
-        //already accepted by broker or canceled by broker / user
-        //check when this ledger crawled
-        checkCrawlerStatus(inLedger)
-        if (devNet) {
-          console.log("already in ledger, wait for ceawler") //delete
-        }
-      } else if (nftOfferCheckCount < 5) {
-        //if not accepted or canceled, check again in 1 second
-        nftOfferCheckCount++
-        delay(1000, checkIfNftOfferAccepted, offerId)
-        if (devNet) {
-          console.log("delay 1s")//delete
-        }
-      } else {
-        //if not accepted or canceled after 5 checks, close the form
-        closeSignInFormAndRefresh()
-        if (devNet) {
-          console.log("delay 5s gone")//delete
-        }
-      }
-    }
-  }
-
   const closeSignInFormAndRefresh = () => {
     setXummQrSrc(qr)
     setScreen("choose-app")
     setSignRequest(null)
+    setAwaiting(false)
+    setStatus("")
   }
 
   const SignInCancelAndClose = () => {
@@ -673,22 +651,21 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
               <>
                 {signRequest.broker?.nftPrice ?
                   <>
-                    <p className='left' style={{ width: "360px", margin: "20px auto" }}>
-                      You're making a counter offer, which should to be accepted automatically within 1 minute.
-                      If it's not accepted you can cancel it at any time.
-                    </p>
-                    <table style={{ textAlign: "left", margin: "20px auto", width: "360px" }}>
+                    <span className='left whole' style={{ margin: "10px auto", fontSize: "14px", width: "360px", maxWidth: "calc(100% - 80px)" }}>
+                      {t("signin.nft-offer.counteroffer")}
+                    </span>
+                    <table style={{ textAlign: "left", margin: "10px auto", width: "360px", maxWidth: "calc(100% - 80px)" }}>
                       <tbody>
                         <tr>
-                          <td>NFT price</td>
+                          <td>{t("signin.nft-offer.nft-price")}</td>
                           <td className='right'> {amountFormat(signRequest.broker.nftPrice)}</td>
                         </tr>
                         <tr>
-                          <td>onXRP fee (1.5%)</td>
+                          <td>{t("signin.nft-offer.fee", { serviceName: signRequest.broker?.name, feeText: signRequest.broker?.feeText })}</td>
                           <td className='right'> {amountFormat(signRequest.broker?.fee)} </td>
                         </tr>
                         <tr>
-                          <td>Total</td>
+                          <td>{t("signin.nft-offer.total")}</td>
                           <td className='right'> <b>{amountFormat(signRequest.request.Amount)}</b></td>
                         </tr>
                       </tbody>
@@ -981,12 +958,18 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
                     {showXummQr ?
                       <XummQr expiredQr={expiredQr} xummQrSrc={xummQrSrc} onReset={XummTxSend} status={status} />
                       :
-                      <div className="orange bold center" style={{ margin: "20px" }}>{status}</div>
+                      <div className="orange bold center" style={{ margin: "20px" }}>
+                        {awaiting && <><span className="waiting"></span><br /></>}
+                        {status}
+                      </div>
                     }
                   </>
                   :
                   <>
-                    <div className="orange bold center" style={{ margin: "20px" }}>{status}</div>
+                    <div className="orange bold center" style={{ margin: "20px" }}>
+                      {awaiting && <><span className="waiting"></span><br /></>}
+                      {status}
+                    </div>
                   </>
                 }
               </>

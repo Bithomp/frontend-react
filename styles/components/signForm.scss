@@ -20,7 +20,7 @@
     outline-offset: -15px;
     position: fixed;
     width: 480px;
-    height: 540px; //bigger on devnets
+    height: 570px; //bigger on devnets
     margin-top: -240px;
     margin-left: -240px;
     top: 50%;
@@ -82,7 +82,7 @@
     }
     .terms-checkbox {
       text-align: left;
-      margin: 20px 52px;
+      margin: 10px 60px;
       font-size: 14px;
       @media only screen and (max-width: 480px) {
         text-align: left;
