@@ -959,7 +959,7 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
                       <XummQr expiredQr={expiredQr} xummQrSrc={xummQrSrc} onReset={XummTxSend} status={status} />
                       :
                       <div className="orange bold center" style={{ margin: "20px" }}>
-                        {awaiting && <><span className="waiting"></span><br /></>}
+                        {awaiting && <><span className="waiting"></span><br /><br /></>}
                         {status}
                       </div>
                     }
@@ -967,7 +967,7 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
                   :
                   <>
                     <div className="orange bold center" style={{ margin: "20px" }}>
-                      {awaiting && <><span className="waiting"></span><br /></>}
+                      {awaiting && <><span className="waiting"></span><br /><br /></>}
                       {status}
                     </div>
                   </>

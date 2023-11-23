@@ -114,7 +114,7 @@
       "enter-domain": "Enter domain"
     },
     "status": {
-      "awaiting-crawler": "Awaiting for our crawler to catch up with the tx ledger",
+      "awaiting-crawler": "Awaiting for crawler to update the data",
       "awaiting-broker": "Awaiting for {{serviceName}} to accept the offer",
       "failed-broker": "Failed to notify {{serviceName}} about the offer. You can cancel it."
     },
