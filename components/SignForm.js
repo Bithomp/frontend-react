@@ -393,7 +393,7 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
     }
 
     // For NFT transaction, lets wait for crawler to finish it's job
-    if (data.payload?.tx_type.includes("NFToken")) {
+    if (data.payload?.tx_type.includes("NFToken") || data.payload?.tx_type.includes("URIToken")) {
       checkTxInCrawler(data.response?.txid)
       return
     } else {
