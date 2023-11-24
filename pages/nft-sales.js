@@ -19,9 +19,22 @@ import {
 } from '../utils/format'
 
 export const getServerSideProps = async ({ query, locale }) => {
-  const { view, sale, list, currency, currencyIssuer, issuer, taxon, period, sortCurrency, marketplace } = query
+  const {
+    view,
+    sale,
+    list,
+    currency,
+    currencyIssuer,
+    issuer,
+    taxon,
+    period,
+    sortCurrency,
+    marketplace
+  } = query
+  //key added to re-render page when the same route is called with different params
   return {
     props: {
+      key: issuer || "",
       view: view || "tiles",
       sale: sale || "all",
       list: list || "top",
@@ -344,8 +357,8 @@ export default function NftSales({
         + (saleTab === 'secondary' ? t("tabs.secondary-sales") : "")
         + (saleTab === 'primary' ? t("tabs.primary-sales") : "")
         + " " + (list === "top" ? t("tabs.top-sales") : t("tabs.latest-sales"))
-        + (issuer ? (" " + issuer) : "")
-        + (taxon ? (" " + taxon) : "")
+        + (issuer ? (" " + issuer) : issuerQuery)
+        + (taxon ? (" " + taxon) : taxonQuery)
         + (currency ? (" " + currency) : "")
         + (currencyIssuer ? (" " + currencyIssuer) : "")
         + (viewTab === "list" ? (" " + t("tabs.list")) : "")

@@ -20,8 +20,10 @@ export const getServerSideProps = async ({ query, locale }) => {
     includeWithoutMetadata,
     id
   } = query
+  //key to refresh the component when Link pressed within the same route
   return {
     props: {
+      key: issuer || owner || id || "",
       view: view || "tiles",
       list: list || "nfts",
       saleDestination: saleDestination || "publicAndKnownBrokers",
