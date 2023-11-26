@@ -60,6 +60,7 @@ import CopyButton from '../../components/UI/CopyButton'
 import NftImageAndVideo from '../../components/NftPreview'
 
 import LinkIcon from "../../public/images/link.svg"
+import { nftName } from '../../utils/nft'
 
 export default function NftOffer({ setSignRequest, signRequest, account, id }) {
   const { t } = useTranslation()
@@ -218,7 +219,7 @@ export default function NftOffer({ setSignRequest, signRequest, account, id }) {
                   <div className="column-left">
                     <NftImageAndVideo nft={data.nftoken} />
                     <div className='center'>
-                      {data.nftoken.metadata?.name ? data.nftoken.metadata.name : ""}
+                      {nftName(data.nftoken)}
                       <br /><br />
                     </div>
 

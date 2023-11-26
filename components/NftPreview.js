@@ -3,7 +3,7 @@ import { useTranslation } from 'next-i18next'
 import Head from "next/head"
 
 import { stripText } from "../utils"
-import { nftUrl } from '../utils/nft'
+import { nftName, nftUrl } from '../utils/nft'
 
 import Tabs from './Tabs'
 import LoadingGif from "../public/images/loading.gif"
@@ -157,7 +157,7 @@ export default function NftPreview({ nft }) {
               setErrored(true);
             }
           }}
-          alt={nft.metadata?.name}
+          alt={nftName(nft)}
         />
       </>
     }

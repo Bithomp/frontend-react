@@ -358,7 +358,7 @@ export default function NftOffers({ setSignRequest, signRequest, account, offerL
                           </p>
                           <p>
                             NFT:{" "}
-                            {offer.nftoken?.metadata?.name ?
+                            {nftName(offer.nftoken) ?
                               nftNameLink(offer.nftoken)
                               :
                               nftOfferLink(offer.offerIndex)

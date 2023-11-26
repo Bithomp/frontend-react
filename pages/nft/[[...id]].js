@@ -859,7 +859,7 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
                   <div className="column-right">
                     {!notFoundInTheNetwork &&
                       <SocialShare
-                        title={data?.metadata?.name || "XRPL NFT"}
+                        title={nftName(data) || "XRPL NFT"}
                         description={pageMeta?.metadata?.description || ""}
                         hashtag="NFT"
                         image={imageUrl}

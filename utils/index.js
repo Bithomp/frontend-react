@@ -533,3 +533,20 @@ export const encodeAddressR = address => {
   if (!address) return null
   return decodeAccountID(address).toString("hex").toUpperCase()
 }
+
+export const shortName = (name, options) => {
+  name = stripText(name)
+  if (!options) {
+    options = {}
+  }
+  if (!options.maxLength) {
+    options.maxLength = 18
+  }
+  if (name?.length > options.maxLength) {
+    name = name.slice(0, name.slice(0, options.maxLength).lastIndexOf(" ")) + '...'
+    if (name.length > (options.maxLength + 3)) {
+      name = name.slice(0, options.maxLength) + '...'
+    }
+  }
+  return name
+}

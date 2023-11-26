@@ -1,5 +1,5 @@
 import { Buffer } from 'buffer'
-import { stripText } from '.'
+import { stripText, shortName } from '.'
 
 import Link from 'next/link'
 import LinkIcon from "../public/images/link.svg"
@@ -126,7 +126,7 @@ export const nftThumbnail = nft => {
       width="32px"
       height="32px"
       style={{ borderRadius: "50% 20% / 10% 40%", verticalAlign: "middle" }}
-      alt={nft.metadata?.name}
+      alt={nftName(nft)}
     />
   </Link>
 }
@@ -134,26 +134,30 @@ export const nftThumbnail = nft => {
 export const nftNameLink = nft => {
   if (!nft) return "";
   return <Link href={"/nft/" + nft.nftokenID}>
-    {nft?.metadata?.name ? nft.metadata.name : <LinkIcon />}
+    {nftName(nft) ? nftName(nft) : <LinkIcon />}
   </Link>
 }
 
-export const nftName = nft => {
+export const nftName = (nft, options = {}) => {
   //xls-35
+  let name = ""
   if (nft?.metadata?.details?.title) {
-    return stripText(nft.metadata.details.title);
+    name = nft.metadata.details.title
     //xls-20
   } else if (nft?.metadata?.name) {
-    return stripText(nft.metadata.name);
+    name = nft.metadata.name
   } else if (nft?.metadata?.Name) {
-    return stripText(nft.metadata.Name);
+    name = nft.metadata.Name
   } else if (nft?.uri) {
-    let name = Buffer.from(nft.uri, 'hex');
+    name = Buffer.from(nft.uri, 'hex')
     if (name.includes('filename=')) {
-      name = name.split('filename=')[1];
-      return stripText(name);
+      name = name.split('filename=')[1]
     }
   }
+  if (options.maxLength) {
+    return shortName(name, options)
+  }
+  return stripText(name)
 }
 
 export const isValidTaxon = taxon => {
