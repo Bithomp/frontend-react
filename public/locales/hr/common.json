@@ -63,8 +63,8 @@
       "90d": "90 dana"
     },
     "target-table-select": {
-      "01": "Main table",
-      "02": "My table"
+      "01": "L1 - Main table",
+      "02": "L2 - My table"
     }
   },
   "signin": {
