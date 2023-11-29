@@ -5,7 +5,7 @@ export default function CheckBox({ children, checked, setChecked }) {
 
   return <label className="checkbox">
     {children}
-    <input type="checkbox" onChange={handleChange} checked={checked} />
+    <input type="checkbox" onChange={handleChange} checked={checked === "true" ? true : checked} />
     <span className="checkmark"></span>
   </label>;
 }
