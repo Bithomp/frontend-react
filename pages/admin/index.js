@@ -299,6 +299,9 @@ export default function Admin() {
     checkApi()
   }
 
+  const now = new Date()
+  const nowDate = new Date(now.getFullYear(), now.getMonth() + 1, now.getDay())
+
   return <>
     <SEO title={t("header", { ns: "admin" })} />
     <div className="page-admin content-center" style={{ maxWidth: "1040px" }}>
@@ -438,7 +441,28 @@ export default function Admin() {
                   </tr>
                   <tr>
                     <td className='right'>Status</td>
-                    <td className='left'>{apiData.locked ? "locked" : "active"}</td>
+                    <td className='left'>
+                      {apiData.locked ?
+                        <b className='red'>locked</b>
+                        :
+                        <>
+                          {apiData.tier === 'free' ?
+                            <b className='green'>active</b>
+                            :
+                            <>
+                              {new Date(apiData.expirationAt) > nowDate ?
+                                <>
+                                  <b className='green'>active</b> until
+                                </>
+                                :
+                                <b className='red'>expired</b>
+                              }
+                              <> {new Date(apiData.expirationAt).toLocaleDateString()}</>
+                            </>
+                          }
+                        </>
+                      }
+                    </td>
                   </tr>
                   <tr>
                     <td className='right'>{t("table.domain")}</td>
