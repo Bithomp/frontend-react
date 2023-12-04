@@ -208,7 +208,7 @@ const ipfsUrl = (uri, type = 'image', gateway = 'our') => {
   if (cid) {
     url = stripText(cid + url.split(cid).pop());
     url = url.replace('#', '%23');
-    if (gateway === 'our' && (type === 'image' || type === 'video' || type === 'thumbnail')) {
+    if (gateway === 'our' && (type === 'image' || type === 'video' || type === 'thumbnail' || type === 'preview')) {
       return 'https://ipfs.bithomp.com/' + type + '/' + url;
     } else if (gateway === 'cl' && type === 'model') {
       return stripText(uri);
@@ -265,6 +265,9 @@ const metaUrl = (nft, type = 'image', gateway = 'our') => {
         return assetUrl(decodedUri.replace("metadata.json", ("data." + meta.file_extension)), type, gateway);
       }
     };
+    //image from animation, if it is not a model
+    if (meta.animation && !isCorrectFileType(meta.animation, 'model')) return assetUrl(meta.animation, 'preview', gateway);
+    if (meta.animation_url && !isCorrectFileType(meta.animation_url, 'model')) return assetUrl(meta.animation_url, 'preview', gateway);
   }
   if (type === 'video' || type === 'thumbnail') {
     if (meta.video) return assetUrl(meta.video, type, gateway);
