@@ -7,7 +7,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import Image from 'next/image'
 import Link from 'next/link'
 
-import { stripText, server, decode, network, devNet } from '../../utils'
+import { stripText, server, decode, network } from '../../utils'
 import { convertedAmount } from '../../utils/format'
 import { getIsSsrMobile } from "../../utils/mobile"
 import { nftName, mpUrl, bestNftOffer, nftUrl, partnerMarketplaces } from '../../utils/nft'
@@ -573,7 +573,7 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
     if (mpUrl(best)) {
       //Partner marketplaces - place counteroffers
       //testing on devnets ONLY for now.
-      if (devNet && partnerMarketplaces[best.destination]) {
+      if (partnerMarketplaces[best.destination]) {
         const { multiplier, fee, name, feeText } = partnerMarketplaces[best.destination]
         let request = {
           "TransactionType": "NFTokenCreateOffer",

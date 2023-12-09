@@ -27,7 +27,7 @@ export const getServerSideProps = async ({ query, locale }) => {
       key: issuer || owner || id || "",
       view: view || "tiles",
       list: list || "nfts",
-      saleDestination: saleDestination || "publicAndKnownBrokers",
+      saleDestination: saleDestination || "buyNow",
       saleCurrency: saleCurrency || "xrp",
       saleCurrencyIssuer: saleCurrencyIssuer || "",
       searchQuery: search || "",

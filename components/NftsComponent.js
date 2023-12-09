@@ -81,8 +81,8 @@ export default function NftsComponent({
   ];
 
   const saleDestinationTabList = [
-    { value: 'publicAndKnownBrokers', label: t("tabs.publicAndKnownBrokers") },
-    { value: 'public', label: t("tabs.public") }
+    { value: 'buyNow', label: t("tabs.buyNow") },
+    { value: 'publicAndKnownBrokers', label: t("tabs.publicAndKnownBrokers") }
   ];
 
   const checkApi = async (options) => {
@@ -116,7 +116,7 @@ export default function NftsComponent({
 
     if (listTab === 'onSale') {
       //order: "offerCreatedNew", "offerCreatedOld", "priceLow", "priceHigh"
-      //destination: "public", "knownBrokers", "publicAndKnownBrokers", "all"
+      //destination: "public", "knownBrokers", "publicAndKnownBrokers", "all", "buyNow"
       listUrlPart = '?list=onSale&destination=' + saleDestinationTab
       orderPart = '&order=priceLow'
       if (saleCurrencyIssuer && saleCurrency) {
@@ -308,7 +308,7 @@ export default function NftsComponent({
       tabsToSet.push({
         tabList: saleDestinationTabList,
         tab: saleDestinationTab,
-        defaultTab: "publicAndKnownBrokers",
+        defaultTab: "buyNow",
         setTab: setSaleDestinationTab,
         paramName: "saleDestination"
       })
