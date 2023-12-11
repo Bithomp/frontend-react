@@ -73,7 +73,6 @@ export default function Footer({ account, setSignRequest }) {
           {network !== 'mainnet' && <a href="https://bithomp.com">XRPL Mainnet</a>}
           {network !== 'testnet' && <a href="https://test.bithomp.com">XRPL Testnet</a>}
           {network !== 'devnet' && <a href="https://dev.bithomp.com">XRPL Devnet</a>}
-          {network !== 'amm' && <a href="https://amm.bithomp.com">XRPL AMM</a>}
         </div>
         <div className="footer-menu-column">
           <span className="footer-menu-header">{t("menu.legal")}</span>

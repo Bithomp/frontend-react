@@ -277,7 +277,7 @@ export const submitTransaction = async (blob, callback) => {
   }
 }
 
-//const devNetworks = ['testnet', 'devnet', 'amm', 'xahau-testnet'];
+//const devNetworks = ['testnet', 'devnet', 'xahau-testnet'];
 
 export const capitalize = str => {
   if (!str) return ""
@@ -325,15 +325,6 @@ const networks = {
     ledgerName: "XRPL",
     minLedger: 1
   },
-  amm: {
-    id: 25,
-    server: "https://amm.bithomp.com",
-    nativeCurrency: "XRP",
-    getCoinsUrl: "/faucet/",
-    explorerName: "XRP AMM",
-    ledgerName: "XRPL",
-    minLedger: 1
-  },
   "xahau-testnet": {
     id: 21338,
     server: "https://test.xahauexplorer.com",
@@ -375,7 +366,6 @@ export const networksIds = {
   0: { server: "https://bithomp.com", name: "mainnet" },
   1: { server: "https://test.bithomp.com", name: "testnet" },
   2: { server: "https://dev.bithomp.com", name: "devnet" },
-  25: { server: "https://amm.bithomp.com", nam: "amm" },
   21337: { server: "https://xahauexplorer.com", name: "xahau" },
   21338: { server: "https://test.xahauexplorer.com", name: "xahau-testnet" }
 }
