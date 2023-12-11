@@ -269,7 +269,7 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
         console.log("payload next.always is missing")
       }
     } else {
-      setShowXummQr(true);
+      setShowXummQr(true)
       setStatus(t("signin.xumm.scan-qr"))
     }
   }
@@ -654,22 +654,24 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
                     <span className='left whole' style={{ margin: "10px auto", fontSize: "14px", width: "360px", maxWidth: "calc(100% - 80px)" }}>
                       {t("signin.nft-offer.counteroffer")}
                     </span>
-                    <table style={{ textAlign: "left", margin: "10px auto", width: "360px", maxWidth: "calc(100% - 80px)" }}>
-                      <tbody>
-                        <tr>
-                          <td>{t("signin.nft-offer.nft-price")}</td>
-                          <td className='right'> {amountFormat(signRequest.broker.nftPrice)}</td>
-                        </tr>
-                        <tr>
-                          <td>{t("signin.nft-offer.fee", { serviceName: signRequest.broker?.name, feeText: signRequest.broker?.feeText })}</td>
-                          <td className='right'> {amountFormat(signRequest.broker?.fee)} </td>
-                        </tr>
-                        <tr>
-                          <td>{t("signin.nft-offer.total")}</td>
-                          <td className='right'> <b>{amountFormat(signRequest.request.Amount)}</b></td>
-                        </tr>
-                      </tbody>
-                    </table>
+                    <div style={{ textAlign: "left", margin: "10px auto", width: "360px", maxWidth: "calc(100% - 80px)" }}>
+                      <table style={{ width: "100%" }}>
+                        <tbody>
+                          <tr>
+                            <td>{t("signin.nft-offer.nft-price")}</td>
+                            <td className='right'> {amountFormat(signRequest.broker.nftPrice)}</td>
+                          </tr>
+                          <tr>
+                            <td>{t("signin.nft-offer.fee", { serviceName: signRequest.broker?.name, feeText: signRequest.broker?.feeText })}</td>
+                            <td className='right'> {amountFormat(signRequest.broker?.fee)} </td>
+                          </tr>
+                          <tr>
+                            <td>{t("signin.nft-offer.total")}</td>
+                            <td className='right'> <b>{amountFormat(signRequest.request.Amount)}</b></td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
                   </>
                   :
                   <div className='center'>
