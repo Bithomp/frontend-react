@@ -1,6 +1,8 @@
 import { useTranslation, Trans } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import Mailto from 'react-protected-mailto'
+import { useState, useEffect } from 'react'
+import axios from 'axios'
 
 import SocialIcons from '../components/Layout/SocialIcons'
 import SEO from '../components/SEO'
@@ -16,8 +18,19 @@ export async function getServerSideProps(context) {
   }
 }
 
-export default function Contact({ networkInfo }) {
-  const { t } = useTranslation();
+export default function Contact() {
+  const { t } = useTranslation()
+  const [networkInfo, setNetworkInfo] = useState({})
+
+  useEffect(() => {
+    async function fetchData() {
+      const networkInfoData = await axios('v2/server')
+      setNetworkInfo(networkInfoData?.data)
+    }
+
+    fetchData()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   return <>
     <SEO title={t("menu.customer-support")} />

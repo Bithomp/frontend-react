@@ -1,7 +1,21 @@
 import { useTranslation } from 'next-i18next'
+import { useState, useEffect } from 'react'
+import axios from 'axios'
 
-export default function TopLinks({ countryCode }) {
+export default function TopLinks() {
   const { t } = useTranslation()
+  const [countryCode, setCountryCode] = useState('')
+
+  useEffect(() => {
+    async function fetchData() {
+      /* {"ip":"176.28.256.49","country":"SE"} */
+      const clientInfo = await axios('client/info')
+      setCountryCode(clientInfo?.data?.country)
+    }
+
+    fetchData()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   {/* it is important to have "tooltiptext right" on the first ad, otherwise brakes UI on mobiles, too wide to the left */ }
   {/* it is important to have "tooltiptext left" on the last ad, otherwise brakes UI on mobiles, too wide to the right */ }

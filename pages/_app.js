@@ -1,7 +1,7 @@
 import Head from 'next/head'
 import Script from 'next/script'
 import { useRouter } from 'next/router'
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import axios from 'axios'
 import { appWithTranslation } from 'next-i18next'
 
@@ -21,9 +21,7 @@ import { ThemeProvider } from "../components/Layout/ThemeContext"
 const MyApp = ({ Component, pageProps }) => {
   const [account, setAccount] = useLocalStorage('account')
   const [selectedCurrency, setSelectedCurrency] = useLocalStorage('currency', 'usd')
-  const [countryCode, setCountryCode] = useState('')
   const [signRequest, setSignRequest] = useState(false)
-  const [networkInfo, setNetworkInfo] = useState({})
 
   const router = useRouter()
 
@@ -45,22 +43,6 @@ const MyApp = ({ Component, pageProps }) => {
   if (showTopAds) {
     showTopAds = !pagesWithNoTopAdds.includes(router.pathname)
   }
-
-  useEffect(() => {
-    async function fetchData() {
-      if (showAds) {
-        /* {"ip":"176.28.256.49","country":"SE"} */
-        const clientInfo = await axios('client/info')
-        setCountryCode(clientInfo?.data?.country)
-      }
-
-      const networkInfoData = await axios('v2/server')
-      setNetworkInfo(networkInfoData?.data)
-    }
-
-    fetchData()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
 
   return (
     <>
@@ -101,9 +83,7 @@ const MyApp = ({ Component, pageProps }) => {
             }
             <div className="content">
               {showTopAds &&
-                <TopLinks
-                  countryCode={countryCode}
-                />
+                <TopLinks />
               }
               <Component
                 {...pageProps}
@@ -115,8 +95,6 @@ const MyApp = ({ Component, pageProps }) => {
                 selectedCurrency={selectedCurrency}
                 setSelectedCurrency={setSelectedCurrency}
                 showAds={showAds}
-                countryCode={countryCode}
-                networkInfo={networkInfo}
               />
             </div>
             <BackgroundImage />
