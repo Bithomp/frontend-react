@@ -59,7 +59,7 @@ export default function Contact() {
         <li>{t("paper-wallet", { ns: "customer-support", nativeCurrency })}</li>
         <li>
           <Trans ns="customer-support" i18nKey="text3">
-            If you have a <b>partnership or marketing</b> proposals then you can contact us by email: <Mailto email='support@bithomp.com' headers={{ subject: 'Bithomp contact page' }} />. You can also contact us with questions about the bithomp username registration or bithomp transaction explorer.
+            If you have a <b>partnership or marketing</b> proposals then you can contact us by email: <Mailto email='partner@bithomp.com' headers={{ subject: 'Bithomp partner' }} />. You can also contact us with questions about the bithomp username registration or bithomp transaction explorer.
           </Trans>
         </li>
       </ol>
@@ -67,7 +67,7 @@ export default function Contact() {
       <h2>{t("submit-info", { ns: "customer-support" })}</h2>
       <p>
         <Trans ns="customer-support" i18nKey="text4">
-          If you have a public service and you want your addresses to be recognised on Bithomp submit your information <a href="https://bithomp.com/explorer/submit.html">here</a>. You can also contact us by email: <Mailto email='support@bithomp.com' headers={{ subject: 'New XRPL Service' }} /> if you want to speed up the process.
+          If you have a public service and you want your addresses to be recognised on Bithomp submit your information <a href="https://bithomp.com/explorer/submit.html">here</a>.
         </Trans>
       </p>
       <h2>{t("follow-us", { ns: "customer-support" })}</h2>

@@ -27,7 +27,7 @@ export default function Advertise() {
           Bithomp is the most popular XRPL Explorer that focuses on the community.
           Through sponsored content on our website, we offer a platform for projects and businesses to connect with the XRPL users and larger blockchain community.
         </p>
-        <p className='bold'>Contact us to advertise <Mailto email='support@bithomp.com' headers={{ subject: 'Advertise' }} />.</p>
+        <p className='bold'>Contact us to advertise <Mailto email='partner@bithomp.com' headers={{ subject: 'Advertise' }} />.</p>
         <h2 className='center'>Advertisement Types</h2>
         <p>
           Bring your message to the attention of thousands of blockchain enthusiasts.
@@ -45,7 +45,7 @@ export default function Advertise() {
         <p>Place your advertisement on the top of all our NFT Explorer pages to connect with the NFT community's users.</p>
         <Image src="/images/advertise/new-pages-header.png" alt="NFT Explorer Header Text Ad" width="0" height="0" sizes="100vw" style={{ width: "100%", height: 'auto' }} />
         <br /><br /><br />
-        <p className='center bold'>Contact us to advertise <Mailto email='support@bithomp.com' headers={{ subject: 'Advertise' }} />.</p>
+        <p className='center bold'>Contact us to advertise <Mailto email='partner@bithomp.com' headers={{ subject: 'Advertise' }} />.</p>
       </div>
     </>
   )
