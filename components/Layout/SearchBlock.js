@@ -382,7 +382,7 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
               {tab === "nft-offers" ? <b>{t("nft-offers.header")}</b> : <Link href={"/nft-offers/" + searchItem}>{t("nft-offers.header")}</Link>}
             </>}
             {tab === "nft-volumes" && <b>{t("menu.nft.volumes")}</b>}
-            <a href={"/explorer/" + searchItem}>{t("explorer.menu.account")}</a>
+            {tab !== "account" && <a href={"/explorer/" + searchItem}>{t("explorer.menu.account")}</a>}
             {tab !== "nft-volumes" && <a href={"/explorer/" + searchItem} className='hide-on-mobile'>{t("explorer.menu.transactions")}</a>}
             {tab !== "nft-volumes" && <a href={"/explorer/" + searchItem} className='hide-on-mobile'>{t("explorer.menu.tokens")}</a>}
           </div>

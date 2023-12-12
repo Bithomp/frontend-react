@@ -318,6 +318,12 @@ export default function Account({ pageMeta, signRequest, id, selectedCurrency })
                         <tr><th colSpan="100">{t("table.ledger-data")}</th></tr>
                       </thead>
                       <tbody>
+                        {data?.ledgerInfo?.accountIndex &&
+                          <tr>
+                            <td>Account ID</td>
+                            <td>{data.ledgerInfo.accountIndex} <CopyButton text={data.ledgerInfo.accountIndex}></CopyButton></td>
+                          </tr>
+                        }
                         <tr>
                           <td>{t("table.address")}</td>
                           <td>{data.address} <CopyButton text={data.address}></CopyButton></td>
@@ -373,7 +379,9 @@ export default function Account({ pageMeta, signRequest, id, selectedCurrency })
                                       <b className='green'>{amountFormat(balances?.available?.native)}</b>
                                     </td>
                                     <td>
-                                      ≈ {shortNiceNumber(balances?.available?.fiat, 2, 3, selectedCurrency)}
+                                      {balances?.available?.fiat &&
+                                        <>≈ {shortNiceNumber(balances.available.fiat, 2, 3, selectedCurrency)}</>
+                                      }
                                     </td>
                                   </tr>
                                   <tr>
@@ -382,7 +390,9 @@ export default function Account({ pageMeta, signRequest, id, selectedCurrency })
                                       {amountFormat(balances?.reserved?.native, { minFractionDigits: 6 })}
                                     </td>
                                     <td>
-                                      ≈ {shortNiceNumber(balances?.reserved?.fiat, 2, 3, selectedCurrency)}
+                                      {balances?.reserved?.fiat &&
+                                        <>≈ {shortNiceNumber(balances.reserved.fiat, 2, 3, selectedCurrency)}</>
+                                      }
                                     </td>
                                   </tr>
                                   <tr>
@@ -391,7 +401,9 @@ export default function Account({ pageMeta, signRequest, id, selectedCurrency })
                                       {amountFormat(balances?.total?.native)}
                                     </td>
                                     <td>
-                                      ≈ {shortNiceNumber(balances?.total?.fiat, 2, 3, selectedCurrency)}
+                                      {balances?.total?.fiat &&
+                                        <>≈ {shortNiceNumber(balances.total.fiat, 2, 3, selectedCurrency)}</>
+                                      }
                                     </td>
                                   </tr>
                                 </tbody>
