@@ -4,10 +4,13 @@ import axios from 'axios'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import Link from 'next/link'
 import Image from 'next/image'
+import moment from 'moment'
 
 import { server, getCoinsUrl, nativeCurrency } from '../../utils'
-import { amountFormat } from '../../utils/format'
+import { amountFormat, shortNiceNumber, fullDateAndTime } from '../../utils/format'
 import { getIsSsrMobile } from "../../utils/mobile"
+
+import LinkIcon from "../../public/images/link.svg"
 
 export async function getServerSideProps(context) {
   const { locale, query, req } = context
@@ -50,18 +53,29 @@ import SearchBlock from '../../components/Layout/SearchBlock'
 import CopyButton from '../../components/UI/CopyButton'
 
 // setSignRequest, account
-export default function Account({ pageMeta, signRequest, id, selectedCurrency, networkInfo }) {
+export default function Account({ pageMeta, signRequest, id, selectedCurrency }) {
   const { t } = useTranslation()
 
   const [data, setData] = useState({})
   const [loading, setLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState("")
   const [ledgerTimestamp, setLedgerTimestamp] = useState("")
+  const [fiatRate, setFiatRate] = useState("")
   const [userData, setUserData] = useState({
     username: pageMeta?.username,
     service: pageMeta?.service?.name,
     address: pageMeta?.address || id
   })
+  const [networkInfo, setNetworkInfo] = useState({})
+  const [balances, setBalances] = useState({})
+
+  useEffect(() => {
+    async function fetchData() {
+      const networkInfoData = await axios('v2/server')
+      setNetworkInfo(networkInfoData?.data)
+    }
+    fetchData()
+  }, [])
 
   const checkApi = async (opts) => {
     if (!id) return
@@ -120,6 +134,16 @@ export default function Account({ pageMeta, signRequest, id, selectedCurrency, n
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, signRequest, selectedCurrency, ledgerTimestamp])
+
+  useEffect(() => {
+    async function fetchRate() {
+      const response = await axios(
+        'v2/rates/current/' + selectedCurrency,
+      )
+      setFiatRate(response.data[selectedCurrency])
+    }
+    fetchRate()
+  }, [selectedCurrency])
 
   const avatarSrc = data => {
     /*
@@ -207,6 +231,35 @@ export default function Account({ pageMeta, signRequest, id, selectedCurrency, n
     return output
   }
 
+  useEffect(() => {
+    if (!data?.ledgerInfo || !networkInfo) return
+    let balanceList = {
+      total: {
+        native: data.ledgerInfo.balance
+      },
+      reserved: {
+        native: data.ledgerInfo.ownerCount * networkInfo.reserveIncrement
+      },
+      available: {}
+    }
+
+    if (balanceList.reserved.native > balanceList.total.native) {
+      balanceList.reserved.native = balanceList.total.native
+    }
+
+    balanceList.available.native = balanceList.total.native - balanceList.reserved.native
+
+    if (balanceList.available.native < 0) {
+      balanceList.available.native = 0
+    }
+
+    balanceList.total.fiat = ((balanceList.total.native / 1000000) * fiatRate).toFixed(2)
+    balanceList.reserved.fiat = ((balanceList.reserved.native / 1000000) * fiatRate).toFixed(2)
+    balanceList.available.fiat = ((balanceList.available.native / 1000000) * fiatRate).toFixed(2)
+
+    setBalances(balanceList)
+  }, [data, networkInfo, fiatRate])
+
   return <>
     <SEO
       page="Account"
@@ -245,7 +298,7 @@ export default function Account({ pageMeta, signRequest, id, selectedCurrency, n
                       <div className='center hidden'>
                         Time machine<br /><br />
                       </div>
-                      <table className='table-details autowidth'>
+                      <table className='table-details autowidth hidden'>
                         <thead>
                           <tr>
                             <th colSpan="100">Statuses</th>
@@ -262,34 +315,25 @@ export default function Account({ pageMeta, signRequest, id, selectedCurrency, n
                   <div className="column-right">
                     <table className='table-details'>
                       <thead>
-                        <tr>
-                          <th colSpan="100">Public data</th>
-                        </tr>
+                        <tr><th colSpan="100">{t("table.ledger-data")}</th></tr>
                       </thead>
                       <tbody>
                         <tr>
                           <td>{t("table.address")}</td>
                           <td>{data.address} <CopyButton text={data.address}></CopyButton></td>
                         </tr>
-                        {accountNameTr(data)}
-                        {/*
-                          <tr>
-                            <td>Data</td>
-                            <td>{codeHighlight(data)}</td>
-                          </tr>
-                        */}
-                      </tbody>
-                    </table>
-
-                    <table className='table-details'>
-                      <thead>
-                        <tr><th colSpan="100">{t("table.ledger-data")}</th></tr>
-                      </thead>
-                      <tbody>
                         <tr>
-                          <td className='bold'>Status</td>
+                          <td>{t("table.status")}</td>
                           {data?.ledgerInfo?.activated ?
-                            <td>Active {/* Last active (here you will see the last submitted transaction and the time passed) */}</td>
+                            <td>
+                              <span className='green'>Active </span>
+                              {data?.ledgerInfo?.lastSubmittedAt &&
+                                moment((data.ledgerInfo.lastSubmittedAt) * 1000, "unix").fromNow()
+                              }
+                              {data?.ledgerInfo?.lastSubmittedTxHash &&
+                                <Link href={"/explorer/" + data.ledgerInfo.lastSubmittedTxHash}> <LinkIcon /></Link>
+                              }
+                            </td>
                             :
                             <td>
                               {/* Also show blackholed status */}
@@ -320,9 +364,62 @@ export default function Account({ pageMeta, signRequest, id, selectedCurrency, n
                         {data?.ledgerInfo?.balance &&
                           <tr>
                             <td>{t("table.balance")}</td>
-                            <td>{amountFormat(data.ledgerInfo.balance)}</td>
+                            <td>
+                              <table style={{ marginLeft: "-5px" }}>
+                                <tbody>
+                                  <tr>
+                                    <td>Available:</td>
+                                    <td>
+                                      <b className='green'>{amountFormat(balances?.available?.native)}</b>
+                                    </td>
+                                    <td>
+                                      ≈ {shortNiceNumber(balances?.available?.fiat, 2, 3, selectedCurrency)}
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                    <td>Reserved:</td>
+                                    <td>
+                                      {amountFormat(balances?.reserved?.native, { minFractionDigits: 6 })}
+                                    </td>
+                                    <td>
+                                      ≈ {shortNiceNumber(balances?.reserved?.fiat, 2, 3, selectedCurrency)}
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                    <td className='right'>Total:</td>
+                                    <td>
+                                      {amountFormat(balances?.total?.native)}
+                                    </td>
+                                    <td>
+                                      ≈ {shortNiceNumber(balances?.total?.fiat, 2, 3, selectedCurrency)}
+                                    </td>
+                                  </tr>
+                                </tbody>
+                              </table>
+                            </td>
                           </tr>
                         }
+                      </tbody>
+                    </table>
+
+                    <table className='table-details'>
+                      <thead>
+                        <tr>
+                          <th colSpan="100">Public data</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {accountNameTr(data)}
+
+                        <tr>
+                          <td>Activated</td>
+                          <td>
+                            {moment((data.inception) * 1000, "unix").fromNow()}
+                            {" "}
+                            ({fullDateAndTime(data.inception)})
+                          </td>
+                        </tr>
+
                       </tbody>
                     </table>
                   </div>
