@@ -4,7 +4,7 @@ import axios from 'axios'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 import { fullDateAndTime, shortHash } from '../utils/format'
-import { useWidth, devNet } from '../utils'
+import { useWidth, devNet, xahauNetwork } from '../utils'
 
 import SEO from '../components/SEO'
 import CopyButton from '../components/UI/CopyButton'
@@ -71,7 +71,8 @@ export default function Amendment() {
       setEnabledAmendments(enabled)
     }
 
-    if (!devNet) {
+    if (!devNet || xahauNetwork) {
+      // works on xahau testnet
       const response2 = await axios('v2/features')
       //here 1) we can get names for sure
       //split disabled to new (withMajority and Without Majourity) and obsolete
