@@ -292,7 +292,7 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
     }
   }
 
-  const ownerName = (nftEvent) => {
+  const ownerName = nftEvent => {
     if (nftEvent.owner) {
       if (nftEvent.amount === "0") {
         return t("table.receiver");
@@ -304,7 +304,7 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
     }
   }
 
-  const nftHistory = (history) => {
+  const nftHistory = history => {
     /*
       "history": [
         {
@@ -333,7 +333,7 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
               </td>
             </tr>
           }
-          {trWithAccount(nftEvent, 'owner', ownerName(nftEvent), "/explorer/", "owner")}
+          {trWithAccount(nftEvent, (nftEvent.minter ? 'minter' : 'owner'), ownerName(nftEvent), "/explorer/", "owner")}
           {nftEvent.marketplace &&
             <tr>
               <td>{marketPlaceUsage(nftEvent)}</td>
@@ -344,7 +344,7 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
             <tr><td colSpan="100"><hr /></td></tr>
           }
         </tbody>
-      );
+      )
     }
   }
 
