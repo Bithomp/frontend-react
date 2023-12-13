@@ -487,7 +487,7 @@ export default function Username({ setSignRequest, account, signOut, addressQuer
                   {!serviceAvailable ?
                     <p>
                       <Trans ns="username" i18nKey="step0.text4">
-                        Usernames are now used cross-chain, <a href="https://bithomp.com/username" target="_blank" rel='noreferrer'>register a username for an address on the XRPL mainnet</a> and it will be also available on other bithomp explorers.
+                        Usernames are now used cross-chain, <a href={"https://bithomp.com/" + (i18n.language !== "en" ? (i18n.language + "/") : "") + "username"} target="_blank" rel='noreferrer'>register a username for an address on the XRPL mainnet</a> and it will be also available on other bithomp explorers.
                       </Trans>
                     </p>
                     :
