@@ -4,13 +4,12 @@ import { useEffect, useState } from 'react'
 import { Turnstile } from '@marsidev/react-turnstile'
 import axios from 'axios'
 import { useTheme } from '../../components/Layout/ThemeContext'
-import Link from 'next/link'
+import { useRouter } from 'next/router'
 
 import SEO from '../../components/SEO'
+import Tabs from '../../components/Tabs'
 
-import { isEmailValid, isUrlValid } from '../../utils'
-import CopyButton from '../../components/UI/CopyButton'
-import { amountFormat, fullDateAndTime } from '../../utils/format'
+import { isEmailValid } from '../../utils'
 
 export const getServerSideProps = async (context) => {
   const { locale } = context
@@ -21,14 +20,13 @@ export const getServerSideProps = async (context) => {
   }
 }
 
-import LinkIcon from "../../public/images/link.svg"
-
 const turnstileSypportedLanguages = ['ar-EG', 'de', 'en', 'es', 'fa', 'fr', 'id', 'it', 'ja', 'ko', 'nl', 'pl', 'pt-BR', 'ru', 'tr', 'zh-CN', 'zh-TW']
 const checkmark = '/images/checkmark.svg'
 
 export default function Admin() {
   const { theme } = useTheme()
   const { t, i18n } = useTranslation(['common', 'admin'])
+  const router = useRouter()
   const [siteKey, setSiteKey] = useState("")
   const [errorMessage, setErrorMessage] = useState("")
   const [token, setToken] = useState("") // CL token
@@ -37,12 +35,6 @@ export default function Admin() {
   const [password, setPassword] = useState("")
   const [step, setStep] = useState(-1)
   const [loggedUserData, setLoggedUserData] = useState(null)
-  const [projectData, setProjectData] = useState(null)
-  const [apiData, setApiData] = useState(null)
-  const [domain, setDomain] = useState("")
-  const [apiDescription, setApiDescription] = useState("")
-  const [apiPayments, setApiPayments] = useState({})
-  const [apiRequests, setApiRequests] = useState({})
 
   const checkApi = async () => {
     /*
@@ -96,7 +88,6 @@ export default function Admin() {
 
     if (data?.data) {
       setLoggedUserData(data.data)
-      getProjectData()
     }
     /*
       {
@@ -105,119 +96,6 @@ export default function Admin() {
         "updated_at": "2023-10-13T10:22:08.000Z",
         "email": "bakshayev@gmail.com"
       }
-    */
-  }
-
-  const getProjectData = async () => {
-    const data = await axios.get(
-      'partner/partner',
-      { baseUrl: '/api/' }
-    ).catch(error => {
-      if (error && error.message !== "canceled") {
-        setErrorMessage(t(error.response.data.error || "error." + error.message))
-      }
-    })
-
-    if (data?.data) {
-      setProjectData(data.data)
-      getApiData()
-    }
-    /*
-    {
-      "id": 444,
-      "created_at": "2023-11-09T10:43:55.000Z",
-      "updated_at": "2023-11-09T10:43:55.000Z",
-      "name": "slavka.com",
-      "email": "bjorn@dzen.net"
-    }
-    */
-  }
-
-  const getApiData = async () => {
-    const data = await axios.get(
-      'partner/partner/accessToken',
-      { baseUrl: '/api/' }
-    ).catch(error => {
-      if (error && error.message !== "canceled") {
-        setErrorMessage(t(error.response.data.error || "error." + error.message))
-      }
-    })
-
-    setApiData(data?.data)
-    /*
-    {
-      "token": "werwerw-werwer-werc",
-      "locked": false,
-      "domain": "slavkino.narod.ru",
-      "tier": "free"
-    }
-    */
-
-    const apiTransactions = await axios.get(
-      'partner/partner/accessToken/transactions?limit=50&offset=0',
-      { baseUrl: '/api/' }
-    ).catch(error => {
-      if (error && error.message !== "canceled") {
-        setErrorMessage(t(error.response.data.error || "error." + error.message))
-      }
-    })
-
-    setApiPayments(apiTransactions?.data)
-
-    //&period=from..to&search=text&ip=z
-    const apiRequests = await axios.get(
-      'partner/partner/accessToken/requests?limit=50&offset=0',
-      { baseUrl: '/api/' }
-    ).catch(error => {
-      if (error && error.message !== "canceled") {
-        setErrorMessage(t(error.response.data.error || "error." + error.message))
-      }
-    })
-
-    setApiRequests(apiRequests?.data)
-  }
-
-  const requestApiKey = async () => {
-    setErrorMessage("")
-
-    if (!domain) {
-      setErrorMessage(t("form.error.domain-empty"))
-      return
-    }
-
-    if (!isUrlValid(domain)) {
-      setErrorMessage(t("form.error.domain-invalid"))
-      return
-    }
-
-    if (!apiDescription) {
-      setErrorMessage(t("form.error.description-empty"))
-      return
-    }
-
-    if (apiDescription.length < 10) {
-      setErrorMessage(t("form.error.description-short"))
-      return
-    }
-
-    const data = await axios.post(
-      'partner/partner/accessToken',
-      { domain, description: apiDescription },
-      { baseUrl: '/api/' }
-    ).catch(error => {
-      if (error && error.message !== "canceled") {
-        setErrorMessage(t(error.response.data.error || "error." + error.message))
-      }
-    })
-
-    setApiData(data?.data)
-    /*
-    {
-      "token": "werwerw-werwer-werc",
-      "locked": false,
-      "domain": "slavkino.narod.ru",
-      "tier": "free"
-    }
     */
   }
 
@@ -328,10 +206,19 @@ export default function Admin() {
     checkApi()
   }
 
-  const now = new Date()
-  const nowDate = new Date(now.getFullYear(), now.getMonth() + 1, now.getDay())
+  const mainTabs = [
+    { value: "account", label: "Account" },
+    { value: "api", label: "API" },
+    { value: "bots", label: "Bots" },
+  ]
 
-  const showExtraInfo = false
+  const changePage = tab => {
+    if (tab === "api") {
+      router.push("/admin/api")
+    } else if (tab === "bots") {
+      router.push("/admin/bots")
+    }
+  }
 
   return <>
     <SEO title={t("header", { ns: "admin" })} />
@@ -339,9 +226,9 @@ export default function Admin() {
       <h1 className='center'>
         {t("header", { ns: "admin" })}
       </h1>
-      <center>
-        {loggedUserData?.email}
-      </center>
+
+      <Tabs tabList={mainTabs} tab="account" setTab={changePage} name="mainTabs" />
+
       <br />
       <div className='center' style={{ height: "300px" }}>
 
@@ -393,231 +280,20 @@ export default function Admin() {
 
         {step === 2 &&
           <>
-            <div className="flex">
-              {showExtraInfo && loggedUserData &&
-                <table className='table-large shrink'>
-                  <thead>
-                    <tr>
-                      <th colSpan="2" className='center'>Logged user data</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td className='right'>{t("table.name")}</td>
-                      <td className='left'>{loggedUserData.name || loggedUserData.email}</td>
-                    </tr>
-                    <tr>
-                      <td className='right'>User ID</td>
-                      <td className='left'>{loggedUserData.id}</td>
-                    </tr>
-                    <tr>
-                      <td className='right'>E-mail</td>
-                      <td className='left'><b>{loggedUserData.email}</b></td>
-                    </tr>
-                    <tr>
-                      <td className='right'>Registered</td>
-                      <td className='left'>{new Date(loggedUserData.created_at).toLocaleString()}</td>
-                    </tr>
-                    <tr>
-                      <td className='right'>Last update</td>
-                      <td className='left'>{new Date(loggedUserData.updated_at).toLocaleString()}</td>
-                    </tr>
-                  </tbody>
-                </table>
-              }
-
-              {showExtraInfo && projectData &&
-                <table className='table-large shrink'>
-                  <thead>
-                    <tr>
-                      <th colSpan="2" className='center'>Project data</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td className='right'>{t("table.name")}</td>
-                      <td className='left'>{projectData.name || projectData.email}</td>
-                    </tr>
-                    <tr>
-                      <td className='right'>Project ID</td>
-                      <td className='left'>{projectData.id}</td>
-                    </tr>
-                    <tr>
-                      <td className='right'>E-mail</td>
-                      <td className='left'><b>{projectData.email}</b></td>
-                    </tr>
-                    <tr>
-                      <td className='right'>Registered</td>
-                      <td className='left'>{new Date(projectData.created_at).toLocaleString()}</td>
-                    </tr>
-                    <tr>
-                      <td className='right'>Last update</td>
-                      <td className='left'>{new Date(projectData.updated_at).toLocaleString()}</td>
-                    </tr>
-                  </tbody>
-                </table>
-              }
-
+            {loggedUserData &&
               <table className='table-large shrink'>
-                <thead>
-                  <tr>
-                    <th colSpan="2" className='center'>API data</th>
-                  </tr>
-                </thead>
-                {apiData ?
-                  <tbody>
-                    <tr>
-                      <td className='right'>Token</td>
-                      <td className='left'>{apiData.token} <CopyButton text={apiData.token} /> </td>
-                    </tr>
-                    <tr>
-                      <td className='right'>Status</td>
-                      <td className='left'>
-                        {apiData.locked ?
-                          <b className='red'>locked</b>
-                          :
-                          <>
-                            {apiData.tier === 'free' ?
-                              <b className='green'>active</b>
-                              :
-                              <>
-                                {new Date(apiData.expirationAt) > nowDate ?
-                                  <>
-                                    <b className='green'>active</b> until
-                                  </>
-                                  :
-                                  <b className='red'>expired</b>
-                                }
-                                <> {new Date(apiData.expirationAt).toLocaleDateString()}</>
-                              </>
-                            }
-                          </>
-                        }
-                      </td>
-                    </tr>
-                    <tr>
-                      <td className='right'>{t("table.domain")}</td>
-                      <td className='left'><b>{apiData.domain}</b></td>
-                    </tr>
-                    <tr>
-                      <td className='right'>Tier</td>
-                      <td className='left'>{apiData.tier}</td>
-                    </tr>
-                  </tbody>
-                  :
-                  <tbody>
-                    <tr>
-                      <td className='right'>{t("table.domain")}</td>
-                      <td className='left'>
-                        <input
-                          placeholder="Enter website domain"
-                          value={domain}
-                          onChange={(e) => { setDomain(e.target.value) }}
-                          className="input-text"
-                          spellCheck="false"
-                          maxLength="30"
-                        />
-                      </td>
-                    </tr>
-                    <tr>
-                      <td className='right'>Description</td>
-                      <td className='left'>
-                        <input
-                          placeholder="Enter API description"
-                          value={apiDescription}
-                          onChange={(e) => { setApiDescription(e.target.value) }}
-                          className="input-text"
-                          maxLength="60"
-                        />
-                      </td>
-                    </tr>
-                    <tr>
-                      <td className='center' colSpan="2">
-                        <button
-                          className={"button-action"}
-                          onClick={requestApiKey}
-                        >
-                          Request API key
-                        </button>
-                        <br />
-                      </td>
-                    </tr>
-                  </tbody>
-                }
-              </table>
-
-              {apiData &&
-                <table className='table-large shrink'>
-                  <thead>
-                    <tr>
-                      <th colSpan="2" className='center'>API payment details</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td className='right'>Address</td>
-                      <td className='left'>rPPHhfSQbHt1t2XPHWAK1HTcjqDg56TzZy <CopyButton text="rPPHhfSQbHt1t2XPHWAK1HTcjqDg56TzZy" /></td>
-                    </tr>
-                    <tr>
-                      <td className='right'>Destination tag</td>
-                      <td className='left bold'>{apiData.id} <CopyButton text={apiData.id} /></td>
-                    </tr>
-                    <tr>
-                      <td className='right'>{apiData.tier}</td>
-                      <td className='left'>{apiData.tier === 'basic' ? "30 EUR/month" : apiData.tier}</td>
-                    </tr>
-                  </tbody>
-                </table>
-              }
-            </div>
-            <div style={{ marginTop: "20px", textAlign: "left" }}>
-              <h3 className='center'>The last API payments</h3>
-              <table className='table-large shrink'>
-                <thead>
-                  <tr>
-                    <th>Date & Time</th>
-                    <th>From</th>
-                    <th>Amount</th>
-                    <th>Tx</th>
-                  </tr>
-                </thead>
                 <tbody>
-                  {apiPayments?.transactions?.map((payment, index) => {
-                    return <tr key={index}>
-                      <td>{fullDateAndTime(payment.processedAt)}</td>
-                      <td><Link href={"/explorer/" + payment.sourceAddress}>{payment.sourceAddress}</Link></td>
-                      <td>{amountFormat(payment.amount * 1000000)}</td>
-                      <td><Link href={"/explorer/" + payment.hash}><LinkIcon /></Link></td>
-                    </tr>
-                  })}
+                  <tr>
+                    <td className='right'>E-mail</td>
+                    <td className='left'><b>{loggedUserData.email}</b></td>
+                  </tr>
+                  <tr>
+                    <td className='right'>Registered</td>
+                    <td className='left'>{new Date(loggedUserData.created_at).toLocaleString()}</td>
+                  </tr>
                 </tbody>
               </table>
-
-              <br />
-              <h3 className='center'>The last API requests</h3>
-              <table className='table-large shrink'>
-                <thead>
-                  <tr>
-                    <th>Date & Time</th>
-                    <th>IP</th>
-                    <th>Country</th>
-                    <th>URL</th>
-                    <th>Status</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {apiRequests?.requests?.map((req, index) => {
-                    return <tr key={index}>
-                      <td>{fullDateAndTime(req.createdAt / 1000)}</td>
-                      <td>{req.ip}</td>
-                      <td>{req.country}</td>
-                      <td>{req.url}</td>
-                      <td>{req.status}</td>
-                    </tr>
-                  })}
-                </tbody>
-              </table>
-            </div>
+            }
           </>
         }
         <br />
