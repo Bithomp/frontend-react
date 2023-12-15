@@ -114,14 +114,14 @@
       "enter-domain": "Introduce un dominio"
     },
     "status": {
-      "awaiting-crawler": "Awaiting for crawler to update the data",
-      "awaiting-broker": "Awaiting for {{serviceName}} to accept the offer",
-      "failed-broker": "Failed to notify {{serviceName}} about the offer. You can cancel it."
+      "awaiting-crawler": "Esperando a que el rastreador actualice los datos",
+      "awaiting-broker": "Esperando a que {{serviceName}} acepte la oferta",
+      "failed-broker": "Fallo al notificar a {{serviceName}} con la oferta. Puedes cancelarla."
     },
     "nft-offer": {
-      "counteroffer": "You're making a counteroffer, which should to be accepted automatically within 20 seconds. If it's not accepted you can cancel it at any time.",
-      "nft-price": "NFT price",
-      "fee": "{{serviceName}} fee ({{feeText}})",
+      "counteroffer": "Estás haciendo una contraoferta, la cual debería ser aceptada automáticamente en 20 segundos. Si no es aceptada, puedes cancelarla en cualquier momento.",
+      "nft-price": "Precio NFT",
+      "fee": "{{serviceName}} comisión ({{feeText}})",
       "total": "Total"
     }
   },
@@ -474,7 +474,7 @@
     "all": "Todo",
     "buy": "Compra",
     "sell": "Venta",
-    "buyNow": "Buy now",
+    "buyNow": "Comprar ya",
     "publicAndKnownBrokers": "Público Y Mercado",
     "onSale": "En venta por XRP",
     "all-tokens": "Todos los tokens",
