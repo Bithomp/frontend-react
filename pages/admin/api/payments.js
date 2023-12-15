@@ -222,7 +222,7 @@ export default function Admin() {
                   return <tr key={index}>
                     <td>{fullDateAndTime(payment.processedAt)}</td>
                     <td><Link href={"/explorer/" + payment.sourceAddress}>{payment.sourceAddress}</Link></td>
-                    <td>{amountFormat(payment.amount * 1000000)}</td>
+                    <td>{amountFormat(payment.amount)}</td>
                     <td><Link href={"/explorer/" + payment.hash}><LinkIcon /></Link></td>
                   </tr>
                 })}
