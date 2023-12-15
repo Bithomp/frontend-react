@@ -1,11 +1,11 @@
 {
   "memo": "Pendaftaran Username Bithomp",
   "error": {
-    "address-empty": "Silakan masukkan alamat XRPL Anda.",
-    "address-invalid": "Silakan masukkan alamat XRPL yang valid.",
-    "address-hosted": "Alamat yang dimasukkan di-hosting di {{service}}, Anda hanya dapat mendaftarkan username untuk dompet yang tidak di-hosting (dompet perangkat keras, Xumm, dll). Jika Anda adalah operator pertukaran, silakan hubungi kami.",
-    "address-done": "Alamat tersebut sudah memiliki username terdaftar.",
-    "username-empty": "Silakan masukkan username yang ingin Anda daftarkan.",
+    "address-empty": "Silahkan masukkan alamat XRPL Anda.",
+    "address-invalid": "Silahkan masukkan alamat XRPL yang valid.",
+    "address-hosted": "Alamat yang dimasukkan di-hosting di {{service}}, Anda hanya dapat mendaftarkan username untuk dompet yang tidak di-hosting (dompet perangkat keras, Xumm, dll). Jika Anda adalah operator pertukaran, silahkan hubungi kami.",
+    "address-done": "Alamat tersebut sudah memiliki username yang telah terdaftar.",
+    "username-empty": "Silahkan masukkan username yang ingin Anda daftarkan.",
     "username-invalid": "Username harus lebih pendek dari 18 karakter, tidak ada simbol yang diizinkan.",
     "username-taken": "Username <b>{{username}}</b> sudah ada :(",
     "username-reserved": "Username <b>{{username}}</b> sudah dipesan, hubungi dukungan kami.",
@@ -13,10 +13,10 @@
     "agree-terms-page": "Harap setujui syarat dan ketentuan yang ditentukan pada halaman ini.",
     "agree-terms-site": "Harap setujui syarat dan ketentuan situs web ini.",
     "agree-privacy-policy": "Harap setujui Kebijakan Privasi kami.",
-    "payment-partly": "Silakan kirim sisa jumlahnya, sejauh ini kami hanya menerima {{received}} {{currency}} saat <b>{{required}} {{currency}}</b> dibutuhkan."
+    "payment-partly": "Silahkan kirim sisa jumlahnya, sejauh ini kami hanya menerima {{received}} {{currency}} saat <b>{{required}} {{currency}}</b> dibutuhkan."
   },
   "step0": {
-    "text0": "Bithomp <1>username</1> adalah username <3>publik</3> untuk alamat {{ledgerName}} Anda.",
+    "text0": "<1>username</1> Bithomp adalah username <3>publik</3> untuk alamat {{ledgerName}} Anda.",
     "text1": "Username akan terkait dengan alamat Anda di penjelajah bithomp dan dalam layanan pihak ketiga yang menggunakan <1>API</1> bithomp. Setelah pendaftaran, username akan menjadi publik - <3>siapa pun</3> akan dapat melihatnya. Alamat XRPL Anda akan dapat diakses oleh:",
     "text2": "Username <1>tidak dapat diubah atau dihapus</1>.",
     "only-one-for-address": "Untuk setiap alamat XRPL, Anda hanya dapat mendaftarkan satu username.",
