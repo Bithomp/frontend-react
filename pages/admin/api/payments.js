@@ -52,6 +52,7 @@ export default function Admin() {
   const apiTabs = [
     { value: "api-info", label: "Information" },
     { value: "api-payments", label: "Payments" },
+    { value: "api-statistics", label: "Statistics" },
     { value: "api-requests", label: "Requests" },
   ]
 
@@ -68,6 +69,8 @@ export default function Admin() {
       router.push("/admin/api/payments")
     } if (tab === "api-requests") {
       router.push("/admin/api/requests")
+    } if (tab === "api-statistics") {
+      router.push("/admin/api/statistics")
     }
   }
 

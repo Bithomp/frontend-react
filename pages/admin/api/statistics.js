@@ -7,10 +7,7 @@ import { useRouter } from 'next/router'
 import SEO from '../../../components/SEO'
 import Tabs from '../../../components/Tabs'
 
-import { fullDateAndTime } from '../../../utils/format'
 import { useWidth } from '../../../utils'
-
-import ReactCountryFlag from "react-country-flag"
 
 export const getServerSideProps = async (context) => {
   const { locale } = context
@@ -24,10 +21,10 @@ export const getServerSideProps = async (context) => {
 export default function Admin() {
   const { t } = useTranslation(['common', 'admin'])
   const [errorMessage, setErrorMessage] = useState("")
-  const [apiRequests, setApiRequests] = useState({})
   const [loading, setLoading] = useState(false)
   const router = useRouter()
   const width = useWidth()
+  const [statistics, setStatistics] = useState({})
 
   useEffect(() => {
     const sessionToken = localStorage.getItem('sessionToken')
@@ -73,9 +70,9 @@ export default function Admin() {
 
   const getData = async () => {
     setLoading(true)
-    //&period=from..to&search=text&ip=z
-    const apiRequests = await axios.get(
-      'partner/partner/accessToken/requests?limit=50&offset=0',
+    //period=from..to&span=minute&search=text&ip=z
+    const requestStats = await axios.get(
+      'partner/partner/accessToken/requests/statistics?limit=30',
       { baseUrl: '/api/' }
     ).catch(error => {
       if (error && error.message !== "canceled") {
@@ -87,7 +84,8 @@ export default function Admin() {
       setLoading(false)
     })
     setLoading(false)
-    setApiRequests(apiRequests?.data)
+
+    setStatistics(requestStats?.data)
   }
 
   return <>
@@ -98,22 +96,18 @@ export default function Admin() {
       </h1>
 
       <Tabs tabList={mainTabs} tab="api" setTab={changePage} name="mainTabs" />
-      <Tabs tabList={apiTabs} tab="api-requests" setTab={changePage} name="apiTabs" />
+      <Tabs tabList={apiTabs} tab="api-statistics" setTab={changePage} name="apiTabs" />
 
       <div className='center'>
         <div style={{ marginTop: "20px", textAlign: "left" }}>
-          <h4 className='center'>The last 50 API requests</h4>
-          {width > 1240 ?
+          <h4 className='center'>30 most common URLs</h4>
+          {width > 750 ?
             <table className='table-large shrink'>
               <thead>
                 <tr>
-                  <th>#</th>
-                  <th>Timestamp</th>
-                  <th>Response</th>
-                  <th>IP</th>
-                  <th className='center'>Country</th>
+                  <th></th>
+                  <th className='right'>Count</th>
                   <th>URL</th>
-                  <th className='right'>Status</th>
                 </tr>
               </thead>
               <tbody>
@@ -125,27 +119,14 @@ export default function Admin() {
                     </td>
                   </tr>
                 }
-                {apiRequests?.requests?.map((req, index) => {
-                  return <tr key={index}>
-                    <td>{index}</td>
-                    <td>{fullDateAndTime(req.createdAt / 1000)}</td>
-                    <td>{req.completedAt - req.createdAt} ms</td>
-                    <td>{req.ip}</td>
-                    <td className='center'>
-                      {req.country}
-                      {" "}
-                      <ReactCountryFlag
-                        countryCode={req.country}
-                        style={{
-                          fontSize: '1.5em',
-                          lineHeight: '1.5em'
-                        }}
-                      />
-                    </td>
-                    <td>{req.url}</td>
-                    <td className='right'>{req.status}</td>
+                {statistics?.urls?.map((item, i) => {
+                  return <tr key={i}>
+                    <td>{i + 1}</td>
+                    <td className='right'>{item.count}</td>
+                    <td>{item.url}</td>
                   </tr>
-                })}
+                }
+                )}
               </tbody>
             </table>
             :
@@ -159,34 +140,54 @@ export default function Admin() {
                     </td>
                   </tr>
                 }
-                {apiRequests?.requests?.map((req, index) => {
-                  return <tr key={index}>
+                {statistics?.urls?.map((item, i) => {
+                  return <tr key={i}>
                     <td style={{ padding: "5px" }} className='center'>
-                      <b>{index + 1}</b>
+                      <b>{i + 1}</b>
                     </td>
                     <td>
-                      <p>{fullDateAndTime(req.createdAt / 1000)}</p>
-                      <p>Response: {req.completedAt - req.createdAt} ms</p>
-                      <p>IP: {req.ip}</p>
-                      <p>
-                        Country: {req.country}
-                        {" "}
-                        <ReactCountryFlag
-                          countryCode={req.country}
-                          style={{
-                            fontSize: '1.5em',
-                            lineHeight: '1.5em'
-                          }}
-                        />
-                      </p>
-                      <p>URL:<br /><span style={{ wordBreak: "break-all" }}>{req.url}</span></p>
-                      <p>Status: {req.status}</p>
+                      <p>Count: {item.count}</p>
+                      <p>URL:<br /><span style={{ wordBreak: "break-all" }}>{item.url}</span></p>
                     </td>
                   </tr>
-                })}
+                }
+                )}
               </tbody>
             </table>
           }
+        </div>
+
+        <div style={{ marginTop: "20px", textAlign: "left" }}>
+          <h4 className='center'>The most common IPs</h4>
+          <table className='table-large shrink'>
+            <thead>
+              <tr>
+                <th></th>
+                <th className='right'>Count</th>
+                <th className='right'>IP</th>
+                <th className='right'>Country</th>
+              </tr>
+            </thead>
+            <tbody>
+              {loading &&
+                <tr className='center'>
+                  <td colSpan="100">
+                    <span className="waiting"></span>
+                    <br />{t("general.loading")}
+                  </td>
+                </tr>
+              }
+              {statistics?.ips?.map((item, i) => {
+                return <tr key={i}>
+                  <td>{i + 1}</td>
+                  <td className='right'>{item.count}</td>
+                  <td className='right'>{item.ip}</td>
+                  <td className='right'>{item.country}</td>
+                </tr>
+              }
+              )}
+            </tbody>
+          </table>
         </div>
 
         <br />
