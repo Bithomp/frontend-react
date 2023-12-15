@@ -71,8 +71,9 @@ export default function Admin() {
   const getData = async () => {
     setLoading(true)
     //period=from..to&span=minute&search=text&ip=z
+    //max=20
     const requestStats = await axios.get(
-      'partner/partner/accessToken/requests/statistics?limit=30',
+      'partner/partner/accessToken/requests/statistics?limit=20',
       { baseUrl: '/api/' }
     ).catch(error => {
       if (error && error.message !== "canceled") {
@@ -100,7 +101,7 @@ export default function Admin() {
 
       <div className='center'>
         <div style={{ marginTop: "20px", textAlign: "left" }}>
-          <h4 className='center'>30 most common URLs</h4>
+          <h4 className='center'>20 most common URLs</h4>
           {width > 750 ?
             <table className='table-large shrink'>
               <thead>
