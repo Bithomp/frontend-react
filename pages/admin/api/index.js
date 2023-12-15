@@ -73,7 +73,7 @@ export default function Admin() {
     ).catch(error => {
       if (error && error.message !== "canceled") {
         setErrorMessage(t(error.response.data.error || "error." + error.message))
-        if (error.response.data.error === "errors.token.required") {
+        if (error.response?.data?.error === "errors.token.required") {
           router.push('/admin')
         }
       }
@@ -139,7 +139,7 @@ export default function Admin() {
 
   return <>
     <SEO title={t("header", { ns: "admin" })} />
-    <div className="page-admin content-center" style={{ maxWidth: "1040px", marginBottom: "400px" }}>
+    <div className="page-admin content-center">
       <h1 className='center'>
         {t("header", { ns: "admin" })}
       </h1>
@@ -147,7 +147,7 @@ export default function Admin() {
       <Tabs tabList={mainTabs} tab="api" setTab={changePage} name="mainTabs" />
       <Tabs tabList={apiTabs} tab="api-info" setTab={changePage} name="apiTabs" />
 
-      <div className='center' style={{ height: "300px" }}>
+      <div className='center'>
         <h4 className='center'>API data</h4>
         <div className="flex">
           <table className='table-large shrink'>

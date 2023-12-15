@@ -10,6 +10,8 @@ import Tabs from '../../../components/Tabs'
 import { fullDateAndTime } from '../../../utils/format'
 import { useWidth } from '../../../utils'
 
+import ReactCountryFlag from "react-country-flag"
+
 export const getServerSideProps = async (context) => {
   const { locale } = context
   return {
@@ -23,6 +25,7 @@ export default function Admin() {
   const { t } = useTranslation(['common', 'admin'])
   const [errorMessage, setErrorMessage] = useState("")
   const [apiRequests, setApiRequests] = useState({})
+  const [loading, setLoading] = useState(false)
   const router = useRouter()
   const width = useWidth()
 
@@ -66,6 +69,7 @@ export default function Admin() {
   }
 
   const getData = async () => {
+    setLoading(true)
     //&period=from..to&search=text&ip=z
     const apiRequests = await axios.get(
       'partner/partner/accessToken/requests?limit=50&offset=0',
@@ -73,18 +77,20 @@ export default function Admin() {
     ).catch(error => {
       if (error && error.message !== "canceled") {
         setErrorMessage(t(error.response.data.error || "error." + error.message))
-        if (error.response.data.error === "errors.token.required") {
+        if (error.response?.data?.error === "errors.token.required") {
           router.push('/admin')
         }
       }
+      setLoading(false)
     })
+    setLoading(false)
 
     setApiRequests(apiRequests?.data)
   }
 
   return <>
     <SEO title={t("header", { ns: "admin" })} />
-    <div className="page-admin content-center" style={{ maxWidth: "1040px", marginBottom: "400px" }}>
+    <div className="page-admin content-text">
       <h1 className='center'>
         {t("header", { ns: "admin" })}
       </h1>
@@ -92,10 +98,10 @@ export default function Admin() {
       <Tabs tabList={mainTabs} tab="api" setTab={changePage} name="mainTabs" />
       <Tabs tabList={apiTabs} tab="api-requests" setTab={changePage} name="apiTabs" />
 
-      <div className='center' style={{ height: "300px" }}>
+      <div className='center'>
         <div style={{ marginTop: "20px", textAlign: "left" }}>
           <h4 className='center'>The last 50 API requests</h4>
-          {width > 1160 ?
+          {width > 1240 ?
             <table className='table-large shrink'>
               <thead>
                 <tr>
@@ -109,13 +115,31 @@ export default function Admin() {
                 </tr>
               </thead>
               <tbody>
+                {loading &&
+                  <tr className='center'>
+                    <td colSpan="100">
+                      <span className="waiting"></span>
+                      <br />{t("general.loading")}
+                    </td>
+                  </tr>
+                }
                 {apiRequests?.requests?.map((req, index) => {
                   return <tr key={index}>
                     <td>{index}</td>
                     <td>{fullDateAndTime(req.createdAt / 1000)}</td>
                     <td>{req.completedAt - req.createdAt} ms</td>
                     <td>{req.ip}</td>
-                    <td className='center'>{req.country}</td>
+                    <td className='center'>
+                      {req.country}
+                      {" "}
+                      <ReactCountryFlag
+                        countryCode={req.country}
+                        style={{
+                          fontSize: '1.5em',
+                          lineHeight: '1.5em'
+                        }}
+                      />
+                    </td>
                     <td>{req.url}</td>
                     <td className='right'>{req.status}</td>
                   </tr>
@@ -125,6 +149,14 @@ export default function Admin() {
             :
             <table className='table-mobile'>
               <tbody>
+                {loading &&
+                  <tr className='center'>
+                    <td colSpan="100">
+                      <span className="waiting"></span>
+                      <br />{t("general.loading")}
+                    </td>
+                  </tr>
+                }
                 {apiRequests?.requests?.map((req, index) => {
                   return <tr key={index}>
                     <td style={{ padding: "5px" }} className='center'>
@@ -134,7 +166,17 @@ export default function Admin() {
                       <p>{fullDateAndTime(req.createdAt / 1000)}</p>
                       <p>Response: {req.completedAt - req.createdAt} ms</p>
                       <p>IP: {req.ip}</p>
-                      <p>Country: {req.country}</p>
+                      <p>
+                        Country: {req.country}
+                        {" "}
+                        <ReactCountryFlag
+                          countryCode={req.country}
+                          style={{
+                            fontSize: '1.5em',
+                            lineHeight: '1.5em'
+                          }}
+                        />
+                      </p>
                       <p>URL:<br /><span style={{ wordBreak: "break-all" }}>{req.url}</span></p>
                       <p>Status: {req.status}</p>
                     </td>

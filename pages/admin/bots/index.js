@@ -50,7 +50,7 @@ export default function Admin() {
 
   return <>
     <SEO title={t("header", { ns: "admin" })} />
-    <div className="page-admin content-center" style={{ maxWidth: "1040px", marginBottom: "400px" }}>
+    <div className="page-admin content-center">
       <h1 className='center'>
         {t("header", { ns: "admin" })}
       </h1>
@@ -58,7 +58,7 @@ export default function Admin() {
       <Tabs tabList={mainTabs} tab="bots" setTab={changePage} name="mainTabs" />
 
       <br />
-      <div className='center' style={{ height: "300px" }}>
+      <div className='center'>
         The page is under construction.<br /><br />
         Here you will be able to set up your {ledgerName} bots.
         <br />

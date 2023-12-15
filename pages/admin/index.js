@@ -222,7 +222,7 @@ export default function Admin() {
 
   return <>
     <SEO title={t("header", { ns: "admin" })} />
-    <div className="page-admin content-center" style={{ maxWidth: "1040px", marginBottom: "400px" }}>
+    <div className="page-admin content-center">
       <h1 className='center'>
         {t("header", { ns: "admin" })}
       </h1>
@@ -232,7 +232,7 @@ export default function Admin() {
       }
 
       <br />
-      <div className='center' style={{ height: "300px" }}>
+      <div className='center'>
 
         {(step === 0 || step === 1) &&
           <div className="input-validation" style={{ margin: "auto", width: "300px" }}>
