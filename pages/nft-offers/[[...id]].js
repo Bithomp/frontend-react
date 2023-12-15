@@ -14,7 +14,7 @@ import {
   nftLink,
   nftOfferLink
 } from '../../utils/format'
-import { nftNameLink, nftThumbnail } from '../../utils/nft'
+import { nftNameLink, nftThumbnail, nftName } from '../../utils/nft'
 
 export const getServerSideProps = async ({ query, locale }) => {
   const { offerList, id } = query
@@ -346,7 +346,7 @@ export default function NftOffers({ setSignRequest, signRequest, account, offerL
                   </tr>
                   :
                   <>
-                    {!errorMessage ? filteredOffers.map((offer, i) =>
+                    {!errorMessage ? filteredOffers?.map((offer, i) =>
                       <tr key={i}>
                         <td style={{ padding: "5px" }} className='center'>
                           <p>{i + 1}</p>
