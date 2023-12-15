@@ -73,6 +73,9 @@ export default function Admin() {
     ).catch(error => {
       if (error && error.message !== "canceled") {
         setErrorMessage(t(error.response.data.error || "error." + error.message))
+        if (error.response.data.error === "errors.token.required") {
+          router.push('/admin')
+        }
       }
     })
 

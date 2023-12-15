@@ -227,7 +227,9 @@ export default function Admin() {
         {t("header", { ns: "admin" })}
       </h1>
 
-      <Tabs tabList={mainTabs} tab="account" setTab={changePage} name="mainTabs" />
+      {step === 2 &&
+        <Tabs tabList={mainTabs} tab="account" setTab={changePage} name="mainTabs" />
+      }
 
       <br />
       <div className='center' style={{ height: "300px" }}>

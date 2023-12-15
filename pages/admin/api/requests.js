@@ -73,6 +73,9 @@ export default function Admin() {
     ).catch(error => {
       if (error && error.message !== "canceled") {
         setErrorMessage(t(error.response.data.error || "error." + error.message))
+        if (error.response.data.error === "errors.token.required") {
+          router.push('/admin')
+        }
       }
     })
 
@@ -92,12 +95,13 @@ export default function Admin() {
       <div className='center' style={{ height: "300px" }}>
         <div style={{ marginTop: "20px", textAlign: "left" }}>
           <h4 className='center'>The last 50 API requests</h4>
-          {width > 600 ?
+          {width > 1160 ?
             <table className='table-large shrink'>
               <thead>
                 <tr>
                   <th>#</th>
-                  <th>Date & Time</th>
+                  <th>Timestamp</th>
+                  <th>Response</th>
                   <th>IP</th>
                   <th className='center'>Country</th>
                   <th>URL</th>
@@ -109,6 +113,7 @@ export default function Admin() {
                   return <tr key={index}>
                     <td>{index}</td>
                     <td>{fullDateAndTime(req.createdAt / 1000)}</td>
+                    <td>{req.completedAt - req.createdAt} ms</td>
                     <td>{req.ip}</td>
                     <td className='center'>{req.country}</td>
                     <td>{req.url}</td>
@@ -127,6 +132,7 @@ export default function Admin() {
                     </td>
                     <td>
                       <p>{fullDateAndTime(req.createdAt / 1000)}</p>
+                      <p>Response: {req.completedAt - req.createdAt} ms</p>
                       <p>IP: {req.ip}</p>
                       <p>Country: {req.country}</p>
                       <p>URL:<br /><span style={{ wordBreak: "break-all" }}>{req.url}</span></p>
