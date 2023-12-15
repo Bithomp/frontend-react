@@ -163,17 +163,19 @@ export default function Admin() {
                     <td className='left bold'>{apiData.id} <CopyButton text={apiData.id} /></td>
                   </tr>
                   <tr>
-                    <td className='right'>Tier {apiData.tier} (month)</td>
+                    <td className='right'>Tier {apiData.tier} (1 month)</td>
                     <td className='left'>
                       {apiPrice(apiData?.tier, 1)}
                     </td>
                   </tr>
-                  <tr>
-                    <td className='right'>Tier {apiData.tier} (year)</td>
-                    <td className='left'>
-                      {apiPrice(apiData?.tier, 12)}
-                    </td>
-                  </tr>
+                  {apiData.tier !== "free" &&
+                    <tr>
+                      <td className='right'>Tier {apiData.tier} (1 year)</td>
+                      <td className='left'>
+                        {apiPrice(apiData?.tier, 12)}
+                      </td>
+                    </tr>
+                  }
                 </tbody>
               </table>
               :
@@ -187,9 +189,15 @@ export default function Admin() {
                   {apiData.id} <CopyButton text={apiData.id} />
                 </p>
                 <p>
-                  Tier {apiData.tier}:<br />
-                  {apiPrice(apiData?.tier)}
+                  Tier {apiData.tier} (1 month):<br />
+                  {apiPrice(apiData?.tier, 1)}
                 </p>
+                {apiData.tier !== "free" &&
+                  <p>
+                    Tier {apiData.tier} (1 year):<br />
+                    {apiPrice(apiData?.tier, 12)}
+                  </p>
+                }
               </div>
             }
           </>
