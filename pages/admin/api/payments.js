@@ -10,7 +10,7 @@ import Tabs from '../../../components/Tabs'
 import CopyButton from '../../../components/UI/CopyButton'
 
 import { amountFormat, fullDateAndTime } from '../../../utils/format'
-import { useWidth } from '../../../utils'
+import { nativeCurrency, useWidth } from '../../../utils'
 
 export const getServerSideProps = async (context) => {
   const { locale } = context
@@ -30,6 +30,7 @@ export default function Admin() {
   const [apiPayments, setApiPayments] = useState({})
   const router = useRouter()
   const width = useWidth()
+  const [eurRate, setEurRate] = useState(0)
 
   useEffect(() => {
     const sessionToken = localStorage.getItem('sessionToken')
@@ -90,6 +91,17 @@ export default function Admin() {
     }
     */
 
+    const rate = await axios.get('v2/rates/current/eur').catch(error => {
+      if (error && error.message !== "canceled") {
+        setErrorMessage(t(error.response.data.error || "error." + error.message))
+      }
+    })
+    /* { "eur": 0.57814 } */
+
+    if (rate?.data?.eur) {
+      setEurRate(rate.data.eur)
+    }
+
     const apiTransactions = await axios.get(
       'partner/partner/accessToken/transactions?limit=50&offset=0',
       { baseUrl: '/api/' }
@@ -105,18 +117,24 @@ export default function Admin() {
     setApiPayments(apiTransactions?.data)
   }
 
-  const apiPrice = tier => {
+  const apiPrice = (tier, months = 1) => {
     if (tier === "free") {
       return "Free"
-    } else if (tier === "basic") {
-      return "30 EUR/month"
-    } else if (tier === "standard") {
-      return "100 EUR/month"
-    } else if (tier === "premium") {
-      return "250 EUR/month"
-    } else {
-      return ""
     }
+
+    if (!eurRate) return ""
+
+    let tierRate = ""
+
+    if (tier === "basic") {
+      tierRate = "30"
+    } else if (tier === "standard") {
+      tierRate = "100"
+    } else if (tier === "premium") {
+      tierRate = "250"
+    }
+
+    return <><b>{(tierRate * months / eurRate).toFixed(2)} {nativeCurrency}</b> ({tierRate * months} EUR)</>
   }
 
   return <>
@@ -145,9 +163,15 @@ export default function Admin() {
                     <td className='left bold'>{apiData.id} <CopyButton text={apiData.id} /></td>
                   </tr>
                   <tr>
-                    <td className='right'>Tier {apiData.tier}</td>
+                    <td className='right'>Tier {apiData.tier} (month)</td>
                     <td className='left'>
-                      {apiPrice(apiData?.tier)}
+                      {apiPrice(apiData?.tier, 1)}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className='right'>Tier {apiData.tier} (year)</td>
+                    <td className='left'>
+                      {apiPrice(apiData?.tier, 12)}
                     </td>
                   </tr>
                 </tbody>
