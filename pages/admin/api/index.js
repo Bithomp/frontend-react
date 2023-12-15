@@ -152,90 +152,94 @@ export default function Admin() {
 
       <div className='center'>
         <h4 className='center'>API data</h4>
-        <div className="flex">
-          <table className='table-large shrink'>
-            {apiData ?
-              <tbody>
-                <tr>
-                  <td className='right'>Token</td>
-                  <td className='left'>{apiData.token} <CopyButton text={apiData.token} /> </td>
-                </tr>
-                <tr>
-                  <td className='right'>Status</td>
-                  <td className='left'>
-                    {apiData.locked ?
-                      <b className='red'>locked</b>
-                      :
-                      <>
-                        {apiData.tier === 'free' ?
-                          <b className='green'>active</b>
-                          :
-                          <>
-                            {new Date(apiData.expirationAt) > nowDate ?
-                              <>
-                                <b className='green'>active</b> until
-                              </>
-                              :
-                              <b className='red'>expired</b>
-                            }
-                            <> {new Date(apiData.expirationAt).toLocaleDateString()}</>
-                          </>
-                        }
-                      </>
-                    }
-                  </td>
-                </tr>
-                <tr>
-                  <td className='right'>{t("table.domain")}</td>
-                  <td className='left'><b>{apiData.domain}</b></td>
-                </tr>
-                <tr>
-                  <td className='right'>Tier</td>
-                  <td className='left'>{apiData.tier}</td>
-                </tr>
-              </tbody>
-              :
-              <tbody>
-                <tr>
-                  <td className='right'>{t("table.domain")}</td>
-                  <td className='left'>
-                    <input
-                      placeholder="Enter website domain"
-                      value={domain}
-                      onChange={(e) => { setDomain(e.target.value) }}
-                      className="input-text"
-                      spellCheck="false"
-                      maxLength="30"
-                    />
-                  </td>
-                </tr>
-                <tr>
-                  <td className='right'>Description</td>
-                  <td className='left'>
-                    <input
-                      placeholder="Enter API description"
-                      value={apiDescription}
-                      onChange={(e) => { setApiDescription(e.target.value) }}
-                      className="input-text"
-                      maxLength="60"
-                    />
-                  </td>
-                </tr>
-                <tr>
-                  <td className='center' colSpan="2">
-                    <button
-                      className={"button-action"}
-                      onClick={requestApiKey}
-                    >
-                      Request API key
-                    </button>
-                    <br />
-                  </td>
-                </tr>
-              </tbody>
-            }
-          </table>
-        </div>
+        Documentation:
+        {" "}
+        <a href="https://docs.bithomp.com" target="_blank" rel="noreferrer">
+          https://docs.bithomp.com
+        </a>
+        <br /><br />
+        <table className='table-large shrink'>
+          {apiData ?
+            <tbody>
+              <tr>
+                <td className='right'>Token</td>
+                <td className='left'>{apiData.token} <CopyButton text={apiData.token} /> </td>
+              </tr>
+              <tr>
+                <td className='right'>Status</td>
+                <td className='left'>
+                  {apiData.locked ?
+                    <b className='red'>locked</b>
+                    :
+                    <>
+                      {apiData.tier === 'free' ?
+                        <b className='green'>active</b>
+                        :
+                        <>
+                          {new Date(apiData.expirationAt) > nowDate ?
+                            <>
+                              <b className='green'>active</b> until
+                            </>
+                            :
+                            <b className='red'>expired</b>
+                          }
+                          <> {new Date(apiData.expirationAt).toLocaleDateString()}</>
+                        </>
+                      }
+                    </>
+                  }
+                </td>
+              </tr>
+              <tr>
+                <td className='right'>{t("table.domain")}</td>
+                <td className='left'><b>{apiData.domain}</b></td>
+              </tr>
+              <tr>
+                <td className='right'>Tier</td>
+                <td className='left'>{apiData.tier}</td>
+              </tr>
+            </tbody>
+            :
+            <tbody>
+              <tr>
+                <td className='right'>{t("table.domain")}</td>
+                <td className='left'>
+                  <input
+                    placeholder="Enter website domain"
+                    value={domain}
+                    onChange={(e) => { setDomain(e.target.value) }}
+                    className="input-text"
+                    spellCheck="false"
+                    maxLength="30"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td className='right'>Description</td>
+                <td className='left'>
+                  <input
+                    placeholder="Enter API description"
+                    value={apiDescription}
+                    onChange={(e) => { setApiDescription(e.target.value) }}
+                    className="input-text"
+                    maxLength="60"
+                  />
+                </td>
+              </tr>
+              <tr>
+                <td className='center' colSpan="2">
+                  <button
+                    className={"button-action"}
+                    onClick={requestApiKey}
+                  >
+                    Request API key
+                  </button>
+                  <br />
+                </td>
+              </tr>
+            </tbody>
+          }
+        </table>
 
         <br />
         {errorMessage ?
