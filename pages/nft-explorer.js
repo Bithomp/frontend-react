@@ -24,7 +24,7 @@ export const getServerSideProps = async ({ query, locale }) => {
   //key to refresh the component when Link pressed within the same route
   return {
     props: {
-      key: issuer || owner || id || "",
+      key: Math.random(),
       view: view || "tiles",
       list: list || "nfts",
       saleDestination: saleDestination || "buyNow",

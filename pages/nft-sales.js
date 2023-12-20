@@ -34,7 +34,7 @@ export const getServerSideProps = async ({ query, locale }) => {
   //key added to re-render page when the same route is called with different params
   return {
     props: {
-      key: issuer || "",
+      key: Math.random(),
       view: view || "tiles",
       sale: sale || "all",
       list: list || "top",
