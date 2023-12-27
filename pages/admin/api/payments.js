@@ -1,5 +1,5 @@
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import { useTranslation, i18n } from 'next-i18next'
+import { useTranslation } from 'next-i18next'
 import { useEffect, useState } from 'react'
 import axios from 'axios'
 import Link from 'next/link'
@@ -255,7 +255,7 @@ export default function Admin() {
             components: "buttons",
             intent: "subscription",
             vault: true,
-            locale: i18n.language,
+            locale: 'en_US'
           }}
         >
           <ButtonWrapper type="subscription" />
