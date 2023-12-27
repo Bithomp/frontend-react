@@ -12,6 +12,45 @@ import CopyButton from '../../../components/UI/CopyButton'
 import { amountFormat, fullDateAndTime } from '../../../utils/format'
 import { nativeCurrency, useWidth } from '../../../utils'
 
+//PayPal
+import {
+  PayPalScriptProvider,
+  PayPalButtons,
+  usePayPalScriptReducer
+} from "@paypal/react-paypal-js"
+
+const ButtonWrapper = ({ type }) => {
+  const [{ options }, dispatch] = usePayPalScriptReducer()
+
+  useEffect(() => {
+    dispatch({
+      type: "resetOptions",
+      value: {
+        ...options,
+        intent: "subscription",
+      },
+    });
+  }, [type])
+
+  return (<PayPalButtons
+    createSubscription={(data, actions) => {
+      return actions.subscription
+        .create({
+          plan_id: "P-274307709T351962WMWF67RA",
+        })
+        .then((orderId) => {
+          // Your code here after create the order
+          return orderId
+        })
+    }}
+    style={{
+      label: "subscribe",
+    }}
+  />)
+}
+
+//https://paypal.github.io/react-paypal-js/?path=/docs/example-paypalbuttons--default
+
 export const getServerSideProps = async (context) => {
   const { locale } = context
   return {
@@ -205,58 +244,76 @@ export default function Admin() {
             }
           </>
         }
-        <div style={{ marginTop: "20px", textAlign: "left" }}>
-          <h4 className='center'>The last API payments</h4>
-          {width > 600 ?
-            <table className='table-large shrink'>
-              <thead>
-                <tr>
-                  <th>Date & Time</th>
-                  <th>From</th>
-                  <th>Amount</th>
-                  <th>Tx</th>
-                </tr>
-              </thead>
-              <tbody>
-                {apiPayments?.transactions?.map((payment, index) => {
-                  return <tr key={index}>
-                    <td>{fullDateAndTime(payment.processedAt)}</td>
-                    <td><Link href={"/explorer/" + payment.sourceAddress}>{payment.sourceAddress}</Link></td>
-                    <td>{amountFormat(payment.amount)}</td>
-                    <td><Link href={"/explorer/" + payment.hash}><LinkIcon /></Link></td>
+
+        <h4>
+          Subcribe to the Standard plan 100 EUR / month with PayPal
+        </h4>
+
+        <PayPalScriptProvider
+          options={{
+            clientId: "AcUlMvkL6Uc6OVv-USMK3fg2wZ_xEBolL0-yyzWkOnS7vF2aWbu_AJFYJxaRRfPoiN0SBEnSFHUTbSUn",
+            components: "buttons",
+            intent: "subscription",
+            vault: true,
+          }}
+        >
+          <ButtonWrapper type="subscription" />
+        </PayPalScriptProvider>
+
+        {apiPayments?.transactions?.length > 0 &&
+          <div style={{ marginTop: "20px", textAlign: "left" }}>
+            <h4 className='center'>The last XRP API payments</h4>
+            {width > 600 ?
+              <table className='table-large shrink'>
+                <thead>
+                  <tr>
+                    <th>Date & Time</th>
+                    <th>From</th>
+                    <th>Amount</th>
+                    <th>Tx</th>
                   </tr>
-                })}
-              </tbody>
-            </table>
-            :
-            <table className='table-mobile'>
-              <tbody>
-                {apiPayments?.transactions?.map((payment, index) => {
-                  return <tr key={index}>
-                    <td style={{ padding: "5px" }} className='center'>
-                      <b>{index + 1}</b>
-                    </td>
-                    <td>
-                      <p>
-                        {fullDateAndTime(payment.processedAt)}
-                      </p>
-                      <p>
-                        From: <br />
-                        <Link href={"/explorer/" + payment.sourceAddress}>{payment.sourceAddress}</Link>
-                      </p>
-                      <p>
-                        Amount: {amountFormat(payment.amount * 1000000)}
-                      </p>
-                      <p>
-                        Transaction: <Link href={"/explorer/" + payment.hash}><LinkIcon /></Link>
-                      </p>
-                    </td>
-                  </tr>
-                })}
-              </tbody>
-            </table>
-          }
-        </div>
+                </thead>
+                <tbody>
+                  {apiPayments?.transactions?.map((payment, index) => {
+                    return <tr key={index}>
+                      <td>{fullDateAndTime(payment.processedAt)}</td>
+                      <td><Link href={"/explorer/" + payment.sourceAddress}>{payment.sourceAddress}</Link></td>
+                      <td>{amountFormat(payment.amount)}</td>
+                      <td><Link href={"/explorer/" + payment.hash}><LinkIcon /></Link></td>
+                    </tr>
+                  })}
+                </tbody>
+              </table>
+              :
+              <table className='table-mobile'>
+                <tbody>
+                  {apiPayments?.transactions?.map((payment, index) => {
+                    return <tr key={index}>
+                      <td style={{ padding: "5px" }} className='center'>
+                        <b>{index + 1}</b>
+                      </td>
+                      <td>
+                        <p>
+                          {fullDateAndTime(payment.processedAt)}
+                        </p>
+                        <p>
+                          From: <br />
+                          <Link href={"/explorer/" + payment.sourceAddress}>{payment.sourceAddress}</Link>
+                        </p>
+                        <p>
+                          Amount: {amountFormat(payment.amount * 1000000)}
+                        </p>
+                        <p>
+                          Transaction: <Link href={"/explorer/" + payment.hash}><LinkIcon /></Link>
+                        </p>
+                      </td>
+                    </tr>
+                  })}
+                </tbody>
+              </table>
+            }
+          </div>
+        }
 
         <br />
         {errorMessage ?
