@@ -6,8 +6,8 @@ module.exports = {
     config.module.rules.push({
       test: /\.svg$/,
       use: ["@svgr/webpack"]
-    });
-    return config;
+    })
+    return config
   },
   images: {
     domains: ['cdn.bithomp.com', 'pbs.twimg.com', 'secure.gravatar.com', 'xumm.app'],
@@ -17,7 +17,7 @@ module.exports = {
     return [
       {
         source: '/go/:path*',
-        destination: 'https://bithomp.com/api/go/:path*',
+        destination: '/api/go/:path*',
         permanent: true
       },
       {
@@ -33,6 +33,6 @@ module.exports = {
         source: '/robots.txt',
         destination: '/api/robots'
       }
-    ];
+    ]
   }
-};
+}
