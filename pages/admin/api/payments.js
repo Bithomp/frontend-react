@@ -29,7 +29,8 @@ const ButtonWrapper = ({ type }) => {
         ...options,
         intent: "subscription",
       },
-    });
+    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [type])
 
   return (<PayPalButtons
