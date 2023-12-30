@@ -1,14 +1,18 @@
 import { useTranslation } from 'next-i18next'
-import { useState, useEffect } from 'react'
-import axios from 'axios'
+//import { useState, useEffect } from 'react'
+import { useWidth } from '../../utils'
+//import axios from 'axios'
 
 export default function TopLinks() {
   const { t } = useTranslation()
-  const [countryCode, setCountryCode] = useState('')
+  const width = useWidth()
+  //const [countryCode, setCountryCode] = useState('')
 
+  //check country
+  {/*
   useEffect(() => {
     async function fetchData() {
-      /* {"ip":"176.28.256.49","country":"SE"} */
+      // {"ip":"176.28.256.49","country":"SE"}
       const clientInfo = await axios('client/info')
       setCountryCode(clientInfo?.data?.country)
     }
@@ -16,10 +20,13 @@ export default function TopLinks() {
     fetchData()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+  */}
 
   {/* it is important to have "tooltiptext right" on the first ad, otherwise brakes UI on mobiles, too wide to the left */ }
   {/* it is important to have "tooltiptext left" on the last ad, otherwise brakes UI on mobiles, too wide to the right */ }
 
+  //country specific ads
+  {/*}
   let moonpayCountries = ['US', 'BR', 'NG']
   if (moonpayCountries.includes(countryCode)) {
     return <div className="top-links">
@@ -28,8 +35,7 @@ export default function TopLinks() {
           href="https://bithomp.com/go/exchange-m"
           target="_blank"
           rel="noreferrer"
-          className='top-link'
-          style={{ color: "yellow" }}
+          className='top-link orange'
         >
           Fast and simple way to Buy and Sell crypto.
         </a>
@@ -41,7 +47,9 @@ export default function TopLinks() {
   }
 
   return ""
+  */}
 
+  //tree ads
   {/*
   return (
     <div className="top-links">
@@ -93,4 +101,20 @@ export default function TopLinks() {
     </div>
   )
   */}
+
+  return <div className="top-links">
+    <span className='tooltip'>
+      <a
+        href="https://bithomp.com/go/top-play"
+        target="_blank"
+        rel="noreferrer"
+        className='top-link orange'
+      >
+        {width > 590 ? "Play XRP - register with the promo code BITHOMP to boost up your bonus." : "Play XRP"}
+      </a>
+      <span className='tooltiptext right small'>
+        {t("sponsored.sponsored")}
+      </span>
+    </span>
+  </div>
 }
