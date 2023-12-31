@@ -102,7 +102,7 @@ export default function Admin() {
 
       <div className='center'>
         <div style={{ marginTop: "20px", textAlign: "left" }}>
-          <h4 className='center'>The last 50 API requests</h4>
+          <h4 className='center'>The last 50 API requests in the last 24h</h4>
           {width > 1240 ?
             <table className='table-large shrink'>
               <thead>

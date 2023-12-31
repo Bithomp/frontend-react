@@ -41,7 +41,7 @@ const MyApp = ({ Component, pageProps }) => {
   let showTopAds = showAds //change here when you want to see TOP ADS
   const pagesWithNoTopAdds = ['/', '/username', '/eaas', '/build-unl', '/disclaimer', '/privacy-policy', '/terms-and-conditions', '/press', '/404']
   if (showTopAds) {
-    showTopAds = !pagesWithNoTopAdds.includes(router.pathname)
+    showTopAds = !pagesWithNoTopAdds.includes(router.pathname) && !router.pathname.includes('/admin')
   }
 
   return (

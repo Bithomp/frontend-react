@@ -9,7 +9,7 @@ import SEO from '../../../components/SEO'
 import Tabs from '../../../components/Tabs'
 import CopyButton from '../../../components/UI/CopyButton'
 
-import { amountFormat, fullDateAndTime } from '../../../utils/format'
+import { amountFormat, fullDateAndTime, niceNumber } from '../../../utils/format'
 import { nativeCurrency, useWidth } from '../../../utils'
 
 //PayPal
@@ -46,6 +46,10 @@ const ButtonWrapper = ({ type }) => {
     }}
     style={{
       label: "subscribe",
+      layout: "vertical",
+      color: "silver",
+      tagline: false,
+      height: 40
     }}
   />)
 }
@@ -114,6 +118,18 @@ export default function Admin() {
     }
   }
 
+  const fiatAmountAt = async payment => {
+    const rate = await axios.get(
+      'v2/rates/history/nearest/eur?date=' + payment.processedAt + '000', //13 digits
+    ).catch(error => {
+      console.log(error)
+    })
+    if (rate?.data?.eur) {
+      return niceNumber(payment.amount / 1000000 * rate.data.eur, 2, "EUR")
+    }
+    return 0
+  }
+
   const getApiData = async () => {
     const data = await axios.get(
       'partner/partner/accessToken',
@@ -157,7 +173,12 @@ export default function Admin() {
       }
     })
 
-    setApiPayments(apiTransactions?.data)
+    if (apiTransactions?.data?.transactions) {
+      for (let transaction of apiTransactions.data.transactions) {
+        transaction.fiatAmount = await fiatAmountAt(transaction)
+      }
+      setApiPayments(apiTransactions.data)
+    }
   }
 
   const apiPrice = (tier, months = 1) => {
@@ -193,7 +214,7 @@ export default function Admin() {
       <div className='center'>
         {apiData &&
           <>
-            <h4 className='center'>API payment details</h4>
+            <h4 className='center'>1. XRP API payment details</h4>
             {width > 600 ?
               <table className='table-large shrink'>
                 <tbody>
@@ -246,22 +267,6 @@ export default function Admin() {
           </>
         }
 
-        <h4>
-          Subcribe to the Standard plan 100 EUR / month with PayPal
-        </h4>
-
-        <PayPalScriptProvider
-          options={{
-            clientId: "AcUlMvkL6Uc6OVv-USMK3fg2wZ_xEBolL0-yyzWkOnS7vF2aWbu_AJFYJxaRRfPoiN0SBEnSFHUTbSUn",
-            components: "buttons",
-            intent: "subscription",
-            vault: true,
-            locale: 'en_US'
-          }}
-        >
-          <ButtonWrapper type="subscription" />
-        </PayPalScriptProvider>
-
         {apiPayments?.transactions?.length > 0 &&
           <div style={{ marginTop: "20px", textAlign: "left" }}>
             <h4 className='center'>The last XRP API payments</h4>
@@ -272,6 +277,7 @@ export default function Admin() {
                     <th>Date & Time</th>
                     <th>From</th>
                     <th>Amount</th>
+                    <th>Fiat</th>
                     <th>Tx</th>
                   </tr>
                 </thead>
@@ -281,6 +287,9 @@ export default function Admin() {
                       <td>{fullDateAndTime(payment.processedAt)}</td>
                       <td><Link href={"/explorer/" + payment.sourceAddress}>{payment.sourceAddress}</Link></td>
                       <td>{amountFormat(payment.amount)}</td>
+                      <td>
+                        {payment.fiatAmount}
+                      </td>
                       <td><Link href={"/explorer/" + payment.hash}><LinkIcon /></Link></td>
                     </tr>
                   })}
@@ -303,7 +312,10 @@ export default function Admin() {
                           <Link href={"/explorer/" + payment.sourceAddress}>{payment.sourceAddress}</Link>
                         </p>
                         <p>
-                          Amount: {amountFormat(payment.amount * 1000000)}
+                          Amount: {amountFormat(payment.amount)}
+                        </p>
+                        <p>
+                          Fiat equivalent: {payment.fiatAmount}
                         </p>
                         <p>
                           Transaction: <Link href={"/explorer/" + payment.hash}><LinkIcon /></Link>
@@ -316,6 +328,24 @@ export default function Admin() {
             }
           </div>
         }
+
+        <h4>
+          2. PayPal subcription for the Standard plan 100 EUR/month
+        </h4>
+
+        <div className='center' style={{ width: "350px", margin: "auto" }}>
+          <PayPalScriptProvider
+            options={{
+              clientId: "AcUlMvkL6Uc6OVv-USMK3fg2wZ_xEBolL0-yyzWkOnS7vF2aWbu_AJFYJxaRRfPoiN0SBEnSFHUTbSUn",
+              components: "buttons",
+              intent: "subscription",
+              vault: true,
+              locale: 'en_US'
+            }}
+          >
+            <ButtonWrapper type="subscription" />
+          </PayPalScriptProvider>
+        </div>
 
         <br />
         {errorMessage ?

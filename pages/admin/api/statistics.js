@@ -101,7 +101,7 @@ export default function Admin() {
 
       <div className='center'>
         <div style={{ marginTop: "20px", textAlign: "left" }}>
-          <h4 className='center'>20 most common URLs</h4>
+          <h4 className='center'>20 most common URLs in the last 24h</h4>
           {width > 750 ?
             <table className='table-large shrink'>
               <thead>
@@ -128,6 +128,13 @@ export default function Admin() {
                   </tr>
                 }
                 )}
+                {!statistics?.urls?.[0] &&
+                  <tr>
+                    <td colSpan="100" className='center'>
+                      <b>No data available</b>
+                    </td>
+                  </tr>
+                }
               </tbody>
             </table>
             :
@@ -153,13 +160,20 @@ export default function Admin() {
                   </tr>
                 }
                 )}
+                {!statistics?.urls?.[0] &&
+                  <tr>
+                    <td colSpan="100" className='center'>
+                      <b>No data available</b>
+                    </td>
+                  </tr>
+                }
               </tbody>
             </table>
           }
         </div>
 
         <div style={{ marginTop: "20px", textAlign: "left" }}>
-          <h4 className='center'>The most common IPs</h4>
+          <h4 className='center'>The most common IPs in the last 24h</h4>
           <table className='table-large shrink'>
             <thead>
               <tr>
@@ -187,6 +201,13 @@ export default function Admin() {
                 </tr>
               }
               )}
+              {!statistics?.ips?.[0] &&
+                <tr>
+                  <td colSpan="100" className='center'>
+                    <b>No data available</b>
+                  </td>
+                </tr>
+              }
             </tbody>
           </table>
         </div>
