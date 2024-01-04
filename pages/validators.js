@@ -430,6 +430,9 @@ export default function Validators({ amendment }) {
                           {t("table.sequence")}: {v.sequence}
                         </p>
                         <p>
+                          {t("last-ledger-information.base-fee")}: {v.baseFee ? amountFormat(v.baseFee) : "N/A"}
+                        </p>
+                        <p>
                           {t("last-ledger-information.base-reserve")}: {v.reserveBase ? amountFormat(v.reserveBase) : "N/A"}
                         </p>
                         <p>
@@ -500,7 +503,6 @@ export default function Validators({ amendment }) {
               {developerMode &&
                 <th className='center'>{t("table.sequence")}</th>
               }
-              <th className='right'>{t("table.reserves", { ns: 'validators' })}</th>
               {showServer &&
                 <th className='center'>Server</th>
               }
@@ -585,6 +587,10 @@ export default function Validators({ amendment }) {
                         }
 
                         {listAmendments(v.amendments)}
+                        <br />
+                        {t("last-ledger-information.base-fee")} {v.baseFee ? amountFormat(v.baseFee) : "N/A"}|
+                        {t("last-ledger-information.base-reserve")} {v.reserveBase ? amountFormat(v.reserveBase) : "N/A"}|
+                        {t("last-ledger-information.increment-reserve")} {v.reserveIncrement ? amountFormat(v.reserveIncrement) : "N/A"}
                       </td>
                       <td className='center'>
                         {v.unl ?
@@ -610,15 +616,6 @@ export default function Validators({ amendment }) {
                       {developerMode &&
                         <td className='center'>{v.sequence}</td>
                       }
-                      <td className='right'>
-                        {(v.reserveIncrement && v.reserveBase) ?
-                          <>
-                            {v.reserveIncrement / 1000000} / {v.reserveBase / 1000000}
-                          </>
-                          :
-                          ""
-                        }
-                      </td>
                       {showServer &&
                         <td className={developerMode ? 'right' : 'center'}>
                           {developerMode && <>

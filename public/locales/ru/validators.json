@@ -8,7 +8,6 @@
     "owner-country": "Страна владельца",
     "votes-for": "Голосует за",
     "last-seen": "Видили",
-    "reserves": "Резервы",
     "text": {
       "domain-verified-toml": "Верифицированный домен (TOML файл)",
       "unl": "в UNL (Unique Node List)",

@@ -8,7 +8,6 @@
     "owner-country": "País del dueño",
     "votes-for": "Votos para",
     "last-seen": "Última vez visto",
-    "reserves": "Reservas",
     "text": {
       "domain-verified-toml": "Dominio verificado (fichero TOML)",
       "unl": "En la Lísta Única de Nodos (UNL)",

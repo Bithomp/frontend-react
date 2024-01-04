@@ -8,7 +8,6 @@
     "owner-country": "Negara Pemilik",
     "votes-for": "Usulan untuk",
     "last-seen": "Terakhir dilihat",
-    "reserves": "Cadangan",
     "text": {
       "domain-verified-toml": "Domain terverifikasi (file TOML)",
       "unl": "Dalam Daftar Node Unik (UNL)",
