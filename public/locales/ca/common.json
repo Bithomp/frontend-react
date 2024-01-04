@@ -51,7 +51,13 @@
     "customer-support": "Atenció al client",
     "press": "Premsa",
     "merch": "Botiga de marxandatge",
-    "donate": "Fes una donació"
+    "donate": "Fes una donació",
+    "sponsored": {
+      "title": "Patrocinat",
+      "buy": "Compra XRP",
+      "earn": "Guanya amb XRP",
+      "play": "Juga amb XRP"
+    }
   },
   "components": {
     "expiration-select": {

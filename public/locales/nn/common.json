@@ -51,7 +51,13 @@
     "customer-support": "Kundeservice",
     "press": "Trykk",
     "merch": "Varebutikk",
-    "donate": "Doner"
+    "donate": "Doner",
+    "sponsored": {
+      "title": "Sponset",
+      "buy": "Kjøp XRP",
+      "earn": "Tjen på XRP",
+      "play": "Play XRP"
+    }
   },
   "components": {
     "expiration-select": {

@@ -51,7 +51,13 @@
     "customer-support": "カスタマサポート",
     "press": "プレス",
     "merch": "グッズ販売",
-    "donate": "寄付"
+    "donate": "寄付",
+    "sponsored": {
+      "title": "スポンサー",
+      "buy": "Buy XRP",
+      "earn": "Earn on XRP",
+      "play": "Play XRP"
+    }
   },
   "components": {
     "expiration-select": {

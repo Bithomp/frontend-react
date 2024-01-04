@@ -51,7 +51,13 @@
     "customer-support": "Korisnička podrška",
     "press": "Press",
     "merch": "Merch shop",
-    "donate": "Donacija"
+    "donate": "Donacija",
+    "sponsored": {
+      "title": "Sponzorirano",
+      "buy": "Kupi XRP",
+      "earn": "Zaradi na XRPu",
+      "play": "Igraj XRP"
+    }
   },
   "components": {
     "expiration-select": {

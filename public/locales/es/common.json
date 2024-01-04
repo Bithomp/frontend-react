@@ -51,7 +51,13 @@
     "customer-support": "Soporte de cliente",
     "press": "Prensa",
     "merch": "Tienda de Merch",
-    "donate": "Donaciones"
+    "donate": "Donaciones",
+    "sponsored": {
+      "title": "Patrocinado",
+      "buy": "Compra XRP",
+      "earn": "Gana en XRP",
+      "play": "Juega con XRP"
+    }
   },
   "components": {
     "expiration-select": {

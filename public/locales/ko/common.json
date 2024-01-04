@@ -51,7 +51,13 @@
     "customer-support": "고객지원",
     "press": "언론",
     "merch": "MD샵",
-    "donate": "기부"
+    "donate": "기부",
+    "sponsored": {
+      "title": "지원받음",
+      "buy": "XRP 구매",
+      "earn": "XRP 수익창출",
+      "play": "XRP 플레이"
+    }
   },
   "components": {
     "expiration-select": {

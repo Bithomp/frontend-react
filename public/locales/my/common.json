@@ -51,7 +51,13 @@
 		"customer-support": "Sokongan Pelanggan",
 		"press": "Media",
 		"merch": "Kedai Merch",
-		"donate": "Sumbangan"
+		"donate": "Sumbangan",
+		"sponsored": {
+			"title": "Ditaja",
+			"buy": "Beli XRP",
+			"earn": "Peroleh dari XRP",
+			"play": "Mainkan XRP"
+		}
 	},
 	"components": {
 		"expiration-select": {

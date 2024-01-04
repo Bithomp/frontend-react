@@ -51,7 +51,13 @@
     "customer-support": "Контакты",
     "press": "Для прессы",
     "merch": "Магазин мерча",
-    "donate": "Донаты"
+    "donate": "Донаты",
+    "sponsored": {
+      "title": "Реклама",
+      "buy": "Купить XRP",
+      "earn": "XRP вклады",
+      "play": "Играть с XRP"
+    }
   },
   "components": {
     "expiration-select": {

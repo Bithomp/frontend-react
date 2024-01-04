@@ -88,6 +88,14 @@ export default function Footer({ account, setSignRequest }) {
           <Link href="/press">{t("menu.press")}</Link>
           <Link href="/donate">{t("menu.donate")} <span className="red">❤</span></Link>
         </div>
+
+        {network === 'mainnet' && <div className="footer-menu-column">
+          <span className="footer-menu-header">{t("menu.sponsored.title")}</span>
+          <a href="/go/fm-buy" target="_blank" rel="noreferrer">{t("menu.sponsored.buy")}</a>
+          <a href="/go/fm-earn" target="_blank" rel="noreferrer">{t("menu.sponsored.earn")}</a>
+          <a href="/go/fm-play" target="_blank" rel="noreferrer">{t("menu.sponsored.play")}</a>
+        </div>}
+
       </div>
 
       <div className="footer-brand">

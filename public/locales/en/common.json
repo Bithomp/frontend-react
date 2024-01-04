@@ -51,7 +51,13 @@
     "customer-support": "Customer support",
     "press": "Press",
     "merch": "Merch shop",
-    "donate": "Donate"
+    "donate": "Donate",
+    "sponsored": {
+      "title": "Sponsored",
+      "buy": "Buy XRP",
+      "earn": "Earn on XRP",
+      "play": "Play XRP"
+    }
   },
   "components": {
     "expiration-select": {
