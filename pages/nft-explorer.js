@@ -85,4 +85,4 @@ export default function Nfts({
     id={id}
     account={account}
   />
-};
+}

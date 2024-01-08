@@ -461,8 +461,8 @@ export default function NftsComponent({
   return <>
     {nftExplorer ?
       <SEO
-        title={t("nft-explorer.header") + (issuerQuery ? (" " + issuerQuery) : "")}
-        description={issuer || search || t("nft-explorer.header")}
+        title={t("nft-explorer.header") + ((issuer || issuerQuery) ? (" " + (issuer || issuerQuery)) : "")}
+        description={issuer || issuerQuery || search || t("nft-explorer.header")}
       />
       :
       <>
