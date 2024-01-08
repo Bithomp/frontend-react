@@ -27,7 +27,7 @@ export default function Ads() {
           <div className="sponsored-brand-text">Instantly buy and sell cryptocurrency with low commission.</div>
         </div>
       </a>
-      <a href="/go/earn-on-xrp" target="_blank" rel="noreferrer">
+      <a href="/go/earn-xrp" target="_blank" rel="noreferrer">
         <div className="sponsored-brand">
           <img src="/images/nexo.svg" className="sponsored-brand-icon" alt="earn on xrp" />
           <div className="sponsored-brand-title">Earn on XRP</div>
