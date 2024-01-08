@@ -165,6 +165,8 @@ export default function Amendment() {
     return windowWidth > 1140 ? <>{hash} </> : (windowWidth > 800 ? <>{shortHash(hash)} </> : "")
   }
 
+  const activationDays = xahauNetwork ? 5 : 14
+
   return <>
     <SEO title={t("menu.xrpl.amendments")} />
     <div className="content-text">
@@ -189,7 +191,7 @@ export default function Amendment() {
                   <td className='center'>{i + 1}</td>
                   <td className="brake">{amendmentLink(a)}</td>
                   <td>{fullDateAndTime(a.majority)}</td>
-                  <td>{fullDateAndTime(a.majority + 14 * 86400 + 903)}</td>
+                  <td>{fullDateAndTime(a.majority + activationDays * 86400 + 903)}</td>
                   <td className='right'>
                     {a.count > threshold ? <b className='green'>{a.count}</b> : a.count}
                     <Link href={"validators?amendment=" + a.name}> <LinkIcon /></Link>
