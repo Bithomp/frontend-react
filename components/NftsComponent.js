@@ -534,7 +534,7 @@ export default function NftsComponent({
               onChange={onSearchChange}
               className="input-text"
               spellCheck="false"
-              maxLength="18"
+              maxLength="100"
               disabled={listTab === 'onSale'}
               onKeyPress={enterPress}
             />
