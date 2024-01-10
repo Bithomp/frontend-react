@@ -11,10 +11,10 @@ import Tabs from '../../components/Tabs'
 
 import { isEmailValid } from '../../utils'
 
-export const getServerSideProps = async (context) => {
-  const { locale } = context
+export const getServerSideProps = async ({ locale, query }) => {
   return {
     props: {
+      redirectToken: query.redirectToken || null,
       ...(await serverSideTranslations(locale, ['common', 'admin'])),
     },
   }
@@ -23,7 +23,7 @@ export const getServerSideProps = async (context) => {
 const turnstileSypportedLanguages = ['ar-EG', 'de', 'en', 'es', 'fa', 'fr', 'id', 'it', 'ja', 'ko', 'nl', 'pl', 'pt-BR', 'ru', 'tr', 'zh-CN', 'zh-TW']
 const checkmark = '/images/checkmark.svg'
 
-export default function Admin() {
+export default function Admin({ redirectToken }) {
   const { theme } = useTheme()
   const { t, i18n } = useTranslation(['common', 'admin'])
   const router = useRouter()
@@ -60,6 +60,7 @@ export default function Admin() {
   }
 
   useEffect(() => {
+    redirectTokenRun()
     const sessionToken = localStorage.getItem('sessionToken')
     if (!sessionToken) {
       checkApi()
@@ -71,6 +72,38 @@ export default function Admin() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  const redirectTokenRun = async () => {
+    if (redirectToken) {
+      const formData = await axios.post(
+        'partner/auth',
+        { redirectToken },
+        { baseUrl: '/api/' }
+      ).catch(error => {
+        if (error?.response?.data?.error) {
+          setErrorMessage(error.response.data.error)
+        } else if (error && error.message !== "canceled") {
+          setErrorMessage(t("error." + error.message))
+        }
+      })
+
+      const data = formData?.data
+      /*
+        {
+          "status": "success",
+          "token": "b625c631-45a9-43b3-935f-4af7667852a3-045d2763-bbb6-4693-bace-52d3417bfd3c",
+          "tokenExpiredAt": 1698497754
+        }
+      */
+      if (data?.status === "success") {
+        setStep(2)
+        setErrorMessage("")
+        localStorage.setItem("sessionToken", data.token)
+        axios.defaults.headers.common['Authorization'] = "Bearer " + data.token
+        getLoggedUserData()
+      }
+    }
+  }
 
   const getLoggedUserData = async () => {
     const data = await axios.get(
