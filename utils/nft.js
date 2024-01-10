@@ -29,6 +29,8 @@ export const mpUrl = offer => {
     url = "https://equilibrium-games.com/marketplace/nft/"
   } else if (service === "CollaterArt") {
     url = "https://collaterart.com/Mainnet/" + offer.owner + "/"
+  } else if (service === "RandX") {
+    url = "https://www.randx.xyz/nft/"
   }
   if (url) {
     return url + offer.nftokenID
