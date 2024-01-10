@@ -138,7 +138,7 @@ export default function Admin() {
   }
 
   const now = new Date()
-  const nowDate = new Date(now.getFullYear(), now.getMonth() + 1, now.getDay())
+  const nowDate = new Date(now.getFullYear(), now.getMonth(), now.getDate())
 
   return <>
     <SEO title={t("header", { ns: "admin" })} />
