@@ -265,9 +265,9 @@ const metaUrl = (nft, type = 'image', gateway = 'our') => {
         return assetUrl(decodedUri.replace("metadata.json", ("data." + meta.file_extension)), type, gateway);
       }
     };
-    //image from animation, if it is not a model
-    if (meta.animation && !isCorrectFileType(meta.animation, 'model')) return assetUrl(meta.animation, 'preview', gateway);
-    if (meta.animation_url && !isCorrectFileType(meta.animation_url, 'model')) return assetUrl(meta.animation_url, 'preview', gateway);
+    //image from animation
+    if (meta.animation) return assetUrl(meta.animation, 'preview', gateway);
+    if (meta.animation_url) return assetUrl(meta.animation_url, 'preview', gateway);
   }
   if (type === 'video' || type === 'thumbnail') {
     if (meta.video) return assetUrl(meta.video, type, gateway);
