@@ -13,7 +13,8 @@ export const partnerMarketplaces = {
 //identified NFT Market Places
 export const mpUrl = offer => {
   if (!offer || !offer.destination || !offer.destinationDetails) return ""
-  const service = offer.destinationDetails.service
+  let service = offer.destinationDetails.service
+  service = service.trim()
   let url = ''
   if (service === "onXRP") {
     url = "https://nft.onxrp.com/nft/"
@@ -31,7 +32,7 @@ export const mpUrl = offer => {
     url = "https://collaterart.com/Mainnet/" + offer.owner + "/"
   } else if (service === "RandX") {
     url = "https://www.randx.xyz/nft/"
-  } else if (service === "OpulenceX" || service === "Opulence" || service === "OPX") {
+  } else if (service === "OpulenceX") {
     url = "https://nftmarketplace.opulencex.io/nft/"
   }
   if (url) {
