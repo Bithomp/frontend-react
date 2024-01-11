@@ -14,6 +14,7 @@ export const partnerMarketplaces = {
 export const mpUrl = offer => {
   if (!offer || !offer.destination || !offer.destinationDetails) return ""
   let service = offer.destinationDetails.service
+  if (!service) return ""
   service = service.trim()
   let url = ''
   if (service === "onXRP") {
