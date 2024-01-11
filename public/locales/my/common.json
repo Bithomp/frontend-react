@@ -422,7 +422,7 @@
 		"public-key": "Kunci Awam",
 		"text": {
 			"show-extended-statistics": "Paparkan statistik lanjutan",
-			"include-without-metadata": "Sertakan NFT tanpa metadata",
+			"include-without-media-data": "Sertakan NFT tanpa mediadata",
 			"include-burned-nfts": "Sertakan NFT yang dibakar",
 			"no-expiration": "Tiada tarikh luput",
 			"no-offers": "Tiada tawaran dijumpai",

@@ -17,7 +17,7 @@ export const getServerSideProps = async ({ query, locale }) => {
     mintedPeriod,
     burnedPeriod,
     includeBurned,
-    includeWithoutMetadata,
+    includeWithoutMediaData,
     id
   } = query
 
@@ -39,7 +39,7 @@ export const getServerSideProps = async ({ query, locale }) => {
       mintedPeriod: mintedPeriod || "",
       burnedPeriod: burnedPeriod || "",
       includeBurnedQuery: includeBurned || false,
-      includeWithoutMetadataQuery: includeWithoutMetadata || false,
+      includeWithoutMediaDataQuery: includeWithoutMediaData || false,
       id: id ? (Array.isArray(id) ? id[0] : id) : "",
       ...(await serverSideTranslations(locale, ['common'])),
     },
@@ -61,7 +61,7 @@ export default function Nfts({
   mintedPeriod,
   burnedPeriod,
   includeBurnedQuery,
-  includeWithoutMetadataQuery,
+  includeWithoutMediaDataQuery,
   id,
   account
 }) {
@@ -80,7 +80,7 @@ export default function Nfts({
     mintedPeriod={mintedPeriod}
     burnedPeriod={burnedPeriod}
     includeBurnedQuery={includeBurnedQuery}
-    includeWithoutMetadataQuery={includeWithoutMetadataQuery}
+    includeWithoutMediaDataQuery={includeWithoutMediaDataQuery}
     nftExplorer={true}
     id={id}
     account={account}

@@ -422,7 +422,7 @@
     "public-key": "公開鍵",
     "text": {
       "show-extended-statistics": "詳細な統計情報の表示",
-      "include-without-metadata": "メタデータなしのNFTを含む",
+      "include-without-media-data": "メディアデータなしのNFTを含む",
       "include-burned-nfts": "バーン済みのNFTを含む",
       "no-expiration": "有効期限なし",
       "no-offers": "オファーがありません",

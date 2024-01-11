@@ -422,7 +422,7 @@
     "public-key": "Clave pública",
     "text": {
       "show-extended-statistics": "Mostrar estadísticas ampliadas",
-      "include-without-metadata": "Incluir NFTs sin metadata",
+      "include-without-media-data": "Incluir NFTs sin mediadata",
       "include-burned-nfts": "Incluir NFTs quemados",
       "no-expiration": "Sin fecha de caducidad",
       "no-offers": "Ofertas no encontradas",

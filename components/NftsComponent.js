@@ -36,7 +36,7 @@ export default function NftsComponent({
   mintedPeriod,
   burnedPeriod,
   includeBurnedQuery,
-  includeWithoutMetadataQuery,
+  includeWithoutMediaDataQuery,
   id,
   account
 }) {
@@ -65,7 +65,7 @@ export default function NftsComponent({
   const [taxonInput, setTaxonInput] = useState(taxonQuery)
   const [searchInput, setSearchInput] = useState(searchQuery)
   const [includeBurned, setIncludeBurned] = useState(includeBurnedQuery)
-  const [includeWithoutMetadata, setIncludeWithoutMetadata] = useState(includeWithoutMetadataQuery)
+  const [includeWithoutMediaData, setIncludeWithoutMediaData] = useState(includeWithoutMediaDataQuery)
 
   useEffect(() => {
     setRendered(true)
@@ -192,9 +192,9 @@ export default function NftsComponent({
       }
     }
 
-    //includeWithoutMetadata
-    if (listTab !== 'onSale' && !includeWithoutMetadata && !searchPart) {
-      searchPart = '&hasMetadata=true'
+    //includeWithoutMediaData
+    if (listTab !== 'onSale' && !includeWithoutMediaData && !searchPart) {
+      searchPart = '&hasImage=true'
     }
 
     const nftEndpoint = xahauNetwork ? 'v2/uritokens' : 'v2/nfts'
@@ -251,7 +251,7 @@ export default function NftsComponent({
   useEffect(() => {
     checkApi({ restart: true })
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id, issuer, taxon, owner, listTab, saleDestinationTab, search, includeBurned, includeWithoutMetadata, listNftsOrderTab])
+  }, [id, issuer, taxon, owner, listTab, saleDestinationTab, search, includeBurned, includeWithoutMediaData, listNftsOrderTab])
 
   useEffect(() => {
     let queryAddList = [];
@@ -343,18 +343,18 @@ export default function NftsComponent({
       queryRemoveList.push("includeBurned")
     }
 
-    if (includeWithoutMetadata) {
+    if (includeWithoutMediaData) {
       queryAddList.push({
-        name: "includeWithoutMetadata",
+        name: "includeWithoutMediaData",
         value: true
       })
     } else {
-      queryRemoveList.push("includeWithoutMetadata")
+      queryRemoveList.push("includeWithoutMediaData")
     }
 
     setTabParams(router, tabsToSet, queryAddList, queryRemoveList)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [viewTab, listNftsOrderTab, rawData, listTab, saleDestinationTab, includeBurned, includeWithoutMetadata])
+  }, [viewTab, listNftsOrderTab, rawData, listTab, saleDestinationTab, includeBurned, includeWithoutMediaData])
 
   const onSearchChange = e => {
     setSearchInput(e.target.value)
@@ -597,8 +597,8 @@ export default function NftsComponent({
         }
         {listTab !== 'onSale' &&
           <div style={checkBoxStyles}>
-            <CheckBox checked={includeWithoutMetadata} setChecked={setIncludeWithoutMetadata}>
-              {t("table.text.include-without-metadata")}
+            <CheckBox checked={includeWithoutMediaData} setChecked={setIncludeWithoutMediaData}>
+              {t("table.text.include-without-media-data")}
             </CheckBox>
           </div>
         }

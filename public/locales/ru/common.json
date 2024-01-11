@@ -422,7 +422,7 @@
     "public-key": "Публичный ключ",
     "text": {
       "show-extended-statistics": "Показать расширенную статистику",
-      "include-without-metadata": "Включить NFT без метаданных",
+      "include-without-media-data": "Включить NFT без медиа данных",
       "include-burned-nfts": "Включить сожжёные NFT",
       "no-expiration": "Без срока действия",
       "no-offers": "Оферы не найдены",

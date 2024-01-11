@@ -422,7 +422,7 @@
     "public-key": "Clau pública",
     "text": {
       "show-extended-statistics": "Mostra estadístiques ampliades",
-      "include-without-metadata": "Include NFTs without metadata",
+      "include-without-media-data": "Include NFTs with no media",
       "include-burned-nfts": "Include burned NFTs",
       "no-expiration": "Sense data de venciment",
       "no-offers": "No s'han trobat ofertes",

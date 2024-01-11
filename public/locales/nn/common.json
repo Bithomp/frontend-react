@@ -422,7 +422,7 @@
     "public-key": "Offentlig nøkkel",
     "text": {
       "show-extended-statistics": "Vis utvidet statistikk",
-      "include-without-metadata": "Include NFTs without metadata",
+      "include-without-media-data": "Include NFTs with no media",
       "include-burned-nfts": "Include burned NFTs",
       "no-expiration": "Ingen utløpsdato",
       "no-offers": "Ingen tilbud funnet",
