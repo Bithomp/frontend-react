@@ -102,9 +102,9 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
   useEffect(() => {
     if (!data || !hasJsonMeta(data) || !data.digest) return
     const checkDigest = async (metadata, digest) => {
-      let ourDigest = await sha512(JSON.stringify(metadata).trim())
+      let ourDigest = await sha512(JSON.stringify(metadata)?.trim())
       ourDigest = ourDigest.toString().slice(0, 64)
-      setIsValidDigest(digest.toUpperCase() === ourDigest.toUpperCase())
+      setIsValidDigest(digest?.toUpperCase() === ourDigest?.toUpperCase())
     }
     checkDigest(data.metadata, data.digest)
   }, [data])
