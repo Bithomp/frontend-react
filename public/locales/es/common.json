@@ -28,7 +28,7 @@
     },
     "xrpl": {
       "governance": "Gobierno",
-      "distribution": "{{nativeCurrency}} distribution",
+      "distribution": "Distribución de {{nativeCurrency}}",
       "last-ledger-information": "Información del último libro contable",
       "last-ledger-transactions": "Transacciones del último libro contable",
       "verified-domains": "Dominios verificados",
@@ -422,7 +422,7 @@
     "public-key": "Clave pública",
     "text": {
       "show-extended-statistics": "Mostrar estadísticas ampliadas",
-      "include-without-media-data": "Incluir NFTs sin mediadata",
+      "include-without-media-data": "Incluir NFTs sin contenido",
       "include-burned-nfts": "Incluir NFTs quemados",
       "no-expiration": "Sin fecha de caducidad",
       "no-offers": "Ofertas no encontradas",
