@@ -31,6 +31,8 @@ export const mpUrl = offer => {
     url = "https://collaterart.com/Mainnet/" + offer.owner + "/"
   } else if (service === "RandX") {
     url = "https://www.randx.xyz/nft/"
+  } else if (service === "OpulenceX" || service === "Opulence" || service === "OPX") {
+    url = "https://nftmarketplace.opulencex.io/nft/"
   }
   if (url) {
     return url + offer.nftokenID
