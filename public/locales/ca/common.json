@@ -484,7 +484,9 @@
     "publicAndKnownBrokers": "Públic & MP",
     "onSale": "En venda per XRP",
     "all-tokens": "Tots els tokens",
-    "xrp-only": "Només XRP"
+    "xrp-only": "Només XRP",
+    "mintedNew": "Latest mints",
+    "mintedOld": "Oldest mints"
   },
   "xumm": {
     "new-qr": "Obtenir un codi QR nou"

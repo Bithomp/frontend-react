@@ -484,7 +484,9 @@
     "publicAndKnownBrokers": "Public & MP",
     "onSale": "On sale for XRP",
     "all-tokens": "All tokens",
-    "xrp-only": "XRP only"
+    "xrp-only": "XRP only",
+    "mintedNew": "Latest mints",
+    "mintedOld": "Oldest mints"
   },
   "xumm": {
     "new-qr": "Get a new QR code"

@@ -484,7 +484,9 @@
     "publicAndKnownBrokers": "Javno & MP",
     "onSale": "Na rasprodaji za XRP",
     "all-tokens": "Svi novčići",
-    "xrp-only": "Samo XRP"
+    "xrp-only": "Samo XRP",
+    "mintedNew": "Latest mints",
+    "mintedOld": "Oldest mints"
   },
   "xumm": {
     "new-qr": "Generiraj novi QR"

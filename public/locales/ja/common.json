@@ -484,7 +484,9 @@
     "publicAndKnownBrokers": "パブリック & MP",
     "onSale": "XRPで販売中",
     "all-tokens": "全トークン",
-    "xrp-only": "XRPのみ"
+    "xrp-only": "XRPのみ",
+    "mintedNew": "Latest mints",
+    "mintedOld": "Oldest mints"
   },
   "xumm": {
     "new-qr": "新しいQRコードを取得"

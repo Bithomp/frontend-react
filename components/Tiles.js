@@ -3,7 +3,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 
 import { xahauNetwork } from '../utils'
-import { nftImageStyle, nftUrl, bestNftOffer, mpUrl, nftName } from '../utils/nft'
+import { nftImageStyle, nftUrl, bestNftOffer, mpUrl, nftName, partnerMarketplaces } from '../utils/nft'
 import { amountFormat, timeOrDate, convertedAmount } from '../utils/format'
 
 const addressName = (details, name) => {
@@ -84,20 +84,22 @@ export default function Tiles({ nftList, type = 'name', convertCurrency, account
   }
 
   const saleData = sellOffers => {
-    if (!sellOffers) return "";
-    const best = bestNftOffer(sellOffers, account, 'sell');
+    if (!sellOffers) return ""
+    const best = bestNftOffer(sellOffers, account, 'sell')
     if (best) {
       if (mpUrl(best)) {
         return <>
           {amountFormat(best.amount)}
-          <br />
-          {t("nfts.on-service", { service: best.destinationDetails.service })}
-        </>;
+          {!partnerMarketplaces[best?.destination] && <>
+            <br />
+            {t("nfts.on-service", { service: best.destinationDetails.service })}
+          </>}
+        </>
       } else {
-        return amountFormat(best.amount);
+        return amountFormat(best.amount)
       }
-    };
-    return "Private offer"; //shouldn't be the case
+    }
+    return "Private offer" //shouldn't be the case
   }
 
   if (type === "name" || type === 'onSale') {
@@ -107,7 +109,7 @@ export default function Tiles({ nftList, type = 'name', convertCurrency, account
           {nftList[0] && nftList.map((nft, i) =>
             <li className="hex" key={i}>
               <div className="hexIn">
-                <Link href={"/nft/" + (nft.nftokenID || nft.uriTokenID)} className="hexLink">
+                <Link href={"nft/" + (nft.nftokenID || nft.uriTokenID)} className="hexLink">
                   {loadingImage(nft)}
                   {imageOrVideo(nft)}
                   <div className="index">{i + 1}</div>
@@ -144,7 +146,7 @@ export default function Tiles({ nftList, type = 'name', convertCurrency, account
           {nftList?.length > 0 && nftList.map((nft, i) =>
             <li className="hex" key={i}>
               <div className="hexIn">
-                <Link href={"/nft/" + nft.nftoken.nftokenID} className="hexLink" >
+                <Link href={"nft/" + nft.nftoken.nftokenID} className="hexLink" >
                   {loadingImage(nft.nftoken)}
                   {imageOrVideo(nft.nftoken)}
                   <div className="index">{i + 1}</div>

@@ -44,6 +44,7 @@ export const mpUrl = offer => {
 
 export const bestNftOffer = (nftOffers, loggedInAddress, type = 'sell') => {
   if (!nftOffers) return null
+
   //nftOffers = nftOffers.filter(function (offer) { return offer.valid; });
   //best xrp offer available or an IOU offer, if it's only one IOU offer available
   let bestNftOffer = null
@@ -61,7 +62,7 @@ export const bestNftOffer = (nftOffers, loggedInAddress, type = 'sell') => {
 
     if (xrpOffers.length > 0) {
       //sorting marketplaces, partner marketplaces first otherwise created latest first
-      xrpOffers = xrpOffers.sort((a, b) => {
+      xrpOffers.sort((a, b) => {
         if (partnerMarketplaces?.[a.destination] && !partnerMarketplaces?.[b.destination]) return 1
         if (!partnerMarketplaces?.[a.destination] && partnerMarketplaces?.[b.destination]) return -1
         return a.createdAt - b.createdAt
@@ -74,13 +75,13 @@ export const bestNftOffer = (nftOffers, loggedInAddress, type = 'sell') => {
         return 0
       })
 
-      if (type = 'buy') {
+      if (type === 'buy') {
         //sort most expansive on top
-        xrpOffers = xrpOffers.sort((a, b) => (parseFloat(a.amount) < parseFloat(b.amount)) ? 1 : -1)
+        xrpOffers.sort((a, b) => (parseFloat(a.amount) < parseFloat(b.amount)) ? 1 : -1)
       } else {
         //sell orders
         //sort cheapest on top
-        xrpOffers = xrpOffers.sort((a, b) => (parseFloat(a.amount) > parseFloat(b.amount)) ? 1 : -1)
+        xrpOffers.sort((a, b) => (parseFloat(a.amount) > parseFloat(b.amount)) ? 1 : -1)
       }
 
       for (let i = 0; i < xrpOffers.length; i++) {

@@ -484,7 +484,9 @@
     "publicAndKnownBrokers": "Публичные и на MП",
     "onSale": "На продаже за XRP",
     "all-tokens": "Все токены",
-    "xrp-only": "Только XRP"
+    "xrp-only": "Только XRP",
+    "mintedNew": "Новые",
+    "mintedOld": "Старые"
   },
   "xumm": {
     "new-qr": "Получить новый QR-код"

@@ -572,7 +572,6 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
 
     if (mpUrl(best)) {
       //Partner marketplaces - place counteroffers
-      //testing on devnets ONLY for now.
       if (partnerMarketplaces[best.destination]) {
         const { multiplier, fee, name, feeText } = partnerMarketplaces[best.destination]
         let request = {

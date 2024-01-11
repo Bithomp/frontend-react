@@ -484,7 +484,9 @@
     "publicAndKnownBrokers": "offentlig & MP",
     "onSale": "Til salgs for XRP",
     "all-tokens": "Alle tokens",
-    "xrp-only": "Kun XRP"
+    "xrp-only": "Kun XRP",
+    "mintedNew": "Latest mints",
+    "mintedOld": "Oldest mints"
   },
   "xumm": {
     "new-qr": "Få en ny QR-kode"

@@ -484,7 +484,9 @@
     "publicAndKnownBrokers": "Publik & Broker Terkenal",
     "onSale": "Dijual dengan XRP",
     "all-tokens": "Semua Token",
-    "xrp-only": "Hanya XRP"
+    "xrp-only": "Hanya XRP",
+    "mintedNew": "Latest mints",
+    "mintedOld": "Oldest mints"
   },
   "xumm": {
     "new-qr": "Dapatkan kode QR baru"

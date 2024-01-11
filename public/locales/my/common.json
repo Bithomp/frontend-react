@@ -484,7 +484,9 @@
 		"publicAndKnownBrokers": "Awam & MP",
 		"onSale": "Dijual untuk XRP",
 		"all-tokens": "Semua token",
-		"xrp-only": "Hanya XRP"
+		"xrp-only": "Hanya XRP",
+    "mintedNew": "Latest mints",
+    "mintedOld": "Oldest mints"
 	},
 	"xumm": {
 		"new-qr": "Dapatkan kod QR baru"

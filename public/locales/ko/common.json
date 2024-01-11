@@ -484,7 +484,9 @@
     "publicAndKnownBrokers": "공공 & MP",
     "onSale": "XRP로 판매 중",
     "all-tokens": "모든 토큰",
-    "xrp-only": "XRP만"
+    "xrp-only": "XRP만",
+    "mintedNew": "Latest mints",
+    "mintedOld": "Oldest mints"
   },
   "xumm": {
     "new-qr": "새로운 QR코드를 사용하세요"
