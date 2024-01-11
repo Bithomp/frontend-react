@@ -8,7 +8,7 @@ import Link from 'next/link'
 
 import { isAddressOrUsername, setTabParams, useWidth, xahauNetwork } from '../utils'
 import { isValidTaxon, nftThumbnail, nftNameLink, bestNftOffer, mpUrl, partnerMarketplaces } from '../utils/nft'
-import { nftLink, usernameOrAddress, userOrServiceLink, amountFormat } from '../utils/format'
+import { nftLink, usernameOrAddress, userOrServiceLink, amountFormat, timeOrDate, fullDateAndTime } from '../utils/format'
 
 import SEO from './SEO'
 import SearchBlock from './Layout/SearchBlock'
@@ -643,9 +643,10 @@ export default function NftsComponent({
                   <tr>
                     <th className='center'>{t("table.index")}</th>
                     <th>NFT</th>
-                    {!xahauNetwork && <th className='center'>{t("table.serial")}</th>}
-                    {(!taxon && !xahauNetwork) && <th className='center'>{t("table.taxon")}</th>}
-                    {!issuer && <th className='center'>{t("table.issuer")}</th>}
+                    <th className='right'>{t("table.minted")}</th>
+                    {!xahauNetwork && <th className='right'>{t("table.serial")}</th>}
+                    {(!taxon && !xahauNetwork) && <th className='right'>{t("table.taxon")}</th>}
+                    {!issuer && <th className='right'>{t("table.issuer")}</th>}
                     {(!id && !owner) && <th className='right'>{t("table.owner")}</th>}
                     {listTab === 'onSale' && <th className='right'>{t("table.price")}</th>}
                   </tr>
@@ -664,9 +665,10 @@ export default function NftsComponent({
                         <tr key={nft.nftokenID}>
                           <td className="center">{i + 1}</td>
                           <td>{nftThumbnail(nft)} {nftNameLink(nft)}</td>
-                          {!xahauNetwork && <td className='center'>{nft.sequence}</td>}
-                          {(!taxon && !xahauNetwork) && <td className='center'>{nft.nftokenTaxon}</td>}
-                          {!issuer && <td className='center'>{nftLink(nft, 'issuer', { address: 'short' })}</td>}
+                          <td className='right'>{timeOrDate(nft.issuedAt)}</td>
+                          {!xahauNetwork && <td className='right'>{nft.sequence}</td>}
+                          {(!taxon && !xahauNetwork) && <td className='right'>{nft.nftokenTaxon}</td>}
+                          {!issuer && <td className='right'>{nftLink(nft, 'issuer', { address: 'short' })}</td>}
                           {(!id && !owner) && <td className='right'>{nftLink(nft, 'owner', { address: 'short' })}</td>}
                           {listTab === 'onSale' && <td className='right'>{priceData(nft.sellOffers)}</td>}
                         </tr>)
@@ -697,6 +699,7 @@ export default function NftsComponent({
                           </td>
                           <td>
                             <div className='brake'>NFT: {nftNameLink(nft)}</div>
+                            <div>{t("table.minted")}: {fullDateAndTime(nft.issuedAt)}</div>
                             {!xahauNetwork && <>{t("table.serial")}: {nft.sequence}<br /></>}
                             {(!taxon && !xahauNetwork) && <>{t("table.taxon")}: {nft.nftokenTaxon}<br /></>}
                             {!issuer && <>{t("table.issuer")}: {nftLink(nft, 'issuer', { address: 'short' })}<br /></>}
