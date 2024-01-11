@@ -3,6 +3,7 @@ import NftsComponent from '../components/NftsComponent';
 
 export const getServerSideProps = async ({ query, locale }) => {
   const {
+    listNftsOrder,
     view,
     list,
     saleDestination,
@@ -24,6 +25,7 @@ export const getServerSideProps = async ({ query, locale }) => {
   //key to refresh the component when Link pressed within the same route
   return {
     props: {
+      listNftsOrder: listNftsOrder || "mintedNew",
       key: Math.random(),
       view: view || "tiles",
       list: list || "nfts",
@@ -47,6 +49,7 @@ export const getServerSideProps = async ({ query, locale }) => {
 }
 
 export default function Nfts({
+  listNftsOrder,
   view,
   list,
   saleDestination,
@@ -66,6 +69,7 @@ export default function Nfts({
   account
 }) {
   return <NftsComponent
+    listNftsOrder={listNftsOrder}
     view={view}
     list={list}
     saleDestination={saleDestination}
