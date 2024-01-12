@@ -422,7 +422,7 @@
     "public-key": "Kunci Publik",
     "text": {
       "show-extended-statistics": "Tampilkan statistik tambahan",
-      "include-without-media-data": "Sertakan NFT tanpa mediadata",
+      "include-without-media-data": "Sertakan NFT tanpa media",
       "include-burned-nfts": "Sertakan NFT yang dihapus",
       "no-expiration": "Tidak ada tanggal kedaluwarsa",
       "no-offers": "Tidak ada penawaran ditemukan",
@@ -485,8 +485,8 @@
     "onSale": "Dijual dengan XRP",
     "all-tokens": "Semua Token",
     "xrp-only": "Hanya XRP",
-    "mintedNew": "Latest mints",
-    "mintedOld": "Oldest mints"
+    "mintedNew": "Cetakan Terbaru",
+    "mintedOld": "Cetakan Terlama"
   },
   "xumm": {
     "new-qr": "Dapatkan kode QR baru"
