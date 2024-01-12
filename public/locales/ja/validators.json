@@ -1,17 +1,17 @@
 {
   "table": {
-    "validator": "Validador",
-    "server-country": "Server country",
-    "server-location": "Server location",
-    "cloud-private": "Cloud/private",
-    "network-asn": "Network ASN",
-    "owner-country": "Owner country",
+    "validator": "バリデータ",
+    "server-country": "サーバの国",
+    "server-location": "サーバの場所",
+    "cloud-private": "クラウド/プライベート",
+    "network-asn": "ネットワークASN",
+    "owner-country": "運用者の国",
     "votes-for": "支持",
     "last-seen": "最終更新",
     "text": {
-      "domain-verified-toml": "Verified domain (TOML file)",
-      "unl": "In the Unique Node List (UNL)",
-      "negative-unl": "in the Negative UNL"
+      "domain-verified-toml": "検証済みドメイン(TOMLファイル)",
+      "unl": "Unique Node List (UNL)",
+      "negative-unl": "Negative UNL"
     }
   },
   "domain-legacy": "ドメイン (古い検証方法)",

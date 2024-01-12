@@ -35,8 +35,8 @@
     "hook-votes": "Hookへの投票",
     "hook-votes-count": "Hookへの投票数",
     "text": {
-      "vacate-seat": "Vacate the seat",
-      "vacate-place": "Vacate the place"
+      "vacate-seat": "空席",
+      "vacate-place": "設定解除"
     }
   }
 }

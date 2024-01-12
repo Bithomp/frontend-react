@@ -28,7 +28,7 @@
     },
     "xrpl": {
       "governance": "ガバナンス",
-      "distribution": "{{nativeCurrency}} distribution",
+      "distribution": "{{nativeCurrency}}の分布",
       "last-ledger-information": "現在のレジャー情報",
       "last-ledger-transactions": "現在のトランザクション情報",
       "verified-domains": "検証済みドメイン",
@@ -120,15 +120,15 @@
       "enter-domain": "ドメインを入力"
     },
     "status": {
-      "awaiting-crawler": "Awaiting for crawler to update the data",
-      "awaiting-broker": "Awaiting for {{serviceName}} to accept the offer",
-      "failed-broker": "Failed to notify {{serviceName}} about the offer. You can cancel it."
+      "awaiting-crawler": "クローラーによるデータ更新を行なっています。",
+      "awaiting-broker": "{{serviceName}}がオファーを受け入れるのを待っています。",
+      "failed-broker": "{{serviceName}}にオファーを通知できませんでした。キャンセルすることができます。"
     },
     "nft-offer": {
-      "counteroffer": "You're making a counteroffer, which should to be accepted automatically within 20 seconds. If it's not accepted you can cancel it at any time.",
-      "nft-price": "NFT price",
-      "fee": "{{serviceName}} fee ({{feeText}})",
-      "total": "Total"
+      "counteroffer": "作成したオファーは20秒以内に自動的に成立します。成立しなかった場合は、いつでもキャンセルすることができます。",
+      "nft-price": "NFTの価格",
+      "fee": "{{serviceName}}の手数料 ({{feeText}})",
+      "total": "合計"
     }
   },
   "footer": {
@@ -230,7 +230,7 @@
     "email": "メールアドレス:",
     "url": "ウェブサイトまたはアプリのURL:",
     "description": "プロジェクトの説明とAPI の利用目的:",
-    "success": "Thank you. The API token was sent to your e-mail.",
+    "success": "ありがとうございます。APIトークンはメールアドレスに送付されました。",
     "error": {
       "url-empty": "ウェブサイトまたはアプリのURLを入力してください。",
       "url-invalid": "有効なURLを入力してください。",
@@ -290,10 +290,10 @@
   },
   "form": {
     "error": {
-      "domain-empty": "Please enter web domain.",
-      "domain-invalid": "Please enter a valid web domain.",
-      "description-empty": "Please enter a description.",
-      "description-short": "Description is too short.",
+      "domain-empty": "ドメインを入力してください。",
+      "domain-invalid": "有効なドメインを入力してください。",
+      "description-empty": "説明を入力してください。",
+      "description-short": "説明が短すぎます。",
       "email-empty": "メールアドレスを入力してください。",
       "email-invalid": "有効なメールアドレスを入力してください。",
       "password-empty": "パスワードを入力してください。",
@@ -304,17 +304,17 @@
     "Network Error": "インターネットに接続していないようです ;(",
     "Request failed with status code 429": "リクエストの送信数が多すぎます、後ほどお試しください！",
     "Request failed with status code 404": "そのようなAPIコールはそのネットワークでは許可されていません",
-    "Request failed with status code 403": "It seems you're logged out, please log in again"
+    "Request failed with status code 403": "ログアウトしています。再度ログインしてください。"
   },
   "errors": {
     "token": {
-      "required": "Please login to continue"
+      "required": "続けるにはログインしてください。"
     },
     "partner": {
-      "not_found": "There are no projects"
+      "not_found": "プロジェクトがありません。"
     },
     "access_token": {
-      "not_found": "There are no API keys."
+      "not_found": "APIキーがありません。"
     }
   },
   "error-api": {
@@ -480,13 +480,13 @@
     "all": "全て",
     "buy": "購入",
     "sell": "売却",
-    "buyNow": "Buy now",
+    "buyNow": "今すぐ購入",
     "publicAndKnownBrokers": "パブリック & MP",
     "onSale": "XRPで販売中",
     "all-tokens": "全トークン",
     "xrp-only": "XRPのみ",
-    "mintedNew": "Latest mints",
-    "mintedOld": "Oldest mints"
+    "mintedNew": "新しいミント",
+    "mintedOld": "古いミント"
   },
   "xumm": {
     "new-qr": "新しいQRコードを取得"
@@ -511,7 +511,7 @@
     "different-network": "このトランザクションは<1>{{networkNameOrId}}</1>ネットワークからのものです。",
     "check-tx-on-different-explorer": "詳細は<1><0>こちら</0></1>をご覧ください。",
     "not-supported-network": "これはサポートされていません",
-    "no-slashes": "The search should not contain slashes."
+    "no-slashes": "検索文字列にはスラッシュを含めないでください。"
   },
   "nft-explorer": {
     "header": "NFTエクスプローラ"
@@ -570,8 +570,8 @@
   },
   "nft-sales": {
     "header": "NFTの販売",
-    "load-more": "XRPLからデータを探しています...しばらくお待ちください...",
-    "end": "リストの末尾."
+    "load-more": "XRPLからデータを探しています。しばらくお待ちください...",
+    "end": "リストの末尾"
   },
   "links": {
     "active-offers-same-account": "このアカウントからの有効なオファーを表示",
