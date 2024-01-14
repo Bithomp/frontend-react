@@ -2,7 +2,7 @@
   "menu": {
     "personal": {
       "personal": "Personal",
-      "search-on-ledgerName": "Cerca en {{ledgerName}}"
+      "search-on-ledgerName": "Cerca a l'{{ledgerName}}"
     },
     "business": {
       "business": "Negoci",
