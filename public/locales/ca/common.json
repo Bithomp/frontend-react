@@ -7,13 +7,13 @@
     "business": {
       "business": "Negoci",
       "advertise": "Anuncia",
-      "eaas": "L'Explorador com a Servei",
-      "build-unl": "Construeix UNL"
+      "eaas": "L'Explorador com a servei",
+      "build-unl": "Crea la teva UNL"
     },
     "usernames": "Registre d'àlies",
     "project-registartion": "Registre de projectes",
     "price-alerts": "Alertes {{nativeCurrency}}",
-    "submit-offline-tx": "Envia una transacció fora de línia",
+    "submit-offline-tx": "Envia transaccions offline",
     "networks": "Xarxes",
     "ledger": "Transaccions del Ledger",
     "nft": {
@@ -42,7 +42,7 @@
       "account-generation": "Generació d'un compte",
       "faucet": "Aixeta",
       "api": "Documentació API",
-      "api-key-request": "Clau Api"
+      "api-key-request": "Clau API"
     },
     "legal": "Legal",
     "disclaimer": "Exempció de responsabilitats",
@@ -84,7 +84,7 @@
       "enter-amount": "Introdueix una quantitat"
     },
     "expiration": "Venciment",
-    "target-table": "Target table",
+    "target-table": "Taula objectiu",
     "xumm": {
       "open-app": "Obre l'aplicació Xumm al mòbil.",
       "change-settings": "Ves a paràmetres i tria un node d'una xarxa de proves.",
@@ -140,7 +140,7 @@
   "home": {
     "title": "Explorador {{explorerName}} | Escaneja l'{{nativeCurrency}} Ledger",
     "description": "Gràfica de preu d'{{nativeCurrency}} | Estadístiques | Explorador d'NFTs | Cerca d'adreces dels moneders",
-    "search-placeholder": "Cerca per Adreça / Transacció / NFT / Àlies / PayString / Oferta / Hash",
+    "search-placeholder": "Cerca per Adreça / Transacció / NFT / Àlies / PayString / Oferta ID / Hash",
     "search-placeholder-short": "Cerca per Adreça / Transacció / Àlies",
     "scan-qr": "ESCANEJA UN CODI",
     "whales": {
@@ -220,7 +220,7 @@
     "balance-update": "Actualització del balanç",
     "details": "Detalls",
     "address": "Adreça",
-    "genesis-balance": "Balanç gènesi",
+    "genesis-balance": "Saldo gènesi",
     "rippletrade-username": "Àlies de Rippletrade",
     "nickname": " Àlies",
     "genesis-index": "Índex gènesi"
@@ -249,7 +249,7 @@
     "price": "preu",
     "total": "total",
     "paid": "pagat",
-    "order-id": "id de l'ordre"
+    "order-id": "ID de l'ordre"
   },
   "button": {
     "continue": "Continua",
@@ -480,7 +480,7 @@
     "all": "Tots",
     "buy": "Compra",
     "sell": "Ven",
-    "buyNow": "Buy now",
+    "buyNow": "Compra ara",
     "publicAndKnownBrokers": "Públic & MP",
     "onSale": "En venda per XRP",
     "all-tokens": "Tots els tokens",
@@ -501,7 +501,7 @@
       "nft-offers": "Ofertes d'NFTs"
     },
     "enter-address": "Introdueix un adreça XRPL o un àlies",
-    "searching-tx-nft-nftoffer": "Cercant per Tx / NFT ID / Oferta NFT",
+    "searching-tx-nft-nftoffer": "Cercant per Tx / NFT ID / ID de l'Oferta",
     "searching-for-addresses": "Cercant per adreces...",
     "menu": {
       "account": "Compte",
@@ -529,7 +529,7 @@
   },
   "nft-offer": {
     "header": "Ofertes d'NFTs",
-    "desc": "Aquí pots cercar ofertes d'NFTs, introdueix l'ID d'una oferta i clica cercar.",
+    "desc": "Aquí pots cercar ofertes d'NFTs, introdueix l'ID d'una Oferta i clica cercar.",
     "enter-offer-id": "Introdueix l'ID d'un oferta NFT",
     "selling": "Venent",
     "buying": "Comprant"
