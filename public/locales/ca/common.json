@@ -20,29 +20,29 @@
       "explorer": "Explorador",
       "volumes": "Volums",
       "sales": "Vendes",
-      "minters": "Minters",
+      "minters": "Encunyadors",
       "distribution": "Distribució (holders)",
       "statistics": "Estadístiques en viu",
       "nfts": "NFTs del compte",
       "offers": "Ofertes"
     },
     "xrpl": {
-      "governance": "Governance",
-      "distribution": "{{nativeCurrency}} distribution",
+      "governance": "Governança",
+      "distribution": "{{nativeCurrency}} distribució",
       "last-ledger-information": "Informació de l'últim Ledger",
       "last-ledger-transactions": "Transaccions de l'últim Ledger",
-      "verified-domains": "Verified domains",
+      "verified-domains": "Dominis verificats",
       "validators": "Validadors",
       "amendments": "Esmenes",
-      "unl-report": "UNL report",
+      "unl-report": "Informe UNL",
       "genesis": "Comptes gènesi"
     },
     "developers": {
-      "developers": "Developers",
+      "developers": "Desenvolupadors",
       "account-generation": "Generació d'un compte",
       "faucet": "Aixeta",
-      "api": "API documentation",
-      "api-key-request": "Api key"
+      "api": "Documentació API",
+      "api-key-request": "Clau Api"
     },
     "legal": "Legal",
     "disclaimer": "Exempció de responsabilitats",
@@ -69,8 +69,8 @@
       "90d": "90 dies"
     },
     "target-table-select": {
-      "01": "L1 - Main table",
-      "02": "L2 - My table"
+      "01": "L1 - Tauler principal",
+      "02": "L2 - El meu tauler"
     }
   },
   "signin": {
@@ -105,29 +105,29 @@
     },
     "not-available": "No disponible",
     "confirm": {
-      "set-domain": "Setting a domain",
+      "set-domain": "Estableix un domini",
       "nft-accept-sell-offer-header": "Compra NFT",
-      "nft-accept-buy-offer-header": "Selling NFT",
+      "nft-accept-buy-offer-header": "Ven NFT",
       "nft-create-sell-offer-header": "Llista per vendre",
       "nft-create-buy-offer-header": "Crea una oferta de Compra",
       "nft-accept-offer": "Accepto que Bithomp em dona accés a un mercat descentralitzat i que no pot verificar o garantir l'autenticitat o legitimitat dels NFTs. Confirmo que he llegit els <1>Termes i condicions del servei</1>, i accepto tots els termes de compra, venda o ús d'NFTs a Bithomp.",
       "nft-create-sell-offer": "Ho entenc, un cop he signat l'NFT pot ser comprat immediatament.",
-      "nft-burn-header": "NFT burning",
-      "nft-burn": "I understand that NFT will be permanently deleted, meaning, it can no longer be owned, transferred, purchased, or sold. This action can not be undone."
+      "nft-burn-header": "NFTs destruïts",
+      "nft-burn": "Entenc que l'NFT serà destruït de manera permanent, ço és, ja no es podrà comprar, vendre, enviar ni rebre. Un cop feta aquesta acció no et pots fer enrere."
     },
     "set-account": {
-      "domain": "Domain",
-      "enter-domain": "Enter domain"
+      "domain": "Domini",
+      "enter-domain": "Introdueix domini"
     },
     "status": {
-      "awaiting-crawler": "Awaiting for crawler to update the data",
-      "awaiting-broker": "Awaiting for {{serviceName}} to accept the offer",
-      "failed-broker": "Failed to notify {{serviceName}} about the offer. You can cancel it."
+      "awaiting-crawler": "Esperant l'indexador per actualizar les dades",
+      "awaiting-broker": "Esperant {{serviceName}} per acceptar l'ofera",
+      "failed-broker": "Ha fallat la notificació a {{serviceName}} sobre l'oferta. Pots cancel·lar-la."
     },
     "nft-offer": {
-      "counteroffer": "You're making a counteroffer, which should to be accepted automatically within 20 seconds. If it's not accepted you can cancel it at any time.",
-      "nft-price": "NFT price",
-      "fee": "{{serviceName}} fee ({{feeText}})",
+      "counteroffer": "Estàs fent una contraoferta, la qual hauria de ser acceptada automàticament en 20 segons. Si no és acceptada la pots cancel·lar en qualsevol moment.",
+      "nft-price": "Preu de l'NFT",
+      "fee": "Comissió de {{serviceName}} ({{feeText}})",
       "total": "Total"
     }
   },
@@ -159,7 +159,7 @@
       "usernames": "Àlies",
       "nft": {
         "created": "NFTs encunyats",
-        "burned": "NFTs eliminats",
+        "burned": "NFTs destruïts",
         "owners": "Propietaris d'NFTs",
         "issuers": "Encunyadors d'NFTs",
         "transfers": "Transferències d'NFTs",
@@ -230,7 +230,7 @@
     "email": "L'adreça de correu electrònic de La teva empresa/Universitat:",
     "url": "L'URL del teu Web/aplicació:",
     "description": "Descripció del projecte i detalls de l'ús de l'API:",
-    "success": "Thank you. The API token was sent to your e-mail.",
+    "success": "Moltes mercès! El Token API s'ha enviat al teu correu electrònic.",
     "error": {
       "url-empty": "Si us plau, introdueix l'URL de la teva pàgina web/applicació.",
       "url-invalid": "Si us plau, introdueix una URL vàlida.",
@@ -266,14 +266,14 @@
     "nft": {
       "cancel-sell-offer-for": "Cancel·la l'oferta de Venda per {{amount}}",
       "cancel-buy-offer-for": "Cancel·la l'oferta de Compra per {{amount}}",
-      "cancel-transfer": "Cancel NFT transfer",
-      "accept-transfer": "Accept NFT transfer",
+      "cancel-transfer": "Cancel·la la transferència de l'NFT",
+      "accept-transfer": "Accepta la transferència de lNFT",
       "buy-for-amount-on": "Compra per {{amount}} a {{service}}",
       "buy-for-amount": "Compra per {{amount}}",
-      "sell-for-amount": "Sell for {{amount}}",
-      "make-offer": "Fes oferta",
+      "sell-for-amount": "Ven per {{amount}}",
+      "make-offer": "Fes una oferta",
       "list-for-sale": "Llista per vendre",
-      "burn": "Burn that NFT"
+      "burn": "Destrueix aquest NFT"
     }
   },
   "general": {
@@ -290,10 +290,10 @@
   },
   "form": {
     "error": {
-      "domain-empty": "Please enter web domain.",
-      "domain-invalid": "Please enter a valid web domain.",
-      "description-empty": "Please enter a description.",
-      "description-short": "Description is too short.",
+      "domain-empty": "Si us plau, introdueix un domini web.",
+      "domain-invalid": "Si us plau, introdueix un domini web vàlid.",
+      "description-empty": "Si us plau, introdueix una descripció.",
+      "description-short": "La descripció és massa curta.",
       "email-empty": "Si us plau, introdueix el teu correu electrònic.",
       "email-invalid": "Si us plau, introdueix una adreça de correu electrònic vàlida.",
       "password-empty": "Si us plau, introdueix la teva contrasenya.",
@@ -304,17 +304,17 @@
     "Network Error": "Sembla que no hi ha connexió a internet ;(",
     "Request failed with status code 429": "Ens estàs enviant massa sol·licituds, intenta-ho de nou més tard!",
     "Request failed with status code 404": "No s'ha trobat",
-    "Request failed with status code 403": "It seems you're logged out, please log in again"
+    "Request failed with status code 403": "Sembla que no estàs identificat, si us plai, ingressa de nou"
   },
   "errors": {
     "token": {
-      "required": "Please login to continue"
+      "required": "Si us plau, identifica't per poder continuar"
     },
     "partner": {
-      "not_found": "There are no projects"
+      "not_found": "No hi ha projectes"
     },
     "access_token": {
-      "not_found": "There are no API keys."
+      "not_found": "No hi ha Claus API"
     }
   },
   "error-api": {
@@ -329,7 +329,7 @@
     "currencyIssuer username is not found or invalid": "L'àlies de l'encunyador no és vàlid",
     "currencyIssuer is invalid": "L'adreça de l'encunyador de la moneda no és vàlida",
     "Token information is not found": "No hem pogut trobar informació sobre aquest ID",
-    "No nfts information is found": "Sorry, an error occured, please to search for somethig else.",
+    "No nfts information is found": "Disculpa, hi ha hagut un error, si su plau, cerca alguna altra cosa diferent.",
     "Address is not valid": "L'adreça no és vàlida"
   },
   "units": {
@@ -355,7 +355,7 @@
     "amount": "Quantitat",
     "name": "Nom",
     "sender": "Remitent",
-    "balance": "Balanç",
+    "balance": "Saldo",
     "memo": "Memo",
     "transaction": "Transacció",
     "owner": "Propietari",
@@ -485,8 +485,8 @@
     "onSale": "En venda per XRP",
     "all-tokens": "Tots els tokens",
     "xrp-only": "Només XRP",
-    "mintedNew": "Latest mints",
-    "mintedOld": "Oldest mints"
+    "mintedNew": "Últimes encunyacions",
+    "mintedOld": "Encunyacions més antigues"
   },
   "xumm": {
     "new-qr": "Obtenir un codi QR nou"
@@ -497,7 +497,7 @@
       "account": "Account information",
       "nft": "NFT",
       "nfts": "NFTs",
-      "nft-offer": "NFT offer",
+      "nft-offer": "Oferta NFT",
       "nft-offers": "Ofertes d'NFTs"
     },
     "enter-address": "Introdueix un adreça XRPL o un àlies",
@@ -508,10 +508,10 @@
       "transactions": "Transaccions",
       "tokens": "Tokens"
     },
-    "different-network": "This transaction is from the <1>{{networkNameOrId}}</1> network",
-    "check-tx-on-different-explorer": "check the details <1><0>here</0></1>.",
-    "not-supported-network": "which is not supported.",
-    "no-slashes": "The search should not contain slashes."
+    "different-network": "Aquesta transacció és de la xarxa <1>{{networkNameOrId}}</1>",
+    "check-tx-on-different-explorer": "comproba els detalls <1><0>here</0></1>.",
+    "not-supported-network": "que no és suportat",
+    "no-slashes": "La cerca no hauria de contenir barres."
   },
   "nft-explorer": {
     "header": "Explorador d'NFTs"
