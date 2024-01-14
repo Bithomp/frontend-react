@@ -1,12 +1,12 @@
 {
-  "header": "NFT minters",
-  "desc": "Here you can find the list of all identified NFT minters on XRPL. If you want your project to be recognised, add a memo with your website address to your mint transactions.",
-  "summary-period": "XRPL had <1>{{minted}}</1> NFTs, from which <3>{{mintedAndBurned}}</3> NFTs {{percentMintedAndBurned}} were burned during the same period of time, total burned during this period: <7>{{burned}}</7> NFTs.",
-  "summary-all": "XRPL had <1>{{minted}}</1> NFTs, from which <3>{{mintedAndBurned}}</3> NFTs {{percentMintedAndBurned}} were burned.",
+  "header": "Encunyadors d'NFTs",
+  "desc": "Aquí pots trobar la llista de tots els encunyadors d'NFTs identificats a l'XRPL. Si vols que el teu projecte també hi aparegui, afegeix un memo amb l'adreça de la teva pàgina web a les transaccions d'encunyació d'NFTs que facis.",
+  "summary-period": "XRPL ha <1>{{minted}}</1> NFTs, dels quals <3>{{mintedAndBurned}}</3> NFTs {{percentMintedAndBurned}} han estat destruïts al llarg del mateix període de temps. El total d'NFTs destruïts en aquest període és de: <7>{{burned}}</7> NFTs.",
+  "summary-all": "XRPL ha <1>{{minted}}</1> NFTs, dels quals <3>{{mintedAndBurned}}</3> NFTs {{percentMintedAndBurned}} han estat destruïts.",
   "table": {
-    "minted-total": "Total minted",
-    "minted-with-metadata": "Minted NFTs with metadata",
-    "minted-and-burned": "Minted and burned",
-    "burned-total": "Total burned"
+    "minted-total": "Total encunyats",
+    "minted-with-metadata": "NFTs encunyats amb metadata",
+    "minted-and-burned": "Encunyats i destruïts",
+    "burned-total": "Total destruïts"
   }
 }
