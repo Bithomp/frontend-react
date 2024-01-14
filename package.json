@@ -30,6 +30,7 @@
     "react-share": "^4.4.1",
     "ripple-address-codec": "^4.3.1",
     "sass": "^1.50.1",
+    "styled-components": "^6.1.8",
     "universal-cookie": "^4.0.4",
     "web-vitals": "^2.1.0"
   },

@@ -8,7 +8,7 @@ import SEO from "../../components/SEO";
 import { server } from "../../utils";
 import { getIsSsrMobile } from "../../utils/mobile";
 
-import { TransactionDetails, TransactionPayment } from "../../components/transaction";
+import { TransactionDetails, TransactionPayment } from "../../components/Transaction";
 
 export async function getServerSideProps(context) {
   const { locale, query, req } = context;
