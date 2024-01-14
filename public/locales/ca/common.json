@@ -2,13 +2,13 @@
   "menu": {
     "personal": {
       "personal": "Personal",
-      "search-on-ledgerName": "Search on {{ledgerName}}"
+      "search-on-ledgerName": "Cerca en {{ledgerName}}"
     },
     "business": {
-      "business": "Business",
-      "advertise": "Advertise",
-      "eaas": "Explorer as a Service",
-      "build-unl": "Build UNL"
+      "business": "Negoci",
+      "advertise": "Anuncia",
+      "eaas": "L'Explorador com a Servei",
+      "build-unl": "Construeix UNL"
     },
     "usernames": "Registre d'àlies",
     "project-registartion": "Registre de projectes",
