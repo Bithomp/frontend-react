@@ -8,7 +8,7 @@ import SEO from "../../components/SEO";
 import { server } from "../../utils";
 import { getIsSsrMobile } from "../../utils/mobile";
 
-import { TransactionDetails, TransactionPayment } from "./components";
+import { TransactionDetails, TransactionPayment } from "../../components/transaction";
 
 export async function getServerSideProps(context) {
   const { locale, query, req } = context;
@@ -83,7 +83,7 @@ export default function Transaction(
         description={"Transaction details, transactions, NFTs, Tokens for " +
           (txData?.service?.name || txData?.username) + " " +
           (txData?.address || id)}
-        // image={{ file: avatarSrc(txData) }}
+      // image={{ file: avatarSrc(txData) }}
       />
       <SearchBlock
         searchPlaceholderText={t("explorer.enter-address")}
