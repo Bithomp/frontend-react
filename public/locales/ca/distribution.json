@@ -1,4 +1,4 @@
 {
-  "desc": "Here you can find the TOP 100 accounts by {{nativeCurrency}} balance.",
-  "summary": "There are <1>{{activeAccounts}}</1> active accounts, total available: <3>{{totalCoins}}</3>"
+  "desc": "Aquí pots trobar els 100 comptes top amb relació al saldo d'{{nativeCurrency}}.",
+  "summary": "Hi ha <1>{{activeAccounts}}</1> comptes actius, total disponible: <3>{{totalCoins}}</3>"
 }
