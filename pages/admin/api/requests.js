@@ -43,7 +43,7 @@ export default function Requests() {
   const mainTabs = [
     { value: "account", label: "Account" },
     { value: "api", label: "API" },
-    { value: "bots", label: "Bots" },
+    //{ value: "bots", label: "Bots" },
   ]
 
   const apiTabs = [

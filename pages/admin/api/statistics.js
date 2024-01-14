@@ -40,7 +40,7 @@ export default function Statistics() {
   const mainTabs = [
     { value: "account", label: "Account" },
     { value: "api", label: "API" },
-    { value: "bots", label: "Bots" },
+    //{ value: "bots", label: "Bots" },
   ]
 
   const apiTabs = [
