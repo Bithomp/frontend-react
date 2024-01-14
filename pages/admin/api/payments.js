@@ -67,7 +67,7 @@ export const getServerSideProps = async (context) => {
 
 import LinkIcon from "../../../public/images/link.svg"
 
-export default function Admin() {
+export default function Payments() {
   const { t } = useTranslation(['common', 'admin'])
   const [errorMessage, setErrorMessage] = useState("")
   const [apiData, setApiData] = useState(null)
@@ -109,11 +109,11 @@ export default function Admin() {
       router.push("/admin")
     } else if (tab === "api-info") {
       router.push("/admin/api")
-    } if (tab === "api-payments") {
+    } else if (tab === "api-payments") {
       router.push("/admin/api/payments")
-    } if (tab === "api-requests") {
+    } else if (tab === "api-requests") {
       router.push("/admin/api/requests")
-    } if (tab === "api-statistics") {
+    } else if (tab === "api-statistics") {
       router.push("/admin/api/statistics")
     }
   }

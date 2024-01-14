@@ -18,7 +18,7 @@ export const getServerSideProps = async (context) => {
   }
 }
 
-export default function Admin() {
+export default function Bots() {
   const { t } = useTranslation(['common', 'admin'])
   const [errorMessage, setErrorMessage] = useState("")
   const router = useRouter()
