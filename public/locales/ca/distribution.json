@@ -1,0 +1,4 @@
+{
+  "desc": "Here you can find the TOP 100 accounts by {{nativeCurrency}} balance.",
+  "summary": "There are <1>{{activeAccounts}}</1> active accounts, total available: <3>{{totalCoins}}</3>"
+}

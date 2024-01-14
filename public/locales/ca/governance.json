@@ -1,0 +1,42 @@
+{
+  "header": "{{ledgerName}} Governance Game",
+  "summary": "There are <1>{{ countTables }}</1> seats.",
+  "reward-rate": "Reward rate: <1>{{ rewardRate }}</1>.",
+  "reward-delay": "Reward delay: <1>{{ rewardDelay }}</1> ({{ rewardDelaySeconds }} seconds).",
+  "button": {
+    "show-main-table": "Show the Main Table",
+    "vote-seat": "Vote for a seat",
+    "vote-reward-rate": "Vote for a reward rate",
+    "vote-reward-delay": "Vote for a Reward delay",
+    "vote-hook": "Vote for a hook"
+  },
+  "table": {
+    "cast-first-vote": "Cast the first vote",
+    "members": "Members",
+    "seat": "Seat",
+    "no-seat": "No seat",
+    "layer": "Layer",
+    "hooks": "Hooks",
+    "place": "Place",
+    "hook": "Hook",
+    "target": "Target",
+    "votes": "Votes",
+    "voter": "Voter",
+    "rate": "Rate",
+    "value": "Value",
+    "delay": "Delay",
+    "in-seconds": "In seconds",
+    "seat-votes": "Seat votes",
+    "seat-votes-count": "Seat votes count",
+    "reward-rate-votes": "Reward rate votes",
+    "reward-rate-votes-count": "Reward rate votes count",
+    "reward-delay-votes": "Reward delay votes",
+    "reward-delay-votes-count": "Reward delay votes count",
+    "hook-votes": "Hook votes",
+    "hook-votes-count": "Hook votes count",
+    "text": {
+      "vacate-seat": "Vacate the seat",
+      "vacate-place": "Vacate the place"
+    }
+  }
+}
