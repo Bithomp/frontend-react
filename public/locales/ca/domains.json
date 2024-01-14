@@ -1,22 +1,22 @@
 {
-  "domain-verification": "Domain verification",
-  "domain-verification-desc": "Domain verification aims to demonstrate that the same organization controls a specific XRP Ledger address and a specific domain.",
-  "reason-to-verify": "In the interest of transparency, you might want to validate your domain in order to establish yourself as a reliable provider of XRPL services.",
-  "two-sides-verification": "Since anyone may set any domain for their XRPL address, a relationship that is two-way between the domain and the address is necessary for domain verification.",
-  "domain-claims-address": "The address should be claimed by the domain",
-  "serve-toml": "Your web server should serve an xrp-ledger.toml file, available at the following URL:",
-  "address-in-toml": "The address you want to verify should be specified under the [[ACCOUNTS]] entry.",
-  "read-about-toml": "Read more about XRPL TOML",
-  "toml-editor": "<0>TOML editor</0> by <2>SchlaubiD</2>",
-  "address-claims-domain": "The domain should be claimed by the address.",
-  "set-domain": "You should <1>set a domain for your XRPL address</1> which should match the domain your TOML file is served from.",
-  "verify": "Verify",
-  "verify-desc": "You can verify that everything is set properly with the tool: <1>TOML Checker</1>. The list on this page updates from 3am to 4am (Stockholm time), if you domain is verifed in the Checker tool, but it is not on our list within 24h, then it's possible that we can not parse your TOML file.",
-  "desc": "Below you can find the list of all verified domains on XRPL (the page updates every day).",
+  "domain-verification": "Verificació de domini",
+  "domain-verification-desc": "La verificació de domini té per objectiu demostrar que una mateixa organització controla alhora una determinada adreça d'XRP i un determinat.",
+  "reason-to-verify": "Per interès en la transaprència, pots voler validar el teu domin per mostrar que es pot confiar amb tu com a proveidor de serveis de l'XRPL.",
+  "two-sides-verification": "Atès que tothom pot establir un domini per la seva adreça d'XRP, una relació bijectiva entre el domini i l'adreça és necessària a fi d'establir la verificació del domini.",
+  "domain-claims-address": "L'adressa ha de ser reclamada pel domini.",
+  "serve-toml": "El teu servidor web hauria de servir un arxiu xrp-ledger.tml, disponible a l'URL següent:",
+  "address-in-toml": "L'adreça que vols verificar ha d'estar especificada sota l'entrada [[ACCOUNTS]].",
+  "read-about-toml": "Llegeix més sobre XRPL TOML",
+  "toml-editor": "<0>TOML editor</0> de <2>SchlaubiD</2>",
+  "address-claims-domain": "El domini ha de ser reclamat per l'adreça.",
+  "set-domain": "Has d'<1>establir un domini per la teva adreça XRPL</1> i ha de coincidir amb el domini que el teu arxiu TOML serveix.",
+  "verify": "Verifica",
+  "verify-desc": "Pots verificar que tot està configurat correctament amb l'eina: <1>TOML Checker</1>. La llista d'aquesta pàgina s'actualitza de 3am a 4am (hora d'Stockholm), si el domini és verificat en l'eina de comprovació, però no és a la nostra llista en 24 hores, llavors és possible que no podem analitzar l'arxiu TOML que ofereixes.",
+  "desc": "Més avall pots trobar la llista de tots els dominis verificats a l'XRPL (aquesta pàgina s'actualitza cada dia).",
   "button": {
-    "set-domain": "Set a domain"
+    "set-domain": "Estableix un domin"
   },
   "table": {
-    "addresses": "Addresses"
+    "addresses": "Adreces"
   }
 }
