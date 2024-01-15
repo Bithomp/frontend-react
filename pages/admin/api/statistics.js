@@ -131,7 +131,7 @@ export default function Statistics() {
                 {!statistics?.urls?.[0] &&
                   <tr>
                     <td colSpan="100" className='center'>
-                      <b>No data available</b>
+                      <b>no data available</b>
                     </td>
                   </tr>
                 }
@@ -163,7 +163,7 @@ export default function Statistics() {
                 {!statistics?.urls?.[0] &&
                   <tr>
                     <td colSpan="100" className='center'>
-                      <b>No data available</b>
+                      <b>no data available</b>
                     </td>
                   </tr>
                 }
@@ -204,7 +204,7 @@ export default function Statistics() {
               {!statistics?.ips?.[0] &&
                 <tr>
                   <td colSpan="100" className='center'>
-                    <b>No data available</b>
+                    <b>no data available</b>
                   </td>
                 </tr>
               }

@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import axios from 'axios'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
+import countries from "i18n-iso-countries"
 
 import SEO from '../../../components/SEO'
 import Tabs from '../../../components/Tabs'
@@ -66,15 +67,19 @@ export const getServerSideProps = async (context) => {
 }
 
 import LinkIcon from "../../../public/images/link.svg"
+import CountrySelect from '../../../components/UI/CountrySelect'
 
 export default function Payments() {
-  const { t } = useTranslation(['common', 'admin'])
+  const { t, i18n } = useTranslation(['common', 'admin'])
   const [errorMessage, setErrorMessage] = useState("")
   const [apiData, setApiData] = useState(null)
   const [apiPayments, setApiPayments] = useState({})
   const router = useRouter()
   const width = useWidth()
   const [eurRate, setEurRate] = useState(0)
+  const [billingCountry, setBillingCountry] = useState("")
+  const [choosingCountry, setChoosingCountry] = useState(false)
+  const [loading, setLoading] = useState(true) //keep true for country select
 
   useEffect(() => {
     const sessionToken = localStorage.getItem('sessionToken')
@@ -86,6 +91,14 @@ export default function Payments() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  let lang = i18n.language.slice(0, 2)
+  const notSupportedLanguages = ['my'] // supported "en", "ru", "ja", "ko" etc
+  if (notSupportedLanguages.includes(lang)) {
+    lang = "en"
+  }
+  const languageData = require('i18n-iso-countries/langs/' + lang + '.json')
+  countries.registerLocale(languageData)
 
   const mainTabs = [
     { value: "account", label: "Account" },
@@ -131,38 +144,8 @@ export default function Payments() {
   }
 
   const getApiData = async () => {
-    const data = await axios.get(
-      'partner/partner/accessToken',
-      { baseUrl: '/api/' }
-    ).catch(error => {
-      if (error && error.message !== "canceled") {
-        setErrorMessage(t(error.response?.data?.error || "error." + error.message))
-      }
-    })
-
-    setApiData(data?.data)
-    /*
-    {
-      "token": "werwerw-werwer-werc",
-      "locked": false,
-      "domain": "slavkino.narod.ru",
-      "tier": "free"
-    }
-    */
-
-    const rate = await axios.get('v2/rates/current/eur').catch(error => {
-      if (error && error.message !== "canceled") {
-        setErrorMessage(t(error.response.data.error || "error." + error.message))
-      }
-    })
-    /* { "eur": 0.57814 } */
-
-    if (rate?.data?.eur) {
-      setEurRate(rate.data.eur)
-    }
-
-    const apiTransactions = await axios.get(
-      'partner/partner/accessToken/transactions?limit=50&offset=0',
+    const partnerData = await axios.get(
+      'partner/partner',
       { baseUrl: '/api/' }
     ).catch(error => {
       if (error && error.message !== "canceled") {
@@ -171,13 +154,74 @@ export default function Payments() {
           router.push('/admin')
         }
       }
+      setLoading(false)
     })
 
-    if (apiTransactions?.data?.transactions) {
-      for (let transaction of apiTransactions.data.transactions) {
-        transaction.fiatAmount = await fiatAmountAt(transaction)
+    /*
+    {
+      "id": 321098,
+      "created_at": "2022-09-20T12:42:38.000Z",
+      "updated_at": "2024-01-09T12:08:33.000Z",
+      "name": "vasia.com",
+      "email": "sasha@public.com",
+      "country": "GB"
+    }
+    */
+
+    setLoading(false)
+
+    if (partnerData?.data?.country) {
+      //set country, check rates, and show transaction history only if we have countru available
+      setBillingCountry(partnerData?.data?.country)
+
+      const data = await axios.get(
+        'partner/partner/accessToken',
+        { baseUrl: '/api/' }
+      ).catch(error => {
+        if (error && error.message !== "canceled") {
+          setErrorMessage(t(error.response?.data?.error || "error." + error.message))
+        }
+      })
+
+      setApiData(data?.data)
+      /*
+      {
+        "token": "werwerw-werwer-werc",
+        "locked": false,
+        "domain": "slavkia.122.com",
+        "tier": "free"
       }
-      setApiPayments(apiTransactions.data)
+      */
+
+      const rate = await axios.get('v2/rates/current/eur').catch(error => {
+        if (error && error.message !== "canceled") {
+          setErrorMessage(t(error.response.data.error || "error." + error.message))
+        }
+      })
+      /* { "eur": 0.57814 } */
+
+      if (rate?.data?.eur) {
+        setEurRate(rate.data.eur)
+      }
+
+      const apiTransactions = await axios.get(
+        'partner/partner/accessToken/transactions?limit=50&offset=0',
+        { baseUrl: '/api/' }
+      ).catch(error => {
+        if (error && error.message !== "canceled") {
+          setErrorMessage(t(error.response.data.error || "error." + error.message))
+          if (error.response?.data?.error === "errors.token.required") {
+            router.push('/admin')
+          }
+        }
+      })
+
+      if (apiTransactions?.data?.transactions) {
+        for (let transaction of apiTransactions.data.transactions) {
+          transaction.fiatAmount = await fiatAmountAt(transaction)
+        }
+        setApiPayments(apiTransactions.data)
+      }
     }
   }
 
@@ -201,6 +245,21 @@ export default function Payments() {
     return <><b>{(tierRate * months / eurRate).toFixed(2)} {nativeCurrency}</b> ({tierRate * months} EUR)</>
   }
 
+  const saveCountry = async () => {
+    const data = await axios.put(
+      'partner/partner',
+      { country: billingCountry },
+      { baseUrl: '/api/' }
+    ).catch(error => {
+      if (error && error.message !== "canceled") {
+        setErrorMessage(t(error.response.data.error || "error." + error.message))
+      }
+    })
+    if (data?.data?.country) {
+      setChoosingCountry(false)
+    }
+  }
+
   return <>
     <SEO title={t("header", { ns: "admin" })} />
     <div className="page-admin content-center">
@@ -212,140 +271,174 @@ export default function Payments() {
       <Tabs tabList={apiTabs} tab="api-payments" setTab={changePage} name="apiTabs" />
 
       <div className='center'>
-        {apiData &&
+        {((!billingCountry || choosingCountry) && !loading) ?
           <>
-            <h4 className='center'>1. XRP API payment details</h4>
-            {width > 600 ?
-              <table className='table-large shrink'>
-                <tbody>
-                  <tr>
-                    <td className='right'>Address</td>
-                    <td className='left'>rPPHhfSQbHt1t2XPHWAK1HTcjqDg56TzZy <CopyButton text="rPPHhfSQbHt1t2XPHWAK1HTcjqDg56TzZy" /></td>
-                  </tr>
-                  <tr>
-                    <td className='right'>Destination tag</td>
-                    <td className='left bold'>{apiData.id} <CopyButton text={apiData.id} /></td>
-                  </tr>
-                  <tr>
-                    <td className='right'>Tier {apiData.tier} (1 month)</td>
-                    <td className='left'>
+            <h4>Choose your country of residence</h4>
+            <CountrySelect
+              countryCode={billingCountry}
+              setCountryCode={setBillingCountry}
+              type="onlySelect"
+            />
+            <br />
+            <button
+              onClick={() => saveCountry()}
+              className='button-action'
+            >
+              Save
+            </button>
+            <br />
+          </>
+          :
+          <>
+            {billingCountry &&
+              <>
+                Your billing country is {" "}
+                <a onClick={() => setChoosingCountry(true)}>
+                  {countries.getName(billingCountry, lang, { select: "official" })}
+                </a>
+              </>
+            }
+
+            {apiData &&
+              <>
+                <h4 className='center'>1. XRP API payment details</h4>
+                {width > 600 ?
+                  <table className='table-large shrink'>
+                    <tbody>
+                      <tr>
+                        <td className='right'>Address</td>
+                        <td className='left'>rPPHhfSQbHt1t2XPHWAK1HTcjqDg56TzZy <CopyButton text="rPPHhfSQbHt1t2XPHWAK1HTcjqDg56TzZy" /></td>
+                      </tr>
+                      <tr>
+                        <td className='right'>Destination tag</td>
+                        <td className='left bold'>{apiData.id} <CopyButton text={apiData.id} /></td>
+                      </tr>
+                      <tr>
+                        <td className='right'>Tier {apiData.tier} (1 month)</td>
+                        <td className='left'>
+                          {apiPrice(apiData?.tier, 1)}
+                        </td>
+                      </tr>
+                      {apiData.tier !== "free" &&
+                        <tr>
+                          <td className='right'>Tier {apiData.tier} (1 year)</td>
+                          <td className='left'>
+                            {apiPrice(apiData?.tier, 12)}
+                          </td>
+                        </tr>
+                      }
+                    </tbody>
+                  </table>
+                  :
+                  <div className='left'>
+                    <p>
+                      Address: <br />
+                      rPPHhfSQbHt1t2XPHWAK1HTcjqDg56TzZy <CopyButton text="rPPHhfSQbHt1t2XPHWAK1HTcjqDg56TzZy" />
+                    </p>
+                    <p>
+                      Destination tag:<br />
+                      {apiData.id} <CopyButton text={apiData.id} />
+                    </p>
+                    <p>
+                      Tier {apiData.tier} (1 month):<br />
                       {apiPrice(apiData?.tier, 1)}
-                    </td>
-                  </tr>
-                  {apiData.tier !== "free" &&
-                    <tr>
-                      <td className='right'>Tier {apiData.tier} (1 year)</td>
-                      <td className='left'>
+                    </p>
+                    {apiData.tier !== "free" &&
+                      <p>
+                        Tier {apiData.tier} (1 year):<br />
                         {apiPrice(apiData?.tier, 12)}
-                      </td>
-                    </tr>
-                  }
-                </tbody>
-              </table>
-              :
-              <div className='left'>
-                <p>
-                  Address: <br />
-                  rPPHhfSQbHt1t2XPHWAK1HTcjqDg56TzZy <CopyButton text="rPPHhfSQbHt1t2XPHWAK1HTcjqDg56TzZy" />
-                </p>
-                <p>
-                  Destination tag:<br />
-                  {apiData.id} <CopyButton text={apiData.id} />
-                </p>
-                <p>
-                  Tier {apiData.tier} (1 month):<br />
-                  {apiPrice(apiData?.tier, 1)}
-                </p>
-                {apiData.tier !== "free" &&
-                  <p>
-                    Tier {apiData.tier} (1 year):<br />
-                    {apiPrice(apiData?.tier, 12)}
-                  </p>
+                      </p>
+                    }
+                  </div>
+                }
+              </>
+            }
+
+            {apiPayments?.transactions?.length > 0 &&
+              <div style={{ marginTop: "20px", textAlign: "left" }}>
+                <h4 className='center'>The last XRP API payments</h4>
+                {width > 600 ?
+                  <table className='table-large shrink'>
+                    <thead>
+                      <tr>
+                        <th>Date & Time</th>
+                        <th>From</th>
+                        <th>Amount</th>
+                        <th>Fiat</th>
+                        <th>Tx</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {apiPayments?.transactions?.map((payment, index) => {
+                        return <tr key={index}>
+                          <td>{fullDateAndTime(payment.processedAt)}</td>
+                          <td><Link href={"/explorer/" + payment.sourceAddress}>{payment.sourceAddress}</Link></td>
+                          <td>{amountFormat(payment.amount)}</td>
+                          <td>
+                            {payment.fiatAmount}
+                          </td>
+                          <td><Link href={"/explorer/" + payment.hash}><LinkIcon /></Link></td>
+                        </tr>
+                      })}
+                    </tbody>
+                  </table>
+                  :
+                  <table className='table-mobile'>
+                    <tbody>
+                      {apiPayments?.transactions?.map((payment, index) => {
+                        return <tr key={index}>
+                          <td style={{ padding: "5px" }} className='center'>
+                            <b>{index + 1}</b>
+                          </td>
+                          <td>
+                            <p>
+                              {fullDateAndTime(payment.processedAt)}
+                            </p>
+                            <p>
+                              From: <br />
+                              <Link href={"/explorer/" + payment.sourceAddress}>{payment.sourceAddress}</Link>
+                            </p>
+                            <p>
+                              Amount: {amountFormat(payment.amount)}
+                            </p>
+                            <p>
+                              Fiat equivalent: {payment.fiatAmount}
+                            </p>
+                            <p>
+                              Transaction: <Link href={"/explorer/" + payment.hash}><LinkIcon /></Link>
+                            </p>
+                          </td>
+                        </tr>
+                      })}
+                    </tbody>
+                  </table>
                 }
               </div>
             }
+
+            {billingCountry &&
+              <>
+                <h4>
+                  2. PayPal subcription for the Standard plan 100 EUR/month
+                </h4>
+
+                <div className='center' style={{ width: "350px", margin: "auto" }}>
+                  <PayPalScriptProvider
+                    options={{
+                      clientId: "AcUlMvkL6Uc6OVv-USMK3fg2wZ_xEBolL0-yyzWkOnS7vF2aWbu_AJFYJxaRRfPoiN0SBEnSFHUTbSUn",
+                      components: "buttons",
+                      intent: "subscription",
+                      vault: true,
+                      locale: 'en_US'
+                    }}
+                  >
+                    <ButtonWrapper type="subscription" />
+                  </PayPalScriptProvider>
+                </div>
+              </>
+            }
           </>
         }
-
-        {apiPayments?.transactions?.length > 0 &&
-          <div style={{ marginTop: "20px", textAlign: "left" }}>
-            <h4 className='center'>The last XRP API payments</h4>
-            {width > 600 ?
-              <table className='table-large shrink'>
-                <thead>
-                  <tr>
-                    <th>Date & Time</th>
-                    <th>From</th>
-                    <th>Amount</th>
-                    <th>Fiat</th>
-                    <th>Tx</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {apiPayments?.transactions?.map((payment, index) => {
-                    return <tr key={index}>
-                      <td>{fullDateAndTime(payment.processedAt)}</td>
-                      <td><Link href={"/explorer/" + payment.sourceAddress}>{payment.sourceAddress}</Link></td>
-                      <td>{amountFormat(payment.amount)}</td>
-                      <td>
-                        {payment.fiatAmount}
-                      </td>
-                      <td><Link href={"/explorer/" + payment.hash}><LinkIcon /></Link></td>
-                    </tr>
-                  })}
-                </tbody>
-              </table>
-              :
-              <table className='table-mobile'>
-                <tbody>
-                  {apiPayments?.transactions?.map((payment, index) => {
-                    return <tr key={index}>
-                      <td style={{ padding: "5px" }} className='center'>
-                        <b>{index + 1}</b>
-                      </td>
-                      <td>
-                        <p>
-                          {fullDateAndTime(payment.processedAt)}
-                        </p>
-                        <p>
-                          From: <br />
-                          <Link href={"/explorer/" + payment.sourceAddress}>{payment.sourceAddress}</Link>
-                        </p>
-                        <p>
-                          Amount: {amountFormat(payment.amount)}
-                        </p>
-                        <p>
-                          Fiat equivalent: {payment.fiatAmount}
-                        </p>
-                        <p>
-                          Transaction: <Link href={"/explorer/" + payment.hash}><LinkIcon /></Link>
-                        </p>
-                      </td>
-                    </tr>
-                  })}
-                </tbody>
-              </table>
-            }
-          </div>
-        }
-
-        <h4>
-          2. PayPal subcription for the Standard plan 100 EUR/month
-        </h4>
-
-        <div className='center' style={{ width: "350px", margin: "auto" }}>
-          <PayPalScriptProvider
-            options={{
-              clientId: "AcUlMvkL6Uc6OVv-USMK3fg2wZ_xEBolL0-yyzWkOnS7vF2aWbu_AJFYJxaRRfPoiN0SBEnSFHUTbSUn",
-              components: "buttons",
-              intent: "subscription",
-              vault: true,
-              locale: 'en_US'
-            }}
-          >
-            <ButtonWrapper type="subscription" />
-          </PayPalScriptProvider>
-        </div>
 
         <br />
         {errorMessage ?

@@ -25,6 +25,7 @@ export default function Api() {
   const [apiData, setApiData] = useState(null)
   const [domain, setDomain] = useState("")
   const [apiDescription, setApiDescription] = useState("")
+  const [loading, setLoading] = useState(false)
   const router = useRouter()
 
   useEffect(() => {
@@ -70,6 +71,7 @@ export default function Api() {
   }
 
   const getApiData = async () => {
+    setLoading(true)
     const data = await axios.get(
       'partner/partner/accessToken',
       { baseUrl: '/api/' }
@@ -80,7 +82,9 @@ export default function Api() {
           router.push('/admin')
         }
       }
+      setLoading(false)
     })
+    setLoading(false)
 
     setApiData(data?.data)
     /*
@@ -159,85 +163,98 @@ export default function Api() {
         </a>
         <br /><br />
         <table className='table-large shrink'>
-          {apiData ?
+          {loading ?
             <tbody>
               <tr>
-                <td className='right'>Token</td>
-                <td className='left'>{apiData.token} <CopyButton text={apiData.token} /> </td>
-              </tr>
-              <tr>
-                <td className='right'>Status</td>
-                <td className='left'>
-                  {apiData.locked ?
-                    <b className='red'>locked</b>
-                    :
-                    <>
-                      {apiData.tier === 'free' ?
-                        <b className='green'>active</b>
-                        :
-                        <>
-                          {new Date(apiData.expirationAt) > nowDate ?
-                            <>
-                              <b className='green'>active</b> until
-                            </>
-                            :
-                            <b className='red'>expired</b>
-                          }
-                          <> {new Date(apiData.expirationAt).toLocaleDateString()}</>
-                        </>
-                      }
-                    </>
-                  }
+                <td className='center' colSpan="2">
+                  <span className="waiting"></span>
+                  <br />{t("general.loading")}
                 </td>
-              </tr>
-              <tr>
-                <td className='right'>{t("table.domain")}</td>
-                <td className='left'><b>{apiData.domain}</b></td>
-              </tr>
-              <tr>
-                <td className='right'>Tier</td>
-                <td className='left'>{apiData.tier}</td>
               </tr>
             </tbody>
             :
-            <tbody>
-              <tr>
-                <td className='right'>{t("table.domain")}</td>
-                <td className='left'>
-                  <input
-                    placeholder="Enter website domain"
-                    value={domain}
-                    onChange={(e) => { setDomain(e.target.value) }}
-                    className="input-text"
-                    spellCheck="false"
-                    maxLength="30"
-                  />
-                </td>
-              </tr>
-              <tr>
-                <td className='right'>Description</td>
-                <td className='left'>
-                  <input
-                    placeholder="Enter API description"
-                    value={apiDescription}
-                    onChange={(e) => { setApiDescription(e.target.value) }}
-                    className="input-text"
-                    maxLength="60"
-                  />
-                </td>
-              </tr>
-              <tr>
-                <td className='center' colSpan="2">
-                  <button
-                    className={"button-action"}
-                    onClick={requestApiKey}
-                  >
-                    Request API key
-                  </button>
-                  <br />
-                </td>
-              </tr>
-            </tbody>
+            <>
+              {apiData ?
+                <tbody>
+                  <tr>
+                    <td className='right'>Token</td>
+                    <td className='left'>{apiData.token} <CopyButton text={apiData.token} /> </td>
+                  </tr>
+                  <tr>
+                    <td className='right'>Status</td>
+                    <td className='left'>
+                      {apiData.locked ?
+                        <b className='red'>locked</b>
+                        :
+                        <>
+                          {apiData.tier === 'free' ?
+                            <b className='green'>active</b>
+                            :
+                            <>
+                              {new Date(apiData.expirationAt) > nowDate ?
+                                <>
+                                  <b className='green'>active</b> until
+                                </>
+                                :
+                                <b className='red'>expired</b>
+                              }
+                              <> {new Date(apiData.expirationAt).toLocaleDateString()}</>
+                            </>
+                          }
+                        </>
+                      }
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className='right'>{t("table.domain")}</td>
+                    <td className='left'><b>{apiData.domain}</b></td>
+                  </tr>
+                  <tr>
+                    <td className='right'>Tier</td>
+                    <td className='left'>{apiData.tier}</td>
+                  </tr>
+                </tbody>
+                :
+                <tbody>
+                  <tr>
+                    <td className='right'>{t("table.domain")}</td>
+                    <td className='left'>
+                      <input
+                        placeholder="Enter website domain"
+                        value={domain}
+                        onChange={(e) => { setDomain(e.target.value) }}
+                        className="input-text"
+                        spellCheck="false"
+                        maxLength="30"
+                      />
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className='right'>Description</td>
+                    <td className='left'>
+                      <input
+                        placeholder="Enter API description"
+                        value={apiDescription}
+                        onChange={(e) => { setApiDescription(e.target.value) }}
+                        className="input-text"
+                        maxLength="60"
+                      />
+                    </td>
+                  </tr>
+                  <tr>
+                    <td className='center' colSpan="2">
+                      <button
+                        className={"button-action"}
+                        onClick={requestApiKey}
+                      >
+                        Request API key
+                      </button>
+                      <br />
+                    </td>
+                  </tr>
+                </tbody>
+              }
+            </>
           }
         </table>
 

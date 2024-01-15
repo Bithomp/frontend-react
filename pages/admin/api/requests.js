@@ -146,6 +146,13 @@ export default function Requests() {
                     <td className='right'>{req.status}</td>
                   </tr>
                 })}
+                {apiRequests?.requests?.length === 0 &&
+                  <tr className='center'>
+                    <td colSpan="100">
+                      <b>no data available</b>
+                    </td>
+                  </tr>
+                }
               </tbody>
             </table>
             :

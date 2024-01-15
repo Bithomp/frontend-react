@@ -6,7 +6,7 @@ import axios from 'axios'
 
 import { useLocalStorage } from '../../utils'
 
-export default function CountrySelect({ setCountryCode }) {
+export default function CountrySelect({ countryCode, setCountryCode, type }) {
   const { i18n } = useTranslation()
   let lang = i18n.language.slice(0, 2)
   const notSupportedLanguages = ['my'] // supported "en", "ru", "ja", "ko" etc
@@ -27,34 +27,46 @@ export default function CountrySelect({ setCountryCode }) {
   const [savedCountry, setSavedCounty] = useLocalStorage('country')
   const [selectCountry, setSelectCountry] = useState({ value: '', label: '' })
 
+  async function fetchData() {
+    const response = await axios('client/info');
+    const json = response.data;
+    if (json && json.country) {
+      const countryCode = json.country.toUpperCase()
+      setSelectCountry({
+        value: countryCode,
+        label: countries.getName(countryCode, lang, { select: "official" })
+      })
+      if (type !== "onlySelect") {
+        setSavedCounty(countryCode)
+        setCountryCode(countryCode)
+      }
+    }
+  }
+
   useEffect(() => {
-    if (savedCountry) {
+    if (type === "onlySelect") {
+      if (countryCode) {
+        setSelectCountry({
+          value: countryCode,
+          label: countries.getName(countryCode, lang, { select: "official" })
+        })
+      } else {
+        fetchData()
+      }
+    } else if (savedCountry) {
       setSelectCountry({
         value: savedCountry,
         label: countries.getName(savedCountry, lang, { select: "official" })
       })
       setCountryCode(savedCountry)
     } else {
-      async function fetchData() {
-        const response = await axios('client/info');
-        const json = response.data;
-        if (json && json.country) {
-          const countryCode = json.country.toUpperCase()
-          setSelectCountry({
-            value: countryCode,
-            label: countries.getName(countryCode, lang, { select: "official" })
-          });
-          setSavedCounty(countryCode)
-          setCountryCode(countryCode)
-        }
-      }
       fetchData()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   useEffect(() => {
-    const lang = i18n.language.slice(0,2)
+    const lang = i18n.language.slice(0, 2)
     if (selectCountry.value) {
       setSelectCountry({
         value: selectCountry.value,
@@ -65,9 +77,11 @@ export default function CountrySelect({ setCountryCode }) {
   }, [i18n.language])
 
   const onCountryChange = (item) => {
-    setSelectCountry(item);
-    setSavedCounty(item.value);
-    setCountryCode(item.value);
+    setSelectCountry(item)
+    if (type !== "onlySelect") {
+      setSavedCounty(item.value)
+    }
+    setCountryCode(item.value)
   }
 
   return (
@@ -80,5 +94,5 @@ export default function CountrySelect({ setCountryCode }) {
       classNamePrefix="react-select"
       instanceId="country-select"
     />
-  );
-};
+  )
+}
