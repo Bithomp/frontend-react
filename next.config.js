@@ -32,6 +32,14 @@ module.exports = {
       {
         source: '/robots.txt',
         destination: '/api/robots'
+      },
+      {
+        source: '/tx/:id',
+        destination: '/transaction/:id'
+      },
+      {
+        source: '/tx',
+        destination: '/transaction'
       }
     ]
   }

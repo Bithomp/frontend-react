@@ -39,6 +39,11 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
   const [searchingSuggestions, setSearchingSuggestions] = useState(false)
   const [errorMessage, setErrorMessage] = useState("")
 
+  if (!searchPlaceholderText) {
+    searchPlaceholderText =
+      windowWidth < 500 ? t("home.search-placeholder-short") : t("home.search-placeholder")
+  }
+
   useEffect(() => {
     if (!id && searchInput.current) {
       searchInput.current.focus()
@@ -178,6 +183,11 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
         router.push('/nft-offer/' + encodeURI(searchFor))
         return
       }
+      //allow transaction search only tab transactions for now (while it's not ready for public)
+      if (tab === 'transaction' && data.type === 'transaction') {
+        router.push('/tx/' + searchFor)
+        return
+      }
     }
 
     if (isValidCTID(searchFor)) {
@@ -221,6 +231,7 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
       return
     }
 
+    //remove tab='transaction' to allow transaction search on all tabs
     //tx, address etc
     window.location = '/explorer/' + encodeURI(searchFor)
     return
@@ -277,7 +288,7 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
     if (tab === "explorer") {
       return t("explorer.header.main", { explorerName })
     }
-    if (['account', 'nft', 'nfts', 'nft-offer', 'nft-offers'].includes(tab)) {
+    if (['account', 'nft', 'nfts', 'nft-offer', 'nft-offers', 'transaction'].includes(tab)) {
       return t("explorer.header." + tab)
     }
     return ""
@@ -377,9 +388,9 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
       {showTabs &&
         <div className='explorer-tabs-block'>
           <div className='explorer-tabs'>
-            {tab === "nfts" ? <b>NFTs</b> : <Link href={"/nfts/" + searchItem + addParams}>NFTs</Link>}
+            {tab === "nfts" ? <b>NFTs</b> : <Link href={"nfts/" + searchItem + addParams}>NFTs</Link>}
             {!xahauNetwork && <>
-              {tab === "nft-offers" ? <b>{t("nft-offers.header")}</b> : <Link href={"/nft-offers/" + searchItem}>{t("nft-offers.header")}</Link>}
+              {tab === "nft-offers" ? <b>{t("nft-offers.header")}</b> : <Link href={"nft-offers/" + searchItem}>{t("nft-offers.header")}</Link>}
             </>}
             {tab === "nft-volumes" && <b>{t("menu.nft.volumes")}</b>}
             {tab !== "account" && <a href={"/explorer/" + searchItem}>{t("explorer.menu.account")}</a>}

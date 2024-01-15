@@ -3,7 +3,7 @@ import { useTranslation } from 'next-i18next'
 import { useState } from 'react'
 import { SiteLinksSearchBoxJsonLd, LogoJsonLd, SocialProfileJsonLd } from 'next-seo'
 
-import { useWidth, server, explorerName, nativeCurrency, devNet } from '../utils'
+import { server, explorerName, nativeCurrency, devNet } from '../utils'
 import { getIsSsrMobile } from "../utils/mobile"
 
 import SEO from '../components/SEO'
@@ -26,7 +26,6 @@ export async function getServerSideProps(context) {
 
 export default function Home({ selectedCurrency, setSelectedCurrency, showAds }) {
   const { t } = useTranslation()
-  const windowWidth = useWidth()
 
   const [chartPeriod, setChartPeriod] = useState('one_day')
 
@@ -80,7 +79,7 @@ export default function Home({ selectedCurrency, setSelectedCurrency, showAds })
           ]
         }
       />
-      <SearchBlock searchPlaceholderText={windowWidth < 500 ? t("home.search-placeholder-short") : t("home.search-placeholder")} tab="explorer" />
+      <SearchBlock tab="explorer" />
 
       {showAds &&
         <div className="home-sponsored">

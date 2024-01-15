@@ -86,8 +86,7 @@ export default function Transaction(
       // image={{ file: avatarSrc(txData) }}
       />
       <SearchBlock
-        searchPlaceholderText={t("explorer.enter-address")}
-        tab="explorer"
+        tab="transaction"
       />
       {isClient &&
         (

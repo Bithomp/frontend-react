@@ -1,4 +1,3 @@
-import { useTranslation } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 
 import SearchBlock from "../../components/Layout/SearchBlock";
@@ -21,19 +20,16 @@ const Container = ({ children }) => {
 };
 
 const TransactionSearch = () => {
-  const { t } = useTranslation();
-
   return (
     <>
       <SEO
-        page="Transaction Seacrh"
-        title="Tranasction Search"
+        page="Transaction search"
+        title="Tranasction search"
         description="Transaction details"
-        // image={{ file: avatarSrc(txData) }}
+      // image={{ file: avatarSrc(txData) }}
       />
       <SearchBlock
-        searchPlaceholderText={t("explorer.enter-address")}
-        tab="explorer"
+        tab="transaction"
       />
       <Container>
         <h1 className='center'>Transaction Search</h1>
