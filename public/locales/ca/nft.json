@@ -2,16 +2,16 @@
   "desc": "Aquí pots cercar NFT's, introdueix l'ID d'un NFT i clica cercar.",
   "enter-nft-id": "Introdueix l'ID d'un NFT",
   "holders": "Distribució (Holders)",
-  "nft-id-decoded-data": "Dades descodificat de l'ID de l'NFT",
-  "nft-not-found-on-that-network": "Aquest NFT no s'ha trobat a la xarxa <1>{{network}}</1>.",
+  "nft-id-decoded-data": "Dades descodificades de l'ID de l'NFT",
+  "nft-not-found-on-that-network": "No s'ha trobat aquest NFT a la xarxa <1>{{network}}</1>.",
   "table": {
     "uri": "URI",
     "digest": "Digest",
     "attention": "Atenció",
     "attention-texts": {
       "no-uri": "Aquest NFT no té URI, és incompatible amb els estàndards acceptats.",
-      "no-metadata": "L'URI no te les metadades per aquest NFT. Això va contra els estàndards acceptats.",
-      "not-transferable": "Aquest NFT no és transferible, només pot ser transferit a, i des de, l'encunyador.",
+      "no-metadata": "L'URI no té la metadata corresponent a aquest NFT. Això va contra els estàndards acceptats.",
+      "not-transferable": "Aquest NFT no és transferible, només pot ser transferit a, o des de, l'encunyador.",
       "burnable": "L'encunyador (o una entitat autoritzada per l'encunyador) pot destruir l'NFT.",
       "no-digest": "No hi ha Digest per aquest NFT. La integritat d'aquest NFT no pot ser verificada.",
       "invalid-digest": "La comprobació d'integritat d'aquest NFT ha fallat. El Digest no correspon les metadades de l'NFT."
