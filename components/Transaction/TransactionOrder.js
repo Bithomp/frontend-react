@@ -1,17 +1,18 @@
 import { useTranslation } from "next-i18next";
 
-import { TDetails, TBody, TRow, TData } from "../TableDetails";
 import { amountFormat } from "../../utils/format";
+import { TDetails, TBody, TData, TRow } from "../TableDetails";
 
 import * as Styled from "./styled";
 import { LinkAccount } from "./Links";
 import { TransactionCard } from "./TransactionCard";
 import { formatDateTime } from "./utils";
 
-export const TransactionPayment = ({ tx }) => {
+export const TransactionOrder = ({ tx }) => {
   const { t } = useTranslation();
 
-  const destination = tx.specification?.destination?.address;
+  const direction = tx.specification?.direction;
+  let txType = direction === "sell" ? "Sell Order" : "Buy Order";
 
   return (
     <TransactionCard tx={tx}>
@@ -19,7 +20,7 @@ export const TransactionPayment = ({ tx }) => {
         <TBody>
           <TRow>
             <TData>{t("table.type")}:</TData>
-            <TData><Styled.Type>Payment</Styled.Type></TData>
+            <TData><Styled.Type>{txType}</Styled.Type></TData>
           </TRow>
           <TRow>
             <TData>Time:</TData>
@@ -46,16 +47,20 @@ export const TransactionPayment = ({ tx }) => {
             <TData>{tx.rawTransaction?.ctid}</TData>
           </TRow>
           <TRow>
-            <TData>Destination:</TData>
+            <TData>Quantity:</TData>
             <TData>
-              <LinkAccount address={destination} />
+              {tx.specification.quantity.value}{" "}
+              {tx.specification.quantity.currency}
             </TData>
           </TRow>
           <TRow>
-            <TData>Delivered amount:</TData>
+            <TData>Total Price:</TData>
             <TData>
-              {tx.outcome.deliveredAmount?.value}{" "}
-              {tx.outcome.deliveredAmount?.currency}
+              {tx.specification.totalPrice.value}{" "}
+              {tx.specification.totalPrice.currency}{" "}
+              (<LinkAccount
+                address={tx.specification.totalPrice.counterparty}
+              />)
             </TData>
           </TRow>
         </TBody>
