@@ -3,7 +3,8 @@ import styled from "styled-components";
 
 import { LinkAccount, LinkLedger } from "./Links";
 import { formatDateTime } from "../../utils/transaction";
-import CopyButton from '../UI/CopyButton'
+import CopyButton from "../UI/CopyButton";
+import * as Table from "../TableDetails";
 
 const Heading = styled.h1`
   margin: 24px 0;
@@ -26,33 +27,10 @@ const Text = styled.p`
   font-size: 16px;
   font-weight: 400;
   text-align: left;
+  word-break: break-word;
 `;
 
-const Table = styled.table`
-  width: 100%;
-  border-collapse: collapse;
-  border-spacing: 0;
-  color: var(--text-main);
-  font-size: 16px;
-  font-weight: 400;
-  text-align: left;
-`;
-
-const Row = ({ children }) => <tr>{children}</tr>;
-
-const Cell = styled.td`
-  padding: 8px 0;
-  border-bottom: 1px solid var(--border-color);
-  &:first-child {
-    color: var(--text-secondary);
-    width: 20%;
-  }
-  &:nth-child(2) {
-    word-break: break-word;
-  }
-`;
-
-export const TransactionDetails = ({ tx }) => {
+export const TransactionDetails = ({ tx, children }) => {
   const { t } = useTranslation();
 
   const isSuccessful = tx.outcome?.result == "tesSUCCESS";
@@ -61,54 +39,61 @@ export const TransactionDetails = ({ tx }) => {
     <>
       <Heading>Transaction Details</Heading>
       <Card>
-        <Text>{tx.id} <CopyButton text={tx.id}></CopyButton></Text>
         <Text>
-          {isSuccessful
-            ? (
-              <span>
-                The transaction was <b className="green">successfull</b>{" "}
-                and validated in the ledger{" "}
-                <LinkLedger version={tx.outcome.ledgerVersion} />{" "}
-                (index:{tx.outcome.indexInLedger}).
-              </span>
-            )
-            : (
-              <span>
-                The transaction <b className="red">FAILED</b>{" "}
-                and included to the ledger{" "}
-                <LinkLedger version={tx.outcome.ledgerVersion} /> (index:{" "}
-                {tx.outcome.indexInLedger}).
-              </span>
-            )}
+          {tx.id} <CopyButton text={tx.id}></CopyButton>
         </Text>
-        <Table>
-          <Row>
-            <Cell>{t("table.type")}:</Cell>
-            <Cell>{tx.type}</Cell>
-          </Row>
-          <Row>
-            <Cell>Time (UTC):</Cell>
-            <Cell>{formatDateTime(tx.outcome.timestamp)}</Cell>
-          </Row>
-          <Row>
-            <Cell>Initiated by:</Cell>
-            <Cell>
-              <LinkAccount hash={tx.address} />
-            </Cell>
-          </Row>
-          <Row>
-            <Cell>Sequence:</Cell>
-            <Cell>#{tx.sequence}</Cell>
-          </Row>
-          <Row>
-            <Cell>XRLP fee:</Cell>
-            <Cell>{tx.outcome?.fee}</Cell>
-          </Row>
-          <Row>
-            <Cell>CTID:</Cell>
-            <Cell>{tx.rawTransaction?.ctid}</Cell>
-          </Row>
-        </Table>
+        {isSuccessful
+          ? (
+            <Text>
+              The transaction was <b className="green">successfull</b>{" "}
+              and validated in the ledger{" "}
+              <LinkLedger version={tx.outcome.ledgerVersion} />{" "}
+              (index:{tx.outcome.indexInLedger}).
+            </Text>
+          )
+          : (
+            <Text>
+              The transaction <b className="red">FAILED</b>{" "}
+              and included to the ledger{" "}
+              <LinkLedger version={tx.outcome.ledgerVersion} /> (index:{" "}
+              {tx.outcome.indexInLedger}).
+            </Text>
+          )}
+        <Table.Root>
+          <Table.Body>
+            <Table.Row>
+              <Table.Data>{t("table.type")}:</Table.Data>
+              <Table.Data>{tx.type}</Table.Data>
+            </Table.Row>
+            <Table.Row>
+              <Table.Data>Time (UTC):</Table.Data>
+              <Table.Data>
+                {formatDateTime(tx.outcome.timestamp)}
+              </Table.Data>
+            </Table.Row>
+            <Table.Row>
+              <Table.Data>Initiated by:</Table.Data>
+              <Table.Data>
+                <LinkAccount address={tx.address} />
+              </Table.Data>
+            </Table.Row>
+            <Table.Row>
+              <Table.Data>Sequence:</Table.Data>
+              <Table.Data>#{tx.sequence}</Table.Data>
+            </Table.Row>
+            <Table.Row>
+              <Table.Data>XRLP fee:</Table.Data>
+              <Table.Data>{tx.outcome?.fee}</Table.Data>
+            </Table.Row>
+            <Table.Row>
+              <Table.Data>CTID:</Table.Data>
+              <Table.Data>{tx.rawTransaction?.ctid}</Table.Data>
+            </Table.Row>
+
+            {/* We can extend this table with more data. */}
+            {children}
+          </Table.Body>
+        </Table.Root>
       </Card>
     </>
   );
