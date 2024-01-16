@@ -32,7 +32,6 @@ export default function Charts() {
       router.push('/admin')
     } else {
       axios.defaults.headers.common['Authorization'] = "Bearer " + sessionToken
-      getData()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
@@ -131,19 +130,14 @@ export default function Charts() {
 
       <div className='center'>
         <div style={{ marginTop: "20px", textAlign: "left" }}>
-          <h4 className='center'>Chart</h4>
-          {!loading && chartData?.length > 0 ?
-            <>
-              <SimpleChart data={chartData} />
-            </>
-            :
-            <div className='center'>
-              no data loaded
-            </div>
+          <h4 className='center'>Requests count</h4>
+          {!loading && chartData?.length > 0 &&
+            <SimpleChart data={chartData} />
           }
           {loading &&
-            <div className='center'>
-              <div className='loader'></div>
+            <div className='center' style={{ marginTop: "20px" }}>
+              <span className="waiting"></span>
+              <br />{t("general.loading")}
             </div>
           }
         </div>
