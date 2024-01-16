@@ -66,7 +66,7 @@ export const TransactionDetails = ({ tx, children }) => {
               <Table.Data>{tx.type}</Table.Data>
             </Table.Row>
             <Table.Row>
-              <Table.Data>Time (UTC):</Table.Data>
+              <Table.Data>Time:</Table.Data>
               <Table.Data>
                 {formatDateTime(tx.outcome.timestamp)}
               </Table.Data>
