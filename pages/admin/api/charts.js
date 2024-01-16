@@ -6,6 +6,7 @@ import { useRouter } from 'next/router'
 
 import SEO from '../../../components/SEO'
 import Tabs from '../../../components/Tabs'
+import SimpleChart from '../../../components/SimpleChart'
 
 export const getServerSideProps = async (context) => {
   const { locale } = context
@@ -23,7 +24,7 @@ export default function Charts() {
   const [errorMessage, setErrorMessage] = useState("")
   const [chartData, setChartData] = useState({})
   const [loading, setLoading] = useState(false)
-  const [span, setSpan] = useState("minute")
+  const [period, setPeriod] = useState("day")
 
   useEffect(() => {
     const sessionToken = localStorage.getItem('sessionToken')
@@ -39,7 +40,7 @@ export default function Charts() {
   useEffect(() => {
     getData()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [span])
+  }, [period])
 
   const mainTabs = [
     { value: "account", label: "Account" },
@@ -55,10 +56,12 @@ export default function Charts() {
     { value: "api-charts", label: "Charts" },
   ]
 
-  const spanTabs = [
-    { value: "minute", label: "Minute" },
-    { value: "hour", label: "Hour" },
+  const periodTabs = [
+    //{ value: "hour", label: "Hour" },
     { value: "day", label: "Day" },
+    { value: "week", label: "Week" },
+    { value: "month", label: "Month" },
+    { value: "year", label: "Year" },
   ]
 
   const changePage = tab => {
@@ -83,9 +86,17 @@ export default function Charts() {
 
   const getData = async () => {
     setLoading(true)
+
+    let span = "day"
+    if (period === "day") {
+      span = "hour"
+    } //else if (period === "hour") {
+    //span = "minute"
+    //}
+
     //&period=from..to&search=text&ip=z
     const apiRequests = await axios.get(
-      'partner/partner/accessToken/requests/chart?span=' + span + '&preiod=from..to',
+      'partner/partner/accessToken/requests/chart?span=' + span + '&period=' + period,
       { baseUrl: '/api/' }
     ).catch(error => {
       if (error && error.message !== "canceled") {
@@ -97,7 +108,13 @@ export default function Charts() {
       setLoading(false)
     })
     setLoading(false)
-    setChartData(apiRequests?.data)
+
+    if (apiRequests?.data?.requests?.length > 0) {
+      const data = apiRequests.data.requests.map((item) => {
+        return [item.time, item.count]
+      })
+      setChartData(data)
+    }
   }
 
   return <>
@@ -108,16 +125,16 @@ export default function Charts() {
       </h1>
 
       <Tabs tabList={mainTabs} tab="api" setTab={changePage} name="mainTabs" />
-      <Tabs tabList={apiTabs} tab="api-requests" setTab={changePage} name="apiTabs" />
+      <Tabs tabList={apiTabs} tab="api-charts" setTab={changePage} name="apiTabs" />
 
-      <Tabs tabList={spanTabs} tab={span} setTab={setSpan} name="apiSpans" />
+      <Tabs tabList={periodTabs} tab={period} setTab={setPeriod} name="periodTabs" />
 
       <div className='center'>
         <div style={{ marginTop: "20px", textAlign: "left" }}>
           <h4 className='center'>Chart</h4>
           {!loading && chartData?.length > 0 ?
             <>
-              data loaded
+              <SimpleChart data={chartData} />
             </>
             :
             <div className='center'>
