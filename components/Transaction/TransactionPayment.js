@@ -1,6 +1,7 @@
 import { useTranslation } from "next-i18next";
 
-import { TRoot, TBody, TRow, TData } from "../TableDetails";
+import { TDetails, TBody, TRow, TData } from "../TableDetails";
+import { amountFormat } from "../../utils/format";
 import { formatDateTime } from "../../utils/transaction";
 
 import { LinkAccount } from "./Links";
@@ -14,7 +15,7 @@ export const TransactionPayment = ({ tx }) => {
 
   return (
     <TransactionCard tx={tx}>
-      <TRoot>
+      <TDetails>
         <TBody>
           <TRow>
             <TData>{t("table.type")}:</TData>
@@ -37,8 +38,8 @@ export const TransactionPayment = ({ tx }) => {
             <TData>#{tx.sequence}</TData>
           </TRow>
           <TRow>
-            <TData>XRLP Fee:</TData>
-            <TData>{tx.outcome?.fee}</TData>
+            <TData>XRPL Fee:</TData>
+            <TData>{amountFormat(tx.outcome?.fee)}</TData>
           </TRow>
           <TRow>
             <TData>CTID:</TData>
@@ -58,7 +59,7 @@ export const TransactionPayment = ({ tx }) => {
             </TData>
           </TRow>
         </TBody>
-      </TRoot>
+      </TDetails>
     </TransactionCard>
   );
 };

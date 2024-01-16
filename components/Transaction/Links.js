@@ -1,15 +1,5 @@
 import Link from "next/link";
 
-const LinkExplorer = ({ hash }) => (
-  <a
-    href={`https://bithomp.com/explorer/${hash}`}
-    target="_blank"
-    rel="noopener noreferrer"
-  >
-    {hash}
-  </a>
-);
-
 const LinkAccount = ({ address }) => (
   <Link href={`/account/${address}`}>
     {address}
@@ -22,4 +12,4 @@ const LinkLedger = ({ version }) => (
   </Link>
 );
 
-export { LinkAccount, LinkExplorer, LinkLedger };
+export { LinkAccount, LinkLedger };

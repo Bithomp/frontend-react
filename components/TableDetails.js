@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-export const TRoot = styled.table`
+export const TDetails = styled.table`
   width: 100%;
   border-collapse: collapse;
   border-spacing: 0;
