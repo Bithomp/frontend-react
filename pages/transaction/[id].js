@@ -8,32 +8,34 @@ import SEO from "../../components/SEO";
 import { server } from "../../utils";
 import { getIsSsrMobile } from "../../utils/mobile";
 
-import { TransactionDetails, TransactionPayment } from "../../components/Transaction";
+import {
+  TransactionDetails,
+  TransactionOrder,
+  TransactionPayment,
+} from "../../components/Transaction";
 
 export async function getServerSideProps(context) {
   const { locale, query, req } = context;
   let txData = null;
   const { id } = query;
 
-  if (id) {
-    let headers = {};
-    if (req.headers["x-real-ip"]) {
-      headers["x-real-ip"] = req.headers["x-real-ip"];
-    }
-    if (req.headers["x-forwarded-for"]) {
-      headers["x-forwarded-for"] = req.headers["x-forwarded-for"];
-    }
-    try {
-      const res = await axios({
-        method: "get",
-        url: server + "/api/cors/v2/transaction/" + id,
-        headers,
-      });
-      txData = res?.data;
-      txData.rawTransaction = JSON.parse(txData.rawTransaction);
-    } catch (error) {
-      console.error(error);
-    }
+  let headers = {};
+  if (req.headers["x-real-ip"]) {
+    headers["x-real-ip"] = req.headers["x-real-ip"];
+  }
+  if (req.headers["x-forwarded-for"]) {
+    headers["x-forwarded-for"] = req.headers["x-forwarded-for"];
+  }
+  try {
+    const res = await axios({
+      method: "get",
+      url: server + "/api/cors/v2/transaction/" + id,
+      headers,
+    });
+    txData = res?.data;
+    txData.rawTransaction = JSON.parse(txData.rawTransaction);
+  } catch (error) {
+    console.error(error);
   }
 
   return {
@@ -70,6 +72,9 @@ export default function Transaction(
     case "payment":
       TransactionComponent = TransactionPayment;
       break;
+    case "order":
+      TransactionComponent = TransactionOrder;
+      break;
     default:
       TransactionComponent = TransactionDetails;
   }
@@ -83,11 +88,8 @@ export default function Transaction(
         description={"Transaction details, transactions, NFTs, Tokens for " +
           (txData?.service?.name || txData?.username) + " " +
           (txData?.address || id)}
-      // image={{ file: avatarSrc(txData) }}
       />
-      <SearchBlock
-        tab="transaction"
-      />
+      <SearchBlock tab="transaction" />
       {isClient &&
         (
           <Container>

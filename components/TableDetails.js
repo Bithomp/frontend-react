@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-export const Root = styled.table`
+export const TRoot = styled.table`
   width: 100%;
   border-collapse: collapse;
   border-spacing: 0;
@@ -10,10 +10,10 @@ export const Root = styled.table`
   text-align: left;
 `;
 
-export const Body = ({ children }) => <tbody>{children}</tbody>;
-export const Row = ({ children }) => <tr>{children}</tr>;
+export const TBody = ({ children }) => <tbody>{children}</tbody>;
+export const TRow = ({ children }) => <tr>{children}</tr>;
 
-export const Data = styled.td`
+export const TData = styled.td`
   padding: 4px;
   border-bottom: 1px solid var(--border-color);
   &:first-child {
