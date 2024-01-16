@@ -48,6 +48,7 @@ export default function Statistics() {
     { value: "api-payments", label: "Payments" },
     { value: "api-statistics", label: "Statistics" },
     { value: "api-requests", label: "Requests" },
+    { value: "api-charts", label: "Charts" },
   ]
 
   const changePage = tab => {
@@ -65,6 +66,8 @@ export default function Statistics() {
       router.push("/admin/api/requests")
     } else if (tab === "api-statistics") {
       router.push("/admin/api/statistics")
+    } else if (tab === "api-charts") {
+      router.push("/admin/api/charts")
     }
   }
 

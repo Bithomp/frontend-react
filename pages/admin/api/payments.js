@@ -13,7 +13,8 @@ import CopyButton from '../../../components/UI/CopyButton'
 import { amountFormat, fullDateAndTime, niceNumber } from '../../../utils/format'
 import { nativeCurrency, useWidth } from '../../../utils'
 
-//PayPal
+//PayPal option is off for now
+/*
 import {
   PayPalScriptProvider,
   PayPalButtons,
@@ -56,6 +57,8 @@ const ButtonWrapper = ({ type }) => {
 }
 
 //https://paypal.github.io/react-paypal-js/?path=/docs/example-paypalbuttons--default
+
+*/
 
 export const getServerSideProps = async (context) => {
   const { locale } = context
@@ -111,6 +114,7 @@ export default function Payments() {
     { value: "api-payments", label: "Payments" },
     { value: "api-statistics", label: "Statistics" },
     { value: "api-requests", label: "Requests" },
+    { value: "api-charts", label: "Charts" },
   ]
 
   const changePage = tab => {
@@ -128,6 +132,8 @@ export default function Payments() {
       router.push("/admin/api/requests")
     } else if (tab === "api-statistics") {
       router.push("/admin/api/statistics")
+    } else if (tab === "api-charts") {
+      router.push("/admin/api/charts")
     }
   }
 
@@ -242,7 +248,9 @@ export default function Payments() {
       tierRate = "250"
     }
 
-    return <><b>{(tierRate * months / eurRate).toFixed(2)} {nativeCurrency}</b> ({tierRate * months} EUR)</>
+    return <>
+      <b>{(tierRate * months / eurRate).toFixed(2)} {nativeCurrency}</b> ({tierRate * months} EUR)
+    </>
   }
 
   const saveCountry = async () => {
@@ -252,7 +260,7 @@ export default function Payments() {
       { baseUrl: '/api/' }
     ).catch(error => {
       if (error && error.message !== "canceled") {
-        setErrorMessage(t(error.response.data.error || "error." + error.message))
+        setErrorMessage(t(error.response?.data?.error || "error." + error.message))
       }
     })
     if (data?.data?.country) {
@@ -301,7 +309,7 @@ export default function Payments() {
 
             {apiData &&
               <>
-                <h4 className='center'>1. XRP API payment details</h4>
+                <h4 className='center'>{/* 1. */}XRP API payment details</h4>
                 {width > 600 ?
                   <table className='table-large shrink'>
                     <tbody>
@@ -416,6 +424,8 @@ export default function Payments() {
               </div>
             }
 
+            {/* PayPal option is off for now 
+
             {billingCountry &&
               <>
                 <h4>
@@ -437,6 +447,8 @@ export default function Payments() {
                 </div>
               </>
             }
+
+          */}
           </>
         }
 

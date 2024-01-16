@@ -132,7 +132,9 @@ export default function Charts() {
         <div style={{ marginTop: "20px", textAlign: "left" }}>
           <h4 className='center'>Requests count</h4>
           {!loading && chartData?.length > 0 &&
-            <SimpleChart data={chartData} />
+            <div style={{ maxWidth: "800px", margin: "auto" }}>
+              <SimpleChart data={chartData} />
+            </div>
           }
           {loading &&
             <div className='center' style={{ marginTop: "20px" }}>
