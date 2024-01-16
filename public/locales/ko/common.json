@@ -352,6 +352,7 @@
     "index": "지표",
     "address": "주소",
     "date": "날짜",
+    "time": "시간",
     "amount": "금액",
     "name": "사용자명",
     "sender": "수신자",

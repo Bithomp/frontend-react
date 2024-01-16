@@ -352,6 +352,7 @@
     "index": "#",
     "address": "アドレス",
     "date": "日付",
+    "time": "時間",
     "amount": "金額",
     "name": "名前",
     "sender": "送信者",

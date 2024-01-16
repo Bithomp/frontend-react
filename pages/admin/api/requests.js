@@ -6,11 +6,11 @@ import { useRouter } from 'next/router'
 
 import SEO from '../../../components/SEO'
 import Tabs from '../../../components/Tabs'
+import DateAndTimeRange from '../../../components/UI/DateAndTimeRange'
+import ReactCountryFlag from "react-country-flag"
 
 import { fullDateAndTime } from '../../../utils/format'
 import { useWidth } from '../../../utils'
-
-import ReactCountryFlag from "react-country-flag"
 
 export const getServerSideProps = async (context) => {
   const { locale } = context
@@ -21,13 +21,20 @@ export const getServerSideProps = async (context) => {
   }
 }
 
+const now = new Date()
+let minDate = now.setDate(now.getDate() - 5) // 5 days ago
+minDate = new Date(minDate)
+
 export default function Requests() {
   const { t } = useTranslation(['common', 'admin'])
+  const router = useRouter()
+  const width = useWidth()
+
   const [errorMessage, setErrorMessage] = useState("")
   const [apiRequests, setApiRequests] = useState({})
   const [loading, setLoading] = useState(false)
-  const router = useRouter()
-  const width = useWidth()
+  const [startDate, setStartDate] = useState(minDate)
+  const [endDate, setEndDate] = useState(new Date())
 
   useEffect(() => {
     const sessionToken = localStorage.getItem('sessionToken')
@@ -37,6 +44,7 @@ export default function Requests() {
       axios.defaults.headers.common['Authorization'] = "Bearer " + sessionToken
       getData()
     }
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -72,14 +80,15 @@ export default function Requests() {
   }
 
   const getData = async () => {
+    setApiRequests({})
     setLoading(true)
-    //&period=from..to&search=text&ip=z
+    //&search=text&ip=z
     const apiRequests = await axios.get(
-      'partner/partner/accessToken/requests?limit=50&offset=0',
+      'partner/partner/accessToken/requests?limit=50&offset=0&period=' + startDate.toISOString() + '..' + endDate.toISOString(),
       { baseUrl: '/api/' }
     ).catch(error => {
       if (error && error.message !== "canceled") {
-        setErrorMessage(t(error.response.data.error || "error." + error.message))
+        setErrorMessage(t(error.response?.data?.error || "error." + error.message))
         if (error.response?.data?.error === "errors.token.required") {
           router.push('/admin')
         }
@@ -99,6 +108,22 @@ export default function Requests() {
 
       <Tabs tabList={mainTabs} tab="api" setTab={changePage} name="mainTabs" />
       <Tabs tabList={apiTabs} tab="api-requests" setTab={changePage} name="apiTabs" />
+      <center>
+        <DateAndTimeRange
+          startDate={startDate}
+          setStartDate={setStartDate}
+          endDate={endDate}
+          setEndDate={setEndDate}
+          minDate={minDate}
+        />
+        {width < 500 && <br />}
+        <button
+          className="button-action narrow thin"
+          onClick={getData}
+        >
+          Search
+        </button>
+      </center>
 
       <div className='center'>
         <div style={{ marginTop: "20px", textAlign: "left" }}>
@@ -161,8 +186,10 @@ export default function Requests() {
                 {loading &&
                   <tr className='center'>
                     <td colSpan="100">
+                      <br />
                       <span className="waiting"></span>
                       <br />{t("general.loading")}
+                      <br /><br />
                     </td>
                   </tr>
                 }

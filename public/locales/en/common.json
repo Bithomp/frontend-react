@@ -352,6 +352,7 @@
     "index": "Index",
     "address": "Address",
     "date": "Date",
+    "time": "Time",
     "amount": "Amount",
     "name": "Name",
     "sender": "Sender",
