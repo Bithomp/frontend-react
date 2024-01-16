@@ -1,12 +1,12 @@
 import { useTranslation } from "next-i18next";
 
 import { amountFormat } from "../../utils/format";
-import { formatDateTime } from "../../utils/transaction";
 import { TDetails, TBody, TData, TRow } from "../TableDetails";
 
+import * as Styled from "./styled";
 import { LinkAccount } from "./Links";
 import { TransactionCard } from "./TransactionCard";
-import * as Styled from "./styled";
+import { formatDateTime } from "./utils";
 
 export const TransactionOrder = ({ tx }) => {
   const { t } = useTranslation();
