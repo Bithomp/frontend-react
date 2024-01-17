@@ -20,10 +20,12 @@ export const getServerSideProps = async (context) => {
 }
 
 const now = new Date()
+let hourAgo = now.setHours(now.getHours() - 1)
 let dayAgo = now.setDate(now.getDate() - 1)
 let weekAgo = now.setDate(now.getDate() - 7)
 let monthAgo = now.setDate(now.getDate() - 30)
 let yearAgo = now.setDate(now.getDate() - 365)
+hourAgo = new Date(hourAgo)
 dayAgo = new Date(dayAgo)
 weekAgo = new Date(weekAgo)
 monthAgo = new Date(monthAgo)
@@ -54,7 +56,9 @@ export default function Charts() {
   useEffect(() => {
     let newStartDate = null
     let newEndDate = null
-    if (period === "day") {
+    if (period === "hour") {
+      newStartDate = hourAgo
+    } else if (period === "day") {
       newStartDate = dayAgo
     } else if (period === "week") {
       newStartDate = weekAgo
@@ -88,7 +92,7 @@ export default function Charts() {
   ]
 
   const periodTabs = [
-    //{ value: "hour", label: "Hour" },
+    { value: "hour", label: "Hour" },
     { value: "day", label: "Day" },
     { value: "week", label: "Week" },
     { value: "month", label: "Month" },
@@ -121,9 +125,9 @@ export default function Charts() {
     let span = "day"
     if (period === "day") {
       span = "hour"
-    } //else if (period === "hour") {
-    //span = "minute"
-    //}
+    } else if (period === "hour") {
+      span = "minute"
+    }
 
     newStartDate = newStartDate || startDate
     newEndDate = newEndDate || endDate
