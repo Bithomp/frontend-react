@@ -176,9 +176,11 @@ export default function Payments() {
 
     setLoading(false)
 
-    if (partnerData?.data?.country) {
-      //set country, check rates, and show transaction history only if we have countru available
-      setBillingCountry(partnerData?.data?.country)
+    const partnerCountry = partnerData?.data?.country
+
+    //if we have country available: set country, check rates, and show transaction history only 
+    if (partnerCountry) {
+      setBillingCountry(partnerCountry)
 
       const data = await axios.get(
         'partner/partner/accessToken',
@@ -228,6 +230,9 @@ export default function Payments() {
         }
         setApiPayments(apiTransactions.data)
       }
+    } else {
+      //if no country available
+      setChoosingCountry(true)
     }
   }
 

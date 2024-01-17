@@ -36,9 +36,9 @@ export default function CountrySelect({ countryCode, setCountryCode, type }) {
         value: countryCode,
         label: countries.getName(countryCode, lang, { select: "official" })
       })
+      setCountryCode(countryCode)
       if (type !== "onlySelect") {
         setSavedCounty(countryCode)
-        setCountryCode(countryCode)
       }
     }
   }
@@ -50,6 +50,7 @@ export default function CountrySelect({ countryCode, setCountryCode, type }) {
           value: countryCode,
           label: countries.getName(countryCode, lang, { select: "official" })
         })
+        setCountryCode(countryCode)
       } else {
         fetchData()
       }
