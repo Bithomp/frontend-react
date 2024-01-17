@@ -37,7 +37,7 @@ export default function Charts() {
   const width = useWidth()
 
   const [errorMessage, setErrorMessage] = useState("")
-  const [chartData, setChartData] = useState({})
+  const [chartData, setChartData] = useState([])
   const [loading, setLoading] = useState(false)
   const [period, setPeriod] = useState("day")
   const [startDate, setStartDate] = useState(dayAgo)
@@ -188,6 +188,11 @@ export default function Charts() {
           {!loading && chartData?.length > 0 &&
             <div style={{ maxWidth: "800px", margin: "auto" }}>
               <SimpleChart data={chartData} />
+            </div>
+          }
+          {!loading && chartData.length === 0 &&
+            <div className='center' style={{ marginTop: "20px" }}>
+              no data available
             </div>
           }
           {loading &&

@@ -244,9 +244,6 @@ export default function Payments() {
   }
 
   const apiPrice = (tier, months = 1) => {
-    if (tier === "free") {
-      return "Free"
-    }
     if (!eurRate) return ""
     let tierRate = apiPlans[tier].price
     return <>
@@ -264,7 +261,9 @@ export default function Payments() {
 
   const apiPlanTr = (tierName, months = 1) => {
     return <tr>
-      <td className='right'>Tier {apiPlanName(apiData.tier, tierName)} ({months} month)</td>
+      <td className='right'>
+        Tier {apiPlanName(apiData.tier, tierName)} ({months === 12 ? "1 year" : (months + " month")})
+      </td>
       <td className='left'>
         {apiPrice(tierName, months)}
       </td>
@@ -273,20 +272,22 @@ export default function Payments() {
 
   const listOfApiPlans = () => {
     if (!apiData) return ""
-    if (apiData.tier === "free") {
-      return <>
-        {apiPlanTr("basic", 1)}
-        {apiPlanTr("basic", 12)}
-        {apiPlanTr("standard", 1)}
-        {apiPlanTr("standard", 12)}
-        {(apiData.tier === "standart" || apiData.tier === "premium") &&
-          <>
-            {apiPlanTr("premium", 1)}
-            {apiPlanTr("premium", 12)}
-          </>
-        }
-      </>
-    }
+    return <>
+      {apiData.tier !== "premium" &&
+        <>
+          {apiPlanTr("basic", 1)}
+          {apiPlanTr("basic", 12)}
+        </>
+      }
+      {apiPlanTr("standard", 1)}
+      {apiPlanTr("standard", 12)}
+      {(apiData.tier === "standart" || apiData.tier === "premium") &&
+        <>
+          {apiPlanTr("premium", 1)}
+          {apiPlanTr("premium", 12)}
+        </>
+      }
+    </>
   }
 
   const saveCountry = async () => {
@@ -387,6 +388,7 @@ export default function Payments() {
                 }
                 <br />
                 Your plan will be activated after the payment is received.
+                {width > 500 ? <br /> : " "}
                 If it's not activated within 24h, please contact us at <b>partner@bithomp.com</b> <CopyButton text="partner@bithomp.com" />
               </>
             }
