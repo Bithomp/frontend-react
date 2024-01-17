@@ -257,7 +257,13 @@ export default function Admin({ redirectToken }) {
     <SEO title={t("header", { ns: "admin" })} />
     <div className="page-admin content-center">
       <h1 className='center'>
-        {t("header", { ns: "admin" })}
+        {step === 0 ?
+          <>
+            Admin panel sign in / registration
+          </>
+          :
+          t("header", { ns: "admin" })
+        }
       </h1>
 
       {step === 2 &&
