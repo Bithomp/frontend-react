@@ -423,7 +423,7 @@
     "public-key": "Public Key",
     "text": {
       "show-extended-statistics": "Erweiterte Statistiken anzeigen",
-      "include-without-media-data": "NFTs ohne Mediadaten einbeziehen",
+      "include-without-media-data": "NFTs ohne Mediendaten einbeziehen",
       "include-burned-nfts": "Vernichtete NFTs einbeziehen",
       "no-expiration": "Kein Ablaufdatum",
       "no-offers": "Keine Angebote gefunden",
@@ -481,13 +481,13 @@
     "all": "Alle",
     "buy": "Kaufen",
     "sell": "Verkaufen",
-    "buyNow": "Buy now",
+    "buyNow": "Jetzt kaufen",
     "publicAndKnownBrokers": "Öffentlich & MP",
     "onSale": "Zum Verkauf für XRP",
     "all-tokens": "Alle Tokens",
     "xrp-only": "nur XRP",
-    "mintedNew": "Latest mints",
-    "mintedOld": "Oldest mints"
+    "mintedNew": "Neuste Mints",
+    "mintedOld": "Älteste Minted"
   },
   "xumm": {
     "new-qr": "Neuen QR-Code erhalten"
@@ -496,7 +496,7 @@
     "header": {
       "main": "{{explorerName}} Explorer",
       "account": "Kontoinformation",
-      "transaction": "Transaction information",
+      "transaction": "Information zur Transaktion",
       "nft": "NFT",
       "nfts": "NFTs",
       "nft-offer": "NFT Angebot",
