@@ -75,12 +75,13 @@ export default function Api() {
 
   const getApiData = async () => {
     setLoading(true)
+    setErrorMessage("")
     const data = await axios.get(
       'partner/partner/accessToken',
       { baseUrl: '/api/' }
     ).catch(error => {
       if (error && error.message !== "canceled") {
-        setErrorMessage(t(error.response.data.error || "error." + error.message))
+        setErrorMessage(t(error.response?.data?.error || "error." + error.message))
         if (error.response?.data?.error === "errors.token.required") {
           router.push('/admin')
         }
@@ -165,13 +166,15 @@ export default function Api() {
           https://docs.bithomp.com
         </a>
         <br /><br />
-        <table className='table-large shrink'>
+        <table className='table-large shrink' style={(!loading && !apiData) ? { border: "none" } : {}}>
           {loading ?
             <tbody>
               <tr>
                 <td className='center' colSpan="2">
                   <span className="waiting"></span>
-                  <br />{t("general.loading")}
+                  <br />
+                  {t("general.loading")}
+                  <br /><br />
                 </td>
               </tr>
             </tbody>
@@ -247,7 +250,7 @@ export default function Api() {
                   <tr>
                     <td className='center' colSpan="2">
                       <button
-                        className={"button-action"}
+                        className="button-action"
                         onClick={requestApiKey}
                       >
                         Request API key

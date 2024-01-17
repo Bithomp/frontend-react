@@ -236,26 +236,57 @@ export default function Payments() {
     }
   }
 
+  const apiPlans = {
+    free: { label: "Free", price: "0" },
+    basic: { label: "Basic", price: "30" },
+    standard: { label: "Standard", price: "100" },
+    premium: { label: "Premium", price: "250" },
+  }
+
   const apiPrice = (tier, months = 1) => {
     if (tier === "free") {
       return "Free"
     }
-
     if (!eurRate) return ""
-
-    let tierRate = ""
-
-    if (tier === "basic") {
-      tierRate = "30"
-    } else if (tier === "standard") {
-      tierRate = "100"
-    } else if (tier === "premium") {
-      tierRate = "250"
-    }
-
+    let tierRate = apiPlans[tier].price
     return <>
       <b>{(tierRate * months / eurRate).toFixed(2)} {nativeCurrency}</b> ({tierRate * months} EUR)
     </>
+  }
+
+  const apiPlanName = (userTier, tierName) => {
+    let name = apiPlans[tierName].label
+    if (tierName === userTier) {
+      return <b>{name}</b>
+    }
+    return name
+  }
+
+  const apiPlanTr = (tierName, months = 1) => {
+    return <tr>
+      <td className='right'>Tier {apiPlanName(apiData.tier, tierName)} ({months} month)</td>
+      <td className='left'>
+        {apiPrice(tierName, months)}
+      </td>
+    </tr>
+  }
+
+  const listOfApiPlans = () => {
+    if (!apiData) return ""
+    if (apiData.tier === "free") {
+      return <>
+        {apiPlanTr("basic", 1)}
+        {apiPlanTr("basic", 12)}
+        {apiPlanTr("standard", 1)}
+        {apiPlanTr("standard", 12)}
+        {(apiData.tier === "standart" || apiData.tier === "premium") &&
+          <>
+            {apiPlanTr("premium", 1)}
+            {apiPlanTr("premium", 12)}
+          </>
+        }
+      </>
+    }
   }
 
   const saveCountry = async () => {
@@ -314,7 +345,15 @@ export default function Payments() {
 
             {apiData &&
               <>
+                <br /><br />
+                Choose your API plan:
+                {" "}
+                <a href="https://docs.bithomp.com/#price-and-limits" target="_blank" rel="noreferrer">
+                  https://docs.bithomp.com/#price-and-limits
+                </a>
+
                 <h4 className='center'>{/* 1. */}XRP API payment details</h4>
+
                 {width > 600 ?
                   <table className='table-large shrink'>
                     <tbody>
@@ -326,20 +365,7 @@ export default function Payments() {
                         <td className='right'>Destination tag</td>
                         <td className='left bold'>{apiData.id} <CopyButton text={apiData.id} /></td>
                       </tr>
-                      <tr>
-                        <td className='right'>Tier {apiData.tier} (1 month)</td>
-                        <td className='left'>
-                          {apiPrice(apiData?.tier, 1)}
-                        </td>
-                      </tr>
-                      {apiData.tier !== "free" &&
-                        <tr>
-                          <td className='right'>Tier {apiData.tier} (1 year)</td>
-                          <td className='left'>
-                            {apiPrice(apiData?.tier, 12)}
-                          </td>
-                        </tr>
-                      }
+                      {listOfApiPlans()}
                     </tbody>
                   </table>
                   :
@@ -352,18 +378,16 @@ export default function Payments() {
                       Destination tag:<br />
                       {apiData.id} <CopyButton text={apiData.id} />
                     </p>
-                    <p>
-                      Tier {apiData.tier} (1 month):<br />
-                      {apiPrice(apiData?.tier, 1)}
-                    </p>
-                    {apiData.tier !== "free" &&
-                      <p>
-                        Tier {apiData.tier} (1 year):<br />
-                        {apiPrice(apiData?.tier, 12)}
-                      </p>
-                    }
+                    <table className='table-mobile'>
+                      <tbody>
+                        {listOfApiPlans()}
+                      </tbody>
+                    </table>
                   </div>
                 }
+                <br />
+                Your plan will be activated after the payment is received.
+                If it's not activated within 24h, please contact us at <b>partner@bithomp.com</b> <CopyButton text="partner@bithomp.com" />
               </>
             }
 
