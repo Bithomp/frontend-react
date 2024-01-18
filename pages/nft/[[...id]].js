@@ -239,7 +239,7 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
   useEffect(() => {
     if (!selectedCurrency) return;
     if (!signRequest) {
-      if (!data?.nftokenID) {
+      if (!data?.nftokenID && !data?.uriTokenID) {
         // no token - first time fetching - allow right away
         checkApi()
       } else {
@@ -791,8 +791,8 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
   return <>
     <SEO
       page="NFT"
-      title={nftName(pageMeta) || pageMeta?.nftokenID || "NFT"}
-      description={pageMeta?.metadata?.description || pageMeta?.metadata?.collection?.name || (!pageMeta?.nftokenID ? t("desc", { ns: 'nft' }) : "")}
+      title={nftName(pageMeta) || pageMeta?.nftokenID || pageMeta?.uriTokenID || "NFT"}
+      description={pageMeta?.metadata?.description || pageMeta?.metadata?.collection?.name || (!(pageMeta?.nftokenID || pageMeta?.uriTokenID) ? t("desc", { ns: 'nft' }) : "")}
       image={{ file: imageUrl }}
     />
     <SearchBlock

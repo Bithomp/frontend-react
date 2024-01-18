@@ -37,7 +37,7 @@ export const mpUrl = offer => {
     url = "https://nftmarketplace.opulencex.io/nft/"
   }
   if (url) {
-    return url + offer.nftokenID
+    return url + (offer.nftokenID || offer.uriTokenID)
   } else {
     return ""
   }
@@ -124,10 +124,10 @@ export const bestNftOffer = (nftOffers, loggedInAddress, type = 'sell') => {
 }
 
 export const nftThumbnail = nft => {
-  if (!nft || !nft.nftokenID) return "";
-  const imageSrc = nftUrl(nft, 'thumbnail');
-  if (!imageSrc) return "";
-  return <Link href={"/nft/" + nft.nftokenID}>
+  if (!nft || !(nft.nftokenID || nft.uriTokenID)) return ""
+  const imageSrc = nftUrl(nft, 'thumbnail')
+  if (!imageSrc) return ""
+  return <Link href={"/nft/" + (nft.nftokenID || nft.uriTokenID)}>
     <img
       src={imageSrc}
       width="32px"
@@ -139,8 +139,8 @@ export const nftThumbnail = nft => {
 }
 
 export const nftNameLink = nft => {
-  if (!nft) return "";
-  return <Link href={"/nft/" + nft.nftokenID}>
+  if (!nft || !(nft.nftokenID || nft.uriTokenID)) return ""
+  return <Link href={"/nft/" + (nft.nftokenID || nft.uriTokenID)}>
     {nftName(nft) ? nftName(nft) : <LinkIcon />}
   </Link>
 }

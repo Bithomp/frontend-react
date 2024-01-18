@@ -176,7 +176,7 @@ export default function NftOffer({ setSignRequest, signRequest, account, id }) {
 
   useEffect(() => {
     if (!signRequest) {
-      if (!data?.nftokenID) {
+      if (!(data?.nftokenID || data?.uriTokenID)) {
         // no token - first time fetching - allow right away
         checkApi()
       } else if (data?.canceledAt || data?.acceptedAt) {
@@ -252,7 +252,7 @@ export default function NftOffer({ setSignRequest, signRequest, account, id }) {
                         {trWithAccount(data, 'account', sellerOrBuyer, "/explorer/", 0)}
                         <tr>
                           <td>{data.flags.sellToken === true ? t("nft-offer.selling") : t("nft-offer.buying")} NFT</td>
-                          <td>{nftIdLink(data.nftokenID)}</td>
+                          <td>{nftIdLink(data.nftokenID || data.uriTokenID)}</td>
                         </tr>
                         {trWithAccount(data, 'destination', t("table.destination"), "/explorer/", 0)}
                         <tr>

@@ -662,7 +662,7 @@ export default function NftsComponent({
                     :
                     <>
                       {!errorMessage ? data.map((nft, i) =>
-                        <tr key={nft.nftokenID}>
+                        <tr key={nft.nftokenID || nft.uriTokenID}>
                           <td className="center">{i + 1}</td>
                           <td>{nftThumbnail(nft)} {nftNameLink(nft)}</td>
                           <td className='right'>{timeOrDate(nft.issuedAt)}</td>
@@ -692,7 +692,7 @@ export default function NftsComponent({
                     :
                     <>
                       {!errorMessage ? data.map((nft, i) =>
-                        <tr key={nft.nftokenID}>
+                        <tr key={nft.nftokenID || nft.uriTokenID}>
                           <td className="center">
                             {i + 1}<br /><br />
                             {nftThumbnail(nft)}
