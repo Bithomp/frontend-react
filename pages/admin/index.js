@@ -259,12 +259,16 @@ export default function Admin({ redirectToken }) {
       <h1 className='center'>
         {step === 0 ?
           <>
-            Admin panel sign in / registration
+            Partner portal sign in / registration
           </>
           :
           t("header", { ns: "admin" })
         }
       </h1>
+
+      {step === 0 &&
+        <center>Register API key, view API statistics and charts.</center>
+      }
 
       {step === 2 &&
         <Tabs tabList={mainTabs} tab="account" setTab={changePage} name="mainTabs" />
