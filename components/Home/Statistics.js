@@ -129,7 +129,7 @@ export default function Statistics() {
     <div className='statistics-block'>
       <div className='stat-piece'>
         <div className='stat-piece-header'>{t("home.stat.ledger-index")}</div>
-        <div><Link href={`ledger/${ledgerIndex}`}>#{ledgerIndex}</Link></div>
+        <div><Link href={`/ledger/${ledgerIndex}`}>#{ledgerIndex}</Link></div>
       </div>
       <div className='stat-piece'>
         <div className='stat-piece-header'>{t("home.stat.close-time")}</div>
@@ -141,7 +141,7 @@ export default function Statistics() {
       </div>
       <div className='stat-piece'>
         <div className='stat-piece-header'>{t("home.stat.quorum")}</div>
-        <div>{quorum} (<Link href="validators">{proposers} {t("home.stat.proposers")}</Link>)</div>
+        <div>{quorum} (<Link href="/validators">{proposers} {t("home.stat.proposers")}</Link>)</div>
       </div>
       <div className='stat-piece'>
         <div className='stat-piece-header'>{t("home.stat.accounts")}</div>

@@ -132,17 +132,17 @@ export default function Header({ setSignRequest, account, signOut, selectedCurre
             <div className="menu-dropdown-button">{ledgerName}</div>
             <div className="menu-dropdown-content">
               {xahauNetwork && <Link href="/governance">{t("menu.xrpl.governance")}</Link>}
-              <Link href="distribution">{t("menu.xrpl.distribution", { nativeCurrency })}</Link>
-              <Link href="last-ledger-information">{t("menu.xrpl.last-ledger-information")}</Link>
-              <Link href="ledger">{t("menu.xrpl.last-ledger-transactions")}</Link>
+              <Link href="/distribution">{t("menu.xrpl.distribution", { nativeCurrency })}</Link>
+              <Link href="/last-ledger-information">{t("menu.xrpl.last-ledger-information")}</Link>
+              <Link href="/ledger">{t("menu.xrpl.last-ledger-transactions")}</Link>
               {/* Hide Verified Domains for XAHAU while they are not ready yet */}
               {!xahauNetwork &&
-                <Link href="domains">{t("menu.xrpl.verified-domains")}</Link>
+                <Link href="/domains">{t("menu.xrpl.verified-domains")}</Link>
               }
-              <Link href="validators">{t("menu.xrpl.validators")}</Link>
-              <Link href="amendments">{t("menu.xrpl.amendments")}</Link>
+              <Link href="/validators">{t("menu.xrpl.validators")}</Link>
+              <Link href="/amendments">{t("menu.xrpl.amendments")}</Link>
               {xahauNetwork && <Link href="/unl-report">{t("menu.xrpl.unl-report")}</Link>}
-              <Link href="genesis">{t("menu.xrpl.genesis")}</Link>
+              <Link href="/genesis">{t("menu.xrpl.genesis")}</Link>
             </div>
           </div>
 
@@ -157,10 +157,10 @@ export default function Header({ setSignRequest, account, signOut, selectedCurre
                 </>
               }
               <a href="https://docs.bithomp.com">{t("menu.developers.api")}</a>
-              <Link href="admin">{t("menu.developers.api-admin")}</Link>
+              <Link href="/admin">{t("menu.developers.api-admin")}</Link>
               <a href="https://github.com/Bithomp">Github</a>
-              <Link href="eaas">{t("menu.business.eaas")}</Link>
-              <Link href="build-unl">{t("menu.business.build-unl")}</Link>
+              <Link href="/eaas">{t("menu.business.eaas")}</Link>
+              <Link href="/build-unl">{t("menu.business.build-unl")}</Link>
             </div>
           </div>
 

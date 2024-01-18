@@ -194,7 +194,7 @@ export default function Amendment() {
                   <td>{fullDateAndTime(a.majority + activationDays * 86400 + 903)}</td>
                   <td className='right'>
                     {a.count > threshold ? <b className='green'>{a.count}</b> : a.count}
-                    <Link href={"validators?amendment=" + a.name}> <LinkIcon /></Link>
+                    <Link href={"/validators?amendment=" + a.name}> <LinkIcon /></Link>
                   </td>
                   <td className='right'>{a.introduced}</td>
                   <td className='right'>
@@ -227,7 +227,7 @@ export default function Amendment() {
                   <td>{amendmentLink(a)}</td>
                   <td className='right'>
                     {a.count > threshold ? <b className='green'>{a.count}</b> : a.count}
-                    <Link href={"validators?amendment=" + a.name}> <LinkIcon /></Link>
+                    <Link href={"/validators?amendment=" + a.name}> <LinkIcon /></Link>
                   </td>
                   <td className='right'>{a.introduced}</td>
                   <td className='right'>

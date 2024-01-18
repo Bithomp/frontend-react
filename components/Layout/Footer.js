@@ -46,10 +46,10 @@ export default function Footer({ account, setSignRequest }) {
 
         <div className="footer-menu-column">
           <span className="footer-menu-header">{t("menu.business.business")}</span>
-          <Link href="advertise">{t("menu.business.advertise")}</Link>
-          <Link href="username">{t("menu.usernames")}</Link>
+          <Link href="/advertise">{t("menu.business.advertise")}</Link>
+          <Link href="/username">{t("menu.usernames")}</Link>
           <a href="https://bithomp.com/explorer/submit.html" target="_blank" rel="noreferrer">{t("menu.project-registartion")}</a>
-          <Link href="eaas">{t("menu.business.eaas")}</Link>
+          <Link href="/eaas">{t("menu.business.eaas")}</Link>
         </div>
 
         <div className="footer-menu-column">
@@ -62,9 +62,9 @@ export default function Footer({ account, setSignRequest }) {
             </>
           }
           <a href="https://docs.bithomp.com">{t("menu.developers.api")}</a>
-          <Link href="admin">{t("menu.developers.api-admin")}</Link>
+          <Link href="/admin">{t("menu.developers.api-admin")}</Link>
           <a href="https://github.com/Bithomp">Github</a>
-          <Link href="build-unl">{t("menu.business.build-unl")}</Link>
+          <Link href="/build-unl">{t("menu.business.build-unl")}</Link>
         </div>
         <div className="footer-menu-column">
           <span className="footer-menu-header">{t("menu.networks")}</span>
@@ -76,17 +76,17 @@ export default function Footer({ account, setSignRequest }) {
         </div>
         <div className="footer-menu-column">
           <span className="footer-menu-header">{t("menu.legal")}</span>
-          <Link href="disclaimer">{t("menu.disclaimer")}</Link>
-          <Link href="privacy-policy">{t("menu.privacy-policy")}</Link>
-          <Link href="terms-and-conditions">{t("menu.terms-and-conditions")}</Link>
+          <Link href="/disclaimer">{t("menu.disclaimer")}</Link>
+          <Link href="/privacy-policy">{t("menu.privacy-policy")}</Link>
+          <Link href="/terms-and-conditions">{t("menu.terms-and-conditions")}</Link>
         </div>
         <div className="footer-menu-column">
           <span className="footer-menu-header">Bithomp</span>
-          <Link href="advertise">{t("menu.business.advertise")}</Link>
+          <Link href="/advertise">{t("menu.business.advertise")}</Link>
           <a href="https://xrplmerch.com/product-category/bithomp/?wpam_id=22" target="_blank" rel="noreferrer">{t("menu.merch")}</a>
-          <Link href="customer-support">{t("menu.customer-support")}</Link>
-          <Link href="press">{t("menu.press")}</Link>
-          <Link href="donate">{t("menu.donate")} <span className="red">❤</span></Link>
+          <Link href="/customer-support">{t("menu.customer-support")}</Link>
+          <Link href="/press">{t("menu.press")}</Link>
+          <Link href="/donate">{t("menu.donate")} <span className="red">❤</span></Link>
         </div>
 
         {network === 'mainnet' && <div className="footer-menu-column">

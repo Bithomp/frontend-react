@@ -112,7 +112,7 @@ export default function LastLedgerInformation() {
           {t("last-ledger-information.ledger-interval")}: {ledger?.lastClose?.convergeTimeS && ledger?.lastClose.convergeTimeS + ' ' + t("units.seconds-short")}
         </p>
         <p>
-          {t("last-ledger-information.transactions")}: {ledger?.validatedLedger.transactionsCount && <Link href={"ledger/" + ledger.validatedLedger.ledgerIndex}>{ledger.validatedLedger.transactionsCount}</Link>}</p>
+          {t("last-ledger-information.transactions")}: {ledger?.validatedLedger.transactionsCount && <Link href={"/ledger/" + ledger.validatedLedger.ledgerIndex}>{ledger.validatedLedger.transactionsCount}</Link>}</p>
         <p>
           {t("last-ledger-information.transaction-speed")}: {ledger?.lastClose && (ledger.validatedLedger.transactionsCount / ledger.lastClose.convergeTimeS).toFixed(2)}
         </p>
