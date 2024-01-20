@@ -61,6 +61,7 @@ export default function Transaction(
   { id, txData },
 ) {
   const { t } = useTranslation();
+  console.log(txData);
 
   const [isClient, setIsClient] = useState(false);
 
