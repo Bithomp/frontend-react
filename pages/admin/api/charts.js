@@ -20,7 +20,8 @@ export const getServerSideProps = async (context) => {
 }
 
 const now = new Date()
-let hourAgo = now.setHours(now.getHours() - 1)
+const nowTime = new Date()
+let hourAgo = nowTime.setHours(now.getHours() - 1)
 let dayAgo = now.setDate(now.getDate() - 1)
 let weekAgo = now.setDate(now.getDate() - 7)
 let monthAgo = now.setDate(now.getDate() - 30)
@@ -80,7 +81,7 @@ export default function Charts() {
   const mainTabs = [
     { value: "account", label: "Account" },
     { value: "api", label: "API" },
-    { value: "bots", label: "Bots" },
+    //{ value: "bots", label: "Bots" },
   ]
 
   const apiTabs = [
