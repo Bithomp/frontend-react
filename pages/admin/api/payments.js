@@ -83,6 +83,7 @@ export default function Payments() {
   const [billingCountry, setBillingCountry] = useState("")
   const [choosingCountry, setChoosingCountry] = useState(false)
   const [loading, setLoading] = useState(true) //keep true for country select
+  const [loadingPayments, setLoadingPayments] = useState(false)
 
   useEffect(() => {
     const sessionToken = localStorage.getItem('sessionToken')
@@ -212,10 +213,13 @@ export default function Payments() {
         setEurRate(rate.data.eur)
       }
 
+      setLoadingPayments(true)
+      setApiPayments({})
       const apiTransactions = await axios.get(
         'partner/partner/accessToken/transactions?limit=50&offset=0',
         { baseUrl: '/api/' }
       ).catch(error => {
+        setLoadingPayments(false)
         if (error && error.message !== "canceled") {
           setErrorMessage(t(error.response.data.error || "error." + error.message))
           if (error.response?.data?.error === "errors.token.required") {
@@ -225,10 +229,12 @@ export default function Payments() {
       })
 
       if (apiTransactions?.data?.transactions) {
-        for (let transaction of apiTransactions.data.transactions) {
+        let apiData = apiTransactions.data
+        for (let transaction of apiData.transactions) {
           transaction.fiatAmount = await fiatAmountAt(transaction)
         }
-        setApiPayments(apiTransactions.data)
+        setApiPayments(apiData)
+        setLoadingPayments(false)
       }
     } else {
       //if no country available
@@ -391,6 +397,16 @@ export default function Payments() {
                 {width > 500 ? <br /> : " "}
                 If it's not activated within 24h, please contact us at <b>partner@bithomp.com</b> <CopyButton text="partner@bithomp.com" />
               </>
+            }
+
+            {loadingPayments &&
+              <div className='center'>
+                <br /><br />
+                <span className="waiting"></span>
+                <br />
+                {t("general.loading")}
+                <br /><br />
+              </div>
             }
 
             {apiPayments?.transactions?.length > 0 &&

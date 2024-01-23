@@ -127,7 +127,7 @@ export default function Statistics() {
                   return <tr key={i}>
                     <td>{i + 1}</td>
                     <td className='right'>{item.count}</td>
-                    <td>{item.url}</td>
+                    <td className='brake'>{item.url}</td>
                   </tr>
                 }
                 )}

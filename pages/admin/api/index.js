@@ -197,14 +197,20 @@ export default function Api() {
                             <b className='green'>active</b>
                             :
                             <>
-                              {new Date(apiData.expirationAt) > nowDate ?
+                              {apiData.expirationAt ?
                                 <>
-                                  <b className='green'>active</b> until
+                                  {new Date(apiData.expirationAt) > nowDate ?
+                                    <>
+                                      <b className='green'>active</b> until
+                                    </>
+                                    :
+                                    <b className='red'>expired</b>
+                                  }
+                                  <> {new Date(apiData.expirationAt).toLocaleDateString()}</>
                                 </>
                                 :
-                                <b className='red'>expired</b>
+                                <b className='green'>active</b>
                               }
-                              <> {new Date(apiData.expirationAt).toLocaleDateString()}</>
                             </>
                           }
                         </>
