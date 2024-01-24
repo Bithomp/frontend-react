@@ -497,9 +497,12 @@ export default function NftsComponent({
     <div className="content-text" style={contextStyle}>
       {nftExplorer && <>
         <h1 className='center'>{t("nft-explorer.header") + " "}</h1>
-        <p className='center'>
-          <Link href={"/nft-sales" + issuerTaxonUrlPart} style={{ marginRight: "5px" }}>{t("nft-sales.header")}</Link>
-        </p>
+        {/* Hide for now when it's not available on xahau network */}
+        {!xahauNetwork &&
+          <p className='center'>
+            <Link href={"/nft-sales" + issuerTaxonUrlPart} style={{ marginRight: "5px" }}>{t("nft-sales.header")}</Link>
+          </p>
+        }
         <div className='center'>
           <span className={xahauNetwork ? 'whole' : 'halv'}>
             <span className='input-title'>{t("table.issuer")} {userOrServiceLink(rawData, 'issuer')}</span>
