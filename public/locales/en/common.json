@@ -346,6 +346,7 @@
     "day": "For the last 24 hours"
   },
   "table": {
+    "warning": "Warning",
     "sequence": "Sequence",
     "version": "Version",
     "domain": "Domain",

@@ -15,6 +15,9 @@
       "burnable": "発行者(または発行者が承認した主体)はこのNFTをバーンすることができます。",
       "no-digest": "Digestが設定されていません。NFTの整合性を検証できません。",
       "invalid-digest": "NFTの整合性チェックに失敗しました。DigestがNFTのメタデータと一致しません。"
+    },
+    "warnings": {
+      "nft-crawler-delay": "Some data is outdated, the last update: {{lastUpdate}}. Our servers are catching up, check later for more accurate data."
     }
   }
 }

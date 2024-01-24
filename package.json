@@ -27,7 +27,7 @@
     "react-i18next": "^12.2.0",
     "react-infinite-scroll-component": "^6.1.0",
     "react-protected-mailto": "^1.0.3",
-    "react-select": "^5.3.0",
+    "react-select": "^5.8.0",
     "react-share": "^4.4.1",
     "ripple-address-codec": "^4.3.1",
     "sass": "^1.50.1",

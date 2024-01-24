@@ -15,6 +15,9 @@
       "burnable": "El emisor (o la entidad autorizada por el emisor) puede destruir el NFT.",
       "no-digest": "No se facilita Resumen (Digest) para este NFT. La integridad del NFT no puede ser varificada.",
       "invalid-digest": "La comprobación de la integridad del NFT ha fallado. El Resumen (Digest) no oncuerda con el metadata del NFT."
+    },
+    "warnings": {
+      "nft-crawler-delay": "Some data is outdated, the last update: {{lastUpdate}}. Our servers are catching up, check later for more accurate data."
     }
   }
 }

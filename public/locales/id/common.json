@@ -346,6 +346,7 @@
     "day": "Selama 24 jam terakhir"
   },
   "table": {
+    "warning": "Warning",
     "sequence": "Urutan",
     "version": "Versi",
     "domain": "Domain",

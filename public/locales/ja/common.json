@@ -346,6 +346,7 @@
     "day": "直近24時間"
   },
   "table": {
+    "warning": "Warning",
     "sequence": "シーケンス",
     "version": "バージョン",
     "domain": "ドメイン",

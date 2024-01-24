@@ -346,6 +346,7 @@
     "day": "For de siste 24 timene"
   },
   "table": {
+    "warning": "Warning",
     "sequence": "Sekvens",
     "version": "Versjon",
     "domain": "Domene",

@@ -346,6 +346,7 @@
     "day": "Les últimes 24 hores"
   },
   "table": {
+    "warning": "Warning",
     "sequence": "Seqüència",
     "version": "Versió",
     "domain": "Domini",

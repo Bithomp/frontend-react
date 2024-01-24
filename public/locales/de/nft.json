@@ -15,6 +15,9 @@
       "burnable": "Der Emittent (oder eine vom Emittenten autorisierte Stelle) kann den NFT vernichten.",
       "no-digest": "Für diesen NFT ist kein Digest angegeben. Die NFT-Integrität kann nicht überprüft werden.",
       "invalid-digest": "Die Integritätsprüfung des NFTs ist fehlgeschlagen. Der Digest stimmt nicht mit den NFT-Metadaten überein."
+    },
+    "warnings": {
+      "nft-crawler-delay": "Some data is outdated, the last update: {{lastUpdate}}. Our servers are catching up, check later for more accurate data."
     }
   }
 }

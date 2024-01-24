@@ -346,6 +346,7 @@
     "day": "Para los últimas 24 horas"
   },
   "table": {
+    "warning": "Warning",
     "sequence": "Secuencia",
     "version": "Versión",
     "domain": "Dominio",

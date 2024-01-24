@@ -346,6 +346,7 @@
     "day": "Za zadnja 24 sata"
   },
   "table": {
+    "warning": "Warning",
     "sequence": "Sekvenca",
     "version": "Verzija",
     "domain": "Domena",

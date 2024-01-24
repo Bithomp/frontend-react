@@ -15,6 +15,9 @@
       "burnable": "The issuer (or an entity authorized by the issuer) can destroy the NFT.",
       "no-digest": "There is no Digest provided for that NFT. The NFT integrity cannot be verified.",
       "invalid-digest": "The NFT integrity check failed. The Digest does not match the NFT metadata."
+    },
+    "warnings": {
+      "nft-crawler-delay": "Some data is outdated, the last update: {{lastUpdate}}. Our servers are catching up, check later for more accurate data."
     }
   }
 }

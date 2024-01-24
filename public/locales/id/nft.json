@@ -15,6 +15,9 @@
       "burnable": "Penerbit (atau entitas yang diizinkan oleh penerbit) dapat menghapus NFT ini.",
       "no-digest": "Tidak ada Digest yang disediakan untuk NFT ini. Integritas NFT tidak dapat diverifikasi.",
       "invalid-digest": "Pemeriksaan integritas NFT tidak berhasil. Digest tidak cocok dengan metadata NFT."
+    },
+    "warnings": {
+      "nft-crawler-delay": "Some data is outdated, the last update: {{lastUpdate}}. Our servers are catching up, check later for more accurate data."
     }
   }
 }

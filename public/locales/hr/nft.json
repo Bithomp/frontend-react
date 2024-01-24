@@ -15,6 +15,9 @@
       "burnable": "Samo izdavač (ili entitet koji je autoriziran od strane izdavača) može može uništiti NFT.",
       "no-digest": "Nema unesenog engl.Digest za taj NFT. NFT integritet ne može biti provjeren.",
       "invalid-digest": "Provjera NFT integriteta nije uspjela. Digest(engl.) se ne podudara s onime iz metapodataka."
+    },
+    "warnings": {
+      "nft-crawler-delay": "Some data is outdated, the last update: {{lastUpdate}}. Our servers are catching up, check later for more accurate data."
     }
   }
 }

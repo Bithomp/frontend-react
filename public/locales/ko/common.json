@@ -346,6 +346,7 @@
     "day": "최근 24시간"
   },
   "table": {
+    "warning": "Warning",
     "sequence": "절차",
     "version": "버전",
     "domain": "도메인",

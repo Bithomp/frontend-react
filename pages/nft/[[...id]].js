@@ -93,6 +93,7 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
   const [countBuyOffers, setCountBuyOffers] = useState(null)
   const [countSellOffers, setCountSellOffers] = useState(null)
   const [isValidDigest, setIsValidDigest] = useState(false)
+  const [warnings, setWarnings] = useState([])
 
   useEffect(() => {
     setRendered(true)
@@ -143,6 +144,9 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
         }
 
         setData(newdata)
+        if (newdata.warnings?.length > 0) {
+          updateWarningMessages(newdata.warnings)
+        }
         //notFoundInTheNetwork
         if (!newdata.owner && !newdata.deletedAt && !newdata.url && !newdata.metadata) {
           setNotFoundInTheNetwork(true)
@@ -788,6 +792,20 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
     return type
   }
 
+  const updateWarningMessages = async warnings => {
+    for (let i = 0; i < warnings.length; i++) {
+      if (warnings[i].message?.indexOf("crawler is not up to date") > -1) {
+        const response = await axios('v2/statistics/nftokens/crawler')
+        let lastUpdate = ""
+        if (response?.data?.ledgerTime) {
+          lastUpdate = fullDateAndTime(response.data.ledgerTime)
+        }
+        warnings[i].message = t("table.warnings.nft-crawler-delay", { ns: 'nft', lastUpdate })
+      }
+    }
+    setWarnings(warnings)
+  }
+
   return <>
     <SEO
       page="NFT"
@@ -865,6 +883,28 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
                         t={t}
                       />
                     }
+
+                    {warnings?.length > 0 &&
+                      <table className='table-details'>
+                        <thead>
+                          <tr>
+                            <th colSpan="100">
+                              {t("table.warning")}
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {warnings.map((warning, i) =>
+                            <tr key={i}>
+                              <td colSpan="100" className='orange'>
+                                {warning.message}
+                              </td>
+                            </tr>
+                          )}
+                        </tbody>
+                      </table>
+                    }
+
                     {data.metadata &&
                       <table className='table-details'>
                         <thead>

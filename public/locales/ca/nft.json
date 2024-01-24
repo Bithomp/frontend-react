@@ -15,6 +15,9 @@
       "burnable": "L'encunyador (o una entitat autoritzada per l'encunyador) pot destruir l'NFT.",
       "no-digest": "No hi ha Digest per aquest NFT. La integritat d'aquest NFT no pot ser verificada.",
       "invalid-digest": "La comprobació d'integritat d'aquest NFT ha fallat. El Digest no correspon les metadades de l'NFT."
+    },
+    "warnings": {
+      "nft-crawler-delay": "Some data is outdated, the last update: {{lastUpdate}}. Our servers are catching up, check later for more accurate data."
     }
   }
 }
