@@ -610,7 +610,7 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
               }
             })}
           >
-            <Image src={xummImg} className='xumm-logo' alt="xumm" height={24} width={24} />
+            <Image src={xummImg} className='xumm-logo' alt="xaman" height={24} width={24} />
             {t("button.nft.buy-for-amount", { amount: amountFormat((Math.ceil(best.amount * multiplier * 1000000) / 1000000)) })}
           </button>
           <br /><br />
@@ -711,7 +711,7 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
           request
         })}
       >
-        <Image src={xummImg} className='xumm-logo' alt="xumm" height={24} width={24} />
+        <Image src={xummImg} className='xumm-logo' alt="xaman" height={24} width={24} />
         {sell ? t("button.nft.list-for-sale") : t("button.nft.make-offer")}
       </button>
       <br /><br />
@@ -737,7 +737,7 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
           request
         })}
       >
-        <Image src={xummImg} className='xumm-logo' alt="xumm" height={24} width={24} />
+        <Image src={xummImg} className='xumm-logo' alt="xaman" height={24} width={24} />
         {t("button.nft.list-for-sale")}
       </button>
       <br /><br />
@@ -775,7 +775,7 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
           request
         })}
       >
-        <Image src={xummImg} className='xumm-logo' alt="xumm" height={24} width={24} />
+        <Image src={xummImg} className='xumm-logo' alt="xaman" height={24} width={24} />
         {t("button.nft.burn")} ️‍🔥
       </button>
       <br /><br />

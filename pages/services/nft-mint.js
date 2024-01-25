@@ -6,6 +6,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { getIsSsrMobile } from "../../utils/mobile"
 import { sha512 } from 'crypto-hash'
 import axios from 'axios'
+import Image from 'next/image'
 
 import {
   addAndRemoveQueryParams,
@@ -16,6 +17,7 @@ import {
 } from '../../utils'
 
 const checkmark = "/images/checkmark.svg"
+const xummImg = "/images/xumm.png"
 
 export const getServerSideProps = async (context) => {
   const { query, locale } = context
@@ -37,7 +39,7 @@ let interval
 let startTime
 
 export default function NftMint({ setSignRequest, uriQuery, digestQuery }) {
-  const { t, i18n } = useTranslation()
+  const { i18n } = useTranslation()
   const router = useRouter()
 
   const [uri, setUri] = useState(uriQuery)
@@ -333,7 +335,10 @@ export default function NftMint({ setSignRequest, uriQuery, digestQuery }) {
           </CheckBox>
 
           <p className="center">
-            <input type="button" value={t("button.submit")} className="button-action" onClick={onSubmit} name="submit-button" />
+            <button className='button-action' onClick={onSubmit} name="submit-button">
+              <Image src={xummImg} className='xumm-logo' alt="xaman" height={24} width={24} />
+              Mint NFT
+            </button>
           </p>
         </>
       }

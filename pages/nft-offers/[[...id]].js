@@ -264,7 +264,7 @@ export default function NftOffers({ setSignRequest, signRequest, account, offerL
               }
             })}
           >
-            <Image src={xummImg} className='xumm-logo' alt="xumm" height={24} width={24} />
+            <Image src={xummImg} className='xumm-logo' alt="xaman" height={24} width={24} />
             {
               (account?.address && account.address === userData.address) ?
                 t('nft-offers.cancel-invalid-offer', { count: offersCount.invalid })

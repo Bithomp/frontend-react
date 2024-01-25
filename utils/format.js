@@ -27,7 +27,7 @@ export const acceptNftBuyOfferButton = (t, setSignRequest, offer) => {
       }
     })}
   >
-    <Image src={xummImg} className='xumm-logo' alt="xumm" height={24} width={24} />
+    <Image src={xummImg} className='xumm-logo' alt="xaman" height={24} width={24} />
     {t("button.nft.sell-for-amount", { amount: amountFormat(offer.amount) })}
   </button>
 }
@@ -55,7 +55,7 @@ export const acceptNftSellOfferButton = (t, setSignRequest, offer, nftType = 'xl
       request
     })}
   >
-    <Image src={xummImg} className='xumm-logo' alt="xumm" height={24} width={24} />
+    <Image src={xummImg} className='xumm-logo' alt="xaman" height={24} width={24} />
     {offer.amount === "0" ? t("button.nft.accept-transfer") : t("button.nft.buy-for-amount", { amount: amountFormat(offer.amount) })}
   </button>
 }
@@ -83,7 +83,7 @@ export const cancelNftOfferButton = (t, setSignRequest, account, offer, type = "
       request
     })}
   >
-    <Image src={xummImg} className='xumm-logo' alt="xumm" height={24} width={24} />
+    <Image src={xummImg} className='xumm-logo' alt="xaman" height={24} width={24} />
     {offer.amount === "0" ? t("button.nft.cancel-transfer")
       :
       <>

@@ -98,7 +98,7 @@ export default function Donate() {
                 className='button-action wide center'
                 href="xumm://xumm.app/detect/request:rPPHhfSQbHt1t2XPHWAK1HTcjqDg56TzZy?dt=1&deeplink=true&afterQr=true"
               >
-                <Image src="/images/xumm.png" className='xumm-logo' alt="xumm" height={24} width={24} />
+                <Image src="/images/xumm.png" className='xumm-logo' alt="xaman" height={24} width={24} />
                 {t("donate.donate-with-xumm")}
               </a>
             </>
