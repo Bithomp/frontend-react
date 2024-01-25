@@ -179,11 +179,11 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
 
     const client = {
       "Memo": {
-        "MemoData": "626974686F6D702E636F6D"
+        "MemoData": encode(server?.replace(/^https?:\/\//, ''))
       }
     }
 
-    if (tx.Memos && tx.Memos.length && tx.Memos[0]?.Memo?.MemoData !== client.Memo.MemoData) {
+    if (tx.Memos && tx.Memos.length && tx.Memos[0]?.Memo?.MemoData !== client.Memo.MemoData && tx.Memos[1]?.Memo?.MemoData !== client.Memo.MemoData) {
       tx.Memos.push(client)
     } else {
       tx.Memos = [client]
