@@ -37,10 +37,10 @@ import CheckBox from '../components/UI/CheckBox'
 import Receipt from '../components/Receipt'
 import SEO from '../components/SEO'
 
-const checkmark = "/images/checkmark.svg";
+const checkmark = "/images/checkmark.svg"
 
-let interval;
-let ws = null;
+let interval
+let ws = null
 
 const serviceAvailable = network === "mainnet" || network === "staging"
 

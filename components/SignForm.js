@@ -292,13 +292,21 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
     }
   }
 
-  const checkTxInCrawler = async txid => {
+  const checkTxInCrawler = async (txid, redirectName) => {
     setAwaiting(true)
     setStatus(t("signin.status.awaiting-crawler"))
     if (txid) {
       const response = await axios("xrpl/transaction/" + txid)
       if (response.data) {
-        const { validated, inLedger, ledger_index } = response.data
+        const { validated, inLedger, ledger_index, meta } = response.data
+
+        if (redirectName === "nft") {
+          //show URI token page (for NFT mints)
+          if (meta?.AffectedNodes?.[0]?.CreatedNode?.LedgerEntryType === "URIToken") {
+            window.location.href = "/nft/" + meta.AffectedNodes[0].CreatedNode.LedgerIndex
+          }
+        }
+
         const includedInLedger = inLedger || ledger_index
         if (validated && includedInLedger) {
           checkCrawlerStatus(includedInLedger)
@@ -334,12 +342,13 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
     */
     //data.payload.tx_type: "SignIn"
 
+    const redirectName = data.custom_meta?.blob?.redirect
+
     //if redirect 
     if (data.response?.account) {
       saveAddressData(data.response.account)
-      const redirectName = data.custom_meta?.blob?.redirect
       if (redirectName === "nfts") {
-        window.location.href = server + "/nfts/" + data.response.account
+        window.location.href = "/nfts/" + data.response.account
         return
       } else if (redirectName === "account") {
         window.location.href = server + "/explorer/" + data.response.account
@@ -379,7 +388,7 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
           const responseData = response.data
           if (responseData.status && responseData.data?.hash) {
             // hash of the offer accept transaction
-            checkTxInCrawler(responseData.data.hash)
+            checkTxInCrawler(responseData.data.hash, redirectName)
           } else {
             setStatus(t("signin.status.failed-broker", { serviceName: data.custom_meta.blob.broker }))
             closeSignInFormAndRefresh()
@@ -394,7 +403,7 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
 
     // For NFT transaction, lets wait for crawler to finish it's job
     if (data.payload?.tx_type.includes("NFToken") || data.payload?.tx_type.includes("URIToken")) {
-      checkTxInCrawler(data.response?.txid)
+      checkTxInCrawler(data.response?.txid, redirectName)
       return
     } else {
       // no checks or delays for non NFT transactions

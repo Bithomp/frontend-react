@@ -425,6 +425,15 @@ export const isValidNftXls20 = x => {
   return false
 }
 
+export const isValidJson = x => {
+  try {
+    JSON.parse(x)
+  } catch (e) {
+    return false
+  }
+  return true
+}
+
 const makeXfl = (exponent, mantissa) => {
   const minMantissa = 1000000000000000n
   const maxMantissa = 9999999999999999n
