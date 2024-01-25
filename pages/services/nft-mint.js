@@ -220,7 +220,7 @@ export default function NftMint({ setSignRequest, uriQuery, digestQuery }) {
       }
       addAndRemoveQueryParams(router, queryAddList, queryRemoveList)
     }
-  }, [digest])
+  }, [digest, router])
 
   const onMetadataChange = e => {
     setDigest("")
