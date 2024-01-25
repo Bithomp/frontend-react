@@ -11,7 +11,8 @@ import {
   addAndRemoveQueryParams,
   encode,
   isIdValid,
-  isValidJson
+  isValidJson,
+  server
 } from '../../utils'
 
 const checkmark = "/images/checkmark.svg"
@@ -50,6 +51,7 @@ export default function NftMint({ setSignRequest, uriQuery, digestQuery }) {
   const [metadataStatus, setMetadataStatus] = useState("")
   const [metaLoadedFromUri, setMetaLoadedFromUri] = useState(false)
   const [update, setUpdate] = useState(false)
+  const [minted, setMinted] = useState("")
 
   let uriRef
   let digestRef
@@ -82,18 +84,6 @@ export default function NftMint({ setSignRequest, uriQuery, digestQuery }) {
     setMetadata("")
     setDigest("")
     setMetadataError("")
-    let queryAddList = []
-    let queryRemoveList = []
-    if (uri) {
-      queryAddList.push({
-        name: "uri",
-        value: uri
-      })
-      setErrorMessage("")
-    } else {
-      queryRemoveList.push("uri")
-    }
-    addAndRemoveQueryParams(router, queryAddList, queryRemoveList)
   }
 
   const getMetadata = async () => {
@@ -190,7 +180,12 @@ export default function NftMint({ setSignRequest, uriQuery, digestQuery }) {
       wallet: "xumm",
       redirect: "nft",
       request,
+      callback: afterSubmit
     })
+  }
+
+  const afterSubmit = id => {
+    setMinted(id)
   }
 
   useEffect(() => {
@@ -206,21 +201,29 @@ export default function NftMint({ setSignRequest, uriQuery, digestQuery }) {
   }, [calculateDigest])
 
   useEffect(() => {
+    let queryAddList = []
+    let queryRemoveList = []
     if (digest) {
-      let queryAddList = []
-      let queryRemoveList = []
-      if (digest) {
-        queryAddList.push({
-          name: "digest",
-          value: digest
-        })
-        setErrorMessage("")
-      } else {
-        queryRemoveList.push("digest")
-      }
-      addAndRemoveQueryParams(router, queryAddList, queryRemoveList)
+      queryAddList.push({
+        name: "digest",
+        value: digest
+      })
+      setErrorMessage("")
+    } else {
+      queryRemoveList.push("digest")
     }
-  }, [digest, router])
+    if (uri) {
+      queryAddList.push({
+        name: "uri",
+        value: uri
+      })
+      setErrorMessage("")
+    } else {
+      queryRemoveList.push("uri")
+    }
+    addAndRemoveQueryParams(router, queryAddList, queryRemoveList)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [digest, uri])
 
   const onMetadataChange = e => {
     setDigest("")
@@ -253,79 +256,103 @@ export default function NftMint({ setSignRequest, uriQuery, digestQuery }) {
         You can use this page to create a new NFT, a unique digital asset that can be used in a variety of applications.
       </p>
 
-      <p>URI that points to the data or metadata associated with the NFT:</p>
-      <div className="input-validation">
-        <input
-          placeholder="ipfs://bafkreignnol62jayyt3hbofhkqvb7jolxyr4vxtby5o7iqpfi2r2gmt6fa4"
-          value={uri}
-          onChange={onUriChange}
-          className="input-text"
-          ref={node => { uriRef = node; }}
-          spellCheck="false"
-          maxLength="256"
-        />
-      </div>
-
-      <CheckBox checked={calculateDigest} setChecked={setCalculateDigest} >
-        Add <b>Digest</b> (recommended)
-      </CheckBox>
-
-      {calculateDigest &&
+      {!minted &&
         <>
-          <p>
-            The digest is calculated from the metadata. It is used to verify that the URI and the metadata have not been tampered with.
-          </p>
-
-          <button
-            className="button-action thin"
-            onClick={loadMetadata}
-            style={{ marginBottom: "10px" }}
-          >
-            Load metadata
-          </button>
-
-          <b className='orange' style={{ marginLeft: "20px" }}>
-            {metadataStatus}
-          </b>
-
-          <p>Metadata: <b className='orange'>{metadataError}</b></p>
-          <textarea
-            value={metadata}
-            placeholder='Paste your JSON metadata here'
-            onChange={onMetadataChange}
-            className='input-text'
-            autoFocus={true}
-            readOnly={metaLoadedFromUri}
-          />
-
-          <p>Digest:</p>
+          <p>URI that points to the data or metadata associated with the NFT:</p>
           <div className="input-validation">
             <input
-              placeholder="Digest"
-              value={digest}
-              onChange={onDigestChange}
+              placeholder="ipfs://bafkreignnol62jayyt3hbofhkqvb7jolxyr4vxtby5o7iqpfi2r2gmt6fa4"
+              value={uri}
+              onChange={onUriChange}
               className="input-text"
-              ref={node => { digestRef = node; }}
+              ref={node => { uriRef = node; }}
               spellCheck="false"
-              maxLength="64"
-              readOnly={true}
+              maxLength="256"
+              name="uri"
             />
-            {isIdValid(digest) && <img src={checkmark} className="validation-icon" alt="validated" />}
           </div>
+
+          <CheckBox checked={calculateDigest} setChecked={setCalculateDigest} name="add-digest" >
+            Add <b>Digest</b> (recommended)
+          </CheckBox>
+
+          {calculateDigest &&
+            <>
+              <p>
+                The digest is calculated from the metadata. It is used to verify that the URI and the metadata have not been tampered with.
+              </p>
+
+              <button
+                className="button-action thin"
+                onClick={loadMetadata}
+                style={{ marginBottom: "10px" }}
+                name="load-metadata-button"
+              >
+                Load metadata
+              </button>
+
+              <b className='orange' style={{ marginLeft: "20px" }}>
+                {metadataStatus}
+              </b>
+
+              <p>Metadata: <b className='orange'>{metadataError}</b></p>
+              <textarea
+                value={metadata}
+                placeholder='Paste your JSON metadata here'
+                onChange={onMetadataChange}
+                className='input-text'
+                autoFocus={true}
+                readOnly={metaLoadedFromUri}
+                name="metadata"
+              />
+
+              <p>Digest:</p>
+              <div className="input-validation">
+                <input
+                  placeholder="Digest"
+                  value={digest}
+                  onChange={onDigestChange}
+                  className="input-text"
+                  ref={node => { digestRef = node; }}
+                  spellCheck="false"
+                  maxLength="64"
+                  readOnly={true}
+                  name="digest"
+                />
+                {isIdValid(digest) && <img src={checkmark} className="validation-icon" alt="validated" />}
+              </div>
+            </>
+          }
+
+          <CheckBox checked={agreeToSiteTerms} setChecked={setAgreeToSiteTerms} name="agree-to-terms">
+            I agree with the <Link href="/terms-and-conditions" target="_blank">Terms and conditions</Link>.
+          </CheckBox>
+
+          <CheckBox checked={agreeToPrivacyPolicy} setChecked={setAgreeToPrivacyPolicy} name="agree-to-privacy-policy">
+            I agree with the <Link href="/privacy-policy" target="_blank">Privacy policy</Link>.
+          </CheckBox>
+
+          <p className="center">
+            <input type="button" value={t("button.submit")} className="button-action" onClick={onSubmit} name="submit-button" />
+          </p>
         </>
       }
 
-      <CheckBox checked={agreeToSiteTerms} setChecked={setAgreeToSiteTerms} >
-        I agree with the <Link href="/terms-and-conditions" target="_blank">Terms and conditions</Link>.
-      </CheckBox>
-
-      <CheckBox checked={agreeToPrivacyPolicy} setChecked={setAgreeToPrivacyPolicy} >
-        I agree with the <Link href="/privacy-policy" target="_blank">Privacy policy</Link>.
-      </CheckBox>
-
-      <p className="center">
-        <input type="button" value={t("button.continue")} className="button-action" onClick={onSubmit} />
-      </p>
+      {minted &&
+        <>
+          The NFT was sucefully minted:
+          <br />
+          <Link href={"/nft/" + minted} className='brake'>
+            {server}/nft/{minted}
+          </Link>
+          <br /><br />
+          <center>
+            <button className="button-action" onClick={() => setMinted("")} name="mint-another-nft">
+              Mint another NFT
+            </button>
+          </center>
+        </>
+      }
 
       <p className="red center" dangerouslySetInnerHTML={{ __html: errorMessage || "&nbsp;" }} />
     </div>

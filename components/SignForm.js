@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react'
 import { useTranslation, Trans } from 'next-i18next'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
@@ -299,17 +299,14 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
       const response = await axios("xrpl/transaction/" + txid)
       if (response.data) {
         const { validated, inLedger, ledger_index, meta } = response.data
-
-        if (redirectName === "nft") {
-          //show URI token page (for NFT mints)
-          if (meta?.AffectedNodes?.[0]?.CreatedNode?.LedgerEntryType === "URIToken") {
-            window.location.href = "/nft/" + meta.AffectedNodes[0].CreatedNode.LedgerIndex
-          }
-        }
-
         const includedInLedger = inLedger || ledger_index
         if (validated && includedInLedger) {
-          checkCrawlerStatus(includedInLedger)
+          if (redirectName === "nft" && meta?.AffectedNodes?.[0]?.CreatedNode?.LedgerEntryType === "URIToken") {
+            //show URI token page (for NFT mints)
+            checkCrawlerStatus({ inLedger: includedInLedger, param: meta.AffectedNodes[0].CreatedNode.LedgerIndex })
+          } else {
+            checkCrawlerStatus({ inLedger: includedInLedger })
+          }
         } else {
           //if not validated or if no ledger info received, delay for 3 seconds
           delay(3000, closeSignInFormAndRefresh)
@@ -411,7 +408,7 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
     }
   }
 
-  const checkCrawlerStatus = async inLedger => {
+  const checkCrawlerStatus = async ({ inLedger, param }) => {
     const crawlerResponse = await axios("v2/statistics/nftokens/crawler")
     if (crawlerResponse.data) {
       const { ledgerIndex } = crawlerResponse.data
@@ -420,10 +417,13 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
       // othewrwise wait until crawler catch up with the ledger where this transaction was included
 
       if (ledgerIndex >= inLedger || (inLedger - 10) > ledgerIndex) {
+        if (param) {
+          signRequest.callback(param)
+        }
         closeSignInFormAndRefresh()
       } else {
         //check again in 1 second if crawler ctached up with the ledger where transaction was included
-        delay(1000, checkCrawlerStatus, inLedger)
+        delay(1000, checkCrawlerStatus, { inLedger, param })
       }
     }
   }
