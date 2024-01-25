@@ -48,20 +48,20 @@ export default function Username({ setSignRequest, account, signOut, addressQuer
   const { t, i18n } = useTranslation()
   const router = useRouter()
 
-  const [address, setAddress] = useState("");
-  const [username, setUsername] = useState("");
-  const [receipt, setReceipt] = useState(false);
-  const [agreeToPageTerms, setAgreeToPageTerms] = useState(false);
-  const [agreeToSiteTerms, setAgreeToSiteTerms] = useState(false);
-  const [agreeToPrivacyPolicy, setAgreeToPrivacyPolicy] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
-  const [paymentErrorMessage, setPaymentErrorMessage] = useState("");
-  const [countryCode, setCountryCode] = useState("");
-  const [register, setRegister] = useState({});
-  const [bidData, setBidData] = useState({});
-  const [step, setStep] = useState(0);
-  const [onRegistartion, setOnRegistartion] = useState(false);
-  const [update, setUpdate] = useState(false);
+  const [address, setAddress] = useState("")
+  const [username, setUsername] = useState("")
+  const [receipt, setReceipt] = useState(false)
+  const [agreeToPageTerms, setAgreeToPageTerms] = useState(false)
+  const [agreeToSiteTerms, setAgreeToSiteTerms] = useState(false)
+  const [agreeToPrivacyPolicy, setAgreeToPrivacyPolicy] = useState(false)
+  const [errorMessage, setErrorMessage] = useState("")
+  const [paymentErrorMessage, setPaymentErrorMessage] = useState("")
+  const [countryCode, setCountryCode] = useState("")
+  const [register, setRegister] = useState({})
+  const [bidData, setBidData] = useState({})
+  const [step, setStep] = useState(0)
+  const [onRegistartion, setOnRegistartion] = useState(false)
+  const [update, setUpdate] = useState(false)
   const [xummUserToken, setXummUserToken] = useState(null)
 
   let addressRef
@@ -69,32 +69,32 @@ export default function Username({ setSignRequest, account, signOut, addressQuer
 
   useEffect(() => {
     setXummUserToken(localStorage.getItem('xummUserToken'))
-    let queryAddList = [];
-    let queryRemoveList = [];
+    let queryAddList = []
+    let queryRemoveList = []
     if (!account) {
       if (isAddressValid(addressQuery)) {
-        setAddress(addressQuery);
+        setAddress(addressQuery)
       } else {
-        queryRemoveList.push("address");
+        queryRemoveList.push("address")
       }
     }
     if (isUsernameValid(usernameQuery)) {
-      setUsername(usernameQuery);
+      setUsername(usernameQuery)
     } else {
-      queryRemoveList.push("username");
+      queryRemoveList.push("username")
     }
     if (receiptQuery === "true") {
       setReceipt(true);
     } else {
-      queryRemoveList.push("receipt");
+      queryRemoveList.push("receipt")
     }
     addAndRemoveQueryParams(router, queryAddList, queryRemoveList)
 
     //on component unmount
     return () => {
-      setUpdate(false);
-      clearInterval(interval);
-      if (ws) ws.close();
+      setUpdate(false)
+      clearInterval(interval)
+      if (ws) ws.close()
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -382,13 +382,13 @@ export default function Username({ setSignRequest, account, signOut, addressQuer
       });
     */
     if (data.bid.status === 'Completed') {
-      setStep(2);
+      setStep(2)
       setOnRegistartion(false)
-      setUpdate(false);
-      setErrorMessage("");
-      clearInterval(interval);
-      if (ws) ws.close();
-      return;
+      setUpdate(false)
+      setErrorMessage("")
+      clearInterval(interval)
+      if (ws) ws.close()
+      return
     }
     if (data.bid.status === "Partly paid") {
       setPaymentErrorMessage(t("error.payment-partly", { received: data.bid.totalReceivedAmount, required: data.bid.price, currency: data.bid.currency, ns: "username" }));

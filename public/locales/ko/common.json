@@ -1,5 +1,8 @@
 {
   "menu": {
+    "services": {
+      "nft-mint": "Mint NFT"
+    },
     "personal": {
       "personal": "개인",
       "search-on-ledgerName": "{{ledgerName}}에서 탐색하기"

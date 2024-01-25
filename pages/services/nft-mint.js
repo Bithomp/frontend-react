@@ -32,6 +32,9 @@ export const getServerSideProps = async (context) => {
 import CheckBox from '../../components/UI/CheckBox'
 import SEO from '../../components/SEO'
 
+let interval
+let startTime
+
 export default function NftMint({ setSignRequest, uriQuery, digestQuery }) {
   const { t, i18n } = useTranslation()
   const router = useRouter()
@@ -46,9 +49,27 @@ export default function NftMint({ setSignRequest, uriQuery, digestQuery }) {
   const [metadata, setMetadata] = useState("")
   const [metadataStatus, setMetadataStatus] = useState("")
   const [metaLoadedFromUri, setMetaLoadedFromUri] = useState(false)
+  const [update, setUpdate] = useState(false)
 
   let uriRef
   let digestRef
+
+  useEffect(() => {
+    //on component unmount
+    return () => {
+      setUpdate(false)
+      clearInterval(interval)
+    }
+  }, [])
+
+  useEffect(() => {
+    if (update) {
+      interval = setInterval(() => getMetadata(), 5000) //5 seconds
+    } else {
+      clearInterval(interval)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [update])
 
   useEffect(() => {
     setErrorMessage("")
@@ -75,29 +96,42 @@ export default function NftMint({ setSignRequest, uriQuery, digestQuery }) {
     addAndRemoveQueryParams(router, queryAddList, queryRemoveList)
   }
 
+  const getMetadata = async () => {
+    setMetadataStatus("Trying to load the metadata from URI...")
+    const response = await axios.get('v2/metadata?url=' + uri).catch(error => {
+      console.log(error)
+      setMetadataStatus("error")
+    })
+    if (response?.data) {
+      if (response.data?.metadata) {
+        setMetaLoadedFromUri(true)
+        setMetadata(JSON.stringify(response.data.metadata, undefined, 4))
+        checkDigest(response.data.metadata)
+        setMetadataStatus("")
+        setUpdate(false)
+      } else if (response.data?.message) {
+        setMetadataStatus(response.data.message)
+        setUpdate(false)
+      } else {
+        if (Date.now() - startTime < 120000) { // 2 minutes
+          setUpdate(true)
+          setMetadataStatus("Trying to load the metadata from URI... (" + Math.ceil((Date.now() - startTime) / 1000 / 5) + "/24 attempts)")
+        } else {
+          setUpdate(false)
+          setMetadataStatus("Load failed")
+        }
+      }
+    }
+  }
+
   const loadMetadata = async () => {
     if (uri) {
       setMetaLoadedFromUri(false)
-      setMetadataStatus("Loading metadata...")
-      const getMetadata = async () => {
-        const response = await axios.get('v2/metadata?url=' + uri).catch(error => {
-          console.log(error)
-          setMetadataStatus("error")
-        })
-        if (response?.data) {
-          if (response.data?.metadata) {
-            setMetaLoadedFromUri(true)
-            setMetadata(JSON.stringify(response.data.metadata, undefined, 4))
-            checkDigest(response.data.metadata)
-            setMetadataStatus("")
-          } else if (response.data?.message) {
-            setMetadataStatus(response.data?.message)
-          } else {
-            setMetadataStatus("error 3")
-          }
-        }
-      }
       getMetadata()
+      startTime = Date.now()
+    } else {
+      setMetadataStatus("Please enter URI :)")
+      uriRef?.focus()
     }
   }
 
@@ -245,11 +279,14 @@ export default function NftMint({ setSignRequest, uriQuery, digestQuery }) {
           <button
             className="button-action thin"
             onClick={loadMetadata}
+            style={{ marginBottom: "10px" }}
           >
             Load metadata
           </button>
-          {" "}
-          <b className='orange'>{metadataStatus}</b>
+
+          <b className='orange' style={{ marginLeft: "20px" }}>
+            {metadataStatus}
+          </b>
 
           <p>Metadata: <b className='orange'>{metadataError}</b></p>
           <textarea

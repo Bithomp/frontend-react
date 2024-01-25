@@ -125,6 +125,9 @@ export default function Header({ setSignRequest, account, signOut, selectedCurre
                 <Link href="/nft-statistics">{t("menu.nft.statistics")}</Link>
               </>
               }
+              {xahauNetwork &&
+                <Link href="/services/nft-mint">{t("menu.services.nft-mint")}</Link>
+              }
             </div>
           </div>
 
@@ -293,7 +296,6 @@ export default function Header({ setSignRequest, account, signOut, selectedCurre
             </>
           }
 
-
           <div className="mobile-menu-directory"><span>NFT</span></div>
           <Link href="/nft-explorer" className="mobile-menu-item" onClick={mobileMenuToggle}> {t("menu.nft.explorer")}</Link>
           {/* Hide NFT menu for XAHAU while they are not ready yet */}
@@ -329,6 +331,15 @@ export default function Header({ setSignRequest, account, signOut, selectedCurre
                 {t("menu.nft.statistics")}
               </Link>
             </>
+          }
+          {xahauNetwork &&
+            <Link
+              href="/services/nft-mint"
+              className="mobile-menu-item"
+              onClick={mobileMenuToggle}
+            >
+              {t("menu.services.nft-mint")}
+            </Link>
           }
 
           <div className="mobile-menu-directory"><span>{ledgerName}</span></div>

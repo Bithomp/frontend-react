@@ -1,5 +1,8 @@
 {
   "menu": {
+    "services": {
+      "nft-mint": "Mint NFT"
+    },
     "personal": {
       "personal": "Osobno",
       "search-on-ledgerName": "Traži na {{ledgerName}}"
