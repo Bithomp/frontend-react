@@ -60,6 +60,7 @@ function generateSiteMap(posts) {
     'build-unl',
     'privacy-policy',
     'terms-and-conditions',
+    'terms-api-bots',
     'disclaimer'
   ] //old pages and not translated pages
   return `<?xml version="1.0" encoding="UTF-8"?>

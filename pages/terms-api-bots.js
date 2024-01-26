@@ -19,7 +19,7 @@ export default function TermsBotsAndApi() {
   return (
     <>
       <SEO
-        title={t("menu.terms-and-conditions")}
+        title={t("menu.terms-api-bots")}
         noindex={true}
       />
       <div className="content-text">

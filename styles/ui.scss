@@ -497,7 +497,9 @@ table {
   &.wide {
     width: calc(100% - 22px);
   }
-  &.disabled {
+  &.disabled,
+  &:disabled,
+  &[disabled] {
     border: 1px solid #999999;
     background-color: #cccccc;
     color: #666666;
