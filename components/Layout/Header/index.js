@@ -189,14 +189,23 @@ export default function Header({ setSignRequest, account, signOut, selectedCurre
                 <span onClick={copyToClipboard} className="link">
                   {isCopied ? t("button.copied") : t("button.copy-my-address")}
                 </span>
-                {/* Hide My NFTS for XAHAU while they are not ready yet */}
+                <Link href={"/nfts/" + address}>{t("signin.actions.my-nfts")}</Link>
+
+                {/* Hide My NFT Offers for XAHAU while they are not ready yet */}
                 {!xahauNetwork &&
-                  <Link href={"/nfts/" + address}>{t("signin.actions.my-nfts")}</Link>
+                  <Link href={"/nft-offers/" + address}>{t("signin.actions.my-nft-offers")}</Link>
                 }
-                <Link href={"/nft-offers/" + address}>{t("signin.actions.my-nft-offers")}</Link>
+
                 {xummUserToken && <a href={"/explorer/" + address + "?hw=xumm&xummtoken=" + xummUserToken}>{t("signin.actions.view")}</a>}
                 {!username && <Link href={"/username?address=" + address}>{t("menu.usernames")}</Link>}
-                {xummUserToken && <a href={"/explorer/" + address + "?hw=xumm&xummtoken=" + xummUserToken + "&action=send"}>{t("signin.actions.send")}</a>}
+
+                {/* Hide Send XRP for XAHAU while they are not ready yet */}
+                {!xahauNetwork &&
+                  <>
+                    {xummUserToken && <a href={"/explorer/" + address + "?hw=xumm&xummtoken=" + xummUserToken + "&action=send"}>{t("signin.actions.send")}</a>}
+                  </>
+                }
+
                 <span onClick={signOut} className="link">{t("signin.signout")}</span>
               </div>
             </div> :
