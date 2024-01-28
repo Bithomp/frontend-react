@@ -90,7 +90,7 @@ export default function NftMint({ setSignRequest, uriQuery, digestQuery }) {
 
   const getMetadata = async () => {
     setMetadataStatus("Trying to load the metadata from URI...")
-    const response = await axios.get('v2/metadata?url=' + uri).catch(error => {
+    const response = await axios.get('v2/metadata?url=' + encodeURIComponent(uri)).catch(error => {
       console.log(error)
       setMetadataStatus("error")
     })
