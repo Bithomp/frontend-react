@@ -10,7 +10,6 @@ import { getIsSsrMobile } from "../../utils/mobile";
 
 import {
   TransactionDetails,
-  TransactionEscrowCreation,
   TransactionEscrow,
   TransactionOrder,
   TransactionPayment,
@@ -72,10 +71,7 @@ export default function Transaction(
 
   let TransactionComponent = null;
   switch (txData?.type) {
-    case "escrowCreation":
-      TransactionComponent = TransactionEscrowCreation;
-      break;
-    case "escrowExecution" || "escrowCancelation":
+    case "escrowCreation" || "escrowExecution" || "escrowCancelation":
       TransactionComponent = TransactionEscrow;
       break;
     case "order":
