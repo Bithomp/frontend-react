@@ -14,7 +14,7 @@ export default function DateAndTimeRange({ setPeriod, minDate, tabs, defaultPeri
 
   const [startDate, setStartDate] = useState(null)
   const [endDate, setEndDate] = useState(null)
-  const [periodName, setPeriodName] = useState(defaultPeriodName || "day")
+  const [periodName, setPeriodName] = useState(defaultPeriodName)
 
   let hourAgo = new Date().setHours(new Date().getHours() - 1)
   let dayAgo = new Date().setDate(new Date().getDate() - 1)
@@ -53,23 +53,18 @@ export default function DateAndTimeRange({ setPeriod, minDate, tabs, defaultPeri
 
   useEffect(() => {
     let newStartDate = null
+    setEndDate(new Date())
     if (periodName === "hour") {
-      setEndDate(new Date())
       newStartDate = hourAgo
     } else if (periodName === "day") {
-      setEndDate(new Date())
       newStartDate = dayAgo
     } else if (periodName === "week") {
-      setEndDate(new Date())
       newStartDate = weekAgo
     } else if (periodName === "month") {
-      setEndDate(new Date())
       newStartDate = monthAgo
     } else if (periodName === "year") {
-      setEndDate(new Date())
       newStartDate = yearAgo
     }
-
     if (periodName === "hour" ||
       periodName === "day" ||
       periodName === "week" ||
@@ -81,8 +76,11 @@ export default function DateAndTimeRange({ setPeriod, minDate, tabs, defaultPeri
       } else {
         setStartDate(newStartDate)
       }
+    } else {
+      if (minDate && newStartDate < minDate) {
+        setStartDate(minDate)
+      }
     }
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [periodName])
 
@@ -122,8 +120,6 @@ export default function DateAndTimeRange({ setPeriod, minDate, tabs, defaultPeri
   if (!minDate) {
     minDate = new Date("2013-01-01T03:21:10.000Z") // ledger 32570
   }
-
-
 
   const startOnChange = date => {
     setStartDate(date)

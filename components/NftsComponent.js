@@ -580,7 +580,7 @@ export default function NftsComponent({
               <DateAndTimeRange
                 period={mintedPeriod}
                 setPeriod={setMintedPeriod}
-                defaultPeriodName={mintedPeriodNameQuery || "year"}
+                defaultPeriodName={mintedPeriodNameQuery}
                 minDate="nft"
                 style={{ marginTop: "10px", display: "inline-block" }}
               />
