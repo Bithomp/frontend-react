@@ -350,6 +350,8 @@
     "day": "최근 24시간"
   },
   "table": {
+    "mints": "Mints",
+    "mint-period": "Mint period",
     "warning": "Warning",
     "sequence": "절차",
     "version": "버전",
@@ -491,8 +493,8 @@
     "onSale": "XRP로 판매 중",
     "all-tokens": "모든 토큰",
     "xrp-only": "XRP만",
-    "mintedNew": "Latest mints",
-    "mintedOld": "Oldest mints"
+    "mintedNew": "Latest",
+    "mintedOld": "Oldest"
   },
   "xumm": {
     "new-qr": "새로운 QR코드를 사용하세요"

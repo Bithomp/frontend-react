@@ -350,6 +350,8 @@
     "day": "Für die letzten 24 Stunden"
   },
   "table": {
+    "mints": "Mints",
+    "mint-period": "Mint period",
     "warning": "Warning",
     "sequence": "Sequenz",
     "version": "Version",
@@ -491,8 +493,8 @@
     "onSale": "Zum Verkauf für XRP",
     "all-tokens": "Alle Tokens",
     "xrp-only": "nur XRP",
-    "mintedNew": "Neuste Minted",
-    "mintedOld": "Älteste Minted"
+    "mintedNew": "Neuste",
+    "mintedOld": "Älteste"
   },
   "xumm": {
     "new-qr": "Neuen QR-Code erhalten"

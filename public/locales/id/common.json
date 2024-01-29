@@ -350,6 +350,8 @@
     "day": "Selama 24 jam terakhir"
   },
   "table": {
+    "mints": "Mints",
+    "mint-period": "Mint period",
     "warning": "Warning",
     "sequence": "Urutan",
     "version": "Versi",
@@ -491,8 +493,8 @@
     "onSale": "Dijual dengan XRP",
     "all-tokens": "Semua Token",
     "xrp-only": "Hanya XRP",
-    "mintedNew": "Cetakan Terbaru",
-    "mintedOld": "Cetakan Terlama"
+    "mintedNew": "Latest",
+    "mintedOld": "Oldest"
   },
   "xumm": {
     "new-qr": "Dapatkan kode QR baru"

@@ -350,6 +350,8 @@
     "day": "直近24時間"
   },
   "table": {
+    "mints": "Mints",
+    "mint-period": "Mint period",
     "warning": "Warning",
     "sequence": "シーケンス",
     "version": "バージョン",
@@ -491,8 +493,8 @@
     "onSale": "XRPで販売中",
     "all-tokens": "全トークン",
     "xrp-only": "XRPのみ",
-    "mintedNew": "新しいミント",
-    "mintedOld": "古いミント"
+    "mintedNew": "新しい",
+    "mintedOld": "古い"
   },
   "xumm": {
     "new-qr": "新しいQRコードを取得"

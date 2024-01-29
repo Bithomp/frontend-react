@@ -37,7 +37,7 @@ export const getServerSideProps = async ({ query, locale }) => {
       taxonQuery: taxon || "",
       serialQuery: serial || "",
       mintedByMarketplace: mintedByMarketplace || "",
-      mintedPeriod: mintedPeriod || "",
+      mintedPeriodNameQuery: mintedPeriod || "",
       burnedPeriod: burnedPeriod || "",
       includeBurnedQuery: includeBurned || false,
       includeWithoutMediaDataQuery: includeWithoutMediaData || false,

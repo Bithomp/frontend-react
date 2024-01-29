@@ -350,6 +350,8 @@
     "day": "Les últimes 24 hores"
   },
   "table": {
+    "mints": "Mints",
+    "mint-period": "Mint period",
     "warning": "Warning",
     "sequence": "Seqüència",
     "version": "Versió",
@@ -491,8 +493,8 @@
     "onSale": "En venda per XRP",
     "all-tokens": "Tots els tokens",
     "xrp-only": "Només XRP",
-    "mintedNew": "Últimes encunyacions",
-    "mintedOld": "Encunyacions més antigues"
+    "mintedNew": "Latest",
+    "mintedOld": "Oldest"
   },
   "xumm": {
     "new-qr": "Obtenir un codi QR nou"

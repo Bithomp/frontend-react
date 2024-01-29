@@ -16,6 +16,7 @@ import Tabs from './Tabs'
 import Tiles from './Tiles'
 import IssuerSelect from './UI/IssuerSelect'
 import CheckBox from './UI/CheckBox'
+import DateAndTimeRange from './UI/DateAndTimeRange'
 
 import DownloadIcon from "../public/images/download.svg"
 
@@ -33,7 +34,7 @@ export default function NftsComponent({
   serialQuery,
   nftExplorer,
   mintedByMarketplace,
-  mintedPeriod,
+  mintedPeriodNameQuery,
   burnedPeriod,
   includeBurnedQuery,
   includeWithoutMediaDataQuery,
@@ -66,6 +67,7 @@ export default function NftsComponent({
   const [searchInput, setSearchInput] = useState(searchQuery)
   const [includeBurned, setIncludeBurned] = useState(includeBurnedQuery)
   const [includeWithoutMediaData, setIncludeWithoutMediaData] = useState(includeWithoutMediaDataQuery)
+  const [mintedPeriod, setMintedPeriod] = useState("")
 
   useEffect(() => {
     setRendered(true)
@@ -251,7 +253,7 @@ export default function NftsComponent({
   useEffect(() => {
     checkApi({ restart: true })
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id, issuer, taxon, owner, listTab, saleDestinationTab, search, includeBurned, includeWithoutMediaData, listNftsOrderTab])
+  }, [id, issuer, taxon, owner, listTab, saleDestinationTab, search, includeBurned, includeWithoutMediaData, listNftsOrderTab, mintedPeriod])
 
   useEffect(() => {
     let queryAddList = [];
@@ -563,15 +565,34 @@ export default function NftsComponent({
           <input type="button" className="button-action" value={t("button.search")} onClick={searchClick} />
         </p>
       </>}
+
       <div className='tabs-inline'>
+        {listTab === 'nfts' &&
+          <div className='center'>
+            {t("table.mints")}
+            <Tabs tabList={listNftsOrderTabList} tab={listNftsOrderTab} setTab={setListNftsOrderTab} name='listNftsOrder' />
+            {nftExplorer && <>
+              {windowWidth < 720 && <br />}
+              <span style={{ marginRight: "10px" }}>
+                {t("table.mint-period")}
+              </span>
+              {windowWidth < 720 && <br />}
+              <DateAndTimeRange
+                period={mintedPeriod}
+                setPeriod={setMintedPeriod}
+                defaultPeriodName={mintedPeriodNameQuery || "year"}
+                minDate="nft"
+                style={{ marginTop: "10px", display: "inline-block" }}
+              />
+            </>
+            }
+          </div>
+        }
+
         <Tabs tabList={viewTabList} tab={viewTab} setTab={setViewTab} name='view' />
 
         {(!burnedPeriod && !xahauNetwork) &&
           <Tabs tabList={listTabList} tab={listTab} setTab={setListTab} name='saleType' />
-        }
-
-        {listTab === 'nfts' &&
-          <Tabs tabList={listNftsOrderTabList} tab={listNftsOrderTab} setTab={setListNftsOrderTab} name='listNftsOrder' />
         }
 
         {(!burnedPeriod && !xahauNetwork) && listTab === 'onSale' &&

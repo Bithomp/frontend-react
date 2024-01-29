@@ -350,6 +350,8 @@
     "day": "For de siste 24 timene"
   },
   "table": {
+    "mints": "Mints",
+    "mint-period": "Mint period",
     "warning": "Warning",
     "sequence": "Sekvens",
     "version": "Versjon",
@@ -491,8 +493,8 @@
     "onSale": "Til salgs for XRP",
     "all-tokens": "Alle tokens",
     "xrp-only": "Kun XRP",
-    "mintedNew": "Latest mints",
-    "mintedOld": "Oldest mints"
+    "mintedNew": "Latest",
+    "mintedOld": "Oldest"
   },
   "xumm": {
     "new-qr": "Få en ny QR-kode"

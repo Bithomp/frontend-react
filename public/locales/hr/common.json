@@ -350,6 +350,8 @@
     "day": "Za zadnja 24 sata"
   },
   "table": {
+    "mints": "Mints",
+    "mint-period": "Mint period",
     "warning": "Warning",
     "sequence": "Sekvenca",
     "version": "Verzija",
@@ -491,8 +493,8 @@
     "onSale": "Na rasprodaji za XRP",
     "all-tokens": "Svi novčići",
     "xrp-only": "Samo XRP",
-    "mintedNew": "Latest mints",
-    "mintedOld": "Oldest mints"
+    "mintedNew": "Latest",
+    "mintedOld": "Oldest"
   },
   "xumm": {
     "new-qr": "Generiraj novi QR"
