@@ -738,7 +738,11 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
         })}
       >
         <Image src={xummImg} className='xumm-logo' alt="xaman" height={24} width={24} />
-        {t("button.nft.list-for-sale")}
+        {countSellOffers?.["active-valid"] > 0 ?
+          t("button.nft.update-sell-offer")
+          :
+          t("button.nft.list-for-sale")
+        }
       </button>
       <br /><br />
     </>

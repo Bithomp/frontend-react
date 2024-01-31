@@ -268,6 +268,7 @@
     "copy-my-address": "Meine Adresse kopieren",
     "sign": "Signieren",
     "nft": {
+      "update-sell-offer": "Update the sell offer",
       "cancel-sell-offer-for": "Verkaufsangebot für {{amount}} abbrechen",
       "cancel-buy-offer-for": "Kaufangebot für {{amount}} abbrechen",
       "cancel-transfer": "NFT Transfer abbrechen",

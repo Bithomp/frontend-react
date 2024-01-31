@@ -268,6 +268,7 @@
 		"copy-my-address": "Salin alamat saya",
 		"sign": "Tandatangan",
 		"nft": {
+			"update-sell-offer": "Update the sell offer",
 			"cancel-sell-offer-for": "Batalkan Tawaran Jualan untuk {{amount}}",
 			"cancel-buy-offer-for": "Batalkan Tawaran Belian untuk {{amount}}",
 			"cancel-transfer": "Batalkan Pemindahan NFT",
