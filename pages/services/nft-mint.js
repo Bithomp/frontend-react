@@ -269,7 +269,7 @@ export default function NftMint({ setSignRequest, uriQuery, digestQuery }) {
               className="input-text"
               ref={node => { uriRef = node; }}
               spellCheck="false"
-              maxLength="256"
+              maxLength="512"
               name="uri"
             />
           </div>
