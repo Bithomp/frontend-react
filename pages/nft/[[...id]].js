@@ -1068,11 +1068,12 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
                               <CopyButton text={data.digest} /></td>
                           </tr>
                         }
+                        {/* isValidJson(decodedUri) - if valid Json in URI, no need to check digest */}
                         {!notFoundInTheNetwork && (
                           !hasJsonMeta(data) ||
                           (data.type === 'xls20' && !data.flags.transferable) ||
                           data.flags.burnable ||
-                          (data.type === 'xls35' && data.uri && hasJsonMeta(data) && (!data.digest || !isValidDigest))
+                          (data.type === 'xls35' && data.uri && hasJsonMeta(data) && (!isValidJson(decodedUri) && (!data.digest || !isValidDigest)))
                         ) &&
                           <tr>
                             <td><b>{t("table.attention", { ns: 'nft' })}</b></td>
