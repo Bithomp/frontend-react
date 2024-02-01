@@ -1039,7 +1039,15 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
                           <tr>
                             <td>{t("table.uri", { ns: 'nft' })}</td>
                             <td>
-                              {data.uri ? decode(data.uri) : t("table.text.unspecified")}
+                              {data.uri ?
+                                <>
+                                  {decode(data.uri)}
+                                  {" "}
+                                  <CopyButton text={decode(data.uri)} />
+                                </>
+                                :
+                                t("table.text.unspecified")
+                              }
                             </td>
                           </tr>
                         }
