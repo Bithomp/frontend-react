@@ -77,6 +77,7 @@ const MyApp = ({ Component, pageProps }) => {
             {signRequest &&
               <SignForm
                 setSignRequest={setSignRequest}
+                account={account}
                 setAccount={setAccount}
                 signRequest={signRequest}
               />

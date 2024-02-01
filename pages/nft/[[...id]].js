@@ -549,9 +549,9 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
   const buyButton = sellOffers => {
     let best = null
     if (data.type === 'xls35') {
-      if (!data.amount) return ""
+      if (!data.amount && !data.destination) return ""
       best = {
-        amount: data.amount,
+        amount: data.amount || "0",
         owner: data.owner,
         destination: data.destination,
         uriTokenID: data.uriTokenID
@@ -1045,7 +1045,7 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
                             <td>
                               {data.uri ?
                                 <>
-                                  {isValidJson(decodedUri.toString()) ? codeHighlight(decodedUri) : decodedUri}
+                                  {isValidJson(decodedUri) ? codeHighlight(decodedUri) : decodedUri}
                                   {" "}
                                   <CopyButton text={decodedUri} />
                                 </>

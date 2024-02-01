@@ -630,6 +630,7 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
     }
     let newRequest = signRequest
     newRequest.request.Destination = value
+    newRequest.request.Amount = "0"
     setSignRequest(newRequest)
   }
 

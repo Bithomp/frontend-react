@@ -56,7 +56,7 @@ export const acceptNftSellOfferButton = (t, setSignRequest, offer, nftType = 'xl
     })}
   >
     <Image src={xummImg} className='xumm-logo' alt="xaman" height={24} width={24} />
-    {offer.amount === "0" ? t("button.nft.accept-transfer") : t("button.nft.buy-for-amount", { amount: amountFormat(offer.amount) })}
+    {(offer.amount === "0" || !offer.amount) ? t("button.nft.accept-transfer") : t("button.nft.buy-for-amount", { amount: amountFormat(offer.amount) })}
   </button>
 }
 
