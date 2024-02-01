@@ -54,6 +54,7 @@ export default function NftMint({ setSignRequest, uriQuery, digestQuery }) {
   const [metaLoadedFromUri, setMetaLoadedFromUri] = useState(false)
   const [update, setUpdate] = useState(false)
   const [minted, setMinted] = useState("")
+  const [uriValidDigest, setUriValidDigest] = useState(isIdValid(digestQuery))
 
   let uriRef
   let digestRef
@@ -86,6 +87,7 @@ export default function NftMint({ setSignRequest, uriQuery, digestQuery }) {
     setMetadata("")
     setDigest("")
     setMetadataError("")
+    setUriValidDigest(false)
   }
 
   const getMetadata = async () => {
@@ -274,40 +276,48 @@ export default function NftMint({ setSignRequest, uriQuery, digestQuery }) {
             />
           </div>
 
-          <CheckBox checked={calculateDigest} setChecked={setCalculateDigest} name="add-digest" >
-            Add <b>Digest</b> (recommended)
-          </CheckBox>
-
-          {calculateDigest &&
+          {!uriValidDigest &&
             <>
-              <p>
-                The digest is calculated from the metadata. It is used to verify that the URI and the metadata have not been tampered with.
-              </p>
+              <CheckBox checked={calculateDigest} setChecked={setCalculateDigest} name="add-digest" >
+                Add <b>Digest</b> (recommended)
+              </CheckBox>
 
-              <button
-                className="button-action thin"
-                onClick={loadMetadata}
-                style={{ marginBottom: "10px" }}
-                name="load-metadata-button"
-              >
-                Load metadata
-              </button>
+              {calculateDigest &&
+                <>
+                  <p>
+                    The digest is calculated from the metadata. It is used to verify that the URI and the metadata have not been tampered with.
+                  </p>
 
-              <b className='orange' style={{ marginLeft: "20px" }}>
-                {metadataStatus}
-              </b>
+                  <button
+                    className="button-action thin"
+                    onClick={loadMetadata}
+                    style={{ marginBottom: "10px" }}
+                    name="load-metadata-button"
+                  >
+                    Load metadata
+                  </button>
 
-              <p>Metadata: <b className='orange'>{metadataError}</b></p>
-              <textarea
-                value={metadata}
-                placeholder='Paste your JSON metadata here'
-                onChange={onMetadataChange}
-                className='input-text'
-                autoFocus={true}
-                readOnly={metaLoadedFromUri}
-                name="metadata"
-              />
+                  <b className='orange' style={{ marginLeft: "20px" }}>
+                    {metadataStatus}
+                  </b>
 
+                  <p>Metadata: <b className='orange'>{metadataError}</b></p>
+                  <textarea
+                    value={metadata}
+                    placeholder='Paste your JSON metadata here'
+                    onChange={onMetadataChange}
+                    className='input-text'
+                    autoFocus={true}
+                    readOnly={metaLoadedFromUri}
+                    name="metadata"
+                  />
+                </>
+              }
+            </>
+          }
+
+          {(calculateDigest || uriValidDigest) &&
+            <>
               <p>Digest:</p>
               <div className="input-validation">
                 <input
