@@ -328,7 +328,7 @@ export default function NftMint({ setSignRequest, uriQuery, digestQuery }) {
                   ref={node => { digestRef = node; }}
                   spellCheck="false"
                   maxLength="64"
-                  readOnly={true}
+                  readOnly={metaLoadedFromUri}
                   name="digest"
                 />
                 {isIdValid(digest) && <img src={checkmark} className="validation-icon" alt="validated" />}
