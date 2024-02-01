@@ -110,6 +110,8 @@
     "not-available": "Nicht verfügbar",
     "confirm": {
       "set-domain": "Eine Domain definieren",
+      "nft-create-transfer-offer-header": "NFT transfer",
+      "nft-transfer": "I'm offering that NFT for FREE to the Destination account, the destination account would need to accept the NFT transfer.",
       "nft-accept-sell-offer-header": "NFT Kauf",
       "nft-accept-buy-offer-header": "NFT verkaufen",
       "nft-create-sell-offer-header": "Liste zum Verkauf",
@@ -268,6 +270,7 @@
     "copy-my-address": "Meine Adresse kopieren",
     "sign": "Signieren",
     "nft": {
+      "transfer": "Transfer NFT",
       "update-sell-offer": "Update the sell offer",
       "cancel-sell-offer-for": "Verkaufsangebot für {{amount}} abbrechen",
       "cancel-buy-offer-for": "Kaufangebot für {{amount}} abbrechen",
@@ -295,6 +298,8 @@
   },
   "form": {
     "error": {
+      "no-address": "Please enter an address.",
+      "invalid-address": "Please enter a valid address.",
       "domain-empty": "Bitte geben Sie die Domain ein.",
       "domain-invalid": "Bitte geben Sie eine gültige Domain ein.",
       "description-empty": "Bitte geben Sie eine Beschreibung ein",

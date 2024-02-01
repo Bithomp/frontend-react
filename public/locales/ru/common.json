@@ -110,6 +110,8 @@
     "not-available": "Не доступно",
     "confirm": {
       "set-domain": "Установка домена",
+      "nft-create-transfer-offer-header": "Передача NFT",
+      "nft-transfer": "Я передаю этот NFT БЕСПЛАТНО адресату, адресат должен будет принять NFT, чтобы завершить передачу.",
       "nft-accept-sell-offer-header": "Покупка NFT",
       "nft-accept-buy-offer-header": "Продажа NFT",
       "nft-create-sell-offer-header": "Создание офера продажи",
@@ -268,6 +270,7 @@
     "copy-my-address": "Копировать адрес",
     "sign": "Подписать",
     "nft": {
+      "transfer": "Передать NFT",
       "update-sell-offer": "Изменить офер продажи",
       "cancel-sell-offer-for": "Отменить офер продажи на {{amount}}",
       "cancel-buy-offer-for": "Отменить офер покупки на {{amount}}",
@@ -295,6 +298,8 @@
   },
   "form": {
     "error": {
+      "no-address": "Введите адрес.",
+      "invalid-address": "введите верный адрес.",
       "domain-empty": "Введите домен.",
       "domain-invalid": "Неверный домен.",
       "description-empty": "Введите описание.",

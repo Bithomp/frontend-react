@@ -110,6 +110,8 @@
     "not-available": "Nije dostupno",
     "confirm": {
       "set-domain": "Postavljanje domene",
+      "nft-create-transfer-offer-header": "NFT transfer",
+      "nft-transfer": "I'm offering that NFT for FREE to the Destination account, the destination account would need to accept the NFT transfer.",
       "nft-accept-sell-offer-header": "NFT kupnja",
       "nft-accept-buy-offer-header": "Prodajni NFTovi",
       "nft-create-sell-offer-header": "Lista za prodaju",
@@ -268,6 +270,7 @@
     "copy-my-address": "Kopiraj moju adresu",
     "sign": "Potpiši",
     "nft": {
+      "transfer": "Transfer NFT",
       "update-sell-offer": "Update the sell offer",
       "cancel-sell-offer-for": "Poništi prodajnu ponudu za {{amount}}",
       "cancel-buy-offer-for": "Poništi kupovnu ponudu za {{amount}}",
@@ -295,6 +298,8 @@
   },
   "form": {
     "error": {
+      "no-address": "Please enter an address.",
+      "invalid-address": "Please enter a valid address.",
       "domain-empty": "Please enter web domain.",
       "domain-invalid": "Please enter a valid web domain.",
       "description-empty": "Please enter a description.",

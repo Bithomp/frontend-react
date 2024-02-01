@@ -110,6 +110,8 @@
 		"not-available": "Tidak Tersedia",
 		"confirm": {
 			"set-domain": "Menetapkan Domain",
+			"nft-create-transfer-offer-header": "NFT transfer",
+			"nft-transfer": "I'm offering that NFT for FREE to the Destination account, the destination account would need to accept the NFT transfer.",
 			"nft-accept-sell-offer-header": "Pembelian NFT",
 			"nft-accept-buy-offer-header": "Selling NFT",
 			"nft-create-sell-offer-header": "Senarai untuk Dijual",
@@ -268,6 +270,7 @@
 		"copy-my-address": "Salin alamat saya",
 		"sign": "Tandatangan",
 		"nft": {
+			"transfer": "Transfer NFT",
 			"update-sell-offer": "Update the sell offer",
 			"cancel-sell-offer-for": "Batalkan Tawaran Jualan untuk {{amount}}",
 			"cancel-buy-offer-for": "Batalkan Tawaran Belian untuk {{amount}}",
@@ -295,6 +298,8 @@
 	},
   "form": {
     "error": {
+      "no-address": "Please enter an address.",
+      "invalid-address": "Please enter a valid address.",
       "domain-empty": "Please enter web domain.",
       "domain-invalid": "Please enter a valid web domain.",
       "description-empty": "Please enter a description.",

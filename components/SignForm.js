@@ -34,7 +34,7 @@ const trezor = '/images/trezor-large.svg'
 const ellipal = '/images/ellipal-large.svg'
 
 const voteTxs = ['castVoteRewardDelay', 'castVoteRewardRate', 'castVoteHook', 'castVoteSeat']
-const askInfoScreens = [...voteTxs, 'NFTokenAcceptOffer', 'NFTokenCreateOffer', 'NFTokenBurn', 'setDomain']
+const askInfoScreens = [...voteTxs, 'NFTokenAcceptOffer', 'NFTokenCreateOffer', 'NFTokenBurn', 'setDomain', 'nftTransfer']
 const noCheckboxScreens = [...voteTxs, 'setDomain']
 
 export default function SignForm({ setSignRequest, account, setAccount, signRequest }) {
@@ -49,6 +49,7 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
   const [xummUuid, setXummUuid] = useState(null)
   const [expiredQr, setExpiredQr] = useState(false)
   const [agreedToRisks, setAgreedToRisks] = useState(false)
+  const [formError, setFormError] = useState(false)
   const [hookData, setHookData] = useState({})
   const [seatData, setSeatData] = useState({})
   const [targetLayer, setTargetLayer] = useState(signRequest?.layer)
@@ -92,6 +93,19 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
     if (tx.TransactionType === "NFTokenAcceptOffer" && !agreedToRisks && signRequest.offerAmount !== "0") {
       setScreen("NFTokenAcceptOffer")
       return
+    }
+
+    if (signRequest.action === 'nftTransfer') {
+      if (!agreedToRisks) {
+        setScreen("nftTransfer")
+        return
+      } else {
+        if (!signRequest.request?.Destination) {
+          setStatus(t("form.error.no-address"))
+          setFormError(true)
+          return
+        }
+      }
     }
 
     if ((tx.TransactionType === "NFTokenCreateOffer" || tx.TransactionType === "URITokenCreateSellOffer") &&
@@ -598,6 +612,21 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
     setSeatData(seatObj)
   }
 
+  const onAddressChange = value => {
+    setFormError(true)
+    if (!value) return
+    if (!isAddressValid(value)) {
+      setStatus(t("form.error.invalid-address"))
+      return
+    } else {
+      setFormError(false)
+      setStatus("")
+    }
+    let newRequest = signRequest
+    newRequest.request.Destination = value
+    setSignRequest(newRequest)
+  }
+
   const onPlaceSelect = topic => {
     let hookObj = hookData
     hookObj.topic = topic.value
@@ -630,6 +659,19 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
 
   const xls35Sell = signRequest?.request?.TransactionType === "URITokenCreateSellOffer"
 
+  const checkBoxText = (screen, signRequest) => {
+    if (screen === 'nftTransfer') return t("signin.confirm.nft-transfer")
+    if (screen === 'NFTokenBurn') return t("signin.confirm.nft-burn")
+    if (screen === 'NFTokenCreateOffer' && (signRequest.request.Flags === 1 || xls35Sell)) {
+      return t("signin.confirm.nft-create-sell-offer")
+    }
+
+    return <Trans i18nKey="signin.confirm.nft-accept-offer">
+      I admit that Bithomp gives me access to a decentralised marketplace, and it cannot verify or guarantee the authenticity and legitimacy of any NFTs.
+      I confirm that I've read the <Link href="/terms-and-conditions" target="_blank">Terms and conditions</Link>, and I agree with all the terms to buy, sell or use any NFTs on Bithomp.
+    </Trans>
+  }
+
   return (
     <div className="sign-in-form">
       <div className="sign-in-body center">
@@ -652,6 +694,7 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
                   t("signin.confirm.nft-create-buy-offer-header")
                 )
               }
+              {screen === 'nftTransfer' && t("signin.confirm.nft-create-transfer-offer-header")}
               {screen === 'setDomain' && t("signin.confirm.set-domain")}
               {voteTxs.includes(screen) && "Cast a vote"}
             </div>
@@ -709,6 +752,26 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
                 }
               </>
             }
+
+            {screen === "nftTransfer" &&
+              <div className='center'>
+                <br />
+                <span className='halv'>
+                  <span className='input-title'>{t("table.destination")}</span>
+                  <input
+                    placeholder={t()}
+                    onChange={e => onAddressChange(e.target.value)}
+                    className="input-text"
+                    spellCheck="false"
+                  />
+                </span>
+                <div>
+                  <br />
+                  {status ? <b className="orange">{status}</b> : <br />}
+                </div>
+              </div>
+            }
+
             {screen === 'setDomain' &&
               <div className='center'>
                 <br />
@@ -901,21 +964,7 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
             {!noCheckboxScreens.includes(screen) &&
               <div className='terms-checkbox'>
                 <CheckBox checked={agreedToRisks} setChecked={setAgreedToRisks} >
-                  {screen === 'NFTokenBurn' ?
-                    t("signin.confirm.nft-burn")
-                    :
-                    <>
-                      {screen === 'NFTokenCreateOffer' &&
-                        (signRequest.request.Flags === 1 || xls35Sell) ?
-                        t("signin.confirm.nft-create-sell-offer")
-                        :
-                        <Trans i18nKey="signin.confirm.nft-accept-offer">
-                          I admit that Bithomp gives me access to a decentralised marketplace, and it cannot verify or guarantee the authenticity and legitimacy of any NFTs.
-                          I confirm that I've read the <Link href="/terms-and-conditions" target="_blank">Terms and conditions</Link>, and I agree with all the terms to buy, sell or use any NFTs on Bithomp.
-                        </Trans>
-                      }
-                    </>
-                  }
+                  {checkBoxText(screen, signRequest)}
                 </CheckBox>
               </div>
             }
@@ -924,7 +973,12 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
             <button type="button" className="button-action" onClick={SignInCancelAndClose} style={buttonStyle}>
               {t("button.cancel")}
             </button>
-            <button type="button" className={"button-action" + (agreedToRisks ? "" : " disabled")} onClick={XummTxSend} style={buttonStyle}>
+            <button
+              type="button"
+              className="button-action"
+              onClick={XummTxSend} style={buttonStyle}
+              disabled={!agreedToRisks || formError}
+            >
               {t("button.sign")}
             </button>
           </>

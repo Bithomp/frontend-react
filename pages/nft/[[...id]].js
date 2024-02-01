@@ -745,6 +745,19 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
         }
       </button>
       <br /><br />
+
+      <button
+        className='button-action wide center'
+        onClick={() => setSignRequest({
+          wallet: "xumm",
+          request,
+          action: "nftTransfer"
+        })}
+      >
+        <Image src={xummImg} className='xumm-logo' alt="xaman" height={24} width={24} />
+        {t("button.nft.transfer")}
+      </button>
+      <br /><br />
     </>
   }
 
