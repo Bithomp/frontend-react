@@ -7,7 +7,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import Image from 'next/image'
 import Link from 'next/link'
 
-import { stripText, server, decode, network } from '../../utils'
+import { stripText, server, decode, network, isValidJson } from '../../utils'
 import { convertedAmount } from '../../utils/format'
 import { getIsSsrMobile } from "../../utils/mobile"
 import { nftName, mpUrl, bestNftOffer, nftUrl, partnerMarketplaces } from '../../utils/nft'
@@ -81,6 +81,7 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
 
   const [rendered, setRendered] = useState(false)
   const [data, setData] = useState({})
+  const [decodedUri, setDecodedUri] = useState(null)
   const [loading, setLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState("")
   const [showRawMetadata, setShowRawMetadata] = useState(false)
@@ -146,6 +147,9 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
         setData(newdata)
         if (newdata.warnings?.length > 0) {
           updateWarningMessages(newdata.warnings)
+        }
+        if (newdata.uri) {
+          setDecodedUri(decode(newdata.uri))
         }
         //notFoundInTheNetwork
         if (!newdata.owner && !newdata.deletedAt && !newdata.url && !newdata.metadata) {
@@ -1041,9 +1045,9 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
                             <td>
                               {data.uri ?
                                 <>
-                                  {decode(data.uri)}
+                                  {isValidJson(decodedUri.toString()) ? codeHighlight(decodedUri) : decodedUri}
                                   {" "}
-                                  <CopyButton text={decode(data.uri)} />
+                                  <CopyButton text={decodedUri} />
                                 </>
                                 :
                                 t("table.text.unspecified")

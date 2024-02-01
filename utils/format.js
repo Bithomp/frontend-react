@@ -676,7 +676,10 @@ const syntaxHighlight = (json) => {
   );
 }
 
-export const codeHighlight = (json) => {
+export const codeHighlight = json => {
+  if (typeof json === 'string') {
+    json = JSON.parse(json)
+  }
   return <pre
     dangerouslySetInnerHTML={{
       __html: syntaxHighlight(JSON.stringify(json, undefined, 4))
