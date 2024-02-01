@@ -315,12 +315,18 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
         const { validated, inLedger, ledger_index, meta } = response.data
         const includedInLedger = inLedger || ledger_index
         if (validated && includedInLedger) {
-          if (redirectName === "nft" && meta?.AffectedNodes?.[0]?.CreatedNode?.LedgerEntryType === "URIToken") {
-            //show URI token page (for NFT mints)
-            checkCrawlerStatus({ inLedger: includedInLedger, param: meta.AffectedNodes[0].CreatedNode.LedgerIndex })
-          } else {
-            checkCrawlerStatus({ inLedger: includedInLedger })
+          if (redirectName === "nft") {
+            //check for URI token
+            for (let i = 0; i < meta.AffectedNodes.length; i++) {
+              const node = meta.AffectedNodes[i]
+              if (node.CreatedNode?.LedgerEntryType === "URIToken") {
+                checkCrawlerStatus({ inLedger: includedInLedger, param: node.CreatedNode.LedgerIndex })
+                break
+              }
+            }
+            return
           }
+          checkCrawlerStatus({ inLedger: includedInLedger })
         } else {
           //if not validated or if no ledger info received, delay for 3 seconds
           delay(3000, closeSignInFormAndRefresh)
