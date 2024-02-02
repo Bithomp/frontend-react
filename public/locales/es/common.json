@@ -298,8 +298,9 @@
   },
   "form": {
     "error": {
-      "no-address": "Por favor, introduce una dirección.",
-      "invalid-address": "Por favor, introduce una dirección válida.",
+      "price-empty": "Please enter an amount.",
+      "address-empty": "Por favor, introduce una dirección.",
+      "address-invalid": "Por favor, introduce una dirección válida.",
       "domain-empty": "Por favor, introduce un dominio web.",
       "domain-invalid": "Por favor, introduce un dominio web válido.",
       "description-empty": "Por favor, introduce una descripción.",
@@ -435,6 +436,7 @@
     "marketplace": "Mercado",
     "public-key": "Clave pública",
     "text": {
+      "private-offer": "Private offer",
       "show-extended-statistics": "Mostrar estadísticas ampliadas",
       "include-without-media-data": "Incluir NFTs sin contenido",
       "include-burned-nfts": "Incluir NFTs quemados",

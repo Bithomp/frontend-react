@@ -298,8 +298,9 @@
   },
   "form": {
     "error": {
-      "no-address": "Введите адрес.",
-      "invalid-address": "введите верный адрес.",
+      "price-empty": "Введите цену.",
+      "address-empty": "Введите адрес.",
+      "address-invalid": "Введите верный адрес.",
       "domain-empty": "Введите домен.",
       "domain-invalid": "Неверный домен.",
       "description-empty": "Введите описание.",
@@ -435,6 +436,7 @@
     "marketplace": "Маркетплейс",
     "public-key": "Публичный ключ",
     "text": {
+      "private-offer": "Частный офер",
       "show-extended-statistics": "Показать расширенную статистику",
       "include-without-media-data": "Включить NFT без медиа данных",
       "include-burned-nfts": "Включить сожжёные NFT",

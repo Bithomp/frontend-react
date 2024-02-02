@@ -59,6 +59,8 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
   const [rewardRate, setRewardRate] = useState()
   const [rewardDelay, setRewardDelay] = useState()
 
+  const [privateOffer, setPrivateOffer] = useState(false)
+
   const xummUserToken = localStorage.getItem('xummUserToken')
 
   useEffect(() => {
@@ -96,22 +98,35 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
     }
 
     if (signRequest.action === 'nftTransfer') {
+      tx.Amount = "0"
       if (!agreedToRisks) {
         setScreen("nftTransfer")
         return
       } else {
         if (!signRequest.request?.Destination) {
-          setStatus(t("form.error.no-address"))
+          setStatus(t("form.error.address-empty"))
           setFormError(true)
           return
         }
       }
     }
 
-    if ((tx.TransactionType === "NFTokenCreateOffer" || tx.TransactionType === "URITokenCreateSellOffer") &&
-      !agreedToRisks) {
-      setScreen("NFTokenCreateOffer")
-      return
+    if ((tx.TransactionType === "NFTokenCreateOffer" || tx.TransactionType === "URITokenCreateSellOffer")) {
+      if (!agreedToRisks) {
+        setScreen("NFTokenCreateOffer")
+        return
+      } else {
+        if (privateOffer && !signRequest.request?.Destination) {
+          setStatus(t("form.error.address-empty"))
+          setFormError(true)
+          return
+        }
+        if (!signRequest.request?.Amount) {
+          setStatus(t("form.error.price-empty"))
+          setFormError(true)
+          return
+        }
+      }
     }
 
     if (tx.TransactionType === "NFTokenBurn" && !agreedToRisks) {
@@ -490,10 +505,25 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
     margin: "0 10px"
   }
 
+  const onPrivateOfferToggle = () => {
+    if (!privateOffer) {
+      let newRequest = signRequest
+      if (newRequest.request.Destination) {
+        delete newRequest.request.Destination
+      }
+      setSignRequest(newRequest)
+      setStatus("")
+      setFormError(false)
+    }
+    setPrivateOffer(!privateOffer)
+  }
+
   const onAmountChange = e => {
     let newRequest = signRequest
     newRequest.request.Amount = (e.target.value * 1000000).toString()
     setSignRequest(newRequest)
+    setFormError(false)
+    setStatus("")
   }
 
   const onDomainChange = e => {
@@ -619,18 +649,18 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
   }
 
   const onAddressChange = value => {
-    setFormError(true)
-    if (!value) return
-    if (!isAddressValid(value)) {
-      setStatus(t("form.error.invalid-address"))
-      return
-    } else {
+    let newRequest = signRequest
+    if (isAddressValid(value)) {
+      newRequest.request.Destination = value
       setFormError(false)
       setStatus("")
+    } else {
+      if (newRequest.request.Destination) {
+        delete newRequest.request.Destination
+      }
+      setStatus(t("form.error.address-invalid"))
+      setFormError(true)
     }
-    let newRequest = signRequest
-    newRequest.request.Destination = value
-    newRequest.request.Amount = "0"
     setSignRequest(newRequest)
   }
 
@@ -759,6 +789,26 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
                         <ExpirationSelect onChange={onExpirationChange} />
                       </span>
                     }
+                    {(signRequest.request.Flags === 1 || xls35Sell) &&
+                      <>
+                        <div className='terms-checkbox'>
+                          <CheckBox checked={privateOffer} setChecked={onPrivateOfferToggle}>
+                            {t("table.text.private-offer")}
+                          </CheckBox>
+                        </div>
+                        {privateOffer &&
+                          <span className='halv'>
+                            <span className='input-title'>{t("table.destination")}</span>
+                            <input
+                              placeholder={t()}
+                              onChange={e => onAddressChange(e.target.value)}
+                              className="input-text"
+                              spellCheck="false"
+                            />
+                          </span>
+                        }
+                      </>
+                    }
                   </div>
                 }
               </>
@@ -776,10 +826,6 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
                     spellCheck="false"
                   />
                 </span>
-                <div>
-                  <br />
-                  {status ? <b className="orange">{status}</b> : <br />}
-                </div>
               </div>
             }
 
@@ -813,11 +859,7 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
                 </span>
                 <div>
                   <br />
-                  {status ?
-                    <b className="orange">{status}</b>
-                    :
-                    rewardDelay ? <b>= {duration(t, rewardDelay, { seconds: true })}</b> : <br />
-                  }
+                  {(!status && rewardDelay) ? <b>= {duration(t, rewardDelay, { seconds: true })}</b> : <br />}
                 </div>
               </div>
             }
@@ -837,11 +879,7 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
                 </span>
                 <div>
                   <br />
-                  {status ?
-                    <b className="orange">{status}</b>
-                    :
-                    rewardRate ? <b>≈ {rewardRateHuman(rewardRate)}</b> : <br />
-                  }
+                  {(!status && rewardRate) ? <b>≈ {rewardRateHuman(rewardRate)}</b> : <br />}
                 </div>
               </div>
             }
@@ -908,10 +946,6 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
                     />
                   </span>
                 }
-                <div>
-                  <br />
-                  {status ? <b className="orange">{status}</b> : <br />}
-                </div>
               </div>
             }
 
@@ -965,10 +999,6 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
                     />
                   </span>
                 }
-                <div>
-                  <br />
-                  {status ? <b className="orange">{status}</b> : <br />}
-                </div>
               </div>
             }
 
@@ -979,6 +1009,10 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
                 </CheckBox>
               </div>
             }
+
+            <div>
+              {status ? <b className="orange">{status}</b> : <br />}
+            </div>
 
             <br />
             <button type="button" className="button-action" onClick={SignInCancelAndClose} style={buttonStyle}>

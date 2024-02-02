@@ -105,7 +105,7 @@ export default function Tiles({ nftList, type = 'name', convertCurrency, account
         return amountFormat(best.amount)
       }
     }
-    return "Private offer" //shouldn't be the case
+    return t("table.text.private-offer") //shouldn't be the case
   }
 
   if (type === "name" || type === 'onSale') {

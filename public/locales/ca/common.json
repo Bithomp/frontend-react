@@ -298,8 +298,9 @@
   },
   "form": {
     "error": {
-      "no-address": "Please enter an address.",
-      "invalid-address": "Please enter a valid address.",
+      "price-empty": "Please enter an amount.",
+      "address-empty": "Please enter an address.",
+      "address-invalid": "Please enter a valid address.",
       "domain-empty": "Si us plau, introdueix un domini web.",
       "domain-invalid": "Si us plau, introdueix un domini web vàlid.",
       "description-empty": "Si us plau, introdueix una descripció.",
@@ -435,6 +436,7 @@
     "marketplace": "Mercat",
     "public-key": "Clau pública",
     "text": {
+      "private-offer": "Private offer",
       "show-extended-statistics": "Mostra estadístiques ampliades",
       "include-without-media-data": "Include NFTs with no media",
       "include-burned-nfts": "Include burned NFTs",

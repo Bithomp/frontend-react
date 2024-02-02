@@ -298,8 +298,9 @@
   },
   "form": {
     "error": {
-      "no-address": "Please enter an address.",
-      "invalid-address": "Please enter a valid address.",
+      "price-empty": "Please enter an amount.",
+      "address-empty": "Please enter an address.",
+      "address-invalid": "Please enter a valid address.",
       "domain-empty": "ドメインを入力してください。",
       "domain-invalid": "有効なドメインを入力してください。",
       "description-empty": "説明を入力してください。",
@@ -435,6 +436,7 @@
     "marketplace": "マーケットプレイス",
     "public-key": "公開鍵",
     "text": {
+      "private-offer": "Private offer",
       "show-extended-statistics": "詳細な統計情報の表示",
       "include-without-media-data": "メディアデータなしのNFTを含む",
       "include-burned-nfts": "バーン済みのNFTを含む",

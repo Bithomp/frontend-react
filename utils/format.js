@@ -60,6 +60,28 @@ export const acceptNftSellOfferButton = (t, setSignRequest, offer, nftType = 'xl
   </button>
 }
 
+export const cancelNftOfferButtons = (t, setSignRequest, account, data) => {
+  if (!data || !account) return null
+  if (data.sellOffers) {
+    const sellOffers = data.sellOffers.filter(offer => !offer.acceptedAt && !offer.canceledAt && offer.owner === account)
+    return sellOffers.map((offer, i) => {
+      return <div key={i}>
+        {cancelNftOfferButton(t, setSignRequest, account, offer, "sell", data.type)}
+        <br /><br />
+      </div>
+    })
+  }
+  if (data.buyOffers) {
+    const buyOffers = data.buyOffers.filter(offer => !offer.acceptedAt && !offer.canceledAt && offer.owner === account)
+    return buyOffers.map((offer, i) => {
+      return <div key={i}>
+        {cancelNftOfferButton(t, setSignRequest, account, offer, "buy", data.type)}
+        <br /><br />
+      </div>
+    })
+  }
+}
+
 export const cancelNftOfferButton = (t, setSignRequest, account, offer, type = "buy", nftType = 'xls20') => {
   let request = null
   if (nftType === 'xls35') {

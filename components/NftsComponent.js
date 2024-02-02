@@ -454,7 +454,7 @@ export default function NftsComponent({
         return amountFormat(best.amount, { tooltip: 'right' })
       }
     }
-    return "Private offer" //shouldn't be the case
+    return t("table.text.private-offer") //shouldn't be the case
   }
 
   let csvHeaders = [

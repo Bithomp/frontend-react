@@ -298,8 +298,9 @@
   },
   "form": {
     "error": {
-      "no-address": "Please enter an address.",
-      "invalid-address": "Please enter a valid address.",
+      "price-empty": "Please enter an amount.",
+      "address-empty": "Please enter an address.",
+      "address-invalid": "Please enter a valid address.",
       "domain-empty": "Please enter web domain.",
       "domain-invalid": "Please enter a valid web domain.",
       "description-empty": "Please enter a description.",
@@ -435,6 +436,7 @@
     "marketplace": "Marketplace",
     "public-key": "Javni ključ",
     "text": {
+      "private-offer": "Private offer",
       "show-extended-statistics": "Pošalji detaljnije statistike",
       "include-without-media-data": "Include NFTs with no media",
       "include-burned-nfts": "Include burned NFTs",

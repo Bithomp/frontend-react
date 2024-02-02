@@ -22,6 +22,7 @@ import {
   codeHighlight,
   trStatus,
   cancelNftOfferButton,
+  cancelNftOfferButtons,
   acceptNftSellOfferButton,
   acceptNftBuyOfferButton
 } from '../../utils/format'
@@ -568,14 +569,10 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
 
     if (!best) return ""
 
-    //show cancel button only if it is my own offer, otherwise it should be buy button
-    //show cancel button only if it's one valid offer, will work in single offers buttons
-    //and won't confuse which order is canceling, when there a few orders for the same price with different destinations (marketplaces)
-    if (best.owner && account?.address && account.address === best.owner && (sellOffers?.length === 1 || data.type === 'xls35')) {
-      return <>
-        {cancelNftOfferButton(t, setSignRequest, account.address, best, "sell", data.type)}
-        <br /><br />
-      </>
+
+    //do not show buy button, if's my own offer (Cancel button will be shown)
+    if (best.owner && account?.address && account.address === best.owner) {
+      return ""
     }
 
     if (mpUrl(best)) {
@@ -663,13 +660,9 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
 
     if (!best) return ""
 
-    //show cancel button only if it is my own offer, otherwise it should be buy button
-    //show cancel button only if it's one offer, it will work in individual offer's buttons and won't confuse which order is canceled when there are a few orders for the same price
-    if (best.owner && account?.address && account.address === best.owner && buyOffers.length === 1) {
-      return <>
-        {cancelNftOfferButton(t, setSignRequest, account.address, best, "buy", data.type)}
-        <br /><br />
-      </>
+    //don't show sell button, if's my own offer (Cancel button will be shown)
+    if (best.owner && account?.address && account.address === best.owner) {
+      return ""
     }
 
     //show sell button only for the NFT owner
@@ -687,7 +680,7 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
     // if removed do not offer to add an offer
     // if not transferable, do not show button to create offers
     if (!id || data.deletedAt || !data.flags.transferable) return ""
-    //if signed in and user is the nft's owner -> make a sell offer, otherwise make a buy offer (no flag)
+    //if signed in and user is the nft's owner -> make a sell offer or a transfer, otherwise make a buy offer (no flag)
     const sell = data?.owner && account?.address && account.address === data.owner
 
     let request = {
@@ -719,6 +712,22 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
         {sell ? t("button.nft.list-for-sale") : t("button.nft.make-offer")}
       </button>
       <br /><br />
+      {sell &&
+        <>
+          <button
+            className='button-action wide center'
+            onClick={() => setSignRequest({
+              wallet: "xumm",
+              request,
+              action: "nftTransfer"
+            })}
+          >
+            <Image src={xummImg} className='xumm-logo' alt="xaman" height={24} width={24} />
+            {t("button.nft.transfer")}
+          </button>
+          <br /><br />
+        </>
+      }
     </>
   }
 
@@ -858,6 +867,7 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
                         <NftPreview nft={data} />
                         {sellButton(data.buyOffers)}
                         {buyButton(data.sellOffers)}
+                        {cancelNftOfferButtons(t, setSignRequest, account?.address, data)}
                         {data.type === 'xls20' &&
                           makeOfferButton(data.sellOffers)
                         }
@@ -1024,15 +1034,6 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
                               <td>{data.sequence}</td>
                             </tr>
                           </>
-                        }
-                        {data.amount !== undefined && data.amount !== null &&
-                          <tr>
-                            <td>{t("table.price")}</td>
-                            <td>{data.amount !== null ? amountFormat(data.amount, { tooltip: "right" }) : t("table.text.unspecified")}</td>
-                          </tr>
-                        }
-                        {data.destination &&
-                          trWithAccount(data, 'destination', t("table.destination"), "/explorer/", "destination")
                         }
                         {!!data.transferFee && <tr>
                           <td>{t("table.transfer-fee")}</td>

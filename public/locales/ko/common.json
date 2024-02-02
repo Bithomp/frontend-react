@@ -298,8 +298,9 @@
   },
   "form": {
     "error": {
-      "no-address": "Please enter an address.",
-      "invalid-address": "Please enter a valid address.",
+      "price-empty": "Please enter an amount.",
+      "address-empty": "Please enter an address.",
+      "address-invalid": "Please enter a valid address.",
       "domain-empty": "Please enter web domain.",
       "domain-invalid": "Please enter a valid web domain.",
       "description-empty": "Please enter a description.",
@@ -435,6 +436,7 @@
     "marketplace": "마켓 플레이스",
     "public-key": "공개 키",
     "text": {
+      "private-offer": "Private offer",
       "show-extended-statistics": "확장된 실시간 데이터를 보여줍니다",
       "include-without-media-data": "미디어 데이터가 없는 NFT를 포함합니다.",
       "include-burned-nfts": "소각된 NFT가 포함되어 있습니다",
