@@ -362,6 +362,10 @@ export const nftImageStyle = (nft, style = {}) => {
     if (imageUrl.slice(0, 10) === 'data:image') {
       style.imageRendering = 'pixelated';
     }
+    if (imageUrl.slice(0, 18) === 'data:image/svg+xml') {
+      style.width = '100%';
+      style.height = '100%';
+    }
     if (nft.deletedAt) {
       style.filter = 'grayscale(1)';
     }

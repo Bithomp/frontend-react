@@ -45,9 +45,10 @@ export default function Tiles({ nftList, type = 'name', convertCurrency, account
 
   const loadingImage = nft => {
     const nftId = nft.nftokenID || nft.uriTokenID
+    const nftImageUrl = nftUrl(nft, 'image');
     if (errored.includes(nftId)) {
       return <div className="img-status">{t("general.load-failed")}</div>;
-    } else if (!loaded.includes(nftId)) {
+    } else if (!loaded.includes(nftId) && !nftImageUrl?.includes('data:image')) {
       return <div className="img-status">{t("general.loading")}</div>;
     }
   }
@@ -57,7 +58,9 @@ export default function Tiles({ nftList, type = 'name', convertCurrency, account
   }
 
   const imageOrVideo = (nft) => {
+    if (!nft) return ""
     let imageStyle = nftImageStyle(nft);
+
     if (Object.keys(imageStyle).length === 0) {
       const nftVideoUrl = nftUrl(nft, 'video');
       if (nftVideoUrl) {
@@ -70,12 +73,15 @@ export default function Tiles({ nftList, type = 'name', convertCurrency, account
         return <div className='tile-content background-secondary'></div>;
       }
     } else {
+      const imageUri = nftUrl(nft, 'image');
+      //data:image show as image right away, as we don't need to wait for it to load
       return <>
         <div className='tile-content' style={imageStyle}></div>
         <img
-          style={{ display: 'none' }}
-          src={nftUrl(nft, 'image')}
-          onLoad={() => setLoaded([...loaded, (nft.nftokenID || nft.uriTokenID)])}
+          bag="sdfsdf"
+          style={imageUri.includes('data:image') ? imageStyle : { display: 'none' }}
+          src={imageUri}
+          onLoad={() => { if (imageUri.slice(0, 10) !== 'data:image') { setLoaded([...loaded, (nft.nftokenID || nft.uriTokenID)]) } }}
           onError={() => setErrored([...errored, (nft.nftokenID || nft.uriTokenID)])}
           alt={nftName(nft)}
         />
