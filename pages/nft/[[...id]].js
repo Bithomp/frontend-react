@@ -1045,9 +1045,18 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
                             <td>
                               {data.uri ?
                                 <>
-                                  {isValidJson(decodedUri) ? codeHighlight(decodedUri) : decodedUri}
-                                  {" "}
-                                  <CopyButton text={decodedUri} />
+                                  {isValidJson(decodedUri) ?
+                                    <>
+                                      <span className='orange'>JSON </span>
+                                      <span className='link' onClick={() => setShowRawMetadata(!showRawMetadata)}>
+                                        {showRawMetadata ? t("table.text.hide") : t("table.text.show")}
+                                      </span>
+                                    </>
+                                    :
+                                    <>
+                                      {decodedUri} <CopyButton text={decodedUri} />
+                                    </>
+                                  }
                                 </>
                                 :
                                 t("table.text.unspecified")
