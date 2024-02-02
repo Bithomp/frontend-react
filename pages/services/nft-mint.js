@@ -132,10 +132,8 @@ export default function NftMint({ setSignRequest, uriQuery, digestQuery }) {
   }
 
   const onDigestChange = e => {
-    if (!calculateDigest) {
-      let digest = e.target.value
-      setDigest(digest)
-    }
+    let digest = e.target.value
+    setDigest(digest)
   }
 
   const onSubmit = async () => {
