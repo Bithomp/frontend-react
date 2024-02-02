@@ -335,18 +335,22 @@ const isCorrectFileType = (url, nftType = 'image') => {
 }
 
 export const nftUrl = (nft, type = 'image', gateway = 'our') => {
-  if (!nft) return null;
-  const url = metaUrl(nft, type, gateway);
+  if (!nft) return null
+  const url = metaUrl(nft, type, gateway)
   if (url) {
-    return url;
+    // do not return IPFS CL links as base64 images
+    if (gateway === 'cl' && url.slice(0, 10) === 'data:image') {
+      return null
+    }
+    return url
   } else {
     if (nft.uri) {
-      const decodedUri = Buffer.from(nft.uri, 'hex');
+      const decodedUri = Buffer.from(nft.uri, 'hex')
       if (isCorrectFileType(decodedUri, type)) {
-        return assetUrl(decodedUri, type, gateway);
+        return assetUrl(decodedUri, type, gateway)
       }
     }
-    return null;
+    return null
   }
 }
 
