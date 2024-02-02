@@ -156,9 +156,9 @@ export const nftName = (nft, options = {}) => {
   } else if (nft?.metadata?.Name) {
     name = nft.metadata.Name
   } else if (nft?.uri) {
-    name = Buffer.from(nft.uri, 'hex')
-    if (name.includes('filename=')) {
-      name = name.toString().split('filename=')[1]
+    const decodedUri = Buffer.from(nft.uri, 'hex')
+    if (decodedUri.includes('filename=')) {
+      name = decodedUri.toString().split('filename=')[1]
     }
   }
   if (options.maxLength) {
