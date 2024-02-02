@@ -13,7 +13,8 @@ import {
   encode,
   isIdValid,
   isValidJson,
-  server
+  server,
+  xahauNetwork
 } from '../../utils'
 
 const checkmark = "/images/checkmark.svg"
@@ -92,7 +93,8 @@ export default function NftMint({ setSignRequest, uriQuery, digestQuery }) {
 
   const getMetadata = async () => {
     setMetadataStatus("Trying to load the metadata from URI...")
-    const response = await axios.get('v2/metadata?url=' + encodeURIComponent(uri)).catch(error => {
+    const nftType = xahauNetwork ? "xls35" : "xls20"
+    const response = await axios.get('v2/metadata?url=' + encodeURIComponent(uri) + '&type=' + nftType).catch(error => {
       console.log(error)
       setMetadataStatus("error")
     })
