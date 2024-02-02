@@ -667,7 +667,11 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
   const xls35Sell = signRequest?.request?.TransactionType === "URITokenCreateSellOffer"
 
   const checkBoxText = (screen, signRequest) => {
-    if (screen === 'nftTransfer') return t("signin.confirm.nft-transfer")
+    if (screen === 'nftTransfer') return <Trans i18nKey="signin.confirm.nft-transfer">
+      I'm offering that NFT for FREE to the Destination account, <span class="orange bold">the destination account would need to accept the NFT transfer</span>.
+    </Trans>
+
+
     if (screen === 'NFTokenBurn') return t("signin.confirm.nft-burn")
     if (screen === 'NFTokenCreateOffer' && (signRequest.request.Flags === 1 || xls35Sell)) {
       return t("signin.confirm.nft-create-sell-offer")

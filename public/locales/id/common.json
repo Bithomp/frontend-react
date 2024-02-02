@@ -111,7 +111,7 @@
     "confirm": {
       "set-domain": "Mengatur Domain",
       "nft-create-transfer-offer-header": "NFT transfer",
-      "nft-transfer": "I'm offering that NFT for FREE to the Destination account, the destination account would need to accept the NFT transfer.",
+      "nft-transfer": "I'm offering that NFT for FREE to the Destination account, <1>the destination account would need to accept the NFT transfer</1>.",
       "nft-accept-sell-offer-header": "Pembelian NFT",
       "nft-accept-buy-offer-header": "Selling NFT",
       "nft-create-sell-offer-header": "Daftar Jual",
