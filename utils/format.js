@@ -62,11 +62,18 @@ export const acceptNftSellOfferButton = (t, setSignRequest, offer, nftType = 'xl
 
 export const cancelNftOfferButtons = (t, setSignRequest, account, data) => {
   if (!data || !account) return null
+
+  //for offer cancelation
+  let nftId = data.nftokenID
+  if (data.type === 'xls35') {
+    nftId = data.uriTokenID
+  }
+
   if (data.sellOffers) {
     const sellOffers = data.sellOffers.filter(offer => !offer.acceptedAt && !offer.canceledAt && offer.owner === account)
     return sellOffers.map((offer, i) => {
       return <div key={i}>
-        {cancelNftOfferButton(t, setSignRequest, account, offer, "sell", data.type)}
+        {cancelNftOfferButton(t, setSignRequest, account, offer, "sell", data.type, nftId)}
         <br /><br />
       </div>
     })
@@ -75,20 +82,20 @@ export const cancelNftOfferButtons = (t, setSignRequest, account, data) => {
     const buyOffers = data.buyOffers.filter(offer => !offer.acceptedAt && !offer.canceledAt && offer.owner === account)
     return buyOffers.map((offer, i) => {
       return <div key={i}>
-        {cancelNftOfferButton(t, setSignRequest, account, offer, "buy", data.type)}
+        {cancelNftOfferButton(t, setSignRequest, account, offer, "buy", data.type, nftId)}
         <br /><br />
       </div>
     })
   }
 }
 
-export const cancelNftOfferButton = (t, setSignRequest, account, offer, type = "buy", nftType = 'xls20') => {
+export const cancelNftOfferButton = (t, setSignRequest, account, offer, type = "buy", nftType = 'xls20', nftId) => {
   let request = null
   if (nftType === 'xls35') {
     request = {
       "Account": account,
       "TransactionType": "URITokenCancelSellOffer",
-      "URITokenID": offer.uriTokenID
+      "URITokenID": nftId
     }
   } else {
     request = {

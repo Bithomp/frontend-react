@@ -447,7 +447,7 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
             ) &&
             <tr>
               <td colSpan="2">
-                {cancelNftOfferButton(t, setSignRequest, account.address, offer, type, "xls20")}
+                {cancelNftOfferButton(t, setSignRequest, account.address, offer, type, data.type, id)}
               </td>
             </tr>
           }

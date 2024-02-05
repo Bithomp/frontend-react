@@ -236,7 +236,7 @@ export default function NftOffer({ setSignRequest, signRequest, account, id }) {
                       || (account?.address && data?.destination === account.address) // if the offer is for me
                     ) &&
                       <>
-                        {cancelNftOfferButton(t, setSignRequest, data.owner, data, "sell", "xls20")}
+                        {cancelNftOfferButton(t, setSignRequest, data.owner, data, "sell", data.type, (data.nftokenID || data.uriTokenID))}
                         <br /><br />
                       </>
                     }
