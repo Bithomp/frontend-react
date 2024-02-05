@@ -270,6 +270,7 @@
     "copy-my-address": "Copy my address",
     "sign": "Sign",
     "nft": {
+      "add-another-sell-offer": "Add another sell offer",
       "transfer": "Transfer NFT",
       "update-sell-offer": "Update the sell offer",
       "cancel-sell-offer-for": "Cancel Sell offer for {{amount}}",

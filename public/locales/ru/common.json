@@ -270,6 +270,7 @@
     "copy-my-address": "Копировать адрес",
     "sign": "Подписать",
     "nft": {
+      "add-another-sell-offer": "Добавить еще один офер продажи",
       "transfer": "Передать NFT",
       "update-sell-offer": "Изменить офер продажи",
       "cancel-sell-offer-for": "Отменить офер продажи на {{amount}}",

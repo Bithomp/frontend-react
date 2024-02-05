@@ -270,6 +270,7 @@
     "copy-my-address": "Kopiraj moju adresu",
     "sign": "Potpiši",
     "nft": {
+      "add-another-sell-offer": "Add another sell offer",
       "transfer": "Transfer NFT",
       "update-sell-offer": "Update the sell offer",
       "cancel-sell-offer-for": "Poništi prodajnu ponudu za {{amount}}",

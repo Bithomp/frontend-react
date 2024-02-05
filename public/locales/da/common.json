@@ -270,6 +270,7 @@
     "copy-my-address": "Kopiér min adresse",
     "sign": "Underskriv",
     "nft": {
+      "add-another-sell-offer": "Add another sell offer",
       "transfer": "Transfer NFT",
       "update-sell-offer": "Update the sell offer",
       "cancel-sell-offer-for": "Annuller Sælg tilbud for {{amount}}",

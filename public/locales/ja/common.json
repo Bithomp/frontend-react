@@ -270,6 +270,7 @@
     "copy-my-address": "アドレスをコピー",
     "sign": "署名",
     "nft": {
+      "add-another-sell-offer": "Add another sell offer",
       "transfer": "Transfer NFT",
       "update-sell-offer": "Update the sell offer",
       "cancel-sell-offer-for": "{{amount}}の売却オファーをキャンセル",

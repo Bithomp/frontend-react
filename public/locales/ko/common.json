@@ -270,6 +270,7 @@
     "copy-my-address": "주소를 복사하세요",
     "sign": "서명",
     "nft": {
+      "add-another-sell-offer": "Add another sell offer",
       "transfer": "Transfer NFT",
       "update-sell-offer": "Update the sell offer",
       "cancel-sell-offer-for": "{{amount}}에 대한 판매 제안 취소",

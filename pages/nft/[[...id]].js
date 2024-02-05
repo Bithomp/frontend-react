@@ -689,11 +689,14 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
       "NFTokenID": id
     }
 
+    let hasAValidSellOffer = false
+
     if (sell) {
       if (sellOffers) {
         sellOffers = sellOffers.filter(function (offer) { return offer.valid })
-        // do not show "make sell offer" button, when there are active valid sell offers
-        if (sellOffers.length) return ""
+        if (sellOffers.length) {
+          hasAValidSellOffer = true
+        }
       }
       request.Flags = 1
     } else {
@@ -709,7 +712,7 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
         })}
       >
         <Image src={xummImg} className='xumm-logo' alt="xaman" height={24} width={24} />
-        {sell ? t("button.nft.list-for-sale") : t("button.nft.make-offer")}
+        {sell ? (hasAValidSellOffer ? t("button.nft.add-another-sell-offer") : t("button.nft.list-for-sale")) : t("button.nft.make-offer")}
       </button>
       <br /><br />
       {sell &&

@@ -3,6 +3,7 @@ import { stripText, shortName } from '.'
 
 import Link from 'next/link'
 import LinkIcon from "../public/images/link.svg"
+import { encode } from 'punycode'
 
 //partner market places (destinations)
 export const partnerMarketplaces = {
@@ -340,7 +341,7 @@ export const nftUrl = (nft, type = 'image', gateway = 'our') => {
   if (url) {
     // do not return IPFS CL links as base64 images
     if (gateway === 'cl' && url.slice(0, 10) === 'data:image') {
-      return null
+      return encodeURIComponent(url)
     }
     return url
   } else {
