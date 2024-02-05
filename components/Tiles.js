@@ -79,7 +79,7 @@ export default function Tiles({ nftList, type = 'name', convertCurrency, account
         <div className='tile-content' style={imageStyle}></div>
         <img
           bag="sdfsdf"
-          style={imageUri.includes('data:image') ? imageStyle : { display: 'none' }}
+          style={imageUri?.includes('data:image') ? imageStyle : { display: 'none' }}
           src={imageUri}
           onLoad={() => { if (imageUri.slice(0, 10) !== 'data:image') { setLoaded([...loaded, (nft.nftokenID || nft.uriTokenID)]) } }}
           onError={() => setErrored([...errored, (nft.nftokenID || nft.uriTokenID)])}
