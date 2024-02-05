@@ -95,6 +95,10 @@ export default function NftsComponent({
   ]
 
   const checkApi = async (options) => {
+
+    // if accoun't nft explorer and there is no owner or id, return
+    if (!nftExplorer && !(id || owner)) return
+
     let marker = hasMore;
     let nftsData = data;
     if (options?.restart) {
@@ -265,7 +269,7 @@ export default function NftsComponent({
           value: usernameOrAddress(rawData, 'owner')
         })
       } else {
-        queryRemoveList.push("owner");
+        queryRemoveList.push("owner")
       }
     }
 
