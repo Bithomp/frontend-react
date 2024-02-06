@@ -43,15 +43,15 @@
     "developers": {
       "developers": "Pengembang",
       "account-generation": "Generasi Akun",
-      "faucet": "Kran",
+      "faucet": "Faucet",
       "api": "Dokumentasi API",
-      "api-admin": "API account (Partner portal)"
+      "api-admin": "Akun API (Portal Partner)"
     },
     "legal": "Hukum",
     "disclaimer": "Penyangkalan",
     "privacy-policy": "Kebijakan Privasi",
     "terms-and-conditions": "Syarat dan Ketentuan",
-    "terms-api-bots": "API & Bots terms of use",
+    "terms-api-bots": "Syarat penggunaan API & Bots",
     "customer-support": "Dukungan Pelanggan",
     "press": "Pers",
     "merch": "Toko Merchandise",
@@ -110,8 +110,8 @@
     "not-available": "Tidak tersedia",
     "confirm": {
       "set-domain": "Mengatur Domain",
-      "nft-create-transfer-offer-header": "NFT transfer",
-      "nft-transfer": "I'm offering that NFT for FREE to the Destination account, <1>the destination account would need to accept the NFT transfer</1>.",
+      "nft-create-transfer-offer-header": "Kirim NFT",
+      "nft-transfer": "Saya menawarkan NFT ini GRATIS kepada akun Tujuan, <1>akun tujuan perlu menerima transfer NFT</1>.",
       "nft-accept-sell-offer-header": "Pembelian NFT",
       "nft-accept-buy-offer-header": "Selling NFT",
       "nft-create-sell-offer-header": "Daftar Jual",
@@ -270,9 +270,9 @@
     "copy-my-address": "Salin alamat saya",
     "sign": "Tanda tangan",
     "nft": {
-      "add-another-sell-offer": "Add another sell offer",
+      "add-another-sell-offer": "Tambahkan penawaran penjualan lainnya",
       "transfer": "Transfer NFT",
-      "update-sell-offer": "Update the sell offer",
+      "update-sell-offer": "Update penawaran penjualan",
       "cancel-sell-offer-for": "Batalkan Penawaran Jual untuk {{amount}}",
       "cancel-buy-offer-for": "Batalkan Penawaran Beli untuk {{amount}}",
       "cancel-transfer": "Batalkan Transfer NFT",
@@ -299,18 +299,18 @@
   },
   "form": {
     "error": {
-      "price-empty": "Please enter an amount.",
-      "address-empty": "Please enter an address.",
-      "address-invalid": "Please enter a valid address.",
-      "domain-empty": "Please enter web domain.",
-      "domain-invalid": "Please enter a valid web domain.",
-      "description-empty": "Please enter a description.",
-      "description-short": "Description is too short.",
-      "email-empty": "Silakan masukkan alamat surel Anda.",
-      "email-invalid": "Silakan masukkan alamat surel yang valid.",
+      "price-empty": "Mohon masukkan jumlah.",
+      "address-empty": "Mohon masukkan alamat.",
+      "address-invalid": "Mohon masukkan alamat yang valid.",
+      "domain-empty": "Mohon masukkan domain web.",
+      "domain-invalid": "Mohon masukkan domain web yang valid.",
+      "description-empty": "Mohon masukkan deskripsi.",
+      "description-short": "Deskripsi terlalu pendek.",
+      "email-empty": "Silakan masukkan alamat email Anda.",
+      "email-invalid": "Silakan masukkan alamat email yang valid.",
       "password-empty": "Silakan masukkan kata sandi Anda.",
       "password-invalid": "Silakan masukkan kata sandi yang valid."
-    }
+  }
   },
   "error": {
     "Network Error": "Sepertinya tidak ada koneksi internet ;(",
@@ -359,7 +359,7 @@
   },
   "table": {
     "mints": "Mints",
-    "mint-period": "Mint period",
+    "mint-period": "Periode Mint",
     "warning": "Warning",
     "sequence": "Urutan",
     "version": "Versi",
