@@ -359,6 +359,7 @@
   },
   "table": {
     "mints": "Mints",
+    "period": "Periode",
     "mint-period": "Mint period",
     "warning": "Warning",
     "sequence": "Sekvens",

@@ -359,6 +359,7 @@
   },
   "table": {
     "mints": "Mints",
+    "period": "Period",
     "mint-period": "Mint period",
     "warning": "Warning",
     "sequence": "절차",

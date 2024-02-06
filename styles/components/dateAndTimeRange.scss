@@ -55,12 +55,13 @@ input {
   }
 
   &.dateAndTimeRange {
-    height: 26px;
+    height: 29px;
     border: 1px solid var(--unaccent-icon);
     margin-right: 10px;
     padding: 1.4px;
     padding-left: 5px;
     margin-bottom: 10px;
+    padding-top: 0;
   }
 }
 

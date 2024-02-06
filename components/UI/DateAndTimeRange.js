@@ -7,10 +7,11 @@ import "react-datepicker/dist/react-datepicker.css"
 import { registerLocale, setDefaultLocale } from "react-datepicker"
 
 import Tabs from "../Tabs"
-import { network } from "../../utils"
+import { network, useWidth } from "../../utils"
 
 export default function DateAndTimeRange({ setPeriod, minDate, tabs, defaultPeriodName, setChartSpan, style }) {
   const { i18n, t } = useTranslation()
+  const windowWidth = useWidth()
 
   const [startDate, setStartDate] = useState(null)
   const [endDate, setEndDate] = useState(null)
@@ -133,7 +134,10 @@ export default function DateAndTimeRange({ setPeriod, minDate, tabs, defaultPeri
 
   return <span style={style}>
     {tabs &&
-      <Tabs tabList={periodTabs} tab={periodName} setTab={setPeriodName} name="periodTabs" />
+      <>
+        <Tabs tabList={periodTabs} tab={periodName} setTab={setPeriodName} name="periodTabs" />
+        {windowWidth < 720 && <br />}
+      </>
     }
 
     <DatePicker
@@ -146,7 +150,7 @@ export default function DateAndTimeRange({ setPeriod, minDate, tabs, defaultPeri
       minDate={minDate}
       maxDate={new Date()}
       endDate={endDate}
-      dateFormat="Pp"
+      dateFormat="yyyy/MM/dd HH:mm"
       className="dateAndTimeRange"
       showMonthDropdown
       showYearDropdown
@@ -161,7 +165,7 @@ export default function DateAndTimeRange({ setPeriod, minDate, tabs, defaultPeri
       endDate={endDate}
       minDate={startDate}
       maxDate={new Date()}
-      dateFormat="Pp"
+      dateFormat="yyyy/MM/dd HH:mm"
       className="dateAndTimeRange"
       showMonthDropdown
       showYearDropdown
