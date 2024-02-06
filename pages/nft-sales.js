@@ -361,10 +361,14 @@ export default function NftSales({
     />
     <div className="content-text" style={{ minHeight: "480px" }}>
       <h1 className="center">{t("nft-sales.header")}</h1>
-      <p className='center'><Link href={"/nft-explorer?view=" + viewTab + issuerTaxonUrlPart}>{t("nft-explorer.header")}</Link></p>
+      <p className='center'>
+        <Link href={"/nft-explorer?view=" + viewTab + issuerTaxonUrlPart}>{t("nft-explorer.header")}</Link>
+      </p>
       <div className='center'>
         <span className='halv'>
-          <span className='input-title'>{t("table.issuer")} {userOrServiceLink(data, 'issuer')}</span>
+          <span className='input-title'>
+            {t("table.issuer")} {userOrServiceLink(data, 'issuer')}
+          </span>
           <input
             placeholder={t("nfts.search-by-issuer")}
             value={issuerInput}
@@ -376,7 +380,9 @@ export default function NftSales({
           />
         </span>
         <span className='halv'>
-          <span className='input-title'>{t("table.taxon")}</span>
+          <span className='input-title'>
+            {t("table.taxon")}
+          </span>
           <input
             placeholder={t("nfts.search-by-taxon")}
             value={taxonInput}

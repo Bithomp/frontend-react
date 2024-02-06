@@ -560,7 +560,6 @@ export default function NftsComponent({
               className="input-text"
               spellCheck="false"
               maxLength="100"
-              disabled={listTab === 'onSale'}
               onKeyPress={enterPress}
             />
           </span>
@@ -574,7 +573,12 @@ export default function NftsComponent({
         {listTab === 'nfts' &&
           <div className='center'>
             {t("table.mints")}
-            <Tabs tabList={listNftsOrderTabList} tab={listNftsOrderTab} setTab={setListNftsOrderTab} name='listNftsOrder' />
+            <Tabs
+              tabList={listNftsOrderTabList}
+              tab={listNftsOrderTab}
+              setTab={setListNftsOrderTab}
+              name='listNftsOrder'
+            />
             {nftExplorer && <>
               {windowWidth < 720 && <br />}
               <span style={{ marginRight: "10px" }}>
