@@ -484,6 +484,7 @@
 		"month": "30 hari",
 		"week": "7 hari",
 		"day": "24 jam",
+		"hour": "1 jam",
 		"currencies": "Mata wang",
 		"issuers": "Penerbit",
 		"marketplaces": "Pasaran",
@@ -574,11 +575,11 @@
 	},
 	"nft-volumes": {
 		"header": "Jualan NFT",
-		"text0": "XRPL mempunyai {{allSales}} NFT {{currency}} {{saleType}} jualan sebanyak {{allVolume}}.",
+		"text0": "For that period XRPL mempunyai {{allSales}} NFT {{currency}} {{saleType}} jualan sebanyak {{allVolume}}.",
 		"brokers": {
 			"desc": "Ini adalah senarai akaun broker NFT. Anda boleh mencari di sini jumlah bot padanan tawaran. Pasaran menggunakan model perdagangan campuran, di sini anda hanya boleh melihat jumlah perdagangan melalui model perantaraan.",
 			"no-broker": "Tiada broker",
-			"text0": "XRPL mempunyai {{allSales}} NFT {{currency}} {{saleType}} jualan sebanyak {{allVolume}}, dari jumlah tersebut, <9>{{brokerSales}}</9> {{percentBrokerSales}} daripada perdagangan dengan jumlah sebanyak <13>{{brokerVolume}}</13> {{percentBrokerVolume}} adalah melalui model perantaraan."
+			"text0": "For that period XRPL mempunyai {{allSales}} NFT {{currency}} {{saleType}} jualan sebanyak {{allVolume}}, dari jumlah tersebut, <9>{{brokerSales}}</9> {{percentBrokerSales}} daripada perdagangan dengan jumlah sebanyak <13>{{brokerVolume}}</13> {{percentBrokerVolume}} adalah melalui model perantaraan."
 		},
 		"marketplaces": {
 			"desc": "Ini adalah senarai Pasaran NFT di XRPL. Jumlah di sini tidak termasuk jualan utama (mints) yang dilakukan dalam 2 transaksi (pembayaran dan pemindahan NFT)."

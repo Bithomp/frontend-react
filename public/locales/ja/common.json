@@ -484,6 +484,7 @@
     "month": "30日間",
     "week": "7日間",
     "day": "24時間",
+    "hour": "1時間",
     "currencies": "通貨",
     "issuers": "発行者",
     "marketplaces": "マーケットプレイス",
@@ -574,11 +575,11 @@
   },
   "nft-volumes": {
     "header": "NFTの取引量",
-    "text0": "XRPLは{{saleType}}にて{{allSales}} {{currency}} NFT({{allVolume}})の取引が行われました。",
+    "text0": "For that period XRPLは{{saleType}}にて{{allSales}} {{currency}} NFT({{allVolume}})の取引が行われました。",
     "brokers": {
       "desc": "NFTブローカーアカウントのリストです。ここでは、オファーマッチングボットの取引量を確認できます。マーケットプレイスではさまざまな取引モデルを使用していますが、ここではブローカーモデルによる取引量のみを見ることができます。",
       "no-broker": "非ブローカー",
-      "text0": "XRPLは{{saleType}}にて{{allSales}}<3>{{currency}}</3> NFT/{{allVolume}}の売上があり、そのうちの<9>{{brokerSales}}</9> {{percentBrokerSales}}/<13>{{brokerVolume}}</13> {{percentBrokerVolume}}はブローカー取引によるものでした。"
+      "text0": "For that period XRPLは{{saleType}}にて{{allSales}}<3>{{currency}}</3> NFT/{{allVolume}}の売上があり、そのうちの<9>{{brokerSales}}</9> {{percentBrokerSales}}/<13>{{brokerVolume}}</13> {{percentBrokerVolume}}はブローカー取引によるものでした。"
     },
     "marketplaces": {
       "desc": "XRPLのNFTマーケットプレイス一覧です。ここでの取引量には、2つの取引（支払いとNFT送金）内で行われた一次販売(ミント)は含まれていません。"
