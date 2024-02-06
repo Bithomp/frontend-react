@@ -1,7 +1,7 @@
 {
   "menu": {
     "services": {
-      "nft-mint": "Mint NFT"
+      "nft-mint": "NFT minten"
     },
     "personal": {
       "personal": "Private",
@@ -45,13 +45,13 @@
       "account-generation": "Wallet erstellen",
       "faucet": "Wasserhahn",
       "api": "API Dokumentation",
-      "api-admin": "API account (Partner portal)"
+      "api-admin": "API Konto (Partner Portal)"
     },
     "legal": "Rechtliches",
     "disclaimer": "Haftungsausschluss",
     "privacy-policy": "Datenschutz",
     "terms-and-conditions": "AGB",
-    "terms-api-bots": "API & Bots terms of use",
+    "terms-api-bots": "API & Bots Nutzungsbedingungen",
     "customer-support": "Kundensupport",
     "press": "Presse",
     "merch": "Merch Shop",
@@ -110,8 +110,8 @@
     "not-available": "Nicht verfügbar",
     "confirm": {
       "set-domain": "Eine Domain definieren",
-      "nft-create-transfer-offer-header": "NFT transfer",
-      "nft-transfer": "I'm offering that NFT for FREE to the Destination account, <1>the destination account would need to accept the NFT transfer</1>.",
+      "nft-create-transfer-offer-header": "NFT Transfer",
+      "nft-transfer": "Ich biete diesen NFT KOSTENLOS für die Zielwallet an, <1> die Zielwallet muss den NFT Transfer akzeptieren</1>.",
       "nft-accept-sell-offer-header": "NFT Kauf",
       "nft-accept-buy-offer-header": "NFT verkaufen",
       "nft-create-sell-offer-header": "Liste zum Verkauf",
@@ -270,16 +270,16 @@
     "copy-my-address": "Meine Adresse kopieren",
     "sign": "Signieren",
     "nft": {
-      "add-another-sell-offer": "Add another sell offer",
-      "transfer": "Transfer NFT",
-      "update-sell-offer": "Update the sell offer",
+      "add-another-sell-offer": "Weiteres Verkaufsangebot hinzufügen",
+      "transfer": "NFT Transfer",
+      "update-sell-offer": "Verkaufsangebot aktualisieren",
       "cancel-sell-offer-for": "Verkaufsangebot für {{amount}} abbrechen",
       "cancel-buy-offer-for": "Kaufangebot für {{amount}} abbrechen",
       "cancel-transfer": "NFT Transfer abbrechen",
       "accept-transfer": "NFT Transfer akzeptieren",
       "buy-for-amount-on": "Für {{amount}} auf {{service}} kaufen",
       "buy-for-amount": "Kaufen für {{amount}}",
-      "sell-for-amount": "Verkaufen füror {{amount}}",
+      "sell-for-amount": "Verkaufen für {{amount}}",
       "make-offer": "Angebot machen",
       "list-for-sale": "Zum Verkauf anbieten",
       "burn": "NFT vernichten"
@@ -299,9 +299,9 @@
   },
   "form": {
     "error": {
-      "price-empty": "Please enter an amount.",
-      "address-empty": "Please enter an address.",
-      "address-invalid": "Please enter a valid address.",
+      "price-empty": "Bitte geben Sie einen Betrag ein.",
+      "address-empty": "Bitte geben Sie eine Adresse ein.",
+      "address-invalid": "Bitte geben Sie eine gültige Adresse ein.",
       "domain-empty": "Bitte geben Sie die Domain ein.",
       "domain-invalid": "Bitte geben Sie eine gültige Domain ein.",
       "description-empty": "Bitte geben Sie eine Beschreibung ein",
@@ -359,8 +359,8 @@
   },
   "table": {
     "mints": "Mints",
-    "mint-period": "Mint period",
-    "warning": "Warning",
+    "mint-period": "Mint Periode",
+    "warning": "Warnung",
     "sequence": "Sequenz",
     "version": "Version",
     "domain": "Domain",

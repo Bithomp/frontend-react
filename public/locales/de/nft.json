@@ -17,7 +17,7 @@
       "invalid-digest": "Die Integritätsprüfung des NFTs ist fehlgeschlagen. Der Digest stimmt nicht mit den NFT-Metadaten überein."
     },
     "warnings": {
-      "nft-crawler-delay": "Some data is outdated, the last update: {{lastUpdate}}. Our servers are catching up, check later for more accurate data."
+      "nft-crawler-delay": "Einige Daten sind veraltet, letztes Update: {{lastUpdate}}. Unsere Server holen auf, prüfen Sie später erneut für genauere Daten."
     }
   }
 }
