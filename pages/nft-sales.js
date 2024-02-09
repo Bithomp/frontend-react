@@ -7,7 +7,7 @@ import InfiniteScroll from 'react-infinite-scroll-component'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import Link from 'next/link'
 
-import { stripText, isAddressOrUsername, setTabParams } from '../utils'
+import { stripText, isAddressOrUsername, setTabParams, useWidth } from '../utils'
 import { isValidTaxon, nftThumbnail, nftNameLink } from '../utils/nft'
 import {
   amountFormat,
@@ -42,7 +42,7 @@ export const getServerSideProps = async ({ query, locale }) => {
       currencyIssuer: currencyIssuer || "",
       issuerQuery: issuer || "",
       taxonQuery: taxon || "",
-      period: period || "week",
+      periodNameQuery: period || "week",
       sortCurrencyQuery: sortCurrency || "",
       marketplace: marketplace || "",
       ...(await serverSideTranslations(locale, ['common'])),
@@ -53,6 +53,7 @@ export const getServerSideProps = async ({ query, locale }) => {
 import SEO from '../components/SEO'
 import Tabs from '../components/Tabs'
 import Tiles from '../components/Tiles'
+import DateAndTimeRange from '../components/UI/DateAndTimeRange'
 
 import LinkIcon from "../public/images/link.svg"
 import DownloadIcon from "../public/images/download.svg"
@@ -65,30 +66,31 @@ export default function NftSales({
   currencyIssuer,
   issuerQuery,
   taxonQuery,
-  period,
+  periodNameQuery,
   sortCurrencyQuery,
   selectedCurrency,
   marketplace,
   account
 }) {
-  const { t } = useTranslation();
+  const { t } = useTranslation()
   const router = useRouter()
+  const windowWidth = useWidth()
 
   const [rendered, setRendered] = useState(false)
   const [data, setData] = useState(null);
   const [sales, setSales] = useState([]);
-  const [viewTab, setViewTab] = useState(view);
-  const [loading, setLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
-  const [saleTab, setSaleTab] = useState(sale);
-  const [issuer, setIssuer] = useState(issuerQuery);
-  const [taxon, setTaxon] = useState(taxonQuery);
-  const [issuerInput, setIssuerInput] = useState(issuerQuery);
-  const [taxonInput, setTaxonInput] = useState(taxonQuery);
-  const [total, setTotal] = useState({});
-  const [periodTab, setPeriodTab] = useState(period);
-  const [pageTab, setPageTab] = useState(list);
-  const [hasMore, setHasMore] = useState("first");
+  const [viewTab, setViewTab] = useState(view)
+  const [loading, setLoading] = useState(false)
+  const [errorMessage, setErrorMessage] = useState("")
+  const [saleTab, setSaleTab] = useState(sale)
+  const [issuer, setIssuer] = useState(issuerQuery)
+  const [taxon, setTaxon] = useState(taxonQuery)
+  const [issuerInput, setIssuerInput] = useState(issuerQuery)
+  const [taxonInput, setTaxonInput] = useState(taxonQuery)
+  const [total, setTotal] = useState({})
+  const [period, setPeriod] = useState("")
+  const [pageTab, setPageTab] = useState(list)
+  const [hasMore, setHasMore] = useState("first")
   const [dateAndTimeNow, setDateAndTimeNow] = useState('')
 
   const sortCurrency = sortCurrencyQuery.toLowerCase() || selectedCurrency
@@ -117,15 +119,9 @@ export default function NftSales({
     { value: 'last', label: t("tabs.latest-sales") }
   ]
 
-  const periodTabList = [
-    { value: 'all', label: t("tabs.all-time") },
-    //{ value: 'year', label: t("tabs.year") },
-    { value: 'month', label: t("tabs.month") },
-    { value: 'week', label: t("tabs.week") },
-    { value: 'day', label: t("tabs.day") }
-  ]
-
   const checkApi = async (options) => {
+    if (!period) return
+
     let marker = hasMore;
     let salesData = sales;
     let markerUrlPart = '';
@@ -149,11 +145,11 @@ export default function NftSales({
       marketplaceUrlPart = '&marketplace=' + marketplace
     }
 
-    if (periodTab) {
-      periodUrlPart = '&period=' + periodTab
+    if (period) {
+      periodUrlPart = '&period=' + period
     }
 
-    let collectionUrlPart = '';
+    let collectionUrlPart = ''
     if (issuer) {
       collectionUrlPart = '&issuer=' + issuer
       if (taxon) {
@@ -227,11 +223,11 @@ export default function NftSales({
       checkApi({ restart: true })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [saleTab, issuer, taxon, periodTab, pageTab, sortCurrency])
+  }, [saleTab, issuer, taxon, pageTab, sortCurrency, period])
 
   useEffect(() => {
-    let queryAddList = [];
-    let queryRemoveList = [];
+    let queryAddList = []
+    let queryRemoveList = []
     if (isAddressOrUsername(data?.issuer)) {
       queryAddList.push({
         name: "issuer",
@@ -240,11 +236,15 @@ export default function NftSales({
       if (isValidTaxon(data?.taxon)) {
         queryAddList.push({ name: "taxon", value: data.taxon })
       } else {
-        queryRemoveList.push("taxon");
+        queryRemoveList.push("taxon")
       }
     } else {
-      queryRemoveList.push("issuer");
-      queryRemoveList.push("taxon");
+      queryRemoveList.push("issuer")
+      queryRemoveList.push("taxon")
+    }
+
+    if (period) {
+      queryAddList.push({ name: "period", value: period })
     }
 
     if (!currency || (currency.toLowerCase() !== 'xrp' && !isAddressOrUsername(currencyIssuer))) {
@@ -268,13 +268,6 @@ export default function NftSales({
         paramName: "view"
       },
       {
-        tabList: periodTabList,
-        tab: periodTab,
-        defaultTab: "week",
-        setTab: setPeriodTab,
-        paramName: "period"
-      },
-      {
         tabList: pageTabList,
         tab: pageTab,
         defaultTab: "top",
@@ -287,7 +280,7 @@ export default function NftSales({
     )
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [viewTab, saleTab, data, periodTab, currency, currencyIssuer, pageTab]);
+  }, [viewTab, saleTab, data, currency, currencyIssuer, pageTab, period])
 
   const searchClick = () => {
     if (isAddressOrUsername(issuerInput)) {
@@ -363,15 +356,19 @@ export default function NftSales({
         + (currency ? (" " + currency) : "")
         + (currencyIssuer ? (" " + currencyIssuer) : "")
         + (viewTab === "list" ? (" " + t("tabs.list")) : "")
-        + (periodTab ? (" (" + (periodTab === 'all' ? t("tabs.all-time") : t("tabs." + periodTab)) + ")") : "")
+        + (period ? (" " + period) : "")
       }
     />
     <div className="content-text" style={{ minHeight: "480px" }}>
       <h1 className="center">{t("nft-sales.header")}</h1>
-      <p className='center'><Link href={"/nft-explorer?view=" + viewTab + issuerTaxonUrlPart}>{t("nft-explorer.header")}</Link></p>
+      <p className='center'>
+        <Link href={"/nft-explorer?view=" + viewTab + issuerTaxonUrlPart}>{t("nft-explorer.header")}</Link>
+      </p>
       <div className='center'>
         <span className='halv'>
-          <span className='input-title'>{t("table.issuer")} {userOrServiceLink(data, 'issuer')}</span>
+          <span className='input-title'>
+            {t("table.issuer")} {userOrServiceLink(data, 'issuer')}
+          </span>
           <input
             placeholder={t("nfts.search-by-issuer")}
             value={issuerInput}
@@ -383,7 +380,9 @@ export default function NftSales({
           />
         </span>
         <span className='halv'>
-          <span className='input-title'>{t("table.taxon")}</span>
+          <span className='input-title'>
+            {t("table.taxon")}
+          </span>
           <input
             placeholder={t("nfts.search-by-taxon")}
             value={taxonInput}
@@ -400,9 +399,23 @@ export default function NftSales({
         <input type="button" className="button-action" value={t("button.search")} onClick={searchClick} />
       </p>
       <div className='tabs-inline'>
+
+        {windowWidth < 720 && <br />}
+        {t("table.period")}
+        {windowWidth < 720 && <br />}
+
+        <DateAndTimeRange
+          period={period}
+          setPeriod={setPeriod}
+          defaultPeriodName={periodNameQuery}
+          minDate="nft"
+          tabs={true}
+        />
+
+        <br />
+
         <Tabs tabList={pageTabList} tab={pageTab} setTab={setPageTab} name="page" />
         <Tabs tabList={viewTabList} tab={viewTab} setTab={setViewTab} name="view" />
-        <Tabs tabList={periodTabList} tab={periodTab} setTab={setPeriodTab} name="period" />
         <Tabs tabList={saleTabList} tab={saleTab} setTab={setSaleTab} name="sale" />
         {rendered &&
           <CSVLink
@@ -417,6 +430,7 @@ export default function NftSales({
           </CSVLink>
         }
       </div>
+
       <InfiniteScroll
         dataLength={sales.length}
         next={checkApi}

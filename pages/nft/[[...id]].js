@@ -437,9 +437,8 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
               }
             </>
           }
-          {/* buyButton already have a cancel option, but only for valid offers */}
           {
-            !offer.valid && !offer.canceledAt && !offer.acceptedAt &&
+            !offer.canceledAt && !offer.acceptedAt &&
             (
               (account?.address && offer.owner && account.address === offer.owner)
               || offer.validationErrors?.includes('Offer is expired')
@@ -568,7 +567,6 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
     }
 
     if (!best) return ""
-
 
     //do not show buy button, if's my own offer (Cancel button will be shown)
     if (best.owner && account?.address && account.address === best.owner) {
