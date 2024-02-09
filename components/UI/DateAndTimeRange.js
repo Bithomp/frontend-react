@@ -7,14 +7,16 @@ import "react-datepicker/dist/react-datepicker.css"
 import { registerLocale, setDefaultLocale } from "react-datepicker"
 
 import Tabs from "../Tabs"
-import { network } from "../../utils"
+import { network, useWidth } from "../../utils"
 
 export default function DateAndTimeRange({ setPeriod, minDate, tabs, defaultPeriodName, setChartSpan, style }) {
   const { i18n, t } = useTranslation()
+  const windowWidth = useWidth()
 
   const [startDate, setStartDate] = useState(null)
   const [endDate, setEndDate] = useState(null)
   const [periodName, setPeriodName] = useState(defaultPeriodName)
+  const [ready, setReady] = useState(false)
 
   let hourAgo = new Date().setHours(new Date().getHours() - 1)
   let dayAgo = new Date().setDate(new Date().getDate() - 1)
@@ -44,14 +46,16 @@ export default function DateAndTimeRange({ setPeriod, minDate, tabs, defaultPeri
   }
 
   const periodTabs = [
-    { value: "hour", label: "Hour" },
-    { value: "day", label: "Day" },
-    { value: "week", label: "Week" },
-    { value: "month", label: "Month" },
-    { value: "year", label: "Year" }
+    { value: "hour", label: t("tabs.hour") },
+    { value: "day", label: t("tabs.day") },
+    { value: "week", label: t("tabs.week") },
+    { value: "month", label: t("tabs.month") },
+    { value: "year", label: t("tabs.year") },
+    { value: "all", label: t("tabs.all-time") }
   ]
 
   useEffect(() => {
+    setReady(true)
     let newStartDate = null
     setEndDate(new Date())
     if (periodName === "hour") {
@@ -132,8 +136,11 @@ export default function DateAndTimeRange({ setPeriod, minDate, tabs, defaultPeri
   }
 
   return <span style={style}>
-    {tabs &&
-      <Tabs tabList={periodTabs} tab={periodName} setTab={setPeriodName} name="periodTabs" />
+    {tabs && ready &&
+      <>
+        <Tabs tabList={periodTabs} tab={periodName} setTab={setPeriodName} name="periodTabs" />
+        {windowWidth < 910 && <br />}
+      </>
     }
 
     <DatePicker
@@ -146,7 +153,7 @@ export default function DateAndTimeRange({ setPeriod, minDate, tabs, defaultPeri
       minDate={minDate}
       maxDate={new Date()}
       endDate={endDate}
-      dateFormat="Pp"
+      dateFormat="yyyy/MM/dd HH:mm"
       className="dateAndTimeRange"
       showMonthDropdown
       showYearDropdown
@@ -161,7 +168,7 @@ export default function DateAndTimeRange({ setPeriod, minDate, tabs, defaultPeri
       endDate={endDate}
       minDate={startDate}
       maxDate={new Date()}
-      dateFormat="Pp"
+      dateFormat="yyyy/MM/dd HH:mm"
       className="dateAndTimeRange"
       showMonthDropdown
       showYearDropdown
