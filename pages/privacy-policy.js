@@ -24,7 +24,7 @@ export default function PrivacyPolicy() {
       />
       <div className="content-text">
         <h1>Privacy Policy</h1>
-        <p>Last updated: August 30, 2023</p>
+        <p>Last updated: February 9, 2024</p>
         <p>This Privacy Policy describes Our policies and procedures on the collection, use and disclosure of Your information when You use the Service and tells You about Your privacy rights and how the law protects You.</p>
         <p>We use Your Personal data to provide and improve the Service. By using the Service, You agree to the collection and use of information in accordance with this Privacy Policy.</p>
         <h1>Interpretation and Definitions</h1>
@@ -175,6 +175,52 @@ export default function PrivacyPolicy() {
           <li><a href="https://support.apple.com/en-ie/guide/safari/sfri11471/mac">Apple Safari</a></li>
         </ul>
         <p>For any other web browser, please visit your web browser's official web pages.</p>
+        <h1>Use of Cloudflare Services</h1>
+        <p><strong>Third-Party Services:</strong></p>
+        <p>Our website utilizes the services of Cloudflare, a third-party service provider. By accessing our website, you acknowledge that certain data may be collected and processed by Cloudflare as described in their Privacy Policy.</p>
+        <p><strong>Information Collected by Cloudflare:</strong></p>
+        <p>Cloudflare may collect and process certain information, including but not limited to IP addresses, access times, and device information. Please refer to Cloudflare's Privacy Policy for more details on the types of information collected and how it is used.</p>
+        <p><strong>Cookies and Tracking:</strong></p>
+        <p>Cloudflare may use cookies and other tracking technologies. Please refer to Cloudflare's Privacy Policy for information on how these technologies are used and how you can manage your preferences.</p>
+        <p><strong>Data Security:</strong></p>
+        <p>We take reasonable steps to ensure the security of your data. However, please be aware that Cloudflare has its own security measures in place, and you should review their Privacy Policy for details on how your data is protected.</p>
+        <p><strong>Changes to Privacy Policy:</strong></p>
+        <p>We reserve the right to update our Privacy Policy to reflect changes in our practices or the services provided by Cloudflare. Any updates will be posted on our website.</p>
+        <h1>Use of Direct Registration System</h1>
+        <p><strong>Information Collected during Registration:</strong></p>
+        <p>During the registration process, we collect certain personal information such as email addresses.</p>
+        <p><strong>Use of Direct Registration System (DRS):</strong></p>
+        <p>Our Direct Registration System (DRS) may utilize third-party services or authentication methods to verify and validate user information. This may involve the secure transmission of relevant data to these third parties for authentication purposes.</p>
+        <p><strong>Purpose of Personal Information:</strong></p>
+        <p>The personal information collected during registration is used for account management, providing personalized services, and communicating with users about their accounts and our services.</p>
+        <p><strong>Third-Party Authentication:</strong></p>
+        <p>Users should be aware that our Direct Registration System may involve third-party authentication services. Users are encouraged to review the terms and privacy policies of these third-party services before proceeding with registration.</p>
+        <p><strong>Account Deactivation and Deletion:</strong></p>
+        <p>Users have the right to request the deactivation or deletion of their accounts. Details on how to deactivate or delete accounts can be found in the "Account Management" section.</p>
+        <h1>Use of Google Analytics 4</h1>
+        <p><strong>Information Collected by Google Analytics:</strong></p>
+        <p>We use Google Analytics 4 to collect and analyze data about how users interact with our website. This includes information such as IP addresses, browser types, and pages visited.</p>
+        <p><strong>Purpose of Data Collection:</strong></p>
+        <p>The data collected by Google Analytics is used to understand user behavior, improve our website, and tailor our content to better meet the needs of our users.</p>
+        <p><strong>Google Analytics Features:</strong></p>
+        <p>Google Analytics may employ features such as user ID tracking, demographics, and interests reporting. This data helps us create a more personalized and relevant user experience.</p>
+        <p><strong>Use of Cookies:</strong></p>
+        <p>Google Analytics uses cookies to collect information about user interactions with our website. You can manage your cookie preferences through your browser settings.</p>
+        <p><strong>Opting Out of Google Analytics:</strong></p>
+        <p>If you prefer not to have your data collected by Google Analytics, you can opt-out by adjusting your browser settings or using the Google Analytics Opt-Out Browser Add-on.</p>
+        <p><strong>Third-Party Disclosure:</strong></p>
+        <p>We may share Google Analytics data with third parties for the purpose of data analysis and website improvement. However, this data is aggregated and does not personally identify individual users.</p>
+        <h1>Use of PayPal</h1>
+        <p><strong>Payment Information:</strong></p>
+        <p>When you make a purchase, we collect and transmit your payment information, including but not limited to credit card details, to PayPal for the purpose of processing the transaction.</p>
+        <p><strong>Security Measures:</strong></p>
+        <p>We take reasonable steps to ensure the security of your payment information during transmission. However, the processing of payments is handled by PayPal, and you should review their security measures outlined in their User Agreement.</p>
+        <p><strong>PayPal Data Handling:</strong></p>
+        <p>PayPal transactions are subject to PayPal's Privacy Statement, available at <a href='https://www.paypal.com/us/legalhub/privacy-full/'>PayPal Privacy Statement</a>. Please review this statement to understand how PayPal handles and protects your personal information.</p>
+        <p><strong>Data Sharing with PayPal:</strong></p>
+        <p>We may share necessary transaction information with PayPal to facilitate payment processing and ensure a smooth transaction experience.</p>
+        <p><strong>User Rights:</strong></p>
+        <p>Users have the right to review, correct, or request the deletion of their payment information. For more details, please refer to the "Account Management" section in our Privacy Policy.</p>
         <h2>Use of Your Personal Data</h2>
         <p>The Company may use Personal Data for the following purposes:</p>
         <ul>
