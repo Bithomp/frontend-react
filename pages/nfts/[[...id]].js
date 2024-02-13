@@ -37,7 +37,7 @@ export const getServerSideProps = async ({ query, locale }) => {
       taxonQuery: taxon || "",
       serialQuery: serial || "",
       mintedByMarketplace: mintedByMarketplace || "",
-      mintedPeriodNameQuery: mintedPeriod || "",
+      mintedPeriod: mintedPeriod || "",
       burnedPeriod: burnedPeriod || "",
       includeBurnedQuery: includeBurned || false,
       includeWithoutMediaDataQuery: includeWithoutMediaData || false,
@@ -80,7 +80,7 @@ export default function Nfts({
     taxonQuery={taxonQuery}
     serialQuery={serialQuery}
     mintedByMarketplace={mintedByMarketplace}
-    mintedPeriod={mintedPeriod}
+    mintedPeriodQuery={mintedPeriod}
     burnedPeriod={burnedPeriod}
     includeBurnedQuery={includeBurnedQuery}
     includeWithoutMediaDataQuery={includeWithoutMediaDataQuery}

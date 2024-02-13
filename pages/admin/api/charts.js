@@ -119,7 +119,7 @@ export default function Charts() {
 
       <center>
         <DateAndTimeRange
-          defaultPeriodName="day"
+          defaultPeriod="day"
           setPeriod={setPeriod}
           tabs={true}
           setChartSpan={setChartSpan}

@@ -9,13 +9,13 @@ import { registerLocale, setDefaultLocale } from "react-datepicker"
 import Tabs from "../Tabs"
 import { network, useWidth } from "../../utils"
 
-export default function DateAndTimeRange({ setPeriod, minDate, tabs, defaultPeriodName, setChartSpan, style }) {
+export default function DateAndTimeRange({ setPeriod, minDate, tabs, defaultPeriod, setChartSpan, style }) {
   const { i18n, t } = useTranslation()
   const windowWidth = useWidth()
 
   const [startDate, setStartDate] = useState(null)
   const [endDate, setEndDate] = useState(null)
-  const [periodName, setPeriodName] = useState(defaultPeriodName)
+  const [periodName, setPeriodName] = useState(defaultPeriod)
   const [ready, setReady] = useState(false)
 
   let hourAgo = new Date().setHours(new Date().getHours() - 1)
@@ -56,7 +56,16 @@ export default function DateAndTimeRange({ setPeriod, minDate, tabs, defaultPeri
 
   useEffect(() => {
     setReady(true)
+
+    if (periodName?.includes("..")) {
+      const periodParts = periodName.split("..")
+      setStartDate(new Date(periodParts[0]))
+      setEndDate(new Date(periodParts[1]))
+      return
+    }
+
     let newStartDate = null
+
     setEndDate(new Date())
     if (periodName === "hour") {
       newStartDate = hourAgo

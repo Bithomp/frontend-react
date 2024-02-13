@@ -34,7 +34,7 @@ export default function NftsComponent({
   serialQuery,
   nftExplorer,
   mintedByMarketplace,
-  mintedPeriodNameQuery,
+  mintedPeriodQuery,
   burnedPeriod,
   includeBurnedQuery,
   includeWithoutMediaDataQuery,
@@ -588,7 +588,7 @@ export default function NftsComponent({
               <DateAndTimeRange
                 period={mintedPeriod}
                 setPeriod={setMintedPeriod}
-                defaultPeriodName={mintedPeriodNameQuery}
+                defaultPeriod={mintedPeriodQuery}
                 minDate="nft"
                 style={{ marginTop: "10px", display: "inline-block" }}
               />

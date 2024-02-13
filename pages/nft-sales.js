@@ -42,7 +42,7 @@ export const getServerSideProps = async ({ query, locale }) => {
       currencyIssuer: currencyIssuer || "",
       issuerQuery: issuer || "",
       taxonQuery: taxon || "",
-      periodNameQuery: period || "week",
+      periodQuery: period || "week",
       sortCurrencyQuery: sortCurrency || "",
       marketplace: marketplace || "",
       ...(await serverSideTranslations(locale, ['common'])),
@@ -66,7 +66,7 @@ export default function NftSales({
   currencyIssuer,
   issuerQuery,
   taxonQuery,
-  periodNameQuery,
+  periodQuery,
   sortCurrencyQuery,
   selectedCurrency,
   marketplace,
@@ -407,7 +407,7 @@ export default function NftSales({
         <DateAndTimeRange
           period={period}
           setPeriod={setPeriod}
-          defaultPeriodName={periodNameQuery}
+          defaultPeriod={periodQuery}
           minDate="nft"
           tabs={true}
         />

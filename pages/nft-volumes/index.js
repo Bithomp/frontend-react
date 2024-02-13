@@ -9,7 +9,7 @@ export const getServerSideProps = async ({ query, locale }) => {
   const { period, sale, list, currency, currencyIssuer, sortCurrency } = query
   return {
     props: {
-      periodNameQuery: period || "week",
+      periodQuery: period || "week",
       sale: sale || "secondary",
       list: list || "issuers",
       currency: currency || "",
@@ -38,7 +38,7 @@ import {
 import LinkIcon from "../../public/images/link.svg"
 
 export default function NftVolumes({
-  periodNameQuery,
+  periodQuery,
   sale,
   list,
   currency,
@@ -515,7 +515,7 @@ export default function NftVolumes({
         <DateAndTimeRange
           period={period}
           setPeriod={setPeriod}
-          defaultPeriodName={periodNameQuery}
+          defaultPeriod={periodQuery}
           minDate="nft"
           tabs={true}
         />
