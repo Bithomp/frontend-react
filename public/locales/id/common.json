@@ -556,7 +556,7 @@
   },
   "nfts": {
     "header": "NFT Akun",
-    "desc": "Di sini Anda dapat mencari NFT, ketik alamat XRPL untuk melihat NFT yang dimilikinya.",
+    "desc": "Di sini Anda dapat mencari NFT, ketik alamat untuk melihat NFT yang dimilikinya.",
     "search-by-name": "Cari berdasarkan nama NFT",
     "search-by-issuer": "Cari berdasarkan penerbit NFT",
     "search-by-taxon": "Cari berdasarkan taksonomi NFT",

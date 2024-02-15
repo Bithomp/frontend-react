@@ -556,7 +556,7 @@
   },
   "nfts": {
     "header": "NFTs de la cuenta",
-    "desc": "Aquí puedes buscar por NFTs, escribe la dirección XRPL para ver que NFTs posee.",
+    "desc": "Aquí puedes buscar por NFTs, escribe la dirección para ver que NFTs posee.",
     "search-by-name": "Buscar por nombre de NFT",
     "search-by-issuer": "Buscar por emisor NFT",
     "search-by-taxon": "Buscar por taxón NFT",

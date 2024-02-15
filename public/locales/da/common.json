@@ -556,7 +556,7 @@
   },
   "nfts": {
     "header": "Kontoens NFT'er",
-    "desc": "Her kan du søge efter NFT'er, indtaste XRPL-adressen for at se, hvilke NFT'er den ejer.",
+    "desc": "Her kan du søge efter NFT'er, indtaste adressen for at se, hvilke NFT'er den ejer.",
     "search-by-name": "Søg efter NFT-navn",
     "search-by-issuer": "Søg efter NFT-udsteder",
     "search-by-taxon": "Søg efter NFT-taxon",

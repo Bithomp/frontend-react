@@ -556,7 +556,7 @@
   },
   "nfts": {
     "header": "NFTs des Kontos",
-    "desc": "Hier können Sie nach NFTs suchen, die XRPL Adresse eingeben, um zu sehen, welche NFTs es besitzt.",
+    "desc": "Hier können Sie nach NFTs suchen, die Adresse eingeben, um zu sehen, welche NFTs es besitzt.",
     "search-by-name": "Suche nach NFT Name",
     "search-by-issuer": "Suche nach NFT Emittent",
     "search-by-taxon": "Suche nach NFT Taxon",
@@ -564,7 +564,7 @@
     "no-nfts": "Wir konnten keine NFTs mit Ihren Suchparametern finden.",
     "on-service": "auf {{service}}",
     "amount-on-service": "{{amount}} auf {{service}}",
-    "load-more": "Wir suchen nach Daten auf dem XRP Ledger... bitte warten...",
+    "load-more": "Wir suchen nach Daten auf dem Ledger... bitte warten...",
     "end": "Hier sind alle NFTs die wir finden konnten."
   },
   "nft-distribution": {

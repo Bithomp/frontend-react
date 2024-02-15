@@ -556,7 +556,7 @@
   },
   "nfts": {
     "header": "NFTs del compte",
-    "desc": "Aquí pots cercar NFTs, escriu l'adreça XRPL per veure quins NFTs té en propietat.",
+    "desc": "Aquí pots cercar NFTs, escriu l'adreça per veure quins NFTs té en propietat.",
     "search-by-name": "Cerca per nom de l'NFT",
     "search-by-issuer": "Cerca per l'encunyador de l'NFT",
     "search-by-taxon": "Cerca per taxó de l'NFT",

@@ -556,7 +556,7 @@
   },
   "nfts": {
     "header": "Account's NFTs",
-    "desc": "Here you can search for NFTs, type in the XRPL address to see what NFTs it owns.",
+    "desc": "Here you can search for NFTs, type in a address to see what NFTs it owns.",
     "search-by-name": "Search by NFT name",
     "search-by-issuer": "Search by NFT issuer",
     "search-by-taxon": "Search by NFT taxon",
@@ -564,7 +564,7 @@
     "no-nfts": "We couldn't find any NFTs with your search parameters.",
     "on-service": "on {{service}}",
     "amount-on-service": "{{amount}} on {{service}}",
-    "load-more": "We are looking for data on the XRPL... please wait...",
+    "load-more": "We are looking for data on the ledger... please wait...",
     "end": "Here are all the NFTs we could find."
   },
   "nft-distribution": {

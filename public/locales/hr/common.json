@@ -556,7 +556,7 @@
   },
   "nfts": {
     "header": "NFTovi računa",
-    "desc": "Ovdje možete pretražiti NFTove, unesite XRPL adresu za vidjeti koje NFTove posjeduje.",
+    "desc": "Ovdje možete pretražiti NFTove, unesite adresu za vidjeti koje NFTove posjeduje.",
     "search-by-name": "Pretraga po nazivu NFTa",
     "search-by-issuer": "Pretraga po izdavatelju NFTa",
     "search-by-taxon": "Pretraga po NFT taxonu",

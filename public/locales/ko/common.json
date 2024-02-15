@@ -556,7 +556,7 @@
   },
   "nfts": {
     "header": "계정의 NFT",
-    "desc": "여기에서 NFT를 검색하고 XRPL 주소를 입력해 어떤 NFT를 보유하고 있는지 확인할 수 있습니다.",
+    "desc": "여기에서 NFT를 검색하고 주소를 입력해 어떤 NFT를 보유하고 있는지 확인할 수 있습니다.",
     "search-by-name": "NFT 이름으로 검색하세요",
     "search-by-issuer": "NFT 발행자 탐색",
     "search-by-taxon": "NFT 분류군 탐색",

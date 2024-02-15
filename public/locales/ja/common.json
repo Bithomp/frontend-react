@@ -556,7 +556,7 @@
   },
   "nfts": {
     "header": "アカウントのNFT",
-    "desc": "XRPLアドレスを入力して、アカウントが保有するNFTを検索できます。",
+    "desc": "アドレスを入力して、アカウントが保有するNFTを検索できます。",
     "search-by-name": "NFT名で検索",
     "search-by-issuer": "NFT発行者で検索",
     "search-by-taxon": "NFT Taxonで検索",
