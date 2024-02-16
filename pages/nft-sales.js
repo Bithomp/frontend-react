@@ -284,6 +284,8 @@ export default function NftSales({
         name: "seller",
         value: usernameOrAddress(data, 'seller')
       })
+    } else {
+      queryRemoveList.push("seller")
     }
 
     if (period) {
