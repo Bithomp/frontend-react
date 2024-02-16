@@ -95,7 +95,7 @@ export default function NftsComponent({
   ]
 
   const checkApi = async (options) => {
-    if (nftExplorer && !mintedPeriod) return
+    if (nftExplorer && !mintedPeriod && listTab !== 'onSale') return
 
     let marker = hasMore;
     let nftsData = data;
@@ -260,42 +260,45 @@ export default function NftsComponent({
   useEffect(() => {
     let queryAddList = [];
     let queryRemoveList = [];
-    if (nftExplorer) {
-      if (isAddressOrUsername(rawData?.owner)) {
-        queryAddList.push({
-          name: "owner",
-          value: usernameOrAddress(rawData, 'owner')
-        })
-      } else {
-        queryRemoveList.push("owner")
-      }
-    }
 
-    if (isAddressOrUsername(rawData?.issuer)) {
-      queryAddList.push({
-        name: "issuer",
-        value: usernameOrAddress(rawData, 'issuer')
-      })
-      if (isValidTaxon(rawData?.taxon)) {
+    if (rawData) {
+      if (nftExplorer) {
+        if (isAddressOrUsername(rawData.owner)) {
+          queryAddList.push({
+            name: "owner",
+            value: usernameOrAddress(rawData, 'owner')
+          })
+        } else {
+          queryRemoveList.push("owner")
+        }
+      }
+
+      if (isAddressOrUsername(rawData.issuer)) {
         queryAddList.push({
-          name: "taxon",
-          value: rawData.taxon
+          name: "issuer",
+          value: usernameOrAddress(rawData, 'issuer')
         })
+        if (isValidTaxon(rawData.taxon)) {
+          queryAddList.push({
+            name: "taxon",
+            value: rawData.taxon
+          })
+        } else {
+          queryRemoveList.push("taxon")
+        }
       } else {
+        queryRemoveList.push("issuer")
         queryRemoveList.push("taxon")
       }
-    } else {
-      queryRemoveList.push("issuer")
-      queryRemoveList.push("taxon")
-    }
 
-    if (rawData?.search) {
-      queryAddList.push({
-        name: "search",
-        value: rawData.search
-      })
-    } else {
-      queryRemoveList.push("search")
+      if (rawData?.search) {
+        queryAddList.push({
+          name: "search",
+          value: rawData.search
+        })
+      } else {
+        queryRemoveList.push("search")
+      }
     }
 
     let tabsToSet = [
