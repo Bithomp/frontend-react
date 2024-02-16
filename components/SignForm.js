@@ -760,7 +760,7 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
                           </tr>
                           <tr>
                             <td>{t("signin.nft-offer.total")}</td>
-                            <td className='right'> <b>{amountFormat(signRequest.request.Amount)}</b></td>
+                            <td className='right'> <b>{amountFormat(signRequest.request.Amount, { precise: true })}</b></td>
                           </tr>
                         </tbody>
                       </table>

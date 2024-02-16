@@ -420,6 +420,11 @@ export const persentFormat = (small, big) => {
 export const amountFormat = (amount, options = {}) => {
   if (!amount && amount !== "0" && amount !== 0) { return "" }
   const { value, currency, valuePrefix, issuer, type } = amountParced(amount)
+
+  if (options.precise) {
+    return value + " " + valuePrefix + " " + currency
+  }
+
   let showValue = value
 
   if (value >= 100) {
@@ -449,7 +454,7 @@ export const amountFormat = (amount, options = {}) => {
     </>
   } else {
     //type: ['IOU', 'IOU demurraging', 'NFT']
-    return showValue + " " + valuePrefix + " " + currency;
+    return showValue + " " + valuePrefix + " " + currency
   }
 }
 
