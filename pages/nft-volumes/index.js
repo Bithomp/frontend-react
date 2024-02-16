@@ -323,13 +323,6 @@ export default function NftVolumes({
       queryRemoveList = ["currency", "currencyIssuer"]
     }
 
-    if (period) {
-      queryAddList.push({
-        name: "period",
-        value: period
-      })
-    }
-
     if (currencyTab === "") {
       queryRemoveList = ["currency", "currencyIssuer"]
     } else if (currencyTab === "xrp") {

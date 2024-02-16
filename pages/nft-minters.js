@@ -44,7 +44,7 @@ export default function NftMinters({ period }) {
 
   const periodTabList = [
     { value: 'all', label: t("tabs.all-time") },
-    //{ value: 'year', label: t("tabs.year") },
+    { value: 'year', label: t("tabs.year") },
     { value: 'month', label: t("tabs.month") },
     { value: 'week', label: t("tabs.week") },
     { value: 'day', label: t("tabs.day") }

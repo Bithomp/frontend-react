@@ -288,10 +288,6 @@ export default function NftSales({
       queryRemoveList.push("seller")
     }
 
-    if (period) {
-      queryAddList.push({ name: "period", value: period })
-    }
-
     if (!currency || (currency.toLowerCase() !== 'xrp' && !isAddressOrUsername(currencyIssuer))) {
       queryRemoveList.push("currency")
       queryRemoveList.push("currencyIssuer")

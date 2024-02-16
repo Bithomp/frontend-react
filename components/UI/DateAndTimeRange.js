@@ -5,13 +5,15 @@ import { useEffect, useState } from "react"
 
 import "react-datepicker/dist/react-datepicker.css"
 import { registerLocale, setDefaultLocale } from "react-datepicker"
+import { useRouter } from "next/router"
 
 import Tabs from "../Tabs"
-import { network, useWidth } from "../../utils"
+import { network, useWidth, setTabParams } from "../../utils"
 
 export default function DateAndTimeRange({ setPeriod, minDate, tabs, defaultPeriod, setChartSpan, style }) {
   const { i18n, t } = useTranslation()
   const windowWidth = useWidth()
+  const router = useRouter()
 
   const [startDate, setStartDate] = useState(null)
   const [endDate, setEndDate] = useState(null)
@@ -94,6 +96,20 @@ export default function DateAndTimeRange({ setPeriod, minDate, tabs, defaultPeri
         setStartDate(minDate)
       }
     }
+
+    let queryAddList = []
+    let queryRemoveList = []
+
+    if (periodName && periodName !== "custom") {
+      queryAddList.push({ name: "period", value: periodName })
+    } else if (startDate && endDate) {
+      queryAddList.push({ name: "period", value: startDate.toISOString() + '..' + endDate.toISOString() })
+    } else {
+      queryRemoveList.push("period")
+    }
+
+    setTabParams(router, [], queryAddList, queryRemoveList)
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [periodName])
 
