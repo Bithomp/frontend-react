@@ -561,6 +561,8 @@
     "search-by-issuer": "Поиск по NFT эмитенту",
     "search-by-taxon": "Поиск по NFT таксону",
     "search-by-owner": "Поиск по владельцу NFT",
+    "search-by-buyer": "Поиск по покупателю NFT",
+    "search-by-seller": "Поиск по продавцу NFT",
     "no-nfts": "Мы не смогли найти ни одного NFT по вашему запросу.",
     "on-service": "на {{service}}",
     "amount-on-service": "{{amount}} на {{service}}",

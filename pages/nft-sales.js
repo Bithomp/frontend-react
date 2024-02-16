@@ -29,7 +29,9 @@ export const getServerSideProps = async ({ query, locale }) => {
     taxon,
     period,
     sortCurrency,
-    marketplace
+    marketplace,
+    buyer,
+    seller
   } = query
   //key added to re-render page when the same route is called with different params
   return {
@@ -45,6 +47,8 @@ export const getServerSideProps = async ({ query, locale }) => {
       periodQuery: period || "week",
       sortCurrencyQuery: sortCurrency || "",
       marketplace: marketplace || "",
+      buyerQuery: buyer || "",
+      sellerQuery: seller || "",
       ...(await serverSideTranslations(locale, ['common'])),
     },
   }
@@ -70,7 +74,9 @@ export default function NftSales({
   sortCurrencyQuery,
   selectedCurrency,
   marketplace,
-  account
+  account,
+  buyerQuery,
+  sellerQuery
 }) {
   const { t } = useTranslation()
   const router = useRouter()
@@ -92,6 +98,10 @@ export default function NftSales({
   const [pageTab, setPageTab] = useState(list)
   const [hasMore, setHasMore] = useState("first")
   const [dateAndTimeNow, setDateAndTimeNow] = useState('')
+  const [buyer, setBuyer] = useState(buyerQuery)
+  const [buyerInput, setBuyerInput] = useState(buyerQuery)
+  const [seller, setSeller] = useState(sellerQuery)
+  const [sellerInput, setSellerInput] = useState(sellerQuery)
 
   const sortCurrency = sortCurrencyQuery.toLowerCase() || selectedCurrency
 
@@ -127,6 +137,8 @@ export default function NftSales({
     let markerUrlPart = '';
     let periodUrlPart = '';
     let marketplaceUrlPart = '';
+    let buyerUrlPart = '';
+    let sellerUrlPart = '';
 
     if (options?.restart) {
       marker = "first";
@@ -157,6 +169,13 @@ export default function NftSales({
       }
     }
 
+    if (buyer) {
+      buyerUrlPart += '&buyer=' + buyer
+    }
+    if (seller) {
+      sellerUrlPart += '&seller=' + seller
+    }
+
     let loadList = "topSold"
     if (pageTab === 'last') {
       loadList = "lastSold"
@@ -171,7 +190,7 @@ export default function NftSales({
 
     const response = await axios(
       'v2/nft-sales?list=' + loadList + currencyUrlPart() + '&saleType=' + saleTab + collectionUrlPart + periodUrlPart + markerUrlPart
-      + "&convertCurrencies=" + sortCurrency + "&sortCurrency=" + sortCurrency + marketplaceUrlPart
+      + "&convertCurrencies=" + sortCurrency + "&sortCurrency=" + sortCurrency + marketplaceUrlPart + buyerUrlPart + sellerUrlPart
     ).catch(error => {
       setErrorMessage(t("error." + error.message))
     })
@@ -189,6 +208,14 @@ export default function NftSales({
 
       if (newdata.issuer) {
         setIssuerInput(newdata.issuer)
+      }
+
+      if (newdata.buyer) {
+        setBuyerInput(newdata.buyer)
+      }
+
+      if (newdata.seller) {
+        setSellerInput(newdata.seller)
       }
 
       if (newdata.sales) {
@@ -223,7 +250,7 @@ export default function NftSales({
       checkApi({ restart: true })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [saleTab, issuer, taxon, pageTab, sortCurrency, period])
+  }, [saleTab, issuer, taxon, pageTab, sortCurrency, period, buyer, seller])
 
   useEffect(() => {
     let queryAddList = []
@@ -241,6 +268,22 @@ export default function NftSales({
     } else {
       queryRemoveList.push("issuer")
       queryRemoveList.push("taxon")
+    }
+
+    if (isAddressOrUsername(data?.buyer)) {
+      queryAddList.push({
+        name: "buyer",
+        value: usernameOrAddress(data, 'buyer')
+      })
+    } else {
+      queryRemoveList.push("buyer")
+    }
+
+    if (isAddressOrUsername(data?.seller)) {
+      queryAddList.push({
+        name: "seller",
+        value: usernameOrAddress(data, 'seller')
+      })
     }
 
     if (period) {
@@ -297,6 +340,20 @@ export default function NftSales({
       setTaxonInput("");
       setTaxon("");
     }
+
+    if (isAddressOrUsername(buyerInput)) {
+      setBuyer(buyerInput);
+    } else {
+      setBuyerInput("");
+      setBuyer("");
+    }
+
+    if (isAddressOrUsername(sellerInput)) {
+      setSeller(sellerInput);
+    } else {
+      setSellerInput("");
+      setSeller("");
+    }
   }
 
   const enterPress = e => {
@@ -352,6 +409,8 @@ export default function NftSales({
         + (saleTab === 'primary' ? t("tabs.primary-sales") : "")
         + " " + (list === "top" ? t("tabs.top-sales") : t("tabs.latest-sales"))
         + (issuer ? (" " + issuer) : issuerQuery)
+        + (buyer ? (" " + t("tabs.buyer") + ": " + buyer) : buyerQuery)
+        + (seller ? (" " + t("tabs.seller") + ": " + seller) : sellerQuery)
         + (taxon ? (" " + taxon) : taxonQuery)
         + (currency ? (" " + currency) : "")
         + (currencyIssuer ? (" " + currencyIssuer) : "")
@@ -395,6 +454,38 @@ export default function NftSales({
           />
         </span>
       </div>
+
+      <div className='center'>
+        <span className='halv'>
+          <span className='input-title'>
+            {t("table.buyer")} {userOrServiceLink(data, 'buyer')}
+          </span>
+          <input
+            placeholder={t("nfts.search-by-buyer")}
+            value={buyerInput}
+            onChange={(e) => { setBuyerInput(e.target.value) }}
+            onKeyPress={enterPress}
+            className="input-text"
+            spellCheck="false"
+            maxLength="35"
+          />
+        </span>
+        <span className='halv'>
+          <span className='input-title'>
+            {t("table.seller")} {userOrServiceLink(data, 'seller')}
+          </span>
+          <input
+            placeholder={t("nfts.search-by-seller")}
+            value={sellerInput}
+            onChange={(e) => { setSellerInput(e.target.value) }}
+            onKeyPress={enterPress}
+            className="input-text"
+            spellCheck="false"
+            maxLength="35"
+          />
+        </span>
+      </div>
+
       <p className="center" style={{ marginBottom: "20px" }}>
         <input type="button" className="button-action" value={t("button.search")} onClick={searchClick} />
       </p>

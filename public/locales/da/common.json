@@ -561,6 +561,8 @@
     "search-by-issuer": "Søg efter NFT-udsteder",
     "search-by-taxon": "Søg efter NFT-taxon",
     "search-by-owner": "Søg efter NFT-ejer",
+    "search-by-buyer": "Søg efter NFT-køber",
+    "search-by-seller": "Søg efter NFT-sælger",
     "no-nfts": "Vi kunne ikke finde nogen NFT'er med dine søgeparametre.",
     "on-service": "på {{service}}",
     "amount-on-service": "{{amount}} på {{service}}",

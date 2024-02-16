@@ -561,6 +561,8 @@
     "search-by-issuer": "Pretraga po izdavatelju NFTa",
     "search-by-taxon": "Pretraga po NFT taxonu",
     "search-by-owner": "Pretraga po NFT vlasniku",
+    "search-by-buyer": "Pretraga po NFT kupcu",
+    "search-by-seller": "Pretraga po NFT prodavaču",
     "no-nfts": "Nismo pronašli niti jedan NFT sa vašim parametrima za pretragu.",
     "on-service": "na {{service}}",
     "amount-on-service": "{{amount}} na {{service}}",

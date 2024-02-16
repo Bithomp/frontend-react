@@ -561,6 +561,8 @@
     "search-by-issuer": "NFT 발행자 탐색",
     "search-by-taxon": "NFT 분류군 탐색",
     "search-by-owner": "NFT 소유자 탐색",
+    "search-by-buyer": "NFT 구매자 탐색",
+    "search-by-seller": "NFT 판매자 탐색",
     "no-nfts": "귀하의 검색 매개변수로 어떤 NFT도 찾을 수 없습니다",
     "on-service": "{{service}}에서",
     "amount-on-service": "{{service}}에서 {{amount}}",

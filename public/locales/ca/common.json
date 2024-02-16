@@ -561,6 +561,8 @@
     "search-by-issuer": "Cerca per l'encunyador de l'NFT",
     "search-by-taxon": "Cerca per taxó de l'NFT",
     "search-by-owner": "Cerca per propietari de l'NFT",
+    "search-by-buyer": "Cerca per comprador de l'NFT",
+    "search-by-seller": "Cerca per venedor de l'NFT",
     "no-nfts": "No hem pogut trobar NFTs amb aquests paràmetres de cerca.",
     "on-service": "a {{service}}",
     "amount-on-service": "{{amount}} a {{service}}",

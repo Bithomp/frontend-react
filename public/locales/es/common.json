@@ -561,6 +561,8 @@
     "search-by-issuer": "Buscar por emisor NFT",
     "search-by-taxon": "Buscar por taxón NFT",
     "search-by-owner": "Buscar por dueño del NFT",
+    "search-by-buyer": "Buscar por comprador del NFT",
+    "search-by-seller": "Buscar por vendedor del NFT",
     "no-nfts": "No pudimos encontrar ningún NFT con tus parámetros de búsqueda.",
     "on-service": "en {{service}}",
     "amount-on-service": "{{amount}} en {{service}}",

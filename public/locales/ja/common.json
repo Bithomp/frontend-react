@@ -561,6 +561,8 @@
     "search-by-issuer": "NFT発行者で検索",
     "search-by-taxon": "NFT Taxonで検索",
     "search-by-owner": "NFT保有者で検索",
+    "search-by-buyer": "NFT購入者で検索",
+    "search-by-seller": "NFT売却者で検索",
     "no-nfts": "検索条件に該当するNFTは見つかりませんでした。",
     "on-service": "{{service}}",
     "amount-on-service": "{{service}}にて{{amount}}",
