@@ -1,7 +1,7 @@
 {
   "header": "Pemintas NFT",
   "desc": "Di sini anda boleh menjumpai senarai semua pemintas NFT yang dikenalpasti di XRPL. Jika anda mahu projek anda dikenali, tambah memo dengan alamat laman web anda kepada transaksi pemintasan anda.",
-  "summary-period": "XRPL mempunyai <1>{{minted}}</1> NFT, daripada jumlah tersebut <3>{{mintedAndBurned}}</3> NFT {{percentMintedAndBurned}} telah dibakar dalam tempoh yang sama, jumlah dibakar sepanjang tempoh ini: <7>{{burned}}</7> NFT.",
+  "summary-period": "For that period XRPL mempunyai <1>{{minted}}</1> NFT, daripada jumlah tersebut <3>{{mintedAndBurned}}</3> NFT {{percentMintedAndBurned}} telah dibakar dalam tempoh yang sama, jumlah dibakar sepanjang tempoh ini: <7>{{burned}}</7> NFT.",
   "summary-all": "XRPL mempunyai <1>{{minted}}</1> NFT, daripada jumlah tersebut <3>{{mintedAndBurned}}</3> NFT {{percentMintedAndBurned}} telah dibakar.",
   "table": {
     "minted-total": "Jumlah pemintasan keseluruhan",

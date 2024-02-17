@@ -1,7 +1,7 @@
 {
 "header": "Pembuat NFT",
   "desc": "Di sini Anda dapat menemukan daftar semua pembuat NFT yang teridentifikasi di XRPL. Jika Anda ingin proyek Anda diakui, tambahkan memo dengan alamat situs web Anda ke transaksi pembuatan NFT Anda.",
-  "summary-period": "XRPL memiliki <1>{{minted}}</1> NFT, di mana <3>{{mintedAndBurned}}</3> NFT {{percentMintedAndBurned}} dihapus selama periode waktu yang sama, total yang dihapus selama periode ini: <7>{{burned}}</7> NFT.",
+  "summary-period": "For that period XRPL memiliki <1>{{minted}}</1> NFT, di mana <3>{{mintedAndBurned}}</3> NFT {{percentMintedAndBurned}} dihapus selama periode waktu yang sama, total yang dihapus selama periode ini: <7>{{burned}}</7> NFT.",
   "summary-all": "XRPL memiliki <1>{{minted}}</1> NFT, di mana <3>{{mintedAndBurned}}</3> NFT {{percentMintedAndBurned}} dihapus.",
   "table": {
     "minted-total": "Total dibuat",

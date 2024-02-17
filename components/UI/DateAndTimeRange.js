@@ -102,8 +102,11 @@ export default function DateAndTimeRange({ setPeriod, minDate, tabs, defaultPeri
 
     if (periodName && periodName !== "custom") {
       queryAddList.push({ name: "period", value: periodName })
+      setPeriod(periodName)
     } else if (startDate && endDate) {
-      queryAddList.push({ name: "period", value: startDate.toISOString() + '..' + endDate.toISOString() })
+      const range = startDate.toISOString() + '..' + endDate.toISOString()
+      queryAddList.push({ name: "period", value: range })
+      setPeriod(range)
     } else {
       queryRemoveList.push("period")
     }
@@ -114,9 +117,6 @@ export default function DateAndTimeRange({ setPeriod, minDate, tabs, defaultPeri
   }, [periodName])
 
   useEffect(() => {
-    if (startDate && endDate) {
-      setPeriod(startDate.toISOString() + '..' + endDate.toISOString())
-    }
     if (setChartSpan) {
       const oneHour = 60 * 60 * 1000
       const oneDay = 24 * oneHour

@@ -1,7 +1,7 @@
 {
   "header": "NFT 채굴자",
   "desc": "XRPL에서 확인된 모든 NFT 채굴자 목록을 확인할 수 있습니다. 프로젝트를 인정받고 싶으시다면, 웹 사이트 주소가 포함된 메모를 채굴한 트랜잭션에 추가하세요.",
-  "summary-period": "XRPL에는 <1>{{minted}}</1> NFT가 존재하며, 이 기간 동안 <3>{{mintedAndBurned}}</3> NFT{{percentMintedAndBurned}}</3> NFT가 소각되었으며, 이 기간 동안 총 <7>{{burned}}</7> NFT가 소각되었습니다.",
+  "summary-period": "For that period XRPL에는 <1>{{minted}}</1> NFT가 존재하며, 이 기간 동안 <3>{{mintedAndBurned}}</3> NFT{{percentMintedAndBurned}}</3> NFT가 소각되었으며, 이 기간 동안 총 <7>{{burned}}</7> NFT가 소각되었습니다.",
   "summary-all": "XRPL에는 <1>{{minted}}</1> NFT가 존재하며, 이 기간 동안 <3>{{mintedAndBurned}}</3> NFT{{percentMintedAndBurned}}</3> NFT가 소각되었습니다.",
   "table": {
     "minted-total": "전체 발행량",
