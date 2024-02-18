@@ -3,6 +3,7 @@
   "desc": "Here you can find the list of all identified NFT minters on XRPL. If you want your project to be recognised, add a memo with your website address to your mint transactions.",
   "summary-period": "For that period XRPL had <1>{{minted}}</1> NFTs, from which <3>{{mintedAndBurned}}</3> NFTs {{percentMintedAndBurned}} were burned during the same period of time, total burned during this period: <7>{{burned}}</7> NFTs.",
   "summary-all": "XRPL had <1>{{minted}}</1> NFTs, from which <3>{{mintedAndBurned}}</3> NFTs {{percentMintedAndBurned}} were burned.",
+  "mint-chart": "Mint chart",
   "table": {
     "minted-total": "Total minted",
     "minted-with-metadata": "Minted NFTs with metadata",

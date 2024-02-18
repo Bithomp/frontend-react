@@ -13,7 +13,11 @@ const oneMonth = oneDay * 30
 const locales = {
   months: {
     en: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-    ru: ['Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июн', 'Июл', 'Авг', 'Сен', 'Окт', 'Ноя', 'Дек']
+    ru: ['Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июн', 'Июл', 'Авг', 'Сен', 'Окт', 'Ноя', 'Дек'],
+    es: ['Enero', 'Feb', 'Mar', 'Abr', 'Mayo', 'Jun', 'Jul', 'Agosto', 'Sept', 'Oct', 'Nov', 'Dic'],
+    de: ['Jan', 'Feb', 'März', 'Apr', 'Mai', 'Juni', 'Juli', 'Aug', 'Sept', 'Okt', 'Nov', 'Dez'],
+    ja: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
+    ko: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월']
   }
 }
 
@@ -21,7 +25,7 @@ export default function PriceChart({ data }) {
   const { i18n } = useTranslation()
   const { theme } = useTheme()
 
-  const supportedLanguages = ["en", "ru"]
+  const supportedLanguages = ["en", "ru", "es", "de", "ja", "ko"]
   let chartLang = "en"
   if (supportedLanguages.includes(i18n.language)) {
     chartLang = i18n.language
@@ -67,6 +71,30 @@ export default function PriceChart({ data }) {
           name: 'ru',
           options: {
             shortMonths: locales.months.ru,
+          }
+        },
+        {
+          name: 'es',
+          options: {
+            shortMonths: locales.months.es,
+          }
+        },
+        {
+          name: 'de',
+          options: {
+            shortMonths: locales.months.de,
+          }
+        },
+        {
+          name: 'ja',
+          options: {
+            shortMonths: locales.months.ja,
+          }
+        },
+        {
+          name: 'ko',
+          options: {
+            shortMonths: locales.months.ko,
           }
         }
       ],

@@ -224,7 +224,7 @@ export default function NftMinters({ periodQuery }) {
 
       <center>
         <br />
-        <h3>Mint chart</h3>
+        <h3>{t("mint-chart", { ns: "nft-minters" })}</h3>
         {loadingChart ?
           <>
             <br />
