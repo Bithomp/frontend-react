@@ -2,8 +2,20 @@ import { useTranslation } from 'next-i18next'
 import dynamic from 'next/dynamic'
 
 import { useTheme } from "./Layout/ThemeContext"
+import { shortNiceNumber } from '../utils/format'
 
 const Chart = dynamic(() => import('react-apexcharts'), { ssr: false })
+
+const oneHour = 1000 * 60 * 60
+const oneDay = oneHour * 24
+const oneMonth = oneDay * 30
+
+const locales = {
+  months: {
+    en: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+    ru: ['Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июн', 'Июл', 'Авг', 'Сен', 'Окт', 'Ноя', 'Дек']
+  }
+}
 
 export default function PriceChart({ data }) {
   const { i18n } = useTranslation()
@@ -32,7 +44,7 @@ export default function PriceChart({ data }) {
     yaxis: {
       labels: {
         formatter: (val) => {
-          return Number(val).toFixed(0)
+          return shortNiceNumber(val, 0, 0)
         }
       },
       tickAmount: 5,
@@ -48,13 +60,13 @@ export default function PriceChart({ data }) {
         {
           name: 'en',
           options: {
-            shortMonths: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+            shortMonths: locales.months.en,
           }
         },
         {
           name: 'ru',
           options: {
-            shortMonths: ['Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июн', 'Июл', 'Авг', 'Сен', 'Окт', 'Ноя', 'Дек'],
+            shortMonths: locales.months.ru,
           }
         }
       ],
@@ -73,21 +85,38 @@ export default function PriceChart({ data }) {
     tooltip: {
       x: {
         formatter: val => {
-          if (timeDifference < 1000 * 60 * 60 * 24 * 5) {
+          if (timeDifference <= oneHour) {
             return new Date(val).toLocaleDateString(undefined, {
               hour: 'numeric',
               minute: 'numeric'
             })
           }
-          return new Date(val).toLocaleDateString(undefined, {
-            year: 'numeric',
-            month: 'short',
-            day: 'numeric'
-          })
+          if (timeDifference <= 60 * oneHour) {
+            const start = new Date(val).setMinutes(0)
+            const end = new Date(val).setMilliseconds(new Date(val).getMilliseconds() + 1)
+            return new Date(start).toLocaleTimeString(undefined, {
+              hour: 'numeric',
+              minute: '2-digit'
+            }) + ' - ' + new Date(end).toLocaleTimeString(undefined, {
+              hour: 'numeric',
+              minute: '2-digit'
+            })
+          }
+          if (timeDifference <= 60 * oneDay) {
+            const start = new Date(val).setUTCHours(0, 0, 0, 0)
+            const end = new Date(val).setMilliseconds(new Date(val).getMilliseconds() + 1)
+            return new Date(start).getUTCDate() + " " + locales.months[chartLang][new Date(start).getUTCMonth()] + " - " +
+              new Date(end).getUTCDate() + " " + locales.months[chartLang][new Date(end).getUTCMonth()]
+
+          }
+          if (timeDifference <= 12 * oneMonth) {
+            return locales.months[chartLang][new Date(val).getUTCMonth()] + " " + new Date(val).getUTCFullYear()
+          }
+          return new Date(val).getUTCFullYear()
         }
       },
       y: {
-        formatter: (val) => Number(val).toFixed(0)
+        formatter: (val) => shortNiceNumber(val, 0, 0)
       },
       theme,
     },
