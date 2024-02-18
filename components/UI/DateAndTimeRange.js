@@ -10,7 +10,7 @@ import { useRouter } from "next/router"
 import Tabs from "../Tabs"
 import { network, useWidth, setTabParams } from "../../utils"
 
-export default function DateAndTimeRange({ setPeriod, minDate, tabs, defaultPeriod, setChartSpan, style }) {
+export default function DateAndTimeRange({ setPeriod, minDate, tabs, defaultPeriod, style }) {
   const { i18n, t } = useTranslation()
   const windowWidth = useWidth()
   const router = useRouter()
@@ -79,6 +79,7 @@ export default function DateAndTimeRange({ setPeriod, minDate, tabs, defaultPeri
       newStartDate = monthAgo
     } else if (periodName === "year") {
       newStartDate = yearAgo
+    } else if (periodName === "all") {
     }
     if (periodName === "hour" ||
       periodName === "day" ||
@@ -117,16 +118,9 @@ export default function DateAndTimeRange({ setPeriod, minDate, tabs, defaultPeri
   }, [periodName])
 
   useEffect(() => {
-    if (setChartSpan) {
-      const oneHour = 60 * 60 * 1000
-      const oneDay = 24 * oneHour
-      if ((endDate - startDate) <= 2 * oneHour) {
-        setChartSpan("minute")
-      } else if ((endDate - startDate) <= 5 * oneDay) {
-        setChartSpan("hour")
-      } else {
-        setChartSpan("day")
-      }
+    //need it to update the search, only for custom to keep the names
+    if (startDate && endDate && (periodName === "custom" || !periodName)) {
+      setPeriod(startDate.toISOString() + '..' + endDate.toISOString())
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [startDate, endDate])

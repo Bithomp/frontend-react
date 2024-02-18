@@ -17,8 +17,9 @@ export const getServerSideProps = async ({ query, locale }) => {
 
 import SEO from '../components/SEO'
 import DateAndTimeRange from '../components/UI/DateAndTimeRange'
+import SimpleChart from '../components/SimpleChart'
 
-import { useWidth } from '../utils'
+import { chartSpan, useWidth } from '../utils'
 import {
   shortNiceNumber,
   persentFormat,
@@ -41,6 +42,8 @@ export default function NftMinters({ periodQuery }) {
   const [errorMessage, setErrorMessage] = useState("")
   const [period, setPeriod] = useState(periodQuery)
   const [sortConfig, setSortConfig] = useState({})
+  const [loadingChart, setLoadingChart] = useState(false)
+  const [chartData, setChartData] = useState([])
 
   const controller = new AbortController()
 
@@ -51,19 +54,45 @@ export default function NftMinters({ periodQuery }) {
     setRawData({})
     setData([])
 
+    if (period) {
+      //chartData
+      setLoadingChart(true)
+      setChartData([])
+
+      const chartDataResponse = await axios.get(
+        'v2/nft-chart?span=' + chartSpan(period) + '&period=' + period,
+      ).catch(error => {
+        if (error && error.message !== "canceled") {
+          setErrorMessage(t("error." + error.message))
+        }
+        setLoadingChart(false)
+      })
+      setLoadingChart(false)
+
+      if (chartDataResponse?.data?.chart?.length > 0) {
+        const newChartData = chartDataResponse.data.chart.map((item) => {
+          return [item.time, item.issues]
+        })
+        setChartData(newChartData)
+      }
+
+      //chart data ends
+    }
+
     const response = await axios.get(apiUrl + '?period=' + period, {
       signal: controller.signal
     }).catch(error => {
       if (error && error.message !== "canceled") {
         setErrorMessage(t("error." + error.message))
-        setLoading(false) //keep here for fast tab clickers
       }
+      setLoading(false) //keep here for fast tab clickers
     })
-    const newdata = response?.data;
+    const newdata = response?.data
+
+    setLoading(false) //keep here for fast tab clickers
 
     if (newdata) {
       setRawData(newdata)
-      setLoading(false) //keep here for fast tab clickers
       if (newdata.period) {
         let list = newdata.marketplaces
         if (list.length > 0) {
@@ -123,7 +152,7 @@ export default function NftMinters({ periodQuery }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isReady, period])
 
-  const urlParams = (minter) => {
+  const urlParams = minter => {
     let urlPart = "?mintedByMarketplace=" + minter?.marketplace + '&includeBurned=true&includeWithoutMediaData=true'
     return urlPart
   }
@@ -190,8 +219,30 @@ export default function NftMinters({ periodQuery }) {
               }
             </>
           }
-        </div >
-      </div >
+        </div>
+      </div>
+
+      <center>
+        <br />
+        <h3>Mint chart</h3>
+        {loadingChart ?
+          <>
+            <br />
+            <span className="waiting"></span>
+            <br />{t("general.loading")}<br />
+            <br />
+          </>
+          :
+          <>
+            {chartData.length > 0 &&
+              <div style={{ maxWidth: "600px" }}>
+                <SimpleChart data={chartData} />
+              </div>
+            }
+          </>
+        }
+      </center>
+
       <br />
       {
         (windowWidth > 1000) ?

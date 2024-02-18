@@ -23,7 +23,7 @@ export default function PriceChart({ data }) {
     xaxis: {
       type: 'datetime',
       labels: {
-        datetimeUTC: false,
+        datetimeUTC: true,
         datetimeFormatter: {
           day: 'd MMM'
         }
