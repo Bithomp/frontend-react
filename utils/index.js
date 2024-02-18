@@ -27,14 +27,13 @@ export const chartSpan = period => {
     const oneHour = 60 * 60 * 1000
     const oneDay = 24 * oneHour
     const oneMonth = 30 * oneDay
-    const oneYear = 365 * oneDay
     if ((endDate - startDate) <= oneHour) {
       return "minute"
-    } else if ((endDate - startDate) <= oneDay) {
+    } else if ((endDate - startDate) <= 60 * oneHour) {
       return "hour"
-    } else if ((endDate - startDate) <= oneMonth) {
+    } else if ((endDate - startDate) <= 60 * oneDay) {
       return "day"
-    } if ((endDate - startDate) <= oneYear) {
+    } if ((endDate - startDate) <= 60 * oneMonth) {
       return "month"
     } else {
       "year"
