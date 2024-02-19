@@ -15,7 +15,7 @@ export const getServerSideProps = async ({ query, locale }) => {
       currency: currency || "",
       currencyIssuer: currencyIssuer || "",
       sortCurrency: sortCurrency || "",
-      ...(await serverSideTranslations(locale, ['common'])),
+      ...(await serverSideTranslations(locale, ['common', 'nft-volumes'])),
     },
   }
 }
@@ -224,7 +224,7 @@ export default function NftVolumes({ periodQuery, sale, currency, currencyIssuer
   return <>
     <SEO
       title={
-        t("nft-volumes.header") + " " + issuer + ' '
+        t("header", { ns: 'nft-volumes' }) + " " + issuer + ' '
         + (saleTab === 'secondary' ? t("tabs.secondary-sales") : "")
         + (saleTab === 'primary' ? t("tabs.primary-sales") : "")
         + (currency ? (" " + currency) : "")

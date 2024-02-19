@@ -575,21 +575,6 @@
     "no-nfts": "Vi kunne ikke finne noen NFT-er utstedt av den adressen.",
     "text0": "{{users}} kontoer eier {{nfts}} NFT-er"
   },
-  "nft-volumes": {
-    "header": "NFT salgsvolum",
-    "text0": "For that period XRPL hadde {{allSales}} {{currency}} NFT {{saleType}} salg for {{allVolume}}.",
-    "brokers": {
-      "desc": "Dette er listen over NFT-meglerkontoer. Du kan finne volume av tilbudsmatchende boter her. Markedsplasser bruker blandede handelsmodeller, her kan du kun se volumene gjennom meglermodellen.",
-      "no-broker": "Ingen megler",
-      "text0": "For that period XRPL hadde {{allSales}} <3>{{currency}}</3> NFT {{saleType}} salg for {{allVolume}}, hvor <9>{{brokerSales}}</9> {{percentBrokerSales}} av handler <13>{{brokerVolume}}</13> {{percentBrokerVolume}} var gjennom meglermodellen."
-    },
-    "marketplaces": {
-      "desc": "Dette er listen over NFT-markedsplasser på XRPL. Volumene her inkluderer ikke de primære salgene (mints) som ble utført innen 2 transaksjoner (betaling og NFT-overføring)."
-    },
-    "issuers": {
-      "desc": "Dette er listen over NFT-utstedere på XRPL. For å se volumer av NFT-samlinger identifisert av utsteder og taxon, klikk på lenken i Salgsvolum-kolonnen."
-    }
-  },
   "nft-sales": {
     "header": "NFT salg",
     "load-more": "Vi ser etter data på XRPL... vennligst vent...",

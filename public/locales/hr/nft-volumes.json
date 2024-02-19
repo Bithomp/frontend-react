@@ -1,0 +1,17 @@
+{
+  "header": "NFT prodajni volumen",
+  "text0": "For that period XRPL je imao {{allSales}} {{currency}} NFT prodaja za {{allVolume}}.",
+  "brokers": {
+    "desc": "Ovo je lista NFT broker računa. Ovdje možete pronaći volumen ponuda botova. Marketplace koriste miksane modele prodaje, ovdje možete vidjeti samo volumen koji je potekao kroz model brokera.",
+    "no-broker": "Nema brokera",
+    "text0": "For that period XRPL je imao {{allSales}} <3>{{currency}}</3> NFT {{saleType}} prodaja za {{allVolume}}, od kojih <9>{{brokerSales}}</9> {{percentBrokerSales}} prodaja <13>{{brokerVolume}}</13> {{percentBrokerVolume}} su bili kroz model brokera."
+  },
+  "marketplaces": {
+    "desc": "Ovo je lista NFT Marketplacea na XRPL-u. Volumeni ovdje ne uključuju primarne prodaje (mints) koje su napravljene unutar 2 transakcije (plaćanje/payment i NFT transfer)."
+  },
+  "issuers": {
+    "desc": "Ovo je lista NFT izdavatelja na XRPL-u. Da bi vidjeli volumene NFT kolekcija indentificiranih po izdavatelju i taxonu kliknite na link u Prodajni volumen stupcu."
+  },
+  "sales-chart": "Sales chart",
+  "volumes-chart": "Volumes chart"
+}

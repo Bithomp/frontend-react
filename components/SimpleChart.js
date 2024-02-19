@@ -35,15 +35,24 @@ export default function PriceChart({ data }) {
 
   const timeDifference = new Date(data[data.length - 1][0]).valueOf() - new Date(data[0][0]).valueOf()
 
+  let formatForXaxisLabels = {
+    datetimeUTC: true,
+    datetimeFormatter: {
+      day: 'd MMM',
+    }
+  }
+
+  if (timeDifference <= oneHour) {
+    formatForXaxisLabels = {
+      datetimeUTC: true,
+      format: 'HH:mm'
+    }
+  }
+
   const options = {
     xaxis: {
       type: 'datetime',
-      labels: {
-        datetimeUTC: true,
-        datetimeFormatter: {
-          day: 'd MMM'
-        }
-      }
+      labels: formatForXaxisLabels
     },
     yaxis: {
       labels: {
@@ -131,11 +140,7 @@ export default function PriceChart({ data }) {
             })
           }
           if (timeDifference <= 60 * oneDay) {
-            const start = new Date(val).setUTCHours(0, 0, 0, 0)
-            const end = new Date(val).setMilliseconds(new Date(val).getMilliseconds() + 1)
-            return new Date(start).getUTCDate() + " " + locales.months[chartLang][new Date(start).getUTCMonth()] + " - " +
-              new Date(end).getUTCDate() + " " + locales.months[chartLang][new Date(end).getUTCMonth()]
-
+            return new Date(val).getUTCDate() + " " + locales.months[chartLang][new Date(val).getUTCMonth()]
           }
           if (timeDifference <= 12 * oneMonth) {
             return locales.months[chartLang][new Date(val).getUTCMonth()] + " " + new Date(val).getUTCFullYear()
@@ -158,10 +163,12 @@ export default function PriceChart({ data }) {
     //colors: ['#006B7D'],
   }
 
-  const series = [{
-    name: '',
-    data
-  }]
+  const series = [
+    {
+      name: '',
+      data
+    }
+  ]
 
   return <>
     <Chart type="line" series={series} options={options} />
