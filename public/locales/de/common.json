@@ -518,7 +518,8 @@
       "nft": "NFT",
       "nfts": "NFTs",
       "nft-offer": "NFT Angebot",
-      "nft-offers": "NFT Angebote"
+      "nft-offers": "NFT Angebote",
+      "nft-volumes": "NFT sales volumes"
     },
     "enter-address": "Geben Sie eine XRPL Adresse oder einen Benutzernamen ein",
     "searching-tx-nft-nftoffer": "Suchen nach Trans / NFT ID / NFT Angebot",

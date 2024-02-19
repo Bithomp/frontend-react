@@ -518,7 +518,8 @@
       "nft": "NFT",
       "nfts": "NFTs",
       "nft-offer": "NFT 제안",
-      "nft-offers": "NFT 제안"
+      "nft-offers": "NFT 제안",
+      "nft-volumes": "NFT sales volumes"
     },
     "enter-address": "XRPL 주소 또는 사용자명으로 로그인하세요",
     "searching-tx-nft-nftoffer": "Tx/NFT ID/NFT 제안 검색하기",

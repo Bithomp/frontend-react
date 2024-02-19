@@ -518,7 +518,8 @@
       "nft": "NFT",
       "nfts": "NFTs",
       "nft-offer": "NFT офер",
-      "nft-offers": "NFT оферы"
+      "nft-offers": "NFT оферы",
+      "nft-volumes": "Объемы продаж NFT"
     },
     "enter-address": "Введите XRPL адрес или ник",
     "searching-tx-nft-nftoffer": "Идет поиск по запрошенному ID",

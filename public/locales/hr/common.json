@@ -518,7 +518,8 @@
       "nft": "NFT",
       "nfts": "NFTs",
       "nft-offer": "NFT ponuda",
-      "nft-offers": "NFT ponude"
+      "nft-offers": "NFT ponude",
+      "nft-volumes": "NFT sales volumes"
     },
     "enter-address": "Unesi XRPL adresu ili korisničko ime",
     "searching-tx-nft-nftoffer": "Tražim Tx / NFT ID / NFT Ponudu",

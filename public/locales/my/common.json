@@ -518,7 +518,8 @@
       "nft": "NFT",
       "nfts": "NFTs",
       "nft-offer": "Tawaran NFT",
-      "nft-offers": "Tawaran NFT"
+      "nft-offers": "Tawaran NFT",
+			"nft-volumes": "NFT sales volumes"
     },
 		"enter-address": "Masukkan alamat XRPL atau nama pengguna",
 		"searching-tx-nft-nftoffer": "Mencari Tx / NFT ID / Tawaran NFT",

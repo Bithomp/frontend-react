@@ -114,7 +114,7 @@ export default function NftVolumes({ periodQuery, sale, currency, currencyIssuer
         setErrorMessage(t("error." + error.message))
         setLoading(false) //keep here for fast tab clickers
       }
-    });
+    })
 
     const newdata = response?.data;
     if (newdata) {
@@ -220,7 +220,7 @@ export default function NftVolumes({ periodQuery, sale, currency, currencyIssuer
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isReady, saleTab, period, currency, currencyIssuer, convertCurrency]);
+  }, [isReady, saleTab, period, currency, currencyIssuer, convertCurrency, issuer]);
 
   const urlParams = (volume) => {
     let urlPart = "?period=" + period + "&sale=" + saleTab

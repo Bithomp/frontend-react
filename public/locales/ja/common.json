@@ -518,7 +518,8 @@
       "nft": "NFT",
       "nfts": "NFTs",
       "nft-offer": "NFTのオファー",
-      "nft-offers": "NFTのオファー"
+      "nft-offers": "NFTのオファー",
+      "nft-volumes": "NFT sales volumes"
     },
     "enter-address": "XRPLアドレスまたはユーザネームを入力してください。",
     "searching-tx-nft-nftoffer": "トランザクション/NFT ID/NFT Offerで検索しています。",

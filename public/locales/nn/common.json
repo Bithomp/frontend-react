@@ -518,7 +518,8 @@
       "nft": "NFT",
       "nfts": "NFTs",
       "nft-offer": "NFT tilbud",
-      "nft-offers": "NFT tilbud"
+      "nft-offers": "NFT tilbud",
+      "nft-volumes": "NFT sales volumes"
     },
     "enter-address": "Skriv inn en XRPL-adresse eller et brukernavn",
     "searching-tx-nft-nftoffer": "Søker etter Tx / NFT ID / NFT bud",

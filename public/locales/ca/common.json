@@ -518,7 +518,8 @@
       "nft": "NFT",
       "nfts": "NFTs",
       "nft-offer": "Oferta NFT",
-      "nft-offers": "Ofertes d'NFTs"
+      "nft-offers": "Ofertes d'NFTs",
+      "nft-volumes": "NFT sales volumes"
     },
     "enter-address": "Introdueix un adreça XRPL o un àlies",
     "searching-tx-nft-nftoffer": "Cercant per Tx / NFT ID / ID de l'Oferta",
