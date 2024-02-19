@@ -354,7 +354,7 @@ export default function NftVolumes({
         paramName: "sale"
       }
     ]
-    if ((!currency || (currency.toLowerCase() !== 'xrp' && !isAddressOrUsername(currencyIssuer))) || listTab === 'currencies') {
+    if ((!currencyTab || (currencyTab.toLowerCase() !== 'xrp' && !isAddressOrUsername(currencyIssuer))) || listTab === 'currencies') {
       queryRemoveList = ["currency", "currencyIssuer"]
     }
 
@@ -375,7 +375,7 @@ export default function NftVolumes({
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isReady, saleTab, period, listTab, currency, currencyIssuer, convertCurrency, issuersExtended, currencyTab])
+  }, [isReady, saleTab, period, listTab, currencyIssuer, convertCurrency, issuersExtended, currencyTab])
 
   const urlParams = (volume, options) => {
     let urlPart = "?period=" + period + "&sale=" + saleTab
@@ -526,7 +526,7 @@ export default function NftVolumes({
         t("header", { ns: 'nft-volumes' }) + ' '
         + (saleTab === 'secondary' ? t("tabs.secondary-sales") : "")
         + (saleTab === 'primary' ? t("tabs.primary-sales") : "")
-        + (currency ? (" " + currency) : "")
+        + (currencyTab ? (" " + currencyTab) : "")
         + (currencyIssuer ? (" " + currencyIssuer) : "")
         + (listTab === "list" ? (" " + t("tabs.list")) : "")
         + (period ? (" " + period) : "")
