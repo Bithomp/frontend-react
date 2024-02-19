@@ -1154,7 +1154,8 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
                                   <>
                                     ,{" "}
                                     <Link href={"/nft-sales?issuer=" + data.issuer}>{t("table.sold_few")}</Link>,{" "}
-                                    <Link href={"/nft-explorer?issuer=" + data.issuer + "&list=onSale"}>{t("table.on-sale")}</Link>
+                                    <Link href={"/nft-explorer?issuer=" + data.issuer + "&list=onSale"}>{t("table.on-sale")}</Link>,{" "}
+                                    <Link href={"/nft-volumes/" + data.issuer + "?period=year"}>{t("table.volume")}</Link>
                                   </>
                                 }
                               </td>
