@@ -1,10 +1,10 @@
 {
   "header": "Volúmenes en ventas NFT",
-  "text0": "For that period el XRPL tuvo {{allSales}} {{currency}} en ventas en el mercado {{saleType}} NFT por valor de {{allVolume}}.",
+  "text0": "Para este periodo, la red tuvo {{allSales}} {{currency}} en ventas en el mercado {{saleType}} NFT por valor de {{allVolume}}.",
   "brokers": {
     "desc": "Este es un listado de cuentas de broker NFT. Puedes encontrar aquí los volúmenes de los bots de cruces. Los mercados utilizan modelos mixtos para comerciar, aquí puedes ver solo volúmenes a través del modelo de broker.",
     "no-broker": "Sin broker",
-    "text0": "For that period XRPL tuvo {{allSales}} <3>{{currency}}</3> ventas {{saleType}} NFT por {{allVolume}}, de las cuales <9>{{brokerSales}}</9> {{percentBrokerSales}} de los acuerdos de <13>{{brokerVolume}}</13> {{percentBrokerVolume}} fueron a través del modelo de broker."
+    "text0": "Para este periodo, la red tuvo {{allSales}} <3>{{currency}}</3> ventas {{saleType}} NFT por {{allVolume}}, de las cuales <9>{{brokerSales}}</9> {{percentBrokerSales}} de los acuerdos de <13>{{brokerVolume}}</13> {{percentBrokerVolume}} fueron a través del modelo de broker."
   },
   "marketplaces": {
     "desc": "Esta es la lista de Mercados NFT en XRPL. Los volúmenes aquí no incluyen las ventas primarias (acuñaciones) las cuales fueron hechas en 2 transacciones (pago y transferencia de NFT)."
