@@ -171,6 +171,11 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
       return
     }
 
+    if (tab === "nft-volumes" && isAddressOrUsername(searchFor)) {
+      router.push("/nft-volumes/" + encodeURI(searchFor) + addParams)
+      return
+    }
+
     //nft nftOffer uriToken
     if (isIdValid(searchFor)) {
       setSearching(true)

@@ -102,31 +102,29 @@ export default function NftVolumes({
     }
 
     // get the chart data
-    if (period) {
-      setLoadingChart(true)
-      setChartIssuers([])
-      setChartVolumes([])
+    setLoadingChart(true)
+    setChartIssuers([])
+    setChartVolumes([])
 
-      const chartDataResponse = await axios.get(
-        'v2/nft-sales-chart?span=' + chartSpan(period) + '&period=' + period + '&saleType=' + saleTab + currencyUrlPart + '&convertCurrencies=' + convertCurrency,
-      ).catch(error => {
-        if (error && error.message !== "canceled") {
-          setErrorMessage(t("error." + error.message))
-        }
-        setLoadingChart(false)
-      })
-      setLoadingChart(false)
-
-      if (chartDataResponse?.data?.chart?.length > 0) {
-        const issuersData = chartDataResponse.data.chart.map((item) => {
-          return [item.time, item.sales]
-        })
-        const volumesData = chartDataResponse.data.chart.map((item) => {
-          return [item.time, item.amountInConvertCurrencies[convertCurrency]]
-        })
-        setChartIssuers(issuersData)
-        setChartVolumes(volumesData)
+    const chartDataResponse = await axios.get(
+      'v2/nft-sales-chart?span=' + chartSpan(period) + '&period=' + period + '&saleType=' + saleTab + currencyUrlPart + '&convertCurrencies=' + convertCurrency,
+    ).catch(error => {
+      if (error && error.message !== "canceled") {
+        console.log(error)
       }
+      setLoadingChart(false)
+    })
+    setLoadingChart(false)
+
+    if (chartDataResponse?.data?.chart?.length > 0) {
+      const issuersData = chartDataResponse.data.chart.map((item) => {
+        return [item.time, item.sales]
+      })
+      const volumesData = chartDataResponse.data.chart.map((item) => {
+        return [item.time, item.amountInConvertCurrencies[convertCurrency]]
+      })
+      setChartIssuers(issuersData)
+      setChartVolumes(volumesData)
     }
     // end getting the chart data
 
