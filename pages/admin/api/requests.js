@@ -33,8 +33,7 @@ export default function Requests() {
   const [errorMessage, setErrorMessage] = useState("")
   const [apiRequests, setApiRequests] = useState({})
   const [loading, setLoading] = useState(false)
-  const [startDate, setStartDate] = useState(minDate)
-  const [endDate, setEndDate] = useState(new Date())
+  const [period, setPeriod] = useState("")
 
   useEffect(() => {
     const sessionToken = localStorage.getItem('sessionToken')
@@ -87,7 +86,7 @@ export default function Requests() {
     setLoading(true)
     //&search=text&ip=z
     const apiRequests = await axios.get(
-      'partner/partner/accessToken/requests?limit=50&offset=0&period=' + startDate.toISOString() + '..' + endDate.toISOString(),
+      'partner/partner/accessToken/requests?limit=50&offset=0&period=' + period,
       { baseUrl: '/api/' }
     ).catch(error => {
       if (error && error.message !== "canceled") {
@@ -113,10 +112,7 @@ export default function Requests() {
       <Tabs tabList={apiTabs} tab="api-requests" setTab={changePage} name="apiTabs" />
       <center>
         <DateAndTimeRange
-          startDate={startDate}
-          setStartDate={setStartDate}
-          endDate={endDate}
-          setEndDate={setEndDate}
+          setPeriod={setPeriod}
           minDate={minDate}
         />
         {width < 500 && <br />}

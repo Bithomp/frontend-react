@@ -37,7 +37,7 @@ export default function Donate() {
           "ledger": 78833252,
           "type": "Payment",
           "sourceAddress": "rf1NrYAsv92UPDd8nyCG4A3bez7dhYE61r",
-          "destinationAddress": "rPPHhfSQbHt1t2XPHWAK1HTcjqDg56TzZy",
+          "destinationAddress": "rEDakigd4Cp78FioF3qvQs6TrjFLjKLqM3",
           "destinationTag": 1,
           "amount": 50,
           "memos": [
@@ -85,7 +85,7 @@ export default function Donate() {
           <br /><br />
           {t("donate.address")}:
           <br />
-          <b style={{ wordBreak: "break-word" }}>rPPHhfSQbHt1t2XPHWAK1HTcjqDg56TzZy</b> <CopyButton text="rPPHhfSQbHt1t2XPHWAK1HTcjqDg56TzZy" />
+          <b style={{ wordBreak: "break-word" }}>rEDakigd4Cp78FioF3qvQs6TrjFLjKLqM3</b> <CopyButton text="rEDakigd4Cp78FioF3qvQs6TrjFLjKLqM3" />
           <br /><br />
           {t("donate.dt")}:
           <br />
@@ -96,9 +96,9 @@ export default function Donate() {
               <br /><br />
               <a
                 className='button-action wide center'
-                href="xumm://xumm.app/detect/request:rPPHhfSQbHt1t2XPHWAK1HTcjqDg56TzZy?dt=1&deeplink=true&afterQr=true"
+                href="xumm://xumm.app/detect/request:rEDakigd4Cp78FioF3qvQs6TrjFLjKLqM3?dt=1&deeplink=true&afterQr=true"
               >
-                <Image src="/images/xumm.png" className='xumm-logo' alt="xumm" height={24} width={24} />
+                <Image src="/images/xumm.png" className='xumm-logo' alt="xaman" height={24} width={24} />
                 {t("donate.donate-with-xumm")}
               </a>
             </>

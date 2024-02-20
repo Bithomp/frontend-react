@@ -149,7 +149,7 @@ a, .link {
   }
 }
 
-input {
+input, textarea {
   appearance: none;
   -webkit-appearance: none; // for ios safari
   border-radius: 0; // remove rounded corners on ios safari
@@ -187,6 +187,14 @@ input {
         box-shadow: none;
       }
     }
+  }
+}
+
+textarea {
+  &.input-text {
+    height: 200px;
+    resize: none;
+    padding-top: 10px;
   }
 }
 
@@ -489,7 +497,9 @@ table {
   &.wide {
     width: calc(100% - 22px);
   }
-  &.disabled {
+  &.disabled,
+  &:disabled,
+  &[disabled] {
     border: 1px solid #999999;
     background-color: #cccccc;
     color: #666666;

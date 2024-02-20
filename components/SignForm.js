@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react'
 import { useTranslation, Trans } from 'next-i18next'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
@@ -34,7 +34,7 @@ const trezor = '/images/trezor-large.svg'
 const ellipal = '/images/ellipal-large.svg'
 
 const voteTxs = ['castVoteRewardDelay', 'castVoteRewardRate', 'castVoteHook', 'castVoteSeat']
-const askInfoScreens = [...voteTxs, 'NFTokenAcceptOffer', 'NFTokenCreateOffer', 'NFTokenBurn', 'setDomain']
+const askInfoScreens = [...voteTxs, 'NFTokenAcceptOffer', 'NFTokenCreateOffer', 'NFTokenBurn', 'setDomain', 'nftTransfer']
 const noCheckboxScreens = [...voteTxs, 'setDomain']
 
 export default function SignForm({ setSignRequest, account, setAccount, signRequest }) {
@@ -49,6 +49,7 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
   const [xummUuid, setXummUuid] = useState(null)
   const [expiredQr, setExpiredQr] = useState(false)
   const [agreedToRisks, setAgreedToRisks] = useState(false)
+  const [formError, setFormError] = useState(false)
   const [hookData, setHookData] = useState({})
   const [seatData, setSeatData] = useState({})
   const [targetLayer, setTargetLayer] = useState(signRequest?.layer)
@@ -57,6 +58,8 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
 
   const [rewardRate, setRewardRate] = useState()
   const [rewardDelay, setRewardDelay] = useState()
+
+  const [privateOffer, setPrivateOffer] = useState(false)
 
   const xummUserToken = localStorage.getItem('xummUserToken')
 
@@ -94,10 +97,36 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
       return
     }
 
-    if ((tx.TransactionType === "NFTokenCreateOffer" || tx.TransactionType === "URITokenCreateSellOffer") &&
-      !agreedToRisks) {
-      setScreen("NFTokenCreateOffer")
-      return
+    if (signRequest.action === 'nftTransfer') {
+      tx.Amount = "0"
+      if (!agreedToRisks) {
+        setScreen("nftTransfer")
+        return
+      } else {
+        if (!signRequest.request?.Destination) {
+          setStatus(t("form.error.address-empty"))
+          setFormError(true)
+          return
+        }
+      }
+    }
+
+    if ((tx.TransactionType === "NFTokenCreateOffer" || tx.TransactionType === "URITokenCreateSellOffer")) {
+      if (!agreedToRisks) {
+        setScreen("NFTokenCreateOffer")
+        return
+      } else {
+        if (privateOffer && !signRequest.request?.Destination) {
+          setStatus(t("form.error.address-empty"))
+          setFormError(true)
+          return
+        }
+        if (!signRequest.request?.Amount) {
+          setStatus(t("form.error.price-empty"))
+          setFormError(true)
+          return
+        }
+      }
     }
 
     if (tx.TransactionType === "NFTokenBurn" && !agreedToRisks) {
@@ -179,11 +208,11 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
 
     const client = {
       "Memo": {
-        "MemoData": "626974686F6D702E636F6D"
+        "MemoData": encode(server?.replace(/^https?:\/\//, ''))
       }
     }
 
-    if (tx.Memos && tx.Memos.length && tx.Memos[0]?.Memo?.MemoData !== client.Memo.MemoData) {
+    if (tx.Memos && tx.Memos.length && tx.Memos[0]?.Memo?.MemoData !== client.Memo.MemoData && tx.Memos[1]?.Memo?.MemoData !== client.Memo.MemoData) {
       tx.Memos.push(client)
     } else {
       tx.Memos = [client]
@@ -292,16 +321,27 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
     }
   }
 
-  const checkTxInCrawler = async txid => {
+  const checkTxInCrawler = async (txid, redirectName) => {
     setAwaiting(true)
     setStatus(t("signin.status.awaiting-crawler"))
     if (txid) {
       const response = await axios("xrpl/transaction/" + txid)
       if (response.data) {
-        const { validated, inLedger, ledger_index } = response.data
+        const { validated, inLedger, ledger_index, meta } = response.data
         const includedInLedger = inLedger || ledger_index
         if (validated && includedInLedger) {
-          checkCrawlerStatus(includedInLedger)
+          if (redirectName === "nft") {
+            //check for URI token
+            for (let i = 0; i < meta.AffectedNodes.length; i++) {
+              const node = meta.AffectedNodes[i]
+              if (node.CreatedNode?.LedgerEntryType === "URIToken") {
+                checkCrawlerStatus({ inLedger: includedInLedger, param: node.CreatedNode.LedgerIndex })
+                break
+              }
+            }
+            return
+          }
+          checkCrawlerStatus({ inLedger: includedInLedger })
         } else {
           //if not validated or if no ledger info received, delay for 3 seconds
           delay(3000, closeSignInFormAndRefresh)
@@ -334,12 +374,13 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
     */
     //data.payload.tx_type: "SignIn"
 
+    const redirectName = data.custom_meta?.blob?.redirect
+
     //if redirect 
     if (data.response?.account) {
       saveAddressData(data.response.account)
-      const redirectName = data.custom_meta?.blob?.redirect
       if (redirectName === "nfts") {
-        window.location.href = server + "/nfts/" + data.response.account
+        window.location.href = "/nfts/" + data.response.account
         return
       } else if (redirectName === "account") {
         window.location.href = server + "/explorer/" + data.response.account
@@ -379,7 +420,7 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
           const responseData = response.data
           if (responseData.status && responseData.data?.hash) {
             // hash of the offer accept transaction
-            checkTxInCrawler(responseData.data.hash)
+            checkTxInCrawler(responseData.data.hash, redirectName)
           } else {
             setStatus(t("signin.status.failed-broker", { serviceName: data.custom_meta.blob.broker }))
             closeSignInFormAndRefresh()
@@ -394,7 +435,7 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
 
     // For NFT transaction, lets wait for crawler to finish it's job
     if (data.payload?.tx_type.includes("NFToken") || data.payload?.tx_type.includes("URIToken")) {
-      checkTxInCrawler(data.response?.txid)
+      checkTxInCrawler(data.response?.txid, redirectName)
       return
     } else {
       // no checks or delays for non NFT transactions
@@ -402,7 +443,7 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
     }
   }
 
-  const checkCrawlerStatus = async inLedger => {
+  const checkCrawlerStatus = async ({ inLedger, param }) => {
     const crawlerResponse = await axios("v2/statistics/nftokens/crawler")
     if (crawlerResponse.data) {
       const { ledgerIndex } = crawlerResponse.data
@@ -411,10 +452,13 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
       // othewrwise wait until crawler catch up with the ledger where this transaction was included
 
       if (ledgerIndex >= inLedger || (inLedger - 10) > ledgerIndex) {
+        if (param) {
+          signRequest.callback(param)
+        }
         closeSignInFormAndRefresh()
       } else {
         //check again in 1 second if crawler ctached up with the ledger where transaction was included
-        delay(1000, checkCrawlerStatus, inLedger)
+        delay(1000, checkCrawlerStatus, { inLedger, param })
       }
     }
   }
@@ -461,10 +505,25 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
     margin: "0 10px"
   }
 
+  const onPrivateOfferToggle = () => {
+    if (!privateOffer) {
+      let newRequest = signRequest
+      if (newRequest.request.Destination) {
+        delete newRequest.request.Destination
+      }
+      setSignRequest(newRequest)
+      setStatus("")
+      setFormError(false)
+    }
+    setPrivateOffer(!privateOffer)
+  }
+
   const onAmountChange = e => {
     let newRequest = signRequest
     newRequest.request.Amount = (e.target.value * 1000000).toString()
     setSignRequest(newRequest)
+    setFormError(false)
+    setStatus("")
   }
 
   const onDomainChange = e => {
@@ -589,6 +648,22 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
     setSeatData(seatObj)
   }
 
+  const onAddressChange = value => {
+    let newRequest = signRequest
+    if (isAddressValid(value)) {
+      newRequest.request.Destination = value
+      setFormError(false)
+      setStatus("")
+    } else {
+      if (newRequest.request.Destination) {
+        delete newRequest.request.Destination
+      }
+      setStatus(t("form.error.address-invalid"))
+      setFormError(true)
+    }
+    setSignRequest(newRequest)
+  }
+
   const onPlaceSelect = topic => {
     let hookObj = hookData
     hookObj.topic = topic.value
@@ -621,6 +696,23 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
 
   const xls35Sell = signRequest?.request?.TransactionType === "URITokenCreateSellOffer"
 
+  const checkBoxText = (screen, signRequest) => {
+    if (screen === 'nftTransfer') return <Trans i18nKey="signin.confirm.nft-transfer">
+      I'm offering that NFT for FREE to the Destination account, <span class="orange bold">the destination account would need to accept the NFT transfer</span>.
+    </Trans>
+
+
+    if (screen === 'NFTokenBurn') return t("signin.confirm.nft-burn")
+    if (screen === 'NFTokenCreateOffer' && (signRequest.request.Flags === 1 || xls35Sell)) {
+      return t("signin.confirm.nft-create-sell-offer")
+    }
+
+    return <Trans i18nKey="signin.confirm.nft-accept-offer">
+      I admit that Bithomp gives me access to a decentralised marketplace, and it cannot verify or guarantee the authenticity and legitimacy of any NFTs.
+      I confirm that I've read the <Link href="/terms-and-conditions" target="_blank">Terms and conditions</Link>, and I agree with all the terms to buy, sell or use any NFTs on Bithomp.
+    </Trans>
+  }
+
   return (
     <div className="sign-in-form">
       <div className="sign-in-body center">
@@ -643,6 +735,7 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
                   t("signin.confirm.nft-create-buy-offer-header")
                 )
               }
+              {screen === 'nftTransfer' && t("signin.confirm.nft-create-transfer-offer-header")}
               {screen === 'setDomain' && t("signin.confirm.set-domain")}
               {voteTxs.includes(screen) && "Cast a vote"}
             </div>
@@ -667,7 +760,7 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
                           </tr>
                           <tr>
                             <td>{t("signin.nft-offer.total")}</td>
-                            <td className='right'> <b>{amountFormat(signRequest.request.Amount)}</b></td>
+                            <td className='right'> <b>{amountFormat(signRequest.request.Amount, { precise: true })}</b></td>
                           </tr>
                         </tbody>
                       </table>
@@ -696,10 +789,46 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
                         <ExpirationSelect onChange={onExpirationChange} />
                       </span>
                     }
+                    {(signRequest.request.Flags === 1 || xls35Sell) &&
+                      <>
+                        <div className='terms-checkbox'>
+                          <CheckBox checked={privateOffer} setChecked={onPrivateOfferToggle}>
+                            {t("table.text.private-offer")}
+                          </CheckBox>
+                        </div>
+                        {privateOffer &&
+                          <span className='halv'>
+                            <span className='input-title'>{t("table.destination")}</span>
+                            <input
+                              placeholder={t()}
+                              onChange={e => onAddressChange(e.target.value)}
+                              className="input-text"
+                              spellCheck="false"
+                            />
+                          </span>
+                        }
+                      </>
+                    }
                   </div>
                 }
               </>
             }
+
+            {screen === "nftTransfer" &&
+              <div className='center'>
+                <br />
+                <span className='halv'>
+                  <span className='input-title'>{t("table.destination")}</span>
+                  <input
+                    placeholder={t()}
+                    onChange={e => onAddressChange(e.target.value)}
+                    className="input-text"
+                    spellCheck="false"
+                  />
+                </span>
+              </div>
+            }
+
             {screen === 'setDomain' &&
               <div className='center'>
                 <br />
@@ -730,11 +859,7 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
                 </span>
                 <div>
                   <br />
-                  {status ?
-                    <b className="orange">{status}</b>
-                    :
-                    rewardDelay ? <b>= {duration(t, rewardDelay, { seconds: true })}</b> : <br />
-                  }
+                  {(!status && rewardDelay) ? <b>= {duration(t, rewardDelay, { seconds: true })}</b> : <br />}
                 </div>
               </div>
             }
@@ -754,11 +879,7 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
                 </span>
                 <div>
                   <br />
-                  {status ?
-                    <b className="orange">{status}</b>
-                    :
-                    rewardRate ? <b>≈ {rewardRateHuman(rewardRate)}</b> : <br />
-                  }
+                  {(!status && rewardRate) ? <b>≈ {rewardRateHuman(rewardRate)}</b> : <br />}
                 </div>
               </div>
             }
@@ -825,10 +946,6 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
                     />
                   </span>
                 }
-                <div>
-                  <br />
-                  {status ? <b className="orange">{status}</b> : <br />}
-                </div>
               </div>
             }
 
@@ -882,40 +999,31 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
                     />
                   </span>
                 }
-                <div>
-                  <br />
-                  {status ? <b className="orange">{status}</b> : <br />}
-                </div>
               </div>
             }
 
             {!noCheckboxScreens.includes(screen) &&
               <div className='terms-checkbox'>
                 <CheckBox checked={agreedToRisks} setChecked={setAgreedToRisks} >
-                  {screen === 'NFTokenBurn' ?
-                    t("signin.confirm.nft-burn")
-                    :
-                    <>
-                      {screen === 'NFTokenCreateOffer' &&
-                        (signRequest.request.Flags === 1 || xls35Sell) ?
-                        t("signin.confirm.nft-create-sell-offer")
-                        :
-                        <Trans i18nKey="signin.confirm.nft-accept-offer">
-                          I admit that Bithomp gives me access to a decentralised marketplace, and it cannot verify or guarantee the authenticity and legitimacy of any NFTs.
-                          I confirm that I've read the <Link href="/terms-and-conditions" target="_blank">Terms and conditions</Link>, and I agree with all the terms to buy, sell or use any NFTs on Bithomp.
-                        </Trans>
-                      }
-                    </>
-                  }
+                  {checkBoxText(screen, signRequest)}
                 </CheckBox>
               </div>
             }
+
+            <div>
+              {status ? <b className="orange">{status}</b> : <br />}
+            </div>
 
             <br />
             <button type="button" className="button-action" onClick={SignInCancelAndClose} style={buttonStyle}>
               {t("button.cancel")}
             </button>
-            <button type="button" className={"button-action" + (agreedToRisks ? "" : " disabled")} onClick={XummTxSend} style={buttonStyle}>
+            <button
+              type="button"
+              className="button-action"
+              onClick={XummTxSend} style={buttonStyle}
+              disabled={!agreedToRisks || formError}
+            >
               {t("button.sign")}
             </button>
           </>
@@ -925,7 +1033,7 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
               <>
                 <div className='header'>{t("signin.choose-app")}</div>
                 <div className='signin-apps'>
-                  <Image alt="xumm" className='signin-app-logo' src='/images/xumm-large.svg' onClick={XummTxSend} width={150} height={24} />
+                  <Image alt="xaman" className='signin-app-logo' src='/images/xumm-large.svg' onClick={XummTxSend} width={150} height={24} />
                   {signRequest.wallet !== "xumm" &&
                     <>
                       {notAvailable(ledger, "ledger")}

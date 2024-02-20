@@ -619,7 +619,7 @@ export default function Governance({ id, setSignRequest, signRequest, account })
                   }
                 })}
               >
-                <Image src={xummImg} className='xumm-logo' alt="xumm" height={24} width={24} />
+                <Image src={xummImg} className='xumm-logo' alt="xaman" height={24} width={24} />
                 {t("button.vote-seat", { ns: 'governance' })}
               </button>
             }
@@ -771,7 +771,7 @@ export default function Governance({ id, setSignRequest, signRequest, account })
                   }
                 })}
               >
-                <Image src={xummImg} className='xumm-logo' alt="xumm" height={24} width={24} />
+                <Image src={xummImg} className='xumm-logo' alt="xaman" height={24} width={24} />
                 {t("button.vote-reward-rate", { ns: 'governance' })}
               </button>
             }
@@ -921,7 +921,7 @@ export default function Governance({ id, setSignRequest, signRequest, account })
                   }
                 })}
               >
-                <Image src={xummImg} className='xumm-logo' alt="xumm" height={24} width={24} />
+                <Image src={xummImg} className='xumm-logo' alt="xaman" height={24} width={24} />
                 {t("button.vote-reward-delay", { ns: 'governance' })}
               </button>
             }
@@ -1080,7 +1080,7 @@ export default function Governance({ id, setSignRequest, signRequest, account })
                   }
                 })}
               >
-                <Image src={xummImg} className='xumm-logo' alt="xumm" height={24} width={24} />
+                <Image src={xummImg} className='xumm-logo' alt="xaman" height={24} width={24} />
                 {t("button.vote-hook", { ns: 'governance' })}
               </button>
             }

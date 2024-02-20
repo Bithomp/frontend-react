@@ -79,6 +79,7 @@ export default function Footer({ account, setSignRequest }) {
           <Link href="/disclaimer">{t("menu.disclaimer")}</Link>
           <Link href="/privacy-policy">{t("menu.privacy-policy")}</Link>
           <Link href="/terms-and-conditions">{t("menu.terms-and-conditions")}</Link>
+          <Link href="/terms-api-bots">{t("menu.terms-api-bots")}</Link>
         </div>
         <div className="footer-menu-column">
           <span className="footer-menu-header">Bithomp</span>

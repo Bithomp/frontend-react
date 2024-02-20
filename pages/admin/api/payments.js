@@ -366,7 +366,7 @@ export default function Payments() {
                     <tbody>
                       <tr>
                         <td className='right'>Address</td>
-                        <td className='left'>rPPHhfSQbHt1t2XPHWAK1HTcjqDg56TzZy <CopyButton text="rPPHhfSQbHt1t2XPHWAK1HTcjqDg56TzZy" /></td>
+                        <td className='left'>rEDakigd4Cp78FioF3qvQs6TrjFLjKLqM3 <CopyButton text="rEDakigd4Cp78FioF3qvQs6TrjFLjKLqM3" /></td>
                       </tr>
                       <tr>
                         <td className='right'>Destination tag</td>
@@ -379,7 +379,7 @@ export default function Payments() {
                   <div className='left'>
                     <p>
                       Address: <br />
-                      rPPHhfSQbHt1t2XPHWAK1HTcjqDg56TzZy <CopyButton text="rPPHhfSQbHt1t2XPHWAK1HTcjqDg56TzZy" />
+                      rEDakigd4Cp78FioF3qvQs6TrjFLjKLqM3 <CopyButton text="rEDakigd4Cp78FioF3qvQs6TrjFLjKLqM3" />
                     </p>
                     <p>
                       Destination tag:<br />

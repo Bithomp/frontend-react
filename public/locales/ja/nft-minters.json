@@ -1,8 +1,9 @@
 {
   "header": "NFTの発行者",
-  "desc": "XRPL 上で確認されたすべての NFT発行者のリストをご覧いただけます。ご自分のプロジェクトを登録したい場合は、Mintトランザクションにご自分のウェブサイトのアドレスを記載したメモを追加してください。",
-  "summary-period": "XRPLには <1>{{minted}}</1> NFTが存在し、その内この期間に <3>{{mintedAndBurned}}</3> NFT{{percentMintedAndBurned}}がバーンされ、この期間に合計 <7>{{burned}}</7> NFTがバーンされました。",
-  "summary-all": "XRPLには <1>{{minted}}</1> NFTが存在し、そこから<3>{{mintedAndBurned}}</3> NFT{{percentMintedAndBurned}}がバーンされました。",
+  "desc": "Here you can find the list of all identified NFT minters. If you want your project to be recognised, add a memo with your website address to your mint transactions.",
+  "summary-period": "For that period <1>{{minted}}</1> NFTs were minted, from which <3>{{mintedAndBurned}}</3> NFTs {{percentMintedAndBurned}} were already burned during the same period of time, total burned during this period: <7>{{burned}}</7> NFTs.",
+  "summary-all": "There are <1>{{minted}}</1> minted NFTs, from which <3>{{mintedAndBurned}}</3> NFTs {{percentMintedAndBurned}} are burned.",
+  "mint-chart": "Mint chart",
   "table": {
     "minted-total": "合計ミント数",
     "minted-with-metadata": "メタデータありのミント数",

@@ -1,5 +1,8 @@
 {
   "menu": {
+    "services": {
+      "nft-mint": "Чеканка NFT"
+    },
     "personal": {
       "personal": "Личный",
       "search-on-ledgerName": "Поиск по {{ledgerName}}"
@@ -27,7 +30,8 @@
       "offers": "Оферы"
     },
     "xrpl": {
-      "governance": "Управление",
+      "governance": "Правление",
+      "activations": "Активированные адреса (график)",
       "distribution": "ТОП адресов по балансу",
       "last-ledger-information": "Информация с последнего леджера",
       "last-ledger-transactions": "Транзакции последнего леджера",
@@ -48,6 +52,7 @@
     "disclaimer": "Отказ от ответственности",
     "privacy-policy": "Политика конфиденциальности",
     "terms-and-conditions": "Условия использования",
+    "terms-api-bots": "Условия использования API и ботов",
     "customer-support": "Контакты",
     "press": "Для прессы",
     "merch": "Магазин мерча",
@@ -106,6 +111,8 @@
     "not-available": "Не доступно",
     "confirm": {
       "set-domain": "Установка домена",
+      "nft-create-transfer-offer-header": "Передача NFT",
+      "nft-transfer": "Я передаю этот NFT БЕСПЛАТНО адресату, адресат должен будет принять NFT, чтобы завершить передачу.",
       "nft-accept-sell-offer-header": "Покупка NFT",
       "nft-accept-buy-offer-header": "Продажа NFT",
       "nft-create-sell-offer-header": "Создание офера продажи",
@@ -264,6 +271,9 @@
     "copy-my-address": "Копировать адрес",
     "sign": "Подписать",
     "nft": {
+      "add-another-sell-offer": "Добавить еще один офер продажи",
+      "transfer": "Передать NFT",
+      "update-sell-offer": "Изменить офер продажи",
       "cancel-sell-offer-for": "Отменить офер продажи на {{amount}}",
       "cancel-buy-offer-for": "Отменить офер покупки на {{amount}}",
       "cancel-transfer": "Отменить передачу NFT",
@@ -290,6 +300,9 @@
   },
   "form": {
     "error": {
+      "price-empty": "Введите цену.",
+      "address-empty": "Введите адрес.",
+      "address-invalid": "Введите верный адрес.",
       "domain-empty": "Введите домен.",
       "domain-invalid": "Неверный домен.",
       "description-empty": "Введите описание.",
@@ -346,6 +359,9 @@
     "day": "За последние 24 часа"
   },
   "table": {
+    "mints": "Сначала",
+    "period": "Период",
+    "mint-period": "Переод чеканки",
     "warning": "Предупреждение",
     "sequence": "Порядковый номер",
     "version": "Версия",
@@ -423,6 +439,7 @@
     "marketplace": "Маркетплейс",
     "public-key": "Публичный ключ",
     "text": {
+      "private-offer": "Частный офер",
       "show-extended-statistics": "Показать расширенную статистику",
       "include-without-media-data": "Включить NFT без медиа данных",
       "include-burned-nfts": "Включить сожжёные NFT",
@@ -468,6 +485,7 @@
     "month": "30 дней",
     "week": "7 дней",
     "day": "24 часа",
+    "hour": "1 час",
     "currencies": "Токены",
     "issuers": "Эмитенты",
     "marketplaces": "Маркетплейсы",
@@ -501,7 +519,8 @@
       "nft": "NFT",
       "nfts": "NFTs",
       "nft-offer": "NFT офер",
-      "nft-offers": "NFT оферы"
+      "nft-offers": "NFT оферы",
+      "nft-volumes": "Объемы продаж NFT"
     },
     "enter-address": "Введите XRPL адрес или ник",
     "searching-tx-nft-nftoffer": "Идет поиск по запрошенному ID",
@@ -539,15 +558,17 @@
   },
   "nfts": {
     "header": "Поиск NFT по адресу владельца",
-    "desc": "Здесь можно искать NFT. Введите XRPL адрес, чтобы проверить какими NFT он владеет.",
+    "desc": "Здесь можно искать NFT. Введите адрес, чтобы проверить какими NFT он владеет.",
     "search-by-name": "Поиск по NFT имени",
     "search-by-issuer": "Поиск по NFT эмитенту",
     "search-by-taxon": "Поиск по NFT таксону",
     "search-by-owner": "Поиск по владельцу NFT",
+    "search-by-buyer": "Поиск по покупателю NFT",
+    "search-by-seller": "Поиск по продавцу NFT",
     "no-nfts": "Мы не смогли найти ни одного NFT по вашему запросу.",
     "on-service": "на {{service}}",
     "amount-on-service": "{{amount}} на {{service}}",
-    "load-more": "Пожалуйста, подождите. Мы ищем для вас информацию на XRPL.",
+    "load-more": "Пожалуйста, подождите. Мы ищем для вас информацию на леджере.",
     "end": "Это все NFT, которые нам удалось найти."
   },
   "nft-distribution": {
@@ -555,21 +576,6 @@
     "desc": "Здесь вы можете проверить распределение NFT, выпущенных конкретным эмитентом. Введите XRPL адрес NFT эмитента или его ник и нажмите кнопку поиска.",
     "no-nfts": "Мы не смогли найти ни одного NFT у этого эмитента.",
     "text0": "У {{users}} аккаунтов нашлось {{nfts}} NFT"
-  },
-  "nft-volumes": {
-    "header": "Объёмы продаж NFT",
-    "text0": "на XRPL было {{allSales}} {{currency}} NFT продаж {{saleType}} в общую сумму {{allVolume}}.",
-    "brokers": {
-      "desc": "Это список аккаунтов-брокеров. Одни маркетплейсы не используют брокер-модель, другие используют ее лишь для части своих торгов.",
-      "no-broker": "Без брокера",
-      "text0": "на XRPL было {{allSales}} <3>{{currency}}</3> NFT продаж {{saleType}} в общую сумму {{allVolume}}, из которых <9>{{brokerSales}}</9> {{percentBrokerSales}} продаж на сумму <13>{{brokerVolume}}</13> {{percentBrokerVolume}} были совершены через брокерную модель."
-    },
-    "marketplaces": {
-      "desc": "Это список NFT Маркетплейсов на XRPL. Данные объёмы не включают себя первичные продажи (выпуски), которые прошли в две транзакции (отдельная оплата и последуюший трансфер)."
-    },
-    "issuers": {
-      "desc": "Это список NFT эмитентов на XRPL. Чтобы посмотреть объёмы продаж у NFT коллекций использующих таксон, нажмите на ссылку в колонке Объём продаж."
-    }
   },
   "nft-sales": {
     "header": "NFT продажи",

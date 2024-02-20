@@ -1,5 +1,8 @@
 {
   "menu": {
+    "services": {
+      "nft-mint": "Mint NFT"
+    },
     "personal": {
       "personal": "Pribadi",
       "search-on-ledgerName": "Cari di {{ledgerName}}"
@@ -28,6 +31,7 @@
     },
     "xrpl": {
       "governance": "Governance",
+      "activations": "Activated accounts (chart)",
       "distribution": "{{nativeCurrency}} distribution",
       "last-ledger-information": "Informasi Ledger Terakhir",
       "last-ledger-transactions": "Transaksi Ledger Terakhir",
@@ -40,14 +44,15 @@
     "developers": {
       "developers": "Pengembang",
       "account-generation": "Generasi Akun",
-      "faucet": "Kran",
+      "faucet": "Faucet",
       "api": "Dokumentasi API",
-      "api-admin": "API account (Partner portal)"
+      "api-admin": "Akun API (Portal Partner)"
     },
     "legal": "Hukum",
     "disclaimer": "Penyangkalan",
     "privacy-policy": "Kebijakan Privasi",
     "terms-and-conditions": "Syarat dan Ketentuan",
+    "terms-api-bots": "Syarat penggunaan API & Bots",
     "customer-support": "Dukungan Pelanggan",
     "press": "Pers",
     "merch": "Toko Merchandise",
@@ -106,6 +111,8 @@
     "not-available": "Tidak tersedia",
     "confirm": {
       "set-domain": "Mengatur Domain",
+      "nft-create-transfer-offer-header": "Kirim NFT",
+      "nft-transfer": "Saya menawarkan NFT ini GRATIS kepada akun Tujuan, <1>akun tujuan perlu menerima transfer NFT</1>.",
       "nft-accept-sell-offer-header": "Pembelian NFT",
       "nft-accept-buy-offer-header": "Selling NFT",
       "nft-create-sell-offer-header": "Daftar Jual",
@@ -264,6 +271,9 @@
     "copy-my-address": "Salin alamat saya",
     "sign": "Tanda tangan",
     "nft": {
+      "add-another-sell-offer": "Tambahkan penawaran penjualan lainnya",
+      "transfer": "Transfer NFT",
+      "update-sell-offer": "Update penawaran penjualan",
       "cancel-sell-offer-for": "Batalkan Penawaran Jual untuk {{amount}}",
       "cancel-buy-offer-for": "Batalkan Penawaran Beli untuk {{amount}}",
       "cancel-transfer": "Batalkan Transfer NFT",
@@ -290,15 +300,18 @@
   },
   "form": {
     "error": {
-      "domain-empty": "Please enter web domain.",
-      "domain-invalid": "Please enter a valid web domain.",
-      "description-empty": "Please enter a description.",
-      "description-short": "Description is too short.",
-      "email-empty": "Silakan masukkan alamat surel Anda.",
-      "email-invalid": "Silakan masukkan alamat surel yang valid.",
+      "price-empty": "Mohon masukkan jumlah.",
+      "address-empty": "Mohon masukkan alamat.",
+      "address-invalid": "Mohon masukkan alamat yang valid.",
+      "domain-empty": "Mohon masukkan domain web.",
+      "domain-invalid": "Mohon masukkan domain web yang valid.",
+      "description-empty": "Mohon masukkan deskripsi.",
+      "description-short": "Deskripsi terlalu pendek.",
+      "email-empty": "Silakan masukkan alamat email Anda.",
+      "email-invalid": "Silakan masukkan alamat email yang valid.",
       "password-empty": "Silakan masukkan kata sandi Anda.",
       "password-invalid": "Silakan masukkan kata sandi yang valid."
-    }
+  }
   },
   "error": {
     "Network Error": "Sepertinya tidak ada koneksi internet ;(",
@@ -346,6 +359,9 @@
     "day": "Selama 24 jam terakhir"
   },
   "table": {
+    "mints": "Mints",
+    "period": "Periode",
+    "mint-period": "Periode Mint",
     "warning": "Warning",
     "sequence": "Urutan",
     "version": "Versi",
@@ -423,6 +439,7 @@
     "marketplace": "Pasar",
     "public-key": "Kunci Publik",
     "text": {
+      "private-offer": "Private offer",
       "show-extended-statistics": "Tampilkan statistik tambahan",
       "include-without-media-data": "Sertakan NFT tanpa media",
       "include-burned-nfts": "Sertakan NFT yang dihapus",
@@ -468,6 +485,7 @@
     "month": "30 hari",
     "week": "7 hari",
     "day": "24 jam",
+    "hour": "1 jam",
     "currencies": "Mata Uang",
     "issuers": "Penerbit",
     "marketplaces": "Pasar",
@@ -487,8 +505,8 @@
     "onSale": "Dijual dengan XRP",
     "all-tokens": "Semua Token",
     "xrp-only": "Hanya XRP",
-    "mintedNew": "Cetakan Terbaru",
-    "mintedOld": "Cetakan Terlama"
+    "mintedNew": "Latest",
+    "mintedOld": "Oldest"
   },
   "xumm": {
     "new-qr": "Dapatkan kode QR baru"
@@ -501,7 +519,8 @@
       "nft": "NFT",
       "nfts": "NFTs",
       "nft-offer": "Penawaran NFT",
-      "nft-offers": "Penawaran NFT"
+      "nft-offers": "Penawaran NFT",
+      "nft-volumes": "NFT sales volumes"
     },
     "enter-address": "Masukkan alamat XRPL atau username",
     "searching-tx-nft-nftoffer": "Mencari Tx / ID NFT / Tawaran NFT",
@@ -539,11 +558,13 @@
   },
   "nfts": {
     "header": "NFT Akun",
-    "desc": "Di sini Anda dapat mencari NFT, ketik alamat XRPL untuk melihat NFT yang dimilikinya.",
+    "desc": "Di sini Anda dapat mencari NFT, ketik alamat untuk melihat NFT yang dimilikinya.",
     "search-by-name": "Cari berdasarkan nama NFT",
     "search-by-issuer": "Cari berdasarkan penerbit NFT",
     "search-by-taxon": "Cari berdasarkan taksonomi NFT",
     "search-by-owner": "Cari berdasarkan pemilik NFT",
+    "search-by-buyer": "Cari berdasarkan pembeli NFT",
+    "search-by-seller": "Cari berdasarkan penjual NFT",
     "no-nfts": "Kami tidak dapat menemukan NFT dengan parameter pencarian Anda.",
     "on-service": "di {{service}}",
     "amount-on-service": "{{amount}} di {{service}}",
@@ -555,21 +576,6 @@
     "desc": "Di sini Anda dapat memeriksa distribusi NFT dari penerbit NFT tertentu. Masukkan alamat XRPL penerbit NFT atau username dan tekan tombol pencarian.",
     "no-nfts": "Kami tidak dapat menemukan NFT yang diterbitkan oleh alamat tersebut.",
     "text0": "{{users}} akun memiliki {{nfts}} NFT"
-  },
-  "nft-volumes": {
-    "header": "Volume Penjualan NFT",
-    "text0": "XRPL memiliki {{allSales}} NFT {{currency}} {{saleType}} dengan volume penjualan {{allVolume}}.",
-    "brokers": {
-      "desc": "Ini adalah daftar akun broker NFT. Anda dapat menemukan di sini volume bot pencocokan penawaran. Pasar menggunakan model perdagangan campuran, di sini Anda hanya dapat melihat volume melalui model broker.",
-      "no-broker": "Tidak ada broker",
-      "text0": "XRPL memiliki {{allSales}} NFT <3>{{currency}}</3> {{saleType}} dengan volume penjualan {{allVolume}}, dari mana <9>{{brokerSales}}</9> {{percentBrokerSales}} perdagangan dengan volume <13>{{brokerVolume}}</13> {{percentBrokerVolume}} dilakukan melalui model broker."
-    },
-    "marketplaces": {
-      "desc": "Ini adalah daftar Pasar NFT di XRPL. Volume di sini tidak termasuk penjualan utama (mint) yang dilakukan dalam 2 transaksi (pembayaran dan transfer NFT)."
-    },
-    "issuers": {
-      "desc": "Ini adalah daftar penerbit NFT di XRPL. Untuk melihat volume koleksi NFT yang diidentifikasi oleh penerbit dan taksonomi, klik tautan dalam kolom Volume Penjualan."
-    }
   },
   "nft-sales": {
     "header": "Penjualan NFT",

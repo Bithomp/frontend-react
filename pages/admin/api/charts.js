@@ -3,7 +3,7 @@ import { useTranslation } from 'next-i18next'
 import { useEffect, useState } from 'react'
 import axios from 'axios'
 import { useRouter } from 'next/router'
-import { useWidth } from '../../../utils'
+import { chartSpan, useWidth } from '../../../utils'
 
 import SEO from '../../../components/SEO'
 import Tabs from '../../../components/Tabs'
@@ -19,19 +19,6 @@ export const getServerSideProps = async (context) => {
   }
 }
 
-const now = new Date()
-const nowTime = new Date()
-let hourAgo = nowTime.setHours(now.getHours() - 1)
-let dayAgo = now.setDate(now.getDate() - 1)
-let weekAgo = now.setDate(now.getDate() - 7)
-let monthAgo = now.setDate(now.getDate() - 30)
-let yearAgo = now.setDate(now.getDate() - 365)
-hourAgo = new Date(hourAgo)
-dayAgo = new Date(dayAgo)
-weekAgo = new Date(weekAgo)
-monthAgo = new Date(monthAgo)
-yearAgo = new Date(yearAgo)
-
 export default function Charts() {
   const { t } = useTranslation(['common', 'admin'])
   const router = useRouter()
@@ -40,9 +27,7 @@ export default function Charts() {
   const [errorMessage, setErrorMessage] = useState("")
   const [chartData, setChartData] = useState([])
   const [loading, setLoading] = useState(false)
-  const [period, setPeriod] = useState("day")
-  const [startDate, setStartDate] = useState(dayAgo)
-  const [endDate, setEndDate] = useState(new Date())
+  const [period, setPeriod] = useState("")
 
   useEffect(() => {
     const sessionToken = localStorage.getItem('sessionToken')
@@ -55,26 +40,9 @@ export default function Charts() {
   }, [])
 
   useEffect(() => {
-    let newStartDate = null
-    let newEndDate = null
-    if (period === "hour") {
-      newStartDate = hourAgo
-    } else if (period === "day") {
-      newStartDate = dayAgo
-    } else if (period === "week") {
-      newStartDate = weekAgo
-    } else if (period === "month") {
-      newStartDate = monthAgo
-    } else if (period === "year") {
-      newStartDate = yearAgo
+    if (period) {
+      getData(period)
     }
-    if (period !== "custom") {
-      newEndDate = new Date()
-      setEndDate(newEndDate)
-      setStartDate(newStartDate)
-    }
-
-    getData({ newStartDate, newEndDate })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [period])
 
@@ -90,14 +58,6 @@ export default function Charts() {
     { value: "api-statistics", label: "Statistics" },
     { value: "api-requests", label: "Requests" },
     { value: "api-charts", label: "Charts" },
-  ]
-
-  const periodTabs = [
-    { value: "hour", label: "Hour" },
-    { value: "day", label: "Day" },
-    { value: "week", label: "Week" },
-    { value: "month", label: "Month" },
-    { value: "year", label: "Year" }
   ]
 
   const changePage = tab => {
@@ -120,22 +80,12 @@ export default function Charts() {
     }
   }
 
-  const getData = async ({ newStartDate, newEndDate }) => {
+  const getData = async period => {
     setLoading(true)
-
-    let span = "day"
-    if (period === "day") {
-      span = "hour"
-    } else if (period === "hour") {
-      span = "minute"
-    }
-
-    newStartDate = newStartDate || startDate
-    newEndDate = newEndDate || endDate
 
     //&search=text&ip=z
     const apiRequests = await axios.get(
-      'partner/partner/accessToken/requests/chart?span=' + span + '&period=' + newStartDate.toISOString() + '..' + newEndDate.toISOString(),
+      'partner/partner/accessToken/requests/chart?span=' + chartSpan(period) + '&period=' + period,
       { baseUrl: '/api/' }
     ).catch(error => {
       if (error && error.message !== "canceled") {
@@ -166,13 +116,11 @@ export default function Charts() {
       <Tabs tabList={mainTabs} tab="api" setTab={changePage} name="mainTabs" />
       <Tabs tabList={apiTabs} tab="api-charts" setTab={changePage} name="apiTabs" />
 
-      <Tabs tabList={periodTabs} tab={period} setTab={setPeriod} name="periodTabs" />
       <center>
         <DateAndTimeRange
-          startDate={startDate}
-          setStartDate={setStartDate}
-          endDate={endDate}
-          setEndDate={setEndDate}
+          defaultPeriod="day"
+          setPeriod={setPeriod}
+          tabs={true}
         />
         {width < 500 && <br />}
         <button

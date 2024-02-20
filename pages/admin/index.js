@@ -5,9 +5,11 @@ import { Turnstile } from '@marsidev/react-turnstile'
 import axios from 'axios'
 import { useTheme } from '../../components/Layout/ThemeContext'
 import { useRouter } from 'next/router'
+import Link from 'next/link'
 
 import SEO from '../../components/SEO'
 import Tabs from '../../components/Tabs'
+import CheckBox from '../../components/UI/CheckBox'
 
 import { isEmailValid } from '../../utils'
 
@@ -35,6 +37,7 @@ export default function Admin({ redirectToken }) {
   const [password, setPassword] = useState("")
   const [step, setStep] = useState(-1)
   const [loggedUserData, setLoggedUserData] = useState(null)
+  const [termsAccepted, setTermsAccepted] = useState(false)
 
   const checkApi = async () => {
     /*
@@ -276,7 +279,6 @@ export default function Admin({ redirectToken }) {
 
       <br />
       <div className='center'>
-
         {(step === 0 || step === 1) &&
           <div className="input-validation" style={{ margin: "auto", width: "300px" }}>
             <input
@@ -287,6 +289,7 @@ export default function Admin({ redirectToken }) {
               ref={node => { emailRef = node; }}
               spellCheck="false"
               disabled={step !== 0}
+              autoFocus={step === 0}
             />
             {isEmailValid(email) && <img src={checkmark} className="validation-icon" alt="validated" />}
           </div>
@@ -320,6 +323,14 @@ export default function Admin({ redirectToken }) {
                 onSuccess={setToken}
               />
             </div>
+            <br />
+            <center>
+              <div style={{ display: "inline-block", marginBottom: "20px" }}>
+                <CheckBox checked={termsAccepted} setChecked={setTermsAccepted} >
+                  I agree with the <Link href="/terms-api-bots" target="_blank">API & Bots terms of use</Link>.
+                </CheckBox>
+              </div>
+            </center>
           </>
         }
 
@@ -354,8 +365,9 @@ export default function Admin({ redirectToken }) {
           <>
             <br />
             <button
-              className={"button-action" + ((!token || !email || !isEmailValid(email)) ? " disabled" : "")}
+              className="button-action"
               onClick={onLogin}
+              disabled={!termsAccepted || !token || !email || !isEmailValid(email)}
             >
               Submit
             </button>

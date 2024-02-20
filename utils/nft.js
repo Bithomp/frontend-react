@@ -156,9 +156,9 @@ export const nftName = (nft, options = {}) => {
   } else if (nft?.metadata?.Name) {
     name = nft.metadata.Name
   } else if (nft?.uri) {
-    name = Buffer.from(nft.uri, 'hex')
-    if (name.includes('filename=')) {
-      name = name.split('filename=')[1]
+    const decodedUri = Buffer.from(nft.uri, 'hex')
+    if (decodedUri.includes('filename=')) {
+      name = decodedUri.toString().split('filename=')[1]
     }
   }
   if (options.maxLength) {
@@ -335,18 +335,22 @@ const isCorrectFileType = (url, nftType = 'image') => {
 }
 
 export const nftUrl = (nft, type = 'image', gateway = 'our') => {
-  if (!nft) return null;
-  const url = metaUrl(nft, type, gateway);
+  if (!nft) return null
+  const url = metaUrl(nft, type, gateway)
   if (url) {
-    return url;
+    // do not return IPFS CL links as base64 images
+    if (gateway === 'cl' && url.slice(0, 10) === 'data:image') {
+      return null
+    }
+    return url
   } else {
     if (nft.uri) {
-      const decodedUri = Buffer.from(nft.uri, 'hex');
+      const decodedUri = Buffer.from(nft.uri, 'hex')
       if (isCorrectFileType(decodedUri, type)) {
-        return assetUrl(decodedUri, type, gateway);
+        return assetUrl(decodedUri, type, gateway)
       }
     }
-    return null;
+    return null
   }
 }
 
@@ -357,6 +361,10 @@ export const nftImageStyle = (nft, style = {}) => {
     style.backgroundImage = "url('" + imageUrl + "')";
     if (imageUrl.slice(0, 10) === 'data:image') {
       style.imageRendering = 'pixelated';
+    }
+    if (imageUrl.slice(0, 18) === 'data:image/svg+xml') {
+      style.width = '100%';
+      style.height = '100%';
     }
     if (nft.deletedAt) {
       style.filter = 'grayscale(1)';

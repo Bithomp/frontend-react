@@ -1,7 +1,8 @@
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useTranslation } from 'next-i18next'
 import { useState } from 'react'
-import { SiteLinksSearchBoxJsonLd, LogoJsonLd, SocialProfileJsonLd } from 'next-seo'
+import { LogoJsonLd, SocialProfileJsonLd } from 'next-seo'
+import Head from "next/head"
 
 import { server, explorerName, nativeCurrency, devNet } from '../utils'
 import { getIsSsrMobile } from "../utils/mobile"
@@ -24,6 +25,22 @@ export async function getServerSideProps(context) {
   }
 }
 
+const ldJsonWebsite = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "XRP Explorer",
+  "alternateName": ["XRP Explorer", "XRPL Explorer", "Scan XRP Ledger"],
+  "url": server,
+  "potentialAction": {
+    "@type": "SearchAction",
+    "target": {
+      "@type": "EntryPoint",
+      "urlTemplate": server + "/explorer/?r={search_term_string}"
+    },
+    "query-input": "required name=search_term_string"
+  }
+}
+
 export default function Home({ selectedCurrency, setSelectedCurrency, showAds }) {
   const { t } = useTranslation()
 
@@ -34,15 +51,6 @@ export default function Home({ selectedCurrency, setSelectedCurrency, showAds })
       <LogoJsonLd
         logo={server + '/images/logo.svg'}
         url={server}
-      />
-      <SiteLinksSearchBoxJsonLd
-        url={server}
-        potentialActions={[
-          {
-            target: server + '/explorer/?r',
-            queryInput: 'search_term_string',
-          }
-        ]}
       />
       <SocialProfileJsonLd
         type="Organization"
@@ -79,6 +87,13 @@ export default function Home({ selectedCurrency, setSelectedCurrency, showAds })
           ]
         }
       />
+      <Head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(ldJsonWebsite) }}
+        />
+      </Head>
+
       <SearchBlock tab="explorer" />
 
       {showAds &&

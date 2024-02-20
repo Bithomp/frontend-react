@@ -1,5 +1,8 @@
 {
   "menu": {
+    "services": {
+      "nft-mint": "Mint NFT"
+    },
     "personal": {
       "personal": "Privat",
       "search-on-ledgerName": "Search on {{ledgerName}}"
@@ -28,6 +31,7 @@
     },
     "xrpl": {
       "governance": "Governance",
+      "activations": "Activated accounts (chart)",
       "distribution": "{{nativeCurrency}} distribution",
       "last-ledger-information": "Siste ledger informasjon",
       "last-ledger-transactions": "Siste ledger transaksjoner",
@@ -48,6 +52,7 @@
     "disclaimer": "Ansvarsfraskrivelse",
     "privacy-policy": "Personvernerklæring",
     "terms-and-conditions": "Vilkår og betingelser",
+    "terms-api-bots": "API & Bots terms of use",
     "customer-support": "Kundeservice",
     "press": "Trykk",
     "merch": "Varebutikk",
@@ -106,6 +111,8 @@
     "not-available": "ikke tilgjengelig",
     "confirm": {
       "set-domain": "Setting a domain",
+      "nft-create-transfer-offer-header": "NFT transfer",
+      "nft-transfer": "I'm offering that NFT for FREE to the Destination account, <1>the destination account would need to accept the NFT transfer</1>.",
       "nft-accept-sell-offer-header": "NFT kjøp",
       "nft-accept-buy-offer-header": "Selling NFT",
       "nft-create-sell-offer-header": "Liste for salg",
@@ -264,6 +271,9 @@
     "copy-my-address": "Kopier min adresse",
     "sign": "Signer",
     "nft": {
+      "add-another-sell-offer": "Add another sell offer",
+      "transfer": "Transfer NFT",
+      "update-sell-offer": "Update the sell offer",
       "cancel-sell-offer-for": "Avbryt salgsbud for {{amount}}",
       "cancel-buy-offer-for": "Avbryt kjøpsbud {{amount}}",
       "cancel-transfer": "Cancel NFT transfer",
@@ -290,6 +300,9 @@
   },
   "form": {
     "error": {
+      "price-empty": "Please enter an amount.",
+      "address-empty": "Please enter an address.",
+      "address-invalid": "Please enter a valid address.",
       "domain-empty": "Please enter web domain.",
       "domain-invalid": "Please enter a valid web domain.",
       "description-empty": "Please enter a description.",
@@ -346,6 +359,9 @@
     "day": "For de siste 24 timene"
   },
   "table": {
+    "mints": "Mints",
+    "period": "Period",
+    "mint-period": "Mint period",
     "warning": "Warning",
     "sequence": "Sekvens",
     "version": "Versjon",
@@ -423,6 +439,7 @@
     "marketplace": "Markedsplass",
     "public-key": "Offentlig nøkkel",
     "text": {
+      "private-offer": "Private offer",
       "show-extended-statistics": "Vis utvidet statistikk",
       "include-without-media-data": "Include NFTs with no media",
       "include-burned-nfts": "Include burned NFTs",
@@ -468,6 +485,7 @@
     "month": " dager",
     "week": "7 dager",
     "day": "24 timer",
+    "hour": "1 time",
     "currencies": "Valutaer",
     "issuers": "Utstedere",
     "marketplaces": "Markedsplasser",
@@ -487,8 +505,8 @@
     "onSale": "Til salgs for XRP",
     "all-tokens": "Alle tokens",
     "xrp-only": "Kun XRP",
-    "mintedNew": "Latest mints",
-    "mintedOld": "Oldest mints"
+    "mintedNew": "Latest",
+    "mintedOld": "Oldest"
   },
   "xumm": {
     "new-qr": "Få en ny QR-kode"
@@ -501,7 +519,8 @@
       "nft": "NFT",
       "nfts": "NFTs",
       "nft-offer": "NFT tilbud",
-      "nft-offers": "NFT tilbud"
+      "nft-offers": "NFT tilbud",
+      "nft-volumes": "NFT sales volumes"
     },
     "enter-address": "Skriv inn en XRPL-adresse eller et brukernavn",
     "searching-tx-nft-nftoffer": "Søker etter Tx / NFT ID / NFT bud",
@@ -539,11 +558,13 @@
   },
   "nfts": {
     "header": "Kontoens NFT-er",
-    "desc": "Her kan du søke etter NFT-er, skriv inn XRPL-adressen for å se hvilke NFT-er den eier.",
+    "desc": "Her kan du søke etter NFT-er, skriv inn adressen for å se hvilke NFT-er den eier.",
     "search-by-name": "Søk etter NFT-navn",
     "search-by-issuer": "Søk etter NFT-utsteder",
     "search-by-taxon": "Søk etter NFT taxon",
     "search-by-owner": "Søk etter NFT eier",
+    "search-by-buyer": "Søk etter NFT kjøper",
+    "search-by-seller": "Søk etter NFT selger",
     "no-nfts": "Vi kunne ikke finne noen NFT-er med søkeparameterne dine.",
     "on-service": "på {{service}}",
     "amount-on-service": "{{amount}} på {{service}}",
@@ -555,21 +576,6 @@
     "desc": "Her kan du sjekke distribusjonen av NFT-er til en bestemt NFT-utsteder. Skriv inn NFT-utstederens XRPL-adresse eller et brukernavn og trykk på søkeknappen.",
     "no-nfts": "Vi kunne ikke finne noen NFT-er utstedt av den adressen.",
     "text0": "{{users}} kontoer eier {{nfts}} NFT-er"
-  },
-  "nft-volumes": {
-    "header": "NFT salgsvolum",
-    "text0": "XRPL hadde {{allSales}} {{currency}} NFT {{saleType}} salg for {{allVolume}}.",
-    "brokers": {
-      "desc": "Dette er listen over NFT-meglerkontoer. Du kan finne volume av tilbudsmatchende boter her. Markedsplasser bruker blandede handelsmodeller, her kan du kun se volumene gjennom meglermodellen.",
-      "no-broker": "Ingen megler",
-      "text0": "XRPL hadde {{allSales}} <3>{{currency}}</3> NFT {{saleType}} salg for {{allVolume}}, hvor <9>{{brokerSales}}</9> {{percentBrokerSales}} av handler <13>{{brokerVolume}}</13> {{percentBrokerVolume}} var gjennom meglermodellen."
-    },
-    "marketplaces": {
-      "desc": "Dette er listen over NFT-markedsplasser på XRPL. Volumene her inkluderer ikke de primære salgene (mints) som ble utført innen 2 transaksjoner (betaling og NFT-overføring)."
-    },
-    "issuers": {
-      "desc": "Dette er listen over NFT-utstedere på XRPL. For å se volumer av NFT-samlinger identifisert av utsteder og taxon, klikk på lenken i Salgsvolum-kolonnen."
-    }
   },
   "nft-sales": {
     "header": "NFT salg",

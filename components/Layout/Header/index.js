@@ -78,15 +78,10 @@ export default function Header({ setSignRequest, account, signOut, selectedCurre
             <div className="menu-dropdown-content">
               <a href={"/explorer/"}>{t("menu.personal.search-on-ledgerName", { ledgerName })}</a>
               <Link href="/username">{t("menu.usernames")}</Link>
-              {/* Hide MY NFTS for XAHAU while they are not ready yet */}
-              {!xahauNetwork &&
-                <>
-                  {displayName ?
-                    <Link href={"/nfts/" + address} legacyBehavior>{t("signin.actions.my-nfts")}</Link>
-                    :
-                    <span onClick={() => { setSignRequest({ redirect: "nfts" }) }} className="link">{t("signin.actions.my-nfts")}</span>
-                  }
-                </>
+              {displayName ?
+                <Link href={"/nfts/" + address} legacyBehavior>{t("signin.actions.my-nfts")}</Link>
+                :
+                <span onClick={() => { setSignRequest({ redirect: "nfts" }) }} className="link">{t("signin.actions.my-nfts")}</span>
               }
               {!devNet && <Link href="/alerts">{t("menu.price-alerts", { nativeCurrency })}</Link>}
               {!devNet && <a href={"/submit/"}>{t("menu.submit-offline-tx")}</a>}
@@ -117,13 +112,22 @@ export default function Header({ setSignRequest, account, signOut, selectedCurre
                 <Link href="/nft-minters">{t("menu.nft.minters")}</Link>
               </>
               }
-              <Link href="/nfts">{t("menu.nft.nfts")}</Link>
+
+              {displayName ?
+                <Link href={"/nfts/" + address} legacyBehavior>{t("menu.nft.nfts")}</Link>
+                :
+                <Link href="/nfts">{t("menu.nft.nfts")}</Link>
+              }
+
               {/* Hide NFT menu for XAHAU while they are not ready yet */}
               {!xahauNetwork && <>
                 <Link href="/nft-offers">{t("menu.nft.offers")}</Link>
                 <Link href="/nft-distribution">{t("menu.nft.distribution")}</Link>
                 <Link href="/nft-statistics">{t("menu.nft.statistics")}</Link>
               </>
+              }
+              {xahauNetwork &&
+                <Link href="/services/nft-mint">{t("menu.services.nft-mint")}</Link>
               }
             </div>
           </div>
@@ -132,6 +136,7 @@ export default function Header({ setSignRequest, account, signOut, selectedCurre
             <div className="menu-dropdown-button">{ledgerName}</div>
             <div className="menu-dropdown-content">
               {xahauNetwork && <Link href="/governance">{t("menu.xrpl.governance")}</Link>}
+              <Link href="/activations">{t("menu.xrpl.activations")}</Link>
               <Link href="/distribution">{t("menu.xrpl.distribution", { nativeCurrency })}</Link>
               <Link href="/last-ledger-information">{t("menu.xrpl.last-ledger-information")}</Link>
               <Link href="/ledger">{t("menu.xrpl.last-ledger-transactions")}</Link>
@@ -186,17 +191,27 @@ export default function Header({ setSignRequest, account, signOut, selectedCurre
                 <span onClick={copyToClipboard} className="link">
                   {isCopied ? t("button.copied") : t("button.copy-my-address")}
                 </span>
-                {/* Hide My NFTS for XAHAU while they are not ready yet */}
+                <Link href={"/nfts/" + address}>{t("signin.actions.my-nfts")}</Link>
+
+                {/* Hide My NFT Offers for XAHAU while they are not ready yet */}
                 {!xahauNetwork &&
-                  <Link href={"/nfts/" + address}>{t("signin.actions.my-nfts")}</Link>
+                  <Link href={"/nft-offers/" + address}>{t("signin.actions.my-nft-offers")}</Link>
                 }
-                <Link href={"/nft-offers/" + address}>{t("signin.actions.my-nft-offers")}</Link>
+
                 {xummUserToken && <a href={"/explorer/" + address + "?hw=xumm&xummtoken=" + xummUserToken}>{t("signin.actions.view")}</a>}
                 {!username && <Link href={"/username?address=" + address}>{t("menu.usernames")}</Link>}
-                {xummUserToken && <a href={"/explorer/" + address + "?hw=xumm&xummtoken=" + xummUserToken + "&action=send"}>{t("signin.actions.send")}</a>}
+
+                {/* Hide Send XRP for XAHAU while they are not ready yet */}
+                {!xahauNetwork &&
+                  <>
+                    {xummUserToken && <a href={"/explorer/" + address + "?hw=xumm&xummtoken=" + xummUserToken + "&action=send"}>{t("signin.actions.send")}</a>}
+                  </>
+                }
+
                 <span onClick={signOut} className="link">{t("signin.signout")}</span>
               </div>
-            </div> :
+            </div>
+            :
             <span onClick={() => { setSignRequest(true) }} className="header-signin-link link">{t("signin.signin")}</span>
           }
           <Switch setCurrencySwitchOpen={setCurrencySwitchOpen} setLangSwitchOpen={setLangSwitchOpen} />
@@ -238,16 +253,23 @@ export default function Header({ setSignRequest, account, signOut, selectedCurre
               <span onClick={copyToClipboard} className="mobile-menu-item link">
                 {isCopied ? t("button.copied") : t("button.copy-my-address")}
               </span>
+              <Link href={"/nfts/" + address} className="mobile-menu-item" onClick={mobileMenuToggle}>{t("signin.actions.my-nfts")}</Link>
 
-              {/* Hide MY NFTS for XAHAU while they are not ready yet */}
+              {/* Hide MY NFT Offers for XAHAU while they are not ready yet */}
               {!xahauNetwork &&
-                <Link href={"/nfts/" + address} className="mobile-menu-item" onClick={mobileMenuToggle}>{t("signin.actions.my-nfts")}</Link>
+                <Link href={"/nft-offers/" + address} className="mobile-menu-item" onClick={mobileMenuToggle}>{t("signin.actions.my-nft-offers")}</Link>
               }
 
-              <Link href={"/nft-offers/" + address} className="mobile-menu-item" onClick={mobileMenuToggle}>{t("signin.actions.my-nft-offers")}</Link>
               {xummUserToken && <a href={"/explorer/" + address + "?hw=xumm&xummtoken=" + xummUserToken} className="mobile-menu-item">{t("signin.actions.view")}</a>}
               {!username && <Link href={"/username?address=" + address} className="mobile-menu-item" onClick={mobileMenuToggle}>{t("menu.usernames")}</Link>}
-              {xummUserToken && <a href={"/explorer/" + address + "?hw=xumm&xummtoken=" + xummUserToken + "&action=send"} className="mobile-menu-item">{t("signin.actions.send")}</a>}
+
+              {/* Hide Send XRP for XAHAU while they are not ready yet */}
+              {!xahauNetwork &&
+                <>
+                  {xummUserToken && <a href={"/explorer/" + address + "?hw=xumm&xummtoken=" + xummUserToken + "&action=send"} className="mobile-menu-item">{t("signin.actions.send")}</a>}
+                </>
+              }
+
               <span onClick={signOut} className="mobile-menu-item link">{t("signin.signout")}</span>
             </>
             :
@@ -259,14 +281,11 @@ export default function Header({ setSignRequest, account, signOut, selectedCurre
           {!displayName &&
             <Link href="/username" className="mobile-menu-item" onClick={mobileMenuToggle}>{t("menu.usernames")}</Link>
           }
-          {/* Hide MY NFTS for XAHAU while they are not ready yet */}
-          {!xahauNetwork &&
-            <>
-              {!displayName &&
-                <span onClick={() => { setSignRequest({ redirect: "nfts" }) }} className="mobile-menu-item link">{t("signin.actions.my-nfts")}</span>
-              }
-            </>
+
+          {!displayName &&
+            <span onClick={() => { setSignRequest({ redirect: "nfts" }) }} className="mobile-menu-item link">{t("signin.actions.my-nfts")}</span>
           }
+
           {!devNet &&
             <Link href="/alerts" className="mobile-menu-item" onClick={mobileMenuToggle}>
               {t("menu.price-alerts", { nativeCurrency })}
@@ -293,7 +312,6 @@ export default function Header({ setSignRequest, account, signOut, selectedCurre
             </>
           }
 
-
           <div className="mobile-menu-directory"><span>NFT</span></div>
           <Link href="/nft-explorer" className="mobile-menu-item" onClick={mobileMenuToggle}> {t("menu.nft.explorer")}</Link>
           {/* Hide NFT menu for XAHAU while they are not ready yet */}
@@ -304,7 +322,15 @@ export default function Header({ setSignRequest, account, signOut, selectedCurre
               <Link href="/nft-minters" className="mobile-menu-item" onClick={mobileMenuToggle}>{t("menu.nft.minters")}</Link>
             </>
           }
-          <Link href="/nfts" className="mobile-menu-item" onClick={mobileMenuToggle}>{t("menu.nft.nfts")}</Link>
+
+          <Link
+            href={"/nfts" + (displayName ? ("/" + address) : "")}
+            className="mobile-menu-item"
+            onClick={mobileMenuToggle}
+          >
+            {t("menu.nft.nfts")}
+          </Link>
+
           {/* Hide NFT menu for XAHAU while they are not ready yet */}
           {!xahauNetwork &&
             <>
@@ -330,6 +356,15 @@ export default function Header({ setSignRequest, account, signOut, selectedCurre
               </Link>
             </>
           }
+          {xahauNetwork &&
+            <Link
+              href="/services/nft-mint"
+              className="mobile-menu-item"
+              onClick={mobileMenuToggle}
+            >
+              {t("menu.services.nft-mint")}
+            </Link>
+          }
 
           <div className="mobile-menu-directory"><span>{ledgerName}</span></div>
           {xahauNetwork &&
@@ -341,6 +376,13 @@ export default function Header({ setSignRequest, account, signOut, selectedCurre
               {t("menu.xrpl.governance")}
             </Link>
           }
+          <Link
+            href="/activations"
+            className="mobile-menu-item"
+            onClick={mobileMenuToggle}
+          >
+            {t("menu.xrpl.activations")}
+          </Link>
           <Link
             href="/distribution"
             className="mobile-menu-item"

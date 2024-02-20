@@ -7,7 +7,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import Image from 'next/image'
 import Link from 'next/link'
 
-import { stripText, server, decode, network } from '../../utils'
+import { stripText, server, decode, network, isValidJson } from '../../utils'
 import { convertedAmount } from '../../utils/format'
 import { getIsSsrMobile } from "../../utils/mobile"
 import { nftName, mpUrl, bestNftOffer, nftUrl, partnerMarketplaces } from '../../utils/nft'
@@ -22,6 +22,7 @@ import {
   codeHighlight,
   trStatus,
   cancelNftOfferButton,
+  cancelNftOfferButtons,
   acceptNftSellOfferButton,
   acceptNftBuyOfferButton
 } from '../../utils/format'
@@ -81,6 +82,7 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
 
   const [rendered, setRendered] = useState(false)
   const [data, setData] = useState({})
+  const [decodedUri, setDecodedUri] = useState(null)
   const [loading, setLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState("")
   const [showRawMetadata, setShowRawMetadata] = useState(false)
@@ -146,6 +148,9 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
         setData(newdata)
         if (newdata.warnings?.length > 0) {
           updateWarningMessages(newdata.warnings)
+        }
+        if (newdata.uri) {
+          setDecodedUri(decode(newdata.uri))
         }
         //notFoundInTheNetwork
         if (!newdata.owner && !newdata.deletedAt && !newdata.url && !newdata.metadata) {
@@ -432,9 +437,8 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
               }
             </>
           }
-          {/* buyButton already have a cancel option, but only for valid offers */}
           {
-            !offer.valid && !offer.canceledAt && !offer.acceptedAt &&
+            !offer.canceledAt && !offer.acceptedAt &&
             (
               (account?.address && offer.owner && account.address === offer.owner)
               || offer.validationErrors?.includes('Offer is expired')
@@ -442,7 +446,7 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
             ) &&
             <tr>
               <td colSpan="2">
-                {cancelNftOfferButton(t, setSignRequest, account.address, offer, type, "xls20")}
+                {cancelNftOfferButton(t, setSignRequest, account.address, offer, type, data.type, id)}
               </td>
             </tr>
           }
@@ -545,9 +549,9 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
   const buyButton = sellOffers => {
     let best = null
     if (data.type === 'xls35') {
-      if (!data.amount) return ""
+      if (!data.amount && !data.destination) return ""
       best = {
-        amount: data.amount,
+        amount: data.amount || "0",
         owner: data.owner,
         destination: data.destination,
         uriTokenID: data.uriTokenID
@@ -564,14 +568,9 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
 
     if (!best) return ""
 
-    //show cancel button only if it is my own offer, otherwise it should be buy button
-    //show cancel button only if it's one valid offer, will work in single offers buttons
-    //and won't confuse which order is canceling, when there a few orders for the same price with different destinations (marketplaces)
-    if (best.owner && account?.address && account.address === best.owner && (sellOffers?.length === 1 || data.type === 'xls35')) {
-      return <>
-        {cancelNftOfferButton(t, setSignRequest, account.address, best, "sell", data.type)}
-        <br /><br />
-      </>
+    //do not show buy button, if's my own offer (Cancel button will be shown)
+    if (best.owner && account?.address && account.address === best.owner) {
+      return ""
     }
 
     if (mpUrl(best)) {
@@ -610,7 +609,7 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
               }
             })}
           >
-            <Image src={xummImg} className='xumm-logo' alt="xumm" height={24} width={24} />
+            <Image src={xummImg} className='xumm-logo' alt="xaman" height={24} width={24} />
             {t("button.nft.buy-for-amount", { amount: amountFormat((Math.ceil(best.amount * multiplier * 1000000) / 1000000)) })}
           </button>
           <br /><br />
@@ -659,13 +658,9 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
 
     if (!best) return ""
 
-    //show cancel button only if it is my own offer, otherwise it should be buy button
-    //show cancel button only if it's one offer, it will work in individual offer's buttons and won't confuse which order is canceled when there are a few orders for the same price
-    if (best.owner && account?.address && account.address === best.owner && buyOffers.length === 1) {
-      return <>
-        {cancelNftOfferButton(t, setSignRequest, account.address, best, "buy", data.type)}
-        <br /><br />
-      </>
+    //don't show sell button, if's my own offer (Cancel button will be shown)
+    if (best.owner && account?.address && account.address === best.owner) {
+      return ""
     }
 
     //show sell button only for the NFT owner
@@ -683,7 +678,7 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
     // if removed do not offer to add an offer
     // if not transferable, do not show button to create offers
     if (!id || data.deletedAt || !data.flags.transferable) return ""
-    //if signed in and user is the nft's owner -> make a sell offer, otherwise make a buy offer (no flag)
+    //if signed in and user is the nft's owner -> make a sell offer or a transfer, otherwise make a buy offer (no flag)
     const sell = data?.owner && account?.address && account.address === data.owner
 
     let request = {
@@ -692,11 +687,14 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
       "NFTokenID": id
     }
 
+    let hasAValidSellOffer = false
+
     if (sell) {
       if (sellOffers) {
         sellOffers = sellOffers.filter(function (offer) { return offer.valid })
-        // do not show "make sell offer" button, when there are active valid sell offers
-        if (sellOffers.length) return ""
+        if (sellOffers.length) {
+          hasAValidSellOffer = true
+        }
       }
       request.Flags = 1
     } else {
@@ -711,10 +709,26 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
           request
         })}
       >
-        <Image src={xummImg} className='xumm-logo' alt="xumm" height={24} width={24} />
-        {sell ? t("button.nft.list-for-sale") : t("button.nft.make-offer")}
+        <Image src={xummImg} className='xumm-logo' alt="xaman" height={24} width={24} />
+        {sell ? (hasAValidSellOffer ? t("button.nft.add-another-sell-offer") : t("button.nft.list-for-sale")) : t("button.nft.make-offer")}
       </button>
       <br /><br />
+      {sell &&
+        <>
+          <button
+            className='button-action wide center'
+            onClick={() => setSignRequest({
+              wallet: "xumm",
+              request,
+              action: "nftTransfer"
+            })}
+          >
+            <Image src={xummImg} className='xumm-logo' alt="xaman" height={24} width={24} />
+            {t("button.nft.transfer")}
+          </button>
+          <br /><br />
+        </>
+      }
     </>
   }
 
@@ -737,8 +751,25 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
           request
         })}
       >
-        <Image src={xummImg} className='xumm-logo' alt="xumm" height={24} width={24} />
-        {t("button.nft.list-for-sale")}
+        <Image src={xummImg} className='xumm-logo' alt="xaman" height={24} width={24} />
+        {countSellOffers?.["active-valid"] > 0 ?
+          t("button.nft.update-sell-offer")
+          :
+          t("button.nft.list-for-sale")
+        }
+      </button>
+      <br /><br />
+
+      <button
+        className='button-action wide center'
+        onClick={() => setSignRequest({
+          wallet: "xumm",
+          request,
+          action: "nftTransfer"
+        })}
+      >
+        <Image src={xummImg} className='xumm-logo' alt="xaman" height={24} width={24} />
+        {t("button.nft.transfer")}
       </button>
       <br /><br />
     </>
@@ -775,7 +806,7 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
           request
         })}
       >
-        <Image src={xummImg} className='xumm-logo' alt="xumm" height={24} width={24} />
+        <Image src={xummImg} className='xumm-logo' alt="xaman" height={24} width={24} />
         {t("button.nft.burn")} ️‍🔥
       </button>
       <br /><br />
@@ -837,6 +868,7 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
                         <NftPreview nft={data} />
                         {sellButton(data.buyOffers)}
                         {buyButton(data.sellOffers)}
+                        {cancelNftOfferButtons(t, setSignRequest, account?.address, data)}
                         {data.type === 'xls20' &&
                           makeOfferButton(data.sellOffers)
                         }
@@ -1004,15 +1036,6 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
                             </tr>
                           </>
                         }
-                        {data.amount !== undefined && data.amount !== null &&
-                          <tr>
-                            <td>{t("table.price")}</td>
-                            <td>{data.amount !== null ? amountFormat(data.amount, { tooltip: "right" }) : t("table.text.unspecified")}</td>
-                          </tr>
-                        }
-                        {data.destination &&
-                          trWithAccount(data, 'destination', t("table.destination"), "/explorer/", "destination")
-                        }
                         {!!data.transferFee && <tr>
                           <td>{t("table.transfer-fee")}</td>
                           <td>{data.transferFee / 1000}%</td>
@@ -1022,7 +1045,24 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
                           <tr>
                             <td>{t("table.uri", { ns: 'nft' })}</td>
                             <td>
-                              {data.uri ? decode(data.uri) : t("table.text.unspecified")}
+                              {data.uri ?
+                                <>
+                                  {isValidJson(decodedUri) ?
+                                    <>
+                                      <span className='orange'>JSON </span>
+                                      <span className='link' onClick={() => setShowRawMetadata(!showRawMetadata)}>
+                                        {showRawMetadata ? t("table.text.hide") : t("table.text.show")}
+                                      </span>
+                                    </>
+                                    :
+                                    <>
+                                      {decodedUri} <CopyButton text={decodedUri} />
+                                    </>
+                                  }
+                                </>
+                                :
+                                t("table.text.unspecified")
+                              }
                             </td>
                           </tr>
                         }
@@ -1039,11 +1079,12 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
                               <CopyButton text={data.digest} /></td>
                           </tr>
                         }
+                        {/* isValidJson(decodedUri) - if valid Json in URI, no need to check digest */}
                         {!notFoundInTheNetwork && (
                           !hasJsonMeta(data) ||
                           (data.type === 'xls20' && !data.flags.transferable) ||
                           data.flags.burnable ||
-                          (data.type === 'xls35' && data.uri && hasJsonMeta(data) && (!data.digest || !isValidDigest))
+                          (data.type === 'xls35' && data.uri && hasJsonMeta(data) && (!isValidJson(decodedUri) && (!data.digest || !isValidDigest)))
                         ) &&
                           <tr>
                             <td><b>{t("table.attention", { ns: 'nft' })}</b></td>
@@ -1088,6 +1129,17 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
                             <tr><th colSpan="100">{t("table.related-lists")}</th></tr>
                           </thead>
                           <tbody>
+                            {data.type === 'xls20' &&
+                              <tr>
+                                <td>{t("table.by-taxon")}</td>
+                                <td>
+                                  <Link href={"/nft-distribution?issuer=" + data.issuer + "&taxon=" + data.nftokenTaxon}>{t("holders", { ns: 'nft' })}</Link>,{" "}
+                                  <Link href={"/nft-explorer?issuer=" + data.issuer + "&taxon=" + data.nftokenTaxon}>{t("table.all-nfts")}</Link>,{" "}
+                                  <Link href={"/nft-sales?issuer=" + data.issuer + "&taxon=" + data.nftokenTaxon}>{t("table.sold_few")}</Link>,{" "}
+                                  <Link href={"/nft-explorer?issuer=" + data.issuer + "&taxon=" + data.nftokenTaxon + "&list=onSale"}>{t("table.on-sale")}</Link>
+                                </td>
+                              </tr>
+                            }
                             <tr>
                               <td>{t("table.by-issuer")}</td>
                               <td>
@@ -1102,21 +1154,12 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
                                   <>
                                     ,{" "}
                                     <Link href={"/nft-sales?issuer=" + data.issuer}>{t("table.sold_few")}</Link>,{" "}
-                                    <Link href={"/nft-explorer?issuer=" + data.issuer + "&list=onSale"}>{t("table.on-sale")}</Link>
+                                    <Link href={"/nft-explorer?issuer=" + data.issuer + "&list=onSale"}>{t("table.on-sale")}</Link>,{" "}
+                                    <Link href={"/nft-volumes/" + data.issuer + "?period=year"}>{t("table.volume")}</Link>
                                   </>
                                 }
                               </td>
                             </tr>
-                            {data.type === 'xls20' &&
-                              <tr>
-                                <td>{t("table.by-taxon")}</td>
-                                <td>
-                                  <Link href={"/nft-explorer?issuer=" + data.issuer + "&taxon=" + data.nftokenTaxon}>{t("table.all-nfts")}</Link>,{" "}
-                                  <Link href={"/nft-sales?issuer=" + data.issuer + "&taxon=" + data.nftokenTaxon}>{t("table.sold_few")}</Link>,{" "}
-                                  <Link href={"/nft-explorer?issuer=" + data.issuer + "&taxon=" + data.nftokenTaxon + "&list=onSale"}>{t("table.on-sale")}</Link>
-                                </td>
-                              </tr>
-                            }
                             <tr>
                               <td>{t("table.by-owner")}</td>
                               <td>

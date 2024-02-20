@@ -1,5 +1,8 @@
 {
   "menu": {
+    "services": {
+      "nft-mint": "Acuñar NFT"
+    },
     "personal": {
       "personal": "Particulares",
       "search-on-ledgerName": "Buscar en {{ledgerName}}"
@@ -28,6 +31,7 @@
     },
     "xrpl": {
       "governance": "Gobierno",
+      "activations": "Cuentas activadas (gráfica)",
       "distribution": "Distribución de {{nativeCurrency}}",
       "last-ledger-information": "Información del último libro contable",
       "last-ledger-transactions": "Transacciones del último libro contable",
@@ -42,12 +46,13 @@
       "account-generation": "Generación de cuenta",
       "faucet": "Grifo",
       "api": "Documentación API",
-      "api-admin": "API account (Partner portal)"
+      "api-admin": "Cuenta API (Portal de miembros)"
     },
     "legal": "Legal",
     "disclaimer": "Advertencia",
     "privacy-policy": "Política de privacidad",
     "terms-and-conditions": "Términos y condiciones",
+    "terms-api-bots": "Términos de uso de API y bots",
     "customer-support": "Soporte de cliente",
     "press": "Prensa",
     "merch": "Tienda de Merch",
@@ -106,6 +111,8 @@
     "not-available": "No disponible",
     "confirm": {
       "set-domain": "Añadir un dominio",
+      "nft-create-transfer-offer-header": "Tranferir NFT",
+      "nft-transfer": "Estoy ofreciendo este NFT GRATUITAMENTE a la cuenta de destino, <1>la cuenta de destino necesita aceptar la transferencia del NFT</1>.",
       "nft-accept-sell-offer-header": "Comprar NFT",
       "nft-accept-buy-offer-header": "Vender NFT",
       "nft-create-sell-offer-header": "Listar para vender",
@@ -264,6 +271,9 @@
     "copy-my-address": "Copiar mi dirección",
     "sign": "Firmar",
     "nft": {
+      "add-another-sell-offer": "Add another sell offer",
+      "transfer": "Transferir NFT",
+      "update-sell-offer": "Actualizar la oferta de venta",
       "cancel-sell-offer-for": "Cancelar oferta de Venta por {{amount}}",
       "cancel-buy-offer-for": "Cancelar oferta de Compra por {{amount}}",
       "cancel-transfer": "Cancelar transferencia NFT",
@@ -273,7 +283,7 @@
       "sell-for-amount": "Vender por {{amount}}",
       "make-offer": "Hacer una oferta",
       "list-for-sale": "Listar para vender",
-      "burn": "Quemar ese NFT"
+      "burn": "Quemar este NFT"
     }
   },
   "general": {
@@ -290,10 +300,13 @@
   },
   "form": {
     "error": {
-      "domain-empty": "Please enter web domain.",
-      "domain-invalid": "Please enter a valid web domain.",
-      "description-empty": "Please enter a description.",
-      "description-short": "Description is too short.",
+      "price-empty": "Please enter an amount.",
+      "address-empty": "Por favor, introduce una dirección.",
+      "address-invalid": "Por favor, introduce una dirección válida.",
+      "domain-empty": "Por favor, introduce un dominio web.",
+      "domain-invalid": "Por favor, introduce un dominio web válido.",
+      "description-empty": "Por favor, introduce una descripción.",
+      "description-short": "La descripción es muy corta.",
       "email-empty": "Por favor, introduce tu correo electrónico.",
       "email-invalid": "Por favor, introduce un correo eléctronico válido.",
       "password-empty": "Por favor, introduce tu contraseña.",
@@ -308,13 +321,13 @@
   },
   "errors": {
     "token": {
-      "required": "Please login to continue"
+      "required": "Por favor, logueate para continuar"
     },
     "partner": {
-      "not_found": "There are no projects"
+      "not_found": "No hay proyectos"
     },
     "access_token": {
-      "not_found": "There are no API keys."
+      "not_found": "No hay claves API."
     }
   },
   "error-api": {
@@ -330,7 +343,7 @@
     "currencyIssuer is invalid": "Divisa de la cuenta del emisor inválida.",
     "Token information is not found": "No pudimos encontrar ninguna información para este ID",
     "No nfts information is found": "Lo senstimos, ha ocurrido un error, por favor, busca algo más.",
-    "Address is not valid": "Invalid address"
+    "Address is not valid": "Dirección inválida"
   },
   "units": {
     "seconds-short": "s",
@@ -346,7 +359,10 @@
     "day": "Para los últimas 24 horas"
   },
   "table": {
-    "warning": "Warning",
+    "mints": "Acuñaciones",
+    "period": "Periodo",
+    "mint-period": "Periodo de acuñación",
+    "warning": "Advertencia",
     "sequence": "Secuencia",
     "version": "Versión",
     "domain": "Dominio",
@@ -423,6 +439,7 @@
     "marketplace": "Mercado",
     "public-key": "Clave pública",
     "text": {
+      "private-offer": "Private offer",
       "show-extended-statistics": "Mostrar estadísticas ampliadas",
       "include-without-media-data": "Incluir NFTs sin contenido",
       "include-burned-nfts": "Incluir NFTs quemados",
@@ -468,6 +485,7 @@
     "month": "30 días",
     "week": "7 días",
     "day": "24 horas",
+    "hour": "1 hora",
     "currencies": "Divisas",
     "issuers": "Emisores",
     "marketplaces": "Mercados",
@@ -487,8 +505,8 @@
     "onSale": "En venta por XRP",
     "all-tokens": "Todos los tokens",
     "xrp-only": "solo XRP",
-    "mintedNew": "Latest mints",
-    "mintedOld": "Oldest mints"
+    "mintedNew": "Latest",
+    "mintedOld": "Oldest"
   },
   "xumm": {
     "new-qr": "Genera un nuevo código QR"
@@ -501,7 +519,8 @@
       "nft": "NFT",
       "nfts": "NFTs",
       "nft-offer": "Ofertas NFT",
-      "nft-offers": "Ofertas NFT"
+      "nft-offers": "Ofertas NFT",
+      "nft-volumes": "NFT sales volumes"
     },
     "enter-address": "Introduce una dirección XRPL o nombre de usuario",
     "searching-tx-nft-nftoffer": "Buscando for Tx / NFT ID / Oferta NFT",
@@ -539,11 +558,13 @@
   },
   "nfts": {
     "header": "NFTs de la cuenta",
-    "desc": "Aquí puedes buscar por NFTs, escribe la dirección XRPL para ver que NFTs posee.",
+    "desc": "Aquí puedes buscar por NFTs, escribe la dirección para ver que NFTs posee.",
     "search-by-name": "Buscar por nombre de NFT",
     "search-by-issuer": "Buscar por emisor NFT",
     "search-by-taxon": "Buscar por taxón NFT",
     "search-by-owner": "Buscar por dueño del NFT",
+    "search-by-buyer": "Buscar por comprador del NFT",
+    "search-by-seller": "Buscar por vendedor del NFT",
     "no-nfts": "No pudimos encontrar ningún NFT con tus parámetros de búsqueda.",
     "on-service": "en {{service}}",
     "amount-on-service": "{{amount}} en {{service}}",
@@ -555,21 +576,6 @@
     "desc": "Aquí puedes comprobar la distribución de NFTs de un emisor particular. Introduce la dirección XPRL del emisor NFT  o el nombre de usuario y presiona el botón de búsqueda.",
     "no-nfts": "No pudimos encontrar ningún NFT acuñado por esa cuenta.",
     "text0": "{{users}} cuentas poseen {{nfts}} NFTs"
-  },
-  "nft-volumes": {
-    "header": "Volúmenes en ventas NFT",
-    "text0": "el XRPL tuvo {{allSales}} {{currency}} en ventas en el mercado {{saleType}} NFT por valor de {{allVolume}}.",
-    "brokers": {
-      "desc": "Este es un listado de cuentas de broker NFT. Puedes encontrar aquí los volúmenes de los bots de cruces. Los mercados utilizan modelos mixtos para comerciar, aquí puedes ver solo volúmenes a través del modelo de broker.",
-      "no-broker": "Sin broker",
-      "text0": "XRPL tuvo {{allSales}} <3>{{currency}}</3> ventas {{saleType}} NFT por {{allVolume}}, de las cuales <9>{{brokerSales}}</9> {{percentBrokerSales}} de los acuerdos de <13>{{brokerVolume}}</13> {{percentBrokerVolume}} fueron a través del modelo de broker."
-    },
-    "marketplaces": {
-      "desc": "Esta es la lista de Mercados NFT en XRPL. Los volúmenes aquí no incluyen las ventas primarias (acuñaciones) las cuales fueron hechas en 2 transacciones (pago y transferencia de NFT)."
-    },
-    "issuers": {
-      "desc": "Esta es la lista de los emisores de NFTs en XRPL. Para ver los volúmenes de colecciones de NFTs identificados por emisor y taxón haz click en el enlace en la columna de Volumen en ventas."
-    }
   },
   "nft-sales": {
     "header": "Ventas NFT",

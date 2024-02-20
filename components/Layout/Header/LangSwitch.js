@@ -104,7 +104,7 @@ export default function LanguageSwitch({ langSwitchOpen, setLangSwitchOpen, setC
     <div className="top-switch">
       <div className="menu-dropdown">
         <div className="switch-container menu-dropdown-button contrast" onClick={switchOnClick}>
-          {i18n.language.toUpperCase()}
+          {i18n?.language?.toUpperCase()}
         </div>
         {langSwitchOpen &&
           <div className="menu-dropdown-content">

@@ -9,16 +9,17 @@ export const getServerSideProps = async ({ query, locale }) => {
   const { period } = query
   return {
     props: {
-      period: period || "week",
+      periodQuery: period || "week",
       ...(await serverSideTranslations(locale, ['common', 'nft-minters'])),
     },
   }
 }
 
 import SEO from '../components/SEO'
-import Tabs from '../components/Tabs'
+import DateAndTimeRange from '../components/UI/DateAndTimeRange'
+import SimpleChart from '../components/SimpleChart'
 
-import { setTabParams, useWidth } from '../utils'
+import { chartSpan, useWidth } from '../utils'
 import {
   shortNiceNumber,
   persentFormat,
@@ -27,7 +28,7 @@ import {
 
 import LinkIcon from "../public/images/link.svg"
 
-export default function NftMinters({ period }) {
+export default function NftMinters({ periodQuery }) {
   const { t } = useTranslation(['common', 'nft-minters'])
   const router = useRouter()
 
@@ -39,16 +40,10 @@ export default function NftMinters({ period }) {
   const [rawData, setRawData] = useState({})
   const [loading, setLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState("")
-  const [periodTab, setPeriodTab] = useState(period)
+  const [period, setPeriod] = useState(periodQuery)
   const [sortConfig, setSortConfig] = useState({})
-
-  const periodTabList = [
-    { value: 'all', label: t("tabs.all-time") },
-    //{ value: 'year', label: t("tabs.year") },
-    { value: 'month', label: t("tabs.month") },
-    { value: 'week', label: t("tabs.week") },
-    { value: 'day', label: t("tabs.day") }
-  ]
+  const [loadingChart, setLoadingChart] = useState(false)
+  const [chartData, setChartData] = useState([])
 
   const controller = new AbortController()
 
@@ -59,19 +54,45 @@ export default function NftMinters({ period }) {
     setRawData({})
     setData([])
 
-    const response = await axios.get(apiUrl + '?period=' + periodTab, {
+    if (period) {
+      //chartData
+      setLoadingChart(true)
+      setChartData([])
+
+      const chartDataResponse = await axios.get(
+        'v2/nft-chart?span=' + chartSpan(period) + '&period=' + period,
+      ).catch(error => {
+        if (error && error.message !== "canceled") {
+          setErrorMessage(t("error." + error.message))
+        }
+        setLoadingChart(false)
+      })
+      setLoadingChart(false)
+
+      if (chartDataResponse?.data?.chart?.length > 0) {
+        const newChartData = chartDataResponse.data.chart.map((item) => {
+          return [item.time, item.issues]
+        })
+        setChartData(newChartData)
+      }
+
+      //chart data ends
+    }
+
+    const response = await axios.get(apiUrl + '?period=' + period, {
       signal: controller.signal
     }).catch(error => {
       if (error && error.message !== "canceled") {
         setErrorMessage(t("error." + error.message))
-        setLoading(false) //keep here for fast tab clickers
       }
+      setLoading(false) //keep here for fast tab clickers
     })
-    const newdata = response?.data;
+    const newdata = response?.data
+
+    setLoading(false) //keep here for fast tab clickers
 
     if (newdata) {
       setRawData(newdata)
-      setLoading(false) //keep here for fast tab clickers
       if (newdata.period) {
         let list = newdata.marketplaces
         if (list.length > 0) {
@@ -124,31 +145,14 @@ export default function NftMinters({ period }) {
 
   useEffect(() => {
     checkApi()
-
-    let queryAddList = []
-    let queryRemoveList = []
-    const tabsToSet = [
-      {
-        tabList: periodTabList,
-        tab: periodTab,
-        defaultTab: "week",
-        setTab: setPeriodTab,
-        paramName: "period"
-      }
-    ]
-
-    setTabParams(router, tabsToSet, queryAddList, queryRemoveList)
-
     setSortConfig({})
-
     return () => {
       controller.abort()
     }
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isReady, periodTab])
+  }, [isReady, period])
 
-  const urlParams = (minter) => {
+  const urlParams = minter => {
     let urlPart = "?mintedByMarketplace=" + minter?.marketplace + '&includeBurned=true&includeWithoutMediaData=true'
     return urlPart
   }
@@ -174,13 +178,19 @@ export default function NftMinters({ period }) {
     <SEO
       title={
         t("header", { ns: "nft-minters" }) + ' '
-        + (periodTab ? (" (" + (periodTab === 'all' ? t("tabs.all-time") : t("tabs." + periodTab)) + ")") : "")
+        + (period ? (" (" + (period === 'all' ? t("tabs.all-time") : t("tabs." + period)) + ")") : "")
       }
     />
     <div className="content-text">
       <h1 className="center">{t("header", { ns: "nft-minters" })}</h1>
       <div className='tabs-inline'>
-        <Tabs tabList={periodTabList} tab={periodTab} setTab={setPeriodTab} name="period" />
+        <DateAndTimeRange
+          period={period}
+          setPeriod={setPeriod}
+          defaultPeriod={periodQuery}
+          minDate="nft"
+          tabs={true}
+        />
       </div>
       <div className='flex'>
         <div className="grey-box">
@@ -193,16 +203,15 @@ export default function NftMinters({ period }) {
             <>
               {rawData?.summary &&
                 <>
-                  {t("period." + periodTab)}{" "}
                   {
-                    periodTab === "all" ?
+                    period === "all" ?
                       <Trans i18nKey="summary-all" ns="nft-minters">
                         XRPL had <b>{{ minted: shortNiceNumber(rawData.summary.minted, 0) }}</b> NFTs,
                         from which <b>{{ mintedAndBurned: shortNiceNumber(rawData.summary.mintedAndBurned, 0) }}</b> NFTs {{ percentMintedAndBurned: persentFormat(rawData.summary.mintedAndBurned, rawData.summary.minted) }} were burned.
                       </Trans>
                       :
                       <Trans i18nKey="summary-period" ns="nft-minters">
-                        XRPL had <b>{{ minted: shortNiceNumber(rawData.summary.minted, 0) }}</b> NFTs,
+                        For that period XRPL had <b>{{ minted: shortNiceNumber(rawData.summary.minted, 0) }}</b> NFTs,
                         from which <b>{{ mintedAndBurned: shortNiceNumber(rawData.summary.mintedAndBurned, 0) }}</b> NFTs {{ percentMintedAndBurned: persentFormat(rawData.summary.mintedAndBurned, rawData.summary.minted) }} were burned during the same period of time, total burned during this period: <b>{{ burned: niceNumber(rawData.summary.burned, 0) }}</b> NFTs.
                       </Trans>
                   }
@@ -210,8 +219,30 @@ export default function NftMinters({ period }) {
               }
             </>
           }
-        </div >
-      </div >
+        </div>
+      </div>
+
+      <center>
+        <br />
+        <h3>{t("mint-chart", { ns: "nft-minters" })}</h3>
+        {loadingChart ?
+          <>
+            <br />
+            <span className="waiting"></span>
+            <br />{t("general.loading")}<br />
+            <br />
+          </>
+          :
+          <>
+            {chartData.length > 0 &&
+              <div style={{ maxWidth: "600px" }}>
+                <SimpleChart data={chartData} />
+              </div>
+            }
+          </>
+        }
+      </center>
+
       <br />
       {
         (windowWidth > 1000) ?
@@ -222,7 +253,7 @@ export default function NftMinters({ period }) {
                 <th>{t("table.minter")} <b className={"link" + (sortConfig.key === 'marketplace' ? " orange" : "")} onClick={() => sortTable('marketplace')}>⇅</b></th>
                 <th className='right'>{t("table.minted-total", { ns: "nft-minters" })} <b className={"link" + (sortConfig.key === 'minted' ? " orange" : "")} onClick={() => sortTable('minted')}>⇅</b></th>
                 <th className='right'>{t("table.minted-with-metadata", { ns: "nft-minters" })} <b className={"link" + (sortConfig.key === 'mintedWithMetadata' ? " orange" : "")} onClick={() => sortTable('mintedWithMetadata')}>⇅</b></th>
-                {periodTab !== "all" && <th className='right'>{t("table.minted-and-burned", { ns: "nft-minters" })} <b className={"link" + (sortConfig.key === 'mintedAndBurned' ? " orange" : "")} onClick={() => sortTable('mintedAndBurned')}>⇅</b></th>}
+                {period !== "all" && <th className='right'>{t("table.minted-and-burned", { ns: "nft-minters" })} <b className={"link" + (sortConfig.key === 'mintedAndBurned' ? " orange" : "")} onClick={() => sortTable('mintedAndBurned')}>⇅</b></th>}
                 <th className='right'>{t("table.burned-total", { ns: "nft-minters" })} <b className={"link" + (sortConfig.key === 'burned' ? " orange" : "")} onClick={() => sortTable('burned')}>⇅</b></th>
               </tr>
             </thead>
@@ -247,20 +278,20 @@ export default function NftMinters({ period }) {
                             <td>{minter.marketplace}</td>
                             <td className='right'>
                               {shortNiceNumber(minter.minted, 0)} {persentFormat(minter.minted, rawData.summary.minted)}
-                              <Link href={'/nft-explorer' + urlParams(minter) + "&mintedPeriod=" + periodTab}> <LinkIcon /></Link>
+                              <Link href={'/nft-explorer' + urlParams(minter) + "&mintedPeriod=" + period}> <LinkIcon /></Link>
                             </td>
                             <td className='right'>
                               {shortNiceNumber(minter.mintedWithMetadata, 0)} {minter.mintedWithMetadata ? persentFormat(minter.mintedWithMetadata, minter.minted) : ""}
                             </td>
-                            {periodTab !== "all" &&
+                            {period !== "all" &&
                               <td className='right'>
                                 {shortNiceNumber(minter.mintedAndBurned, 0)} {minter.mintedAndBurned ? persentFormat(minter.mintedAndBurned, minter.minted) : ""}
-                                <Link href={'/nft-explorer' + urlParams(minter) + "&mintedPeriod=" + periodTab + "&burnedPeriod=" + periodTab}> <LinkIcon /></Link>
+                                <Link href={'/nft-explorer' + urlParams(minter) + "&mintedPeriod=" + period + "&burnedPeriod=" + period}> <LinkIcon /></Link>
                               </td>
                             }
                             <td className='right'>
                               {shortNiceNumber(minter.burned, 0)}
-                              <Link href={'/nft-explorer' + urlParams(minter) + "&burnedPeriod=" + periodTab}> <LinkIcon /></Link>
+                              <Link href={'/nft-explorer' + urlParams(minter) + "&burnedPeriod=" + period}> <LinkIcon /></Link>
                             </td>
                           </tr>
                         )
@@ -300,20 +331,20 @@ export default function NftMinters({ period }) {
                         </p>
                         <p>
                           {t("table.minted-total", { ns: "nft-minters" })}: {shortNiceNumber(minter.minted, 0)} {persentFormat(minter.minted, rawData.summary.minted)}
-                          <Link href={'/nft-explorer' + urlParams(minter) + "&mintedPeriod=" + periodTab}> <LinkIcon /></Link>
+                          <Link href={'/nft-explorer' + urlParams(minter) + "&mintedPeriod=" + period}> <LinkIcon /></Link>
                         </p>
                         <p>
                           {t("table.minted-with-metadata", { ns: "nft-minters" })}: {shortNiceNumber(minter.mintedWithMetadata, 0)} {minter.mintedWithMetadata ? persentFormat(minter.mintedWithMetadata, minter.minted) : ""}
                         </p>
-                        {periodTab !== "all" &&
+                        {period !== "all" &&
                           <p>
                             {t("table.minted-and-burned", { ns: "nft-minters" })}: {shortNiceNumber(minter.mintedAndBurned, 0)} {minter.mintedAndBurned ? persentFormat(minter.mintedAndBurned, minter.minted) : ""}
-                            <Link href={'/nft-explorer' + urlParams(minter) + "&mintedPeriod=" + periodTab + "&burnedPeriod=" + periodTab}> <LinkIcon /></Link>
+                            <Link href={'/nft-explorer' + urlParams(minter) + "&mintedPeriod=" + period + "&burnedPeriod=" + period}> <LinkIcon /></Link>
                           </p>
                         }
                         <p>
                           {t("table.burned-total", { ns: "nft-minters" })}: {shortNiceNumber(minter.burned, 0)}
-                          <Link href={'/nft-explorer' + urlParams(minter) + "&burnedPeriod=" + periodTab}> <LinkIcon /></Link>
+                          <Link href={'/nft-explorer' + urlParams(minter) + "&burnedPeriod=" + period}> <LinkIcon /></Link>
                         </p>
                       </td>
                     </tr>)

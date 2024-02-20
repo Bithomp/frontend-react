@@ -9,13 +9,13 @@ export const getServerSideProps = async ({ query, locale }) => {
   const { period, sale, list, currency, currencyIssuer, sortCurrency } = query
   return {
     props: {
-      period: period || "week",
+      periodQuery: period || "week",
       sale: sale || "secondary",
       list: list || "issuers",
       currency: currency || "",
       currencyIssuer: currencyIssuer || "",
       sortCurrency: sortCurrency || "",
-      ...(await serverSideTranslations(locale, ['common'])),
+      ...(await serverSideTranslations(locale, ['common', 'nft-volumes'])),
     },
   }
 }
@@ -23,8 +23,10 @@ export const getServerSideProps = async ({ query, locale }) => {
 import SEO from '../../components/SEO'
 import Tabs from '../../components/Tabs'
 import CheckBox from '../../components/UI/CheckBox'
+import DateAndTimeRange from '../../components/UI/DateAndTimeRange'
+import SimpleChart from '../../components/SimpleChart'
 
-import { setTabParams, stripText, isAddressOrUsername, useWidth } from '../../utils'
+import { setTabParams, stripText, isAddressOrUsername, useWidth, chartSpan } from '../../utils'
 import {
   amountFormat,
   shortNiceNumber,
@@ -32,28 +34,38 @@ import {
   usernameOrAddress,
   persentFormat,
   niceNumber
-} from '../../utils/format';
+} from '../../utils/format'
 
 import LinkIcon from "../../public/images/link.svg"
 
-export default function NftVolumes({ period, sale, list, currency, currencyIssuer, selectedCurrency, sortCurrency }) {
+export default function NftVolumes({
+  periodQuery,
+  sale,
+  list,
+  currency,
+  currencyIssuer,
+  selectedCurrency,
+  sortCurrency
+}) {
   const { t } = useTranslation()
   const router = useRouter()
+  const windowWidth = useWidth()
 
   const { isReady } = router
-
-  const windowWidth = useWidth()
 
   const [data, setData] = useState([])
   const [rawData, setRawData] = useState({})
   const [loading, setLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState("")
-  const [periodTab, setPeriodTab] = useState(period)
+  const [period, setPeriod] = useState("")
   const [saleTab, setSaleTab] = useState(sale)
   const [listTab, setListTab] = useState(list)
   const [currencyTab, setCurrencyTab] = useState(currency?.toLowerCase())
   const [sortConfig, setSortConfig] = useState({})
   const [issuersExtended, setIssuersExtended] = useState(false)
+  const [chartIssuers, setChartIssuers] = useState([])
+  const [chartVolumes, setChartVolumes] = useState([])
+  const [loadingChart, setLoadingChart] = useState(false)
 
   const convertCurrency = sortCurrency || selectedCurrency
 
@@ -62,14 +74,6 @@ export default function NftVolumes({ period, sale, list, currency, currencyIssue
     { value: 'marketplaces', label: (t("tabs.marketplaces")) },
     { value: 'currencies', label: (t("tabs.currencies")) },
     { value: 'brokers', label: (t("tabs.brokers")) }
-  ]
-
-  const periodTabList = [
-    { value: 'all', label: t("tabs.all-time") },
-    //{ value: 'year', label: t("tabs.year") },
-    { value: 'month', label: t("tabs.month") },
-    { value: 'week', label: t("tabs.week") },
-    { value: 'day', label: t("tabs.day") }
   ]
 
   const saleTabList = [
@@ -86,24 +90,57 @@ export default function NftVolumes({ period, sale, list, currency, currencyIssue
   const controller = new AbortController()
 
   const checkApi = async () => {
+    if (!period || !listTab || !convertCurrency) return
+
+    let currencyUrlPart = ""
+    if (listTab !== 'currencies') {
+      if (currency && currencyIssuer) {
+        currencyUrlPart = '&currency=' + stripText(currency) + '&currencyIssuer=' + stripText(currencyIssuer)
+      } else if (currencyTab === 'xrp') {
+        currencyUrlPart = '&currency=xrp'
+      }
+    }
+
+    // get the chart data
+    setLoadingChart(true)
+    setChartIssuers([])
+    setChartVolumes([])
+
+    const chartDataResponse = await axios.get(
+      'v2/nft-sales-chart?span=' + chartSpan(period) + '&period=' + period + '&saleType=' + saleTab + currencyUrlPart + '&convertCurrencies=' + convertCurrency,
+    ).catch(error => {
+      if (error && error.message !== "canceled") {
+        console.log(error)
+      }
+      setLoadingChart(false)
+    })
+    setLoadingChart(false)
+
+    if (chartDataResponse?.data?.chart?.length > 0) {
+      const issuersData = chartDataResponse.data.chart.map((item) => {
+        return [item.time, item.sales]
+      })
+      const volumesData = chartDataResponse.data.chart.map((item) => {
+        return [item.time, item.amountInConvertCurrencies[convertCurrency]]
+      })
+      setChartIssuers(issuersData)
+      setChartVolumes(volumesData)
+    }
+    // end getting the chart data
+
     let apiUrl = 'v2/nft-volumes-extended?list=' + listTab + '&convertCurrencies=' + convertCurrency + '&sortCurrency=' + convertCurrency
 
     if (listTab === 'issuers' && issuersExtended) {
       apiUrl += '&floorPrice=true&statistics=true'
     }
-    if (listTab !== 'currencies') {
-      if (currency && currencyIssuer) {
-        apiUrl += '&currency=' + stripText(currency) + '&currencyIssuer=' + stripText(currencyIssuer)
-      } else if (currencyTab === 'xrp') {
-        apiUrl += '&currency=xrp'
-      }
-    }
+
+    apiUrl += currencyUrlPart
 
     setLoading(true)
     setRawData({})
     setData([])
 
-    const response = await axios.get(apiUrl + '&period=' + periodTab + '&saleType=' + saleTab, {
+    const response = await axios.get(apiUrl + '&period=' + period + '&saleType=' + saleTab, {
       signal: controller.signal
     }).catch(error => {
       if (error && error.message !== "canceled") {
@@ -310,13 +347,6 @@ export default function NftVolumes({ period, sale, list, currency, currencyIssue
         paramName: "list"
       },
       {
-        tabList: periodTabList,
-        tab: periodTab,
-        defaultTab: "week",
-        setTab: setPeriodTab,
-        paramName: "period"
-      },
-      {
         tabList: saleTabList,
         tab: saleTab,
         defaultTab: "secondary",
@@ -324,7 +354,7 @@ export default function NftVolumes({ period, sale, list, currency, currencyIssue
         paramName: "sale"
       }
     ]
-    if ((!currency || (currency.toLowerCase() !== 'xrp' && !isAddressOrUsername(currencyIssuer))) || listTab === 'currencies') {
+    if ((!currencyTab || (currencyTab.toLowerCase() !== 'xrp' && !isAddressOrUsername(currencyIssuer))) || listTab === 'currencies') {
       queryRemoveList = ["currency", "currencyIssuer"]
     }
 
@@ -345,10 +375,10 @@ export default function NftVolumes({ period, sale, list, currency, currencyIssue
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isReady, saleTab, periodTab, listTab, currency, currencyIssuer, convertCurrency, issuersExtended, currencyTab])
+  }, [isReady, saleTab, period, listTab, currencyIssuer, convertCurrency, issuersExtended, currencyTab])
 
   const urlParams = (volume, options) => {
-    let urlPart = "?period=" + periodTab + "&sale=" + saleTab
+    let urlPart = "?period=" + period + "&sale=" + saleTab
     if (volume?.volumes && volume?.volumes.length === 1 && !options?.excludeCurrency) {
       if (volume.volumes[0].amount.currency) {
         urlPart = urlPart + "&currency=" + volume.volumes[0].amount.currency + '&currencyIssuer=' + volume.volumes[0].amount.issuer
@@ -493,30 +523,72 @@ export default function NftVolumes({ period, sale, list, currency, currencyIssue
   return <>
     <SEO
       title={
-        t("nft-volumes.header") + ' '
+        t("header", { ns: 'nft-volumes' }) + ' '
         + (saleTab === 'secondary' ? t("tabs.secondary-sales") : "")
         + (saleTab === 'primary' ? t("tabs.primary-sales") : "")
-        + (currency ? (" " + currency) : "")
+        + (currencyTab ? (" " + currencyTab) : "")
         + (currencyIssuer ? (" " + currencyIssuer) : "")
         + (listTab === "list" ? (" " + t("tabs.list")) : "")
-        + (periodTab ? (" (" + (periodTab === 'all' ? t("tabs.all-time") : t("tabs." + periodTab)) + ")") : "")
+        + (period ? (" " + period) : "")
       }
     />
     <div className="content-text">
-      <h1 className="center">{t("nft-volumes.header") + " "}</h1>
+      <h1 className="center">{t("header", { ns: 'nft-volumes' }) + " "}</h1>
       <div className='tabs-inline'>
+
+        {windowWidth < 720 && <br />}
+        {t("table.period")}
+        {windowWidth < 720 && <br />}
+
+        <DateAndTimeRange
+          period={period}
+          setPeriod={setPeriod}
+          defaultPeriod={periodQuery}
+          minDate="nft"
+          tabs={true}
+        />
+
+        <br />
+
         <Tabs tabList={listTabList} tab={listTab} setTab={setListTab} name="list" />
-        <Tabs tabList={periodTabList} tab={periodTab} setTab={setPeriodTab} name="period" />
         {(!currencyIssuer && listTab !== "currencies") &&
           <Tabs tabList={currencyTabList} tab={currencyTab} setTab={setCurrencyTab} name="currency" />
         }
         <Tabs tabList={saleTabList} tab={saleTab} setTab={setSaleTab} name="sale" />
       </div>
+
+      <center>
+        {loadingChart ?
+          <>
+            <br />
+            <span className="waiting"></span>
+            <br />{t("general.loading")}<br />
+            <br />
+          </>
+          :
+          <>
+            {chartIssuers.length > 0 && chartVolumes.length > 0 &&
+              <div>
+                <div style={{ maxWidth: "100%", width: "600px", display: "inline-block" }}>
+                  <h3>{t("sales-chart", { ns: 'nft-volumes' })}</h3>
+                  <SimpleChart data={chartIssuers} />
+                </div>
+                {windowWidth > 1000 && <div style={{ display: "inline-block", width: "100px" }}></div>}
+                <div style={{ maxWidth: "100%", width: "600px", display: "inline-block" }}>
+                  <h3>{t("volumes-chart", { ns: 'nft-volumes' })} ({convertCurrency?.toUpperCase()})</h3>
+                  <SimpleChart data={chartVolumes} />
+                </div>
+              </div>
+            }
+          </>
+        }
+      </center>
+
       {listTab !== 'currencies' &&
         <>
           <div className='flex'>
             <div className="grey-box">
-              {t("nft-volumes." + listTab + ".desc")}
+              {t(listTab + ".desc", { ns: 'nft-volumes' })}
             </div>
             <div className="grey-box">
               {loading ?
@@ -525,14 +597,13 @@ export default function NftVolumes({ period, sale, list, currency, currencyIssue
                 <>
                   {rawData?.summary &&
                     <>
-                      {t("period." + periodTab)}{" "}
                       {listTab === 'brokers' ?
-                        <Trans i18nKey="nft-volumes.brokers.text0">
+                        <Trans i18nKey="brokers.text0" ns='nft-volumes'>
                           XRPL had {{ allSales: shortNiceNumber(rawData.summary.all.sales, 0) }} <b>{{ currency: (currencyIssuer ? currency : currencyTab).toUpperCase() }}</b> NFT {{ saleType: saleTab === 'primaryAndSecondary' ? "" : ("(" + t("tabs." + saleTab + "-sales")).toLocaleLowerCase() + ")" }} sales for {{ allVolume: niceNumber(rawData.summary.all.volumesInConvertCurrencies[convertCurrency], 0, convertCurrency) }},
                           from which <b>{{ brokerSales: shortNiceNumber(rawData.summary.brokers?.sales, 0) }}</b> {{ percentBrokerSales: persentFormat(rawData.summary.brokers?.sales, rawData.summary.all.sales) }} of trades for <b>{{ brokerVolume: niceNumber(rawData.summary.brokers?.volumesInConvertCurrencies[convertCurrency], 0, convertCurrency) }}</b> {{ percentBrokerVolume: persentFormat(rawData.summary.brokers?.volumesInConvertCurrencies[convertCurrency], rawData.summary.all.volumesInConvertCurrencies[convertCurrency]) }} were through the brokerage model.
                         </Trans>
                         :
-                        <Trans i18nKey="nft-volumes.text0">
+                        <Trans i18nKey="text0" ns="nft-volumes">
                           XRPL had {{ allSales: shortNiceNumber(rawData.summary.all.sales, 0) }} {{ currency: (currencyIssuer ? currency : currencyTab).toUpperCase() }} NFT {{ saleType: saleTab === 'primaryAndSecondary' ? "" : ("(" + t("tabs." + saleTab + "-sales")).toLocaleLowerCase() + ")" }} sales for {{ allVolume: niceNumber(rawData.summary.all.volumesInConvertCurrencies[convertCurrency], 0, convertCurrency) }}.
                         </Trans>
                       }
@@ -607,7 +678,7 @@ export default function NftVolumes({ period, sale, list, currency, currencyIssue
                             </td>
                           }
                           {listTab === 'issuers' && issuersExtended && <td className='right hide-on-mobile'>{shortNiceNumber(volume.statistics?.tradedNfts, 0)}</td>}
-                          {listTab === 'brokers' && <td>{addressUsernameOrServiceLink(volume, "broker", { short: true, noBroker: t("nft-volumes.brokers.no-broker") })}</td>}
+                          {listTab === 'brokers' && <td>{addressUsernameOrServiceLink(volume, "broker", { short: true, noBroker: t("brokers.no-broker", { ns: 'nft-volumes' }) })}</td>}
                           {listTab === 'currencies' && <td className='center'><Link href={'/nft-volumes' + urlParams(volume) + '&list=issuers'}><LinkIcon /></Link></td>}
                           <td className='right'>
                             {shortNiceNumber(volume.sales, 0)}
@@ -621,7 +692,7 @@ export default function NftVolumes({ period, sale, list, currency, currencyIssue
                           {listTab === 'issuers' && issuersExtended && <td className='right hide-on-mobile'>{shortNiceNumber(volume.statistics?.buyers, 0)}</td>}
                           {(listTab === 'currencies' || (currency && currencyIssuer) || currencyTab === 'xrp') &&
                             <td className='right'>
-                              {amountFormat(volume.volumes[0].amount, { maxFractionDigits: 2 })}
+                              {amountFormat(volume.volumes[0]?.amount, { maxFractionDigits: 2 })}
                             </td>
                           }
                           <td className='right'>

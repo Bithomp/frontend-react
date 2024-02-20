@@ -114,7 +114,7 @@ export default function Ledger({ ledgerIndex, pageMeta }) {
   </p>
 
   return <>
-    <SEO title={t("menu.ledger") + ' ' + ledgerVersion} />
+    <SEO title={t("menu.ledger") + ' ' + (pageMeta?.ledgerVersion || ledgerIndex)} />
     <div className="content-text">
       <h1 className="center">{t("menu.ledger")} #{ledgerVersion}<br />{(rendered && pageMeta?.close_time) ? fullDateAndTime(pageMeta.close_time) : <br />}</h1>
       {ledgerVersion >= minLedger ?

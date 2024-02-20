@@ -60,7 +60,7 @@
       &.xahOnly {
         input {
           @media only screen and (max-width: 480px) {
-            width: calc(100% - 52px);
+            width: calc(100% - 22px);
           }
         }
         &:after {
@@ -82,7 +82,7 @@
     }
     .terms-checkbox {
       text-align: left;
-      margin: 10px 60px;
+      margin: 10px 52px;
       font-size: 14px;
       @media only screen and (max-width: 480px) {
         text-align: left;

@@ -7,7 +7,7 @@ import InfiniteScroll from 'react-infinite-scroll-component'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import Link from 'next/link'
 
-import { stripText, isAddressOrUsername, setTabParams } from '../utils'
+import { stripText, isAddressOrUsername, setTabParams, useWidth } from '../utils'
 import { isValidTaxon, nftThumbnail, nftNameLink } from '../utils/nft'
 import {
   amountFormat,
@@ -29,7 +29,9 @@ export const getServerSideProps = async ({ query, locale }) => {
     taxon,
     period,
     sortCurrency,
-    marketplace
+    marketplace,
+    buyer,
+    seller
   } = query
   //key added to re-render page when the same route is called with different params
   return {
@@ -42,9 +44,11 @@ export const getServerSideProps = async ({ query, locale }) => {
       currencyIssuer: currencyIssuer || "",
       issuerQuery: issuer || "",
       taxonQuery: taxon || "",
-      period: period || "week",
+      periodQuery: period || "week",
       sortCurrencyQuery: sortCurrency || "",
       marketplace: marketplace || "",
+      buyerQuery: buyer || "",
+      sellerQuery: seller || "",
       ...(await serverSideTranslations(locale, ['common'])),
     },
   }
@@ -53,6 +57,7 @@ export const getServerSideProps = async ({ query, locale }) => {
 import SEO from '../components/SEO'
 import Tabs from '../components/Tabs'
 import Tiles from '../components/Tiles'
+import DateAndTimeRange from '../components/UI/DateAndTimeRange'
 
 import LinkIcon from "../public/images/link.svg"
 import DownloadIcon from "../public/images/download.svg"
@@ -65,31 +70,38 @@ export default function NftSales({
   currencyIssuer,
   issuerQuery,
   taxonQuery,
-  period,
+  periodQuery,
   sortCurrencyQuery,
   selectedCurrency,
   marketplace,
-  account
+  account,
+  buyerQuery,
+  sellerQuery
 }) {
-  const { t } = useTranslation();
+  const { t } = useTranslation()
   const router = useRouter()
+  const windowWidth = useWidth()
 
   const [rendered, setRendered] = useState(false)
   const [data, setData] = useState(null);
   const [sales, setSales] = useState([]);
-  const [viewTab, setViewTab] = useState(view);
-  const [loading, setLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
-  const [saleTab, setSaleTab] = useState(sale);
-  const [issuer, setIssuer] = useState(issuerQuery);
-  const [taxon, setTaxon] = useState(taxonQuery);
-  const [issuerInput, setIssuerInput] = useState(issuerQuery);
-  const [taxonInput, setTaxonInput] = useState(taxonQuery);
-  const [total, setTotal] = useState({});
-  const [periodTab, setPeriodTab] = useState(period);
-  const [pageTab, setPageTab] = useState(list);
-  const [hasMore, setHasMore] = useState("first");
+  const [viewTab, setViewTab] = useState(view)
+  const [loading, setLoading] = useState(false)
+  const [errorMessage, setErrorMessage] = useState("")
+  const [saleTab, setSaleTab] = useState(sale)
+  const [issuer, setIssuer] = useState(issuerQuery)
+  const [taxon, setTaxon] = useState(taxonQuery)
+  const [issuerInput, setIssuerInput] = useState(issuerQuery)
+  const [taxonInput, setTaxonInput] = useState(taxonQuery)
+  const [total, setTotal] = useState({})
+  const [period, setPeriod] = useState("")
+  const [pageTab, setPageTab] = useState(list)
+  const [hasMore, setHasMore] = useState("first")
   const [dateAndTimeNow, setDateAndTimeNow] = useState('')
+  const [buyer, setBuyer] = useState(buyerQuery)
+  const [buyerInput, setBuyerInput] = useState(buyerQuery)
+  const [seller, setSeller] = useState(sellerQuery)
+  const [sellerInput, setSellerInput] = useState(sellerQuery)
 
   const sortCurrency = sortCurrencyQuery.toLowerCase() || selectedCurrency
 
@@ -117,20 +129,16 @@ export default function NftSales({
     { value: 'last', label: t("tabs.latest-sales") }
   ]
 
-  const periodTabList = [
-    { value: 'all', label: t("tabs.all-time") },
-    //{ value: 'year', label: t("tabs.year") },
-    { value: 'month', label: t("tabs.month") },
-    { value: 'week', label: t("tabs.week") },
-    { value: 'day', label: t("tabs.day") }
-  ]
-
   const checkApi = async (options) => {
+    if (!period) return
+
     let marker = hasMore;
     let salesData = sales;
     let markerUrlPart = '';
     let periodUrlPart = '';
     let marketplaceUrlPart = '';
+    let buyerUrlPart = '';
+    let sellerUrlPart = '';
 
     if (options?.restart) {
       marker = "first";
@@ -149,16 +157,23 @@ export default function NftSales({
       marketplaceUrlPart = '&marketplace=' + marketplace
     }
 
-    if (periodTab) {
-      periodUrlPart = '&period=' + periodTab
+    if (period) {
+      periodUrlPart = '&period=' + period
     }
 
-    let collectionUrlPart = '';
+    let collectionUrlPart = ''
     if (issuer) {
       collectionUrlPart = '&issuer=' + issuer
       if (taxon) {
         collectionUrlPart += '&taxon=' + taxon
       }
+    }
+
+    if (buyer) {
+      buyerUrlPart += '&buyer=' + buyer
+    }
+    if (seller) {
+      sellerUrlPart += '&seller=' + seller
     }
 
     let loadList = "topSold"
@@ -175,7 +190,7 @@ export default function NftSales({
 
     const response = await axios(
       'v2/nft-sales?list=' + loadList + currencyUrlPart() + '&saleType=' + saleTab + collectionUrlPart + periodUrlPart + markerUrlPart
-      + "&convertCurrencies=" + sortCurrency + "&sortCurrency=" + sortCurrency + marketplaceUrlPart
+      + "&convertCurrencies=" + sortCurrency + "&sortCurrency=" + sortCurrency + marketplaceUrlPart + buyerUrlPart + sellerUrlPart
     ).catch(error => {
       setErrorMessage(t("error." + error.message))
     })
@@ -193,6 +208,14 @@ export default function NftSales({
 
       if (newdata.issuer) {
         setIssuerInput(newdata.issuer)
+      }
+
+      if (newdata.buyer) {
+        setBuyerInput(newdata.buyer)
+      }
+
+      if (newdata.seller) {
+        setSellerInput(newdata.seller)
       }
 
       if (newdata.sales) {
@@ -227,11 +250,11 @@ export default function NftSales({
       checkApi({ restart: true })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [saleTab, issuer, taxon, periodTab, pageTab, sortCurrency])
+  }, [saleTab, issuer, taxon, pageTab, sortCurrency, period, buyer, seller])
 
   useEffect(() => {
-    let queryAddList = [];
-    let queryRemoveList = [];
+    let queryAddList = []
+    let queryRemoveList = []
     if (isAddressOrUsername(data?.issuer)) {
       queryAddList.push({
         name: "issuer",
@@ -240,11 +263,29 @@ export default function NftSales({
       if (isValidTaxon(data?.taxon)) {
         queryAddList.push({ name: "taxon", value: data.taxon })
       } else {
-        queryRemoveList.push("taxon");
+        queryRemoveList.push("taxon")
       }
     } else {
-      queryRemoveList.push("issuer");
-      queryRemoveList.push("taxon");
+      queryRemoveList.push("issuer")
+      queryRemoveList.push("taxon")
+    }
+
+    if (isAddressOrUsername(data?.buyer)) {
+      queryAddList.push({
+        name: "buyer",
+        value: usernameOrAddress(data, 'buyer')
+      })
+    } else {
+      queryRemoveList.push("buyer")
+    }
+
+    if (isAddressOrUsername(data?.seller)) {
+      queryAddList.push({
+        name: "seller",
+        value: usernameOrAddress(data, 'seller')
+      })
+    } else {
+      queryRemoveList.push("seller")
     }
 
     if (!currency || (currency.toLowerCase() !== 'xrp' && !isAddressOrUsername(currencyIssuer))) {
@@ -268,13 +309,6 @@ export default function NftSales({
         paramName: "view"
       },
       {
-        tabList: periodTabList,
-        tab: periodTab,
-        defaultTab: "week",
-        setTab: setPeriodTab,
-        paramName: "period"
-      },
-      {
         tabList: pageTabList,
         tab: pageTab,
         defaultTab: "top",
@@ -287,7 +321,7 @@ export default function NftSales({
     )
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [viewTab, saleTab, data, periodTab, currency, currencyIssuer, pageTab]);
+  }, [viewTab, saleTab, data, currency, currencyIssuer, pageTab, period])
 
   const searchClick = () => {
     if (isAddressOrUsername(issuerInput)) {
@@ -303,6 +337,20 @@ export default function NftSales({
       setIssuer("");
       setTaxonInput("");
       setTaxon("");
+    }
+
+    if (isAddressOrUsername(buyerInput)) {
+      setBuyer(buyerInput);
+    } else {
+      setBuyerInput("");
+      setBuyer("");
+    }
+
+    if (isAddressOrUsername(sellerInput)) {
+      setSeller(sellerInput);
+    } else {
+      setSellerInput("");
+      setSeller("");
     }
   }
 
@@ -359,19 +407,25 @@ export default function NftSales({
         + (saleTab === 'primary' ? t("tabs.primary-sales") : "")
         + " " + (list === "top" ? t("tabs.top-sales") : t("tabs.latest-sales"))
         + (issuer ? (" " + issuer) : issuerQuery)
+        + (buyer ? (" " + t("tabs.buyer") + ": " + buyer) : buyerQuery)
+        + (seller ? (" " + t("tabs.seller") + ": " + seller) : sellerQuery)
         + (taxon ? (" " + taxon) : taxonQuery)
         + (currency ? (" " + currency) : "")
         + (currencyIssuer ? (" " + currencyIssuer) : "")
         + (viewTab === "list" ? (" " + t("tabs.list")) : "")
-        + (periodTab ? (" (" + (periodTab === 'all' ? t("tabs.all-time") : t("tabs." + periodTab)) + ")") : "")
+        + (period ? (" " + period) : "")
       }
     />
     <div className="content-text" style={{ minHeight: "480px" }}>
       <h1 className="center">{t("nft-sales.header")}</h1>
-      <p className='center'><Link href={"/nft-explorer?view=" + viewTab + issuerTaxonUrlPart}>{t("nft-explorer.header")}</Link></p>
+      <p className='center'>
+        <Link href={"/nft-explorer?view=" + viewTab + issuerTaxonUrlPart}>{t("nft-explorer.header")}</Link>
+      </p>
       <div className='center'>
         <span className='halv'>
-          <span className='input-title'>{t("table.issuer")} {userOrServiceLink(data, 'issuer')}</span>
+          <span className='input-title'>
+            {t("table.issuer")} {userOrServiceLink(data, 'issuer')}
+          </span>
           <input
             placeholder={t("nfts.search-by-issuer")}
             value={issuerInput}
@@ -383,7 +437,9 @@ export default function NftSales({
           />
         </span>
         <span className='halv'>
-          <span className='input-title'>{t("table.taxon")}</span>
+          <span className='input-title'>
+            {t("table.taxon")}
+          </span>
           <input
             placeholder={t("nfts.search-by-taxon")}
             value={taxonInput}
@@ -396,13 +452,59 @@ export default function NftSales({
           />
         </span>
       </div>
+
+      <div className='center'>
+        <span className='halv'>
+          <span className='input-title'>
+            {t("table.buyer")} {userOrServiceLink(data, 'buyer')}
+          </span>
+          <input
+            placeholder={t("nfts.search-by-buyer")}
+            value={buyerInput}
+            onChange={(e) => { setBuyerInput(e.target.value) }}
+            onKeyPress={enterPress}
+            className="input-text"
+            spellCheck="false"
+            maxLength="35"
+          />
+        </span>
+        <span className='halv'>
+          <span className='input-title'>
+            {t("table.seller")} {userOrServiceLink(data, 'seller')}
+          </span>
+          <input
+            placeholder={t("nfts.search-by-seller")}
+            value={sellerInput}
+            onChange={(e) => { setSellerInput(e.target.value) }}
+            onKeyPress={enterPress}
+            className="input-text"
+            spellCheck="false"
+            maxLength="35"
+          />
+        </span>
+      </div>
+
       <p className="center" style={{ marginBottom: "20px" }}>
         <input type="button" className="button-action" value={t("button.search")} onClick={searchClick} />
       </p>
       <div className='tabs-inline'>
+
+        {windowWidth < 720 && <br />}
+        {t("table.period")}
+        {windowWidth < 720 && <br />}
+
+        <DateAndTimeRange
+          period={period}
+          setPeriod={setPeriod}
+          defaultPeriod={periodQuery}
+          minDate="nft"
+          tabs={true}
+        />
+
+        <br />
+
         <Tabs tabList={pageTabList} tab={pageTab} setTab={setPageTab} name="page" />
         <Tabs tabList={viewTabList} tab={viewTab} setTab={setViewTab} name="view" />
-        <Tabs tabList={periodTabList} tab={periodTab} setTab={setPeriodTab} name="period" />
         <Tabs tabList={saleTabList} tab={saleTab} setTab={setSaleTab} name="sale" />
         {rendered &&
           <CSVLink
@@ -417,6 +519,7 @@ export default function NftSales({
           </CSVLink>
         }
       </div>
+
       <InfiniteScroll
         dataLength={sales.length}
         next={checkApi}

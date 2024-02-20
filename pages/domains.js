@@ -135,7 +135,7 @@ export default function Domains({ setSignRequest }) {
                 }
               })}
             >
-              <Image src="/images/xumm.png" className='xumm-logo' alt="xumm" height={24} width={24} />
+              <Image src="/images/xumm.png" className='xumm-logo' alt="xaman" height={24} width={24} />
               {t("button.set-domain", { ns: 'domains' })}
             </button>
           </p>

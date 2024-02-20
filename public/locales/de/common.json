@@ -1,5 +1,8 @@
 {
   "menu": {
+    "services": {
+      "nft-mint": "NFT minten"
+    },
     "personal": {
       "personal": "Private",
       "search-on-ledgerName": "Auf {{ledgerName}} suchen"
@@ -28,6 +31,7 @@
     },
     "xrpl": {
       "governance": "Governance",
+      "activations": "Activated accounts (chart)",
       "distribution": "{{nativeCurrency}} Verteilung",
       "last-ledger-information": "Aktuellste Ledger Informationen",
       "last-ledger-transactions": "Aktuellste Ledger Transaktionen",
@@ -42,12 +46,13 @@
       "account-generation": "Wallet erstellen",
       "faucet": "Wasserhahn",
       "api": "API Dokumentation",
-      "api-admin": "API account (Partner portal)"
+      "api-admin": "API Konto (Partner Portal)"
     },
     "legal": "Rechtliches",
     "disclaimer": "Haftungsausschluss",
     "privacy-policy": "Datenschutz",
     "terms-and-conditions": "AGB",
+    "terms-api-bots": "API & Bots Nutzungsbedingungen",
     "customer-support": "Kundensupport",
     "press": "Presse",
     "merch": "Merch Shop",
@@ -106,6 +111,8 @@
     "not-available": "Nicht verfügbar",
     "confirm": {
       "set-domain": "Eine Domain definieren",
+      "nft-create-transfer-offer-header": "NFT Transfer",
+      "nft-transfer": "Ich biete diesen NFT KOSTENLOS für die Zielwallet an, <1> die Zielwallet muss den NFT Transfer akzeptieren</1>.",
       "nft-accept-sell-offer-header": "NFT Kauf",
       "nft-accept-buy-offer-header": "NFT verkaufen",
       "nft-create-sell-offer-header": "Liste zum Verkauf",
@@ -264,13 +271,16 @@
     "copy-my-address": "Meine Adresse kopieren",
     "sign": "Signieren",
     "nft": {
+      "add-another-sell-offer": "Weiteres Verkaufsangebot hinzufügen",
+      "transfer": "NFT Transfer",
+      "update-sell-offer": "Verkaufsangebot aktualisieren",
       "cancel-sell-offer-for": "Verkaufsangebot für {{amount}} abbrechen",
       "cancel-buy-offer-for": "Kaufangebot für {{amount}} abbrechen",
       "cancel-transfer": "NFT Transfer abbrechen",
       "accept-transfer": "NFT Transfer akzeptieren",
       "buy-for-amount-on": "Für {{amount}} auf {{service}} kaufen",
       "buy-for-amount": "Kaufen für {{amount}}",
-      "sell-for-amount": "Verkaufen füror {{amount}}",
+      "sell-for-amount": "Verkaufen für {{amount}}",
       "make-offer": "Angebot machen",
       "list-for-sale": "Zum Verkauf anbieten",
       "burn": "NFT vernichten"
@@ -290,6 +300,9 @@
   },
   "form": {
     "error": {
+      "price-empty": "Bitte geben Sie einen Betrag ein.",
+      "address-empty": "Bitte geben Sie eine Adresse ein.",
+      "address-invalid": "Bitte geben Sie eine gültige Adresse ein.",
       "domain-empty": "Bitte geben Sie die Domain ein.",
       "domain-invalid": "Bitte geben Sie eine gültige Domain ein.",
       "description-empty": "Bitte geben Sie eine Beschreibung ein",
@@ -346,7 +359,10 @@
     "day": "Für die letzten 24 Stunden"
   },
   "table": {
-    "warning": "Warning",
+    "mints": "Mints",
+    "period": "Periode",
+    "mint-period": "Mint Periode",
+    "warning": "Warnung",
     "sequence": "Sequenz",
     "version": "Version",
     "domain": "Domain",
@@ -423,6 +439,7 @@
     "marketplace": "Marktplatz",
     "public-key": "Public Key",
     "text": {
+      "private-offer": "Private offer",
       "show-extended-statistics": "Erweiterte Statistiken anzeigen",
       "include-without-media-data": "NFTs ohne Mediendaten einbeziehen",
       "include-burned-nfts": "Vernichtete NFTs einbeziehen",
@@ -468,6 +485,7 @@
     "month": "30 Tage",
     "week": "7 Tage",
     "day": "24 Stunden",
+    "hour": "1 Stunde",
     "currencies": "Währungen",
     "issuers": "Emittenten",
     "marketplaces": "Marktplätze",
@@ -487,8 +505,8 @@
     "onSale": "Zum Verkauf für XRP",
     "all-tokens": "Alle Tokens",
     "xrp-only": "nur XRP",
-    "mintedNew": "Neuste Minted",
-    "mintedOld": "Älteste Minted"
+    "mintedNew": "Neuste",
+    "mintedOld": "Älteste"
   },
   "xumm": {
     "new-qr": "Neuen QR-Code erhalten"
@@ -501,7 +519,8 @@
       "nft": "NFT",
       "nfts": "NFTs",
       "nft-offer": "NFT Angebot",
-      "nft-offers": "NFT Angebote"
+      "nft-offers": "NFT Angebote",
+      "nft-volumes": "NFT sales volumes"
     },
     "enter-address": "Geben Sie eine XRPL Adresse oder einen Benutzernamen ein",
     "searching-tx-nft-nftoffer": "Suchen nach Trans / NFT ID / NFT Angebot",
@@ -539,15 +558,17 @@
   },
   "nfts": {
     "header": "NFTs des Kontos",
-    "desc": "Hier können Sie nach NFTs suchen, die XRPL Adresse eingeben, um zu sehen, welche NFTs es besitzt.",
+    "desc": "Hier können Sie nach NFTs suchen, die Adresse eingeben, um zu sehen, welche NFTs es besitzt.",
     "search-by-name": "Suche nach NFT Name",
     "search-by-issuer": "Suche nach NFT Emittent",
     "search-by-taxon": "Suche nach NFT Taxon",
     "search-by-owner": "Suche nach NFT Besitzer",
+    "search-by-buyer": "Suche nach NFT Käufer",
+    "search-by-seller": "Suche nach NFT Verkäufer",
     "no-nfts": "Wir konnten keine NFTs mit Ihren Suchparametern finden.",
     "on-service": "auf {{service}}",
     "amount-on-service": "{{amount}} auf {{service}}",
-    "load-more": "Wir suchen nach Daten auf dem XRP Ledger... bitte warten...",
+    "load-more": "Wir suchen nach Daten auf dem Ledger... bitte warten...",
     "end": "Hier sind alle NFTs die wir finden konnten."
   },
   "nft-distribution": {
@@ -555,21 +576,6 @@
     "desc": "Hier können Sie die Verteilung von NFTs eines bestimmten NFT Emittenten überprüfen. Geben Sie die XRPL Adresse des NFT Emittenten oder einen Benutzernamen ein und klicken Sie auf die Suchschaltfläche.",
     "no-nfts": "Wir konnten keine von dieser Adresse emittierten NFTs finden",
     "text0": "{{users}} Konten besitzen {{nfts}} NFTs"
-  },
-  "nft-volumes": {
-    "header": "NFT Verkaufsvolumen",
-    "text0": "XRPL hatte {{allSales}} {{currency}} NFT {{saleType}} Verkäufe für {{allVolume}}.",
-    "brokers": {
-      "desc": "Dies ist die Liste der NFT Vermittlerkonten. Hier finden Sie zahlreiche Angebots-Matching-Bots. Marktplätze verwenden gemischte Handelsmodelle, hier können Sie nur die Volumen durch das Vermittler-Modell sehen.",
-      "no-broker": "Kein Vermittler",
-      "text0": "XRPL hatte {{allSales}} <3>{{currency}}</3> NFT {{saleType}} Verkäufe für {{allVolume}}, davon <9>{{brokerSales}}</9> {{percentBrokerSales}} der Geschäfte für <13>{{brokerVolume}}</13> {{percentBrokerVolume}} erfolgten über das Vermittler-Modell."
-    },
-    "marketplaces": {
-      "desc": "Dies ist die Liste der NFT Marktplätze auf XRPL. In den Volumen sind hier die Primärverkäufe (Mints) nicht enthalten, die innerhalb von 2 Transaktionen (Zahlung und NFT Transfer) getätigt wurden."
-    },
-    "issuers": {
-      "desc": "Dies ist die Liste der NFT Emittenten auf XRPL. Um die Volumen der NFT Kollektionen nach Emittenten und Taxon anzuzeigen, klicken Sie auf den Link in der Spalte Volumen"
-    }
   },
   "nft-sales": {
     "header": "NFT Verkäufe",
