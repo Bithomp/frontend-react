@@ -692,7 +692,7 @@ export default function NftVolumes({
                           {listTab === 'issuers' && issuersExtended && <td className='right hide-on-mobile'>{shortNiceNumber(volume.statistics?.buyers, 0)}</td>}
                           {(listTab === 'currencies' || (currency && currencyIssuer) || currencyTab === 'xrp') &&
                             <td className='right'>
-                              {amountFormat(volume.volumes[0].amount, { maxFractionDigits: 2 })}
+                              {amountFormat(volume.volumes[0]?.amount, { maxFractionDigits: 2 })}
                             </td>
                           }
                           <td className='right'>
