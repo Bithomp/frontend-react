@@ -47,14 +47,27 @@ export default function DateAndTimeRange({ setPeriod, minDate, tabs, defaultPeri
     }
   }
 
-  const periodTabs = [
+  if (!minDate) {
+    if (network === "xahau") {
+      minDate = new Date("2023-10-30T12:21:00.000Z") // ledger 2
+    } else {
+      minDate = new Date("2013-01-01T03:21:10.000Z") // ledger 32570
+    }
+  }
+
+  let periodTabs = [
     { value: "hour", label: t("tabs.hour") },
     { value: "day", label: t("tabs.day") },
     { value: "week", label: t("tabs.week") },
     { value: "month", label: t("tabs.month") },
-    { value: "year", label: t("tabs.year") },
-    { value: "all", label: t("tabs.all-time") }
+    { value: "year", label: t("tabs.year") }
   ]
+
+  // if minDate was less than a year ago, do not show tab "all"
+  //usefull for xahau, when there is less data than for a year, otherwise the all stats looks weird
+  if (minDate < yearAgo) {
+    periodTabs.push({ value: "all", label: t("tabs.all-time") })
+  }
 
   useEffect(() => {
     setReady(true)
@@ -138,10 +151,6 @@ export default function DateAndTimeRange({ setPeriod, minDate, tabs, defaultPeri
       registerLocale(lang, languageData)
     }
     setDefaultLocale(lang)
-  }
-
-  if (!minDate) {
-    minDate = new Date("2013-01-01T03:21:10.000Z") // ledger 32570
   }
 
   const startOnChange = date => {

@@ -2,7 +2,7 @@ import { useTranslation } from 'next-i18next'
 import dynamic from 'next/dynamic'
 
 import { useTheme } from "./Layout/ThemeContext"
-import { shortNiceNumber } from '../utils/format'
+import { niceNumber } from '../utils/format'
 
 const Chart = dynamic(() => import('react-apexcharts'), { ssr: false })
 
@@ -57,7 +57,7 @@ export default function PriceChart({ data }) {
     yaxis: {
       labels: {
         formatter: (val) => {
-          return shortNiceNumber(val, 0, 0)
+          return niceNumber(val, 0, 0)
         }
       },
       tickAmount: 5,
@@ -149,7 +149,7 @@ export default function PriceChart({ data }) {
         }
       },
       y: {
-        formatter: (val) => shortNiceNumber(val, 0, 0)
+        formatter: (val) => niceNumber(val, 0, 0)
       },
       theme,
     },
