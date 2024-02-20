@@ -31,7 +31,7 @@
     },
     "xrpl": {
       "governance": "Правление",
-      "activations": "Activated accounts (chart)",
+      "activations": "Активированные адреса (график)",
       "distribution": "ТОП адресов по балансу",
       "last-ledger-information": "Информация с последнего леджера",
       "last-ledger-transactions": "Транзакции последнего леджера",
