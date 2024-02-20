@@ -23,7 +23,7 @@ export default function TermsAndConditions() {
       />
       <div className="content-text">
         <h1>Terms and Conditions</h1>
-        <p>Last updated: February 16, 2023</p>
+        <p>Last updated: February 9, 2024</p>
         <p>Please read these terms and conditions carefully before using Our Service.</p>
         <h1>Interpretation and Definitions</h1>
         <h2>Interpretation</h2>
@@ -93,6 +93,44 @@ export default function TermsAndConditions() {
         <p>Our Service may contain links to third-party web sites or services that are not owned or controlled by the Company.</p>
         <p>The Company has no control over, and assumes no responsibility for, the content, privacy policies, or practices of any third party web sites or services. You further acknowledge and agree that the Company shall not be responsible or liable, directly or indirectly, for any damage or loss caused or alleged to be caused by or in connection with the use of or reliance on any such content, goods or services available on or through any such web sites or services.</p>
         <p>We strongly advise You to read the terms and conditions and privacy policies of any third-party web sites or services that You visit.</p>
+        <h1>Use of Cloudflare Services</h1>
+        <p>By using our website, you acknowledge and agree that we utilize the services of Cloudflare, Inc. ("Cloudflare") to enhance the performance and security of our website.</p>
+        <p>You agree to comply with Cloudflare's Terms of Service, which can be found on their website at Cloudflare Terms of Service.</p>
+        <p><strong> Delivery Network (CDN):</strong></p>
+        <p>Our website uses Cloudflare's Content Delivery Network (CDN) to optimize the delivery of web content to users around the world. This may involve the caching and distribution of static content through Cloudflare servers.</p>
+        <p><strong>Security and DDoS Protection:</strong></p>
+        <p>Cloudflare provides security services to protect our website from potential threats, including Distributed Denial of Service (DDoS) attacks. You agree to cooperate with Cloudflare's security measures.</p>
+        <p><strong>Logging and Analytics:</strong></p>
+        <p>Cloudflare may collect certain information as part of its services, such as IP addresses, access times, and referring URLs. This information is subject to Cloudflare's Privacy Policy, which can be found on their website at <a href='https://www.cloudflare.com/privacypolicy/'>Cloudflare Privacy Policy</a>.</p>
+        <p><strong>Limitation of Liability:</strong></p>
+        <p>We are not responsible for any issues or disruptions arising from the use of Cloudflare's services. Any claims or disputes related to Cloudflare's services should be directed to Cloudflare in accordance with their Terms of Service.</p>
+        <h1>Use of Direct Registration System</h1>
+        <p><strong>User Registration:</strong></p>
+        <p>To access certain features and services on our website, users may be required to complete a registration process. By registering, you agree to provide accurate and complete information.</p>
+        <p><strong>Direct Registration System (DRS):</strong></p>
+        <p>Our website employs a Direct Registration System (DRS) to simplify the user registration process. DRS may utilize third-party authentication services or other methods to facilitate a secure and efficient registration experience.</p>
+        <p><strong>Account Security:</strong></p>
+        <p>Users are responsible for maintaining the confidentiality of their account credentials. Any activities that occur under user accounts are their responsibility.</p>
+        <p><strong>User Obligations:</strong></p>
+        <p>Registered users agree to comply with our Terms and Conditions and any additional terms or guidelines applicable to specific services or features. Failure to comply may result in the suspension or termination of user accounts.</p>
+        <h1>Use of Google Analytics 4</h1>
+        <p><strong>Website Analytics:</strong></p>
+        <p>Our website uses Google Analytics 4, a web analytics service provided by Google, Inc. ("Google"). Google Analytics uses cookies to help analyze how users interact with our website.</p>
+        <p><strong>User Consent:</strong></p>
+        <p>By using our website, you consent to the processing of data about you by Google in the manner and for the purposes set out in our Privacy Policy.</p>
+        <p><strong>Opt-Out Option:</strong></p>
+        <p>You can opt-out of Google Analytics by adjusting your browser settings or using the Google Analytics Opt-Out Browser Add-on, available at <a href='https://support.google.com/analytics/answer/181881?hl=en/'>Google Analytics Opt-Out Browser Add-on</a>. </p>
+        <p><strong>Google Analytics Terms:</strong></p>
+        <p>Google Analytics is subject to Google's Terms of Service, which can be found on their website at Google Terms of Service.</p>
+        <h1>Use of PayPal</h1>
+        <p><strong>Payment Services:</strong></p>
+        <p>Our website utilizes PayPal, a third-party payment processing service, to facilitate secure and convenient online transactions.</p>
+        <p><strong>User Consent:</strong></p>
+        <p>By making a purchase on our website, you acknowledge and agree to the processing of your payment information by PayPal in accordance with their <a href='https://www.paypal.com/us/legalhub/useragreement-full/'>User Agreement</a>.</p>
+        <p><strong>Payment Authorization:</strong></p>
+        <p>When you choose to make a payment, you authorize us to transmit your payment information to PayPal for processing.</p>
+        <p><strong>PayPal User Agreement:</strong></p>
+        <p>PayPal transactions are subject to the PayPal User Agreement, available at PayPal User Agreement. Please review this agreement to understand the terms and conditions governing your use of PayPal for transactions on our website.</p>
         <h1>Termination</h1>
         <p>We may terminate or suspend Your access immediately, without prior notice or liability, for any reason whatsoever, including without limitation if You breach these Terms and Conditions.</p>
         <p>Upon termination, Your right to use the Service will cease immediately.</p>
