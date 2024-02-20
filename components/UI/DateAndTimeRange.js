@@ -49,9 +49,11 @@ export default function DateAndTimeRange({ setPeriod, minDate, tabs, defaultPeri
 
   if (!minDate) {
     if (network === "xahau") {
-      minDate = new Date("2023-10-30T12:21:00.000Z") // ledger 2
+      minDate = new Date("2023-10-30T12:21:00.000Z") // ledger 2 on xahau
+    } else if (network === "xahau-testnet") {
+      minDate = new Date("2023-01-27T13:07:10.000Z") // ledger 3 on xahau-testnet
     } else {
-      minDate = new Date("2013-01-01T03:21:10.000Z") // ledger 32570
+      minDate = new Date("2013-01-01T03:21:10.000Z") // ledger 32570 on mainnet
     }
   }
 
