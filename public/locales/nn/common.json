@@ -31,6 +31,7 @@
     },
     "xrpl": {
       "governance": "Governance",
+      "activations": "Activated accounts (chart)",
       "distribution": "{{nativeCurrency}} distribution",
       "last-ledger-information": "Siste ledger informasjon",
       "last-ledger-transactions": "Siste ledger transaksjoner",

@@ -31,6 +31,7 @@
     },
     "xrpl": {
       "governance": "Uprava",
+      "activations": "Activated accounts (chart)",
       "distribution": "{{nativeCurrency}} distribution",
       "last-ledger-information": "Zadnje ledger informacije",
       "last-ledger-transactions": "Zadnje ledger transakcije",

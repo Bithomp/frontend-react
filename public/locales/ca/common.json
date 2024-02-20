@@ -31,6 +31,7 @@
     },
     "xrpl": {
       "governance": "Governança",
+      "activations": "Activated accounts (chart)",
       "distribution": "{{nativeCurrency}} distribució",
       "last-ledger-information": "Informació de l'últim Ledger",
       "last-ledger-transactions": "Transaccions de l'últim Ledger",
