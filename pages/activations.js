@@ -1,4 +1,4 @@
-import { useTranslation } from 'next-i18next'
+import { useTranslation, Trans } from 'next-i18next'
 import { useState, useEffect } from 'react'
 import axios from 'axios'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
@@ -18,6 +18,7 @@ import DateAndTimeRange from '../components/UI/DateAndTimeRange'
 import SimpleChart from '../components/SimpleChart'
 
 import { chartSpan } from '../utils'
+import { niceNumber } from '../utils/format'
 
 export default function Activations({ periodQuery }) {
   const { t } = useTranslation(['common', 'activations'])
@@ -25,6 +26,7 @@ export default function Activations({ periodQuery }) {
   const [period, setPeriod] = useState(periodQuery)
   const [loadingChart, setLoadingChart] = useState(false)
   const [chartData, setChartData] = useState([])
+  const [total, setTotal] = useState(0)
 
   const controller = new AbortController()
 
@@ -46,6 +48,10 @@ export default function Activations({ periodQuery }) {
       const newChartData = chartDataResponse.data.chart.map((item) => {
         return [item.time, item.activations]
       })
+      const totalAccounts = chartDataResponse.data.chart.reduce(function (a, b) {
+        return a + b.activations
+      }, 0)
+      setTotal(niceNumber(totalAccounts))
       setChartData(newChartData)
     }
   }
@@ -88,6 +94,9 @@ export default function Activations({ periodQuery }) {
           </>
           :
           <>
+            <Trans i18nKey="account-activations-for-that-period" ns="activations" count={total}>
+              For that period <b>{{ count: total }}</b> accounts were activated.
+            </Trans>
             {chartData.length > 0 &&
               <div style={{ maxWidth: "600px" }}>
                 <SimpleChart data={chartData} />
@@ -96,6 +105,6 @@ export default function Activations({ periodQuery }) {
           </>
         }
       </center>
-    </div>
+    </div >
   </>
 }
