@@ -359,7 +359,12 @@ export const nftImageStyle = (nft, style = {}) => {
   const imageUrl = nftUrl(nft, 'image');
   if (imageUrl) {
 
-    if (nft.metadata?.name?.toLowerCase().includes("nude")) {
+    if (nft.metadata?.name?.toLowerCase().includes("nude") ||
+      nft.metadata?.title?.toLowerCase().includes("nude") ||
+      nft.metadata?.name?.toLowerCase().includes("sexy") ||
+      nft.metadata?.name?.toLowerCase().includes("naked") ||
+      nft.metadata?.is_explicit
+    ) {
       style.backgroundImage = "url('/images/18plus.jpg')";
     } else {
       style.backgroundImage = "url('" + imageUrl + "')";
