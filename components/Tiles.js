@@ -1,10 +1,10 @@
 import { useTranslation } from 'next-i18next'
-import { useState } from 'react'
 import Link from 'next/link'
 
 import { xahauNetwork } from '../utils'
-import { nftImageStyle, nftUrl, bestNftOffer, mpUrl, nftName, partnerMarketplaces } from '../utils/nft'
+import { bestNftOffer, mpUrl, nftName, partnerMarketplaces } from '../utils/nft'
 import { amountFormat, timeOrDate, convertedAmount } from '../utils/format'
+import NftImageOrVideo from './NftImageOrVideo'
 
 const addressName = (details, name) => {
   if (!details) return ""
@@ -24,8 +24,6 @@ const addressName = (details, name) => {
 export default function Tiles({ nftList, type = 'name', convertCurrency, account }) {
   const { t } = useTranslation();
 
-  const [loaded, setLoaded] = useState([]);
-  const [errored, setErrored] = useState([]);
   /*
     {
       "issuer": "r9spUPhPBfB6kQeF6vPhwmtFwRhBh2JUCG",
@@ -42,52 +40,6 @@ export default function Tiles({ nftList, type = 'name', convertCurrency, account
       }
     }
   */
-
-  const loadingImage = nft => {
-    const nftId = nft.nftokenID || nft.uriTokenID
-    const nftImageUrl = nftUrl(nft, 'image');
-    if (errored.includes(nftId)) {
-      return <div className="img-status">{t("general.load-failed")}</div>;
-    } else if (!loaded.includes(nftId) && !nftImageUrl?.includes('data:image')) {
-      return <div className="img-status">{t("general.loading")}</div>;
-    }
-  }
-
-  const playMovie = (e) => {
-    e.target.querySelector('video').play();
-  }
-
-  const imageOrVideo = (nft) => {
-    if (!nft) return ""
-    let imageStyle = nftImageStyle(nft);
-
-    if (Object.keys(imageStyle).length === 0) {
-      const nftVideoUrl = nftUrl(nft, 'video');
-      if (nftVideoUrl) {
-        return <div className='tile-content' onMouseOver={playMovie}>
-          <video playsInline muted preload="metadata">
-            <source src={nftVideoUrl} type="video/mp4" />
-          </video>
-        </div>;
-      } else {
-        return <div className='tile-content background-secondary'></div>;
-      }
-    } else {
-      const imageUri = nftUrl(nft, 'image');
-      //data:image show as image right away, as we don't need to wait for it to load
-      return <>
-        <div className='tile-content' style={imageStyle}></div>
-        <img
-          bag="sdfsdf"
-          style={imageUri?.includes('data:image') ? imageStyle : { display: 'none' }}
-          src={imageUri}
-          onLoad={() => { if (imageUri.slice(0, 10) !== 'data:image') { setLoaded([...loaded, (nft.nftokenID || nft.uriTokenID)]) } }}
-          onError={() => setErrored([...errored, (nft.nftokenID || nft.uriTokenID)])}
-          alt={nftName(nft)}
-        />
-      </>;
-    }
-  }
 
   const saleData = sellOffers => {
     if (!sellOffers) return ""
@@ -116,8 +68,7 @@ export default function Tiles({ nftList, type = 'name', convertCurrency, account
             <li className="hex" key={i}>
               <div className="hexIn">
                 <Link href={"/nft/" + (nft.nftokenID || nft.uriTokenID)} className="hexLink">
-                  {loadingImage(nft)}
-                  {imageOrVideo(nft)}
+                  <NftImageOrVideo nft={nft} />
                   <div className="index">{i + 1}</div>
                   <div className='title'></div>
 
@@ -153,8 +104,7 @@ export default function Tiles({ nftList, type = 'name', convertCurrency, account
             <li className="hex" key={i}>
               <div className="hexIn">
                 <Link href={"/nft/" + (nft.nftoken.nftokenID || nft.nftoken.uriTokenID)} className="hexLink" >
-                  {loadingImage(nft.nftoken)}
-                  {imageOrVideo(nft.nftoken)}
+                  <NftImageOrVideo nft={nft.nftoken} />
                   <div className="index">{i + 1}</div>
                   <div className='title'></div>
                   <h1>

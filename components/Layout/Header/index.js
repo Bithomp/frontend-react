@@ -114,7 +114,7 @@ export default function Header({ setSignRequest, account, signOut, selectedCurre
               }
 
               {displayName ?
-                <Link href={"/nfts/" + address} legacyBehavior>{t("signin.actions.my-nfts")}</Link>
+                <Link href={"/nfts/" + address} legacyBehavior>{t("menu.nft.nfts")}</Link>
                 :
                 <Link href="/nfts">{t("menu.nft.nfts")}</Link>
               }
@@ -136,6 +136,7 @@ export default function Header({ setSignRequest, account, signOut, selectedCurre
             <div className="menu-dropdown-button">{ledgerName}</div>
             <div className="menu-dropdown-content">
               {xahauNetwork && <Link href="/governance">{t("menu.xrpl.governance")}</Link>}
+              <Link href="/activations">{t("menu.xrpl.activations")}</Link>
               <Link href="/distribution">{t("menu.xrpl.distribution", { nativeCurrency })}</Link>
               <Link href="/last-ledger-information">{t("menu.xrpl.last-ledger-information")}</Link>
               <Link href="/ledger">{t("menu.xrpl.last-ledger-transactions")}</Link>
@@ -375,6 +376,13 @@ export default function Header({ setSignRequest, account, signOut, selectedCurre
               {t("menu.xrpl.governance")}
             </Link>
           }
+          <Link
+            href="/activations"
+            className="mobile-menu-item"
+            onClick={mobileMenuToggle}
+          >
+            {t("menu.xrpl.activations")}
+          </Link>
           <Link
             href="/distribution"
             className="mobile-menu-item"

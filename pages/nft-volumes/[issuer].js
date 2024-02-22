@@ -9,13 +9,13 @@ export const getServerSideProps = async ({ query, locale }) => {
   const { period, sale, currency, currencyIssuer, issuer, sortCurrency } = query
   return {
     props: {
-      periodNameQuery: period || "week",
+      periodQuery: period || "week",
       sale: sale || "all",
       issuer: issuer || "",
       currency: currency || "",
       currencyIssuer: currencyIssuer || "",
       sortCurrency: sortCurrency || "",
-      ...(await serverSideTranslations(locale, ['common'])),
+      ...(await serverSideTranslations(locale, ['common', 'nft-volumes'])),
     },
   }
 }
@@ -24,8 +24,9 @@ import SEO from '../../components/SEO'
 import Tabs from '../../components/Tabs'
 import SearchBlock from '../../components/Layout/SearchBlock'
 import DateAndTimeRange from '../../components/UI/DateAndTimeRange'
+import SimpleChart from '../../components/SimpleChart'
 
-import { setTabParams, stripText, isAddressOrUsername, useWidth } from '../../utils'
+import { setTabParams, stripText, isAddressOrUsername, useWidth, chartSpan } from '../../utils'
 import {
   niceNumber,
   shortNiceNumber,
@@ -35,7 +36,7 @@ import {
 
 import LinkIcon from "../../public/images/link.svg"
 
-export default function NftVolumes({ periodNameQuery, sale, currency, currencyIssuer, issuer, selectedCurrency, sortCurrency }) {
+export default function NftVolumes({ periodQuery, sale, currency, currencyIssuer, issuer, selectedCurrency, sortCurrency }) {
   const { t } = useTranslation()
   const router = useRouter()
   const { isReady } = router
@@ -46,9 +47,12 @@ export default function NftVolumes({ periodNameQuery, sale, currency, currencyIs
   const [userData, setUserData] = useState({});
   const [loading, setLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState("")
-  const [period, setPeriod] = useState(period)
+  const [period, setPeriod] = useState(periodQuery)
   const [saleTab, setSaleTab] = useState(sale)
   const [sortConfig, setSortConfig] = useState({})
+  const [chartIssuers, setChartIssuers] = useState([])
+  const [chartVolumes, setChartVolumes] = useState([])
+  const [loadingChart, setLoadingChart] = useState(false)
 
   const convertCurrency = sortCurrency || selectedCurrency
 
@@ -65,11 +69,40 @@ export default function NftVolumes({ periodNameQuery, sale, currency, currencyIs
 
     let apiUrl = 'v2/nft-volumes-extended?issuer=' + issuer + '&list=taxons&convertCurrencies=' + convertCurrency + '&sortCurrency=' + convertCurrency + '&statistics=true'
 
+    let currencyUrlPart = ""
     if (currency && currencyIssuer) {
-      apiUrl += '&currency=' + stripText(currency) + '&currencyIssuer=' + stripText(currencyIssuer)
+      currencyUrlPart = '&currency=' + stripText(currency) + '&currencyIssuer=' + stripText(currencyIssuer)
     } else if (currency.toLowerCase() === 'xrp') {
-      apiUrl += '&currency=xrp';
+      currencyUrlPart = '&currency=xrp';
     }
+
+    apiUrl += currencyUrlPart
+
+    // get the chart data
+    setLoadingChart(true)
+    setChartIssuers([])
+    setChartVolumes([])
+    const chartDataResponse = await axios.get(
+      'v2/nft-sales-chart?span=' + chartSpan(period) + '&period=' + period + '&saleType=' + saleTab + currencyUrlPart + '&convertCurrencies=' + convertCurrency + '&issuer=' + issuer,
+    ).catch(error => {
+      if (error && error.message !== "canceled") {
+        console.log(error)
+      }
+      setLoadingChart(false)
+    })
+    setLoadingChart(false)
+
+    if (chartDataResponse?.data?.chart?.length > 0) {
+      const issuersData = chartDataResponse.data.chart.map((item) => {
+        return [item.time, item.sales]
+      })
+      const volumesData = chartDataResponse.data.chart.map((item) => {
+        return [item.time, item.amountInConvertCurrencies[convertCurrency]]
+      })
+      setChartIssuers(issuersData)
+      setChartVolumes(volumesData)
+    }
+    // end getting the chart data
 
     setLoading(true)
     setRawData({})
@@ -81,7 +114,7 @@ export default function NftVolumes({ periodNameQuery, sale, currency, currencyIs
         setErrorMessage(t("error." + error.message))
         setLoading(false) //keep here for fast tab clickers
       }
-    });
+    })
 
     const newdata = response?.data;
     if (newdata) {
@@ -187,7 +220,7 @@ export default function NftVolumes({ periodNameQuery, sale, currency, currencyIs
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isReady, saleTab, period, currency, currencyIssuer, convertCurrency]);
+  }, [isReady, saleTab, period, currency, currencyIssuer, convertCurrency, issuer]);
 
   const urlParams = (volume) => {
     let urlPart = "?period=" + period + "&sale=" + saleTab
@@ -224,7 +257,7 @@ export default function NftVolumes({ periodNameQuery, sale, currency, currencyIs
   return <>
     <SEO
       title={
-        t("nft-volumes.header") + " " + issuer + ' '
+        t("header", { ns: 'nft-volumes' }) + " " + issuer + ' '
         + (saleTab === 'secondary' ? t("tabs.secondary-sales") : "")
         + (saleTab === 'primary' ? t("tabs.primary-sales") : "")
         + (currency ? (" " + currency) : "")
@@ -247,7 +280,7 @@ export default function NftVolumes({ periodNameQuery, sale, currency, currencyIs
         <DateAndTimeRange
           period={period}
           setPeriod={setPeriod}
-          defaultPeriodName={periodNameQuery}
+          defaultPeriod={periodQuery}
           minDate="nft"
           tabs={true}
         />
@@ -256,6 +289,34 @@ export default function NftVolumes({ periodNameQuery, sale, currency, currencyIs
 
         <Tabs tabList={saleTabList} tab={saleTab} setTab={setSaleTab} name="sale" />
       </div>
+
+      <center>
+        {loadingChart ?
+          <>
+            <br />
+            <span className="waiting"></span>
+            <br />{t("general.loading")}<br />
+            <br />
+          </>
+          :
+          <>
+            {chartIssuers.length > 0 && chartVolumes.length > 0 &&
+              <div>
+                <div style={{ maxWidth: "100%", width: "600px", display: "inline-block" }}>
+                  <h3>{t("sales-chart", { ns: 'nft-volumes' })}</h3>
+                  <SimpleChart data={chartIssuers} />
+                </div>
+                {windowWidth > 1000 && <div style={{ display: "inline-block", width: "100px" }}></div>}
+                <div style={{ maxWidth: "100%", width: "600px", display: "inline-block" }}>
+                  <h3>{t("volumes-chart", { ns: 'nft-volumes' })} ({convertCurrency?.toUpperCase()})</h3>
+                  <SimpleChart data={chartVolumes} />
+                </div>
+              </div>
+            }
+          </>
+        }
+      </center>
+
       {windowWidth > 1000 ?
         <table className="table-large shrink">
           <thead>

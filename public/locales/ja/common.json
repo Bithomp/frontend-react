@@ -31,6 +31,7 @@
     },
     "xrpl": {
       "governance": "ガバナンス",
+      "activations": "Activated accounts (chart)",
       "distribution": "{{nativeCurrency}}の分布",
       "last-ledger-information": "現在のレジャー情報",
       "last-ledger-transactions": "現在のトランザクション情報",
@@ -518,7 +519,8 @@
       "nft": "NFT",
       "nfts": "NFTs",
       "nft-offer": "NFTのオファー",
-      "nft-offers": "NFTのオファー"
+      "nft-offers": "NFTのオファー",
+      "nft-volumes": "NFT sales volumes"
     },
     "enter-address": "XRPLアドレスまたはユーザネームを入力してください。",
     "searching-tx-nft-nftoffer": "トランザクション/NFT ID/NFT Offerで検索しています。",
@@ -556,11 +558,13 @@
   },
   "nfts": {
     "header": "アカウントのNFT",
-    "desc": "XRPLアドレスを入力して、アカウントが保有するNFTを検索できます。",
+    "desc": "アドレスを入力して、アカウントが保有するNFTを検索できます。",
     "search-by-name": "NFT名で検索",
     "search-by-issuer": "NFT発行者で検索",
     "search-by-taxon": "NFT Taxonで検索",
     "search-by-owner": "NFT保有者で検索",
+    "search-by-buyer": "NFT購入者で検索",
+    "search-by-seller": "NFT売却者で検索",
     "no-nfts": "検索条件に該当するNFTは見つかりませんでした。",
     "on-service": "{{service}}",
     "amount-on-service": "{{service}}にて{{amount}}",
@@ -572,21 +576,6 @@
     "desc": "ここでは、特定のNFT発行者のNFTの分布を確認することができます。NFT発行者のXRPLアドレスまたはユーザネームを入力し、検索ボタンを押してください。",
     "no-nfts": "そのアドレスから発行されたNFTは見つかりませんでした。",
     "text0": "{{users}} アカウントが {{nfts}} NFTを保有しています。"
-  },
-  "nft-volumes": {
-    "header": "NFTの取引量",
-    "text0": "For that period XRPLは{{saleType}}にて{{allSales}} {{currency}} NFT({{allVolume}})の取引が行われました。",
-    "brokers": {
-      "desc": "NFTブローカーアカウントのリストです。ここでは、オファーマッチングボットの取引量を確認できます。マーケットプレイスではさまざまな取引モデルを使用していますが、ここではブローカーモデルによる取引量のみを見ることができます。",
-      "no-broker": "非ブローカー",
-      "text0": "For that period XRPLは{{saleType}}にて{{allSales}}<3>{{currency}}</3> NFT/{{allVolume}}の売上があり、そのうちの<9>{{brokerSales}}</9> {{percentBrokerSales}}/<13>{{brokerVolume}}</13> {{percentBrokerVolume}}はブローカー取引によるものでした。"
-    },
-    "marketplaces": {
-      "desc": "XRPLのNFTマーケットプレイス一覧です。ここでの取引量には、2つの取引（支払いとNFT送金）内で行われた一次販売(ミント)は含まれていません。"
-    },
-    "issuers": {
-      "desc": "XRPLのNFT発行者リストです。発行者とTaxon毎に分類されたNFTコレクションの販売量を見るには、販売量欄のリンクをクリックしてください。"
-    }
   },
   "nft-sales": {
     "header": "NFTの販売",

@@ -1,8 +1,9 @@
 {
   "header": "NFT Minter",
-  "desc": "Hier finden Sie die Liste aller identifizierten NFT Minter auf XRPL. Wenn Sie möchten, dass Ihr Projekt erkannt wird, fügen Sie Ihren Mint-Transaktionen ein Memo mit Ihrer Website-Adresse hinzu.",
-  "summary-period": "XRPL hatte <1>{{minted}}</1> NFTs, von denen <3>{{mintedAndBurned}}</3> NFTs {{percentMintedAndBurned}} im gleichen Zeitraum vernichtet wurden. Insgesamt wurden in diesem Zeitraum <7>{{burned}}</7> NFTs vernichtet.",
-  "summary-all": "XRPL hatte <1>{{minted}}</1> NFTs, von denen <3>{{mintedAndBurned}}</3> NFTs {{percentMintedAndBurned}} vernichtet wurden.",
+  "desc": "Here you can find the list of all identified NFT minters. If you want your project to be recognised, add a memo with your website address to your mint transactions.",
+  "summary-period": "For that period <1>{{minted}}</1> NFTs were minted, from which <3>{{mintedAndBurned}}</3> NFTs {{percentMintedAndBurned}} were already burned during the same period of time, total burned during this period: <7>{{burned}}</7> NFTs.",
+  "summary-all": "There are <1>{{minted}}</1> minted NFTs, from which <3>{{mintedAndBurned}}</3> NFTs {{percentMintedAndBurned}} are burned.",
+  "mint-chart": "Mint chart",
   "table": {
     "minted-total": "Total minted",
     "minted-with-metadata": "Minted NFTs mit Metadaten",

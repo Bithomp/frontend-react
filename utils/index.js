@@ -3,6 +3,44 @@ import { useCallback, useEffect, useState } from "react"
 import { Buffer } from 'buffer'
 import { decodeAccountID, isValidClassicAddress } from 'ripple-address-codec'
 
+export const chartSpan = period => {
+  if (!period) return ""
+
+  if (period === "hour") {
+    return "minute"
+  } else if (period === "day") {
+    return "hour"
+  } else if (period === "week") {
+    return "day"
+  } else if (period === "month") {
+    return "day"
+  } else if (period === "year") {
+    return "month"
+  } else if (period === "all") {
+    return "year"
+  }
+
+  if (period?.includes("..")) {
+    const periodParts = period.split("..")
+    const startDate = new Date(periodParts[0])
+    const endDate = new Date(periodParts[1])
+    const oneHour = 60 * 60 * 1000
+    const oneDay = 24 * oneHour
+    const oneMonth = 30 * oneDay
+    if ((endDate - startDate) <= oneHour) {
+      return "minute"
+    } else if ((endDate - startDate) <= 60 * oneHour) {
+      return "hour"
+    } else if ((endDate - startDate) <= 60 * oneDay) {
+      return "day"
+    } if ((endDate - startDate) <= 60 * oneMonth) {
+      return "month"
+    } else {
+      "year"
+    }
+  }
+}
+
 export const delay = async (milliseconds, callback, options) => {
   const delayFunction = () => {
     return new Promise(resolve => {

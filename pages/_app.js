@@ -37,11 +37,18 @@ const MyApp = ({ Component, pageProps }) => {
     axios.defaults.baseURL = server + '/api/cors/'
   }
 
+  const pathname = router.pathname
+  const pagesWithoutWrapper = ['/social-share']
+
   const showAds = network === 'mainnet' // !devNet // no ads on test network
   let showTopAds = false // showAds //change here when you want to see TOP ADS
   const pagesWithNoTopAdds = ['/', '/username', '/eaas', '/build-unl', '/disclaimer', '/privacy-policy', '/terms-and-conditions', '/terms-api-bots', '/press', '/404']
   if (showTopAds) {
-    showTopAds = !pagesWithNoTopAdds.includes(router.pathname) && !router.pathname.includes('/admin')
+    showTopAds = !pagesWithNoTopAdds.includes(pathname) && !pathname.includes('/admin')
+  }
+
+  if (pagesWithoutWrapper.includes(pathname)) {
+    return <Component />
   }
 
   return (

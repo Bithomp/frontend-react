@@ -145,7 +145,7 @@ export default function Statistics() {
       </div>
       <div className='stat-piece'>
         <div className='stat-piece-header'>{t("home.stat.accounts")}</div>
-        <div>{createdAccounts}</div>
+        <div><Link href='/activations?period=all'>{createdAccounts}</Link></div>
       </div>
       <div className='stat-piece'>
         <div className='stat-piece-header'>{t("home.stat.usernames")}</div>

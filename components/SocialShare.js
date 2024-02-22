@@ -5,7 +5,7 @@ import {
   TelegramShareButton, TelegramIcon,
   WeiboShareButton, WeiboIcon,
   PinterestShareButton, PinterestIcon,
-  TwitterShareButton, TwitterIcon,
+  TwitterShareButton, XIcon,
   RedditShareButton, RedditIcon,
   ViberShareButton, ViberIcon,
   LineShareButton, LineIcon,
@@ -110,7 +110,7 @@ export default function SocialShare({ t, title, hashtag, description, image }) {
               related={['bithomp', 'bithompAlerts']}
               style={iconStyle}
             >
-              <TwitterIcon size={size} round />
+              <XIcon size={size} round />
             </TwitterShareButton>
 
             <RedditShareButton

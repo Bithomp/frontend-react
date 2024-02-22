@@ -1,0 +1,17 @@
+{
+  "header": "Volume Penjualan NFT",
+  "text0": "For that period XRPL memiliki {{allSales}} NFT {{currency}} {{saleType}} dengan volume penjualan {{allVolume}}.",
+  "brokers": {
+    "desc": "Ini adalah daftar akun broker NFT. Anda dapat menemukan di sini volume bot pencocokan penawaran. Pasar menggunakan model perdagangan campuran, di sini Anda hanya dapat melihat volume melalui model broker.",
+    "no-broker": "Tidak ada broker",
+    "text0": "For that period XRPL memiliki {{allSales}} NFT <3>{{currency}}</3> {{saleType}} dengan volume penjualan {{allVolume}}, dari mana <9>{{brokerSales}}</9> {{percentBrokerSales}} perdagangan dengan volume <13>{{brokerVolume}}</13> {{percentBrokerVolume}} dilakukan melalui model broker."
+  },
+  "marketplaces": {
+    "desc": "Ini adalah daftar Pasar NFT di XRPL. Volume di sini tidak termasuk penjualan utama (mint) yang dilakukan dalam 2 transaksi (pembayaran dan transfer NFT)."
+  },
+  "issuers": {
+    "desc": "Ini adalah daftar penerbit NFT di XRPL. Untuk melihat volume koleksi NFT yang diidentifikasi oleh penerbit dan taksonomi, klik tautan dalam kolom Volume Penjualan."
+  },
+  "sales-chart": "Sales chart",
+  "volumes-chart": "Volumes chart"
+}

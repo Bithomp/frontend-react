@@ -1,0 +1,19 @@
+<svg
+  id="twitterLogotype"
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 51 50"
+  fill="none"
+>
+  <circle cx="25.5" cy="25" r="25" fill="#000"></circle>
+  <g clip-path="url(#twitter)">
+    <path
+      fill="#fff"
+      d="M32.975 13.219h3.988l-8.71 9.98L38.5 36.782h-8.023l-6.284-8.238-7.19 8.238h-3.99l9.317-10.676-9.83-12.886h8.227l5.68 7.528 6.568-7.528Zm-1.398 21.17h2.21L19.526 15.486h-2.37l14.422 18.903Z"
+    ></path>
+  </g>
+  <defs>
+    <clipPath id="twitter">
+      <path fill="#fff" d="M12.5 12h26v26h-26z"></path>
+    </clipPath>
+  </defs>
+</svg>

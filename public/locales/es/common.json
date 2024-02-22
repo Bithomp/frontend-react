@@ -31,6 +31,7 @@
     },
     "xrpl": {
       "governance": "Gobierno",
+      "activations": "Cuentas activadas (gráfica)",
       "distribution": "Distribución de {{nativeCurrency}}",
       "last-ledger-information": "Información del último libro contable",
       "last-ledger-transactions": "Transacciones del último libro contable",
@@ -518,7 +519,8 @@
       "nft": "NFT",
       "nfts": "NFTs",
       "nft-offer": "Ofertas NFT",
-      "nft-offers": "Ofertas NFT"
+      "nft-offers": "Ofertas NFT",
+      "nft-volumes": "NFT sales volumes"
     },
     "enter-address": "Introduce una dirección XRPL o nombre de usuario",
     "searching-tx-nft-nftoffer": "Buscando for Tx / NFT ID / Oferta NFT",
@@ -556,11 +558,13 @@
   },
   "nfts": {
     "header": "NFTs de la cuenta",
-    "desc": "Aquí puedes buscar por NFTs, escribe la dirección XRPL para ver que NFTs posee.",
+    "desc": "Aquí puedes buscar por NFTs, escribe la dirección para ver que NFTs posee.",
     "search-by-name": "Buscar por nombre de NFT",
     "search-by-issuer": "Buscar por emisor NFT",
     "search-by-taxon": "Buscar por taxón NFT",
     "search-by-owner": "Buscar por dueño del NFT",
+    "search-by-buyer": "Buscar por comprador del NFT",
+    "search-by-seller": "Buscar por vendedor del NFT",
     "no-nfts": "No pudimos encontrar ningún NFT con tus parámetros de búsqueda.",
     "on-service": "en {{service}}",
     "amount-on-service": "{{amount}} en {{service}}",
@@ -572,21 +576,6 @@
     "desc": "Aquí puedes comprobar la distribución de NFTs de un emisor particular. Introduce la dirección XPRL del emisor NFT  o el nombre de usuario y presiona el botón de búsqueda.",
     "no-nfts": "No pudimos encontrar ningún NFT acuñado por esa cuenta.",
     "text0": "{{users}} cuentas poseen {{nfts}} NFTs"
-  },
-  "nft-volumes": {
-    "header": "Volúmenes en ventas NFT",
-    "text0": "For that period el XRPL tuvo {{allSales}} {{currency}} en ventas en el mercado {{saleType}} NFT por valor de {{allVolume}}.",
-    "brokers": {
-      "desc": "Este es un listado de cuentas de broker NFT. Puedes encontrar aquí los volúmenes de los bots de cruces. Los mercados utilizan modelos mixtos para comerciar, aquí puedes ver solo volúmenes a través del modelo de broker.",
-      "no-broker": "Sin broker",
-      "text0": "For that period XRPL tuvo {{allSales}} <3>{{currency}}</3> ventas {{saleType}} NFT por {{allVolume}}, de las cuales <9>{{brokerSales}}</9> {{percentBrokerSales}} de los acuerdos de <13>{{brokerVolume}}</13> {{percentBrokerVolume}} fueron a través del modelo de broker."
-    },
-    "marketplaces": {
-      "desc": "Esta es la lista de Mercados NFT en XRPL. Los volúmenes aquí no incluyen las ventas primarias (acuñaciones) las cuales fueron hechas en 2 transacciones (pago y transferencia de NFT)."
-    },
-    "issuers": {
-      "desc": "Esta es la lista de los emisores de NFTs en XRPL. Para ver los volúmenes de colecciones de NFTs identificados por emisor y taxón haz click en el enlace en la columna de Volumen en ventas."
-    }
   },
   "nft-sales": {
     "header": "Ventas NFT",

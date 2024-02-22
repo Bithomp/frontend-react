@@ -81,7 +81,7 @@ export default function Nfts({
     taxonQuery={taxonQuery}
     serialQuery={serialQuery}
     mintedByMarketplace={mintedByMarketplace}
-    mintedPeriodNameQuery={mintedPeriod}
+    mintedPeriodQuery={mintedPeriod}
     burnedPeriod={burnedPeriod}
     includeBurnedQuery={includeBurnedQuery}
     includeWithoutMediaDataQuery={includeWithoutMediaDataQuery}

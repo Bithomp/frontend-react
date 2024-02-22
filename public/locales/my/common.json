@@ -31,6 +31,7 @@
 		},
 		"xrpl": {
 			"governance": "Governance",
+			"activations": "Activated accounts (chart)",
 			"distribution": "{{nativeCurrency}} distribution",
 			"last-ledger-information": "Maklumat Ledger Terakhir",
 			"last-ledger-transactions": "Transaksi Ledger Terakhir",
@@ -518,7 +519,8 @@
       "nft": "NFT",
       "nfts": "NFTs",
       "nft-offer": "Tawaran NFT",
-      "nft-offers": "Tawaran NFT"
+      "nft-offers": "Tawaran NFT",
+			"nft-volumes": "NFT sales volumes"
     },
 		"enter-address": "Masukkan alamat XRPL atau nama pengguna",
 		"searching-tx-nft-nftoffer": "Mencari Tx / NFT ID / Tawaran NFT",
@@ -556,11 +558,13 @@
 	},
 	"nfts": {
 		"header": "NFT akaun",
-		"desc": "Di sini anda boleh mencari NFT, taip alamat XRPL untuk melihat NFT apa yang dimiliki olehnya.",
+		"desc": "Di sini anda boleh mencari NFT, taip alamat untuk melihat NFT apa yang dimiliki olehnya.",
 		"search-by-name": "Cari berdasarkan nama NFT",
 		"search-by-issuer": "Cari berdasarkan penerbit NFT",
 		"search-by-taxon": "Cari berdasarkan takson NFT",
 		"search-by-owner": "Cari berdasarkan pemilik NFT",
+		"search-by-buyer": "Cari berdasarkan pembeli NFT",
+		"search-by-seller": "Cari berdasarkan penjual NFT",
 		"no-nfts": "Kami tidak dapat menemui sebarang NFT dengan parameter carian anda.",
 		"on-service": "di {{service}}",
 		"amount-on-service": "{{amount}} di {{service}}",
@@ -572,21 +576,6 @@
 		"desc": "Di sini anda boleh menyemak pembahagian NFT oleh penerbit NFT tertentu. Masukkan alamat XRPL penerbit NFT atau nama pengguna dan tekan butang carian.",
 		"no-nfts": "Kami tidak dapat menemui sebarang NFT yang dikeluarkan oleh alamat tersebut.",
 		"text0": "{{users}} akaun memiliki {{nfts}} NFT"
-	},
-	"nft-volumes": {
-		"header": "Jualan NFT",
-		"text0": "For that period XRPL mempunyai {{allSales}} NFT {{currency}} {{saleType}} jualan sebanyak {{allVolume}}.",
-		"brokers": {
-			"desc": "Ini adalah senarai akaun broker NFT. Anda boleh mencari di sini jumlah bot padanan tawaran. Pasaran menggunakan model perdagangan campuran, di sini anda hanya boleh melihat jumlah perdagangan melalui model perantaraan.",
-			"no-broker": "Tiada broker",
-			"text0": "For that period XRPL mempunyai {{allSales}} NFT {{currency}} {{saleType}} jualan sebanyak {{allVolume}}, dari jumlah tersebut, <9>{{brokerSales}}</9> {{percentBrokerSales}} daripada perdagangan dengan jumlah sebanyak <13>{{brokerVolume}}</13> {{percentBrokerVolume}} adalah melalui model perantaraan."
-		},
-		"marketplaces": {
-			"desc": "Ini adalah senarai Pasaran NFT di XRPL. Jumlah di sini tidak termasuk jualan utama (mints) yang dilakukan dalam 2 transaksi (pembayaran dan pemindahan NFT)."
-		},
-		"issuers": {
-			"desc": "Ini adalah senarai penerbit NFT di XRPL. Untuk melihat jumlah koleksi NFT yang dikenal pasti mengikut penerbit dan takson, klik pautan dalam jadual Jualan."
-		}
 	},
 	"nft-sales": {
 		"header": "Jualan NFT",

@@ -1,8 +1,9 @@
 {
   "header": "NFT чеканщики",
-  "desc": "Здесь представлен список всех распознаных нами NFT чеканщиков на XRPL. Если вы хотите чтобы ваш проект был в этом списке, то укажите в memo транзакции чеканки адрес вашего веб-сайта.",
-  "summary-period": "на XRPL отчеканено <1>{{minted}}</1> NFT, из которых <3>{{mintedAndBurned}}</3> NFT {{percentMintedAndBurned}} были сожжены в этот же период времени, всего сожжено за этот период: <7>{{burned}}</7> NFT.",
-  "summary-all": "на XRPL отчеканено <1>{{minted}}</1> NFT, из которых <3>{{mintedAndBurned}}</3> NFT {{percentMintedAndBurned}} были сожжены.",
+  "desc": "Здесь представлен список всех распознаных нами NFT чеканщиков. Если вы хотите чтобы ваш проект был в этом списке, то укажите в memo транзакции чеканки адрес вашего веб-сайта.",
+  "summary-period": "За этот период отчеканено <1>{{minted}}</1> NFT, из которых <3>{{mintedAndBurned}}</3> NFT {{percentMintedAndBurned}} были уже сожжены в этот же период времени, всего сожжено за этот период: <7>{{burned}}</7> NFT.",
+  "summary-all": "Всего отчеканено <1>{{minted}}</1> NFT, из которых <3>{{mintedAndBurned}}</3> NFT {{percentMintedAndBurned}} сожжены.",
+  "mint-chart": "График чеканок",
   "table": {
     "minted-total": "Всего отчеканено",
     "minted-with-metadata": "Отчеканенные NFT с метаданными",

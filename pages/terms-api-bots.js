@@ -2,6 +2,7 @@ import Mailto from 'react-protected-mailto'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import SEO from '../components/SEO'
 import { useTranslation } from 'next-i18next'
+
 import Link from 'next/link'
 
 export async function getServerSideProps(context) {

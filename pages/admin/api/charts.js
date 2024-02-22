@@ -3,7 +3,7 @@ import { useTranslation } from 'next-i18next'
 import { useEffect, useState } from 'react'
 import axios from 'axios'
 import { useRouter } from 'next/router'
-import { useWidth } from '../../../utils'
+import { chartSpan, useWidth } from '../../../utils'
 
 import SEO from '../../../components/SEO'
 import Tabs from '../../../components/Tabs'
@@ -28,7 +28,6 @@ export default function Charts() {
   const [chartData, setChartData] = useState([])
   const [loading, setLoading] = useState(false)
   const [period, setPeriod] = useState("")
-  const [chartSpan, setChartSpan] = useState("day")
 
   useEffect(() => {
     const sessionToken = localStorage.getItem('sessionToken')
@@ -86,7 +85,7 @@ export default function Charts() {
 
     //&search=text&ip=z
     const apiRequests = await axios.get(
-      'partner/partner/accessToken/requests/chart?span=' + chartSpan + '&period=' + period,
+      'partner/partner/accessToken/requests/chart?span=' + chartSpan(period) + '&period=' + period,
       { baseUrl: '/api/' }
     ).catch(error => {
       if (error && error.message !== "canceled") {
@@ -119,10 +118,9 @@ export default function Charts() {
 
       <center>
         <DateAndTimeRange
-          defaultPeriodName="day"
+          defaultPeriod="day"
           setPeriod={setPeriod}
           tabs={true}
-          setChartSpan={setChartSpan}
         />
         {width < 500 && <br />}
         <button

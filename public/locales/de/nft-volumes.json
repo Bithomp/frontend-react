@@ -1,0 +1,17 @@
+{
+  "header": "NFT Verkaufsvolumen",
+  "text0": "For that period XRPL hatte {{allSales}} {{currency}} NFT {{saleType}} Verkäufe für {{allVolume}}.",
+  "brokers": {
+    "desc": "Dies ist die Liste der NFT Vermittlerkonten. Hier finden Sie zahlreiche Angebots-Matching-Bots. Marktplätze verwenden gemischte Handelsmodelle, hier können Sie nur die Volumen durch das Vermittler-Modell sehen.",
+    "no-broker": "Kein Vermittler",
+    "text0": "For that period XRPL hatte {{allSales}} <3>{{currency}}</3> NFT {{saleType}} Verkäufe für {{allVolume}}, davon <9>{{brokerSales}}</9> {{percentBrokerSales}} der Geschäfte für <13>{{brokerVolume}}</13> {{percentBrokerVolume}} erfolgten über das Vermittler-Modell."
+  },
+  "marketplaces": {
+    "desc": "Dies ist die Liste der NFT Marktplätze auf XRPL. In den Volumen sind hier die Primärverkäufe (Mints) nicht enthalten, die innerhalb von 2 Transaktionen (Zahlung und NFT Transfer) getätigt wurden."
+  },
+  "issuers": {
+    "desc": "Dies ist die Liste der NFT Emittenten auf XRPL. Um die Volumen der NFT Kollektionen nach Emittenten und Taxon anzuzeigen, klicken Sie auf den Link in der Spalte Volumen"
+  },
+  "sales-chart": "Sales chart",
+  "volumes-chart": "Volumes chart"
+}

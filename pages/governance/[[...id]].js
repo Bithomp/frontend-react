@@ -115,7 +115,7 @@ export default function Governance({ id, setSignRequest, signRequest, account })
     if (seat === "not found") {
       return <>
         <span className='orange'>{t("table.no-seat", { ns: 'governance' })}</span>
-        {!options?.short && <> - {coloredName || shortAddress(addressData[addessName])}</>}
+        {!options?.short && <> - <CopyButton text={addressData[addessName]} /> {coloredName || shortAddress(addressData[addessName], 4)}</>}
       </>
     }
     return <>
