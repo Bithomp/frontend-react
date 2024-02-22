@@ -909,7 +909,7 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
                         { value: "08", label: "8" },
                         { value: "09", label: "9" },
                         { value: "0A", label: "10" },
-                        { value: "OB", label: "11" },
+                        { value: "0B", label: "11" },
                         { value: "0C", label: "12" },
                         { value: "0D", label: "13" },
                         { value: "0E", label: "14" },
