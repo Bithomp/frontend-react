@@ -152,6 +152,7 @@ export default function Account({ pageMeta, signRequest, id, selectedCurrency, l
     } else {
       getHistoricalRate()
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedCurrency])
 
   const getHistoricalRate = () => {
