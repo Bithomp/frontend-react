@@ -94,7 +94,7 @@ export default function Footer({ account, setSignRequest }) {
           <span className="footer-menu-header">{t("menu.sponsored.title")}</span>
           <a href="/go/fm-buy" target="_blank" rel="noreferrer">{t("menu.sponsored.buy")}</a>
           <a href="/go/fm-earn" target="_blank" rel="noreferrer">{t("menu.sponsored.earn")}</a>
-          <a href="/go/fm-play" target="_blank" rel="noreferrer">{t("menu.sponsored.play")}</a>
+          {/* <a href="/go/fm-play" target="_blank" rel="noreferrer">{t("menu.sponsored.play")}</a> */}
         </div>}
 
       </div>

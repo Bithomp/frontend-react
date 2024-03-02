@@ -4,6 +4,7 @@ export default function Ads() {
 
   if (network === "mainnet") {
     return <>
+      {/*
       <a href="/go/play-xrp" target="_blank" rel="noreferrer">
         <div className="sponsored-brand">
           <img src="/images/xbit.png" className="sponsored-brand-icon" alt="play xrp" />
@@ -11,6 +12,7 @@ export default function Ads() {
           <div className="sponsored-brand-text">Register with <i>BITHOMP</i> and boost up your bonus.</div>
         </div>
       </a>
+      */}
       {/*
         <a href="/go/main-exchange" target="_blank" rel="noreferrer">
           <div className="sponsored-brand easybit">
@@ -37,6 +39,8 @@ export default function Ads() {
     </>
   }
 
+  {/*
+
   if (network === 'xahau') {
     return <>
       <a href="/go/play-xrp" target="_blank" rel="noreferrer">
@@ -50,4 +54,6 @@ export default function Ads() {
       </a>
     </>
   }
+  
+  */}
 }
