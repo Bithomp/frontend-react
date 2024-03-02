@@ -10,12 +10,14 @@ import { server, getCoinsUrl, nativeCurrency } from '../../utils'
 import { amountFormat, shortNiceNumber, fullDateAndTime } from '../../utils/format'
 import { getIsSsrMobile } from "../../utils/mobile"
 
+import DatePicker from "react-datepicker"
+import "react-datepicker/dist/react-datepicker.css"
 import LinkIcon from "../../public/images/link.svg"
 
 export async function getServerSideProps(context) {
   const { locale, query, req } = context
   let pageMeta = null
-  const { id } = query
+  const { id, ledgerTimestamp } = query
   //keep it from query instead of params, anyway it is an array sometimes
   const account = id ? (Array.isArray(id) ? id[0] : id) : ""
   if (account) {
@@ -29,7 +31,7 @@ export async function getServerSideProps(context) {
     try {
       const res = await axios({
         method: 'get',
-        url: server + '/api/cors/v2/address/' + account + '?username=true&service=true&twitterImageUrl=true&blacklist=true',
+        url: server + '/api/cors/v2/address/' + account + '?username=true&service=true&twitterImageUrl=true&blacklist=true' + (ledgerTimestamp ? ('&ledgerTimestamp=' + ledgerTimestamp) : ""),
         headers
       })
       pageMeta = res?.data
@@ -41,6 +43,7 @@ export async function getServerSideProps(context) {
   return {
     props: {
       id: account,
+      ledgerTimestampQuery: ledgerTimestamp || "",
       isSsrMobile: getIsSsrMobile(context),
       pageMeta,
       ...(await serverSideTranslations(locale, ['common']))
@@ -53,13 +56,13 @@ import SearchBlock from '../../components/Layout/SearchBlock'
 import CopyButton from '../../components/UI/CopyButton'
 
 // setSignRequest, account
-export default function Account({ pageMeta, signRequest, id, selectedCurrency }) {
+export default function Account({ pageMeta, signRequest, id, selectedCurrency, ledgerTimestampQuery }) {
   const { t } = useTranslation()
 
   const [data, setData] = useState({})
   const [loading, setLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState("")
-  const [ledgerTimestamp, setLedgerTimestamp] = useState("")
+  const [ledgerTimestamp, setLedgerTimestamp] = useState(ledgerTimestampQuery)
   const [fiatRate, setFiatRate] = useState("")
   const [userData, setUserData] = useState({
     username: pageMeta?.username,
@@ -118,17 +121,12 @@ export default function Account({ pageMeta, signRequest, id, selectedCurrency })
   }
 
   useEffect(() => {
-    //TODO: add validation
-    //if a valid TimeStamp '/^[0-9-:TZ]+$/' 
-    setLedgerTimestamp("") //DELETE, We need a component for that
-
-    if (!selectedCurrency) return;
+    if (!selectedCurrency) return
     if (!signRequest) {
       if (!data?.address) {
         // no token - first time fetching - allow right away
         checkApi()
       } else {
-        setLoading(true)
         checkApi({ noCache: true })
       }
     }
@@ -136,14 +134,37 @@ export default function Account({ pageMeta, signRequest, id, selectedCurrency })
   }, [id, signRequest, selectedCurrency, ledgerTimestamp])
 
   useEffect(() => {
-    async function fetchRate() {
-      const response = await axios(
-        'v2/rates/current/' + selectedCurrency,
-      )
-      setFiatRate(response.data[selectedCurrency])
+    if (!ledgerTimestamp) return
+    getHistoricalRate()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ledgerTimestamp])
+
+  useEffect(() => {
+    if (!ledgerTimestamp) {
+      //if there is ledgerTimestamp then we need a historicalrate
+      async function fetchRate() {
+        const response = await axios(
+          'v2/rates/current/' + selectedCurrency,
+        )
+        setFiatRate(response.data[selectedCurrency])
+      }
+      fetchRate()
+    } else {
+      getHistoricalRate()
     }
-    fetchRate()
   }, [selectedCurrency])
+
+  const getHistoricalRate = () => {
+    if (ledgerTimestamp && selectedCurrency) {
+      async function fetchHistoricalRate() {
+        const response = await axios(
+          'v2/rates/current/' + selectedCurrency + 'timestamp=' + ledgerTimestamp,
+        )
+        setFiatRate(response.data[selectedCurrency])
+      }
+      fetchHistoricalRate()
+    }
+  }
 
   const avatarSrc = data => {
     /*
@@ -295,10 +316,7 @@ export default function Account({ pageMeta, signRequest, id, selectedCurrency })
                       height="200"
                     />
                     <div>
-                      <div className='center hidden'>
-                        Time machine<br /><br />
-                      </div>
-                      <table className='table-details autowidth hidden'>
+                      <table className='table-details autowidth'>
                         <thead>
                           <tr>
                             <th colSpan="100">Statuses</th>
@@ -306,8 +324,64 @@ export default function Account({ pageMeta, signRequest, id, selectedCurrency })
                         </thead>
                         <tbody>
                           <tr>
-                            <td>XUMM Pro</td><td>{data?.xummMeta?.xummPro ? "Yes" : "No"}</td>
+                            <td colSpan="2">
+                              Time machine
+                              {/*  (info) Check account balance and settings in any Time in the past. */}
+                              <br />
+                              <DatePicker
+                                selected={ledgerTimestampQuery || new Date()}
+                                onChange={setLedgerTimestamp}
+                                selectsStart
+                                showTimeInput
+                                timeInputLabel={t("table.time")}
+                                //startDate={startDate}
+                                minDate={new Date(data.inception)}
+                                maxDate={new Date()}
+                                //endDate={endDate}
+                                dateFormat="yyyy/MM/dd HH:mm"
+                                className="dateAndTimeRange"
+                                showMonthDropdown
+                                showYearDropdown
+                              />
+                            </td>
                           </tr>
+
+                          {data.xummMeta?.kycApproved &&
+                            <tr>
+                              <td>KYC</td>
+                              <td>XUMM verified</td>
+                            </tr>
+                          }
+                          {data.xummMeta?.xummPro &&
+                            <tr>
+                              <td>XUMM Pro</td>
+                              <td>
+                                {data?.xummMeta?.xummProfile?.slug ?
+                                  <a href={data.xummMeta.xummProfile.profileUrl}>
+                                    <u class="bold orange">{data.xummMeta.xummProfile.slug}</u>
+                                  </a>
+                                  :
+                                  <span class="bold orange">activated <i class="fa fa-heart"></i></span>
+                                }
+                              </td>
+                            </tr>
+                          }
+                          {data.xummMeta?.globalid?.profileUrl &&
+                            <tr>
+                              <td>
+                                GlobaliD
+                              </td>
+                              <td>
+                                <a href={data.xummMeta.globalid.profileUrl}>
+                                  <u class="bold green">{data.xummMeta.globalid.profileUrl.strReplace("https://app.global.id/u/", "")}</u>
+                                </a>
+                                {" "}
+                                <a href={data.xummMeta.globalid.profileUrl}>
+                                  <b class="green"><i class="fa fa-globe"></i></b>
+                                </a>
+                              </td>
+                            </tr>
+                          }
                         </tbody>
                       </table>
                     </div>
@@ -315,7 +389,17 @@ export default function Account({ pageMeta, signRequest, id, selectedCurrency })
                   <div className="column-right">
                     <table className='table-details'>
                       <thead>
-                        <tr><th colSpan="100">{t("table.ledger-data")}</th></tr>
+                        <tr>
+                          <th colSpan="100">
+                            {t("table.ledger-data")}
+                            {" "}
+                            {data?.ledgerInfo?.ledgerTimestamp &&
+                              <span className='red'>
+                                Historical data ({fullDateAndTime(data.ledgerInfo.ledgerTimestamp)})
+                              </span>
+                            }
+                          </th>
+                        </tr>
                       </thead>
                       <tbody>
                         {data?.ledgerInfo?.accountIndex &&
@@ -351,7 +435,11 @@ export default function Account({ pageMeta, signRequest, id, selectedCurrency })
                             <td>
                               <span className='green'>Active </span>
                               {data?.ledgerInfo?.lastSubmittedAt &&
-                                moment((data.ledgerInfo.lastSubmittedAt) * 1000, "unix").fromNow()
+                                <>
+                                  {moment((data.ledgerInfo.lastSubmittedAt) * 1000, "unix").fromNow()}
+                                  {" "}
+                                  ({fullDateAndTime(data.ledgerInfo.lastSubmittedAt)})
+                                </>
                               }
                               {data?.ledgerInfo?.lastSubmittedTxHash &&
                                 <Link href={"/explorer/" + data.ledgerInfo.lastSubmittedTxHash}> <LinkIcon /></Link>
@@ -428,6 +516,42 @@ export default function Account({ pageMeta, signRequest, id, selectedCurrency })
                             </td>
                           </tr>
                         }
+                        {data.ledgerInfo?.importSequence &&
+                          <tr>
+                            <td>
+                              Import sequence
+                            </td>
+                            <td>
+                              #{data.ledgerInfo.importSequence}
+                            </td>
+                          </tr>
+                        }
+                        {/**
+    $ledger = $ledgerInfo['ledger'];
+    $xahauReward['accumulator'] = $ledgerInfo["rewardAccumulator"];
+    $xahauReward['lgrFirst'] = $ledgerInfo["rewardLgrFirst"];
+    $xahauReward['lgrLast'] = $ledgerInfo["rewardLgrLast"];
+    $xahauReward['time'] = $ledgerInfo["rewardTime"];
+
+    if ($xahauReward['lgrFirst']) {
+    $rewardDelay = 2600000; //seconds // take it from hook instead later
+    $rewardRate = 0.0033333333300000004; // get it from hook later
+    $remainingSec = $rewardDelay - (time() - ($xahauReward['time'] + 946684800));
+    //$claimable = $remainingSec <= 0;
+    $claimableDate = date('Y-m-d H:i:s', (time() + $remainingSec));
+
+    // calculate reward
+    $elapsed = $ledger - $xahauReward['lgrFirst'];
+    $elapsedSinceLast = $ledger - $xahauReward['lgrLast'];
+    $accumulator = hexdec($xahauReward['accumulator']);
+    if (intval($balance) > 0 && $elapsedSinceLast > 0) {
+      $accumulator += intval($balance) / 1000000 * $elapsedSinceLast;
+    }
+    $reward = $accumulator / $elapsed * $rewardRate;
+    $output .= '<div>Reward: <b>≈ ' . number_format($reward, 6) . ' XAH</b></div>';
+    $output .= '<div>Claimable: <b>' . $claimableDate . '</b></div>';
+  }
+                         */}
                       </tbody>
                     </table>
 
@@ -448,6 +572,8 @@ export default function Account({ pageMeta, signRequest, id, selectedCurrency })
                             ({fullDateAndTime(data.inception)})
                           </td>
                         </tr>
+
+
 
                       </tbody>
                     </table>

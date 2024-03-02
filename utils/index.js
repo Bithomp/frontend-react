@@ -417,6 +417,38 @@ const WssServer = () => {
 }
 export const wssServer = WssServer()
 
+export const networkMinimumDate = (type = 'ledger') => {
+  let minDate = null
+
+  if (type === "nft") {
+    if (network === "mainnet") {
+      minDate = new Date("2022-10-31T20:50:51.000Z") // first nft on the xrpl mainent
+    } else if (network === "xahau") {
+      minDate = new Date("2023-11-01T13:00:29.000Z") //first nft on xahau
+    } else if (network === "xahau-testnet") {
+      minDate = new Date("2023-01-28T08:35:30.000Z") //first nft on xahau-testnet
+    } else if (network === "testnet") {
+      minDate = new Date("2023-08-09T01:53:41.000Z") // first nft in history for the testnet
+    } else if (network === "devnet") {
+      minDate = new Date("2023-09-19T20:36:40.000Z") // first nft in history for the devnet
+    } else {
+      minDate = new Date("2013-01-01T03:21:10.000Z") // ledger 32570
+    }
+  }
+
+  if (!minDate) {
+    if (network === "xahau") {
+      minDate = new Date("2023-10-30T12:21:00.000Z") // ledger 2 on xahau
+    } else if (network === "xahau-testnet") {
+      minDate = new Date("2023-01-27T13:07:10.000Z") // ledger 3 on xahau-testnet
+    } else {
+      minDate = new Date("2013-01-01T03:21:10.000Z") // ledger 32570 on mainnet
+    }
+  }
+
+  return minDate
+}
+
 export const isEmailValid = x => {
   let re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
   return x && re.test(x)
