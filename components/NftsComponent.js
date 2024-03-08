@@ -484,7 +484,11 @@ export default function NftsComponent({
   return <>
     {nftExplorer ?
       <SEO
-        title={t("nft-explorer.header") + ((issuer || issuerQuery) ? (" " + (issuer || issuerQuery)) : "")}
+        title={
+          t("nft-explorer.header") +
+          ((issuer || issuerQuery) ? (" " + (issuer || issuerQuery)) : "") +
+          (owner || ownerQuery ? (", " + t("table.owner") + ": " + (owner || ownerQuery)) : "")
+        }
         description={issuer || issuerQuery || search || t("nft-explorer.header")}
       />
       :
