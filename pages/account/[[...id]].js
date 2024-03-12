@@ -159,9 +159,13 @@ export default function Account({ pageMeta, signRequest, id, selectedCurrency, l
     if (ledgerTimestamp && selectedCurrency) {
       async function fetchHistoricalRate() {
         const response = await axios(
-          'v2/rates/current/' + selectedCurrency + 'timestamp=' + ledgerTimestamp,
-        )
-        setFiatRate(response.data[selectedCurrency])
+          'v2/rates/history/nearest/' + selectedCurrency + '?date=' + new Date(ledgerTimestamp).valueOf()
+        ).catch(error => {
+          console.log(error)
+        })
+        if (response?.data?.[selectedCurrency]) {
+          setFiatRate(response.data[selectedCurrency])
+        }
       }
       fetchHistoricalRate()
     }
@@ -392,12 +396,12 @@ export default function Account({ pageMeta, signRequest, id, selectedCurrency, l
                       <thead>
                         <tr>
                           <th colSpan="100">
-                            {t("table.ledger-data")}
-                            {" "}
-                            {data?.ledgerInfo?.ledgerTimestamp &&
-                              <span className='red'>
+                            {data?.ledgerInfo?.ledgerTimestamp ?
+                              <span className='red bold'>
                                 Historical data ({fullDateAndTime(data.ledgerInfo.ledgerTimestamp)})
                               </span>
+                              :
+                              t("table.ledger-data")
                             }
                           </th>
                         </tr>
