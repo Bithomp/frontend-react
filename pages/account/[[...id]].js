@@ -63,6 +63,7 @@ export default function Account({ pageMeta, signRequest, id, selectedCurrency, l
   const [loading, setLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState("")
   const [ledgerTimestamp, setLedgerTimestamp] = useState(ledgerTimestampQuery)
+  const [ledgerTimestampInput, setLedgerTimestampInput] = useState(ledgerTimestampQuery)
   const [fiatRate, setFiatRate] = useState("")
   const [userData, setUserData] = useState({
     username: pageMeta?.username,
@@ -95,7 +96,7 @@ export default function Account({ pageMeta, signRequest, id, selectedCurrency, l
       '/v2/address/' + id
       + '?username=true&service=true&verifiedDomain=true&parent=true&nickname=true&inception=true&flare=true&blacklist=true&payString=true&ledgerInfo=true&twitterImageUrl=true&xummMeta=true'
       + noCache
-      + (ledgerTimestamp ? ('&ledgerTimestamp=' + ledgerTimestamp) : "")
+      + (ledgerTimestamp ? ('&ledgerTimestamp=' + ledgerTimestamp.toISOString()) : "")
     ).catch(error => {
       setErrorMessage(t("error." + error.message))
     })
@@ -286,6 +287,11 @@ export default function Account({ pageMeta, signRequest, id, selectedCurrency, l
     setBalances(balanceList)
   }, [data, networkInfo, fiatRate])
 
+  const resetTimeMachine = () => {
+    setLedgerTimestampInput(null)
+    setLedgerTimestamp(null)
+  }
+
   return <>
     <SEO
       page="Account"
@@ -315,81 +321,100 @@ export default function Account({ pageMeta, signRequest, id, selectedCurrency, l
                   <div className="column-left">
                     <Image
                       alt="avatar"
-                      style={{ width: "100%", height: "auto", display: "inline-block" }}
                       src={avatarSrc(data)}
                       width="200"
                       height="200"
+                      className="avatar"
                     />
                     <div>
                       <table className='table-details autowidth'>
                         <thead>
                           <tr>
-                            <th colSpan="100">Statuses</th>
+                            <th colSpan="100">Time machine</th>
                           </tr>
                         </thead>
                         <tbody>
                           <tr>
                             <td colSpan="2">
-                              Time machine
                               {/*  (info) Check account balance and settings in any Time in the past. */}
-                              <br />
-                              <DatePicker
-                                selected={ledgerTimestampQuery || new Date()}
-                                onChange={setLedgerTimestamp}
-                                selectsStart
-                                showTimeInput
-                                timeInputLabel={t("table.time")}
-                                //startDate={startDate}
-                                minDate={new Date(data.inception)}
-                                maxDate={new Date()}
-                                //endDate={endDate}
-                                dateFormat="yyyy/MM/dd HH:mm"
-                                className="dateAndTimeRange"
-                                showMonthDropdown
-                                showYearDropdown
-                              />
+                              <center>
+                                <DatePicker
+                                  selected={ledgerTimestampInput || new Date()}
+                                  onChange={setLedgerTimestampInput}
+                                  selectsStart
+                                  showTimeInput
+                                  timeInputLabel={t("table.time")}
+                                  minDate={new Date(data.inception * 1000)}
+                                  maxDate={new Date()}
+                                  dateFormat="yyyy/MM/dd HH:mm:ss"
+                                  className="dateAndTimeRange"
+                                  showMonthDropdown
+                                  showYearDropdown
+                                />
+                              </center>
+                              <div className='flex flex-center'>
+                                <button onClick={() => setLedgerTimestamp(ledgerTimestampInput)} className='button-action thin narrow'>Update</button>
+                                {" "}
+                                <button onClick={resetTimeMachine} className='button-action thin narrow'>Reset</button>
+                              </div>
                             </td>
                           </tr>
-
-                          {data.xummMeta?.kycApproved &&
-                            <tr>
-                              <td>KYC</td>
-                              <td>XUMM verified</td>
-                            </tr>
-                          }
-                          {data.xummMeta?.xummPro &&
-                            <tr>
-                              <td>XUMM Pro</td>
-                              <td>
-                                {data?.xummMeta?.xummProfile?.slug ?
-                                  <a href={data.xummMeta.xummProfile.profileUrl}>
-                                    <u class="bold orange">{data.xummMeta.xummProfile.slug}</u>
-                                  </a>
-                                  :
-                                  <span class="bold orange">activated <i class="fa fa-heart"></i></span>
-                                }
-                              </td>
-                            </tr>
-                          }
-                          {data.xummMeta?.globalid?.profileUrl &&
-                            <tr>
-                              <td>
-                                GlobaliD
-                              </td>
-                              <td>
-                                <a href={data.xummMeta.globalid.profileUrl}>
-                                  <u class="bold green">{data.xummMeta.globalid.profileUrl.strReplace("https://app.global.id/u/", "")}</u>
-                                </a>
-                                {" "}
-                                <a href={data.xummMeta.globalid.profileUrl}>
-                                  <b class="green"><i class="fa fa-globe"></i></b>
-                                </a>
-                              </td>
-                            </tr>
-                          }
                         </tbody>
                       </table>
                     </div>
+                    {(
+                      data.xummMeta?.kycApproved ||
+                      data.xummMeta?.xummPro ||
+                      data.xummMeta?.globalid?.profileUrl
+                    ) &&
+                      <div>
+                        <table className='table-details autowidth'>
+                          <thead>
+                            <tr>
+                              <th colSpan="100">Statuses</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {data.xummMeta?.kycApproved &&
+                              <tr>
+                                <td>KYC</td>
+                                <td>XUMM verified</td>
+                              </tr>
+                            }
+                            {data.xummMeta?.xummPro &&
+                              <tr>
+                                <td>XUMM Pro</td>
+                                <td>
+                                  {data?.xummMeta?.xummProfile?.slug ?
+                                    <a href={data.xummMeta.xummProfile.profileUrl}>
+                                      <u class="bold orange">{data.xummMeta.xummProfile.slug}</u>
+                                    </a>
+                                    :
+                                    <span class="bold orange">activated <i class="fa fa-heart"></i></span>
+                                  }
+                                </td>
+                              </tr>
+                            }
+                            {data.xummMeta?.globalid?.profileUrl &&
+                              <tr>
+                                <td>
+                                  GlobaliD
+                                </td>
+                                <td>
+                                  <a href={data.xummMeta.globalid.profileUrl}>
+                                    <u class="bold green">{data.xummMeta.globalid.profileUrl.strReplace("https://app.global.id/u/", "")}</u>
+                                  </a>
+                                  {" "}
+                                  <a href={data.xummMeta.globalid.profileUrl}>
+                                    <b class="green"><i class="fa fa-globe"></i></b>
+                                  </a>
+                                </td>
+                              </tr>
+                            }
+                          </tbody>
+                        </table>
+                      </div>
+                    }
                   </div>
                   <div className="column-right">
                     <table className='table-details'>
