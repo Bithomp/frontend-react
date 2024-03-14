@@ -72,18 +72,17 @@ export default function Tiles({ nftList, type = 'name', convertCurrency, account
                   <div className="index">{i + 1}</div>
                   <div className='title'></div>
 
-                  {type === 'name' ?
-                    <h1>{nftName(nft, { maxLength: 18 })}</h1>
-                    :
-                    <h1>{saleData(nft.sellOffers)}</h1>
-                  }
+                  <div className='title-text'>
+                    {type === 'name' ? nftName(nft, { maxLength: 18 }) : saleData(nft.sellOffers)}
+                  </div>
                   <div className='title-full'>
                     {nftName(nft) ? <>{t("table.name")}: {nftName(nft)}<br /></> : ""}
-                    {!xahauNetwork && <>
-                      {t("table.serial")}: {nft.sequence}<br />
-                      {t("table.taxon")}: {nft.nftokenTaxon}
-                    </>}
-
+                    {!xahauNetwork &&
+                      <>
+                        {t("table.serial")}: {nft.sequence}<br />
+                        {t("table.taxon")}: {nft.nftokenTaxon}
+                      </>
+                    }
                     {addressName(nft.issuerDetails, t("table.issuer"))}
                     {addressName(nft.ownerDetails, t("table.owner"))}
                   </div>
@@ -107,11 +106,11 @@ export default function Tiles({ nftList, type = 'name', convertCurrency, account
                   <NftImageOrVideo nft={nft.nftoken} />
                   <div className="index">{i + 1}</div>
                   <div className='title'></div>
-                  <h1>
+                  <div className='title-text'>
                     {convertedAmount(nft, convertCurrency) || amountFormat(nft.amount)}
                     <br />
                     {timeOrDate(nft.acceptedAt)}
-                  </h1>
+                  </div>
                   <div className='title-full'>
                     {nftName(nft.nftoken) ? <>{t("table.name")}: {nftName(nft.nftoken, { maxLength: 18 })}</> : ""}
                     {addressName(nft.nftoken?.issuerDetails, t("table.issuer"))}
