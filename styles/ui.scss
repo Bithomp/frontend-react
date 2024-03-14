@@ -131,7 +131,7 @@ h1 {
 }
 
 br {
-  position: relative; //fix for safari
+  position: relative !important; //fix for safari
 }
 
 code {
