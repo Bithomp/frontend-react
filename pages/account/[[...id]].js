@@ -387,10 +387,10 @@ export default function Account({ pageMeta, signRequest, id, selectedCurrency, l
                                 <td>
                                   {data?.xummMeta?.xummProfile?.slug ?
                                     <a href={data.xummMeta.xummProfile.profileUrl}>
-                                      <u class="bold orange">{data.xummMeta.xummProfile.slug}</u>
+                                      <u className="bold orange">{data.xummMeta.xummProfile.slug}</u>
                                     </a>
                                     :
-                                    <span class="bold orange">activated <i class="fa fa-heart"></i></span>
+                                    <span className="bold orange">activated <i className="fa fa-heart"></i></span>
                                   }
                                 </td>
                               </tr>
@@ -402,11 +402,11 @@ export default function Account({ pageMeta, signRequest, id, selectedCurrency, l
                                 </td>
                                 <td>
                                   <a href={data.xummMeta.globalid.profileUrl}>
-                                    <u class="bold green">{data.xummMeta.globalid.profileUrl.strReplace("https://app.global.id/u/", "")}</u>
+                                    <u className="bold green">{data.xummMeta.globalid.profileUrl.strReplace("https://app.global.id/u/", "")}</u>
                                   </a>
                                   {" "}
                                   <a href={data.xummMeta.globalid.profileUrl}>
-                                    <b class="green"><i class="fa fa-globe"></i></b>
+                                    <b className="green"><i className="fa fa-globe"></i></b>
                                   </a>
                                 </td>
                               </tr>

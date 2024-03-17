@@ -397,7 +397,7 @@ export default function Admin({ redirectToken }) {
                     <td className='left'>
                       {packageData ?
                         <>
-                          <b class="green">Active</b> until {new Date(packageData.expiredAt * 1000).toLocaleDateString()}
+                          <b className="green">Active</b> until {new Date(packageData.expiredAt * 1000).toLocaleDateString()}
                         </>
                         :
                         "not activated"
