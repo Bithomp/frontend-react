@@ -4,10 +4,9 @@ import { useEffect, useState } from 'react'
 import axios from 'axios'
 import { useRouter } from 'next/router'
 
-import SEO from '../../../components/SEO'
+import SEO from '../../components/SEO'
 
-import { ledgerName } from '../../../utils'
-import AdminTabs from '../../../components/Admin/Tabs'
+import AdminTabs from '../../components/Admin/Tabs'
 
 export const getServerSideProps = async (context) => {
   const { locale } = context
@@ -18,7 +17,7 @@ export const getServerSideProps = async (context) => {
   }
 }
 
-export default function Bots() {
+export default function Subscriptions() {
   const { t } = useTranslation(['common', 'admin'])
   const [errorMessage, setErrorMessage] = useState("")
   const router = useRouter()
@@ -41,12 +40,11 @@ export default function Bots() {
         {t("header", { ns: "admin" })}
       </h1>
 
-      <AdminTabs name="mainTabs" tab="bots" />
+      <AdminTabs name="mainTabs" tab="subscriptions" />
 
       <br />
       <div className='center'>
         The page is under construction.<br /><br />
-        Here you will be able to set up your {ledgerName} bots.
         <br />
         {errorMessage ?
           <div className='center orange bold'>

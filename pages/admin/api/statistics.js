@@ -5,9 +5,9 @@ import axios from 'axios'
 import { useRouter } from 'next/router'
 
 import SEO from '../../../components/SEO'
-import Tabs from '../../../components/Tabs'
 
 import { useWidth } from '../../../utils'
+import AdminTabs from '../../../components/Admin/Tabs'
 
 export const getServerSideProps = async (context) => {
   const { locale } = context
@@ -37,40 +37,6 @@ export default function Statistics() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  const mainTabs = [
-    { value: "account", label: "Account" },
-    { value: "api", label: "API" },
-    //{ value: "bots", label: "Bots" },
-  ]
-
-  const apiTabs = [
-    { value: "api-info", label: "Information" },
-    { value: "api-payments", label: "Payments" },
-    { value: "api-statistics", label: "Statistics" },
-    { value: "api-requests", label: "Requests" },
-    { value: "api-charts", label: "Charts" },
-  ]
-
-  const changePage = tab => {
-    if (tab === "api") {
-      router.push("/admin/api")
-    } else if (tab === "bots") {
-      router.push("/admin/bots")
-    } else if (tab === "account") {
-      router.push("/admin")
-    } else if (tab === "api-info") {
-      router.push("/admin/api")
-    } else if (tab === "api-payments") {
-      router.push("/admin/api/payments")
-    } else if (tab === "api-requests") {
-      router.push("/admin/api/requests")
-    } else if (tab === "api-statistics") {
-      router.push("/admin/api/statistics")
-    } else if (tab === "api-charts") {
-      router.push("/admin/api/charts")
-    }
-  }
-
   const getData = async () => {
     setLoading(true)
     //period=from..to&span=minute&search=text&ip=z
@@ -99,8 +65,8 @@ export default function Statistics() {
         {t("header", { ns: "admin" })}
       </h1>
 
-      <Tabs tabList={mainTabs} tab="api" setTab={changePage} name="mainTabs" />
-      <Tabs tabList={apiTabs} tab="api-statistics" setTab={changePage} name="apiTabs" />
+      <AdminTabs name="mainTabs" tab="api" />
+      <AdminTabs name="apiTabs" tab="api-statistics" />
 
       <div className='center'>
         <div style={{ marginTop: "20px", textAlign: "left" }}>

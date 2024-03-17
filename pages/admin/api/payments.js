@@ -7,7 +7,6 @@ import { useRouter } from 'next/router'
 import countries from "i18n-iso-countries"
 
 import SEO from '../../../components/SEO'
-import Tabs from '../../../components/Tabs'
 import CopyButton from '../../../components/UI/CopyButton'
 
 import { amountFormat, fullDateAndTime, niceNumber } from '../../../utils/format'
@@ -71,6 +70,7 @@ export const getServerSideProps = async (context) => {
 
 import LinkIcon from "../../../public/images/link.svg"
 import CountrySelect from '../../../components/UI/CountrySelect'
+import AdminTabs from '../../../components/Admin/Tabs'
 
 export default function Payments() {
   const { t, i18n } = useTranslation(['common', 'admin'])
@@ -103,40 +103,6 @@ export default function Payments() {
   }
   const languageData = require('i18n-iso-countries/langs/' + lang + '.json')
   countries.registerLocale(languageData)
-
-  const mainTabs = [
-    { value: "account", label: "Account" },
-    { value: "api", label: "API" },
-    //{ value: "bots", label: "Bots" },
-  ]
-
-  const apiTabs = [
-    { value: "api-info", label: "Information" },
-    { value: "api-payments", label: "Payments" },
-    { value: "api-statistics", label: "Statistics" },
-    { value: "api-requests", label: "Requests" },
-    { value: "api-charts", label: "Charts" },
-  ]
-
-  const changePage = tab => {
-    if (tab === "api") {
-      router.push("/admin/api")
-    } else if (tab === "bots") {
-      router.push("/admin/bots")
-    } else if (tab === "account") {
-      router.push("/admin")
-    } else if (tab === "api-info") {
-      router.push("/admin/api")
-    } else if (tab === "api-payments") {
-      router.push("/admin/api/payments")
-    } else if (tab === "api-requests") {
-      router.push("/admin/api/requests")
-    } else if (tab === "api-statistics") {
-      router.push("/admin/api/statistics")
-    } else if (tab === "api-charts") {
-      router.push("/admin/api/charts")
-    }
-  }
 
   const fiatAmountAt = async payment => {
     const rate = await axios.get(
@@ -318,8 +284,8 @@ export default function Payments() {
         {t("header", { ns: "admin" })}
       </h1>
 
-      <Tabs tabList={mainTabs} tab="api" setTab={changePage} name="mainTabs" />
-      <Tabs tabList={apiTabs} tab="api-payments" setTab={changePage} name="apiTabs" />
+      <AdminTabs name="mainTabs" tab="api" />
+      <AdminTabs name="apiTabs" tab="api-payments" />
 
       <div className='center'>
         {((!billingCountry || choosingCountry) && !loading) ?
