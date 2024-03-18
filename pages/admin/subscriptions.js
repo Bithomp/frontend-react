@@ -13,7 +13,7 @@ import Select from 'react-select'
 import BillingCountry from '../../components/Admin/BillingCountry'
 import Link from 'next/link'
 import CopyButton from '../../components/UI/CopyButton'
-import LinkIcon from "../../../public/images/link.svg"
+import LinkIcon from "../../public/images/link.svg"
 
 export const getServerSideProps = async (context) => {
   const { locale } = context
@@ -119,7 +119,7 @@ export default function Subscriptions() {
       'partner/partner/bids',
       {
         type: "bithomp_pro",
-        tier: "standard",
+        //tier: "standard", //only for api plans
         period,
         periodCount: 1 * periodCount,
       },
