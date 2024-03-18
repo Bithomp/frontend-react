@@ -35,6 +35,7 @@ export default function Admin({ redirectToken }) {
   const [password, setPassword] = useState("")
   const [step, setStep] = useState(-1)
   const [loggedUserData, setLoggedUserData] = useState(null)
+  const [checkedPackageData, setCheckedPackageData] = useState(false)
   const [packageData, setPackageData] = useState(null)
   const [termsAccepted, setTermsAccepted] = useState(false)
 
@@ -189,7 +190,10 @@ export default function Admin({ redirectToken }) {
           */
           setPackageData(packageData.data)
         }
+        setCheckedPackageData(true)
       }
+    } else {
+      setCheckedPackageData(true)
     }
   }
 
@@ -395,12 +399,18 @@ export default function Admin({ redirectToken }) {
                   <tr>
                     <td className='right'>Bithomp Pro</td>
                     <td className='left'>
-                      {packageData ?
+                      {checkedPackageData ?
                         <>
-                          <b className="green">Active</b> until {new Date(packageData.expiredAt * 1000).toLocaleDateString()}
+                          {packageData ?
+                            <>
+                              <b className="green">Active</b> until {new Date(packageData.expiredAt * 1000).toLocaleDateString()}
+                            </>
+                            :
+                            "not activated"
+                          }
                         </>
                         :
-                        "not activated"
+                        "loading status..."
                       }
                     </td>
                   </tr>

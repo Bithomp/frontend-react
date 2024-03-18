@@ -271,6 +271,7 @@ export default function Subscriptions() {
                 }
                 onChange={(selected) => {
                   setBithompProPlan(selected.value)
+                  setPayData(null)
                 }}
                 defaultValue={bithompProOptions[0]}
                 isSearchable={false}
@@ -306,7 +307,9 @@ export default function Subscriptions() {
                           </tr>
                           <tr>
                             <td className='right'>Amount</td>
-                            <td className='left'>{shortNiceNumber(payData.bid.price, 2, 2)} {payData.bid.currency} <CopyButton text={payData.bid.price} /></td>
+                            <td className='left'>
+                              {shortNiceNumber(Math.ceil(payData.bid.price * 100) / 100, 2, 2)} {payData.bid.currency} <CopyButton text={payData.bid.price} />
+                            </td>
                           </tr>
                         </tbody>
                       </table>
