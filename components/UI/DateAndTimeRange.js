@@ -90,7 +90,7 @@ export default function DateAndTimeRange({ setPeriod, minDate, tabs, defaultPeri
         setStartDate(newStartDate)
       }
     } else {
-      if (minDate && newStartDate < minDate) {
+      if (minDate && (!newStartDate || newStartDate < minDate) && periodName !== "custom") {
         setStartDate(minDate)
       }
     }

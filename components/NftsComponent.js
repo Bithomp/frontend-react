@@ -67,7 +67,7 @@ export default function NftsComponent({
   const [searchInput, setSearchInput] = useState(searchQuery)
   const [includeBurned, setIncludeBurned] = useState(includeBurnedQuery)
   const [includeWithoutMediaData, setIncludeWithoutMediaData] = useState(includeWithoutMediaDataQuery)
-  const [mintedPeriod, setMintedPeriod] = useState("")
+  const [mintedPeriod, setMintedPeriod] = useState(mintedPeriodQuery)
 
   useEffect(() => {
     setRendered(true)
@@ -593,7 +593,7 @@ export default function NftsComponent({
               <DateAndTimeRange
                 period={mintedPeriod}
                 setPeriod={setMintedPeriod}
-                defaultPeriod={mintedPeriodQuery}
+                defaultPeriod={mintedPeriod}
                 minDate="nft"
                 style={{ marginTop: "10px", display: "inline-block" }}
               />
