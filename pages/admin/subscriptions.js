@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import axios from 'axios'
 import { useRouter } from 'next/router'
 
-import { useWidth, encode } from '../../utils'
+import { useWidth, encode, wssServer } from '../../utils'
 import { fullDateAndTime, shortNiceNumber } from '../../utils/format'
 
 import SEO from '../../components/SEO'
@@ -15,6 +15,7 @@ import Link from 'next/link'
 import CopyButton from '../../components/UI/CopyButton'
 import LinkIcon from "../../public/images/link.svg"
 import Image from 'next/image'
+import Receipt from '../../components/Receipt'
 
 const xummImg = "/images/xumm.png"
 
@@ -26,6 +27,9 @@ export const getServerSideProps = async (context) => {
     },
   }
 }
+
+let interval
+let ws = null
 
 export default function Subscriptions({ setSignRequest }) {
   const { t } = useTranslation(['common', 'admin'])
@@ -39,6 +43,10 @@ export default function Subscriptions({ setSignRequest }) {
   const [payData, setPayData] = useState(null)
   const [billingCountry, setBillingCountry] = useState("")
   const [choosingCountry, setChoosingCountry] = useState(false)
+  const [update, setUpdate] = useState(false)
+  const [bidData, setBidData] = useState(null)
+  const [paymentErrorMessage, setPaymentErrorMessage] = useState("")
+  const [step, setStep] = useState(0)
 
   useEffect(() => {
     const sessionToken = localStorage.getItem('sessionToken')
@@ -111,6 +119,7 @@ export default function Subscriptions({ setSignRequest }) {
   ]
 
   const onPurchaseClick = async () => {
+    setPayData(null)
     if (!bithompProPlan) {
       setErrorMessage("No plan selected")
       return
@@ -154,13 +163,121 @@ export default function Subscriptions({ setSignRequest }) {
             "priceInEUR": 30,
             "type": "bithomp_pro",
             "period": "month",
-            "periodCount": 3
+            "periodCount": 3,
+            "partnerID": 44598
           },
           "transactions": []
         }
       */
+      setPayData(paymentData?.data)
+      setUpdate(true)
+      setStep(1)
     }
-    setPayData(paymentData?.data)
+  }
+
+  useEffect(() => {
+    if (payData?.bid?.destinationTag && payData?.bid?.partnerID && update) {
+      interval = setInterval(() => checkPayment(payData.bid.partnerID, payData.bid.destinationTag), 60000)
+      checkPaymentWs(payData.bid.partnerID, payData.bid.destinationTag)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [payData, update])
+
+  const onCancel = () => {
+    setUpdate(false)
+    clearInterval(interval)
+    setStep(0)
+    setPayData(null)
+    if (ws) ws.close()
+  }
+
+  const updateBid = data => {
+    if (!data?.bid?.status) return
+
+    setBidData(data)
+    /* 
+      {
+        "bid": {
+          "id": 40201,
+          "createdAt": 1710850893,
+          "updatedAt": 1710850893,
+          "destinationTag": 408658420,
+          "action": "Pay for Bithomp Pro",
+          "status": "Created",
+          "price": 55.268976,
+          "totalReceivedAmount": 0,
+          "currency": "XRP",
+          "priceInSEK": 339.53,
+          "country": "BR",
+          "destinationAddress": "rEDakigd4Cp78FioF3qvQs6TrjFLjKLqM3",
+          "priceInEUR": 30,
+          "type": "bithomp_pro",
+          "period": "month",
+          "periodCount": 3,
+          "partnerID": 44509
+        },
+        "transactions": []
+      }
+    */
+    if (data.bid.status === 'Completed') {
+      setStep(2)
+      setUpdate(false)
+      setErrorMessage("")
+      clearInterval(interval)
+      if (ws) ws.close()
+      return
+    }
+    if (data.bid.status === "Partly paid") {
+      setPaymentErrorMessage(t("error.payment-partly", { received: data.bid.totalReceivedAmount, required: data.bid.price, currency: data.bid.currency, ns: "username" }));
+      return
+    }
+    if (data.bid.status === "Timeout") {
+      setStep(0)
+      setUpdate(false)
+      clearInterval(interval)
+      if (ws) ws.close()
+      return
+    }
+    if (data.error) {
+      setErrorMessage(data.error)
+    }
+  }
+
+  const checkPayment = async (partnerId, destinationTag) => {
+    const response = await axios('v2/bid/partner:' + partnerId + '/' + destinationTag + '/status').catch(error => {
+      setErrorMessage(t("error." + error.message))
+    })
+    const data = response.data
+    if (data) {
+      updateBid(data)
+    }
+  }
+
+  const checkPaymentWs = (partnerId, destinationTag) => {
+    if (!update) return
+    ws = new WebSocket(wssServer)
+
+    ws.onopen = () => {
+      console.log("ws open") //delete
+      if (ws.readyState === 1) {
+        ws.send(JSON.stringify({ command: "subscribe", bids: [{ partnerID: partnerId, destinationTag }], id: 1 }))
+      }
+    }
+
+    ws.onmessage = evt => {
+      console.log("ws message") //delete
+      const message = JSON.parse(evt.data);
+      if (message) {
+        updateBid(message);
+      }
+    }
+
+    ws.onclose = () => {
+      console.log("ws close") //delete
+      if (update) {
+        checkPaymentWs(partnerId, destinationTag)
+      }
+    }
   }
 
   return <>
@@ -292,7 +409,7 @@ export default function Subscriptions({ setSignRequest }) {
               </button>
 
               <>
-                {payData &&
+                {payData && step === 1 &&
                   <>
                     <h4 className='center'>Bithomp Pro payment details</h4>
 
@@ -335,33 +452,50 @@ export default function Subscriptions({ setSignRequest }) {
                         </table>
                       </div>
                     }
-                    <br />
-                    <button
-                      className='button-action'
-                      style={{ margin: "10px 10px 20px" }}
-                      onClick={() => setSignRequest({
-                        wallet: "xumm",
-                        request: {
-                          TransactionType: "Payment",
-                          Destination: payData.bid.destinationAddress,
-                          DestinationTag: payData.bid.destinationTag,
-                          Amount: (Math.ceil(payData.bid.price * 100) * 10000).toString(),
-                          Memos: [
-                            {
-                              "Memo": {
-                                "MemoData": encode("Payment for Bithomp Pro (" + payData.bid.periodCount + " " + payData.bid.period + (payData.bid.periodCount > 1 ? "s" : "") + ")"),
+
+                    <p className="center">
+                      <input type="button" value={t("button.cancel")} className="button-action" onClick={onCancel} />
+
+                      <button
+                        className='button-action'
+                        style={{ margin: "10px 10px 20px" }}
+                        onClick={() => setSignRequest({
+                          wallet: "xumm",
+                          request: {
+                            TransactionType: "Payment",
+                            Destination: payData.bid.destinationAddress,
+                            DestinationTag: payData.bid.destinationTag,
+                            Amount: (Math.ceil(payData.bid.price * 100) * 10000).toString(),
+                            Memos: [
+                              {
+                                "Memo": {
+                                  "MemoData": encode("Payment for Bithomp Pro (" + payData.bid.periodCount + " " + payData.bid.period + (payData.bid.periodCount > 1 ? "s" : "") + ")"),
+                                }
                               }
-                            }
-                          ]
-                        }
-                      })}
-                    >
-                      <Image src={xummImg} className='xumm-logo' alt="xaman" height={24} width={24} />
-                      Pay with Xaman
-                    </button>
+                            ]
+                          }
+                        })}
+                      >
+                        <Image src={xummImg} className='xumm-logo' alt="xaman" height={24} width={24} />
+                        Pay with Xaman
+                      </button>
+                    </p>
+
                     <br />
                     Your Pro account will be activated when the payment is received.
                   </>
+                }
+
+                {step === 2 &&
+                  <>
+                    <p className="center">
+                      We have received your purchase.
+                    </p>
+                    <Receipt item="username" details={bidData} />
+                  </>
+                }
+                {paymentErrorMessage &&
+                  <p className="red center" dangerouslySetInnerHTML={{ __html: paymentErrorMessage || "&nbsp;" }} />
                 }
 
                 {payData?.transactions?.length > 0 &&
