@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import axios from 'axios'
 import { useRouter } from 'next/router'
 
-import { useWidth } from '../../utils'
+import { useWidth, encode } from '../../utils'
 import { fullDateAndTime, shortNiceNumber } from '../../utils/format'
 
 import SEO from '../../components/SEO'
@@ -14,6 +14,9 @@ import BillingCountry from '../../components/Admin/BillingCountry'
 import Link from 'next/link'
 import CopyButton from '../../components/UI/CopyButton'
 import LinkIcon from "../../public/images/link.svg"
+import Image from 'next/image'
+
+const xummImg = "/images/xumm.png"
 
 export const getServerSideProps = async (context) => {
   const { locale } = context
@@ -24,7 +27,7 @@ export const getServerSideProps = async (context) => {
   }
 }
 
-export default function Subscriptions() {
+export default function Subscriptions({ setSignRequest }) {
   const { t } = useTranslation(['common', 'admin'])
   const router = useRouter()
   const width = useWidth()
@@ -32,7 +35,7 @@ export default function Subscriptions() {
   const [errorMessage, setErrorMessage] = useState("")
   const [loading, setLoading] = useState(true) // keep true in order not to have hydr error for rendering the select
   const [packages, setPackages] = useState([])
-  const [bithompProPlan, setBithompProPlan] = useState("1m")
+  const [bithompProPlan, setBithompProPlan] = useState("m1")
   const [payData, setPayData] = useState(null)
   const [billingCountry, setBillingCountry] = useState("")
   const [choosingCountry, setChoosingCountry] = useState(false)
@@ -291,7 +294,6 @@ export default function Subscriptions() {
               <>
                 {payData &&
                   <>
-
                     <h4 className='center'>Bithomp Pro payment details</h4>
 
                     {width > 600 ?
@@ -299,7 +301,7 @@ export default function Subscriptions() {
                         <tbody>
                           <tr>
                             <td className='right'>Address</td>
-                            <td className='left'>rEDakigd4Cp78FioF3qvQs6TrjFLjKLqM3 <CopyButton text="rEDakigd4Cp78FioF3qvQs6TrjFLjKLqM3" /></td>
+                            <td className='left'>{payData.bid.destinationAddress} <CopyButton text={payData.bid.destinationAddress} /></td>
                           </tr>
                           <tr>
                             <td className='right'>Destination tag</td>
@@ -317,7 +319,7 @@ export default function Subscriptions() {
                       <div className='left'>
                         <p>
                           Address: <br />
-                          rEDakigd4Cp78FioF3qvQs6TrjFLjKLqM3 <CopyButton text="rEDakigd4Cp78FioF3qvQs6TrjFLjKLqM3" />
+                          {payData.bid.destinationAddress} <CopyButton text={payData.bid.destinationAddress} />
                         </p>
                         <p>
                           Destination tag:<br />
@@ -333,6 +335,30 @@ export default function Subscriptions() {
                         </table>
                       </div>
                     }
+                    <br />
+                    <button
+                      className='button-action'
+                      style={{ margin: "10px 10px 20px" }}
+                      onClick={() => setSignRequest({
+                        wallet: "xumm",
+                        request: {
+                          TransactionType: "Payment",
+                          Destination: payData.bid.destinationAddress,
+                          DestinationTag: payData.bid.destinationTag,
+                          Amount: (Math.ceil(payData.bid.price * 100) * 10000).toString(),
+                          Memos: [
+                            {
+                              "Memo": {
+                                "MemoData": encode("Payment for Bithomp Pro (" + payData.bid.periodCount + " " + payData.bid.period + (payData.bid.periodCount > 1 ? "s" : "") + ")"),
+                              }
+                            }
+                          ]
+                        }
+                      })}
+                    >
+                      <Image src={xummImg} className='xumm-logo' alt="xaman" height={24} width={24} />
+                      Pay with Xaman
+                    </button>
                     <br />
                     Your Pro account will be activated when the payment is received.
                   </>
@@ -400,14 +426,9 @@ export default function Subscriptions() {
                   </div>
                 }
               </>
-
-
-
-
             </div>
           </>
         }
-
       </div>
     </div >
   </>
