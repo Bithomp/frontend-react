@@ -14,7 +14,7 @@
       "build-unl": "UNL erstellen"
     },
     "usernames": "Benutzernamen registrieren",
-    "project-registartion": "Projekt registrieren",
+    "project-registration": "Projekt registrieren",
     "price-alerts": "{{nativeCurrency}} Preisalarme",
     "submit-offline-tx": "Offline Transaktion einreichen",
     "networks": "Netzwerke",

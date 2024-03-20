@@ -14,7 +14,7 @@
 			"build-unl": "Bangunkan UNL"
 		},
 		"usernames": "Pendaftaran Nama Pengguna",
-		"project-registartion": "Pendaftaran Projek",
+		"project-registration": "Pendaftaran Projek",
 		"price-alerts": "Peringatan Harga {{nativeCurrency}}",
 		"submit-offline-tx": "Hantar Transaksi Offline",
 		"networks": "Rangkaian",

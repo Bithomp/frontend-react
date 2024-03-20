@@ -114,6 +114,9 @@ body.dark {
     &.short-top {
       margin-top: 40px;
     }
+    &.short-bottom {
+      margin-bottom: 40px;
+    }
     @media only screen and (max-width: 800px) {
       margin: 20px;
       &.short-top {
@@ -713,6 +716,8 @@ body.dark {
 @import "./components/searchBlock.scss";
 @import "./components/tabs.scss";
 @import "./components/issuerSelect.scss";
+@import "./components/inputPrepend.scss";
+@import "./components/buttonArrowScroll.scss";
 @import "./components/simpleSelect.scss";
 @import "./components/footer.scss";
 

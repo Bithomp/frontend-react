@@ -14,7 +14,7 @@
       "build-unl": "Bangun UNL"
     },
     "usernames": "Pendaftaran Username",
-    "project-registartion": "Pendaftaran Proyek",
+    "project-registration": "Pendaftaran Proyek",
     "price-alerts": "Peringatan Harga {{nativeCurrency}}",
     "submit-offline-tx": "Kirim Transaksi Offline",
     "networks": "Jaringan",

@@ -14,7 +14,7 @@
       "build-unl": "Build UNL"
     },
     "usernames": "Registrering af brugernavn",
-    "project-registartion": "Projekt registrering",
+    "project-registration": "Projekt registrering",
     "price-alerts": "{{nativeCurrency}}-pris varsler",
     "submit-offline-tx": "Indsend offline transaktion",
     "networks": "Netværk",

@@ -14,7 +14,7 @@
       "build-unl": "Construcción de UNL"
     },
     "usernames": "Registro de nombre de usuario",
-    "project-registartion": "Registro de proyecto",
+    "project-registration": "Registro de proyecto",
     "price-alerts": "Alertas de precio {{nativeCurrency}}",
     "submit-offline-tx": "Enviar transacción offline",
     "networks": "Redes",
