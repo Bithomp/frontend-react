@@ -12,8 +12,16 @@
     transition: box-shadow 0.4s ease-in-out;
     cursor: pointer;
 
+    img {
+        transition: transform 0.4s ease-in-out;
+    }
+
     &:hover {
         box-shadow: 0 0 7px 0 rgba(0, 0, 0, 0.4);
+
+        img {
+            transform: scale(0.9);
+        }
     }
 
     @media only screen and (max-width: 816px) {

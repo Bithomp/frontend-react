@@ -19,6 +19,7 @@ import { useState } from "react";
 import { isEmailValid } from '../utils'
 import SEO from "../components/SEO";
 import ButtonScrollTop from "../components/Layout/ButtonScrollTop";
+import axios from "axios";
 
 export async function getServerSideProps(context) {
     const { locale } = context;
@@ -152,20 +153,16 @@ export default function SubmitAccountInformation() {
         const clearData = Object.fromEntries(Object.entries(allValues).filter(([key, value]) => value !== ''));
         // const postData = { email, clearData };
 
+        const apiData = await axios.get( 'partner/partner', { baseUrl: '/api/' }).catch(error => {
+          setErrorMessage(t("error." + error.message))
+        });
 
-        // const apiData = await axios.post('v2/developer/register', postData).catch(error => {
+        // const apiData = await axios.post( 'partner/partner', { baseUrl: '/api/' }).catch(error => {
         //   setErrorMessage(t("error." + error.message))
         // });
 
-        // const data = apiData?.data;
-
-        // if (data) {
-        //   if (data.error) {
-        //     setErrorMessage(data.error);
-        //   }
-        // } else {
-        //   console.log('developer/register error: no data');
-        // }
+        const data = apiData?.data;
+        console.log(data);
       }
 
     return (
