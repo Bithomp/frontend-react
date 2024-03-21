@@ -538,13 +538,6 @@
   "nft-explorer": {
     "header": "NFT explorer"
   },
-  "submit-account-info": {
-    "title": "Submit account",
-    "header": "Submit XRPL account information",
-    "desc": "Bithomp strive to increase the quality of the information provided by the wallet explorer and allow users to quickly identify relationships on the ledger. If you run a service using XRP (exchange, financial service provider, non-profit or any other business) or if you use such a service, Please submit that service information here.The submission is not meant for private accounts, personal account information submitted via this form will be discarded.",
-    "subtitle": "Your information",
-    "info": "Please provide your email address in case we need to contact you for your submittion's validation."
-  },
   "nft-offers": {
     "header": "NFT offers",
     "owned-desc": "Here you can search for Buy and Sell Offers for NFTs, type in the XRPL address or username to see what it offers.",

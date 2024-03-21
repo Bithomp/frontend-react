@@ -1,5 +1,5 @@
 import { FaMediumM } from "react-icons/fa";
-import { SiSteemit, SiXrp } from "react-icons/si";
+import { SiXrp } from "react-icons/si";
 import {
     FaUser,
     FaTwitter,
@@ -18,74 +18,58 @@ import { useState } from "react";
 
 import { isEmailValid } from '../utils'
 import SEO from "../components/SEO";
-import ButtonScrollTop from "../components/Layout/ButtonScrollTop";
 import axios from "axios";
 
 export async function getServerSideProps(context) {
     const { locale } = context;
     return {
-        props: {
-            ...(await serverSideTranslations(locale, ["common"])),
-        },
-    };
-}
+      props: {
+        ...(await serverSideTranslations(locale, ['submit-account-information', 'common'])),
+      }
+    }
+  }
 
 const fields = [
     {
         icon: <SiXrp />,
-        name: "xrp",
-        placeholder: "XRP address",
+        name: "xrp"
     },
     {
         icon: <FaUser />,
-        name: "name",
-        placeholder: "Name",
+        name: "name"
     },
     {
         icon: <CiGlobe />,
-        name: "web",
-        placeholder: "Web domain",
+        name: "web"
     },
     {
         icon: <FaTwitter />,
-        name: "twitter",
-        placeholder: "Twitter username",
+        name: "twitter"
     },
     {
         icon: <FaInstagram />,
-        name: "instagram",
-        placeholder: "Instagram username",
+        name: "instagram"
     },
     {
         icon: <FaFacebookF />,
-        name: "facebook",
-        placeholder: "Facebook username",
+        name: "facebook"
     },
     {
         icon: <FaYoutube />,
-        name: "youtube",
-        placeholder: "Youtube account",
+        name: "youtube"
     },
     {
         icon: <FaLinkedinIn />,
-        name: "linkedin",
-        placeholder: "LinkedIn username",
+        name: "linkedin"
     },
     {
         icon: <FaRedditAlien />,
-        name: "reddit",
-        placeholder: "Reddit username",
+        name: "reddit"
     },
     {
         icon: <FaMediumM />,
-        name: "medium",
-        placeholder: "Medium username",
-    },
-    {
-        icon: <SiSteemit />,
-        name: "steemit",
-        placeholder: "Steemit username",
-    },
+        name: "medium"
+    }
 ];
 
 export default function SubmitAccountInformation() {
@@ -103,8 +87,7 @@ export default function SubmitAccountInformation() {
         youtube: '',
         linkedin: '',
         reddit: '',
-        medium: '',
-        steemit: ''
+        medium: ''
     });
 
     let emailRef;
@@ -170,10 +153,8 @@ export default function SubmitAccountInformation() {
             <SEO title={t("menu.project-registration")} noindex={true} />
 
             <div className='content-text content-center short-top short-bottom'>
-                <h1 className='center'>{t("submit-account-info.header")}</h1>
-                <div>{t("submit-account-info.desc")}</div>
-
-                <ButtonScrollTop />
+                <h1 className='center'>{t("header", {ns: "submit-account-information"})}</h1>
+                <div>{t("desc", {ns: "submit-account-information"})}</div>
 
                 <form style={{ marginTop: "20px" }}>
                     {fields.map((field, index) => (
@@ -183,7 +164,7 @@ export default function SubmitAccountInformation() {
                                 className='input-text'
                                 name={field.name}
                                 value={allValues[field.name]}
-                                placeholder={field.placeholder}
+                                placeholder={t(`placeholders.${field.name}`, {ns: "submit-account-information"})}
                                 onChange={changeHandler}
                             />
                             <label className='input-label'>{field.icon}</label>
@@ -191,9 +172,9 @@ export default function SubmitAccountInformation() {
                     ))}
 
                     <div className='center' style={style}>
-                        {t("submit-account-info.subtitle")}
+                        {t("subtitle", {ns: "submit-account-information"})}
                     </div>
-                    <p>{t("submit-account-info.info")}</p>
+                    <p>{t("info", {ns: "submit-account-information"})}</p>
 
                     <div className='input-prepend'>
                         <input
@@ -202,7 +183,7 @@ export default function SubmitAccountInformation() {
                             className='input-text'
                             value={email}
                             onChange={onEmailChange}
-                            placeholder='Your personal email'
+                            placeholder={t("placeholders.email", {ns: "submit-account-information"})}
                         />
                         <label className='input-label'>
                             <AiOutlineMail />
