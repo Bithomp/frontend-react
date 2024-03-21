@@ -14,9 +14,9 @@ import { AiOutlineMail } from "react-icons/ai";
 
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { useTranslation } from "next-i18next";
-import { useState } from "react";
+import { useRef, useState } from "react";
 
-import { isEmailValid } from '../utils'
+import { isEmailValid, isDomainValid, isAddressValid } from '../utils'
 import SEO from "../components/SEO";
 import axios from "axios";
 
@@ -29,10 +29,11 @@ export async function getServerSideProps(context) {
     }
   }
 
+
 const fields = [
     {
         icon: <SiXrp />,
-        name: "xrp"
+        name: "address"
     },
     {
         icon: <FaUser />,
@@ -40,7 +41,7 @@ const fields = [
     },
     {
         icon: <CiGlobe />,
-        name: "web"
+        name: "domain"
     },
     {
         icon: <FaTwitter />,
@@ -75,12 +76,14 @@ const fields = [
 export default function SubmitAccountInformation() {
     const { t } = useTranslation();
 
+    let emailRef = useRef();
+    const listRef = useRef([]);
     const [errorMessage, setErrorMessage] = useState("");
     const [email, setEmail] = useState("");
     const [allValues, setAllValues] = useState({
-        xrp: '',
+        address: '',
         name: '',
-        web: '',
+        domain: '',
         twitter: '',
         instagram: '',
         facebook: '',
@@ -90,7 +93,12 @@ export default function SubmitAccountInformation() {
         medium: ''
     });
 
-    let emailRef;
+    const baseList = [
+        'address',
+        'name',
+        'email',
+        'domain'
+    ];
 
     const style = {
         fontSize: "18px",
@@ -120,33 +128,89 @@ export default function SubmitAccountInformation() {
     }
 
     const onSubmit = async () => {
+        // eslint-disable-next-line no-unused-vars
+        const clearData = Object.fromEntries(Object.entries(allValues).filter(([key, value]) => value !== ''));
+
+        if(!clearData.address) {
+            setErrorMessage(t("form.error.address-empty"));
+            listRef.address?.focus();
+            return;
+        }
+
+        if (!isAddressValid(clearData.address)) {
+            setErrorMessage(t("form.error.address-invalid"));
+            listRef.address?.focus();
+            return;
+        }
+
+        if(!clearData.name) {
+            setErrorMessage(t("form.error.name-empty"));
+            listRef.name?.focus();
+            return;
+        }
+
+
         if (!email) {
-          setErrorMessage(t("form.error.email-empty"));
-          emailRef?.focus();
-          return;
+            setErrorMessage(t("form.error.email-empty"));
+            emailRef?.focus();
+            return;
+        }
+
+        if (!clearData.domain) {
+            setErrorMessage(t("form.error.domain-empty"));
+            listRef.domain?.focus();
+            return;
+        }
+
+        if (!isDomainValid(clearData.domain)) {
+            setErrorMessage(t("form.error.domain-invalid"));
+            listRef.domain?.focus();
+            return;
         }
 
         if (!isEmailValid(email)) {
-          setErrorMessage(t("form.error.email-invalid"));
-          emailRef?.focus();
-          return;
+            setErrorMessage(t("form.error.email-invalid"));
+            emailRef?.focus();
+            return;
         }
 
-        // eslint-disable-next-line no-unused-vars
-        const clearData = Object.fromEntries(Object.entries(allValues).filter(([key, value]) => value !== ''));
-        // const postData = { email, clearData };
 
-        const apiData = await axios.get( 'partner/partner', { baseUrl: '/api/' }).catch(error => {
+        const structuredData = Object.keys(clearData).reduce((obj, key) => {
+            if (baseList.includes(key)) {
+                return {
+                    ...obj,
+                    [key]: clearData[key]
+                };
+            } else {
+                return {
+                    ...obj,
+                    email,
+                    accounts: {
+                    ...(obj.accounts || {}),
+                    [key]: clearData[key]
+                    }
+                };
+            }
+        }, {});
+
+        const apiData = await axios.post( 'v1/userinfo', structuredData, { baseUrl: '/api/' }).catch(error => {
           setErrorMessage(t("error." + error.message))
         });
 
-        // const apiData = await axios.post( 'partner/partner', { baseUrl: '/api/' }).catch(error => {
-        //   setErrorMessage(t("error." + error.message))
-        // });
-
         const data = apiData?.data;
-        console.log(data);
-      }
+
+        if (data) {
+            if (data.status === "success") {
+                setErrorMessage("");
+            }
+
+            if (data.error) {
+                setErrorMessage(data.error);
+            }
+        } else {
+            console.log('userinfo error: no data');
+        }
+    }
 
     return (
         <>
@@ -157,11 +221,12 @@ export default function SubmitAccountInformation() {
                 <div>{t("desc", {ns: "submit-account-information"})}</div>
 
                 <form style={{ marginTop: "20px" }}>
-                    {fields.map((field, index) => (
-                        <div key={index} className='input-prepend'>
+                    {fields.map((field, i) => (
+                        <div key={i} className='input-prepend'>
                             <input
                                 type='text'
                                 className='input-text'
+                                ref={ref => { listRef[field.name] = ref; }}
                                 name={field.name}
                                 value={allValues[field.name]}
                                 placeholder={t(`placeholders.${field.name}`, {ns: "submit-account-information"})}

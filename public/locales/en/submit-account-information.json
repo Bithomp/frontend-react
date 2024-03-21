@@ -7,8 +7,8 @@
     "placeholders": {
         "email": "Your personal email",
         "name": "Name",
-        "xrp": "Address",
-        "web": "Web domain",
+        "address": "Address",
+        "domain": "Web domain",
         "twitter": "Username",
         "instagram": "Username",
         "facebook": "Username",
