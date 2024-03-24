@@ -12,10 +12,13 @@ import {
 
 import SocialIcons from "./SocialIcons"
 import LogoAnimated from './LogoAnimated'
+import ButtonScrollTop from './ButtonScrollTop'
+import { useRef } from 'react'
 
 export default function Footer({ account, setSignRequest }) {
   const year = new Date().getFullYear();
   const { t } = useTranslation();
+  const footerRef = useRef();
 
   const [showCookie, setShowCokie] = useLocalStorage('showCookie', true);
 
@@ -24,7 +27,10 @@ export default function Footer({ account, setSignRequest }) {
   }
 
   return (
-    <footer>
+    <footer ref={footerRef}>
+
+      <ButtonScrollTop footer={footerRef} />
+
       <div className="footer-menu">
         <div className="footer-menu-column">
           <span className="footer-menu-header">{t("menu.personal.personal")}</span>

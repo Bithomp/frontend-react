@@ -18,7 +18,6 @@ import { useState } from "react";
 
 import { isEmailValid } from '../utils'
 import SEO from "../components/SEO";
-import ButtonScrollTop from "../components/Layout/ButtonScrollTop";
 import axios from "axios";
 
 export async function getServerSideProps(context) {
@@ -172,8 +171,6 @@ export default function SubmitAccountInformation() {
             <div className='content-text content-center short-top short-bottom'>
                 <h1 className='center'>{t("submit-account-info.header")}</h1>
                 <div>{t("submit-account-info.desc")}</div>
-
-                <ButtonScrollTop />
 
                 <form style={{ marginTop: "20px" }}>
                     {fields.map((field, index) => (
