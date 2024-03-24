@@ -301,6 +301,7 @@
   "form": {
     "error": {
       "price-empty": "Введите цену.",
+      "name-empty": "Введите Ваше имя.",
       "address-empty": "Введите адрес.",
       "address-invalid": "Введите верный адрес.",
       "domain-empty": "Введите домен.",

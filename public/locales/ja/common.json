@@ -302,6 +302,7 @@
     "error": {
       "price-empty": "Please enter an amount.",
       "address-empty": "Please enter an address.",
+      "name-empty": "Please enter your name.",
       "address-invalid": "Please enter a valid address.",
       "domain-empty": "ドメインを入力してください。",
       "domain-invalid": "有効なドメインを入力してください。",

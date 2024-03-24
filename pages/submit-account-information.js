@@ -1,5 +1,5 @@
 import { FaMediumM } from "react-icons/fa";
-import { SiSteemit, SiXrp } from "react-icons/si";
+import { SiXrp } from "react-icons/si";
 import {
     FaUser,
     FaTwitter,
@@ -14,99 +14,91 @@ import { AiOutlineMail } from "react-icons/ai";
 
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { useTranslation } from "next-i18next";
-import { useState } from "react";
+import { useRef, useState } from "react";
 
-import { isEmailValid } from '../utils'
+import { isEmailValid, isDomainValid, isAddressValid } from '../utils'
 import SEO from "../components/SEO";
 import axios from "axios";
 
 export async function getServerSideProps(context) {
     const { locale } = context;
     return {
-        props: {
-            ...(await serverSideTranslations(locale, ["common"])),
-        },
-    };
-}
+      props: {
+        ...(await serverSideTranslations(locale, ['submit-account-information', 'common'])),
+      }
+    }
+  }
+
 
 const fields = [
     {
         icon: <SiXrp />,
-        name: "xrp",
-        placeholder: "XRP address",
+        name: "address"
     },
     {
         icon: <FaUser />,
-        name: "name",
-        placeholder: "Name",
+        name: "name"
     },
     {
         icon: <CiGlobe />,
-        name: "web",
-        placeholder: "Web domain",
+        name: "domain"
     },
     {
         icon: <FaTwitter />,
-        name: "twitter",
-        placeholder: "Twitter username",
+        name: "twitter"
     },
     {
         icon: <FaInstagram />,
-        name: "instagram",
-        placeholder: "Instagram username",
+        name: "instagram"
     },
     {
         icon: <FaFacebookF />,
-        name: "facebook",
-        placeholder: "Facebook username",
+        name: "facebook"
     },
     {
         icon: <FaYoutube />,
-        name: "youtube",
-        placeholder: "Youtube account",
+        name: "youtube"
     },
     {
         icon: <FaLinkedinIn />,
-        name: "linkedin",
-        placeholder: "LinkedIn username",
+        name: "linkedin"
     },
     {
         icon: <FaRedditAlien />,
-        name: "reddit",
-        placeholder: "Reddit username",
+        name: "reddit"
     },
     {
         icon: <FaMediumM />,
-        name: "medium",
-        placeholder: "Medium username",
-    },
-    {
-        icon: <SiSteemit />,
-        name: "steemit",
-        placeholder: "Steemit username",
-    },
+        name: "medium"
+    }
 ];
 
 export default function SubmitAccountInformation() {
     const { t } = useTranslation();
 
+    let emailRef = useRef();
+    const listRef = useRef([]);
     const [errorMessage, setErrorMessage] = useState("");
     const [email, setEmail] = useState("");
     const [allValues, setAllValues] = useState({
-        xrp: '',
+        address: '',
         name: '',
-        web: '',
+        domain: '',
         twitter: '',
         instagram: '',
         facebook: '',
         youtube: '',
         linkedin: '',
         reddit: '',
-        medium: '',
-        steemit: ''
+        medium: ''
     });
 
-    let emailRef;
+    const baseList = [
+        'address',
+        'name',
+        'email',
+        'domain'
+    ];
 
     const style = {
         fontSize: "18px",
@@ -136,51 +128,108 @@ export default function SubmitAccountInformation() {
     }
 
     const onSubmit = async () => {
+        // eslint-disable-next-line no-unused-vars
+        const clearData = Object.fromEntries(Object.entries(allValues).filter(([key, value]) => value !== ''));
+
+        if(!clearData.address) {
+            setErrorMessage(t("form.error.address-empty"));
+            listRef.address?.focus();
+            return;
+        }
+
+        if (!isAddressValid(clearData.address)) {
+            setErrorMessage(t("form.error.address-invalid"));
+            listRef.address?.focus();
+            return;
+        }
+
+        if(!clearData.name) {
+            setErrorMessage(t("form.error.name-empty"));
+            listRef.name?.focus();
+            return;
+        }
+
+
         if (!email) {
-          setErrorMessage(t("form.error.email-empty"));
-          emailRef?.focus();
-          return;
+            setErrorMessage(t("form.error.email-empty"));
+            emailRef?.focus();
+            return;
+        }
+
+        if (!clearData.domain) {
+            setErrorMessage(t("form.error.domain-empty"));
+            listRef.domain?.focus();
+            return;
+        }
+
+        if (!isDomainValid(clearData.domain)) {
+            setErrorMessage(t("form.error.domain-invalid"));
+            listRef.domain?.focus();
+            return;
         }
 
         if (!isEmailValid(email)) {
-          setErrorMessage(t("form.error.email-invalid"));
-          emailRef?.focus();
-          return;
+            setErrorMessage(t("form.error.email-invalid"));
+            emailRef?.focus();
+            return;
         }
 
-        // eslint-disable-next-line no-unused-vars
-        const clearData = Object.fromEntries(Object.entries(allValues).filter(([key, value]) => value !== ''));
-        // const postData = { email, clearData };
 
-        const apiData = await axios.get( 'partner/partner', { baseUrl: '/api/' }).catch(error => {
-          setErrorMessage(t("error." + error.message))
+        const structuredData = Object.keys(clearData).reduce((obj, key) => {
+            if (baseList.includes(key)) {
+                return {
+                    ...obj,
+                    [key]: clearData[key]
+                };
+            } else {
+                return {
+                    ...obj,
+                    email,
+                    accounts: {
+                    ...(obj.accounts || {}),
+                    [key]: clearData[key]
+                    }
+                };
+            }
+        }, {});
+
+        const apiData = await axios.post('v1/userinfo', structuredData, { baseUrl: '/api/' }).catch(error => {
+          setErrorMessage(t("error." + error.message));
         });
 
-        // const apiData = await axios.post( 'partner/partner', { baseUrl: '/api/' }).catch(error => {
-        //   setErrorMessage(t("error." + error.message))
-        // });
-
         const data = apiData?.data;
-        console.log(data);
-      }
+
+        if (data) {
+            if (data.status === "success") {
+                setErrorMessage("");
+            }
+
+            if (data.error) {
+                setErrorMessage(data.error);
+            }
+        } else {
+            console.log('userinfo error: no data');
+        }
+    }
 
     return (
         <>
             <SEO title={t("menu.project-registration")} noindex={true} />
 
             <div className='content-text content-center short-top short-bottom'>
-                <h1 className='center'>{t("submit-account-info.header")}</h1>
-                <div>{t("submit-account-info.desc")}</div>
+                <h1 className='center'>{t("heading", {ns: "submit-account-information"})}</h1>
+                <div>{t("desc", {ns: "submit-account-information"})}</div>
 
                 <form style={{ marginTop: "20px" }}>
-                    {fields.map((field, index) => (
-                        <div key={index} className='input-prepend'>
+                    {fields.map((field, i) => (
+                        <div key={i} className='input-prepend'>
                             <input
                                 type='text'
                                 className='input-text'
+                                ref={ref => { listRef[field.name] = ref; }}
                                 name={field.name}
                                 value={allValues[field.name]}
-                                placeholder={field.placeholder}
+                                placeholder={t(`placeholders.${field.name}`, {ns: "submit-account-information"})}
                                 onChange={changeHandler}
                             />
                             <label className='input-label'>{field.icon}</label>
@@ -188,9 +237,9 @@ export default function SubmitAccountInformation() {
                     ))}
 
                     <div className='center' style={style}>
-                        {t("submit-account-info.subtitle")}
+                        {t("subtitle", {ns: "submit-account-information"})}
                     </div>
-                    <p>{t("submit-account-info.info")}</p>
+                    <p>{t("info", {ns: "submit-account-information"})}</p>
 
                     <div className='input-prepend'>
                         <input
@@ -199,7 +248,7 @@ export default function SubmitAccountInformation() {
                             className='input-text'
                             value={email}
                             onChange={onEmailChange}
-                            placeholder='Your personal email'
+                            placeholder={t("placeholders.email", {ns: "submit-account-information"})}
                         />
                         <label className='input-label'>
                             <AiOutlineMail />

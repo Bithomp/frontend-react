@@ -301,6 +301,7 @@
   "form": {
     "error": {
       "price-empty": "Bitte geben Sie einen Betrag ein.",
+      "name-empty": "Bitte geben Sie Ihren Namen ein.",
       "address-empty": "Bitte geben Sie eine Adresse ein.",
       "address-invalid": "Bitte geben Sie eine gültige Adresse ein.",
       "domain-empty": "Bitte geben Sie die Domain ein.",

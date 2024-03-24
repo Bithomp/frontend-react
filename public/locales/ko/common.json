@@ -302,6 +302,7 @@
     "error": {
       "price-empty": "Please enter an amount.",
       "address-empty": "Please enter an address.",
+      "name-empty": "Please enter your name.",
       "address-invalid": "Please enter a valid address.",
       "domain-empty": "Please enter web domain.",
       "domain-invalid": "Please enter a valid web domain.",

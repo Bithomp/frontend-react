@@ -1,0 +1,20 @@
+{
+    "title": "Submit account",
+    "heading": "Submit account information",
+    "desc": "Bithomp strive to increase the quality of the information provided by the wallet explorer and allow users to quickly identify relationships on the ledger. If you run a service using the Ledger (exchange, financial service provider, non-profit or any other business) or if you use such a service, Please submit that service information here.The submission is not meant for private accounts, personal account information submitted via this form will be discarded.",
+    "subtitle": "Your information",
+    "info": "Please provide your email address in case we need to contact you for your submittion's validation.",
+    "placeholders": {
+        "email": "Your personal email",
+        "name": "Name",
+        "address": "Address",
+        "domain": "Web domain",
+        "twitter": "Username",
+        "instagram": "Username",
+        "facebook": "Username",
+        "youtube": "Account",
+        "linkedin": "Username",
+        "reddit": "Username",
+        "medium": "Username"
+    }
+}

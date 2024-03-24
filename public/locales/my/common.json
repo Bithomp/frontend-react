@@ -300,17 +300,18 @@
 	},
   "form": {
     "error": {
-			"price-empty": "Please enter an amount.",
-      "address-empty": "Please enter an address.",
-      "address-invalid": "Please enter a valid address.",
-      "domain-empty": "Please enter web domain.",
-      "domain-invalid": "Please enter a valid web domain.",
-      "description-empty": "Please enter a description.",
-      "description-short": "Description is too short.",
-			"email-empty": "Sila masukkan alamat e-mel anda.",
-			"email-invalid": "Sila masukkan alamat e-mel yang sah.",
-			"password-empty": "Sila masukkan kata laluan anda.",
-			"password-invalid": "Sila masukkan kata laluan yang sah."
+		"price-empty": "Please enter an amount.",
+		"name-empty": "Please enter your name.",
+		"address-empty": "Please enter an address.",
+		"address-invalid": "Please enter a valid address.",
+		"domain-empty": "Please enter web domain.",
+		"domain-invalid": "Please enter a valid web domain.",
+		"description-empty": "Please enter a description.",
+		"description-short": "Description is too short.",
+		"email-empty": "Sila masukkan alamat e-mel anda.",
+		"email-invalid": "Sila masukkan alamat e-mel yang sah.",
+		"password-empty": "Sila masukkan kata laluan anda.",
+		"password-invalid": "Sila masukkan kata laluan yang sah."
     }
   },
 	"error": {

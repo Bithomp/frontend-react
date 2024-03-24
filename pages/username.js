@@ -311,7 +311,7 @@ export default function Username({ setSignRequest, account, signOut, addressQuer
               TransactionType: "Payment",
               Destination: data.destinationAddress,
               DestinationTag: data.destinationTag,
-              Amount: (Math.ceil(data.amount * 1000000 * 100) / 100).toString(),
+              Amount: (Math.ceil(data.amount * 100) * 10000).toString(),
               Memos: [
                 {
                   "Memo": {
