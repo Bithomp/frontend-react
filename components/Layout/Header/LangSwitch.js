@@ -10,8 +10,6 @@ import 'moment/locale/id' // 'id'
 import 'moment/locale/ja' // 'ja'
 import 'moment/locale/ca' // 'ca'
 import 'moment/locale/hr' // 'hr'
-import 'moment/locale/da' // 'da'
-import 'moment/locale/nn' // 'nn'
 import 'moment/locale/my' // 'my'
 
 import { useRouter } from 'next/router'
@@ -72,9 +70,7 @@ export default function LanguageSwitch({ langSwitchOpen, setLangSwitchOpen, setC
     { value: 'ru', label: 'Русский' },
     { value: 'hr', label: 'Hrvatski' },
     { value: 'de', label: 'Deutsch' },
-    { value: 'da', label: 'Dansk' },
     { value: 'es', label: 'Español' },
-    { value: 'nn', label: 'Norsk' },
     { value: 'ja', label: '日本語' },
     { value: 'my', label: 'Bahasa Melayu' }
   ]
