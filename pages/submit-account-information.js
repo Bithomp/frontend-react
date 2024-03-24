@@ -193,8 +193,8 @@ export default function SubmitAccountInformation() {
             }
         }, {});
 
-        const apiData = await axios.post( 'v1/userinfo', structuredData, { baseUrl: '/api/' }).catch(error => {
-          setErrorMessage(t("error." + error.message))
+        const apiData = await axios.post('v1/userinfo', structuredData, { baseUrl: '/api/' }).catch(error => {
+          setErrorMessage(t("error." + error.message));
         });
 
         const data = apiData?.data;
@@ -217,7 +217,7 @@ export default function SubmitAccountInformation() {
             <SEO title={t("menu.project-registration")} noindex={true} />
 
             <div className='content-text content-center short-top short-bottom'>
-                <h1 className='center'>{t("header", {ns: "submit-account-information"})}</h1>
+                <h1 className='center'>{t("heading", {ns: "submit-account-information"})}</h1>
                 <div>{t("desc", {ns: "submit-account-information"})}</div>
 
                 <form style={{ marginTop: "20px" }}>
