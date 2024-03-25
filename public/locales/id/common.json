@@ -301,7 +301,6 @@
   "form": {
     "error": {
       "price-empty": "Mohon masukkan jumlah.",
-      "name-empty": "Please enter your name.",
       "address-empty": "Mohon masukkan alamat.",
       "address-invalid": "Mohon masukkan alamat yang valid.",
       "domain-empty": "Mohon masukkan domain web.",

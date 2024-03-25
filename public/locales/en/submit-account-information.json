@@ -15,6 +15,13 @@
         "youtube": "Account",
         "linkedin": "Username",
         "reddit": "Username",
-        "medium": "Username"
+        "medium": "Username",
+        "telegram": "Username"
+    },
+    "form": {
+        "error": {
+            "service-name-empty": "Please enter service name."
+        },
+        "success":  "Form submitted successfully."
     }
 }

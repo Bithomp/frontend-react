@@ -1,4 +1,4 @@
-import { FaMediumM } from "react-icons/fa";
+import { FaMediumM, FaTelegramPlane } from "react-icons/fa";
 import { SiXrp } from "react-icons/si";
 import {
     FaUser,
@@ -14,7 +14,7 @@ import { AiOutlineMail } from "react-icons/ai";
 
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import { useTranslation } from "next-i18next";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { isEmailValid, isDomainValid, isAddressValid } from '../utils'
 import SEO from "../components/SEO";
@@ -69,15 +69,37 @@ const fields = [
     {
         icon: <FaMediumM />,
         name: "medium"
+    },
+    {
+        icon: <FaTelegramPlane />,
+        name: "telegram"
     }
 ];
+
+const popupStyles = {
+    width: "230px",
+    textAlign: "center",
+    padding: "0 10px",
+    pointerEvents: "none",
+    zIndex: 2,
+    backgroundColor: "white",
+    position: "fixed",
+    left: "65px",
+    bottom: "40px",
+    boxShadow: "0 0 7px 0 rgba(0, 0, 0, 0.2)"
+}
 
 export default function SubmitAccountInformation() {
     const { t } = useTranslation();
 
     let emailRef = useRef();
     const listRef = useRef([]);
-    const [errorMessage, setErrorMessage] = useState("");
+    const [error, setError] = useState(null);
+    const [popupMessage, setPopupMessage] = useState(null);
+    // eslint-disable-next-line no-unused-vars
+    const [success, setSuccess] = useState(null);
+
+
     const [email, setEmail] = useState("");
     const [allValues, setAllValues] = useState({
         address: '',
@@ -89,7 +111,8 @@ export default function SubmitAccountInformation() {
         youtube: '',
         linkedin: '',
         reddit: '',
-        medium: ''
+        medium: '',
+        telegram: '',
     });
 
     const baseList = [
@@ -108,6 +131,27 @@ export default function SubmitAccountInformation() {
         margin: "29px auto 40px",
         display: "block",
     };
+
+    const setSuccessMessage = (message) => {
+        setSuccess(message);
+        setPopupMessage(message);
+    };
+
+    const setErrorMessage = (message) => {
+        setError(message);
+        setPopupMessage(message);
+    };
+
+    useEffect(() => {
+        if (popupMessage) {
+          const timer = setTimeout(() => {
+            setPopupMessage(null);
+          }, 3000);
+
+          return () => clearTimeout(timer);
+        }
+    }, [popupMessage]);
+
 
     const onEmailChange = (e) => {
         let x = e.target.value;
@@ -143,7 +187,7 @@ export default function SubmitAccountInformation() {
         }
 
         if (!clearData.name) {
-            setErrorMessage(t("form.error.name-empty"));
+            setErrorMessage(t("form.error.service-name-empty", { ns: "submit-account-information" }));
             listRef.name?.focus();
             return;
         }
@@ -200,7 +244,7 @@ export default function SubmitAccountInformation() {
 
         if (data) {
             if (data.status === "success") {
-                setErrorMessage("");
+                setSuccessMessage(t("form.success", { ns: "submit-account-information" }));
             }
 
             if (data.error) {
@@ -209,6 +253,7 @@ export default function SubmitAccountInformation() {
         } else {
             console.log('userinfo error: no data');
         }
+
     }
 
     return (
@@ -254,8 +299,6 @@ export default function SubmitAccountInformation() {
                         </label>
                     </div>
 
-                    {errorMessage && <p className="red center">{errorMessage}</p>}
-
                     <button
                         type='button'
                         className='button-action'
@@ -265,6 +308,10 @@ export default function SubmitAccountInformation() {
                         {t("button.submit")}
                     </button>
                 </form>
+
+                <div style={popupStyles}>
+                    {popupMessage && (<p className={`center ${error ? 'red' : 'green'}`}>{popupMessage}</p>)}
+                </div>
             </div>
         </>
     );
