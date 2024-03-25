@@ -12,6 +12,7 @@
     transition: box-shadow 0.3s ease-in-out, opacity 0.25s ease-in-out;
     cursor: pointer;
     opacity: 0;
+    -webkit-tap-highlight-color: transparent; // Remove the blue highlight on mobile
 
     @media only screen and (max-width: 816px) {
         right: 15px;
