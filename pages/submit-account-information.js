@@ -23,12 +23,11 @@ import axios from "axios";
 export async function getServerSideProps(context) {
     const { locale } = context;
     return {
-      props: {
-        ...(await serverSideTranslations(locale, ['submit-account-information', 'common'])),
-      }
+        props: {
+            ...(await serverSideTranslations(locale, ['submit-account-information', 'common'])),
+        }
     }
-  }
-
+}
 
 const fields = [
     {
@@ -115,15 +114,15 @@ export default function SubmitAccountInformation() {
         x = x.trim();
         setEmail(x);
         if (isEmailValid(x)) {
-          setErrorMessage("");
+            setErrorMessage("");
         }
     }
 
     const changeHandler = e => {
-        setAllValues({...allValues, [e.target.name]: e.target.value})
+        setAllValues({ ...allValues, [e.target.name]: e.target.value })
 
         if (e.target.value !== '') {
-          setErrorMessage("");
+            setErrorMessage("");
         }
     }
 
@@ -131,7 +130,7 @@ export default function SubmitAccountInformation() {
         // eslint-disable-next-line no-unused-vars
         const clearData = Object.fromEntries(Object.entries(allValues).filter(([key, value]) => value !== ''));
 
-        if(!clearData.address) {
+        if (!clearData.address) {
             setErrorMessage(t("form.error.address-empty"));
             listRef.address?.focus();
             return;
@@ -143,7 +142,7 @@ export default function SubmitAccountInformation() {
             return;
         }
 
-        if(!clearData.name) {
+        if (!clearData.name) {
             setErrorMessage(t("form.error.name-empty"));
             listRef.name?.focus();
             return;
@@ -186,15 +185,15 @@ export default function SubmitAccountInformation() {
                     ...obj,
                     email,
                     accounts: {
-                    ...(obj.accounts || {}),
-                    [key]: clearData[key]
+                        ...(obj.accounts || {}),
+                        [key]: clearData[key]
                     }
                 };
             }
         }, {});
 
-        const apiData = await axios.post('v1/userinfo', structuredData, { baseUrl: '/api/' }).catch(error => {
-          setErrorMessage(t("error." + error.message));
+        const apiData = await axios.post('v1/userinfo', structuredData).catch(error => {
+            setErrorMessage(t("error." + error.message));
         });
 
         const data = apiData?.data;
@@ -217,8 +216,8 @@ export default function SubmitAccountInformation() {
             <SEO title={t("menu.project-registration")} noindex={true} />
 
             <div className='content-text content-center short-top short-bottom'>
-                <h1 className='center'>{t("heading", {ns: "submit-account-information"})}</h1>
-                <div>{t("desc", {ns: "submit-account-information"})}</div>
+                <h1 className='center'>{t("heading", { ns: "submit-account-information" })}</h1>
+                <div>{t("desc", { ns: "submit-account-information" })}</div>
 
                 <form style={{ marginTop: "20px" }}>
                     {fields.map((field, i) => (
@@ -229,7 +228,7 @@ export default function SubmitAccountInformation() {
                                 ref={ref => { listRef[field.name] = ref; }}
                                 name={field.name}
                                 value={allValues[field.name]}
-                                placeholder={t(`placeholders.${field.name}`, {ns: "submit-account-information"})}
+                                placeholder={t(`placeholders.${field.name}`, { ns: "submit-account-information" })}
                                 onChange={changeHandler}
                             />
                             <label className='input-label'>{field.icon}</label>
@@ -237,9 +236,9 @@ export default function SubmitAccountInformation() {
                     ))}
 
                     <div className='center' style={style}>
-                        {t("subtitle", {ns: "submit-account-information"})}
+                        {t("subtitle", { ns: "submit-account-information" })}
                     </div>
-                    <p>{t("info", {ns: "submit-account-information"})}</p>
+                    <p>{t("info", { ns: "submit-account-information" })}</p>
 
                     <div className='input-prepend'>
                         <input
@@ -248,7 +247,7 @@ export default function SubmitAccountInformation() {
                             className='input-text'
                             value={email}
                             onChange={onEmailChange}
-                            placeholder={t("placeholders.email", {ns: "submit-account-information"})}
+                            placeholder={t("placeholders.email", { ns: "submit-account-information" })}
                         />
                         <label className='input-label'>
                             <AiOutlineMail />

@@ -6,7 +6,7 @@
     "info": "Please provide your email address in case we need to contact you for your submittion's validation.",
     "placeholders": {
         "email": "Your personal email",
-        "name": "Name",
+        "name": "Service name",
         "address": "Address",
         "domain": "Web domain",
         "twitter": "Username",
