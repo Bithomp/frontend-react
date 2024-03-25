@@ -4,12 +4,6 @@
     max-width: 766px;
     width: 100%;
 
-    @media only screen and (min-width: 816px) {
-      &:first-of-type {
-        margin-top: 40px;
-      }
-    }
-
     @media only screen and (max-width: 816px) {
       max-width: 378px;
       margin: 0 auto 20px;

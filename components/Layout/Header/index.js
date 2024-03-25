@@ -93,7 +93,7 @@ export default function Header({ setSignRequest, account, signOut, selectedCurre
             <div className="menu-dropdown-content">
               <Link href="/advertise">{t("menu.business.advertise")}</Link>
               <Link href="/username">{t("menu.usernames")}</Link>
-              <Link href="https://bithomp.com/submit-account-information">{t("menu.project-registration")}</Link>
+              <Link href="/submit-account-information">{t("menu.project-registration")}</Link>
               <a href="https://docs.bithomp.com">{t("menu.developers.api")}</a>
               <Link href="/eaas">{t("menu.business.eaas")}</Link>
               <Link href="/build-unl">{t("menu.business.build-unl")}</Link>
@@ -302,7 +302,7 @@ export default function Header({ setSignRequest, account, signOut, selectedCurre
               {!displayName &&
                 <Link href="/username" className="mobile-menu-item" onClick={mobileMenuToggle}>{t("menu.usernames")}</Link>
               }
-              <Link href="https://bithomp.com/submit-account-information" className="mobile-menu-item" onClick={mobileMenuToggle}>
+              <Link href="/submit-account-information" className="mobile-menu-item" onClick={mobileMenuToggle}>
                 {t("menu.project-registration")}
               </Link>
               <Link href="/eaas" className="mobile-menu-item" onClick={mobileMenuToggle}>
