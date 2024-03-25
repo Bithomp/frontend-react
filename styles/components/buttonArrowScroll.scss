@@ -7,13 +7,28 @@
     background-color: white;
     position: fixed;
     right: 80px;
-    bottom: 20px;
+    bottom: 40px;
     box-shadow: 0 0 7px 0 rgba(0, 0, 0, 0.2);
-    transition: box-shadow 0.4s ease-in-out;
+    transition: box-shadow 0.3s ease-in-out, opacity 0.25s ease-in-out;
     cursor: pointer;
+    opacity: 0;
+
+    @media only screen and (max-width: 816px) {
+        right: 15px;
+    }
+
+    &.is-shown {
+        opacity: 1;
+    }
+
+    &.is-fixed {
+        position: absolute;
+        top: -40px;
+        transform: translateY(-100%);
+    }
 
     img {
-        transition: transform 0.4s ease-in-out;
+        transition: transform 0.3s ease-in-out;
     }
 
     &:hover {
@@ -22,10 +37,5 @@
         img {
             transform: scale(0.9);
         }
-    }
-
-    @media only screen and (max-width: 816px) {
-        right: 15px;
-        bottom: 106px;
     }
 }
