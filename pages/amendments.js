@@ -12,7 +12,7 @@ import Link from 'next/link'
 
 import LinkIcon from "../public/images/link.svg"
 
-export async function getStaticProps({ locale }) {
+export const getServerSideProps = async ({ locale }) => {
   return {
     props: {
       ...(await serverSideTranslations(locale, ['common', 'amendments'])),

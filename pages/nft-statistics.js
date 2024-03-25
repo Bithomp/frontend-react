@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
-export async function getStaticProps({ locale }) {
+export const getServerSideProps = async ({ locale }) => {
   return {
     props: {
       ...(await serverSideTranslations(locale, ['common'])),
