@@ -14,7 +14,7 @@
       "build-unl": "Izradi UNL"
     },
     "usernames": "Registracija korisničkog imena",
-    "project-registartion": "Registracija projekta",
+    "project-registration": "Registracija projekta",
     "price-alerts": "Upozorenja na promjenu {{nativeCurrency}} cijene",
     "submit-offline-tx": "Pošalji offline transakciju",
     "networks": "Mreže",

@@ -14,7 +14,7 @@
       "build-unl": "Build UNL"
     },
     "usernames": "Username registration",
-    "project-registartion": "Project registration",
+    "project-registration": "Project registration",
     "price-alerts": "{{nativeCurrency}} price alerts",
     "submit-offline-tx": "Submit offline transaction",
     "networks": "Networks",

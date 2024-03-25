@@ -1,0 +1,32 @@
+{
+    "title": "Submit account",
+    "heading": "Submit account information",
+    "cross-chain": "Services are used cross-chain, <1>register a Service on the XRPL mainnet</1> and it will be available on other bithomp explorers.",
+    "desc": "Bithomp strive to increase the quality of the information provided by the Explorer and allow users to quickly identify relationships on the Ledger. If you run a service using the Ledger (exchange, financial service provider, non-profit or any other business) or if you use such a service, please submit that service information here.",
+    "no-private": "The submission is not meant for private accounts, personal account information submitted via this form will be discarded.",
+    "subtitle": "Your information",
+    "info": "Please provide your email address in case we need to contact you for your submittion's validation.",
+    "placeholders": {
+        "email": "Your personal email",
+        "name": "Service name",
+        "address": "Address",
+        "domain": "Web domain",
+        "twitter": "Twitter username",
+        "instagram": "Instagram username",
+        "facebook": "Facebook username",
+        "youtube": "Youtube username",
+        "linkedin": "Linkedin username",
+        "reddit": "Reddit username",
+        "medium": "Medium username",
+        "telegram": "Telegram username"
+    },
+    "form": {
+        "error": {
+            "service-name-empty": "Please enter service name."
+        },
+        "success":  "Form submitted successfully."
+    },
+    "error": {
+        "Account exist": "Someone already submitted information for that address."
+    }
+}
