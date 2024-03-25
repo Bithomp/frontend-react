@@ -29,7 +29,8 @@ export default function LanguageSwitch({ langSwitchOpen, setLangSwitchOpen, setC
 
   if (!rendered) return null
 
-  const { pathname, asPath, query } = router
+  const { asPath } = router
+  //const { pathname, asPath, query } = router
 
   const langChange = lang => {
     moment.locale(lang)
@@ -37,9 +38,11 @@ export default function LanguageSwitch({ langSwitchOpen, setLangSwitchOpen, setC
   }
 
   const handleLangChange = lang => {
-    if (i18n.language !== lang) {
+    if (i18n.language && i18n.language.slice(0, 2) !== lang) {
       langChange(lang)
-      router.replace({ pathname, query }, asPath, { locale: lang })
+      //router.replace({ pathname, query }, asPath, { locale: lang })
+      //hard refresh to avoid the issue when in some cases the language is not saved when user returned from a third party site
+      window.location.replace(`/${lang}${asPath}`)
     }
     setLangSwitchOpen(false)
   }
