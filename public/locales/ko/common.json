@@ -14,7 +14,7 @@
       "build-unl": "UNL 생성"
     },
     "usernames": "사용자명을 등록하세요",
-    "project-registartion": "프로젝트 등록하세요",
+    "project-registration": "프로젝트 등록하세요",
     "price-alerts": "{{nativeCurrency}} 가격 알림",
     "submit-offline-tx": "오프라인 거래 제출",
     "networks": "네트워크",

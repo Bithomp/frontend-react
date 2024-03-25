@@ -48,7 +48,7 @@ export default function Footer({ account, setSignRequest }) {
           <span className="footer-menu-header">{t("menu.business.business")}</span>
           <Link href="/advertise">{t("menu.business.advertise")}</Link>
           <Link href="/username">{t("menu.usernames")}</Link>
-          <a href="https://bithomp.com/explorer/submit.html" target="_blank" rel="noreferrer">{t("menu.project-registartion")}</a>
+          <Link href="https://bithomp.com/submit-account-information">{t("menu.project-registration")}</Link>
           <Link href="/eaas">{t("menu.business.eaas")}</Link>
         </div>
 

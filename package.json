@@ -25,6 +25,7 @@
     "react-datepicker": "^4.25.0",
     "react-dom": "^18.2.0",
     "react-i18next": "^12.2.0",
+    "react-icons": "^5.0.1",
     "react-infinite-scroll-component": "^6.1.0",
     "react-protected-mailto": "^1.0.3",
     "react-select": "^5.8.0",
@@ -58,7 +59,6 @@
     ]
   },
   "devDependencies": {
-    "webpack": "^5.0.0",
     "@storybook/addon-essentials": "^7.6.10",
     "@storybook/addon-interactions": "^7.6.10",
     "@storybook/addon-links": "^7.6.10",
@@ -72,6 +72,6 @@
     "eslint-plugin-storybook": "^0.6.15",
     "husky": "^8.0.3",
     "storybook": "^7.6.10",
-    "typescript": "^4.9.5"
+    "webpack": "^5.0.0"
   }
 }
