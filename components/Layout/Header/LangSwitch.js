@@ -31,20 +31,17 @@ export default function LanguageSwitch({ langSwitchOpen, setLangSwitchOpen, setC
 
   const { pathname, asPath, query } = router
 
-  const langChange = lang => {
-    moment.locale(lang)
-    cookies.set('NEXT_LOCALE', lang, { path: '/' })
-  }
-
   const handleLangChange = lang => {
     if (i18n.language !== lang) {
-      langChange(lang)
-      router.replace({ pathname, query }, asPath, { locale: lang })
+      moment.locale(lang)
+      cookies.set('NEXT_LOCALE', lang, { path: '/' })
+      router.push({ pathname, query }, asPath, { locale: lang })
     }
     setLangSwitchOpen(false)
   }
 
-  langChange(i18n.language)
+  moment.locale(i18n.language)
+  cookies.set('NEXT_LOCALE', i18n.language, { path: '/' })
 
   const spanClass = (lang) => {
     return i18n.language === lang.value ? "link blue" : "link"
