@@ -4,7 +4,7 @@ import Link from 'next/link'
 
 import SEO from '../components/SEO'
 
-export const getServerSideProps = async ({ locale }) => {
+export async function getStaticProps({ locale }) {
   return {
     props: {
       ...(await serverSideTranslations(locale, ['common'])),
