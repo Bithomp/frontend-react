@@ -17,6 +17,52 @@ import LinkIcon from "../../public/images/link.svg"
 import Image from 'next/image'
 import Receipt from '../../components/Receipt'
 
+//PayPal option starts
+import {
+  PayPalScriptProvider,
+  PayPalButtons,
+  usePayPalScriptReducer
+} from "@paypal/react-paypal-js"
+
+const ButtonWrapper = ({ type }) => {
+  const [{ options }, dispatch] = usePayPalScriptReducer()
+
+  useEffect(() => {
+    dispatch({
+      type: "resetOptions",
+      value: {
+        ...options,
+        intent: "subscription",
+      },
+    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [type])
+
+  return (<PayPalButtons
+    createSubscription={(data, actions) => {
+      return actions.subscription
+        .create({
+          plan_id: "P-274307709T351962WMWF67RA",
+        })
+        .then((orderId) => {
+          // Your code here after create the order
+          return orderId
+        })
+    }}
+    style={{
+      label: "subscribe",
+      layout: "vertical",
+      color: "silver",
+      tagline: false,
+      height: 40
+    }}
+  />)
+}
+
+//https://paypal.github.io/react-paypal-js/?path=/docs/example-paypalbuttons--default
+
+//PayPal option ends
+
 const xummImg = "/images/xumm.png"
 
 export const getServerSideProps = async (context) => {
@@ -379,7 +425,27 @@ export default function Subscriptions({ setSignRequest }) {
             <div className='center'>
               Here you can purchase <b>Bithomp Pro</b> subscription.
             </div>
-            <br />
+            <h4>
+              Pay with PayPal - 1 Year, 100 EUR
+            </h4>
+
+            <div className='center' style={{ width: "350px", margin: "auto" }}>
+              <PayPalScriptProvider
+                options={{
+                  clientId: "AcUlMvkL6Uc6OVv-USMK3fg2wZ_xEBolL0-yyzWkOnS7vF2aWbu_AJFYJxaRRfPoiN0SBEnSFHUTbSUn",
+                  components: "buttons",
+                  intent: "subscription",
+                  vault: true,
+                  locale: 'en_US'
+                }}
+              >
+                <ButtonWrapper type="subscription" />
+              </PayPalScriptProvider>
+            </div>
+
+            <h4>
+              Pay with XRP
+            </h4>
 
             <div className='center'>
               <Select

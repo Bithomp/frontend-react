@@ -11,53 +11,6 @@ import CopyButton from '../../../components/UI/CopyButton'
 import { amountFormat, fullDateAndTime, niceNumber } from '../../../utils/format'
 import { nativeCurrency, useWidth } from '../../../utils'
 
-//PayPal option is off for now
-/*
-import {
-  PayPalScriptProvider,
-  PayPalButtons,
-  usePayPalScriptReducer
-} from "@paypal/react-paypal-js"
-
-const ButtonWrapper = ({ type }) => {
-  const [{ options }, dispatch] = usePayPalScriptReducer()
-
-  useEffect(() => {
-    dispatch({
-      type: "resetOptions",
-      value: {
-        ...options,
-        intent: "subscription",
-      },
-    })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [type])
-
-  return (<PayPalButtons
-    createSubscription={(data, actions) => {
-      return actions.subscription
-        .create({
-          plan_id: "P-274307709T351962WMWF67RA",
-        })
-        .then((orderId) => {
-          // Your code here after create the order
-          return orderId
-        })
-    }}
-    style={{
-      label: "subscribe",
-      layout: "vertical",
-      color: "silver",
-      tagline: false,
-      height: 40
-    }}
-  />)
-}
-
-//https://paypal.github.io/react-paypal-js/?path=/docs/example-paypalbuttons--default
-
-*/
-
 export const getServerSideProps = async (context) => {
   const { locale } = context
   return {
@@ -363,32 +316,6 @@ export default function Payments() {
                 }
               </div>
             }
-
-            {/* PayPal option is off for now 
-
-            {billingCountry &&
-              <>
-                <h4>
-                  2. PayPal subcription for the Standard plan 100 EUR/month
-                </h4>
-
-                <div className='center' style={{ width: "350px", margin: "auto" }}>
-                  <PayPalScriptProvider
-                    options={{
-                      clientId: "AcUlMvkL6Uc6OVv-USMK3fg2wZ_xEBolL0-yyzWkOnS7vF2aWbu_AJFYJxaRRfPoiN0SBEnSFHUTbSUn",
-                      components: "buttons",
-                      intent: "subscription",
-                      vault: true,
-                      locale: 'en_US'
-                    }}
-                  >
-                    <ButtonWrapper type="subscription" />
-                  </PayPalScriptProvider>
-                </div>
-              </>
-            }
-
-          */}
           </>
         }
 

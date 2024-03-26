@@ -191,6 +191,8 @@ export default function Admin({ redirectToken }) {
           setPackageData(packageData.data)
         }
         setCheckedPackageData(true)
+      } else {
+        setCheckedPackageData(true)
       }
     } else {
       setCheckedPackageData(true)
