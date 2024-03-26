@@ -467,7 +467,8 @@ export default function NftsComponent({
     { label: t("table.issuer"), key: "issuer" },
     { label: t("table.taxon"), key: "nftokenTaxon" },
     { label: t("table.serial"), key: "sequence" },
-    { label: t("table.name"), key: "metadata.name" }
+    { label: t("table.name"), key: "metadata.name" },
+    { label: "METADATA", key: "metadata" }
   ]
   if (nftExplorer) {
     csvHeaders.push({ label: t("table.owner"), key: "owner" })
