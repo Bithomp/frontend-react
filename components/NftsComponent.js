@@ -233,6 +233,11 @@ export default function NftsComponent({
           nftList = newdata.uritokens
         }
 
+        //for CSV export
+        for (let i = 0; i < nftList.length; i++) {
+          nftList[i].metadataString = JSON.stringify(nftList[i].metadata)
+        }
+
         if (nftList?.length > 0) {
           setErrorMessage("")
           if (newdata.marker) {
@@ -468,7 +473,7 @@ export default function NftsComponent({
     { label: t("table.taxon"), key: "nftokenTaxon" },
     { label: t("table.serial"), key: "sequence" },
     { label: t("table.name"), key: "metadata.name" },
-    { label: "METADATA", key: "metadata" }
+    { label: t("table.metadata"), key: "metadataString" }
   ]
   if (nftExplorer) {
     csvHeaders.push({ label: t("table.owner"), key: "owner" })
