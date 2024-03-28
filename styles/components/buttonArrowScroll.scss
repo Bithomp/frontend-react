@@ -22,6 +22,11 @@
         opacity: 1;
     }
 
+    body.dark & {
+        background-color: var(--background-footer);
+        box-shadow: 0 0 7px 0 rgba(255, 255, 255, 0.3);
+    }
+
     &.is-fixed {
         position: absolute;
         top: -40px;
