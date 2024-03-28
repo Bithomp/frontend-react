@@ -14,7 +14,7 @@
       "build-unl": "Crea la teva UNL"
     },
     "usernames": "Registre d'àlies",
-    "project-registartion": "Registre de projectes",
+    "project-registration": "Registre de projectes",
     "price-alerts": "Alertes {{nativeCurrency}}",
     "submit-offline-tx": "Envia transaccions offline",
     "networks": "Xarxes",

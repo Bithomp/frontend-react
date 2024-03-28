@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 
 const arrowTop = "/images/arrow-top.svg"
 
-export default function ButtonScrollTop({footer}) {
+export default function ButtonScrollTop({ footer }) {
 
     const [buttonState, setButtonState] = useState({ isShown: false, isFixedButton: false });
 
@@ -20,6 +20,7 @@ export default function ButtonScrollTop({footer}) {
         return () => {
             window.removeEventListener('scroll', handleScroll);
         };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const scrollTop = useCallback(() => {

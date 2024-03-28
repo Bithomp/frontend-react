@@ -1,0 +1,44 @@
+.input-prepend {
+    position: relative;
+    margin-top: 20px;
+    max-width: 766px;
+    width: 100%;
+
+    @media only screen and (max-width: 816px) {
+      max-width: 378px;
+      margin: 0 auto 20px;
+    }
+
+    input {
+      padding-left: 40px;
+      max-width: 704px;
+
+      @media only screen and (max-width: 816px) {
+        width: calc(100% - 52px);
+        max-width: 378px;
+      }
+
+      &::placeholder {
+        color: var(--text-main);
+        opacity: 0.5;
+      }
+
+      &[value=""] + label {
+        opacity: 0.5;
+      }
+    }
+
+    label {
+      color: var(--accent-icon);
+      position: absolute;
+      inset: 0 auto 0 11px;
+      display: flex;
+      align-items: center;
+      width: 20px;
+      transition: opacity 0.4s;
+
+      svg {
+        width: 100%;
+      }
+    }
+}

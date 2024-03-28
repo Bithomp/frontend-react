@@ -6,9 +6,23 @@ import axios from 'axios'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import Link from 'next/link'
 
-import { isAddressOrUsername, setTabParams, useWidth, xahauNetwork } from '../utils'
-import { isValidTaxon, nftThumbnail, nftNameLink, bestNftOffer, mpUrl, partnerMarketplaces } from '../utils/nft'
-import { nftLink, usernameOrAddress, userOrServiceLink, amountFormat, timeOrDate, fullDateAndTime } from '../utils/format'
+import { isAddressOrUsername, setTabParams, useWidth, xahauNetwork, capitalizeFirstLetter } from '../utils'
+import {
+  isValidTaxon,
+  nftThumbnail,
+  nftNameLink,
+  bestNftOffer,
+  mpUrl,
+  partnerMarketplaces
+} from '../utils/nft'
+import {
+  nftLink,
+  usernameOrAddress,
+  userOrServiceLink,
+  amountFormat,
+  timeOrDate,
+  fullDateAndTime
+} from '../utils/format'
 
 import SEO from './SEO'
 import SearchBlock from './Layout/SearchBlock'
@@ -68,6 +82,19 @@ export default function NftsComponent({
   const [includeBurned, setIncludeBurned] = useState(includeBurnedQuery)
   const [includeWithoutMediaData, setIncludeWithoutMediaData] = useState(includeWithoutMediaDataQuery)
   const [mintedPeriod, setMintedPeriod] = useState(mintedPeriodQuery)
+  const [csvHeaders, setCsvHeaders] = useState([])
+
+  let csvHeadersConst = [
+    { label: "NFT ID", key: "nftokenID" },
+    { label: t("table.issuer"), key: "issuer" },
+    { label: t("table.taxon"), key: "nftokenTaxon" },
+    { label: t("table.serial"), key: "sequence" },
+    { label: t("table.name"), key: "metadata.name" }
+  ]
+
+  if (nftExplorer) {
+    csvHeadersConst.push({ label: t("table.owner"), key: "owner" })
+  }
 
   useEffect(() => {
     setRendered(true)
@@ -232,6 +259,33 @@ export default function NftsComponent({
         if (xahauNetwork) {
           nftList = newdata.uritokens
         }
+
+        let csvHeadersNew = []
+        let keys = []
+        let attributes = []
+        let attributesHeaders = []
+
+        //for CSV export
+        for (let i = 0; i < nftList.length; i++) {
+          if (nftList[i].metadata) {
+            Object.keys(nftList[i].metadata).forEach(function (key) {
+              if (!keys.includes(key) && key.toLowerCase() !== 'name' && typeof nftList[i].metadata[key] === 'string') {
+                keys.push(key)
+                csvHeadersNew.push({ label: capitalizeFirstLetter(key), key: "metadata." + key })
+              }
+              if (key.toLowerCase() === "attributes") {
+                Object.keys(nftList[i].metadata[key]).forEach(function (attribute) {
+                  if (!attributes.includes(attribute)) {
+                    attributes.push(attribute)
+                    attributesHeaders.push({ label: "Attribute " + nftList[i].metadata[key][attribute].trait_type, key: "metadata.attributes." + attribute + ".value" })
+                  }
+                })
+              }
+            })
+          }
+        }
+
+        setCsvHeaders(csvHeadersConst.concat(csvHeadersNew).concat(attributesHeaders))
 
         if (nftList?.length > 0) {
           setErrorMessage("")
@@ -460,17 +514,6 @@ export default function NftsComponent({
       }
     }
     return t("table.text.private-offer") //shouldn't be the case
-  }
-
-  let csvHeaders = [
-    { label: "NFT ID", key: "nftokenID" },
-    { label: t("table.issuer"), key: "issuer" },
-    { label: t("table.taxon"), key: "nftokenTaxon" },
-    { label: t("table.serial"), key: "sequence" },
-    { label: t("table.name"), key: "metadata.name" }
-  ]
-  if (nftExplorer) {
-    csvHeaders.push({ label: t("table.owner"), key: "owner" })
   }
 
   const checkBoxStyles = {
