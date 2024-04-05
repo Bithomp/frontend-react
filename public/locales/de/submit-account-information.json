@@ -1,0 +1,32 @@
+{
+    "title": "Konto einreichen",
+    "heading": "Kontoinformationen einreichen",
+    "cross-chain": "Dienste werden cross-chain genutzt. <1>Registeren Sie einen Dienst auf XRPL mainnet</1> und es wird auf den anderen Bithomp Explorern verfügbar sein.",
+    "desc": "Bithomp ist bestrebt, die Qualität der vom Explorer bereitgestellten Informationen zu verbessern und es den Benutzern zu ermöglichen, Beziehungen auf dem Ledger schnell zu erkennen. Wenn Sie einen Dienst betreiben, der den Ledger nutzt (Börse, Finanzdienstleister, gemeinnützig oder ein anderes Unternehmen), oder wenn Sie einen solchen Dienst nutzen, übermitteln Sie bitte die Informationen zu diesem Dienst hier.",
+    "no-private": "Die Übermittlung ist nicht für private Konten gedacht. Persönliche Kontoinformationen, die über dieses Formular übermittelt werden, werden verworfen.",
+    "subtitle": "Ihre Information",
+    "info": "Bitte geben Sie Ihre E-Mail-Adresse an für den Fall, dass wir Sie für die Validierung Ihrer Angaben kontaktieren müssen.",
+    "placeholders": {
+        "email": "Ihre persönliche E-Mail-Adresse",
+        "name": "Name des Dienstes",
+        "address": "Adressse",
+        "domain": "Web-Domäne",
+        "twitter": "Twitter Benutzername",
+        "instagram": "Instagram Benutzername",
+        "facebook": "Facebook Benutzername",
+        "youtube": "Youtube Benutzername",
+        "linkedin": "Linkedin Benutzername",
+        "reddit": "Reddit Benutzername",
+        "medium": "Medium Benutzername",
+        "telegram": "Telegram Benutzername"
+    },
+    "form": {
+        "error": {
+            "service-name-empty": "Bitte geben Sie den Name des Dienstes an."
+        },
+        "success":  "Formular erfolgreich gesendet."
+    },
+    "error": {
+        "Account exist": "Jemand hat bereits Informationen für diese Adresse übermittelt."
+    }
+}
