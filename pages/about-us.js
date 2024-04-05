@@ -7,23 +7,23 @@ export async function getServerSideProps(context) {
   const { locale } = context
   return {
     props: {
-      ...(await serverSideTranslations(locale, ['common'])),
+      ...(await serverSideTranslations(locale, ['common', 'about-us'])),
     }
   }
 }
 
 export default function AboutUs() {
 
-  const { t } = useTranslation(['common'])
+  const { t } = useTranslation(['common', 'about-us'])
 
   return (
     <>
       <SEO
-        title={t('menu.company.about-us')}
-        description="Read about Bithomp and our services"
+        title={t('seo-header', { ns: 'about-us' })}
+        description={t('seo-description', { ns: 'about-us' })}
       />
       <div className="content-text content-center">
-        <h1 className='center'>Welcome to Bithomp</h1>
+        <h1 className='center'>{t("header", { ns: 'about-us' })}</h1>
         <p>
           Bithomp serves as a tool for users to delve into XRPL and XAHAU accounts, examining balances, transactions, owned assets including fungible tokens and NFTs, as well as orders, escrows, and other features across the following networks:
         </p>
