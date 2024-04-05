@@ -32,14 +32,16 @@ const pages = [
   { loc: "genesis", changefreq: "weekly", priority: "0.6" },
   { loc: "build-unl", changefreq: "yearly", priority: "0.6" },
 
-  { loc: "submit/", changefreq: "yearly", priority: "0.5" },
+  { loc: "submit-account-information", changefreq: "yearly", priority: "0.5" },
 
+  { loc: "about-us", changefreq: "yearly", priority: "0.4" },
   { loc: "customer-support", changefreq: "yearly", priority: "0.4" },
   { loc: "developer", changefreq: "yearly", priority: "0.4" },
   { loc: "press", changefreq: "yearly", priority: "0.4" },
-
-  { loc: "explorer/submit.html", changefreq: "yearly", priority: "0.2" }
+  { loc: "submit/", changefreq: "yearly", priority: "0.4" },
 ]
+
+//network specific pages
 
 if (xahauNetwork) {
   pages.push(
@@ -54,7 +56,6 @@ function generateSiteMap(posts) {
     'explorer/',
     'submit/',
     'paperwallet/',
-    'explorer/submit.html',
     'advertise',
     'eaas',
     'build-unl',
