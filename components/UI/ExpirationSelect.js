@@ -1,5 +1,5 @@
 import Select from 'react-select'
-import { useTranslation } from "react-i18next"
+import { useTranslation } from "next-i18next"
 
 export default function ExpirationSelect({ onChange }) {
   const { t } = useTranslation()

@@ -1,5 +1,8 @@
 {
   "menu": {
+    "company": {
+      "about-us": "About us"
+    },
     "services": {
       "nft-mint": "Mint NFT"
     },
@@ -14,7 +17,7 @@
       "build-unl": "UNLの作成"
     },
     "usernames": "ユーザネームの登録",
-    "project-registartion": "プロジェクトの登録",
+    "project-registration": "プロジェクトの登録",
     "price-alerts": "{{nativeCurrency}}価格アラート",
     "submit-offline-tx": "オフライントランザクションを送信",
     "networks": "ネットワーク",

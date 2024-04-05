@@ -5,9 +5,9 @@ import axios from 'axios'
 import { useRouter } from 'next/router'
 
 import SEO from '../../../components/SEO'
-import Tabs from '../../../components/Tabs'
 
 import { ledgerName } from '../../../utils'
+import AdminTabs from '../../../components/Admin/Tabs'
 
 export const getServerSideProps = async (context) => {
   const { locale } = context
@@ -34,20 +34,6 @@ export default function Bots() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  const mainTabs = [
-    { value: "account", label: "Account" },
-    { value: "api", label: "API" },
-    { value: "bots", label: "Bots" },
-  ]
-
-  const changePage = tab => {
-    if (tab === "api") {
-      router.push("/admin/api")
-    } else if (tab === "account") {
-      router.push("/admin")
-    }
-  }
-
   return <>
     <SEO title={t("header", { ns: "admin" })} />
     <div className="page-admin content-center">
@@ -55,7 +41,7 @@ export default function Bots() {
         {t("header", { ns: "admin" })}
       </h1>
 
-      <Tabs tabList={mainTabs} tab="bots" setTab={changePage} name="mainTabs" />
+      <AdminTabs name="mainTabs" tab="bots" />
 
       <br />
       <div className='center'>

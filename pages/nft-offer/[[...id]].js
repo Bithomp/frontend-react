@@ -236,7 +236,17 @@ export default function NftOffer({ setSignRequest, signRequest, account, id }) {
                       || (account?.address && data?.destination === account.address) // if the offer is for me
                     ) &&
                       <>
-                        {cancelNftOfferButton(t, setSignRequest, data.owner, data, "sell", data.type, (data.nftokenID || data.uriTokenID))}
+                        {
+                          cancelNftOfferButton(
+                            t,
+                            setSignRequest,
+                            data.owner,
+                            data,
+                            (data.flags?.sellToken === true ? "sell" : "buy"),
+                            data.type,
+                            (data.nftokenID || data.uriTokenID)
+                          )
+                        }
                         <br /><br />
                       </>
                     }
@@ -245,6 +255,10 @@ export default function NftOffer({ setSignRequest, signRequest, account, id }) {
                     <table className='table-details'>
                       <tbody>
                         {trStatus(t, data)}
+                        <tr>
+                          <td>{t("table.type")}</td>
+                          <td>{data.flags?.sellToken === true ? t("table.text.sell") : t("table.text.buy")} </td>
+                        </tr>
                         <tr>
                           <td>{t("table.offer")}</td>
                           <td>{shortHash(data.offerIndex, 10)} <CopyButton text={data.offerIndex} /></td>

@@ -1160,17 +1160,19 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
                                 }
                               </td>
                             </tr>
-                            <tr>
-                              <td>{t("table.by-owner")}</td>
-                              <td>
-                                <Link href={"/nft-explorer?owner=" + data.owner}>{t("table.all-nfts")}</Link>
-                                {data.type === 'xls20' &&
-                                  <>,{" "}
-                                    <Link href={"/nft-explorer?owner=" + data.owner + "&list=onSale"}>{t("table.on-sale")}</Link>
-                                  </>
-                                }
-                              </td>
-                            </tr>
+                            {data.owner &&
+                              <tr>
+                                <td>{t("table.by-owner")}</td>
+                                <td>
+                                  <Link href={"/nft-explorer?owner=" + data.owner}>{t("table.all-nfts")}</Link>
+                                  {data.type === 'xls20' &&
+                                    <>,{" "}
+                                      <Link href={"/nft-explorer?owner=" + data.owner + "&list=onSale"}>{t("table.on-sale")}</Link>
+                                    </>
+                                  }
+                                </td>
+                              </tr>
+                            }
                           </tbody>
                         </table>
 

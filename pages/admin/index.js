@@ -4,14 +4,13 @@ import { useEffect, useState } from 'react'
 import { Turnstile } from '@marsidev/react-turnstile'
 import axios from 'axios'
 import { useTheme } from '../../components/Layout/ThemeContext'
-import { useRouter } from 'next/router'
 import Link from 'next/link'
 
 import SEO from '../../components/SEO'
-import Tabs from '../../components/Tabs'
 import CheckBox from '../../components/UI/CheckBox'
 
 import { isEmailValid } from '../../utils'
+import AdminTabs from '../../components/Admin/Tabs'
 
 export const getServerSideProps = async ({ locale, query }) => {
   return {
@@ -28,7 +27,6 @@ const checkmark = '/images/checkmark.svg'
 export default function Admin({ redirectToken }) {
   const { theme } = useTheme()
   const { t, i18n } = useTranslation(['common', 'admin'])
-  const router = useRouter()
   const [siteKey, setSiteKey] = useState("")
   const [errorMessage, setErrorMessage] = useState("")
   const [token, setToken] = useState("") // CL token
@@ -37,6 +35,8 @@ export default function Admin({ redirectToken }) {
   const [password, setPassword] = useState("")
   const [step, setStep] = useState(-1)
   const [loggedUserData, setLoggedUserData] = useState(null)
+  const [checkedPackageData, setCheckedPackageData] = useState(false)
+  const [packageData, setPackageData] = useState(null)
   const [termsAccepted, setTermsAccepted] = useState(false)
 
   const checkApi = async () => {
@@ -123,16 +123,80 @@ export default function Admin({ redirectToken }) {
     })
 
     if (data?.data) {
+      /*
+        {
+          "id": 2,
+          "created_at": "2023-10-13T10:22:08.000Z",
+          "updated_at": "2023-10-13T10:22:08.000Z",
+          "email": "vasia@pupkin.tk"
+        }
+      */
       setLoggedUserData(data.data)
     }
-    /*
-      {
-        "id": 2,
-        "created_at": "2023-10-13T10:22:08.000Z",
-        "updated_at": "2023-10-13T10:22:08.000Z",
-        "email": "bakshayev@gmail.com"
+
+    const partnerData = await axios.get(
+      'partner/partner',
+      { baseUrl: '/api/' }
+    ).catch(error => {
+      if (error.response?.data?.error === "errors.token.required") {
+        onLogOut()
+        return
       }
-    */
+      if (error && error.message !== "canceled") {
+        setErrorMessage(t(error.response?.data?.error || "error." + error.message))
+      }
+    })
+
+    if (partnerData?.data) {
+      /*
+        {
+          "bithompProPackageID": 48,
+          "id": 4450,
+          "created_at": "2023-11-10T18:54:52.000Z",
+          "updated_at": "2024-01-15T09:19:40.000Z",
+          "name": "Vasia TEST",
+          "email": "vasia@pupkin.tk",
+          "country": "BO"
+        }
+      */
+      if (partnerData.data.bithompProPackageID) {
+        //request to get the package data
+        const packageData = await axios.get(
+          'partner/partner/package/' + partnerData.data.bithompProPackageID,
+          { baseUrl: '/api/' }
+        ).catch(error => {
+          if (error.response?.data?.error === "errors.token.required") {
+            onLogOut()
+            return
+          }
+          if (error && error.message !== "canceled") {
+            setErrorMessage(t(error.response?.data?.error || "error." + error.message))
+          }
+        })
+
+        if (packageData?.data) {
+          /*
+            {
+              "id": 4,
+              "createdAt": 1710684170,
+              "updatedAt": 1710684170,
+              "startedAt": 1710288000,
+              "expiredAt": 1711151999,
+              "cancelledAt": null,
+              "unlockedAt": null,
+              "type": "bithomp_pro",
+              "metadata": {}
+            }
+          */
+          setPackageData(packageData.data)
+        }
+        setCheckedPackageData(true)
+      } else {
+        setCheckedPackageData(true)
+      }
+    } else {
+      setCheckedPackageData(true)
+    }
   }
 
   let emailRef
@@ -242,25 +306,11 @@ export default function Admin({ redirectToken }) {
     checkApi()
   }
 
-  const mainTabs = [
-    { value: "account", label: "Account" },
-    { value: "api", label: "API" },
-    //{ value: "bots", label: "Bots" },
-  ]
-
-  const changePage = tab => {
-    if (tab === "api") {
-      router.push("/admin/api")
-    } else if (tab === "bots") {
-      router.push("/admin/bots")
-    }
-  }
-
   return <>
     <SEO title={t("header", { ns: "admin" })} />
     <div className="page-admin content-center">
       <h1 className='center'>
-        {step === 0 ?
+        {step < 1 ?
           <>
             Partner portal sign in / registration
           </>
@@ -274,7 +324,7 @@ export default function Admin({ redirectToken }) {
       }
 
       {step === 2 &&
-        <Tabs tabList={mainTabs} tab="account" setTab={changePage} name="mainTabs" />
+        <AdminTabs name="mainTabs" tab="account" />
       }
 
       <br />
@@ -282,6 +332,7 @@ export default function Admin({ redirectToken }) {
         {(step === 0 || step === 1) &&
           <div className="input-validation" style={{ margin: "auto", width: "300px" }}>
             <input
+              name="email"
               placeholder="Email address"
               value={email}
               onChange={onEmailChange}
@@ -346,6 +397,24 @@ export default function Admin({ redirectToken }) {
                   <tr>
                     <td className='right'>Registered</td>
                     <td className='left'>{new Date(loggedUserData.created_at).toLocaleString()}</td>
+                  </tr>
+                  <tr>
+                    <td className='right'>Bithomp Pro</td>
+                    <td className='left'>
+                      {checkedPackageData ?
+                        <>
+                          {packageData ?
+                            <>
+                              <b className="green">Active</b> until {new Date(packageData.expiredAt * 1000).toLocaleDateString()}
+                            </>
+                            :
+                            "not activated"
+                          }
+                        </>
+                        :
+                        "loading status..."
+                      }
+                    </td>
                   </tr>
                 </tbody>
               </table>

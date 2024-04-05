@@ -87,7 +87,8 @@
             font-size: 1em;
             font-weight: bold;
           }
-          h1 {
+          .title-text {
+            font-weight: bold;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -145,7 +146,7 @@
                 opacity: 1;
               }
             }
-            h1,
+            .title-text,
             .title,
             .img-status {
               opacity: 0;

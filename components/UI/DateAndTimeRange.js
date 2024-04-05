@@ -1,6 +1,6 @@
 
 import DatePicker from "react-datepicker"
-import { useTranslation } from "react-i18next"
+import { useTranslation } from "next-i18next"
 import { useEffect, useState } from "react"
 
 import "react-datepicker/dist/react-datepicker.css"
@@ -8,7 +8,7 @@ import { registerLocale, setDefaultLocale } from "react-datepicker"
 import { useRouter } from "next/router"
 
 import Tabs from "../Tabs"
-import { network, useWidth, setTabParams } from "../../utils"
+import { useWidth, setTabParams, networkMinimumDate } from "../../utils"
 
 export default function DateAndTimeRange({ setPeriod, minDate, tabs, defaultPeriod, style }) {
   const { i18n, t } = useTranslation()
@@ -32,29 +32,11 @@ export default function DateAndTimeRange({ setPeriod, minDate, tabs, defaultPeri
   yearAgo = new Date(yearAgo)
 
   if (minDate === "nft") {
-    if (network === "mainnet") {
-      minDate = new Date("2022-10-31T20:50:51.000Z") // first nft on the xrpl mainent
-    } else if (network === "xahau") {
-      minDate = new Date("2023-11-01T13:00:29.000Z") //first nft on xahau
-    } else if (network === "xahau-testnet") {
-      minDate = new Date("2023-01-28T08:35:30.000Z") //first nft on xahau-testnet
-    } else if (network === "testnet") {
-      minDate = new Date("2023-08-09T01:53:41.000Z") // first nft in history for the testnet
-    } else if (network === "devnet") {
-      minDate = new Date("2023-09-19T20:36:40.000Z") // first nft in history for the devnet
-    } else {
-      minDate = new Date("2013-01-01T03:21:10.000Z") // ledger 32570
-    }
+    minDate = networkMinimumDate("nft")
   }
 
   if (!minDate) {
-    if (network === "xahau") {
-      minDate = new Date("2023-10-30T12:21:00.000Z") // ledger 2 on xahau
-    } else if (network === "xahau-testnet") {
-      minDate = new Date("2023-01-27T13:07:10.000Z") // ledger 3 on xahau-testnet
-    } else {
-      minDate = new Date("2013-01-01T03:21:10.000Z") // ledger 32570 on mainnet
-    }
+    minDate = networkMinimumDate()
   }
 
   let periodTabs = [
@@ -108,7 +90,7 @@ export default function DateAndTimeRange({ setPeriod, minDate, tabs, defaultPeri
         setStartDate(newStartDate)
       }
     } else {
-      if (minDate && newStartDate < minDate) {
+      if (minDate && (!newStartDate || newStartDate < minDate) && periodName !== "custom") {
         setStartDate(minDate)
       }
     }

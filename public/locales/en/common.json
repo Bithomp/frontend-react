@@ -1,5 +1,8 @@
 {
   "menu": {
+    "company": {
+      "about-us": "About us"
+    },
     "services": {
       "nft-mint": "Mint NFT"
     },
@@ -14,7 +17,7 @@
       "build-unl": "Build UNL"
     },
     "usernames": "Username registration",
-    "project-registartion": "Project registration",
+    "project-registration": "Project registration",
     "price-alerts": "{{nativeCurrency}} price alerts",
     "submit-offline-tx": "Submit offline transaction",
     "networks": "Networks",

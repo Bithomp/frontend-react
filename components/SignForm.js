@@ -698,7 +698,7 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
 
   const checkBoxText = (screen, signRequest) => {
     if (screen === 'nftTransfer') return <Trans i18nKey="signin.confirm.nft-transfer">
-      I'm offering that NFT for FREE to the Destination account, <span class="orange bold">the destination account would need to accept the NFT transfer</span>.
+      I'm offering that NFT for FREE to the Destination account, <span className="orange bold">the destination account would need to accept the NFT transfer</span>.
     </Trans>
 
 

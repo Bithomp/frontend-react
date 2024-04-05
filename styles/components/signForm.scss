@@ -60,7 +60,7 @@
       &.xahOnly {
         input {
           @media only screen and (max-width: 480px) {
-            width: calc(100% - 22px);
+            width: calc(100% - 52px);
           }
         }
         &:after {
@@ -114,6 +114,7 @@
       display: inline-block;
       margin: 20px 0;
       text-align: left;
+      max-width: 400px;
     }
     .signin-status {
       margin: 20px;

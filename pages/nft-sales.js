@@ -15,7 +15,9 @@ import {
   nftLink,
   userOrServiceLink,
   usernameOrAddress,
-  timeOrDate
+  timeOrDate,
+  fullDateAndTime,
+  niceNumber
 } from '../utils/format'
 
 export const getServerSideProps = async ({ query, locale }) => {
@@ -220,6 +222,15 @@ export default function NftSales({
 
       if (newdata.sales) {
         if (newdata.sales.length > 0) {
+
+          //for CSV export
+          for (let i = 0; i < newdata.sales.length; i++) {
+            newdata.sales[i].localDate = fullDateAndTime(newdata.sales[i].acceptedAt)
+            newdata.sales[i].amountInConvertCurrency = niceNumber(newdata.sales[i].amountInConvertCurrencies[sortCurrency], 2)
+            newdata.sales[i].amountFormated = amountFormat(newdata.sales[i].amount, { minFractionDigist: 2 })
+            newdata.sales[i].nftId = newdata.sales[i].nftoken.nftokenID || newdata.sales[i].nftoken.uriTokenID
+          }
+
           setErrorMessage("")
           if (newdata.marker) {
             setHasMore(newdata.marker)
@@ -383,14 +394,13 @@ export default function NftSales({
   }
 
   let csvHeaders = [
-    { label: t("table.accepted"), key: "acceptedAt" },
-    { label: (t("table.amount") + " (" + sortCurrency + ")"), key: "amountInConvertCurrencies." + sortCurrency },
-    { label: (t("table.amount") + " (drops)"), key: "amount" },
+    { label: t("table.accepted"), key: "localDate" },
+    { label: (t("table.amount") + " (" + sortCurrency + ")"), key: "amountInConvertCurrency" },
+    { label: t("table.amount"), key: "amountFormated" },
     { label: t("table.name"), key: "nftoken.metadata.name" },
     { label: t("table.taxon"), key: "nftoken.nftokenTaxon" },
     { label: t("table.serial"), key: "nftoken.sequence" },
-    { label: "NFT", key: "nftoken.nftokenID" },
-    { label: "NFT", key: "nftoken.uriTokenID" },
+    { label: "NFT ID", key: "nftId" },
     { label: t("table.transaction"), key: "acceptedTxHash" },
     { label: t("table.buyer"), key: "buyer" },
     { label: t("table.seller"), key: "seller" },

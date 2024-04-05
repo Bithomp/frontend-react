@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react"
-import { useTranslation } from "react-i18next"
+import { useTranslation } from "next-i18next"
 
 const copyTextToClipboard = async (text) => {
   if ('clipboard' in navigator) {
@@ -40,7 +40,7 @@ export default function CopyButton({ text }) {
   if (!text) return ""
 
   const notCopiedStyle = {
-    outline: "none", 
+    outline: "none",
     marginBottom: "-3px"
   }
 

@@ -1,5 +1,8 @@
 {
 	"menu": {
+		"company": {
+      "about-us": "About us"
+    },
 		"services": {
       "nft-mint": "Mint NFT"
     },
@@ -14,7 +17,7 @@
 			"build-unl": "Bangunkan UNL"
 		},
 		"usernames": "Pendaftaran Nama Pengguna",
-		"project-registartion": "Pendaftaran Projek",
+		"project-registration": "Pendaftaran Projek",
 		"price-alerts": "Peringatan Harga {{nativeCurrency}}",
 		"submit-offline-tx": "Hantar Transaksi Offline",
 		"networks": "Rangkaian",
@@ -300,17 +303,17 @@
 	},
   "form": {
     "error": {
-			"price-empty": "Please enter an amount.",
-      "address-empty": "Please enter an address.",
-      "address-invalid": "Please enter a valid address.",
-      "domain-empty": "Please enter web domain.",
-      "domain-invalid": "Please enter a valid web domain.",
-      "description-empty": "Please enter a description.",
-      "description-short": "Description is too short.",
-			"email-empty": "Sila masukkan alamat e-mel anda.",
-			"email-invalid": "Sila masukkan alamat e-mel yang sah.",
-			"password-empty": "Sila masukkan kata laluan anda.",
-			"password-invalid": "Sila masukkan kata laluan yang sah."
+		"price-empty": "Please enter an amount.",
+		"address-empty": "Please enter an address.",
+		"address-invalid": "Please enter a valid address.",
+		"domain-empty": "Please enter web domain.",
+		"domain-invalid": "Please enter a valid web domain.",
+		"description-empty": "Please enter a description.",
+		"description-short": "Description is too short.",
+		"email-empty": "Sila masukkan alamat e-mel anda.",
+		"email-invalid": "Sila masukkan alamat e-mel yang sah.",
+		"password-empty": "Sila masukkan kata laluan anda.",
+		"password-invalid": "Sila masukkan kata laluan yang sah."
     }
   },
 	"error": {

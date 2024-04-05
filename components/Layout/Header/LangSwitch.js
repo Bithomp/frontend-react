@@ -10,8 +10,6 @@ import 'moment/locale/id' // 'id'
 import 'moment/locale/ja' // 'ja'
 import 'moment/locale/ca' // 'ca'
 import 'moment/locale/hr' // 'hr'
-import 'moment/locale/da' // 'da'
-import 'moment/locale/nn' // 'nn'
 import 'moment/locale/my' // 'my'
 
 import { useRouter } from 'next/router'
@@ -31,19 +29,25 @@ export default function LanguageSwitch({ langSwitchOpen, setLangSwitchOpen, setC
 
   if (!rendered) return null
 
-  const { pathname, asPath, query } = router
+  const { asPath } = router
+  //const { pathname, asPath, query } = router
+
+  const langChange = lang => {
+    moment.locale(lang)
+    cookies.set('NEXT_LOCALE', lang, { path: '/' })
+  }
 
   const handleLangChange = lang => {
-    if (i18n.language !== lang) {
-      moment.locale(lang)
-      cookies.set('NEXT_LOCALE', lang, { path: '/' })
-      router.push({ pathname, query }, asPath, { locale: lang })
+    if (i18n.language && i18n.language.slice(0, 2) !== lang) {
+      langChange(lang)
+      //router.replace({ pathname, query }, asPath, { locale: lang })
+      //hard refresh to avoid the issue when in some cases the language is not saved when user returned from a third party site
+      window.location.replace(`/${lang}${asPath}`)
     }
     setLangSwitchOpen(false)
   }
 
-  moment.locale(i18n.language)
-  cookies.set('NEXT_LOCALE', i18n.language, { path: '/' })
+  langChange(i18n.language)
 
   const spanClass = (lang) => {
     return i18n.language === lang.value ? "link blue" : "link"
@@ -72,9 +76,7 @@ export default function LanguageSwitch({ langSwitchOpen, setLangSwitchOpen, setC
     { value: 'ru', label: 'Русский' },
     { value: 'hr', label: 'Hrvatski' },
     { value: 'de', label: 'Deutsch' },
-    { value: 'da', label: 'Dansk' },
     { value: 'es', label: 'Español' },
-    { value: 'nn', label: 'Norsk' },
     { value: 'ja', label: '日本語' },
     { value: 'my', label: 'Bahasa Melayu' }
   ]

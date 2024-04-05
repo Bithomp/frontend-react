@@ -1,11 +1,11 @@
 import Select from 'react-select';
-import { useTranslation } from "react-i18next";
+import { useTranslation } from "next-i18next";
 import { useState, useEffect } from 'react';
 
 export default function IssuerSelect({ issuersList, selectedIssuer, setSelectedIssuer }) {
   const { t } = useTranslation();
 
-  let emptyOption = { value: '', label: t("general.all-issuers"), username: ""};
+  let emptyOption = { value: '', label: t("general.all-issuers"), username: "" };
   let defaultOption = emptyOption;
   let issuersArray = [];
 

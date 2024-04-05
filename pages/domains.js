@@ -9,7 +9,7 @@ import { useWidth } from '../utils'
 
 import SEO from '../components/SEO'
 
-export async function getStaticProps({ locale }) {
+export const getServerSideProps = async ({ locale }) => {
   return {
     props: {
       ...(await serverSideTranslations(locale, ['common', 'domains'])),

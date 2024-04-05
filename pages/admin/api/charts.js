@@ -6,9 +6,9 @@ import { useRouter } from 'next/router'
 import { chartSpan, useWidth } from '../../../utils'
 
 import SEO from '../../../components/SEO'
-import Tabs from '../../../components/Tabs'
 import SimpleChart from '../../../components/SimpleChart'
 import DateAndTimeRange from '../../../components/UI/DateAndTimeRange'
+import AdminTabs from '../../../components/Admin/Tabs'
 
 export const getServerSideProps = async (context) => {
   const { locale } = context
@@ -46,40 +46,6 @@ export default function Charts() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [period])
 
-  const mainTabs = [
-    { value: "account", label: "Account" },
-    { value: "api", label: "API" },
-    //{ value: "bots", label: "Bots" },
-  ]
-
-  const apiTabs = [
-    { value: "api-info", label: "Information" },
-    { value: "api-payments", label: "Payments" },
-    { value: "api-statistics", label: "Statistics" },
-    { value: "api-requests", label: "Requests" },
-    { value: "api-charts", label: "Charts" },
-  ]
-
-  const changePage = tab => {
-    if (tab === "api") {
-      router.push("/admin/api")
-    } else if (tab === "bots") {
-      router.push("/admin/bots")
-    } else if (tab === "account") {
-      router.push("/admin")
-    } else if (tab === "api-info") {
-      router.push("/admin/api")
-    } else if (tab === "api-payments") {
-      router.push("/admin/api/payments")
-    } else if (tab === "api-requests") {
-      router.push("/admin/api/requests")
-    } else if (tab === "api-statistics") {
-      router.push("/admin/api/statistics")
-    } else if (tab === "api-charts") {
-      router.push("/admin/api/charts")
-    }
-  }
-
   const getData = async period => {
     setLoading(true)
 
@@ -113,8 +79,8 @@ export default function Charts() {
         {t("header", { ns: "admin" })}
       </h1>
 
-      <Tabs tabList={mainTabs} tab="api" setTab={changePage} name="mainTabs" />
-      <Tabs tabList={apiTabs} tab="api-charts" setTab={changePage} name="apiTabs" />
+      <AdminTabs name="mainTabs" tab="api" />
+      <AdminTabs name="apiTabs" tab="api-charts" />
 
       <center>
         <DateAndTimeRange

@@ -1,0 +1,47 @@
+.button-arrow-scroll {
+    height: 42px;
+    width: 42px;
+    z-index: 2;
+    border: none;
+    border-radius: 50%;
+    background-color: white;
+    position: fixed;
+    right: 80px;
+    bottom: 40px;
+    box-shadow: 0 0 7px 0 rgba(0, 0, 0, 0.2);
+    transition: box-shadow 0.3s ease-in-out, opacity 0.25s ease-in-out;
+    cursor: pointer;
+    opacity: 0;
+    -webkit-tap-highlight-color: transparent; // Remove the blue highlight on mobile
+
+    @media only screen and (max-width: 816px) {
+        right: 15px;
+    }
+
+    &.is-shown {
+        opacity: 1;
+    }
+
+    body.dark & {
+        background-color: var(--background-footer);
+        box-shadow: 0 0 7px 0 rgba(255, 255, 255, 0.3);
+    }
+
+    &.is-fixed {
+        position: absolute;
+        top: -40px;
+        transform: translateY(-100%);
+    }
+
+    img {
+        transition: transform 0.3s ease-in-out;
+    }
+
+    &:hover {
+        box-shadow: 0 0 7px 0 rgba(0, 0, 0, 0.4);
+
+        img {
+            transform: scale(0.9);
+        }
+    }
+}

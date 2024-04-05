@@ -18,8 +18,10 @@ import { nftNameLink, nftThumbnail, nftName } from '../../utils/nft'
 
 export const getServerSideProps = async ({ query, locale }) => {
   const { offerList, id } = query
+  //key to refresh the component when Link pressed within the same route
   return {
     props: {
+      key: Math.random(),
       offerList: offerList || "owned",
       id: id ? (Array.isArray(id) ? id[0] : id) : "",
       ...(await serverSideTranslations(locale, ['common'])),

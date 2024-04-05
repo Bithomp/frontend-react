@@ -1,5 +1,8 @@
 {
   "menu": {
+    "company": {
+      "about-us": "О нас"
+    },
     "services": {
       "nft-mint": "Чеканка NFT"
     },
@@ -14,7 +17,7 @@
       "build-unl": "Создать UNL"
     },
     "usernames": "Псевдоним",
-    "project-registartion": "Регистрация проекта",
+    "project-registration": "Регистрация проекта",
     "price-alerts": "Мониторинг {{nativeCurrency}} цены",
     "submit-offline-tx": "Отправить офлайн транзакцию",
     "networks": "Сети",
@@ -301,6 +304,7 @@
   "form": {
     "error": {
       "price-empty": "Введите цену.",
+      "name-empty": "Введите Ваше имя.",
       "address-empty": "Введите адрес.",
       "address-invalid": "Введите верный адрес.",
       "domain-empty": "Введите домен.",

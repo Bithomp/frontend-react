@@ -4,61 +4,12 @@ import { useEffect, useState } from 'react'
 import axios from 'axios'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import countries from "i18n-iso-countries"
 
 import SEO from '../../../components/SEO'
-import Tabs from '../../../components/Tabs'
 import CopyButton from '../../../components/UI/CopyButton'
 
 import { amountFormat, fullDateAndTime, niceNumber } from '../../../utils/format'
 import { nativeCurrency, useWidth } from '../../../utils'
-
-//PayPal option is off for now
-/*
-import {
-  PayPalScriptProvider,
-  PayPalButtons,
-  usePayPalScriptReducer
-} from "@paypal/react-paypal-js"
-
-const ButtonWrapper = ({ type }) => {
-  const [{ options }, dispatch] = usePayPalScriptReducer()
-
-  useEffect(() => {
-    dispatch({
-      type: "resetOptions",
-      value: {
-        ...options,
-        intent: "subscription",
-      },
-    })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [type])
-
-  return (<PayPalButtons
-    createSubscription={(data, actions) => {
-      return actions.subscription
-        .create({
-          plan_id: "P-274307709T351962WMWF67RA",
-        })
-        .then((orderId) => {
-          // Your code here after create the order
-          return orderId
-        })
-    }}
-    style={{
-      label: "subscribe",
-      layout: "vertical",
-      color: "silver",
-      tagline: false,
-      height: 40
-    }}
-  />)
-}
-
-//https://paypal.github.io/react-paypal-js/?path=/docs/example-paypalbuttons--default
-
-*/
 
 export const getServerSideProps = async (context) => {
   const { locale } = context
@@ -70,10 +21,11 @@ export const getServerSideProps = async (context) => {
 }
 
 import LinkIcon from "../../../public/images/link.svg"
-import CountrySelect from '../../../components/UI/CountrySelect'
+import AdminTabs from '../../../components/Admin/Tabs'
+import BillingCountry from '../../../components/Admin/BillingCountry'
 
 export default function Payments() {
-  const { t, i18n } = useTranslation(['common', 'admin'])
+  const { t } = useTranslation(['common', 'admin'])
   const [errorMessage, setErrorMessage] = useState("")
   const [apiData, setApiData] = useState(null)
   const [apiPayments, setApiPayments] = useState({})
@@ -82,7 +34,7 @@ export default function Payments() {
   const [eurRate, setEurRate] = useState(0)
   const [billingCountry, setBillingCountry] = useState("")
   const [choosingCountry, setChoosingCountry] = useState(false)
-  const [loading, setLoading] = useState(true) //keep true for country select
+  const [loading, setLoading] = useState(false)
   const [loadingPayments, setLoadingPayments] = useState(false)
 
   useEffect(() => {
@@ -95,48 +47,6 @@ export default function Payments() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
-
-  let lang = i18n.language.slice(0, 2)
-  const notSupportedLanguages = ['my'] // supported "en", "ru", "ja", "ko" etc
-  if (notSupportedLanguages.includes(lang)) {
-    lang = "en"
-  }
-  const languageData = require('i18n-iso-countries/langs/' + lang + '.json')
-  countries.registerLocale(languageData)
-
-  const mainTabs = [
-    { value: "account", label: "Account" },
-    { value: "api", label: "API" },
-    //{ value: "bots", label: "Bots" },
-  ]
-
-  const apiTabs = [
-    { value: "api-info", label: "Information" },
-    { value: "api-payments", label: "Payments" },
-    { value: "api-statistics", label: "Statistics" },
-    { value: "api-requests", label: "Requests" },
-    { value: "api-charts", label: "Charts" },
-  ]
-
-  const changePage = tab => {
-    if (tab === "api") {
-      router.push("/admin/api")
-    } else if (tab === "bots") {
-      router.push("/admin/bots")
-    } else if (tab === "account") {
-      router.push("/admin")
-    } else if (tab === "api-info") {
-      router.push("/admin/api")
-    } else if (tab === "api-payments") {
-      router.push("/admin/api/payments")
-    } else if (tab === "api-requests") {
-      router.push("/admin/api/requests")
-    } else if (tab === "api-statistics") {
-      router.push("/admin/api/statistics")
-    } else if (tab === "api-charts") {
-      router.push("/admin/api/charts")
-    }
-  }
 
   const fiatAmountAt = async payment => {
     const rate = await axios.get(
@@ -151,94 +61,63 @@ export default function Payments() {
   }
 
   const getApiData = async () => {
-    const partnerData = await axios.get(
-      'partner/partner',
+    //check rates, and show transaction history only 
+    setLoading(true)
+    const data = await axios.get(
+      'partner/partner/accessToken',
       { baseUrl: '/api/' }
     ).catch(error => {
+      if (error && error.message !== "canceled") {
+        setErrorMessage(t(error.response?.data?.error || "error." + error.message))
+      }
+      setLoading(false)
+    })
+
+    setLoading(false)
+
+    setApiData(data?.data)
+    /*
+    {
+      "token": "werwerw-werwer-werc",
+      "locked": false,
+      "domain": "slavkia.122.com",
+      "tier": "free"
+    }
+    */
+
+    const rate = await axios.get('v2/rates/current/eur').catch(error => {
+      if (error && error.message !== "canceled") {
+        setErrorMessage(t(error.response.data.error || "error." + error.message))
+      }
+    })
+    /* { "eur": 0.57814 } */
+
+    if (rate?.data?.eur) {
+      setEurRate(rate.data.eur)
+    }
+
+    setLoadingPayments(true)
+    setApiPayments({})
+    const apiTransactions = await axios.get(
+      'partner/partner/accessToken/transactions?limit=50&offset=0',
+      { baseUrl: '/api/' }
+    ).catch(error => {
+      setLoadingPayments(false)
       if (error && error.message !== "canceled") {
         setErrorMessage(t(error.response.data.error || "error." + error.message))
         if (error.response?.data?.error === "errors.token.required") {
           router.push('/admin')
         }
       }
-      setLoading(false)
     })
 
-    /*
-    {
-      "id": 321098,
-      "created_at": "2022-09-20T12:42:38.000Z",
-      "updated_at": "2024-01-09T12:08:33.000Z",
-      "name": "vasia.com",
-      "email": "sasha@public.com",
-      "country": "GB"
-    }
-    */
-
-    setLoading(false)
-
-    const partnerCountry = partnerData?.data?.country
-
-    //if we have country available: set country, check rates, and show transaction history only 
-    if (partnerCountry) {
-      setBillingCountry(partnerCountry)
-
-      const data = await axios.get(
-        'partner/partner/accessToken',
-        { baseUrl: '/api/' }
-      ).catch(error => {
-        if (error && error.message !== "canceled") {
-          setErrorMessage(t(error.response?.data?.error || "error." + error.message))
-        }
-      })
-
-      setApiData(data?.data)
-      /*
-      {
-        "token": "werwerw-werwer-werc",
-        "locked": false,
-        "domain": "slavkia.122.com",
-        "tier": "free"
+    if (apiTransactions?.data?.transactions) {
+      let apiData = apiTransactions.data
+      for (let transaction of apiData.transactions) {
+        transaction.fiatAmount = await fiatAmountAt(transaction)
       }
-      */
-
-      const rate = await axios.get('v2/rates/current/eur').catch(error => {
-        if (error && error.message !== "canceled") {
-          setErrorMessage(t(error.response.data.error || "error." + error.message))
-        }
-      })
-      /* { "eur": 0.57814 } */
-
-      if (rate?.data?.eur) {
-        setEurRate(rate.data.eur)
-      }
-
-      setLoadingPayments(true)
-      setApiPayments({})
-      const apiTransactions = await axios.get(
-        'partner/partner/accessToken/transactions?limit=50&offset=0',
-        { baseUrl: '/api/' }
-      ).catch(error => {
-        setLoadingPayments(false)
-        if (error && error.message !== "canceled") {
-          setErrorMessage(t(error.response.data.error || "error." + error.message))
-          if (error.response?.data?.error === "errors.token.required") {
-            router.push('/admin')
-          }
-        }
-      })
-
-      if (apiTransactions?.data?.transactions) {
-        let apiData = apiTransactions.data
-        for (let transaction of apiData.transactions) {
-          transaction.fiatAmount = await fiatAmountAt(transaction)
-        }
-        setApiPayments(apiData)
-        setLoadingPayments(false)
-      }
-    } else {
-      //if no country available
-      setChoosingCountry(true)
+      setApiPayments(apiData)
+      setLoadingPayments(false)
     }
   }
 
@@ -296,21 +175,6 @@ export default function Payments() {
     </>
   }
 
-  const saveCountry = async () => {
-    const data = await axios.put(
-      'partner/partner',
-      { country: billingCountry },
-      { baseUrl: '/api/' }
-    ).catch(error => {
-      if (error && error.message !== "canceled") {
-        setErrorMessage(t(error.response?.data?.error || "error." + error.message))
-      }
-    })
-    if (data?.data?.country) {
-      setChoosingCountry(false)
-    }
-  }
-
   return <>
     <SEO title={t("header", { ns: "admin" })} />
     <div className="page-admin content-center">
@@ -318,38 +182,20 @@ export default function Payments() {
         {t("header", { ns: "admin" })}
       </h1>
 
-      <Tabs tabList={mainTabs} tab="api" setTab={changePage} name="mainTabs" />
-      <Tabs tabList={apiTabs} tab="api-payments" setTab={changePage} name="apiTabs" />
+      <AdminTabs name="mainTabs" tab="api" />
+      <AdminTabs name="apiTabs" tab="api-payments" />
 
       <div className='center'>
-        {((!billingCountry || choosingCountry) && !loading) ?
-          <>
-            <h4>Choose your country of residence</h4>
-            <CountrySelect
-              countryCode={billingCountry}
-              setCountryCode={setBillingCountry}
-              type="onlySelect"
-            />
-            <br />
-            <button
-              onClick={() => saveCountry()}
-              className='button-action'
-            >
-              Save
-            </button>
-            <br />
-          </>
-          :
-          <>
-            {billingCountry &&
-              <>
-                Your billing country is {" "}
-                <a onClick={() => setChoosingCountry(true)}>
-                  {countries.getName(billingCountry, lang, { select: "official" })}
-                </a>
-              </>
-            }
 
+        <BillingCountry
+          billingCountry={billingCountry}
+          setBillingCountry={setBillingCountry}
+          choosingCountry={choosingCountry}
+          setChoosingCountry={setChoosingCountry}
+        />
+
+        {!((!billingCountry || choosingCountry) && !loading) &&
+          <>
             {apiData &&
               <>
                 <br /><br />
@@ -470,32 +316,6 @@ export default function Payments() {
                 }
               </div>
             }
-
-            {/* PayPal option is off for now 
-
-            {billingCountry &&
-              <>
-                <h4>
-                  2. PayPal subcription for the Standard plan 100 EUR/month
-                </h4>
-
-                <div className='center' style={{ width: "350px", margin: "auto" }}>
-                  <PayPalScriptProvider
-                    options={{
-                      clientId: "AcUlMvkL6Uc6OVv-USMK3fg2wZ_xEBolL0-yyzWkOnS7vF2aWbu_AJFYJxaRRfPoiN0SBEnSFHUTbSUn",
-                      components: "buttons",
-                      intent: "subscription",
-                      vault: true,
-                      locale: 'en_US'
-                    }}
-                  >
-                    <ButtonWrapper type="subscription" />
-                  </PayPalScriptProvider>
-                </div>
-              </>
-            }
-
-          */}
           </>
         }
 

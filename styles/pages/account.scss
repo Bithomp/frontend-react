@@ -3,13 +3,13 @@
   .column-left {
     display: inline-block;
     position: relative;
-    width: calc(23% - 30px);
+    width: calc(26% - 30px);
     padding: 0 15px;
     table.table-details {
+      margin-top: 10px;
       border-collapse: separate;
       background-color: var(--background-main);
       td {
-        background-color: var(--background-secondary);
         border: 2.5px solid var(--background-main);
         &:first-child {
           border-left-width: 5px;
@@ -25,10 +25,17 @@
         box-shadow: none;
       }
     }
+    .avatar {
+      width: calc(100% - 2px);
+      height: auto;
+      display: inline-block;
+      border: 1px solid var(--button-additional);
+      box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.15);
+    }
   }
   .column-right {
     display: inline-block;
-    width: calc(77% - 32px);
+    width: calc(74% - 32px);
     padding: 0 15px;
     vertical-align: top;
     .slide {
