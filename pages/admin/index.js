@@ -310,7 +310,7 @@ export default function Admin({ redirectToken }) {
     <SEO title={t("header", { ns: "admin" })} />
     <div className="page-admin content-center">
       <h1 className='center'>
-        {step === 0 ?
+        {step < 1 ?
           <>
             Partner portal sign in / registration
           </>

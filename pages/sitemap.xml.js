@@ -33,6 +33,7 @@ const pages = [
   { loc: "build-unl", changefreq: "yearly", priority: "0.6" },
 
   { loc: "submit-account-information", changefreq: "yearly", priority: "0.5" },
+  { loc: "admin", changefreq: "yearly", priority: "0.5" },
 
   { loc: "about-us", changefreq: "yearly", priority: "0.4" },
   { loc: "customer-support", changefreq: "yearly", priority: "0.4" },
@@ -53,6 +54,7 @@ if (xahauNetwork) {
 function generateSiteMap(posts) {
   const locales = ['en', 'ko', 'ru', 'de', 'es', 'id', 'ja', 'ca', 'hr', 'my']
   const oldPages = [
+    'admin',
     'explorer/',
     'submit/',
     'paperwallet/',
