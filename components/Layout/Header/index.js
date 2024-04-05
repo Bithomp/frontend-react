@@ -79,7 +79,7 @@ export default function Header({ setSignRequest, account, signOut, selectedCurre
               <a href={"/explorer/"}>{t("menu.personal.search-on-ledgerName", { ledgerName })}</a>
               <Link href="/username">{t("menu.usernames")}</Link>
               {displayName ?
-                <Link href={"/nfts/" + address} legacyBehavior>{t("signin.actions.my-nfts")}</Link>
+                <Link href={"/nfts/" + address}>{t("signin.actions.my-nfts")}</Link>
                 :
                 <span onClick={() => { setSignRequest({ redirect: "nfts" }) }} className="link">{t("signin.actions.my-nfts")}</span>
               }
@@ -113,13 +113,13 @@ export default function Header({ setSignRequest, account, signOut, selectedCurre
               </>
               }
 
-              <Link href={"/nfts" + (displayName ? ("/" + address) : "")} legacyBehavior>
+              <Link href={"/nfts" + (displayName ? ("/" + address) : "")}>
                 {t("menu.nft.nfts")}
               </Link>
 
               {/* Hide NFT menu for XAHAU while they are not ready yet */}
               {!xahauNetwork && <>
-                <Link href={"/nft-offers" + (displayName ? ("/" + address) : "")} legacyBehavior>
+                <Link href={"/nft-offers" + (displayName ? ("/" + address) : "")}>
                   {t("menu.nft.offers")}
                 </Link>
                 <Link href="/nft-distribution">{t("menu.nft.distribution")}</Link>
@@ -339,7 +339,8 @@ export default function Header({ setSignRequest, account, signOut, selectedCurre
               <Link
                 href={"/nft-offers" + (displayName ? ("/" + address) : "")}
                 className="mobile-menu-item"
-                onClick={mobileMenuToggle}>
+                onClick={mobileMenuToggle}
+              >
                 {t("menu.nft.offers")}
               </Link>
               <Link
