@@ -89,6 +89,7 @@ export default function Footer({ account, setSignRequest }) {
         </div>
         <div className="footer-menu-column">
           <span className="footer-menu-header">Bithomp</span>
+          <Link href="/about-us">{t("menu.company.about-us")}</Link>
           <Link href="/advertise">{t("menu.business.advertise")}</Link>
           <a href="https://xrplmerch.com/product-category/bithomp/?wpam_id=22" target="_blank" rel="noreferrer">{t("menu.merch")}</a>
           <Link href="/customer-support">{t("menu.customer-support")}</Link>
@@ -132,5 +133,5 @@ export default function Footer({ account, setSignRequest }) {
         </div>
       }
     </footer>
-  );
-};
+  )
+}

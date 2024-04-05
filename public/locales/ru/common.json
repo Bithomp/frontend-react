@@ -1,5 +1,8 @@
 {
   "menu": {
+    "company": {
+      "about-us": "О нас"
+    },
     "services": {
       "nft-mint": "Чеканка NFT"
     },

@@ -1,6 +1,7 @@
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 import SEO from '../components/SEO'
+import { useTranslation } from 'next-i18next'
 
 export async function getServerSideProps(context) {
   const { locale } = context
@@ -11,25 +12,28 @@ export async function getServerSideProps(context) {
   }
 }
 
-export default function Eaas() {
+export default function AboutUs() {
+
+  const { t } = useTranslation(['common'])
+
   return (
     <>
       <SEO
-        title="About us"
+        title={t('menu.company.about-us')}
         description="Read about Bithomp and our services"
       />
       <div className="content-text content-center">
         <h1 className='center'>Welcome to Bithomp</h1>
         <p>
           Bithomp serves as a tool for users to delve into XRPL and XAHAU accounts, examining balances, transactions, owned assets including fungible tokens and NFTs, as well as orders, escrows, and other features across the following networks:
-          <ul>
-            <li><a href="https://bithomp.com" target="_blank" rel="noreferrer">XRPL Mainnet</a>,</li>
-            <li><a href="https://xahauexplorer.com" target="_blank" rel="noreferrer">XAHAU Mainnet</a>,</li>
-            <li><a href="https://test.bithomp.com" target="_blank" rel="noreferrer">XRPL Testnet</a>,</li>
-            <li><a href="https://dev.bithomp.com" target="_blank" rel="noreferrer">XRPL Devnet</a>,</li>
-            <li><a href="https://test.xahauexplorer.com" target="_blank" rel="noreferrer">XAHAU Testnet</a>.</li>
-          </ul>
         </p>
+        <ul>
+          <li><a href="https://bithomp.com" target="_blank" rel="noreferrer">XRPL Mainnet</a>,</li>
+          <li><a href="https://xahauexplorer.com" target="_blank" rel="noreferrer">XAHAU Mainnet</a>,</li>
+          <li><a href="https://test.bithomp.com" target="_blank" rel="noreferrer">XRPL Testnet</a>,</li>
+          <li><a href="https://dev.bithomp.com" target="_blank" rel="noreferrer">XRPL Devnet</a>,</li>
+          <li><a href="https://test.xahauexplorer.com" target="_blank" rel="noreferrer">XAHAU Testnet</a>.</li>
+        </ul>
         <p>
           Imagine it as a search engine for the extensive decentralised databases, as well as a source of live statistics.
         </p>
@@ -42,35 +46,37 @@ export default function Eaas() {
           Our mission is to make XRPL ecosystem accessible to a broader audience.
         </p>
         <h2>What we offer</h2>
-        <p>
-          <ul>
-            <li><b>XRPL and XAHAU Explorers</b> - your gateway to the extensive decentralised databases.</li>
-            <li><b>API Service</b> - your access to fast and reliable information, historical data and statistics on XRPL accounts, NFTs, and more.</li>
-            <li><b>NFT Explorer</b> - the best search engine for NFTs and NFT offers on XRPL and XAHAU networks.
-              <p>Why is it the best?
-                <br /><br />
-                <ul>
-                  <li>We display all types of NFTs.</li>
-                  <li>We present the history of all NFT sales.</li>
-                  <li>We validate buy and sell offers and display historical offers.</li>
-                  <li>We efficiently cache video files and images for nearly instantaneous viewing.</li>
-                  <li>We provide information on the marketplaces where NFTs were minted or sold.</li>
-                  <li>We provide the opportunity of selling, buying, burning, or transferring NFTs directly from our website.</li>
-                  <li>We showcase all NFTs, regardless of the marketplace where they were issued, including those issued by the users themselves.</li>
-                  <li>We show NFT metadata including all NFT attributes in our CSV exports.</li>
-                </ul>
-              </p>
-            </li>
-            <li><b>NFT Statistics</b> - your access to up-to-date data on all XRPL and XAHAU NFTs. Explore floor prices, sales volumes, NFT distribution info, minters, create volume sales charts, mint charts, and much more.</li>
-            <li>
-              <b>Explorers and Faucets for
-                <a href="https://test.bithomp.com/faucet/" target="_blank" rel="noreferrer">XRPL Testnet</a>,
-                <a href="https://dev.bithomp.com/faucet/" target="_blank" rel="noreferrer">XRPL Devnet</a>, and
-                <a href="https://test.xahauexplorer.com/faucet/" target="_blank" rel="noreferrer">XAHAU Testnet</a>.
-              </b> - convenient tool for developers to efficiently explore, test, and troubleshoot their applications without using real money.
-            </li>
-          </ul>
-        </p>
+        <ul>
+          <li><b>XRPL and XAHAU Explorers</b> - your gateway to the extensive decentralised databases.</li>
+          <br />
+          <li><b>API Service</b> - your access to fast and reliable information, historical data and statistics on XRPL accounts, NFTs, and more.</li>
+          <br />
+          <li><b>NFT Explorer</b> - the best search engine for NFTs and NFT offers on XRPL and XAHAU networks.
+            <p>
+              Why is it the best?
+            </p>
+            <ul>
+              <li>We display all types of NFTs.</li>
+              <li>We present the history of all NFT sales.</li>
+              <li>We validate buy and sell offers and display historical offers.</li>
+              <li>We efficiently cache video files and images for nearly instantaneous viewing.</li>
+              <li>We provide information on the marketplaces where NFTs were minted or sold.</li>
+              <li>We provide the opportunity of selling, buying, burning, or transferring NFTs directly from our website.</li>
+              <li>We showcase all NFTs, regardless of the marketplace where they were issued, including those issued by the users themselves.</li>
+              <li>We show NFT metadata including all NFT attributes in our CSV exports.</li>
+            </ul>
+          </li>
+          <br />
+          <li><b>NFT Statistics</b> - your access to up-to-date data on all XRPL and XAHAU NFTs. Explore floor prices, sales volumes, NFT distribution info, minters, create volume sales charts, mint charts, and much more.</li>
+          <br />
+          <li>
+            <b>Explorers and Faucets for {" "}
+              <a href="https://test.bithomp.com/faucet/" target="_blank" rel="noreferrer">XRPL Testnet</a>,{" "}
+              <a href="https://dev.bithomp.com/faucet/" target="_blank" rel="noreferrer">XRPL Devnet</a>, and{" "}
+              <a href="https://test.xahauexplorer.com/faucet/" target="_blank" rel="noreferrer">XAHAU Testnet</a>.
+            </b> - convenient tool for developers to efficiently explore, test, and troubleshoot their applications without using real money.
+          </li>
+        </ul>
         <h2>Our plans</h2>
         <p>
           Bithomp is constantly evolving, adding new features and improving existing options to make them increasingly convenient for our users. Our plans and goals are ambitious and far-reaching. We are committed to ensuring that Bithomp remains accessible to all users. We're grateful for the trust and partnership we've built with the XRPL community, and we look forward to enhancing our platform further in collaboration with our customers.
