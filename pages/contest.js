@@ -1,4 +1,7 @@
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
+
 import SEO from '../components/SEO'
+
 import Image from 'next/image'
 import {
   FaTwitter,
@@ -7,6 +10,15 @@ import {
   FaLinkedinIn,
   FaTiktok
 } from "react-icons/fa6"
+
+export async function getServerSideProps(context) {
+  const { locale } = context
+  return {
+    props: {
+      ...(await serverSideTranslations(locale, ['common'])),
+    }
+  }
+}
 
 export default function Contest() {
 
@@ -24,7 +36,7 @@ export default function Contest() {
           <Image src="/images/pages/contest/contest.png" alt="Bithomp contest" width={400} height={225} />
         </center>
         <p>
-          <center>Hi, Friends!</center>
+          Hi, Friends!
           <br />
           Do you use Bithomp? Do you like contests? Do you want to <b>WIN 200 XRP?</b>
           <br />
