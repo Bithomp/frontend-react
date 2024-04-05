@@ -113,15 +113,15 @@ export default function Header({ setSignRequest, account, signOut, selectedCurre
               </>
               }
 
-              {displayName ?
-                <Link href={"/nfts/" + address} legacyBehavior>{t("menu.nft.nfts")}</Link>
-                :
-                <Link href="/nfts">{t("menu.nft.nfts")}</Link>
-              }
+              <Link href={"/nfts" + (displayName ? ("/" + address) : "")} legacyBehavior>
+                {t("menu.nft.nfts")}
+              </Link>
 
               {/* Hide NFT menu for XAHAU while they are not ready yet */}
               {!xahauNetwork && <>
-                <Link href="/nft-offers">{t("menu.nft.offers")}</Link>
+                <Link href={"/nft-offers" + (displayName ? ("/" + address) : "")} legacyBehavior>
+                  {t("menu.nft.offers")}
+                </Link>
                 <Link href="/nft-distribution">{t("menu.nft.distribution")}</Link>
                 <Link href="/nft-statistics">{t("menu.nft.statistics")}</Link>
               </>
@@ -337,7 +337,7 @@ export default function Header({ setSignRequest, account, signOut, selectedCurre
           {!xahauNetwork &&
             <>
               <Link
-                href="/nft-offers"
+                href={"/nft-offers" + (displayName ? ("/" + address) : "")}
                 className="mobile-menu-item"
                 onClick={mobileMenuToggle}>
                 {t("menu.nft.offers")}
