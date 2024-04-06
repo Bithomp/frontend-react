@@ -266,22 +266,24 @@ export default function NftsComponent({
         let attributesHeaders = []
 
         //for CSV export
-        for (let i = 0; i < nftList.length; i++) {
-          if (nftList[i].metadata) {
-            Object.keys(nftList[i].metadata).forEach(function (key) {
-              if (!keys.includes(key) && key.toLowerCase() !== 'name' && typeof nftList[i].metadata[key] === 'string') {
-                keys.push(key)
-                csvHeadersNew.push({ label: capitalizeFirstLetter(key), key: "metadata." + key })
-              }
-              if (key.toLowerCase() === "attributes") {
-                Object.keys(nftList[i].metadata[key]).forEach(function (attribute) {
-                  if (!attributes.includes(attribute)) {
-                    attributes.push(attribute)
-                    attributesHeaders.push({ label: "Attribute " + nftList[i].metadata[key][attribute].trait_type, key: "metadata.attributes." + attribute + ".value" })
-                  }
-                })
-              }
-            })
+        if (nftList && nftList.length > 0) {
+          for (let i = 0; i < nftList.length; i++) {
+            if (nftList[i].metadata) {
+              Object.keys(nftList[i].metadata).forEach(function (key) {
+                if (!keys.includes(key) && key.toLowerCase() !== 'name' && typeof nftList[i].metadata[key] === 'string') {
+                  keys.push(key)
+                  csvHeadersNew.push({ label: capitalizeFirstLetter(key), key: "metadata." + key })
+                }
+                if (key.toLowerCase() === "attributes") {
+                  Object.keys(nftList[i].metadata[key]).forEach(function (attribute) {
+                    if (!attributes.includes(attribute)) {
+                      attributes.push(attribute)
+                      attributesHeaders.push({ label: "Attribute " + nftList[i].metadata[key][attribute].trait_type, key: "metadata.attributes." + attribute + ".value" })
+                    }
+                  })
+                }
+              })
+            }
           }
         }
 
