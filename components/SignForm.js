@@ -267,15 +267,12 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
       setStatus(t("signin.xumm.statuses.redirecting"))
       //return to the same page
       signInPayload.options.return_url = {
-        app: server + router.asPath
+        app: server + router.asPath + '?uuid={id}'
       }
       //for username receipts
       if (tx.TransactionType === "Payment") {
         signInPayload.options.return_url.app += '&receipt=true'
       }
-
-      //add signed transaction to the return url
-      signInPayload.options.return_url.app += '&uuid={id}'
     } else {
       if (xummUserToken) {
         signInPayload.user_token = xummUserToken
