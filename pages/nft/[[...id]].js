@@ -34,10 +34,8 @@ export async function getServerSideProps(context) {
   let pageMeta = null
   const { id } = query
   //keep it from query instead of params, anyway it is an array sometimes in params too.
-  let nftId = id ? (Array.isArray(id) ? id[0] : id) : ""
+  const nftId = id ? (Array.isArray(id) ? id[0] : id) : ""
   if (nftId) {
-    nftId = nftId.split("?")[0]
-
     let headers = {}
     if (req.headers["x-real-ip"]) {
       headers["x-real-ip"] = req.headers["x-real-ip"]
