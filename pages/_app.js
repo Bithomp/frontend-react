@@ -13,7 +13,7 @@ import BackgroundImage from '../components/Layout/BackgroundImage'
 import TopLinks from '../components/Layout/TopLinks'
 
 import { IsSsrMobileContext } from '../utils/mobile'
-import { network, server, useLocalStorage } from '../utils'
+import { isValidUUID, network, server, useLocalStorage } from '../utils'
 
 import '../styles/ui.scss'
 import { ThemeProvider } from "../components/Layout/ThemeContext"
@@ -83,7 +83,7 @@ const MyApp = ({ Component, pageProps }) => {
               setSelectedCurrency={setSelectedCurrency}
             />
             <ScrollToTop />
-            {(signRequest || uuid) &&
+            {(signRequest || isValidUUID(uuid)) &&
               <SignForm
                 setSignRequest={setSignRequest}
                 account={account}

@@ -18,7 +18,8 @@ import {
   floatToXlfHex,
   rewardRateHuman,
   encodeAddressR,
-  isAddressValid
+  isAddressValid,
+  removeQueryParams
 } from '../utils'
 import { amountFormat, capitalize, duration } from '../utils/format'
 import { payloadXummPost, xummWsConnect, xummCancel, xummGetSignedData } from '../utils/xumm'
@@ -61,7 +62,7 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
 
   const [privateOffer, setPrivateOffer] = useState(false)
 
-  const xummUserToken = localStorage.getItem('xummUserToken')
+  const xummUserToken = uuid ? "" : localStorage.getItem('xummUserToken')
 
   useEffect(() => {
     //deeplink doesnt work on mobiles when it's not in the onClick event
@@ -73,6 +74,7 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
     setErase(false)
 
     if (uuid) {
+      setScreen("xumm")
       setShowXummQr(false)
       setStatus(t("signin.xumm.statuses.wait"))
       xummGetSignedData(uuid, afterSubmit)
@@ -474,6 +476,9 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
     setSignRequest(null)
     setAwaiting(false)
     setStatus("")
+    if (uuid) {
+      removeQueryParams(router, ["uuid"])
+    }
   }
 
   const SignInCancelAndClose = () => {
@@ -1039,7 +1044,7 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
                 <div className='header'>{t("signin.choose-app")}</div>
                 <div className='signin-apps'>
                   <Image alt="xaman" className='signin-app-logo' src='/images/xumm-large.svg' onClick={XummTxSend} width={150} height={24} />
-                  {signRequest.wallet !== "xumm" &&
+                  {signRequest?.wallet !== "xumm" &&
                     <>
                       {notAvailable(ledger, "ledger")}
                       {notAvailable(trezor, "trezor")}

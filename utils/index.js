@@ -489,6 +489,10 @@ export const isValidCTID = x => {
   return /^[cC]{1}[a-fA-F0-9]{15}$/.test(x)
 }
 
+export const isValidUUID = x => {
+  return /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/.test(x)
+}
+
 export const isValidNftXls20 = x => {
   // if starts with 000, the 4th one is from 0 to (1+2+4+8) 15 (F)
   if (isIdValid(x) && x.substring(0, 3) === '000') return true
