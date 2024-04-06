@@ -19,8 +19,9 @@ export async function getServerSideProps(context) {
   let pageMeta = null
   const { id, ledgerTimestamp } = query
   //keep it from query instead of params, anyway it is an array sometimes
-  const account = id ? (Array.isArray(id) ? id[0] : id) : ""
+  let account = id ? (Array.isArray(id) ? id[0] : id) : ""
   if (account) {
+    account = account.split("?")[0]
     let headers = {}
     if (req.headers["x-real-ip"]) {
       headers["x-real-ip"] = req.headers["x-real-ip"]

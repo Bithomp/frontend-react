@@ -21,7 +21,8 @@ import { getIsSsrMobile } from "../../utils/mobile"
 export async function getServerSideProps(context) {
   const { locale, query } = context
   // keep params instead of query, anyway it is an array sometimes
-  const id = query?.id ? (Array.isArray(query.id) ? query.id[0] : query.id) : ""
+  let id = query?.id ? (Array.isArray(query.id) ? query.id[0] : query.id) : ""
+  id = id.split("?")[0] // remove query params
   /*
   let pageMeta = null
   if (id) {

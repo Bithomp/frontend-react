@@ -19,7 +19,8 @@ export async function getServerSideProps(context) {
   const { locale, query } = context
   const { taxon, issuer, id } = query
   //keep query instead of params, anyway it is an array sometimes
-  const idQuery = id ? (Array.isArray(id) ? id[0] : id) : ""
+  let idQuery = id ? (Array.isArray(id) ? id[0] : id) : ""
+  idQuery = idQuery.split("?")[0]
   let issuerQuery = isAddressOrUsername(idQuery) ? idQuery : issuer
   issuerQuery = isAddressOrUsername(issuerQuery) ? issuerQuery : ""
 
@@ -209,7 +210,7 @@ export default function NftDistribution({ issuerQuery, taxonQuery, idQuery }) {
             filename={'nft_destribution_' + data.issuer + '_UTC_' + (new Date().toJSON()) + '.csv'}
             className='button-action thin narrow'
           >
-            <DownloadIcon/> CSV
+            <DownloadIcon /> CSV
           </CSVLink>
         </p>
       }
