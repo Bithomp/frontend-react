@@ -504,7 +504,8 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
       width: '100%',
       bottom: "20px",
       left: 0,
-      textAlign: "center"
+      textAlign: "center",
+      color: "black"
     }
     return <div style={divStyle}>
       <img alt={name} className='signin-app-logo' src={picture} />
@@ -1047,8 +1048,8 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
                   <Image alt="xaman" className='signin-app-logo' src='/images/xumm-large.svg' onClick={XummTxSend} width={150} height={24} />
                   {signRequest?.wallet !== "xumm" &&
                     <>
-                      {notAvailable(ledger, "ledger")}
-                      {notAvailable(trezor, "trezor")}
+                      {!isMobile && notAvailable(ledger, "ledger")}
+                      {!isMobile && notAvailable(trezor, "trezor")}
                       {notAvailable(ellipal, "ellipal")}
                     </>
                   }
