@@ -25,6 +25,8 @@ const MyApp = ({ Component, pageProps }) => {
 
   const router = useRouter()
 
+  const { uuid } = router.query
+
   const signOut = () => {
     localStorage.removeItem('xummUserToken')
     setAccount(null)
@@ -81,12 +83,13 @@ const MyApp = ({ Component, pageProps }) => {
               setSelectedCurrency={setSelectedCurrency}
             />
             <ScrollToTop />
-            {signRequest &&
+            {(signRequest || uuid) &&
               <SignForm
                 setSignRequest={setSignRequest}
                 account={account}
                 setAccount={setAccount}
                 signRequest={signRequest}
+                uuid={uuid}
               />
             }
             <div className="content">

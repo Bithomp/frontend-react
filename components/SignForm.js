@@ -37,7 +37,7 @@ const voteTxs = ['castVoteRewardDelay', 'castVoteRewardRate', 'castVoteHook', 'c
 const askInfoScreens = [...voteTxs, 'NFTokenAcceptOffer', 'NFTokenCreateOffer', 'NFTokenBurn', 'setDomain', 'nftTransfer']
 const noCheckboxScreens = [...voteTxs, 'setDomain']
 
-export default function SignForm({ setSignRequest, account, setAccount, signRequest }) {
+export default function SignForm({ setSignRequest, account, setAccount, signRequest, uuid }) {
   const { t } = useTranslation()
   const router = useRouter()
   const isMobile = useIsMobile()
@@ -71,8 +71,15 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
     setHookData({})
     setSeatData({})
     setErase(false)
+
+    if (uuid) {
+      setShowXummQr(false)
+      setStatus(t("signin.xumm.statuses.wait"))
+      xummGetSignedData(uuid, afterSubmit)
+    }
+
     //eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [signRequest])
+  }, [signRequest, uuid])
 
   const saveAddressData = async (address) => {
     //&service=true&verifiedDomain=true&blacklist=true&payString=true&twitterImageUrl=true&nickname=true
@@ -255,9 +262,8 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
     setStatus(t("signin.xumm.statuses.wait"))
 
     if (isMobile) {
-      setStatus(t("signin.xumm.statuses.redirecting"));
+      setStatus(t("signin.xumm.statuses.redirecting"))
       //return to the same page
-      //you can add "?uuid={id}"
       signInPayload.options.return_url = {
         app: server + router.asPath
       }
@@ -266,8 +272,8 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
         signInPayload.options.return_url.app += '&receipt=true'
       }
 
-      //app which signed
-      //signInPayload.options.return_url.app += '&signed=xumm'
+      //add signed transaction to the return url
+      signInPayload.options.return_url.app += '&uuid={id}'
     } else {
       if (xummUserToken) {
         signInPayload.user_token = xummUserToken
@@ -450,7 +456,6 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
       // if crawler 10 ledgers behind, update right away
       // the backend suppose to return info directly from ledger when crawler 30 seconds behind
       // othewrwise wait until crawler catch up with the ledger where this transaction was included
-
       if (ledgerIndex >= inLedger || (inLedger - 10) > ledgerIndex) {
         if (param) {
           signRequest.callback(param)
@@ -473,11 +478,11 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
 
   const SignInCancelAndClose = () => {
     if (screen === 'xumm') {
-      setXummQrSrc(qr);
-      xummCancel(xummUuid);
+      setXummQrSrc(qr)
+      xummCancel(xummUuid)
     }
-    setScreen("choose-app");
-    setSignRequest(null);
+    setScreen("choose-app")
+    setSignRequest(null)
   }
 
   // temporary styles while hardware wallets are not connected
