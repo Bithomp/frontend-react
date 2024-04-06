@@ -62,7 +62,11 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
 
   const [privateOffer, setPrivateOffer] = useState(false)
 
-  const xummUserToken = uuid ? "" : localStorage.getItem('xummUserToken')
+  const [xummUserToken, setXummUserToken] = useState(null)
+
+  useEffect(() => {
+    setXummUserToken(localStorage.getItem('xummUserToken'))
+  }, [])
 
   useEffect(() => {
     //deeplink doesnt work on mobiles when it's not in the onClick event
