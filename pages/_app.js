@@ -22,6 +22,7 @@ const MyApp = ({ Component, pageProps }) => {
   const [account, setAccount] = useLocalStorage('account')
   const [selectedCurrency, setSelectedCurrency] = useLocalStorage('currency', 'usd')
   const [signRequest, setSignRequest] = useState(false)
+  const [refreshPage, setRefreshPage] = useState("")
 
   const router = useRouter()
 
@@ -90,6 +91,7 @@ const MyApp = ({ Component, pageProps }) => {
                 setAccount={setAccount}
                 signRequest={signRequest}
                 uuid={uuid}
+                setRefreshPage={setRefreshPage}
               />
             }
             <div className="content">
@@ -99,6 +101,7 @@ const MyApp = ({ Component, pageProps }) => {
               <Component
                 {...pageProps}
                 signRequest={signRequest}
+                refreshPage={refreshPage}
                 setSignRequest={setSignRequest}
                 account={account}
                 setAccount={setAccount}

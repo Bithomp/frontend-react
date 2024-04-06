@@ -77,7 +77,15 @@ const hasJsonMeta = nft => {
   return nft.metadata && nft.metadata.attributes?.metaSource?.toLowerCase() !== "bithomp"
 }
 
-export default function Nft({ setSignRequest, account, signRequest, pageMeta, id, selectedCurrency }) {
+export default function Nft({
+  setSignRequest,
+  account,
+  signRequest,
+  pageMeta,
+  id,
+  selectedCurrency,
+  refreshPage
+}) {
   const { t } = useTranslation()
 
   const [rendered, setRendered] = useState(false)
@@ -256,7 +264,7 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id, signRequest, selectedCurrency])
+  }, [id, signRequest, selectedCurrency, refreshPage])
 
   const externalUrl = meta => {
     let url = meta.external_url || meta.external_link || meta.externalUrl || meta.externalURL || (meta.minter?.includes("https://") && meta.minter) || meta.External_Link;

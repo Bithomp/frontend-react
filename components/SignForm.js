@@ -38,7 +38,7 @@ const voteTxs = ['castVoteRewardDelay', 'castVoteRewardRate', 'castVoteHook', 'c
 const askInfoScreens = [...voteTxs, 'NFTokenAcceptOffer', 'NFTokenCreateOffer', 'NFTokenBurn', 'setDomain', 'nftTransfer']
 const noCheckboxScreens = [...voteTxs, 'setDomain']
 
-export default function SignForm({ setSignRequest, account, setAccount, signRequest, uuid }) {
+export default function SignForm({ setSignRequest, account, setAccount, signRequest, uuid, setRefreshPage }) {
   const { t } = useTranslation()
   const router = useRouter()
   const isMobile = useIsMobile()
@@ -479,16 +479,11 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
     setScreen("choose-app")
     setAwaiting(false)
     setStatus("")
+    setSignRequest(null)
     if (uuid) {
       removeQueryParams(router, ["uuid"])
     }
-    //we need to update signRequest to trigger useEffect and update pages
-    //usefull for when returned from xaman with uuid
-    if (!signRequest && signRequest === null) {
-      setSignRequest(false)
-    } else {
-      setSignRequest(null)
-    }
+    setRefreshPage(new Date())
   }
 
   const SignInCancelAndClose = () => {
