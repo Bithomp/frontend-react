@@ -271,11 +271,14 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
       setStatus(t("signin.xumm.statuses.redirecting"))
       //return to the same page
       signInPayload.options.return_url = {
-        app: server + router.asPath + '?uuid={id}'
+        app: server + router.asPath
       }
-      //for username receipts
-      if (tx.TransactionType === "Payment") {
-        signInPayload.options.return_url.app += '&receipt=true'
+      // add uuid to the url for NFT transactions 
+      if (tx.TransactionType.includes("NFToken") || tx.TransactionType.includes("URIToken")) {
+        signInPayload.options.return_url.app += '?uuid={id}'
+      } else if (tx.TransactionType === "Payment") {
+        //for username receipts
+        signInPayload.options.return_url.app += '?receipt=true'
       }
     } else {
       if (xummUserToken) {
@@ -474,11 +477,17 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
   const closeSignInFormAndRefresh = () => {
     setXummQrSrc(qr)
     setScreen("choose-app")
-    setSignRequest(null)
     setAwaiting(false)
     setStatus("")
     if (uuid) {
       removeQueryParams(router, ["uuid"])
+    }
+    //we need to update signRequest to trigger useEffect and update pages
+    //usefull for when returned from xaman with uuid
+    if (!signRequest && signRequest === null) {
+      setSignRequest(false)
+    } else {
+      setSignRequest(null)
     }
   }
 
