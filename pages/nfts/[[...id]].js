@@ -22,10 +22,6 @@ export const getServerSideProps = async ({ query, locale }) => {
     id
   } = query
   //key to refresh the component when Link pressed within the same route
-
-  let queryId = id ? (Array.isArray(id) ? id[0] : id) : ""
-  queryId = queryId.split("?")[0]
-
   return {
     props: {
       listNftsOrder: listNftsOrder || "mintedNew",
@@ -45,7 +41,7 @@ export const getServerSideProps = async ({ query, locale }) => {
       burnedPeriod: burnedPeriod || "",
       includeBurnedQuery: includeBurned || false,
       includeWithoutMediaDataQuery: includeWithoutMediaData || false,
-      id: queryId,
+      id: id ? (Array.isArray(id) ? id[0] : id) : "",
       ...(await serverSideTranslations(locale, ['common'])),
     },
   }

@@ -10,8 +10,7 @@ export const getServerSideProps = async (context) => {
   const { locale, query } = context
   const { id } = query
   //keep it from query instead of params, anyway it is an array sometimes
-  let account = id ? (Array.isArray(id) ? id[0] : id) : ""
-  account = account.split("?")[0] //remove query string
+  const account = id ? (Array.isArray(id) ? id[0] : id) : ""
   return {
     props: {
       id: account,
