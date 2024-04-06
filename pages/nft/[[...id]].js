@@ -882,6 +882,7 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
                         <Trans i18nKey="nft-not-found-on-that-network" ns="nft">
                           This NFT wasn't found on the <b>{{ network }}</b> network.
                         </Trans>
+                        <br /><br />
                       </div>
                     }
                     <div>
