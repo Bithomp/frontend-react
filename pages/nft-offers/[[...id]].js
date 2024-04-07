@@ -36,7 +36,7 @@ import Tabs from '../../components/Tabs'
 import LinkIcon from "../../public/images/link.svg"
 const xummImg = "/images/xumm.png"
 
-export default function NftOffers({ setSignRequest, signRequest, account, offerList, id }) {
+export default function NftOffers({ setSignRequest, refreshPage, account, offerList, id }) {
   const { t } = useTranslation()
   const router = useRouter()
   const windowWidth = useWidth()
@@ -225,20 +225,18 @@ export default function NftOffers({ setSignRequest, signRequest, account, offerL
   */
 
   useEffect(() => {
-    if (!signRequest) {
-      checkApi()
-      setTabParams(router, [
-        {
-          tabList: offerListTabList,
-          tab: offerListTab,
-          defaultTab: "owned",
-          setTab: setOfferListTab,
-          paramName: "offerList"
-        }
-      ])
-    }
+    checkApi()
+    setTabParams(router, [
+      {
+        tabList: offerListTabList,
+        tab: offerListTab,
+        defaultTab: "owned",
+        setTab: setOfferListTab,
+        paramName: "offerList"
+      }
+    ])
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id, offerListTab, signRequest])
+  }, [id, offerListTab, refreshPage])
 
   return <>
     <SEO title={t("nft-offers.header") + (id ? (" " + id) : "")} />

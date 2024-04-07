@@ -36,7 +36,7 @@ import CopyButton from '../../components/UI/CopyButton'
 
 const xummImg = "/images/xumm.png"
 
-export default function Governance({ id, setSignRequest, signRequest, account }) {
+export default function Governance({ id, setSignRequest, refreshPage, account }) {
   const { t } = useTranslation(['common', 'governance'])
   const router = useRouter()
   const isMobile = useIsMobile()
@@ -322,15 +322,13 @@ export default function Governance({ id, setSignRequest, signRequest, account })
   */
 
   useEffect(() => {
-    if (!signRequest) {
-      checkApi()
-    }
+    checkApi()
     return () => {
       controller.abort()
       controller2.abort()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isReady, id, signRequest])
+  }, [isReady, id, refreshPage])
 
   const addressOption = isMobile ? { short: true } : {}
   const canVote = account?.address && data?.members?.find(m => m.value === account.address)

@@ -100,7 +100,6 @@ const MyApp = ({ Component, pageProps }) => {
               }
               <Component
                 {...pageProps}
-                signRequest={signRequest}
                 refreshPage={refreshPage}
                 setSignRequest={setSignRequest}
                 account={account}

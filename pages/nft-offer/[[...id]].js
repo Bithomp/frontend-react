@@ -62,7 +62,7 @@ import NftImageAndVideo from '../../components/NftPreview'
 import LinkIcon from "../../public/images/link.svg"
 import { nftName } from '../../utils/nft'
 
-export default function NftOffer({ setSignRequest, signRequest, account, id }) {
+export default function NftOffer({ setSignRequest, refreshPage, account, id }) {
   const { t } = useTranslation()
 
   const [data, setData] = useState({})
@@ -175,20 +175,18 @@ export default function NftOffer({ setSignRequest, signRequest, account, id }) {
   */
 
   useEffect(() => {
-    if (!signRequest) {
-      if (!(data?.nftokenID || data?.uriTokenID)) {
-        // no token - first time fetching - allow right away
-        checkApi()
-      } else if (data?.canceledAt || data?.acceptedAt) {
-        //do not send request if it is Canceled or Accepted
-        return
-      } else {
-        setLoading(true)
-        checkApi({ noCache: true })
-      }
+    if (!(data?.nftokenID || data?.uriTokenID)) {
+      // no token - first time fetching - allow right away
+      checkApi()
+    } else if (data?.canceledAt || data?.acceptedAt) {
+      //do not send request if it is Canceled or Accepted
+      return
+    } else {
+      setLoading(true)
+      checkApi({ noCache: true })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id, signRequest])
+  }, [id, refreshPage])
 
   const sellerOrBuyer = data?.flags?.sellToken === true ? t("table.seller") : t("table.buyer");
 

@@ -80,7 +80,6 @@ const hasJsonMeta = nft => {
 export default function Nft({
   setSignRequest,
   account,
-  signRequest,
   pageMeta,
   id,
   selectedCurrency,
@@ -254,17 +253,15 @@ export default function Nft({
   */
 
   useEffect(() => {
-    if (!selectedCurrency) return;
-    if (!signRequest) {
-      if (!data?.nftokenID && !data?.uriTokenID) {
-        // no token - first time fetching - allow right away
-        checkApi()
-      } else {
-        checkApi({ noCache: true })
-      }
+    if (!selectedCurrency) return
+    if (!data?.nftokenID && !data?.uriTokenID) {
+      // no token - first time fetching - allow right away
+      checkApi()
+    } else {
+      checkApi({ noCache: true })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id, signRequest, selectedCurrency, refreshPage])
+  }, [id, refreshPage, selectedCurrency])
 
   const externalUrl = meta => {
     let url = meta.external_url || meta.external_link || meta.externalUrl || meta.externalURL || (meta.minter?.includes("https://") && meta.minter) || meta.External_Link;
