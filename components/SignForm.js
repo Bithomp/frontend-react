@@ -240,10 +240,9 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
     }
 
     //add network ID to transactions for xahau-testnet and xahau
-    //if (networkId === 21338 || networkId === 21337) {
-    //add for all networks for xaman, it's might not work for hardware wallets
-    tx.NetworkID = networkId
-    //}
+    if (networkId === 21338 || networkId === 21337) {
+      tx.NetworkID = networkId
+    }
 
     let signInPayload = {
       options: {
