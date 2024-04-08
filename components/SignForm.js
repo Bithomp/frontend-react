@@ -69,6 +69,7 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
   }, [])
 
   useEffect(() => {
+    if (!signRequest) return
     //deeplink doesnt work on mobiles when it's not in the onClick event
     if (!isMobile && signRequest?.wallet === "xumm") {
       XummTxSend()
@@ -76,16 +77,17 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
     setHookData({})
     setSeatData({})
     setErase(false)
-
-    if (uuid) {
-      setScreen("xumm")
-      setShowXummQr(false)
-      setStatus(t("signin.xumm.statuses.wait"))
-      xummGetSignedData(uuid, afterSubmit)
-    }
-
     //eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [signRequest, uuid])
+  }, [signRequest])
+
+  useEffect(() => {
+    if (!uuid) return
+    setScreen("xumm")
+    setShowXummQr(false)
+    setStatus(t("signin.xumm.statuses.wait"))
+    xummGetSignedData(uuid, afterSubmit)
+    //eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [uuid])
 
   const saveAddressData = async (address) => {
     //&service=true&verifiedDomain=true&blacklist=true&payString=true&twitterImageUrl=true&nickname=true
@@ -437,11 +439,11 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
             checkTxInCrawler(responseData.data.hash, redirectName)
           } else {
             setStatus(t("signin.status.failed-broker", { serviceName: data.custom_meta.blob.broker }))
-            closeSignInFormAndRefresh()
+            delay(3000, closeSignInFormAndRefresh)
           }
         } else {
           setStatus(t("signin.status.failed-broker", { serviceName: data.custom_meta.blob.broker }))
-          closeSignInFormAndRefresh()
+          delay(3000, closeSignInFormAndRefresh)
         }
       }
       return
