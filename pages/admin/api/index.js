@@ -132,8 +132,8 @@ export default function Api() {
           https://docs.bithomp.com
         </a>
         <br /><br />
-        <table className='table-large shrink' style={(!loading && !apiData) ? { border: "none" } : {}}>
-          {loading ?
+        {loading ?
+          <table className='table-large shrink'>
             <tbody>
               <tr>
                 <td className='center' colSpan="2">
@@ -144,9 +144,11 @@ export default function Api() {
                 </td>
               </tr>
             </tbody>
-            :
-            <>
-              {apiData ?
+          </table>
+          :
+          <>
+            {apiData ?
+              <table className='table-large shrink'>
                 <tbody>
                   <tr>
                     <td className='right'>Token</td>
@@ -192,49 +194,40 @@ export default function Api() {
                     <td className='left'>{apiData.tier}</td>
                   </tr>
                 </tbody>
-                :
-                <tbody>
-                  <tr>
-                    <td className='right'>{t("table.domain")}</td>
-                    <td className='left'>
-                      <input
-                        placeholder="Enter website domain"
-                        value={domain}
-                        onChange={(e) => { setDomain(e.target.value) }}
-                        className="input-text"
-                        spellCheck="false"
-                        maxLength="30"
-                      />
-                    </td>
-                  </tr>
-                  <tr>
-                    <td className='right'>Description</td>
-                    <td className='left'>
-                      <input
-                        placeholder="Enter API description"
-                        value={apiDescription}
-                        onChange={(e) => { setApiDescription(e.target.value) }}
-                        className="input-text"
-                        maxLength="60"
-                      />
-                    </td>
-                  </tr>
-                  <tr>
-                    <td className='center' colSpan="2">
-                      <button
-                        className="button-action"
-                        onClick={requestApiKey}
-                      >
-                        Request API key
-                      </button>
-                      <br />
-                    </td>
-                  </tr>
-                </tbody>
-              }
-            </>
-          }
-        </table>
+              </table>
+              :
+              <div>
+                <h4>API registartion</h4>
+                <p>
+                  <input
+                    placeholder="Your website domain"
+                    value={domain}
+                    onChange={(e) => { setDomain(e.target.value) }}
+                    className="input-text"
+                    spellCheck="false"
+                    maxLength="30"
+                  />
+                </p>
+                <p>
+                  <input
+                    placeholder="Description how API will be used"
+                    value={apiDescription}
+                    onChange={(e) => { setApiDescription(e.target.value) }}
+                    className="input-text"
+                    maxLength="60"
+                  />
+                </p>
+                <button
+                  className="button-action"
+                  onClick={requestApiKey}
+                >
+                  Request API key
+                </button>
+                <br />
+              </div>
+            }
+          </>
+        }
 
         <br />
         {errorMessage ?
