@@ -246,11 +246,21 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
 
     let signInPayload = {
       options: {
-        expire: 3,
-        force_network: null // keep it here as null, it will be set to the network of the transaction
+        expire: 3
       },
       txjson: tx
     }
+
+    //for Xaman to sign transaction in the right network
+    let forceNetwork = null
+    if (networkId === 0) {
+      forceNetwork = 'MAINNET'
+    } else if (networkId === 1) {
+      forceNetwork = 'TESTNET'
+    } else if (networkId === 2) {
+      forceNetwork = 'DEVNET'
+    }
+    signInPayload.options.force_network = forceNetwork
 
     if (signRequest.redirect) {
       signInPayload.custom_meta = {
