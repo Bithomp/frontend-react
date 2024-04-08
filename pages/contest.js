@@ -4,7 +4,7 @@ import SEO from '../components/SEO'
 
 import Image from 'next/image'
 import {
-  FaTwitter,
+  FaXTwitter,
   FaInstagram,
   FaYoutube,
   FaLinkedinIn,
@@ -46,7 +46,7 @@ export default function Contest() {
         <h3>1. Follow us and tag us on any of the social networks mentioned below:</h3>
         <p>
           <a href='https://twitter.com/bithomp' target="_blank" rel="noreferrer">
-            <FaTwitter style={iconStyle} /> Twitter
+            <FaXTwitter style={iconStyle} /> Twitter
           </a>
         </p>
         <p>
