@@ -32,6 +32,16 @@
     }
   }
 
+  &--outline {
+    padding-left: 35px;
+
+    .checkmark {
+      background-color: transparent;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+  }
+
   input {
     position: absolute;
     opacity: 0;

@@ -1,9 +1,9 @@
-export default function CheckBox({ children, checked, setChecked, name }) {
+export default function CheckBox({ children, checked, setChecked, name, outline }) {
   const handleChange = () => {
     setChecked(!checked)
   };
 
-  return <label className="checkbox">
+  return <label className={`checkbox${outline ? " checkbox--outline" : ""}`}>
     {children}
     <input
       type="checkbox"

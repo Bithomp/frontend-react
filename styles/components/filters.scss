@@ -1,0 +1,51 @@
+.filters {
+    position: relative;
+    z-index: 3;
+    max-width: 300px;
+    padding: 20px 15px;
+    overflow-y: scroll;
+
+    &.is-close {
+        overflow: unset;
+    }
+
+    & + .content-text {
+        margin: 0;
+        width: 100%;
+    }
+
+    &__head {
+        text-align: right;
+        margin-bottom: 20px;
+        font-size: 14px;
+        color: #6e6e6e;
+
+        i {
+            font-style: normal;
+        }
+    }
+
+    &__wrap {
+        > * {
+            margin-bottom: 20px;
+        }
+
+        .is-close & {
+            display: none;
+        }
+    }
+
+    &__toggle {
+        position: absolute;
+        display: flex;
+        top: 15px;
+        left: 15px;
+        background-color: transparent;
+        border: none;
+        margin: 0;
+        font-size: 20px;
+        padding: 5px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
+}

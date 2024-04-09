@@ -88,6 +88,24 @@ body.dark {
   border-top: 81px solid var(--background-header);
   flex: 1;
 
+  .content-cols {
+    display: flex;
+    height: calc(100lvh - 150px);
+    position: relative;
+
+    &::before {
+      content: '';
+      position: absolute;
+      inset: 0 15px auto;
+      border-top: 1px solid #ccc;
+    }
+
+    .content-text {
+      overflow-y: scroll;
+      padding: 20px 0 80px;
+    }
+  }
+
   .content-text {
     margin: 80px;
     z-index: 1;
@@ -717,14 +735,17 @@ body.dark {
 @import "./components/tabs.scss";
 @import "./components/issuerSelect.scss";
 @import "./components/inputPrepend.scss";
+@import "./components/addressInput.scss";
 @import "./components/buttonArrowScroll.scss";
 @import "./components/simpleSelect.scss";
 @import "./components/footer.scss";
 @import "./components/buttonArrowScroll.scss";
+@import "./components/radioOptions.scss";
 
 //components
 @import "./components/tiles.scss";
 @import "./components/receipt.scss";
+@import "./components/filters.scss";
 @import "./components/dateAndTimeRange.scss";
 
 //home page
