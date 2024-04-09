@@ -24,7 +24,6 @@ header {
       align-items: center;
     }
     .menu-dropdown-content {
-      display: none;
       position: absolute;
       padding-top: 31px;
       min-width: 165px;
@@ -32,6 +31,11 @@ header {
       border-bottom: 1px solid var(--background-menu);
       box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
       z-index: 2;
+      opacity: 0;
+      visibility: hidden;
+      transition-delay: 0.6s;
+
+
       &:after {
         content: "";
         position: absolute;
@@ -57,11 +61,20 @@ header {
       }
     }
     &:hover {
+      z-index: 20;
+
       .menu-dropdown-content {
-        display: block;
+        visibility: visible;
+        opacity: 1;
+        transition-delay: 0s;
       }
       .menu-dropdown-button {
         color: var(--accent-link);
+      }
+
+      & ~ .menu-dropdown .menu-dropdown-content {
+        visibility: hidden;
+        opacity: 0;
       }
     }
   }
