@@ -1,11 +1,11 @@
-import { useTranslation } from 'next-i18next'
+//import { useTranslation } from 'next-i18next'
 //import { useState, useEffect } from 'react'
-import { useWidth, network } from '../../utils'
+//import { useWidth, network } from '../../utils'
 //import axios from 'axios'
 
 export default function TopLinks() {
-  const { t } = useTranslation()
-  const width = useWidth()
+  //const { t } = useTranslation()
+  //const width = useWidth()
   //const [countryCode, setCountryCode] = useState('')
 
   //check country
@@ -102,6 +102,8 @@ export default function TopLinks() {
   )
   */}
 
+  {/*
+
   if (network === "mainnet") {
     return <div className="top-links">
       <span className='tooltip'>
@@ -137,4 +139,16 @@ export default function TopLinks() {
       </span>
     </div>
   }
+
+  */}
+
+  return <div className="top-links">
+    <a
+      href="https://bithomp.com/go/contest-top"
+      rel="noreferrer"
+      className='top-link orange'
+    >
+      Win 100, 200, or 300 XRP from Bithomp
+    </a>
+  </div>
 }

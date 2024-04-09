@@ -44,8 +44,20 @@ const MyApp = ({ Component, pageProps }) => {
   const pagesWithoutWrapper = ['/social-share']
 
   const showAds = network === 'mainnet' // !devNet // no ads on test network
-  let showTopAds = false // showAds //change here when you want to see TOP ADS
-  const pagesWithNoTopAdds = ['/', '/username', '/eaas', '/build-unl', '/disclaimer', '/privacy-policy', '/terms-and-conditions', '/terms-api-bots', '/press', '/404']
+  let showTopAds = true // showAds //change here when you want to see TOP ADS
+  const pagesWithNoTopAdds = [
+    '/',
+    '/username',
+    '/eaas',
+    '/build-unl',
+    '/disclaimer',
+    '/privacy-policy',
+    '/terms-and-conditions',
+    '/terms-api-bots',
+    '/press',
+    '/404',
+    '/contest'
+  ]
   if (showTopAds) {
     showTopAds = !pagesWithNoTopAdds.includes(pathname) && !pathname.includes('/admin')
   }
