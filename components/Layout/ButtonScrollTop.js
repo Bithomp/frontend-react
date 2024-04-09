@@ -9,7 +9,9 @@ export default function ButtonScrollTop({ footer }) {
     const handleScroll = useCallback(() => {
         const scrollPosition = window.pageYOffset + window.innerHeight;
         const isShown = window.pageYOffset !== 0;
-        const isFixedButton = scrollPosition > footer.current.offsetTop;
+        const isPhone = window.matchMedia("(max-width: 768px)").matches;
+
+        const isFixedButton = scrollPosition > (!isPhone ? footer.current.offsetTop : footer.current.offsetTop + footer.current.offsetHeight);
 
         setButtonState({ isShown, isFixedButton });
     }, [footer]);
