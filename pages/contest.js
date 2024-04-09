@@ -103,7 +103,7 @@ export default function Contest() {
         <p>Just share your experience, thoughts and insights from using our services. Tell everyone what you like and which features you use more often. You are welcome to suggest ways we can improve our project and identify any areas you think are missing.</p>
         <h3>3. Tag your post with #BithompContest.</h3>
         <p><b>Deadline is May 10, 2024, 9 GMT.</b></p>
-        <p>Please note, your post can be in any format you prefer, such as text, video, image, GIF, or any other. Feel free to make it funny, serious, thought-provoking, tearful or whatever you wish it to be. However, it must not contain any violations or insults.</p>
+        <p>Please note that your post can be in any format you prefer! Use text, video, image, GIF, or anything else you wish. Feel free to make it funny, serious, thought-provoking, tearful or whatever you wish it to be. However, it must not contain any violations or insults.</p>
         <p>The winners will be chosen by the Bithomp team on <b>May 12, 2024</b> and announced on all the aforementioned social networks at 3 GMT.</p>
         <p>
           We'll pick up <b>THREE winners</b> and they'll get:<br />
