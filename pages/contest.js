@@ -50,7 +50,7 @@ export default function Contest() {
         description="Win 200 XRP by participating in the Bithomp contest."
       />
       <div className="content-text content-center">
-        <h1 className='center'>Win 200 XRP from Bithomp</h1>
+        <h1 className='center'>Win 100, 200, or 300 XRP from Bithomp</h1>
         <center>
           <video
             width={width < 760 ? "100%" : "760"}
