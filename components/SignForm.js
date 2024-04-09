@@ -284,14 +284,12 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
       setStatus(t("signin.xumm.statuses.redirecting"))
       //return to the same page
       signInPayload.options.return_url = {
-        app: server + router.asPath
+        app: server + router.asPath + '?uuid={id}'
       }
-      // add uuid to the url for NFT transactions 
-      if (tx.TransactionType.includes("NFToken") || tx.TransactionType.includes("URIToken")) {
-        signInPayload.options.return_url.app += '?uuid={id}'
-      } else if (tx.TransactionType === "Payment") {
+
+      if (tx.TransactionType === "Payment") {
         //for username receipts
-        signInPayload.options.return_url.app += '?receipt=true'
+        signInPayload.options.return_url.app += '&receipt=true'
       }
     } else {
       if (xummUserToken) {
@@ -312,7 +310,6 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
     setXummUuid(data.uuid)
     setXummQrSrc(data.refs.qr_png)
     setExpiredQr(false)
-    xummWsConnect(data.refs.websocket_status, xummWsConnected)
     if (data.pushed) {
       setStatus(t("signin.xumm.statuses.check-push"))
     }
@@ -325,6 +322,8 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
     } else {
       setShowXummQr(true)
       setStatus(t("signin.xumm.scan-qr"))
+      //connect to xaman websocket only if it didn't redirect to the xaman app
+      xummWsConnect(data.refs.websocket_status, xummWsConnected)
     }
   }
 
@@ -401,9 +400,9 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
 
     const redirectName = data.custom_meta?.blob?.redirect
 
-    //if redirect 
     if (data.response?.account) {
       saveAddressData(data.response.account)
+      //if redirect 
       if (redirectName === "nfts") {
         window.location.href = "/nfts/" + data.response.account
         return
