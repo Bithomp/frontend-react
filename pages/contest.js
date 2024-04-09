@@ -38,6 +38,7 @@ export default function Contest() {
   useEffect(() => {
     //Reload the video when the source changes
     reloadSource()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [width])
 
   let videoRef
