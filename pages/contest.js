@@ -101,7 +101,6 @@ export default function Contest() {
         </p>
         <h3>2. Create the post “How I use Bithomp”.</h3>
         <p>Just share your experience, thoughts and insights from using our services. Tell everyone what you like and which features you use more often. You are welcome to suggest ways we can improve our project and identify any areas you think are missing.</p>
-        <p>You are welcome to suggest ways we can improve our project and identify any areas you think are missing.</p>
         <h3>3. Tag your post with #BithompContest.</h3>
         <p><b>Deadline is May 10, 2024, 9 GMT.</b></p>
         <p>Please note, your post can be in any format you prefer, such as text, video, image, GIF, or any other. Feel free to make it funny, serious, thought-provoking, tearful or whatever you wish it to be. However, it must not contain any violations or insults.</p>
