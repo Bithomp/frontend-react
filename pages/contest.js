@@ -2,7 +2,6 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 import SEO from '../components/SEO'
 
-import Image from 'next/image'
 import {
   FaXTwitter,
   FaInstagram,
@@ -10,6 +9,9 @@ import {
   FaLinkedinIn,
   FaTiktok
 } from "react-icons/fa6"
+
+import { useWidth } from '../utils'
+import { useEffect } from 'react'
 
 export async function getServerSideProps(context) {
   const { locale } = context
@@ -22,7 +24,23 @@ export async function getServerSideProps(context) {
 
 export default function Contest() {
 
+  const width = useWidth()
+
   const iconStyle = { marginBottom: "-2px" }
+
+  const reloadSource = () => {
+    //Function to reload the video element with a new source
+    if (videoRef) {
+      videoRef.load()
+    }
+  }
+
+  useEffect(() => {
+    //Reload the video when the source changes
+    reloadSource()
+  }, [width])
+
+  let videoRef
 
   return (
     <>
@@ -33,7 +51,18 @@ export default function Contest() {
       <div className="content-text content-center">
         <h1 className='center'>Win 200 XRP from Bithomp</h1>
         <center>
-          <Image src="/images/pages/contest/contest.png" alt="Bithomp contest" width={400} height={225} />
+          <video
+            width={width < 760 ? "100%" : "760"}
+            height={width < 400 ? width * 1.6 : (width < 760 ? width * 0.5625 : "427,5")}
+            controls
+            ref={node => { videoRef = node }}
+          >
+            <source
+              src={'/videos/pages/contest/' + (width < 400 ? 'mobile.mp4' : 'desktop.mp4')}
+              type="video/mp4"
+              preload="none"
+            />
+          </video>
         </center>
         <p>
           Hi, Friends!
