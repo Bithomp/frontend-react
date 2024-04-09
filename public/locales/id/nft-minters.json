@@ -1,13 +1,13 @@
 {
   "header": "Pembuat NFT",
-  "desc": "Here you can find the list of all identified NFT minters. If you want your project to be recognised, add a memo with your website address to your mint transactions.",
-  "summary-period": "For that period <1>{{minted}}</1> NFTs were minted, from which <3>{{mintedAndBurned}}</3> NFTs {{percentMintedAndBurned}} were already burned during the same period of time, total burned during this period: <7>{{burned}}</7> NFTs.",
-  "summary-all": "There are <1>{{minted}}</1> minted NFTs, from which <3>{{mintedAndBurned}}</3> NFTs {{percentMintedAndBurned}} are burned.",
+  "desc": "Di sini Anda dapat menemukan daftar semua pembuat NFT yang terverifikasi. Jika Anda ingin proyek Anda diakui, tambahkan memo dengan alamat situs web Anda ke transaksi pembuatan NFT Anda.",
+  "summary-period": "Selama periode tersebut, sebanyak <1>{{minted}}</1> NFT telah dibuat. Dari jumlah tersebut, <3>{{mintedAndBurned}}</3> NFT {{percentMintedAndBurned}} sudah dihapus dalam periode yang sama. Total NFT yang dihapus selama periode ini: <7>{{burned}}</7> NFT.",
+  "summary-all": "Total NFT yang telah dibuat adalah <1>{{minted}}</1>. Dari jumlah tersebut, <3>{{mintedAndBurned}}</3> NFT {{percentMintedAndBurned}} sudah dihapus.",
   "mint-chart": "Mint chart",
   "table": {
     "minted-total": "Total dibuat",
     "minted-with-metadata": "NFT yang Dibuat dengan Metadata",
-    "minted-and-burned": "Dibuat dan Dihapus",
-    "burned-total": "Total dihapus"
+    "minted-and-burned": "Dibuat dan Terhapus",
+    "burned-total": "Total terhapus"
   }
 }
