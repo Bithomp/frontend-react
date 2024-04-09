@@ -1,7 +1,7 @@
 {
   "menu": {
     "company": {
-      "about-us": "About us"
+      "about-us": "Tentang"
     },
     "services": {
       "nft-mint": "Mint NFT"
@@ -33,17 +33,17 @@
       "offers": "Penawaran"
     },
     "xrpl": {
-      "governance": "Governance",
-      "activations": "Activated accounts (chart)",
-      "distribution": "{{nativeCurrency}} distribution",
-      "last-ledger-information": "Informasi Ledger Terakhir",
-      "last-ledger-transactions": "Transaksi Ledger Terakhir",
-      "verified-domains": "Domain yang Terverifikasi",
-      "validators": "Validasi",
-      "amendments": "Amandemen",
-      "unl-report": "UNL report",
-      "genesis": "Akun Genesis"
-    },
+    "governance": "Governance",
+    "activations": "Akun yang Telah Aktif (grafik)",
+    "distribution": "Distribusi {{nativeCurrency}}",
+    "last-ledger-information": "Informasi Ledger Terbaru",
+    "last-ledger-transactions": "Transaksi Ledger Terbaru",
+    "verified-domains": "Domain yang Terverifikasi",
+    "validators": "Validasi",
+    "amendments": "Perubahan",
+    "unl-report": "Laporan UNL",
+    "genesis": "Akun Awal"
+  },
     "developers": {
       "developers": "Pengembang",
       "account-generation": "Generasi Akun",
