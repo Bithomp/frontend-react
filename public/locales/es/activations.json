@@ -1,4 +1,4 @@
 {
   "header": "Cuentas activadas",
-  "account-activations-for-that-period": "For that period <1>{{count}}</1> accounts were activated."
+  "account-activations-for-that-period": "<1>{{count}}</1> cuentas fueron activadas para ese periodo."
 }
