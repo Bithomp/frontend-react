@@ -10,7 +10,8 @@ import { isValidTaxon } from '../../utils/nft'
 import {
   nftsExplorerLink,
   addressUsernameOrServiceLink,
-  userOrServiceLink
+  userOrServiceLink,
+  niceNumber
 } from '../../utils/format'
 
 import DownloadIcon from "../../public/images/download.svg"
@@ -22,7 +23,6 @@ export async function getServerSideProps(context) {
   const idQuery = id ? (Array.isArray(id) ? id[0] : id) : ""
   let issuerQuery = isAddressOrUsername(idQuery) ? idQuery : issuer
   issuerQuery = isAddressOrUsername(issuerQuery) ? issuerQuery : ""
-
   return {
     props: {
       idQuery,
@@ -49,69 +49,66 @@ export default function NftDistribution({ issuerQuery, taxonQuery, idQuery }) {
   const [taxonInput, setTaxonInput] = useState(taxonQuery)
 
   const checkApi = async () => {
-    if (!issuer) {
-      return
-    }
     /*
+    "issuer": "rMCfTcW9k2Z21cm4zWj2mgHaTrxxrHtL7n",
+    "issuerDetails": {
+      "username": null,
+      "service": null
+    },
+    "taxon": 0,
+    "order": "ownerAndNotMinter",
+    "owners": [
       {
-        "issuer": "rDANq225BqjoyiFPXGcpBTzFdQTnn6aK6z",
-        "issuerDetails": {
-          "username": "Junkies",
-          "service": "Junkies"
+        "address": "r4iCcnDXzCZCDkrbWyebk5aNwg55R8PyB9",
+        "addressDetails": {
+          "username": null,
+          "service": null
         },
-        "list": "owners",
-        "totalNfts": 4730,
-        "totalOwners": 996,
-        "owners": [
-          {
-            "owner": "rDANq225BqjoyiFPXGcpBTzFdQTnn6aK6z",
-            "ownerDetails": {
-              "username": "Junkies",
-              "service": "Junkies"
-            },
-            "count": 500
-          },
+        "owner": 9,
+        "minterAndOwner": 0,
+        "ownerAndNotMinter": 9
+      },
       */
     let taxonUrlPart = ""
     if (taxon > -1) {
       taxonUrlPart = '&taxon=' + taxon
     }
+    //order=ownerAndNotMinter, marker=m
     const response = await axios(
-      'v2/nft-count/' + issuer + '?list=owners' + taxonUrlPart
+      'v2/nft-owners?issuer=' + issuer + taxonUrlPart
     ).catch(error => {
       setErrorMessage(t("error." + error.message))
-    });
+    })
     setLoading(false);
     const newdata = response?.data;
     if (newdata) {
-      if (newdata.issuer) {
+      if (newdata.owners) {
         if (newdata.owners.length > 0) {
-          setErrorMessage("");
-          setData(newdata);
+          setErrorMessage("")
+          setData(newdata)
         } else {
-          setErrorMessage(t("nft-distribution.no-nfts"));
+          setErrorMessage(t("nft-distribution.no-nfts"))
         }
       } else {
         if (newdata.error) {
-          setErrorMessage(newdata.error);
+          setErrorMessage(newdata.error)
         } else {
-          setErrorMessage("Error");
-          console.log(newdata);
+          setErrorMessage("Error")
+          console.log(newdata)
         }
       }
     }
   }
 
   useEffect(() => {
-    if (!issuer) return
     checkApi()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [issuer, taxon])
 
   let csvHeaders = [
     { label: t("table.owner"), key: "owner" },
-    { label: t("table.username"), key: "ownerDetails.username" },
-    { label: t("table.count"), key: "count" }
+    { label: t("table.username"), key: "addressDetails.username" },
+    { label: t("table.count"), key: "owner" }
   ]
 
   const searchClick = () => {
@@ -209,60 +206,96 @@ export default function NftDistribution({ issuerQuery, taxonQuery, idQuery }) {
             filename={'nft_destribution_' + data.issuer + '_UTC_' + (new Date().toJSON()) + '.csv'}
             className='button-action thin narrow'
           >
-            <DownloadIcon/> CSV
+            <DownloadIcon /> CSV
           </CSVLink>
         </p>
       }
-      {issuer ?
-        <table className={"table-large" + (windowWidth < 640 ? "" : " shrink")}>
-          <thead>
-            <tr>
-              <th className='center'>{t("table.index")}</th>
-              <th className='center'>{t("table.count")}</th>
-              <th>{t("table.owner")}</th>
-              <th className='center'>{t("table.nfts")}</th>
-            </tr>
-          </thead>
-          <tbody>
-            {loading ?
-              <tr className='center'>
-                <td colSpan="100">
-                  <span className="waiting"></span>
-                  <br />{t("general.loading")}
-                </td>
-              </tr>
-              :
+
+      <table className={"table-large" + (windowWidth < 640 ? "" : " shrink")}>
+        <thead>
+          <tr>
+            <th className='center'>{t("table.index")}</th>
+            <th>{t("table.owner")}</th>
+            {!issuer &&
               <>
-                {!errorMessage ? data.owners?.map((user, i) =>
-                  <tr key={i}>
-                    <td className="center">{i + 1}</td>
-                    <td className='center'>{user.count}</td>
-                    <td>{addressUsernameOrServiceLink({ owner: user.owner, ownerDetails: user.ownerDetails }, 'owner', { short: (windowWidth < 640) })}</td>
-                    <td className='center'>
-                      {
-                        nftsExplorerLink(
-                          {
-                            owner: user.owner,
-                            ownerDetails: user.ownerDetails,
-                            issuer: data.issuer,
-                            issuerDetails: data.issuerDetails
-                          }
-                        )
-                      }
-                    </td>
-                  </tr>)
-                  :
-                  <tr><td colSpan="100" className='center orange bold'>{errorMessage}</td></tr>
-                }
+                <th className='right'>Not self-issued</th>
+                <th className='right'>Self-issued</th>
               </>
             }
-          </tbody>
-        </table>
-        :
-        <p className='center'>
-          {t("nft-distribution.desc")}
-        </p>
-      }
+            <th className='right'>
+              {issuer ? t("table.nfts") : "Total"}
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {loading ?
+            <tr className='center'>
+              <td colSpan="100">
+                <span className="waiting"></span>
+                <br />{t("general.loading")}
+              </td>
+            </tr>
+            :
+            <>
+              {!errorMessage ? data.owners?.map((user, i) =>
+                <tr key={i}>
+                  <td className="center">{i + 1}</td>
+                  <td>
+                    {
+                      addressUsernameOrServiceLink(
+                        { owner: user.address, ownerDetails: user.addressDetails },
+                        'owner',
+                        { short: (windowWidth < 640) }
+                      )
+                    }
+                  </td>
+                  {!issuer &&
+                    <>
+                      <td className='right'>
+                        {niceNumber(user.ownerAndNotMinter)}
+                      </td>
+                      <td className='right'>
+                        {niceNumber(user.minterAndOwner)}
+                        {user.minterAndOwner > 0 &&
+                          <>
+                            {" "}
+                            {
+                              nftsExplorerLink(
+                                {
+                                  owner: user.address,
+                                  ownerDetails: user.addressDetails,
+                                  issuer: user.address,
+                                  issuerDetails: user.addressDetails
+                                }
+                              )
+                            }
+                          </>
+                        }
+                      </td>
+                    </>
+                  }
+                  <td className='right'>
+                    {niceNumber(user.owner)}
+                    {" "}
+                    {
+                      nftsExplorerLink(
+                        {
+                          owner: user.address,
+                          ownerDetails: user.addressDetails,
+                          issuer: data.issuer,
+                          issuerDetails: data.issuerDetails
+                        }
+                      )
+                    }
+                  </td>
+                </tr>)
+                :
+                <tr><td colSpan="100" className='center orange bold'>{errorMessage}</td></tr>
+              }
+            </>
+          }
+        </tbody>
+      </table>
     </div>
   </>
 }
