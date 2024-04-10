@@ -174,7 +174,9 @@
         "issuers": "Penerbit NFT",
         "transfers": "Transfer NFT",
         "for-sale": "NFT yang Dijual"
-      }
+      },
+      "escrows": "Escrows",
+      "amms": "AMM pools"
     }
   },
   "last-ledger-information": {

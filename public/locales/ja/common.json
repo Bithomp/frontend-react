@@ -174,7 +174,9 @@
         "issuers": "NFT発行者数",
         "transfers": "NFTトランスファー数",
         "for-sale": "販売中のNFT数"
-      }
+      },
+      "escrows": "Escrows",
+      "amms": "AMM pools"
     }
   },
   "last-ledger-information": {

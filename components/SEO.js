@@ -75,9 +75,7 @@ export default function SEO({ title, titleWithNetwork, description, image, page,
     { hrefLang: 'es', href: server + '/es' + path },
     { hrefLang: 'id', href: server + '/id' + path },
     { hrefLang: 'ja', href: server + '/ja' + path },
-    { hrefLang: 'ca', href: server + '/ca' + path },
-    { hrefLang: 'hr', href: server + '/hr' + path },
-    { hrefLang: 'my', href: server + '/my' + path }
+    { hrefLang: 'hr', href: server + '/hr' + path }
   ]
 
   return (

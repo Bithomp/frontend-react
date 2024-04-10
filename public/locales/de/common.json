@@ -1,5 +1,8 @@
 {
   "menu": {
+    "company": {
+      "about-us": "About us"
+    },
     "services": {
       "nft-mint": "NFT minten"
     },
@@ -171,7 +174,9 @@
         "issuers": "NFT Emittenten",
         "transfers": "NFT Transfers",
         "for-sale": "NFTs zum Verkauf"
-      }
+      },
+      "escrows": "Escrows",
+      "amms": "AMM pools"
     }
   },
   "last-ledger-information": {

@@ -174,7 +174,9 @@
         "issuers": "Emisores NFT",
         "transfers": "Transferencias NFT",
         "for-sale": "NFTs en venta"
-      }
+      },
+      "escrows": "Escrows",
+      "amms": "AMM pools"
     }
   },
   "last-ledger-information": {

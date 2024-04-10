@@ -174,7 +174,9 @@
         "issuers": "NFT izdavači",
         "transfers": "NFT transferi",
         "for-sale": "NFTovi na rasprodaji"
-      }
+      },
+      "escrows": "Escrows",
+      "amms": "AMM pools"
     }
   },
   "last-ledger-information": {
