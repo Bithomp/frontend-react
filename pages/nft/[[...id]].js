@@ -587,17 +587,17 @@ export default function Nft({
           "NFTokenID": id,
           "Destination": best.destination,
           "Owner": data.owner,
-          "Amount": (Math.ceil(best.amount * multiplier * 1000000) / 1000000).toString()
+          "Amount": (Math.ceil(best.amount * multiplier)).toString()
         }
 
         if (best.amount.value) {
           request.Amount = {
-            value: (Math.ceil(best.amount.value * multiplier * 1000000) / 1000000).toString(),
+            value: (Math.ceil(best.amount.value * multiplier)).toString(),
             currency: best.amount.currency,
             issuer: best.amount.issuer
           }
         } else {
-          request.Amount = (Math.ceil(best.amount * multiplier * 1000000) / 1000000).toString()
+          request.Amount = (Math.ceil(best.amount * multiplier)).toString()
         }
 
         return <>
@@ -615,7 +615,7 @@ export default function Nft({
             })}
           >
             <Image src={xummImg} className='xumm-logo' alt="xaman" height={24} width={24} />
-            {t("button.nft.buy-for-amount", { amount: amountFormat((Math.ceil(best.amount * multiplier * 1000000) / 1000000)) })}
+            {t("button.nft.buy-for-amount", { amount: amountFormat(Math.ceil(best.amount * multiplier)) })}
           </button>
           <br /><br />
         </>
