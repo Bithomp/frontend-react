@@ -28,7 +28,7 @@ import {
 
 import SEO from './SEO'
 import SearchBlock from './Layout/SearchBlock'
-import Tabs from './Tabs'
+// import Tabs from './Tabs'
 import Tiles from './Tiles'
 import IssuerSelect from './UI/IssuerSelect'
 import CheckBox from './UI/CheckBox'
@@ -81,13 +81,15 @@ export default function NftsComponent({
   // const [owner, setOwner] = useState(ownerQuery)
   // const [taxon, setTaxon] = useState(taxonQuery)
   // const [issuerInput, setIssuerInput] = useState(issuerQuery)
-  // const [ownerInput, setOwnerInput] = useState(ownerQuery)
+  const [ownerInput, setOwnerInput] = useState(ownerQuery)
   // const [taxonInput, setTaxonInput] = useState(taxonQuery)
   // const [searchInput, setSearchInput] = useState(searchQuery)
   const [includeBurned, setIncludeBurned] = useState(includeBurnedQuery)
   const [includeWithoutMediaData, setIncludeWithoutMediaData] = useState(includeWithoutMediaDataQuery)
   const [mintedPeriod, setMintedPeriod] = useState(mintedPeriodQuery)
   const [csvHeaders, setCsvHeaders] = useState([])
+  const [nftCount, setNftCount] = useState(null)
+
 
   let csvHeadersConst = [
     { label: "NFT ID", key: "nftokenID" },
@@ -128,6 +130,8 @@ export default function NftsComponent({
 
   const checkApi = async (options) => {
     if (nftExplorer && !mintedPeriod && listTab !== 'onSale') return
+
+    console.log("checkApi");
 
     let marker = hasMore;
     let nftsData = data;
@@ -242,6 +246,9 @@ export default function NftsComponent({
 
     setLoading(false)
     const newdata = response?.data
+
+    setNftCount(newdata.nfts.length);
+
     if (newdata) {
       setRawData(newdata)
       if (newdata.error) {
@@ -530,6 +537,8 @@ export default function NftsComponent({
     marginBottom: "20px",
   }
 
+  console.log(ownerInput);
+
   return <>
     {nftExplorer ?
       <SEO
@@ -567,7 +576,7 @@ export default function NftsComponent({
           </button>
           <div className="filters__wrap">
             <div className="filters__head">
-              <span><i>12</i> results</span>
+              <span><i>{nftCount}</i> results</span>
             </div>
             {nftExplorer && <>
               {/* Hide for now when it's not available on xahau network */}
@@ -606,18 +615,18 @@ export default function NftsComponent({
                 </div>
               <div className='center'>
                 <span className='input-title'>{t("table.owner")} {userOrServiceLink(rawData, 'owner')}</span>
-                {/* <input
+                <input
                   placeholder={t("nfts.search-by-owner")}
                   value={ownerInput}
                   onChange={(e) => { setOwnerInput(e.target.value) }}
-                  onKeyPress={enterPress}
+                  // onKeyPress={enterPress}
                   className="input-text"
                   spellCheck="false"
                   maxLength="35"
-                /> */}
-                <AddressInput
+                />
+                {/* <AddressInput
                     searchPlaceholderText={t("nfts.search-by-owner")}
-                  />
+                  /> */}
               </div>
               <div className='center'>
                 <span className='input-title'>{t("table.name")}</span>
@@ -667,12 +676,19 @@ export default function NftsComponent({
               {t("table.view")}
               <RadioOptions tabList={viewTabList} tab={viewTab} setTab={setViewTab} name='view' />
             </div>
+
             {(!burnedPeriod && !xahauNetwork) &&
-              <Tabs tabList={listTabList} tab={listTab} setTab={setListTab} name='saleType' />
+              <div>
+                {t("table.all-nfts")}
+                <RadioOptions tabList={listTabList} tab={listTab} setTab={setListTab} name='saleType' />
+              </div>
             }
 
             {(!burnedPeriod && !xahauNetwork) && listTab === 'onSale' &&
-              <Tabs tabList={saleDestinationTabList} tab={saleDestinationTab} setTab={setSaleDestinationTab} name='saleDestination' />
+              <div>
+                {t("table.on-sale")}
+                <RadioOptions tabList={saleDestinationTabList} tab={saleDestinationTab} setTab={setSaleDestinationTab} name='saleDestination' />
+              </div>
             }
 
             <div>
