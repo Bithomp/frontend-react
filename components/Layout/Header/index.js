@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { useTranslation } from 'next-i18next'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 
 import { devNet, xahauNetwork, ledgerName, nativeCurrency, network } from '../../../utils'
 
@@ -20,9 +20,45 @@ export default function Header({ setSignRequest, account, signOut, selectedCurre
 
   const [xummUserToken, setXummUserToken] = useState(null)
 
+  const [hoverStates, setHoverStates] = useState({});
+  const timeoutIds = useRef({});
+
+  const handleMouseEnter = (id) => () => {
+    Object.values(timeoutIds.current).forEach(() => {
+      clearTimeout(timeoutIds.current[id]);
+    });
+    setHoverStates(prevState => {
+      const newState = {};
+      Object.keys(prevState).forEach(key => {
+        newState[key] = false;
+      });
+      newState[id] = true;
+      return newState;
+    });
+  };
+
+  const handleMouseLeave = (id) => () => {
+    timeoutIds.current[id] = setTimeout(() => {
+      setHoverStates(prevState => ({ ...prevState, [id]: false }));
+    }, 800);
+  };
+
   useEffect(() => {
     setRendered(true)
     setXummUserToken(localStorage.getItem('xummUserToken'))
+
+    const dropdowns = document.querySelectorAll('.menu-dropdown');
+    dropdowns.forEach((dropdown) => {
+      dropdown.addEventListener('mouseenter', handleMouseEnter(dropdown.id));
+      dropdown.addEventListener('mouseleave', handleMouseLeave(dropdown.id));
+    });
+
+    return () => {
+      dropdowns.forEach((dropdown) => {
+        dropdown.removeEventListener('mouseenter', handleMouseEnter(dropdown.id));
+        dropdown.removeEventListener('mouseleave', handleMouseLeave(dropdown.id));
+      });
+    };
   }, [])
 
   let address, hashicon, displayName, username;
@@ -73,9 +109,9 @@ export default function Header({ setSignRequest, account, signOut, selectedCurre
       <header>
         <Link href="/"><div className='header-logo'><LogoAnimated /></div></Link>
         <div className="header-menu-left">
-          <div className="menu-dropdown">
+          <div className="menu-dropdown" id="dropdown1">
             <div className="menu-dropdown-button">{t("menu.personal.personal")}</div>
-            <div className="menu-dropdown-content">
+            <div className="menu-dropdown-content" style={{ display: hoverStates["dropdown1"] ? 'block' : 'none' }}>
               <a href={"/explorer/"}>{t("menu.personal.search-on-ledgerName", { ledgerName })}</a>
               <Link href="/username">{t("menu.usernames")}</Link>
               {displayName ?
@@ -88,9 +124,9 @@ export default function Header({ setSignRequest, account, signOut, selectedCurre
             </div>
           </div>
 
-          <div className="menu-dropdown">
+          <div className="menu-dropdown" id="dropdown2">
             <div className="menu-dropdown-button">{t("menu.business.business")}</div>
-            <div className="menu-dropdown-content">
+            <div className="menu-dropdown-content" style={{ display: hoverStates["dropdown2"] ? 'block' : 'none' }}>
               <Link href="/advertise">{t("menu.business.advertise")}</Link>
               <Link href="/username">{t("menu.usernames")}</Link>
               <Link href="/submit-account-information">{t("menu.project-registration")}</Link>
@@ -101,9 +137,9 @@ export default function Header({ setSignRequest, account, signOut, selectedCurre
             </div>
           </div>
 
-          <div className="menu-dropdown">
+          <div className="menu-dropdown" id="dropdown3">
             <div className="menu-dropdown-button">NFT</div>
-            <div className="menu-dropdown-content">
+            <div className="menu-dropdown-content" style={{ display: hoverStates["dropdown3"] ? 'block' : 'none' }}>
               <Link href="/nft-explorer">{t("menu.nft.explorer")}</Link>
               {/* Hide NFT menu for XAHAU while they are not ready yet */}
               {!xahauNetwork && <>
@@ -132,9 +168,9 @@ export default function Header({ setSignRequest, account, signOut, selectedCurre
             </div>
           </div>
 
-          <div className="menu-dropdown">
+          <div className="menu-dropdown" id="dropdown4">
             <div className="menu-dropdown-button">{ledgerName}</div>
-            <div className="menu-dropdown-content">
+            <div className="menu-dropdown-content" style={{ display: hoverStates["dropdown4"] ? 'block' : 'none' }}>
               {xahauNetwork && <Link href="/governance">{t("menu.xrpl.governance")}</Link>}
               <Link href="/activations">{t("menu.xrpl.activations")}</Link>
               <Link href="/distribution">{t("menu.xrpl.distribution", { nativeCurrency })}</Link>
@@ -151,9 +187,9 @@ export default function Header({ setSignRequest, account, signOut, selectedCurre
             </div>
           </div>
 
-          <div className="menu-dropdown">
+          <div className="menu-dropdown" id="dropdown5">
             <div className="menu-dropdown-button">{t("menu.developers.developers")}</div>
-            <div className="menu-dropdown-content">
+            <div className="menu-dropdown-content" style={{ display: hoverStates["dropdown5"] ? 'block' : 'none' }}>
               {devNet &&
                 <>
                   <a href={"/create/"}>{t("menu.developers.account-generation")}</a>
@@ -169,9 +205,9 @@ export default function Header({ setSignRequest, account, signOut, selectedCurre
             </div>
           </div>
 
-          <div className="menu-dropdown">
+          <div className="menu-dropdown" id="dropdown6">
             <div className="menu-dropdown-button">{t("menu.networks")}</div>
-            <div className="menu-dropdown-content">
+            <div className="menu-dropdown-content" style={{ display: hoverStates["dropdown6"] ? 'block' : 'none' }}>
               {network !== 'xahau' && <a href="https://xahauexplorer.com">XAHAU Mainnet</a>}
               {network !== 'xahau-testnet' && <a href="https://test.xahauexplorer.com">XAHAU Testnet</a>}
               {network !== 'mainnet' && <a href="https://bithomp.com">XRPL Mainnet</a>}
@@ -182,12 +218,12 @@ export default function Header({ setSignRequest, account, signOut, selectedCurre
         </div>
         <div className="header-menu-right">
           {displayName ?
-            <div className="menu-dropdown">
+            <div className="menu-dropdown" id="dropdown7">
               <div className="menu-dropdown-button">
                 <img src={hashicon} alt="user icon" className="user-icon" />
                 {displayName}
               </div>
-              <div className="menu-dropdown-content">
+              <div className="menu-dropdown-content" style={{ display: hoverStates["dropdown7"] ? 'block' : 'none' }}>
                 <span onClick={copyToClipboard} className="link">
                   {isCopied ? t("button.copied") : t("button.copy-my-address")}
                 </span>
