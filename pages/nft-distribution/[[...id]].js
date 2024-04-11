@@ -37,7 +37,7 @@ export async function getServerSideProps(context) {
       issuerQuery,
       orderQuery: order || "ownerAndNotMinter",
       taxonQuery: taxon || "",
-      ...(await serverSideTranslations(locale, ['common']))
+      ...(await serverSideTranslations(locale, ['common', 'nft-distribution']))
     }
   }
 }
@@ -74,23 +74,30 @@ export default function NftDistribution({ issuerQuery, taxonQuery, idQuery, orde
           "username": null,
           "service": null
         },
-        "owner": 9,
+        "total": 9,
         "minterAndOwner": 0,
         "ownerAndNotMinter": 9
-      },
-      */
+      }
+    ],
+    "summary: {
+      "totalNfts": 1375421,
+      "totalOwners": 35309
+    }
+    */
+    setData([])
     let taxonUrlPart = ""
     if (taxon > -1) {
       taxonUrlPart = '&taxon=' + taxon
     }
-    //marker=m
+
     setLoading(true)
 
     let orderPart = order
     if (issuer) {
-      orderPart = 'owner'
+      orderPart = 'total'
     }
 
+    //marker=m
     const response = await axios(
       'v2/nft-owners?issuer=' + issuer + taxonUrlPart + '&order=' + orderPart
     ).catch(error => {
@@ -104,7 +111,7 @@ export default function NftDistribution({ issuerQuery, taxonQuery, idQuery, orde
           setErrorMessage("")
           setData(newdata)
         } else {
-          setErrorMessage(t("nft-distribution.no-nfts"))
+          setErrorMessage(t("no-nfts", { ns: "nft-distribution" }))
         }
       } else {
         if (newdata.error) {
@@ -123,9 +130,9 @@ export default function NftDistribution({ issuerQuery, taxonQuery, idQuery, orde
   }, [issuer, taxon, order])
 
   let csvHeaders = [
-    { label: t("table.owner"), key: "owner" },
+    { label: t("table.owner"), key: "address" },
     { label: t("table.username"), key: "addressDetails.username" },
-    { label: t("table.count"), key: "owner" }
+    { label: t("table.count"), key: "total" }
   ]
 
   const searchClick = () => {
@@ -176,8 +183,8 @@ export default function NftDistribution({ issuerQuery, taxonQuery, idQuery, orde
 
   const changeOrder = order => {
     setOrder(order)
-    if (order === 'owner') {
-      addQueryParams(router, [{ name: "order", value: "owner" }])
+    if (order === 'total') {
+      addQueryParams(router, [{ name: "order", value: "total" }])
     } else {
       removeQueryParams(router, ["order"])
     }
@@ -185,10 +192,10 @@ export default function NftDistribution({ issuerQuery, taxonQuery, idQuery, orde
 
   return <>
     <SEO
-      title={t("nft-distribution.header") + (issuer ? (" " + issuer) : "") + (taxon ? (" " + taxon) : "")}
+      title={t("header", { ns: "nft-distribution" }) + (issuer ? (" " + issuer) : "") + (taxon ? (" " + taxon) : "")}
     />
     <div className="content-text" style={{ marginTop: "20px" }}>
-      <h1 className='center'>{t("nft-distribution.header")}</h1>
+      <h1 className='center'>{t("header", { ns: 'nft-distribution' })}</h1>
       <div className='center'>
         <span className='halv'>
           <span className='input-title'>{t("table.issuer")} {userOrServiceLink(data, 'issuer')}</span>
@@ -220,10 +227,17 @@ export default function NftDistribution({ issuerQuery, taxonQuery, idQuery, orde
         <input type="button" className="button-action" value={t("button.search")} onClick={searchClick} />
       </p>
 
-      {data?.totalNfts &&
+      {data?.summary?.totalNfts &&
         <p className='center'>
-          <Trans i18nKey="nft-distribution.text0" values={{ users: data.totalOwners, nfts: data.totalNfts }}>
-            {{ users: data.totalOwners }} users own {{ nfts: data.totalNfts }} NFTs
+          <Trans
+            i18nKey={order}
+            ns="nft-distribution"
+            values={{
+              users: niceNumber(data.summary?.totalOwners),
+              nfts: niceNumber(data.summary.totalNfts)
+            }}
+          >
+            {niceNumber(data.summary?.totalOwners)} users own {niceNumber(data.summary.totalNfts)} NFTs
           </Trans>
           <br /><br />
           <CSVLink
@@ -250,11 +264,11 @@ export default function NftDistribution({ issuerQuery, taxonQuery, idQuery, orde
                     style={order !== 'ownerAndNotMinter' ? { cursor: "pointer" } : {}}
                     className={order === 'ownerAndNotMinter' ? "blue" : ""}
                   >
-                    Non-self-issued <FaSortAmountDown />
+                    {t("table.non-self-issued", { ns: "nft-distribution" })} <FaSortAmountDown />
                   </span>
                 </th>
                 <th className='right'>
-                  Self-issued
+                  {t("table.self-issued", { ns: "nft-distribution" })}
                 </th>
               </>
             }
@@ -263,11 +277,11 @@ export default function NftDistribution({ issuerQuery, taxonQuery, idQuery, orde
                 t("table.nfts")
                 :
                 <span
-                  onClick={() => changeOrder('owner')}
-                  style={order !== 'owner' ? { cursor: "pointer" } : {}}
-                  className={order === 'owner' ? "blue" : ""}
+                  onClick={() => changeOrder('total')}
+                  style={order !== 'total' ? { cursor: "pointer" } : {}}
+                  className={order === 'total' ? "blue" : ""}
                 >
-                  Total <FaSortAmountDown />
+                  {t("table.total", { ns: "nft-distribution" })} <FaSortAmountDown />
                 </span>
               }
             </th>
@@ -287,13 +301,7 @@ export default function NftDistribution({ issuerQuery, taxonQuery, idQuery, orde
                 <tr key={i}>
                   <td className="center">{i + 1}</td>
                   <td>
-                    {
-                      addressUsernameOrServiceLink(
-                        { owner: user.address, ownerDetails: user.addressDetails },
-                        'owner',
-                        { short: (windowWidth < 640) }
-                      )
-                    }
+                    {addressUsernameOrServiceLink(user, 'address', { short: (windowWidth < 640) })}
                   </td>
                   {!issuer &&
                     <>
@@ -321,7 +329,7 @@ export default function NftDistribution({ issuerQuery, taxonQuery, idQuery, orde
                     </>
                   }
                   <td className='right'>
-                    {niceNumber(user.owner)}
+                    {niceNumber(user.total)}
                     {" "}
                     {
                       nftsExplorerLink(

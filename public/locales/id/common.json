@@ -576,12 +576,6 @@
     "load-more": "Kami sedang mencari data di XRPL... harap tunggu...",
     "end": "Ini adalah semua NFT yang dapat kami temukan."
   },
-  "nft-distribution": {
-    "header": "Distribusi NFT",
-    "desc": "Di sini Anda dapat memeriksa distribusi NFT dari penerbit NFT tertentu. Masukkan alamat XRPL penerbit NFT atau username dan tekan tombol pencarian.",
-    "no-nfts": "Kami tidak dapat menemukan NFT yang diterbitkan oleh alamat tersebut.",
-    "text0": "{{users}} akun memiliki {{nfts}} NFT"
-  },
   "nft-sales": {
     "header": "Penjualan NFT",
     "load-more": "Kami sedang mencari data di XRPL... harap tunggu...",

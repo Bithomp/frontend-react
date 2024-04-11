@@ -1,0 +1,12 @@
+{
+  "header": "NFT Verteilung",
+  "desc": "Hier können Sie die Verteilung von NFTs eines bestimmten NFT Emittenten überprüfen. Geben Sie die XRPL Adresse des NFT Emittenten oder einen Benutzernamen ein und klicken Sie auf die Suchschaltfläche.",
+  "no-nfts": "Wir konnten keine von dieser Adresse emittierten NFTs finden",
+  "total": "{{users}} konten besitzen {{nfts}} NFTs",
+  "ownerAndNotMinter": "{{users}} accounts own {{nfts}} non-self-issued NFTs",
+  "table": {
+    "non-self-issued": "Non-self-issued",
+    "self-issued": "Self-issued",
+    "total": "Total"
+  }
+}

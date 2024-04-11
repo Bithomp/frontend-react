@@ -576,12 +576,6 @@
     "load-more": "Tražimo podatke na XRPLu... molimo pričekajte...",
     "end": "Ovdje su svi NFTovi koje smo uspjeli pronaći."
   },
-  "nft-distribution": {
-    "header": "NFT distribucija",
-    "desc": "Ovdje možete provjeriti distribuciju NFTova od jednog NFT izdavača. Unesite izdavačevu XRPL adresu ili korisničko ime i stisnite dugme za pretragu.",
-    "no-nfts": "Nismo pronašli niti jedan NFT kojemu je izdavač ta adresa.",
-    "text0": "{{users}} računi posjeduju {{nfts}} NFTa"
-  },
   "nft-sales": {
     "header": "NFT prodaje",
     "load-more": "Tražimo podatke na XRPLu... molimo pričekajte...",

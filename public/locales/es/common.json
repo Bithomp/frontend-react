@@ -576,12 +576,6 @@
     "load-more": "Estamos buscando información en el XRPL... por favor, espera...",
     "end": "Aquí están todos los NFTs que pudimos encontrar."
   },
-  "nft-distribution": {
-    "header": "Distribución NFT",
-    "desc": "Aquí puedes comprobar la distribución de NFTs de un emisor particular. Introduce la dirección XPRL del emisor NFT  o el nombre de usuario y presiona el botón de búsqueda.",
-    "no-nfts": "No pudimos encontrar ningún NFT acuñado por esa cuenta.",
-    "text0": "{{users}} cuentas poseen {{nfts}} NFTs"
-  },
   "nft-sales": {
     "header": "Ventas NFT",
     "load-more": "Estamos buscando información en el XRPL... por favor, espera...",
