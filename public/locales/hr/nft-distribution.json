@@ -3,7 +3,8 @@
   "desc": "Ovdje možete provjeriti distribuciju NFTova od jednog NFT izdavača. Unesite izdavačevu XRPL adresu ili korisničko ime i stisnite dugme za pretragu.",
   "no-nfts": "Nismo pronašli niti jedan NFT kojemu je izdavač ta adresa.",
   "total": "{{users}} računi posjeduju {{nfts}} NFTa",
-  "ownerAndNotMinter": "{{users}} accounts own {{nfts}} non-self-issued NFTs",
+  "nonSelfIssued": "{{users}} accounts own {{nfts}} non-self-issued NFTs",
+  "selfIssued": "{{users}} accounts own {{nfts}} self-issued NFTs",
   "table": {
     "non-self-issued": "Non-self-issued",
     "self-issued": "Self-issued",

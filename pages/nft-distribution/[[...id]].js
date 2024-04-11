@@ -35,7 +35,7 @@ export async function getServerSideProps(context) {
     props: {
       idQuery,
       issuerQuery,
-      orderQuery: order || "ownerAndNotMinter",
+      orderQuery: order || "nonSelfIssued",
       taxonQuery: taxon || "",
       ...(await serverSideTranslations(locale, ['common', 'nft-distribution']))
     }
@@ -66,7 +66,7 @@ export default function NftDistribution({ issuerQuery, taxonQuery, idQuery, orde
       "service": null
     },
     "taxon": 0,
-    "order": "ownerAndNotMinter",
+    "order": "nonSelfIssued",
     "owners": [
       {
         "address": "r4iCcnDXzCZCDkrbWyebk5aNwg55R8PyB9",
@@ -75,8 +75,8 @@ export default function NftDistribution({ issuerQuery, taxonQuery, idQuery, orde
           "service": null
         },
         "total": 9,
-        "minterAndOwner": 0,
-        "ownerAndNotMinter": 9
+        "selfIssued": 0,
+        "nonSelfIssued": 9
       }
     ],
     "summary: {
@@ -132,7 +132,9 @@ export default function NftDistribution({ issuerQuery, taxonQuery, idQuery, orde
   let csvHeaders = [
     { label: t("table.owner"), key: "address" },
     { label: t("table.username"), key: "addressDetails.username" },
-    { label: t("table.count"), key: "total" }
+    { label: t("table.nonSelfIssued", { ns: "nft-distribution" }), key: "nonSelfIssued" },
+    { label: t("table.selfIssued", { ns: "nft-distribution" }), key: "selfIssued" },
+    { label: t("table.total", { ns: "nft-distribution" }), key: "total" }
   ]
 
   const searchClick = () => {
@@ -183,8 +185,8 @@ export default function NftDistribution({ issuerQuery, taxonQuery, idQuery, orde
 
   const changeOrder = order => {
     setOrder(order)
-    if (order === 'total') {
-      addQueryParams(router, [{ name: "order", value: "total" }])
+    if (order !== 'nonSelfIssued') {
+      addQueryParams(router, [{ name: "order", value: order }])
     } else {
       removeQueryParams(router, ["order"])
     }
@@ -192,7 +194,13 @@ export default function NftDistribution({ issuerQuery, taxonQuery, idQuery, orde
 
   return <>
     <SEO
-      title={t("header", { ns: "nft-distribution" }) + (issuer ? (" " + issuer) : "") + (taxon ? (" " + taxon) : "")}
+      title={
+        t("header", { ns: "nft-distribution" }) +
+        (issuer ? (" " + issuer) : "") +
+        (taxon ? (" " + taxon) : "") +
+        (order === "total" ? (" " + t("table.total", { ns: "nft-distribution" })) : "") +
+        (order === "selfIssued" ? (" " + t("table.self-issued", { ns: "nft-distribution" })) : "")
+      }
     />
     <div className="content-text" style={{ marginTop: "20px" }}>
       <h1 className='center'>{t("header", { ns: 'nft-distribution' })}</h1>
@@ -239,7 +247,7 @@ export default function NftDistribution({ issuerQuery, taxonQuery, idQuery, orde
           >
             {niceNumber(data.summary?.totalOwners)} users own {niceNumber(data.summary.totalNfts)} NFTs
           </Trans>
-          <br /><br />
+          {" "}
           <CSVLink
             data={data.owners}
             headers={csvHeaders}
@@ -260,15 +268,21 @@ export default function NftDistribution({ issuerQuery, taxonQuery, idQuery, orde
               <>
                 <th className='right'>
                   <span
-                    onClick={() => changeOrder('ownerAndNotMinter')}
-                    style={order !== 'ownerAndNotMinter' ? { cursor: "pointer" } : {}}
-                    className={order === 'ownerAndNotMinter' ? "blue" : ""}
+                    onClick={() => changeOrder('nonSelfIssued')}
+                    style={order !== 'nonSelfIssued' ? { cursor: "pointer" } : {}}
+                    className={order === 'nonSelfIssued' ? "blue" : ""}
                   >
                     {t("table.non-self-issued", { ns: "nft-distribution" })} <FaSortAmountDown />
                   </span>
                 </th>
                 <th className='right'>
-                  {t("table.self-issued", { ns: "nft-distribution" })}
+                  <span
+                    onClick={() => changeOrder('selfIssued')}
+                    style={order !== 'selfIssued' ? { cursor: "pointer" } : {}}
+                    className={order === 'selfIssued' ? "blue" : ""}
+                  >
+                    {t("table.self-issued", { ns: "nft-distribution" })} <FaSortAmountDown />
+                  </span>
                 </th>
               </>
             }
@@ -306,10 +320,10 @@ export default function NftDistribution({ issuerQuery, taxonQuery, idQuery, orde
                   {!issuer &&
                     <>
                       <td className='right'>
-                        {niceNumber(user.ownerAndNotMinter)}
+                        {niceNumber(user.nonSelfIssued)}
                       </td>
                       <td className='right'>
-                        {niceNumber(user.minterAndOwner)}
+                        {niceNumber(user.selfIssued)}
                         {user.minterAndOwner > 0 &&
                           <>
                             {" "}
