@@ -132,8 +132,8 @@ export default function NftDistribution({ issuerQuery, taxonQuery, idQuery, orde
   let csvHeaders = [
     { label: t("table.owner"), key: "address" },
     { label: t("table.username"), key: "addressDetails.username" },
-    { label: t("table.nonSelfIssued", { ns: "nft-distribution" }), key: "nonSelfIssued" },
-    { label: t("table.selfIssued", { ns: "nft-distribution" }), key: "selfIssued" },
+    { label: t("table.non-self-issued", { ns: "nft-distribution" }), key: "nonSelfIssued" },
+    { label: t("table.self-issued", { ns: "nft-distribution" }), key: "selfIssued" },
     { label: t("table.total", { ns: "nft-distribution" }), key: "total" }
   ]
 
@@ -247,11 +247,11 @@ export default function NftDistribution({ issuerQuery, taxonQuery, idQuery, orde
           >
             {niceNumber(data.summary?.totalOwners)} users own {niceNumber(data.summary.totalNfts)} NFTs
           </Trans>
-          {" "}
+          {windowWidth < 960 ? <><br /><br /></> : " "}
           <CSVLink
             data={data.owners}
             headers={csvHeaders}
-            filename={'nft_destribution_' + data.issuer + '_UTC_' + (new Date().toJSON()) + '.csv'}
+            filename={'nft_destribution_' + (data.issuer || "") + '_' + (new Date().toLocaleString()) + '.csv'}
             className='button-action thin narrow'
           >
             <DownloadIcon /> CSV
@@ -259,111 +259,211 @@ export default function NftDistribution({ issuerQuery, taxonQuery, idQuery, orde
         </p>
       }
 
-      <table className={"table-large" + (windowWidth < 640 ? "" : " shrink")}>
-        <thead>
-          <tr>
-            <th className='center'>{t("table.index")}</th>
-            <th>{t("table.owner")}</th>
-            {!issuer &&
+      {windowWidth < 960 && !issuer &&
+        <>
+          <p>
+            <span
+              onClick={() => changeOrder('nonSelfIssued')}
+              style={order !== 'nonSelfIssued' ? { cursor: "pointer" } : {}}
+              className={order === 'nonSelfIssued' ? "blue" : ""}
+            >
+              {t("table.non-self-issued", { ns: "nft-distribution" })} <FaSortAmountDown />
+            </span>
+          </p>
+          <p>
+            <span
+              onClick={() => changeOrder('selfIssued')}
+              style={order !== 'selfIssued' ? { cursor: "pointer" } : {}}
+              className={order === 'selfIssued' ? "blue" : ""}
+            >
+              {t("table.self-issued", { ns: "nft-distribution" })} <FaSortAmountDown />
+            </span>
+          </p>
+          <p>
+            <span
+              onClick={() => changeOrder('total')}
+              style={order !== 'total' ? { cursor: "pointer" } : {}}
+              className={order === 'total' ? "blue" : ""}
+            >
+              {t("table.total", { ns: "nft-distribution" })} <FaSortAmountDown />
+            </span>
+          </p>
+        </>
+      }
+
+      {windowWidth >= 960 ?
+        <table className="table-large shrink">
+          <thead>
+            <tr>
+              <th className='center'>{t("table.index")}</th>
+              <th>{t("table.owner")}</th>
+              {!issuer &&
+                <>
+                  <th className='right'>
+                    <span
+                      onClick={() => changeOrder('nonSelfIssued')}
+                      style={order !== 'nonSelfIssued' ? { cursor: "pointer" } : {}}
+                      className={order === 'nonSelfIssued' ? "blue" : ""}
+                    >
+                      {t("table.non-self-issued", { ns: "nft-distribution" })} <FaSortAmountDown />
+                    </span>
+                  </th>
+                  <th className='right'>
+                    <span
+                      onClick={() => changeOrder('selfIssued')}
+                      style={order !== 'selfIssued' ? { cursor: "pointer" } : {}}
+                      className={order === 'selfIssued' ? "blue" : ""}
+                    >
+                      {t("table.self-issued", { ns: "nft-distribution" })} <FaSortAmountDown />
+                    </span>
+                  </th>
+                </>
+              }
+              <th className='right'>
+                {issuer ?
+                  t("table.nfts")
+                  :
+                  <span
+                    onClick={() => changeOrder('total')}
+                    style={order !== 'total' ? { cursor: "pointer" } : {}}
+                    className={order === 'total' ? "blue" : ""}
+                  >
+                    {t("table.total", { ns: "nft-distribution" })} <FaSortAmountDown />
+                  </span>
+                }
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {loading ?
+              <tr className='center'>
+                <td colSpan="100">
+                  <span className="waiting"></span>
+                  <br />{t("general.loading")}
+                </td>
+              </tr>
+              :
               <>
-                <th className='right'>
-                  <span
-                    onClick={() => changeOrder('nonSelfIssued')}
-                    style={order !== 'nonSelfIssued' ? { cursor: "pointer" } : {}}
-                    className={order === 'nonSelfIssued' ? "blue" : ""}
-                  >
-                    {t("table.non-self-issued", { ns: "nft-distribution" })} <FaSortAmountDown />
-                  </span>
-                </th>
-                <th className='right'>
-                  <span
-                    onClick={() => changeOrder('selfIssued')}
-                    style={order !== 'selfIssued' ? { cursor: "pointer" } : {}}
-                    className={order === 'selfIssued' ? "blue" : ""}
-                  >
-                    {t("table.self-issued", { ns: "nft-distribution" })} <FaSortAmountDown />
-                  </span>
-                </th>
+                {!errorMessage ? data.owners?.map((user, i) =>
+                  <tr key={i}>
+                    <td className="center">{i + 1}</td>
+                    <td>
+                      {addressUsernameOrServiceLink(user, 'address')}
+                    </td>
+                    {!issuer &&
+                      <>
+                        <td className='right'>
+                          {niceNumber(user.nonSelfIssued)}
+                        </td>
+                        <td className='right'>
+                          {niceNumber(user.selfIssued)}
+                          {user.selfIssued > 0 &&
+                            <>
+                              {" "}
+                              {
+                                nftsExplorerLink(
+                                  {
+                                    owner: user.address,
+                                    ownerDetails: user.addressDetails,
+                                    issuer: user.address,
+                                    issuerDetails: user.addressDetails
+                                  }
+                                )
+                              }
+                            </>
+                          }
+                        </td>
+                      </>
+                    }
+                    <td className='right'>
+                      {niceNumber(user.total)}
+                      {" "}
+                      {
+                        nftsExplorerLink(
+                          {
+                            owner: user.address,
+                            ownerDetails: user.addressDetails,
+                            issuer: data.issuer,
+                            issuerDetails: data.issuerDetails
+                          }
+                        )
+                      }
+                    </td>
+                  </tr>)
+                  :
+                  <tr><td colSpan="100" className='center orange bold'>{errorMessage}</td></tr>
+                }
               </>
             }
-            <th className='right'>
-              {issuer ?
-                t("table.nfts")
-                :
-                <span
-                  onClick={() => changeOrder('total')}
-                  style={order !== 'total' ? { cursor: "pointer" } : {}}
-                  className={order === 'total' ? "blue" : ""}
-                >
-                  {t("table.total", { ns: "nft-distribution" })} <FaSortAmountDown />
-                </span>
-              }
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          {loading ?
-            <tr className='center'>
-              <td colSpan="100">
-                <span className="waiting"></span>
-                <br />{t("general.loading")}
-              </td>
-            </tr>
-            :
-            <>
-              {!errorMessage ? data.owners?.map((user, i) =>
-                <tr key={i}>
-                  <td className="center">{i + 1}</td>
-                  <td>
-                    {addressUsernameOrServiceLink(user, 'address', { short: (windowWidth < 640) })}
-                  </td>
-                  {!issuer &&
-                    <>
-                      <td className='right'>
-                        {niceNumber(user.nonSelfIssued)}
+          </tbody>
+        </table>
+        :
+        <table className="table-mobile">
+          <thead>
+          </thead>
+          <tbody>
+            {loading ?
+              <tr className='center'>
+                <td colSpan="100">
+                  <br />
+                  <span className="waiting"></span>
+                  <br />{t("general.loading")}<br />
+                  <br />
+                </td>
+              </tr>
+              :
+              <>
+                {!errorMessage ?
+                  data?.owners?.map((user, i) =>
+                    <tr key={i}>
+                      <td style={{ padding: "5px" }} className='center'>
+                        <p>{i + 1}</p>
                       </td>
-                      <td className='right'>
-                        {niceNumber(user.selfIssued)}
-                        {user.minterAndOwner > 0 &&
+                      <td>
+                        <p>
+                          {addressUsernameOrServiceLink(user, 'address')}
+                        </p>
+                        {!issuer &&
                           <>
-                            {" "}
-                            {
-                              nftsExplorerLink(
-                                {
-                                  owner: user.address,
-                                  ownerDetails: user.addressDetails,
-                                  issuer: user.address,
-                                  issuerDetails: user.addressDetails
-                                }
-                              )
-                            }
+                            <p>
+                              {t("table.non-self-issued", { ns: "nft-distribution" })}:
+                              {" "}
+                              {niceNumber(user.nonSelfIssued)}
+                            </p>
+                            <p>
+                              {t("table.self-issued", { ns: "nft-distribution" })}:
+                              {" "}
+                              {niceNumber(user.selfIssued)}
+                            </p>
                           </>
                         }
+                        <p>
+                          {issuer ? t("table.nfts") : t("table.total", { ns: "nft-distribution" })}:
+                          {" "}
+                          {niceNumber(user.total)}
+                          {" "}
+                          {
+                            nftsExplorerLink(
+                              {
+                                owner: user.address,
+                                ownerDetails: user.addressDetails,
+                                issuer: data.issuer,
+                                issuerDetails: data.issuerDetails
+                              }
+                            )
+                          }
+                        </p>
                       </td>
-                    </>
-                  }
-                  <td className='right'>
-                    {niceNumber(user.total)}
-                    {" "}
-                    {
-                      nftsExplorerLink(
-                        {
-                          owner: user.address,
-                          ownerDetails: user.addressDetails,
-                          issuer: data.issuer,
-                          issuerDetails: data.issuerDetails
-                        }
-                      )
-                    }
-                  </td>
-                </tr>)
-                :
-                <tr><td colSpan="100" className='center orange bold'>{errorMessage}</td></tr>
-              }
-            </>
-          }
-        </tbody>
-      </table>
+                    </tr>
+                  )
+                  :
+                  <tr><td colSpan="100" className='center orange bold'>{errorMessage}</td></tr>
+                }
+              </>
+            }
+          </tbody>
+        </table>
+      }
     </div>
   </>
 }
