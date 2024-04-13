@@ -174,7 +174,9 @@
         "issuers": "NFT issuers",
         "transfers": "NFT transfers",
         "for-sale": "NFTs for sale"
-      }
+      },
+      "escrows": "Escrows",
+      "amms": "AMM pools"
     }
   },
   "last-ledger-information": {
@@ -573,12 +575,6 @@
     "amount-on-service": "{{amount}} on {{service}}",
     "load-more": "We are looking for data on the ledger... please wait...",
     "end": "Here are all the NFTs we could find."
-  },
-  "nft-distribution": {
-    "header": "NFT distribution",
-    "desc": "Here you can check the distribution of NFTs of a particilar NFT issuer. Enter the NFT issuer XRPL address or a username and press the search button.",
-    "no-nfts": "We couldn't find any NFTs issued by that address.",
-    "text0": "{{users}} accounts own {{nfts}} NFTs"
   },
   "nft-sales": {
     "header": "NFT sales",

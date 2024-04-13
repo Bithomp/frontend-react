@@ -13,7 +13,7 @@ import BackgroundImage from '../components/Layout/BackgroundImage'
 import TopLinks from '../components/Layout/TopLinks'
 
 import { IsSsrMobileContext } from '../utils/mobile'
-import { network, server, useLocalStorage } from '../utils'
+import { isValidUUID, network, server, useLocalStorage } from '../utils'
 
 import '../styles/ui.scss'
 import { ThemeProvider } from "../components/Layout/ThemeContext"
@@ -22,8 +22,11 @@ const MyApp = ({ Component, pageProps }) => {
   const [account, setAccount] = useLocalStorage('account')
   const [selectedCurrency, setSelectedCurrency] = useLocalStorage('currency', 'usd')
   const [signRequest, setSignRequest] = useState(false)
+  const [refreshPage, setRefreshPage] = useState("")
 
   const router = useRouter()
+
+  const { uuid } = router.query
 
   const signOut = () => {
     localStorage.removeItem('xummUserToken')
@@ -41,8 +44,20 @@ const MyApp = ({ Component, pageProps }) => {
   const pagesWithoutWrapper = ['/social-share']
 
   const showAds = network === 'mainnet' // !devNet // no ads on test network
-  let showTopAds = false // showAds //change here when you want to see TOP ADS
-  const pagesWithNoTopAdds = ['/', '/username', '/eaas', '/build-unl', '/disclaimer', '/privacy-policy', '/terms-and-conditions', '/terms-api-bots', '/press', '/404']
+  let showTopAds = true // showAds //change here when you want to see TOP ADS
+  const pagesWithNoTopAdds = [
+    '/',
+    '/username',
+    '/eaas',
+    '/build-unl',
+    '/disclaimer',
+    '/privacy-policy',
+    '/terms-and-conditions',
+    '/terms-api-bots',
+    '/press',
+    '/404',
+    '/contest'
+  ]
   if (showTopAds) {
     showTopAds = !pagesWithNoTopAdds.includes(pathname) && !pathname.includes('/admin')
   }
@@ -81,12 +96,14 @@ const MyApp = ({ Component, pageProps }) => {
               setSelectedCurrency={setSelectedCurrency}
             />
             <ScrollToTop />
-            {signRequest &&
+            {(signRequest || isValidUUID(uuid)) &&
               <SignForm
                 setSignRequest={setSignRequest}
                 account={account}
                 setAccount={setAccount}
                 signRequest={signRequest}
+                uuid={uuid}
+                setRefreshPage={setRefreshPage}
               />
             }
             <div className="content">
@@ -95,7 +112,7 @@ const MyApp = ({ Component, pageProps }) => {
               }
               <Component
                 {...pageProps}
-                signRequest={signRequest}
+                refreshPage={refreshPage}
                 setSignRequest={setSignRequest}
                 account={account}
                 setAccount={setAccount}

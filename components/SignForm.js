@@ -18,7 +18,8 @@ import {
   floatToXlfHex,
   rewardRateHuman,
   encodeAddressR,
-  isAddressValid
+  isAddressValid,
+  removeQueryParams
 } from '../utils'
 import { amountFormat, capitalize, duration } from '../utils/format'
 import { payloadXummPost, xummWsConnect, xummCancel, xummGetSignedData } from '../utils/xumm'
@@ -37,7 +38,7 @@ const voteTxs = ['castVoteRewardDelay', 'castVoteRewardRate', 'castVoteHook', 'c
 const askInfoScreens = [...voteTxs, 'NFTokenAcceptOffer', 'NFTokenCreateOffer', 'NFTokenBurn', 'setDomain', 'nftTransfer']
 const noCheckboxScreens = [...voteTxs, 'setDomain']
 
-export default function SignForm({ setSignRequest, account, setAccount, signRequest }) {
+export default function SignForm({ setSignRequest, account, setAccount, signRequest, uuid, setRefreshPage }) {
   const { t } = useTranslation()
   const router = useRouter()
   const isMobile = useIsMobile()
@@ -61,9 +62,14 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
 
   const [privateOffer, setPrivateOffer] = useState(false)
 
-  const xummUserToken = localStorage.getItem('xummUserToken')
+  const [xummUserToken, setXummUserToken] = useState(null)
 
   useEffect(() => {
+    setXummUserToken(localStorage.getItem('xummUserToken'))
+  }, [])
+
+  useEffect(() => {
+    if (!signRequest) return
     //deeplink doesnt work on mobiles when it's not in the onClick event
     if (!isMobile && signRequest?.wallet === "xumm") {
       XummTxSend()
@@ -73,6 +79,15 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
     setErase(false)
     //eslint-disable-next-line react-hooks/exhaustive-deps
   }, [signRequest])
+
+  useEffect(() => {
+    if (!uuid) return
+    setScreen("xumm")
+    setShowXummQr(false)
+    setStatus(t("signin.xumm.statuses.wait"))
+    xummGetSignedData(uuid, afterSubmit)
+    //eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [uuid])
 
   const saveAddressData = async (address) => {
     //&service=true&verifiedDomain=true&blacklist=true&payString=true&twitterImageUrl=true&nickname=true
@@ -236,6 +251,17 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
       txjson: tx
     }
 
+    //for Xaman to sign transaction in the right network
+    let forceNetwork = null
+    if (networkId === 0) {
+      forceNetwork = 'MAINNET'
+    } else if (networkId === 1) {
+      forceNetwork = 'TESTNET'
+    } else if (networkId === 2) {
+      forceNetwork = 'DEVNET'
+    }
+    signInPayload.options.force_network = forceNetwork
+
     if (signRequest.redirect) {
       signInPayload.custom_meta = {
         blob: {
@@ -255,19 +281,16 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
     setStatus(t("signin.xumm.statuses.wait"))
 
     if (isMobile) {
-      setStatus(t("signin.xumm.statuses.redirecting"));
+      setStatus(t("signin.xumm.statuses.redirecting"))
       //return to the same page
-      //you can add "?uuid={id}"
       signInPayload.options.return_url = {
-        app: server + router.asPath
-      }
-      //for username receipts
-      if (tx.TransactionType === "Payment") {
-        signInPayload.options.return_url.app += '&receipt=true'
+        app: server + router.asPath + '?uuid={id}'
       }
 
-      //app which signed
-      //signInPayload.options.return_url.app += '&signed=xumm'
+      if (tx.TransactionType === "Payment") {
+        //for username receipts
+        signInPayload.options.return_url.app += '&receipt=true'
+      }
     } else {
       if (xummUserToken) {
         signInPayload.user_token = xummUserToken
@@ -287,7 +310,6 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
     setXummUuid(data.uuid)
     setXummQrSrc(data.refs.qr_png)
     setExpiredQr(false)
-    xummWsConnect(data.refs.websocket_status, xummWsConnected)
     if (data.pushed) {
       setStatus(t("signin.xumm.statuses.check-push"))
     }
@@ -300,6 +322,8 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
     } else {
       setShowXummQr(true)
       setStatus(t("signin.xumm.scan-qr"))
+      //connect to xaman websocket only if it didn't redirect to the xaman app
+      xummWsConnect(data.refs.websocket_status, xummWsConnected)
     }
   }
 
@@ -376,9 +400,9 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
 
     const redirectName = data.custom_meta?.blob?.redirect
 
-    //if redirect 
     if (data.response?.account) {
       saveAddressData(data.response.account)
+      //if redirect 
       if (redirectName === "nfts") {
         window.location.href = "/nfts/" + data.response.account
         return
@@ -423,11 +447,11 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
             checkTxInCrawler(responseData.data.hash, redirectName)
           } else {
             setStatus(t("signin.status.failed-broker", { serviceName: data.custom_meta.blob.broker }))
-            closeSignInFormAndRefresh()
+            delay(3000, closeSignInFormAndRefresh)
           }
         } else {
           setStatus(t("signin.status.failed-broker", { serviceName: data.custom_meta.blob.broker }))
-          closeSignInFormAndRefresh()
+          delay(3000, closeSignInFormAndRefresh)
         }
       }
       return
@@ -450,7 +474,6 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
       // if crawler 10 ledgers behind, update right away
       // the backend suppose to return info directly from ledger when crawler 30 seconds behind
       // othewrwise wait until crawler catch up with the ledger where this transaction was included
-
       if (ledgerIndex >= inLedger || (inLedger - 10) > ledgerIndex) {
         if (param) {
           signRequest.callback(param)
@@ -466,18 +489,22 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
   const closeSignInFormAndRefresh = () => {
     setXummQrSrc(qr)
     setScreen("choose-app")
-    setSignRequest(null)
     setAwaiting(false)
     setStatus("")
+    setSignRequest(null)
+    if (uuid) {
+      removeQueryParams(router, ["uuid"])
+    }
+    setRefreshPage(new Date())
   }
 
   const SignInCancelAndClose = () => {
     if (screen === 'xumm') {
-      setXummQrSrc(qr);
-      xummCancel(xummUuid);
+      setXummQrSrc(qr)
+      xummCancel(xummUuid)
     }
-    setScreen("choose-app");
-    setSignRequest(null);
+    setScreen("choose-app")
+    setSignRequest(null)
   }
 
   // temporary styles while hardware wallets are not connected
@@ -493,7 +520,8 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
       width: '100%',
       bottom: "20px",
       left: 0,
-      textAlign: "center"
+      textAlign: "center",
+      color: "black"
     }
     return <div style={divStyle}>
       <img alt={name} className='signin-app-logo' src={picture} />
@@ -1034,10 +1062,10 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
                 <div className='header'>{t("signin.choose-app")}</div>
                 <div className='signin-apps'>
                   <Image alt="xaman" className='signin-app-logo' src='/images/xumm-large.svg' onClick={XummTxSend} width={150} height={24} />
-                  {signRequest.wallet !== "xumm" &&
+                  {signRequest?.wallet !== "xumm" &&
                     <>
-                      {notAvailable(ledger, "ledger")}
-                      {notAvailable(trezor, "trezor")}
+                      {!isMobile && notAvailable(ledger, "ledger")}
+                      {!isMobile && notAvailable(trezor, "trezor")}
                       {notAvailable(ellipal, "ellipal")}
                     </>
                   }

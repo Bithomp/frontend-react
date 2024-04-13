@@ -174,7 +174,9 @@
         "issuers": "NFT発行者数",
         "transfers": "NFTトランスファー数",
         "for-sale": "販売中のNFT数"
-      }
+      },
+      "escrows": "Escrows",
+      "amms": "AMM pools"
     }
   },
   "last-ledger-information": {
@@ -573,12 +575,6 @@
     "amount-on-service": "{{service}}にて{{amount}}",
     "load-more": "XRPLからデータを探しています...しばらくお待ちください...",
     "end": "取得できた全てのNFTを表示しています。"
-  },
-  "nft-distribution": {
-    "header": "NFTの分布",
-    "desc": "ここでは、特定のNFT発行者のNFTの分布を確認することができます。NFT発行者のXRPLアドレスまたはユーザネームを入力し、検索ボタンを押してください。",
-    "no-nfts": "そのアドレスから発行されたNFTは見つかりませんでした。",
-    "text0": "{{users}} アカウントが {{nfts}} NFTを保有しています。"
   },
   "nft-sales": {
     "header": "NFTの販売",

@@ -56,7 +56,7 @@ import SearchBlock from '../../components/Layout/SearchBlock'
 import CopyButton from '../../components/UI/CopyButton'
 
 // setSignRequest, account
-export default function Account({ pageMeta, signRequest, id, selectedCurrency, ledgerTimestampQuery }) {
+export default function Account({ pageMeta, refreshPage, id, selectedCurrency, ledgerTimestampQuery }) {
   const { t } = useTranslation()
 
   const [data, setData] = useState({})
@@ -123,16 +123,14 @@ export default function Account({ pageMeta, signRequest, id, selectedCurrency, l
 
   useEffect(() => {
     if (!selectedCurrency) return
-    if (!signRequest) {
-      if (!data?.address) {
-        // no token - first time fetching - allow right away
-        checkApi()
-      } else {
-        checkApi({ noCache: true })
-      }
+    if (!data?.address) {
+      // no token - first time fetching - allow right away
+      checkApi()
+    } else {
+      checkApi({ noCache: true })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id, signRequest, selectedCurrency, ledgerTimestamp])
+  }, [id, refreshPage, selectedCurrency, ledgerTimestamp])
 
   useEffect(() => {
     if (!ledgerTimestamp) return

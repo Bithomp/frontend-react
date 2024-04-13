@@ -1,0 +1,32 @@
+{
+    "title": "Kirim Info Akun",
+    "heading": "Kirim Info Akun Anda",
+    "cross-chain": "Layanan yang digunakan di berbagai platform, <1>daftar layanan di jaringan utama XRPL</1> dan akan terlihat di penjelajah Bithomp lainnya.",
+    "desc": "Bithomp berusaha untuk memberikan informasi yang baik pada Penjelajah dan memudahkan pengguna mengenali aktivitas di Ledger. Jika Anda memiliki layanan di Ledger (seperti pertukaran, layanan keuangan, atau bisnis lainnya) atau menggunakan layanan tersebut, berikan info di sini.",
+    "no-private": "Info yang Anda berikan bukan untuk akun pribadi, info pribadi akan diabaikan.",
+    "subtitle": "Informasi Anda",
+    "info": "Harap berikan email Anda jika kami perlu menghubungi Anda.",
+    "placeholders": {
+        "email": "Email Anda",
+        "name": "Nama Layanan",
+        "address": "Alamat",
+        "domain": "Domain Website",
+        "twitter": "Username Twitter",
+        "instagram": "Username Instagram",
+        "facebook": "Username Facebook",
+        "youtube": "Username Youtube",
+        "linkedin": "Username Linkedin",
+        "reddit": "Username Reddit",
+        "medium": "Username Medium",
+        "telegram": "Username Telegram"
+    },
+    "form": {
+        "error": {
+            "service-name-empty": "Masukkan nama layanan."
+        },
+        "success":  "Info berhasil dikirim."
+    },
+    "error": {
+        "Account exist": "Info untuk alamat tersebut sudah ada."
+    }
+}

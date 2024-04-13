@@ -77,7 +77,14 @@ const hasJsonMeta = nft => {
   return nft.metadata && nft.metadata.attributes?.metaSource?.toLowerCase() !== "bithomp"
 }
 
-export default function Nft({ setSignRequest, account, signRequest, pageMeta, id, selectedCurrency }) {
+export default function Nft({
+  setSignRequest,
+  account,
+  pageMeta,
+  id,
+  selectedCurrency,
+  refreshPage
+}) {
   const { t } = useTranslation()
 
   const [rendered, setRendered] = useState(false)
@@ -246,17 +253,15 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
   */
 
   useEffect(() => {
-    if (!selectedCurrency) return;
-    if (!signRequest) {
-      if (!data?.nftokenID && !data?.uriTokenID) {
-        // no token - first time fetching - allow right away
-        checkApi()
-      } else {
-        checkApi({ noCache: true })
-      }
+    if (!selectedCurrency) return
+    if (!data?.nftokenID && !data?.uriTokenID) {
+      // no token - first time fetching - allow right away
+      checkApi()
+    } else {
+      checkApi({ noCache: true })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id, signRequest, selectedCurrency])
+  }, [id, refreshPage, selectedCurrency])
 
   const externalUrl = meta => {
     let url = meta.external_url || meta.external_link || meta.externalUrl || meta.externalURL || (meta.minter?.includes("https://") && meta.minter) || meta.External_Link;
@@ -582,17 +587,17 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
           "NFTokenID": id,
           "Destination": best.destination,
           "Owner": data.owner,
-          "Amount": (Math.ceil(best.amount * multiplier * 1000000) / 1000000).toString()
+          "Amount": (Math.ceil(best.amount * multiplier)).toString()
         }
 
         if (best.amount.value) {
           request.Amount = {
-            value: (Math.ceil(best.amount.value * multiplier * 1000000) / 1000000).toString(),
+            value: (Math.ceil(best.amount.value * multiplier)).toString(),
             currency: best.amount.currency,
             issuer: best.amount.issuer
           }
         } else {
-          request.Amount = (Math.ceil(best.amount * multiplier * 1000000) / 1000000).toString()
+          request.Amount = (Math.ceil(best.amount * multiplier)).toString()
         }
 
         return <>
@@ -610,7 +615,7 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
             })}
           >
             <Image src={xummImg} className='xumm-logo' alt="xaman" height={24} width={24} />
-            {t("button.nft.buy-for-amount", { amount: amountFormat((Math.ceil(best.amount * multiplier * 1000000) / 1000000)) })}
+            {t("button.nft.buy-for-amount", { amount: amountFormat(Math.ceil(best.amount * multiplier)) })}
           </button>
           <br /><br />
         </>
@@ -882,6 +887,7 @@ export default function Nft({ setSignRequest, account, signRequest, pageMeta, id
                         <Trans i18nKey="nft-not-found-on-that-network" ns="nft">
                           This NFT wasn't found on the <b>{{ network }}</b> network.
                         </Trans>
+                        <br /><br />
                       </div>
                     }
                     <div>

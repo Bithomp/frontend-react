@@ -266,22 +266,24 @@ export default function NftsComponent({
         let attributesHeaders = []
 
         //for CSV export
-        for (let i = 0; i < nftList.length; i++) {
-          if (nftList[i].metadata) {
-            Object.keys(nftList[i].metadata).forEach(function (key) {
-              if (!keys.includes(key) && key.toLowerCase() !== 'name' && typeof nftList[i].metadata[key] === 'string') {
-                keys.push(key)
-                csvHeadersNew.push({ label: capitalizeFirstLetter(key), key: "metadata." + key })
-              }
-              if (key.toLowerCase() === "attributes") {
-                Object.keys(nftList[i].metadata[key]).forEach(function (attribute) {
-                  if (!attributes.includes(attribute)) {
-                    attributes.push(attribute)
-                    attributesHeaders.push({ label: "Attribute " + nftList[i].metadata[key][attribute].trait_type, key: "metadata.attributes." + attribute + ".value" })
-                  }
-                })
-              }
-            })
+        if (nftList && nftList.length > 0) {
+          for (let i = 0; i < nftList.length; i++) {
+            if (nftList[i].metadata) {
+              Object.keys(nftList[i].metadata).forEach(function (key) {
+                if (!keys.includes(key) && key.toLowerCase() !== 'name' && typeof nftList[i].metadata[key] === 'string') {
+                  keys.push(key)
+                  csvHeadersNew.push({ label: capitalizeFirstLetter(key), key: "metadata." + key })
+                }
+                if (key.toLowerCase() === "attributes") {
+                  Object.keys(nftList[i].metadata[key]).forEach(function (attribute) {
+                    if (!attributes.includes(attribute)) {
+                      attributes.push(attribute)
+                      attributesHeaders.push({ label: "Attribute " + nftList[i].metadata[key][attribute].trait_type, key: "metadata.attributes." + attribute + ".value" })
+                    }
+                  })
+                }
+              })
+            }
           }
         }
 
@@ -530,7 +532,14 @@ export default function NftsComponent({
         title={
           t("nft-explorer.header") +
           ((issuer || issuerQuery) ? (" " + (issuer || issuerQuery)) : "") +
-          (owner || ownerQuery ? (", " + t("table.owner") + ": " + (owner || ownerQuery)) : "")
+          ((taxon || taxonQuery) ? (" " + (taxon || taxonQuery)) : "") +
+          (owner || ownerQuery ? (", " + t("table.owner") + ": " + (owner || ownerQuery)) : "") +
+          (viewTab === "list" ? (" " + t("tabs.list")) : "") +
+          (listTab === "onSale" ? (" " + t("tabs.onSale")) : "") +
+          (listTab === "onSale" && saleDestinationTab === "buyNow" ? (", " + t("tabs.buyNow")) : "") +
+          (search || searchQuery ? (", " + t("table.name") + ": " + (search || searchQuery)) : "") +
+          (burnedPeriod ? (", " + t("table.burn-period") + ": " + burnedPeriod) : "") +
+          (listNftsOrderTab ? (", " + t("tabs." + listNftsOrderTab)) : "")
         }
         description={issuer || issuerQuery || search || t("nft-explorer.header")}
       />

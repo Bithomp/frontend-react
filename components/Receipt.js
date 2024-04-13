@@ -103,9 +103,9 @@ export default function Receipt({ item, details }) {
             </div>
           </div>
           <div className="receipt-bottom">
-            Bithomp AB, 559342-2867<br />
-            Kivra: 559342-2867,  106 31 Stockholm<br />
-            VAT: SE559342286701
+            Octillion S.A.<br />
+            Nancy Whiticker house, 7<br />
+            Old street, Roseau, Dominica.
           </div>
         </div>
       </div>

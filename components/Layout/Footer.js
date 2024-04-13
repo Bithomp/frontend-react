@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { useTranslation } from 'next-i18next'
+import { useState, useEffect } from 'react'
 
 import {
   devNet,
@@ -16,9 +17,17 @@ import ButtonScrollTop from './ButtonScrollTop'
 import { useRef } from 'react'
 
 export default function Footer({ account, setSignRequest }) {
-  const year = new Date().getFullYear();
-  const { t } = useTranslation();
-  const footerRef = useRef();
+  const year = new Date().getFullYear()
+  const { t } = useTranslation()
+  const footerRef = useRef()
+
+  const [rendered, setRendered] = useState(false)
+
+  useEffect(() => {
+    // otherwise error on mgrok tunnel when test with mobiles
+    setRendered(true)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const [showCookie, setShowCokie] = useLocalStorage('showCookie', true);
 
@@ -108,11 +117,13 @@ export default function Footer({ account, setSignRequest }) {
 
       <div className="footer-brand">
         <div className="footer-logo"><LogoAnimated /></div>
-        <div className="footer-brand-text">
-          Copyright © {year} Bithomp AB<br />
-          Kivra: 559342-2867<br />
-          106 31, Stockholm
-        </div>
+        {rendered &&
+          <div className="footer-brand-text">
+            Copyright © {year} Bithomp AB<br />
+            Kivra: 559342-2867<br />
+            106 31, Stockholm
+          </div>
+        }
         <div className="footer-social">
           <SocialIcons />
         </div>

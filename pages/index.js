@@ -94,6 +94,16 @@ export default function Home({ selectedCurrency, setSelectedCurrency, showAds })
         />
       </Head>
 
+      <div className="top-links">
+        <a
+          href="https://bithomp.com/go/contest-landing"
+          rel="noreferrer"
+          className='top-link orange'
+        >
+          Win 100, 200, or 300 XRP from Bithomp
+        </a>
+      </div>
+
       <SearchBlock tab="explorer" />
 
       {showAds &&

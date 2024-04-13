@@ -1,5 +1,8 @@
 {
   "menu": {
+    "company": {
+      "about-us": "About us"
+    },
     "services": {
       "nft-mint": "NFT minten"
     },
@@ -171,7 +174,9 @@
         "issuers": "NFT Emittenten",
         "transfers": "NFT Transfers",
         "for-sale": "NFTs zum Verkauf"
-      }
+      },
+      "escrows": "Escrows",
+      "amms": "AMM pools"
     }
   },
   "last-ledger-information": {
@@ -571,12 +576,6 @@
     "amount-on-service": "{{amount}} auf {{service}}",
     "load-more": "Wir suchen nach Daten auf dem Ledger... bitte warten...",
     "end": "Hier sind alle NFTs die wir finden konnten."
-  },
-  "nft-distribution": {
-    "header": "NFT Verteilung",
-    "desc": "Hier können Sie die Verteilung von NFTs eines bestimmten NFT Emittenten überprüfen. Geben Sie die XRPL Adresse des NFT Emittenten oder einen Benutzernamen ein und klicken Sie auf die Suchschaltfläche.",
-    "no-nfts": "Wir konnten keine von dieser Adresse emittierten NFTs finden",
-    "text0": "{{users}} Konten besitzen {{nfts}} NFTs"
   },
   "nft-sales": {
     "header": "NFT Verkäufe",
