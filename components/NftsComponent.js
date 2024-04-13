@@ -532,7 +532,14 @@ export default function NftsComponent({
         title={
           t("nft-explorer.header") +
           ((issuer || issuerQuery) ? (" " + (issuer || issuerQuery)) : "") +
-          (owner || ownerQuery ? (", " + t("table.owner") + ": " + (owner || ownerQuery)) : "")
+          ((taxon || taxonQuery) ? (" " + (taxon || taxonQuery)) : "") +
+          (owner || ownerQuery ? (", " + t("table.owner") + ": " + (owner || ownerQuery)) : "") +
+          (viewTab === "list" ? (" " + t("tabs.list")) : "") +
+          (listTab === "onSale" ? (" " + t("tabs.onSale")) : "") +
+          (listTab === "onSale" && saleDestinationTab === "buyNow" ? (", " + t("tabs.buyNow")) : "") +
+          (search || searchQuery ? (", " + t("table.name") + ": " + (search || searchQuery)) : "") +
+          (burnedPeriod ? (", " + t("table.burn-period") + ": " + burnedPeriod) : "") +
+          (listNftsOrderTab ? (", " + t("tabs." + listNftsOrderTab)) : "")
         }
         description={issuer || issuerQuery || search || t("nft-explorer.header")}
       />
