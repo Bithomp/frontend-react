@@ -5,7 +5,7 @@ import axios from 'axios'
 import { useRouter } from 'next/router'
 
 import { useWidth, encode, wssServer } from '../../utils'
-import { fullDateAndTime, shortNiceNumber } from '../../utils/format'
+import { fullDateAndTime, shortNiceNumber, amountFormat } from '../../utils/format'
 
 import SEO from '../../components/SEO'
 import AdminTabs from '../../components/Admin/Tabs'
@@ -241,29 +241,42 @@ export default function Subscriptions({ setSignRequest }) {
     if (!data?.bid?.status) return
 
     setBidData(data)
-    console.log(data) //delete - test if it returns transactions when status completed or partly paid
     /* 
-      {
-        "bid": {
-          "id": 40201,
-          "createdAt": 1710850893,
-          "updatedAt": 1710850893,
-          "destinationTag": 408658420,
-          "action": "Pay for Bithomp Pro",
-          "status": "Created",
-          "price": 55.268976,
-          "totalReceivedAmount": 0,
-          "currency": "XRP",
-          "priceInSEK": 339.53,
-          "country": "BR",
-          "destinationAddress": "rEDakigd4Cp78FioF3qvQs6TrjFLjKLqM3",
-          "priceInEUR": 30,
-          "type": "bithomp_pro",
-          "period": "month",
-          "periodCount": 3,
-          "partnerID": 44509
-        },
-        "transactions": []
+        {
+          "bid": {
+            "id": 52,
+            "createdAt": 1713180049,
+            "updatedAt": 1713180071,
+            "destinationTag": 978199589,
+            "action": "Pay for Bithomp Pro",
+            "status": "Completed",
+            "price": 20.653049,
+            "totalReceivedAmount": 20.66,
+            "currency": "XRP",
+            "priceInSEK": 115.7,
+            "country": "SE",
+            "completedAt": 1713180071,
+            "txHash": "B900B65B243E473D1A06CBD53464D305156A7A691FF4AC1B14323AF17C389AC9",
+            "priceInEUR": 10,
+            "type": "bithomp_pro",
+            "period": "month",
+            "periodCount": 1
+          },
+          "transactions": [
+            {
+              "id": 46,
+              "processedAt": 1713180071,
+              "hash": "B900B65B243E473D1A06CBD53464D305156A7A691FF4AC1B14323AF17C389AC9",
+              "ledger": 5933482,
+              "type": "Payment",
+              "sourceAddress": "raNf8ibQZECTaiFqkDXKRmM2GfdWK76cSu",
+              "destinationAddress": "rsuUjfWxrACCAwGQDsNeZUhpzXf1n1NK5Z",
+              "destinationTag": 978199589,
+              "amount": 20.66,
+              "status": "Completed",
+              "memos": "[{\"data\":\"Payment for Bithomp Pro (1 month)\"},{\"data\":\"bithomp.com\"}]"
+            }
+        ]
       }
     */
     if (data.bid.status === 'Completed') {
@@ -561,14 +574,14 @@ export default function Subscriptions({ setSignRequest }) {
                   <p className="center">
                     We have received your purchase.
                   </p>
-                  <Receipt item="username" details={bidData} />
+                  <Receipt item="subscription" details={bidData.bid} />
                 </>
               }
               {paymentErrorMessage &&
                 <p className="red center" dangerouslySetInnerHTML={{ __html: paymentErrorMessage || "&nbsp;" }} />
               }
 
-              {payData?.transactions?.length > 0 &&
+              {bidData?.transactions?.length > 0 &&
                 <div style={{ marginTop: "20px", textAlign: "left" }}>
                   <h4 className='center'>Transactions</h4>
                   {width > 600 ?
@@ -578,19 +591,15 @@ export default function Subscriptions({ setSignRequest }) {
                           <th>Date & Time</th>
                           <th>From</th>
                           <th>Amount</th>
-                          <th>Fiat</th>
                           <th>Tx</th>
                         </tr>
                       </thead>
                       <tbody>
-                        {payData?.transactions?.map((payment, index) => {
+                        {bidData?.transactions?.map((payment, index) => {
                           return <tr key={index}>
                             <td>{fullDateAndTime(payment.processedAt)}</td>
                             <td><Link href={"/explorer/" + payment.sourceAddress}>{payment.sourceAddress}</Link></td>
-                            <td>{amountFormat(payment.amount)}</td>
-                            <td>
-                              {payment.fiatAmount}
-                            </td>
+                            <td>{amountFormat(payment.amount * 1000000)}</td>
                             <td><Link href={"/explorer/" + payment.hash}><LinkIcon /></Link></td>
                           </tr>
                         })}
@@ -599,7 +608,7 @@ export default function Subscriptions({ setSignRequest }) {
                     :
                     <table className='table-mobile'>
                       <tbody>
-                        {payData?.transactions?.map((payment, index) => {
+                        {bidData?.transactions?.map((payment, index) => {
                           return <tr key={index}>
                             <td style={{ padding: "5px" }} className='center'>
                               <b>{index + 1}</b>
