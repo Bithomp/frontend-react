@@ -1,3 +1,19 @@
 .address-input {
-    text-align: left;
+
+    .react-select__placeholder,
+    .react-select__control {
+        text-align: left !important;
+    }
+
+    &.address-input--taxon .react-select__control {
+        background-color: var(--background-input-readonly);
+        pointer-events: none;
+
+        .not-empty ~ .center & {
+            background-color: var(--background-input);
+            pointer-events: all;
+        }
+    }
+
+    
 }

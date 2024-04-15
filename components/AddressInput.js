@@ -1,45 +1,30 @@
 import { useState, useEffect, useRef } from 'react'
 import Select from 'react-select'
-import { useTranslation, Trans } from 'next-i18next'
+import { useTranslation } from 'next-i18next'
 import { useRouter } from 'next/router'
-import axios from 'axios';
-// import { useSearchParams } from 'next/navigation'
-// import Link from 'next/link'
 
 import {
-  // isAddressOrUsername,
-  isIdValid,
-  // useWidth,
   isValidCTID,
-  decodeCTID,
-  networkId,
-  networksIds,
-  // isValidNftXls20,
-//   explorerName,
-  // xahauNetwork
 } from '../utils'
-// import { userOrServiceName, amountFormat } from '../utils/format'
-// import { amountFormat } from '../utils/format'
 
-const searchItemRe = /^[~]{0,1}[a-zA-Z0-9-_.]*[+]{0,1}[a-zA-Z0-9-_.]*[$]{0,1}[a-zA-Z0-9-.]*[a-zA-Z0-9]*$/i
-// let typingTimer
+import { userOrServiceLink } from '../utils/format'
 
-export default function AddressInput({ searchPlaceholderText, tab = null, userData = {} }) {
+let typingTimer
+
+export default function AddressInput({ searchPlaceholderText, userData = {}, setFilters, type, inputValue, title, link }) {
   const { t } = useTranslation()
-  // const searchParams = useSearchParams()
   const router = useRouter()
   const searchInput = useRef(null)
-  // const windowWidth = useWidth()
 
   const { id } = router.query
-  const [searchItem, setSearchItem] = useState(id || userData?.address || "")
-//   const [searching, setSearching] = useState(false)
-  // const [searchSuggestions, setSearchSuggestions] = useState([])
-  // const [searchingSuggestions, setSearchingSuggestions] = useState(false)
+  const [notEmpty, setNotEmpty] = useState(false)
+  const [searchItem, setSearchItem] = useState(id || userData?.address || inputValue || "")
   const [errorMessage, setErrorMessage] = useState("")
   const [isMounted, setIsMounted] = useState(false)
 
-  useEffect(() => setIsMounted(true), [])
+  useEffect(() => {
+    setIsMounted(true)
+  }, [])
 
   useEffect(() => {
     if (!id && searchInput.current) {
@@ -53,59 +38,48 @@ export default function AddressInput({ searchPlaceholderText, tab = null, userDa
     }
   }, [userData])
 
-  // const requestSuggestions = value => {
-  //   if (isValidCTID(value)) {
-  //     return
-  //   }
-
-  //   //if more than 3 characters - search for suggestions
-  //   if (value && value.length > 1 && value.length < 36) {
-  //     clearTimeout(typingTimer)
-  //     setSearchSuggestions([])
-  //     typingTimer = setTimeout(async () => {
-  //       if (value && value.length > 2) {
-  //         setSearchingSuggestions(true)
-  //         const suggestionsResponse = await axios('v2/address/search/' + value)
-  //           .catch(error => {
-  //             setSearchingSuggestions(false)
-  //             console.log(error.message)
-  //           })
-  //         if (suggestionsResponse) {
-  //           const suggestions = suggestionsResponse.data
-  //           if (suggestions?.addresses?.length > 0) {
-  //             setSearchSuggestions(suggestions.addresses)
-  //           }
-  //         }
-  //         setSearchingSuggestions(false)
-  //       }
-  //     }, 500) // 0.5 sec
-  //   }
-  // }
-
 
   const searchOnKeyUp = e => {
-    if (e.key === 'Enter') {
-      e.preventDefault()
-      onSearch()
+    const value= e?.target?.value;
+
+    if (isValidCTID(value)) {
       return
     }
 
-    // if printable character entered
-    // e.key === 'Unidentified' - for android chrome
-    if (e.key === 'Unidentified' || ([...e.key].length === 1 && !e.ctrlKey && !e.metaKey)) {
+    //if more than 3 characters - search for suggestions
+    let notEmpty = false;
+    if (value && value.length > 0) {
+      clearTimeout(typingTimer)
+      typingTimer = setTimeout(async () => {
 
-      // We should allow spaces here... or even non-latin characters, so that validation can be removed, together with searchItemRe 
-      if (!searchItemRe.test(e.key)) {
-        e.preventDefault()
-        return
-      }
+        if(type === 'search' || type === 'issuer') {
+          if(value.length > 2) {
+            notEmpty = true
+            setFilters({ [type]: value });
+          } else {
+            notEmpty && setSearchItem('')
+            setFilters({ [type]: '' });
+          }
+        } else {
+          notEmpty = true
+          setFilters({ [type]: value });
+        }
 
-      // requestSuggestions(e?.target?.value)
+        if(type === 'issuer') {
+          if(value.length > 2) {
+            setNotEmpty(true)
+          } else {
+            setNotEmpty(false)
+          }
+        }
+      }, 500) // 0.5 sec
+    } else {
+      notEmpty && setSearchItem('')
+      setFilters({ [type]: '' });
     }
   }
 
   const searchOnChange = (option) => {
-    console.log(option);
     if (!option) return
     if (option.username && !option.username.includes("-")) {
       onSearch(option.username)
@@ -113,25 +87,6 @@ export default function AddressInput({ searchPlaceholderText, tab = null, userDa
       onSearch(option.address)
     }
   }
-
-  // a stupid hack to remove id param
-  // let addParams = ''
-  // if (searchParams) {
-  //   let searchPart = searchParams.toString()
-  //   let searchId = searchParams.get("id")
-  //   if (searchId) {
-  //     if (searchPart.indexOf("id=" + searchId + "&") !== -1) {
-  //       searchPart = searchPart.replace("id=" + searchId + "&", "")
-  //     } else if (searchPart.indexOf("&id=" + searchId) !== -1) {
-  //       searchPart = searchPart.replace("&id=" + searchId, "")
-  //     } else {
-  //       searchPart = searchPart.replace("id=" + searchId, "")
-  //     }
-  //   }
-  //   if (searchPart) {
-  //     addParams = '?' + searchPart;
-  //   }
-  // }
 
   const onSearch = async (si) => {
     setErrorMessage("")
@@ -147,131 +102,24 @@ export default function AddressInput({ searchPlaceholderText, tab = null, userDa
 
     if (!searchFor) return
 
-    // if (tab === "account" && isAddressOrUsername(searchFor)) {
-    //   router.push("/account/" + encodeURI(searchFor) + addParams)
-    //   return
-    // }
-
-    // if (tab === "nfts" && isAddressOrUsername(searchFor)) {
-    //   router.push("/nfts/" + encodeURI(searchFor) + addParams)
-    //   return
-    // }
-
-    // if (tab === "nft-offers" && isAddressOrUsername(searchFor)) {
-    //   router.push("/nft-offers/" + encodeURI(searchFor) + addParams)
-    //   return
-    // }
-
-    // if (tab === "nft" && isValidNftXls20(searchFor)) {
-    //   router.push("/nft/" + encodeURI(searchFor))
-    //   return
-    // }
-
-    // if (tab === "nft-volumes" && isAddressOrUsername(searchFor)) {
-    //   router.push("/nft-volumes/" + encodeURI(searchFor) + addParams)
-    //   return
-    // }
-
-    //nft nftOffer uriToken
-    if (isIdValid(searchFor)) {
-      setSearching(true)
-      const response = await axios('v2/search/' + searchFor)
-      setSearching(false)
-      const data = response.data
-      if (data.type === 'nftoken' || data.type === 'uriToken') {
-        router.push('/nft/' + encodeURI(searchFor))
-        return
-      }
-      if (data.type === 'nftokenOffer') {
-        router.push('/nft-offer/' + encodeURI(searchFor))
-        return
-      }
-      //allow transaction search only tab transactions for now (while it's not ready for public)
-      if (tab === 'transaction' && data.type === 'transaction') {
-        router.push('/tx/' + searchFor)
-        return
-      }
-    }
-
-    if (isValidCTID(searchFor)) {
-      try {
-        const { networkId: CTIDnetworkId } = decodeCTID(searchFor)
-        if (networkId === CTIDnetworkId) {
-          // we are on the correct explorer
-          window.location = '/explorer/' + searchFor
-        } else if (networksIds[CTIDnetworkId]) {
-          setErrorMessage(
-            <>
-              <Trans i18nKey="explorer.different-network">
-                This transaction is from the <b>{{ networkNameOrId: networksIds[CTIDnetworkId].name }}</b> network
-              </Trans>,{" "}
-              <Trans i18nKey="explorer.check-tx-on-different-explorer">
-                check the details <a href={networksIds[CTIDnetworkId].server + "/explorer/" + searchFor}>
-                  <u>here</u>
-                </a>
-              </Trans>
-            </>
-          )
-          return
-        } else {
-          setErrorMessage(
-            <>
-              <Trans i18nKey="explorer.different-network">
-                This transaction is from the <b>{{ networkNameOrId: CTIDnetworkId }}</b> network
-              </Trans>, {t("explorer.not-supported-network")}
-            </>
-          )
-          return
-        }
-      } catch (error) {
-        setErrorMessage(error)
-        return
-      }
-    }
-
     if (searchFor.includes("/") || searchFor.includes("\\")) {
       setErrorMessage(t("explorer.no-slashes"))
       return
     }
 
-    //remove tab='transaction' to allow transaction search on all tabs
-    //tx, address etc
-    window.location = '/explorer/' + encodeURI(searchFor)
     return
   }
 
-
-  // const showTabs = tab && ['nfts', 'nft-offers', 'nft-volumes', 'account'].includes(tab)
-
-  const searchOnInputChange = (inputValue, action) => {
+  const searchOnInputChange = (value, action) => {
     if (action.action !== "input-blur" && action.action !== "menu-close") {
-      setSearchItem(inputValue)
+      setSearchItem(value)
     }
   }
 
-  // const searchOnFocus = () => {
-  //   const selectInstance = searchInput?.current?.select
-  //   if (!selectInstance?.hasValue()) return // No value, nothing to select.
-  //   const textElem = selectInstance.controlRef.querySelector("[class*=singleValue]") // Element which has the text.
-  //   // Following code is from https://stackoverflow.com/a/4183448/6612182
-  //   if (window.getSelection && document.createRange) {
-  //     // Every browser
-  //     const sel = window.getSelection()
-  //     const range = document.createRange()
-  //     range.selectNodeContents(textElem)
-  //     sel.removeAllRanges()
-  //     sel.addRange(range)
-  //   } else if (document.selection && document.body.createTextRange) {
-  //     // Microsoft
-  //     const textRange = document.body.createTextRange()
-  //     textRange.moveToElementText(textElem)
-  //     textRange.select()
-  //   }
-  // }
-
   return (
-    <>
-      <div className="address-input">
+    <div className={`center${notEmpty ? ' not-empty' : ''}`}>
+      <span className='input-title'>{title} {link ? userOrServiceLink(link, type) : ''}</span>
+      <div className={`address-input address-input--${type}`}>
         {isMounted &&
         <div onKeyUp={searchOnKeyUp}>
             <Select
@@ -279,52 +127,9 @@ export default function AddressInput({ searchPlaceholderText, tab = null, userDa
             className="address-input-select"
             placeholder={searchPlaceholderText}
             onChange={searchOnChange}
-            // onFocus={searchOnFocus}
             spellCheck="false"
-            // options={searchSuggestions}
-            // getOptionLabel={
-            //     (option) => <>
-            //     <span style={windowWidth < 400 ? { fontSize: "14px" } : {}}>{option.address}</span>
-            //     {(option.username || option.service || option.globalid || option.xumm) ? (windowWidth > 400 ? " - " : " ") : ""}
-            //     <b className='blue'>{option.username}</b>
-            //     {option.service && <>
-            //         {option.username ? " (" : ""}
-            //         <b className='green'>{option.service}</b>
-            //         {option.username ? ")" : ""}
-            //     </>}
-            //     {(option.username || option.service) && (option.verifiedDomain || option.serviceDomain) && <>, </>}
-            //     {option.verifiedDomain ?
-            //         <span className='green bold'> {option.verifiedDomain}</span>
-            //         :
-            //         (option.serviceDomain && <span className='green'> {option.serviceDomain}</span>)
-            //     }
-            //     {(option.username || option.service || option.verifiedDomain || option.serviceDomain) && option.xumm && <>, </>}
-            //     {option.xumm &&
-            //         <>
-            //         Xaman <span className='orange'>
-            //             {option.xumm.includes("+") ? option.xumm.replace(/\+/g, " (") + ")" : option.xumm}
-            //         </span>
-            //         {option.xummVerified && <> ✅</>}
-            //         </>
-            //     }
-            //     {(option.username || option.service || option.verifiedDomain || option.serviceDomain || option.xumm) && option.globalid && <>, </>}
-            //     {option.globalid &&
-            //         <>
-            //         GlobaliD <span className='purple'>{option.globalid}</span>
-            //         {option.globalidStatus && <> ✔️</>}
-            //         </>
-            //     }
-            //     {option.balance &&
-            //         <> [<b>{amountFormat(option.balance, { maxFractionDigits: 2 }).trim()}</b>]</>
-            //     }
-            //     </>
-            // }
-            // getOptionValue={
-            //     option => (option.address + option.username + option.service + option.xumm + option.globalid + option.verifiedDomain + option.serviceDomain)
-            // }
             inputValue={searchItem}
             onInputChange={searchOnInputChange}
-            // isSearchable={true}
             components={{ DropdownIndicator:() => null, IndicatorSeparator:() => null }}
             classNamePrefix="react-select"
             instanceId="search-select"
@@ -338,22 +143,7 @@ export default function AddressInput({ searchPlaceholderText, tab = null, userDa
             {errorMessage}
         </div>
         }
-        </div>
-      {/* {showTabs &&
-        <div className='explorer-tabs-block'>
-          <div className='explorer-tabs'>
-            {tab === "nfts" ? <b>NFTs</b> : <Link href={"/nfts/" + searchItem + addParams}>NFTs</Link>}
-            {!xahauNetwork && <>
-              {tab === "nft-offers" ? <b>{t("nft-offers.header")}</b> : <Link href={"/nft-offers/" + searchItem}>{t("nft-offers.header")}</Link>}
-            </>}
-            {tab === "nft-volumes" && <b>{t("menu.nft.volumes")}</b>}
-            {tab !== "account" && <a href={"/explorer/" + searchItem}>{t("explorer.menu.account")}</a>}
-            {tab !== "nft-volumes" && <a href={"/explorer/" + searchItem} className='hide-on-mobile'>{t("explorer.menu.transactions")}</a>}
-            {tab !== "nft-volumes" && <a href={"/explorer/" + searchItem} className='hide-on-mobile'>{t("explorer.menu.tokens")}</a>}
-          </div>
-          <div className='explorer-tabs-shadow'></div>
-        </div>
-      } */}
-    </>
+      </div>
+    </div>
   )
 }
