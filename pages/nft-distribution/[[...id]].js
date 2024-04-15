@@ -259,7 +259,7 @@ export default function NftDistribution({ issuerQuery, taxonQuery, idQuery, orde
         </p>
       }
 
-      {windowWidth < 960 && !issuer &&
+      {(windowWidth < 960 && !issuer) &&
         <>
           <p>
             <span
@@ -291,7 +291,7 @@ export default function NftDistribution({ issuerQuery, taxonQuery, idQuery, orde
         </>
       }
 
-      {windowWidth >= 960 ?
+      {(!windowWidth || windowWidth >= 960) ?
         <table className="table-large shrink">
           <thead>
             <tr>
