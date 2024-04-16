@@ -91,7 +91,6 @@ body.dark {
 
   .content-cols {
     display: flex;
-    height: calc(100lvh - 150px);
     position: relative;
 
     &::before {
@@ -102,8 +101,12 @@ body.dark {
     }
 
     .content-text {
-      overflow-y: scroll;
+      // overflow-y: scroll;
       padding: 20px 0 80px;
+
+      @media(max-width: 1024px) {
+        padding-top: 40px;
+      }
     }
   }
 
