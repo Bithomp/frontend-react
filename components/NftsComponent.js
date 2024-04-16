@@ -566,7 +566,6 @@ export default function NftsComponent({
                 <button className='filters__close' onClick={() => toggleFilters()}><IoMdClose /></button>
               </div>
               {nftExplorer && <>
-                {/* Hide for now when it's not available on xahau network */}
                   <AddressInput
                     type="issuer"
                     title={t("table.issuer")}

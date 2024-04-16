@@ -27,12 +27,6 @@ export default function AddressInput({ searchPlaceholderText, userData = {}, set
   }, [])
 
   useEffect(() => {
-    if (!id && searchInput.current) {
-      searchInput.current.focus()
-    }
-  }, [id, searchInput])
-
-  useEffect(() => {
     if (userData?.address) {
       setSearchItem(userData.address)
     }
