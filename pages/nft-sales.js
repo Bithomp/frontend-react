@@ -85,8 +85,8 @@ export default function NftSales({
   const windowWidth = useWidth()
 
   const [rendered, setRendered] = useState(false)
-  const [data, setData] = useState(null);
-  const [sales, setSales] = useState([]);
+  const [data, setData] = useState(null)
+  const [sales, setSales] = useState([])
   const [viewTab, setViewTab] = useState(view)
   const [loading, setLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState("")
@@ -134,21 +134,21 @@ export default function NftSales({
   const checkApi = async (options) => {
     if (!period) return
 
-    let marker = hasMore;
-    let salesData = sales;
-    let markerUrlPart = '';
-    let periodUrlPart = '';
-    let marketplaceUrlPart = '';
-    let buyerUrlPart = '';
-    let sellerUrlPart = '';
+    let marker = hasMore
+    let salesData = sales
+    let markerUrlPart = ''
+    let periodUrlPart = ''
+    let marketplaceUrlPart = ''
+    let buyerUrlPart = ''
+    let sellerUrlPart = ''
 
     if (options?.restart) {
-      marker = "first";
-      setHasMore("first");
-      setData(null);
-      setSales([]);
-      salesData = [];
-      setLoading(true);
+      marker = "first"
+      setHasMore("first")
+      setData(null)
+      setSales([])
+      salesData = []
+      setLoading(true)
     }
 
     if (!marker || (marker === "first" && salesData.length)) {

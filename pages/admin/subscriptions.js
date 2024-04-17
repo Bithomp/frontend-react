@@ -18,6 +18,7 @@ import Image from 'next/image'
 import Receipt from '../../components/Receipt'
 
 //PayPal option starts
+/*
 import {
   PayPalScriptProvider,
   PayPalButtons,
@@ -62,6 +63,7 @@ const ButtonWrapper = ({ type }) => {
 //https://paypal.github.io/react-paypal-js/?path=/docs/example-paypalbuttons--default
 
 //PayPal option ends
+*/
 
 const xummImg = "/images/xumm.png"
 
@@ -435,10 +437,9 @@ export default function Subscriptions({ setSignRequest }) {
           <>
             {step < 2 &&
               <>
-                <h4 className='center'>Purchase subscription</h4>
-                <div className='center'>
-                  Here you can purchase <b>Bithomp Pro</b> subscription.
-                </div>
+                <h4 className='center'>Purchase Bithomp Pro</h4>
+
+                {/*
                 <h4>
                   Pay with PayPal - 1 Year, 100 EUR
                 </h4>
@@ -460,6 +461,7 @@ export default function Subscriptions({ setSignRequest }) {
                 <h4>
                   Pay with XRP
                 </h4>
+                */}
 
                 <div className='center'>
                   <Select
@@ -494,7 +496,7 @@ export default function Subscriptions({ setSignRequest }) {
             <div className='center'>
               {payData && step === 1 &&
                 <>
-                  <h4 className='center'>Bithomp Pro payment details</h4>
+                  <h4 className='center'>Subscription payment details</h4>
 
                   {width > 600 ?
                     <table className='table-large shrink'>
