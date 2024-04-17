@@ -21,7 +21,7 @@ export const getServerSideProps = async ({ locale, query }) => {
   }
 }
 
-const turnstileSypportedLanguages = ['ar-EG', 'de', 'en', 'es', 'fa', 'fr', 'id', 'it', 'ja', 'ko', 'nl', 'pl', 'pt-BR', 'ru', 'tr', 'zh-CN', 'zh-TW']
+const turnstileSupportedLanguages = ['ar-EG', 'de', 'en', 'es', 'fa', 'fr', 'id', 'it', 'ja', 'ko', 'nl', 'pl', 'pt-BR', 'ru', 'tr', 'zh-CN', 'zh-TW']
 const checkmark = '/images/checkmark.svg'
 
 export default function Admin({ redirectToken }) {
@@ -369,7 +369,7 @@ export default function Admin({ redirectToken }) {
                 style={{ margin: "auto" }}
                 options={{
                   theme,
-                  language: turnstileSypportedLanguages.includes(i18n.language) ? i18n.language : 'en',
+                  language: turnstileSupportedLanguages.includes(i18n.language) ? i18n.language : 'en',
                 }}
                 onSuccess={setToken}
               />
