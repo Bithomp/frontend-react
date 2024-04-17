@@ -174,7 +174,9 @@
         "issuers": "NFT izdavači",
         "transfers": "NFT transferi",
         "for-sale": "NFTovi na rasprodaji"
-      }
+      },
+      "escrows": "Escrows",
+      "amms": "AMM pools"
     }
   },
   "last-ledger-information": {
@@ -293,6 +295,7 @@
     "error": "Greška",
     "no-data": "Nema dostupnih podataka",
     "loading": "Učitavam...",
+    "login-to-bithomp-pro": "Login to <1>Bithomp Pro</1> to load more data.",
     "load-failed": "Neuspjelo učitavanje",
     "all-issuers": "Svi issueri",
     "no-expiration": "Nikad",
@@ -574,12 +577,6 @@
     "amount-on-service": "{{amount}} na {{service}}",
     "load-more": "Tražimo podatke na XRPLu... molimo pričekajte...",
     "end": "Ovdje su svi NFTovi koje smo uspjeli pronaći."
-  },
-  "nft-distribution": {
-    "header": "NFT distribucija",
-    "desc": "Ovdje možete provjeriti distribuciju NFTova od jednog NFT izdavača. Unesite izdavačevu XRPL adresu ili korisničko ime i stisnite dugme za pretragu.",
-    "no-nfts": "Nismo pronašli niti jedan NFT kojemu je izdavač ta adresa.",
-    "text0": "{{users}} računi posjeduju {{nfts}} NFTa"
   },
   "nft-sales": {
     "header": "NFT prodaje",

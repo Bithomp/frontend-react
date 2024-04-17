@@ -52,7 +52,7 @@ if (xahauNetwork) {
 }
 
 function generateSiteMap(posts) {
-  const locales = ['en', 'ko', 'ru', 'de', 'es', 'id', 'ja', 'ca', 'hr', 'my']
+  const locales = ['en', 'ko', 'ru', 'de', 'es', 'id', 'ja', 'hr']
   const oldPages = [
     'admin',
     'explorer/',

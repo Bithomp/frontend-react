@@ -24,19 +24,21 @@ export default function Receipt({ item, details }) {
     }
   }
 
-  let timestamp = null;
-  let fiatPrice = 0;
-  let xrpPrice = 0;
-  let serviceName = "Service name";
-  let txHash = '';
+  let timestamp = null
+  let fiatPrice = 0
+  let xrpPrice = 0
+  let serviceName = "Service name"
+  let txHash = ''
+  let fiatCurrency = ''
 
   if (item === "username") {
     serviceName = t("menu.usernames");
     if (details) {
-      timestamp = details.completedAt;
-      fiatPrice = details.priceInSEK;
-      xrpPrice = details.price;
+      timestamp = details.completedAt
+      fiatPrice = details.priceInSEK
+      xrpPrice = details.price
       txHash = details.txHash
+      fiatCurrency = 'SEK'
     }
 
     /*
@@ -58,6 +60,39 @@ export default function Receipt({ item, details }) {
       updatedAt: 1658841346
     }
     */
+  } else if (item === "subscription") {
+    /*
+    {
+      "id": 53,
+      "createdAt": 1713180707,
+      "updatedAt": 1713180831,
+      "destinationTag": 173620292,
+      "action": "Pay for Bithomp Pro",
+      "status": "Completed",
+      "price": 61.952751,
+      "totalReceivedAmount": 61.96,
+      "currency": "XRP",
+      "priceInSEK": 347.1,
+      "country": "SE",
+      "completedAt": 1713180831,
+      "txHash": "2D4B8220D325F0A76D2862DAC80D64B36C9FDED3B8DB8E774338F086C2FB5E39",
+      "destinationAddress": "rsuUjfWxrACCAwGQDsNeZUhpzXf1n1NK5Z",
+      "priceInEUR": 30,
+      "type": "bithomp_pro",
+      "period": "month",
+      "periodCount": 3,
+      "partnerID": 5
+    }
+    */
+
+    if (details) {
+      serviceName = 'Bithomp Pro' //details.action
+      timestamp = details.completedAt
+      fiatPrice = details.priceInEUR
+      xrpPrice = details.price
+      txHash = details.txHash
+      fiatCurrency = 'EUR'
+    }
   }
 
   timestamp = fullDateAndTime(timestamp);
@@ -83,17 +118,28 @@ export default function Receipt({ item, details }) {
                 </tr>
                 <tr>
                   <td>1</td>
-                  <td>{serviceName}</td>
+                  <td style={{ textAlign: 'left' }}>{serviceName}</td>
                   <td style={{ textAlign: "right" }}>{fiatPrice}</td>
                 </tr>
                 <tr>
-                  <td colSpan="2" className='bold uppercase'>{t("receipt.total")}</td>
-                  <td className='bold' style={{ textAlign: "right" }}>SEK {fiatPrice}</td>
+                  <td
+                    colSpan="2"
+                    className='bold uppercase'
+                    style={{ textAlign: 'left' }}
+                  >
+                    {t("receipt.total")}
+                  </td>
+                  <td className='bold' style={{ textAlign: "right" }}>{fiatCurrency} {fiatPrice}</td>
                 </tr>
                 <tr>
-                  <td className='bold uppercase'>{t("receipt.paid")}</td>
-                  <td>XRP {xrpPrice} ({rate} SEK/XRP)</td>
-                  <td className='bold' style={{ textAlign: "right" }}>SEK {fiatPrice}</td>
+                  <td
+                    className='bold uppercase'
+                    style={{ textAlign: 'left' }}
+                  >
+                    {t("receipt.paid")}
+                  </td>
+                  <td>XRP {xrpPrice} ({rate} {fiatCurrency}/XRP)</td>
+                  <td className='bold' style={{ textAlign: "right" }}>{fiatCurrency} {fiatPrice}</td>
                 </tr>
               </tbody>
             </table>
@@ -103,9 +149,9 @@ export default function Receipt({ item, details }) {
             </div>
           </div>
           <div className="receipt-bottom">
-            Bithomp AB, 559342-2867<br />
-            Kivra: 559342-2867,  106 31 Stockholm<br />
-            VAT: SE559342286701
+            Octillion S.A.<br />
+            Nancy Whiticker house, 7<br />
+            Old street, Roseau, Dominica.
           </div>
         </div>
       </div>
@@ -113,5 +159,5 @@ export default function Receipt({ item, details }) {
         <input type="button" value={t("button.print")} className="button-action" onClick={onPrint} />
       </p>
     </>
-  );
-};
+  )
+}

@@ -5,7 +5,7 @@ import axios from 'axios'
 import { useRouter } from 'next/router'
 
 import { useWidth, encode, wssServer } from '../../utils'
-import { fullDateAndTime, shortNiceNumber } from '../../utils/format'
+import { fullDateAndTime, shortNiceNumber, amountFormat } from '../../utils/format'
 
 import SEO from '../../components/SEO'
 import AdminTabs from '../../components/Admin/Tabs'
@@ -18,6 +18,7 @@ import Image from 'next/image'
 import Receipt from '../../components/Receipt'
 
 //PayPal option starts
+/*
 import {
   PayPalScriptProvider,
   PayPalButtons,
@@ -62,6 +63,7 @@ const ButtonWrapper = ({ type }) => {
 //https://paypal.github.io/react-paypal-js/?path=/docs/example-paypalbuttons--default
 
 //PayPal option ends
+*/
 
 const xummImg = "/images/xumm.png"
 
@@ -160,7 +162,7 @@ export default function Subscriptions({ setSignRequest }) {
   const bithompProOptions = [
     { value: 'm1', label: '1 month', price: "10 EUR" },
     { value: 'm3', label: '3 months', price: "30 EUR" },
-    { value: 'm1', label: '6 months', price: "60 EUR" },
+    { value: 'm6', label: '6 months', price: "60 EUR" },
     { value: 'y1', label: '1 year', price: "100 EUR" }
   ]
 
@@ -242,27 +244,41 @@ export default function Subscriptions({ setSignRequest }) {
 
     setBidData(data)
     /* 
-      {
-        "bid": {
-          "id": 40201,
-          "createdAt": 1710850893,
-          "updatedAt": 1710850893,
-          "destinationTag": 408658420,
-          "action": "Pay for Bithomp Pro",
-          "status": "Created",
-          "price": 55.268976,
-          "totalReceivedAmount": 0,
-          "currency": "XRP",
-          "priceInSEK": 339.53,
-          "country": "BR",
-          "destinationAddress": "rEDakigd4Cp78FioF3qvQs6TrjFLjKLqM3",
-          "priceInEUR": 30,
-          "type": "bithomp_pro",
-          "period": "month",
-          "periodCount": 3,
-          "partnerID": 44509
-        },
-        "transactions": []
+        {
+          "bid": {
+            "id": 52,
+            "createdAt": 1713180049,
+            "updatedAt": 1713180071,
+            "destinationTag": 978199589,
+            "action": "Pay for Bithomp Pro",
+            "status": "Completed",
+            "price": 20.653049,
+            "totalReceivedAmount": 20.66,
+            "currency": "XRP",
+            "priceInSEK": 115.7,
+            "country": "SE",
+            "completedAt": 1713180071,
+            "txHash": "B900B65B243E473D1A06CBD53464D305156A7A691FF4AC1B14323AF17C389AC9",
+            "priceInEUR": 10,
+            "type": "bithomp_pro",
+            "period": "month",
+            "periodCount": 1
+          },
+          "transactions": [
+            {
+              "id": 46,
+              "processedAt": 1713180071,
+              "hash": "B900B65B243E473D1A06CBD53464D305156A7A691FF4AC1B14323AF17C389AC9",
+              "ledger": 5933482,
+              "type": "Payment",
+              "sourceAddress": "raNf8ibQZECTaiFqkDXKRmM2GfdWK76cSu",
+              "destinationAddress": "rsuUjfWxrACCAwGQDsNeZUhpzXf1n1NK5Z",
+              "destinationTag": 978199589,
+              "amount": 20.66,
+              "status": "Completed",
+              "memos": "[{\"data\":\"Payment for Bithomp Pro (1 month)\"},{\"data\":\"bithomp.com\"}]"
+            }
+        ]
       }
     */
     if (data.bid.status === 'Completed') {
@@ -270,6 +286,7 @@ export default function Subscriptions({ setSignRequest }) {
       setUpdate(false)
       setErrorMessage("")
       clearInterval(interval)
+      getApiData()
       if (ws) ws.close()
       return
     }
@@ -304,14 +321,12 @@ export default function Subscriptions({ setSignRequest }) {
     ws = new WebSocket(wssServer)
 
     ws.onopen = () => {
-      console.log("ws open") //delete
       if (ws.readyState === 1) {
         ws.send(JSON.stringify({ command: "subscribe", bids: [{ partnerID: partnerId, destinationTag }], id: 1 }))
       }
     }
 
     ws.onmessage = evt => {
-      console.log("ws message") //delete
       const message = JSON.parse(evt.data);
       if (message) {
         updateBid(message);
@@ -319,7 +334,6 @@ export default function Subscriptions({ setSignRequest }) {
     }
 
     ws.onclose = () => {
-      console.log("ws close") //delete
       if (update) {
         checkPaymentWs(partnerId, destinationTag)
       }
@@ -421,211 +435,211 @@ export default function Subscriptions({ setSignRequest }) {
 
         {!(!billingCountry || choosingCountry || loading) &&
           <>
-            <h4 className='center'>Purchase subscription</h4>
-            <div className='center'>
-              Here you can purchase <b>Bithomp Pro</b> subscription.
-            </div>
-            <h4>
-              Pay with PayPal - 1 Year, 100 EUR
-            </h4>
-
-            <div className='center' style={{ width: "350px", margin: "auto" }}>
-              <PayPalScriptProvider
-                options={{
-                  clientId: "AcUlMvkL6Uc6OVv-USMK3fg2wZ_xEBolL0-yyzWkOnS7vF2aWbu_AJFYJxaRRfPoiN0SBEnSFHUTbSUn",
-                  components: "buttons",
-                  intent: "subscription",
-                  vault: true,
-                  locale: 'en_US'
-                }}
-              >
-                <ButtonWrapper type="subscription" />
-              </PayPalScriptProvider>
-            </div>
-
-            <h4>
-              Pay with XRP
-            </h4>
-
-            <div className='center'>
-              <Select
-                options={bithompProOptions}
-                getOptionLabel={
-                  (option) => <div style={{ width: "150px" }}>
-                    {option.label} <span style={{ float: "right" }}>{option.price}</span>
-                  </div>
-                }
-                onChange={(selected) => {
-                  setBithompProPlan(selected.value)
-                  setPayData(null)
-                }}
-                defaultValue={bithompProOptions[0]}
-                isSearchable={false}
-                className="simple-select"
-                classNamePrefix="react-select"
-                instanceId="period-select"
-              />
-
-              <button
-                className="button-action narrow"
-                onClick={onPurchaseClick}
-                style={{ height: "37px", marginLeft: "10px" }}
-              >
-                Purchase
-              </button>
-
+            {step < 2 &&
               <>
-                {payData && step === 1 &&
-                  <>
-                    <h4 className='center'>Bithomp Pro payment details</h4>
+                <h4 className='center'>Purchase Bithomp Pro</h4>
 
-                    {width > 600 ?
-                      <table className='table-large shrink'>
-                        <tbody>
-                          <tr>
-                            <td className='right'>Address</td>
-                            <td className='left'>{payData.bid.destinationAddress} <CopyButton text={payData.bid.destinationAddress} /></td>
-                          </tr>
-                          <tr>
-                            <td className='right'>Destination tag</td>
-                            <td className='left bold'>{payData.bid.destinationTag} <CopyButton text={payData.bid.destinationTag} /></td>
-                          </tr>
-                          <tr>
-                            <td className='right'>Amount</td>
-                            <td className='left'>
-                              {shortNiceNumber(Math.ceil(payData.bid.price * 100) / 100, 2, 2)} {payData.bid.currency} <CopyButton text={payData.bid.price} />
-                            </td>
-                          </tr>
-                        </tbody>
-                      </table>
-                      :
-                      <div className='left'>
-                        <p>
-                          Address: <br />
-                          {payData.bid.destinationAddress} <CopyButton text={payData.bid.destinationAddress} />
-                        </p>
-                        <p>
-                          Destination tag:<br />
-                          <b>{payData.bid.destinationTag}</b> <CopyButton text={payData.bid.destinationTag} />
-                        </p>
-                        <p>
-                          Amount:<br />
-                          {payData.bid.price} {payData.bid.currency} <CopyButton text={payData.bid.price} />
-                        </p>
-                        <table className='table-mobile'>
-                          <tbody>
-                          </tbody>
-                        </table>
+                {/*
+                <h4>
+                  Pay with PayPal - 1 Year, 100 EUR
+                </h4>
+
+                <div className='center' style={{ width: "350px", margin: "auto" }}>
+                  <PayPalScriptProvider
+                    options={{
+                      clientId: "AcUlMvkL6Uc6OVv-USMK3fg2wZ_xEBolL0-yyzWkOnS7vF2aWbu_AJFYJxaRRfPoiN0SBEnSFHUTbSUn",
+                      components: "buttons",
+                      intent: "subscription",
+                      vault: true,
+                      locale: 'en_US'
+                    }}
+                  >
+                    <ButtonWrapper type="subscription" />
+                  </PayPalScriptProvider>
+                </div>
+
+                <h4>
+                  Pay with XRP
+                </h4>
+                */}
+
+                <div className='center'>
+                  <Select
+                    options={bithompProOptions}
+                    getOptionLabel={
+                      (option) => <div style={{ width: "150px" }}>
+                        {option.label} <span style={{ float: "right" }}>{option.price}</span>
                       </div>
                     }
+                    onChange={(selected) => {
+                      setBithompProPlan(selected.value)
+                      setPayData(null)
+                    }}
+                    defaultValue={bithompProOptions[0]}
+                    isSearchable={false}
+                    className="simple-select"
+                    classNamePrefix="react-select"
+                    instanceId="period-select"
+                  />
 
-                    <p className="center">
-                      <input type="button" value={t("button.cancel")} className="button-action" onClick={onCancel} />
+                  <button
+                    className="button-action narrow"
+                    onClick={onPurchaseClick}
+                    style={{ height: "37px", marginLeft: "10px" }}
+                  >
+                    Purchase
+                  </button>
+                </div>
+              </>
+            }
 
-                      <button
-                        className='button-action'
-                        style={{ margin: "10px 10px 20px" }}
-                        onClick={() => setSignRequest({
-                          wallet: "xumm",
-                          request: {
-                            TransactionType: "Payment",
-                            Destination: payData.bid.destinationAddress,
-                            DestinationTag: payData.bid.destinationTag,
-                            Amount: (Math.ceil(payData.bid.price * 100) * 10000).toString(),
-                            Memos: [
-                              {
-                                "Memo": {
-                                  "MemoData": encode("Payment for Bithomp Pro (" + payData.bid.periodCount + " " + payData.bid.period + (payData.bid.periodCount > 1 ? "s" : "") + ")"),
-                                }
-                              }
-                            ]
-                          }
-                        })}
-                      >
-                        <Image src={xummImg} className='xumm-logo' alt="xaman" height={24} width={24} />
-                        Pay with Xaman
-                      </button>
-                    </p>
+            <div className='center'>
+              {payData && step === 1 &&
+                <>
+                  <h4 className='center'>Subscription payment details</h4>
 
-                    <br />
-                    Your Pro account will be activated when the payment is received.
-                  </>
-                }
-
-                {step === 2 &&
-                  <>
-                    <p className="center">
-                      We have received your purchase.
-                    </p>
-                    <Receipt item="username" details={bidData} />
-                  </>
-                }
-                {paymentErrorMessage &&
-                  <p className="red center" dangerouslySetInnerHTML={{ __html: paymentErrorMessage || "&nbsp;" }} />
-                }
-
-                {payData?.transactions?.length > 0 &&
-                  <div style={{ marginTop: "20px", textAlign: "left" }}>
-                    <h4 className='center'>Transactions</h4>
-                    {width > 600 ?
-                      <table className='table-large shrink'>
-                        <thead>
-                          <tr>
-                            <th>Date & Time</th>
-                            <th>From</th>
-                            <th>Amount</th>
-                            <th>Fiat</th>
-                            <th>Tx</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {payData?.transactions?.map((payment, index) => {
-                            return <tr key={index}>
-                              <td>{fullDateAndTime(payment.processedAt)}</td>
-                              <td><Link href={"/explorer/" + payment.sourceAddress}>{payment.sourceAddress}</Link></td>
-                              <td>{amountFormat(payment.amount)}</td>
-                              <td>
-                                {payment.fiatAmount}
-                              </td>
-                              <td><Link href={"/explorer/" + payment.hash}><LinkIcon /></Link></td>
-                            </tr>
-                          })}
-                        </tbody>
-                      </table>
-                      :
+                  {width > 600 ?
+                    <table className='table-large shrink'>
+                      <tbody>
+                        <tr>
+                          <td className='right'>Address</td>
+                          <td className='left'>{payData.bid.destinationAddress} <CopyButton text={payData.bid.destinationAddress} /></td>
+                        </tr>
+                        <tr>
+                          <td className='right'>Destination tag</td>
+                          <td className='left bold'>{payData.bid.destinationTag} <CopyButton text={payData.bid.destinationTag} /></td>
+                        </tr>
+                        <tr>
+                          <td className='right'>Amount</td>
+                          <td className='left'>
+                            {shortNiceNumber(Math.ceil(payData.bid.price * 100) / 100, 2, 2)} {payData.bid.currency} <CopyButton text={payData.bid.price} />
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                    :
+                    <div className='left'>
+                      <p>
+                        Address: <br />
+                        {payData.bid.destinationAddress} <CopyButton text={payData.bid.destinationAddress} />
+                      </p>
+                      <p>
+                        Destination tag:<br />
+                        <b>{payData.bid.destinationTag}</b> <CopyButton text={payData.bid.destinationTag} />
+                      </p>
+                      <p>
+                        Amount:<br />
+                        {payData.bid.price} {payData.bid.currency} <CopyButton text={payData.bid.price} />
+                      </p>
                       <table className='table-mobile'>
                         <tbody>
-                          {payData?.transactions?.map((payment, index) => {
-                            return <tr key={index}>
-                              <td style={{ padding: "5px" }} className='center'>
-                                <b>{index + 1}</b>
-                              </td>
-                              <td>
-                                <p>
-                                  {fullDateAndTime(payment.processedAt)}
-                                </p>
-                                <p>
-                                  From: <br />
-                                  <Link href={"/explorer/" + payment.sourceAddress}>{payment.sourceAddress}</Link>
-                                </p>
-                                <p>
-                                  Amount: {amountFormat(payment.amount)}
-                                </p>
-                                <p>
-                                  Fiat equivalent: {payment.fiatAmount}
-                                </p>
-                                <p>
-                                  Transaction: <Link href={"/explorer/" + payment.hash}><LinkIcon /></Link>
-                                </p>
-                              </td>
-                            </tr>
-                          })}
                         </tbody>
                       </table>
-                    }
-                  </div>
-                }
-              </>
+                    </div>
+                  }
+
+                  <p className="center">
+                    <input type="button" value={t("button.cancel")} className="button-action" onClick={onCancel} />
+
+                    <button
+                      className='button-action'
+                      style={{ margin: "10px 10px 20px" }}
+                      onClick={() => setSignRequest({
+                        wallet: "xumm",
+                        request: {
+                          TransactionType: "Payment",
+                          Destination: payData.bid.destinationAddress,
+                          DestinationTag: payData.bid.destinationTag,
+                          Amount: (Math.ceil(payData.bid.price * 100) * 10000).toString(),
+                          Memos: [
+                            {
+                              "Memo": {
+                                "MemoData": encode("Payment for Bithomp Pro (" + payData.bid.periodCount + " " + payData.bid.period + (payData.bid.periodCount > 1 ? "s" : "") + ")"),
+                              }
+                            }
+                          ]
+                        }
+                      })}
+                    >
+                      <Image src={xummImg} className='xumm-logo' alt="xaman" height={24} width={24} />
+                      Pay with Xaman
+                    </button>
+                  </p>
+
+                  <br />
+                  Your Pro account will be activated when the payment is received.
+                </>
+              }
+
+              {step === 2 &&
+                <>
+                  <p className="center">
+                    We have received your purchase.
+                  </p>
+                  <Receipt item="subscription" details={bidData.bid} />
+                </>
+              }
+              {paymentErrorMessage &&
+                <p className="red center" dangerouslySetInnerHTML={{ __html: paymentErrorMessage || "&nbsp;" }} />
+              }
+
+              {bidData?.transactions?.length > 0 &&
+                <div style={{ marginTop: "20px", textAlign: "left" }}>
+                  <h4 className='center'>Transactions</h4>
+                  {width > 600 ?
+                    <table className='table-large shrink'>
+                      <thead>
+                        <tr>
+                          <th>Date & Time</th>
+                          <th>From</th>
+                          <th>Amount</th>
+                          <th>Tx</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {bidData?.transactions?.map((payment, index) => {
+                          return <tr key={index}>
+                            <td>{fullDateAndTime(payment.processedAt)}</td>
+                            <td><Link href={"/explorer/" + payment.sourceAddress}>{payment.sourceAddress}</Link></td>
+                            <td>{amountFormat(payment.amount * 1000000)}</td>
+                            <td><Link href={"/explorer/" + payment.hash}><LinkIcon /></Link></td>
+                          </tr>
+                        })}
+                      </tbody>
+                    </table>
+                    :
+                    <table className='table-mobile'>
+                      <tbody>
+                        {bidData?.transactions?.map((payment, index) => {
+                          return <tr key={index}>
+                            <td style={{ padding: "5px" }} className='center'>
+                              <b>{index + 1}</b>
+                            </td>
+                            <td>
+                              <p>
+                                {fullDateAndTime(payment.processedAt)}
+                              </p>
+                              <p>
+                                From: <br />
+                                <Link href={"/explorer/" + payment.sourceAddress}>{payment.sourceAddress}</Link>
+                              </p>
+                              <p>
+                                Amount: {amountFormat(payment.amount)}
+                              </p>
+                              <p>
+                                Fiat equivalent: {payment.fiatAmount}
+                              </p>
+                              <p>
+                                Transaction: <Link href={"/explorer/" + payment.hash}><LinkIcon /></Link>
+                              </p>
+                            </td>
+                          </tr>
+                        })}
+                      </tbody>
+                    </table>
+                  }
+                </div>
+              }
             </div>
           </>
         }

@@ -32,6 +32,8 @@ header {
       border-bottom: 1px solid var(--background-menu);
       box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
       z-index: 2;
+
+
       &:after {
         content: "";
         position: absolute;
@@ -57,11 +59,13 @@ header {
       }
     }
     &:hover {
-      .menu-dropdown-content {
-        display: block;
-      }
       .menu-dropdown-button {
         color: var(--accent-link);
+      }
+
+      & ~ .menu-dropdown .menu-dropdown-content {
+        visibility: hidden;
+        opacity: 0;
       }
     }
   }

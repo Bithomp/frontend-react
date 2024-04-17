@@ -1,0 +1,13 @@
+{
+  "header": "Distribución NFT",
+  "desc": "Aquí puedes comprobar la distribución de NFTs de un emisor particular. Introduce la dirección XRPL del emisor NFT  o el nombre de usuario y presiona el botón de búsqueda.",
+  "no-nfts": "No pudimos encontrar ningún NFT acuñado por esa cuenta.",
+  "total": "{{users}} cuentas poseen {{nfts}} NFTs",
+  "nonSelfIssued": "{{users}} cuentas son dueñas de {{nfts}} NFTs de otros",
+  "selfIssued": "{{users}} cuentas son dueñas de {{nfts}} NFTs suyos",
+  "table": {
+    "non-self-issued": "De otros",
+    "self-issued": "Propios",
+    "total": "Total"
+  }
+}

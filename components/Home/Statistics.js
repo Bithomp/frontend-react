@@ -69,6 +69,20 @@ export default function Statistics() {
           "forSale": 4377,
           "forSaleWithoutDestination": 2564,
           "forSaleWithDestination": 1817
+        },
+        "escrows": {
+          "crawler": {
+            "ledgerIndex": 87214991,
+            "ledgerTime": 1712755071
+          },
+          "existing": 10374
+        },
+        "amms": {
+          "crawler": {
+            "ledgerIndex": 87214991,
+            "ledgerTime": 1712755071
+          },
+          "existing": 193
         }
       }
       */
@@ -105,9 +119,20 @@ export default function Statistics() {
     transfers: 'xxx',
     forSaleWithoutDestination: 'xxx'
   }
+  let escrowsCount = 'xxx'
+  let ammsCount = 'xxx'
 
   if (data) {
-    const { validatedLedger, lastClose, validationQuorum, accounts, usernames, nftokens } = data
+    const {
+      validatedLedger,
+      lastClose,
+      validationQuorum,
+      accounts,
+      usernames,
+      nftokens,
+      escrows,
+      amms
+    } = data
     closedAt = validatedLedger?.ledgerTime * 1000
     closedAt = new Date(closedAt).toLocaleTimeString()
     ledgerIndex = validatedLedger?.ledgerIndex
@@ -122,6 +147,8 @@ export default function Statistics() {
     if (nftokens) {
       nft = nftokens
     }
+    escrowsCount = niceNumber(escrows?.existing)
+    ammsCount = niceNumber(amms?.existing)
   }
 
   return <>
@@ -143,6 +170,9 @@ export default function Statistics() {
         <div className='stat-piece-header'>{t("home.stat.quorum")}</div>
         <div>{quorum} (<Link href="/validators">{proposers} {t("home.stat.proposers")}</Link>)</div>
       </div>
+    </div>
+
+    <div className='statistics-block'>
       <div className='stat-piece'>
         <div className='stat-piece-header'>{t("home.stat.accounts")}</div>
         <div><Link href='/activations?period=all'>{createdAccounts}</Link></div>
@@ -151,7 +181,18 @@ export default function Statistics() {
         <div className='stat-piece-header'>{t("home.stat.usernames")}</div>
         <div>{registeredUsernames}</div>
       </div>
+      {!xahauNetwork &&
+        <div className='stat-piece'>
+          <div className='stat-piece-header'>{t("home.stat.amms")}</div>
+          <div>{ammsCount}</div>
+        </div>
+      }
+      <div className='stat-piece'>
+        <div className='stat-piece-header'>{t("home.stat.escrows")}</div>
+        <div>{escrowsCount}</div>
+      </div>
     </div>
+
     {/* Hide NFT stats for XAHAU while they are not ready yet */}
     {!xahauNetwork &&
       <div className='statistics-block'>

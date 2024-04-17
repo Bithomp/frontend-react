@@ -8,9 +8,7 @@ import 'moment/locale/de' // 'de'
 import 'moment/locale/es' // 'es'
 import 'moment/locale/id' // 'id'
 import 'moment/locale/ja' // 'ja'
-import 'moment/locale/ca' // 'ca'
 import 'moment/locale/hr' // 'hr'
-import 'moment/locale/my' // 'my'
 
 import { useRouter } from 'next/router'
 import Cookies from 'universal-cookie'
@@ -50,7 +48,7 @@ export default function LanguageSwitch({ langSwitchOpen, setLangSwitchOpen, setC
   langChange(i18n.language)
 
   const spanClass = (lang) => {
-    return i18n.language === lang.value ? "link blue" : "link"
+    return i18n.language === lang?.value ? "link blue" : "link"
   }
 
   const td = (langList, i, columnsNumber) => {
@@ -59,7 +57,7 @@ export default function LanguageSwitch({ langSwitchOpen, setLangSwitchOpen, setC
       cols.push(
         <td key={j}>
           <span className={spanClass(langList[columnsNumber * i + j])} onClick={() => handleLangChange(langList[columnsNumber * i + j].value)}>
-            {langList[columnsNumber * i + j].label}
+            {langList[columnsNumber * i + j]?.label}
           </span>
         </td>
       )
@@ -70,15 +68,13 @@ export default function LanguageSwitch({ langSwitchOpen, setLangSwitchOpen, setC
   //first collumn would become the most popular except the indonesian
   const langList = [
     { value: 'en', label: 'English' },
-    { value: 'id', label: 'Bahasa Indonesia' },
-    { value: 'ko', label: '한국어' },
-    { value: 'ca', label: 'Català' },
-    { value: 'ru', label: 'Русский' },
-    { value: 'hr', label: 'Hrvatski' },
-    { value: 'de', label: 'Deutsch' },
     { value: 'es', label: 'Español' },
+    { value: 'ko', label: '한국어' },
     { value: 'ja', label: '日本語' },
-    { value: 'my', label: 'Bahasa Melayu' }
+    { value: 'ru', label: 'Русский' },
+    { value: 'id', label: 'Bahasa Indonesia' },
+    { value: 'de', label: 'Deutsch' },
+    { value: 'hr', label: 'Hrvatski' }
   ]
 
   const langTable = () => {
