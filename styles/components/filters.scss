@@ -147,6 +147,12 @@
         border-color: var(--accent-link);
         box-shadow: 0 0 5px var(--unaccent-icon);
     }
+
+    .react-select__menu {
+        margin-top: 0;
+        word-wrap: break-word;
+        border-radius: 0;
+    }
 }
 
 body.is-filters-hide {

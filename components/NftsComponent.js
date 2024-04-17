@@ -99,7 +99,6 @@ export default function NftsComponent({
 
   useEffect(() => {
     setRendered(true)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const viewTabList = [

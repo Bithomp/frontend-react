@@ -1,55 +1,81 @@
 import { useState, useEffect, useRef } from 'react'
 import Select from 'react-select'
 import { useTranslation } from 'next-i18next'
-import { useRouter } from 'next/router'
+import axios from 'axios';
 
 import {
-  isValidCTID,
+  useWidth
 } from '../utils'
 
-import { userOrServiceLink } from '../utils/format'
+import { userOrServiceLink, amountFormat } from '../utils/format'
 
 let typingTimer
 
 export default function AddressInput({ searchPlaceholderText, setFilters, type, inputValue, title, link }) {
   const { t } = useTranslation()
-  const router = useRouter()
   const searchInput = useRef(null)
+  const windowWidth = useWidth()
 
-  const { id } = router.query
   const [notEmpty, setNotEmpty] = useState(false)
-  const [searchItem, setSearchItem] = useState(id || inputValue || "")
+  const [searchItem, setSearchItem] = useState(inputValue || "")
   const [errorMessage, setErrorMessage] = useState("")
   const [isMounted, setIsMounted] = useState(false)
+  const [searchSuggestions, setSearchSuggestions] = useState([])
+  const [searchingSuggestions, setSearchingSuggestions] = useState(false)
 
   useEffect(() => {
-    setIsMounted(true)
+    setIsMounted(true);
+  }, [])
+
+  useEffect(() => {
+    const fetchData = async () => {
+      if(inputValue) {
+        const response = await axios('v2/address/search/' + inputValue)
+        const { address } = response.data.addresses[0];
+        setSearchItem(address);
+        setNotEmpty(true);
+      }
+    }
+    fetchData();
   }, [])
 
 
-  const searchOnKeyUp = e => {
-    const value= e?.target?.value;
 
-    if (isValidCTID(value)) {
-      return
-    }
+  const searchOnKeyUp = e => {
+    const value = e?.target?.value;
 
     //if more than 3 characters - search for suggestions
-    let notEmpty = false;
     if (value && value.length > 0) {
       clearTimeout(typingTimer)
+      setSearchSuggestions([])
       typingTimer = setTimeout(async () => {
+
+        if (value && value.length > 2 && type !== 'search') {
+          setSearchingSuggestions(true)
+          const suggestionsResponse = await axios('v2/address/search/' + value)
+            .catch(error => {
+              setSearchingSuggestions(false)
+              console.log(error.message)
+            })
+          if (suggestionsResponse) {
+            const suggestions = suggestionsResponse.data
+            if (suggestions?.addresses?.length > 0) {
+              setSearchSuggestions(suggestions.addresses)
+            }
+          }
+          setSearchingSuggestions(false)
+        }
 
         if(type === 'search' || type === 'issuer') {
           if(value.length > 2) {
-            notEmpty = true
+            setNotEmpty(true)
             setFilters({ [type]: value });
           } else {
             notEmpty && setSearchItem('')
             setFilters({ [type]: '' });
           }
         } else {
-          notEmpty = true
+          setNotEmpty(true)
           setFilters({ [type]: value });
         }
 
@@ -68,7 +94,14 @@ export default function AddressInput({ searchPlaceholderText, setFilters, type, 
   }
 
   const searchOnChange = (option) => {
-    if (!option) return
+    if (!option) {
+      setNotEmpty(false)
+      setSearchItem('')
+      setFilters({ [type]: '' });
+      return
+    }
+
+    setSearchItem(option.address)
     if (option.username && !option.username.includes("-")) {
       onSearch(option.username)
     } else {
@@ -76,13 +109,10 @@ export default function AddressInput({ searchPlaceholderText, setFilters, type, 
     }
   }
 
+
   const onSearch = async (si) => {
     setErrorMessage("")
     let searchFor = null
-
-    if (typeof searchItem === 'string') {
-      searchFor = searchItem.trim()
-    }
 
     if (typeof si === 'string') {
       searchFor = si
@@ -94,6 +124,8 @@ export default function AddressInput({ searchPlaceholderText, setFilters, type, 
       setErrorMessage(t("explorer.no-slashes"))
       return
     }
+
+    setFilters({ [type]: searchFor });
 
     return
   }
@@ -117,11 +149,55 @@ export default function AddressInput({ searchPlaceholderText, setFilters, type, 
             onChange={searchOnChange}
             spellCheck="false"
             inputValue={searchItem}
+            options={searchSuggestions}
+            isClearable={true}
+            getOptionLabel={
+              (option) => <>
+                <span style={windowWidth < 400 ? { fontSize: "14px" } : {}}>{option.address}</span>
+                {(option.username || option.service || option.globalid || option.xumm) ? (windowWidth > 400 ? " - " : " ") : ""}
+                <b className='blue'>{option.username}</b>
+                {option.service && <>
+                  {option.username ? " (" : ""}
+                  <b className='green'>{option.service}</b>
+                  {option.username ? ")" : ""}
+                </>}
+                {(option.username || option.service) && (option.verifiedDomain || option.serviceDomain) && <>, </>}
+                {option.verifiedDomain ?
+                  <span className='green bold'> {option.verifiedDomain}</span>
+                  :
+                  (option.serviceDomain && <span className='green'> {option.serviceDomain}</span>)
+                }
+                {(option.username || option.service || option.verifiedDomain || option.serviceDomain) && option.xumm && <>, </>}
+                {option.xumm &&
+                  <>
+                    Xaman <span className='orange'>
+                      {option.xumm.includes("+") ? option.xumm.replace(/\+/g, " (") + ")" : option.xumm}
+                    </span>
+                    {option.xummVerified && <> ✅</>}
+                  </>
+                }
+                {(option.username || option.service || option.verifiedDomain || option.serviceDomain || option.xumm) && option.globalid && <>, </>}
+                {option.globalid &&
+                  <>
+                    GlobaliD <span className='purple'>{option.globalid}</span>
+                    {option.globalidStatus && <> ✔️</>}
+                  </>
+                }
+                {option.balance &&
+                  <> [<b>{amountFormat(option.balance, { maxFractionDigits: 2 }).trim()}</b>]</>
+                }
+              </>
+            }
+            getOptionValue={
+              option => (option.address + option.username + option.service + option.xumm + option.globalid + option.verifiedDomain + option.serviceDomain)
+            }
             onInputChange={searchOnInputChange}
             components={{ DropdownIndicator:() => null, IndicatorSeparator:() => null }}
             classNamePrefix="react-select"
             instanceId="search-select"
-            noOptionsMessage={() =>  null}
+            noOptionsMessage={
+              () => searchingSuggestions ? t("explorer.searching-for-addresses") : null
+            }
             />
         </div>
         }

@@ -25,4 +25,9 @@
             box-shadow: 0 0 5px var(--unaccent-icon);
         }
     }
+
+    .react-select__input {
+        color: var(--text-main) !important;
+        opacity: 1 !important;
+    }
 }
