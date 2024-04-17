@@ -50,7 +50,7 @@ export default function AddressInput({ searchPlaceholderText, setFilters, type, 
       setSearchSuggestions([])
       typingTimer = setTimeout(async () => {
 
-        if (value && value.length > 2 && type !== 'search') {
+        if (value && value.length > 2 && type !== 'name') {
           setSearchingSuggestions(true)
           const suggestionsResponse = await axios('v2/address/search/' + value)
             .catch(error => {
@@ -66,7 +66,7 @@ export default function AddressInput({ searchPlaceholderText, setFilters, type, 
           setSearchingSuggestions(false)
         }
 
-        if(type === 'search' || type === 'issuer') {
+        if(type === 'name' || type === 'issuer') {
           if(value.length > 2) {
             setNotEmpty(true)
             setFilters({ [type]: value });
@@ -88,16 +88,19 @@ export default function AddressInput({ searchPlaceholderText, setFilters, type, 
         }
       }, 500) // 0.5 sec
     } else {
-      notEmpty && setSearchItem('')
-      setFilters({ [type]: '' });
+      clearAll()
     }
+  }
+
+  const clearAll = () => {
+    setNotEmpty(false)
+    notEmpty && setSearchItem('')
+    setFilters({ [type]: '' });
   }
 
   const searchOnChange = (option) => {
     if (!option) {
-      setNotEmpty(false)
-      setSearchItem('')
-      setFilters({ [type]: '' });
+      clearAll()
       return
     }
 

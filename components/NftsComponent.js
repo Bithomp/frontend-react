@@ -140,9 +140,9 @@ export default function NftsComponent({
       setOwner(null)
     }
 
-    if(options?.search) {
-      setSearch(options?.search)
-    } else if(options?.search === '') {
+    if(options?.name) {
+      setSearch(options?.name)
+    } else if(options?.name === '') {
       setSearch(null)
     }
   }
@@ -598,7 +598,7 @@ export default function NftsComponent({
                     searchPlaceholderText={t("nfts.search-by-owner")}
                   />
                   <AddressInput
-                    type="search"
+                    type="name"
                     title={t("table.name")}
                     inputValue={search}
                     setFilters={setFilters}
