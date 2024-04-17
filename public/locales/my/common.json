@@ -362,9 +362,10 @@
 		"day": "Selama 24 jam yang lalu"
 	},
 	"table": {
-    "mints": "Mints",
+    	"mints": "Mints",
+		"view": "View",
 		"period": "Tempoh",
-    "mint-period": "Mint period",
+    	"mint-period": "Mint period",
 		"warning": "Warning",
 		"sequence": "Rantaian",
 		"version": "Versi",

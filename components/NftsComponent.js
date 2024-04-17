@@ -562,7 +562,16 @@ export default function NftsComponent({
             <div className="filters__wrap">
               <div className="filters__head">
                 <span><i>{nftCount}</i> results</span>
-                <h4>Filters</h4>
+                {rendered &&
+                  <CSVLink
+                    data={data || []}
+                    headers={csvHeaders}
+                    filename='nfts_export.csv'
+                    className={'button-action thin narrow' + (!(data && data.length > 0) ? ' disabled' : '')}
+                  >
+                    <DownloadIcon /> CSV
+                  </CSVLink>
+                }
                 <button className='filters__close' onClick={() => toggleFilters()}><IoMdClose /></button>
               </div>
               {nftExplorer && <>
@@ -660,18 +669,6 @@ export default function NftsComponent({
                   </div>
                 }
               </div>
-
-
-              {rendered &&
-                <CSVLink
-                  data={data || []}
-                  headers={csvHeaders}
-                  filename='nfts_export.csv'
-                  className={'button-action thin narrow' + (!(data && data.length > 0) ? ' disabled' : '')}
-                >
-                  <DownloadIcon /> CSV
-                </CSVLink>
-              }
             </div>
           </div>
       </div>

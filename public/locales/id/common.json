@@ -363,6 +363,7 @@
   },
   "table": {
     "mints": "Mints",
+    "view": "View",
     "period": "Periode",
     "mint-period": "Periode Mint",
     "warning": "Warning",

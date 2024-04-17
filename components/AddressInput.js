@@ -11,26 +11,20 @@ import { userOrServiceLink } from '../utils/format'
 
 let typingTimer
 
-export default function AddressInput({ searchPlaceholderText, userData = {}, setFilters, type, inputValue, title, link }) {
+export default function AddressInput({ searchPlaceholderText, setFilters, type, inputValue, title, link }) {
   const { t } = useTranslation()
   const router = useRouter()
   const searchInput = useRef(null)
 
   const { id } = router.query
   const [notEmpty, setNotEmpty] = useState(false)
-  const [searchItem, setSearchItem] = useState(id || userData?.address || inputValue || "")
+  const [searchItem, setSearchItem] = useState(id || inputValue || "")
   const [errorMessage, setErrorMessage] = useState("")
   const [isMounted, setIsMounted] = useState(false)
 
   useEffect(() => {
     setIsMounted(true)
   }, [])
-
-  useEffect(() => {
-    if (userData?.address) {
-      setSearchItem(userData.address)
-    }
-  }, [userData])
 
 
   const searchOnKeyUp = e => {

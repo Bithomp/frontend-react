@@ -15,5 +15,14 @@
         }
     }
 
-    
+    .react-select__control {
+        border: 1px solid var(--unaccent-icon);
+        border-radius: 0;
+        box-shadow: none;
+
+        &:hover {
+            border-color: var(--accent-link);
+            box-shadow: 0 0 5px var(--unaccent-icon);
+        }
+    }
 }

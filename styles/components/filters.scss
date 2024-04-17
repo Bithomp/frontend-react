@@ -67,22 +67,24 @@
         margin-bottom: 20px;
         font-size: 14px;
         color: #6e6e6e;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
 
         @media (max-width: 1024px) {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
 
-            h4 {
-                margin: 0;
-                font-size: 20px;
-                color: var( --text-main);
+            .button-action {
+                order: -1;
             }
         }
 
-        h4 {
-            @media (min-width: 1024px) {
-                display: none;
+        > span {
+            @media(min-width: 1024px) {
+                margin-left: 33%;
+            }
+
+            @media(max-width: 1024px) {
+                font-size: 16px;
             }
         }
 
@@ -121,7 +123,7 @@
     &__toggle {
         position: absolute;
         display: flex;
-        top: 15px;
+        top: 20px;
         left: 15px;
         background-color: #fff;
         border: none;
@@ -139,6 +141,11 @@
             left: 20px;
             pointer-events: all;
         }
+    }
+
+    .react-datepicker-wrapper input:hover {
+        border-color: var(--accent-link);
+        box-shadow: 0 0 5px var(--unaccent-icon);
     }
 }
 

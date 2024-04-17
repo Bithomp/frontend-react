@@ -360,6 +360,7 @@
   },
   "table": {
     "mints": "Mints",
+    "view": "View",
     "period": "Període",
     "mint-period": "Mint period",
     "warning": "Warning",
