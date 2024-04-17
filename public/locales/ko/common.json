@@ -295,6 +295,7 @@
     "error": "오류",
     "no-data": "데이터를 찾을 수 없습니다",
     "loading": "대기 중",
+    "login-to-bithomp-pro": "Login to <1>Bithomp Pro</1> to load more data.",
     "load-failed": "로딩에 실패했습니다",
     "all-issuers": "모든 발행자",
     "no-expiration": "무기한",

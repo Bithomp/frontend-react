@@ -295,6 +295,7 @@
     "error": "Ошибка",
     "no-data": "Данных нет",
     "loading": "Загрузка...",
+    "login-to-bithomp-pro": "Ввойдите в <1>Bithomp Pro</1>, чтобы подгрузить больше данных.",
     "load-failed": "Ошибка загрузки",
     "all-issuers": "Все эмитенты",
     "no-expiration": "Бессрочный",

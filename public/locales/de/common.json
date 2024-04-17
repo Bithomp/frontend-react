@@ -295,6 +295,7 @@
     "error": "Fehler",
     "no-data": "Keine Daten verfügbar",
     "loading": "Lade...",
+    "login-to-bithomp-pro": "Login to <1>Bithomp Pro</1> to load more data.",
     "load-failed": "Laden fehlgeschlagen",
     "all-issuers": "Alle Emittenten",
     "no-expiration": "Nie",

@@ -4,6 +4,8 @@ import axios from 'axios'
 import { CSVLink } from "react-csv"
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useRouter } from 'next/router'
+import InfiniteScroll from 'react-infinite-scroll-component'
+import Link from 'next/link'
 
 import { FaSortAmountDown } from "react-icons/fa"
 
@@ -50,6 +52,7 @@ export default function NftDistribution({ issuerQuery, taxonQuery, idQuery, orde
   const router = useRouter()
 
   const [data, setData] = useState([])
+  const [owners, setOwners] = useState([])
   const [loading, setLoading] = useState(true)
   const [errorMessage, setErrorMessage] = useState("")
   const [taxon, setTaxon] = useState(taxonQuery)
@@ -57,6 +60,17 @@ export default function NftDistribution({ issuerQuery, taxonQuery, idQuery, orde
   const [issuerInput, setIssuerInput] = useState(issuerQuery)
   const [taxonInput, setTaxonInput] = useState(taxonQuery)
   const [order, setOrder] = useState(orderQuery)
+  const [hasMore, setHasMore] = useState("first")
+  const [sessionToken, setSessionToken] = useState("")
+
+  useEffect(() => {
+    const sessionTokenString = localStorage.getItem('sessionToken')
+    if (sessionTokenString) {
+      axios.defaults.headers.common['Authorization'] = "Bearer " + sessionTokenString
+      setSessionToken(sessionTokenString)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const checkApi = async () => {
     /*
@@ -84,22 +98,32 @@ export default function NftDistribution({ issuerQuery, taxonQuery, idQuery, orde
       "totalOwners": 35309
     }
     */
+
+    // do not load more if thereis no session token
+    if (hasMore !== "first" && !sessionToken) {
+      return
+    }
+
+    let ownersData = owners
+    let markerPart = hasMore === "first" ? "" : "&marker=" + data?.marker
+
     setData([])
     let taxonUrlPart = ""
     if (taxon > -1) {
       taxonUrlPart = '&taxon=' + taxon
     }
 
-    setLoading(true)
+    if (!markerPart) {
+      setLoading(true)
+    }
 
     let orderPart = order
     if (issuer) {
       orderPart = 'total'
     }
 
-    //marker=m
     const response = await axios(
-      'v2/nft-owners?issuer=' + issuer + taxonUrlPart + '&order=' + orderPart
+      'v2/nft-owners?issuer=' + issuer + taxonUrlPart + '&order=' + orderPart + markerPart
     ).catch(error => {
       setErrorMessage(t("error." + error.message))
     })
@@ -110,14 +134,24 @@ export default function NftDistribution({ issuerQuery, taxonQuery, idQuery, orde
         if (newdata.owners.length > 0) {
           setErrorMessage("")
           setData(newdata)
+          if (newdata.marker) {
+            setHasMore(newdata.marker)
+          } else {
+            setHasMore(false)
+          }
+          setOwners([...ownersData, ...newdata.owners])
         } else {
           setErrorMessage(t("no-nfts", { ns: "nft-distribution" }))
         }
       } else {
+        if (marker === 'first') {
+          setErrorMessage(t("general.no-data"))
+        } else {
+          setHasMore(false)
+        }
         if (newdata.error) {
           setErrorMessage(newdata.error)
         } else {
-          setErrorMessage("Error")
           console.log(newdata)
         }
       }
@@ -259,7 +293,7 @@ export default function NftDistribution({ issuerQuery, taxonQuery, idQuery, orde
         </p>
       }
 
-      {(windowWidth < 960 && !issuer) &&
+      {(windowWidth && windowWidth < 960 && !issuer) ?
         <>
           <p>
             <span
@@ -289,181 +323,200 @@ export default function NftDistribution({ issuerQuery, taxonQuery, idQuery, orde
             </span>
           </p>
         </>
+        :
+        ""
       }
 
-      {(!windowWidth || windowWidth >= 960) ?
-        <table className="table-large shrink">
-          <thead>
-            <tr>
-              <th className='center'>{t("table.index")}</th>
-              <th>{t("table.owner")}</th>
-              {!issuer &&
+      <InfiniteScroll
+        dataLength={owners.length}
+        next={checkApi}
+        hasMore={hasMore}
+        loader={!errorMessage &&
+          <p className="center">
+            {(hasMore !== "first" && !sessionToken) ?
+              <Trans i18nKey="general.login-to-bithomp-pro">
+                Login to <Link href="/admin">Bithomp Pro</Link> to load more data.
+              </Trans>
+              :
+              t("general.loading")
+            }
+          </p>
+        }
+        endMessage={<p className="center">End of list</p>}
+      >
+
+        {(!windowWidth || windowWidth >= 960) ?
+          <table className="table-large shrink">
+            <thead>
+              <tr>
+                <th className='center'>{t("table.index")}</th>
+                <th>{t("table.owner")}</th>
+                {!issuer &&
+                  <>
+                    <th className='right'>
+                      <span
+                        onClick={() => changeOrder('nonSelfIssued')}
+                        style={order !== 'nonSelfIssued' ? { cursor: "pointer" } : {}}
+                        className={order === 'nonSelfIssued' ? "blue" : ""}
+                      >
+                        {t("table.non-self-issued", { ns: "nft-distribution" })} <FaSortAmountDown />
+                      </span>
+                    </th>
+                    <th className='right'>
+                      <span
+                        onClick={() => changeOrder('selfIssued')}
+                        style={order !== 'selfIssued' ? { cursor: "pointer" } : {}}
+                        className={order === 'selfIssued' ? "blue" : ""}
+                      >
+                        {t("table.self-issued", { ns: "nft-distribution" })} <FaSortAmountDown />
+                      </span>
+                    </th>
+                  </>
+                }
+                <th className='right'>
+                  {issuer ?
+                    t("table.nfts")
+                    :
+                    <span
+                      onClick={() => changeOrder('total')}
+                      style={order !== 'total' ? { cursor: "pointer" } : {}}
+                      className={order === 'total' ? "blue" : ""}
+                    >
+                      {t("table.total", { ns: "nft-distribution" })} <FaSortAmountDown />
+                    </span>
+                  }
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {loading ?
+                <tr className='center'>
+                  <td colSpan="100">
+                    <span className="waiting"></span>
+                  </td>
+                </tr>
+                :
                 <>
-                  <th className='right'>
-                    <span
-                      onClick={() => changeOrder('nonSelfIssued')}
-                      style={order !== 'nonSelfIssued' ? { cursor: "pointer" } : {}}
-                      className={order === 'nonSelfIssued' ? "blue" : ""}
-                    >
-                      {t("table.non-self-issued", { ns: "nft-distribution" })} <FaSortAmountDown />
-                    </span>
-                  </th>
-                  <th className='right'>
-                    <span
-                      onClick={() => changeOrder('selfIssued')}
-                      style={order !== 'selfIssued' ? { cursor: "pointer" } : {}}
-                      className={order === 'selfIssued' ? "blue" : ""}
-                    >
-                      {t("table.self-issued", { ns: "nft-distribution" })} <FaSortAmountDown />
-                    </span>
-                  </th>
+                  {!errorMessage ? owners?.map((user, i) =>
+                    <tr key={i}>
+                      <td className="center">{i + 1}</td>
+                      <td>
+                        {addressUsernameOrServiceLink(user, 'address')}
+                      </td>
+                      {!issuer &&
+                        <>
+                          <td className='right'>
+                            {niceNumber(user.nonSelfIssued)}
+                          </td>
+                          <td className='right'>
+                            {niceNumber(user.selfIssued)}
+                            {user.selfIssued > 0 &&
+                              <>
+                                {" "}
+                                {
+                                  nftsExplorerLink(
+                                    {
+                                      owner: user.address,
+                                      ownerDetails: user.addressDetails,
+                                      issuer: user.address,
+                                      issuerDetails: user.addressDetails
+                                    }
+                                  )
+                                }
+                              </>
+                            }
+                          </td>
+                        </>
+                      }
+                      <td className='right'>
+                        {niceNumber(user.total)}
+                        {" "}
+                        {
+                          nftsExplorerLink(
+                            {
+                              owner: user.address,
+                              ownerDetails: user.addressDetails,
+                              issuer: data.issuer,
+                              issuerDetails: data.issuerDetails
+                            }
+                          )
+                        }
+                      </td>
+                    </tr>)
+                    :
+                    <tr><td colSpan="100" className='center orange bold'>{errorMessage}</td></tr>
+                  }
                 </>
               }
-              <th className='right'>
-                {issuer ?
-                  t("table.nfts")
-                  :
-                  <span
-                    onClick={() => changeOrder('total')}
-                    style={order !== 'total' ? { cursor: "pointer" } : {}}
-                    className={order === 'total' ? "blue" : ""}
-                  >
-                    {t("table.total", { ns: "nft-distribution" })} <FaSortAmountDown />
-                  </span>
-                }
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {loading ?
-              <tr className='center'>
-                <td colSpan="100">
-                  <span className="waiting"></span>
-                  <br />{t("general.loading")}
-                </td>
-              </tr>
-              :
-              <>
-                {!errorMessage ? data.owners?.map((user, i) =>
-                  <tr key={i}>
-                    <td className="center">{i + 1}</td>
-                    <td>
-                      {addressUsernameOrServiceLink(user, 'address')}
-                    </td>
-                    {!issuer &&
-                      <>
-                        <td className='right'>
-                          {niceNumber(user.nonSelfIssued)}
+            </tbody>
+          </table>
+          :
+          <table className="table-mobile">
+            <thead>
+            </thead>
+            <tbody>
+              {loading ?
+                <tr className='center'>
+                  <td colSpan="100">
+                    <br />
+                    <span className="waiting"></span>
+                    <br />
+                  </td>
+                </tr>
+                :
+                <>
+                  {!errorMessage ?
+                    owners?.map((user, i) =>
+                      <tr key={i}>
+                        <td style={{ padding: "5px" }} className='center'>
+                          <p>{i + 1}</p>
                         </td>
-                        <td className='right'>
-                          {niceNumber(user.selfIssued)}
-                          {user.selfIssued > 0 &&
+                        <td>
+                          <p>
+                            {addressUsernameOrServiceLink(user, 'address')}
+                          </p>
+                          {!issuer &&
                             <>
-                              {" "}
-                              {
-                                nftsExplorerLink(
-                                  {
-                                    owner: user.address,
-                                    ownerDetails: user.addressDetails,
-                                    issuer: user.address,
-                                    issuerDetails: user.addressDetails
-                                  }
-                                )
-                              }
+                              <p>
+                                {t("table.non-self-issued", { ns: "nft-distribution" })}:
+                                {" "}
+                                {niceNumber(user.nonSelfIssued)}
+                              </p>
+                              <p>
+                                {t("table.self-issued", { ns: "nft-distribution" })}:
+                                {" "}
+                                {niceNumber(user.selfIssued)}
+                              </p>
                             </>
                           }
+                          <p>
+                            {issuer ? t("table.nfts") : t("table.total", { ns: "nft-distribution" })}:
+                            {" "}
+                            {niceNumber(user.total)}
+                            {" "}
+                            {
+                              nftsExplorerLink(
+                                {
+                                  owner: user.address,
+                                  ownerDetails: user.addressDetails,
+                                  issuer: data.issuer,
+                                  issuerDetails: data.issuerDetails
+                                }
+                              )
+                            }
+                          </p>
                         </td>
-                      </>
-                    }
-                    <td className='right'>
-                      {niceNumber(user.total)}
-                      {" "}
-                      {
-                        nftsExplorerLink(
-                          {
-                            owner: user.address,
-                            ownerDetails: user.addressDetails,
-                            issuer: data.issuer,
-                            issuerDetails: data.issuerDetails
-                          }
-                        )
-                      }
-                    </td>
-                  </tr>)
-                  :
-                  <tr><td colSpan="100" className='center orange bold'>{errorMessage}</td></tr>
-                }
-              </>
-            }
-          </tbody>
-        </table>
-        :
-        <table className="table-mobile">
-          <thead>
-          </thead>
-          <tbody>
-            {loading ?
-              <tr className='center'>
-                <td colSpan="100">
-                  <br />
-                  <span className="waiting"></span>
-                  <br />{t("general.loading")}<br />
-                  <br />
-                </td>
-              </tr>
-              :
-              <>
-                {!errorMessage ?
-                  data?.owners?.map((user, i) =>
-                    <tr key={i}>
-                      <td style={{ padding: "5px" }} className='center'>
-                        <p>{i + 1}</p>
-                      </td>
-                      <td>
-                        <p>
-                          {addressUsernameOrServiceLink(user, 'address')}
-                        </p>
-                        {!issuer &&
-                          <>
-                            <p>
-                              {t("table.non-self-issued", { ns: "nft-distribution" })}:
-                              {" "}
-                              {niceNumber(user.nonSelfIssued)}
-                            </p>
-                            <p>
-                              {t("table.self-issued", { ns: "nft-distribution" })}:
-                              {" "}
-                              {niceNumber(user.selfIssued)}
-                            </p>
-                          </>
-                        }
-                        <p>
-                          {issuer ? t("table.nfts") : t("table.total", { ns: "nft-distribution" })}:
-                          {" "}
-                          {niceNumber(user.total)}
-                          {" "}
-                          {
-                            nftsExplorerLink(
-                              {
-                                owner: user.address,
-                                ownerDetails: user.addressDetails,
-                                issuer: data.issuer,
-                                issuerDetails: data.issuerDetails
-                              }
-                            )
-                          }
-                        </p>
-                      </td>
-                    </tr>
-                  )
-                  :
-                  <tr><td colSpan="100" className='center orange bold'>{errorMessage}</td></tr>
-                }
-              </>
-            }
-          </tbody>
-        </table>
-      }
+                      </tr>
+                    )
+                    :
+                    <tr><td colSpan="100" className='center orange bold'>{errorMessage}</td></tr>
+                  }
+                </>
+              }
+            </tbody>
+          </table>
+        }
+      </InfiniteScroll>
     </div>
   </>
 }
