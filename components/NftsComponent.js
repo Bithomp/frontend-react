@@ -6,7 +6,7 @@ import axios from 'axios'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import Link from 'next/link'
 
-import { IoMdClose  } from "react-icons/io";
+import { IoMdClose } from "react-icons/io";
 import { BsFilter } from "react-icons/bs";
 
 import { isAddressOrUsername, setTabParams, useWidth, xahauNetwork, capitalizeFirstLetter } from '../utils'
@@ -35,7 +35,7 @@ import DateAndTimeRange from './UI/DateAndTimeRange'
 
 import DownloadIcon from "../public/images/download.svg"
 import RadioOptions from './UI/RadioOptions'
-import AddressInput from './AddressInput'
+import AddressInput from './UI/AddressInput'
 
 export default function NftsComponent({
   listNftsOrder,
@@ -122,27 +122,27 @@ export default function NftsComponent({
   ]
 
   const setFilters = (options) => {
-    if(options?.issuer) {
+    if (options?.issuer) {
       setIssuer(options?.issuer)
-    } else if(options?.issuer === '') {
+    } else if (options?.issuer === '') {
       setIssuer(null)
     }
 
-    if(options?.taxon) {
+    if (options?.taxon) {
       setTaxon(options?.taxon)
-    } else if(options?.taxon === '') {
+    } else if (options?.taxon === '') {
       setTaxon(null)
     }
 
-    if(options?.owner) {
+    if (options?.owner) {
       setOwner(options?.owner)
-    } else if(options?.owner === '') {
+    } else if (options?.owner === '') {
       setOwner(null)
     }
 
-    if(options?.name) {
+    if (options?.name) {
       setSearch(options?.name)
-    } else if(options?.name === '') {
+    } else if (options?.name === '') {
       setSearch(null)
     }
   }
@@ -561,122 +561,122 @@ export default function NftsComponent({
     }
     <div className="content-cols">
       <div className="filters">
-          <div className="filters__box">
-            <button className='filters__toggle' onClick={() => toggleFilters()}>
-              <BsFilter />
-            </button>
-            <div className="filters__wrap">
-              <div className="filters__head">
-                <span><i>{nftCount}</i> results</span>
-                {rendered &&
-                  <CSVLink
-                    data={data || []}
-                    headers={csvHeaders}
-                    filename='nfts_export.csv'
-                    className={'button-action thin narrow' + (!(data && data.length > 0) ? ' disabled' : '')}
-                  >
-                    <DownloadIcon /> CSV
-                  </CSVLink>
-                }
-                <button className='filters__close' onClick={() => toggleFilters()}><IoMdClose /></button>
-              </div>
-              {nftExplorer && <>
-                  <AddressInput
-                    type="issuer"
-                    title={t("table.issuer")}
-                    link={rawData}
-                    inputValue={issuer}
-                    setFilters={setFilters}
-                    searchPlaceholderText={t("nfts.search-by-issuer")}
-                  />
-                  <AddressInput
-                    type="taxon"
-                    title={t("table.taxon")}
-                    inputValue={taxon}
-                    setFilters={setFilters}
-                    searchPlaceholderText={t("nfts.search-by-taxon")}
-                  />
-                  <AddressInput
-                    type="owner"
-                    title={t("table.owner")}
-                    link={rawData}
-                    inputValue={owner}
-                    setFilters={setFilters}
-                    searchPlaceholderText={t("nfts.search-by-owner")}
-                  />
-                  <AddressInput
-                    type="name"
-                    title={t("table.name")}
-                    inputValue={search}
-                    setFilters={setFilters}
-                    searchPlaceholderText={t("nfts.search-by-name")}
-                  />
-              </>}
-
-              {listTab === 'nfts' &&
-                <div>
-                  {t("table.mints")}
-                  <RadioOptions
-                    tabList={listNftsOrderTabList}
-                    tab={listNftsOrderTab}
-                    setTab={setListNftsOrderTab}
-                    name='listNftsOrder'
-                  />
-                  {nftExplorer && <>
-                    {windowWidth < 720 && <br />}
-                    <span style={{ marginRight: "10px" }}>
-                      {t("table.mint-period")}
-                    </span>
-                    {windowWidth < 720 && <br />}
-                    <DateAndTimeRange
-                      period={mintedPeriod}
-                      setPeriod={setMintedPeriod}
-                      defaultPeriod={mintedPeriod}
-                      minDate="nft"
-                      style={{ marginTop: "10px", display: "inline-block" }}
-                    />
-                  </>
-                  }
-                </div>
+        <div className="filters__box">
+          <button className='filters__toggle' onClick={() => toggleFilters()}>
+            <BsFilter />
+          </button>
+          <div className="filters__wrap">
+            <div className="filters__head">
+              <span><i>{nftCount}</i> results</span>
+              {rendered &&
+                <CSVLink
+                  data={data || []}
+                  headers={csvHeaders}
+                  filename='nfts_export.csv'
+                  className={'button-action thin narrow' + (!(data && data.length > 0) ? ' disabled' : '')}
+                >
+                  <DownloadIcon /> CSV
+                </CSVLink>
               }
+              <button className='filters__close' onClick={() => toggleFilters()}><IoMdClose /></button>
+            </div>
+            {nftExplorer && <>
+              <AddressInput
+                type="issuer"
+                title={t("table.issuer")}
+                link={rawData}
+                inputValue={issuer}
+                setFilters={setFilters}
+                searchPlaceholderText={t("nfts.search-by-issuer")}
+              />
+              <AddressInput
+                type="taxon"
+                title={t("table.taxon")}
+                inputValue={taxon}
+                setFilters={setFilters}
+                searchPlaceholderText={t("nfts.search-by-taxon")}
+              />
+              <AddressInput
+                type="owner"
+                title={t("table.owner")}
+                link={rawData}
+                inputValue={owner}
+                setFilters={setFilters}
+                searchPlaceholderText={t("nfts.search-by-owner")}
+              />
+              <AddressInput
+                type="name"
+                title={t("table.name")}
+                inputValue={search}
+                setFilters={setFilters}
+                searchPlaceholderText={t("nfts.search-by-name")}
+              />
+            </>}
 
+            {listTab === 'nfts' &&
               <div>
-                {t("table.view")}
-                <RadioOptions tabList={viewTabList} tab={viewTab} setTab={setViewTab} name='view' />
+                {t("table.mints")}
+                <RadioOptions
+                  tabList={listNftsOrderTabList}
+                  tab={listNftsOrderTab}
+                  setTab={setListNftsOrderTab}
+                  name='listNftsOrder'
+                />
+                {nftExplorer && <>
+                  {windowWidth < 720 && <br />}
+                  <span style={{ marginRight: "10px" }}>
+                    {t("table.mint-period")}
+                  </span>
+                  {windowWidth < 720 && <br />}
+                  <DateAndTimeRange
+                    period={mintedPeriod}
+                    setPeriod={setMintedPeriod}
+                    defaultPeriod={mintedPeriod}
+                    minDate="nft"
+                    style={{ marginTop: "10px", display: "inline-block" }}
+                  />
+                </>
+                }
               </div>
+            }
 
-              {(!burnedPeriod && !xahauNetwork) &&
-                <div>
-                  {t("table.all-nfts")}
-                  <RadioOptions tabList={listTabList} tab={listTab} setTab={setListTab} name='saleType' />
-                </div>
-              }
+            <div>
+              {t("table.view")}
+              <RadioOptions tabList={viewTabList} tab={viewTab} setTab={setViewTab} name='view' />
+            </div>
 
-              {(!burnedPeriod && !xahauNetwork) && listTab === 'onSale' &&
-                <div>
-                  {t("table.on-sale")}
-                  <RadioOptions tabList={saleDestinationTabList} tab={saleDestinationTab} setTab={setSaleDestinationTab} name='saleDestination' />
-                </div>
-              }
-
+            {(!burnedPeriod && !xahauNetwork) &&
               <div>
-                {!burnedPeriod && listTab !== 'onSale' &&
-                  <div style={checkBoxStyles}>
-                    <CheckBox checked={includeBurned} setChecked={setIncludeBurned} outline>
-                      {t("table.text.include-burned-nfts")}
-                    </CheckBox>
-                  </div>
-                }
-                {listTab !== 'onSale' &&
-                  <div style={checkBoxStyles}>
-                    <CheckBox checked={includeWithoutMediaData} setChecked={setIncludeWithoutMediaData} outline>
-                      {t("table.text.include-without-media-data")}
-                    </CheckBox>
-                  </div>
-                }
+                {t("table.all-nfts")}
+                <RadioOptions tabList={listTabList} tab={listTab} setTab={setListTab} name='saleType' />
               </div>
+            }
+
+            {(!burnedPeriod && !xahauNetwork) && listTab === 'onSale' &&
+              <div>
+                {t("table.on-sale")}
+                <RadioOptions tabList={saleDestinationTabList} tab={saleDestinationTab} setTab={setSaleDestinationTab} name='saleDestination' />
+              </div>
+            }
+
+            <div>
+              {!burnedPeriod && listTab !== 'onSale' &&
+                <div style={checkBoxStyles}>
+                  <CheckBox checked={includeBurned} setChecked={setIncludeBurned} outline>
+                    {t("table.text.include-burned-nfts")}
+                  </CheckBox>
+                </div>
+              }
+              {listTab !== 'onSale' &&
+                <div style={checkBoxStyles}>
+                  <CheckBox checked={includeWithoutMediaData} setChecked={setIncludeWithoutMediaData} outline>
+                    {t("table.text.include-without-media-data")}
+                  </CheckBox>
+                </div>
+              }
             </div>
           </div>
+        </div>
       </div>
 
       <div className="content-text" style={contextStyle}>
