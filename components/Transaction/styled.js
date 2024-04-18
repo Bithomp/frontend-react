@@ -22,6 +22,7 @@ export const Info = styled.p`
   font-weight: 400;
   text-align: left;
   word-break: break-word;
+  text-align: center;
 `;
 
 export const Type = styled.span`

@@ -1,6 +1,6 @@
 import CopyButton from "../UI/CopyButton";
 
-import { Card, Info, Heading}  from "./styled";
+import { Card, Info, Heading } from "./styled";
 import { LinkLedger } from "./Links";
 
 export const TransactionCard = ({ tx, children }) => {
@@ -19,7 +19,7 @@ export const TransactionCard = ({ tx, children }) => {
               The transaction was <b className="green">successfull</b>{" "}
               and validated in the ledger{" "}
               <LinkLedger version={tx.outcome.ledgerVersion} />{" "}
-              (index:{tx.outcome.indexInLedger}).
+              (index: {tx.outcome.indexInLedger}).
             </Info>
           )
           : (
