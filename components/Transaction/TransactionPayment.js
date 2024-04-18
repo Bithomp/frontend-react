@@ -10,8 +10,6 @@ import { TransactionCard } from "./TransactionCard";
 export const TransactionPayment = ({ tx }) => {
   const { t } = useTranslation();
 
-  const destination = tx.specification?.destination?.address;
-
   return (
     <TransactionCard tx={tx}>
       <TDetails>
@@ -27,14 +25,32 @@ export const TransactionPayment = ({ tx }) => {
             </TData>
           </TRow>
           <TRow>
-            <TData>Initiated by:</TData>
+            <TData>Source:</TData>
             <TData>
-              <LinkAccount address={tx.address} />
+              <LinkAccount address={tx.rawTransaction.Account} />
             </TData>
           </TRow>
           <TRow>
             <TData>Sequence:</TData>
             <TData>#{tx.sequence}</TData>
+          </TRow>
+          <TRow>
+            <TData>Destination:</TData>
+            <TData>
+              <LinkAccount address={tx.rawTransaction.Destination} />
+            </TData>
+          </TRow>
+          {tx.rawTransaction?.DestinationTag &&
+            <TRow>
+              <TData>Destination tag:</TData>
+              <TData>{tx.rawTransaction.DestinationTag}</TData>
+            </TRow>
+          }
+          <TRow>
+            <TData>Delivered amount:</TData>
+            <TData className="bold green">
+              {amountFormat(tx.outcome.deliveredAmount)}
+            </TData>
           </TRow>
           <TRow>
             <TData>Ledger fee:</TData>
@@ -46,18 +62,6 @@ export const TransactionPayment = ({ tx }) => {
               <TData>{LinkTx({ tx: tx.rawTransaction.ctid })}</TData>
             </TRow>
           }
-          <TRow>
-            <TData>Destination:</TData>
-            <TData>
-              <LinkAccount address={destination} />
-            </TData>
-          </TRow>
-          <TRow>
-            <TData>Delivered amount:</TData>
-            <TData>
-              {amountFormat(tx.outcome.deliveredAmount)}
-            </TData>
-          </TRow>
         </TBody>
       </TDetails>
     </TransactionCard>
