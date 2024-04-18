@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import Select from 'react-select'
 import { useTranslation } from 'next-i18next'
 import axios from 'axios';
@@ -8,45 +8,52 @@ import {
   useWidth
 } from '../../utils'
 
-import { amountFormat } from '../../utils/format'
+import { amountFormat, userOrServiceLink } from '../../utils/format'
 
 let typingTimer
 
-export default function AddressInput({ placeholder, title, link, value, setValue }) {
+export default function AddressInput({ placeholder, title, setValue, rawData, type }) {
   const { t } = useTranslation()
-  const searchInput = useRef(null)
   const windowWidth = useWidth()
 
-  const [searchItem, setSearchItem] = useState(value || "")
+  const [inputValue, setInputValue] = useState("")
   const [errorMessage, setErrorMessage] = useState("")
   const [isMounted, setIsMounted] = useState(false)
   const [searchSuggestions, setSearchSuggestions] = useState([])
   const [searchingSuggestions, setSearchingSuggestions] = useState(false)
+  const [link, setLink] = useState("")
 
   useEffect(() => {
     setIsMounted(true);
   }, [])
 
+  useEffect(() => {
+    if (rawData) {
+      setInputValue(rawData[type])
+      setLink(userOrServiceLink(rawData, type))
+    }
+  }, [rawData])
+
   const searchOnKeyUp = e => {
 
-    const value = e?.target?.value
+    const address = e?.target?.value
 
-    if (e.key === 'Enter' && isAddressOrUsername(value)) {
-      setValue(value)
+    if (e.key === 'Enter' && isAddressOrUsername(address)) {
+      setValue(address)
       clearTimeout(typingTimer)
       setSearchSuggestions([])
       return
     }
 
     //if more than 3 characters - search for suggestions
-    if (value && value.length > 0) {
+    if (address && address.length > 0) {
       clearTimeout(typingTimer)
       setSearchSuggestions([])
       typingTimer = setTimeout(async () => {
 
-        if (value && value.length > 2) {
+        if (address && address.length > 2) {
           setSearchingSuggestions(true)
-          const suggestionsResponse = await axios('v2/address/search/' + value)
+          const suggestionsResponse = await axios('v2/address/search/' + address)
             .catch(error => {
               setSearchingSuggestions(false)
               console.log(error.message)
@@ -63,14 +70,13 @@ export default function AddressInput({ placeholder, title, link, value, setValue
     }
   }
 
-  const searchOnChange = (option) => {
+  const searchOnChange = option => {
     if (!option) {
-      setSearchItem('')
       setValue("")
       return
     }
 
-    setSearchItem(option.address)
+    setValue(option.address)
     if (option.username && !option.username.includes("-")) {
       onSearch(option.username)
     } else {
@@ -101,7 +107,7 @@ export default function AddressInput({ placeholder, title, link, value, setValue
 
   const searchOnInputChange = (value, action) => {
     if (action.action !== "input-blur" && action.action !== "menu-close") {
-      setSearchItem(value)
+      setInputValue(value)
     }
   }
 
@@ -112,12 +118,11 @@ export default function AddressInput({ placeholder, title, link, value, setValue
         {isMounted &&
           <div onKeyUp={searchOnKeyUp}>
             <Select
-              ref={searchInput}
               className="address-input-select"
               placeholder={placeholder}
               onChange={searchOnChange}
               spellCheck="false"
-              inputValue={searchItem}
+              inputValue={inputValue}
               options={searchSuggestions}
               isClearable={true}
               getOptionLabel={

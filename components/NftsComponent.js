@@ -23,8 +23,7 @@ import {
   usernameOrAddress,
   amountFormat,
   timeOrDate,
-  fullDateAndTime,
-  userOrServiceLink
+  fullDateAndTime
 } from '../utils/format'
 
 import SEO from './SEO'
@@ -80,8 +79,6 @@ export default function NftsComponent({
   const [owner, setOwner] = useState(ownerQuery)
   const [taxon, setTaxon] = useState(taxonQuery)
   const [search, setSearch] = useState(searchQuery)
-  const [issuerInput, setIssuerInput] = useState(issuerQuery)
-  const [ownerInput, setOwnerInput] = useState(ownerQuery)
   const [taxonInput, setTaxonInput] = useState(taxonQuery)
   const [searchInput, setSearchInput] = useState(searchQuery)
   const [includeBurned, setIncludeBurned] = useState(includeBurnedQuery)
@@ -249,25 +246,20 @@ export default function NftsComponent({
         setErrorMessage(t("error-api." + newdata.error))
       } else {
         if (newdata.issuer) {
-          setIssuerInput(newdata.issuer)
           if (newdata.taxon) {
             setTaxonInput(newdata.taxon)
           } else {
             setTaxonInput("")
           }
-        } else {
-          setIssuerInput("")
         }
 
         if (newdata.owner) {
-          setOwnerInput(newdata.owner)
           setUserData({
             username: newdata.ownerDetails?.username,
             service: newdata.ownerDetails?.service,
             address: newdata.owner
           })
         } else {
-          setOwnerInput("")
           setUserData({})
         }
 
@@ -440,7 +432,7 @@ export default function NftsComponent({
   }
 
   const searchClick = () => {
-    if (isAddressOrUsername(issuerInput)) {
+    if (issuer) {
       if (isValidTaxon(taxonInput)) {
         setTaxon(taxonInput)
       } else {
@@ -448,12 +440,8 @@ export default function NftsComponent({
         setTaxon("")
       }
     } else {
-      setIssuerInput("")
       setTaxonInput("")
       setTaxon("")
-    }
-    if (!isAddressOrUsername(ownerInput)) {
-      setOwnerInput("")
     }
     setSearch(searchInput)
   }
@@ -610,9 +598,9 @@ export default function NftsComponent({
               <AddressInput
                 title={t("table.issuer")}
                 placeholder={t("nfts.search-by-issuer")}
-                value={issuerInput}
-                setValue={(val) => { setIssuer(val); searchClick() }}
-                link={userOrServiceLink(rawData, 'issuer')}
+                setValue={setIssuer}
+                rawData={rawData}
+                type='issuer'
               />
 
               {!xahauNetwork &&
@@ -626,17 +614,17 @@ export default function NftsComponent({
                     className="input-text"
                     spellCheck="false"
                     maxLength="35"
-                    disabled={issuerInput ? false : true}
+                    disabled={issuer ? false : true}
                   />
                 </>
               }
 
               <AddressInput
                 title={t("table.owner")}
-                value={ownerInput}
-                link={userOrServiceLink(rawData, 'owner')}
-                setValue={(val) => { setOwner(val); searchClick() }}
                 placeholder={t("nfts.search-by-owner")}
+                setValue={setOwner}
+                rawData={rawData}
+                type='owner'
               />
               <span className='input-title'>{t("table.name")}</span>
               <input
