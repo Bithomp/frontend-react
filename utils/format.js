@@ -5,6 +5,7 @@ import React from "react"
 import { Trans } from 'next-i18next'
 import moment from 'moment'
 import momentDurationFormatSetup from "moment-duration-format"
+import axios from 'axios'
 
 import LinkIcon from "../public/images/link.svg"
 import { stripText, nativeCurrency } from '.'
@@ -458,6 +459,76 @@ export const amountFormat = (amount, options = {}) => {
   }
 }
 
+const lpTokenName = async currency => {
+  const response = await axios("v2/amm/" + currency)
+  const data = response.data
+  if (!data) return ""
+
+  let firstCurrency = ""
+  let secondCurrency = ""
+  if (data.amount) {
+    if (data.amount.currency) {
+      firstCurrency = niceCurrency(data.amount.currency)
+    } else {
+      firstCurrency = nativeCurrency
+    }
+    if (data.amount2.currency) {
+      secondCurrency = niceCurrency(data.amount2.currency)
+    } else {
+      secondCurrency = nativeCurrency
+    }
+    return "LP " + firstCurrency + '/' + secondCurrency
+  }
+}
+
+const niceCurrency = currency => {
+  if (!currency) return ""
+  let firstTwoNumbers = currency.substr(0, 2)
+  if (currency.length > 3) {
+    if (firstTwoNumbers === '01') {
+      // deprecated demurraging/interest-bearing
+      type = 'IOU demurraging';
+      let currencyText = Buffer.from(currency.substr(2, 8), 'hex')
+      currencyText = currencyText.substr(0, 3)
+      let profit = currency.substr(16, 16)
+      if (profit === 'C1F76FF6ECB0BAC6' || profit === 'C1F76FF6ECB0CCCD') {
+        valuePrefix = '(-0.5%pa)'
+      } else if (profit === '41F76FF6ECB0BAC6' || profit === '41F76FF6ECB0CCCD') {
+        valuePrefix = '(+0.5%pa)'
+      } else if (profit === 'C1E76FF6ECB0BAC6') {
+        valuePrefix = '(+1%pa)'
+      } else {
+        /*
+          $realprofit = 1 - (exp(31536000 / hex2double($profit)));
+          $realprofit = round($realprofit * 100, 2, PHP_ROUND_HALF_UP);
+          if ($realprofit > 0) {
+            $plus = '+';
+          } else {
+            $plus = '';
+          }
+          $output .= ' (' . $plus . $realprofit . '%pa)';
+        */
+        valuePrefix = "(??%pa)"
+      }
+      currency = currencyText;
+    } else if (firstTwoNumbers === '02') {
+      currency = Buffer.from(currency.substring(16), 'hex')
+    } else if (firstTwoNumbers === '03') {
+      currency = lpTokenName(currency)
+    } else {
+      currency = Buffer.from(currency, 'hex')
+    }
+  }
+
+  if (currency.toString().toUpperCase() === nativeCurrency && amount.issuer) {
+    currency = "Fake" + nativeCurrency
+  }
+
+  // curency + " " - otherwise it is in the hex format
+  return stripText(currency + " ")
+}
+
+
 const amountParced = amount => {
   if (!amount && amount !== 0) {
     return false
@@ -495,50 +566,11 @@ const amountParced = amount => {
     type = 'IOU'
     const xls14NftVal = xls14NftValue(value)
     let realXls14 = false
-    let firstTwoNumbers = currency.substr(0, 2)
-    if (currency.length > 3) {
-      if (firstTwoNumbers === '01') {
-        // deprecated demurraging/interest-bearing
-        type = 'IOU demurraging';
-        let currencyText = Buffer.from(currency.substr(2, 8), 'hex')
-        currencyText = currencyText.substr(0, 3)
-        let profit = currency.substr(16, 16)
-        if (profit === 'C1F76FF6ECB0BAC6' || profit === 'C1F76FF6ECB0CCCD') {
-          valuePrefix = '(-0.5%pa)'
-        } else if (profit === '41F76FF6ECB0BAC6' || profit === '41F76FF6ECB0CCCD') {
-          valuePrefix = '(+0.5%pa)'
-        } else if (profit === 'C1E76FF6ECB0BAC6') {
-          valuePrefix = '(+1%pa)'
-        } else {
-          /*
-            $realprofit = 1 - (exp(31536000 / hex2double($profit)));
-            $realprofit = round($realprofit * 100, 2, PHP_ROUND_HALF_UP);
-            if ($realprofit > 0) {
-              $plus = '+';
-            } else {
-              $plus = '';
-            }
-            $output .= ' (' . $plus . $realprofit . '%pa)';
-          */
-          valuePrefix = "(??%pa)"
-        }
-        currency = currencyText;
-      } else if (firstTwoNumbers === '02') {
-        currency = Buffer.from(currency.substring(16), 'hex')
-        if (xls14NftVal) {
-          realXls14 = true
-        }
-      } else if (firstTwoNumbers === '03') {
-        //AMM LP token, 03 + 19 bytes of sha512
-        currency = "LP token"
-      } else {
-        currency = Buffer.from(currency, 'hex')
-      }
-    }
 
-    if (currency.toString().toUpperCase() === nativeCurrency && amount.issuer) {
-      currency = "Fake" + nativeCurrency
+    if (currency.length > 3 && currency.substr(0, 2) === '02' && xls14NftVal) {
+      realXls14 = true
     }
+    currency = niceCurrency(currency)
 
     if (xls14NftVal) {
       type = 'NFT'
@@ -556,8 +588,6 @@ const amountParced = amount => {
     value = amount / 1000000
     currency = nativeCurrency
   }
-  // curency + " " - otherwise it is in the hex format
-  currency = stripText(currency + " ")
   return {
     type,
     value,

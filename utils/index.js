@@ -304,18 +304,16 @@ export const encode = code => {
 
 //not in use yet
 export const submitTransaction = async (blob, callback) => {
-  blob = JSON.stringify(blob);
+  blob = JSON.stringify(blob)
 
   const response = await axios.post('v2/transaction/submit', blob).catch(error => {
     console.log("submitTransaction error:", error.message)
   });
 
   if (response) {
-    callback(response);
+    callback(response)
   }
 }
-
-//const devNetworks = ['testnet', 'devnet', 'xahau-testnet'];
 
 export const capitalize = str => {
   if (!str) return ""
