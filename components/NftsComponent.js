@@ -23,7 +23,8 @@ import {
   usernameOrAddress,
   amountFormat,
   timeOrDate,
-  fullDateAndTime
+  fullDateAndTime,
+  userOrServiceLink
 } from '../utils/format'
 
 import SEO from './SEO'
@@ -79,6 +80,10 @@ export default function NftsComponent({
   const [owner, setOwner] = useState(ownerQuery)
   const [taxon, setTaxon] = useState(taxonQuery)
   const [search, setSearch] = useState(searchQuery)
+  const [issuerInput, setIssuerInput] = useState(issuerQuery)
+  const [ownerInput, setOwnerInput] = useState(ownerQuery)
+  const [taxonInput, setTaxonInput] = useState(taxonQuery)
+  const [searchInput, setSearchInput] = useState(searchQuery)
   const [includeBurned, setIncludeBurned] = useState(includeBurnedQuery)
   const [includeWithoutMediaData, setIncludeWithoutMediaData] = useState(includeWithoutMediaDataQuery)
   const [mintedPeriod, setMintedPeriod] = useState(mintedPeriodQuery)
@@ -120,32 +125,6 @@ export default function NftsComponent({
     { value: 'mintedNew', label: t("tabs.mintedNew") },
     { value: 'mintedOld', label: t("tabs.mintedOld") }
   ]
-
-  const setFilters = (options) => {
-    if (options?.issuer) {
-      setIssuer(options?.issuer)
-    } else if (options?.issuer === '') {
-      setIssuer(null)
-    }
-
-    if (options?.taxon) {
-      setTaxon(options?.taxon)
-    } else if (options?.taxon === '') {
-      setTaxon(null)
-    }
-
-    if (options?.owner) {
-      setOwner(options?.owner)
-    } else if (options?.owner === '') {
-      setOwner(null)
-    }
-
-    if (options?.name) {
-      setSearch(options?.name)
-    } else if (options?.name === '') {
-      setSearch(null)
-    }
-  }
 
   const checkApi = async (options) => {
     if (nftExplorer && !mintedPeriod && listTab !== 'onSale') return
@@ -270,16 +249,26 @@ export default function NftsComponent({
         setErrorMessage(t("error-api." + newdata.error))
       } else {
         if (newdata.issuer) {
-          setIssuer(newdata.issuer)
+          setIssuerInput(newdata.issuer)
+          if (newdata.taxon) {
+            setTaxonInput(newdata.taxon)
+          } else {
+            setTaxonInput("")
+          }
+        } else {
+          setIssuerInput("")
         }
 
         if (newdata.owner) {
-          // setOwnerInput(newdata.owner)
+          setOwnerInput(newdata.owner)
           setUserData({
             username: newdata.ownerDetails?.username,
             service: newdata.ownerDetails?.service,
             address: newdata.owner
           })
+        } else {
+          setOwnerInput("")
+          setUserData({})
         }
 
         let nftList = newdata.nfts ? newdata.nfts : 0;
@@ -446,6 +435,41 @@ export default function NftsComponent({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [viewTab, listNftsOrderTab, rawData, listTab, saleDestinationTab, includeBurned, includeWithoutMediaData])
 
+  const onSearchChange = e => {
+    setSearchInput(e.target.value)
+  }
+
+  const searchClick = () => {
+    if (isAddressOrUsername(issuerInput)) {
+      if (isValidTaxon(taxonInput)) {
+        setTaxon(taxonInput)
+      } else {
+        setTaxonInput("")
+        setTaxon("")
+      }
+    } else {
+      setIssuerInput("")
+      setTaxonInput("")
+      setTaxon("")
+    }
+    if (!isAddressOrUsername(ownerInput)) {
+      setOwnerInput("")
+    }
+    setSearch(searchInput)
+  }
+
+  const enterPress = e => {
+    if (e.key === 'Enter') {
+      searchClick()
+    }
+  }
+
+  const onTaxonInput = e => {
+    if (!/^\d+$/.test(e.key)) {
+      e.preventDefault()
+    }
+    enterPress(e)
+  }
 
   const toggleFilters = () => {
     setFiltersHide(!filtersHide)
@@ -556,7 +580,9 @@ export default function NftsComponent({
     {nftExplorer &&
       <>
         <h1 className='center'>{t("nft-explorer.header") + " "}</h1>
-        <Link href={"/nft-sales" + issuerTaxonUrlPart} style={{ display: "block", margin: "-5px auto 10px", width: "fit-content" }}>{t("nft-sales.header")}</Link>
+        {!xahauNetwork &&
+          <Link href={"/nft-sales" + issuerTaxonUrlPart} style={{ display: "block", margin: "-5px auto 10px", width: "fit-content" }}>{t("nft-sales.header")}</Link>
+        }
       </>
     }
     <div className="content-cols">
@@ -582,35 +608,45 @@ export default function NftsComponent({
             </div>
             {nftExplorer && <>
               <AddressInput
-                type="issuer"
                 title={t("table.issuer")}
-                link={rawData}
-                inputValue={issuer}
-                setFilters={setFilters}
-                searchPlaceholderText={t("nfts.search-by-issuer")}
+                placeholder={t("nfts.search-by-issuer")}
+                setValue={(val) => { setIssuer(val); searchClick() }}
+                link={userOrServiceLink(rawData, 'issuer')}
               />
+
+              {!xahauNetwork &&
+                <>
+                  <span className='input-title'>{t("table.taxon")}</span>
+                  <input
+                    placeholder={t("nfts.search-by-taxon")}
+                    value={taxonInput}
+                    onChange={(e) => { setTaxonInput(e.target.value) }}
+                    onKeyPress={onTaxonInput}
+                    className="input-text"
+                    spellCheck="false"
+                    maxLength="35"
+                    disabled={issuerInput ? false : true}
+                  />
+                </>
+              }
+
               <AddressInput
-                type="taxon"
-                title={t("table.taxon")}
-                inputValue={taxon}
-                setFilters={setFilters}
-                searchPlaceholderText={t("nfts.search-by-taxon")}
-              />
-              <AddressInput
-                type="owner"
                 title={t("table.owner")}
-                link={rawData}
-                inputValue={owner}
-                setFilters={setFilters}
-                searchPlaceholderText={t("nfts.search-by-owner")}
+                link={userOrServiceLink(rawData, 'owner')}
+                setValue={(val) => { setOwner(val); searchClick() }}
+                placeholder={t("nfts.search-by-owner")}
               />
-              <AddressInput
-                type="name"
-                title={t("table.name")}
-                inputValue={search}
-                setFilters={setFilters}
-                searchPlaceholderText={t("nfts.search-by-name")}
+              <span className='input-title'>{t("table.name")}</span>
+              <input
+                placeholder={t("nfts.search-by-name")}
+                value={searchInput}
+                onChange={onSearchChange}
+                className="input-text"
+                spellCheck="false"
+                maxLength="100"
+                onKeyPress={enterPress}
               />
+
             </>}
 
             {listTab === 'nfts' &&
@@ -623,11 +659,9 @@ export default function NftsComponent({
                   name='listNftsOrder'
                 />
                 {nftExplorer && <>
-                  {windowWidth < 720 && <br />}
                   <span style={{ marginRight: "10px" }}>
                     {t("table.mint-period")}
                   </span>
-                  {windowWidth < 720 && <br />}
                   <DateAndTimeRange
                     period={mintedPeriod}
                     setPeriod={setMintedPeriod}

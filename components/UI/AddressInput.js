@@ -4,20 +4,20 @@ import { useTranslation } from 'next-i18next'
 import axios from 'axios';
 
 import {
+  isAddressOrUsername,
   useWidth
 } from '../../utils'
 
-import { userOrServiceLink, amountFormat } from '../../utils/format'
+import { amountFormat } from '../../utils/format'
 
 let typingTimer
 
-export default function AddressInput({ searchPlaceholderText, setFilters, type, inputValue, title, link }) {
+export default function AddressInput({ placeholder, title, link, setValue }) {
   const { t } = useTranslation()
   const searchInput = useRef(null)
   const windowWidth = useWidth()
 
-  const [notEmpty, setNotEmpty] = useState(false)
-  const [searchItem, setSearchItem] = useState(inputValue || "")
+  const [searchItem, setSearchItem] = useState("")
   const [errorMessage, setErrorMessage] = useState("")
   const [isMounted, setIsMounted] = useState(false)
   const [searchSuggestions, setSearchSuggestions] = useState([])
@@ -27,22 +27,16 @@ export default function AddressInput({ searchPlaceholderText, setFilters, type, 
     setIsMounted(true);
   }, [])
 
-  useEffect(() => {
-    const fetchData = async () => {
-      if (inputValue) {
-        const response = await axios('v2/address/search/' + inputValue)
-        const { address } = response.data.addresses[0];
-        setSearchItem(address);
-        setNotEmpty(true);
-      }
-    }
-    fetchData();
-  }, [])
-
-
-
   const searchOnKeyUp = e => {
-    const value = e?.target?.value;
+
+    const value = e?.target?.value
+
+    if (e.key === 'Enter' && isAddressOrUsername(value)) {
+      setValue(value)
+      clearTimeout(typingTimer)
+      setSearchSuggestions([])
+      return
+    }
 
     //if more than 3 characters - search for suggestions
     if (value && value.length > 0) {
@@ -50,7 +44,7 @@ export default function AddressInput({ searchPlaceholderText, setFilters, type, 
       setSearchSuggestions([])
       typingTimer = setTimeout(async () => {
 
-        if (value && value.length > 2 && type !== 'name') {
+        if (value && value.length > 2) {
           setSearchingSuggestions(true)
           const suggestionsResponse = await axios('v2/address/search/' + value)
             .catch(error => {
@@ -65,42 +59,14 @@ export default function AddressInput({ searchPlaceholderText, setFilters, type, 
           }
           setSearchingSuggestions(false)
         }
-
-        if (type === 'name' || type === 'issuer') {
-          if (value.length > 2) {
-            setNotEmpty(true)
-            setFilters({ [type]: value });
-          } else {
-            notEmpty && setSearchItem('')
-            setFilters({ [type]: '' });
-          }
-        } else {
-          setNotEmpty(true)
-          setFilters({ [type]: value });
-        }
-
-        if (type === 'issuer') {
-          if (value.length > 2) {
-            setNotEmpty(true)
-          } else {
-            setNotEmpty(false)
-          }
-        }
       }, 500) // 0.5 sec
-    } else {
-      clearAll()
     }
-  }
-
-  const clearAll = () => {
-    setNotEmpty(false)
-    notEmpty && setSearchItem('')
-    setFilters({ [type]: '' });
   }
 
   const searchOnChange = (option) => {
     if (!option) {
-      clearAll()
+      setSearchItem('')
+      setValue("")
       return
     }
 
@@ -128,7 +94,7 @@ export default function AddressInput({ searchPlaceholderText, setFilters, type, 
       return
     }
 
-    setFilters({ [type]: searchFor });
+    setValue(searchFor)
 
     return
   }
@@ -140,15 +106,15 @@ export default function AddressInput({ searchPlaceholderText, setFilters, type, 
   }
 
   return (
-    <div className={`center${notEmpty ? ' not-empty' : ''}`}>
-      <span className='input-title'>{title} {link ? userOrServiceLink(link, type) : ''}</span>
-      <div className={`address-input address-input--${type}`}>
+    <div className="center">
+      <span className='input-title'>{title} {link}</span>
+      <div className="address-input address-input--issuer">
         {isMounted &&
           <div onKeyUp={searchOnKeyUp}>
             <Select
               ref={searchInput}
               className="address-input-select"
-              placeholder={searchPlaceholderText}
+              placeholder={placeholder}
               onChange={searchOnChange}
               spellCheck="false"
               inputValue={searchItem}
