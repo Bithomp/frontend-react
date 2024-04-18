@@ -519,13 +519,6 @@ const niceCurrency = currency => {
       currency = Buffer.from(currency, 'hex')
     }
   }
-
-  if (currency.toString().toUpperCase() === nativeCurrency && amount.issuer) {
-    currency = "Fake" + nativeCurrency
-  }
-
-  // curency + " " - otherwise it is in the hex format
-  return stripText(currency + " ")
 }
 
 
@@ -559,7 +552,7 @@ const amountParced = amount => {
   let type = ''
   let issuer = null
 
-  if (amount.value) {
+  if (amount.value && !(!amount.issuer && amount.currency === nativeCurrency)) {
     currency = amount.currency
     value = amount.value
     issuer = amount.issuer
@@ -585,9 +578,21 @@ const amountParced = amount => {
     }
   } else {
     type = nativeCurrency
-    value = amount / 1000000
+    if (amount.value) {
+      value = amount.value
+    } else {
+      value = amount / 1000000
+    }
     currency = nativeCurrency
   }
+
+  if (currency?.toString().toUpperCase() === nativeCurrency && amount.issuer) {
+    currency = "Fake" + nativeCurrency
+  }
+
+  // curency + " " - otherwise it is in the hex format
+  currency = stripText(currency + " ")
+
   return {
     type,
     value,

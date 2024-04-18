@@ -12,4 +12,10 @@ const LinkLedger = ({ version }) => (
   </Link>
 );
 
-export { LinkAccount, LinkLedger };
+const LinkTx = ({ tx }) => (
+  <Link href={`/tx/${tx}`}>
+    {tx}
+  </Link>
+);
+
+export { LinkAccount, LinkLedger, LinkTx };

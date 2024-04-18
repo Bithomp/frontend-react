@@ -4,7 +4,7 @@ import { TDetails, TBody, TRow, TData } from "../TableDetails";
 import { amountFormat, fullDateAndTime } from "../../utils/format";
 
 import * as Styled from "./styled";
-import { LinkAccount } from "./Links";
+import { LinkAccount, LinkTx } from "./Links";
 import { TransactionCard } from "./TransactionCard";
 
 export const TransactionPayment = ({ tx }) => {
@@ -40,10 +40,12 @@ export const TransactionPayment = ({ tx }) => {
             <TData>Ledger fee:</TData>
             <TData>{amountFormat(tx.rawTransaction?.Fee)}</TData>
           </TRow>
-          <TRow>
-            <TData>CTID:</TData>
-            <TData>{tx.rawTransaction?.ctid}</TData>
-          </TRow>
+          {tx.rawTransaction?.ctid &&
+            <TRow>
+              <TData>CTID:</TData>
+              <TData>{LinkTx({ tx: tx.rawTransaction.ctid })}</TData>
+            </TRow>
+          }
           <TRow>
             <TData>Destination:</TData>
             <TData>
@@ -53,8 +55,7 @@ export const TransactionPayment = ({ tx }) => {
           <TRow>
             <TData>Delivered amount:</TData>
             <TData>
-              {tx.outcome.deliveredAmount?.value}{" "}
-              {tx.outcome.deliveredAmount?.currency}
+              {amountFormat(tx.outcome.deliveredAmount)}
             </TData>
           </TRow>
         </TBody>
