@@ -1,12 +1,11 @@
 import { useTranslation } from "next-i18next";
 
 import { TBody, TData, TDetails, TRow } from "../TableDetails";
-import { amountFormat } from "../../utils/format";
+import { amountFormat, fullDateAndTime } from "../../utils/format";
 
 import * as Styled from "./styled";
 import { LinkAccount } from "./Links";
 import { TransactionCard } from "./TransactionCard";
-import { formatDateTime } from "./utils";
 
 export const TransactionEscrow = ({ tx }) => {
   const { t } = useTranslation();
@@ -24,7 +23,7 @@ export const TransactionEscrow = ({ tx }) => {
       break;
   }
 
-  const fee = Number(tx.outcome?.fee);
+  const fee = Number(tx.rawTransaction?.Fee);
   let escrowAmount = tx.specification?.amount;
   let escrowReciever = "";
 
@@ -70,7 +69,7 @@ export const TransactionEscrow = ({ tx }) => {
           <TRow>
             <TData>Time:</TData>
             <TData>
-              {formatDateTime(tx.outcome.timestamp)}
+              {fullDateAndTime(tx.rawTransaction?.date, 'ripple')}
             </TData>
           </TRow>
 
@@ -134,13 +133,13 @@ export const TransactionEscrow = ({ tx }) => {
               <TRow>
                 <TData>Execute After:</TData>
                 <TData>
-                  {formatDateTime(tx.specification?.allowExecuteAfter)}
+                  {fullDateAndTime(tx.specification?.allowExecuteAfter)}
                 </TData>
               </TRow>
               <TRow>
                 <TData>Cancel After:</TData>
                 <TData>
-                  {formatDateTime(tx.specification?.allowCancelAfter)}
+                  {fullDateAndTime(tx.specification?.allowCancelAfter)}
                 </TData>
               </TRow>
               <TRow>
@@ -168,8 +167,8 @@ export const TransactionEscrow = ({ tx }) => {
           )}
 
           <TRow>
-            <TData>XRPL Fee:</TData>
-            <TData>{amountFormat(tx.outcome?.fee)}</TData>
+            <TData>Ledger fee:</TData>
+            <TData>{amountFormat(tx.rawTransaction?.Fee)}</TData>
           </TRow>
           <TRow>
             <TData>CTID:</TData>

@@ -1,12 +1,11 @@
 import { useTranslation } from "next-i18next";
 
-import { amountFormat } from "../../utils/format";
+import { amountFormat, fullDateAndTime } from "../../utils/format";
 import { TDetails, TBody, TData, TRow } from "../TableDetails";
 
 import * as Styled from "./styled";
 import { LinkAccount } from "./Links";
 import { TransactionCard } from "./TransactionCard";
-import { formatDateTime } from "./utils";
 
 export const TransactionOrder = ({ tx }) => {
   const { t } = useTranslation();
@@ -25,7 +24,7 @@ export const TransactionOrder = ({ tx }) => {
           <TRow>
             <TData>Time:</TData>
             <TData>
-              {formatDateTime(tx.outcome.timestamp)}
+              {fullDateAndTime(tx.rawTransaction?.date, 'ripple')}
             </TData>
           </TRow>
           <TRow>
@@ -39,8 +38,8 @@ export const TransactionOrder = ({ tx }) => {
             <TData>#{tx.sequence}</TData>
           </TRow>
           <TRow>
-            <TData>XRPL Fee:</TData>
-            <TData>{amountFormat(tx.outcome?.fee)}</TData>
+            <TData>Ledger fee:</TData>
+            <TData>{amountFormat(tx.rawTransaction?.Fee)}</TData>
           </TRow>
           <TRow>
             <TData>CTID:</TData>

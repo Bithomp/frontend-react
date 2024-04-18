@@ -603,15 +603,22 @@ export const capitalize = word => {
 
 export const fullDateAndTime = (timestamp, type = null) => {
   //used also in CSV file names as text
-  if (!timestamp) return '';
+  if (!timestamp) return ''
 
-  timestamp = timestamp * 1000
+  // if T/Z format
+  if (!timestamp.toString().includes('T')) {
+    if (type === 'ripple') {
+      timestamp += 946684800 //946684800 is the difference between Unix and Ripple timestamps
+    }
 
-  let dateAndTime = new Date(timestamp).toLocaleString();
+    timestamp = timestamp * 1000
+  }
+
+  let dateAndTime = new Date(timestamp).toLocaleString()
   if (type === 'expiration') {
-    return new Date(timestamp) < new Date() ? <span className='orange'>{dateAndTime}</span> : dateAndTime;
+    return new Date(timestamp) < new Date() ? <span className='orange'>{dateAndTime}</span> : dateAndTime
   } else {
-    return dateAndTime;
+    return dateAndTime
   }
 }
 
