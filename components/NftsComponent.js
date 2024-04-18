@@ -610,6 +610,7 @@ export default function NftsComponent({
               <AddressInput
                 title={t("table.issuer")}
                 placeholder={t("nfts.search-by-issuer")}
+                value={issuerInput}
                 setValue={(val) => { setIssuer(val); searchClick() }}
                 link={userOrServiceLink(rawData, 'issuer')}
               />
@@ -632,6 +633,7 @@ export default function NftsComponent({
 
               <AddressInput
                 title={t("table.owner")}
+                value={ownerInput}
                 link={userOrServiceLink(rawData, 'owner')}
                 setValue={(val) => { setOwner(val); searchClick() }}
                 placeholder={t("nfts.search-by-owner")}

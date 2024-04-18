@@ -12,12 +12,12 @@ import { amountFormat } from '../../utils/format'
 
 let typingTimer
 
-export default function AddressInput({ placeholder, title, link, setValue }) {
+export default function AddressInput({ placeholder, title, link, value, setValue }) {
   const { t } = useTranslation()
   const searchInput = useRef(null)
   const windowWidth = useWidth()
 
-  const [searchItem, setSearchItem] = useState("")
+  const [searchItem, setSearchItem] = useState(value || "")
   const [errorMessage, setErrorMessage] = useState("")
   const [isMounted, setIsMounted] = useState(false)
   const [searchSuggestions, setSearchSuggestions] = useState([])
