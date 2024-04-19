@@ -12,7 +12,8 @@ import {
   shortHash,
   amountFormat,
   addressUsernameOrServiceLink,
-  fullDateAndTime
+  fullDateAndTime,
+  fullNiceNumber
 } from "../../utils/format"
 
 import CopyButton from "../../components/UI/CopyButton"
@@ -153,7 +154,7 @@ export default function Amm(
                     <tr>
                       <td>Balance</td>
                       <td>
-                        {data.lpTokenBalance.value}
+                        {fullNiceNumber(data.lpTokenBalance.value)}
                         {" " + lpToken}
                       </td>
                     </tr>

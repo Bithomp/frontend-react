@@ -699,6 +699,21 @@ export const niceNumber = (n, fractionDigits = 0, currency = null) => {
   }
 }
 
+export const fullNiceNumber = n => {
+  if (typeof n === 'string') {
+    if (n.includes('x')) { //in case of placeholders xxx
+      return n
+    } else {
+      n = Number(n)
+    }
+  }
+  if (n) {
+    return n.toLocaleString(undefined, { maximumFractionDigits: 15 })
+  } else {
+    return n
+  }
+}
+
 export const shortNiceNumber = (n, smallNumberFractionDigits = 2, largeNumberFractionDigits = 3, currency = null) => {
   if (n !== 0 && !n) return null;
   n = Number(n);
