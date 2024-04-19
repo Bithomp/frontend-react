@@ -520,6 +520,7 @@
   "explorer": {
     "header": {
       "main": "{{explorerName}}エクスプローラ",
+      "amm": "AMM pool information",
       "account": "アカウント情報",
       "transaction": "Transaction information",
       "nft": "NFT",

@@ -1,12 +1,10 @@
 import axios from "axios";
 import { useTranslation } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
-import { useEffect, useState } from "react";
 
 import SearchBlock from "../../components/Layout/SearchBlock";
 import SEO from "../../components/SEO";
 import { server } from "../../utils";
-import { getIsSsrMobile } from "../../utils/mobile";
 
 import {
   TransactionDetails,
@@ -17,7 +15,7 @@ import {
 
 export async function getServerSideProps(context) {
   const { locale, query, req } = context;
-  let txData = null;
+  let initialData = null;
   const { id } = query;
 
   let headers = {};
@@ -33,8 +31,8 @@ export async function getServerSideProps(context) {
       url: server + "/api/cors/v2/transaction/" + id,
       headers,
     });
-    txData = res?.data;
-    txData.rawTransaction = JSON.parse(txData.rawTransaction);
+    initialData = res?.data;
+    initialData.rawTransaction = JSON.parse(initialData.rawTransaction);
   } catch (error) {
     console.error(error);
   }
@@ -42,8 +40,7 @@ export async function getServerSideProps(context) {
   return {
     props: {
       id,
-      isSsrMobile: getIsSsrMobile(context),
-      txData,
+      initialData,
       ...(await serverSideTranslations(locale, ["common"])),
     },
   };
@@ -58,19 +55,13 @@ const Container = ({ children }) => {
 };
 
 export default function Transaction(
-  { id, txData },
+  { id, initialData },
 ) {
   const { t } = useTranslation();
-  console.log(txData);
-
-  const [isClient, setIsClient] = useState(false);
-
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
+  console.log(initialData);
 
   let TransactionComponent = null;
-  switch (txData?.type) {
+  switch (initialData?.type) {
     case "escrowCreation" || "escrowExecution" || "escrowCancelation":
       TransactionComponent = TransactionEscrow;
       break;
@@ -89,18 +80,15 @@ export default function Transaction(
       <SEO
         page="Transaction"
         title={t("explorer.header.transaction") + " " +
-          (txData?.service?.name || txData?.username || txData?.address || id)}
+          (initialData?.service?.name || initialData?.username || initialData?.address || id)}
         description={"Transaction details, transactions, NFTs, Tokens for " +
-          (txData?.service?.name || txData?.username) + " " +
-          (txData?.address || id)}
+          (initialData?.service?.name || initialData?.username) + " " +
+          (initialData?.address || id)}
       />
       <SearchBlock tab="transaction" />
-      {isClient &&
-        (
-          <Container>
-            <TransactionComponent tx={txData} />
-          </Container>
-        )}
+      <Container>
+        <TransactionComponent tx={initialData} />
+      </Container>
     </>
   );
 }

@@ -521,6 +521,7 @@
   "explorer": {
     "header": {
       "main": "{{explorerName}} Explorer",
+      "amm": "AMM pool information",
       "account": "Kontoinformation",
       "transaction": "Information zur Transaktion",
       "nft": "NFT",

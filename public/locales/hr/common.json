@@ -520,6 +520,7 @@
   "explorer": {
     "header": {
       "main": "{{explorerName}} Tražilica",
+      "amm": "AMM pool information",
       "account": "Account information",
       "transaction": "Transaction information",
       "nft": "NFT",

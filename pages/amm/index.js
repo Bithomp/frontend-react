@@ -19,21 +19,20 @@ const Container = ({ children }) => {
   );
 };
 
-const TransactionSearch = () => {
+const AmmSearch = () => {
   return (
     <>
       <SEO
-        page="Transaction search"
-        title="Tranasction search"
-        description="Transaction details"
-      // image={{ file: avatarSrc(txData) }}
+        page="AMM pool details"
+        title="AMM pool details"
+        description="Automated market maker pool information search"
       />
-      <SearchBlock tab="transaction" />
+      <SearchBlock tab="amm" />
       <Container>
-        <h1 className='center'>Transaction search</h1>
+        <h1 className='center'>Automated market maker pool information search</h1>
       </Container>
     </>
   );
 };
 
-export default TransactionSearch;
+export default AmmSearch;

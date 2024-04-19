@@ -2,6 +2,7 @@ import { useTranslation } from "next-i18next";
 
 import { TDetails, TBody, TRow, TData } from "../TableDetails";
 import { amountFormat, fullDateAndTime } from "../../utils/format";
+import { useEffect, useState } from "react";
 
 import * as Styled from "./styled";
 import { LinkAccount, LinkTx } from "./Links";
@@ -9,6 +10,11 @@ import { TransactionCard } from "./TransactionCard";
 
 export const TransactionPayment = ({ tx }) => {
   const { t } = useTranslation();
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   return (
     <TransactionCard tx={tx}>
@@ -21,7 +27,9 @@ export const TransactionPayment = ({ tx }) => {
           <TRow>
             <TData>Date and time:</TData>
             <TData>
-              {fullDateAndTime(tx.rawTransaction?.date, 'ripple')}
+              {isMounted &&
+                fullDateAndTime(tx.rawTransaction?.date, 'ripple')
+              }
             </TData>
           </TRow>
           <TRow>

@@ -335,6 +335,7 @@ export const userOrServiceLink = (data, type, options = {}) => {
 }
 
 export const addressUsernameOrServiceLink = (data, type, options = {}) => {
+
   if (!options.url) {
     options.url = "/explorer/"
   }
@@ -459,9 +460,7 @@ export const amountFormat = (amount, options = {}) => {
   }
 }
 
-const lpTokenName = async currency => {
-  const response = await axios("v2/amm/" + currency)
-  const data = response.data
+export const lpTokenName = data => {
   if (!data) return ""
 
   let firstCurrency = ""
@@ -479,6 +478,12 @@ const lpTokenName = async currency => {
     }
     return "LP " + firstCurrency + '/' + secondCurrency
   }
+}
+
+const getLpTokenName = async currency => {
+  const response = await axios("v2/amm/" + currency)
+  const data = response.data
+  return lpTokenName(data)
 }
 
 const niceCurrency = currency => {
@@ -514,11 +519,12 @@ const niceCurrency = currency => {
     } else if (firstTwoNumbers === '02') {
       currency = Buffer.from(currency.substring(16), 'hex')
     } else if (firstTwoNumbers === '03') {
-      currency = lpTokenName(currency)
+      currency = getLpTokenName(currency)
     } else {
       currency = Buffer.from(currency, 'hex')
     }
   }
+  return currency
 }
 
 

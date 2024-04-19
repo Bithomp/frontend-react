@@ -1238,6 +1238,6 @@ export default function Nft({
           </p>
         </>
       }
-    </div >
-  </>;
+    </div>
+  </>
 }
