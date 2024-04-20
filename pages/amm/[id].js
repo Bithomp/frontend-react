@@ -168,7 +168,22 @@ export default function Amm(
                     </thead>
                     <tbody>
                       {trWithAccount(data.auctionSlot, 'account', t("table.owner"))}
-                      {/* plus 4 more authorized accounts, AuthAccounts */}
+                      {data.auctionSlot.authAccounts?.length > 0 ?
+                        data.auctionSlot.authAccounts.map((account, i) => (
+                          <React.Fragment key={i}>
+                            {trWithAccount(
+                              account,
+                              'account',
+                              "Authorized account " + (data.auctionSlot.authAccounts.length > 1 ? i + 1 : "")
+                            )}
+                          </React.Fragment>
+                        ))
+                        :
+                        <tr>
+                          <td>Authorized accounts</td>
+                          <td>The are no additional accounts that are authorized to trade at the discounted fee for this AMM instance.</td>
+                        </tr>
+                      }
                       <tr>
                         <td>Discounted fee</td>
                         <td>
