@@ -224,6 +224,30 @@ export default function Amm(
                             <td>Vote weight</td>
                             <td>{showPercents(slot.voteWeight)}</td>
                           </tr>
+                          <tr>
+                            <td>Created</td>
+                            <td>
+                              {isMounted ?
+                                fullDateAndTime(slot.createdAt)
+                                :
+                                ""
+                              }
+                              <LinkTxIcon tx={slot.createdTxHash} />
+                            </td>
+                          </tr>
+                          {slot.createdAt !== slot.updatedAt &&
+                            <tr>
+                              <td>Last update</td>
+                              <td>
+                                {isMounted ?
+                                  fullDateAndTime(slot.updatedAt)
+                                  :
+                                  ""
+                                }
+                                <LinkTxIcon tx={slot.updatedTxHash} />
+                              </td>
+                            </tr>
+                          }
                           {i !== data.voteSlots.length - 1 &&
                             <tr><td colSpan="100"><hr /></td></tr>
                           }
