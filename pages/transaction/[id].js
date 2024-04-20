@@ -11,6 +11,7 @@ import {
   TransactionEscrow,
   TransactionOrder,
   TransactionPayment,
+  TransactionAmm,
 } from "../../components/Transaction";
 
 export async function getServerSideProps(context) {
@@ -48,9 +49,9 @@ export async function getServerSideProps(context) {
 
 const Container = ({ children }) => {
   return (
-    <div className="content-center short-top">
+    <>
       {children}
-    </div>
+    </>
   );
 };
 
@@ -62,6 +63,9 @@ export default function Transaction(
 
   let TransactionComponent = null;
   switch (initialData?.type) {
+    case "ammCreate" || "ammBid" || "ammVote" || "ammWithdraw" || "ammDeposit":
+      TransactionComponent = TransactionAmm;
+      break;
     case "escrowCreation" || "escrowExecution" || "escrowCancelation":
       TransactionComponent = TransactionEscrow;
       break;

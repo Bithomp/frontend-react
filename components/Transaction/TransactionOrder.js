@@ -4,7 +4,7 @@ import { amountFormat, fullDateAndTime } from "../../utils/format";
 import { TDetails, TBody, TData, TRow } from "../TableDetails";
 
 import * as Styled from "./styled";
-import { LinkAccount } from "./Links";
+import { LinkAccount } from "../../utils/links";
 import { TransactionCard } from "./TransactionCard";
 
 export const TransactionOrder = ({ tx }) => {

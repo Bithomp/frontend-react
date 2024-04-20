@@ -14,7 +14,8 @@ export const getServerSideProps = async ({ locale }) => {
 import SEO from '../components/SEO'
 
 import { wssServer } from '../utils'
-import { niceNumber, fullDateAndTime, ledgerLink } from '../utils/format'
+import { niceNumber, fullDateAndTime } from '../utils/format'
+import { LedgerLink } from '../utils/links'
 
 let ws = null;
 
@@ -112,7 +113,7 @@ export default function NftStatistics() {
               {t("nft-statistics.updated")}: {crawlerTime}
             </p>
             <p>
-              {t("nft-statistics.ledger-index")}: {ledgerLink(crawlerIndex)}
+              {t("nft-statistics.ledger-index")}: <LedgerLink version={crawlerIndex} />
             </p>
           </>
         }

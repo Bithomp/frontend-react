@@ -1,10 +1,17 @@
 import styled from "styled-components";
 
+export const MainBody = styled.div`
+  margin: 40px auto;
+  width: calc(100% - 40px);
+  max-width: 760px;
+  z-index: 1;
+  position: relative;
+}`;
+
 export const Card = styled.div`
   border-top: 4px solid var(--accent-link);
   box-shadow: 0 1px 3px hsla(0,0%,0%,0.2);
   padding: 8px;
-  margin-bottom: 16px;
 `;
 
 export const Heading = styled.h1`

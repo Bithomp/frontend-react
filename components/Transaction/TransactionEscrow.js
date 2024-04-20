@@ -4,11 +4,18 @@ import { TBody, TData, TDetails, TRow } from "../TableDetails";
 import { amountFormat, fullDateAndTime } from "../../utils/format";
 
 import * as Styled from "./styled";
-import { LinkAccount } from "./Links";
+import { LinkAccount } from "../../utils/links";
 import { TransactionCard } from "./TransactionCard";
+import { useState, useEffect } from "react";
 
 export const TransactionEscrow = ({ tx }) => {
   const { t } = useTranslation();
+
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   let isEscrowCreation, isEscrowExecution, isEscrowCancelation;
   switch (tx.type) {
@@ -69,7 +76,7 @@ export const TransactionEscrow = ({ tx }) => {
           <TRow>
             <TData>Time:</TData>
             <TData>
-              {fullDateAndTime(tx.rawTransaction?.date, 'ripple')}
+              {isMounted && fullDateAndTime(tx.rawTransaction?.date, 'ripple')}
             </TData>
           </TRow>
 
@@ -133,13 +140,13 @@ export const TransactionEscrow = ({ tx }) => {
               <TRow>
                 <TData>Execute After:</TData>
                 <TData>
-                  {fullDateAndTime(tx.specification?.allowExecuteAfter)}
+                  {isMounted && fullDateAndTime(tx.specification?.allowExecuteAfter)}
                 </TData>
               </TRow>
               <TRow>
                 <TData>Cancel After:</TData>
                 <TData>
-                  {fullDateAndTime(tx.specification?.allowCancelAfter)}
+                  {isMounted && ullDateAndTime(tx.specification?.allowCancelAfter)}
                 </TData>
               </TRow>
               <TRow>

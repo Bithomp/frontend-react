@@ -10,11 +10,11 @@ import {
   lpTokenName,
   trWithAccount,
   shortHash,
-  amountFormat,
-  addressUsernameOrServiceLink,
   fullDateAndTime,
-  fullNiceNumber
+  fullNiceNumber,
+  trAmountWithGateway,
 } from "../../utils/format"
+import { LinkTxIcon } from '../../utils/links'
 
 import CopyButton from "../../components/UI/CopyButton"
 import { useEffect, useState } from "react"
@@ -109,42 +109,8 @@ export default function Amm(
                       <td>{shortHash(data.ammID, 10)} <CopyButton text={data.ammID} /></td>
                     </tr>
                     {trWithAccount(data, 'account', t("table.address"))}
-                    <tr>
-                      <td>Asset 1</td>
-                      <td>
-                        {amountFormat(data.amount)}
-                        {data.amountIssuerDetails &&
-                          <>
-                            {" "}
-                            ({addressUsernameOrServiceLink(
-                              {
-                                issuer: data.amount.issuer,
-                                issuerDetails: data.amountIssuerDetails
-                              },
-                              'issuer'
-                            )})
-                          </>
-                        }
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>Asset 2</td>
-                      <td>
-                        {amountFormat(data.amount2)}
-                        {data.amount2IssuerDetails &&
-                          <>
-                            {" "}
-                            ({addressUsernameOrServiceLink(
-                              {
-                                issuer: data.amount2.issuer,
-                                issuerDetails: data.amount2IssuerDetails
-                              },
-                              'issuer'
-                            )})
-                          </>
-                        }
-                      </td>
-                    </tr>
+                    {trAmountWithGateway({ amount: data.amount, name: "Asset 1" })}
+                    {trAmountWithGateway({ amount: data.amount2, name: "Asset 2" })}
                     <tr>
                       <td>Trading fee</td>
                       <td>
@@ -158,6 +124,30 @@ export default function Amm(
                         {" " + lpToken}
                       </td>
                     </tr>
+                    <tr>
+                      <td>Created</td>
+                      <td>
+                        {isMounted ?
+                          fullDateAndTime(data.createdAt)
+                          :
+                          ""
+                        }
+                        <LinkTxIcon tx={data.createdTxHash} />
+                      </td>
+                    </tr>
+                    {data.createdAt !== data.updatedAt &&
+                      <tr>
+                        <td>Last update</td>
+                        <td>
+                          {isMounted ?
+                            fullDateAndTime(data.updatedAt)
+                            :
+                            ""
+                          }
+                          <LinkTxIcon tx={data.updatedTxHash} />
+                        </td>
+                      </tr>
+                    }
                   </tbody>
                 </table>
 
@@ -201,7 +191,7 @@ export default function Amm(
                         <td>Expiration</td>
                         <td>
                           {isMounted ?
-                            fullDateAndTime(data.auctionSlot.expiration, 'ripple')
+                            fullDateAndTime(data.auctionSlot.expiration)
                             :
                             ""
                           }

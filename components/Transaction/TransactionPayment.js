@@ -5,7 +5,7 @@ import { amountFormat, fullDateAndTime } from "../../utils/format";
 import { useEffect, useState } from "react";
 
 import * as Styled from "./styled";
-import { LinkAccount, LinkTx } from "./Links";
+import { LinkAccount } from "../../utils/links";
 import { TransactionCard } from "./TransactionCard";
 
 export const TransactionPayment = ({ tx }) => {
@@ -67,7 +67,7 @@ export const TransactionPayment = ({ tx }) => {
           {tx.rawTransaction?.ctid &&
             <TRow>
               <TData>CTID:</TData>
-              <TData>{LinkTx({ tx: tx.rawTransaction.ctid })}</TData>
+              <TData>{tx.rawTransaction.ctid}</TData>
             </TRow>
           }
         </TBody>

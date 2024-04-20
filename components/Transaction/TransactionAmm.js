@@ -9,7 +9,7 @@ import { TransactionCard } from "./TransactionCard";
 import { useState, useEffect } from "react";
 import CopyButton from "../UI/CopyButton";
 
-export const TransactionDetails = ({ tx }) => {
+export const TransactionAmm = ({ tx }) => {
   const { t } = useTranslation();
 
   const [showRawData, setShowRawData] = useState(false);

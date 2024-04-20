@@ -13,9 +13,9 @@ export async function getServerSideProps(context) {
 
 const Container = ({ children }) => {
   return (
-    <div className="content-center short-top">
+    <>
       {children}
-    </div>
+    </>
   );
 };
 

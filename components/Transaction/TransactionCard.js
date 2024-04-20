@@ -1,13 +1,13 @@
 import CopyButton from "../UI/CopyButton";
 
-import { Card, Info, Heading } from "./styled";
-import { LinkLedger } from "./Links";
+import { Card, Info, Heading, MainBody } from "./styled";
+import { LedgerLink } from "../../utils/links";
 
 export const TransactionCard = ({ tx, children }) => {
   const isSuccessful = tx.outcome?.result == "tesSUCCESS";
 
   return (
-    <>
+    <MainBody>
       <Heading>Transaction Details</Heading>
       <Card>
         <Info>
@@ -18,7 +18,7 @@ export const TransactionCard = ({ tx, children }) => {
             <Info>
               The transaction was <b className="green">successfull</b>{" "}
               and validated in the ledger{" "}
-              <LinkLedger version={tx.outcome.ledgerVersion} />{" "}
+              <LedgerLink version={tx.outcome.ledgerVersion} />{" "}
               (index: {tx.outcome.indexInLedger}).
             </Info>
           )
@@ -26,12 +26,12 @@ export const TransactionCard = ({ tx, children }) => {
             <Info>
               The transaction <b className="red">FAILED</b>{" "}
               and included to the ledger{" "}
-              <LinkLedger version={tx.outcome.ledgerVersion} /> (index:{" "}
+              <LedgerLink version={tx.outcome.ledgerVersion} /> (index:{" "}
               {tx.outcome.indexInLedger}).
             </Info>
           )}
         {children}
       </Card>
-    </>
+    </MainBody>
   );
 };

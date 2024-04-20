@@ -12,7 +12,8 @@ export const getServerSideProps = async ({ locale }) => {
 }
 
 import { wssServer, nativeCurrency } from '../utils'
-import { niceNumber, ledgerLink } from '../utils/format'
+import { niceNumber } from '../utils/format'
+import { LedgerLink } from '../utils/links'
 
 import SEO from '../components/SEO'
 
@@ -104,7 +105,7 @@ export default function LastLedgerInformation() {
           {t("last-ledger-information.ledger-hash")}: {ledger?.validatedLedger.hash.toLowerCase()}
         </p>
         <p>
-          {t("last-ledger-information.ledger")}: {ledgerLink(ledger?.validatedLedger.ledgerIndex)}
+          {t("last-ledger-information.ledger")}: <LedgerLink version={ledger?.validatedLedger.ledgerIndex} />
         </p>
         <p>
           {t("last-ledger-information.ledger-closed-at")}: {closedAt}</p>
@@ -112,7 +113,15 @@ export default function LastLedgerInformation() {
           {t("last-ledger-information.ledger-interval")}: {ledger?.lastClose?.convergeTimeS && ledger?.lastClose.convergeTimeS + ' ' + t("units.seconds-short")}
         </p>
         <p>
-          {t("last-ledger-information.transactions")}: {ledger?.validatedLedger.transactionsCount && <Link href={"/ledger/" + ledger.validatedLedger.ledgerIndex}>{ledger.validatedLedger.transactionsCount}</Link>}</p>
+          {t("last-ledger-information.transactions")}:
+          {" "}
+          {ledger?.validatedLedger.transactionsCount &&
+            <LedgerLink
+              version={ledger?.validatedLedger.ledgerIndex}
+              text={ledger.validatedLedger.transactionsCount}
+            />
+          }
+        </p>
         <p>
           {t("last-ledger-information.transaction-speed")}: {ledger?.lastClose && (ledger.validatedLedger.transactionsCount / ledger.lastClose.convergeTimeS).toFixed(2)}
         </p>

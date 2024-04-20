@@ -2,12 +2,12 @@ import { useTranslation, Trans } from 'next-i18next'
 import { useState, useEffect } from 'react'
 import axios from 'axios'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import Link from 'next/link'
 
 import SEO from '../../components/SEO'
 
 import { server, network, ledgerName, minLedger } from '../../utils'
 import { fullDateAndTime, shortHash, addressUsernameOrServiceLink } from '../../utils/format'
+import { LedgerLink } from '../../utils/links'
 
 export async function getServerSideProps(context) {
   const { locale, req, query } = context
@@ -107,10 +107,20 @@ export default function Ledger({ ledgerIndex, pageMeta }) {
 
   const ledgerNavigation = <p className='center'>
     {ledgerVersion >= (minLedger + 1) &&
-      <Link href={"/ledger/" + (Number(ledgerVersion) - 1)} style={{ marginRight: "10px" }} onClick={() => setLedgerVersion(ledgerVersion - 1)}>←</Link>
+      <LedgerLink
+        version={Number(ledgerVersion) - 1}
+        style={{ marginRight: "10px" }}
+        onClick={() => setLedgerVersion(ledgerVersion - 1)}
+        text="←"
+      />
     }
     #{ledgerVersion}
-    <Link href={"/ledger/" + (Number(ledgerVersion) + 1)} style={{ marginLeft: "10px" }} onClick={() => setLedgerVersion(ledgerVersion + 1)}>→</Link>
+    <LedgerLink
+      version={Number(ledgerVersion) + 1}
+      style={{ marginLeft: "10px" }}
+      onClick={() => setLedgerVersion(ledgerVersion + 1)}
+      text="→"
+    />
   </p>
 
   return <>

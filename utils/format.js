@@ -335,7 +335,6 @@ export const userOrServiceLink = (data, type, options = {}) => {
 }
 
 export const addressUsernameOrServiceLink = (data, type, options = {}) => {
-
   if (!options.url) {
     options.url = "/explorer/"
   }
@@ -370,13 +369,6 @@ export const userOrServiceName = data => {
     }
   }
   return ""
-}
-
-export const ledgerLink = id => {
-  if (id) {
-    return <Link href={"/ledger/" + id}>#{id}</Link>
-  }
-  return ''
 }
 
 //replace with txIdLink
@@ -417,6 +409,28 @@ export const persentFormat = (small, big) => {
   big = Number(big)
   if (big === 0) return "0%"
   return "(" + Math.floor((small * 100 / big) * 100) / 100 + '%)'
+}
+
+export const trAmountWithGateway = ({ amount, name }) => {
+  if (!amount && amount !== 0) return ""
+  return <tr>
+    <td>{name}</td>
+    <td>
+      {amountFormat(amount)}
+      {amount?.issuer &&
+        <>
+          {" "}
+          ({addressUsernameOrServiceLink(amount, 'issuer', { short: true })})
+        </>
+      }
+      {amount?.counterparty &&
+        <>
+          {" "}
+          ({addressUsernameOrServiceLink(amount, 'counterparty', { short: true })})
+        </>
+      }
+    </td>
+  </tr>
 }
 
 export const amountFormat = (amount, options = {}) => {
@@ -768,7 +782,7 @@ const syntaxHighlight = (json) => {
       } else if (/null/.test(match)) {
         cls = "null";
       }
-      return '<span className="' + cls + '">' + match + "</span>";
+      return '<span class="' + cls + '">' + match + "</span>";
     }
   );
 }
