@@ -178,17 +178,8 @@ export default function Amm(
                       <tr>
                         <td>Price</td>
                         <td>
-                          {data.auctionSlot.price.value}
+                          {fullNiceNumber(data.auctionSlot.price.value)}
                           {" " + lpToken + " "}
-                          {/*
-                          ({addressUsernameOrServiceLink(
-                            {
-                              issuer: data.auctionSlot.price.issuer,
-                              issuerDetails: data.auctionSlot.priceIssuerDetails
-                            },
-                            'issuer'
-                          )})
-                          */}
                         </td>
                       </tr>
                       <tr>
@@ -213,7 +204,13 @@ export default function Amm(
                     <tbody>
                       {data.voteSlots.map((slot, i) => (
                         <React.Fragment key={i}>
-                          {trWithAccount(slot, 'account', "Voter")}
+                          {
+                            trWithAccount(
+                              slot,
+                              'account',
+                              "Voter " + (data.voteSlots.length > 1 ? i + 1 : "")
+                            )
+                          }
                           <tr>
                             <td>Trading fee</td>
                             <td>{showPercents(slot.tradingFee)}</td>
@@ -222,6 +219,9 @@ export default function Amm(
                             <td>Vote weight</td>
                             <td>{showPercents(slot.voteWeight)}</td>
                           </tr>
+                          {i !== data.voteSlots.length - 1 &&
+                            <tr><td colSpan="100"><hr /></td></tr>
+                          }
                         </React.Fragment>
                       ))}
                     </tbody>
