@@ -54,6 +54,7 @@ export async function getServerSideProps(context) {
 import SEO from '../../components/SEO'
 import SearchBlock from '../../components/Layout/SearchBlock'
 import CopyButton from '../../components/UI/CopyButton'
+import { LinkAmm } from '../../utils/links'
 
 // setSignRequest, account
 export default function Account({ pageMeta, refreshPage, id, selectedCurrency, ledgerTimestampQuery }) {
@@ -601,7 +602,14 @@ export default function Account({ pageMeta, refreshPage, id, selectedCurrency, l
                           </td>
                         </tr>
 
-
+                        {data.ledgerInfo?.ammID &&
+                          <tr>
+                            <td>AMM ID</td>
+                            <td>
+                              <LinkAmm ammId={data.ledgerInfo.ammID} />
+                            </td>
+                          </tr>
+                        }
 
                       </tbody>
                     </table>

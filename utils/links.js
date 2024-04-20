@@ -1,5 +1,7 @@
 import Link from 'next/link'
 import LinkIcon from "../public/images/link.svg"
+import { shortHash } from './format'
+import CopyButton from '../components/UI/CopyButton'
 
 export const LinkTxIcon = ({ tx }) => (
   tx ?
@@ -24,6 +26,21 @@ export const LinkAccount = ({ address }) => (
     <Link href={`/explorer/${address}`}>
       {address}
     </Link>
+    :
+    ''
+)
+
+export const LinkAmm = ({ ammId }) => (
+  ammId ?
+    <>
+      <Link href={`/amm/${ammId}`}>
+        {shortHash(ammId, 16)}
+        {" "}
+        <LinkIcon />
+      </Link>
+      {" "}
+      <CopyButton text={ammId} />
+    </>
     :
     ''
 )
