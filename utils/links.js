@@ -34,7 +34,7 @@ export const LinkAmm = ({ ammId }) => (
   ammId ?
     <>
       <Link href={`/amm/${ammId}`}>
-        {shortHash(ammId, 16)}
+        {shortHash(ammId, 10)}
         {" "}
         <LinkIcon />
       </Link>
