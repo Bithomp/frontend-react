@@ -190,6 +190,10 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
         router.push('/nft-offer/' + encodeURI(searchFor))
         return
       }
+      if (data.type === 'amm') {
+        router.push('/amm/' + encodeURI(searchFor))
+        return
+      }
       //allow transaction search only tab transactions for now (while it's not ready for public)
       if (tab === 'transaction' && data.type === 'transaction') {
         router.push('/tx/' + searchFor)
