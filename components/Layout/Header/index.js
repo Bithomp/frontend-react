@@ -168,9 +168,19 @@ export default function Header({ setSignRequest, account, signOut, selectedCurre
             </div>
           </div>
 
-          <div className="menu-dropdown" id="dropdown4">
+          {/* Hide AMM for XAHAU */}
+          {!xahauNetwork &&
+            <div className="menu-dropdown" id="dropdown4">
+              <div className="menu-dropdown-button">{t("menu.amm.amm")}</div>
+              <div className="menu-dropdown-content" style={{ display: hoverStates["dropdown4"] ? 'block' : 'none' }}>
+                <Link href="/amm">{t("menu.amm.explorer")}</Link>
+              </div>
+            </div>
+          }
+
+          <div className="menu-dropdown" id="dropdown5">
             <div className="menu-dropdown-button">{ledgerName}</div>
-            <div className="menu-dropdown-content" style={{ display: hoverStates["dropdown4"] ? 'block' : 'none' }}>
+            <div className="menu-dropdown-content" style={{ display: hoverStates["dropdown5"] ? 'block' : 'none' }}>
               {xahauNetwork && <Link href="/governance">{t("menu.xrpl.governance")}</Link>}
               <Link href="/activations">{t("menu.xrpl.activations")}</Link>
               <Link href="/distribution">{t("menu.xrpl.distribution", { nativeCurrency })}</Link>
@@ -187,9 +197,9 @@ export default function Header({ setSignRequest, account, signOut, selectedCurre
             </div>
           </div>
 
-          <div className="menu-dropdown" id="dropdown5">
+          <div className="menu-dropdown" id="dropdown6">
             <div className="menu-dropdown-button">{t("menu.developers.developers")}</div>
-            <div className="menu-dropdown-content" style={{ display: hoverStates["dropdown5"] ? 'block' : 'none' }}>
+            <div className="menu-dropdown-content" style={{ display: hoverStates["dropdown6"] ? 'block' : 'none' }}>
               {devNet &&
                 <>
                   <a href={"/create/"}>{t("menu.developers.account-generation")}</a>
@@ -205,9 +215,9 @@ export default function Header({ setSignRequest, account, signOut, selectedCurre
             </div>
           </div>
 
-          <div className="menu-dropdown" id="dropdown6">
+          <div className="menu-dropdown" id="dropdown7">
             <div className="menu-dropdown-button">{t("menu.networks")}</div>
-            <div className="menu-dropdown-content" style={{ display: hoverStates["dropdown6"] ? 'block' : 'none' }}>
+            <div className="menu-dropdown-content" style={{ display: hoverStates["dropdown7"] ? 'block' : 'none' }}>
               {network !== 'xahau' && <a href="https://xahauexplorer.com">XAHAU Mainnet</a>}
               {network !== 'xahau-testnet' && <a href="https://test.xahauexplorer.com">XAHAU Testnet</a>}
               {network !== 'mainnet' && <a href="https://bithomp.com">XRPL Mainnet</a>}
@@ -218,12 +228,12 @@ export default function Header({ setSignRequest, account, signOut, selectedCurre
         </div>
         <div className="header-menu-right">
           {displayName ?
-            <div className="menu-dropdown" id="dropdown7">
+            <div className="menu-dropdown" id="dropdown8">
               <div className="menu-dropdown-button">
                 <img src={hashicon} alt="user icon" className="user-icon" />
                 {displayName}
               </div>
-              <div className="menu-dropdown-content" style={{ display: hoverStates["dropdown7"] ? 'block' : 'none' }}>
+              <div className="menu-dropdown-content" style={{ display: hoverStates["dropdown8"] ? 'block' : 'none' }}>
                 <span onClick={copyToClipboard} className="link">
                   {isCopied ? t("button.copied") : t("button.copy-my-address")}
                 </span>
@@ -403,6 +413,14 @@ export default function Header({ setSignRequest, account, signOut, selectedCurre
             >
               {t("menu.services.nft-mint")}
             </Link>
+          }
+
+          {/* Hide AMM for XAHAU */}
+          {!xahauNetwork &&
+            <>
+              <div className="mobile-menu-directory"><span>{t("menu.amm.amm")}</span></div>
+              <Link href="/amm" className="mobile-menu-item" onClick={mobileMenuToggle}>{t("menu.amm.explorer")}</Link>
+            </>
           }
 
           <div className="mobile-menu-directory"><span>{ledgerName}</span></div>

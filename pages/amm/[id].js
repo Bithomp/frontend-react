@@ -87,7 +87,10 @@ export default function Amm(
           + (data?.ammID || id)
         }
       />
-      <SearchBlock tab="amm" />
+      <SearchBlock
+        tab="amm"
+        searchPlaceholderText="Search by AMM ID, Liquidity Pool (LP) token, AMM owner address"
+      />
       <div className="content-center short-top amm">
         {errorMessage ?
           <div className='center orange bold'>{errorMessage}</div>

@@ -1,5 +1,10 @@
 {
   "menu": {
+    "amm": {
+      "amm": "АММ",
+      "pools": "АММ пулы",
+      "explorer": "АММ эксплорер"
+    },
     "company": {
       "about-us": "О нас"
     },

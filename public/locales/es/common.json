@@ -1,5 +1,10 @@
 {
   "menu": {
+    "amm": {
+      "amm": "AMM",
+      "pools": "AMM pools",
+      "explorer": "AMM explorer"
+    },
     "company": {
       "about-us": "About us"
     },
