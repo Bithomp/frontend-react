@@ -125,6 +125,12 @@ export default function Amm(
                       </td>
                     </tr>
                     <tr>
+                      <td>Currency code</td>
+                      <td>
+                        {data.lpTokenBalance.currency} <CopyButton text={data.lpTokenBalance.currency} />
+                      </td>
+                    </tr>
+                    <tr>
                       <td>Created</td>
                       <td>
                         {isMounted ?
