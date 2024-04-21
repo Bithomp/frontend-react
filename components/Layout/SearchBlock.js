@@ -16,7 +16,8 @@ import {
   networksIds,
   isValidNftXls20,
   explorerName,
-  xahauNetwork
+  xahauNetwork,
+  isCurrencyHashValid,
 } from '../../utils'
 import { userOrServiceName, amountFormat } from '../../utils/format'
 
@@ -168,6 +169,11 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
 
     if (tab === "nft" && isValidNftXls20(searchFor)) {
       router.push("/nft/" + encodeURI(searchFor))
+      return
+    }
+
+    if (tab === "amm" && (isAddressOrUsername(searchFor) || isCurrencyHashValid(searchFor))) {
+      router.push("/amm/" + encodeURI(searchFor))
       return
     }
 

@@ -30,6 +30,7 @@ const AmmSearch = () => {
       <SearchBlock tab="amm" />
       <Container>
         <h1 className='center'>Automated market maker pool information search</h1>
+        <p className='center'>Dive into the world of Autmated Market Maker (AMM) pools. Get access to up-to-date AMM pool information. Search by AMM ID, Liquidity Pool (LP) token, AMM owner address.</p>
       </Container>
     </>
   );

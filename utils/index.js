@@ -479,6 +479,10 @@ export const isAddressOrUsername = x => {
   return isAddressValid(x) || isUsernameValid(x)
 }
 
+export const isCurrencyHashValid = x => {
+  return /^[0-9a-zA-Z]{40}$/.test(x)
+}
+
 export const isIdValid = x => {
   return /^[0-9a-zA-Z]{64}$/.test(x)
 }
