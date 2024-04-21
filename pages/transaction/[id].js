@@ -63,7 +63,7 @@ export default function Transaction(
 
   let TransactionComponent = null;
   switch (initialData?.type) {
-    case "ammCreate" || "ammBid" || "ammVote" || "ammWithdraw" || "ammDeposit":
+    case "ammCreate" || "ammBid" || "ammVote" || "ammWithdraw" || "ammDeposit" || "ammDelete":
       TransactionComponent = TransactionAmm;
       break;
     case "escrowCreation" || "escrowExecution" || "escrowCancelation":
