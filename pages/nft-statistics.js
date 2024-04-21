@@ -127,7 +127,7 @@ export default function NftStatistics() {
           {t("nft-statistics.exist")}: {nft && niceNumber(nft.created - nft.burned)}
         </p>
         <p>
-          {t("nft-statistics.owners")}: {niceNumber(nft?.owners)}
+          {t("nft-statistics.owners")}: <Link href='/nft-distribution'>{niceNumber(nft?.owners)}</Link>
         </p>
         <p>
           {t("nft-statistics.issuers")}: <Link href='/nft-volumes'>{niceNumber(nft?.issuers)}</Link>
