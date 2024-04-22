@@ -2,6 +2,7 @@ import React from 'react'
 import axios from "axios"
 import { useTranslation } from "next-i18next"
 import { serverSideTranslations } from "next-i18next/serverSideTranslations"
+import moment from 'moment'
 
 import SearchBlock from "../../components/Layout/SearchBlock"
 import SEO from "../../components/SEO"
@@ -137,7 +138,11 @@ export default function Amm(
                       <td>Created</td>
                       <td>
                         {isMounted ?
-                          fullDateAndTime(data.createdAt)
+                          <>
+                            {moment((data.createdAt) * 1000, "unix").fromNow()}
+                            {", "}
+                            {fullDateAndTime(data.createdAt)}
+                          </>
                           :
                           ""
                         }
@@ -149,7 +154,11 @@ export default function Amm(
                         <td>Last update</td>
                         <td>
                           {isMounted ?
-                            fullDateAndTime(data.updatedAt)
+                            <>
+                              {moment((data.updatedAt) * 1000, "unix").fromNow()}
+                              {", "}
+                              {fullDateAndTime(data.updatedAt)}
+                            </>
                             :
                             ""
                           }
@@ -196,11 +205,23 @@ export default function Amm(
                           {" " + lpToken + " "}
                         </td>
                       </tr>
+                      {data.auctionSlot.timeInterval &&
+                        <tr>
+                          <td>Time interval</td>
+                          <td>
+                            {(data.auctionSlot.timeInterval + 1) + "/20"}
+                          </td>
+                        </tr>
+                      }
                       <tr>
                         <td>Expiration</td>
                         <td>
                           {isMounted ?
-                            fullDateAndTime(data.auctionSlot.expiration)
+                            <>
+                              {moment((data.auctionSlot.expiration) * 1000, "unix").fromNow()}
+                              {", "}
+                              {fullDateAndTime(data.auctionSlot.expiration)}
+                            </>
                             :
                             ""
                           }
@@ -237,7 +258,11 @@ export default function Amm(
                             <td>Created</td>
                             <td>
                               {isMounted ?
-                                fullDateAndTime(slot.createdAt)
+                                <>
+                                  {moment((data.createdAt) * 1000, "unix").fromNow()}
+                                  {", "}
+                                  {fullDateAndTime(data.createdAt)}
+                                </>
                                 :
                                 ""
                               }
@@ -249,7 +274,11 @@ export default function Amm(
                               <td>Last update</td>
                               <td>
                                 {isMounted ?
-                                  fullDateAndTime(slot.updatedAt)
+                                  <>
+                                    {moment((data.updatedAt) * 1000, "unix").fromNow()}
+                                    {", "}
+                                    {fullDateAndTime(data.updatedAt)}
+                                  </>
                                   :
                                   ""
                                 }
