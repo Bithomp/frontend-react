@@ -139,13 +139,14 @@ export default function Amm(
                       <td>
                         {isMounted ?
                           <>
-                            {moment((data.createdAt) * 1000, "unix").fromNow()}
+                            {moment(data.createdAt * 1000, "unix").fromNow()}
                             {", "}
                             {fullDateAndTime(data.createdAt)}
                           </>
                           :
                           ""
                         }
+                        {" "}
                         <LinkTxIcon tx={data.createdTxHash} />
                       </td>
                     </tr>
@@ -155,13 +156,14 @@ export default function Amm(
                         <td>
                           {isMounted ?
                             <>
-                              {moment((data.updatedAt) * 1000, "unix").fromNow()}
+                              {moment(data.updatedAt * 1000, "unix").fromNow()}
                               {", "}
                               {fullDateAndTime(data.updatedAt)}
                             </>
                             :
                             ""
                           }
+                          {" "}
                           <LinkTxIcon tx={data.updatedTxHash} />
                         </td>
                       </tr>
@@ -218,7 +220,7 @@ export default function Amm(
                         <td>
                           {isMounted ?
                             <>
-                              {moment((data.auctionSlot.expiration) * 1000, "unix").fromNow()}
+                              {moment(data.auctionSlot.expiration * 1000, "unix").fromNow()}
                               {", "}
                               {fullDateAndTime(data.auctionSlot.expiration)}
                             </>
@@ -259,13 +261,14 @@ export default function Amm(
                             <td>
                               {isMounted ?
                                 <>
-                                  {moment((data.createdAt) * 1000, "unix").fromNow()}
+                                  {moment(data.createdAt * 1000, "unix").fromNow()}
                                   {", "}
                                   {fullDateAndTime(data.createdAt)}
                                 </>
                                 :
                                 ""
                               }
+                              {" "}
                               <LinkTxIcon tx={slot.createdTxHash} />
                             </td>
                           </tr>
@@ -275,13 +278,14 @@ export default function Amm(
                               <td>
                                 {isMounted ?
                                   <>
-                                    {moment((data.updatedAt) * 1000, "unix").fromNow()}
+                                    {moment(data.updatedAt * 1000, "unix").fromNow()}
                                     {", "}
                                     {fullDateAndTime(data.updatedAt)}
                                   </>
                                   :
                                   ""
                                 }
+                                {" "}
                                 <LinkTxIcon tx={slot.updatedTxHash} />
                               </td>
                             </tr>
