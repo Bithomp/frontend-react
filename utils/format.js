@@ -494,12 +494,6 @@ export const lpTokenName = data => {
   }
 }
 
-const getLpTokenName = async currency => {
-  const response = await axios("v2/amm/" + currency)
-  const data = response.data
-  return lpTokenName(data)
-}
-
 const niceCurrency = currency => {
   if (!currency) return ""
   let firstTwoNumbers = currency.substr(0, 2)
@@ -533,7 +527,7 @@ const niceCurrency = currency => {
     } else if (firstTwoNumbers === '02') {
       currency = Buffer.from(currency.substring(16), 'hex')
     } else if (firstTwoNumbers === '03') {
-      currency = getLpTokenName(currency)
+      currency = "LP token"
     } else {
       currency = Buffer.from(currency, 'hex')
     }
@@ -796,4 +790,9 @@ export const codeHighlight = json => {
       __html: syntaxHighlight(JSON.stringify(json, undefined, 4))
     }}
   />
+}
+
+export const showAmmPercents = x => {
+  x = x ? (x / 1000) : "0"
+  return x + "%"
 }

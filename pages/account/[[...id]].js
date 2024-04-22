@@ -606,7 +606,12 @@ export default function Account({ pageMeta, refreshPage, id, selectedCurrency, l
                           <tr>
                             <td>AMM ID</td>
                             <td>
-                              <LinkAmm ammId={data.ledgerInfo.ammID} />
+                              <LinkAmm
+                                ammId={data.ledgerInfo.ammID}
+                                hash={true}
+                                icon={true}
+                                copy={true}
+                              />
                             </td>
                           </tr>
                         }

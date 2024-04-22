@@ -3,10 +3,10 @@ import LinkIcon from "../public/images/link.svg"
 import { shortHash } from './format'
 import CopyButton from '../components/UI/CopyButton'
 
-export const LinkTxIcon = ({ tx }) => (
+export const LinkTx = ({ tx, icon }) => (
   tx ?
     <Link href={`/explorer/${tx}`}>
-      <LinkIcon />
+      {icon ? <LinkIcon /> : shortHash(tx, 10)}
     </Link>
     :
     ''
@@ -30,16 +30,14 @@ export const LinkAccount = ({ address }) => (
     ''
 )
 
-export const LinkAmm = ({ ammId }) => (
+export const LinkAmm = ({ ammId, hash, icon, copy }) => (
   ammId ?
     <>
       <Link href={`/amm/${ammId}`}>
-        {shortHash(ammId, 10)}
-        {" "}
-        <LinkIcon />
+        {hash ? shortHash(ammId, hash > 3 ? hash : 10) : ''}
+        {icon ? <> <LinkIcon /></> : ''}
       </Link>
-      {" "}
-      <CopyButton text={ammId} />
+      {copy ? <> <CopyButton text={ammId} /></> : ''}
     </>
     :
     ''

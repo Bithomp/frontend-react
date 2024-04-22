@@ -14,8 +14,9 @@ import {
   fullDateAndTime,
   fullNiceNumber,
   trAmountWithGateway,
+  showAmmPercents,
 } from "../../utils/format"
-import { LinkTxIcon } from '../../utils/links'
+import { LinkTx } from '../../utils/links'
 
 import CopyButton from "../../components/UI/CopyButton"
 import { useEffect, useState } from "react"
@@ -68,11 +69,6 @@ export default function Amm(
 
   const lpToken = lpTokenName(data)
 
-  const showPercents = (value) => {
-    value = value ? (value / 1000) : "0"
-    return value + "%"
-  }
-
   return (
     <>
       <SEO
@@ -110,7 +106,9 @@ export default function Amm(
                   <tbody>
                     <tr>
                       <td>AMM ID</td>
-                      <td>{shortHash(data.ammID, 10)} <CopyButton text={data.ammID} /></td>
+                      <td>
+                        {shortHash(data.ammID, 10)} <CopyButton text={data.ammID} />
+                      </td>
                     </tr>
                     {trWithAccount(data, 'account', t("table.address"))}
                     {trAmountWithGateway({ amount: data.amount, name: "Asset 1" })}
@@ -118,7 +116,7 @@ export default function Amm(
                     <tr>
                       <td>Trading fee</td>
                       <td>
-                        {showPercents(data.tradingFee)}
+                        {showAmmPercents(data.tradingFee)}
                       </td>
                     </tr>
                     <tr>
@@ -147,7 +145,7 @@ export default function Amm(
                           ""
                         }
                         {" "}
-                        <LinkTxIcon tx={data.createdTxHash} />
+                        <LinkTx tx={data.createdTxHash} icon={true} />
                       </td>
                     </tr>
                     {data.createdAt !== data.updatedAt &&
@@ -164,7 +162,7 @@ export default function Amm(
                             ""
                           }
                           {" "}
-                          <LinkTxIcon tx={data.updatedTxHash} />
+                          <LinkTx tx={data.updatedTxHash} icon={true} />
                         </td>
                       </tr>
                     }
@@ -197,7 +195,7 @@ export default function Amm(
                       <tr>
                         <td>Discounted fee</td>
                         <td>
-                          {showPercents(data.auctionSlot.discountedFee)}
+                          {showAmmPercents(data.auctionSlot.discountedFee)}
                         </td>
                       </tr>
                       <tr>
@@ -250,11 +248,11 @@ export default function Amm(
                           }
                           <tr>
                             <td>Trading fee</td>
-                            <td>{showPercents(slot.tradingFee)}</td>
+                            <td>{showAmmPercents(slot.tradingFee)}</td>
                           </tr>
                           <tr>
                             <td>Vote weight</td>
-                            <td>{showPercents(slot.voteWeight)}</td>
+                            <td>{showAmmPercents(slot.voteWeight)}</td>
                           </tr>
                           <tr>
                             <td>Created</td>
@@ -269,7 +267,7 @@ export default function Amm(
                                 ""
                               }
                               {" "}
-                              <LinkTxIcon tx={slot.createdTxHash} />
+                              <LinkTx tx={slot.createdTxHash} icon={true} />
                             </td>
                           </tr>
                           {slot.createdAt !== slot.updatedAt &&
@@ -286,7 +284,7 @@ export default function Amm(
                                   ""
                                 }
                                 {" "}
-                                <LinkTxIcon tx={slot.updatedTxHash} />
+                                <LinkTx tx={slot.updatedTxHash} icon={true} />
                               </td>
                             </tr>
                           }
