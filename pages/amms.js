@@ -1,8 +1,7 @@
 import { useTranslation } from 'next-i18next'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import axios from 'axios'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import { useRouter } from 'next/router'
 import { useWidth, server } from '../utils'
 import {
   lpTokenName,
@@ -56,14 +55,12 @@ import { LinkAmm } from '../utils/links'
 
 export default function Amms({ initialData, initialErrorMessage }) {
   const { t } = useTranslation(['common'])
-  const router = useRouter()
-
-  const { isReady } = router
 
   const windowWidth = useWidth()
 
   const data = initialData?.amms || []
   const errorMessage = initialErrorMessage || ""
+  const loading = false
   /*
   const [data, setData] = useState(initialData?.amms || [])
   const [rawData, setRawData] = useState(initialData || {})
@@ -71,7 +68,7 @@ export default function Amms({ initialData, initialErrorMessage }) {
   const [errorMessage, setErrorMessage] = useState(initialErrorMessage || "")
   */
 
-  const controller = new AbortController()
+  const [isRendered, setIsRendered] = useState(false)
 
   /*
   const checkApi = async () => {
@@ -116,18 +113,16 @@ export default function Amms({ initialData, initialErrorMessage }) {
 
   useEffect(() => {
     //checkApi()
-    return () => {
-      controller.abort()
-    }
+    setIsRendered(true)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isReady])
+  }, [])
 
   return <>
     <SEO title={t("menu.amm.pools")} />
     <div className="content-text">
       <h1 className="center">{t("menu.amm.pools")}</h1>
       <br />
-      {windowWidth > 1000 ?
+      {(!windowWidth || windowWidth > 1000) ?
         <table className="table-large shrink">
           <thead>
             <tr>
@@ -194,7 +189,7 @@ export default function Amms({ initialData, initialErrorMessage }) {
                             {shortHash(a.lpTokenBalance.currency)} <CopyButton text={a.lpTokenBalance.currency} />
                           </td>
                           <td>
-                            {isReady ?
+                            {isRendered ?
                               moment(a.createdAt * 1000, "unix").fromNow()
                               :
                               ""
@@ -282,7 +277,7 @@ export default function Amms({ initialData, initialErrorMessage }) {
                       <p>
                         Created:
                         {" "}
-                        {isReady ?
+                        {isRendered ?
                           <>
                             {moment(a.createdAt * 1000, "unix").fromNow()}
                             {", "}
