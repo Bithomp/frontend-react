@@ -9,6 +9,46 @@ import LangSwitch from "./LangSwitch"
 import CurrencySwitch from "./CurrencySwitch"
 import LogoAnimated from '../LogoAnimated'
 
+let timeoutIds = {}
+
+const MenuDropDown = ({ children, id, title, setHoverStates, hoverStates }) => {
+  const handleMouseEnter = id => {
+    // clear timeout for all dropdowns
+    for (let key in timeoutIds) {
+      clearTimeout(timeoutIds[key])
+    }
+    //hide other dropdowns, show this one
+    setHoverStates(state => {
+      //set all in state to false acept the with key id
+      let newState = {}
+      for (let key in state) {
+        newState[key] = key === id
+      }
+      newState[id] = true
+      return newState
+    })
+  }
+  const handleMouseLeave = id => {
+    timeoutIds[id] = setTimeout(() => {
+      setHoverStates(state => ({ ...state, [id]: false }))
+    }, 600)
+  }
+  return (
+    <div
+      className="menu-dropdown"
+      onMouseEnter={() => handleMouseEnter(id)}
+      onMouseLeave={() => handleMouseLeave(id)}
+    >
+      <div className="menu-dropdown-button">{title}</div>
+      {hoverStates[id] &&
+        <div className="menu-dropdown-content">
+          {children}
+        </div>
+      }
+    </div>
+  )
+}
+
 export default function Header({ setSignRequest, account, signOut, selectedCurrency, setSelectedCurrency }) {
   const { t } = useTranslation('common')
 
@@ -21,29 +61,6 @@ export default function Header({ setSignRequest, account, signOut, selectedCurre
   const [xummUserToken, setXummUserToken] = useState(null)
 
   const [hoverStates, setHoverStates] = useState({})
-  let timeoutIds = {}
-
-  const handleMouseEnter = id => {
-    // clear timeout for all dropdowns
-    for (let key in timeoutIds) {
-      clearTimeout(timeoutIds[key])
-    }
-    //hide other dropdowns, show this one
-    setHoverStates(state => {
-      const newState = {};
-      Object.keys(state).forEach(key => {
-        newState[key] = false
-      });
-      newState[id] = true
-      return newState;
-    });
-  };
-
-  const handleMouseLeave = id => {
-    timeoutIds[id] = setTimeout(() => {
-      setHoverStates(state => ({ ...state, [id]: false }))
-    }, 600)
-  }
 
   useEffect(() => {
     setRendered(true)
@@ -93,30 +110,17 @@ export default function Header({ setSignRequest, account, signOut, selectedCurre
     )
   }
 
-  const MenuDropDown = ({ children, id, title }) => {
-    return (
-      <div
-        className="menu-dropdown"
-        onMouseEnter={() => handleMouseEnter(id)}
-        onMouseLeave={() => handleMouseLeave(id)}
-      >
-        <div className="menu-dropdown-button">{title}</div>
-        {hoverStates[id] &&
-          <div className="menu-dropdown-content">
-            {children}
-          </div>
-        }
-      </div>
-    )
-  }
-
   return (
     <>
       <header>
         <Link href="/"><div className='header-logo'><LogoAnimated /></div></Link>
         <div className="header-menu-left">
-
-          <MenuDropDown id="dropdown1" title={t("menu.personal.personal")}>
+          <MenuDropDown
+            id="dropdown1"
+            title={t("menu.personal.personal")}
+            setHoverStates={setHoverStates}
+            hoverStates={hoverStates}
+          >
             <a href={"/explorer/"}>{t("menu.personal.search-on-ledgerName", { ledgerName })}</a>
             <Link href="/username">{t("menu.usernames")}</Link>
             {displayName ?
@@ -128,7 +132,12 @@ export default function Header({ setSignRequest, account, signOut, selectedCurre
             {!devNet && <a href={"/submit/"}>{t("menu.submit-offline-tx")}</a>}
           </MenuDropDown>
 
-          <MenuDropDown id="dropdown2" title={t("menu.business.business")}>
+          <MenuDropDown
+            id="dropdown2"
+            title={t("menu.business.business")}
+            setHoverStates={setHoverStates}
+            hoverStates={hoverStates}
+          >
             <Link href="/advertise">{t("menu.business.advertise")}</Link>
             <Link href="/username">{t("menu.usernames")}</Link>
             <Link href="/submit-account-information">{t("menu.project-registration")}</Link>
@@ -138,7 +147,12 @@ export default function Header({ setSignRequest, account, signOut, selectedCurre
             <Link href="/press">{t("menu.press")}</Link>
           </MenuDropDown>
 
-          <MenuDropDown id="dropdown3" title="NFT">
+          <MenuDropDown
+            id="dropdown3"
+            title="NFT"
+            setHoverStates={setHoverStates}
+            hoverStates={hoverStates}
+          >
             <Link href="/nft-explorer">{t("menu.nft.explorer")}</Link>
             {/* Hide NFT menu for XAHAU while they are not ready yet */}
             {!xahauNetwork && <>
@@ -168,13 +182,23 @@ export default function Header({ setSignRequest, account, signOut, selectedCurre
 
           {/* Hide AMM for XAHAU */}
           {!xahauNetwork &&
-            <MenuDropDown id="dropdown4" title={t("menu.amm.amm")}>
+            <MenuDropDown
+              id="dropdown4"
+              title={t("menu.amm.amm")}
+              setHoverStates={setHoverStates}
+              hoverStates={hoverStates}
+            >
               <Link href="/amms">{t("menu.amm.pools")}</Link>
               <Link href="/amm">{t("menu.amm.explorer")}</Link>
             </MenuDropDown>
           }
 
-          <MenuDropDown id="dropdown5" title={ledgerName}>
+          <MenuDropDown
+            id="dropdown5"
+            title={ledgerName}
+            setHoverStates={setHoverStates}
+            hoverStates={hoverStates}
+          >
             {xahauNetwork && <Link href="/governance">{t("menu.xrpl.governance")}</Link>}
             <Link href="/activations">{t("menu.xrpl.activations")}</Link>
             <Link href="/distribution">{t("menu.xrpl.distribution", { nativeCurrency })}</Link>
@@ -190,7 +214,12 @@ export default function Header({ setSignRequest, account, signOut, selectedCurre
             <Link href="/genesis">{t("menu.xrpl.genesis")}</Link>
           </MenuDropDown>
 
-          <MenuDropDown id="dropdown6" title={t("menu.developers.developers")}>
+          <MenuDropDown
+            id="dropdown6"
+            title={t("menu.developers.developers")}
+            setHoverStates={setHoverStates}
+            hoverStates={hoverStates}
+          >
             {devNet &&
               <>
                 <a href={"/create/"}>{t("menu.developers.account-generation")}</a>
@@ -205,7 +234,12 @@ export default function Header({ setSignRequest, account, signOut, selectedCurre
             <Link href="/build-unl">{t("menu.business.build-unl")}</Link>
           </MenuDropDown>
 
-          <MenuDropDown id="dropdown7" title={t("menu.networks")}>
+          <MenuDropDown
+            id="dropdown7"
+            title={t("menu.networks")}
+            setHoverStates={setHoverStates}
+            hoverStates={hoverStates}
+          >
             {network !== 'xahau' && <a href="https://xahauexplorer.com">XAHAU Mainnet</a>}
             {network !== 'xahau-testnet' && <a href="https://test.xahauexplorer.com">XAHAU Testnet</a>}
             {network !== 'mainnet' && <a href="https://bithomp.com">XRPL Mainnet</a>}
@@ -223,6 +257,8 @@ export default function Header({ setSignRequest, account, signOut, selectedCurre
                   {displayName}
                 </>
               }
+              setHoverStates={setHoverStates}
+              hoverStates={hoverStates}
             >
               <span onClick={copyToClipboard} className="link">
                 {isCopied ? t("button.copied") : t("button.copy-my-address")}
