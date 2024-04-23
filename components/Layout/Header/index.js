@@ -101,11 +101,9 @@ export default function Header({ setSignRequest, account, signOut, selectedCurre
         onMouseLeave={() => handleMouseLeave(id)}
       >
         <div className="menu-dropdown-button">{title}</div>
-        {hoverStates[id] &&
-          <div className="menu-dropdown-content">
-            {children}
-          </div>
-        }
+        <div className="menu-dropdown-content" style={{ display: hoverStates[id] ? 'block' : 'none' }}>
+          {children}
+        </div>
       </div>
     )
   }
