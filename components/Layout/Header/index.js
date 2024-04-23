@@ -173,6 +173,7 @@ export default function Header({ setSignRequest, account, signOut, selectedCurre
             <div className="menu-dropdown" id="dropdown4">
               <div className="menu-dropdown-button">{t("menu.amm.amm")}</div>
               <div className="menu-dropdown-content" style={{ display: hoverStates["dropdown4"] ? 'block' : 'none' }}>
+                <Link href="/amms">{t("menu.amm.pools")}</Link>
                 <Link href="/amm">{t("menu.amm.explorer")}</Link>
               </div>
             </div>
@@ -419,7 +420,20 @@ export default function Header({ setSignRequest, account, signOut, selectedCurre
           {!xahauNetwork &&
             <>
               <div className="mobile-menu-directory"><span>{t("menu.amm.amm")}</span></div>
-              <Link href="/amm" className="mobile-menu-item" onClick={mobileMenuToggle}>{t("menu.amm.explorer")}</Link>
+              <Link
+                href="/amms"
+                className="mobile-menu-item"
+                onClick={mobileMenuToggle}
+              >
+                {t("menu.amm.pools")}
+              </Link>
+              <Link
+                href="/amm"
+                className="mobile-menu-item"
+                onClick={mobileMenuToggle}
+              >
+                {t("menu.amm.explorer")}
+              </Link>
             </>
           }
 
