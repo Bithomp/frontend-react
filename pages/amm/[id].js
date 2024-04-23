@@ -107,12 +107,15 @@ export default function Amm(
 
   useEffect(() => {
     if (ledgerTimestamp === "") return // do not call API on first render, its null on reset
-    checkApi()
     const getParamTimestamp = new Date(ledgerTimestamp).toISOString()
-    if (ledgerTimestamp && getParamTimestamp !== ledgerTimestampQuery) {
+    if (ledgerTimestamp && ledgerTimestamp !== ledgerTimestampQuery) {
+      checkApi()
       addQueryParams(router, [{ name: "ledgerTimestamp", value: getParamTimestamp }])
     } else {
-      removeQueryParams(router, ["ledgerTimestamp"])
+      if (!ledgerTimestamp) {
+        checkApi()
+        removeQueryParams(router, ["ledgerTimestamp"])
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ledgerTimestamp])
@@ -125,7 +128,7 @@ export default function Amm(
   const lpToken = lpTokenName(data)
 
   const timeMachineButtons = <>
-    <button onClick={() => setLedgerTimestamp(ledgerTimestampInput)} className='button-action thin narrow'>Update</button>
+    <button onClick={() => setLedgerTimestamp(Date.parse(ledgerTimestampInput))} className='button-action thin narrow'>Update</button>
     {" "}
     <button onClick={resetTimeMachine} className='button-action thin narrow'>Reset</button>
   </>
@@ -151,7 +154,7 @@ export default function Amm(
         userData={userData}
       />
       <div className="content-center short-top amm">
-        <div className={width < 600 ? 'center' : ""}>
+        <div className={width > 600 ? "" : 'center'}>
           Time machine:{" "}
           <DatePicker
             selected={ledgerTimestampInput || new Date()}
