@@ -104,14 +104,14 @@ export default function Amm(
   }
 
   useEffect(() => {
-    if (!ledgerTimestamp) return
+    if (ledgerTimestamp === "") return // do not call API on first render, its null on reset
     checkApi()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ledgerTimestamp])
 
   const resetTimeMachine = () => {
-    setLedgerTimestampInput(null)
     setLedgerTimestamp(null)
+    setLedgerTimestampInput(null)
   }
 
   const lpToken = lpTokenName(data)
@@ -187,7 +187,7 @@ export default function Amm(
                       <thead>
                         <tr>
                           <th colSpan="100">
-                            Automated market maker pool
+                            Automated market maker pool <span className='orange'>{data.ledgerIndex ? '#' + data.ledgerIndex : ''}</span>
                           </th>
                         </tr>
                       </thead>
