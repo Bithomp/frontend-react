@@ -31,7 +31,7 @@ export async function getServerSideProps(context) {
     try {
       const res = await axios({
         method: 'get',
-        url: server + '/api/cors/v2/address/' + account + '?username=true&service=true&twitterImageUrl=true&blacklist=true' + (ledgerTimestamp ? ('&ledgerTimestamp=' + ledgerTimestamp.toISOString()) : ""),
+        url: server + '/api/cors/v2/address/' + account + '?username=true&service=true&twitterImageUrl=true&blacklist=true' + (ledgerTimestamp ? ('&ledgerTimestamp=' + new Date(ledgerTimestamp).toISOString()) : ""),
         headers
       })
       pageMeta = res?.data
@@ -43,7 +43,7 @@ export async function getServerSideProps(context) {
   return {
     props: {
       id: account,
-      ledgerTimestampQuery: ledgerTimestamp || "",
+      ledgerTimestampQuery: Date.parse(ledgerTimestamp) || "",
       isSsrMobile: getIsSsrMobile(context),
       pageMeta,
       ...(await serverSideTranslations(locale, ['common']))
@@ -97,7 +97,7 @@ export default function Account({ pageMeta, refreshPage, id, selectedCurrency, l
       '/v2/address/' + id
       + '?username=true&service=true&verifiedDomain=true&parent=true&nickname=true&inception=true&flare=true&blacklist=true&payString=true&ledgerInfo=true&twitterImageUrl=true&xummMeta=true'
       + noCache
-      + (ledgerTimestamp ? ('&ledgerTimestamp=' + ledgerTimestamp.toISOString()) : "")
+      + (ledgerTimestamp ? ('&ledgerTimestamp=' + new Date(ledgerTimestamp).toISOString()) : "")
     ).catch(error => {
       setErrorMessage(t("error." + error.message))
     })

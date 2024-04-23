@@ -6,7 +6,7 @@ import moment from 'moment'
 
 import SearchBlock from "../../components/Layout/SearchBlock"
 import SEO from "../../components/SEO"
-import { server, useWidth } from "../../utils"
+import { addQueryParams, removeQueryParams, server, useWidth } from "../../utils"
 import {
   lpTokenName,
   trWithAccount,
@@ -22,6 +22,7 @@ import "react-datepicker/dist/react-datepicker.css"
 
 import CopyButton from "../../components/UI/CopyButton"
 import { useEffect, useState } from "react"
+import { useRouter } from "next/router"
 
 export async function getServerSideProps(context) {
   const { locale, query, req } = context
@@ -39,7 +40,7 @@ export async function getServerSideProps(context) {
   try {
     const res = await axios({
       method: "get",
-      url: server + "/api/cors/v2/amm/" + id + (ledgerTimestamp ? ('?ledgerTimestamp=' + ledgerTimestamp.toISOString()) : ""),
+      url: server + "/api/cors/v2/amm/" + id + (ledgerTimestamp ? ('?ledgerTimestamp=' + ledgerTimestamp) : ""),
       headers,
     }).catch(error => {
       errorMessage = error.message
@@ -53,7 +54,7 @@ export async function getServerSideProps(context) {
     props: {
       id,
       initialData: initialData,
-      ledgerTimestampQuery: ledgerTimestamp || "",
+      ledgerTimestampQuery: Date.parse(ledgerTimestamp) || "",
       initialErrorMessage: errorMessage || "",
       ...(await serverSideTranslations(locale, ["common"])),
     },
@@ -65,6 +66,7 @@ export default function Amm(
 ) {
   const { t } = useTranslation()
   const width = useWidth()
+  const router = useRouter()
   const [isMounted, setIsMounted] = useState(false)
   const [ledgerTimestamp, setLedgerTimestamp] = useState(ledgerTimestampQuery)
   const [ledgerTimestampInput, setLedgerTimestampInput] = useState(ledgerTimestampQuery)
@@ -82,7 +84,7 @@ export default function Amm(
     setLoading(true)
 
     const response = await axios(
-      "v2/amm/" + id + (ledgerTimestamp ? ('?ledgerTimestamp=' + ledgerTimestamp.toISOString()) : "")
+      "v2/amm/" + id + (ledgerTimestamp ? ('?ledgerTimestamp=' + new Date(ledgerTimestamp).toISOString()) : "")
     ).catch(error => {
       setErrorMessage(t("error." + error.message))
     })
@@ -106,6 +108,12 @@ export default function Amm(
   useEffect(() => {
     if (ledgerTimestamp === "") return // do not call API on first render, its null on reset
     checkApi()
+    const getParamTimestamp = new Date(ledgerTimestamp).toISOString()
+    if (ledgerTimestamp && getParamTimestamp !== ledgerTimestampQuery) {
+      addQueryParams(router, [{ name: "ledgerTimestamp", value: getParamTimestamp }])
+    } else {
+      removeQueryParams(router, ["ledgerTimestamp"])
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ledgerTimestamp])
 
