@@ -29,7 +29,7 @@ export async function getServerSideProps(context) {
   try {
     const res = await axios({
       method: "get",
-      url: server + "/api/cors/v2/amms",
+      url: server + "/api/cors/v2/amms?order=currencyHigh&sortCurrency=XRP",
       headers,
     }).catch(error => {
       initialErrorMessage = error.message
