@@ -6,6 +6,7 @@ const pages = [
   { loc: "nft-explorer", changefreq: "daily", priority: "1" },
   { loc: "amendments", changefreq: "always", priority: "1" },
   { loc: "validators", changefreq: "always", priority: "1" },
+  { loc: "amms", changefreq: "always", priority: "1" },
 
   { loc: "nft-sales", changefreq: "daily", priority: "0.9" },
   { loc: "", changefreq: "hourly", priority: "0.9" },
@@ -13,9 +14,7 @@ const pages = [
   { loc: "nft-volumes", changefreq: "always", priority: "0.9" },
   { loc: "nft-minters", changefreq: "always", priority: "0.9" },
 
-  { loc: "advertise", changefreq: "yearly", priority: "0.8" },
-  { loc: "eaas", changefreq: "yearly", priority: "0.8" },
-
+  { loc: "amm", changefreq: "daily", priority: "0.7" },
   { loc: "nfts", changefreq: "daily", priority: "0.7" },
   { loc: "nft", changefreq: "daily", priority: "0.7" },
   { loc: "nft-distribution", changefreq: "daily", priority: "0.7" },
@@ -31,6 +30,8 @@ const pages = [
 
   { loc: "genesis", changefreq: "weekly", priority: "0.6" },
   { loc: "build-unl", changefreq: "yearly", priority: "0.6" },
+  { loc: "advertise", changefreq: "yearly", priority: "0.6" },
+  { loc: "eaas", changefreq: "yearly", priority: "0.6" },
 
   { loc: "submit-account-information", changefreq: "yearly", priority: "0.5" },
   { loc: "admin", changefreq: "yearly", priority: "0.5" },
