@@ -31,7 +31,7 @@ export async function getServerSideProps(context) {
     try {
       const res = await axios({
         method: 'get',
-        url: server + '/api/cors/v2/address/' + account + '?username=true&service=true&twitterImageUrl=true&blacklist=true' + (ledgerTimestamp ? ('&ledgerTimestamp=' + ledgerTimestamp) : ""),
+        url: server + '/api/cors/v2/address/' + account + '?username=true&service=true&twitterImageUrl=true&blacklist=true' + (ledgerTimestamp ? ('&ledgerTimestamp=' + ledgerTimestamp.toISOString()) : ""),
         headers
       })
       pageMeta = res?.data
