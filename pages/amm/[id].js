@@ -94,8 +94,16 @@ export default function Amm(
       if (newdata.account) {
         setData(newdata)
         setUserData({ ...newdata.accountDetails, address: newdata.account })
+        if (newdata.ledgerTimestamp) {
+          const getParamTimestamp = new Date(newdata.ledgerTimestamp * 1000).toISOString()
+          addQueryParams(router, [{ name: "ledgerTimestamp", value: getParamTimestamp }])
+        } else {
+          removeQueryParams(router, ["ledgerTimestamp"])
+        }
       } else {
-        if (newdata.error) {
+        if (newdata.error === "Account malformed") {
+          setErrorMessage("No information found for that AMM ID at this time of that day.")
+        } else if (newdata.error) {
           setErrorMessage(t("error-api." + newdata.error))
         } else {
           setErrorMessage("Error")
@@ -107,15 +115,8 @@ export default function Amm(
 
   useEffect(() => {
     if (ledgerTimestamp === "") return // do not call API on first render, its null on reset
-    const getParamTimestamp = new Date(ledgerTimestamp).toISOString()
-    if (ledgerTimestamp && ledgerTimestamp !== ledgerTimestampQuery) {
+    if (!ledgerTimestamp || (ledgerTimestamp && ledgerTimestamp !== ledgerTimestampQuery)) {
       checkApi()
-      addQueryParams(router, [{ name: "ledgerTimestamp", value: getParamTimestamp }])
-    } else {
-      if (!ledgerTimestamp) {
-        checkApi()
-        removeQueryParams(router, ["ledgerTimestamp"])
-      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ledgerTimestamp])
@@ -133,6 +134,11 @@ export default function Amm(
     <button onClick={resetTimeMachine} className='button-action thin narrow'>Reset</button>
   </>
 
+  const oldDateAndTime =
+    <span className='orange bold' style={{ float: "right" }}>
+      {(isMounted && data.ledgerTimestamp) ? fullDateAndTime(data.ledgerTimestamp) : ''}
+    </span>
+
   return (
     <>
       <SEO
@@ -140,12 +146,13 @@ export default function Amm(
         title={
           t("explorer.header.amm") + " "
           + lpToken + " "
-          + (data?.ammID || id)
+          + (data?.ledgerTimestamp ? " " + fullDateAndTime(data.ledgerTimestamp) : "")
         }
         description={
           "Automated market maker pool details for "
           + lpToken + " "
-          + (data?.ammID || id)
+          + shortHash(data?.ammID)
+          + (data?.ledgerTimestamp ? " " + fullDateAndTime(data.ledgerTimestamp) : "")
         }
       />
       <SearchBlock
@@ -198,7 +205,8 @@ export default function Amm(
                       <thead>
                         <tr>
                           <th colSpan="100">
-                            Automated market maker pool <span className='orange'>{data.ledgerIndex ? '#' + data.ledgerIndex : ''}</span>
+                            Automated market maker pool
+                            {oldDateAndTime}
                           </th>
                         </tr>
                       </thead>
@@ -271,7 +279,7 @@ export default function Amm(
                     {data?.auctionSlot &&
                       <table className='table-details'>
                         <thead>
-                          <tr><th colSpan="100">Auction slot</th></tr>
+                          <tr><th colSpan="100">Auction slot {oldDateAndTime}</th></tr>
                         </thead>
                         <tbody>
                           {trWithAccount(data.auctionSlot, 'account', t("table.owner"))}
@@ -333,7 +341,7 @@ export default function Amm(
                     {data?.voteSlots?.length > 0 &&
                       <table className='table-details'>
                         <thead>
-                          <tr><th colSpan="100">Vote slots</th></tr>
+                          <tr><th colSpan="100">Vote slots {oldDateAndTime}</th></tr>
                         </thead>
                         <tbody>
                           {data.voteSlots.map((slot, i) => (
