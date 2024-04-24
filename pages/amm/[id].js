@@ -297,7 +297,7 @@ export default function Amm(
                             :
                             <tr>
                               <td>Authorized accounts</td>
-                              <td>The are no additional accounts that are authorized to trade at the discounted fee for this AMM instance.</td>
+                              <td>There are no additional accounts that are authorized to trade at the discounted fee for this AMM instance.</td>
                             </tr>
                           }
                           <tr>
