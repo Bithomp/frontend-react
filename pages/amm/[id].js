@@ -82,6 +82,7 @@ export default function Amm(
   const checkApi = async () => {
     if (!id) return
     setLoading(true)
+    setErrorMessage("")
 
     const response = await axios(
       "v2/amm/" + id + (ledgerTimestamp ? ('?ledgerTimestamp=' + new Date(ledgerTimestamp).toISOString()) : "")
@@ -101,7 +102,7 @@ export default function Amm(
           removeQueryParams(router, ["ledgerTimestamp"])
         }
       } else {
-        if (newdata.error === "Account malformed") {
+        if (newdata.error === "Account malformed.") {
           setErrorMessage("No information found for that AMM ID at this time of that day.")
         } else if (newdata.error) {
           setErrorMessage(t("error-api." + newdata.error))
@@ -196,7 +197,7 @@ export default function Amm(
           :
           <>
             {errorMessage ?
-              <div className='center orange bold'>{errorMessage}</div>
+              <div className='orange bold'><br />{errorMessage}</div>
               :
               <>
                 {data?.ammID &&
