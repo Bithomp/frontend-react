@@ -244,7 +244,7 @@ export default function Nodes({ initialData, initialErrorMessage }) {
                           <td className='center'>{i + 1}</td>
                           <td>{isRendered && countryCodeWithFlag(a.country_code)}</td>
                           <td className='right'>
-                            {shortHash(a.node_public_key)} <CopyButton text={a.node_public_key} />
+                            {windowWidth > 1260 ? a.node_public_key : shortHash(a.node_public_key)} <CopyButton text={a.node_public_key} />
                           </td>
                           <td className='right'>
                             {a.ip}
