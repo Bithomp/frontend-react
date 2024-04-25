@@ -8,6 +8,7 @@ import Switch from "./Switch"
 import LangSwitch from "./LangSwitch"
 import CurrencySwitch from "./CurrencySwitch"
 import LogoAnimated from '../LogoAnimated'
+import Image from 'next/image'
 
 let timeoutIds = {}
 
@@ -67,7 +68,7 @@ export default function Header({ setSignRequest, account, signOut, selectedCurre
     setXummUserToken(localStorage.getItem('xummUserToken'))
   }, [])
 
-  let address, hashicon, displayName, username;
+  let address, hashicon, displayName, username, pro, proName;
   if (account && account.address) {
     address = account.address;
     hashicon = account.hashicon;
@@ -77,6 +78,20 @@ export default function Header({ setSignRequest, account, signOut, selectedCurre
     } else {
       displayName = address.substr(0, 8) + "..." + address.substr(-8);
     }
+  }
+  if (account && account.pro) {
+    pro = account.pro
+    //split email before @ and after
+    const emailParts = pro.split('@')
+    let emailPart1 = emailParts[0]
+    let emailPart2 = emailParts[1]
+    if (emailPart1?.length > 10) {
+      emailPart1 = emailPart1.substr(0, 7) + '**'
+    }
+    if (emailPart2?.length > 10) {
+      emailPart2 = '**' + emailPart2.substr(-7)
+    }
+    proName = emailPart1 + "@" + emailPart2
   }
 
   const mobileMenuToggle = () => {
@@ -112,7 +127,7 @@ export default function Header({ setSignRequest, account, signOut, selectedCurre
 
   return (
     <>
-      <header>
+      <header className={menuOpen ? 'mobile-menu-open' : ''}>
         <Link href="/"><div className='header-logo'><LogoAnimated /></div></Link>
         <div className="header-menu-left">
           <MenuDropDown
@@ -260,6 +275,7 @@ export default function Header({ setSignRequest, account, signOut, selectedCurre
               setHoverStates={setHoverStates}
               hoverStates={hoverStates}
             >
+              <Link href="/admin">{!proName ? 'Bithomp Pro' : proName}</Link>
               <span onClick={copyToClipboard} className="link">
                 {isCopied ? t("button.copied") : t("button.copy-my-address")}
               </span>
@@ -283,7 +299,18 @@ export default function Header({ setSignRequest, account, signOut, selectedCurre
               <span onClick={signOut} className="link">{t("signin.signout")}</span>
             </MenuDropDown>
             :
-            <span onClick={() => { setSignRequest(true) }} className="header-signin-link link">{t("signin.signin")}</span>
+            <MenuDropDown
+              id="dropdown8"
+              title={!proName ? t("signin.signin") : proName}
+              setHoverStates={setHoverStates}
+              hoverStates={hoverStates}
+            >
+              <Link href="/admin">Bithomp Pro</Link>
+              <span onClick={() => { setSignRequest({ wallet: "xumm" }) }} className="link">
+                <Image src="/images/xumm.png" className='xumm-logo' alt="xaman" height={24} width={24} />
+                Xaman
+              </span>
+            </MenuDropDown>
           }
           <Switch setCurrencySwitchOpen={setCurrencySwitchOpen} setLangSwitchOpen={setLangSwitchOpen} />
           <LangSwitch
@@ -310,6 +337,9 @@ export default function Header({ setSignRequest, account, signOut, selectedCurre
         <div className="mobile-menu">
           {displayName ?
             <>
+              <Link href="/admin" className="mobile-menu-item" onClick={mobileMenuToggle}>
+                {!proName ? 'Bithomp Pro' : proName}
+              </Link>
               {xummUserToken ?
                 <a href={"/explorer/" + address + "?hw=xumm&xummtoken=" + xummUserToken} className="mobile-menu-item">
                   <img src={hashicon} alt="user icon" className="user-icon" />
@@ -344,7 +374,15 @@ export default function Header({ setSignRequest, account, signOut, selectedCurre
               <span onClick={signOut} className="mobile-menu-item link">{t("signin.signout")}</span>
             </>
             :
-            <span onClick={() => { setSignRequest(true) }} className="mobile-menu-item link">{t("signin.signin")}</span>
+            <>
+              <Link href="/admin" className="mobile-menu-item" onClick={mobileMenuToggle}>
+                Bithomp Pro
+              </Link>
+              <span onClick={() => { setSignRequest({ wallet: "xumm" }) }} className="link mobile-menu-item">
+                <Image src="/images/xumm.png" className='xumm-logo' alt="xaman" height={24} width={24} />
+                Xaman
+              </span>
+            </>
           }
 
           <div className="mobile-menu-directory"><span>{t("menu.personal.personal")}</span></div>

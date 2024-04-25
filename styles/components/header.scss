@@ -22,6 +22,8 @@ header {
       transition: color .5s;
       display: flex;
       align-items: center;
+      padding-bottom: 1px; //don't cut bottoms of "g" in titles
+      height: 20px;
     }
     .menu-dropdown-content {
       position: absolute;
@@ -76,15 +78,15 @@ header {
   }
 
   .header-menu-left {
-    top: 31px;
+    top: 29px;
     left: 250px;
     .menu-dropdown {
       .menu-dropdown-button {
-        margin: 0 10px;
+        margin: 0 8px;
       }
       .menu-dropdown-content {
         &:after {
-          top: 31px;
+          top: 30px;
         }
       }
     }
@@ -92,7 +94,7 @@ header {
 
   .header-menu-right {
     right: 80px;
-    top: 24px;
+    top: 24.5px;
     display: flex;
     align-items: center;
     > div {
@@ -116,7 +118,7 @@ header {
     .menu-dropdown {
       .menu-dropdown-content {
         &:after {
-          top: 29px;
+          top: 30px;
         }
       }
     }
@@ -214,7 +216,6 @@ header {
 
     .header-menu-right {
       right: 60px;
-      .header-signin-link,
       .theme-switch {
         display: none;
       }
@@ -232,6 +233,19 @@ header {
 
     .header-burger {
       display: block;
+    }
+  }
+}
+
+@media only screen and (max-width: 400px) {
+  header {
+    &.mobile-menu-open {
+      .header-logo {
+        margin-left: 15px;
+        max-width: 90px;
+        margin-top: 25px;
+        max-height: 31px;
+      }
     }
   }
 }

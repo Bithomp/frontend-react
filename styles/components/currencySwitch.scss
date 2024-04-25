@@ -19,6 +19,7 @@
     .menu-dropdown-button {
       justify-content: center;
       user-select: none;
+      height: 30px;
     }
     .menu-dropdown-content {
       display: block;
@@ -38,11 +39,21 @@
         }
       }
       &:after {
-        top: 26px !important;
+        top: 25.5px !important;
       }
-      padding-top: 27px !important;
+      padding-top: 26px !important;
       min-width: auto !important;
       right: 0;
+    }
+  }
+}
+
+@media only screen and (max-width: 400px) {
+  .top-switch {
+    .menu-dropdown {
+      .menu-dropdown-content {
+        right: -20px;
+      }
     }
   }
 }
