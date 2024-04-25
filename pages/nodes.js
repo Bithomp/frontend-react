@@ -108,7 +108,7 @@ export default function Nodes({ initialData, initialErrorMessage }) {
     <SEO title={t("menu.xrpl.nodes")} />
     <div className="content-text">
       <h1 className="center">{data?.summary?.total} {ledgerName} nodes</h1>
-      <p className='center'>{data?.crawl_time && "updated " + timeFromNow(data.crawl_time)}</p>
+      <p className='center'>{isRendered && data?.crawl_time && "updated " + timeFromNow(data.crawl_time)}</p>
       <div className='flex flex-center'>
         <div className='div-with-table'>
           <h4 className="center">Versions</h4>
