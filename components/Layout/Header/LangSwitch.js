@@ -32,7 +32,13 @@ export default function LanguageSwitch({ langSwitchOpen, setLangSwitchOpen, setC
   const langChange = lang => {
     if (lang === 'default') return
     moment.locale(lang)
-    cookies.set('NEXT_LOCALE', lang, { path: '/', domain: "." + encodeURI(window.location.hostname) })
+    let domain = window.location.hostname
+    let domainParts = domain.split('.')
+    if (domainParts.length > 2) {
+      domain = domainParts.slice(1).join('.')
+    }
+
+    cookies.set('NEXT_LOCALE', lang, { path: '/', domain: "." + encodeURI(domain) })
   }
 
   const handleLangChange = lang => {

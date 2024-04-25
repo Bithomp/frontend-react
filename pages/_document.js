@@ -57,7 +57,12 @@ class MyDocument extends Document {
                 window.__setPreferredTheme = function (newTheme) {
                   setTheme(newTheme);
                   try {
-                    document.cookie = "theme=" + JSON.stringify(window.__theme) + ";path=/;domain=." + encodeURI(window.location.hostname);
+                    let domain = window.location.hostname;
+                    let domainParts = domain.split('.');
+                    if (domainParts.length > 2) {
+                      domain = domainParts.slice(1).join('.');
+                    }
+                    document.cookie = "theme=" + JSON.stringify(window.__theme) + ";path=/;domain=." + encodeURI(domain);
                   } catch (err) {}
                 };
                 let preferredTheme;
