@@ -100,14 +100,14 @@
     "expiration": "Istek",
     "target-table": "Target table",
     "xumm": {
-      "open-app": "Otvori Xumm aplikaciju na tvojem mobitelu.",
+      "open-app": "Otvori Xaman aplikaciju na tvojem mobitelu.",
       "change-settings": "Idi na postavke i odaberi testni čvor.",
-      "scan-qr": "Skeniraj ovaj QR s Xumm app-om.",
+      "scan-qr": "Skeniraj ovaj QR s Xaman app-om.",
       "statuses": {
-        "redirecting": "Preusmjeravam na Xumm...",
+        "redirecting": "Preusmjeravam na Xaman...",
         "wait": "Molimo pričekajte...",
         "check-push": "Provjeri push notifikaciju na tvojem mobitelu.",
-        "check-app": "Molimo pratite upute u Xumm applikaciji.",
+        "check-app": "Molimo pratite upute u Xaman applikaciji.",
         "expired": "QR kod je istekao, zatraži novi."
       }
     },
@@ -601,7 +601,7 @@
     "it-helps": "Vaša donacija će pomoći dodati nove kapacitete te u razvoju Bithomp-a.",
     "address": "Naša XRPL adresa za donacije",
     "dt": "Destinacijska oznaka",
-    "donate-with-xumm": "Doniraj pomoću Xumm-a"
+    "donate-with-xaman": "Doniraj pomoću Xaman-a"
   },
   "sponsored": {
     "sponsored": "Sponzorirano"

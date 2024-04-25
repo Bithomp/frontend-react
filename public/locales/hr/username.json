@@ -3,7 +3,7 @@
   "error": {
     "address-empty": "Molimo unesite vašu XRP adresu.",
     "address-invalid": "Molimo unesite valjanu XRP adresu.",
-    "address-hosted": "Unesena adresa koristi poslužitelj na {{service}}, možete registrirati korisničko ime samo s adresa koje ne koriste poslužitelje (hardverski novčanici, Xumm, itd.). Ako vodite mjenjačnicu kripto valuta molimo kontaktirajte nas.",
+    "address-hosted": "Unesena adresa koristi poslužitelj na {{service}}, možete registrirati korisničko ime samo s adresa koje ne koriste poslužitelje (hardverski novčanici, Xaman, itd.). Ako vodite mjenjačnicu kripto valuta molimo kontaktirajte nas.",
     "address-done": "Adresa već ima registrirano korisničko ime.",
     "username-empty": "Molimo unesite korisničko ime koje želite registrirati.",
     "username-invalid": "Korisničko ime bi trebalo biti kraće od 18 karatktera, bez simbola.",
@@ -25,7 +25,7 @@
     "text3": "Plaćanje je za 100 Švedskih kruna u protuvrijednosti u XRP-u. Uplata za to korisničko ime <1>nije povratna</1>. Ako platite više nago je zatraženo, ekstra iznos ćemo brojati kao donaciju i neće biti moguć povrat.",
     "text4": "Korisnička imena se sad koriste na više lanaca, <1>registriraj korisničko ime na glavnoj XRPL mreži</1> i biti će dostupna na bithomp pregledniku (unutar jednog sata).",
     "enter-address-or": "Unesite vašu XRPL adresu ili",
-    "sign-in": "Prijavite se pomoću Xumm-a",
+    "sign-in": "Prijavite se pomoću Xaman-a",
     "sign-out": "odjava",
     "your-address": "Vaša XRPL adresa",
     "enter-username": "Unesite korisničko ime koje želite imati",

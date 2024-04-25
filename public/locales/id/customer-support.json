@@ -6,7 +6,7 @@
   "status-success": "Jika transaksi Anda memiliki status \"berhasil\" tetapi tidak diterima, maka hubungi dukungan dompet/pertukaran layanan penerima.",
   "wrong-tag": "Jika Anda mengirimkan transaksi tanpa tag tujuan atau dengan tag tujuan yang salah, maka baca (2) dan (3) di atas.",
   "text2": "Jika Anda kehilangan {{baseReserve}} dalam dompet Anda, harap baca tentang <3>cadangan dasar</3>.",
-  "paper-wallet": "Jika Anda ingin mengirim {{nativeCurrency}} dari dompet kertas, Anda perlu mengimpornya ke dompet perangkat lunak terlebih dahulu, Anda dapat menggunakan aplikasi seluler Xumm untuk itu (impor sebagai \"kata sandi keluarga\").",
+  "paper-wallet": "Jika Anda ingin mengirim {{nativeCurrency}} dari dompet kertas, Anda perlu mengimpornya ke dompet perangkat lunak terlebih dahulu, Anda dapat menggunakan aplikasi seluler Xaman untuk itu (impor sebagai \"kata sandi keluarga\").",
   "text3": "Jika Anda memiliki proposal <1>kemitraan atau pemasaran</1>, Anda dapat menghubungi kami melalui surel: <3/>. Anda juga dapat menghubungi kami untuk pertanyaan tentang pendaftaran username bithomp atau penjelajah transaksi bithomp.",
   "no-answer": "Karena waktu yang terbatas, kami tidak menjawab surel terkait dengan 1-6.",
   "submit-info": "Kirim informasi tentang layanan Anda",

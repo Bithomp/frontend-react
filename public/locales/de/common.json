@@ -100,14 +100,14 @@
     "expiration": "Ablauf",
     "target-table": "Zieltisch",
     "xumm": {
-      "open-app": "Öffnen Sie die Xumm App auf Ihrem Telefon.",
+      "open-app": "Öffnen Sie die Xaman App auf Ihrem Telefon.",
       "change-settings": "Gehen Sie in die Einstellungen und wählen Sie einen Testnetz Knoten.",
-      "scan-qr": "Scannen Sie diesen QR-Code mit der Xumm App.",
+      "scan-qr": "Scannen Sie diesen QR-Code mit der Xaman App.",
       "statuses": {
-        "redirecting": "Weiterleiten zu Xumm...",
+        "redirecting": "Weiterleiten zu Xaman...",
         "wait": "Bitte warten...",
         "check-push": "Prüfen Sie die Push-Benachrichtigung auf Ihrem Telefon.",
-        "check-app": "Bitte folgen Sie den Instruktionen in der Xumm App.",
+        "check-app": "Bitte folgen Sie den Instruktionen in der Xaman App.",
         "expired": "Der QR-Code ist abgelaufen. Beantragen Sie einen neuen."
       }
     },
@@ -602,7 +602,7 @@
     "it-helps": "Ihre Spende wird uns helfen, mehr Kapazitäten hinzuzufügen und Bithomp weiterzuentwickeln.",
     "address": "Unsere XRPL Adresse für Spenden",
     "dt": "DestinationTag",
-    "donate-with-xumm": "Spenden mit XUMM"
+    "donate-with-xaman": "Spenden mit Xaman"
   },
   "sponsored": {
     "sponsored": "Gesponsert"

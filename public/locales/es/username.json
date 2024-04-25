@@ -3,7 +3,7 @@
   "error": {
     "address-empty": "Por favor, introduce tu dirección XRPL.",
     "address-invalid": "Por favor, introduce una dirección XRPL válida.",
-    "address-hosted": "La dirección introducida está alojada en {{service}}, solo puedes registrar nombres de usuario para carteras no alojadas (carteras hardware, Xumm, etc). Si eres un operador de un exchange, por favor, contactanos.",
+    "address-hosted": "La dirección introducida está alojada en {{service}}, solo puedes registrar nombres de usuario para carteras no alojadas (carteras hardware, Xaman, etc). Si eres un operador de un exchange, por favor, contactanos.",
     "address-done": "La dirección tiene ya un nombre de usuario registrado.",
     "username-empty": "Por favor, introduce el nombre de usuario que quieres registrar.",
     "username-invalid": "El nombre de usuario debe tener menos de 18 caracteres, los simbolos no están permitidos.",
@@ -25,7 +25,7 @@
     "text3": "El pago es de 100 coronas suecas en XRP. El pago por el nombre de usuario <1>no es reembolsable</1>. Si pagas más de lo solicitado, la cantidad excedida se contabilizará como donación y no será devuelta.",
     "text4": "Los nombres de usuario ahora son multi-cadena, <1>registra un nombre de usuario en la red principal XRPL</1> y estará disponible en los exploradores de bithomp (en 1 hora).",
     "enter-address-or": "Introduce tu dirección XRPL o",
-    "sign-in": "Conéctate con Xumm",
+    "sign-in": "Conéctate con Xaman",
     "sign-out": "Desconectar",
     "your-address": "Tu dirección XRPL",
     "enter-username": "Introduce un nombre de usuario que te gustaría tener",

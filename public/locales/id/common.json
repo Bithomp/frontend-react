@@ -100,14 +100,14 @@
     "expiration": "Kedaluwarsa",
     "target-table": "Target table",
     "xumm": {
-      "open-app": "Buka aplikasi Xumm di ponsel Anda.",
+      "open-app": "Buka aplikasi Xaman di ponsel Anda.",
       "change-settings": "Buka pengaturan dan pilih node testnet.",
-      "scan-qr": "Pindai kode QR ini dengan aplikasi Xumm.",
+      "scan-qr": "Pindai kode QR ini dengan aplikasi Xaman.",
       "statuses": {
-        "redirecting": "Mengalihkan ke Xumm...",
+        "redirecting": "Mengalihkan ke Xaman...",
         "wait": "Harap tunggu...",
         "check-push": "Periksa pemberitahuan push di ponsel Anda.",
-        "check-app": "Ikuti petunjuk di aplikasi Xumm.",
+        "check-app": "Ikuti petunjuk di aplikasi Xaman.",
         "expired": "Kode QR telah kedaluwarsa, minta yang baru."
       }
     },
@@ -601,7 +601,7 @@
     "it-helps": "Donasi Anda akan membantu kami menambah kapasitas dan terus mengembangkan Bithomp.",
     "address": "Alamat XRPL kami untuk donasi",
     "dt": "Destination tag",
-    "donate-with-xumm": "Donasi dengan XUMM"
+    "donate-with-xaman": "Donasi dengan Xaman"
   },
   "sponsored": {
     "sponsored": "Disponsori"

@@ -100,14 +100,14 @@
     "expiration": "有効期限",
     "target-table": "対象テーブル",
     "xumm": {
-      "open-app": "スマートフォンでXummアプリを開きます。",
+      "open-app": "スマートフォンでXamanアプリを開きます。",
       "change-settings": "設定からテストネットノードを選択してください。",
-      "scan-qr": "XummアプリでQRコードをスキャンします。",
+      "scan-qr": "XamanアプリでQRコードをスキャンします。",
       "statuses": {
-        "redirecting": "Xummへリダイレクトしています...",
+        "redirecting": "Xamanへリダイレクトしています...",
         "wait": "しばらくお待ちください...",
         "check-push": "スマートフォンのプッシュ通知を確認してください。",
-        "check-app": "Xummアプリの指示に従ってください。",
+        "check-app": "Xamanアプリの指示に従ってください。",
         "expired": "QRコードの有効期限が切れました。新しいQRコードをリクエストしてください。"
       }
     },
@@ -601,7 +601,7 @@
     "it-helps": "皆様からの寄付は、Bithompの設備増強と継続的な開発に役立てられます。",
     "address": "寄付用XRPLアドレス",
     "dt": "宛先タグ",
-    "donate-with-xumm": "Xummで寄付"
+    "donate-with-xaman": "Xamanで寄付"
   },
   "sponsored": {
     "sponsored": "スポンサー"

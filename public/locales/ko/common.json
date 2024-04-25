@@ -100,14 +100,14 @@
     "expiration": "만료",
     "target-table": "Target table",
     "xumm": {
-      "open-app": "Xumm 앱을 여세요",
+      "open-app": "Xaman 앱을 여세요",
       "change-settings": "설정에 가서 테스트넷 노드를 고르세요",
-      "scan-qr": "Xumm 앱에서 QR코드를 찍으세요.",
+      "scan-qr": "Xaman 앱에서 QR코드를 찍으세요.",
       "statuses": {
-        "redirecting": "Xumm로 재연결 중입니다",
+        "redirecting": "Xaman로 재연결 중입니다",
         "wait": "기다려주세요",
         "check-push": "푸시 알림을 설정하세요.",
-        "check-app": "Xumm app의 절차를 따라주세요.",
+        "check-app": "Xaman app의 절차를 따라주세요.",
         "expired": "QR코드가 만료되었습니다. 다시 시도하세요."
       }
     },
@@ -601,7 +601,7 @@
     "it-helps": "여러분의 기부는 빗썸의 역량을 확충하고 지속적으로 발전하는 데 도움이 될 것입니다",
     "address": "기부를 위한 XRPL 주소",
     "dt": "대상 태그",
-    "donate-with-xumm": "XUMM에서 기부하세요"
+    "donate-with-xaman": "Xaman에서 기부하세요"
   },
   "sponsored": {
     "sponsored": "스폰서"

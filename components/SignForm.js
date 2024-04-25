@@ -82,7 +82,7 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
 
   useEffect(() => {
     if (!uuid) return
-    setScreen("xumm")
+    setScreen("xaman")
     setShowXummQr(false)
     setStatus(t("signin.xumm.statuses.wait"))
     xummGetSignedData(uuid, afterSubmit)
@@ -298,7 +298,7 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
       setShowXummQr(true)
     }
     payloadXummPost(signInPayload, onPayloadResponse)
-    setScreen("xumm")
+    setScreen("xaman")
   }
 
   const onPayloadResponse = data => {
@@ -499,7 +499,7 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
   }
 
   const SignInCancelAndClose = () => {
-    if (screen === 'xumm') {
+    if (screen === 'xaman') {
       setXummQrSrc(qr)
       xummCancel(xummUuid)
     }
@@ -1076,7 +1076,7 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
                 <div className='header'>
                   {signRequest?.request ? t("signin.sign-with", { appName: capitalize(screen) }) : t("signin.login-with", { appName: capitalize(screen) })}
                 </div>
-                {screen === 'xumm' ?
+                {screen === 'xaman' ?
                   <>
                     {!isMobile &&
                       <div className="signin-actions-list">
