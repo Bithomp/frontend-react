@@ -59,7 +59,7 @@ export default function Transaction(
   { id, initialData },
 ) {
   const { t } = useTranslation();
-  console.log(initialData);
+  console.log(initialData); //delete
 
   let TransactionComponent = null;
   switch (initialData?.type) {

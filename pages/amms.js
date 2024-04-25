@@ -35,7 +35,6 @@ export async function getServerSideProps(context) {
       initialErrorMessage = error.message
     });
     initialData = res?.data
-    console.log(initialData)
   } catch (error) {
     console.error(error)
   }
