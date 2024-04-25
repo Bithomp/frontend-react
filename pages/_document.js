@@ -57,7 +57,7 @@ class MyDocument extends Document {
                 window.__setPreferredTheme = function (newTheme) {
                   setTheme(newTheme);
                   try {
-                    document.cookie = "theme=" + JSON.stringify(window.__theme);
+                    document.cookie = "theme=" + JSON.stringify(window.__theme) + ";path=/";
                   } catch (err) {}
                 };
                 let preferredTheme;
