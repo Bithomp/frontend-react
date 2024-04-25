@@ -208,6 +208,24 @@ header {
   }
 }
 
+.mobile-menu-open {
+  header {
+    .header-menu-right {
+      .theme-switch {
+        display: block;
+      }
+      .top-switch {
+        .menu-dropdown {
+          display: block;
+        }
+      }
+    }
+  }
+  .mobile-menu {
+    transform: translateX(0);
+  }
+}
+
 @media only screen and (max-width: 1240px) {
   header {
     .header-menu-left {
@@ -238,8 +256,8 @@ header {
 }
 
 @media only screen and (max-width: 400px) {
-  header {
-    &.mobile-menu-open {
+  .mobile-menu-open {
+    header {
       .header-logo {
         margin-left: 15px;
         max-width: 90px;

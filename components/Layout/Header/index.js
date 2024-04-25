@@ -97,17 +97,9 @@ export default function Header({ setSignRequest, account, signOut, selectedCurre
   const mobileMenuToggle = () => {
     // remove scrollbar when menu is open
     if (!menuOpen) {
-      document.getElementsByClassName("mobile-menu")[0].style.transform = "translateX(0)";
       document.body.style.overflow = "hidden";
-      document.getElementsByClassName("theme-switch")[0].style.display = "block";
-      document.getElementsByClassName("top-switch")[0].getElementsByClassName("menu-dropdown")[0].style.display = "block";
-      document.getElementsByClassName("top-switch")[1].getElementsByClassName("menu-dropdown")[0].style.display = "block";
     } else {
-      document.getElementsByClassName("mobile-menu")[0].style.transform = "translateX(100%)";
       document.body.style.overflow = "auto";
-      document.getElementsByClassName("theme-switch")[0].style.display = "none";
-      document.getElementsByClassName("top-switch")[0].getElementsByClassName("menu-dropdown")[0].style.display = "none";
-      document.getElementsByClassName("top-switch")[1].getElementsByClassName("menu-dropdown")[0].style.display = "none";
     }
     setMenuOpen(!menuOpen);
   };
@@ -126,8 +118,8 @@ export default function Header({ setSignRequest, account, signOut, selectedCurre
   }
 
   return (
-    <>
-      <header className={menuOpen ? 'mobile-menu-open' : ''}>
+    <div className={menuOpen ? 'mobile-menu-open' : ''}>
+      <header>
         <Link href="/"><div className='header-logo'><LogoAnimated /></div></Link>
         <div className="header-menu-left">
           <MenuDropDown
@@ -598,6 +590,6 @@ export default function Header({ setSignRequest, account, signOut, selectedCurre
 
         </div>
       }
-    </>
+    </div>
   )
 }
