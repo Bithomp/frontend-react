@@ -31,12 +31,13 @@ export default function LanguageSwitch({ langSwitchOpen, setLangSwitchOpen, setC
   //const { pathname, asPath, query } = router
 
   const langChange = lang => {
+    if (lang === 'default') return
     moment.locale(lang)
     cookies.set('NEXT_LOCALE', lang, { path: '/' })
   }
 
   const handleLangChange = lang => {
-    if (i18n.language && i18n.language.slice(0, 2) !== lang) {
+    if (i18n.language && i18n.language !== 'default' && i18n.language.slice(0, 2) !== lang) {
       langChange(lang)
       //router.replace({ pathname, query }, asPath, { locale: lang })
       //hard refresh to avoid the issue when in some cases the language is not saved when user returned from a third party site

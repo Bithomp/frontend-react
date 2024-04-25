@@ -8,6 +8,9 @@ import countries from "i18n-iso-countries"
 export const countriesTranslated = () => {
   const { i18n } = useTranslation()
   let lang = i18n.language.slice(0, 2)
+  if (i18n.language === "default") {
+    lang = "en"
+  }
   const notSupportedLanguages = ['my'] // supported "en", "ru", "ja", "ko" etc
   if (notSupportedLanguages.includes(lang)) {
     lang = "en"

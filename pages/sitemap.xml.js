@@ -78,7 +78,7 @@ function generateSiteMap(posts) {
             <priority>${priority}</priority>
             ${!oldPages.includes(loc) ? locales
             .map((locale) => {
-              return `<xhtml:link rel="alternate" hreflang="${locale}" href="${`${server}${locale === 'en' ? '' : '/' + locale}/${loc}`}"/>`
+              return `<xhtml:link rel="alternate" hreflang="${locale}" href="${`${server}${'/' + locale}/${loc}`}"/>`
             })
             .join('')
             :
