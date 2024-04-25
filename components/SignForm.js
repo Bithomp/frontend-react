@@ -1061,7 +1061,7 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
               <>
                 <div className='header'>{t("signin.choose-app")}</div>
                 <div className='signin-apps'>
-                  <Image alt="xaman" className='signin-app-logo' src='/images/xumm-large.svg' onClick={XummTxSend} width={150} height={24} />
+                  <Image alt="xaman" className='signin-app-logo' src='/images/xaman-large.svg' onClick={XummTxSend} width={150} height={24} />
                   {signRequest?.wallet !== "xumm" &&
                     <>
                       {!isMobile && notAvailable(ledger, "ledger")}
