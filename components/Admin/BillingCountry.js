@@ -1,24 +1,16 @@
 import CountrySelect from '../UI/CountrySelect'
-import { useTranslation } from 'next-i18next'
-import countries from "i18n-iso-countries"
 import axios from 'axios'
 import { useRouter } from 'next/router'
 import { useState, useEffect } from 'react'
 
+import { countriesTranslated } from '../../utils'
+
 export default function BillingCountry({ billingCountry, setBillingCountry, choosingCountry, setChoosingCountry }) {
 
-  const { i18n } = useTranslation()
   const router = useRouter()
+  const countries = countriesTranslated()
 
   const [loading, setLoading] = useState(true) //keep true for country select
-
-  let lang = i18n.language.slice(0, 2)
-  const notSupportedLanguages = ['my'] // supported "en", "ru", "ja", "ko" etc
-  if (notSupportedLanguages.includes(lang)) {
-    lang = "en"
-  }
-  const languageData = require('i18n-iso-countries/langs/' + lang + '.json')
-  countries.registerLocale(languageData)
 
   useEffect(() => {
     const sessionToken = localStorage.getItem('sessionToken')
@@ -108,7 +100,7 @@ export default function BillingCountry({ billingCountry, setBillingCountry, choo
           <>
             Your billing country is {" "}
             <a onClick={() => setChoosingCountry(true)}>
-              {countries.getName(billingCountry, lang, { select: "official" })}
+              {countries.getNameTranslated(billingCountry)}
             </a>
           </>
         }

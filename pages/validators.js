@@ -4,14 +4,13 @@ import axios from 'axios'
 import moment from "moment"
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import ReactCountryFlag from "react-country-flag"
-import countries from "i18n-iso-countries"
 import { useTheme } from '../components/Layout/ThemeContext'
 
 import SEO from '../components/SEO'
 import CheckBox from '../components/UI/CheckBox'
 
 import { addressUsernameOrServiceLink, amountFormat, fullDateAndTime, shortHash } from '../utils/format'
-import { devNet, useWidth, xahauNetwork } from '../utils'
+import { devNet, useWidth, xahauNetwork, countriesTranslated } from '../utils'
 
 import CopyButton from '../components/UI/CopyButton'
 
@@ -48,9 +47,11 @@ export default function Validators({ amendment }) {
   const [unlValidatorsCount, setUnlValidatorsCount] = useState(0)
   const [developerMode, setDeveloperMode] = useState(false)
   const [showServer, setShowServer] = useState(true)
-  const { t, i18n } = useTranslation()
+  const { t } = useTranslation()
   const windowWidth = useWidth()
   const { theme } = useTheme()
+
+  const countries = countriesTranslated()
 
   const compare = (a, b) => {
     if (!amendment) {
@@ -158,14 +159,6 @@ export default function Validators({ amendment }) {
     </a>
   }
 
-  let lang = i18n.language.slice(0, 2)
-  const notSupportedLanguages = ['my'] // supported "en", "ru", "ja", "ko" etc
-  if (notSupportedLanguages.includes(lang)) {
-    lang = "en"
-  }
-  const languageData = require('i18n-iso-countries/langs/' + lang + '.json')
-  countries.registerLocale(languageData)
-
   const displayFlag = (country, typeName, em = 1.5) => {
     if (!country) return ""
     if (country.length === 2) {
@@ -180,7 +173,7 @@ export default function Validators({ amendment }) {
         />
         {country.toLowerCase() !== "eu" &&
           <span className='tooltiptext right no-brake'>
-            {typeName}: {countries.getName(country, lang, { select: "official" })}
+            {typeName}: {countries.getNameTranslated(country)}
           </span>
         }
       </span>

@@ -2,6 +2,38 @@ import axios from 'axios'
 import { useCallback, useEffect, useState } from "react"
 import { Buffer } from 'buffer'
 import { decodeAccountID, isValidClassicAddress } from 'ripple-address-codec'
+import { useTranslation } from 'next-i18next'
+import countries from "i18n-iso-countries"
+
+export const countriesTranslated = () => {
+  const { i18n } = useTranslation()
+  let lang = i18n.language.slice(0, 2)
+  const notSupportedLanguages = ['my'] // supported "en", "ru", "ja", "ko" etc
+  if (notSupportedLanguages.includes(lang)) {
+    lang = "en"
+  }
+  const languageData = require('i18n-iso-countries/langs/' + lang + '.json')
+  countries.registerLocale(languageData)
+  countries.getNameTranslated = code => {
+    return countries.getName(code, lang, { select: "official" })
+  }
+
+  countries.getNamesTranslated = () => {
+    return countries.getNames(lang, { select: "official" })
+  }
+
+  const countryObj = countries.getNamesTranslated()
+  const countryArr = Object.entries(countryObj).map(([key, value]) => {
+    return {
+      label: value,
+      value: key
+    }
+  })
+  countryArr.sort((a, b) => a.label.localeCompare(b.label, lang))
+  countries.countryArr = countryArr
+
+  return countries
+}
 
 export const chartSpan = period => {
   if (!period) return ""

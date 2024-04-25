@@ -38,6 +38,7 @@
       "offers": "オファー"
     },
     "xrpl": {
+      "nodes": "ノード",
       "governance": "ガバナンス",
       "activations": "Activated accounts (chart)",
       "distribution": "{{nativeCurrency}}の分布",

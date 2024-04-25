@@ -38,6 +38,7 @@
       "offers": "Ponude"
     },
     "xrpl": {
+      "nodes": "Čvorovi",
       "governance": "Uprava",
       "activations": "Activated accounts (chart)",
       "distribution": "{{nativeCurrency}} distribution",

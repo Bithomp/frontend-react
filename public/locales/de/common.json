@@ -38,6 +38,7 @@
       "offers": "Angebote"
     },
     "xrpl": {
+      "nodes": "Knoten",
       "governance": "Governance",
       "activations": "Aktivierte Konten (Diagramm)",
       "distribution": "{{nativeCurrency}} Verteilung",

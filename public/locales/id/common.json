@@ -38,17 +38,18 @@
       "offers": "Penawaran"
     },
     "xrpl": {
-    "governance": "Governance",
-    "activations": "Akun yang Telah Aktif (grafik)",
-    "distribution": "Distribusi {{nativeCurrency}}",
-    "last-ledger-information": "Informasi Ledger Terbaru",
-    "last-ledger-transactions": "Transaksi Ledger Terbaru",
-    "verified-domains": "Domain yang Terverifikasi",
-    "validators": "Validasi",
-    "amendments": "Perubahan",
-    "unl-report": "Laporan UNL",
-    "genesis": "Akun Awal"
-  },
+      "nodes": "Node",
+      "governance": "Governance",
+      "activations": "Akun yang Telah Aktif (grafik)",
+      "distribution": "Distribusi {{nativeCurrency}}",
+      "last-ledger-information": "Informasi Ledger Terbaru",
+      "last-ledger-transactions": "Transaksi Ledger Terbaru",
+      "verified-domains": "Domain yang Terverifikasi",
+      "validators": "Validasi",
+      "amendments": "Perubahan",
+      "unl-report": "Laporan UNL",
+      "genesis": "Akun Awal"
+    },
     "developers": {
       "developers": "Pengembang",
       "account-generation": "Generasi Akun",
