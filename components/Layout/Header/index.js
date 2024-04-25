@@ -327,11 +327,21 @@ export default function Header({ setSignRequest, account, signOut, selectedCurre
       </header>
       {rendered &&
         <div className="mobile-menu">
+          {!proName &&
+            <>
+              <br />
+              <div className="mobile-menu-directory"><span>{t("signin.signin")}</span></div>
+            </>
+          }
+          <Link href="/admin" className="mobile-menu-item" onClick={mobileMenuToggle}>
+            {!proName ? 'Bithomp Pro' : proName}
+          </Link>
+          {proName && !displayName &&
+            <div className="mobile-menu-directory"><span>{t("signin.signin")}</span></div>
+          }
+
           {displayName ?
             <>
-              <Link href="/admin" className="mobile-menu-item" onClick={mobileMenuToggle}>
-                {!proName ? 'Bithomp Pro' : proName}
-              </Link>
               {xummUserToken ?
                 <a href={"/explorer/" + address + "?hw=xumm&xummtoken=" + xummUserToken} className="mobile-menu-item">
                   <img src={hashicon} alt="user icon" className="user-icon" />
@@ -366,15 +376,10 @@ export default function Header({ setSignRequest, account, signOut, selectedCurre
               <span onClick={signOut} className="mobile-menu-item link">{t("signin.signout")}</span>
             </>
             :
-            <>
-              <Link href="/admin" className="mobile-menu-item" onClick={mobileMenuToggle}>
-                Bithomp Pro
-              </Link>
-              <span onClick={() => { setSignRequest({ wallet: "xumm" }) }} className="link mobile-menu-item">
-                <Image src="/images/xumm.png" className='xumm-logo' alt="xaman" height={24} width={24} />
-                Xaman
-              </span>
-            </>
+            <span onClick={() => { setSignRequest({ wallet: "xumm" }) }} className="link mobile-menu-item">
+              <Image src="/images/xumm.png" className='xumm-logo' alt="xaman" height={24} width={24} />
+              Xaman
+            </span>
           }
 
           <div className="mobile-menu-directory"><span>{t("menu.personal.personal")}</span></div>
