@@ -11,8 +11,8 @@ import {
   addressUsernameOrServiceLink,
   shortNiceNumber,
   fullDateAndTime,
+  timeFromNow,
 } from '../utils/format'
-import moment from 'moment'
 
 export async function getServerSideProps(context) {
   const { locale, req } = context
@@ -189,11 +189,7 @@ export default function Amms({ initialData, initialErrorMessage }) {
                             {shortHash(a.lpTokenBalance.currency)} <CopyButton text={a.lpTokenBalance.currency} />
                           </td>
                           <td>
-                            {isRendered ?
-                              moment(a.createdAt * 1000, "unix").fromNow()
-                              :
-                              ""
-                            }
+                            {isRendered && timeFromNow(a.createdAt)}
                           </td>
                           <td className='right'>
                             {showAmmPercents(a.tradingFee)}
@@ -279,7 +275,7 @@ export default function Amms({ initialData, initialErrorMessage }) {
                         {" "}
                         {isRendered ?
                           <>
-                            {moment(a.createdAt * 1000, "unix").fromNow()}
+                            {timeFromNow(a.createdAt)}
                             {", "}
                             {fullDateAndTime(a.createdAt)}
                           </>

@@ -620,6 +620,10 @@ export const capitalize = word => {
   return word.charAt(0).toUpperCase() + word.slice(1)
 }
 
+export const timeFromNow = timestamp => {
+  return moment(timestamp * 1000, "unix").fromNow()
+}
+
 export const fullDateAndTime = (timestamp, type = null) => {
   //used also in CSV file names as text
   if (!timestamp) return ''

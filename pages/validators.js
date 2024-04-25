@@ -9,7 +9,7 @@ import { useTheme } from '../components/Layout/ThemeContext'
 import SEO from '../components/SEO'
 import CheckBox from '../components/UI/CheckBox'
 
-import { addressUsernameOrServiceLink, amountFormat, fullDateAndTime, shortHash } from '../utils/format'
+import { addressUsernameOrServiceLink, amountFormat, fullDateAndTime, shortHash, timeFromNow } from '../utils/format'
 import { devNet, useWidth, xahauNetwork, countriesTranslated } from '../utils'
 
 import CopyButton from '../components/UI/CopyButton'
@@ -35,7 +35,7 @@ moment.relativeTimeThreshold('ss', devNet ? 36 : 6)
 
 const showTime = ({ time }) => {
   if (!time) return "N/A"
-  return <span className={(Math.floor(Date.now() / 1000) - (devNet ? 40 : 10)) > time ? 'red bold' : ''}>{moment((time - 1) * 1000, "unix").fromNow()}</span>
+  return <span className={(Math.floor(Date.now() / 1000) - (devNet ? 40 : 10)) > time ? 'red bold' : ''}>{timeFromNow((time - 1))}</span>
 }
 
 const ShowTimeMemo = memo(showTime)

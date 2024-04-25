@@ -4,10 +4,9 @@ import axios from 'axios'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import Link from 'next/link'
 import Image from 'next/image'
-import moment from 'moment'
 
 import { server, getCoinsUrl, nativeCurrency } from '../../utils'
-import { amountFormat, shortNiceNumber, fullDateAndTime } from '../../utils/format'
+import { amountFormat, shortNiceNumber, fullDateAndTime, timeFromNow } from '../../utils/format'
 import { getIsSsrMobile } from "../../utils/mobile"
 
 import DatePicker from "react-datepicker"
@@ -465,7 +464,7 @@ export default function Account({ pageMeta, refreshPage, id, selectedCurrency, l
                               <span className='green'>Active </span>
                               {data?.ledgerInfo?.lastSubmittedAt &&
                                 <>
-                                  {moment((data.ledgerInfo.lastSubmittedAt) * 1000, "unix").fromNow()}
+                                  {timeFromNow(data.ledgerInfo.lastSubmittedAt)}
                                   {" "}
                                   ({fullDateAndTime(data.ledgerInfo.lastSubmittedAt)})
                                 </>
@@ -596,7 +595,7 @@ export default function Account({ pageMeta, refreshPage, id, selectedCurrency, l
                         <tr>
                           <td>Activated</td>
                           <td>
-                            {moment((data.inception) * 1000, "unix").fromNow()}
+                            {timeFromNow(data.inception)}
                             {" "}
                             ({fullDateAndTime(data.inception)})
                           </td>

@@ -2,7 +2,6 @@ import React from 'react'
 import axios from "axios"
 import { useTranslation } from "next-i18next"
 import { serverSideTranslations } from "next-i18next/serverSideTranslations"
-import moment from 'moment'
 
 import SearchBlock from "../../components/Layout/SearchBlock"
 import SEO from "../../components/SEO"
@@ -15,6 +14,7 @@ import {
   fullNiceNumber,
   trAmountWithGateway,
   showAmmPercents,
+  timeFromNow,
 } from "../../utils/format"
 import { LinkTx } from '../../utils/links'
 import DatePicker from "react-datepicker"
@@ -245,7 +245,7 @@ export default function Amm(
                           <td>
                             {isMounted ?
                               <>
-                                {moment(data.createdAt * 1000, "unix").fromNow()}
+                                {timeFromNow(data.createdAt)}
                                 {", "}
                                 {fullDateAndTime(data.createdAt)}
                               </>
@@ -262,7 +262,7 @@ export default function Amm(
                             <td>
                               {isMounted ?
                                 <>
-                                  {moment(data.updatedAt * 1000, "unix").fromNow()}
+                                  {timeFromNow(data.updatedAt)}
                                   {", "}
                                   {fullDateAndTime(data.updatedAt)}
                                 </>
@@ -326,7 +326,7 @@ export default function Amm(
                             <td>
                               {isMounted ?
                                 <>
-                                  {moment(data.auctionSlot.expiration * 1000, "unix").fromNow()}
+                                  {timeFromNow(data.auctionSlot.expiration)}
                                   {", "}
                                   {fullDateAndTime(data.auctionSlot.expiration)}
                                 </>
@@ -369,7 +369,7 @@ export default function Amm(
                                     <td>
                                       {isMounted ?
                                         <>
-                                          {moment(slot.createdAt * 1000, "unix").fromNow()}
+                                          {timeFromNow(slot.createdAt)}
                                           {", "}
                                           {fullDateAndTime(slot.createdAt)}
                                         </>
@@ -387,7 +387,7 @@ export default function Amm(
                                       <td>
                                         {isMounted ?
                                           <>
-                                            {moment(data.updatedAt * 1000, "unix").fromNow()}
+                                            {timeFromNow(data.updatedAt)}
                                             {", "}
                                             {fullDateAndTime(data.updatedAt)}
                                           </>
