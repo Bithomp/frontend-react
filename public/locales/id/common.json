@@ -37,7 +37,7 @@
       "nfts": "NFT Akun",
       "offers": "Penawaran"
     },
-    "xrpl": {
+    "network": {
       "nodes": "Node",
       "governance": "Governance",
       "activations": "Akun yang Telah Aktif (grafik)",

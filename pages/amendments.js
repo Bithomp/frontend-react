@@ -168,7 +168,7 @@ export default function Amendment() {
   const activationDays = xahauNetwork ? 5 : 14
 
   return <>
-    <SEO title={t("menu.xrpl.amendments")} />
+    <SEO title={t("menu.network.amendments")} />
     <div className="content-text">
       {majorityAmendments?.length > 0 &&
         <>

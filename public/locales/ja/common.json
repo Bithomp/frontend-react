@@ -37,7 +37,7 @@
       "nfts": "アカウントのNFT",
       "offers": "オファー"
     },
-    "xrpl": {
+    "network": {
       "nodes": "ノード",
       "governance": "ガバナンス",
       "activations": "Activated accounts (chart)",

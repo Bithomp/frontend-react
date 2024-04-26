@@ -206,19 +206,22 @@ export default function Header({ setSignRequest, account, signOut, selectedCurre
             setHoverStates={setHoverStates}
             hoverStates={hoverStates}
           >
-            {xahauNetwork && <Link href="/governance">{t("menu.xrpl.governance")}</Link>}
-            <Link href="/activations">{t("menu.xrpl.activations")}</Link>
-            <Link href="/distribution">{t("menu.xrpl.distribution", { nativeCurrency })}</Link>
-            <Link href="/last-ledger-information">{t("menu.xrpl.last-ledger-information")}</Link>
-            <Link href="/ledger">{t("menu.xrpl.last-ledger-transactions")}</Link>
+            {xahauNetwork && <Link href="/governance">{t("menu.network.governance")}</Link>}
+            <Link href="/activations">{t("menu.network.activations")}</Link>
+            <Link href="/distribution">{t("menu.network.distribution", { nativeCurrency })}</Link>
+            <Link href="/last-ledger-information">{t("menu.network.last-ledger-information")}</Link>
+            <Link href="/ledger">{t("menu.network.last-ledger-transactions")}</Link>
             {/* Hide Verified Domains for XAHAU while they are not ready yet */}
             {!xahauNetwork &&
-              <Link href="/domains">{t("menu.xrpl.verified-domains")}</Link>
+              <Link href="/domains">{t("menu.network.verified-domains")}</Link>
             }
-            <Link href="/validators">{t("menu.xrpl.validators")}</Link>
-            <Link href="/amendments">{t("menu.xrpl.amendments")}</Link>
-            {xahauNetwork && <Link href="/unl-report">{t("menu.xrpl.unl-report")}</Link>}
-            <Link href="/genesis">{t("menu.xrpl.genesis")}</Link>
+            <Link href="/validators">{t("menu.network.validators")}</Link>
+            {!(xahauNetwork && devNet) &&
+              <Link href="/amendments">{t("menu.network.amendments")}</Link>
+            }
+            <Link href="/nodes">{t("menu.network.nodes")}</Link>
+            {xahauNetwork && <Link href="/unl-report">{t("menu.network.unl-report")}</Link>}
+            <Link href="/genesis">{t("menu.network.genesis")}</Link>
           </MenuDropDown>
 
           <MenuDropDown
@@ -503,7 +506,7 @@ export default function Header({ setSignRequest, account, signOut, selectedCurre
               className="mobile-menu-item"
               onClick={mobileMenuToggle}
             >
-              {t("menu.xrpl.governance")}
+              {t("menu.network.governance")}
             </Link>
           }
           <Link
@@ -511,28 +514,28 @@ export default function Header({ setSignRequest, account, signOut, selectedCurre
             className="mobile-menu-item"
             onClick={mobileMenuToggle}
           >
-            {t("menu.xrpl.activations")}
+            {t("menu.network.activations")}
           </Link>
           <Link
             href="/distribution"
             className="mobile-menu-item"
             onClick={mobileMenuToggle}
           >
-            {t("menu.xrpl.distribution", { nativeCurrency })}
+            {t("menu.network.distribution", { nativeCurrency })}
           </Link>
           <Link
             href="/last-ledger-information"
             className="mobile-menu-item"
             onClick={mobileMenuToggle}
           >
-            {t("menu.xrpl.last-ledger-information")}
+            {t("menu.network.last-ledger-information")}
           </Link>
           <Link
             href="/ledger"
             className="mobile-menu-item"
             onClick={mobileMenuToggle}
           >
-            {t("menu.xrpl.last-ledger-transactions")}
+            {t("menu.network.last-ledger-transactions")}
           </Link>
 
           {/* Hide Verified Domains for XAHAU while they are not ready yet */}
@@ -542,7 +545,7 @@ export default function Header({ setSignRequest, account, signOut, selectedCurre
               className="mobile-menu-item"
               onClick={mobileMenuToggle}
             >
-              {t("menu.xrpl.verified-domains")}
+              {t("menu.network.verified-domains")}
             </Link>
           }
 
@@ -551,26 +554,35 @@ export default function Header({ setSignRequest, account, signOut, selectedCurre
             className="mobile-menu-item"
             onClick={mobileMenuToggle}
           >
-            {t("menu.xrpl.validators")}
+            {t("menu.network.validators")}
           </Link>
           <Link
             href="/amendments"
             className="mobile-menu-item"
             onClick={mobileMenuToggle}
           >
-            {t("menu.xrpl.amendments")}
+            {t("menu.network.amendments")}
           </Link>
+          {!(xahauNetwork && devNet) &&
+            <Link
+              href="/nodes"
+              className="mobile-menu-item"
+              onClick={mobileMenuToggle}
+            >
+              {t("menu.network.nodes")}
+            </Link>
+          }
           {xahauNetwork &&
             <Link
               href="/unl-report"
               className="mobile-menu-item"
               onClick={mobileMenuToggle}
             >
-              {t("menu.xrpl.unl-report")}
+              {t("menu.network.unl-report")}
             </Link>
           }
           <Link href="/genesis" className="mobile-menu-item" onClick={mobileMenuToggle}>
-            {t("menu.xrpl.genesis")}
+            {t("menu.network.genesis")}
           </Link>
 
           <div className="mobile-menu-directory"><span>{t("menu.developers.developers")}</span></div>

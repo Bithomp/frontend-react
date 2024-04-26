@@ -37,7 +37,7 @@
       "nfts": "NFTs eines Kontos",
       "offers": "Angebote"
     },
-    "xrpl": {
+    "network": {
       "nodes": "Knoten",
       "governance": "Governance",
       "activations": "Aktivierte Konten (Diagramm)",

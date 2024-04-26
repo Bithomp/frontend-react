@@ -24,6 +24,8 @@ const pages = [
   { loc: "donate", changefreq: "daily", priority: "0.7" },
   { loc: "alerts", changefreq: "daily", priority: "0.7" },
   { loc: "last-ledger-information", changefreq: "always", priority: "0.7" },
+  { loc: "nodes", changefreq: "always", priority: "0.7" },
+  { loc: "activations", changefreq: "always", priority: "0.7" },
   { loc: "paperwallet/", changefreq: "yearly", priority: "0.7" },
   { loc: "domains", changefreq: "always", priority: "0.7" },
   { loc: "distribution", changefreq: "always", priority: "0.7" },

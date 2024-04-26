@@ -37,7 +37,7 @@
       "nfts": "Account's NFTs",
       "offers": "Offers"
     },
-    "xrpl": {
+    "network": {
       "nodes": "Nodes",
       "governance": "Governance",
       "activations": "Activated accounts (chart)",

@@ -311,9 +311,9 @@ export default function Validators({ amendment }) {
   }
 
   return <>
-    <SEO title={t("menu.xrpl.validators")} />
+    <SEO title={t("menu.network.validators")} />
     <div className="content-text">
-      <h1 className="center">{t("menu.xrpl.validators")}</h1>
+      <h1 className="center">{t("menu.network.validators")}</h1>
       <div className="flex center">
         <div className="grey-box">
           {!loading ? <>

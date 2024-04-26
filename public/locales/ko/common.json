@@ -37,7 +37,7 @@
       "nfts": "계정의 NFT",
       "offers": "제안"
     },
-    "xrpl": {
+    "network": {
       "nodes": "노드",
       "governance": "Governance",
       "activations": "Activated accounts (chart)",

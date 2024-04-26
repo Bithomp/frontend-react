@@ -37,7 +37,7 @@
       "nfts": "NFTovi računa",
       "offers": "Ponude"
     },
-    "xrpl": {
+    "network": {
       "nodes": "Čvorovi",
       "governance": "Uprava",
       "activations": "Activated accounts (chart)",

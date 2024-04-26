@@ -76,10 +76,10 @@ export default function Domains({ setSignRequest }) {
   }, [])
 
   return <>
-    <SEO title={t("menu.xrpl.verified-domains")} />
+    <SEO title={t("menu.network.verified-domains")} />
     <div className="content-text">
 
-      <h1 className="center">{t("menu.xrpl.verified-domains")}</h1>
+      <h1 className="center">{t("menu.network.verified-domains")}</h1>
       <div className='flex'>
         <div className="grey-box">
           <h4>

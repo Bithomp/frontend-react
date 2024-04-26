@@ -105,9 +105,9 @@ export default function Distribution() {
   }, [isReady])
 
   return <>
-    <SEO title={t("menu.xrpl.distribution", { nativeCurrency })} />
+    <SEO title={t("menu.network.distribution", { nativeCurrency })} />
     <div className="content-text">
-      <h1 className="center">{t("menu.xrpl.distribution", { nativeCurrency })}</h1>
+      <h1 className="center">{t("menu.network.distribution", { nativeCurrency })}</h1>
       <div className='flex'>
         <div className="grey-box">
           {t("desc", { ns: 'distribution', nativeCurrency })}

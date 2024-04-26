@@ -104,7 +104,7 @@ export default function Nodes({ initialData, initialErrorMessage }) {
   }
 
   return <>
-    <SEO title={t("menu.xrpl.nodes")} />
+    <SEO title={t("menu.network.nodes")} />
     <div className="content-text">
       <h1 className="center">{data?.summary?.total} {ledgerName} nodes</h1>
       <p className='center'>{isRendered && data?.crawl_time && "updated " + timeFromNow(data.crawl_time)}</p>
@@ -211,7 +211,7 @@ export default function Nodes({ initialData, initialErrorMessage }) {
 
       <h4 className="center">Nodes</h4>
 
-      {(!windowWidth || windowWidth > 1000) ?
+      {(!windowWidth || windowWidth > 1230) ?
         <table className="table-large shrink">
           <thead>
             <tr>
@@ -220,6 +220,8 @@ export default function Nodes({ initialData, initialErrorMessage }) {
               <th className='right'>Public key</th>
               <th className='right'>IP</th>
               <th>Version</th>
+              <th className='right'>Peers In</th>
+              <th className='right'>Peers Out</th>
               <th className='right'>Uptime</th>
             </tr>
           </thead>
@@ -243,13 +245,19 @@ export default function Nodes({ initialData, initialErrorMessage }) {
                           <td className='center'>{i + 1}</td>
                           <td>{isRendered && countryCodeWithFlag(a.country_code)}</td>
                           <td className='right'>
-                            {windowWidth > 1260 ? a.node_public_key : shortHash(a.node_public_key)} <CopyButton text={a.node_public_key} />
+                            {windowWidth > 1560 ? a.node_public_key : shortHash(a.node_public_key)} <CopyButton text={a.node_public_key} />
                           </td>
                           <td className='right'>
                             {a.ip}
                           </td>
                           <td>
                             {shortVersion(a.version)}
+                          </td>
+                          <td className='right'>
+                            {a.inbound_count}
+                          </td>
+                          <td className='right'>
+                            {a.outbound_count}
                           </td>
                           <td className='right'>
                             {duration(t, a.uptime)}
@@ -291,13 +299,19 @@ export default function Nodes({ initialData, initialErrorMessage }) {
                         {isRendered && countryWithFlag(a.country_code)}
                       </p>
                       <p>
-                        Public key: {shortHash(a.node_public_key)} <CopyButton text={a.node_public_key} />
+                        Public key: {windowWidth > 540 ? a.node_public_key : shortHash(a.node_public_key)} <CopyButton text={a.node_public_key} />
                       </p>
                       <p>
                         IP: {a.ip}
                       </p>
                       <p>
                         Version: {shortVersion(a.version)}
+                      </p>
+                      <p>
+                        Peers In: {a.inbound_count}
+                      </p>
+                      <p>
+                        Peers Out: {a.outbound_count}
                       </p>
                       <p>
                         Uptime: {duration(t, a.uptime)}

@@ -97,9 +97,9 @@ export default function LastLedgerInformation() {
   }
 
   return <>
-    <SEO title={t("menu.xrpl.last-ledger-information")} />
+    <SEO title={t("menu.network.last-ledger-information")} />
     <div className="content-text content-center">
-      <h1 className="center">{t("menu.xrpl.last-ledger-information")}</h1>
+      <h1 className="center">{t("menu.network.last-ledger-information")}</h1>
       <div className="main-box">
         <p>
           {t("last-ledger-information.ledger-hash")}: {ledger?.validatedLedger.hash.toLowerCase()}

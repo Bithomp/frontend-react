@@ -37,7 +37,7 @@
       "nfts": "NFTs de la cuenta",
       "offers": "Ofertas"
     },
-    "xrpl": {
+    "network": {
       "nodes": "Nodos",
       "governance": "Gobierno",
       "activations": "Cuentas activadas (gráfica)",
