@@ -216,10 +216,10 @@ export default function Header({ setSignRequest, account, signOut, selectedCurre
               <Link href="/domains">{t("menu.network.verified-domains")}</Link>
             }
             <Link href="/validators">{t("menu.network.validators")}</Link>
+            <Link href="/amendments">{t("menu.network.amendments")}</Link>
             {!(xahauNetwork && devNet) &&
-              <Link href="/amendments">{t("menu.network.amendments")}</Link>
+              <Link href="/nodes">{t("menu.network.nodes")}</Link>
             }
-            <Link href="/nodes">{t("menu.network.nodes")}</Link>
             {xahauNetwork && <Link href="/unl-report">{t("menu.network.unl-report")}</Link>}
             <Link href="/genesis">{t("menu.network.genesis")}</Link>
           </MenuDropDown>
