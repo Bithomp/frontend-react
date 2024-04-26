@@ -402,27 +402,6 @@ export default function Header({ setSignRequest, account, signOut, selectedCurre
           }
           {!devNet && <a href={"/submit/"} className="mobile-menu-item">{t("menu.submit-offline-tx")}</a>}
 
-          {!devNet &&
-            <>
-              <div className="mobile-menu-directory"><span>{t("menu.business.business")}</span></div>
-              <Link href="/advertise" className="mobile-menu-item" onClick={mobileMenuToggle}>
-                {t("menu.business.advertise")}
-              </Link>
-              {!displayName &&
-                <Link href="/username" className="mobile-menu-item" onClick={mobileMenuToggle}>{t("menu.usernames")}</Link>
-              }
-              <Link href="/submit-account-information" className="mobile-menu-item" onClick={mobileMenuToggle}>
-                {t("menu.project-registration")}
-              </Link>
-              <Link href="/eaas" className="mobile-menu-item" onClick={mobileMenuToggle}>
-                {t("menu.business.eaas")}
-              </Link>
-              <Link href="/build-unl" className="mobile-menu-item" onClick={mobileMenuToggle}>
-                {t("menu.business.build-unl")}
-              </Link>
-            </>
-          }
-
           <div className="mobile-menu-directory"><span>NFT</span></div>
           <Link href="/nft-explorer" className="mobile-menu-item" onClick={mobileMenuToggle}> {t("menu.nft.explorer")}</Link>
           {/* Hide NFT menu for XAHAU while they are not ready yet */}
@@ -604,6 +583,27 @@ export default function Header({ setSignRequest, account, signOut, selectedCurre
             {t("menu.developers.api-admin")}
           </Link>
           <a href="https://github.com/Bithomp" className="mobile-menu-item">Github</a>
+
+          {!devNet &&
+            <>
+              <div className="mobile-menu-directory"><span>{t("menu.business.business")}</span></div>
+              <Link href="/advertise" className="mobile-menu-item" onClick={mobileMenuToggle}>
+                {t("menu.business.advertise")}
+              </Link>
+              {!displayName &&
+                <Link href="/username" className="mobile-menu-item" onClick={mobileMenuToggle}>{t("menu.usernames")}</Link>
+              }
+              <Link href="/submit-account-information" className="mobile-menu-item" onClick={mobileMenuToggle}>
+                {t("menu.project-registration")}
+              </Link>
+              <Link href="/eaas" className="mobile-menu-item" onClick={mobileMenuToggle}>
+                {t("menu.business.eaas")}
+              </Link>
+              <Link href="/build-unl" className="mobile-menu-item" onClick={mobileMenuToggle}>
+                {t("menu.business.build-unl")}
+              </Link>
+            </>
+          }
 
         </div>
       }

@@ -157,7 +157,7 @@
     "title": "{{explorerName}} Explorer | Scan the {{nativeCurrency}} Ledger",
     "description": "{{nativeCurrency}} price chart | {{explorerName}} Statistics | NFT explorer | Wallet address lookup | {{explorerName}} NFT volumes | Buy and Sell NFT | {{explorerName}} Services",
     "search-placeholder": "Search by Address / Transaction / NFT / Username / PayString / Offer / Currency hash",
-    "search-placeholder-short": "Search by Address / Transaction / User",
+    "search-placeholder-short": "Address / Transaction / Username",
     "scan-qr": "SCAN A CODE",
     "whales": {
       "header": "The most significant transactions for the last 24 hours",
