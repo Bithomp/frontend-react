@@ -37,8 +37,7 @@ export default function LanguageSwitch({ langSwitchOpen, setLangSwitchOpen, setC
     if (domainParts.length > 2) {
       domain = domainParts.slice(1).join('.')
     }
-
-    cookies.set('NEXT_LOCALE', lang, { path: '/', domain: "." + encodeURI(domain) })
+    cookies.set('NEXT_LOCALE', lang, { path: '/', domain: "." + encodeURI(domain), maxAge: 31536000 })
   }
 
   const handleLangChange = lang => {
