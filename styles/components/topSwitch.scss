@@ -21,6 +21,12 @@
       user-select: none;
       height: 30px;
     }
+    .menu-dropdown-subtitle {
+      top: 30px;
+      position: absolute;
+      width: 100%;
+      text-align: center;
+    }
     .menu-dropdown-content {
       display: block;
       table {
@@ -43,16 +49,26 @@
       }
       padding-top: 26px !important;
       min-width: auto !important;
-      right: 0;
+      &.stick-right {
+        right: 0;
+        left: auto;
+      }
+      &.stick-left {
+        right: auto;
+        left: -8px;
+      }
     }
   }
 }
 
-@media only screen and (max-width: 400px) {
+@media only screen and (max-width: 600px) {
   .top-switch {
     .menu-dropdown {
       .menu-dropdown-content {
-        right: -20px;
+        position: fixed;
+        width: 100%;
+        display: flex;
+        flex-flow: column nowrap;
       }
     }
   }

@@ -25,7 +25,6 @@
     "project-registration": "Projekt registrieren",
     "price-alerts": "{{nativeCurrency}} Preisalarme",
     "submit-offline-tx": "Offline Transaktion einreichen",
-    "networks": "Netzwerke",
     "ledger": "Ledger Transaktionen",
     "nft": {
       "explorer": "Explorer",
@@ -38,6 +37,7 @@
       "offers": "Angebote"
     },
     "network": {
+      "network": "Netzwerk",
       "nodes": "Knoten",
       "governance": "Governance",
       "activations": "Aktivierte Konten (Diagramm)",

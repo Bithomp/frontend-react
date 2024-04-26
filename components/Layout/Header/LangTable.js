@@ -15,7 +15,7 @@ import Cookies from 'universal-cookie'
 
 const cookies = new Cookies()
 
-export default function LanguageSwitch({ langSwitchOpen, setLangSwitchOpen, setCurrencySwitchOpen }) {
+export default function LanguageSwitch({ close }) {
   const { i18n } = useTranslation()
   const router = useRouter()
 
@@ -47,7 +47,7 @@ export default function LanguageSwitch({ langSwitchOpen, setLangSwitchOpen, setC
       //hard refresh to avoid the issue when in some cases the language is not saved when user returned from a third party site
       //window.location.replace(`/${lang}${asPath}`)
     }
-    setLangSwitchOpen(false)
+    close()
   }
 
   langChange(i18n.language)
@@ -61,7 +61,10 @@ export default function LanguageSwitch({ langSwitchOpen, setLangSwitchOpen, setC
     for (let j = 0; j < columnsNumber; j++) {
       cols.push(
         <td key={j}>
-          <span className={spanClass(langList[columnsNumber * i + j])} onClick={() => handleLangChange(langList[columnsNumber * i + j].value)}>
+          <span
+            className={spanClass(langList[columnsNumber * i + j])}
+            onClick={() => handleLangChange(langList[columnsNumber * i + j].value)}
+          >
             {langList[columnsNumber * i + j]?.label}
           </span>
         </td>
@@ -98,23 +101,5 @@ export default function LanguageSwitch({ langSwitchOpen, setLangSwitchOpen, setC
     </table>
   }
 
-  const switchOnClick = () => {
-    setLangSwitchOpen(!langSwitchOpen)
-    setCurrencySwitchOpen(false)
-  }
-
-  return (
-    <div className="top-switch">
-      <div className="menu-dropdown">
-        <div className="switch-container menu-dropdown-button contrast" onClick={switchOnClick}>
-          {i18n?.language?.toUpperCase()}
-        </div>
-        {langSwitchOpen &&
-          <div className="menu-dropdown-content">
-            {langTable()}
-          </div>
-        }
-      </div>
-    </div>
-  )
+  return langTable()
 }

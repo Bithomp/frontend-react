@@ -25,7 +25,6 @@
     "project-registration": "Registro de proyecto",
     "price-alerts": "Alertas de precio {{nativeCurrency}}",
     "submit-offline-tx": "Enviar transacción offline",
-    "networks": "Redes",
     "ledger": "Transacciones del libro contable",
     "nft": {
       "explorer": "Explorador",
@@ -38,6 +37,7 @@
       "offers": "Ofertas"
     },
     "network": {
+      "network": "Red",
       "nodes": "Nodos",
       "governance": "Gobierno",
       "activations": "Cuentas activadas (gráfica)",

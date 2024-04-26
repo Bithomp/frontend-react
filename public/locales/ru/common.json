@@ -12,11 +12,11 @@
       "nft-mint": "Чеканка NFT"
     },
     "personal": {
-      "personal": "Личный",
+      "personal": "Для вас",
       "search-on-ledgerName": "Поиск по {{ledgerName}}"
     },
     "business": {
-      "business": "Корпоративный",
+      "business": "Для бизнеса",
       "advertise": "Размещение рекламы",
       "eaas": "Explorer как сервис (EaaS)",
       "build-unl": "Создать UNL"
@@ -25,7 +25,6 @@
     "project-registration": "Регистрация проекта",
     "price-alerts": "Мониторинг {{nativeCurrency}} цены",
     "submit-offline-tx": "Отправить офлайн транзакцию",
-    "networks": "Сети",
     "ledger": "Транзакции леджера",
     "nft": {
       "explorer": "Эксплорер",
@@ -38,6 +37,7 @@
       "offers": "Оферы"
     },
     "network": {
+      "network": "Сеть",
       "nodes": "Ноды",
       "governance": "Правление",
       "activations": "Активированные адреса (график)",

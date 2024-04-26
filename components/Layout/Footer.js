@@ -82,14 +82,6 @@ export default function Footer({ account, setSignRequest }) {
           <Link href="/build-unl">{t("menu.business.build-unl")}</Link>
         </div>
         <div className="footer-menu-column">
-          <span className="footer-menu-header">{t("menu.networks")}</span>
-          {network !== 'xahau' && <a href="https://xahauexplorer.com">XAHAU Mainnet</a>}
-          {network !== 'xahau-testnet' && <a href="https://test.xahauexplorer.com">XAHAU Testnet</a>}
-          {network !== 'mainnet' && <a href="https://bithomp.com">XRPL Mainnet</a>}
-          {network !== 'testnet' && <a href="https://test.bithomp.com">XRPL Testnet</a>}
-          {network !== 'devnet' && <a href="https://dev.bithomp.com">XRPL Devnet</a>}
-        </div>
-        <div className="footer-menu-column">
           <span className="footer-menu-header">{t("menu.legal")}</span>
           <Link href="/disclaimer">{t("menu.disclaimer")}</Link>
           <Link href="/privacy-policy">{t("menu.privacy-policy")}</Link>

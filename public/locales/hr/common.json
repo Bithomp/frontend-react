@@ -25,7 +25,6 @@
     "project-registration": "Registracija projekta",
     "price-alerts": "Upozorenja na promjenu {{nativeCurrency}} cijene",
     "submit-offline-tx": "Pošalji offline transakciju",
-    "networks": "Mreže",
     "ledger": "Ledger transakcije",
     "nft": {
       "explorer": "Istraži",
@@ -38,6 +37,7 @@
       "offers": "Ponude"
     },
     "network": {
+      "network": "Mreža",
       "nodes": "Čvorovi",
       "governance": "Uprava",
       "activations": "Activated accounts (chart)",

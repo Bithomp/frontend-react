@@ -359,60 +359,66 @@ export const network = process.env.NEXT_PUBLIC_NETWORK_NAME
 export const devNet = ['mainnet', 'staging', 'xahau'].includes(network) ? false : network
 export const xahauNetwork = network.includes('xahau')
 
-const networks = {
+export const networks = {
   mainnet: {
     id: 0,
     server: "https://bithomp.com",
     nativeCurrency: "XRP",
     getCoinsUrl: "/go/buy-first-xrp",
-    explorerName: "XRP",
+    explorerName: "XRPL",
     ledgerName: "XRPL",
-    minLedger: 32570
+    minLedger: 32570,
+    subname: ""
   },
   staging: {
     id: 2,
     server: "https://staging.bithomp.com",
     nativeCurrency: "XRP",
     getCoinsUrl: "/faucet/",
-    explorerName: "XRP Staging",
+    explorerName: "XRPL Staging",
     ledgerName: "XRPL",
-    minLedger: 32570
+    minLedger: 32570,
+    subname: ""
   },
   testnet: {
     id: 1,
     server: "https://test.bithomp.com",
     nativeCurrency: "XRP",
     getCoinsUrl: "/faucet/",
-    explorerName: "XRP TESTNET",
+    explorerName: "XRPL Testnet",
     ledgerName: "XRPL",
-    minLedger: 1
+    minLedger: 1,
+    subname: "Testnet"
   },
   devnet: {
     id: 2,
     server: "https://dev.bithomp.com",
     nativeCurrency: "XRP",
     getCoinsUrl: "/faucet/",
-    explorerName: "XRP DEVNET",
+    explorerName: "XRPL Devnet",
     ledgerName: "XRPL",
-    minLedger: 1
+    minLedger: 1,
+    subname: "Devnet"
   },
   "xahau-testnet": {
     id: 21338,
     server: "https://test.xahauexplorer.com",
     nativeCurrency: "XAH",
     getCoinsUrl: "/faucet/",
-    explorerName: "XAHAU TESTNET",
-    ledgerName: "XAHAU",
-    minLedger: 3
+    explorerName: "Xahau Testnet",
+    ledgerName: "Xahau",
+    minLedger: 3,
+    subname: "Testnet"
   },
   xahau: {
     id: 21337,
     server: "https://xahauexplorer.com",
     nativeCurrency: "XAH",
     getCoinsUrl: null,
-    explorerName: "XAHAU",
-    ledgerName: "XAHAU",
-    minLedger: 1
+    explorerName: "Xahau",
+    ledgerName: "Xahau",
+    minLedger: 1,
+    subname: ""
   }
 }
 
@@ -431,6 +437,7 @@ export const nativeCurrency = networks[network]?.nativeCurrency
 export const getCoinsUrl = networks[network]?.getCoinsUrl
 export const explorerName = networks[network]?.explorerName
 export const ledgerName = networks[network]?.ledgerName
+export const ledgerSubName = networks[network]?.subname
 export const minLedger = networks[network]?.minLedger
 
 export const networksIds = {

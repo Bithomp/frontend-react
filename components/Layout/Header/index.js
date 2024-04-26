@@ -2,17 +2,35 @@ import Link from 'next/link'
 import { useTranslation } from 'next-i18next'
 import { useState, useEffect } from 'react'
 
-import { devNet, xahauNetwork, ledgerName, nativeCurrency, network } from '../../../utils'
+import {
+  devNet,
+  xahauNetwork,
+  ledgerName,
+  nativeCurrency,
+  ledgerSubName,
+} from '../../../utils'
 
 import Switch from "./Switch"
-import LangSwitch from "./LangSwitch"
-import CurrencySwitch from "./CurrencySwitch"
+import LangTable from "./LangTable"
+import CurrencyTable from "./CurrencyTable"
+import NetworkTable from "./NetworkTable"
 import LogoAnimated from '../LogoAnimated'
 import Image from 'next/image'
 
 let timeoutIds = {}
 
-const MenuDropDown = ({ children, id, title, setHoverStates, hoverStates }) => {
+const MenuDropDown = ({
+  children,
+  id,
+  title,
+  subtitle,
+  setHoverStates,
+  hoverStates,
+  type,
+  style,
+  direction
+}) => {
+  if (!direction) direction = 'stick-left'
   const handleMouseEnter = id => {
     // clear timeout for all dropdowns
     for (let key in timeoutIds) {
@@ -34,30 +52,52 @@ const MenuDropDown = ({ children, id, title, setHoverStates, hoverStates }) => {
       setHoverStates(state => ({ ...state, [id]: false }))
     }, 600)
   }
-  return (
+
+  const body = <div
+    className="menu-dropdown"
+    onMouseEnter={() => handleMouseEnter(id)}
+    onMouseLeave={() => handleMouseLeave(id)}
+  >
     <div
-      className="menu-dropdown"
-      onMouseEnter={() => handleMouseEnter(id)}
-      onMouseLeave={() => handleMouseLeave(id)}
+      className={"menu-dropdown-button" + (type === 'top-switch' ? " switch-container contrast" : "")}
+      style={style}
+      onClick={() => setHoverStates(state => ({ ...state, [id]: !hoverStates[id] }))}
     >
-      <div className="menu-dropdown-button">{title}</div>
-      {hoverStates[id] &&
-        <div className="menu-dropdown-content">
-          {children}
-        </div>
-      }
+      {title}
     </div>
-  )
+    {subtitle &&
+      <div className='menu-dropdown-subtitle orange'>
+        {subtitle?.toLowerCase()}
+      </div>
+    }
+    {hoverStates[id] &&
+      <div className={"menu-dropdown-content " + direction}>
+        {children}
+      </div>
+    }
+  </div>
+
+  if (type === 'top-switch') {
+    return <div className='top-switch'>
+      {body}
+    </div>
+  } else {
+    return body
+  }
 }
 
-export default function Header({ setSignRequest, account, signOut, selectedCurrency, setSelectedCurrency }) {
-  const { t } = useTranslation('common')
+export default function Header({
+  setSignRequest,
+  account,
+  signOut,
+  selectedCurrency,
+  setSelectedCurrency,
+}) {
+  const { i18n, t } = useTranslation('common')
 
   const [rendered, setRendered] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
   const [isCopied, setIsCopied] = useState(false)
-  const [langSwitchOpen, setLangSwitchOpen] = useState(false)
-  const [currencySwitchOpen, setCurrencySwitchOpen] = useState(false)
 
   const [xummUserToken, setXummUserToken] = useState(null)
 
@@ -202,7 +242,7 @@ export default function Header({ setSignRequest, account, signOut, selectedCurre
 
           <MenuDropDown
             id="dropdown5"
-            title={ledgerName}
+            title={t("menu.network.network")}
             setHoverStates={setHoverStates}
             hoverStates={hoverStates}
           >
@@ -243,24 +283,12 @@ export default function Header({ setSignRequest, account, signOut, selectedCurre
             <Link href="/eaas">{t("menu.business.eaas")}</Link>
             <Link href="/build-unl">{t("menu.business.build-unl")}</Link>
           </MenuDropDown>
+        </div>
 
-          <MenuDropDown
-            id="dropdown7"
-            title={t("menu.networks")}
-            setHoverStates={setHoverStates}
-            hoverStates={hoverStates}
-          >
-            {network !== 'xahau' && <a href="https://xahauexplorer.com">XAHAU Mainnet</a>}
-            {network !== 'xahau-testnet' && <a href="https://test.xahauexplorer.com">XAHAU Testnet</a>}
-            {network !== 'mainnet' && <a href="https://bithomp.com">XRPL Mainnet</a>}
-            {network !== 'testnet' && <a href="https://test.bithomp.com">XRPL Testnet</a>}
-            {network !== 'devnet' && <a href="https://dev.bithomp.com">XRPL Devnet</a>}
-          </MenuDropDown>
-        </div >
         <div className="header-menu-right">
           {displayName ?
             <MenuDropDown
-              id="dropdown8"
+              id="dropdown7"
               title={
                 <>
                   <img src={hashicon} alt="user icon" className="user-icon" />
@@ -295,7 +323,7 @@ export default function Header({ setSignRequest, account, signOut, selectedCurre
             </MenuDropDown>
             :
             <MenuDropDown
-              id="dropdown8"
+              id="dropdown7"
               title={!proName ? t("signin.signin") : proName}
               setHoverStates={setHoverStates}
               hoverStates={hoverStates}
@@ -307,19 +335,51 @@ export default function Header({ setSignRequest, account, signOut, selectedCurre
               </span>
             </MenuDropDown>
           }
-          <Switch setCurrencySwitchOpen={setCurrencySwitchOpen} setLangSwitchOpen={setLangSwitchOpen} />
-          <LangSwitch
-            langSwitchOpen={langSwitchOpen}
-            setLangSwitchOpen={setLangSwitchOpen}
-            setCurrencySwitchOpen={setCurrencySwitchOpen}
-          />
-          <CurrencySwitch
-            selectedCurrency={selectedCurrency}
-            setSelectedCurrency={setSelectedCurrency}
-            currencySwitchOpen={currencySwitchOpen}
-            setCurrencySwitchOpen={setCurrencySwitchOpen}
-            setLangSwitchOpen={setLangSwitchOpen}
-          />
+
+          <MenuDropDown
+            id="dropdown8"
+            title={ledgerName}
+            subtitle={ledgerSubName}
+            setHoverStates={setHoverStates}
+            hoverStates={hoverStates}
+            type="top-switch"
+            style={{ width: '100%' }}
+            direction='stick-right'
+          >
+            <NetworkTable
+              close={() => setHoverStates(state => ({ ...state, dropdown8: false }))}
+            />
+          </MenuDropDown>
+
+          <MenuDropDown
+            id="dropdown9"
+            title={selectedCurrency?.toUpperCase()}
+            setHoverStates={setHoverStates}
+            hoverStates={hoverStates}
+            type="top-switch"
+            direction='stick-right'
+          >
+            <CurrencyTable
+              selectedCurrency={selectedCurrency}
+              setSelectedCurrency={setSelectedCurrency}
+              close={() => setHoverStates(state => ({ ...state, dropdown9: false }))}
+            />
+          </MenuDropDown>
+
+          <MenuDropDown
+            id="dropdown10"
+            title={i18n.language?.toUpperCase()}
+            setHoverStates={setHoverStates}
+            hoverStates={hoverStates}
+            type="top-switch"
+            direction='stick-right'
+          >
+            <LangTable
+              close={() => setHoverStates(state => ({ ...state, dropdown10: false }))}
+            />
+          </MenuDropDown>
+
+          <Switch />
         </div>
         <div className="header-burger">
           <input type="checkbox" id="header-burger" checked={menuOpen} onChange={mobileMenuToggle} />
@@ -604,7 +664,6 @@ export default function Header({ setSignRequest, account, signOut, selectedCurre
               </Link>
             </>
           }
-
         </div>
       }
     </div>

@@ -25,7 +25,6 @@
     "project-registration": "Pendaftaran Proyek",
     "price-alerts": "Peringatan Harga {{nativeCurrency}}",
     "submit-offline-tx": "Kirim Transaksi Offline",
-    "networks": "Jaringan",
     "ledger": "Transaksi Ledger",
     "nft": {
       "explorer": "Penjelajah",
@@ -38,6 +37,7 @@
       "offers": "Penawaran"
     },
     "network": {
+      "network": "Jaringan",
       "nodes": "Node",
       "governance": "Governance",
       "activations": "Akun yang Telah Aktif (grafik)",

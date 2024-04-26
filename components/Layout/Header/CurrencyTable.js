@@ -2,13 +2,7 @@ import { useState, useEffect } from "react"
 
 import { fiatCurrencyList } from "../../../utils"
 
-export default function CurrencySwitch({ 
-  selectedCurrency, 
-  setSelectedCurrency, 
-  currencySwitchOpen, 
-  setCurrencySwitchOpen,
-  setLangSwitchOpen
- }) {
+export default function CurrencySwitch({ selectedCurrency, setSelectedCurrency, close }) {
   const [rendered, setRendered] = useState(false)
 
   useEffect(() => {
@@ -23,7 +17,7 @@ export default function CurrencySwitch({
 
   const onCurrencySelect = (currency) => {
     setSelectedCurrency(currency)
-    setCurrencySwitchOpen(false)
+    close()
   }
 
   const td = (currencyList, i) => {
@@ -31,7 +25,10 @@ export default function CurrencySwitch({
     for (let j = 0; j < 4; j++) {
       cols.push(
         <td key={j}>
-          <span className={spanClass(currencyList[4 * i + j])} onClick={() => onCurrencySelect(currencyList[4 * i + j].value)}>
+          <span
+            className={spanClass(currencyList[4 * i + j])}
+            onClick={() => onCurrencySelect(currencyList[4 * i + j].value)}
+          >
             {currencyList[4 * i + j].label}
           </span>
         </td>
@@ -56,23 +53,5 @@ export default function CurrencySwitch({
     </table>
   }
 
-  const switchOnClick = () => {
-    setCurrencySwitchOpen(!currencySwitchOpen)
-    setLangSwitchOpen(false)
-  }
-
-  return (
-    <div className="top-switch">
-      <div className="menu-dropdown">
-        <div className="switch-container menu-dropdown-button contrast" onClick={switchOnClick}>
-          {selectedCurrency.toUpperCase()}
-        </div>
-        {currencySwitchOpen &&
-          <div className="menu-dropdown-content">
-            {currencyTable()}
-          </div>
-        }
-      </div>
-    </div>
-  )
+  return currencyTable()
 }
