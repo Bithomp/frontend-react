@@ -104,10 +104,18 @@ export default function Nodes({ initialData, initialErrorMessage }) {
   }
 
   return <>
-    <SEO title={t("menu.network.nodes")} />
+    <SEO
+      title={data?.summary?.total + " nodes"}
+      description={"Explore the list of " + ledgerName + " nodes. View up-to-date statistics on node versions and countries."}
+    />
     <div className="content-text">
       <h1 className="center">{data?.summary?.total} {ledgerName} nodes</h1>
-      <p className='center'>{isRendered && data?.crawl_time && "updated " + timeFromNow(data.crawl_time)}</p>
+
+      <p className='center'>
+        Explore the list of {ledgerName} nodes. View up-to-date statistics on node versions and countries
+        {isRendered && data?.crawl_time && " (updated " + timeFromNow(data.crawl_time) + ")."}
+      </p>
+
       <div className='flex flex-center'>
         <div className='div-with-table'>
           <h4 className="center">Versions</h4>
