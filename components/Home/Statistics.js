@@ -178,12 +178,12 @@ export default function Statistics() {
         <div className='stat-piece-header'>{t("home.stat.transactions")}</div>
         <div>{txCount} ({txPerSecond} {t("home.stat.txs-per-sec")})</div>
       </div>
-
-      <div className='stat-piece'>
-        <div className='stat-piece-header'>{t("home.stat.nodes")}</div>
-        <div><Link href="/nodes">{nodesCount}</Link></div>
-      </div>
-
+      {nodesCount > 0 &&
+        <div className='stat-piece'>
+          <div className='stat-piece-header'>{t("home.stat.nodes")}</div>
+          <div><Link href="/nodes">{nodesCount}</Link></div>
+        </div>
+      }
       <div className='stat-piece'>
         <div className='stat-piece-header'>{t("home.stat.quorum")}</div>
         <div>{quorum} (<Link href="/validators">{proposers} {t("home.stat.proposers")}</Link>)</div>
