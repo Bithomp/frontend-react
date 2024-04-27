@@ -182,7 +182,8 @@
         "for-sale": "NFT 판매 중"
       },
       "escrows": "Escrows",
-      "amms": "AMM pools"
+      "amms": "AMM pools",
+      "nodes": "노드"
     }
   },
   "last-ledger-information": {

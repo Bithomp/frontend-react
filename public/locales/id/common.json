@@ -182,7 +182,8 @@
         "for-sale": "NFT yang Dijual"
       },
       "escrows": "Escrows",
-      "amms": "AMM pools"
+      "amms": "AMM pools",
+      "nodes": "Node"
     }
   },
   "last-ledger-information": {

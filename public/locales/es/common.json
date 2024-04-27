@@ -182,7 +182,8 @@
         "for-sale": "NFTs en venta"
       },
       "escrows": "Escrows",
-      "amms": "AMM pools"
+      "amms": "AMM pools",
+      "nodes:": "Nodos"
     }
   },
   "last-ledger-information": {

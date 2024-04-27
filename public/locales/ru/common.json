@@ -182,7 +182,8 @@
         "for-sale": "Продается"
       },
       "escrows": "Эскроу",
-      "amms": "Пулы AMM"
+      "amms": "Пулы AMM",
+      "nodes": "Ноды"
     }
   },
   "last-ledger-information": {

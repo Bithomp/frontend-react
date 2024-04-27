@@ -84,6 +84,12 @@ export default function Statistics() {
             "ledgerTime": 1712755071
           },
           "existing": 193
+        },
+        "nodes": {
+          "crawler": {
+            "time": 1714145597
+          },
+          "total": 606
         }
       }
       */
@@ -122,6 +128,7 @@ export default function Statistics() {
   }
   let escrowsCount = 'xxx'
   let ammsCount = 'xxx'
+  let nodesCount = 'xxx'
 
   if (data) {
     const {
@@ -132,7 +139,8 @@ export default function Statistics() {
       usernames,
       nftokens,
       escrows,
-      amms
+      amms,
+      nodes,
     } = data
     closedAt = validatedLedger?.ledgerTime * 1000
     closedAt = new Date(closedAt).toLocaleTimeString()
@@ -150,6 +158,7 @@ export default function Statistics() {
     }
     escrowsCount = niceNumber(escrows?.existing)
     ammsCount = niceNumber(amms?.existing)
+    nodesCount = niceNumber(nodes?.total)
   }
 
   return <>
@@ -169,6 +178,12 @@ export default function Statistics() {
         <div className='stat-piece-header'>{t("home.stat.transactions")}</div>
         <div>{txCount} ({txPerSecond} {t("home.stat.txs-per-sec")})</div>
       </div>
+
+      <div className='stat-piece'>
+        <div className='stat-piece-header'>{t("home.stat.nodes")}</div>
+        <div><Link href="/nodes">{nodesCount}</Link></div>
+      </div>
+
       <div className='stat-piece'>
         <div className='stat-piece-header'>{t("home.stat.quorum")}</div>
         <div>{quorum} (<Link href="/validators">{proposers} {t("home.stat.proposers")}</Link>)</div>

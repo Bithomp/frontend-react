@@ -182,7 +182,8 @@
         "for-sale": "NFTovi na rasprodaji"
       },
       "escrows": "Escrows",
-      "amms": "AMM pools"
+      "amms": "AMM pools",
+      "nodes": "Čvorovi"
     }
   },
   "last-ledger-information": {

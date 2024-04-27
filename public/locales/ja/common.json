@@ -182,7 +182,8 @@
         "for-sale": "販売中のNFT数"
       },
       "escrows": "Escrows",
-      "amms": "AMM pools"
+      "amms": "AMM pools",
+      "nodes": "ノード数" 
     }
   },
   "last-ledger-information": {
