@@ -9,7 +9,13 @@ import { useTheme } from '../components/Layout/ThemeContext'
 import SEO from '../components/SEO'
 import CheckBox from '../components/UI/CheckBox'
 
-import { addressUsernameOrServiceLink, amountFormat, fullDateAndTime, shortHash, timeFromNow } from '../utils/format'
+import {
+  addressUsernameOrServiceLink,
+  amountFormat,
+  fullDateAndTime,
+  shortHash,
+  timeFromNow
+} from '../utils/format'
 import { devNet, useWidth, xahauNetwork, countriesTranslated } from '../utils'
 
 import CopyButton from '../components/UI/CopyButton'
@@ -435,7 +441,7 @@ export default function Validators({ amendment }) {
                           <p>
                             {t("table.server-country", { ns: 'validators' })}:
                             {" "}
-                            {countries.getName(fixCountry(v.serverCountry), lang, { select: "official" })}
+                            {countries.getNameTranslated(fixCountry(v.serverCountry))}
                             {" "}
                             <ReactCountryFlag
                               countryCode={fixCountry(v.serverCountry)}
