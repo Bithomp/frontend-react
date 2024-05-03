@@ -209,7 +209,7 @@ export default function Account({ pageMeta, refreshPage, id, selectedCurrency, l
     let output = []
 
     if (data.ledgerInfo?.activated) {
-      //show username registartion link and usernsmes only for active accounts
+      //show username registration link and usernsmes only for active accounts
       if (data.username) {
         output.push(<tr key="0">
           <td>Username</td>

@@ -60,7 +60,7 @@ export default function Username({ setSignRequest, account, signOut, addressQuer
   const [register, setRegister] = useState({})
   const [bidData, setBidData] = useState({})
   const [step, setStep] = useState(0)
-  const [onRegistartion, setOnRegistartion] = useState(false)
+  const [onRegistration, setOnRegistration] = useState(false)
   const [update, setUpdate] = useState(false)
   const [xummUserToken, setXummUserToken] = useState(null)
 
@@ -177,7 +177,7 @@ export default function Username({ setSignRequest, account, signOut, addressQuer
     setUpdate(false)
     clearInterval(interval)
     setStep(0)
-    setOnRegistartion(false)
+    setOnRegistration(false)
     if (ws) ws.close()
   }
 
@@ -301,10 +301,10 @@ export default function Username({ setSignRequest, account, signOut, addressQuer
 
       if (data.completedAt) {
         setStep(2)
-        setOnRegistartion(false)
+        setOnRegistration(false)
       } else {
         if (xummUserToken && data.destinationAddress) {
-          setOnRegistartion(true)
+          setOnRegistration(true)
           setSignRequest({
             wallet: "xumm",
             request: {
@@ -383,7 +383,7 @@ export default function Username({ setSignRequest, account, signOut, addressQuer
     */
     if (data.bid.status === 'Completed') {
       setStep(2)
-      setOnRegistartion(false)
+      setOnRegistration(false)
       setUpdate(false)
       setErrorMessage("")
       clearInterval(interval)
@@ -478,9 +478,9 @@ export default function Username({ setSignRequest, account, signOut, addressQuer
               </p>
             </>
           }
-          {(!account?.username || onRegistartion) ?
+          {(!account?.username || onRegistration) ?
             <>
-              {account?.username && onRegistartion ?
+              {account?.username && onRegistration ?
                 <div className='center'><span className="waiting"></span><br />{t("general.loading")}</div>
                 :
                 <>

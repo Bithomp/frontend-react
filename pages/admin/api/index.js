@@ -197,7 +197,7 @@ export default function Api() {
               </table>
               :
               <div>
-                <h4>API registartion</h4>
+                <h4>API registration</h4>
                 <p>
                   <input
                     placeholder="Your website domain"
