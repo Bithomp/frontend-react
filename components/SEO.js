@@ -67,7 +67,7 @@ export default function SEO({ title, titleWithNetwork, description, image, page,
   let path = router.asPath !== "/" ? router.asPath : ""
 
   let languageAlternates = [
-    { hrefLang: 'x-default', href: server + path },
+    { hrefLang: 'x-default', href: server + + '/en' + path },
     { hrefLang: 'en', href: server + '/en' + path },
     { hrefLang: 'ko', href: server + '/ko' + path },
     { hrefLang: 'ru', href: server + '/ru' + path },
