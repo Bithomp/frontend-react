@@ -520,6 +520,13 @@ export default function NftVolumes({
     }
   }
 
+  const handleClick = async (url) => {
+    // Wait for route change before do anything
+    await router.push(url)
+    // Reload after routing
+    router.reload()
+  }
+
   return <>
     <SEO
       title={
@@ -679,7 +686,16 @@ export default function NftVolumes({
                           }
                           {listTab === 'issuers' && issuersExtended && <td className='right hide-on-mobile'>{shortNiceNumber(volume.statistics?.tradedNfts, 0)}</td>}
                           {listTab === 'brokers' && <td>{addressUsernameOrServiceLink(volume, "broker", { short: true, noBroker: t("brokers.no-broker", { ns: 'nft-volumes' }) })}</td>}
-                          {listTab === 'currencies' && <td className='center'><Link href={'/nft-volumes' + urlParams(volume) + '&list=issuers'}><LinkIcon /></Link></td>}
+                          {listTab === 'currencies' &&
+                            <td className='center'>
+                              <Link
+                                href={'/nft-volumes' + urlParams(volume) + '&list=issuers'}
+                                onClick={() => handleClick('/nft-volumes' + urlParams(volume) + '&list=issuers')}
+                              >
+                                <LinkIcon />
+                              </Link>
+                            </td>
+                          }
                           <td className='right'>
                             {shortNiceNumber(volume.sales, 0)}
                             {rawData?.summary &&
@@ -689,7 +705,9 @@ export default function NftVolumes({
                               <Link href={'/nft-sales' + urlParams(volume)}> <LinkIcon /></Link>
                             }
                           </td>
-                          {listTab === 'issuers' && issuersExtended && <td className='right hide-on-mobile'>{shortNiceNumber(volume.statistics?.buyers, 0)}</td>}
+                          {listTab === 'issuers' && issuersExtended && <td className='right hide-on-mobile'>
+                            {shortNiceNumber(volume.statistics?.buyers, 0)}</td>
+                          }
                           {(listTab === 'currencies' || (currency && currencyIssuer) || currencyTab === 'xrp') &&
                             <td className='right'>
                               {amountFormat(volume.volumes[0]?.amount, { maxFractionDigits: 2 })}
