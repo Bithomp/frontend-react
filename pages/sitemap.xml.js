@@ -56,7 +56,7 @@ if (xahauNetwork) {
 
 function generateSiteMap(posts) {
   const locales = ['en', 'ko', 'ru', 'de', 'es', 'id', 'ja', 'hr']
-  const oldPages = [
+  const noTranslatedPages = [
     'admin',
     'explorer/',
     'submit/',
@@ -68,17 +68,27 @@ function generateSiteMap(posts) {
     'terms-and-conditions',
     'terms-api-bots',
     'disclaimer'
-  ] //old pages and not translated pages
+  ]
+  const oldPages = [
+    'explorer/',
+    'submit/',
+    'paperwallet/',
+  ]
+  const pagesWithoutTranslation = [...noTranslatedPages, ...oldPages]
+
   return `<?xml version="1.0" encoding="UTF-8"?>
    <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
      ${posts
       .map(({ loc, changefreq, priority }) => {
         return `
           <url>
-            <loc>${`${server}/${loc}`}</loc>
+            ${!oldPages.includes(loc) ?
+            `<loc>${`${server}/en/${loc}`}</loc>`
+            :
+            `<loc>${`${server}/${loc}`}</loc>`}
             <changefreq>${changefreq}</changefreq>
             <priority>${priority}</priority>
-            ${!oldPages.includes(loc) ? locales
+            ${!pagesWithoutTranslation.includes(loc) ? locales
             .map((locale) => {
               return `<xhtml:link rel="alternate" hreflang="${locale}" href="${`${server}${'/' + locale}/${loc}`}"/>`
             })
