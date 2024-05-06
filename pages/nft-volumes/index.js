@@ -33,7 +33,8 @@ import {
   addressUsernameOrServiceLink,
   usernameOrAddress,
   persentFormat,
-  niceNumber
+  niceNumber,
+  niceCurrency
 } from '../../utils/format'
 
 import LinkIcon from "../../public/images/link.svg"
@@ -606,12 +607,12 @@ export default function NftVolumes({
                     <>
                       {listTab === 'brokers' ?
                         <Trans i18nKey="brokers.text0" ns='nft-volumes'>
-                          XRPL had {{ allSales: shortNiceNumber(rawData.summary.all.sales, 0) }} <b>{{ currency: (currencyIssuer ? currency : currencyTab).toUpperCase() }}</b> NFT {{ saleType: saleTab === 'primaryAndSecondary' ? "" : ("(" + t("tabs." + saleTab + "-sales")).toLocaleLowerCase() + ")" }} sales for {{ allVolume: niceNumber(rawData.summary.all.volumesInConvertCurrencies[convertCurrency], 0, convertCurrency) }},
+                          XRPL had {{ allSales: shortNiceNumber(rawData.summary.all.sales, 0) }} <b>{{ currency: currencyIssuer ? niceCurrency(currency) : currencyTab.toUpperCase() }}</b> NFT {{ saleType: saleTab === 'primaryAndSecondary' ? "" : ("(" + t("tabs." + saleTab + "-sales")).toLocaleLowerCase() + ")" }} sales for {{ allVolume: niceNumber(rawData.summary.all.volumesInConvertCurrencies[convertCurrency], 0, convertCurrency) }},
                           from which <b>{{ brokerSales: shortNiceNumber(rawData.summary.brokers?.sales, 0) }}</b> {{ percentBrokerSales: persentFormat(rawData.summary.brokers?.sales, rawData.summary.all.sales) }} of trades for <b>{{ brokerVolume: niceNumber(rawData.summary.brokers?.volumesInConvertCurrencies[convertCurrency], 0, convertCurrency) }}</b> {{ percentBrokerVolume: persentFormat(rawData.summary.brokers?.volumesInConvertCurrencies[convertCurrency], rawData.summary.all.volumesInConvertCurrencies[convertCurrency]) }} were through the brokerage model.
                         </Trans>
                         :
                         <Trans i18nKey="text0" ns="nft-volumes">
-                          XRPL had {{ allSales: shortNiceNumber(rawData.summary.all.sales, 0) }} {{ currency: (currencyIssuer ? currency : currencyTab).toUpperCase() }} NFT {{ saleType: saleTab === 'primaryAndSecondary' ? "" : ("(" + t("tabs." + saleTab + "-sales")).toLocaleLowerCase() + ")" }} sales for {{ allVolume: niceNumber(rawData.summary.all.volumesInConvertCurrencies[convertCurrency], 0, convertCurrency) }}.
+                          XRPL had {{ allSales: shortNiceNumber(rawData.summary.all.sales, 0) }} {{ currency: currencyIssuer ? niceCurrency(currency) : currencyTab.toUpperCase() }} NFT {{ saleType: saleTab === 'primaryAndSecondary' ? "" : ("(" + t("tabs." + saleTab + "-sales")).toLocaleLowerCase() + ")" }} sales for {{ allVolume: niceNumber(rawData.summary.all.volumesInConvertCurrencies[convertCurrency], 0, convertCurrency) }}.
                         </Trans>
                       }
                     </>

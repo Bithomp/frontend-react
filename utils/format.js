@@ -494,7 +494,7 @@ export const lpTokenName = data => {
   }
 }
 
-const niceCurrency = currency => {
+export const niceCurrency = currency => {
   if (!currency) return ""
   let firstTwoNumbers = currency.substr(0, 2)
   if (currency.length > 3) {
