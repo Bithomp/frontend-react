@@ -96,7 +96,7 @@ export default function NftSales({
   const [issuerInput, setIssuerInput] = useState(issuerQuery)
   const [taxonInput, setTaxonInput] = useState(taxonQuery)
   const [total, setTotal] = useState({})
-  const [period, setPeriod] = useState("")
+  const [period, setPeriod] = useState(periodQuery)
   const [pageTab, setPageTab] = useState(list)
   const [hasMore, setHasMore] = useState("first")
   const [dateAndTimeNow, setDateAndTimeNow] = useState('')
@@ -132,7 +132,7 @@ export default function NftSales({
   ]
 
   const checkApi = async (options) => {
-    if (!period) return
+    if (!period || !sortCurrency) return
 
     let marker = hasMore
     let salesData = sales
