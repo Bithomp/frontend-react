@@ -45,13 +45,14 @@ export async function getServerSideProps(context) {
 }
 
 import SEO from '../../components/SEO'
+import CopyButton from '../../components/UI/CopyButton';
 
 export default function NftDistribution({ issuerQuery, taxonQuery, idQuery, orderQuery }) {
   const { t } = useTranslation()
   const windowWidth = useWidth()
   const router = useRouter()
 
-  const [data, setData] = useState([])
+  const [data, setData] = useState({})
   const [owners, setOwners] = useState([])
   const [loading, setLoading] = useState(true)
   const [errorMessage, setErrorMessage] = useState("")
@@ -99,17 +100,33 @@ export default function NftDistribution({ issuerQuery, taxonQuery, idQuery, orde
     }
     */
 
+
+    const oldIssuer = data?.issuer
+    const oldTaxon = data?.taxon
+    const loadMoreRequest =
+      hasMore !== "first" &&
+      (issuer ? oldIssuer === issuer : !oldIssuer) &&
+      (taxon ? oldTaxon === taxon : !oldTaxon)
+
+    console.log("loadMoreRequest", loadMoreRequest, oldTaxon, oldIssuer, taxon, issuer)
+
     // do not load more if thereis no session token
-    if (hasMore !== "first" && !sessionToken) {
+    if (loadMoreRequest && !sessionToken) {
       return
     }
 
     let ownersData = owners
-    let markerPart = hasMore === "first" ? "" : "&marker=" + data?.marker
 
-    setData([])
+    let markerPart = ""
+    if (loadMoreRequest) {
+      markerPart = "&marker=" + data?.marker
+    } else {
+      setHasMore("first")
+    }
+
+    setData({})
     let taxonUrlPart = ""
-    if (taxon > -1) {
+    if (taxon !== "" & taxon > -1) {
       taxonUrlPart = '&taxon=' + taxon
     }
 
@@ -118,12 +135,14 @@ export default function NftDistribution({ issuerQuery, taxonQuery, idQuery, orde
     }
 
     let orderPart = order
+    let issuerPart = ""
     if (issuer) {
+      issuerPart = '&issuer=' + issuer
       orderPart = 'total'
     }
 
     const response = await axios(
-      'v2/nft-owners?issuer=' + issuer + taxonUrlPart + '&order=' + orderPart + markerPart
+      'v2/nft-owners?order=' + orderPart + issuerPart + taxonUrlPart + markerPart
     ).catch(error => {
       setErrorMessage(t("error." + error.message))
     })
@@ -139,7 +158,11 @@ export default function NftDistribution({ issuerQuery, taxonQuery, idQuery, orde
           } else {
             setHasMore(false)
           }
-          setOwners([...ownersData, ...newdata.owners])
+          if (!loadMoreRequest) {
+            setOwners(newdata.owners)
+          } else {
+            setOwners([...ownersData, ...newdata.owners])
+          }
         } else {
           setErrorMessage(t("no-nfts", { ns: "nft-distribution" }))
         }
@@ -401,6 +424,8 @@ export default function NftDistribution({ issuerQuery, taxonQuery, idQuery, orde
                     <tr key={i}>
                       <td className="center">{i + 1}</td>
                       <td>
+                        <CopyButton text={user.address} />
+                        {" "}
                         {addressUsernameOrServiceLink(user, 'address')}
                       </td>
                       {!issuer &&
@@ -474,6 +499,8 @@ export default function NftDistribution({ issuerQuery, taxonQuery, idQuery, orde
                         <td>
                           <p>
                             {addressUsernameOrServiceLink(user, 'address')}
+                            {" "}
+                            <CopyButton text={user.address} />
                           </p>
                           {!issuer &&
                             <>
