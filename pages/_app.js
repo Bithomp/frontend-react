@@ -56,7 +56,6 @@ const MyApp = ({ Component, pageProps }) => {
     '/terms-api-bots',
     '/press',
     '/404',
-    '/contest'
   ]
   if (showTopAds) {
     showTopAds = !pagesWithNoTopAdds.includes(pathname) && !pathname.includes('/admin')
