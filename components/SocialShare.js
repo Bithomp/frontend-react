@@ -17,7 +17,7 @@ import {
   WorkplaceShareButton, WorkplaceIcon
 } from 'react-share'
 
-import { network } from '../utils'
+import { network, xahauNetwork } from '../utils'
 import { useIsMobile } from "../utils/mobile"
 
 import CopyButton from './UI/CopyButton'
@@ -35,6 +35,8 @@ export default function SocialShare({ t, title, hashtag, description, image }) {
   if (typeof window !== 'undefined') {
     url = window.location.href
   }
+
+  const networkHashtag = xahauNetwork ? 'Xahau' : 'XRPL'
 
   return (
     <table className='table-details'>
@@ -105,9 +107,9 @@ export default function SocialShare({ t, title, hashtag, description, image }) {
             <TwitterShareButton
               url={url}
               title={title}
-              via='bithomp'
-              hashtags={[hashtag, 'XRPL']}
-              related={['bithomp', 'bithompAlerts']}
+              via={xahauNetwork ? 'xahauexplorer' : 'bithomp'}
+              hashtags={[hashtag, networkHashtag]}
+              related={['bithomp', 'bithompAlerts', 'xahauexplorer']}
               style={iconStyle}
             >
               <XIcon size={size} round />
@@ -155,7 +157,7 @@ export default function SocialShare({ t, title, hashtag, description, image }) {
               url={url}
               title={title}
               caption={description}
-              tags={[hashtag, 'XRPL']}
+              tags={[hashtag, networkHashtag]}
               posttype='link'
               style={iconStyle}
             >
