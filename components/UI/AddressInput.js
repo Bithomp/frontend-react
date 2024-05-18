@@ -1,3 +1,4 @@
+import { IoMdClose } from "react-icons/io";
 import { useState, useEffect } from 'react'
 import Select from 'react-select'
 import { useTranslation } from 'next-i18next'
@@ -5,14 +6,15 @@ import axios from 'axios';
 
 import {
   isAddressOrUsername,
-  useWidth
+  useWidth,
+  xahauNetwork,
 } from '../../utils'
 
 import { amountFormat, userOrServiceLink } from '../../utils/format'
 
 let typingTimer
 
-export default function AddressInput({ placeholder, title, setValue, rawData, type }) {
+export default function AddressInput({ placeholder, title, setValue, rawData, type, disabled }) {
   const { t } = useTranslation()
   const windowWidth = useWidth()
 
@@ -22,46 +24,71 @@ export default function AddressInput({ placeholder, title, setValue, rawData, ty
   const [searchSuggestions, setSearchSuggestions] = useState([])
   const [searchingSuggestions, setSearchingSuggestions] = useState(false)
   const [link, setLink] = useState("")
+  const [isNameInput, setIsNameInput] = useState(false)
+  const [isTaxonInput, setIsTaxonInput] = useState(false)
+  const [notEmpty, setNotEmpty] = useState(false)
 
   useEffect(() => {
     setIsMounted(true);
+    type == "search" && setIsNameInput(true)
+    type == "taxon" && setIsTaxonInput(true)
   }, [])
 
   useEffect(() => {
     if (rawData) {
+      rawData[type] && setNotEmpty(true)
       setInputValue(rawData[type])
       setLink(userOrServiceLink(rawData, type))
+
+      if(disabled) {
+        clearOnClick()
+      }
     }
   }, [rawData])
 
   const searchOnKeyUp = e => {
+    const valueInp = e.target.value;
+    const maxCount = isTaxonInput ? 1 : 2;
 
-    const address = e?.target?.value
+    if(inputValue.length > 0) {
+      setNotEmpty(true);
+    }
 
-    if (e.key === 'Enter' && isAddressOrUsername(address)) {
-      setValue(address)
+    if (e.key === 'Enter' && isAddressOrUsername(valueInp)) {
+      setValue(valueInp);
       clearTimeout(typingTimer)
       setSearchSuggestions([])
       return
     }
 
     //if more than 3 characters - search for suggestions
-    if (address && address.length > 0) {
-      clearTimeout(typingTimer)
-      setSearchSuggestions([])
+    if (valueInp && valueInp.length > 0 && !isTaxonInput) {
+      clearTimeout(typingTimer);
+      setSearchSuggestions([]);
       typingTimer = setTimeout(async () => {
-
-        if (address && address.length > 2) {
+        if (valueInp && valueInp.length > maxCount) {
           setSearchingSuggestions(true)
-          const suggestionsResponse = await axios('v2/address/search/' + address)
-            .catch(error => {
-              setSearchingSuggestions(false)
-              console.log(error.message)
-            })
+          let url;
+
+          const nftEndpoint = xahauNetwork ? 'v2/uritokens' : 'v2/nfts'
+          if (isNameInput) {
+            const searchPart = '?search=' + valueInp + '&searchLocations=metadata.name';
+            url = nftEndpoint + searchPart;
+          } else {
+            url = "v2/address/search/" + valueInp;
+          }
+
+          const suggestionsResponse = await axios(url).catch((error) => {
+            setSearchingSuggestions(false);
+            console.log(error.message);
+          })
+
           if (suggestionsResponse) {
             const suggestions = suggestionsResponse.data
             if (suggestions?.addresses?.length > 0) {
-              setSearchSuggestions(suggestions.addresses)
+              setSearchSuggestions(suggestions.addresses);
+            } else if((isNameInput) && suggestions?.nfts?.length > 0) {
+              setSearchSuggestions(suggestions.nfts);
             }
           }
           setSearchingSuggestions(false)
@@ -76,14 +103,14 @@ export default function AddressInput({ placeholder, title, setValue, rawData, ty
       return
     }
 
-    setValue(option.address)
+    const value = isNameInput ? option.metadata.name : option.address
+
     if (option.username && !option.username.includes("-")) {
       onSearch(option.username)
     } else {
-      onSearch(option.address)
+      onSearch(value)
     }
   }
-
 
   const onSearch = async (si) => {
     setErrorMessage("")
@@ -105,32 +132,46 @@ export default function AddressInput({ placeholder, title, setValue, rawData, ty
     return
   }
 
+  const onSearchClick = () => {
+    setValue(inputValue);
+    setInputValue(inputValue);
+  }
+
   const searchOnInputChange = (value, action) => {
     if (action.action !== "input-blur" && action.action !== "menu-close") {
+      setNotEmpty(true)
       setInputValue(value)
     }
+  }
+
+  const clearOnClick = () => {
+    setValue("");
+    setInputValue("");
+    setLink("");
+    setNotEmpty(false);
   }
 
   return (
     <div className="center">
       <span className='input-title'>{title} {link}</span>
-      <div className="address-input address-input--issuer">
+      <div className={`address-input address-input--issuer${disabled ? ' disabled' : ''}`}>
         {isMounted &&
-          <div onKeyUp={searchOnKeyUp}>
+          <div className="address-input__wrap" onKeyUp={searchOnKeyUp}>
             <Select
-              className="address-input-select"
+              className={`address-input-select${notEmpty ? ' not-empty' : ''}`}
               placeholder={placeholder}
               onChange={searchOnChange}
               spellCheck="false"
               inputValue={inputValue}
               options={searchSuggestions}
               isClearable={true}
+              value={notEmpty ? inputValue : null}
               getOptionLabel={
                 (option) => <>
-                  <span style={windowWidth < 400 ? { fontSize: "14px" } : {}}>{option.address}</span>
-                  {(option.username || option.service || option.globalid || option.xumm) ? (windowWidth > 400 ? " - " : " ") : ""}
-                  <b className='blue'>{option.username}</b>
-                  {option.service && <>
+                <span style={windowWidth < 400 ? { fontSize: "14px" } : {}}>{option.address || option.issuer}</span>
+                {(option.username || option.service || option.globalid || option.xumm) ? (windowWidth > 400 ? " - " : " ") : ""}
+                <b className='blue'>{option.username || option.metadata?.name}</b>
+                {option.service && <>
                     {option.username ? " (" : ""}
                     <b className='green'>{option.service}</b>
                     {option.username ? ")" : ""}
@@ -162,8 +203,16 @@ export default function AddressInput({ placeholder, title, setValue, rawData, ty
                   }
                 </>
               }
-              getOptionValue={
-                option => (option.address + option.username + option.service + option.xumm + option.globalid + option.verifiedDomain + option.serviceDomain)
+              getOptionValue={(option) =>
+                option.address +
+                option.username +
+                option.service +
+                option.xumm +
+                option.issuer +
+                option.metadata?.name +
+                option.globalid +
+                option.verifiedDomain +
+                option.serviceDomain
               }
               onInputChange={searchOnInputChange}
               components={{ DropdownIndicator: () => null, IndicatorSeparator: () => null }}
@@ -173,6 +222,16 @@ export default function AddressInput({ placeholder, title, setValue, rawData, ty
                 () => searchingSuggestions ? t("explorer.searching-for-addresses") : null
               }
             />
+            <div className="address-input__btns">
+                <button className="address-input__clear" onClick={clearOnClick}><IoMdClose /></button>
+                <div className='search-button' onClick={onSearchClick}>
+                    <img
+                        src='/images/search.svg'
+                        className='search-icon'
+                        alt='search'
+                    />
+                </div>
+            </div>
           </div>
         }
 
