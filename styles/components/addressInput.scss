@@ -4,7 +4,6 @@
     &__wrap {
         position: relative;
         border: 1px solid var(--unaccent-icon);
-        background: #fff;
     }
 
     &-select {
@@ -44,20 +43,36 @@
         box-shadow: none;
         background: transparent;
 
-        // &:hover {
-        //     border-color: var(--accent-link);
-        //     box-shadow: 0 0 5px var(--unaccent-icon);
-        // }
+        &:hover {
+            border-color: var(--accent-link);
+            box-shadow: 0 0 5px var(--unaccent-icon);
+        }
     }
 
     &__btns {
         position: absolute;
         inset: 0 0 0 auto;
         display: flex;
-        background: #fff;
 
         .disabled & {
             background: none;
+        }
+    }
+
+    .react-select {
+        &__input-container {
+            max-width: calc(100% - 55px);
+            overflow: hidden;
+        }
+
+        &__menu {
+            background: #000;
+            border: 1px solid var(--unaccent-icon);
+        }
+
+        &__option--is-selected,
+        &__option--is-focused {
+            background: var(--unaccent-icon);
         }
     }
 
@@ -72,6 +87,10 @@
         .not-empty ~ .address-input__btns & {
             opacity: 1;
             pointer-events: all;
+        }
+
+        .dark & {
+            color: var(--text-main);
         }
     }
 
