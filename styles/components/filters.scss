@@ -54,6 +54,10 @@ $width: 340px;
         padding: 0;
         display: flex;
 
+        .dark & {
+            color: #fff;
+        }
+
         @media(min-width: 1024px) {
             display: none;
         }
@@ -96,8 +100,12 @@ $width: 340px;
     }
 
     &__wrap {
+        padding-bottom: 10px;
+
         > * {
-            margin-bottom: 20px;
+            @media(min-width: 1024px) {
+                margin-bottom: 20px;
+            }
         }
 
         @media(min-width: 1024px) {
@@ -115,6 +123,10 @@ $width: 340px;
             transform: translateY(100%);
             pointer-events: all;
             transition: transform 0.3s ease-in-out;
+
+            .dark & {
+                background: #000;
+            }
 
             body.is-filters-hide & {
                 transform: translateY(0);

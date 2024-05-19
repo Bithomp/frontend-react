@@ -7,13 +7,18 @@ import InfiniteScroll from 'react-infinite-scroll-component'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import Link from 'next/link'
 
+import RadioOptions from '../components/UI/RadioOptions'
+import AddressInput from '../components/UI/AddressInput'
+
+import { IoMdClose } from "react-icons/io";
+import { BsFilter } from "react-icons/bs";
+
 import { stripText, isAddressOrUsername, setTabParams, useWidth } from '../utils'
 import { isValidTaxon, nftThumbnail, nftNameLink } from '../utils/nft'
 import {
   amountFormat,
   convertedAmount,
   nftLink,
-  userOrServiceLink,
   usernameOrAddress,
   timeOrDate,
   fullDateAndTime,
@@ -57,7 +62,6 @@ export const getServerSideProps = async ({ query, locale }) => {
 }
 
 import SEO from '../components/SEO'
-import Tabs from '../components/Tabs'
 import Tiles from '../components/Tiles'
 import DateAndTimeRange from '../components/UI/DateAndTimeRange'
 
@@ -93,16 +97,22 @@ export default function NftSales({
   const [saleTab, setSaleTab] = useState(sale)
   const [issuer, setIssuer] = useState(issuerQuery)
   const [taxon, setTaxon] = useState(taxonQuery)
-  const [issuerInput, setIssuerInput] = useState(issuerQuery)
   const [taxonInput, setTaxonInput] = useState(taxonQuery)
   const [total, setTotal] = useState({})
   const [period, setPeriod] = useState("")
   const [pageTab, setPageTab] = useState(list)
   const [hasMore, setHasMore] = useState("first")
-  const [dateAndTimeNow, setDateAndTimeNow] = useState('')
   const [buyer, setBuyer] = useState(buyerQuery)
-  const [buyerInput, setBuyerInput] = useState(buyerQuery)
   const [seller, setSeller] = useState(sellerQuery)
+  const [filtersHide, setFiltersHide] = useState(false)
+  const [nftCount, setNftCount] = useState(null)
+  // eslint-disable-next-line
+  const [issuerInput, setIssuerInput] = useState(issuerQuery)
+  // eslint-disable-next-line
+  const [dateAndTimeNow, setDateAndTimeNow] = useState('')
+  // eslint-disable-next-line
+  const [buyerInput, setBuyerInput] = useState(buyerQuery)
+  // eslint-disable-next-line
   const [sellerInput, setSellerInput] = useState(sellerQuery)
 
   const sortCurrency = sortCurrencyQuery.toLowerCase() || selectedCurrency
@@ -253,6 +263,8 @@ export default function NftSales({
           console.log(newdata)
         }
       }
+
+      setNftCount(newdata.sales.length);
     }
   }
 
@@ -334,9 +346,9 @@ export default function NftSales({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [viewTab, saleTab, data, currency, currencyIssuer, pageTab, period])
 
-  const searchClick = () => {
-    if (isAddressOrUsername(issuerInput)) {
-      setIssuer(issuerInput);
+  const checkIssuerValue = e => {
+    if (isAddressOrUsername(e)) {
+      setIssuer(e);
       if (isValidTaxon(taxonInput)) {
         setTaxon(taxonInput);
       } else {
@@ -349,34 +361,35 @@ export default function NftSales({
       setTaxonInput("");
       setTaxon("");
     }
+  }
 
-    if (isAddressOrUsername(buyerInput)) {
-      setBuyer(buyerInput);
+  const checkBuyerValue = e => {
+    if (isAddressOrUsername(e)) {
+      setBuyer(e);
     } else {
       setBuyerInput("");
       setBuyer("");
     }
+  }
 
-    if (isAddressOrUsername(sellerInput)) {
-      setSeller(sellerInput);
+  const checkSellerValue = e => {
+    if (isAddressOrUsername(e)) {
+      setSeller(e);
     } else {
       setSellerInput("");
       setSeller("");
     }
   }
 
-  const enterPress = e => {
-    if (e.key === 'Enter') {
-      searchClick();
+  const onTaxonInput = value => {
+    if (/^\d+$/.test(value) && issuer && isValidTaxon(value)) {
+      setTaxon(value);
+      setTaxonInput(value);
+    } else {
+      setTaxon("");
+      setTaxonInput("");
     }
-  }
-
-  const onTaxonInput = (e) => {
-    if (!/^\d+$/.test(e.key)) {
-      e.preventDefault();
-    }
-    enterPress(e);
-  }
+  };
 
   const issuerTaxonUrlPart = (data && issuer) ? ("&issuer=" + usernameOrAddress(data, 'issuer') + (taxon ? ("&taxon=" + taxon) : "")) : "";
 
@@ -409,6 +422,16 @@ export default function NftSales({
     { label: t("table.marketplace"), key: "marketplace" }
   ]
 
+  const toggleFilters = () => {
+    setFiltersHide(!filtersHide)
+  }
+
+  useEffect(() => {
+    filtersHide
+      ? document.body.classList.add('is-filters-hide')
+      : document.body.classList.remove('is-filters-hide');
+  }, [filtersHide]);
+
   return <>
     <SEO
       title={
@@ -426,189 +449,174 @@ export default function NftSales({
         + (period ? (" " + period) : "")
       }
     />
-    <div className="content-text" style={{ minHeight: "480px" }}>
-      <h1 className="center">{t("nft-sales.header")}</h1>
-      <p className='center'>
-        <Link href={"/nft-explorer?view=" + viewTab + issuerTaxonUrlPart}>{t("nft-explorer.header")}</Link>
-      </p>
-      <div className='center'>
-        <span className='halv'>
-          <span className='input-title'>
-            {t("table.issuer")} {userOrServiceLink(data, 'issuer')}
-          </span>
-          <input
-            placeholder={t("nfts.search-by-issuer")}
-            value={issuerInput}
-            onChange={(e) => { setIssuerInput(e.target.value) }}
-            onKeyPress={enterPress}
-            className="input-text"
-            spellCheck="false"
-            maxLength="35"
-          />
-        </span>
-        <span className='halv'>
-          <span className='input-title'>
-            {t("table.taxon")}
-          </span>
-          <input
-            placeholder={t("nfts.search-by-taxon")}
-            value={taxonInput}
-            onChange={(e) => { setTaxonInput(e.target.value) }}
-            onKeyPress={onTaxonInput}
-            className="input-text"
-            spellCheck="false"
-            maxLength="35"
-            disabled={issuerInput ? false : true}
-          />
-        </span>
+
+    <h1 className="center">{t("nft-sales.header")}</h1>
+    <p className='center'>
+      <Link href={"/nft-explorer?view=" + viewTab + issuerTaxonUrlPart}>{t("nft-explorer.header")}</Link>
+    </p>
+
+    <div className="content-cols">
+      <div className="filters">
+        <div className="filters__box">
+          <button className='filters__toggle' onClick={() => toggleFilters()}>
+            <BsFilter />
+          </button>
+          <div className="filters__wrap">
+            <div className="filters__head">
+              <span><i>{nftCount}</i> results</span>
+              {rendered &&
+                  <CSVLink
+                  data={data ? data.sales : []}
+                  headers={csvHeaders}
+                  filename='nfts_export.csv'
+                  className={'button-action thin narrow' + (!(data && data.sales.length > 0) ? ' disabled' : '')}
+                >
+                  <DownloadIcon /> CSV
+                </CSVLink>
+              }
+              <button className='filters__close' onClick={() => toggleFilters()}><IoMdClose /></button>
+            </div>
+              <AddressInput
+                title={t("table.issuer")}
+                placeholder={t("nfts.search-by-issuer")}
+                setValue={checkIssuerValue}
+                rawData={data}
+                type='issuer'
+              />
+              <AddressInput
+                title={t("table.taxon")}
+                placeholder={t("nfts.search-by-taxon")}
+                setValue={onTaxonInput}
+                rawData={data}
+                type='taxon'
+                disabled={issuer ? false : true}
+              />
+              <AddressInput
+                title={t("table.buyer")}
+                placeholder={t("nfts.search-by-buyer")}
+                setValue={checkBuyerValue}
+                rawData={data}
+                type='buyer'
+              />
+              <AddressInput
+                title={t("table.seller")}
+                placeholder={t("nfts.search-by-seller")}
+                setValue={checkSellerValue}
+                rawData={data}
+                type='seller'
+              />
+
+              {windowWidth < 720 && <br />}
+              {t("table.period")}
+              {windowWidth < 720 && <br />}
+
+              <DateAndTimeRange
+                period={period}
+                setPeriod={setPeriod}
+                defaultPeriod={periodQuery}
+                minDate="nft"
+                tabs={true}
+              />
+
+              <div>
+                  {t("table.view")}
+                  <RadioOptions tabList={pageTabList} tab={pageTab} setTab={setPageTab} name='page' />
+              </div>
+
+              <div>
+                  {t("table.view")}
+                  <RadioOptions tabList={viewTabList} tab={viewTab} setTab={setViewTab} name='view' />
+              </div>
+
+              <div>
+                  {t("table.view")}
+                  <RadioOptions tabList={saleTabList} tab={saleTab} setTab={setSaleTab} name='sale' />
+              </div>
+          </div>
+        </div>
       </div>
+      <div className="content-text" style={{ minHeight: "480px" }}>
 
-      <div className='center'>
-        <span className='halv'>
-          <span className='input-title'>
-            {t("table.buyer")} {userOrServiceLink(data, 'buyer')}
-          </span>
-          <input
-            placeholder={t("nfts.search-by-buyer")}
-            value={buyerInput}
-            onChange={(e) => { setBuyerInput(e.target.value) }}
-            onKeyPress={enterPress}
-            className="input-text"
-            spellCheck="false"
-            maxLength="35"
-          />
-        </span>
-        <span className='halv'>
-          <span className='input-title'>
-            {t("table.seller")} {userOrServiceLink(data, 'seller')}
-          </span>
-          <input
-            placeholder={t("nfts.search-by-seller")}
-            value={sellerInput}
-            onChange={(e) => { setSellerInput(e.target.value) }}
-            onKeyPress={enterPress}
-            className="input-text"
-            spellCheck="false"
-            maxLength="35"
-          />
-        </span>
-      </div>
-
-      <p className="center" style={{ marginBottom: "20px" }}>
-        <input type="button" className="button-action" value={t("button.search")} onClick={searchClick} />
-      </p>
-      <div className='tabs-inline'>
-
-        {windowWidth < 720 && <br />}
-        {t("table.period")}
-        {windowWidth < 720 && <br />}
-
-        <DateAndTimeRange
-          period={period}
-          setPeriod={setPeriod}
-          defaultPeriod={periodQuery}
-          minDate="nft"
-          tabs={true}
-        />
-
-        <br />
-
-        <Tabs tabList={pageTabList} tab={pageTab} setTab={setPageTab} name="page" />
-        <Tabs tabList={viewTabList} tab={viewTab} setTab={setViewTab} name="view" />
-        <Tabs tabList={saleTabList} tab={saleTab} setTab={setSaleTab} name="sale" />
-        {rendered &&
-          <CSVLink
-            data={sales}
-            headers={csvHeaders}
-            filename={'nft sales export ' + dateAndTimeNow + '.csv'}
-            className={'button-action thin narrow' + (sales.length === 0 ? ' disabled' : '')}
-            style={{ marginBottom: "15px" }}
-            href="#"
-          >
-            <DownloadIcon /> CSV
-          </CSVLink>
-        }
-      </div>
-
-      <InfiniteScroll
-        dataLength={sales.length}
-        next={checkApi}
-        hasMore={hasMore}
-        loader={!errorMessage &&
-          <p className="center">{t("nft-sales.load-more")}</p>
-        }
-        endMessage={<p className="center">{t("nft-sales.end")}</p>}
-      >
-        {viewTab === "list" &&
-          <table className="table-large">
-            <thead>
-              <tr>
-                <th className='center'>{t("table.index")}</th>
-                <th className='center'>{t("table.sold")}</th>
-                <th>{t("table.amount")} ({sortCurrency?.toUpperCase()})</th>
-                <th>{t("table.amount")}</th>
-                <th>NFT</th>
-                <th className='center hide-on-mobile'>{t("table.taxon")}</th>
-                <th className='center hide-on-mobile'>{t("table.serial")}</th>
-                <th className='hide-on-mobile'>{t("table.transaction")}</th>
-                {saleTab !== "primary" && <th className='hide-on-mobile right'>{t("table.seller")}</th>}
-                <th className='hide-on-mobile right'>{t("table.buyer")}</th>
-                {!issuer && <th className='hide-on-mobile right'>{t("table.issuer")}</th>}
-              </tr>
-            </thead>
-            <tbody>
-              {loading ?
-                <tr className='center'>
-                  <td colSpan="100">
-                    <span className="waiting"></span>
-                    <br />{t("general.loading")}<br />
-                  </td>
+        <InfiniteScroll
+          dataLength={sales.length}
+          next={checkApi}
+          hasMore={hasMore}
+          loader={!errorMessage &&
+            <p className="center">{t("nft-sales.load-more")}</p>
+          }
+          endMessage={<p className="center">{t("nft-sales.end")}</p>}
+        >
+          {viewTab === "list" &&
+            <table className="table-large">
+              <thead>
+                <tr>
+                  <th className='center'>{t("table.index")}</th>
+                  <th className='center'>{t("table.sold")}</th>
+                  <th>{t("table.amount")} ({sortCurrency?.toUpperCase()})</th>
+                  <th>{t("table.amount")}</th>
+                  <th>NFT</th>
+                  <th className='center hide-on-mobile'>{t("table.taxon")}</th>
+                  <th className='center hide-on-mobile'>{t("table.serial")}</th>
+                  <th className='hide-on-mobile'>{t("table.transaction")}</th>
+                  {saleTab !== "primary" && <th className='hide-on-mobile right'>{t("table.seller")}</th>}
+                  <th className='hide-on-mobile right'>{t("table.buyer")}</th>
+                  {!issuer && <th className='hide-on-mobile right'>{t("table.issuer")}</th>}
                 </tr>
+              </thead>
+              <tbody>
+                {loading ?
+                  <tr className='center'>
+                    <td colSpan="100">
+                      <span className="waiting"></span>
+                      <br />{t("general.loading")}<br />
+                    </td>
+                  </tr>
+                  :
+                  <>
+                    {!errorMessage && sales.length ?
+                      sales.map((nft, i) =>
+                        <tr key={i}>
+                          <td className='center'>{i + 1}</td>
+                          <td className='center'>{timeOrDate(nft.acceptedAt)}</td>
+                          <td>{convertedAmount(nft, sortCurrency)}</td>
+                          <td>{amountFormat(nft.amount, { tooltip: 'right' })}</td>
+                          <td>{nftThumbnail(nft.nftoken)} {nftNameLink(nft.nftoken)}</td>
+                          <td className='center hide-on-mobile'>{nft.nftoken.nftokenTaxon}</td>
+                          <td className='center hide-on-mobile'>{nft.nftoken.sequence}</td>
+                          <td className='center hide-on-mobile'><a href={"/explorer/" + nft.acceptedTxHash}><LinkIcon /></a></td>
+                          {saleTab !== "primary" && <td className='right hide-on-mobile'>{nftLink(nft, 'seller', { address: 'short' })}</td>}
+                          <td className='right hide-on-mobile'>{nftLink(nft, 'buyer', { address: 'short' })}</td>
+                          {!issuer && <td className='right hide-on-mobile'>{nftLink(nft.nftoken, 'issuer', { address: 'short' })}</td>}
+                        </tr>
+                      )
+                      :
+                      <tr><td colSpan="100" className='center orange bold'>{errorMessage}</td></tr>
+                    }
+                  </>
+                }
+              </tbody>
+            </table>
+          }
+          {viewTab === "tiles" &&
+            <>
+              {loading ?
+                <div className='center' style={{ marginTop: "20px" }}>
+                  <span className="waiting"></span>
+                  <br />{t("general.loading")}
+                </div>
                 :
                 <>
-                  {!errorMessage && sales.length ?
-                    sales.map((nft, i) =>
-                      <tr key={i}>
-                        <td className='center'>{i + 1}</td>
-                        <td className='center'>{timeOrDate(nft.acceptedAt)}</td>
-                        <td>{convertedAmount(nft, sortCurrency)}</td>
-                        <td>{amountFormat(nft.amount, { tooltip: 'right' })}</td>
-                        <td>{nftThumbnail(nft.nftoken)} {nftNameLink(nft.nftoken)}</td>
-                        <td className='center hide-on-mobile'>{nft.nftoken.nftokenTaxon}</td>
-                        <td className='center hide-on-mobile'>{nft.nftoken.sequence}</td>
-                        <td className='center hide-on-mobile'><a href={"/explorer/" + nft.acceptedTxHash}><LinkIcon /></a></td>
-                        {saleTab !== "primary" && <td className='right hide-on-mobile'>{nftLink(nft, 'seller', { address: 'short' })}</td>}
-                        <td className='right hide-on-mobile'>{nftLink(nft, 'buyer', { address: 'short' })}</td>
-                        {!issuer && <td className='right hide-on-mobile'>{nftLink(nft.nftoken, 'issuer', { address: 'short' })}</td>}
-                      </tr>
-                    )
+                  {errorMessage ?
+                    <div className='center orange bold'>{errorMessage}</div>
                     :
-                    <tr><td colSpan="100" className='center orange bold'>{errorMessage}</td></tr>
+                    <Tiles nftList={sales} type={pageTab} convertCurrency={sortCurrency} account={account} />
                   }
                 </>
               }
-            </tbody>
-          </table>
-        }
-        {viewTab === "tiles" &&
-          <>
-            {loading ?
-              <div className='center' style={{ marginTop: "20px" }}>
-                <span className="waiting"></span>
-                <br />{t("general.loading")}
-              </div>
-              :
-              <>
-                {errorMessage ?
-                  <div className='center orange bold'>{errorMessage}</div>
-                  :
-                  <Tiles nftList={sales} type={pageTab} convertCurrency={sortCurrency} account={account} />
-                }
-              </>
-            }
-          </>
-        }
-      </InfiniteScroll>
-    </div >
+            </>
+          }
+        </InfiniteScroll>
+      </div>
+    </div>
   </>
 }

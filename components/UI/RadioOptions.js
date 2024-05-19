@@ -4,7 +4,7 @@ export default function RadioOptions({ tabList, tab, setTab, name = "radio", sty
       setTab(e.currentTarget.value);
     }
 
-    return <div className='radio-options' style={style}>
+    return <div className={`radio-options${tabList.length > 3 ? ' radio-options--large' : ''}`} style={style}>
         {tabList.map((tabItem) => (
             <div className='radio-input' key={tabItem.value}>
                 <input

@@ -3,13 +3,26 @@
     display: flex;
     align-items: center;
 
+    @media(max-width: 1024px) {
+        flex-wrap: wrap;
+        margin-bottom: 0;
+    }
+
     .radio-input {
         padding: 1px;
         display: flex;
         align-items: center;
+        font-size: 15px;
+
+        @media(max-width: 1024px) {
+            flex: 1 1 45%;
+            margin-bottom: 15px;
+        }
 
         & + .radio-input {
-            margin-left: 15px;
+            @media(min-width: 1024px) {
+                margin-left: 15px;
+            }
         }
 
         input {
@@ -47,6 +60,16 @@
             &:checked:before {
                 transform: scale(0.6);
             }
+        }
+    }
+
+    &--large {
+        flex-wrap: wrap;
+
+        .radio-input {
+            flex: 1 1 45%;
+            margin-bottom: 15px;
+            margin-left: 0 !important;
         }
     }
 }

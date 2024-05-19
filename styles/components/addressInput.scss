@@ -1,6 +1,10 @@
 .address-input {
     position: relative;
 
+    @media(max-width: 1024px) {
+        margin-bottom: 20px;
+    }
+
     &__wrap {
         position: relative;
         border: 1px solid var(--unaccent-icon);
@@ -66,8 +70,11 @@
         }
 
         &__menu {
-            background: #000;
             border: 1px solid var(--unaccent-icon);
+
+            .dark & {
+                background: #000;
+            }
         }
 
         &__option--is-selected,
