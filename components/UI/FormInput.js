@@ -52,7 +52,6 @@ export default function FormInput({ placeholder, title, setValue, rawData, type,
     }
 
     if (e.key === 'Enter' && isAddressOrUsername(valueInp)) {
-      console.log("Enter");
       setValue(valueInp);
       clearTimeout(typingTimer)
       setSearchingSuggestions(false)
