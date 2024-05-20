@@ -557,7 +557,9 @@ export default function NftsComponent({
       <>
         <h1 className='center'>{t("nft-explorer.header") + " "}</h1>
         {!xahauNetwork &&
-          <Link href={"/nft-sales" + issuerTaxonUrlPart} style={{ display: "block", margin: "-5px auto 10px", width: "fit-content" }}>{t("nft-sales.header")}</Link>
+          <p className='center'>
+            <Link href={"/nft-sales" + issuerTaxonUrlPart}>{t("nft-sales.header")}</Link>
+          </p>
         }
       </>
     }

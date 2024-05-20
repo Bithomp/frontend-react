@@ -106,14 +106,7 @@ export default function NftSales({
   const [seller, setSeller] = useState(sellerQuery)
   const [filtersHide, setFiltersHide] = useState(false)
   const [nftCount, setNftCount] = useState(null)
-  // eslint-disable-next-line
-  const [issuerInput, setIssuerInput] = useState(issuerQuery)
-  // eslint-disable-next-line
   const [dateAndTimeNow, setDateAndTimeNow] = useState('')
-  // eslint-disable-next-line
-  const [buyerInput, setBuyerInput] = useState(buyerQuery)
-  // eslint-disable-next-line
-  const [sellerInput, setSellerInput] = useState(sellerQuery)
 
   const sortCurrency = sortCurrencyQuery.toLowerCase() || selectedCurrency
 
@@ -219,15 +212,15 @@ export default function NftSales({
       }
 
       if (newdata.issuer) {
-        setIssuerInput(newdata.issuer)
+        setIssuer(newdata.issuer)
       }
 
       if (newdata.buyer) {
-        setBuyerInput(newdata.buyer)
+        setBuyer(newdata.buyer)
       }
 
       if (newdata.seller) {
-        setSellerInput(newdata.seller)
+        setSeller(newdata.seller)
       }
 
       if (newdata.sales) {
@@ -356,7 +349,6 @@ export default function NftSales({
         setTaxon("");
       }
     } else {
-      setIssuerInput("");
       setIssuer("");
       setTaxonInput("");
       setTaxon("");
@@ -364,22 +356,12 @@ export default function NftSales({
   }
 
   const checkBuyerValue = e => {
-    if (isAddressOrUsername(e)) {
-      setBuyer(e);
-    } else {
-      setBuyerInput("");
-      setBuyer("");
-    }
-  }
+    setBuyer(isAddressOrUsername(e) ? e : "");
+  };
 
   const checkSellerValue = e => {
-    if (isAddressOrUsername(e)) {
-      setSeller(e);
-    } else {
-      setSellerInput("");
-      setSeller("");
-    }
-  }
+    setSeller(isAddressOrUsername(e) ? e : "");
+  };
 
   const onTaxonInput = value => {
     if (/^\d+$/.test(value) && issuer && isValidTaxon(value)) {
@@ -468,7 +450,7 @@ export default function NftSales({
                   <CSVLink
                   data={data ? data.sales : []}
                   headers={csvHeaders}
-                  filename='nfts_export.csv'
+                  filename={'nft sales export ' + dateAndTimeNow + '.csv'}
                   className={'button-action thin narrow' + (!(data && data.sales.length > 0) ? ' disabled' : '')}
                 >
                   <DownloadIcon /> CSV
@@ -518,7 +500,7 @@ export default function NftSales({
                 setPeriod={setPeriod}
                 defaultPeriod={periodQuery}
                 minDate="nft"
-                tabs={true}
+                radio={true}
               />
 
               <div>

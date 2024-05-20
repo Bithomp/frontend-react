@@ -8,9 +8,10 @@ import { registerLocale, setDefaultLocale } from "react-datepicker"
 import { useRouter } from "next/router"
 
 import RadioOptions from './RadioOptions'
+import Tabs from '../Tabs'
 import { useWidth, setTabParams, networkMinimumDate } from "../../utils"
 
-export default function DateAndTimeRange({ setPeriod, minDate, tabs, defaultPeriod, style }) {
+export default function DateAndTimeRange({ setPeriod, minDate, tabs, radio, defaultPeriod, style }) {
   const { i18n, t } = useTranslation()
   const windowWidth = useWidth()
   const router = useRouter()
@@ -149,6 +150,13 @@ export default function DateAndTimeRange({ setPeriod, minDate, tabs, defaultPeri
 
   return <span style={style}>
     {tabs && ready &&
+      <>
+        <Tabs tabList={periodTabs} tab={periodName} setTab={setPeriodName} name='periodTabs' />
+        {windowWidth < 910 && <br />}
+      </>
+    }
+
+    {radio && ready &&
       <>
         <RadioOptions tabList={periodTabs} tab={periodName} setTab={setPeriodName} name='periodTabs' />
         {windowWidth < 910 && <br />}
