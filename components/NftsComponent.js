@@ -35,7 +35,7 @@ import DateAndTimeRange from './UI/DateAndTimeRange'
 
 import DownloadIcon from "../public/images/download.svg"
 import RadioOptions from './UI/RadioOptions'
-import AddressInput from './UI/AddressInput'
+import FormInput from './UI/FormInput'
 
 export default function NftsComponent({
   listNftsOrder,
@@ -134,6 +134,7 @@ export default function NftsComponent({
       setLoading(true)
       setData([])
       nftsData = []
+      scrollTop()
     }
 
     let listUrlPart = '?list=nfts'
@@ -313,6 +314,14 @@ export default function NftsComponent({
           }
         }
       }
+    }
+  }
+
+  const scrollTop = () => {
+    if (window) {
+      window.scrollTo({
+        top: 0
+      })
     }
   }
 
@@ -579,17 +588,18 @@ export default function NftsComponent({
               <button className='filters__close' onClick={() => toggleFilters()}><IoMdClose /></button>
             </div>
             {nftExplorer && <>
-              <AddressInput
+              <FormInput
                 title={t("table.issuer")}
                 placeholder={t("nfts.search-by-issuer")}
                 setValue={onIssuerSearch}
                 rawData={rawData}
                 type='issuer'
+                tips={true}
               />
 
               {!xahauNetwork &&
                 <>
-                  <AddressInput
+                  <FormInput
                     title={t("table.taxon")}
                     placeholder={t("nfts.search-by-taxon")}
                     setValue={onTaxonInput}
@@ -600,14 +610,16 @@ export default function NftsComponent({
                 </>
               }
 
-              <AddressInput
+              <FormInput
                 title={t("table.owner")}
                 placeholder={t("nfts.search-by-owner")}
                 setValue={setOwner}
                 rawData={rawData}
                 type='owner'
+                tips={true}
               />
-              <AddressInput
+
+              <FormInput
                 title={t("table.name")}
                 placeholder={t("nfts.search-by-name")}
                 setValue={setSearch}

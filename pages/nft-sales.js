@@ -8,7 +8,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import Link from 'next/link'
 
 import RadioOptions from '../components/UI/RadioOptions'
-import AddressInput from '../components/UI/AddressInput'
+import FormInput from '../components/UI/FormInput'
 
 import { IoMdClose } from "react-icons/io";
 import { BsFilter } from "react-icons/bs";
@@ -476,14 +476,15 @@ export default function NftSales({
               }
               <button className='filters__close' onClick={() => toggleFilters()}><IoMdClose /></button>
             </div>
-              <AddressInput
+              <FormInput
                 title={t("table.issuer")}
                 placeholder={t("nfts.search-by-issuer")}
                 setValue={checkIssuerValue}
                 rawData={data}
                 type='issuer'
+                tips={true}
               />
-              <AddressInput
+              <FormInput
                 title={t("table.taxon")}
                 placeholder={t("nfts.search-by-taxon")}
                 setValue={onTaxonInput}
@@ -491,19 +492,21 @@ export default function NftSales({
                 type='taxon'
                 disabled={issuer ? false : true}
               />
-              <AddressInput
+              <FormInput
                 title={t("table.buyer")}
                 placeholder={t("nfts.search-by-buyer")}
                 setValue={checkBuyerValue}
                 rawData={data}
                 type='buyer'
+                tips={true}
               />
-              <AddressInput
+              <FormInput
                 title={t("table.seller")}
                 placeholder={t("nfts.search-by-seller")}
                 setValue={checkSellerValue}
                 rawData={data}
                 type='seller'
+                tips={true}
               />
 
               {windowWidth < 720 && <br />}

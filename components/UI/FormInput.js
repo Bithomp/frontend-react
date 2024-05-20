@@ -6,15 +6,14 @@ import axios from 'axios';
 
 import {
   isAddressOrUsername,
-  useWidth,
-  xahauNetwork,
+  useWidth
 } from '../../utils'
 
 import { amountFormat, userOrServiceLink } from '../../utils/format'
 
 let typingTimer
 
-export default function AddressInput({ placeholder, title, setValue, rawData, type, disabled }) {
+export default function FormInput({ placeholder, title, setValue, rawData, type, tips, disabled }) {
   const { t } = useTranslation()
   const windowWidth = useWidth()
 
@@ -24,14 +23,10 @@ export default function AddressInput({ placeholder, title, setValue, rawData, ty
   const [searchSuggestions, setSearchSuggestions] = useState([])
   const [searchingSuggestions, setSearchingSuggestions] = useState(false)
   const [link, setLink] = useState("")
-  const [isNameInput, setIsNameInput] = useState(false)
-  const [isTaxonInput, setIsTaxonInput] = useState(false)
   const [notEmpty, setNotEmpty] = useState(false)
 
   useEffect(() => {
     setIsMounted(true);
-    type == "search" && setIsNameInput(true)
-    type == "taxon" && setIsTaxonInput(true)
   }, [])
 
   useEffect(() => {
@@ -48,7 +43,7 @@ export default function AddressInput({ placeholder, title, setValue, rawData, ty
 
   const searchOnKeyUp = e => {
     const valueInp = e.target.value;
-    const maxCount = isTaxonInput ? 1 : 2;
+    const maxCount = 2;
 
     if(inputValue.length > 0) {
       setNotEmpty(true);
@@ -62,21 +57,13 @@ export default function AddressInput({ placeholder, title, setValue, rawData, ty
     }
 
     //if more than 3 characters - search for suggestions
-    if (valueInp && valueInp.length > 0 && !isTaxonInput) {
+    if (valueInp && valueInp.length > 0 && tips) {
       clearTimeout(typingTimer);
       setSearchSuggestions([]);
       typingTimer = setTimeout(async () => {
         if (valueInp && valueInp.length > maxCount) {
           setSearchingSuggestions(true)
-          let url;
-
-          const nftEndpoint = xahauNetwork ? 'v2/uritokens' : 'v2/nfts'
-          if (isNameInput) {
-            const searchPart = '?search=' + valueInp + '&searchLocations=metadata.name';
-            url = nftEndpoint + searchPart;
-          } else {
-            url = "v2/address/search/" + valueInp;
-          }
+          const url = "v2/address/search/" + valueInp;
 
           const suggestionsResponse = await axios(url).catch((error) => {
             setSearchingSuggestions(false);
@@ -87,8 +74,6 @@ export default function AddressInput({ placeholder, title, setValue, rawData, ty
             const suggestions = suggestionsResponse.data
             if (suggestions?.addresses?.length > 0) {
               setSearchSuggestions(suggestions.addresses);
-            } else if((isNameInput) && suggestions?.nfts?.length > 0) {
-              setSearchSuggestions(suggestions.nfts);
             }
           }
           setSearchingSuggestions(false)
@@ -103,12 +88,10 @@ export default function AddressInput({ placeholder, title, setValue, rawData, ty
       return
     }
 
-    const value = isNameInput ? option.metadata.name : option.address
-
     if (option.username && !option.username.includes("-")) {
       onSearch(option.username)
     } else {
-      onSearch(value)
+      onSearch(option.address)
     }
   }
 
@@ -170,7 +153,7 @@ export default function AddressInput({ placeholder, title, setValue, rawData, ty
                 (option) => <>
                 <span style={windowWidth < 400 ? { fontSize: "14px" } : {}}>{option.address || option.issuer}</span>
                 {(option.username || option.service || option.globalid || option.xumm) ? (windowWidth > 400 ? " - " : " ") : ""}
-                <b className='blue'>{option.username || option.metadata?.name}</b>
+                <b className='blue'>{option.username}</b>
                 {option.service && <>
                     {option.username ? " (" : ""}
                     <b className='green'>{option.service}</b>
@@ -208,8 +191,6 @@ export default function AddressInput({ placeholder, title, setValue, rawData, ty
                 option.username +
                 option.service +
                 option.xumm +
-                option.issuer +
-                option.metadata?.name +
                 option.globalid +
                 option.verifiedDomain +
                 option.serviceDomain

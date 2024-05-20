@@ -101,11 +101,10 @@ body.dark {
     }
 
     .content-text {
-      // overflow-y: scroll;
       padding: 20px 0 80px;
 
       @media(max-width: 1024px) {
-        padding-top: 40px;
+        padding: 50px 15px;
       }
     }
   }
@@ -335,6 +334,11 @@ table {
   }
   &.table-large {
     min-width: 760px;
+    max-width: calc(100% - 50px);
+    @media(max-width: 1150px) {
+      min-width: 95%;
+      width: 95%;
+    }
     &.shrink {
       min-width: unset;
       @media screen and (max-width: 800px) {
@@ -365,6 +369,11 @@ table {
       th, td {
         padding: 10px;
         font-size: 14px;
+
+        @media(max-width: 1550px) {
+          padding: 4px;
+          font-size: 12px;
+        }
       }
       @media only screen and (max-width: 640px) {
         td, th {
@@ -739,7 +748,7 @@ body.dark {
 @import "./components/tabs.scss";
 @import "./components/issuerSelect.scss";
 @import "./components/inputPrepend.scss";
-@import "./components/addressInput.scss";
+@import "./components/formInput.scss";
 @import "./components/buttonArrowScroll.scss";
 @import "./components/simpleSelect.scss";
 @import "./components/footer.scss";
