@@ -158,7 +158,11 @@ export default function Amm(
       />
       <SearchBlock
         tab="amm"
-        searchPlaceholderText="Search by AMM ID, Liquidity Pool (LP) token, AMM owner address"
+        searchPlaceholderText={width > 600 ?
+          "Search by AMM ID, Liquidity Pool (LP) token, AMM owner address"
+          :
+          "AMM ID, LP token or AMM address"
+        }
         userData={userData}
       />
       <div className="content-center short-top amm">

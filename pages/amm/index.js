@@ -1,7 +1,8 @@
-import { serverSideTranslations } from "next-i18next/serverSideTranslations";
+import { serverSideTranslations } from "next-i18next/serverSideTranslations"
 
-import SearchBlock from "../../components/Layout/SearchBlock";
-import SEO from "../../components/SEO";
+import SearchBlock from "../../components/Layout/SearchBlock"
+import SEO from "../../components/SEO"
+import { useWidth } from "../../utils"
 
 export async function getServerSideProps(context) {
   return {
@@ -20,6 +21,7 @@ const Container = ({ children }) => {
 };
 
 const AmmSearch = () => {
+  const width = useWidth()
   return (
     <>
       <SEO
@@ -29,7 +31,11 @@ const AmmSearch = () => {
       />
       <SearchBlock
         tab="amm"
-        searchPlaceholderText="Search by AMM ID, Liquidity Pool (LP) token, AMM owner address"
+        searchPlaceholderText={width > 600 ?
+          "Search by AMM ID, Liquidity Pool (LP) token, AMM owner address"
+          :
+          "AMM ID, LP token or AMM address"
+        }
       />
       <Container>
         <h1 className='center'>Automated market maker pool information search</h1>
@@ -39,4 +45,4 @@ const AmmSearch = () => {
   );
 };
 
-export default AmmSearch;
+export default AmmSearch
