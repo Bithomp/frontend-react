@@ -373,6 +373,7 @@
   },
   "table": {
     "mints": "Acuñaciones",
+    "view": "View",
     "period": "Periodo",
     "mint-period": "Periodo de acuñación",
     "warning": "Advertencia",

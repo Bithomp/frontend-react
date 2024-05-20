@@ -82,11 +82,36 @@ body.dark {
   bottom: 0;
   right: 0;
   background-size: 100% auto;
+  pointer-events: none;
 }
 
 .content {
   border-top: 81px solid var(--background-header);
   flex: 1;
+
+  .content-cols {
+    display: flex;
+    position: relative;
+
+    &::before {
+      content: '';
+      position: absolute;
+      inset: 0 15px auto;
+      border-top: 1px solid #ccc;
+
+      @media(min-width: 1024px) {
+        z-index: 4;
+      }
+    }
+
+    .content-text {
+      padding: 20px 0 80px;
+
+      @media(max-width: 1024px) {
+        padding: 50px 15px;
+      }
+    }
+  }
 
   .content-text {
     margin: 80px;
@@ -321,6 +346,11 @@ table {
   }
   &.table-large {
     min-width: 760px;
+    max-width: calc(100% - 50px);
+    @media(max-width: 1150px) {
+      min-width: 95%;
+      width: 95%;
+    }
     &.shrink {
       min-width: unset;
       @media screen and (max-width: 800px) {
@@ -351,6 +381,11 @@ table {
       th, td {
         padding: 10px;
         font-size: 14px;
+
+        @media(max-width: 1550px) {
+          padding: 4px;
+          font-size: 12px;
+        }
       }
       @media only screen and (max-width: 640px) {
         td, th {
@@ -725,14 +760,17 @@ body.dark {
 @import "./components/tabs.scss";
 @import "./components/issuerSelect.scss";
 @import "./components/inputPrepend.scss";
+@import "./components/formInput.scss";
 @import "./components/buttonArrowScroll.scss";
 @import "./components/simpleSelect.scss";
 @import "./components/footer.scss";
 @import "./components/buttonArrowScroll.scss";
+@import "./components/radioOptions.scss";
 
 //components
 @import "./components/tiles.scss";
 @import "./components/receipt.scss";
+@import "./components/filters.scss";
 @import "./components/dateAndTimeRange.scss";
 
 //home page

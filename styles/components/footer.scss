@@ -1,5 +1,6 @@
 footer {
   position: relative;
+  z-index: 3;
   background-color: var(--background-footer);
   color: var(--text-contrast);
   transition: background-color .5s, color .5s;

@@ -1,0 +1,200 @@
+$width: 340px;
+
+.filters {
+    position: absolute;
+    height: 100%;
+    z-index: 3;
+
+    @media(min-width: 1240px) {
+        body:not(.is-filters-hide) & + .content-text {
+            padding-left: $width + 35px !important;
+        }
+
+        & + .content-text {
+            min-height: calc(100vh - 81px) !important;
+        }
+    }
+
+    @media (max-width: 1240px) {
+        position: absolute;
+        width: 100vw;
+        height: 100%;
+        pointer-events: none;
+    }
+
+    &__box {
+        @media(min-width: 1240px) {
+            position: sticky;
+            top: 81px;
+            padding: 20px 15px;
+            width: $width;
+            max-width: $width;
+
+            @media(max-width: 1300px) {
+                width: 300px;
+                max-width: 300px;
+            }
+
+            body:not(.is-filters-hide) & {
+                height: calc(100vh - 81px);
+                overflow-y: scroll;
+                scrollbar-width: thin;
+                scrollbar-color: var(--accent-icon) #fff;
+
+                &::-webkit-scrollbar {
+                    width: 8px;
+                }
+
+                &::-webkit-scrollbar-track {
+                    background: #fff;
+                }
+
+                &::-webkit-scrollbar-thumb {
+                    background-color: var(--accent-icon);
+                    border-radius: 0px;
+                }
+            }
+        }
+
+        @media(max-width: 1240px) {
+            height: 100%;
+        }
+    }
+
+    body.is-filters-hide & {
+        @media(min-width: 1240px) {
+            width: fit-content;
+        }
+    }
+
+    &__close {
+        background: none;
+        border: none;
+        font-size: 34px;
+        padding: 0;
+        display: flex;
+
+        .dark & {
+            color: #fff;
+        }
+
+        @media(min-width: 1240px) {
+            display: none;
+        }
+    }
+
+    & + .content-text {
+        margin: 0;
+        width: 100%;
+    }
+
+    &__head {
+        text-align: right;
+        margin-bottom: 20px;
+        font-size: 14px;
+        color: #6e6e6e;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        @media (max-width: 1240px) {
+
+            .button-action {
+                order: -1;
+            }
+        }
+
+        > span {
+            @media(min-width: 1240px) {
+                margin-left: 33%;
+            }
+
+            @media(max-width: 1240px) {
+                font-size: 16px;
+            }
+        }
+
+        i {
+            font-style: normal;
+        }
+    }
+
+    &__wrap {
+        padding-bottom: 10px;
+
+        > * {
+            @media(min-width: 1240px) {
+                margin-bottom: 20px;
+            }
+        }
+
+        @media(min-width: 1240px) {
+            body.is-filters-hide & {
+                display: none;
+            }
+        }
+
+        @media (max-width: 1240px) {
+            position: fixed;
+            inset: 81px 0 0;
+            background: #fff;
+            padding: 20px 30px;
+            overflow-y: scroll;
+            transform: translateY(100%);
+            pointer-events: all;
+            transition: transform 0.3s ease-in-out;
+
+            .dark & {
+                background: #000;
+            }
+
+            body.is-filters-hide & {
+                transform: translateY(0);
+            }
+        }
+    }
+
+    &__toggle {
+        position: absolute;
+        display: flex;
+        top: 20px;
+        left: 15px;
+        background-color: #fff;
+        border: none;
+        margin: 0;
+        font-size: 20px;
+        padding: 5px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        cursor: pointer;
+
+        @media (max-width: 1240px) {
+            position: sticky;
+            margin-top: 9px;
+            top: 100px;
+            left: 20px;
+            pointer-events: all;
+        }
+    }
+
+    .react-datepicker-wrapper input:hover {
+        border-color: var(--accent-link);
+        box-shadow: 0 0 5px var(--unaccent-icon);
+    }
+
+    .react-select__menu {
+        margin-top: 0;
+        word-wrap: break-word;
+        border-radius: 0;
+        inset: 100% -1px auto;
+        box-sizing: content-box;
+        border: 1px solid var(--accent-icon);
+        box-shadow: none;
+    }
+}
+
+body.is-filters-hide {
+    @media(max-width: 1240px) {
+        overflow: hidden;
+    }
+}
