@@ -36,7 +36,7 @@ export default function FormInput({ placeholder, title, setValue, rawData, type,
       setLink(userOrServiceLink(rawData, type))
 
       if(disabled) {
-        clearOnClick()
+        clearAll()
       }
     }
   }, [rawData])
@@ -45,13 +45,17 @@ export default function FormInput({ placeholder, title, setValue, rawData, type,
     const valueInp = e.target.value;
     const maxCount = 2;
 
-    if(inputValue.length > 0) {
+    if(valueInp.length > 0) {
       setNotEmpty(true);
+    } else {
+      clearAll();
     }
 
     if (e.key === 'Enter' && isAddressOrUsername(valueInp)) {
+      console.log("Enter");
       setValue(valueInp);
       clearTimeout(typingTimer)
+      setSearchingSuggestions(false)
       setSearchSuggestions([])
       return
     }
@@ -93,6 +97,8 @@ export default function FormInput({ placeholder, title, setValue, rawData, type,
     } else {
       onSearch(option.address)
     }
+
+    setSearchSuggestions([]);
   }
 
   const onSearch = async (si) => {
@@ -127,11 +133,12 @@ export default function FormInput({ placeholder, title, setValue, rawData, type,
     }
   }
 
-  const clearOnClick = () => {
+  const clearAll = () => {
     setValue("");
     setInputValue("");
     setLink("");
     setNotEmpty(false);
+    setSearchSuggestions([]);
   }
 
   return (
@@ -204,7 +211,7 @@ export default function FormInput({ placeholder, title, setValue, rawData, type,
               }
             />
             <div className="address-input__btns">
-                <button className="address-input__clear" onClick={clearOnClick}><IoMdClose /></button>
+                <button className="address-input__clear" onClick={clearAll}><IoMdClose /></button>
                 <div className='search-button' onClick={onSearchClick}>
                     <img
                         src='/images/search.svg'

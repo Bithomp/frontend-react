@@ -98,6 +98,10 @@ body.dark {
       position: absolute;
       inset: 0 15px auto;
       border-top: 1px solid #ccc;
+
+      @media(min-width: 1024px) {
+        z-index: 4;
+      }
     }
 
     .content-text {

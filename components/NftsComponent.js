@@ -84,8 +84,6 @@ export default function NftsComponent({
   const [mintedPeriod, setMintedPeriod] = useState(mintedPeriodQuery)
   const [csvHeaders, setCsvHeaders] = useState([])
   const [nftCount, setNftCount] = useState(null)
-  // eslint-disable-next-line no-unused-vars
-  const [taxonInput, setTaxonInput] = useState(taxonQuery)
 
   let csvHeadersConst = [
     { label: "NFT ID", key: "nftokenID" },
@@ -248,9 +246,9 @@ export default function NftsComponent({
       } else {
         if (newdata.issuer) {
           if (newdata.taxon) {
-            setTaxonInput(newdata.taxon)
+            setTaxon(newdata.taxon)
           } else {
-            setTaxonInput("")
+            setTaxon("")
           }
         }
 
@@ -439,17 +437,14 @@ export default function NftsComponent({
   const onTaxonInput = value => {
     if (/^\d+$/.test(value) && issuer && isValidTaxon(value)) {
       setTaxon(value);
-      setTaxonInput(value);
     } else {
       setTaxon("");
-      setTaxonInput("");
     }
   };
 
   const onIssuerSearch = value => {
     if(!value) {
       setTaxon("");
-      setTaxonInput("");
     }
     setIssuer(value);
   }

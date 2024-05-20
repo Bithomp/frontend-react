@@ -186,6 +186,10 @@ $width: 340px;
         margin-top: 0;
         word-wrap: break-word;
         border-radius: 0;
+        inset: 100% -1px auto;
+        box-sizing: content-box;
+        border: 1px solid var(--accent-icon);
+        box-shadow: none;
     }
 }
 
