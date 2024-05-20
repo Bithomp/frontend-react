@@ -152,6 +152,7 @@ export default function NftSales({
       setSales([])
       salesData = []
       setLoading(true)
+      scrollTop()
     }
 
     if (!marker || (marker === "first" && salesData.length)) {
@@ -257,7 +258,7 @@ export default function NftSales({
         }
       }
 
-      setNftCount(newdata.sales.length);
+      setNftCount(newdata.sales.length + salesData.length);
     }
   }
 
@@ -413,6 +414,14 @@ export default function NftSales({
       ? document.body.classList.add('is-filters-hide')
       : document.body.classList.remove('is-filters-hide');
   }, [filtersHide]);
+
+  const scrollTop = () => {
+    if (window) {
+      window.scrollTo({
+        top: 0
+      })
+    }
+  }
 
   return <>
     <SEO
