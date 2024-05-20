@@ -258,7 +258,7 @@ export default function NftSales({
         }
       }
 
-      setNftCount(newdata.sales.length);
+      setNftCount(newdata.sales.length + salesData.length);
     }
   }
 
