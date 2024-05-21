@@ -7,6 +7,10 @@ $button-size: 30px;
     top: 15px;
     z-index: 3;
 
+    @media(max-width: 1024px) {
+        top: 9px;
+    }
+
     &__wrap {
         position: sticky;
         top: 90px;
@@ -17,6 +21,11 @@ $button-size: 30px;
         gap: 10px;
         background: var(--background-input-readonly);
         padding: 7px 10px;
+
+        @media(max-width: 1024px) {
+            padding: 5px;
+            gap: 5px;
+        }
     }
 
     &__button {

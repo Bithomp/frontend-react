@@ -165,14 +165,12 @@ $width: 340px;
         font-size: 20px;
         padding: 5px;
         border: 1px solid #ccc;
-        border-radius: 5px;
         cursor: pointer;
 
         @media (max-width: 1240px) {
             position: sticky;
             margin-top: 9px;
             top: 100px;
-            left: 20px;
             pointer-events: all;
         }
     }
