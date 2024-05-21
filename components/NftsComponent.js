@@ -36,6 +36,7 @@ import DateAndTimeRange from './UI/DateAndTimeRange'
 import DownloadIcon from "../public/images/download.svg"
 import RadioOptions from './UI/RadioOptions'
 import FormInput from './UI/FormInput'
+import AddressInput from './UI/AddressInput'
 
 export default function NftsComponent({
   listNftsOrder,
@@ -84,6 +85,8 @@ export default function NftsComponent({
   const [mintedPeriod, setMintedPeriod] = useState(mintedPeriodQuery)
   const [csvHeaders, setCsvHeaders] = useState([])
   const [nftCount, setNftCount] = useState(null)
+
+  const controller = new AbortController()
 
   let csvHeadersConst = [
     { label: "NFT ID", key: "nftokenID" },
@@ -231,10 +234,14 @@ export default function NftsComponent({
 
     const nftEndpoint = xahauNetwork ? 'v2/uritokens' : 'v2/nfts'
 
-    const response = await axios(nftEndpoint + listUrlPart + ownerUrlPart + collectionUrlPart + markerUrlPart + searchPart + serialPart + mintAndBurnPart + orderPart)
-      .catch(error => {
-        setErrorMessage(t("error." + error.message))
-      })
+    const response = await axios(
+      nftEndpoint + listUrlPart + ownerUrlPart + collectionUrlPart + markerUrlPart + searchPart + serialPart + mintAndBurnPart + orderPart,
+      {
+        signal: controller.signal
+      }
+    ).catch(error => {
+      setErrorMessage(t("error." + error.message))
+    })
 
     setLoading(false)
     const newdata = response?.data
@@ -325,6 +332,12 @@ export default function NftsComponent({
 
   useEffect(() => {
     checkApi({ restart: true })
+
+    return () => {
+      if (controller) {
+        controller.abort()
+      }
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, issuer, taxon, owner, listTab, saleDestinationTab, search, includeBurned, includeWithoutMediaData, listNftsOrderTab, mintedPeriod])
 
@@ -443,7 +456,7 @@ export default function NftsComponent({
   };
 
   const onIssuerSearch = value => {
-    if(!value) {
+    if (!value) {
       setTaxon("");
     }
     setIssuer(value);
@@ -582,49 +595,46 @@ export default function NftsComponent({
                   <DownloadIcon /> CSV
                 </CSVLink>
               }
-              <button className='filters__close' onClick={() => toggleFilters()}><IoMdClose /></button>
+              <button className='filters__close' onClick={() => toggleFilters()}>
+                <IoMdClose />
+              </button>
             </div>
-            {nftExplorer && <>
-              <FormInput
-                title={t("table.issuer")}
-                placeholder={t("nfts.search-by-issuer")}
-                setValue={onIssuerSearch}
-                rawData={rawData}
-                type='issuer'
-                tips={true}
-              />
-
-              {!xahauNetwork &&
-                <>
-                  <FormInput
-                    title={t("table.taxon")}
-                    placeholder={t("nfts.search-by-taxon")}
-                    setValue={onTaxonInput}
-                    rawData={rawData}
-                    type='taxon'
-                    disabled={issuer ? false : true}
-                  />
-                </>
-              }
-
-              <FormInput
-                title={t("table.owner")}
-                placeholder={t("nfts.search-by-owner")}
-                setValue={setOwner}
-                rawData={rawData}
-                type='owner'
-                tips={true}
-              />
-
-              <FormInput
-                title={t("table.name")}
-                placeholder={t("nfts.search-by-name")}
-                setValue={setSearch}
-                rawData={rawData}
-                type='search'
-              />
-
-            </>}
+            {nftExplorer &&
+              <>
+                <AddressInput
+                  title={t("table.issuer")}
+                  placeholder={t("nfts.search-by-issuer")}
+                  setValue={onIssuerSearch}
+                  rawData={rawData}
+                  type='issuer'
+                />
+                {!xahauNetwork &&
+                  <>
+                    <FormInput
+                      title={t("table.taxon")}
+                      placeholder={t("nfts.search-by-taxon")}
+                      setValue={onTaxonInput}
+                      defaultValue={rawData?.taxon}
+                      disabled={issuer ? false : true}
+                    />
+                  </>
+                }
+                <AddressInput
+                  title={t("table.owner")}
+                  placeholder={t("nfts.search-by-owner")}
+                  setValue={setOwner}
+                  rawData={rawData}
+                  type='owner'
+                  tips={true}
+                />
+                <FormInput
+                  title={t("table.name")}
+                  placeholder={t("nfts.search-by-name")}
+                  setValue={setSearch}
+                  defaultValue={rawData?.search}
+                />
+              </>
+            }
 
             {listTab === 'nfts' &&
               <div>
