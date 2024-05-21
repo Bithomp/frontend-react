@@ -13,7 +13,7 @@ import FormInput from '../components/UI/FormInput'
 import { IoMdClose } from "react-icons/io";
 import { BsFilter } from "react-icons/bs";
 
-import { stripText, isAddressOrUsername, setTabParams, useWidth } from '../utils'
+import { stripText, isAddressOrUsername, setTabParams, useWidth, xahauNetwork } from '../utils'
 import { isValidTaxon, nftThumbnail, nftNameLink } from '../utils/nft'
 import {
   amountFormat,
@@ -194,8 +194,10 @@ export default function NftSales({
       setLoading(true)
     }
 
+    let nftTypeName = xahauNetwork ? 'uritokens' : 'nft'
+
     const response = await axios(
-      'v2/nft-sales?list=' + loadList + currencyUrlPart() + '&saleType=' + saleTab + collectionUrlPart + periodUrlPart + markerUrlPart
+      'v2/' + nftTypeName + '-sales?list=' + loadList + currencyUrlPart() + '&saleType=' + saleTab + collectionUrlPart + periodUrlPart + markerUrlPart
       + "&convertCurrencies=" + sortCurrency + "&sortCurrency=" + sortCurrency + marketplaceUrlPart + buyerUrlPart + sellerUrlPart
     ).catch(error => {
       setErrorMessage(t("error." + error.message))
@@ -456,7 +458,7 @@ export default function NftSales({
             <div className="filters__head">
               <span><i>{nftCount}</i> results</span>
               {rendered &&
-                  <CSVLink
+                <CSVLink
                   data={data ? data.sales : []}
                   headers={csvHeaders}
                   filename={'nft sales export ' + dateAndTimeNow + '.csv'}
@@ -467,65 +469,65 @@ export default function NftSales({
               }
               <button className='filters__close' onClick={() => toggleFilters()}><IoMdClose /></button>
             </div>
-              <FormInput
-                title={t("table.issuer")}
-                placeholder={t("nfts.search-by-issuer")}
-                setValue={checkIssuerValue}
-                rawData={data}
-                type='issuer'
-                tips={true}
-              />
-              <FormInput
-                title={t("table.taxon")}
-                placeholder={t("nfts.search-by-taxon")}
-                setValue={onTaxonInput}
-                rawData={data}
-                type='taxon'
-                disabled={issuer ? false : true}
-              />
-              <FormInput
-                title={t("table.buyer")}
-                placeholder={t("nfts.search-by-buyer")}
-                setValue={checkBuyerValue}
-                rawData={data}
-                type='buyer'
-                tips={true}
-              />
-              <FormInput
-                title={t("table.seller")}
-                placeholder={t("nfts.search-by-seller")}
-                setValue={checkSellerValue}
-                rawData={data}
-                type='seller'
-                tips={true}
-              />
+            <FormInput
+              title={t("table.issuer")}
+              placeholder={t("nfts.search-by-issuer")}
+              setValue={checkIssuerValue}
+              rawData={data}
+              type='issuer'
+              tips={true}
+            />
+            <FormInput
+              title={t("table.taxon")}
+              placeholder={t("nfts.search-by-taxon")}
+              setValue={onTaxonInput}
+              rawData={data}
+              type='taxon'
+              disabled={issuer ? false : true}
+            />
+            <FormInput
+              title={t("table.buyer")}
+              placeholder={t("nfts.search-by-buyer")}
+              setValue={checkBuyerValue}
+              rawData={data}
+              type='buyer'
+              tips={true}
+            />
+            <FormInput
+              title={t("table.seller")}
+              placeholder={t("nfts.search-by-seller")}
+              setValue={checkSellerValue}
+              rawData={data}
+              type='seller'
+              tips={true}
+            />
 
-              {windowWidth < 720 && <br />}
-              {t("table.period")}
-              {windowWidth < 720 && <br />}
+            {windowWidth < 720 && <br />}
+            {t("table.period")}
+            {windowWidth < 720 && <br />}
 
-              <DateAndTimeRange
-                period={period}
-                setPeriod={setPeriod}
-                defaultPeriod={periodQuery}
-                minDate="nft"
-                radio={true}
-              />
+            <DateAndTimeRange
+              period={period}
+              setPeriod={setPeriod}
+              defaultPeriod={periodQuery}
+              minDate="nft"
+              radio={true}
+            />
 
-              <div>
-                  {t("table.view")}
-                  <RadioOptions tabList={pageTabList} tab={pageTab} setTab={setPageTab} name='page' />
-              </div>
+            <div>
+              {t("table.view")}
+              <RadioOptions tabList={pageTabList} tab={pageTab} setTab={setPageTab} name='page' />
+            </div>
 
-              <div>
-                  {t("table.view")}
-                  <RadioOptions tabList={viewTabList} tab={viewTab} setTab={setViewTab} name='view' />
-              </div>
+            <div>
+              {t("table.view")}
+              <RadioOptions tabList={viewTabList} tab={viewTab} setTab={setViewTab} name='view' />
+            </div>
 
-              <div>
-                  {t("table.view")}
-                  <RadioOptions tabList={saleTabList} tab={saleTab} setTab={setSaleTab} name='sale' />
-              </div>
+            <div>
+              {t("table.view")}
+              <RadioOptions tabList={saleTabList} tab={saleTab} setTab={setSaleTab} name='sale' />
+            </div>
           </div>
         </div>
       </div>
