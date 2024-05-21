@@ -143,11 +143,11 @@ export default function AddressInput({ placeholder, title, setValue, rawData, ty
   return (
     <div className="center">
       <span className='input-title'>{title} {link}</span>
-      <div className={`address-input address-input--issuer${disabled ? ' disabled' : ''}`}>
+      <div className={`form-input form-input--address${disabled ? ' disabled' : ''}`}>
         {isMounted &&
-          <div className="address-input__wrap" onKeyUp={searchOnKeyUp}>
+          <div className="form-input__wrap" onKeyUp={searchOnKeyUp}>
             <Select
-              className={`address-input-select${notEmpty ? ' not-empty' : ''}`}
+              className={`form-input-select${notEmpty ? ' not-empty' : ''}`}
               placeholder={placeholder}
               onChange={searchOnChange}
               spellCheck="false"
@@ -209,8 +209,8 @@ export default function AddressInput({ placeholder, title, setValue, rawData, ty
                 () => searchingSuggestions ? t("explorer.searching-for-addresses") : null
               }
             />
-            <div className="address-input__btns">
-              <button className="address-input__clear" onClick={clearAll}><IoMdClose /></button>
+            <div className="form-input__btns">
+              <button className="form-input__clear" onClick={clearAll}><IoMdClose /></button>
               <div className='search-button' onClick={onSearchClick}>
                 <img
                   src='/images/search.svg'

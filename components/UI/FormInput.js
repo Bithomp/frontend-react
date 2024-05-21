@@ -41,10 +41,10 @@ export default function FormInput({ placeholder, title, setValue, defaultValue, 
   return (
     <div className="center">
       <span className='input-title'>{title}</span>
-      <div className={`address-input address-input--issuer${disabled ? ' disabled' : ''}`}>
-        <div className="address-input__wrap">
+      <div className={`form-input form-input--search${disabled ? ' disabled' : ''}`}>
+        <div className="form-input__wrap">
           <input
-            className={`address-input__input${inputValue ? ' not-empty' : ''}`}
+            className={`form-input__input${inputValue ? ' not-empty' : ''}`}
             placeholder={placeholder}
             onChange={onChange}
             onKeyUp={onKeyUp}
@@ -52,8 +52,8 @@ export default function FormInput({ placeholder, title, setValue, defaultValue, 
             disabled={disabled}
             spellCheck="false"
           />
-          <div className="address-input__btns">
-            <button className="address-input__clear" onClick={clearAll}>
+          <div className="form-input__btns">
+            <button className="form-input__clear" onClick={clearAll}>
               <IoMdClose />
             </button>
             <div className='search-button' onClick={onSearchClick}>

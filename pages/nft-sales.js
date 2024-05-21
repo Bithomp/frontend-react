@@ -574,7 +574,7 @@ export default function NftSales({
           endMessage={<p className="center">{t("nft-sales.end")}</p>}
         >
           {viewTab === "list" &&
-            <table className="table-large">
+            <table className="table-large table-large--without-border">
               <thead>
                 <tr>
                   <th className='center'>{t("table.index")}</th>

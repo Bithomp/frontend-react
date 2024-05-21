@@ -625,7 +625,6 @@ export default function NftsComponent({
                   setValue={setOwner}
                   rawData={rawData}
                   type='owner'
-                  tips={true}
                 />
                 <FormInput
                   title={t("table.name")}
@@ -742,7 +741,7 @@ export default function NftsComponent({
             {viewTab === "list" &&
               <>
                 {windowWidth > 500 ?
-                  <table className="table-large">
+                  <table className="table-large table-large--without-border">
                     <thead>
                       <tr>
                         <th className='center'>{t("table.index")}</th>
