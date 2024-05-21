@@ -105,7 +105,7 @@ body.dark {
     }
 
     .content-text {
-      padding: 20px 0 80px;
+      padding: 75px 0 80px;
 
       @media(max-width: 1024px) {
         padding: 50px 15px;
@@ -769,6 +769,7 @@ body.dark {
 @import "./components/footer.scss";
 @import "./components/buttonArrowScroll.scss";
 @import "./components/radioOptions.scss";
+@import "./components/viewToggle.scss";
 
 //components
 @import "./components/tiles.scss";

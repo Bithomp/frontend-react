@@ -1,0 +1,57 @@
+$button-size: 30px;
+
+.view-toggle {
+    position: absolute;
+    height: 100%;
+    right: 15px;
+    top: 15px;
+    z-index: 3;
+
+    &__wrap {
+        position: sticky;
+        top: 90px;
+        right: 0;
+        display: flex;
+        justify-content: space-between;
+        width: fit-content;
+        gap: 10px;
+        background: var(--background-input-readonly);
+        padding: 7px 10px;
+    }
+
+    &__button {
+        transition: background-color 0.3s;
+
+        label {
+            cursor: pointer;
+            width: $button-size;
+            height: $button-size;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #fff;
+            font-size: 18px;
+        }
+
+        input:checked + label {
+            background: var(--accent-link);
+            color: #fff;
+        }
+
+        svg {
+            padding-bottom: 2px;
+        }
+
+        input {
+            display: none;
+        }
+
+        &:hover {
+            background-color: var(--background-input-hover);
+        }
+
+        &--is-selected {
+            background-color: var(--background-input-selected);
+        }
+    }
+}

@@ -9,6 +9,7 @@ import Link from 'next/link'
 
 import RadioOptions from '../components/UI/RadioOptions'
 import FormInput from '../components/UI/FormInput'
+import ViewTogggle from '../components/UI/ViewToggle'
 
 import { IoMdClose } from "react-icons/io";
 import { BsFilter } from "react-icons/bs";
@@ -95,7 +96,7 @@ export default function NftSales({
   const [rendered, setRendered] = useState(false)
   const [data, setData] = useState(null)
   const [sales, setSales] = useState([])
-  const [viewTab, setViewTab] = useState(view)
+  const [activeView, setActiveView] = useState(view)
   const [loading, setLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState("")
   const [saleTab, setSaleTab] = useState(sale)
@@ -124,7 +125,7 @@ export default function NftSales({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  const viewTabList = [
+  const viewList = [
     { value: 'tiles', label: t("tabs.tiles") },
     { value: 'list', label: t("tabs.list") }
   ]
@@ -354,10 +355,10 @@ export default function NftSales({
         paramName: "sale"
       },
       {
-        tabList: viewTabList,
-        tab: viewTab,
+        tabList: viewList,
+        tab: activeView,
         defaultTab: "tiles",
-        setTab: setViewTab,
+        setTab: setActiveView,
         paramName: "view"
       },
       {
@@ -373,7 +374,7 @@ export default function NftSales({
     )
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [viewTab, saleTab, data, currency, currencyIssuer, pageTab, period])
+  }, [activeView, saleTab, data, currency, currencyIssuer, pageTab, period])
 
   const checkIssuerValue = e => {
     if (isAddressOrUsername(e)) {
@@ -465,7 +466,7 @@ export default function NftSales({
         + (taxon ? (" " + taxon) : taxonQuery)
         + (currency ? (" " + currency) : "")
         + (currencyIssuer ? (" " + currencyIssuer) : "")
-        + (viewTab === "list" ? (" " + t("tabs.list")) : "")
+        + (activeView === "list" ? (" " + t("tabs.list")) : "")
         + (period ? (" " + period) : "")
         + (search || searchQuery ? (", " + t("table.name") + ": " + (search || searchQuery)) : "")
       }
@@ -474,10 +475,11 @@ export default function NftSales({
 
     <h1 className="center">{t("nft-sales.header")}</h1>
     <p className='center'>
-      <Link href={"/nft-explorer?view=" + viewTab + issuerTaxonUrlPart}>{t("nft-explorer.header")}</Link>
+      <Link href={"/nft-explorer?view=" + activeView + issuerTaxonUrlPart}>{t("nft-explorer.header")}</Link>
     </p>
 
     <div className="content-cols">
+      <ViewTogggle viewList={viewList} activeView={activeView} setActiveView={setActiveView} />
       <div className="filters">
         <div className="filters__box">
           <button className='filters__toggle' onClick={() => toggleFilters()}>
@@ -552,11 +554,6 @@ export default function NftSales({
 
             <div>
               {t("table.view")}
-              <RadioOptions tabList={viewTabList} tab={viewTab} setTab={setViewTab} name='view' />
-            </div>
-
-            <div>
-              {t("table.view")}
               <RadioOptions tabList={saleTabList} tab={saleTab} setTab={setSaleTab} name='sale' />
             </div>
           </div>
@@ -573,7 +570,7 @@ export default function NftSales({
           }
           endMessage={<p className="center">{t("nft-sales.end")}</p>}
         >
-          {viewTab === "list" &&
+          {activeView === "list" &&
             <table className="table-large table-large--without-border">
               <thead>
                 <tr>
@@ -624,7 +621,7 @@ export default function NftSales({
               </tbody>
             </table>
           }
-          {viewTab === "tiles" &&
+          {activeView === "tiles" &&
             <>
               {loading ?
                 <div className='center' style={{ marginTop: "20px" }}>
