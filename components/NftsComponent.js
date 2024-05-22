@@ -443,7 +443,7 @@ export default function NftsComponent({
   };
 
   const onIssuerSearch = value => {
-    if(!value) {
+    if (!value) {
       setTaxon("");
     }
     setIssuer(value);
@@ -556,11 +556,9 @@ export default function NftsComponent({
     {nftExplorer &&
       <>
         <h1 className='center'>{t("nft-explorer.header") + " "}</h1>
-        {!xahauNetwork &&
-          <p className='center'>
-            <Link href={"/nft-sales" + issuerTaxonUrlPart}>{t("nft-sales.header")}</Link>
-          </p>
-        }
+        <p className='center'>
+          <Link href={"/nft-sales" + issuerTaxonUrlPart}>{t("nft-sales.header")}</Link>
+        </p>
       </>
     }
     <div className="content-cols">
