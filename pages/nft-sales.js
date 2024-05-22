@@ -546,7 +546,7 @@ export default function NftSales({
             />
 
             <div>
-              {t("table.view")}
+              {t("table.show")}
               <RadioOptions tabList={pageTabList} tab={pageTab} setTab={setPageTab} name='page' />
             </div>
 
@@ -556,7 +556,7 @@ export default function NftSales({
             </div>
 
             <div>
-              {t("table.view")}
+              {t("table.sales")}
               <RadioOptions tabList={saleTabList} tab={saleTab} setTab={setSaleTab} name='sale' />
             </div>
           </div>
