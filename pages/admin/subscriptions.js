@@ -343,9 +343,7 @@ export default function Subscriptions({ setSignRequest }) {
   return <>
     <SEO title={t("header", { ns: "admin" })} />
     <div className="page-admin content-center">
-      <h1 className='center'>
-        {t("header", { ns: "admin" })}
-      </h1>
+      <h1 className='center'>{t("header", { ns: "admin" })}</h1>
 
       <AdminTabs name="mainTabs" tab="subscriptions" />
 
@@ -371,59 +369,62 @@ export default function Subscriptions({ setSignRequest }) {
         }
 
         {packages?.length > 0 &&
-          <div style={{ textAlign: "left" }}>
-            {width > 600 ?
-              <table className='table-large shrink'>
-                <thead>
-                  <tr>
-                    <th>Type</th>
-                    <th>Created</th>
-                    <th>Start</th>
-                    <th>Expire</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {packages?.map((row, index) => {
-                    return <tr key={index}>
-                      <td>{typeName(row.type)}</td>
-                      <td>{fullDateAndTime(row.createdAt)}</td>
-                      <td>{fullDateAndTime(row.startedAt)}</td>
-                      <td>{fullDateAndTime(row.expiredAt + 1)}</td>
+          <>
+            <h4 className='center'>Your purchased subscriptions</h4>
+            <div style={{ textAlign: "left" }}>
+              {width > 600 ?
+                <table className='table-large shrink'>
+                  <thead>
+                    <tr>
+                      <th>Type</th>
+                      <th>Created</th>
+                      <th>Start</th>
+                      <th>Expire</th>
                     </tr>
-                  })}
-                </tbody>
-              </table>
-              :
-              <table className='table-mobile'>
-                <tbody>
-                  {packages?.map((row, index) => {
-                    return <tr key={index}>
-                      <td style={{ padding: "5px" }} className='center'>
-                        <b>{index + 1}</b>
-                      </td>
-                      <td>
-                        <p>
-                          Type: {row.type}
-                        </p>
-                        <p>
-                          Created: <br />
-                          {fullDateAndTime(row.createdAt)}
-                        </p>
-                        <p>
-                          Start: <br />
-                          {fullDateAndTime(row.startedAt)}
-                        </p>
-                        <p>
-                          Expire: <br />
-                          {fullDateAndTime(row.expiredAt + 1)}
-                        </p>
-                      </td>
-                    </tr>
-                  })}
-                </tbody>
-              </table>
-            }
-          </div>
+                  </thead>
+                  <tbody>
+                    {packages?.map((row, index) => {
+                      return <tr key={index}>
+                        <td>{typeName(row.type)}</td>
+                        <td>{fullDateAndTime(row.createdAt)}</td>
+                        <td>{fullDateAndTime(row.startedAt)}</td>
+                        <td>{fullDateAndTime(row.expiredAt + 1)}</td>
+                      </tr>
+                    })}
+                  </tbody>
+                </table>
+                :
+                <table className='table-mobile'>
+                  <tbody>
+                    {packages?.map((row, index) => {
+                      return <tr key={index}>
+                        <td style={{ padding: "5px" }} className='center'>
+                          <b>{index + 1}</b>
+                        </td>
+                        <td>
+                          <p>
+                            Type: {row.type}
+                          </p>
+                          <p>
+                            Created: <br />
+                            {fullDateAndTime(row.createdAt)}
+                          </p>
+                          <p>
+                            Start: <br />
+                            {fullDateAndTime(row.startedAt)}
+                          </p>
+                          <p>
+                            Expire: <br />
+                            {fullDateAndTime(row.expiredAt + 1)}
+                          </p>
+                        </td>
+                      </tr>
+                    })}
+                  </tbody>
+                </table>
+              }
+            </div>
+          </>
         }
 
         {errorMessage &&
@@ -644,6 +645,6 @@ export default function Subscriptions({ setSignRequest }) {
           </>
         }
       </div>
-    </div >
+    </div>
   </>
 }

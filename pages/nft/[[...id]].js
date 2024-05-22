@@ -1149,17 +1149,12 @@ export default function Nft({
                             <tr>
                               <td>{t("table.by-issuer")}</td>
                               <td>
-                                {data.type === 'xls20' &&
-                                  <>
-                                    <Link href={"/nft-distribution?issuer=" + data.issuer}>{t("holders", { ns: 'nft' })}</Link>
-                                    ,{" "}
-                                  </>
-                                }
-                                <Link href={"/nft-explorer?issuer=" + data.issuer}>{t("table.all-nfts")}</Link>
+                                <Link href={"/nft-distribution?issuer=" + data.issuer}>{t("holders", { ns: 'nft' })}</Link>,{" "}
+                                <Link href={"/nft-explorer?issuer=" + data.issuer}>{t("table.all-nfts")}</Link>,{" "}
+                                <Link href={"/nft-sales?issuer=" + data.issuer}>{t("table.sold_few")}</Link>
                                 {data.type === 'xls20' &&
                                   <>
                                     ,{" "}
-                                    <Link href={"/nft-sales?issuer=" + data.issuer}>{t("table.sold_few")}</Link>,{" "}
                                     <Link href={"/nft-explorer?issuer=" + data.issuer + "&list=onSale"}>{t("table.on-sale")}</Link>,{" "}
                                     <Link href={"/nft-volumes/" + data.issuer + "?period=year"}>{t("table.volume")}</Link>
                                   </>

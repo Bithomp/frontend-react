@@ -13,7 +13,7 @@ import FormInput from '../components/UI/FormInput'
 import { IoMdClose } from "react-icons/io";
 import { BsFilter } from "react-icons/bs";
 
-import { stripText, isAddressOrUsername, setTabParams, useWidth } from '../utils'
+import { stripText, isAddressOrUsername, setTabParams, useWidth, xahauNetwork } from '../utils'
 import { isValidTaxon, nftThumbnail, nftNameLink } from '../utils/nft'
 import {
   amountFormat,
@@ -210,9 +210,11 @@ export default function NftSales({
         return
       }
     }
+    
+    let nftTypeName = xahauNetwork ? 'uritoken' : 'nft'
 
     const response = await axios(
-      'v2/nft-sales?list=' + loadList + currencyUrlPart() + '&saleType=' + saleTab + collectionUrlPart + periodUrlPart + markerUrlPart
+      'v2/' + nftTypeName + '-sales?list=' + loadList + currencyUrlPart() + '&saleType=' + saleTab + collectionUrlPart + periodUrlPart + markerUrlPart
       + "&convertCurrencies=" + sortCurrency + "&sortCurrency=" + sortCurrency + marketplaceUrlPart + buyerUrlPart + sellerUrlPart + searchPart,
       {
         signal: controller.signal

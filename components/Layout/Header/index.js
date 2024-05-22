@@ -202,25 +202,25 @@ export default function Header({
           >
             <Link href="/nft-explorer">{t("menu.nft.explorer")}</Link>
             {/* Hide NFT menu for XAHAU while they are not ready yet */}
-            {!xahauNetwork && <>
-              <Link href="/nft-volumes">{t("menu.nft.volumes")}</Link>
-              <Link href="/nft-sales">{t("menu.nft.sales")}</Link>
-              <Link href="/nft-minters">{t("menu.nft.minters")}</Link>
-            </>
-            }
+            {!xahauNetwork && <Link href="/nft-volumes">{t("menu.nft.volumes")}</Link>}
+            <Link href="/nft-sales">{t("menu.nft.sales")}</Link>
+            {/* Hide NFT menu for XAHAU while they are not ready yet */}
+            {!xahauNetwork && <Link href="/nft-minters">{t("menu.nft.minters")}</Link>}
 
             <Link href={"/nfts" + (displayName ? ("/" + address) : "")}>
               {t("menu.nft.nfts")}
             </Link>
 
-            {/* Hide NFT menu for XAHAU while they are not ready yet */}
-            {!xahauNetwork && <>
+            {/* Hide NFT offers for XAHAU while they are not ready yet */}
+            {!xahauNetwork &&
               <Link href={"/nft-offers" + (displayName ? ("/" + address) : "")}>
                 {t("menu.nft.offers")}
               </Link>
-              <Link href="/nft-distribution">{t("menu.nft.distribution")}</Link>
+            }
+            <Link href="/nft-distribution">{t("menu.nft.distribution")}</Link>
+            {/* Hide NFT statistics for XAHAU while they are not ready yet */}
+            {!xahauNetwork &&
               <Link href="/nft-statistics">{t("menu.nft.statistics")}</Link>
-            </>
             }
             {xahauNetwork &&
               <Link href="/services/nft-mint">{t("menu.services.nft-mint")}</Link>
@@ -464,14 +464,12 @@ export default function Header({
 
           <div className="mobile-menu-directory"><span>NFT</span></div>
           <Link href="/nft-explorer" className="mobile-menu-item" onClick={mobileMenuToggle}> {t("menu.nft.explorer")}</Link>
-          {/* Hide NFT menu for XAHAU while they are not ready yet */}
-          {!xahauNetwork &&
-            <>
-              <Link href="/nft-volumes" className="mobile-menu-item" onClick={mobileMenuToggle}>{t("menu.nft.volumes")}</Link>
-              <Link href="/nft-sales" className="mobile-menu-item" onClick={mobileMenuToggle}>{t("menu.nft.sales")}</Link>
-              <Link href="/nft-minters" className="mobile-menu-item" onClick={mobileMenuToggle}>{t("menu.nft.minters")}</Link>
-            </>
-          }
+
+          {/* Hide NFT-volumes for XAHAU while they are not ready yet */}
+          {!xahauNetwork && <Link href="/nft-volumes" className="mobile-menu-item" onClick={mobileMenuToggle}>{t("menu.nft.volumes")}</Link>}
+          <Link href="/nft-sales" className="mobile-menu-item" onClick={mobileMenuToggle}>{t("menu.nft.sales")}</Link>
+          {/* Hide NFT-minters for XAHAU while they are not ready yet */}
+          {!xahauNetwork && <Link href="/nft-minters" className="mobile-menu-item" onClick={mobileMenuToggle}>{t("menu.nft.minters")}</Link>}
 
           <Link
             href={"/nfts" + (displayName ? ("/" + address) : "")}
@@ -481,31 +479,32 @@ export default function Header({
             {t("menu.nft.nfts")}
           </Link>
 
-          {/* Hide NFT menu for XAHAU while they are not ready yet */}
+          {/* Hide NFT offers for XAHAU while they are not ready yet */}
           {!xahauNetwork &&
-            <>
-              <Link
-                href={"/nft-offers" + (displayName ? ("/" + address) : "")}
-                className="mobile-menu-item"
-                onClick={mobileMenuToggle}
-              >
-                {t("menu.nft.offers")}
-              </Link>
-              <Link
-                href="/nft-distribution"
-                className="mobile-menu-item"
-                onClick={mobileMenuToggle}
-              >
-                {t("menu.nft.distribution")}
-              </Link>
-              <Link
-                href="/nft-statistics"
-                className="mobile-menu-item"
-                onClick={mobileMenuToggle}
-              >
-                {t("menu.nft.statistics")}
-              </Link>
-            </>
+            <Link
+              href={"/nft-offers" + (displayName ? ("/" + address) : "")}
+              className="mobile-menu-item"
+              onClick={mobileMenuToggle}
+            >
+              {t("menu.nft.offers")}
+            </Link>
+          }
+          <Link
+            href="/nft-distribution"
+            className="mobile-menu-item"
+            onClick={mobileMenuToggle}
+          >
+            {t("menu.nft.distribution")}
+          </Link>
+          {/* Hide NFT statistics for XAHAU while they are not ready yet */}
+          {!xahauNetwork &&
+            <Link
+              href="/nft-statistics"
+              className="mobile-menu-item"
+              onClick={mobileMenuToggle}
+            >
+              {t("menu.nft.statistics")}
+            </Link>
           }
           {xahauNetwork &&
             <Link

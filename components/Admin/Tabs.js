@@ -7,7 +7,7 @@ export default function AdminTabs({ name, tab }) {
 
   const mainTabs = [
     { value: "account", label: "Account" },
-    //{ value: "subscriptions", label: "Subscriptions" },
+    { value: "subscriptions", label: "Subscriptions" },
     { value: "api", label: "API" },
     //{ value: "bots", label: "Bots" },
   ]

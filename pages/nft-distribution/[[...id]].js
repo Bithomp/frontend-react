@@ -14,7 +14,8 @@ import {
   isAddressOrUsername,
   addAndRemoveQueryParams,
   addQueryParams,
-  removeQueryParams
+  removeQueryParams,
+  xahauNetwork
 } from '../../utils'
 import { isValidTaxon } from '../../utils/nft'
 import {
@@ -45,7 +46,11 @@ export async function getServerSideProps(context) {
 }
 
 import SEO from '../../components/SEO'
-import CopyButton from '../../components/UI/CopyButton';
+import CopyButton from '../../components/UI/CopyButton'
+
+const subscriptionExpired = proExpire => {
+  return proExpire < new Date().getTime()
+}
 
 export default function NftDistribution({ issuerQuery, taxonQuery, idQuery, orderQuery }) {
   const { t } = useTranslation()
@@ -63,12 +68,17 @@ export default function NftDistribution({ issuerQuery, taxonQuery, idQuery, orde
   const [order, setOrder] = useState(orderQuery)
   const [hasMore, setHasMore] = useState("first")
   const [sessionToken, setSessionToken] = useState("")
+  const [proExpire, setProExpire] = useState("")
 
   useEffect(() => {
     const sessionTokenString = localStorage.getItem('sessionToken')
     if (sessionTokenString) {
       axios.defaults.headers.common['Authorization'] = "Bearer " + sessionTokenString
       setSessionToken(sessionTokenString)
+    }
+    const proExpireString = localStorage.getItem('pro-expire')
+    if (proExpireString) {
+      setProExpire(Number(proExpireString))
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
@@ -108,10 +118,8 @@ export default function NftDistribution({ issuerQuery, taxonQuery, idQuery, orde
       (issuer ? oldIssuer === issuer : !oldIssuer) &&
       (taxon ? oldTaxon === taxon : !oldTaxon)
 
-    console.log("loadMoreRequest", loadMoreRequest, oldTaxon, oldIssuer, taxon, issuer)
-
-    // do not load more if thereis no session token
-    if (loadMoreRequest && !sessionToken) {
+    // do not load more if thereis no session token or if Bithomp Pro is expired
+    if (loadMoreRequest && (!sessionToken || sessionToken && subscriptionExpired(proExpire))) {
       return
     }
 
@@ -142,7 +150,7 @@ export default function NftDistribution({ issuerQuery, taxonQuery, idQuery, orde
     }
 
     const response = await axios(
-      'v2/nft-owners?order=' + orderPart + issuerPart + taxonUrlPart + markerPart
+      'v2/' + (xahauNetwork ? 'uritoken' : 'nft') + '-owners?order=' + orderPart + issuerPart + taxonUrlPart + markerPart
     ).catch(error => {
       setErrorMessage(t("error." + error.message))
     })
@@ -356,10 +364,24 @@ export default function NftDistribution({ issuerQuery, taxonQuery, idQuery, orde
         hasMore={hasMore}
         loader={!errorMessage &&
           <p className="center">
-            {(hasMore !== "first" && !sessionToken) ?
-              <Trans i18nKey="general.login-to-bithomp-pro">
-                Login to <Link href="/admin">Bithomp Pro</Link> to load more data.
-              </Trans>
+            {hasMore !== "first" ?
+              <>
+                {!sessionToken ?
+                  <Trans i18nKey="general.login-to-bithomp-pro">
+                    Loading more data is available to <Link href="/admin">logged-in</Link> Bithomp Pro subscribers.
+                  </Trans>
+                  :
+                  <>
+                    {!subscriptionExpired(proExpire) ?
+                      t("general.loading")
+                      :
+                      <Trans i18nKey="general.renew-bithomp-pro">
+                        Your Bithomp Pro subscription has expired. <Link href="/admin/subscriptions">Renew your subscription</Link>.
+                      </Trans>
+                    }
+                  </>
+                }
+              </>
               :
               t("general.loading")
             }
