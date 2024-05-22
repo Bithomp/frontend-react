@@ -14,7 +14,8 @@ import {
   isAddressOrUsername,
   addAndRemoveQueryParams,
   addQueryParams,
-  removeQueryParams
+  removeQueryParams,
+  xahauNetwork
 } from '../../utils'
 import { isValidTaxon } from '../../utils/nft'
 import {
@@ -142,7 +143,7 @@ export default function NftDistribution({ issuerQuery, taxonQuery, idQuery, orde
     }
 
     const response = await axios(
-      'v2/nft-owners?order=' + orderPart + issuerPart + taxonUrlPart + markerPart
+      'v2/' + (xahauNetwork ? 'uritoken' : 'nft') + '-owners?order=' + orderPart + issuerPart + taxonUrlPart + markerPart
     ).catch(error => {
       setErrorMessage(t("error." + error.message))
     })
