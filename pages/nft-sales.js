@@ -485,7 +485,7 @@ export default function NftSales({
           </button>
           <div className="filters__wrap">
             <div className="filters__head">
-              <span>{t("table.result")}: <i>{nftCount}</i></span>
+              <span>{t("general.loaded")}: <i>{nftCount}</i></span>
               {rendered &&
                 <CSVLink
                   data={data ? data.sales : []}
@@ -546,7 +546,7 @@ export default function NftSales({
             />
 
             <div>
-              {t("table.show")}
+              {t("general.show")}
               <RadioOptions tabList={pageTabList} tab={pageTab} setTab={setPageTab} name='page' />
             </div>
 

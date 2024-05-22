@@ -584,7 +584,7 @@ export default function NftsComponent({
           </button>
           <div className="filters__wrap">
             <div className="filters__head">
-              <span>{t("table.result")}: <i>{nftCount}</i></span>
+              <span>{t("general.loaded")}: <i>{nftCount}</i></span>
               {rendered &&
                 <CSVLink
                   data={data || []}
@@ -667,7 +667,7 @@ export default function NftsComponent({
 
             {(!burnedPeriod && !xahauNetwork) &&
               <div>
-                {t("table.search")}
+                {t("general.search")}
                 <RadioOptions tabList={listTabList} tab={listTab} setTab={setListTab} name='saleType' />
               </div>
             }
