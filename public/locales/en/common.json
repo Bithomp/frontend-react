@@ -410,6 +410,7 @@
     "hash": "Hash",
     "serial": "Serial",
     "search": "Search",
+    "result": "Result",
     "taxon": "Taxon",
     "placed": "Placed",
     "accepted": "Accepted",

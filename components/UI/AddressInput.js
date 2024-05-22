@@ -39,6 +39,7 @@ export default function AddressInput({ placeholder, title, setValue, rawData, ty
         clearAll()
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [rawData])
 
   const searchOnKeyUp = e => {

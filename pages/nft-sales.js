@@ -485,7 +485,7 @@ export default function NftSales({
           </button>
           <div className="filters__wrap">
             <div className="filters__head">
-              <span><i>{nftCount}</i> results</span>
+              <span>{t("table.result")}: <i>{nftCount}</i></span>
               {rendered &&
                 <CSVLink
                   data={data ? data.sales : []}

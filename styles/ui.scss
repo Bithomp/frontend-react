@@ -99,7 +99,7 @@ body.dark {
       inset: 0 15px auto;
       border-top: 1px solid #ccc;
 
-      @media(min-width: 1024px) {
+      @media(min-width: 1100px) {
         z-index: 4;
       }
     }
@@ -107,8 +107,8 @@ body.dark {
     .content-text {
       padding: 20px 0 80px;
 
-      @media(max-width: 1024px) {
-        padding: 50px 15px;
+      @media(max-width: 1200px) {
+        padding: 55px 15px;
       }
     }
   }
@@ -385,6 +385,11 @@ table {
         @media(max-width: 1550px) {
           padding: 4px;
           font-size: 12px;
+        }
+
+        @media(max-width: 1300px) {
+          padding: 2px;
+          font-size: 11px;
         }
       }
       @media only screen and (max-width: 640px) {
