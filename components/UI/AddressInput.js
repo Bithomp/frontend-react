@@ -38,6 +38,12 @@ export default function AddressInput({ placeholder, title, setValue, rawData, ty
       if (disabled) {
         clearAll()
       }
+
+      if(rawData.error) {
+        setInputValue("");
+        setLink("");
+        setNotEmpty(false);
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [rawData])

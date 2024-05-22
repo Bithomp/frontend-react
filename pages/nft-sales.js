@@ -491,7 +491,7 @@ export default function NftSales({
                   data={data ? data.sales : []}
                   headers={csvHeaders}
                   filename={'nft sales export ' + dateAndTimeNow + '.csv'}
-                  className={'button-action thin narrow' + (!(data && data.sales.length > 0) ? ' disabled' : '')}
+                  className={'button-action thin narrow' + (!(data && data.sales?.length > 0) ? ' disabled' : '')}
                 >
                   <DownloadIcon /> CSV
                 </CSVLink>
