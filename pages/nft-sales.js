@@ -194,7 +194,7 @@ export default function NftSales({
       setLoading(true)
     }
 
-    let nftTypeName = xahauNetwork ? 'uritokens' : 'nft'
+    let nftTypeName = xahauNetwork ? 'uritoken' : 'nft'
 
     const response = await axios(
       'v2/' + nftTypeName + '-sales?list=' + loadList + currencyUrlPart() + '&saleType=' + saleTab + collectionUrlPart + periodUrlPart + markerUrlPart
