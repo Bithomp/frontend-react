@@ -309,7 +309,10 @@
     "no-uri": "URIが指定されていません",
     "no-media": "メディアが見つかりません",
     "viewer": "ビュワー",
-    "developer-mode": "開発者モード"
+    "developer-mode": "開発者モード",
+    "search": "Search",
+    "result": "Result",
+    "show": "Show"
   },
   "form": {
     "error": {
@@ -409,9 +412,6 @@
     "status": "ステータス",
     "hash": "Hash",
     "serial": "シリアル番号",
-    "search": "Search",
-    "result": "Result",
-    "show": "Show",
     "taxon": "Taxon",
     "placed": "作成日時",
     "accepted": "承認済み",

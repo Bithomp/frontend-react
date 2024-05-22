@@ -129,19 +129,26 @@
         width: 34px;
         background-color: var(--accent-icon);
         cursor: pointer;
-        transition: opacity 0.3s;
         display: flex;
         align-items: center;
         justify-content: center;
-        transition: background-color 0.3s;
+        transition: background-color 0.25s;
 
         img {
             padding-top: 4px;
             width: 18px;
+            transition: filter 0.25s;
         }
+
 
         &:hover {
             background-color: var(--text-main);
+
+            .dark & {
+                img {
+                    filter: brightness(0.25);
+                }
+            }
         }
     }
 }

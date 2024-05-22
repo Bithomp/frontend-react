@@ -309,7 +309,10 @@
     "no-uri": "Keine URI angegeben",
     "no-media": "Kein Medien gefunden",
     "viewer": "Betrachtungsprogramm",
-    "developer-mode": "Entwicklermodus"
+    "developer-mode": "Entwicklermodus",
+    "search": "Search",
+    "result": "Result",
+    "show": "Show"
   },
   "form": {
     "error": {
@@ -410,9 +413,6 @@
     "status": "Status",
     "hash": "Hash",
     "serial": "Serie",
-    "search": "Search",
-    "result": "Result",
-    "show": "Show",
     "taxon": "Taxon",
     "placed": "Platziert",
     "accepted": "Akzeptiert",

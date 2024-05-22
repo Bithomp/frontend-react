@@ -309,7 +309,10 @@
     "no-uri": "Nema URIja",
     "no-media": "Nema medija",
     "viewer": "Preglednik",
-    "developer-mode": "Developer mode"
+    "developer-mode": "Developer mode",
+    "search": "Search",
+    "result": "Result",
+    "show": "Show"
   },
   "form": {
     "error": {
@@ -409,9 +412,6 @@
     "status": "Status",
     "hash": "Hash",
     "serial": "Serial",
-    "search": "Search",
-    "result": "Result",
-    "show": "Show",
     "taxon": "Taxon",
     "placed": "Postavljeno",
     "accepted": "Privaćeno",
