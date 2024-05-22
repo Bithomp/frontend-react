@@ -1,13 +1,8 @@
 footer {
   position: relative;
-  z-index: 2;
   background-color: var(--background-footer);
   color: var(--text-contrast);
   transition: background-color .5s, color .5s;
-
-  @media(min-width: 1024px) {
-    z-index: 3;
-  }
 }
 
 .footer-menu {
