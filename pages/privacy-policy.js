@@ -161,6 +161,8 @@ export default function PrivacyPolicy() {
           <li><strong>account</strong> - Logged in user data: XRPL address, hashicon, bithomp username. (ex. {"{'address': 'rhphEJQoxuquJmuJgtLbGyBW2NK6s6nQSW', 'hashicon': 'data:image/png;base64,iV+IKg2dQrggg==', 'username': 'Bithomp'}"})</li>
           <li><strong>xummUserToken</strong> - xumm user token (ex. "c3f386ab-b5b5-47c3-87a4-d031451777fa").</li>
           <li><strong>language</strong> - on docs.bithomp.com, the prefered programing language (ex: "php").</li>
+          <li><strong>sessionToken</strong> - session token for logged-in users, to show relevant data for the authroised user (ex: "ebc39d9a-13eb-4a86-bf7a-2002726ec6a7-54633f3b-b8ea-483e-89e3-5f2763b269c1").</li>
+          <li><strong>pro-expire</strong> - expiration date (unix) of the subscription for logged-in users, used to prevent sending unnecessary requests. (ex: "1718495999000")</li>
         </ul>
         <h3>How to manage Cookies</h3>
         <p>If You prefer to avoid the use of Cookies on the Website, first You must disable the use of Cookies in your browser and then delete the Cookies saved in your browser associated with this website. You may use this option for preventing the use of Cookies at any time.</p>
