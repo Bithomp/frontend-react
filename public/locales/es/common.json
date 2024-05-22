@@ -409,6 +409,7 @@
     "status": "Estado",
     "hash": "Hash",
     "serial": "Serial",
+    "search": "Search",
     "taxon": "Taxón",
     "placed": "Creado",
     "accepted": "Aceptado",

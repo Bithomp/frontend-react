@@ -409,6 +409,7 @@
     "status": "ステータス",
     "hash": "Hash",
     "serial": "シリアル番号",
+    "search": "Search",
     "taxon": "Taxon",
     "placed": "作成日時",
     "accepted": "承認済み",

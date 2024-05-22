@@ -409,6 +409,7 @@
     "status": "Status",
     "hash": "Hash",
     "serial": "Serial",
+    "search": "Search",
     "taxon": "Takson",
     "placed": "Ditempatkan",
     "accepted": "Diterima",
