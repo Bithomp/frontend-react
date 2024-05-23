@@ -6,13 +6,14 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import Image from 'next/image'
 import Link from 'next/link'
 
-import { setTabParams, useWidth } from '../../utils'
+import { setTabParams, useWidth, xahauNetwork } from '../../utils'
 import {
   amountFormat,
   fullDateAndTime,
   expirationExpired,
   nftLink,
-  nftOfferLink
+  nftOfferLink,
+  addressUsernameOrServiceLink
 } from '../../utils/format'
 import { nftNameLink, nftThumbnail, nftName } from '../../utils/nft'
 
@@ -56,11 +57,19 @@ export default function NftOffers({ setSignRequest, refreshPage, account, offerL
   const [invalidOffers, setInvalidOffers] = useState([]);
   const [expiredOffers, setExpiredOffers] = useState([]);
 
-  const offerListTabList = [
+  let offerListTabList = [
     { value: 'owned', label: t("tabs.owned-offers") },
-    { value: 'for-owned-nfts', label: t("tabs.offers-for-owned-nfts") },
     { value: 'privately-offered-to-address', label: t("tabs.privately-offered-to-address") }
-  ];
+  ]
+
+  if (!xahauNetwork) {
+    // put it as the second tab
+    offerListTabList = [
+      ...offerListTabList.slice(0, 1),
+      { value: 'for-owned-nfts', label: t("tabs.offers-for-owned-nfts") },
+      ...offerListTabList.slice(1)
+    ]
+  }
 
   const offerTypeTabList = [
     { value: 'all', label: (t("tabs.all") + (offersCount?.all ? (" (" + offersCount.all + ")") : "")) },
@@ -82,7 +91,7 @@ export default function NftOffers({ setSignRequest, refreshPage, account, offerL
 
     setLoading(true);
     setOffersCount({});
-    const response = await axios('v2/nft-offers/' + id + offerListUrlPart).catch(error => {
+    const response = await axios('v2/' + (xahauNetwork ? 'uritoken' : 'nft') + '-offers/' + id + offerListUrlPart).catch(error => {
       setErrorMessage(t("error." + error.message))
     });
     setLoading(false);
@@ -248,7 +257,7 @@ export default function NftOffers({ setSignRequest, refreshPage, account, offerL
     <div className="content-text" style={{ marginTop: "20px" }}>
       <div className='tabs-inline'>
         <Tabs tabList={offerListTabList} tab={offerListTab} setTab={setOfferListTab} name="offerList" />
-        {(offerListTab === 'owned' && (offersCount.all > 1)) &&
+        {!xahauNetwork && (offerListTab === 'owned' && (offersCount.all > 1)) &&
           <Tabs tabList={offerTypeTabList} tab={offerTypeTab} setTab={setOfferTypeTab} name="offerType" />
         }
         {!!offersCount.expired && userData?.address &&
@@ -281,7 +290,7 @@ export default function NftOffers({ setSignRequest, refreshPage, account, offerL
               <thead>
                 <tr>
                   <th className='center'>{t("table.index")}</th>
-                  <th className='center'>{t("table.offer")}</th>
+                  {!xahauNetwork && <th className='center'>{t("table.offer")}</th>}
                   <th>NFT</th>
                   {showTypeColumn && <th>{t("table.type")}</th>}
                   <th>{t("table.amount")}</th>
@@ -304,11 +313,11 @@ export default function NftOffers({ setSignRequest, refreshPage, account, offerL
                     {!errorMessage ? filteredOffers.map((offer, i) =>
                       <tr key={i}>
                         <td className="center">{i + 1}</td>
-                        <td className='center'><Link href={"/nft-offer/" + offer.offerIndex}><LinkIcon /></Link></td>
+                        {!xahauNetwork && <td className='center'><Link href={"/nft-offer/" + offer.offerIndex}><LinkIcon /></Link></td>}
                         <td>{nftThumbnail(offer.nftoken)} {nftNameLink(offer.nftoken)}</td>
-                        {showTypeColumn && <td>{offer.flags?.sellToken === true ? t("table.text.sell") : t("table.text.buy")}</td>}
+                        {showTypeColumn && <td>{offer.flags?.sellToken === true || xahauNetwork ? t("table.text.sell") : t("table.text.buy")}</td>}
                         <td>{amountFormat(offer.amount, { tooltip: true, maxFractionDigits: 2 })}</td>
-                        <td>{fullDateAndTime(offer.createdAt)}</td>
+                        <td>{fullDateAndTime(offer.createdAt)} <Link href={"/explorer/" + offer.createdTxHash}><LinkIcon /></Link></td>
                         {showExpirationColumn && <td>{offer.expiration ? fullDateAndTime(offer.expiration, "expiration") : t("table.text.no-expiration")}</td>}
                         {(showDestinationColumn && offerListTab !== 'privately-offered-to-address') && <td>{nftLink(offer, 'destination')}</td>}
                         {showValidationColumn &&
@@ -353,9 +362,11 @@ export default function NftOffers({ setSignRequest, refreshPage, account, offerL
                           <p>{nftThumbnail(offer.nftoken)}</p>
                         </td>
                         <td>
-                          <p>
-                            {t("table.offer")}: {nftOfferLink(offer.offerIndex)}
-                          </p>
+                          {!xahauNetwork &&
+                            <p>
+                              {t("table.offer")}: {nftOfferLink(offer.offerIndex)}
+                            </p>
+                          }
                           <p>
                             NFT:{" "}
                             {nftName(offer.nftoken) ?
@@ -365,13 +376,13 @@ export default function NftOffers({ setSignRequest, refreshPage, account, offerL
                             }
                           </p>
                           <p>
-                            {t("table.type")}: {offer.flags?.sellToken === true ? t("table.text.sell") : t("table.text.buy")}
+                            {t("table.type")}: {offer.flags?.sellToken === true || xahauNetwork ? t("table.text.sell") : t("table.text.buy")}
                           </p>
                           <p>
                             {t("table.amount")}: {amountFormat(offer.amount)}
                           </p>
                           <p>
-                            {t("table.placed")}: {fullDateAndTime(offer.createdAt)}
+                            {t("table.placed")}: {fullDateAndTime(offer.createdAt)} <Link href={"/explorer/" + offer.createdTxHash}><LinkIcon /></Link>
                           </p>
                           {offer.expiration &&
                             <p>
@@ -380,7 +391,9 @@ export default function NftOffers({ setSignRequest, refreshPage, account, offerL
                           }
                           {offer.destination &&
                             <p>
-                              {t("table.destination")}: {nftLink(offer, 'destination')}
+                              {t("table.destination")}:
+                              <br />
+                              {addressUsernameOrServiceLink(offer, 'destination')}
                             </p>
                           }
                           {!offer.valid &&

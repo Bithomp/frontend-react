@@ -16,7 +16,6 @@ import {
   networksIds,
   isValidNftXls20,
   explorerName,
-  xahauNetwork,
   isCurrencyHashValid,
 } from '../../utils'
 import { userOrServiceName, amountFormat } from '../../utils/format'
@@ -408,9 +407,7 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
         <div className='explorer-tabs-block'>
           <div className='explorer-tabs'>
             {tab === "nfts" ? <b>NFTs</b> : <Link href={"/nfts/" + searchItem + addParams}>NFTs</Link>}
-            {!xahauNetwork && <>
-              {tab === "nft-offers" ? <b>{t("nft-offers.header")}</b> : <Link href={"/nft-offers/" + searchItem}>{t("nft-offers.header")}</Link>}
-            </>}
+            {tab === "nft-offers" ? <b>{t("nft-offers.header")}</b> : <Link href={"/nft-offers/" + searchItem}>{t("nft-offers.header")}</Link>}
             {tab === "nft-volumes" && <b>{t("menu.nft.volumes")}</b>}
             {tab !== "account" && <a href={"/explorer/" + searchItem}>{t("explorer.menu.account")}</a>}
             {tab !== "nft-volumes" && <a href={"/explorer/" + searchItem} className='hide-on-mobile'>{t("explorer.menu.transactions")}</a>}

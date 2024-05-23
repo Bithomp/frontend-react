@@ -210,13 +210,9 @@ export default function Header({
             <Link href={"/nfts" + (displayName ? ("/" + address) : "")}>
               {t("menu.nft.nfts")}
             </Link>
-
-            {/* Hide NFT offers for XAHAU while they are not ready yet */}
-            {!xahauNetwork &&
-              <Link href={"/nft-offers" + (displayName ? ("/" + address) : "")}>
-                {t("menu.nft.offers")}
-              </Link>
-            }
+            <Link href={"/nft-offers" + (displayName ? ("/" + address) : "")}>
+              {t("menu.nft.offers")}
+            </Link>
             <Link href="/nft-distribution">{t("menu.nft.distribution")}</Link>
             {/* Hide NFT statistics for XAHAU while they are not ready yet */}
             {!xahauNetwork &&
@@ -303,11 +299,7 @@ export default function Header({
                 {isCopied ? t("button.copied") : t("button.copy-my-address")}
               </span>
               <Link href={"/nfts/" + address}>{t("signin.actions.my-nfts")}</Link>
-
-              {/* Hide My NFT Offers for XAHAU while they are not ready yet */}
-              {!xahauNetwork &&
-                <Link href={"/nft-offers/" + address}>{t("signin.actions.my-nft-offers")}</Link>
-              }
+              <Link href={"/nft-offers/" + address}>{t("signin.actions.my-nft-offers")}</Link>
 
               {xummUserToken && <a href={"/explorer/" + address + "?hw=xumm&xummtoken=" + xummUserToken}>{t("signin.actions.view")}</a>}
               {!username && <Link href={"/username?address=" + address}>{t("menu.usernames")}</Link>}
@@ -420,11 +412,7 @@ export default function Header({
                 {isCopied ? t("button.copied") : t("button.copy-my-address")}
               </span>
               <Link href={"/nfts/" + address} className="mobile-menu-item" onClick={mobileMenuToggle}>{t("signin.actions.my-nfts")}</Link>
-
-              {/* Hide MY NFT Offers for XAHAU while they are not ready yet */}
-              {!xahauNetwork &&
-                <Link href={"/nft-offers/" + address} className="mobile-menu-item" onClick={mobileMenuToggle}>{t("signin.actions.my-nft-offers")}</Link>
-              }
+              <Link href={"/nft-offers/" + address} className="mobile-menu-item" onClick={mobileMenuToggle}>{t("signin.actions.my-nft-offers")}</Link>
 
               {xummUserToken && <a href={"/explorer/" + address + "?hw=xumm&xummtoken=" + xummUserToken} className="mobile-menu-item">{t("signin.actions.view")}</a>}
               {!username && <Link href={"/username?address=" + address} className="mobile-menu-item" onClick={mobileMenuToggle}>{t("menu.usernames")}</Link>}
@@ -478,17 +466,13 @@ export default function Header({
           >
             {t("menu.nft.nfts")}
           </Link>
-
-          {/* Hide NFT offers for XAHAU while they are not ready yet */}
-          {!xahauNetwork &&
-            <Link
-              href={"/nft-offers" + (displayName ? ("/" + address) : "")}
-              className="mobile-menu-item"
-              onClick={mobileMenuToggle}
-            >
-              {t("menu.nft.offers")}
-            </Link>
-          }
+          <Link
+            href={"/nft-offers" + (displayName ? ("/" + address) : "")}
+            className="mobile-menu-item"
+            onClick={mobileMenuToggle}
+          >
+            {t("menu.nft.offers")}
+          </Link>
           <Link
             href="/nft-distribution"
             className="mobile-menu-item"
