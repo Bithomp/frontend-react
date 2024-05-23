@@ -280,37 +280,39 @@ export default function NftsComponent({
         let attributesHeaders = []
 
         //for CSV export
-        for (let i = 0; i < nftList.length; i++) {
-          if (nftList[i].metadata) {
-            Object.keys(nftList[i].metadata).forEach(function (key) {
-              //remove escapes to fix the export
-              //according to the CSV specs, to include double quotes within a string that is already quoted, you need to use two double quotes ("")
-              if (typeof nftList[i].metadata[key] === 'string') {
-                nftList[i].metadata[key] = nftList[i].metadata[key].replace(/"/g, '""')
-              }
-              if (!keys.includes(key) && key.toLowerCase() !== 'name' && typeof nftList[i].metadata[key] === 'string') {
-                keys.push(key)
-                csvHeadersNew.push({ label: capitalizeFirstLetter(key), key: "metadata." + key })
-              }
-              if (key.toLowerCase() === "attributes") {
-                Object.keys(nftList[i].metadata[key]).forEach(function (attribute) {
-                  //remove escapes for the export
-                  if (typeof nftList[i].metadata[key][attribute]?.value === 'string') {
-                    nftList[i].metadata[key][attribute] = nftList[i].metadata[key][attribute].value.replace(/"/g, '""')
-                  }
-                  if (!attributes.includes(attribute)) {
-                    attributes.push(attribute)
-                    attributesHeaders.push({ label: "Attribute " + nftList[i].metadata[key][attribute].trait_type, key: "metadata.attributes." + attribute + ".value" })
-                  }
-                })
-              }
-            })
+        if (nftList?.length > 0) {
+          for (let i = 0; i < nftList.length; i++) {
+            if (nftList[i].metadata) {
+              Object.keys(nftList[i].metadata).forEach(function (key) {
+                //remove escapes to fix the export
+                //according to the CSV specs, to include double quotes within a string that is already quoted, you need to use two double quotes ("")
+                if (typeof nftList[i].metadata[key] === 'string') {
+                  nftList[i].metadata[key] = nftList[i].metadata[key].replace(/"/g, '""')
+                }
+                if (!keys.includes(key) && key.toLowerCase() !== 'name' && typeof nftList[i].metadata[key] === 'string') {
+                  keys.push(key)
+                  csvHeadersNew.push({ label: capitalizeFirstLetter(key), key: "metadata." + key })
+                }
+                if (key.toLowerCase() === "attributes") {
+                  Object.keys(nftList[i].metadata[key]).forEach(function (attribute) {
+                    //remove escapes for the export
+                    if (typeof nftList[i].metadata[key][attribute]?.value === 'string') {
+                      nftList[i].metadata[key][attribute] = nftList[i].metadata[key][attribute].value.replace(/"/g, '""')
+                    }
+                    if (!attributes.includes(attribute)) {
+                      attributes.push(attribute)
+                      attributesHeaders.push({ label: "Attribute " + nftList[i].metadata[key][attribute].trait_type, key: "metadata.attributes." + attribute + ".value" })
+                    }
+                  })
+                }
+              })
+            }
           }
         }
 
         setCsvHeaders(csvHeadersConst.concat(csvHeadersNew).concat(attributesHeaders))
-        const count = nftsData.length + (nftList ? nftList.length : 0);
-        setNftCount(count);
+        const count = nftsData?.length + (nftList?.length || 0)
+        setNftCount(count)
 
         if (nftList?.length > 0) {
           setErrorMessage("")
@@ -716,7 +718,7 @@ export default function NftsComponent({
           </div>
           :
           <InfiniteScroll
-            dataLength={data.length}
+            dataLength={data?.length}
             next={checkApi}
             hasMore={hasMore}
             loader={!errorMessage &&
