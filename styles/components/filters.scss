@@ -5,9 +5,13 @@ $width: 340px;
     height: 100%;
     z-index: 3;
 
-    @media(min-width: 1240px) {
+    @media(min-width: 1100px) {
         body:not(.is-filters-hide) & + .content-text {
             padding-left: $width + 35px !important;
+
+            @media(max-width: 1300px) {
+                padding-left: 330px !important;
+            }
         }
 
         & + .content-text {
@@ -15,15 +19,16 @@ $width: 340px;
         }
     }
 
-    @media (max-width: 1240px) {
+    @media (max-width: 1100px) {
         position: absolute;
         width: 100vw;
-        height: 100%;
+        height: calc(100% - 20px);
         pointer-events: none;
+        padding-top: 9px;
     }
 
     &__box {
-        @media(min-width: 1240px) {
+        @media(min-width: 1100px) {
             position: sticky;
             top: 81px;
             padding: 20px 15px;
@@ -56,13 +61,13 @@ $width: 340px;
             }
         }
 
-        @media(max-width: 1240px) {
+        @media(max-width: 1100px) {
             height: 100%;
         }
     }
 
     body.is-filters-hide & {
-        @media(min-width: 1240px) {
+        @media(min-width: 1100px) {
             width: fit-content;
         }
     }
@@ -78,7 +83,7 @@ $width: 340px;
             color: #fff;
         }
 
-        @media(min-width: 1240px) {
+        @media(min-width: 1100px) {
             display: none;
         }
     }
@@ -97,7 +102,7 @@ $width: 340px;
         align-items: center;
         justify-content: space-between;
 
-        @media (max-width: 1240px) {
+        @media (max-width: 1100px) {
 
             .button-action {
                 order: -1;
@@ -105,11 +110,11 @@ $width: 340px;
         }
 
         > span {
-            @media(min-width: 1240px) {
+            @media(min-width: 1100px) {
                 margin-left: 33%;
             }
 
-            @media(max-width: 1240px) {
+            @media(max-width: 1100px) {
                 font-size: 16px;
             }
         }
@@ -123,18 +128,18 @@ $width: 340px;
         padding-bottom: 40px;
 
         > * {
-            @media(min-width: 1240px) {
+            @media(min-width: 1100px) {
                 margin-bottom: 20px;
             }
         }
 
-        @media(min-width: 1240px) {
+        @media(min-width: 1100px) {
             body.is-filters-hide & {
                 display: none;
             }
         }
 
-        @media (max-width: 1240px) {
+        @media (max-width: 1100px) {
             position: fixed;
             inset: 81px 0 0;
             background: #fff;
@@ -168,9 +173,8 @@ $width: 340px;
         border-radius: 5px;
         cursor: pointer;
 
-        @media (max-width: 1240px) {
+        @media (max-width: 1100px) {
             position: sticky;
-            margin-top: 9px;
             top: 100px;
             left: 20px;
             pointer-events: all;
@@ -194,7 +198,7 @@ $width: 340px;
 }
 
 body.is-filters-hide {
-    @media(max-width: 1240px) {
+    @media(max-width: 1100px) {
         overflow: hidden;
     }
 }

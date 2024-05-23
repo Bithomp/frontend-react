@@ -310,7 +310,10 @@
     "no-uri": "No URI specified",
     "no-media": "No media found",
     "viewer": "Viewer",
-    "developer-mode": "Developer mode"
+    "developer-mode": "Developer mode",
+    "search": "Search",
+    "loaded": "Loaded",
+    "show": "Show"
   },
   "form": {
     "error": {

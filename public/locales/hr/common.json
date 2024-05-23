@@ -310,7 +310,10 @@
     "no-uri": "Nema URIja",
     "no-media": "Nema medija",
     "viewer": "Preglednik",
-    "developer-mode": "Developer mode"
+    "developer-mode": "Developer mode",
+    "search": "Search",
+    "loaded": "Loaded",
+    "show": "Show"
   },
   "form": {
     "error": {

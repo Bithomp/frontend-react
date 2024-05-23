@@ -38,7 +38,8 @@ export const getServerSideProps = async ({ query, locale }) => {
     sortCurrency,
     marketplace,
     buyer,
-    seller
+    seller,
+    search
   } = query
   //key added to re-render page when the same route is called with different params
   return {
@@ -56,6 +57,7 @@ export const getServerSideProps = async ({ query, locale }) => {
       marketplace: marketplace || "",
       buyerQuery: buyer || "",
       sellerQuery: seller || "",
+      searchQuery: search || "",
       ...(await serverSideTranslations(locale, ['common'])),
     },
   }
@@ -67,6 +69,7 @@ import DateAndTimeRange from '../components/UI/DateAndTimeRange'
 
 import LinkIcon from "../public/images/link.svg"
 import DownloadIcon from "../public/images/download.svg"
+import AddressInput from '../components/UI/AddressInput'
 
 export default function NftSales({
   view,
@@ -82,7 +85,8 @@ export default function NftSales({
   marketplace,
   account,
   buyerQuery,
-  sellerQuery
+  sellerQuery,
+  searchQuery
 }) {
   const { t } = useTranslation()
   const router = useRouter()
@@ -97,7 +101,6 @@ export default function NftSales({
   const [saleTab, setSaleTab] = useState(sale)
   const [issuer, setIssuer] = useState(issuerQuery)
   const [taxon, setTaxon] = useState(taxonQuery)
-  const [taxonInput, setTaxonInput] = useState(taxonQuery)
   const [total, setTotal] = useState({})
   const [period, setPeriod] = useState(periodQuery)
   const [pageTab, setPageTab] = useState(list)
@@ -107,6 +110,9 @@ export default function NftSales({
   const [filtersHide, setFiltersHide] = useState(false)
   const [nftCount, setNftCount] = useState(null)
   const [dateAndTimeNow, setDateAndTimeNow] = useState('')
+  const [search, setSearch] = useState(searchQuery)
+
+  const controller = new AbortController()
 
   const sortCurrency = sortCurrencyQuery.toLowerCase() || selectedCurrency
 
@@ -144,6 +150,7 @@ export default function NftSales({
     let marketplaceUrlPart = ''
     let buyerUrlPart = ''
     let sellerUrlPart = ''
+    let searchPart = ''
 
     if (options?.restart) {
       marker = "first"
@@ -194,16 +201,29 @@ export default function NftSales({
       setLoading(true)
     }
 
+    if (search) {
+      searchPart = '&search=' + search + '&searchLocations=metadata.name'
+      //'&searchLocations=metadata.name,metadata.description'
+      if (search.length < 3) {
+        setErrorMessage(t("error-api.search is too short"))
+        setLoading(false)
+        return
+      }
+    }
+    
     let nftTypeName = xahauNetwork ? 'uritoken' : 'nft'
 
     const response = await axios(
       'v2/' + nftTypeName + '-sales?list=' + loadList + currencyUrlPart() + '&saleType=' + saleTab + collectionUrlPart + periodUrlPart + markerUrlPart
-      + "&convertCurrencies=" + sortCurrency + "&sortCurrency=" + sortCurrency + marketplaceUrlPart + buyerUrlPart + sellerUrlPart
+      + "&convertCurrencies=" + sortCurrency + "&sortCurrency=" + sortCurrency + marketplaceUrlPart + buyerUrlPart + sellerUrlPart + searchPart,
+      {
+        signal: controller.signal
+      }
     ).catch(error => {
       setErrorMessage(t("error." + error.message))
     })
 
-    const newdata = response.data
+    const newdata = response?.data
     setLoading(false)
 
     if (newdata) {
@@ -268,8 +288,14 @@ export default function NftSales({
     if (sortCurrency) {
       checkApi({ restart: true })
     }
+
+    return () => {
+      if (controller) {
+        controller.abort()
+      }
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [saleTab, issuer, taxon, pageTab, sortCurrency, period, buyer, seller])
+  }, [saleTab, issuer, taxon, pageTab, sortCurrency, period, buyer, seller, search])
 
   useEffect(() => {
     let queryAddList = []
@@ -312,6 +338,15 @@ export default function NftSales({
       queryRemoveList.push("currencyIssuer")
     }
 
+    if (data?.search) {
+      queryAddList.push({
+        name: "search",
+        value: data.search
+      })
+    } else {
+      queryRemoveList.push("search")
+    }
+
     setTabParams(router, [
       {
         tabList: saleTabList,
@@ -344,17 +379,13 @@ export default function NftSales({
 
   const checkIssuerValue = e => {
     if (isAddressOrUsername(e)) {
-      setIssuer(e);
-      if (isValidTaxon(taxonInput)) {
-        setTaxon(taxonInput);
-      } else {
-        setTaxonInput("");
-        setTaxon("");
+      setIssuer(e)
+      if (!isValidTaxon(taxon)) {
+        setTaxon("")
       }
     } else {
-      setIssuer("");
-      setTaxonInput("");
-      setTaxon("");
+      setIssuer("")
+      setTaxon("")
     }
   }
 
@@ -367,14 +398,12 @@ export default function NftSales({
   };
 
   const onTaxonInput = value => {
-    if (/^\d+$/.test(value) && issuer && isValidTaxon(value)) {
-      setTaxon(value);
-      setTaxonInput(value);
+    if (isValidTaxon(value) && issuer) {
+      setTaxon(value)
     } else {
-      setTaxon("");
-      setTaxonInput("");
+      setTaxon("")
     }
-  };
+  }
 
   const issuerTaxonUrlPart = (data && issuer) ? ("&issuer=" + usernameOrAddress(data, 'issuer') + (taxon ? ("&taxon=" + taxon) : "")) : "";
 
@@ -440,7 +469,9 @@ export default function NftSales({
         + (currencyIssuer ? (" " + currencyIssuer) : "")
         + (viewTab === "list" ? (" " + t("tabs.list")) : "")
         + (period ? (" " + period) : "")
+        + (search || searchQuery ? (", " + t("table.name") + ": " + (search || searchQuery)) : "")
       }
+      description={issuer || issuerQuery || search || t("nft-sales.header")}
     />
 
     <h1 className="center">{t("nft-sales.header")}</h1>
@@ -456,50 +487,52 @@ export default function NftSales({
           </button>
           <div className="filters__wrap">
             <div className="filters__head">
-              <span><i>{nftCount}</i> results</span>
+              <span>{t("general.loaded")}: <i>{nftCount}</i></span>
               {rendered &&
                 <CSVLink
                   data={data ? data.sales : []}
                   headers={csvHeaders}
                   filename={'nft sales export ' + dateAndTimeNow + '.csv'}
-                  className={'button-action thin narrow' + (!(data && data.sales.length > 0) ? ' disabled' : '')}
+                  className={'button-action thin narrow' + (!(data && data.sales?.length > 0) ? ' disabled' : '')}
                 >
                   <DownloadIcon /> CSV
                 </CSVLink>
               }
               <button className='filters__close' onClick={() => toggleFilters()}><IoMdClose /></button>
             </div>
-            <FormInput
+            <AddressInput
               title={t("table.issuer")}
               placeholder={t("nfts.search-by-issuer")}
               setValue={checkIssuerValue}
               rawData={data}
               type='issuer'
-              tips={true}
             />
             <FormInput
               title={t("table.taxon")}
               placeholder={t("nfts.search-by-taxon")}
               setValue={onTaxonInput}
-              rawData={data}
-              type='taxon'
               disabled={issuer ? false : true}
+              defaultValue={data?.taxon}
             />
-            <FormInput
+            <AddressInput
               title={t("table.buyer")}
               placeholder={t("nfts.search-by-buyer")}
               setValue={checkBuyerValue}
               rawData={data}
               type='buyer'
-              tips={true}
             />
-            <FormInput
+            <AddressInput
               title={t("table.seller")}
               placeholder={t("nfts.search-by-seller")}
               setValue={checkSellerValue}
               rawData={data}
               type='seller'
-              tips={true}
+            />
+            <FormInput
+              title={t("table.name")}
+              placeholder={t("nfts.search-by-name")}
+              setValue={setSearch}
+              defaultValue={data?.search}
             />
 
             {windowWidth < 720 && <br />}
@@ -515,7 +548,7 @@ export default function NftSales({
             />
 
             <div>
-              {t("table.view")}
+              {t("general.show")}
               <RadioOptions tabList={pageTabList} tab={pageTab} setTab={setPageTab} name='page' />
             </div>
 
@@ -525,7 +558,7 @@ export default function NftSales({
             </div>
 
             <div>
-              {t("table.view")}
+              {t("table.sales")}
               <RadioOptions tabList={saleTabList} tab={saleTab} setTab={setSaleTab} name='sale' />
             </div>
           </div>
@@ -543,7 +576,7 @@ export default function NftSales({
           endMessage={<p className="center">{t("nft-sales.end")}</p>}
         >
           {viewTab === "list" &&
-            <table className="table-large">
+            <table className="table-large table-large--without-border">
               <thead>
                 <tr>
                   <th className='center'>{t("table.index")}</th>

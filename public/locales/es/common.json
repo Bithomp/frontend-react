@@ -310,7 +310,10 @@
     "no-uri": "URI no especificada",
     "no-media": "No se ha encontrado contenido",
     "viewer": "Vista",
-    "developer-mode": "Modo desarrollador"
+    "developer-mode": "Modo desarrollador",
+    "search": "Search",
+    "loaded": "Loaded",
+    "show": "Show"
   },
   "form": {
     "error": {
