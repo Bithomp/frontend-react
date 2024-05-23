@@ -113,10 +113,12 @@ export default function NftDistribution({ issuerQuery, taxonQuery, idQuery, orde
 
     const oldIssuer = data?.issuer
     const oldTaxon = data?.taxon
+    const oldOrder = data?.order
     const loadMoreRequest =
       hasMore !== "first" &&
       (issuer ? oldIssuer === issuer : !oldIssuer) &&
-      (taxon ? oldTaxon === taxon : !oldTaxon)
+      (taxon ? oldTaxon === taxon : !oldTaxon) &&
+      (order ? oldOrder === order : !oldOrder)
 
     // do not load more if thereis no session token or if Bithomp Pro is expired
     if (loadMoreRequest && (!sessionToken || sessionToken && subscriptionExpired(proExpire))) {
