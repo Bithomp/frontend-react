@@ -5,13 +5,9 @@ $width: 340px;
     height: 100%;
     z-index: 3;
 
-    @media(min-width: 1100px) {
+    @media(min-width: 1300px) {
         body:not(.is-filters-hide) & + .content-text {
             padding-left: $width + 35px !important;
-
-            @media(max-width: 1300px) {
-                padding-left: 330px !important;
-            }
         }
 
         & + .content-text {
@@ -19,7 +15,7 @@ $width: 340px;
         }
     }
 
-    @media (max-width: 1100px) {
+    @media (max-width: 1300px) {
         position: absolute;
         width: 100vw;
         height: calc(100% - 20px);
@@ -28,17 +24,12 @@ $width: 340px;
     }
 
     &__box {
-        @media(min-width: 1100px) {
+        @media(min-width: 1300px) {
             position: sticky;
             top: 81px;
             padding: 20px 15px;
             width: $width;
             max-width: $width;
-
-            @media(max-width: 1300px) {
-                width: 300px;
-                max-width: 300px;
-            }
 
             body:not(.is-filters-hide) & {
                 height: calc(100vh - 81px);
@@ -61,13 +52,13 @@ $width: 340px;
             }
         }
 
-        @media(max-width: 1100px) {
+        @media(max-width: 1300px) {
             height: 100%;
         }
     }
 
     body.is-filters-hide & {
-        @media(min-width: 1100px) {
+        @media(min-width: 1300px) {
             width: fit-content;
         }
     }
@@ -83,7 +74,7 @@ $width: 340px;
             color: #fff;
         }
 
-        @media(min-width: 1100px) {
+        @media(min-width: 1300px) {
             display: none;
         }
     }
@@ -91,6 +82,17 @@ $width: 340px;
     & + .content-text {
         margin: 0;
         width: 100%;
+
+        @media(max-width: 1300px) {
+            padding: 55px 15px !important;
+        }
+
+        th, td {
+            @media(max-width: 1550px) {
+                padding: 5px;
+                font-size: 12px;
+            }
+        }
     }
 
     &__head {
@@ -102,7 +104,7 @@ $width: 340px;
         align-items: center;
         justify-content: space-between;
 
-        @media (max-width: 1100px) {
+        @media (max-width: 1300px) {
 
             .button-action {
                 order: -1;
@@ -110,11 +112,11 @@ $width: 340px;
         }
 
         > span {
-            @media(min-width: 1100px) {
+            @media(min-width: 1300px) {
                 margin-left: 33%;
             }
 
-            @media(max-width: 1100px) {
+            @media(max-width: 1300px) {
                 font-size: 16px;
             }
         }
@@ -128,18 +130,23 @@ $width: 340px;
         padding-bottom: 40px;
 
         > * {
-            @media(min-width: 1100px) {
+            @media(min-width: 1300px) {
                 margin-bottom: 20px;
+            }
+
+            @media(max-width: 1300px) {
+                max-width: 620px;
+                margin: 0 auto 20px;
             }
         }
 
-        @media(min-width: 1100px) {
+        @media(min-width: 1300px) {
             body.is-filters-hide & {
                 display: none;
             }
         }
 
-        @media (max-width: 1100px) {
+        @media (max-width: 1300px) {
             position: fixed;
             inset: 81px 0 0;
             background: #fff;
@@ -173,7 +180,7 @@ $width: 340px;
         border-radius: 5px;
         cursor: pointer;
 
-        @media (max-width: 1100px) {
+        @media (max-width: 1300px) {
             position: sticky;
             top: 100px;
             left: 20px;
@@ -198,7 +205,7 @@ $width: 340px;
 }
 
 body.is-filters-hide {
-    @media(max-width: 1100px) {
+    @media(max-width: 1300px) {
         overflow: hidden;
     }
 }
