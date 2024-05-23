@@ -535,17 +535,18 @@ export default function NftSales({
               defaultValue={data?.search}
             />
 
-            {windowWidth < 720 && <br />}
-            {t("table.period")}
-            {windowWidth < 720 && <br />}
-
-            <DateAndTimeRange
-              period={period}
-              setPeriod={setPeriod}
-              defaultPeriod={periodQuery}
-              minDate="nft"
-              radio={true}
-            />
+            <div>
+              {windowWidth < 720 && <br />}
+              {t("table.period")}
+              {windowWidth < 720 && <br />}
+              <DateAndTimeRange
+                period={period}
+                setPeriod={setPeriod}
+                defaultPeriod={periodQuery}
+                minDate="nft"
+                radio={true}
+              />
+            </div>
 
             <div>
               {t("general.show")}
