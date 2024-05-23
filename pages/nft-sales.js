@@ -279,7 +279,7 @@ export default function NftSales({
         }
       }
 
-      setNftCount(newdata.sales.length + salesData.length);
+      setNftCount((newdata.sales?.length || 0) + salesData.length)
     }
   }
 
@@ -489,7 +489,7 @@ export default function NftSales({
               <span>{t("general.loaded")}: <i>{nftCount}</i></span>
               {rendered &&
                 <CSVLink
-                  data={data ? data.sales : []}
+                  data={data && !data?.error ? data.sales : ''}
                   headers={csvHeaders}
                   filename={'nft sales export ' + dateAndTimeNow + '.csv'}
                   className={'button-action thin narrow' + (!(data && data.sales?.length > 0) ? ' disabled' : '')}

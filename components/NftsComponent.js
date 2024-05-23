@@ -249,6 +249,7 @@ export default function NftsComponent({
     if (newdata) {
       setRawData(newdata)
       if (newdata.error) {
+        setNftCount(0)
         setErrorMessage(t("error-api." + newdata.error))
       } else {
         if (newdata.issuer) {
