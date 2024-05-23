@@ -177,7 +177,7 @@ export default function NftSales({
     let collectionUrlPart = ''
     if (issuer) {
       collectionUrlPart = '&issuer=' + issuer
-      if (taxon) {
+      if (isValidTaxon(taxon)) {
         collectionUrlPart += '&taxon=' + taxon
       }
     }
@@ -210,7 +210,7 @@ export default function NftSales({
         return
       }
     }
-    
+
     let nftTypeName = xahauNetwork ? 'uritoken' : 'nft'
 
     const response = await axios(
@@ -405,7 +405,7 @@ export default function NftSales({
     }
   }
 
-  const issuerTaxonUrlPart = (data && issuer) ? ("&issuer=" + usernameOrAddress(data, 'issuer') + (taxon ? ("&taxon=" + taxon) : "")) : "";
+  const issuerTaxonUrlPart = (data && issuer) ? ("&issuer=" + usernameOrAddress(data, 'issuer') + (isValidTaxon(taxon) ? ("&taxon=" + taxon) : "")) : "";
 
   const currencyUrlPart = () => {
     if (!currency) return ""
@@ -464,7 +464,7 @@ export default function NftSales({
         + (issuer ? (" " + issuer) : issuerQuery)
         + (buyer ? (" " + t("tabs.buyer") + ": " + buyer) : buyerQuery)
         + (seller ? (" " + t("tabs.seller") + ": " + seller) : sellerQuery)
-        + (taxon ? (" " + taxon) : taxonQuery)
+        + (isValidTaxon(taxon) ? (" " + taxon) : taxonQuery)
         + (currency ? (" " + currency) : "")
         + (currencyIssuer ? (" " + currencyIssuer) : "")
         + (viewTab === "list" ? (" " + t("tabs.list")) : "")

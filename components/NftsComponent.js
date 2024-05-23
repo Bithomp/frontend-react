@@ -193,7 +193,7 @@ export default function NftsComponent({
 
     if (issuer) {
       collectionUrlPart = '&issuer=' + issuer
-      if (taxon) {
+      if (isValidTaxon(taxon)) {
         collectionUrlPart += '&taxon=' + taxon
       }
     }
@@ -252,7 +252,7 @@ export default function NftsComponent({
         setErrorMessage(t("error-api." + newdata.error))
       } else {
         if (newdata.issuer) {
-          if (newdata.taxon) {
+          if (isValidTaxon(newdata.taxon)) {
             setTaxon(newdata.taxon)
           } else {
             setTaxon("")
@@ -472,7 +472,7 @@ export default function NftsComponent({
       : document.body.classList.remove('is-filters-hide');
   }, [filtersHide]);
 
-  const issuerTaxonUrlPart = "?view=" + viewTab + (rawData ? ("&issuer=" + usernameOrAddress(rawData, 'issuer') + (rawData.taxon ? ("&taxon=" + rawData.taxon) : "")) : "");
+  const issuerTaxonUrlPart = "?view=" + viewTab + (rawData ? ("&issuer=" + usernameOrAddress(rawData, 'issuer') + (isValidTaxon(rawData.taxon) ? ("&taxon=" + rawData.taxon) : "")) : "");
 
   const contextStyle = { minHeight: "480px" }
   if (!nftExplorer) {
@@ -541,7 +541,7 @@ export default function NftsComponent({
         title={
           t("nft-explorer.header") +
           ((issuer || issuerQuery) ? (" " + (issuer || issuerQuery)) : "") +
-          ((taxon || taxonQuery) ? (" " + (taxon || taxonQuery)) : "") +
+          (isValidTaxon(taxon || taxonQuery) ? (" " + (taxon || taxonQuery)) : "") +
           (owner || ownerQuery ? (", " + t("table.owner") + ": " + (owner || ownerQuery)) : "") +
           (viewTab === "list" ? (" " + t("tabs.list")) : "") +
           (listTab === "onSale" ? (" " + t("tabs.onSale")) : "") +
@@ -746,7 +746,7 @@ export default function NftsComponent({
                         <th>NFT</th>
                         <th className='right'>{t("table.minted")}</th>
                         {!xahauNetwork && <th className='right'>{t("table.serial")}</th>}
-                        {(!taxon && !xahauNetwork) && <th className='right'>{t("table.taxon")}</th>}
+                        {(!isValidTaxon(taxon) && !xahauNetwork) && <th className='right'>{t("table.taxon")}</th>}
                         {!issuer && <th className='right'>{t("table.issuer")}</th>}
                         {(!id && !owner) && <th className='right'>{t("table.owner")}</th>}
                         {listTab === 'onSale' && <th className='right'>{t("table.price")}</th>}
@@ -768,7 +768,7 @@ export default function NftsComponent({
                               <td>{nftThumbnail(nft)} {nftNameLink(nft)}</td>
                               <td className='right'>{timeOrDate(nft.issuedAt)}</td>
                               {!xahauNetwork && <td className='right'>{nft.sequence}</td>}
-                              {(!taxon && !xahauNetwork) && <td className='right'>{nft.nftokenTaxon}</td>}
+                              {(!isValidTaxon(taxon) && !xahauNetwork) && <td className='right'>{nft.nftokenTaxon}</td>}
                               {!issuer && <td className='right'>{nftLink(nft, 'issuer', { address: 'short' })}</td>}
                               {(!id && !owner) && <td className='right'>{nftLink(nft, 'owner', { address: 'short' })}</td>}
                               {listTab === 'onSale' && <td className='right'>{priceData(nft.sellOffers)}</td>}
@@ -802,7 +802,7 @@ export default function NftsComponent({
                                 <div className='brake'>NFT: {nftNameLink(nft)}</div>
                                 <div>{t("table.minted")}: {fullDateAndTime(nft.issuedAt)}</div>
                                 {!xahauNetwork && <>{t("table.serial")}: {nft.sequence}<br /></>}
-                                {(!taxon && !xahauNetwork) && <>{t("table.taxon")}: {nft.nftokenTaxon}<br /></>}
+                                {(!isValidTaxon(taxon) && !xahauNetwork) && <>{t("table.taxon")}: {nft.nftokenTaxon}<br /></>}
                                 {!issuer && <>{t("table.issuer")}: {nftLink(nft, 'issuer', { address: 'short' })}<br /></>}
                                 {(!id && !owner) && <>{t("table.owner")}: {nftLink(nft, 'owner', { address: 'short' })}<br /></>}
                                 {listTab === 'onSale' && <>{t("table.price")}: {priceData(nft.sellOffers)}<br /></>}

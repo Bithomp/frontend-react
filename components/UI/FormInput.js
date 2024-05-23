@@ -6,14 +6,14 @@ export default function FormInput({ placeholder, title, setValue, defaultValue, 
   const [inputValue, setInputValue] = useState("")
 
   useEffect(() => {
-    if (defaultValue) {
+    if (defaultValue || defaultValue === "0" || defaultValue === 0) {
       setInputValue(defaultValue)
     }
   }, [defaultValue])
 
   const onChange = e => {
     const value = e.target.value
-    if (!value) {
+    if (value !== "0" && !value) {
       clearAll()
     } else {
       setInputValue(value)
