@@ -11,7 +11,12 @@ import RadioOptions from './RadioOptions'
 import Tabs from '../Tabs'
 import { useWidth, setTabParams, networkMinimumDate } from "../../utils"
 
-export default function DateAndTimeRange({ setPeriod, minDate, tabs, radio, defaultPeriod, style }) {
+export default function DateAndTimeRange({ setPeriod, minDate, tabs, radio, defaultPeriod, style, periodQueryName }) {
+
+  if (!periodQueryName) {
+    periodQueryName = "period"
+  }
+
   const { i18n, t } = useTranslation()
   const windowWidth = useWidth()
   const router = useRouter()
@@ -100,14 +105,14 @@ export default function DateAndTimeRange({ setPeriod, minDate, tabs, radio, defa
     let queryRemoveList = []
 
     if (periodName && periodName !== "custom") {
-      queryAddList.push({ name: "period", value: periodName })
+      queryAddList.push({ name: periodQueryName, value: periodName })
       setPeriod(periodName)
     } else if (startDate && endDate) {
       const range = startDate.toISOString() + '..' + endDate.toISOString()
-      queryAddList.push({ name: "period", value: range })
+      queryAddList.push({ name: periodQueryName, value: range })
       setPeriod(range)
     } else {
-      queryRemoveList.push("period")
+      queryRemoveList.push(periodQueryName)
     }
 
     setTabParams(router, [], queryAddList, queryRemoveList)

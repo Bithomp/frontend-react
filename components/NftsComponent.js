@@ -647,6 +647,7 @@ export default function NftsComponent({
                     {t("table.mint-period")}
                   </span>
                   <DateAndTimeRange
+                    periodQueryName="mintedPeriod"
                     period={mintedPeriod}
                     setPeriod={setMintedPeriod}
                     defaultPeriod={mintedPeriod}
