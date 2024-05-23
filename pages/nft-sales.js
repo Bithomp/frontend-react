@@ -225,13 +225,12 @@ export default function NftSales({
 
     const newdata = response?.data
     setLoading(false)
+    setTotal({})
 
     if (newdata) {
       setData(newdata)
-      if (newdata.issuer || newdata.owner) {
+      if (newdata.total?.secondary) {
         setTotal(newdata.total)
-      } else {
-        setTotal({})
       }
 
       if (newdata.issuer) {
