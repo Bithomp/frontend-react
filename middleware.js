@@ -11,11 +11,27 @@ export async function middleware(req) {
     return
   }
 
-  if (req.nextUrl.locale === 'default') {
-    const locale = req.cookies.get('NEXT_LOCALE')?.value || 'en'
+  const cookieLocale = req.cookies.get('NEXT_LOCALE')?.value || 'en'
 
+  //if someone has an old link with old locale that was removed.
+  const removedLocales = ['ca', 'da', 'nn', 'my']
+
+  for (const locale of removedLocales) {
+    if (req.nextUrl.pathname.startsWith(`/${locale}/`)) {
+      return NextResponse.redirect(
+        new URL(`${req.nextUrl.pathname.replace(`/${locale}/`, `/${cookieLocale}/`)}${req.nextUrl.search}`, req.url)
+      )
+    }
+    if (req.nextUrl.pathname === `/${locale}`) {
+      return NextResponse.redirect(
+        new URL(`${req.nextUrl.pathname.replace(`/${locale}`, `/${cookieLocale}`)}${req.nextUrl.search}`, req.url)
+      )
+    }
+  }
+
+  if (req.nextUrl.locale === 'default') {
     return NextResponse.redirect(
-      new URL(`/${locale}${req.nextUrl.pathname}${req.nextUrl.search}`, req.url)
+      new URL(`/${cookieLocale}${req.nextUrl.pathname}${req.nextUrl.search}`, req.url)
     )
   }
 }
