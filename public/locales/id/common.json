@@ -559,9 +559,9 @@
   },
   "nft-offers": {
     "header": "Penawaran NFT",
-    "owned-desc": "Di sini Anda dapat mencari Penawaran Beli dan Jual untuk NFT, ketik alamat XRPL atau username untuk melihat apa yang ditawarkan.",
-    "for-owned-nfts-desc": "Di sini Anda dapat mencari Penawaran Beli untuk NFT yang dimiliki oleh akun, ketik alamat XRPL atau username untuk melihat penawaran yang diterima.",
-    "privately-offered-to-address-desc": "Di sini Anda dapat mencari Penawaran yang dibuat secara pribadi untuk sebuah akun (dengan tujuan), ini sering digunakan untuk transfer NFT (harga 0 XRP), ketik alamat XRPL atau username untuk melihat penawaran yang diterima.",
+    "owned-desc": "Di sini Anda dapat mencari Penawaran Beli dan Jual untuk NFT, ketik alamat atau username untuk melihat apa yang ditawarkan.",
+    "for-owned-nfts-desc": "Di sini Anda dapat mencari Penawaran Beli untuk NFT yang dimiliki oleh akun, ketik alamat atau username untuk melihat penawaran yang diterima.",
+    "privately-offered-to-address-desc": "Di sini Anda dapat mencari Penawaran yang dibuat secara pribadi untuk sebuah akun (dengan tujuan), ini sering digunakan untuk transfer NFT (harga 0), ketik alamat atau username untuk melihat penawaran yang diterima.",
     "no-nft-offers": "Kami tidak dapat menemukan Penawaran NFT apa pun.",
     "cancel-invalid-offer_one": "Batal penawaran yang tidak valid",
     "cancel-invalid-offer_other": "Batal {{count}} penawaran yang tidak valid",

@@ -541,7 +541,7 @@
       "nft-offers": "NFT offers",
       "nft-volumes": "NFT sales volumes"
     },
-    "enter-address": "Enter an XRPL address or a username",
+    "enter-address": "Enter an address or a username",
     "searching-tx-nft-nftoffer": "Searching for Tx / NFT ID / NFT Offer",
     "searching-for-addresses": "Searching for addresses...",
     "menu": {
@@ -559,9 +559,9 @@
   },
   "nft-offers": {
     "header": "NFT offers",
-    "owned-desc": "Here you can search for Buy and Sell Offers for NFTs, type in the XRPL address or username to see what it offers.",
-    "for-owned-nfts-desc": "Here you can search for Buy Offers for NFTs owned by account, type in the XRPL address or username to see received offers.",
-    "privately-offered-to-address-desc": "Here you can search for Offers privately created for an account (with destination), it is often used for NFT transfers (price 0 XRP), type in the XRPL address or username to see received offers.",
+    "owned-desc": "Here you can search for Buy and Sell Offers for NFTs, type in the address or username to view which NFT offers it has.",
+    "for-owned-nfts-desc": "Here you can search for Buy Offers for NFTs owned by account, type in the address or username to see received offers.",
+    "privately-offered-to-address-desc": "Here you can search for Offers privately created for an account (with destination), it is often used for NFT transfers (price 0), type in the address or username to see received offers.",
     "no-nft-offers": "We couldn't find any NFT Offers.",
     "cancel-invalid-offer_one": "Cancel the invalid offer",
     "cancel-invalid-offer_other": "Cancel {{count}} invalid offers",

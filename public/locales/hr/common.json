@@ -559,9 +559,9 @@
   },
   "nft-offers": {
     "header": "NFT ponude",
-    "owned-desc": "Ovdje možete pretražiti kupopordajne ponude za NFTove, unesite XRPL adresu ili korisničko ime za vidjeti što se nudi.",
-    "for-owned-nfts-desc": "Ovdje možete pretražiti ponude za kupnju za NFTova, unesite XRPL adresu ili korisničko ime za vidjeti pristigle ponude.",
-    "privately-offered-to-address-desc": "Ovdje možete pretražiti privatne ponude XRPL računa (s destinacijskom oznakom), to je često korišteno kod NFT transfera (cijena 0 XRP), unesite XRPL adresu ili korisničko ime za vidjeti pristigle ponude.",
+    "owned-desc": "Ovdje možete pretražiti kupopordajne ponude za NFTove, unesite adresu ili korisničko ime za vidjeti što se nudi.",
+    "for-owned-nfts-desc": "Ovdje možete pretražiti ponude za kupnju za NFTova, unesite adresu ili korisničko ime za vidjeti pristigle ponude.",
+    "privately-offered-to-address-desc": "Ovdje možete pretražiti privatne ponude računa (s destinacijskom oznakom), to je često korišteno kod NFT transfera (cijena 0), unesite adresu ili korisničko ime za vidjeti pristigle ponude.",
     "no-nft-offers": "Nismo pronašli niti jednu NFT ponudu.",
     "cancel-invalid-offer_one": "Poništi nevaljalu ponudu",
     "cancel-invalid-offer_other": "Poništi {{count}} nevaljalih ponuda",

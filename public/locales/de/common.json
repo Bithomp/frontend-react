@@ -318,7 +318,6 @@
   "form": {
     "error": {
       "price-empty": "Bitte geben Sie einen Betrag ein.",
-      "name-empty": "Bitte geben Sie Ihren Namen ein.",
       "address-empty": "Bitte geben Sie eine Adresse ein.",
       "address-invalid": "Bitte geben Sie eine gültige Adresse ein.",
       "domain-empty": "Bitte geben Sie die Domain ein.",
@@ -542,7 +541,7 @@
       "nft-offers": "NFT Angebote",
       "nft-volumes": "NFT sales volumes"
     },
-    "enter-address": "Geben Sie eine XRPL Adresse oder einen Benutzernamen ein",
+    "enter-address": "Geben Sie eine Adresse oder einen Benutzernamen ein",
     "searching-tx-nft-nftoffer": "Suchen nach Trans / NFT ID / NFT Angebot",
     "searching-for-addresses": "Suche nach Adressen...",
     "menu": {
@@ -560,9 +559,9 @@
   },
   "nft-offers": {
     "header": "NFT Angebote",
-    "owned-desc": "Hier können Sie nach Kauf- und Verkaufsangeboten für NFTs suchen, die XRPL Adresse oder den Benutzernamen eingeben, um zu sehen, was angeboten wird.",
-    "for-owned-nfts-desc": "Hier können Sie nach Kaufangeboten für NFTs im Besitz eines Kontos suchen, die XRPL Adresse oder den Benutzernamen eingeben, um erhaltene Angebote anzuzeigen.",
-    "privately-offered-to-address-desc": "Hier können Sie nach Angeboten suchen, die privat für ein Konto (mit Ziel) erstellt wurden. Es wird häufig für NFT-Transfers verwendet (Preis 0 XRP). Geben Sie die XRPL Adresse oder den Benutzernamen ein, um erhaltene Angebote anzuzeigen.",
+    "owned-desc": "Hier können Sie nach Kauf- und Verkaufsangeboten für NFTs suchen, die Adresse oder den Benutzernamen eingeben, um zu sehen, was angeboten wird.",
+    "for-owned-nfts-desc": "Hier können Sie nach Kaufangeboten für NFTs im Besitz eines Kontos suchen, die Adresse oder den Benutzernamen eingeben, um erhaltene Angebote anzuzeigen.",
+    "privately-offered-to-address-desc": "Hier können Sie nach Angeboten suchen, die privat für ein Konto (mit Ziel) erstellt wurden. Es wird häufig für NFT-Transfers verwendet (Preis 0). Geben Sie die Adresse oder den Benutzernamen ein, um erhaltene Angebote anzuzeigen.",
     "no-nft-offers": "Wir konnten keine NFT Angebote finden.",
     "cancel-invalid-offer_one": "Stornieren Sie das ungültige Angebot",
     "cancel-invalid-offer_other": "Stornieren Sie {{count}} ungültige Angebote",

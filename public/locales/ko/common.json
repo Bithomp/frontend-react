@@ -559,9 +559,9 @@
   },
   "nft-offers": {
     "header": "NFT 제안",
-    "owned-desc": "여기에서 NFT에 대한 구매 및 판매 제안을 검색하고 XRPL 주소 또는 사용자 이름을 입력해 제안을 확인할 수 있습니다",
-    "for-owned-nfts-desc": "여기에서 계정별로 소유한 NFT에 대한 구매 제안을 검색하고 XRPL 주소 또는 사용자 이름을 입력하면 수신된 제안을 확인할 수 있습니다",
-    "privately-offered-to-address-desc": "여기에서 계정에 대해 비공개로 생성된 제안(목적지 포함)을 검색할 수 있으며, 종종 NFT 전송(가격 0 XRP)에 사용되며, XRPL 주소 또는 사용자명을 입력하면 수신된 제안을 확인할 수 있습니다",
+    "owned-desc": "여기에서 NFT에 대한 구매 및 판매 제안을 검색하고 주소 또는 사용자 이름을 입력해 제안을 확인할 수 있습니다",
+    "for-owned-nfts-desc": "여기에서 계정별로 소유한 NFT에 대한 구매 제안을 검색하고 주소 또는 사용자 이름을 입력하면 수신된 제안을 확인할 수 있습니다",
+    "privately-offered-to-address-desc": "여기에서 계정에 대해 비공개로 생성된 제안(목적지 포함)을 검색할 수 있으며, 종종 NFT 전송(가격 0)에 사용되며, XRPL 주소 또는 사용자명을 입력하면 수신된 제안을 확인할 수 있습니다",
     "no-nft-offers": "NFT 제안을 찾지 못했습니다",
     "cancel-invalid-offer_one": "유효하지 않은 제안을 취소합니다",
     "cancel-invalid-offer_other": "유효하지 않은 {{count}}개의 제안 취소",

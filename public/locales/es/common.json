@@ -559,9 +559,9 @@
   },
   "nft-offers": {
     "header": "Ofertas NFT",
-    "owned-desc": "Aquí puedes buscar por Ofertas de Compra y Venta para NFTs, escribe la dirección XRPL o nombre de usuario para ver que ofrece.",
-    "for-owned-nfts-desc": "Aquí puedes buscar las Ofertas de Compra para NFTs pertenecientes por cuenta, escribe la dirección XRPL o el nombre de usuario para ver las ofertas recibidas.",
-    "privately-offered-to-address-desc": "Aquí puedes buscar Ofertas privadamente creadas para una cuenta (con destinatario), es comúnmente usado para transferencias NFT (precio 0 XRP), escribe la dirección XRPL o nombre de usuario para ver ofertas recibidas.",
+    "owned-desc": "Aquí puedes buscar por Ofertas de Compra y Venta para NFTs, escribe la dirección o nombre de usuario para ver que ofrece.",
+    "for-owned-nfts-desc": "Aquí puedes buscar las Ofertas de Compra para NFTs pertenecientes por cuenta, escribe la dirección o el nombre de usuario para ver las ofertas recibidas.",
+    "privately-offered-to-address-desc": "Aquí puedes buscar Ofertas privadamente creadas para una cuenta (con destinatario), es comúnmente usado para transferencias NFT (precio 0), escribe la dirección o nombre de usuario para ver ofertas recibidas.",
     "no-nft-offers": "No hemos podido encontrar ninguna Oferta NFT.",
     "cancel-invalid-offer_one": "Cancelar la oferta inválida",
     "cancel-invalid-offer_other": "Cancelar {{count}} ofertas inválidas",
