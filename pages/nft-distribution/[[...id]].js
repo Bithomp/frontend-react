@@ -277,19 +277,21 @@ export default function NftDistribution({ issuerQuery, taxonQuery, idQuery, orde
             maxLength="35"
           />
         </span>
-        <span className='halv'>
-          <span className='input-title'>{t("table.taxon")}</span>
-          <input
-            placeholder={t("nfts.search-by-taxon")}
-            value={taxonInput}
-            onChange={(e) => { setTaxonInput(e.target.value) }}
-            onKeyPress={onTaxonInput}
-            className="input-text"
-            spellCheck="false"
-            maxLength="35"
-            disabled={issuerInput ? false : true}
-          />
-        </span>
+        {!xahauNetwork &&
+          <span className='halv'>
+            <span className='input-title'>{t("table.taxon")}</span>
+            <input
+              placeholder={t("nfts.search-by-taxon")}
+              value={taxonInput}
+              onChange={(e) => { setTaxonInput(e.target.value) }}
+              onKeyPress={onTaxonInput}
+              className="input-text"
+              spellCheck="false"
+              maxLength="35"
+              disabled={issuerInput ? false : true}
+            />
+          </span>
+        }
       </div>
       <p className="center" style={{ marginBottom: "20px" }}>
         <input type="button" className="button-action" value={t("button.search")} onClick={searchClick} />
