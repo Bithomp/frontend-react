@@ -506,13 +506,15 @@ export default function NftSales({
               rawData={data}
               type='issuer'
             />
-            <FormInput
-              title={t("table.taxon")}
-              placeholder={t("nfts.search-by-taxon")}
-              setValue={onTaxonInput}
-              disabled={issuer ? false : true}
-              defaultValue={data?.taxon}
-            />
+            {!xahauNetwork &&
+              <FormInput
+                title={t("table.taxon")}
+                placeholder={t("nfts.search-by-taxon")}
+                setValue={onTaxonInput}
+                disabled={issuer ? false : true}
+                defaultValue={data?.taxon}
+              />
+            }
             <AddressInput
               title={t("table.buyer")}
               placeholder={t("nfts.search-by-buyer")}
