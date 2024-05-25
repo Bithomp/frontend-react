@@ -160,10 +160,10 @@ export default function Subscriptions({ setSignRequest }) {
   }
 
   const bithompProOptions = [
-    { value: 'm1', label: '1 month', price: "10 EUR" },
-    { value: 'm3', label: '3 months', price: "30 EUR" },
-    { value: 'm6', label: '6 months', price: "60 EUR" },
-    { value: 'y1', label: '1 year', price: "100 EUR" }
+    { value: 'm1', label: '1 month', price: "4.99 EUR" },
+    { value: 'm3', label: '3 months', price: "14.97 EUR" },
+    { value: 'm6', label: '6 months', price: "29.94 EUR" },
+    { value: 'y1', label: '1 year', price: "49.99 EUR" }
   ]
 
   const onPurchaseClick = async () => {
