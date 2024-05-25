@@ -2,7 +2,7 @@ import { network } from "../../utils"
 
 export default function Ads() {
 
-  if (network === "mainnet") {
+  if (network === "mainnet" || network === "staging") {
     return <>
       {/*
       <a href="/go/play-xrp" target="_blank" rel="noreferrer">

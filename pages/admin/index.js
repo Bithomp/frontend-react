@@ -194,6 +194,7 @@ export default function Admin({ redirectToken, Account, setAccount }) {
         }
         setCheckedPackageData(true)
       } else {
+        localStorage.setItem("pro-expire", JSON.stringify(0))
         setCheckedPackageData(true)
       }
     } else {

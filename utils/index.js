@@ -5,6 +5,18 @@ import { decodeAccountID, isValidClassicAddress } from 'ripple-address-codec'
 import { useTranslation } from 'next-i18next'
 import countries from "i18n-iso-countries"
 
+export const useSubscriptionExpired = () => {
+  const [proExpire, setProExpire] = useState("")
+  useEffect(() => {
+    const proExpireString = localStorage.getItem('pro-expire')
+    if (proExpireString) {
+      setProExpire(proExpireString)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+  return Number(proExpire) < new Date().getTime()
+}
+
 export const countriesTranslated = () => {
   const { i18n } = useTranslation()
   let lang = i18n.language.slice(0, 2)

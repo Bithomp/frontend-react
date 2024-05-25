@@ -15,7 +15,8 @@ import {
   addAndRemoveQueryParams,
   addQueryParams,
   removeQueryParams,
-  xahauNetwork
+  xahauNetwork,
+  useSubscriptionExpired
 } from '../../utils'
 import { isValidTaxon } from '../../utils/nft'
 import {
@@ -48,14 +49,11 @@ export async function getServerSideProps(context) {
 import SEO from '../../components/SEO'
 import CopyButton from '../../components/UI/CopyButton'
 
-const subscriptionExpired = proExpire => {
-  return proExpire < new Date().getTime()
-}
-
 export default function NftDistribution({ issuerQuery, taxonQuery, idQuery, orderQuery }) {
   const { t } = useTranslation()
   const windowWidth = useWidth()
   const router = useRouter()
+  const subscriptionExpired = useSubscriptionExpired()
 
   const [data, setData] = useState({})
   const [owners, setOwners] = useState([])
@@ -68,17 +66,12 @@ export default function NftDistribution({ issuerQuery, taxonQuery, idQuery, orde
   const [order, setOrder] = useState(orderQuery)
   const [hasMore, setHasMore] = useState("first")
   const [sessionToken, setSessionToken] = useState("")
-  const [proExpire, setProExpire] = useState("")
 
   useEffect(() => {
     const sessionTokenString = localStorage.getItem('sessionToken')
     if (sessionTokenString) {
       axios.defaults.headers.common['Authorization'] = "Bearer " + sessionTokenString
       setSessionToken(sessionTokenString)
-    }
-    const proExpireString = localStorage.getItem('pro-expire')
-    if (proExpireString) {
-      setProExpire(Number(proExpireString))
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
@@ -121,7 +114,7 @@ export default function NftDistribution({ issuerQuery, taxonQuery, idQuery, orde
       (order ? oldOrder === order : !oldOrder)
 
     // do not load more if thereis no session token or if Bithomp Pro is expired
-    if (loadMoreRequest && (!sessionToken || sessionToken && subscriptionExpired(proExpire))) {
+    if (loadMoreRequest && (!sessionToken || sessionToken && subscriptionExpired)) {
       return
     }
 
@@ -374,7 +367,7 @@ export default function NftDistribution({ issuerQuery, taxonQuery, idQuery, orde
                   </Trans>
                   :
                   <>
-                    {!subscriptionExpired(proExpire) ?
+                    {!subscriptionExpired ?
                       t("general.loading")
                       :
                       <Trans i18nKey="general.renew-bithomp-pro">
