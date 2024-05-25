@@ -290,7 +290,7 @@ export const nftsExplorerLink = ({ owner, ownerDetails, issuer, issuerDetails })
       link = "/nft-explorer?owner=" + ownerUri;
     }
   }
-  return <Link href={link}><LinkIcon /></Link>
+  return <Link href={link + '&includeWithoutMediaData=true'}><LinkIcon /></Link>
 }
 
 export const usernameOrAddress = (data, type) => {
