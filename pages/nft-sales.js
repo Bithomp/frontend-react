@@ -26,7 +26,8 @@ import {
   niceNumber
 } from '../utils/format'
 
-export const getServerSideProps = async ({ query, locale }) => {
+export const getServerSideProps = async (context) => {
+  const { query, locale } = context
   const {
     view,
     sale,
