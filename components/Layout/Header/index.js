@@ -622,7 +622,7 @@ export default function Header({
             </>
           }
           <Link href="https://docs.bithomp.com" className="mobile-menu-item">{t("menu.developers.api")}</Link>
-          <Link href="/developer" className="mobile-menu-item" onClick={mobileMenuToggle}>
+          <Link href="/admin" className="mobile-menu-item" onClick={mobileMenuToggle}>
             {t("menu.developers.api-admin")}
           </Link>
           <a href="https://github.com/Bithomp" className="mobile-menu-item">Github</a>
