@@ -5,7 +5,8 @@ import { getIsSsrMobile } from '../utils/mobile'
 
 import SEO from '../components/SEO'
 
-export async function getStaticProps({ locale }) {
+export async function getStaticProps(context) {
+  const { locale } = context
   return {
     props: {
       isSsrMobile: getIsSsrMobile(context),
