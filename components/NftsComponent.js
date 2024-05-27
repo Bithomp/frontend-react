@@ -126,6 +126,7 @@ export default function NftsComponent({
 
   const checkApi = async (options) => {
     if (nftExplorer && !mintedPeriod && listTab !== 'onSale') return
+    if (!nftExplorer && !id && !owner) return
 
     let marker = hasMore;
     let nftsData = data;
@@ -181,13 +182,17 @@ export default function NftsComponent({
       mintAndBurnPart += '&issuedAt=' + mintedPeriod
     }
 
-    if (id || owner) {
-      ownerUrlPart = '&owner=' + (id || owner)
-      const issuersJson = await axios('v2/nft-issuers?owner=' + (id || owner)).catch(error => {
-        console.log(t("error." + error.message))
-      })
-      if (issuersJson?.data?.issuers) {
-        setIssuersList(issuersJson.data.issuers)
+    const newOwner = id || owner
+    if (newOwner) {
+      ownerUrlPart = '&owner=' + newOwner
+      // don't check for issuers on Xahau network
+      if (!xahauNetwork && rawData?.owner !== newOwner && rawData?.ownerDetails?.username?.toLowerCase() !== newOwner.toLowerCase()) {
+        const issuersJson = await axios('v2/nft-issuers?owner=' + newOwner).catch(error => {
+          console.log(t("error." + error.message))
+        })
+        if (issuersJson?.data?.issuers) {
+          setIssuersList(issuersJson.data.issuers)
+        }
       }
     }
 
@@ -593,7 +598,7 @@ export default function NftsComponent({
           </button>
           <div className="filters__wrap">
             <div className="filters__head">
-              <span>{t("general.loaded")}: <i>{nftCount}</i></span>
+              <span>{nftCount !== null ? t("general.loaded") + ":" : ''} <i>{nftCount}</i></span>
               {rendered &&
                 <CSVLink
                   data={data || []}
@@ -736,7 +741,7 @@ export default function NftsComponent({
           //  <h3 style={{ textAlign: 'center' }}>&#8593; Release to refresh</h3>
           //}
           >
-            {!nftExplorer && (id || owner) &&
+            {!xahauNetwork && !nftExplorer && (id || owner) && issuersList?.length > 0 &&
               <div className='center' style={{ marginBottom: "10px" }}>
                 {rendered &&
                   <IssuerSelect
