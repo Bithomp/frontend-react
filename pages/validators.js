@@ -23,7 +23,8 @@ import CopyButton from '../components/UI/CopyButton'
 
 import VerifiedIcon from "../public/images/verified.svg"
 
-export const getServerSideProps = async ({ query, locale }) => {
+export const getServerSideProps = async (context) => {
+  const { query, locale } = context
   const { amendment } = query
   return {
     props: {

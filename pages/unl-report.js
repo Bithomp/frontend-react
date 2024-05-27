@@ -6,7 +6,8 @@ import { useRouter } from 'next/router'
 
 import { getIsSsrMobile } from '../utils/mobile'
 
-export const getServerSideProps = async ({ locale }) => {
+export const getServerSideProps = async (context) => {
+  const { locale } = context
   return {
     props: {
       isSsrMobile: getIsSsrMobile(context),
