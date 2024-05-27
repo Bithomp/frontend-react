@@ -5,6 +5,7 @@ import axios from 'axios'
 import { useRouter } from 'next/router'
 
 import { useWidth, encode, wssServer } from '../../utils'
+import { getIsSsrMobile } from '../../utils/mobile'
 import { fullDateAndTime, shortNiceNumber, amountFormat } from '../../utils/format'
 
 import SEO from '../../components/SEO'
@@ -71,6 +72,7 @@ export const getServerSideProps = async (context) => {
   const { locale } = context
   return {
     props: {
+      isSsrMobile: getIsSsrMobile(context),
       ...(await serverSideTranslations(locale, ['common', 'admin'])),
     },
   }

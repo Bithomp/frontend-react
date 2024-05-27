@@ -10,12 +10,14 @@ import ReactCountryFlag from "react-country-flag"
 
 import { fullDateAndTime } from '../../../utils/format'
 import { useWidth } from '../../../utils'
+import { getIsSsrMobile } from '../../../utils/mobile'
 import AdminTabs from '../../../components/Admin/Tabs'
 
 export const getServerSideProps = async (context) => {
   const { locale } = context
   return {
     props: {
+      isSsrMobile: getIsSsrMobile(context),
       ...(await serverSideTranslations(locale, ['common', 'admin'])),
     },
   }

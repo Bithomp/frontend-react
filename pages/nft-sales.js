@@ -14,6 +14,7 @@ import { IoMdClose } from "react-icons/io";
 import { BsFilter } from "react-icons/bs";
 
 import { stripText, isAddressOrUsername, setTabParams, useWidth, xahauNetwork } from '../utils'
+import { getIsSsrMobile } from '../utils/mobile'
 import { isValidTaxon, nftThumbnail, nftNameLink } from '../utils/nft'
 import {
   amountFormat,
@@ -58,6 +59,7 @@ export const getServerSideProps = async ({ query, locale }) => {
       buyerQuery: buyer || "",
       sellerQuery: seller || "",
       searchQuery: search || "",
+      isSsrMobile: getIsSsrMobile(context),
       ...(await serverSideTranslations(locale, ['common'])),
     },
   }

@@ -18,6 +18,7 @@ import {
   xahauNetwork,
   useSubscriptionExpired
 } from '../../utils'
+import { getIsSsrMobile } from '../../utils/mobile'
 import { isValidTaxon } from '../../utils/nft'
 import {
   nftsExplorerLink,
@@ -41,6 +42,7 @@ export async function getServerSideProps(context) {
       issuerQuery,
       orderQuery: order || "nonSelfIssued",
       taxonQuery: taxon || "",
+      isSsrMobile: getIsSsrMobile(context),
       ...(await serverSideTranslations(locale, ['common', 'nft-distribution']))
     }
   }
@@ -266,7 +268,9 @@ export default function NftDistribution({ issuerQuery, taxonQuery, idQuery, orde
       <h1 className='center'>{t("header", { ns: 'nft-distribution' })}</h1>
       <div className='center'>
         <span className='halv'>
-          <span className='input-title'>{t("table.issuer")} {userOrServiceLink(data, 'issuer')}</span>
+          <span className='input-title'>
+            {t("table.issuer")} {userOrServiceLink(data, 'issuer')}
+          </span>
           <input
             placeholder={t("nfts.search-by-issuer")}
             value={issuerInput}

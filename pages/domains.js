@@ -5,13 +5,16 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import Image from 'next/image'
 
 import { trWithAccount } from '../utils/format'
+import { getIsSsrMobile } from '../utils/mobile'
 import { useWidth } from '../utils'
 
 import SEO from '../components/SEO'
 
-export const getServerSideProps = async ({ locale }) => {
+export const getServerSideProps = async (context) => {
+  const { locale } = context
   return {
     props: {
+      isSsrMobile: getIsSsrMobile(context),
       ...(await serverSideTranslations(locale, ['common', 'domains'])),
     }
   }

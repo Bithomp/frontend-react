@@ -6,6 +6,7 @@ import { serverSideTranslations } from "next-i18next/serverSideTranslations"
 import SearchBlock from "../../components/Layout/SearchBlock"
 import SEO from "../../components/SEO"
 import { addQueryParams, removeQueryParams, server, useWidth } from "../../utils"
+import { getIsSsrMobile } from '../../utils/mobile'
 import {
   lpTokenName,
   trWithAccount,
@@ -56,6 +57,7 @@ export async function getServerSideProps(context) {
       initialData: initialData,
       ledgerTimestampQuery: Date.parse(ledgerTimestamp) || "",
       initialErrorMessage: errorMessage || "",
+      isSsrMobile: getIsSsrMobile(context),
       ...(await serverSideTranslations(locale, ["common"])),
     },
   }

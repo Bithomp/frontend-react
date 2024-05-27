@@ -10,11 +10,13 @@ import CopyButton from '../../../components/UI/CopyButton'
 
 import { amountFormat, fullDateAndTime, niceNumber } from '../../../utils/format'
 import { nativeCurrency, useWidth } from '../../../utils'
+import { getIsSsrMobile } from '../../../utils/mobile'
 
 export const getServerSideProps = async (context) => {
   const { locale } = context
   return {
     props: {
+      isSsrMobile: getIsSsrMobile(context),
       ...(await serverSideTranslations(locale, ['common', 'admin'])),
     },
   }

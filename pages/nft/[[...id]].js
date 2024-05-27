@@ -58,8 +58,8 @@ export async function getServerSideProps(context) {
   return {
     props: {
       id: nftId,
-      isSsrMobile: getIsSsrMobile(context),
       pageMeta,
+      isSsrMobile: getIsSsrMobile(context),
       ...(await serverSideTranslations(locale, ['common', 'nft']))
     }
   }

@@ -17,6 +17,7 @@ import { useTranslation, Trans } from "next-i18next";
 import { useEffect, useRef, useState } from "react";
 
 import { isEmailValid, isDomainValid, isAddressValid, network } from '../utils'
+import { getIsSsrMobile } from "../utils/mobile"
 import SEO from "../components/SEO";
 import axios from "axios";
 
@@ -24,6 +25,7 @@ export async function getServerSideProps(context) {
     const { locale } = context;
     return {
         props: {
+            isSsrMobile: getIsSsrMobile(context),
             ...(await serverSideTranslations(locale, ['submit-account-information', 'common'])),
         }
     }

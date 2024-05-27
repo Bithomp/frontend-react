@@ -4,9 +4,12 @@ import Mailto from 'react-protected-mailto'
 
 import SEO from '../components/SEO'
 
+import { getIsSsrMobile } from '../utils/mobile'
+
 export async function getServerSideProps(context) {
   const { locale } = context
   return {
+    isSsrMobile: getIsSsrMobile(context),
     props: {
       ...(await serverSideTranslations(locale, ['common'])),
     }

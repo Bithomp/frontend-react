@@ -5,6 +5,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 import { fullDateAndTime, shortHash } from '../utils/format'
 import { useWidth, devNet, xahauNetwork } from '../utils'
+import { getIsSsrMobile } from '../utils/mobile'
 
 import SEO from '../components/SEO'
 import CopyButton from '../components/UI/CopyButton'
@@ -15,6 +16,7 @@ import LinkIcon from "../public/images/link.svg"
 export const getServerSideProps = async ({ locale }) => {
   return {
     props: {
+      isSsrMobile: getIsSsrMobile(context),
       ...(await serverSideTranslations(locale, ['common', 'amendments'])),
     }
   }

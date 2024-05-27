@@ -5,6 +5,7 @@ import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import SearchBlock from "../../components/Layout/SearchBlock";
 import SEO from "../../components/SEO";
 import { server } from "../../utils";
+import { getIsSsrMobile } from "../../utils/mobile";
 
 import {
   TransactionDetails,
@@ -42,6 +43,7 @@ export async function getServerSideProps(context) {
     props: {
       id,
       initialData,
+      isSsrMobile: getIsSsrMobile(context),
       ...(await serverSideTranslations(locale, ["common"])),
     },
   };

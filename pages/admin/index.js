@@ -10,11 +10,13 @@ import SEO from '../../components/SEO'
 import CheckBox from '../../components/UI/CheckBox'
 
 import { isEmailValid } from '../../utils'
+import { getIsSsrMobile } from '../../utils/mobile'
 import AdminTabs from '../../components/Admin/Tabs'
 
 export const getServerSideProps = async ({ locale, query }) => {
   return {
     props: {
+      isSsrMobile: getIsSsrMobile(context),
       redirectToken: query.redirectToken || null,
       ...(await serverSideTranslations(locale, ['common', 'admin'])),
     },

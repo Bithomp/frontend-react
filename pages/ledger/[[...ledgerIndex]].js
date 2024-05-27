@@ -6,6 +6,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import SEO from '../../components/SEO'
 
 import { server, network, ledgerName, minLedger } from '../../utils'
+import { getIsSsrMobile } from '../../utils/mobile'
 import { fullDateAndTime, shortHash, addressUsernameOrServiceLink } from '../../utils/format'
 import { LedgerLink } from '../../utils/links'
 
@@ -44,6 +45,7 @@ export async function getServerSideProps(context) {
     props: {
       ledgerIndex,
       pageMeta,
+      isSsrMobile: getIsSsrMobile(context),
       ...(await serverSideTranslations(locale, ['common', 'ledger']))
     }
   }

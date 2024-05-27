@@ -7,12 +7,14 @@ import { useRouter } from 'next/router'
 import SEO from '../../../components/SEO'
 
 import { ledgerName } from '../../../utils'
+import { getIsSsrMobile } from '../../../utils/mobile'
 import AdminTabs from '../../../components/Admin/Tabs'
 
 export const getServerSideProps = async (context) => {
   const { locale } = context
   return {
     props: {
+      isSsrMobile: getIsSsrMobile(context),
       ...(await serverSideTranslations(locale, ['common', 'admin'])),
     },
   }

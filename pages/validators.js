@@ -17,6 +17,7 @@ import {
   timeFromNow
 } from '../utils/format'
 import { devNet, useWidth, xahauNetwork, countriesTranslated } from '../utils'
+import { getIsSsrMobile } from '../utils/mobile'
 
 import CopyButton from '../components/UI/CopyButton'
 
@@ -27,6 +28,7 @@ export const getServerSideProps = async ({ query, locale }) => {
   return {
     props: {
       amendment: amendment || null,
+      isSsrMobile: getIsSsrMobile(context),
       ...(await serverSideTranslations(locale, ['common', 'validators'])),
     }
   }

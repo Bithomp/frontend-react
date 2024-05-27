@@ -5,11 +5,14 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 
+import { getIsSsrMobile } from '../utils/mobile'
+
 export const getServerSideProps = async ({ query, locale }) => {
   const { period } = query
   return {
     props: {
       periodQuery: period || "week",
+      isSsrMobile: getIsSsrMobile(context),
       ...(await serverSideTranslations(locale, ['common', 'nft-minters'])),
     },
   }

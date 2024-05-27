@@ -1,6 +1,8 @@
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import NftsComponent from '../components/NftsComponent';
 
+import { getIsSsrMobile } from '../utils/mobile'
+
 export const getServerSideProps = async ({ query, locale }) => {
   const {
     listNftsOrder,
@@ -43,6 +45,7 @@ export const getServerSideProps = async ({ query, locale }) => {
       includeBurnedQuery: includeBurned || false,
       includeWithoutMediaDataQuery: includeWithoutMediaData || false,
       id: id ? (Array.isArray(id) ? id[0] : id) : "",
+      isSsrMobile: getIsSsrMobile(context),
       ...(await serverSideTranslations(locale, ['common'])),
     },
   }

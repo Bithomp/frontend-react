@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 import axios from 'axios'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useWidth, server } from '../utils'
+import { getIsSsrMobile } from '../utils/mobile'
 import {
   lpTokenName,
   shortHash,
@@ -43,6 +44,7 @@ export async function getServerSideProps(context) {
     props: {
       initialData: initialData || null,
       initialErrorMessage: initialErrorMessage || "",
+      isSsrMobile: getIsSsrMobile(context),
       ...(await serverSideTranslations(locale, ["common"])),
     },
   }

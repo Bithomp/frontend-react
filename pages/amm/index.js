@@ -3,10 +3,12 @@ import { serverSideTranslations } from "next-i18next/serverSideTranslations"
 import SearchBlock from "../../components/Layout/SearchBlock"
 import SEO from "../../components/SEO"
 import { useWidth } from "../../utils"
+import { getIsSsrMobile } from "../../utils/mobile"
 
 export async function getServerSideProps(context) {
   return {
     props: {
+      isSsrMobile: getIsSsrMobile(context),
       ...(await serverSideTranslations(context.locale, ["common"])),
     },
   };

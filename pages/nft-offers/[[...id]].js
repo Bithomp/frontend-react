@@ -7,6 +7,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 
 import { setTabParams, useWidth, xahauNetwork } from '../../utils'
+import { getIsSsrMobile } from "../../utils/mobile"
 import {
   amountFormat,
   fullDateAndTime,
@@ -17,7 +18,8 @@ import {
 } from '../../utils/format'
 import { nftNameLink, nftThumbnail, nftName } from '../../utils/nft'
 
-export const getServerSideProps = async ({ query, locale }) => {
+export const getServerSideProps = async (context) => {
+  const { locale, query } = context
   const { offerList, id } = query
   //key to refresh the component when Link pressed within the same route
   return {
@@ -25,6 +27,7 @@ export const getServerSideProps = async ({ query, locale }) => {
       key: Math.random(),
       offerList: offerList || "owned",
       id: id ? (Array.isArray(id) ? id[0] : id) : "",
+      isSsrMobile: getIsSsrMobile(context),
       ...(await serverSideTranslations(locale, ['common'])),
     },
   }

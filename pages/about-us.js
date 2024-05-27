@@ -2,11 +2,13 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 import SEO from '../components/SEO'
 import { useTranslation } from 'next-i18next'
+import { getIsSsrMobile } from '../utils/mobile'
 
 export async function getServerSideProps(context) {
   const { locale } = context
   return {
     props: {
+      isSsrMobile: getIsSsrMobile(context),
       ...(await serverSideTranslations(locale, ['common', 'about-us'])),
     }
   }

@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import axios from 'axios'
 import { useRouter } from 'next/router'
 import { chartSpan, useWidth } from '../../../utils'
+import { getIsSsrMobile } from '../../../utils/mobile'
 
 import SEO from '../../../components/SEO'
 import SimpleChart from '../../../components/SimpleChart'
@@ -14,6 +15,7 @@ export const getServerSideProps = async (context) => {
   const { locale } = context
   return {
     props: {
+      isSsrMobile: getIsSsrMobile(context),
       ...(await serverSideTranslations(locale, ['common', 'admin'])),
     },
   }

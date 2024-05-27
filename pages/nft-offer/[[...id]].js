@@ -47,8 +47,8 @@ export async function getServerSideProps(context) {
   return {
     props: {
       id,
-      isSsrMobile: getIsSsrMobile(context),
       //pageMeta,
+      isSsrMobile: getIsSsrMobile(context),
       ...(await serverSideTranslations(locale, ['common']))
     }
   }

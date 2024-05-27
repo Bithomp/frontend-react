@@ -5,6 +5,8 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 
+import { getIsSsrMobile } from '../../utils/mobile'
+
 export const getServerSideProps = async ({ query, locale }) => {
   const { period, sale, list, currency, currencyIssuer, sortCurrency } = query
   return {
@@ -15,6 +17,7 @@ export const getServerSideProps = async ({ query, locale }) => {
       currency: currency || "",
       currencyIssuer: currencyIssuer || "",
       sortCurrency: sortCurrency || "",
+      isSsrMobile: getIsSsrMobile(context),
       ...(await serverSideTranslations(locale, ['common', 'nft-volumes'])),
     },
   }

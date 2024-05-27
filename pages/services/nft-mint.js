@@ -25,9 +25,9 @@ export const getServerSideProps = async (context) => {
   const { uri, digest } = query
   return {
     props: {
-      isSsrMobile: getIsSsrMobile(context),
       uriQuery: uri || "",
       digestQuery: digest || "",
+      isSsrMobile: getIsSsrMobile(context),
       ...(await serverSideTranslations(locale, ['common'])),
     },
   }

@@ -7,6 +7,7 @@ import { useRouter } from 'next/router'
 import SEO from '../../../components/SEO'
 
 import { isUrlValid } from '../../../utils'
+import { getIsSsrMobile } from '../../../utils/mobile'
 import CopyButton from '../../../components/UI/CopyButton'
 import AdminTabs from '../../../components/Admin/Tabs'
 
@@ -14,6 +15,7 @@ export const getServerSideProps = async (context) => {
   const { locale } = context
   return {
     props: {
+      isSsrMobile: getIsSsrMobile(context),
       ...(await serverSideTranslations(locale, ['common', 'admin'])),
     },
   }

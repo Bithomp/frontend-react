@@ -3,9 +3,12 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
+import { getIsSsrMobile } from '../utils/mobile'
+
 export const getServerSideProps = async ({ locale }) => {
   return {
     props: {
+      isSsrMobile: getIsSsrMobile(context),
       ...(await serverSideTranslations(locale, ['common'])),
     }
   }

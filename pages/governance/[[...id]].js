@@ -6,6 +6,8 @@ import { useRouter } from 'next/router'
 import Link from 'next/link'
 import Image from 'next/image'
 
+import { useIsMobile, getIsSsrMobile } from "../../utils/mobile"
+
 export const getServerSideProps = async (context) => {
   const { locale, query } = context
   const { id } = query
@@ -14,6 +16,7 @@ export const getServerSideProps = async (context) => {
   return {
     props: {
       id: account,
+      isSsrMobile: getIsSsrMobile(context),
       ...(await serverSideTranslations(locale, ['common', 'governance'])),
     },
   }
@@ -21,7 +24,6 @@ export const getServerSideProps = async (context) => {
 
 import SEO from '../../components/SEO'
 
-import { useIsMobile } from "../../utils/mobile"
 import { ledgerName, rewardRateHuman } from '../../utils'
 import {
   duration,

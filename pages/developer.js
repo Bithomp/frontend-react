@@ -4,12 +4,14 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import axios from 'axios'
 
 import { isEmailValid, isUrlValid } from '../utils'
+import { getIsSsrMobile } from '../utils/mobile'
 import SEO from '../components/SEO'
 
 export async function getServerSideProps(context) {
   const { locale } = context
   return {
     props: {
+      isSsrMobile: getIsSsrMobile(context),
       ...(await serverSideTranslations(locale, ['common'])),
     }
   }
