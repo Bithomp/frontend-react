@@ -1,15 +1,12 @@
 import { useTranslation, Trans } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import Link from 'next/link'
-import { getIsSsrMobile } from '../utils/mobile'
 
 import SEO from '../components/SEO'
 
-export async function getStaticProps(context) {
-  const { locale } = context
+export async function getStaticProps({ locale }) {
   return {
     props: {
-      isSsrMobile: getIsSsrMobile(context),
       ...(await serverSideTranslations(locale, ['common'])),
     },
   }
