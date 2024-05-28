@@ -16,6 +16,9 @@ export async function middleware(req) {
   //if someone has an old link with old locale that was removed.
   const removedLocales = ['ca', 'da', 'nn', 'my']
 
+  //trying to fix redirects https://bithomp.com/undefined/undefined
+  if (!cookieLocale) return
+
   for (const locale of removedLocales) {
     if (req.nextUrl.pathname.startsWith(`/${locale}/`)) {
       return NextResponse.redirect(
