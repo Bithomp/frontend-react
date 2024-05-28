@@ -9,8 +9,8 @@ import { getIsSsrMobile } from '../utils/mobile'
 export async function getServerSideProps(context) {
   const { locale } = context
   return {
-    isSsrMobile: getIsSsrMobile(context),
     props: {
+      isSsrMobile: getIsSsrMobile(context),
       ...(await serverSideTranslations(locale, ['common'])),
     }
   }
