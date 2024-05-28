@@ -23,7 +23,8 @@ import {
   usernameOrAddress,
   timeOrDate,
   fullDateAndTime,
-  niceNumber
+  niceNumber,
+  shortHash
 } from '../utils/format'
 
 export const getServerSideProps = async (context) => {
@@ -570,7 +571,6 @@ export default function NftSales({
         </div>
       </div>
       <div className="content-text" style={{ minHeight: "480px" }}>
-
         <InfiniteScroll
           dataLength={sales.length}
           next={checkApi}
@@ -581,55 +581,111 @@ export default function NftSales({
           endMessage={<p className="center">{t("nft-sales.end")}</p>}
         >
           {viewTab === "list" &&
-            <table className="table-large table-large--without-border">
-              <thead>
-                <tr>
-                  <th className='center'>{t("table.index")}</th>
-                  <th className='center'>{t("table.sold")}</th>
-                  <th>{t("table.amount")} ({sortCurrency?.toUpperCase()})</th>
-                  <th>{t("table.amount")}</th>
-                  <th>NFT</th>
-                  <th className='center hide-on-mobile'>{t("table.taxon")}</th>
-                  <th className='center hide-on-mobile'>{t("table.serial")}</th>
-                  <th className='hide-on-mobile'>{t("table.transaction")}</th>
-                  {saleTab !== "primary" && <th className='hide-on-mobile right'>{t("table.seller")}</th>}
-                  <th className='hide-on-mobile right'>{t("table.buyer")}</th>
-                  {!issuer && <th className='hide-on-mobile right'>{t("table.issuer")}</th>}
-                </tr>
-              </thead>
-              <tbody>
-                {loading ?
-                  <tr className='center'>
-                    <td colSpan="100">
-                      <span className="waiting"></span>
-                      <br />{t("general.loading")}<br />
-                    </td>
-                  </tr>
-                  :
-                  <>
-                    {!errorMessage && sales.length ?
-                      sales.map((nft, i) =>
-                        <tr key={i}>
-                          <td className='center'>{i + 1}</td>
-                          <td className='center'>{timeOrDate(nft.acceptedAt)}</td>
-                          <td>{convertedAmount(nft, sortCurrency)}</td>
-                          <td>{amountFormat(nft.amount, { tooltip: 'right' })}</td>
-                          <td>{nftThumbnail(nft.nftoken)} {nftNameLink(nft.nftoken)}</td>
-                          <td className='center hide-on-mobile'>{nft.nftoken.nftokenTaxon}</td>
-                          <td className='center hide-on-mobile'>{nft.nftoken.sequence}</td>
-                          <td className='center hide-on-mobile'><a href={"/explorer/" + nft.acceptedTxHash}><LinkIcon /></a></td>
-                          {saleTab !== "primary" && <td className='right hide-on-mobile'>{nftLink(nft, 'seller', { address: 'short' })}</td>}
-                          <td className='right hide-on-mobile'>{nftLink(nft, 'buyer', { address: 'short' })}</td>
-                          {!issuer && <td className='right hide-on-mobile'>{nftLink(nft.nftoken, 'issuer', { address: 'short' })}</td>}
-                        </tr>
-                      )
+            <>
+              {windowWidth > 720 ?
+                <table className="table-large table-large--without-border">
+                  <thead>
+                    <tr>
+                      <th className='center'>{t("table.index")}</th>
+                      <th className='center'>{t("table.sold")}</th>
+                      <th>{t("table.amount")} ({sortCurrency?.toUpperCase()})</th>
+                      <th>{t("table.amount")}</th>
+                      <th>NFT</th>
+                      {!xahauNetwork &&
+                        <>
+                          <th className='center'>{t("table.taxon")}</th>
+                          <th className='center'>{t("table.serial")}</th>
+                        </>
+                      }
+                      <th>{t("table.transaction")}</th>
+                      {saleTab !== "primary" && <th className='right'>{t("table.seller")}</th>}
+                      <th className='right'>{t("table.buyer")}</th>
+                      {!issuer && <th className='right'>{t("table.issuer")}</th>}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {loading ?
+                      <tr className='center'>
+                        <td colSpan="100">
+                          <span className="waiting"></span>
+                          <br />{t("general.loading")}<br />
+                        </td>
+                      </tr>
                       :
-                      <tr><td colSpan="100" className='center orange bold'>{errorMessage}</td></tr>
+                      <>
+                        {!errorMessage && sales.length ?
+                          sales.map((nft, i) =>
+                            <tr key={i}>
+                              <td className='center'>{i + 1}</td>
+                              <td className='center'>{timeOrDate(nft.acceptedAt)}</td>
+                              <td>{convertedAmount(nft, sortCurrency)}</td>
+                              <td>{amountFormat(nft.amount, { tooltip: 'right' })}</td>
+                              <td>{nftThumbnail(nft.nftoken)} {nftNameLink(nft.nftoken)}</td>
+                              {!xahauNetwork &&
+                                <>
+                                  <td className='center'>{nft.nftoken.nftokenTaxon}</td>
+                                  <td className='center'>{nft.nftoken.sequence}</td>
+                                </>
+                              }
+                              <td className='center'><a href={"/explorer/" + nft.acceptedTxHash}><LinkIcon /></a></td>
+                              {saleTab !== "primary" && <td className='right'>{nftLink(nft, 'seller', { address: 'short' })}</td>}
+                              <td className='right'>{nftLink(nft, 'buyer', { address: 'short' })}</td>
+                              {!issuer && <td className='right'>{nftLink(nft.nftoken, 'issuer', { address: 'short' })}</td>}
+                            </tr>
+                          )
+                          :
+                          <tr><td colSpan="100" className='center orange bold'>{errorMessage}</td></tr>
+                        }
+                      </>
                     }
-                  </>
-                }
-              </tbody>
-            </table>
+                  </tbody>
+                </table>
+
+                :
+                <table className="table-mobile">
+                  <tbody>
+                    {loading ?
+                      <tr className='center'>
+                        <td colSpan="100">
+                          <span className="waiting"></span>
+                          <br />{t("general.loading")}
+                        </td>
+                      </tr>
+                      :
+                      <>
+                        {!errorMessage && sales.length ?
+                          sales.map((nft, i) =>
+                            <tr key={i}>
+                              <td className="center">
+                                {i + 1}<br /><br />
+                                {nftThumbnail(nft.nftoken)}
+                              </td>
+                              <td>
+                                <div>NFT: {nftNameLink(nft.nftoken)}</div>
+                                <div>{t("table.sold")}: {timeOrDate(nft.acceptedAt)}</div>
+                                <div>{t("table.amount")}: {amountFormat(nft.amount, { tooltip: 'right' })} (≈{convertedAmount(nft, sortCurrency)})</div>
+                                {!xahauNetwork &&
+                                  <>
+                                    <div>{t("table.taxon")}: {nft.nftoken.nftokenTaxon}</div>
+                                    <div>{t("table.serial")}: {nft.nftoken.sequence}</div>
+                                  </>
+                                }
+                                <div>{t("table.transaction")}: <a href={"/explorer/" + nft.acceptedTxHash}>{shortHash(nft.acceptedTxHash)} <LinkIcon /></a></div>
+                                {saleTab !== "primary" && <div>{t("table.seller")}: {nftLink(nft, 'seller', { address: 'short' })}</div>}
+                                <div>{t("table.buyer")}: {nftLink(nft, 'buyer', { address: 'short' })}</div>
+                                {!issuer && <div>{t("table.issuer")}: {nftLink(nft.nftoken, 'issuer', { address: 'short' })}</div>}
+                              </td>
+                            </tr>
+                          )
+                          :
+                          <tr><td colSpan="100" className='center orange bold'>{errorMessage}</td></tr>
+                        }
+                      </>
+                    }
+                  </tbody>
+                </table>
+              }
+            </>
           }
           {viewTab === "tiles" &&
             <>

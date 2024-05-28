@@ -237,6 +237,8 @@ export const nftLink = (nft, type, options = {}) => {
   let defaultContent = <LinkIcon />
   if (options.address === 'short') {
     defaultContent = shortAddress(nft[type])
+  } else if (options.address === 'full') {
+    defaultContent = nft[type]
   }
 
   //nft-offers destination
