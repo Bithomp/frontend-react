@@ -318,16 +318,24 @@ export default function Admin({ redirectToken, Account, setAccount }) {
     <div className="page-admin content-center">
       <h1 className='center'>
         {step < 1 ?
-          <>
-            Sign in / registration
-          </>
+          "Welcome to Bithomp Pro"
           :
           t("header", { ns: "admin" })
         }
       </h1>
 
       {step === 0 &&
-        <center>Register API key, view API statistics and charts.</center>
+        <div>
+          <div style={{ maxWidth: "440px", margin: "auto" }}>
+            - Access advanced features with Bithomp Pro subscription.
+            <br />
+            - Manage your API keys and view your API statistics.
+          </div>
+          <br />
+          <center>
+            <b>Register</b> or <b>Sign In</b> to get started.
+          </center>
+        </div>
       }
 
       {step === 2 &&
