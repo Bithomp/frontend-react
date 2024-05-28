@@ -30,7 +30,7 @@ export default function LanguageSwitch({ close }) {
   const { pathname, asPath, query } = router
 
   const langChange = lang => {
-    if (lang === 'default') return
+    if (lang === 'default' || lang === 'undefined' || !lang) return
     moment.locale(lang)
     let domain = window.location.hostname
     let domainParts = domain.split('.')

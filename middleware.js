@@ -11,13 +11,11 @@ export async function middleware(req) {
     return
   }
 
-  const cookieLocale = req.cookies.get('NEXT_LOCALE')?.value || 'en'
+  let cookieLocale = req.cookies.get('NEXT_LOCALE')?.value || 'en'
+  cookieLocale = cookieLocale === 'undefined' ? 'en' : cookieLocale
 
   //if someone has an old link with old locale that was removed.
   const removedLocales = ['ca', 'da', 'nn', 'my']
-
-  //trying to fix redirects https://bithomp.com/undefined/undefined
-  if (!cookieLocale) return
 
   for (const locale of removedLocales) {
     if (req.nextUrl.pathname.startsWith(`/${locale}/`)) {
