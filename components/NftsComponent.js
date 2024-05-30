@@ -545,11 +545,6 @@ export default function NftsComponent({
     return t("table.text.private-offer") //shouldn't be the case
   }
 
-  const checkBoxStyles = {
-    display: "block",
-    marginBottom: "20px",
-  }
-
   return <>
     {nftExplorer ?
       <SEO
@@ -695,14 +690,14 @@ export default function NftsComponent({
 
             <div>
               {!burnedPeriod && listTab !== 'onSale' &&
-                <div style={checkBoxStyles}>
+                <div className='filters-check-box'>
                   <CheckBox checked={includeBurned} setChecked={setIncludeBurned} outline>
                     {t("table.text.include-burned-nfts")}
                   </CheckBox>
                 </div>
               }
               {listTab !== 'onSale' &&
-                <div style={checkBoxStyles}>
+                <div className='filters-check-box'>
                   <CheckBox checked={includeWithoutMediaData} setChecked={setIncludeWithoutMediaData} outline>
                     {t("table.text.include-without-media-data")}
                   </CheckBox>

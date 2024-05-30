@@ -235,7 +235,7 @@ export default function NftVolumes({ periodQuery, sale, currency, currencyIssuer
         urlPart = urlPart + "&currency=xrp"
       }
     }
-    urlPart = urlPart + "&issuer=" + usernameOrAddress(rawData, "issuer") + "&taxon=" + volume.taxon
+    urlPart = urlPart + "&issuer=" + usernameOrAddress(rawData, "issuer") + "&taxon=" + volume.taxon + "&includeWithoutMediaData=true"
     return urlPart
   }
 

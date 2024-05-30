@@ -397,7 +397,7 @@ export default function NftVolumes({
     if (volume?.marketplace) {
       urlPart += "&marketplace=" + volume.marketplace
     }
-    return urlPart
+    return urlPart + "&includeWithoutMediaData=true"
   }
 
   const sortTable = key => {

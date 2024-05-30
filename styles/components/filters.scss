@@ -129,6 +129,11 @@ $width: 340px;
     &__wrap {
         padding-bottom: 40px;
 
+        .filters-check-box {
+            display: block;
+            margin-bottom: 20px;
+        }
+
         > * {
             @media(min-width: 1300px) {
                 margin-bottom: 20px;

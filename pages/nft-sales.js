@@ -9,11 +9,12 @@ import Link from 'next/link'
 
 import RadioOptions from '../components/UI/RadioOptions'
 import FormInput from '../components/UI/FormInput'
+import CheckBox from '../components/UI/CheckBox'
 
 import { IoMdClose } from "react-icons/io";
 import { BsFilter } from "react-icons/bs";
 
-import { stripText, isAddressOrUsername, setTabParams, useWidth, xahauNetwork } from '../utils'
+import { stripText, isAddressOrUsername, setTabParams, useWidth, xahauNetwork, nativeCurrency } from '../utils'
 import { getIsSsrMobile } from '../utils/mobile'
 import { isValidTaxon, nftThumbnail, nftNameLink } from '../utils/nft'
 import {
@@ -42,7 +43,8 @@ export const getServerSideProps = async (context) => {
     marketplace,
     buyer,
     seller,
-    search
+    search,
+    includeWithoutMediaData,
   } = query
   //key added to re-render page when the same route is called with different params
   return {
@@ -55,12 +57,13 @@ export const getServerSideProps = async (context) => {
       currencyIssuer: currencyIssuer || "",
       issuerQuery: issuer || "",
       taxonQuery: taxon || "",
-      periodQuery: period || "week",
+      periodQuery: period || (xahauNetwork ? "month" : "week"),
       sortCurrencyQuery: sortCurrency || "",
       marketplace: marketplace || "",
       buyerQuery: buyer || "",
       sellerQuery: seller || "",
       searchQuery: search || "",
+      includeWithoutMediaDataQuery: includeWithoutMediaData || false,
       isSsrMobile: getIsSsrMobile(context),
       ...(await serverSideTranslations(locale, ['common'])),
     },
@@ -90,7 +93,8 @@ export default function NftSales({
   account,
   buyerQuery,
   sellerQuery,
-  searchQuery
+  searchQuery,
+  includeWithoutMediaDataQuery
 }) {
   const { t } = useTranslation()
   const router = useRouter()
@@ -115,6 +119,7 @@ export default function NftSales({
   const [nftCount, setNftCount] = useState(null)
   const [dateAndTimeNow, setDateAndTimeNow] = useState('')
   const [search, setSearch] = useState(searchQuery)
+  const [includeWithoutMediaData, setIncludeWithoutMediaData] = useState(includeWithoutMediaDataQuery)
 
   const controller = new AbortController()
 
@@ -193,9 +198,9 @@ export default function NftSales({
       sellerUrlPart += '&seller=' + seller
     }
 
-    let loadList = "topSold"
+    let order = 'priceHigh'
     if (pageTab === 'last') {
-      loadList = "lastSold"
+      order = 'soldNew'
     }
 
     if (marker && marker !== "first") {
@@ -215,10 +220,15 @@ export default function NftSales({
       }
     }
 
+    //includeWithoutMediaData when there is no search params
+    if (!includeWithoutMediaData && !searchPart) {
+      searchPart = '&hasImage=true'
+    }
+
     let nftTypeName = xahauNetwork ? 'uritoken' : 'nft'
 
     const response = await axios(
-      'v2/' + nftTypeName + '-sales?list=' + loadList + currencyUrlPart() + '&saleType=' + saleTab + collectionUrlPart + periodUrlPart + markerUrlPart
+      'v2/' + nftTypeName + '-sales?order=' + order + currencyUrlPart() + '&saleType=' + saleTab + collectionUrlPart + periodUrlPart + markerUrlPart
       + "&convertCurrencies=" + sortCurrency + "&sortCurrency=" + sortCurrency + marketplaceUrlPart + buyerUrlPart + sellerUrlPart + searchPart,
       {
         signal: controller.signal
@@ -283,7 +293,7 @@ export default function NftSales({
         }
       }
 
-      setNftCount(newdata.sales.length + salesData.length);
+      setNftCount((newdata.sales?.length || 0) + salesData.length)
     }
   }
 
@@ -298,7 +308,18 @@ export default function NftSales({
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [saleTab, issuer, taxon, pageTab, sortCurrency, period, buyer, seller, search])
+  }, [
+    saleTab,
+    issuer,
+    taxon,
+    pageTab,
+    sortCurrency,
+    period,
+    buyer,
+    seller,
+    search,
+    includeWithoutMediaData
+  ])
 
   useEffect(() => {
     let queryAddList = []
@@ -350,6 +371,15 @@ export default function NftSales({
       queryRemoveList.push("search")
     }
 
+    if (includeWithoutMediaData) {
+      queryAddList.push({
+        name: "includeWithoutMediaData",
+        value: true
+      })
+    } else {
+      queryRemoveList.push("includeWithoutMediaData")
+    }
+
     setTabParams(router, [
       {
         tabList: saleTabList,
@@ -378,7 +408,7 @@ export default function NftSales({
     )
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [viewTab, saleTab, data, currency, currencyIssuer, pageTab, period])
+  }, [viewTab, saleTab, data, currency, currencyIssuer, pageTab, period, includeWithoutMediaData])
 
   const checkIssuerValue = e => {
     if (isAddressOrUsername(e)) {
@@ -413,8 +443,8 @@ export default function NftSales({
   const currencyUrlPart = () => {
     if (!currency) return ""
 
-    if (currency.toLowerCase() === 'xrp') {
-      return "&currency=xrp";
+    if (currency.toLowerCase() === nativeCurrency.toLowerCase()) {
+      return "&currency=" + nativeCurrency.toLowerCase()
     } else {
       if (isAddressOrUsername(currencyIssuer)) {
         return '&currency=' + stripText(currency) + "&currencyIssuer=" + stripText(currencyIssuer);
@@ -493,7 +523,7 @@ export default function NftSales({
               <span>{t("general.loaded")}: <i>{nftCount}</i></span>
               {rendered &&
                 <CSVLink
-                  data={data ? data.sales : []}
+                  data={data?.sales || []}
                   headers={csvHeaders}
                   filename={'nft sales export ' + dateAndTimeNow + '.csv'}
                   className={'button-action thin narrow' + (!(data && data.sales?.length > 0) ? ' disabled' : '')}
@@ -566,6 +596,12 @@ export default function NftSales({
             <div>
               {t("table.sales")}
               <RadioOptions tabList={saleTabList} tab={saleTab} setTab={setSaleTab} name='sale' />
+            </div>
+
+            <div className='filters-check-box'>
+              <CheckBox checked={includeWithoutMediaData} setChecked={setIncludeWithoutMediaData} outline>
+                {t("table.text.include-without-media-data")}
+              </CheckBox>
             </div>
           </div>
         </div>
