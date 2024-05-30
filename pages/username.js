@@ -84,7 +84,7 @@ export default function Username({ setSignRequest, account, signOut, addressQuer
       queryRemoveList.push("username")
     }
     if (receiptQuery === "true") {
-      setReceipt(true);
+      setReceipt(true)
     } else {
       queryRemoveList.push("receipt")
     }
@@ -98,7 +98,7 @@ export default function Username({ setSignRequest, account, signOut, addressQuer
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [])
 
   useEffect(() => {
     if (account?.address) {

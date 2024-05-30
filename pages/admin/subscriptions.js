@@ -69,10 +69,12 @@ const ButtonWrapper = ({ type }) => {
 const xummImg = "/images/xumm.png"
 
 export const getServerSideProps = async (context) => {
-  const { locale } = context
+  const { query, locale } = context
+  const { receipt } = query
   return {
     props: {
       isSsrMobile: getIsSsrMobile(context),
+      receiptQuery: receipt || "false",
       ...(await serverSideTranslations(locale, ['common', 'admin'])),
     },
   }
@@ -81,7 +83,7 @@ export const getServerSideProps = async (context) => {
 let interval
 let ws = null
 
-export default function Subscriptions({ setSignRequest }) {
+export default function Subscriptions({ setSignRequest, receiptQuery }) {
   const { t } = useTranslation(['common', 'admin'])
   const router = useRouter()
   const width = useWidth()
@@ -574,12 +576,14 @@ export default function Subscriptions({ setSignRequest }) {
                 </>
               }
 
-              {step === 2 &&
+              {receiptQuery || step === 2 &&
                 <>
                   <p className="center">
                     We have received your purchase.
                   </p>
-                  <Receipt item="subscription" details={bidData.bid} />
+                  {!receiptQuery &&
+                    <Receipt item="subscription" details={bidData.bid} />
+                  }
                 </>
               }
               {paymentErrorMessage &&
