@@ -185,9 +185,8 @@ export default function NftsComponent({
     const newOwner = id || owner
     if (newOwner) {
       ownerUrlPart = '&owner=' + newOwner
-      // don't check for issuers on Xahau network
-      if (!xahauNetwork && rawData?.owner !== newOwner && rawData?.ownerDetails?.username?.toLowerCase() !== newOwner.toLowerCase()) {
-        const issuersJson = await axios('v2/nft-issuers?owner=' + newOwner).catch(error => {
+      if (rawData?.owner !== newOwner && rawData?.ownerDetails?.username?.toLowerCase() !== newOwner.toLowerCase()) {
+        const issuersJson = await axios('v2/' + (xahauNetwork ? 'uritoken' : 'nft') + '-issuers?owner=' + newOwner).catch(error => {
           console.log(t("error." + error.message))
         })
         if (issuersJson?.data?.issuers) {
@@ -741,7 +740,7 @@ export default function NftsComponent({
           //  <h3 style={{ textAlign: 'center' }}>&#8593; Release to refresh</h3>
           //}
           >
-            {!xahauNetwork && !nftExplorer && (id || owner) && issuersList?.length > 0 &&
+            {!nftExplorer && (id || owner) && issuersList?.length > 0 &&
               <div className='center' style={{ marginBottom: "10px" }}>
                 {rendered &&
                   <IssuerSelect
