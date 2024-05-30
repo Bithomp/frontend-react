@@ -11,28 +11,45 @@ export async function middleware(req) {
     return
   }
 
-  let cookieLocale = req.cookies.get('NEXT_LOCALE')?.value || 'en'
-  cookieLocale = cookieLocale === 'undefined' ? 'en' : cookieLocale
+  const cookieLocale = req.cookies.get('NEXT_LOCALE')?.value
 
   //if someone has an old link with old locale that was removed.
   const removedLocales = ['ca', 'da', 'nn', 'my']
+  const currentLocales = ['en', 'ko', 'ru', 'de', 'es', 'id', 'ja', 'hr']
 
+  const reactLocale = req.nextUrl.locale
+
+  //default option
+  let viewLocale = 'en'
+
+  if (currentLocales.includes(reactLocale)) {
+    // exlude 'default' locale
+    viewLocale = reactLocale
+  }
+
+  // if the cookie locale is set and is one of the currently supported locales - then it's a priority
+  if (cookieLocale && currentLocales.includes(cookieLocale)) {
+    viewLocale = cookieLocale
+  }
+
+  //if locale is one of the deleted ones
   for (const locale of removedLocales) {
     if (req.nextUrl.pathname.startsWith(`/${locale}/`)) {
       return NextResponse.redirect(
-        new URL(`${req.nextUrl.pathname.replace(`/${locale}/`, `/${cookieLocale}/`)}${req.nextUrl.search}`, req.url)
+        new URL(`${req.nextUrl.pathname.replace(`/${locale}/`, `/${viewLocale}/`)}${req.nextUrl.search}`, req.url)
       )
     }
     if (req.nextUrl.pathname === `/${locale}`) {
       return NextResponse.redirect(
-        new URL(`${req.nextUrl.pathname.replace(`/${locale}`, `/${cookieLocale}`)}${req.nextUrl.search}`, req.url)
+        new URL(`${req.nextUrl.pathname.replace(`/${locale}`, `/${viewLocale}`)}${req.nextUrl.search}`, req.url)
       )
     }
   }
 
-  if (req.nextUrl.locale === 'default') {
+  //import to have this case: reactLocale === 'default'
+  if (reactLocale !== viewLocale) {
     return NextResponse.redirect(
-      new URL(`/${cookieLocale}${req.nextUrl.pathname}${req.nextUrl.search}`, req.url)
+      new URL(`/${viewLocale}${req.nextUrl.pathname}${req.nextUrl.search}`, req.url)
     )
   }
 }
