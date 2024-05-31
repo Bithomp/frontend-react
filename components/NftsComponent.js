@@ -139,11 +139,8 @@ export default function NftsComponent({
       scrollTop()
     }
 
-    let listUrlPart = '?list=nfts'
-
-    if (xahauNetwork) {
-      listUrlPart = '?list=uritokens'
-    }
+    // it seems not nessary anylonger, we just need to keep the structure of URI with "?"
+    let listUrlPart = '?list=' + (xahauNetwork ? 'uritokens' : 'nfts')
 
     let ownerUrlPart = ''
     let collectionUrlPart = ''
@@ -152,11 +149,8 @@ export default function NftsComponent({
     let serialPart = ''
     let mintAndBurnPart = ''
     let orderPart = ''
-    let hasImagePart = listTab !== 'onSale' && !includeWithoutMediaData ? '&hasImage=true' : ''
-
-    if (includeBurned) {
-      listUrlPart += '&includeDeleted=true'
-    }
+    let includeBurnedPart = includeBurned ? '&includeBurned=true' : ''
+    let hasImagePart = !includeWithoutMediaData ? '&hasImage=true' : ''
 
     if (listTab === 'onSale') {
       //order: "offerCreatedNew", "offerCreatedOld", "priceLow", "priceHigh"
@@ -232,11 +226,9 @@ export default function NftsComponent({
       }
     }
 
-    const nftEndpoint = xahauNetwork ? 'v2/uritokens' : 'v2/nfts'
-
     const response = await axios(
-      nftEndpoint + listUrlPart + ownerUrlPart + collectionUrlPart + markerUrlPart +
-      searchPart + serialPart + mintAndBurnPart + orderPart + hasImagePart,
+      'v2/' + (xahauNetwork ? 'uritokens' : 'nfts') + listUrlPart + ownerUrlPart + collectionUrlPart + markerUrlPart +
+      searchPart + serialPart + mintAndBurnPart + orderPart + hasImagePart + includeBurnedPart,
       {
         signal: controller.signal
       }
@@ -693,13 +685,11 @@ export default function NftsComponent({
                   </CheckBox>
                 </div>
               }
-              {listTab !== 'onSale' &&
-                <div className='filters-check-box'>
-                  <CheckBox checked={includeWithoutMediaData} setChecked={setIncludeWithoutMediaData} outline>
-                    {t("table.text.include-without-media-data")}
-                  </CheckBox>
-                </div>
-              }
+              <div className='filters-check-box'>
+                <CheckBox checked={includeWithoutMediaData} setChecked={setIncludeWithoutMediaData} outline>
+                  {t("table.text.include-without-media-data")}
+                </CheckBox>
+              </div>
             </div>
           </div>
         </div>
