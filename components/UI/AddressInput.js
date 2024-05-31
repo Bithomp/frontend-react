@@ -39,10 +39,12 @@ export default function AddressInput({ placeholder, title, setValue, rawData, ty
         clearAll()
       }
 
-      if(rawData.error) {
+      if (rawData.error) {
         setInputValue("");
         setLink("");
         setNotEmpty(false);
+        setSearchingSuggestions(false)
+        setSearchSuggestions([])
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -161,7 +163,7 @@ export default function AddressInput({ placeholder, title, setValue, rawData, ty
               inputValue={inputValue}
               options={searchSuggestions}
               isClearable={true}
-              value={notEmpty ? inputValue : null}
+              value={inputValue || ''}
               getOptionLabel={
                 (option) => <>
                   <span style={windowWidth < 400 ? { fontSize: "14px" } : {}}>{option.address || option.issuer}</span>

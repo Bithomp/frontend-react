@@ -154,12 +154,6 @@ export default function NftSales({
 
     let marker = hasMore
     let salesData = sales
-    let markerUrlPart = ''
-    let periodUrlPart = ''
-    let marketplaceUrlPart = ''
-    let buyerUrlPart = ''
-    let sellerUrlPart = ''
-    let searchPart = ''
 
     if (options?.restart) {
       marker = "first"
@@ -172,18 +166,18 @@ export default function NftSales({
     }
 
     if (!marker || (marker === "first" && salesData.length)) {
-      return;
+      return
     }
 
-    if (marketplace) {
-      marketplaceUrlPart = '&marketplace=' + marketplace
-    }
-
-    if (period) {
-      periodUrlPart = '&period=' + period
-    }
-
+    let markerUrlPart = marker && marker !== "first" ? "&marker=" + marker : ""
+    let periodUrlPart = period ? '&period=' + period : ''
+    let marketplaceUrlPart = marketplace ? '&marketplace=' + marketplace : ''
+    let buyerUrlPart = buyer ? '&buyer=' + buyer : ''
+    let sellerUrlPart = seller ? '&seller=' + seller : ''
+    let searchPart = ''
+    let hasImagePart = !includeWithoutMediaData ? '&hasImage=true' : ''
     let collectionUrlPart = ''
+
     if (issuer) {
       collectionUrlPart = '&issuer=' + issuer
       if (isValidTaxon(taxon)) {
@@ -191,21 +185,11 @@ export default function NftSales({
       }
     }
 
-    if (buyer) {
-      buyerUrlPart += '&buyer=' + buyer
-    }
-    if (seller) {
-      sellerUrlPart += '&seller=' + seller
-    }
-
     let order = 'priceHigh'
     if (pageTab === 'last') {
       order = 'soldNew'
     }
 
-    if (marker && marker !== "first") {
-      markerUrlPart = "&marker=" + marker
-    }
     if (marker === "first") {
       setLoading(true)
     }
@@ -220,16 +204,11 @@ export default function NftSales({
       }
     }
 
-    //includeWithoutMediaData when there is no search params
-    if (!includeWithoutMediaData && !searchPart) {
-      searchPart = '&hasImage=true'
-    }
-
     let nftTypeName = xahauNetwork ? 'uritoken' : 'nft'
 
     const response = await axios(
       'v2/' + nftTypeName + '-sales?order=' + order + currencyUrlPart() + '&saleType=' + saleTab + collectionUrlPart + periodUrlPart + markerUrlPart
-      + "&convertCurrencies=" + sortCurrency + "&sortCurrency=" + sortCurrency + marketplaceUrlPart + buyerUrlPart + sellerUrlPart + searchPart,
+      + "&convertCurrencies=" + sortCurrency + "&sortCurrency=" + sortCurrency + marketplaceUrlPart + buyerUrlPart + sellerUrlPart + searchPart + hasImagePart,
       {
         signal: controller.signal
       }
