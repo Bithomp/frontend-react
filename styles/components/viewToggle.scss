@@ -40,6 +40,10 @@ $button-size: 30px;
             justify-content: center;
             background: #fff;
             font-size: 18px;
+
+            .dark & {
+                color: #000;
+            }
         }
 
         input:checked + label {
