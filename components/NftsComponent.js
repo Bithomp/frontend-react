@@ -152,6 +152,7 @@ export default function NftsComponent({
     let serialPart = ''
     let mintAndBurnPart = ''
     let orderPart = ''
+    let hasImagePart = listTab !== 'onSale' && !includeWithoutMediaData ? '&hasImage=true' : ''
 
     if (includeBurned) {
       listUrlPart += '&includeDeleted=true'
@@ -231,15 +232,11 @@ export default function NftsComponent({
       }
     }
 
-    //includeWithoutMediaData
-    if (listTab !== 'onSale' && !includeWithoutMediaData && !searchPart) {
-      searchPart = '&hasImage=true'
-    }
-
     const nftEndpoint = xahauNetwork ? 'v2/uritokens' : 'v2/nfts'
 
     const response = await axios(
-      nftEndpoint + listUrlPart + ownerUrlPart + collectionUrlPart + markerUrlPart + searchPart + serialPart + mintAndBurnPart + orderPart,
+      nftEndpoint + listUrlPart + ownerUrlPart + collectionUrlPart + markerUrlPart +
+      searchPart + serialPart + mintAndBurnPart + orderPart + hasImagePart,
       {
         signal: controller.signal
       }
