@@ -169,7 +169,7 @@ export default function NftSales({
       return
     }
 
-    let markerUrlPart = ''
+    let markerUrlPart = marker && marker !== "first" ? "&marker=" + marker : ""
     let periodUrlPart = period ? '&period=' + period : ''
     let marketplaceUrlPart = marketplace ? '&marketplace=' + marketplace : ''
     let buyerUrlPart = buyer ? '&buyer=' + buyer : ''
@@ -190,9 +190,6 @@ export default function NftSales({
       order = 'soldNew'
     }
 
-    if (marker && marker !== "first") {
-      markerUrlPart = "&marker=" + marker
-    }
     if (marker === "first") {
       setLoading(true)
     }
