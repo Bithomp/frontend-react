@@ -153,9 +153,9 @@ $width: 340px;
 
         @media (max-width: 1300px) {
             position: fixed;
-            inset: 81px 0 0;
+            inset: 81px 0 -90px;
             background: #fff;
-            padding: 20px 30px;
+            padding: 20px 30px 90px;
             overflow-y: scroll;
             transform: translateY(100%);
             pointer-events: all;
@@ -184,6 +184,10 @@ $width: 340px;
         border: 1px solid #ccc;
         border-radius: 5px;
         cursor: pointer;
+
+        .dark & {
+            color: #000;
+        }
 
         @media (max-width: 1300px) {
             position: sticky;
