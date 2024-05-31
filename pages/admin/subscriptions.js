@@ -392,7 +392,9 @@ export default function Subscriptions({ setSignRequest, receiptQuery }) {
                         <td>{typeName(row.type)}</td>
                         <td>{fullDateAndTime(row.createdAt)}</td>
                         <td>{fullDateAndTime(row.startedAt)}</td>
-                        <td>{fullDateAndTime(row.expiredAt + 1)}</td>
+                        <td>
+                          {!row.expiredAt && metadata?.forever ? "Never" : fullDateAndTime(row.expiredAt + 1)}
+                        </td>
                       </tr>
                     })}
                   </tbody>
@@ -419,7 +421,7 @@ export default function Subscriptions({ setSignRequest, receiptQuery }) {
                           </p>
                           <p>
                             Expire: <br />
-                            {fullDateAndTime(row.expiredAt + 1)}
+                            {!row.expiredAt && metadata?.forever ? "Never" : fullDateAndTime(row.expiredAt + 1)}
                           </p>
                         </td>
                       </tr>
