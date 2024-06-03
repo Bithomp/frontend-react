@@ -149,7 +149,7 @@ export default function NftsComponent({
     let serialPart = ''
     let mintAndBurnPart = ''
     let orderPart = ''
-    let includeBurnedPart = includeBurned ? '&includeBurned=true' : ''
+    let includeBurnedPart = includeBurned ? '&includeDeleted=true' : ''
     let hasImagePart = !includeWithoutMediaData ? '&hasImage=true' : ''
 
     if (listTab === 'onSale') {
