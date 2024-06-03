@@ -27,7 +27,7 @@ export default function TermsAndConditions() {
       />
       <div className="content-text">
         <h1>Terms and Conditions</h1>
-        <p>Last updated: May 31, 2024</p>
+        <p>Last updated: June 3, 2024</p>
         <p>Please read these terms and conditions carefully before using Our Service.</p>
         <h1>Interpretation and Definitions</h1>
         <h2>Interpretation</h2>
