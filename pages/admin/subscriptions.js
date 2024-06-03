@@ -578,11 +578,11 @@ export default function Subscriptions({ setSignRequest, receiptQuery }) {
                 </>
               }
 
-              {receiptQuery === "true" || step === 2 &&
+              {(receiptQuery === "true" || step === 2) &&
                 <>
                   <br />
-                  <p className="center">
-                    We have received your purchase.
+                  <p className="center orange">
+                    We have received your payment.
                   </p>
                   {receiptQuery === "false" &&
                     <Receipt item="subscription" details={bidData.bid} />
