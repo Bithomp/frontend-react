@@ -198,7 +198,7 @@ export default function NftsComponent({
     }
 
     if (search) {
-      searchPart = '&search=' + search + '&searchLocations=metadata.name'
+      searchPart = '&search=' + encodeURIComponent(search) + '&searchLocations=metadata.name'
       //'&searchLocations=metadata.name,metadata.description'
       if (search.length < 3) {
         setErrorMessage(t("error-api.search is too short"))
