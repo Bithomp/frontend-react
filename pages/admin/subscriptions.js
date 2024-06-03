@@ -393,7 +393,7 @@ export default function Subscriptions({ setSignRequest, receiptQuery }) {
                         <td>{fullDateAndTime(row.createdAt)}</td>
                         <td>{fullDateAndTime(row.startedAt)}</td>
                         <td>
-                          {!row.expiredAt && metadata?.forever ? "Never" : fullDateAndTime(row.expiredAt + 1)}
+                          {!row.expiredAt && row.metadata?.forever ? "Never" : fullDateAndTime(row.expiredAt + 1)}
                         </td>
                       </tr>
                     })}
@@ -421,7 +421,7 @@ export default function Subscriptions({ setSignRequest, receiptQuery }) {
                           </p>
                           <p>
                             Expire: <br />
-                            {!row.expiredAt && metadata?.forever ? "Never" : fullDateAndTime(row.expiredAt + 1)}
+                            {!row.expiredAt && row.metadata?.forever ? "Never" : fullDateAndTime(row.expiredAt + 1)}
                           </p>
                         </td>
                       </tr>
@@ -578,11 +578,11 @@ export default function Subscriptions({ setSignRequest, receiptQuery }) {
                 </>
               }
 
-              {receiptQuery === "true" || step === 2 &&
+              {(receiptQuery === "true" || step === 2) &&
                 <>
                   <br />
-                  <p className="center">
-                    We have received your purchase.
+                  <p className="center orange">
+                    We have received your payment.
                   </p>
                   {receiptQuery === "false" &&
                     <Receipt item="subscription" details={bidData.bid} />
