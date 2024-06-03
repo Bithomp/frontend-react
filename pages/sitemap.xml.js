@@ -66,7 +66,6 @@ function generateSiteMap(posts) {
     'build-unl',
     'privacy-policy',
     'terms-and-conditions',
-    'terms-api-bots',
     'disclaimer'
   ]
   const oldPages = [

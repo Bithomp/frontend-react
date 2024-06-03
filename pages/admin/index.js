@@ -392,8 +392,8 @@ export default function Admin({ redirectToken, Account, setAccount }) {
             <br />
             <center>
               <div style={{ display: "inline-block", marginBottom: "20px" }}>
-                <CheckBox checked={termsAccepted} setChecked={setTermsAccepted} >
-                  I agree with the <Link href="/terms-api-bots" target="_blank">API & Bots terms of use</Link>.
+                <CheckBox checked={termsAccepted} setChecked={setTermsAccepted}>
+                  I agree with the <Link href="/terms-and-conditions">{t("menu.terms-and-conditions")}</Link>.
                 </CheckBox>
               </div>
             </center>

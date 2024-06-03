@@ -54,7 +54,6 @@ const MyApp = ({ Component, pageProps }) => {
     '/disclaimer',
     '/privacy-policy',
     '/terms-and-conditions',
-    '/terms-api-bots',
     '/press',
     '/404',
   ]
