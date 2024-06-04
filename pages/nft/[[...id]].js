@@ -845,7 +845,7 @@ export default function Nft({
   return <>
     <SEO
       page="NFT"
-      title={nftName(pageMeta) || pageMeta?.nftokenID || pageMeta?.uriTokenID || "NFT"}
+      title={(nftName(pageMeta) || pageMeta?.nftokenID || pageMeta?.uriTokenID || "NFT") + (pageMeta?.nftSerial ? " #" + pageMeta?.nftSerial : "")}
       description={pageMeta?.metadata?.description || pageMeta?.metadata?.collection?.name || (!(pageMeta?.nftokenID || pageMeta?.uriTokenID) ? t("desc", { ns: 'nft' }) : "")}
       image={{ file: imageUrl }}
     />
