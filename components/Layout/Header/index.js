@@ -138,12 +138,12 @@ export default function Header({
   const mobileMenuToggle = () => {
     // remove scrollbar when menu is open
     if (!menuOpen) {
-      document.body.style.overflow = "hidden";
+      document.body.style.overflow = "hidden"
     } else {
-      document.body.style.overflow = "auto";
+      document.body.style.overflow = "auto"
     }
-    setMenuOpen(!menuOpen);
-  };
+    setMenuOpen(!menuOpen)
+  }
 
   const copyToClipboard = () => {
     navigator.clipboard.writeText(address).then(() => {
@@ -160,7 +160,7 @@ export default function Header({
 
   const handleClick = (event) => {
     if (event.target.getAttribute('aria-expanded') !== null) {
-        event.target.setAttribute('aria-expanded', event.target.getAttribute('aria-expanded') === 'true' ? 'false' : 'true');
+      event.target.setAttribute('aria-expanded', event.target.getAttribute('aria-expanded') === 'true' ? 'false' : 'true');
     }
   };
 
@@ -441,7 +441,11 @@ export default function Header({
           }
 
           <ExpandListItems
-           />
+            mobileMenuToggle={mobileMenuToggle}
+            displayName={displayName}
+            address={address}
+            setSignRequest={setSignRequest}
+          />
         </div>
       }
     </div>
