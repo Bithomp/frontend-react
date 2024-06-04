@@ -9,7 +9,7 @@ import {
   nativeCurrency
 } from '../../../utils'
 
-export default function ExpandListItems({ mobileMenuToggle, displayName, address }) {
+export default function ExpandListItems({ mobileMenuToggle, displayName, address, setSignRequest }) {
   const { t } = useTranslation('common')
 
   return (
