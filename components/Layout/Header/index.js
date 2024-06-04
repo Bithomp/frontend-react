@@ -396,7 +396,7 @@ export default function Header({
             </>
           }
           <Link href="/admin" className="mobile-menu-item" onClick={mobileMenuToggle}>
-            {!proName ? 'Bithomp Pro' : proName}
+            {proName || 'Bithomp Pro'}
           </Link>
           {proName && !displayName &&
             <div className="mobile-menu-directory"><span>{t("signin.signin")}</span></div>
