@@ -8,7 +8,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 
 import { stripText, server, decode, network, isValidJson } from '../../utils'
-import { convertedAmount } from '../../utils/format'
+import { convertedAmount, usernameOrAddress } from '../../utils/format'
 import { getIsSsrMobile } from "../../utils/mobile"
 import { nftName, mpUrl, bestNftOffer, nftUrl, partnerMarketplaces } from '../../utils/nft'
 import {
@@ -846,7 +846,10 @@ export default function Nft({
     <SEO
       page="NFT"
       title={(nftName(pageMeta) || pageMeta?.nftokenID || pageMeta?.uriTokenID || "NFT") + (pageMeta?.nftSerial ? " #" + pageMeta?.nftSerial : "")}
-      description={pageMeta?.metadata?.description || pageMeta?.metadata?.collection?.name || (!(pageMeta?.nftokenID || pageMeta?.uriTokenID) ? t("desc", { ns: 'nft' }) : "")}
+      description={
+        (pageMeta?.metadata?.description || pageMeta?.metadata?.collection?.name || (!(pageMeta?.nftokenID || pageMeta?.uriTokenID) ? t("desc", { ns: 'nft' }) : "")) +
+        (pageMeta?.issuer ? " - " + t("table.issuer") + ": " + usernameOrAddress(pageMeta, 'issuer') : "")
+      }
       image={{ file: imageUrl }}
     />
     <SearchBlock
