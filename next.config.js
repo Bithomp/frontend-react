@@ -27,6 +27,11 @@ module.exports = {
         source: '/rich-list',
         destination: '/distribution',
         permanent: true
+      },
+      {
+        source: '/developer',
+        destination: '/admin',
+        permanent: true
       }
     ]
   },
