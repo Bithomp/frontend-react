@@ -172,13 +172,27 @@ header {
   .mobile-menu-item {
     display: flex;
     margin: 5px 40px;
-    color: rgba(#fff, 0.75);
+    color:#fff;
     font-size: 16px;
     padding-left: 10px;
     .user-icon {
       width: 24px;
       height: 24px;
       margin-right: 5px;
+    }
+    &--link {
+      padding-left: 0;
+      display: flex;
+      align-items: center;
+      svg {
+        margin: -3px 5px 0 0;
+      }
+    }
+  }
+  .mobile-menu-directory + .mobile-menu-item--link {
+    padding-left: 10px;
+    svg {
+      display: none;
     }
   }
   .mobile-menu__submenu {

@@ -3,6 +3,8 @@ import { useTranslation } from 'next-i18next'
 import { useState, useEffect } from 'react'
 import ExpandListItems from './ExpandListItems'
 
+import { FaUserLarge } from "react-icons/fa6";
+
 import {
   devNet,
   xahauNetwork,
@@ -395,8 +397,8 @@ export default function Header({
               <div className="mobile-menu-directory"><span>{t("signin.signin")}</span></div>
             </>
           }
-          <Link href="/admin" className="mobile-menu-item" onClick={mobileMenuToggle}>
-            {proName || 'Bithomp Pro'}
+          <Link href="/admin" className="mobile-menu-item mobile-menu-item--link" onClick={mobileMenuToggle}>
+            <FaUserLarge /> {proName || 'Bithomp Pro'}
           </Link>
           {proName && !displayName &&
             <div className="mobile-menu-directory"><span>{t("signin.signin")}</span></div>
@@ -434,7 +436,7 @@ export default function Header({
               <span onClick={signOut} className="mobile-menu-item link">{t("signin.signout")}</span>
             </>
             :
-            <span onClick={() => { setSignRequest({ wallet: "xumm" }) }} className="link mobile-menu-item">
+            <span onClick={() => { setSignRequest({ wallet: "xumm" }) }} className="link mobile-menu-item mobile-menu-item--link">
               <Image src="/images/xumm.png" className='xumm-logo' alt="xaman" height={24} width={24} />
               Xaman
             </span>
