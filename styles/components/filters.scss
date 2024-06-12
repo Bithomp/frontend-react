@@ -82,9 +82,10 @@ $width: 340px;
     & + .content-text {
         margin: 0;
         width: 100%;
+        padding: 75px 0 80px;
 
         @media(max-width: 1300px) {
-            padding: 55px 15px !important;
+            padding: 60px 15px !important;
         }
 
         th, td {
@@ -182,7 +183,6 @@ $width: 340px;
         font-size: 20px;
         padding: 5px;
         border: 1px solid #ccc;
-        border-radius: 5px;
         cursor: pointer;
 
         .dark & {
@@ -191,8 +191,9 @@ $width: 340px;
 
         @media (max-width: 1300px) {
             position: sticky;
-            top: 100px;
+            top: 95px;
             left: 20px;
+            margin-top: 4px;
             pointer-events: all;
         }
     }
