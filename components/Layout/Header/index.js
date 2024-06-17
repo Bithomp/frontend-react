@@ -1,6 +1,9 @@
 import Link from 'next/link'
 import { useTranslation } from 'next-i18next'
 import { useState, useEffect } from 'react'
+import ExpandListItems from './ExpandListItems'
+
+import { FaUserLarge } from "react-icons/fa6";
 
 import {
   devNet,
@@ -137,12 +140,12 @@ export default function Header({
   const mobileMenuToggle = () => {
     // remove scrollbar when menu is open
     if (!menuOpen) {
-      document.body.style.overflow = "hidden";
+      document.body.style.overflow = "hidden"
     } else {
-      document.body.style.overflow = "auto";
+      document.body.style.overflow = "auto"
     }
-    setMenuOpen(!menuOpen);
-  };
+    setMenuOpen(!menuOpen)
+  }
 
   const copyToClipboard = () => {
     navigator.clipboard.writeText(address).then(() => {
@@ -156,6 +159,12 @@ export default function Header({
       }
     )
   }
+
+  const handleClick = (event) => {
+    if (event.target.getAttribute('aria-expanded') !== null) {
+      event.target.setAttribute('aria-expanded', event.target.getAttribute('aria-expanded') === 'true' ? 'false' : 'true');
+    }
+  };
 
   return (
     <div className={menuOpen ? 'mobile-menu-open' : ''}>
@@ -381,15 +390,15 @@ export default function Header({
         </div>
       </header>
       {rendered &&
-        <div className="mobile-menu">
+        <div className="mobile-menu" onClick={handleClick}>
           {!proName &&
             <>
               <br />
               <div className="mobile-menu-directory"><span>{t("signin.signin")}</span></div>
             </>
           }
-          <Link href="/admin" className="mobile-menu-item" onClick={mobileMenuToggle}>
-            {!proName ? 'Bithomp Pro' : proName}
+          <Link href="/admin" className="mobile-menu-item mobile-menu-item--link" onClick={mobileMenuToggle}>
+            <FaUserLarge /> {proName || 'Bithomp Pro'}
           </Link>
           {proName && !displayName &&
             <div className="mobile-menu-directory"><span>{t("signin.signin")}</span></div>
@@ -427,226 +436,18 @@ export default function Header({
               <span onClick={signOut} className="mobile-menu-item link">{t("signin.signout")}</span>
             </>
             :
-            <span onClick={() => { setSignRequest({ wallet: "xumm" }) }} className="link mobile-menu-item">
+            <span onClick={() => { setSignRequest({ wallet: "xumm" }) }} className="link mobile-menu-item mobile-menu-item--link">
               <Image src="/images/xumm.png" className='xumm-logo' alt="xaman" height={24} width={24} />
               Xaman
             </span>
           }
 
-          <div className="mobile-menu-directory"><span>{t("menu.personal.personal")}</span></div>
-          <a href={"/explorer/"} className="mobile-menu-item">{t("menu.personal.search-on-ledgerName", { ledgerName })}</a>
-          {!displayName &&
-            <Link href="/username" className="mobile-menu-item" onClick={mobileMenuToggle}>{t("menu.usernames")}</Link>
-          }
-
-          {!displayName &&
-            <span onClick={() => { setSignRequest({ redirect: "nfts" }) }} className="mobile-menu-item link">{t("signin.actions.my-nfts")}</span>
-          }
-
-          {!devNet &&
-            <Link href="/alerts" className="mobile-menu-item" onClick={mobileMenuToggle}>
-              {t("menu.price-alerts", { nativeCurrency })}
-            </Link>
-          }
-          {!devNet && <a href={"/submit/"} className="mobile-menu-item">{t("menu.submit-offline-tx")}</a>}
-
-          <div className="mobile-menu-directory"><span>NFT</span></div>
-          <Link href="/nft-explorer" className="mobile-menu-item" onClick={mobileMenuToggle}> {t("menu.nft.explorer")}</Link>
-
-          {/* Hide NFT-volumes for XAHAU while they are not ready yet */}
-          {!xahauNetwork && <Link href="/nft-volumes" className="mobile-menu-item" onClick={mobileMenuToggle}>{t("menu.nft.volumes")}</Link>}
-          <Link href="/nft-sales" className="mobile-menu-item" onClick={mobileMenuToggle}>{t("menu.nft.sales")}</Link>
-          {/* Hide NFT-minters for XAHAU while they are not ready yet */}
-          {!xahauNetwork && <Link href="/nft-minters" className="mobile-menu-item" onClick={mobileMenuToggle}>{t("menu.nft.minters")}</Link>}
-
-          <Link
-            href={"/nfts" + (displayName ? ("/" + address) : "")}
-            className="mobile-menu-item"
-            onClick={mobileMenuToggle}
-          >
-            {t("menu.nft.nfts")}
-          </Link>
-          <Link
-            href={"/nft-offers" + (displayName ? ("/" + address) : "")}
-            className="mobile-menu-item"
-            onClick={mobileMenuToggle}
-          >
-            {t("menu.nft.offers")}
-          </Link>
-          <Link
-            href="/nft-distribution"
-            className="mobile-menu-item"
-            onClick={mobileMenuToggle}
-          >
-            {t("menu.nft.distribution")}
-          </Link>
-          {/* Hide NFT statistics for XAHAU while they are not ready yet */}
-          {!xahauNetwork &&
-            <Link
-              href="/nft-statistics"
-              className="mobile-menu-item"
-              onClick={mobileMenuToggle}
-            >
-              {t("menu.nft.statistics")}
-            </Link>
-          }
-          {xahauNetwork &&
-            <Link
-              href="/services/nft-mint"
-              className="mobile-menu-item"
-              onClick={mobileMenuToggle}
-            >
-              {t("menu.services.nft-mint")}
-            </Link>
-          }
-
-          {/* Hide AMM for XAHAU */}
-          {!xahauNetwork &&
-            <>
-              <div className="mobile-menu-directory"><span>{t("menu.amm.amm")}</span></div>
-              <Link
-                href="/amms"
-                className="mobile-menu-item"
-                onClick={mobileMenuToggle}
-              >
-                {t("menu.amm.pools")}
-              </Link>
-              <Link
-                href="/amm"
-                className="mobile-menu-item"
-                onClick={mobileMenuToggle}
-              >
-                {t("menu.amm.explorer")}
-              </Link>
-            </>
-          }
-
-          <div className="mobile-menu-directory"><span>{ledgerName}</span></div>
-          {xahauNetwork &&
-            <Link
-              href="/governance"
-              className="mobile-menu-item"
-              onClick={mobileMenuToggle}
-            >
-              {t("menu.network.governance")}
-            </Link>
-          }
-          <Link
-            href="/activations"
-            className="mobile-menu-item"
-            onClick={mobileMenuToggle}
-          >
-            {t("menu.network.activations")}
-          </Link>
-          <Link
-            href="/distribution"
-            className="mobile-menu-item"
-            onClick={mobileMenuToggle}
-          >
-            {t("menu.network.distribution", { nativeCurrency })}
-          </Link>
-          <Link
-            href="/last-ledger-information"
-            className="mobile-menu-item"
-            onClick={mobileMenuToggle}
-          >
-            {t("menu.network.last-ledger-information")}
-          </Link>
-          <Link
-            href="/ledger"
-            className="mobile-menu-item"
-            onClick={mobileMenuToggle}
-          >
-            {t("menu.network.last-ledger-transactions")}
-          </Link>
-
-          {/* Hide Verified Domains for XAHAU while they are not ready yet */}
-          {!xahauNetwork &&
-            <Link
-              href="/domains"
-              className="mobile-menu-item"
-              onClick={mobileMenuToggle}
-            >
-              {t("menu.network.verified-domains")}
-            </Link>
-          }
-
-          <Link
-            href="/validators"
-            className="mobile-menu-item"
-            onClick={mobileMenuToggle}
-          >
-            {t("menu.network.validators")}
-          </Link>
-          <Link
-            href="/amendments"
-            className="mobile-menu-item"
-            onClick={mobileMenuToggle}
-          >
-            {t("menu.network.amendments")}
-          </Link>
-          {!(xahauNetwork && devNet) &&
-            <Link
-              href="/nodes"
-              className="mobile-menu-item"
-              onClick={mobileMenuToggle}
-            >
-              {t("menu.network.nodes")}
-            </Link>
-          }
-          {xahauNetwork &&
-            <Link
-              href="/unl-report"
-              className="mobile-menu-item"
-              onClick={mobileMenuToggle}
-            >
-              {t("menu.network.unl-report")}
-            </Link>
-          }
-          <Link href="/genesis" className="mobile-menu-item" onClick={mobileMenuToggle}>
-            {t("menu.network.genesis")}
-          </Link>
-
-          <div className="mobile-menu-directory"><span>{t("menu.developers.developers")}</span></div>
-          {devNet &&
-            <>
-              <a href={"/create/"} className="mobile-menu-item">{t("menu.developers.account-generation")}</a>
-              <a href={"/faucet/"} className="mobile-menu-item">{t("menu.developers.faucet")}</a>
-              <a href={"/tools/"} className="mobile-menu-item">Bithomp tools</a>
-              <Link href="/eaas" className="mobile-menu-item" onClick={mobileMenuToggle}>
-                {t("menu.business.eaas")}
-              </Link>
-              <Link href="/build-unl" className="mobile-menu-item" onClick={mobileMenuToggle}>
-                {t("menu.business.build-unl")}
-              </Link>
-            </>
-          }
-          <Link href="https://docs.bithomp.com" className="mobile-menu-item">{t("menu.developers.api")}</Link>
-          <Link href="/admin" className="mobile-menu-item" onClick={mobileMenuToggle}>
-            {t("menu.developers.api-admin")}
-          </Link>
-          <a href="https://github.com/Bithomp" className="mobile-menu-item">Github</a>
-
-          {!devNet &&
-            <>
-              <div className="mobile-menu-directory"><span>{t("menu.business.business")}</span></div>
-              <Link href="/advertise" className="mobile-menu-item" onClick={mobileMenuToggle}>
-                {t("menu.business.advertise")}
-              </Link>
-              {!displayName &&
-                <Link href="/username" className="mobile-menu-item" onClick={mobileMenuToggle}>{t("menu.usernames")}</Link>
-              }
-              <Link href="/submit-account-information" className="mobile-menu-item" onClick={mobileMenuToggle}>
-                {t("menu.project-registration")}
-              </Link>
-              <Link href="/eaas" className="mobile-menu-item" onClick={mobileMenuToggle}>
-                {t("menu.business.eaas")}
-              </Link>
-              <Link href="/build-unl" className="mobile-menu-item" onClick={mobileMenuToggle}>
-                {t("menu.business.build-unl")}
-              </Link>
-            </>
-          }
+          <ExpandListItems
+            mobileMenuToggle={mobileMenuToggle}
+            displayName={displayName}
+            address={address}
+            setSignRequest={setSignRequest}
+          />
         </div>
       }
     </div>

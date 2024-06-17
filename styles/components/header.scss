@@ -115,11 +115,11 @@ header {
     position: absolute;
     right: 20px;
     top: 25px;
-  
+
     #header-burger {
       display: none;
     }
-    
+
     .header-burger-elements {
       width: 32px;
       height: 26px;
@@ -128,18 +128,18 @@ header {
       flex-direction: column;
       cursor: pointer;
     }
-    
+
     .header-burger-elements > div {
       height: 2px;
       background-color: white;
       transition: 0.5s;
       z-index: 4;
     }
-    
+
     #header-burger:checked ~ .header-burger-elements > div {
       background-color: #fff;
     }
-    
+
     #header-burger:checked ~ .header-burger-elements > div:nth-child(1) {
       transform: translateY(12px) rotate(45deg);
     }
@@ -164,33 +164,88 @@ header {
   z-index: 4;
   transition: 0.5s;
   overflow: auto;
+  display: flex;
+  flex-direction: column;
+  .mobile-menu-wrap {
+    padding-top: 5px;
+  }
   .mobile-menu-item {
     display: flex;
-    margin: 23px 40px;
-    color: white;
-    font-size: 18px;
+    margin: 5px 40px;
+    color:#fff;
+    font-size: 16px;
+    padding-left: 10px;
     .user-icon {
       width: 24px;
       height: 24px;
       margin-right: 5px;
     }
+    &--link {
+      padding-left: 0;
+      display: flex;
+      align-items: center;
+      svg {
+        margin: -3px 5px 0 0;
+      }
+    }
   }
+  .mobile-menu-directory + .mobile-menu-item--link {
+    padding-left: 10px;
+    svg {
+      display: none;
+    }
+  }
+  .mobile-menu__submenu {
+    display: none;
+    overflow: hidden;
+    padding: 10px 0 4px;
+  }
+
   .mobile-menu-directory {
-    color: rgba(255, 255, 255, 0.5);
-    height: 1px;
-    border-top: 1px solid rgba(255, 255, 255, 0.5);
-    text-align: center;
     position: relative;
     margin: 0 40px;
-    span {
-      position: relative;
-      top: -.8em;
-      font-size: 14px;
-      background-color: var(--background-menu);
-      transition: background-color .5s;
-      display: inline-block;
-      padding: 0 10px;
+    color: #fff;
+    font-size: 18px;
+    padding: 4px 0;
+    border-bottom: 1px solid #fff;
+
+    &[aria-expanded]:after,
+    &[aria-expanded]::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      transform-origin: center;
+      width: 1px;
+      height: 8px;
+      background-color: #fff;
+      transform: rotate(45deg);
+      right: 3px;
+      transition: transform 0.2s;
     }
+
+    &[aria-expanded]:after {
+      right: 8px;
+      transform: rotate(-45deg);
+    }
+
+    &[aria-expanded="true"] {
+
+      &::after {
+        transform: rotate(45deg);
+      }
+
+      &::before {
+        transform: rotate(-45deg);
+      }
+
+      + .mobile-menu__submenu {
+        display: block;
+      }
+    }
+  }
+
+  > .mobile-menu-directory {
+    margin-bottom: 10px;
   }
 }
 
