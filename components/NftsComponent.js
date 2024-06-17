@@ -575,7 +575,9 @@ export default function NftsComponent({
       </>
     }
     <div className="content-cols">
-      <ViewTogggle viewList={viewList} activeView={activeView} setActiveView={setActiveView} name='view' />
+      <div className="filters-nav">
+        <ViewTogggle viewList={viewList} activeView={activeView} setActiveView={setActiveView} name='view' />
+      </div>
       <div className="filters">
         <div className="filters__box">
           <button className='filters__toggle' onClick={() => toggleFilters()}>

@@ -1,15 +1,6 @@
 $button-size: 30px;
 
 .view-toggle {
-    position: absolute;
-    height: 100%;
-    right: 15px;
-    top: 15px;
-    z-index: 3;
-
-    @media (max-width: 1300px) {
-        top: 9px;
-    }
 
     &__wrap {
         position: sticky;

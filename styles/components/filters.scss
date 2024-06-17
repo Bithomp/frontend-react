@@ -12,6 +12,7 @@ $width: 340px;
 
         & + .content-text {
             min-height: calc(100vh - 81px) !important;
+            padding-top: 80px !important;
         }
     }
 
@@ -20,7 +21,27 @@ $width: 340px;
         width: 100vw;
         height: calc(100% - 20px);
         pointer-events: none;
-        padding-top: 9px;
+        padding-top: 12px;
+    }
+
+    &-nav {
+        position: absolute;
+        inset: 20px 15px 0;
+        display: flex;
+        justify-content: flex-end;
+        align-items: flex-start;
+        z-index: 3;
+        pointer-events: none;
+
+        @media(max-width: 1300px) {
+            top: 12px;
+        }
+
+        > * {
+            position: sticky;
+            top: 95px;
+            pointer-events: all;
+        }
     }
 
     &__box {
@@ -85,7 +106,7 @@ $width: 340px;
         padding: 75px 0 80px;
 
         @media(max-width: 1300px) {
-            padding: 60px 15px !important;
+            padding: 65px 15px !important;
         }
 
         th, td {
@@ -181,7 +202,7 @@ $width: 340px;
         border: none;
         margin: 0;
         font-size: 20px;
-        padding: 5px;
+        padding: 4px;
         border: 1px solid #ccc;
         cursor: pointer;
 
@@ -193,7 +214,7 @@ $width: 340px;
             position: sticky;
             top: 95px;
             left: 23px;
-            margin-top: 4px;
+            margin-top: 5px;
             pointer-events: all;
         }
     }
