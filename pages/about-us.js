@@ -75,7 +75,7 @@ export default function AboutUs() {
             <b>Explorers and Faucets for {" "}
               <a href="https://test.bithomp.com/faucet/" target="_blank" rel="noreferrer">XRPL Testnet</a>,{" "}
               <a href="https://dev.bithomp.com/faucet/" target="_blank" rel="noreferrer">XRPL Devnet</a>, and{" "}
-              <a href="https://test.xahauexplorer.com/faucet/" target="_blank" rel="noreferrer">XAHAU Testnet</a>.
+              <a href="https://test.xahauexplorer.com/faucet/" target="_blank" rel="noreferrer">XAHAU Testnet</a>
             </b> - convenient tool for developers to efficiently explore, test, and troubleshoot their applications without using real money.
           </li>
         </ul>
