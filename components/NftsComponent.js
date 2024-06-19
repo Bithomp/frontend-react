@@ -37,6 +37,7 @@ import DownloadIcon from "../public/images/download.svg"
 import RadioOptions from './UI/RadioOptions'
 import FormInput from './UI/FormInput'
 import AddressInput from './UI/AddressInput'
+import ViewTogggle from './UI/ViewToggle'
 
 export default function NftsComponent({
   listNftsOrder,
@@ -71,7 +72,7 @@ export default function NftsComponent({
   const [hasMore, setHasMore] = useState("first")
   const [errorMessage, setErrorMessage] = useState("")
   const [listNftsOrderTab, setListNftsOrderTab] = useState(listNftsOrder)
-  const [viewTab, setViewTab] = useState(view)
+  const [activeView, setActiveView] = useState(view)
   const [listTab, setListTab] = useState(list)
   const [saleDestinationTab, setSaleDestinationTab] = useState(saleDestination)
   const [userData, setUserData] = useState({})
@@ -104,7 +105,7 @@ export default function NftsComponent({
     setRendered(true)
   }, [])
 
-  const viewTabList = [
+  const viewList = [
     { value: 'tiles', label: t("tabs.tiles") },
     { value: 'list', label: t("tabs.list") }
   ]
@@ -398,10 +399,10 @@ export default function NftsComponent({
         paramName: "list"
       },
       {
-        tabList: viewTabList,
-        tab: viewTab,
+        tabList: viewList,
+        tab: activeView,
         defaultTab: "tiles",
-        setTab: setViewTab,
+        setTab: setActiveView,
         paramName: "view"
       }
     ]
@@ -449,7 +450,7 @@ export default function NftsComponent({
 
     setTabParams(router, tabsToSet, queryAddList, queryRemoveList)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [viewTab, listNftsOrderTab, rawData, listTab, saleDestinationTab, includeBurned, includeWithoutMediaData])
+  }, [activeView, listNftsOrderTab, rawData, listTab, saleDestinationTab, includeBurned, includeWithoutMediaData])
 
   const onTaxonInput = value => {
     if (/^\d+$/.test(value) && issuer && isValidTaxon(value)) {
@@ -476,7 +477,7 @@ export default function NftsComponent({
       : document.body.classList.remove('is-filters-hide');
   }, [filtersHide]);
 
-  const issuerTaxonUrlPart = "?view=" + viewTab + (rawData ? ("&issuer=" + usernameOrAddress(rawData, 'issuer') + (isValidTaxon(rawData.taxon) ? ("&taxon=" + rawData.taxon) : "")) : "");
+  const issuerTaxonUrlPart = "?view=" + activeView + (rawData ? ("&issuer=" + usernameOrAddress(rawData, 'issuer') + (isValidTaxon(rawData.taxon) ? ("&taxon=" + rawData.taxon) : "")) : "");
 
   const contextStyle = { minHeight: "480px" }
   if (!nftExplorer) {
@@ -542,7 +543,7 @@ export default function NftsComponent({
           ((issuer || issuerQuery) ? (" " + (issuer || issuerQuery)) : "") +
           (isValidTaxon(taxon || taxonQuery) ? (" " + (taxon || taxonQuery)) : "") +
           (owner || ownerQuery ? (", " + t("table.owner") + ": " + (owner || ownerQuery)) : "") +
-          (viewTab === "list" ? (" " + t("tabs.list")) : "") +
+          (activeView === "list" ? (" " + t("tabs.list")) : "") +
           (listTab === "onSale" ? (" " + t("tabs.onSale")) : "") +
           (listTab === "onSale" && saleDestinationTab === "buyNow" ? (", " + t("tabs.buyNow")) : "") +
           (search || searchQuery ? (", " + t("table.name") + ": " + (search || searchQuery)) : "") +
@@ -574,6 +575,9 @@ export default function NftsComponent({
       </>
     }
     <div className="content-cols">
+      <div className="filters-nav">
+        <ViewTogggle viewList={viewList} activeView={activeView} setActiveView={setActiveView} name='view' />
+      </div>
       <div className="filters">
         <div className="filters__box">
           <button className='filters__toggle' onClick={() => toggleFilters()}>
@@ -658,11 +662,6 @@ export default function NftsComponent({
               </div>
             }
 
-            <div>
-              {t("table.view")}
-              <RadioOptions tabList={viewTabList} tab={viewTab} setTab={setViewTab} name='view' />
-            </div>
-
             {(!burnedPeriod && !xahauNetwork) &&
               <div>
                 {t("general.search")}
@@ -734,7 +733,7 @@ export default function NftsComponent({
               </div>
             }
 
-            {viewTab === "list" &&
+            {activeView === "list" &&
               <>
                 {windowWidth > 500 ?
                   <table className="table-large table-large--without-border">
@@ -817,7 +816,7 @@ export default function NftsComponent({
                 }
               </>
             }
-            {viewTab === "tiles" &&
+            {activeView === "tiles" &&
               <>
                 {loading ?
                   <div className='center' style={{ marginTop: "20px" }}>
