@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import ExpandListItems from './ExpandListItems'
 
 import { FaUserLarge } from "react-icons/fa6";
+import { IoIosRocket } from "react-icons/io";
 
 import {
   devNet,
@@ -398,7 +399,7 @@ export default function Header({
             </>
           }
           <Link href="/admin" className="mobile-menu-item mobile-menu-item--link" onClick={mobileMenuToggle}>
-            <FaUserLarge /> {proName || 'Bithomp Pro'}
+            {!proName ? <IoIosRocket /> : <FaUserLarge />} {proName || 'Bithomp Pro'}
           </Link>
           {proName && !displayName &&
             <div className="mobile-menu-directory"><span>{t("signin.signin")}</span></div>

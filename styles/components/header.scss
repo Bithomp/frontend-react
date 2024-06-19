@@ -190,9 +190,10 @@ header {
     }
   }
   .mobile-menu-directory + .mobile-menu-item--link {
-    padding-left: 10px;
     svg {
-      display: none;
+      width: 24px;
+      height: auto;
+      max-height: 20px;
     }
   }
   .mobile-menu__submenu {
