@@ -1,4 +1,5 @@
-$button-size: 30px;
+$button-size: 36px;
+$button-size-mobile: 30px;
 
 .view-toggle {
 
@@ -9,14 +10,12 @@ $button-size: 30px;
         display: flex;
         justify-content: space-between;
         width: fit-content;
-        gap: 10px;
-        background: var(--background-input-readonly);
-        padding: 7px 10px;
+        gap: 1px;
+        background: #ccc;
+        padding: 1px;
 
         @media (max-width: 1300px) {
             top: 90px;
-            padding: 5px 8px;
-            gap: 8px;
         }
     }
 
@@ -32,6 +31,11 @@ $button-size: 30px;
             justify-content: center;
             background: #fff;
             font-size: 18px;
+
+            @media(max-width: 440px) {
+                width: $button-size-mobile;
+                height: $button-size-mobile;
+            }
 
             .dark & {
                 color: #000;

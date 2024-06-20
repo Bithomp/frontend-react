@@ -6,6 +6,8 @@ $width: 340px;
     z-index: 3;
 
     @media(min-width: 1300px) {
+        border-right: 1px solid #ccc;
+
         body:not(.is-filters-hide) & + .content-text {
             padding-left: $width + 35px !important;
         }
@@ -37,10 +39,17 @@ $width: 340px;
             top: 12px;
         }
 
-        > * {
-            position: sticky;
+        &__wrap {
+            position: sticky !important;
             top: 95px;
             pointer-events: all;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+
+            @media(max-width: 1300px) {
+                gap: 8px;
+            }
         }
     }
 
@@ -126,6 +135,10 @@ $width: 340px;
         align-items: center;
         justify-content: space-between;
 
+        @media(min-width: 1300px) {
+            height: 38px;
+        }
+
         @media (max-width: 1300px) {
 
             .button-action {
@@ -196,6 +209,8 @@ $width: 340px;
     &__toggle {
         position: absolute;
         display: flex;
+        align-items: center;
+        justify-content: center;
         top: 20px;
         left: 15px;
         background-color: #fff;
@@ -206,6 +221,11 @@ $width: 340px;
         border: 1px solid #ccc;
         cursor: pointer;
 
+        @media(min-width: 440px) {
+            width: 38px;
+            height: 38px;
+        }
+
         .dark & {
             color: #000;
         }
@@ -213,8 +233,6 @@ $width: 340px;
         @media (max-width: 1300px) {
             position: sticky;
             top: 95px;
-            left: 23px;
-            margin-top: 5px;
             pointer-events: all;
         }
     }

@@ -1,0 +1,128 @@
+$phone-bp: 440px;
+
+.dropdown {
+    min-width: 270px;
+
+    &--desktop {
+        @media(max-width: $phone-bp) {
+            display: none;
+        }
+    }
+
+    &--mobile {
+        position: fixed;
+        background: #fff;
+        inset: auto 0 -2px;
+        padding: 5px 15px 55px;
+        z-index: 3;
+        border-top: 1px solid #ccc;
+        transform: translateY(100%);
+        transition: transform 0.3s ease-in-out;
+
+        .is-sort-menu-open & {
+            transform: translateY(0);
+        }
+
+        .dark & {
+            background: #000;
+        }
+
+        ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        li {
+            padding: 5px 0;
+        }
+
+        @media(min-width: $phone-bp) {
+            display: none;
+        }
+    }
+
+    &__head {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin: 5px 0 10px;
+
+        button {
+            border: none;
+            background: transparent;
+            font-size: 24px;
+
+            .dark & {
+                color: #fff;
+            }
+        }
+    }
+
+    &-btn {
+        width: 32px;
+        height: 32px;
+        border: 1px solid #ccc;
+        border-radius: 0;
+        background: #fff;
+        font-size: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        @media(min-width: 440px) {
+            display: none;
+        }
+    }
+
+    .dropdown__control {
+        border-radius: 0;
+        background: #fff;
+
+        &--is-focused {
+            border-color: hsl(0, 0%, 80%);
+            box-shadow: none;
+        }
+
+        .dark & {
+            background: #000;
+        }
+    }
+
+    .dropdown__value-container {
+        @media(max-width: 1300px) {
+            font-size: 14px;
+        }
+    }
+
+    .dropdown__single-value,
+    .dropdown__placeholder {
+        color: hsl(0, 0%, 20%);
+
+        .dark & {
+            color: #fff;
+        }
+    }
+
+    .dropdown__indicator-separator {
+        display: none;
+    }
+
+    .dropdown__menu {
+        background: #fff;
+        border-radius: 0;
+
+        .dark & {
+            background: #000;
+        }
+    }
+
+    .dropdown__option--is-focused {
+        background: none;
+        border-color: hsl(0, 0%, 80%) !important;
+    }
+
+    .dropdown__option--is-selected {
+        background: var(--accent-icon);
+    }
+}
