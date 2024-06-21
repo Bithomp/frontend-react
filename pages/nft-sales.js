@@ -220,9 +220,6 @@ export default function NftSales({
       setErrorMessage(t("error." + error.message))
     })
 
-    console.log('v2/' + nftTypeName + '-sales?order=' + order + currencyUrlPart() + '&saleType=' + saleTab + collectionUrlPart + periodUrlPart + markerUrlPart
-      + "&convertCurrencies=" + sortCurrency + "&sortCurrency=" + sortCurrency + marketplaceUrlPart + buyerUrlPart + sellerUrlPart + searchPart + hasImagePart);
-
     const newdata = response?.data
     setLoading(false)
     setTotal({})

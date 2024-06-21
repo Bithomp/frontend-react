@@ -13,14 +13,14 @@ $phone-bp: 440px;
         position: fixed;
         background: #fff;
         inset: auto 0 -2px;
-        padding: 5px 15px 55px;
+        padding: 5px 15px 20%;
         z-index: 3;
         border-top: 1px solid #ccc;
         transform: translateY(100%);
         transition: transform 0.3s ease-in-out;
 
         .is-sort-menu-open & {
-            transform: translateY(0);
+            transform: translateY(15%);
         }
 
         .dark & {
