@@ -43,7 +43,6 @@ import ViewTogggle from './UI/ViewToggle'
 
 
 export default function NftsComponent({
-  // listNftsOrder,
   view,
   list,
   saleDestination,
@@ -161,8 +160,8 @@ export default function NftsComponent({
     let markerUrlPart = ''
     let searchPart = ''
     let serialPart = ''
-    let orderPart = ''
     let mintAndBurnPart = ''
+    let orderPart = ''
     let includeBurnedPart = includeBurned ? '&includeDeleted=true' : ''
     let hasImagePart = !includeWithoutMediaData ? '&hasImage=true' : ''
 
