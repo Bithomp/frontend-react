@@ -565,7 +565,7 @@ export default function NftsComponent({
           (listTab === "onSale" && saleDestinationTab === "buyNow" ? (", " + t("tabs.buyNow")) : "") +
           (search || searchQuery ? (", " + t("table.name") + ": " + (search || searchQuery)) : "") +
           (burnedPeriod ? (", " + t("table.burn-period") + ": " + burnedPeriod) : "") +
-          (order ? (", " + t("dropdown." + order.label), {ns: "nft-sort"}) : "")
+          (order ? (", " + t("dropdown." + order, {ns: "nft-sort"})) : "")
         }
         description={issuer || issuerQuery || search || t("nft-explorer.header")}
       />
