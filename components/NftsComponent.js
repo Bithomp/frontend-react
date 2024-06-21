@@ -9,6 +9,7 @@ import Select from 'react-select'
 
 import { IoMdClose } from "react-icons/io";
 import { BsFilter } from "react-icons/bs";
+import { TbArrowsSort } from "react-icons/tb";
 
 import { isAddressOrUsername, setTabParams, useWidth, xahauNetwork, capitalizeFirstLetter } from '../utils'
 import {
@@ -75,8 +76,8 @@ export default function NftsComponent({
   const orderOnSaleList = [
     { value: 'offerCreatedNew', label: t("dropdown.offerCreatedNew", {ns: "nft-sort"}) },
     { value: 'offerCreatedOld', label: t("dropdown.offerCreatedOld", {ns: "nft-sort"}) },
-    { value: 'soldNew', label: t("dropdown.soldNew", {ns: "nft-sort"}) },
-    { value: 'soldOld', label: t("dropdown.soldOld", {ns: "nft-sort"}) }
+    { value: 'priceLow', label: t("dropdown.priceLow", {ns: "nft-sort"}) },
+    { value: 'priceHigh', label: t("dropdown.priceHigh", {ns: "nft-sort"}) }
   ]
 
   const [rendered, setRendered] = useState(false)
@@ -86,7 +87,6 @@ export default function NftsComponent({
   const [loading, setLoading] = useState(false)
   const [hasMore, setHasMore] = useState("first")
   const [errorMessage, setErrorMessage] = useState("")
-  const [currentOrderList, setCurrentOrderList] = useState(orderNftsList)
   const [activeView, setActiveView] = useState(view)
   const [listTab, setListTab] = useState(list)
   const [saleDestinationTab, setSaleDestinationTab] = useState(saleDestination)
@@ -101,7 +101,9 @@ export default function NftsComponent({
   const [mintedPeriod, setMintedPeriod] = useState(mintedPeriodQuery)
   const [csvHeaders, setCsvHeaders] = useState([])
   const [nftCount, setNftCount] = useState(null)
-  const [order, setOrder] = useState("mintedNew")
+  const [currentOrderList, setCurrentOrderList] = useState(listTab !== "onSale" ? orderNftsList : orderOnSaleList)
+  const [order, setOrder] = useState(currentOrderList[0].value)
+  const [placeholder, setPlaceholder] = useState('');
 
   const controller = new AbortController()
 
@@ -120,14 +122,6 @@ export default function NftsComponent({
   useEffect(() => {
     setRendered(true)
   }, [])
-
-  useEffect(() => {
-    if(listTab === 'onSale') {
-      setCurrentOrderList(orderOnSaleList)
-    } else {
-      setCurrentOrderList(orderNftsList)
-    }
-  }, [currentOrderList])
 
   const viewList = [
     { value: 'tiles', label: t("tabs.tiles") },
@@ -167,6 +161,7 @@ export default function NftsComponent({
     let markerUrlPart = ''
     let searchPart = ''
     let serialPart = ''
+    let orderPart = ''
     let mintAndBurnPart = ''
     let includeBurnedPart = includeBurned ? '&includeDeleted=true' : ''
     let hasImagePart = !includeWithoutMediaData ? '&hasImage=true' : ''
@@ -175,16 +170,11 @@ export default function NftsComponent({
       //order: "offerCreatedNew", "offerCreatedOld", "priceLow", "priceHigh"
       //destination: "public", "knownBrokers", "publicAndKnownBrokers", "all", "buyNow"
       listUrlPart = '?list=onSale&destination=' + saleDestinationTab
-      setCurrentOrderList(orderOnSaleList)
-      console.log(listTab, currentOrderList);
-      console.log(orderOnSaleList);
       if (saleCurrencyIssuer && saleCurrency) {
         listUrlPart = listUrlPart + '&currency=' + saleCurrency + '&currencyIssuer=' + saleCurrencyIssuer
       } else {
         listUrlPart = listUrlPart + '&currency=xrp'
       }
-    } else {
-      setCurrentOrderList(orderNftsList)
     }
 
     if (mintedByMarketplace) {
@@ -243,17 +233,15 @@ export default function NftsComponent({
       // reverse and show only with meta
       // on the first load when no params
       if (listTab === 'onSale') {
-        setOrder('offerCreatedNew')
+        orderPart = '&order=offerCreatedNew'
       }
     }
 
-    // console.log(order);
-    // console.log('v2/' + (xahauNetwork ? 'uritokens' : 'nfts') + listUrlPart + ownerUrlPart + collectionUrlPart + markerUrlPart +
-    //   searchPart + serialPart + mintAndBurnPart + '&order=' + order + hasImagePart + includeBurnedPart);
+    orderPart = '&order=' + order
 
     const response = await axios(
       'v2/' + (xahauNetwork ? 'uritokens' : 'nfts') + listUrlPart + ownerUrlPart + collectionUrlPart + markerUrlPart +
-      searchPart + serialPart + mintAndBurnPart + '&order=' + order + hasImagePart + includeBurnedPart,
+      searchPart + serialPart + mintAndBurnPart + orderPart + hasImagePart + includeBurnedPart,
       {
         signal: controller.signal
       }
@@ -360,6 +348,20 @@ export default function NftsComponent({
   }
 
   useEffect(() => {
+    const actualList = listTab !== "onSale" ? orderNftsList : orderOnSaleList
+    setCurrentOrderList(actualList)
+    setOrder(actualList[0].value)
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [listTab])
+
+  useEffect(() => {
+    if (currentOrderList.length > 0) {
+      setPlaceholder(currentOrderList[0].label);
+    }
+  }, [currentOrderList]);
+
+  useEffect(() => {
     checkApi({ restart: true })
 
     return () => {
@@ -368,7 +370,7 @@ export default function NftsComponent({
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id, issuer, taxon, owner, listTab, order, saleDestinationTab, search, includeBurned, includeWithoutMediaData, mintedPeriod])
+  }, [id, issuer, taxon, owner, order, saleDestinationTab, search, includeBurned, includeWithoutMediaData, mintedPeriod])
 
   useEffect(() => {
     let queryAddList = [];
@@ -483,6 +485,15 @@ export default function NftsComponent({
       : document.body.classList.remove('is-filters-hide');
   }, [filtersHide]);
 
+  const handleButtonClick = () => {
+    document.body.classList.toggle('is-sort-menu-open');
+  }
+
+  const hideMobileSortMenu = (value) => {
+    setOrder(value)
+    document.body.classList.remove('is-sort-menu-open');
+  }
+
   const issuerTaxonUrlPart = "?view=" + activeView + (rawData ? ("&issuer=" + usernameOrAddress(rawData, 'issuer') + (isValidTaxon(rawData.taxon) ? ("&taxon=" + rawData.taxon) : "")) : "");
 
   const contextStyle = { minHeight: "480px" }
@@ -554,7 +565,7 @@ export default function NftsComponent({
           (listTab === "onSale" && saleDestinationTab === "buyNow" ? (", " + t("tabs.buyNow")) : "") +
           (search || searchQuery ? (", " + t("table.name") + ": " + (search || searchQuery)) : "") +
           (burnedPeriod ? (", " + t("table.burn-period") + ": " + burnedPeriod) : "") +
-          (currentOrderList ? (", " + t("dropdown." + order), {ns: "nft-sort"}) : "")
+          (order ? (", " + t("dropdown." + order.label), {ns: "nft-sort"}) : "")
         }
         description={issuer || issuerQuery || search || t("nft-explorer.header")}
       />
@@ -583,21 +594,39 @@ export default function NftsComponent({
     <div className="content-cols">
       <div className="filters-nav">
         <div className="filters-nav__wrap">
-            <Select
-              instanceId="dropdown"
-              placeholder={currentOrderList[0].label}
-              defaultValue={currentOrderList[0].value}
-              options={currentOrderList}
-              onChange={option => setOrder(option.value)}
-              isSearchable={false}
-              className="dropdown dropdown--desktop"
-              classNamePrefix="dropdown"
-              />
-              {/* <button className="dropdown-btn" onClick={handleButtonClick}>
-                <TbArrowsSort />
-              </button> */}
-            <ViewTogggle viewList={viewList} activeView={activeView} setActiveView={setActiveView} name='view' />
-          </div>
+          <Select
+            instanceId="dropdown"
+            placeholder={placeholder}
+            value={placeholder}
+            defaultValue={currentOrderList[0].value}
+            options={currentOrderList}
+            onChange={option => {
+              setOrder(option.value)
+              setPlaceholder(option.label)
+            }}
+            isSearchable={false}
+            className="dropdown dropdown--desktop"
+            classNamePrefix="dropdown"
+          />
+          <button className="dropdown-btn" onClick={handleButtonClick}>
+            <TbArrowsSort />
+          </button>
+          <ViewTogggle viewList={viewList} activeView={activeView} setActiveView={setActiveView} name='view' />
+        </div>
+      </div>
+      <div className="dropdown--mobile">
+        <div className='dropdown__head'>
+          <span>{t("heading", {ns: "nft-sort"})}</span>
+          <button onClick={() => document.body.classList.remove('is-sort-menu-open')}><IoMdClose /></button>
+        </div>
+        <ul>
+          {currentOrderList.map((item, i) =>
+            <li
+              key={i}
+              style={{fontWeight: item.value === order ? 'bold' : 'normal'}}
+              onClick={() => hideMobileSortMenu(item.value)}>{item.label}</li>
+          )}
+        </ul>
       </div>
       <div className="filters">
         <div className="filters__box">

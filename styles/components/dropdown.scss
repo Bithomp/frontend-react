@@ -80,7 +80,7 @@ $phone-bp: 440px;
         background: #fff;
 
         &--is-focused {
-            border-color: hsl(0, 0%, 80%);
+            border-color: hsl(0, 0%, 80%) !important;
             box-shadow: none;
         }
 
