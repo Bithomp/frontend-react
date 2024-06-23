@@ -5,7 +5,6 @@
   "nft-id-decoded-data": "Data NFT ID yang telah diterjemahkan",
   "nft-not-found-on-that-network": "NFT ini tidak ditemukan pada jaringan <1>{{network}}</1>.",
   "table": {
-    "uri": "URI",
     "digest": "Digest",
     "attention": "Perhatian",
     "attention-texts": {

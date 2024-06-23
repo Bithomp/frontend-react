@@ -441,6 +441,7 @@ export default function NftSales({
     { label: t("table.taxon"), key: "nftoken.nftokenTaxon" },
     { label: t("table.serial"), key: "nftoken.sequence" },
     { label: "NFT ID", key: "nftId" },
+    { label: t("table.uri"), key: "nftoken.url" },
     { label: t("table.transaction"), key: "acceptedTxHash" },
     { label: t("table.buyer"), key: "buyer" },
     { label: t("table.seller"), key: "seller" },

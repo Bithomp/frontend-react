@@ -375,6 +375,7 @@
     "day": "Selama 24 jam terakhir"
   },
   "table": {
+    "uri": "URI",
     "mints": "Mints",
     "view": "View",
     "period": "Periode",
