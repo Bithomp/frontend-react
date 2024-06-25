@@ -2,7 +2,6 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useTranslation } from 'next-i18next'
 import { useEffect, useState } from 'react'
 import axios from 'axios'
-import Link from 'next/link'
 import { useRouter } from 'next/router'
 
 import SEO from '../../../components/SEO'
@@ -275,12 +274,12 @@ export default function Payments() {
                       {apiPayments?.transactions?.map((payment, index) => {
                         return <tr key={index}>
                           <td>{fullDateAndTime(payment.processedAt)}</td>
-                          <td><Link href={"/explorer/" + payment.sourceAddress}>{payment.sourceAddress}</Link></td>
+                          <td><a href={"/explorer/" + payment.sourceAddress}>{payment.sourceAddress}</a></td>
                           <td>{amountFormat(payment.amount)}</td>
                           <td>
                             {payment.fiatAmount}
                           </td>
-                          <td><Link href={"/explorer/" + payment.hash}><LinkIcon /></Link></td>
+                          <td><a href={"/explorer/" + payment.hash}><LinkIcon /></a></td>
                         </tr>
                       })}
                     </tbody>
@@ -299,7 +298,7 @@ export default function Payments() {
                             </p>
                             <p>
                               From: <br />
-                              <Link href={"/explorer/" + payment.sourceAddress}>{payment.sourceAddress}</Link>
+                              <a href={"/explorer/" + payment.sourceAddress}>{payment.sourceAddress}</a>
                             </p>
                             <p>
                               Amount: {amountFormat(payment.amount)}
@@ -308,7 +307,7 @@ export default function Payments() {
                               Fiat equivalent: {payment.fiatAmount}
                             </p>
                             <p>
-                              Transaction: <Link href={"/explorer/" + payment.hash}><LinkIcon /></Link>
+                              Transaction: <a href={"/explorer/" + payment.hash}><LinkIcon /></a>
                             </p>
                           </td>
                         </tr>

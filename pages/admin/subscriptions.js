@@ -12,7 +12,6 @@ import SEO from '../../components/SEO'
 import AdminTabs from '../../components/Admin/Tabs'
 import Select from 'react-select'
 import BillingCountry from '../../components/Admin/BillingCountry'
-import Link from 'next/link'
 import CopyButton from '../../components/UI/CopyButton'
 import LinkIcon from "../../public/images/link.svg"
 import Image from 'next/image'
@@ -610,9 +609,9 @@ export default function Subscriptions({ setSignRequest, receiptQuery }) {
                         {bidData?.transactions?.map((payment, index) => {
                           return <tr key={index}>
                             <td>{fullDateAndTime(payment.processedAt)}</td>
-                            <td><Link href={"/explorer/" + payment.sourceAddress}>{payment.sourceAddress}</Link></td>
+                            <td><a href={"/explorer/" + payment.sourceAddress}>{payment.sourceAddress}</a></td>
                             <td>{amountFormat(payment.amount * 1000000)}</td>
-                            <td><Link href={"/explorer/" + payment.hash}><LinkIcon /></Link></td>
+                            <td><a href={"/explorer/" + payment.hash}><LinkIcon /></a></td>
                           </tr>
                         })}
                       </tbody>
@@ -631,7 +630,7 @@ export default function Subscriptions({ setSignRequest, receiptQuery }) {
                               </p>
                               <p>
                                 From: <br />
-                                <Link href={"/explorer/" + payment.sourceAddress}>{payment.sourceAddress}</Link>
+                                <a href={"/explorer/" + payment.sourceAddress}>{payment.sourceAddress}</a>
                               </p>
                               <p>
                                 Amount: {amountFormat(payment.amount)}
@@ -640,7 +639,7 @@ export default function Subscriptions({ setSignRequest, receiptQuery }) {
                                 Fiat equivalent: {payment.fiatAmount}
                               </p>
                               <p>
-                                Transaction: <Link href={"/explorer/" + payment.hash}><LinkIcon /></Link>
+                                Transaction: <a href={"/explorer/" + payment.hash}><LinkIcon /></a>
                               </p>
                             </td>
                           </tr>
