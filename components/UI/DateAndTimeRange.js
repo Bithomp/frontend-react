@@ -26,16 +26,16 @@ export default function DateAndTimeRange({ setPeriod, minDate, tabs, radio, defa
   const [periodName, setPeriodName] = useState(defaultPeriod)
   const [ready, setReady] = useState(false)
 
-  let hourAgo = new Date().setHours(new Date().getHours() - 1).setMilliseconds(0)
-  let dayAgo = new Date().setDate(new Date().getDate() - 1).setMilliseconds(0)
-  let weekAgo = new Date().setDate(new Date().getDate() - 7).setMilliseconds(0)
-  let monthAgo = new Date().setDate(new Date().getDate() - 30).setMilliseconds(0)
-  let yearAgo = new Date().setDate(new Date().getDate() - 365).setMilliseconds(0)
-  hourAgo = new Date(hourAgo)
-  dayAgo = new Date(dayAgo)
-  weekAgo = new Date(weekAgo)
-  monthAgo = new Date(monthAgo)
-  yearAgo = new Date(yearAgo)
+  let hourAgo = new Date().setHours(new Date().getHours() - 1)
+  let dayAgo = new Date().setDate(new Date().getDate() - 1)
+  let weekAgo = new Date().setDate(new Date().getDate() - 7)
+  let monthAgo = new Date().setDate(new Date().getDate() - 30)
+  let yearAgo = new Date().setDate(new Date().getDate() - 365)
+  hourAgo = new Date(hourAgo).setMilliseconds(0)
+  dayAgo = new Date(dayAgo).setMilliseconds(0)
+  weekAgo = new Date(weekAgo).setMilliseconds(0)
+  monthAgo = new Date(monthAgo).setMilliseconds(0)
+  yearAgo = new Date(yearAgo).setMilliseconds(0)
 
   if (minDate === "nft") {
     minDate = networkMinimumDate("nft")
@@ -64,14 +64,14 @@ export default function DateAndTimeRange({ setPeriod, minDate, tabs, radio, defa
 
     if (periodName?.includes("..")) {
       const periodParts = periodName.split("..")
-      setStartDate(new Date(periodParts[0]).setMilliseconds(0))
-      setEndDate(new Date(periodParts[1]).setMilliseconds(0))
+      setStartDate(new Date(new Date(periodParts[0]).setMilliseconds(0)))
+      setEndDate(new Date(new Date(periodParts[1]).setMilliseconds(0)))
       return
     }
 
     let newStartDate = null
 
-    setEndDate(new Date().setMilliseconds(0))
+    setEndDate(new Date(new Date().setMilliseconds(0)))
     if (periodName === "hour") {
       newStartDate = hourAgo
     } else if (periodName === "day") {

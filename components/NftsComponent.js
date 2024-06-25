@@ -9,7 +9,7 @@ import Link from 'next/link'
 import { IoMdClose } from "react-icons/io";
 import { BsFilter } from "react-icons/bs";
 
-import { isAddressOrUsername, setTabParams, useWidth, xahauNetwork, capitalizeFirstLetter } from '../utils'
+import { isAddressOrUsername, setTabParams, useWidth, xahauNetwork, capitalizeFirstLetter, periodDescription } from '../utils'
 import {
   isValidTaxon,
   nftThumbnail,
@@ -449,9 +449,16 @@ export default function NftsComponent({
       queryRemoveList.push("includeWithoutMediaData")
     }
 
+    if (mintedPeriod) {
+      queryAddList.push({
+        name: "mintedPeriod",
+        value: mintedPeriod
+      })
+    }
+
     setTabParams(router, tabsToSet, queryAddList, queryRemoveList)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeView, listNftsOrderTab, rawData, listTab, saleDestinationTab, includeBurned, includeWithoutMediaData])
+  }, [activeView, listNftsOrderTab, rawData, listTab, saleDestinationTab, includeBurned, includeWithoutMediaData, mintedPeriod])
 
   const onTaxonInput = value => {
     if (/^\d+$/.test(value) && issuer && isValidTaxon(value)) {
@@ -551,7 +558,10 @@ export default function NftsComponent({
           (burnedPeriod ? (", " + t("table.burn-period") + ": " + burnedPeriod) : "") +
           (listNftsOrderTab ? (", " + t("tabs." + listNftsOrderTab)) : "")
         }
-        description={issuer || issuerQuery || search || t("nft-explorer.header")}
+        description={
+          (issuer || issuerQuery || search || t("nft-explorer.header")) +
+          ((rendered && mintedPeriod) ? (", " + t("table.mint-period") + ": " + periodDescription(mintedPeriod)) : "")
+        }
       />
       :
       <>
