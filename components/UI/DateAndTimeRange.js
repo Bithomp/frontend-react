@@ -26,11 +26,11 @@ export default function DateAndTimeRange({ setPeriod, minDate, tabs, radio, defa
   const [periodName, setPeriodName] = useState(defaultPeriod)
   const [ready, setReady] = useState(false)
 
-  let hourAgo = new Date().setHours(new Date().getHours() - 1)
-  let dayAgo = new Date().setDate(new Date().getDate() - 1)
-  let weekAgo = new Date().setDate(new Date().getDate() - 7)
-  let monthAgo = new Date().setDate(new Date().getDate() - 30)
-  let yearAgo = new Date().setDate(new Date().getDate() - 365)
+  let hourAgo = new Date().setHours(new Date().getHours() - 1).setMilliseconds(0)
+  let dayAgo = new Date().setDate(new Date().getDate() - 1).setMilliseconds(0)
+  let weekAgo = new Date().setDate(new Date().getDate() - 7).setMilliseconds(0)
+  let monthAgo = new Date().setDate(new Date().getDate() - 30).setMilliseconds(0)
+  let yearAgo = new Date().setDate(new Date().getDate() - 365).setMilliseconds(0)
   hourAgo = new Date(hourAgo)
   dayAgo = new Date(dayAgo)
   weekAgo = new Date(weekAgo)
@@ -64,14 +64,14 @@ export default function DateAndTimeRange({ setPeriod, minDate, tabs, radio, defa
 
     if (periodName?.includes("..")) {
       const periodParts = periodName.split("..")
-      setStartDate(new Date(periodParts[0]))
-      setEndDate(new Date(periodParts[1]))
+      setStartDate(new Date(periodParts[0]).setMilliseconds(0))
+      setEndDate(new Date(periodParts[1]).setMilliseconds(0))
       return
     }
 
     let newStartDate = null
 
-    setEndDate(new Date())
+    setEndDate(new Date().setMilliseconds(0))
     if (periodName === "hour") {
       newStartDate = hourAgo
     } else if (periodName === "day") {
@@ -176,7 +176,7 @@ export default function DateAndTimeRange({ setPeriod, minDate, tabs, radio, defa
       timeInputLabel={t("table.time")}
       startDate={startDate}
       minDate={minDate}
-      maxDate={new Date()}
+      maxDate={new Date().setMilliseconds(0)}
       endDate={endDate}
       dateFormat="yyyy/MM/dd HH:mm"
       className="dateAndTimeRange"
@@ -192,7 +192,7 @@ export default function DateAndTimeRange({ setPeriod, minDate, tabs, radio, defa
       startDate={startDate}
       endDate={endDate}
       minDate={startDate}
-      maxDate={new Date()}
+      maxDate={new Date().setMilliseconds(0)}
       dateFormat="yyyy/MM/dd HH:mm"
       className="dateAndTimeRange"
       showMonthDropdown
