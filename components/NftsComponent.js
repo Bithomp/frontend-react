@@ -480,6 +480,7 @@ export default function NftsComponent({
   }
 
   useEffect(() => {
+    // disable nft scrolling when filters are open on mobile/tablet
     document.body.style.overflow = window.matchMedia("(max-width: 1300px)").matches && filtersHide ? "hidden" : "";
   }, [filtersHide]);
 
