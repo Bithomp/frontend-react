@@ -101,8 +101,7 @@ export default function NftsComponent({
   const [csvHeaders, setCsvHeaders] = useState([])
   const [nftCount, setNftCount] = useState(null)
   const [currentOrderList, setCurrentOrderList] = useState(listTab !== "onSale" ? orderNftsList : orderOnSaleList)
-  const [order, setOrder] = useState(currentOrderList[0].value)
-  const [placeholder, setPlaceholder] = useState('');
+  const [order, setOrder] = useState(currentOrderList[0])
   const [sortMenuOpen, setSortMenuOpen] = useState(false);
 
   const controller = new AbortController()
@@ -237,7 +236,7 @@ export default function NftsComponent({
       }
     }
 
-    orderPart = '&order=' + order
+    orderPart = '&order=' + order.value
 
     const response = await axios(
       'v2/' + (xahauNetwork ? 'uritokens' : 'nfts') + listUrlPart + ownerUrlPart + collectionUrlPart + markerUrlPart +
@@ -350,16 +349,10 @@ export default function NftsComponent({
   useEffect(() => {
     const actualList = listTab !== "onSale" ? orderNftsList : orderOnSaleList
     setCurrentOrderList(actualList)
-    setOrder(actualList[0].value)
+    setOrder(actualList[0])
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [listTab])
-
-  useEffect(() => {
-    if (currentOrderList.length > 0) {
-      setPlaceholder(currentOrderList[0].label);
-    }
-  }, [currentOrderList]);
 
   useEffect(() => {
     checkApi({ restart: true })
@@ -560,7 +553,7 @@ export default function NftsComponent({
           (listTab === "onSale" && saleDestinationTab === "buyNow" ? (", " + t("tabs.buyNow")) : "") +
           (search || searchQuery ? (", " + t("table.name") + ": " + (search || searchQuery)) : "") +
           (burnedPeriod ? (", " + t("table.burn-period") + ": " + burnedPeriod) : "") +
-          (order ? (", " + t("dropdown." + order, {ns: "nft-sort"})) : "")
+          (order ? (", " + t("dropdown." + order.value, {ns: "nft-sort"})) : "")
         }
         description={issuer || issuerQuery || search || t("nft-explorer.header")}
       />
@@ -591,13 +584,11 @@ export default function NftsComponent({
         <div className="filters-nav__wrap">
           <Select
             instanceId="dropdown"
-            placeholder={placeholder}
-            value={placeholder}
-            defaultValue={currentOrderList[0].value}
+            value={order}
+            defaultValue={currentOrderList[0]}
             options={currentOrderList}
             onChange={option => {
-              setOrder(option.value)
-              setPlaceholder(option.label)
+              setOrder(option)
             }}
             isSearchable={false}
             className="dropdown dropdown--desktop"
@@ -618,8 +609,8 @@ export default function NftsComponent({
           {currentOrderList.map((item, i) =>
             <li
               key={i}
-              style={{fontWeight: item.value === order ? 'bold' : 'normal'}}
-              onClick={() => hideMobileSortMenu(item.value)}>{item.label}</li>
+              style={{fontWeight: item.value === order.value ? 'bold' : 'normal'}}
+              onClick={() => hideMobileSortMenu(item)}>{item.label}</li>
           )}
         </ul>
       </div>
