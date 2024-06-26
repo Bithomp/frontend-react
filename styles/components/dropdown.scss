@@ -35,6 +35,7 @@ $phone-bp: 440px;
 
         li {
             padding: 5px 0;
+            width: fit-content;
         }
 
         @media(min-width: $phone-bp) {

@@ -103,6 +103,7 @@ export default function NftsComponent({
   const [currentOrderList, setCurrentOrderList] = useState(listTab !== "onSale" ? orderNftsList : orderOnSaleList)
   const [order, setOrder] = useState(currentOrderList[0].value)
   const [placeholder, setPlaceholder] = useState('');
+  const [sortMenuOpen, setSortMenuOpen] = useState(false);
 
   const controller = new AbortController()
 
@@ -479,18 +480,12 @@ export default function NftsComponent({
   }
 
   useEffect(() => {
-    filtersHide
-      ? document.body.classList.add('is-filters-hide')
-      : document.body.classList.remove('is-filters-hide');
+    document.body.style.overflow = window.matchMedia("(max-width: 1300px)").matches && filtersHide ? "hidden" : "";
   }, [filtersHide]);
-
-  const handleButtonClick = () => {
-    document.body.classList.toggle('is-sort-menu-open');
-  }
 
   const hideMobileSortMenu = (value) => {
     setOrder(value)
-    document.body.classList.remove('is-sort-menu-open');
+    setSortMenuOpen(false);
   }
 
   const issuerTaxonUrlPart = "?view=" + activeView + (rawData ? ("&issuer=" + usernameOrAddress(rawData, 'issuer') + (isValidTaxon(rawData.taxon) ? ("&taxon=" + rawData.taxon) : "")) : "");
@@ -590,7 +585,7 @@ export default function NftsComponent({
         </p>
       </>
     }
-    <div className="content-cols">
+    <div className={`content-cols${sortMenuOpen ? ' is-sort-menu-open' : ''}${filtersHide ? ' is-filters-hide' : ''}`}>
       <div className="filters-nav">
         <div className="filters-nav__wrap">
           <Select
@@ -607,7 +602,7 @@ export default function NftsComponent({
             className="dropdown dropdown--desktop"
             classNamePrefix="dropdown"
           />
-          <button className="dropdown-btn" onClick={handleButtonClick}>
+          <button className="dropdown-btn" onClick={() => setSortMenuOpen(!sortMenuOpen)}>
             <TbArrowsSort />
           </button>
           <ViewTogggle viewList={viewList} activeView={activeView} setActiveView={setActiveView} name='view' />
@@ -616,7 +611,7 @@ export default function NftsComponent({
       <div className="dropdown--mobile">
         <div className='dropdown__head'>
           <span>{t("heading", {ns: "nft-sort"})}</span>
-          <button onClick={() => document.body.classList.remove('is-sort-menu-open')}><IoMdClose /></button>
+          <button onClick={() => setSortMenuOpen(false)}><IoMdClose /></button>
         </div>
         <ul>
           {currentOrderList.map((item, i) =>

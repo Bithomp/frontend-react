@@ -6,10 +6,12 @@ $width: 340px;
     z-index: 3;
 
     @media(min-width: 1300px) {
-        border-right: 1px solid #ccc;
+        .content-cols:not(.is-filters-hide) & {
+            border-right: 1px solid #ccc;
 
-        body:not(.is-filters-hide) & + .content-text {
-            padding-left: $width + 35px !important;
+            & + .content-text {
+                padding-left: $width + 35px !important;
+            }
         }
 
         & + .content-text {
@@ -87,7 +89,7 @@ $width: 340px;
         }
     }
 
-    body.is-filters-hide & {
+    .content-cols.is-filters-hide & {
         @media(min-width: 1300px) {
             width: fit-content;
         }
@@ -181,7 +183,7 @@ $width: 340px;
         }
 
         @media(min-width: 1300px) {
-            body.is-filters-hide & {
+            .content-cols.is-filters-hide & {
                 display: none;
             }
         }
@@ -200,7 +202,7 @@ $width: 340px;
                 background: #000;
             }
 
-            body.is-filters-hide & {
+            .content-cols.is-filters-hide & {
                 transform: translateY(0);
             }
         }
@@ -250,11 +252,5 @@ $width: 340px;
         box-sizing: content-box;
         border: 1px solid var(--accent-icon);
         box-shadow: none;
-    }
-}
-
-body.is-filters-hide {
-    @media(max-width: 1300px) {
-        overflow: hidden;
     }
 }

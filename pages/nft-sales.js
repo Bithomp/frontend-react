@@ -123,6 +123,7 @@ export default function NftSales({
   const [dateAndTimeNow, setDateAndTimeNow] = useState('')
   const [search, setSearch] = useState(searchQuery)
   const [includeWithoutMediaData, setIncludeWithoutMediaData] = useState(includeWithoutMediaDataQuery)
+  const [sortMenuOpen, setSortMenuOpen] = useState(false);
 
   const controller = new AbortController()
 
@@ -450,18 +451,12 @@ export default function NftSales({
   }
 
   useEffect(() => {
-    filtersHide
-      ? document.body.classList.add('is-filters-hide')
-      : document.body.classList.remove('is-filters-hide');
+    document.body.style.overflow = window.matchMedia("(max-width: 1300px)").matches && filtersHide ? "hidden" : "";
   }, [filtersHide]);
-
-  const handleButtonClick = () => {
-    document.body.classList.toggle('is-sort-menu-open');
-  }
 
   const hideMobileSortMenu = (value) => {
     setOrder(value)
-    document.body.classList.remove('is-sort-menu-open');
+    setSortMenuOpen(false);
   }
 
   const scrollTop = () => {
@@ -497,7 +492,7 @@ export default function NftSales({
       <Link href={"/nft-explorer?view=" + activeView + issuerTaxonUrlPart}>{t("nft-explorer.header")}</Link>
     </p>
 
-    <div className="content-cols">
+    <div className={`content-cols${sortMenuOpen ? ' is-sort-menu-open' : ''}${filtersHide ? ' is-filters-hide' : ''}`}>
       <div className="filters-nav">
         <div className="filters-nav__wrap">
           <Select
@@ -510,7 +505,7 @@ export default function NftSales({
             className="dropdown dropdown--desktop"
             classNamePrefix="dropdown"
             />
-            <button className="dropdown-btn" onClick={handleButtonClick}>
+            <button className="dropdown-btn" onClick={() => setSortMenuOpen(!sortMenuOpen)}>
               <TbArrowsSort />
             </button>
           <ViewTogggle viewList={viewList} activeView={activeView} setActiveView={setActiveView} />
@@ -519,7 +514,7 @@ export default function NftSales({
       <div className="dropdown--mobile">
         <div className='dropdown__head'>
           <span>{t("heading", {ns: "nft-sort"})}</span>
-          <button onClick={() => document.body.classList.remove('is-sort-menu-open')}><IoMdClose /></button>
+          <button onClick={() => setSortMenuOpen(false)}><IoMdClose /></button>
         </div>
         <ul>
           {orderList.map((item, i) =>
