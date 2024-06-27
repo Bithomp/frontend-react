@@ -43,6 +43,7 @@ import ViewTogggle from './UI/ViewToggle'
 
 
 export default function NftsComponent({
+  orderQuery,
   view,
   list,
   saleDestination,
@@ -67,16 +68,16 @@ export default function NftsComponent({
   const windowWidth = useWidth()
 
   const orderNftsList = [
-    { value: 'mintedNew', label: t("dropdown.mintedNew", {ns: "nft-sort"}) },
-    { value: 'mintedOld', label: t("dropdown.mintedOld", {ns: "nft-sort"}) },
-    { value: 'rating', label: t("dropdown.rating", {ns: "nft-sort"}) }
+    { value: 'mintedNew', label: t("dropdown.mintedNew", { ns: "nft-sort" }) },
+    { value: 'mintedOld', label: t("dropdown.mintedOld", { ns: "nft-sort" }) },
+    { value: 'rating', label: t("dropdown.rating", { ns: "nft-sort" }) }
   ]
 
   const orderOnSaleList = [
-    { value: 'offerCreatedNew', label: t("dropdown.offerCreatedNew", {ns: "nft-sort"}) },
-    { value: 'offerCreatedOld', label: t("dropdown.offerCreatedOld", {ns: "nft-sort"}) },
-    { value: 'priceLow', label: t("dropdown.priceLow", {ns: "nft-sort"}) },
-    { value: 'priceHigh', label: t("dropdown.priceHigh", {ns: "nft-sort"}) }
+    { value: 'priceLow', label: t("dropdown.priceLow", { ns: "nft-sort" }) },
+    { value: 'priceHigh', label: t("dropdown.priceHigh", { ns: "nft-sort" }) },
+    { value: 'offerCreatedNew', label: t("dropdown.offerCreatedNew", { ns: "nft-sort" }) },
+    { value: 'offerCreatedOld', label: t("dropdown.offerCreatedOld", { ns: "nft-sort" }) }
   ]
 
   const [rendered, setRendered] = useState(false)
@@ -101,8 +102,8 @@ export default function NftsComponent({
   const [csvHeaders, setCsvHeaders] = useState([])
   const [nftCount, setNftCount] = useState(null)
   const [currentOrderList, setCurrentOrderList] = useState(listTab !== "onSale" ? orderNftsList : orderOnSaleList)
-  const [order, setOrder] = useState(currentOrderList[0].value)
-  const [placeholder, setPlaceholder] = useState('');
+  const [order, setOrder] = useState(orderQuery || currentOrderList[0].value)
+  const [choosenOrderOption, setChoosenOrderOption] = useState()
   const [sortMenuOpen, setSortMenuOpen] = useState(false);
 
   const controller = new AbortController()
@@ -120,6 +121,18 @@ export default function NftsComponent({
   }
 
   useEffect(() => {
+    let found = false
+    for (let i = 0; i < currentOrderList.length; i++) {
+      if (currentOrderList[i].value.toLowerCase() === order.toLowerCase()) {
+        setChoosenOrderOption(currentOrderList[i])
+        found = true
+        break
+      }
+    }
+    if (!found) {
+      setOrder(currentOrderList[0].value)
+      setChoosenOrderOption(currentOrderList[0])
+    }
     setRendered(true)
   }, [])
 
@@ -348,20 +361,6 @@ export default function NftsComponent({
   }
 
   useEffect(() => {
-    const actualList = listTab !== "onSale" ? orderNftsList : orderOnSaleList
-    setCurrentOrderList(actualList)
-    setOrder(actualList[0].value)
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [listTab])
-
-  useEffect(() => {
-    if (currentOrderList.length > 0) {
-      setPlaceholder(currentOrderList[0].label);
-    }
-  }, [currentOrderList]);
-
-  useEffect(() => {
     checkApi({ restart: true })
 
     return () => {
@@ -433,9 +432,32 @@ export default function NftsComponent({
       }
     ]
 
-    if (listTab !== 'onSale') {
+    if (listTab === 'onSale') {
+      tabsToSet.push({
+        tabList: saleDestinationTabList,
+        tab: saleDestinationTab,
+        defaultTab: "buyNow",
+        setTab: setSaleDestinationTab,
+        paramName: "saleDestination"
+      })
+      tabsToSet.push({
+        tabList: orderOnSaleList,
+        tab: order,
+        defaultTab: "priceLow",
+        setTab: setOrder,
+        paramName: "order"
+      })
+    } else {
+      queryRemoveList.push("saleDestination")
       queryRemoveList.push("saleCurrency")
       queryRemoveList.push("saleCurrencyIssuer")
+      tabsToSet.push({
+        tabList: orderNftsList,
+        tab: order,
+        defaultTab: "mintedNew",
+        setTab: setOrder,
+        paramName: "order"
+      })
     }
 
     if (includeBurned) {
@@ -481,8 +503,25 @@ export default function NftsComponent({
 
   useEffect(() => {
     // disable nft scrolling when filters are open on mobile/tablet
-    document.body.style.overflow = window.matchMedia("(max-width: 1300px)").matches && filtersHide ? "hidden" : "";
-  }, [filtersHide]);
+    document.body.style.overflow = window.matchMedia("(max-width: 1300px)").matches && filtersHide ? "hidden" : ""
+  }, [filtersHide])
+
+  useEffect(() => {
+    const actualList = listTab !== "onSale" ? orderNftsList : orderOnSaleList
+    setCurrentOrderList(actualList)
+
+    let newOrder = order || actualList[0].value
+
+    for (let i = 0; i < actualList.length; i++) {
+      if (actualList[i].value.toLowerCase() === newOrder.toLowerCase()) {
+        setChoosenOrderOption(actualList[i])
+        setOrder(actualList[i].value)
+        break
+      }
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [order, listTab])
 
   const hideMobileSortMenu = (value) => {
     setOrder(value)
@@ -560,7 +599,7 @@ export default function NftsComponent({
           (listTab === "onSale" && saleDestinationTab === "buyNow" ? (", " + t("tabs.buyNow")) : "") +
           (search || searchQuery ? (", " + t("table.name") + ": " + (search || searchQuery)) : "") +
           (burnedPeriod ? (", " + t("table.burn-period") + ": " + burnedPeriod) : "") +
-          (order ? (", " + t("dropdown." + order, {ns: "nft-sort"})) : "")
+          (order ? (", " + t("dropdown." + order, { ns: "nft-sort" })) : "")
         }
         description={issuer || issuerQuery || search || t("nft-explorer.header")}
       />
@@ -589,20 +628,19 @@ export default function NftsComponent({
     <div className={`content-cols${sortMenuOpen ? ' is-sort-menu-open' : ''}${filtersHide ? ' is-filters-hide' : ''}`}>
       <div className="filters-nav">
         <div className="filters-nav__wrap">
-          <Select
-            instanceId="dropdown"
-            placeholder={placeholder}
-            value={placeholder}
-            defaultValue={currentOrderList[0].value}
-            options={currentOrderList}
-            onChange={option => {
-              setOrder(option.value)
-              setPlaceholder(option.label)
-            }}
-            isSearchable={false}
-            className="dropdown dropdown--desktop"
-            classNamePrefix="dropdown"
-          />
+          {rendered &&
+            <Select
+              instanceId="dropdown"
+              value={choosenOrderOption}
+              options={currentOrderList}
+              onChange={option => {
+                setOrder(option.value)
+              }}
+              isSearchable={false}
+              className="dropdown dropdown--desktop"
+              classNamePrefix="dropdown"
+            />
+          }
           <button className="dropdown-btn" onClick={() => setSortMenuOpen(!sortMenuOpen)}>
             <TbArrowsSort />
           </button>
@@ -611,14 +649,14 @@ export default function NftsComponent({
       </div>
       <div className="dropdown--mobile">
         <div className='dropdown__head'>
-          <span>{t("heading", {ns: "nft-sort"})}</span>
+          <span>{t("heading", { ns: "nft-sort" })}</span>
           <button onClick={() => setSortMenuOpen(false)}><IoMdClose /></button>
         </div>
         <ul>
           {currentOrderList.map((item, i) =>
             <li
               key={i}
-              style={{fontWeight: item.value === order ? 'bold' : 'normal'}}
+              style={{ fontWeight: item.value === order ? 'bold' : 'normal' }}
               onClick={() => hideMobileSortMenu(item.value)}>{item.label}</li>
           )}
         </ul>

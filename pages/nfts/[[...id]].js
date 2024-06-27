@@ -6,7 +6,7 @@ import { getIsSsrMobile } from '../../utils/mobile'
 export const getServerSideProps = async (context) => {
   const { query, locale } = context
   const {
-    listNftsOrder,
+    order,
     view,
     list,
     saleDestination,
@@ -27,7 +27,7 @@ export const getServerSideProps = async (context) => {
   //key to refresh the component when Link pressed within the same route
   return {
     props: {
-      listNftsOrder: listNftsOrder || "mintedNew",
+      orderQuery: order || "",
       key: Math.random(),
       view: view || "tiles",
       list: list || "nfts",
@@ -52,7 +52,7 @@ export const getServerSideProps = async (context) => {
 }
 
 export default function Nfts({
-  listNftsOrder,
+  orderQuery,
   view,
   list,
   saleDestination,
@@ -72,7 +72,7 @@ export default function Nfts({
   account
 }) {
   return <NftsComponent
-    listNftsOrder={listNftsOrder}
+    orderQuery={orderQuery}
     view={view}
     list={list}
     saleDestination={saleDestination}
