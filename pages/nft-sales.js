@@ -6,12 +6,12 @@ import { CSVLink } from "react-csv"
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import Link from 'next/link'
-import Select from 'react-select'
 
 import RadioOptions from '../components/UI/RadioOptions'
 import FormInput from '../components/UI/FormInput'
 import CheckBox from '../components/UI/CheckBox'
 import ViewTogggle from '../components/UI/ViewToggle'
+import SimpleSelect from '../components/UI/simpleSelect'
 
 import { IoMdClose } from "react-icons/io";
 import { BsFilter } from "react-icons/bs";
@@ -529,17 +529,7 @@ export default function NftSales({
     <div className={`content-cols${sortMenuOpen ? ' is-sort-menu-open' : ''}${filtersHide ? ' is-filters-hide' : ''}`}>
       <div className="filters-nav">
         <div className="filters-nav__wrap">
-          {rendered &&
-            <Select
-              instanceId="dropdown"
-              value={choosenOrderOption}
-              options={orderList}
-              onChange={option => setOrder(option.value)}
-              isSearchable={false}
-              className="dropdown dropdown--desktop"
-              classNamePrefix="dropdown"
-            />
-          }
+          <SimpleSelect setValue={setOrder} optionsList={orderList} choosenOption={choosenOrderOption} />
           <button className="dropdown-btn" onClick={() => setSortMenuOpen(!sortMenuOpen)}>
             <TbArrowsSort />
           </button>

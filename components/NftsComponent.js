@@ -5,7 +5,6 @@ import { CSVLink } from "react-csv"
 import axios from 'axios'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import Link from 'next/link'
-import Select from 'react-select'
 
 import { IoMdClose } from "react-icons/io";
 import { BsFilter } from "react-icons/bs";
@@ -40,7 +39,7 @@ import RadioOptions from './UI/RadioOptions'
 import FormInput from './UI/FormInput'
 import AddressInput from './UI/AddressInput'
 import ViewTogggle from './UI/ViewToggle'
-
+import SimpleSelect from './UI/simpleSelect'
 
 export default function NftsComponent({
   orderQuery,
@@ -628,19 +627,7 @@ export default function NftsComponent({
     <div className={`content-cols${sortMenuOpen ? ' is-sort-menu-open' : ''}${filtersHide ? ' is-filters-hide' : ''}`}>
       <div className="filters-nav">
         <div className="filters-nav__wrap">
-          {rendered &&
-            <Select
-              instanceId="dropdown"
-              value={choosenOrderOption}
-              options={currentOrderList}
-              onChange={option => {
-                setOrder(option.value)
-              }}
-              isSearchable={false}
-              className="dropdown dropdown--desktop"
-              classNamePrefix="dropdown"
-            />
-          }
+          <SimpleSelect setValue={setOrder} optionsList={currentOrderList} choosenOption={choosenOrderOption} />
           <button className="dropdown-btn" onClick={() => setSortMenuOpen(!sortMenuOpen)}>
             <TbArrowsSort />
           </button>
