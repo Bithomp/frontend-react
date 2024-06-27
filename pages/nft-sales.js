@@ -103,13 +103,6 @@ export default function NftSales({
   const router = useRouter()
   const windowWidth = useWidth()
 
-  const orderList = [
-    { value: 'priceHigh', label: t("dropdown.priceHigh", {ns: "nft-sort"}) },
-    { value: 'priceLow', label: t("dropdown.priceLow", {ns: "nft-sort"}) },
-    { value: 'soldNew', label: t("dropdown.soldNew", {ns: "nft-sort"}) },
-    { value: 'soldOld', label: t("dropdown.soldOld", {ns: "nft-sort"}) }
-  ]
-
   const [rendered, setRendered] = useState(false)
   const [data, setData] = useState(null)
   const [sales, setSales] = useState([])
@@ -121,7 +114,7 @@ export default function NftSales({
   const [taxon, setTaxon] = useState(taxonQuery)
   const [total, setTotal] = useState({})
   const [period, setPeriod] = useState(periodQuery)
-  const [order, setOrder] = useState(orderList[0])
+  const [order, setOrder] = useState("priceHigh")
   const [hasMore, setHasMore] = useState("first")
   const [buyer, setBuyer] = useState(buyerQuery)
   const [seller, setSeller] = useState(sellerQuery)
@@ -153,6 +146,13 @@ export default function NftSales({
     { value: 'all', label: t("tabs.primaryAndSecondary-sales") },
     { value: 'secondary', label: (t("tabs.secondary-sales") + (total?.secondary ? (" (" + total.secondary + ")") : "")) },
     { value: 'primary', label: (t("tabs.primary-sales") + (total?.primary ? (" (" + total.primary + ")") : "")) }
+  ]
+
+  const orderList = [
+    { value: 'priceHigh', label: t("dropdown.priceHigh", {ns: "nft-sort"}) },
+    { value: 'priceLow', label: t("dropdown.priceLow", {ns: "nft-sort"}) },
+    { value: 'soldNew', label: t("dropdown.soldNew", {ns: "nft-sort"}) },
+    { value: 'soldOld', label: t("dropdown.soldOld", {ns: "nft-sort"}) }
   ]
 
   const checkApi = async (options) => {
@@ -192,7 +192,7 @@ export default function NftSales({
     }
 
     if (!order) {
-      setOrder(orderList[0])
+      setOrder(orderList[0].value)
     }
 
     if (marker === "first") {
@@ -212,7 +212,7 @@ export default function NftSales({
     let nftTypeName = xahauNetwork ? 'uritoken' : 'nft'
 
     const response = await axios(
-      'v2/' + nftTypeName + '-sales?order=' + order?.value + currencyUrlPart() + '&saleType=' + saleTab + collectionUrlPart + periodUrlPart + markerUrlPart
+      'v2/' + nftTypeName + '-sales?order=' + order + currencyUrlPart() + '&saleType=' + saleTab + collectionUrlPart + periodUrlPart + markerUrlPart
       + "&convertCurrencies=" + sortCurrency + "&sortCurrency=" + sortCurrency + marketplaceUrlPart + buyerUrlPart + sellerUrlPart + searchPart + hasImagePart,
       {
         signal: controller.signal
@@ -498,9 +498,10 @@ export default function NftSales({
         <div className="filters-nav__wrap">
           <Select
             instanceId="dropdown"
-            defaultValue={orderList[0]}
+            placeholder={orderList[0].label}
+            defaultValue={orderList[0].value}
             options={orderList}
-            onChange={option => setOrder(option)}
+            onChange={option => setOrder(option.value)}
             isSearchable={false}
             className="dropdown dropdown--desktop"
             classNamePrefix="dropdown"
@@ -520,8 +521,8 @@ export default function NftSales({
           {orderList.map((item, i) =>
             <li
               key={i}
-              style={{fontWeight: item.value === order.value ? 'bold' : 'normal'}}
-              onClick={() => hideMobileSortMenu(item)}>{item.label}</li>
+              style={{fontWeight: item.value === order ? 'bold' : 'normal'}}
+              onClick={() => hideMobileSortMenu(item.value)}>{item.label}</li>
           )}
         </ul>
       </div>
