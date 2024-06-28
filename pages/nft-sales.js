@@ -60,7 +60,7 @@ export const getServerSideProps = async (context) => {
       currencyIssuer: currencyIssuer || "",
       issuerQuery: issuer || "",
       taxonQuery: taxon || "",
-      periodQuery: period || (xahauNetwork ? "month" : "week"),
+      periodQuery: period || (xahauNetwork ? "year" : "week"),
       sortCurrencyQuery: sortCurrency || "",
       marketplace: marketplace || "",
       buyerQuery: buyer || "",
