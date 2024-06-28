@@ -5,8 +5,8 @@
     "priceLow": "Price low to high",
     "soldNew": "Recent sales",
     "soldOld": "Oldest sales",
-    "mintedNew": "Latest",
-    "mintedOld": "Oldest",
+    "mintedNew": "Latest mints",
+    "mintedOld": "Oldest mints",
     "rating": "Most viewed",
     "offerCreatedNew": "Newest offers",
     "offerCreatedOld": "Oldest offers"
