@@ -101,8 +101,7 @@ export default function NftsComponent({
   const [csvHeaders, setCsvHeaders] = useState([])
   const [nftCount, setNftCount] = useState(null)
   const [currentOrderList, setCurrentOrderList] = useState(listTab !== "onSale" ? orderNftsList : orderOnSaleList)
-  const [order, setOrder] = useState(orderQuery || currentOrderList[0].value)
-  const [choosenOrderOption, setChoosenOrderOption] = useState()
+  const [order, setOrder] = useState(orderQuery)
   const [sortMenuOpen, setSortMenuOpen] = useState(false);
 
   const controller = new AbortController()
@@ -120,18 +119,6 @@ export default function NftsComponent({
   }
 
   useEffect(() => {
-    let found = false
-    for (let i = 0; i < currentOrderList.length; i++) {
-      if (currentOrderList[i].value.toLowerCase() === order.toLowerCase()) {
-        setChoosenOrderOption(currentOrderList[i])
-        found = true
-        break
-      }
-    }
-    if (!found) {
-      setOrder(currentOrderList[0].value)
-      setChoosenOrderOption(currentOrderList[0])
-    }
     setRendered(true)
   }, [])
 
@@ -508,19 +495,8 @@ export default function NftsComponent({
   useEffect(() => {
     const actualList = listTab !== "onSale" ? orderNftsList : orderOnSaleList
     setCurrentOrderList(actualList)
-
-    let newOrder = order || actualList[0].value
-
-    for (let i = 0; i < actualList.length; i++) {
-      if (actualList[i].value.toLowerCase() === newOrder.toLowerCase()) {
-        setChoosenOrderOption(actualList[i])
-        setOrder(actualList[i].value)
-        break
-      }
-    }
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [order, listTab])
+  }, [listTab])
 
   const hideMobileSortMenu = (value) => {
     setOrder(value)
@@ -627,7 +603,7 @@ export default function NftsComponent({
     <div className={`content-cols${sortMenuOpen ? ' is-sort-menu-open' : ''}${filtersHide ? ' is-filters-hide' : ''}`}>
       <div className="filters-nav">
         <div className="filters-nav__wrap">
-          <SimpleSelect setValue={setOrder} optionsList={currentOrderList} choosenOption={choosenOrderOption} />
+          <SimpleSelect value={order} setValue={setOrder} optionsList={currentOrderList} />
           <button className="dropdown-btn" onClick={() => setSortMenuOpen(!sortMenuOpen)}>
             <TbArrowsSort />
           </button>

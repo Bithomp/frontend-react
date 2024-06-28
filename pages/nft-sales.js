@@ -115,7 +115,6 @@ export default function NftSales({
   const [total, setTotal] = useState({})
   const [period, setPeriod] = useState(periodQuery)
   const [order, setOrder] = useState(orderQuery)
-  const [choosenOrderOption, setChoosenOrderOption] = useState()
   const [hasMore, setHasMore] = useState("first")
   const [buyer, setBuyer] = useState(buyerQuery)
   const [seller, setSeller] = useState(sellerQuery)
@@ -142,34 +141,8 @@ export default function NftSales({
     const time = new Date(Date.now()).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })
     setDateAndTimeNow(date + ' at ' + time)
     setRendered(true)
-
-    let found = false
-    for (let i = 0; i < orderList.length; i++) {
-      if (orderList[i].value.toLowerCase() === order.toLowerCase()) {
-        setChoosenOrderOption(orderList[i])
-        found = true
-        break
-      }
-    }
-    if (!found) {
-      setOrder(orderList[0].value)
-      setChoosenOrderOption(orderList[0])
-    }
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
-
-  useEffect(() => {
-    let newOrder = order || orderList[0].value
-    for (let i = 0; i < orderList.length; i++) {
-      if (orderList[i].value.toLowerCase() === newOrder.toLowerCase()) {
-        setChoosenOrderOption(orderList[i])
-        setOrder(orderList[i].value)
-        break
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [order])
 
   const viewList = [
     { value: 'tiles', label: t("tabs.tiles") },
@@ -216,10 +189,6 @@ export default function NftSales({
       if (isValidTaxon(taxon)) {
         collectionUrlPart += '&taxon=' + taxon
       }
-    }
-
-    if (!order) {
-      setOrder(orderList[0].value)
     }
 
     if (marker === "first") {
@@ -491,7 +460,7 @@ export default function NftSales({
 
   const hideMobileSortMenu = (value) => {
     setOrder(value)
-    setSortMenuOpen(false);
+    setSortMenuOpen(false)
   }
 
   const scrollTop = () => {
@@ -529,7 +498,7 @@ export default function NftSales({
     <div className={`content-cols${sortMenuOpen ? ' is-sort-menu-open' : ''}${filtersHide ? ' is-filters-hide' : ''}`}>
       <div className="filters-nav">
         <div className="filters-nav__wrap">
-          <SimpleSelect setValue={setOrder} optionsList={orderList} choosenOption={choosenOrderOption} />
+          <SimpleSelect value={order} setValue={setOrder} optionsList={orderList} />
           <button className="dropdown-btn" onClick={() => setSortMenuOpen(!sortMenuOpen)}>
             <TbArrowsSort />
           </button>
