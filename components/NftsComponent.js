@@ -39,7 +39,7 @@ import RadioOptions from './UI/RadioOptions'
 import FormInput from './UI/FormInput'
 import AddressInput from './UI/AddressInput'
 import ViewTogggle from './UI/ViewToggle'
-import SimpleSelect from './UI/simpleSelect'
+import SimpleSelect from './UI/SimpleSelect'
 
 export default function NftsComponent({
   orderQuery,

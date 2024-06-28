@@ -11,7 +11,7 @@ import RadioOptions from '../components/UI/RadioOptions'
 import FormInput from '../components/UI/FormInput'
 import CheckBox from '../components/UI/CheckBox'
 import ViewTogggle from '../components/UI/ViewToggle'
-import SimpleSelect from '../components/UI/simpleSelect'
+import SimpleSelect from '../components/UI/SimpleSelect'
 
 import { IoMdClose } from "react-icons/io";
 import { BsFilter } from "react-icons/bs";
