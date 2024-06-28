@@ -620,7 +620,10 @@ export default function NftsComponent({
             <li
               key={i}
               style={{ fontWeight: item.value === order ? 'bold' : 'normal' }}
-              onClick={() => hideMobileSortMenu(item.value)}>{item.label}</li>
+              onClick={() => hideMobileSortMenu(item.value)}
+            >
+              {item.label}
+            </li>
           )}
         </ul>
       </div>
