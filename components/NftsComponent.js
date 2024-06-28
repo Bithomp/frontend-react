@@ -245,13 +245,18 @@ export default function NftsComponent({
         signal: controller.signal
       }
     ).catch(error => {
-      setErrorMessage(t("error." + error.message))
+      if (error) {
+        if (error && error.message !== "canceled") {
+          setErrorMessage(t("error." + error.message))
+          setLoading(false)
+        }
+      }
     })
 
-    setLoading(false)
     const newdata = response?.data
 
     if (newdata) {
+      setLoading(false)
       setRawData(newdata)
       if (newdata.error) {
         setErrorMessage(t("error-api." + newdata.error))
