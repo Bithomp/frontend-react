@@ -5,7 +5,6 @@
   "nft-id-decoded-data": "NFT ID decoded data",
   "nft-not-found-on-that-network": "This NFT wasn't found on the <1>{{network}}</1> network.",
   "table": {
-    "uri": "URI",
     "digest": "Digest",
     "attention": "Pozornost",
     "attention-texts": {

@@ -470,7 +470,7 @@ export default function Account({ pageMeta, refreshPage, id, selectedCurrency, l
                                 </>
                               }
                               {data?.ledgerInfo?.lastSubmittedTxHash &&
-                                <Link href={"/explorer/" + data.ledgerInfo.lastSubmittedTxHash}> <LinkIcon /></Link>
+                                <a href={"/explorer/" + data.ledgerInfo.lastSubmittedTxHash}> <LinkIcon /></a>
                               }
                             </td>
                             :

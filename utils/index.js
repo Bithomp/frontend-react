@@ -5,6 +5,15 @@ import { decodeAccountID, isValidClassicAddress } from 'ripple-address-codec'
 import { useTranslation } from 'next-i18next'
 import countries from "i18n-iso-countries"
 
+export const periodDescription = (periodName) => {
+  if (periodName?.includes("..")) {
+    const periodParts = periodName.split("..")
+    return "from " + new Date(periodParts[0]).toLocaleString() + " to " + new Date(periodParts[1]).toLocaleString()
+  } else {
+    return periodName
+  }
+}
+
 export const useSubscriptionExpired = () => {
   const [proExpire, setProExpire] = useState("")
   useEffect(() => {

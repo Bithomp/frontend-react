@@ -374,6 +374,7 @@
     "day": "Für die letzten 24 Stunden"
   },
   "table": {
+    "uri": "URI",
     "mints": "Mints",
     "view": "View",
     "period": "Periode",

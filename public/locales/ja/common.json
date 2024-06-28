@@ -374,6 +374,7 @@
     "day": "直近24時間"
   },
   "table": {
+    "uri": "URI",
     "mints": "Mints",
     "view": "View",
     "period": "Period",

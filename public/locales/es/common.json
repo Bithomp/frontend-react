@@ -374,6 +374,7 @@
     "day": "Para los últimas 24 horas"
   },
   "table": {
+    "uri": "URI",
     "mints": "Acuñaciones",
     "view": "View",
     "period": "Periodo",

@@ -10,7 +10,7 @@ import { IoMdClose } from "react-icons/io";
 import { BsFilter } from "react-icons/bs";
 import { TbArrowsSort } from "react-icons/tb";
 
-import { isAddressOrUsername, setTabParams, useWidth, xahauNetwork, capitalizeFirstLetter } from '../utils'
+import { isAddressOrUsername, setTabParams, useWidth, xahauNetwork, capitalizeFirstLetter, periodDescription } from '../utils'
 import {
   isValidTaxon,
   nftThumbnail,
@@ -111,7 +111,8 @@ export default function NftsComponent({
     { label: t("table.issuer"), key: "issuer" },
     { label: t("table.taxon"), key: "nftokenTaxon" },
     { label: t("table.serial"), key: "sequence" },
-    { label: t("table.name"), key: "metadata.name" }
+    { label: t("table.name"), key: "metadata.name" },
+    { label: t("table.uri"), key: "url" }
   ]
 
   if (nftExplorer) {
@@ -469,9 +470,16 @@ export default function NftsComponent({
       queryRemoveList.push("includeWithoutMediaData")
     }
 
+    if (mintedPeriod) {
+      queryAddList.push({
+        name: "mintedPeriod",
+        value: mintedPeriod
+      })
+    }
+
     setTabParams(router, tabsToSet, queryAddList, queryRemoveList)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeView, order, rawData, listTab, saleDestinationTab, includeBurned, includeWithoutMediaData])
+  }, [activeView, order, rawData, listTab, saleDestinationTab, includeBurned, includeWithoutMediaData, mintedPeriod])
 
   const onTaxonInput = value => {
     if (/^\d+$/.test(value) && issuer && isValidTaxon(value)) {
@@ -581,7 +589,10 @@ export default function NftsComponent({
           (burnedPeriod ? (", " + t("table.burn-period") + ": " + burnedPeriod) : "") +
           (order ? (", " + t("dropdown." + order, { ns: "nft-sort" })) : "")
         }
-        description={issuer || issuerQuery || search || t("nft-explorer.header")}
+        description={
+          (issuer || issuerQuery || search || t("nft-explorer.header")) +
+          ((rendered && mintedPeriod) ? (", " + t("table.mint-period") + ": " + periodDescription(mintedPeriod)) : "")
+        }
       />
       :
       <>

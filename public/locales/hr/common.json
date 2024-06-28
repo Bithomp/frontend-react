@@ -374,6 +374,7 @@
     "day": "Za zadnja 24 sata"
   },
   "table": {
+    "uri": "URI",
     "mints": "Mints",
     "view": "View",
     "period": "Period",
