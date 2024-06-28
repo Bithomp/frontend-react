@@ -95,7 +95,8 @@ export default function Tiles({ nftList, type = 'name', convertCurrency, account
     </div>
   }
 
-  if (type === 'top' || type === 'last') {
+
+  if (type === 'priceHigh' || type === 'priceLow' || type === 'soldNew' || type === 'soldOld') {
     return <div className='tiles'>
       <div className="grid">
         <ul className="hexGrid">

@@ -311,8 +311,7 @@
     "viewer": "Просмотрщик",
     "developer-mode": "Режим разработчика",
     "search": "Поиск",
-    "loaded": "Загружено",
-    "show": "Показать"
+    "loaded": "Загружено"
   },
   "form": {
     "error": {
@@ -496,8 +495,6 @@
     "secondary-sales": "Вторичные",
     "primary-sales": "Первичные",
     "primaryAndSecondary-sales": "Все",
-    "top-sales": "ТОП",
-    "latest-sales": "Последние",
     "all-time": "Все время",
     "year": "365 дней",
     "month": "30 дней",

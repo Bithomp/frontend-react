@@ -11,9 +11,11 @@ import RadioOptions from '../components/UI/RadioOptions'
 import FormInput from '../components/UI/FormInput'
 import CheckBox from '../components/UI/CheckBox'
 import ViewTogggle from '../components/UI/ViewToggle'
+import SimpleSelect from '../components/UI/simpleSelect'
 
 import { IoMdClose } from "react-icons/io";
 import { BsFilter } from "react-icons/bs";
+import { TbArrowsSort } from "react-icons/tb";
 
 import { stripText, isAddressOrUsername, setTabParams, useWidth, xahauNetwork, nativeCurrency } from '../utils'
 import { getIsSsrMobile } from '../utils/mobile'
@@ -32,9 +34,9 @@ import {
 export const getServerSideProps = async (context) => {
   const { query, locale } = context
   const {
+    order,
     view,
     sale,
-    list,
     currency,
     currencyIssuer,
     issuer,
@@ -51,9 +53,9 @@ export const getServerSideProps = async (context) => {
   return {
     props: {
       key: Math.random(),
+      orderQuery: order || "priceHigh",
       view: view || "tiles",
       sale: sale || "all",
-      list: list || "top",
       currency: currency || "",
       currencyIssuer: currencyIssuer || "",
       issuerQuery: issuer || "",
@@ -66,7 +68,7 @@ export const getServerSideProps = async (context) => {
       searchQuery: search || "",
       includeWithoutMediaDataQuery: includeWithoutMediaData || false,
       isSsrMobile: getIsSsrMobile(context),
-      ...(await serverSideTranslations(locale, ['common'])),
+      ...(await serverSideTranslations(locale, ['common', 'nft-sort'])),
     },
   }
 }
@@ -80,9 +82,9 @@ import DownloadIcon from "../public/images/download.svg"
 import AddressInput from '../components/UI/AddressInput'
 
 export default function NftSales({
+  orderQuery,
   view,
   sale,
-  list,
   currency,
   currencyIssuer,
   issuerQuery,
@@ -97,7 +99,7 @@ export default function NftSales({
   searchQuery,
   includeWithoutMediaDataQuery
 }) {
-  const { t } = useTranslation()
+  const { t } = useTranslation(['common', 'nft-sort'])
   const router = useRouter()
   const windowWidth = useWidth()
 
@@ -112,7 +114,7 @@ export default function NftSales({
   const [taxon, setTaxon] = useState(taxonQuery)
   const [total, setTotal] = useState({})
   const [period, setPeriod] = useState(periodQuery)
-  const [pageTab, setPageTab] = useState(list)
+  const [order, setOrder] = useState(orderQuery)
   const [hasMore, setHasMore] = useState("first")
   const [buyer, setBuyer] = useState(buyerQuery)
   const [seller, setSeller] = useState(sellerQuery)
@@ -121,10 +123,18 @@ export default function NftSales({
   const [dateAndTimeNow, setDateAndTimeNow] = useState('')
   const [search, setSearch] = useState(searchQuery)
   const [includeWithoutMediaData, setIncludeWithoutMediaData] = useState(includeWithoutMediaDataQuery)
+  const [sortMenuOpen, setSortMenuOpen] = useState(false)
 
   const controller = new AbortController()
 
   const sortCurrency = sortCurrencyQuery.toLowerCase() || selectedCurrency
+
+  const orderList = [
+    { value: 'priceHigh', label: t("dropdown.priceHigh", { ns: "nft-sort" }) },
+    { value: 'priceLow', label: t("dropdown.priceLow", { ns: "nft-sort" }) },
+    { value: 'soldNew', label: t("dropdown.soldNew", { ns: "nft-sort" }) },
+    { value: 'soldOld', label: t("dropdown.soldOld", { ns: "nft-sort" }) }
+  ]
 
   useEffect(() => {
     const date = new Date(Date.now()).toLocaleDateString([], { year: 'numeric', month: 'short', day: '2-digit' })
@@ -143,11 +153,6 @@ export default function NftSales({
     { value: 'all', label: t("tabs.primaryAndSecondary-sales") },
     { value: 'secondary', label: (t("tabs.secondary-sales") + (total?.secondary ? (" (" + total.secondary + ")") : "")) },
     { value: 'primary', label: (t("tabs.primary-sales") + (total?.primary ? (" (" + total.primary + ")") : "")) }
-  ]
-
-  const pageTabList = [
-    { value: 'top', label: t("tabs.top-sales") },
-    { value: 'last', label: t("tabs.latest-sales") }
   ]
 
   const checkApi = async (options) => {
@@ -184,11 +189,6 @@ export default function NftSales({
       if (isValidTaxon(taxon)) {
         collectionUrlPart += '&taxon=' + taxon
       }
-    }
-
-    let order = 'priceHigh'
-    if (pageTab === 'last') {
-      order = 'soldNew'
     }
 
     if (marker === "first") {
@@ -292,7 +292,7 @@ export default function NftSales({
     saleTab,
     issuer,
     taxon,
-    pageTab,
+    order,
     sortCurrency,
     period,
     buyer,
@@ -376,11 +376,11 @@ export default function NftSales({
         paramName: "view"
       },
       {
-        tabList: pageTabList,
-        tab: pageTab,
-        defaultTab: "top",
-        setTab: setPageTab,
-        paramName: "list"
+        tabList: orderList,
+        tab: order,
+        defaultTab: "priceHigh",
+        setTab: setOrder,
+        paramName: "order"
       }
     ],
       queryAddList,
@@ -388,7 +388,7 @@ export default function NftSales({
     )
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeView, saleTab, data, currency, currencyIssuer, pageTab, period, includeWithoutMediaData])
+  }, [activeView, saleTab, data, currency, currencyIssuer, period, includeWithoutMediaData])
 
   const checkIssuerValue = e => {
     if (isAddressOrUsername(e)) {
@@ -455,10 +455,14 @@ export default function NftSales({
   }
 
   useEffect(() => {
-    filtersHide
-      ? document.body.classList.add('is-filters-hide')
-      : document.body.classList.remove('is-filters-hide');
+    // disable nft scrolling when filters are open on mobile/tablet
+    document.body.style.overflow = window.matchMedia("(max-width: 1300px)").matches && filtersHide ? "hidden" : "";
   }, [filtersHide]);
+
+  const hideMobileSortMenu = (value) => {
+    setOrder(value)
+    setSortMenuOpen(false)
+  }
 
   const scrollTop = () => {
     if (window) {
@@ -474,7 +478,6 @@ export default function NftSales({
         'NFT '
         + (saleTab === 'secondary' ? t("tabs.secondary-sales") : "")
         + (saleTab === 'primary' ? t("tabs.primary-sales") : "")
-        + " " + (list === "top" ? t("tabs.top-sales") : t("tabs.latest-sales"))
         + (issuer ? (" " + issuer) : issuerQuery)
         + (buyer ? (" " + t("tabs.buyer") + ": " + buyer) : buyerQuery)
         + (seller ? (" " + t("tabs.seller") + ": " + seller) : sellerQuery)
@@ -493,9 +496,29 @@ export default function NftSales({
       <Link href={"/nft-explorer?view=" + activeView + issuerTaxonUrlPart}>{t("nft-explorer.header")}</Link>
     </p>
 
-    <div className="content-cols">
+    <div className={`content-cols${sortMenuOpen ? ' is-sort-menu-open' : ''}${filtersHide ? ' is-filters-hide' : ''}`}>
       <div className="filters-nav">
-        <ViewTogggle viewList={viewList} activeView={activeView} setActiveView={setActiveView} />
+        <div className="filters-nav__wrap">
+          <SimpleSelect value={order} setValue={setOrder} optionsList={orderList} />
+          <button className="dropdown-btn" onClick={() => setSortMenuOpen(!sortMenuOpen)}>
+            <TbArrowsSort />
+          </button>
+          <ViewTogggle viewList={viewList} activeView={activeView} setActiveView={setActiveView} />
+        </div>
+      </div>
+      <div className="dropdown--mobile">
+        <div className='dropdown__head'>
+          <span>{t("heading", { ns: "nft-sort" })}</span>
+          <button onClick={() => setSortMenuOpen(false)}><IoMdClose /></button>
+        </div>
+        <ul>
+          {orderList.map((item, i) =>
+            <li
+              key={i}
+              style={{ fontWeight: item.value === order ? 'bold' : 'normal' }}
+              onClick={() => hideMobileSortMenu(item.value)}>{item.label}</li>
+          )}
+        </ul>
       </div>
       <div className="filters">
         <div className="filters__box">
@@ -565,11 +588,6 @@ export default function NftSales({
                 minDate="nft"
                 radio={true}
               />
-            </div>
-
-            <div>
-              {t("general.show")}
-              <RadioOptions tabList={pageTabList} tab={pageTab} setTab={setPageTab} name='page' />
             </div>
 
             <div>
@@ -655,7 +673,6 @@ export default function NftSales({
                     }
                   </tbody>
                 </table>
-
                 :
                 <table className="table-mobile">
                   <tbody>
@@ -714,7 +731,7 @@ export default function NftSales({
                   {errorMessage ?
                     <div className='center orange bold'>{errorMessage}</div>
                     :
-                    <Tiles nftList={sales} type={pageTab} convertCurrency={sortCurrency} account={account} />
+                    <Tiles nftList={sales} type={order} convertCurrency={sortCurrency} account={account} />
                   }
                 </>
               }

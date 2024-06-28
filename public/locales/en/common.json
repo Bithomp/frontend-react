@@ -311,8 +311,7 @@
     "viewer": "Viewer",
     "developer-mode": "Developer mode",
     "search": "Search",
-    "loaded": "Loaded",
-    "show": "Show"
+    "loaded": "Loaded"
   },
   "form": {
     "error": {
@@ -496,8 +495,6 @@
     "secondary-sales": "Secondary",
     "primary-sales": "Primary",
     "primaryAndSecondary-sales": "All sales",
-    "top-sales": "TOP sales",
-    "latest-sales": "Latest sales",
     "all-time": "All time",
     "year": "365 days",
     "month": "30 days",

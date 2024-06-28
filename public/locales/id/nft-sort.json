@@ -1,0 +1,14 @@
+{
+    "heading": "Sort by:",
+    "dropdown": {
+        "priceHigh": "Highest price to lower price",
+        "priceLow": "Lowest  price to high price",
+        "soldNew": "Recent sales",
+        "soldOld": "Oldest sales",
+        "mintedNew": "Latest",
+        "mintedOld": "Oldest",
+        "rating": "Most Popular",
+        "offerCreatedNew": "Newest Offers",
+        "offerCreatedOld": "Oldest Offers"
+    }
+}

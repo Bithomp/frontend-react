@@ -311,8 +311,7 @@
     "viewer": "Vista",
     "developer-mode": "Modo desarrollador",
     "search": "Search",
-    "loaded": "Loaded",
-    "show": "Show"
+    "loaded": "Loaded"
   },
   "form": {
     "error": {
@@ -496,8 +495,6 @@
     "secondary-sales": "Secundario",
     "primary-sales": "Primario",
     "primaryAndSecondary-sales": "Todas las ventas",
-    "top-sales": "TOP ventas",
-    "latest-sales": "Últimas ventas",
     "all-time": "Desde siempre",
     "year": "365 días",
     "month": "30 días",

@@ -311,8 +311,7 @@
     "viewer": "Preglednik",
     "developer-mode": "Developer mode",
     "search": "Search",
-    "loaded": "Loaded",
-    "show": "Show"
+    "loaded": "Loaded"
   },
   "form": {
     "error": {
@@ -496,8 +495,6 @@
     "secondary-sales": "Sekundarne",
     "primary-sales": "Primarne",
     "primaryAndSecondary-sales": "Sve prodaje",
-    "top-sales": "TOP prodaje",
-    "latest-sales": "Zadnje prodaje",
     "all-time": "Sve vrijeme",
     "year": "365 dana",
     "month": "30 dana",
