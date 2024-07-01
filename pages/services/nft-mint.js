@@ -245,6 +245,9 @@ export default function NftMint({ setSignRequest, uriQuery, digestQuery }) {
 
   const checkDigest = async metadata => {
     if (!metadata) return
+    if (typeof metadata === 'string') {
+      metadata = JSON.parse(metadata)
+    }
     let ourDigest = await sha512(JSON.stringify(metadata)?.trim())
     ourDigest = ourDigest.toString().slice(0, 64)
     setDigest(ourDigest.toUpperCase())

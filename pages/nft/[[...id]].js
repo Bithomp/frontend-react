@@ -112,6 +112,9 @@ export default function Nft({
   useEffect(() => {
     if (!data || !hasJsonMeta(data) || !data.digest) return
     const checkDigest = async (metadata, digest) => {
+      if (typeof metadata === 'string') {
+        metadata = JSON.parse(metadata)
+      }
       let ourDigest = await sha512(JSON.stringify(metadata)?.trim())
       ourDigest = ourDigest.toString().slice(0, 64)
       setIsValidDigest(digest?.toUpperCase() === ourDigest?.toUpperCase())
@@ -1052,7 +1055,7 @@ export default function Nft({
                         {trWithFlags(t, data.flags)}
                         {!notFoundInTheNetwork &&
                           <tr>
-                            <td>{t("table.uri", { ns: 'nft' })}</td>
+                            <td>{t("table.uri")}</td>
                             <td>
                               {data.uri ?
                                 <>
