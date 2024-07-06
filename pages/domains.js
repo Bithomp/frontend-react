@@ -114,7 +114,7 @@ export default function Domains({ setSignRequest }) {
           </p>
           <p>
             <Trans i18nKey="toml-editor" ns="domains">
-              <a href="https://dallipay.com/xrpltomleditor/">TOML editor</a> by <a href="https://twitter.com/SchlaubiD">SchlaubiD</a>.
+              <a href="https://dallipay.com/xrpltomleditor/">TOML editor</a> by <a href="https://x.com/SchlaubiD">SchlaubiD</a>.
             </Trans>
           </p>
         </div>

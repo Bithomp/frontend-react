@@ -152,7 +152,7 @@ export default function Validators({ amendment }) {
   const twitterLink = twitter => {
     if (!twitter) return ""
     twitter = twitter.replace("@", "")
-    return <a href={"https://twitter.com/" + twitter}>
+    return <a href={"https://x.com/" + twitter}>
       {" "}
       <span className='tooltip'>
         <svg width="12" height="12.27" viewBox="0 0 1200 1227" fill="none" xmlns="http://www.w3.org/2000/svg">
