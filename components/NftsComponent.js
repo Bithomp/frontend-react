@@ -545,7 +545,7 @@ export default function NftsComponent({
         "sequence": 0,
         "owner": "rw5ZYt7SecZ44QLe8Tz6dSYMRuLa8LHv6S",
         "uri": "68747470733A2F2F697066732E696F2F697066732F6261667962656963323779736F376C656C6534786277767464706F6E77716C6C766A68793667717A6C74666E673271357A6869717A61786F7A6B6D2F6D657461646174612E6A736F6E",
-        "url": "https://cloudflare-ipfs.com/ipfs/bafybeic27yso7lele4xbwvtdponwqllvjhy6gqzltfng2q5zhiqzaxozkm/metadata.json",
+        "url": "https://ipfs.io/ipfs/bafybeic27yso7lele4xbwvtdponwqllvjhy6gqzltfng2q5zhiqzaxozkm/metadata.json",
         "nftSerial": 0,
         "issuerDetails": {
           "username": "3DAPES",

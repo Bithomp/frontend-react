@@ -224,7 +224,7 @@ export default function Nft({
       "issuedAt":1667328041,
       "ownerChangedAt":1667328041,
       "deletedAt":null,
-      "url":"https://cloudflare-ipfs.com/ipfs/bafybeidrrt7llyjb2qqg3u37oagnwrmpwyuohlt767gknv5pyfyj6hpoh4/metadata.json",
+      "url":"https://ipfs.io/ipfs/bafybeidrrt7llyjb2qqg3u37oagnwrmpwyuohlt767gknv5pyfyj6hpoh4/metadata.json",
       "metadata":{
         "name":"Pirate Edition",
         "description":"-Sanctum NFTs 007-\n\n&quot;The discovery of treasure in the land of Atlantis.&quot;",

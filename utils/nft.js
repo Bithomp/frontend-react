@@ -222,7 +222,7 @@ const ipfsUrl = (uri, type = 'image', gateway = 'our') => {
     } else if (gateway === 'cl' && type === 'model') {
       return stripText(uri);
     } else if (gateway === 'cl' || type === 'audio' || type === 'model' || type === 'viewer') {
-      return 'https://cloudflare-ipfs.com/ipfs/' + url + filename;
+      return 'https://ipfs.io/ipfs/' + url + filename;
     }
   } else {
     return null;
