@@ -2,13 +2,43 @@
 
 .issuer-select {
   @include react-select;
-  margin: 5px;
   max-width: 400px;
-  width: calc(100% - 22px);
+  width: 100%;
   display: inline-block;
 
   .react-select__option,
   .react-select__single-value {
     text-align: left;
+  }
+
+  .react-select__menu {
+    box-sizing: border-box !important;
+    inset: 100% 0 auto !important;
+  }
+
+  .react-select__control {
+    box-shadow: none;
+
+    &:hover {
+      border-color: var(--accent-link);
+      box-shadow: 0 0 5px var(--unaccent-icon);
+    }
+  }
+
+  .react-select__option {
+    background: #fff;
+
+    &--is-selected {
+      background: var(--accent-icon);
+      color: #fff;
+    }
+
+    &:hover {
+      background-color: var(--unaccent-icon);
+    }
+
+    &:active {
+      background: none !important;
+    }
   }
 }

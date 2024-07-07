@@ -80,6 +80,10 @@ $phone-bp: 440px;
         border-radius: 0;
         background: #fff;
 
+        &:hover {
+            border-color: var(--accent-icon);
+        }
+
         &--is-focused {
             border-color: hsl(0, 0%, 80%) !important;
             box-shadow: none;
@@ -105,8 +109,12 @@ $phone-bp: 440px;
         }
     }
 
-    .dropdown__indicator-separator {
-        display: none;
+    .dropdown__indicator {
+        color: var(--accent-icon);
+
+        &-separator {
+            display: none;
+        }
     }
 
     .dropdown__menu {
@@ -118,12 +126,22 @@ $phone-bp: 440px;
         }
     }
 
-    .dropdown__option--is-focused {
-        background: none;
-        border-color: hsl(0, 0%, 80%) !important;
-    }
+    .dropdown__option {
+        &:active {
+            background: none !important;
+        }
 
-    .dropdown__option--is-selected {
-        background: var(--accent-icon);
+        &:hover {
+            background: var(--unaccent-icon);
+        }
+
+        &--is-focused {
+            background: none;
+            border-color: hsl(0, 0%, 80%) !important;
+        }
+
+        &--is-selected {
+            background: var(--accent-icon);
+        }
     }
 }
