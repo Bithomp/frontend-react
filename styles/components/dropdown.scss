@@ -70,6 +70,8 @@ $phone-bp: 440px;
         display: flex;
         align-items: center;
         justify-content: center;
+        color: var(--background-block);
+        padding: 0 5px;
 
         @media(min-width: 440px) {
             display: none;
