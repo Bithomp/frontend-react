@@ -109,6 +109,10 @@ body.dark {
     }
   }
 
+  .explorer-tabs-block + .content-cols::before {
+    border-top: none;
+  }
+
   .content-text {
     margin: 80px;
     z-index: 1;
