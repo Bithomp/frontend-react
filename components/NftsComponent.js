@@ -721,11 +721,16 @@ export default function NftsComponent({
             }
 
             {!nftExplorer && (id || owner) && issuersList?.length > 0 && rendered &&
-              <IssuerSelect
-                issuersList={issuersList}
-                selectedIssuer={issuer}
-                setSelectedIssuer={setIssuer}
-              />
+              <div>
+                <span style={{ display: "inline-block", paddingBottom: "5px" }}>
+                  {t("table.issuer")}
+                </span>
+                <IssuerSelect
+                  issuersList={issuersList}
+                  selectedIssuer={issuer}
+                  setSelectedIssuer={setIssuer}
+                />
+              </div>
             }
 
             {(!burnedPeriod && !xahauNetwork) &&
