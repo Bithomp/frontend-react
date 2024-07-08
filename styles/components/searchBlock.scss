@@ -11,7 +11,7 @@
     margin-right: 20px;
     width: calc(100% - 40px);
     max-width: 760px;
-    z-index: 3;
+    z-index: 4;
     @media only screen and (max-width: 1024px) {
       margin-left: 10px;
       margin-right: 10px;
@@ -125,7 +125,7 @@
     align-items: center;
   }
   .explorer-tabs-shadow {
-    height: 5px;
-    background: linear-gradient(180deg, rgba(0, 0, 0, 0.05) 0%, rgba(0, 0, 0, 0.1) 0.01%, rgba(0, 0, 0, 0) 100%);
+    height: 1px;
+    background: #ccc;
   }
 }
