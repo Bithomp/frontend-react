@@ -720,7 +720,7 @@ export default function NftsComponent({
               </div>
             }
 
-            {!nftExplorer && (id || owner) && issuersList?.length > 0 && rendered &&
+            {!nftExplorer && rendered &&
               <div>
                 <span style={{ display: "inline-block", paddingBottom: "5px" }}>
                   {t("table.issuer")}
@@ -729,6 +729,7 @@ export default function NftsComponent({
                   issuersList={issuersList}
                   selectedIssuer={issuer}
                   setSelectedIssuer={setIssuer}
+                  disabled={!(id || owner) || issuersList?.length < 1}
                 />
               </div>
             }

@@ -2,7 +2,7 @@ import Select from 'react-select';
 import { useTranslation } from "next-i18next";
 import { useState, useEffect } from 'react';
 
-export default function IssuerSelect({ issuersList, selectedIssuer, setSelectedIssuer }) {
+export default function IssuerSelect({ issuersList, selectedIssuer, setSelectedIssuer, disabled }) {
   const { t } = useTranslation();
 
   let emptyOption = { value: '', label: t("general.all-issuers"), username: "" };
@@ -70,6 +70,7 @@ export default function IssuerSelect({ issuersList, selectedIssuer, setSelectedI
       className="issuer-select"
       classNamePrefix="react-select"
       instanceId="issuer-select"
+      isDisabled={disabled}
     />
   );
 };
