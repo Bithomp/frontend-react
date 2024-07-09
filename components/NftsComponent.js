@@ -702,7 +702,7 @@ export default function NftsComponent({
             }
 
             {listTab === 'nfts' && nftExplorer &&
-              <>
+              <div>
                 {t("table.mint-period")}
                 <DateAndTimeRange
                   periodQueryName="mintedPeriod"
@@ -712,7 +712,7 @@ export default function NftsComponent({
                   minDate="nft"
                   radio={true}
                 />
-              </>
+              </div>
             }
 
             {(!burnedPeriod && !xahauNetwork) &&
