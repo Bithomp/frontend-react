@@ -225,8 +225,8 @@ export default function Amm(
                           </td>
                         </tr>
                         {trWithAccount(data, 'account', t("table.address"))}
-                        {trAmountWithGateway({ amount: data.amount, name: "Asset 1" })}
-                        {trAmountWithGateway({ amount: data.amount2, name: "Asset 2" })}
+                        {isMounted ? trAmountWithGateway({ amount: data.amount, name: "Asset 1" }) : ""}
+                        {isMounted ? trAmountWithGateway({ amount: data.amount2, name: "Asset 2" }) : ""}
                         <tr>
                           <td>Trading fee</td>
                           <td>
