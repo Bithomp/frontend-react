@@ -236,7 +236,7 @@ export default function Amm(
                         <tr>
                           <td>Balance</td>
                           <td>
-                            {fullNiceNumber(data.lpTokenBalance.value)}
+                            {isMounted ? fullNiceNumber(data.lpTokenBalance.value) : ""}
                             {" " + lpToken}
                           </td>
                         </tr>
@@ -315,7 +315,7 @@ export default function Amm(
                           <tr>
                             <td>Price</td>
                             <td>
-                              {fullNiceNumber(data.auctionSlot.price.value)}
+                              {isMounted ? fullNiceNumber(data.auctionSlot.price.value) : ""}
                               {" " + lpToken + " "}
                             </td>
                           </tr>

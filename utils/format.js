@@ -5,7 +5,6 @@ import React from "react"
 import { Trans } from 'next-i18next'
 import moment from 'moment'
 import momentDurationFormatSetup from "moment-duration-format"
-import axios from 'axios'
 
 import LinkIcon from "../public/images/link.svg"
 import { stripText, nativeCurrency } from '.'

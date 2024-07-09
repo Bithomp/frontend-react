@@ -176,7 +176,7 @@ export default function Amms({ initialData, initialErrorMessage }) {
                             }
                           </td>
                           <td>
-                            {shortNiceNumber(a.lpTokenBalance.value)}
+                            {isRendered ? shortNiceNumber(a.lpTokenBalance.value) : ""}
                             <br />
                             {lpTokenName(a)}
                           </td>
@@ -250,7 +250,7 @@ export default function Amms({ initialData, initialErrorMessage }) {
                       <p>
                         LP balance:
                         {" "}
-                        {shortNiceNumber(a.lpTokenBalance.value)}
+                        {isRendered ? shortNiceNumber(a.lpTokenBalance.value) : ""}
                         {" "}
                         {lpTokenName(a)}
                       </p>
