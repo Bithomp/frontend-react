@@ -578,9 +578,7 @@ export default function NftSales({
             />
 
             <div>
-              {windowWidth < 720 && <br />}
               {t("table.period")}
-              {windowWidth < 720 && <br />}
               <DateAndTimeRange
                 period={period}
                 setPeriod={setPeriod}

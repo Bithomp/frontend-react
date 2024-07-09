@@ -701,23 +701,18 @@ export default function NftsComponent({
               </>
             }
 
-            {listTab === 'nfts' &&
-              <div>
-                {nftExplorer && <>
-                  <span style={{ marginRight: "10px" }}>
-                    {t("table.mint-period")}
-                  </span>
-                  <DateAndTimeRange
-                    periodQueryName="mintedPeriod"
-                    period={mintedPeriod}
-                    setPeriod={setMintedPeriod}
-                    defaultPeriod={mintedPeriod}
-                    minDate="nft"
-                    style={{ marginTop: "10px", display: "inline-block" }}
-                  />
-                </>
-                }
-              </div>
+            {listTab === 'nfts' && nftExplorer &&
+              <>
+                {t("table.mint-period")}
+                <DateAndTimeRange
+                  periodQueryName="mintedPeriod"
+                  period={mintedPeriod}
+                  setPeriod={setMintedPeriod}
+                  defaultPeriod={mintedPeriodQuery}
+                  minDate="nft"
+                  radio={true}
+                />
+              </>
             }
 
             {(!burnedPeriod && !xahauNetwork) &&
