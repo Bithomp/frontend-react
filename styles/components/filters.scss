@@ -51,6 +51,7 @@ $width: 340px;
 
             @media(max-width: 1300px) {
                 gap: 8px;
+                margin-bottom: 8px;
             }
         }
     }
@@ -226,6 +227,10 @@ $width: 340px;
         @media(min-width: 440px) {
             width: 38px;
             height: 38px;
+        }
+
+        @media(max-width: 440px) {
+            padding: 5px;
         }
 
         .dark & {
