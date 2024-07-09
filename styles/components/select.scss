@@ -23,6 +23,17 @@
     }
   }
 
+  &.react-select--is-disabled {
+    .react-select__control {
+      background-color: var(--background-input-readonly);
+    }
+
+    .react-select__single-value,
+    .react-select__indicator {
+      opacity: 0.45;
+    }
+  }
+
   .react-select__control--is-focused {
     box-shadow: 0 0 5px var(--unaccent-icon);
   }
