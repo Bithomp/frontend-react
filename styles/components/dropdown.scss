@@ -1,6 +1,9 @@
+@import "./select.scss";
+
 $phone-bp: 440px;
 
 .dropdown {
+    @include react-select;
     min-width: 270px;
 
     &--desktop {
@@ -78,12 +81,14 @@ $phone-bp: 440px;
         }
     }
 
-    .dropdown__control {
+    .react-select__control {
+        border-color: var(--unaccent-icon);
         border-radius: 0;
         background: #fff;
 
         &:hover {
-            border-color: var(--accent-icon);
+            border-color: var(--accent-link);
+            box-shadow: 0 0 5px var(--unaccent-icon);
         }
 
         &--is-focused {
@@ -96,14 +101,14 @@ $phone-bp: 440px;
         }
     }
 
-    .dropdown__value-container {
+    .react-select__value-container {
         @media(max-width: 1300px) {
             font-size: 14px;
         }
     }
 
-    .dropdown__single-value,
-    .dropdown__placeholder {
+    .react-select__single-value,
+    .react-select__placeholder {
         color: hsl(0, 0%, 20%);
 
         .dark & {
@@ -111,39 +116,14 @@ $phone-bp: 440px;
         }
     }
 
-    .dropdown__indicator {
-        color: var(--accent-icon);
-
-        &-separator {
-            display: none;
-        }
-    }
-
-    .dropdown__menu {
+    .react-select__menu {
         background: #fff;
         border-radius: 0;
+        margin-top: 0;
+        border: 1px solid var(--accent-link);
 
         .dark & {
             background: #000;
-        }
-    }
-
-    .dropdown__option {
-        &:active {
-            background: none !important;
-        }
-
-        &:hover {
-            background: var(--unaccent-icon);
-        }
-
-        &--is-focused {
-            background: none;
-            border-color: hsl(0, 0%, 80%) !important;
-        }
-
-        &--is-selected {
-            background: var(--accent-icon);
         }
     }
 }
