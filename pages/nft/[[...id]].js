@@ -112,6 +112,9 @@ export default function Nft({
   useEffect(() => {
     if (!data || !hasJsonMeta(data) || !data.digest) return
     const checkDigest = async (metadata, digest) => {
+      if (typeof metadata === 'string') {
+        metadata = JSON.parse(metadata)
+      }
       let ourDigest = await sha512(JSON.stringify(metadata)?.trim())
       ourDigest = ourDigest.toString().slice(0, 64)
       setIsValidDigest(digest?.toUpperCase() === ourDigest?.toUpperCase())
@@ -221,7 +224,7 @@ export default function Nft({
       "issuedAt":1667328041,
       "ownerChangedAt":1667328041,
       "deletedAt":null,
-      "url":"https://cloudflare-ipfs.com/ipfs/bafybeidrrt7llyjb2qqg3u37oagnwrmpwyuohlt767gknv5pyfyj6hpoh4/metadata.json",
+      "url":"https://ipfs.io/ipfs/bafybeidrrt7llyjb2qqg3u37oagnwrmpwyuohlt767gknv5pyfyj6hpoh4/metadata.json",
       "metadata":{
         "name":"Pirate Edition",
         "description":"-Sanctum NFTs 007-\n\n&quot;The discovery of treasure in the land of Atlantis.&quot;",
@@ -1052,7 +1055,7 @@ export default function Nft({
                         {trWithFlags(t, data.flags)}
                         {!notFoundInTheNetwork &&
                           <tr>
-                            <td>{t("table.uri", { ns: 'nft' })}</td>
+                            <td>{t("table.uri")}</td>
                             <td>
                               {data.uri ?
                                 <>

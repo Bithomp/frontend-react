@@ -1,0 +1,14 @@
+{
+  "heading": "Sort by:",
+  "dropdown": {
+    "priceHigh": "Price high to low",
+    "priceLow": "Price low to high",
+    "soldNew": "Recent sales",
+    "soldOld": "Oldest sales",
+    "mintedNew": "Latest mints",
+    "mintedOld": "Oldest mints",
+    "rating": "Most viewed",
+    "offerCreatedNew": "Newest offers",
+    "offerCreatedOld": "Oldest offers"
+  }
+}

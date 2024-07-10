@@ -1,10 +1,14 @@
 import { useTranslation } from 'next-i18next'
 import Link from 'next/link'
+import { useRouter } from 'next/router'
+import { useState } from 'react'
 
 import { xahauNetwork } from '../utils'
-import { bestNftOffer, mpUrl, nftName, partnerMarketplaces } from '../utils/nft'
+import { bestNftOffer, isNftExplicit, mpUrl, nftName, partnerMarketplaces } from '../utils/nft'
 import { amountFormat, timeOrDate, convertedAmount } from '../utils/format'
 import NftImageOrVideo from './NftImageOrVideo'
+import AgeCheck from './UI/AgeCheck'
+
 
 const addressName = (details, name) => {
   if (!details) return ""
@@ -22,7 +26,10 @@ const addressName = (details, name) => {
 }
 
 export default function Tiles({ nftList, type = 'name', convertCurrency, account }) {
-  const { t } = useTranslation();
+  const { t } = useTranslation()
+  const router = useRouter()
+
+  const [showAgeCheck, setShowAgeCheck] = useState(false)
 
   /*
     {
@@ -60,6 +67,16 @@ export default function Tiles({ nftList, type = 'name', convertCurrency, account
     return t("table.text.private-offer") //shouldn't be the case
   }
 
+  const clickOnTile = (e, nft) => {
+    e.preventDefault()
+    const isOver18 = localStorage.getItem('isOver18')
+    if (!isOver18 && isNftExplicit(nft)) {
+      setShowAgeCheck(true)
+      return
+    }
+    router.push('/nft/' + nft.nftokenID)
+  }
+
   if (type === "name" || type === 'onSale') {
     return <div className='tiles'>
       <div className="grid">
@@ -67,7 +84,11 @@ export default function Tiles({ nftList, type = 'name', convertCurrency, account
           {nftList[0] && nftList.map((nft, i) =>
             <li className="hex" key={i}>
               <div className="hexIn">
-                <Link href={"/nft/" + (nft.nftokenID || nft.uriTokenID)} className="hexLink">
+                <Link
+                  href="#"
+                  className="hexLink"
+                  onClick={(e) => clickOnTile(e, nft)}
+                >
                   <NftImageOrVideo nft={nft} />
                   <div className="index">{i + 1}</div>
                   <div className='title'></div>
@@ -92,17 +113,22 @@ export default function Tiles({ nftList, type = 'name', convertCurrency, account
           )}
         </ul>
       </div>
+      {showAgeCheck && <AgeCheck />}
     </div>
   }
 
-  if (type === 'top' || type === 'last') {
+  if (type === 'priceHigh' || type === 'priceLow' || type === 'soldNew' || type === 'soldOld') {
     return <div className='tiles'>
       <div className="grid">
         <ul className="hexGrid">
           {nftList?.length > 0 && nftList.map((nft, i) =>
             <li className="hex" key={i}>
               <div className="hexIn">
-                <Link href={"/nft/" + (nft.nftoken.nftokenID || nft.nftoken.uriTokenID)} className="hexLink" >
+                <Link
+                  href="#"
+                  className="hexLink"
+                  onClick={(e) => clickOnTile(e, nft.nftoken)}
+                >
                   <NftImageOrVideo nft={nft.nftoken} />
                   <div className="index">{i + 1}</div>
                   <div className='title'></div>
@@ -129,6 +155,7 @@ export default function Tiles({ nftList, type = 'name', convertCurrency, account
           )}
         </ul>
       </div>
+      {showAgeCheck && <AgeCheck />}
     </div>
   }
   return ""

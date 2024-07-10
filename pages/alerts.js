@@ -69,7 +69,7 @@ export default function Alerts() {
           </p>
           <p>
             <Trans i18nKey="alerts.text1">
-              Follow the Telegram channel: <a href="https://t.me/bithomp">bithomp</a> or the twitter account: <a href="https://twitter.com/bithompAlerts">bithompAlerts</a>.
+              Follow the Telegram channel: <a href="https://t.me/bithomp">bithomp</a> or the twitter account: <a href="https://x.com/bithompAlerts">bithompAlerts</a>.
             </Trans>
           </p>
         </>

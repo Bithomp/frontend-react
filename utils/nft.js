@@ -222,7 +222,7 @@ const ipfsUrl = (uri, type = 'image', gateway = 'our') => {
     } else if (gateway === 'cl' && type === 'model') {
       return stripText(uri);
     } else if (gateway === 'cl' || type === 'audio' || type === 'model' || type === 'viewer') {
-      return 'https://cloudflare-ipfs.com/ipfs/' + url + filename;
+      return 'https://ipfs.io/ipfs/' + url + filename;
     }
   } else {
     return null;
@@ -356,17 +356,24 @@ export const nftUrl = (nft, type = 'image', gateway = 'our') => {
   }
 }
 
+export const isNftExplicit = nft => {
+  if (nft.metadata?.name?.toLowerCase().includes("nude") ||
+    nft.metadata?.title?.toLowerCase().includes("nude") ||
+    nft.metadata?.name?.toLowerCase().includes("sexy") ||
+    nft.metadata?.name?.toLowerCase().includes("naked") ||
+    nft.metadata?.is_explicit
+  ) {
+    return true
+  }
+  return false
+}
+
 export const nftImageStyle = (nft, style = {}) => {
   if (!nft) { return {} };
-  const imageUrl = nftUrl(nft, 'image');
+  const imageUrl = nftUrl(nft, 'image')
   if (imageUrl) {
-
-    if (nft.metadata?.name?.toLowerCase().includes("nude") ||
-      nft.metadata?.title?.toLowerCase().includes("nude") ||
-      nft.metadata?.name?.toLowerCase().includes("sexy") ||
-      nft.metadata?.name?.toLowerCase().includes("naked") ||
-      nft.metadata?.is_explicit
-    ) {
+    const isOver18 = localStorage.getItem('isOver18')
+    if (isNftExplicit(nft) && !isOver18) {
       style.backgroundImage = "url('/images/18plus.jpg')";
     } else {
       style.backgroundImage = "url('" + imageUrl + "')";

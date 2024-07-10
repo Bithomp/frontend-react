@@ -58,7 +58,7 @@ export default function Home({ selectedCurrency, setSelectedCurrency, showAds })
         url={server}
         sameAs={[
           'http://instagram.com/bithomp',
-          'https://twitter.com/bithomp',
+          'https://x.com/bithomp',
           'https://www.youtube.com/@bithomp',
           'https://www.linkedin.com/company/bithomp/'
         ]}

@@ -115,7 +115,11 @@ export default function Nodes({ initialData, initialErrorMessage }) {
 
       <p className='center'>
         Explore the list of {ledgerName} nodes. View up-to-date statistics on node versions and countries
-        {isRendered && data?.crawl_time && " (updated " + timeFromNow(data.crawl_time) + ")."}
+        {data?.crawl_time && <>
+          {" "}
+          (updated {timeFromNow(data.crawl_time)}).
+        </>
+        }
       </p>
 
       <div className='flex flex-center'>

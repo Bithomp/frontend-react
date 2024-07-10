@@ -109,6 +109,10 @@ body.dark {
     }
   }
 
+  .explorer-tabs-block + .content-cols::before {
+    border-top: none;
+  }
+
   .content-text {
     margin: 80px;
     z-index: 1;
@@ -767,6 +771,8 @@ body.dark {
 @import "./components/receipt.scss";
 @import "./components/filters.scss";
 @import "./components/dateAndTimeRange.scss";
+@import "./components/dropdown.scss";
+@import "./components/ageCheck.scss";
 
 //home page
 @import "./components/currencySelect.scss";

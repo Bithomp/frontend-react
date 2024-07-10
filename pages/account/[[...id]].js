@@ -200,6 +200,11 @@ export default function Account({ pageMeta, refreshPage, id, selectedCurrency, l
       xummAvatarUrl = data.xummMeta?.avatar
     }
 
+    /*
+    no need for, because it's rendered by next js on our server 
+    'https://cdn.bithomp.com/image?url=' + data.service?.twitterImageUrl
+    */
+
     return data.service?.twitterImageUrl || gravatarUrl || xummAvatarUrl || ('https://cdn.bithomp.com/avatar/' + data.address)
   }
 

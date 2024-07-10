@@ -6,7 +6,7 @@ import { getIsSsrMobile } from '../utils/mobile'
 export const getServerSideProps = async (context) => {
   const { query, locale } = context
   const {
-    listNftsOrder,
+    order,
     view,
     list,
     saleDestination,
@@ -28,7 +28,7 @@ export const getServerSideProps = async (context) => {
   //key to refresh the component when Link pressed within the same route
   return {
     props: {
-      listNftsOrder: listNftsOrder || "mintedNew",
+      orderQuery: order || "",
       key: Math.random(),
       view: view || "tiles",
       list: list || "nfts",
@@ -41,19 +41,19 @@ export const getServerSideProps = async (context) => {
       taxonQuery: taxon || "",
       serialQuery: serial || "",
       mintedByMarketplace: mintedByMarketplace || "",
-      mintedPeriod: mintedPeriod || "",
+      mintedPeriod: mintedPeriod || "all",
       burnedPeriod: burnedPeriod || "",
       includeBurnedQuery: includeBurned || false,
       includeWithoutMediaDataQuery: includeWithoutMediaData || false,
       id: id ? (Array.isArray(id) ? id[0] : id) : "",
       isSsrMobile: getIsSsrMobile(context),
-      ...(await serverSideTranslations(locale, ['common'])),
+      ...(await serverSideTranslations(locale, ['common', 'nft-sort'])),
     },
   }
 }
 
 export default function Nfts({
-  listNftsOrder,
+  orderQuery,
   view,
   list,
   saleDestination,
@@ -73,7 +73,7 @@ export default function Nfts({
   account
 }) {
   return <NftsComponent
-    listNftsOrder={listNftsOrder}
+    orderQuery={orderQuery}
     view={view}
     list={list}
     saleDestination={saleDestination}

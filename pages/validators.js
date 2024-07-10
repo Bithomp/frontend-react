@@ -44,7 +44,9 @@ moment.relativeTimeThreshold('ss', devNet ? 36 : 6)
 
 const showTime = ({ time }) => {
   if (!time) return "N/A"
-  return <span className={(Math.floor(Date.now() / 1000) - (devNet ? 40 : 10)) > time ? 'red bold' : ''}>{timeFromNow((time - 1))}</span>
+  return <span className={(Math.floor(Date.now() / 1000) - (devNet ? 40 : 10)) > time ? 'red bold' : ''}>
+    {timeFromNow((time - 1))}
+  </span>
 }
 
 const ShowTimeMemo = memo(showTime)
@@ -152,7 +154,7 @@ export default function Validators({ amendment }) {
   const twitterLink = twitter => {
     if (!twitter) return ""
     twitter = twitter.replace("@", "")
-    return <a href={"https://twitter.com/" + twitter}>
+    return <a href={"https://x.com/" + twitter}>
       {" "}
       <span className='tooltip'>
         <svg width="12" height="12.27" viewBox="0 0 1200 1227" fill="none" xmlns="http://www.w3.org/2000/svg">

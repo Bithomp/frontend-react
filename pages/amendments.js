@@ -4,7 +4,7 @@ import axios from 'axios'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 import { fullDateAndTime, shortHash } from '../utils/format'
-import { useWidth, devNet, xahauNetwork } from '../utils'
+import { useWidth, xahauNetwork } from '../utils'
 import { getIsSsrMobile } from '../utils/mobile'
 
 import SEO from '../components/SEO'
@@ -74,74 +74,71 @@ export default function Amendment() {
       setEnabledAmendments(enabled)
     }
 
-    if (!devNet || xahauNetwork) {
-      // works on xahau testnet
-      const response2 = await axios('v2/features')
-      //here 1) we can get names for sure
-      //split disabled to new (withMajority and Without Majourity) and obsolete
-      let newdata = response2.data
-      if (newdata.result?.features) {
-        setLoadedFeatures(true)
-        const features = newdata.result.features
+    const response2 = await axios('v2/features')
+    //here 1) we can get names for sure
+    //split disabled to new (withMajority and Without Majourity) and obsolete
+    let newdata = response2.data
+    if (newdata.result?.features) {
+      setLoadedFeatures(true)
+      const features = newdata.result.features
 
-        let voting = [] // the list of amendments that are voting
+      let voting = [] // the list of amendments that are voting
 
-        Object.keys(features).forEach(key => {
-          if (!features[key].enabled && features[key].vetoed !== 'Obsolete') {
-            voting.push(key)
-            setValidations(features[key].validations)
-            setThreshold(features[key].threshold)
-          }
-        })
-
-        //add possible missing names and vetoed status (obsolete)
-        for (let i = 0; i < disabled.length; i++) {
-          if (features[disabled[i].amendment]) {
-            disabled[i].name = features[disabled[i].amendment].name
-            disabled[i].vetoed = features[disabled[i].amendment].vetoed
-            disabled[i].count = features[disabled[i].amendment].count
-          }
+      Object.keys(features).forEach(key => {
+        if (!features[key].enabled && features[key].vetoed !== 'Obsolete') {
+          voting.push(key)
+          setValidations(features[key].validations)
+          setThreshold(features[key].threshold)
         }
+      })
 
-        //add possible missing names
-        for (let i = 0; i < enabled.length; i++) {
-          if (features[enabled[i].amendment]) {
-            enabled[i].name = features[enabled[i].amendment].name
-          }
+      //add possible missing names and vetoed status (obsolete)
+      for (let i = 0; i < disabled.length; i++) {
+        if (features[disabled[i].amendment]) {
+          disabled[i].name = features[disabled[i].amendment].name
+          disabled[i].vetoed = features[disabled[i].amendment].vetoed
+          disabled[i].count = features[disabled[i].amendment].count
         }
-
-        //add possible missing names and count
-        for (let i = 0; i < majority.length; i++) {
-          if (features[majority[i].amendment]) {
-            majority[i].name = features[majority[i].amendment].name
-            majority[i].count = features[majority[i].amendment].count
-          }
-        }
-
-        let obsoleteArray = []
-        let newArray = []
-        let notAvailableArray = []
-
-        //split disabled (without majourity) to new and obsolete
-        for (let i = 0; i < disabled.length; i++) {
-          if (disabled[i].vetoed === 'Obsolete') {
-            obsoleteArray.push(disabled[i])
-          } else if (voting.includes(disabled[i].amendment)) {
-            newArray.push(disabled[i])
-          } else {
-            notAvailableArray.push(disabled[i])
-          }
-        }
-
-        //with more votes on top
-        newArray.sort((a, b) => (a.count > b.count) ? -1 : 1)
-
-        setNotAvailableAmendments(notAvailableArray)
-        setObsoleteAmendments(obsoleteArray)
-        setNewAmendments(newArray)
-        setEnabledAmendments(enabled)
-        setMajorityAmendments(majority)
       }
+
+      //add possible missing names
+      for (let i = 0; i < enabled.length; i++) {
+        if (features[enabled[i].amendment]) {
+          enabled[i].name = features[enabled[i].amendment].name
+        }
+      }
+
+      //add possible missing names and count
+      for (let i = 0; i < majority.length; i++) {
+        if (features[majority[i].amendment]) {
+          majority[i].name = features[majority[i].amendment].name
+          majority[i].count = features[majority[i].amendment].count
+        }
+      }
+
+      let obsoleteArray = []
+      let newArray = []
+      let notAvailableArray = []
+
+      //split disabled (without majourity) to new and obsolete
+      for (let i = 0; i < disabled.length; i++) {
+        if (disabled[i].vetoed === 'Obsolete') {
+          obsoleteArray.push(disabled[i])
+        } else if (voting.includes(disabled[i].amendment)) {
+          newArray.push(disabled[i])
+        } else {
+          notAvailableArray.push(disabled[i])
+        }
+      }
+
+      //with more votes on top
+      newArray.sort((a, b) => (a.count > b.count) ? -1 : 1)
+
+      setNotAvailableAmendments(notAvailableArray)
+      setObsoleteAmendments(obsoleteArray)
+      setNewAmendments(newArray)
+      setEnabledAmendments(enabled)
+      setMajorityAmendments(majority)
     }
   }
 

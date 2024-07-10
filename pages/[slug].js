@@ -18,7 +18,7 @@ export async function getStaticProps({ locale, params }) {
   if (slug === 'latest-nft-sales') {
     return {
       redirect: {
-        destination: '/nft-sales?list=last',
+        destination: '/nft-sales?order=soldNew&period=week',
         permanent: true
       }
     }
