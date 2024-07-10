@@ -1,8 +1,7 @@
 import { useTranslation } from 'next-i18next'
 import { useEffect, useState } from 'react'
-import axios from 'axios'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import { useWidth, server, ledgerName, countriesTranslated } from '../utils'
+import { useWidth, ledgerName, countriesTranslated } from '../utils'
 import { getIsSsrMobile } from '../utils/mobile'
 import {
   shortHash,
@@ -24,9 +23,9 @@ export async function getServerSideProps(context) {
   }
   let initialErrorMessage = null
   try {
-    const res = await axios({
+    const res = await axiosServer({
       method: "get",
-      url: server + "/api/cors/v2/nodes",
+      url: "v2/nodes",
       headers,
     }).catch(error => {
       initialErrorMessage = error.message
@@ -48,6 +47,7 @@ export async function getServerSideProps(context) {
 
 import SEO from '../components/SEO'
 import CopyButton from '../components/UI/CopyButton'
+import { axiosServer } from '../utils/axios'
 
 const shortVersion = version => {
   version = version.replace("rippled-", "")

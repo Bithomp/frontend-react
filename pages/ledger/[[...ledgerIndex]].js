@@ -5,10 +5,11 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 import SEO from '../../components/SEO'
 
-import { server, network, ledgerName, minLedger } from '../../utils'
+import { network, ledgerName, minLedger } from '../../utils'
 import { getIsSsrMobile } from '../../utils/mobile'
 import { fullDateAndTime, shortHash, addressUsernameOrServiceLink } from '../../utils/format'
 import { LedgerLink } from '../../utils/links'
+import { axiosServer } from '../../utils/axios'
 
 export async function getServerSideProps(context) {
   const { locale, req, query } = context
@@ -26,9 +27,9 @@ export async function getServerSideProps(context) {
 
   try {
     if (ledgerIndex === "" || ledgerIndex >= minLedger) {
-      const res = await axios({
+      const res = await axiosServer({
         method: 'get',
-        url: server + '/api/cors/xrpl/v1/ledger/' + ledgerIndex,
+        url: 'xrpl/v1/ledger/' + ledgerIndex,
         headers
       })
       pageMeta = res?.data

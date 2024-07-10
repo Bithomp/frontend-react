@@ -5,7 +5,7 @@ import { serverSideTranslations } from "next-i18next/serverSideTranslations"
 
 import SearchBlock from "../../components/Layout/SearchBlock"
 import SEO from "../../components/SEO"
-import { addQueryParams, removeQueryParams, server, useWidth } from "../../utils"
+import { addQueryParams, removeQueryParams, useWidth } from "../../utils"
 import { getIsSsrMobile } from '../../utils/mobile'
 import {
   lpTokenName,
@@ -24,6 +24,7 @@ import "react-datepicker/dist/react-datepicker.css"
 import CopyButton from "../../components/UI/CopyButton"
 import { useEffect, useState } from "react"
 import { useRouter } from "next/router"
+import { axiosServer } from '../../utils/axios'
 
 export async function getServerSideProps(context) {
   const { locale, query, req } = context
@@ -39,9 +40,9 @@ export async function getServerSideProps(context) {
   }
   let errorMessage = null
   try {
-    const res = await axios({
+    const res = await axiosServer({
       method: "get",
-      url: server + "/api/cors/v2/amm/" + id + (ledgerTimestamp ? ('?ledgerTimestamp=' + ledgerTimestamp) : ""),
+      url: "v2/amm/" + id + (ledgerTimestamp ? ('?ledgerTimestamp=' + ledgerTimestamp) : ""),
       headers,
     }).catch(error => {
       errorMessage = error.message

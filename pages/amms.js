@@ -1,8 +1,8 @@
 import { useTranslation } from 'next-i18next'
 import { useEffect } from 'react'
-import axios from 'axios'
+import { axiosServer } from '../utils/axios'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import { useWidth, server } from '../utils'
+import { useWidth } from '../utils'
 import { getIsSsrMobile } from '../utils/mobile'
 import {
   lpTokenName,
@@ -28,9 +28,9 @@ export async function getServerSideProps(context) {
   }
   let initialErrorMessage = null
   try {
-    const res = await axios({
+    const res = await axiosServer({
       method: "get",
-      url: server + "/api/cors/v2/amms?order=currencyHigh&sortCurrency=XRP",
+      url: "v2/amms?order=currencyHigh&sortCurrency=XRP",
       headers,
     }).catch(error => {
       initialErrorMessage = error.message

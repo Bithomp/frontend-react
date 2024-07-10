@@ -4,6 +4,7 @@ import axios from 'axios'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import Link from 'next/link'
 import Image from 'next/image'
+import { axiosServer } from '../../utils/axios'
 
 import { server, getCoinsUrl, nativeCurrency } from '../../utils'
 import { amountFormat, shortNiceNumber, fullDateAndTime, timeFromNow } from '../../utils/format'
@@ -28,9 +29,9 @@ export async function getServerSideProps(context) {
       headers["x-forwarded-for"] = req.headers["x-forwarded-for"]
     }
     try {
-      const res = await axios({
+      const res = await axiosServer({
         method: 'get',
-        url: server + '/api/cors/v2/address/' + account + '?username=true&service=true&twitterImageUrl=true&blacklist=true' + (ledgerTimestamp ? ('&ledgerTimestamp=' + new Date(ledgerTimestamp).toISOString()) : ""),
+        url: 'v2/address/' + account + '?username=true&service=true&twitterImageUrl=true&blacklist=true' + (ledgerTimestamp ? ('&ledgerTimestamp=' + new Date(ledgerTimestamp).toISOString()) : ""),
         headers
       })
       pageMeta = res?.data
@@ -328,6 +329,7 @@ export default function Account({ pageMeta, refreshPage, id, selectedCurrency, l
                       width="200"
                       height="200"
                       className="avatar"
+                      priority
                     />
                     <div>
                       <table className='table-details autowidth'>

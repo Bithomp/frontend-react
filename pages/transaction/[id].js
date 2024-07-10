@@ -1,10 +1,9 @@
-import axios from "axios";
 import { useTranslation } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 
 import SearchBlock from "../../components/Layout/SearchBlock";
 import SEO from "../../components/SEO";
-import { server } from "../../utils";
+import { axiosServer } from "../../utils/axios";
 import { getIsSsrMobile } from "../../utils/mobile";
 
 import {
@@ -28,9 +27,9 @@ export async function getServerSideProps(context) {
     headers["x-forwarded-for"] = req.headers["x-forwarded-for"];
   }
   try {
-    const res = await axios({
+    const res = await axiosServer({
       method: "get",
-      url: server + "/api/cors/v2/transaction/" + id,
+      url: "v2/transaction/" + id,
       headers,
     });
     initialData = res?.data;
@@ -61,7 +60,6 @@ export default function Transaction(
   { id, initialData },
 ) {
   const { t } = useTranslation();
-  console.log(initialData); //delete
 
   let TransactionComponent = null;
   switch (initialData?.type) {

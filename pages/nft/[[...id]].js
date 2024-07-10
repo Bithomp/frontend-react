@@ -7,7 +7,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import Image from 'next/image'
 import Link from 'next/link'
 
-import { stripText, server, decode, network, isValidJson } from '../../utils'
+import { stripText, decode, network, isValidJson } from '../../utils'
 import { convertedAmount, usernameOrAddress } from '../../utils/format'
 import { getIsSsrMobile } from "../../utils/mobile"
 import { nftName, mpUrl, bestNftOffer, nftUrl, partnerMarketplaces } from '../../utils/nft'
@@ -26,6 +26,7 @@ import {
   acceptNftSellOfferButton,
   acceptNftBuyOfferButton
 } from '../../utils/format'
+import { axiosServer } from '../../utils/axios'
 
 import SocialShare from '../../components/SocialShare'
 
@@ -44,9 +45,9 @@ export async function getServerSideProps(context) {
       headers["x-forwarded-for"] = req.headers["x-forwarded-for"]
     }
     try {
-      const res = await axios({
+      const res = await axiosServer({
         method: 'get',
-        url: server + '/api/cors/v2/nft/' + nftId + '?uri=true&metadata=true',
+        url: 'v2/nft/' + nftId + '?uri=true&metadata=true',
         headers
       })
       pageMeta = res?.data
