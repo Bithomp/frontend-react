@@ -8,11 +8,11 @@ import {
   lpTokenName,
   shortHash,
   showAmmPercents,
-  amountFormat,
   addressUsernameOrServiceLink,
   shortNiceNumber,
   fullDateAndTime,
   timeFromNow,
+  amountFormatNode,
 } from '../utils/format'
 
 export async function getServerSideProps(context) {
@@ -155,7 +155,7 @@ export default function Amms({ initialData, initialErrorMessage }) {
                         <tr key={i}>
                           <td className='center'>{i + 1}</td>
                           <td>
-                            {amountFormat(a.amount, { short: true, maxFractionDigits: 6 })}
+                            {amountFormatNode(a.amount, { short: true, maxFractionDigits: 6 })}
                             {a.amount?.issuer &&
                               <>
                                 <br />
@@ -164,7 +164,7 @@ export default function Amms({ initialData, initialErrorMessage }) {
                             }
                           </td>
                           <td>
-                            {amountFormat(a.amount2, { short: true, maxFractionDigits: 6 })}
+                            {amountFormatNode(a.amount2, { short: true, maxFractionDigits: 6 })}
                             {a.amount2?.issuer &&
                               <>
                                 <br />
@@ -231,7 +231,7 @@ export default function Amms({ initialData, initialErrorMessage }) {
                       <p>
                         Asset 1:
                         {" "}
-                        {amountFormat(a.amount, { short: true, maxFractionDigits: 6 })}
+                        {amountFormatNode(a.amount, { short: true, maxFractionDigits: 6 })}
                         {a.amount?.issuer &&
                           addressUsernameOrServiceLink(a.amount, 'issuer', { short: true })
                         }
@@ -239,7 +239,7 @@ export default function Amms({ initialData, initialErrorMessage }) {
                       <p>
                         Asset 2:
                         {" "}
-                        {amountFormat(a.amount2, { short: true, maxFractionDigits: 6 })}
+                        {amountFormatNode(a.amount2, { short: true, maxFractionDigits: 6 })}
                         {a.amount2?.issuer &&
                           addressUsernameOrServiceLink(a.amount2, 'issuer', { short: true })
                         }

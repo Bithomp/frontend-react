@@ -417,7 +417,7 @@ export const trAmountWithGateway = ({ amount, name }) => {
   return <tr>
     <td>{name}</td>
     <td>
-      {amountFormat(amount)}
+      {amountFormatNode(amount)}
       {amount?.issuer &&
         <>
           {" "}
@@ -475,10 +475,14 @@ export const amountFormat = (amount, options = {}) => {
     if (options.noSpace) {
       textCurrency = textCurrency?.trim()
     }
-    return <span suppressHydrationWarning>
-      {showValue + " " + valuePrefix + " " + textCurrency}
-    </span>
+    return showValue + " " + valuePrefix + " " + textCurrency
   }
+}
+
+export const amountFormatNode = (amount, options) => {
+  return <span suppressHydrationWarning>
+    {amountFormat(amount, options)}
+  </span>
 }
 
 export const lpTokenName = data => {
