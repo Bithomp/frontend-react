@@ -367,7 +367,7 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
                       </>
                     }
                     {option.balance &&
-                      <> [<b>{amountFormat(option.balance, { maxFractionDigits: 2 }).trim()}</b>]</>
+                      <> [<b>{amountFormat(option.balance, { maxFractionDigits: 2, noSpace: true })}</b>]</>
                     }
                   </>
                 }

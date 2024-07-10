@@ -197,7 +197,7 @@ export default function AddressInput({ placeholder, title, setValue, rawData, ty
                     </>
                   }
                   {option.balance &&
-                    <> [<b>{amountFormat(option.balance, { maxFractionDigits: 2 }).trim()}</b>]</>
+                    <> [<b>{amountFormat(option.balance, { maxFractionDigits: 2, noSpace: true })}</b>]</>
                   }
                 </>
               }

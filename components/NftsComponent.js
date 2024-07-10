@@ -715,8 +715,8 @@ export default function NftsComponent({
               </div>
             }
 
-            {!nftExplorer &&
-              <div suppressHydrationWarning>
+            {!nftExplorer && rendered &&
+              <div>
                 <span style={{ display: "inline-block", paddingBottom: "5px" }}>
                   {t("table.issuer")}
                 </span>

@@ -471,8 +471,12 @@ export const amountFormat = (amount, options = {}) => {
     </span>
   } else {
     //type: ['IOU', 'IOU demurraging', 'NFT']
+    let textCurrency = currency
+    if (options.noSpace) {
+      textCurrency = textCurrency?.trim()
+    }
     return <span suppressHydrationWarning>
-      {showValue + " " + valuePrefix + " " + currency}
+      {showValue + " " + valuePrefix + " " + textCurrency}
     </span>
   }
 }
