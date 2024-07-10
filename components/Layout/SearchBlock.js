@@ -38,11 +38,14 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
   const [searchSuggestions, setSearchSuggestions] = useState([])
   const [searchingSuggestions, setSearchingSuggestions] = useState(false)
   const [errorMessage, setErrorMessage] = useState("")
+  const [isMounted, setIsMounted] = useState(false)
 
   if (!searchPlaceholderText) {
     searchPlaceholderText =
       windowWidth < 500 ? t("home.search-placeholder-short") : t("home.search-placeholder")
   }
+
+  useEffect(() => setIsMounted(true), [])
 
   useEffect(() => {
     if (!id && searchInput.current) {
@@ -321,66 +324,68 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
               <h1 className='contrast'>{explorerHeader(tab)} {userOrServiceName(userData)}</h1>
             }
           </div>
-          <div onKeyUp={searchOnKeyUp} suppressHydrationWarning>
-            <Select
-              ref={searchInput}
-              className="issuer-select search-input search-input-select"
-              placeholder={searchPlaceholderText}
-              onChange={searchOnChange}
-              onFocus={searchOnFocus}
-              spellCheck="false"
-              options={searchSuggestions}
-              getOptionLabel={
-                (option) => <>
-                  <span style={windowWidth < 400 ? { fontSize: "14px" } : {}}>{option.address}</span>
-                  {(option.username || option.service || option.globalid || option.xumm) ? (windowWidth > 400 ? " - " : " ") : ""}
-                  <b className='blue'>{option.username}</b>
-                  {option.service && <>
-                    {option.username ? " (" : ""}
-                    <b className='green'>{option.service}</b>
-                    {option.username ? ")" : ""}
-                  </>}
-                  {(option.username || option.service) && (option.verifiedDomain || option.serviceDomain) && <>, </>}
-                  {option.verifiedDomain ?
-                    <span className='green bold'> {option.verifiedDomain}</span>
-                    :
-                    (option.serviceDomain && <span className='green'> {option.serviceDomain}</span>)
-                  }
-                  {(option.username || option.service || option.verifiedDomain || option.serviceDomain) && option.xumm && <>, </>}
-                  {option.xumm &&
-                    <>
-                      Xaman <span className='orange'>
-                        {option.xumm.includes("+") ? option.xumm.replace(/\+/g, " (") + ")" : option.xumm}
-                      </span>
-                      {option.xummVerified && <> ✅</>}
-                    </>
-                  }
-                  {(option.username || option.service || option.verifiedDomain || option.serviceDomain || option.xumm) && option.globalid && <>, </>}
-                  {option.globalid &&
-                    <>
-                      GlobaliD <span className='purple'>{option.globalid}</span>
-                      {option.globalidStatus && <> ✔️</>}
-                    </>
-                  }
-                  {option.balance &&
-                    <> [<b>{amountFormat(option.balance, { maxFractionDigits: 2, noSpace: true })}</b>]</>
-                  }
-                </>
-              }
-              getOptionValue={
-                option => (option.address + option.username + option.service + option.xumm + option.globalid + option.verifiedDomain + option.serviceDomain)
-              }
-              inputValue={searchItem}
-              onInputChange={searchOnInputChange}
-              isSearchable={true}
-              classNamePrefix="react-select"
-              instanceId="search-select"
-              noOptionsMessage={
-                () => searchingSuggestions ? t("explorer.searching-for-addresses") : null
-                //({ inputValue }) => inputValue.length > 3
-              }
-            />
-          </div>
+          {isMounted &&
+            <div onKeyUp={searchOnKeyUp}>
+              <Select
+                ref={searchInput}
+                className="issuer-select search-input search-input-select"
+                placeholder={searchPlaceholderText}
+                onChange={searchOnChange}
+                onFocus={searchOnFocus}
+                spellCheck="false"
+                options={searchSuggestions}
+                getOptionLabel={
+                  (option) => <>
+                    <span style={windowWidth < 400 ? { fontSize: "14px" } : {}}>{option.address}</span>
+                    {(option.username || option.service || option.globalid || option.xumm) ? (windowWidth > 400 ? " - " : " ") : ""}
+                    <b className='blue'>{option.username}</b>
+                    {option.service && <>
+                      {option.username ? " (" : ""}
+                      <b className='green'>{option.service}</b>
+                      {option.username ? ")" : ""}
+                    </>}
+                    {(option.username || option.service) && (option.verifiedDomain || option.serviceDomain) && <>, </>}
+                    {option.verifiedDomain ?
+                      <span className='green bold'> {option.verifiedDomain}</span>
+                      :
+                      (option.serviceDomain && <span className='green'> {option.serviceDomain}</span>)
+                    }
+                    {(option.username || option.service || option.verifiedDomain || option.serviceDomain) && option.xumm && <>, </>}
+                    {option.xumm &&
+                      <>
+                        Xaman <span className='orange'>
+                          {option.xumm.includes("+") ? option.xumm.replace(/\+/g, " (") + ")" : option.xumm}
+                        </span>
+                        {option.xummVerified && <> ✅</>}
+                      </>
+                    }
+                    {(option.username || option.service || option.verifiedDomain || option.serviceDomain || option.xumm) && option.globalid && <>, </>}
+                    {option.globalid &&
+                      <>
+                        GlobaliD <span className='purple'>{option.globalid}</span>
+                        {option.globalidStatus && <> ✔️</>}
+                      </>
+                    }
+                    {option.balance &&
+                      <> [<b>{amountFormat(option.balance, { maxFractionDigits: 2, noSpace: true })}</b>]</>
+                    }
+                  </>
+                }
+                getOptionValue={
+                  option => (option.address + option.username + option.service + option.xumm + option.globalid + option.verifiedDomain + option.serviceDomain)
+                }
+                inputValue={searchItem}
+                onInputChange={searchOnInputChange}
+                isSearchable={true}
+                classNamePrefix="react-select"
+                instanceId="search-select"
+                noOptionsMessage={
+                  () => searchingSuggestions ? t("explorer.searching-for-addresses") : null
+                  //({ inputValue }) => inputValue.length > 3
+                }
+              />
+            </div>
+          }
 
           <div className="search-button" onClick={onSearch}>
             <img src="/images/search.svg" className="search-icon" alt="search" />
