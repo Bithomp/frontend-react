@@ -585,8 +585,9 @@ export default function NftSales({
           </div>
         </div>
       </div>
-      <div className="content-text" style={{ minHeight: "480px" }}>
+      <div className="content-text" style={{ minHeight: "480px" }} id="scrollableDiv">
         <InfiniteScroll
+          scrollableTarget="scrollableDiv"
           dataLength={sales.length}
           next={checkApi}
           hasMore={hasMore}

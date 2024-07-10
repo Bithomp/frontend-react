@@ -705,7 +705,7 @@ export default function NftsComponent({
         </div>
       </div>
 
-      <div className="content-text" style={contextStyle}>
+      <div className="content-text" style={contextStyle} id="scrollableDiv">
 
         {/* if accoun't nft explorer and there is no owner or id, ask to provide an address */}
         {(!nftExplorer && !(id || owner)) ?
@@ -714,6 +714,7 @@ export default function NftsComponent({
           </div>
           :
           <InfiniteScroll
+            scrollableTarget="scrollableDiv"
             dataLength={data?.length}
             next={checkApi}
             hasMore={hasMore}
