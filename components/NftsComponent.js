@@ -40,7 +40,6 @@ import FormInput from './UI/FormInput'
 import AddressInput from './UI/AddressInput'
 import ViewTogggle from './UI/ViewToggle'
 import SimpleSelect from './UI/SimpleSelect'
-import VerificationPopup from './UI/VerificationPopup'
 
 export default function NftsComponent({
   orderQuery,
@@ -897,8 +896,5 @@ export default function NftsComponent({
         }
       </div>
     </div>
-
-    {/* added in this place just for test */}
-    <VerificationPopup />
   </>
 }
