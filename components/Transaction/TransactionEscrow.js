@@ -6,16 +6,9 @@ import { amountFormat, fullDateAndTime } from "../../utils/format";
 import * as Styled from "./styled";
 import { LinkAccount } from "../../utils/links";
 import { TransactionCard } from "./TransactionCard";
-import { useState, useEffect } from "react";
 
 export const TransactionEscrow = ({ tx }) => {
-  const { t } = useTranslation();
-
-  const [isMounted, setIsMounted] = useState(false);
-
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
+  const { t } = useTranslation()
 
   let isEscrowCreation, isEscrowExecution, isEscrowCancelation;
   switch (tx.type) {
@@ -76,7 +69,7 @@ export const TransactionEscrow = ({ tx }) => {
           <TRow>
             <TData>Time:</TData>
             <TData>
-              {isMounted && fullDateAndTime(tx.rawTransaction?.date, 'ripple')}
+              {fullDateAndTime(tx.rawTransaction?.date, 'ripple')}
             </TData>
           </TRow>
 
@@ -140,13 +133,13 @@ export const TransactionEscrow = ({ tx }) => {
               <TRow>
                 <TData>Execute After:</TData>
                 <TData>
-                  {isMounted && fullDateAndTime(tx.specification?.allowExecuteAfter)}
+                  {fullDateAndTime(tx.specification?.allowExecuteAfter)}
                 </TData>
               </TRow>
               <TRow>
                 <TData>Cancel After:</TData>
                 <TData>
-                  {isMounted && ullDateAndTime(tx.specification?.allowCancelAfter)}
+                  {fullDateAndTime(tx.specification?.allowCancelAfter)}
                 </TData>
               </TRow>
               <TRow>

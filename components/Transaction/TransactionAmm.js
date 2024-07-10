@@ -6,18 +6,13 @@ import { TBody, TData, TDetails, TRow } from "../TableDetails";
 import * as Styled from "./styled";
 import { LinkAccount } from "../../utils/links";
 import { TransactionCard } from "./TransactionCard";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import CopyButton from "../UI/CopyButton";
 
 export const TransactionAmm = ({ tx }) => {
   const { t } = useTranslation();
 
-  const [showRawData, setShowRawData] = useState(false);
-  const [isMounted, setIsMounted] = useState(false);
-
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
+  const [showRawData, setShowRawData] = useState(false)
 
   return (
     <>
@@ -33,7 +28,7 @@ export const TransactionAmm = ({ tx }) => {
             <TRow>
               <TData>Time:</TData>
               <TData>
-                {isMounted && fullDateAndTime(tx.rawTransaction?.date, 'ripple')}
+                {fullDateAndTime(tx.rawTransaction?.date, 'ripple')}
               </TData>
             </TRow>
             <TRow>

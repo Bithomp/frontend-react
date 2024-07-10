@@ -633,7 +633,7 @@ export const timeFromNow = timestamp => {
   </span>
 }
 
-export const fullDateAndTime = (timestamp, type = null) => {
+export const fullDateAndTime = (timestamp, type = null, options) => {
   //used also in CSV file names as text
   if (!timestamp) return ''
 
@@ -647,6 +647,12 @@ export const fullDateAndTime = (timestamp, type = null) => {
   }
 
   let dateAndTime = new Date(timestamp).toLocaleString()
+  if (!options?.asText) {
+    dateAndTime = <span suppressHydrationWarning>
+      {dateAndTime}
+    </span>
+  }
+
   if (type === 'expiration') {
     return new Date(timestamp) < new Date() ? <span className='orange'>{dateAndTime}</span> : dateAndTime
   } else {

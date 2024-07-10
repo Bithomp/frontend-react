@@ -53,7 +53,6 @@ export async function getServerSideProps(context) {
 
 export default function Ledger({ ledgerIndex, pageMeta }) {
   const [data, setData] = useState(null)
-  const [rendered, setRendered] = useState(false)
   const [loading, setLoading] = useState(false)
   const { t } = useTranslation()
 
@@ -100,7 +99,6 @@ export default function Ledger({ ledgerIndex, pageMeta }) {
   */
 
   useEffect(() => {
-    setRendered(true)
     if (ledgerVersion === "" || ledgerVersion >= minLedger) {
       checkApi()
     }
@@ -128,7 +126,7 @@ export default function Ledger({ ledgerIndex, pageMeta }) {
   return <>
     <SEO title={t("menu.ledger") + ' ' + (pageMeta?.ledgerVersion || ledgerIndex)} />
     <div className="content-text">
-      <h1 className="center">{t("menu.ledger")} #{ledgerVersion}<br />{(rendered && pageMeta?.close_time) ? fullDateAndTime(pageMeta.close_time) : <br />}</h1>
+      <h1 className="center">{t("menu.ledger")} #{ledgerVersion}<br />{pageMeta?.close_time ? fullDateAndTime(pageMeta.close_time) : <br />}</h1>
       {ledgerVersion >= minLedger ?
         <>
           {ledgerNavigation}

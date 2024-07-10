@@ -244,7 +244,7 @@ export default function NftSales({
 
           //for CSV export
           for (let i = 0; i < newdata.sales.length; i++) {
-            newdata.sales[i].localDate = fullDateAndTime(newdata.sales[i].acceptedAt)
+            newdata.sales[i].localDate = fullDateAndTime(newdata.sales[i].acceptedAt, null, { asText: true })
             newdata.sales[i].amountInConvertCurrency = niceNumber(newdata.sales[i].amountInConvertCurrencies[sortCurrency], 2)
             newdata.sales[i].amountFormated = amountFormat(newdata.sales[i].amount, { minFractionDigist: 2 })
             newdata.sales[i].nftId = newdata.sales[i].nftoken.nftokenID || newdata.sales[i].nftoken.uriTokenID

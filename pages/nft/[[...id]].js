@@ -87,7 +87,6 @@ export default function Nft({
 }) {
   const { t } = useTranslation()
 
-  const [rendered, setRendered] = useState(false)
   const [data, setData] = useState({})
   const [decodedUri, setDecodedUri] = useState(null)
   const [loading, setLoading] = useState(false)
@@ -103,11 +102,6 @@ export default function Nft({
   const [countSellOffers, setCountSellOffers] = useState(null)
   const [isValidDigest, setIsValidDigest] = useState(false)
   const [warnings, setWarnings] = useState([])
-
-  useEffect(() => {
-    setRendered(true)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
 
   useEffect(() => {
     if (!data || !hasJsonMeta(data) || !data.digest) return
@@ -337,7 +331,7 @@ export default function Nft({
         <tbody key={i}>
           <tr>
             <td className='bold'>{eventType(nftEvent)}</td>
-            <td>{rendered && fullDateAndTime(nftEvent.changedAt)} <a href={"/explorer/" + nftEvent.txHash}><LinkIcon /></a></td>
+            <td>{fullDateAndTime(nftEvent.changedAt)} <a href={"/explorer/" + nftEvent.txHash}><LinkIcon /></a></td>
           </tr>
           {(nftEvent.amount && nftEvent.amount !== "0") &&
             <tr>
@@ -837,7 +831,7 @@ export default function Nft({
         const response = await axios('v2/statistics/nftokens/crawler')
         let lastUpdate = ""
         if (response?.data?.ledgerTime) {
-          lastUpdate = fullDateAndTime(response.data.ledgerTime)
+          lastUpdate = fullDateAndTime(response.data.ledgerTime, null, { asText: true })
         }
         warnings[i].message = t("table.warnings.nft-crawler-delay", { ns: 'nft', lastUpdate })
       }

@@ -69,17 +69,12 @@ export default function Amm(
   const { t } = useTranslation()
   const width = useWidth()
   const router = useRouter()
-  const [isMounted, setIsMounted] = useState(false)
   const [ledgerTimestamp, setLedgerTimestamp] = useState(ledgerTimestampQuery)
   const [ledgerTimestampInput, setLedgerTimestampInput] = useState(ledgerTimestampQuery)
   const [loading, setLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState(initialErrorMessage)
   const [data, setData] = useState(initialData)
   const [userData, setUserData] = useState({ ...initialData?.accountDetails, address: initialData?.account })
-
-  useEffect(() => {
-    setIsMounted(true)
-  }, [])
 
   const checkApi = async () => {
     if (!id) return
@@ -139,7 +134,7 @@ export default function Amm(
 
   const oldDateAndTime =
     <span className='orange bold' style={{ float: "right" }}>
-      {(isMounted && data.ledgerTimestamp) ? fullDateAndTime(data.ledgerTimestamp) : ''}
+      {data.ledgerTimestamp ? fullDateAndTime(data.ledgerTimestamp) : ''}
     </span>
 
   return (
@@ -149,13 +144,13 @@ export default function Amm(
         title={
           t("explorer.header.amm") + " "
           + lpToken + " "
-          + (data?.ledgerTimestamp ? " " + fullDateAndTime(data.ledgerTimestamp) : "")
+          + (data?.ledgerTimestamp ? " " + fullDateAndTime(data.ledgerTimestamp, null, { asText: true }) : "")
         }
         description={
           "Automated market maker pool details for "
           + lpToken + " "
           + shortHash(data?.ammID)
-          + (data?.ledgerTimestamp ? " " + fullDateAndTime(data.ledgerTimestamp) : "")
+          + (data?.ledgerTimestamp ? " " + fullDateAndTime(data.ledgerTimestamp, null, { asText: true }) : "")
         }
       />
       <SearchBlock

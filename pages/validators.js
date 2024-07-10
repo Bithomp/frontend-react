@@ -330,7 +330,7 @@ export default function Validators({ amendment }) {
           {!loading ? <>
             {validators &&
               <Trans i18nKey="text0" ns='validators'>
-                The validator list <b>{{ url: validators.url }}</b> has sequence {{ sequence: validators.sequence }} and expiration on {{ expiration: fullDateAndTime(validators.expiration) }}.<br />It includes {{ validatorCount: unlValidatorsCount }} validators which are listed below.
+                The validator list <b>{{ url: validators.url }}</b> has sequence {{ sequence: validators.sequence }} and expiration on {{ expiration: fullDateAndTime(validators.expiration, null, { asText: true }) }}.<br />It includes {{ validatorCount: unlValidatorsCount }} validators which are listed below.
               </Trans>
             }
             <br />

@@ -85,8 +85,8 @@ export default function NftStatistics() {
   const nft = data?.allTime;
   const crawlerIndex = data?.crawler?.ledgerIndex;
   const currentLedgerIndex = data?.validatedLedger.ledgerIndex;
-  const crawlerTime = data?.crawler?.ledgerTime && fullDateAndTime(data.crawler.ledgerTime);
-  const currentLedgerTime = data?.validatedLedger.ledgerTime && fullDateAndTime(data.validatedLedger.ledgerTime);
+  const crawlerTime = data?.crawler?.ledgerTime && fullDateAndTime(data.crawler.ledgerTime, null, { asText: true });
+  const currentLedgerTime = data?.validatedLedger.ledgerTime && fullDateAndTime(data.validatedLedger.ledgerTime, null, { asText: true });
 
   let lag = false;
   if (crawlerIndex && currentLedgerIndex) {
