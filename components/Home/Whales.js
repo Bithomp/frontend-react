@@ -92,7 +92,13 @@ export default function Whales({ currency }) {
                 <a href={'/explorer/' + tx.hash}>{txIdFormat(tx.hash)}</a>
               </span>
               <span className='tx-amount'>{amountFormat(tx.amount, { short: true, maxFractionDigits: 2 })}</span>
-              <span className='tx-amount-fiat'>{devNet ? t("home.whales.no-value") : (tx.amountFiats ? shortNiceNumber(tx.amountFiats[currency?.toLowerCase()], 2, 1, currency) : "")}</span>
+              <span className='tx-amount-fiat'>
+                {devNet ?
+                  t("home.whales.no-value")
+                  :
+                  (tx.amountFiats ? shortNiceNumber(tx.amountFiats[currency?.toLowerCase()], 2, 1, currency) : "")
+                }
+              </span>
             </div>
           ))}
         </div>

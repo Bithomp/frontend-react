@@ -725,7 +725,9 @@ export const fullNiceNumber = n => {
     }
   }
   if (n) {
-    return n.toLocaleString(undefined, { maximumFractionDigits: 15 })
+    return <span suppressHydrationWarning>
+      {n.toLocaleString(undefined, { maximumFractionDigits: 15 })}
+    </span>
   } else {
     return n
   }

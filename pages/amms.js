@@ -1,5 +1,5 @@
 import { useTranslation } from 'next-i18next'
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import axios from 'axios'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useWidth, server } from '../utils'
@@ -69,8 +69,6 @@ export default function Amms({ initialData, initialErrorMessage }) {
   const [errorMessage, setErrorMessage] = useState(initialErrorMessage || "")
   */
 
-  const [isRendered, setIsRendered] = useState(false)
-
   /*
   const checkApi = async () => {
     let apiUrl = 'v2/amms'
@@ -114,7 +112,6 @@ export default function Amms({ initialData, initialErrorMessage }) {
 
   useEffect(() => {
     //checkApi()
-    setIsRendered(true)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -175,8 +172,8 @@ export default function Amms({ initialData, initialErrorMessage }) {
                               </>
                             }
                           </td>
-                          <td>
-                            {isRendered ? shortNiceNumber(a.lpTokenBalance.value) : ""}
+                          <td suppressHydrationWarning>
+                            {shortNiceNumber(a.lpTokenBalance.value)}
                             <br />
                             {lpTokenName(a)}
                           </td>
@@ -247,7 +244,7 @@ export default function Amms({ initialData, initialErrorMessage }) {
                           addressUsernameOrServiceLink(a.amount2, 'issuer', { short: true })
                         }
                       </p>
-                      <p>
+                      <p suppressHydrationWarning>
                         LP balance:
                         {" "}
                         {shortNiceNumber(a.lpTokenBalance.value)}
