@@ -62,7 +62,7 @@ export default function NftsComponent({
   id,
   account
 }) {
-  const { t } = useTranslation(['common', 'nft-sort'])
+  const { t } = useTranslation(['common', 'nft-sort', 'popups'])
   const router = useRouter()
   const windowWidth = useWidth()
 

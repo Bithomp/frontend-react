@@ -9,7 +9,6 @@ import { amountFormat, timeOrDate, convertedAmount } from '../utils/format'
 import NftImageOrVideo from './NftImageOrVideo'
 import AgeCheck from './UI/AgeCheck'
 
-
 const addressName = (details, name) => {
   if (!details) return ""
   const { username, service } = details
@@ -26,7 +25,7 @@ const addressName = (details, name) => {
 }
 
 export default function Tiles({ nftList, type = 'name', convertCurrency, account }) {
-  const { t } = useTranslation()
+  const { t } = useTranslation(['common', 'popups'])
   const router = useRouter()
 
   const [showAgeCheck, setShowAgeCheck] = useState(false)
@@ -113,7 +112,7 @@ export default function Tiles({ nftList, type = 'name', convertCurrency, account
           )}
         </ul>
       </div>
-      {showAgeCheck && <AgeCheck />}
+      {showAgeCheck && <AgeCheck setShowAgeCheck={setShowAgeCheck} />}
     </div>
   }
 
@@ -155,7 +154,7 @@ export default function Tiles({ nftList, type = 'name', convertCurrency, account
           )}
         </ul>
       </div>
-      {showAgeCheck && <AgeCheck />}
+      {showAgeCheck && <AgeCheck setShowAgeCheck={setShowAgeCheck} />}
     </div>
   }
   return ""
