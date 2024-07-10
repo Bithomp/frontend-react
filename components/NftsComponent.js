@@ -894,6 +894,5 @@ export default function NftsComponent({
         }
       </div>
     </div>
-
   </>
 }
