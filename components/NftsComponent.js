@@ -715,6 +715,20 @@ export default function NftsComponent({
               </div>
             }
 
+            {!nftExplorer && rendered &&
+              <div>
+                <span style={{ display: "inline-block", paddingBottom: "5px" }}>
+                  {t("table.issuer")}
+                </span>
+                <IssuerSelect
+                  issuersList={issuersList}
+                  selectedIssuer={issuer}
+                  setSelectedIssuer={setIssuer}
+                  disabled={!(id || owner) || issuersList?.length < 1}
+                />
+              </div>
+            }
+
             {(!burnedPeriod && !xahauNetwork) &&
               <div>
                 {t("general.search")}
@@ -774,17 +788,6 @@ export default function NftsComponent({
           //  <h3 style={{ textAlign: 'center' }}>&#8593; Release to refresh</h3>
           //}
           >
-            {!nftExplorer && (id || owner) && issuersList?.length > 0 &&
-              <div className='center' style={{ marginBottom: "10px" }}>
-                {rendered &&
-                  <IssuerSelect
-                    issuersList={issuersList}
-                    selectedIssuer={issuer}
-                    setSelectedIssuer={setIssuer}
-                  />
-                }
-              </div>
-            }
 
             {activeView === "list" &&
               <>

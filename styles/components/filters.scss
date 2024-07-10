@@ -223,6 +223,7 @@ $width: 340px;
         padding: 4px;
         border: 1px solid #ccc;
         cursor: pointer;
+        color: var(--background-block);
 
         @media(min-width: 440px) {
             width: 38px;

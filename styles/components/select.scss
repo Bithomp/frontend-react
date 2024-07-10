@@ -6,9 +6,12 @@
     box-shadow: none;
     background-color: var(--background-input);
     transition: background-color .5s, border-color 0.5s;
+
     &:hover {
-      border-color: var(--accent-icon);
+      border-color: var(--accent-link);
+      box-shadow: 0 0 5px var(--unaccent-icon);
     }
+
     .react-select__value-container {
       text-align: left;
       .react-select__input-container {
@@ -20,15 +23,29 @@
     }
   }
 
+  &.react-select--is-disabled {
+    .react-select__control {
+      background-color: var(--background-input-readonly);
+    }
+
+    .react-select__single-value,
+    .react-select__indicator {
+      opacity: 0.45;
+    }
+  }
+
   .react-select__control--is-focused {
-    box-shadow: 0 0 10px var(--accent-icon);
+    box-shadow: 0 0 5px var(--unaccent-icon);
   }
 
   .react-select__menu {
     border-radius: 0;
     margin-top: 0;
     z-index: 2;
+    box-shadow: none;
     background-color: var(--background-secondary);
+    box-sizing: border-box !important;
+    inset: 100% 0 auto !important;
   }
 
   .react-select__menu-list {
@@ -39,13 +56,19 @@
   .react-select__option {
     background-color: var(--background-secondary);
     color: var(--text-main);
-    &:hover {
-      background-color: var(--background-main);
-    }
-  }
 
-  .react-select__option--is-focused:not(.react-select__option--is-selected) {
-    background-color: var(--background-main);
+    &--is-focused {
+      border-color: hsl(0, 0%, 80%) !important;
+    }
+
+    &--is-selected {
+      color: var(--background-main);
+      background: var(--accent-icon);
+    }
+
+    &:hover {
+      background: var(--unaccent-icon);
+    }
   }
 
   .react-select__dropdown-indicator {
@@ -55,8 +78,13 @@
     }
   }
 
+  .react-select__indicator {
+    &-separator {
+      display: none;
+    }
+  }
+
   .react-select__indicator-separator {
-    //background-color: var(--accent-icon);
     display: none;
   }
 
