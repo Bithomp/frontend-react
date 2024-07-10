@@ -44,7 +44,9 @@ moment.relativeTimeThreshold('ss', devNet ? 36 : 6)
 
 const showTime = ({ time }) => {
   if (!time) return "N/A"
-  return <span className={(Math.floor(Date.now() / 1000) - (devNet ? 40 : 10)) > time ? 'red bold' : ''}>{timeFromNow((time - 1))}</span>
+  return <span className={(Math.floor(Date.now() / 1000) - (devNet ? 40 : 10)) > time ? 'red bold' : ''}>
+    {timeFromNow((time - 1))}
+  </span>
 }
 
 const ShowTimeMemo = memo(showTime)

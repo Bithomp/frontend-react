@@ -460,7 +460,7 @@ export const amountFormat = (amount, options = {}) => {
 
   //add issued by (issuerDetails.service / username)
   if (type !== nativeCurrency && options.tooltip) {
-    return <>
+    return <span suppressHydrationWarning>
       {showValue} {valuePrefix} {" "}
       <span className='tooltip'>
         <a href={"/explorer/" + issuer}>{currency}</a>
@@ -468,10 +468,12 @@ export const amountFormat = (amount, options = {}) => {
           {addressUsernameOrServiceLink(amount, 'issuer', { short: true })}
         </span>
       </span>
-    </>
+    </span>
   } else {
     //type: ['IOU', 'IOU demurraging', 'NFT']
-    return showValue + " " + valuePrefix + " " + currency
+    return <span suppressHydrationWarning>
+      {showValue + " " + valuePrefix + " " + currency}
+    </span>
   }
 }
 
@@ -622,7 +624,9 @@ export const capitalize = word => {
 }
 
 export const timeFromNow = timestamp => {
-  return moment(timestamp * 1000, "unix").fromNow()
+  return <span suppressHydrationWarning>
+    {moment(timestamp * 1000, "unix").fromNow()}
+  </span>
 }
 
 export const fullDateAndTime = (timestamp, type = null) => {

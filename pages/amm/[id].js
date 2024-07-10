@@ -249,15 +249,9 @@ export default function Amm(
                         <tr>
                           <td>Created</td>
                           <td>
-                            {isMounted ?
-                              <>
-                                {timeFromNow(data.createdAt)}
-                                {", "}
-                                {fullDateAndTime(data.createdAt)}
-                              </>
-                              :
-                              ""
-                            }
+                            {timeFromNow(data.createdAt)}
+                            {", "}
+                            {fullDateAndTime(data.createdAt)}
                             {" "}
                             <LinkTx tx={data.createdTxHash} icon={true} />
                           </td>
@@ -266,15 +260,9 @@ export default function Amm(
                           <tr>
                             <td>Last update</td>
                             <td>
-                              {isMounted ?
-                                <>
-                                  {timeFromNow(data.updatedAt)}
-                                  {", "}
-                                  {fullDateAndTime(data.updatedAt)}
-                                </>
-                                :
-                                ""
-                              }
+                              {timeFromNow(data.updatedAt)}
+                              {", "}
+                              {fullDateAndTime(data.updatedAt)}
                               {" "}
                               <LinkTx tx={data.updatedTxHash} icon={true} />
                             </td>
@@ -330,15 +318,9 @@ export default function Amm(
                           <tr>
                             <td>Expiration</td>
                             <td>
-                              {isMounted ?
-                                <>
-                                  {timeFromNow(data.auctionSlot.expiration)}
-                                  {", "}
-                                  {fullDateAndTime(data.auctionSlot.expiration)}
-                                </>
-                                :
-                                ""
-                              }
+                              {timeFromNow(data.auctionSlot.expiration)}
+                              {", "}
+                              {fullDateAndTime(data.auctionSlot.expiration)}
                             </td>
                           </tr>
                         </tbody>
@@ -373,15 +355,9 @@ export default function Amm(
                                   <tr>
                                     <td>Created</td>
                                     <td>
-                                      {isMounted ?
-                                        <>
-                                          {timeFromNow(slot.createdAt)}
-                                          {", "}
-                                          {fullDateAndTime(slot.createdAt)}
-                                        </>
-                                        :
-                                        ""
-                                      }
+                                      {timeFromNow(slot.createdAt)}
+                                      {", "}
+                                      {fullDateAndTime(slot.createdAt)}
                                       {" "}
                                       <LinkTx tx={slot.createdTxHash} icon={true} />
                                     </td>
@@ -391,15 +367,9 @@ export default function Amm(
                                     <tr>
                                       <td>Last update</td>
                                       <td>
-                                        {isMounted ?
-                                          <>
-                                            {timeFromNow(data.updatedAt)}
-                                            {", "}
-                                            {fullDateAndTime(data.updatedAt)}
-                                          </>
-                                          :
-                                          ""
-                                        }
+                                        {timeFromNow(data.updatedAt)}
+                                        {", "}
+                                        {fullDateAndTime(data.updatedAt)}
                                         {" "}
                                         <LinkTx tx={slot.updatedTxHash} icon={true} />
                                       </td>

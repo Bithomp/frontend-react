@@ -190,7 +190,7 @@ export default function Amms({ initialData, initialErrorMessage }) {
                             {shortHash(a.lpTokenBalance.currency)} <CopyButton text={a.lpTokenBalance.currency} />
                           </td>
                           <td>
-                            {isRendered && timeFromNow(a.createdAt)}
+                            {timeFromNow(a.createdAt)}
                           </td>
                           <td className='right'>
                             {showAmmPercents(a.tradingFee)}
@@ -250,7 +250,7 @@ export default function Amms({ initialData, initialErrorMessage }) {
                       <p>
                         LP balance:
                         {" "}
-                        {isRendered ? shortNiceNumber(a.lpTokenBalance.value) : ""}
+                        {shortNiceNumber(a.lpTokenBalance.value)}
                         {" "}
                         {lpTokenName(a)}
                       </p>
@@ -274,15 +274,9 @@ export default function Amms({ initialData, initialErrorMessage }) {
                       <p>
                         Created:
                         {" "}
-                        {isRendered ?
-                          <>
-                            {timeFromNow(a.createdAt)}
-                            {", "}
-                            {fullDateAndTime(a.createdAt)}
-                          </>
-                          :
-                          ""
-                        }
+                        {timeFromNow(a.createdAt)}
+                        {", "}
+                        {fullDateAndTime(a.createdAt)}
                       </p>
                       <p>
                         Trading fee:
