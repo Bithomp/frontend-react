@@ -413,7 +413,7 @@ export default function Validators({ amendment }) {
                         }
                         {v.unl &&
                           <p>
-                            UNL: ✔️
+                            UNL: ✅
                           </p>
                         }
                         {v.nUnl &&
@@ -607,7 +607,7 @@ export default function Validators({ amendment }) {
                             </span>
                             :
                             <span className='tooltip'>
-                              ✔️
+                              ✅
                               <span className='tooltiptext right no-brake'>
                                 {t("table.text.unl", { ns: 'validators' })}
                               </span>
