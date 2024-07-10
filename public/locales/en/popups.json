@@ -1,0 +1,8 @@
+{
+  "age-check": {
+    "subtitle": "Explicit content",
+    "text": "This will enable explicit and sensitive content. You must be of the legal age to view this.",
+    "button-true": "Yes, I'm over 18",
+    "button-false": "No, I'm not"
+  }
+}

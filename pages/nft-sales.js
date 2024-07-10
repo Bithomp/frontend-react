@@ -68,7 +68,7 @@ export const getServerSideProps = async (context) => {
       searchQuery: search || "",
       includeWithoutMediaDataQuery: includeWithoutMediaData || false,
       isSsrMobile: getIsSsrMobile(context),
-      ...(await serverSideTranslations(locale, ['common', 'nft-sort'])),
+      ...(await serverSideTranslations(locale, ['common', 'nft-sort', 'popups'])),
     },
   }
 }

@@ -47,7 +47,7 @@ export const getServerSideProps = async (context) => {
       includeWithoutMediaDataQuery: includeWithoutMediaData || false,
       id: id ? (Array.isArray(id) ? id[0] : id) : "",
       isSsrMobile: getIsSsrMobile(context),
-      ...(await serverSideTranslations(locale, ['common', 'nft-sort'])),
+      ...(await serverSideTranslations(locale, ['common', 'nft-sort', 'popups'])),
     },
   }
 }

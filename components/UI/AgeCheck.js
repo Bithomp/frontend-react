@@ -1,26 +1,32 @@
-import { useState } from "react"
+import { useTranslation } from "react-i18next"
 
-export default function AgeCheck() {
-  const [isShown, setIsShown] = useState(true)
+export default function AgeCheck({ setShowAgeCheck }) {
+  const { t } = useTranslation()
 
   const confirmAgeClick = () => {
     localStorage.setItem("isOver18", true)
-    setIsShown(false)
+    setShowAgeCheck(false)
   }
 
   return <>
-    <div className={`age-check${isShown ? ' is-visible' : ''}`}>
+    <div className="age-check is-visible">
       <div className="age-check__header">
         <h3>18+</h3>
-        <p className="age-check__subtitle">Explicit content</p>
+        <p className="age-check__subtitle">
+          {t("age-check.subtitle", { ns: "popups" })}
+        </p>
       </div>
       <p className="age-check__text">
-        This will enable explicit and sensitive content. You must be of the legal age to view this.
+        {t("age-check.text", { ns: "popups" })}
       </p>
       <br />
       <div className="age-check__btns">
-        <button className="age-check__btn" onClick={confirmAgeClick}>Yes, I'm over 18</button>
-        <button className="age-check__btn" onClick={() => setIsShown(false)}>No, I'm not</button>
+        <button className="age-check__btn" onClick={confirmAgeClick}>
+          {t("age-check.button-true", { ns: "popups" })}
+        </button>
+        <button className="age-check__btn" onClick={() => setShowAgeCheck(false)}>
+          {t("age-check.button-false", { ns: "popups" })}
+        </button>
       </div>
     </div>
     <div className="age-check-overlay"></div>

@@ -16,6 +16,7 @@ $width: 340px;
         height: calc(100% - 20px);
         pointer-events: none;
         padding-top: 12px;
+        z-index: 4;
     }
 
     &-nav {
