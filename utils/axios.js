@@ -8,3 +8,6 @@ export const axiosServer = axios.create({
   baseURL: server + '/api/'
 })
 
+export const axiosAdmin = axios.create({
+  baseURL: server + '/api/partner/'
+})

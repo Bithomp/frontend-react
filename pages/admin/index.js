@@ -2,7 +2,6 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useTranslation } from 'next-i18next'
 import { useEffect, useState } from 'react'
 import { Turnstile } from '@marsidev/react-turnstile'
-import axios from 'axios'
 import { useTheme } from '../../components/Layout/ThemeContext'
 import Link from 'next/link'
 
@@ -12,6 +11,7 @@ import CheckBox from '../../components/UI/CheckBox'
 import { isEmailValid } from '../../utils'
 import { getIsSsrMobile } from '../../utils/mobile'
 import AdminTabs from '../../components/Admin/Tabs'
+import { axiosAdmin } from '../../utils/axios'
 
 export const getServerSideProps = async (context) => {
   const { locale, query } = context
@@ -52,7 +52,7 @@ export default function Admin({ redirectToken, Account, setAccount }) {
         "authTokenExpiredAt": 1698490659
       }
     */
-    const siteKeyData = await axios.get('partner/auth', { baseUrl: '/api/' }).catch(error => {
+    const siteKeyData = await axiosAdmin.get('auth').catch(error => {
       if (error && error.message !== "canceled") {
         setErrorMessage(t("error." + error.message))
       }
@@ -73,7 +73,7 @@ export default function Admin({ redirectToken, Account, setAccount }) {
       setStep(0)
     } else {
       setStep(2)
-      axios.defaults.headers.common['Authorization'] = "Bearer " + sessionToken
+      axiosAdmin.defaults.headers.common['Authorization'] = "Bearer " + sessionToken
       getLoggedUserData()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -81,10 +81,9 @@ export default function Admin({ redirectToken, Account, setAccount }) {
 
   const redirectTokenRun = async () => {
     if (redirectToken) {
-      const formData = await axios.post(
-        'partner/auth',
-        { redirectToken },
-        { baseUrl: '/api/' }
+      const formData = await axiosAdmin.post(
+        'auth',
+        { redirectToken }
       ).catch(error => {
         if (error?.response?.data?.error) {
           setErrorMessage(error.response.data.error)
@@ -105,17 +104,14 @@ export default function Admin({ redirectToken, Account, setAccount }) {
         setStep(2)
         setErrorMessage("")
         localStorage.setItem("sessionToken", data.token)
-        axios.defaults.headers.common['Authorization'] = "Bearer " + data.token
+        axiosAdmin.defaults.headers.common['Authorization'] = "Bearer " + data.token
         getLoggedUserData()
       }
     }
   }
 
   const getLoggedUserData = async () => {
-    const data = await axios.get(
-      'partner/user',
-      { baseUrl: '/api/' }
-    ).catch(error => {
+    const data = await axiosAdmin.get('user').catch(error => {
       if (error.response?.data?.error === "errors.token.required") {
         onLogOut()
         return
@@ -138,10 +134,7 @@ export default function Admin({ redirectToken, Account, setAccount }) {
       setAccount({ ...Account, pro: data.data.email })
     }
 
-    const partnerData = await axios.get(
-      'partner/partner',
-      { baseUrl: '/api/' }
-    ).catch(error => {
+    const partnerData = await axiosAdmin.get('partner').catch(error => {
       if (error.response?.data?.error === "errors.token.required") {
         onLogOut()
         return
@@ -165,9 +158,8 @@ export default function Admin({ redirectToken, Account, setAccount }) {
       */
       if (partnerData.data.bithompProPackageID) {
         //request to get the package data
-        const packageData = await axios.get(
-          'partner/partner/package/' + partnerData.data.bithompProPackageID,
-          { baseUrl: '/api/' }
+        const packageData = await axiosAdmin.get(
+          'partner/package/' + partnerData.data.bithompProPackageID
         ).catch(error => {
           if (error.response?.data?.error === "errors.token.required") {
             onLogOut()
@@ -236,10 +228,9 @@ export default function Admin({ redirectToken, Account, setAccount }) {
     setErrorMessage("")
 
     if (step === 0) {
-      const formData = await axios.put(
-        'partner/auth',
-        { email, authToken, "cf-turnstile-response": token },
-        { baseUrl: '/api/' }
+      const formData = await axiosAdmin.put(
+        'auth',
+        { email, authToken, "cf-turnstile-response": token }
       ).catch(error => {
         if (error && error.message !== "canceled") {
           setErrorMessage(t(error.response.data.error || "error." + error.message))
@@ -269,10 +260,9 @@ export default function Admin({ redirectToken, Account, setAccount }) {
         return
       }
 
-      const formData = await axios.post(
-        'partner/auth',
-        { email, password, authToken },
-        { baseUrl: '/api/' }
+      const formData = await axiosAdmin.post(
+        'auth',
+        { email, password, authToken }
       ).catch(error => {
         if (error?.response?.data?.error === "Invalid password") {
           setErrorMessage(t("form.error.password-invalid"))
@@ -295,7 +285,7 @@ export default function Admin({ redirectToken, Account, setAccount }) {
         setStep(2)
         setErrorMessage("")
         localStorage.setItem("sessionToken", data.token)
-        axios.defaults.headers.common['Authorization'] = "Bearer " + data.token
+        axiosAdmin.defaults.headers.common['Authorization'] = "Bearer " + data.token
         getLoggedUserData()
       }
     }

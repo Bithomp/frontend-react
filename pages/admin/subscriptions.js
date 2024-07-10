@@ -3,6 +3,7 @@ import { useTranslation } from 'next-i18next'
 import { useEffect, useState } from 'react'
 import axios from 'axios'
 import { useRouter } from 'next/router'
+import { axiosAdmin } from '../../utils/axios'
 
 import { useWidth, encode, wssServer } from '../../utils'
 import { getIsSsrMobile } from '../../utils/mobile'
@@ -104,7 +105,7 @@ export default function Subscriptions({ setSignRequest, receiptQuery }) {
     if (!sessionToken) {
       router.push('/admin')
     } else {
-      axios.defaults.headers.common['Authorization'] = "Bearer " + sessionToken
+      axiosAdmin.defaults.headers.common['Authorization'] = "Bearer " + sessionToken
       getApiData()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -114,10 +115,7 @@ export default function Subscriptions({ setSignRequest, receiptQuery }) {
     setLoading(true)
     setErrorMessage("")
 
-    const packagesData = await axios.get(
-      'partner/partner/packages',
-      { baseUrl: '/api/' }
-    ).catch(error => {
+    const packagesData = await axiosAdmin.get('partner/packages').catch(error => {
       if (error && error.message !== "canceled") {
         setErrorMessage(t(error.response.data.error || "error." + error.message))
         if (error.response?.data?.error === "errors.token.required") {
@@ -178,15 +176,14 @@ export default function Subscriptions({ setSignRequest, receiptQuery }) {
     const period = bithompProPlan.substring(0, 1) === "m" ? "month" : "year"
     const periodCount = bithompProPlan.substring(1)
 
-    const paymentData = await axios.post(
-      'partner/partner/bids',
+    const paymentData = await axiosAdmin.post(
+      'partner/bids',
       {
         type: "bithomp_pro",
         //tier: "standard", //only for api plans
         period,
         periodCount: 1 * periodCount,
-      },
-      { baseUrl: '/api/' }
+      }
     ).catch(error => {
       if (error && error.message !== "canceled") {
         setErrorMessage(t(error.response.data.error || "error." + error.message))

@@ -1,10 +1,10 @@
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useTranslation } from 'next-i18next'
 import { useEffect, useState } from 'react'
-import axios from 'axios'
 import { useRouter } from 'next/router'
 import { chartSpan, useWidth } from '../../../utils'
 import { getIsSsrMobile } from '../../../utils/mobile'
+import { axiosAdmin } from '../../../utils/axios'
 
 import SEO from '../../../components/SEO'
 import SimpleChart from '../../../components/SimpleChart'
@@ -36,7 +36,7 @@ export default function Charts() {
     if (!sessionToken) {
       router.push('/admin')
     } else {
-      axios.defaults.headers.common['Authorization'] = "Bearer " + sessionToken
+      axiosAdmin.defaults.headers.common['Authorization'] = "Bearer " + sessionToken
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
@@ -52,9 +52,8 @@ export default function Charts() {
     setLoading(true)
 
     //&search=text&ip=z
-    const apiRequests = await axios.get(
-      'partner/partner/accessToken/requests/chart?span=' + chartSpan(period) + '&period=' + period,
-      { baseUrl: '/api/' }
+    const apiRequests = await axiosAdmin.get(
+      'partner/accessToken/requests/chart?span=' + chartSpan(period) + '&period=' + period
     ).catch(error => {
       if (error && error.message !== "canceled") {
         setErrorMessage(t(error.response.data.error || "error." + error.message))

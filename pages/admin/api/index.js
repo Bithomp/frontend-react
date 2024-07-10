@@ -1,8 +1,8 @@
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useTranslation } from 'next-i18next'
 import { useEffect, useState } from 'react'
-import axios from 'axios'
 import { useRouter } from 'next/router'
+import { axiosAdmin } from '../../../utils/axios'
 
 import SEO from '../../../components/SEO'
 
@@ -35,7 +35,7 @@ export default function Api() {
     if (!sessionToken) {
       router.push('/admin')
     } else {
-      axios.defaults.headers.common['Authorization'] = "Bearer " + sessionToken
+      axiosAdmin.defaults.headers.common['Authorization'] = "Bearer " + sessionToken
       getApiData()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -44,9 +44,8 @@ export default function Api() {
   const getApiData = async () => {
     setLoading(true)
     setErrorMessage("")
-    const data = await axios.get(
-      'partner/partner/accessToken',
-      { baseUrl: '/api/' }
+    const data = await axiosAdmin.get(
+      'partner/accessToken'
     ).catch(error => {
       if (error && error.message !== "canceled") {
         setErrorMessage(t(error.response?.data?.error || "error." + error.message))
@@ -92,10 +91,9 @@ export default function Api() {
       return
     }
 
-    const data = await axios.post(
-      'partner/partner/accessToken',
-      { domain, description: apiDescription },
-      { baseUrl: '/api/' }
+    const data = await axiosAdmin.post(
+      'partner/accessToken',
+      { domain, description: apiDescription }
     ).catch(error => {
       if (error && error.message !== "canceled") {
         setErrorMessage(t(error.response.data.error || "error." + error.message))

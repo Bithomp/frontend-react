@@ -24,6 +24,7 @@ export const getServerSideProps = async (context) => {
 import LinkIcon from "../../../public/images/link.svg"
 import AdminTabs from '../../../components/Admin/Tabs'
 import BillingCountry from '../../../components/Admin/BillingCountry'
+import { axiosAdmin } from '../../../utils/axios'
 
 export default function Payments() {
   const { t } = useTranslation(['common', 'admin'])
@@ -43,7 +44,7 @@ export default function Payments() {
     if (!sessionToken) {
       router.push('/admin')
     } else {
-      axios.defaults.headers.common['Authorization'] = "Bearer " + sessionToken
+      axiosAdmin.defaults.headers.common['Authorization'] = "Bearer " + sessionToken
       getApiData()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -64,9 +65,8 @@ export default function Payments() {
   const getApiData = async () => {
     //check rates, and show transaction history only 
     setLoading(true)
-    const data = await axios.get(
-      'partner/partner/accessToken',
-      { baseUrl: '/api/' }
+    const data = await axiosAdmin.get(
+      'partner/accessToken'
     ).catch(error => {
       if (error && error.message !== "canceled") {
         setErrorMessage(t(error.response?.data?.error || "error." + error.message))
@@ -99,9 +99,8 @@ export default function Payments() {
 
     setLoadingPayments(true)
     setApiPayments({})
-    const apiTransactions = await axios.get(
-      'partner/partner/accessToken/transactions?limit=50&offset=0',
-      { baseUrl: '/api/' }
+    const apiTransactions = await axiosAdmin.get(
+      'partner/accessToken/transactions?limit=50&offset=0'
     ).catch(error => {
       setLoadingPayments(false)
       if (error && error.message !== "canceled") {
