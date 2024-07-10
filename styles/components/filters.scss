@@ -1,19 +1,9 @@
 $width: 340px;
 
 .filters {
-    position: absolute;
-    height: 100%;
     z-index: 3;
 
     @media(min-width: 1300px) {
-        .content-cols:not(.is-filters-hide) & {
-            border-right: 1px solid #ccc;
-
-            & + .content-text {
-                padding-left: $width + 35px !important;
-            }
-        }
-
         & + .content-text {
             min-height: calc(100vh - 81px) !important;
             padding-top: 80px !important;
@@ -65,7 +55,6 @@ $width: 340px;
             max-width: $width;
 
             body:not(.is-filters-hide) & {
-                height: calc(100vh - 81px);
                 overflow-y: scroll;
                 scrollbar-width: thin;
                 scrollbar-color: var(--accent-icon) #fff;
@@ -92,7 +81,7 @@ $width: 340px;
 
     .content-cols.is-filters-hide & {
         @media(min-width: 1300px) {
-            width: fit-content;
+            width: 0;
         }
     }
 
@@ -116,6 +105,11 @@ $width: 340px;
         margin: 0;
         width: 100%;
         padding: 75px 0 80px;
+
+        @media(min-width: 1300px) {
+            height: calc(100svh - 80px);
+            overflow-y: scroll;
+        }
 
         @media(max-width: 1300px) {
             padding: 65px 15px !important;
