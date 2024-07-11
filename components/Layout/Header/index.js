@@ -14,12 +14,13 @@ import {
   ledgerSubName,
 } from '../../../utils'
 
+import Image from 'next/image'
 import Switch from "./Switch"
 import LangTable from "./LangTable"
 import CurrencyTable from "./CurrencyTable"
 import NetworkTable from "./NetworkTable"
 import LogoAnimated from '../LogoAnimated'
-import Image from 'next/image'
+import { FaAngleDown } from "react-icons/fa";
 
 let timeoutIds = {}
 
@@ -68,6 +69,7 @@ const MenuDropDown = ({
       onClick={() => setHoverStates(state => ({ ...state, [id]: !hoverStates[id] }))}
     >
       {title}
+      <FaAngleDown className='chevron' />
     </div>
     {subtitle &&
       <div className='menu-dropdown-subtitle orange'>

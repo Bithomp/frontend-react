@@ -9,7 +9,7 @@ header {
   .header-logo {
     max-width: 150px;
     max-height: 43px;
-    margin-left: 80px;
+    margin-left: 20px;
     margin-top: 17px;
   }
 
@@ -24,6 +24,10 @@ header {
       align-items: center;
       padding-bottom: 1px; //don't cut bottoms of "g" in titles
       height: 20px;
+      .chevron {
+        padding-left: 3px;
+        padding-top: 2px;
+      }
     }
     .menu-dropdown-content {
       position: absolute;
@@ -84,13 +88,13 @@ header {
   }
 
   .header-menu-left {
-    left: 250px;
+    left: 190px;
     top: 29px;
   }
 
   .header-menu-right {
     top: 24.5px;
-    right: 80px;
+    right: 20px;
     > div {
       &:last-child {
         margin-right: 0;
@@ -107,6 +111,11 @@ header {
       width: 24px;
       height: 24px;
       margin-right: 5px;
+    }
+    .top-switch {
+      .chevron {
+        display: none;
+      }
     }
   }
 
@@ -285,7 +294,6 @@ header {
     }
 
     .header-logo {
-      margin-left: 20px;
       max-width: 120px;
       margin-top: 21px;
       max-height: 39px;
