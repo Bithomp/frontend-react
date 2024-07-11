@@ -37,7 +37,7 @@
       "offers": "Angebote"
     },
     "network": {
-      "network": "Netzwerk",
+      "blockchain": "Blockchain",
       "nodes": "Knoten",
       "governance": "Governance",
       "activations": "Aktivierte Konten (Diagramm)",

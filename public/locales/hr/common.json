@@ -37,7 +37,7 @@
       "offers": "Ponude"
     },
     "network": {
-      "network": "Mreža",
+      "blockchain": "Blockchain",
       "nodes": "Čvorovi",
       "governance": "Uprava",
       "activations": "Activated accounts (chart)",

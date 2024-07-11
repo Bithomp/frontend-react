@@ -37,7 +37,7 @@
       "offers": "Penawaran"
     },
     "network": {
-      "network": "Jaringan",
+      "blockchain": "Blockchain",
       "nodes": "Node",
       "governance": "Governance",
       "activations": "Akun yang Telah Aktif (grafik)",

@@ -37,7 +37,7 @@
       "offers": "オファー"
     },
     "network": {
-      "network": "ネットワーク",
+      "blockchain": "ブロックチェーン",
       "nodes": "ノード",
       "governance": "ガバナンス",
       "activations": "Activated accounts (chart)",

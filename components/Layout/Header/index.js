@@ -248,7 +248,7 @@ export default function Header({
 
           <MenuDropDown
             id="dropdown5"
-            title={t("menu.network.network")}
+            title={t("menu.network.blockchain")}
             setHoverStates={setHoverStates}
             hoverStates={hoverStates}
           >

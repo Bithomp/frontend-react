@@ -108,7 +108,7 @@ export default function ExpandListItems({ mobileMenuToggle, displayName, address
         </>
       }
 
-      <div className="mobile-menu-directory" aria-expanded="false">{ledgerName}</div>
+      <div className="mobile-menu-directory" aria-expanded="false">{t("menu.network.blockchain")}</div>
       <div className="mobile-menu__submenu">
         {xahauNetwork &&
           <Link

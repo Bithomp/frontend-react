@@ -37,7 +37,7 @@
       "offers": "제안"
     },
     "network": {
-      "network": "네트워크",
+      "blockchain": "블록체인",
       "nodes": "노드",
       "governance": "Governance",
       "activations": "Activated accounts (chart)",

@@ -37,7 +37,7 @@
       "offers": "Offers"
     },
     "network": {
-      "network": "Network",
+      "blockchain": "Blockchain",
       "nodes": "Nodes",
       "governance": "Governance",
       "activations": "Activated accounts (chart)",

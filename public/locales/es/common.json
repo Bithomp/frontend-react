@@ -37,7 +37,7 @@
       "offers": "Ofertas"
     },
     "network": {
-      "network": "Red",
+      "blockchain": "Blockchain",
       "nodes": "Nodos",
       "governance": "Gobierno",
       "activations": "Cuentas activadas (gráfica)",

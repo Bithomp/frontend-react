@@ -37,7 +37,7 @@
       "offers": "Оферы"
     },
     "network": {
-      "network": "Сеть",
+      "blockchain": "Блокчейн",
       "nodes": "Ноды",
       "governance": "Правление",
       "activations": "Активированные адреса (график)",
