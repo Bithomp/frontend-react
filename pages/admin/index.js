@@ -27,7 +27,7 @@ export const getServerSideProps = async (context) => {
 const turnstileSupportedLanguages = ['ar-EG', 'de', 'en', 'es', 'fa', 'fr', 'id', 'it', 'ja', 'ko', 'nl', 'pl', 'pt-BR', 'ru', 'tr', 'zh-CN', 'zh-TW']
 const checkmark = '/images/checkmark.svg'
 
-export default function Admin({ redirectToken, Account, setAccount }) {
+export default function Admin({ redirectToken, account, setAccount }) {
   const { theme } = useTheme()
   const { t, i18n } = useTranslation(['common', 'admin'])
   const [siteKey, setSiteKey] = useState("")
@@ -131,7 +131,7 @@ export default function Admin({ redirectToken, Account, setAccount }) {
         }
       */
       setLoggedUserData(data.data)
-      setAccount({ ...Account, pro: data.data.email })
+      setAccount({ ...account, pro: data.data.email })
     }
 
     const partnerData = await axiosAdmin.get('partner').catch(error => {
@@ -293,7 +293,7 @@ export default function Admin({ redirectToken, Account, setAccount }) {
 
   const onLogOut = () => {
     localStorage.removeItem('sessionToken')
-    setAccount({ ...Account, pro: null })
+    setAccount({ ...account, pro: null })
     setStep(0)
     setErrorMessage("")
     setToken("")

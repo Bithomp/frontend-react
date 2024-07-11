@@ -94,7 +94,7 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
     const response = await axios("v2/address/" + address + '?username=true&hashicon=true')
     if (response.data) {
       const { hashicon, username } = response.data;
-      setAccount({ address, hashicon, username })
+      setAccount({ ...account, address, hashicon, username })
     } else {
       setAccount(null)
     }
