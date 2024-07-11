@@ -7,7 +7,6 @@ import {
   useLocalStorage,
   ledgerName,
   nativeCurrency,
-  xahauNetwork,
   network
 } from '../../utils'
 
@@ -16,7 +15,7 @@ import LogoAnimated from './LogoAnimated'
 import ButtonScrollTop from './ButtonScrollTop'
 import { useRef } from 'react'
 
-export default function Footer({ account, setSignRequest }) {
+export default function Footer() {
   const year = new Date().getFullYear()
   const { t } = useTranslation()
   const footerRef = useRef()
@@ -42,29 +41,12 @@ export default function Footer({ account, setSignRequest }) {
 
       <div className="footer-menu">
         <div className="footer-menu-column">
-          <span className="footer-menu-header">{t("menu.personal.personal")}</span>
-          <a href={"/explorer/"}>{t("menu.personal.search-on-ledgerName", { ledgerName })}</a>
-          <Link href="/username">{t("menu.usernames")}</Link>
-          {/* Hide MY NFTS for XAHAU while they are not ready yet */}
-          {!xahauNetwork &&
-            <>
-              {account?.address ?
-                <Link href={"/nfts/" + account.address} legacyBehavior>{t("signin.actions.my-nfts")}</Link>
-                :
-                <span onClick={() => { setSignRequest({ redirect: "nfts" }) }} className="link">{t("signin.actions.my-nfts")}</span>
-              }
-            </>
-          }
-          {!devNet && <Link href="/alerts">{t("menu.price-alerts", { nativeCurrency })}</Link>}
-          {!devNet && <a href={"/submit/"}>{t("menu.submit-offline-tx")}</a>}
-        </div>
-
-        <div className="footer-menu-column">
-          <span className="footer-menu-header">{t("menu.business.business")}</span>
-          <Link href="/advertise">{t("menu.business.advertise")}</Link>
+          <span className="footer-menu-header">{t("menu.services.services")}</span>
+          <a href={"/explorer/"}>{t("menu.services.search-on-ledgerName", { ledgerName })}</a>
           <Link href="/username">{t("menu.usernames")}</Link>
           <Link href="/submit-account-information">{t("menu.project-registration")}</Link>
-          <Link href="/eaas">{t("menu.business.eaas")}</Link>
+          {!devNet && <Link href="/alerts">{t("menu.price-alerts", { nativeCurrency })}</Link>}
+          {!devNet && <a href={"/submit/"}>{t("menu.submit-offline-tx")}</a>}
         </div>
 
         <div className="footer-menu-column">
@@ -79,13 +61,8 @@ export default function Footer({ account, setSignRequest }) {
           <a href="https://docs.bithomp.com">{t("menu.developers.api")}</a>
           <Link href="/admin">{t("menu.developers.api-admin")}</Link>
           <a href="https://github.com/Bithomp">Github</a>
+          <Link href="/eaas">{t("menu.business.eaas")}</Link>
           <Link href="/build-unl">{t("menu.business.build-unl")}</Link>
-        </div>
-        <div className="footer-menu-column">
-          <span className="footer-menu-header">{t("menu.legal")}</span>
-          <Link href="/disclaimer">{t("menu.disclaimer")}</Link>
-          <Link href="/privacy-policy">{t("menu.privacy-policy")}</Link>
-          <Link href="/terms-and-conditions">{t("menu.terms-and-conditions")}</Link>
         </div>
         <div className="footer-menu-column">
           <span className="footer-menu-header">Bithomp</span>
@@ -96,14 +73,20 @@ export default function Footer({ account, setSignRequest }) {
           <Link href="/press">{t("menu.press")}</Link>
           <Link href="/donate">{t("menu.donate")} <span className="red">❤</span></Link>
         </div>
-
-        {network === 'mainnet' && <div className="footer-menu-column">
-          <span className="footer-menu-header">{t("menu.sponsored.title")}</span>
-          <a href="/go/fm-buy" target="_blank" rel="noreferrer">{t("menu.sponsored.buy")}</a>
-          <a href="/go/fm-earn" target="_blank" rel="noreferrer">{t("menu.sponsored.earn")}</a>
-          {/* <a href="/go/fm-play" target="_blank" rel="noreferrer">{t("menu.sponsored.play")}</a> */}
-        </div>}
-
+        <div className="footer-menu-column">
+          <span className="footer-menu-header">{t("menu.legal")}</span>
+          <Link href="/disclaimer">{t("menu.disclaimer")}</Link>
+          <Link href="/privacy-policy">{t("menu.privacy-policy")}</Link>
+          <Link href="/terms-and-conditions">{t("menu.terms-and-conditions")}</Link>
+        </div>
+        {network === 'mainnet' &&
+          <div className="footer-menu-column">
+            <span className="footer-menu-header">{t("menu.sponsored.title")}</span>
+            <a href="/go/fm-buy" target="_blank" rel="noreferrer">{t("menu.sponsored.buy")}</a>
+            <a href="/go/fm-earn" target="_blank" rel="noreferrer">{t("menu.sponsored.earn")}</a>
+            {/* <a href="/go/fm-play" target="_blank" rel="noreferrer">{t("menu.sponsored.play")}</a> */}
+          </div>
+        }
       </div>
 
       <div className="footer-brand">

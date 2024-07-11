@@ -9,14 +9,11 @@
       "about-us": "О нас"
     },
     "services": {
-      "nft-mint": "Чеканка NFT"
-    },
-    "personal": {
-      "personal": "Для вас",
+      "services": "Сервисы",
+      "nft-mint": "Чеканка NFT",
       "search-on-ledgerName": "Поиск по {{ledgerName}}"
     },
     "business": {
-      "business": "Для бизнеса",
       "advertise": "Размещение рекламы",
       "eaas": "Explorer как сервис (EaaS)",
       "build-unl": "Создать UNL"

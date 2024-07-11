@@ -9,14 +9,11 @@
       "about-us": "About us"
     },
     "services": {
-      "nft-mint": "Mint NFT"
-    },
-    "personal": {
-      "personal": "個人向け",
+      "services": "Services",
+      "nft-mint": "Mint NFT",
       "search-on-ledgerName": "{{ledgerName}}の検索"
     },
     "business": {
-      "business": "ビジネス向け",
       "advertise": "広告掲載",
       "eaas": "Explorer as a Service",
       "build-unl": "UNLの作成"

@@ -9,14 +9,11 @@
       "about-us": "About us"
     },
     "services": {
-      "nft-mint": "Acuñar NFT"
-    },
-    "personal": {
-      "personal": "Particulares",
+      "services": "Servicios",
+      "nft-mint": "Acuñar NFT",
       "search-on-ledgerName": "Buscar en {{ledgerName}}"
     },
     "business": {
-      "business": "Empresas",
       "advertise": "Anúnciate",
       "eaas": "Explorador como Servicio",
       "build-unl": "Construcción de UNL"

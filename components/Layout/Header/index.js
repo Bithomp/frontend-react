@@ -176,34 +176,18 @@ export default function Header({
         <div className="header-menu-left">
           <MenuDropDown
             id="dropdown1"
-            title={t("menu.personal.personal")}
+            title={t("menu.services.services")}
             setHoverStates={setHoverStates}
             hoverStates={hoverStates}
           >
-            <a href={"/explorer/"}>{t("menu.personal.search-on-ledgerName", { ledgerName })}</a>
-            <Link href="/username">{t("menu.usernames")}</Link>
-            {displayName ?
-              <Link href={"/nfts/" + address}>{t("signin.actions.my-nfts")}</Link>
-              :
-              <span onClick={() => { setSignRequest({ redirect: "nfts" }) }} className="link">{t("signin.actions.my-nfts")}</span>
+            {xahauNetwork &&
+              <Link href="/services/nft-mint">{t("menu.services.nft-mint")}</Link>
             }
-            {!devNet && <Link href="/alerts">{t("menu.price-alerts", { nativeCurrency })}</Link>}
-            {!devNet && <a href={"/submit/"}>{t("menu.submit-offline-tx")}</a>}
-          </MenuDropDown>
-
-          <MenuDropDown
-            id="dropdown2"
-            title={t("menu.business.business")}
-            setHoverStates={setHoverStates}
-            hoverStates={hoverStates}
-          >
-            <Link href="/advertise">{t("menu.business.advertise")}</Link>
+            <a href={"/explorer/"}>{t("menu.services.search-on-ledgerName", { ledgerName })}</a>
             <Link href="/username">{t("menu.usernames")}</Link>
             <Link href="/submit-account-information">{t("menu.project-registration")}</Link>
-            <a href="https://docs.bithomp.com">{t("menu.developers.api")}</a>
-            <Link href="/eaas">{t("menu.business.eaas")}</Link>
-            <Link href="/build-unl">{t("menu.business.build-unl")}</Link>
-            <Link href="/press">{t("menu.press")}</Link>
+            {!devNet && <Link href="/alerts">{t("menu.price-alerts", { nativeCurrency })}</Link>}
+            {!devNet && <a href={"/submit/"}>{t("menu.submit-offline-tx")}</a>}
           </MenuDropDown>
 
           <MenuDropDown
@@ -212,6 +196,11 @@ export default function Header({
             setHoverStates={setHoverStates}
             hoverStates={hoverStates}
           >
+            {displayName ?
+              <Link href={"/nfts/" + address}>{t("signin.actions.my-nfts")}</Link>
+              :
+              <span onClick={() => { setSignRequest({ redirect: "nfts" }) }} className="link">{t("signin.actions.my-nfts")}</span>
+            }
             <Link href="/nft-explorer">{t("menu.nft.explorer")}</Link>
             {/* Hide NFT menu for XAHAU while they are not ready yet */}
             {!xahauNetwork && <Link href="/nft-volumes">{t("menu.nft.volumes")}</Link>}

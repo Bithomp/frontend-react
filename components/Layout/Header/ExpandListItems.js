@@ -14,16 +14,25 @@ export default function ExpandListItems({ mobileMenuToggle, displayName, address
 
   return (
     <div className='mobile-menu-wrap'>
-      <div className="mobile-menu-directory" aria-expanded="false">{t("menu.personal.personal")}</div>
+      <div className="mobile-menu-directory" aria-expanded="false">{t("menu.services.services")}</div>
       <div className="mobile-menu__submenu">
-        <a href={"/explorer/"} className="mobile-menu-item">{t("menu.personal.search-on-ledgerName", { ledgerName })}</a>
+        {xahauNetwork &&
+          <Link
+            href="/services/nft-mint"
+            className="mobile-menu-item"
+            onClick={mobileMenuToggle}
+          >
+            {t("menu.services.nft-mint")}
+          </Link>
+        }
+        <a href={"/explorer/"} className="mobile-menu-item">{t("menu.services.search-on-ledgerName", { ledgerName })}</a>
         {!displayName &&
           <Link href="/username" className="mobile-menu-item" onClick={mobileMenuToggle}>{t("menu.usernames")}</Link>
         }
 
-        {!displayName &&
-          <span onClick={() => { setSignRequest({ redirect: "nfts" }) }} className="mobile-menu-item link">{t("signin.actions.my-nfts")}</span>
-        }
+        <Link href="/submit-account-information" className="mobile-menu-item" onClick={mobileMenuToggle}>
+          {t("menu.project-registration")}
+        </Link>
 
         {!devNet &&
           <Link href="/alerts" className="mobile-menu-item" onClick={mobileMenuToggle}>
@@ -35,6 +44,10 @@ export default function ExpandListItems({ mobileMenuToggle, displayName, address
 
       <div className="mobile-menu-directory" aria-expanded="false">NFT</div>
       <div className="mobile-menu__submenu">
+        {!displayName &&
+          <span onClick={() => { setSignRequest({ redirect: "nfts" }) }} className="mobile-menu-item link">{t("signin.actions.my-nfts")}</span>
+        }
+
         <Link href="/nft-explorer" className="mobile-menu-item" onClick={mobileMenuToggle}> {t("menu.nft.explorer")}</Link>
 
         {/* Hide NFT-volumes for XAHAU while they are not ready yet */}
@@ -216,30 +229,84 @@ export default function ExpandListItems({ mobileMenuToggle, displayName, address
           {t("menu.developers.api-admin")}
         </Link>
         <a href="https://github.com/Bithomp" className="mobile-menu-item">Github</a>
+        <Link href="/eaas" className="mobile-menu-item" onClick={mobileMenuToggle}>
+          {t("menu.business.eaas")}
+        </Link>
+        <Link href="/build-unl" className="mobile-menu-item" onClick={mobileMenuToggle}>
+          {t("menu.business.build-unl")}
+        </Link>
       </div>
 
-      {!devNet &&
-        <>
-          <div className="mobile-menu-directory" aria-expanded="false">{t("menu.business.business")}</div>
-          <div className="mobile-menu__submenu">
-            <Link href="/advertise" className="mobile-menu-item" onClick={mobileMenuToggle}>
-              {t("menu.business.advertise")}
-            </Link>
-            {!displayName &&
-              <Link href="/username" className="mobile-menu-item" onClick={mobileMenuToggle}>{t("menu.usernames")}</Link>
-            }
-            <Link href="/submit-account-information" className="mobile-menu-item" onClick={mobileMenuToggle}>
-              {t("menu.project-registration")}
-            </Link>
-            <Link href="/eaas" className="mobile-menu-item" onClick={mobileMenuToggle}>
-              {t("menu.business.eaas")}
-            </Link>
-            <Link href="/build-unl" className="mobile-menu-item" onClick={mobileMenuToggle}>
-              {t("menu.business.build-unl")}
-            </Link>
-          </div>
-        </>
-      }
+      <div className="mobile-menu-directory" aria-expanded="false">Bithomp</div>
+      <div className="mobile-menu__submenu">
+        <Link href="/about-us" className="mobile-menu-item" onClick={mobileMenuToggle}>
+          {t("menu.company.about-us")}
+        </Link>
+        <Link href="/advertise" className="mobile-menu-item" onClick={mobileMenuToggle}>
+          {t("menu.business.advertise")}
+        </Link>
+        <a
+          href="https://xrplmerch.com/product-category/bithomp/?wpam_id=22"
+          target="_blank"
+          rel="noreferrer"
+          className="mobile-menu-item"
+        >
+          {t("menu.merch")}
+        </a>
+        <Link href="/customer-support" className="mobile-menu-item" onClick={mobileMenuToggle}>
+          {t("menu.customer-support")}
+        </Link>
+        <Link href="/press" className="mobile-menu-item" onClick={mobileMenuToggle}>
+          {t("menu.press")}
+        </Link>
+        <Link href="/donate" className="mobile-menu-item" onClick={mobileMenuToggle}>
+          {t("menu.donate")}
+          <span className="red" style={{ marginLeft: "5px" }}>❤</span>
+        </Link>
+      </div>
+
+      <div className="mobile-menu-directory" aria-expanded="false">{t("menu.legal")}</div>
+      <div className="mobile-menu__submenu">
+        <Link href="/disclaimer" className="mobile-menu-item" onClick={mobileMenuToggle}>
+          {t("menu.disclaimer")}
+        </Link>
+        <Link href="/privacy-policy" className="mobile-menu-item" onClick={mobileMenuToggle}>
+          {t("menu.privacy-policy")}
+        </Link>
+        <Link href="/terms-and-conditions" className="mobile-menu-item" onClick={mobileMenuToggle}>
+          {t("menu.terms-and-conditions")}
+        </Link>
+      </div>
+
+      <div className="mobile-menu-directory" aria-expanded="false">{t("menu.sponsored.title")}</div>
+      <div className="mobile-menu__submenu">
+        <a
+          href="/go/fm-buy"
+          target="_blank"
+          rel="noreferrer"
+          className="mobile-menu-item"
+        >
+          {t("menu.sponsored.buy")}
+        </a>
+        <a
+          href="/go/fm-earn"
+          target="_blank"
+          rel="noreferrer"
+          className="mobile-menu-item"
+        >
+          {t("menu.sponsored.earn")}
+        </a>
+        {/* 
+        <a
+          href="/go/fm-play"
+          target="_blank"
+          rel="noreferrer"
+          className="mobile-menu-item"
+        >
+          {t("menu.sponsored.play")}
+        </a>
+        */}
+      </div>
     </div>
   )
 }

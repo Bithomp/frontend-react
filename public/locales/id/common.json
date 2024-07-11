@@ -9,14 +9,11 @@
       "about-us": "Tentang"
     },
     "services": {
-      "nft-mint": "Mint NFT"
-    },
-    "personal": {
-      "personal": "Pribadi",
+      "services": "Layanan",
+      "nft-mint": "Mint NFT",
       "search-on-ledgerName": "Cari di {{ledgerName}}"
     },
     "business": {
-      "business": "Bisnis",
       "advertise": "Iklankan",
       "eaas": "Explorer sebagai Layanan",
       "build-unl": "Bangun UNL"

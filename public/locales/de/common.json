@@ -9,14 +9,11 @@
       "about-us": "About us"
     },
     "services": {
-      "nft-mint": "NFT minten"
-    },
-    "personal": {
-      "personal": "Private",
+      "services": "Services",
+      "nft-mint": "NFT minten",
       "search-on-ledgerName": "Auf {{ledgerName}} suchen"
     },
     "business": {
-      "business": "Firmen",
       "advertise": "Werbung",
       "eaas": "Explorer als Dienst",
       "build-unl": "UNL erstellen"

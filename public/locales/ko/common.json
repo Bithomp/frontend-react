@@ -9,10 +9,8 @@
       "about-us": "About us"
     },
     "services": {
-      "nft-mint": "Mint NFT"
-    },
-    "personal": {
-      "personal": "개인",
+      "services": "Services",
+      "nft-mint": "Mint NFT",
       "search-on-ledgerName": "{{ledgerName}}에서 탐색하기"
     },
     "business": {

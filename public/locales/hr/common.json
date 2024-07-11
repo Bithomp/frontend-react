@@ -9,14 +9,11 @@
       "about-us": "About us"
     },
     "services": {
-      "nft-mint": "Mint NFT"
-    },
-    "personal": {
-      "personal": "Osobno",
+      "services": "Services",
+      "nft-mint": "Mint NFT",
       "search-on-ledgerName": "Traži na {{ledgerName}}"
     },
     "business": {
-      "business": "Business",
       "advertise": "Oglašavanje",
       "eaas": "Pretraživač kao servis",
       "build-unl": "Izradi UNL"
