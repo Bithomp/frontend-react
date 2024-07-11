@@ -9,7 +9,6 @@
     padding: 20px 40px 40px;
     color: #fff;
     text-align: center;
-    display: none;
 
     @media(max-width: 650px) {
         max-width: 280px;
@@ -73,15 +72,9 @@
     }
 
     &-overlay {
-        display: none;
         position: fixed;
         inset: 0;
         z-index: 4;
         background-color: rgba(0, 0, 0, 0.6);
-    }
-
-    &.is-visible,
-    &.is-visible + .age-check-overlay {
-        display: block;
     }
 }
