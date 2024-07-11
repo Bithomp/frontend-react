@@ -9,7 +9,7 @@ export default function AgeCheck({ setShowAgeCheck }) {
   }
 
   return <>
-    <div className="age-check is-visible">
+    <div className="age-check">
       <div className="age-check__header">
         <h3>18+</h3>
         <p className="age-check__subtitle">
