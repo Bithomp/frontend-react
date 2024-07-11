@@ -108,7 +108,7 @@ export default function DateAndTimeRange({ setPeriod, minDate, tabs, radio, defa
       queryAddList.push({ name: periodQueryName, value: periodName })
       setPeriod(periodName)
     } else if (startDate && endDate) {
-      const range = startDate.toISOString() + '..' + endDate.toISOString()
+      const range = new Date(startDate).toISOString() + '..' + new Date(endDate).toISOString()
       queryAddList.push({ name: periodQueryName, value: range })
       setPeriod(range)
     } else {
@@ -123,7 +123,12 @@ export default function DateAndTimeRange({ setPeriod, minDate, tabs, radio, defa
   useEffect(() => {
     //need it to update the search, only for custom to keep the names
     if (startDate && endDate && (periodName === "custom" || !periodName)) {
-      setPeriod(startDate.toISOString() + '..' + endDate.toISOString())
+      let queryAddList = []
+      let queryRemoveList = []
+      const range = new Date(startDate).toISOString() + '..' + new Date(endDate).toISOString()
+      queryAddList.push({ name: periodQueryName, value: range })
+      setPeriod(range)
+      setTabParams(router, [], queryAddList, queryRemoveList)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [startDate, endDate])

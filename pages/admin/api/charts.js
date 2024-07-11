@@ -90,12 +90,6 @@ export default function Charts() {
           tabs={true}
         />
         {width < 500 && <br />}
-        <button
-          className="button-action narrow thin"
-          onClick={getData}
-        >
-          Search
-        </button>
       </center>
 
       <div className='center'>
