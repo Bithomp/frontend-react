@@ -277,7 +277,7 @@ export const nftLink = (nft, type, options = {}) => {
   }
 }
 
-export const nftsExplorerLink = ({ owner, ownerDetails, issuer, issuerDetails }) => {
+export const nftsExplorerLink = ({ owner, ownerDetails, issuer, issuerDetails, taxon }) => {
   if (!owner && !issuer) return "";
   let link = '';
   const issuerUri = issuerDetails?.username ? issuerDetails.username : issuer;
@@ -290,6 +290,9 @@ export const nftsExplorerLink = ({ owner, ownerDetails, issuer, issuerDetails })
     } else if (owner) {
       link = "/nft-explorer?owner=" + ownerUri;
     }
+  }
+  if (taxon !== null) {
+    link += "&taxon=" + taxon
   }
   return <Link href={link + '&includeWithoutMediaData=true'}><LinkIcon /></Link>
 }

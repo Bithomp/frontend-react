@@ -485,7 +485,8 @@ export default function NftDistribution({ issuerQuery, taxonQuery, idQuery, orde
                               owner: user.address,
                               ownerDetails: user.addressDetails,
                               issuer: data.issuer,
-                              issuerDetails: data.issuerDetails
+                              issuerDetails: data.issuerDetails,
+                              taxon: data.taxon
                             }
                           )
                         }
@@ -550,7 +551,8 @@ export default function NftDistribution({ issuerQuery, taxonQuery, idQuery, orde
                                   owner: user.address,
                                   ownerDetails: user.addressDetails,
                                   issuer: data.issuer,
-                                  issuerDetails: data.issuerDetails
+                                  issuerDetails: data.issuerDetails,
+                                  taxon: data.taxon
                                 }
                               )
                             }
