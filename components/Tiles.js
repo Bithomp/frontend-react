@@ -84,7 +84,7 @@ export default function Tiles({ nftList, type = 'name', convertCurrency, account
             <li className="hex" key={i}>
               <div className="hexIn">
                 <Link
-                  href="#"
+                  href={isNftExplicit(nft) ? "#" : "/nft/" + nft.nftokenID}
                   className="hexLink"
                   onClick={(e) => clickOnTile(e, nft)}
                 >
@@ -124,7 +124,7 @@ export default function Tiles({ nftList, type = 'name', convertCurrency, account
             <li className="hex" key={i}>
               <div className="hexIn">
                 <Link
-                  href="#"
+                  href={isNftExplicit(nft.nftoken) ? "#" : "/nft/" + nft.nftoken.nftokenID}
                   className="hexLink"
                   onClick={(e) => clickOnTile(e, nft.nftoken)}
                 >
