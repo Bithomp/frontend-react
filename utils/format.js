@@ -291,7 +291,7 @@ export const nftsExplorerLink = ({ owner, ownerDetails, issuer, issuerDetails, t
       link = "/nft-explorer?owner=" + ownerUri;
     }
   }
-  if (taxon !== null) {
+  if (taxon === 0 || taxon === "0" || taxon) {
     link += "&taxon=" + taxon
   }
   return <Link href={link + '&includeWithoutMediaData=true'}><LinkIcon /></Link>

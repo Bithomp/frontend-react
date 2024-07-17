@@ -120,12 +120,15 @@ export default function NftDistribution({ issuerQuery, taxonQuery, idQuery, orde
       return
     }
 
+    let marker = hasMore
+
     let ownersData = owners
 
     let markerPart = ""
     if (loadMoreRequest) {
       markerPart = "&marker=" + data?.marker
     } else {
+      marker = "first"
       setHasMore("first")
     }
 
