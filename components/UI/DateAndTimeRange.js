@@ -59,9 +59,9 @@ export default function DateAndTimeRange({ setPeriod, minDate, tabs, radio, defa
     periodTabs.push({ value: "all", label: t("tabs.all-time") })
   }
 
-  useEffect(() => {
-    setReady(true)
-
+  const setValues = (periodName, startDatePassed, endDatePassed) => {
+    let startDateIn = startDatePassed || startDate
+    let endDateIn = endDatePassed || endDate
     if (periodName?.includes("..")) {
       const periodParts = periodName.split("..")
       setStartDate(new Date(new Date(periodParts[0]).setMilliseconds(0)))
@@ -69,35 +69,39 @@ export default function DateAndTimeRange({ setPeriod, minDate, tabs, radio, defa
       return
     }
 
-    let newStartDate = null
+    setEndDate(endDateIn || new Date(new Date().setMilliseconds(0)))
 
-    setEndDate(new Date(new Date().setMilliseconds(0)))
-    if (periodName === "hour") {
-      newStartDate = hourAgo
-    } else if (periodName === "day") {
-      newStartDate = dayAgo
-    } else if (periodName === "week") {
-      newStartDate = weekAgo
-    } else if (periodName === "month") {
-      newStartDate = monthAgo
-    } else if (periodName === "year") {
-      newStartDate = yearAgo
-    } else if (periodName === "all") {
-    }
-    if (periodName === "hour" ||
-      periodName === "day" ||
-      periodName === "week" ||
-      periodName === "month" ||
-      periodName === "year"
-    ) {
-      if (minDate && newStartDate < minDate) {
-        setStartDate(minDate)
-      } else {
-        setStartDate(newStartDate)
-      }
+    if (startDatePassed) {
+      setStartDate(startDateIn)
     } else {
-      if (minDate && (!newStartDate || newStartDate < minDate) && periodName !== "custom") {
-        setStartDate(minDate)
+      let newStartDate = null
+      if (periodName === "hour") {
+        newStartDate = hourAgo
+      } else if (periodName === "day") {
+        newStartDate = dayAgo
+      } else if (periodName === "week") {
+        newStartDate = weekAgo
+      } else if (periodName === "month") {
+        newStartDate = monthAgo
+      } else if (periodName === "year") {
+        newStartDate = yearAgo
+      } else if (periodName === "all") {
+      }
+      if (periodName === "hour" ||
+        periodName === "day" ||
+        periodName === "week" ||
+        periodName === "month" ||
+        periodName === "year"
+      ) {
+        if (minDate && newStartDate < minDate) {
+          setStartDate(minDate)
+        } else {
+          setStartDate(newStartDate)
+        }
+      } else {
+        if (minDate && (!newStartDate || newStartDate < minDate) && periodName !== "custom") {
+          setStartDate(minDate)
+        }
       }
     }
 
@@ -107,8 +111,8 @@ export default function DateAndTimeRange({ setPeriod, minDate, tabs, radio, defa
     if (periodName && periodName !== "custom") {
       queryAddList.push({ name: periodQueryName, value: periodName })
       setPeriod(periodName)
-    } else if (startDate && endDate) {
-      const range = new Date(startDate).toISOString() + '..' + new Date(endDate).toISOString()
+    } else if (startDateIn && endDateIn) {
+      const range = new Date(startDateIn).toISOString() + '..' + new Date(endDateIn).toISOString()
       queryAddList.push({ name: periodQueryName, value: range })
       setPeriod(range)
     } else {
@@ -116,22 +120,13 @@ export default function DateAndTimeRange({ setPeriod, minDate, tabs, radio, defa
     }
 
     setTabParams(router, [], queryAddList, queryRemoveList)
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [periodName])
+  }
 
   useEffect(() => {
-    //need it to update the search, only for custom to keep the names
-    if (startDate && endDate && (periodName === "custom" || !periodName)) {
-      let queryAddList = []
-      let queryRemoveList = []
-      const range = new Date(startDate).toISOString() + '..' + new Date(endDate).toISOString()
-      queryAddList.push({ name: periodQueryName, value: range })
-      setPeriod(range)
-      setTabParams(router, [], queryAddList, queryRemoveList)
-    }
+    setReady(true)
+    setValues(periodName)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [startDate, endDate])
+  }, [periodName])
 
   let lang = i18n.language
 
@@ -149,13 +144,11 @@ export default function DateAndTimeRange({ setPeriod, minDate, tabs, radio, defa
   }
 
   const startOnChange = date => {
-    setStartDate(date)
-    setPeriodName("custom")
+    setValues("custom", date, null)
   }
 
   const endOnChange = date => {
-    setEndDate(date)
-    setPeriodName("custom")
+    setValues("custom", null, date)
   }
 
   return <span style={style}>
