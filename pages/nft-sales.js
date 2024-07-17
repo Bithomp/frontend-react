@@ -603,7 +603,7 @@ export default function NftSales({
       </div>
       <div className="content-text" style={{ minHeight: "480px" }} id="scrollableDiv">
         <InfiniteScroll
-          scrollableTarget="scrollableDiv"
+          scrollableTarget={windowWidth > 1300 ? "scrollableDiv" : null} // filters.css line 58, when filters open - then scrollable, otherwise not
           dataLength={sales.length}
           next={checkApi}
           hasMore={hasMore}

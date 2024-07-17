@@ -770,7 +770,7 @@ export default function NftsComponent({
           </div>
           :
           <InfiniteScroll
-            scrollableTarget="scrollableDiv"
+            scrollableTarget={windowWidth > 1300 ? "scrollableDiv" : null} // filters.css line 58, when filters open - then scrollable, otherwise not
             dataLength={data?.length}
             next={checkApi}
             hasMore={hasMore}
