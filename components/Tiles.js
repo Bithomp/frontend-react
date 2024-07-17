@@ -66,10 +66,14 @@ export default function Tiles({ nftList, type = 'name', convertCurrency, account
     return t("table.text.private-offer") //shouldn't be the case
   }
 
+  const needAgeCheck = nft => {
+    const isOver18 = localStorage.getItem('isOver18')
+    return !isOver18 && isNftExplicit(nft)
+  }
+
   const clickOnTile = (e, nft) => {
     e.preventDefault()
-    const isOver18 = localStorage.getItem('isOver18')
-    if (!isOver18 && isNftExplicit(nft)) {
+    if (needAgeCheck(nft)) {
       setShowAgeCheck(true)
       return
     }
@@ -84,7 +88,7 @@ export default function Tiles({ nftList, type = 'name', convertCurrency, account
             <li className="hex" key={i}>
               <div className="hexIn">
                 <Link
-                  href={isNftExplicit(nft) ? "#" : "/nft/" + nft.nftokenID}
+                  href={needAgeCheck(nft) ? "#" : "/nft/" + nft.nftokenID}
                   className="hexLink"
                   onClick={(e) => clickOnTile(e, nft)}
                 >
@@ -124,7 +128,7 @@ export default function Tiles({ nftList, type = 'name', convertCurrency, account
             <li className="hex" key={i}>
               <div className="hexIn">
                 <Link
-                  href={isNftExplicit(nft.nftoken) ? "#" : "/nft/" + nft.nftoken.nftokenID}
+                  href={needAgeCheck(nft.nftoken) ? "#" : "/nft/" + nft.nftoken.nftokenID}
                   className="hexLink"
                   onClick={(e) => clickOnTile(e, nft.nftoken)}
                 >
