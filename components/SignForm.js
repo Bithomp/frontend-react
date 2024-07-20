@@ -28,6 +28,7 @@ import XummQr from "./Xumm/Qr"
 import CheckBox from './UI/CheckBox'
 import ExpirationSelect from './UI/ExpirationSelect'
 import TargetTableSelect from './UI/TargetTableSelect'
+import { submitProAddressToVerify } from '../utils/pro'
 
 const qr = "/images/qr.gif"
 const ledger = '/images/ledger-large.svg'
@@ -105,6 +106,10 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
     let tx = { TransactionType: "SignIn" }
     if (signRequest.request) {
       tx = signRequest.request
+    }
+    if (signRequest.data?.signOnly) {
+      //for Xaman make "SignIn" when signing only.
+      tx.TransactionType = "SignIn"
     }
 
     if (tx.TransactionType === "NFTokenAcceptOffer" && !agreedToRisks && signRequest.offerAmount !== "0") {
@@ -251,6 +256,10 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
       txjson: tx
     }
 
+    if (signRequest.data?.signOnly) {
+      signInPayload.options.submit = false
+    }
+
     //for Xaman to sign transaction in the right network
     let forceNetwork = null
     if (networkId === 0) {
@@ -261,21 +270,16 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
       forceNetwork = 'DEVNET'
     }
     signInPayload.options.force_network = forceNetwork
+    signInPayload.custom_meta = { blob: {} }
 
     if (signRequest.redirect) {
-      signInPayload.custom_meta = {
-        blob: {
-          redirect: signRequest.redirect
-        }
-      }
+      signInPayload.custom_meta.blob.redirect = signRequest.redirect
     }
-
     if (signRequest.broker) {
-      signInPayload.custom_meta = {
-        blob: {
-          broker: signRequest.broker.name
-        }
-      }
+      signInPayload.custom_meta.blob.broker = signRequest.broker.name
+    }
+    if (signRequest.data) {
+      signInPayload.custom_meta.blob.data = signRequest.data
     }
 
     setStatus(t("signin.xumm.statuses.wait"))
@@ -397,6 +401,26 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
     }
     */
     //data.payload.tx_type: "SignIn"
+
+    if (data.custom_meta?.blob?.data?.signOnly) {
+      if (data.custom_meta.blob.data?.action === "pro-add-address") {
+        //add address to the list
+        submitProAddressToVerify({
+          address: data.custom_meta.blob.data.address,
+          name: data.custom_meta.blob.data.name,
+          blob: data.response.hex
+        }, res => {
+          if (res?.error) {
+            setStatus(t(res.error))
+          } else {
+            //pageRefresh, updatedata, delay 2 sec
+            closeSignInFormAndRefresh()
+          }
+        })
+        return
+      }
+      return
+    }
 
     const redirectName = data.custom_meta?.blob?.redirect
 

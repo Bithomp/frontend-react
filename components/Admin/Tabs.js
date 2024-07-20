@@ -6,8 +6,9 @@ export default function AdminTabs({ name, tab }) {
   const router = useRouter()
 
   const mainTabs = [
-    { value: "account", label: "Account" },
+    { value: "profile", label: "Profile" },
     { value: "subscriptions", label: "Subscriptions" },
+    //{ value: "pro", label: "Pro addresses" },
     { value: "api", label: "API" },
     //{ value: "bots", label: "Bots" },
   ]
@@ -27,7 +28,7 @@ export default function AdminTabs({ name, tab }) {
       router.push("/admin/bots")
     } else if (tab === "subscriptions") {
       router.push("/admin/subscriptions")
-    } else if (tab === "account") {
+    } else if (tab === "profile") {
       router.push("/admin")
     } else if (tab === "api-info") {
       router.push("/admin/api")
@@ -39,6 +40,8 @@ export default function AdminTabs({ name, tab }) {
       router.push("/admin/api/statistics")
     } else if (tab === "api-charts") {
       router.push("/admin/api/charts")
+    } else if (tab === "pro") {
+      router.push("/admin/pro")
     }
   }
 

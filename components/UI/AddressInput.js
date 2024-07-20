@@ -6,6 +6,7 @@ import axios from 'axios';
 
 import {
   isAddressOrUsername,
+  isAddressValid,
   useWidth
 } from '../../utils'
 
@@ -13,7 +14,7 @@ import { amountFormat, userOrServiceLink } from '../../utils/format'
 
 let typingTimer
 
-export default function AddressInput({ placeholder, title, setValue, rawData, type, disabled }) {
+export default function AddressInput({ placeholder, title, setValue, rawData, type, disabled, hideButton }) {
   const { t } = useTranslation()
   const windowWidth = useWidth()
 
@@ -30,8 +31,9 @@ export default function AddressInput({ placeholder, title, setValue, rawData, ty
   }, [])
 
   useEffect(() => {
-    if (rawData) {
-      rawData[type] && setNotEmpty(true)
+    setErrorMessage("")
+    if (rawData && rawData[type]) {
+      setNotEmpty(true)
       setInputValue(rawData[type])
       setLink(userOrServiceLink(rawData, type))
 
@@ -50,21 +52,49 @@ export default function AddressInput({ placeholder, title, setValue, rawData, ty
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [rawData])
 
-  const searchOnKeyUp = e => {
+  const searchOnKeyUp = async e => {
+    setErrorMessage("")
     const valueInp = e.target.value;
     const maxCount = 2;
 
     if (valueInp.length > 0) {
-      setNotEmpty(true);
+      setNotEmpty(true)
     } else {
-      clearAll();
+      clearAll()
     }
 
     if (e.key === 'Enter' && isAddressOrUsername(valueInp)) {
-      setValue(valueInp);
+      //request one address/username and set link, check if it's valid
+
       clearTimeout(typingTimer)
       setSearchingSuggestions(false)
       setSearchSuggestions([])
+
+      let url = "v2/username/" + valueInp
+      if (isAddressValid(valueInp)) {
+        url = "v2/address/" + valueInp
+      }
+
+      const response = await axios(url + '?username=true&service=true').catch((error) => {
+        console.log(error.message)
+        setErrorMessage(t("error." + error.message))
+      })
+
+      const data = response?.data
+
+      if (data?.address) {
+        setLink(userOrServiceLink({
+          address: data.address,
+          addressDetails: {
+            username: data.username,
+            service: data.service?.name
+          }
+        }, 'address'))
+        setValue(data.address)
+        setInputValue(data.address)
+      } else {
+        setErrorMessage("No address found")
+      }
       return
     }
 
@@ -97,41 +127,28 @@ export default function AddressInput({ placeholder, title, setValue, rawData, ty
   const searchOnChange = option => {
     if (!option) {
       setValue("")
+      setInputValue("")
+      setLink("")
+      setErrorMessage("")
       return
     }
 
-    if (option.username && !option.username.includes("-")) {
-      onSearch(option.username)
-    } else {
-      onSearch(option.address)
-    }
+    setValue(option.address)
+    setInputValue(option.address)
+    setLink(userOrServiceLink({
+      address: option.address || option.issuer,
+      addressDetails: {
+        username: option.username,
+        service: option.service
+      }
+    }, 'address'))
 
-    setSearchSuggestions([]);
-  }
-
-  const onSearch = async (si) => {
-    setErrorMessage("")
-    let searchFor = null
-
-    if (typeof si === 'string') {
-      searchFor = si
-    }
-
-    if (!searchFor) return
-
-    if (searchFor.includes("/") || searchFor.includes("\\")) {
-      setErrorMessage(t("explorer.no-slashes"))
-      return
-    }
-
-    setValue(searchFor)
-
-    return
+    setSearchSuggestions([])
   }
 
   const onSearchClick = () => {
-    setValue(inputValue);
-    setInputValue(inputValue);
+    setValue(inputValue)
+    setInputValue(inputValue)
   }
 
   const searchOnInputChange = (value, action) => {
@@ -142,11 +159,12 @@ export default function AddressInput({ placeholder, title, setValue, rawData, ty
   }
 
   const clearAll = () => {
-    setValue("");
-    setInputValue("");
-    setLink("");
-    setNotEmpty(false);
-    setSearchSuggestions([]);
+    setValue("")
+    setInputValue("")
+    setLink("")
+    setNotEmpty(false)
+    setSearchSuggestions([])
+    setErrorMessage("")
   }
 
   return (
@@ -160,10 +178,10 @@ export default function AddressInput({ placeholder, title, setValue, rawData, ty
               placeholder={placeholder}
               onChange={searchOnChange}
               spellCheck="false"
-              inputValue={inputValue}
+              inputValue={inputValue} // The value of the search input
               options={searchSuggestions}
               isClearable={true}
-              value={inputValue || ''}
+              value={inputValue || ''} //The value of the select; reflected by the selected option
               getOptionLabel={
                 (option) => <>
                   <span style={windowWidth < 400 ? { fontSize: "14px" } : {}}>{option.address || option.issuer}</span>
@@ -220,19 +238,21 @@ export default function AddressInput({ placeholder, title, setValue, rawData, ty
             />
             <div className="form-input__btns">
               <button className="form-input__clear" onClick={clearAll}><IoMdClose /></button>
-              <div className='search-button' onClick={onSearchClick}>
-                <img
-                  src='/images/search.svg'
-                  className='search-icon'
-                  alt='search'
-                />
-              </div>
+              {!hideButton &&
+                <div className='search-button' onClick={onSearchClick}>
+                  <img
+                    src='/images/search.svg'
+                    className='search-icon'
+                    alt='search'
+                  />
+                </div>
+              }
             </div>
           </div>
         }
 
         {errorMessage &&
-          <div className='orange' style={{ position: "absolute", bottom: "-50px", minHeight: "42px", textAlign: "left" }}>
+          <div className='orange' style={{ position: "absolute", bottom: "-40px", minHeight: "42px", textAlign: "right", right: 0 }}>
             {errorMessage}
           </div>
         }

@@ -329,7 +329,7 @@ export default function Admin({ redirectToken, account, setAccount }) {
       }
 
       {step === 2 &&
-        <AdminTabs name="mainTabs" tab="account" />
+        <AdminTabs name="mainTabs" tab="profile" />
       }
 
       <br />

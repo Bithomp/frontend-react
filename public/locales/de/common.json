@@ -340,6 +340,10 @@
     },
     "access_token": {
       "not_found": "Keine API Keys vorhanden."
+    },
+    "address": {
+      "invalid_signature_address": "Invalid signature address. Make sure that you sign with the correct address.",
+      "limit_reached": "You can not add more addesses, you've reached the limit."
     }
   },
   "error-api": {

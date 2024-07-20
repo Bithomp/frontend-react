@@ -523,6 +523,9 @@ table {
     margin-right: 5px;
     margin-bottom: 5px;
     vertical-align: middle;
+    &.disabled {
+      filter: grayscale(100%);
+    }
   }
 
   &:hover {
