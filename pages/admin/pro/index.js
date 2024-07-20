@@ -213,10 +213,12 @@ export default function Pro({
                           Verified at: {fullDateAndTime(address.createdAt)}
                         </p>
                         <p>
-                          Remove:{" "}
-                          <span className='red'>
-                            <MdDelete onClick={() => { removeProAddress(address.id, afterAddressRemoved) }} />
-                          </span>
+                          <button
+                            className="button-action thin"
+                            onClick={() => { removeProAddress(address.id, afterAddressRemoved) }}
+                          >
+                            Remove
+                          </button>
                         </p>
                       </td>
                     </tr>
