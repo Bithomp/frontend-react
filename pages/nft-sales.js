@@ -28,7 +28,8 @@ import {
   timeOrDate,
   fullDateAndTime,
   niceNumber,
-  shortHash
+  shortHash,
+  shortNiceNumber
 } from '../utils/format'
 
 export const getServerSideProps = async (context) => {
@@ -112,7 +113,6 @@ export default function NftSales({
   const [saleTab, setSaleTab] = useState(sale)
   const [issuer, setIssuer] = useState(issuerQuery)
   const [taxon, setTaxon] = useState(taxonQuery)
-  const [total, setTotal] = useState({})
   const [period, setPeriod] = useState(periodQuery)
   const [order, setOrder] = useState(orderQuery)
   const [hasMore, setHasMore] = useState("first")
@@ -124,6 +124,7 @@ export default function NftSales({
   const [search, setSearch] = useState(searchQuery)
   const [includeWithoutMediaData, setIncludeWithoutMediaData] = useState(includeWithoutMediaDataQuery)
   const [sortMenuOpen, setSortMenuOpen] = useState(false)
+  const [saleTabList, setSaleTabList] = useState([])
 
   const controller = new AbortController()
 
@@ -141,6 +142,7 @@ export default function NftSales({
     const time = new Date(Date.now()).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })
     setDateAndTimeNow(date + ' at ' + time)
     setRendered(true)
+    updateSaleTabList({})
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -149,17 +151,21 @@ export default function NftSales({
     { value: 'list', label: t("tabs.list") }
   ]
 
-  const saleTabList = [
-    { value: 'all', label: t("tabs.primaryAndSecondary-sales") },
-    { value: 'secondary', label: (t("tabs.secondary-sales") + (total?.secondary ? (" (" + total.secondary + ")") : "")) },
-    { value: 'primary', label: (t("tabs.primary-sales") + (total?.primary ? (" (" + total.primary + ")") : "")) }
-  ]
+  const updateSaleTabList = total => {
+    setSaleTabList([
+      { value: 'all', label: t("tabs.primaryAndSecondary-sales") + ((total?.secondary || total?.primary) ? (" (" + shortNiceNumber(total.secondary + total.primary, 0, 0) + ")") : "") },
+      { value: 'secondary', label: (t("tabs.secondary-sales") + ((total?.secondary || total?.secondary === 0) ? (" (" + shortNiceNumber(total.secondary, 0, 0) + ")") : "")) },
+      { value: 'primary', label: (t("tabs.primary-sales") + ((total?.primary || total?.primary === 0) ? (" (" + shortNiceNumber(total.primary, 0, 0) + ")") : "")) }
+    ])
+  }
 
   const checkApi = async (options) => {
     if (!period || !sortCurrency) return
 
     let marker = hasMore
     let salesData = sales
+
+    updateSaleTabList({})
 
     if (options?.restart) {
       marker = "first"
@@ -218,12 +224,11 @@ export default function NftSales({
 
     const newdata = response?.data
     setLoading(false)
-    setTotal({})
 
     if (newdata) {
       setData(newdata)
-      if (newdata.total?.secondary) {
-        setTotal(newdata.total)
+      if (newdata.total?.secondary || newdata.total?.primary) {
+        updateSaleTabList(newdata.total)
       }
 
       if (newdata.issuer) {
