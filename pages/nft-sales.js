@@ -168,7 +168,6 @@ export default function NftSales({
       setSales([])
       salesData = []
       setLoading(true)
-      scrollTop()
     }
 
     if (!marker || (marker === "first" && salesData.length)) {
@@ -462,14 +461,6 @@ export default function NftSales({
   const hideMobileSortMenu = (value) => {
     setOrder(value)
     setSortMenuOpen(false)
-  }
-
-  const scrollTop = () => {
-    if (window) {
-      window.scrollTo({
-        top: 0
-      })
-    }
   }
 
   return <>

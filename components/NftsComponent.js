@@ -150,7 +150,6 @@ export default function NftsComponent({
       setLoading(true)
       setData([])
       nftsData = []
-      scrollTop()
     }
 
     // it seems not nessary anylonger, we just need to keep the structure of URI with "?"
@@ -341,14 +340,6 @@ export default function NftsComponent({
           }
         }
       }
-    }
-  }
-
-  const scrollTop = () => {
-    if (window) {
-      window.scrollTo({
-        top: 0
-      })
     }
   }
 
