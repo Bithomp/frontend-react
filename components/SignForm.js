@@ -511,24 +511,22 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
   }
 
   const closeSignInFormAndRefresh = () => {
-    setXummQrSrc(qr)
-    setScreen("choose-app")
-    setAwaiting(false)
-    setStatus("")
-    setSignRequest(null)
-    if (uuid) {
-      removeQueryParams(router, ["uuid"])
-    }
+    signInCancelAndClose()
     setRefreshPage(new Date())
   }
 
-  const SignInCancelAndClose = () => {
+  const signInCancelAndClose = () => {
     if (screen === 'xaman') {
       setXummQrSrc(qr)
       xummCancel(xummUuid)
     }
+    if (uuid) {
+      removeQueryParams(router, ["uuid"])
+    }
     setScreen("choose-app")
     setSignRequest(null)
+    setAwaiting(false)
+    setStatus("")
   }
 
   // temporary styles while hardware wallets are not connected
@@ -768,7 +766,7 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
   return (
     <div className="sign-in-form">
       <div className="sign-in-body center">
-        <div className='close-button' onClick={SignInCancelAndClose}></div>
+        <div className='close-button' onClick={signInCancelAndClose}></div>
         {askInfoScreens.includes(screen) ?
           <>
             <div className='header'>
@@ -1067,7 +1065,7 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
             </div>
 
             <br />
-            <button type="button" className="button-action" onClick={SignInCancelAndClose} style={buttonStyle}>
+            <button type="button" className="button-action" onClick={signInCancelAndClose} style={buttonStyle}>
               {t("button.cancel")}
             </button>
             <button
