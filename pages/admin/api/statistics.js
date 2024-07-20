@@ -73,7 +73,7 @@ export default function Statistics() {
         <div style={{ marginTop: "20px", textAlign: "left" }}>
           <h4 className='center'>20 most common URLs in the last 24h</h4>
           {width > 750 ?
-            <table className='table-large shrink'>
+            <table className='table-large'>
               <thead>
                 <tr>
                   <th></th>
@@ -144,7 +144,7 @@ export default function Statistics() {
 
         <div style={{ marginTop: "20px", textAlign: "left" }}>
           <h4 className='center'>The most common IPs in the last 24h</h4>
-          <table className='table-large shrink'>
+          <table className='table-large'>
             <thead>
               <tr>
                 <th></th>

@@ -9,7 +9,7 @@ import { axiosAdmin } from '../../../utils/axios'
 
 import SEO from '../../../components/SEO'
 import AddressInput from '../../../components/UI/AddressInput'
-import { encode } from '../../../utils'
+import { encode, useWidth } from '../../../utils'
 import { removeProAddress } from '../../../utils/pro'
 import FormInput from '../../../components/UI/FormInput'
 import { fullDateAndTime } from '../../../utils/format'
@@ -34,6 +34,7 @@ export default function Pro({
   refreshPage
 }) {
   const router = useRouter()
+  const width = useWidth()
 
   const { t } = useTranslation(['common', 'admin'])
   const [errorMessage, setErrorMessage] = useState("")
@@ -149,9 +150,9 @@ export default function Pro({
 
       <AdminTabs name="mainTabs" tab="pro" />
 
-      <div className='center'>
-        <h4>Verified addresses</h4>
+      <h4 className='center'>Verified addresses</h4>
 
+      {width > 750 ?
         <table className='table-large'>
           <thead>
             <tr>
@@ -175,7 +176,8 @@ export default function Pro({
                       <td className='center red'>
                         <MdDelete onClick={() => { removeProAddress(address.id, afterAddressRemoved) }} />
                       </td>
-                    </tr>)
+                    </tr>
+                  )
                 }
               </>
               :
@@ -191,64 +193,108 @@ export default function Pro({
             }
           </tbody>
         </table>
-        <br /><br />
-        <div style={{ textAlign: "left" }}>
-          In order to use PRO functionality for your accounts, you would need to verify them first.
-          <br /><br />
-          <div>
-            - Get your personal historical transaction's extracts and statistics.
-            <br />
-            - Auto cancelation of expired NFT offers
-            <br />
-            - Auto execution of time based escrows
-          </div>
-          <br /><br />
-          <div className='flex flex-center'>
-            <span style={{ width: "calc(70% - 20px)" }}>
-              <AddressInput
-                title="Address"
-                placeholder="Enter address"
-                setValue={setAddressToVerify}
-                rawData={{
-                  address: account?.address,
-                  addressDetails: {
-                    username: account?.username
+        :
+        <table className='table-mobile'>
+          <tbody>
+            {verifiedAddresses?.length > 0 ?
+              <>
+                {
+                  verifiedAddresses.map((address, i) =>
+                    <tr key={i}>
+                      <td style={{ padding: "5px" }}>#{i + 1}</td>
+                      <td>
+                        <p>
+                          Address: <b>{address.address}</b>
+                        </p>
+                        <p>
+                          Name: <b>{address.name}</b>
+                        </p>
+                        <p>
+                          Verified at: {fullDateAndTime(address.createdAt)}
+                        </p>
+                        <p>
+                          Remove:{" "}
+                          <span className='red'>
+                            <MdDelete onClick={() => { removeProAddress(address.id, afterAddressRemoved) }} />
+                          </span>
+                        </p>
+                      </td>
+                    </tr>
+                  )
+                }
+              </>
+              :
+              <tr>
+                <td colSpan="100" className='center'>
+                  {loadingVerifiedAddresses ?
+                    "Loading data..."
+                    :
+                    "You do not have verified addresses yet."
                   }
-                }}
-                type='address'
-                hideButton={true}
-              />
-            </span>
-            <span style={{ width: "30%" }}>
-              <FormInput
-                title="Private name"
-                placeholder="Enter address name"
-                setInnerValue={setAddressName}
-                hideButton={true}
-              />
-            </span>
-          </div>
-          <br /><br />
-          <center>
-            <button
-              className="button-action"
-              onClick={addAddressClicked}
-              disabled={!addressToVerify || !addressName}
-            >
-              Verify {" "}
-              <Image src="/images/xumm.png" className={'xumm-logo' + ((!addressToVerify || !addressName) ? ' disabled' : '')} alt="xaman" height={24} width={24} />
-            </button>
-          </center>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      }
+      <br /><br />
+      <div style={{ textAlign: "left" }}>
+        In order to use PRO functionality for your accounts, you would need to verify them first.
+        <br /><br />
+        <div>
+          - Get your personal historical transaction's extracts and statistics.
+          <br />
+          - Auto cancelation of expired NFT offers
+          <br />
+          - Auto execution of time based escrows
+        </div>
+        {width > 851 && <br />}
+        <br />
+        <div className='flex flex-center'>
+          <span style={width > 851 ? { width: "calc(70% - 20px)" } : { width: "100%", marginBottom: "-20px" }}>
+            <AddressInput
+              title="Address"
+              placeholder="Enter address"
+              setValue={setAddressToVerify}
+              rawData={{
+                address: account?.address,
+                addressDetails: {
+                  username: account?.username
+                }
+              }}
+              type='address'
+              hideButton={true}
+            />
+          </span>
+          <span style={{ width: width > 851 ? "30%" : "100%" }}>
+            <FormInput
+              title="Private name"
+              placeholder="Enter address name"
+              setInnerValue={setAddressName}
+              hideButton={true}
+            />
+          </span>
         </div>
         <br />
-        {errorMessage ?
-          <div className='center orange bold'>
-            {errorMessage}
-          </div>
-          :
-          <br />
-        }
+        <center>
+          <button
+            className="button-action"
+            onClick={addAddressClicked}
+            disabled={!addressToVerify || !addressName}
+          >
+            Verify {" "}
+            <Image src="/images/xumm.png" className={'xumm-logo' + ((!addressToVerify || !addressName) ? ' disabled' : '')} alt="xaman" height={24} width={24} />
+          </button>
+        </center>
       </div>
+      <br />
+      {errorMessage ?
+        <div className='center orange bold'>
+          {errorMessage}
+        </div>
+        :
+        <br />
+      }
     </div>
   </>
 }

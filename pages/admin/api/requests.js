@@ -96,7 +96,7 @@ export default function Requests() {
         <div style={{ marginTop: "20px", textAlign: "left" }}>
           <h4 className='center'>The last 50 API requests (the last 5 days)</h4>
           {width > 1240 ?
-            <table className='table-large shrink'>
+            <table className='table-large'>
               <thead>
                 <tr>
                   <th>#</th>

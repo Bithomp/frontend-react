@@ -5,7 +5,6 @@ import axios from 'axios'
 import { CSVLink } from "react-csv"
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import Link from 'next/link'
 
 import RadioOptions from '../components/UI/RadioOptions'
 import FormInput from '../components/UI/FormInput'
@@ -489,7 +488,7 @@ export default function NftSales({
 
     <h1 className="center">{t("nft-sales.header")}</h1>
     <p className='center'>
-      <Link href={"/nft-explorer?view=" + activeView + issuerTaxonUrlPart}>{t("nft-explorer.header")}</Link>
+      <a href={"/nft-explorer?view=" + activeView + issuerTaxonUrlPart}>{t("nft-explorer.header")}</a>
     </p>
 
     <div className={`content-cols${sortMenuOpen ? ' is-sort-menu-open' : ''}${filtersHide ? ' is-filters-hide' : ''}`}>
@@ -597,9 +596,8 @@ export default function NftSales({
           </div>
         </div>
       </div>
-      <div className="content-text" style={{ minHeight: "480px" }} id="scrollableDiv">
+      <div className="content-text" style={{ minHeight: "480px" }}>
         <InfiniteScroll
-          scrollableTarget={windowWidth > 1300 ? "scrollableDiv" : null} // filters.css line 58, when filters open - then scrollable, otherwise not
           dataLength={sales.length}
           next={checkApi}
           hasMore={hasMore}
@@ -607,6 +605,7 @@ export default function NftSales({
             <p className="center">{t("nft-sales.load-more")}</p>
           }
           endMessage={<p className="center">{t("nft-sales.end")}</p>}
+          height={windowWidth < 1300 ? "calc(100vh - 220px)" : "1000px"}
         >
           {activeView === "list" &&
             <>

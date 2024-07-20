@@ -133,7 +133,7 @@ export default function Api() {
         </a>
         <br /><br />
         {loading ?
-          <table className='table-large shrink'>
+          <table className='table-large'>
             <tbody>
               <tr>
                 <td className='center' colSpan="2">
@@ -148,7 +148,7 @@ export default function Api() {
           :
           <>
             {apiData ?
-              <table className='table-large shrink'>
+              <table className='table-large'>
                 <tbody>
                   <tr>
                     <td className='right'>Token</td>

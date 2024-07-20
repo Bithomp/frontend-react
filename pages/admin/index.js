@@ -393,7 +393,7 @@ export default function Admin({ redirectToken, account, setAccount }) {
         {step === 2 &&
           <>
             {loggedUserData &&
-              <table className='table-large shrink'>
+              <table className='table-large'>
                 <tbody>
                   <tr>
                     <td className='right'>E-mail</td>

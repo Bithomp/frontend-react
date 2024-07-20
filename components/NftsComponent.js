@@ -4,7 +4,6 @@ import { useRouter } from 'next/router'
 import { CSVLink } from "react-csv"
 import axios from 'axios'
 import InfiniteScroll from 'react-infinite-scroll-component'
-import Link from 'next/link'
 
 import { IoMdClose } from "react-icons/io";
 import { BsFilter } from "react-icons/bs";
@@ -603,7 +602,7 @@ export default function NftsComponent({
       <>
         <h1 className='center'>{t("nft-explorer.header") + " "}</h1>
         <p className='center'>
-          <Link href={"/nft-sales" + issuerTaxonUrlPart}>{t("nft-sales.header")}</Link>
+          <a href={"/nft-sales" + issuerTaxonUrlPart}>{t("nft-sales.header")}</a>
         </p>
       </>
     }
@@ -752,8 +751,7 @@ export default function NftsComponent({
         </div>
       </div>
 
-      <div className="content-text" style={contextStyle} id="scrollableDiv">
-
+      <div className="content-text" style={contextStyle}>
         {/* if accoun't nft explorer and there is no owner or id, ask to provide an address */}
         {(!nftExplorer && !(id || owner)) ?
           <div className='center' style={{ marginTop: "20px" }}>
@@ -761,7 +759,6 @@ export default function NftsComponent({
           </div>
           :
           <InfiniteScroll
-            scrollableTarget={windowWidth > 1300 ? "scrollableDiv" : null} // filters.css line 58, when filters open - then scrollable, otherwise not
             dataLength={data?.length}
             next={checkApi}
             hasMore={hasMore}
@@ -769,6 +766,7 @@ export default function NftsComponent({
               <p className="center">{t("nfts.load-more")}</p>
             }
             endMessage={<p className="center">{t("nfts.end")}</p>}
+            height={windowWidth < 1300 ? "calc(100vh - 220px)" : "1000px"}
           // below props only if you need pull down functionality
           //refreshFunction={this.refresh}
           //pullDownToRefresh

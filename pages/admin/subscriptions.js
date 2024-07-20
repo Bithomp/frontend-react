@@ -373,7 +373,7 @@ export default function Subscriptions({ setSignRequest, receiptQuery }) {
             <h4 className='center'>Your purchased subscriptions</h4>
             <div style={{ textAlign: "left" }}>
               {width > 600 ?
-                <table className='table-large shrink'>
+                <table className='table-large'>
                   <thead>
                     <tr>
                       <th>Type</th>
