@@ -457,11 +457,6 @@ export default function NftSales({
     setFiltersHide(!filtersHide)
   }
 
-  useEffect(() => {
-    // disable nft scrolling when filters are open on mobile/tablet
-    document.body.style.overflow = window.matchMedia("(max-width: 1300px)").matches && filtersHide ? "hidden" : "";
-  }, [filtersHide]);
-
   const hideMobileSortMenu = (value) => {
     setOrder(value)
     setSortMenuOpen(false)
@@ -596,7 +591,7 @@ export default function NftSales({
           </div>
         </div>
       </div>
-      <div className="content-text" style={{ minHeight: "480px" }}>
+      <div className="content-text">
         <InfiniteScroll
           dataLength={sales.length}
           next={checkApi}
@@ -605,7 +600,7 @@ export default function NftSales({
             <p className="center">{t("nft-sales.load-more")}</p>
           }
           endMessage={<p className="center">{t("nft-sales.end")}</p>}
-          height={windowWidth < 1300 ? "calc(100vh - 220px)" : "1000px"}
+          height={!filtersHide ? "1300px" : "100vh"}
         >
           {activeView === "list" &&
             <>

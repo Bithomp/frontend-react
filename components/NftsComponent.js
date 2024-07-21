@@ -497,11 +497,6 @@ export default function NftsComponent({
   }
 
   useEffect(() => {
-    // disable nft scrolling when filters are open on mobile/tablet
-    document.body.style.overflow = window.matchMedia("(max-width: 1300px)").matches && filtersHide ? "hidden" : ""
-  }, [filtersHide])
-
-  useEffect(() => {
     const actualList = listTab !== "onSale" ? orderNftsList : orderOnSaleList
     setCurrentOrderList(actualList)
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -767,7 +762,7 @@ export default function NftsComponent({
               <p className="center">{t("nfts.load-more")}</p>
             }
             endMessage={<p className="center">{t("nfts.end")}</p>}
-            height={windowWidth < 1300 ? "calc(100vh - 220px)" : "1000px"}
+            height={!filtersHide ? "1300px" : "100vh"}
           // below props only if you need pull down functionality
           //refreshFunction={this.refresh}
           //pullDownToRefresh
@@ -779,7 +774,6 @@ export default function NftsComponent({
           //  <h3 style={{ textAlign: 'center' }}>&#8593; Release to refresh</h3>
           //}
           >
-
             {activeView === "list" &&
               <>
                 {windowWidth > 500 ?
