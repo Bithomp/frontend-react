@@ -9,7 +9,14 @@ import { IoMdClose } from "react-icons/io";
 import { BsFilter } from "react-icons/bs";
 import { TbArrowsSort } from "react-icons/tb";
 
-import { isAddressOrUsername, setTabParams, useWidth, xahauNetwork, capitalizeFirstLetter, periodDescription } from '../utils'
+import {
+  isAddressOrUsername,
+  setTabParams,
+  useWidth,
+  xahauNetwork,
+  capitalizeFirstLetter,
+  periodDescription
+} from '../utils'
 import {
   isValidTaxon,
   nftThumbnail,
@@ -165,7 +172,6 @@ export default function NftsComponent({
     let hasImagePart = !includeWithoutMediaData ? '&hasImage=true' : ''
 
     if (listTab === 'onSale') {
-      //order: "offerCreatedNew", "offerCreatedOld", "priceLow", "priceHigh"
       //destination: "public", "knownBrokers", "publicAndKnownBrokers", "all", "buyNow"
       listUrlPart = '?list=onSale&destination=' + saleDestinationTab
       if (saleCurrencyIssuer && saleCurrency) {
@@ -506,12 +512,7 @@ export default function NftsComponent({
     setSortMenuOpen(false);
   }
 
-  const issuerTaxonUrlPart = "?view=" + activeView + (rawData ? ("&issuer=" + usernameOrAddress(rawData, 'issuer') + (isValidTaxon(rawData.taxon) ? ("&taxon=" + rawData.taxon) : "")) : "");
-
-  // const contextStyle = { minHeight: "480px" }
-  // if (!nftExplorer) {
-  //   contextStyle.marginTop = "20px"
-  // }
+  const issuerTaxonUrlPart = "?view=" + activeView + (rawData ? ("&issuer=" + usernameOrAddress(rawData, 'issuer') + (isValidTaxon(rawData.taxon) ? ("&taxon=" + rawData.taxon) : "")) : "")
 
   /*
   {
@@ -751,7 +752,6 @@ export default function NftsComponent({
         </div>
       </div>
 
-      {/* <div className="content-text" style={contextStyle}> */}
       <div className="content-text">
         {/* if accoun't nft explorer and there is no owner or id, ask to provide an address */}
         {(!nftExplorer && !(id || owner)) ?
