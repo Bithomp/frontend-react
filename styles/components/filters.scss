@@ -143,13 +143,16 @@ $width: 340px;
         }
 
         > span {
-            @media(min-width: 1300px) {
-                margin-left: 33%;
-            }
+          @media(min-width: 1300px) {
+            margin-left: 55px;
+            width: calc(100% - 140px);
+            text-align: center;
+          }
 
-            @media(max-width: 1300px) {
-                font-size: 16px;
-            }
+          @media(max-width: 1300px) {
+            font-size: 16px;
+            margin-left: -50px;
+          }
         }
 
         i {

@@ -640,7 +640,7 @@ export default function NftsComponent({
           </button>
           <div className="filters__wrap">
             <div className="filters__head">
-              <span>{nftCount !== null ? t("general.loaded") + ":" : ''} <i>{nftCount}</i></span>
+              <span>{nftCount ? ("1-" + nftCount + (hasMore ? (" " + t("general.of-many")) : '')) : ''}</span>
               {rendered &&
                 <CSVLink
                   data={data || []}
