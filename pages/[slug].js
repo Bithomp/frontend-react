@@ -47,12 +47,15 @@ export default function Custom404() {
   const { slug } = router.query
 
   useEffect(() => {
-    if (slugRegex.test(slug) && !forbiddenSlugsRegex.test(slug)) {
+    if (slugRegex.test(slug)) {
+      if (forbiddenSlugsRegex.test(slug)) {
+        window.location = '/404'
+        return
+      }
+
       window.location = '/explorer/' + encodeURI(slug)
       return
     }
-
-    window.location = '/404'
   })
 
   return (
