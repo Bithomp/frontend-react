@@ -194,8 +194,13 @@ header {
       display: flex;
       align-items: center;
       svg {
+        width: 24px;
         margin: -3px 5px 0 0;
       }
+    }
+    &--border {
+      padding-bottom: 18px;
+      border-bottom: 1px solid #fff;
     }
   }
   .mobile-menu-directory + .mobile-menu-item--link {
@@ -249,7 +254,8 @@ header {
       }
 
       + .mobile-menu__submenu {
-        display: block;
+        display: flex;
+        flex-direction: column;
       }
     }
   }
