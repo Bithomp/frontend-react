@@ -15,6 +15,7 @@ export default function FormInput({ placeholder, title, setValue, defaultValue, 
     if (setInnerValue) {
       setInnerValue(inputInnerValue)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [inputInnerValue])
 
   const onChange = e => {
