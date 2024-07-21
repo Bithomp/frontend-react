@@ -23,6 +23,10 @@
     }
   }
 
+  .react-select__single-value {
+    text-align: left;
+  }
+
   &.react-select--is-disabled {
     .react-select__control {
       background-color: var(--background-input-readonly);
@@ -40,12 +44,14 @@
 
   .react-select__menu {
     border-radius: 0;
-    margin-top: 0;
+    margin-top: -1px;
     z-index: 2;
     box-shadow: none;
     background-color: var(--background-secondary);
     box-sizing: border-box !important;
     inset: 100% 0 auto !important;
+    border: 1px solid var(--accent-icon);
+    word-wrap: break-word;
   }
 
   .react-select__menu-list {
@@ -54,6 +60,7 @@
   }
 
   .react-select__option {
+    text-align: left;
     background-color: var(--background-secondary);
     color: var(--text-main);
 

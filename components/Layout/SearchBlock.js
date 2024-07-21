@@ -328,7 +328,7 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
             <div onKeyUp={searchOnKeyUp}>
               <Select
                 ref={searchInput}
-                className="issuer-select search-input search-input-select"
+                className="search-input search-input-select"
                 placeholder={searchPlaceholderText}
                 onChange={searchOnChange}
                 onFocus={searchOnFocus}

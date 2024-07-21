@@ -1,3 +1,5 @@
+@import "./select.scss";
+
 .search-block {
   height: 164px; //200px with QR code scanner
   background-color: var(--background-block);
@@ -26,6 +28,7 @@
       }
     }
     .search-input {
+      @include react-select;
       height: 40px;
       border: 1px solid var(--unaccent-icon);
       padding-left: 20px;

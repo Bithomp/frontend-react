@@ -170,11 +170,11 @@ export default function AddressInput({ placeholder, title, setValue, rawData, ty
   return (
     <div className="center">
       <span className='input-title'>{title} {link}</span>
-      <div className={`form-input form-input--address${disabled ? ' disabled' : ''}`}>
+      <div className={`form-input${disabled ? ' disabled' : ''}`}>
         {isMounted ?
           <div className="form-input__wrap" onKeyUp={searchOnKeyUp}>
             <Select
-              className={`form-input-select${notEmpty ? ' not-empty' : ''}`}
+              className={`address-input ${notEmpty ? ' not-empty' : ''}`}
               placeholder={placeholder}
               onChange={searchOnChange}
               spellCheck="false"
@@ -231,7 +231,7 @@ export default function AddressInput({ placeholder, title, setValue, rawData, ty
               onInputChange={searchOnInputChange}
               components={{ DropdownIndicator: () => null, IndicatorSeparator: () => null }}
               classNamePrefix="react-select"
-              instanceId="search-select"
+              instanceId="address-input"
               noOptionsMessage={
                 () => searchingSuggestions ? t("explorer.searching-for-addresses") : null
               }

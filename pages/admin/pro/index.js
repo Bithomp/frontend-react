@@ -149,7 +149,7 @@ export default function Pro({
 
       <h4 className='center'>Verified addresses</h4>
 
-      {width > 750 ?
+      {(!width || width > 750) ?
         <table className='table-large'>
           <thead>
             <tr>

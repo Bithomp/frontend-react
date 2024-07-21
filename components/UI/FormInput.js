@@ -47,10 +47,10 @@ export default function FormInput({ placeholder, title, setValue, defaultValue, 
   return (
     <div className="center">
       <span className='input-title'>{title}</span>
-      <div className={`form-input form-input--search${disabled ? ' disabled' : ''}`}>
+      <div className={`form-input ${disabled ? ' disabled' : ''}`}>
         <div className="form-input__wrap">
           <input
-            className={`form-input__input${inputInnerValue ? ' not-empty' : ''}`}
+            className={`simple-input${inputInnerValue ? ' not-empty' : ''}`}
             placeholder={placeholder}
             onChange={onChange}
             onKeyUp={onKeyUp}
