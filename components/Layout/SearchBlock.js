@@ -324,7 +324,7 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
               <h1 className='contrast'>{explorerHeader(tab)} {userOrServiceName(userData)}</h1>
             }
           </div>
-          {isMounted &&
+          {isMounted ?
             <div onKeyUp={searchOnKeyUp}>
               <Select
                 ref={searchInput}
@@ -385,6 +385,17 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
                 }
               />
             </div>
+            :
+            <input
+              ref={searchInput}
+              type="text"
+              className="search-input"
+              placeholder={searchPlaceholderText}
+              value={searchItem}
+              onChange={e => setSearchItem(e.target.value)}
+              onKeyUp={searchOnKeyUp}
+              spellCheck="false"
+            />
           }
 
           <div className="search-button" onClick={onSearch}>
