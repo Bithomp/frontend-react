@@ -389,7 +389,8 @@ export default function Header({
               <div className="mobile-menu-directory"><span>{t("signin.signin")}</span></div>
             </>
           }
-          <Link href="/admin" className={`mobile-menu-item mobile-menu-item--link${proName ? ' mobile-menu-item--pt' : ''}`} onClick={mobileMenuToggle}>
+          {proName && <div style={{ height: "12px" }}></div>}
+          <Link href="/admin" className="mobile-menu-item mobile-menu-item--link" onClick={mobileMenuToggle}>
             {!proName ? <IoIosRocket /> : <FaUserLarge />} {proName || 'Bithomp Pro'}
           </Link>
           {proName && !displayName &&
