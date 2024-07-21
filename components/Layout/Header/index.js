@@ -389,7 +389,7 @@ export default function Header({
               <div className="mobile-menu-directory"><span>{t("signin.signin")}</span></div>
             </>
           }
-          <Link href="/admin" className="mobile-menu-item mobile-menu-item--link" onClick={mobileMenuToggle}>
+          <Link href="/admin" className={`mobile-menu-item mobile-menu-item--link${proName ? ' mobile-menu-item--pt' : ''}`} onClick={mobileMenuToggle}>
             {!proName ? <IoIosRocket /> : <FaUserLarge />} {proName || 'Bithomp Pro'}
           </Link>
           {proName && !displayName &&
@@ -399,12 +399,12 @@ export default function Header({
           {displayName ?
             <>
               {xummUserToken ?
-                <a href={"/explorer/" + address + "?hw=xumm&xummtoken=" + xummUserToken} className="mobile-menu-item">
+                <a href={"/explorer/" + address + "?hw=xumm&xummtoken=" + xummUserToken} className="mobile-menu-item mobile-menu-item--link mobile-menu-item-border">
                   <img src={hashicon} alt="user icon" className="user-icon" />
                   {displayName}
                 </a>
                 :
-                <span className="mobile-menu-item">
+                <span className="mobile-menu-item mobile-menu-item--link mobile-menu-item-border">
                   <img src={hashicon} alt="user icon" className="user-icon" />
                   {displayName}
                 </span>
