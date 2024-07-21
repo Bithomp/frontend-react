@@ -1,8 +1,11 @@
-import { useRouter } from "next/router"
-import { useEffect } from "react"
+import { useRouter } from 'next/router'
+import { useEffect } from 'react'
 import { useTranslation, Trans } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import Link from 'next/link'
+
+const slugRegex = /^[~]{0,1}[a-zA-Z0-9-_.]*[+]{0,1}[a-zA-Z0-9-_.]*[$]{0,1}[a-zA-Z0-9-.]*[a-zA-Z0-9]*$/i
+const forbiddenSlugsRegex = /^.((?!\$).)*.?\.(7z|gz|tar\.gz|rar)$/i
 
 export async function getStaticProps({ locale, params }) {
   const { slug } = params
@@ -23,9 +26,10 @@ export async function getStaticProps({ locale, params }) {
       }
     }
   }
+
   return {
     props: {
-      ...(await serverSideTranslations(locale, ['common'])),
+      ...(await serverSideTranslations(locale, ['common']))
     }
   }
 }
@@ -43,20 +47,26 @@ export default function Custom404() {
   const { slug } = router.query
 
   useEffect(() => {
-    if (/^[~]{0,1}[a-zA-Z0-9-_.]*[+]{0,1}[a-zA-Z0-9-_.]*[$]{0,1}[a-zA-Z0-9-.]*[a-zA-Z0-9]*$/i.test(slug)) {
-      window.location = "/explorer/" + encodeURI(slug);
-      return;
+    if (slugRegex.test(slug) && !forbiddenSlugsRegex.test(slug)) {
+      window.location = '/explorer/' + encodeURI(slug)
+      return
     }
+
+    window.location = '/404'
   })
 
   return (
     <div className="content-text center">
-      <h1>{t("page-not-found.header")}</h1>
+      <h1>{t('page-not-found.header')}</h1>
       <p>
         <Trans i18nKey="page-not-found.text">
-          Click <Link href="/" className="bold">here</Link> to check our landing page.
+          Click{' '}
+          <Link href="/" className="bold">
+            here
+          </Link>{' '}
+          to check our landing page.
         </Trans>
       </p>
     </div>
-  );
+  )
 }
