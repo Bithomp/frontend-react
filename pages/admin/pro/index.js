@@ -84,9 +84,6 @@ export default function Pro({
       axiosAdmin.defaults.headers.common['Authorization'] = "Bearer " + sessionToken
       setErrorMessage("") //delete
     }
-
-    getVerifiedAddresses()
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
