@@ -400,12 +400,17 @@ export default function Header({
           {displayName ?
             <>
               {xummUserToken ?
-                <a href={"/explorer/" + address + "?hw=xumm&xummtoken=" + xummUserToken} className="mobile-menu-item mobile-menu-item--link mobile-menu-item--border">
+                <a
+                  href={"/explorer/" + address + "?hw=xumm&xummtoken=" + xummUserToken}
+                  className="mobile-menu-item mobile-menu-item--link mobile-menu-item--border"
+                >
                   <img src={hashicon} alt="user icon" className="user-icon" />
                   {displayName}
                 </a>
                 :
-                <span className="mobile-menu-item mobile-menu-item--link mobile-menu-item--border">
+                <span
+                  className="mobile-menu-item mobile-menu-item--link mobile-menu-item--border"
+                >
                   <img src={hashicon} alt="user icon" className="user-icon" />
                   {displayName}
                 </span>
