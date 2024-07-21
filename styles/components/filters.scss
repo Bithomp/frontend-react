@@ -4,19 +4,19 @@ $width: 340px;
     z-index: 3;
 
     @media(min-width: 1300px) {
-        & + .content-text {
-            min-height: calc(100vh - 81px) !important;
-            padding-top: 80px !important;
-        }
+      & + .content-text {
+        min-height: calc(100vh - 81px) !important;
+        padding-top: 16px;
+      }
     }
 
     @media (max-width: 1300px) {
-        position: absolute;
-        width: 100vw;
-        height: calc(100% - 20px);
-        pointer-events: none;
-        padding-top: 12px;
-        z-index: 4;
+      position: absolute;
+      width: 100vw;
+      height: calc(100% - 20px);
+      pointer-events: none;
+      padding-top: 12px;
+      z-index: 4;
     }
 
     &-nav {
@@ -76,52 +76,50 @@ $width: 340px;
         }
 
         @media(max-width: 1300px) {
-            height: 100%;
+          height: 100%;
         }
     }
 
     .content-cols.is-filters-hide & {
-        @media(min-width: 1300px) {
-            width: 0;
-        }
+      @media(min-width: 1300px) {
+        width: 0;
+      }
     }
 
     &__close {
-        background: none;
-        border: none;
-        font-size: 34px;
-        padding: 0;
-        display: flex;
+      background: none;
+      border: none;
+      font-size: 34px;
+      padding: 0;
+      display: flex;
 
-        .dark & {
-            color: #fff;
-        }
+      .dark & {
+        color: #fff;
+      }
 
-        @media(min-width: 1300px) {
-            display: none;
-        }
+      @media(min-width: 1300px) {
+        display: none;
+      }
     }
 
     & + .content-text {
-        margin: 0;
-        width: 100%;
-        padding: 75px 0 80px;
+      margin: 64px 0 25px 0;
+      width: 100%;
 
-        @media(min-width: 1300px) {
-            height: calc(100svh - 80px);
-            overflow-y: scroll;
-        }
+      @media(min-width: 1300px) {
+        overflow-y: scroll;
+      }
 
-        @media(max-width: 1300px) {
-          padding: 65px 15px 0 15px !important;
-        }
+      @media(max-width: 440px) {
+        margin: 55px 0 15px 0;
+      }
 
-        th, td {
-            @media(max-width: 1550px) {
-                padding: 5px;
-                font-size: 12px;
-            }
+      th, td {
+        @media(max-width: 1550px) {
+          padding: 5px;
+          font-size: 12px;
         }
+      }
     }
 
     &__head {
@@ -179,28 +177,28 @@ $width: 340px;
         }
 
         @media(min-width: 1300px) {
-            .content-cols.is-filters-hide & {
-                display: none;
-            }
+          .content-cols.is-filters-hide & {
+            display: none;
+          }
         }
 
         @media (max-width: 1300px) {
-            position: fixed;
-            inset: 81px 0 -90px;
-            background: #fff;
-            padding: 20px 30px 90px;
-            overflow-y: scroll;
-            transform: translateY(100%);
-            pointer-events: all;
-            transition: transform 0.3s ease-in-out;
+          position: fixed;
+          inset: 81px 0 -90px;
+          background: #fff;
+          padding: 20px 30px 90px;
+          overflow-y: scroll;
+          transform: translateY(100%);
+          pointer-events: all;
+          transition: transform 0.3s ease-in-out;
 
-            .dark & {
-                background: #000;
-            }
+          .dark & {
+            background: #000;
+          }
 
-            .content-cols.is-filters-hide & {
-                transform: translateY(0);
-            }
+          .content-cols.is-filters-hide & {
+            transform: translateY(0);
+          }
         }
     }
 
@@ -221,16 +219,16 @@ $width: 340px;
         color: var(--background-block);
 
         @media(min-width: 440px) {
-            width: 38px;
-            height: 38px;
+          width: 38px;
+          height: 38px;
         }
 
         @media(max-width: 440px) {
-            padding: 5px;
+          padding: 5px;
         }
 
         .dark & {
-            color: #000;
+          color: #000;
         }
 
         @media (max-width: 1300px) {
