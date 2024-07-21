@@ -508,10 +508,10 @@ export default function NftsComponent({
 
   const issuerTaxonUrlPart = "?view=" + activeView + (rawData ? ("&issuer=" + usernameOrAddress(rawData, 'issuer') + (isValidTaxon(rawData.taxon) ? ("&taxon=" + rawData.taxon) : "")) : "");
 
-  const contextStyle = { minHeight: "480px" }
-  if (!nftExplorer) {
-    contextStyle.marginTop = "20px"
-  }
+  // const contextStyle = { minHeight: "480px" }
+  // if (!nftExplorer) {
+  //   contextStyle.marginTop = "20px"
+  // }
 
   /*
   {
@@ -751,7 +751,8 @@ export default function NftsComponent({
         </div>
       </div>
 
-      <div className="content-text" style={contextStyle}>
+      {/* <div className="content-text" style={contextStyle}> */}
+      <div className="content-text">
         {/* if accoun't nft explorer and there is no owner or id, ask to provide an address */}
         {(!nftExplorer && !(id || owner)) ?
           <div className='center' style={{ marginTop: "20px" }}>
