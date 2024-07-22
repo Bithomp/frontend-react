@@ -3,6 +3,7 @@ import { useEffect } from 'react'
 import { useTranslation, Trans } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import Link from 'next/link'
+import { server } from '../utils'
 
 const slugRegex = /^[~]{0,1}[a-zA-Z0-9-_.]*[+]{0,1}[a-zA-Z0-9-_.]*[$]{0,1}[a-zA-Z0-9-.]*[a-zA-Z0-9]*$/i
 const forbiddenSlugsRegex = /^.((?!\$).)*.?\.(7z|gz|tar\.gz|rar)$/i
@@ -53,7 +54,7 @@ export default function Custom404() {
         return
       }
 
-      window.location = '/explorer/' + encodeURI(slug)
+      window.location = server + '/explorer/' + encodeURI(slug)
       return
     }
   })
