@@ -14,7 +14,7 @@ import { amountFormat, userOrServiceLink } from '../../utils/format'
 
 let typingTimer
 
-export default function AddressInput({ placeholder, title, setValue, rawData, type, disabled, hideButton }) {
+export default function AddressInput({ placeholder, title, setValue, rawData, type, disabled, hideButton, setInnerValue }) {
   const { t } = useTranslation()
   const windowWidth = useWidth()
 
@@ -27,8 +27,15 @@ export default function AddressInput({ placeholder, title, setValue, rawData, ty
   const [notEmpty, setNotEmpty] = useState(false)
 
   useEffect(() => {
-    setIsMounted(true);
+    setIsMounted(true)
   }, [])
+
+  useEffect(() => {
+    if (setInnerValue) {
+      setInnerValue(inputValue)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [inputValue])
 
   useEffect(() => {
     setErrorMessage("")
@@ -42,9 +49,9 @@ export default function AddressInput({ placeholder, title, setValue, rawData, ty
       }
 
       if (rawData.error) {
-        setInputValue("");
-        setLink("");
-        setNotEmpty(false);
+        setInputValue("")
+        setLink("")
+        setNotEmpty(false)
         setSearchingSuggestions(false)
         setSearchSuggestions([])
       }
@@ -90,7 +97,7 @@ export default function AddressInput({ placeholder, title, setValue, rawData, ty
             service: data.service?.name
           }
         }, 'address'))
-        setValue(data.address)
+        if (setValue) setValue(data.address)
         setInputValue(data.address)
       } else {
         setErrorMessage("No address found")
@@ -126,14 +133,14 @@ export default function AddressInput({ placeholder, title, setValue, rawData, ty
 
   const searchOnChange = option => {
     if (!option) {
-      setValue("")
+      if (setValue) setValue("")
       setInputValue("")
       setLink("")
       setErrorMessage("")
       return
     }
 
-    setValue(option.address)
+    if (setValue) setValue(option.address)
     setInputValue(option.address)
     setLink(userOrServiceLink({
       address: option.address || option.issuer,
@@ -147,7 +154,7 @@ export default function AddressInput({ placeholder, title, setValue, rawData, ty
   }
 
   const onSearchClick = () => {
-    setValue(inputValue)
+    if (setValue) setValue(inputValue)
     setInputValue(inputValue)
   }
 
@@ -159,7 +166,7 @@ export default function AddressInput({ placeholder, title, setValue, rawData, ty
   }
 
   const clearAll = () => {
-    setValue("")
+    if (setValue) setValue("")
     setInputValue("")
     setLink("")
     setNotEmpty(false)
@@ -177,6 +184,7 @@ export default function AddressInput({ placeholder, title, setValue, rawData, ty
               className={`address-input ${notEmpty ? ' not-empty' : ''}`}
               placeholder={placeholder}
               onChange={searchOnChange}
+              onInputChange={searchOnInputChange}
               spellCheck="false"
               inputValue={inputValue} // The value of the search input
               options={searchSuggestions}
@@ -228,7 +236,6 @@ export default function AddressInput({ placeholder, title, setValue, rawData, ty
                 option.verifiedDomain +
                 option.serviceDomain
               }
-              onInputChange={searchOnInputChange}
               components={{ DropdownIndicator: () => null, IndicatorSeparator: () => null }}
               classNamePrefix="react-select"
               instanceId="address-input"

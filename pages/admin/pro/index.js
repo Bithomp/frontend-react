@@ -254,7 +254,7 @@ export default function Pro({
             <AddressInput
               title="Address"
               placeholder="Enter address"
-              setValue={setAddressToVerify}
+              setInnerValue={setAddressToVerify}
               rawData={{
                 address: account?.address,
                 addressDetails: {
@@ -274,7 +274,7 @@ export default function Pro({
             />
           </span>
         </div>
-        <br />
+        <br /><br />
         <center>
           <button
             className="button-action"
