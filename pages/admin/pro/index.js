@@ -82,7 +82,7 @@ export default function Pro({
       router.push('/admin')
     } else {
       axiosAdmin.defaults.headers.common['Authorization'] = "Bearer " + sessionToken
-      setErrorMessage("") //delete
+      setErrorMessage("")
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
