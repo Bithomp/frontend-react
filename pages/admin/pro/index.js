@@ -16,6 +16,7 @@ import { fullDateAndTime } from '../../../utils/format'
 import Image from 'next/image'
 
 import { MdDelete } from "react-icons/md"
+import Link from 'next/link'
 
 export const getServerSideProps = async (context) => {
   const { locale } = context
@@ -167,7 +168,16 @@ export default function Pro({
                   verifiedAddresses.map((address, i) =>
                     <tr key={i}>
                       <td className="center">{i + 1}</td>
-                      <td className='left'>{address.address}</td>
+                      <td className='left'>
+                        {address.address}
+                        <br />
+                        <Link
+                          className="button-action"
+                          href={"/admin/pro/history?address=" + address}
+                        >
+                          History
+                        </Link>
+                      </td>
                       <td className='right'>{address.name}</td>
                       <td>{fullDateAndTime(address.createdAt)}</td>
                       <td className='center red'>
