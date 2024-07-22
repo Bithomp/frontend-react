@@ -168,6 +168,7 @@
       "quorum": "Kvorum validatora",
       "proposers": "predlagatelji",
       "accounts": "Računi",
+      "accountsActiveLast24h": "Active accounts (24h)",
       "usernames": "Korisnička imena",
       "nft": {
         "created": "NFT kreirano",

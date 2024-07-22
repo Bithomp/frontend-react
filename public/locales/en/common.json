@@ -168,6 +168,7 @@
       "quorum": "Validation quorum",
       "proposers": "proposers",
       "accounts": "Accounts",
+      "accountsActiveLast24h": "Active accounts (24h)",
       "usernames": "Usernames",
       "nft": {
         "created": "NFT minted",

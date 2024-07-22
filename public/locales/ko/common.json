@@ -169,6 +169,7 @@
       "quorum": "유효 쿼럼",
       "proposers": "제안자",
       "accounts": "거래",
+      "accountsActiveLast24h": "Active accounts (24h)",
       "usernames": "사용자명",
       "nft": {
         "created": "NFT 채굴됨",

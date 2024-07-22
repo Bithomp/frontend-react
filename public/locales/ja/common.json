@@ -168,6 +168,7 @@
       "quorum": "バリデーション定足数",
       "proposers": "提出者数",
       "accounts": "アカウント",
+      "accountsActiveLast24h": "Active accounts (24h)",
       "usernames": "ユーザネーム",
       "nft": {
         "created": "NFTミント数",

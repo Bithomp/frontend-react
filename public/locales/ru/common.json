@@ -168,6 +168,7 @@
       "quorum": "Кворум валидаторов",
       "proposers": "предлагающих",
       "accounts": "Адреса",
+      "accountsActiveLast24h": "Активные адреса (24ч)",
       "usernames": "Псевдонимы",
       "nft": {
         "created": "NFT выпущено",

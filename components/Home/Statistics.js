@@ -54,6 +54,8 @@ export default function Statistics() {
         },
         usernames: 1,
         accounts: {
+          activeLast24h: 7657,
+          crawler: {},
           created: 1,
           blackholed: 5,
           deleted: 34
@@ -117,6 +119,7 @@ export default function Statistics() {
   let quorum = 'x'
   let proposers = 'x'
   let createdAccounts = 'xxxx'
+  let activeAccountsLast24h = 'xxxx'
   let registeredUsernames = 'xx'
   let nft = {
     created: 'xxx',
@@ -152,6 +155,7 @@ export default function Statistics() {
       proposers = lastClose.proposers
     }
     createdAccounts = niceNumber(accounts.created - accounts.deleted)
+    activeAccountsLast24h = niceNumber(accounts.activeLast24h)
     registeredUsernames = niceNumber(usernames)
     if (nftokens) {
       nft = nftokens
@@ -195,6 +199,12 @@ export default function Statistics() {
         <div className='stat-piece-header'>{t("home.stat.accounts")}</div>
         <div><Link href='/activations?period=all'>{createdAccounts}</Link></div>
       </div>
+
+      <div className='stat-piece'>
+        <div className='stat-piece-header'>{t("home.stat.accountsActiveLast24h")}</div>
+        <div>{activeAccountsLast24h}</div>
+      </div>
+
       <div className='stat-piece'>
         <div className='stat-piece-header'>{t("home.stat.usernames")}</div>
         <div>{registeredUsernames}</div>
