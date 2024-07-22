@@ -330,7 +330,8 @@
     "Network Error": "Похоже, что у вас пропал интернет :(",
     "Request failed with status code 429": "Вы нам шлете слишком много запросов, попробуйте вернуться позже.",
     "Request failed with status code 404": "Этот API запрос не разрешен в этой сети",
-    "Request failed with status code 403": "Похоже, что вышли из аккаунта, пожалуйста, войдите снова."
+    "Request failed with status code 403": "Похоже, что вышли из аккаунта, пожалуйста, войдите снова.",
+    "Request aborted": "Запрос отменен"
   },
   "errors": {
     "token": {

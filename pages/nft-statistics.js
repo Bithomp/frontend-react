@@ -122,13 +122,22 @@ export default function NftStatistics() {
           </>
         }
         <p>
-          {t("nft-statistics.created")}: {niceNumber(nft?.created)}
+          {t("nft-statistics.created")}:{" "}
+          <Link href='/nft-explorer?mintedPeriod=all&includeBurned=true&includeWithoutMediaData=true'>
+            {niceNumber(nft?.created)}
+          </Link>
         </p>
         <p>
-          {t("nft-statistics.burned")}: {niceNumber(nft?.burned)}
+          {t("nft-statistics.burned")}:{" "}
+          <Link href='/nft-explorer?includeBurned=true&includeWithoutMediaData=true&burnedPeriod=all&mintedPeriod=all'>
+            {niceNumber(nft?.burned)}
+          </Link>
         </p>
         <p>
-          {t("nft-statistics.exist")}: {nft && niceNumber(nft.created - nft.burned)}
+          {t("nft-statistics.exist")}:{" "}
+          <Link href='/nft-explorer?mintedPeriod=all&includeWithoutMediaData=true'>
+            {nft && niceNumber(nft.created - nft.burned)}
+          </Link>
         </p>
         <p>
           {t("nft-statistics.owners")}: <Link href='/nft-distribution'>{niceNumber(nft?.owners)}</Link>
@@ -140,13 +149,18 @@ export default function NftStatistics() {
           {t("nft-statistics.transfers")}: {niceNumber(nft?.transfers)}
         </p>
         <p>
-          {t("nft-statistics.for-sale")}: {niceNumber(nft?.forSale)}
+          {t("nft-statistics.for-sale")}:{" "}
+          {niceNumber(nft?.forSale)}
         </p>
         <p>
-          {t("nft-statistics.for-sale-without-destination")}: {niceNumber(nft?.forSaleWithoutDestination)}
+          {t("nft-statistics.for-sale-without-destination")}:{" "}
+          <Link href='/nft-explorer?mintedPeriod=all&includeBurned=true&includeWithoutMediaData=true&list=onSale'>
+            {niceNumber(nft?.forSaleWithoutDestination)}
+          </Link>
         </p>
         <p>
-          {t("nft-statistics.for-sale-with-destination")}: {niceNumber(nft?.forSaleWithDestination)}
+          {t("nft-statistics.for-sale-with-destination")}:{" "}
+          {niceNumber(nft?.forSaleWithDestination)}
         </p>
         <p>
           {t("nft-statistics.burnable")}: {niceNumber(nft?.burnable)}
@@ -167,5 +181,5 @@ export default function NftStatistics() {
         </p>
       </div>
     </div>
-  );
-};
+  )
+}

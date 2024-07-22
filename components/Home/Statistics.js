@@ -127,7 +127,7 @@ export default function Statistics() {
     owners: 'xxx',
     issuers: 'xxx',
     transfers: 'xxx',
-    forSaleWithoutDestination: 'xxx'
+    forSale: 'xxx'
   }
   let escrowsCount = 'xxx'
   let ammsCount = 'xxx'
@@ -226,11 +226,19 @@ export default function Statistics() {
       <div className='statistics-block'>
         <div className='stat-piece'>
           <div className='stat-piece-header'>{t("home.stat.nft.created")}</div>
-          <div>{niceNumber(nft.created)}</div>
+          <div>
+            <Link href='/nft-explorer?mintedPeriod=all&includeBurned=true&includeWithoutMediaData=true'>
+              {niceNumber(nft.created)}
+            </Link>
+          </div>
         </div>
         <div className='stat-piece'>
           <div className='stat-piece-header'>{t("home.stat.nft.burned")}</div>
-          <div>{niceNumber(nft.burned)}</div>
+          <div>
+            <Link href='/nft-explorer?includeBurned=true&includeWithoutMediaData=true&burnedPeriod=all&mintedPeriod=all'>
+              {niceNumber(nft.burned)}
+            </Link>
+          </div>
         </div>
         <div className='stat-piece'>
           <div className='stat-piece-header'>{t("home.stat.nft.issuers")}</div>
@@ -246,7 +254,11 @@ export default function Statistics() {
         </div>
         <div className='stat-piece'>
           <div className='stat-piece-header'>{t("home.stat.nft.for-sale")}</div>
-          <div>{niceNumber(nft.forSaleWithoutDestination)}</div>
+          <div>
+            <Link href='/nft-explorer?list=onSale&saleDestination=publicAndKnownBrokers&mintedPeriod=all&includeWithoutMediaData=true'>
+              {niceNumber(nft.forSale)}
+            </Link>
+          </div>
         </div>
       </div>
     }

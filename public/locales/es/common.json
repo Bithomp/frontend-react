@@ -330,7 +330,8 @@
     "Network Error": "Parece que no hay conexión a internet ;(",
     "Request failed with status code 429": "¡Nos estáis mandando demasiadas peticiones, prueba más tarde!",
     "Request failed with status code 404": "Such API call is not allowed on that network",
-    "Request failed with status code 403": "It seems you're logged out, please log in again"
+    "Request failed with status code 403": "It seems you're logged out, please log in again",
+    "Request aborted": "Request aborted"
   },
   "errors": {
     "token": {
