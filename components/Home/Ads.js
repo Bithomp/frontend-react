@@ -23,7 +23,7 @@ export default function Ads() {
         </a>
       */}
       <a href="/go/buy-xrp" target="_blank" rel="noreferrer">
-        <div className="sponsored-brand">
+        <div className="sponsored-brand btcbit">
           <img src="/images/btcbit.svg" className="sponsored-brand-icon" alt="buy xrp" />
           <div className="sponsored-brand-title">Buy XRP</div>
           <div className="sponsored-brand-text">Instantly buy and sell cryptocurrency with low commission.</div>
