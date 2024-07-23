@@ -46,6 +46,7 @@ export default function Pro({
   const [rawData, setRawData] = useState({})
 
   const suggestAddress = (account, verAddresses) => {
+    setRawData({})
     if (!verAddresses || !account) return
     let loggedInAddressAlreadyVerified = false
     for (let i = 0; i < verAddresses.length; i++) {
@@ -62,8 +63,6 @@ export default function Pro({
           username: account?.username
         }
       })
-    } else {
-      setRawData({})
     }
   }
 
@@ -96,6 +95,7 @@ export default function Pro({
       }
     */
     setVerifiedAddresses(data?.addresses)
+    suggestAddress(account, data?.addresses)
   }
 
   useEffect(() => {
@@ -114,7 +114,7 @@ export default function Pro({
     setAddressToVerify("")
     suggestAddress(account, verifiedAddresses)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [account, verifiedAddresses])
+  }, [account])
 
   useEffect(() => {
     getVerifiedAddresses()
