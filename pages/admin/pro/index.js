@@ -95,9 +95,7 @@ export default function Pro({
         ]
       }
     */
-    if (data?.addresses) {
-      setVerifiedAddresses(data.addresses)
-    }
+    setVerifiedAddresses(data.addresses)
   }
 
   useEffect(() => {
@@ -259,7 +257,7 @@ export default function Pro({
                           >
                             History
                           </Link>
-                          {""}
+                          {" "}
                           <button
                             className="button-action narrow thin"
                             onClick={() => { removeProAddress(address.id, afterAddressRemoved) }}
