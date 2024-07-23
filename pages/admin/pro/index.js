@@ -130,6 +130,11 @@ export default function Pro({
   }
 
   const addAddressClicked = () => {
+    if (account?.pro) {
+      setErrorMessage("There is no Pro email")
+      return
+    }
+
     const command = {
       action: "addAddress",
       email: account?.pro
@@ -248,8 +253,15 @@ export default function Pro({
                           Verified at: {fullDateAndTime(address.createdAt)}
                         </p>
                         <p>
+                          <Link
+                            className="button-action narrow thin"
+                            href={"/admin/pro/history?address=" + address}
+                          >
+                            History
+                          </Link>
+                          {""}
                           <button
-                            className="button-action thin"
+                            className="button-action narrow thin"
                             onClick={() => { removeProAddress(address.id, afterAddressRemoved) }}
                           >
                             Remove
