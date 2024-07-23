@@ -68,6 +68,8 @@ export default function Pro({
   }
 
   const getVerifiedAddresses = async () => {
+    setAddressName("")
+    setAddressToVerify("")
     setLoadingVerifiedAddresses(true)
     const response = await axiosAdmin.get('user/addresses').catch(error => {
       setLoadingVerifiedAddresses(false)
@@ -116,8 +118,6 @@ export default function Pro({
 
   useEffect(() => {
     getVerifiedAddresses()
-    setAddressName("")
-    setAddressToVerify("")
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [refreshPage])
 
