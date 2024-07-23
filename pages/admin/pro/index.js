@@ -46,10 +46,7 @@ export default function Pro({
   const [rawData, setRawData] = useState({})
 
   const suggestAddress = (account, verAddresses) => {
-    setAddressName("")
-    setAddressToVerify("")
-    setRawData({})
-    if (!verAddresses) return
+    if (!verAddresses || !account) return
     let loggedInAddressAlreadyVerified = false
     for (let i = 0; i < verAddresses.length; i++) {
       if (verAddresses[i].address === account.address) {
@@ -65,10 +62,13 @@ export default function Pro({
           username: account?.username
         }
       })
+    } else {
+      setRawData({})
     }
   }
 
   const getVerifiedAddresses = async () => {
+    setRawData({})
     setLoadingVerifiedAddresses(true)
     const response = await axiosAdmin.get('user/addresses').catch(error => {
       setLoadingVerifiedAddresses(false)
@@ -111,6 +111,8 @@ export default function Pro({
   }, [])
 
   useEffect(() => {
+    setAddressName("")
+    setAddressToVerify("")
     suggestAddress(account, verifiedAddresses)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [account, verifiedAddresses])
