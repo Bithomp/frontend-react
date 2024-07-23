@@ -140,7 +140,7 @@ export default function NftStatistics() {
           </Link>
         </p>
         <p>
-          {t("nft-statistics.owners")}: <Link href='/nft-distribution'>{niceNumber(nft?.owners)}</Link>
+          {t("nft-statistics.owners")}: <Link href='/nft-distribution?order=total'>{niceNumber(nft?.owners)}</Link>
         </p>
         <p>
           {t("nft-statistics.issuers")}: <Link href='/nft-volumes'>{niceNumber(nft?.issuers)}</Link>
