@@ -130,8 +130,8 @@ export default function Pro({
   }
 
   const addAddressClicked = () => {
-    if (account?.pro) {
-      setErrorMessage("There is no Pro email")
+    if (!account?.pro) {
+      setErrorMessage("There is no pro email")
       return
     }
 
