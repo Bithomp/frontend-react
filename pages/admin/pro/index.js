@@ -68,7 +68,6 @@ export default function Pro({
   }
 
   const getVerifiedAddresses = async () => {
-    setRawData({})
     setLoadingVerifiedAddresses(true)
     const response = await axiosAdmin.get('user/addresses').catch(error => {
       setLoadingVerifiedAddresses(false)
@@ -96,7 +95,7 @@ export default function Pro({
         ]
       }
     */
-    setVerifiedAddresses(data.addresses)
+    setVerifiedAddresses(data?.addresses)
   }
 
   useEffect(() => {

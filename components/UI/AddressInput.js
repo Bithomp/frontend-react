@@ -56,14 +56,13 @@ export default function AddressInput({
       if (disabled) {
         clearAll()
       }
-
-      if (rawData.error) {
-        setInputValue("")
-        setLink("")
-        setNotEmpty(false)
-        setSearchingSuggestions(false)
-        setSearchSuggestions([])
-      }
+    }
+    if (!rawData || rawData?.error) {
+      setInputValue("")
+      setLink("")
+      setNotEmpty(false)
+      setSearchingSuggestions(false)
+      setSearchSuggestions([])
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [rawData])
