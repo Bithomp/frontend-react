@@ -43,6 +43,29 @@ export default function Pro({
   const [addressToVerify, setAddressToVerify] = useState("")
   const [addressName, setAddressName] = useState("")
   const [loadingVerifiedAddresses, setLoadingVerifiedAddresses] = useState(false)
+  const [rawData, setRawData] = useState({})
+
+  const suggestAddress = (account, verAddresses) => {
+    if (!verAddresses) return
+    let loggedInAddressAlreadyVerified = false
+    for (let i = 0; i < verAddresses.length; i++) {
+      if (verAddresses[i].address === account.address) {
+        loggedInAddressAlreadyVerified = true
+        break
+      }
+    }
+    //suggest the loggedin address to get verified
+    if (!loggedInAddressAlreadyVerified) {
+      setRawData({
+        address: account?.address,
+        addressDetails: {
+          username: account?.username
+        }
+      })
+    } else {
+      setRawData({})
+    }
+  }
 
   const getVerifiedAddresses = async () => {
     setLoadingVerifiedAddresses(true)
@@ -87,6 +110,11 @@ export default function Pro({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  useEffect(() => {
+    suggestAddress(account, verifiedAddresses)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [account, verifiedAddresses])
 
   useEffect(() => {
     getVerifiedAddresses()
@@ -151,7 +179,7 @@ export default function Pro({
       <h4 className='center'>Verified addresses</h4>
 
       {(!width || width > 750) ?
-        <table className='table-large'>
+        <table className='table-large no-hover'>
           <thead>
             <tr>
               <th className='center'>#</th>
@@ -170,9 +198,9 @@ export default function Pro({
                       <td className="center">{i + 1}</td>
                       <td className='left'>
                         {address.address}
-                        <br />
+                        <br /><br />
                         <Link
-                          className="button-action"
+                          className="button-action narrow thin"
                           href={"/admin/pro/history?address=" + address}
                         >
                           History
@@ -265,14 +293,9 @@ export default function Pro({
               title="Address"
               placeholder="Enter address"
               setInnerValue={setAddressToVerify}
-              rawData={{
-                address: account?.address,
-                addressDetails: {
-                  username: account?.username
-                }
-              }}
-              type='address'
               hideButton={true}
+              rawData={rawData}
+              type="address"
             />
           </span>
           <span style={{ width: width > 851 ? "30%" : "100%" }}>
@@ -280,6 +303,7 @@ export default function Pro({
               title="Private name"
               placeholder="Enter address name"
               setInnerValue={setAddressName}
+              defaultValue={rawData?.addressDetails?.username}
               hideButton={true}
             />
           </span>
@@ -291,8 +315,15 @@ export default function Pro({
             onClick={addAddressClicked}
             disabled={!addressToVerify || !addressName}
           >
-            Verify {" "}
-            <Image src="/images/xumm.png" className={'xumm-logo' + ((!addressToVerify || !addressName) ? ' disabled' : '')} alt="xaman" height={24} width={24} />
+            Verify
+            {" "}
+            <Image
+              src="/images/xumm.png"
+              className={'xumm-logo' + ((!addressToVerify || !addressName) ? ' disabled' : '')}
+              alt="xaman"
+              height={24}
+              width={24}
+            />
           </button>
         </center>
       </div>

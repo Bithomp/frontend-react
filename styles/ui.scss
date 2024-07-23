@@ -389,6 +389,25 @@ table {
     @media only screen and (max-width: 800px) {
       min-width: 100%;
     }
+    &.no-hover {
+      tr {
+        &:hover {
+          td {
+            background-color: inherit;
+            color: inherit;
+          }
+          a {
+            color: inherit;
+          }
+          svg {
+            stroke: inherit;
+            &.change-fill {
+              fill: inherit;
+            }
+          }
+        }
+      }
+    }
   }
   &.table-large--without-border {
     border: none;

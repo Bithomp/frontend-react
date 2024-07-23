@@ -14,7 +14,16 @@ import { amountFormat, userOrServiceLink } from '../../utils/format'
 
 let typingTimer
 
-export default function AddressInput({ placeholder, title, setValue, rawData, type, disabled, hideButton, setInnerValue }) {
+export default function AddressInput({
+  placeholder,
+  title,
+  setValue,
+  rawData,
+  type,
+  disabled,
+  hideButton,
+  setInnerValue
+}) {
   const { t } = useTranslation()
   const windowWidth = useWidth()
 
