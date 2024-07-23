@@ -411,7 +411,7 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
           blob: data.response.hex
         }, res => {
           if (res?.error) {
-            setStatus(t(res.error))
+            setStatus(t(res.error) + ", blob: " + data.response.hex + " address: " + data.custom_meta.blob.data.address + " name: " + data.custom_meta.blob.data.name)
           } else {
             //pageRefresh, updatedata, delay 2 sec
             closeSignInFormAndRefresh()
