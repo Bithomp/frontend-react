@@ -6,7 +6,7 @@
   "status-success": "Si tu transacción tiene el estado de \"realizado\" pero no se ha recibido, contacta con el soporte de la cartera / servicio / exchange del destinatario.",
   "wrong-tag": "Si enviaste una transacción sin tag de destino or con un tag de destino erróneo entonces lee arriba los puntos (2) y (3).",
   "text2": "Si echas en falta {{baseReserve}} en tu cartera, por favor lee acerca de la <3>reserva inicial</3>.",
-  "paper-wallet": "Si quieres enviar {{nativeCurrency}} desde una cartera de papel, necesitas importarla a una cartera de software primero, puedes usar la app móvil de Xumm para ello (importa el secreto como una \"semilla familiar\").",
+  "paper-wallet": "Si quieres enviar {{nativeCurrency}} desde una cartera de papel, necesitas importarla a una cartera de software primero, puedes usar la app móvil de Xaman para ello (importa el secreto como una \"semilla familiar\").",
   "text3": "Si tienes una propuesta de <1>colaboración o márketing</1> puedes contactarnos por correo electrónico: <3/>. También puedes contactarnos para cuestiones sobre el registro de nombres de usuario de bithomp o el explorador de transacciones de bithomp.",
   "no-answer": "Debido a que nuestro tiempo es limitado no respondemos correos relacionados con los puntos 1-6.",
   "submit-info": "Enviar información sobre tu servicio",

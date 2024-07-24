@@ -33,6 +33,10 @@ class MyDocument extends Document {
           <script
             dangerouslySetInnerHTML={{
               __html: `(function () {
+                try {
+                  document.cookie = "theme=" + ";expires=Thu, 01 Jan 1970 00:00:01 GMT";
+                  document.cookie = "NEXT_LOCALE=" + ";expires=Thu, 01 Jan 1970 00:00:01 GMT";
+                } catch (err) {}
                 function getCookie(cname) {
                   let name = cname + "=";
                   let decodedCookie = decodeURIComponent(document.cookie);
@@ -57,7 +61,12 @@ class MyDocument extends Document {
                 window.__setPreferredTheme = function (newTheme) {
                   setTheme(newTheme);
                   try {
-                    document.cookie = "theme=" + JSON.stringify(window.__theme);
+                    let domain = window.location.hostname;
+                    let domainParts = domain.split('.');
+                    if (domainParts.length > 2) {
+                      domain = domainParts.slice(1).join('.');
+                    }
+                    document.cookie = "theme=" + JSON.stringify(window.__theme) + ";path=/;domain=." + encodeURI(domain) + ";max-age=31536000";
                   } catch (err) {}
                 };
                 let preferredTheme;

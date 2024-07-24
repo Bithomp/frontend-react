@@ -1,17 +1,19 @@
 {
   "menu": {
+    "amm": {
+      "amm": "AMM",
+      "pools": "AMM pools",
+      "explorer": "AMM explorer"
+    },
     "company": {
       "about-us": "About us"
     },
     "services": {
-      "nft-mint": "Mint NFT"
-    },
-    "personal": {
-      "personal": "Osobno",
+      "services": "Services",
+      "nft-mint": "Mint NFT",
       "search-on-ledgerName": "Traži na {{ledgerName}}"
     },
     "business": {
-      "business": "Business",
       "advertise": "Oglašavanje",
       "eaas": "Pretraživač kao servis",
       "build-unl": "Izradi UNL"
@@ -20,7 +22,6 @@
     "project-registration": "Registracija projekta",
     "price-alerts": "Upozorenja na promjenu {{nativeCurrency}} cijene",
     "submit-offline-tx": "Pošalji offline transakciju",
-    "networks": "Mreže",
     "ledger": "Ledger transakcije",
     "nft": {
       "explorer": "Istraži",
@@ -32,7 +33,9 @@
       "nfts": "NFTovi računa",
       "offers": "Ponude"
     },
-    "xrpl": {
+    "network": {
+      "blockchain": "Blockchain",
+      "nodes": "Čvorovi",
       "governance": "Uprava",
       "activations": "Activated accounts (chart)",
       "distribution": "{{nativeCurrency}} distribution",
@@ -49,13 +52,12 @@
       "account-generation": "Generiranje računa",
       "faucet": "Faucet",
       "api": "API documentation",
-      "api-admin": "API account (Partner portal)"
+      "api-admin": "API account"
     },
     "legal": "Legal",
     "disclaimer": "Izjava o odricanju",
     "privacy-policy": "Privatnost podataka",
     "terms-and-conditions": "Uvjeti korištenja",
-    "terms-api-bots": "API & Bots terms of use",
     "customer-support": "Korisnička podrška",
     "press": "Press",
     "merch": "Merch shop",
@@ -94,14 +96,14 @@
     "expiration": "Istek",
     "target-table": "Target table",
     "xumm": {
-      "open-app": "Otvori Xumm aplikaciju na tvojem mobitelu.",
+      "open-app": "Otvori Xaman aplikaciju na tvojem mobitelu.",
       "change-settings": "Idi na postavke i odaberi testni čvor.",
-      "scan-qr": "Skeniraj ovaj QR s Xumm app-om.",
+      "scan-qr": "Skeniraj ovaj QR s Xaman app-om.",
       "statuses": {
-        "redirecting": "Preusmjeravam na Xumm...",
+        "redirecting": "Preusmjeravam na Xaman...",
         "wait": "Molimo pričekajte...",
         "check-push": "Provjeri push notifikaciju na tvojem mobitelu.",
-        "check-app": "Molimo pratite upute u Xumm applikaciji.",
+        "check-app": "Molimo pratite upute u Xaman applikaciji.",
         "expired": "QR kod je istekao, zatraži novi."
       }
     },
@@ -166,6 +168,7 @@
       "quorum": "Kvorum validatora",
       "proposers": "predlagatelji",
       "accounts": "Računi",
+      "accountsActiveLast24h": "Active accounts (24h)",
       "usernames": "Korisnička imena",
       "nft": {
         "created": "NFT kreirano",
@@ -176,7 +179,8 @@
         "for-sale": "NFTovi na rasprodaji"
       },
       "escrows": "Escrows",
-      "amms": "AMM pools"
+      "amms": "AMM pools",
+      "nodes": "Čvorovi"
     }
   },
   "last-ledger-information": {
@@ -295,13 +299,17 @@
     "error": "Greška",
     "no-data": "Nema dostupnih podataka",
     "loading": "Učitavam...",
+    "login-to-bithomp-pro": "Loading more data is available to <1>logged-in</1> Bithomp Pro subscribers.",
+    "renew-bithomp-pro": "Your Bithomp Pro subscription has expired. <1>Renew your subscription</1>.",
     "load-failed": "Neuspjelo učitavanje",
     "all-issuers": "Svi issueri",
     "no-expiration": "Nikad",
     "no-uri": "Nema URIja",
     "no-media": "Nema medija",
     "viewer": "Preglednik",
-    "developer-mode": "Developer mode"
+    "developer-mode": "Developer mode",
+    "search": "Search",
+    "of-many": "of many"
   },
   "form": {
     "error": {
@@ -322,7 +330,8 @@
     "Network Error": "Nema internetske veze ;(",
     "Request failed with status code 429": "Šaljete nam previše zahtjeva, pokušajte malo kasnije.",
     "Request failed with status code 404": "Such API call is not allowed on that network",
-    "Request failed with status code 403": "It seems you're logged out, please log in again"
+    "Request failed with status code 403": "It seems you're logged out, please log in again",
+    "Request aborted": "Request aborted"
   },
   "errors": {
     "token": {
@@ -333,6 +342,10 @@
     },
     "access_token": {
       "not_found": "There are no API keys."
+    },
+    "address": {
+      "invalid_signature_address": "Invalid signature address. Make sure that you sign with the correct address.",
+      "limit_reached": "You can not add more addesses, you've reached the limit."
     }
   },
   "error-api": {
@@ -364,7 +377,9 @@
     "day": "Za zadnja 24 sata"
   },
   "table": {
+    "uri": "URI",
     "mints": "Mints",
+    "view": "View",
     "period": "Period",
     "mint-period": "Mint period",
     "warning": "Warning",
@@ -483,8 +498,6 @@
     "secondary-sales": "Sekundarne",
     "primary-sales": "Primarne",
     "primaryAndSecondary-sales": "Sve prodaje",
-    "top-sales": "TOP prodaje",
-    "latest-sales": "Zadnje prodaje",
     "all-time": "Sve vrijeme",
     "year": "365 dana",
     "month": "30 dana",
@@ -519,6 +532,7 @@
   "explorer": {
     "header": {
       "main": "{{explorerName}} Tražilica",
+      "amm": "AMM pool information",
       "account": "Account information",
       "transaction": "Transaction information",
       "nft": "NFT",
@@ -545,9 +559,9 @@
   },
   "nft-offers": {
     "header": "NFT ponude",
-    "owned-desc": "Ovdje možete pretražiti kupopordajne ponude za NFTove, unesite XRPL adresu ili korisničko ime za vidjeti što se nudi.",
-    "for-owned-nfts-desc": "Ovdje možete pretražiti ponude za kupnju za NFTova, unesite XRPL adresu ili korisničko ime za vidjeti pristigle ponude.",
-    "privately-offered-to-address-desc": "Ovdje možete pretražiti privatne ponude XRPL računa (s destinacijskom oznakom), to je često korišteno kod NFT transfera (cijena 0 XRP), unesite XRPL adresu ili korisničko ime za vidjeti pristigle ponude.",
+    "owned-desc": "Ovdje možete pretražiti kupopordajne ponude za NFTove, unesite adresu ili korisničko ime za vidjeti što se nudi.",
+    "for-owned-nfts-desc": "Ovdje možete pretražiti ponude za kupnju za NFTova, unesite adresu ili korisničko ime za vidjeti pristigle ponude.",
+    "privately-offered-to-address-desc": "Ovdje možete pretražiti privatne ponude računa (s destinacijskom oznakom), to je često korišteno kod NFT transfera (cijena 0), unesite adresu ili korisničko ime za vidjeti pristigle ponude.",
     "no-nft-offers": "Nismo pronašli niti jednu NFT ponudu.",
     "cancel-invalid-offer_one": "Poništi nevaljalu ponudu",
     "cancel-invalid-offer_other": "Poništi {{count}} nevaljalih ponuda",
@@ -593,7 +607,7 @@
     "it-helps": "Vaša donacija će pomoći dodati nove kapacitete te u razvoju Bithomp-a.",
     "address": "Naša XRPL adresa za donacije",
     "dt": "Destinacijska oznaka",
-    "donate-with-xumm": "Doniraj pomoću Xumm-a"
+    "donate-with-xaman": "Doniraj pomoću Xaman-a"
   },
   "sponsored": {
     "sponsored": "Sponzorirano"

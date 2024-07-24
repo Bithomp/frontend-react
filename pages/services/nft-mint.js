@@ -25,9 +25,9 @@ export const getServerSideProps = async (context) => {
   const { uri, digest } = query
   return {
     props: {
-      isSsrMobile: getIsSsrMobile(context),
       uriQuery: uri || "",
       digestQuery: digest || "",
+      isSsrMobile: getIsSsrMobile(context),
       ...(await serverSideTranslations(locale, ['common'])),
     },
   }
@@ -245,6 +245,9 @@ export default function NftMint({ setSignRequest, uriQuery, digestQuery }) {
 
   const checkDigest = async metadata => {
     if (!metadata) return
+    if (typeof metadata === 'string') {
+      metadata = JSON.parse(metadata)
+    }
     let ourDigest = await sha512(JSON.stringify(metadata)?.trim())
     ourDigest = ourDigest.toString().slice(0, 64)
     setDigest(ourDigest.toUpperCase())

@@ -2,6 +2,62 @@ import axios from 'axios'
 import { useCallback, useEffect, useState } from "react"
 import { Buffer } from 'buffer'
 import { decodeAccountID, isValidClassicAddress } from 'ripple-address-codec'
+import { useTranslation } from 'next-i18next'
+import countries from "i18n-iso-countries"
+
+export const periodDescription = (periodName) => {
+  if (periodName?.includes("..")) {
+    const periodParts = periodName.split("..")
+    return "from " + new Date(periodParts[0]).toLocaleString() + " to " + new Date(periodParts[1]).toLocaleString()
+  } else {
+    return periodName
+  }
+}
+
+export const useSubscriptionExpired = () => {
+  const [proExpire, setProExpire] = useState("")
+  useEffect(() => {
+    const proExpireString = localStorage.getItem('pro-expire')
+    if (proExpireString) {
+      setProExpire(proExpireString)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+  return Number(proExpire) < new Date().getTime()
+}
+
+export const countriesTranslated = () => {
+  const { i18n } = useTranslation()
+  let lang = i18n.language.slice(0, 2)
+  if (i18n.language === "default") {
+    lang = "en"
+  }
+  const notSupportedLanguages = ['my'] // supported "en", "ru", "ja", "ko" etc
+  if (notSupportedLanguages.includes(lang)) {
+    lang = "en"
+  }
+  const languageData = require('i18n-iso-countries/langs/' + lang + '.json')
+  countries.registerLocale(languageData)
+  countries.getNameTranslated = code => {
+    return countries.getName(code, lang, { select: "official" })
+  }
+
+  countries.getNamesTranslated = () => {
+    return countries.getNames(lang, { select: "official" })
+  }
+
+  const countryObj = countries.getNamesTranslated()
+  const countryArr = Object.entries(countryObj).map(([key, value]) => {
+    return {
+      label: value,
+      value: key
+    }
+  })
+  countryArr.sort((a, b) => a.label.localeCompare(b.label, lang))
+  countries.countryArr = countryArr
+
+  return countries
+}
 
 export const chartSpan = period => {
   if (!period) return ""
@@ -304,18 +360,16 @@ export const encode = code => {
 
 //not in use yet
 export const submitTransaction = async (blob, callback) => {
-  blob = JSON.stringify(blob);
+  blob = JSON.stringify(blob)
 
   const response = await axios.post('v2/transaction/submit', blob).catch(error => {
     console.log("submitTransaction error:", error.message)
   });
 
   if (response) {
-    callback(response);
+    callback(response)
   }
 }
-
-//const devNetworks = ['testnet', 'devnet', 'xahau-testnet'];
 
 export const capitalize = str => {
   if (!str) return ""
@@ -326,60 +380,66 @@ export const network = process.env.NEXT_PUBLIC_NETWORK_NAME
 export const devNet = ['mainnet', 'staging', 'xahau'].includes(network) ? false : network
 export const xahauNetwork = network.includes('xahau')
 
-const networks = {
+export const networks = {
   mainnet: {
     id: 0,
     server: "https://bithomp.com",
     nativeCurrency: "XRP",
     getCoinsUrl: "/go/buy-first-xrp",
-    explorerName: "XRP",
+    explorerName: "XRPL",
     ledgerName: "XRPL",
-    minLedger: 32570
+    minLedger: 32570,
+    subname: ""
   },
   staging: {
     id: 2,
     server: "https://staging.bithomp.com",
     nativeCurrency: "XRP",
     getCoinsUrl: "/faucet/",
-    explorerName: "XRP Staging",
+    explorerName: "XRPL Staging",
     ledgerName: "XRPL",
-    minLedger: 32570
+    minLedger: 32570,
+    subname: ""
   },
   testnet: {
     id: 1,
     server: "https://test.bithomp.com",
     nativeCurrency: "XRP",
     getCoinsUrl: "/faucet/",
-    explorerName: "XRP TESTNET",
+    explorerName: "XRPL Testnet",
     ledgerName: "XRPL",
-    minLedger: 1
+    minLedger: 1,
+    subname: "Testnet"
   },
   devnet: {
     id: 2,
     server: "https://dev.bithomp.com",
     nativeCurrency: "XRP",
     getCoinsUrl: "/faucet/",
-    explorerName: "XRP DEVNET",
+    explorerName: "XRPL Devnet",
     ledgerName: "XRPL",
-    minLedger: 1
+    minLedger: 1,
+    subname: "Devnet"
   },
   "xahau-testnet": {
     id: 21338,
     server: "https://test.xahauexplorer.com",
     nativeCurrency: "XAH",
     getCoinsUrl: "/faucet/",
-    explorerName: "XAHAU TESTNET",
-    ledgerName: "XAHAU",
-    minLedger: 3
+    explorerName: "Xahau Testnet",
+    ledgerName: "Xahau",
+    minLedger: 3,
+    subname: "Testnet"
   },
   xahau: {
     id: 21337,
     server: "https://xahauexplorer.com",
     nativeCurrency: "XAH",
     getCoinsUrl: null,
-    explorerName: "XAHAU",
-    ledgerName: "XAHAU",
-    minLedger: 1
+    explorerName: "Xahau",
+    ledgerName: "Xahau",
+    minLedger: 1,
+    subname: ""
   }
 }
 
@@ -398,6 +458,7 @@ export const nativeCurrency = networks[network]?.nativeCurrency
 export const getCoinsUrl = networks[network]?.getCoinsUrl
 export const explorerName = networks[network]?.explorerName
 export const ledgerName = networks[network]?.ledgerName
+export const ledgerSubName = networks[network]?.subname
 export const minLedger = networks[network]?.minLedger
 
 export const networksIds = {
@@ -479,6 +540,10 @@ export const isUsernameValid = x => {
 
 export const isAddressOrUsername = x => {
   return isAddressValid(x) || isUsernameValid(x)
+}
+
+export const isCurrencyHashValid = x => {
+  return /^[0-9a-zA-Z]{40}$/.test(x)
 }
 
 export const isIdValid = x => {

@@ -1,11 +1,9 @@
-import axios from "axios";
 import { useTranslation } from "next-i18next";
 import { serverSideTranslations } from "next-i18next/serverSideTranslations";
-import { useEffect, useState } from "react";
 
 import SearchBlock from "../../components/Layout/SearchBlock";
 import SEO from "../../components/SEO";
-import { server } from "../../utils";
+import { axiosServer } from "../../utils/axios";
 import { getIsSsrMobile } from "../../utils/mobile";
 
 import {
@@ -13,11 +11,12 @@ import {
   TransactionEscrow,
   TransactionOrder,
   TransactionPayment,
+  TransactionAmm,
 } from "../../components/Transaction";
 
 export async function getServerSideProps(context) {
   const { locale, query, req } = context;
-  let txData = null;
+  let initialData = null;
   const { id } = query;
 
   let headers = {};
@@ -28,13 +27,13 @@ export async function getServerSideProps(context) {
     headers["x-forwarded-for"] = req.headers["x-forwarded-for"];
   }
   try {
-    const res = await axios({
+    const res = await axiosServer({
       method: "get",
-      url: server + "/api/cors/v2/transaction/" + id,
+      url: "v2/transaction/" + id,
       headers,
     });
-    txData = res?.data;
-    txData.rawTransaction = JSON.parse(txData.rawTransaction);
+    initialData = res?.data;
+    initialData.rawTransaction = JSON.parse(initialData.rawTransaction);
   } catch (error) {
     console.error(error);
   }
@@ -42,8 +41,8 @@ export async function getServerSideProps(context) {
   return {
     props: {
       id,
+      initialData,
       isSsrMobile: getIsSsrMobile(context),
-      txData,
       ...(await serverSideTranslations(locale, ["common"])),
     },
   };
@@ -51,26 +50,22 @@ export async function getServerSideProps(context) {
 
 const Container = ({ children }) => {
   return (
-    <div className="content-center short-top">
+    <>
       {children}
-    </div>
+    </>
   );
 };
 
 export default function Transaction(
-  { id, txData },
+  { id, initialData },
 ) {
   const { t } = useTranslation();
-  console.log(txData);
-
-  const [isClient, setIsClient] = useState(false);
-
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
 
   let TransactionComponent = null;
-  switch (txData?.type) {
+  switch (initialData?.type) {
+    case "ammCreate" || "ammBid" || "ammVote" || "ammWithdraw" || "ammDeposit" || "ammDelete":
+      TransactionComponent = TransactionAmm;
+      break;
     case "escrowCreation" || "escrowExecution" || "escrowCancelation":
       TransactionComponent = TransactionEscrow;
       break;
@@ -89,18 +84,15 @@ export default function Transaction(
       <SEO
         page="Transaction"
         title={t("explorer.header.transaction") + " " +
-          (txData?.service?.name || txData?.username || txData?.address || id)}
+          (initialData?.service?.name || initialData?.username || initialData?.address || id)}
         description={"Transaction details, transactions, NFTs, Tokens for " +
-          (txData?.service?.name || txData?.username) + " " +
-          (txData?.address || id)}
+          (initialData?.service?.name || initialData?.username) + " " +
+          (initialData?.address || id)}
       />
       <SearchBlock tab="transaction" />
-      {isClient &&
-        (
-          <Container>
-            <TransactionComponent tx={txData} />
-          </Container>
-        )}
+      <Container>
+        <TransactionComponent tx={initialData} />
+      </Container>
     </>
   );
 }

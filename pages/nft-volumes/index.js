@@ -5,7 +5,10 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 
-export const getServerSideProps = async ({ query, locale }) => {
+import { getIsSsrMobile } from '../../utils/mobile'
+
+export const getServerSideProps = async (context) => {
+  const { query, locale } = context
   const { period, sale, list, currency, currencyIssuer, sortCurrency } = query
   return {
     props: {
@@ -15,6 +18,7 @@ export const getServerSideProps = async ({ query, locale }) => {
       currency: currency || "",
       currencyIssuer: currencyIssuer || "",
       sortCurrency: sortCurrency || "",
+      isSsrMobile: getIsSsrMobile(context),
       ...(await serverSideTranslations(locale, ['common', 'nft-volumes'])),
     },
   }
@@ -33,7 +37,8 @@ import {
   addressUsernameOrServiceLink,
   usernameOrAddress,
   persentFormat,
-  niceNumber
+  niceNumber,
+  niceCurrency
 } from '../../utils/format'
 
 import LinkIcon from "../../public/images/link.svg"
@@ -392,7 +397,7 @@ export default function NftVolumes({
     if (volume?.marketplace) {
       urlPart += "&marketplace=" + volume.marketplace
     }
-    return urlPart
+    return urlPart + "&includeWithoutMediaData=true"
   }
 
   const sortTable = key => {
@@ -520,6 +525,13 @@ export default function NftVolumes({
     }
   }
 
+  const handleClick = async (url) => {
+    // Wait for route change before do anything
+    await router.push(url)
+    // Reload after routing
+    router.reload()
+  }
+
   return <>
     <SEO
       title={
@@ -599,12 +611,12 @@ export default function NftVolumes({
                     <>
                       {listTab === 'brokers' ?
                         <Trans i18nKey="brokers.text0" ns='nft-volumes'>
-                          XRPL had {{ allSales: shortNiceNumber(rawData.summary.all.sales, 0) }} <b>{{ currency: (currencyIssuer ? currency : currencyTab).toUpperCase() }}</b> NFT {{ saleType: saleTab === 'primaryAndSecondary' ? "" : ("(" + t("tabs." + saleTab + "-sales")).toLocaleLowerCase() + ")" }} sales for {{ allVolume: niceNumber(rawData.summary.all.volumesInConvertCurrencies[convertCurrency], 0, convertCurrency) }},
+                          XRPL had {{ allSales: shortNiceNumber(rawData.summary.all.sales, 0) }} <b>{{ currency: currencyIssuer ? niceCurrency(currency) : currencyTab.toUpperCase() }}</b> NFT {{ saleType: saleTab === 'primaryAndSecondary' ? "" : ("(" + t("tabs." + saleTab + "-sales")).toLocaleLowerCase() + ")" }} sales for {{ allVolume: niceNumber(rawData.summary.all.volumesInConvertCurrencies[convertCurrency], 0, convertCurrency) }},
                           from which <b>{{ brokerSales: shortNiceNumber(rawData.summary.brokers?.sales, 0) }}</b> {{ percentBrokerSales: persentFormat(rawData.summary.brokers?.sales, rawData.summary.all.sales) }} of trades for <b>{{ brokerVolume: niceNumber(rawData.summary.brokers?.volumesInConvertCurrencies[convertCurrency], 0, convertCurrency) }}</b> {{ percentBrokerVolume: persentFormat(rawData.summary.brokers?.volumesInConvertCurrencies[convertCurrency], rawData.summary.all.volumesInConvertCurrencies[convertCurrency]) }} were through the brokerage model.
                         </Trans>
                         :
                         <Trans i18nKey="text0" ns="nft-volumes">
-                          XRPL had {{ allSales: shortNiceNumber(rawData.summary.all.sales, 0) }} {{ currency: (currencyIssuer ? currency : currencyTab).toUpperCase() }} NFT {{ saleType: saleTab === 'primaryAndSecondary' ? "" : ("(" + t("tabs." + saleTab + "-sales")).toLocaleLowerCase() + ")" }} sales for {{ allVolume: niceNumber(rawData.summary.all.volumesInConvertCurrencies[convertCurrency], 0, convertCurrency) }}.
+                          XRPL had {{ allSales: shortNiceNumber(rawData.summary.all.sales, 0) }} {{ currency: currencyIssuer ? niceCurrency(currency) : currencyTab.toUpperCase() }} NFT {{ saleType: saleTab === 'primaryAndSecondary' ? "" : ("(" + t("tabs." + saleTab + "-sales")).toLocaleLowerCase() + ")" }} sales for {{ allVolume: niceNumber(rawData.summary.all.volumesInConvertCurrencies[convertCurrency], 0, convertCurrency) }}.
                         </Trans>
                       }
                     </>
@@ -679,7 +691,16 @@ export default function NftVolumes({
                           }
                           {listTab === 'issuers' && issuersExtended && <td className='right hide-on-mobile'>{shortNiceNumber(volume.statistics?.tradedNfts, 0)}</td>}
                           {listTab === 'brokers' && <td>{addressUsernameOrServiceLink(volume, "broker", { short: true, noBroker: t("brokers.no-broker", { ns: 'nft-volumes' }) })}</td>}
-                          {listTab === 'currencies' && <td className='center'><Link href={'/nft-volumes' + urlParams(volume) + '&list=issuers'}><LinkIcon /></Link></td>}
+                          {listTab === 'currencies' &&
+                            <td className='center'>
+                              <Link
+                                href={'/nft-volumes' + urlParams(volume) + '&list=issuers'}
+                                onClick={() => handleClick('/nft-volumes' + urlParams(volume) + '&list=issuers')}
+                              >
+                                <LinkIcon />
+                              </Link>
+                            </td>
+                          }
                           <td className='right'>
                             {shortNiceNumber(volume.sales, 0)}
                             {rawData?.summary &&
@@ -689,7 +710,9 @@ export default function NftVolumes({
                               <Link href={'/nft-sales' + urlParams(volume)}> <LinkIcon /></Link>
                             }
                           </td>
-                          {listTab === 'issuers' && issuersExtended && <td className='right hide-on-mobile'>{shortNiceNumber(volume.statistics?.buyers, 0)}</td>}
+                          {listTab === 'issuers' && issuersExtended && <td className='right hide-on-mobile'>
+                            {shortNiceNumber(volume.statistics?.buyers, 0)}</td>
+                          }
                           {(listTab === 'currencies' || (currency && currencyIssuer) || currencyTab === 'xrp') &&
                             <td className='right'>
                               {amountFormat(volume.volumes[0]?.amount, { maxFractionDigits: 2 })}

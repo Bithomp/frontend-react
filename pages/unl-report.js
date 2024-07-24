@@ -4,9 +4,13 @@ import axios from 'axios'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useRouter } from 'next/router'
 
-export const getServerSideProps = async ({ locale }) => {
+import { getIsSsrMobile } from '../utils/mobile'
+
+export const getServerSideProps = async (context) => {
+  const { locale } = context
   return {
     props: {
+      isSsrMobile: getIsSsrMobile(context),
       ...(await serverSideTranslations(locale, ['common', 'unl-report'])),
     },
   }

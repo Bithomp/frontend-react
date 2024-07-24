@@ -6,7 +6,7 @@
   "status-success": "Falls Ihre Transaktion den Status \"erfolgreich\" hat aber nicht beim Empfänger angekommen ist, kontaktieren Sie den Support des Services / Walletbetreibers / Börse des Empfängers.",
   "wrong-tag": "Falls Sie eine Transaktion ohne DestinationTag oder mit einem falschen DestinationTag gesendet haben, lesen Sie bitte (2) und (3) oberhalb.",
   "text2": "Falls Sie {{baseReserve}} in Ihrer Wallet vermissen, lesen Sie bitte über <3>Basis Reserve</3>.",
-  "paper-wallet": "Falls Sie {{nativeCurrency}} von Ihrer Papierwallet senden möchten, müssen Sie diese zuerst in eine Software-Wallet importieren. Sie können dafür die Xumm Mobile App verwenden (Geheimnis als \"Familien-Seed\" importieren).",
+  "paper-wallet": "Falls Sie {{nativeCurrency}} von Ihrer Papierwallet senden möchten, müssen Sie diese zuerst in eine Software-Wallet importieren. Sie können dafür die Xaman Mobile App verwenden (Geheimnis als \"Familien-Seed\" importieren).",
   "text3": "Für Vorschläge zu <1>Partnerschaften oder Marketing</1> kontaktieren Sie uns bitte per E-Mail: <3/>. Sie können uns auch zu Fragen über bithomp Benutzernamen oder dem bithomp Transaktion Explorer kontaktieren.",
   "no-answer": "Aufgrund unserer begrenzten verfügbaren Zeit antworten wir nicht auf E-Mails mit Bezug zu 1-6.",
   "submit-info": "Informationen über Ihren Service schicken",

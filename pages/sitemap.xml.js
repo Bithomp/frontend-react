@@ -6,6 +6,7 @@ const pages = [
   { loc: "nft-explorer", changefreq: "daily", priority: "1" },
   { loc: "amendments", changefreq: "always", priority: "1" },
   { loc: "validators", changefreq: "always", priority: "1" },
+  { loc: "amms", changefreq: "always", priority: "1" },
 
   { loc: "nft-sales", changefreq: "daily", priority: "0.9" },
   { loc: "", changefreq: "hourly", priority: "0.9" },
@@ -13,9 +14,7 @@ const pages = [
   { loc: "nft-volumes", changefreq: "always", priority: "0.9" },
   { loc: "nft-minters", changefreq: "always", priority: "0.9" },
 
-  { loc: "advertise", changefreq: "yearly", priority: "0.8" },
-  { loc: "eaas", changefreq: "yearly", priority: "0.8" },
-
+  { loc: "amm", changefreq: "daily", priority: "0.7" },
   { loc: "nfts", changefreq: "daily", priority: "0.7" },
   { loc: "nft", changefreq: "daily", priority: "0.7" },
   { loc: "nft-distribution", changefreq: "daily", priority: "0.7" },
@@ -25,12 +24,16 @@ const pages = [
   { loc: "donate", changefreq: "daily", priority: "0.7" },
   { loc: "alerts", changefreq: "daily", priority: "0.7" },
   { loc: "last-ledger-information", changefreq: "always", priority: "0.7" },
+  { loc: "nodes", changefreq: "always", priority: "0.7" },
+  { loc: "activations", changefreq: "always", priority: "0.7" },
   { loc: "paperwallet/", changefreq: "yearly", priority: "0.7" },
   { loc: "domains", changefreq: "always", priority: "0.7" },
   { loc: "distribution", changefreq: "always", priority: "0.7" },
 
   { loc: "genesis", changefreq: "weekly", priority: "0.6" },
   { loc: "build-unl", changefreq: "yearly", priority: "0.6" },
+  { loc: "advertise", changefreq: "yearly", priority: "0.6" },
+  { loc: "eaas", changefreq: "yearly", priority: "0.6" },
 
   { loc: "submit-account-information", changefreq: "yearly", priority: "0.5" },
   { loc: "admin", changefreq: "yearly", priority: "0.5" },
@@ -53,7 +56,7 @@ if (xahauNetwork) {
 
 function generateSiteMap(posts) {
   const locales = ['en', 'ko', 'ru', 'de', 'es', 'id', 'ja', 'hr']
-  const oldPages = [
+  const noTranslatedPages = [
     'admin',
     'explorer/',
     'submit/',
@@ -63,21 +66,30 @@ function generateSiteMap(posts) {
     'build-unl',
     'privacy-policy',
     'terms-and-conditions',
-    'terms-api-bots',
     'disclaimer'
-  ] //old pages and not translated pages
+  ]
+  const oldPages = [
+    'explorer/',
+    'submit/',
+    'paperwallet/',
+  ]
+  const pagesWithoutTranslation = [...noTranslatedPages, ...oldPages]
+
   return `<?xml version="1.0" encoding="UTF-8"?>
    <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
      ${posts
       .map(({ loc, changefreq, priority }) => {
         return `
           <url>
-            <loc>${`${server}/${loc}`}</loc>
+            ${!oldPages.includes(loc) ?
+            `<loc>${`${server}/en/${loc}`}</loc>`
+            :
+            `<loc>${`${server}/${loc}`}</loc>`}
             <changefreq>${changefreq}</changefreq>
             <priority>${priority}</priority>
-            ${!oldPages.includes(loc) ? locales
+            ${!pagesWithoutTranslation.includes(loc) ? locales
             .map((locale) => {
-              return `<xhtml:link rel="alternate" hreflang="${locale}" href="${`${server}${locale === 'en' ? '' : '/' + locale}/${loc}`}"/>`
+              return `<xhtml:link rel="alternate" hreflang="${locale}" href="${`${server}${'/' + locale}/${loc}`}"/>`
             })
             .join('')
             :

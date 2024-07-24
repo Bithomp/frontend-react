@@ -142,13 +142,5 @@ export default function TopLinks() {
 
   */}
 
-  return <div className="top-links">
-    <a
-      href="https://bithomp.com/go/contest-top"
-      rel="noreferrer"
-      className='top-link orange'
-    >
-      Win 100, 200, or 300 XRP from Bithomp
-    </a>
-  </div>
+  return ""
 }

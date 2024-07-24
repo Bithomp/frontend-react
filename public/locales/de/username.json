@@ -3,7 +3,7 @@
   "error": {
     "address-empty": "Bitte geben Sie Ihre XRPL Adresse ein.",
     "address-invalid": "Bitte geben Sie eine gültige XRPL Adresse ein.",
-    "address-hosted": "Die eingegebene Adresse wird von {{service}} betrieben. Benuternamen können nur für eigene Wallets (Hardware Wallets, Xumm, etc.) registriert werden. Bitte kontaktieren Sie uns, falls Sie ein Betreiber einer Börse sind.",
+    "address-hosted": "Die eingegebene Adresse wird von {{service}} betrieben. Benuternamen können nur für eigene Wallets (Hardware Wallets, Xaman, etc.) registriert werden. Bitte kontaktieren Sie uns, falls Sie ein Betreiber einer Börse sind.",
     "address-done": "Für diese Adresse wurde bereits ein Benutzername registriert.",
     "username-empty": "Bitte geben Sie den Benutzernamen ein, welches Sie registrieren möchten.",
     "username-invalid": "Benutzernamen sollten kürzer als 18 Zeichen sein. Symbole sind nicht erlaubt.",
@@ -25,7 +25,7 @@
     "text3": "Die Zahlung ist für 100 Swedische Kronen in XRP umgerechnet. Die Zahlung für den Benutzernamen ist <1>nicht zurückerstattbar</1>. Falls Sie mehr als notwendig überweisen, wird der zuviel überwiesene Betrag als Spende betrachtet und nicht zurückerstattet.",
     "text4": "Benutzernamen sind jetzt netzwerkübergreifend. <1>Registrieren Sie einen Benutzernamen auf dem XRPL Mainnet</1> und er wird in den bithomp Explorer innert einer Stunde verfügbar sein.",
     "enter-address-or": "Geben Sie Ihre XRPL Adresse ein oder",
-    "sign-in": "loggen Sie sich mit Xumm ein",
+    "sign-in": "loggen Sie sich mit Xaman ein",
     "sign-out": "Ausloggen",
     "your-address": "Ihre XRPL Adresse",
     "enter-username": "Geben Sie den Benutzernamen ein, welchen Sie gerne haben möchten",

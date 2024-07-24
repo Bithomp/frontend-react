@@ -3,7 +3,7 @@
 /* https://gwfh.mranftl.com/fonts/open-sans?subsets=cyrillic,cyrillic-ext,latin,latin-ext */
 /* open-sans-regular - cyrillic_cyrillic-ext_latin_latin-ext */
 @font-face {
-  font-display: swap; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
+  font-display: block;
   font-family: 'Open Sans';
   font-style: normal;
   font-weight: 400;
@@ -12,7 +12,7 @@
 }
 /* open-sans-italic - cyrillic_cyrillic-ext_latin_latin-ext */
 @font-face {
-  font-display: swap; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
+  font-display: block;
   font-family: 'Open Sans';
   font-style: italic;
   font-weight: 400;
@@ -21,7 +21,7 @@
 }
 /* open-sans-700 - cyrillic_cyrillic-ext_latin_latin-ext */
 @font-face {
-  font-display: swap; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
+  font-display: block;
   font-family: 'Open Sans';
   font-style: normal;
   font-weight: 700;
@@ -30,7 +30,7 @@
 }
 /* open-sans-700italic - cyrillic_cyrillic-ext_latin_latin-ext */
 @font-face {
-  font-display: swap; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
+  font-display: block;
   font-family: 'Open Sans';
   font-style: italic;
   font-weight: 700;
@@ -82,11 +82,32 @@ body.dark {
   bottom: 0;
   right: 0;
   background-size: 100% auto;
+  pointer-events: none;
 }
 
 .content {
   border-top: 81px solid var(--background-header);
   flex: 1;
+
+  .content-cols {
+    display: flex;
+    position: relative;
+
+    &::before {
+      content: '';
+      position: absolute;
+      inset: 0 15px auto;
+      border-top: 1px solid #ccc;
+
+      @media(min-width: 1300px) {
+        z-index: 4;
+      }
+    }
+  }
+
+  .explorer-tabs-block + .content-cols::before {
+    border-top: none;
+  }
 
   .content-text {
     margin: 80px;
@@ -153,6 +174,14 @@ a, .link {
     &:hover {
       color: var(--text-oposite);
     }
+  }
+
+  .xumm-logo {
+    width: 24px;
+    height: 24px;
+    border-radius: 5px;
+    margin-right: 5px;
+    vertical-align: middle;
   }
 }
 
@@ -313,6 +342,7 @@ table {
   }
   &.table-large {
     min-width: 760px;
+    max-width: calc(100% - 50px);
     &.shrink {
       min-width: unset;
       @media screen and (max-width: 800px) {
@@ -359,6 +389,28 @@ table {
     @media only screen and (max-width: 800px) {
       min-width: 100%;
     }
+    &.no-hover {
+      tr {
+        &:hover {
+          td {
+            background-color: inherit;
+            color: inherit;
+          }
+          a {
+            color: inherit;
+          }
+          svg {
+            stroke: inherit;
+            &.change-fill {
+              fill: inherit;
+            }
+          }
+        }
+      }
+    }
+  }
+  &.table-large--without-border {
+    border: none;
   }
   &.table-mobile {
     width: 100%;
@@ -482,6 +534,9 @@ table {
     margin-right: 5px;
     margin-bottom: 5px;
     vertical-align: middle;
+    &.disabled {
+      filter: grayscale(100%);
+    }
   }
 
   &:hover {
@@ -709,7 +764,7 @@ body.dark {
 //common ui
 @import "./components/header.scss";
 @import "./components/switch.scss";
-@import "./components/currencySwitch.scss";
+@import "./components/topSwitch.scss";
 @import "./components/signForm.scss";
 @import "./components/checkbox.scss";
 @import "./components/topLinks.scss";
@@ -717,15 +772,22 @@ body.dark {
 @import "./components/tabs.scss";
 @import "./components/issuerSelect.scss";
 @import "./components/inputPrepend.scss";
+@import "./components/formInput.scss";
+@import "./components/addressInput.scss";
 @import "./components/buttonArrowScroll.scss";
 @import "./components/simpleSelect.scss";
 @import "./components/footer.scss";
 @import "./components/buttonArrowScroll.scss";
+@import "./components/radioOptions.scss";
+@import "./components/viewToggle.scss";
 
 //components
 @import "./components/tiles.scss";
 @import "./components/receipt.scss";
+@import "./components/filters.scss";
 @import "./components/dateAndTimeRange.scss";
+@import "./components/dropdown.scss";
+@import "./components/ageCheck.scss";
 
 //home page
 @import "./components/currencySelect.scss";

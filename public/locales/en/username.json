@@ -3,7 +3,7 @@
   "error": {
     "address-empty": "Please enter your XRPL address.",
     "address-invalid": "Please enter a valid XRPL address.",
-    "address-hosted": "Entered address is hosted on {{service}}, you can register usernames only for non-hosted wallets (hardware wallets, Xumm, etc). If you are an exchange operator, please contact us.",
+    "address-hosted": "Entered address is hosted on {{service}}, you can register usernames only for non-hosted wallets (hardware wallets, Xaman, etc). If you are an exchange operator, please contact us.",
     "address-done": "The address already has a registered username.",
     "username-empty": "Please enter username you want to register.",
     "username-invalid": "Username should be shorter than 18 characters, no symbols allowed.",
@@ -25,7 +25,7 @@
     "text3": "The payment is for 100 Swedish kronor denominated in XRP. The payment for the username is <1>not refundable</1>. If you pay more than requested, the exceeding amount will be counted as donation and won't be refunded.",
     "text4": "Usernames are now used cross-chain, <1>register a username on the XRPL mainnet</1> and it will be available on other bithomp explorers (within 1 hour).",
     "enter-address-or": "Enter your XRPL address or",
-    "sign-in": "Sign in with Xumm",
+    "sign-in": "Sign in with Xaman",
     "sign-out": "sign out",
     "your-address": "Your XRPL address",
     "enter-username": "Enter the username you would like to have",

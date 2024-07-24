@@ -33,9 +33,9 @@ export async function getServerSideProps(context) {
       headers["x-forwarded-for"] = req.headers["x-forwarded-for"]
     }
     try {
-      const res = await axios({
+      const res = await axiosServer({
         method: 'get',
-        url: server + '/api/cors/v2/nft/offer/' + id,
+        url: 'v2/nft/offer/' + id,
         headers
       })
       pageMeta = res?.data
@@ -47,8 +47,8 @@ export async function getServerSideProps(context) {
   return {
     props: {
       id,
-      isSsrMobile: getIsSsrMobile(context),
       //pageMeta,
+      isSsrMobile: getIsSsrMobile(context),
       ...(await serverSideTranslations(locale, ['common']))
     }
   }

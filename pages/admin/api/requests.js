@@ -1,7 +1,6 @@
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useTranslation } from 'next-i18next'
 import { useEffect, useState } from 'react'
-import axios from 'axios'
 import { useRouter } from 'next/router'
 
 import SEO from '../../../components/SEO'
@@ -10,12 +9,15 @@ import ReactCountryFlag from "react-country-flag"
 
 import { fullDateAndTime } from '../../../utils/format'
 import { useWidth } from '../../../utils'
+import { getIsSsrMobile } from '../../../utils/mobile'
 import AdminTabs from '../../../components/Admin/Tabs'
+import { axiosAdmin } from '../../../utils/axios'
 
 export const getServerSideProps = async (context) => {
   const { locale } = context
   return {
     props: {
+      isSsrMobile: getIsSsrMobile(context),
       ...(await serverSideTranslations(locale, ['common', 'admin'])),
     },
   }
@@ -40,7 +42,7 @@ export default function Requests() {
     if (!sessionToken) {
       router.push('/admin')
     } else {
-      axios.defaults.headers.common['Authorization'] = "Bearer " + sessionToken
+      axiosAdmin.defaults.headers.common['Authorization'] = "Bearer " + sessionToken
       getData()
     }
 
@@ -51,9 +53,8 @@ export default function Requests() {
     setApiRequests({})
     setLoading(true)
     //&search=text&ip=z
-    const apiRequests = await axios.get(
-      'partner/partner/accessToken/requests?limit=50&offset=0&period=' + period,
-      { baseUrl: '/api/' }
+    const apiRequests = await axiosAdmin.get(
+      'partner/accessToken/requests?limit=50&offset=0&period=' + period
     ).catch(error => {
       if (error && error.message !== "canceled") {
         setErrorMessage(t(error.response?.data?.error || "error." + error.message))
@@ -95,7 +96,7 @@ export default function Requests() {
         <div style={{ marginTop: "20px", textAlign: "left" }}>
           <h4 className='center'>The last 50 API requests (the last 5 days)</h4>
           {width > 1240 ?
-            <table className='table-large shrink'>
+            <table className='table-large'>
               <thead>
                 <tr>
                   <th>#</th>

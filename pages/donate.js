@@ -99,7 +99,7 @@ export default function Donate() {
                 href="xumm://xumm.app/detect/request:rEDakigd4Cp78FioF3qvQs6TrjFLjKLqM3?dt=1&deeplink=true&afterQr=true"
               >
                 <Image src="/images/xumm.png" className='xumm-logo' alt="xaman" height={24} width={24} />
-                {t("donate.donate-with-xumm")}
+                {t("donate.donate-with-xaman")}
               </a>
             </>
           }

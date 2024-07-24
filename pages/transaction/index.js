@@ -3,9 +3,12 @@ import { serverSideTranslations } from "next-i18next/serverSideTranslations";
 import SearchBlock from "../../components/Layout/SearchBlock";
 import SEO from "../../components/SEO";
 
+import { getIsSsrMobile } from "../../utils/mobile";
+
 export async function getServerSideProps(context) {
   return {
     props: {
+      isSsrMobile: getIsSsrMobile(context),
       ...(await serverSideTranslations(context.locale, ["common"])),
     },
   };
@@ -13,9 +16,9 @@ export async function getServerSideProps(context) {
 
 const Container = ({ children }) => {
   return (
-    <div className="content-center short-top">
+    <>
       {children}
-    </div>
+    </>
   );
 };
 
@@ -28,11 +31,9 @@ const TransactionSearch = () => {
         description="Transaction details"
       // image={{ file: avatarSrc(txData) }}
       />
-      <SearchBlock
-        tab="transaction"
-      />
+      <SearchBlock tab="transaction" />
       <Container>
-        <h1 className='center'>Transaction Search</h1>
+        <h1 className='center'>Transaction search</h1>
       </Container>
     </>
   );

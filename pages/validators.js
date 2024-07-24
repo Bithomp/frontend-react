@@ -4,24 +4,32 @@ import axios from 'axios'
 import moment from "moment"
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import ReactCountryFlag from "react-country-flag"
-import countries from "i18n-iso-countries"
 import { useTheme } from '../components/Layout/ThemeContext'
 
 import SEO from '../components/SEO'
 import CheckBox from '../components/UI/CheckBox'
 
-import { addressUsernameOrServiceLink, amountFormat, fullDateAndTime, shortHash } from '../utils/format'
-import { devNet, useWidth, xahauNetwork } from '../utils'
+import {
+  addressUsernameOrServiceLink,
+  amountFormat,
+  fullDateAndTime,
+  shortHash,
+  timeFromNow
+} from '../utils/format'
+import { devNet, useWidth, xahauNetwork, countriesTranslated } from '../utils'
+import { getIsSsrMobile } from '../utils/mobile'
 
 import CopyButton from '../components/UI/CopyButton'
 
 import VerifiedIcon from "../public/images/verified.svg"
 
-export const getServerSideProps = async ({ query, locale }) => {
+export const getServerSideProps = async (context) => {
+  const { query, locale } = context
   const { amendment } = query
   return {
     props: {
       amendment: amendment || null,
+      isSsrMobile: getIsSsrMobile(context),
       ...(await serverSideTranslations(locale, ['common', 'validators'])),
     }
   }
@@ -36,7 +44,9 @@ moment.relativeTimeThreshold('ss', devNet ? 36 : 6)
 
 const showTime = ({ time }) => {
   if (!time) return "N/A"
-  return <span className={(Math.floor(Date.now() / 1000) - (devNet ? 40 : 10)) > time ? 'red bold' : ''}>{moment((time - 1) * 1000, "unix").fromNow()}</span>
+  return <span className={(Math.floor(Date.now() / 1000) - (devNet ? 40 : 10)) > time ? 'red bold' : ''}>
+    {timeFromNow((time - 1))}
+  </span>
 }
 
 const ShowTimeMemo = memo(showTime)
@@ -48,9 +58,11 @@ export default function Validators({ amendment }) {
   const [unlValidatorsCount, setUnlValidatorsCount] = useState(0)
   const [developerMode, setDeveloperMode] = useState(false)
   const [showServer, setShowServer] = useState(true)
-  const { t, i18n } = useTranslation()
+  const { t } = useTranslation()
   const windowWidth = useWidth()
   const { theme } = useTheme()
+
+  const countries = countriesTranslated()
 
   const compare = (a, b) => {
     if (!amendment) {
@@ -142,7 +154,7 @@ export default function Validators({ amendment }) {
   const twitterLink = twitter => {
     if (!twitter) return ""
     twitter = twitter.replace("@", "")
-    return <a href={"https://twitter.com/" + twitter}>
+    return <a href={"https://x.com/" + twitter}>
       {" "}
       <span className='tooltip'>
         <svg width="12" height="12.27" viewBox="0 0 1200 1227" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -158,14 +170,6 @@ export default function Validators({ amendment }) {
     </a>
   }
 
-  let lang = i18n.language.slice(0, 2)
-  const notSupportedLanguages = ['my'] // supported "en", "ru", "ja", "ko" etc
-  if (notSupportedLanguages.includes(lang)) {
-    lang = "en"
-  }
-  const languageData = require('i18n-iso-countries/langs/' + lang + '.json')
-  countries.registerLocale(languageData)
-
   const displayFlag = (country, typeName, em = 1.5) => {
     if (!country) return ""
     if (country.length === 2) {
@@ -180,7 +184,7 @@ export default function Validators({ amendment }) {
         />
         {country.toLowerCase() !== "eu" &&
           <span className='tooltiptext right no-brake'>
-            {typeName}: {countries.getName(country, lang, { select: "official" })}
+            {typeName}: {countries.getNameTranslated(country)}
           </span>
         }
       </span>
@@ -318,15 +322,15 @@ export default function Validators({ amendment }) {
   }
 
   return <>
-    <SEO title={t("menu.xrpl.validators")} />
+    <SEO title={t("menu.network.validators")} />
     <div className="content-text">
-      <h1 className="center">{t("menu.xrpl.validators")}</h1>
+      <h1 className="center">{t("menu.network.validators")}</h1>
       <div className="flex center">
         <div className="grey-box">
           {!loading ? <>
             {validators &&
               <Trans i18nKey="text0" ns='validators'>
-                The validator list <b>{{ url: validators.url }}</b> has sequence {{ sequence: validators.sequence }} and expiration on {{ expiration: fullDateAndTime(validators.expiration) }}.<br />It includes {{ validatorCount: unlValidatorsCount }} validators which are listed below.
+                The validator list <b>{{ url: validators.url }}</b> has sequence {{ sequence: validators.sequence }} and expiration on {{ expiration: fullDateAndTime(validators.expiration, null, { asText: true }) }}.<br />It includes {{ validatorCount: unlValidatorsCount }} validators which are listed below.
               </Trans>
             }
             <br />
@@ -409,7 +413,7 @@ export default function Validators({ amendment }) {
                         }
                         {v.unl &&
                           <p>
-                            UNL: ✔️
+                            UNL: ✅
                           </p>
                         }
                         {v.nUnl &&
@@ -442,7 +446,7 @@ export default function Validators({ amendment }) {
                           <p>
                             {t("table.server-country", { ns: 'validators' })}:
                             {" "}
-                            {countries.getName(fixCountry(v.serverCountry), lang, { select: "official" })}
+                            {countries.getNameTranslated(fixCountry(v.serverCountry))}
                             {" "}
                             <ReactCountryFlag
                               countryCode={fixCountry(v.serverCountry)}
@@ -603,7 +607,7 @@ export default function Validators({ amendment }) {
                             </span>
                             :
                             <span className='tooltip'>
-                              ✔️
+                              ✅
                               <span className='tooltiptext right no-brake'>
                                 {t("table.text.unl", { ns: 'validators' })}
                               </span>

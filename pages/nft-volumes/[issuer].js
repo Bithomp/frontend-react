@@ -5,7 +5,10 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 
-export const getServerSideProps = async ({ query, locale }) => {
+import { getIsSsrMobile } from '../../utils/mobile'
+
+export const getServerSideProps = async (context) => {
+  const { query, locale } = context
   const { period, sale, currency, currencyIssuer, issuer, sortCurrency } = query
   return {
     props: {
@@ -15,6 +18,7 @@ export const getServerSideProps = async ({ query, locale }) => {
       currency: currency || "",
       currencyIssuer: currencyIssuer || "",
       sortCurrency: sortCurrency || "",
+      isSsrMobile: getIsSsrMobile(context),
       ...(await serverSideTranslations(locale, ['common', 'nft-volumes'])),
     },
   }
@@ -231,7 +235,7 @@ export default function NftVolumes({ periodQuery, sale, currency, currencyIssuer
         urlPart = urlPart + "&currency=xrp"
       }
     }
-    urlPart = urlPart + "&issuer=" + usernameOrAddress(rawData, "issuer") + "&taxon=" + volume.taxon
+    urlPart = urlPart + "&issuer=" + usernameOrAddress(rawData, "issuer") + "&taxon=" + volume.taxon + "&includeWithoutMediaData=true"
     return urlPart
   }
 

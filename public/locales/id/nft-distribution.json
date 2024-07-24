@@ -1,6 +1,6 @@
 {
   "header": "Distribusi NFT",
-  "desc": "Di sini Anda dapat memeriksa distribusi NFT dari penerbit NFT tertentu. Masukkan alamat XRPL penerbit NFT atau username dan tekan tombol pencarian.",
+  "desc": "Di sini Anda dapat memeriksa distribusi NFT dari penerbit NFT tertentu. Masukkan alamat penerbit NFT atau username dan tekan tombol pencarian.",
   "no-nfts": "Kami tidak dapat menemukan NFT yang diterbitkan oleh alamat tersebut.",
   "total": "{{users}} akun memiliki {{nfts}} NFT",
   "nonSelfIssued": "{{users}} accounts own {{nfts}} non-self-issued NFTs",

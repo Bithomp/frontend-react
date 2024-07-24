@@ -1,17 +1,19 @@
 {
   "menu": {
+    "amm": {
+      "amm": "AMM",
+      "pools": "AMM pools",
+      "explorer": "AMM explorer"
+    },
     "company": {
       "about-us": "About us"
     },
     "services": {
-      "nft-mint": "Acuñar NFT"
-    },
-    "personal": {
-      "personal": "Particulares",
+      "services": "Servicios",
+      "nft-mint": "Acuñar NFT",
       "search-on-ledgerName": "Buscar en {{ledgerName}}"
     },
     "business": {
-      "business": "Empresas",
       "advertise": "Anúnciate",
       "eaas": "Explorador como Servicio",
       "build-unl": "Construcción de UNL"
@@ -20,7 +22,6 @@
     "project-registration": "Registro de proyecto",
     "price-alerts": "Alertas de precio {{nativeCurrency}}",
     "submit-offline-tx": "Enviar transacción offline",
-    "networks": "Redes",
     "ledger": "Transacciones del libro contable",
     "nft": {
       "explorer": "Explorador",
@@ -32,7 +33,9 @@
       "nfts": "NFTs de la cuenta",
       "offers": "Ofertas"
     },
-    "xrpl": {
+    "network": {
+      "blockchain": "Blockchain",
+      "nodes": "Nodos",
       "governance": "Gobierno",
       "activations": "Cuentas activadas (gráfica)",
       "distribution": "Distribución de {{nativeCurrency}}",
@@ -49,13 +52,12 @@
       "account-generation": "Generación de cuenta",
       "faucet": "Grifo",
       "api": "Documentación API",
-      "api-admin": "Cuenta API (Portal de miembros)"
+      "api-admin": "Cuenta API"
     },
     "legal": "Legal",
     "disclaimer": "Advertencia",
     "privacy-policy": "Política de privacidad",
     "terms-and-conditions": "Términos y condiciones",
-    "terms-api-bots": "Términos de uso de API y bots",
     "customer-support": "Soporte de cliente",
     "press": "Prensa",
     "merch": "Tienda de Merch",
@@ -94,14 +96,14 @@
     "expiration": "Caducidad",
     "target-table": "Target table",
     "xumm": {
-      "open-app": "Abre la app Xumm en tu teléfono.",
+      "open-app": "Abre la app Xaman en tu teléfono.",
       "change-settings": "Vete a opciones y elige un nodo testnet.",
-      "scan-qr": "Escanea este código QR con la app Xumm.",
+      "scan-qr": "Escanea este código QR con la app Xaman.",
       "statuses": {
-        "redirecting": "Redireccionando a Xumm...",
+        "redirecting": "Redireccionando a Xaman...",
         "wait": "Por favor, espera...",
         "check-push": "Comprueba una notificación push en tu móvil.",
-        "check-app": "Por favor, sigue las siguientes instrucciones en tu app Xumm.",
+        "check-app": "Por favor, sigue las siguientes instrucciones en tu app Xaman.",
         "expired": "El código QR ha caducado, solicita uno nuevo."
       }
     },
@@ -167,6 +169,7 @@
       "proposers": "Validadores",
       "accounts": "Cuentas",
       "usernames": "Nombres de usuario",
+      "accountsActiveLast24h": "Active accounts (24h)",
       "nft": {
         "created": "NFTs acuñados",
         "burned": "NFTs quemados",
@@ -176,7 +179,8 @@
         "for-sale": "NFTs en venta"
       },
       "escrows": "Escrows",
-      "amms": "AMM pools"
+      "amms": "AMM pools",
+      "nodes:": "Nodos"
     }
   },
   "last-ledger-information": {
@@ -295,13 +299,17 @@
     "error": "Error",
     "no-data": "Datos no disponibles",
     "loading": "Cargando...",
+    "login-to-bithomp-pro": "Loading more data is available to <1>logged-in</1> Bithomp Pro subscribers.",
+    "renew-bithomp-pro": "Your Bithomp Pro subscription has expired. <1>Renew your subscription</1>.",
     "load-failed": "Fallo al cargar",
     "all-issuers": "Todos los emisores",
     "no-expiration": "Nunca",
     "no-uri": "URI no especificada",
     "no-media": "No se ha encontrado contenido",
     "viewer": "Vista",
-    "developer-mode": "Modo desarrollador"
+    "developer-mode": "Modo desarrollador",
+    "search": "Search",
+    "of-many": "of many"
   },
   "form": {
     "error": {
@@ -322,7 +330,8 @@
     "Network Error": "Parece que no hay conexión a internet ;(",
     "Request failed with status code 429": "¡Nos estáis mandando demasiadas peticiones, prueba más tarde!",
     "Request failed with status code 404": "Such API call is not allowed on that network",
-    "Request failed with status code 403": "It seems you're logged out, please log in again"
+    "Request failed with status code 403": "It seems you're logged out, please log in again",
+    "Request aborted": "Request aborted"
   },
   "errors": {
     "token": {
@@ -333,6 +342,10 @@
     },
     "access_token": {
       "not_found": "No hay claves API."
+    },
+    "address": {
+      "invalid_signature_address": "Invalid signature address. Make sure that you sign with the correct address.",
+      "limit_reached": "You can not add more addesses, you've reached the limit."
     }
   },
   "error-api": {
@@ -364,7 +377,9 @@
     "day": "Para los últimas 24 horas"
   },
   "table": {
+    "uri": "URI",
     "mints": "Acuñaciones",
+    "view": "View",
     "period": "Periodo",
     "mint-period": "Periodo de acuñación",
     "warning": "Advertencia",
@@ -483,8 +498,6 @@
     "secondary-sales": "Secundario",
     "primary-sales": "Primario",
     "primaryAndSecondary-sales": "Todas las ventas",
-    "top-sales": "TOP ventas",
-    "latest-sales": "Últimas ventas",
     "all-time": "Desde siempre",
     "year": "365 días",
     "month": "30 días",
@@ -519,6 +532,7 @@
   "explorer": {
     "header": {
       "main": "Explorador {{explorerName}}",
+      "amm": "AMM pool information",
       "account": "Account information",
       "transaction": "Transaction information",
       "nft": "NFT",
@@ -545,9 +559,9 @@
   },
   "nft-offers": {
     "header": "Ofertas NFT",
-    "owned-desc": "Aquí puedes buscar por Ofertas de Compra y Venta para NFTs, escribe la dirección XRPL o nombre de usuario para ver que ofrece.",
-    "for-owned-nfts-desc": "Aquí puedes buscar las Ofertas de Compra para NFTs pertenecientes por cuenta, escribe la dirección XRPL o el nombre de usuario para ver las ofertas recibidas.",
-    "privately-offered-to-address-desc": "Aquí puedes buscar Ofertas privadamente creadas para una cuenta (con destinatario), es comúnmente usado para transferencias NFT (precio 0 XRP), escribe la dirección XRPL o nombre de usuario para ver ofertas recibidas.",
+    "owned-desc": "Aquí puedes buscar por Ofertas de Compra y Venta para NFTs, escribe la dirección o nombre de usuario para ver que ofrece.",
+    "for-owned-nfts-desc": "Aquí puedes buscar las Ofertas de Compra para NFTs pertenecientes por cuenta, escribe la dirección o el nombre de usuario para ver las ofertas recibidas.",
+    "privately-offered-to-address-desc": "Aquí puedes buscar Ofertas privadamente creadas para una cuenta (con destinatario), es comúnmente usado para transferencias NFT (precio 0), escribe la dirección o nombre de usuario para ver ofertas recibidas.",
     "no-nft-offers": "No hemos podido encontrar ninguna Oferta NFT.",
     "cancel-invalid-offer_one": "Cancelar la oferta inválida",
     "cancel-invalid-offer_other": "Cancelar {{count}} ofertas inválidas",
@@ -593,7 +607,7 @@
     "it-helps": "Tu donación nos ayudará a añadir capacidad y continuar a desarrollar Bithomp.",
     "address": "Nuestra dirección XRPL para donaciones",
     "dt": "Marca de destino",
-    "donate-with-xumm": "Donar con XUMM"
+    "donate-with-xaman": "Donar con Xaman"
   },
   "sponsored": {
     "sponsored": "Patrocinado"

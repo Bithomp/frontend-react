@@ -7,12 +7,14 @@ import axios from 'axios'
 import SocialIcons from '../components/Layout/SocialIcons'
 import SEO from '../components/SEO'
 import { nativeCurrency } from '../utils'
+import { getIsSsrMobile } from '../utils/mobile'
 import { amountFormat } from '../utils/format'
 
 export async function getServerSideProps(context) {
   const { locale } = context
   return {
     props: {
+      isSsrMobile: getIsSsrMobile(context),
       ...(await serverSideTranslations(locale, ['common', 'customer-support'])),
     }
   }

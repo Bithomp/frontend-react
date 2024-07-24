@@ -2,12 +2,14 @@ import { useTranslation, Trans } from 'next-i18next'
 import { useState, useEffect } from 'react'
 import axios from 'axios'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import Link from 'next/link'
 
 import SEO from '../../components/SEO'
 
-import { server, network, ledgerName, minLedger } from '../../utils'
+import { network, ledgerName, minLedger } from '../../utils'
+import { getIsSsrMobile } from '../../utils/mobile'
 import { fullDateAndTime, shortHash, addressUsernameOrServiceLink } from '../../utils/format'
+import { LedgerLink } from '../../utils/links'
+import { axiosServer } from '../../utils/axios'
 
 export async function getServerSideProps(context) {
   const { locale, req, query } = context
@@ -25,9 +27,9 @@ export async function getServerSideProps(context) {
 
   try {
     if (ledgerIndex === "" || ledgerIndex >= minLedger) {
-      const res = await axios({
+      const res = await axiosServer({
         method: 'get',
-        url: server + '/api/cors/xrpl/v1/ledger/' + ledgerIndex,
+        url: 'xrpl/v1/ledger/' + ledgerIndex,
         headers
       })
       pageMeta = res?.data
@@ -44,6 +46,7 @@ export async function getServerSideProps(context) {
     props: {
       ledgerIndex,
       pageMeta,
+      isSsrMobile: getIsSsrMobile(context),
       ...(await serverSideTranslations(locale, ['common', 'ledger']))
     }
   }
@@ -51,7 +54,6 @@ export async function getServerSideProps(context) {
 
 export default function Ledger({ ledgerIndex, pageMeta }) {
   const [data, setData] = useState(null)
-  const [rendered, setRendered] = useState(false)
   const [loading, setLoading] = useState(false)
   const { t } = useTranslation()
 
@@ -98,7 +100,6 @@ export default function Ledger({ ledgerIndex, pageMeta }) {
   */
 
   useEffect(() => {
-    setRendered(true)
     if (ledgerVersion === "" || ledgerVersion >= minLedger) {
       checkApi()
     }
@@ -107,16 +108,26 @@ export default function Ledger({ ledgerIndex, pageMeta }) {
 
   const ledgerNavigation = <p className='center'>
     {ledgerVersion >= (minLedger + 1) &&
-      <Link href={"/ledger/" + (Number(ledgerVersion) - 1)} style={{ marginRight: "10px" }} onClick={() => setLedgerVersion(ledgerVersion - 1)}>←</Link>
+      <LedgerLink
+        version={Number(ledgerVersion) - 1}
+        style={{ marginRight: "10px" }}
+        onClick={() => setLedgerVersion(ledgerVersion - 1)}
+        text="←"
+      />
     }
     #{ledgerVersion}
-    <Link href={"/ledger/" + (Number(ledgerVersion) + 1)} style={{ marginLeft: "10px" }} onClick={() => setLedgerVersion(ledgerVersion + 1)}>→</Link>
+    <LedgerLink
+      version={Number(ledgerVersion) + 1}
+      style={{ marginLeft: "10px" }}
+      onClick={() => setLedgerVersion(ledgerVersion + 1)}
+      text="→"
+    />
   </p>
 
   return <>
     <SEO title={t("menu.ledger") + ' ' + (pageMeta?.ledgerVersion || ledgerIndex)} />
     <div className="content-text">
-      <h1 className="center">{t("menu.ledger")} #{ledgerVersion}<br />{(rendered && pageMeta?.close_time) ? fullDateAndTime(pageMeta.close_time) : <br />}</h1>
+      <h1 className="center">{t("menu.ledger")} #{ledgerVersion}<br />{pageMeta?.close_time ? fullDateAndTime(pageMeta.close_time) : <br />}</h1>
       {ledgerVersion >= minLedger ?
         <>
           {ledgerNavigation}

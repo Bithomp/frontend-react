@@ -8,6 +8,7 @@ export const TDetails = styled.table`
   font-size: 16px;
   font-weight: 400;
   text-align: left;
+  margin: auto;
 `;
 
 export const TBody = ({ children }) => <tbody>{children}</tbody>;
@@ -18,7 +19,7 @@ export const TData = styled.td`
   border-bottom: 1px solid var(--border-color);
   &:first-child {
     color: var(--text-secondary);
-    width: 20%;
+    text-align: right;
   }
   &:nth-child(2) {
     word-break: break-word;

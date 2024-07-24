@@ -58,7 +58,7 @@ export default function Home({ selectedCurrency, setSelectedCurrency, showAds })
         url={server}
         sameAs={[
           'http://instagram.com/bithomp',
-          'https://twitter.com/bithomp',
+          'https://x.com/bithomp',
           'https://www.youtube.com/@bithomp',
           'https://www.linkedin.com/company/bithomp/'
         ]}
@@ -93,16 +93,6 @@ export default function Home({ selectedCurrency, setSelectedCurrency, showAds })
           dangerouslySetInnerHTML={{ __html: JSON.stringify(ldJsonWebsite) }}
         />
       </Head>
-
-      <div className="top-links">
-        <a
-          href="https://bithomp.com/go/contest-landing"
-          rel="noreferrer"
-          className='top-link orange'
-        >
-          Win 100, 200, or 300 XRP from Bithomp
-        </a>
-      </div>
 
       <SearchBlock tab="explorer" />
 

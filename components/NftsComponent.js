@@ -4,9 +4,19 @@ import { useRouter } from 'next/router'
 import { CSVLink } from "react-csv"
 import axios from 'axios'
 import InfiniteScroll from 'react-infinite-scroll-component'
-import Link from 'next/link'
 
-import { isAddressOrUsername, setTabParams, useWidth, xahauNetwork, capitalizeFirstLetter } from '../utils'
+import { IoMdClose } from "react-icons/io";
+import { BsFilter } from "react-icons/bs";
+import { TbArrowsSort } from "react-icons/tb";
+
+import {
+  isAddressOrUsername,
+  setTabParams,
+  useWidth,
+  xahauNetwork,
+  capitalizeFirstLetter,
+  periodDescription
+} from '../utils'
 import {
   isValidTaxon,
   nftThumbnail,
@@ -18,7 +28,6 @@ import {
 import {
   nftLink,
   usernameOrAddress,
-  userOrServiceLink,
   amountFormat,
   timeOrDate,
   fullDateAndTime
@@ -26,16 +35,20 @@ import {
 
 import SEO from './SEO'
 import SearchBlock from './Layout/SearchBlock'
-import Tabs from './Tabs'
 import Tiles from './Tiles'
 import IssuerSelect from './UI/IssuerSelect'
 import CheckBox from './UI/CheckBox'
 import DateAndTimeRange from './UI/DateAndTimeRange'
 
 import DownloadIcon from "../public/images/download.svg"
+import RadioOptions from './UI/RadioOptions'
+import FormInput from './UI/FormInput'
+import AddressInput from './UI/AddressInput'
+import ViewTogggle from './UI/ViewToggle'
+import SimpleSelect from './UI/SimpleSelect'
 
 export default function NftsComponent({
-  listNftsOrder,
+  orderQuery,
   view,
   list,
   saleDestination,
@@ -55,41 +68,57 @@ export default function NftsComponent({
   id,
   account
 }) {
-  const { t } = useTranslation()
+  const { t } = useTranslation(['common', 'nft-sort', 'popups'])
   const router = useRouter()
   const windowWidth = useWidth()
+
+  const orderNftsList = [
+    { value: 'mintedNew', label: t("dropdown.mintedNew", { ns: "nft-sort" }) },
+    { value: 'mintedOld', label: t("dropdown.mintedOld", { ns: "nft-sort" }) },
+    { value: 'rating', label: t("dropdown.rating", { ns: "nft-sort" }) }
+  ]
+
+  const orderOnSaleList = [
+    { value: 'priceLow', label: t("dropdown.priceLow", { ns: "nft-sort" }) },
+    { value: 'priceHigh', label: t("dropdown.priceHigh", { ns: "nft-sort" }) },
+    { value: 'offerCreatedNew', label: t("dropdown.offerCreatedNew", { ns: "nft-sort" }) },
+    { value: 'offerCreatedOld', label: t("dropdown.offerCreatedOld", { ns: "nft-sort" }) }
+  ]
 
   const [rendered, setRendered] = useState(false)
   const [data, setData] = useState([])
   const [rawData, setRawData] = useState(null)
+  const [filtersHide, setFiltersHide] = useState(false)
   const [loading, setLoading] = useState(false)
   const [hasMore, setHasMore] = useState("first")
   const [errorMessage, setErrorMessage] = useState("")
-  const [listNftsOrderTab, setListNftsOrderTab] = useState(listNftsOrder)
-  const [viewTab, setViewTab] = useState(view)
+  const [activeView, setActiveView] = useState(view)
   const [listTab, setListTab] = useState(list)
   const [saleDestinationTab, setSaleDestinationTab] = useState(saleDestination)
-  const [search, setSearch] = useState(searchQuery)
   const [userData, setUserData] = useState({})
   const [issuersList, setIssuersList] = useState([])
   const [issuer, setIssuer] = useState(issuerQuery)
   const [owner, setOwner] = useState(ownerQuery)
   const [taxon, setTaxon] = useState(taxonQuery)
-  const [issuerInput, setIssuerInput] = useState(issuerQuery)
-  const [ownerInput, setOwnerInput] = useState(ownerQuery)
-  const [taxonInput, setTaxonInput] = useState(taxonQuery)
-  const [searchInput, setSearchInput] = useState(searchQuery)
+  const [search, setSearch] = useState(searchQuery)
   const [includeBurned, setIncludeBurned] = useState(includeBurnedQuery)
   const [includeWithoutMediaData, setIncludeWithoutMediaData] = useState(includeWithoutMediaDataQuery)
   const [mintedPeriod, setMintedPeriod] = useState(mintedPeriodQuery)
   const [csvHeaders, setCsvHeaders] = useState([])
+  const [nftCount, setNftCount] = useState(null)
+  const [currentOrderList, setCurrentOrderList] = useState(listTab !== "onSale" ? orderNftsList : orderOnSaleList)
+  const [order, setOrder] = useState(orderQuery)
+  const [sortMenuOpen, setSortMenuOpen] = useState(false);
+
+  const controller = new AbortController()
 
   let csvHeadersConst = [
     { label: "NFT ID", key: "nftokenID" },
     { label: t("table.issuer"), key: "issuer" },
     { label: t("table.taxon"), key: "nftokenTaxon" },
     { label: t("table.serial"), key: "sequence" },
-    { label: t("table.name"), key: "metadata.name" }
+    { label: t("table.name"), key: "metadata.name" },
+    { label: t("table.uri"), key: "url" }
   ]
 
   if (nftExplorer) {
@@ -98,10 +127,9 @@ export default function NftsComponent({
 
   useEffect(() => {
     setRendered(true)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  const viewTabList = [
+  const viewList = [
     { value: 'tiles', label: t("tabs.tiles") },
     { value: 'list', label: t("tabs.list") }
   ]
@@ -116,13 +144,9 @@ export default function NftsComponent({
     { value: 'publicAndKnownBrokers', label: t("tabs.publicAndKnownBrokers") }
   ]
 
-  const listNftsOrderTabList = [
-    { value: 'mintedNew', label: t("tabs.mintedNew") },
-    { value: 'mintedOld', label: t("tabs.mintedOld") }
-  ]
-
   const checkApi = async (options) => {
     if (nftExplorer && !mintedPeriod && listTab !== 'onSale') return
+    if (!nftExplorer && !id && !owner) return
 
     let marker = hasMore;
     let nftsData = data;
@@ -134,11 +158,8 @@ export default function NftsComponent({
       nftsData = []
     }
 
-    let listUrlPart = '?list=nfts'
-
-    if (xahauNetwork) {
-      listUrlPart = '?list=uritokens'
-    }
+    // it seems not nessary anylonger, we just need to keep the structure of URI with "?"
+    let listUrlPart = '?list=' + (xahauNetwork ? 'uritokens' : 'nfts')
 
     let ownerUrlPart = ''
     let collectionUrlPart = ''
@@ -147,23 +168,17 @@ export default function NftsComponent({
     let serialPart = ''
     let mintAndBurnPart = ''
     let orderPart = ''
-
-    if (includeBurned) {
-      listUrlPart += '&includeDeleted=true'
-    }
+    let includeBurnedPart = includeBurned ? '&includeDeleted=true' : ''
+    let hasImagePart = !includeWithoutMediaData ? '&hasImage=true' : ''
 
     if (listTab === 'onSale') {
-      //order: "offerCreatedNew", "offerCreatedOld", "priceLow", "priceHigh"
       //destination: "public", "knownBrokers", "publicAndKnownBrokers", "all", "buyNow"
       listUrlPart = '?list=onSale&destination=' + saleDestinationTab
-      orderPart = '&order=priceLow'
       if (saleCurrencyIssuer && saleCurrency) {
         listUrlPart = listUrlPart + '&currency=' + saleCurrency + '&currencyIssuer=' + saleCurrencyIssuer
       } else {
         listUrlPart = listUrlPart + '&currency=xrp'
       }
-    } else {
-      orderPart = '&order=' + listNftsOrderTab
     }
 
     if (mintedByMarketplace) {
@@ -177,25 +192,28 @@ export default function NftsComponent({
       mintAndBurnPart += '&issuedAt=' + mintedPeriod
     }
 
-    if (id || owner) {
-      ownerUrlPart = '&owner=' + (id || owner)
-      const issuersJson = await axios('v2/nft-issuers?owner=' + (id || owner)).catch(error => {
-        console.log(t("error." + error.message))
-      })
-      if (issuersJson?.data?.issuers) {
-        setIssuersList(issuersJson.data.issuers)
+    const newOwner = id || owner
+    if (newOwner) {
+      ownerUrlPart = '&owner=' + newOwner
+      if (rawData?.owner !== newOwner && rawData?.ownerDetails?.username?.toLowerCase() !== newOwner.toLowerCase()) {
+        const issuersJson = await axios('v2/' + (xahauNetwork ? 'uritoken' : 'nft') + '-issuers?owner=' + newOwner).catch(error => {
+          console.log(t("error." + error.message))
+        })
+        if (issuersJson?.data?.issuers) {
+          setIssuersList(issuersJson.data.issuers)
+        }
       }
     }
 
     if (issuer) {
       collectionUrlPart = '&issuer=' + issuer
-      if (taxon) {
+      if (isValidTaxon(taxon)) {
         collectionUrlPart += '&taxon=' + taxon
       }
     }
 
     if (search) {
-      searchPart = '&search=' + search + '&searchLocations=metadata.name'
+      searchPart = '&search=' + encodeURIComponent(search) + '&searchLocations=metadata.name'
       //'&searchLocations=metadata.name,metadata.description'
       if (search.length < 3) {
         setErrorMessage(t("error-api.search is too short"))
@@ -223,36 +241,47 @@ export default function NftsComponent({
       }
     }
 
-    //includeWithoutMediaData
-    if (listTab !== 'onSale' && !includeWithoutMediaData && !searchPart) {
-      searchPart = '&hasImage=true'
-    }
+    orderPart = '&order=' + order
 
-    const nftEndpoint = xahauNetwork ? 'v2/uritokens' : 'v2/nfts'
+    const response = await axios(
+      'v2/' + (xahauNetwork ? 'uritokens' : 'nfts') + listUrlPart + ownerUrlPart + collectionUrlPart + markerUrlPart +
+      searchPart + serialPart + mintAndBurnPart + orderPart + hasImagePart + includeBurnedPart,
+      {
+        signal: controller.signal
+      }
+    ).catch(error => {
+      if (error) {
+        if (error && error.message !== "canceled") {
+          setErrorMessage(t("error." + error.message))
+          setLoading(false)
+        }
+      }
+    })
 
-    const response = await axios(nftEndpoint + listUrlPart + ownerUrlPart + collectionUrlPart + markerUrlPart + searchPart + serialPart + mintAndBurnPart + orderPart)
-      .catch(error => {
-        setErrorMessage(t("error." + error.message))
-      })
-
-    setLoading(false)
     const newdata = response?.data
+
     if (newdata) {
+      setLoading(false)
       setRawData(newdata)
       if (newdata.error) {
         setErrorMessage(t("error-api." + newdata.error))
       } else {
         if (newdata.issuer) {
-          setIssuerInput(newdata.issuer)
+          if (isValidTaxon(newdata.taxon)) {
+            setTaxon(newdata.taxon)
+          } else {
+            setTaxon("")
+          }
         }
 
         if (newdata.owner) {
-          setOwnerInput(newdata.owner)
           setUserData({
             username: newdata.ownerDetails?.username,
             service: newdata.ownerDetails?.service,
             address: newdata.owner
           })
+        } else {
+          setUserData({})
         }
 
         let nftList = newdata.nfts
@@ -266,16 +295,25 @@ export default function NftsComponent({
         let attributesHeaders = []
 
         //for CSV export
-        if (nftList && nftList.length > 0) {
+        if (nftList?.length > 0) {
           for (let i = 0; i < nftList.length; i++) {
             if (nftList[i].metadata) {
               Object.keys(nftList[i].metadata).forEach(function (key) {
+                //remove escapes to fix the export
+                //according to the CSV specs, to include double quotes within a string that is already quoted, you need to use two double quotes ("")
+                if (typeof nftList[i].metadata[key] === 'string') {
+                  nftList[i].metadata[key] = nftList[i].metadata[key].replace(/"/g, '""')
+                }
                 if (!keys.includes(key) && key.toLowerCase() !== 'name' && typeof nftList[i].metadata[key] === 'string') {
                   keys.push(key)
                   csvHeadersNew.push({ label: capitalizeFirstLetter(key), key: "metadata." + key })
                 }
                 if (key.toLowerCase() === "attributes") {
                   Object.keys(nftList[i].metadata[key]).forEach(function (attribute) {
+                    //remove escapes for the export
+                    if (typeof nftList[i].metadata[key][attribute]?.value === 'string') {
+                      nftList[i].metadata[key][attribute] = nftList[i].metadata[key][attribute].value.replace(/"/g, '""')
+                    }
                     if (!attributes.includes(attribute)) {
                       attributes.push(attribute)
                       attributesHeaders.push({ label: "Attribute " + nftList[i].metadata[key][attribute].trait_type, key: "metadata.attributes." + attribute + ".value" })
@@ -288,6 +326,8 @@ export default function NftsComponent({
         }
 
         setCsvHeaders(csvHeadersConst.concat(csvHeadersNew).concat(attributesHeaders))
+        const count = nftsData?.length + (nftList?.length || 0)
+        setNftCount(count)
 
         if (nftList?.length > 0) {
           setErrorMessage("")
@@ -310,8 +350,14 @@ export default function NftsComponent({
 
   useEffect(() => {
     checkApi({ restart: true })
+
+    return () => {
+      if (controller) {
+        controller.abort()
+      }
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id, issuer, taxon, owner, listTab, saleDestinationTab, search, includeBurned, includeWithoutMediaData, listNftsOrderTab, mintedPeriod])
+  }, [id, issuer, taxon, owner, order, saleDestinationTab, search, includeBurned, includeWithoutMediaData, mintedPeriod])
 
   useEffect(() => {
     let queryAddList = [];
@@ -366,10 +412,10 @@ export default function NftsComponent({
         paramName: "list"
       },
       {
-        tabList: viewTabList,
-        tab: viewTab,
+        tabList: viewList,
+        tab: activeView,
         defaultTab: "tiles",
-        setTab: setViewTab,
+        setTab: setActiveView,
         paramName: "view"
       }
     ]
@@ -382,18 +428,23 @@ export default function NftsComponent({
         setTab: setSaleDestinationTab,
         paramName: "saleDestination"
       })
-      queryRemoveList.push("listNftsOrder")
+      tabsToSet.push({
+        tabList: orderOnSaleList,
+        tab: order,
+        defaultTab: "priceLow",
+        setTab: setOrder,
+        paramName: "order"
+      })
     } else {
       queryRemoveList.push("saleDestination")
       queryRemoveList.push("saleCurrency")
       queryRemoveList.push("saleCurrencyIssuer")
-
       tabsToSet.push({
-        tabList: listNftsOrderTabList,
-        tab: listNftsOrderTab,
+        tabList: orderNftsList,
+        tab: order,
         defaultTab: "mintedNew",
-        setTab: setListNftsOrderTab,
-        paramName: "listNftsOrder"
+        setTab: setOrder,
+        paramName: "order"
       })
     }
 
@@ -415,57 +466,48 @@ export default function NftsComponent({
       queryRemoveList.push("includeWithoutMediaData")
     }
 
+    if (mintedPeriod) {
+      queryAddList.push({
+        name: "mintedPeriod",
+        value: mintedPeriod
+      })
+    }
+
     setTabParams(router, tabsToSet, queryAddList, queryRemoveList)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [viewTab, listNftsOrderTab, rawData, listTab, saleDestinationTab, includeBurned, includeWithoutMediaData])
+  }, [activeView, order, rawData, listTab, saleDestinationTab, includeBurned, includeWithoutMediaData, mintedPeriod])
 
-  const onSearchChange = e => {
-    setSearchInput(e.target.value)
-  }
-
-  const searchClick = () => {
-    if (isAddressOrUsername(issuerInput)) {
-      setIssuer(issuerInput);
-      if (isValidTaxon(taxonInput)) {
-        setTaxon(taxonInput);
-      } else {
-        setTaxonInput("");
-        setTaxon("");
-      }
+  const onTaxonInput = value => {
+    if (/^\d+$/.test(value) && issuer && isValidTaxon(value)) {
+      setTaxon(value);
     } else {
-      setIssuerInput("");
-      setIssuer("");
-      setTaxonInput("");
       setTaxon("");
     }
-    if (isAddressOrUsername(ownerInput)) {
-      setOwner(ownerInput);
-    } else {
-      setOwnerInput("");
-      setOwner("");
+  };
+
+  const onIssuerSearch = value => {
+    if (!value) {
+      setTaxon("");
     }
-    setSearch(searchInput)
+    setIssuer(value);
   }
 
-  const enterPress = e => {
-    if (e.key === 'Enter') {
-      searchClick()
-    }
+  const toggleFilters = () => {
+    setFiltersHide(!filtersHide)
   }
 
-  const onTaxonInput = e => {
-    if (!/^\d+$/.test(e.key)) {
-      e.preventDefault()
-    }
-    enterPress(e)
+  useEffect(() => {
+    const actualList = listTab !== "onSale" ? orderNftsList : orderOnSaleList
+    setCurrentOrderList(actualList)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [listTab])
+
+  const hideMobileSortMenu = (value) => {
+    setOrder(value)
+    setSortMenuOpen(false);
   }
 
-  const issuerTaxonUrlPart = "?view=" + viewTab + (rawData ? ("&issuer=" + usernameOrAddress(rawData, 'issuer') + (rawData.taxon ? ("&taxon=" + rawData.taxon) : "")) : "");
-
-  const contextStyle = { minHeight: "480px" }
-  if (!nftExplorer) {
-    contextStyle.marginTop = "20px"
-  }
+  const issuerTaxonUrlPart = "?view=" + activeView + (rawData ? ("&issuer=" + usernameOrAddress(rawData, 'issuer') + (isValidTaxon(rawData.taxon) ? ("&taxon=" + rawData.taxon) : "")) : "")
 
   /*
   {
@@ -489,7 +531,7 @@ export default function NftsComponent({
         "sequence": 0,
         "owner": "rw5ZYt7SecZ44QLe8Tz6dSYMRuLa8LHv6S",
         "uri": "68747470733A2F2F697066732E696F2F697066732F6261667962656963323779736F376C656C6534786277767464706F6E77716C6C766A68793667717A6C74666E673271357A6869717A61786F7A6B6D2F6D657461646174612E6A736F6E",
-        "url": "https://cloudflare-ipfs.com/ipfs/bafybeic27yso7lele4xbwvtdponwqllvjhy6gqzltfng2q5zhiqzaxozkm/metadata.json",
+        "url": "https://ipfs.io/ipfs/bafybeic27yso7lele4xbwvtdponwqllvjhy6gqzltfng2q5zhiqzaxozkm/metadata.json",
         "nftSerial": 0,
         "issuerDetails": {
           "username": "3DAPES",
@@ -518,30 +560,25 @@ export default function NftsComponent({
     return t("table.text.private-offer") //shouldn't be the case
   }
 
-  const checkBoxStyles = {
-    display: "inline-block",
-    marginTop: windowWidth > 500 ? "-20px" : 0,
-    marginBottom: "20px",
-    marginRight: "20px",
-    marginLeft: "20px"
-  }
-
   return <>
     {nftExplorer ?
       <SEO
         title={
           t("nft-explorer.header") +
           ((issuer || issuerQuery) ? (" " + (issuer || issuerQuery)) : "") +
-          ((taxon || taxonQuery) ? (" " + (taxon || taxonQuery)) : "") +
+          (isValidTaxon(taxon || taxonQuery) ? (" " + (taxon || taxonQuery)) : "") +
           (owner || ownerQuery ? (", " + t("table.owner") + ": " + (owner || ownerQuery)) : "") +
-          (viewTab === "list" ? (" " + t("tabs.list")) : "") +
+          (activeView === "list" ? (" " + t("tabs.list")) : "") +
           (listTab === "onSale" ? (" " + t("tabs.onSale")) : "") +
           (listTab === "onSale" && saleDestinationTab === "buyNow" ? (", " + t("tabs.buyNow")) : "") +
           (search || searchQuery ? (", " + t("table.name") + ": " + (search || searchQuery)) : "") +
           (burnedPeriod ? (", " + t("table.burn-period") + ": " + burnedPeriod) : "") +
-          (listNftsOrderTab ? (", " + t("tabs." + listNftsOrderTab)) : "")
+          (order ? (", " + t("dropdown." + order, { ns: "nft-sort" })) : "")
         }
-        description={issuer || issuerQuery || search || t("nft-explorer.header")}
+        description={
+          (issuer || issuerQuery || search || t("nft-explorer.header")) +
+          ((rendered && mintedPeriod) ? (", " + t("table.mint-period") + ": " + periodDescription(mintedPeriod)) : "")
+        }
       />
       :
       <>
@@ -557,282 +594,290 @@ export default function NftsComponent({
       </>
     }
 
-    <div className="content-text" style={contextStyle}>
-      {nftExplorer && <>
+    {nftExplorer &&
+      <>
         <h1 className='center'>{t("nft-explorer.header") + " "}</h1>
-        {/* Hide for now when it's not available on xahau network */}
-        {!xahauNetwork &&
-          <p className='center'>
-            <Link href={"/nft-sales" + issuerTaxonUrlPart} style={{ marginRight: "5px" }}>{t("nft-sales.header")}</Link>
-          </p>
-        }
-        <div className='center'>
-          <span className={xahauNetwork ? 'whole' : 'halv'}>
-            <span className='input-title'>{t("table.issuer")} {userOrServiceLink(rawData, 'issuer')}</span>
-            <input
-              placeholder={t("nfts.search-by-issuer")}
-              value={issuerInput}
-              onChange={(e) => { setIssuerInput(e.target.value) }}
-              onKeyPress={enterPress}
-              className="input-text"
-              spellCheck="false"
-              maxLength="35"
-            />
-          </span>
-          {!xahauNetwork &&
-            <span className='halv'>
-              <span className='input-title'>{t("table.taxon")}</span>
-              <input
-                placeholder={t("nfts.search-by-taxon")}
-                value={taxonInput}
-                onChange={(e) => { setTaxonInput(e.target.value) }}
-                onKeyPress={onTaxonInput}
-                className="input-text"
-                spellCheck="false"
-                maxLength="35"
-                disabled={issuerInput ? false : true}
-              />
-            </span>
-          }
-        </div>
-        <div className='center'>
-          <span className='halv'>
-            <span className='input-title'>{t("table.owner")} {userOrServiceLink(rawData, 'owner')}</span>
-            <input
-              placeholder={t("nfts.search-by-owner")}
-              value={ownerInput}
-              onChange={(e) => { setOwnerInput(e.target.value) }}
-              onKeyPress={enterPress}
-              className="input-text"
-              spellCheck="false"
-              maxLength="35"
-            />
-          </span>
-          <span className='halv'>
-            <span className='input-title'>{t("table.name")}</span>
-            <input
-              placeholder={t("nfts.search-by-name")}
-              value={searchInput}
-              onChange={onSearchChange}
-              className="input-text"
-              spellCheck="false"
-              maxLength="100"
-              onKeyPress={enterPress}
-            />
-          </span>
-        </div>
-        <p className="center" style={{ marginBottom: "20px" }}>
-          <input type="button" className="button-action" value={t("button.search")} onClick={searchClick} />
+        <p className='center'>
+          <a href={"/nft-sales" + issuerTaxonUrlPart}>{t("nft-sales.header")}</a>
         </p>
-      </>}
-
-      <div className='tabs-inline'>
-        {listTab === 'nfts' &&
-          <div className='center'>
-            {t("table.mints")}
-            <Tabs
-              tabList={listNftsOrderTabList}
-              tab={listNftsOrderTab}
-              setTab={setListNftsOrderTab}
-              name='listNftsOrder'
-            />
-            {nftExplorer && <>
-              {windowWidth < 720 && <br />}
-              <span style={{ marginRight: "10px" }}>
-                {t("table.mint-period")}
-              </span>
-              {windowWidth < 720 && <br />}
-              <DateAndTimeRange
-                period={mintedPeriod}
-                setPeriod={setMintedPeriod}
-                defaultPeriod={mintedPeriod}
-                minDate="nft"
-                style={{ marginTop: "10px", display: "inline-block" }}
-              />
-            </>
-            }
-          </div>
-        }
-
-        <Tabs tabList={viewTabList} tab={viewTab} setTab={setViewTab} name='view' />
-
-        {(!burnedPeriod && !xahauNetwork) &&
-          <Tabs tabList={listTabList} tab={listTab} setTab={setListTab} name='saleType' />
-        }
-
-        {(!burnedPeriod && !xahauNetwork) && listTab === 'onSale' &&
-          <Tabs tabList={saleDestinationTabList} tab={saleDestinationTab} setTab={setSaleDestinationTab} name='saleDestination' />
-        }
-
-        {rendered &&
-          <CSVLink
-            data={data || []}
-            headers={csvHeaders}
-            filename='nfts_export.csv'
-            className={'button-action thin narrow' + (!(data && data.length > 0) ? ' disabled' : '')}
-          >
-            <DownloadIcon /> CSV
-          </CSVLink>
-        }
-      </div>
-
-      <center>
-        {!burnedPeriod && listTab !== 'onSale' &&
-          <div style={checkBoxStyles}>
-            <CheckBox checked={includeBurned} setChecked={setIncludeBurned}>
-              {t("table.text.include-burned-nfts")}
-            </CheckBox>
-          </div>
-        }
-        {listTab !== 'onSale' &&
-          <div style={checkBoxStyles}>
-            <CheckBox checked={includeWithoutMediaData} setChecked={setIncludeWithoutMediaData}>
-              {t("table.text.include-without-media-data")}
-            </CheckBox>
-          </div>
-        }
-      </center>
-
-      {/* if accoun't nft explorer and there is no owner or id, ask to provide an address */}
-      {(!nftExplorer && !(id || owner)) ?
-        <div className='center' style={{ marginTop: "20px" }}>
-          {t("nfts.desc")}
+      </>
+    }
+    <div className={`content-cols${sortMenuOpen ? ' is-sort-menu-open' : ''}${filtersHide ? ' is-filters-hide' : ''}`}>
+      <div className="filters-nav">
+        <div className="filters-nav__wrap">
+          <SimpleSelect value={order} setValue={setOrder} optionsList={currentOrderList} />
+          <button className="dropdown-btn" onClick={() => setSortMenuOpen(!sortMenuOpen)}>
+            <TbArrowsSort />
+          </button>
+          <ViewTogggle viewList={viewList} activeView={activeView} setActiveView={setActiveView} name='view' />
         </div>
-        :
-        <InfiniteScroll
-          dataLength={data.length}
-          next={checkApi}
-          hasMore={hasMore}
-          loader={!errorMessage &&
-            <p className="center">{t("nfts.load-more")}</p>
-          }
-          endMessage={<p className="center">{t("nfts.end")}</p>}
-        // below props only if you need pull down functionality
-        //refreshFunction={this.refresh}
-        //pullDownToRefresh
-        //pullDownToRefreshThreshold={50}
-        //</>pullDownToRefreshContent={
-        //  <h3 style={{ textAlign: 'center' }}>&#8595; Pull down to refresh</h3>
-        //}
-        //releaseToRefreshContent={
-        //  <h3 style={{ textAlign: 'center' }}>&#8593; Release to refresh</h3>
-        //}
-        >
-          {!nftExplorer && (id || owner) &&
-            <div className='center' style={{ marginBottom: "10px" }}>
+      </div>
+      <div className="dropdown--mobile">
+        <div className='dropdown__head'>
+          <span>{t("heading", { ns: "nft-sort" })}</span>
+          <button onClick={() => setSortMenuOpen(false)}><IoMdClose /></button>
+        </div>
+        <ul>
+          {currentOrderList.map((item, i) =>
+            <li
+              key={i}
+              style={{ fontWeight: item.value === order ? 'bold' : 'normal' }}
+              onClick={() => hideMobileSortMenu(item.value)}
+            >
+              {item.label}
+            </li>
+          )}
+        </ul>
+      </div>
+      <div className="filters">
+        <div className="filters__box">
+          <button className='filters__toggle' onClick={() => toggleFilters()}>
+            <BsFilter />
+          </button>
+          <div className="filters__wrap">
+            <div className="filters__head">
+              <span>{nftCount ? ("1-" + nftCount + (hasMore ? (" " + t("general.of-many")) : '')) : ''}</span>
               {rendered &&
+                <CSVLink
+                  data={data || []}
+                  headers={csvHeaders}
+                  filename='nfts_export.csv'
+                  className={'button-action thin narrow' + (!(data && data.length > 0) ? ' disabled' : '')}
+                >
+                  <DownloadIcon /> CSV
+                </CSVLink>
+              }
+              <button className='filters__close' onClick={() => toggleFilters()}>
+                <IoMdClose />
+              </button>
+            </div>
+            {nftExplorer &&
+              <>
+                <AddressInput
+                  title={t("table.issuer")}
+                  placeholder={t("nfts.search-by-issuer")}
+                  setValue={onIssuerSearch}
+                  rawData={rawData}
+                  type='issuer'
+                />
+                {!xahauNetwork &&
+                  <>
+                    <FormInput
+                      title={t("table.taxon")}
+                      placeholder={t("nfts.search-by-taxon")}
+                      setValue={onTaxonInput}
+                      defaultValue={rawData?.taxon}
+                      disabled={issuer ? false : true}
+                    />
+                  </>
+                }
+                <AddressInput
+                  title={t("table.owner")}
+                  placeholder={t("nfts.search-by-owner")}
+                  setValue={setOwner}
+                  rawData={rawData}
+                  type='owner'
+                />
+                <FormInput
+                  title={t("table.name")}
+                  placeholder={t("nfts.search-by-name")}
+                  setValue={setSearch}
+                  defaultValue={rawData?.search}
+                />
+              </>
+            }
+
+            {listTab === 'nfts' && nftExplorer &&
+              <div>
+                {t("table.mint-period")}
+                <DateAndTimeRange
+                  periodQueryName="mintedPeriod"
+                  period={mintedPeriod}
+                  setPeriod={setMintedPeriod}
+                  defaultPeriod={mintedPeriodQuery}
+                  minDate="nft"
+                  radio={true}
+                />
+              </div>
+            }
+
+            {!nftExplorer && rendered &&
+              <div>
+                <span style={{ display: "inline-block", paddingBottom: "5px" }}>
+                  {t("table.issuer")}
+                </span>
                 <IssuerSelect
                   issuersList={issuersList}
                   selectedIssuer={issuer}
                   setSelectedIssuer={setIssuer}
+                  disabled={!(id || owner) || issuersList?.length < 1}
                 />
-              }
-            </div>
-          }
+              </div>
+            }
 
-          {viewTab === "list" &&
-            <>
-              {windowWidth > 500 ?
-                <table className="table-large">
-                  <thead>
-                    <tr>
-                      <th className='center'>{t("table.index")}</th>
-                      <th>NFT</th>
-                      <th className='right'>{t("table.minted")}</th>
-                      {!xahauNetwork && <th className='right'>{t("table.serial")}</th>}
-                      {(!taxon && !xahauNetwork) && <th className='right'>{t("table.taxon")}</th>}
-                      {!issuer && <th className='right'>{t("table.issuer")}</th>}
-                      {(!id && !owner) && <th className='right'>{t("table.owner")}</th>}
-                      {listTab === 'onSale' && <th className='right'>{t("table.price")}</th>}
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {loading ?
-                      <tr className='center'>
-                        <td colSpan="100">
-                          <span className="waiting"></span>
-                          <br />{t("general.loading")}
-                        </td>
-                      </tr>
-                      :
-                      <>
-                        {!errorMessage ? data.map((nft, i) =>
-                          <tr key={nft.nftokenID || nft.uriTokenID}>
-                            <td className="center">{i + 1}</td>
-                            <td>{nftThumbnail(nft)} {nftNameLink(nft)}</td>
-                            <td className='right'>{timeOrDate(nft.issuedAt)}</td>
-                            {!xahauNetwork && <td className='right'>{nft.sequence}</td>}
-                            {(!taxon && !xahauNetwork) && <td className='right'>{nft.nftokenTaxon}</td>}
-                            {!issuer && <td className='right'>{nftLink(nft, 'issuer', { address: 'short' })}</td>}
-                            {(!id && !owner) && <td className='right'>{nftLink(nft, 'owner', { address: 'short' })}</td>}
-                            {listTab === 'onSale' && <td className='right'>{priceData(nft.sellOffers)}</td>}
-                          </tr>)
-                          :
-                          <tr><td colSpan="100" className='center orange bold'>{errorMessage}</td></tr>
-                        }
-                      </>
-                    }
-                  </tbody>
-                </table>
-                :
-                <table className="table-mobile">
-                  <tbody>
-                    {loading ?
-                      <tr className='center'>
-                        <td colSpan="100">
-                          <span className="waiting"></span>
-                          <br />{t("general.loading")}
-                        </td>
-                      </tr>
-                      :
-                      <>
-                        {!errorMessage ? data.map((nft, i) =>
-                          <tr key={nft.nftokenID || nft.uriTokenID}>
-                            <td className="center">
-                              {i + 1}<br /><br />
-                              {nftThumbnail(nft)}
-                            </td>
-                            <td>
-                              <div className='brake'>NFT: {nftNameLink(nft)}</div>
-                              <div>{t("table.minted")}: {fullDateAndTime(nft.issuedAt)}</div>
-                              {!xahauNetwork && <>{t("table.serial")}: {nft.sequence}<br /></>}
-                              {(!taxon && !xahauNetwork) && <>{t("table.taxon")}: {nft.nftokenTaxon}<br /></>}
-                              {!issuer && <>{t("table.issuer")}: {nftLink(nft, 'issuer', { address: 'short' })}<br /></>}
-                              {(!id && !owner) && <>{t("table.owner")}: {nftLink(nft, 'owner', { address: 'short' })}<br /></>}
-                              {listTab === 'onSale' && <>{t("table.price")}: {priceData(nft.sellOffers)}<br /></>}
-                            </td>
-                          </tr>)
-                          :
-                          <tr><td colSpan="100" className='center orange bold'>{errorMessage}</td></tr>
-                        }
-                      </>
-                    }
-                  </tbody>
-                </table>
+            {(!burnedPeriod && !xahauNetwork) &&
+              <div>
+                {t("general.search")}
+                <RadioOptions tabList={listTabList} tab={listTab} setTab={setListTab} name='saleType' />
+              </div>
+            }
 
-              }
-            </>
-          }
-          {viewTab === "tiles" &&
-            <>
-              {loading ?
-                <div className='center' style={{ marginTop: "20px" }}>
-                  <span className="waiting"></span>
-                  <br />{t("general.loading")}
+            {(!burnedPeriod && !xahauNetwork) && listTab === 'onSale' &&
+              <div>
+                {t("table.on-sale")}
+                <RadioOptions tabList={saleDestinationTabList} tab={saleDestinationTab} setTab={setSaleDestinationTab} name='saleDestination' />
+              </div>
+            }
+
+            <div>
+              {!burnedPeriod && listTab !== 'onSale' &&
+                <div className='filters-check-box'>
+                  <CheckBox checked={includeBurned} setChecked={setIncludeBurned} outline>
+                    {t("table.text.include-burned-nfts")}
+                  </CheckBox>
                 </div>
-                :
-                <>
-                  {errorMessage ?
-                    <div className='center orange bold'>{errorMessage}</div>
-                    :
-                    <Tiles nftList={data} type={listTab === 'onSale' ? 'onSale' : 'name'} account={account} />
-                  }
-                </>
               }
-            </>
-          }
-        </InfiniteScroll>
-      }
+              <div className='filters-check-box'>
+                <CheckBox checked={includeWithoutMediaData} setChecked={setIncludeWithoutMediaData} outline>
+                  {t("table.text.include-without-media-data")}
+                </CheckBox>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="content-text">
+        {/* if accoun't nft explorer and there is no owner or id, ask to provide an address */}
+        {(!nftExplorer && !(id || owner)) ?
+          <div className='center' style={{ marginTop: "20px" }}>
+            {t("nfts.desc")}
+          </div>
+          :
+          <InfiniteScroll
+            dataLength={data?.length}
+            next={checkApi}
+            hasMore={hasMore}
+            loader={!errorMessage &&
+              <p className="center">{t("nfts.load-more")}</p>
+            }
+            endMessage={<p className="center">{t("nfts.end")}</p>}
+            height={!filtersHide ? "1300px" : "100vh"}
+          // below props only if you need pull down functionality
+          //refreshFunction={this.refresh}
+          //pullDownToRefresh
+          //pullDownToRefreshThreshold={50}
+          //</>pullDownToRefreshContent={
+          //  <h3 style={{ textAlign: 'center' }}>&#8595; Pull down to refresh</h3>
+          //}
+          //releaseToRefreshContent={
+          //  <h3 style={{ textAlign: 'center' }}>&#8593; Release to refresh</h3>
+          //}
+          >
+            {activeView === "list" &&
+              <>
+                {windowWidth > 500 ?
+                  <table className="table-large table-large--without-border">
+                    <thead>
+                      <tr>
+                        <th className='center'>{t("table.index")}</th>
+                        <th>NFT</th>
+                        <th className='right'>{t("table.minted")}</th>
+                        {!xahauNetwork && <th className='right'>{t("table.serial")}</th>}
+                        {(!isValidTaxon(taxon) && !xahauNetwork) && <th className='right'>{t("table.taxon")}</th>}
+                        {!issuer && <th className='right'>{t("table.issuer")}</th>}
+                        {(!id && !owner) && <th className='right'>{t("table.owner")}</th>}
+                        {listTab === 'onSale' && <th className='right'>{t("table.price")}</th>}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {loading ?
+                        <tr className='center'>
+                          <td colSpan="100">
+                            <span className="waiting"></span>
+                            <br />{t("general.loading")}
+                          </td>
+                        </tr>
+                        :
+                        <>
+                          {!errorMessage ? data.map((nft, i) =>
+                            <tr key={nft.nftokenID || nft.uriTokenID}>
+                              <td className="center">{i + 1}</td>
+                              <td>{nftThumbnail(nft)} {nftNameLink(nft)}</td>
+                              <td className='right'>{timeOrDate(nft.issuedAt)}</td>
+                              {!xahauNetwork && <td className='right'>{nft.sequence}</td>}
+                              {(!isValidTaxon(taxon) && !xahauNetwork) && <td className='right'>{nft.nftokenTaxon}</td>}
+                              {!issuer && <td className='right'>{nftLink(nft, 'issuer', { address: 'short' })}</td>}
+                              {(!id && !owner) && <td className='right'>{nftLink(nft, 'owner', { address: 'short' })}</td>}
+                              {listTab === 'onSale' && <td className='right'>{priceData(nft.sellOffers)}</td>}
+                            </tr>)
+                            :
+                            <tr><td colSpan="100" className='center orange bold'>{errorMessage}</td></tr>
+                          }
+                        </>
+                      }
+                    </tbody>
+                  </table>
+                  :
+                  <table className="table-mobile">
+                    <tbody>
+                      {loading ?
+                        <tr className='center'>
+                          <td colSpan="100">
+                            <span className="waiting"></span>
+                            <br />{t("general.loading")}
+                          </td>
+                        </tr>
+                        :
+                        <>
+                          {!errorMessage ? data.map((nft, i) =>
+                            <tr key={nft.nftokenID || nft.uriTokenID}>
+                              <td className="center">
+                                {i + 1}<br /><br />
+                                {nftThumbnail(nft)}
+                              </td>
+                              <td>
+                                <div className='brake'>NFT: {nftNameLink(nft)}</div>
+                                <div>{t("table.minted")}: {fullDateAndTime(nft.issuedAt)}</div>
+                                {!xahauNetwork && <>{t("table.serial")}: {nft.sequence}<br /></>}
+                                {(!isValidTaxon(taxon) && !xahauNetwork) && <>{t("table.taxon")}: {nft.nftokenTaxon}<br /></>}
+                                {!issuer && <>{t("table.issuer")}: {nftLink(nft, 'issuer', { address: 'short' })}<br /></>}
+                                {(!id && !owner) && <>{t("table.owner")}: {nftLink(nft, 'owner', { address: 'short' })}<br /></>}
+                                {listTab === 'onSale' && <>{t("table.price")}: {priceData(nft.sellOffers)}<br /></>}
+                              </td>
+                            </tr>)
+                            :
+                            <tr><td colSpan="100" className='center orange bold'>{errorMessage}</td></tr>
+                          }
+                        </>
+                      }
+                    </tbody>
+                  </table>
+
+                }
+              </>
+            }
+            {activeView === "tiles" &&
+              <>
+                {loading ?
+                  <div className='center' style={{ marginTop: "20px" }}>
+                    <span className="waiting"></span>
+                    <br />{t("general.loading")}
+                  </div>
+                  :
+                  <>
+                    {errorMessage ?
+                      <div className='center orange bold'>{errorMessage}</div>
+                      :
+                      <Tiles nftList={data} type={listTab === 'onSale' ? 'onSale' : 'name'} account={account} />
+                    }
+                  </>
+                }
+              </>
+            }
+          </InfiniteScroll>
+        }
+      </div>
     </div>
   </>
 }

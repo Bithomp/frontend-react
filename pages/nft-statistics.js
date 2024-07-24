@@ -3,9 +3,13 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
-export const getServerSideProps = async ({ locale }) => {
+import { getIsSsrMobile } from '../utils/mobile'
+
+export const getServerSideProps = async (context) => {
+  const { locale } = context
   return {
     props: {
+      isSsrMobile: getIsSsrMobile(context),
       ...(await serverSideTranslations(locale, ['common'])),
     }
   }
@@ -14,7 +18,8 @@ export const getServerSideProps = async ({ locale }) => {
 import SEO from '../components/SEO'
 
 import { wssServer } from '../utils'
-import { niceNumber, fullDateAndTime, ledgerLink } from '../utils/format'
+import { niceNumber, fullDateAndTime } from '../utils/format'
+import { LedgerLink } from '../utils/links'
 
 let ws = null;
 
@@ -80,8 +85,8 @@ export default function NftStatistics() {
   const nft = data?.allTime;
   const crawlerIndex = data?.crawler?.ledgerIndex;
   const currentLedgerIndex = data?.validatedLedger.ledgerIndex;
-  const crawlerTime = data?.crawler?.ledgerTime && fullDateAndTime(data.crawler.ledgerTime);
-  const currentLedgerTime = data?.validatedLedger.ledgerTime && fullDateAndTime(data.validatedLedger.ledgerTime);
+  const crawlerTime = data?.crawler?.ledgerTime && fullDateAndTime(data.crawler.ledgerTime, null, { asText: true });
+  const currentLedgerTime = data?.validatedLedger.ledgerTime && fullDateAndTime(data.validatedLedger.ledgerTime, null, { asText: true });
 
   let lag = false;
   if (crawlerIndex && currentLedgerIndex) {
@@ -112,21 +117,30 @@ export default function NftStatistics() {
               {t("nft-statistics.updated")}: {crawlerTime}
             </p>
             <p>
-              {t("nft-statistics.ledger-index")}: {ledgerLink(crawlerIndex)}
+              {t("nft-statistics.ledger-index")}: <LedgerLink version={crawlerIndex} />
             </p>
           </>
         }
         <p>
-          {t("nft-statistics.created")}: {niceNumber(nft?.created)}
+          {t("nft-statistics.created")}:{" "}
+          <Link href='/nft-explorer?mintedPeriod=all&includeBurned=true&includeWithoutMediaData=true'>
+            {niceNumber(nft?.created)}
+          </Link>
         </p>
         <p>
-          {t("nft-statistics.burned")}: {niceNumber(nft?.burned)}
+          {t("nft-statistics.burned")}:{" "}
+          <Link href='/nft-explorer?includeBurned=true&includeWithoutMediaData=true&burnedPeriod=all&mintedPeriod=all'>
+            {niceNumber(nft?.burned)}
+          </Link>
         </p>
         <p>
-          {t("nft-statistics.exist")}: {nft && niceNumber(nft.created - nft.burned)}
+          {t("nft-statistics.exist")}:{" "}
+          <Link href='/nft-explorer?mintedPeriod=all&includeWithoutMediaData=true'>
+            {nft && niceNumber(nft.created - nft.burned)}
+          </Link>
         </p>
         <p>
-          {t("nft-statistics.owners")}: {niceNumber(nft?.owners)}
+          {t("nft-statistics.owners")}: <Link href='/nft-distribution?order=total'>{niceNumber(nft?.owners)}</Link>
         </p>
         <p>
           {t("nft-statistics.issuers")}: <Link href='/nft-volumes'>{niceNumber(nft?.issuers)}</Link>
@@ -135,13 +149,18 @@ export default function NftStatistics() {
           {t("nft-statistics.transfers")}: {niceNumber(nft?.transfers)}
         </p>
         <p>
-          {t("nft-statistics.for-sale")}: {niceNumber(nft?.forSale)}
+          {t("nft-statistics.for-sale")}:{" "}
+          {niceNumber(nft?.forSale)}
         </p>
         <p>
-          {t("nft-statistics.for-sale-without-destination")}: {niceNumber(nft?.forSaleWithoutDestination)}
+          {t("nft-statistics.for-sale-without-destination")}:{" "}
+          <Link href='/nft-explorer?mintedPeriod=all&includeBurned=true&includeWithoutMediaData=true&list=onSale'>
+            {niceNumber(nft?.forSaleWithoutDestination)}
+          </Link>
         </p>
         <p>
-          {t("nft-statistics.for-sale-with-destination")}: {niceNumber(nft?.forSaleWithDestination)}
+          {t("nft-statistics.for-sale-with-destination")}:{" "}
+          {niceNumber(nft?.forSaleWithDestination)}
         </p>
         <p>
           {t("nft-statistics.burnable")}: {niceNumber(nft?.burnable)}
@@ -162,5 +181,5 @@ export default function NftStatistics() {
         </p>
       </div>
     </div>
-  );
-};
+  )
+}

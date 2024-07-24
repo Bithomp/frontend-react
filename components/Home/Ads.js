@@ -2,7 +2,7 @@ import { network } from "../../utils"
 
 export default function Ads() {
 
-  if (network === "mainnet") {
+  if (network === "mainnet" || network === "staging") {
     return <>
       {/*
       <a href="/go/play-xrp" target="_blank" rel="noreferrer">
@@ -23,7 +23,7 @@ export default function Ads() {
         </a>
       */}
       <a href="/go/buy-xrp" target="_blank" rel="noreferrer">
-        <div className="sponsored-brand">
+        <div className="sponsored-brand btcbit">
           <img src="/images/btcbit.svg" className="sponsored-brand-icon" alt="buy xrp" />
           <div className="sponsored-brand-title">Buy XRP</div>
           <div className="sponsored-brand-text">Instantly buy and sell cryptocurrency with low commission.</div>
@@ -33,7 +33,7 @@ export default function Ads() {
         <div className="sponsored-brand">
           <img src="/images/nexo.svg" className="sponsored-brand-icon" alt="earn on xrp" />
           <div className="sponsored-brand-title">Earn on XRP</div>
-          <div className="sponsored-brand-text">Earn 8% per year on XRP.</div>
+          <div className="sponsored-brand-text">Earn up to 12% per year on XRP.</div>
         </div>
       </a>
     </>

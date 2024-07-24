@@ -16,7 +16,7 @@ import {
   networksIds,
   isValidNftXls20,
   explorerName,
-  xahauNetwork
+  isCurrencyHashValid,
 } from '../../utils'
 import { userOrServiceName, amountFormat } from '../../utils/format'
 
@@ -171,6 +171,11 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
       return
     }
 
+    if (tab === "amm" && (isAddressOrUsername(searchFor) || isCurrencyHashValid(searchFor))) {
+      router.push("/amm/" + encodeURI(searchFor))
+      return
+    }
+
     if (tab === "nft-volumes" && isAddressOrUsername(searchFor)) {
       router.push("/nft-volumes/" + encodeURI(searchFor) + addParams)
       return
@@ -188,6 +193,10 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
       }
       if (data.type === 'nftokenOffer') {
         router.push('/nft-offer/' + encodeURI(searchFor))
+        return
+      }
+      if (data.type === 'amm') {
+        router.push('/amm/' + encodeURI(searchFor))
         return
       }
       //allow transaction search only tab transactions for now (while it's not ready for public)
@@ -295,7 +304,7 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
     if (tab === "explorer") {
       return t("explorer.header.main", { explorerName })
     }
-    if (['account', 'nft', 'nfts', 'nft-offer', 'nft-offers', 'transaction', 'nft-volumes'].includes(tab)) {
+    if (['amm', 'account', 'nft', 'nfts', 'nft-offer', 'nft-offers', 'transaction', 'nft-volumes'].includes(tab)) {
       return t("explorer.header." + tab)
     }
     return ""
@@ -315,11 +324,11 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
               <h1 className='contrast'>{explorerHeader(tab)} {userOrServiceName(userData)}</h1>
             }
           </div>
-          {isMounted &&
+          {isMounted ?
             <div onKeyUp={searchOnKeyUp}>
               <Select
                 ref={searchInput}
-                className="issuer-select search-input search-input-select"
+                className="search-input search-input-select"
                 placeholder={searchPlaceholderText}
                 onChange={searchOnChange}
                 onFocus={searchOnFocus}
@@ -358,7 +367,7 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
                       </>
                     }
                     {option.balance &&
-                      <> [<b>{amountFormat(option.balance, { maxFractionDigits: 2 }).trim()}</b>]</>
+                      <> [<b>{amountFormat(option.balance, { maxFractionDigits: 2, noSpace: true })}</b>]</>
                     }
                   </>
                 }
@@ -376,6 +385,17 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
                 }
               />
             </div>
+            :
+            <input
+              ref={searchInput}
+              type="text"
+              className="search-input"
+              placeholder={searchPlaceholderText}
+              value={searchItem}
+              onChange={e => setSearchItem(e.target.value)}
+              onKeyUp={searchOnKeyUp}
+              spellCheck="false"
+            />
           }
 
           <div className="search-button" onClick={onSearch}>
@@ -398,9 +418,7 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
         <div className='explorer-tabs-block'>
           <div className='explorer-tabs'>
             {tab === "nfts" ? <b>NFTs</b> : <Link href={"/nfts/" + searchItem + addParams}>NFTs</Link>}
-            {!xahauNetwork && <>
-              {tab === "nft-offers" ? <b>{t("nft-offers.header")}</b> : <Link href={"/nft-offers/" + searchItem}>{t("nft-offers.header")}</Link>}
-            </>}
+            {tab === "nft-offers" ? <b>{t("nft-offers.header")}</b> : <Link href={"/nft-offers/" + searchItem}>{t("nft-offers.header")}</Link>}
             {tab === "nft-volumes" && <b>{t("menu.nft.volumes")}</b>}
             {tab !== "account" && <a href={"/explorer/" + searchItem}>{t("explorer.menu.account")}</a>}
             {tab !== "nft-volumes" && <a href={"/explorer/" + searchItem} className='hide-on-mobile'>{t("explorer.menu.transactions")}</a>}

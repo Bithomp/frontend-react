@@ -2,11 +2,13 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 import SEO from '../components/SEO'
 import { useTranslation } from 'next-i18next'
+import { getIsSsrMobile } from '../utils/mobile'
 
 export async function getServerSideProps(context) {
   const { locale } = context
   return {
     props: {
+      isSsrMobile: getIsSsrMobile(context),
       ...(await serverSideTranslations(locale, ['common', 'about-us'])),
     }
   }
@@ -73,7 +75,7 @@ export default function AboutUs() {
             <b>Explorers and Faucets for {" "}
               <a href="https://test.bithomp.com/faucet/" target="_blank" rel="noreferrer">XRPL Testnet</a>,{" "}
               <a href="https://dev.bithomp.com/faucet/" target="_blank" rel="noreferrer">XRPL Devnet</a>, and{" "}
-              <a href="https://test.xahauexplorer.com/faucet/" target="_blank" rel="noreferrer">XAHAU Testnet</a>.
+              <a href="https://test.xahauexplorer.com/faucet/" target="_blank" rel="noreferrer">XAHAU Testnet</a>
             </b> - convenient tool for developers to efficiently explore, test, and troubleshoot their applications without using real money.
           </li>
         </ul>

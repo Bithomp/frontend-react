@@ -180,6 +180,7 @@ const isValidCid = hash => {
 const ipfsUrl = (uri, type = 'image', gateway = 'our') => {
   if (!uri) return null;
   let url = uri.toString();
+  let filename = '';
   if (url.includes('.ipfs.w3s.link') || url.includes('.ipfs.nftstorage.link')) {
     url = url.replace("https://", "");
     url = url.replace(".ipfs.w3s.link", "");
@@ -188,6 +189,7 @@ const ipfsUrl = (uri, type = 'image', gateway = 'our') => {
     return 'https://wallet.xrplnft.art/ipfs/' + url.slice(4); //centralised option
     //url = url.slice(4); //decentralised option is too slow
   } else if (url.includes('?filename=')) {
+    filename = '?filename=' + url.split('?filename=')[1];
     url = url.split('?filename=')[0];
   } else if (url.slice(0, 5) === 'hash:') {
     url = url.slice(5);
@@ -216,11 +218,11 @@ const ipfsUrl = (uri, type = 'image', gateway = 'our') => {
     url = stripText(cid + url.split(cid).pop());
     url = url.replace('#', '%23');
     if (gateway === 'our' && (type === 'image' || type === 'video' || type === 'thumbnail' || type === 'preview')) {
-      return 'https://ipfs.bithomp.com/' + type + '/' + url;
+      return 'https://ipfs.bithomp.com/' + type + '/' + url + filename;
     } else if (gateway === 'cl' && type === 'model') {
       return stripText(uri);
     } else if (gateway === 'cl' || type === 'audio' || type === 'model' || type === 'viewer') {
-      return 'https://cloudflare-ipfs.com/ipfs/' + url;
+      return 'https://ipfs.io/ipfs/' + url + filename;
     }
   } else {
     return null;
@@ -354,17 +356,24 @@ export const nftUrl = (nft, type = 'image', gateway = 'our') => {
   }
 }
 
+export const isNftExplicit = nft => {
+  if (nft.metadata?.name?.toLowerCase().includes("nude") ||
+    nft.metadata?.title?.toLowerCase().includes("nude") ||
+    nft.metadata?.name?.toLowerCase().includes("sexy") ||
+    nft.metadata?.name?.toLowerCase().includes("naked") ||
+    nft.metadata?.is_explicit
+  ) {
+    return true
+  }
+  return false
+}
+
 export const nftImageStyle = (nft, style = {}) => {
   if (!nft) { return {} };
-  const imageUrl = nftUrl(nft, 'image');
+  const imageUrl = nftUrl(nft, 'image')
   if (imageUrl) {
-
-    if (nft.metadata?.name?.toLowerCase().includes("nude") ||
-      nft.metadata?.title?.toLowerCase().includes("nude") ||
-      nft.metadata?.name?.toLowerCase().includes("sexy") ||
-      nft.metadata?.name?.toLowerCase().includes("naked") ||
-      nft.metadata?.is_explicit
-    ) {
+    const isOver18 = localStorage.getItem('isOver18')
+    if (isNftExplicit(nft) && !isOver18) {
       style.backgroundImage = "url('/images/18plus.jpg')";
     } else {
       style.backgroundImage = "url('" + imageUrl + "')";

@@ -3,21 +3,23 @@ import { useTranslation } from 'next-i18next'
 import { useEffect, useState } from 'react'
 import axios from 'axios'
 import { useRouter } from 'next/router'
+import { axiosAdmin } from '../../utils/axios'
 
 import { useWidth, encode, wssServer } from '../../utils'
+import { getIsSsrMobile } from '../../utils/mobile'
 import { fullDateAndTime, shortNiceNumber, amountFormat } from '../../utils/format'
 
 import SEO from '../../components/SEO'
 import AdminTabs from '../../components/Admin/Tabs'
 import Select from 'react-select'
 import BillingCountry from '../../components/Admin/BillingCountry'
-import Link from 'next/link'
 import CopyButton from '../../components/UI/CopyButton'
 import LinkIcon from "../../public/images/link.svg"
 import Image from 'next/image'
 import Receipt from '../../components/Receipt'
 
 //PayPal option starts
+/*
 import {
   PayPalScriptProvider,
   PayPalButtons,
@@ -62,13 +64,17 @@ const ButtonWrapper = ({ type }) => {
 //https://paypal.github.io/react-paypal-js/?path=/docs/example-paypalbuttons--default
 
 //PayPal option ends
+*/
 
 const xummImg = "/images/xumm.png"
 
 export const getServerSideProps = async (context) => {
-  const { locale } = context
+  const { query, locale } = context
+  const { receipt } = query
   return {
     props: {
+      isSsrMobile: getIsSsrMobile(context),
+      receiptQuery: receipt || "false",
       ...(await serverSideTranslations(locale, ['common', 'admin'])),
     },
   }
@@ -77,7 +83,7 @@ export const getServerSideProps = async (context) => {
 let interval
 let ws = null
 
-export default function Subscriptions({ setSignRequest }) {
+export default function Subscriptions({ setSignRequest, receiptQuery }) {
   const { t } = useTranslation(['common', 'admin'])
   const router = useRouter()
   const width = useWidth()
@@ -99,7 +105,7 @@ export default function Subscriptions({ setSignRequest }) {
     if (!sessionToken) {
       router.push('/admin')
     } else {
-      axios.defaults.headers.common['Authorization'] = "Bearer " + sessionToken
+      axiosAdmin.defaults.headers.common['Authorization'] = "Bearer " + sessionToken
       getApiData()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -109,10 +115,7 @@ export default function Subscriptions({ setSignRequest }) {
     setLoading(true)
     setErrorMessage("")
 
-    const packagesData = await axios.get(
-      'partner/partner/packages',
-      { baseUrl: '/api/' }
-    ).catch(error => {
+    const packagesData = await axiosAdmin.get('partner/packages').catch(error => {
       if (error && error.message !== "canceled") {
         setErrorMessage(t(error.response.data.error || "error." + error.message))
         if (error.response?.data?.error === "errors.token.required") {
@@ -158,10 +161,10 @@ export default function Subscriptions({ setSignRequest }) {
   }
 
   const bithompProOptions = [
-    { value: 'm1', label: '1 month', price: "10 EUR" },
-    { value: 'm3', label: '3 months', price: "30 EUR" },
-    { value: 'm6', label: '6 months', price: "60 EUR" },
-    { value: 'y1', label: '1 year', price: "100 EUR" }
+    { value: 'm1', label: '1 month', price: "4.99 EUR" },
+    { value: 'm3', label: '3 months', price: "14.97 EUR" },
+    { value: 'm6', label: '6 months', price: "29.94 EUR" },
+    { value: 'y1', label: '1 year', price: "49.99 EUR" }
   ]
 
   const onPurchaseClick = async () => {
@@ -173,15 +176,14 @@ export default function Subscriptions({ setSignRequest }) {
     const period = bithompProPlan.substring(0, 1) === "m" ? "month" : "year"
     const periodCount = bithompProPlan.substring(1)
 
-    const paymentData = await axios.post(
-      'partner/partner/bids',
+    const paymentData = await axiosAdmin.post(
+      'partner/bids',
       {
         type: "bithomp_pro",
         //tier: "standard", //only for api plans
         period,
         periodCount: 1 * periodCount,
-      },
-      { baseUrl: '/api/' }
+      }
     ).catch(error => {
       if (error && error.message !== "canceled") {
         setErrorMessage(t(error.response.data.error || "error." + error.message))
@@ -341,9 +343,7 @@ export default function Subscriptions({ setSignRequest }) {
   return <>
     <SEO title={t("header", { ns: "admin" })} />
     <div className="page-admin content-center">
-      <h1 className='center'>
-        {t("header", { ns: "admin" })}
-      </h1>
+      <h1 className='center'>{t("header", { ns: "admin" })}</h1>
 
       <AdminTabs name="mainTabs" tab="subscriptions" />
 
@@ -369,59 +369,64 @@ export default function Subscriptions({ setSignRequest }) {
         }
 
         {packages?.length > 0 &&
-          <div style={{ textAlign: "left" }}>
-            {width > 600 ?
-              <table className='table-large shrink'>
-                <thead>
-                  <tr>
-                    <th>Type</th>
-                    <th>Created</th>
-                    <th>Start</th>
-                    <th>Expire</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {packages?.map((row, index) => {
-                    return <tr key={index}>
-                      <td>{typeName(row.type)}</td>
-                      <td>{fullDateAndTime(row.createdAt)}</td>
-                      <td>{fullDateAndTime(row.startedAt)}</td>
-                      <td>{fullDateAndTime(row.expiredAt + 1)}</td>
+          <>
+            <h4 className='center'>Your purchased subscriptions</h4>
+            <div style={{ textAlign: "left" }}>
+              {width > 600 ?
+                <table className='table-large'>
+                  <thead>
+                    <tr>
+                      <th>Type</th>
+                      <th>Created</th>
+                      <th>Start</th>
+                      <th>Expire</th>
                     </tr>
-                  })}
-                </tbody>
-              </table>
-              :
-              <table className='table-mobile'>
-                <tbody>
-                  {packages?.map((row, index) => {
-                    return <tr key={index}>
-                      <td style={{ padding: "5px" }} className='center'>
-                        <b>{index + 1}</b>
-                      </td>
-                      <td>
-                        <p>
-                          Type: {row.type}
-                        </p>
-                        <p>
-                          Created: <br />
-                          {fullDateAndTime(row.createdAt)}
-                        </p>
-                        <p>
-                          Start: <br />
-                          {fullDateAndTime(row.startedAt)}
-                        </p>
-                        <p>
-                          Expire: <br />
-                          {fullDateAndTime(row.expiredAt + 1)}
-                        </p>
-                      </td>
-                    </tr>
-                  })}
-                </tbody>
-              </table>
-            }
-          </div>
+                  </thead>
+                  <tbody>
+                    {packages?.map((row, index) => {
+                      return <tr key={index}>
+                        <td>{typeName(row.type)}</td>
+                        <td>{fullDateAndTime(row.createdAt)}</td>
+                        <td>{fullDateAndTime(row.startedAt)}</td>
+                        <td>
+                          {!row.expiredAt && row.metadata?.forever ? "Never" : fullDateAndTime(row.expiredAt + 1)}
+                        </td>
+                      </tr>
+                    })}
+                  </tbody>
+                </table>
+                :
+                <table className='table-mobile'>
+                  <tbody>
+                    {packages?.map((row, index) => {
+                      return <tr key={index}>
+                        <td style={{ padding: "5px" }} className='center'>
+                          <b>{index + 1}</b>
+                        </td>
+                        <td>
+                          <p>
+                            Type: {row.type}
+                          </p>
+                          <p>
+                            Created: <br />
+                            {fullDateAndTime(row.createdAt)}
+                          </p>
+                          <p>
+                            Start: <br />
+                            {fullDateAndTime(row.startedAt)}
+                          </p>
+                          <p>
+                            Expire: <br />
+                            {!row.expiredAt && row.metadata?.forever ? "Never" : fullDateAndTime(row.expiredAt + 1)}
+                          </p>
+                        </td>
+                      </tr>
+                    })}
+                  </tbody>
+                </table>
+              }
+            </div>
+          </>
         }
 
         {errorMessage &&
@@ -435,10 +440,9 @@ export default function Subscriptions({ setSignRequest }) {
           <>
             {step < 2 &&
               <>
-                <h4 className='center'>Purchase subscription</h4>
-                <div className='center'>
-                  Here you can purchase <b>Bithomp Pro</b> subscription.
-                </div>
+                <h4 className='center'>Purchase Bithomp Pro</h4>
+
+                {/*
                 <h4>
                   Pay with PayPal - 1 Year, 100 EUR
                 </h4>
@@ -460,6 +464,7 @@ export default function Subscriptions({ setSignRequest }) {
                 <h4>
                   Pay with XRP
                 </h4>
+                */}
 
                 <div className='center'>
                   <Select
@@ -494,7 +499,7 @@ export default function Subscriptions({ setSignRequest }) {
             <div className='center'>
               {payData && step === 1 &&
                 <>
-                  <h4 className='center'>Bithomp Pro payment details</h4>
+                  <h4 className='center'>Subscription payment details</h4>
 
                   {width > 600 ?
                     <table className='table-large shrink'>
@@ -569,12 +574,15 @@ export default function Subscriptions({ setSignRequest }) {
                 </>
               }
 
-              {step === 2 &&
+              {(receiptQuery === "true" || step === 2) &&
                 <>
-                  <p className="center">
-                    We have received your purchase.
+                  <br />
+                  <p className="center orange">
+                    We have received your payment.
                   </p>
-                  <Receipt item="subscription" details={bidData.bid} />
+                  {receiptQuery === "false" &&
+                    <Receipt item="subscription" details={bidData.bid} />
+                  }
                 </>
               }
               {paymentErrorMessage &&
@@ -598,9 +606,9 @@ export default function Subscriptions({ setSignRequest }) {
                         {bidData?.transactions?.map((payment, index) => {
                           return <tr key={index}>
                             <td>{fullDateAndTime(payment.processedAt)}</td>
-                            <td><Link href={"/explorer/" + payment.sourceAddress}>{payment.sourceAddress}</Link></td>
+                            <td><a href={"/explorer/" + payment.sourceAddress}>{payment.sourceAddress}</a></td>
                             <td>{amountFormat(payment.amount * 1000000)}</td>
-                            <td><Link href={"/explorer/" + payment.hash}><LinkIcon /></Link></td>
+                            <td><a href={"/explorer/" + payment.hash}><LinkIcon /></a></td>
                           </tr>
                         })}
                       </tbody>
@@ -619,7 +627,7 @@ export default function Subscriptions({ setSignRequest }) {
                               </p>
                               <p>
                                 From: <br />
-                                <Link href={"/explorer/" + payment.sourceAddress}>{payment.sourceAddress}</Link>
+                                <a href={"/explorer/" + payment.sourceAddress}>{payment.sourceAddress}</a>
                               </p>
                               <p>
                                 Amount: {amountFormat(payment.amount)}
@@ -628,7 +636,7 @@ export default function Subscriptions({ setSignRequest }) {
                                 Fiat equivalent: {payment.fiatAmount}
                               </p>
                               <p>
-                                Transaction: <Link href={"/explorer/" + payment.hash}><LinkIcon /></Link>
+                                Transaction: <a href={"/explorer/" + payment.hash}><LinkIcon /></a>
                               </p>
                             </td>
                           </tr>
@@ -642,6 +650,6 @@ export default function Subscriptions({ setSignRequest }) {
           </>
         }
       </div>
-    </div >
+    </div>
   </>
 }

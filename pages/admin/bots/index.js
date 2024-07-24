@@ -1,18 +1,20 @@
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useTranslation } from 'next-i18next'
 import { useEffect, useState } from 'react'
-import axios from 'axios'
 import { useRouter } from 'next/router'
 
 import SEO from '../../../components/SEO'
 
 import { ledgerName } from '../../../utils'
+import { getIsSsrMobile } from '../../../utils/mobile'
 import AdminTabs from '../../../components/Admin/Tabs'
+import { axiosAdmin } from '../../../utils/axios'
 
 export const getServerSideProps = async (context) => {
   const { locale } = context
   return {
     props: {
+      isSsrMobile: getIsSsrMobile(context),
       ...(await serverSideTranslations(locale, ['common', 'admin'])),
     },
   }
@@ -28,7 +30,7 @@ export default function Bots() {
     if (!sessionToken) {
       router.push('/admin')
     } else {
-      axios.defaults.headers.common['Authorization'] = "Bearer " + sessionToken
+      axiosAdmin.defaults.headers.common['Authorization'] = "Bearer " + sessionToken
       setErrorMessage("") //delete
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

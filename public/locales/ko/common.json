@@ -1,13 +1,16 @@
 {
   "menu": {
+    "amm": {
+      "amm": "AMM",
+      "pools": "AMM pools",
+      "explorer": "AMM explorer"
+    },
     "company": {
       "about-us": "About us"
     },
     "services": {
-      "nft-mint": "Mint NFT"
-    },
-    "personal": {
-      "personal": "개인",
+      "services": "Services",
+      "nft-mint": "Mint NFT",
       "search-on-ledgerName": "{{ledgerName}}에서 탐색하기"
     },
     "business": {
@@ -20,7 +23,6 @@
     "project-registration": "프로젝트 등록하세요",
     "price-alerts": "{{nativeCurrency}} 가격 알림",
     "submit-offline-tx": "오프라인 거래 제출",
-    "networks": "네트워크",
     "ledger": "레저 거래",
     "nft": {
       "explorer": "탐색기",
@@ -32,7 +34,9 @@
       "nfts": "계정의 NFT",
       "offers": "제안"
     },
-    "xrpl": {
+    "network": {
+      "blockchain": "블록체인",
+      "nodes": "노드",
       "governance": "Governance",
       "activations": "Activated accounts (chart)",
       "distribution": "{{nativeCurrency}} distribution",
@@ -49,13 +53,12 @@
       "account-generation": "계정 일반화",
       "faucet": "퍼셋",
       "api": "API 문서화",
-      "api-admin": "API account (Partner portal)"
+      "api-admin": "API account"
     },
     "legal": "정책",
     "disclaimer": "면책조항",
     "privacy-policy": "개인정보처리방침",
     "terms-and-conditions": "이용약관",
-    "terms-api-bots": "API & Bots terms of use",
     "customer-support": "고객지원",
     "press": "언론",
     "merch": "MD샵",
@@ -94,14 +97,14 @@
     "expiration": "만료",
     "target-table": "Target table",
     "xumm": {
-      "open-app": "Xumm 앱을 여세요",
+      "open-app": "Xaman 앱을 여세요",
       "change-settings": "설정에 가서 테스트넷 노드를 고르세요",
-      "scan-qr": "Xumm 앱에서 QR코드를 찍으세요.",
+      "scan-qr": "Xaman 앱에서 QR코드를 찍으세요.",
       "statuses": {
-        "redirecting": "Xumm로 재연결 중입니다",
+        "redirecting": "Xaman로 재연결 중입니다",
         "wait": "기다려주세요",
         "check-push": "푸시 알림을 설정하세요.",
-        "check-app": "Xumm app의 절차를 따라주세요.",
+        "check-app": "Xaman app의 절차를 따라주세요.",
         "expired": "QR코드가 만료되었습니다. 다시 시도하세요."
       }
     },
@@ -166,6 +169,7 @@
       "quorum": "유효 쿼럼",
       "proposers": "제안자",
       "accounts": "거래",
+      "accountsActiveLast24h": "Active accounts (24h)",
       "usernames": "사용자명",
       "nft": {
         "created": "NFT 채굴됨",
@@ -176,7 +180,8 @@
         "for-sale": "NFT 판매 중"
       },
       "escrows": "Escrows",
-      "amms": "AMM pools"
+      "amms": "AMM pools",
+      "nodes": "노드"
     }
   },
   "last-ledger-information": {
@@ -295,13 +300,17 @@
     "error": "오류",
     "no-data": "데이터를 찾을 수 없습니다",
     "loading": "대기 중",
+    "login-to-bithomp-pro": "Loading more data is available to <1>logged-in</1> Bithomp Pro subscribers.",
+    "renew-bithomp-pro": "Your Bithomp Pro subscription has expired. <1>Renew your subscription</1>.",
     "load-failed": "로딩에 실패했습니다",
     "all-issuers": "모든 발행자",
     "no-expiration": "무기한",
     "no-uri": "URI가 지정되지 않았습니다",
     "no-media": "미디어를 찾을 수 없습니다",
     "viewer": "뷰어",
-    "developer-mode": "개발자 모드"
+    "developer-mode": "개발자 모드",
+    "search": "Search",
+    "of-many": "of many"
   },
   "form": {
     "error": {
@@ -322,7 +331,8 @@
     "Network Error": "인터넷이 연결되어 있지 않습니다;",
     "Request failed with status code 429": "요청사항이 너무 많습니다. 나중에 다시 시도하세요",
     "Request failed with status code 404": "Such API call is not allowed on that network",
-    "Request failed with status code 403": "It seems you're logged out, please log in again"
+    "Request failed with status code 403": "It seems you're logged out, please log in again",
+    "Request aborted": "Request aborted"
   },
   "errors": {
     "token": {
@@ -333,6 +343,10 @@
     },
     "access_token": {
       "not_found": "There are no API keys."
+    },
+    "address": {
+      "invalid_signature_address": "Invalid signature address. Make sure that you sign with the correct address.",
+      "limit_reached": "You can not add more addesses, you've reached the limit."
     }
   },
   "error-api": {
@@ -364,7 +378,9 @@
     "day": "최근 24시간"
   },
   "table": {
+    "uri": "URI",
     "mints": "Mints",
+    "view": "View",
     "period": "Period",
     "mint-period": "Mint period",
     "warning": "Warning",
@@ -483,8 +499,6 @@
     "secondary-sales": "2차",
     "primary-sales": "1차",
     "primaryAndSecondary-sales": "전체 세일",
-    "top-sales": "상위 판매",
-    "latest-sales": "최근 판매",
     "all-time": "24시간",
     "year": "365일",
     "month": "30일",
@@ -519,6 +533,7 @@
   "explorer": {
     "header": {
       "main": "{{explorerName}} 탐색기",
+      "amm": "AMM pool information",
       "account": "Account information",
       "transaction": "Transaction information",
       "nft": "NFT",
@@ -545,9 +560,9 @@
   },
   "nft-offers": {
     "header": "NFT 제안",
-    "owned-desc": "여기에서 NFT에 대한 구매 및 판매 제안을 검색하고 XRPL 주소 또는 사용자 이름을 입력해 제안을 확인할 수 있습니다",
-    "for-owned-nfts-desc": "여기에서 계정별로 소유한 NFT에 대한 구매 제안을 검색하고 XRPL 주소 또는 사용자 이름을 입력하면 수신된 제안을 확인할 수 있습니다",
-    "privately-offered-to-address-desc": "여기에서 계정에 대해 비공개로 생성된 제안(목적지 포함)을 검색할 수 있으며, 종종 NFT 전송(가격 0 XRP)에 사용되며, XRPL 주소 또는 사용자명을 입력하면 수신된 제안을 확인할 수 있습니다",
+    "owned-desc": "여기에서 NFT에 대한 구매 및 판매 제안을 검색하고 주소 또는 사용자 이름을 입력해 제안을 확인할 수 있습니다",
+    "for-owned-nfts-desc": "여기에서 계정별로 소유한 NFT에 대한 구매 제안을 검색하고 주소 또는 사용자 이름을 입력하면 수신된 제안을 확인할 수 있습니다",
+    "privately-offered-to-address-desc": "여기에서 계정에 대해 비공개로 생성된 제안(목적지 포함)을 검색할 수 있으며, 종종 NFT 전송(가격 0)에 사용되며, XRPL 주소 또는 사용자명을 입력하면 수신된 제안을 확인할 수 있습니다",
     "no-nft-offers": "NFT 제안을 찾지 못했습니다",
     "cancel-invalid-offer_one": "유효하지 않은 제안을 취소합니다",
     "cancel-invalid-offer_other": "유효하지 않은 {{count}}개의 제안 취소",
@@ -593,7 +608,7 @@
     "it-helps": "여러분의 기부는 빗썸의 역량을 확충하고 지속적으로 발전하는 데 도움이 될 것입니다",
     "address": "기부를 위한 XRPL 주소",
     "dt": "대상 태그",
-    "donate-with-xumm": "XUMM에서 기부하세요"
+    "donate-with-xaman": "Xaman에서 기부하세요"
   },
   "sponsored": {
     "sponsored": "스폰서"

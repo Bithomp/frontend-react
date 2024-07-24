@@ -38,7 +38,7 @@ Runs the app in production
 
 `mv .env .env.local` // rename .env into .env.local
 
-`nano .env.local` // open the file .env.local and remove # for the env you have api key for and before the last line with the key, enter your API key
+`nano .env.local` // open the file .env.local and remove # for the env you have api key for and before the last line with the key, enter your `NEXT_PUBLIC_BITHOMP_API_TEST_KEY`
 
 `yarn` // install packgaes
 
@@ -56,7 +56,7 @@ Runs the app in production
 
 `mv .env .env.local`
 
-`nano .env.local` //remove # for the correct env and save the changes
+`nano .env.local` //remove # for the correct env, enter your `NEXT_PUBLIC_BITHOMP_API_KEY` and save the changes
 
 `yarn`
 
@@ -90,12 +90,6 @@ Spanish -  [@Ekiserrepe](https://github.com/Ekiserrepe)
 
 Croatian - [@zgrguric](https://github.com/zgrguric)
 
-Catalan - [@EnigmaRidworld](https://github.com/EnigmaRidworld)
-
 Japanese - [@develoQ](https://github.com/develoQ)
 
-Indonesian - [@suuf24](https://github.com/suuf24)
-
 German - [@rsteimen](https://github.com/rsteimen)
-
-Malay - [@wojake](https://github.com/wojake)

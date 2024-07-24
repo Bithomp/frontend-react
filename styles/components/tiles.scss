@@ -56,6 +56,8 @@
           -ms-transform: skewY(-30deg) rotate3d(0,0,1,60deg);
           transform: skewY(-30deg) rotate3d(0,0,1,60deg);
           background-color: var(--background-input-readonly);
+          -webkit-clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+          clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
           .img-status {
             top: 40%;
             color: black;
@@ -157,7 +159,21 @@
     }
   }
 
-  @media (min-width:1201px) {
+  @media (max-width: 1500px) and (min-width:1301px) {
+    .hexGrid {
+      .hex {
+        .hexIn {
+          .hexLink {
+            .title-text {
+              font-size: 0.7em;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  @media (min-width: 1201px) {
     .hexGrid{
       padding-bottom: 5.4%;
     }

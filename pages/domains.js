@@ -5,13 +5,16 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import Image from 'next/image'
 
 import { trWithAccount } from '../utils/format'
+import { getIsSsrMobile } from '../utils/mobile'
 import { useWidth } from '../utils'
 
 import SEO from '../components/SEO'
 
-export const getServerSideProps = async ({ locale }) => {
+export const getServerSideProps = async (context) => {
+  const { locale } = context
   return {
     props: {
+      isSsrMobile: getIsSsrMobile(context),
       ...(await serverSideTranslations(locale, ['common', 'domains'])),
     }
   }
@@ -76,10 +79,10 @@ export default function Domains({ setSignRequest }) {
   }, [])
 
   return <>
-    <SEO title={t("menu.xrpl.verified-domains")} />
+    <SEO title={t("menu.network.verified-domains")} />
     <div className="content-text">
 
-      <h1 className="center">{t("menu.xrpl.verified-domains")}</h1>
+      <h1 className="center">{t("menu.network.verified-domains")}</h1>
       <div className='flex'>
         <div className="grey-box">
           <h4>
@@ -111,7 +114,7 @@ export default function Domains({ setSignRequest }) {
           </p>
           <p>
             <Trans i18nKey="toml-editor" ns="domains">
-              <a href="https://dallipay.com/xrpltomleditor/">TOML editor</a> by <a href="https://twitter.com/SchlaubiD">SchlaubiD</a>.
+              <a href="https://dallipay.com/xrpltomleditor/">TOML editor</a> by <a href="https://x.com/SchlaubiD">SchlaubiD</a>.
             </Trans>
           </p>
         </div>

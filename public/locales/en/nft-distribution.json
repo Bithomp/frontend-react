@@ -1,6 +1,6 @@
 {
   "header": "NFT distribution",
-  "desc": "Here you can check the distribution of NFTs of a particilar NFT issuer. Enter the NFT issuer XRPL address or a username and press the search button.",
+  "desc": "Here you can check the distribution of NFTs of a particilar NFT issuer. Enter the NFT issuer address or a username and press the search button.",
   "no-nfts": "We couldn't find any NFTs issued by that address.",
   "total": "{{users}} accounts own {{nfts}} NFTs",
   "nonSelfIssued": "{{users}} accounts own {{nfts}} non-self-issued NFTs",

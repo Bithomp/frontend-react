@@ -1,6 +1,6 @@
 {
   "header": "NFT distribucija",
-  "desc": "Ovdje možete provjeriti distribuciju NFTova od jednog NFT izdavača. Unesite izdavačevu XRPL adresu ili korisničko ime i stisnite dugme za pretragu.",
+  "desc": "Ovdje možete provjeriti distribuciju NFTova od jednog NFT izdavača. Unesite izdavačevu adresu ili korisničko ime i stisnite dugme za pretragu.",
   "no-nfts": "Nismo pronašli niti jedan NFT kojemu je izdavač ta adresa.",
   "total": "{{users}} računi posjeduju {{nfts}} NFTa",
   "nonSelfIssued": "{{users}} accounts own {{nfts}} non-self-issued NFTs",

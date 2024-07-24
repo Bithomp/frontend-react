@@ -60,9 +60,9 @@ export default function Genesis() {
   const timestampFormatParams = { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric' };
 
   return <>
-    <SEO title={t("menu.xrpl.genesis")} />
+    <SEO title={t("menu.network.genesis")} />
     <div className="page-genesis content-text">
-      <h1 className="center">{t("menu.xrpl.genesis")}</h1>
+      <h1 className="center">{t("menu.network.genesis")}</h1>
 
       {/* TODO add description for other networks like in ledger/[[...ledgerindex]].js */}
       {network === "mainnet" &&

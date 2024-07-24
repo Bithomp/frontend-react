@@ -28,6 +28,7 @@ import XummQr from "./Xumm/Qr"
 import CheckBox from './UI/CheckBox'
 import ExpirationSelect from './UI/ExpirationSelect'
 import TargetTableSelect from './UI/TargetTableSelect'
+import { submitProAddressToVerify } from '../utils/pro'
 
 const qr = "/images/qr.gif"
 const ledger = '/images/ledger-large.svg'
@@ -82,7 +83,7 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
 
   useEffect(() => {
     if (!uuid) return
-    setScreen("xumm")
+    setScreen("xaman")
     setShowXummQr(false)
     setStatus(t("signin.xumm.statuses.wait"))
     xummGetSignedData(uuid, afterSubmit)
@@ -94,7 +95,7 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
     const response = await axios("v2/address/" + address + '?username=true&hashicon=true')
     if (response.data) {
       const { hashicon, username } = response.data;
-      setAccount({ address, hashicon, username })
+      setAccount({ ...account, address, hashicon, username })
     } else {
       setAccount(null)
     }
@@ -105,6 +106,10 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
     let tx = { TransactionType: "SignIn" }
     if (signRequest.request) {
       tx = signRequest.request
+    }
+    if (signRequest.data?.signOnly) {
+      //for Xaman make "SignIn" when signing only.
+      tx.TransactionType = "SignIn"
     }
 
     if (tx.TransactionType === "NFTokenAcceptOffer" && !agreedToRisks && signRequest.offerAmount !== "0") {
@@ -251,6 +256,10 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
       txjson: tx
     }
 
+    if (signRequest.data?.signOnly) {
+      signInPayload.options.submit = false
+    }
+
     //for Xaman to sign transaction in the right network
     let forceNetwork = null
     if (networkId === 0) {
@@ -261,21 +270,16 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
       forceNetwork = 'DEVNET'
     }
     signInPayload.options.force_network = forceNetwork
+    signInPayload.custom_meta = { blob: {} }
 
     if (signRequest.redirect) {
-      signInPayload.custom_meta = {
-        blob: {
-          redirect: signRequest.redirect
-        }
-      }
+      signInPayload.custom_meta.blob.redirect = signRequest.redirect
     }
-
     if (signRequest.broker) {
-      signInPayload.custom_meta = {
-        blob: {
-          broker: signRequest.broker.name
-        }
-      }
+      signInPayload.custom_meta.blob.broker = signRequest.broker.name
+    }
+    if (signRequest.data) {
+      signInPayload.custom_meta.blob.data = signRequest.data
     }
 
     setStatus(t("signin.xumm.statuses.wait"))
@@ -298,7 +302,7 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
       setShowXummQr(true)
     }
     payloadXummPost(signInPayload, onPayloadResponse)
-    setScreen("xumm")
+    setScreen("xaman")
   }
 
   const onPayloadResponse = data => {
@@ -398,6 +402,26 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
     */
     //data.payload.tx_type: "SignIn"
 
+    if (data.custom_meta?.blob?.data?.signOnly) {
+      if (data.custom_meta.blob.data?.action === "pro-add-address") {
+        //add address to the list
+        submitProAddressToVerify({
+          address: data.custom_meta.blob.data.address,
+          name: data.custom_meta.blob.data.name,
+          blob: data.response.hex
+        }, res => {
+          if (res?.error) {
+            setStatus(t(res.error) + ", blob: " + data.response.hex + " address: " + data.custom_meta.blob.data.address + " name: " + data.custom_meta.blob.data.name)
+          } else {
+            //pageRefresh, updatedata, delay 2 sec
+            closeSignInFormAndRefresh()
+          }
+        })
+        return
+      }
+      return
+    }
+
     const redirectName = data.custom_meta?.blob?.redirect
 
     if (data.response?.account) {
@@ -487,24 +511,22 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
   }
 
   const closeSignInFormAndRefresh = () => {
-    setXummQrSrc(qr)
-    setScreen("choose-app")
-    setAwaiting(false)
-    setStatus("")
-    setSignRequest(null)
-    if (uuid) {
-      removeQueryParams(router, ["uuid"])
-    }
+    signInCancelAndClose()
     setRefreshPage(new Date())
   }
 
-  const SignInCancelAndClose = () => {
-    if (screen === 'xumm') {
+  const signInCancelAndClose = () => {
+    if (screen === 'xaman') {
       setXummQrSrc(qr)
       xummCancel(xummUuid)
     }
+    if (uuid) {
+      removeQueryParams(router, ["uuid"])
+    }
     setScreen("choose-app")
     setSignRequest(null)
+    setAwaiting(false)
+    setStatus("")
   }
 
   // temporary styles while hardware wallets are not connected
@@ -744,7 +766,7 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
   return (
     <div className="sign-in-form">
       <div className="sign-in-body center">
-        <div className='close-button' onClick={SignInCancelAndClose}></div>
+        <div className='close-button' onClick={signInCancelAndClose}></div>
         {askInfoScreens.includes(screen) ?
           <>
             <div className='header'>
@@ -1043,7 +1065,7 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
             </div>
 
             <br />
-            <button type="button" className="button-action" onClick={SignInCancelAndClose} style={buttonStyle}>
+            <button type="button" className="button-action" onClick={signInCancelAndClose} style={buttonStyle}>
               {t("button.cancel")}
             </button>
             <button
@@ -1061,7 +1083,7 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
               <>
                 <div className='header'>{t("signin.choose-app")}</div>
                 <div className='signin-apps'>
-                  <Image alt="xaman" className='signin-app-logo' src='/images/xumm-large.svg' onClick={XummTxSend} width={150} height={24} />
+                  <Image alt="xaman" className='signin-app-logo' src='/images/xaman-large.svg' onClick={XummTxSend} width={150} height={24} />
                   {signRequest?.wallet !== "xumm" &&
                     <>
                       {!isMobile && notAvailable(ledger, "ledger")}
@@ -1076,7 +1098,7 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
                 <div className='header'>
                   {signRequest?.request ? t("signin.sign-with", { appName: capitalize(screen) }) : t("signin.login-with", { appName: capitalize(screen) })}
                 </div>
-                {screen === 'xumm' ?
+                {screen === 'xaman' ?
                   <>
                     {!isMobile &&
                       <div className="signin-actions-list">

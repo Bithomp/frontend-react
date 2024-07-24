@@ -7,10 +7,16 @@ import "react-datepicker/dist/react-datepicker.css"
 import { registerLocale, setDefaultLocale } from "react-datepicker"
 import { useRouter } from "next/router"
 
-import Tabs from "../Tabs"
+import RadioOptions from './RadioOptions'
+import Tabs from '../Tabs'
 import { useWidth, setTabParams, networkMinimumDate } from "../../utils"
 
-export default function DateAndTimeRange({ setPeriod, minDate, tabs, defaultPeriod, style }) {
+export default function DateAndTimeRange({ setPeriod, minDate, tabs, radio, defaultPeriod, style, periodQueryName }) {
+
+  if (!periodQueryName) {
+    periodQueryName = "period"
+  }
+
   const { i18n, t } = useTranslation()
   const windowWidth = useWidth()
   const router = useRouter()
@@ -25,11 +31,11 @@ export default function DateAndTimeRange({ setPeriod, minDate, tabs, defaultPeri
   let weekAgo = new Date().setDate(new Date().getDate() - 7)
   let monthAgo = new Date().setDate(new Date().getDate() - 30)
   let yearAgo = new Date().setDate(new Date().getDate() - 365)
-  hourAgo = new Date(hourAgo)
-  dayAgo = new Date(dayAgo)
-  weekAgo = new Date(weekAgo)
-  monthAgo = new Date(monthAgo)
-  yearAgo = new Date(yearAgo)
+  hourAgo = new Date(hourAgo).setMilliseconds(0)
+  dayAgo = new Date(dayAgo).setMilliseconds(0)
+  weekAgo = new Date(weekAgo).setMilliseconds(0)
+  monthAgo = new Date(monthAgo).setMilliseconds(0)
+  yearAgo = new Date(yearAgo).setMilliseconds(0)
 
   if (minDate === "nft") {
     minDate = networkMinimumDate("nft")
@@ -53,45 +59,49 @@ export default function DateAndTimeRange({ setPeriod, minDate, tabs, defaultPeri
     periodTabs.push({ value: "all", label: t("tabs.all-time") })
   }
 
-  useEffect(() => {
-    setReady(true)
-
+  const setValues = (periodName, startDatePassed, endDatePassed) => {
+    let startDateIn = startDatePassed || startDate
+    let endDateIn = endDatePassed || endDate
     if (periodName?.includes("..")) {
       const periodParts = periodName.split("..")
-      setStartDate(new Date(periodParts[0]))
-      setEndDate(new Date(periodParts[1]))
+      setStartDate(new Date(new Date(periodParts[0]).setMilliseconds(0)))
+      setEndDate(new Date(new Date(periodParts[1]).setMilliseconds(0)))
       return
     }
 
-    let newStartDate = null
+    setEndDate(endDateIn || new Date(new Date().setMilliseconds(0)))
 
-    setEndDate(new Date())
-    if (periodName === "hour") {
-      newStartDate = hourAgo
-    } else if (periodName === "day") {
-      newStartDate = dayAgo
-    } else if (periodName === "week") {
-      newStartDate = weekAgo
-    } else if (periodName === "month") {
-      newStartDate = monthAgo
-    } else if (periodName === "year") {
-      newStartDate = yearAgo
-    } else if (periodName === "all") {
-    }
-    if (periodName === "hour" ||
-      periodName === "day" ||
-      periodName === "week" ||
-      periodName === "month" ||
-      periodName === "year"
-    ) {
-      if (minDate && newStartDate < minDate) {
-        setStartDate(minDate)
-      } else {
-        setStartDate(newStartDate)
-      }
+    if (startDatePassed) {
+      setStartDate(startDateIn)
     } else {
-      if (minDate && (!newStartDate || newStartDate < minDate) && periodName !== "custom") {
-        setStartDate(minDate)
+      let newStartDate = null
+      if (periodName === "hour") {
+        newStartDate = hourAgo
+      } else if (periodName === "day") {
+        newStartDate = dayAgo
+      } else if (periodName === "week") {
+        newStartDate = weekAgo
+      } else if (periodName === "month") {
+        newStartDate = monthAgo
+      } else if (periodName === "year") {
+        newStartDate = yearAgo
+      } else if (periodName === "all") {
+      }
+      if (periodName === "hour" ||
+        periodName === "day" ||
+        periodName === "week" ||
+        periodName === "month" ||
+        periodName === "year"
+      ) {
+        if (minDate && newStartDate < minDate) {
+          setStartDate(minDate)
+        } else {
+          setStartDate(newStartDate)
+        }
+      } else {
+        if (minDate && (!newStartDate || newStartDate < minDate) && periodName !== "custom") {
+          setStartDate(minDate)
+        }
       }
     }
 
@@ -99,28 +109,24 @@ export default function DateAndTimeRange({ setPeriod, minDate, tabs, defaultPeri
     let queryRemoveList = []
 
     if (periodName && periodName !== "custom") {
-      queryAddList.push({ name: "period", value: periodName })
+      queryAddList.push({ name: periodQueryName, value: periodName })
       setPeriod(periodName)
-    } else if (startDate && endDate) {
-      const range = startDate.toISOString() + '..' + endDate.toISOString()
-      queryAddList.push({ name: "period", value: range })
+    } else if (startDateIn && endDateIn) {
+      const range = new Date(startDateIn).toISOString() + '..' + new Date(endDateIn).toISOString()
+      queryAddList.push({ name: periodQueryName, value: range })
       setPeriod(range)
     } else {
-      queryRemoveList.push("period")
+      queryRemoveList.push(periodQueryName)
     }
 
     setTabParams(router, [], queryAddList, queryRemoveList)
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [periodName])
+  }
 
   useEffect(() => {
-    //need it to update the search, only for custom to keep the names
-    if (startDate && endDate && (periodName === "custom" || !periodName)) {
-      setPeriod(startDate.toISOString() + '..' + endDate.toISOString())
-    }
+    setReady(true)
+    setValues(periodName)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [startDate, endDate])
+  }, [periodName])
 
   let lang = i18n.language
 
@@ -138,19 +144,24 @@ export default function DateAndTimeRange({ setPeriod, minDate, tabs, defaultPeri
   }
 
   const startOnChange = date => {
-    setStartDate(date)
-    setPeriodName("custom")
+    setValues("custom", date, null)
   }
 
   const endOnChange = date => {
-    setEndDate(date)
-    setPeriodName("custom")
+    setValues("custom", null, date)
   }
 
   return <span style={style}>
     {tabs && ready &&
       <>
-        <Tabs tabList={periodTabs} tab={periodName} setTab={setPeriodName} name="periodTabs" />
+        <Tabs tabList={periodTabs} tab={periodName} setTab={setPeriodName} name='periodTabs' />
+        {windowWidth < 910 && <br />}
+      </>
+    }
+
+    {radio && ready &&
+      <>
+        <RadioOptions tabList={periodTabs} tab={periodName} setTab={setPeriodName} name='periodTabs' />
         {windowWidth < 910 && <br />}
       </>
     }
@@ -163,7 +174,7 @@ export default function DateAndTimeRange({ setPeriod, minDate, tabs, defaultPeri
       timeInputLabel={t("table.time")}
       startDate={startDate}
       minDate={minDate}
-      maxDate={new Date()}
+      maxDate={new Date().setMilliseconds(0)}
       endDate={endDate}
       dateFormat="yyyy/MM/dd HH:mm"
       className="dateAndTimeRange"
@@ -179,7 +190,7 @@ export default function DateAndTimeRange({ setPeriod, minDate, tabs, defaultPeri
       startDate={startDate}
       endDate={endDate}
       minDate={startDate}
-      maxDate={new Date()}
+      maxDate={new Date().setMilliseconds(0)}
       dateFormat="yyyy/MM/dd HH:mm"
       className="dateAndTimeRange"
       showMonthDropdown

@@ -236,6 +236,8 @@ export const nftLink = (nft, type, options = {}) => {
   let defaultContent = <LinkIcon />
   if (options.address === 'short') {
     defaultContent = shortAddress(nft[type])
+  } else if (options.address === 'full') {
+    defaultContent = nft[type]
   }
 
   //nft-offers destination
@@ -275,7 +277,7 @@ export const nftLink = (nft, type, options = {}) => {
   }
 }
 
-export const nftsExplorerLink = ({ owner, ownerDetails, issuer, issuerDetails }) => {
+export const nftsExplorerLink = ({ owner, ownerDetails, issuer, issuerDetails, taxon }) => {
   if (!owner && !issuer) return "";
   let link = '';
   const issuerUri = issuerDetails?.username ? issuerDetails.username : issuer;
@@ -289,7 +291,10 @@ export const nftsExplorerLink = ({ owner, ownerDetails, issuer, issuerDetails })
       link = "/nft-explorer?owner=" + ownerUri;
     }
   }
-  return <Link href={link}><LinkIcon /></Link>
+  if (taxon === 0 || taxon === "0" || taxon) {
+    link += "&taxon=" + taxon
+  }
+  return <Link href={link + '&includeWithoutMediaData=true'}><LinkIcon /></Link>
 }
 
 export const usernameOrAddress = (data, type) => {
@@ -370,13 +375,6 @@ export const userOrServiceName = data => {
   return ""
 }
 
-export const ledgerLink = id => {
-  if (id) {
-    return <Link href={"/ledger/" + id}>#{id}</Link>
-  }
-  return ''
-}
-
 //replace with txIdLink
 export const txIdFormat = (txId) => {
   txId = txId.toLowerCase();
@@ -417,6 +415,28 @@ export const persentFormat = (small, big) => {
   return "(" + Math.floor((small * 100 / big) * 100) / 100 + '%)'
 }
 
+export const trAmountWithGateway = ({ amount, name }) => {
+  if (!amount && amount !== 0) return ""
+  return <tr>
+    <td>{name}</td>
+    <td>
+      {amountFormatNode(amount)}
+      {amount?.issuer &&
+        <>
+          {" "}
+          ({addressUsernameOrServiceLink(amount, 'issuer', { short: true })})
+        </>
+      }
+      {amount?.counterparty &&
+        <>
+          {" "}
+          ({addressUsernameOrServiceLink(amount, 'counterparty', { short: true })})
+        </>
+      }
+    </td>
+  </tr>
+}
+
 export const amountFormat = (amount, options = {}) => {
   if (!amount && amount !== "0" && amount !== 0) { return "" }
   const { value, currency, valuePrefix, issuer, type } = amountParced(amount)
@@ -443,7 +463,7 @@ export const amountFormat = (amount, options = {}) => {
 
   //add issued by (issuerDetails.service / username)
   if (type !== nativeCurrency && options.tooltip) {
-    return <>
+    return <span suppressHydrationWarning>
       {showValue} {valuePrefix} {" "}
       <span className='tooltip'>
         <a href={"/explorer/" + issuer}>{currency}</a>
@@ -451,12 +471,84 @@ export const amountFormat = (amount, options = {}) => {
           {addressUsernameOrServiceLink(amount, 'issuer', { short: true })}
         </span>
       </span>
-    </>
+    </span>
   } else {
     //type: ['IOU', 'IOU demurraging', 'NFT']
-    return showValue + " " + valuePrefix + " " + currency
+    let textCurrency = currency
+    if (options.noSpace) {
+      textCurrency = textCurrency?.trim()
+    }
+    return showValue + " " + valuePrefix + " " + textCurrency
   }
 }
+
+export const amountFormatNode = (amount, options) => {
+  return <span suppressHydrationWarning>
+    {amountFormat(amount, options)}
+  </span>
+}
+
+export const lpTokenName = data => {
+  if (!data) return ""
+
+  let firstCurrency = ""
+  let secondCurrency = ""
+  if (data.amount) {
+    if (data.amount.currency) {
+      firstCurrency = niceCurrency(data.amount.currency)
+    } else {
+      firstCurrency = nativeCurrency
+    }
+    if (data.amount2.currency) {
+      secondCurrency = niceCurrency(data.amount2.currency)
+    } else {
+      secondCurrency = nativeCurrency
+    }
+    return "LP " + firstCurrency + '/' + secondCurrency
+  }
+}
+
+export const niceCurrency = currency => {
+  if (!currency) return ""
+  let firstTwoNumbers = currency.substr(0, 2)
+  if (currency.length > 3) {
+    if (firstTwoNumbers === '01') {
+      // deprecated demurraging/interest-bearing
+      type = 'IOU demurraging';
+      let currencyText = Buffer.from(currency.substr(2, 8), 'hex')
+      currencyText = currencyText.substr(0, 3)
+      let profit = currency.substr(16, 16)
+      if (profit === 'C1F76FF6ECB0BAC6' || profit === 'C1F76FF6ECB0CCCD') {
+        valuePrefix = '(-0.5%pa)'
+      } else if (profit === '41F76FF6ECB0BAC6' || profit === '41F76FF6ECB0CCCD') {
+        valuePrefix = '(+0.5%pa)'
+      } else if (profit === 'C1E76FF6ECB0BAC6') {
+        valuePrefix = '(+1%pa)'
+      } else {
+        /*
+          $realprofit = 1 - (exp(31536000 / hex2double($profit)));
+          $realprofit = round($realprofit * 100, 2, PHP_ROUND_HALF_UP);
+          if ($realprofit > 0) {
+            $plus = '+';
+          } else {
+            $plus = '';
+          }
+          $output .= ' (' . $plus . $realprofit . '%pa)';
+        */
+        valuePrefix = "(??%pa)"
+      }
+      currency = currencyText;
+    } else if (firstTwoNumbers === '02') {
+      currency = Buffer.from(currency.substring(16), 'hex')
+    } else if (firstTwoNumbers === '03') {
+      currency = "LP token"
+    } else {
+      currency = Buffer.from(currency, 'hex')
+    }
+  }
+  return currency
+}
+
 
 const amountParced = amount => {
   if (!amount && amount !== 0) {
@@ -488,57 +580,18 @@ const amountParced = amount => {
   let type = ''
   let issuer = null
 
-  if (amount.value) {
+  if (amount.value && !(!amount.issuer && amount.currency === nativeCurrency)) {
     currency = amount.currency
     value = amount.value
     issuer = amount.issuer
     type = 'IOU'
     const xls14NftVal = xls14NftValue(value)
     let realXls14 = false
-    let firstTwoNumbers = currency.substr(0, 2)
-    if (currency.length > 3) {
-      if (firstTwoNumbers === '01') {
-        // deprecated demurraging/interest-bearing
-        type = 'IOU demurraging';
-        let currencyText = Buffer.from(currency.substr(2, 8), 'hex')
-        currencyText = currencyText.substr(0, 3)
-        let profit = currency.substr(16, 16)
-        if (profit === 'C1F76FF6ECB0BAC6' || profit === 'C1F76FF6ECB0CCCD') {
-          valuePrefix = '(-0.5%pa)'
-        } else if (profit === '41F76FF6ECB0BAC6' || profit === '41F76FF6ECB0CCCD') {
-          valuePrefix = '(+0.5%pa)'
-        } else if (profit === 'C1E76FF6ECB0BAC6') {
-          valuePrefix = '(+1%pa)'
-        } else {
-          /*
-            $realprofit = 1 - (exp(31536000 / hex2double($profit)));
-            $realprofit = round($realprofit * 100, 2, PHP_ROUND_HALF_UP);
-            if ($realprofit > 0) {
-              $plus = '+';
-            } else {
-              $plus = '';
-            }
-            $output .= ' (' . $plus . $realprofit . '%pa)';
-          */
-          valuePrefix = "(??%pa)"
-        }
-        currency = currencyText;
-      } else if (firstTwoNumbers === '02') {
-        currency = Buffer.from(currency.substring(16), 'hex')
-        if (xls14NftVal) {
-          realXls14 = true
-        }
-      } else if (firstTwoNumbers === '03') {
-        //AMM LP token, 03 + 19 bytes of sha512
-        currency = "LP token"
-      } else {
-        currency = Buffer.from(currency, 'hex')
-      }
-    }
 
-    if (currency.toString().toUpperCase() === nativeCurrency && amount.issuer) {
-      currency = "Fake" + nativeCurrency
+    if (currency.length > 3 && currency.substr(0, 2) === '02' && xls14NftVal) {
+      realXls14 = true
     }
+    currency = niceCurrency(currency)
 
     if (xls14NftVal) {
       type = 'NFT'
@@ -553,11 +606,21 @@ const amountParced = amount => {
     }
   } else {
     type = nativeCurrency
-    value = amount / 1000000
+    if (amount.value) {
+      value = amount.value
+    } else {
+      value = amount / 1000000
+    }
     currency = nativeCurrency
   }
+
+  if (currency?.toString().toUpperCase() === nativeCurrency && amount.issuer) {
+    currency = "Fake" + nativeCurrency
+  }
+
   // curency + " " - otherwise it is in the hex format
   currency = stripText(currency + " ")
+
   return {
     type,
     value,
@@ -571,17 +634,36 @@ export const capitalize = word => {
   return word.charAt(0).toUpperCase() + word.slice(1)
 }
 
-export const fullDateAndTime = (timestamp, type = null) => {
+export const timeFromNow = timestamp => {
+  return <span suppressHydrationWarning>
+    {moment(timestamp * 1000, "unix").fromNow()}
+  </span>
+}
+
+export const fullDateAndTime = (timestamp, type = null, options) => {
   //used also in CSV file names as text
-  if (!timestamp) return '';
+  if (!timestamp) return ''
 
-  timestamp = timestamp * 1000
+  // if T/Z format
+  if (!timestamp.toString().includes('T')) {
+    if (type === 'ripple') {
+      timestamp += 946684800 //946684800 is the difference between Unix and Ripple timestamps
+    }
 
-  let dateAndTime = new Date(timestamp).toLocaleString();
+    timestamp = timestamp * 1000
+  }
+
+  let dateAndTime = new Date(timestamp).toLocaleString()
+  if (!options?.asText) {
+    dateAndTime = <span suppressHydrationWarning>
+      {dateAndTime}
+    </span>
+  }
+
   if (type === 'expiration') {
-    return new Date(timestamp) < new Date() ? <span className='orange'>{dateAndTime}</span> : dateAndTime;
+    return new Date(timestamp) < new Date() ? <span className='orange'>{dateAndTime}</span> : dateAndTime
   } else {
-    return dateAndTime;
+    return dateAndTime
   }
 }
 
@@ -651,6 +733,23 @@ export const niceNumber = (n, fractionDigits = 0, currency = null) => {
   }
 }
 
+export const fullNiceNumber = n => {
+  if (typeof n === 'string') {
+    if (n.includes('x')) { //in case of placeholders xxx
+      return n
+    } else {
+      n = Number(n)
+    }
+  }
+  if (n) {
+    return <span suppressHydrationWarning>
+      {n.toLocaleString(undefined, { maximumFractionDigits: 15 })}
+    </span>
+  } else {
+    return n
+  }
+}
+
 export const shortNiceNumber = (n, smallNumberFractionDigits = 2, largeNumberFractionDigits = 3, currency = null) => {
   if (n !== 0 && !n) return null;
   n = Number(n);
@@ -705,7 +804,7 @@ const syntaxHighlight = (json) => {
       } else if (/null/.test(match)) {
         cls = "null";
       }
-      return '<span className="' + cls + '">' + match + "</span>";
+      return '<span class="' + cls + '">' + match + "</span>";
     }
   );
 }
@@ -719,4 +818,9 @@ export const codeHighlight = json => {
       __html: syntaxHighlight(JSON.stringify(json, undefined, 4))
     }}
   />
+}
+
+export const showAmmPercents = x => {
+  x = x ? (x / 1000) : "0"
+  return x + "%"
 }

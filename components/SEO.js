@@ -8,7 +8,7 @@ export default function SEO({ title, titleWithNetwork, description, image, page,
 
   description = description || title
 
-  const canonical = server + (router.locale !== 'en' ? ("/" + router.locale) : "") + (router.asPath === "/" ? "" : router.asPath)
+  const canonical = server + "/" + router.locale + (router.asPath === "/" ? "" : router.asPath)
 
   let openGraph = {
     type: 'website',
@@ -67,8 +67,8 @@ export default function SEO({ title, titleWithNetwork, description, image, page,
   let path = router.asPath !== "/" ? router.asPath : ""
 
   let languageAlternates = [
-    { hrefLang: 'x-default', href: server + path },
-    { hrefLang: 'en', href: server + path },
+    { hrefLang: 'x-default', href: server + + '/en' + path },
+    { hrefLang: 'en', href: server + '/en' + path },
     { hrefLang: 'ko', href: server + '/ko' + path },
     { hrefLang: 'ru', href: server + '/ru' + path },
     { hrefLang: 'de', href: server + '/de' + path },

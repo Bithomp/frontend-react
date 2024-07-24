@@ -2,7 +2,6 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useTranslation } from 'next-i18next'
 import { useEffect, useState } from 'react'
 import axios from 'axios'
-import Link from 'next/link'
 import { useRouter } from 'next/router'
 
 import SEO from '../../../components/SEO'
@@ -10,11 +9,13 @@ import CopyButton from '../../../components/UI/CopyButton'
 
 import { amountFormat, fullDateAndTime, niceNumber } from '../../../utils/format'
 import { nativeCurrency, useWidth } from '../../../utils'
+import { getIsSsrMobile } from '../../../utils/mobile'
 
 export const getServerSideProps = async (context) => {
   const { locale } = context
   return {
     props: {
+      isSsrMobile: getIsSsrMobile(context),
       ...(await serverSideTranslations(locale, ['common', 'admin'])),
     },
   }
@@ -23,6 +24,7 @@ export const getServerSideProps = async (context) => {
 import LinkIcon from "../../../public/images/link.svg"
 import AdminTabs from '../../../components/Admin/Tabs'
 import BillingCountry from '../../../components/Admin/BillingCountry'
+import { axiosAdmin } from '../../../utils/axios'
 
 export default function Payments() {
   const { t } = useTranslation(['common', 'admin'])
@@ -42,7 +44,7 @@ export default function Payments() {
     if (!sessionToken) {
       router.push('/admin')
     } else {
-      axios.defaults.headers.common['Authorization'] = "Bearer " + sessionToken
+      axiosAdmin.defaults.headers.common['Authorization'] = "Bearer " + sessionToken
       getApiData()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -63,9 +65,8 @@ export default function Payments() {
   const getApiData = async () => {
     //check rates, and show transaction history only 
     setLoading(true)
-    const data = await axios.get(
-      'partner/partner/accessToken',
-      { baseUrl: '/api/' }
+    const data = await axiosAdmin.get(
+      'partner/accessToken'
     ).catch(error => {
       if (error && error.message !== "canceled") {
         setErrorMessage(t(error.response?.data?.error || "error." + error.message))
@@ -98,9 +99,8 @@ export default function Payments() {
 
     setLoadingPayments(true)
     setApiPayments({})
-    const apiTransactions = await axios.get(
-      'partner/partner/accessToken/transactions?limit=50&offset=0',
-      { baseUrl: '/api/' }
+    const apiTransactions = await axiosAdmin.get(
+      'partner/accessToken/transactions?limit=50&offset=0'
     ).catch(error => {
       setLoadingPayments(false)
       if (error && error.message !== "canceled") {
@@ -208,7 +208,7 @@ export default function Payments() {
                 <h4 className='center'>{/* 1. */}XRP API payment details</h4>
 
                 {width > 600 ?
-                  <table className='table-large shrink'>
+                  <table className='table-large'>
                     <tbody>
                       <tr>
                         <td className='right'>Address</td>
@@ -259,7 +259,7 @@ export default function Payments() {
               <div style={{ marginTop: "20px", textAlign: "left" }}>
                 <h4 className='center'>The last XRP API payments</h4>
                 {width > 600 ?
-                  <table className='table-large shrink'>
+                  <table className='table-large'>
                     <thead>
                       <tr>
                         <th>Date & Time</th>
@@ -273,12 +273,12 @@ export default function Payments() {
                       {apiPayments?.transactions?.map((payment, index) => {
                         return <tr key={index}>
                           <td>{fullDateAndTime(payment.processedAt)}</td>
-                          <td><Link href={"/explorer/" + payment.sourceAddress}>{payment.sourceAddress}</Link></td>
+                          <td><a href={"/explorer/" + payment.sourceAddress}>{payment.sourceAddress}</a></td>
                           <td>{amountFormat(payment.amount)}</td>
                           <td>
                             {payment.fiatAmount}
                           </td>
-                          <td><Link href={"/explorer/" + payment.hash}><LinkIcon /></Link></td>
+                          <td><a href={"/explorer/" + payment.hash}><LinkIcon /></a></td>
                         </tr>
                       })}
                     </tbody>
@@ -297,7 +297,7 @@ export default function Payments() {
                             </p>
                             <p>
                               From: <br />
-                              <Link href={"/explorer/" + payment.sourceAddress}>{payment.sourceAddress}</Link>
+                              <a href={"/explorer/" + payment.sourceAddress}>{payment.sourceAddress}</a>
                             </p>
                             <p>
                               Amount: {amountFormat(payment.amount)}
@@ -306,7 +306,7 @@ export default function Payments() {
                               Fiat equivalent: {payment.fiatAmount}
                             </p>
                             <p>
-                              Transaction: <Link href={"/explorer/" + payment.hash}><LinkIcon /></Link>
+                              Transaction: <a href={"/explorer/" + payment.hash}><LinkIcon /></a>
                             </p>
                           </td>
                         </tr>

@@ -2,7 +2,7 @@ import { useState, useEffect } from "react"
 import { useTheme } from "../ThemeContext"
 import Image from 'next/image'
 
-export default function Switch({ setCurrencySwitchOpen, setLangSwitchOpen }) {
+export default function Switch() {
   const [rendered, setRendered] = useState(false)
   const { theme, toggleTheme } = useTheme()
 
@@ -14,8 +14,6 @@ export default function Switch({ setCurrencySwitchOpen, setLangSwitchOpen }) {
 
   const switchOnClick = () => {
     toggleTheme()
-    setCurrencySwitchOpen(false)
-    setLangSwitchOpen(false)
   }
 
   return (

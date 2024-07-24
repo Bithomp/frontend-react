@@ -3,16 +3,21 @@ import { useState, useEffect } from 'react'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import Link from 'next/link'
 
-export const getServerSideProps = async ({ locale }) => {
+import { getIsSsrMobile } from '../utils/mobile'
+
+export const getServerSideProps = async (context) => {
+  const { locale } = context
   return {
     props: {
+      isSsrMobile: getIsSsrMobile(context),
       ...(await serverSideTranslations(locale, ['common'])),
     }
   }
 }
 
 import { wssServer, nativeCurrency } from '../utils'
-import { niceNumber, ledgerLink } from '../utils/format'
+import { niceNumber } from '../utils/format'
+import { LedgerLink } from '../utils/links'
 
 import SEO from '../components/SEO'
 
@@ -96,15 +101,15 @@ export default function LastLedgerInformation() {
   }
 
   return <>
-    <SEO title={t("menu.xrpl.last-ledger-information")} />
+    <SEO title={t("menu.network.last-ledger-information")} />
     <div className="content-text content-center">
-      <h1 className="center">{t("menu.xrpl.last-ledger-information")}</h1>
+      <h1 className="center">{t("menu.network.last-ledger-information")}</h1>
       <div className="main-box">
         <p>
           {t("last-ledger-information.ledger-hash")}: {ledger?.validatedLedger.hash.toLowerCase()}
         </p>
         <p>
-          {t("last-ledger-information.ledger")}: {ledgerLink(ledger?.validatedLedger.ledgerIndex)}
+          {t("last-ledger-information.ledger")}: <LedgerLink version={ledger?.validatedLedger.ledgerIndex} />
         </p>
         <p>
           {t("last-ledger-information.ledger-closed-at")}: {closedAt}</p>
@@ -112,7 +117,15 @@ export default function LastLedgerInformation() {
           {t("last-ledger-information.ledger-interval")}: {ledger?.lastClose?.convergeTimeS && ledger?.lastClose.convergeTimeS + ' ' + t("units.seconds-short")}
         </p>
         <p>
-          {t("last-ledger-information.transactions")}: {ledger?.validatedLedger.transactionsCount && <Link href={"/ledger/" + ledger.validatedLedger.ledgerIndex}>{ledger.validatedLedger.transactionsCount}</Link>}</p>
+          {t("last-ledger-information.transactions")}:
+          {" "}
+          {ledger?.validatedLedger.transactionsCount &&
+            <LedgerLink
+              version={ledger?.validatedLedger.ledgerIndex}
+              text={ledger.validatedLedger.transactionsCount}
+            />
+          }
+        </p>
         <p>
           {t("last-ledger-information.transaction-speed")}: {ledger?.lastClose && (ledger.validatedLedger.transactionsCount / ledger.lastClose.convergeTimeS).toFixed(2)}
         </p>

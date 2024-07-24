@@ -95,7 +95,7 @@ export default function Receipt({ item, details }) {
     }
   }
 
-  timestamp = fullDateAndTime(timestamp);
+  timestamp = fullDateAndTime(timestamp, null, { asText: true });
   fiatPrice = fiatPrice?.toFixed(2);
   xrpPrice = xrpPrice?.toFixed(2);
   const rate = Math.floor((fiatPrice / xrpPrice) * 100) / 100;

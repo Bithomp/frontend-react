@@ -4,11 +4,15 @@ import axios from 'axios'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useRouter } from 'next/router'
 
-export const getServerSideProps = async ({ query, locale }) => {
+import { getIsSsrMobile } from '../utils/mobile'
+
+export const getServerSideProps = async (context) => {
+  const { query, locale } = context
   const { period } = query
   return {
     props: {
       period: period || "week",
+      isSsrMobile: getIsSsrMobile(context),
       ...(await serverSideTranslations(locale, ['common', 'distribution'])),
     },
   }
@@ -105,9 +109,9 @@ export default function Distribution() {
   }, [isReady])
 
   return <>
-    <SEO title={t("menu.xrpl.distribution", { nativeCurrency })} />
+    <SEO title={t("menu.network.distribution", { nativeCurrency })} />
     <div className="content-text">
-      <h1 className="center">{t("menu.xrpl.distribution", { nativeCurrency })}</h1>
+      <h1 className="center">{t("menu.network.distribution", { nativeCurrency })}</h1>
       <div className='flex'>
         <div className="grey-box">
           {t("desc", { ns: 'distribution', nativeCurrency })}

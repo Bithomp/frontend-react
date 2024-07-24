@@ -7,8 +7,8 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import Image from 'next/image'
 import Link from 'next/link'
 
-import { stripText, server, decode, network, isValidJson } from '../../utils'
-import { convertedAmount } from '../../utils/format'
+import { stripText, decode, network, isValidJson } from '../../utils'
+import { convertedAmount, usernameOrAddress } from '../../utils/format'
 import { getIsSsrMobile } from "../../utils/mobile"
 import { nftName, mpUrl, bestNftOffer, nftUrl, partnerMarketplaces } from '../../utils/nft'
 import {
@@ -26,6 +26,7 @@ import {
   acceptNftSellOfferButton,
   acceptNftBuyOfferButton
 } from '../../utils/format'
+import { axiosServer } from '../../utils/axios'
 
 import SocialShare from '../../components/SocialShare'
 
@@ -44,9 +45,9 @@ export async function getServerSideProps(context) {
       headers["x-forwarded-for"] = req.headers["x-forwarded-for"]
     }
     try {
-      const res = await axios({
+      const res = await axiosServer({
         method: 'get',
-        url: server + '/api/cors/v2/nft/' + nftId + '?uri=true&metadata=true',
+        url: 'v2/nft/' + nftId + '?uri=true&metadata=true',
         headers
       })
       pageMeta = res?.data
@@ -58,8 +59,8 @@ export async function getServerSideProps(context) {
   return {
     props: {
       id: nftId,
-      isSsrMobile: getIsSsrMobile(context),
       pageMeta,
+      isSsrMobile: getIsSsrMobile(context),
       ...(await serverSideTranslations(locale, ['common', 'nft']))
     }
   }
@@ -87,7 +88,6 @@ export default function Nft({
 }) {
   const { t } = useTranslation()
 
-  const [rendered, setRendered] = useState(false)
   const [data, setData] = useState({})
   const [decodedUri, setDecodedUri] = useState(null)
   const [loading, setLoading] = useState(false)
@@ -105,13 +105,11 @@ export default function Nft({
   const [warnings, setWarnings] = useState([])
 
   useEffect(() => {
-    setRendered(true)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
-
-  useEffect(() => {
     if (!data || !hasJsonMeta(data) || !data.digest) return
     const checkDigest = async (metadata, digest) => {
+      if (typeof metadata === 'string') {
+        metadata = JSON.parse(metadata)
+      }
       let ourDigest = await sha512(JSON.stringify(metadata)?.trim())
       ourDigest = ourDigest.toString().slice(0, 64)
       setIsValidDigest(digest?.toUpperCase() === ourDigest?.toUpperCase())
@@ -221,7 +219,7 @@ export default function Nft({
       "issuedAt":1667328041,
       "ownerChangedAt":1667328041,
       "deletedAt":null,
-      "url":"https://cloudflare-ipfs.com/ipfs/bafybeidrrt7llyjb2qqg3u37oagnwrmpwyuohlt767gknv5pyfyj6hpoh4/metadata.json",
+      "url":"https://ipfs.io/ipfs/bafybeidrrt7llyjb2qqg3u37oagnwrmpwyuohlt767gknv5pyfyj6hpoh4/metadata.json",
       "metadata":{
         "name":"Pirate Edition",
         "description":"-Sanctum NFTs 007-\n\n&quot;The discovery of treasure in the land of Atlantis.&quot;",
@@ -334,7 +332,7 @@ export default function Nft({
         <tbody key={i}>
           <tr>
             <td className='bold'>{eventType(nftEvent)}</td>
-            <td>{rendered && fullDateAndTime(nftEvent.changedAt)} <a href={"/explorer/" + nftEvent.txHash}><LinkIcon /></a></td>
+            <td>{fullDateAndTime(nftEvent.changedAt)} <a href={"/explorer/" + nftEvent.txHash}><LinkIcon /></a></td>
           </tr>
           {(nftEvent.amount && nftEvent.amount !== "0") &&
             <tr>
@@ -834,7 +832,7 @@ export default function Nft({
         const response = await axios('v2/statistics/nftokens/crawler')
         let lastUpdate = ""
         if (response?.data?.ledgerTime) {
-          lastUpdate = fullDateAndTime(response.data.ledgerTime)
+          lastUpdate = fullDateAndTime(response.data.ledgerTime, null, { asText: true })
         }
         warnings[i].message = t("table.warnings.nft-crawler-delay", { ns: 'nft', lastUpdate })
       }
@@ -845,8 +843,11 @@ export default function Nft({
   return <>
     <SEO
       page="NFT"
-      title={nftName(pageMeta) || pageMeta?.nftokenID || pageMeta?.uriTokenID || "NFT"}
-      description={pageMeta?.metadata?.description || pageMeta?.metadata?.collection?.name || (!(pageMeta?.nftokenID || pageMeta?.uriTokenID) ? t("desc", { ns: 'nft' }) : "")}
+      title={(nftName(pageMeta) || pageMeta?.nftokenID || pageMeta?.uriTokenID || "NFT") + (pageMeta?.nftSerial ? " #" + pageMeta?.nftSerial : "")}
+      description={
+        (pageMeta?.metadata?.description || pageMeta?.metadata?.collection?.name || (!(pageMeta?.nftokenID || pageMeta?.uriTokenID) ? t("desc", { ns: 'nft' }) : "")) +
+        (pageMeta?.issuer ? " - " + t("table.issuer") + ": " + usernameOrAddress(pageMeta, 'issuer') : "")
+      }
       image={{ file: imageUrl }}
     />
     <SearchBlock
@@ -1049,7 +1050,7 @@ export default function Nft({
                         {trWithFlags(t, data.flags)}
                         {!notFoundInTheNetwork &&
                           <tr>
-                            <td>{t("table.uri", { ns: 'nft' })}</td>
+                            <td>{t("table.uri")}</td>
                             <td>
                               {data.uri ?
                                 <>
@@ -1149,17 +1150,12 @@ export default function Nft({
                             <tr>
                               <td>{t("table.by-issuer")}</td>
                               <td>
-                                {data.type === 'xls20' &&
-                                  <>
-                                    <Link href={"/nft-distribution?issuer=" + data.issuer}>{t("holders", { ns: 'nft' })}</Link>
-                                    ,{" "}
-                                  </>
-                                }
-                                <Link href={"/nft-explorer?issuer=" + data.issuer}>{t("table.all-nfts")}</Link>
+                                <Link href={"/nft-distribution?issuer=" + data.issuer}>{t("holders", { ns: 'nft' })}</Link>,{" "}
+                                <Link href={"/nft-explorer?issuer=" + data.issuer}>{t("table.all-nfts")}</Link>,{" "}
+                                <Link href={"/nft-sales?issuer=" + data.issuer}>{t("table.sold_few")}</Link>
                                 {data.type === 'xls20' &&
                                   <>
                                     ,{" "}
-                                    <Link href={"/nft-sales?issuer=" + data.issuer}>{t("table.sold_few")}</Link>,{" "}
                                     <Link href={"/nft-explorer?issuer=" + data.issuer + "&list=onSale"}>{t("table.on-sale")}</Link>,{" "}
                                     <Link href={"/nft-volumes/" + data.issuer + "?period=year"}>{t("table.volume")}</Link>
                                   </>
@@ -1238,6 +1234,6 @@ export default function Nft({
           </p>
         </>
       }
-    </div >
-  </>;
+    </div>
+  </>
 }

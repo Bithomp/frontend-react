@@ -35,7 +35,7 @@ export default function SocialSharePage() {
         <div style={{ height: spaceBetweenLogoAndButtons + "px" }}> </div>
 
         <div>
-          <a href="https://twitter.com/bithomp">
+          <a href="https://x.com/bithomp">
             <Img src="/images/social-share/twitter.svg" alt="twitter" width={size} height={size} style={iconStyle} />
           </a>
           <a href="https://www.instagram.com/bithomp/">

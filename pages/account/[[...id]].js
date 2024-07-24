@@ -4,10 +4,10 @@ import axios from 'axios'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import Link from 'next/link'
 import Image from 'next/image'
-import moment from 'moment'
+import { axiosServer } from '../../utils/axios'
 
 import { server, getCoinsUrl, nativeCurrency } from '../../utils'
-import { amountFormat, shortNiceNumber, fullDateAndTime } from '../../utils/format'
+import { amountFormat, shortNiceNumber, fullDateAndTime, timeFromNow } from '../../utils/format'
 import { getIsSsrMobile } from "../../utils/mobile"
 
 import DatePicker from "react-datepicker"
@@ -29,9 +29,9 @@ export async function getServerSideProps(context) {
       headers["x-forwarded-for"] = req.headers["x-forwarded-for"]
     }
     try {
-      const res = await axios({
+      const res = await axiosServer({
         method: 'get',
-        url: server + '/api/cors/v2/address/' + account + '?username=true&service=true&twitterImageUrl=true&blacklist=true' + (ledgerTimestamp ? ('&ledgerTimestamp=' + ledgerTimestamp) : ""),
+        url: 'v2/address/' + account + '?username=true&service=true&twitterImageUrl=true&blacklist=true' + (ledgerTimestamp ? ('&ledgerTimestamp=' + new Date(ledgerTimestamp).toISOString()) : ""),
         headers
       })
       pageMeta = res?.data
@@ -43,7 +43,7 @@ export async function getServerSideProps(context) {
   return {
     props: {
       id: account,
-      ledgerTimestampQuery: ledgerTimestamp || "",
+      ledgerTimestampQuery: Date.parse(ledgerTimestamp) || "",
       isSsrMobile: getIsSsrMobile(context),
       pageMeta,
       ...(await serverSideTranslations(locale, ['common']))
@@ -54,6 +54,7 @@ export async function getServerSideProps(context) {
 import SEO from '../../components/SEO'
 import SearchBlock from '../../components/Layout/SearchBlock'
 import CopyButton from '../../components/UI/CopyButton'
+import { LinkAmm } from '../../utils/links'
 
 // setSignRequest, account
 export default function Account({ pageMeta, refreshPage, id, selectedCurrency, ledgerTimestampQuery }) {
@@ -96,7 +97,7 @@ export default function Account({ pageMeta, refreshPage, id, selectedCurrency, l
       '/v2/address/' + id
       + '?username=true&service=true&verifiedDomain=true&parent=true&nickname=true&inception=true&flare=true&blacklist=true&payString=true&ledgerInfo=true&twitterImageUrl=true&xummMeta=true'
       + noCache
-      + (ledgerTimestamp ? ('&ledgerTimestamp=' + ledgerTimestamp.toISOString()) : "")
+      + (ledgerTimestamp ? ('&ledgerTimestamp=' + new Date(ledgerTimestamp).toISOString()) : "")
     ).catch(error => {
       setErrorMessage(t("error." + error.message))
     })
@@ -200,6 +201,11 @@ export default function Account({ pageMeta, refreshPage, id, selectedCurrency, l
       xummAvatarUrl = data.xummMeta?.avatar
     }
 
+    /*
+    no need for, because it's rendered by next js on our server 
+    'https://cdn.bithomp.com/image?url=' + data.service?.twitterImageUrl
+    */
+
     return data.service?.twitterImageUrl || gravatarUrl || xummAvatarUrl || ('https://cdn.bithomp.com/avatar/' + data.address)
   }
 
@@ -209,7 +215,7 @@ export default function Account({ pageMeta, refreshPage, id, selectedCurrency, l
     let output = []
 
     if (data.ledgerInfo?.activated) {
-      //show username registartion link and usernsmes only for active accounts
+      //show username registration link and usernsmes only for active accounts
       if (data.username) {
         output.push(<tr key="0">
           <td>Username</td>
@@ -323,6 +329,7 @@ export default function Account({ pageMeta, refreshPage, id, selectedCurrency, l
                       width="200"
                       height="200"
                       className="avatar"
+                      priority
                     />
                     <div>
                       <table className='table-details autowidth'>
@@ -464,13 +471,13 @@ export default function Account({ pageMeta, refreshPage, id, selectedCurrency, l
                               <span className='green'>Active </span>
                               {data?.ledgerInfo?.lastSubmittedAt &&
                                 <>
-                                  {moment((data.ledgerInfo.lastSubmittedAt) * 1000, "unix").fromNow()}
+                                  {timeFromNow(data.ledgerInfo.lastSubmittedAt)}
                                   {" "}
                                   ({fullDateAndTime(data.ledgerInfo.lastSubmittedAt)})
                                 </>
                               }
                               {data?.ledgerInfo?.lastSubmittedTxHash &&
-                                <Link href={"/explorer/" + data.ledgerInfo.lastSubmittedTxHash}> <LinkIcon /></Link>
+                                <a href={"/explorer/" + data.ledgerInfo.lastSubmittedTxHash}> <LinkIcon /></a>
                               }
                             </td>
                             :
@@ -595,13 +602,25 @@ export default function Account({ pageMeta, refreshPage, id, selectedCurrency, l
                         <tr>
                           <td>Activated</td>
                           <td>
-                            {moment((data.inception) * 1000, "unix").fromNow()}
+                            {timeFromNow(data.inception)}
                             {" "}
                             ({fullDateAndTime(data.inception)})
                           </td>
                         </tr>
 
-
+                        {data.ledgerInfo?.ammID &&
+                          <tr>
+                            <td>AMM ID</td>
+                            <td>
+                              <LinkAmm
+                                ammId={data.ledgerInfo.ammID}
+                                hash={true}
+                                icon={true}
+                                copy={true}
+                              />
+                            </td>
+                          </tr>
+                        }
 
                       </tbody>
                     </table>

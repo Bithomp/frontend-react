@@ -2,7 +2,6 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useTranslation } from 'next-i18next'
 import { useEffect, useState } from 'react'
 import { Turnstile } from '@marsidev/react-turnstile'
-import axios from 'axios'
 import { useTheme } from '../../components/Layout/ThemeContext'
 import Link from 'next/link'
 
@@ -10,21 +9,25 @@ import SEO from '../../components/SEO'
 import CheckBox from '../../components/UI/CheckBox'
 
 import { isEmailValid } from '../../utils'
+import { getIsSsrMobile } from '../../utils/mobile'
 import AdminTabs from '../../components/Admin/Tabs'
+import { axiosAdmin } from '../../utils/axios'
 
-export const getServerSideProps = async ({ locale, query }) => {
+export const getServerSideProps = async (context) => {
+  const { locale, query } = context
   return {
     props: {
+      isSsrMobile: getIsSsrMobile(context),
       redirectToken: query.redirectToken || null,
       ...(await serverSideTranslations(locale, ['common', 'admin'])),
     },
   }
 }
 
-const turnstileSypportedLanguages = ['ar-EG', 'de', 'en', 'es', 'fa', 'fr', 'id', 'it', 'ja', 'ko', 'nl', 'pl', 'pt-BR', 'ru', 'tr', 'zh-CN', 'zh-TW']
+const turnstileSupportedLanguages = ['ar-EG', 'de', 'en', 'es', 'fa', 'fr', 'id', 'it', 'ja', 'ko', 'nl', 'pl', 'pt-BR', 'ru', 'tr', 'zh-CN', 'zh-TW']
 const checkmark = '/images/checkmark.svg'
 
-export default function Admin({ redirectToken }) {
+export default function Admin({ redirectToken, account, setAccount }) {
   const { theme } = useTheme()
   const { t, i18n } = useTranslation(['common', 'admin'])
   const [siteKey, setSiteKey] = useState("")
@@ -49,7 +52,7 @@ export default function Admin({ redirectToken }) {
         "authTokenExpiredAt": 1698490659
       }
     */
-    const siteKeyData = await axios.get('partner/auth', { baseUrl: '/api/' }).catch(error => {
+    const siteKeyData = await axiosAdmin.get('auth').catch(error => {
       if (error && error.message !== "canceled") {
         setErrorMessage(t("error." + error.message))
       }
@@ -70,7 +73,7 @@ export default function Admin({ redirectToken }) {
       setStep(0)
     } else {
       setStep(2)
-      axios.defaults.headers.common['Authorization'] = "Bearer " + sessionToken
+      axiosAdmin.defaults.headers.common['Authorization'] = "Bearer " + sessionToken
       getLoggedUserData()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -78,10 +81,9 @@ export default function Admin({ redirectToken }) {
 
   const redirectTokenRun = async () => {
     if (redirectToken) {
-      const formData = await axios.post(
-        'partner/auth',
-        { redirectToken },
-        { baseUrl: '/api/' }
+      const formData = await axiosAdmin.post(
+        'auth',
+        { redirectToken }
       ).catch(error => {
         if (error?.response?.data?.error) {
           setErrorMessage(error.response.data.error)
@@ -102,17 +104,14 @@ export default function Admin({ redirectToken }) {
         setStep(2)
         setErrorMessage("")
         localStorage.setItem("sessionToken", data.token)
-        axios.defaults.headers.common['Authorization'] = "Bearer " + data.token
+        axiosAdmin.defaults.headers.common['Authorization'] = "Bearer " + data.token
         getLoggedUserData()
       }
     }
   }
 
   const getLoggedUserData = async () => {
-    const data = await axios.get(
-      'partner/user',
-      { baseUrl: '/api/' }
-    ).catch(error => {
+    const data = await axiosAdmin.get('user').catch(error => {
       if (error.response?.data?.error === "errors.token.required") {
         onLogOut()
         return
@@ -132,12 +131,10 @@ export default function Admin({ redirectToken }) {
         }
       */
       setLoggedUserData(data.data)
+      setAccount({ ...account, pro: data.data.email })
     }
 
-    const partnerData = await axios.get(
-      'partner/partner',
-      { baseUrl: '/api/' }
-    ).catch(error => {
+    const partnerData = await axiosAdmin.get('partner').catch(error => {
       if (error.response?.data?.error === "errors.token.required") {
         onLogOut()
         return
@@ -161,9 +158,8 @@ export default function Admin({ redirectToken }) {
       */
       if (partnerData.data.bithompProPackageID) {
         //request to get the package data
-        const packageData = await axios.get(
-          'partner/partner/package/' + partnerData.data.bithompProPackageID,
-          { baseUrl: '/api/' }
+        const packageData = await axiosAdmin.get(
+          'partner/package/' + partnerData.data.bithompProPackageID
         ).catch(error => {
           if (error.response?.data?.error === "errors.token.required") {
             onLogOut()
@@ -189,9 +185,11 @@ export default function Admin({ redirectToken }) {
             }
           */
           setPackageData(packageData.data)
+          localStorage.setItem("pro-expire", JSON.stringify(packageData.data.expiredAt * 1000))
         }
         setCheckedPackageData(true)
       } else {
+        localStorage.setItem("pro-expire", JSON.stringify(0))
         setCheckedPackageData(true)
       }
     } else {
@@ -230,10 +228,9 @@ export default function Admin({ redirectToken }) {
     setErrorMessage("")
 
     if (step === 0) {
-      const formData = await axios.put(
-        'partner/auth',
-        { email, authToken, "cf-turnstile-response": token },
-        { baseUrl: '/api/' }
+      const formData = await axiosAdmin.put(
+        'auth',
+        { email, authToken, "cf-turnstile-response": token }
       ).catch(error => {
         if (error && error.message !== "canceled") {
           setErrorMessage(t(error.response.data.error || "error." + error.message))
@@ -263,10 +260,9 @@ export default function Admin({ redirectToken }) {
         return
       }
 
-      const formData = await axios.post(
-        'partner/auth',
-        { email, password, authToken },
-        { baseUrl: '/api/' }
+      const formData = await axiosAdmin.post(
+        'auth',
+        { email, password, authToken }
       ).catch(error => {
         if (error?.response?.data?.error === "Invalid password") {
           setErrorMessage(t("form.error.password-invalid"))
@@ -289,7 +285,7 @@ export default function Admin({ redirectToken }) {
         setStep(2)
         setErrorMessage("")
         localStorage.setItem("sessionToken", data.token)
-        axios.defaults.headers.common['Authorization'] = "Bearer " + data.token
+        axiosAdmin.defaults.headers.common['Authorization'] = "Bearer " + data.token
         getLoggedUserData()
       }
     }
@@ -297,6 +293,7 @@ export default function Admin({ redirectToken }) {
 
   const onLogOut = () => {
     localStorage.removeItem('sessionToken')
+    setAccount({ ...account, pro: null })
     setStep(0)
     setErrorMessage("")
     setToken("")
@@ -311,20 +308,28 @@ export default function Admin({ redirectToken }) {
     <div className="page-admin content-center">
       <h1 className='center'>
         {step < 1 ?
-          <>
-            Partner portal sign in / registration
-          </>
+          "Welcome to Bithomp Pro"
           :
           t("header", { ns: "admin" })
         }
       </h1>
 
       {step === 0 &&
-        <center>Register API key, view API statistics and charts.</center>
+        <div>
+          <div style={{ maxWidth: "440px", margin: "auto" }}>
+            - Access advanced features with Bithomp Pro subscription.
+            <br />
+            - Manage your API keys and view your API statistics.
+          </div>
+          <br />
+          <center>
+            <b>Register</b> or <b>Sign In</b> to get started.
+          </center>
+        </div>
       }
 
       {step === 2 &&
-        <AdminTabs name="mainTabs" tab="account" />
+        <AdminTabs name="mainTabs" tab="profile" />
       }
 
       <br />
@@ -369,7 +374,7 @@ export default function Admin({ redirectToken }) {
                 style={{ margin: "auto" }}
                 options={{
                   theme,
-                  language: turnstileSypportedLanguages.includes(i18n.language) ? i18n.language : 'en',
+                  language: turnstileSupportedLanguages.includes(i18n.language) ? i18n.language : 'en',
                 }}
                 onSuccess={setToken}
               />
@@ -377,8 +382,8 @@ export default function Admin({ redirectToken }) {
             <br />
             <center>
               <div style={{ display: "inline-block", marginBottom: "20px" }}>
-                <CheckBox checked={termsAccepted} setChecked={setTermsAccepted} >
-                  I agree with the <Link href="/terms-api-bots" target="_blank">API & Bots terms of use</Link>.
+                <CheckBox checked={termsAccepted} setChecked={setTermsAccepted}>
+                  I agree with the <Link href="/terms-and-conditions">{t("menu.terms-and-conditions")}</Link>.
                 </CheckBox>
               </div>
             </center>
@@ -388,7 +393,7 @@ export default function Admin({ redirectToken }) {
         {step === 2 &&
           <>
             {loggedUserData &&
-              <table className='table-large shrink'>
+              <table className='table-large no-hover'>
                 <tbody>
                   <tr>
                     <td className='right'>E-mail</td>

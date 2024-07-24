@@ -1,18 +1,20 @@
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useTranslation } from 'next-i18next'
 import { useEffect, useState } from 'react'
-import axios from 'axios'
 import { useRouter } from 'next/router'
+import { axiosAdmin } from '../../../utils/axios'
 
 import SEO from '../../../components/SEO'
 
 import { useWidth } from '../../../utils'
+import { getIsSsrMobile } from '../../../utils/mobile'
 import AdminTabs from '../../../components/Admin/Tabs'
 
 export const getServerSideProps = async (context) => {
   const { locale } = context
   return {
     props: {
+      isSsrMobile: getIsSsrMobile(context),
       ...(await serverSideTranslations(locale, ['common', 'admin'])),
     },
   }
@@ -31,7 +33,7 @@ export default function Statistics() {
     if (!sessionToken) {
       router.push('/admin')
     } else {
-      axios.defaults.headers.common['Authorization'] = "Bearer " + sessionToken
+      axiosAdmin.defaults.headers.common['Authorization'] = "Bearer " + sessionToken
       getData()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -41,9 +43,8 @@ export default function Statistics() {
     setLoading(true)
     //period=from..to&span=minute&search=text&ip=z
     //max=20
-    const requestStats = await axios.get(
-      'partner/partner/accessToken/requests/statistics?limit=20',
-      { baseUrl: '/api/' }
+    const requestStats = await axiosAdmin.get(
+      'partner/accessToken/requests/statistics?limit=20'
     ).catch(error => {
       if (error && error.message !== "canceled") {
         setErrorMessage(t(error.response.data.error || "error." + error.message))
@@ -72,7 +73,7 @@ export default function Statistics() {
         <div style={{ marginTop: "20px", textAlign: "left" }}>
           <h4 className='center'>20 most common URLs in the last 24h</h4>
           {width > 750 ?
-            <table className='table-large shrink'>
+            <table className='table-large'>
               <thead>
                 <tr>
                   <th></th>
@@ -143,7 +144,7 @@ export default function Statistics() {
 
         <div style={{ marginTop: "20px", textAlign: "left" }}>
           <h4 className='center'>The most common IPs in the last 24h</h4>
-          <table className='table-large shrink'>
+          <table className='table-large'>
             <thead>
               <tr>
                 <th></th>
