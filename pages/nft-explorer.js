@@ -28,7 +28,7 @@ export const getServerSideProps = async (context) => {
   //key to refresh the component when Link pressed within the same route
   return {
     props: {
-      orderQuery: order || "",
+      orderQuery: order || "mintedNew",
       key: Math.random(),
       view: view || "tiles",
       list: list || "nfts",
