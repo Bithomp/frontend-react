@@ -31,7 +31,21 @@ const MyApp = ({ Component, pageProps }) => {
 
   const signOut = () => {
     localStorage.removeItem('xummUserToken')
-    setAccount(null)
+    setAccount({
+      ...account,
+      address: null,
+      hashicon: null,
+      username: null
+    })
+  }
+
+  const signOutPro = () => {
+    localStorage.removeItem('sessionToken')
+    setAccount({
+      ...account,
+      pro: null
+    })
+    window.location.reload()
   }
 
   if (process.env.NODE_ENV === 'development') {
@@ -91,6 +105,7 @@ const MyApp = ({ Component, pageProps }) => {
               setSignRequest={setSignRequest}
               account={account}
               signOut={signOut}
+              signOutPro={signOutPro}
               selectedCurrency={selectedCurrency}
               setSelectedCurrency={setSelectedCurrency}
             />

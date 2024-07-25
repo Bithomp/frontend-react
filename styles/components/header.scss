@@ -62,6 +62,11 @@ header {
           color: var(--accent-link);
         }
       }
+      hr {
+        margin: 0;
+        border: 0;
+        border-top: 1px solid var(--background-menu);
+      }
     }
     &:hover {
       .menu-dropdown-button {
@@ -188,26 +193,6 @@ header {
       width: 24px;
       height: 24px;
       margin-right: 5px;
-    }
-    &--link {
-      padding-left: 0;
-      display: flex;
-      align-items: center;
-      svg {
-        width: 24px;
-        margin: -3px 5px 0 0;
-      }
-    }
-    &--border {
-      padding-bottom: 18px;
-      border-bottom: 1px solid #fff;
-    }
-  }
-  .mobile-menu-directory + .mobile-menu-item--link {
-    svg {
-      width: 24px;
-      height: auto;
-      max-height: 20px;
     }
   }
   .mobile-menu__submenu {

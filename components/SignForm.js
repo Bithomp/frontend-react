@@ -97,7 +97,12 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
       const { hashicon, username } = response.data;
       setAccount({ ...account, address, hashicon, username })
     } else {
-      setAccount(null)
+      setAccount({
+        ...account,
+        address: null,
+        hashicon: null,
+        username: null
+      })
     }
   }
 

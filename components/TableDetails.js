@@ -16,7 +16,7 @@ export const TRow = ({ children }) => <tr>{children}</tr>;
 
 export const TData = styled.td`
   padding: 4px;
-  border-bottom: 1px solid var(--border-color);
+  border-bottom: 1px solid var(--accent-link);
   &:first-child {
     color: var(--text-secondary);
     text-align: right;

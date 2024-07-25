@@ -1,10 +1,7 @@
 import Link from 'next/link'
 import { useTranslation } from 'next-i18next'
 import { useState, useEffect } from 'react'
-import ExpandListItems from './ExpandListItems'
-
-import { FaUserLarge } from "react-icons/fa6";
-import { IoIosRocket } from "react-icons/io";
+import MobileMenu from './MobileMenu'
 
 import {
   devNet,
@@ -20,7 +17,8 @@ import LangTable from "./LangTable"
 import CurrencyTable from "./CurrencyTable"
 import NetworkTable from "./NetworkTable"
 import LogoAnimated from '../LogoAnimated'
-import { FaAngleDown } from "react-icons/fa";
+import { FaAngleDown } from "react-icons/fa"
+import { IoIosRocket } from "react-icons/io"
 
 let timeoutIds = {}
 
@@ -96,6 +94,7 @@ export default function Header({
   setSignRequest,
   account,
   signOut,
+  signOutPro,
   selectedCurrency,
   setSelectedCurrency,
 }) {
@@ -162,12 +161,6 @@ export default function Header({
       }
     )
   }
-
-  const handleClick = (event) => {
-    if (event.target.getAttribute('aria-expanded') !== null) {
-      event.target.setAttribute('aria-expanded', event.target.getAttribute('aria-expanded') === 'true' ? 'false' : 'true');
-    }
-  };
 
   return (
     <div className={menuOpen ? 'mobile-menu-open' : ''}>
@@ -283,51 +276,69 @@ export default function Header({
         </div>
 
         <div className="header-menu-right">
-          {displayName ?
-            <MenuDropDown
-              id="dropdown7"
-              title={
-                <>
-                  <img src={hashicon} alt="user icon" className="user-icon" />
-                  {displayName}
-                </>
-              }
-              setHoverStates={setHoverStates}
-              hoverStates={hoverStates}
-            >
-              <Link href="/admin">{!proName ? 'Bithomp Pro' : proName}</Link>
-              <span onClick={copyToClipboard} className="link">
-                {isCopied ? t("button.copied") : t("button.copy-my-address")}
-              </span>
-              <Link href={"/nfts/" + address}>{t("signin.actions.my-nfts")}</Link>
-              <Link href={"/nft-offers/" + address}>{t("signin.actions.my-nft-offers")}</Link>
+          <MenuDropDown
+            id="dropdown7"
+            title={
+              <>
+                {displayName ?
+                  <>
+                    <img src={hashicon} alt="user icon" className="user-icon" />
+                    {displayName}
+                  </>
+                  :
+                  <>
+                    {!proName ? t("signin.signin") : proName}
+                  </>
+                }
+              </>
+            }
+            setHoverStates={setHoverStates}
+            hoverStates={hoverStates}
+          >
+            <div style={{ minWidth: "250px" }}></div>
 
-              {xummUserToken && <a href={"/explorer/" + address + "?hw=xumm&xummtoken=" + xummUserToken}>{t("signin.actions.view")}</a>}
-              {!username && <Link href={"/username?address=" + address}>{t("menu.usernames")}</Link>}
-
-              {/* Hide Send XRP for XAHAU while they are not ready yet */}
-              {!xahauNetwork &&
-                <>
-                  {xummUserToken && <a href={"/explorer/" + address + "?hw=xumm&xummtoken=" + xummUserToken + "&action=send"}>{t("signin.actions.send")}</a>}
-                </>
-              }
-
-              <span onClick={signOut} className="link">{t("signin.signout")}</span>
-            </MenuDropDown>
-            :
-            <MenuDropDown
-              id="dropdown7"
-              title={!proName ? t("signin.signin") : proName}
-              setHoverStates={setHoverStates}
-              hoverStates={hoverStates}
-            >
-              <Link href="/admin">Bithomp Pro</Link>
+            {!displayName &&
               <span onClick={() => { setSignRequest({ wallet: "xumm" }) }} className="link">
                 <Image src="/images/xumm.png" className='xumm-logo' alt="xaman" height={24} width={24} />
                 Xaman
               </span>
-            </MenuDropDown>
-          }
+            }
+
+            {displayName &&
+              <>
+                <span onClick={copyToClipboard} className="link">
+                  {isCopied ? t("button.copied") : t("button.copy-my-address")}
+                </span>
+                <Link href={"/nfts/" + address}>{t("signin.actions.my-nfts")}</Link>
+                <Link href={"/nft-offers/" + address}>{t("signin.actions.my-nft-offers")}</Link>
+
+                {xummUserToken && <a href={"/explorer/" + address + "?hw=xumm&xummtoken=" + xummUserToken}>{t("signin.actions.view")}</a>}
+                {!username && <Link href={"/username?address=" + address}>{t("menu.usernames")}</Link>}
+
+                {/* Hide Send XRP for XAHAU while they are not ready yet */}
+                {!xahauNetwork &&
+                  <>
+                    {xummUserToken && <a href={"/explorer/" + address + "?hw=xumm&xummtoken=" + xummUserToken + "&action=send"}>{t("signin.actions.send")}</a>}
+                  </>
+                }
+
+                <span onClick={signOut} className="link">{t("signin.signout")}</span>
+              </>
+            }
+
+            <hr className='hr' />
+            <Link href="/admin">
+              <IoIosRocket style={{ fontSize: "1.2em", marginBottom: "-2px" }} /> Bithomp Pro
+            </Link>
+            {proName && <>
+              <hr />
+              <Link href="/admin">{displayName ? proName : "Profile"}</Link>
+              <Link href="/admin/subscriptions">Subscriptions</Link>
+              <Link href="/admin/api">API management</Link>
+              <span onClick={signOutPro} className="link">{t("signin.signout")}</span>
+            </>
+            }
+          </MenuDropDown>
 
           <MenuDropDown
             id="dropdown8"
@@ -382,71 +393,20 @@ export default function Header({
         </div>
       </header>
       {rendered &&
-        <div className="mobile-menu" onClick={handleClick}>
-          {!proName &&
-            <>
-              <br />
-              <div className="mobile-menu-directory"><span>{t("signin.signin")}</span></div>
-            </>
-          }
-          {proName && <div style={{ height: "12px" }}></div>}
-          <Link href="/admin" className="mobile-menu-item mobile-menu-item--link" onClick={mobileMenuToggle}>
-            {!proName ? <IoIosRocket /> : <FaUserLarge />} {proName || 'Bithomp Pro'}
-          </Link>
-          {proName && !displayName &&
-            <div className="mobile-menu-directory"><span>{t("signin.signin")}</span></div>
-          }
-
-          {displayName ?
-            <>
-              {xummUserToken ?
-                <a
-                  href={"/explorer/" + address + "?hw=xumm&xummtoken=" + xummUserToken}
-                  className="mobile-menu-item mobile-menu-item--link mobile-menu-item--border"
-                >
-                  <img src={hashicon} alt="user icon" className="user-icon" />
-                  {displayName}
-                </a>
-                :
-                <span
-                  className="mobile-menu-item mobile-menu-item--link mobile-menu-item--border"
-                >
-                  <img src={hashicon} alt="user icon" className="user-icon" />
-                  {displayName}
-                </span>
-              }
-              <span onClick={copyToClipboard} className="mobile-menu-item link">
-                {isCopied ? t("button.copied") : t("button.copy-my-address")}
-              </span>
-              <Link href={"/nfts/" + address} className="mobile-menu-item" onClick={mobileMenuToggle}>{t("signin.actions.my-nfts")}</Link>
-              <Link href={"/nft-offers/" + address} className="mobile-menu-item" onClick={mobileMenuToggle}>{t("signin.actions.my-nft-offers")}</Link>
-
-              {xummUserToken && <a href={"/explorer/" + address + "?hw=xumm&xummtoken=" + xummUserToken} className="mobile-menu-item">{t("signin.actions.view")}</a>}
-              {!username && <Link href={"/username?address=" + address} className="mobile-menu-item" onClick={mobileMenuToggle}>{t("menu.usernames")}</Link>}
-
-              {/* Hide Send XRP for XAHAU while they are not ready yet */}
-              {!xahauNetwork &&
-                <>
-                  {xummUserToken && <a href={"/explorer/" + address + "?hw=xumm&xummtoken=" + xummUserToken + "&action=send"} className="mobile-menu-item">{t("signin.actions.send")}</a>}
-                </>
-              }
-
-              <span onClick={signOut} className="mobile-menu-item link">{t("signin.signout")}</span>
-            </>
-            :
-            <span onClick={() => { setSignRequest({ wallet: "xumm" }) }} className="link mobile-menu-item mobile-menu-item--link">
-              <Image src="/images/xumm.png" className='xumm-logo' alt="xaman" height={24} width={24} />
-              Xaman
-            </span>
-          }
-
-          <ExpandListItems
-            mobileMenuToggle={mobileMenuToggle}
-            displayName={displayName}
-            address={address}
-            setSignRequest={setSignRequest}
-          />
-        </div>
+        <MobileMenu
+          mobileMenuToggle={mobileMenuToggle}
+          displayName={displayName}
+          address={address}
+          setSignRequest={setSignRequest}
+          proName={proName}
+          signOut={signOut}
+          signOutPro={signOutPro}
+          xummUserToken={xummUserToken}
+          hashicon={hashicon}
+          username={username}
+          isCopied={isCopied}
+          copyToClipboard={copyToClipboard}
+        />
       }
     </div>
   )
