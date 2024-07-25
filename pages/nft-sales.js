@@ -218,13 +218,16 @@ export default function NftSales({
         signal: controller.signal
       }
     ).catch(error => {
-      setErrorMessage(t("error." + error.message))
+      if (error && error.message !== "canceled") {
+        setErrorMessage(t("error." + error.message))
+        setLoading(false)
+      }
     })
 
     const newdata = response?.data
-    setLoading(false)
 
     if (newdata) {
+      setLoading(false)
       setData(newdata)
       if (newdata.total?.secondary || newdata.total?.primary) {
         updateSaleTabList(newdata.total)
