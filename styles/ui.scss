@@ -210,6 +210,10 @@ input, textarea {
       max-width: 378px;
       width: calc(100% - 44px);
     }
+    &:-webkit-autofill,
+    &:-webkit-autofill:focus {
+      transition: background-color 0s 600000s, color 0s 600000s !important; // a style trick for chrome autofill, otherwise it's white in the dark scheme
+    }
     &:hover, &:focus {
       border: 1px solid var(--accent-icon);
       transition: border-color 0.5s;
