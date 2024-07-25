@@ -295,8 +295,9 @@ export default function Header({
             setHoverStates={setHoverStates}
             hoverStates={hoverStates}
           >
-            <div style={{ minWidth: "250px" }}></div>
-
+            {(displayName || proName) &&
+              <div style={{ minWidth: "250px" }}></div>
+            }
             {!displayName &&
               <span onClick={() => { setSignRequest({ wallet: "xumm" }) }} className="link">
                 <Image src="/images/xumm.png" className='xumm-logo' alt="xaman" height={24} width={24} />
