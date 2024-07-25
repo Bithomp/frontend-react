@@ -46,27 +46,30 @@ export default function MobileMenu({
       <div className='mobile-menu-wrap'>
         <br />
         <div className="mobile-menu-directory" aria-expanded={displayName ? "false" : "true"}>
-          <IoWallet style={{ marginBottom: "-2px" }} /> {t("table.address")}
+          {displayName ?
+            <>
+              <img
+                src={hashicon}
+                alt="user icon"
+                style={{ width: "18px", height: "18px", marginRight: "5px" }}
+              />
+              {displayName}
+            </>
+            :
+            <>
+              <IoWallet style={{ marginBottom: "-2px" }} /> {t("table.address")}
+            </>
+          }
         </div>
         <div className="mobile-menu__submenu">
           {displayName ?
             <>
-              {xummUserToken ?
-                <a
-                  href={"/explorer/" + address + "?hw=xumm&xummtoken=" + xummUserToken}
-                  className="mobile-menu-item"
-                >
-                  <img src={hashicon} alt="user icon" className="user-icon" />
-                  {displayName}
-                </a>
-                :
-                <span
-                  className="mobile-menu-item"
-                >
-                  <img src={hashicon} alt="user icon" className="user-icon" />
-                  {displayName}
-                </span>
-              }
+              <a
+                href={"/explorer/" + address + (xummUserToken ? ("?hw=xumm&xummtoken=" + xummUserToken) : "")}
+                className="mobile-menu-item"
+              >
+                {t("signin.actions.view")}
+              </a>
               <span onClick={copyToClipboard} className="mobile-menu-item link">
                 {isCopied ? t("button.copied") : t("button.copy-my-address")}
               </span>
@@ -77,11 +80,6 @@ export default function MobileMenu({
                 {t("signin.actions.my-nft-offers")}
               </Link>
 
-              {xummUserToken &&
-                <a href={"/explorer/" + address + "?hw=xumm&xummtoken=" + xummUserToken} className="mobile-menu-item">
-                  {t("signin.actions.view")}
-                </a>
-              }
               {!username &&
                 <Link href={"/username?address=" + address} className="mobile-menu-item" onClick={mobileMenuToggle}>
                   {t("menu.usernames")}

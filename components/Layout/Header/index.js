@@ -310,10 +310,12 @@ export default function Header({
                 <span onClick={copyToClipboard} className="link">
                   {isCopied ? t("button.copied") : t("button.copy-my-address")}
                 </span>
+                <a href={"/explorer/" + address + (xummUserToken ? ("?hw=xumm&xummtoken=" + xummUserToken) : "")}>
+                  {t("signin.actions.view")}
+                </a>
                 <Link href={"/nfts/" + address}>{t("signin.actions.my-nfts")}</Link>
                 <Link href={"/nft-offers/" + address}>{t("signin.actions.my-nft-offers")}</Link>
 
-                {xummUserToken && <a href={"/explorer/" + address + "?hw=xumm&xummtoken=" + xummUserToken}>{t("signin.actions.view")}</a>}
                 {!username && <Link href={"/username?address=" + address}>{t("menu.usernames")}</Link>}
 
                 {/* Hide Send XRP for XAHAU while they are not ready yet */}
