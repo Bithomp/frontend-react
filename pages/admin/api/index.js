@@ -148,7 +148,7 @@ export default function Api() {
           :
           <>
             {apiData ?
-              <table className='table-large'>
+              <table className='table-large no-hover'>
                 <tbody>
                   <tr>
                     <td className='right'>Token</td>
