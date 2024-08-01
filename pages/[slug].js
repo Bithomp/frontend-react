@@ -6,7 +6,7 @@ import Link from 'next/link'
 import { server } from '../utils'
 
 const slugRegex = /^[~]{0,1}[a-zA-Z0-9-_.]*[+]{0,1}[a-zA-Z0-9-_.]*[$]{0,1}[a-zA-Z0-9-.]*[a-zA-Z0-9]*$/i
-const forbiddenSlugsRegex = /^.((?!\$).)*.?\.(7z|gz|tar\.gz|rar)$/i
+const forbiddenSlugsRegex = /^.((?!\$).)*.?\.(7z|gz|rar|tar)$/i
 
 export async function getStaticProps({ locale, params }) {
   const { slug } = params
