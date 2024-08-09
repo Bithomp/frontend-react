@@ -1,6 +1,8 @@
 import { network } from '../../utils'
+import { useTheme } from '../Layout/ThemeContext'
 
 export default function Ads() {
+  const { theme } = useTheme()
   if (network === 'mainnet' || network === 'staging') {
     return (
       <>
@@ -38,7 +40,11 @@ export default function Ads() {
         </a>
         <a href="/go/main-play" target="_blank" rel="noreferrer">
           <div className="sponsored-brand easybit">
-            <img src="/images/betplay.png" className="sponsored-brand-icon" alt="play crypto" />
+            <img
+              src={theme === 'dark' ? '/images/betplay_dark.png' : '/images/betplay.png'}
+              className="sponsored-brand-icon"
+              alt="play crypto"
+            />
             <div className="sponsored-brand-title">Crypto Casino</div>
             <div className="sponsored-brand-text">
               100% Welcome Bonus on your first deposit! 10% cashback every week!
