@@ -55,7 +55,7 @@ $width: 340px;
             width: $width;
             max-width: $width;
 
-            body:not(.is-filters-hide) & {
+            .content-cols:not(.is-filters-hide) & {
                 overflow-y: scroll;
                 scrollbar-width: thin;
                 scrollbar-color: var(--accent-icon) #fff;
@@ -105,10 +105,6 @@ $width: 340px;
     & + .content-text {
       margin: 64px 0 25px 0;
       width: 100%;
-
-      @media(min-width: 1300px) {
-        overflow-y: scroll;
-      }
 
       @media(max-width: 440px) {
         margin: 55px 0 15px 0;
