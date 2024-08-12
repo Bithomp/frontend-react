@@ -1,8 +1,16 @@
 import { network } from '../../utils'
 import { useTheme } from '../Layout/ThemeContext'
+import { useEffect, useState } from 'react'
 
 export default function Ads() {
   const { theme } = useTheme()
+  const [rendered, setRendered] = useState(false)
+
+  useEffect(() => {
+    setRendered(true)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
   if (network === 'mainnet' || network === 'staging') {
     return (
       <>
@@ -40,11 +48,13 @@ export default function Ads() {
         </a>
         <a href="/go/main-play" target="_blank" rel="noreferrer">
           <div className="sponsored-brand easybit">
-            <img
-              src={theme === 'dark' ? '/images/betplay_dark.png' : '/images/betplay.png'}
-              className="sponsored-brand-icon"
-              alt="play crypto"
-            />
+            {rendered && (
+              <img
+                src={theme === 'dark' ? '/images/betplay_dark.png' : '/images/betplay.png'}
+                className="sponsored-brand-icon"
+                alt="play crypto"
+              />
+            )}
             <div className="sponsored-brand-title">Crypto Casino</div>
             <div className="sponsored-brand-text">
               100% Welcome Bonus on your first deposit! 10% cashback every week!
