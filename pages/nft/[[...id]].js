@@ -890,7 +890,11 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
 
     // if not signed, or signed but not an owner - do not show burn button
     // may be we should show it for burnable nfts (with a flag) for the minters also?
-    if (!(data?.owner && account?.address && account.address === data.owner)) return ''
+    if (
+      !(data?.owner && account?.address && account.address === data.owner) &&
+      !(data?.issuer && account?.address && account.address === data.issuer)
+    )
+      return ''
 
     let request = null
 
