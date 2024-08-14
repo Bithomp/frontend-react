@@ -169,7 +169,7 @@
       "proposers": "Validadores",
       "accounts": "Cuentas",
       "usernames": "Nombres de usuario",
-      "accountsActiveLast24h": "Active accounts (24h)",
+      "accountsActiveLast24h": "Cuentas activas (24h)",
       "nft": {
         "created": "NFTs acuñados",
         "burned": "NFTs quemados",
