@@ -1,29 +1,28 @@
 import Head from 'next/head'
 import Script from 'next/script'
 import { useRouter } from 'next/router'
-import { useState } from "react"
+import { useState } from 'react'
 import axios from 'axios'
 import { appWithTranslation } from 'next-i18next'
 
 import Header from '../components/Layout/Header'
 import Footer from '../components/Layout/Footer'
-import SignForm from "../components/SignForm"
-import ScrollToTop from "../components/Layout/ScrollToTop"
+import SignForm from '../components/SignForm'
+import ScrollToTop from '../components/Layout/ScrollToTop'
 import BackgroundImage from '../components/Layout/BackgroundImage'
 import TopLinks from '../components/Layout/TopLinks'
 
 import { IsSsrMobileContext } from '../utils/mobile'
-import { isValidUUID, network, server, useLocalStorage, useSubscriptionExpired } from '../utils'
+import { isValidUUID, network, server, useLocalStorage, subscriptionExpired } from '../utils'
 
 import '../styles/ui.scss'
-import { ThemeProvider } from "../components/Layout/ThemeContext"
+import { ThemeProvider } from '../components/Layout/ThemeContext'
 
 const MyApp = ({ Component, pageProps }) => {
   const [account, setAccount] = useLocalStorage('account')
   const [selectedCurrency, setSelectedCurrency] = useLocalStorage('currency', 'usd')
   const [signRequest, setSignRequest] = useState(false)
-  const [refreshPage, setRefreshPage] = useState("")
-  const subscriptionExpired = useSubscriptionExpired()
+  const [refreshPage, setRefreshPage] = useState('')
 
   const router = useRouter()
 
@@ -69,7 +68,7 @@ const MyApp = ({ Component, pageProps }) => {
     '/privacy-policy',
     '/terms-and-conditions',
     '/press',
-    '/404',
+    '/404'
   ]
   if (showTopAds) {
     showTopAds = !pagesWithNoTopAdds.includes(pathname) && !pathname.includes('/admin')
@@ -88,19 +87,22 @@ const MyApp = ({ Component, pageProps }) => {
       <IsSsrMobileContext.Provider value={pageProps.isSsrMobile}>
         <ThemeProvider>
           <div className="body" data-network={network}>
-            {process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID &&
+            {process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID && (
               <>
-                <Script src={"https://www.googletagmanager.com/gtag/js?id=" + process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID} />
+                <Script
+                  src={'https://www.googletagmanager.com/gtag/js?id=' + process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID}
+                />
                 <Script id="google-analytics">
                   {`
                     window.dataLayer = window.dataLayer || [];
                     function gtag(){dataLayer.push(arguments);}
                     gtag('js', new Date());
-                    gtag('config', "` + process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID + '");'
-                  }
+                    gtag('config', "` +
+                    process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID +
+                    '");'}
                 </Script>
               </>
-            }
+            )}
             <Header
               setSignRequest={setSignRequest}
               account={account}
@@ -110,7 +112,7 @@ const MyApp = ({ Component, pageProps }) => {
               setSelectedCurrency={setSelectedCurrency}
             />
             <ScrollToTop />
-            {(signRequest || isValidUUID(uuid)) &&
+            {(signRequest || isValidUUID(uuid)) && (
               <SignForm
                 setSignRequest={setSignRequest}
                 account={account}
@@ -119,11 +121,9 @@ const MyApp = ({ Component, pageProps }) => {
                 uuid={uuid}
                 setRefreshPage={setRefreshPage}
               />
-            }
+            )}
             <div className="content">
-              {showTopAds &&
-                <TopLinks />
-              }
+              {showTopAds && <TopLinks />}
               <Component
                 {...pageProps}
                 refreshPage={refreshPage}
@@ -137,10 +137,7 @@ const MyApp = ({ Component, pageProps }) => {
               />
             </div>
             <BackgroundImage />
-            <Footer
-              setSignRequest={setSignRequest}
-              account={account}
-            />
+            <Footer setSignRequest={setSignRequest} account={account} />
           </div>
         </ThemeProvider>
       </IsSsrMobileContext.Provider>

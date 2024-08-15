@@ -4,11 +4,12 @@ import { useEffect, useState } from 'react'
 import { Turnstile } from '@marsidev/react-turnstile'
 import { useTheme } from '../../components/Layout/ThemeContext'
 import Link from 'next/link'
+import Cookies from 'universal-cookie'
 
 import SEO from '../../components/SEO'
 import CheckBox from '../../components/UI/CheckBox'
 
-import { isEmailValid } from '../../utils'
+import { domainFromUrl, isEmailValid } from '../../utils'
 import { getIsSsrMobile } from '../../utils/mobile'
 import AdminTabs from '../../components/Admin/Tabs'
 import { axiosAdmin } from '../../utils/axios'
@@ -59,6 +60,8 @@ export default function Admin({ redirectToken, account, setAccount }) {
   const [checkedPackageData, setCheckedPackageData] = useState(false)
   const [packageData, setPackageData] = useState(null)
   const [termsAccepted, setTermsAccepted] = useState(false)
+
+  const cookies = new Cookies(null, { path: '/' })
 
   const checkApi = async () => {
     /*
@@ -171,6 +174,9 @@ export default function Admin({ redirectToken, account, setAccount }) {
           "country": "BO"
         }
       */
+
+      const cookieParams = { path: '/', domain: '.' + domainFromUrl, maxAge: 31536000 }
+
       if (partnerData.data.bithompProPackageID) {
         //request to get the package data
         const packageData = await axiosAdmin
@@ -200,11 +206,11 @@ export default function Admin({ redirectToken, account, setAccount }) {
             }
           */
           setPackageData(packageData.data)
-          localStorage.setItem('pro-expire', JSON.stringify(packageData.data.expiredAt * 1000))
+          cookies.set('pro-expire', JSON.stringify(packageData.data.expiredAt * 1000), cookieParams)
         }
         setCheckedPackageData(true)
       } else {
-        localStorage.setItem('pro-expire', JSON.stringify(0))
+        cookies.set('pro-expire', JSON.stringify(0), cookieParams)
         setCheckedPackageData(true)
       }
     } else {
