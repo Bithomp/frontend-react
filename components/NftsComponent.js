@@ -6,7 +6,6 @@ import axios from 'axios'
 import InfiniteScroll from 'react-infinite-scroll-component'
 
 import { IoMdClose } from 'react-icons/io'
-import { BsFilter } from 'react-icons/bs'
 import { TbArrowsSort } from 'react-icons/tb'
 
 import {
@@ -33,6 +32,7 @@ import FormInput from './UI/FormInput'
 import AddressInput from './UI/AddressInput'
 import ViewTogggle from './UI/ViewToggle'
 import SimpleSelect from './UI/SimpleSelect'
+import LeftFilters from './UI/LeftFilters'
 
 export default function NftsComponent({
   orderQuery,
@@ -513,10 +513,6 @@ export default function NftsComponent({
     setIssuer(value)
   }
 
-  const toggleFilters = () => {
-    setFiltersHide(!filtersHide)
-  }
-
   useEffect(() => {
     const actualList = listTab !== 'onSale' ? orderNftsList : orderOnSaleList
     setCurrentOrderList(actualList)
@@ -658,124 +654,118 @@ export default function NftsComponent({
             ))}
           </ul>
         </div>
-        <div className="filters">
-          <div className="filters__box">
-            <button className="filters__toggle" onClick={() => toggleFilters()}>
-              <BsFilter />
-            </button>
-            <div className="filters__wrap">
-              <div className="filters__head">
-                <span>{nftCount ? '1-' + nftCount + (hasMore ? ' ' + t('general.of-many') : '') : ''}</span>
-                {rendered && (
-                  <CSVLink
-                    data={data || []}
-                    headers={csvHeaders}
-                    filename="nfts_export.csv"
-                    className={'button-action thin narrow' + (!(data && data.length > 0) ? ' disabled' : '')}
-                  >
-                    <DownloadIcon /> CSV
-                  </CSVLink>
-                )}
-                <button className="filters__close" onClick={() => toggleFilters()}>
-                  <IoMdClose />
-                </button>
-              </div>
-              {nftExplorer && (
-                <>
-                  <AddressInput
-                    title={t('table.issuer')}
-                    placeholder={t('nfts.search-by-issuer')}
-                    setValue={onIssuerSearch}
-                    rawData={rawData}
-                    type="issuer"
-                  />
-                  {!xahauNetwork && (
-                    <FormInput
-                      title={t('table.taxon')}
-                      placeholder={t('nfts.search-by-taxon')}
-                      setValue={onTaxonInput}
-                      defaultValue={rawData?.taxon}
-                      disabled={issuer ? false : true}
-                    />
-                  )}
-                  <AddressInput
-                    title={t('table.owner')}
-                    placeholder={t('nfts.search-by-owner')}
-                    setValue={setOwner}
-                    rawData={rawData}
-                    type="owner"
-                  />
+        <LeftFilters filtersHide={filtersHide} setFiltersHide={setFiltersHide}>
+          <>
+            <span className="filter-header-title">
+              {nftCount ? '1-' + nftCount + (hasMore ? ' ' + t('general.of-many') : '') : ''}
+            </span>
+            {rendered && (
+              <CSVLink
+                data={data || []}
+                headers={csvHeaders}
+                filename="nfts_export.csv"
+                className={'button-action thin narrow' + (!(data && data.length > 0) ? ' disabled' : '')}
+              >
+                <DownloadIcon /> CSV
+              </CSVLink>
+            )}
+          </>
+          <>
+            {nftExplorer && (
+              <>
+                <AddressInput
+                  title={t('table.issuer')}
+                  placeholder={t('nfts.search-by-issuer')}
+                  setValue={onIssuerSearch}
+                  rawData={rawData}
+                  type="issuer"
+                />
+                {!xahauNetwork && (
                   <FormInput
-                    title={t('table.name')}
-                    placeholder={t('nfts.search-by-name')}
-                    setValue={setSearch}
-                    defaultValue={rawData?.search}
+                    title={t('table.taxon')}
+                    placeholder={t('nfts.search-by-taxon')}
+                    setValue={onTaxonInput}
+                    defaultValue={rawData?.taxon}
+                    disabled={issuer ? false : true}
                   />
-                </>
-              )}
-
-              {listTab === 'nfts' && nftExplorer && (
-                <div>
-                  {t('table.mint-period')}
-                  <DateAndTimeRange
-                    periodQueryName="mintedPeriod"
-                    period={mintedPeriod}
-                    setPeriod={setMintedPeriod}
-                    defaultPeriod={mintedPeriodQuery}
-                    minDate="nft"
-                    radio={true}
-                  />
-                </div>
-              )}
-
-              {!nftExplorer && rendered && (
-                <div>
-                  <span style={{ display: 'inline-block', paddingBottom: '5px' }}>{t('table.issuer')}</span>
-                  <IssuerSelect
-                    issuersList={issuersList}
-                    selectedIssuer={issuer}
-                    setSelectedIssuer={setIssuer}
-                    disabled={!(id || owner) || issuersList?.length < 1}
-                  />
-                </div>
-              )}
-
-              {!burnedPeriod && !xahauNetwork && (
-                <div>
-                  {t('general.search')}
-                  <RadioOptions tabList={listTabList} tab={listTab} setTab={setListTab} name="saleType" />
-                </div>
-              )}
-
-              {!burnedPeriod && !xahauNetwork && listTab === 'onSale' && (
-                <div>
-                  {t('table.on-sale')}
-                  <RadioOptions
-                    tabList={saleDestinationTabList}
-                    tab={saleDestinationTab}
-                    setTab={setSaleDestinationTab}
-                    name="saleDestination"
-                  />
-                </div>
-              )}
-
-              <div>
-                {!burnedPeriod && listTab !== 'onSale' && (
-                  <div className="filters-check-box">
-                    <CheckBox checked={includeBurned} setChecked={setIncludeBurned} outline>
-                      {t('table.text.include-burned-nfts')}
-                    </CheckBox>
-                  </div>
                 )}
+                <AddressInput
+                  title={t('table.owner')}
+                  placeholder={t('nfts.search-by-owner')}
+                  setValue={setOwner}
+                  rawData={rawData}
+                  type="owner"
+                />
+                <FormInput
+                  title={t('table.name')}
+                  placeholder={t('nfts.search-by-name')}
+                  setValue={setSearch}
+                  defaultValue={rawData?.search}
+                />
+              </>
+            )}
+
+            {listTab === 'nfts' && nftExplorer && (
+              <div>
+                {t('table.mint-period')}
+                <DateAndTimeRange
+                  periodQueryName="mintedPeriod"
+                  period={mintedPeriod}
+                  setPeriod={setMintedPeriod}
+                  defaultPeriod={mintedPeriodQuery}
+                  minDate="nft"
+                  radio={true}
+                />
+              </div>
+            )}
+
+            {!nftExplorer && rendered && (
+              <div>
+                <span style={{ display: 'inline-block', paddingBottom: '5px' }}>{t('table.issuer')}</span>
+                <IssuerSelect
+                  issuersList={issuersList}
+                  selectedIssuer={issuer}
+                  setSelectedIssuer={setIssuer}
+                  disabled={!(id || owner) || issuersList?.length < 1}
+                />
+              </div>
+            )}
+
+            {!burnedPeriod && !xahauNetwork && (
+              <div>
+                {t('general.search')}
+                <RadioOptions tabList={listTabList} tab={listTab} setTab={setListTab} name="saleType" />
+              </div>
+            )}
+
+            {!burnedPeriod && !xahauNetwork && listTab === 'onSale' && (
+              <div>
+                {t('table.on-sale')}
+                <RadioOptions
+                  tabList={saleDestinationTabList}
+                  tab={saleDestinationTab}
+                  setTab={setSaleDestinationTab}
+                  name="saleDestination"
+                />
+              </div>
+            )}
+
+            <div>
+              {!burnedPeriod && listTab !== 'onSale' && (
                 <div className="filters-check-box">
-                  <CheckBox checked={includeWithoutMediaData} setChecked={setIncludeWithoutMediaData} outline>
-                    {t('table.text.include-without-media-data')}
+                  <CheckBox checked={includeBurned} setChecked={setIncludeBurned} outline>
+                    {t('table.text.include-burned-nfts')}
                   </CheckBox>
                 </div>
+              )}
+              <div className="filters-check-box">
+                <CheckBox checked={includeWithoutMediaData} setChecked={setIncludeWithoutMediaData} outline>
+                  {t('table.text.include-without-media-data')}
+                </CheckBox>
               </div>
             </div>
-          </div>
-        </div>
+          </>
+        </LeftFilters>
 
         <div className="content-text">
           {/* if accoun't nft explorer and there is no owner or id, ask to provide an address */}

@@ -6,14 +6,7 @@ import { CSVLink } from 'react-csv'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
-import RadioOptions from '../components/UI/RadioOptions'
-import FormInput from '../components/UI/FormInput'
-import CheckBox from '../components/UI/CheckBox'
-import ViewTogggle from '../components/UI/ViewToggle'
-import SimpleSelect from '../components/UI/SimpleSelect'
-
 import { IoMdClose } from 'react-icons/io'
-import { BsFilter } from 'react-icons/bs'
 import { TbArrowsSort } from 'react-icons/tb'
 
 import { stripText, isAddressOrUsername, setTabParams, useWidth, xahauNetwork, nativeCurrency } from '../utils'
@@ -30,6 +23,20 @@ import {
   shortHash,
   shortNiceNumber
 } from '../utils/format'
+
+import SEO from '../components/SEO'
+import Tiles from '../components/Tiles'
+import RadioOptions from '../components/UI/RadioOptions'
+import FormInput from '../components/UI/FormInput'
+import CheckBox from '../components/UI/CheckBox'
+import ViewTogggle from '../components/UI/ViewToggle'
+import SimpleSelect from '../components/UI/SimpleSelect'
+import DateAndTimeRange from '../components/UI/DateAndTimeRange'
+import AddressInput from '../components/UI/AddressInput'
+import LeftFilters from '../components/UI/LeftFilters'
+
+import LinkIcon from '../public/images/link.svg'
+import DownloadIcon from '../public/images/download.svg'
 
 export const getServerSideProps = async (context) => {
   const { query, locale } = context
@@ -72,14 +79,6 @@ export const getServerSideProps = async (context) => {
     }
   }
 }
-
-import SEO from '../components/SEO'
-import Tiles from '../components/Tiles'
-import DateAndTimeRange from '../components/UI/DateAndTimeRange'
-
-import LinkIcon from '../public/images/link.svg'
-import DownloadIcon from '../public/images/download.svg'
-import AddressInput from '../components/UI/AddressInput'
 
 export default function NftSales({
   orderQuery,
@@ -486,10 +485,6 @@ export default function NftSales({
     { label: t('table.marketplace'), key: 'marketplace' }
   ]
 
-  const toggleFilters = () => {
-    setFiltersHide(!filtersHide)
-  }
-
   const hideMobileSortMenu = (value) => {
     setOrder(value)
     setSortMenuOpen(false)
@@ -551,89 +546,83 @@ export default function NftSales({
             ))}
           </ul>
         </div>
-        <div className="filters">
-          <div className="filters__box">
-            <button className="filters__toggle" onClick={() => toggleFilters()}>
-              <BsFilter />
-            </button>
-            <div className="filters__wrap">
-              <div className="filters__head">
-                <span>{nftCount ? '1-' + nftCount + (hasMore ? ' ' + t('general.of-many') : '') : ''}</span>
-                {rendered && (
-                  <CSVLink
-                    data={data?.sales || []}
-                    headers={csvHeaders}
-                    filename={'nft sales export ' + dateAndTimeNow + '.csv'}
-                    className={'button-action thin narrow' + (!(data && data.sales?.length > 0) ? ' disabled' : '')}
-                  >
-                    <DownloadIcon /> CSV
-                  </CSVLink>
-                )}
-                <button className="filters__close" onClick={() => toggleFilters()}>
-                  <IoMdClose />
-                </button>
-              </div>
-              <AddressInput
-                title={t('table.issuer')}
-                placeholder={t('nfts.search-by-issuer')}
-                setValue={checkIssuerValue}
-                rawData={data}
-                type="issuer"
-              />
-              {!xahauNetwork && (
-                <FormInput
-                  title={t('table.taxon')}
-                  placeholder={t('nfts.search-by-taxon')}
-                  setValue={onTaxonInput}
-                  disabled={issuer ? false : true}
-                  defaultValue={data?.taxon}
-                />
-              )}
-              <AddressInput
-                title={t('table.buyer')}
-                placeholder={t('nfts.search-by-buyer')}
-                setValue={checkBuyerValue}
-                rawData={data}
-                type="buyer"
-              />
-              <AddressInput
-                title={t('table.seller')}
-                placeholder={t('nfts.search-by-seller')}
-                setValue={checkSellerValue}
-                rawData={data}
-                type="seller"
-              />
+        <LeftFilters filtersHide={filtersHide} setFiltersHide={setFiltersHide}>
+          <>
+            <span className="filter-header-title">
+              {nftCount ? '1-' + nftCount + (hasMore ? ' ' + t('general.of-many') : '') : ''}
+            </span>
+            {rendered && (
+              <CSVLink
+                data={data?.sales || []}
+                headers={csvHeaders}
+                filename={'nft sales export ' + dateAndTimeNow + '.csv'}
+                className={'button-action thin narrow' + (!(data && data.sales?.length > 0) ? ' disabled' : '')}
+              >
+                <DownloadIcon /> CSV
+              </CSVLink>
+            )}
+          </>
+          <>
+            <AddressInput
+              title={t('table.issuer')}
+              placeholder={t('nfts.search-by-issuer')}
+              setValue={checkIssuerValue}
+              rawData={data}
+              type="issuer"
+            />
+            {!xahauNetwork && (
               <FormInput
-                title={t('table.name')}
-                placeholder={t('nfts.search-by-name')}
-                setValue={setSearch}
-                defaultValue={data?.search}
+                title={t('table.taxon')}
+                placeholder={t('nfts.search-by-taxon')}
+                setValue={onTaxonInput}
+                disabled={issuer ? false : true}
+                defaultValue={data?.taxon}
               />
+            )}
+            <AddressInput
+              title={t('table.buyer')}
+              placeholder={t('nfts.search-by-buyer')}
+              setValue={checkBuyerValue}
+              rawData={data}
+              type="buyer"
+            />
+            <AddressInput
+              title={t('table.seller')}
+              placeholder={t('nfts.search-by-seller')}
+              setValue={checkSellerValue}
+              rawData={data}
+              type="seller"
+            />
+            <FormInput
+              title={t('table.name')}
+              placeholder={t('nfts.search-by-name')}
+              setValue={setSearch}
+              defaultValue={data?.search}
+            />
 
-              <div>
-                {t('table.period')}
-                <DateAndTimeRange
-                  period={period}
-                  setPeriod={setPeriod}
-                  defaultPeriod={periodQuery}
-                  minDate="nft"
-                  radio={true}
-                />
-              </div>
-
-              <div>
-                {t('table.sales')}
-                <RadioOptions tabList={saleTabList} tab={saleTab} setTab={setSaleTab} name="sale" />
-              </div>
-
-              <div className="filters-check-box">
-                <CheckBox checked={includeWithoutMediaData} setChecked={setIncludeWithoutMediaData} outline>
-                  {t('table.text.include-without-media-data')}
-                </CheckBox>
-              </div>
+            <div>
+              {t('table.period')}
+              <DateAndTimeRange
+                period={period}
+                setPeriod={setPeriod}
+                defaultPeriod={periodQuery}
+                minDate="nft"
+                radio={true}
+              />
             </div>
-          </div>
-        </div>
+
+            <div>
+              {t('table.sales')}
+              <RadioOptions tabList={saleTabList} tab={saleTab} setTab={setSaleTab} name="sale" />
+            </div>
+
+            <div className="filters-check-box">
+              <CheckBox checked={includeWithoutMediaData} setChecked={setIncludeWithoutMediaData} outline>
+                {t('table.text.include-without-media-data')}
+              </CheckBox>
+            </div>
+          </>
+        </LeftFilters>
         <div className="content-text">
           <InfiniteScroll
             dataLength={sales.length}
