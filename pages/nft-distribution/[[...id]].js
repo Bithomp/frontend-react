@@ -392,7 +392,7 @@ export default function NftDistribution({ issuerQuery, taxonQuery, idQuery, orde
                           t('general.loading')
                         ) : (
                           <Trans i18nKey="general.renew-bithomp-pro">
-                            Your Bithomp Pro subscription has expired.{' '}
+                            Your Bithomp Pro subscription has expired.
                             <Link href="/admin/subscriptions">Renew your subscription</Link>.
                           </Trans>
                         )}
