@@ -185,7 +185,7 @@ export default function NftsComponent({
       ownerUrlPart = '&owner=' + newOwner
       if (rawData?.owner !== newOwner && rawData?.ownerDetails?.username?.toLowerCase() !== newOwner.toLowerCase()) {
         const issuersJson = await axios(
-          'v2/' + (xahauNetwork ? 'uritoken' : 'nft') + '-issuers?owner=' + newOwner
+          'v2/' + (xahauNetwork ? 'uritoken' : 'nft') + '-issuers?owner=' + newOwner + '&limit=200'
         ).catch((error) => {
           console.log(t('error.' + error.message))
         })
