@@ -134,6 +134,7 @@ export default function NftsComponent({
   const checkApi = async (options) => {
     if (nftExplorer && !mintedPeriod && listTab !== 'onSale') return
     if (!nftExplorer && !id && !owner) return
+    if (!order) return
 
     let marker = hasMore
     let nftsData = data
