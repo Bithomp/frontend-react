@@ -2,7 +2,6 @@ import { useTranslation } from 'next-i18next'
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import axios from 'axios'
-import { CSVLink } from 'react-csv'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
@@ -36,7 +35,6 @@ import AddressInput from '../components/UI/AddressInput'
 import LeftFilters from '../components/UI/LeftFilters'
 
 import LinkIcon from '../public/images/link.svg'
-import DownloadIcon from '../public/images/download.svg'
 
 export const getServerSideProps = async (context) => {
   const { query, locale } = context
@@ -102,7 +100,6 @@ export default function NftSales({
   const router = useRouter()
   const windowWidth = useWidth()
 
-  const [rendered, setRendered] = useState(false)
   const [data, setData] = useState(null)
   const [sales, setSales] = useState([])
   const [activeView, setActiveView] = useState(view)
@@ -118,7 +115,6 @@ export default function NftSales({
   const [seller, setSeller] = useState(sellerQuery)
   const [filtersHide, setFiltersHide] = useState(false)
   const [nftCount, setNftCount] = useState(null)
-  const [dateAndTimeNow, setDateAndTimeNow] = useState('')
   const [search, setSearch] = useState(searchQuery)
   const [includeWithoutMediaData, setIncludeWithoutMediaData] = useState(includeWithoutMediaDataQuery)
   const [sortMenuOpen, setSortMenuOpen] = useState(false)
@@ -136,10 +132,6 @@ export default function NftSales({
   ]
 
   useEffect(() => {
-    const date = new Date(Date.now()).toLocaleDateString([], { year: 'numeric', month: 'short', day: '2-digit' })
-    const time = new Date(Date.now()).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })
-    setDateAndTimeNow(date + ' at ' + time)
-    setRendered(true)
     updateSaleTabList({})
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
@@ -546,82 +538,72 @@ export default function NftSales({
             ))}
           </ul>
         </div>
-        <LeftFilters filtersHide={filtersHide} setFiltersHide={setFiltersHide}>
-          <>
-            <span className="filter-header-title">
-              {nftCount ? '1-' + nftCount + (hasMore ? ' ' + t('general.of-many') : '') : ''}
-            </span>
-            {rendered && (
-              <CSVLink
-                data={data?.sales || []}
-                headers={csvHeaders}
-                filename={'nft sales export ' + dateAndTimeNow + '.csv'}
-                className={'button-action thin narrow' + (!(data && data.sales?.length > 0) ? ' disabled' : '')}
-              >
-                <DownloadIcon /> CSV
-              </CSVLink>
-            )}
-          </>
-          <>
-            <AddressInput
-              title={t('table.issuer')}
-              placeholder={t('nfts.search-by-issuer')}
-              setValue={checkIssuerValue}
-              rawData={data}
-              type="issuer"
-            />
-            {!xahauNetwork && (
-              <FormInput
-                title={t('table.taxon')}
-                placeholder={t('nfts.search-by-taxon')}
-                setValue={onTaxonInput}
-                disabled={issuer ? false : true}
-                defaultValue={data?.taxon}
-              />
-            )}
-            <AddressInput
-              title={t('table.buyer')}
-              placeholder={t('nfts.search-by-buyer')}
-              setValue={checkBuyerValue}
-              rawData={data}
-              type="buyer"
-            />
-            <AddressInput
-              title={t('table.seller')}
-              placeholder={t('nfts.search-by-seller')}
-              setValue={checkSellerValue}
-              rawData={data}
-              type="seller"
-            />
+        <LeftFilters
+          filtersHide={filtersHide}
+          setFiltersHide={setFiltersHide}
+          count={nftCount}
+          hasMore={hasMore}
+          data={data?.sales || []}
+          csvHeaders={csvHeaders}
+        >
+          <AddressInput
+            title={t('table.issuer')}
+            placeholder={t('nfts.search-by-issuer')}
+            setValue={checkIssuerValue}
+            rawData={data}
+            type="issuer"
+          />
+          {!xahauNetwork && (
             <FormInput
-              title={t('table.name')}
-              placeholder={t('nfts.search-by-name')}
-              setValue={setSearch}
-              defaultValue={data?.search}
+              title={t('table.taxon')}
+              placeholder={t('nfts.search-by-taxon')}
+              setValue={onTaxonInput}
+              disabled={issuer ? false : true}
+              defaultValue={data?.taxon}
             />
+          )}
+          <AddressInput
+            title={t('table.buyer')}
+            placeholder={t('nfts.search-by-buyer')}
+            setValue={checkBuyerValue}
+            rawData={data}
+            type="buyer"
+          />
+          <AddressInput
+            title={t('table.seller')}
+            placeholder={t('nfts.search-by-seller')}
+            setValue={checkSellerValue}
+            rawData={data}
+            type="seller"
+          />
+          <FormInput
+            title={t('table.name')}
+            placeholder={t('nfts.search-by-name')}
+            setValue={setSearch}
+            defaultValue={data?.search}
+          />
 
-            <div>
-              {t('table.period')}
-              <DateAndTimeRange
-                period={period}
-                setPeriod={setPeriod}
-                defaultPeriod={periodQuery}
-                minDate="nft"
-                radio={true}
-              />
-            </div>
+          <div>
+            {t('table.period')}
+            <DateAndTimeRange
+              period={period}
+              setPeriod={setPeriod}
+              defaultPeriod={periodQuery}
+              minDate="nft"
+              radio={true}
+            />
+          </div>
 
-            <div>
-              {t('table.sales')}
-              <RadioOptions tabList={saleTabList} tab={saleTab} setTab={setSaleTab} name="sale" />
-            </div>
+          <div>
+            {t('table.sales')}
+            <RadioOptions tabList={saleTabList} tab={saleTab} setTab={setSaleTab} name="sale" />
+          </div>
 
-            <div className="filters-check-box">
-              <CheckBox checked={includeWithoutMediaData} setChecked={setIncludeWithoutMediaData} outline>
-                {t('table.text.include-without-media-data')}
-              </CheckBox>
-            </div>
-          </>
+          <div className="filters-check-box">
+            <CheckBox checked={includeWithoutMediaData} setChecked={setIncludeWithoutMediaData} outline>
+              {t('table.text.include-without-media-data')}
+            </CheckBox>
+          </div>
         </LeftFilters>
         <div className="content-text">
           <InfiniteScroll
