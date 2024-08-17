@@ -64,7 +64,7 @@ export default function NftVolumes({
   const [rawData, setRawData] = useState({})
   const [loading, setLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
-  const [period, setPeriod] = useState('')
+  const [period, setPeriod] = useState(periodQuery)
   const [saleTab, setSaleTab] = useState(sale)
   const [listTab, setListTab] = useState(list)
   const [currencyTab, setCurrencyTab] = useState(currency?.toLowerCase())
@@ -75,6 +75,7 @@ export default function NftVolumes({
   const [loadingChart, setLoadingChart] = useState(false)
   const [filtersHide, setFiltersHide] = useState(false)
   const [hasMore, setHasMore] = useState('first')
+  const [csvHeaders, setCsvHeaders] = useState([])
 
   const convertCurrency = sortCurrency || selectedCurrency
 
@@ -100,6 +101,36 @@ export default function NftVolumes({
 
   const checkApi = async () => {
     if (!period || !listTab || !convertCurrency) return
+
+    const constCsvHeaders = [
+      { label: t('table.sales'), key: 'sales' },
+      { label: t('table.volume') + ' (' + convertCurrency?.toUpperCase() + ')', key: 'volumeInConvertCurrency' }
+    ]
+
+    if (listTab === 'issuers') {
+      setCsvHeaders([
+        { label: t('table.issuer'), key: 'issuer' },
+        { label: t('table.name'), key: 'issuerDetails.service' },
+        { label: t('table.username'), key: 'issuerDetails.username' },
+        ...constCsvHeaders
+      ])
+    } else if (listTab === 'marketplaces') {
+      setCsvHeaders([
+        { label: t('table.marketplace'), key: 'marketplace' },
+        { label: t('table.minted'), key: 'nftokens.minted' },
+        { label: t('table.burned'), key: 'nftokens.burned' },
+        ...constCsvHeaders
+      ])
+    } else if (listTab === 'brokers') {
+      setCsvHeaders([
+        { label: t('table.broker'), key: 'broker' },
+        { label: t('table.name'), key: 'brokerDetails.service' },
+        { label: t('table.username'), key: 'brokerDetails.username' },
+        ...constCsvHeaders
+      ])
+    } else if (listTab === 'currencies') {
+      setCsvHeaders([{ label: t('table.amount'), key: 'amount' }, ...constCsvHeaders])
+    }
 
     let marker = hasMore
 
@@ -191,6 +222,11 @@ export default function NftVolumes({
               newdata[listTab][i].volumesInConvertCurrencies[convertCurrency],
               2
             )
+            if (listTab === 'currencies') {
+              newdata[listTab][i].amount = amountFormat(newdata[listTab][i]?.volumes[0].amount, {
+                maxFractionDigits: 2
+              })
+            }
           }
 
           setErrorMessage('')
@@ -639,14 +675,6 @@ export default function NftVolumes({
     router.reload()
   }
 
-  let csvHeaders = [
-    { label: t('table.issuer'), key: 'issuer' },
-    { label: t('table.name'), key: 'issuerDetails.service' },
-    { label: t('table.username'), key: 'issuerDetails.username' },
-    { label: t('table.sales'), key: 'sales' },
-    { label: t('table.volume') + ' (' + convertCurrency?.toUpperCase() + ')', key: 'volumeInConvertCurrency' }
-  ]
-
   const chartDivStyle =
     windowWidth > 600
       ? { flexGrow: 0, flexBasis: 'calc(50% - 20px)' }
@@ -691,7 +719,7 @@ export default function NftVolumes({
           <div>
             {t('table.period')}
             <DateAndTimeRange
-              periodQueryName="mintedPeriod"
+              periodQueryName="period"
               period={period}
               setPeriod={setPeriod}
               defaultPeriod={periodQuery}
