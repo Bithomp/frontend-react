@@ -33,6 +33,7 @@ import SimpleSelect from '../components/UI/SimpleSelect'
 import DateAndTimeRange from '../components/UI/DateAndTimeRange'
 import AddressInput from '../components/UI/AddressInput'
 import LeftFilters from '../components/UI/LeftFilters'
+import NftTabs from '../components/NftTabs'
 
 import LinkIcon from '../public/images/link.svg'
 
@@ -503,9 +504,7 @@ export default function NftSales({
       />
 
       <h1 className="center">{t('nft-sales.header')}</h1>
-      <p className="center">
-        <a href={'/nft-explorer?view=' + activeView + issuerTaxonUrlPart}>{t('nft-explorer.header')}</a>
-      </p>
+      <NftTabs tab="nft-sales" url={'/nft-explorer?view=' + activeView + issuerTaxonUrlPart} />
 
       <div
         className={`content-cols${sortMenuOpen ? ' is-sort-menu-open' : ''}${filtersHide ? ' is-filters-hide' : ''}`}

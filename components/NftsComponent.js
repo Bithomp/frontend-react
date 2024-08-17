@@ -31,6 +31,7 @@ import AddressInput from './UI/AddressInput'
 import ViewTogggle from './UI/ViewToggle'
 import SimpleSelect from './UI/SimpleSelect'
 import LeftFilters from './UI/LeftFilters'
+import NftTabs from './NftTabs'
 
 export default function NftsComponent({
   orderQuery,
@@ -94,6 +95,7 @@ export default function NftsComponent({
   const [currentOrderList, setCurrentOrderList] = useState(listTab !== 'onSale' ? orderNftsList : orderOnSaleList)
   const [order, setOrder] = useState(orderQuery)
   const [sortMenuOpen, setSortMenuOpen] = useState(false)
+  const [issuerTaxonUrlPart, setIssuerTaxonUrlPart] = useState('?view=' + activeView)
 
   const controller = new AbortController()
 
@@ -383,6 +385,14 @@ export default function NftsComponent({
     let queryRemoveList = []
 
     if (rawData) {
+      setIssuerTaxonUrlPart(
+        '?view=' +
+          activeView +
+          '&issuer=' +
+          usernameOrAddress(rawData, 'issuer') +
+          (isValidTaxon(rawData.taxon) ? '&taxon=' + rawData.taxon : '')
+      )
+
       if (nftExplorer) {
         if (isAddressOrUsername(rawData.owner)) {
           queryAddList.push({
@@ -522,15 +532,6 @@ export default function NftsComponent({
     setSortMenuOpen(false)
   }
 
-  const issuerTaxonUrlPart =
-    '?view=' +
-    activeView +
-    (rawData
-      ? '&issuer=' +
-        usernameOrAddress(rawData, 'issuer') +
-        (isValidTaxon(rawData.taxon) ? '&taxon=' + rawData.taxon : '')
-      : '')
-
   /*
   {
     "issuer": "rJxrRzDLjdUiahyLUESuPPR6ucBCUWoMfw",
@@ -616,9 +617,7 @@ export default function NftsComponent({
       {nftExplorer && (
         <>
           <h1 className="center">{t('nft-explorer.header') + ' '}</h1>
-          <p className="center">
-            <a href={'/nft-sales' + issuerTaxonUrlPart}>{t('nft-sales.header')}</a>
-          </p>
+          <NftTabs tab="nft-explorer" url={'/nft-sales' + issuerTaxonUrlPart} />
         </>
       )}
       <div
