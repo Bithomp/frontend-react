@@ -1,10 +1,10 @@
-import { useTranslation } from 'next-i18next'
+//import { useTranslation } from 'next-i18next'
 //import { useState, useEffect } from 'react'
 //import { useWidth, network } from '../../utils'
 //import axios from 'axios'
 
 export default function TopLinks() {
-  const { t } = useTranslation()
+  //const { t } = useTranslation()
   //const width = useWidth()
   //const [countryCode, setCountryCode] = useState('')
 
@@ -160,7 +160,6 @@ export default function TopLinks() {
         <a href="/go/buy-land" target="_blank" rel="noreferrer" className="top-link orange">
           Set up your spot in the metaverse. Join now.
         </a>
-        <span className="tooltiptext right small">{t('sponsored.sponsored')}</span>
       </span>
     </div>
   )
