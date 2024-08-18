@@ -194,7 +194,7 @@ export default function NftVolumes({
       '&sortCurrency=' +
       convertCurrency
 
-    if (listTab === 'issuers' && issuersExtended) {
+    if ((listTab === 'issuers' || listTab === 'collections') && issuersExtended) {
       apiUrl += '&floorPrice=true&statistics=true'
     }
 
@@ -690,7 +690,8 @@ export default function NftVolumes({
       : { width: '100%', marginLeft: 0, marginRight: '10px' }
 
   const collectionName = (data, type) => {
-    if (!data?.collectionDetails) return ''
+    if (!data?.collection) return ''
+    if (!data.collectionDetails) return data.collection
     const { name, family, description, issuer, taxon, collection } = data.collectionDetails
     if (type === 'mobile') {
       return (
@@ -731,7 +732,11 @@ export default function NftVolumes({
 
     let nameLink = name || data.collection
     if (nonSologenic(data)) {
-      nameLink = <Link href={'/nft-explorer?issuer=' + issuer + '&taxon=' + taxon}>{nameLink}</Link>
+      nameLink = (
+        <Link href={'/nft-explorer?issuer=' + issuer + '&taxon=' + taxon + '&includeWithoutMediaData=true'}>
+          {nameLink}
+        </Link>
+      )
     }
 
     if (family) {
@@ -787,7 +792,7 @@ export default function NftVolumes({
           csvHeaders={csvHeaders}
         >
           <div>
-            {listTab === 'issuers' && (
+            {(listTab === 'issuers' || listTab === 'collections') && (
               <CheckBox checked={issuersExtended} setChecked={setIssuersExtended}>
                 {t('table.text.show-extended-statistics')}
               </CheckBox>
