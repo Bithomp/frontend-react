@@ -1107,7 +1107,7 @@ export default function NftVolumes({
                                   (currency && currencyIssuer) ||
                                   currencyTab === 'xrp') && (
                                   <td className="right">
-                                    {amountFormat(volume.volumes[0]?.amount, { maxFractionDigits: 2 })}
+                                    {amountFormat(volume.volumes?.[0]?.amount, { maxFractionDigits: 2 })}
                                   </td>
                                 )}
                                 <td className="right">
