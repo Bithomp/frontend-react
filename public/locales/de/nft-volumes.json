@@ -1,6 +1,9 @@
 {
   "header": "NFT Verkaufsvolumen",
   "text0": "In diesem Zeitraum hatte XRPL {{allSales}} {{currency}} NFT {{saleType}} Verkäufe für {{allVolume}}.",
+  "collections": {
+    "desc": "This is the list of NFT collections. In den Volumen sind hier die Primärverkäufe (Mints) nicht enthalten, die innerhalb von 2 Transaktionen (Zahlung und NFT Transfer) getätigt wurden."
+  },
   "brokers": {
     "desc": "Dies ist die Liste der NFT Vermittlerkonten. Hier finden Sie zahlreiche Angebots-Matching-Bots. Marktplätze verwenden gemischte Handelsmodelle, hier können Sie nur die Volumen durch das Vermittler-Modell sehen.",
     "no-broker": "Kein Vermittler",

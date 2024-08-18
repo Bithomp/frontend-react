@@ -31,7 +31,9 @@
       "distribution": "Distribucija (holderi)",
       "statistics": "Statistike uživo",
       "nfts": "NFTovi računa",
-      "offers": "Ponude"
+      "offers": "Ponude",
+      "marketplaces": "Tržnice",
+      "collections": "Kolekcije"
     },
     "network": {
       "blockchain": "Blockchain",
@@ -429,6 +431,7 @@
     "external-url": "Eksterni URL",
     "description": "Opis",
     "collection": "Kolekcija",
+    "collection-family": "Kolekcijska obitelj",
     "transfer-fee": "Naknada",
     "flag": "Zastavica",
     "flags": "Zastavice",
@@ -508,6 +511,8 @@
     "issuers": "Izdavači",
     "marketplaces": "Tržnica",
     "brokers": "Brokeri",
+    "charts": "Grafovi",
+    "collections": "Kolekcije",
     "image": "Slika",
     "video": "Video",
     "audio": "Audio",

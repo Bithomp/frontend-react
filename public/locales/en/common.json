@@ -31,7 +31,9 @@
       "distribution": "Distribution (holders)",
       "statistics": "Live statistics",
       "nfts": "Account's NFTs",
-      "offers": "Offers"
+      "offers": "Offers",
+      "marketplaces": "Marketplaces",
+      "collections": "Collections"
     },
     "network": {
       "blockchain": "Blockchain",
@@ -429,6 +431,7 @@
     "external-url": "External URL",
     "description": "Description",
     "collection": "Collection",
+    "collection-family": "Collection family",
     "transfer-fee": "Royalty",
     "flag": "Flag",
     "flags": "Flags",
@@ -508,6 +511,8 @@
     "issuers": "Issuers",
     "marketplaces": "Marketplaces",
     "brokers": "Brokers",
+    "charts": "Charts",
+    "collections": "Collections",
     "image": "Image",
     "video": "Video",
     "audio": "Audio",
