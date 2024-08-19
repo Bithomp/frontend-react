@@ -12,6 +12,7 @@ export const getServerSideProps = async (context) => {
   const { period, sale, list, currency, currencyIssuer, sortCurrency, extendedStats } = query
   return {
     props: {
+      key: Math.random(),
       extendedStatsQuery: extendedStats || false,
       periodQuery: period || 'week',
       sale: sale || 'secondary',
