@@ -520,6 +520,37 @@ export default function NftVolumes({
     return urlPart + '&includeWithoutMediaData=true'
   }
 
+  const nftExplorerLink = (data, options = {}) => {
+    if (!data) return ''
+    const { onSale, text } = options
+    let params = '?includeWithoutMediaData=true&issuer='
+    if (data.collectionDetails?.issuer && (data.collectionDetails?.taxon || data.collectionDetails?.taxon === 0)) {
+      params += data.collectionDetails.issuer + '&taxon=' + data.collectionDetails.taxon
+    } else if (data.issuer) {
+      params += usernameOrAddress(data, 'issuer')
+    } else {
+      return ''
+    }
+    return <Link href={'/nft-explorer' + params + (onSale ? '&list=onSale' : '')}>{text || <LinkIcon />}</Link>
+  }
+
+  const nftDistributionLink = (data) => {
+    if (!data) return ''
+    let params = '?issuer='
+    if (data.collectionDetails?.issuer && (data.collectionDetails?.taxon || data.collectionDetails?.taxon === 0)) {
+      params += data.collectionDetails.issuer + '&taxon=' + data.collectionDetails.taxon
+    } else if (data.issuer) {
+      params += usernameOrAddress(data, 'issuer')
+    } else {
+      return ''
+    }
+    return (
+      <Link href={'/nft-distribution/' + params}>
+        <LinkIcon />
+      </Link>
+    )
+  }
+
   const sortTable = (key) => {
     if (!data || !data[0] || !(data[0][key] || data[0].volumesInConvertCurrencies[convertCurrency])) return
     let direction = 'descending'
@@ -655,9 +686,7 @@ export default function NftVolumes({
         return (
           <>
             {output}
-            <Link href={'/nft-explorer?issuer=' + usernameOrAddress(volume, 'issuer') + '&list=onSale'}>
-              <LinkIcon />
-            </Link>
+            {nftExplorerLink(volume, { onSale: true })}
             {tableWithFloors}
           </>
         )
@@ -666,10 +695,7 @@ export default function NftVolumes({
     if (output) {
       return (
         <>
-          {output}{' '}
-          <Link href={'/nft-explorer?issuer=' + usernameOrAddress(volume, 'issuer') + '&list=onSale'}>
-            <LinkIcon />
-          </Link>
+          {output} {nftExplorerLink(volume, { onSale: true })}
         </>
       )
     } else {
@@ -732,11 +758,7 @@ export default function NftVolumes({
 
     let nameLink = name || data.collection
     if (nonSologenic(data)) {
-      nameLink = (
-        <Link href={'/nft-explorer?issuer=' + issuer + '&taxon=' + taxon + '&includeWithoutMediaData=true'}>
-          {nameLink}
-        </Link>
-      )
+      nameLink = nftExplorerLink(data, { text: nameLink })
     }
 
     if (family) {
@@ -1053,18 +1075,12 @@ export default function NftVolumes({
                                 )}
                                 {(listTab === 'issuers' || listTab === 'collections') && issuersExtended && (
                                   <td className="right hide-on-mobile">
-                                    {shortNiceNumber(volume.statistics?.nfts, 0)}{' '}
-                                    <Link href={'/nft-explorer?issuer=' + usernameOrAddress(volume, 'issuer')}>
-                                      <LinkIcon />
-                                    </Link>
+                                    {shortNiceNumber(volume.statistics?.nfts, 0)} {nftExplorerLink(volume)}
                                   </td>
                                 )}
                                 {(listTab === 'issuers' || listTab === 'collections') && issuersExtended && (
                                   <td className="right hide-on-mobile">
-                                    {shortNiceNumber(volume.statistics?.owners, 0)}{' '}
-                                    <Link href={'/nft-distribution/' + usernameOrAddress(volume, 'issuer')}>
-                                      <LinkIcon />
-                                    </Link>
+                                    {shortNiceNumber(volume.statistics?.owners, 0)} {nftDistributionLink(volume)}
                                   </td>
                                 )}
                                 {(listTab === 'issuers' || listTab === 'collections') && issuersExtended && (
@@ -1237,15 +1253,11 @@ export default function NftVolumes({
                                 <>
                                   <p>
                                     {t('table.nfts-now')}: {shortNiceNumber(volume.statistics?.nfts, 0)}{' '}
-                                    <Link href={'/nft-explorer?issuer=' + usernameOrAddress(volume, 'issuer')}>
-                                      <LinkIcon />
-                                    </Link>
+                                    {nftExplorerLink(volume)}
                                   </p>
                                   <p>
                                     {t('table.owners-now')}: {shortNiceNumber(volume.statistics?.owners, 0)}{' '}
-                                    <Link href={'/nft-distribution/' + usernameOrAddress(volume, 'issuer')}>
-                                      <LinkIcon />
-                                    </Link>
+                                    {nftDistributionLink(volume)}
                                   </p>
                                   {showFloor(volume) ? (
                                     <div>
