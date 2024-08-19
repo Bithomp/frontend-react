@@ -25,8 +25,8 @@ export default function AdminTabs({ tab, url }) {
   if (!rendered) return <div style={{ height: '51px' }}></div>
 
   return (
-    <p className="center">
+    <div className="center">
       <Tabs tabList={mainTabs} tab={tab} setTab={changePage} name="nftTabs" />
-    </p>
+    </div>
   )
 }
