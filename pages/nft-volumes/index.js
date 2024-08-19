@@ -9,9 +9,10 @@ import { getIsSsrMobile } from '../../utils/mobile'
 
 export const getServerSideProps = async (context) => {
   const { query, locale } = context
-  const { period, sale, list, currency, currencyIssuer, sortCurrency } = query
+  const { period, sale, list, currency, currencyIssuer, sortCurrency, extendedStats } = query
   return {
     props: {
+      extendedStatsQuery: extendedStats || false,
       periodQuery: period || 'week',
       sale: sale || 'secondary',
       list: list || 'issuers',
@@ -47,6 +48,7 @@ import RadioOptions from '../../components/UI/RadioOptions'
 import { collectionThumbnail } from '../../utils/nft'
 
 export default function NftVolumes({
+  extendedStatsQuery,
   periodQuery,
   sale,
   list,
@@ -70,7 +72,7 @@ export default function NftVolumes({
   const [listTab, setListTab] = useState(list)
   const [currencyTab, setCurrencyTab] = useState(currency?.toLowerCase())
   const [sortConfig, setSortConfig] = useState({})
-  const [issuersExtended, setIssuersExtended] = useState(false)
+  const [extendedStats, setExtendedStats] = useState(extendedStatsQuery)
   const [chartIssuers, setChartIssuers] = useState([])
   const [chartVolumes, setChartVolumes] = useState([])
   const [loadingChart, setLoadingChart] = useState(false)
@@ -194,7 +196,7 @@ export default function NftVolumes({
       '&sortCurrency=' +
       convertCurrency
 
-    if ((listTab === 'issuers' || listTab === 'collections') && issuersExtended) {
+    if ((listTab === 'issuers' || listTab === 'collections') && extendedStats) {
       apiUrl += '&floorPrice=true&statistics=true'
     }
 
@@ -483,6 +485,16 @@ export default function NftVolumes({
         value: 'xrp'
       })
     }
+
+    if (extendedStats) {
+      queryAddList.push({
+        name: 'extendedStats',
+        value: true
+      })
+    } else {
+      queryRemoveList.push('extendedStats')
+    }
+
     setTabParams(router, tabsToSet, queryAddList, queryRemoveList)
 
     setSortConfig({})
@@ -492,7 +504,7 @@ export default function NftVolumes({
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isReady, saleTab, period, listTab, currencyIssuer, convertCurrency, issuersExtended, currencyTab])
+  }, [isReady, saleTab, period, listTab, currencyIssuer, convertCurrency, extendedStats, currencyTab])
 
   const urlParams = (volume, options) => {
     let urlPart = '?period=' + period + '&sale=' + saleTab
@@ -508,11 +520,14 @@ export default function NftVolumes({
         urlPart = urlPart + '&currency=xrp'
       }
     }
-    if (volume?.issuer && !options?.excludeIssuer) {
-      urlPart = urlPart + '&issuer=' + usernameOrAddress(volume, 'issuer')
-    }
-    if (nonSologenic(volume) && !options?.excludeIssuer) {
-      urlPart = urlPart + '&issuer=' + volume.collectionDetails.issuer + '&taxon=' + volume.collectionDetails.taxon
+    if (!options?.excludeIssuer) {
+      if (volume?.issuer) {
+        urlPart = urlPart + '&issuer=' + usernameOrAddress(volume, 'issuer')
+      } else if (nonSologenic(volume)) {
+        urlPart = urlPart + '&issuer=' + volume.collectionDetails.issuer + '&taxon=' + volume.collectionDetails.taxon
+      } else if (volume?.collection) {
+        urlPart = urlPart + '&collection=' + volume.collection
+      }
     }
     if (volume?.marketplace) {
       urlPart += '&marketplace=' + volume.marketplace
@@ -523,11 +538,13 @@ export default function NftVolumes({
   const nftExplorerLink = (data, options = {}) => {
     if (!data) return ''
     const { onSale, text } = options
-    let params = '?includeWithoutMediaData=true&issuer='
+    let params = '?includeWithoutMediaData=true'
     if (data.collectionDetails?.issuer && (data.collectionDetails?.taxon || data.collectionDetails?.taxon === 0)) {
-      params += data.collectionDetails.issuer + '&taxon=' + data.collectionDetails.taxon
+      params += '&issuer=' + data.collectionDetails.issuer + '&taxon=' + data.collectionDetails.taxon
     } else if (data.issuer) {
-      params += usernameOrAddress(data, 'issuer')
+      params += '&issuer=' + usernameOrAddress(data, 'issuer')
+    } else if (data.collection) {
+      params += '&collection=' + data.collection
     } else {
       return ''
     }
@@ -546,6 +563,17 @@ export default function NftVolumes({
     }
     return (
       <Link href={'/nft-distribution/' + params}>
+        <LinkIcon />
+      </Link>
+    )
+  }
+
+  const nftSalesLink = (data) => {
+    if (!data) return ''
+    if (!nonSologenic(data)) return '' //no links for collections yet
+    return (
+      <Link href={'/nft-sales' + urlParams(data)}>
+        {' '}
         <LinkIcon />
       </Link>
     )
@@ -756,10 +784,7 @@ export default function NftVolumes({
       )
     }
 
-    let nameLink = name || data.collection
-    if (nonSologenic(data)) {
-      nameLink = nftExplorerLink(data, { text: nameLink })
-    }
+    let nameLink = nftExplorerLink(data, { text: name || data.collection })
 
     if (family) {
       if (
@@ -815,7 +840,7 @@ export default function NftVolumes({
         >
           <div>
             {(listTab === 'issuers' || listTab === 'collections') && (
-              <CheckBox checked={issuersExtended} setChecked={setIssuersExtended}>
+              <CheckBox checked={extendedStats} setChecked={setExtendedStats}>
                 {t('table.text.show-extended-statistics')}
               </CheckBox>
             )}
@@ -969,7 +994,7 @@ export default function NftVolumes({
                     {listTab === 'marketplaces' && <th>{t('table.marketplace')}</th>}
                     {listTab === 'marketplaces' && <th className="right">{t('table.minted')}</th>}
                     {listTab === 'issuers' && <th>{t('table.issuer')}</th>}
-                    {(listTab === 'issuers' || listTab === 'collections') && issuersExtended && (
+                    {(listTab === 'issuers' || listTab === 'collections') && extendedStats && (
                       <th className="right hide-on-mobile">
                         {t('table.nfts-now')}{' '}
                         <b
@@ -980,7 +1005,7 @@ export default function NftVolumes({
                         </b>
                       </th>
                     )}
-                    {(listTab === 'issuers' || listTab === 'collections') && issuersExtended && (
+                    {(listTab === 'issuers' || listTab === 'collections') && extendedStats && (
                       <th className="right hide-on-mobile">
                         {t('table.owners-now')}{' '}
                         <b
@@ -991,10 +1016,10 @@ export default function NftVolumes({
                         </b>
                       </th>
                     )}
-                    {(listTab === 'issuers' || listTab === 'collections') && issuersExtended && (
+                    {(listTab === 'issuers' || listTab === 'collections') && extendedStats && (
                       <th className="right">{t('table.floor-now')}</th>
                     )}
-                    {(listTab === 'issuers' || listTab === 'collections') && issuersExtended && (
+                    {(listTab === 'issuers' || listTab === 'collections') && extendedStats && (
                       <th className="right hide-on-mobile">
                         {t('table.traded-nfts')}{' '}
                         <b
@@ -1016,7 +1041,7 @@ export default function NftVolumes({
                         ⇅
                       </b>
                     </th>
-                    {(listTab === 'issuers' || listTab === 'collections') && issuersExtended && (
+                    {(listTab === 'issuers' || listTab === 'collections') && extendedStats && (
                       <th className="right hide-on-mobile">
                         {t('table.buyers')}{' '}
                         <b
@@ -1073,20 +1098,20 @@ export default function NftVolumes({
                                 {listTab === 'issuers' && (
                                   <td>{addressUsernameOrServiceLink(volume, 'issuer', { short: true })}</td>
                                 )}
-                                {(listTab === 'issuers' || listTab === 'collections') && issuersExtended && (
+                                {(listTab === 'issuers' || listTab === 'collections') && extendedStats && (
                                   <td className="right hide-on-mobile">
                                     {shortNiceNumber(volume.statistics?.nfts, 0)} {nftExplorerLink(volume)}
                                   </td>
                                 )}
-                                {(listTab === 'issuers' || listTab === 'collections') && issuersExtended && (
+                                {(listTab === 'issuers' || listTab === 'collections') && extendedStats && (
                                   <td className="right hide-on-mobile">
                                     {shortNiceNumber(volume.statistics?.owners, 0)} {nftDistributionLink(volume)}
                                   </td>
                                 )}
-                                {(listTab === 'issuers' || listTab === 'collections') && issuersExtended && (
+                                {(listTab === 'issuers' || listTab === 'collections') && extendedStats && (
                                   <td className="right">{showFloor(volume)}</td>
                                 )}
-                                {(listTab === 'issuers' || listTab === 'collections') && issuersExtended && (
+                                {(listTab === 'issuers' || listTab === 'collections') && extendedStats && (
                                   <td className="right hide-on-mobile">
                                     {shortNiceNumber(volume.statistics?.tradedNfts, 0)}
                                   </td>
@@ -1112,14 +1137,9 @@ export default function NftVolumes({
                                 <td className="right">
                                   {shortNiceNumber(volume.sales, 0)}
                                   {rawData?.summary && <> {persentFormat(volume.sales, rawData.summary.all.sales)}</>}
-                                  {listTab !== 'brokers' && (listTab !== 'collections' || nonSologenic(volume)) && (
-                                    <Link href={'/nft-sales' + urlParams(volume)}>
-                                      {' '}
-                                      <LinkIcon />
-                                    </Link>
-                                  )}
+                                  {listTab !== 'brokers' && nftSalesLink(volume)}
                                 </td>
-                                {(listTab === 'issuers' || listTab === 'collections') && issuersExtended && (
+                                {(listTab === 'issuers' || listTab === 'collections') && extendedStats && (
                                   <td className="right hide-on-mobile">
                                     {shortNiceNumber(volume.statistics?.buyers, 0)}
                                   </td>
@@ -1249,7 +1269,7 @@ export default function NftVolumes({
                                   {t('table.issuer')}: {addressUsernameOrServiceLink(volume, 'issuer')}
                                 </p>
                               )}
-                              {(listTab === 'issuers' || listTab === 'collections') && issuersExtended && (
+                              {(listTab === 'issuers' || listTab === 'collections') && extendedStats && (
                                 <>
                                   <p>
                                     {t('table.nfts-now')}: {shortNiceNumber(volume.statistics?.nfts, 0)}{' '}
@@ -1274,14 +1294,9 @@ export default function NftVolumes({
                               <p>
                                 {t('table.sales')}: {shortNiceNumber(volume.sales, 0)}
                                 {rawData?.summary && <> {persentFormat(volume.sales, rawData.summary.all.sales)}</>}
-                                {listTab !== 'brokers' && (listTab !== 'collections' || nonSologenic(volume)) && (
-                                  <Link href={'/nft-sales' + urlParams(volume)}>
-                                    {' '}
-                                    <LinkIcon />
-                                  </Link>
-                                )}
+                                {listTab !== 'brokers' && nftSalesLink(volume)}
                               </p>
-                              {issuersExtended && (
+                              {extendedStats && (
                                 <p>
                                   {t('table.buyers')}: {shortNiceNumber(volume.statistics?.buyers, 0)}
                                 </p>

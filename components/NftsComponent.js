@@ -34,6 +34,7 @@ import LeftFilters from './UI/LeftFilters'
 import NftTabs from './NftTabs'
 
 export default function NftsComponent({
+  collectionQuery,
   orderQuery,
   view,
   list,
@@ -96,6 +97,7 @@ export default function NftsComponent({
   const [order, setOrder] = useState(orderQuery)
   const [sortMenuOpen, setSortMenuOpen] = useState(false)
   const [issuerTaxonUrlPart, setIssuerTaxonUrlPart] = useState('?view=' + activeView)
+  const [collectionUrlPart, setCollectionUrlPart] = useState(collectionQuery ? '&collection=' + collectionQuery : '')
 
   const controller = new AbortController()
 
@@ -150,7 +152,7 @@ export default function NftsComponent({
     let listUrlPart = '?list=' + (xahauNetwork ? 'uritokens' : 'nfts')
 
     let ownerUrlPart = ''
-    let collectionUrlPart = ''
+    let issuerTaxonUrlPart = ''
     let markerUrlPart = ''
     let searchPart = ''
     let serialPart = ''
@@ -158,6 +160,7 @@ export default function NftsComponent({
     let orderPart = ''
     let includeBurnedPart = includeBurned ? '&includeDeleted=true' : ''
     let hasImagePart = !includeWithoutMediaData ? '&hasImage=true' : ''
+    let collectionUrlPart = collectionQuery ? '&collection=' + collectionQuery : ''
 
     if (listTab === 'onSale') {
       //destination: "public", "knownBrokers", "publicAndKnownBrokers", "all", "buyNow"
@@ -196,9 +199,9 @@ export default function NftsComponent({
     }
 
     if (issuer) {
-      collectionUrlPart = '&issuer=' + issuer
+      issuerTaxonUrlPart = '&issuer=' + issuer
       if (isValidTaxon(taxon)) {
-        collectionUrlPart += '&taxon=' + taxon
+        issuerTaxonUrlPart += '&taxon=' + taxon
       }
     }
 
@@ -223,7 +226,7 @@ export default function NftsComponent({
       setLoading(true)
     }
 
-    if (!ownerUrlPart && !collectionUrlPart && !searchPart && !serialPart && !mintAndBurnPart) {
+    if (!ownerUrlPart && !issuerTaxonUrlPart && !collectionUrlPart && !searchPart && !serialPart && !mintAndBurnPart) {
       // reverse and show only with meta
       // on the first load when no params
       if (listTab === 'onSale') {
@@ -238,6 +241,7 @@ export default function NftsComponent({
         (xahauNetwork ? 'uritokens' : 'nfts') +
         listUrlPart +
         ownerUrlPart +
+        issuerTaxonUrlPart +
         collectionUrlPart +
         markerUrlPart +
         searchPart +
@@ -392,6 +396,8 @@ export default function NftsComponent({
           usernameOrAddress(rawData, 'issuer') +
           (isValidTaxon(rawData.taxon) ? '&taxon=' + rawData.taxon : '')
       )
+
+      setCollectionUrlPart(rawData.collection ? '&collection=' + rawData.collection : '')
 
       if (nftExplorer) {
         if (isAddressOrUsername(rawData.owner)) {
@@ -617,7 +623,7 @@ export default function NftsComponent({
       {nftExplorer && (
         <>
           <h1 className="center">{t('nft-explorer.header') + ' '}</h1>
-          <NftTabs tab="nft-explorer" url={'/nft-sales' + issuerTaxonUrlPart} />
+          <NftTabs tab="nft-explorer" url={'/nft-sales' + issuerTaxonUrlPart + collectionUrlPart} />
         </>
       )}
       <div

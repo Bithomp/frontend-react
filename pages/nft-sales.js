@@ -40,6 +40,7 @@ import LinkIcon from '../public/images/link.svg'
 export const getServerSideProps = async (context) => {
   const { query, locale } = context
   const {
+    collection,
     order,
     view,
     sale,
@@ -59,6 +60,7 @@ export const getServerSideProps = async (context) => {
   return {
     props: {
       key: Math.random(),
+      collectionQuery: collection || '',
       orderQuery: order || 'priceHigh',
       view: view || 'tiles',
       sale: sale || 'all',
@@ -80,6 +82,7 @@ export const getServerSideProps = async (context) => {
 }
 
 export default function NftSales({
+  collectionQuery,
   orderQuery,
   view,
   sale,
@@ -120,6 +123,8 @@ export default function NftSales({
   const [includeWithoutMediaData, setIncludeWithoutMediaData] = useState(includeWithoutMediaDataQuery)
   const [sortMenuOpen, setSortMenuOpen] = useState(false)
   const [saleTabList, setSaleTabList] = useState([])
+  const [issuerTaxonUrlPart, setIssuerTaxonUrlPart] = useState('?view=' + activeView)
+  const [collectionUrlPart, setCollectionUrlPart] = useState(collectionQuery ? '&collection=' + collectionQuery : '')
 
   const controller = new AbortController()
 
@@ -195,12 +200,13 @@ export default function NftSales({
     let sellerUrlPart = seller ? '&seller=' + seller : ''
     let searchPart = ''
     let hasImagePart = !includeWithoutMediaData ? '&hasImage=true' : ''
-    let collectionUrlPart = ''
+    let issuerTaxonUrlPart = ''
+    let collectionUrlPart = collectionQuery ? '&collection=' + collectionQuery : ''
 
     if (issuer) {
-      collectionUrlPart = '&issuer=' + issuer
+      issuerTaxonUrlPart = '&issuer=' + issuer
       if (isValidTaxon(taxon)) {
-        collectionUrlPart += '&taxon=' + taxon
+        issuerTaxonUrlPart += '&taxon=' + taxon
       }
     }
 
@@ -228,6 +234,7 @@ export default function NftSales({
         currencyUrlPart() +
         '&saleType=' +
         saleTab +
+        issuerTaxonUrlPart +
         collectionUrlPart +
         periodUrlPart +
         markerUrlPart +
@@ -327,6 +334,18 @@ export default function NftSales({
   useEffect(() => {
     let queryAddList = []
     let queryRemoveList = []
+
+    if (data) {
+      setIssuerTaxonUrlPart(
+        '?view=' +
+          activeView +
+          '&issuer=' +
+          usernameOrAddress(data, 'issuer') +
+          (isValidTaxon(data.taxon) ? '&taxon=' + data.taxon : '')
+      )
+      setCollectionUrlPart(data.collection ? '&collection=' + data.collection : '')
+    }
+
     if (isAddressOrUsername(data?.issuer)) {
       queryAddList.push({
         name: 'issuer',
@@ -443,11 +462,6 @@ export default function NftSales({
     }
   }
 
-  const issuerTaxonUrlPart =
-    data && issuer
-      ? '&issuer=' + usernameOrAddress(data, 'issuer') + (isValidTaxon(taxon) ? '&taxon=' + taxon : '')
-      : ''
-
   const currencyUrlPart = () => {
     if (!currency) return ''
 
@@ -504,7 +518,7 @@ export default function NftSales({
       />
 
       <h1 className="center">{t('nft-sales.header')}</h1>
-      <NftTabs tab="nft-sales" url={'/nft-explorer?view=' + activeView + issuerTaxonUrlPart} />
+      <NftTabs tab="nft-sales" url={'/nft-explorer?view=' + activeView + issuerTaxonUrlPart + collectionUrlPart} />
 
       <div
         className={`content-cols${sortMenuOpen ? ' is-sort-menu-open' : ''}${filtersHide ? ' is-filters-hide' : ''}`}
