@@ -1259,7 +1259,7 @@ export default function NftVolumes({
                               )}
                             </td>
                             <td>
-                              {listTab === 'collections' && collectionName(volume, 'mobile')}
+                              {listTab === 'collections' && <p>{collectionName(volume, 'mobile')}</p>}
                               {listTab === 'marketplaces' && (
                                 <p>
                                   {t('table.marketplace')}: {volume.marketplace}
