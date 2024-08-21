@@ -3,7 +3,7 @@ $width: 340px;
 .filters {
   z-index: 3;
 
-  @media(min-width: 1300px) {
+  @media (min-width: 1300px) {
     & + .content-text {
       min-height: calc(100vh - 81px) !important;
       padding-top: 16px;
@@ -28,7 +28,7 @@ $width: 340px;
     z-index: 3;
     pointer-events: none;
 
-    @media(max-width: 1300px) {
+    @media (max-width: 1300px) {
       top: 12px;
     }
 
@@ -40,7 +40,7 @@ $width: 340px;
       align-items: center;
       gap: 15px;
 
-      @media(max-width: 1300px) {
+      @media (max-width: 1300px) {
         gap: 8px;
         margin-bottom: 8px;
       }
@@ -48,7 +48,7 @@ $width: 340px;
   }
 
   &__box {
-    @media(min-width: 1300px) {
+    @media (min-width: 1300px) {
       position: sticky;
       top: 81px;
       padding: 20px 15px;
@@ -75,13 +75,13 @@ $width: 340px;
       }
     }
 
-    @media(max-width: 1300px) {
+    @media (max-width: 1300px) {
       height: 100%;
     }
   }
 
   .content-cols.is-filters-hide & {
-    @media(min-width: 1300px) {
+    @media (min-width: 1300px) {
       width: 0;
     }
   }
@@ -97,7 +97,7 @@ $width: 340px;
       color: #fff;
     }
 
-    @media(min-width: 1300px) {
+    @media (min-width: 1300px) {
       display: none;
     }
   }
@@ -106,12 +106,13 @@ $width: 340px;
     margin: 64px 0 25px 0;
     width: 100%;
 
-    @media(max-width: 440px) {
+    @media (max-width: 440px) {
       margin: 55px 0 15px 0;
     }
 
-    th, td {
-      @media(max-width: 1550px) {
+    th,
+    td {
+      @media (max-width: 1550px) {
         padding: 5px;
         font-size: 12px;
       }
@@ -127,7 +128,7 @@ $width: 340px;
     align-items: center;
     justify-content: space-between;
 
-    @media(min-width: 1300px) {
+    @media (min-width: 1300px) {
       height: 38px;
     }
 
@@ -138,12 +139,12 @@ $width: 340px;
     }
 
     .filter-header-title {
-      @media(min-width: 1300px) {
+      @media (min-width: 1300px) {
         margin-left: 55px;
         width: calc(100% - 140px);
         text-align: center;
       }
-      @media(max-width: 1300px) {
+      @media (max-width: 1300px) {
         font-size: 16px;
         margin-left: -50px;
       }
@@ -163,17 +164,17 @@ $width: 340px;
     }
 
     .filters-body > * {
-      @media(min-width: 1300px) {
+      @media (min-width: 1300px) {
         margin-bottom: 20px;
       }
 
-      @media(max-width: 1300px) {
+      @media (max-width: 1300px) {
         max-width: 620px;
         margin: 0 auto 20px;
       }
     }
 
-    @media(min-width: 1300px) {
+    @media (min-width: 1300px) {
       .content-cols.is-filters-hide & {
         display: none;
       }
@@ -195,6 +196,10 @@ $width: 340px;
 
       .content-cols.is-filters-hide & {
         transform: translateY(0);
+
+        .content-text {
+          pointer-events: none;
+        }
       }
     }
   }
@@ -215,12 +220,12 @@ $width: 340px;
     cursor: pointer;
     color: var(--background-block);
 
-    @media(min-width: 440px) {
+    @media (min-width: 440px) {
       width: 38px;
       height: 38px;
     }
 
-    @media(max-width: 440px) {
+    @media (max-width: 440px) {
       padding: 5px;
     }
 
