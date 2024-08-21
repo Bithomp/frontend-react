@@ -1170,7 +1170,7 @@ export default function NftVolumes({
                                   </td>
                                 )}
                                 <td className="right">
-                                  <span className="tooltip">
+                                  <span className={listTab !== 'currencies' ? 'tooltip' : ''}>
                                     {niceNumber(volume.volumesInConvertCurrencies[convertCurrency], 2, convertCurrency)}
                                     {listTab !== 'currencies' && (
                                       <table
