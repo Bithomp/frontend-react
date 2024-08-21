@@ -63,7 +63,7 @@ export const getServerSideProps = async (context) => {
       collectionQuery: collection || '',
       orderQuery: order || 'priceHigh',
       view: view || 'tiles',
-      sale: sale || 'all',
+      sale: sale || 'primaryAndSecondary',
       currency: currency || '',
       currencyIssuer: currencyIssuer || '',
       issuerQuery: issuer || '',
@@ -122,7 +122,20 @@ export default function NftSales({
   const [search, setSearch] = useState(searchQuery)
   const [includeWithoutMediaData, setIncludeWithoutMediaData] = useState(includeWithoutMediaDataQuery)
   const [sortMenuOpen, setSortMenuOpen] = useState(false)
-  const [saleTabList, setSaleTabList] = useState([])
+  const [saleTabList, setSaleTabList] = useState([
+    {
+      value: 'primaryAndSecondary',
+      label: t('tabs.primaryAndSecondary-sales')
+    },
+    {
+      value: 'secondary',
+      label: t('tabs.secondary-sales')
+    },
+    {
+      value: 'primary',
+      label: t('tabs.primary-sales')
+    }
+  ])
   const [issuerTaxonUrlPart, setIssuerTaxonUrlPart] = useState('?view=' + activeView)
   const [collectionUrlPart, setCollectionUrlPart] = useState(collectionQuery ? '&collection=' + collectionQuery : '')
 
@@ -150,7 +163,7 @@ export default function NftSales({
   const updateSaleTabList = (total) => {
     setSaleTabList([
       {
-        value: 'all',
+        value: 'primaryAndSecondary',
         label:
           t('tabs.primaryAndSecondary-sales') +
           (total?.secondary || total?.primary
@@ -408,7 +421,7 @@ export default function NftSales({
         {
           tabList: saleTabList,
           tab: saleTab,
-          defaultTab: 'all',
+          defaultTab: 'primaryAndSecondary',
           setTab: setSaleTab,
           paramName: 'sale'
         },
