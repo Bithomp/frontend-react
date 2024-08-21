@@ -571,13 +571,30 @@ export default function NftVolumes({
 
   const nftSalesLink = (data) => {
     if (!data) return ''
-    if (!nonSologenic(data)) return '' //no links for collections yet
     return (
       <Link href={'/nft-sales' + urlParams(data)}>
         {' '}
         <LinkIcon />
       </Link>
     )
+  }
+
+  const nftVolumesLink = (data) => {
+    if (!data) return ''
+    if (data.issuer) {
+      return (
+        <Link
+          href={
+            '/nft-volumes/' +
+            usernameOrAddress(data, 'issuer') +
+            urlParams(data, { excludeIssuer: true, excludeCurrency: true })
+          }
+        >
+          {' '}
+          <LinkIcon />
+        </Link>
+      )
+    }
   }
 
   const sortTable = (key) => {
@@ -1195,18 +1212,7 @@ export default function NftVolumes({
                                     volume.volumesInConvertCurrencies[convertCurrency],
                                     rawData.summary.all.volumesInConvertCurrencies[convertCurrency]
                                   )}
-                                  {listTab === 'issuers' && (
-                                    <Link
-                                      href={
-                                        '/nft-volumes/' +
-                                        usernameOrAddress(volume, 'issuer') +
-                                        urlParams(volume, { excludeIssuer: true, excludeCurrency: true })
-                                      }
-                                    >
-                                      {' '}
-                                      <LinkIcon />
-                                    </Link>
-                                  )}
+                                  {(listTab === 'issuers' || listTab === 'collections') && nftVolumesLink(volume)}
                                 </td>
                               </tr>
                             ))}
@@ -1314,18 +1320,7 @@ export default function NftVolumes({
                                     )}
                                   </>
                                 )}
-                                {listTab === 'issuers' && (
-                                  <Link
-                                    href={
-                                      '/nft-volumes/' +
-                                      usernameOrAddress(volume, 'issuer') +
-                                      urlParams(volume, { excludeIssuer: true, excludeCurrency: true })
-                                    }
-                                  >
-                                    {' '}
-                                    <LinkIcon />
-                                  </Link>
-                                )}
+                                {(listTab === 'issuers' || listTab === 'collections') && nftVolumesLink(volume)}
                                 <table
                                   className="table-mobile"
                                   style={{ width: 'calc(100% - 22px)', margin: '10px 0' }}
