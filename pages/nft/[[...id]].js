@@ -670,8 +670,13 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
           request.Amount = Math.ceil(best.amount * multiplier).toString()
         }
 
-        if (name === 'onXRP' && request.Amount === '0') {
-          request.Amount = '1' // accept offer must be positive
+        if (name === 'onXRP') {
+          if (data.issuer === data.owner) {
+            return ''
+          }
+          if (request.Amount === '0') {
+            request.Amount = '1' // accept offer must be positive
+          }
         }
 
         return (
