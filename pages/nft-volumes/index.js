@@ -16,7 +16,7 @@ export const getServerSideProps = async (context) => {
       extendedStatsQuery: extendedStats || false,
       periodQuery: period || 'week',
       sale: sale || 'secondary',
-      list: list || 'issuers',
+      list: list || 'collections',
       currency: currency || '',
       currencyIssuer: currencyIssuer || '',
       sortCurrency: sortCurrency || '',
@@ -525,7 +525,12 @@ export default function NftVolumes({
       if (volume?.issuer) {
         urlPart = urlPart + '&issuer=' + usernameOrAddress(volume, 'issuer')
       } else if (nonSologenic(volume)) {
-        urlPart = urlPart + '&issuer=' + volume.collectionDetails.issuer + '&taxon=' + volume.collectionDetails.taxon
+        urlPart =
+          urlPart +
+          '&issuer=' +
+          usernameOrAddress(volume.collectionDetails, 'issuer') +
+          '&taxon=' +
+          volume.collectionDetails.taxon
       } else if (volume?.collection) {
         urlPart = urlPart + '&collection=' + volume.collection
       }
@@ -541,7 +546,8 @@ export default function NftVolumes({
     const { onSale, text } = options
     let params = '?includeWithoutMediaData=true'
     if (data.collectionDetails?.issuer && (data.collectionDetails?.taxon || data.collectionDetails?.taxon === 0)) {
-      params += '&issuer=' + data.collectionDetails.issuer + '&taxon=' + data.collectionDetails.taxon
+      params +=
+        '&issuer=' + usernameOrAddress(data.collectionDetails, 'issuer') + '&taxon=' + data.collectionDetails.taxon
     } else if (data.issuer) {
       params += '&issuer=' + usernameOrAddress(data, 'issuer')
     } else if (data.collection) {
@@ -556,7 +562,7 @@ export default function NftVolumes({
     if (!data) return ''
     let params = '?issuer='
     if (data.collectionDetails?.issuer && (data.collectionDetails?.taxon || data.collectionDetails?.taxon === 0)) {
-      params += data.collectionDetails.issuer + '&taxon=' + data.collectionDetails.taxon
+      params += usernameOrAddress(data.collectionDetails, 'issuer') + '&taxon=' + data.collectionDetails.taxon
     } else if (data.issuer) {
       params += usernameOrAddress(data, 'issuer')
     } else {
@@ -761,10 +767,19 @@ export default function NftVolumes({
       ? { flexGrow: 0, flexBasis: 'calc(50% - 20px)' }
       : { width: '100%', marginLeft: 0, marginRight: '10px' }
 
+  const collectionNameText = (data) => {
+    if (!data?.collectionDetails?.issuerDetails) return data.collection
+    const { service, username } = data.collectionDetails.issuerDetails
+    if (service || username) {
+      return service || username // + ' (' + data.collectionDetails.taxon + ')'
+    }
+    return data.collection
+  }
+
   const collectionName = (data, type) => {
     if (!data?.collection) return ''
     if (!data.collectionDetails) return data.collection
-    const { name, family, description, issuer, taxon, collection } = data.collectionDetails
+    const { name, family, description, issuer, taxon } = data.collectionDetails
     if (type === 'mobile') {
       return (
         <>
@@ -780,7 +795,7 @@ export default function NftVolumes({
           )}
           {!family && !name && (
             <p>
-              {t('table.collection')}: {collection}
+              {t('table.collection')}: {collectionNameText(data)}
             </p>
           )}
           {description && (
@@ -802,7 +817,9 @@ export default function NftVolumes({
       )
     }
 
-    let nameLink = nftExplorerLink(data, { text: name || data.collection })
+    let nameLink = nftExplorerLink(data, {
+      text: name || collectionNameText(data)
+    })
 
     if (family) {
       if (
@@ -1106,7 +1123,7 @@ export default function NftVolumes({
                                 <td className="center">{i + 1}</td>
                                 {listTab === 'collections' && (
                                   <td>
-                                    {collectionThumbnail(volume.collectionDetails?.image)} {collectionName(volume)}
+                                    {collectionThumbnail(volume.collectionDetails)} {collectionName(volume)}
                                   </td>
                                 )}
                                 {listTab === 'marketplaces' && <td>{volume.marketplace}</td>}
@@ -1250,13 +1267,14 @@ export default function NftVolumes({
                           <tr key={i}>
                             <td style={{ padding: '5px' }} className="center">
                               <b>{i + 1}</b>
-                              {listTab === 'collections' && volume?.collectionDetails?.image && (
-                                <>
-                                  <br />
-                                  <br />
-                                  {collectionThumbnail(volume.collectionDetails.image)}
-                                </>
-                              )}
+                              {listTab === 'collections' &&
+                                (volume?.collectionDetails?.image || volume?.collectionDetails?.video) && (
+                                  <>
+                                    <br />
+                                    <br />
+                                    {collectionThumbnail(volume.collectionDetails)}
+                                  </>
+                                )}
                             </td>
                             <td>
                               {listTab === 'collections' && collectionName(volume, 'mobile')}

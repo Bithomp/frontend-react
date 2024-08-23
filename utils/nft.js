@@ -148,13 +148,16 @@ export const nftThumbnail = (nft) => {
   )
 }
 
-export const collectionThumbnail = (uri) => {
+export const collectionThumbnail = (data) => {
+  if (!data) return ''
+  const { image, video } = data
+  const uri = image || video
   if (!uri) return ''
   let imageSrc = ''
   const ipfs = ipfsUrl(uri, 'thumbnail', 'our')
   if (ipfs) {
     imageSrc = ipfs
-  } else if (uri.slice(0, 8) === 'https://' || uri.slice(0, 10) === 'data:image') {
+  } else if (typeof uri === 'string' && (uri.slice(0, 8) === 'https://' || uri.slice(0, 10) === 'data:image')) {
     imageSrc = stripText(uri)
   } else {
     return ''
@@ -165,7 +168,7 @@ export const collectionThumbnail = (uri) => {
       width="32px"
       height="32px"
       style={{ borderRadius: '50% 20% / 10% 40%', verticalAlign: 'middle' }}
-      alt="collection image"
+      alt=""
     />
   )
 }
