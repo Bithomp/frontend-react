@@ -670,6 +670,10 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
           request.Amount = Math.ceil(best.amount * multiplier).toString()
         }
 
+        if (name === 'onXRP' && request.Amount === '0') {
+          request.Amount = '1' // accept offer must be positive
+        }
+
         return (
           <>
             <button
@@ -680,7 +684,7 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
                   request,
                   broker: {
                     name,
-                    fee: best.amount * fee,
+                    fee: Math.ceil(best.amount > 0 ? best.amount * fee : 1),
                     nftPrice: best.amount,
                     feeText
                   }
@@ -688,7 +692,9 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
               }
             >
               <Image src={xummImg} className="xumm-logo" alt="xaman" height={24} width={24} />
-              {t('button.nft.buy-for-amount', { amount: amountFormat(Math.ceil(best.amount * multiplier)) })}
+              {t('button.nft.buy-for-amount', {
+                amount: amountFormat(Math.ceil(best.amount > 0 ? best.amount * multiplier : 1))
+              })}
             </button>
             <br />
             <br />

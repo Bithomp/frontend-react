@@ -829,7 +829,7 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
                                 feeText: signRequest.broker?.feeText
                               })}
                             </td>
-                            <td className="right"> {amountFormat(signRequest.broker?.fee)} </td>
+                            <td className="right"> {amountFormat(signRequest.broker?.fee, { precise: true })} </td>
                           </tr>
                           <tr>
                             <td>{t('signin.nft-offer.total')}</td>
