@@ -4,13 +4,15 @@ import { useRouter } from 'next/router'
 import { useState } from 'react'
 import axios from 'axios'
 import { appWithTranslation } from 'next-i18next'
+import dynamic from 'next/dynamic'
 
 import Header from '../components/Layout/Header'
 import Footer from '../components/Layout/Footer'
 import SignForm from '../components/SignForm'
 import ScrollToTop from '../components/Layout/ScrollToTop'
 import BackgroundImage from '../components/Layout/BackgroundImage'
-import TopLinks from '../components/Layout/TopLinks'
+
+const TopLinks = dynamic(() => import('../components/Layout/TopLinks'), { ssr: false })
 
 import { IsSsrMobileContext } from '../utils/mobile'
 import { isValidUUID, network, server, useLocalStorage, subscriptionExpired } from '../utils'
