@@ -180,11 +180,6 @@ export default function NftVolumes({
       setHasMore('first')
     }
 
-    if (rawData?.summary) {
-      setRawDataSummary(rawData.summary)
-    }
-    const summary = rawData?.summary || rawDataSummary
-
     let currencyUrlPart = ''
     if (listTab !== 'currencies') {
       if (currency && currencyIssuer) {
@@ -267,6 +262,12 @@ export default function NftVolumes({
 
     if (newdata) {
       setRawData(newdata)
+
+      if (newdata?.summary) {
+        setRawDataSummary(newdata.summary)
+      }
+      const summary = newdata?.summary || rawDataSummary
+
       setLoading(false) //keep here for fast tab clickers
       if (newdata[listTab]) {
         let list = newdata[listTab]
