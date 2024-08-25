@@ -146,6 +146,15 @@ export default function NftVolumes({
       ])
     } else if (listTab === 'currencies') {
       setCsvHeaders([{ label: t('table.amount'), key: 'amount' }, ...constCsvHeaders])
+    } else if (listTab === 'collections') {
+      setCsvHeaders([
+        { label: t('table.name'), key: 'collectionDetails.name' },
+        { label: t('table.collection-family'), key: 'collectionDetails.family' },
+        { label: t('table.description'), key: 'collectionDetails.description' },
+        { label: t('table.issuer'), key: 'collectionDetails.issuer' },
+        { label: t('table.taxon'), key: 'collectionDetails.taxon' },
+        ...constCsvHeaders
+      ])
     }
 
     const oldListTab = rawData?.list
@@ -279,6 +288,11 @@ export default function NftVolumes({
               list[i].amount = amountFormat(list[i]?.volumes[0].amount, {
                 maxFractionDigits: 2
               })
+            }
+            if (listTab === 'collections' && list[i].collectionDetails) {
+              list[i].collectionDetails.family = list[i].collectionDetails?.family?.replace(/"/g, '""')
+              list[i].collectionDetails.description = list[i].collectionDetails?.description?.replace(/"/g, '""')
+              list[i].collectionDetails.name = collectionNameText(list[i])
             }
           }
 
