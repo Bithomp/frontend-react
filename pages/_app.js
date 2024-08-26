@@ -60,7 +60,7 @@ const MyApp = ({ Component, pageProps }) => {
   const pagesWithoutWrapper = ['/social-share']
 
   const showAds = subscriptionExpired && (network === 'mainnet' || network === 'staging') // !devNet // no ads on test network
-  let showTopAds = showAds // change here when you want to see TOP ADS
+  let showTopAds = false //showAds // change here when you want to see TOP ADS
   const pagesWithNoTopAdds = [
     '/',
     '/username',
