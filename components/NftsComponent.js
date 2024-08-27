@@ -1,8 +1,9 @@
-import { useTranslation } from 'next-i18next'
+import { useTranslation, Trans } from 'next-i18next'
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import axios from 'axios'
 import InfiniteScroll from 'react-infinite-scroll-component'
+import Link from 'next/link'
 
 import { IoMdClose } from 'react-icons/io'
 import { TbArrowsSort } from 'react-icons/tb'
@@ -13,7 +14,8 @@ import {
   useWidth,
   xahauNetwork,
   capitalizeFirstLetter,
-  periodDescription
+  periodDescription,
+  subscriptionExpired
 } from '../utils'
 import { isValidTaxon, nftThumbnail, nftNameLink, bestNftOffer, mpUrl, partnerMarketplaces } from '../utils/nft'
 import { nftLink, usernameOrAddress, amountFormat, timeOrDate, fullDateAndTime } from '../utils/format'
@@ -98,6 +100,7 @@ export default function NftsComponent({
   const [sortMenuOpen, setSortMenuOpen] = useState(false)
   const [issuerTaxonUrlPart, setIssuerTaxonUrlPart] = useState('?view=' + activeView)
   const [collectionUrlPart, setCollectionUrlPart] = useState(collectionQuery ? '&collection=' + collectionQuery : '')
+  const [sessionToken, setSessionToken] = useState('')
 
   const controller = new AbortController()
 
@@ -116,6 +119,13 @@ export default function NftsComponent({
 
   useEffect(() => {
     setRendered(true)
+
+    const sessionTokenString = localStorage.getItem('sessionToken')
+    if (sessionTokenString) {
+      axios.defaults.headers.common['Authorization'] = 'Bearer ' + sessionTokenString
+      setSessionToken(sessionTokenString)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const viewList = [
@@ -146,6 +156,11 @@ export default function NftsComponent({
       setLoading(true)
       setData([])
       nftsData = []
+    } else if (marker && marker !== 'first') {
+      // do not load more if there is no session token or if Bithomp Pro is expired
+      if (!sessionToken || (sessionToken && subscriptionExpired)) {
+        return
+      }
     }
 
     // it seems not nessary anylonger, we just need to keep the structure of URI with "?"
@@ -771,7 +786,35 @@ export default function NftsComponent({
               dataLength={data?.length}
               next={checkApi}
               hasMore={hasMore}
-              loader={!errorMessage && <p className="center">{t('nfts.load-more')}</p>}
+              loader={
+                !errorMessage && (
+                  <p className="center">
+                    {hasMore !== 'first' ? (
+                      <>
+                        {!sessionToken ? (
+                          <Trans i18nKey="general.login-to-bithomp-pro">
+                            Loading more data is available to <Link href="/admin">logged-in</Link> Bithomp Pro
+                            subscribers.
+                          </Trans>
+                        ) : (
+                          <>
+                            {!subscriptionExpired ? (
+                              t('nfts.load-more')
+                            ) : (
+                              <Trans i18nKey="general.renew-bithomp-pro">
+                                Your Bithomp Pro subscription has expired.
+                                <Link href="/admin/subscriptions">Renew your subscription</Link>.
+                              </Trans>
+                            )}
+                          </>
+                        )}
+                      </>
+                    ) : (
+                      t('nfts.load-more')
+                    )}
+                  </p>
+                )
+              }
               endMessage={<p className="center">{t('nfts.end')}</p>}
               height={!filtersHide ? '1300px' : '100vh'}
               // below props only if you need pull down functionality

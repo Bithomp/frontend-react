@@ -1,14 +1,23 @@
-import { useTranslation } from 'next-i18next'
+import { useTranslation, Trans } from 'next-i18next'
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import axios from 'axios'
 import InfiniteScroll from 'react-infinite-scroll-component'
+import Link from 'next/link'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 import { IoMdClose } from 'react-icons/io'
 import { TbArrowsSort } from 'react-icons/tb'
 
-import { stripText, isAddressOrUsername, setTabParams, useWidth, xahauNetwork, nativeCurrency } from '../utils'
+import {
+  stripText,
+  isAddressOrUsername,
+  setTabParams,
+  useWidth,
+  xahauNetwork,
+  nativeCurrency,
+  subscriptionExpired
+} from '../utils'
 import { getIsSsrMobile } from '../utils/mobile'
 import { isValidTaxon, nftThumbnail, nftNameLink } from '../utils/nft'
 import {
@@ -138,6 +147,7 @@ export default function NftSales({
   ])
   const [issuerTaxonUrlPart, setIssuerTaxonUrlPart] = useState('?view=' + activeView)
   const [collectionUrlPart, setCollectionUrlPart] = useState(collectionQuery ? '&collection=' + collectionQuery : '')
+  const [sessionToken, setSessionToken] = useState('')
 
   const controller = new AbortController()
 
@@ -152,6 +162,12 @@ export default function NftSales({
 
   useEffect(() => {
     updateSaleTabList({})
+
+    const sessionTokenString = localStorage.getItem('sessionToken')
+    if (sessionTokenString) {
+      axios.defaults.headers.common['Authorization'] = 'Bearer ' + sessionTokenString
+      setSessionToken(sessionTokenString)
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -200,6 +216,11 @@ export default function NftSales({
       setSales([])
       salesData = []
       setLoading(true)
+    } else if (marker && marker !== 'first') {
+      // do not load more if there is no session token or if Bithomp Pro is expired
+      if (!sessionToken || (sessionToken && subscriptionExpired)) {
+        return
+      }
     }
 
     if (!marker || (marker === 'first' && salesData.length)) {
@@ -636,7 +657,35 @@ export default function NftSales({
             dataLength={sales.length}
             next={checkApi}
             hasMore={hasMore}
-            loader={!errorMessage && <p className="center">{t('nft-sales.load-more')}</p>}
+            loader={
+              !errorMessage && (
+                <p className="center">
+                  {hasMore !== 'first' ? (
+                    <>
+                      {!sessionToken ? (
+                        <Trans i18nKey="general.login-to-bithomp-pro">
+                          Loading more data is available to <Link href="/admin">logged-in</Link> Bithomp Pro
+                          subscribers.
+                        </Trans>
+                      ) : (
+                        <>
+                          {!subscriptionExpired ? (
+                            t('nft-sales.load-more')
+                          ) : (
+                            <Trans i18nKey="general.renew-bithomp-pro">
+                              Your Bithomp Pro subscription has expired.
+                              <Link href="/admin/subscriptions">Renew your subscription</Link>.
+                            </Trans>
+                          )}
+                        </>
+                      )}
+                    </>
+                  ) : (
+                    t('nft-sales.load-more')
+                  )}
+                </p>
+              )
+            }
             endMessage={<p className="center">{t('nft-sales.end')}</p>}
             height={!filtersHide ? '1300px' : '100vh'}
           >
