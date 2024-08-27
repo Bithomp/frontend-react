@@ -469,13 +469,13 @@ export default function Subscriptions({ setSignRequest, receiptQuery }) {
                           Enable Infinity scroll in the <Link href="/nft-sales">NFT Sales</Link>
                         </li>
                         <li>
-                          Unlock the full list of <Link href="/nft-distribution">NFT holders</Link>.
+                          Unlock the full list of <Link href="/nft-distribution">NFT holders</Link>
                         </li>
                         <li>
                           View the complete lists of NFT <Link href="/nft-volumes?list=collections">Collections</Link> &{' '}
-                          <Link href="/nft-volumes?list=issuers">Issuers</Link>.
+                          <Link href="/nft-volumes?list=issuers">Issuers</Link>
                         </li>
-                        <li>CSV exports of complete lists.</li>
+                        <li>CSV exports of complete lists</li>
                       </ul>
                     </p>
                     <p>
