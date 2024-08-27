@@ -463,10 +463,10 @@ export default function Subscriptions({ setSignRequest, receiptQuery }) {
                       ✅ <b>Exclusive Access to Advanced Tools:</b>
                       <ul>
                         <li>
-                          Enable Infinity scroll in the <Link href="/nft-explorer">NFT Explorer</Link>
+                          Enable Infinite scroll in the <Link href="/nft-explorer">NFT Explorer</Link>
                         </li>
                         <li>
-                          Enable Infinity scroll in the <Link href="/nft-sales">NFT Sales</Link>
+                          Enable Infinite scroll in the <Link href="/nft-sales">NFT Sales</Link>
                         </li>
                         <li>
                           Unlock the full list of <Link href="/nft-distribution">NFT holders</Link>
