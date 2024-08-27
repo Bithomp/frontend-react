@@ -15,7 +15,7 @@ import {
   xahauNetwork,
   capitalizeFirstLetter,
   periodDescription,
-  subscriptionExpired
+  useSubscriptionExpired
 } from '../utils'
 import { isValidTaxon, nftThumbnail, nftNameLink, bestNftOffer, mpUrl, partnerMarketplaces } from '../utils/nft'
 import { nftLink, usernameOrAddress, amountFormat, timeOrDate, fullDateAndTime } from '../utils/format'
@@ -60,6 +60,7 @@ export default function NftsComponent({
   const { t } = useTranslation(['common', 'nft-sort', 'popups'])
   const router = useRouter()
   const windowWidth = useWidth()
+  const subscriptionExpired = useSubscriptionExpired()
 
   const orderNftsList = [
     { value: 'mintedNew', label: t('dropdown.mintedNew', { ns: 'nft-sort' }) },

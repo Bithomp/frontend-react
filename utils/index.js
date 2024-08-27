@@ -28,7 +28,7 @@ export const periodDescription = (periodName) => {
   }
 }
 
-const useSubscriptionExpired = () => {
+export const useSubscriptionExpired = () => {
   const cookies = new Cookies(null, { path: '/' })
   const proExpire = cookies.get('pro-expire')
   if (!proExpire) return true
