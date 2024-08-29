@@ -6,7 +6,7 @@ import { useRouter } from 'next/router'
 import { axiosAdmin } from '../../utils/axios'
 import Link from 'next/link'
 
-import { useWidth, encode, wssServer } from '../../utils'
+import { useWidth, encode, wssServer, xahauNetwork } from '../../utils'
 import { getIsSsrMobile } from '../../utils/mobile'
 import { fullDateAndTime, shortNiceNumber, amountFormat } from '../../utils/format'
 
@@ -471,10 +471,12 @@ export default function Subscriptions({ setSignRequest, receiptQuery }) {
                         <li>
                           Unlock the full list of <Link href="/nft-distribution">NFT holders</Link>
                         </li>
-                        <li>
-                          View the complete lists of NFT <Link href="/nft-volumes?list=collections">Collections</Link> &{' '}
-                          <Link href="/nft-volumes?list=issuers">Issuers</Link>
-                        </li>
+                        {!xahauNetwork && (
+                          <li>
+                            View the complete lists of NFT <Link href="/nft-volumes?list=collections">Collections</Link>{' '}
+                            & <Link href="/nft-volumes?list=issuers">Issuers</Link>
+                          </li>
+                        )}
                         <li>CSV exports of complete lists</li>
                       </ul>
                     </p>
