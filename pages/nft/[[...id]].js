@@ -979,6 +979,7 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
           (pageMeta?.metadata?.description ||
             pageMeta?.metadata?.collection?.name ||
             (!(pageMeta?.nftokenID || pageMeta?.uriTokenID) ? t('desc', { ns: 'nft' }) : '')) +
+          (pageMeta?.nftSerial ? ' #' + pageMeta?.nftSerial : '') +
           (pageMeta?.issuer ? ' - ' + t('table.issuer') + ': ' + usernameOrAddress(pageMeta, 'issuer') : '')
         }
         image={{ file: imageUrl }}

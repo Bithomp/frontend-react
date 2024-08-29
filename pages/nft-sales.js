@@ -535,7 +535,7 @@ export default function NftSales({
     <>
       <SEO
         title={
-          'NFT ' +
+          t('nft-sales.header') +
           (saleTab === 'secondary' ? t('tabs.secondary-sales') : '') +
           (saleTab === 'primary' ? t('tabs.primary-sales') : '') +
           (issuer ? ' ' + issuer : issuerQuery) +
@@ -545,10 +545,23 @@ export default function NftSales({
           (currency ? ' ' + currency : '') +
           (currencyIssuer ? ' ' + currencyIssuer : '') +
           (activeView === 'list' ? ' ' + t('tabs.list') : '') +
-          (period ? ' ' + period : '') +
+          (period ? ' ' + period : periodQuery) +
           (search || searchQuery ? ', ' + t('table.name') + ': ' + (search || searchQuery) : '')
         }
-        description={issuer || issuerQuery || search || t('nft-sales.header')}
+        description={
+          t('nft-sales.header') +
+          (saleTab === 'secondary' ? t('tabs.secondary-sales') : '') +
+          (saleTab === 'primary' ? t('tabs.primary-sales') : '') +
+          (issuer ? ' ' + issuer : issuerQuery) +
+          (buyer ? ' ' + t('tabs.buyer') + ': ' + buyer : buyerQuery) +
+          (seller ? ' ' + t('tabs.seller') + ': ' + seller : sellerQuery) +
+          (isValidTaxon(taxon) ? ' ' + taxon : taxonQuery) +
+          (currency ? ' ' + currency : '') +
+          (currencyIssuer ? ' ' + currencyIssuer : '') +
+          (activeView === 'list' ? ' ' + t('tabs.list') : '') +
+          (period ? ' ' + period : periodQuery) +
+          (search || searchQuery ? ', ' + t('table.name') + ': ' + (search || searchQuery) : '')
+        }
       />
 
       <h1 className="center">{t('nft-sales.header')}</h1>
