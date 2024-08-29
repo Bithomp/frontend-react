@@ -8,7 +8,6 @@ import 'moment/locale/de' // 'de'
 import 'moment/locale/es' // 'es'
 import 'moment/locale/id' // 'id'
 import 'moment/locale/ja' // 'ja'
-import 'moment/locale/hr' // 'hr'
 
 import { useRouter } from 'next/router'
 import Cookies from 'universal-cookie'
@@ -77,8 +76,7 @@ export default function LanguageSwitch({ close }) {
     { value: 'ja', label: '日本語' },
     { value: 'ru', label: 'Русский' },
     { value: 'id', label: 'Bahasa Indonesia' },
-    { value: 'de', label: 'Deutsch' },
-    { value: 'hr', label: 'Hrvatski' }
+    { value: 'de', label: 'Deutsch' }
   ]
 
   const langTable = () => {
