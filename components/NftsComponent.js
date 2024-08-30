@@ -148,6 +148,25 @@ export default function NftsComponent({
     if (nftExplorer && !mintedPeriod && listTab !== 'onSale') return
     if (!nftExplorer && !id && !owner) return
     if (!order) return
+    if (listTab === 'onSale') {
+      let supportedOrder = false
+      for (let index = 0; index < orderOnSaleList.length; index++) {
+        if (order === orderOnSaleList[index].value) {
+          supportedOrder = true
+          break
+        }
+      }
+      if (!supportedOrder) return
+    } else if (listTab === 'nfts') {
+      let supportedOrder = false
+      for (let index = 0; index < orderNftsList.length; index++) {
+        if (order === orderNftsList[index].value) {
+          supportedOrder = true
+          break
+        }
+      }
+      if (!supportedOrder) return
+    }
 
     let marker = hasMore
     let nftsData = data
