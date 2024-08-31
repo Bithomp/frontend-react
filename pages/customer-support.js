@@ -9,7 +9,6 @@ import SEO from '../components/SEO'
 import { nativeCurrency, explorerName } from '../utils'
 import { getIsSsrMobile } from '../utils/mobile'
 import { amountFormat } from '../utils/format'
-import Link from 'next/link'
 
 export async function getServerSideProps(context) {
   const { locale } = context
@@ -123,7 +122,7 @@ export default function Contact() {
         <p>
           <Trans ns="customer-support" i18nKey="submit-info-here">
             If you have a public service and you want your addresses to be recognised, submit your information{' '}
-            <Link href="/submit-account-information">here</Link>.
+            <a href="https://bithomp.com/submit-account-information">here</a>.
           </Trans>
         </p>
         <h3>{t('follow-us', { ns: 'customer-support' })}</h3>
