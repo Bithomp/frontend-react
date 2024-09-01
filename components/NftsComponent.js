@@ -15,7 +15,8 @@ import {
   xahauNetwork,
   capitalizeFirstLetter,
   periodDescription,
-  useSubscriptionExpired
+  useSubscriptionExpired,
+  decode
 } from '../utils'
 import {
   isValidTaxon,
@@ -119,7 +120,7 @@ export default function NftsComponent({
     { label: t('table.taxon'), key: 'nftokenTaxon' },
     { label: t('table.serial'), key: 'sequence' },
     { label: t('table.name'), key: 'metadata.name' },
-    { label: t('table.uri'), key: 'url' },
+    { label: t('table.uri'), key: 'uriDecoded' },
     { label: 'CID', key: 'cid' }
   ]
 
@@ -346,6 +347,7 @@ export default function NftsComponent({
         if (nftList?.length > 0) {
           for (let i = 0; i < nftList.length; i++) {
             nftList[i].cid = ipfsUrl(nftList[i].url, 'cid')
+            nftList[i].uriDecoded = decode(nftList[i].uri).toString().replace(/"/g, '""')
             if (nftList[i].metadata) {
               Object.keys(nftList[i].metadata).forEach(function (key) {
                 //remove escapes to fix the export
