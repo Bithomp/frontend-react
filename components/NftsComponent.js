@@ -347,7 +347,10 @@ export default function NftsComponent({
         if (nftList?.length > 0) {
           for (let i = 0; i < nftList.length; i++) {
             nftList[i].cid = ipfsUrl(nftList[i].url, 'cid')
-            nftList[i].uriDecoded = decode(nftList[i].uri).toString().replace(/"/g, '""')
+            nftList[i].uriDecoded = decode(nftList[i].uri)
+            if (typeof nftList[i].uriDecoded === 'string') {
+              nftList[i].uriDecoded = nftList[i].uriDecoded.replace(/"/g, '""')
+            }
             if (nftList[i].metadata) {
               Object.keys(nftList[i].metadata).forEach(function (key) {
                 //remove escapes to fix the export
