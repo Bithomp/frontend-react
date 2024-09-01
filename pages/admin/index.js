@@ -57,6 +57,7 @@ export default function Admin({ redirectToken, account, setAccount }) {
   const [password, setPassword] = useState('')
   const [step, setStep] = useState(-1)
   const [loggedUserData, setLoggedUserData] = useState(null)
+  const [partnerData, setPartnerData] = useState(null)
   const [checkedPackageData, setCheckedPackageData] = useState(false)
   const [packageData, setPackageData] = useState(null)
   const [termsAccepted, setTermsAccepted] = useState(false)
@@ -152,7 +153,7 @@ export default function Admin({ redirectToken, account, setAccount }) {
       setAccount({ ...account, pro: data.data.email })
     }
 
-    const partnerData = await axiosAdmin.get('partner').catch((error) => {
+    const partnerDataRaw = await axiosAdmin.get('partner').catch((error) => {
       if (error.response?.data?.error === 'errors.token.required') {
         onLogOut()
         return
@@ -162,7 +163,8 @@ export default function Admin({ redirectToken, account, setAccount }) {
       }
     })
 
-    if (partnerData?.data) {
+    if (partnerDataRaw?.data) {
+      setPartnerData(partnerDataRaw.data)
       /*
         {
           "bithompProPackageID": 48,
@@ -177,10 +179,10 @@ export default function Admin({ redirectToken, account, setAccount }) {
 
       const cookieParams = { path: '/', domain: '.' + domainFromUrl, maxAge: 31536000 }
 
-      if (partnerData.data.bithompProPackageID) {
+      if (partnerDataRaw.data.bithompProPackageID) {
         //request to get the package data
         const packageData = await axiosAdmin
-          .get('partner/package/' + partnerData.data.bithompProPackageID)
+          .get('partner/package/' + partnerDataRaw.data.bithompProPackageID)
           .catch((error) => {
             if (error.response?.data?.error === 'errors.token.required') {
               onLogOut()
@@ -437,6 +439,14 @@ export default function Admin({ redirectToken, account, setAccount }) {
                         )}
                       </td>
                     </tr>
+                    {packageData && partnerData && (
+                      <tr>
+                        <td className="right">Priority support</td>
+                        <td className="left">
+                          <b>pro+{partnerData.id}@bithomp.com</b>
+                        </td>
+                      </tr>
+                    )}
                   </tbody>
                 </table>
               )}
