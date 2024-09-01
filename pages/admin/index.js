@@ -5,6 +5,7 @@ import { Turnstile } from '@marsidev/react-turnstile'
 import { useTheme } from '../../components/Layout/ThemeContext'
 import Link from 'next/link'
 import Cookies from 'universal-cookie'
+import Mailto from 'react-protected-mailto'
 
 import SEO from '../../components/SEO'
 import CheckBox from '../../components/UI/CheckBox'
@@ -440,12 +441,20 @@ export default function Admin({ redirectToken, account, setAccount }) {
                       </td>
                     </tr>
                     {packageData && partnerData && (
-                      <tr>
-                        <td className="right">Priority support</td>
-                        <td className="left">
-                          <b>pro+{partnerData.id}@bithomp.com</b>
-                        </td>
-                      </tr>
+                      <>
+                        <tr>
+                          <td className="right">Support e-mail</td>
+                          <td className="left">
+                            <Mailto email="pro@bithomp.com" headers={{ subject: 'PRO user ' + partnerData.id }} />
+                          </td>
+                        </tr>
+                        <tr>
+                          <td className="right">E-mail subject (for priority)</td>
+                          <td className="left">
+                            <b>PRO user {partnerData.id}</b>
+                          </td>
+                        </tr>
+                      </>
                     )}
                   </tbody>
                 </table>
