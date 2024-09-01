@@ -210,7 +210,7 @@ const isValidCid = (hash) => {
   return /^Qm[a-zA-Z0-9]{44}$|^baf[a-zA-Z0-9]{56}$/.test(hash)
 }
 
-const ipfsUrl = (uri, type = 'image', gateway = 'our') => {
+export const ipfsUrl = (uri, type = 'image', gateway = 'our') => {
   if (!uri) return null
   let url = uri.toString()
   let filename = ''
@@ -248,6 +248,9 @@ const ipfsUrl = (uri, type = 'image', gateway = 'our') => {
   }
 
   if (cid) {
+    if (type === 'cid') {
+      return cid
+    }
     url = stripText(cid + url.split(cid).pop())
     url = url.replace('#', '%23')
     if (gateway === 'our' && (type === 'image' || type === 'video' || type === 'thumbnail' || type === 'preview')) {

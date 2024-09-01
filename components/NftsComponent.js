@@ -17,7 +17,15 @@ import {
   periodDescription,
   useSubscriptionExpired
 } from '../utils'
-import { isValidTaxon, nftThumbnail, nftNameLink, bestNftOffer, mpUrl, partnerMarketplaces } from '../utils/nft'
+import {
+  isValidTaxon,
+  nftThumbnail,
+  nftNameLink,
+  bestNftOffer,
+  mpUrl,
+  partnerMarketplaces,
+  ipfsUrl
+} from '../utils/nft'
 import { nftLink, usernameOrAddress, amountFormat, timeOrDate, fullDateAndTime } from '../utils/format'
 
 import SEO from './SEO'
@@ -111,7 +119,8 @@ export default function NftsComponent({
     { label: t('table.taxon'), key: 'nftokenTaxon' },
     { label: t('table.serial'), key: 'sequence' },
     { label: t('table.name'), key: 'metadata.name' },
-    { label: t('table.uri'), key: 'url' }
+    { label: t('table.uri'), key: 'url' },
+    { label: 'CID', key: 'cid' }
   ]
 
   if (nftExplorer) {
@@ -336,6 +345,7 @@ export default function NftsComponent({
         //for CSV export
         if (nftList?.length > 0) {
           for (let i = 0; i < nftList.length; i++) {
+            nftList[i].cid = ipfsUrl(nftList[i].url, 'cid')
             if (nftList[i].metadata) {
               Object.keys(nftList[i].metadata).forEach(function (key) {
                 //remove escapes to fix the export
