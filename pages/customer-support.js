@@ -6,7 +6,7 @@ import axios from 'axios'
 
 import SocialIcons from '../components/Layout/SocialIcons'
 import SEO from '../components/SEO'
-import { nativeCurrency, explorerName } from '../utils'
+import { nativeCurrency, explorerName, xahauNetwork } from '../utils'
 import { getIsSsrMobile } from '../utils/mobile'
 import { amountFormat } from '../utils/format'
 
@@ -94,7 +94,16 @@ export default function Contact() {
               <strong>Missing {{ baseReserve: amountFormat(networkInfo?.reserveBase) }} in Your Wallet</strong>: The
               missing {{ baseReserve: amountFormat(networkInfo?.reserveBase) }} is due to the {{ nativeCurrency }}{' '}
               Ledger's base reserve requirement. Please read more about the{' '}
-              <a href="https://xrpl.org/reserves.html">base reserve</a>.
+              <a
+                href={
+                  xahauNetwork
+                    ? 'https://help.xumm.app/app/xahau/understanding-reserves-on-xahau'
+                    : 'https://xrpl.org/reserves.html'
+                }
+              >
+                base reserve
+              </a>
+              .
             </Trans>
           </li>
           <li>
