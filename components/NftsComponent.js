@@ -706,7 +706,7 @@ export default function NftsComponent({
                 title={t('table.issuer')}
                 placeholder={t('nfts.search-by-issuer')}
                 setValue={onIssuerSearch}
-                rawData={rawData}
+                rawData={rawData || { issuer: issuerQuery }}
                 type="issuer"
               />
               {!xahauNetwork && (
@@ -722,7 +722,7 @@ export default function NftsComponent({
                 title={t('table.owner')}
                 placeholder={t('nfts.search-by-owner')}
                 setValue={setOwner}
-                rawData={rawData}
+                rawData={rawData || { owner: ownerQuery }}
                 type="owner"
               />
               <FormInput
