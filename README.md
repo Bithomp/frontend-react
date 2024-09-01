@@ -88,7 +88,7 @@ Runs the app in production
 
 Spanish -  [@Ekiserrepe](https://github.com/Ekiserrepe)
 
-Croatian - [@zgrguric](https://github.com/zgrguric)
+Indonesian - [@suuf24](https://github.com/suuf24)
 
 Japanese - [@develoQ](https://github.com/develoQ)
 
