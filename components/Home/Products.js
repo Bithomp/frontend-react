@@ -1,37 +1,37 @@
 import Link from 'next/link'
-// import { useTranslation } from 'next-i18next'
+import { useTranslation } from 'next-i18next'
 
 const logo = '/images/logo-small.svg'
 
-const products = [
-  {
-    type: 'nft',
-    title: 'NFT Explorer',
-    list: ['search by name', 'check statistics', 'present your NFT', 'buy/sell', 'manage NFT'],
-    bg: '/images/products/product-bg-1.png'
-  },
-  {
-    type: 'api',
-    title: 'API',
-    list: ['free registration', 'get balance', 'get transaction status', 'get statistics'],
-    bg: '/images/products/product-bg-2.png'
-  },
-  {
-    type: 'xrpl',
-    title: 'XRPL Services',
-    list: ['set domain', 'mint nft'],
-    bg: '/images/products/product-bg-3.png'
-  },
-  {
-    type: 'services',
-    title: 'Services',
-    list: ['nft bots', 'notifications', 'price alerts', 'usernames'],
-    bg: '/images/products/product-bg-4.png'
-  }
-]
-
 export default function Products() {
-  // const { t } = useTranslation()
+  const { t } = useTranslation(['common', 'products', 'volumes'])
+
+  const products = [
+    {
+      type: 'nft',
+      title: t('titles.nft', { ns: 'products' }),
+      list: [t('items.search-name', { ns: 'products' }), t('items.check', { ns: 'products' }), t('items.your-nft', { ns: 'products' }), t('items.buy-sell', { ns: 'products' }), t('items.manage-nft', { ns: 'products' })],
+      bg: '/images/products/product-bg-1.png'
+    },
+    {
+      type: 'api',
+      title: t('titles.api', { ns: 'products' }),
+      list: [t('items.registration', { ns: 'products' }), t('items.balance', { ns: 'products' }), t('items.transaction-status', { ns: 'products' }), t('items.statistics', { ns: 'products' })],
+      bg: '/images/products/product-bg-2.png'
+    },
+    {
+      type: 'xrpl',
+      title: t('titles.xrpl', { ns: 'products' }),
+      list: [t('items.domain', { ns: 'products' }), t('items.mint-nft', { ns: 'products' })],
+      bg: '/images/products/product-bg-3.png'
+    },
+    {
+      type: 'services',
+      title: t('titles.services', { ns: 'products' }),
+      list: [t('items.nft-bots', { ns: 'products' }), t('items.notifications', { ns: 'products' }), t('items.alerts', { ns: 'products' }), t('items.usernames', { ns: 'products' })],
+      bg: '/images/products/product-bg-4.png'
+    }
+  ]
 
   return (
     <div className="products">
