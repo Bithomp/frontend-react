@@ -14,6 +14,7 @@ import Converter from '../components/Home/Converter'
 import PriceChart from '../components/Home/PriceChart'
 import Statistics from '../components/Home/Statistics'
 import Ads from '../components/Home/Ads'
+import Products from '../components/Home/Products'
 
 export async function getServerSideProps(context) {
   const { locale } = context
@@ -92,6 +93,8 @@ export default function Home({ selectedCurrency, setSelectedCurrency, showAds })
       </Head>
 
       <SearchBlock tab="explorer" />
+
+      <Products />
 
       {rendered && showAds && (
         <div className="home-sponsored">

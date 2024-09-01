@@ -1,0 +1,151 @@
+.products {
+  max-width: 760px;
+  margin: 30px auto;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  justify-content: space-between;
+  position: relative;
+  z-index: 1;
+  gap: 20px;
+
+  @media (max-width: 800px) {
+    grid-template-columns: repeat(1, 1fr);
+  }
+
+  .product {
+    position: relative;
+    flex-basis: calc(50% - 10px);
+    height: 227px;
+    overflow: hidden;
+    background: #090909;
+    box-shadow: 0px 0px 2px 0px #00000040;
+    transition: box-shadow 0.3s ease;
+
+    &:hover {
+      box-shadow: 0px 0px 20px 0px #00000040;
+
+      .dark & {
+        box-shadow: 0px 0px 15px 0px var(--unaccent-icon);
+      }
+    }
+
+    .light & {
+      background: #fff;
+    }
+
+    @media (max-width: 800px) {
+      margin: 0 auto;
+      width: 362px;
+    }
+
+    @media (max-width: 380px) {
+      width: calc(100% - 20px);
+      margin: 0 10px;
+    }
+
+    &::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    &:nth-child(3),
+    &:nth-child(4) {
+      height: 259px;
+    }
+
+    &__wrap {
+      position: absolute;
+      padding: 40px 20px 20px;
+      inset: 0;
+      z-index: 2;
+      color: #fff;
+
+      .light & {
+        color: #000;
+      }
+
+      @media (max-width: 380px) {
+        padding: 30px 15px 10px;
+      }
+    }
+
+    &__bg {
+      position: absolute;
+      height: 100%;
+      width: auto;
+      top: 0;
+      right: 0;
+      z-index: 1;
+
+      @media (max-width: 380px) {
+        right: -10%;
+      }
+
+      img {
+        height: 100%;
+        width: auto;
+      }
+    }
+
+    &--nft {
+      &::after {
+        background: #dd983d1a;
+      }
+
+      .product__bg {
+        top: -5%;
+        right: 0;
+        width: auto;
+        height: 109%;
+
+        @media (max-width: 380px) {
+          right: -10%;
+        }
+      }
+    }
+
+    &--services::after {
+      background: #3fa3b533;
+    }
+
+    &--xrpl::after {
+      background: #00b1c115;
+    }
+
+    &--api::after {
+      background: #14913e33;
+    }
+
+    h2 {
+      font-size: 24px;
+      line-height: 1;
+      font-weight: 700;
+      margin: 0;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    li {
+      font-weight: 400;
+      font-size: 14px;
+      line-height: 17px;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+
+      span {
+        padding-left: 10px;
+      }
+
+      img {
+        width: 12px;
+      }
+    }
+  }
+}
