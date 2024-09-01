@@ -31,7 +31,9 @@
       "distribution": "保有者分布",
       "statistics": "リアルタイム情報",
       "nfts": "アカウントのNFT",
-      "offers": "オファー"
+      "offers": "オファー",
+      "marketplaces": "マーケットプレイス",
+      "collections": "コレクション"
     },
     "network": {
       "blockchain": "ブロックチェーン",
@@ -429,6 +431,7 @@
     "external-url": "外部URL",
     "description": "説明",
     "collection": "コレクション",
+    "collection-family": "コレクションファミリー",
     "transfer-fee": "ロイヤリティ",
     "flag": "フラグ",
     "flags": "フラグ",
@@ -508,6 +511,8 @@
     "issuers": "発行者",
     "marketplaces": "マーケットプレイス",
     "brokers": "ブローカー",
+    "charts": "チャート",
+    "collections": "コレクション",
     "image": "画像",
     "video": "ビデオ",
     "audio": "音声",

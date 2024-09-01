@@ -14,7 +14,16 @@ import { amountFormat, userOrServiceLink } from '../../utils/format'
 
 let typingTimer
 
-export default function AddressInput({ placeholder, title, setValue, rawData, type, disabled, hideButton, setInnerValue }) {
+export default function AddressInput({
+  placeholder,
+  title,
+  setValue,
+  rawData,
+  type,
+  disabled,
+  hideButton,
+  setInnerValue
+}) {
   const { t } = useTranslation()
   const windowWidth = useWidth()
 
@@ -47,14 +56,13 @@ export default function AddressInput({ placeholder, title, setValue, rawData, ty
       if (disabled) {
         clearAll()
       }
-
-      if (rawData.error) {
-        setInputValue("")
-        setLink("")
-        setNotEmpty(false)
-        setSearchingSuggestions(false)
-        setSearchSuggestions([])
-      }
+    }
+    if (!rawData || rawData?.error) {
+      setInputValue("")
+      setLink("")
+      setNotEmpty(false)
+      setSearchingSuggestions(false)
+      setSearchSuggestions([])
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [rawData])

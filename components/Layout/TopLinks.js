@@ -9,7 +9,8 @@ export default function TopLinks() {
   //const [countryCode, setCountryCode] = useState('')
 
   //check country
-  {/*
+  {
+    /*
   useEffect(() => {
     async function fetchData() {
       // {"ip":"176.28.256.49","country":"SE"}
@@ -20,13 +21,19 @@ export default function TopLinks() {
     fetchData()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
-  */}
+  */
+  }
 
-  {/* it is important to have "tooltiptext right" on the first ad, otherwise brakes UI on mobiles, too wide to the left */ }
-  {/* it is important to have "tooltiptext left" on the last ad, otherwise brakes UI on mobiles, too wide to the right */ }
+  {
+    /* it is important to have "tooltiptext right" on the first ad, otherwise brakes UI on mobiles, too wide to the left */
+  }
+  {
+    /* it is important to have "tooltiptext left" on the last ad, otherwise brakes UI on mobiles, too wide to the right */
+  }
 
   //country specific ads
-  {/*}
+  {
+    /*}
   let moonpayCountries = ['US', 'BR', 'NG']
   if (moonpayCountries.includes(countryCode)) {
     return <div className="top-links">
@@ -47,10 +54,12 @@ export default function TopLinks() {
   }
 
   return ""
-  */}
+  */
+  }
 
   //tree ads
-  {/*
+  {
+    /*
   return (
     <div className="top-links">
       <span className='tooltip'>
@@ -100,9 +109,11 @@ export default function TopLinks() {
       </span>
     </div>
   )
-  */}
+  */
+  }
 
-  {/*
+  {
+    /*
 
   if (network === "mainnet") {
     return <div className="top-links">
@@ -140,7 +151,16 @@ export default function TopLinks() {
     </div>
   }
 
-  */}
+  */
+  }
 
-  return ""
+  return (
+    <div className="top-links">
+      <span className="tooltip">
+        <a href="/go/buy-land" target="_blank" rel="noreferrer" className="top-link orange">
+          Set up your spot in the metaverse. Join now.
+        </a>
+      </span>
+    </div>
+  )
 }

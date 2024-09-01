@@ -4,7 +4,7 @@ import axios from 'axios'
 import Image from 'next/image'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
-import { useIsMobile, getIsSsrMobile } from "../utils/mobile"
+import { useIsMobile, getIsSsrMobile } from '../utils/mobile'
 import { fullDateAndTime, amountFormat, addressUsernameOrServiceLink } from '../utils/format'
 import { stripText } from '../utils'
 
@@ -13,7 +13,7 @@ export async function getServerSideProps(context) {
   return {
     props: {
       isSsrMobile: getIsSsrMobile(context),
-      ...(await serverSideTranslations(locale, ['common'])),
+      ...(await serverSideTranslations(locale, ['common']))
     }
   }
 }
@@ -56,113 +56,125 @@ export default function Donate() {
       const response = await axios('v2/donations')
       setData(response.data)
     }
-    fetchData();
+    fetchData()
   }, [setData])
 
-  return <>
-    <SEO
-      title={t("menu.donate") + " ❤"}
-      description={t("donate.help-us") + " " + t("donate.it-helps")}
-      image={{ height: 300, width: 300, file: 'donate.png' }}
-      websiteName="Bithomp"
-    />
-    <div className="content-text content-center">
-      <h1 className="center">{t("menu.donate")} <span className="red">❤</span></h1>
-      <div className="flex">
-        <div className="grey-box" >
-          <Image
-            src="/images/donate.png"
-            alt="donate"
-            width={300}
-            height={300}
-            style={{ float: "left", marginRight: "15px" }}
-            className='hide-on-mobile'
-          />
-          <br className='hide-on-mobile' />
-          {t("donate.help-us")}
-          <br /><br />
-          {t("donate.it-helps")}
-          <br /><br />
-          {t("donate.address")}:
-          <br />
-          <b style={{ wordBreak: "break-word" }}>rEDakigd4Cp78FioF3qvQs6TrjFLjKLqM3</b> <CopyButton text="rEDakigd4Cp78FioF3qvQs6TrjFLjKLqM3" />
-          <br /><br />
-          {t("donate.dt")}:
-          <br />
-          <b>1</b> <CopyButton text="1" />
-
-          {isMobile &&
-            <>
-              <br /><br />
-              <a
-                className='button-action wide center'
-                href="xumm://xumm.app/detect/request:rEDakigd4Cp78FioF3qvQs6TrjFLjKLqM3?dt=1&deeplink=true&afterQr=true"
-              >
-                <Image src="/images/xumm.png" className='xumm-logo' alt="xaman" height={24} width={24} />
-                {t("donate.donate-with-xaman")}
-              </a>
-            </>
-          }
+  return (
+    <>
+      <SEO
+        title={t('menu.donate') + ' ❤'}
+        description={t('donate.help-us') + ' ' + t('donate.it-helps')}
+        image={{ height: 300, width: 300, file: 'donate.png' }}
+        websiteName="Bithomp"
+      />
+      <div className="content-text content-center">
+        <h1 className="center">
+          {t('menu.donate')} <span className="red">❤</span>
+        </h1>
+        <div className="flex">
+          <div className="grey-box">
+            <Image
+              src="/images/donate.png"
+              alt="donate"
+              width={300}
+              height={300}
+              style={{ float: 'left', marginRight: '15px' }}
+              className="hide-on-mobile"
+            />
+            <br className="hide-on-mobile" />
+            {t('donate.help-us')}
+            <br />
+            <br />
+            {t('donate.it-helps')}
+            <br />
+            <br />
+            {t('donate.address')}:
+            <br />
+            <b style={{ wordBreak: 'break-word' }}>rEDakigd4Cp78FioF3qvQs6TrjFLjKLqM3</b>{' '}
+            <CopyButton text="rEDakigd4Cp78FioF3qvQs6TrjFLjKLqM3" />
+            <br />
+            <br />
+            {t('donate.dt')}:
+            <br />
+            <b>1</b> <CopyButton text="1" />
+            {isMobile && (
+              <>
+                <br />
+                <br />
+                <a
+                  className="button-action wide center"
+                  href="xumm://xumm.app/detect/request:rEDakigd4Cp78FioF3qvQs6TrjFLjKLqM3?dt=1&deeplink=true&afterQr=true"
+                >
+                  <Image src="/images/xumm.png" className="xumm-logo" alt="xaman" height={24} width={24} />
+                  {t('donate.donate-with-xaman')}
+                </a>
+              </>
+            )}
+          </div>
         </div>
-      </div>
-      <br />
+        <br />
 
-      {data?.transactions && <>
-        {isMobile ?
-          <table className="table-mobile">
-            <thead>
-            </thead>
-            <tbody>
-              {data?.transactions?.map((tx, i) => (
-                <tr key={i}>
-                  <td style={{ paddingLeft: "15px" }}>
-                    <p>
-                      {t("table.date")}<br />
-                      {fullDateAndTime(tx.processedAt)}
-                    </p>
-                    <p>
-                      {t("table.sender")}<br />
-                      {addressUsernameOrServiceLink(tx, 'sourceAddress', { short: true })}
-                    </p>
-                    <p>
-                      {t("table.amount")}<br />
-                      {amountFormat(tx.amount)}
-                    </p>
-                    {tx.memos && tx.memos.length > 0 &&
-                      <p>
-                        {t("table.memo")}<br />
-                        {stripText(tx.memos[0]?.data)}
-                      </p>
-                    }
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-          :
-          <table className="table-large">
-            <thead>
-              <tr>
-                <th>{t("table.date")}</th>
-                <th>{t("table.sender")}</th>
-                <th>{t("table.amount")}</th>
-                <th>{t("table.memo")}</th>
-              </tr>
-            </thead>
-            <tbody>
-              {data?.transactions?.map((tx, i) =>
-                <tr key={i}>
-                  <td>{fullDateAndTime(tx.processedAt)}</td>
-                  <td>{addressUsernameOrServiceLink(tx, 'sourceAddress', { short: true })}</td>
-                  <td>{amountFormat(tx.amount)}</td>
-                  <td>{tx.memos && tx.memos.length > 0 && stripText(tx.memos[0]?.data)}</td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        }
-      </>
-      }
-    </div>
-  </>
+        {data?.transactions && (
+          <>
+            {isMobile ? (
+              <table className="table-mobile">
+                <thead></thead>
+                <tbody>
+                  {data?.transactions?.map((tx, i) => (
+                    <tr key={i}>
+                      <td style={{ paddingLeft: '15px' }}>
+                        <p>
+                          {t('table.date')}
+                          <br />
+                          {fullDateAndTime(tx.processedAt)}
+                        </p>
+                        <p>
+                          {t('table.sender')}
+                          <br />
+                          {addressUsernameOrServiceLink(tx, 'sourceAddress', { short: true })}
+                        </p>
+                        <p>
+                          {t('table.amount')}
+                          <br />
+                          {amountFormat(tx.amount)}
+                        </p>
+                        {tx.memos && tx.memos.length > 0 && (
+                          <p>
+                            {t('table.memo')}
+                            <br />
+                            {stripText(tx.memos[0]?.data)}
+                          </p>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            ) : (
+              <table className="table-large">
+                <thead>
+                  <tr>
+                    <th>{t('table.date')}</th>
+                    <th>{t('table.sender')}</th>
+                    <th>{t('table.amount')}</th>
+                    <th>{t('table.memo')}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {data?.transactions?.map((tx, i) => (
+                    <tr key={i}>
+                      <td>{fullDateAndTime(tx.processedAt)}</td>
+                      <td>{addressUsernameOrServiceLink(tx, 'sourceAddress', { short: true })}</td>
+                      <td>{amountFormat(tx.amount)}</td>
+                      <td>{tx.memos && tx.memos.length > 0 && stripText(tx.memos[0]?.data)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
+          </>
+        )}
+      </div>
+    </>
+  )
 }

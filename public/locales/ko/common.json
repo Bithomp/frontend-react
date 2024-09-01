@@ -32,7 +32,9 @@
       "distribution": "분배 (홀더)",
       "statistics": "실시간 통계",
       "nfts": "계정의 NFT",
-      "offers": "제안"
+      "offers": "제안",
+      "marketplaces": "마켓플레이스",
+      "collections": "컬렉션"
     },
     "network": {
       "blockchain": "블록체인",
@@ -430,6 +432,7 @@
     "external-url": "외부 URL",
     "description": "설명",
     "collection": "컬렉션",
+    "collection-family": "컬렉션 패밀리",
     "transfer-fee": "로열티",
     "flag": "플래그",
     "flags": "플래그",
@@ -509,6 +512,8 @@
     "issuers": "발행자",
     "marketplaces": "마켓플레이스",
     "brokers": "브로커",
+    "charts": "차트",
+    "collections": "컬렉션",
     "image": "이미지",
     "video": "비디오",
     "audio": "오디오",

@@ -395,8 +395,11 @@ export const shortAddress = (id, length = 6) => {
   return id.substr(0, length) + "..." + id.substr(-length)
 }
 
-export const convertedAmount = (nft, convertCurrency) => {
+export const convertedAmount = (nft, convertCurrency, options) => {
   if (nft?.amountInConvertCurrencies && nft.amountInConvertCurrencies?.[convertCurrency]) {
+    if (options?.short) {
+      return shortNiceNumber(nft.amountInConvertCurrencies[convertCurrency], 2, 3, convertCurrency)
+    }
     return niceNumber(nft.amountInConvertCurrencies[convertCurrency], 2, convertCurrency)
   }
   return null

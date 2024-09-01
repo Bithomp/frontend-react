@@ -31,7 +31,9 @@
       "distribution": "Distribusi (pemilik)",
       "statistics": "Statistik Langsung",
       "nfts": "NFT Akun",
-      "offers": "Penawaran"
+      "offers": "Penawaran",
+      "marketplaces": "Pasar",
+      "collections": "Koleksi"
     },
     "network": {
       "blockchain": "Blockchain",
@@ -168,7 +170,7 @@
       "quorum": "Quorum validasi",
       "proposers": "Pengusul",
       "accounts": "Akun",
-      "accountsActiveLast24h": "Active accounts (24h)",
+      "accountsActiveLast24h": "Akun aktiv (24h)",
       "usernames": "Username",
       "nft": {
         "created": "NFT dicetak",
@@ -429,6 +431,7 @@
     "external-url": "URL Eksternal",
     "description": "Deskripsi",
     "collection": "Koleksi",
+    "collection-family": "Koleksi Keluarga",
     "transfer-fee": "Royalti",
     "flag": "Bendera",
     "flags": "Bendera",
@@ -508,6 +511,8 @@
     "issuers": "Penerbit",
     "marketplaces": "Pasar",
     "brokers": "Broker",
+    "charts": "Grafik",
+    "collections": "Koleksi",
     "image": "Gambar",
     "video": "Video",
     "audio": "Audio",

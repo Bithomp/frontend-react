@@ -208,7 +208,7 @@ export default function Payments() {
                 <h4 className='center'>{/* 1. */}XRP API payment details</h4>
 
                 {width > 600 ?
-                  <table className='table-large'>
+                  <table className='table-large no-hover'>
                     <tbody>
                       <tr>
                         <td className='right'>Address</td>
@@ -259,7 +259,7 @@ export default function Payments() {
               <div style={{ marginTop: "20px", textAlign: "left" }}>
                 <h4 className='center'>The last XRP API payments</h4>
                 {width > 600 ?
-                  <table className='table-large'>
+                  <table className='table-large no-hover'>
                     <thead>
                       <tr>
                         <th>Date & Time</th>

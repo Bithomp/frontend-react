@@ -2,18 +2,39 @@ const { i18n } = require('./next-i18next.config')
 
 module.exports = {
   compiler: {
-    styledComponents: true,
+    styledComponents: true
   },
   i18n,
   webpack(config) {
     config.module.rules.push({
       test: /\.svg$/,
-      use: ["@svgr/webpack"]
+      use: ['@svgr/webpack']
     })
     return config
   },
   images: {
-    domains: ['cdn.bithomp.com', 'pbs.twimg.com', 'secure.gravatar.com', 'xumm.app'],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'cdn.bithomp.com',
+        port: ''
+      },
+      {
+        protocol: 'https',
+        hostname: 'pbs.twimg.com',
+        port: ''
+      },
+      {
+        protocol: 'https',
+        hostname: 'secure.gravatar.com',
+        port: ''
+      },
+      {
+        protocol: 'https',
+        hostname: 'xumm.app',
+        port: ''
+      }
+    ]
   },
   compress: false,
   async redirects() {

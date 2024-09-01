@@ -1,6 +1,9 @@
 {
   "header": "NFT sales volumes",
   "text0": "For that period XRPL had {{allSales}} {{currency}} NFT {{saleType}} sales for {{allVolume}}.",
+  "collections": {
+    "desc": "This is the list of NFT collections. The volumes here do not include the primary sales (mints) which were done within 2 transactions (payment and NFT transfer)."
+  },
   "brokers": {
     "desc": "This is the list of NFT broker accounts. You can find here volumes of offer matching bots. Marketplaces use mixed trade models, here you can see only the volumes through the brokerage model.",
     "no-broker": "No broker",

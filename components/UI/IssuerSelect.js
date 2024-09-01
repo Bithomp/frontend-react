@@ -1,63 +1,63 @@
-import Select from 'react-select';
-import { useTranslation } from "next-i18next";
-import { useState, useEffect } from 'react';
+import Select from 'react-select'
+import { useTranslation } from 'next-i18next'
+import { useState, useEffect } from 'react'
 
 export default function IssuerSelect({ issuersList, selectedIssuer, setSelectedIssuer, disabled }) {
-  const { t } = useTranslation();
+  const { t } = useTranslation()
 
-  let emptyOption = { value: '', label: t("general.all-issuers"), username: "" };
-  let defaultOption = emptyOption;
-  let issuersArray = [];
+  let emptyOption = { value: '', label: t('general.all-issuers'), username: '' }
+  let defaultOption = emptyOption
+  let issuersArray = []
 
   if (issuersList) {
     for (let i = 0; i < issuersList.length; i++) {
-      const { address, service, username } = issuersList[i];
-      let label = address;
+      const { address, service, username } = issuersList[i]
+      let label = address
       if (username) {
-        label = username;
+        label = username
       } else if (service) {
-        label = service;
+        label = service
       }
-      const option = { value: address, label, username };
+      const option = { value: address, label, username }
       if (address === selectedIssuer || username?.toLowerCase() === selectedIssuer.toLowerCase()) {
-        defaultOption = option;
+        defaultOption = option
       }
       if (address === label) {
-        issuersArray.push(option);
+        issuersArray.push(option)
       } else {
-        issuersArray.unshift(option);
+        issuersArray.unshift(option)
       }
     }
-    issuersArray.unshift(emptyOption);
+    issuersArray.unshift(emptyOption)
   }
 
-  const [value, setValue] = useState(defaultOption);
+  const [value, setValue] = useState(defaultOption)
 
-  const onChange = value => {
-    setValue(value);
-    setSelectedIssuer(value.username || value.value);
-  };
+  const onChange = (value) => {
+    setValue(value)
+    setSelectedIssuer(value.username || value.value)
+  }
 
   useEffect(() => {
     if (selectedIssuer && issuersList) {
       for (let i = 0; i < issuersList.length; i++) {
-        const { address, username, service } = issuersList[i];
+        const { address, username, service } = issuersList[i]
         if (address === selectedIssuer || username?.toLowerCase() === selectedIssuer.toLowerCase()) {
-          let label = address;
+          let label = address
           if (username) {
-            label = username;
+            label = username
           } else if (service) {
-            label = service;
+            label = service
           }
-          setValue({ value: address, label, username });
+          setValue({ value: address, label, username })
         }
       }
     }
-  }, [selectedIssuer, issuersList]);
+  }, [selectedIssuer, issuersList])
 
   if (issuersList && issuersList.length === 1) {
     //Do not show the select if it's only one issuer inside
-    return "";
+    return ''
   }
 
   return (
@@ -72,5 +72,5 @@ export default function IssuerSelect({ issuersList, selectedIssuer, setSelectedI
       instanceId="issuer-select"
       isDisabled={disabled}
     />
-  );
-};
+  )
+}

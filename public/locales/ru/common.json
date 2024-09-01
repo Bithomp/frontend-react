@@ -31,7 +31,9 @@
       "distribution": "Распределение (владельцы)",
       "statistics": "Онлайн статистика",
       "nfts": "Поиск NFT по адресу владельца",
-      "offers": "Оферы"
+      "offers": "Оферы",
+      "marketplaces": "Маркетплейсы",
+      "collections": "Коллекции"
     },
     "network": {
       "blockchain": "Блокчейн",
@@ -429,6 +431,7 @@
     "external-url": "Внешняя ссылка",
     "description": "Описание",
     "collection": "Коллекция",
+    "collection-family": "Семейство коллекций",
     "transfer-fee": "Pоялти",
     "flag": "Атрибут",
     "flags": "Атрибуты",
@@ -508,6 +511,8 @@
     "issuers": "Эмитенты",
     "marketplaces": "Маркетплейсы",
     "brokers": "Брокеры",
+    "charts": "Графики",
+    "collections": "Коллекции",
     "image": "Картинка",
     "video": "Видео",
     "audio": "Аудио",

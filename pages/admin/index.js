@@ -4,11 +4,13 @@ import { useEffect, useState } from 'react'
 import { Turnstile } from '@marsidev/react-turnstile'
 import { useTheme } from '../../components/Layout/ThemeContext'
 import Link from 'next/link'
+import Cookies from 'universal-cookie'
+import Mailto from 'react-protected-mailto'
 
 import SEO from '../../components/SEO'
 import CheckBox from '../../components/UI/CheckBox'
 
-import { isEmailValid } from '../../utils'
+import { domainFromUrl, isEmailValid } from '../../utils'
 import { getIsSsrMobile } from '../../utils/mobile'
 import AdminTabs from '../../components/Admin/Tabs'
 import { axiosAdmin } from '../../utils/axios'
@@ -19,28 +21,49 @@ export const getServerSideProps = async (context) => {
     props: {
       isSsrMobile: getIsSsrMobile(context),
       redirectToken: query.redirectToken || null,
-      ...(await serverSideTranslations(locale, ['common', 'admin'])),
-    },
+      ...(await serverSideTranslations(locale, ['common', 'admin']))
+    }
   }
 }
 
-const turnstileSupportedLanguages = ['ar-EG', 'de', 'en', 'es', 'fa', 'fr', 'id', 'it', 'ja', 'ko', 'nl', 'pl', 'pt-BR', 'ru', 'tr', 'zh-CN', 'zh-TW']
+const turnstileSupportedLanguages = [
+  'ar-EG',
+  'de',
+  'en',
+  'es',
+  'fa',
+  'fr',
+  'id',
+  'it',
+  'ja',
+  'ko',
+  'nl',
+  'pl',
+  'pt-BR',
+  'ru',
+  'tr',
+  'zh-CN',
+  'zh-TW'
+]
 const checkmark = '/images/checkmark.svg'
 
 export default function Admin({ redirectToken, account, setAccount }) {
   const { theme } = useTheme()
   const { t, i18n } = useTranslation(['common', 'admin'])
-  const [siteKey, setSiteKey] = useState("")
-  const [errorMessage, setErrorMessage] = useState("")
-  const [token, setToken] = useState("") // CL token
-  const [authToken, setAuthToken] = useState("") // our site auth token
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
+  const [siteKey, setSiteKey] = useState('')
+  const [errorMessage, setErrorMessage] = useState('')
+  const [token, setToken] = useState('') // CL token
+  const [authToken, setAuthToken] = useState('') // our site auth token
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
   const [step, setStep] = useState(-1)
   const [loggedUserData, setLoggedUserData] = useState(null)
+  const [partnerData, setPartnerData] = useState(null)
   const [checkedPackageData, setCheckedPackageData] = useState(false)
   const [packageData, setPackageData] = useState(null)
   const [termsAccepted, setTermsAccepted] = useState(false)
+
+  const cookies = new Cookies(null, { path: '/' })
 
   const checkApi = async () => {
     /*
@@ -52,9 +75,9 @@ export default function Admin({ redirectToken, account, setAccount }) {
         "authTokenExpiredAt": 1698490659
       }
     */
-    const siteKeyData = await axiosAdmin.get('auth').catch(error => {
-      if (error && error.message !== "canceled") {
-        setErrorMessage(t("error." + error.message))
+    const siteKeyData = await axiosAdmin.get('auth').catch((error) => {
+      if (error && error.message !== 'canceled') {
+        setErrorMessage(t('error.' + error.message))
       }
     })
 
@@ -73,7 +96,7 @@ export default function Admin({ redirectToken, account, setAccount }) {
       setStep(0)
     } else {
       setStep(2)
-      axiosAdmin.defaults.headers.common['Authorization'] = "Bearer " + sessionToken
+      axiosAdmin.defaults.headers.common['Authorization'] = 'Bearer ' + sessionToken
       getLoggedUserData()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -81,14 +104,11 @@ export default function Admin({ redirectToken, account, setAccount }) {
 
   const redirectTokenRun = async () => {
     if (redirectToken) {
-      const formData = await axiosAdmin.post(
-        'auth',
-        { redirectToken }
-      ).catch(error => {
+      const formData = await axiosAdmin.post('auth', { redirectToken }).catch((error) => {
         if (error?.response?.data?.error) {
           setErrorMessage(error.response.data.error)
-        } else if (error && error.message !== "canceled") {
-          setErrorMessage(t("error." + error.message))
+        } else if (error && error.message !== 'canceled') {
+          setErrorMessage(t('error.' + error.message))
         }
       })
 
@@ -100,24 +120,24 @@ export default function Admin({ redirectToken, account, setAccount }) {
           "tokenExpiredAt": 1698497754
         }
       */
-      if (data?.status === "success") {
+      if (data?.status === 'success') {
         setStep(2)
-        setErrorMessage("")
-        localStorage.setItem("sessionToken", data.token)
-        axiosAdmin.defaults.headers.common['Authorization'] = "Bearer " + data.token
+        setErrorMessage('')
+        localStorage.setItem('sessionToken', data.token)
+        axiosAdmin.defaults.headers.common['Authorization'] = 'Bearer ' + data.token
         getLoggedUserData()
       }
     }
   }
 
   const getLoggedUserData = async () => {
-    const data = await axiosAdmin.get('user').catch(error => {
-      if (error.response?.data?.error === "errors.token.required") {
+    const data = await axiosAdmin.get('user').catch((error) => {
+      if (error.response?.data?.error === 'errors.token.required') {
         onLogOut()
         return
       }
-      if (error && error.message !== "canceled") {
-        setErrorMessage(t(error.response?.data?.error || "error." + error.message))
+      if (error && error.message !== 'canceled') {
+        setErrorMessage(t(error.response?.data?.error || 'error.' + error.message))
       }
     })
 
@@ -134,17 +154,18 @@ export default function Admin({ redirectToken, account, setAccount }) {
       setAccount({ ...account, pro: data.data.email })
     }
 
-    const partnerData = await axiosAdmin.get('partner').catch(error => {
-      if (error.response?.data?.error === "errors.token.required") {
+    const partnerDataRaw = await axiosAdmin.get('partner').catch((error) => {
+      if (error.response?.data?.error === 'errors.token.required') {
         onLogOut()
         return
       }
-      if (error && error.message !== "canceled") {
-        setErrorMessage(t(error.response?.data?.error || "error." + error.message))
+      if (error && error.message !== 'canceled') {
+        setErrorMessage(t(error.response?.data?.error || 'error.' + error.message))
       }
     })
 
-    if (partnerData?.data) {
+    if (partnerDataRaw?.data) {
+      setPartnerData(partnerDataRaw.data)
       /*
         {
           "bithompProPackageID": 48,
@@ -156,19 +177,22 @@ export default function Admin({ redirectToken, account, setAccount }) {
           "country": "BO"
         }
       */
-      if (partnerData.data.bithompProPackageID) {
+
+      const cookieParams = { path: '/', domain: '.' + domainFromUrl, maxAge: 31536000 }
+
+      if (partnerDataRaw.data.bithompProPackageID) {
         //request to get the package data
-        const packageData = await axiosAdmin.get(
-          'partner/package/' + partnerData.data.bithompProPackageID
-        ).catch(error => {
-          if (error.response?.data?.error === "errors.token.required") {
-            onLogOut()
-            return
-          }
-          if (error && error.message !== "canceled") {
-            setErrorMessage(t(error.response?.data?.error || "error." + error.message))
-          }
-        })
+        const packageData = await axiosAdmin
+          .get('partner/package/' + partnerDataRaw.data.bithompProPackageID)
+          .catch((error) => {
+            if (error.response?.data?.error === 'errors.token.required') {
+              onLogOut()
+              return
+            }
+            if (error && error.message !== 'canceled') {
+              setErrorMessage(t(error.response?.data?.error || 'error.' + error.message))
+            }
+          })
 
         if (packageData?.data) {
           /*
@@ -185,11 +209,11 @@ export default function Admin({ redirectToken, account, setAccount }) {
             }
           */
           setPackageData(packageData.data)
-          localStorage.setItem("pro-expire", JSON.stringify(packageData.data.expiredAt * 1000))
+          cookies.set('pro-expire', JSON.stringify(packageData.data.expiredAt * 1000), cookieParams)
         }
         setCheckedPackageData(true)
       } else {
-        localStorage.setItem("pro-expire", JSON.stringify(0))
+        cookies.set('pro-expire', JSON.stringify(0), cookieParams)
         setCheckedPackageData(true)
       }
     } else {
@@ -200,43 +224,42 @@ export default function Admin({ redirectToken, account, setAccount }) {
   let emailRef
   let passwordRef
 
-  const onEmailChange = e => {
+  const onEmailChange = (e) => {
     let x = e.target.value
     // our backend doesnt like yet Upper Case for some reason :)
     x = x.trim().toLowerCase()
     setEmail(x)
     if (isEmailValid(x)) {
-      setErrorMessage("")
+      setErrorMessage('')
     }
   }
 
   const onLogin = async () => {
     if (!email) {
-      setErrorMessage(t("form.error.email-empty"))
+      setErrorMessage(t('form.error.email-empty'))
       emailRef?.focus()
       return
     }
 
     if (!isEmailValid(email)) {
-      setErrorMessage(t("form.error.email-invalid"))
+      setErrorMessage(t('form.error.email-invalid'))
       emailRef?.focus()
       return
     }
 
     if (!token || !authToken) return
 
-    setErrorMessage("")
+    setErrorMessage('')
 
     if (step === 0) {
-      const formData = await axiosAdmin.put(
-        'auth',
-        { email, authToken, "cf-turnstile-response": token }
-      ).catch(error => {
-        if (error && error.message !== "canceled") {
-          setErrorMessage(t(error.response.data.error || "error." + error.message))
-          //{"error":"Authentication token is invalid"}
-        }
-      })
+      const formData = await axiosAdmin
+        .put('auth', { email, authToken, 'cf-turnstile-response': token })
+        .catch((error) => {
+          if (error && error.message !== 'canceled') {
+            setErrorMessage(t(error.response.data.error || 'error.' + error.message))
+            //{"error":"Authentication token is invalid"}
+          }
+        })
 
       /*
       {
@@ -248,28 +271,25 @@ export default function Admin({ redirectToken, account, setAccount }) {
       */
 
       const data = formData?.data
-      if (data?.status === "success") {
-        setErrorMessage("Check your email for a temporary password.")
+      if (data?.status === 'success') {
+        setErrorMessage('Check your email for a temporary password.')
         setStep(1)
       }
     } else {
       //step 1
       if (!password) {
-        setErrorMessage(t("form.error.password-empty"))
+        setErrorMessage(t('form.error.password-empty'))
         passwordRef?.focus()
         return
       }
 
-      const formData = await axiosAdmin.post(
-        'auth',
-        { email, password, authToken }
-      ).catch(error => {
-        if (error?.response?.data?.error === "Invalid password") {
-          setErrorMessage(t("form.error.password-invalid"))
+      const formData = await axiosAdmin.post('auth', { email, password, authToken }).catch((error) => {
+        if (error?.response?.data?.error === 'Invalid password') {
+          setErrorMessage(t('form.error.password-invalid'))
         } else if (error?.response?.data?.error) {
           setErrorMessage(error.response.data.error)
-        } else if (error && error.message !== "canceled") {
-          setErrorMessage(t("error." + error.message))
+        } else if (error && error.message !== 'canceled') {
+          setErrorMessage(t('error.' + error.message))
         }
       })
 
@@ -281,11 +301,11 @@ export default function Admin({ redirectToken, account, setAccount }) {
           "tokenExpiredAt": 1698497754
         }
       */
-      if (data?.status === "success") {
+      if (data?.status === 'success') {
         setStep(2)
-        setErrorMessage("")
-        localStorage.setItem("sessionToken", data.token)
-        axiosAdmin.defaults.headers.common['Authorization'] = "Bearer " + data.token
+        setErrorMessage('')
+        localStorage.setItem('sessionToken', data.token)
+        axiosAdmin.defaults.headers.common['Authorization'] = 'Bearer ' + data.token
         getLoggedUserData()
       }
     }
@@ -295,171 +315,178 @@ export default function Admin({ redirectToken, account, setAccount }) {
     localStorage.removeItem('sessionToken')
     setAccount({ ...account, pro: null })
     setStep(0)
-    setErrorMessage("")
-    setToken("")
-    setAuthToken("")
-    setPassword("")
+    setErrorMessage('')
+    setToken('')
+    setAuthToken('')
+    setPassword('')
     setLoggedUserData(null)
     checkApi()
   }
 
-  return <>
-    <SEO title={t("header", { ns: "admin" })} />
-    <div className="page-admin content-center">
-      <h1 className='center'>
-        {step < 1 ?
-          "Welcome to Bithomp Pro"
-          :
-          t("header", { ns: "admin" })
-        }
-      </h1>
+  return (
+    <>
+      <SEO title={t('header', { ns: 'admin' })} />
+      <div className="page-admin content-center">
+        <h1 className="center">{step < 1 ? 'Welcome to Bithomp Pro' : t('header', { ns: 'admin' })}</h1>
 
-      {step === 0 &&
-        <div>
-          <div style={{ maxWidth: "440px", margin: "auto" }}>
-            - Access advanced features with Bithomp Pro subscription.
-            <br />
-            - Manage your API keys and view your API statistics.
-          </div>
-          <br />
-          <center>
-            <b>Register</b> or <b>Sign In</b> to get started.
-          </center>
-        </div>
-      }
-
-      {step === 2 &&
-        <AdminTabs name="mainTabs" tab="profile" />
-      }
-
-      <br />
-      <div className='center'>
-        {(step === 0 || step === 1) &&
-          <div className="input-validation" style={{ margin: "auto", width: "300px" }}>
-            <input
-              name="email"
-              placeholder="Email address"
-              value={email}
-              onChange={onEmailChange}
-              className="input-text"
-              ref={node => { emailRef = node; }}
-              spellCheck="false"
-              disabled={step !== 0}
-              autoFocus={step === 0}
-            />
-            {isEmailValid(email) && <img src={checkmark} className="validation-icon" alt="validated" />}
-          </div>
-        }
-
-        {step === 1 &&
-          <div className="input-validation" style={{ margin: "auto", width: "300px", marginTop: "20px" }}>
-            <input
-              placeholder="Password"
-              value={password}
-              onChange={e => setPassword(e.target.value)}
-              className="input-text"
-              ref={node => { passwordRef = node; }}
-              spellCheck="false"
-            />
-            {password?.length > 8 && <img src={checkmark} className="validation-icon" alt="validated" />}
-          </div>
-        }
-
-        {step === 0 &&
-          <>
-            <br />
-            <div style={{ height: "65px" }}>
-              <Turnstile
-                siteKey={siteKey}
-                style={{ margin: "auto" }}
-                options={{
-                  theme,
-                  language: turnstileSupportedLanguages.includes(i18n.language) ? i18n.language : 'en',
-                }}
-                onSuccess={setToken}
-              />
+        {step === 0 && (
+          <div>
+            <div style={{ maxWidth: '440px', margin: 'auto' }}>
+              - Access advanced features with Bithomp Pro subscription.
+              <br />- Manage your API keys and view your API statistics.
             </div>
             <br />
             <center>
-              <div style={{ display: "inline-block", marginBottom: "20px" }}>
-                <CheckBox checked={termsAccepted} setChecked={setTermsAccepted}>
-                  I agree with the <Link href="/terms-and-conditions">{t("menu.terms-and-conditions")}</Link>.
-                </CheckBox>
-              </div>
+              <b>Register</b> or <b>Sign In</b> to get started.
             </center>
-          </>
-        }
-
-        {step === 2 &&
-          <>
-            {loggedUserData &&
-              <table className='table-large'>
-                <tbody>
-                  <tr>
-                    <td className='right'>E-mail</td>
-                    <td className='left'><b>{loggedUserData.email}</b></td>
-                  </tr>
-                  <tr>
-                    <td className='right'>Registered</td>
-                    <td className='left'>{new Date(loggedUserData.created_at).toLocaleString()}</td>
-                  </tr>
-                  <tr>
-                    <td className='right'>Bithomp Pro</td>
-                    <td className='left'>
-                      {checkedPackageData ?
-                        <>
-                          {packageData ?
-                            <>
-                              <b className="green">Active</b> until {new Date(packageData.expiredAt * 1000).toLocaleDateString()}
-                            </>
-                            :
-                            "not activated"
-                          }
-                        </>
-                        :
-                        "loading status..."
-                      }
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            }
-          </>
-        }
-        <br />
-        {errorMessage ?
-          <div className='center orange bold'>
-            {errorMessage}
           </div>
-          :
+        )}
+
+        {step === 2 && <AdminTabs name="mainTabs" tab="profile" />}
+
+        <br />
+        <div className="center">
+          {(step === 0 || step === 1) && (
+            <div className="input-validation" style={{ margin: 'auto', width: '300px' }}>
+              <input
+                name="email"
+                placeholder="Email address"
+                value={email}
+                onChange={onEmailChange}
+                className="input-text"
+                ref={(node) => {
+                  emailRef = node
+                }}
+                spellCheck="false"
+                disabled={step !== 0}
+                autoFocus={step === 0}
+              />
+              {isEmailValid(email) && <img src={checkmark} className="validation-icon" alt="validated" />}
+            </div>
+          )}
+
+          {step === 1 && (
+            <div className="input-validation" style={{ margin: 'auto', width: '300px', marginTop: '20px' }}>
+              <input
+                placeholder="Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="input-text"
+                ref={(node) => {
+                  passwordRef = node
+                }}
+                spellCheck="false"
+              />
+              {password?.length > 8 && <img src={checkmark} className="validation-icon" alt="validated" />}
+            </div>
+          )}
+
+          {step === 0 && (
+            <>
+              <br />
+              <div style={{ height: '65px' }}>
+                <Turnstile
+                  siteKey={siteKey}
+                  style={{ margin: 'auto' }}
+                  options={{
+                    theme,
+                    language: turnstileSupportedLanguages.includes(i18n.language) ? i18n.language : 'en'
+                  }}
+                  onSuccess={setToken}
+                />
+              </div>
+              <br />
+              <center>
+                <div style={{ display: 'inline-block', marginBottom: '20px' }}>
+                  <CheckBox checked={termsAccepted} setChecked={setTermsAccepted}>
+                    I agree with the <Link href="/terms-and-conditions">{t('menu.terms-and-conditions')}</Link>.
+                  </CheckBox>
+                </div>
+              </center>
+            </>
+          )}
+
+          {step === 2 && (
+            <>
+              {loggedUserData && (
+                <table className="table-large no-hover">
+                  <tbody>
+                    <tr>
+                      <td className="right">E-mail</td>
+                      <td className="left">
+                        <b>{loggedUserData.email}</b>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td className="right">Registered</td>
+                      <td className="left">{new Date(loggedUserData.created_at).toLocaleString()}</td>
+                    </tr>
+                    <tr>
+                      <td className="right">Bithomp Pro</td>
+                      <td className="left">
+                        {checkedPackageData ? (
+                          <>
+                            {packageData ? (
+                              <>
+                                <b className="green">Active</b> until{' '}
+                                {new Date(packageData.expiredAt * 1000).toLocaleDateString()}
+                              </>
+                            ) : (
+                              'not activated'
+                            )}
+                          </>
+                        ) : (
+                          'loading status...'
+                        )}
+                      </td>
+                    </tr>
+                    {packageData && partnerData && (
+                      <>
+                        <tr>
+                          <td className="right">Support e-mail</td>
+                          <td className="left">
+                            <Mailto email="pro@bithomp.com" headers={{ subject: 'PRO user ' + partnerData.id }} />
+                          </td>
+                        </tr>
+                        <tr>
+                          <td className="right">E-mail subject (for priority)</td>
+                          <td className="left">
+                            <b>PRO user {partnerData.id}</b>
+                          </td>
+                        </tr>
+                      </>
+                    )}
+                  </tbody>
+                </table>
+              )}
+            </>
+          )}
           <br />
-        }
+          {errorMessage ? <div className="center orange bold">{errorMessage}</div> : <br />}
 
-        {(step === 0 || step === 1) &&
-          <>
-            <br />
-            <button
-              className="button-action"
-              onClick={onLogin}
-              disabled={!termsAccepted || !token || !email || !isEmailValid(email)}
-            >
-              Submit
-            </button>
-          </>
-        }
+          {(step === 0 || step === 1) && (
+            <>
+              <br />
+              <button
+                className="button-action"
+                onClick={onLogin}
+                disabled={!termsAccepted || !token || !email || !isEmailValid(email)}
+              >
+                Submit
+              </button>
+            </>
+          )}
 
-        {step === 2 &&
-          <>
-            <br />
-            <button
-              className={"button-action"}
-              onClick={onLogOut}
-            >
-              Log out
-            </button>
-          </>
-        }
+          {step === 2 && (
+            <>
+              <br />
+              <button className={'button-action'} onClick={onLogOut}>
+                Log out
+              </button>
+            </>
+          )}
+        </div>
       </div>
-    </div>
-  </>
+    </>
+  )
 }
