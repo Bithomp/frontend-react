@@ -352,6 +352,7 @@ export default function NftsComponent({
               nftList[i].uriDecoded = nftList[i].uriDecoded.replace(/"/g, '""')
             }
             if (nftList[i].metadata) {
+              nftList[i].metadata.attributesExport = {}
               Object.keys(nftList[i].metadata).forEach(function (key) {
                 //remove escapes to fix the export
                 //according to the CSV specs, to include double quotes within a string that is already quoted, you need to use two double quotes ("")
@@ -368,19 +369,19 @@ export default function NftsComponent({
                 }
                 if (key.toLowerCase() === 'attributes') {
                   Object.keys(nftList[i].metadata[key]).forEach(function (attribute) {
-                    //remove escapes for the export
-                    if (typeof nftList[i].metadata[key][attribute]?.value === 'string') {
-                      nftList[i].metadata[key][attribute] = nftList[i].metadata[key][attribute].value.replace(
-                        /"/g,
-                        '""'
-                      )
-                    }
-                    if (!attributes.includes(attribute)) {
-                      attributes.push(attribute)
-                      attributesHeaders.push({
-                        label: 'Attribute ' + nftList[i].metadata[key][attribute].trait_type,
-                        key: 'metadata.attributes.' + attribute + '.value'
-                      })
+                    if (nftList[i].metadata[key][attribute].trait_type) {
+                      let traitType = nftList[i].metadata[key][attribute].trait_type.toString()
+                      let traitValue = nftList[i].metadata[key][attribute].value.toString()
+                      traitType = traitType.replace(/"/g, '""')
+                      traitValue = traitValue.replace(/"/g, '""')
+                      nftList[i].metadata.attributesExport[traitType] = traitValue
+                      if (!attributes.includes(traitType)) {
+                        attributes.push(traitType)
+                        attributesHeaders.push({
+                          label: 'Attribute ' + traitType,
+                          key: 'metadata.attributesExport.' + traitType
+                        })
+                      }
                     }
                   })
                 }
