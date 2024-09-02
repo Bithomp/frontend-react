@@ -13,7 +13,7 @@
   "what-to-do": "What to Do in Specific Situations:",
   "stolen-funds": "<strong>Stolen Funds or Fraud/Scam Victim</strong>: If your funds were stolen or you were scammed, you can report the incident <2>here</2>.",
   "failed-transaction": "<strong>Failed Transaction with Funds Deducted</strong>: If your transaction status shows as <strong>failed</strong> but the funds were still deducted, please contact the service, wallet, or exchange you used to initiate the transaction.",
-  "successful-transaction": "<strong>Successful Transaction Not Received</strong>: If your transaction shows as <strong>successful</strong> but the recipient hasn't received the funds, reach out to the recipient's wallet, service, or exchange support team.",
+  "successful-transaction": "<strong>Successful Transaction, Funds Not Received</strong>: If your transaction shows as <strong>successful</strong> but the recipient hasn't received the funds, reach out to the recipient's wallet, service, or exchange support team.",
   "destination-tag": "<strong>Incorrect or Missing Destination Tag</strong>: If you sent a transaction without a destination tag or with an incorrect tag, refer to points (2) and (3) above for guidance.",
   "missing-base-reserve": "<strong>Missing {{baseReserve}} in Your Wallet</strong>: The missing {{baseReserve}} is due to the {{nativeCurrency}} Ledger's base reserve requirement. Please read more about the <8>base reserve</8>.",
   "sending-from-paper-wallet": "<strong>Sending {{nativeCurrency}} from a Paper Wallet</strong>: To send {{nativeCurrency}} from a paper wallet, you need to first import it into a software wallet. We recommend using the <strong>Xaman</strong> mobile app for this purpose, where you can import the secret as a <5>family seed.</5>",
