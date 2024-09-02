@@ -362,11 +362,24 @@ export default function NftsComponent({
                 if (
                   !keys.includes(key) &&
                   key.toLowerCase() !== 'name' &&
+                  nftList[i].metadata[key] &&
                   typeof nftList[i].metadata[key] === 'string'
                 ) {
                   keys.push(key)
                   csvHeadersNew.push({ label: capitalizeFirstLetter(key), key: 'metadata.' + key })
                 }
+
+                if (
+                  ['image', 'video', 'animation', '3dmodel'].includes(key.toLowerCase().replace('_url', '')) &&
+                  nftList[i].metadata[key]
+                ) {
+                  if (!keys.includes(key + 'Cid')) {
+                    keys.push(key + 'Cid')
+                    csvHeadersNew.push({ label: capitalizeFirstLetter(key) + ' CID', key: 'metadata.' + key + 'Cid' })
+                  }
+                  nftList[i].metadata[key + 'Cid'] = ipfsUrl(nftList[i].metadata[key], 'cid')
+                }
+
                 if (key.toLowerCase() === 'attributes') {
                   Object.keys(nftList[i].metadata[key]).forEach(function (attribute) {
                     if (nftList[i].metadata[key][attribute].trait_type) {
