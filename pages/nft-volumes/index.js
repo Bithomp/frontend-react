@@ -516,14 +516,13 @@ export default function NftVolumes({
 
   useEffect(() => {
     if (windowWidth > 1300 && !filtersHide) {
-      setLoadingChart(true)
+      setLoadingChart('refresh')
       const timeoutId = setTimeout(() => {
         setLoadingChart(false)
-      }, 200)
-
+      }, 1)
       return () => clearTimeout(timeoutId)
     }
-  }, [filtersHide])
+  }, [filtersHide, windowWidth])
 
   useEffect(() => {
     if (!convertCurrency) return
@@ -985,12 +984,16 @@ export default function NftVolumes({
             <center>
               {loadingChart ? (
                 <>
-                  <br />
-                  <span className="waiting"></span>
-                  <br />
-                  {t('general.loading')}
-                  <br />
-                  <br />
+                  {loadingChart !== 'refresh' && (
+                    <>
+                      <br />
+                      <span className="waiting"></span>
+                      <br />
+                      {t('general.loading')}
+                      <br />
+                      <br />
+                    </>
+                  )}
                 </>
               ) : (
                 <>
