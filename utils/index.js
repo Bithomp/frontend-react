@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { use, useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { Buffer } from 'buffer'
 import { decodeAccountID, isValidClassicAddress } from 'ripple-address-codec'
 import { useTranslation } from 'next-i18next'
