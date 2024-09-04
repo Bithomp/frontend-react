@@ -267,7 +267,7 @@ export default function NftDistribution({ issuerQuery, taxonQuery, idQuery, orde
           (order === 'selfIssued' ? ' ' + t('table.self-issued', { ns: 'nft-distribution' }) : '')
         }
       />
-      <div className="content-text" style={{ marginTop: '20px' }}>
+      <div className="content-text">
         <h1 className="center">{t('header', { ns: 'nft-distribution' })}</h1>
         <div className="center">
           <span className="halv">
