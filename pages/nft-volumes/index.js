@@ -14,8 +14,8 @@ export const getServerSideProps = async (context) => {
   return {
     props: {
       key: Math.random(),
-      extendedStatsQuery: extendedStats || false,
-      periodQuery: period || 'week',
+      extendedStatsQuery: extendedStats || true,
+      periodQuery: period || 'month',
       sale: sale || 'secondary',
       list: list || 'collections',
       currency: currency || '',
@@ -563,10 +563,10 @@ export default function NftVolumes({
       })
     }
 
-    if (extendedStats) {
+    if (!extendedStats) {
       queryAddList.push({
         name: 'extendedStats',
-        value: true
+        value: false
       })
     } else {
       queryRemoveList.push('extendedStats')
