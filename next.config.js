@@ -71,5 +71,8 @@ module.exports = {
         destination: '/transaction'
       }
     ]
+  },
+  experimental: {
+    largePageDataBytes: 128 * 1000
   }
 }

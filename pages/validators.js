@@ -1,6 +1,5 @@
 import { useTranslation, Trans } from 'next-i18next'
 import { useState, useEffect, memo } from 'react'
-import axios from 'axios'
 import moment from 'moment'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import ReactCountryFlag from 'react-country-flag'
@@ -11,18 +10,50 @@ import CheckBox from '../components/UI/CheckBox'
 
 import { addressUsernameOrServiceLink, amountFormat, fullDateAndTime, shortHash, timeFromNow } from '../utils/format'
 import { devNet, useWidth, xahauNetwork, countriesTranslated } from '../utils'
+import { axiosServer } from '../utils/axios'
 import { getIsSsrMobile } from '../utils/mobile'
 
 import CopyButton from '../components/UI/CopyButton'
 
 import VerifiedIcon from '../public/images/verified.svg'
 
-export const getServerSideProps = async (context) => {
-  const { query, locale } = context
+export async function getServerSideProps(context) {
+  const { query, locale, req } = context
   const { amendment } = query
+  let initialData = {}
+
+  let headers = {}
+  if (req.headers['x-real-ip']) {
+    headers['x-real-ip'] = req.headers['x-real-ip']
+  }
+  if (req.headers['x-forwarded-for']) {
+    headers['x-forwarded-for'] = req.headers['x-forwarded-for']
+  }
+  let initialErrorMessage = null
+  try {
+    const res = await axiosServer({
+      method: 'get',
+      url: 'v2/unl',
+      headers
+    }).catch((error) => {
+      initialErrorMessage = error.message
+    })
+    const res2 = await axiosServer({
+      method: 'get',
+      url: 'v2/validators',
+      headers
+    })
+    initialData.unl = res?.data
+    initialData.validators = res2?.data
+  } catch (error) {
+    console.error(error)
+  }
+
   return {
     props: {
       amendment: amendment || null,
+      initialData: initialData || null,
+      initialErrorMessage: initialErrorMessage || '',
       isSsrMobile: getIsSsrMobile(context),
       ...(await serverSideTranslations(locale, ['common', 'validators']))
     }
@@ -47,10 +78,9 @@ const showTime = ({ time }) => {
 
 const ShowTimeMemo = memo(showTime)
 
-export default function Validators({ amendment }) {
+export default function Validators({ amendment, initialData, initialErrorMessage }) {
   const [validators, setValidators] = useState(null)
   const [loading, setLoading] = useState(false)
-  const [errorMessage, setErrorMessage] = useState(null)
   const [unlValidatorsCount, setUnlValidatorsCount] = useState(0)
   const [developerMode, setDeveloperMode] = useState(false)
   const [showServer, setShowServer] = useState(true)
@@ -190,14 +220,8 @@ export default function Validators({ amendment }) {
   }
 
   const checkApi = async () => {
-    setLoading(true)
-    const response = await axios('v2/unl').catch((error) => {
-      if (error && error.message !== 'canceled') {
-        setErrorMessage(t('error.' + error.message))
-        setLoading(false) //keep here for fast tab clickers
-      }
-    })
-    let dataU = response.data
+    if (!initialData) return
+    let dataU = initialData.unl
     if (dataU) {
       dataU.validators?.sort(compare)
       setUnlValidatorsCount(dataU.validators?.length)
@@ -207,8 +231,7 @@ export default function Validators({ amendment }) {
         dataU.validators[i].unl = true
       }
 
-      const responseV = await axios('v2/validators')
-      const dataV = responseV.data
+      const dataV = initialData.validators
       let foundServerCountry = false
       if (dataV) {
         for (let i = 0; i < dataV.length; i++) {
@@ -390,7 +413,7 @@ export default function Validators({ amendment }) {
                 </tr>
               ) : (
                 <>
-                  {!errorMessage && validators?.validators?.length > 0 ? (
+                  {!initialErrorMessage && validators?.validators?.length > 0 ? (
                     validators.validators.map((v, i) => (
                       <tr key={i}>
                         <td style={{ padding: '5px' }}>{i + 1}</td>
@@ -502,7 +525,7 @@ export default function Validators({ amendment }) {
                   ) : (
                     <tr>
                       <td colSpan="100" className="center orange bold">
-                        {errorMessage}
+                        {initialErrorMessage}
                       </td>
                     </tr>
                   )}
@@ -538,7 +561,7 @@ export default function Validators({ amendment }) {
                 </tr>
               ) : (
                 <>
-                  {!errorMessage && validators?.validators?.length > 0 ? (
+                  {!initialErrorMessage && validators?.validators?.length > 0 ? (
                     validators.validators.map((v, i) => (
                       <tr key={v.publicKey}>
                         <td>{i + 1}</td>
@@ -644,7 +667,7 @@ export default function Validators({ amendment }) {
                   ) : (
                     <tr>
                       <td colSpan="100" className="center orange bold">
-                        {errorMessage}
+                        {initialErrorMessage}
                       </td>
                     </tr>
                   )}
