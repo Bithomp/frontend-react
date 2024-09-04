@@ -80,10 +80,10 @@ const ShowTimeMemo = memo(showTime)
 
 export default function Validators({ amendment, initialData, initialErrorMessage }) {
   const [validators, setValidators] = useState(null)
-  const [loading, setLoading] = useState(false)
   const [unlValidatorsCount, setUnlValidatorsCount] = useState(0)
   const [developerMode, setDeveloperMode] = useState(false)
   const [showServer, setShowServer] = useState(true)
+  const [serverVersions, setServerVersions] = useState({ validators: {}, unl: {}, count: { validators: 0, unl: 0 } })
   const { t } = useTranslation()
   const windowWidth = useWidth()
   const { theme } = useTheme()
@@ -177,6 +177,12 @@ export default function Validators({ amendment, initialData, initialErrorMessage
     return a.publicKey > b.publicKey ? 1 : -1
   }
 
+  const compareVersions = (a, b) => {
+    if (a.count > b.count) return -1
+    if (a.count < b.count) return 1
+    return 0
+  }
+
   const twitterLink = (twitter) => {
     if (!twitter) return ''
     twitter = twitter.replace('@', '')
@@ -226,6 +232,8 @@ export default function Validators({ amendment, initialData, initialErrorMessage
       dataU.validators?.sort(compare)
       setUnlValidatorsCount(dataU.validators?.length)
 
+      let countServerVersions = { validators: {}, unl: {}, count: { validators: 0, unl: 0 } }
+
       //in case some of the validators down...
       for (let i = 0; i < dataU.validators.length; i++) {
         dataU.validators[i].unl = true
@@ -236,6 +244,14 @@ export default function Validators({ amendment, initialData, initialErrorMessage
       if (dataV) {
         for (let i = 0; i < dataV.length; i++) {
           const v = dataV[i]
+          if (v.serverVersion) {
+            if (countServerVersions.validators[v.serverVersion]) {
+              countServerVersions.validators[v.serverVersion]++
+            } else {
+              countServerVersions.validators[v.serverVersion] = 1
+            }
+            countServerVersions.count.validators++
+          }
           if (v.serverCountry) {
             foundServerCountry = true
           }
@@ -247,13 +263,42 @@ export default function Validators({ amendment, initialData, initialErrorMessage
             v.domainLegacy = dataU.validators[index].domainLegacy
             v.sequence = dataU.validators[index].sequence
             dataU.validators[index] = v
+            if (v.serverVersion) {
+              if (countServerVersions.unl[v.serverVersion]) {
+                countServerVersions.unl[v.serverVersion]++
+              } else {
+                countServerVersions.unl[v.serverVersion] = 1
+              }
+              countServerVersions.count.unl++
+            }
           }
         }
         dataU.validators.sort(compare)
         setShowServer(foundServerCountry)
         setValidators(dataU)
-        setLoading(false)
       }
+
+      //compareVersions for server versions Validators
+      let countServerVersionsArray = []
+      for (let v in countServerVersions.validators) {
+        countServerVersionsArray.push({ version: v, count: countServerVersions.validators[v] })
+      }
+      countServerVersionsArray.sort(compareVersions)
+      countServerVersions.validators = {}
+      for (let i = 0; i < countServerVersionsArray.length; i++) {
+        countServerVersions.validators[countServerVersionsArray[i].version] = countServerVersionsArray[i].count
+      }
+      //compareVersions for server versions UNL
+      countServerVersionsArray = []
+      for (let v in countServerVersions.unl) {
+        countServerVersionsArray.push({ version: v, count: countServerVersions.unl[v] })
+      }
+      countServerVersionsArray.sort(compareVersions)
+      countServerVersions.unl = {}
+      for (let i = 0; i < countServerVersionsArray.length; i++) {
+        countServerVersions.unl[countServerVersionsArray[i].version] = countServerVersionsArray[i].count
+      }
+      setServerVersions(countServerVersions)
     }
   }
 
@@ -358,33 +403,81 @@ export default function Validators({ amendment, initialData, initialErrorMessage
         <h1 className="center">{t('menu.network.validators')}</h1>
         <div className="flex center">
           <div className="grey-box">
-            {!loading ? (
-              <>
-                {validators && (
-                  <Trans i18nKey="text0" ns="validators">
-                    The validator list <b>{{ url: validators.url }}</b> has sequence {{ sequence: validators.sequence }}{' '}
-                    and expiration on {{ expiration: fullDateAndTime(validators.expiration, null, { asText: true }) }}.
-                    <br />
-                    It includes {{ validatorCount: unlValidatorsCount }} validators which are listed below.
-                  </Trans>
-                )}
+            {validators && (
+              <Trans i18nKey="text0" ns="validators">
+                The validator list <b>{{ url: validators.url }}</b> has sequence {{ sequence: validators.sequence }} and
+                expiration on {{ expiration: fullDateAndTime(validators.expiration, null, { asText: true }) }}.
                 <br />
-                {validators?.error && (
-                  <b>
-                    <br />
-                    Validation error: <span className="red">{validators?.error}</span>.
-                  </b>
-                )}
-              </>
-            ) : (
-              <>
+                It includes {{ validatorCount: unlValidatorsCount }} validators which are listed below.
+              </Trans>
+            )}
+            <br />
+            {validators?.error && (
+              <b>
                 <br />
-                {t('general.loading')}
-                <br />
-              </>
+                Validation error: <span className="red">{validators?.error}</span>.
+              </b>
             )}
           </div>
         </div>
+
+        <div className="flex flex-center">
+          <div className="div-with-table">
+            <h4 className="center">{t('menu.network.validators')}</h4>
+            {serverVersions?.count?.validators && (
+              <table className="table-large shrink">
+                <thead>
+                  <tr>
+                    <th className="center">{t('table.index')}</th>
+                    <th>{t('table.version')}</th>
+                    <th className="right">{t('table.count')}</th>
+                    <th className="right">%%</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {Object.keys(serverVersions.validators).map((v, i) => (
+                    <tr key={i}>
+                      <td className="center">{i + 1}</td>
+                      <td>{v}</td>
+                      <td className="right">{serverVersions.validators[v]}</td>
+                      <td className="right">
+                        {Math.ceil((serverVersions.validators[v] / serverVersions.count.validators) * 10000) / 100}%
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
+          </div>
+          <div className="div-with-table">
+            <h4 className="center">UNL {t('menu.network.validators')}</h4>
+            {serverVersions?.count?.unl && (
+              <table className="table-large shrink">
+                <thead>
+                  <tr>
+                    <th className="center">{t('table.index')}</th>
+                    <th>{t('table.version')}</th>
+                    <th className="right">{t('table.count')}</th>
+                    <th className="right">%%</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {Object.keys(serverVersions.unl).map((v, i) => (
+                    <tr key={i}>
+                      <td className="center">{i + 1}</td>
+                      <td>{v}</td>
+                      <td className="right">{serverVersions.unl[v]}</td>
+                      <td className="right">
+                        {Math.ceil((serverVersions.unl[v] / serverVersions.count.unl) * 10000) / 100}%
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
+          </div>
+        </div>
+        <br />
 
         {windowWidth >= 960 && (
           <div style={{ width: '200px', margin: 'auto' }}>
@@ -400,136 +493,121 @@ export default function Validators({ amendment, initialData, initialErrorMessage
           <table className="table-mobile">
             <thead></thead>
             <tbody>
-              {loading ? (
-                <tr className="center">
-                  <td colSpan="100">
-                    <br />
-                    <span className="waiting"></span>
-                    <br />
-                    {t('general.loading')}
-                    <br />
-                    <br />
+              {!initialErrorMessage && validators?.validators?.length > 0 ? (
+                validators.validators.map((v, i) => (
+                  <tr key={i}>
+                    <td style={{ padding: '5px' }}>{i + 1}</td>
+                    <td>
+                      <p>
+                        {displayFlag(v.ownerCountry, t('table.owner-country', { ns: 'validators' }))}
+                        {v.principals?.map((p, i) => (
+                          <span key={i}>
+                            {p.name && <b> {p.name}</b>}
+                            {twitterLink(p.twitter || p.x)}
+                            <br />
+                          </span>
+                        ))}
+                      </p>
+
+                      {v.domain ? (
+                        <p>
+                          {t('table.domain')}:<br />
+                          <a href={'https://' + v.domain}>{v.domain}</a>
+                          {verifiedSign(v.domainVerified, v.domain)}
+                        </p>
+                      ) : (
+                        <>
+                          {v.domainLegacy && (
+                            <p>
+                              {t('domain-legacy', { ns: 'validators' })}
+                              <br />
+                              <a href={'https://' + v.domainLegacy}>{v.domainLegacy}</a>
+                              {verifiedSign(v.domainLegacyVerified, v.domainLegacy)}
+                            </p>
+                          )}
+                        </>
+                      )}
+                      {v.unl && <p>UNL: ✅</p>}
+                      {v.nUnl && <p>nUNL: ❌</p>}
+                      <p>
+                        {t('table.votes-for', { ns: 'validators' })}:
+                        <br />
+                        {listAmendments(v.amendments)}
+                      </p>
+                      <p>
+                        {t('table.public-key')}:<br />
+                        {shortHash(v.publicKey)} <CopyButton text={v.publicKey} />
+                      </p>
+                      <p>
+                        {t('table.sequence')}: {v.sequence}
+                      </p>
+                      <p>
+                        {t('last-ledger-information.base-fee')}: {v.baseFee ? amountFormat(v.baseFee) : 'N/A'}
+                      </p>
+                      <p>
+                        {t('last-ledger-information.base-reserve')}:{' '}
+                        {v.reserveBase ? amountFormat(v.reserveBase) : 'N/A'}
+                      </p>
+                      <p>
+                        {t('last-ledger-information.increment-reserve')}:{' '}
+                        {v.reserveIncrement ? amountFormat(v.reserveIncrement) : 'N/A'}
+                      </p>
+                      {v.serverCountry?.length === 2 && (
+                        <p>
+                          {t('table.server-country', { ns: 'validators' })}:{' '}
+                          {countries.getNameTranslated(fixCountry(v.serverCountry))}{' '}
+                          <ReactCountryFlag
+                            countryCode={fixCountry(v.serverCountry)}
+                            style={{
+                              fontSize: '1.5em',
+                              lineHeight: '1.5em'
+                            }}
+                          />
+                        </p>
+                      )}
+
+                      {v.serverLocation && (
+                        <p>
+                          {t('table.server-location', { ns: 'validators' })}: {v.serverLocation}
+                        </p>
+                      )}
+
+                      {v.serverCloud?.toString() && (
+                        <p>
+                          {t('table.cloud-private', { ns: 'validators' })}:
+                          {v.serverCloud === true && <span style={{ fontSize: '1.5em' }}> ☁️</span>}
+                          {v.serverCloud === false && <span style={{ fontSize: '1.5em' }}> 🏠</span>}
+                        </p>
+                      )}
+
+                      {v.serverLocation && (
+                        <p>
+                          {t('table.network-asn', { ns: 'validators' })}: {v.networkASN}
+                        </p>
+                      )}
+
+                      <p>
+                        {t('table.version')}: {v.serverVersion ? v.serverVersion : 'N/A'}
+                      </p>
+                      <p>
+                        {t('table.last-seen', { ns: 'validators' })}: <ShowTimeMemo time={v.lastSeenTime} />
+                      </p>
+                      {xahauNetwork && (
+                        <p>
+                          {t('table.address')} <CopyButton text={v.address} />
+                          <br />
+                          {addressUsernameOrServiceLink(v, 'address')}
+                        </p>
+                      )}
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="100" className="center orange bold">
+                    {initialErrorMessage}
                   </td>
                 </tr>
-              ) : (
-                <>
-                  {!initialErrorMessage && validators?.validators?.length > 0 ? (
-                    validators.validators.map((v, i) => (
-                      <tr key={i}>
-                        <td style={{ padding: '5px' }}>{i + 1}</td>
-                        <td>
-                          <p>
-                            {displayFlag(v.ownerCountry, t('table.owner-country', { ns: 'validators' }))}
-                            {v.principals?.map((p, i) => (
-                              <span key={i}>
-                                {p.name && <b> {p.name}</b>}
-                                {twitterLink(p.twitter || p.x)}
-                                <br />
-                              </span>
-                            ))}
-                          </p>
-
-                          {v.domain ? (
-                            <p>
-                              {t('table.domain')}:<br />
-                              <a href={'https://' + v.domain}>{v.domain}</a>
-                              {verifiedSign(v.domainVerified, v.domain)}
-                            </p>
-                          ) : (
-                            <>
-                              {v.domainLegacy && (
-                                <p>
-                                  {t('domain-legacy', { ns: 'validators' })}
-                                  <br />
-                                  <a href={'https://' + v.domainLegacy}>{v.domainLegacy}</a>
-                                  {verifiedSign(v.domainLegacyVerified, v.domainLegacy)}
-                                </p>
-                              )}
-                            </>
-                          )}
-                          {v.unl && <p>UNL: ✅</p>}
-                          {v.nUnl && <p>nUNL: ❌</p>}
-                          <p>
-                            {t('table.votes-for', { ns: 'validators' })}:
-                            <br />
-                            {listAmendments(v.amendments)}
-                          </p>
-                          <p>
-                            {t('table.public-key')}:<br />
-                            {shortHash(v.publicKey)} <CopyButton text={v.publicKey} />
-                          </p>
-                          <p>
-                            {t('table.sequence')}: {v.sequence}
-                          </p>
-                          <p>
-                            {t('last-ledger-information.base-fee')}: {v.baseFee ? amountFormat(v.baseFee) : 'N/A'}
-                          </p>
-                          <p>
-                            {t('last-ledger-information.base-reserve')}:{' '}
-                            {v.reserveBase ? amountFormat(v.reserveBase) : 'N/A'}
-                          </p>
-                          <p>
-                            {t('last-ledger-information.increment-reserve')}:{' '}
-                            {v.reserveIncrement ? amountFormat(v.reserveIncrement) : 'N/A'}
-                          </p>
-                          {v.serverCountry?.length === 2 && (
-                            <p>
-                              {t('table.server-country', { ns: 'validators' })}:{' '}
-                              {countries.getNameTranslated(fixCountry(v.serverCountry))}{' '}
-                              <ReactCountryFlag
-                                countryCode={fixCountry(v.serverCountry)}
-                                style={{
-                                  fontSize: '1.5em',
-                                  lineHeight: '1.5em'
-                                }}
-                              />
-                            </p>
-                          )}
-
-                          {v.serverLocation && (
-                            <p>
-                              {t('table.server-location', { ns: 'validators' })}: {v.serverLocation}
-                            </p>
-                          )}
-
-                          {v.serverCloud?.toString() && (
-                            <p>
-                              {t('table.cloud-private', { ns: 'validators' })}:
-                              {v.serverCloud === true && <span style={{ fontSize: '1.5em' }}> ☁️</span>}
-                              {v.serverCloud === false && <span style={{ fontSize: '1.5em' }}> 🏠</span>}
-                            </p>
-                          )}
-
-                          {v.serverLocation && (
-                            <p>
-                              {t('table.network-asn', { ns: 'validators' })}: {v.networkASN}
-                            </p>
-                          )}
-
-                          <p>
-                            {t('table.version')}: {v.serverVersion ? v.serverVersion : 'N/A'}
-                          </p>
-                          <p>
-                            {t('table.last-seen', { ns: 'validators' })}: <ShowTimeMemo time={v.lastSeenTime} />
-                          </p>
-                          {xahauNetwork && (
-                            <p>
-                              {t('table.address')} <CopyButton text={v.address} />
-                              <br />
-                              {addressUsernameOrServiceLink(v, 'address')}
-                            </p>
-                          )}
-                        </td>
-                      </tr>
-                    ))
-                  ) : (
-                    <tr>
-                      <td colSpan="100" className="center orange bold">
-                        {initialErrorMessage}
-                      </td>
-                    </tr>
-                  )}
-                </>
               )}
             </tbody>
           </table>
@@ -548,130 +626,113 @@ export default function Validators({ amendment, initialData, initialErrorMessage
               </tr>
             </thead>
             <tbody>
-              {loading ? (
-                <tr className="center">
-                  <td colSpan="100">
-                    <br />
-                    <span className="waiting"></span>
-                    <br />
-                    {t('general.loading')}
-                    <br />
-                    <br />
-                  </td>
-                </tr>
-              ) : (
-                <>
-                  {!initialErrorMessage && validators?.validators?.length > 0 ? (
-                    validators.validators.map((v, i) => (
-                      <tr key={v.publicKey}>
-                        <td>{i + 1}</td>
-                        <td>
-                          {developerMode && (
+              {!initialErrorMessage && validators?.validators?.length > 0 ? (
+                validators.validators.map((v, i) => (
+                  <tr key={v.publicKey}>
+                    <td>{i + 1}</td>
+                    <td>
+                      {developerMode && (
+                        <>
+                          <CopyButton text={v.publicKey} /> {windowWidth > 1240 ? v.publicKey : shortHash(v.publicKey)}
+                          <br />
+                        </>
+                      )}
+                      {displayFlag(v.ownerCountry, t('table.owner-country', { ns: 'validators' }))}
+                      {v.ownerCountry && ' '}
+                      {v.principals?.map((p, i) => (
+                        <span key={i}>
+                          {p.name && <b>{p.name}</b>}
+                          {twitterLink(p.twitter || p.x)}
+                          {i !== v.principals.length - 1 ? ', ' : <br />}
+                        </span>
+                      ))}
+                      {!v.principals?.length && <br />}
+                      {v.domain ? (
+                        <>
+                          <a href={'https://' + v.domain}>{v.domain}</a>
+                          {verifiedSign(v.domainVerified, v.domain)}
+                          <br />
+                        </>
+                      ) : (
+                        <>
+                          {v.domainLegacy ? (
                             <>
-                              <CopyButton text={v.publicKey} />{' '}
+                              <a href={'https://' + v.domainLegacy} className="green">
+                                {v.domainLegacy}
+                              </a>
+                              {verifiedSign(v.domainLegacyVerified, v.domainLegacy)}
+                              <br />
+                            </>
+                          ) : !developerMode ? (
+                            <>
                               {windowWidth > 1240 ? v.publicKey : shortHash(v.publicKey)}
                               <br />
                             </>
-                          )}
-                          {displayFlag(v.ownerCountry, t('table.owner-country', { ns: 'validators' }))}
-                          {v.ownerCountry && ' '}
-                          {v.principals?.map((p, i) => (
-                            <span key={i}>
-                              {p.name && <b>{p.name}</b>}
-                              {twitterLink(p.twitter || p.x)}
-                              {i !== v.principals.length - 1 ? ', ' : <br />}
-                            </span>
-                          ))}
-                          {!v.principals?.length && <br />}
-                          {v.domain ? (
-                            <>
-                              <a href={'https://' + v.domain}>{v.domain}</a>
-                              {verifiedSign(v.domainVerified, v.domain)}
-                              <br />
-                            </>
-                          ) : (
-                            <>
-                              {v.domainLegacy ? (
-                                <>
-                                  <a href={'https://' + v.domainLegacy} className="green">
-                                    {v.domainLegacy}
-                                  </a>
-                                  {verifiedSign(v.domainLegacyVerified, v.domainLegacy)}
-                                  <br />
-                                </>
-                              ) : !developerMode ? (
-                                <>
-                                  {windowWidth > 1240 ? v.publicKey : shortHash(v.publicKey)}
-                                  <br />
-                                </>
-                              ) : (
-                                ''
-                              )}
-                            </>
-                          )}
-                          {listAmendments(v.amendments)}
-                          <br />
-                          {t('last-ledger-information.base-fee')} {v.baseFee ? amountFormat(v.baseFee) : 'N/A'}|
-                          {t('last-ledger-information.base-reserve')}{' '}
-                          {v.reserveBase ? amountFormat(v.reserveBase) : 'N/A'}|
-                          {t('last-ledger-information.increment-reserve')}{' '}
-                          {v.reserveIncrement ? amountFormat(v.reserveIncrement) : 'N/A'}
-                        </td>
-                        <td className="center">
-                          {v.unl ? (
-                            v.nUnl ? (
-                              <span className="tooltip">
-                                ❌
-                                <span className="tooltiptext right no-brake">
-                                  {t('table.text.negative-unl', { ns: 'validators' })}
-                                </span>
-                              </span>
-                            ) : (
-                              <span className="tooltip">
-                                ✅
-                                <span className="tooltiptext right no-brake">
-                                  {t('table.text.unl', { ns: 'validators' })}
-                                </span>
-                              </span>
-                            )
                           ) : (
                             ''
                           )}
-                        </td>
-                        {developerMode && <td className="center">{v.sequence}</td>}
-                        {showServer && (
-                          <td className={developerMode ? 'right' : 'center'}>
-                            {developerMode && <>{v.serverLocation && <>{v.serverLocation} </>}</>}
-                            {displayFlag(v.serverCountry, t('table.server-country', { ns: 'validators' }))}
-                            {developerMode && (
-                              <>
-                                <br />
-                                {v.serverCloud === true && <span style={{ fontSize: '1.5em' }}>☁️</span>}
-                                {v.serverCloud === false && <span style={{ fontSize: '1.5em' }}>🏠</span>}
-                                {v.networkASN && <> {v.networkASN}</>}
-                              </>
-                            )}
-                          </td>
+                        </>
+                      )}
+                      {listAmendments(v.amendments)}
+                      <br />
+                      {t('last-ledger-information.base-fee')} {v.baseFee ? amountFormat(v.baseFee) : 'N/A'}|
+                      {t('last-ledger-information.base-reserve')} {v.reserveBase ? amountFormat(v.reserveBase) : 'N/A'}|
+                      {t('last-ledger-information.increment-reserve')}{' '}
+                      {v.reserveIncrement ? amountFormat(v.reserveIncrement) : 'N/A'}
+                    </td>
+                    <td className="center">
+                      {v.unl ? (
+                        v.nUnl ? (
+                          <span className="tooltip">
+                            ❌
+                            <span className="tooltiptext right no-brake">
+                              {t('table.text.negative-unl', { ns: 'validators' })}
+                            </span>
+                          </span>
+                        ) : (
+                          <span className="tooltip">
+                            ✅
+                            <span className="tooltiptext right no-brake">
+                              {t('table.text.unl', { ns: 'validators' })}
+                            </span>
+                          </span>
+                        )
+                      ) : (
+                        ''
+                      )}
+                    </td>
+                    {developerMode && <td className="center">{v.sequence}</td>}
+                    {showServer && (
+                      <td className={developerMode ? 'right' : 'center'}>
+                        {developerMode && <>{v.serverLocation && <>{v.serverLocation} </>}</>}
+                        {displayFlag(v.serverCountry, t('table.server-country', { ns: 'validators' }))}
+                        {developerMode && (
+                          <>
+                            <br />
+                            {v.serverCloud === true && <span style={{ fontSize: '1.5em' }}>☁️</span>}
+                            {v.serverCloud === false && <span style={{ fontSize: '1.5em' }}>🏠</span>}
+                            {v.networkASN && <> {v.networkASN}</>}
+                          </>
                         )}
-                        <td className="left">{v.serverVersion}</td>
-                        <td className="right">
-                          <ShowTimeMemo time={v.lastSeenTime} />
-                        </td>
-                        {(xahauNetwork || (developerMode && windowWidth > 1560)) && (
-                          <td className="left">
-                            <CopyButton text={v.address} /> {addressUsernameOrServiceLink(v, 'address')}
-                          </td>
-                        )}
-                      </tr>
-                    ))
-                  ) : (
-                    <tr>
-                      <td colSpan="100" className="center orange bold">
-                        {initialErrorMessage}
                       </td>
-                    </tr>
-                  )}
-                </>
+                    )}
+                    <td className="left">{v.serverVersion}</td>
+                    <td className="right">
+                      <ShowTimeMemo time={v.lastSeenTime} />
+                    </td>
+                    {(xahauNetwork || (developerMode && windowWidth > 1560)) && (
+                      <td className="left">
+                        <CopyButton text={v.address} /> {addressUsernameOrServiceLink(v, 'address')}
+                      </td>
+                    )}
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="100" className="center orange bold">
+                    {initialErrorMessage}
+                  </td>
+                </tr>
               )}
             </tbody>
           </table>
