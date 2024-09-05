@@ -382,13 +382,14 @@ export const capitalize = (str) => {
 }
 
 export const network = process.env.NEXT_PUBLIC_NETWORK_NAME
+const webAddress = process.env.NEXT_PUBLIC_WEB_ADDRESS
 export const devNet = ['mainnet', 'staging', 'xahau'].includes(network) ? false : network
 export const xahauNetwork = network.includes('xahau')
 
 export const networks = {
   mainnet: {
     id: 0,
-    server: 'https://bithomp.com',
+    server: webAddress || 'https://bithomp.com',
     nativeCurrency: 'XRP',
     getCoinsUrl: '/go/buy-first-xrp',
     explorerName: 'XRPL',
