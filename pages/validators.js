@@ -14,6 +14,7 @@ import { axiosServer } from '../utils/axios'
 import { getIsSsrMobile } from '../utils/mobile'
 
 import CopyButton from '../components/UI/CopyButton'
+import NetworkPagesTab from '../components/Tabs/NetworkPagesTabs'
 
 import VerifiedIcon from '../public/images/verified.svg'
 
@@ -401,6 +402,7 @@ export default function Validators({ amendment, initialData, initialErrorMessage
       <SEO title={t('menu.network.validators')} />
       <div className="content-text">
         <h1 className="center">{t('menu.network.validators')}</h1>
+        <NetworkPagesTab tab="validators" />
         <div className="flex center">
           <div className="grey-box">
             {validators && (

@@ -44,6 +44,7 @@ export async function getServerSideProps(context) {
 
 import SEO from '../components/SEO'
 import CopyButton from '../components/UI/CopyButton'
+import NetworkPagesTab from '../components/Tabs/NetworkPagesTabs'
 
 const shortVersion = (version) => {
   version = version.replace('rippled-', '')
@@ -115,6 +116,7 @@ export default function Nodes({ initialData, initialErrorMessage }) {
         <h1 className="center">
           {data?.summary?.total} {ledgerName} nodes
         </h1>
+        <NetworkPagesTab tab="nodes" />
 
         <p className="center">
           Explore the list of {ledgerName} nodes. View up-to-date statistics on node versions and countries
