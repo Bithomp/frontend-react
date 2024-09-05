@@ -11,7 +11,7 @@ import { getIsSsrMobile } from '../../utils/mobile'
 import { fullDateAndTime, shortNiceNumber, amountFormat } from '../../utils/format'
 
 import SEO from '../../components/SEO'
-import AdminTabs from '../../components/Admin/Tabs'
+import AdminTabs from '../../components/Tabs/AdminTabs'
 import Select from 'react-select'
 import BillingCountry from '../../components/Admin/BillingCountry'
 import CopyButton from '../../components/UI/CopyButton'

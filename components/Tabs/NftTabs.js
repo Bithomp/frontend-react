@@ -1,9 +1,9 @@
 import { useRouter } from 'next/router'
-import Tabs from './Tabs'
+import Tabs from '.'
 import { useTranslation } from 'next-i18next'
 import { useEffect, useState } from 'react'
 
-export default function AdminTabs({ tab, url }) {
+export default function NftTabs({ tab, url }) {
   const router = useRouter()
   const { t } = useTranslation()
 

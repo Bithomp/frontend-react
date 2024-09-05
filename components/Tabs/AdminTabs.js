@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router'
-import Tabs from '../Tabs'
+import Tabs from '.'
 
 export default function AdminTabs({ name, tab }) {
   const router = useRouter()

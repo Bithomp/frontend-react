@@ -42,7 +42,7 @@ import AddressInput from './UI/AddressInput'
 import ViewTogggle from './UI/ViewToggle'
 import SimpleSelect from './UI/SimpleSelect'
 import LeftFilters from './UI/LeftFilters'
-import NftTabs from './NftTabs'
+import NftTabs from './Tabs/NftTabs'
 
 export default function NftsComponent({
   collectionQuery,

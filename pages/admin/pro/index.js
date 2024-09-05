@@ -4,7 +4,7 @@ import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 
 import { getIsSsrMobile } from '../../../utils/mobile'
-import AdminTabs from '../../../components/Admin/Tabs'
+import AdminTabs from '../../../components/Tabs/AdminTabs'
 import { axiosAdmin } from '../../../utils/axios'
 
 import SEO from '../../../components/SEO'

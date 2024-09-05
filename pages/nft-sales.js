@@ -42,7 +42,7 @@ import SimpleSelect from '../components/UI/SimpleSelect'
 import DateAndTimeRange from '../components/UI/DateAndTimeRange'
 import AddressInput from '../components/UI/AddressInput'
 import LeftFilters from '../components/UI/LeftFilters'
-import NftTabs from '../components/NftTabs'
+import NftTabs from '../components/Tabs/NftTabs'
 
 import LinkIcon from '../public/images/link.svg'
 

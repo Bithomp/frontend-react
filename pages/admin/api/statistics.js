@@ -8,21 +8,21 @@ import SEO from '../../../components/SEO'
 
 import { useWidth } from '../../../utils'
 import { getIsSsrMobile } from '../../../utils/mobile'
-import AdminTabs from '../../../components/Admin/Tabs'
+import AdminTabs from '../../../components/Tabs/AdminTabs'
 
 export const getServerSideProps = async (context) => {
   const { locale } = context
   return {
     props: {
       isSsrMobile: getIsSsrMobile(context),
-      ...(await serverSideTranslations(locale, ['common', 'admin'])),
-    },
+      ...(await serverSideTranslations(locale, ['common', 'admin']))
+    }
   }
 }
 
 export default function Statistics() {
   const { t } = useTranslation(['common', 'admin'])
-  const [errorMessage, setErrorMessage] = useState("")
+  const [errorMessage, setErrorMessage] = useState('')
   const [loading, setLoading] = useState(false)
   const router = useRouter()
   const width = useWidth()
@@ -33,7 +33,7 @@ export default function Statistics() {
     if (!sessionToken) {
       router.push('/admin')
     } else {
-      axiosAdmin.defaults.headers.common['Authorization'] = "Bearer " + sessionToken
+      axiosAdmin.defaults.headers.common['Authorization'] = 'Bearer ' + sessionToken
       getData()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -43,12 +43,10 @@ export default function Statistics() {
     setLoading(true)
     //period=from..to&span=minute&search=text&ip=z
     //max=20
-    const requestStats = await axiosAdmin.get(
-      'partner/accessToken/requests/statistics?limit=20'
-    ).catch(error => {
-      if (error && error.message !== "canceled") {
-        setErrorMessage(t(error.response.data.error || "error." + error.message))
-        if (error.response?.data?.error === "errors.token.required") {
+    const requestStats = await axiosAdmin.get('partner/accessToken/requests/statistics?limit=20').catch((error) => {
+      if (error && error.message !== 'canceled') {
+        setErrorMessage(t(error.response.data.error || 'error.' + error.message))
+        if (error.response?.data?.error === 'errors.token.required') {
           router.push('/admin')
         }
       }
@@ -59,138 +57,142 @@ export default function Statistics() {
     setStatistics(requestStats?.data)
   }
 
-  return <>
-    <SEO title={t("header", { ns: "admin" })} />
-    <div className="page-admin content-text">
-      <h1 className='center'>
-        {t("header", { ns: "admin" })}
-      </h1>
+  return (
+    <>
+      <SEO title={t('header', { ns: 'admin' })} />
+      <div className="page-admin content-text">
+        <h1 className="center">{t('header', { ns: 'admin' })}</h1>
 
-      <AdminTabs name="mainTabs" tab="api" />
-      <AdminTabs name="apiTabs" tab="api-statistics" />
+        <AdminTabs name="mainTabs" tab="api" />
+        <AdminTabs name="apiTabs" tab="api-statistics" />
 
-      <div className='center'>
-        <div style={{ marginTop: "20px", textAlign: "left" }}>
-          <h4 className='center'>20 most common URLs in the last 24h</h4>
-          {width > 750 ?
-            <table className='table-large'>
+        <div className="center">
+          <div style={{ marginTop: '20px', textAlign: 'left' }}>
+            <h4 className="center">20 most common URLs in the last 24h</h4>
+            {width > 750 ? (
+              <table className="table-large">
+                <thead>
+                  <tr>
+                    <th></th>
+                    <th className="right">Count</th>
+                    <th>URL</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {loading && (
+                    <tr className="center">
+                      <td colSpan="100">
+                        <span className="waiting"></span>
+                        <br />
+                        {t('general.loading')}
+                      </td>
+                    </tr>
+                  )}
+                  {statistics?.urls?.map((item, i) => {
+                    return (
+                      <tr key={i}>
+                        <td>{i + 1}</td>
+                        <td className="right">{item.count}</td>
+                        <td className="brake">{item.url}</td>
+                      </tr>
+                    )
+                  })}
+                  {!statistics?.urls?.[0] && (
+                    <tr>
+                      <td colSpan="100" className="center">
+                        <b>no data available</b>
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            ) : (
+              <table className="table-mobile">
+                <tbody>
+                  {loading && (
+                    <tr className="center">
+                      <td colSpan="100">
+                        <span className="waiting"></span>
+                        <br />
+                        {t('general.loading')}
+                      </td>
+                    </tr>
+                  )}
+                  {statistics?.urls?.map((item, i) => {
+                    return (
+                      <tr key={i}>
+                        <td style={{ padding: '5px' }} className="center">
+                          <b>{i + 1}</b>
+                        </td>
+                        <td>
+                          <p>Count: {item.count}</p>
+                          <p>
+                            URL:
+                            <br />
+                            <span style={{ wordBreak: 'break-all' }}>{item.url}</span>
+                          </p>
+                        </td>
+                      </tr>
+                    )
+                  })}
+                  {!statistics?.urls?.[0] && (
+                    <tr>
+                      <td colSpan="100" className="center">
+                        <b>no data available</b>
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            )}
+          </div>
+
+          <div style={{ marginTop: '20px', textAlign: 'left' }}>
+            <h4 className="center">The most common IPs in the last 24h</h4>
+            <table className="table-large">
               <thead>
                 <tr>
                   <th></th>
-                  <th className='right'>Count</th>
-                  <th>URL</th>
+                  <th className="right">Count</th>
+                  <th className="right">IP</th>
+                  <th className="right">Country</th>
                 </tr>
               </thead>
               <tbody>
-                {loading &&
-                  <tr className='center'>
+                {loading && (
+                  <tr className="center">
                     <td colSpan="100">
                       <span className="waiting"></span>
-                      <br />{t("general.loading")}
+                      <br />
+                      {t('general.loading')}
                     </td>
                   </tr>
-                }
-                {statistics?.urls?.map((item, i) => {
-                  return <tr key={i}>
-                    <td>{i + 1}</td>
-                    <td className='right'>{item.count}</td>
-                    <td className='brake'>{item.url}</td>
-                  </tr>
-                }
                 )}
-                {!statistics?.urls?.[0] &&
+                {statistics?.ips?.map((item, i) => {
+                  return (
+                    <tr key={i}>
+                      <td>{i + 1}</td>
+                      <td className="right">{item.count}</td>
+                      <td className="right">{item.ip}</td>
+                      <td className="right">{item.country}</td>
+                    </tr>
+                  )
+                })}
+                {!statistics?.ips?.[0] && (
                   <tr>
-                    <td colSpan="100" className='center'>
+                    <td colSpan="100" className="center">
                       <b>no data available</b>
                     </td>
                   </tr>
-                }
-              </tbody>
-            </table>
-            :
-            <table className='table-mobile'>
-              <tbody>
-                {loading &&
-                  <tr className='center'>
-                    <td colSpan="100">
-                      <span className="waiting"></span>
-                      <br />{t("general.loading")}
-                    </td>
-                  </tr>
-                }
-                {statistics?.urls?.map((item, i) => {
-                  return <tr key={i}>
-                    <td style={{ padding: "5px" }} className='center'>
-                      <b>{i + 1}</b>
-                    </td>
-                    <td>
-                      <p>Count: {item.count}</p>
-                      <p>URL:<br /><span style={{ wordBreak: "break-all" }}>{item.url}</span></p>
-                    </td>
-                  </tr>
-                }
                 )}
-                {!statistics?.urls?.[0] &&
-                  <tr>
-                    <td colSpan="100" className='center'>
-                      <b>no data available</b>
-                    </td>
-                  </tr>
-                }
               </tbody>
             </table>
-          }
-        </div>
-
-        <div style={{ marginTop: "20px", textAlign: "left" }}>
-          <h4 className='center'>The most common IPs in the last 24h</h4>
-          <table className='table-large'>
-            <thead>
-              <tr>
-                <th></th>
-                <th className='right'>Count</th>
-                <th className='right'>IP</th>
-                <th className='right'>Country</th>
-              </tr>
-            </thead>
-            <tbody>
-              {loading &&
-                <tr className='center'>
-                  <td colSpan="100">
-                    <span className="waiting"></span>
-                    <br />{t("general.loading")}
-                  </td>
-                </tr>
-              }
-              {statistics?.ips?.map((item, i) => {
-                return <tr key={i}>
-                  <td>{i + 1}</td>
-                  <td className='right'>{item.count}</td>
-                  <td className='right'>{item.ip}</td>
-                  <td className='right'>{item.country}</td>
-                </tr>
-              }
-              )}
-              {!statistics?.ips?.[0] &&
-                <tr>
-                  <td colSpan="100" className='center'>
-                    <b>no data available</b>
-                  </td>
-                </tr>
-              }
-            </tbody>
-          </table>
-        </div>
-
-        <br />
-        {errorMessage ?
-          <div className='center orange bold'>
-            {errorMessage}
           </div>
-          :
+
           <br />
-        }
+          {errorMessage ? <div className="center orange bold">{errorMessage}</div> : <br />}
+        </div>
       </div>
-    </div>
-  </>
+    </>
+  )
 }

@@ -12,7 +12,7 @@ import CheckBox from '../../components/UI/CheckBox'
 
 import { domainFromUrl, isEmailValid } from '../../utils'
 import { getIsSsrMobile } from '../../utils/mobile'
-import AdminTabs from '../../components/Admin/Tabs'
+import AdminTabs from '../../components/Tabs/AdminTabs'
 import { axiosAdmin } from '../../utils/axios'
 
 export const getServerSideProps = async (context) => {
