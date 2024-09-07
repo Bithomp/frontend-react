@@ -1,6 +1,13 @@
 import axios from 'axios'
-import { useTranslation } from 'next-i18next'
-import { nativeCurrency, explorerName, turnstileSupportedLanguages, isAddressValid, server } from '../../utils'
+import { useTranslation, Trans } from 'next-i18next'
+import {
+  nativeCurrency,
+  explorerName,
+  ledgerName,
+  turnstileSupportedLanguages,
+  isAddressValid,
+  server
+} from '../../utils'
 import { useTheme } from '../../components/Layout/ThemeContext'
 
 import AddressInput from '../UI/AddressInput'
@@ -110,13 +117,11 @@ export default function Converter({ account }) {
       )}
       {step === 0 && !loading && (
         <>
-          <p className="center">
-            Experience how fast and easy it is to make transactions on the {explorerName} network!
-          </p>
+          <p className="center">{t('experience-fast-transactions', { ns: 'faucet', explorerName })}</p>
           <div>
             <AddressInput
               title={t('table.address')}
-              placeholder={'Enter your ' + explorerName + ' address'}
+              placeholder={t('form.placeholder.enter-address', { ns: 'faucet', ledgerName })}
               setValue={setAddress}
               rawData={{
                 address: account?.address,
@@ -127,26 +132,27 @@ export default function Converter({ account }) {
             />
           </div>
           <div>
-            <p>How It Works:</p>
+            <p>{t('how-it-works', { ns: 'faucet' })}</p>
             <ul>
               <li>
-                <b>Activated Wallet Required</b>: Ensure your wallet is activated.
+                <b>{t('activated-wallet-required', { ns: 'faucet' })}</b>:{' '}
+                {t('ensure-wallet-activated', { ns: 'faucet' })}
               </li>
               <li>
-                <b>Receive {nativeCurrency} Drops</b>: Get between 1 to 600 drops of {nativeCurrency}.
+                <b>{t('receive-currency-drops', { ns: 'faucet', nativeCurrency })}</b>:{' '}
+                {t('get-between-drops', { ns: 'faucet', nativeCurrency })}
               </li>
               <li>
-                <b>Get Instant Feedback</b>: See if the payment Succeeded or Failed. Find out the exact time it took to
-                arrive, check the transaction fee, and get a transaction link to view the full details.
+                <b>{t('get-instant-feedback', { ns: 'faucet' })}</b>: {t('see-if-payment-succeeded', { ns: 'faucet' })}
               </li>
               {/*
-            <li>
-              <b>Get Daily Statistics</b>: See the day's stats, including the total number of transactions, the total
-              amount sent, and the fees paid.
-            </li>
-            */}
               <li>
-                <b>Daily Testing Limit</b>: You can test it only once per day (one wallet per IP).
+                <b>Get Daily Statistics</b>: See the day's stats, including the total number of transactions, the total
+                amount sent, and the fees paid.
+              </li>
+              */}
+              <li>
+                <b>{t('daily-testing-limit', { ns: 'faucet' })}</b>: {t('can-test-only-once-per-day', { ns: 'faucet' })}
               </li>
             </ul>
             <center>
@@ -167,17 +173,16 @@ export default function Converter({ account }) {
                     </>
                   )}
                   <br />
-
                   <button
                     className="center button-action"
                     disabled={!token || !isAddressValid(address)}
                     onClick={onSubmit}
                   >
-                    Test Now
+                    {t('button.test-now', { ns: 'faucet' })}
                   </button>
                 </>
               )}
-              <p>Try it now and see how quickly {nativeCurrency} payments are processed!</p>
+              <p>{t('try-it-now', { ns: 'faucet', nativeCurrency })}</p>
             </center>
           </div>
         </>
@@ -190,40 +195,40 @@ export default function Converter({ account }) {
             </div>
           ) : (
             <>
-              <h3 className="center">Test completed!</h3>
+              <h3 className="center">{t('test-completed', { ns: 'faucet' })}</h3>
               <p>
-                Status:{' '}
+                {t('table.status')}:{' '}
                 {data.state === 'validated' ? (
-                  <span>
-                    <b className="green">Validated</b> on the Ledger
-                    {data.ledgerIndex && (
-                      <>
-                        {' '}
-                        <LedgerLink version={data.ledgerIndex} />
-                      </>
-                    )}
-                  </span>
+                  <Trans i18nKey="validated-on-ledger" ns="faucet">
+                    <b className="green">Validated</b> on the Ledger <LedgerLink version={data.ledgerIndex} />
+                  </Trans>
                 ) : (
                   data.state
                 )}
               </p>
               {data.amount && (
                 <p>
-                  Amount: <b className="green">{data.amount} drops</b> ({amountFormat(data.amount, 6)?.trim()})
+                  {t('table.amount')}: <b className="green">{data.amount} drops</b> (
+                  {amountFormat(data.amount, 6)?.trim()})
                 </p>
               )}
               {data.fee && (
                 <p>
-                  Fee: <b className="green">{data.fee} drops</b> ({amountFormat(data.fee, 6)?.trim()})
+                  {t('table.fee', { ns: 'faucet' })}: <b className="green">{data.fee} drops</b> (
+                  {amountFormat(data.fee, 6)?.trim()})
                 </p>
               )}
               {data.executionTime && (
                 <p>
-                  Confirmed within: <b className="green">{Math.ceil(data.executionTime / 10) / 100} seconds</b>
+                  <Trans i18nKey="confirmed-within-seconds" ns="faucet">
+                    Confirmed within{' '}
+                    <b className="green">{{ time: Math.ceil(data.executionTime / 10) / 100 }} seconds</b>
+                  </Trans>
                 </p>
               )}
               <p>
-                Transaction hash: <a href={server + '/explorer/' + data.hash}>{shortHash(data.hash)}</a>
+                {t('table.transaction-hash', { ns: 'faucet' })}:{' '}
+                <a href={server + '/explorer/' + data.hash}>{shortHash(data.hash)}</a>
               </p>
             </>
           )}

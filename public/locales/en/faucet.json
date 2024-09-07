@@ -1,5 +1,31 @@
 {
   "error-occured:": "An error occurred",
   "try-later": "You've already tried it today. Come back in {{time}}.",
-  "test-the-speed": "Test the Speed and Reliability of {{explorerName}} Payments"
+  "test-the-speed": "Test the Speed and Reliability of {{explorerName}} Payments",
+  "experience-fast-transactions": "Experience how fast and easy it is to make transactions on the {{explorerName}} network!",
+  "form": {
+    "placeholder": {
+      "enter-address": "Enter your {{ledgerName}} address"
+    }
+  },
+  "how-it-works": "How It Works:",
+  "activated-wallet-required": "Activated Wallet Required",
+  "ensure-wallet-activated": "Ensure your wallet is activated.",
+  "receive-currency-drops": "Receive {{nativeCurrency}} Drops",
+  "get-between-drops": "Get between 1 to 600 drops of {{nativeCurrency}}.",
+  "get-instant-feedback": "Get Instant Feedback",
+  "see-if-payment-succeeded": "See if the payment succeeded or failed. Find out the exact time it took to arrive, check the transaction fee, and get a transaction link to view the full details.",
+  "daily-testing-limit": "Daily Testing Limit",
+  "can-test-only-once-per-day": "You can test it only once per day (one wallet per IP).",
+  "button": {
+    "test-now": "Test Now"
+  },
+  "try-it-now": "Try it now and see how quickly {{nativeCurrency}} payments are processed!",
+  "test-completed": "Test completed!",
+  "validated-on-ledger": "<0>Validated</0> on the Ledger <2/>",
+  "table": {
+    "fee": "Fee",
+    "transaction-hash": "Transaction hash"
+  },
+  "confirmed-within-seconds": "Confirmed within <2>{{time}} seconds</2>"
 }
