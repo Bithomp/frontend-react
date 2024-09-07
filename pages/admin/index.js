@@ -10,7 +10,7 @@ import Mailto from 'react-protected-mailto'
 import SEO from '../../components/SEO'
 import CheckBox from '../../components/UI/CheckBox'
 
-import { domainFromUrl, isEmailValid } from '../../utils'
+import { domainFromUrl, isEmailValid, turnstileSupportedLanguages } from '../../utils'
 import { getIsSsrMobile } from '../../utils/mobile'
 import AdminTabs from '../../components/Tabs/AdminTabs'
 import { axiosAdmin } from '../../utils/axios'
@@ -26,25 +26,6 @@ export const getServerSideProps = async (context) => {
   }
 }
 
-const turnstileSupportedLanguages = [
-  'ar-EG',
-  'de',
-  'en',
-  'es',
-  'fa',
-  'fr',
-  'id',
-  'it',
-  'ja',
-  'ko',
-  'nl',
-  'pl',
-  'pt-BR',
-  'ru',
-  'tr',
-  'zh-CN',
-  'zh-TW'
-]
 const checkmark = '/images/checkmark.svg'
 
 export default function Admin({ redirectToken, account, setAccount }) {
@@ -480,7 +461,7 @@ export default function Admin({ redirectToken, account, setAccount }) {
           {step === 2 && (
             <>
               <br />
-              <button className={'button-action'} onClick={onLogOut}>
+              <button className="button-action" onClick={onLogOut}>
                 Log out
               </button>
             </>

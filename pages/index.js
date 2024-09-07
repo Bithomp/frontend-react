@@ -14,6 +14,7 @@ import Converter from '../components/Home/Converter'
 import PriceChart from '../components/Home/PriceChart'
 import Statistics from '../components/Home/Statistics'
 import Ads from '../components/Home/Ads'
+import Faucet from '../components/Home/Faucet'
 
 export async function getServerSideProps(context) {
   const { locale } = context
@@ -41,7 +42,7 @@ const ldJsonWebsite = {
   }
 }
 
-export default function Home({ selectedCurrency, setSelectedCurrency, showAds }) {
+export default function Home({ selectedCurrency, setSelectedCurrency, showAds, account }) {
   const { t } = useTranslation()
 
   const [chartPeriod, setChartPeriod] = useState('one_day')
@@ -120,6 +121,10 @@ export default function Home({ selectedCurrency, setSelectedCurrency, showAds })
 
       <div className="home-statistics">
         <Statistics />
+      </div>
+
+      <div className="home-faucet">
+        <Faucet account={account} />
       </div>
     </>
   )

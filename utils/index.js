@@ -6,6 +6,26 @@ import { useTranslation } from 'next-i18next'
 import countries from 'i18n-iso-countries'
 import Cookies from 'universal-cookie'
 
+export const turnstileSupportedLanguages = [
+  'ar-EG',
+  'de',
+  'en',
+  'es',
+  'fa',
+  'fr',
+  'id',
+  'it',
+  'ja',
+  'ko',
+  'nl',
+  'pl',
+  'pt-BR',
+  'ru',
+  'tr',
+  'zh-CN',
+  'zh-TW'
+]
+
 const useDomainFromUrl = () => {
   if (typeof window !== 'undefined') {
     let domain = window.location.hostname

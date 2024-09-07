@@ -199,6 +199,15 @@
   }
 }
 
+.home-faucet {
+  position: relative;
+  z-index: 1;
+  max-width: 750px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 60px;
+}
+
 @keyframes just-added {
   0%   { background-color: var(--background-main); color: var(--text-main); }
   50%  { background-color: var(--background-contrast); color: var(--text-oposite); }
