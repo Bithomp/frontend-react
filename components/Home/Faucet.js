@@ -6,6 +6,7 @@ import { useTheme } from '../../components/Layout/ThemeContext'
 import AddressInput from '../UI/AddressInput'
 import { Turnstile } from '@marsidev/react-turnstile'
 import { useEffect, useState } from 'react'
+import { shortHash } from '../../utils/format'
 
 export default function Converter({ account }) {
   const [data, setData] = useState({})
@@ -177,10 +178,16 @@ export default function Converter({ account }) {
           ) : (
             <>
               <h3 className="center">Test completed!</h3>
-              <p>Status: {data.state}</p>
-              <p>Time: {data.executionTime} ms</p>
               <p>
-                Transaction: <a href={server + data.hash}>{data.hash.toLowerCase()}</a>
+                Status: {data.state === 'validated' ? <b className="green">Validated on the Ledger</b> : data.state}
+              </p>
+              {data.executionTime && (
+                <p>
+                  Payment confirmed within: <b className="green">{Math.ceil(data.executionTime / 10) / 100} seconds</b>
+                </p>
+              )}
+              <p>
+                Payment transaction: <a href={server + '/explorer/' + data.hash}>{shortHash(data.hash)}</a>
               </p>
             </>
           )}

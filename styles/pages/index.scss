@@ -206,6 +206,10 @@
   margin-left: auto;
   margin-right: auto;
   margin-bottom: 60px;
+  @media only screen and (max-width: 800px) {
+    margin-left: 20px;
+    margin-right: 20px;
+  }
 }
 
 @keyframes just-added {
