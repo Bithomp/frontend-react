@@ -35,6 +35,10 @@ export const mpUrl = (offer) => {
     url = 'https://www.randx.xyz/nft/'
   } else if (service === 'OpulenceX') {
     url = 'https://nftmarketplace.opulencex.io/nft/'
+  } else if (service === 'Art Dept') {
+    url = 'https://artdept.fun/nft/'
+  } else if (service === 'DeXfi') {
+    url = 'https://dexfi.pro' // so far there no nft specific url :(
   }
   if (url) {
     return url + (offer.nftokenID || offer.uriTokenID)
