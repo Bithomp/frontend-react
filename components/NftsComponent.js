@@ -383,10 +383,10 @@ export default function NftsComponent({
                 if (key.toLowerCase() === 'attributes') {
                   Object.keys(nftList[i].metadata[key]).forEach(function (attribute) {
                     if (nftList[i].metadata[key][attribute].trait_type) {
-                      let traitType = nftList[i].metadata[key][attribute].trait_type.toString()
-                      let traitValue = nftList[i].metadata[key][attribute].value.toString()
-                      traitType = traitType.replace(/"/g, '""')
-                      traitValue = traitValue.replace(/"/g, '""')
+                      let traitType = nftList[i].metadata[key][attribute]?.trait_type?.toString()
+                      let traitValue = nftList[i].metadata[key][attribute]?.value?.toString()
+                      traitType = traitType?.replace(/"/g, '""')
+                      traitValue = traitValue?.replace(/"/g, '""')
                       nftList[i].metadata.attributesExport[traitType] = traitValue
                       if (!attributes.includes(traitType)) {
                         attributes.push(traitType)
