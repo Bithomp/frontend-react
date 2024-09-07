@@ -364,18 +364,22 @@ export default function Admin({ redirectToken, account, setAccount }) {
 
           {step === 0 && (
             <>
-              <br />
-              <div style={{ height: '65px' }}>
-                <Turnstile
-                  siteKey={siteKey}
-                  style={{ margin: 'auto' }}
-                  options={{
-                    theme,
-                    language: turnstileSupportedLanguages.includes(i18n.language) ? i18n.language : 'en'
-                  }}
-                  onSuccess={setToken}
-                />
-              </div>
+              {!token && (
+                <>
+                  <br />
+                  <div style={{ height: '65px' }}>
+                    <Turnstile
+                      siteKey={siteKey}
+                      style={{ margin: 'auto' }}
+                      options={{
+                        theme,
+                        language: turnstileSupportedLanguages.includes(i18n.language) ? i18n.language : 'en'
+                      }}
+                      onSuccess={setToken}
+                    />
+                  </div>
+                </>
+              )}
               <br />
               <center>
                 <div style={{ display: 'inline-block', marginBottom: '20px' }}>

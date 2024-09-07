@@ -7,6 +7,7 @@ import AddressInput from '../UI/AddressInput'
 import { Turnstile } from '@marsidev/react-turnstile'
 import { useEffect, useState } from 'react'
 import { amountFormat, duration, shortHash } from '../../utils/format'
+import { LedgerLink } from '../../utils/links'
 
 export default function Converter({ account }) {
   const [data, setData] = useState({})
@@ -152,17 +153,22 @@ export default function Converter({ account }) {
             <center>
               {siteKey && (
                 <>
+                  {!token && (
+                    <>
+                      <br />
+                      <Turnstile
+                        siteKey={siteKey}
+                        style={{ margin: 'auto' }}
+                        options={{
+                          theme,
+                          language: turnstileSupportedLanguages.includes(i18n.language) ? i18n.language : 'en'
+                        }}
+                        onSuccess={setToken}
+                      />
+                    </>
+                  )}
                   <br />
-                  <Turnstile
-                    siteKey={siteKey}
-                    style={{ margin: 'auto' }}
-                    options={{
-                      theme,
-                      language: turnstileSupportedLanguages.includes(i18n.language) ? i18n.language : 'en'
-                    }}
-                    onSuccess={setToken}
-                  />
-                  <br />
+
                   <button
                     className="center button-action"
                     disabled={!token || !isAddressValid(address)}
@@ -191,6 +197,12 @@ export default function Converter({ account }) {
                 {data.state === 'validated' ? (
                   <span>
                     <b className="green">Validated</b> on the Ledger
+                    {data.ledgerIndex && (
+                      <>
+                        {' '}
+                        <LedgerLink version={data.ledgerIndex} />
+                      </>
+                    )}
                   </span>
                 ) : (
                   data.state
@@ -208,11 +220,11 @@ export default function Converter({ account }) {
               )}
               {data.executionTime && (
                 <p>
-                  Payment confirmed within: <b className="green">{Math.ceil(data.executionTime / 10) / 100} seconds</b>
+                  Confirmed within: <b className="green">{Math.ceil(data.executionTime / 10) / 100} seconds</b>
                 </p>
               )}
               <p>
-                Payment transaction: <a href={server + '/explorer/' + data.hash}>{shortHash(data.hash)}</a>
+                Transaction hash: <a href={server + '/explorer/' + data.hash}>{shortHash(data.hash)}</a>
               </p>
             </>
           )}
