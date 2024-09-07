@@ -46,12 +46,11 @@ export default function Converter({ account }) {
 
   const onSubmit = async () => {
     if (!token) {
-      setErrorMessage('Please complete the captcha')
       return
     }
 
     if (!address) {
-      setErrorMessage('Please enter an address')
+      setErrorMessage(t('form.error.address-empty'))
       return
     }
 
@@ -89,16 +88,16 @@ export default function Converter({ account }) {
           options.seconds = true
         }
         const time = duration(t, response?.data?.timeLeft, options)
-        setErrorMessage("You've already tried it today. Come back in " + time + '.')
+        setErrorMessage(t('try-later', { ns: 'faucet', time }))
       } else {
-        setErrorMessage(response?.data?.message || 'An error occurred')
+        setErrorMessage(response?.data?.message || t('error-occured', { ns: 'faucet' }))
       }
     }
   }
 
   return (
     <>
-      <h2 className="center">Test the Speed and Reliability of {explorerName} Payments</h2>
+      <h2 className="center">{t('test-the-speed', { ns: 'faucet', explorerName })}</h2>
       {loading && (
         <div className="center">
           <br />
