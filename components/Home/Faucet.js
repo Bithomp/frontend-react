@@ -6,7 +6,7 @@ import { useTheme } from '../../components/Layout/ThemeContext'
 import AddressInput from '../UI/AddressInput'
 import { Turnstile } from '@marsidev/react-turnstile'
 import { useEffect, useState } from 'react'
-import { shortHash } from '../../utils/format'
+import { amountFormat, duration, shortHash } from '../../utils/format'
 
 export default function Converter({ account }) {
   const [data, setData] = useState({})
@@ -80,7 +80,15 @@ export default function Converter({ account }) {
       */
     } else {
       if (response?.data?.message === 'Too many requests') {
-        setErrorMessage("You've already tried it today. Come back later.")
+        /*
+        {"success":false,"message":"Too many requests","timeLeft":85901}
+        */
+        let options = { seconds: false }
+        if (response?.data?.timeLeft < 3600) {
+          options.seconds = true
+        }
+        const time = duration(t, response?.data?.timeLeft, options)
+        setErrorMessage("You've already tried it today. Come back in " + time + '.')
       } else {
         setErrorMessage(response?.data?.message || 'An error occurred')
       }
@@ -179,8 +187,25 @@ export default function Converter({ account }) {
             <>
               <h3 className="center">Test completed!</h3>
               <p>
-                Status: {data.state === 'validated' ? <b className="green">Validated on the Ledger</b> : data.state}
+                Status:{' '}
+                {data.state === 'validated' ? (
+                  <span>
+                    <b className="green">Validated</b> on the Ledger
+                  </span>
+                ) : (
+                  data.state
+                )}
               </p>
+              {data.amount && (
+                <p>
+                  Amount: <b className="green">{data.amount} drops</b> ({amountFormat(data.amount, 6)?.trim()})
+                </p>
+              )}
+              {data.fee && (
+                <p>
+                  Fee: <b className="green">{data.fee} drops</b> ({amountFormat(data.fee, 6)?.trim()})
+                </p>
+              )}
               {data.executionTime && (
                 <p>
                   Payment confirmed within: <b className="green">{Math.ceil(data.executionTime / 10) / 100} seconds</b>
