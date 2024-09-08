@@ -1,10 +1,10 @@
 import { network } from '../../utils'
-import { useTheme } from '../Layout/ThemeContext'
-import { useEffect, useState } from 'react'
+//import { useTheme } from '../Layout/ThemeContext'
+import { useEffect } from 'react'
 
 export default function Ads() {
-  const { theme } = useTheme()
-  const [rendered, setRendered] = useState(false)
+  //const { theme } = useTheme()
+  //const [rendered, setRendered] = useState(false)
 
   useEffect(() => {
     setRendered(true)
@@ -46,6 +46,7 @@ export default function Ads() {
             <div className="sponsored-brand-text">Earn up to 12% per year on XRP.</div>
           </div>
         </a>
+        {/*
         <a href="/go/main-play" target="_blank" rel="noreferrer">
           <div className="sponsored-brand easybit">
             {rendered && (
@@ -61,6 +62,7 @@ export default function Ads() {
             </div>
           </div>
         </a>
+        */}
       </>
     )
   }
