@@ -65,9 +65,12 @@ export default function Converter({ account }) {
 
     const data = { 'cf-turnstile-response': token, address }
     const response = await axios.post('v2/testPayment', data).catch((error) => {
-      if (error && error.message !== 'canceled') {
+      if (error.response?.data?.error === 'Invalid captcha') {
+        setErrorMessage('Captcha timeout, try again.')
+      } else if (error && error.message !== 'canceled') {
         setErrorMessage(t('error.' + error.message))
       }
+      setToken('')
       setLoading(false)
     })
 

@@ -43,6 +43,7 @@ export default function Admin({ redirectToken, account, setAccount }) {
   const [checkedPackageData, setCheckedPackageData] = useState(false)
   const [packageData, setPackageData] = useState(null)
   const [termsAccepted, setTermsAccepted] = useState(false)
+  const [rememberMe, setRememberMe] = useState(false)
 
   const cookies = new Cookies(null, { path: '/' })
 
@@ -113,10 +114,6 @@ export default function Admin({ redirectToken, account, setAccount }) {
 
   const getLoggedUserData = async () => {
     const data = await axiosAdmin.get('user').catch((error) => {
-      if (error.response?.data?.error === 'errors.token.required') {
-        onLogOut()
-        return
-      }
       if (error && error.message !== 'canceled') {
         setErrorMessage(t(error.response?.data?.error || 'error.' + error.message))
       }
@@ -234,12 +231,19 @@ export default function Admin({ redirectToken, account, setAccount }) {
 
     if (step === 0) {
       const formData = await axiosAdmin
-        .put('auth', { email, authToken, 'cf-turnstile-response': token })
+        .put('auth', { email, authToken, 'cf-turnstile-response': token, rememberMe })
         .catch((error) => {
-          if (error && error.message !== 'canceled') {
+          if (error?.response?.data?.error === 'errors.token.required') {
+            onLogOut()
+            return
+          }
+          if (error.response?.data?.error === 'Invalid captcha') {
+            setErrorMessage('Captcha timeout, try again.')
+          } else if (error && error.message !== 'canceled') {
             setErrorMessage(t(error.response.data.error || 'error.' + error.message))
             //{"error":"Authentication token is invalid"}
           }
+          setToken('')
         })
 
       /*
@@ -264,7 +268,7 @@ export default function Admin({ redirectToken, account, setAccount }) {
         return
       }
 
-      const formData = await axiosAdmin.post('auth', { email, password, authToken }).catch((error) => {
+      const formData = await axiosAdmin.post('auth', { email, password, authToken, rememberMe }).catch((error) => {
         if (error?.response?.data?.error === 'Invalid password') {
           setErrorMessage(t('form.error.password-invalid'))
         } else if (error?.response?.data?.error) {
@@ -328,7 +332,7 @@ export default function Admin({ redirectToken, account, setAccount }) {
         <br />
         <div className="center">
           {(step === 0 || step === 1) && (
-            <div className="input-validation" style={{ margin: 'auto', width: '300px' }}>
+            <div className="input-validation" style={{ margin: 'auto', width: '440px' }}>
               <input
                 name="email"
                 placeholder="Email address"
@@ -347,7 +351,7 @@ export default function Admin({ redirectToken, account, setAccount }) {
           )}
 
           {step === 1 && (
-            <div className="input-validation" style={{ margin: 'auto', width: '300px', marginTop: '20px' }}>
+            <div className="input-validation" style={{ margin: 'auto', width: '440px', marginTop: '20px' }}>
               <input
                 placeholder="Password"
                 value={password}
@@ -381,13 +385,22 @@ export default function Admin({ redirectToken, account, setAccount }) {
                 </>
               )}
               <br />
-              <center>
-                <div style={{ display: 'inline-block', marginBottom: '20px' }}>
-                  <CheckBox checked={termsAccepted} setChecked={setTermsAccepted}>
-                    I agree with the <Link href="/terms-and-conditions">{t('menu.terms-and-conditions')}</Link>.
-                  </CheckBox>
-                </div>
-              </center>
+              <div
+                style={{
+                  display: 'inline-block',
+                  marginBottom: '20px',
+                  textAlign: 'left',
+                  width: '438px',
+                  margin: 'auto'
+                }}
+              >
+                <CheckBox checked={rememberMe} setChecked={setRememberMe}>
+                  Remember me
+                </CheckBox>
+                <CheckBox checked={termsAccepted} setChecked={setTermsAccepted}>
+                  I agree with the <Link href="/terms-and-conditions">{t('menu.terms-and-conditions')}</Link>.
+                </CheckBox>
+              </div>
             </>
           )}
 
