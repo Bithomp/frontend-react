@@ -458,7 +458,7 @@ export default function Subscriptions({ setSignRequest, receiptQuery }) {
 
           {newAndActivePackages?.length > 0 && (
             <>
-              <h4 className="center">Your purchased subscriptions</h4>
+              <h4 className="center">Your active subscriptions</h4>
               {packageList(newAndActivePackages, width)}
             </>
           )}
