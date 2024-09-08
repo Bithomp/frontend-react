@@ -699,7 +699,6 @@ export const fullDateAndTime = (timestamp, type = null, options) => {
     if (type === 'ripple') {
       timestamp += 946684800 //946684800 is the difference between Unix and Ripple timestamps
     }
-
     timestamp = timestamp * 1000
   }
 

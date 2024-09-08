@@ -6,7 +6,7 @@ import { useRouter } from 'next/router'
 import { axiosAdmin } from '../../utils/axios'
 import Link from 'next/link'
 
-import { useWidth, encode, wssServer, xahauNetwork } from '../../utils'
+import { useWidth, encode, wssServer, xahauNetwork, timestampExpired } from '../../utils'
 import { getIsSsrMobile } from '../../utils/mobile'
 import { fullDateAndTime, shortNiceNumber, amountFormat } from '../../utils/format'
 
@@ -84,6 +84,86 @@ export const getServerSideProps = async (context) => {
 let interval
 let ws = null
 
+const bithompProOptions = [
+  { value: 'm1', label: '1 month', price: '4.99 EUR' },
+  { value: 'm3', label: '3 months', price: '14.97 EUR' },
+  { value: 'm6', label: '6 months', price: '29.94 EUR' },
+  { value: 'y1', label: '1 year', price: '49.99 EUR' }
+]
+
+const typeName = (type) => {
+  switch (type) {
+    case 'bithomp_pro':
+      return 'Bithomp Pro'
+    default:
+      return type
+  }
+}
+
+const packageList = (packages, width) => {
+  return (
+    <div style={{ textAlign: 'left' }}>
+      {width > 600 ? (
+        <table className="table-large no-hover">
+          <thead>
+            <tr>
+              <th>Type</th>
+              <th>Created</th>
+              <th>Start</th>
+              <th>Expire</th>
+            </tr>
+          </thead>
+          <tbody>
+            {packages?.map((row, index) => {
+              return (
+                <tr key={index}>
+                  <td>{typeName(row.type)}</td>
+                  <td>{fullDateAndTime(row.createdAt)}</td>
+                  <td>{fullDateAndTime(row.startedAt)}</td>
+                  <td>
+                    {!row.expiredAt && row.metadata?.forever
+                      ? 'Never'
+                      : fullDateAndTime(row.expiredAt + 1, 'expiration')}
+                  </td>
+                </tr>
+              )
+            })}
+          </tbody>
+        </table>
+      ) : (
+        <table className="table-mobile">
+          <tbody>
+            {packages?.map((row, index) => {
+              return (
+                <tr key={index}>
+                  <td style={{ padding: '5px' }} className="center">
+                    <b>{index + 1}</b>
+                  </td>
+                  <td>
+                    <p>Type: {row.type}</p>
+                    <p>
+                      Created: <br />
+                      {fullDateAndTime(row.createdAt)}
+                    </p>
+                    <p>
+                      Start: <br />
+                      {fullDateAndTime(row.startedAt)}
+                    </p>
+                    <p>
+                      Expire: <br />
+                      {!row.expiredAt && row.metadata?.forever ? 'Never' : fullDateAndTime(row.expiredAt + 1)}
+                    </p>
+                  </td>
+                </tr>
+              )
+            })}
+          </tbody>
+        </table>
+      )}
+    </div>
+  )
+}
+
 export default function Subscriptions({ setSignRequest, receiptQuery }) {
   const { t } = useTranslation(['common', 'admin'])
   const router = useRouter()
@@ -91,7 +171,8 @@ export default function Subscriptions({ setSignRequest, receiptQuery }) {
 
   const [errorMessage, setErrorMessage] = useState('')
   const [loading, setLoading] = useState(true) // keep true in order not to have hydr error for rendering the select
-  const [packages, setPackages] = useState([])
+  const [newAndActivePackages, setNewAndActivePackages] = useState([])
+  const [expiredPackages, setExpiredPackages] = useState([])
   const [bithompProPlan, setBithompProPlan] = useState('m1')
   const [payData, setPayData] = useState(null)
   const [billingCountry, setBillingCountry] = useState('')
@@ -146,27 +227,24 @@ export default function Subscriptions({ setSignRequest, receiptQuery }) {
           ]
         }
       */
-      setPackages(packagesData.data.packages)
+
+      //for each package, check if it is expired
+      let newAndActive = []
+      let expired = []
+      packagesData.data.packages.forEach((packageItem) => {
+        if (packageItem.expiredAt && timestampExpired(packageItem.expiredAt)) {
+          expired.push(packageItem)
+        } else {
+          newAndActive.push(packageItem)
+        }
+      })
+
+      setNewAndActivePackages(newAndActive)
+      setExpiredPackages(expired)
     }
 
     setLoading(false)
   }
-
-  const typeName = (type) => {
-    switch (type) {
-      case 'bithomp_pro':
-        return 'Bithomp Pro'
-      default:
-        return type
-    }
-  }
-
-  const bithompProOptions = [
-    { value: 'm1', label: '1 month', price: '4.99 EUR' },
-    { value: 'm3', label: '3 months', price: '14.97 EUR' },
-    { value: 'm6', label: '6 months', price: '29.94 EUR' },
-    { value: 'y1', label: '1 year', price: '49.99 EUR' }
-  ]
 
   const onPurchaseClick = async () => {
     setPayData(null)
@@ -378,66 +456,10 @@ export default function Subscriptions({ setSignRequest, receiptQuery }) {
             </div>
           )}
 
-          {packages?.length > 0 && (
+          {newAndActivePackages?.length > 0 && (
             <>
               <h4 className="center">Your purchased subscriptions</h4>
-              <div style={{ textAlign: 'left' }}>
-                {width > 600 ? (
-                  <table className="table-large no-hover">
-                    <thead>
-                      <tr>
-                        <th>Type</th>
-                        <th>Created</th>
-                        <th>Start</th>
-                        <th>Expire</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {packages?.map((row, index) => {
-                        return (
-                          <tr key={index}>
-                            <td>{typeName(row.type)}</td>
-                            <td>{fullDateAndTime(row.createdAt)}</td>
-                            <td>{fullDateAndTime(row.startedAt)}</td>
-                            <td>
-                              {!row.expiredAt && row.metadata?.forever ? 'Never' : fullDateAndTime(row.expiredAt + 1)}
-                            </td>
-                          </tr>
-                        )
-                      })}
-                    </tbody>
-                  </table>
-                ) : (
-                  <table className="table-mobile">
-                    <tbody>
-                      {packages?.map((row, index) => {
-                        return (
-                          <tr key={index}>
-                            <td style={{ padding: '5px' }} className="center">
-                              <b>{index + 1}</b>
-                            </td>
-                            <td>
-                              <p>Type: {row.type}</p>
-                              <p>
-                                Created: <br />
-                                {fullDateAndTime(row.createdAt)}
-                              </p>
-                              <p>
-                                Start: <br />
-                                {fullDateAndTime(row.startedAt)}
-                              </p>
-                              <p>
-                                Expire: <br />
-                                {!row.expiredAt && row.metadata?.forever ? 'Never' : fullDateAndTime(row.expiredAt + 1)}
-                              </p>
-                            </td>
-                          </tr>
-                        )
-                      })}
-                    </tbody>
-                  </table>
-                )}
-              </div>
+              {packageList(newAndActivePackages, width)}
             </>
           )}
 
@@ -721,6 +743,13 @@ export default function Subscriptions({ setSignRequest, receiptQuery }) {
                   </div>
                 )}
               </div>
+            </>
+          )}
+
+          {expiredPackages?.length > 0 && (
+            <>
+              <h4 className="center">Your expired subscriptions</h4>
+              {packageList(expiredPackages, width)}
             </>
           )}
         </div>

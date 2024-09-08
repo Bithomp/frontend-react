@@ -6,6 +6,18 @@ import { useTranslation } from 'next-i18next'
 import countries from 'i18n-iso-countries'
 import Cookies from 'universal-cookie'
 
+export const timestampExpired = (timestamp, type) => {
+  if (!timestamp) return null
+  // if T/Z format
+  if (!timestamp.toString().includes('T')) {
+    if (type === 'ripple') {
+      timestamp += 946684800 //946684800 is the difference between Unix and Ripple timestamps
+    }
+    timestamp = timestamp * 1000
+  }
+  return new Date(timestamp) < new Date()
+}
+
 export const turnstileSupportedLanguages = [
   'ar-EG',
   'de',
