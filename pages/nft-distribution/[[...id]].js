@@ -329,9 +329,11 @@ export default function NftDistribution({ issuerQuery, taxonQuery, idQuery, orde
               ' '
             )}
             <CSVLink
-              data={data.owners}
+              data={owners}
               headers={csvHeaders}
-              filename={'nft_destribution_' + (data.issuer || '') + '_' + new Date().toLocaleString() + '.csv'}
+              filename={
+                'nft_destribution_' + (data.issuer ? data.issuer + '_' : '') + new Date().toLocaleString() + '.csv'
+              }
               className="button-action thin narrow"
             >
               <DownloadIcon /> CSV
@@ -570,6 +572,21 @@ export default function NftDistribution({ issuerQuery, taxonQuery, idQuery, orde
             </table>
           )}
         </InfiniteScroll>
+
+        <center>
+          {!hasMore && (
+            <CSVLink
+              data={owners}
+              headers={csvHeaders}
+              filename={
+                'nft_destribution_' + (data.issuer ? data.issuer + '_' : '') + new Date().toLocaleString() + '.csv'
+              }
+              className="button-action thin narrow"
+            >
+              <DownloadIcon /> CSV
+            </CSVLink>
+          )}
+        </center>
       </div>
     </>
   )
