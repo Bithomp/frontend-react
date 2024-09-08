@@ -124,7 +124,7 @@
       "nft-accept-buy-offer-header": "Selling NFT",
       "nft-create-sell-offer-header": "List for sale",
       "nft-create-buy-offer-header": "Create Buy offer",
-      "nft-accept-offer": "I admit that Bithomp gives me access to a decentralised marketplace, and it cannot verify or guarantee the authenticity and legitimacy of any NFTs. I confirm that I've read the <1>Terms and conditions</1>, and I agree with all the terms to buy, sell or use any NFTs on Bithomp.",
+      "nft-accept-offer": "I admit that {{webSiteName}} gives me access to a decentralised marketplace, and it cannot verify or guarantee the authenticity and legitimacy of any NFTs. I confirm that I've read the <4>Terms and conditions</4>, and I agree with all the terms to buy, sell or use any NFTs on {{webSiteName}}.",
       "nft-create-sell-offer": "I understand, once my listing is signed, the NFT can be purchased instantly.",
       "nft-burn-header": "NFT burning",
       "nft-burn": "I understand that NFT will be permanently deleted, meaning, it can no longer be owned, transferred, purchased, or sold. This action can not be undone."

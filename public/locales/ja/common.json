@@ -124,7 +124,7 @@
       "nft-accept-buy-offer-header": "NFTの売却",
       "nft-create-sell-offer-header": "出品(販売)",
       "nft-create-buy-offer-header": "購入オファーを作成",
-      "nft-accept-offer": "Bithompは分散型マーケットプレイスへのアクセスを提供するものであり、いかなるNFTの信憑性及び正当性を検証又は保証するものではないことを認めます。私は、<1>利用規約</1>を読み、BithompでNFTを売買または使用するすべての条件に同意します。",
+      "nft-accept-offer": "{{webSiteName}}は分散型マーケットプレイスへのアクセスを提供するものであり、いかなるNFTの信憑性及び正当性を検証又は保証するものではないことを認めます。私は、<4>利用規約</4>を読み、{{webSiteName}}でNFTを売買または使用するすべての条件に同意します。",
       "nft-create-sell-offer": "署名後、このNFTは第三者により即座に購入可能となることを理解しています。",
       "nft-burn-header": "NFTをバーン",
       "nft-burn": "NFTが永久的に削除され、所有、譲渡、購入、売却ができなくなることを理解しています。この措置は取り消すことができません。"

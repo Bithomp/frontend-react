@@ -19,7 +19,8 @@ import {
   rewardRateHuman,
   encodeAddressR,
   isAddressValid,
-  removeQueryParams
+  removeQueryParams,
+  webSiteName
 } from '../utils'
 import { amountFormat, capitalize, duration } from '../utils/format'
 import { payloadXummPost, xummWsConnect, xummCancel, xummGetSignedData } from '../utils/xumm'
@@ -772,12 +773,12 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
 
     return (
       <Trans i18nKey="signin.confirm.nft-accept-offer">
-        I admit that Bithomp gives me access to a decentralised marketplace, and it cannot verify or guarantee the
-        authenticity and legitimacy of any NFTs. I confirm that I've read the{' '}
+        I admit that {{ webSiteName }} gives me access to a decentralised marketplace, and it cannot verify or guarantee
+        the authenticity and legitimacy of any NFTs. I confirm that I've read the{' '}
         <Link href="/terms-and-conditions" target="_blank">
           Terms and conditions
         </Link>
-        , and I agree with all the terms to buy, sell or use any NFTs on Bithomp.
+        , and I agree with all the terms to buy, sell or use any NFTs on {{ webSiteName }}.
       </Trans>
     )
   }

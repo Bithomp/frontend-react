@@ -124,7 +124,7 @@
       "nft-accept-buy-offer-header": "Selling NFT",
       "nft-create-sell-offer-header": "Daftar Jual",
       "nft-create-buy-offer-header": "Buat Penawaran Beli",
-      "nft-accept-offer": "Saya mengakui bahwa Bithomp memberi saya akses ke pasar terdesentralisasi, dan tidak dapat memverifikasi atau menjamin keaslian dan legalitas NFT apa pun. Saya mengkonfirmasi bahwa saya telah membaca <1>Syarat dan Ketentuan</1>, dan saya setuju dengan semua syarat untuk membeli, menjual, atau menggunakan NFT apa pun di Bithomp.",
+      "nft-accept-offer": "Saya mengakui bahwa {{webSiteName}} memberi saya akses ke pasar terdesentralisasi, dan tidak dapat memverifikasi atau menjamin keaslian dan legalitas NFT apa pun. Saya mengkonfirmasi bahwa saya telah membaca <4>Syarat dan Ketentuan</4>, dan saya setuju dengan semua syarat untuk membeli, menjual, atau menggunakan NFT apa pun di {{webSiteName}}.",
       "nft-create-sell-offer": "Saya mengerti, begitu daftar saya ditandatangani, NFT dapat dibeli secara instan.",
       "nft-burn-header": "Penghapusan NFT",
       "nft-burn": "Saya mengerti bahwa NFT akan dihapus secara permanen, artinya, tidak dapat dimiliki, ditransfer, dibeli, atau dijual lagi. Tindakan ini tidak dapat dibatalkan."

@@ -125,7 +125,7 @@
       "nft-accept-buy-offer-header": "Selling NFT",
       "nft-create-sell-offer-header": "출품(판매)",
       "nft-create-buy-offer-header": "구매 제안을 준비하세요",
-      "nft-accept-offer": "Bithomp는 탈중앙화 마켓플레이스에 대한 액세스를 제공하는 것일 뿐, NFT의 진위 여부 및 정당성을 검증하거나 보증하는 것이 아님을 인정합니다. 본인은 <1>이용약관</1>을 읽었으며, Bithomp에서 NFT를 구매, 판매 또는 사용하는 모든 조건에 동의합니다.",
+      "nft-accept-offer": "{{webSiteName}}는 탈중앙화 마켓플레이스에 대한 액세스를 제공하는 것일 뿐, NFT의 진위 여부 및 정당성을 검증하거나 보증하는 것이 아님을 인정합니다. 본인은 <4>이용약관</4>을 읽었으며, {{webSiteName}}에서 NFT를 구매, 판매 또는 사용하는 모든 조건에 동의합니다.",
       "nft-create-sell-offer": "리스팅에 서명하면 NFT를 즉시 구매할 수 있다는 것을 알고 있습니다",
       "nft-burn-header": "NFT 소각",
       "nft-burn": "NFT는 영구적으로 삭제되며, 더 이상 소유, 양도, 구매 또는 판매할 수 없음을 이해합니다. 이 조치는 취소할 수 없습니다"

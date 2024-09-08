@@ -124,7 +124,7 @@
       "nft-accept-buy-offer-header": "NFT verkaufen",
       "nft-create-sell-offer-header": "Liste zum Verkauf",
       "nft-create-buy-offer-header": "Kaufangebot erstellen",
-      "nft-accept-offer": "Ich anerkenne, dass Bithomp mir einen Zugriff auf einen dezentralen Marktplatz gewährt und dabei die Echtheit und Legitimität keiner NFTs garantiert werden können. Ich bestätige, dass ich die <1>AGB</1> gelesen habe und ich stimme allen Bedingungen zum Kauf, Verkauf oder Nutzung von NFTs auf Bithomp zu.",
+      "nft-accept-offer": "Ich anerkenne, dass {{webSiteName}} mir einen Zugriff auf einen dezentralen Marktplatz gewährt und dabei die Echtheit und Legitimität keiner NFTs garantiert werden können. Ich bestätige, dass ich die <4>AGB</4> gelesen habe und ich stimme allen Bedingungen zum Kauf, Verkauf oder Nutzung von NFTs auf {{webSiteName}} zu.",
       "nft-create-sell-offer": "Ich verstehe, dass der NFT sofort gekauft werden kann, sobald mein Angebot signiert ist.",
       "nft-burn-header": "NFT vernichten",
       "nft-burn": "Ich verstehe, dass NFT dauerhaft vernichtet wird, was bedeutet, dass es nicht mehr besessen, übertragen, gekauft oder verkauft werden kann. Diese Aktion kann nicht rückgängig gemacht werden."

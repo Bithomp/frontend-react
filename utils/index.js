@@ -486,6 +486,9 @@ export const explorerName = networks[network]?.explorerName
 export const ledgerName = networks[network]?.ledgerName
 export const ledgerSubName = networks[network]?.subname
 export const minLedger = networks[network]?.minLedger
+const webAddressParts = server?.replace('http://', '').replace('https://', '').split('.')
+export const webSiteName =
+  webAddressParts[webAddressParts.length - 2] + '.' + webAddressParts[webAddressParts.length - 1]
 
 export const networksIds = {
   0: { server: 'https://bithomp.com', name: 'mainnet' },
