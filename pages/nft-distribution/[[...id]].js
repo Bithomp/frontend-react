@@ -35,7 +35,7 @@ export async function getServerSideProps(context) {
     props: {
       idQuery,
       issuerQuery,
-      orderQuery: order || 'nonSelfIssued',
+      orderQuery: issuerQuery ? 'total' : order || 'nonSelfIssued',
       taxonQuery: taxon || '',
       isSsrMobile: getIsSsrMobile(context),
       ...(await serverSideTranslations(locale, ['common', 'nft-distribution']))
@@ -105,7 +105,7 @@ export default function NftDistribution({ issuerQuery, taxonQuery, idQuery, orde
     const loadMoreRequest =
       hasMore !== 'first' &&
       (issuer ? oldIssuer === issuer : !oldIssuer) &&
-      (taxon ? oldTaxon === taxon : !oldTaxon) &&
+      (isValidTaxon(taxon) ? Number(oldTaxon) === Number(taxon) : !isValidTaxon(oldTaxon)) &&
       (order ? oldOrder === order : !oldOrder)
 
     // do not load more if thereis no session token or if Bithomp Pro is expired
@@ -127,7 +127,7 @@ export default function NftDistribution({ issuerQuery, taxonQuery, idQuery, orde
 
     setData({})
     let taxonUrlPart = ''
-    if ((taxon !== '') & (taxon > -1)) {
+    if (isValidTaxon(taxon)) {
       taxonUrlPart = '&taxon=' + taxon
     }
 
