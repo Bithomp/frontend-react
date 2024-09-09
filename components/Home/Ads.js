@@ -1,15 +1,17 @@
 import { network } from '../../utils'
 //import { useTheme } from '../Layout/ThemeContext'
-import { useEffect } from 'react'
+//import { useEffect, useState } from 'react'
 
 export default function Ads() {
   //const { theme } = useTheme()
   //const [rendered, setRendered] = useState(false)
 
+  /*
   useEffect(() => {
     setRendered(true)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+  */
 
   if (network === 'mainnet' || network === 'staging') {
     return (
