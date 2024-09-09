@@ -4,20 +4,21 @@ import { useEffect, useState } from 'react'
 import axios from 'axios'
 import { useRouter } from 'next/router'
 import { axiosAdmin } from '../../utils/axios'
-import Link from 'next/link'
 
-import { useWidth, encode, wssServer, xahauNetwork, timestampExpired } from '../../utils'
+import { useWidth, encode, wssServer, timestampExpired, addAndRemoveQueryParams } from '../../utils'
 import { getIsSsrMobile } from '../../utils/mobile'
 import { fullDateAndTime, shortNiceNumber, amountFormat } from '../../utils/format'
 
 import SEO from '../../components/SEO'
 import AdminTabs from '../../components/Tabs/AdminTabs'
-import Select from 'react-select'
 import BillingCountry from '../../components/Admin/BillingCountry'
 import CopyButton from '../../components/UI/CopyButton'
 import LinkIcon from '../../public/images/link.svg'
 import Image from 'next/image'
 import Receipt from '../../components/Receipt'
+import Tabs from '../../components/Tabs'
+import Pro from '../../components/Admin/subscriptions/BithompPro'
+import Api from '../../components/Admin/subscriptions/Api'
 
 //PayPal option starts
 /*
@@ -71,11 +72,12 @@ const xummImg = '/images/xumm.png'
 
 export const getServerSideProps = async (context) => {
   const { query, locale } = context
-  const { receipt } = query
+  const { receipt, tab } = query
   return {
     props: {
       isSsrMobile: getIsSsrMobile(context),
       receiptQuery: receipt || 'false',
+      tabQuery: tab || 'pro',
       ...(await serverSideTranslations(locale, ['common', 'admin']))
     }
   }
@@ -84,19 +86,29 @@ export const getServerSideProps = async (context) => {
 let interval
 let ws = null
 
-const bithompProOptions = [
-  { value: 'm1', label: '1 month', price: '4.99 EUR' },
-  { value: 'm3', label: '3 months', price: '14.97 EUR' },
-  { value: 'm6', label: '6 months', price: '29.94 EUR' },
-  { value: 'y1', label: '1 year', price: '49.99 EUR' }
-]
-
 const typeName = (type) => {
   switch (type) {
     case 'bithomp_pro':
       return 'Bithomp Pro'
+    case 'token':
+      return 'API'
+    case 'bot':
+      return 'Bot'
     default:
       return type
+  }
+}
+
+const tabTotype = (tab) => {
+  switch (tab) {
+    case 'pro':
+      return 'bithomp_pro'
+    case 'api':
+      return 'token'
+    case 'bot':
+      return 'bot'
+    default:
+      return tab
   }
 }
 
@@ -164,7 +176,12 @@ const packageList = (packages, width) => {
   )
 }
 
-export default function Subscriptions({ setSignRequest, receiptQuery }) {
+const subscriptionsTabList = [
+  { value: 'pro', label: 'Bithomp Pro' },
+  { value: 'api', label: 'API' }
+]
+
+export default function Subscriptions({ setSignRequest, receiptQuery, tabQuery }) {
   const { t } = useTranslation(['common', 'admin'])
   const router = useRouter()
   const width = useWidth()
@@ -173,7 +190,8 @@ export default function Subscriptions({ setSignRequest, receiptQuery }) {
   const [loading, setLoading] = useState(true) // keep true in order not to have hydr error for rendering the select
   const [newAndActivePackages, setNewAndActivePackages] = useState([])
   const [expiredPackages, setExpiredPackages] = useState([])
-  const [bithompProPlan, setBithompProPlan] = useState('m1')
+  const [payPeriod, setPayPeriod] = useState('m3')
+  const [tier, setTier] = useState('standard')
   const [payData, setPayData] = useState(null)
   const [billingCountry, setBillingCountry] = useState('')
   const [choosingCountry, setChoosingCountry] = useState(false)
@@ -181,6 +199,7 @@ export default function Subscriptions({ setSignRequest, receiptQuery }) {
   const [bidData, setBidData] = useState(null)
   const [paymentErrorMessage, setPaymentErrorMessage] = useState('')
   const [step, setStep] = useState(0)
+  const [subscriptionsTab, setSubscriptionsTab] = useState(tabQuery)
 
   useEffect(() => {
     const sessionToken = localStorage.getItem('sessionToken')
@@ -192,6 +211,21 @@ export default function Subscriptions({ setSignRequest, receiptQuery }) {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  useEffect(() => {
+    let queryAddList = []
+    let queryRemoveList = []
+    if (subscriptionsTab === 'pro') {
+      queryRemoveList.push('tab')
+    } else {
+      queryAddList.push({
+        name: 'tab',
+        value: subscriptionsTab
+      })
+    }
+    addAndRemoveQueryParams(router, queryAddList, queryRemoveList)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [subscriptionsTab])
 
   const getApiData = async () => {
     setLoading(true)
@@ -248,28 +282,27 @@ export default function Subscriptions({ setSignRequest, receiptQuery }) {
 
   const onPurchaseClick = async () => {
     setPayData(null)
-    if (!bithompProPlan) {
-      setErrorMessage('No plan selected')
-      return
-    }
-    const period = bithompProPlan.substring(0, 1) === 'm' ? 'month' : 'year'
-    const periodCount = bithompProPlan.substring(1)
+    const period = payPeriod.substring(0, 1) === 'm' ? 'month' : 'year'
+    const periodCount = payPeriod.substring(1)
 
-    const paymentData = await axiosAdmin
-      .post('partner/bids', {
-        type: 'bithomp_pro',
-        //tier: "standard", //only for api plans
-        period,
-        periodCount: 1 * periodCount
-      })
-      .catch((error) => {
-        if (error && error.message !== 'canceled') {
-          setErrorMessage(t(error.response.data.error || 'error.' + error.message))
-          if (error.response?.data?.error === 'errors.token.required') {
-            router.push('/admin')
-          }
+    let options = {
+      type: tabTotype(subscriptionsTab),
+      period,
+      periodCount: 1 * periodCount
+    }
+
+    if (subscriptionsTab === 'api') {
+      options.tier = tier
+    }
+
+    const paymentData = await axiosAdmin.post('partner/bids', options).catch((error) => {
+      if (error && error.message !== 'canceled') {
+        setErrorMessage(t(error.response.data.error || 'error.' + error.message))
+        if (error.response?.data?.error === 'errors.token.required') {
+          router.push('/admin')
         }
-      })
+      }
+    })
 
     if (paymentData?.data) {
       /*
@@ -308,6 +341,11 @@ export default function Subscriptions({ setSignRequest, receiptQuery }) {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [payData, update])
+
+  useEffect(() => {
+    setPayData(null)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [payPeriod, tier])
 
   const onCancel = () => {
     setUpdate(false)
@@ -470,110 +508,48 @@ export default function Subscriptions({ setSignRequest, receiptQuery }) {
             </div>
           )}
 
+          <Tabs
+            tabList={subscriptionsTabList}
+            tab={subscriptionsTab}
+            setTab={setSubscriptionsTab}
+            name="subscriptions"
+            style={{ marginTop: '20px' }}
+          />
+
           {!(!billingCountry || choosingCountry || loading) && (
             <>
               {step < 2 && (
                 <>
-                  <h4 className="center">Why Purchase a Bithomp Pro Subscription?</h4>
+                  {subscriptionsTab === 'pro' && <Pro setPayPeriod={setPayPeriod} />}
+                  {subscriptionsTab === 'api' && <Api setPayPeriod={setPayPeriod} setTier={setTier} tier={tier} />}
 
-                  <div style={{ textAlign: 'left' }}>
-                    <p>
-                      This premium offering is packed with benefits that make your experience with our platform more
-                      efficient and enjoyable:
-                    </p>
-                    <p>
-                      ✅ <b>Exclusive Access to Advanced Tools:</b>
-                      <ul>
-                        <li>
-                          Enable Infinite scroll in the <Link href="/nft-explorer">NFT Explorer</Link>
-                        </li>
-                        <li>
-                          Enable Infinite scroll in the <Link href="/nft-sales">NFT Sales</Link>
-                        </li>
-                        <li>
-                          Unlock the full list of <Link href="/nft-distribution">NFT holders</Link>
-                        </li>
-                        {!xahauNetwork && (
-                          <li>
-                            View the complete lists of NFT <Link href="/nft-volumes?list=collections">Collections</Link>{' '}
-                            & <Link href="/nft-volumes?list=issuers">Issuers</Link>
-                          </li>
-                        )}
-                        <li>CSV exports of complete lists</li>
-                      </ul>
-                    </p>
-                    <p>
-                      ✅ <b>Priority Support</b>: As a Pro subscriber, you'll receive prioritized customer support,
-                      ensuring that any questions or issues you have are addressed with speed and care.
-                    </p>
-                    <p>
-                      ✅ <b>Fewer Ads</b>: Experience the platform with significantly fewer advertisements, allowing you
-                      to focus on what matters most.
-                    </p>
-                    <p>
-                      ✅ <b>Support the Project</b>: By subscribing, you're directly contributing to the growth and
-                      development of Bithomp. Your support is deeply appreciated and helps us continue to innovate and
-                      improve.
-                    </p>
-                    <p>
-                      And this is just the beginning! More features to add even greater value to your Pro Subscription
-                      are coming soon.
-                    </p>
-                  </div>
-
-                  <p>Subscribe to Bithomp Pro!</p>
+                  <button
+                    className="button-action narrow"
+                    onClick={onPurchaseClick}
+                    style={{ height: '37px', marginLeft: '10px', marginTop: '20px' }}
+                  >
+                    Purchase
+                  </button>
 
                   {/*
-                <h4>
-                  Pay with PayPal - 1 Year, 100 EUR
-                </h4>
+                    <h4>
+                      Pay with PayPal - 1 Year, 100 EUR
+                    </h4>
 
-                <div className='center' style={{ width: "350px", margin: "auto" }}>
-                  <PayPalScriptProvider
-                    options={{
-                      clientId: "AcUlMvkL6Uc6OVv-USMK3fg2wZ_xEBolL0-yyzWkOnS7vF2aWbu_AJFYJxaRRfPoiN0SBEnSFHUTbSUn",
-                      components: "buttons",
-                      intent: "subscription",
-                      vault: true,
-                      locale: 'en_US'
-                    }}
-                  >
-                    <ButtonWrapper type="subscription" />
-                  </PayPalScriptProvider>
-                </div>
-
-                <h4>
-                  Pay with XRP
-                </h4>
-                */}
-
-                  <div className="center">
-                    <Select
-                      options={bithompProOptions}
-                      getOptionLabel={(option) => (
-                        <div style={{ width: '150px' }}>
-                          {option.label} <span style={{ float: 'right' }}>{option.price}</span>
-                        </div>
-                      )}
-                      onChange={(selected) => {
-                        setBithompProPlan(selected.value)
-                        setPayData(null)
-                      }}
-                      defaultValue={bithompProOptions[0]}
-                      isSearchable={false}
-                      className="simple-select"
-                      classNamePrefix="react-select"
-                      instanceId="period-select"
-                    />
-
-                    <button
-                      className="button-action narrow"
-                      onClick={onPurchaseClick}
-                      style={{ height: '37px', marginLeft: '10px' }}
-                    >
-                      Purchase
-                    </button>
-                  </div>
+                    <div className='center' style={{ width: "350px", margin: "auto" }}>
+                      <PayPalScriptProvider
+                        options={{
+                          clientId: "AcUlMvkL6Uc6OVv-USMK3fg2wZ_xEBolL0-yyzWkOnS7vF2aWbu_AJFYJxaRRfPoiN0SBEnSFHUTbSUn",
+                          components: "buttons",
+                          intent: "subscription",
+                          vault: true,
+                          locale: 'en_US'
+                        }}
+                      >
+                        <ButtonWrapper type="subscription" />
+                      </PayPalScriptProvider>
+                    </div>
+                  */}
                 </>
               )}
 
