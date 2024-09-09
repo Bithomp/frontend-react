@@ -47,7 +47,7 @@ const fiatAmountAt = async (payment) => {
 
 export default function ListTransactions({ transactions }) {
   const width = useWidth()
-  const [transactionList, setTransactionList] = useState(transactions)
+  const [transactionList, setTransactionList] = useState([])
 
   const assignFiatAmount = async (list) => {
     if (!list) return
