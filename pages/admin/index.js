@@ -10,7 +10,7 @@ import Mailto from 'react-protected-mailto'
 import SEO from '../../components/SEO'
 import CheckBox from '../../components/UI/CheckBox'
 
-import { domainFromUrl, isEmailValid, turnstileSupportedLanguages } from '../../utils'
+import { domainFromUrl, isEmailValid, turnstileSupportedLanguages, useWidth } from '../../utils'
 import { getIsSsrMobile } from '../../utils/mobile'
 import AdminTabs from '../../components/Tabs/AdminTabs'
 import { axiosAdmin } from '../../utils/axios'
@@ -31,6 +31,8 @@ const checkmark = '/images/checkmark.svg'
 export default function Admin({ redirectToken, account, setAccount }) {
   const { theme } = useTheme()
   const { t, i18n } = useTranslation(['common', 'admin'])
+  const width = useWidth()
+
   const [siteKey, setSiteKey] = useState('')
   const [errorMessage, setErrorMessage] = useState('')
   const [token, setToken] = useState('') // CL token
@@ -308,6 +310,10 @@ export default function Admin({ redirectToken, account, setAccount }) {
     checkApi()
   }
 
+  const flexWidth = (minus = 0) => {
+    return width > 480 ? 440 - minus + 'px' : '100%'
+  }
+
   return (
     <>
       <SEO title={t('header', { ns: 'admin' })} />
@@ -316,7 +322,7 @@ export default function Admin({ redirectToken, account, setAccount }) {
 
         {step === 0 && (
           <div>
-            <div style={{ maxWidth: '440px', margin: 'auto' }}>
+            <div style={{ maxWidth: flexWidth(), margin: 'auto' }}>
               - Access advanced features with Bithomp Pro subscription.
               <br />- Manage your API keys and view your API statistics.
             </div>
@@ -332,7 +338,7 @@ export default function Admin({ redirectToken, account, setAccount }) {
         <br />
         <div className="center">
           {(step === 0 || step === 1) && (
-            <div className="input-validation" style={{ margin: 'auto', width: '440px' }}>
+            <div className="input-validation" style={{ margin: 'auto', width: flexWidth() }}>
               <input
                 name="email"
                 placeholder="Email address"
@@ -351,7 +357,7 @@ export default function Admin({ redirectToken, account, setAccount }) {
           )}
 
           {step === 1 && (
-            <div className="input-validation" style={{ margin: 'auto', width: '440px', marginTop: '20px' }}>
+            <div className="input-validation" style={{ margin: 'auto', width: flexWidth(), marginTop: '20px' }}>
               <input
                 placeholder="Password"
                 value={password}
@@ -390,7 +396,7 @@ export default function Admin({ redirectToken, account, setAccount }) {
                   display: 'inline-block',
                   marginBottom: '20px',
                   textAlign: 'left',
-                  width: '438px',
+                  width: flexWidth(2),
                   margin: 'auto'
                 }}
               >
