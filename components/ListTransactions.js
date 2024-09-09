@@ -36,7 +36,7 @@ export default function ListTransactions({ transactions }) {
       {transactions?.length > 0 && (
         <>
           {width > 600 ? (
-            <table className="table-large no-hover">
+            <table className="table-large">
               <thead>
                 <tr>
                   <th>Date & Time</th>
@@ -54,7 +54,7 @@ export default function ListTransactions({ transactions }) {
                       <td>
                         <a href={'/explorer/' + payment.sourceAddress}>{payment.sourceAddress}</a>
                       </td>
-                      <td>{amountFormat(payment.amount, { maxFractionDigits: 6 })}</td>
+                      <td>{amountFormat(payment.amount)}</td>
                       <td>{payment.memos?.[0]?.data}</td>
                       <td>
                         <a href={'/explorer/' + payment.hash}>
@@ -81,7 +81,7 @@ export default function ListTransactions({ transactions }) {
                           From: <br />
                           <a href={'/explorer/' + payment.sourceAddress}>{payment.sourceAddress}</a>
                         </p>
-                        <p>Amount: {amountFormat(payment.amount, { maxFractionDigits: 6 })}</p>
+                        <p>Amount: {amountFormat(payment.amount)}</p>
                         <p>Memo: {payment.memos?.[0]?.data}</p>
                         <p>
                           Transaction:{' '}
