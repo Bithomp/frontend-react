@@ -27,5 +27,5 @@
     "fee": "手数料",
     "transaction-hash": "トランザクションハッシュ"
   },
-  "confirmed-within-seconds": "数秒以内に<"
+  "confirmed-within-seconds": "<2>{{time}}秒以内に確認済み</2>"
 }

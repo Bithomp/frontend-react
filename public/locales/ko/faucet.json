@@ -27,5 +27,5 @@
     "fee": "수수료",
     "transaction-hash": "거래 해시"
   },
-  "confirmed-within-seconds": "몇 초 이내에<"
+  "confirmed-within-seconds": "확인됨 <2>{{time}}초 이내</2>"
 }

@@ -27,5 +27,5 @@
     "fee": "Tarifa",
     "transaction-hash": "Hash de transacción"
   },
-  "confirmed-within-seconds": "Confirmado en segundos <"
+  "confirmed-within-seconds": "Confirmado en menos de <2>{{time}} segundos</2>"
 }

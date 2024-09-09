@@ -27,5 +27,5 @@
     "fee": "Biaya",
     "transaction-hash": "Hash transaksi"
   },
-  "confirmed-within-seconds": "Dikonfirmasi dalam <"
+  "confirmed-within-seconds": "Dikonfirmasi dalam waktu kurang dari <2>{{time}} detik</2>"
 }

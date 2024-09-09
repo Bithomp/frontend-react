@@ -27,5 +27,5 @@
     "fee": "Gebühr",
     "transaction-hash": "Transaktions-Hash"
   },
-  "confirmed-within-seconds": "Innerhalb von <"
+  "confirmed-within-seconds": "Bestätigt innerhalb von <2>{{time}} Sekunden</2>"
 }

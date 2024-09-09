@@ -27,5 +27,5 @@
     "fee": "Комиссия",
     "transaction-hash": "Хэш транзакции"
   },
-  "confirmed-within-seconds": "Подтверждено за <"
+  "confirmed-within-seconds": "Подтверждено в течение <2>{{time}} секунд</2>"
 }
