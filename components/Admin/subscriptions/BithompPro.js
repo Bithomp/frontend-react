@@ -20,25 +20,25 @@ export default function Pro({ setPayPeriod }) {
         </p>
         <p>
           ✅ <b>Exclusive Access to Advanced Tools:</b>
-          <ul>
-            <li>
-              Enable Infinite scroll in the <Link href="/nft-explorer">NFT Explorer</Link>
-            </li>
-            <li>
-              Enable Infinite scroll in the <Link href="/nft-sales">NFT Sales</Link>
-            </li>
-            <li>
-              Unlock the full list of <Link href="/nft-distribution">NFT holders</Link>
-            </li>
-            {!xahauNetwork && (
-              <li>
-                View the complete lists of NFT <Link href="/nft-volumes?list=collections">Collections</Link> &{' '}
-                <Link href="/nft-volumes?list=issuers">Issuers</Link>
-              </li>
-            )}
-            <li>CSV exports of complete lists</li>
-          </ul>
         </p>
+        <ul>
+          <li>
+            Enable Infinite scroll in the <Link href="/nft-explorer">NFT Explorer</Link>
+          </li>
+          <li>
+            Enable Infinite scroll in the <Link href="/nft-sales">NFT Sales</Link>
+          </li>
+          <li>
+            Unlock the full list of <Link href="/nft-distribution">NFT holders</Link>
+          </li>
+          {!xahauNetwork && (
+            <li>
+              View the complete lists of NFT <Link href="/nft-volumes?list=collections">Collections</Link> &{' '}
+              <Link href="/nft-volumes?list=issuers">Issuers</Link>
+            </li>
+          )}
+          <li>CSV exports of complete lists</li>
+        </ul>
         <p>
           ✅ <b>Priority Support</b>: As a Pro subscriber, you'll receive prioritized customer support, ensuring that
           any questions or issues you have are addressed with speed and care.

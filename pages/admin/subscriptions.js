@@ -19,6 +19,7 @@ import Receipt from '../../components/Receipt'
 import Tabs from '../../components/Tabs'
 import Pro from '../../components/Admin/subscriptions/BithompPro'
 import Api from '../../components/Admin/subscriptions/Api'
+import ListTransactions from '../../components/ListTransactions'
 
 //PayPal option starts
 /*
@@ -200,6 +201,7 @@ export default function Subscriptions({ setSignRequest, receiptQuery, tabQuery }
   const [paymentErrorMessage, setPaymentErrorMessage] = useState('')
   const [step, setStep] = useState(0)
   const [subscriptionsTab, setSubscriptionsTab] = useState(tabQuery)
+  const [transactions, setTransactions] = useState([])
 
   useEffect(() => {
     const sessionToken = localStorage.getItem('sessionToken')
@@ -208,6 +210,7 @@ export default function Subscriptions({ setSignRequest, receiptQuery, tabQuery }
     } else {
       axiosAdmin.defaults.headers.common['Authorization'] = 'Bearer ' + sessionToken
       getApiData()
+      getTransactions()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
@@ -226,6 +229,21 @@ export default function Subscriptions({ setSignRequest, receiptQuery, tabQuery }
     addAndRemoveQueryParams(router, queryAddList, queryRemoveList)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [subscriptionsTab])
+
+  const getTransactions = async () => {
+    const response = await axiosAdmin.get('partner/transactions?limit=5').catch((error) => {
+      if (error && error.message !== 'canceled') {
+        console.log(error)
+        if (error.response?.data?.error === 'errors.token.required') {
+          router.push('/admin')
+        }
+      }
+    })
+    if (response?.data) {
+      setTransactions(response.data?.transactions)
+      return response.data
+    }
+  }
 
   const getApiData = async () => {
     setLoading(true)
@@ -276,7 +294,6 @@ export default function Subscriptions({ setSignRequest, receiptQuery, tabQuery }
       setNewAndActivePackages(newAndActive)
       setExpiredPackages(expired)
     }
-
     setLoading(false)
   }
 
@@ -403,10 +420,12 @@ export default function Subscriptions({ setSignRequest, receiptQuery, tabQuery }
       setErrorMessage('')
       clearInterval(interval)
       getApiData()
+      getTransactions()
       if (ws) ws.close()
       return
     }
     if (data.bid.status === 'Partly paid') {
+      getTransactions()
       setPaymentErrorMessage(
         t('error.payment-partly', {
           received: data.bid.totalReceivedAmount,
@@ -727,6 +746,13 @@ export default function Subscriptions({ setSignRequest, receiptQuery, tabQuery }
               <h4 className="center">Your expired subscriptions</h4>
               {packageList(expiredPackages, width)}
             </>
+          )}
+
+          {transactions?.length > 0 && (
+            <div style={{ marginTop: '20px', textAlign: 'left' }}>
+              <h4 className="center">Your last payments</h4>
+              <ListTransactions transactions={transactions} />
+            </div>
           )}
         </div>
       </div>
