@@ -14,7 +14,6 @@ export default function AdminTabs({ name, tab }) {
 
   const apiTabs = [
     { value: 'api-info', label: 'Information' },
-    { value: 'api-payments', label: 'Payments' },
     { value: 'api-statistics', label: 'Statistics' },
     { value: 'api-requests', label: 'Requests' },
     { value: 'api-charts', label: 'Charts' }
@@ -31,8 +30,6 @@ export default function AdminTabs({ name, tab }) {
       router.push('/admin')
     } else if (tab === 'api-info') {
       router.push('/admin/api')
-    } else if (tab === 'api-payments') {
-      router.push('/admin/api/payments')
     } else if (tab === 'api-requests') {
       router.push('/admin/api/requests')
     } else if (tab === 'api-statistics') {

@@ -3,10 +3,10 @@ import { useTranslation } from 'next-i18next'
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import { axiosAdmin } from '../../../utils/axios'
+import Link from 'next/link'
 
 import SEO from '../../../components/SEO'
 
-import { isUrlValid } from '../../../utils'
 import { getIsSsrMobile } from '../../../utils/mobile'
 import CopyButton from '../../../components/UI/CopyButton'
 import AdminTabs from '../../../components/Tabs/AdminTabs'
@@ -71,11 +71,6 @@ export default function Api() {
 
     if (!domain) {
       setErrorMessage(t('form.error.domain-empty'))
-      return
-    }
-
-    if (!isUrlValid(domain)) {
-      setErrorMessage(t('form.error.domain-invalid'))
       return
     }
 
@@ -145,63 +140,70 @@ export default function Api() {
           ) : (
             <>
               {apiData ? (
-                <table className="table-large no-hover">
-                  <tbody>
-                    <tr>
-                      <td className="right">Token</td>
-                      <td className="left">
-                        {apiData.token} <CopyButton text={apiData.token} />{' '}
-                      </td>
-                    </tr>
-                    <tr>
-                      <td className="right">Status</td>
-                      <td className="left">
-                        {apiData.locked ? (
-                          <b className="red">locked</b>
-                        ) : (
-                          <>
-                            {apiData.tier === 'free' ? (
-                              <b className="green">active</b>
-                            ) : (
-                              <>
-                                {apiData.expirationAt ? (
-                                  <>
-                                    {new Date(apiData.expirationAt) > nowDate ? (
-                                      <>
-                                        <b className="green">active</b> until
-                                      </>
-                                    ) : (
-                                      <b className="red">expired</b>
-                                    )}
-                                    <> {new Date(apiData.expirationAt).toLocaleDateString()}</>
-                                  </>
-                                ) : (
-                                  <b className="green">active</b>
-                                )}
-                              </>
-                            )}
-                          </>
-                        )}
-                      </td>
-                    </tr>
-                    <tr>
-                      <td className="right">{t('table.domain')}</td>
-                      <td className="left">
-                        <b>{apiData.domain}</b>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td className="right">Tier</td>
-                      <td className="left">{apiData.tier}</td>
-                    </tr>
-                  </tbody>
-                </table>
+                <>
+                  <table className="table-large no-hover">
+                    <tbody>
+                      <tr>
+                        <td className="right">Token</td>
+                        <td className="left">
+                          {apiData.token} <CopyButton text={apiData.token} />{' '}
+                        </td>
+                      </tr>
+                      <tr>
+                        <td className="right">Status</td>
+                        <td className="left">
+                          {apiData.locked ? (
+                            <b className="red">locked</b>
+                          ) : (
+                            <>
+                              {apiData.tier === 'free' ? (
+                                <b className="green">active</b>
+                              ) : (
+                                <>
+                                  {apiData.expirationAt ? (
+                                    <>
+                                      {new Date(apiData.expirationAt) > nowDate ? (
+                                        <>
+                                          <b className="green">active</b> until
+                                        </>
+                                      ) : (
+                                        <b className="red">expired</b>
+                                      )}
+                                      <> {new Date(apiData.expirationAt).toLocaleDateString()}</>
+                                    </>
+                                  ) : (
+                                    <b className="green">active</b>
+                                  )}
+                                </>
+                              )}
+                            </>
+                          )}
+                        </td>
+                      </tr>
+                      <tr>
+                        <td className="right">{t('table.domain')}</td>
+                        <td className="left">
+                          <b>{apiData.domain}</b>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td className="right">Tier</td>
+                        <td className="left">{apiData.tier}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  <br />
+                  <br />
+                  <Link className="button-action" href="/admin/subscriptions?tab=api">
+                    Manage your API subscription
+                  </Link>
+                </>
               ) : (
                 <div>
                   <h4>API registration</h4>
                   <p>
                     <input
-                      placeholder="Your website domain"
+                      placeholder='Your website domain or "localhost" for a local project'
                       value={domain}
                       onChange={(e) => {
                         setDomain(e.target.value)

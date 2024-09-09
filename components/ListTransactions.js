@@ -1,5 +1,8 @@
+import { useEffect, useState } from 'react'
 import { useWidth } from '../utils'
 import { amountFormat, fullDateAndTime } from '../utils/format'
+import { niceNumber } from '../utils/format'
+import axios from 'axios'
 
 import LinkIcon from '../public/images/link.svg'
 
@@ -28,12 +31,39 @@ import LinkIcon from '../public/images/link.svg'
   ]
 */
 
+const fiatAmountAt = async (payment) => {
+  const rate = await axios
+    .get(
+      'v2/rates/history/nearest/eur?date=' + payment.processedAt + '000' //13 digits
+    )
+    .catch((error) => {
+      console.log(error)
+    })
+  if (rate?.data?.eur) {
+    return niceNumber((payment.amount / 1000000) * rate.data.eur, 2, 'EUR')
+  }
+  return 0
+}
+
 export default function ListTransactions({ transactions }) {
   const width = useWidth()
+  const [transactionList, setTransactionList] = useState(transactions)
+
+  const assignFiatAmount = async (list) => {
+    if (!list) return
+    for (let transaction of list) {
+      transaction.fiatAmount = await fiatAmountAt(transaction)
+    }
+    setTransactionList(transactions)
+  }
+
+  useEffect(() => {
+    assignFiatAmount(transactions)
+  }, [transactions])
 
   return (
     <>
-      {transactions?.length > 0 && (
+      {transactionList?.length > 0 && (
         <>
           {width > 600 ? (
             <table className="table-large">
@@ -42,12 +72,13 @@ export default function ListTransactions({ transactions }) {
                   <th>Date & Time</th>
                   <th>From</th>
                   <th>Amount</th>
+                  <th>Fiat</th>
                   <th>Memo</th>
                   <th>Tx</th>
                 </tr>
               </thead>
               <tbody>
-                {transactions?.map((payment, index) => {
+                {transactionList?.map((payment, index) => {
                   return (
                     <tr key={index}>
                       <td>{fullDateAndTime(payment.processedAt)}</td>
@@ -55,6 +86,7 @@ export default function ListTransactions({ transactions }) {
                         <a href={'/explorer/' + payment.sourceAddress}>{payment.sourceAddress}</a>
                       </td>
                       <td>{amountFormat(payment.amount)}</td>
+                      <td>{payment.fiatAmount}</td>
                       <td>{payment.memos?.[0]?.data}</td>
                       <td>
                         <a href={'/explorer/' + payment.hash}>
@@ -69,7 +101,7 @@ export default function ListTransactions({ transactions }) {
           ) : (
             <table className="table-mobile">
               <tbody>
-                {transactions?.map((payment, index) => {
+                {transactionList?.map((payment, index) => {
                   return (
                     <tr key={index}>
                       <td style={{ padding: '5px' }} className="center">
@@ -82,6 +114,7 @@ export default function ListTransactions({ transactions }) {
                           <a href={'/explorer/' + payment.sourceAddress}>{payment.sourceAddress}</a>
                         </p>
                         <p>Amount: {amountFormat(payment.amount)}</p>
+                        <p>Fiat equivalent: {payment.fiatAmount}</p>
                         <p>Memo: {payment.memos?.[0]?.data}</p>
                         <p>
                           Transaction:{' '}
