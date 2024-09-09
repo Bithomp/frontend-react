@@ -1,0 +1,31 @@
+{
+  "error-occured": "エラーが発生しました",
+  "try-later": "今日はすでにお試しいただきました。{{time}}に戻ってください。",
+  "test-the-speed": "{{explorerName}}での支払いの速度と信頼性をテストしてください",
+  "experience-fast-transactions": "{{explorerName}}で取引がどれほど迅速かつ簡単であるかを体験してください！",
+  "form": {
+    "placeholder": {
+      "enter-address": "{{ledgerName}}のアドレスを入力してください"
+    }
+  },
+  "how-it-works": "仕組み:",
+  "activated-wallet-required": "アクティブなウォレットが必要です",
+  "ensure-wallet-activated": "ウォレットがアクティブであることを確認してください。",
+  "receive-currency-drops": "{{nativeCurrency}}の暗号通貨ドロップを受け取る",
+  "get-between-drops": "1から600のドロップを{{nativeCurrency}}で受け取ります。",
+  "get-instant-feedback": "瞬時のフィードバックを受け取る",
+  "see-if-payment-succeeded": "支払いが成功したかどうかを確認し、正確な送信時間、取引手数料を確認し、すべての詳細を確認するためのトランザクションリンクを取得してください。",
+  "daily-testing-limit": "1日のテスト制限",
+  "can-test-only-once-per-day": "1日に1回のみテストできます（IPごとに1つのウォレット）。",
+  "button": {
+    "test-now": "今すぐテスト"
+  },
+  "try-it-now": "{{nativeCurrency}}での支払い処理の速さを今すぐお試しください！",
+  "test-completed": "テスト完了！",
+  "validated-on-ledger": "<0>レジャーで確認済み</0><2/>",
+  "table": {
+    "fee": "手数料",
+    "transaction-hash": "トランザクションハッシュ"
+  },
+  "confirmed-within-seconds": "数秒以内に<"
+}

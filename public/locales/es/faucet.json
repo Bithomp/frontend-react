@@ -1,0 +1,31 @@
+{
+  "error-occured": "Ocurrió un error",
+  "try-later": "Ya has intentado hoy. Regresa a las {{time}}.",
+  "test-the-speed": "Prueba la velocidad y confiabilidad del pago en {{explorerName}}",
+  "experience-fast-transactions": "¡Experimenta lo rápido y fácil que es transaccionar en {{explorerName}}!",
+  "form": {
+    "placeholder": {
+      "enter-address": "Introduce la dirección de {{ledgerName}}"
+    }
+  },
+  "how-it-works": "Cómo funciona:",
+  "activated-wallet-required": "Se requiere una billetera activada",
+  "ensure-wallet-activated": "Asegúrate de que tu billetera esté activada.",
+  "receive-currency-drops": "Recibe gotas de criptomonedas en {{nativeCurrency}}",
+  "get-between-drops": "Recibe entre 1 y 600 gotas en {{nativeCurrency}}.",
+  "get-instant-feedback": "Recibe comentarios instantáneos",
+  "see-if-payment-succeeded": "Verifica si el pago fue exitoso y recibe un enlace de transacción para comprobar el tiempo exacto de transmisión, tarifas de transacción y todos los detalles.",
+  "daily-testing-limit": "Límite de prueba diario",
+  "can-test-only-once-per-day": "Solo puedes probar una vez al día (una billetera por IP).",
+  "button": {
+    "test-now": "Prueba ahora"
+  },
+  "try-it-now": "¡Experimenta ahora la velocidad del procesamiento de pagos con {{nativeCurrency}}!",
+  "test-completed": "¡Prueba completada!",
+  "validated-on-ledger": "<0>Validado en el libro mayor</0><2/>",
+  "table": {
+    "fee": "Tarifa",
+    "transaction-hash": "Hash de transacción"
+  },
+  "confirmed-within-seconds": "Confirmado en segundos <"
+}

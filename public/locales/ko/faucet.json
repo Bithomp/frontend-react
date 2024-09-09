@@ -1,0 +1,31 @@
+{
+  "error-occured": "오류가 발생했습니다",
+  "try-later": "오늘 이미 시도하셨습니다. {{time}}에 다시 돌아오세요.",
+  "test-the-speed": "{{explorerName}}에서 결제의 속도와 신뢰성을 테스트하세요",
+  "experience-fast-transactions": "{{explorerName}}에서 거래가 얼마나 빠르고 간편한지 경험해 보세요!",
+  "form": {
+    "placeholder": {
+      "enter-address": "{{ledgerName}} 주소를 입력하세요"
+    }
+  },
+  "how-it-works": "작동 방식:",
+  "activated-wallet-required": "활성화된 지갑이 필요합니다",
+  "ensure-wallet-activated": "지갑이 활성화되어 있는지 확인하세요.",
+  "receive-currency-drops": "{{nativeCurrency}}의 암호화폐 드롭을 받기",
+  "get-between-drops": "1에서 600의 드롭을 {{nativeCurrency}}로 받습니다.",
+  "get-instant-feedback": "즉각적인 피드백 받기",
+  "see-if-payment-succeeded": "결제가 성공했는지 확인하고, 정확한 전송 시간, 거래 수수료를 확인하며 모든 세부 사항을 보려면 거래 링크를 받으세요.",
+  "daily-testing-limit": "일일 테스트 한도",
+  "can-test-only-once-per-day": "하루에 한 번만 테스트할 수 있습니다 (IP당 하나의 지갑).",
+  "button": {
+    "test-now": "지금 테스트하기"
+  },
+  "try-it-now": "{{nativeCurrency}}로 결제 처리의 속도를 지금 바로 체험해 보세요!",
+  "test-completed": "테스트 완료!",
+  "validated-on-ledger": "<0>레저에서 확인됨</0><2/>",
+  "table": {
+    "fee": "수수료",
+    "transaction-hash": "거래 해시"
+  },
+  "confirmed-within-seconds": "몇 초 이내에<"
+}
