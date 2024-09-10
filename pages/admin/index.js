@@ -413,55 +413,48 @@ export default function Admin({ redirectToken, account, setAccount }) {
           {step === 2 && (
             <>
               {loggedUserData && (
-                <table className="table-large no-hover">
-                  <tbody>
-                    <tr>
-                      <td className="right">E-mail</td>
-                      <td className="left">
-                        <b>{loggedUserData.email}</b>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td className="right">Registered</td>
-                      <td className="left">{new Date(loggedUserData.created_at).toLocaleString()}</td>
-                    </tr>
-                    <tr>
-                      <td className="right">Bithomp Pro</td>
-                      <td className="left">
-                        {checkedPackageData ? (
-                          <>
-                            {packageData ? (
-                              <>
-                                <b className="green">Active</b> until{' '}
-                                {new Date(packageData.expiredAt * 1000).toLocaleDateString()}
-                              </>
-                            ) : (
-                              'not activated'
-                            )}
-                          </>
-                        ) : (
-                          'loading status...'
-                        )}
-                      </td>
-                    </tr>
-                    {packageData && partnerData && (
-                      <>
-                        <tr>
-                          <td className="right">Support e-mail</td>
-                          <td className="left">
-                            <Mailto email="pro@bithomp.com" headers={{ subject: 'PRO user ' + partnerData.id }} />
-                          </td>
-                        </tr>
-                        <tr>
-                          <td className="right">E-mail subject (for priority)</td>
-                          <td className="left">
-                            <b>PRO user {partnerData.id}</b>
-                          </td>
-                        </tr>
-                      </>
-                    )}
-                  </tbody>
-                </table>
+                <>
+                  <table className="table-large no-hover shrink">
+                    <tbody>
+                      <tr>
+                        <td className="left">E-mail</td>
+                        <td className="left">
+                          <b>{loggedUserData.email}</b>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td className="left">Bithomp Pro</td>
+                        <td className="left">
+                          {checkedPackageData ? (
+                            <>
+                              {packageData ? (
+                                <>
+                                  <b className="green">Active</b> until{' '}
+                                  {new Date(packageData.expiredAt * 1000).toLocaleDateString()}
+                                </>
+                              ) : (
+                                'not activated'
+                              )}
+                            </>
+                          ) : (
+                            'loading status...'
+                          )}
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  {packageData && partnerData && (
+                    <span>
+                      <br />
+                      For priority support, please use subject <b>PRO user {partnerData.id}</b> when sending us an
+                      e-mail to{' '}
+                      <b>
+                        <Mailto email="pro@bithomp.com" headers={{ subject: 'PRO user ' + partnerData.id }} />
+                      </b>
+                      .
+                    </span>
+                  )}
+                </>
               )}
             </>
           )}
