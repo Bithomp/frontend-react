@@ -639,7 +639,10 @@ export default function Subscriptions({ setSignRequest, receiptQuery, tabQuery }
                                 {
                                   Memo: {
                                     MemoData: encode(
-                                      'Payment for Bithomp Pro (' +
+                                      'Payment for ' +
+                                        typeName(payData.bid.type) +
+                                        (payData.bid.tier ? ' ' + payData.bid.tier.toUpperCase() : '') +
+                                        ' (' +
                                         payData.bid.periodCount +
                                         ' ' +
                                         payData.bid.period +
