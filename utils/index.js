@@ -579,6 +579,13 @@ export const isAddressValid = (x) => {
   return isValidClassicAddress(x)
 }
 
+export const isTagValid = (x) => {
+  if (!x) return false
+  if (!/^[0-9]{1,10}$/.test(x)) return false
+  if (parseInt(x) > 4294967295) return false
+  return true
+}
+
 export const isUsernameValid = (x) => {
   return x && /^(?=.{3,18}$)[0-9a-zA-Z]{1,18}[-]{0,1}[0-9a-zA-Z]{1,18}$/.test(x)
 }

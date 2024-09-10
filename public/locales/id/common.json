@@ -315,6 +315,7 @@
   },
   "form": {
     "error": {
+      "destination-tag-invalid": "Tag tujuan tidak valid.",
       "price-empty": "Mohon masukkan jumlah.",
       "address-empty": "Mohon masukkan alamat.",
       "address-invalid": "Mohon masukkan alamat yang valid.",
@@ -326,7 +327,10 @@
       "email-invalid": "Silakan masukkan alamat email yang valid.",
       "password-empty": "Silakan masukkan kata sandi Anda.",
       "password-invalid": "Silakan masukkan kata sandi yang valid."
-  }
+    },
+    "placeholder": {
+      "destination-tag": "Enter the Destination tag (if it is required)"
+    }
   },
   "error": {
     "Network Error": "Sepertinya tidak ada koneksi internet ;(",
@@ -379,6 +383,7 @@
     "day": "Selama 24 jam terakhir"
   },
   "table": {
+    "destination-tag": "Destination tag",
     "uri": "URI",
     "mints": "Mints",
     "view": "View",
@@ -611,7 +616,6 @@
     "help-us": "Bantu kami dalam misi kami untuk membuat penjelajah XRPL yang paling ramah pengguna.",
     "it-helps": "Donasi Anda akan membantu kami menambah kapasitas dan terus mengembangkan Bithomp.",
     "address": "Alamat XRPL kami untuk donasi",
-    "dt": "Destination tag",
     "donate-with-xaman": "Donasi dengan Xaman"
   },
   "sponsored": {

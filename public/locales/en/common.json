@@ -315,6 +315,7 @@
   },
   "form": {
     "error": {
+      "destination-tag-invalid": "Invalid destination tag.",
       "price-empty": "Please enter an amount.",
       "address-empty": "Please enter an address.",
       "address-invalid": "Please enter a valid address.",
@@ -326,6 +327,9 @@
       "email-invalid": "Please enter a valid e-mail address.",
       "password-empty": "Please enter your password.",
       "password-invalid": "Please enter a valid password."
+    },
+    "placeholder": {
+      "destination-tag": "Enter the Destination tag (if it is required)"
     }
   },
   "error": {
@@ -379,6 +383,7 @@
     "day": "For the last 24 hours"
   },
   "table": {
+    "destination-tag": "Destination tag",
     "uri": "URI",
     "mints": "Mints",
     "view": "View",
@@ -611,7 +616,6 @@
     "help-us": "Help us in our mission to make the most user friendly XRPL explorer.",
     "it-helps": "Your donation will help us to add capacity and continue to develop Bithomp.",
     "address": "Our XRPL address for donations",
-    "dt": "Destination tag",
     "donate-with-xaman": "Donate with Xaman"
   },
   "sponsored": {

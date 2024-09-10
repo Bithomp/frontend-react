@@ -315,6 +315,7 @@
   },
   "form": {
     "error": {
+      "destination-tag-invalid": "Por favor, introduce una marca de destino válida.",
       "price-empty": "Please enter an amount.",
       "address-empty": "Por favor, introduce una dirección.",
       "address-invalid": "Por favor, introduce una dirección válida.",
@@ -326,6 +327,9 @@
       "email-invalid": "Por favor, introduce un correo eléctronico válido.",
       "password-empty": "Por favor, introduce tu contraseña.",
       "password-invalid": "Por favor, introduce una contraseña válida."
+    },
+    "placeholder": {
+      "destination-tag": "Enter the Destination tag (if it is required)"
     }
   },
   "error": {
@@ -379,6 +383,7 @@
     "day": "Para los últimas 24 horas"
   },
   "table": {
+    "destination-tag": "Marca de destino",
     "uri": "URI",
     "mints": "Acuñaciones",
     "view": "View",
@@ -611,7 +616,6 @@
     "help-us": "Ayúdanos en nuestra misión de convertirnos en el explorador XRPL más amigable.",
     "it-helps": "Tu donación nos ayudará a añadir capacidad y continuar a desarrollar Bithomp.",
     "address": "Nuestra dirección XRPL para donaciones",
-    "dt": "Marca de destino",
     "donate-with-xaman": "Donar con Xaman"
   },
   "sponsored": {

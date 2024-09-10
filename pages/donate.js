@@ -94,7 +94,7 @@ export default function Donate() {
             <CopyButton text="rEDakigd4Cp78FioF3qvQs6TrjFLjKLqM3" />
             <br />
             <br />
-            {t('donate.dt')}:
+            {t('table.destination-tag')}:
             <br />
             <b>1</b> <CopyButton text="1" />
             {isMobile && (

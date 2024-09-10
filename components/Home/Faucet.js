@@ -6,11 +6,14 @@ import {
   ledgerName,
   turnstileSupportedLanguages,
   isAddressValid,
-  server
+  server,
+  isTagValid,
+  useWidth
 } from '../../utils'
 import { useTheme } from '../../components/Layout/ThemeContext'
 
 import AddressInput from '../UI/AddressInput'
+import FormInput from '../UI/FormInput'
 import { Turnstile } from '@marsidev/react-turnstile'
 import { useEffect, useState } from 'react'
 import { amountFormat, duration, shortHash } from '../../utils/format'
@@ -19,6 +22,7 @@ import { LedgerLink } from '../../utils/links'
 export default function Converter({ account }) {
   const [data, setData] = useState({})
   const [address, setAddress] = useState(account?.address)
+  const [destinationTag, setDestinationTag] = useState(null)
   const [siteKey, setSiteKey] = useState('')
   const [errorMessage, setErrorMessage] = useState()
   const [token, setToken] = useState()
@@ -27,6 +31,7 @@ export default function Converter({ account }) {
 
   const { t, i18n } = useTranslation()
   const { theme } = useTheme()
+  const width = useWidth()
 
   useEffect(() => {
     fetchData()
@@ -52,7 +57,10 @@ export default function Converter({ account }) {
   }
 
   const onSubmit = async () => {
+    setErrorMessage('')
+
     if (!token) {
+      console.error('No token')
       return
     }
 
@@ -61,9 +69,17 @@ export default function Converter({ account }) {
       return
     }
 
+    if (destinationTag && !isTagValid(destinationTag)) {
+      setErrorMessage(t('form.error.destination-tag-invalid'))
+      return
+    }
+
     setLoading(true)
 
-    const data = { 'cf-turnstile-response': token, address }
+    let data = { 'cf-turnstile-response': token, address }
+    if (destinationTag) {
+      data.destinationTag = parseInt(destinationTag)
+    }
     const response = await axios.post('v2/testPayment', data).catch((error) => {
       if (error.response?.data?.error === 'Invalid captcha') {
         setErrorMessage('Captcha timeout, try again.')
@@ -133,6 +149,13 @@ export default function Converter({ account }) {
               type="address"
               hideButton={true}
             />
+            {width > 1100 && <br />}
+            <FormInput
+              title={t('table.destination-tag')}
+              placeholder={t('form.placeholder.destination-tag')}
+              setInnerValue={setDestinationTag}
+              hideButton={true}
+            />
           </div>
           <div>
             <p>{t('how-it-works', { ns: 'faucet' })}</p>
@@ -192,11 +215,7 @@ export default function Converter({ account }) {
       )}
       {step === 1 && (
         <div>
-          {errorMessage ? (
-            <div className="center">
-              <span className="bold red center">{errorMessage}</span>
-            </div>
-          ) : (
+          {!errorMessage && (
             <>
               <h3 className="center">{t('test-completed', { ns: 'faucet' })}</h3>
               <p>
@@ -235,6 +254,11 @@ export default function Converter({ account }) {
               </p>
             </>
           )}
+        </div>
+      )}
+      {errorMessage && (
+        <div className="center">
+          <span className="bold red center">{errorMessage}</span>
         </div>
       )}
     </>

@@ -315,6 +315,7 @@
   },
   "form": {
     "error": {
+      "destination-tag-invalid": "宛先タグが無効です。",
       "price-empty": "Please enter an amount.",
       "address-empty": "Please enter an address.",
       "address-invalid": "Please enter a valid address.",
@@ -326,6 +327,9 @@
       "email-invalid": "有効なメールアドレスを入力してください。",
       "password-empty": "パスワードを入力してください。",
       "password-invalid": "無効なパスワードです。"
+    },
+    "placeholder": {
+      "destination-tag": "Enter the Destination tag (if it is required)"
     }
   },
   "error": {
@@ -379,6 +383,7 @@
     "day": "直近24時間"
   },
   "table": {
+    "destination-tag": "宛先タグ",
     "uri": "URI",
     "mints": "Mints",
     "view": "View",
@@ -611,7 +616,6 @@
     "help-us": "最も使いやすいXRPLエクスプローラを作るという私たちのミッションにご協力ください。",
     "it-helps": "皆様からの寄付は、Bithompの設備増強と継続的な開発に役立てられます。",
     "address": "寄付用XRPLアドレス",
-    "dt": "宛先タグ",
     "donate-with-xaman": "Xamanで寄付"
   },
   "sponsored": {
