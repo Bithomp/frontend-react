@@ -7,6 +7,7 @@ import Link from 'next/link'
 
 import SEO from '../../../components/SEO'
 
+import { isUrlValid } from '../../../utils'
 import { getIsSsrMobile } from '../../../utils/mobile'
 import CopyButton from '../../../components/UI/CopyButton'
 import AdminTabs from '../../../components/Tabs/AdminTabs'
@@ -71,6 +72,11 @@ export default function Api() {
 
     if (!domain) {
       setErrorMessage(t('form.error.domain-empty'))
+      return
+    }
+
+    if (!isUrlValid(domain) && domain !== 'localhost') {
+      setErrorMessage(t('form.error.domain-invalid'))
       return
     }
 
