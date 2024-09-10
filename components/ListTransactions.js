@@ -59,6 +59,7 @@ export default function ListTransactions({ transactions }) {
 
   useEffect(() => {
     assignFiatAmount(transactions)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [transactions])
 
   return (
