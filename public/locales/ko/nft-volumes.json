@@ -1,6 +1,9 @@
 {
   "header": "NFT 판매량",
   "text0": "For that period XRPL은 {{saleType}}에서 {{allSales}} {{currency}} NFT({{allVolume}}) 거래가 이루어졌습니다.",
+  "collections": {
+    "desc": "This is the list of NFT collections. 여기 거래량에는 2번의 거래(결제 및 NFT 전송) 내에서 이루어진 1차 판매(채굴)는 포함되지 않습니다"
+  },
   "brokers": {
     "desc": "NFT 브로커 계좌 목록입니다. 여기에서 제안 매칭 봇의 거래량을 확인할 수 있습니다. 마켓플레이스는 혼합 거래 모델을 사용하므로 여기에서는 중개 모델을 통한 거래량만 볼 수 있습니다",
     "no-broker": "브로커 없음",

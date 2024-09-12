@@ -14,8 +14,8 @@ export async function middleware(req) {
   const cookieLocale = req.cookies.get('NEXT_LOCALE')?.value
 
   //if someone has an old link with old locale that was removed.
-  const removedLocales = ['ca', 'da', 'nn', 'my']
-  const currentLocales = ['en', 'ko', 'ru', 'de', 'es', 'id', 'ja', 'hr']
+  const removedLocales = ['ca', 'da', 'nn', 'my', 'hr']
+  const currentLocales = ['en', 'ko', 'ru', 'de', 'es', 'id', 'ja']
 
   const reactLocale = req.nextUrl.locale
 
@@ -48,8 +48,6 @@ export async function middleware(req) {
 
   //import to have this case: reactLocale === 'default'
   if (reactLocale !== viewLocale) {
-    return NextResponse.redirect(
-      new URL(`/${viewLocale}${req.nextUrl.pathname}${req.nextUrl.search}`, req.url)
-    )
+    return NextResponse.redirect(new URL(`/${viewLocale}${req.nextUrl.pathname}${req.nextUrl.search}`, req.url))
   }
 }

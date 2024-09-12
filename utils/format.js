@@ -1,63 +1,74 @@
 import { Buffer } from 'buffer'
 import Link from 'next/link'
 import Image from 'next/image'
-import React from "react"
+import React from 'react'
 import { Trans } from 'next-i18next'
 import moment from 'moment'
-import momentDurationFormatSetup from "moment-duration-format"
+import momentDurationFormatSetup from 'moment-duration-format'
+import { useTranslation } from 'next-i18next'
 
-import LinkIcon from "../public/images/link.svg"
+import LinkIcon from '../public/images/link.svg'
 import { stripText, nativeCurrency } from '.'
 import { mpUrl } from './nft'
 
-const xummImg = "/images/xumm.png"
+const xummImg = '/images/xumm.png'
 
 momentDurationFormatSetup(moment)
 
 export const acceptNftBuyOfferButton = (t, setSignRequest, offer) => {
-  return <button
-    className='button-action wide center'
-    onClick={() => setSignRequest({
-      wallet: "xumm",
-      offerAmount: offer.amount,
-      offerType: 'buy',
-      request: {
-        "TransactionType": "NFTokenAcceptOffer",
-        "NFTokenBuyOffer": offer.offerIndex
+  return (
+    <button
+      className="button-action wide center"
+      onClick={() =>
+        setSignRequest({
+          wallet: 'xumm',
+          offerAmount: offer.amount,
+          offerType: 'buy',
+          request: {
+            TransactionType: 'NFTokenAcceptOffer',
+            NFTokenBuyOffer: offer.offerIndex
+          }
+        })
       }
-    })}
-  >
-    <Image src={xummImg} className='xumm-logo' alt="xaman" height={24} width={24} />
-    {t("button.nft.sell-for-amount", { amount: amountFormat(offer.amount) })}
-  </button>
+    >
+      <Image src={xummImg} className="xumm-logo" alt="xaman" height={24} width={24} />
+      {t('button.nft.sell-for-amount', { amount: amountFormat(offer.amount) })}
+    </button>
+  )
 }
 
 export const acceptNftSellOfferButton = (t, setSignRequest, offer, nftType = 'xls20') => {
   let request = null
   if (nftType === 'xls35') {
     request = {
-      "Amount": offer.amount,
-      "TransactionType": "URITokenBuy",
-      "URITokenID": offer.uriTokenID
+      Amount: offer.amount,
+      TransactionType: 'URITokenBuy',
+      URITokenID: offer.uriTokenID
     }
   } else {
     request = {
-      "TransactionType": "NFTokenAcceptOffer",
-      "NFTokenSellOffer": offer.offerIndex,
+      TransactionType: 'NFTokenAcceptOffer',
+      NFTokenSellOffer: offer.offerIndex
     }
   }
-  return <button
-    className='button-action wide center'
-    onClick={() => setSignRequest({
-      wallet: "xumm",
-      offerAmount: offer.amount,
-      offerType: 'sell',
-      request
-    })}
-  >
-    <Image src={xummImg} className='xumm-logo' alt="xaman" height={24} width={24} />
-    {(offer.amount === "0" || !offer.amount) ? t("button.nft.accept-transfer") : t("button.nft.buy-for-amount", { amount: amountFormat(offer.amount) })}
-  </button>
+  return (
+    <button
+      className="button-action wide center"
+      onClick={() =>
+        setSignRequest({
+          wallet: 'xumm',
+          offerAmount: offer.amount,
+          offerType: 'sell',
+          request
+        })
+      }
+    >
+      <Image src={xummImg} className="xumm-logo" alt="xaman" height={24} width={24} />
+      {offer.amount === '0' || !offer.amount
+        ? t('button.nft.accept-transfer')
+        : t('button.nft.buy-for-amount', { amount: amountFormat(offer.amount) })}
+    </button>
+  )
 }
 
 export const cancelNftOfferButtons = (t, setSignRequest, account, data) => {
@@ -70,79 +81,98 @@ export const cancelNftOfferButtons = (t, setSignRequest, account, data) => {
   }
 
   if (data.sellOffers) {
-    const sellOffers = data.sellOffers.filter(offer => !offer.acceptedAt && !offer.canceledAt && offer.owner === account)
+    const sellOffers = data.sellOffers.filter(
+      (offer) => !offer.acceptedAt && !offer.canceledAt && offer.owner === account
+    )
     return sellOffers.map((offer, i) => {
-      return <div key={i}>
-        {cancelNftOfferButton(t, setSignRequest, account, offer, "sell", data.type, nftId)}
-        <br /><br />
-      </div>
+      return (
+        <div key={i}>
+          {cancelNftOfferButton(t, setSignRequest, account, offer, 'sell', data.type, nftId)}
+          <br />
+          <br />
+        </div>
+      )
     })
   }
   if (data.buyOffers) {
-    const buyOffers = data.buyOffers.filter(offer => !offer.acceptedAt && !offer.canceledAt && offer.owner === account)
+    const buyOffers = data.buyOffers.filter(
+      (offer) => !offer.acceptedAt && !offer.canceledAt && offer.owner === account
+    )
     return buyOffers.map((offer, i) => {
-      return <div key={i}>
-        {cancelNftOfferButton(t, setSignRequest, account, offer, "buy", data.type, nftId)}
-        <br /><br />
-      </div>
+      return (
+        <div key={i}>
+          {cancelNftOfferButton(t, setSignRequest, account, offer, 'buy', data.type, nftId)}
+          <br />
+          <br />
+        </div>
+      )
     })
   }
 }
 
-export const cancelNftOfferButton = (t, setSignRequest, account, offer, type = "buy", nftType = 'xls20', nftId) => {
+export const cancelNftOfferButton = (t, setSignRequest, account, offer, type = 'buy', nftType = 'xls20', nftId) => {
   let request = null
   if (nftType === 'xls35') {
     request = {
-      "Account": account,
-      "TransactionType": "URITokenCancelSellOffer",
-      "URITokenID": nftId
+      Account: account,
+      TransactionType: 'URITokenCancelSellOffer',
+      URITokenID: nftId
     }
   } else {
     request = {
-      "TransactionType": "NFTokenCancelOffer",
-      "Account": account,
-      "NFTokenOffers": [offer.offerIndex]
+      TransactionType: 'NFTokenCancelOffer',
+      Account: account,
+      NFTokenOffers: [offer.offerIndex]
     }
   }
 
-  return <button
-    className='button-action wide center'
-    onClick={() => setSignRequest({
-      wallet: "xumm",
-      request
-    })}
-  >
-    <Image src={xummImg} className='xumm-logo' alt="xaman" height={24} width={24} />
-    {offer.amount === "0" ? t("button.nft.cancel-transfer")
-      :
-      <>
-        {type === "sell" ? t("button.nft.cancel-sell-offer-for", { amount: amountFormat(offer.amount) }) : t("button.nft.cancel-buy-offer-for", { amount: amountFormat(offer.amount) })}
-      </>
-    }
-  </button>
+  return (
+    <button
+      className="button-action wide center"
+      onClick={() =>
+        setSignRequest({
+          wallet: 'xumm',
+          request
+        })
+      }
+    >
+      <Image src={xummImg} className="xumm-logo" alt="xaman" height={24} width={24} />
+      {offer.amount === '0' ? (
+        t('button.nft.cancel-transfer')
+      ) : (
+        <>
+          {type === 'sell'
+            ? t('button.nft.cancel-sell-offer-for', { amount: amountFormat(offer.amount) })
+            : t('button.nft.cancel-buy-offer-for', { amount: amountFormat(offer.amount) })}
+        </>
+      )}
+    </button>
+  )
 }
 
 //table
 export const trStatus = (t, data) => {
   if (data.validationErrors && data.validationErrors.length > 0) {
-    return <tr>
-      <td>{t("table.status")}</td>
-      <td>
-        {data.validationErrors.map((error, i) =>
-          <span key={i} className='red'>
-            {t("table.text-status." + error)}
-          </span>
-        )}
-      </td>
-    </tr>
+    return (
+      <tr>
+        <td>{t('table.status')}</td>
+        <td>
+          {data.validationErrors.map((error, i) => (
+            <span key={i} className="red">
+              {t('table.text-status.' + error)}
+            </span>
+          ))}
+        </td>
+      </tr>
+    )
   }
   if (data.canceledAt || data.acceptedAt) {
-    return <tr>
-      <td>{t("table.status")}</td>
-      <td className='red'>
-        {data.acceptedAt ? t("table.accepted") : t("table.canceled")}
-      </td>
-    </tr>
+    return (
+      <tr>
+        <td>{t('table.status')}</td>
+        <td className="red">{data.acceptedAt ? t('table.accepted') : t('table.canceled')}</td>
+      </tr>
+    )
   }
 }
 
@@ -157,7 +187,7 @@ export const trWithFlags = (t, flags) => {
   */
   let flagList = ''
   let count = 0
-  let name = t("table.flags")
+  let name = t('table.flags')
 
   for (let key in flags) {
     if (flags[key]) {
@@ -172,25 +202,27 @@ export const trWithFlags = (t, flags) => {
   flagList = flagList.slice(0, -2) // remove the last comma
 
   if (count === 1) {
-    name = t("table.flag")
+    name = t('table.flag')
   }
   if (count === 0) {
-    flagList = t("table.text.unspecified")
+    flagList = t('table.text.unspecified')
   }
-  return <tr>
-    <td>{name}</td>
-    <td>{flagList}</td>
-  </tr>
+  return (
+    <tr>
+      <td>{name}</td>
+      <td>{flagList}</td>
+    </tr>
+  )
 }
 
-export const trWithAccount = (data, valueName, tableName, url = "/explorer/", i = 0) => {
+export const trWithAccount = (data, valueName, tableName, url = '/explorer/', i = 0) => {
   if (!data || !data[valueName]) return null
   let link = <a href={url + data[valueName]}>{data[valueName]}</a>
-  if (url !== "/explorer/") {
+  if (url !== '/explorer/') {
     link = <Link href={url + data[valueName]}>{data[valueName]}</Link>
   }
   let userOrServicelink = userOrServiceLink(data, valueName, { url })
-  return userOrServicelink ?
+  return userOrServicelink ? (
     <React.Fragment key={i}>
       <tr>
         <td>{tableName}</td>
@@ -201,36 +233,37 @@ export const trWithAccount = (data, valueName, tableName, url = "/explorer/", i 
         <td>{link}</td>
       </tr>
     </React.Fragment>
-    :
+  ) : (
     <tr key={i} td={i}>
       <td>{tableName}</td>
       <td>{link}</td>
     </tr>
+  )
 }
 
 export const nftOfferLink = (nftOfferId, chars = 10) => {
-  if (!nftOfferId) return "";
-  return <Link href={"/nft-offer/" + nftOfferId}>{shortHash(nftOfferId, chars)}</Link>
+  if (!nftOfferId) return ''
+  return <Link href={'/nft-offer/' + nftOfferId}>{shortHash(nftOfferId, chars)}</Link>
 }
 
 export const nftIdLink = (nftId, chars = 10) => {
-  if (!nftId) return "";
-  return <Link href={"/nft/" + nftId}>{shortHash(nftId, chars)}</Link>
+  if (!nftId) return ''
+  return <Link href={'/nft/' + nftId}>{shortHash(nftId, chars)}</Link>
 }
 
 export const txIdLink = (txId, chars = 10) => {
-  if (!txId) return "";
-  return <a href={"/explorer/" + txId}>{shortHash(txId, chars)}</a>
+  if (!txId) return ''
+  return <a href={'/explorer/' + txId}>{shortHash(txId, chars)}</a>
 }
 
 export const nftLink = (nft, type, options = {}) => {
-  if (!nft || !type || !nft[type]) return ""
+  if (!nft || !type || !nft[type]) return ''
 
-  let link = "/explorer/"
-  if (type === "issuer") {
-    link = "/nft-explorer?issuer="
-  } else if (type === "owner" || type === "seller" || type === "buyer") {
-    link = "/nfts/"
+  let link = '/explorer/'
+  if (type === 'issuer') {
+    link = '/nft-explorer?issuer='
+  } else if (type === 'owner' || type === 'seller' || type === 'buyer') {
+    link = '/nfts/'
   }
 
   let defaultContent = <LinkIcon />
@@ -244,33 +277,33 @@ export const nftLink = (nft, type, options = {}) => {
   if (nft[type + 'Details']) {
     const { service, username } = nft[type + 'Details']
 
-    if (type === "destination" && nft.valid) {
+    if (type === 'destination' && nft.valid) {
       const url = mpUrl(nft)
       if (url) {
-        return <span>
-          <Trans i18nKey="table.text.see-on">
-            See on <a href={url} target="_blank" rel="noreferrer">
-              <b className={service ? 'green' : (username ? 'blue' : '')}>
-                {{ marketplace: service || username || "" }}
-              </b>
-            </a>
-          </Trans>
-        </span>
+        return (
+          <span>
+            <Trans i18nKey="table.text.see-on">
+              See on{' '}
+              <a href={url} target="_blank" rel="noreferrer">
+                <b className={service ? 'green' : username ? 'blue' : ''}>
+                  {{ marketplace: service || username || '' }}
+                </b>
+              </a>
+            </Trans>
+          </span>
+        )
       }
     }
     const showName = userOrServiceName(nft[type + 'Details'])
-    if (link === "/explorer/") {
-      return <a href={link + (nft[type + 'Details'].username || nft[type])}>
-        {showName ? showName : defaultContent}
-      </a>
+    if (link === '/explorer/') {
+      return <a href={link + (nft[type + 'Details'].username || nft[type])}>{showName ? showName : defaultContent}</a>
     } else {
-      return <Link href={link + (nft[type + 'Details'].username || nft[type])}>
-        {showName ? showName : defaultContent}
-      </Link>
+      return (
+        <Link href={link + (nft[type + 'Details'].username || nft[type])}>{showName ? showName : defaultContent}</Link>
+      )
     }
-
   }
-  if (link === "/explorer/") {
+  if (link === '/explorer/') {
     return <a href={link + nft[type]}>{defaultContent}</a>
   } else {
     return <Link href={link + nft[type]}>{defaultContent}</Link>
@@ -278,125 +311,148 @@ export const nftLink = (nft, type, options = {}) => {
 }
 
 export const nftsExplorerLink = ({ owner, ownerDetails, issuer, issuerDetails, taxon }) => {
-  if (!owner && !issuer) return "";
-  let link = '';
-  const issuerUri = issuerDetails?.username ? issuerDetails.username : issuer;
-  const ownerUri = ownerDetails?.username ? ownerDetails.username : owner;
+  if (!owner && !issuer) return ''
+  let link = ''
+  const issuerUri = issuerDetails?.username ? issuerDetails.username : issuer
+  const ownerUri = ownerDetails?.username ? ownerDetails.username : owner
   if (issuer && owner) {
-    link = "/nft-explorer?issuer=" + issuerUri + '&owner=' + ownerUri;
+    link = '/nft-explorer?issuer=' + issuerUri + '&owner=' + ownerUri
   } else {
     if (issuer) {
-      link = "/nft-explorer?issuer=" + issuerUri;
+      link = '/nft-explorer?issuer=' + issuerUri
     } else if (owner) {
-      link = "/nft-explorer?owner=" + ownerUri;
+      link = '/nft-explorer?owner=' + ownerUri
     }
   }
-  if (taxon === 0 || taxon === "0" || taxon) {
-    link += "&taxon=" + taxon
+  if (taxon === 0 || taxon === '0' || taxon) {
+    link += '&taxon=' + taxon
   }
-  return <Link href={link + '&includeWithoutMediaData=true'}><LinkIcon /></Link>
+  return (
+    <Link href={link + '&includeWithoutMediaData=true'}>
+      <LinkIcon />
+    </Link>
+  )
 }
 
 export const usernameOrAddress = (data, type) => {
-  if (!data || !type || !data[type]) return "";
+  if (!data || !type || !data[type]) return ''
   if (data[type + 'Details']) {
-    const { username } = data[type + 'Details'];
+    const { username } = data[type + 'Details']
     if (username) {
-      return username;
+      return username
     }
   }
-  return data[type];
+  return data[type]
 }
 
 export const userOrServiceLink = (data, type, options = {}) => {
-  if (!data || !type || !data[type]) return ""
+  if (!data || !type || !data[type]) return ''
   if (!options.url) {
-    options.url = "/explorer/"
+    options.url = '/explorer/'
   }
   if (data[type + 'Details']) {
     const { username, service } = data[type + 'Details']
     let link = username ? username : data[type]
     if (service) {
-      let serviceName = service;
+      let serviceName = service
       if (options.short && serviceName.length > 18) {
         serviceName = service.substring(0, 15).trim() + '...'
       }
-      if (options.url === "/explorer/") {
-        return <a href={options.url + link} className='bold green'>{serviceName}</a>
+      if (options.url === '/explorer/') {
+        return (
+          <a href={options.url + link} className="bold green">
+            {serviceName}
+          </a>
+        )
       } else {
-        return <Link href={options.url + link} className='bold green'>{serviceName}</Link>
+        return (
+          <Link href={options.url + link} className="bold green">
+            {serviceName}
+          </Link>
+        )
       }
     }
     if (username) {
-      if (options.url === "/explorer/") {
-        return <a href={options.url + link} className='bold blue'>{username}</a>
+      if (options.url === '/explorer/') {
+        return (
+          <a href={options.url + link} className="bold blue">
+            {username}
+          </a>
+        )
       } else {
-        return <Link href={options.url + link} className='bold blue'>{username}</Link>
+        return (
+          <Link href={options.url + link} className="bold blue">
+            {username}
+          </Link>
+        )
       }
     }
   }
-  return ""
+  return ''
 }
 
 export const addressUsernameOrServiceLink = (data, type, options = {}) => {
   if (!options.url) {
-    options.url = "/explorer/"
+    options.url = '/explorer/'
   }
   if (type === 'broker' && data?.broker === 'no broker') {
     return <b>{options.noBroker}</b>
   }
-  if (userOrServiceLink(data, type) !== "") {
+  if (userOrServiceLink(data, type) !== '') {
     return userOrServiceLink(data, type, options)
   }
   if (options.short) {
-    if (options.url === "/explorer/") {
+    if (options.url === '/explorer/') {
       return <a href={options.url + data[type]}>{shortAddress(data[type])}</a>
     } else {
       return <Link href={options.url + data[type]}>{shortAddress(data[type])}</Link>
     }
   }
-  if (options.url === "/explorer/") {
+  if (options.url === '/explorer/') {
     return <a href={options.url + data[type]}>{data[type]}</a>
   } else {
     return <Link href={options.url + data[type]}>{data[type]}</Link>
   }
 }
 
-export const userOrServiceName = data => {
+export const userOrServiceName = (data) => {
   if (data) {
     const { service, username } = data
     if (service) {
-      return <b className='green'>{service}</b>
+      return <b className="green">{service}</b>
     }
     if (username) {
-      return <b className='blue'>{username}</b>
+      return <b className="blue">{username}</b>
     }
   }
-  return ""
+  return ''
 }
 
 //replace with txIdLink
 export const txIdFormat = (txId) => {
-  txId = txId.toLowerCase();
+  txId = txId.toLowerCase()
   if (window.innerWidth < 800) {
-    return txId.substr(0, 6) + "..." + txId.substr(-6);
+    return txId.substr(0, 6) + '...' + txId.substr(-6)
   }
-  return txId;
+  return txId
 }
 
 export const shortHash = (id, n = 6) => {
-  if (!id) return ""
+  if (!id) return ''
   id = id.toString()
-  return id.substr(0, n) + "..." + id.substr(-n)
+  return id.substr(0, n) + '...' + id.substr(-n)
 }
 
 export const shortAddress = (id, length = 6) => {
-  if (!id) return ""
-  return id.substr(0, length) + "..." + id.substr(-length)
+  if (!id) return ''
+  return id.substr(0, length) + '...' + id.substr(-length)
 }
 
-export const convertedAmount = (nft, convertCurrency) => {
+export const convertedAmount = (nft, convertCurrency, options) => {
   if (nft?.amountInConvertCurrencies && nft.amountInConvertCurrencies?.[convertCurrency]) {
+    if (options?.short) {
+      return shortNiceNumber(nft.amountInConvertCurrencies[convertCurrency], 2, 3, convertCurrency)
+    }
     return niceNumber(nft.amountInConvertCurrencies[convertCurrency], 2, convertCurrency)
   }
   return null
@@ -411,38 +467,32 @@ export const persentFormat = (small, big) => {
   }
   small = Number(small)
   big = Number(big)
-  if (big === 0) return "0%"
-  return "(" + Math.floor((small * 100 / big) * 100) / 100 + '%)'
+  if (big === 0) return '0%'
+  return '(' + Math.floor(((small * 100) / big) * 100) / 100 + '%)'
 }
 
 export const trAmountWithGateway = ({ amount, name }) => {
-  if (!amount && amount !== 0) return ""
-  return <tr>
-    <td>{name}</td>
-    <td>
-      {amountFormatNode(amount)}
-      {amount?.issuer &&
-        <>
-          {" "}
-          ({addressUsernameOrServiceLink(amount, 'issuer', { short: true })})
-        </>
-      }
-      {amount?.counterparty &&
-        <>
-          {" "}
-          ({addressUsernameOrServiceLink(amount, 'counterparty', { short: true })})
-        </>
-      }
-    </td>
-  </tr>
+  if (!amount && amount !== 0) return ''
+  return (
+    <tr>
+      <td>{name}</td>
+      <td>
+        {amountFormatNode(amount)}
+        {amount?.issuer && <> ({addressUsernameOrServiceLink(amount, 'issuer', { short: true })})</>}
+        {amount?.counterparty && <> ({addressUsernameOrServiceLink(amount, 'counterparty', { short: true })})</>}
+      </td>
+    </tr>
+  )
 }
 
 export const amountFormat = (amount, options = {}) => {
-  if (!amount && amount !== "0" && amount !== 0) { return "" }
+  if (!amount && amount !== '0' && amount !== 0) {
+    return ''
+  }
   const { value, currency, valuePrefix, issuer, type } = amountParced(amount)
 
   if (options.precise) {
-    return value + " " + valuePrefix + " " + currency
+    return value + ' ' + valuePrefix + ' ' + currency
   }
 
   let showValue = value
@@ -463,36 +513,36 @@ export const amountFormat = (amount, options = {}) => {
 
   //add issued by (issuerDetails.service / username)
   if (type !== nativeCurrency && options.tooltip) {
-    return <span suppressHydrationWarning>
-      {showValue} {valuePrefix} {" "}
-      <span className='tooltip'>
-        <a href={"/explorer/" + issuer}>{currency}</a>
-        <span className={'tooltiptext ' + options.tooltip}>
-          {addressUsernameOrServiceLink(amount, 'issuer', { short: true })}
+    return (
+      <span suppressHydrationWarning>
+        {showValue} {valuePrefix}{' '}
+        <span className="tooltip">
+          <a href={'/explorer/' + issuer}>{currency}</a>
+          <span className={'tooltiptext ' + options.tooltip}>
+            {addressUsernameOrServiceLink(amount, 'issuer', { short: true })}
+          </span>
         </span>
       </span>
-    </span>
+    )
   } else {
     //type: ['IOU', 'IOU demurraging', 'NFT']
     let textCurrency = currency
     if (options.noSpace) {
       textCurrency = textCurrency?.trim()
     }
-    return showValue + " " + valuePrefix + " " + textCurrency
+    return showValue + ' ' + valuePrefix + ' ' + textCurrency
   }
 }
 
 export const amountFormatNode = (amount, options) => {
-  return <span suppressHydrationWarning>
-    {amountFormat(amount, options)}
-  </span>
+  return <span suppressHydrationWarning>{amountFormat(amount, options)}</span>
 }
 
-export const lpTokenName = data => {
-  if (!data) return ""
+export const lpTokenName = (data) => {
+  if (!data) return ''
 
-  let firstCurrency = ""
-  let secondCurrency = ""
+  let firstCurrency = ''
+  let secondCurrency = ''
   if (data.amount) {
     if (data.amount.currency) {
       firstCurrency = niceCurrency(data.amount.currency)
@@ -504,17 +554,17 @@ export const lpTokenName = data => {
     } else {
       secondCurrency = nativeCurrency
     }
-    return "LP " + firstCurrency + '/' + secondCurrency
+    return 'LP ' + firstCurrency + '/' + secondCurrency
   }
 }
 
-export const niceCurrency = currency => {
-  if (!currency) return ""
+export const niceCurrency = (currency) => {
+  if (!currency) return ''
   let firstTwoNumbers = currency.substr(0, 2)
   if (currency.length > 3) {
     if (firstTwoNumbers === '01') {
       // deprecated demurraging/interest-bearing
-      type = 'IOU demurraging';
+      type = 'IOU demurraging'
       let currencyText = Buffer.from(currency.substr(2, 8), 'hex')
       currencyText = currencyText.substr(0, 3)
       let profit = currency.substr(16, 16)
@@ -535,13 +585,13 @@ export const niceCurrency = currency => {
           }
           $output .= ' (' . $plus . $realprofit . '%pa)';
         */
-        valuePrefix = "(??%pa)"
+        valuePrefix = '(??%pa)'
       }
-      currency = currencyText;
+      currency = currencyText
     } else if (firstTwoNumbers === '02') {
       currency = Buffer.from(currency.substring(16), 'hex')
     } else if (firstTwoNumbers === '03') {
-      currency = "LP token"
+      currency = 'LP token'
     } else {
       currency = Buffer.from(currency, 'hex')
     }
@@ -549,15 +599,14 @@ export const niceCurrency = currency => {
   return currency
 }
 
-
-const amountParced = amount => {
+const amountParced = (amount) => {
   if (!amount && amount !== 0) {
     return false
   }
 
   const xls14NftValue = (value) => {
     value = value.toString()
-    if (value.includes("e-")) {
+    if (value.includes('e-')) {
       let power = Number(value.slice(-2))
       const number = value.slice(0, -4)
       const numberLength = number.length
@@ -597,10 +646,10 @@ const amountParced = amount => {
       type = 'NFT'
       if (realXls14) {
         //real xls-14
-        valuePrefix = "NFT (XLS-14)"
+        valuePrefix = 'NFT (XLS-14)'
       } else {
         //a parody of xls-14
-        valuePrefix = "NFT (XLS-14?)"
+        valuePrefix = 'NFT (XLS-14?)'
       }
       value = xls14NftVal
     }
@@ -615,11 +664,11 @@ const amountParced = amount => {
   }
 
   if (currency?.toString().toUpperCase() === nativeCurrency && amount.issuer) {
-    currency = "Fake" + nativeCurrency
+    currency = 'Fake' + nativeCurrency
   }
 
   // curency + " " - otherwise it is in the hex format
-  currency = stripText(currency + " ")
+  currency = stripText(currency + ' ')
 
   return {
     type,
@@ -630,14 +679,15 @@ const amountParced = amount => {
   }
 }
 
-export const capitalize = word => {
+export const capitalize = (word) => {
   return word.charAt(0).toUpperCase() + word.slice(1)
 }
 
-export const timeFromNow = timestamp => {
-  return <span suppressHydrationWarning>
-    {moment(timestamp * 1000, "unix").fromNow()}
-  </span>
+export const timeFromNow = (timestamp) => {
+  const { i18n } = useTranslation()
+  let lang = i18n.language.slice(0, 2)
+  moment.locale(lang)
+  return <span suppressHydrationWarning>{moment(timestamp * 1000, 'unix').fromNow()}</span>
 }
 
 export const fullDateAndTime = (timestamp, type = null, options) => {
@@ -649,26 +699,23 @@ export const fullDateAndTime = (timestamp, type = null, options) => {
     if (type === 'ripple') {
       timestamp += 946684800 //946684800 is the difference between Unix and Ripple timestamps
     }
-
     timestamp = timestamp * 1000
   }
 
   let dateAndTime = new Date(timestamp).toLocaleString()
   if (!options?.asText) {
-    dateAndTime = <span suppressHydrationWarning>
-      {dateAndTime}
-    </span>
+    dateAndTime = <span suppressHydrationWarning>{dateAndTime}</span>
   }
 
   if (type === 'expiration') {
-    return new Date(timestamp) < new Date() ? <span className='orange'>{dateAndTime}</span> : dateAndTime
+    return new Date(timestamp) < new Date() ? <span className="orange">{dateAndTime}</span> : dateAndTime
   } else {
     return dateAndTime
   }
 }
 
 export const timeFormat = (timestamp) => {
-  return new Date(timestamp * 1000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
+  return new Date(timestamp * 1000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })
 }
 
 export const dateFormat = (timestamp, stringParams = {}, params = {}) => {
@@ -682,16 +729,18 @@ export const dateFormat = (timestamp, stringParams = {}, params = {}) => {
       return new Date(timestamp).toLocaleDateString()
     }
   }
-  return ""
+  return ''
 }
 
 export const timeOrDate = (timestamp) => {
   //if today - return time, otherwise date
-  return (new Date(timestamp * 1000)).setHours(0, 0, 0, 0) === (new Date()).setHours(0, 0, 0, 0) ? timeFormat(timestamp) : dateFormat(timestamp);
+  return new Date(timestamp * 1000).setHours(0, 0, 0, 0) === new Date().setHours(0, 0, 0, 0)
+    ? timeFormat(timestamp)
+    : dateFormat(timestamp)
 }
 
 export const expirationExpired = (t, timestamp) => {
-  return new Date(timestamp * 1000) < new Date() ? t("table.expired") : t("table.expiration");
+  return new Date(timestamp * 1000) < new Date() ? t('table.expired') : t('table.expiration')
 }
 
 export const duration = (t, seconds, options) => {
@@ -705,15 +754,28 @@ export const duration = (t, seconds, options) => {
     seconds: s
     ms:      S
   */
-  if (!seconds) return ""
-  return moment.duration(seconds, "seconds").format("d[" + t("units.days-short") + "] h[" + t("units.hours-short") + "] m[" + t("units.minutes-short") + "]" + (options?.seconds ? (" s[" + t("units.seconds-short") + "]") : ""), { trim: "both" })
+  if (!seconds) return ''
+  return moment
+    .duration(seconds, 'seconds')
+    .format(
+      'd[' +
+        t('units.days-short') +
+        '] h[' +
+        t('units.hours-short') +
+        '] m[' +
+        t('units.minutes-short') +
+        ']' +
+        (options?.seconds ? ' s[' + t('units.seconds-short') + ']' : ''),
+      { trim: 'both' }
+    )
 }
 
 //need to make dynamic fraction digits
 export const niceNumber = (n, fractionDigits = 0, currency = null) => {
   if (typeof n === 'string') {
-    if (n.includes('x')) { //in case of placeholders xxx
-      return n;
+    if (n.includes('x')) {
+      //in case of placeholders xxx
+      return n
     } else {
       n = Number(n)
     }
@@ -724,7 +786,7 @@ export const niceNumber = (n, fractionDigits = 0, currency = null) => {
       minimumFractionDigits: fractionDigits
     }
     if (currency) {
-      options.style = "currency"
+      options.style = 'currency'
       options.currency = currency.toUpperCase()
     }
     return n.toLocaleString(undefined, options)
@@ -733,94 +795,92 @@ export const niceNumber = (n, fractionDigits = 0, currency = null) => {
   }
 }
 
-export const fullNiceNumber = n => {
+export const fullNiceNumber = (n) => {
   if (typeof n === 'string') {
-    if (n.includes('x')) { //in case of placeholders xxx
+    if (n.includes('x')) {
+      //in case of placeholders xxx
       return n
     } else {
       n = Number(n)
     }
   }
   if (n) {
-    return <span suppressHydrationWarning>
-      {n.toLocaleString(undefined, { maximumFractionDigits: 15 })}
-    </span>
+    return <span suppressHydrationWarning>{n.toLocaleString(undefined, { maximumFractionDigits: 15 })}</span>
   } else {
     return n
   }
 }
 
 export const shortNiceNumber = (n, smallNumberFractionDigits = 2, largeNumberFractionDigits = 3, currency = null) => {
-  if (n !== 0 && !n) return null;
-  n = Number(n);
-  let beforeNumber = '';
+  if (n !== 0 && !n) return null
+  n = Number(n)
+  let beforeNumber = ''
   if (n < 0) {
-    beforeNumber = '-';
-    n = -1 * n;
+    beforeNumber = '-'
+    n = -1 * n
   }
   if (smallNumberFractionDigits > 2) {
     if (n > 99.99) {
-      smallNumberFractionDigits = 2;
+      smallNumberFractionDigits = 2
     } else if (n > 9.99) {
-      smallNumberFractionDigits = 3;
+      smallNumberFractionDigits = 3
     }
   }
-  let output = '';
+  let output = ''
   if (n > 999999999999) {
-    output = niceNumber(n / 1000000000000, largeNumberFractionDigits, currency) + 'T';
+    output = niceNumber(n / 1000000000000, largeNumberFractionDigits, currency) + 'T'
   } else if (n > 999999999) {
-    output = niceNumber(n / 1000000000, largeNumberFractionDigits, currency) + 'B';
+    output = niceNumber(n / 1000000000, largeNumberFractionDigits, currency) + 'B'
   } else if (n > 999999) {
-    output = niceNumber(n / 1000000, largeNumberFractionDigits, currency) + 'M';
+    output = niceNumber(n / 1000000, largeNumberFractionDigits, currency) + 'M'
   } else if (n > 99999) {
-    output = niceNumber(Math.floor(n), 0, currency);
+    output = niceNumber(Math.floor(n), 0, currency)
   } else if (n === 0) {
-    output = 0;
+    output = 0
   } else {
-    const pow = Math.pow(10, smallNumberFractionDigits);
-    output = niceNumber(Math.floor(n * pow) / pow, smallNumberFractionDigits, currency);
+    const pow = Math.pow(10, smallNumberFractionDigits)
+    output = niceNumber(Math.floor(n * pow) / pow, smallNumberFractionDigits, currency)
   }
-  return beforeNumber + output;
+  return beforeNumber + output
 }
 
 const syntaxHighlight = (json) => {
-  if (!json) return "";
-  json = json
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;");
+  if (!json) return ''
+  json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
   return json.replace(
     /("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+-]?\d+)?)/g,
     function (match) {
-      var cls = "number";
+      var cls = 'number'
       if (/^"/.test(match)) {
         if (/:$/.test(match)) {
-          cls = "key";
+          cls = 'key'
         } else {
-          cls = "string";
+          cls = 'string'
         }
       } else if (/true|false/.test(match)) {
-        cls = "boolean";
+        cls = 'boolean'
       } else if (/null/.test(match)) {
-        cls = "null";
+        cls = 'null'
       }
-      return '<span class="' + cls + '">' + match + "</span>";
+      return '<span class="' + cls + '">' + match + '</span>'
     }
-  );
+  )
 }
 
-export const codeHighlight = json => {
+export const codeHighlight = (json) => {
   if (typeof json === 'string') {
     json = JSON.parse(json)
   }
-  return <pre
-    dangerouslySetInnerHTML={{
-      __html: syntaxHighlight(JSON.stringify(json, undefined, 4))
-    }}
-  />
+  return (
+    <pre
+      dangerouslySetInnerHTML={{
+        __html: syntaxHighlight(JSON.stringify(json, undefined, 4))
+      }}
+    />
+  )
 }
 
-export const showAmmPercents = x => {
-  x = x ? (x / 1000) : "0"
-  return x + "%"
+export const showAmmPercents = (x) => {
+  x = x ? x / 1000 : '0'
+  return x + '%'
 }

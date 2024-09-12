@@ -10,23 +10,24 @@ import { getIsSsrMobile } from '../utils/mobile'
 import SEO from '../components/SEO'
 import CopyButton from '../components/UI/CopyButton'
 import Link from 'next/link'
+import NetworkPagesTab from '../components/Tabs/NetworkPagesTabs'
 
-import LinkIcon from "../public/images/link.svg"
+import LinkIcon from '../public/images/link.svg'
 
 export const getServerSideProps = async (context) => {
   const { locale } = context
   return {
     props: {
       isSsrMobile: getIsSsrMobile(context),
-      ...(await serverSideTranslations(locale, ['common', 'amendments'])),
+      ...(await serverSideTranslations(locale, ['common', 'amendments']))
     }
   }
 }
 
-const amendmentLink = a => {
+const amendmentLink = (a) => {
   if (a.name) {
     if (a.introduced) {
-      return <a href={"https://xrpl.org/known-amendments.html#" + a.name.toLowerCase()}>{a.name}</a>
+      return <a href={'https://xrpl.org/known-amendments.html#' + a.name.toLowerCase()}>{a.name}</a>
     }
     return a.name
   }
@@ -84,7 +85,7 @@ export default function Amendment() {
 
       let voting = [] // the list of amendments that are voting
 
-      Object.keys(features).forEach(key => {
+      Object.keys(features).forEach((key) => {
         if (!features[key].enabled && features[key].vetoed !== 'Obsolete') {
           voting.push(key)
           setValidations(features[key].validations)
@@ -132,7 +133,7 @@ export default function Amendment() {
       }
 
       //with more votes on top
-      newArray.sort((a, b) => (a.count > b.count) ? -1 : 1)
+      newArray.sort((a, b) => (a.count > b.count ? -1 : 1))
 
       setNotAvailableAmendments(notAvailableArray)
       setObsoleteAmendments(obsoleteArray)
@@ -157,173 +158,187 @@ export default function Amendment() {
   */
 
   useEffect(() => {
-    checkApi();
+    checkApi()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const showHash = (hash) => {
-    return windowWidth > 1140 ? <>{hash} </> : (windowWidth > 800 ? <>{shortHash(hash)} </> : "")
+    return windowWidth > 1140 ? <>{hash} </> : windowWidth > 800 ? <>{shortHash(hash)} </> : ''
   }
 
   const activationDays = xahauNetwork ? 5 : 14
 
-  return <>
-    <SEO title={t("menu.network.amendments")} />
-    <div className="content-text">
-      {majorityAmendments?.length > 0 &&
-        <>
-          <h1 className="center">{t("soon", { ns: 'amendments' })}</h1>
-          <table className="table-large">
-            <thead>
-              <tr>
-                <th className='center'>{t("table.index")}</th>
-                <th>{t("table.name")}</th>
-                <th>{t("majority", { ns: 'amendments' })}</th>
-                <th>{t("eta", { ns: 'amendments' })}</th>
-                <th className='right'>{threshold} / {validations}</th>
-                <th className='right'>{t("table.version")}</th>
-                <th className='right'>{t("table.hash")}</th>
-              </tr>
-            </thead>
-            <tbody>
-              {majorityAmendments.map((a, i) =>
-                <tr key={a.amendment}>
-                  <td className='center'>{i + 1}</td>
-                  <td className="brake">{amendmentLink(a)}</td>
-                  <td>{fullDateAndTime(a.majority)}</td>
-                  <td>{fullDateAndTime(a.majority + activationDays * 86400 + 903)}</td>
-                  <td className='right'>
-                    {a.count > threshold ? <b className='green'>{a.count}</b> : a.count}
-                    <Link href={"/validators?amendment=" + a.name}> <LinkIcon /></Link>
-                  </td>
-                  <td className='right'>{a.introduced}</td>
-                  <td className='right'>
-                    {showHash(a.amendment)}
-                    <CopyButton text={a.amendment} />
-                  </td>
+  return (
+    <>
+      <SEO title={t('menu.network.amendments')} />
+      <div className="content-text">
+        <h1 className="center">{t('menu.network.amendments')}</h1>
+        <NetworkPagesTab tab="amendments" />
+        {majorityAmendments?.length > 0 && (
+          <>
+            <h2 className="center">{t('soon', { ns: 'amendments' })}</h2>
+            <table className="table-large">
+              <thead>
+                <tr>
+                  <th className="center">{t('table.index')}</th>
+                  <th>{t('table.name')}</th>
+                  <th>{t('majority', { ns: 'amendments' })}</th>
+                  <th>{t('eta', { ns: 'amendments' })}</th>
+                  <th className="right">
+                    {threshold} / {validations}
+                  </th>
+                  <th className="right">{t('table.version')}</th>
+                  <th className="right">{t('table.hash')}</th>
                 </tr>
-              )}
-            </tbody>
-          </table>
-        </>
-      }
-      {loadedFeatures && newAmendments?.length > 0 &&
-        <>
-          <h1 className="center">{t("new", { ns: 'amendments' })}</h1>
-          <table className="table-large">
-            <thead>
-              <tr>
-                <th className='center'>{t("table.index")}</th>
-                <th>{t("table.name")}</th>
-                <th className='right'>{threshold} / {validations}</th>
-                <th className='right'>{t("table.version")}</th>
-                <th className='right'>{t("table.hash")}</th>
-              </tr>
-            </thead>
-            <tbody>
-              {newAmendments.map((a, i) =>
-                <tr key={a.amendment}>
-                  <td className='center'>{i + 1}</td>
-                  <td>{amendmentLink(a)}</td>
-                  <td className='right'>
-                    {a.count > threshold ? <b className='green'>{a.count}</b> : a.count}
-                    <Link href={"/validators?amendment=" + a.name}> <LinkIcon /></Link>
-                  </td>
-                  <td className='right'>{a.introduced}</td>
-                  <td className='right'>
-                    {showHash(a.amendment)}
-                    <CopyButton text={a.amendment} />
-                  </td>
+              </thead>
+              <tbody>
+                {majorityAmendments.map((a, i) => (
+                  <tr key={a.amendment}>
+                    <td className="center">{i + 1}</td>
+                    <td className="brake">{amendmentLink(a)}</td>
+                    <td>{fullDateAndTime(a.majority)}</td>
+                    <td>{fullDateAndTime(a.majority + activationDays * 86400 + 903)}</td>
+                    <td className="right">
+                      {a.count > threshold ? <b className="green">{a.count}</b> : a.count}
+                      <Link href={'/validators?amendment=' + a.name}>
+                        {' '}
+                        <LinkIcon />
+                      </Link>
+                    </td>
+                    <td className="right">{a.introduced}</td>
+                    <td className="right">
+                      {showHash(a.amendment)}
+                      <CopyButton text={a.amendment} />
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </>
+        )}
+        {loadedFeatures && newAmendments?.length > 0 && (
+          <>
+            <h2 className="center">{t('new', { ns: 'amendments' })}</h2>
+            <table className="table-large">
+              <thead>
+                <tr>
+                  <th className="center">{t('table.index')}</th>
+                  <th>{t('table.name')}</th>
+                  <th className="right">
+                    {threshold} / {validations}
+                  </th>
+                  <th className="right">{t('table.version')}</th>
+                  <th className="right">{t('table.hash')}</th>
                 </tr>
-              )}
-            </tbody>
-          </table>
-        </>
-      }
-      {enabledAmendments?.length > 0 &&
-        <>
-          <h1 className="center">{t("enabled", { ns: 'amendments' })}</h1>
-          <table className="table-large">
-            <thead>
-              <tr>
-                <th className='center'>{t("table.index")}</th>
-                <th>{t("table.name")}</th>
-                <th className='right'>{t("table.version")}</th>
-                <th className='right'>{t("table.hash")}</th>
-              </tr>
-            </thead>
-            <tbody>
-              {enabledAmendments.map((a, i) =>
-                <tr key={a.amendment}>
-                  <td className='center'>{i + 1}</td>
-                  <td>{amendmentLink(a)}</td>
-                  <td className='right'>{a.introduced}</td>
-                  <td className='right'>
-                    {showHash(a.amendment)}
-                    <CopyButton text={a.amendment} />
-                  </td>
+              </thead>
+              <tbody>
+                {newAmendments.map((a, i) => (
+                  <tr key={a.amendment}>
+                    <td className="center">{i + 1}</td>
+                    <td>{amendmentLink(a)}</td>
+                    <td className="right">
+                      {a.count > threshold ? <b className="green">{a.count}</b> : a.count}
+                      <Link href={'/validators?amendment=' + a.name}>
+                        {' '}
+                        <LinkIcon />
+                      </Link>
+                    </td>
+                    <td className="right">{a.introduced}</td>
+                    <td className="right">
+                      {showHash(a.amendment)}
+                      <CopyButton text={a.amendment} />
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </>
+        )}
+        {enabledAmendments?.length > 0 && (
+          <>
+            <h2 className="center">{t('enabled', { ns: 'amendments' })}</h2>
+            <table className="table-large">
+              <thead>
+                <tr>
+                  <th className="center">{t('table.index')}</th>
+                  <th>{t('table.name')}</th>
+                  <th className="right">{t('table.version')}</th>
+                  <th className="right">{t('table.hash')}</th>
                 </tr>
-              )}
-            </tbody>
-          </table>
-        </>
-      }
+              </thead>
+              <tbody>
+                {enabledAmendments.map((a, i) => (
+                  <tr key={a.amendment}>
+                    <td className="center">{i + 1}</td>
+                    <td>{amendmentLink(a)}</td>
+                    <td className="right">{a.introduced}</td>
+                    <td className="right">
+                      {showHash(a.amendment)}
+                      <CopyButton text={a.amendment} />
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </>
+        )}
 
-      {obsoleteAmendments?.length > 0 &&
-        <>
-          <h1 className="center">{t("obsolete", { ns: 'amendments' })}</h1>
-          <table className="table-large">
-            <thead>
-              <tr>
-                <th className='center'>{t("table.index")}</th>
-                <th>{t("table.name")}</th>
-                <th className='right'>{t("table.version")}</th>
-                <th className='right'>{t("table.hash")}</th>
-              </tr>
-            </thead>
-            <tbody>
-              {obsoleteAmendments.map((a, i) =>
-                <tr key={a.amendment}>
-                  <td className='center'>{i + 1}</td>
-                  <td>{amendmentLink(a)}</td>
-                  <td className='right'>{a.introduced}</td>
-                  <td className='right'>
-                    {showHash(a.amendment)}
-                    <CopyButton text={a.amendment} />
-                  </td>
+        {obsoleteAmendments?.length > 0 && (
+          <>
+            <h2 className="center">{t('obsolete', { ns: 'amendments' })}</h2>
+            <table className="table-large">
+              <thead>
+                <tr>
+                  <th className="center">{t('table.index')}</th>
+                  <th>{t('table.name')}</th>
+                  <th className="right">{t('table.version')}</th>
+                  <th className="right">{t('table.hash')}</th>
                 </tr>
-              )}
-            </tbody>
-          </table>
-        </>
-      }
+              </thead>
+              <tbody>
+                {obsoleteAmendments.map((a, i) => (
+                  <tr key={a.amendment}>
+                    <td className="center">{i + 1}</td>
+                    <td>{amendmentLink(a)}</td>
+                    <td className="right">{a.introduced}</td>
+                    <td className="right">
+                      {showHash(a.amendment)}
+                      <CopyButton text={a.amendment} />
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </>
+        )}
 
-      {loadedFeatures && notAvailableAmendments?.length > 0 &&
-        <>
-          <h1 className="center">{t("not-available", { ns: 'amendments' })}</h1>
-          <table className="table-large">
-            <thead>
-              <tr>
-                <th className='center'>{t("table.index")}</th>
-                <th>{t("table.name")}</th>
-                <th className='right'>{t("table.hash")}</th>
-              </tr>
-            </thead>
-            <tbody>
-              {notAvailableAmendments.map((a, i) =>
-                <tr key={a.amendment}>
-                  <td className='center'>{i + 1}</td>
-                  <td className="brake">{amendmentLink(a)}</td>
-                  <td className='right'>
-                    {showHash(a.amendment)}
-                    <CopyButton text={a.amendment} />
-                  </td>
+        {loadedFeatures && notAvailableAmendments?.length > 0 && (
+          <>
+            <h2 className="center">{t('not-available', { ns: 'amendments' })}</h2>
+            <table className="table-large">
+              <thead>
+                <tr>
+                  <th className="center">{t('table.index')}</th>
+                  <th>{t('table.name')}</th>
+                  <th className="right">{t('table.hash')}</th>
                 </tr>
-              )}
-            </tbody>
-          </table>
-        </>
-      }
-    </div>
-  </>
+              </thead>
+              <tbody>
+                {notAvailableAmendments.map((a, i) => (
+                  <tr key={a.amendment}>
+                    <td className="center">{i + 1}</td>
+                    <td className="brake">{amendmentLink(a)}</td>
+                    <td className="right">
+                      {showHash(a.amendment)}
+                      <CopyButton text={a.amendment} />
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </>
+        )}
+      </div>
+    </>
+  )
 }

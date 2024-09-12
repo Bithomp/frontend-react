@@ -31,7 +31,9 @@
       "distribution": "Verteilung (Halter)",
       "statistics": "Live Statistiken",
       "nfts": "NFTs eines Kontos",
-      "offers": "Angebote"
+      "offers": "Angebote",
+      "marketplaces": "Marktplätze",
+      "collections": "Kollektionen"
     },
     "network": {
       "blockchain": "Blockchain",
@@ -122,7 +124,7 @@
       "nft-accept-buy-offer-header": "NFT verkaufen",
       "nft-create-sell-offer-header": "Liste zum Verkauf",
       "nft-create-buy-offer-header": "Kaufangebot erstellen",
-      "nft-accept-offer": "Ich anerkenne, dass Bithomp mir einen Zugriff auf einen dezentralen Marktplatz gewährt und dabei die Echtheit und Legitimität keiner NFTs garantiert werden können. Ich bestätige, dass ich die <1>AGB</1> gelesen habe und ich stimme allen Bedingungen zum Kauf, Verkauf oder Nutzung von NFTs auf Bithomp zu.",
+      "nft-accept-offer": "Ich anerkenne, dass {{webSiteName}} mir einen Zugriff auf einen dezentralen Marktplatz gewährt und dabei die Echtheit und Legitimität keiner NFTs garantiert werden können. Ich bestätige, dass ich die <4>AGB</4> gelesen habe und ich stimme allen Bedingungen zum Kauf, Verkauf oder Nutzung von NFTs auf {{webSiteName}} zu.",
       "nft-create-sell-offer": "Ich verstehe, dass der NFT sofort gekauft werden kann, sobald mein Angebot signiert ist.",
       "nft-burn-header": "NFT vernichten",
       "nft-burn": "Ich verstehe, dass NFT dauerhaft vernichtet wird, was bedeutet, dass es nicht mehr besessen, übertragen, gekauft oder verkauft werden kann. Diese Aktion kann nicht rückgängig gemacht werden."
@@ -313,6 +315,7 @@
   },
   "form": {
     "error": {
+      "destination-tag-invalid": "Ungültiger Destination Tag",
       "price-empty": "Bitte geben Sie einen Betrag ein.",
       "address-empty": "Bitte geben Sie eine Adresse ein.",
       "address-invalid": "Bitte geben Sie eine gültige Adresse ein.",
@@ -324,6 +327,9 @@
       "email-invalid": "Bitte geben Sie eine gültige E-Mail Adresse einn.",
       "password-empty": "Bitte geben Sie Ihr Passwort ein.",
       "password-invalid": "Bitte geben Sie ein gültiges Passwort ein."
+    },
+    "placeholder": {
+      "destination-tag": "Enter the Destination tag (if it is required)"
     }
   },
   "error": {
@@ -377,6 +383,7 @@
     "day": "Für die letzten 24 Stunden"
   },
   "table": {
+    "destination-tag": "DestinationTag",
     "uri": "URI",
     "mints": "Mints",
     "view": "View",
@@ -429,6 +436,7 @@
     "external-url": "Externe URL",
     "description": "Beschreibung",
     "collection": "Kollektion",
+    "collection-family": "Kollektion familie",
     "transfer-fee": "Abgabe",
     "flag": "Markierung",
     "flags": "Markierungen",
@@ -508,6 +516,8 @@
     "issuers": "Emittenten",
     "marketplaces": "Marktplätze",
     "brokers": "Vermittler",
+    "charts:": "Diagramme",
+    "collections": "Kollektionen",
     "image": "Bild",
     "video": "Video",
     "audio": "Audio",
@@ -606,7 +616,6 @@
     "help-us": "Helfen Sie uns bei unserer Mission, den benutzerfreundlichsten XRPL Explorer zu entwickeln.",
     "it-helps": "Ihre Spende wird uns helfen, mehr Kapazitäten hinzuzufügen und Bithomp weiterzuentwickeln.",
     "address": "Unsere XRPL Adresse für Spenden",
-    "dt": "DestinationTag",
     "donate-with-xaman": "Spenden mit Xaman"
   },
   "sponsored": {

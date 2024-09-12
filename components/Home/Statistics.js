@@ -22,13 +22,13 @@ export default function Statistics() {
   }
 
   const connect = () => {
-    ws = new WebSocket(wssServer);
+    ws = new WebSocket(wssServer)
 
     ws.onopen = () => {
-      ws.send(JSON.stringify({ command: "subscribe", streams: ["statistics"], id: 1 }))
+      ws.send(JSON.stringify({ command: 'subscribe', streams: ['statistics'], id: 1 }))
     }
 
-    ws.onmessage = evt => {
+    ws.onmessage = (evt) => {
       const message = JSON.parse(evt.data)
       setData(message)
 
@@ -134,17 +134,7 @@ export default function Statistics() {
   let nodesCount = 'xxx'
 
   if (data) {
-    const {
-      validatedLedger,
-      lastClose,
-      validationQuorum,
-      accounts,
-      usernames,
-      nftokens,
-      escrows,
-      amms,
-      nodes,
-    } = data
+    const { validatedLedger, lastClose, validationQuorum, accounts, usernames, nftokens, escrows, amms, nodes } = data
     closedAt = validatedLedger?.ledgerTime * 1000
     closedAt = new Date(closedAt).toLocaleTimeString()
     ledgerIndex = validatedLedger?.ledgerIndex
@@ -165,102 +155,120 @@ export default function Statistics() {
     nodesCount = niceNumber(nodes?.total)
   }
 
-  return <>
-    <h2 className="center">{t("home.stat.header", { ledgerName })}</h2>
-    <div className='statistics-block'>
-      <div className='stat-piece'>
-        <div className='stat-piece-header'>{t("home.stat.ledger-index")}</div>
-        <div>
-          <LedgerLink version={ledgerIndex} />
-        </div>
-      </div>
-      <div className='stat-piece'>
-        <div className='stat-piece-header'>{t("home.stat.close-time")}</div>
-        <div>{closedAt}</div>
-      </div>
-      <div className='stat-piece'>
-        <div className='stat-piece-header'>{t("home.stat.transactions")}</div>
-        <div>{txCount} ({txPerSecond} {t("home.stat.txs-per-sec")})</div>
-      </div>
-      {nodesCount > 0 &&
-        <div className='stat-piece'>
-          <div className='stat-piece-header'>{t("home.stat.nodes")}</div>
-          <div><Link href="/nodes">{nodesCount}</Link></div>
-        </div>
-      }
-      <div className='stat-piece'>
-        <div className='stat-piece-header'>{t("home.stat.quorum")}</div>
-        <div>{quorum} (<Link href="/validators">{proposers} {t("home.stat.proposers")}</Link>)</div>
-      </div>
-    </div>
-
-    <div className='statistics-block'>
-      <div className='stat-piece'>
-        <div className='stat-piece-header'>{t("home.stat.accounts")}</div>
-        <div><Link href='/activations?period=all'>{createdAccounts}</Link></div>
-      </div>
-
-      <div className='stat-piece'>
-        <div className='stat-piece-header'>{t("home.stat.accountsActiveLast24h")}</div>
-        <div>{activeAccountsLast24h}</div>
-      </div>
-
-      <div className='stat-piece'>
-        <div className='stat-piece-header'>{t("home.stat.usernames")}</div>
-        <div>{registeredUsernames}</div>
-      </div>
-      {!xahauNetwork &&
-        <div className='stat-piece'>
-          <div className='stat-piece-header'>{t("home.stat.amms")}</div>
-          <div>{ammsCount}</div>
-        </div>
-      }
-      <div className='stat-piece'>
-        <div className='stat-piece-header'>{t("home.stat.escrows")}</div>
-        <div>{escrowsCount}</div>
-      </div>
-    </div>
-
-    {/* Hide NFT stats for XAHAU while they are not ready yet */}
-    {!xahauNetwork &&
-      <div className='statistics-block'>
-        <div className='stat-piece'>
-          <div className='stat-piece-header'>{t("home.stat.nft.created")}</div>
+  return (
+    <>
+      <h2 className="center">{t('home.stat.header', { ledgerName })}</h2>
+      <div className="statistics-block">
+        <div className="stat-piece">
+          <div className="stat-piece-header">{t('home.stat.ledger-index')}</div>
           <div>
-            <Link href='/nft-explorer?mintedPeriod=all&includeBurned=true&includeWithoutMediaData=true'>
-              {niceNumber(nft.created)}
-            </Link>
+            <LedgerLink version={ledgerIndex} />
           </div>
         </div>
-        <div className='stat-piece'>
-          <div className='stat-piece-header'>{t("home.stat.nft.burned")}</div>
+        <div className="stat-piece">
+          <div className="stat-piece-header">{t('home.stat.close-time')}</div>
+          <div>{closedAt}</div>
+        </div>
+        <div className="stat-piece">
+          <div className="stat-piece-header">{t('home.stat.transactions')}</div>
           <div>
-            <Link href='/nft-explorer?includeBurned=true&includeWithoutMediaData=true&burnedPeriod=all&mintedPeriod=all'>
-              {niceNumber(nft.burned)}
-            </Link>
+            {txCount} ({txPerSecond} {t('home.stat.txs-per-sec')})
           </div>
         </div>
-        <div className='stat-piece'>
-          <div className='stat-piece-header'>{t("home.stat.nft.issuers")}</div>
-          <div><Link href='/nft-volumes'>{niceNumber(nft.issuers)}</Link></div>
-        </div>
-        <div className='stat-piece'>
-          <div className='stat-piece-header'>{t("home.stat.nft.owners")}</div>
-          <div><Link href='/nft-distribution?order=total'>{niceNumber(nft.owners)}</Link></div>
-        </div>
-        <div className='stat-piece'>
-          <div className='stat-piece-header'>{t("home.stat.nft.transfers")}</div>
-          <div>{niceNumber(nft.transfers)}</div>
-        </div>
-        <div className='stat-piece'>
-          <div className='stat-piece-header'>{t("home.stat.nft.for-sale")}</div>
+        {nodesCount > 0 && (
+          <div className="stat-piece">
+            <div className="stat-piece-header">{t('home.stat.nodes')}</div>
+            <div>
+              <Link href="/nodes">{nodesCount}</Link>
+            </div>
+          </div>
+        )}
+        <div className="stat-piece">
+          <div className="stat-piece-header">{t('home.stat.quorum')}</div>
           <div>
-            <Link href='/nft-explorer?list=onSale&saleDestination=publicAndKnownBrokers&mintedPeriod=all&includeWithoutMediaData=true'>
-              {niceNumber(nft.forSale)}
+            {quorum} (
+            <Link href="/validators">
+              {proposers} {t('home.stat.proposers')}
             </Link>
+            )
           </div>
         </div>
       </div>
-    }
-  </>
+
+      <div className="statistics-block">
+        <div className="stat-piece">
+          <div className="stat-piece-header">{t('home.stat.accounts')}</div>
+          <div>
+            <Link href="/activations?period=all">{createdAccounts}</Link>
+          </div>
+        </div>
+
+        <div className="stat-piece">
+          <div className="stat-piece-header">{t('home.stat.accountsActiveLast24h')}</div>
+          <div>{activeAccountsLast24h}</div>
+        </div>
+
+        <div className="stat-piece">
+          <div className="stat-piece-header">{t('home.stat.usernames')}</div>
+          <div>{registeredUsernames}</div>
+        </div>
+        {!xahauNetwork && (
+          <div className="stat-piece">
+            <div className="stat-piece-header">{t('home.stat.amms')}</div>
+            <div>{ammsCount}</div>
+          </div>
+        )}
+        <div className="stat-piece">
+          <div className="stat-piece-header">{t('home.stat.escrows')}</div>
+          <div>{escrowsCount}</div>
+        </div>
+      </div>
+
+      {/* Hide NFT stats for XAHAU while they are not ready yet */}
+      {!xahauNetwork && (
+        <div className="statistics-block">
+          <div className="stat-piece">
+            <div className="stat-piece-header">{t('home.stat.nft.created')}</div>
+            <div>
+              <Link href="/nft-explorer?mintedPeriod=all&includeBurned=true&includeWithoutMediaData=true">
+                {niceNumber(nft.created)}
+              </Link>
+            </div>
+          </div>
+          <div className="stat-piece">
+            <div className="stat-piece-header">{t('home.stat.nft.burned')}</div>
+            <div>
+              <Link href="/nft-explorer?includeBurned=true&includeWithoutMediaData=true&burnedPeriod=all&mintedPeriod=all">
+                {niceNumber(nft.burned)}
+              </Link>
+            </div>
+          </div>
+          <div className="stat-piece">
+            <div className="stat-piece-header">{t('home.stat.nft.issuers')}</div>
+            <div>
+              <Link href="/nft-volumes?period=all">{niceNumber(nft.issuers)}</Link>
+            </div>
+          </div>
+          <div className="stat-piece">
+            <div className="stat-piece-header">{t('home.stat.nft.owners')}</div>
+            <div>
+              <Link href="/nft-distribution?order=total">{niceNumber(nft.owners)}</Link>
+            </div>
+          </div>
+          <div className="stat-piece">
+            <div className="stat-piece-header">{t('home.stat.nft.transfers')}</div>
+            <div>{niceNumber(nft.transfers)}</div>
+          </div>
+          <div className="stat-piece">
+            <div className="stat-piece-header">{t('home.stat.nft.for-sale')}</div>
+            <div>
+              <Link href="/nft-explorer?list=onSale&saleDestination=publicAndKnownBrokers&mintedPeriod=all&includeWithoutMediaData=true">
+                {niceNumber(nft.forSale)}
+              </Link>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
+  )
 }

@@ -159,17 +159,10 @@
     }
   }
 
-  @media (max-width: 1500px) and (min-width:1301px) {
+  @media (max-width: 1640px) and (min-width:1301px) {
+    //opened filters
     .hexGrid {
-      .hex {
-        .hexIn {
-          .hexLink {
-            .title-text {
-              font-size: 0.7em;
-            }
-          }
-        }
-      }
+      font-size: 13px;
     }
   }
 

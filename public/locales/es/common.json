@@ -31,7 +31,9 @@
       "distribution": "Distribución (dueños)",
       "statistics": "Estadísticas en vivo",
       "nfts": "NFTs de la cuenta",
-      "offers": "Ofertas"
+      "offers": "Ofertas",
+      "marketplaces": "Mercados",
+      "collections": "Colecciones"
     },
     "network": {
       "blockchain": "Blockchain",
@@ -122,7 +124,7 @@
       "nft-accept-buy-offer-header": "Vender NFT",
       "nft-create-sell-offer-header": "Listar para vender",
       "nft-create-buy-offer-header": "Crear oferta de Compra",
-      "nft-accept-offer": "Admito que Bithomp me da acceso a un mercado descentralizado, y que no puede ser verificada o garantizada la autenticidad y legitimidad de ningún NFT. Confirmo que he leido los <1>Términos y condiciones</1>, y estoy conforme con todos los términos de compra, venta o uso de cualquier NFT en Bithomp.",
+      "nft-accept-offer": "Admito que {{webSiteName}} me da acceso a un mercado descentralizado, y que no puede ser verificada o garantizada la autenticidad y legitimidad de ningún NFT. Confirmo que he leido los <4>Términos y condiciones</4>, y estoy conforme con todos los términos de compra, venta o uso de cualquier NFT en {{webSiteName}}.",
       "nft-create-sell-offer": "Comprendo, que una vez firmado el listado, el NFT puede ser adquirido instantaneamente.",
       "nft-burn-header": "Quemando el NFT",
       "nft-burn": "Entiendo que el NFT será eliminado permanéntemente, queriendo decir que no podrá ser poseido,trasnsferido, comprado o vendido. Esta acción es irreversible."
@@ -169,7 +171,7 @@
       "proposers": "Validadores",
       "accounts": "Cuentas",
       "usernames": "Nombres de usuario",
-      "accountsActiveLast24h": "Active accounts (24h)",
+      "accountsActiveLast24h": "Cuentas activas (24h)",
       "nft": {
         "created": "NFTs acuñados",
         "burned": "NFTs quemados",
@@ -313,6 +315,7 @@
   },
   "form": {
     "error": {
+      "destination-tag-invalid": "Por favor, introduce una marca de destino válida.",
       "price-empty": "Please enter an amount.",
       "address-empty": "Por favor, introduce una dirección.",
       "address-invalid": "Por favor, introduce una dirección válida.",
@@ -324,6 +327,9 @@
       "email-invalid": "Por favor, introduce un correo eléctronico válido.",
       "password-empty": "Por favor, introduce tu contraseña.",
       "password-invalid": "Por favor, introduce una contraseña válida."
+    },
+    "placeholder": {
+      "destination-tag": "Enter the Destination tag (if it is required)"
     }
   },
   "error": {
@@ -377,6 +383,7 @@
     "day": "Para los últimas 24 horas"
   },
   "table": {
+    "destination-tag": "Marca de destino",
     "uri": "URI",
     "mints": "Acuñaciones",
     "view": "View",
@@ -429,6 +436,7 @@
     "external-url": "URL Externa",
     "description": "Descripción",
     "collection": "Colección",
+    "collection-family": "Familia de colección",
     "transfer-fee": "Regalías",
     "flag": "Bandera",
     "flags": "Banderas",
@@ -508,6 +516,8 @@
     "issuers": "Emisores",
     "marketplaces": "Mercados",
     "brokers": "Brokers",
+    "charts": "Gráficas",
+    "collections": "Colecciones",
     "image": "Imagen",
     "video": "Vídeo",
     "audio": "Audio",
@@ -606,7 +616,6 @@
     "help-us": "Ayúdanos en nuestra misión de convertirnos en el explorador XRPL más amigable.",
     "it-helps": "Tu donación nos ayudará a añadir capacidad y continuar a desarrollar Bithomp.",
     "address": "Nuestra dirección XRPL para donaciones",
-    "dt": "Marca de destino",
     "donate-with-xaman": "Donar con Xaman"
   },
   "sponsored": {

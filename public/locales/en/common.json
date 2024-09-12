@@ -31,7 +31,9 @@
       "distribution": "Distribution (holders)",
       "statistics": "Live statistics",
       "nfts": "Account's NFTs",
-      "offers": "Offers"
+      "offers": "Offers",
+      "marketplaces": "Marketplaces",
+      "collections": "Collections"
     },
     "network": {
       "blockchain": "Blockchain",
@@ -122,7 +124,7 @@
       "nft-accept-buy-offer-header": "Selling NFT",
       "nft-create-sell-offer-header": "List for sale",
       "nft-create-buy-offer-header": "Create Buy offer",
-      "nft-accept-offer": "I admit that Bithomp gives me access to a decentralised marketplace, and it cannot verify or guarantee the authenticity and legitimacy of any NFTs. I confirm that I've read the <1>Terms and conditions</1>, and I agree with all the terms to buy, sell or use any NFTs on Bithomp.",
+      "nft-accept-offer": "I admit that {{webSiteName}} gives me access to a decentralised marketplace, and it cannot verify or guarantee the authenticity and legitimacy of any NFTs. I confirm that I've read the <4>Terms and conditions</4>, and I agree with all the terms to buy, sell or use any NFTs on {{webSiteName}}.",
       "nft-create-sell-offer": "I understand, once my listing is signed, the NFT can be purchased instantly.",
       "nft-burn-header": "NFT burning",
       "nft-burn": "I understand that NFT will be permanently deleted, meaning, it can no longer be owned, transferred, purchased, or sold. This action can not be undone."
@@ -313,6 +315,7 @@
   },
   "form": {
     "error": {
+      "destination-tag-invalid": "Invalid destination tag.",
       "price-empty": "Please enter an amount.",
       "address-empty": "Please enter an address.",
       "address-invalid": "Please enter a valid address.",
@@ -324,6 +327,9 @@
       "email-invalid": "Please enter a valid e-mail address.",
       "password-empty": "Please enter your password.",
       "password-invalid": "Please enter a valid password."
+    },
+    "placeholder": {
+      "destination-tag": "Enter the Destination tag (if it is required)"
     }
   },
   "error": {
@@ -377,6 +383,7 @@
     "day": "For the last 24 hours"
   },
   "table": {
+    "destination-tag": "Destination tag",
     "uri": "URI",
     "mints": "Mints",
     "view": "View",
@@ -429,6 +436,7 @@
     "external-url": "External URL",
     "description": "Description",
     "collection": "Collection",
+    "collection-family": "Collection family",
     "transfer-fee": "Royalty",
     "flag": "Flag",
     "flags": "Flags",
@@ -508,6 +516,8 @@
     "issuers": "Issuers",
     "marketplaces": "Marketplaces",
     "brokers": "Brokers",
+    "charts": "Charts",
+    "collections": "Collections",
     "image": "Image",
     "video": "Video",
     "audio": "Audio",
@@ -606,7 +616,6 @@
     "help-us": "Help us in our mission to make the most user friendly XRPL explorer.",
     "it-helps": "Your donation will help us to add capacity and continue to develop Bithomp.",
     "address": "Our XRPL address for donations",
-    "dt": "Destination tag",
     "donate-with-xaman": "Donate with Xaman"
   },
   "sponsored": {

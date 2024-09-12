@@ -1,0 +1,31 @@
+{
+  "error-occured": "Terjadi kesalahan",
+  "try-later": "Anda sudah mencobanya hari ini. Kembali lagi dalam {{time}}.",
+  "test-the-speed": "Uji Kecepatan dan Reliabilitas Pembayaran {{explorerName}}",
+  "experience-fast-transactions": "Rasakan betapa cepat dan mudahnya melakukan transaksi di {{explorerName}}!",
+  "form": {
+    "placeholder": {
+      "enter-address": "Masukkan alamat {{ledgerName}} Anda"
+    }
+  },
+  "how-it-works": "Bagaimana Cara Kerjanya:",
+  "activated-wallet-required": "Dompet yang diaktifkan diperlukan",
+  "ensure-wallet-activated": "Pastikan dompet Anda sudah diaktifkan.",
+  "receive-currency-drops": "Terima cryptocurrency drops {{nativeCurrency}}",
+  "get-between-drops": "Dapatkan antara 1 hingga 600 drops {{nativeCurrency}}.",
+  "get-instant-feedback": "Dapatkan umpan balik instan",
+  "see-if-payment-succeeded": "Lihat apakah pembayaran berhasil atau tidak. Ketahui waktu pengiriman yang tepat, periksa biaya transaksi, dan dapatkan tautan transaksi untuk melihat semua detail.",
+  "daily-testing-limit": "Batas pengujian harian",
+  "can-test-only-once-per-day": "Anda hanya bisa menguji sekali per hari (satu dompet per IP).",
+  "button": {
+    "test-now": "Uji sekarang"
+  },
+  "try-it-now": "Coba sekarang dan lihat seberapa cepat pembayaran {{nativeCurrency}} diproses!",
+  "test-completed": "Ujian selesai!",
+  "validated-on-ledger": "<0>Divalidasi</0> di Ledger <2/>",
+  "table": {
+    "fee": "Biaya",
+    "transaction-hash": "Hash transaksi"
+  },
+  "confirmed-within-seconds": "Dikonfirmasi dalam waktu kurang dari <2>{{time}} detik</2>"
+}

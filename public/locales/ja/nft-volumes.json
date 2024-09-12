@@ -1,6 +1,9 @@
 {
   "header": "NFTの取引量",
   "text0": "For that period XRPLは{{saleType}}にて{{allSales}} {{currency}} NFT({{allVolume}})の取引が行われました。",
+  "collections": {
+    "desc": "This is the list of NFT collections. 2つの取引（支払いとNFT送金）内で行われた一次販売(ミント)は含まれていません。"
+  },
   "brokers": {
     "desc": "NFTブローカーアカウントのリストです。ここでは、オファーマッチングボットの取引量を確認できます。マーケットプレイスではさまざまな取引モデルを使用していますが、ここではブローカーモデルによる取引量のみを見ることができます。",
     "no-broker": "非ブローカー",

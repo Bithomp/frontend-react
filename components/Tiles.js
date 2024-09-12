@@ -97,7 +97,11 @@ export default function Tiles({ nftList, type = 'name', convertCurrency, account
                   <div className='title'></div>
 
                   <div className='title-text'>
-                    {type === 'name' ? nftName(nft, { maxLength: 18 }) : saleData(nft.sellOffers)}
+                    {type === 'name' ?
+                      nftName(nft, { maxLength: 18 })
+                      :
+                      saleData(nft.sellOffers)
+                    }
                   </div>
                   <div className='title-full'>
                     {nftName(nft) ? <>{t("table.name")}: {nftName(nft)}<br /></> : ""}
@@ -136,7 +140,7 @@ export default function Tiles({ nftList, type = 'name', convertCurrency, account
                   <div className="index">{i + 1}</div>
                   <div className='title'></div>
                   <div className='title-text'>
-                    {convertedAmount(nft, convertCurrency) || amountFormat(nft.amount)}
+                    {convertedAmount(nft, convertCurrency, { short: true }) || amountFormat(nft.amount)}
                     <br />
                     {timeOrDate(nft.acceptedAt)}
                   </div>

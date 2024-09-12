@@ -1,5 +1,5 @@
 import { useTranslation, Trans } from 'next-i18next'
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
@@ -10,7 +10,7 @@ export const getServerSideProps = async (context) => {
   return {
     props: {
       isSsrMobile: getIsSsrMobile(context),
-      ...(await serverSideTranslations(locale, ['common'])),
+      ...(await serverSideTranslations(locale, ['common']))
     }
   }
 }
@@ -21,7 +21,7 @@ import { wssServer } from '../utils'
 import { niceNumber, fullDateAndTime } from '../utils/format'
 import { LedgerLink } from '../utils/links'
 
-let ws = null;
+let ws = null
 
 export default function NftStatistics() {
   const { t } = useTranslation()
@@ -32,12 +32,12 @@ export default function NftStatistics() {
     ws = new WebSocket(wssServer)
 
     ws.onopen = () => {
-      ws.send(JSON.stringify({ command: "subscribe", streams: ["nftokens"], id: 1 }));
+      ws.send(JSON.stringify({ command: 'subscribe', streams: ['nftokens'], id: 1 }))
     }
 
-    ws.onmessage = evt => {
-      const message = JSON.parse(evt.data);
-      setData(message);
+    ws.onmessage = (evt) => {
+      const message = JSON.parse(evt.data)
+      setData(message)
       /*
         {
           "type": "NFTokens",
@@ -69,115 +69,115 @@ export default function NftStatistics() {
     }
 
     ws.onclose = () => {
-      connect();
+      connect()
     }
   }
 
   useEffect(() => {
-    connect();
+    connect()
     return () => {
-      setData(null);
-      if (ws) ws.close();
+      setData(null)
+      if (ws) ws.close()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [])
 
-  const nft = data?.allTime;
-  const crawlerIndex = data?.crawler?.ledgerIndex;
-  const currentLedgerIndex = data?.validatedLedger.ledgerIndex;
-  const crawlerTime = data?.crawler?.ledgerTime && fullDateAndTime(data.crawler.ledgerTime, null, { asText: true });
-  const currentLedgerTime = data?.validatedLedger.ledgerTime && fullDateAndTime(data.validatedLedger.ledgerTime, null, { asText: true });
+  const nft = data?.allTime
+  const crawlerIndex = data?.crawler?.ledgerIndex
+  const currentLedgerIndex = data?.validatedLedger.ledgerIndex
+  const crawlerTime = data?.crawler?.ledgerTime && fullDateAndTime(data.crawler.ledgerTime, null, { asText: true })
+  const currentLedgerTime =
+    data?.validatedLedger.ledgerTime && fullDateAndTime(data.validatedLedger.ledgerTime, null, { asText: true })
 
-  let lag = false;
+  let lag = false
   if (crawlerIndex && currentLedgerIndex) {
     //check if ledger index gap is more than 2
     if (currentLedgerIndex - crawlerIndex > 2) {
       //crawler is lagging bihind
-      lag = currentLedgerIndex - crawlerIndex;
+      lag = currentLedgerIndex - crawlerIndex
     }
   }
 
   return (
     <div className="content-text content-center">
-      <SEO title={t("nft-statistics.header")} />
-      <h1 className="center">{t("nft-statistics.header")}</h1>
+      <SEO title={t('nft-statistics.header')} />
+      <h1 className="center">{t('nft-statistics.header')}</h1>
       <div className="main-box">
-        {lag ?
-          <p className='orange'>
+        {lag ? (
+          <p className="orange">
             <Trans i18nKey="nft-statistics.text0">
               The informations is a bit outdated, we need to catch up with <b>{{ lag }}</b> ledgers.
               <br />
-              The data is provided for the ledger #{{ crawlerIndex }}, ({{ crawlerTime }}).
-              The last validated ledger is #{{ currentLedgerIndex }}, ({{ currentLedgerTime }}).
+              The data is provided for the ledger #{{ crawlerIndex }}, ({{ crawlerTime }}). The last validated ledger is
+              #{{ currentLedgerIndex }}, ({{ currentLedgerTime }}).
             </Trans>
           </p>
-          :
+        ) : (
           <>
             <p>
-              {t("nft-statistics.updated")}: {crawlerTime}
+              {t('nft-statistics.updated')}: {crawlerTime}
             </p>
             <p>
-              {t("nft-statistics.ledger-index")}: <LedgerLink version={crawlerIndex} />
+              {t('nft-statistics.ledger-index')}: <LedgerLink version={crawlerIndex} />
             </p>
           </>
-        }
+        )}
         <p>
-          {t("nft-statistics.created")}:{" "}
-          <Link href='/nft-explorer?mintedPeriod=all&includeBurned=true&includeWithoutMediaData=true'>
+          {t('nft-statistics.created')}:{' '}
+          <Link href="/nft-explorer?mintedPeriod=all&includeBurned=true&includeWithoutMediaData=true">
             {niceNumber(nft?.created)}
           </Link>
         </p>
         <p>
-          {t("nft-statistics.burned")}:{" "}
-          <Link href='/nft-explorer?includeBurned=true&includeWithoutMediaData=true&burnedPeriod=all&mintedPeriod=all'>
+          {t('nft-statistics.burned')}:{' '}
+          <Link href="/nft-explorer?includeBurned=true&includeWithoutMediaData=true&burnedPeriod=all&mintedPeriod=all">
             {niceNumber(nft?.burned)}
           </Link>
         </p>
         <p>
-          {t("nft-statistics.exist")}:{" "}
-          <Link href='/nft-explorer?mintedPeriod=all&includeWithoutMediaData=true'>
+          {t('nft-statistics.exist')}:{' '}
+          <Link href="/nft-explorer?mintedPeriod=all&includeWithoutMediaData=true">
             {nft && niceNumber(nft.created - nft.burned)}
           </Link>
         </p>
         <p>
-          {t("nft-statistics.owners")}: <Link href='/nft-distribution?order=total'>{niceNumber(nft?.owners)}</Link>
+          {t('nft-statistics.owners')}: <Link href="/nft-distribution?order=total">{niceNumber(nft?.owners)}</Link>
         </p>
         <p>
-          {t("nft-statistics.issuers")}: <Link href='/nft-volumes'>{niceNumber(nft?.issuers)}</Link>
+          {t('nft-statistics.issuers')}: <Link href="/nft-volumes?period=all">{niceNumber(nft?.issuers)}</Link>
         </p>
         <p>
-          {t("nft-statistics.transfers")}: {niceNumber(nft?.transfers)}
+          {t('nft-statistics.transfers')}: {niceNumber(nft?.transfers)}
         </p>
         <p>
-          {t("nft-statistics.for-sale")}:{" "}
-          {niceNumber(nft?.forSale)}
+          {t('nft-statistics.for-sale')}: {niceNumber(nft?.forSale)}
         </p>
         <p>
-          {t("nft-statistics.for-sale-without-destination")}:{" "}
-          <Link href='/nft-explorer?mintedPeriod=all&includeBurned=true&includeWithoutMediaData=true&list=onSale'>
+          {t('nft-statistics.for-sale-without-destination')}:{' '}
+          <Link href="/nft-explorer?mintedPeriod=all&includeBurned=true&includeWithoutMediaData=true&list=onSale">
             {niceNumber(nft?.forSaleWithoutDestination)}
           </Link>
         </p>
         <p>
-          {t("nft-statistics.for-sale-with-destination")}:{" "}
-          {niceNumber(nft?.forSaleWithDestination)}
+          {t('nft-statistics.for-sale-with-destination')}: {niceNumber(nft?.forSaleWithDestination)}
         </p>
         <p>
-          {t("nft-statistics.burnable")}: {niceNumber(nft?.burnable)}
+          {t('nft-statistics.burnable')}: {niceNumber(nft?.burnable)}
         </p>
         <p>
-          {t("nft-statistics.only-xrp")}: {niceNumber(nft?.onlyXRP)}
+          {t('nft-statistics.only-xrp')}: {niceNumber(nft?.onlyXRP)}
         </p>
         <p>
-          {t("nft-statistics.transferable")}: {niceNumber(nft?.transferable)}
+          {t('nft-statistics.transferable')}: {niceNumber(nft?.transferable)}
         </p>
-        <p className="center" style={{ position: "absolute", top: "calc(50% - 72px)", left: "calc(50% - 54px)" }}>
-          {!data &&
+        <p className="center" style={{ position: 'absolute', top: 'calc(50% - 72px)', left: 'calc(50% - 54px)' }}>
+          {!data && (
             <>
               <span className="waiting"></span>
-              <br />{t("general.loading")}
+              <br />
+              {t('general.loading')}
             </>
-          }
+          )}
         </p>
       </div>
     </div>

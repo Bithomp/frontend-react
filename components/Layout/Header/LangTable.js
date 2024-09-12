@@ -1,17 +1,17 @@
 import { useTranslation } from 'next-i18next'
-import { useState, useEffect } from "react"
+import { useState, useEffect } from 'react'
 
-import moment from "moment"
+import moment from 'moment'
 import 'moment/locale/ru' // 'ru'
 import 'moment/locale/ko' // 'ko'
 import 'moment/locale/de' // 'de'
 import 'moment/locale/es' // 'es'
 import 'moment/locale/id' // 'id'
 import 'moment/locale/ja' // 'ja'
-import 'moment/locale/hr' // 'hr'
 
 import { useRouter } from 'next/router'
 import Cookies from 'universal-cookie'
+import { domainFromUrl } from '../../../utils'
 
 const cookies = new Cookies()
 
@@ -29,18 +29,13 @@ export default function LanguageSwitch({ close }) {
 
   const { pathname, asPath, query } = router
 
-  const langChange = lang => {
+  const langChange = (lang) => {
     if (lang === 'default' || lang === 'undefined' || !lang) return
     moment.locale(lang)
-    let domain = window.location.hostname
-    let domainParts = domain.split('.')
-    if (domainParts.length > 2) {
-      domain = domainParts.slice(1).join('.')
-    }
-    cookies.set('NEXT_LOCALE', lang, { path: '/', domain: "." + encodeURI(domain), maxAge: 31536000 })
+    cookies.set('NEXT_LOCALE', lang, { path: '/', domain: '.' + domainFromUrl, maxAge: 31536000 })
   }
 
-  const handleLangChange = lang => {
+  const handleLangChange = (lang) => {
     if (i18n.language && i18n.language !== 'default' && i18n.language.slice(0, 2) !== lang) {
       langChange(lang)
       router.replace({ pathname, query }, asPath, { locale: lang })
@@ -53,7 +48,7 @@ export default function LanguageSwitch({ close }) {
   langChange(i18n.language)
 
   const spanClass = (lang) => {
-    return i18n.language === lang?.value ? "link blue" : "link"
+    return i18n.language === lang?.value ? 'link blue' : 'link'
   }
 
   const td = (langList, i, columnsNumber) => {
@@ -81,8 +76,7 @@ export default function LanguageSwitch({ close }) {
     { value: 'ja', label: '日本語' },
     { value: 'ru', label: 'Русский' },
     { value: 'id', label: 'Bahasa Indonesia' },
-    { value: 'de', label: 'Deutsch' },
-    { value: 'hr', label: 'Hrvatski' }
+    { value: 'de', label: 'Deutsch' }
   ]
 
   const langTable = () => {
@@ -90,15 +84,13 @@ export default function LanguageSwitch({ close }) {
     const lines = Math.ceil(langList.length / columnsNumber)
     let rows = []
     for (let i = 0; i < lines; i++) {
-      rows.push(
-        <tr key={i}>{td(langList, i, columnsNumber)}</tr>
-      )
+      rows.push(<tr key={i}>{td(langList, i, columnsNumber)}</tr>)
     }
-    return <table>
-      <tbody>
-        {rows}
-      </tbody>
-    </table>
+    return (
+      <table>
+        <tbody>{rows}</tbody>
+      </table>
+    )
   }
 
   return langTable()

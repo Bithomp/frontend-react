@@ -8,7 +8,7 @@ export default function SEO({ title, titleWithNetwork, description, image, page,
 
   description = description || title
 
-  const canonical = server + "/" + router.locale + (router.asPath === "/" ? "" : router.asPath)
+  const canonical = server + '/' + router.locale + (router.asPath === '/' ? '' : router.asPath)
 
   let openGraph = {
     type: 'website',
@@ -16,22 +16,24 @@ export default function SEO({ title, titleWithNetwork, description, image, page,
     title: title || page,
     description,
     locale: router.locale,
-    site_name: websiteName || explorerName + " " + (page ? page : ""),
+    site_name: websiteName || explorerName + ' ' + (page ? page : '')
   }
 
   if (image) {
     images = [image]
   } else if (!images) {
-    images = [{
-      file: server + '/logo512.png',
-      width: 512,
-      height: 512
-    },
-    {
-      file: server + '/logo192.png',
-      width: 192,
-      height: 192
-    }]
+    images = [
+      {
+        file: server + '/logo512.png',
+        width: 512,
+        height: 512
+      },
+      {
+        file: server + '/logo192.png',
+        width: 192,
+        height: 192
+      }
+    ]
   }
 
   if (images) {
@@ -39,17 +41,15 @@ export default function SEO({ title, titleWithNetwork, description, image, page,
     for (let i = 0; i < images.length; i++) {
       const { file, width, height } = images[i]
       let url = file
-      if (file?.indexOf("http") !== 0) {
+      if (file?.indexOf('http') !== 0) {
         url = server + '/images/' + file
       }
-      openGraph.images.push(
-        {
-          url,
-          width,
-          height,
-          alt: `Image for ${title} ${i > 0 ? i : ""}`,
-        }
-      )
+      openGraph.images.push({
+        url,
+        width,
+        height,
+        alt: `Image for ${title} ${i > 0 ? i : ''}`
+      })
     }
   }
 
@@ -64,24 +64,23 @@ export default function SEO({ title, titleWithNetwork, description, image, page,
   }
 
   // don't add the slash after language, otherwise redirects and it is bad for SEO
-  let path = router.asPath !== "/" ? router.asPath : ""
+  let path = router.asPath !== '/' ? router.asPath : ''
 
   let languageAlternates = [
-    { hrefLang: 'x-default', href: server + + '/en' + path },
+    { hrefLang: 'x-default', href: server + '/en' + path },
     { hrefLang: 'en', href: server + '/en' + path },
     { hrefLang: 'ko', href: server + '/ko' + path },
     { hrefLang: 'ru', href: server + '/ru' + path },
     { hrefLang: 'de', href: server + '/de' + path },
     { hrefLang: 'es', href: server + '/es' + path },
     { hrefLang: 'id', href: server + '/id' + path },
-    { hrefLang: 'ja', href: server + '/ja' + path },
-    { hrefLang: 'hr', href: server + '/hr' + path }
+    { hrefLang: 'ja', href: server + '/ja' + path }
   ]
 
   return (
     <NextSeo
-      title={titleWithNetwork ? title : (explorerName + " " + title)}
-      description={description + " " + explorerName}
+      title={titleWithNetwork ? title : explorerName + ' ' + title}
+      description={description + ' ' + explorerName}
       openGraph={openGraph}
       twitter={twitter}
       languageAlternates={languageAlternates}

@@ -1,49 +1,91 @@
 import axios from 'axios'
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from 'react'
 import { Buffer } from 'buffer'
 import { decodeAccountID, isValidClassicAddress } from 'ripple-address-codec'
 import { useTranslation } from 'next-i18next'
-import countries from "i18n-iso-countries"
+import countries from 'i18n-iso-countries'
+import Cookies from 'universal-cookie'
+
+export const timestampExpired = (timestamp, type) => {
+  if (!timestamp) return null
+  // if T/Z format
+  if (!timestamp.toString().includes('T')) {
+    if (type === 'ripple') {
+      timestamp += 946684800 //946684800 is the difference between Unix and Ripple timestamps
+    }
+    timestamp = timestamp * 1000
+  }
+  return new Date(timestamp) < new Date()
+}
+
+export const turnstileSupportedLanguages = [
+  'ar-EG',
+  'de',
+  'en',
+  'es',
+  'fa',
+  'fr',
+  'id',
+  'it',
+  'ja',
+  'ko',
+  'nl',
+  'pl',
+  'pt-BR',
+  'ru',
+  'tr',
+  'zh-CN',
+  'zh-TW'
+]
+
+const useDomainFromUrl = () => {
+  if (typeof window !== 'undefined') {
+    let domain = window.location.hostname
+    let domainParts = domain.split('.')
+    if (domainParts.length > 2) {
+      domain = domainParts.slice(1).join('.')
+    }
+    return encodeURI(domain)
+  }
+  return ''
+}
+export const domainFromUrl = useDomainFromUrl()
 
 export const periodDescription = (periodName) => {
-  if (periodName?.includes("..")) {
-    const periodParts = periodName.split("..")
-    return "from " + new Date(periodParts[0]).toLocaleString() + " to " + new Date(periodParts[1]).toLocaleString()
+  if (periodName?.includes('..')) {
+    const periodParts = periodName.split('..')
+    return 'from ' + new Date(periodParts[0]).toLocaleString() + ' to ' + new Date(periodParts[1]).toLocaleString()
   } else {
     return periodName
   }
 }
 
 export const useSubscriptionExpired = () => {
-  const [proExpire, setProExpire] = useState("")
-  useEffect(() => {
-    const proExpireString = localStorage.getItem('pro-expire')
-    if (proExpireString) {
-      setProExpire(proExpireString)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  const cookies = new Cookies(null, { path: '/' })
+  const proExpire = cookies.get('pro-expire')
+  if (!proExpire) return true
   return Number(proExpire) < new Date().getTime()
 }
+export const subscriptionExpired = useSubscriptionExpired()
 
 export const countriesTranslated = () => {
   const { i18n } = useTranslation()
   let lang = i18n.language.slice(0, 2)
-  if (i18n.language === "default") {
-    lang = "en"
+  if (i18n.language === 'default') {
+    lang = 'en'
   }
   const notSupportedLanguages = ['my'] // supported "en", "ru", "ja", "ko" etc
   if (notSupportedLanguages.includes(lang)) {
-    lang = "en"
+    lang = 'en'
   }
   const languageData = require('i18n-iso-countries/langs/' + lang + '.json')
   countries.registerLocale(languageData)
-  countries.getNameTranslated = code => {
-    return countries.getName(code, lang, { select: "official" })
+  countries.getNameTranslated = (code) => {
+    return countries.getName(code, lang, { select: 'official' })
   }
 
   countries.getNamesTranslated = () => {
-    return countries.getNames(lang, { select: "official" })
+    return countries.getNames(lang, { select: 'official' })
   }
 
   const countryObj = countries.getNamesTranslated()
@@ -59,47 +101,48 @@ export const countriesTranslated = () => {
   return countries
 }
 
-export const chartSpan = period => {
-  if (!period) return ""
+export const chartSpan = (period) => {
+  if (!period) return ''
 
-  if (period === "hour") {
-    return "minute"
-  } else if (period === "day") {
-    return "hour"
-  } else if (period === "week") {
-    return "day"
-  } else if (period === "month") {
-    return "day"
-  } else if (period === "year") {
-    return "month"
-  } else if (period === "all") {
-    return "year"
+  if (period === 'hour') {
+    return 'minute'
+  } else if (period === 'day') {
+    return 'hour'
+  } else if (period === 'week') {
+    return 'day'
+  } else if (period === 'month') {
+    return 'day'
+  } else if (period === 'year') {
+    return 'month'
+  } else if (period === 'all') {
+    return 'year'
   }
 
-  if (period?.includes("..")) {
-    const periodParts = period.split("..")
+  if (period?.includes('..')) {
+    const periodParts = period.split('..')
     const startDate = new Date(periodParts[0])
     const endDate = new Date(periodParts[1])
     const oneHour = 60 * 60 * 1000
     const oneDay = 24 * oneHour
     const oneMonth = 30 * oneDay
-    if ((endDate - startDate) <= oneHour) {
-      return "minute"
-    } else if ((endDate - startDate) <= 60 * oneHour) {
-      return "hour"
-    } else if ((endDate - startDate) <= 60 * oneDay) {
-      return "day"
-    } if ((endDate - startDate) <= 60 * oneMonth) {
-      return "month"
+    if (endDate - startDate <= oneHour) {
+      return 'minute'
+    } else if (endDate - startDate <= 60 * oneHour) {
+      return 'hour'
+    } else if (endDate - startDate <= 60 * oneDay) {
+      return 'day'
+    }
+    if (endDate - startDate <= 60 * oneMonth) {
+      return 'month'
     } else {
-      "year"
+      ;('year')
     }
   }
 }
 
 export const delay = async (milliseconds, callback, options) => {
   const delayFunction = () => {
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       setTimeout(resolve, milliseconds)
     })
   }
@@ -108,29 +151,23 @@ export const delay = async (milliseconds, callback, options) => {
 }
 
 //https://github.com/XRPLF/CTID/blob/main/ctid.js#L24C31-L24C31 by Richard
-export const decodeCTID = ctid => {
+export const decodeCTID = (ctid) => {
   let ctidValue
-  if (typeof (ctid) === 'string') {
-    if (!/^[0-9A-F]+$/.test(ctid))
-      throw new Error("ctid must be a hexadecimal string or BigInt")
+  if (typeof ctid === 'string') {
+    if (!/^[0-9A-F]+$/.test(ctid)) throw new Error('ctid must be a hexadecimal string or BigInt')
 
-    if (ctid.length !== 16)
-      throw new Error("ctid must be exactly 16 nibbles and start with a C")
+    if (ctid.length !== 16) throw new Error('ctid must be exactly 16 nibbles and start with a C')
 
     ctidValue = BigInt('0x' + ctid)
-  }
-  else if (typeof (ctid) === 'bigint')
-    ctidValue = ctid;
-  else
-    throw new Error("ctid must be a hexadecimal string or BigInt")
+  } else if (typeof ctid === 'bigint') ctidValue = ctid
+  else throw new Error('ctid must be a hexadecimal string or BigInt')
 
-  if (ctidValue > 0xFFFFFFFFFFFFFFFFn ||
-    (ctidValue & 0xF000000000000000n) != 0xC000000000000000n)
-    throw new Error("ctid must be exactly 16 nibbles and start with a C")
+  if (ctidValue > 0xffffffffffffffffn || (ctidValue & 0xf000000000000000n) != 0xc000000000000000n)
+    throw new Error('ctid must be exactly 16 nibbles and start with a C')
 
-  const ledgerIndex = Number((ctidValue >> 32n) & 0xFFFFFFFn)
-  const txIndex = Number((ctidValue >> 16n) & 0xFFFFn)
-  const networkId = Number(ctidValue & 0xFFFFn)
+  const ledgerIndex = Number((ctidValue >> 32n) & 0xfffffffn)
+  const txIndex = Number((ctidValue >> 16n) & 0xffffn)
+  const networkId = Number(ctidValue & 0xffffn)
   return {
     networkId,
     ledgerIndex,
@@ -178,7 +215,7 @@ export const fiatCurrencyList = [
   { value: 'kwd', label: 'KWD' },
   { value: 'ngn', label: 'NGN' },
   { value: 'uah', label: 'UAH' },
-  { value: 'vnd', label: 'VND' },
+  { value: 'vnd', label: 'VND' }
 ]
 
 export const useWidth = () => {
@@ -196,19 +233,19 @@ export const useWidth = () => {
 export const useLocalStorage = (key, initialValue) => {
   const initialize = (key) => {
     try {
-      const item = localStorage.getItem(key);
-      if (item && item !== "undefined") {
-        return JSON.parse(item);
+      const item = localStorage.getItem(key)
+      if (item && item !== 'undefined') {
+        return JSON.parse(item)
       }
 
-      if (typeof initialValue !== "undefined") {
-        localStorage.setItem(key, JSON.stringify(initialValue));
-        return initialValue;
+      if (typeof initialValue !== 'undefined') {
+        localStorage.setItem(key, JSON.stringify(initialValue))
+        return initialValue
       } else {
         return null
       }
     } catch {
-      if (typeof initialValue !== "undefined") {
+      if (typeof initialValue !== 'undefined') {
         return initialValue
       } else {
         return null
@@ -216,40 +253,40 @@ export const useLocalStorage = (key, initialValue) => {
     }
   }
 
-  const [state, setState] = useState(null);
+  const [state, setState] = useState(null)
 
   useEffect(() => {
-    setState(initialize(key));
-  }, []);
+    setState(initialize(key))
+  }, [])
 
   const setValue = useCallback(
     (value) => {
       try {
-        const valueToStore = value instanceof Function ? value(storedValue) : value;
-        setState(valueToStore);
-        localStorage.setItem(key, JSON.stringify(valueToStore));
+        const valueToStore = value instanceof Function ? value(storedValue) : value
+        setState(valueToStore)
+        localStorage.setItem(key, JSON.stringify(valueToStore))
       } catch (error) {
-        console.log(error);
+        console.log(error)
       }
     },
     [key, setState]
-  );
+  )
 
   const remove = useCallback(() => {
     try {
-      localStorage.removeItem(key);
+      localStorage.removeItem(key)
     } catch {
-      console.log(error);
+      console.log(error)
     }
-  }, [key]);
+  }, [key])
 
-  return [state, setValue, remove];
-};
+  return [state, setValue, remove]
+}
 
 const shallRemoveParam = (tabList, tab, defaultTab, setTab) => {
-  const existTab = tabList.some(t => t.value === tab);
+  const existTab = tabList.some((t) => t.value === tab)
   if (!existTab) {
-    setTab(defaultTab);
+    setTab(defaultTab)
     return true
   } else {
     return tab === defaultTab
@@ -281,7 +318,7 @@ export const removeQueryParams = (router, removeList) => {
 }
 
 export const addQueryParams = (router, addList = []) => {
-  if (!addList.length) return;
+  if (!addList.length) return
   for (let i = 0; i < addList.length; i++) {
     const { name, value } = addList[i]
     router.query[name] = value
@@ -299,12 +336,12 @@ export const addAndRemoveQueryParams = (router, addList, removeList) => {
 }
 
 export const stripText = (text) => {
-  if (!text) return ""
+  if (!text) return ''
   text = text.toString() //For buffer/hex
   return text
 }
 
-export const typeNumberOnly = e => {
+export const typeNumberOnly = (e) => {
   //do not allow dot or comma to be first
   if (e.target.selectionStart === 0 && (e.key === ',' || e.key === '.')) {
     e.preventDefault()
@@ -321,7 +358,7 @@ export const typeNumberOnly = e => {
   }
   const pattern = /^[,.0-9]+$/
   if (!pattern.test(e.key)) {
-    e.preventDefault();
+    e.preventDefault()
     return
   }
   if (e.key === '.' && e.target.value.indexOf('.') !== -1) {
@@ -335,7 +372,7 @@ export const typeNumberOnly = e => {
       e.preventDefault()
       return
     }
-    const splitedByDot = e.target.value.split(".")
+    const splitedByDot = e.target.value.split('.')
     if (splitedByDot[0].length > 9 || splitedByDot[1].length > 5) {
       e.preventDefault()
       return
@@ -346,7 +383,7 @@ export const typeNumberOnly = e => {
   }
 }
 
-export const decode = code => {
+export const decode = (code) => {
   if (!code) return null
   const decodedHex = Buffer.from(code, 'hex')
   const decodedString = decodedHex.toString()
@@ -354,7 +391,7 @@ export const decode = code => {
   return stripText(code)
 }
 
-export const encode = code => {
+export const encode = (code) => {
   return Buffer.from(code).toString('hex').toUpperCase()
 }
 
@@ -362,93 +399,94 @@ export const encode = code => {
 export const submitTransaction = async (blob, callback) => {
   blob = JSON.stringify(blob)
 
-  const response = await axios.post('v2/transaction/submit', blob).catch(error => {
-    console.log("submitTransaction error:", error.message)
-  });
+  const response = await axios.post('v2/transaction/submit', blob).catch((error) => {
+    console.log('submitTransaction error:', error.message)
+  })
 
   if (response) {
     callback(response)
   }
 }
 
-export const capitalize = str => {
-  if (!str) return ""
+export const capitalize = (str) => {
+  if (!str) return ''
   return str.charAt(0).toUpperCase() + str.slice(1)
 }
 
 export const network = process.env.NEXT_PUBLIC_NETWORK_NAME
+const webAddress = process.env.NEXT_PUBLIC_WEB_ADDRESS
 export const devNet = ['mainnet', 'staging', 'xahau'].includes(network) ? false : network
 export const xahauNetwork = network.includes('xahau')
 
 export const networks = {
   mainnet: {
     id: 0,
-    server: "https://bithomp.com",
-    nativeCurrency: "XRP",
-    getCoinsUrl: "/go/buy-first-xrp",
-    explorerName: "XRPL",
-    ledgerName: "XRPL",
+    server: webAddress || 'https://bithomp.com',
+    nativeCurrency: 'XRP',
+    getCoinsUrl: '/go/buy-first-xrp',
+    explorerName: 'XRPL',
+    ledgerName: 'XRPL',
     minLedger: 32570,
-    subname: ""
+    subname: ''
   },
   staging: {
     id: 2,
-    server: "https://staging.bithomp.com",
-    nativeCurrency: "XRP",
-    getCoinsUrl: "/faucet/",
-    explorerName: "XRPL Staging",
-    ledgerName: "XRPL",
+    server: 'https://staging.bithomp.com',
+    nativeCurrency: 'XRP',
+    getCoinsUrl: '/faucet/',
+    explorerName: 'XRPL Staging',
+    ledgerName: 'XRPL',
     minLedger: 32570,
-    subname: ""
+    subname: ''
   },
   testnet: {
     id: 1,
-    server: "https://test.bithomp.com",
-    nativeCurrency: "XRP",
-    getCoinsUrl: "/faucet/",
-    explorerName: "XRPL Testnet",
-    ledgerName: "XRPL",
+    server: 'https://test.bithomp.com',
+    nativeCurrency: 'XRP',
+    getCoinsUrl: '/faucet/',
+    explorerName: 'XRPL Testnet',
+    ledgerName: 'XRPL',
     minLedger: 1,
-    subname: "Testnet"
+    subname: 'Testnet'
   },
   devnet: {
     id: 2,
-    server: "https://dev.bithomp.com",
-    nativeCurrency: "XRP",
-    getCoinsUrl: "/faucet/",
-    explorerName: "XRPL Devnet",
-    ledgerName: "XRPL",
+    server: 'https://dev.bithomp.com',
+    nativeCurrency: 'XRP',
+    getCoinsUrl: '/faucet/',
+    explorerName: 'XRPL Devnet',
+    ledgerName: 'XRPL',
     minLedger: 1,
-    subname: "Devnet"
+    subname: 'Devnet'
   },
-  "xahau-testnet": {
+  'xahau-testnet': {
     id: 21338,
-    server: "https://test.xahauexplorer.com",
-    nativeCurrency: "XAH",
-    getCoinsUrl: "/faucet/",
-    explorerName: "Xahau Testnet",
-    ledgerName: "Xahau",
+    server: 'https://test.xahauexplorer.com',
+    nativeCurrency: 'XAH',
+    getCoinsUrl: '/faucet/',
+    explorerName: 'Xahau Testnet',
+    ledgerName: 'Xahau',
     minLedger: 3,
-    subname: "Testnet"
+    subname: 'Testnet'
   },
   xahau: {
     id: 21337,
-    server: "https://xahauexplorer.com",
-    nativeCurrency: "XAH",
+    server: 'https://xahauexplorer.com',
+    nativeCurrency: 'XAH',
     getCoinsUrl: null,
-    explorerName: "Xahau",
-    ledgerName: "Xahau",
+    explorerName: 'Xahau',
+    ledgerName: 'Xahau',
     minLedger: 1,
-    subname: ""
+    subname: ''
   }
 }
 
 // show error if network is not found
 if (!networks[network]) {
   if (network) {
-    throw new Error("Network not found: " + network + ' it can be one of those: ' + Object.keys(networks).join(', '))
+    throw new Error('Network not found: ' + network + ' it can be one of those: ' + Object.keys(networks).join(', '))
   } else {
-    throw new Error("Network needs to be defined in .env.local file")
+    throw new Error('Network needs to be defined in .env.local file')
   }
 }
 
@@ -460,13 +498,16 @@ export const explorerName = networks[network]?.explorerName
 export const ledgerName = networks[network]?.ledgerName
 export const ledgerSubName = networks[network]?.subname
 export const minLedger = networks[network]?.minLedger
+const webAddressParts = server?.replace('http://', '').replace('https://', '').split('.')
+export const webSiteName =
+  webAddressParts[webAddressParts.length - 2] + '.' + webAddressParts[webAddressParts.length - 1]
 
 export const networksIds = {
-  0: { server: "https://bithomp.com", name: "mainnet" },
-  1: { server: "https://test.bithomp.com", name: "testnet" },
-  2: { server: "https://dev.bithomp.com", name: "devnet" },
-  21337: { server: "https://xahauexplorer.com", name: "xahau" },
-  21338: { server: "https://test.xahauexplorer.com", name: "xahau-testnet" }
+  0: { server: 'https://bithomp.com', name: 'mainnet' },
+  1: { server: 'https://test.bithomp.com', name: 'testnet' },
+  2: { server: 'https://dev.bithomp.com', name: 'devnet' },
+  21337: { server: 'https://xahauexplorer.com', name: 'xahau' },
+  21338: { server: 'https://test.xahauexplorer.com', name: 'xahau-testnet' }
 }
 
 const WssServer = () => {
@@ -474,97 +515,108 @@ const WssServer = () => {
   if (process.env.NODE_ENV === 'development') {
     token = '?x-bithomp-token=' + process.env.NEXT_PUBLIC_BITHOMP_API_TEST_KEY
   }
-  return server?.replace("https://", "wss://") + '/wss/' + token
+  return server?.replace('https://', 'wss://') + '/wss/' + token
 }
 export const wssServer = WssServer()
 
 export const networkMinimumDate = (type = 'ledger') => {
   let minDate = null
 
-  if (type === "nft") {
-    if (network === "mainnet") {
-      minDate = new Date("2022-10-31T20:50:51.000Z") // first nft on the xrpl mainent
-    } else if (network === "xahau") {
-      minDate = new Date("2023-11-01T13:00:29.000Z") //first nft on xahau
-    } else if (network === "xahau-testnet") {
-      minDate = new Date("2023-01-28T08:35:30.000Z") //first nft on xahau-testnet
-    } else if (network === "testnet") {
-      minDate = new Date("2023-08-09T01:53:41.000Z") // first nft in history for the testnet
-    } else if (network === "devnet") {
-      minDate = new Date("2023-09-19T20:36:40.000Z") // first nft in history for the devnet
+  if (type === 'nft') {
+    if (network === 'mainnet') {
+      minDate = new Date('2022-10-31T20:50:51.000Z') // first nft on the xrpl mainent
+    } else if (network === 'xahau') {
+      minDate = new Date('2023-11-01T13:00:29.000Z') //first nft on xahau
+    } else if (network === 'xahau-testnet') {
+      minDate = new Date('2023-01-28T08:35:30.000Z') //first nft on xahau-testnet
+    } else if (network === 'testnet') {
+      minDate = new Date('2023-08-09T01:53:41.000Z') // first nft in history for the testnet
+    } else if (network === 'devnet') {
+      minDate = new Date('2023-09-19T20:36:40.000Z') // first nft in history for the devnet
     } else {
-      minDate = new Date("2013-01-01T03:21:10.000Z") // ledger 32570
+      minDate = new Date('2013-01-01T03:21:10.000Z') // ledger 32570
     }
   }
 
   if (!minDate) {
-    if (network === "xahau") {
-      minDate = new Date("2023-10-30T12:21:00.000Z") // ledger 2 on xahau
-    } else if (network === "xahau-testnet") {
-      minDate = new Date("2023-01-27T13:07:10.000Z") // ledger 3 on xahau-testnet
+    if (network === 'xahau') {
+      minDate = new Date('2023-10-30T12:21:00.000Z') // ledger 2 on xahau
+    } else if (network === 'xahau-testnet') {
+      minDate = new Date('2023-01-27T13:07:10.000Z') // ledger 3 on xahau-testnet
     } else {
-      minDate = new Date("2013-01-01T03:21:10.000Z") // ledger 32570 on mainnet
+      minDate = new Date('2013-01-01T03:21:10.000Z') // ledger 32570 on mainnet
     }
   }
 
   return minDate
 }
 
-export const isEmailValid = x => {
-  let re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+export const isEmailValid = (x) => {
+  let re =
+    /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
   return x && re.test(x)
 }
 
-export const isUrlValid = x => {
-  let re = new RegExp('^(https?:\\/\\/)?' + // protocol
-    '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // domain name
-    '((\\d{1,3}\\.){3}\\d{1,3}))' + // OR ip (v4) address
-    '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + // port and path
-    '(\\?[;&a-z\\d%_.~+=-]*)?' + // query string
-    '(\\#[-a-z\\d_]*)?$', 'i') // fragment locator
+export const isUrlValid = (x) => {
+  let re = new RegExp(
+    '^(https?:\\/\\/)?' + // protocol
+      '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // domain name
+      '((\\d{1,3}\\.){3}\\d{1,3}))' + // OR ip (v4) address
+      '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + // port and path
+      '(\\?[;&a-z\\d%_.~+=-]*)?' + // query string
+      '(\\#[-a-z\\d_]*)?$',
+    'i'
+  ) // fragment locator
   return !!re.test(x)
 }
 
-export const isDomainValid = x => {
+export const isDomainValid = (x) => {
   var re = /^((?:(?:(?:\w[\.\-\+]?)*)\w)+)((?:(?:(?:\w[\.\-\+]?){0,62})\w)+)\.(\w{2,6})$/
   return re.test(x)
 }
 
-export const isAddressValid = x => {
+export const isAddressValid = (x) => {
   return isValidClassicAddress(x)
 }
 
-export const isUsernameValid = x => {
+export const isTagValid = (x) => {
+  if (!x) return false
+  if (!/^[0-9]{1,10}$/.test(x)) return false
+  if (parseInt(x) > 4294967295) return false
+  return true
+}
+
+export const isUsernameValid = (x) => {
   return x && /^(?=.{3,18}$)[0-9a-zA-Z]{1,18}[-]{0,1}[0-9a-zA-Z]{1,18}$/.test(x)
 }
 
-export const isAddressOrUsername = x => {
+export const isAddressOrUsername = (x) => {
   return isAddressValid(x) || isUsernameValid(x)
 }
 
-export const isCurrencyHashValid = x => {
+export const isCurrencyHashValid = (x) => {
   return /^[0-9a-zA-Z]{40}$/.test(x)
 }
 
-export const isIdValid = x => {
+export const isIdValid = (x) => {
   return /^[0-9a-zA-Z]{64}$/.test(x)
 }
 
-export const isValidCTID = x => {
+export const isValidCTID = (x) => {
   return /^[cC]{1}[a-fA-F0-9]{15}$/.test(x)
 }
 
-export const isValidUUID = x => {
+export const isValidUUID = (x) => {
   return /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/.test(x)
 }
 
-export const isValidNftXls20 = x => {
+export const isValidNftXls20 = (x) => {
   // if starts with 000, the 4th one is from 0 to (1+2+4+8) 15 (F)
   if (isIdValid(x) && x.substring(0, 3) === '000') return true
   return false
 }
 
-export const isValidJson = x => {
+export const isValidJson = (x) => {
   try {
     JSON.parse(x)
   } catch (e) {
@@ -580,52 +632,46 @@ const makeXfl = (exponent, mantissa) => {
   const maxExponent = 80
 
   // convert types as needed
-  if (typeof (exponent) != 'bigint')
-    exponent = BigInt(exponent);
+  if (typeof exponent != 'bigint') exponent = BigInt(exponent)
 
-  if (typeof (mantissa) != 'bigint')
-    mantissa = BigInt(mantissa);
+  if (typeof mantissa != 'bigint') mantissa = BigInt(mantissa)
 
   // canonical zero
-  if (mantissa == 0n)
-    return 0n;
+  if (mantissa == 0n) return 0n
 
   // normalize
-  let is_negative = mantissa < 0;
-  if (is_negative)
-    mantissa *= -1n;
+  let is_negative = mantissa < 0
+  if (is_negative) mantissa *= -1n
 
   while (mantissa > maxMantissa) {
-    mantissa /= 10n;
-    exponent++;
+    mantissa /= 10n
+    exponent++
   }
   while (mantissa < minMantissa) {
-    mantissa *= 10n;
-    exponent--;
+    mantissa *= 10n
+    exponent--
   }
 
   // canonical zero on mantissa underflow
-  if (mantissa == 0)
-    return 0n;
+  if (mantissa == 0) return 0n
 
   // under and overflows
-  if (exponent > maxExponent || exponent < minExponent)
-    return -1; // note this is an "invalid" XFL used to propagate errors
+  if (exponent > maxExponent || exponent < minExponent) return -1 // note this is an "invalid" XFL used to propagate errors
 
-  exponent += 97n;
+  exponent += 97n
 
-  let xfl = (!is_negative ? 1n : 0n);
-  xfl <<= 8n;
-  xfl |= BigInt(exponent);
-  xfl <<= 54n;
-  xfl |= BigInt(mantissa);
+  let xfl = !is_negative ? 1n : 0n
+  xfl <<= 8n
+  xfl |= BigInt(exponent)
+  xfl <<= 54n
+  xfl |= BigInt(mantissa)
 
-  return xfl;
+  return xfl
 }
 
-const floatToXfl = fl => {
+const floatToXfl = (fl) => {
   let e = 0
-  let d = "" + parseFloat("" + fl)
+  let d = '' + parseFloat('' + fl)
   d = d.toLowerCase()
   let s = d.split('e')
   if (s.length == 2) {
@@ -636,13 +682,11 @@ const floatToXfl = fl => {
   if (s.length == 2) {
     d = d.replace('.', '')
     e -= s[1].length
-  }
-  else if (s.length > 2)
-    d = 0n;
+  } else if (s.length > 2) d = 0n
   return makeXfl(e, d)
 }
 
-const changeEndianness = string => {
+const changeEndianness = (string) => {
   const result = []
   let len = string.length - 2
   while (len >= 0) {
@@ -652,7 +696,7 @@ const changeEndianness = string => {
   return result.join('')
 }
 
-export const floatToXlfHex = fl => {
+export const floatToXlfHex = (fl) => {
   if (!fl) return null
   fl = floatToXfl(fl)
   fl = fl.toString(16)
@@ -660,16 +704,16 @@ export const floatToXlfHex = fl => {
   return fl.toUpperCase()
 }
 
-export const rewardRateHuman = rewardRate => {
+export const rewardRateHuman = (rewardRate) => {
   rewardRate = parseFloat(rewardRate)
-  if (!rewardRate) return "0 % pa"
-  if (rewardRate < 0 || rewardRate > 1) return "Invalid rate"
-  return (Math.round((((1 + rewardRate) ** 12) - 1) * 10000) / 100) + " % pa"
+  if (!rewardRate) return '0 % pa'
+  if (rewardRate < 0 || rewardRate > 1) return 'Invalid rate'
+  return Math.round(((1 + rewardRate) ** 12 - 1) * 10000) / 100 + ' % pa'
 }
 
-export const encodeAddressR = address => {
+export const encodeAddressR = (address) => {
   if (!address) return null
-  return decodeAccountID(address).toString("hex").toUpperCase()
+  return decodeAccountID(address).toString('hex').toUpperCase()
 }
 
 export const shortName = (name, options) => {
@@ -681,14 +725,14 @@ export const shortName = (name, options) => {
     options.maxLength = 18
   }
   if (name?.length > options.maxLength) {
-    name = name.slice(0, name.slice(0, options.maxLength).lastIndexOf(" ")) + '...'
-    if (name.length > (options.maxLength + 3)) {
+    name = name.slice(0, name.slice(0, options.maxLength).lastIndexOf(' ')) + '...'
+    if (name.length > options.maxLength + 3) {
       name = name.slice(0, options.maxLength) + '...'
     }
   }
   return name
 }
 
-export const capitalizeFirstLetter = string => {
+export const capitalizeFirstLetter = (string) => {
   return string.charAt(0).toUpperCase() + string.slice(1)
 }

@@ -1,0 +1,31 @@
+{
+  "error-occured": "Ошибка",
+  "try-later": "Вы уже пробовали сегодня. Вернитесь через {{time}}.",
+  "test-the-speed": "Проверьте скорость и надежность платежей {{explorerName}}",
+  "experience-fast-transactions": "Узнайте, как быстро и легко совершать транзакции в сети {{explorerName}}!",
+  "form": {
+    "placeholder": {
+      "enter-address": "Введите свой адрес {{ledgerName}}"
+    }
+  },
+  "how-it-works": "Как это работает:",
+  "activated-wallet-required": "Требуется активированный кошелек",
+  "ensure-wallet-activated": "Убедитесь, что ваш кошелек активирован.",
+  "receive-currency-drops": "Получите дропы {{nativeCurrency}}",
+  "get-between-drops": "Получите от 1 до 600 дропов {{nativeCurrency}}.",
+  "get-instant-feedback": "Получите моментальную обратную связь",
+  "see-if-payment-succeeded": "Узнайте, удался ли платеж или нет. Узнайте точное время доставки, проверьте комиссию за транзакцию и получите ссылку на транзакцию для просмотра всех деталей.",
+  "daily-testing-limit": "Суточный лимит тестирования",
+  "can-test-only-once-per-day": "Вы можете тестировать только один раз в день (один кошелек на IP).",
+  "button": {
+    "test-now": "Протестировать сейчас"
+  },
+  "try-it-now": "Попробуйте сейчас и узнайте, как быстро обрабатываются платежи {{nativeCurrency}}!",
+  "test-completed": "Тест завершен!",
+  "validated-on-ledger": "<0>Подтверждено</0> в Ledger <2/>",
+  "table": {
+    "fee": "Комиссия",
+    "transaction-hash": "Хэш транзакции"
+  },
+  "confirmed-within-seconds": "Подтверждено в течение <2>{{time}} секунд</2>"
+}
