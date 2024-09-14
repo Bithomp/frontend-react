@@ -88,6 +88,9 @@
             top: 25%;
             font-size: 1em;
             font-weight: bold;
+            @media(max-width: 1360px) and (min-width: 1301px) {
+              font-size: 0.9em;
+            }
           }
           .title-text {
             font-weight: bold;
