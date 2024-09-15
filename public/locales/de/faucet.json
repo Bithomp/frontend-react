@@ -12,7 +12,7 @@
   "activated-wallet-required": "Aktivierte Wallet erforderlich",
   "ensure-wallet-activated": "Stellen Sie sicher, dass Ihre Wallet aktiviert ist.",
   "receive-currency-drops": "Erhalten Sie Cryptocurrency-Drops {{nativeCurrency}}",
-  "get-between-drops": "Erhalten Sie zwischen 1 und 600 Drops {{nativeCurrency}}.",
+  "get-between-drops": "Erhalten Sie zwischen 1 und 100000 Drops {{nativeCurrency}}.",
   "get-instant-feedback": "Erhalten Sie sofortiges Feedback",
   "see-if-payment-succeeded": "Sehen Sie, ob die Zahlung erfolgreich war. Erfahren Sie die genaue Versandzeit, überprüfen Sie die Transaktionsgebühren und erhalten Sie einen Transaktionslink, um alle Details einzusehen.",
   "daily-testing-limit": "Tägliches Testlimit",

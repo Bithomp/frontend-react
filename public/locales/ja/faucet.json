@@ -12,7 +12,7 @@
   "activated-wallet-required": "アクティブなウォレットが必要です",
   "ensure-wallet-activated": "ウォレットがアクティブであることを確認してください。",
   "receive-currency-drops": "{{nativeCurrency}}の暗号通貨ドロップを受け取る",
-  "get-between-drops": "1から600のドロップを{{nativeCurrency}}で受け取ります。",
+  "get-between-drops": "1から100000のドロップを{{nativeCurrency}}で受け取ります。",
   "get-instant-feedback": "瞬時のフィードバックを受け取る",
   "see-if-payment-succeeded": "支払いが成功したかどうかを確認し、正確な送信時間、取引手数料を確認し、すべての詳細を確認するためのトランザクションリンクを取得してください。",
   "daily-testing-limit": "1日のテスト制限",
