@@ -12,7 +12,7 @@
   "activated-wallet-required": "활성화된 지갑이 필요합니다",
   "ensure-wallet-activated": "지갑이 활성화되어 있는지 확인하세요.",
   "receive-currency-drops": "{{nativeCurrency}}의 암호화폐 드롭을 받기",
-  "get-between-drops": "1에서 100000의 드롭을 {{nativeCurrency}}로 받습니다.",
+  "get-between-drops": "당신은 1방울에서 0.1 {{nativeCurrency}}까지 받을 수 있습니다.",
   "get-instant-feedback": "즉각적인 피드백 받기",
   "see-if-payment-succeeded": "결제가 성공했는지 확인하고, 정확한 전송 시간, 거래 수수료를 확인하며 모든 세부 사항을 보려면 거래 링크를 받으세요.",
   "daily-testing-limit": "일일 테스트 한도",
