@@ -421,7 +421,7 @@ export const xahauNetwork = network.includes('xahau')
 export const networks = {
   mainnet: {
     id: 0,
-    server: webAddress || 'https://bithomp.com',
+    server: 'https://xrplexplorer.com',
     nativeCurrency: 'XRP',
     getCoinsUrl: '/go/buy-first-xrp',
     explorerName: 'XRPL',
@@ -490,7 +490,7 @@ if (!networks[network]) {
   }
 }
 
-export const server = networks[network]?.server
+export const server = webAddress || networks[network]?.server
 export const networkId = networks[network]?.id
 export const nativeCurrency = networks[network]?.nativeCurrency
 export const getCoinsUrl = networks[network]?.getCoinsUrl
@@ -503,7 +503,7 @@ export const webSiteName =
   webAddressParts[webAddressParts.length - 2] + '.' + webAddressParts[webAddressParts.length - 1]
 
 export const networksIds = {
-  0: { server: 'https://bithomp.com', name: 'mainnet' },
+  0: { server: 'https://xrplexplorer.com', name: 'mainnet' },
   1: { server: 'https://test.bithomp.com', name: 'testnet' },
   2: { server: 'https://dev.bithomp.com', name: 'devnet' },
   21337: { server: 'https://xahauexplorer.com', name: 'xahau' },

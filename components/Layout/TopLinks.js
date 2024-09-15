@@ -39,7 +39,7 @@ export default function TopLinks() {
     return <div className="top-links">
       <span className='tooltip'>
         <a
-          href="https://bithomp.com/go/exchange-m"
+          href="https://xrplexplorer.com/go/exchange-m"
           target="_blank"
           rel="noreferrer"
           className='top-link orange'
@@ -64,7 +64,7 @@ export default function TopLinks() {
     <div className="top-links">
       <span className='tooltip'>
         <a
-          href="https://bithomp.com/go/top-buy"
+          href="https://xrplexplorer.com/go/top-buy"
           target="_blank"
           rel="noreferrer"
           className='top-link'
@@ -80,7 +80,7 @@ export default function TopLinks() {
 
       <span className='tooltip'>
         <a
-          href="https://bithomp.com/go/top-exchange"
+          href="https://xrplexplorer.com/go/top-exchange"
           target="_blank"
           rel="noreferrer"
           className='top-link'
@@ -96,7 +96,7 @@ export default function TopLinks() {
       
       <span className='tooltip'>
         <a
-          href="https://bithomp.com/go/top-play"
+          href="https://xrplexplorer.com/go/top-play"
           target="_blank"
           rel="noreferrer"
           className='top-link'

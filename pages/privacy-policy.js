@@ -5,6 +5,7 @@ import { useTranslation } from 'next-i18next'
 import SEO from '../components/SEO'
 
 import { getIsSsrMobile } from '../utils/mobile'
+import { server } from '../utils'
 
 export async function getServerSideProps(context) {
   const { locale } = context
@@ -24,7 +25,7 @@ export default function PrivacyPolicy() {
       <SEO title={t('menu.privacy-policy')} noindex={true} />
       <div className="content-text">
         <h1>Privacy Policy</h1>
-        <p>Last updated: August 15, 2024</p>
+        <p>Last updated: September 15, 2024</p>
         <p>
           This Privacy Policy describes Our policies and procedures on the collection, use and disclosure of Your
           information when You use the Service and tells You about Your privacy rights and how the law protects You.
@@ -99,8 +100,7 @@ export default function PrivacyPolicy() {
           </li>
           <li>
             <p>
-              <strong>Website</strong> refers to Bithomp, accessible from{' '}
-              <a href="https://bithomp.com">https://bithomp.com</a>
+              <strong>Website</strong> refers to Bithomp, accessible from <a href={server}>{server}</a>
             </p>
           </li>
           <li>

@@ -231,7 +231,7 @@ export default function SubmitAccountInformation() {
                 "address": "r3bXhbFak2UHK4S1JqmyMiHTN2h4LyhMt6",
                 "verified": false,
                 "name": "bithomp",
-                "domain": "bithomp.com",
+                "domain": "xrplexplorer.com",
                 "email": "support@email.com",
                 "twitter": "twiteter",
                 "facebook": "facebook",
@@ -273,7 +273,7 @@ export default function SubmitAccountInformation() {
               Services are used cross-chain,{' '}
               <a
                 href={
-                  'https://bithomp.com/' +
+                  'https://xrplexplorer.com/' +
                   (i18n.language !== 'en' ? i18n.language + '/' : '') +
                   'submit-account-information'
                 }
