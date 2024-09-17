@@ -220,7 +220,7 @@
   },
   "alerts": {
     "text0": "Dapatkan pemberitahuan saat harga pasar XRP/USD atau XRP/BTC oleh <1>Bitstamp</1> berubah lebih dari 5% dalam satu jam atau lebih dari 10% dalam satu hari.",
-    "text1": "Ikuti saluran Telegram: <1>bithomp</1> atau akun Twitter: <3>bithompAlerts</3>.",
+    "text1": "Ikuti saluran Telegram: <1>bithomp</1> atau akun X: <3>XRP_PriceAlert</3>.",
     "last-alerts": "50 Pemberitahuan Terakhir",
     "date-and-time": "Tanggal & waktu",
     "currency-pair": "Pasangan Mata Uang",

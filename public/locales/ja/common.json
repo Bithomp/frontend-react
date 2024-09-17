@@ -220,7 +220,7 @@
   },
   "alerts": {
     "text0": "<1>Bitstamp</1>によるXRP/USDまたはXRP/BTCの市場価格が、1時間以内に5%以上、または1日以内に10%以上変動した場合にアラートを受け取ります。",
-    "text1": "テレグラムのチャンネル <1>bithomp</1> またはツイッターアカウント <3>bithompAlerts</3> をフォローしてください。",
+    "text1": "テレグラムのチャンネル <1>bithomp</1> またはXアカウント <3>XRP_PriceAlerts</3> をフォローしてください。",
     "last-alerts": "直近50アラート",
     "date-and-time": "日付",
     "currency-pair": "通貨ペア",
