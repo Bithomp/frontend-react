@@ -6,8 +6,8 @@ import LinkIcon from '../public/images/link.svg'
 
 //partner market places (destinations)
 export const partnerMarketplaces = {
-  rpZqTPC8GvrSvEfFsUuHkmPCg29GdQuXhC: { name: 'onXRP', feeText: '1,5%', fee: 0.015, multiplier: 1.015 }, //onxrp mainnet
-  rn6CYo6uSxR6fP7jWg3c8SL5jrqTc2GjCS: { name: 'onXRP', feeText: '1,5%', fee: 0.015, multiplier: 1.015 } //onxrp testnet
+  rpZqTPC8GvrSvEfFsUuHkmPCg29GdQuXhC: { name: 'bidds', feeText: '1,5%', fee: 0.015, multiplier: 1.015 }, //bidds mainnet
+  rn6CYo6uSxR6fP7jWg3c8SL5jrqTc2GjCS: { name: 'bidds', feeText: '1,5%', fee: 0.015, multiplier: 1.015 } //bidds testnet
 }
 
 //identified NFT Market Places
@@ -17,8 +17,8 @@ export const mpUrl = (offer) => {
   if (!service) return ''
   service = service.trim()
   let url = ''
-  if (service === 'onXRP') {
-    url = 'https://nft.onxrp.com/nft/'
+  if (service === 'bidds') {
+    url = 'https://nft.bidds.com/nft/'
   } else if (service === 'xrp.cafe') {
     url = 'https://xrp.cafe/nft/'
   } else if (service === 'xMart') {

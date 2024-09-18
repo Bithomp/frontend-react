@@ -235,7 +235,7 @@ export default function NftOffers({ setSignRequest, refreshPage, account, offerL
         },
         "destinationDetails": {
           "username": null,
-          "service": "onXRP"
+          "service": "bidds"
         },
         "valid": false,
         "validationErrors": [

@@ -454,7 +454,7 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
     //if broker, notify about the offer
     if (data.custom_meta?.blob?.broker) {
       setStatus(t('signin.status.awaiting-broker', { serviceName: data.custom_meta.blob.broker }))
-      if (data.custom_meta.blob.broker === 'onXRP') {
+      if (data.custom_meta.blob.broker === 'bidds') {
         setAwaiting(true)
         const response = await axios('/v2/onxrp/transaction/broker/' + data.response.txid).catch((error) => {
           console.log(error)

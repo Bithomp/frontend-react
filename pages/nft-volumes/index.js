@@ -481,7 +481,7 @@ export default function NftVolumes({
             "destination": "rpZqTPC8GvrSvEfFsUuHkmPCg29GdQuXhC",
             "destinationDetails": {
               "username": null,
-              "service": "onXRP"
+              "service": "bidds"
             }
           }
         }],
