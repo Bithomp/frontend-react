@@ -47,7 +47,8 @@
       transition: transform 0.3s ease;
 
       .dark & {
-        height: 190%;
+        height: 160%;
+        right: -45%;
       }
     }
 
