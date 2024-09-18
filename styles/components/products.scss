@@ -1,0 +1,195 @@
+.products {
+  max-width: 760px;
+  margin: 30px auto;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  justify-content: space-between;
+  position: relative;
+  z-index: 1;
+  gap: 20px;
+
+  @media(min-width: 1600px) {
+    max-width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+
+  @media (max-width: 800px) {
+    grid-template-columns: repeat(1, 1fr);
+  }
+
+  .product {
+    position: relative;
+    flex-basis: calc(50% - 10px);
+    height: 227px;
+    overflow: hidden;
+    background: #090909;
+    box-shadow: 0px 0px 2px 0px #00000040;
+    transition: box-shadow 0.3s ease;
+
+    &:hover {
+      &::before {
+        transform-origin: 50% 0%;
+        transform: scale(1.5) translateY(-50%);
+      }
+    }
+
+    &::before {
+      content: "";
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      right: -20%;
+      width: auto;
+      height: 100%;
+      aspect-ratio: 1.5;
+      z-index: 0;
+      transition: transform 0.3s ease;
+    }
+
+    &:nth-child(2):before {
+      background: radial-gradient(ellipse at center, rgba(#14913E,1) 0%, rgba(#14913E,0) 70%);
+    
+    }
+
+    &:nth-child(3) {
+      &::before {
+        background: radial-gradient(ellipse at center, rgba(#00b1c1,1) 0%, rgba(#00b1c1,0) 70%);
+      }
+    }
+
+    &:nth-child(4) {
+      &::before {
+        background: radial-gradient(ellipse at center, rgba(#3FA3B5,1) 0%, rgba(#3FA3B5,0) 70%);
+      }
+    }
+
+    .light & {
+      background: #fff;
+    }
+
+    @media (max-width: 800px) {
+      margin: 0 auto;
+      width: 362px;
+    }
+
+    @media (max-width: 380px) {
+      width: calc(100% - 20px);
+      margin: 0 10px;
+    }
+
+    &::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    &:nth-child(3),
+    &:nth-child(4) {
+      height: 259px;
+    }
+
+    @media(min-width: 1600px) {
+      max-width: 370px;
+      height: 260px;
+    }
+
+    &__wrap {
+      position: absolute;
+      padding: 40px 20px 20px;
+      inset: 0;
+      z-index: 2;
+      color: #fff;
+
+      .light & {
+        color: #000;
+      }
+
+      @media (max-width: 380px) {
+        padding: 30px 15px 10px;
+      }
+    }
+
+    &__bg {
+      position: absolute;
+      height: 100%;
+      width: auto;
+      bottom: 0;
+      right: 0;
+      z-index: 1;
+
+      @media(min-width: 1600px) {
+        height: 95%;
+      }
+
+      @media (max-width: 380px) {
+        right: -10%;
+      }
+
+      img {
+        height: 100%;
+        width: auto;
+      }
+    }
+
+    &--nft {
+      &::after {
+        background: #dd983d1a;
+      }
+
+      .product__bg {
+        top: -5%;
+        right: 0;
+        width: auto;
+        height: 109%;
+
+        @media (max-width: 380px) {
+          right: -10%;
+        }
+      }
+    }
+
+    &--services::after {
+      background: #3fa3b533;
+    }
+
+    &--xrpl::after {
+      background: #00b1c115;
+    }
+
+    &--api::after {
+      background: #14913e33;
+    }
+
+    h2 {
+      font-size: 24px;
+      line-height: 1;
+      font-weight: 700;
+      margin: 0;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    li {
+      font-weight: 400;
+      font-size: 14px;
+      line-height: 17px;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+
+      span {
+        padding-left: 10px;
+      }
+
+      img {
+        width: 12px;
+      }
+    }
+  }
+}

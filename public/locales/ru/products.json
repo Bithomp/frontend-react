@@ -1,0 +1,25 @@
+{
+  "titles": {
+    "nft": "NFT Эксплорер",
+    "api": "API",
+    "xrpl": "XRPL Сервисы",
+    "services": "Сервисы"
+  },
+  "items": {
+    "search-name": "поиск по имени",
+    "check": "проверить статистику",
+    "your-nft": "представить ваш NFT",
+    "buy-sell": "купить/продать",
+    "manage-nft": "управлять NFT",
+    "registration": "бесплатная регистрация",
+    "balance": "проверить баланс",
+    "transaction-status": "проверить транзакции",
+    "statistics": "получить статистику",
+    "domain": "установить домен",
+    "mint-nft": "создать NFT",
+    "nft-bots": "NFT боты",
+    "notifications": "уведомления",
+    "alerts": "ценовые оповещения",
+    "usernames": "имена пользователей"
+  }
+}
