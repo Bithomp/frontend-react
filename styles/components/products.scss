@@ -45,22 +45,37 @@
       aspect-ratio: 1.5;
       z-index: 0;
       transition: transform 0.3s ease;
+
+      .dark & {
+        height: 190%;
+      }
     }
 
     &:nth-child(2):before {
       background: radial-gradient(ellipse at center, rgba(#14913E,1) 0%, rgba(#14913E,0) 70%);
     
+      .dark & {
+        background: radial-gradient(ellipse at center, #14913E70 0%, rgba(#14913E,0) 70%);
+      }
     }
 
     &:nth-child(3) {
       &::before {
         background: radial-gradient(ellipse at center, rgba(#00b1c1,1) 0%, rgba(#00b1c1,0) 70%);
+
+        .dark & {
+          background: radial-gradient(ellipse at center, rgba(#00b1c1, 0.7) 0%, rgba(#00b1c1,0) 70%);
+        }
       }
+      
     }
 
     &:nth-child(4) {
       &::before {
         background: radial-gradient(ellipse at center, rgba(#3FA3B5,1) 0%, rgba(#3FA3B5,0) 70%);
+        .dark & {
+          background: radial-gradient(ellipse at center, rgba(#3FA3B5, 0.7) 0%, rgba(#3FA3B5,0) 70%);
+        }
       }
     }
 
