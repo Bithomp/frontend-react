@@ -29,13 +29,13 @@
 
     &:hover {
       &::before {
-        transform-origin: 50% 0%;
         transform: scale(1.5) translateY(-50%);
       }
     }
 
     &::before {
       content: "";
+      transform-origin: 50% 0%;
       position: absolute;
       top: 50%;
       transform: translateY(-50%);
