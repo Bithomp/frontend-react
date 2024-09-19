@@ -17,19 +17,22 @@ export default function Products() {
       type: 'api',
       title: t('titles.api', { ns: 'products' }),
       list: [t('items.registration', { ns: 'products' }), t('items.balance', { ns: 'products' }), t('items.transaction-status', { ns: 'products' }), t('items.statistics', { ns: 'products' })],
-      bg: '/images/products/product-bg-2.png'
+      bg: '/images/products/product-bg-2.png',
+      gradient: '/images/products/gradient-3.svg'
     },
     {
       type: 'xrpl',
       title: t('titles.xrpl', { ns: 'products' }),
       list: [t('items.domain', { ns: 'products' }), t('items.mint-nft', { ns: 'products' })],
-      bg: '/images/products/product-bg-3.png'
+      bg: '/images/products/product-bg-3.png',
+      gradient: '/images/products/gradient-1.svg'
     },
     {
       type: 'services',
       title: t('titles.services', { ns: 'products' }),
       list: [t('items.nft-bots', { ns: 'products' }), t('items.notifications', { ns: 'products' }), t('items.alerts', { ns: 'products' }), t('items.usernames', { ns: 'products' })],
-      bg: '/images/products/product-bg-4.png'
+      bg: '/images/products/product-bg-4.png',
+      gradient: '/images/products/gradient-2.svg'
     }
   ]
 
@@ -54,6 +57,11 @@ export default function Products() {
             <div className="product__bg">
               <img alt="bithomp logo" src={product.bg} />
             </div>
+            {product.gradient && (
+              <div className="product__gradient">
+                <img alt="gradient" src={product.gradient} />
+              </div>
+            )}
           </div>
         )
       })}
