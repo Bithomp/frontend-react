@@ -141,7 +141,7 @@ export default function Converter({ account }) {
             <AddressInput
               title={t('table.address')}
               placeholder={t('form.placeholder.enter-address', { ns: 'faucet', ledgerName })}
-              setValue={setAddress}
+              setInnerValue={setAddress}
               rawData={{
                 address: account?.address,
                 addressDetails: { username: account?.username, service: account?.service }
@@ -184,20 +184,16 @@ export default function Converter({ account }) {
             <center>
               {siteKey && (
                 <>
-                  {!token && (
-                    <>
-                      <br />
-                      <Turnstile
-                        siteKey={siteKey}
-                        style={{ margin: 'auto' }}
-                        options={{
-                          theme,
-                          language: turnstileSupportedLanguages.includes(i18n.language) ? i18n.language : 'en'
-                        }}
-                        onSuccess={setToken}
-                      />
-                    </>
-                  )}
+                  <br />
+                  <Turnstile
+                    siteKey={siteKey}
+                    style={{ margin: 'auto' }}
+                    options={{
+                      theme,
+                      language: turnstileSupportedLanguages.includes(i18n.language) ? i18n.language : 'en'
+                    }}
+                    onSuccess={setToken}
+                  />
                   <br />
                   <button
                     className="center button-action"
