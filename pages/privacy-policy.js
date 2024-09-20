@@ -733,30 +733,16 @@ export default function PrivacyPolicy() {
         <h1>Supervisory organs and other authorities</h1>
         <p>Our supervisory authority who You can turn to regarding our data processing is:</p>
         <p>
-          <strong>Name:</strong> Swedish Authority for Privacy Protection (Imy)
+          <strong>Name:</strong> Information Commission of Seychelles
         </p>
         <p>
-          <strong>Address:</strong> Drottninggatan 29, plan 5, 10420 Stockholm
+          <strong>Post address:</strong> P.O. Box 1342, KLA Residence, 3rd Floor, Room 9, Mont Fleuri
         </p>
         <p>
-          <strong>Post address:</strong> Integritetsskyddsmyndigheten Box 8114, 10420 Stockholm
+          <strong>Phone:</strong> (248) 430-3188
         </p>
         <p>
-          <strong>Phone:</strong> 08-657 61 00
-        </p>
-        <p>
-          <strong>Email:</strong> <Mailto email="imy@imy.se" headers={{ subject: 'Privacy Protection' }} />
-        </p>
-        <p>
-          Foreign data protection authorities may also be involved if you have your location or place of business
-          outside Sweden. You can search the relevant authority{' '}
-          <a
-            href="https://ec.europa.eu/justice/article-29/structure/data-protection-authorities/index_en.htm"
-            rel="noreferrer"
-          >
-            here
-          </a>
-          .
+          <strong>Email:</strong> <Mailto email="enquiries@infocom.sc" headers={{ subject: 'Privacy Protection' }} />
         </p>
       </div>
     </>
