@@ -15,13 +15,14 @@ import PriceChart from '../components/Home/PriceChart'
 import Statistics from '../components/Home/Statistics'
 import Ads from '../components/Home/Ads'
 import Faucet from '../components/Home/Faucet'
+import Products from '../components/Home/Products'
 
 export async function getServerSideProps(context) {
   const { locale } = context
   return {
     props: {
       isSsrMobile: getIsSsrMobile(context),
-      ...(await serverSideTranslations(locale, ['common', 'faucet']))
+      ...(await serverSideTranslations(locale, ['common', 'faucet', 'products']))
     }
   }
 }
@@ -93,6 +94,8 @@ export default function Home({ selectedCurrency, setSelectedCurrency, showAds, a
       </Head>
 
       <SearchBlock tab="explorer" />
+
+      <Products />
 
       {rendered && showAds && (
         <div className="home-sponsored">
