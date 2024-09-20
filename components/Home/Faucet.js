@@ -184,20 +184,16 @@ export default function Converter({ account }) {
             <center>
               {siteKey && (
                 <>
-                  {!token && (
-                    <>
-                      <br />
-                      <Turnstile
-                        siteKey={siteKey}
-                        style={{ margin: 'auto' }}
-                        options={{
-                          theme,
-                          language: turnstileSupportedLanguages.includes(i18n.language) ? i18n.language : 'en'
-                        }}
-                        onSuccess={setToken}
-                      />
-                    </>
-                  )}
+                  <br />
+                  <Turnstile
+                    siteKey={siteKey}
+                    style={{ margin: 'auto' }}
+                    options={{
+                      theme,
+                      language: turnstileSupportedLanguages.includes(i18n.language) ? i18n.language : 'en'
+                    }}
+                    onSuccess={setToken}
+                  />
                   <br />
                   <button
                     className="center button-action"
