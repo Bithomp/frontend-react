@@ -54,7 +54,7 @@ export default function SEO({ title, titleWithNetwork, description, image, page,
   }
 
   let twitter = {
-    handle: '@bithomp',
+    handle: '@xrplexplorer',
     site: server,
     cardType: 'summary'
   }

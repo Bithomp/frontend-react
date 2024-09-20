@@ -49,7 +49,7 @@ export default function Pro({ setPayPeriod }) {
         </p>
         <p>
           ✅ <b>Support the Project</b>: By subscribing, you're directly contributing to the growth and development of
-          Bithomp. Your support is deeply appreciated and helps us continue to innovate and improve.
+          our project. Your support is deeply appreciated and helps us continue to innovate and improve.
         </p>
         <p>
           And this is just the beginning! More features to add even greater value to your Pro Subscription are coming

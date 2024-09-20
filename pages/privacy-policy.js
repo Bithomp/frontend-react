@@ -25,7 +25,7 @@ export default function PrivacyPolicy() {
       <SEO title={t('menu.privacy-policy')} noindex={true} />
       <div className="content-text">
         <h1>Privacy Policy</h1>
-        <p>Last updated: September 15, 2024</p>
+        <p>Last updated: September 20, 2024</p>
         <p>
           This Privacy Policy describes Our policies and procedures on the collection, use and disclosure of Your
           information when You use the Service and tells You about Your privacy rights and how the law protects You.
@@ -52,7 +52,8 @@ export default function PrivacyPolicy() {
           <li>
             <p>
               <strong>Company</strong> (referred to as either &quot;the Company&quot;, &quot;We&quot;, &quot;Us&quot; or
-              &quot;Our&quot; in this Agreement) refers to Bithomp AB, Kivra: 559342-2867, 106 31, Stockholm, Sweden.
+              &quot;Our&quot; in this Agreement) refers to Ledger Explorer Ltd., Suite 9, Ansuya Estate, Revolution
+              Avenue, Victoria, Mahe, Seychelles.
             </p>
           </li>
           <li>
@@ -64,7 +65,7 @@ export default function PrivacyPolicy() {
           </li>
           <li>
             <p>
-              <strong>Country</strong> refers to: Sweden
+              <strong>Country</strong> refers to: Malta
             </p>
           </li>
           <li>
@@ -292,7 +293,7 @@ export default function PrivacyPolicy() {
             <strong>country</strong> - country of residence (ex: "SE").
           </li>
           <li>
-            <strong>account</strong> - Logged in user data: XRPL address, hashicon, bithomp username. (ex.{' '}
+            <strong>account</strong> - Logged in user data: address, hashicon, username. (ex.{' '}
             {
               "{'address': 'rhphEJQoxuquJmuJgtLbGyBW2NK6s6nQSW', 'hashicon': 'data:image/png;base64,iV+IKg2dQrggg==', 'username': 'Bithomp'}"
             }

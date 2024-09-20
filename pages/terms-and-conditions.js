@@ -5,7 +5,7 @@ import { useTranslation } from 'next-i18next'
 
 import { getIsSsrMobile } from '../utils/mobile'
 import Link from 'next/link'
-import { server } from '../utils'
+import { ledgerName, server } from '../utils'
 
 export async function getServerSideProps(context) {
   const { locale } = context
@@ -25,7 +25,7 @@ export default function TermsAndConditions() {
       <SEO title={t('menu.terms-and-conditions')} noindex={true} />
       <div className="content-text">
         <h1>Terms and Conditions</h1>
-        <p>Last updated: September 15, 2024</p>
+        <p>Last updated: September 20, 2024</p>
         <p>Please read these terms and conditions carefully before using Our Service.</p>
         <h1>Interpretation and Definitions</h1>
         <h2>Interpretation</h2>
@@ -45,13 +45,14 @@ export default function TermsAndConditions() {
           </li>
           <li>
             <p>
-              <strong>Country</strong> refers to: Sweden
+              <strong>Country</strong> refers to: Malta
             </p>
           </li>
           <li>
             <p>
               <strong>Company</strong> (referred to as either &quot;the Company&quot;, &quot;We&quot;, &quot;Us&quot; or
-              &quot;Our&quot; in this Agreement) refers to Bithomp AB, Kivra: 559342-2867, 106 31, Stockholm, Sweden.
+              &quot;Our&quot; in this Agreement) refers to Ledger Explorer Ltd., Suite 9, Ansuya Estate, Revolution
+              Avenue, Victoria, Mahe, Seychelles.
             </p>
           </li>
           <li>
@@ -83,7 +84,8 @@ export default function TermsAndConditions() {
           </li>
           <li>
             <p>
-              <strong>Website</strong> refers to Bithomp website, accessible from <a href={server}>{server}</a>.
+              <strong>Website</strong> refers to {ledgerName} Explorer website, accessible from{' '}
+              <a href={server}>{server}</a>.
             </p>
           </li>
           <li>
@@ -362,12 +364,12 @@ export default function TermsAndConditions() {
           <strong>1. Acceptance </strong>
         </p>
         <p>
-          The Bithomp API, as outlined below, is provided by Bithomp AB ("Bithomp," "Company," "we," "us," or "our"). If
-          you intend to utilize our Bithomp API, it is essential that you fully accept all the terms and conditions
-          outlined in this Bithomp API Terms of Service ("API Terms"). Before commencing the use of our Bithomp API, it
-          is imperative that you thoroughly read and agree to our API Terms. By accessing or using our Bithomp API, you
-          are expressing your full and legal agreement to abide by all the provisions within these API Terms, in
-          addition to our <Link href="/privacy-policy">Privacy policy</Link> and{' '}
+          The Bithomp API, as outlined below, is provided by Ledger Explorer Ltd. ("Bithomp", "Company", "we", "us", or
+          "our"). If you intend to utilize our Bithomp API, it is essential that you fully accept all the terms and
+          conditions outlined in this Bithomp API Terms of Service ("API Terms"). Before commencing the use of our
+          Bithomp API, it is imperative that you thoroughly read and agree to our API Terms. By accessing or using our
+          Bithomp API, you are expressing your full and legal agreement to abide by all the provisions within these API
+          Terms, in addition to our <Link href="/privacy-policy">Privacy policy</Link> and{' '}
           <Link href="/terms-and-conditions">Terms and Conditions</Link>, the terms of which are integrated herein by
           reference.
         </p>
@@ -382,9 +384,9 @@ export default function TermsAndConditions() {
         <p>
           As a user of the Bithomp API, you acknowledge and accept that the API Terms, along with our{' '}
           <Link href="/privacy-policy">Privacy policy</Link> and{' '}
-          <Link href="/terms-and-conditions">Terms and Conditions</Link>, form a legally binding contract between
-          Bithomp and yourself. This agreement holds true even though it is in electronic form and does not necessitate
-          physical signing or online acknowledgment, governing your use of our Bithomp API.
+          <Link href="/terms-and-conditions">Terms and Conditions</Link>, form a legally binding contract between Ledger
+          Explorer Ltd. and yourself. This agreement holds true even though it is in electronic form and does not
+          necessitate physical signing or online acknowledgment, governing your use of our Bithomp API.
         </p>
 
         <p>
@@ -395,8 +397,8 @@ export default function TermsAndConditions() {
           developed, created, or offered using our Bithomp API.
         </p>
         <p>
-          2.2 "API Documentation" pertains to the documentation, data, and information provided by Bithomp regarding the
-          use of our Bithomp API through our API Site.
+          2.2 "API Documentation" pertains to the documentation, data, and information provided by Ledger Explorer Ltd.
+          regarding the use of our Bithomp API through our API Site.
         </p>
         <p>
           2.3 "API Site" denotes our API development site located <Link href="/admin">HERE</Link>
@@ -406,8 +408,8 @@ export default function TermsAndConditions() {
           along with the associated API Documentation.
         </p>
         <p>
-          2.5 The "Bithomp Brand" includes the "BITHOMP" brand name and other branding elements, names, logos, slogans,
-          service marks, trademarks, and trade names owned by Bithomp.
+          2.5 The "Bithomp Brand" includes the "BITHOMP" and "Ledger Explorer" brand name and other branding elements,
+          names, logos, slogans, service marks, trademarks, and trade names owned by Ledger Explorer Ltd.
         </p>
         <p>
           2.6 "Data" covers (i) any data and content uploaded, posted, transmitted, or otherwise made available by
