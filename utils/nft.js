@@ -7,7 +7,7 @@ import LinkIcon from '../public/images/link.svg'
 //partner market places (destinations)
 export const partnerMarketplaces = {
   rpZqTPC8GvrSvEfFsUuHkmPCg29GdQuXhC: { name: 'bidds', feeText: '1,5%', fee: 0.015, multiplier: 1.015 }, //bidds mainnet
-  rn6CYo6uSxR6fP7jWg3c8SL5jrqTc2GjCS: { name: 'bidds', feeText: '1,5%', fee: 0.015, multiplier: 1.015 } //bidds testnet
+  rhb5g4EHLHCiTAc8fJU5wk2jmsef2wNCxM: { name: 'bidds', feeText: '1,5%', fee: 0.015, multiplier: 1.015 } //bidds testnet new
 }
 
 //identified NFT Market Places
