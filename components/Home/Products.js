@@ -4,19 +4,30 @@ import { useTranslation } from 'next-i18next'
 const logo = '/images/logo-small.svg'
 
 export default function Products() {
-  const { t } = useTranslation(['common', 'products', 'volumes'])
+  const { t } = useTranslation()
 
   const products = [
     {
       type: 'nft',
       title: t('titles.nft', { ns: 'products' }),
-      list: [t('items.search-name', { ns: 'products' }), t('items.check', { ns: 'products' }), t('items.your-nft', { ns: 'products' }), t('items.buy-sell', { ns: 'products' }), t('items.manage-nft', { ns: 'products' })],
+      list: [
+        t('items.search-name', { ns: 'products' }),
+        t('items.check', { ns: 'products' }),
+        t('items.your-nft', { ns: 'products' }),
+        t('items.buy-sell', { ns: 'products' }),
+        t('items.manage-nft', { ns: 'products' })
+      ],
       bg: '/images/products/product-bg-1.png'
     },
     {
       type: 'api',
       title: t('titles.api', { ns: 'products' }),
-      list: [t('items.registration', { ns: 'products' }), t('items.balance', { ns: 'products' }), t('items.transaction-status', { ns: 'products' }), t('items.statistics', { ns: 'products' })],
+      list: [
+        t('items.registration', { ns: 'products' }),
+        t('items.balance', { ns: 'products' }),
+        t('items.transaction-status', { ns: 'products' }),
+        t('items.statistics', { ns: 'products' })
+      ],
       bg: '/images/products/product-bg-2.png',
       gradient: '/images/products/gradient-3.svg'
     },
@@ -30,7 +41,12 @@ export default function Products() {
     {
       type: 'services',
       title: t('titles.services', { ns: 'products' }),
-      list: [t('items.nft-bots', { ns: 'products' }), t('items.notifications', { ns: 'products' }), t('items.alerts', { ns: 'products' }), t('items.usernames', { ns: 'products' })],
+      list: [
+        t('items.nft-bots', { ns: 'products' }),
+        t('items.notifications', { ns: 'products' }),
+        t('items.alerts', { ns: 'products' }),
+        t('items.usernames', { ns: 'products' })
+      ],
       bg: '/images/products/product-bg-4.png',
       gradient: '/images/products/gradient-2.svg'
     }
