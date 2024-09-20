@@ -456,7 +456,7 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
       setStatus(t('signin.status.awaiting-broker', { serviceName: data.custom_meta.blob.broker }))
       if (data.custom_meta.blob.broker === 'onXRP') {
         setAwaiting(true)
-        const response = await axios('/v2/onxrp/transaction/broker/' + data.response.txid).catch((error) => {
+        const response = await axios('/v2/bidds/transaction/broker/' + data.response.txid).catch((error) => {
           console.log(error)
           setStatus(t('signin.status.failed-broker', { serviceName: data.custom_meta.blob.broker }))
           closeSignInFormAndRefresh() //setAwaiting false inside
