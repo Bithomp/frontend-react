@@ -8,7 +8,11 @@
   z-index: 1;
   gap: 20px;
 
-  @media(min-width: 1600px) {
+  @media(min-width: 1500px) and (max-width: 1600px) {
+    gap: 10px;
+  }
+
+  @media(min-width: 1500px) {
     max-width: 100%;
     display: flex;
     justify-content: center;
@@ -33,13 +37,6 @@
       z-index: 0;
       pointer-events: none;
       transition: transform 0.3s ease;
-    }
-
-    &:hover {
-
-      .product__gradient {
-        transform: scale(1.2);
-      }
     }
 
     .light & {
@@ -69,9 +66,13 @@
       height: 259px;
     }
 
+    @media(min-width: 1500px) {
+      max-width: 360px;
+      height: 260px;
+    }
+
     @media(min-width: 1600px) {
       max-width: 370px;
-      height: 260px;
     }
 
     &__wrap {
@@ -98,6 +99,10 @@
       right: 0;
       z-index: 1;
 
+      @media(min-width: 1500px) {
+        height: 90%;
+      }
+
       @media(min-width: 1600px) {
         height: 95%;
       }
@@ -123,6 +128,10 @@
         width: auto;
         height: 109%;
 
+        @media(min-width: 1500px) {
+          right: -8%;
+        }
+
         @media (max-width: 380px) {
           right: -10%;
         }
@@ -133,12 +142,28 @@
       background: #3fa3b533;
     }
 
-    &--xrpl::after {
-      background: #00b1c115;
+    &--xrpl {
+      &::after {
+        background: #00b1c115;
+      }
+
+      @media(min-width: 1500px) {
+        .product__bg {
+          right: -5%;
+        }
+      }
     }
 
-    &--api::after {
-      background: #14913e33;
+    &--api {
+      &::after {
+        background: #14913e33;
+      }
+
+      @media(min-width: 1500px) {
+        .product__bg {
+          right: -5%;
+        }
+      }
     }
 
     h2 {
@@ -151,18 +176,43 @@
     ul {
       list-style: none;
       padding: 0;
+      max-width: 65%;
     }
 
     li {
-      font-weight: 400;
-      font-size: 14px;
-      line-height: 17px;
       margin-bottom: 10px;
-      display: flex;
-      align-items: center;
+
+      a {
+        display: flex;
+        align-items: center;
+        color: #fff;
+        font-weight: 400;
+        font-size: 14px;
+        line-height: 17px;
+        
+
+        &:hover {
+          span::after {
+            transform: scaleX(1);
+            transform-origin: left;
+          }
+        }
+      }
 
       span {
-        padding-left: 10px;
+        margin-left: 10px;
+        position: relative;
+
+        &::after {
+          content: "";
+          position: absolute;
+          inset: auto 0 -2px;
+          height: 1px;
+          background: #fff;
+          transform: scaleX(0);
+          transition: transform 0.3s ease;
+          transform-origin: right;
+        }
       }
 
       img {
