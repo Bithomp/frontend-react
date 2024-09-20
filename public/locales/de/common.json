@@ -298,6 +298,7 @@
     }
   },
   "general": {
+    "link": "link",
     "error": "Fehler",
     "no-data": "Keine Daten verfügbar",
     "loading": "Lade...",

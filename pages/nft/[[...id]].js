@@ -10,7 +10,7 @@ import Link from 'next/link'
 import { stripText, decode, network, isValidJson } from '../../utils'
 import { convertedAmount, usernameOrAddress } from '../../utils/format'
 import { getIsSsrMobile } from '../../utils/mobile'
-import { nftName, mpUrl, bestNftOffer, nftUrl, partnerMarketplaces } from '../../utils/nft'
+import { nftName, mpUrl, bestNftOffer, nftUrl, partnerMarketplaces, ipfsUrl } from '../../utils/nft'
 import {
   shortHash,
   trWithAccount,
@@ -267,12 +267,16 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
       meta.External_Link
     if (url) {
       url = stripText(url)
-      if (url.toLowerCase().slice(0, 8) !== 'https://' && url.slice(0, 7).toLowerCase() !== 'http://') {
+      let urlText = url
+      if (url.toLowerCase().slice(0, 7) === 'ipfs://') {
+        urlText = url.slice(7)
+        url = ipfsUrl(url, 'viewer', 'cl')
+      } else if (url.toLowerCase().slice(0, 8) !== 'https://' && url.slice(0, 7).toLowerCase() !== 'http://') {
         url = 'https://' + url
       }
       return (
         <a href={url} target="_blank" rel="noreferrer nofollow">
-          {url}
+          {urlText}
         </a>
       )
     }

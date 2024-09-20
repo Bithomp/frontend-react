@@ -150,7 +150,7 @@ export default function NftPreview({ nft }) {
           </span>
           <span style={{ float: 'right', padding: '4px 0px' }}>
             <a href={clUrl[contentTab]} target="_blank" rel="noreferrer">
-              {t('tabs.' + contentTab)} IPFS
+              {t('tabs.' + contentTab)} {t('general.link')}
             </a>
           </span>
         </div>
@@ -215,7 +215,7 @@ export default function NftPreview({ nft }) {
       {contentTabList.length < 2 && defaultUrl && (
         <span style={{ padding: '4px 0px' }}>
           <a href={defaultUrl} target="_blank" rel="noreferrer">
-            {t('tabs.' + defaultTab)} IPFS
+            {t('tabs.' + defaultTab)} {t('general.link')}
           </a>
         </span>
       )}
@@ -225,7 +225,7 @@ export default function NftPreview({ nft }) {
           <audio src={audioUrl} controls style={{ display: 'block', margin: '20px auto' }}></audio>
           <span style={{ padding: '4px 0px' }}>
             <a href={clUrl.audio} target="_blank" rel="noreferrer">
-              {t('tabs.audio')} IPFS
+              {t('tabs.audio')} {t('general.link')}
             </a>
           </span>
         </>
