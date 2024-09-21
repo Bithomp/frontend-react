@@ -25,7 +25,7 @@ export default function TermsAndConditions() {
       <SEO title={t('menu.terms-and-conditions')} noindex={true} />
       <div className="content-text">
         <h1>Terms and Conditions</h1>
-        <p>Last updated: September 20, 2024</p>
+        <p>Last updated: September 21, 2024</p>
         <p>Please read these terms and conditions carefully before using Our Service.</p>
         <h1>Interpretation and Definitions</h1>
         <h2>Interpretation</h2>
@@ -800,10 +800,10 @@ export default function TermsAndConditions() {
           <strong>Limitation of Liability</strong>
         </p>
         <p>
-          Bithomp.com and its employees shall not be liable for any direct, indirect, incidental, special, or
-          consequential damages resulting from the use or inability to use the services. This includes, but is not
-          limited to, damages for loss of profits, data, or other intangible losses arising out of or in connection with
-          the use or performance of the service.
+          {server} and its employees shall not be liable for any direct, indirect, incidental, special, or consequential
+          damages resulting from the use or inability to use the services. This includes, but is not limited to, damages
+          for loss of profits, data, or other intangible losses arising out of or in connection with the use or
+          performance of the service.
         </p>
         <p>
           <strong>Changes to Subscription and Terms</strong>
