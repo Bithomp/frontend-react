@@ -441,7 +441,7 @@ export const networks = {
   },
   testnet: {
     id: 1,
-    server: 'https://test.bithomp.com',
+    server: 'https://test.xrplexplorer.com',
     nativeCurrency: 'XRP',
     getCoinsUrl: '/faucet/',
     explorerName: 'XRPL Testnet',
@@ -451,7 +451,7 @@ export const networks = {
   },
   devnet: {
     id: 2,
-    server: 'https://dev.bithomp.com',
+    server: 'https://dev.xrplexplorer.com',
     nativeCurrency: 'XRP',
     getCoinsUrl: '/faucet/',
     explorerName: 'XRPL Devnet',
@@ -504,8 +504,8 @@ export const webSiteName =
 
 export const networksIds = {
   0: { server: 'https://xrplexplorer.com', name: 'mainnet' },
-  1: { server: 'https://test.bithomp.com', name: 'testnet' },
-  2: { server: 'https://dev.bithomp.com', name: 'devnet' },
+  1: { server: 'https://test.xrplexplorer.com', name: 'testnet' },
+  2: { server: 'https://dev.xrplexplorer.com', name: 'devnet' },
   21337: { server: 'https://xahauexplorer.com', name: 'xahau' },
   21338: { server: 'https://test.xahauexplorer.com', name: 'xahau-testnet' }
 }

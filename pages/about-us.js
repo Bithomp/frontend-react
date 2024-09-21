@@ -41,13 +41,13 @@ export default function AboutUs() {
             ,
           </li>
           <li>
-            <a href="https://test.bithomp.com" target="_blank" rel="noreferrer">
+            <a href="https://test.xrplexplorer.com" target="_blank" rel="noreferrer">
               XRPL Testnet
             </a>
             ,
           </li>
           <li>
-            <a href="https://dev.bithomp.com" target="_blank" rel="noreferrer">
+            <a href="https://dev.xrplexplorer.com" target="_blank" rel="noreferrer">
               XRPL Devnet
             </a>
             ,
@@ -111,11 +111,11 @@ export default function AboutUs() {
           <li>
             <b>
               Explorers and Faucets for{' '}
-              <a href="https://test.bithomp.com/faucet/" target="_blank" rel="noreferrer">
+              <a href="https://test.xrplexplorer.com/faucet/" target="_blank" rel="noreferrer">
                 XRPL Testnet
               </a>
               ,{' '}
-              <a href="https://dev.bithomp.com/faucet/" target="_blank" rel="noreferrer">
+              <a href="https://dev.xrplexplorer.com/faucet/" target="_blank" rel="noreferrer">
                 XRPL Devnet
               </a>
               , and{' '}
