@@ -218,32 +218,16 @@
         
 
         &:hover {
-          span::after {
-            transform: scaleX(1);
-            transform-origin: left;
-            transition-delay: 0.1s;
+          span {
+            text-decoration: underline;
           }
         }
       }
 
       span {
-        padding-left: 20px;
+        margin-left: 20px;
+        padding-bottom: 4px;
         position: relative;
-
-        &::after {
-          content: "";
-          position: absolute;
-          inset: auto 0 -2px;
-          height: 1px;
-          background: #fff;
-          transform: scaleX(0);
-          transition: transform 0.3s ease;
-          transform-origin: right;
-
-          .light & {
-            background: #000;
-          }
-        }
       }
 
       img {
