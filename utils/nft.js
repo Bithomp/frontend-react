@@ -335,7 +335,7 @@ const metaUrl = (nft, type = 'image', gateway = 'our') => {
     if (isCorrectFileType(meta.animation, type)) return assetUrl(meta.animation, type, gateway)
     if (isCorrectFileType(meta.animation_url, type)) return assetUrl(meta.animation_url, type, gateway)
     // a hack for xSPECTAR avatars
-    if (nft.issuer === 'ra59pDJcuqKJcQws7Xpuu1S8UYKmKnpUkW') {
+    if (nft.issuer === 'ra59pDJcuqKJcQws7Xpuu1S8UYKmKnpUkW' && nft.nftokenTaxon === 10) {
       return assetUrl(meta.animation_url, type, gateway)
     }
     if (meta.movie) return assetUrl(meta.movie, type, gateway)
