@@ -19,7 +19,7 @@ import AddressInput from './UI/AddressInput'
 import FormInput from './UI/FormInput'
 import { Turnstile } from '@marsidev/react-turnstile'
 import { useEffect, useState } from 'react'
-import { amountFormat, duration, shortHash } from '../utils/format'
+import { addressLink, amountFormat, duration, fullNiceNumber, shortHash } from '../utils/format'
 import { LedgerLink } from '../utils/links'
 
 export default function Converter({ account, type }) {
@@ -45,6 +45,7 @@ export default function Converter({ account, type }) {
   }, [])
 
   useEffect(() => {
+    if (!account?.address) return
     setAddress(account?.address)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [account])
@@ -63,6 +64,7 @@ export default function Converter({ account, type }) {
   }
 
   const onSubmit = async () => {
+    setData({})
     setErrorMessage('')
 
     if (!token) {
@@ -99,7 +101,6 @@ export default function Converter({ account, type }) {
       } else if (error && error.message !== 'canceled') {
         setErrorMessage(t('error.' + error.message))
       }
-      setToken('')
       setLoading(false)
     })
 
@@ -151,17 +152,7 @@ export default function Converter({ account, type }) {
   return (
     <>
       {testPayment && <h2 className="center">{t('test-the-speed', { ns: 'faucet', explorerName })}</h2>}
-      {loading && (
-        <div className="center">
-          <br />
-          <span className="waiting"></span>
-          <br />
-          {t('general.loading')}
-          <br />
-          <br />
-        </div>
-      )}
-      {(step === 0 || !testPayment) && !loading && (
+      {(step === 0 || !testPayment) && (
         <>
           {testPayment && <p className="center">{t('experience-fast-transactions', { ns: 'faucet', explorerName })}</p>}
           <div>
@@ -222,11 +213,11 @@ export default function Converter({ account, type }) {
                     {t('see-if-payment-succeeded', { ns: 'faucet' })}
                   </li>
                   {/*
-              <li>
-                <b>Get Daily Statistics</b>: See the day's stats, including the total number of transactions, the total
-                amount sent, and the fees paid.
-              </li>
-              */}
+                  <li>
+                    <b>Get Daily Statistics</b>: See the day's stats, including the total number of transactions, the total
+                    amount sent, and the fees paid.
+                  </li>
+                  */}
                   <li>
                     <b>{t('daily-testing-limit', { ns: 'faucet' })}</b>:{' '}
                     {t('can-test-only-once-per-day', { ns: 'faucet' })}
@@ -250,7 +241,7 @@ export default function Converter({ account, type }) {
                   <br />
                   <button
                     className="center button-action"
-                    disabled={!token || !isAddressValid(address)}
+                    disabled={!token || !isAddressValid(address) || loading}
                     onClick={onSubmit}
                   >
                     {testPayment
@@ -263,6 +254,16 @@ export default function Converter({ account, type }) {
             </center>
           </div>
         </>
+      )}
+      {loading && (
+        <div className="center">
+          <br />
+          <span className="waiting"></span>
+          <br />
+          {t('general.loading')}
+          <br />
+          <br />
+        </div>
       )}
       {step === 1 && data.state && (
         <div>
@@ -281,8 +282,15 @@ export default function Converter({ account, type }) {
               </p>
               {data.amount && (
                 <p>
-                  {t('table.amount')}: <b className="green">{data.amount} drops</b> (
-                  {amountFormat(data.amount, 6)?.trim()})
+                  {t('table.amount')}:{' '}
+                  {testPayment ? (
+                    <>
+                      <b className="green">{fullNiceNumber(data.amount)} drops</b> (
+                      {amountFormat(data.amount, 6)?.trim()})
+                    </>
+                  ) : (
+                    <b className="green">{amountFormat(data.amount, 6)?.trim()}</b>
+                  )}
                 </p>
               )}
               {data.fee && (
@@ -303,6 +311,11 @@ export default function Converter({ account, type }) {
                 <p>
                   {t('table.transaction-hash', { ns: 'faucet' })}:{' '}
                   <a href={server + '/explorer/' + data.hash}>{shortHash(data.hash)}</a>
+                </p>
+              )}
+              {address && (
+                <p>
+                  {t('table.address')}: {addressLink(address)}
                 </p>
               )}
             </>

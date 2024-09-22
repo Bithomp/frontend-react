@@ -245,7 +245,6 @@ export default function Admin({ redirectToken, account, setAccount }) {
             setErrorMessage(t(error.response.data.error || 'error.' + error.message))
             //{"error":"Authentication token is invalid"}
           }
-          setToken('')
         })
 
       /*
@@ -303,7 +302,6 @@ export default function Admin({ redirectToken, account, setAccount }) {
     setAccount({ ...account, pro: null })
     setStep(0)
     setErrorMessage('')
-    setToken('')
     setAuthToken('')
     setPassword('')
     setLoggedUserData(null)

@@ -123,9 +123,11 @@ export default function Home({ selectedCurrency, setSelectedCurrency, showAds, a
         <Statistics />
       </div>
 
-      <div className="home-faucet">
-        <Faucet account={account} type="testPayment" />
-      </div>
+      {!devNet && (
+        <div className="home-faucet">
+          <Faucet account={account} type="testPayment" />
+        </div>
+      )}
     </>
   )
 }
