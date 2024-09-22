@@ -5,6 +5,7 @@ import { fullDateAndTime } from '../utils/format'
 import { useTheme } from './Layout/ThemeContext'
 
 import Logo from '../public/images/logo.svg'
+import { nativeCurrency } from '../utils'
 
 export default function Receipt({ item, details }) {
   const { t } = useTranslation()
@@ -134,7 +135,7 @@ export default function Receipt({ item, details }) {
                     {t('receipt.paid')}
                   </td>
                   <td>
-                    XRP {xrpPrice} ({rate} {fiatCurrency}/XRP)
+                    {nativeCurrency} {xrpPrice} ({rate} {fiatCurrency}/{nativeCurrency})
                   </td>
                   <td className="bold" style={{ textAlign: 'right' }}>
                     {fiatCurrency} {fiatPrice}

@@ -12,8 +12,7 @@
     "username-hold": "Username <b>{{username}}</b> ditahan untuk pendaftaran oleh akun XRPL lainnya. Anda dapat mencoba lagi dalam 24 jam.",
     "agree-terms-page": "Harap setujui syarat dan ketentuan yang ditentukan pada halaman ini.",
     "agree-terms-site": "Harap setujui syarat dan ketentuan situs web ini.",
-    "agree-privacy-policy": "Harap setujui Kebijakan Privasi kami.",
-    "payment-partly": "Silahkan kirim sisa jumlahnya, sejauh ini kami hanya menerima {{received}} {{currency}} saat <b>{{required}} {{currency}}</b> dibutuhkan."
+    "agree-privacy-policy": "Harap setujui Kebijakan Privasi kami."
   },
   "step0": {
     "text0": "<1>username</1> Bithomp adalah username <3>publik</3> untuk alamat {{ledgerName}} Anda.",

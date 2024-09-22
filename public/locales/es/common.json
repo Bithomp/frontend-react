@@ -333,6 +333,7 @@
     }
   },
   "error": {
+    "payment-partly": "Por favor envia el resto de la cantidad, por el momento solo hemos recibido {{received}} {{currency}} de <b>{{required}} {{currency}}</b> requeridos.",
     "Network Error": "Parece que no hay conexión a internet ;(",
     "Request failed with status code 429": "¡Nos estáis mandando demasiadas peticiones, prueba más tarde!",
     "Request failed with status code 404": "Such API call is not allowed on that network",

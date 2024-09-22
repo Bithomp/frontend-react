@@ -12,8 +12,7 @@
     "username-hold": "ユーザネーム <b>{{username}}</b> は他のアカウントによって登録処理中です。24時間後に再度試してみてください。",
     "agree-terms-page": "記載されている利用規約への同意が必要です。",
     "agree-terms-site": "本サイトの利用規約への同意が必要です。",
-    "agree-privacy-policy": "プライバシーポリシーへの同意が必要です。",
-    "payment-partly": "<b>{{currency}} {{required}}</b>が必要ですが、{{received}} {{currency}}しか受け取っていません。残りの金額を送金してください。"
+    "agree-privacy-policy": "プライバシーポリシーへの同意が必要です。"
   },
   "step0": {
     "text0": "Bithomp<1>ユーザネーム</1>はあなたの{{ledgerName}}アドレスの<3>公開ユーザ名</3>です。",

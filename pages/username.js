@@ -398,8 +398,7 @@ export default function Username({ setSignRequest, account, signOut, addressQuer
         t('error.payment-partly', {
           received: data.bid.totalReceivedAmount,
           required: data.bid.price,
-          currency: data.bid.currency,
-          ns: 'username'
+          currency: data.bid.currency
         })
       )
       return

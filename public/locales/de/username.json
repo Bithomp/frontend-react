@@ -12,8 +12,7 @@
     "username-hold": "Der Benutzername <b>{{username}}</b> ist auf der Warteliste zur Registrierung einer anderen XRPL Adresse. Sie können den Vorgang in 24 Stunden erneut versuchen.",
     "agree-terms-page": "Bitte bestätigen Sie die AGB auf dieser Seite.",
     "agree-terms-site": "Bitte bestätigen Sie die AGB der Webseite.",
-    "agree-privacy-policy": "Bitte bestätigen Sie unsere Datenschutzbestimmungen.",
-    "payment-partly": "Bitte überweisen Sie den Rest des Betrages. Bis jetzt haben wir erst {{received}} {{currency}} erhalten, obwohl <b>{{required}} {{currency}}</b> erwartet wird."
+    "agree-privacy-policy": "Bitte bestätigen Sie unsere Datenschutzbestimmungen."
   },
   "step0": {
     "text0": "Bithomp <1>username</1> ist ein <3>public</3> Benutzername für Ihre {{ledgerName}} Adresse.",

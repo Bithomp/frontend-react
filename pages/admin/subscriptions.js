@@ -362,7 +362,7 @@ export default function Subscriptions({ setSignRequest, receiptQuery, tabQuery }
   useEffect(() => {
     setPayData(null)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [payPeriod, tier])
+  }, [payPeriod, tier, subscriptionsTab])
 
   const onCancel = () => {
     setUpdate(false)
@@ -430,8 +430,7 @@ export default function Subscriptions({ setSignRequest, receiptQuery, tabQuery }
         t('error.payment-partly', {
           received: data.bid.totalReceivedAmount,
           required: data.bid.price,
-          currency: data.bid.currency,
-          ns: 'username'
+          currency: data.bid.currency
         })
       )
       return
