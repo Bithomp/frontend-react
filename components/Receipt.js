@@ -2,23 +2,23 @@ import { useTranslation } from 'next-i18next'
 
 import { fullDateAndTime } from '../utils/format'
 
-import { useTheme } from "./Layout/ThemeContext"
+import { useTheme } from './Layout/ThemeContext'
 
-import Logo from "../public/images/logo.svg"
+import Logo from '../public/images/logo.svg'
 
 export default function Receipt({ item, details }) {
   const { t } = useTranslation()
-  const { theme } = useTheme();
+  const { theme } = useTheme()
 
   if (!details) {
-    return;
+    return
   }
 
   const onPrint = () => {
     if (theme === 'dark') {
-      global.window.__setPreferredTheme("light")
+      global.window.__setPreferredTheme('light')
       window.print()
-      global.window.__setPreferredTheme("dark")
+      global.window.__setPreferredTheme('dark')
     } else {
       window.print()
     }
@@ -27,12 +27,12 @@ export default function Receipt({ item, details }) {
   let timestamp = null
   let fiatPrice = 0
   let xrpPrice = 0
-  let serviceName = "Service name"
+  let serviceName = 'Service name'
   let txHash = ''
   let fiatCurrency = ''
 
-  if (item === "username") {
-    serviceName = t("menu.usernames");
+  if (item === 'username') {
+    serviceName = t('menu.usernames')
     if (details) {
       timestamp = details.completedAt
       fiatPrice = details.priceInSEK
@@ -60,7 +60,7 @@ export default function Receipt({ item, details }) {
       updatedAt: 1658841346
     }
     */
-  } else if (item === "subscription") {
+  } else if (item === 'subscription') {
     /*
     {
       "id": 53,
@@ -95,10 +95,10 @@ export default function Receipt({ item, details }) {
     }
   }
 
-  timestamp = fullDateAndTime(timestamp, null, { asText: true });
-  fiatPrice = fiatPrice?.toFixed(2);
-  xrpPrice = xrpPrice?.toFixed(2);
-  const rate = Math.floor((fiatPrice / xrpPrice) * 100) / 100;
+  timestamp = fullDateAndTime(timestamp, null, { asText: true })
+  fiatPrice = fiatPrice?.toFixed(2)
+  xrpPrice = xrpPrice?.toFixed(2)
+  const rate = Math.floor((fiatPrice / xrpPrice) * 100) / 100
 
   return (
     <>
@@ -106,57 +106,61 @@ export default function Receipt({ item, details }) {
         <div className="receipt-body">
           <div className="receipt-details">
             <div className="receipt-header">
-              <Logo style={{ width: "40%" }} id="receiptLogo" />
+              <Logo style={{ width: '40%' }} id="receiptLogo" />
               <div>{timestamp}</div>
             </div>
             <table>
               <tbody>
                 <tr>
-                  <th>{t("receipt.quantity")}</th>
-                  <th>{t("receipt.items")}</th>
-                  <th style={{ textAlign: "right" }}>{t("receipt.price")}</th>
+                  <th>{t('receipt.quantity')}</th>
+                  <th>{t('receipt.items')}</th>
+                  <th style={{ textAlign: 'right' }}>{t('receipt.price')}</th>
                 </tr>
                 <tr>
                   <td>1</td>
                   <td style={{ textAlign: 'left' }}>{serviceName}</td>
-                  <td style={{ textAlign: "right" }}>{fiatPrice}</td>
+                  <td style={{ textAlign: 'right' }}>{fiatPrice}</td>
                 </tr>
                 <tr>
-                  <td
-                    colSpan="2"
-                    className='bold uppercase'
-                    style={{ textAlign: 'left' }}
-                  >
-                    {t("receipt.total")}
+                  <td colSpan="2" className="bold uppercase" style={{ textAlign: 'left' }}>
+                    {t('receipt.total')}
                   </td>
-                  <td className='bold' style={{ textAlign: "right" }}>{fiatCurrency} {fiatPrice}</td>
+                  <td className="bold" style={{ textAlign: 'right' }}>
+                    {fiatCurrency} {fiatPrice}
+                  </td>
                 </tr>
                 <tr>
-                  <td
-                    className='bold uppercase'
-                    style={{ textAlign: 'left' }}
-                  >
-                    {t("receipt.paid")}
+                  <td className="bold uppercase" style={{ textAlign: 'left' }}>
+                    {t('receipt.paid')}
                   </td>
-                  <td>XRP {xrpPrice} ({rate} {fiatCurrency}/XRP)</td>
-                  <td className='bold' style={{ textAlign: "right" }}>{fiatCurrency} {fiatPrice}</td>
+                  <td>
+                    XRP {xrpPrice} ({rate} {fiatCurrency}/XRP)
+                  </td>
+                  <td className="bold" style={{ textAlign: 'right' }}>
+                    {fiatCurrency} {fiatPrice}
+                  </td>
                 </tr>
               </tbody>
             </table>
             <div className="receipt-order-id">
-              <b className='uppercase'>{t("receipt.order-id")}</b><br />
+              <b className="uppercase">{t('receipt.order-id')}</b>
+              <br />
               {txHash}
             </div>
           </div>
           <div className="receipt-bottom">
-            Octillion S.A.<br />
-            Nancy Whiticker house, 7<br />
-            Old street, Roseau, Dominica.
+            Ledger Explorer Ltd.
+            <br />
+            Suite 9, Ansuya Estate,
+            <br />
+            Revolution Avenue, Victoria,
+            <br />
+            Mahe, Seychelles.
           </div>
         </div>
       </div>
       <p className="center">
-        <input type="button" value={t("button.print")} className="button-action" onClick={onPrint} />
+        <input type="button" value={t('button.print')} className="button-action" onClick={onPrint} />
       </p>
     </>
   )
