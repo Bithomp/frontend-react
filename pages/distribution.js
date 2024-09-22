@@ -7,26 +7,19 @@ import { useRouter } from 'next/router'
 import { getIsSsrMobile } from '../utils/mobile'
 
 export const getServerSideProps = async (context) => {
-  const { query, locale } = context
-  const { period } = query
+  const { locale } = context
   return {
     props: {
-      period: period || "week",
       isSsrMobile: getIsSsrMobile(context),
-      ...(await serverSideTranslations(locale, ['common', 'distribution'])),
-    },
+      ...(await serverSideTranslations(locale, ['common', 'distribution']))
+    }
   }
 }
 
 import SEO from '../components/SEO'
 
 import { useWidth, nativeCurrency } from '../utils'
-import {
-  trWithAccount,
-  amountFormat,
-  userOrServiceLink,
-  niceNumber
-} from '../utils/format'
+import { amountFormat, userOrServiceLink, niceNumber, percentFormat, addressLink } from '../utils/format'
 
 export default function Distribution() {
   const { t } = useTranslation(['common', 'distribution'])
@@ -39,7 +32,7 @@ export default function Distribution() {
   const [data, setData] = useState([])
   const [rawData, setRawData] = useState({})
   const [loading, setLoading] = useState(false)
-  const [errorMessage, setErrorMessage] = useState("")
+  const [errorMessage, setErrorMessage] = useState('')
 
   const controller = new AbortController()
 
@@ -50,15 +43,17 @@ export default function Distribution() {
     setRawData({})
     setData([])
 
-    const response = await axios.get(apiUrl, {
-      signal: controller.signal
-    }).catch(error => {
-      if (error && error.message !== "canceled") {
-        setErrorMessage(t("error." + error.message))
-        setLoading(false) //keep here for fast tab clickers
-      }
-    })
-    const newdata = response?.data;
+    const response = await axios
+      .get(apiUrl, {
+        signal: controller.signal
+      })
+      .catch((error) => {
+        if (error && error.message !== 'canceled') {
+          setErrorMessage(t('error.' + error.message))
+          setLoading(false) //keep here for fast tab clickers
+        }
+      })
+    const newdata = response?.data
 
     if (newdata) {
       setRawData(newdata)
@@ -66,16 +61,16 @@ export default function Distribution() {
       if (newdata.addresses) {
         let list = newdata.addresses
         if (list.length > 0) {
-          setErrorMessage("")
+          setErrorMessage('')
           setData(list)
         } else {
-          setErrorMessage(t("general.no-data"))
+          setErrorMessage(t('general.no-data'))
         }
       } else {
         if (newdata.error) {
           setErrorMessage(newdata.error)
         } else {
-          setErrorMessage("Error")
+          setErrorMessage('Error')
           console.log(newdata)
         }
       }
@@ -108,117 +103,132 @@ export default function Distribution() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isReady])
 
-  return <>
-    <SEO title={t("menu.network.distribution", { nativeCurrency })} />
-    <div className="content-text">
-      <h1 className="center">{t("menu.network.distribution", { nativeCurrency })}</h1>
-      <div className='flex'>
-        <div className="grey-box">
-          {t("desc", { ns: 'distribution', nativeCurrency })}
+  return (
+    <>
+      <SEO title={t('menu.network.distribution', { nativeCurrency })} />
+      <div className="content-text">
+        <h1 className="center">{t('menu.network.distribution', { nativeCurrency })}</h1>
+        <div className="flex">
+          <div className="grey-box">{t('desc', { ns: 'distribution', nativeCurrency })}</div>
+          <div className="grey-box">
+            {loading ? (
+              t('general.loading')
+            ) : (
+              <Trans i18nKey="summary" ns="distribution">
+                There are <b>{{ activeAccounts: niceNumber(rawData?.summary?.activeAccounts) }}</b> active accounts,
+                total available: <b>{{ totalCoins: amountFormat(rawData?.summary?.totalCoins) }}</b>
+              </Trans>
+            )}
+          </div>
         </div>
-        <div className="grey-box">
-          {loading ?
-            t("general.loading")
-            :
-            <Trans i18nKey="summary" ns="distribution">
-              There are <b>{{ activeAccounts: niceNumber(rawData?.summary?.activeAccounts) }}</b> active accounts, total available: <b>{{ totalCoins: amountFormat(rawData?.summary?.totalCoins) }}</b>
-            </Trans>
-          }
-        </div >
-      </div >
-      <br />
-      {
-        (windowWidth > 1000) ?
+        <br />
+        {windowWidth > 1000 ? (
           <table className="table-large shrink">
             <thead>
               <tr>
-                <th className='center'>{t("table.index")}</th>
-                <th>{t("table.address")}</th>
-                <th className='right'>{t("table.balance")}</th>
+                <th className="center">{t('table.index')}</th>
+                <th>{t('table.address')}</th>
+                <th className="right">{t('table.balance')}</th>
               </tr>
             </thead>
             <tbody>
-              {loading ?
-                <tr className='center'>
+              {loading ? (
+                <tr className="center">
                   <td colSpan="100">
                     <br />
                     <span className="waiting"></span>
-                    <br />{t("general.loading")}<br />
+                    <br />
+                    {t('general.loading')}
+                    <br />
                     <br />
                   </td>
                 </tr>
-                :
+              ) : (
                 <>
-                  {(!errorMessage && data) ?
+                  {!errorMessage && data ? (
                     <>
                       {data.length > 0 &&
-                        data.map((r, i) =>
+                        data.map((r, i) => (
                           <tr key={i}>
-                            <td className='center'>{i + 1}</td>
+                            <td className="center">{i + 1}</td>
                             <td>
-                              <table>
-                                <tbody>
-                                  {trWithAccount(r, 'address')}
-                                </tbody>
-                              </table>
+                              {userOrServiceLink(r, 'address') && (
+                                <>
+                                  {userOrServiceLink(r, 'address')}
+                                  <br />
+                                </>
+                              )}
+                              {addressLink(r.address)}
                             </td>
-                            <td className='right'>
-                              {amountFormat(r.balance)}
+                            <td className="right">
+                              {amountFormat(r.balance)} {percentFormat(r.balance, rawData.summary?.totalCoins)}
                             </td>
                           </tr>
-                        )
-                      }
+                        ))}
                     </>
-                    :
-                    <tr><td colSpan="100" className='center orange bold'>{errorMessage}</td></tr>
-                  }
+                  ) : (
+                    <tr>
+                      <td colSpan="100" className="center orange bold">
+                        {errorMessage}
+                      </td>
+                    </tr>
+                  )}
                 </>
-              }
+              )}
             </tbody>
           </table>
-          :
+        ) : (
           <table className="table-mobile">
-            <thead>
-            </thead>
+            <thead></thead>
             <tbody>
-              {loading ?
-                <tr className='center'>
+              {loading ? (
+                <tr className="center">
                   <td colSpan="100">
                     <br />
                     <span className="waiting"></span>
-                    <br />{t("general.loading")}<br />
+                    <br />
+                    {t('general.loading')}
+                    <br />
                     <br />
                   </td>
                 </tr>
-                :
+              ) : (
                 <>
-                  {!errorMessage ? data.map((r, i) =>
-                    <tr key={i}>
-                      <td style={{ padding: "5px" }} className='center'>
-                        <b>{i + 1}</b>
-                      </td>
-                      <td>
-                        <p>
-                          {t("table.address")}: <a href={"/explorer/" + r.address}>{r.address}</a> {userOrServiceLink(r, 'address')}
-                        </p>
-                        {r.service &&
+                  {!errorMessage ? (
+                    data.map((r, i) => (
+                      <tr key={i}>
+                        <td style={{ padding: '5px' }} className="center">
+                          <b>{i + 1}</b>
+                        </td>
+                        <td>
                           <p>
-                            {t("table.service", { ns: "distribution" })}: {r.service}
+                            {userOrServiceLink(r, 'address') && (
+                              <>
+                                {t('table.name')}: {userOrServiceLink(r, 'address')}
+                                <br />
+                              </>
+                            )}
+                            {t('table.address')}: <a href={'/explorer/' + r.address}>{r.address}</a>
+                            <br />
+                            {t('table.balance')}: {amountFormat(r.balance)}{' '}
+                            {percentFormat(r.balance, rawData.summary?.totalCoins)}
                           </p>
-                        }
-                        <p>
-                          {t("table.balance")}: {amountFormat(r.balance)}
-                        </p>
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan="100" className="center orange bold">
+                        {errorMessage}
                       </td>
-                    </tr>)
-                    :
-                    <tr><td colSpan="100" className='center orange bold'>{errorMessage}</td></tr>
-                  }
+                    </tr>
+                  )}
                 </>
-              }
+              )}
             </tbody>
           </table>
-      }
-    </div>
-  </>
+        )}
+      </div>
+    </>
+  )
 }

@@ -39,7 +39,7 @@ import {
   shortNiceNumber,
   addressUsernameOrServiceLink,
   usernameOrAddress,
-  persentFormat,
+  percentFormat,
   niceNumber,
   niceCurrency
 } from '../../utils/format'
@@ -1048,7 +1048,7 @@ export default function NftVolumes({
                               }}
                               , from which <b>{{ brokerSales: shortNiceNumber(rawDataSummary.brokers?.sales, 0) }}</b>{' '}
                               {{
-                                percentBrokerSales: persentFormat(
+                                percentBrokerSales: percentFormat(
                                   rawDataSummary.brokers?.sales,
                                   rawDataSummary.all.sales
                                 )
@@ -1064,7 +1064,7 @@ export default function NftVolumes({
                                 }}
                               </b>{' '}
                               {{
-                                percentBrokerVolume: persentFormat(
+                                percentBrokerVolume: percentFormat(
                                   rawDataSummary.brokers?.volumesInConvertCurrencies[convertCurrency],
                                   rawDataSummary.all.volumesInConvertCurrencies[convertCurrency]
                                 )
@@ -1287,7 +1287,7 @@ export default function NftVolumes({
                                   )}
                                   <td className="right">
                                     {shortNiceNumber(volume.sales, 0)}
-                                    {rawDataSummary && <> {persentFormat(volume.sales, rawDataSummary.all.sales)}</>}
+                                    {rawDataSummary && <> {percentFormat(volume.sales, rawDataSummary.all.sales)}</>}
                                     {listTab !== 'brokers' && nftSalesLink(volume)}
                                   </td>
                                   {(listTab === 'issuers' || listTab === 'collections') && extendedStats && (
@@ -1345,7 +1345,7 @@ export default function NftVolumes({
                                         </table>
                                       )}
                                     </span>{' '}
-                                    {persentFormat(
+                                    {percentFormat(
                                       volume.volumesInConvertCurrencies[convertCurrency],
                                       rawDataSummary?.all.volumesInConvertCurrencies[convertCurrency]
                                     )}
@@ -1439,7 +1439,7 @@ export default function NftVolumes({
                                 )}
                                 <p>
                                   {t('table.sales')}: {shortNiceNumber(volume.sales, 0)}
-                                  {rawDataSummary && <> {persentFormat(volume.sales, rawDataSummary.all.sales)}</>}
+                                  {rawDataSummary && <> {percentFormat(volume.sales, rawDataSummary.all.sales)}</>}
                                   {listTab !== 'brokers' && nftSalesLink(volume)}
                                 </p>
                                 {extendedStats && (
@@ -1453,7 +1453,7 @@ export default function NftVolumes({
                                   {rawDataSummary && (
                                     <>
                                       {' '}
-                                      {persentFormat(
+                                      {percentFormat(
                                         volume.volumesInConvertCurrencies[convertCurrency],
                                         rawDataSummary.all.volumesInConvertCurrencies[convertCurrency]
                                       )}

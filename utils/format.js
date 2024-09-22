@@ -415,6 +415,11 @@ export const addressUsernameOrServiceLink = (data, type, options = {}) => {
   }
 }
 
+export const addressLink = (address, options = {}) => {
+  if (!address) return ''
+  return <a href={'/explorer/' + address}>{options.short ? shortAddress(address) : address}</a>
+}
+
 export const userOrServiceName = (data) => {
   if (data) {
     const { service, username } = data
@@ -458,7 +463,7 @@ export const convertedAmount = (nft, convertCurrency, options) => {
   return null
 }
 
-export const persentFormat = (small, big) => {
+export const percentFormat = (small, big) => {
   if (!small && small !== 0) return
   if (!big && big !== 0) return
   if (small.value && big.value) {

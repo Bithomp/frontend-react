@@ -24,7 +24,7 @@ import DateAndTimeRange from '../components/UI/DateAndTimeRange'
 import SimpleChart from '../components/SimpleChart'
 
 import { chartSpan, useWidth } from '../utils'
-import { shortNiceNumber, persentFormat, niceNumber } from '../utils/format'
+import { shortNiceNumber, percentFormat, niceNumber } from '../utils/format'
 
 import LinkIcon from '../public/images/link.svg'
 
@@ -214,7 +214,7 @@ export default function NftMinters({ periodQuery }) {
                         XRPL had <b>{{ minted: shortNiceNumber(rawData.summary.minted, 0) }}</b> NFTs, from which{' '}
                         <b>{{ mintedAndBurned: shortNiceNumber(rawData.summary.mintedAndBurned, 0) }}</b> NFTs{' '}
                         {{
-                          percentMintedAndBurned: persentFormat(rawData.summary.mintedAndBurned, rawData.summary.minted)
+                          percentMintedAndBurned: percentFormat(rawData.summary.mintedAndBurned, rawData.summary.minted)
                         }}{' '}
                         were burned.
                       </Trans>
@@ -224,7 +224,7 @@ export default function NftMinters({ periodQuery }) {
                         from which <b>{{ mintedAndBurned: shortNiceNumber(rawData.summary.mintedAndBurned, 0) }}</b>{' '}
                         NFTs{' '}
                         {{
-                          percentMintedAndBurned: persentFormat(rawData.summary.mintedAndBurned, rawData.summary.minted)
+                          percentMintedAndBurned: percentFormat(rawData.summary.mintedAndBurned, rawData.summary.minted)
                         }}{' '}
                         were burned during the same period of time, total burned during this period:{' '}
                         <b>{{ burned: niceNumber(rawData.summary.burned, 0) }}</b> NFTs.
@@ -337,7 +337,7 @@ export default function NftMinters({ periodQuery }) {
                             <td className="center">{i + 1}</td>
                             <td>{minter.marketplace}</td>
                             <td className="right">
-                              {shortNiceNumber(minter.minted, 0)} {persentFormat(minter.minted, rawData.summary.minted)}
+                              {shortNiceNumber(minter.minted, 0)} {percentFormat(minter.minted, rawData.summary.minted)}
                               <Link href={'/nft-explorer' + urlParams(minter) + '&mintedPeriod=' + period}>
                                 {' '}
                                 <LinkIcon />
@@ -345,12 +345,12 @@ export default function NftMinters({ periodQuery }) {
                             </td>
                             <td className="right">
                               {shortNiceNumber(minter.mintedWithMetadata, 0)}{' '}
-                              {minter.mintedWithMetadata ? persentFormat(minter.mintedWithMetadata, minter.minted) : ''}
+                              {minter.mintedWithMetadata ? percentFormat(minter.mintedWithMetadata, minter.minted) : ''}
                             </td>
                             {period !== 'all' && (
                               <td className="right">
                                 {shortNiceNumber(minter.mintedAndBurned, 0)}{' '}
-                                {minter.mintedAndBurned ? persentFormat(minter.mintedAndBurned, minter.minted) : ''}
+                                {minter.mintedAndBurned ? percentFormat(minter.mintedAndBurned, minter.minted) : ''}
                                 <Link
                                   href={
                                     '/nft-explorer' +
@@ -416,7 +416,7 @@ export default function NftMinters({ periodQuery }) {
                           </p>
                           <p>
                             {t('table.minted-total', { ns: 'nft-minters' })}: {shortNiceNumber(minter.minted, 0)}{' '}
-                            {persentFormat(minter.minted, rawData.summary.minted)}
+                            {percentFormat(minter.minted, rawData.summary.minted)}
                             <Link href={'/nft-explorer' + urlParams(minter) + '&mintedPeriod=' + period}>
                               {' '}
                               <LinkIcon />
@@ -425,13 +425,13 @@ export default function NftMinters({ periodQuery }) {
                           <p>
                             {t('table.minted-with-metadata', { ns: 'nft-minters' })}:{' '}
                             {shortNiceNumber(minter.mintedWithMetadata, 0)}{' '}
-                            {minter.mintedWithMetadata ? persentFormat(minter.mintedWithMetadata, minter.minted) : ''}
+                            {minter.mintedWithMetadata ? percentFormat(minter.mintedWithMetadata, minter.minted) : ''}
                           </p>
                           {period !== 'all' && (
                             <p>
                               {t('table.minted-and-burned', { ns: 'nft-minters' })}:{' '}
                               {shortNiceNumber(minter.mintedAndBurned, 0)}{' '}
-                              {minter.mintedAndBurned ? persentFormat(minter.mintedAndBurned, minter.minted) : ''}
+                              {minter.mintedAndBurned ? percentFormat(minter.mintedAndBurned, minter.minted) : ''}
                               <Link
                                 href={
                                   '/nft-explorer' +
