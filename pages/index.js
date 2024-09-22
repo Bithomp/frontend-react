@@ -14,7 +14,7 @@ import Converter from '../components/Home/Converter'
 import PriceChart from '../components/Home/PriceChart'
 import Statistics from '../components/Home/Statistics'
 import Ads from '../components/Home/Ads'
-import Faucet from '../components/Home/Faucet'
+import Faucet from '../components/Faucet'
 
 export async function getServerSideProps(context) {
   const { locale } = context

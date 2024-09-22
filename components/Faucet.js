@@ -12,15 +12,15 @@ import {
   typeNumberOnly,
   devNet,
   capitalize
-} from '../../utils'
-import { useTheme } from '../../components/Layout/ThemeContext'
+} from '../utils'
+import { useTheme } from './Layout/ThemeContext'
 
-import AddressInput from '../UI/AddressInput'
-import FormInput from '../UI/FormInput'
+import AddressInput from './UI/AddressInput'
+import FormInput from './UI/FormInput'
 import { Turnstile } from '@marsidev/react-turnstile'
 import { useEffect, useState } from 'react'
-import { amountFormat, duration, shortHash } from '../../utils/format'
-import { LedgerLink } from '../../utils/links'
+import { amountFormat, duration, shortHash } from '../utils/format'
+import { LedgerLink } from '../utils/links'
 
 export default function Converter({ account, type }) {
   const [data, setData] = useState({})

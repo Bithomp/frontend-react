@@ -1,5 +1,5 @@
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import Faucet from '../components/Home/Faucet'
+import Faucet from '../components/Faucet'
 
 import SEO from '../components/SEO'
 
