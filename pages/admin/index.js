@@ -317,7 +317,7 @@ export default function Admin({ redirectToken, account, setAccount }) {
   return (
     <>
       <SEO title={t('header', { ns: 'admin' })} />
-      <div className="page-admin content-center">
+      <div className="page-admin">
         <h1 className="center">{step < 1 ? 'Welcome to Bithomp Pro' : t('header', { ns: 'admin' })}</h1>
 
         {step === 0 && (
@@ -479,6 +479,8 @@ export default function Admin({ redirectToken, account, setAccount }) {
             </>
           )}
         </div>
+        <br />
+        <br />
       </div>
     </>
   )

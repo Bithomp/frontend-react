@@ -376,6 +376,7 @@ export default function Subscriptions({ setSignRequest, receiptQuery, tabQuery }
     if (!data?.bid?.status) return
 
     setBidData(data)
+    setPaymentErrorMessage('')
     /* 
         {
           "bid": {
@@ -429,7 +430,7 @@ export default function Subscriptions({ setSignRequest, receiptQuery, tabQuery }
       setPaymentErrorMessage(
         t('error.payment-partly', {
           received: data.bid.totalReceivedAmount,
-          required: data.bid.price,
+          required: shortNiceNumber(Math.ceil(data.bid.price * 100) / 100, 2, 2),
           currency: data.bid.currency
         })
       )
@@ -666,7 +667,6 @@ export default function Subscriptions({ setSignRequest, receiptQuery, tabQuery }
 
                 {(receiptQuery === 'true' || step === 2) && (
                   <>
-                    <br />
                     <p className="center orange">We have received your payment.</p>
                     {receiptQuery === 'false' && <Receipt item="subscription" details={bidData.bid} />}
                   </>
