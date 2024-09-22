@@ -185,7 +185,7 @@ export default function Converter({ account, type }) {
             />
             {!testPayment && (
               <div>
-                <br />
+                {width > 1100 && <br />}
                 <span className="input-title">
                   {capitalize(devNet)} {nativeCurrency} amount (maximum: 100 {nativeCurrency})
                 </span>
