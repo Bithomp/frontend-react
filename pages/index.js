@@ -124,7 +124,7 @@ export default function Home({ selectedCurrency, setSelectedCurrency, showAds, a
       </div>
 
       <div className="home-faucet">
-        <Faucet account={account} />
+        <Faucet account={account} type="testPayment" />
       </div>
     </>
   )

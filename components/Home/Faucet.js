@@ -8,7 +8,10 @@ import {
   isAddressValid,
   server,
   isTagValid,
-  useWidth
+  useWidth,
+  typeNumberOnly,
+  devNet,
+  capitalize
 } from '../../utils'
 import { useTheme } from '../../components/Layout/ThemeContext'
 
@@ -19,10 +22,11 @@ import { useEffect, useState } from 'react'
 import { amountFormat, duration, shortHash } from '../../utils/format'
 import { LedgerLink } from '../../utils/links'
 
-export default function Converter({ account }) {
+export default function Converter({ account, type }) {
   const [data, setData] = useState({})
   const [address, setAddress] = useState(account?.address)
   const [destinationTag, setDestinationTag] = useState(null)
+  const [amount, setAmount] = useState('100000000')
   const [siteKey, setSiteKey] = useState('')
   const [errorMessage, setErrorMessage] = useState()
   const [token, setToken] = useState()
@@ -32,6 +36,8 @@ export default function Converter({ account }) {
   const { t, i18n } = useTranslation()
   const { theme } = useTheme()
   const width = useWidth()
+
+  const testPayment = type === 'testPayment'
 
   useEffect(() => {
     fetchData()
@@ -80,7 +86,14 @@ export default function Converter({ account }) {
     if (destinationTag) {
       data.destinationTag = parseInt(destinationTag)
     }
-    const response = await axios.post('v2/testPayment', data).catch((error) => {
+
+    if (!testPayment) {
+      data.amount = amount
+    }
+
+    const endPoint = testPayment ? 'v2/testPayment' : 'xrpl/faucet'
+
+    const response = await axios.post(endPoint, data).catch((error) => {
       if (error.response?.data?.error === 'Invalid captcha') {
         setErrorMessage('Captcha timeout, try again.')
       } else if (error && error.message !== 'canceled') {
@@ -115,15 +128,29 @@ export default function Converter({ account }) {
         }
         const time = duration(t, response?.data?.timeLeft, options)
         setErrorMessage(t('try-later', { ns: 'faucet', time }))
+      } else if (response?.data?.state === 'tecNO_DST_INSUF_XRP') {
+        setErrorMessage('The destination address is not activated, send a larger amount to activate it!')
       } else {
-        setErrorMessage(response?.data?.message || t('error-occured', { ns: 'faucet' }))
+        setErrorMessage(response?.data?.message || response?.data?.state || t('error-occured', { ns: 'faucet' }))
       }
     }
   }
 
+  const onAmountChange = (e) => {
+    setErrorMessage('')
+    let amountString = e.target.value
+    if (!amountString || amountString < 0) return
+    if (amountString > 100) {
+      setErrorMessage("The amount can't be more than 100 " + nativeCurrency)
+      return
+    }
+    amountString = (amountString * 1000000).toString()
+    setAmount(amountString)
+  }
+
   return (
     <>
-      <h2 className="center">{t('test-the-speed', { ns: 'faucet', explorerName })}</h2>
+      {testPayment && <h2 className="center">{t('test-the-speed', { ns: 'faucet', explorerName })}</h2>}
       {loading && (
         <div className="center">
           <br />
@@ -134,9 +161,9 @@ export default function Converter({ account }) {
           <br />
         </div>
       )}
-      {step === 0 && !loading && (
+      {(step === 0 || !testPayment) && !loading && (
         <>
-          <p className="center">{t('experience-fast-transactions', { ns: 'faucet', explorerName })}</p>
+          {testPayment && <p className="center">{t('experience-fast-transactions', { ns: 'faucet', explorerName })}</p>}
           <div>
             <AddressInput
               title={t('table.address')}
@@ -156,31 +183,57 @@ export default function Converter({ account }) {
               setInnerValue={setDestinationTag}
               hideButton={true}
             />
+            {!testPayment && (
+              <div>
+                <br />
+                <span className="input-title">
+                  {capitalize(devNet)} {nativeCurrency} amount (maximum: 100 {nativeCurrency})
+                </span>
+                <input
+                  placeholder={'Enter amount in ' + nativeCurrency}
+                  onChange={onAmountChange}
+                  onKeyPress={typeNumberOnly}
+                  className="input-text"
+                  spellCheck="false"
+                  maxLength="35"
+                  min="0"
+                  type="text"
+                  inputMode="decimal"
+                  defaultValue="100"
+                />
+              </div>
+            )}
           </div>
           <div>
-            <p>{t('how-it-works', { ns: 'faucet' })}</p>
-            <ul>
-              <li>
-                <b>{t('activated-wallet-required', { ns: 'faucet' })}</b>:{' '}
-                {t('ensure-wallet-activated', { ns: 'faucet' })}
-              </li>
-              <li>
-                <b>{t('receive-currency-drops', { ns: 'faucet', nativeCurrency })}</b>:{' '}
-                {t('get-between-drops', { ns: 'faucet', nativeCurrency })}
-              </li>
-              <li>
-                <b>{t('get-instant-feedback', { ns: 'faucet' })}</b>: {t('see-if-payment-succeeded', { ns: 'faucet' })}
-              </li>
-              {/*
+            {testPayment && (
+              <>
+                <p>{t('how-it-works', { ns: 'faucet' })}</p>
+                <ul>
+                  <li>
+                    <b>{t('activated-wallet-required', { ns: 'faucet' })}</b>:{' '}
+                    {t('ensure-wallet-activated', { ns: 'faucet' })}
+                  </li>
+                  <li>
+                    <b>{t('receive-currency-drops', { ns: 'faucet', nativeCurrency })}</b>:{' '}
+                    {t('get-between-drops', { ns: 'faucet', nativeCurrency })}
+                  </li>
+                  <li>
+                    <b>{t('get-instant-feedback', { ns: 'faucet' })}</b>:{' '}
+                    {t('see-if-payment-succeeded', { ns: 'faucet' })}
+                  </li>
+                  {/*
               <li>
                 <b>Get Daily Statistics</b>: See the day's stats, including the total number of transactions, the total
                 amount sent, and the fees paid.
               </li>
               */}
-              <li>
-                <b>{t('daily-testing-limit', { ns: 'faucet' })}</b>: {t('can-test-only-once-per-day', { ns: 'faucet' })}
-              </li>
-            </ul>
+                  <li>
+                    <b>{t('daily-testing-limit', { ns: 'faucet' })}</b>:{' '}
+                    {t('can-test-only-once-per-day', { ns: 'faucet' })}
+                  </li>
+                </ul>
+              </>
+            )}
             <center>
               {siteKey && (
                 <>
@@ -200,20 +253,22 @@ export default function Converter({ account }) {
                     disabled={!token || !isAddressValid(address)}
                     onClick={onSubmit}
                   >
-                    {t('button.test-now', { ns: 'faucet' })}
+                    {testPayment
+                      ? t('button.test-now', { ns: 'faucet' })
+                      : 'Get ' + explorerName + ' ' + nativeCurrency}
                   </button>
                 </>
               )}
-              <p>{t('try-it-now', { ns: 'faucet', nativeCurrency })}</p>
+              {testPayment && <p>{t('try-it-now', { ns: 'faucet', nativeCurrency })}</p>}
             </center>
           </div>
         </>
       )}
-      {step === 1 && (
+      {step === 1 && data.state && (
         <div>
           {!errorMessage && (
             <>
-              <h3 className="center">{t('test-completed', { ns: 'faucet' })}</h3>
+              <h3 className="center">{testPayment ? t('test-completed', { ns: 'faucet' }) : 'Submitted'}</h3>
               <p>
                 {t('table.status')}:{' '}
                 {data.state === 'validated' ? (
@@ -244,16 +299,19 @@ export default function Converter({ account }) {
                   </Trans>
                 </p>
               )}
-              <p>
-                {t('table.transaction-hash', { ns: 'faucet' })}:{' '}
-                <a href={server + '/explorer/' + data.hash}>{shortHash(data.hash)}</a>
-              </p>
+              {data.hash && (
+                <p>
+                  {t('table.transaction-hash', { ns: 'faucet' })}:{' '}
+                  <a href={server + '/explorer/' + data.hash}>{shortHash(data.hash)}</a>
+                </p>
+              )}
             </>
           )}
         </div>
       )}
       {errorMessage && (
         <div className="center">
+          <br />
           <span className="bold red center">{errorMessage}</span>
         </div>
       )}
