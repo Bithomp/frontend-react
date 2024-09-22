@@ -18,45 +18,13 @@ export async function getServerSideProps(context) {
 }
 
 export default function FaucetPage({ account }) {
-  if (!devNet) {
-    return (
-      <>
-        <SEO title={ledgerName + ' Faucet'} description={'Get Free ' + ledgerName + ' ' + nativeCurrency} />
-        <div className="content-text content-center">
-          <h1 className="center">{ledgerName} Faucet</h1>
-          <p>
-            <center>We do not have a faucet on the Mainnet 😅</center>
-          </p>
-          Here are our Faucets:
-          <ul>
-            <li>
-              <a href="https://test.xrplexplorer.com/faucet" target="_blank" rel="noreferrer">
-                XRPL Testnet
-              </a>
-            </li>
-            <li>
-              <a href="https://dev.xrplexplorer.com/faucet" target="_blank" rel="noreferrer">
-                XRPL Devnet
-              </a>
-            </li>
-            <li>
-              <a href="https://test.xahauexplorer.com/faucet" target="_blank" rel="noreferrer">
-                Xahau Testnet
-              </a>
-            </li>
-          </ul>
-        </div>
-      </>
-    )
-  }
-
   return (
     <>
-      <SEO title={ledgerName + ' Faucet'} description={'Get Free ' + ledgerName + ' ' + nativeCurrency} />
+      <SEO title="Faucet" description={'Get Free ' + ledgerName + ' ' + nativeCurrency} />
       <div className="content-text content-center">
-        <h1 className="center">Faucet</h1>
+        {devNet && <h1 className="center">Faucet</h1>}
         <FaucetTabs />
-        <Faucet account={account} />
+        <Faucet account={account} type={devNet ? 'faucet' : 'testPayment'} />
       </div>
     </>
   )
