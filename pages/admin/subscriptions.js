@@ -346,6 +346,7 @@ export default function Subscriptions({ setSignRequest, receiptQuery, tabQuery }
         }
       */
       setPayData(paymentData?.data)
+      updateBid(paymentData?.data)
       setUpdate(true)
       setStep(1)
     }
