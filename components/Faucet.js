@@ -93,7 +93,7 @@ export default function Converter({ account, type }) {
       data.amount = amount
     }
 
-    const endPoint = testPayment ? 'v2/testPayment' : 'xrpl/faucet'
+    const endPoint = testPayment ? 'v2/testPayment' : 'v2/faucet'
 
     const response = await axios.post(endPoint, data).catch((error) => {
       if (error.response?.data?.error === 'Invalid captcha') {
