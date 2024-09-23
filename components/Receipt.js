@@ -154,7 +154,7 @@ export default function Receipt({ item, details }) {
             <br />
             Suite 9, Ansuya Estate,
             <br />
-            Revolution Avenue, Victoria,
+            Royal street, Victoria,
             <br />
             Mahe, Seychelles.
           </div>

@@ -104,7 +104,7 @@ export default function Footer() {
           <br />
           <b>Ledger Explorer Ltd</b>
           <br />
-          Suite 9, Ansuya Estate, Revolution Avenue,
+          Suite 9, Ansuya Estate, Royal street,
           <br />
           Victoria, Mahe, Seychelles
         </div>
