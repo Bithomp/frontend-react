@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { LogoJsonLd, SocialProfileJsonLd } from 'next-seo'
 import Head from 'next/head'
 
-import { server, explorerName, nativeCurrency, devNet } from '../utils'
+import { server, explorerName, nativeCurrency, devNet, network } from '../utils'
 import { getIsSsrMobile } from '../utils/mobile'
 
 import SEO from '../components/SEO'
@@ -41,6 +41,8 @@ const ldJsonWebsite = {
     'query-input': 'required name=search_term_string'
   }
 }
+
+const testPaymentAvailable = network === 'xahau'
 
 export default function Home({ selectedCurrency, setSelectedCurrency, showAds, account }) {
   const { t } = useTranslation()
@@ -123,7 +125,7 @@ export default function Home({ selectedCurrency, setSelectedCurrency, showAds, a
         <Statistics />
       </div>
 
-      {!devNet && (
+      {!devNet && testPaymentAvailable && (
         <div className="home-faucet">
           <Faucet account={account} type="testPayment" />
         </div>
