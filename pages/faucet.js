@@ -22,9 +22,10 @@ export default function FaucetPage({ account }) {
     <>
       <SEO title="Faucet" description={'Get Free ' + ledgerName + ' ' + nativeCurrency} />
       <div className="content-text content-center">
-        {devNet && <h1 className="center">Faucet</h1>}
+        <h1 className="center">Faucet</h1>
+        {!devNet && <p className="center">Choose the Network</p>}
         <FaucetTabs />
-        <Faucet account={account} type={devNet ? 'faucet' : 'testPayment'} />
+        {devNet ? <Faucet account={account} /> : <br />}
       </div>
     </>
   )

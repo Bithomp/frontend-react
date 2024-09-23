@@ -5,15 +5,17 @@ import {
   explorerName,
   ledgerName,
   turnstileSupportedLanguages,
-  isAddressValid,
   server,
   isTagValid,
   useWidth,
   typeNumberOnly,
   devNet,
-  capitalize
+  capitalize,
+  isAddressValid,
+  addAndRemoveQueryParams
 } from '../utils'
 import { useTheme } from './Layout/ThemeContext'
+import { useRouter } from 'next/router'
 
 import AddressInput from './UI/AddressInput'
 import FormInput from './UI/FormInput'
@@ -22,11 +24,13 @@ import { useEffect, useState } from 'react'
 import { addressLink, amountFormat, duration, fullNiceNumber, shortHash } from '../utils/format'
 import { LedgerLink } from '../utils/links'
 
-export default function Converter({ account, type }) {
+export default function Faucet({ account, type }) {
+  const router = useRouter()
+  const { address: queryAddress, amount: queryAmount, destinationTag: queryDestinationTag } = router.query
   const [data, setData] = useState({})
-  const [address, setAddress] = useState(account?.address)
-  const [destinationTag, setDestinationTag] = useState(null)
-  const [amount, setAmount] = useState('100000000')
+  const [address, setAddress] = useState(isAddressValid(queryAddress) ? queryAddress : account?.address)
+  const [destinationTag, setDestinationTag] = useState(isTagValid(queryDestinationTag) ? queryDestinationTag : null)
+  const [amount, setAmount] = useState((queryAmount * 1000000).toString() || '100000000')
   const [siteKey, setSiteKey] = useState('')
   const [errorMessage, setErrorMessage] = useState()
   const [token, setToken] = useState()
@@ -38,6 +42,46 @@ export default function Converter({ account, type }) {
   const width = useWidth()
 
   const testPayment = type === 'testPayment'
+
+  useEffect(() => {
+    let queryAddList = []
+    let queryRemoveList = []
+    if (address !== queryAddress) {
+      if (isAddressValid(address)) {
+        queryAddList.push({
+          name: 'address',
+          value: address
+        })
+      } else {
+        queryRemoveList.push('address')
+      }
+    }
+
+    if (destinationTag !== queryDestinationTag) {
+      if (isTagValid(destinationTag)) {
+        queryAddList.push({
+          name: 'destinationTag',
+          value: destinationTag
+        })
+      } else {
+        queryRemoveList.push('destinationTag')
+      }
+    }
+
+    if (amount !== (queryAmount * 1000000).toString()) {
+      if (amount) {
+        queryAddList.push({
+          name: 'amount',
+          value: amount / 1000000
+        })
+      } else {
+        queryRemoveList.push('amount')
+      }
+    }
+
+    addAndRemoveQueryParams(router, queryAddList, queryRemoveList)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [address, destinationTag, amount])
 
   useEffect(() => {
     fetchData()
@@ -161,7 +205,7 @@ export default function Converter({ account, type }) {
               placeholder={t('form.placeholder.enter-address', { ns: 'faucet', ledgerName })}
               setInnerValue={setAddress}
               rawData={{
-                address: account?.address,
+                address,
                 addressDetails: { username: account?.username, service: account?.service }
               }}
               type="address"
@@ -173,6 +217,8 @@ export default function Converter({ account, type }) {
               placeholder={t('form.placeholder.destination-tag')}
               setInnerValue={setDestinationTag}
               hideButton={true}
+              onKeyPress={typeNumberOnly}
+              defaultValue={destinationTag}
             />
             {!testPayment && (
               <div>
@@ -190,7 +236,7 @@ export default function Converter({ account, type }) {
                   min="0"
                   type="text"
                   inputMode="decimal"
-                  defaultValue="100"
+                  defaultValue={amount / 1000000}
                 />
               </div>
             )}

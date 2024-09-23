@@ -1,12 +1,20 @@
-import { IoMdClose } from "react-icons/io"
+import { IoMdClose } from 'react-icons/io'
 import { useState, useEffect } from 'react'
 
-export default function FormInput({ placeholder, title, setValue, defaultValue, disabled, hideButton, setInnerValue }) {
-
-  const [inputInnerValue, setInputInnerValue] = useState("")
+export default function FormInput({
+  placeholder,
+  title,
+  setValue,
+  defaultValue,
+  disabled,
+  hideButton,
+  setInnerValue,
+  onKeyPress
+}) {
+  const [inputInnerValue, setInputInnerValue] = useState('')
 
   useEffect(() => {
-    if (defaultValue || defaultValue === "0" || defaultValue === 0) {
+    if (defaultValue || defaultValue === '0' || defaultValue === 0) {
       setInputInnerValue(defaultValue)
     }
   }, [defaultValue])
@@ -18,36 +26,42 @@ export default function FormInput({ placeholder, title, setValue, defaultValue, 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [inputInnerValue])
 
-  const onChange = e => {
+  const onChange = (e) => {
     const value = e.target.value
-    if (value !== "0" && !value) {
+    if (value !== '0' && !value) {
       clearAll()
     } else {
       setInputInnerValue(value)
     }
   }
 
-  const onKeyUp = e => {
+  const onKeyUp = (e) => {
     const value = e.target.value
     if (e.key === 'Enter') {
-      if (setValue) { setValue(value) }
+      if (setValue) {
+        setValue(value)
+      }
       return
     }
   }
 
   const onSearchClick = () => {
-    if (setValue) { setValue(inputInnerValue) }
+    if (setValue) {
+      setValue(inputInnerValue)
+    }
     setInputInnerValue(inputInnerValue)
   }
 
   const clearAll = () => {
-    if (setValue) { setValue("") }
-    setInputInnerValue("")
+    if (setValue) {
+      setValue('')
+    }
+    setInputInnerValue('')
   }
 
   return (
     <div className="center">
-      <span className='input-title'>{title}</span>
+      <span className="input-title">{title}</span>
       <div className={`form-input ${disabled ? ' disabled' : ''}`}>
         <div className="form-input__wrap">
           <input
@@ -58,20 +72,17 @@ export default function FormInput({ placeholder, title, setValue, defaultValue, 
             value={inputInnerValue}
             disabled={disabled}
             spellCheck="false"
+            onKeyPress={onKeyPress}
           />
           <div className="form-input__btns">
             <button className="form-input__clear" onClick={clearAll}>
               <IoMdClose />
             </button>
-            {!hideButton &&
-              <div className='search-button' onClick={onSearchClick}>
-                <img
-                  src='/images/search.svg'
-                  className='search-icon'
-                  alt='search'
-                />
+            {!hideButton && (
+              <div className="search-button" onClick={onSearchClick}>
+                <img src="/images/search.svg" className="search-icon" alt="search" />
               </div>
-            }
+            )}
           </div>
         </div>
       </div>
