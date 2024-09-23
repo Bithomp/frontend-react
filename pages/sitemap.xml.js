@@ -2,7 +2,7 @@ import { server, xahauNetwork } from '../utils'
 
 const pages = [
   { loc: '', changefreq: 'always', priority: '1' },
-  { loc: 'faucet', changefreq: 'montly', priority: '1' },
+  { loc: 'faucet', changefreq: 'monthly', priority: '1' },
   { loc: 'username', changefreq: 'monthly', priority: '1' },
   { loc: 'nft-explorer', changefreq: 'daily', priority: '1' },
   { loc: 'amendments', changefreq: 'always', priority: '1' },
