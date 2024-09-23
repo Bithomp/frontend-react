@@ -44,9 +44,12 @@ export default function Faucet({ account, type }) {
   const testPayment = type === 'testPayment'
 
   useEffect(() => {
+    //do not add query params if it is a test payment
+    if (testPayment) return
+
     let queryAddList = []
     let queryRemoveList = []
-    if (address !== queryAddress) {
+    if (address !== queryAddress && address !== account?.address) {
       if (isAddressValid(address)) {
         queryAddList.push({
           name: 'address',
@@ -81,7 +84,7 @@ export default function Faucet({ account, type }) {
 
     addAndRemoveQueryParams(router, queryAddList, queryRemoveList)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [address, destinationTag, amount])
+  }, [address, destinationTag, amount, account])
 
   useEffect(() => {
     fetchData()
