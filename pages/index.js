@@ -15,6 +15,7 @@ import PriceChart from '../components/Home/PriceChart'
 import Statistics from '../components/Home/Statistics'
 import Ads from '../components/Home/Ads'
 import Faucet from '../components/Faucet'
+import Link from 'next/link'
 
 export async function getServerSideProps(context) {
   const { locale } = context
@@ -93,6 +94,16 @@ export default function Home({ selectedCurrency, setSelectedCurrency, showAds, a
       <Head>
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(ldJsonWebsite) }} />
       </Head>
+
+      <div className="center">
+        <h1 style={{ fontSize: '1.5em' }}>{explorerName} Explorer</h1>
+        <h2 style={{ fontSize: '1.2em' }}>
+          Search for <Link href="/ledger">Transactions</Link>,{' '}
+          <Link href="/distribution">{nativeCurrency} addresses</Link>, <Link href="/nft-explorer">NFTs</Link>. View{' '}
+          <Link href="/validators">Validators</Link>, <Link href="/amendments">Amendments</Link>,{' '}
+          <Link href="/distribution">{nativeCurrency} distribution</Link>.
+        </h2>
+      </div>
 
       <SearchBlock tab="explorer" />
 
