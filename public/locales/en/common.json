@@ -153,7 +153,7 @@
   },
   "home": {
     "title": "{{explorerName}} Explorer | Scan the {{nativeCurrency}} Ledger",
-    "description": "{{nativeCurrency}} price chart | {{explorerName}} Statistics | NFT explorer | Wallet address lookup | {{explorerName}} NFT volumes | Buy and Sell NFT | {{explorerName}} Services",
+    "description": "{{nativeCurrency}} Ledger Explorer",
     "search-placeholder": "Search by Address / Transaction / NFT / Username / PayString / Offer / Currency hash",
     "search-placeholder-short": "Address / Transaction / Username",
     "scan-qr": "SCAN A CODE",
