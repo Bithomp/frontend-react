@@ -68,7 +68,7 @@ export default function Faucet({ account, type }) {
       }
     }
 
-    if (amount !== (queryAmount * 1000000).toString()) {
+    if (amount !== (queryAmount * 1000000).toString() && amount !== '100000000') {
       if (amount) {
         queryAddList.push({
           name: 'amount',
