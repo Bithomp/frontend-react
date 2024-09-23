@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { LogoJsonLd, SocialProfileJsonLd } from 'next-seo'
 import Head from 'next/head'
 
-import { server, explorerName, nativeCurrency, devNet, network } from '../utils'
+import { server, explorerName, nativeCurrency, devNet, network, xahauNetwork } from '../utils'
 import { getIsSsrMobile } from '../utils/mobile'
 
 import SEO from '../components/SEO'
@@ -100,8 +100,16 @@ export default function Home({ selectedCurrency, setSelectedCurrency, showAds, a
         <h2 style={{ fontSize: '1.2em' }}>
           Search for <Link href="/ledger">Transactions</Link>,{' '}
           <Link href="/distribution">{nativeCurrency} addresses</Link>, <Link href="/nft-explorer">NFTs</Link>. View{' '}
-          <Link href="/nft-volumes">NFT volumes</Link>, <Link href="/amms">Amm pools</Link>,{' '}
-          <Link href="/validators">Validators</Link>, <Link href="/amendments">Amendments</Link>,{' '}
+          {xahauNetwork ? (
+            <>
+              <Link href="/governance">Xahau Governance</Link>
+            </>
+          ) : (
+            <>
+              <Link href="/nft-volumes">NFT volumes</Link>, <Link href="/amms">Amm pools</Link>
+            </>
+          )}
+          , <Link href="/validators">Validators</Link>, <Link href="/amendments">Amendments</Link>,{' '}
           <Link href="/distribution">{nativeCurrency} distribution</Link>.
         </h2>
       </div>
