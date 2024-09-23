@@ -47,7 +47,7 @@ export default function Footer() {
           {devNet && (
             <>
               <a href={'/create/'}>{t('menu.developers.account-generation')}</a>
-              <a href={'/faucet/'}>{t('menu.developers.faucet')}</a>
+              <Link href="/faucet">{t('menu.developers.faucet')}</Link>
               <a href={'/tools/'}>Bithomp tools</a>
             </>
           )}

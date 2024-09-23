@@ -111,15 +111,15 @@ export default function AboutUs() {
           <li>
             <b>
               Explorers and Faucets for{' '}
-              <a href="https://test.xrplexplorer.com/faucet/" target="_blank" rel="noreferrer">
+              <a href="https://test.xrplexplorer.com/faucet" target="_blank" rel="noreferrer">
                 XRPL Testnet
               </a>
               ,{' '}
-              <a href="https://dev.xrplexplorer.com/faucet/" target="_blank" rel="noreferrer">
+              <a href="https://dev.xrplexplorer.com/faucet" target="_blank" rel="noreferrer">
                 XRPL Devnet
               </a>
               , and{' '}
-              <a href="https://test.xahauexplorer.com/faucet/" target="_blank" rel="noreferrer">
+              <a href="https://test.xahauexplorer.com/faucet" target="_blank" rel="noreferrer">
                 XAHAU Testnet
               </a>
             </b>{' '}

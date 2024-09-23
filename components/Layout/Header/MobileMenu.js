@@ -324,9 +324,9 @@ export default function MobileMenu({
               <a href={'/create/'} className="mobile-menu-item">
                 {t('menu.developers.account-generation')}
               </a>
-              <a href={'/faucet/'} className="mobile-menu-item">
+              <Link href="/faucet" className="mobile-menu-item">
                 {t('menu.developers.faucet')}
-              </a>
+              </Link>
               <a href={'/tools/'} className="mobile-menu-item">
                 Bithomp tools
               </a>
