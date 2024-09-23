@@ -30,7 +30,7 @@ export default function Faucet({ account, type }) {
   const [data, setData] = useState({})
   const [address, setAddress] = useState(isAddressValid(queryAddress) ? queryAddress : account?.address)
   const [destinationTag, setDestinationTag] = useState(isTagValid(queryDestinationTag) ? queryDestinationTag : null)
-  const [amount, setAmount] = useState((queryAmount * 1000000).toString() || '100000000')
+  const [amount, setAmount] = useState(queryAmount ? (queryAmount * 1000000).toString() : '100000000')
   const [siteKey, setSiteKey] = useState('')
   const [errorMessage, setErrorMessage] = useState()
   const [token, setToken] = useState()
