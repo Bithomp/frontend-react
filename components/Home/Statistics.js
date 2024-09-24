@@ -172,7 +172,7 @@ export default function Statistics() {
         <div className="stat-piece">
           <div className="stat-piece-header">{t('home.stat.transactions')}</div>
           <div>
-            {txCount} ({txPerSecond} {t('home.stat.txs-per-sec')})
+            <LedgerLink version={ledgerIndex} text={txCount} /> ({txPerSecond} {t('home.stat.txs-per-sec')})
           </div>
         </div>
         {nodesCount > 0 && (
@@ -215,7 +215,9 @@ export default function Statistics() {
         {!xahauNetwork && (
           <div className="stat-piece">
             <div className="stat-piece-header">{t('home.stat.amms')}</div>
-            <div>{ammsCount}</div>
+            <div>
+              <Link href="/amms">{ammsCount}</Link>
+            </div>
           </div>
         )}
         <div className="stat-piece">
