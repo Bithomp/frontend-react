@@ -1,0 +1,5 @@
+{
+  "search-for": "Cari <1>Transaksi</1>, <4>alamat {{nativeCurrency}}</4>, <6>NFTs</6>.",
+  "view-xahau": "Lihat <1>Pemerintahan Xahau</1>, <3>Validator</3>, <6>Amendemen</6>, <9>distribusi {{nativeCurrency}}</9>.",
+  "view-xrpl": "Lihat <1>volume NFT</1>, <3>kolam AMM</3>, <6>Validator</6>, <8>amendemen</8>, <11>distribusi {{nativeCurrency}}</11>."
+}
