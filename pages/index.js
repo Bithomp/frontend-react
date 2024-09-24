@@ -1,5 +1,5 @@
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import { useTranslation } from 'next-i18next'
+import { Trans, useTranslation } from 'next-i18next'
 import { useEffect, useState } from 'react'
 import { LogoJsonLd, SocialProfileJsonLd } from 'next-seo'
 import Head from 'next/head'
@@ -22,7 +22,7 @@ export async function getServerSideProps(context) {
   return {
     props: {
       isSsrMobile: getIsSsrMobile(context),
-      ...(await serverSideTranslations(locale, ['common', 'faucet']))
+      ...(await serverSideTranslations(locale, ['common', 'faucet', 'landing']))
     }
   }
 }
@@ -96,21 +96,25 @@ export default function Home({ selectedCurrency, setSelectedCurrency, showAds, a
       </Head>
 
       <div className="center">
-        <h1 style={{ fontSize: '1.5em' }}>{explorerName} Explorer</h1>
-        <h2 style={{ fontSize: '1.2em' }}>
-          Search for <Link href="/ledger">Transactions</Link>,{' '}
-          <Link href="/distribution">{nativeCurrency} addresses</Link>, <Link href="/nft-explorer">NFTs</Link>. View{' '}
+        <h1 className="landing-h1">{t('explorer.header.main', { explorerName })}</h1>
+        <h2 className="landing-h2">
+          <Trans i18nKey="search-for" ns="landing">
+            Search for <Link href="/ledger">Transactions</Link>,{' '}
+            <Link href="/distribution">{{ nativeCurrency }} addresses</Link>, <Link href="/nft-explorer">NFTs</Link>.
+          </Trans>{' '}
           {xahauNetwork ? (
-            <>
-              <Link href="/governance">Xahau Governance</Link>
-            </>
+            <Trans i18nKey="view-xahau" ns="landing">
+              View <Link href="/governance">Xahau Governance</Link>, <Link href="/validators">Validators</Link>,{' '}
+              <Link href="/amendments">Amendments</Link>,{' '}
+              <Link href="/distribution">{{ nativeCurrency }} distribution</Link>.
+            </Trans>
           ) : (
-            <>
-              <Link href="/nft-volumes">NFT volumes</Link>, <Link href="/amms">Amm pools</Link>
-            </>
+            <Trans i18nKey="view-xrpl" ns="landing">
+              View <Link href="/nft-volumes">NFT volumes</Link>, <Link href="/amms">Amm pools</Link>,{' '}
+              <Link href="/validators">Validators</Link>, <Link href="/amendments">Amendments</Link>,{' '}
+              <Link href="/distribution">{{ nativeCurrency }} distribution</Link>.
+            </Trans>
           )}
-          , <Link href="/validators">Validators</Link>, <Link href="/amendments">Amendments</Link>,{' '}
-          <Link href="/distribution">{nativeCurrency} distribution</Link>.
         </h2>
       </div>
 
