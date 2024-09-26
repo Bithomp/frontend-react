@@ -324,7 +324,7 @@ export default function MobileMenu({
               <a href={'/create/'} className="mobile-menu-item">
                 {t('menu.developers.account-generation')}
               </a>
-              <Link href="/faucet" className="mobile-menu-item">
+              <Link href="/faucet" className="mobile-menu-item" onClick={mobileMenuToggle}>
                 {t('menu.developers.faucet')}
               </Link>
               <a href={'/tools/'} className="mobile-menu-item">
