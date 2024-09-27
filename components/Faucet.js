@@ -196,6 +196,15 @@ export default function Faucet({ account, type }) {
     setAmount(amountString)
   }
 
+  const setAddressValue = (value) => {
+    //do not erase fetched names by updating the address in raw data
+    if (!isAddressValid(address)) {
+      setAddress(value)
+    } else if (account.address && account.address !== value) {
+      setAddress(value)
+    }
+  }
+
   return (
     <>
       {testPayment && <h2 className="center">{t('test-the-speed', { ns: 'faucet', explorerName })}</h2>}
@@ -206,11 +215,15 @@ export default function Faucet({ account, type }) {
             <AddressInput
               title={t('table.address')}
               placeholder={t('form.placeholder.enter-address', { ns: 'faucet', ledgerName })}
-              setInnerValue={setAddress}
-              rawData={{
-                address,
-                addressDetails: { username: account?.username, service: account?.service }
-              }}
+              setInnerValue={setAddressValue}
+              rawData={
+                address === account?.address
+                  ? {
+                      address,
+                      addressDetails: { username: account?.username, service: account?.service }
+                    }
+                  : {}
+              }
               type="address"
               hideButton={true}
             />

@@ -1,14 +1,10 @@
-import { IoMdClose } from "react-icons/io";
+import { IoMdClose } from 'react-icons/io'
 import { useState, useEffect } from 'react'
 import Select from 'react-select'
 import { useTranslation } from 'next-i18next'
-import axios from 'axios';
+import axios from 'axios'
 
-import {
-  isAddressOrUsername,
-  isAddressValid,
-  useWidth
-} from '../../utils'
+import { isAddressOrUsername, isAddressValid, useWidth } from '../../utils'
 
 import { amountFormat, userOrServiceLink } from '../../utils/format'
 
@@ -27,12 +23,12 @@ export default function AddressInput({
   const { t } = useTranslation()
   const windowWidth = useWidth()
 
-  const [inputValue, setInputValue] = useState("")
-  const [errorMessage, setErrorMessage] = useState("")
+  const [inputValue, setInputValue] = useState('')
+  const [errorMessage, setErrorMessage] = useState('')
   const [isMounted, setIsMounted] = useState(false)
   const [searchSuggestions, setSearchSuggestions] = useState([])
   const [searchingSuggestions, setSearchingSuggestions] = useState(false)
-  const [link, setLink] = useState("")
+  const [link, setLink] = useState('')
   const [notEmpty, setNotEmpty] = useState(false)
 
   useEffect(() => {
@@ -43,11 +39,14 @@ export default function AddressInput({
     if (setInnerValue) {
       setInnerValue(inputValue)
     }
+    if (!isAddressValid(inputValue)) {
+      setLink('')
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [inputValue])
 
   useEffect(() => {
-    setErrorMessage("")
+    setErrorMessage('')
     if (rawData && rawData[type]) {
       setNotEmpty(true)
       setInputValue(rawData[type])
@@ -58,8 +57,8 @@ export default function AddressInput({
       }
     }
     if (!rawData || rawData?.error) {
-      setInputValue("")
-      setLink("")
+      setInputValue('')
+      setLink('')
       setNotEmpty(false)
       setSearchingSuggestions(false)
       setSearchSuggestions([])
@@ -67,10 +66,10 @@ export default function AddressInput({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [rawData])
 
-  const searchOnKeyUp = async e => {
-    setErrorMessage("")
-    const valueInp = e.target.value;
-    const maxCount = 2;
+  const searchOnKeyUp = async (e) => {
+    setErrorMessage('')
+    const valueInp = e.target.value
+    const maxCount = 2
 
     if (valueInp.length > 0) {
       setNotEmpty(true)
@@ -85,52 +84,57 @@ export default function AddressInput({
       setSearchingSuggestions(false)
       setSearchSuggestions([])
 
-      let url = "v2/username/" + valueInp
+      let url = 'v2/username/' + valueInp
       if (isAddressValid(valueInp)) {
-        url = "v2/address/" + valueInp
+        url = 'v2/address/' + valueInp
       }
 
       const response = await axios(url + '?username=true&service=true').catch((error) => {
         console.log(error.message)
-        setErrorMessage(t("error." + error.message))
+        setErrorMessage(t('error.' + error.message))
       })
 
       const data = response?.data
 
       if (data?.address) {
-        setLink(userOrServiceLink({
-          address: data.address,
-          addressDetails: {
-            username: data.username,
-            service: data.service?.name
-          }
-        }, 'address'))
+        setLink(
+          userOrServiceLink(
+            {
+              address: data.address,
+              addressDetails: {
+                username: data.username,
+                service: data.service?.name
+              }
+            },
+            'address'
+          )
+        )
         if (setValue) setValue(data.address)
         setInputValue(data.address)
       } else {
-        setErrorMessage("No address found")
+        setErrorMessage('No address found')
       }
       return
     }
 
     //if more than 3 characters - search for suggestions
     if (valueInp && valueInp.length > 0) {
-      clearTimeout(typingTimer);
-      setSearchSuggestions([]);
+      clearTimeout(typingTimer)
+      setSearchSuggestions([])
       typingTimer = setTimeout(async () => {
         if (valueInp && valueInp.length > maxCount) {
           setSearchingSuggestions(true)
-          const url = "v2/address/search/" + valueInp;
+          const url = 'v2/address/search/' + valueInp
 
           const suggestionsResponse = await axios(url).catch((error) => {
-            setSearchingSuggestions(false);
-            console.log(error.message);
+            setSearchingSuggestions(false)
+            console.log(error.message)
           })
 
           if (suggestionsResponse) {
             const suggestions = suggestionsResponse.data
             if (suggestions?.addresses?.length > 0) {
-              setSearchSuggestions(suggestions.addresses);
+              setSearchSuggestions(suggestions.addresses)
             }
           }
           setSearchingSuggestions(false)
@@ -139,24 +143,29 @@ export default function AddressInput({
     }
   }
 
-  const searchOnChange = option => {
+  const searchOnChange = (option) => {
     if (!option) {
-      if (setValue) setValue("")
-      setInputValue("")
-      setLink("")
-      setErrorMessage("")
+      if (setValue) setValue('')
+      setInputValue('')
+      setLink('')
+      setErrorMessage('')
       return
     }
 
     if (setValue) setValue(option.address)
     setInputValue(option.address)
-    setLink(userOrServiceLink({
-      address: option.address || option.issuer,
-      addressDetails: {
-        username: option.username,
-        service: option.service
-      }
-    }, 'address'))
+    setLink(
+      userOrServiceLink(
+        {
+          address: option.address || option.issuer,
+          addressDetails: {
+            username: option.username,
+            service: option.service
+          }
+        },
+        'address'
+      )
+    )
 
     setSearchSuggestions([])
   }
@@ -167,26 +176,28 @@ export default function AddressInput({
   }
 
   const searchOnInputChange = (value, action) => {
-    if (action.action !== "input-blur" && action.action !== "menu-close") {
+    if (action.action !== 'input-blur' && action.action !== 'menu-close') {
       setNotEmpty(true)
       setInputValue(value)
     }
   }
 
   const clearAll = () => {
-    if (setValue) setValue("")
-    setInputValue("")
-    setLink("")
+    if (setValue) setValue('')
+    setInputValue('')
+    setLink('')
     setNotEmpty(false)
     setSearchSuggestions([])
-    setErrorMessage("")
+    setErrorMessage('')
   }
 
   return (
     <div className="center">
-      <span className='input-title'>{title} {link}</span>
+      <span className="input-title">
+        {title} {link}
+      </span>
       <div className={`form-input${disabled ? ' disabled' : ''}`}>
-        {isMounted ?
+        {isMounted ? (
           <div className="form-input__wrap" onKeyUp={searchOnKeyUp}>
             <Select
               className={`address-input ${notEmpty ? ' not-empty' : ''}`}
@@ -198,43 +209,59 @@ export default function AddressInput({
               options={searchSuggestions}
               isClearable={true}
               value={inputValue || ''} //The value of the select; reflected by the selected option
-              getOptionLabel={
-                (option) => <>
-                  <span style={windowWidth < 400 ? { fontSize: "14px" } : {}}>{option.address || option.issuer}</span>
-                  {(option.username || option.service || option.globalid || option.xumm) ? (windowWidth > 400 ? " - " : " ") : ""}
-                  <b className='blue'>{option.username}</b>
-                  {option.service && <>
-                    {option.username ? " (" : ""}
-                    <b className='green'>{option.service}</b>
-                    {option.username ? ")" : ""}
-                  </>}
-                  {(option.username || option.service) && (option.verifiedDomain || option.serviceDomain) && <>, </>}
-                  {option.verifiedDomain ?
-                    <span className='green bold'> {option.verifiedDomain}</span>
-                    :
-                    (option.serviceDomain && <span className='green'> {option.serviceDomain}</span>)
-                  }
-                  {(option.username || option.service || option.verifiedDomain || option.serviceDomain) && option.xumm && <>, </>}
-                  {option.xumm &&
+              getOptionLabel={(option) => (
+                <>
+                  <span style={windowWidth < 400 ? { fontSize: '14px' } : {}}>{option.address || option.issuer}</span>
+                  {option.username || option.service || option.globalid || option.xumm
+                    ? windowWidth > 400
+                      ? ' - '
+                      : ' '
+                    : ''}
+                  <b className="blue">{option.username}</b>
+                  {option.service && (
                     <>
-                      Xaman <span className='orange'>
-                        {option.xumm.includes("+") ? option.xumm.replace(/\+/g, " (") + ")" : option.xumm}
+                      {option.username ? ' (' : ''}
+                      <b className="green">{option.service}</b>
+                      {option.username ? ')' : ''}
+                    </>
+                  )}
+                  {(option.username || option.service) && (option.verifiedDomain || option.serviceDomain) && <>, </>}
+                  {option.verifiedDomain ? (
+                    <span className="green bold"> {option.verifiedDomain}</span>
+                  ) : (
+                    option.serviceDomain && <span className="green"> {option.serviceDomain}</span>
+                  )}
+                  {(option.username || option.service || option.verifiedDomain || option.serviceDomain) &&
+                    option.xumm && <>, </>}
+                  {option.xumm && (
+                    <>
+                      Xaman{' '}
+                      <span className="orange">
+                        {option.xumm.includes('+') ? option.xumm.replace(/\+/g, ' (') + ')' : option.xumm}
                       </span>
                       {option.xummVerified && <> ✅</>}
                     </>
-                  }
-                  {(option.username || option.service || option.verifiedDomain || option.serviceDomain || option.xumm) && option.globalid && <>, </>}
-                  {option.globalid &&
+                  )}
+                  {(option.username ||
+                    option.service ||
+                    option.verifiedDomain ||
+                    option.serviceDomain ||
+                    option.xumm) &&
+                    option.globalid && <>, </>}
+                  {option.globalid && (
                     <>
-                      GlobaliD <span className='purple'>{option.globalid}</span>
+                      GlobaliD <span className="purple">{option.globalid}</span>
                       {option.globalidStatus && <> ✔️</>}
                     </>
-                  }
-                  {option.balance &&
-                    <> [<b>{amountFormat(option.balance, { maxFractionDigits: 2, noSpace: true })}</b>]</>
-                  }
+                  )}
+                  {option.balance && (
+                    <>
+                      {' '}
+                      [<b>{amountFormat(option.balance, { maxFractionDigits: 2, noSpace: true })}</b>]
+                    </>
+                  )}
                 </>
-              }
+              )}
               getOptionValue={(option) =>
                 option.address +
                 option.username +
@@ -247,24 +274,20 @@ export default function AddressInput({
               components={{ DropdownIndicator: () => null, IndicatorSeparator: () => null }}
               classNamePrefix="react-select"
               instanceId="address-input"
-              noOptionsMessage={
-                () => searchingSuggestions ? t("explorer.searching-for-addresses") : null
-              }
+              noOptionsMessage={() => (searchingSuggestions ? t('explorer.searching-for-addresses') : null)}
             />
             <div className="form-input__btns">
-              <button className="form-input__clear" onClick={clearAll}><IoMdClose /></button>
-              {!hideButton &&
-                <div className='search-button' onClick={onSearchClick}>
-                  <img
-                    src='/images/search.svg'
-                    className='search-icon'
-                    alt='search'
-                  />
+              <button className="form-input__clear" onClick={clearAll}>
+                <IoMdClose />
+              </button>
+              {!hideButton && (
+                <div className="search-button" onClick={onSearchClick}>
+                  <img src="/images/search.svg" className="search-icon" alt="search" />
                 </div>
-              }
+              )}
             </div>
           </div>
-          :
+        ) : (
           <div className="form-input__wrap">
             <input
               placeholder={placeholder}
@@ -275,25 +298,26 @@ export default function AddressInput({
               disabled={disabled}
             />
             <div className="form-input__btns">
-              <button className="form-input__clear" onClick={clearAll}><IoMdClose /></button>
-              {!hideButton &&
-                <div className='search-button' onClick={onSearchClick}>
-                  <img
-                    src='/images/search.svg'
-                    className='search-icon'
-                    alt='search'
-                  />
+              <button className="form-input__clear" onClick={clearAll}>
+                <IoMdClose />
+              </button>
+              {!hideButton && (
+                <div className="search-button" onClick={onSearchClick}>
+                  <img src="/images/search.svg" className="search-icon" alt="search" />
                 </div>
-              }
+              )}
             </div>
           </div>
-        }
+        )}
 
-        {errorMessage &&
-          <div className='orange' style={{ position: "absolute", bottom: "-40px", minHeight: "42px", textAlign: "right", right: 0 }}>
+        {errorMessage && (
+          <div
+            className="orange"
+            style={{ position: 'absolute', bottom: '-40px', minHeight: '42px', textAlign: 'right', right: 0 }}
+          >
             {errorMessage}
           </div>
-        }
+        )}
       </div>
     </div>
   )
