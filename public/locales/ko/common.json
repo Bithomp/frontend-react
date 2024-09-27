@@ -221,7 +221,7 @@
   },
   "alerts": {
     "text0": "<1>Bitstamp</1>에서 XRP/USD 또는 XRP/BTC의 시장 가격이 1시간 이내에 5% 이상 또는 1일 이내에 10% 이상 변동하면 알림을 받을 수 있습니다.",
-    "text1": "텔레그램 채널 <1>bithomp</1> 또는 X 계정 <3>XRP_PriceAlerts</3>를 팔로우하세요.",
+    "text1": "텔레그램 채널 <1>bithomp</1> 또는 X 계정 <4>XRP_PriceAlerts</4>를 팔로우하세요.",
     "last-alerts": "최근 50개 알림",
     "date-and-time": "날짜 및 시간",
     "currency-pair": "통화 페어",
