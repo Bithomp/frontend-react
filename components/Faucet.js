@@ -12,7 +12,9 @@ import {
   devNet,
   capitalize,
   isAddressValid,
-  addAndRemoveQueryParams
+  addAndRemoveQueryParams,
+  removeQueryParams,
+  addQueryParams
 } from '../utils'
 import { useTheme } from './Layout/ThemeContext'
 import { useRouter } from 'next/router'
@@ -24,13 +26,18 @@ import { useEffect, useState } from 'react'
 import { addressLink, amountFormat, duration, fullNiceNumber, shortHash } from '../utils/format'
 import { LedgerLink } from '../utils/links'
 
+const convertToDrops = (amount) => {
+  return parseInt(amount * 1000000).toString()
+}
+
 export default function Faucet({ account, type }) {
   const router = useRouter()
   const { address: queryAddress, amount: queryAmount, destinationTag: queryDestinationTag } = router.query
+
   const [data, setData] = useState({})
   const [address, setAddress] = useState(isAddressValid(queryAddress) ? queryAddress : account?.address)
   const [destinationTag, setDestinationTag] = useState(isTagValid(queryDestinationTag) ? queryDestinationTag : null)
-  const [amount, setAmount] = useState(queryAmount ? (queryAmount * 1000000).toString() : '100000000')
+  const [amount, setAmount] = useState(queryAmount ? convertToDrops(queryAmount) : '100000000')
   const [siteKey, setSiteKey] = useState('')
   const [errorMessage, setErrorMessage] = useState()
   const [token, setToken] = useState()
@@ -44,11 +51,13 @@ export default function Faucet({ account, type }) {
   const testPayment = type === 'testPayment'
 
   useEffect(() => {
+    console.log('queryAddress', queryAddress, 'address', address, 'account.address', account?.address) // dlete
     //do not add query params if it is a test payment
     if (testPayment) return
 
     let queryAddList = []
     let queryRemoveList = []
+
     if (address !== queryAddress && address !== account?.address) {
       if (isAddressValid(address)) {
         queryAddList.push({
@@ -71,7 +80,7 @@ export default function Faucet({ account, type }) {
       }
     }
 
-    if (amount !== (queryAmount * 1000000).toString() && amount !== '100000000') {
+    if (amount !== convertToDrops(queryAmount) && amount !== '100000000') {
       if (amount) {
         queryAddList.push({
           name: 'amount',
@@ -192,7 +201,7 @@ export default function Faucet({ account, type }) {
       setErrorMessage("The amount can't be more than 100 " + nativeCurrency)
       return
     }
-    amountString = (amountString * 1000000).toString()
+    amountString = convertToDrops(amountString)
     setAmount(amountString)
   }
 
@@ -200,8 +209,12 @@ export default function Faucet({ account, type }) {
     //do not erase fetched names by updating the address in raw data
     if (!isAddressValid(address)) {
       setAddress(value)
-    } else if (account.address && account.address !== value) {
+    } else if (account?.address && account.address !== value) {
       setAddress(value)
+    } else if (!isAddressValid(value)) {
+      removeQueryParams(router, ['address'])
+    } else {
+      addQueryParams(router, [{ name: 'address', value }])
     }
   }
 
@@ -217,7 +230,7 @@ export default function Faucet({ account, type }) {
               placeholder={t('form.placeholder.enter-address', { ns: 'faucet', ledgerName })}
               setInnerValue={setAddressValue}
               rawData={
-                address === account?.address
+                address === account?.address || (address === queryAddress && isAddressValid(queryAddress))
                   ? {
                       address,
                       addressDetails: { username: account?.username, service: account?.service }
