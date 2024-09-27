@@ -4,7 +4,7 @@ import { shortHash } from './format'
 import CopyButton from '../components/UI/CopyButton'
 
 export const LinkTx = ({ tx, icon }) =>
-  tx ? <Link href={`/explorer/${tx}`}>{icon ? <LinkIcon /> : shortHash(tx, 10)}</Link> : ''
+  tx ? <a href={`/explorer/${tx}`}>{icon ? <LinkIcon /> : shortHash(tx, 10)}</a> : ''
 
 export const LedgerLink = ({ version, text, style, onClick }) =>
   version ? (
