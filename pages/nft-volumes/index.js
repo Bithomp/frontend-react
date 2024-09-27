@@ -844,6 +844,7 @@ export default function NftVolumes({
       : { width: '100%', marginLeft: 0, marginRight: '10px' }
 
   const collectionNameText = (data) => {
+    if (data.collectionDetails?.name) return data.collectionDetails.name.replace(/"/g, '""')
     if (!data?.collectionDetails?.issuerDetails) return data.collection
     const { service, username } = data.collectionDetails.issuerDetails
     if (service || username) {
@@ -856,6 +857,7 @@ export default function NftVolumes({
     if (!data?.collection) return ''
     if (!data.collectionDetails) return data.collection
     const { name, family, description, issuer, taxon } = data.collectionDetails
+
     if (type === 'mobile') {
       return (
         <>
