@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react'
-import { explorerName } from '../../../utils'
 import Select from 'react-select'
 import { useWidth } from '../../../utils'
 
@@ -81,28 +80,15 @@ export default function Api({ setPayPeriod, setTier, tier }) {
       <div style={{ textAlign: 'left' }}>
         <p>Purchasing an API subscription can be beneficial for several reasons:</p>
         <p>
-          ✅ <b>Access to Data</b>: The API provides access to extensive data on the {explorerName}, including
-          transaction and account information, AMM, NFTs and more, allowing you to develop applications that require
-          this information.
+          ✅ <b>Increased Rate Limits</b>: Paid plans offer higher request limits, which include more requests per
+          minute as well as more requests per day. This is particularly crucial for applications requiring real-time
+          data.
         </p>
         <p>
-          ✅ <b>Real-time Updates</b>: With the API, you can receive real-time updates about changes {explorerName},
-          which is crucial for applications needing timely data.
-        </p>
-        <p>
-          ✅ <b>Support for Development</b>: As a developer, having access to a reliable API can speed up your
-          development process, allowing you to focus on building your application without worrying about data retrieval
-          and management.
-        </p>
-        <p>
-          ✅ <b>Scalability</b>: Using an API can help your application scale more effectively by offloading data
-          management and processing to an external service.
+          ✅ <b>Access to Advanced Features</b>: Subscribing to a paid plan grants access to additional features,
+          including specialized endpoints that are not available in the Free tier.
         </p>
       </div>
-      <p className="left">
-        Overall, purchasing API subscription can provide you with valuable tools and resources for working with the{' '}
-        {explorerName} ecosystem.
-      </p>
       <p>Subscribe to our API!</p>
 
       <div className="center">
