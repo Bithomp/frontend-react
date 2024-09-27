@@ -688,19 +688,12 @@ export const capitalize = (word) => {
   return word.charAt(0).toUpperCase() + word.slice(1)
 }
 
-export const timeFromNow = (timestamp, i18nPassed) => {
-  const getLang = (inst) => {
-    if (inst.language === 'default' || inst.language === 'undefined') {
-      return 'en'
-    }
-    return inst.language.slice(0, 2)
-  }
+export const timeFromNow = (timestamp, i18n) => {
   let lang = 'en'
-  if (i18nPassed) {
-    lang = getLang(i18nPassed)
+  if (i18n.language === 'default' || i18n.language === 'undefined') {
+    lang = 'en'
   } else {
-    const { i18n } = useTranslation()
-    lang = getLang(i18n)
+    lang = i18n.language.slice(0, 2)
   }
   moment.locale(lang)
   return <span suppressHydrationWarning>{moment(timestamp * 1000, 'unix').fromNow()}</span>

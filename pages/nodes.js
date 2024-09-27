@@ -72,7 +72,7 @@ const countryCodeWithFlag = (countryCode) => {
 }
 
 export default function Nodes({ initialData, initialErrorMessage }) {
-  const { t } = useTranslation(['common'])
+  const { t, i18n } = useTranslation()
 
   const windowWidth = useWidth()
   const countries = countriesTranslated()
@@ -120,7 +120,7 @@ export default function Nodes({ initialData, initialErrorMessage }) {
 
         <p className="center">
           Explore the list of {ledgerName} nodes. View up-to-date statistics on node versions and countries
-          {data?.crawl_time && <> (updated {timeFromNow(data.crawl_time)}).</>}
+          {data?.crawl_time && <> (updated {timeFromNow(data.crawl_time, i18n)}).</>}
         </p>
 
         <div className="flex flex-center">

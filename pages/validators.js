@@ -68,28 +68,28 @@ const fixCountry = (country) => {
 
 moment.relativeTimeThreshold('ss', devNet ? 36 : 6)
 
-const showTime = ({ time }) => {
-  if (!time) return 'N/A'
-  return (
-    <span className={Math.floor(Date.now() / 1000) - (devNet ? 40 : 10) > time ? 'red bold' : ''}>
-      {timeFromNow(time - 1)}
-    </span>
-  )
-}
-
-const ShowTimeMemo = memo(showTime)
-
 export default function Validators({ amendment, initialData, initialErrorMessage }) {
   const [validators, setValidators] = useState(null)
   const [unlValidatorsCount, setUnlValidatorsCount] = useState(0)
   const [developerMode, setDeveloperMode] = useState(false)
   const [showServer, setShowServer] = useState(true)
   const [serverVersions, setServerVersions] = useState({ validators: {}, unl: {}, count: { validators: 0, unl: 0 } })
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const windowWidth = useWidth()
   const { theme } = useTheme()
 
   const countries = countriesTranslated()
+
+  const showTime = ({ time }) => {
+    if (!time) return 'N/A'
+    return (
+      <span className={Math.floor(Date.now() / 1000) - (devNet ? 40 : 10) > time ? 'red bold' : ''}>
+        {timeFromNow(time - 1, i18n)}
+      </span>
+    )
+  }
+
+  const ShowTimeMemo = memo(showTime)
 
   const compare = (a, b) => {
     if (!amendment) {
