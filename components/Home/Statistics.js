@@ -134,7 +134,18 @@ export default function Statistics() {
   let nodesCount = 'xxx'
 
   if (data) {
-    const { validatedLedger, lastClose, validationQuorum, accounts, usernames, nftokens, escrows, amms, nodes } = data
+    const {
+      validatedLedger,
+      lastClose,
+      validationQuorum,
+      accounts,
+      usernames,
+      nftokens,
+      uritokens,
+      escrows,
+      amms,
+      nodes
+    } = data
     closedAt = validatedLedger?.ledgerTime * 1000
     closedAt = new Date(closedAt).toLocaleTimeString()
     ledgerIndex = validatedLedger?.ledgerIndex
@@ -149,6 +160,8 @@ export default function Statistics() {
     registeredUsernames = niceNumber(usernames)
     if (nftokens) {
       nft = nftokens
+    } else if (uritokens) {
+      nft = uritokens
     }
     escrowsCount = niceNumber(escrows?.existing)
     ammsCount = niceNumber(amms?.existing)
@@ -226,51 +239,58 @@ export default function Statistics() {
         </div>
       </div>
 
-      {/* Hide NFT stats for XAHAU while they are not ready yet */}
-      {!xahauNetwork && (
-        <div className="statistics-block">
-          <div className="stat-piece">
-            <div className="stat-piece-header">{t('home.stat.nft.created')}</div>
-            <div>
-              <Link href="/nft-explorer?mintedPeriod=all&includeBurned=true&includeWithoutMediaData=true">
-                {niceNumber(nft.created)}
-              </Link>
-            </div>
+      <div className="statistics-block">
+        <div className="stat-piece">
+          <div className="stat-piece-header">{t('home.stat.nft.created')}</div>
+          <div>
+            <Link href="/nft-explorer?mintedPeriod=all&includeBurned=true&includeWithoutMediaData=true">
+              {niceNumber(nft.created)}
+            </Link>
           </div>
-          <div className="stat-piece">
-            <div className="stat-piece-header">{t('home.stat.nft.burned')}</div>
-            <div>
-              <Link href="/nft-explorer?includeBurned=true&includeWithoutMediaData=true&burnedPeriod=all&mintedPeriod=all">
-                {niceNumber(nft.burned)}
-              </Link>
-            </div>
+        </div>
+        <div className="stat-piece">
+          <div className="stat-piece-header">{t('home.stat.nft.burned')}</div>
+          <div>
+            <Link href="/nft-explorer?includeBurned=true&includeWithoutMediaData=true&burnedPeriod=all&mintedPeriod=all">
+              {niceNumber(nft.burned)}
+            </Link>
           </div>
-          <div className="stat-piece">
-            <div className="stat-piece-header">{t('home.stat.nft.issuers')}</div>
-            <div>
-              <Link href="/nft-volumes?period=all">{niceNumber(nft.issuers)}</Link>
-            </div>
+        </div>
+        <div className="stat-piece">
+          <div className="stat-piece-header">{t('home.stat.nft.issuers')}</div>
+          <div>
+            {/* Hide link to nft-volumes while its not ready on xahau yet*/}
+            {xahauNetwork ? (
+              niceNumber(nft.issuers)
+            ) : (
+              <Link href="/nft-volumes?period=all&list=issuers">{niceNumber(nft.issuers)}</Link>
+            )}
           </div>
-          <div className="stat-piece">
-            <div className="stat-piece-header">{t('home.stat.nft.owners')}</div>
-            <div>
-              <Link href="/nft-distribution?order=total">{niceNumber(nft.owners)}</Link>
-            </div>
+        </div>
+        <div className="stat-piece">
+          <div className="stat-piece-header">{t('home.stat.nft.owners')}</div>
+          <div>
+            <Link href="/nft-distribution?order=total">{niceNumber(nft.owners)}</Link>
           </div>
-          <div className="stat-piece">
-            <div className="stat-piece-header">{t('home.stat.nft.transfers')}</div>
-            <div>{niceNumber(nft.transfers)}</div>
-          </div>
-          <div className="stat-piece">
-            <div className="stat-piece-header">{t('home.stat.nft.for-sale')}</div>
-            <div>
+        </div>
+        <div className="stat-piece">
+          <div className="stat-piece-header">{t('home.stat.nft.transfers')}</div>
+          <div>{niceNumber(nft.transfers)}</div>
+        </div>
+        <div className="stat-piece">
+          <div className="stat-piece-header">{t('home.stat.nft.for-sale')}</div>
+          <div>
+            {/* Hide link to nft-explorer?list=onSale while its not ready on xahau yet*/}
+            {xahauNetwork ? (
+              niceNumber(nft.forSale)
+            ) : (
               <Link href="/nft-explorer?list=onSale&saleDestination=publicAndKnownBrokers&mintedPeriod=all&includeWithoutMediaData=true">
                 {niceNumber(nft.forSale)}
               </Link>
-            </div>
+            )}
           </div>
         </div>
-      )}
+      </div>
     </>
   )
 }
