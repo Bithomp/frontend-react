@@ -1,4 +1,4 @@
-import { network } from '../../utils'
+import { nativeCurrency } from '../../utils'
 //import { useTheme } from '../Layout/ThemeContext'
 //import { useEffect, useState } from 'react'
 
@@ -13,7 +13,7 @@ export default function Ads() {
   }, [])
   */
 
-  if (network === 'mainnet' || network === 'staging') {
+  if (nativeCurrency === 'XRP') {
     return (
       <>
         {/*

@@ -15,7 +15,7 @@ import BackgroundImage from '../components/Layout/BackgroundImage'
 const TopLinks = dynamic(() => import('../components/Layout/TopLinks'), { ssr: false })
 
 import { IsSsrMobileContext } from '../utils/mobile'
-import { isValidUUID, network, server, useLocalStorage, subscriptionExpired } from '../utils'
+import { isValidUUID, network, server, useLocalStorage, subscriptionExpired, nativeCurrency } from '../utils'
 
 import '../styles/ui.scss'
 import { ThemeProvider } from '../components/Layout/ThemeContext'
@@ -59,7 +59,7 @@ const MyApp = ({ Component, pageProps }) => {
   const pathname = router.pathname
   const pagesWithoutWrapper = ['/social-share']
 
-  const showAds = subscriptionExpired && (network === 'mainnet' || network === 'staging') // !devNet // no ads on test network
+  const showAds = subscriptionExpired && nativeCurrency === 'XRP'
   let showTopAds = false //showAds // change here when you want to see TOP ADS
   const pagesWithNoTopAdds = [
     '/',
