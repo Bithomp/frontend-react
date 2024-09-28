@@ -20,7 +20,8 @@ import {
   encodeAddressR,
   isAddressValid,
   removeQueryParams,
-  webSiteName
+  webSiteName,
+  xahauNetwork
 } from '../utils'
 import { amountFormat, capitalize, duration } from '../utils/format'
 import { payloadXummPost, xummWsConnect, xummCancel, xummGetSignedData } from '../utils/xumm'
@@ -507,7 +508,7 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
   }
 
   const checkCrawlerStatus = async ({ inLedger, param }) => {
-    const crawlerResponse = await axios('v2/statistics/nftokens/crawler')
+    const crawlerResponse = await axios('v2/statistics/' + (xahauNetwork ? 'uritokens' : 'nftokens') + '/crawler')
     if (crawlerResponse.data) {
       const { ledgerIndex } = crawlerResponse.data
       // if crawler 10 ledgers behind, update right away

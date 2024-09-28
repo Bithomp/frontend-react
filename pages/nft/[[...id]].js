@@ -7,7 +7,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import Image from 'next/image'
 import Link from 'next/link'
 
-import { stripText, decode, network, isValidJson } from '../../utils'
+import { stripText, decode, network, isValidJson, xahauNetwork } from '../../utils'
 import { convertedAmount, usernameOrAddress } from '../../utils/format'
 import { getIsSsrMobile } from '../../utils/mobile'
 import { nftName, mpUrl, bestNftOffer, nftUrl, partnerMarketplaces, ipfsUrl } from '../../utils/nft'
@@ -960,7 +960,7 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
   const updateWarningMessages = async (warnings) => {
     for (let i = 0; i < warnings.length; i++) {
       if (warnings[i].message?.indexOf('crawler is not up to date') > -1) {
-        const response = await axios('v2/statistics/nftokens/crawler')
+        const response = await axios('v2/statistics/' + (xahauNetwork ? 'uritokens' : 'nftokens') + '/crawler')
         let lastUpdate = ''
         if (response?.data?.ledgerTime) {
           lastUpdate = fullDateAndTime(response.data.ledgerTime, null, { asText: true })
