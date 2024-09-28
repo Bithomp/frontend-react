@@ -189,8 +189,7 @@ export default function Header({
             <Link href={'/nfts' + (displayName ? '/' + address : '')}>{t('menu.nft.nfts')}</Link>
             <Link href={'/nft-offers' + (displayName ? '/' + address : '')}>{t('menu.nft.offers')}</Link>
             <Link href="/nft-distribution">{t('menu.nft.distribution')}</Link>
-            {/* Hide NFT statistics for XAHAU while they are not ready yet */}
-            {!xahauNetwork && <Link href="/nft-statistics">{t('menu.nft.statistics')}</Link>}
+            <Link href="/nft-statistics">{t('menu.nft.statistics')}</Link>
             {xahauNetwork && <Link href="/services/nft-mint">{t('menu.services.nft-mint')}</Link>}
           </MenuDropDown>
 

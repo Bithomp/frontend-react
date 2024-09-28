@@ -235,12 +235,9 @@ export default function MobileMenu({
           <Link href="/nft-distribution" className="mobile-menu-item" onClick={mobileMenuToggle}>
             {t('menu.nft.distribution')}
           </Link>
-          {/* Hide NFT statistics for XAHAU while they are not ready yet */}
-          {!xahauNetwork && (
-            <Link href="/nft-statistics" className="mobile-menu-item" onClick={mobileMenuToggle}>
-              {t('menu.nft.statistics')}
-            </Link>
-          )}
+          <Link href="/nft-statistics" className="mobile-menu-item" onClick={mobileMenuToggle}>
+            {t('menu.nft.statistics')}
+          </Link>
           {xahauNetwork && (
             <Link href="/services/nft-mint" className="mobile-menu-item" onClick={mobileMenuToggle}>
               {t('menu.services.nft-mint')}
