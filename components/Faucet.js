@@ -51,7 +51,6 @@ export default function Faucet({ account, type }) {
   const testPayment = type === 'testPayment'
 
   useEffect(() => {
-    console.log('queryAddress', queryAddress, 'address', address, 'account.address', account?.address) // dlete
     //do not add query params if it is a test payment
     if (testPayment) return
 
