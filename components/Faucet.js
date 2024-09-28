@@ -213,7 +213,8 @@ export default function Faucet({ account, type }) {
       setAddress(value)
     } else if (!isAddressValid(value)) {
       removeQueryParams(router, ['address'])
-    } else {
+    } else if (!testPayment) {
+      // do not add on the landing page where we have the test payment
       addQueryParams(router, [{ name: 'address', value }])
     }
   }
