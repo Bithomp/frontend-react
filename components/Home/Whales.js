@@ -89,6 +89,18 @@ export default function Whales({ currency }) {
      }
   */
 
+  const doShort = (tx, width) => {
+    if (
+      !tx.sourceAddressDetails?.service &&
+      !tx.destinationAddressDetails?.service &&
+      !tx.sourceAddressDetails?.username &&
+      !tx.destinationAddressDetails?.username
+    ) {
+      return true
+    }
+    return width < 730
+  }
+
   return (
     <>
       {data?.length > 0 && (
@@ -99,8 +111,9 @@ export default function Whales({ currency }) {
               <div key={tx.hash} className={'tx-row' + (difference?.includes(tx) ? ' just-added' : '')}>
                 <span className="tx-time">{timeFormat(tx.timestamp)}</span>
                 <span className="tx-addresses">
-                  {addressUsernameOrServiceLink(tx, 'sourceAddress')} →{width < 800 ? <br /> : ' '}
-                  {addressUsernameOrServiceLink(tx, 'destinationAddress', { short: width < 730 })}
+                  {addressUsernameOrServiceLink(tx, 'sourceAddress', { short: doShort(tx, width) })} →
+                  {width < 800 ? <br /> : ' '}
+                  {addressUsernameOrServiceLink(tx, 'destinationAddress', { short: doShort(tx, width) })}
                 </span>
                 <span className="tx-link">{txIdLink(tx.hash, 0)}</span>
                 <span className="tx-amount">
