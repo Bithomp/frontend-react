@@ -10,7 +10,7 @@ class MyDocument extends Document {
         // Useful for wrapping the whole react tree
         enhanceApp: (App) => App,
         // Useful for wrapping in a per-page basis
-        enhanceComponent: (Component) => Component,
+        enhanceComponent: (Component) => Component
       })
 
     // Run the parent `getInitialProps`, it now includes the custom `renderPage`
@@ -28,6 +28,27 @@ class MyDocument extends Document {
           <meta name="theme-color" content="#000000" />
           <link rel="apple-touch-icon" href="/logo192.png" />
           <link rel="manifest" href="/manifest.json" />
+          <meta name="viewport" content="width=device-width,initial-scale=1" />
+          <meta charSet="utf-8" />
+          {process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID && (
+            <>
+              <script
+                async
+                src={'https://www.googletagmanager.com/gtag/js?id=' + process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID}
+              ></script>
+              <script
+                dangerouslySetInnerHTML={{
+                  __html: `
+                    window.dataLayer = window.dataLayer || [];
+                    function gtag(){dataLayer.push(arguments);}
+                    gtag('js', new Date());
+
+                    gtag('config', '${process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID}');
+                  `
+                }}
+              />
+            </>
+          )}
         </Head>
         <body className={this.props.cookieTheme} data-networkname={process.env.NEXT_PUBLIC_NETWORK_NAME}>
           <script
