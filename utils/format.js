@@ -5,7 +5,6 @@ import React from 'react'
 import { Trans } from 'next-i18next'
 import moment from 'moment'
 import momentDurationFormatSetup from 'moment-duration-format'
-import { useTranslation } from 'next-i18next'
 
 import LinkIcon from '../public/images/link.svg'
 import { stripText, nativeCurrency } from '.'
@@ -253,7 +252,7 @@ export const nftIdLink = (nftId, chars = 10) => {
 
 export const txIdLink = (txId, chars = 10) => {
   if (!txId) return ''
-  return <a href={'/explorer/' + txId}>{shortHash(txId, chars)}</a>
+  return <a href={'/explorer/' + txId}>{!chars ? <LinkIcon /> : shortHash(txId, chars)}</a>
 }
 
 export const nftLink = (nft, type, options = {}) => {
@@ -403,13 +402,13 @@ export const addressUsernameOrServiceLink = (data, type, options = {}) => {
   }
   if (options.short) {
     if (options.url === '/explorer/') {
-      return <a href={options.url + data[type]}>{shortAddress(data[type])}</a>
+      return addressLink(data[type], { short: options.short })
     } else {
       return <Link href={options.url + data[type]}>{shortAddress(data[type])}</Link>
     }
   }
   if (options.url === '/explorer/') {
-    return <a href={options.url + data[type]}>{data[type]}</a>
+    return addressLink(data[type])
   } else {
     return <Link href={options.url + data[type]}>{data[type]}</Link>
   }
@@ -417,7 +416,7 @@ export const addressUsernameOrServiceLink = (data, type, options = {}) => {
 
 export const addressLink = (address, options = {}) => {
   if (!address) return ''
-  return <a href={'/explorer/' + address}>{options.short ? shortAddress(address) : address}</a>
+  return <a href={'/explorer/' + address}>{options.short ? shortAddress(address, options.short) : address}</a>
 }
 
 export const userOrServiceName = (data) => {
@@ -433,15 +432,6 @@ export const userOrServiceName = (data) => {
   return ''
 }
 
-//replace with txIdLink
-export const txIdFormat = (txId) => {
-  txId = txId.toLowerCase()
-  if (window.innerWidth < 800) {
-    return txId.substr(0, 6) + '...' + txId.substr(-6)
-  }
-  return txId
-}
-
 export const shortHash = (id, n = 6) => {
   if (!id) return ''
   id = id.toString()
@@ -450,6 +440,9 @@ export const shortHash = (id, n = 6) => {
 
 export const shortAddress = (id, length = 6) => {
   if (!id) return ''
+  if (length === true) {
+    length = 6
+  }
   return id.substr(0, length) + '...' + id.substr(-length)
 }
 

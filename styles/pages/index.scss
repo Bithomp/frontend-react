@@ -174,6 +174,7 @@ h2.landing-h2 {
       }
       margin-bottom: 10px;
       .tx-time {
+        vertical-align: middle;
         display: inline-block;
         width: 6%;
         text-align: center;
@@ -181,33 +182,49 @@ h2.landing-h2 {
           width: 14%;
         }
       }
-      .tx-link {
+      .tx-addresses {
+        vertical-align: middle;
         padding-left: 5px;
-        width: 68%;
+        width: 67%;
         display: inline-block;
         @media only screen and (max-width: 800px) {
-          width: 34%;
+          width: 48%;
           overflow: hidden;
           padding: 0;
           vertical-align: middle;
         }
       }
+      .tx-link {
+        padding-right: 5px;
+        text-align: right;
+        width: calc(5% - 5px);
+        display: inline-block;
+        margin-bottom: -5px;
+        vertical-align: middle;
+        @media only screen and (max-width: 800px) {
+          width: calc(4% - 5px);
+          padding: 0;
+        }
+      }
       .tx-amount {
+        vertical-align: middle;
         padding-right: 5px;
         text-align: right;
         display: inline-block;
-        width: 12%;
+        width: 10%;
         @media only screen and (max-width: 800px) {
-          width: 24%;
+          width: 0%;
+          padding-right: 0;
         }
       }
       .tx-amount-fiat {
+        vertical-align: middle;
         padding-right: 5px;
         text-align: right;
         display: inline-block;
-        width: 12%;
+        width: 10%;
         @media only screen and (max-width: 800px) {
-          width: 24%;
+          width: 30%;
         }
       }
     }
