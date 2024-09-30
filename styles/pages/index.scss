@@ -99,23 +99,27 @@ h2.landing-h2 {
 }
 
 .home-converter {
-  position: relative;
+  margin-left: 20px;
   z-index: 2; //to show over the chart
+  padding-top: 32px;
   height: 200px;
   text-align: center;
-  @media only screen and (max-width: 1024px) {
+  @media only screen and (max-width: 803px) {
+    padding-top: 0;
     height: 170px;
+    margin-left: 0;
   }
 }
 
 .home-price-chart {
-  position: relative;
+  padding-top: 20px;
   z-index: 1;
-  max-width: 790px;
-  margin-left: auto;
-  margin-right: auto;
-  margin-bottom: 60px;
-  padding-right: 10px;
+  width: 404px;
+  margin-right: 20px;
+  @media only screen and (max-width: 803px) {
+    margin-left: 10px;
+    width: calc(100% - 20px);
+  }
 }
 
 .home-statistics {

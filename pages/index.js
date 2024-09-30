@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { LogoJsonLd, SocialProfileJsonLd } from 'next-seo'
 import Head from 'next/head'
 
-import { server, explorerName, nativeCurrency, devNet, network, xahauNetwork } from '../utils'
+import { server, explorerName, nativeCurrency, devNet, network, xahauNetwork, useWidth } from '../utils'
 import { getIsSsrMobile } from '../utils/mobile'
 
 import SEO from '../components/SEO'
@@ -50,6 +50,7 @@ export default function Home({ selectedCurrency, setSelectedCurrency, showAds, a
 
   const [chartPeriod, setChartPeriod] = useState('one_day')
   const [rendered, setRendered] = useState(false)
+  const width = useWidth()
 
   useEffect(() => {
     setRendered(true)
@@ -127,7 +128,7 @@ export default function Home({ selectedCurrency, setSelectedCurrency, showAds, a
       )}
 
       {!devNet && selectedCurrency && (
-        <>
+        <div className="flex flex-center">
           <div className="home-converter">
             <Converter
               selectedCurrency={selectedCurrency}
@@ -136,9 +137,14 @@ export default function Home({ selectedCurrency, setSelectedCurrency, showAds, a
             />
           </div>
           <div className="home-price-chart">
-            <PriceChart currency={selectedCurrency} chartPeriod={chartPeriod} setChartPeriod={setChartPeriod} />
+            <PriceChart
+              currency={selectedCurrency}
+              chartPeriod={chartPeriod}
+              setChartPeriod={setChartPeriod}
+              hideToolbar={width > 800}
+            />
           </div>
-        </>
+        </div>
       )}
 
       <div className="home-whale-transactions">
