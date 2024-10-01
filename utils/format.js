@@ -252,7 +252,11 @@ export const nftIdLink = (nftId, chars = 10) => {
 
 export const txIdLink = (txId, chars = 10) => {
   if (!txId) return ''
-  return <a href={'/explorer/' + txId}>{!chars ? <LinkIcon /> : shortHash(txId, chars)}</a>
+  return (
+    <a href={'/explorer/' + txId} aria-label="Transaction link">
+      {!chars ? <LinkIcon /> : shortHash(txId, chars)}
+    </a>
+  )
 }
 
 export const nftLink = (nft, type, options = {}) => {
@@ -416,7 +420,11 @@ export const addressUsernameOrServiceLink = (data, type, options = {}) => {
 
 export const addressLink = (address, options = {}) => {
   if (!address) return ''
-  return <a href={'/explorer/' + address}>{options.short ? shortAddress(address, options.short) : address}</a>
+  return (
+    <a href={'/explorer/' + address} aria-label="address link">
+      {options.short ? shortAddress(address, options.short) : address}
+    </a>
+  )
 }
 
 export const userOrServiceName = (data) => {

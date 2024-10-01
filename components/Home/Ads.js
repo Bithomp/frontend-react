@@ -36,14 +36,14 @@ export default function Ads() {
       */}
         <a href="/go/buy-xrp" target="_blank" rel="noreferrer">
           <div className="sponsored-brand btcbit">
-            <img src="/images/btcbit.svg" className="sponsored-brand-icon" alt="buy xrp" />
+            <img src="/images/btcbit.svg" className="sponsored-brand-icon" alt="Logo for Buy xrp" />
             <div className="sponsored-brand-title">Buy XRP</div>
             <div className="sponsored-brand-text">Instantly buy and sell cryptocurrency with low commission.</div>
           </div>
         </a>
         <a href="/go/earn-xrp" target="_blank" rel="noreferrer">
           <div className="sponsored-brand">
-            <img src="/images/nexo.svg" className="sponsored-brand-icon" alt="earn on xrp" />
+            <img src="/images/nexo.svg" className="sponsored-brand-icon" alt="Logo for Earn on xrp" />
             <div className="sponsored-brand-title">Earn on XRP</div>
             <div className="sponsored-brand-text">Earn up to 12% per year on XRP.</div>
           </div>

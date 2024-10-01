@@ -139,7 +139,7 @@ export default function Header({
     <div className={menuOpen ? 'mobile-menu-open' : ''}>
       <header>
         <div className="header-logo">
-          <Link href="/">
+          <Link href="/" aria-label="Main page">
             <LogoAnimated />
           </Link>
         </div>

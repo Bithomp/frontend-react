@@ -78,10 +78,10 @@ export default function PriceChart({ currency, chartPeriod, setChartPeriod, hide
         show: showToolbar,
         tools: {
           download: false,
-          zoom: '<img src="' + zoomicon + '" width="20">',
-          zoomin: '<img src="' + zoominicon + '" width="20">',
-          zoomout: '<img src="' + zoomouticon + '" width="20">',
-          pan: '<img src="' + panicon + '" width="20">',
+          zoom: '<img src="' + zoomicon + '" width="20" alt="zoom">',
+          zoomin: '<img src="' + zoominicon + '" width="20" alt="zoom in">',
+          zoomout: '<img src="' + zoomouticon + '" width="20" alt="zoom out">',
+          pan: '<img src="' + panicon + '" width="20" alt="pan">',
           reset: false
         }
       }
