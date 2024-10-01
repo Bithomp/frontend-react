@@ -101,7 +101,7 @@ class MyDocument extends Document {
             `
             }}
           />
-          <Main cookieTheme={this.props.cookieTheme} />
+          <Main />
           <NextScript />
         </body>
       </Html>
