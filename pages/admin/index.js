@@ -10,7 +10,7 @@ import Mailto from 'react-protected-mailto'
 import SEO from '../../components/SEO'
 import CheckBox from '../../components/UI/CheckBox'
 
-import { cookieParams, isEmailValid, turnstileSupportedLanguages, useWidth } from '../../utils'
+import { domainFromUrl, isEmailValid, turnstileSupportedLanguages, useWidth } from '../../utils'
 import { getIsSsrMobile } from '../../utils/mobile'
 import AdminTabs from '../../components/Tabs/AdminTabs'
 import { axiosAdmin } from '../../utils/axios'
@@ -47,7 +47,7 @@ export default function Admin({ redirectToken, account, setAccount }) {
   const [termsAccepted, setTermsAccepted] = useState(false)
   const [rememberMe, setRememberMe] = useState(false)
 
-  const cookies = new Cookies()
+  const cookies = new Cookies(null, { path: '/' })
 
   const checkApi = async () => {
     /*
@@ -157,6 +157,8 @@ export default function Admin({ redirectToken, account, setAccount }) {
           "country": "BO"
         }
       */
+
+      const cookieParams = { path: '/', domain: '.' + domainFromUrl, maxAge: 31536000 }
 
       if (partnerDataRaw.data.bithompProPackageID) {
         //request to get the package data

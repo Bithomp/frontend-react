@@ -28,6 +28,8 @@ class MyDocument extends Document {
           <meta name="theme-color" content="#000000" />
           <link rel="apple-touch-icon" href="/logo192.png" />
           <link rel="manifest" href="/manifest.json" />
+          <meta name="viewport" content="width=device-width,initial-scale=1" />
+          <meta charSet="utf-8" />
           {process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID && (
             <>
               <script
@@ -52,6 +54,10 @@ class MyDocument extends Document {
           <script
             dangerouslySetInnerHTML={{
               __html: `(function () {
+                try {
+                  document.cookie = "theme=" + ";expires=Thu, 01 Jan 1970 00:00:01 GMT";
+                  document.cookie = "NEXT_LOCALE=" + ";expires=Thu, 01 Jan 1970 00:00:01 GMT";
+                } catch (err) {}
                 function getCookie(cname) {
                   let name = cname + "=";
                   let decodedCookie = decodeURIComponent(document.cookie);
@@ -101,7 +107,7 @@ class MyDocument extends Document {
             `
             }}
           />
-          <Main cookieTheme={this.props.cookieTheme} />
+          <Main />
           <NextScript />
         </body>
       </Html>
