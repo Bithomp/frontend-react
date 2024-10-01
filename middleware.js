@@ -34,12 +34,12 @@ export async function middleware(req) {
 
   //if locale is one of the deleted ones
   for (const locale of removedLocales) {
-    if (req.nextUrl.pathname.startsWith(`/${locale}/`)) {
+    if (req.nextUrl.pathname.startsWith(`/${locale}/` && locale !== viewLocale)) {
       return NextResponse.redirect(
         new URL(`${req.nextUrl.pathname.replace(`/${locale}/`, `/${viewLocale}/`)}${req.nextUrl.search}`, req.url)
       )
     }
-    if (req.nextUrl.pathname === `/${locale}`) {
+    if (req.nextUrl.pathname === `/${locale}` && locale !== viewLocale) {
       return NextResponse.redirect(
         new URL(`${req.nextUrl.pathname.replace(`/${locale}`, `/${viewLocale}`)}${req.nextUrl.search}`, req.url)
       )

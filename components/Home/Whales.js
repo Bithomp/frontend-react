@@ -112,7 +112,7 @@ export default function Whales({ currency }) {
                 <span className="tx-time">{timeFormat(tx.timestamp)}</span>
                 <span className="tx-addresses">
                   {addressUsernameOrServiceLink(tx, 'sourceAddress', { short: doShort(tx, width) })} →
-                  {width < 800 ? <br /> : ' '}
+                  {width < 800 ? <div style={{ height: '6px' }}></div> : ' '}
                   {addressUsernameOrServiceLink(tx, 'destinationAddress', { short: doShort(tx, width) })}
                 </span>
                 <span className="tx-link">{txIdLink(tx.hash, 0)}</span>

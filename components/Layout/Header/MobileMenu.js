@@ -12,8 +12,8 @@ import { IoStatsChart, IoWallet } from 'react-icons/io5'
 import { FaSignOutAlt } from 'react-icons/fa'
 
 const handleClick = (e) => {
-  if (e.target.getAttribute('aria-expanded') !== null) {
-    e.target.setAttribute('aria-expanded', e.target.getAttribute('aria-expanded') === 'true' ? 'false' : 'true')
+  if (e.target.getAttribute('data-expanded') !== null) {
+    e.target.setAttribute('data-expanded', e.target.getAttribute('data-expanded') === 'true' ? 'false' : 'true')
   }
 }
 
@@ -39,7 +39,7 @@ export default function MobileMenu({
     <div className="mobile-menu" onClick={handleClick}>
       <div className="mobile-menu-wrap">
         <br />
-        <div className="mobile-menu-directory" aria-expanded={displayName ? 'false' : 'true'}>
+        <div className="mobile-menu-directory" data-expanded={displayName ? 'false' : 'true'}>
           {displayName ? (
             <>
               <img src={hashicon} alt="user icon" style={{ width: '18px', height: '18px', marginRight: '5px' }} />
@@ -107,7 +107,7 @@ export default function MobileMenu({
           )}
         </div>
 
-        <div className="mobile-menu-directory" aria-expanded={proName ? 'false' : 'true'}>
+        <div className="mobile-menu-directory" data-expanded={proName ? 'false' : 'true'}>
           <IoIosRocket /> Bithomp Pro
         </div>
         <div className="mobile-menu__submenu">
@@ -132,7 +132,7 @@ export default function MobileMenu({
           )}
         </div>
 
-        <div className="mobile-menu-directory" aria-expanded="false">
+        <div className="mobile-menu-directory" data-expanded="false">
           {t('menu.services.services')}
         </div>
         <div className="mobile-menu__submenu">
@@ -166,7 +166,7 @@ export default function MobileMenu({
           )}
         </div>
 
-        <div className="mobile-menu-directory" aria-expanded="false">
+        <div className="mobile-menu-directory" data-expanded="false">
           NFT
         </div>
         <div className="mobile-menu__submenu">
@@ -248,7 +248,7 @@ export default function MobileMenu({
         {/* Hide AMM for XAHAU */}
         {!xahauNetwork && (
           <>
-            <div className="mobile-menu-directory" aria-expanded="false">
+            <div className="mobile-menu-directory" data-expanded="false">
               {t('menu.amm.amm')}
             </div>
             <div className="mobile-menu__submenu">
@@ -262,7 +262,7 @@ export default function MobileMenu({
           </>
         )}
 
-        <div className="mobile-menu-directory" aria-expanded="false">
+        <div className="mobile-menu-directory" data-expanded="false">
           {t('menu.network.blockchain')}
         </div>
         <div className="mobile-menu__submenu">
@@ -312,7 +312,7 @@ export default function MobileMenu({
           </Link>
         </div>
 
-        <div className="mobile-menu-directory" aria-expanded="false">
+        <div className="mobile-menu-directory" data-expanded="false">
           {t('menu.developers.developers')}
         </div>
         <div className="mobile-menu__submenu">
@@ -352,7 +352,7 @@ export default function MobileMenu({
           </Link>
         </div>
 
-        <div className="mobile-menu-directory" aria-expanded="false">
+        <div className="mobile-menu-directory" data-expanded="false">
           Bithomp
         </div>
         <div className="mobile-menu__submenu">
@@ -384,7 +384,7 @@ export default function MobileMenu({
           </Link>
         </div>
 
-        <div className="mobile-menu-directory" aria-expanded="false">
+        <div className="mobile-menu-directory" data-expanded="false">
           {t('menu.legal')}
         </div>
         <div className="mobile-menu__submenu">
@@ -399,7 +399,7 @@ export default function MobileMenu({
           </Link>
         </div>
 
-        <div className="mobile-menu-directory" aria-expanded="false">
+        <div className="mobile-menu-directory" data-expanded="false">
           {t('menu.sponsored.title')}
         </div>
         <div className="mobile-menu__submenu">

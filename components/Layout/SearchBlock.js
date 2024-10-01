@@ -403,10 +403,12 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
                   () => (searchingSuggestions ? t('explorer.searching-for-addresses') : null)
                   //({ inputValue }) => inputValue.length > 3
                 }
+                aria-label="Search"
               />
             </div>
           ) : (
             <input
+              aria-label="Search"
               ref={searchInput}
               type="text"
               className="search-input"

@@ -63,6 +63,7 @@ export default function CurrencySelect({ setSelectedCurrency, selectedCurrency }
       className="currency-select"
       classNamePrefix="react-select"
       instanceId="currency-select"
+      aria-label="Currency select"
     />
   )
 }
