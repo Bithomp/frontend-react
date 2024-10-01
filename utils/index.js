@@ -6,6 +6,43 @@ import { useTranslation } from 'next-i18next'
 import countries from 'i18n-iso-countries'
 import Cookies from 'universal-cookie'
 
+const useDomainFromUrl = () => {
+  if (typeof window !== 'undefined') {
+    let domain = window.location.hostname
+    let domainParts = domain.split('.')
+    if (domainParts.length > 2) {
+      domain = domainParts.slice(1).join('.')
+    }
+    return encodeURI(domain)
+  }
+  return ''
+}
+
+export const domainFromUrl = useDomainFromUrl()
+export const cookieParams = { path: '/', domain: '.' + domainFromUrl, maxAge: 31536000 }
+
+export const useCookie = (key, defaultValue) => {
+  const cookies = new Cookies()
+  const [item, setItemValue] = useState(() => {
+    if (cookies.get(key)) {
+      return cookies.get(key)
+    }
+    cookies.set(key, defaultValue, cookieParams)
+    return defaultValue
+  })
+
+  const setValue = (value) => {
+    setItemValue(value)
+    cookies.set(key, value, cookieParams)
+  }
+
+  const removeItem = () => {
+    cookies.remove(key)
+  }
+
+  return [item, setValue, removeItem]
+}
+
 export const timestampExpired = (timestamp, type) => {
   if (!timestamp) return null
   // if T/Z format
@@ -38,19 +75,6 @@ export const turnstileSupportedLanguages = [
   'zh-TW'
 ]
 
-const useDomainFromUrl = () => {
-  if (typeof window !== 'undefined') {
-    let domain = window.location.hostname
-    let domainParts = domain.split('.')
-    if (domainParts.length > 2) {
-      domain = domainParts.slice(1).join('.')
-    }
-    return encodeURI(domain)
-  }
-  return ''
-}
-export const domainFromUrl = useDomainFromUrl()
-
 export const periodDescription = (periodName) => {
   if (periodName?.includes('..')) {
     const periodParts = periodName.split('..')
@@ -61,7 +85,7 @@ export const periodDescription = (periodName) => {
 }
 
 export const useSubscriptionExpired = () => {
-  const cookies = new Cookies(null, { path: '/' })
+  const cookies = new Cookies()
   const proExpire = cookies.get('pro-expire')
   if (!proExpire) return true
   return Number(proExpire) < new Date().getTime()

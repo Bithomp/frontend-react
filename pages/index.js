@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { LogoJsonLd, SocialProfileJsonLd } from 'next-seo'
 import Head from 'next/head'
 
-import { server, explorerName, nativeCurrency, devNet, network, xahauNetwork, useWidth } from '../utils'
+import { server, explorerName, nativeCurrency, devNet, network, xahauNetwork } from '../utils'
 import { getIsSsrMobile } from '../utils/mobile'
 
 import SEO from '../components/SEO'
@@ -50,7 +50,6 @@ export default function Home({ selectedCurrency, setSelectedCurrency, showAds, a
 
   const [chartPeriod, setChartPeriod] = useState('one_day')
   const [rendered, setRendered] = useState(false)
-  const width = useWidth()
 
   useEffect(() => {
     setRendered(true)
@@ -127,7 +126,7 @@ export default function Home({ selectedCurrency, setSelectedCurrency, showAds, a
         </div>
       )}
 
-      {!devNet && selectedCurrency && (
+      {!devNet && (
         <div className="flex flex-center">
           <div className="home-converter">
             <Converter
@@ -141,7 +140,7 @@ export default function Home({ selectedCurrency, setSelectedCurrency, showAds, a
               currency={selectedCurrency}
               chartPeriod={chartPeriod}
               setChartPeriod={setChartPeriod}
-              hideToolbar={width > 800}
+              hideToolbar={true}
             />
           </div>
         </div>

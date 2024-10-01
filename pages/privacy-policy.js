@@ -25,7 +25,7 @@ export default function PrivacyPolicy() {
       <SEO title={t('menu.privacy-policy')} noindex={true} />
       <div className="content-text">
         <h1>Privacy Policy</h1>
-        <p>Last updated: September 20, 2024</p>
+        <p>Last updated: October 1, 2024</p>
         <p>
           This Privacy Policy describes Our policies and procedures on the collection, use and disclosure of Your
           information when You use the Service and tells You about Your privacy rights and how the law protects You.
@@ -274,6 +274,9 @@ export default function PrivacyPolicy() {
             prevent sending unnecessary requests. (ex: "1718495999000")
           </li>
           <li>
+            <strong>currency</strong> - the prefered Service currency (ex: "sek").
+          </li>
+          <li>
             <strong>_ga</strong> - the main cookie used by Google Analytics, enables a service to distinguish one
             visitor from another and lasts for 2 years.
           </li>
@@ -285,9 +288,6 @@ export default function PrivacyPolicy() {
         <ul>
           <li>
             <strong>showCookie</strong> - show or hide the cookie message. (ex. true).
-          </li>
-          <li>
-            <strong>currency</strong> - the prefered Service currency (ex: "sek").
           </li>
           <li>
             <strong>country</strong> - country of residence (ex: "SE").
