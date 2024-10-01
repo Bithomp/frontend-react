@@ -1,10 +1,8 @@
 import { useRouter } from 'next/router'
 import { useState } from 'react'
-import Head from 'next/head'
 import axios from 'axios'
 import { appWithTranslation } from 'next-i18next'
 import dynamic from 'next/dynamic'
-import Cookies from 'universal-cookie'
 
 import Header from '../components/Layout/Header'
 import Footer from '../components/Layout/Footer'
@@ -15,14 +13,14 @@ import BackgroundImage from '../components/Layout/BackgroundImage'
 const TopLinks = dynamic(() => import('../components/Layout/TopLinks'), { ssr: false })
 
 import { IsSsrMobileContext } from '../utils/mobile'
-import { isValidUUID, network, server, useLocalStorage, subscriptionExpired, nativeCurrency, useCookie } from '../utils'
+import { isValidUUID, network, server, useLocalStorage, subscriptionExpired, nativeCurrency } from '../utils'
 
 import '../styles/ui.scss'
 import { ThemeProvider } from '../components/Layout/ThemeContext'
 
-const MyApp = ({ Component, pageProps, cookieOnLoadCurrency }) => {
+const MyApp = ({ Component, pageProps }) => {
   const [account, setAccount] = useLocalStorage('account')
-  const [selectedCurrency, setSelectedCurrency] = useCookie('currency', cookieOnLoadCurrency)
+  const [selectedCurrency, setSelectedCurrency] = useLocalStorage('currency', 'usd')
   const [signRequest, setSignRequest] = useState(false)
   const [refreshPage, setRefreshPage] = useState('')
 
@@ -82,10 +80,6 @@ const MyApp = ({ Component, pageProps, cookieOnLoadCurrency }) => {
 
   return (
     <>
-      <Head>
-        <meta name="viewport" content="width=device-width,initial-scale=1" />
-        <meta charSet="utf-8" />
-      </Head>
       <IsSsrMobileContext.Provider value={pageProps.isSsrMobile}>
         <ThemeProvider>
           <div className="body" data-network={network}>
@@ -129,17 +123,6 @@ const MyApp = ({ Component, pageProps, cookieOnLoadCurrency }) => {
       </IsSsrMobileContext.Provider>
     </>
   )
-}
-
-MyApp.getInitialProps = async ({ ctx }) => {
-  const cookies = new Cookies(ctx.req?.headers.cookie)
-  const cookieOnLoadCurrency = cookies.get('currency')
-  if (cookieOnLoadCurrency) {
-    return {
-      cookieOnLoadCurrency
-    }
-  }
-  return {}
 }
 
 export default appWithTranslation(MyApp)

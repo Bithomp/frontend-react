@@ -11,7 +11,7 @@ import 'moment/locale/ja' // 'ja'
 
 import { useRouter } from 'next/router'
 import Cookies from 'universal-cookie'
-import { cookieParams } from '../../../utils'
+import { domainFromUrl } from '../../../utils'
 
 const cookies = new Cookies()
 
@@ -32,7 +32,7 @@ export default function LanguageSwitch({ close }) {
   const langChange = (lang) => {
     if (lang === 'default' || lang === 'undefined' || !lang) return
     moment.locale(lang)
-    cookies.set('NEXT_LOCALE', lang, cookieParams)
+    cookies.set('NEXT_LOCALE', lang, { path: '/', domain: '.' + domainFromUrl, maxAge: 31536000 })
   }
 
   const handleLangChange = (lang) => {
