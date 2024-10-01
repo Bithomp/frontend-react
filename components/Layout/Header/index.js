@@ -337,21 +337,22 @@ export default function Header({
           >
             <NetworkTable close={() => setHoverStates((state) => ({ ...state, dropdown8: false }))} />
           </MenuDropDown>
-
-          <MenuDropDown
-            id="dropdown9"
-            title={selectedCurrency?.toUpperCase()}
-            setHoverStates={setHoverStates}
-            hoverStates={hoverStates}
-            type="top-switch"
-            direction="stick-right"
-          >
-            <CurrencyTable
-              selectedCurrency={selectedCurrency}
-              setSelectedCurrency={setSelectedCurrency}
-              close={() => setHoverStates((state) => ({ ...state, dropdown9: false }))}
-            />
-          </MenuDropDown>
+          {rendered && (
+            <MenuDropDown
+              id="dropdown9"
+              title={selectedCurrency?.toUpperCase()}
+              setHoverStates={setHoverStates}
+              hoverStates={hoverStates}
+              type="top-switch"
+              direction="stick-right"
+            >
+              <CurrencyTable
+                selectedCurrency={selectedCurrency}
+                setSelectedCurrency={setSelectedCurrency}
+                close={() => setHoverStates((state) => ({ ...state, dropdown9: false }))}
+              />
+            </MenuDropDown>
+          )}
 
           <MenuDropDown
             id="dropdown10"

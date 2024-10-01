@@ -19,6 +19,11 @@ export default function PriceChart({ currency, chartPeriod, setChartPeriod, hide
   const { theme } = useTheme()
 
   const [data, setData] = useState({ data: [[]] })
+  const [rendered, setRendered] = useState(false)
+
+  useEffect(() => {
+    setRendered(true)
+  }, [])
 
   const supportedLanguages = ['en', 'ru']
   let chartLang = 'en'
@@ -328,6 +333,8 @@ export default function PriceChart({ currency, chartPeriod, setChartPeriod, hide
       data: data.data
     }
   ]
+
+  if (!rendered) return ''
 
   return (
     <>

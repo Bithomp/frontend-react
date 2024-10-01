@@ -4,7 +4,6 @@ import Head from 'next/head'
 import axios from 'axios'
 import { appWithTranslation } from 'next-i18next'
 import dynamic from 'next/dynamic'
-import Cookies from 'universal-cookie'
 
 import Header from '../components/Layout/Header'
 import Footer from '../components/Layout/Footer'
@@ -20,9 +19,9 @@ import { isValidUUID, network, server, useLocalStorage, subscriptionExpired, nat
 import '../styles/ui.scss'
 import { ThemeProvider } from '../components/Layout/ThemeContext'
 
-const MyApp = ({ Component, pageProps, cookieOnLoadCurrency }) => {
+const MyApp = ({ Component, pageProps }) => {
   const [account, setAccount] = useLocalStorage('account')
-  const [selectedCurrency, setSelectedCurrency] = useCookie('currency', cookieOnLoadCurrency)
+  const [selectedCurrency, setSelectedCurrency] = useCookie('currency', 'usd')
   const [signRequest, setSignRequest] = useState(false)
   const [refreshPage, setRefreshPage] = useState('')
 
@@ -129,17 +128,6 @@ const MyApp = ({ Component, pageProps, cookieOnLoadCurrency }) => {
       </IsSsrMobileContext.Provider>
     </>
   )
-}
-
-MyApp.getInitialProps = async ({ ctx }) => {
-  const cookies = new Cookies(ctx.req?.headers.cookie)
-  const cookieOnLoadCurrency = cookies.get('currency')
-  if (cookieOnLoadCurrency) {
-    return {
-      cookieOnLoadCurrency
-    }
-  }
-  return {}
 }
 
 export default appWithTranslation(MyApp)
