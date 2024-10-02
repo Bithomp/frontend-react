@@ -1,13 +1,14 @@
 import Link from 'next/link'
 import { useTranslation } from 'next-i18next'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
+import dynamic from 'next/dynamic'
 
-import { devNet, ledgerName, nativeCurrency, network, useCookie } from '../../utils'
+import { devNet, ledgerName, nativeCurrency, network } from '../../utils'
 
+const CookieMessage = dynamic(() => import('./CookieMessage'), { ssr: false })
 import SocialIcons from './SocialIcons'
 import LogoAnimated from './LogoAnimated'
 import ButtonScrollTop from './ButtonScrollTop'
-import { useRef } from 'react'
 
 export default function Footer() {
   const year = new Date().getFullYear()
@@ -21,12 +22,6 @@ export default function Footer() {
     setRendered(true)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
-
-  const [showCookie, setShowCokie] = useCookie('showCookie', true)
-
-  const onCookieAccept = () => {
-    setShowCokie(false)
-  }
 
   return (
     <footer ref={footerRef}>
@@ -112,23 +107,7 @@ export default function Footer() {
           <SocialIcons />
         </div>
       </div>
-      {rendered && showCookie && showCookie !== 'false' && (
-        <div className="footer-cookie center">
-          {t('footer.cookie.we-use-cookie')}{' '}
-          <Link href="/privacy-policy" className="hover-oposite">
-            {t('menu.privacy-policy')}
-          </Link>
-          .
-          <br />
-          <input
-            type="button"
-            value={t('button.accept')}
-            className="button-action thin"
-            onClick={onCookieAccept}
-            style={{ marginTop: '10px' }}
-          />
-        </div>
-      )}
+      <CookieMessage />
     </footer>
   )
 }

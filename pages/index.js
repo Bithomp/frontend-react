@@ -159,7 +159,7 @@ export default function Home({ selectedCurrency, setSelectedCurrency, showAds, a
         <Statistics />
       </div>
 
-      {!devNet && testPaymentAvailable && (
+      {!devNet && testPaymentAvailable && !bot && (
         <div className="home-faucet">
           <Faucet account={account} type="testPayment" />
         </div>
