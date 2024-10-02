@@ -34,7 +34,7 @@ export async function getServerSideProps(context) {
         url:
           'v2/address/' +
           account +
-          '?username=true&service=true&twitterImageUrl=true&blacklist=true' +
+          '?username=true&service=true&blacklist=true' +
           (ledgerTimestamp ? '&ledgerTimestamp=' + new Date(ledgerTimestamp).toISOString() : ''),
         headers
       })
@@ -100,7 +100,7 @@ export default function Account({ pageMeta, refreshPage, id, selectedCurrency, l
     const response = await axios(
       '/v2/address/' +
         id +
-        '?username=true&service=true&verifiedDomain=true&parent=true&nickname=true&inception=true&flare=true&blacklist=true&payString=true&ledgerInfo=true&twitterImageUrl=true&xummMeta=true' +
+        '?username=true&service=true&verifiedDomain=true&parent=true&nickname=true&inception=true&flare=true&blacklist=true&payString=true&ledgerInfo=true&xummMeta=true' +
         noCache +
         (ledgerTimestamp ? '&ledgerTimestamp=' + new Date(ledgerTimestamp).toISOString() : '')
     ).catch((error) => {
@@ -184,29 +184,7 @@ export default function Account({ pageMeta, refreshPage, id, selectedCurrency, l
       6) otherwise show hashicon
     */
     if (!data) return ''
-
-    if (data.blacklist?.blacklisted) {
-      return '/images/fraud-alert.png'
-    }
-
-    let gravatarUrl = null
-    if (data.ledgerInfo?.emailHash) {
-      gravatarUrl = 'https://secure.gravatar.com/avatar/' + data.ledgerInfo?.emailHash + '?d=mm&s=200'
-    }
-
-    let xummAvatarUrl = null
-    if (data.xummMeta?.xummPro || data.xummMeta?.curated_asset) {
-      xummAvatarUrl = data.xummMeta?.avatar
-    }
-
-    /*
-    no need for, because it's rendered by next js on our server 
-    'https://cdn.bithomp.com/image?url=' + data.service?.twitterImageUrl
-    */
-
-    return (
-      data.service?.twitterImageUrl || gravatarUrl || xummAvatarUrl || 'https://cdn.bithomp.com/avatar/' + data.address
-    )
+    return 'https://cdn.bithomp.com/avatar/' + data.address
   }
 
   const accountNameTr = (data) => {
