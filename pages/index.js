@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { LogoJsonLd, SocialProfileJsonLd } from 'next-seo'
 import Head from 'next/head'
 
-import { server, explorerName, nativeCurrency, devNet, network, xahauNetwork } from '../utils'
+import { server, explorerName, nativeCurrency, devNet, xahauNetwork } from '../utils'
 import { getIsSsrMobile } from '../utils/mobile'
 
 import SEO from '../components/SEO'
@@ -43,7 +43,7 @@ const ldJsonWebsite = {
   }
 }
 
-const testPaymentAvailable = network === 'xahau'
+const testPaymentAvailable = true
 
 export default function Home({ selectedCurrency, setSelectedCurrency, showAds, account }) {
   const { t } = useTranslation()
