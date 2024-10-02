@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { useTranslation } from 'next-i18next'
 import { useState, useEffect } from 'react'
 
-import { devNet, useLocalStorage, ledgerName, nativeCurrency, network } from '../../utils'
+import { devNet, ledgerName, nativeCurrency, network, useCookie } from '../../utils'
 
 import SocialIcons from './SocialIcons'
 import LogoAnimated from './LogoAnimated'
@@ -22,7 +22,7 @@ export default function Footer() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  const [showCookie, setShowCokie] = useLocalStorage('showCookie', true)
+  const [showCookie, setShowCokie] = useCookie('showCookie', true)
 
   const onCookieAccept = () => {
     setShowCokie(false)
@@ -112,11 +112,11 @@ export default function Footer() {
           <SocialIcons />
         </div>
       </div>
-      {showCookie && (
+      {rendered && showCookie && showCookie !== 'false' && (
         <div className="footer-cookie center">
           {t('footer.cookie.we-use-cookie')}{' '}
           <Link href="/privacy-policy" className="hover-oposite">
-            {t('footer.cookie.read-more')}
+            {t('menu.privacy-policy')}
           </Link>
           .
           <br />

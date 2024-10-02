@@ -25,7 +25,7 @@ export default function PrivacyPolicy() {
       <SEO title={t('menu.privacy-policy')} noindex={true} />
       <div className="content-text">
         <h1>Privacy Policy</h1>
-        <p>Last updated: October 1, 2024</p>
+        <p>Last updated: October 2, 2024</p>
         <p>
           This Privacy Policy describes Our policies and procedures on the collection, use and disclosure of Your
           information when You use the Service and tells You about Your privacy rights and how the law protects You.
@@ -264,6 +264,9 @@ export default function PrivacyPolicy() {
         <h4>Cookies</h4>
         <ul>
           <li>
+            <strong>showCookie</strong> - show or hide the cookie message. (ex. true).
+          </li>
+          <li>
             <strong>NEXT_LOCALE</strong> - the prefered Service language (ex: "en").
           </li>
           <li>
@@ -286,9 +289,6 @@ export default function PrivacyPolicy() {
         </ul>
         <h4>Local storage</h4>
         <ul>
-          <li>
-            <strong>showCookie</strong> - show or hide the cookie message. (ex. true).
-          </li>
           <li>
             <strong>country</strong> - country of residence (ex: "SE").
           </li>

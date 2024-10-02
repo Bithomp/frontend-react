@@ -9,6 +9,11 @@ export default function Converter({ selectedCurrency, setSelectedCurrency, chart
   const [data, setData] = useState({})
   const [nativeTokenValue, setNativeTokenValue] = useState('1')
   const [fiatValue, setFiatValue] = useState('')
+  const [rendered, setRendered] = useState(false)
+
+  useEffect(() => {
+    setRendered(true)
+  }, [])
 
   useEffect(() => {
     async function fetchData() {
@@ -79,9 +84,13 @@ export default function Converter({ selectedCurrency, setSelectedCurrency, chart
           inputMode="decimal"
           aria-label="Fiat amount"
         />
-        <div className="converter-currency-select">
-          <CurrencySelect setSelectedCurrency={setSelectedCurrency} selectedCurrency={selectedCurrency} />
-        </div>
+        {rendered ? (
+          <div className="converter-currency-select">
+            <CurrencySelect setSelectedCurrency={setSelectedCurrency} selectedCurrency={selectedCurrency} />
+          </div>
+        ) : (
+          <div className="converter-xrp"></div>
+        )}
       </div>
     </>
   )
