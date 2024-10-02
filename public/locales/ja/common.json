@@ -383,6 +383,8 @@
     "day": "直近24時間"
   },
   "table": {
+    "currency": "通貨",
+    "currency-issuer": "通貨発行者",
     "destination-tag": "宛先タグ",
     "uri": "URI",
     "mints": "Mints",

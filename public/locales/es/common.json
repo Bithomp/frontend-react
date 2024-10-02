@@ -383,6 +383,8 @@
     "day": "Para los últimas 24 horas"
   },
   "table": {
+    "currency": "Divisa",
+    "currency-issuer": "Emisor de la divisa",
     "destination-tag": "Marca de destino",
     "uri": "URI",
     "mints": "Acuñaciones",

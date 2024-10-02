@@ -383,6 +383,8 @@
     "day": "Für die letzten 24 Stunden"
   },
   "table": {
+    "currency": "Währung",
+    "currency-issuer": "Währungsemittent",
     "destination-tag": "DestinationTag",
     "uri": "URI",
     "mints": "Mints",

@@ -384,6 +384,8 @@
     "day": "최근 24시간"
   },
   "table": {
+    "currency": "통화",
+    "currency-issuer": "통화 발행자",
     "destination-tag": "대상 태그",
     "uri": "URI",
     "mints": "Mints",

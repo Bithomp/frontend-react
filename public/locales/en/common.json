@@ -383,6 +383,8 @@
     "day": "For the last 24 hours"
   },
   "table": {
+    "currency": "Currency",
+    "currency-issuer": "Currency issuer",
     "destination-tag": "Destination tag",
     "uri": "URI",
     "mints": "Mints",

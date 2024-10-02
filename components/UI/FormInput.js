@@ -74,16 +74,18 @@ export default function FormInput({
             spellCheck="false"
             onKeyPress={onKeyPress}
           />
-          <div className="form-input__btns">
-            <button className="form-input__clear" onClick={clearAll}>
-              <IoMdClose />
-            </button>
-            {!hideButton && (
-              <div className="search-button" onClick={onSearchClick}>
-                <img src="/images/search.svg" className="search-icon" alt="search" />
-              </div>
-            )}
-          </div>
+          {!disabled && (
+            <div className="form-input__btns">
+              <button className="form-input__clear" onClick={clearAll}>
+                <IoMdClose />
+              </button>
+              {!hideButton && (
+                <div className="search-button" onClick={onSearchClick}>
+                  <img src="/images/search.svg" className="search-icon" alt="search" />
+                </div>
+              )}
+            </div>
+          )}
         </div>
       </div>
     </div>

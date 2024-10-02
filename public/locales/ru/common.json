@@ -383,6 +383,8 @@
     "day": "За последние 24 часа"
   },
   "table": {
+    "currency": "Токен",
+    "currency-issuer": "Эмитент токена",
     "destination-tag": "Тег назначения",
     "uri": "URI",
     "mints": "Сначала",

@@ -27,7 +27,7 @@ import {
   partnerMarketplaces,
   ipfsUrl
 } from '../utils/nft'
-import { nftLink, usernameOrAddress, amountFormat, timeOrDate, fullDateAndTime } from '../utils/format'
+import { nftLink, usernameOrAddress, amountFormat, timeOrDate, fullDateAndTime, niceCurrency } from '../utils/format'
 
 import SEO from './SEO'
 import SearchBlock from './Layout/SearchBlock'
@@ -731,6 +731,25 @@ export default function NftsComponent({
         >
           {nftExplorer && (
             <>
+              {mintedByMarketplace && (
+                <FormInput
+                  title={t('table.marketplace')}
+                  defaultValue={mintedByMarketplace}
+                  disabled={true}
+                  hideButton={true}
+                />
+              )}
+              {collectionQuery && (
+                <FormInput
+                  title={t('table.collection')}
+                  defaultValue={collectionQuery}
+                  disabled={true}
+                  hideButton={true}
+                />
+              )}
+              {serialQuery && (
+                <FormInput title={t('table.serial')} defaultValue={serialQuery} disabled={true} hideButton={true} />
+              )}
               <AddressInput
                 title={t('table.issuer')}
                 placeholder={t('nfts.search-by-issuer')}
@@ -805,6 +824,22 @@ export default function NftsComponent({
                 setTab={setSaleDestinationTab}
                 name="saleDestination"
               />
+              {saleCurrencyIssuer && saleCurrency && (
+                <>
+                  <FormInput
+                    title={t('table.currency')}
+                    defaultValue={niceCurrency(saleCurrency)}
+                    disabled={true}
+                    hideButton={true}
+                  />
+                  <FormInput
+                    title={t('table.currency-issuer')}
+                    defaultValue={saleCurrencyIssuer}
+                    disabled={true}
+                    hideButton={true}
+                  />
+                </>
+              )}
             </div>
           )}
 

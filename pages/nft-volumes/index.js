@@ -47,6 +47,7 @@ import {
 import LinkIcon from '../../public/images/link.svg'
 import LeftFilters from '../../components/UI/LeftFilters'
 import RadioOptions from '../../components/UI/RadioOptions'
+import FormInput from '../../components/UI/FormInput'
 import { collectionThumbnail } from '../../utils/nft'
 
 export default function NftVolumes({
@@ -621,7 +622,12 @@ export default function NftVolumes({
     if (!data) return ''
     const { onSale, text } = options
     let params = '?includeWithoutMediaData=true'
-    if (data.collectionDetails?.issuer && (data.collectionDetails?.taxon || data.collectionDetails?.taxon === 0)) {
+    if (data.marketplace) {
+      params += '&includeBurned=true&mintedByMarketplace=' + data.marketplace + '&mintedPeriod=' + period
+    } else if (
+      data.collectionDetails?.issuer &&
+      (data.collectionDetails?.taxon || data.collectionDetails?.taxon === 0)
+    ) {
       params +=
         '&issuer=' + usernameOrAddress(data.collectionDetails, 'issuer') + '&taxon=' + data.collectionDetails.taxon
     } else if (data.issuer) {
@@ -979,6 +985,22 @@ export default function NftVolumes({
               <RadioOptions tabList={currencyTabList} tab={currencyTab} setTab={setCurrencyTab} name="currency" />
             </div>
           )}
+          {currencyIssuer && currency && (
+            <>
+              <FormInput
+                title={t('table.currency')}
+                defaultValue={niceCurrency(currency)}
+                disabled={true}
+                hideButton={true}
+              />
+              <FormInput
+                title={t('table.currency-issuer')}
+                defaultValue={currencyIssuer}
+                disabled={true}
+                hideButton={true}
+              />
+            </>
+          )}
         </LeftFilters>
 
         {listTab === 'charts' ? (
@@ -1244,18 +1266,21 @@ export default function NftVolumes({
                                   )}
                                   {listTab === 'marketplaces' && <td>{volume.marketplace}</td>}
                                   {listTab === 'marketplaces' && (
-                                    <td className="right">{shortNiceNumber(volume.nftokens?.minted, 0)}</td>
+                                    <td className="right">
+                                      {shortNiceNumber(volume.nftokens?.minted, 0)}{' '}
+                                      {volume.nftokens?.minted ? nftExplorerLink(volume) : ''}
+                                    </td>
                                   )}
                                   {listTab === 'issuers' && (
                                     <td>{addressUsernameOrServiceLink(volume, 'issuer', { short: true })}</td>
                                   )}
                                   {(listTab === 'issuers' || listTab === 'collections') && extendedStats && (
-                                    <td className="right hide-on-mobile">
+                                    <td className="right">
                                       {shortNiceNumber(volume.statistics?.nfts, 0)} {nftExplorerLink(volume)}
                                     </td>
                                   )}
                                   {(listTab === 'issuers' || listTab === 'collections') && extendedStats && (
-                                    <td className="right hide-on-mobile">
+                                    <td className="right">
                                       {shortNiceNumber(volume.statistics?.owners, 0)} {nftDistributionLink(volume)}
                                     </td>
                                   )}
@@ -1263,9 +1288,7 @@ export default function NftVolumes({
                                     <td className="right">{showFloor(volume)}</td>
                                   )}
                                   {(listTab === 'issuers' || listTab === 'collections') && extendedStats && (
-                                    <td className="right hide-on-mobile">
-                                      {shortNiceNumber(volume.statistics?.tradedNfts, 0)}
-                                    </td>
+                                    <td className="right">{shortNiceNumber(volume.statistics?.tradedNfts, 0)}</td>
                                   )}
                                   {listTab === 'brokers' && (
                                     <td>

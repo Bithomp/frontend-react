@@ -383,6 +383,8 @@
     "day": "Selama 24 jam terakhir"
   },
   "table": {
+    "currency": "Mata Uang",
+    "currency-issuer": "Penerbit Mata Uang",
     "destination-tag": "Destination tag",
     "uri": "URI",
     "mints": "Mints",

@@ -29,7 +29,8 @@ import {
   fullDateAndTime,
   niceNumber,
   shortHash,
-  shortNiceNumber
+  shortNiceNumber,
+  niceCurrency
 } from '../utils/format'
 
 import SEO from '../components/SEO'
@@ -658,6 +659,23 @@ export default function NftSales({
             {t('table.sales')}
             <RadioOptions tabList={saleTabList} tab={saleTab} setTab={setSaleTab} name="sale" />
           </div>
+
+          {currencyIssuer && currency && (
+            <>
+              <FormInput
+                title={t('table.currency')}
+                defaultValue={niceCurrency(currency)}
+                disabled={true}
+                hideButton={true}
+              />
+              <FormInput
+                title={t('table.currency-issuer')}
+                defaultValue={currencyIssuer}
+                disabled={true}
+                hideButton={true}
+              />
+            </>
+          )}
 
           <div className="filters-check-box">
             <CheckBox checked={includeWithoutMediaData} setChecked={setIncludeWithoutMediaData} outline>
