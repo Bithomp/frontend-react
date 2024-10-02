@@ -712,6 +712,14 @@ table {
 }
 /* tooltip ends */
 
+.social-icons {
+  a {
+    font-size: 1.5em;
+    margin: 0 5px;
+    display: inline-block;
+  }
+}
+
 pre {
   box-shadow: 0px 0px 4px rgb(0 0 0 / 15%);
   width: calc(100% - 10px);

@@ -3,6 +3,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import SEO from '../components/SEO'
 import { useTranslation } from 'next-i18next'
 import { getIsSsrMobile } from '../utils/mobile'
+import SocialIcons from '../components/Layout/SocialIcons'
 
 export async function getServerSideProps(context) {
   const { locale } = context
@@ -162,6 +163,10 @@ export default function AboutUs() {
             Humans of XRPL
           </a>{' '}
           (page 28)
+        </p>
+        <p>
+          <h2>Follow us on Social Media</h2>
+          <SocialIcons />
         </p>
       </div>
     </>
