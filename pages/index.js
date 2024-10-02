@@ -3,6 +3,7 @@ import { Trans, useTranslation } from 'next-i18next'
 import { useEffect, useState } from 'react'
 import { LogoJsonLd, SocialProfileJsonLd } from 'next-seo'
 import Head from 'next/head'
+import dynamic from 'next/dynamic'
 
 import { server, explorerName, nativeCurrency, devNet, xahauNetwork } from '../utils'
 import { getIsSsrMobile } from '../utils/mobile'
@@ -14,8 +15,9 @@ import Converter from '../components/Home/Converter'
 import PriceChart from '../components/Home/PriceChart'
 import Statistics from '../components/Home/Statistics'
 import Ads from '../components/Home/Ads'
-import Faucet from '../components/Faucet'
 import Link from 'next/link'
+
+const Faucet = dynamic(() => import('../components/Faucet'), { ssr: false })
 
 export async function getServerSideProps(context) {
   const { locale } = context
