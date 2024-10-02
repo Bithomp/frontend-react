@@ -181,11 +181,6 @@ export default function Account({ pageMeta, refreshPage, id, selectedCurrency, l
       3) if valid twitter - image from twitter
       4) if gravatar - image from gravatar 
       5) if xummPro or xummCurratedAssets - from xumm 
-      6) otherwise show hashicon 
-
-      our cdn image:
-      1) if in blacklist - alert image
-      3) if valid twitter - image from twitter
       6) otherwise show hashicon
     */
     if (!data) return ''
@@ -246,7 +241,7 @@ export default function Account({ pageMeta, refreshPage, id, selectedCurrency, l
     let thirdPartyService = null
     if (data.xummMeta?.thirdPartyProfiles?.length) {
       for (let i = 0; i < data.xummMeta.thirdPartyProfiles.length; i++) {
-        const excludeList = ['xumm.app', 'xrpl', 'bithomp.com']
+        const excludeList = ['xumm.app', 'xrpl', 'xrplexplorer.com']
         if (!excludeList.includes(data.xummMeta.thirdPartyProfiles[i].source)) {
           thirdPartyService = data.xummMeta.thirdPartyProfiles[i].accountAlias
           break

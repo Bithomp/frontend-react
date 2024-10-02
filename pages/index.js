@@ -5,7 +5,7 @@ import { LogoJsonLd, SocialProfileJsonLd } from 'next-seo'
 import Head from 'next/head'
 import dynamic from 'next/dynamic'
 
-import { server, explorerName, nativeCurrency, devNet, xahauNetwork } from '../utils'
+import { server, explorerName, nativeCurrency, devNet, xahauNetwork, detectRobot } from '../utils'
 import { getIsSsrMobile } from '../utils/mobile'
 
 import SEO from '../components/SEO'
@@ -21,8 +21,11 @@ const Faucet = dynamic(() => import('../components/Faucet'), { ssr: false })
 
 export async function getServerSideProps(context) {
   const { locale } = context
+  const userAgent = context.req.headers['user-agent']
+  const bot = detectRobot(userAgent)
   return {
     props: {
+      bot: bot || '',
       isSsrMobile: getIsSsrMobile(context),
       ...(await serverSideTranslations(locale, ['common', 'faucet', 'landing']))
     }
@@ -47,7 +50,7 @@ const ldJsonWebsite = {
 
 const testPaymentAvailable = true
 
-export default function Home({ selectedCurrency, setSelectedCurrency, showAds, account }) {
+export default function Home({ selectedCurrency, setSelectedCurrency, showAds, account, bot }) {
   const { t } = useTranslation()
 
   const [chartPeriod, setChartPeriod] = useState('one_day')
@@ -122,7 +125,7 @@ export default function Home({ selectedCurrency, setSelectedCurrency, showAds, a
 
       <SearchBlock tab="explorer" />
 
-      {rendered && showAds && (
+      {rendered && showAds && !bot && (
         <div className="home-sponsored">
           <Ads />
         </div>
