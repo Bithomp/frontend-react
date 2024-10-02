@@ -31,7 +31,7 @@ const ldJsonWebsite = {
   '@context': 'https://schema.org',
   '@type': 'WebSite',
   name: 'XRP Explorer',
-  alternateName: ['XRP Explorer', 'XRPL Explorer', 'Scan XRP Ledger'],
+  alternateName: ['XRP Explorer', 'XRPL Explorer', 'Scan XRP Ledger', 'Bithomp XRPL Explorer'],
   url: server,
   potentialAction: {
     '@type': 'SearchAction',
