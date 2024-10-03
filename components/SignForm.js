@@ -556,7 +556,7 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
 
   const closeSignInFormAndRefresh = () => {
     signInCancelAndClose()
-    setRefreshPage(new Date())
+    setRefreshPage(Date.now())
   }
 
   const signInCancelAndClose = () => {

@@ -184,7 +184,7 @@ export default function Account({
     }
   }
 
-  const avatarSrc = (data) => {
+  const avatarSrc = (data, options) => {
     /*
       1) if in blacklist - alert image
       2) if bithomp image, show it 
@@ -194,7 +194,7 @@ export default function Account({
       6) otherwise show hashicon
     */
     if (!data) return ''
-    return 'https://cdn.bithomp.com/avatar/' + data.address + (refreshPage ? '?' + refreshPage : '')
+    return 'https://cdn.bithomp.com/avatar/' + data.address + (options?.noCache && refreshPage ? '?' + refreshPage : '')
   }
 
   const accountNameTr = (data) => {
@@ -336,7 +336,7 @@ export default function Account({
                         <div className="column-left">
                           <Image
                             alt="avatar"
-                            src={avatarSrc(data)}
+                            src={avatarSrc(data, { noCache: true })}
                             width="200"
                             height="200"
                             className="avatar"
