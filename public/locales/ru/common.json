@@ -118,6 +118,7 @@
     "not-available": "Не доступно",
     "confirm": {
       "set-domain": "Установка домена",
+      "set-avatar": "Установка аватара",
       "nft-create-transfer-offer-header": "Передача NFT",
       "nft-transfer": "Я передаю этот NFT БЕСПЛАТНО адресату, адресат должен будет принять NFT, чтобы завершить передачу.",
       "nft-accept-sell-offer-header": "Покупка NFT",

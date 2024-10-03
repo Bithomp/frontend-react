@@ -12,7 +12,6 @@ import {
   devNet,
   typeNumberOnly,
   delay,
-  isDomainValid,
   encode,
   networkId,
   floatToXlfHex,
@@ -31,6 +30,9 @@ import CheckBox from './UI/CheckBox'
 import ExpirationSelect from './UI/ExpirationSelect'
 import TargetTableSelect from './UI/TargetTableSelect'
 import { submitProAddressToVerify } from '../utils/pro'
+import { setAvatar } from '../utils/blobVerifications'
+import SetAvatar from './SignForms/SetAvatar'
+import SetDomain from './SignForms/SetDomain'
 
 const qr = '/images/qr.gif'
 const ledger = '/images/ledger-large.svg'
@@ -44,9 +46,10 @@ const askInfoScreens = [
   'NFTokenCreateOffer',
   'NFTokenBurn',
   'setDomain',
+  'setAvatar',
   'nftTransfer'
 ]
-const noCheckboxScreens = [...voteTxs, 'setDomain']
+const noCheckboxScreens = [...voteTxs, 'setDomain', 'setAvatar']
 
 export default function SignForm({ setSignRequest, account, setAccount, signRequest, uuid, setRefreshPage }) {
   const { t } = useTranslation()
@@ -173,6 +176,11 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
       return
     }
 
+    if (signRequest.action === 'setAvatar' && !agreedToRisks) {
+      setScreen('setAvatar')
+      return
+    }
+
     if (signRequest.action && voteTxs.includes(signRequest.action) && !agreedToRisks) {
       setScreen(signRequest.action)
       return
@@ -235,24 +243,26 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
       ]
     }
 
-    const client = {
-      Memo: {
-        MemoData: encode(server?.replace(/^https?:\/\//, ''))
+    // add memo with domain and source tag
+    if (!signRequest.data?.signOnly) {
+      const client = {
+        Memo: {
+          MemoData: encode(server?.replace(/^https?:\/\//, ''))
+        }
       }
-    }
+      if (
+        tx.Memos &&
+        tx.Memos.length &&
+        tx.Memos[0]?.Memo?.MemoData !== client.Memo.MemoData &&
+        tx.Memos[1]?.Memo?.MemoData !== client.Memo.MemoData
+      ) {
+        tx.Memos.push(client)
+      } else {
+        tx.Memos = [client]
+      }
 
-    if (
-      tx.Memos &&
-      tx.Memos.length &&
-      tx.Memos[0]?.Memo?.MemoData !== client.Memo.MemoData &&
-      tx.Memos[1]?.Memo?.MemoData !== client.Memo.MemoData
-    ) {
-      tx.Memos.push(client)
-    } else {
-      tx.Memos = [client]
+      tx.SourceTag = 42697468
     }
-
-    tx.SourceTag = 42697468
 
     if (!tx.Account && account?.address) {
       tx.Account = account.address
@@ -435,6 +445,24 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
         )
         return
       }
+
+      if (data.custom_meta.blob.data?.action === 'set-avatar') {
+        //add address to the list
+        setAvatar(
+          {
+            address: data.response.account,
+            blob: data.response.hex
+          },
+          (res) => {
+            if (res?.error) {
+              setStatus(t(res.error))
+            } else {
+              delay(3000, closeSignInFormAndRefresh)
+            }
+          }
+        )
+        return
+      }
       return
     }
 
@@ -592,21 +620,6 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
     setSignRequest(newRequest)
     setFormError(false)
     setStatus('')
-  }
-
-  const onDomainChange = (e) => {
-    setStatus('')
-    let newRequest = signRequest
-    let domain = e.target.value
-    domain = domain.trim()
-    domain = String(domain).toLowerCase()
-    if (isDomainValid(domain)) {
-      newRequest.request.Domain = encode(domain)
-      setSignRequest(newRequest)
-      setAgreedToRisks(true)
-    } else {
-      setAgreedToRisks(false)
-    }
   }
 
   const onRewardDelayChange = (e) => {
@@ -802,6 +815,7 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
                   : t('signin.confirm.nft-create-buy-offer-header'))}
               {screen === 'nftTransfer' && t('signin.confirm.nft-create-transfer-offer-header')}
               {screen === 'setDomain' && t('signin.confirm.set-domain')}
+              {screen === 'setAvatar' && t('signin.confirm.set-avatar')}
               {voteTxs.includes(screen) && 'Cast a vote'}
             </div>
 
@@ -908,18 +922,21 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
             )}
 
             {screen === 'setDomain' && (
-              <div className="center">
-                <br />
-                <span className="halv">
-                  <span className="input-title">{t('signin.set-account.domain')}</span>
-                  <input
-                    placeholder={t('signin.set-account.enter-domain')}
-                    onChange={onDomainChange}
-                    className="input-text"
-                    spellCheck="false"
-                  />
-                </span>
-              </div>
+              <SetDomain
+                setSignRequest={setSignRequest}
+                signRequest={signRequest}
+                setStatus={setStatus}
+                setAgreedToRisks={setAgreedToRisks}
+              />
+            )}
+
+            {screen === 'setAvatar' && (
+              <SetAvatar
+                setSignRequest={setSignRequest}
+                signRequest={signRequest}
+                setStatus={setStatus}
+                setAgreedToRisks={setAgreedToRisks}
+              />
             )}
 
             {screen === 'castVoteRewardDelay' && (

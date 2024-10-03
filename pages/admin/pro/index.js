@@ -308,8 +308,8 @@ export default function Pro({ account, setAccount, setSignRequest, refreshPage }
             <button className="button-action" onClick={addAddressClicked} disabled={!addressToVerify || !addressName}>
               Verify{' '}
               <Image
-                src="/images/xumm.png"
-                className={'xumm-logo' + (!addressToVerify || !addressName ? ' disabled' : '')}
+                src="/images/xaman.png"
+                className={'xaman-logo' + (!addressToVerify || !addressName ? ' disabled' : '')}
                 alt="xaman"
                 height={24}
                 width={24}

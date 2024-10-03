@@ -38,7 +38,7 @@ import SearchBlock from '../../components/Layout/SearchBlock'
 import Tabs from '../../components/Tabs'
 
 import LinkIcon from '../../public/images/link.svg'
-const xummImg = '/images/xumm.png'
+const xamanImg = '/images/xaman.png'
 
 export default function NftOffers({ setSignRequest, refreshPage, account, offerList, id }) {
   const { t } = useTranslation()
@@ -284,7 +284,7 @@ export default function NftOffers({ setSignRequest, refreshPage, account, offerL
                 })
               }
             >
-              <Image src={xummImg} className="xumm-logo" alt="xaman" height={24} width={24} />
+              <Image src={xamanImg} className="xaman-logo" alt="xaman" height={24} width={24} />
               {account?.address && account.address === userData.address
                 ? t('nft-offers.cancel-invalid-offer', { count: offersCount.invalid })
                 : t('nft-offers.cancel-expired-offer', { count: offersCount.expired })}

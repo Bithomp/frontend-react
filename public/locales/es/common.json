@@ -118,6 +118,7 @@
     "not-available": "No disponible",
     "confirm": {
       "set-domain": "Añadir un dominio",
+      "set-avatar": "Añadir un avatar",
       "nft-create-transfer-offer-header": "Tranferir NFT",
       "nft-transfer": "Estoy ofreciendo este NFT GRATUITAMENTE a la cuenta de destino, <1>la cuenta de destino necesita aceptar la transferencia del NFT</1>.",
       "nft-accept-sell-offer-header": "Comprar NFT",

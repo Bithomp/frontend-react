@@ -72,7 +72,7 @@ import CopyButton from '../../components/UI/CopyButton'
 import NftPreview from '../../components/NftPreview'
 
 import LinkIcon from '../../public/images/link.svg'
-const xummImg = '/images/xumm.png'
+const xamanImg = '/images/xaman.png'
 
 const hasJsonMeta = (nft) => {
   return nft.metadata && nft.metadata.attributes?.metaSource?.toLowerCase() !== 'bithomp'
@@ -700,7 +700,7 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
                 })
               }
             >
-              <Image src={xummImg} className="xumm-logo" alt="xaman" height={24} width={24} />
+              <Image src={xamanImg} className="xaman-logo" alt="xaman" height={24} width={24} />
               {t('button.nft.buy-for-amount', {
                 amount: amountFormat(Math.ceil(best.amount > 0 ? best.amount * multiplier : 1))
               })}
@@ -821,7 +821,7 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
             })
           }
         >
-          <Image src={xummImg} className="xumm-logo" alt="xaman" height={24} width={24} />
+          <Image src={xamanImg} className="xaman-logo" alt="xaman" height={24} width={24} />
           {sell
             ? hasAValidSellOffer
               ? t('button.nft.add-another-sell-offer')
@@ -842,7 +842,7 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
                 })
               }
             >
-              <Image src={xummImg} className="xumm-logo" alt="xaman" height={24} width={24} />
+              <Image src={xamanImg} className="xaman-logo" alt="xaman" height={24} width={24} />
               {t('button.nft.transfer')}
             </button>
             <br />
@@ -875,7 +875,7 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
             })
           }
         >
-          <Image src={xummImg} className="xumm-logo" alt="xaman" height={24} width={24} />
+          <Image src={xamanImg} className="xaman-logo" alt="xaman" height={24} width={24} />
           {countSellOffers?.['active-valid'] > 0 ? t('button.nft.update-sell-offer') : t('button.nft.list-for-sale')}
         </button>
         <br />
@@ -891,7 +891,7 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
             })
           }
         >
-          <Image src={xummImg} className="xumm-logo" alt="xaman" height={24} width={24} />
+          <Image src={xamanImg} className="xaman-logo" alt="xaman" height={24} width={24} />
           {t('button.nft.transfer')}
         </button>
         <br />
@@ -938,7 +938,7 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
             })
           }
         >
-          <Image src={xummImg} className="xumm-logo" alt="xaman" height={24} width={24} />
+          <Image src={xamanImg} className="xaman-logo" alt="xaman" height={24} width={24} />
           {t('button.nft.burn')} ️‍🔥
         </button>
         <br />

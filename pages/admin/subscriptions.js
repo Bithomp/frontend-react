@@ -69,7 +69,7 @@ const ButtonWrapper = ({ type }) => {
 //PayPal option ends
 */
 
-const xummImg = '/images/xumm.png'
+const xamanImg = '/images/xaman.png'
 
 export const getServerSideProps = async (context) => {
   const { query, locale } = context
@@ -657,7 +657,7 @@ export default function Subscriptions({ setSignRequest, receiptQuery, tabQuery }
                           })
                         }
                       >
-                        <Image src={xummImg} className="xumm-logo" alt="xaman" height={24} width={24} />
+                        <Image src={xamanImg} className="xaman-logo" alt="xaman" height={24} width={24} />
                         Pay with Xaman
                       </button>
                     </p>

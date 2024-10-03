@@ -118,6 +118,7 @@
     "not-available": "Tidak tersedia",
     "confirm": {
       "set-domain": "Mengatur Domain",
+      "set-avatar": "Mengatur Avatar",
       "nft-create-transfer-offer-header": "Kirim NFT",
       "nft-transfer": "Saya menawarkan NFT ini GRATIS kepada akun Tujuan, <1>akun tujuan perlu menerima transfer NFT</1>.",
       "nft-accept-sell-offer-header": "Pembelian NFT",

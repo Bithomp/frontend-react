@@ -16,7 +16,7 @@ import LinkIcon from '../../public/images/link.svg'
 
 export async function getServerSideProps(context) {
   const { locale, query, req } = context
-  let pageMeta = null
+  let initialData = null
   const { id, ledgerTimestamp } = query
   //keep it from query instead of params, anyway it is an array sometimes
   const account = id ? (Array.isArray(id) ? id[0] : id) : ''
@@ -34,11 +34,11 @@ export async function getServerSideProps(context) {
         url:
           'v2/address/' +
           account +
-          '?username=true&service=true&blacklist=true' +
+          '?username=true&service=true&verifiedDomain=true&parent=true&nickname=true&inception=true&flare=true&blacklist=true&payString=true&ledgerInfo=true&xummMeta=true' +
           (ledgerTimestamp ? '&ledgerTimestamp=' + new Date(ledgerTimestamp).toISOString() : ''),
         headers
       })
-      pageMeta = res?.data
+      initialData = res?.data
     } catch (error) {
       console.error(error)
     }
@@ -49,7 +49,7 @@ export async function getServerSideProps(context) {
       id: account,
       ledgerTimestampQuery: Date.parse(ledgerTimestamp) || '',
       isSsrMobile: getIsSsrMobile(context),
-      pageMeta,
+      initialData,
       ...(await serverSideTranslations(locale, ['common']))
     }
   }
@@ -60,8 +60,17 @@ import SearchBlock from '../../components/Layout/SearchBlock'
 import CopyButton from '../../components/UI/CopyButton'
 import { LinkAmm } from '../../utils/links'
 
-// setSignRequest, account
-export default function Account({ pageMeta, refreshPage, id, selectedCurrency, ledgerTimestampQuery }) {
+const xamanImg = '/images/xaman.png'
+
+export default function Account({
+  initialData,
+  refreshPage,
+  id,
+  selectedCurrency,
+  ledgerTimestampQuery,
+  account,
+  setSignRequest
+}) {
   const { t, i18n } = useTranslation()
 
   const [data, setData] = useState({})
@@ -71,12 +80,17 @@ export default function Account({ pageMeta, refreshPage, id, selectedCurrency, l
   const [ledgerTimestampInput, setLedgerTimestampInput] = useState(ledgerTimestampQuery)
   const [fiatRate, setFiatRate] = useState('')
   const [userData, setUserData] = useState({
-    username: pageMeta?.username,
-    service: pageMeta?.service?.name,
-    address: pageMeta?.address || id
+    username: initialData?.username,
+    service: initialData?.service?.name,
+    address: initialData?.address || id
   })
   const [networkInfo, setNetworkInfo] = useState({})
   const [balances, setBalances] = useState({})
+
+  useEffect(() => {
+    if (!initialData?.address) return
+    setData(initialData)
+  }, [initialData])
 
   useEffect(() => {
     async function fetchData() {
@@ -96,7 +110,6 @@ export default function Account({ pageMeta, refreshPage, id, selectedCurrency, l
       noCache = '&timestamp=' + Date.now()
     }
 
-    //&hashicon=true
     const response = await axios(
       '/v2/address/' +
         id +
@@ -129,10 +142,7 @@ export default function Account({ pageMeta, refreshPage, id, selectedCurrency, l
 
   useEffect(() => {
     if (!selectedCurrency) return
-    if (!data?.address) {
-      // no token - first time fetching - allow right away
-      checkApi()
-    } else {
+    if (data?.address) {
       checkApi({ noCache: true })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -146,7 +156,7 @@ export default function Account({ pageMeta, refreshPage, id, selectedCurrency, l
 
   useEffect(() => {
     if (!ledgerTimestamp) {
-      //if there is ledgerTimestamp then we need a historicalrate
+      //if there is ledgerTimestamp then we need a historical rate
       async function fetchRate() {
         const response = await axios('v2/rates/current/' + selectedCurrency)
         setFiatRate(response.data[selectedCurrency])
@@ -184,7 +194,7 @@ export default function Account({ pageMeta, refreshPage, id, selectedCurrency, l
       6) otherwise show hashicon
     */
     if (!data) return ''
-    return 'https://cdn.bithomp.com/avatar/' + data.address
+    return 'https://cdn.bithomp.com/avatar/' + data.address + (refreshPage ? '?' + refreshPage : '')
   }
 
   const accountNameTr = (data) => {
@@ -197,7 +207,7 @@ export default function Account({ pageMeta, refreshPage, id, selectedCurrency, l
       if (data.username) {
         output.push(
           <tr key="0">
-            <td>Username</td>
+            <td>{t('table.username')}</td>
             <td className="blue bold">
               {data.username} <CopyButton text={server + '/account/' + data.username}></CopyButton>
             </td>
@@ -207,7 +217,7 @@ export default function Account({ pageMeta, refreshPage, id, selectedCurrency, l
         //if no username and no service - show register link
         output.push(
           <tr key="0">
-            <td>Username</td>
+            <td>{t('table.username')}</td>
             <td>
               <Link href={'/username?address=' + data.address}>register</Link>
             </td>
@@ -295,15 +305,15 @@ export default function Account({ pageMeta, refreshPage, id, selectedCurrency, l
         title={
           t('explorer.header.account') +
           ' ' +
-          (pageMeta?.service?.name || pageMeta?.username || pageMeta?.address || id)
+          (initialData?.service?.name || initialData?.username || initialData?.address || id)
         }
         description={
           'Account details, transactions, NFTs, Tokens for ' +
-          (pageMeta?.service?.name || pageMeta?.username) +
+          (initialData?.service?.name || initialData?.username) +
           ' ' +
-          (pageMeta?.address || id)
+          (initialData?.address || id)
         }
-        image={{ file: avatarSrc(pageMeta) }}
+        image={{ file: avatarSrc(initialData) }}
       />
       <SearchBlock searchPlaceholderText={t('explorer.enter-address')} tab="account" userData={userData} />
       <div className="content-center short-top account">
@@ -321,7 +331,7 @@ export default function Account({ pageMeta, refreshPage, id, selectedCurrency, l
                   <div className="center orange bold">{errorMessage}</div>
                 ) : (
                   <>
-                    {data.address && (
+                    {data?.address && (
                       <>
                         <div className="column-left">
                           <Image
@@ -332,48 +342,48 @@ export default function Account({ pageMeta, refreshPage, id, selectedCurrency, l
                             className="avatar"
                             priority
                           />
-                          <div>
-                            <table className="table-details autowidth">
-                              <thead>
-                                <tr>
-                                  <th colSpan="100">Time machine</th>
-                                </tr>
-                              </thead>
-                              <tbody>
-                                <tr>
-                                  <td colSpan="2">
-                                    {/*  (info) Check account balance and settings in any Time in the past. */}
-                                    <center>
-                                      <DatePicker
-                                        selected={ledgerTimestampInput || new Date()}
-                                        onChange={setLedgerTimestampInput}
-                                        selectsStart
-                                        showTimeInput
-                                        timeInputLabel={t('table.time')}
-                                        minDate={new Date(data.inception * 1000)}
-                                        maxDate={new Date()}
-                                        dateFormat="yyyy/MM/dd HH:mm:ss"
-                                        className="dateAndTimeRange"
-                                        showMonthDropdown
-                                        showYearDropdown
-                                      />
-                                    </center>
-                                    <div className="flex flex-center">
-                                      <button
-                                        onClick={() => setLedgerTimestamp(ledgerTimestampInput)}
-                                        className="button-action thin narrow"
-                                      >
-                                        Update
-                                      </button>{' '}
-                                      <button onClick={resetTimeMachine} className="button-action thin narrow">
-                                        Reset
-                                      </button>
-                                    </div>
-                                  </td>
-                                </tr>
-                              </tbody>
-                            </table>
-                          </div>
+
+                          <table className="table-details autowidth">
+                            <thead>
+                              <tr>
+                                <th colSpan="100">Time machine</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr>
+                                <td colSpan="2">
+                                  {/*  (info) Check account balance and settings in any Time in the past. */}
+                                  <center>
+                                    <DatePicker
+                                      selected={ledgerTimestampInput || new Date()}
+                                      onChange={setLedgerTimestampInput}
+                                      selectsStart
+                                      showTimeInput
+                                      timeInputLabel={t('table.time')}
+                                      minDate={new Date(data.inception * 1000)}
+                                      maxDate={new Date()}
+                                      dateFormat="yyyy/MM/dd HH:mm:ss"
+                                      className="dateAndTimeRange"
+                                      showMonthDropdown
+                                      showYearDropdown
+                                    />
+                                  </center>
+                                  <div className="flex flex-center">
+                                    <button
+                                      onClick={() => setLedgerTimestamp(ledgerTimestampInput)}
+                                      className="button-action thin narrow"
+                                    >
+                                      Update
+                                    </button>{' '}
+                                    <button onClick={resetTimeMachine} className="button-action thin narrow">
+                                      Reset
+                                    </button>
+                                  </div>
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+
                           {(data.xummMeta?.kycApproved ||
                             data.xummMeta?.xummPro ||
                             data.xummMeta?.globalid?.profileUrl) && (
@@ -430,6 +440,50 @@ export default function Account({ pageMeta, refreshPage, id, selectedCurrency, l
                                 </tbody>
                               </table>
                             </div>
+                          )}
+
+                          {(!account?.address || data?.address === account?.address) && (
+                            <table className="table-details autowidth">
+                              <thead>
+                                <tr>
+                                  <th colSpan="100">Actions</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr>
+                                  <td colSpan="2">
+                                    <div className="flex flex-center">
+                                      <button
+                                        className="button-action wide center"
+                                        onClick={() =>
+                                          setSignRequest({
+                                            wallet: 'xumm',
+                                            action: 'setAvatar',
+                                            request: {
+                                              TransactionType: 'AccountSet',
+                                              Account: data.address
+                                            },
+                                            data: {
+                                              signOnly: true,
+                                              action: 'set-avatar'
+                                            }
+                                          })
+                                        }
+                                      >
+                                        <Image
+                                          src={xamanImg}
+                                          className="xaman-logo"
+                                          alt="xaman"
+                                          height={24}
+                                          width={24}
+                                        />
+                                        Set Avatar
+                                      </button>
+                                    </div>
+                                  </td>
+                                </tr>
+                              </tbody>
+                            </table>
                           )}
                         </div>
                         <div className="column-right">
