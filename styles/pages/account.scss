@@ -3,7 +3,7 @@
   .column-left {
     display: inline-block;
     position: relative;
-    width: calc(26% - 30px);
+    width: calc(30% - 30px);
     padding: 0 15px;
     table.table-details {
       margin-top: 10px;
@@ -27,6 +27,7 @@
     }
     .avatar {
       width: calc(100% - 2px);
+      max-width: 333px;
       height: auto;
       display: inline-block;
       border: 1px solid var(--button-additional);
@@ -35,7 +36,7 @@
   }
   .column-right {
     display: inline-block;
-    width: calc(74% - 32px);
+    width: calc(70% - 32px);
     padding: 0 15px;
     vertical-align: top;
     .slide {
@@ -45,7 +46,7 @@
       }
     }
   }
-  @media only screen and (max-width: 600px) {
+  @media only screen and (max-width: 800px) {
     font-size: 14px;
     .column-left {
       width: 100%;

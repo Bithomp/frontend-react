@@ -334,14 +334,16 @@ export default function Account({
                     {data?.address && (
                       <>
                         <div className="column-left">
-                          <Image
-                            alt="avatar"
-                            src={avatarSrc(data, { noCache: true })}
-                            width="200"
-                            height="200"
-                            className="avatar"
-                            priority
-                          />
+                          <center>
+                            <Image
+                              alt="avatar"
+                              src={avatarSrc(data, { noCache: true })}
+                              width="200"
+                              height="200"
+                              className="avatar"
+                              priority
+                            />
+                          </center>
 
                           <table className="table-details autowidth">
                             <thead>
@@ -353,7 +355,7 @@ export default function Account({
                               <tr>
                                 <td colSpan="2">
                                   {/*  (info) Check account balance and settings in any Time in the past. */}
-                                  <center>
+                                  <div className="time-machine">
                                     <DatePicker
                                       selected={ledgerTimestampInput || new Date()}
                                       onChange={setLedgerTimestampInput}
@@ -367,15 +369,27 @@ export default function Account({
                                       showMonthDropdown
                                       showYearDropdown
                                     />
-                                  </center>
-                                  <div className="flex flex-center">
+                                  </div>
+                                  <div>
                                     <button
                                       onClick={() => setLedgerTimestamp(ledgerTimestampInput)}
                                       className="button-action thin narrow"
+                                      style={{
+                                        width: 'calc(50% - 30px)',
+                                        marginRight: '10px',
+                                        display: 'inline-block'
+                                      }}
                                     >
                                       Update
                                     </button>{' '}
-                                    <button onClick={resetTimeMachine} className="button-action thin narrow">
+                                    <button
+                                      onClick={resetTimeMachine}
+                                      className="button-action thin narrow"
+                                      style={{
+                                        width: 'calc(50% - 30px)',
+                                        display: 'inline-block'
+                                      }}
+                                    >
                                       Reset
                                     </button>
                                   </div>
