@@ -270,6 +270,7 @@
     "order-id": "orden id"
   },
   "button": {
+    "set-domain": "Añadir un dominio",
     "continue": "Continuar",
     "cancel": "Cancelar",
     "accept": "Aceptar",

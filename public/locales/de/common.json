@@ -270,6 +270,7 @@
     "order-id": "Bestellung Id"
   },
   "button": {
+    "set-domain": "Domain festlegen",
     "continue": "Fortfahren",
     "cancel": "Abbrechen",
     "accept": "Akzeptieren",

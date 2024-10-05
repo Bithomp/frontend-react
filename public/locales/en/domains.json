@@ -13,9 +13,6 @@
   "verify": "Verify",
   "verify-desc": "You can verify that everything is set properly with the tool: <1>TOML Checker</1>. The list on this page updates from 3am to 4am (Stockholm time), if you domain is verifed in the Checker tool, but it is not on our list within 24h, then it's possible that we can not parse your TOML file.",
   "desc": "Below you can find the list of all verified domains on XRPL (the page updates every day).",
-  "button": {
-    "set-domain": "Set a domain"
-  },
   "table": {
     "addresses": "Addresses"
   }

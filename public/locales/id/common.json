@@ -270,6 +270,7 @@
     "order-id": "ID pesanan"
   },
   "button": {
+    "set-domain": "Tetapkan sebuah domain",
     "continue": "Lanjut",
     "cancel": "Batal",
     "accept": "Terima",

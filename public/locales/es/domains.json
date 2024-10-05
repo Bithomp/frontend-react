@@ -13,9 +13,6 @@
   "verify": "Verificar",
   "verify-desc": "Puedes verificar que todo está correctamente configurado con la herramienta: <1>Comprobador TOML</1>. La lista de esta página se actualiza de 3am a 4am (horario de Stockholm), si tu dominio está verificado por la herramienta, pero no está en la nuestra lista en 24h, entonces es posible que no podamos leer el fichero TOML.",
   "desc": "Abajo puedes encontrar la lista de dominios verificados en XRPL (la página se actualiza cada día).",
-  "button": {
-    "set-domain": "Añadir un dominio"
-  },
   "table": {
     "addresses": "Direcciones"
   }

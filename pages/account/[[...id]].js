@@ -487,11 +487,34 @@ export default function Account({
                                         <Image
                                           src={xamanImg}
                                           className="xaman-logo"
-                                          alt="xaman"
+                                          alt="xaman logo"
                                           height={24}
                                           width={24}
                                         />
                                         Set Avatar
+                                      </button>
+
+                                      <button
+                                        className="button-action wide center"
+                                        onClick={() =>
+                                          setSignRequest({
+                                            wallet: 'xumm',
+                                            action: 'setDomain',
+                                            redirect: 'account',
+                                            request: {
+                                              TransactionType: 'AccountSet'
+                                            }
+                                          })
+                                        }
+                                      >
+                                        <Image
+                                          src={xamanImg}
+                                          className="xaman-logo"
+                                          alt="xaman logo"
+                                          height={24}
+                                          width={24}
+                                        />
+                                        {t('button.set-domain')}
                                       </button>
                                     </div>
                                   </td>

@@ -271,6 +271,7 @@
     "order-id": "ID 오더"
   },
   "button": {
+    "set-domain": "도메인을 설정합니다",
     "continue": "계속",
     "cancel": "취소",
     "accept": "확인",

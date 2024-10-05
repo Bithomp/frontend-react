@@ -270,6 +270,7 @@
     "order-id": "order id"
   },
   "button": {
+    "set-domain": "ドメインを設定",
     "continue": "続行",
     "cancel": "キャンセル",
     "accept": "承認",

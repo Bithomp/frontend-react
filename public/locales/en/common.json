@@ -270,6 +270,7 @@
     "order-id": "order id"
   },
   "button": {
+    "set-domain": "Set a domain",
     "continue": "Continue",
     "cancel": "Cancel",
     "accept": "Accept",

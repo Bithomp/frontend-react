@@ -132,7 +132,7 @@ export default function Domains({ setSignRequest }) {
                 }
               >
                 <Image src="/images/xaman.png" className="xaman-logo" alt="xaman" height={24} width={24} />
-                {t('button.set-domain', { ns: 'domains' })}
+                {t('button.set-domain')}
               </button>
             </p>
             <h4>{t('verify', { ns: 'domains' })}</h4>
