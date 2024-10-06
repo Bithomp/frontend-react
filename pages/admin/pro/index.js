@@ -9,10 +9,10 @@ import { axiosAdmin } from '../../../utils/axios'
 
 import SEO from '../../../components/SEO'
 import AddressInput from '../../../components/UI/AddressInput'
-import { encode, useWidth } from '../../../utils'
-import { removeProAddress } from '../../../utils/pro'
+import { encode, useWidth, subscriptionExpired } from '../../../utils'
+import { removeProAddress, activateAddressCrawler } from '../../../utils/pro'
 import FormInput from '../../../components/UI/FormInput'
-import { fullDateAndTime } from '../../../utils/format'
+import { addressLink, fullDateAndTime, capitalize } from '../../../utils/format'
 import Image from 'next/image'
 
 import { MdDelete } from 'react-icons/md'
@@ -26,6 +26,13 @@ export const getServerSideProps = async (context) => {
       ...(await serverSideTranslations(locale, ['common', 'admin']))
     }
   }
+}
+
+const crawlerStatus = (crawler) => {
+  if (!crawler) return 'Not started'
+  //“paused”, “queued”, “running”, “synced”
+  const color = crawler.status === 'paused' ? 'red' : crawler.status === 'queued' ? 'orange' : 'green'
+  return <span className={color}>{capitalize(crawler.status)}</span>
 }
 
 export default function Pro({ account, setAccount, setSignRequest, refreshPage }) {
@@ -81,10 +88,19 @@ export default function Pro({ account, setAccount, setSignRequest, refreshPage }
         "count": 1,
         "addresses": [
           {
-            "id": 1,
-            "createdAt": 1721461101,
-            "address": "fytuuyfgukhg",
-            "name": "vasia"
+            "id": 28,
+            "createdAt": 1721741550,
+            "address": "raN6cSu",
+            "name": "vasia",
+            "crawler": {
+              "status": "queued",
+              "createdAt": 1728212999,
+              "updatedAt": 1728212999,
+              "lastCrawledAt": null,
+              "firstLedgerIndex": null,
+              "currentLedgerIndex": null,
+              "lastLedgerIndex": null
+            }
           }
         ]
       }
@@ -158,11 +174,34 @@ export default function Pro({ account, setAccount, setSignRequest, refreshPage }
     })
   }
 
-  const afterAddressRemoved = (data) => {
+  const afterVerifiedAddressesUpdate = (data) => {
     if (data?.error) {
       setErrorMessage(data.error)
     }
     getVerifiedAddresses()
+  }
+
+  const addressButtons = (address) => {
+    return (
+      <>
+        {address.crawler && (
+          <Link className="button-action narrow thin" href={'/admin/pro/history?address=' + address.address}>
+            View
+          </Link>
+        )}{' '}
+        {!(address.crawler && address.crawler.status !== 'paused') && (
+          <button
+            className="button-action narrow thin"
+            onClick={() => {
+              activateAddressCrawler(address.address, afterVerifiedAddressesUpdate)
+            }}
+            disabled={subscriptionExpired}
+          >
+            Enable
+          </button>
+        )}
+      </>
+    )
   }
 
   return (
@@ -174,6 +213,15 @@ export default function Pro({ account, setAccount, setSignRequest, refreshPage }
         <AdminTabs name="mainTabs" tab="pro" />
 
         <h4 className="center">Verified addresses</h4>
+        <div>
+          Get your personal historical transaction's extracts and statistics.
+          <br />
+          {/*
+            - Auto cancelation of expired NFT offers
+            <br />- Auto execution of time based escrows
+            */}
+        </div>
+        <br />
 
         {!width || width > 750 ? (
           <table className="table-large no-hover">
@@ -181,8 +229,8 @@ export default function Pro({ account, setAccount, setSignRequest, refreshPage }
               <tr>
                 <th className="center">#</th>
                 <th className="left">Address</th>
-                <th className="right">Private name</th>
-                <th>Verified at</th>
+                <th className="right">Data analytics</th>
+                <th>Status</th>
                 <th className="center">Remove</th>
               </tr>
             </thead>
@@ -193,22 +241,14 @@ export default function Pro({ account, setAccount, setSignRequest, refreshPage }
                     <tr key={i}>
                       <td className="center">{i + 1}</td>
                       <td className="left">
-                        {address.address}
-                        <br />
-                        <br />
-                        <Link
-                          className="button-action narrow thin"
-                          href={'/admin/pro/history?address=' + address.address}
-                        >
-                          History
-                        </Link>
+                        <b className="orange">{address.name}</b> - {addressLink(address.address, { short: true })}
                       </td>
-                      <td className="right">{address.name}</td>
-                      <td>{fullDateAndTime(address.createdAt)}</td>
+                      <td className="right">{addressButtons(address)}</td>
+                      <td>{crawlerStatus(address.crawler)}</td>
                       <td className="center red">
                         <MdDelete
                           onClick={() => {
-                            removeProAddress(address.id, afterAddressRemoved)
+                            removeProAddress(address.id, afterVerifiedAddressesUpdate)
                           }}
                         />
                       </td>
@@ -234,16 +274,13 @@ export default function Pro({ account, setAccount, setSignRequest, refreshPage }
                       <td style={{ padding: '5px' }}>#{i + 1}</td>
                       <td>
                         <p>
-                          Address: <b>{address.address}</b>
+                          Address: <b className="orange">{address.name}</b> -{' '}
+                          {addressLink(address.address, { short: true })}
                         </p>
+                        <p>Status: {crawlerStatus(address.crawler)}</p>
+                        <p>Registered: {fullDateAndTime(address.createdAt)}</p>
                         <p>
-                          Name: <b>{address.name}</b>
-                        </p>
-                        <p>Verified at: {fullDateAndTime(address.createdAt)}</p>
-                        <p>
-                          <Link className="button-action narrow thin" href={'/admin/pro/history?address=' + address}>
-                            History
-                          </Link>{' '}
+                          {addressButtons(address)}
                           <button
                             className="button-action narrow thin"
                             onClick={() => {
@@ -270,52 +307,65 @@ export default function Pro({ account, setAccount, setSignRequest, refreshPage }
         <br />
         <br />
         <div style={{ textAlign: 'left' }}>
-          In order to use PRO functionality for your accounts, you would need to verify them first.
-          <br />
-          <br />
-          <div>
-            - Get your personal historical transaction's extracts and statistics.
-            <br />
-            - Auto cancelation of expired NFT offers
-            <br />- Auto execution of time based escrows
-          </div>
-          {width > 851 && <br />}
-          <br />
-          <div className="flex flex-center">
-            <span style={width > 851 ? { width: 'calc(70% - 20px)' } : { width: '100%', marginBottom: '-20px' }}>
-              <AddressInput
-                title="Address"
-                placeholder="Enter address"
-                setInnerValue={setAddressToVerify}
-                hideButton={true}
-                rawData={rawData}
-                type="address"
-              />
-            </span>
-            <span style={{ width: width > 851 ? '30%' : '100%' }}>
-              <FormInput
-                title="Private name"
-                placeholder="Enter address name"
-                setInnerValue={setAddressName}
-                defaultValue={rawData?.addressDetails?.username}
-                hideButton={true}
-              />
-            </span>
-          </div>
-          <br />
-          <br />
-          <center>
-            <button className="button-action" onClick={addAddressClicked} disabled={!addressToVerify || !addressName}>
-              Verify{' '}
-              <Image
-                src="/images/xaman.png"
-                className={'xaman-logo' + (!addressToVerify || !addressName ? ' disabled' : '')}
-                alt="xaman"
-                height={24}
-                width={24}
-              />
-            </button>
-          </center>
+          {verifiedAddresses?.length > 0 ? (
+            <>
+              {subscriptionExpired ? (
+                <>
+                  In order to activate Data Analyses, please{' '}
+                  <Link href="/admin/subscriptions?tab=pro">purchase the Bithomp Pro subscription</Link>.
+                </>
+              ) : (
+                'You can add up to 5 addresses for data analyses. If you need more, please contact us.'
+              )}
+            </>
+          ) : (
+            <>In order to use PRO functionality for your accounts, you would need to verify them first.</>
+          )}
+          {verifiedAddresses?.length < 5 && !subscriptionExpired && (
+            <>
+              {width > 851 && <br />}
+              <br />
+              <div className="flex flex-center">
+                <span style={width > 851 ? { width: 'calc(70% - 20px)' } : { width: '100%', marginBottom: '-20px' }}>
+                  <AddressInput
+                    title="Address"
+                    placeholder="Enter address"
+                    setInnerValue={setAddressToVerify}
+                    hideButton={true}
+                    rawData={rawData}
+                    type="address"
+                  />
+                </span>
+                <span style={{ width: width > 851 ? '30%' : '100%' }}>
+                  <FormInput
+                    title="Private name"
+                    placeholder="Enter address name"
+                    setInnerValue={setAddressName}
+                    defaultValue={rawData?.addressDetails?.username}
+                    hideButton={true}
+                  />
+                </span>
+              </div>
+              <br />
+              <br />
+              <center>
+                <button
+                  className="button-action"
+                  onClick={addAddressClicked}
+                  disabled={!addressToVerify || !addressName}
+                >
+                  Verify{' '}
+                  <Image
+                    src="/images/xaman.png"
+                    className={'xaman-logo' + (!addressToVerify || !addressName ? ' disabled' : '')}
+                    alt="xaman"
+                    height={24}
+                    width={24}
+                  />
+                </button>
+              </center>
+            </>
+          )}
         </div>
         <br />
         {errorMessage ? <div className="center orange bold">{errorMessage}</div> : <br />}

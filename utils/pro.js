@@ -1,7 +1,32 @@
-import { axiosAdmin } from "./axios"
+import { axiosAdmin } from './axios'
+
+export const activateAddressCrawler = async (address, callback) => {
+  if (!address) return
+  const response = await axiosAdmin.post('user/address/' + address + '/crawler', {}).catch((error) => {
+    if (callback) {
+      callback({ error: error.response?.data?.error || error.message })
+    }
+  })
+  const json = response?.data
+  /*
+    {
+      "id": "1",
+      "status": "queued",
+      "createdAt": 1728212999,
+      "updatedAt": 1728212999,
+      "lastCrawledAt": null,
+      "firstLedgerIndex": null,
+      "currentLedgerIndex": null,
+      "lastLedgerIndex": null
+    }
+  */
+  if (json) {
+    callback(json)
+  }
+}
 
 export const submitProAddressToVerify = async (data, callback) => {
-  const response = await axiosAdmin.post('user/addresses/', data).catch(error => {
+  const response = await axiosAdmin.post('user/addresses/', data).catch((error) => {
     if (callback) {
       callback({ error: error.response?.data?.error || error.message })
     }
@@ -24,7 +49,7 @@ export const submitProAddressToVerify = async (data, callback) => {
 
 export const removeProAddress = async (id, callback) => {
   if (!id) return
-  const response = await axiosAdmin.delete('user/address/' + id).catch(error => {
+  const response = await axiosAdmin.delete('user/address/' + id).catch((error) => {
     if (callback) {
       callback({ error: error.response?.data?.error || error.message })
     }

@@ -471,11 +471,6 @@ export const submitTransaction = async (blob, callback) => {
   }
 }
 
-export const capitalize = (str) => {
-  if (!str) return ''
-  return str.charAt(0).toUpperCase() + str.slice(1)
-}
-
 export const network = process.env.NEXT_PUBLIC_NETWORK_NAME
 const webAddress = process.env.NEXT_PUBLIC_WEB_ADDRESS
 export const devNet = ['mainnet', 'staging', 'xahau'].includes(network) ? false : network
@@ -794,8 +789,4 @@ export const shortName = (name, options) => {
     }
   }
   return name
-}
-
-export const capitalizeFirstLetter = (string) => {
-  return string.charAt(0).toUpperCase() + string.slice(1)
 }

@@ -10,7 +10,6 @@ import {
   useWidth,
   typeNumberOnly,
   devNet,
-  capitalize,
   isAddressValid,
   addAndRemoveQueryParams,
   removeQueryParams,
@@ -23,7 +22,7 @@ import AddressInput from './UI/AddressInput'
 import FormInput from './UI/FormInput'
 import { Turnstile } from '@marsidev/react-turnstile'
 import { useEffect, useState } from 'react'
-import { addressLink, amountFormat, duration, fullNiceNumber, shortHash } from '../utils/format'
+import { addressLink, amountFormat, capitalize, duration, fullNiceNumber, shortHash } from '../utils/format'
 import { LedgerLink } from '../utils/links'
 
 const convertToDrops = (amount) => {

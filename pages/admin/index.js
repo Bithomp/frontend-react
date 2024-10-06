@@ -32,6 +32,7 @@ export default function Admin({ redirectToken, account, setAccount }) {
   const { theme } = useTheme()
   const { t, i18n } = useTranslation(['common', 'admin'])
   const width = useWidth()
+  const cookies = new Cookies()
 
   const [siteKey, setSiteKey] = useState('')
   const [errorMessage, setErrorMessage] = useState('')
@@ -46,8 +47,6 @@ export default function Admin({ redirectToken, account, setAccount }) {
   const [packageData, setPackageData] = useState(null)
   const [termsAccepted, setTermsAccepted] = useState(false)
   const [rememberMe, setRememberMe] = useState(false)
-
-  const cookies = new Cookies()
 
   const checkApi = async () => {
     /*

@@ -13,7 +13,6 @@ import {
   setTabParams,
   useWidth,
   xahauNetwork,
-  capitalizeFirstLetter,
   periodDescription,
   useSubscriptionExpired,
   decode
@@ -27,7 +26,15 @@ import {
   partnerMarketplaces,
   ipfsUrl
 } from '../utils/nft'
-import { nftLink, usernameOrAddress, amountFormat, timeOrDate, fullDateAndTime, niceCurrency } from '../utils/format'
+import {
+  nftLink,
+  usernameOrAddress,
+  amountFormat,
+  timeOrDate,
+  fullDateAndTime,
+  niceCurrency,
+  capitalize
+} from '../utils/format'
 
 import SEO from './SEO'
 import SearchBlock from './Layout/SearchBlock'
@@ -366,7 +373,7 @@ export default function NftsComponent({
                   typeof nftList[i].metadata[key] === 'string'
                 ) {
                   keys.push(key)
-                  csvHeadersNew.push({ label: capitalizeFirstLetter(key), key: 'metadata.' + key })
+                  csvHeadersNew.push({ label: capitalize(key), key: 'metadata.' + key })
                 }
 
                 if (
@@ -375,7 +382,7 @@ export default function NftsComponent({
                 ) {
                   if (!keys.includes(key + 'Cid')) {
                     keys.push(key + 'Cid')
-                    csvHeadersNew.push({ label: capitalizeFirstLetter(key) + ' CID', key: 'metadata.' + key + 'Cid' })
+                    csvHeadersNew.push({ label: capitalize(key) + ' CID', key: 'metadata.' + key + 'Cid' })
                   }
                   nftList[i].metadata[key + 'Cid'] = ipfsUrl(nftList[i].metadata[key], 'cid')
                 }
