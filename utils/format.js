@@ -806,7 +806,7 @@ export const niceNumber = (n, fractionDigits = 0, currency = null) => {
   }
 }
 
-export const fullNiceNumber = (n) => {
+export const fullNiceNumber = (n, currency = null) => {
   if (typeof n === 'string') {
     if (n.includes('x')) {
       //in case of placeholders xxx
@@ -815,8 +815,16 @@ export const fullNiceNumber = (n) => {
       n = Number(n)
     }
   }
+
   if (n) {
-    return <span suppressHydrationWarning>{n.toLocaleString(undefined, { maximumFractionDigits: 15 })}</span>
+    let options = {
+      maximumFractionDigits: 15
+    }
+    if (currency) {
+      options.style = 'currency'
+      options.currency = currency.toUpperCase()
+    }
+    return <span suppressHydrationWarning>{n.toLocaleString(undefined, options)}</span>
   } else {
     return n
   }

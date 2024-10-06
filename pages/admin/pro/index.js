@@ -32,7 +32,7 @@ const crawlerStatus = (crawler) => {
   if (!crawler) return 'Not started'
   //“paused”, “queued”, “running”, “synced”
   const color = crawler.status === 'paused' ? 'red' : crawler.status === 'queued' ? 'orange' : 'green'
-  return <span className={color}>{capitalize(crawler.status)}</span>
+  return <span className={color + (crawler.status === 'synced' ? ' bold' : '')}>{capitalize(crawler.status)}</span>
 }
 
 export default function Pro({ account, setAccount, setSignRequest, refreshPage }) {

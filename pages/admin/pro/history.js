@@ -9,7 +9,7 @@ import { axiosAdmin } from '../../../utils/axios'
 
 import SEO from '../../../components/SEO'
 import { useWidth } from '../../../utils'
-import { fullDateAndTime } from '../../../utils/format'
+import { fullDateAndTime, txIdLink } from '../../../utils/format'
 
 export const getServerSideProps = async (context) => {
   const { locale, query } = context
@@ -23,13 +23,14 @@ export const getServerSideProps = async (context) => {
   }
 }
 
-export default function History({ account, setAccount, queryAddress }) {
+export default function History({ account, setAccount, queryAddress, selectedCurrency }) {
   const router = useRouter()
   const width = useWidth()
 
   const { t } = useTranslation(['common', 'admin'])
   const [errorMessage, setErrorMessage] = useState('')
   const [data, setData] = useState(null)
+  const [activities, setActivities] = useState([])
   const [loading, setLoading] = useState(false)
 
   const getProAddressHistory = async () => {
@@ -47,10 +48,31 @@ export default function History({ account, setAccount, queryAddress }) {
     setLoading(false)
     const data = response?.data
     /*
-
+      {
+        "total": 414,
+        "count": 200,
+        "marker": "200",
+        "activities": [
+          {
+            "address": "raNf8ibQZECTaiFqkDXKRmM2GfdWK76cSu",
+            "timestamp": 1677327372,
+            "ledgerIndex": 78035481,
+            "txIndex": 5,
+            "hash": "1C463FA4DC1D14C2A5890F39A3120946EB1F44EECC0C752C1E0194B8677B6F12",
+            "direction": "sent",
+            "txType": "TrustSet",
+            "counterparty": null,
+            "st": null,
+            "dt": null,
+            "currency": "XRP",
+            "amount": "-0.000012",
+            "amountNative": "-0.000012",
+            "amountInFiats": {
+              "aed": "-0.0000167092330343814396",
     */
     if (data) {
-      setData(data)
+      setData(data) // for stats data, may we need extract only some fields
+      setActivities(data.activities) // add more data by pages
     }
   }
 
@@ -82,25 +104,35 @@ export default function History({ account, setAccount, queryAddress }) {
 
         <h4 className="center">Balances history</h4>
 
+        <p className="center">
+          Showing {data?.count || 'xxx'} balance changes from {data?.total || 'xxx'} total.
+        </p>
+
         {!width || width > 750 ? (
           <table className="table-large">
             <thead>
               <tr>
                 <th className="center">#</th>
-                <th className="left">Address</th>
-                <th className="right">Private name</th>
-                <th>Verified at</th>
+                <th>Timestamp</th>
+                <th>Tx Type</th>
+                <th>Ledger Amount</th>
+                <th>{selectedCurrency.toUpperCase()} equavalent</th>
+                <th>Tx</th>
               </tr>
             </thead>
             <tbody>
-              {data?.length > 0 ? (
+              {activities?.length > 0 ? (
                 <>
-                  {data.map((address, i) => (
+                  {activities.map((a, i) => (
                     <tr key={i}>
                       <td className="center">{i + 1}</td>
-                      <td className="left">{address.address}</td>
-                      <td className="right">{address.name}</td>
-                      <td>{fullDateAndTime(address.createdAt)}</td>
+                      <td>{fullDateAndTime(a.timestamp)}</td>
+                      <td>{a.txType}</td>
+                      <td>
+                        {a.amount} {/* a.currency */}
+                      </td>
+                      <td>{a.amountInFiats[selectedCurrency]}</td>
+                      <td>{txIdLink(a.hash, 0)}</td>
                     </tr>
                   ))}
                 </>
@@ -116,19 +148,23 @@ export default function History({ account, setAccount, queryAddress }) {
         ) : (
           <table className="table-mobile">
             <tbody>
-              {data?.length > 0 ? (
+              {activities?.length > 0 ? (
                 <>
-                  {data.map((address, i) => (
+                  {activities.map((a, i) => (
                     <tr key={i}>
                       <td style={{ padding: '5px' }}>#{i + 1}</td>
                       <td>
                         <p>
-                          Address: <b>{address.address}</b>
+                          Timestamp: <b>{fullDateAndTime(a.timestamp)}</b>
+                        </p>
+                        <p>Tx Type: {a.txType}</p>
+                        <p>
+                          Ledger Amount: <b>{a.amount}</b>
                         </p>
                         <p>
-                          Name: <b>{address.name}</b>
+                          {selectedCurrency.toUpperCase()} equavalent: {a.amountInFiats[selectedCurrency]}
                         </p>
-                        <p>Verified at: {fullDateAndTime(address.createdAt)}</p>
+                        <p>Tx: {txIdLink(a.hash, 0)}</p>
                       </td>
                     </tr>
                   ))}
@@ -144,21 +180,6 @@ export default function History({ account, setAccount, queryAddress }) {
           </table>
         )}
         <br />
-        <br />
-        <div style={{ textAlign: 'left' }}>
-          In order to use PRO functionality for your accounts, you would need to verify them first.
-          <br />
-          <br />
-          <div>
-            - Get your personal historical transaction's extracts and statistics.
-            <br />
-            - Auto cancelation of expired NFT offers
-            <br />- Auto execution of time based escrows
-          </div>
-          {width > 851 && <br />}
-          <br />
-          <br />
-        </div>
         <br />
         {errorMessage ? <div className="center orange bold">{errorMessage}</div> : <br />}
       </div>
