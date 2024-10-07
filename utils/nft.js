@@ -427,6 +427,7 @@ export const isNftExplicit = (nft) => {
     nft.metadata?.title?.toLowerCase().includes('nude') ||
     nft.metadata?.name?.toLowerCase().includes('sexy') ||
     nft.metadata?.name?.toLowerCase().includes('naked') ||
+    nft.metadata?.name?.toLowerCase().includes('ladies') ||
     nft.metadata?.is_explicit
   ) {
     return true
