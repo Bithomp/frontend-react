@@ -393,6 +393,7 @@
     "view": "View",
     "period": "Period",
     "mint-period": "Mint period",
+    "burn-period": "Burn period",
     "warning": "Warning",
     "sequence": "シーケンス",
     "version": "バージョン",
@@ -538,7 +539,9 @@
     "all-tokens": "全トークン",
     "xrp-only": "XRPのみ",
     "mintedNew": "新しい",
-    "mintedOld": "古い"
+    "mintedOld": "古い",
+    "existing": "既存",
+    "burned": "バーン"
   },
   "xumm": {
     "new-qr": "新しいQRコードを取得"

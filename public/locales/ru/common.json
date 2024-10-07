@@ -393,6 +393,7 @@
     "view": "Вид",
     "period": "Период",
     "mint-period": "Период чеканки",
+    "burn-period": "Период сжигания",
     "warning": "Предупреждение",
     "sequence": "Порядковый номер",
     "version": "Версия",
@@ -538,7 +539,9 @@
     "all-tokens": "Все токены",
     "xrp-only": "Только XRP",
     "mintedNew": "Новые",
-    "mintedOld": "Старые"
+    "mintedOld": "Старые",
+    "existing": "Существующие",
+    "burned": "Сожженные"
   },
   "xumm": {
     "new-qr": "Получить новый QR-код"

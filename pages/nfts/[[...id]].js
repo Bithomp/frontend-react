@@ -27,27 +27,27 @@ export const getServerSideProps = async (context) => {
   //key to refresh the component when Link pressed within the same route
   return {
     props: {
-      orderQuery: order || "",
+      orderQuery: order || '',
       key: Math.random(),
-      view: view || "tiles",
-      list: list || "nfts",
-      saleDestination: saleDestination || "buyNow",
-      saleCurrency: saleCurrency || "xrp",
-      saleCurrencyIssuer: saleCurrencyIssuer || "",
-      searchQuery: search || "",
-      issuerQuery: issuer || "",
-      ownerQuery: owner || "",
-      taxonQuery: taxon || "",
-      serialQuery: serial || "",
-      mintedByMarketplace: mintedByMarketplace || "",
-      mintedPeriod: mintedPeriod || "all",
-      burnedPeriod: burnedPeriod || "",
+      view: view || 'tiles',
+      list: list || 'nfts',
+      saleDestination: saleDestination || 'buyNow',
+      saleCurrency: saleCurrency || 'xrp',
+      saleCurrencyIssuer: saleCurrencyIssuer || '',
+      searchQuery: search || '',
+      issuerQuery: issuer || '',
+      ownerQuery: owner || '',
+      taxonQuery: taxon || '',
+      serialQuery: serial || '',
+      mintedByMarketplace: mintedByMarketplace || '',
+      mintedPeriod: mintedPeriod || 'all',
+      burnedPeriod: burnedPeriod || '',
       includeBurnedQuery: includeBurned || false,
       includeWithoutMediaDataQuery: includeWithoutMediaData || false,
-      id: id ? (Array.isArray(id) ? id[0] : id) : "",
+      id: id ? (Array.isArray(id) ? id[0] : id) : '',
       isSsrMobile: getIsSsrMobile(context),
-      ...(await serverSideTranslations(locale, ['common', 'nft-sort', 'popups'])),
-    },
+      ...(await serverSideTranslations(locale, ['common', 'nft-sort', 'popups']))
+    }
   }
 }
 
@@ -71,25 +71,27 @@ export default function Nfts({
   id,
   account
 }) {
-  return <NftsComponent
-    orderQuery={orderQuery}
-    view={view}
-    list={list}
-    saleDestination={saleDestination}
-    saleCurrency={saleCurrency}
-    saleCurrencyIssuer={saleCurrencyIssuer}
-    searchQuery={searchQuery}
-    issuerQuery={issuerQuery}
-    ownerQuery={ownerQuery}
-    taxonQuery={taxonQuery}
-    serialQuery={serialQuery}
-    mintedByMarketplace={mintedByMarketplace}
-    mintedPeriodQuery={mintedPeriod}
-    burnedPeriod={burnedPeriod}
-    includeBurnedQuery={includeBurnedQuery}
-    includeWithoutMediaDataQuery={includeWithoutMediaDataQuery}
-    nftExplorer={false}
-    id={id}
-    account={account}
-  />
+  return (
+    <NftsComponent
+      orderQuery={orderQuery}
+      view={view}
+      list={list}
+      saleDestination={saleDestination}
+      saleCurrency={saleCurrency}
+      saleCurrencyIssuer={saleCurrencyIssuer}
+      searchQuery={searchQuery}
+      issuerQuery={issuerQuery}
+      ownerQuery={ownerQuery}
+      taxonQuery={taxonQuery}
+      serialQuery={serialQuery}
+      mintedByMarketplace={mintedByMarketplace}
+      mintedPeriodQuery={mintedPeriod}
+      burnedPeriodQuery={burnedPeriod}
+      includeBurnedQuery={includeBurnedQuery}
+      includeWithoutMediaDataQuery={includeWithoutMediaDataQuery}
+      nftExplorer={false}
+      id={id}
+      account={account}
+    />
+  )
 }

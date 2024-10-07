@@ -67,7 +67,7 @@ export default function NftsComponent({
   nftExplorer,
   mintedByMarketplace,
   mintedPeriodQuery,
-  burnedPeriod,
+  burnedPeriodQuery,
   includeBurnedQuery,
   includeWithoutMediaDataQuery,
   id,
@@ -110,6 +110,7 @@ export default function NftsComponent({
   const [includeBurned, setIncludeBurned] = useState(includeBurnedQuery)
   const [includeWithoutMediaData, setIncludeWithoutMediaData] = useState(includeWithoutMediaDataQuery)
   const [mintedPeriod, setMintedPeriod] = useState(mintedPeriodQuery)
+  const [burnedPeriod, setBurnedPeriod] = useState(burnedPeriodQuery)
   const [csvHeaders, setCsvHeaders] = useState([])
   const [nftCount, setNftCount] = useState(null)
   const [currentOrderList, setCurrentOrderList] = useState(listTab !== 'onSale' ? orderNftsList : orderOnSaleList)
@@ -452,7 +453,8 @@ export default function NftsComponent({
     search,
     includeBurned,
     includeWithoutMediaData,
-    mintedPeriod
+    mintedPeriod,
+    burnedPeriod
   ])
 
   useEffect(() => {
@@ -579,9 +581,26 @@ export default function NftsComponent({
       })
     }
 
+    if (burnedPeriod) {
+      queryAddList.push({
+        name: 'burnedPeriod',
+        value: burnedPeriod
+      })
+    }
+
     setTabParams(router, tabsToSet, queryAddList, queryRemoveList)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeView, order, rawData, listTab, saleDestinationTab, includeBurned, includeWithoutMediaData, mintedPeriod])
+  }, [
+    activeView,
+    order,
+    rawData,
+    listTab,
+    saleDestinationTab,
+    includeBurned,
+    includeWithoutMediaData,
+    mintedPeriod,
+    burnedPeriod
+  ])
 
   const onTaxonInput = (value) => {
     if (/^\d+$/.test(value) && issuer && isValidTaxon(value)) {
@@ -851,13 +870,46 @@ export default function NftsComponent({
           )}
 
           <div>
-            {!burnedPeriod && listTab !== 'onSale' && (
-              <div className="filters-check-box">
-                <CheckBox checked={includeBurned} setChecked={setIncludeBurned} outline>
-                  {t('table.text.include-burned-nfts')}
-                </CheckBox>
+            {listTab !== 'onSale' && (
+              <>
+                {t('table.text.include-burned-nfts')}
+                <RadioOptions
+                  tabList={[
+                    { value: 'existing', label: t('tabs.existing') },
+                    { value: 'all', label: t('tabs.all') },
+                    { value: 'burned', label: t('tabs.burned') }
+                  ]}
+                  tab={burnedPeriod ? 'burned' : includeBurned ? 'all' : 'existing'}
+                  setTab={(tab) => {
+                    if (tab === 'burned') {
+                      setBurnedPeriod('all')
+                    } else if (tab === 'all') {
+                      setIncludeBurned(true)
+                      setBurnedPeriod(null)
+                    } else {
+                      setIncludeBurned(false)
+                      setBurnedPeriod(null)
+                    }
+                  }}
+                  name="ExistingAndBurnedTabs"
+                />
+              </>
+            )}
+            {burnedPeriod && (
+              <div>
+                {t('table.burn-period')}
+                <DateAndTimeRange
+                  periodQueryName="burnedPeriod"
+                  period={burnedPeriod}
+                  setPeriod={setBurnedPeriod}
+                  defaultPeriod={burnedPeriodQuery}
+                  minDate="nft"
+                  radio={true}
+                  name="burnedPeriod"
+                />
               </div>
             )}
+
             <div className="filters-check-box">
               <CheckBox checked={includeWithoutMediaData} setChecked={setIncludeWithoutMediaData} outline>
                 {t('table.text.include-without-media-data')}

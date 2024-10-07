@@ -154,14 +154,14 @@ export default function DateAndTimeRange({ setPeriod, minDate, tabs, radio, defa
     <span style={style}>
       {tabs && ready && (
         <>
-          <Tabs tabList={periodTabs} tab={periodName} setTab={setPeriodName} name="periodTabs" />
+          <Tabs tabList={periodTabs} tab={periodName} setTab={setPeriodName} name={periodQueryName + 'Tabs'} />
           {windowWidth < 910 && <br />}
         </>
       )}
 
       {radio && ready && (
         <>
-          <RadioOptions tabList={periodTabs} tab={periodName} setTab={setPeriodName} name="periodTabs" />
+          <RadioOptions tabList={periodTabs} tab={periodName} setTab={setPeriodName} name={periodQueryName + 'Tabs'} />
           {windowWidth < 910 && <br />}
         </>
       )}

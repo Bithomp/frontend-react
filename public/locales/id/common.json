@@ -393,6 +393,7 @@
     "view": "View",
     "period": "Periode",
     "mint-period": "Periode Mint",
+    "burn-period": "Periode Burn",
     "warning": "Warning",
     "sequence": "Urutan",
     "version": "Versi",
@@ -538,7 +539,9 @@
     "all-tokens": "Semua Token",
     "xrp-only": "Hanya XRP",
     "mintedNew": "Latest",
-    "mintedOld": "Oldest"
+    "mintedOld": "Oldest",
+    "existing": "Existing",
+    "burned": "Dihapus"
   },
   "xumm": {
     "new-qr": "Dapatkan kode QR baru"

@@ -91,7 +91,7 @@ export default function Nfts({
       serialQuery={serialQuery}
       mintedByMarketplace={mintedByMarketplace}
       mintedPeriodQuery={mintedPeriod}
-      burnedPeriod={burnedPeriod}
+      burnedPeriodQuery={burnedPeriod}
       includeBurnedQuery={includeBurnedQuery}
       includeWithoutMediaDataQuery={includeWithoutMediaDataQuery}
       nftExplorer={true}

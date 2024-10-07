@@ -393,6 +393,7 @@
     "view": "View",
     "period": "Period",
     "mint-period": "Mint period",
+    "burn-period": "Burn period",
     "warning": "Warning",
     "sequence": "Sequence",
     "version": "Version",
@@ -538,7 +539,9 @@
     "all-tokens": "All tokens",
     "xrp-only": "XRP only",
     "mintedNew": "Latest",
-    "mintedOld": "Oldest"
+    "mintedOld": "Oldest",
+    "existing": "Existing",
+    "burned": "Burned"
   },
   "xumm": {
     "new-qr": "Get a new QR code"
