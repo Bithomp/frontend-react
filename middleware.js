@@ -48,6 +48,14 @@ export async function middleware(req) {
 
   //import to have this case: reactLocale === 'default'
   if (reactLocale !== viewLocale) {
-    return NextResponse.redirect(new URL(`/${viewLocale}${req.nextUrl.pathname}${req.nextUrl.search}`, req.url))
+    // do not add "/" after locale if it's the root
+    return NextResponse.redirect(
+      new URL(
+        `/${viewLocale}${req.nextUrl.pathname !== '/' ? req.nextUrl.pathname : req.nextUrl.search ? '/' : ''}${
+          req.nextUrl.search
+        }`,
+        req.url
+      )
+    )
   }
 }

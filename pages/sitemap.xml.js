@@ -76,7 +76,11 @@ function generateSiteMap(posts) {
        .map(({ loc, changefreq, priority }) => {
          return `
           <url>
-            ${!oldPages.includes(loc) ? `<loc>${`${server}/en/${loc}`}</loc>` : `<loc>${`${server}/${loc}`}</loc>`}
+            ${
+              !oldPages.includes(loc)
+                ? `<loc>${`${server}/en${loc ? '/' + loc : ''}`}</loc>`
+                : `<loc>${`${server}/${loc}`}</loc>`
+            }
             <changefreq>${changefreq}</changefreq>
             <priority>${priority}</priority>
             ${
