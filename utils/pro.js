@@ -1,4 +1,12 @@
 import { axiosAdmin } from './axios'
+import { capitalize } from './format'
+
+export const crawlerStatus = (crawler) => {
+  if (!crawler) return 'Not started'
+  //“paused”, “queued”, “running”, “synced”
+  const color = crawler.status === 'paused' ? 'red' : crawler.status === 'queued' ? 'orange' : 'green'
+  return <span className={color + (crawler.status === 'synced' ? ' bold' : '')}>{capitalize(crawler.status)}</span>
+}
 
 export const activateAddressCrawler = async (address, callback) => {
   if (!address) return

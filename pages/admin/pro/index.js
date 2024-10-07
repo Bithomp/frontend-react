@@ -10,13 +10,14 @@ import { axiosAdmin } from '../../../utils/axios'
 import SEO from '../../../components/SEO'
 import AddressInput from '../../../components/UI/AddressInput'
 import { encode, useWidth, subscriptionExpired } from '../../../utils'
-import { removeProAddress, activateAddressCrawler } from '../../../utils/pro'
+import { removeProAddress, activateAddressCrawler, crawlerStatus } from '../../../utils/pro'
 import FormInput from '../../../components/UI/FormInput'
-import { addressLink, fullDateAndTime, capitalize } from '../../../utils/format'
+import { addressLink, fullDateAndTime } from '../../../utils/format'
 import Image from 'next/image'
 
 import { MdDelete } from 'react-icons/md'
 import Link from 'next/link'
+import ProTabs from '../../../components/Tabs/ProTabs'
 
 export const getServerSideProps = async (context) => {
   const { locale } = context
@@ -26,13 +27,6 @@ export const getServerSideProps = async (context) => {
       ...(await serverSideTranslations(locale, ['common', 'admin']))
     }
   }
-}
-
-const crawlerStatus = (crawler) => {
-  if (!crawler) return 'Not started'
-  //“paused”, “queued”, “running”, “synced”
-  const color = crawler.status === 'paused' ? 'red' : crawler.status === 'queued' ? 'orange' : 'green'
-  return <span className={color + (crawler.status === 'synced' ? ' bold' : '')}>{capitalize(crawler.status)}</span>
 }
 
 export default function Pro({ account, setAccount, setSignRequest, refreshPage }) {
@@ -211,6 +205,8 @@ export default function Pro({ account, setAccount, setSignRequest, refreshPage }
         <h1 className="center">Pro addresses</h1>
 
         <AdminTabs name="mainTabs" tab="pro" />
+
+        <ProTabs tab="addresses" />
 
         <h4 className="center">Verified addresses</h4>
         <div>
