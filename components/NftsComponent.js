@@ -696,7 +696,9 @@ export default function NftsComponent({
             (listTab === 'onSale' && saleDestinationTab === 'buyNow' ? ', ' + t('tabs.buyNow') : '') +
             (search || searchQuery ? ', ' + t('table.name') + ': ' + (search || searchQuery) : '') +
             (burnedPeriod ? ', ' + t('table.burn-period') + ': ' + burnedPeriod : '') +
-            (order ? ', ' + t('dropdown.' + order, { ns: 'nft-sort' }) : '')
+            (order ? ', ' + t('dropdown.' + order, { ns: 'nft-sort' }) : '') +
+            (includeBurned ? ', ' + t('table.text.include-burned-nfts') : '') +
+            (includeWithoutMediaData ? ', ' + t('table.text.include-without-media-data') : '')
           }
           description={
             (issuer || issuerQuery || search || t('nft-explorer.header')) +
