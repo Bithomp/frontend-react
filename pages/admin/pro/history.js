@@ -53,6 +53,7 @@ import { RiNftFill } from 'react-icons/ri'
 import { CiSettings } from 'react-icons/ci'
 import { CiLink } from 'react-icons/ci'
 import { CiFileOn } from 'react-icons/ci'
+import { BsCurrencyExchange } from 'react-icons/bs'
 
 const typeToIcon = (type, direction) => {
   let icon = null
@@ -64,6 +65,9 @@ const typeToIcon = (type, direction) => {
     icon = <CiSettings />
   } else if (type === 'TrustSet') {
     icon = <CiLink />
+  } else if (type.includes('Offer')) {
+    // NFT offers already presented earlier
+    icon = <BsCurrencyExchange />
   } else {
     icon = <CiFileOn />
   }
@@ -242,7 +246,7 @@ export default function History({ account, setAccount, queryAddress, selectedCur
                     <td className="left">
                       <b className="orange">{address.name}</b>
                       <br />
-                      {addressLink(address.address)}
+                      {addressLink(address.address, { short: width < 750 })}
                     </td>
                     <td>{crawlerStatus(address.crawler)}</td>
                   </tr>
@@ -261,7 +265,7 @@ export default function History({ account, setAccount, queryAddress, selectedCur
         {addressesToCheck.length > 0 && (
           <>
             <p className="center">
-              Showing {data?.count || 'xxx'} balance changes from {data?.total || 'xxx'} total.
+              Showing {data?.count || '0'} balance changes from {data?.total || '0'} total.
             </p>
 
             {!width || width > 750 ? (
@@ -287,7 +291,7 @@ export default function History({ account, setAccount, queryAddress, selectedCur
                           <td>{fullDateAndTime(a.timestamp)}</td>
                           <td className="center">{typeToIcon(a.txType, a.direction)}</td>
                           <td className="right">{showAmount(a.amount)}</td>
-                          <td className="right">{showFiat(a.amountInFiats[selectedCurrency])}</td>
+                          <td className="right">{showFiat(a.amountInFiats?.[selectedCurrency])}</td>
                           <td>{txIdLink(a.hash, 0)}</td>
                         </tr>
                       ))}
@@ -318,7 +322,8 @@ export default function History({ account, setAccount, queryAddress, selectedCur
                               Ledger Amount: <b>{showAmount(a.amount)}</b>
                             </p>
                             <p>
-                              {selectedCurrency.toUpperCase()} equavalent: {showFiat(a.amountInFiats[selectedCurrency])}
+                              {selectedCurrency.toUpperCase()} equavalent:{' '}
+                              {showFiat(a.amountInFiats?.[selectedCurrency])}
                             </p>
                             <p>Tx: {txIdLink(a.hash, 0)}</p>
                           </td>
@@ -328,7 +333,7 @@ export default function History({ account, setAccount, queryAddress, selectedCur
                   ) : (
                     <tr>
                       <td colSpan="100" className="center">
-                        {loading ? 'Loading data...' : 'You do not have verified addresses yet.'}
+                        {loading ? 'Loading data...' : 'There is no data to show here yet.'}
                       </td>
                     </tr>
                   )}

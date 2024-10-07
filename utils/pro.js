@@ -1,11 +1,33 @@
 import { axiosAdmin } from './axios'
-import { capitalize } from './format'
+import { capitalize, shortNiceNumber } from './format'
 
 export const crawlerStatus = (crawler) => {
   if (!crawler) return 'Not started'
   //“paused”, “queued”, “running”, “synced”
   const color = crawler.status === 'paused' ? 'red' : crawler.status === 'queued' ? 'orange' : 'green'
-  return <span className={color + (crawler.status === 'synced' ? ' bold' : '')}>{capitalize(crawler.status)}</span>
+
+  /*
+    "crawler": {
+      "status": "synced",
+      "createdAt": 1728212999,
+      "updatedAt": 1728252600,
+      "lastCrawledAt": 1728252600,
+      "firstLedgerIndex": 17741709,
+      "currentLedgerIndex": 90592089,
+      "lastLedgerIndex": 90592089
+    }
+  */
+
+  return (
+    <>
+      <span className={color + (crawler.status === 'synced' ? ' bold' : '')}>{capitalize(crawler.status)}</span>
+      {crawler.status !== 'synced' && (
+        <>
+          <br />({shortNiceNumber(crawler.lastLedgerIndex - crawler.currentLedgerIndex)} ledgers to load)
+        </>
+      )}
+    </>
+  )
 }
 
 export const activateAddressCrawler = async (address, callback) => {
