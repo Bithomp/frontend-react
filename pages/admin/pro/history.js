@@ -54,6 +54,7 @@ import { CiSettings } from 'react-icons/ci'
 import { CiLink } from 'react-icons/ci'
 import { CiFileOn } from 'react-icons/ci'
 import { BsCurrencyExchange } from 'react-icons/bs'
+import DateAndTimeRange from '../../../components/UI/DateAndTimeRange'
 
 const typeToIcon = (type, direction) => {
   let icon = null
@@ -95,12 +96,20 @@ export default function History({ account, setAccount, queryAddress, selectedCur
   const [loadingVerifiedAddresses, setLoadingVerifiedAddresses] = useState(false)
   const [verifiedAddresses, setVerifiedAddresses] = useState([])
   const [addressesToCheck, setAddressesToCheck] = useState(queryAddress ? [queryAddress] : [])
+  const [period, setPeriod] = useState('all')
 
   const getProAddressHistory = async () => {
     if (addressesToCheck.length === 0) return
     setLoading(true)
     const response = await axiosAdmin
-      .get('user/addresses/activities?convertCurrency=' + selectedCurrency + '&addresses=' + addressesToCheck)
+      .get(
+        'user/addresses/activities?convertCurrency=' +
+          selectedCurrency +
+          '&addresses=' +
+          addressesToCheck +
+          '&period=' +
+          period
+      )
       .catch((error) => {
         setLoading(false)
         if (error.response?.data?.error === 'errors.token.required') {
@@ -203,7 +212,15 @@ export default function History({ account, setAccount, queryAddress, selectedCur
   useEffect(() => {
     getProAddressHistory()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [addressesToCheck, selectedCurrency])
+  }, [addressesToCheck, selectedCurrency, period])
+
+  const addressName = (address) => {
+    for (let a of verifiedAddresses) {
+      if (a.address === address) {
+        return <span className="orange">{a.name}</span>
+      }
+    }
+  }
 
   return (
     <>
@@ -262,6 +279,11 @@ export default function History({ account, setAccount, queryAddress, selectedCur
           </tbody>
         </table>
 
+        <center>
+          <DateAndTimeRange defaultPeriod="all" setPeriod={setPeriod} tabs={true} />
+          {width < 500 && <br />}
+        </center>
+
         {addressesToCheck.length > 0 && (
           <>
             <p className="center">
@@ -274,6 +296,7 @@ export default function History({ account, setAccount, queryAddress, selectedCur
                   <tr>
                     <th className="center">#</th>
                     <th>Timestamp</th>
+                    {addressesToCheck.length > 1 && <th>Address</th>}
                     <th className="center">Type</th>
                     <th className="right">Ledger Amount</th>
                     <th suppressHydrationWarning className="right">
@@ -289,6 +312,7 @@ export default function History({ account, setAccount, queryAddress, selectedCur
                         <tr key={i}>
                           <td className="center">{i + 1}</td>
                           <td>{fullDateAndTime(a.timestamp)}</td>
+                          {addressesToCheck.length > 1 && <td>{addressName(a.address)}</td>}
                           <td className="center">{typeToIcon(a.txType, a.direction)}</td>
                           <td className="right">{showAmount(a.amount)}</td>
                           <td className="right">{showFiat(a.amountInFiats?.[selectedCurrency])}</td>
@@ -299,7 +323,7 @@ export default function History({ account, setAccount, queryAddress, selectedCur
                   ) : (
                     <tr>
                       <td colSpan="100" className="center">
-                        {loading ? 'Loading data...' : 'You do not have verified addresses yet.'}
+                        {loading ? 'Loading data...' : 'There is no data to show here.'}
                       </td>
                     </tr>
                   )}
@@ -317,6 +341,11 @@ export default function History({ account, setAccount, queryAddress, selectedCur
                             <p>
                               Timestamp: <b>{fullDateAndTime(a.timestamp)}</b>
                             </p>
+                            {addressesToCheck.length > 1 && (
+                              <p>
+                                Address: <b>{addressName(a.address)}</b>
+                              </p>
+                            )}
                             <p>Type: {a.txType}</p>
                             <p>
                               Ledger Amount: <b>{showAmount(a.amount)}</b>
@@ -333,7 +362,7 @@ export default function History({ account, setAccount, queryAddress, selectedCur
                   ) : (
                     <tr>
                       <td colSpan="100" className="center">
-                        {loading ? 'Loading data...' : 'There is no data to show here yet.'}
+                        {loading ? 'Loading data...' : 'There is no data to show here.'}
                       </td>
                     </tr>
                   )}
