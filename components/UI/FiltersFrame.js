@@ -19,6 +19,7 @@ export default function FiltersFrame({
   activeView,
   setActiveView,
   count,
+  total,
   hasMore,
   data,
   csvHeaders,
@@ -112,6 +113,7 @@ export default function FiltersFrame({
           if (setFiltersHideP) setFiltersHideP(value)
         }}
         count={count}
+        total={total}
         hasMore={hasMore}
         data={data || []}
         csvHeaders={csvHeaders}

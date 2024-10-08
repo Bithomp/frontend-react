@@ -348,6 +348,7 @@ export default function History({ account, setAccount, queryAddress, selectedCur
             { value: 'asc', label: 'Earliest first' }
           ]}
           count={data?.count || 0}
+          total={data?.total || 0}
           hasMore={data?.marker}
           data={activities || []}
           csvHeaders={csvHeaders}
