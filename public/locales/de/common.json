@@ -219,7 +219,7 @@
     "for-sale-with-destination": "NFTs zum direkten Verkauf"
   },
   "alerts": {
-    "text0": "Benachrichtigung erhalten, wenn der Marktpreis von <1>Bitstamp</1> für XRP/USD oder XRP/BTC sich um mehr als 5% innert einer Stunde oder mehr als 10% innert eines Tages verändert.",
+    "text0": "Benachrichtigung erhalten, wenn der Marktpreis von <6>{{linkText}}</6> für {{ nativeCurrency }}/USD oder {{ nativeCurrency }}/BTC sich um mehr als 5% innert einer Stunde oder mehr als 10% innert eines Tages verändert.",
     "text1": "Dem Telegram Kanal <1>bithomp</1> oder dem X Account <4>XRP_PriceAlerts</4> folgen.",
     "last-alerts": "Letzte 50 Benachrichtigungen",
     "date-and-time": "Datum & Zeit",

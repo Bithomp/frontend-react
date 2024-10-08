@@ -61,23 +61,23 @@ export default function Alerts() {
       <SEO title={t('menu.price-alerts', { nativeCurrency })} />
       <div className="page-alerts content-center">
         <h1 className="center">{t('menu.price-alerts', { nativeCurrency })}</h1>
+        <p>
+          <Trans i18nKey="alerts.text0">
+            Get notified when {{ nativeCurrency }}/USD or {{ nativeCurrency }}/BTC market price by{' '}
+            <a href={xahauNetwork ? 'https://www.coingecko.com/' : 'https://www.bitstamp.net/'}>
+              {{ linkText: xahauNetwork ? 'CoinGecko' : 'Bitstamp' }}
+            </a>{' '}
+            changes for more than 5% within an hour or more than 10% within a day.
+          </Trans>
+        </p>
         {!xahauNetwork && (
-          <>
-            <p>
-              <Trans i18nKey="alerts.text0">
-                Get notified when XRP/USD or XRP/BTC market price by <a href="https://www.bitstamp.net/">Bitstamp</a>{' '}
-                changes for more than 5% within an hour or more than 10% within a day.
-              </Trans>
-            </p>
-            <p>
-              <Trans i18nKey="alerts.text1">
-                Follow the Telegram channel: <a href="https://t.me/bithomp">bithomp</a> or the X account:{' '}
-                <a href="https://x.com/XRP_PriceAlerts">XRP Price Alerts</a>.
-              </Trans>
-            </p>
-          </>
+          <p>
+            <Trans i18nKey="alerts.text1">
+              Follow the Telegram channel: <a href="https://t.me/bithomp">bithomp</a> or the X account:{' '}
+              <a href="https://x.com/XRP_PriceAlerts">XRP Price Alerts</a>.
+            </Trans>
+          </p>
         )}
-        <br />
         <h3 className="center">{t('alerts.last-alerts')}</h3>
         <table className="table-large">
           <thead>

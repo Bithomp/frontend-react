@@ -219,7 +219,7 @@
     "for-sale-with-destination": "NFT yang Dijual Langsung"
   },
   "alerts": {
-    "text0": "Dapatkan pemberitahuan saat harga pasar XRP/USD atau XRP/BTC oleh <1>Bitstamp</1> berubah lebih dari 5% dalam satu jam atau lebih dari 10% dalam satu hari.",
+    "text0": "Dapatkan pemberitahuan saat harga pasar {{ nativeCurrency }}/USD atau {{ nativeCurrency }}/BTC oleh <6>{{linkText}}</6> berubah lebih dari 5% dalam satu jam atau lebih dari 10% dalam satu hari.",
     "text1": "Ikuti saluran Telegram: <1>bithomp</1> atau akun X: <4>XRP_PriceAlerts</4>.",
     "last-alerts": "50 Pemberitahuan Terakhir",
     "date-and-time": "Tanggal & waktu",
