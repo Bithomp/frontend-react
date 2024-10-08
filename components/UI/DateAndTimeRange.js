@@ -107,12 +107,15 @@ export default function DateAndTimeRange({ setPeriod, minDate, tabs, radio, defa
     let queryAddList = []
     let queryRemoveList = []
 
-    if (periodName && periodName !== 'custom' && periodName !== defaultPeriod) {
-      queryAddList.push({ name: periodQueryName, value: periodName })
+    if (periodName && periodName !== 'custom') {
+      if (periodName !== defaultPeriod) {
+        queryAddList.push({ name: periodQueryName, value: periodName })
+      } else {
+        queryRemoveList.push(periodQueryName)
+      }
       setPeriod(periodName)
-    } else if (startDateIn && endDateIn && (periodName ? periodName !== defaultPeriod : true)) {
+    } else if (startDateIn && endDateIn) {
       const range = new Date(startDateIn).toISOString() + '..' + new Date(endDateIn).toISOString()
-      queryAddList.push({ name: periodQueryName, value: range })
       setPeriod(range)
     } else {
       queryRemoveList.push(periodQueryName)

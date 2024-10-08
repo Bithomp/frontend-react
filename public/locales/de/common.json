@@ -313,7 +313,8 @@
     "developer-mode": "Entwicklermodus",
     "search": "Search",
     "of-many": "of many",
-    "of": "von"
+    "of": "von",
+    "sort-by": "Sortieren nach"
   },
   "form": {
     "error": {

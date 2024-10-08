@@ -31,7 +31,6 @@ export const getServerSideProps = async (context) => {
     props: {
       collectionQuery: collection || '',
       orderQuery: order || 'mintedNew',
-      key: Math.random(),
       view: view || 'tiles',
       list: list || 'nfts',
       saleDestination: saleDestination || 'buyNow',

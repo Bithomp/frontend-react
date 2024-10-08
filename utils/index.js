@@ -347,6 +347,7 @@ export const useLocalStorage = (key, initialValue) => {
 }
 
 const shallRemoveParam = (tabList, tab, defaultTab, setTab) => {
+  if (!setTab) return false
   const existTab = tabList.some((t) => t.value === tab)
   if (!existTab) {
     setTab(defaultTab)

@@ -55,7 +55,7 @@ import { CiLink } from 'react-icons/ci'
 import { CiFileOn } from 'react-icons/ci'
 import { BsCurrencyExchange } from 'react-icons/bs'
 import DateAndTimeRange from '../../../components/UI/DateAndTimeRange'
-import LeftFilters from '../../../components/UI/LeftFilters'
+import FiltersFrame from '../../../components/UI/FiltersFrame'
 
 const typeToIcon = (type, direction) => {
   let icon = null
@@ -85,7 +85,7 @@ const typeToIcon = (type, direction) => {
   )
 }
 
-export default function History({ account, setAccount, queryAddress, selectedCurrency }) {
+export default function History({ account, setAccount, queryAddress, selectedCurrency, setSelectedCurrency }) {
   const router = useRouter()
   const width = useWidth()
 
@@ -98,7 +98,7 @@ export default function History({ account, setAccount, queryAddress, selectedCur
   const [verifiedAddresses, setVerifiedAddresses] = useState([])
   const [addressesToCheck, setAddressesToCheck] = useState(queryAddress ? [queryAddress] : [])
   const [period, setPeriod] = useState('all')
-  const [filtersHide, setFiltersHide] = useState(false)
+  const [order, setOrder] = useState('desc')
 
   let csvHeaders = [
     { label: '#', key: 'index' },
@@ -120,7 +120,9 @@ export default function History({ account, setAccount, queryAddress, selectedCur
           '&addresses=' +
           addressesToCheck +
           '&period=' +
-          period
+          period +
+          '&order=' +
+          order
       )
       .catch((error) => {
         setLoading(false)
@@ -229,7 +231,7 @@ export default function History({ account, setAccount, queryAddress, selectedCur
   useEffect(() => {
     getProAddressHistory()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [addressesToCheck, selectedCurrency, period])
+  }, [addressesToCheck, selectedCurrency, period, order])
 
   const addressName = (address) => {
     for (let a of verifiedAddresses) {
@@ -239,6 +241,96 @@ export default function History({ account, setAccount, queryAddress, selectedCur
     }
   }
 
+  const Content = () => (
+    <>
+      {addressesToCheck.length > 0 && (
+        <>
+          {!width || width > 750 ? (
+            <table className="table-large without-border">
+              <thead>
+                <tr>
+                  <th className="center">#</th>
+                  <th>Timestamp</th>
+                  {addressesToCheck.length > 1 && <th>Address</th>}
+                  <th className="center">Type</th>
+                  <th className="right">Ledger Amount</th>
+                  <th suppressHydrationWarning className="right">
+                    {selectedCurrency.toUpperCase()} equavalent
+                  </th>
+                  <th>Tx</th>
+                </tr>
+              </thead>
+              <tbody>
+                {activities?.length > 0 ? (
+                  <>
+                    {activities.map((a, i) => (
+                      <tr key={i}>
+                        <td className="center">{i + 1}</td>
+                        <td>{fullDateAndTime(a.timestamp)}</td>
+                        {addressesToCheck.length > 1 && <td>{addressName(a.address)}</td>}
+                        <td className="center">{typeToIcon(a.txType, a.direction)}</td>
+                        <td className="right">{showAmount(a.amount)}</td>
+                        <td className="right">{showFiat(a.amountInFiats?.[selectedCurrency])}</td>
+                        <td>{txIdLink(a.hash, 0)}</td>
+                      </tr>
+                    ))}
+                  </>
+                ) : (
+                  <tr>
+                    <td colSpan="100" className="center">
+                      {loading ? 'Loading data...' : 'There is no data to show here.'}
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          ) : (
+            <table className="table-mobile">
+              <tbody>
+                {activities?.length > 0 ? (
+                  <>
+                    {activities.map((a, i) => (
+                      <tr key={i}>
+                        <td style={{ padding: '5px' }}>#{i + 1}</td>
+                        <td>
+                          <p>
+                            Timestamp: <b>{fullDateAndTime(a.timestamp)}</b>
+                          </p>
+                          {addressesToCheck.length > 1 && (
+                            <p>
+                              Address: <b>{addressName(a.address)}</b>
+                            </p>
+                          )}
+                          <p>Type: {a.txType}</p>
+                          <p>
+                            Ledger Amount: <b>{showAmount(a.amount)}</b>
+                          </p>
+                          <p>
+                            {selectedCurrency.toUpperCase()} equavalent: {showFiat(a.amountInFiats?.[selectedCurrency])}
+                          </p>
+                          <p>Tx: {txIdLink(a.hash, 0)}</p>
+                        </td>
+                      </tr>
+                    ))}
+                  </>
+                ) : (
+                  <tr>
+                    <td colSpan="100" className="center">
+                      {loading ? 'Loading data...' : 'There is no data to show here.'}
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          )}
+        </>
+      )}
+      <br />
+      <br />
+      {errorMessage ? <div className="center orange bold">{errorMessage}</div> : <br />}
+    </>
+  )
+
   return (
     <>
       <SEO title="Pro address: history" />
@@ -246,19 +338,24 @@ export default function History({ account, setAccount, queryAddress, selectedCur
         <h1 className="center">Pro address balances history</h1>
 
         <AdminTabs name="mainTabs" tab="pro" />
-
         <ProTabs tab="balance-changes" />
 
-        <div className={`content-cols${filtersHide ? ' is-filters-hide' : ''}`}>
-          <LeftFilters
-            filtersHide={filtersHide}
-            setFiltersHide={setFiltersHide}
-            count={data?.count || 0}
-            total={data?.total || 0}
-            hasMore={data?.marker}
-            data={activities || []}
-            csvHeaders={csvHeaders}
-          >
+        <FiltersFrame
+          order={order}
+          setOrder={setOrder}
+          orderList={[
+            { value: 'desc', label: 'Latest first' },
+            { value: 'asc', label: 'Earliest first' }
+          ]}
+          count={data?.count || 0}
+          hasMore={data?.marker}
+          data={activities || []}
+          csvHeaders={csvHeaders}
+          Content={Content}
+          setSelectedCurrency={setSelectedCurrency}
+          selectedCurrency={selectedCurrency}
+        >
+          <>
             Addresses
             {verifiedAddresses?.length > 0 ? (
               <>
@@ -292,97 +389,8 @@ export default function History({ account, setAccount, queryAddress, selectedCur
               Period
               <DateAndTimeRange setPeriod={setPeriod} defaultPeriod="all" radio={true} />
             </div>
-          </LeftFilters>
-
-          <div className="content-text no-sorting">
-            {addressesToCheck.length > 0 && (
-              <>
-                {!width || width > 750 ? (
-                  <table className="table-large without-border">
-                    <thead>
-                      <tr>
-                        <th className="center">#</th>
-                        <th>Timestamp</th>
-                        {addressesToCheck.length > 1 && <th>Address</th>}
-                        <th className="center">Type</th>
-                        <th className="right">Ledger Amount</th>
-                        <th suppressHydrationWarning className="right">
-                          {selectedCurrency.toUpperCase()} equavalent
-                        </th>
-                        <th>Tx</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {activities?.length > 0 ? (
-                        <>
-                          {activities.map((a, i) => (
-                            <tr key={i}>
-                              <td className="center">{i + 1}</td>
-                              <td>{fullDateAndTime(a.timestamp)}</td>
-                              {addressesToCheck.length > 1 && <td>{addressName(a.address)}</td>}
-                              <td className="center">{typeToIcon(a.txType, a.direction)}</td>
-                              <td className="right">{showAmount(a.amount)}</td>
-                              <td className="right">{showFiat(a.amountInFiats?.[selectedCurrency])}</td>
-                              <td>{txIdLink(a.hash, 0)}</td>
-                            </tr>
-                          ))}
-                        </>
-                      ) : (
-                        <tr>
-                          <td colSpan="100" className="center">
-                            {loading ? 'Loading data...' : 'There is no data to show here.'}
-                          </td>
-                        </tr>
-                      )}
-                    </tbody>
-                  </table>
-                ) : (
-                  <table className="table-mobile">
-                    <tbody>
-                      {activities?.length > 0 ? (
-                        <>
-                          {activities.map((a, i) => (
-                            <tr key={i}>
-                              <td style={{ padding: '5px' }}>#{i + 1}</td>
-                              <td>
-                                <p>
-                                  Timestamp: <b>{fullDateAndTime(a.timestamp)}</b>
-                                </p>
-                                {addressesToCheck.length > 1 && (
-                                  <p>
-                                    Address: <b>{addressName(a.address)}</b>
-                                  </p>
-                                )}
-                                <p>Type: {a.txType}</p>
-                                <p>
-                                  Ledger Amount: <b>{showAmount(a.amount)}</b>
-                                </p>
-                                <p>
-                                  {selectedCurrency.toUpperCase()} equavalent:{' '}
-                                  {showFiat(a.amountInFiats?.[selectedCurrency])}
-                                </p>
-                                <p>Tx: {txIdLink(a.hash, 0)}</p>
-                              </td>
-                            </tr>
-                          ))}
-                        </>
-                      ) : (
-                        <tr>
-                          <td colSpan="100" className="center">
-                            {loading ? 'Loading data...' : 'There is no data to show here.'}
-                          </td>
-                        </tr>
-                      )}
-                    </tbody>
-                  </table>
-                )}
-              </>
-            )}
-            <br />
-            <br />
-            {errorMessage ? <div className="center orange bold">{errorMessage}</div> : <br />}
-          </div>
-        </div>
+          </>
+        </FiltersFrame>
       </div>
     </>
   )

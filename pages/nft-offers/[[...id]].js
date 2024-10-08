@@ -24,7 +24,6 @@ export const getServerSideProps = async (context) => {
   //key to refresh the component when Link pressed within the same route
   return {
     props: {
-      key: Math.random(),
       offerList: offerList || 'owned',
       id: id ? (Array.isArray(id) ? id[0] : id) : '',
       isSsrMobile: getIsSsrMobile(context),
