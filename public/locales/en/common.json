@@ -312,7 +312,8 @@
     "viewer": "Viewer",
     "developer-mode": "Developer mode",
     "search": "Search",
-    "of-many": "of many"
+    "of-many": "of many",
+    "of": "of"
   },
   "form": {
     "error": {

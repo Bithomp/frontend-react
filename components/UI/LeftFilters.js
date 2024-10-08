@@ -6,7 +6,16 @@ import { useTranslation } from 'next-i18next'
 
 import DownloadIcon from '../../public/images/download.svg'
 
-export default function LeftFilters({ children, filtersHide, setFiltersHide, data, csvHeaders, count, hasMore }) {
+export default function LeftFilters({
+  children,
+  filtersHide,
+  setFiltersHide,
+  data,
+  csvHeaders,
+  count,
+  hasMore,
+  total
+}) {
   const { t } = useTranslation()
 
   const [rendered, setRendered] = useState(false)
@@ -33,7 +42,11 @@ export default function LeftFilters({ children, filtersHide, setFiltersHide, dat
         <div className="filters__wrap">
           <div className="filters-head">
             <span className="filter-header-title">
-              {count ? '1-' + count + (hasMore ? ' ' + t('general.of-many') : '') : ''}
+              {count
+                ? '1-' +
+                  count +
+                  (total ? ' ' + t('general.of') + ' ' + total : hasMore ? ' ' + t('general.of-many') : '')
+                : ''}
             </span>
             {rendered && (
               <CSVLink

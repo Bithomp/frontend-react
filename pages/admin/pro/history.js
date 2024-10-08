@@ -55,6 +55,7 @@ import { CiLink } from 'react-icons/ci'
 import { CiFileOn } from 'react-icons/ci'
 import { BsCurrencyExchange } from 'react-icons/bs'
 import DateAndTimeRange from '../../../components/UI/DateAndTimeRange'
+import LeftFilters from '../../../components/UI/LeftFilters'
 
 const typeToIcon = (type, direction) => {
   let icon = null
@@ -88,7 +89,7 @@ export default function History({ account, setAccount, queryAddress, selectedCur
   const router = useRouter()
   const width = useWidth()
 
-  const { t } = useTranslation(['common', 'admin'])
+  const { t } = useTranslation()
   const [errorMessage, setErrorMessage] = useState('')
   const [data, setData] = useState(null)
   const [activities, setActivities] = useState([])
@@ -97,6 +98,17 @@ export default function History({ account, setAccount, queryAddress, selectedCur
   const [verifiedAddresses, setVerifiedAddresses] = useState([])
   const [addressesToCheck, setAddressesToCheck] = useState(queryAddress ? [queryAddress] : [])
   const [period, setPeriod] = useState('all')
+  const [filtersHide, setFiltersHide] = useState(false)
+
+  let csvHeaders = [
+    { label: '#', key: 'index' },
+    { label: 'Timestamp', key: 'timestampExport' },
+    { label: 'Address', key: 'address' },
+    { label: 'Type', key: 'txType' },
+    { label: 'Ledger Amount', key: 'amountExport' },
+    { label: selectedCurrency.toUpperCase() + ' equavalent', key: 'amountInFiats.' + selectedCurrency },
+    { label: 'Tx', key: 'hash' }
+  ]
 
   const getProAddressHistory = async () => {
     if (addressesToCheck.length === 0) return
@@ -147,6 +159,11 @@ export default function History({ account, setAccount, queryAddress, selectedCur
     */
     if (data) {
       setData(data) // for stats data, may we need extract only some fields
+      for (let i = 0; i < data.activities.length; i++) {
+        data.activities[i].index = i + 1
+        data.activities[i].amountExport = amountFormat(data.activities[i].amount)
+        data.activities[i].timestampExport = fullDateAndTime(data.activities[i].timestamp, null, { asText: true })
+      }
       setActivities(data.activities) // add more data by pages
     }
   }
@@ -225,155 +242,147 @@ export default function History({ account, setAccount, queryAddress, selectedCur
   return (
     <>
       <SEO title="Pro address: history" />
-      <div className="page-admin content-center">
+      <div className="page-admin">
         <h1 className="center">Pro address balances history</h1>
 
         <AdminTabs name="mainTabs" tab="pro" />
 
         <ProTabs tab="balance-changes" />
 
-        <h4 className="center">Balances history</h4>
-
-        <table className="table-large no-hover">
-          <thead>
-            <tr>
-              <th className="center">Include</th>
-              <th className="left">Address</th>
-              <th>Status</th>
-            </tr>
-          </thead>
-          <tbody>
+        <div className={`content-cols${filtersHide ? ' is-filters-hide' : ''}`}>
+          <LeftFilters
+            filtersHide={filtersHide}
+            setFiltersHide={setFiltersHide}
+            count={data?.count || 0}
+            total={data?.total || 0}
+            hasMore={data?.marker}
+            data={activities || []}
+            csvHeaders={csvHeaders}
+          >
+            Addresses
             {verifiedAddresses?.length > 0 ? (
               <>
                 {verifiedAddresses.map((address, i) => (
-                  <tr key={i}>
-                    <td>
-                      <CheckBox
-                        checked={addressesToCheck.includes(address.address)}
-                        setChecked={() => {
-                          setAddressesToCheck(
-                            addressesToCheck.includes(address.address)
-                              ? addressesToCheck.filter((a) => a !== address.address)
-                              : [...addressesToCheck, address.address]
-                          )
-                        }}
-                        style={{ height: '23px', width: '23px', margin: 'auto', padding: 0 }}
-                      />
-                    </td>
-                    <td className="left">
-                      <b className="orange">{address.name}</b>
+                  <div className="filters-check-box" key={i}>
+                    <CheckBox
+                      checked={addressesToCheck.includes(address.address)}
+                      setChecked={() => {
+                        setAddressesToCheck(
+                          addressesToCheck.includes(address.address)
+                            ? addressesToCheck.filter((a) => a !== address.address)
+                            : [...addressesToCheck, address.address]
+                        )
+                      }}
+                      outline
+                      checkmarkStyle={{ top: '10px' }}
+                    >
+                      <b className="orange">{address.name}</b> - <small>{crawlerStatus(address.crawler)}</small>
                       <br />
-                      {addressLink(address.address, { short: width < 750 })}
-                    </td>
-                    <td>{crawlerStatus(address.crawler)}</td>
-                  </tr>
+                      {addressLink(address.address, { short: 10 })}
+                    </CheckBox>
+                  </div>
                 ))}
               </>
+            ) : loadingVerifiedAddresses ? (
+              'Loading data...'
             ) : (
-              <tr>
-                <td colSpan="100" className="center">
-                  {loadingVerifiedAddresses ? 'Loading data...' : 'You do not have verified addresses yet.'}
-                </td>
-              </tr>
+              'You do not have verified addresses yet.'
             )}
-          </tbody>
-        </table>
+            <div>
+              Period
+              <DateAndTimeRange setPeriod={setPeriod} defaultPeriod="all" radio={true} />
+            </div>
+          </LeftFilters>
 
-        <center>
-          <DateAndTimeRange defaultPeriod="all" setPeriod={setPeriod} tabs={true} />
-          {width < 500 && <br />}
-        </center>
-
-        {addressesToCheck.length > 0 && (
-          <>
-            <p className="center">
-              Showing {data?.count || '0'} balance changes from {data?.total || '0'} total.
-            </p>
-
-            {!width || width > 750 ? (
-              <table className="table-large">
-                <thead>
-                  <tr>
-                    <th className="center">#</th>
-                    <th>Timestamp</th>
-                    {addressesToCheck.length > 1 && <th>Address</th>}
-                    <th className="center">Type</th>
-                    <th className="right">Ledger Amount</th>
-                    <th suppressHydrationWarning className="right">
-                      {selectedCurrency.toUpperCase()} equavalent
-                    </th>
-                    <th>Tx</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {activities?.length > 0 ? (
-                    <>
-                      {activities.map((a, i) => (
-                        <tr key={i}>
-                          <td className="center">{i + 1}</td>
-                          <td>{fullDateAndTime(a.timestamp)}</td>
-                          {addressesToCheck.length > 1 && <td>{addressName(a.address)}</td>}
-                          <td className="center">{typeToIcon(a.txType, a.direction)}</td>
-                          <td className="right">{showAmount(a.amount)}</td>
-                          <td className="right">{showFiat(a.amountInFiats?.[selectedCurrency])}</td>
-                          <td>{txIdLink(a.hash, 0)}</td>
-                        </tr>
-                      ))}
-                    </>
-                  ) : (
-                    <tr>
-                      <td colSpan="100" className="center">
-                        {loading ? 'Loading data...' : 'There is no data to show here.'}
-                      </td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
-            ) : (
-              <table className="table-mobile">
-                <tbody>
-                  {activities?.length > 0 ? (
-                    <>
-                      {activities.map((a, i) => (
-                        <tr key={i}>
-                          <td style={{ padding: '5px' }}>#{i + 1}</td>
-                          <td>
-                            <p>
-                              Timestamp: <b>{fullDateAndTime(a.timestamp)}</b>
-                            </p>
-                            {addressesToCheck.length > 1 && (
-                              <p>
-                                Address: <b>{addressName(a.address)}</b>
-                              </p>
-                            )}
-                            <p>Type: {a.txType}</p>
-                            <p>
-                              Ledger Amount: <b>{showAmount(a.amount)}</b>
-                            </p>
-                            <p>
-                              {selectedCurrency.toUpperCase()} equavalent:{' '}
-                              {showFiat(a.amountInFiats?.[selectedCurrency])}
-                            </p>
-                            <p>Tx: {txIdLink(a.hash, 0)}</p>
+          <div className="content-text no-sorting">
+            {addressesToCheck.length > 0 && (
+              <>
+                {!width || width > 750 ? (
+                  <table className="table-large without-border">
+                    <thead>
+                      <tr>
+                        <th className="center">#</th>
+                        <th>Timestamp</th>
+                        {addressesToCheck.length > 1 && <th>Address</th>}
+                        <th className="center">Type</th>
+                        <th className="right">Ledger Amount</th>
+                        <th suppressHydrationWarning className="right">
+                          {selectedCurrency.toUpperCase()} equavalent
+                        </th>
+                        <th>Tx</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {activities?.length > 0 ? (
+                        <>
+                          {activities.map((a, i) => (
+                            <tr key={i}>
+                              <td className="center">{i + 1}</td>
+                              <td>{fullDateAndTime(a.timestamp)}</td>
+                              {addressesToCheck.length > 1 && <td>{addressName(a.address)}</td>}
+                              <td className="center">{typeToIcon(a.txType, a.direction)}</td>
+                              <td className="right">{showAmount(a.amount)}</td>
+                              <td className="right">{showFiat(a.amountInFiats?.[selectedCurrency])}</td>
+                              <td>{txIdLink(a.hash, 0)}</td>
+                            </tr>
+                          ))}
+                        </>
+                      ) : (
+                        <tr>
+                          <td colSpan="100" className="center">
+                            {loading ? 'Loading data...' : 'There is no data to show here.'}
                           </td>
                         </tr>
-                      ))}
-                    </>
-                  ) : (
-                    <tr>
-                      <td colSpan="100" className="center">
-                        {loading ? 'Loading data...' : 'There is no data to show here.'}
-                      </td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
+                      )}
+                    </tbody>
+                  </table>
+                ) : (
+                  <table className="table-mobile">
+                    <tbody>
+                      {activities?.length > 0 ? (
+                        <>
+                          {activities.map((a, i) => (
+                            <tr key={i}>
+                              <td style={{ padding: '5px' }}>#{i + 1}</td>
+                              <td>
+                                <p>
+                                  Timestamp: <b>{fullDateAndTime(a.timestamp)}</b>
+                                </p>
+                                {addressesToCheck.length > 1 && (
+                                  <p>
+                                    Address: <b>{addressName(a.address)}</b>
+                                  </p>
+                                )}
+                                <p>Type: {a.txType}</p>
+                                <p>
+                                  Ledger Amount: <b>{showAmount(a.amount)}</b>
+                                </p>
+                                <p>
+                                  {selectedCurrency.toUpperCase()} equavalent:{' '}
+                                  {showFiat(a.amountInFiats?.[selectedCurrency])}
+                                </p>
+                                <p>Tx: {txIdLink(a.hash, 0)}</p>
+                              </td>
+                            </tr>
+                          ))}
+                        </>
+                      ) : (
+                        <tr>
+                          <td colSpan="100" className="center">
+                            {loading ? 'Loading data...' : 'There is no data to show here.'}
+                          </td>
+                        </tr>
+                      )}
+                    </tbody>
+                  </table>
+                )}
+              </>
             )}
-          </>
-        )}
-        <br />
-        <br />
-        {errorMessage ? <div className="center orange bold">{errorMessage}</div> : <br />}
+            <br />
+            <br />
+            {errorMessage ? <div className="center orange bold">{errorMessage}</div> : <br />}
+          </div>
+        </div>
       </div>
     </>
   )

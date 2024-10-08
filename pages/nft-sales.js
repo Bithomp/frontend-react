@@ -723,7 +723,7 @@ export default function NftSales({
             {activeView === 'list' && (
               <>
                 {windowWidth > 720 ? (
-                  <table className="table-large table-large--without-border">
+                  <table className="table-large without-border">
                     <thead>
                       <tr>
                         <th className="center">{t('table.index')}</th>

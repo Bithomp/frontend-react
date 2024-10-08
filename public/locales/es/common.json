@@ -312,7 +312,8 @@
     "viewer": "Vista",
     "developer-mode": "Modo desarrollador",
     "search": "Search",
-    "of-many": "of many"
+    "of-many": "of many",
+    "of": "of"
   },
   "form": {
     "error": {

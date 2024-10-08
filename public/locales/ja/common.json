@@ -312,7 +312,8 @@
     "viewer": "ビュワー",
     "developer-mode": "開発者モード",
     "search": "Search",
-    "of-many": "of many"
+    "of-many": "of many",
+    "of": "of"
   },
   "form": {
     "error": {

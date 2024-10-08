@@ -1,4 +1,4 @@
-export default function CheckBox({ children, checked, setChecked, name, outline, style }) {
+export default function CheckBox({ children, checked, setChecked, name, outline, style, checkmarkStyle }) {
   const handleChange = () => {
     setChecked(!checked)
   }
@@ -12,7 +12,7 @@ export default function CheckBox({ children, checked, setChecked, name, outline,
         checked={checked === 'true' ? true : checked}
         name={name || 'checkbox'}
       />
-      <span className="checkmark"></span>
+      <span className="checkmark" style={checkmarkStyle}></span>
     </label>
   )
 }

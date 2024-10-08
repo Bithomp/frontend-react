@@ -312,7 +312,8 @@
     "viewer": "Pelihat",
     "developer-mode": "Mode Pengembang",
     "search": "Search",
-    "of-many": "of many"
+    "of-many": "of many",
+    "of": "of"
   },
   "form": {
     "error": {

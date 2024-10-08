@@ -313,7 +313,8 @@
     "viewer": "뷰어",
     "developer-mode": "개발자 모드",
     "search": "Search",
-    "of-many": "of many"
+    "of-many": "of many",
+    "of": "of"
   },
   "form": {
     "error": {
