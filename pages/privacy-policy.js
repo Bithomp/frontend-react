@@ -25,7 +25,7 @@ export default function PrivacyPolicy() {
       <SEO title={t('menu.privacy-policy')} noindex={true} />
       <div className="content-text">
         <h1>Privacy Policy</h1>
-        <p>Last updated: October 2, 2024</p>
+        <p>Last updated: October 8, 2024</p>
         <p>
           This Privacy Policy describes Our policies and procedures on the collection, use and disclosure of Your
           information when You use the Service and tells You about Your privacy rights and how the law protects You.
@@ -300,7 +300,7 @@ export default function PrivacyPolicy() {
             )
           </li>
           <li>
-            <strong>xummUserToken</strong> - xumm user token (ex. "c3f386ab-b5b5-47c3-87a4-d031451777fa").
+            <strong>xamanUserToken</strong> - xumm user token (ex. "c3f386ab-b5b5-47c3-87a4-d031451777fa").
           </li>
           <li>
             <strong>language</strong> - on docs.bithomp.com, the prefered programing language (ex: "php").

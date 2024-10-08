@@ -76,13 +76,13 @@ export default function Header({
   const [menuOpen, setMenuOpen] = useState(false)
   const [isCopied, setIsCopied] = useState(false)
 
-  const [xummUserToken, setXummUserToken] = useState(null)
+  const [xamanUserToken, setXummUserToken] = useState(null)
 
   const [hoverStates, setHoverStates] = useState({})
 
   useEffect(() => {
     setRendered(true)
-    setXummUserToken(localStorage.getItem('xummUserToken'))
+    setXummUserToken(localStorage.getItem('xamanUserToken'))
   }, [])
 
   let address, hashicon, displayName, username, pro, proName
@@ -283,7 +283,7 @@ export default function Header({
                 <span onClick={copyToClipboard} className="link">
                   {isCopied ? t('button.copied') : t('button.copy-my-address')}
                 </span>
-                <a href={'/explorer/' + address + (xummUserToken ? '?hw=xumm&xummtoken=' + xummUserToken : '')}>
+                <a href={'/explorer/' + address + (xamanUserToken ? '?hw=xumm&xummtoken=' + xamanUserToken : '')}>
                   {t('signin.actions.view')}
                 </a>
                 <Link href={'/nfts/' + address}>{t('signin.actions.my-nfts')}</Link>
@@ -294,8 +294,8 @@ export default function Header({
                 {/* Hide Send XRP for XAHAU while they are not ready yet */}
                 {!xahauNetwork && (
                   <>
-                    {xummUserToken && (
-                      <a href={'/explorer/' + address + '?hw=xumm&xummtoken=' + xummUserToken + '&action=send'}>
+                    {xamanUserToken && (
+                      <a href={'/explorer/' + address + '?hw=xumm&xummtoken=' + xamanUserToken + '&action=send'}>
                         {t('signin.actions.send')}
                       </a>
                     )}
@@ -385,7 +385,7 @@ export default function Header({
           proName={proName}
           signOut={signOut}
           signOutPro={signOutPro}
-          xummUserToken={xummUserToken}
+          xamanUserToken={xamanUserToken}
           hashicon={hashicon}
           username={username}
           isCopied={isCopied}

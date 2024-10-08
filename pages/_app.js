@@ -33,7 +33,7 @@ const MyApp = ({ Component, pageProps }) => {
   const { uuid } = router.query
 
   const signOut = () => {
-    localStorage.removeItem('xummUserToken')
+    localStorage.removeItem('xamanUserToken')
     setAccount({
       ...account,
       address: null,

@@ -3,7 +3,7 @@ import { useTranslation } from 'next-i18next'
 
 import ProgressBar from '../Layout/Header/ProgressBar'
 
-export default function XamanQr({ expiredQr, xummQrSrc, onReset, status }) {
+export default function XamanQr({ expiredQr, xamanQrSrc, onReset, status }) {
   const { t } = useTranslation()
 
   const [expiresInSeconds, setExpiresInSeconds] = useState(180)
@@ -41,7 +41,7 @@ export default function XamanQr({ expiredQr, xummQrSrc, onReset, status }) {
     <>
       {!overtime && (
         <div className="center">
-          <img width="200" height="200" src={xummQrSrc} alt="qr-code" />
+          <img width="200" height="200" src={xamanQrSrc} alt="qr-code" />
         </div>
       )}
       {overtime && (

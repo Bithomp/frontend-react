@@ -335,7 +335,7 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
                 getOptionLabel={(option) => (
                   <>
                     <span style={windowWidth < 400 ? { fontSize: '14px' } : {}}>{option.address}</span>
-                    {option.username || option.service || option.globalid || option.xumm
+                    {option.username || option.service || option.globalid || option.xaman
                       ? windowWidth > 400
                         ? ' - '
                         : ' '
@@ -355,21 +355,21 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
                       option.serviceDomain && <span className="green"> {option.serviceDomain}</span>
                     )}
                     {(option.username || option.service || option.verifiedDomain || option.serviceDomain) &&
-                      option.xumm && <>, </>}
-                    {option.xumm && (
+                      option.xaman && <>, </>}
+                    {option.xaman && (
                       <>
                         Xaman{' '}
                         <span className="orange">
-                          {option.xumm.includes('+') ? option.xumm.replace(/\+/g, ' (') + ')' : option.xumm}
+                          {option.xaman.includes('+') ? option.xaman.replace(/\+/g, ' (') + ')' : option.xaman}
                         </span>
-                        {option.xummVerified && <> ✅</>}
+                        {option.xamanVerified && <> ✅</>}
                       </>
                     )}
                     {(option.username ||
                       option.service ||
                       option.verifiedDomain ||
                       option.serviceDomain ||
-                      option.xumm) &&
+                      option.xaman) &&
                       option.globalid && <>, </>}
                     {option.globalid && (
                       <>
@@ -389,7 +389,7 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
                   option.address +
                   option.username +
                   option.service +
-                  option.xumm +
+                  option.xaman +
                   option.globalid +
                   option.verifiedDomain +
                   option.serviceDomain

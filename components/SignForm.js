@@ -23,7 +23,7 @@ import {
   xahauNetwork
 } from '../utils'
 import { amountFormat, capitalize, duration } from '../utils/format'
-import { payloadXummPost, xummWsConnect, xummCancel, xummGetSignedData } from '../utils/xumm'
+import { payloadXamanPost, xamanWsConnect, xamanCancel, xamanGetSignedData } from '../utils/xaman'
 
 import XamanQr from './Xaman/Qr'
 import CheckBox from './UI/CheckBox'
@@ -59,8 +59,8 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
   const [screen, setScreen] = useState('choose-app')
   const [status, setStatus] = useState('')
   const [showXamanQr, setShowXamanQr] = useState(false)
-  const [xummQrSrc, setXamanQrSrc] = useState(qr)
-  const [xummUuid, setXummUuid] = useState(null)
+  const [xamanQrSrc, setXamanQrSrc] = useState(qr)
+  const [xamanUuid, setXamanUuid] = useState(null)
   const [expiredQr, setExpiredQr] = useState(false)
   const [agreedToRisks, setAgreedToRisks] = useState(false)
   const [formError, setFormError] = useState(false)
@@ -75,10 +75,10 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
 
   const [privateOffer, setPrivateOffer] = useState(false)
 
-  const [xummUserToken, setXummUserToken] = useState(null)
+  const [xamanUserToken, setXummUserToken] = useState(null)
 
   useEffect(() => {
-    setXummUserToken(localStorage.getItem('xummUserToken'))
+    setXummUserToken(localStorage.getItem('xamanUserToken'))
   }, [])
 
   useEffect(() => {
@@ -98,7 +98,7 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
     setScreen('xaman')
     setShowXamanQr(false)
     setStatus(t('signin.xumm.statuses.wait'))
-    xummGetSignedData(uuid, afterSubmit)
+    xamanGetSignedData(uuid, afterSubmit)
     //eslint-disable-next-line react-hooks/exhaustive-deps
   }, [uuid])
 
@@ -320,12 +320,12 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
         signInPayload.options.return_url.app += '&receipt=true'
       }
     } else {
-      if (xummUserToken) {
-        signInPayload.user_token = xummUserToken
+      if (xamanUserToken) {
+        signInPayload.user_token = xamanUserToken
       }
       setShowXamanQr(true)
     }
-    payloadXummPost(signInPayload, onPayloadResponse)
+    payloadXamanPost(signInPayload, onPayloadResponse)
     setScreen('xaman')
   }
 
@@ -335,7 +335,7 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
       setStatus(data.error)
       return
     }
-    setXummUuid(data.uuid)
+    setXamanUuid(data.uuid)
     setXamanQrSrc(data.refs.qr_png)
     setExpiredQr(false)
     if (data.pushed) {
@@ -351,11 +351,11 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
       setShowXamanQr(true)
       setStatus(t('signin.xumm.scan-qr'))
       //connect to xaman websocket only if it didn't redirect to the xaman app
-      xummWsConnect(data.refs.websocket_status, xummWsConnected)
+      xamanWsConnect(data.refs.websocket_status, xamanWsConnected)
     }
   }
 
-  const xummWsConnected = (obj) => {
+  const xamanWsConnected = (obj) => {
     if (obj.status === 'canceled') {
       //cancel button pressed in xaman app
       closeSignInFormAndRefresh()
@@ -364,7 +364,7 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
     } else if (obj.signed) {
       setShowXamanQr(false)
       setStatus(t('signin.xumm.statuses.wait'))
-      xummGetSignedData(obj.payload_uuidv4, afterSubmit)
+      xamanGetSignedData(obj.payload_uuidv4, afterSubmit)
     } else if (obj.expires_in_seconds) {
       if (obj.expires_in_seconds <= 0) {
         setExpiredQr(true)
@@ -562,7 +562,7 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
   const signInCancelAndClose = () => {
     if (screen === 'xaman') {
       setXamanQrSrc(qr)
-      xummCancel(xummUuid)
+      xamanCancel(xamanUuid)
     }
     if (uuid) {
       removeQueryParams(router, ['uuid'])
@@ -1173,7 +1173,7 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
                     )}
                     <br />
                     {showXamanQr ? (
-                      <XamanQr expiredQr={expiredQr} xummQrSrc={xummQrSrc} onReset={XummTxSend} status={status} />
+                      <XamanQr expiredQr={expiredQr} xamanQrSrc={xamanQrSrc} onReset={XummTxSend} status={status} />
                     ) : (
                       <div className="orange bold center" style={{ margin: '20px' }}>
                         {awaiting && (

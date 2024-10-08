@@ -34,7 +34,7 @@ export async function getServerSideProps(context) {
         url:
           'v2/address/' +
           account +
-          '?username=true&service=true&verifiedDomain=true&parent=true&nickname=true&inception=true&flare=true&blacklist=true&payString=true&ledgerInfo=true&xummMeta=true' +
+          '?username=true&service=true&verifiedDomain=true&parent=true&nickname=true&inception=true&flare=true&blacklist=true&payString=true&ledgerInfo=true&xamanMeta=true' +
           (ledgerTimestamp ? '&ledgerTimestamp=' + new Date(ledgerTimestamp).toISOString() : ''),
         headers
       })
@@ -113,7 +113,7 @@ export default function Account({
     const response = await axios(
       '/v2/address/' +
         id +
-        '?username=true&service=true&verifiedDomain=true&parent=true&nickname=true&inception=true&flare=true&blacklist=true&payString=true&ledgerInfo=true&xummMeta=true' +
+        '?username=true&service=true&verifiedDomain=true&parent=true&nickname=true&inception=true&flare=true&blacklist=true&payString=true&ledgerInfo=true&xamanMeta=true' +
         noCache +
         (ledgerTimestamp ? '&ledgerTimestamp=' + new Date(ledgerTimestamp).toISOString() : '')
     ).catch((error) => {
@@ -227,11 +227,11 @@ export default function Account({
     }
 
     let thirdPartyService = null
-    if (data.xummMeta?.thirdPartyProfiles?.length) {
-      for (let i = 0; i < data.xummMeta.thirdPartyProfiles.length; i++) {
-        const excludeList = ['xumm.app', 'xrpl', 'xrplexplorer.com']
-        if (!excludeList.includes(data.xummMeta.thirdPartyProfiles[i].source)) {
-          thirdPartyService = data.xummMeta.thirdPartyProfiles[i].accountAlias
+    if (data.xamanMeta?.thirdPartyProfiles?.length) {
+      for (let i = 0; i < data.xamanMeta.thirdPartyProfiles.length; i++) {
+        const excludeList = ['xumm.app', 'xaman.app', 'xrpl', 'xrplexplorer.com']
+        if (!excludeList.includes(data.xamanMeta.thirdPartyProfiles[i].source)) {
+          thirdPartyService = data.xamanMeta.thirdPartyProfiles[i].accountAlias
           break
         }
       }
@@ -398,9 +398,9 @@ export default function Account({
                             </tbody>
                           </table>
 
-                          {(data.xummMeta?.kycApproved ||
-                            data.xummMeta?.xummPro ||
-                            data.xummMeta?.globalid?.profileUrl) && (
+                          {(data.xamanMeta?.kycApproved ||
+                            data.xamanMeta?.xummPro ||
+                            data.xamanMeta?.globalid?.profileUrl) && (
                             <div>
                               <table className="table-details autowidth">
                                 <thead>
@@ -409,19 +409,19 @@ export default function Account({
                                   </tr>
                                 </thead>
                                 <tbody>
-                                  {data.xummMeta?.kycApproved && (
+                                  {data.xamanMeta?.kycApproved && (
                                     <tr>
                                       <td>KYC</td>
                                       <td>XUMM verified</td>
                                     </tr>
                                   )}
-                                  {data.xummMeta?.xummPro && (
+                                  {data.xamanMeta?.xummPro && (
                                     <tr>
                                       <td>XUMM Pro</td>
                                       <td>
-                                        {data?.xummMeta?.xummProfile?.slug ? (
-                                          <a href={data.xummMeta.xummProfile.profileUrl}>
-                                            <u className="bold orange">{data.xummMeta.xummProfile.slug}</u>
+                                        {data?.xamanMeta?.xummProfile?.slug ? (
+                                          <a href={data.xamanMeta.xummProfile.profileUrl}>
+                                            <u className="bold orange">{data.xamanMeta.xummProfile.slug}</u>
                                           </a>
                                         ) : (
                                           <span className="bold orange">
@@ -431,19 +431,16 @@ export default function Account({
                                       </td>
                                     </tr>
                                   )}
-                                  {data.xummMeta?.globalid?.profileUrl && (
+                                  {data.xamanMeta?.globalid?.profileUrl && (
                                     <tr>
                                       <td>GlobaliD</td>
                                       <td>
-                                        <a href={data.xummMeta.globalid.profileUrl}>
+                                        <a href={data.xamanMeta.globalid.profileUrl}>
                                           <u className="bold green">
-                                            {data.xummMeta.globalid.profileUrl.strReplace(
-                                              'https://app.global.id/u/',
-                                              ''
-                                            )}
+                                            {data.xamanMeta.globalid.profileUrl.replace('https://app.global.id/u/', '')}
                                           </u>
                                         </a>{' '}
-                                        <a href={data.xummMeta.globalid.profileUrl}>
+                                        <a href={data.xamanMeta.globalid.profileUrl}>
                                           <b className="green">
                                             <i className="fa fa-globe"></i>
                                           </b>

@@ -33,6 +33,11 @@ module.exports = {
         protocol: 'https',
         hostname: 'xumm.app',
         port: ''
+      },
+      {
+        protocol: 'https',
+        hostname: 'xaman.app',
+        port: ''
       }
     ]
   },

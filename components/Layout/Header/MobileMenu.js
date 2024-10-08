@@ -26,7 +26,7 @@ export default function MobileMenu({
   setSignRequest,
   proName,
   signOutPro,
-  xummUserToken,
+  xamanUserToken,
   signOut,
   isCopied,
   copyToClipboard
@@ -55,7 +55,7 @@ export default function MobileMenu({
           {displayName ? (
             <>
               <a
-                href={server + '/explorer/' + address + (xummUserToken ? '?hw=xumm&xummtoken=' + xummUserToken : '')}
+                href={server + '/explorer/' + address + (xamanUserToken ? '?hw=xumm&xummtoken=' + xamanUserToken : '')}
                 className="mobile-menu-item"
               >
                 {t('signin.actions.view')}
@@ -79,9 +79,9 @@ export default function MobileMenu({
               {/* Hide Send XRP for XAHAU while they are not ready yet */}
               {!xahauNetwork && (
                 <>
-                  {xummUserToken && (
+                  {xamanUserToken && (
                     <a
-                      href={server + '/explorer/' + address + '?hw=xumm&xummtoken=' + xummUserToken + '&action=send'}
+                      href={server + '/explorer/' + address + '?hw=xumm&xummtoken=' + xamanUserToken + '&action=send'}
                       className="mobile-menu-item"
                     >
                       {t('signin.actions.send')}

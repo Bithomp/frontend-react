@@ -62,13 +62,13 @@ export default function Username({ setSignRequest, account, signOut, addressQuer
   const [step, setStep] = useState(0)
   const [onRegistration, setOnRegistration] = useState(false)
   const [update, setUpdate] = useState(false)
-  const [xummUserToken, setXummUserToken] = useState(null)
+  const [xamanUserToken, setXummUserToken] = useState(null)
 
   let addressRef
   let usernameRef
 
   useEffect(() => {
-    setXummUserToken(localStorage.getItem('xummUserToken'))
+    setXummUserToken(localStorage.getItem('xamanUserToken'))
     let queryAddList = []
     let queryRemoveList = []
     if (!account) {
@@ -110,7 +110,7 @@ export default function Username({ setSignRequest, account, signOut, addressQuer
         }
       ])
     }
-    setXummUserToken(localStorage.getItem('xummUserToken'))
+    setXummUserToken(localStorage.getItem('xamanUserToken'))
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [account])
 
@@ -303,7 +303,7 @@ export default function Username({ setSignRequest, account, signOut, addressQuer
         setStep(2)
         setOnRegistration(false)
       } else {
-        if (xummUserToken && data.destinationAddress) {
+        if (xamanUserToken && data.destinationAddress) {
           setOnRegistration(true)
           setSignRequest({
             wallet: 'xumm',
