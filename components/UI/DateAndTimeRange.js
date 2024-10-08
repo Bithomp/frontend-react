@@ -53,7 +53,7 @@ export default function DateAndTimeRange({ setPeriod, minDate, tabs, radio, defa
 
   // if minDate was less than a year ago, do not show tab "all"
   //usefull for xahau, when there is less data than for a year, otherwise the all stats looks weird
-  if (minDate < yearAgo) {
+  if (minDate < yearAgo || radio) {
     periodTabs.push({ value: 'all', label: t('tabs.all-time') })
   }
 
