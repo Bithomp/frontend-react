@@ -214,6 +214,9 @@ export default function History({ account, setAccount, queryAddress, selectedCur
       }
     */
     setVerifiedAddresses(data?.addresses)
+    if (addressesToCheck?.length === 0) {
+      setAddressesToCheck([data?.addresses?.[0].address])
+    }
   }
 
   useEffect(() => {

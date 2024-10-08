@@ -12,11 +12,14 @@ import ScrollToTop from '../components/Layout/ScrollToTop'
 import BackgroundImage from '../components/Layout/BackgroundImage'
 
 const TopLinks = dynamic(() => import('../components/Layout/TopLinks'), { ssr: false })
+const TopProgressBar = dynamic(() => import('../components/TopProgressBar'), { ssr: false })
 
 import { IsSsrMobileContext } from '../utils/mobile'
 import { isValidUUID, network, server, useLocalStorage, subscriptionExpired, nativeCurrency, useCookie } from '../utils'
 
 import '../styles/ui.scss'
+import '../styles/components/nprogress.css'
+
 import { ThemeProvider } from '../components/Layout/ThemeContext'
 
 const MyApp = ({ Component, pageProps }) => {
@@ -108,6 +111,7 @@ const MyApp = ({ Component, pageProps }) => {
               />
             )}
             <div className="content">
+              <TopProgressBar />
               {showTopAds && <TopLinks />}
               <Component
                 {...pageProps}

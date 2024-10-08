@@ -431,7 +431,7 @@ table {
     border: none;
   }
   &.table-mobile {
-    width: 100%;
+    width: calc(100% - 30px);
     margin: auto;
     font-size: 12px;
     tr {
