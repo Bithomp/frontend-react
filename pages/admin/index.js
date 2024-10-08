@@ -420,8 +420,10 @@ export default function Admin({ redirectToken, account, setAccount }) {
                             <>
                               {packageData ? (
                                 <>
-                                  <b className="green">Active</b> until{' '}
-                                  {new Date(packageData.expiredAt * 1000).toLocaleDateString()}
+                                  <b className="green">Active</b>
+                                  {packageData.expiredAt && (
+                                    <> until {new Date(packageData.expiredAt * 1000).toLocaleDateString()}</>
+                                  )}
                                 </>
                               ) : (
                                 'not activated'
