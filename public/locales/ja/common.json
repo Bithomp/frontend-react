@@ -537,7 +537,7 @@
     "sell": "売却",
     "buyNow": "今すぐ購入",
     "publicAndKnownBrokers": "パブリック & MP",
-    "onSale": "XRPで販売中",
+    "onSale": "{{nativeCurrency}}で販売中",
     "all-tokens": "全トークン",
     "xrp-only": "XRPのみ",
     "mintedNew": "新しい",

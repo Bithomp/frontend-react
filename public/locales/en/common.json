@@ -537,7 +537,7 @@
     "sell": "Sell",
     "buyNow": "Buy now",
     "publicAndKnownBrokers": "Public & MP",
-    "onSale": "On sale for XRP",
+    "onSale": "On sale for {{nativeCurrency}}",
     "all-tokens": "All tokens",
     "xrp-only": "XRP only",
     "mintedNew": "Latest",

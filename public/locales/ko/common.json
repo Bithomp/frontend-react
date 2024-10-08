@@ -538,7 +538,7 @@
     "sell": "판매",
     "buyNow": "Buy now",
     "publicAndKnownBrokers": "공공 & MP",
-    "onSale": "XRP로 판매 중",
+    "onSale": "{{nativeCurrency}}로 판매 중",
     "all-tokens": "모든 토큰",
     "xrp-only": "XRP만",
     "mintedNew": "Latest",

@@ -12,7 +12,8 @@ import {
   xahauNetwork,
   periodDescription,
   useSubscriptionExpired,
-  decode
+  decode,
+  nativeCurrency
 } from '../utils'
 import {
   isValidTaxon,
@@ -142,13 +143,16 @@ export default function NftsComponent({
 
   const listTabList = [
     { value: 'nfts', label: t('tabs.all') },
-    { value: 'onSale', label: t('tabs.onSale') }
+    { value: 'onSale', label: t('tabs.onSale', { nativeCurrency }) }
   ]
 
-  const saleDestinationTabList = [
-    { value: 'buyNow', label: t('tabs.buyNow') },
-    { value: 'publicAndKnownBrokers', label: t('tabs.publicAndKnownBrokers') }
-  ]
+  let saleDestinationTabList = [{ value: 'buyNow', label: t('tabs.buyNow') }]
+
+  if (xahauNetwork) {
+    saleDestinationTabList.push({ value: 'all', label: t('tabs.all') })
+  } else {
+    saleDestinationTabList.push({ value: 'publicAndKnownBrokers', label: t('tabs.publicAndKnownBrokers') })
+  }
 
   const checkApi = async (options) => {
     if (nftExplorer && !mintedPeriod && listTab !== 'onSale') return
@@ -209,7 +213,7 @@ export default function NftsComponent({
       if (saleCurrencyIssuer && saleCurrency) {
         listUrlPart = listUrlPart + '&currency=' + saleCurrency + '&currencyIssuer=' + saleCurrencyIssuer
       } else {
-        listUrlPart = listUrlPart + '&currency=xrp'
+        listUrlPart = listUrlPart + '&currency=' + nativeCurrency?.toLowerCase()
       }
     }
 
@@ -555,11 +559,13 @@ export default function NftsComponent({
       queryRemoveList.push('includeWithoutMediaData')
     }
 
-    if (mintedPeriod) {
+    if (mintedPeriod && mintedPeriod !== 'all') {
       queryAddList.push({
         name: 'mintedPeriod',
         value: mintedPeriod
       })
+    } else {
+      queryRemoveList.push('mintedPeriod')
     }
 
     if (burnedPeriod) {
@@ -567,6 +573,8 @@ export default function NftsComponent({
         name: 'burnedPeriod',
         value: burnedPeriod
       })
+    } else {
+      queryRemoveList.push('burnedPeriod')
     }
 
     setTabParams(router, tabsToSet, queryAddList, queryRemoveList)
@@ -864,7 +872,7 @@ export default function NftsComponent({
             (isValidTaxon(taxon || taxonQuery) ? ' ' + (taxon || taxonQuery) : '') +
             (owner || ownerQuery ? ', ' + t('table.owner') + ': ' + (owner || ownerQuery) : '') +
             (activeView === 'list' ? ' ' + t('tabs.list') : '') +
-            (listTab === 'onSale' ? ' ' + t('tabs.onSale') : '') +
+            (listTab === 'onSale' ? ' ' + t('tabs.onSale', { nativeCurrency }) : '') +
             (listTab === 'onSale' && saleDestinationTab === 'buyNow' ? ', ' + t('tabs.buyNow') : '') +
             (search || searchQuery ? ', ' + t('table.name') + ': ' + (search || searchQuery) : '') +
             (burnedPeriod ? ', ' + t('table.burn-period') + ': ' + burnedPeriod : '') +
@@ -981,13 +989,13 @@ export default function NftsComponent({
               />
             </div>
           )}
-          {!burnedPeriod && !xahauNetwork && (
+          {!burnedPeriod && (
             <div>
               {t('general.search')}
               <RadioOptions tabList={listTabList} tab={listTab} setTab={setListTab} name="saleType" />
             </div>
           )}
-          {!burnedPeriod && !xahauNetwork && listTab === 'onSale' && (
+          {!burnedPeriod && listTab === 'onSale' && (
             <div>
               {t('table.on-sale')}
               <RadioOptions

@@ -537,7 +537,7 @@
     "sell": "Jual",
     "buyNow": "Buy now",
     "publicAndKnownBrokers": "Publik & Broker Terkenal",
-    "onSale": "Dijual dengan XRP",
+    "onSale": "Dijual dengan {{nativeCurrency}}",
     "all-tokens": "Semua Token",
     "xrp-only": "Hanya XRP",
     "mintedNew": "Latest",

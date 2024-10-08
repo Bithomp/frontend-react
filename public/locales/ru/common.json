@@ -537,7 +537,7 @@
     "sell": "Продажа",
     "buyNow": "Купить сейчас",
     "publicAndKnownBrokers": "Публичные и на MП",
-    "onSale": "На продаже за XRP",
+    "onSale": "На продаже за {{nativeCurrency}}",
     "all-tokens": "Все токены",
     "xrp-only": "Только XRP",
     "mintedNew": "Новые",
