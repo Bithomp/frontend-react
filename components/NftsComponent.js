@@ -146,12 +146,18 @@ export default function NftsComponent({
     { value: 'onSale', label: t('tabs.onSale', { nativeCurrency }) }
   ]
 
-  let saleDestinationTabList = [{ value: 'buyNow', label: t('tabs.buyNow') }]
+  let saleDestinationTabList = []
 
   if (xahauNetwork) {
-    saleDestinationTabList.push({ value: 'all', label: t('tabs.all') })
+    saleDestinationTabList = [
+      { value: 'public', label: t('tabs.buyNow') },
+      { value: 'all', label: t('tabs.all') }
+    ]
   } else {
-    saleDestinationTabList.push({ value: 'publicAndKnownBrokers', label: t('tabs.publicAndKnownBrokers') })
+    saleDestinationTabList = [
+      { value: 'buyNow', label: t('tabs.buyNow') },
+      { value: 'publicAndKnownBrokers', label: t('tabs.publicAndKnownBrokers') }
+    ]
   }
 
   const checkApi = async (options) => {
