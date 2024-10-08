@@ -35,7 +35,7 @@ export default function Pro({ account, setAccount, setSignRequest, refreshPage }
 
   const { t } = useTranslation(['common', 'admin'])
   const [errorMessage, setErrorMessage] = useState('')
-  const [verifiedAddresses, setVerifiedAddresses] = useState(null)
+  const [verifiedAddresses, setVerifiedAddresses] = useState([])
   const [addressToVerify, setAddressToVerify] = useState('')
   const [addressName, setAddressName] = useState('')
   const [loadingVerifiedAddresses, setLoadingVerifiedAddresses] = useState(false)
@@ -317,7 +317,8 @@ export default function Pro({ account, setAccount, setSignRequest, refreshPage }
           ) : (
             <>In order to use PRO functionality for your accounts, you would need to verify them first.</>
           )}
-          {verifiedAddresses?.length < 5 && !subscriptionExpired && (
+          {/* Allow only 1 for non-subscribers and 5 for those with subscription */}
+          {((verifiedAddresses?.length < 5 && !subscriptionExpired) || verifiedAddresses.length === 0) && (
             <>
               {width > 851 && <br />}
               <br />
