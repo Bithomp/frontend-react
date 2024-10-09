@@ -40,6 +40,7 @@ export default function Pro({ account, setAccount, setSignRequest, refreshPage }
   const [addressName, setAddressName] = useState('')
   const [loadingVerifiedAddresses, setLoadingVerifiedAddresses] = useState(false)
   const [rawData, setRawData] = useState({})
+  const [rendered, setRendered] = useState(false)
 
   const suggestAddress = (account, verAddresses) => {
     setRawData({})
@@ -110,6 +111,7 @@ export default function Pro({ account, setAccount, setSignRequest, refreshPage }
     } else {
       axiosAdmin.defaults.headers.common['Authorization'] = 'Bearer ' + sessionToken
       setErrorMessage('')
+      setRendered(true)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
@@ -219,151 +221,157 @@ export default function Pro({ account, setAccount, setSignRequest, refreshPage }
         </div>
         <br />
 
-        {!width || width > 750 ? (
-          <table className="table-large no-hover">
-            <thead>
-              <tr>
-                <th className="center">#</th>
-                <th className="left">Address</th>
-                <th className="right">Data analytics</th>
-                <th>Status</th>
-                <th className="center">Remove</th>
-              </tr>
-            </thead>
-            <tbody>
-              {verifiedAddresses?.length > 0 ? (
-                <>
-                  {verifiedAddresses.map((address, i) => (
-                    <tr key={i}>
-                      <td className="center">{i + 1}</td>
-                      <td className="left">
-                        <b className="orange">{address.name}</b> - {addressLink(address.address, { short: true })}
-                      </td>
-                      <td className="right">{addressButtons(address)}</td>
-                      <td>{crawlerStatus(address.crawler)}</td>
-                      <td className="center red">
-                        <MdDelete
-                          onClick={() => {
-                            removeProAddress(address.id, afterVerifiedAddressesUpdate)
-                          }}
-                        />
-                      </td>
-                    </tr>
-                  ))}
-                </>
-              ) : (
-                <tr>
-                  <td colSpan="100" className="center">
-                    {loadingVerifiedAddresses ? 'Loading data...' : 'You do not have verified addresses yet.'}
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        ) : (
-          <table className="table-mobile">
-            <tbody>
-              {verifiedAddresses?.length > 0 ? (
-                <>
-                  {verifiedAddresses.map((address, i) => (
-                    <tr key={i}>
-                      <td style={{ padding: '5px' }}>#{i + 1}</td>
-                      <td>
-                        <p>
-                          Address: <b className="orange">{address.name}</b> -{' '}
-                          {addressLink(address.address, { short: true })}
-                        </p>
-                        <p>Status: {crawlerStatus(address.crawler)}</p>
-                        <p>Registered: {fullDateAndTime(address.createdAt)}</p>
-                        <p>
-                          {addressButtons(address)}
-                          <button
-                            className="button-action narrow thin"
-                            onClick={() => {
-                              removeProAddress(address.id, afterAddressRemoved)
-                            }}
-                          >
-                            Remove
-                          </button>
-                        </p>
+        {rendered && (
+          <>
+            {!width || width > 750 ? (
+              <table className="table-large no-hover">
+                <thead>
+                  <tr>
+                    <th className="center">#</th>
+                    <th className="left">Address</th>
+                    <th className="right">Data analytics</th>
+                    <th>Status</th>
+                    <th className="center">Remove</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {verifiedAddresses?.length > 0 ? (
+                    <>
+                      {verifiedAddresses.map((address, i) => (
+                        <tr key={i}>
+                          <td className="center">{i + 1}</td>
+                          <td className="left">
+                            <b className="orange">{address.name}</b> - {addressLink(address.address, { short: true })}
+                          </td>
+                          <td className="right">{addressButtons(address)}</td>
+                          <td>{crawlerStatus(address.crawler)}</td>
+                          <td className="center red">
+                            <MdDelete
+                              onClick={() => {
+                                removeProAddress(address.id, afterVerifiedAddressesUpdate)
+                              }}
+                            />
+                          </td>
+                        </tr>
+                      ))}
+                    </>
+                  ) : (
+                    <tr>
+                      <td colSpan="100" className="center">
+                        {loadingVerifiedAddresses ? 'Loading data...' : 'You do not have verified addresses yet.'}
                       </td>
                     </tr>
-                  ))}
+                  )}
+                </tbody>
+              </table>
+            ) : (
+              <table className="table-mobile">
+                <tbody>
+                  {verifiedAddresses?.length > 0 ? (
+                    <>
+                      {verifiedAddresses.map((address, i) => (
+                        <tr key={i}>
+                          <td style={{ padding: '5px' }}>#{i + 1}</td>
+                          <td>
+                            <p>
+                              Address: <b className="orange">{address.name}</b> -{' '}
+                              {addressLink(address.address, { short: true })}
+                            </p>
+                            <p>Status: {crawlerStatus(address.crawler)}</p>
+                            <p>Registered: {fullDateAndTime(address.createdAt)}</p>
+                            <p>
+                              {addressButtons(address)}
+                              <button
+                                className="button-action narrow thin"
+                                onClick={() => {
+                                  removeProAddress(address.id, afterAddressRemoved)
+                                }}
+                              >
+                                Remove
+                              </button>
+                            </p>
+                          </td>
+                        </tr>
+                      ))}
+                    </>
+                  ) : (
+                    <tr>
+                      <td colSpan="100" className="center">
+                        {loadingVerifiedAddresses ? 'Loading data...' : 'You do not have verified addresses yet.'}
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            )}
+            <br />
+            <br />
+            <div style={{ textAlign: 'left' }}>
+              {verifiedAddresses?.length > 0 ? (
+                <>
+                  {subscriptionExpired ? (
+                    <>
+                      In order to activate Data Analyses, please{' '}
+                      <Link href="/admin/subscriptions?tab=pro">purchase the Bithomp Pro subscription</Link>.
+                    </>
+                  ) : (
+                    'You can add up to 5 addresses for data analyses. If you need more, please contact us.'
+                  )}
                 </>
               ) : (
-                <tr>
-                  <td colSpan="100" className="center">
-                    {loadingVerifiedAddresses ? 'Loading data...' : 'You do not have verified addresses yet.'}
-                  </td>
-                </tr>
+                <>In order to use PRO functionality for your accounts, you would need to verify them first.</>
               )}
-            </tbody>
-          </table>
+              {/* Allow only 1 for non-subscribers and 5 for those with subscription */}
+              {((verifiedAddresses?.length < 5 && !subscriptionExpired) || !verifiedAddresses) && (
+                <>
+                  {width > 851 && <br />}
+                  <br />
+                  <div className="flex flex-center">
+                    <span
+                      style={width > 851 ? { width: 'calc(70% - 20px)' } : { width: '100%', marginBottom: '-20px' }}
+                    >
+                      <AddressInput
+                        title="Address"
+                        placeholder="Enter address"
+                        setInnerValue={setAddressToVerify}
+                        hideButton={true}
+                        rawData={rawData}
+                        type="address"
+                      />
+                    </span>
+                    <span style={{ width: width > 851 ? '30%' : '100%' }}>
+                      <FormInput
+                        title="Private name"
+                        placeholder="Enter address name"
+                        setInnerValue={setAddressName}
+                        defaultValue={rawData?.addressDetails?.username}
+                        hideButton={true}
+                      />
+                    </span>
+                  </div>
+                  <br />
+                  <br />
+                  <center>
+                    <button
+                      className="button-action"
+                      onClick={addAddressClicked}
+                      disabled={!addressToVerify || !addressName}
+                    >
+                      Verify{' '}
+                      <Image
+                        src="/images/xaman.png"
+                        className={'xaman-logo' + (!addressToVerify || !addressName ? ' disabled' : '')}
+                        alt="xaman"
+                        height={24}
+                        width={24}
+                      />
+                    </button>
+                  </center>
+                </>
+              )}
+            </div>
+          </>
         )}
-        <br />
-        <br />
-        <div style={{ textAlign: 'left' }}>
-          {verifiedAddresses?.length > 0 ? (
-            <>
-              {subscriptionExpired ? (
-                <>
-                  In order to activate Data Analyses, please{' '}
-                  <Link href="/admin/subscriptions?tab=pro">purchase the Bithomp Pro subscription</Link>.
-                </>
-              ) : (
-                'You can add up to 5 addresses for data analyses. If you need more, please contact us.'
-              )}
-            </>
-          ) : (
-            <>In order to use PRO functionality for your accounts, you would need to verify them first.</>
-          )}
-          {/* Allow only 1 for non-subscribers and 5 for those with subscription */}
-          {((verifiedAddresses?.length < 5 && !subscriptionExpired) || verifiedAddresses.length === 0) && (
-            <>
-              {width > 851 && <br />}
-              <br />
-              <div className="flex flex-center">
-                <span style={width > 851 ? { width: 'calc(70% - 20px)' } : { width: '100%', marginBottom: '-20px' }}>
-                  <AddressInput
-                    title="Address"
-                    placeholder="Enter address"
-                    setInnerValue={setAddressToVerify}
-                    hideButton={true}
-                    rawData={rawData}
-                    type="address"
-                  />
-                </span>
-                <span style={{ width: width > 851 ? '30%' : '100%' }}>
-                  <FormInput
-                    title="Private name"
-                    placeholder="Enter address name"
-                    setInnerValue={setAddressName}
-                    defaultValue={rawData?.addressDetails?.username}
-                    hideButton={true}
-                  />
-                </span>
-              </div>
-              <br />
-              <br />
-              <center>
-                <button
-                  className="button-action"
-                  onClick={addAddressClicked}
-                  disabled={!addressToVerify || !addressName}
-                >
-                  Verify{' '}
-                  <Image
-                    src="/images/xaman.png"
-                    className={'xaman-logo' + (!addressToVerify || !addressName ? ' disabled' : '')}
-                    alt="xaman"
-                    height={24}
-                    width={24}
-                  />
-                </button>
-              </center>
-            </>
-          )}
-        </div>
         <br />
         {errorMessage ? <div className="center orange bold">{errorMessage}</div> : <br />}
       </div>

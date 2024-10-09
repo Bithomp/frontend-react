@@ -23,7 +23,8 @@ export const crawlerStatus = (crawler) => {
       <span className={color + (crawler.status === 'synced' ? ' bold' : '')}>{capitalize(crawler.status)}</span>
       {crawler.status !== 'synced' && (
         <>
-          <br />({shortNiceNumber(crawler.lastLedgerIndex - crawler.currentLedgerIndex)} ledgers to load)
+          <br />({shortNiceNumber(crawler.lastLedgerIndex - crawler.currentLedgerIndex)} ledgers to load
+          {crawler.status !== 'paused' && ', 2-20 min'})
         </>
       )}
     </>
