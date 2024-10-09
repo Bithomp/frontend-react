@@ -55,7 +55,7 @@ import { CiLink } from 'react-icons/ci'
 import { CiFileOn } from 'react-icons/ci'
 import { BsCurrencyExchange } from 'react-icons/bs'
 import DateAndTimeRange from '../../../components/UI/DateAndTimeRange'
-import FiltersFrame from '../../../components/UI/FiltersFrame'
+import FiltersFrame from '../../../components/Layout/FiltersFrame'
 import Link from 'next/link'
 
 const typeToIcon = (type, direction) => {

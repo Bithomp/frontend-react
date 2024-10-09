@@ -2,14 +2,14 @@ import { useState, useEffect } from 'react'
 import { useTranslation } from 'next-i18next'
 import { useRouter } from 'next/router'
 
-import SimpleSelect from './SimpleSelect'
+import SimpleSelect from '../UI/SimpleSelect'
 import LeftFilters from './LeftFilters'
-import ViewTogggle from './ViewToggle'
+import ViewTogggle from '../UI/ViewToggle'
 
 import { TbArrowsSort } from 'react-icons/tb'
 import { IoMdClose } from 'react-icons/io'
 import { setTabParams, useWidth } from '../../utils'
-import CurrencySelect from './CurrencySelect'
+import CurrencySelect from '../UI/CurrencySelect'
 
 export default function FiltersFrame({
   children,
@@ -23,9 +23,9 @@ export default function FiltersFrame({
   hasMore,
   data,
   csvHeaders,
-  Content,
   contentStyle,
-  setFiltersHideP,
+  filtersHide,
+  setFiltersHide,
   setSelectedCurrency,
   selectedCurrency
 }) {
@@ -34,7 +34,6 @@ export default function FiltersFrame({
   const width = useWidth()
 
   const [sortMenuOpen, setSortMenuOpen] = useState(false)
-  const [filtersHide, setFiltersHide] = useState(false)
 
   const hideMobileSortMenu = (value) => {
     setOrder(value)
@@ -108,20 +107,17 @@ export default function FiltersFrame({
       )}
       <LeftFilters
         filtersHide={filtersHide}
-        setFiltersHide={(value) => {
-          setFiltersHide(value)
-          if (setFiltersHideP) setFiltersHideP(value)
-        }}
+        setFiltersHide={setFiltersHide}
         count={count}
         total={total}
         hasMore={hasMore}
         data={data || []}
         csvHeaders={csvHeaders}
       >
-        {children}
+        {children[0]}
       </LeftFilters>
       <div className="content-text" style={contentStyle}>
-        <Content filtersHide={filtersHide} />
+        {children[1]}
       </div>
     </div>
   )
