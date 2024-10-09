@@ -30,7 +30,9 @@ export default function LeftFilters({
   }, [])
 
   const toggleFilters = () => {
-    setFiltersHide(!filtersHide)
+    if (setFiltersHide) {
+      setFiltersHide(!filtersHide)
+    }
   }
 
   return (
