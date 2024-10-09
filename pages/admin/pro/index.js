@@ -322,7 +322,9 @@ export default function Pro({ account, setAccount, setSignRequest, refreshPage }
                 <>In order to use PRO functionality for your accounts, you would need to verify them first.</>
               )}
               {/* Allow only 1 for non-subscribers and 5 for those with subscription */}
-              {((verifiedAddresses?.length < 5 && !subscriptionExpired) || !verifiedAddresses) && (
+              {((verifiedAddresses?.length < 5 && !subscriptionExpired) ||
+                !verifiedAddresses ||
+                verifiedAddresses?.length === 0) && (
                 <>
                   {width > 851 && <br />}
                   <br />

@@ -56,6 +56,7 @@ import { CiFileOn } from 'react-icons/ci'
 import { BsCurrencyExchange } from 'react-icons/bs'
 import DateAndTimeRange from '../../../components/UI/DateAndTimeRange'
 import FiltersFrame from '../../../components/UI/FiltersFrame'
+import Link from 'next/link'
 
 const typeToIcon = (type, direction) => {
   let icon = null
@@ -214,8 +215,8 @@ export default function History({ account, setAccount, queryAddress, selectedCur
       }
     */
     setVerifiedAddresses(data?.addresses)
-    if (addressesToCheck?.length === 0) {
-      setAddressesToCheck([data?.addresses?.[0].address])
+    if (addressesToCheck?.length === 0 && data?.addresses?.[0]?.address) {
+      setAddressesToCheck([data.addresses[0].address])
     }
   }
 
@@ -384,10 +385,19 @@ export default function History({ account, setAccount, queryAddress, selectedCur
                   </div>
                 ))}
               </>
-            ) : loadingVerifiedAddresses ? (
-              'Loading data...'
             ) : (
-              'You do not have verified addresses yet.'
+              <>
+                {loadingVerifiedAddresses ? (
+                  'Loading data...'
+                ) : (
+                  <div>
+                    <br />
+                    <Link href="/admin/pro" className="button-action narrow thin">
+                      Add
+                    </Link>
+                  </div>
+                )}
+              </>
             )}
             <div>
               Period
