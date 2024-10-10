@@ -107,7 +107,11 @@ export default function History({ account, setAccount, queryAddress, selectedCur
 
   useEffect(() => {
     if (activities.length > 0) {
-      setCurrentList(activities.slice(page * rowsPerPage, (page + 1) * rowsPerPage))
+      if (rowsPerPage === -1) {
+        setCurrentList(activities)
+      } else {
+        setCurrentList(activities.slice(page * rowsPerPage, (page + 1) * rowsPerPage))
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activities, page, rowsPerPage])
@@ -259,7 +263,7 @@ export default function History({ account, setAccount, queryAddress, selectedCur
   return (
     <>
       <SEO title="Pro address: history" />
-      <div className="page-admin">
+      <div className="page-pro-history">
         <h1 className="center">Pro address balances history</h1>
 
         <AdminTabs name="mainTabs" tab="pro" />
@@ -375,7 +379,7 @@ export default function History({ account, setAccount, queryAddress, selectedCur
                 ) : (
                   <table className="table-mobile">
                     <tbody>
-                      {activcurrentListities?.length > 0 ? (
+                      {currentList?.length > 0 ? (
                         <>
                           {currentList.map((a, i) => (
                             <tr key={i}>

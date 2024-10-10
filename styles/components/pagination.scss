@@ -1,8 +1,21 @@
 .MuiTablePagination-root {
   display: inline-block;
+  background-color: var(--background-input);
+  border: 1px solid var(--unaccent-icon);
   @media screen and (max-width: 920px) and (min-width: 440px) {
     margin-right: 0px;
     margin-left: auto;
+    &:hover {
+      border-color: var(--accent-link);
+      box-shadow: 0 0 5px var(--unaccent-icon);
+    }
+  }
+  @media screen and (max-width: 440px) {
+    border: 1px solid #ccc;
+    &:hover {
+      border-color: #ccc;
+      box-shadow: unset;
+    }
   }
 }
 
@@ -17,4 +30,7 @@
 
 .MuiButtonBase-root {
   padding: 7px !important;
+  @media screen and (max-width: 440px) {
+    padding: 3px !important;
+  }
 }

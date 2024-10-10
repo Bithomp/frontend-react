@@ -78,6 +78,17 @@ export default function FiltersFrame({
 
   if (!children || children.length < 2) return null
 
+  let rowsPerPageOptions = [10, 25, { label: 'All', value: -1 }]
+  const steps = [50, 100, 250, 500, 1000]
+
+  for (let i = 0; i < steps.length; i++) {
+    if (steps[i] > total) {
+      break
+    } else {
+      rowsPerPageOptions.push(steps[i])
+    }
+  }
+
   return (
     <div className={`content-cols${sortMenuOpen ? ' is-sort-menu-open' : ''}${filtersHide ? ' is-filters-hide' : ''}`}>
       {(orderList || activeView || page) && (
@@ -93,7 +104,7 @@ export default function FiltersFrame({
                   onPageChange={handleChangePage}
                   rowsPerPage={rowsPerPage}
                   onRowsPerPageChange={handleChangeRowsPerPage}
-                  rowsPerPageOptions={width <= 440 ? [] : undefined}
+                  rowsPerPageOptions={width <= 440 ? [] : rowsPerPageOptions}
                 />
               </>
             ) : (
@@ -126,6 +137,7 @@ export default function FiltersFrame({
                   onPageChange={handleChangePage}
                   rowsPerPage={rowsPerPage}
                   onRowsPerPageChange={handleChangeRowsPerPage}
+                  rowsPerPageOptions={rowsPerPageOptions}
                 />
               </>
             ) : (
