@@ -101,6 +101,16 @@ export default function History({ account, setAccount, queryAddress, selectedCur
   const [period, setPeriod] = useState('all')
   const [order, setOrder] = useState('desc')
   const [filtersHide, setFiltersHide] = useState(false)
+  const [page, setPage] = useState(0)
+  const [rowsPerPage, setRowsPerPage] = useState(10)
+  const [currentList, setCurrentList] = useState([])
+
+  useEffect(() => {
+    if (activities.length > 0) {
+      setCurrentList(activities.slice(page * rowsPerPage, (page + 1) * rowsPerPage))
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activities, page, rowsPerPage])
 
   let csvHeaders = [
     { label: '#', key: 'index' },
@@ -265,12 +275,16 @@ export default function History({ account, setAccount, queryAddress, selectedCur
           count={data?.count || 0}
           total={data?.total || 0}
           hasMore={data?.marker}
-          data={activities || []}
+          data={currentList || []}
           csvHeaders={csvHeaders}
           setSelectedCurrency={setSelectedCurrency}
           selectedCurrency={selectedCurrency}
           setFiltersHide={setFiltersHide}
           filtersHide={filtersHide}
+          page={page}
+          setPage={setPage}
+          rowsPerPage={rowsPerPage}
+          setRowsPerPage={setRowsPerPage}
         >
           <filters>
             Addresses
@@ -335,11 +349,11 @@ export default function History({ account, setAccount, queryAddress, selectedCur
                       </tr>
                     </thead>
                     <tbody>
-                      {activities?.length > 0 ? (
+                      {currentList?.length > 0 ? (
                         <>
-                          {activities.map((a, i) => (
+                          {currentList.map((a, i) => (
                             <tr key={i}>
-                              <td className="center">{i + 1}</td>
+                              <td className="center">{a.index}</td>
                               <td>{fullDateAndTime(a.timestamp)}</td>
                               {addressesToCheck.length > 1 && <td>{addressName(a.address)}</td>}
                               <td className="center">{typeToIcon(a.txType, a.direction)}</td>
@@ -361,11 +375,11 @@ export default function History({ account, setAccount, queryAddress, selectedCur
                 ) : (
                   <table className="table-mobile">
                     <tbody>
-                      {activities?.length > 0 ? (
+                      {activcurrentListities?.length > 0 ? (
                         <>
-                          {activities.map((a, i) => (
+                          {currentList.map((a, i) => (
                             <tr key={i}>
-                              <td style={{ padding: '5px' }}>#{i + 1}</td>
+                              <td style={{ padding: '5px' }}>#{a.index}</td>
                               <td>
                                 <p>
                                   Timestamp: <b>{fullDateAndTime(a.timestamp)}</b>

@@ -45,6 +45,7 @@ $width: 340px;
       top: 95px;
       pointer-events: all;
       display: flex;
+      flex-wrap: wrap;
       align-items: center;
       gap: 15px;
 
@@ -52,6 +53,11 @@ $width: 340px;
         gap: 8px;
         margin-bottom: 8px;
       }
+
+      .dropdown {
+        margin-left: auto;
+      }
+
     }
   }
 
@@ -102,6 +108,10 @@ $width: 340px;
   & + .content-text {
     margin: 64px 0 25px 0;
     width: 100%;
+
+    @media (max-width: 920px) {
+      margin: 128px 0 25px 0;
+    }
 
     @media (max-width: 440px) {
       margin: 55px 0 15px 0;

@@ -10,6 +10,7 @@ import { TbArrowsSort } from 'react-icons/tb'
 import { IoMdClose } from 'react-icons/io'
 import { setTabParams, useWidth } from '../../utils'
 import CurrencySelect from '../UI/CurrencySelect'
+import { TablePagination } from '@mui/material'
 
 export default function FiltersFrame({
   children,
@@ -27,7 +28,11 @@ export default function FiltersFrame({
   filtersHide,
   setFiltersHide,
   setSelectedCurrency,
-  selectedCurrency
+  selectedCurrency,
+  page,
+  setPage,
+  rowsPerPage,
+  setRowsPerPage
 }) {
   const { t } = useTranslation()
   const router = useRouter()
@@ -62,11 +67,39 @@ export default function FiltersFrame({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeView])
 
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage)
+  }
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10))
+    setPage(0)
+  }
+
+  if (!children || children.length < 2) return null
+
   return (
     <div className={`content-cols${sortMenuOpen ? ' is-sort-menu-open' : ''}${filtersHide ? ' is-filters-hide' : ''}`}>
-      {(orderList || activeView) && (
+      {(orderList || activeView || page) && (
         <div className="filters-nav">
           <div className="filters-nav__wrap">
+            {rowsPerPage && (width >= 920 || width <= 440) ? (
+              <>
+                <TablePagination
+                  labelRowsPerPage={width <= 440 ? 'Rows' : 'Rows per page'}
+                  component="div"
+                  count={total}
+                  page={page}
+                  onPageChange={handleChangePage}
+                  rowsPerPage={rowsPerPage}
+                  onRowsPerPageChange={handleChangeRowsPerPage}
+                  rowsPerPageOptions={width <= 440 ? [] : undefined}
+                />
+              </>
+            ) : (
+              ''
+            )}
+
             {orderList && (
               <>
                 <SimpleSelect value={order} setValue={setOrder} optionsList={orderList} />
@@ -80,6 +113,23 @@ export default function FiltersFrame({
             )}
             {activeView && (
               <ViewTogggle viewList={viewList} activeView={activeView} setActiveView={setActiveView} name="view" />
+            )}
+
+            {rowsPerPage && width < 920 && width > 440 ? (
+              <>
+                <div style={{ flexBasis: '100%', height: 0 }}></div>
+                <TablePagination
+                  labelRowsPerPage="Rows per page"
+                  component="div"
+                  count={total}
+                  page={page}
+                  onPageChange={handleChangePage}
+                  rowsPerPage={rowsPerPage}
+                  onRowsPerPageChange={handleChangeRowsPerPage}
+                />
+              </>
+            ) : (
+              ''
             )}
           </div>
         </div>

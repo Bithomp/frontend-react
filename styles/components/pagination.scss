@@ -1,0 +1,20 @@
+.MuiTablePagination-root {
+  display: inline-block;
+  @media screen and (max-width: 920px) and (min-width: 440px) {
+    margin-right: 0px;
+    margin-left: auto;
+  }
+}
+
+.MuiToolbar-root {
+ min-height: unset !important;
+}
+
+.MuiTablePagination-selectLabel,
+.MuiTablePagination-displayedRows {
+  margin: 0 !important;
+}
+
+.MuiButtonBase-root {
+  padding: 7px !important;
+}
