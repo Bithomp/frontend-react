@@ -20,6 +20,10 @@
   }
 }
 
+.MuiSvgIcon-root {
+  color: var(--text-main);
+}
+
 .MuiToolbar-root {
  min-height: unset !important;
 }
