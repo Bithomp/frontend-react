@@ -21,13 +21,12 @@ export const crawlerStatus = (crawler) => {
   return (
     <>
       <span className={color + (crawler.status === 'synced' ? ' bold' : '')}>{capitalize(crawler.status)}</span>
-      {crawler.status !== 'synced' && (
+      {(crawler.status === 'queued' || crawler.status !== 'running') && (
         <>
           <br />
-          {crawler.status !== 'queued'
-            ? shortNiceNumber(crawler.lastLedgerIndex - crawler.currentLedgerIndex) + '  ledgers to load'
-            : '1-10 min'}
-          {crawler.status === 'running' && ', 2-20 min'}
+          {crawler.status === 'queued' && '1-10 min'}
+          {crawler.status === 'running' &&
+            shortNiceNumber(crawler.lastLedgerIndex - crawler.currentLedgerIndex) + '  ledgers to load, 2-20 min'}
         </>
       )}
     </>
