@@ -18,6 +18,27 @@ export default function Pro({ setPayPeriod }) {
           This premium offering is packed with benefits that make your experience with our platform more efficient and
           enjoyable:
         </p>
+
+        <p>
+          ✅ <b>Balance changes reports:</b>
+        </p>
+        <ul>
+          <li>
+            <Link href="/admin/pro">Add up to 5 addresses</Link> to View and Export your historical balance changes.
+          </li>
+          <li>
+            Reports in <b>40 FIAT</b> currencies
+          </li>
+          <li>
+            Precise historical value calculations for issued tokens, considering the depth of the order book on the
+            moment when transaction took place
+          </li>
+          <li>Historical FIAT convertion rates</li>
+          <li>Instantly view all your balance changes for several addresses in the same report</li>
+          <li>Advanced sorting and filtering options</li>
+          <li>CSV Export</li>
+        </ul>
+
         <p>
           ✅ <b>Exclusive Access to Advanced Tools:</b>
         </p>
