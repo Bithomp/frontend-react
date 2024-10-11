@@ -48,17 +48,13 @@ export const detectRobot = (userAgent) => {
 const useDomainFromUrl = () => {
   if (typeof window !== 'undefined') {
     let domain = window.location.hostname
-    let domainParts = domain.split('.')
-    if (domainParts.length > 2) {
-      domain = domainParts.slice(1).join('.')
-    }
     return encodeURI(domain)
   }
   return ''
 }
 
 export const domainFromUrl = useDomainFromUrl()
-export const cookieParams = { path: '/', domain: '.' + domainFromUrl, maxAge: 31536000 }
+export const cookieParams = { path: '/', domain: domainFromUrl, maxAge: 31536000 }
 
 export const useCookie = (key, defaultValue) => {
   const cookies = new Cookies()

@@ -77,11 +77,7 @@ class MyDocument extends Document {
                   setTheme(newTheme);
                   try {
                     let domain = window.location.hostname;
-                    let domainParts = domain.split('.');
-                    if (domainParts.length > 2) {
-                      domain = domainParts.slice(1).join('.');
-                    }
-                    document.cookie = "theme=" + JSON.stringify(window.__theme) + ";path=/;domain=." + encodeURI(domain) + ";max-age=31536000";
+                    document.cookie = "theme=" + JSON.stringify(window.__theme) + ";path=/;domain=" + encodeURI(domain) + ";max-age=31536000";
                   } catch (err) {}
                 };
                 let preferredTheme;
