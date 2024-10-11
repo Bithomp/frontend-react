@@ -106,6 +106,7 @@ export default function FiltersFrame({
                   rowsPerPage={rowsPerPage}
                   onRowsPerPageChange={handleChangeRowsPerPage}
                   rowsPerPageOptions={width <= 440 ? [] : rowsPerPageOptions}
+                  //slotProps={{ select: </> }}
                 />
               </>
             ) : (
@@ -139,6 +140,7 @@ export default function FiltersFrame({
                   rowsPerPage={rowsPerPage}
                   onRowsPerPageChange={handleChangeRowsPerPage}
                   rowsPerPageOptions={rowsPerPageOptions}
+                  //slotProps={{ select: </> }}
                 />
               </>
             ) : (

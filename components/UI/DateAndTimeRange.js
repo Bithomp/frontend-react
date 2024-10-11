@@ -183,6 +183,7 @@ export default function DateAndTimeRange({ setPeriod, minDate, tabs, radio, defa
         className="dateAndTimeRange"
         showMonthDropdown
         showYearDropdown
+        name="StartDate"
       />
       <DatePicker
         selected={endDate}
@@ -198,6 +199,7 @@ export default function DateAndTimeRange({ setPeriod, minDate, tabs, radio, defa
         className="dateAndTimeRange"
         showMonthDropdown
         showYearDropdown
+        name="EndDate"
       />
     </span>
   )

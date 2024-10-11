@@ -2,7 +2,7 @@
   display: inline-block;
   background-color: var(--background-input);
   border: 1px solid var(--unaccent-icon);
-  color: var(--text-main);
+  color: var(--text-main) !important;
   @media screen and (max-width: 920px) and (min-width: 440px) {
     margin-right: 0px;
     margin-left: auto;
@@ -21,7 +21,7 @@
 }
 
 .MuiSvgIcon-root {
-  color: var(--text-main);
+  color: var(--text-main) !important;
 }
 
 .MuiToolbar-root {
