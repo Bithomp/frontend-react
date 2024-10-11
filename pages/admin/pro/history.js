@@ -265,6 +265,18 @@ export default function History({ account, setAccount, queryAddress, selectedCur
           setRowsPerPage={setRowsPerPage}
         >
           <filters>
+            {verifiedAddresses?.length > 0 && data && activities && data.total > activities.length && (
+              <div className="center" style={{ marginLeft: -32 }}>
+                <button
+                  className="button-action narrow thin"
+                  onClick={() => getProAddressHistory({ marker: data.marker })}
+                >
+                  Load more data
+                </button>
+                <br />
+                <br />
+              </div>
+            )}
             Addresses
             {verifiedAddresses?.length > 0 ? (
               <>
