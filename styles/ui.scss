@@ -405,7 +405,7 @@ table {
       }
     }
     @media only screen and (max-width: 800px) {
-      min-width: 100%;
+      min-width: calc(100% - 20px);
     }
     &.no-hover {
       tr {

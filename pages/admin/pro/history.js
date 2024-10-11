@@ -91,6 +91,7 @@ export default function History({ account, setAccount, queryAddress, selectedCur
     { label: 'Type', key: 'txType' },
     { label: 'Ledger Amount', key: 'amountExport' },
     { label: selectedCurrency.toUpperCase() + ' equavalent', key: 'amountInFiats.' + selectedCurrency },
+    { label: 'Memo', key: 'memo' },
     { label: 'Tx', key: 'hash' }
   ]
 
@@ -253,7 +254,7 @@ export default function History({ account, setAccount, queryAddress, selectedCur
           count={activities?.length || 0}
           total={data?.total || 0}
           hasMore={data?.marker}
-          data={currentList || []}
+          data={activities || []}
           csvHeaders={csvHeaders}
           setSelectedCurrency={setSelectedCurrency}
           selectedCurrency={selectedCurrency}
@@ -324,7 +325,7 @@ export default function History({ account, setAccount, queryAddress, selectedCur
             {addressesToCheck.length > 0 && (
               <>
                 {!width || width > 750 ? (
-                  <table className="table-large without-border">
+                  <table className="table-large without-border" style={width > 750 ? { width: 730 } : {}}>
                     <thead>
                       <tr>
                         <th className="center">#</th>
@@ -335,6 +336,7 @@ export default function History({ account, setAccount, queryAddress, selectedCur
                         <th suppressHydrationWarning className="right">
                           {selectedCurrency.toUpperCase()} equavalent
                         </th>
+                        <th>Memo</th>
                         <th>Tx</th>
                       </tr>
                     </thead>
@@ -351,6 +353,11 @@ export default function History({ account, setAccount, queryAddress, selectedCur
                               </td>
                               <td className="right">{showAmount(a.amount)}</td>
                               <td className="right">{showFiat(a.amountInFiats?.[selectedCurrency])}</td>
+                              <td>
+                                <div style={{ width: 200, overflow: 'hidden' }}>
+                                  {a.memo && a.memo?.slice(0, 25) + (a.memo?.length > 25 ? '...' : '')}
+                                </div>
+                              </td>
                               <td>{txIdLink(a.hash, 0)}</td>
                             </tr>
                           ))}
@@ -389,6 +396,7 @@ export default function History({ account, setAccount, queryAddress, selectedCur
                                   {selectedCurrency.toUpperCase()} equavalent:{' '}
                                   {showFiat(a.amountInFiats?.[selectedCurrency])}
                                 </p>
+                                {a.memo && <p>Memo: {a.memo?.slice(0, 197) + (a.memo?.length > 197 ? '...' : '')}</p>}
                                 <p>Tx: {txIdLink(a.hash, 0)}</p>
                               </td>
                             </tr>
