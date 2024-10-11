@@ -212,7 +212,7 @@ export default function Pro({ account, setAccount, setSignRequest, refreshPage }
 
         <h4 className="center">Verified addresses</h4>
         <div>
-          Get your personal historical transaction's extracts and statistics.
+          View and Export your personal historical balance changes.
           <br />
           {/*
             - Auto cancelation of expired NFT offers

@@ -567,7 +567,7 @@ table {
 
   &:hover {
     background-color: var(--background-menu);
-    color: var(--text-contrast);
+    color: var(--text-contrast) !important;
     border-color: var(--accent-link);
   }
   &.thin {

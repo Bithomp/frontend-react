@@ -7,14 +7,16 @@ import { CiFileOn } from 'react-icons/ci'
 import { BsCurrencyExchange } from 'react-icons/bs'
 import { TbPigMoney } from 'react-icons/tb'
 import { LuFileCheck2 } from 'react-icons/lu'
+import { BsFillSafeFill } from 'react-icons/bs'
 
 export default function TypeToIcon({ type, direction }) {
+  if (!type) return ''
   let icon = null
   if (type === 'Payment') {
     icon = direction === 'sent' ? <GiPayMoney /> : <GiReceiveMoney />
   } else if (type.includes('NFT')) {
     icon = <RiNftFill />
-  } else if (type === 'AccountSet') {
+  } else if (type === 'AccountSet' || type === 'SetRegularKey') {
     icon = <CiSettings />
   } else if (type === 'TrustSet') {
     icon = <CiLink />
@@ -25,6 +27,8 @@ export default function TypeToIcon({ type, direction }) {
     icon = <TbPigMoney />
   } else if (type === 'EnableAmendment') {
     icon = <LuFileCheck2 />
+  } else if (type.includes('Escrow')) {
+    icon = <BsFillSafeFill />
   } else {
     icon = <CiFileOn />
   }

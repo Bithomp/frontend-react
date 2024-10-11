@@ -78,6 +78,9 @@ export default function History({ account, setAccount, queryAddress, selectedCur
         setCurrentList(activities.slice(page * rowsPerPage, (page + 1) * rowsPerPage))
       }
     }
+    if ((page + 2) * rowsPerPage > activities.length && data?.marker) {
+      getProAddressHistory({ marker: data.marker })
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activities, page, rowsPerPage])
 
@@ -91,7 +94,7 @@ export default function History({ account, setAccount, queryAddress, selectedCur
     { label: 'Tx', key: 'hash' }
   ]
 
-  const getProAddressHistory = async () => {
+  const getProAddressHistory = async (options) => {
     if (addressesToCheck.length === 0) return
     setLoading(true)
     const response = await axiosAdmin
@@ -103,7 +106,9 @@ export default function History({ account, setAccount, queryAddress, selectedCur
           '&period=' +
           period +
           '&order=' +
-          order
+          order +
+          '&limit=1000' +
+          (options?.marker ? '&marker=' + options.marker : '')
       )
       .catch((error) => {
         setLoading(false)
@@ -116,7 +121,7 @@ export default function History({ account, setAccount, queryAddress, selectedCur
         }
       })
     setLoading(false)
-    const data = response?.data
+    let res = response?.data
     /*
       {
         "total": 414,
@@ -140,14 +145,18 @@ export default function History({ account, setAccount, queryAddress, selectedCur
             "amountInFiats": {
               "aed": "-0.0000167092330343814396",
     */
-    if (data) {
-      setData(data) // for stats data, may we need extract only some fields
-      for (let i = 0; i < data.activities.length; i++) {
-        data.activities[i].index = i + 1
-        data.activities[i].amountExport = amountFormat(data.activities[i].amount)
-        data.activities[i].timestampExport = fullDateAndTime(data.activities[i].timestamp, null, { asText: true })
+    if (res) {
+      for (let i = 0; i < res.activities.length; i++) {
+        res.activities[i].index = options?.marker ? activities.length + 1 + i : i + 1
+        res.activities[i].amountExport = amountFormat(res.activities[i].amount)
+        res.activities[i].timestampExport = fullDateAndTime(res.activities[i].timestamp, null, { asText: true })
       }
-      setActivities(data.activities) // add more data by pages
+      setData(res) // last request data
+      if (options?.marker) {
+        setActivities(activities.concat(res.activities)) // joines data
+      } else {
+        setActivities(res.activities) // rewrite old data
+      }
     }
   }
 
@@ -241,7 +250,7 @@ export default function History({ account, setAccount, queryAddress, selectedCur
             { value: 'desc', label: 'Latest first' },
             { value: 'asc', label: 'Earliest first' }
           ]}
-          count={data?.count || 0}
+          count={activities?.length || 0}
           total={data?.total || 0}
           hasMore={data?.marker}
           data={currentList || []}

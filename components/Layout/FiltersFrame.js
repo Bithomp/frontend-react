@@ -78,11 +78,12 @@ export default function FiltersFrame({
 
   if (!children || children.length < 2) return null
 
-  let rowsPerPageOptions = [10, 25, { label: 'All', value: -1 }]
+  let rowsPerPageOptions = [10, 25]
   const steps = [50, 100, 250, 500, 1000]
 
   for (let i = 0; i < steps.length; i++) {
     if (steps[i] > total) {
+      rowsPerPageOptions.push({ label: 'All', value: -1 })
       break
     } else {
       rowsPerPageOptions.push(steps[i])
