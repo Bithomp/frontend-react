@@ -128,7 +128,7 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
         '?uri=true&metadata=true&history=true&sellOffers=true&buyOffers=true&offersValidate=true&offersHistory=true' +
         noCache +
         '&convertCurrencies=' +
-        selectedCurrency
+        selectedCurrency?.toLowerCase()
     ).catch((error) => {
       setErrorMessage(t('error.' + error.message))
     })
