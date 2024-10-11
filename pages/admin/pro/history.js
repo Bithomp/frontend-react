@@ -13,6 +13,10 @@ import { addressLink, amountFormat, fullDateAndTime, txIdLink } from '../../../u
 import ProTabs from '../../../components/Tabs/ProTabs'
 import { crawlerStatus } from '../../../utils/pro'
 import CheckBox from '../../../components/UI/CheckBox'
+import Link from 'next/link'
+import DateAndTimeRange from '../../../components/UI/DateAndTimeRange'
+import FiltersFrame from '../../../components/Layout/FiltersFrame'
+import TypeToIcon from '../../../components/Admin/subscriptions/pro/history/TypeToIcon'
 
 export const getServerSideProps = async (context) => {
   const { locale, query } = context
@@ -45,45 +49,6 @@ const showFiat = (fiat) => {
     maximumFractionDigits: 6
   }
   return <span className={positive ? 'green' : 'red'}>{Number(fiat).toLocaleString(undefined, options)}</span>
-}
-
-import { GiReceiveMoney } from 'react-icons/gi'
-import { GiPayMoney } from 'react-icons/gi'
-import { RiNftFill } from 'react-icons/ri'
-import { CiSettings } from 'react-icons/ci'
-import { CiLink } from 'react-icons/ci'
-import { CiFileOn } from 'react-icons/ci'
-import { BsCurrencyExchange } from 'react-icons/bs'
-import DateAndTimeRange from '../../../components/UI/DateAndTimeRange'
-import FiltersFrame from '../../../components/Layout/FiltersFrame'
-import Link from 'next/link'
-
-const typeToIcon = (type, direction) => {
-  let icon = null
-  if (type === 'Payment') {
-    icon = direction === 'sent' ? <GiPayMoney /> : <GiReceiveMoney />
-  } else if (type.includes('NFT')) {
-    icon = <RiNftFill />
-  } else if (type === 'AccountSet') {
-    icon = <CiSettings />
-  } else if (type === 'TrustSet') {
-    icon = <CiLink />
-  } else if (type.includes('Offer')) {
-    // NFT offers already presented earlier
-    icon = <BsCurrencyExchange />
-  } else {
-    icon = <CiFileOn />
-  }
-
-  return (
-    <span className="tooltip">
-      <span style={{ fontSize: '20px' }}>{icon}</span>
-      <span className="tooltiptext">
-        {type}
-        {type === 'Payment' ? ' ' + direction : ''}
-      </span>
-    </span>
-  )
 }
 
 export default function History({ account, setAccount, queryAddress, selectedCurrency, setSelectedCurrency }) {
@@ -360,7 +325,9 @@ export default function History({ account, setAccount, queryAddress, selectedCur
                               <td className="center">{a.index}</td>
                               <td>{fullDateAndTime(a.timestamp)}</td>
                               {addressesToCheck.length > 1 && <td>{addressName(a.address)}</td>}
-                              <td className="center">{typeToIcon(a.txType, a.direction)}</td>
+                              <td className="center">
+                                <TypeToIcon type={a.txType} direction={a.direction} />
+                              </td>
                               <td className="right">{showAmount(a.amount)}</td>
                               <td className="right">{showFiat(a.amountInFiats?.[selectedCurrency])}</td>
                               <td>{txIdLink(a.hash, 0)}</td>
