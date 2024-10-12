@@ -1,6 +1,7 @@
 .MuiTablePagination-root {
   display: inline-block;
   background-color: var(--background-input);
+  transition: background-color .5s, color .5s;
   border: 1px solid var(--unaccent-icon);
   color: var(--text-main) !important;
   @media screen and (max-width: 920px) and (min-width: 440px) {
@@ -12,11 +13,7 @@
     }
   }
   @media screen and (max-width: 440px) {
-    border: 1px solid #ccc;
-    &:hover {
-      border-color: #ccc;
-      box-shadow: unset;
-    }
+    min-width: 200px;
   }
 }
 

@@ -325,19 +325,19 @@ export default function History({ account, setAccount, queryAddress, selectedCur
             {addressesToCheck.length > 0 && (
               <>
                 {!width || width > 750 ? (
-                  <table className="table-large without-border" style={width > 750 ? { width: 730 } : {}}>
+                  <table className="table-large without-border no-hover" style={width > 750 ? { width: 730 } : {}}>
                     <thead>
                       <tr>
                         <th className="center">#</th>
                         <th>Timestamp</th>
                         {addressesToCheck.length > 1 && <th>Address</th>}
                         <th className="center">Type</th>
+                        <th>Memo</th>
+                        <th>Tx</th>
                         <th className="right">Ledger Amount</th>
                         <th suppressHydrationWarning className="right">
                           {selectedCurrency.toUpperCase()} equavalent
                         </th>
-                        <th>Memo</th>
-                        <th>Tx</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -351,14 +351,14 @@ export default function History({ account, setAccount, queryAddress, selectedCur
                               <td className="center">
                                 <TypeToIcon type={a.txType} direction={a.direction} />
                               </td>
-                              <td className="right">{showAmount(a.amount)}</td>
-                              <td className="right">{showFiat(a.amountInFiats?.[selectedCurrency])}</td>
                               <td>
                                 <div style={{ width: 200, overflow: 'hidden' }}>
                                   {a.memo && a.memo?.slice(0, 25) + (a.memo?.length > 25 ? '...' : '')}
                                 </div>
                               </td>
                               <td>{txIdLink(a.hash, 0)}</td>
+                              <td className="right">{showAmount(a.amount)}</td>
+                              <td className="right">{showFiat(a.amountInFiats?.[selectedCurrency])}</td>
                             </tr>
                           ))}
                         </>

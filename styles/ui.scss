@@ -423,6 +423,11 @@ table {
               fill: inherit;
             }
           }
+          a, .link {
+            svg {
+              stroke: var(--accent-link);
+            }
+          }
         }
       }
     }

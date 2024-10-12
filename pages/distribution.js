@@ -123,7 +123,7 @@ export default function Distribution() {
         </div>
         <br />
         {windowWidth > 1000 ? (
-          <table className="table-large shrink">
+          <table className="table-large shrink no-hover">
             <thead>
               <tr>
                 <th className="center">{t('table.index')}</th>

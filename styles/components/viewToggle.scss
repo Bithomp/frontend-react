@@ -1,66 +1,61 @@
-$button-size: 36px;
+$button-size: 38px;
 $button-size-mobile: 30px;
 
 .view-toggle {
+  &__wrap {
+    position: sticky;
+    top: 94px;
+    right: 0;
+    display: flex;
+    justify-content: space-between;
+    width: fit-content;
+    gap: 1px;
+    border: 1px solid var(--unaccent-icon);
 
-    &__wrap {
-        position: sticky;
-        top: 94px;
-        right: 0;
-        display: flex;
-        justify-content: space-between;
-        width: fit-content;
-        gap: 1px;
-        background: #ccc;
-        padding: 1px;
+    @media (max-width: 1300px) {
+      top: 90px;
+    }
+  }
 
-        @media (max-width: 1300px) {
-            top: 90px;
-        }
+  &__button {
+    transition: background-color 0.3s;
+
+    label {
+      cursor: pointer;
+      width: $button-size;
+      height: $button-size;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-main);
+      background-color: var(--background-input);
+      font-size: 18px;
+
+      @media(max-width: 440px) {
+        width: $button-size-mobile;
+        height: $button-size-mobile;
+      }
     }
 
-    &__button {
-        transition: background-color 0.3s;
-
-        label {
-            cursor: pointer;
-            width: $button-size;
-            height: $button-size;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: #fff;
-            font-size: 18px;
-
-            @media(max-width: 440px) {
-                width: $button-size-mobile;
-                height: $button-size-mobile;
-            }
-
-            .dark & {
-                color: #000;
-            }
-        }
-
-        input:checked + label {
-            background: var(--accent-link);
-            color: #fff;
-        }
-
-        svg {
-            padding-bottom: 2px;
-        }
-
-        input {
-            display: none;
-        }
-
-        &:hover {
-            background-color: var(--background-input-hover);
-        }
-
-        &--is-selected {
-            background-color: var(--background-input-selected);
-        }
+    input:checked + label {
+      background: var(--accent-link);
+      color: #fff;
     }
+
+    svg {
+      padding-bottom: 2px;
+    }
+
+    input {
+      display: none;
+    }
+
+    &:hover {
+      background-color: var(--background-input-hover);
+    }
+
+    &--is-selected {
+      background-color: var(--background-input-selected);
+    }
+  }
 }

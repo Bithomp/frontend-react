@@ -214,14 +214,13 @@ $width: 340px;
     justify-content: center;
     top: 20px;
     left: 15px;
-    background-color: #fff;
-    border: none;
+    background-color: var(--background-input);
     margin: 0;
     font-size: 20px;
     padding: 4px;
-    border: 1px solid #ccc;
+    border: 1px solid var(--unaccent-icon);
     cursor: pointer;
-    color: var(--background-block);
+    color: var(--text-main);
 
     @media (min-width: 440px) {
       width: 38px;
@@ -230,10 +229,6 @@ $width: 340px;
 
     @media (max-width: 440px) {
       padding: 5px;
-    }
-
-    .dark & {
-      color: #000;
     }
 
     @media (max-width: 1300px) {
