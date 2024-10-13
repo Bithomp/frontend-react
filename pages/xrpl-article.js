@@ -1,3 +1,4 @@
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import SEO from '../components/SEO'
 import { useTranslation } from 'next-i18next'
 import { getIsSsrMobile } from '../utils/mobile'
