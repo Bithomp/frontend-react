@@ -6,6 +6,7 @@ export default function AdminTabs({ name, tab }) {
 
   const mainTabs = [
     { value: 'profile', label: 'Profile' },
+    { value: 'watchlist', label: 'Watchlist' },
     { value: 'subscriptions', label: 'Subscriptions' },
     { value: 'pro', label: 'Pro addresses' },
     { value: 'api', label: 'API' }
@@ -38,6 +39,8 @@ export default function AdminTabs({ name, tab }) {
       router.push('/admin/api/charts')
     } else if (tab === 'pro') {
       router.push('/admin/pro')
+    } else if (tab === 'watchlist') {
+      router.push('/admin/watchlist')
     }
   }
 

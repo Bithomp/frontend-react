@@ -445,6 +445,16 @@ table {
   }
 }
 
+.content-center {
+  table {
+    &.table-large {
+      @media only screen and (max-width: 800px) {
+        min-width: 100%;
+      }
+    }
+  }
+}
+
 .center {
   text-align: center !important;
 }
