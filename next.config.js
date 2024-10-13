@@ -74,6 +74,14 @@ module.exports = {
       {
         source: '/tx',
         destination: '/transaction'
+      },
+      {
+        source: '/address/:id',
+        destination: '/account/:id'
+      },
+      {
+        source: '/address',
+        destination: '/account'
       }
     ]
   },
