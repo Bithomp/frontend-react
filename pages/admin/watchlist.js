@@ -12,8 +12,10 @@ import { isAddressValid, isIdValid, isValidNftXls20, subscriptionExpired, useWid
 import AddressInput from '../../components/UI/AddressInput'
 import FormInput from '../../components/UI/FormInput'
 import { MdDelete } from 'react-icons/md'
-import { addressLink, nftIdLink } from '../../utils/format'
+import { addressLink, amountFormat, nftIdLink, timeFromNow, txIdLink } from '../../utils/format'
 import Link from 'next/link'
+import axios from 'axios'
+import Image from 'next/image'
 
 export const getServerSideProps = async (context) => {
   const { locale } = context
@@ -26,7 +28,7 @@ export const getServerSideProps = async (context) => {
 }
 
 export default function Watchlist() {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const router = useRouter()
   const width = useWidth()
 
@@ -83,8 +85,12 @@ export default function Watchlist() {
         }
       */
       setData(response.data)
-      setAddresses(response.data.favorites.filter((a) => a.type === 'address'))
-      setNfts(response.data.favorites.filter((a) => a.type === 'nftoken' || a.type === 'uritoken'))
+      let addressList = response.data.favorites.filter((a) => a.type === 'address')
+      setAddresses(addressList)
+      getEntityInfo(addressList, 'address')
+      let nftList = response.data.favorites.filter((a) => a.type === 'nftoken' || a.type === 'uritoken')
+      setNfts(nftList)
+      getEntityInfo(nftList, 'nft')
     }
     setLoading(false)
   }
@@ -149,6 +155,32 @@ export default function Watchlist() {
     }
   }
 
+  const getEntityInfo = async (list, type) => {
+    if (list?.length > 0) {
+      await Promise.all(
+        list.map(async (a) => {
+          const url = type === 'address' ? '/v2/address/' + a.entity + '?&ledgerInfo=true' : '/v2/nft/' + a.entity
+          const response = await axios(url).catch((error) => {
+            console.log(error)
+          })
+          if (response?.data) {
+            list = list.map((l) => {
+              if (l.entity === a.entity) {
+                l.info = response.data
+              }
+              return l
+            })
+          }
+        })
+      )
+      if (type === 'address') {
+        setAddresses(list)
+      } else if (type === 'nft') {
+        setNfts(list)
+      }
+    }
+  }
+
   return (
     <>
       <SEO title={t('header', { ns: 'admin' })} />
@@ -170,8 +202,9 @@ export default function Watchlist() {
                 <thead>
                   <tr>
                     <th className="center">#</th>
-                    <th className="left">Name</th>
                     <th className="left">Address</th>
+                    <th className="right">Balance</th>
+                    <th className="right">Last active</th>
                     <th className="center">Remove</th>
                   </tr>
                 </thead>
@@ -182,9 +215,41 @@ export default function Watchlist() {
                         <tr key={i}>
                           <td className="center">{i + 1}</td>
                           <td className="left">
-                            <b className="orange">{a.name}</b>
+                            <table>
+                              <tbody>
+                                <tr>
+                                  <td style={{ padding: 0 }}>
+                                    <Image
+                                      alt="avatar"
+                                      src={'https://cdn.bithomp.com/avatar/' + a.entity}
+                                      width={width < 440 ? 30 : 40}
+                                      height={width < 440 ? 30 : 40}
+                                    />
+                                  </td>
+                                  <td style={{ padding: '0 0 0 10px' }}>
+                                    <b className="orange">{a.name}</b>
+                                    <br />
+                                    {addressLink(a.entity, { short: true })}
+                                  </td>
+                                </tr>
+                              </tbody>
+                            </table>
                           </td>
-                          <td className="left">{addressLink(a.entity, { short: true })}</td>
+                          <td className="right">{amountFormat(a.info?.ledgerInfo?.balance)}</td>
+                          <td className="right">
+                            {a.info?.ledgerInfo?.activated ? (
+                              <>
+                                {a.info.ledgerInfo?.lastSubmittedAt && (
+                                  <>{timeFromNow(a.info.ledgerInfo.lastSubmittedAt, i18n)}</>
+                                )}
+                                {a.info.ledgerInfo?.lastSubmittedTxHash && (
+                                  <> {txIdLink(a.info.ledgerInfo.lastSubmittedTxHash, 0)}</>
+                                )}
+                              </>
+                            ) : (
+                              'Not activated'
+                            )}
+                          </td>
                           <td className="center red">
                             <MdDelete
                               onClick={() => {

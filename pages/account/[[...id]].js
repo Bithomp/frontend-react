@@ -7,12 +7,11 @@ import Image from 'next/image'
 import { axiosServer } from '../../utils/axios'
 
 import { server, getCoinsUrl, nativeCurrency } from '../../utils'
-import { amountFormat, shortNiceNumber, fullDateAndTime, timeFromNow } from '../../utils/format'
+import { amountFormat, shortNiceNumber, fullDateAndTime, timeFromNow, txIdLink } from '../../utils/format'
 import { getIsSsrMobile } from '../../utils/mobile'
 
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
-import LinkIcon from '../../public/images/link.svg'
 
 export async function getServerSideProps(context) {
   const { locale, query, req } = context
@@ -453,7 +452,7 @@ export default function Account({
                             </div>
                           )}
 
-                          {(!account?.address || data?.address === account?.address) && (
+                          {((!account?.address && !data?.service?.name) || data?.address === account?.address) && (
                             <table className="table-details autowidth">
                               <thead>
                                 <tr>
@@ -579,10 +578,7 @@ export default function Account({
                                       </>
                                     )}
                                     {data?.ledgerInfo?.lastSubmittedTxHash && (
-                                      <a href={'/explorer/' + data.ledgerInfo.lastSubmittedTxHash}>
-                                        {' '}
-                                        <LinkIcon />
-                                      </a>
+                                      <> {txIdLink(data.ledgerInfo.lastSubmittedTxHash, 0)}</>
                                     )}
                                   </td>
                                 ) : (
