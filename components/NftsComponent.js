@@ -11,9 +11,9 @@ import {
   useWidth,
   xahauNetwork,
   periodDescription,
-  useSubscriptionExpired,
   decode,
-  nativeCurrency
+  nativeCurrency,
+  subscriptionExpired
 } from '../utils'
 import {
   isValidTaxon,
@@ -72,7 +72,6 @@ export default function NftsComponent({
   const { t } = useTranslation()
   const router = useRouter()
   const windowWidth = useWidth()
-  const subscriptionExpired = useSubscriptionExpired()
 
   const orderNftsList = [
     { value: 'mintedNew', label: t('dropdown.mintedNew', { ns: 'nft-sort' }) },
