@@ -75,7 +75,7 @@ export default function Nodes({ initialData, initialErrorMessage }) {
   const { t, i18n } = useTranslation()
 
   const windowWidth = useWidth()
-  const countries = countriesTranslated()
+  const countries = countriesTranslated(i18n.language)
 
   const data = initialData || {}
   const errorMessage = initialErrorMessage || ''

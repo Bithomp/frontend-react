@@ -78,7 +78,7 @@ export default function Validators({ amendment, initialData, initialErrorMessage
   const windowWidth = useWidth()
   const { theme } = useTheme()
 
-  const countries = countriesTranslated()
+  const countries = countriesTranslated(i18n.language)
 
   const showTime = ({ time }) => {
     if (!time) return 'N/A'

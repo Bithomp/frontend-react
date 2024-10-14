@@ -2,13 +2,14 @@ import CountrySelect from '../UI/CountrySelect'
 import axios from 'axios'
 import { useRouter } from 'next/router'
 import { useState, useEffect } from 'react'
+import { useTranslation } from 'next-i18next'
 
 import { countriesTranslated } from '../../utils'
 
 export default function BillingCountry({ billingCountry, setBillingCountry, choosingCountry, setChoosingCountry }) {
-
   const router = useRouter()
-  const countries = countriesTranslated()
+  const { i18n } = useTranslation()
+  const countries = countriesTranslated(i18n.language)
 
   const [loading, setLoading] = useState(true) //keep true for country select
 
@@ -17,20 +18,17 @@ export default function BillingCountry({ billingCountry, setBillingCountry, choo
     if (!sessionToken) {
       router.push('/admin')
     } else {
-      axios.defaults.headers.common['Authorization'] = "Bearer " + sessionToken
+      axios.defaults.headers.common['Authorization'] = 'Bearer ' + sessionToken
       getApiData()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const getApiData = async () => {
-    const partnerData = await axios.get(
-      'partner/partner',
-      { baseUrl: '/api/' }
-    ).catch(error => {
-      if (error && error.message !== "canceled") {
+    const partnerData = await axios.get('partner/partner', { baseUrl: '/api/' }).catch((error) => {
+      if (error && error.message !== 'canceled') {
         console.log(error)
-        if (error.response?.data?.error === "errors.token.required") {
+        if (error.response?.data?.error === 'errors.token.required') {
           router.push('/admin')
         }
       }
@@ -62,49 +60,40 @@ export default function BillingCountry({ billingCountry, setBillingCountry, choo
   }
 
   const saveCountry = async () => {
-    const data = await axios.put(
-      'partner/partner',
-      { country: billingCountry },
-      { baseUrl: '/api/' }
-    ).catch(error => {
-      if (error && error.message !== "canceled") {
-        console.log(error)
-      }
-    })
+    const data = await axios
+      .put('partner/partner', { country: billingCountry }, { baseUrl: '/api/' })
+      .catch((error) => {
+        if (error && error.message !== 'canceled') {
+          console.log(error)
+        }
+      })
     if (data?.data?.country) {
       setChoosingCountry(false)
     }
   }
 
-  return <>
-    {((!billingCountry || choosingCountry) && !loading) ?
-      <>
-        <h4>Choose your country of residence</h4>
-        <CountrySelect
-          countryCode={billingCountry}
-          setCountryCode={setBillingCountry}
-          type="onlySelect"
-        />
-        <br />
-        <button
-          onClick={() => saveCountry()}
-          className='button-action'
-        >
-          Save
-        </button>
-        <br />
-      </>
-      :
-      <>
-        {billingCountry &&
-          <>
-            Your billing country is {" "}
-            <a onClick={() => setChoosingCountry(true)}>
-              {countries.getNameTranslated(billingCountry)}
-            </a>
-          </>
-        }
-      </>
-    }
-  </>
+  return (
+    <>
+      {(!billingCountry || choosingCountry) && !loading ? (
+        <>
+          <h4>Choose your country of residence</h4>
+          <CountrySelect countryCode={billingCountry} setCountryCode={setBillingCountry} type="onlySelect" />
+          <br />
+          <button onClick={() => saveCountry()} className="button-action">
+            Save
+          </button>
+          <br />
+        </>
+      ) : (
+        <>
+          {billingCountry && (
+            <>
+              Your billing country is{' '}
+              <a onClick={() => setChoosingCountry(true)}>{countries.getNameTranslated(billingCountry)}</a>
+            </>
+          )}
+        </>
+      )}
+    </>
+  )
 }

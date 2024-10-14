@@ -2,9 +2,10 @@ import axios from 'axios'
 import { useCallback, useEffect, useState } from 'react'
 import { Buffer } from 'buffer'
 import { decodeAccountID, isValidClassicAddress } from 'ripple-address-codec'
-import { useTranslation } from 'next-i18next'
 import countries from 'i18n-iso-countries'
 import Cookies from 'universal-cookie'
+
+const cookies = new Cookies()
 
 export const detectRobot = (userAgent) => {
   const robots = new RegExp(
@@ -45,19 +46,10 @@ export const detectRobot = (userAgent) => {
   return robots.test(userAgent)
 }
 
-const useDomainFromUrl = () => {
-  if (typeof window !== 'undefined') {
-    let domain = window.location.hostname
-    return encodeURI(domain)
-  }
-  return ''
-}
-
-export const domainFromUrl = useDomainFromUrl()
+export const domainFromUrl = typeof window !== 'undefined' ? encodeURI(window.location.hostname) : ''
 export const cookieParams = { path: '/', domain: domainFromUrl, maxAge: 31536000 }
 
 export const useCookie = (key, defaultValue) => {
-  const cookies = new Cookies()
   const [item, setItemValue] = useState(() => {
     if (cookies.get(key)) {
       return cookies.get(key)
@@ -119,18 +111,13 @@ export const periodDescription = (periodName) => {
   }
 }
 
-export const useSubscriptionExpired = () => {
-  const cookies = new Cookies()
-  const proExpire = cookies.get('pro-expire')
-  if (!proExpire) return true
-  return Number(proExpire) < new Date().getTime()
-}
-export const subscriptionExpired = useSubscriptionExpired()
+export const subscriptionExpired = cookies.get('pro-expire')
+  ? Number(cookies.get('pro-expire')) < new Date().getTime()
+  : true
 
-export const countriesTranslated = () => {
-  const { i18n } = useTranslation()
-  let lang = i18n.language.slice(0, 2)
-  if (i18n.language === 'default') {
+export const countriesTranslated = (language) => {
+  let lang = language.slice(0, 2)
+  if (language === 'default') {
     lang = 'en'
   }
   const notSupportedLanguages = ['my'] // supported "en", "ru", "ja", "ko" etc
@@ -316,6 +303,7 @@ export const useLocalStorage = (key, initialValue) => {
 
   useEffect(() => {
     setState(initialize(key))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const setValue = useCallback(
