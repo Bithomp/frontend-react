@@ -415,7 +415,13 @@ table {
             color: inherit;
           }
           a {
-            color: inherit;
+            color: var(--accent-link);
+            &:hover {
+              color: inherit;
+            }
+            &.button-action {
+              color: var(--text-contrast);
+            }
           }
           svg {
             stroke: inherit;
@@ -431,9 +437,6 @@ table {
         }
       }
     }
-  }
-  &.without-border {
-    border: none;
   }
   &.table-mobile {
     width: calc(100% - 30px);
@@ -546,6 +549,10 @@ table {
 
 .bordered {
   border: 2px solid var(--accent-link);
+}
+
+.no-border {
+  border: none !important;
 }
 
 .hidden {

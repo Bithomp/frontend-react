@@ -325,7 +325,7 @@ export default function History({ account, setAccount, queryAddress, selectedCur
             {addressesToCheck.length > 0 && (
               <>
                 {!width || width > 750 ? (
-                  <table className="table-large without-border no-hover" style={width > 750 ? { width: 730 } : {}}>
+                  <table className="table-large no-border no-hover" style={width > 750 ? { width: 730 } : {}}>
                     <thead>
                       <tr>
                         <th className="center">#</th>

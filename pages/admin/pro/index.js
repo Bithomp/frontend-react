@@ -29,6 +29,8 @@ export const getServerSideProps = async (context) => {
   }
 }
 
+const xamanImg = '/images/xaman.png'
+
 export default function Pro({ account, setAccount, setSignRequest, refreshPage }) {
   const router = useRouter()
   const width = useWidth()
@@ -177,12 +179,12 @@ export default function Pro({ account, setAccount, setSignRequest, refreshPage }
     getVerifiedAddresses()
   }
 
-  const addressButtons = (address) => {
+  const addressButtons = (address, options) => {
     return (
       <>
         {address.crawler && (
           <Link className="button-action narrow thin" href={'/admin/pro/history?address=' + address.address}>
-            View
+            {options?.mobile ? 'View history' : 'View'}
           </Link>
         )}{' '}
         {!(address.crawler && address.crawler.status !== 'paused') && (
@@ -237,18 +239,57 @@ export default function Pro({ account, setAccount, setSignRequest, refreshPage }
                 <tbody>
                   {verifiedAddresses?.length > 0 ? (
                     <>
-                      {verifiedAddresses.map((address, i) => (
+                      {verifiedAddresses.map((a, i) => (
                         <tr key={i}>
                           <td className="center">{i + 1}</td>
                           <td className="left">
-                            <b className="orange">{address.name}</b> - {addressLink(address.address, { short: true })}
+                            <table>
+                              <tbody>
+                                <tr>
+                                  <td style={{ padding: 0 }}>
+                                    <Image
+                                      alt="avatar"
+                                      src={
+                                        'https://cdn.bithomp.com/avatar/' +
+                                        a.address +
+                                        (refreshPage ? '?' + refreshPage : '')
+                                      }
+                                      width="40"
+                                      height="40"
+                                    />
+                                  </td>
+                                  <td style={{ padding: '0 0 0 10px' }}>
+                                    <b className="orange">{a.name}</b> - {addressLink(a.address, { short: true })}
+                                    <br />
+                                    <a
+                                      onClick={() =>
+                                        setSignRequest({
+                                          //wallet: 'xumm',
+                                          action: 'setAvatar',
+                                          request: {
+                                            TransactionType: 'AccountSet',
+                                            Account: a.address
+                                          },
+                                          data: {
+                                            signOnly: true,
+                                            action: 'set-avatar'
+                                          }
+                                        })
+                                      }
+                                    >
+                                      Set Avatar
+                                    </a>
+                                  </td>
+                                </tr>
+                              </tbody>
+                            </table>
                           </td>
-                          <td className="right">{addressButtons(address)}</td>
-                          <td>{crawlerStatus(address.crawler)}</td>
+                          <td className="right">{addressButtons(a)}</td>
+                          <td>{crawlerStatus(a.crawler)}</td>
                           <td className="center red">
                             <MdDelete
                               onClick={() => {
-                                removeProAddress(address.id, afterVerifiedAddressesUpdate)
+                                removeProAddress(a.id, afterVerifiedAddressesUpdate)
                               }}
                             />
                           </td>
@@ -269,22 +310,53 @@ export default function Pro({ account, setAccount, setSignRequest, refreshPage }
                 <tbody>
                   {verifiedAddresses?.length > 0 ? (
                     <>
-                      {verifiedAddresses.map((address, i) => (
+                      {verifiedAddresses.map((a, i) => (
                         <tr key={i}>
-                          <td style={{ padding: '5px' }}>#{i + 1}</td>
+                          <td style={{ padding: '20px 5px', verticalAlign: 'top' }} className="center">
+                            <Image
+                              alt="avatar"
+                              src={'https://cdn.bithomp.com/avatar/' + a.address}
+                              width="30"
+                              height="30"
+                            />
+                            <br />
+                            <br />
+                            {i + 1}
+                          </td>
                           <td>
                             <p>
-                              Address: <b className="orange">{address.name}</b> -{' '}
-                              {addressLink(address.address, { short: true })}
+                              Address: <b className="orange">{a.name}</b> - {addressLink(a.address, { short: true })}
                             </p>
-                            <p>Status: {crawlerStatus(address.crawler)}</p>
-                            <p>Registered: {fullDateAndTime(address.createdAt)}</p>
+                            <p>Status: {crawlerStatus(a.crawler)}</p>
+                            <p>Registered: {fullDateAndTime(a.createdAt)}</p>
                             <p>
-                              {addressButtons(address)}
+                              {addressButtons(a, { mobile: true })}
+                              <button
+                                className="button-action narrow thin"
+                                onClick={() =>
+                                  setSignRequest({
+                                    wallet: 'xumm',
+                                    action: 'setAvatar',
+                                    request: {
+                                      TransactionType: 'AccountSet',
+                                      Account: a.address
+                                    },
+                                    data: {
+                                      signOnly: true,
+                                      action: 'set-avatar'
+                                    }
+                                  })
+                                }
+                              >
+                                Set Avatar{' '}
+                                <Image src={xamanImg} className="xaman-logo" alt="xaman logo" height={24} width={24} />
+                              </button>
+                              <br />
+                              <br />
                               <button
                                 className="button-action narrow thin"
                                 onClick={() => {
-                                  removeProAddress(address.id, afterAddressRemoved)
+                                  removeProAddress(a.id, afterAddressRemoved)
                                 }}
                               >
                                 Remove
@@ -326,7 +398,7 @@ export default function Pro({ account, setAccount, setSignRequest, refreshPage }
                 !verifiedAddresses ||
                 verifiedAddresses?.length === 0) && (
                 <>
-                  {width > 851 && <br />}
+                  <br />
                   <br />
                   <div className="flex flex-center">
                     <span
