@@ -7,8 +7,9 @@ import Image from 'next/image'
 import { axiosServer } from '../../utils/axios'
 
 import { server, getCoinsUrl, nativeCurrency } from '../../utils'
-import { amountFormat, shortNiceNumber, fullDateAndTime, timeFromNow, txIdLink } from '../../utils/format'
+import { amountFormat, fullDateAndTime, timeFromNow, txIdLink, nativeCurrencyToFiat } from '../../utils/format'
 import { getIsSsrMobile } from '../../utils/mobile'
+import { fetchCurrentFiatRate } from '../../utils/common'
 
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
@@ -156,11 +157,7 @@ export default function Account({
   useEffect(() => {
     if (!ledgerTimestamp) {
       //if there is ledgerTimestamp then we need a historical rate
-      async function fetchRate() {
-        const response = await axios('v2/rates/current/' + selectedCurrency)
-        setFiatRate(response.data[selectedCurrency])
-      }
-      fetchRate()
+      fetchCurrentFiatRate(selectedCurrency, setFiatRate)
     } else {
       getHistoricalRate()
     }
@@ -284,10 +281,6 @@ export default function Account({
     if (balanceList.available.native < 0) {
       balanceList.available.native = 0
     }
-
-    balanceList.total.fiat = ((balanceList.total.native / 1000000) * fiatRate).toFixed(2)
-    balanceList.reserved.fiat = ((balanceList.reserved.native / 1000000) * fiatRate).toFixed(2)
-    balanceList.available.fiat = ((balanceList.available.native / 1000000) * fiatRate).toFixed(2)
 
     setBalances(balanceList)
   }, [data, networkInfo, fiatRate])
@@ -626,27 +619,36 @@ export default function Account({
                                             <b className="green">{amountFormat(balances?.available?.native)}</b>
                                           </td>
                                           <td>
-                                            {balances?.available?.fiat && (
-                                              <>≈ {shortNiceNumber(balances.available.fiat, 2, 3, selectedCurrency)}</>
-                                            )}
+                                            ≈{' '}
+                                            {nativeCurrencyToFiat({
+                                              amount: balances.available?.native,
+                                              selectedCurrency,
+                                              fiatRate
+                                            })}
                                           </td>
                                         </tr>
                                         <tr>
                                           <td>Reserved:</td>
                                           <td>{amountFormat(balances?.reserved?.native, { minFractionDigits: 6 })}</td>
                                           <td>
-                                            {balances?.reserved?.fiat && (
-                                              <>≈ {shortNiceNumber(balances.reserved.fiat, 2, 3, selectedCurrency)}</>
-                                            )}
+                                            ≈{' '}
+                                            {nativeCurrencyToFiat({
+                                              amount: balances.reserved?.native,
+                                              selectedCurrency,
+                                              fiatRate
+                                            })}
                                           </td>
                                         </tr>
                                         <tr>
                                           <td className="right">Total:</td>
                                           <td>{amountFormat(balances?.total?.native)}</td>
                                           <td>
-                                            {balances?.total?.fiat && (
-                                              <>≈ {shortNiceNumber(balances.total.fiat, 2, 3, selectedCurrency)}</>
-                                            )}
+                                            ≈{' '}
+                                            {nativeCurrencyToFiat({
+                                              amount: balances.total?.native,
+                                              selectedCurrency,
+                                              fiatRate
+                                            })}
                                           </td>
                                         </tr>
                                       </tbody>

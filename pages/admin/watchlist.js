@@ -12,10 +12,11 @@ import { isAddressValid, isIdValid, isValidNftXls20, subscriptionExpired, useWid
 import AddressInput from '../../components/UI/AddressInput'
 import FormInput from '../../components/UI/FormInput'
 import { MdDelete } from 'react-icons/md'
-import { addressLink, amountFormat, nftIdLink, timeFromNow, txIdLink } from '../../utils/format'
+import { addressLink, amountFormat, nativeCurrencyToFiat, nftIdLink, timeFromNow, txIdLink } from '../../utils/format'
 import Link from 'next/link'
 import axios from 'axios'
 import Image from 'next/image'
+import { fetchCurrentFiatRate } from '../../utils/common'
 
 export const getServerSideProps = async (context) => {
   const { locale } = context
@@ -27,7 +28,7 @@ export const getServerSideProps = async (context) => {
   }
 }
 
-export default function Watchlist() {
+export default function Watchlist({ selectedCurrency }) {
   const { t, i18n } = useTranslation()
   const router = useRouter()
   const width = useWidth()
@@ -39,6 +40,7 @@ export default function Watchlist() {
   const [entetyName, setEntetyName] = useState('')
   const [nfts, setNfts] = useState([])
   const [addresses, setAddresses] = useState([])
+  const [fiatRate, setFiatRate] = useState(0)
 
   useEffect(() => {
     const sessionToken = localStorage.getItem('sessionToken')
@@ -50,6 +52,13 @@ export default function Watchlist() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  useEffect(() => {
+    if (selectedCurrency) {
+      fetchCurrentFiatRate(selectedCurrency, setFiatRate)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedCurrency])
 
   /*
     .delete("/user/favorite/1");
@@ -235,7 +244,15 @@ export default function Watchlist() {
                               </tbody>
                             </table>
                           </td>
-                          <td className="right">{amountFormat(a.info?.ledgerInfo?.balance)}</td>
+                          <td className="right">
+                            {amountFormat(a.info?.ledgerInfo?.balance)}
+                            <br />≈{' '}
+                            {nativeCurrencyToFiat({
+                              amount: a.info?.ledgerInfo?.balance,
+                              selectedCurrency,
+                              fiatRate
+                            })}
+                          </td>
                           <td className="right">
                             {a.info?.ledgerInfo?.activated ? (
                               <>
