@@ -245,7 +245,9 @@ export default function Watchlist({ selectedCurrency }) {
                             </table>
                           </td>
                           <td className="right">
-                            {amountFormat(a.info?.ledgerInfo?.balance)}
+                            <b className="green">
+                              {amountFormat(a.info?.ledgerInfo?.balance, { maxFractionDigits: 2 })}
+                            </b>
                             <br />≈{' '}
                             {nativeCurrencyToFiat({
                               amount: a.info?.ledgerInfo?.balance,
