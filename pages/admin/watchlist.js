@@ -325,14 +325,14 @@ export default function Watchlist({ selectedCurrency }) {
                               </p>
                               <p>Last active: {lastActive(a.info?.ledgerInfo)}</p>
                               <p>
-                                <button
-                                  className="button-action narrow thin"
+                                <a
                                   onClick={() => {
                                     removeEntity(a.id)
                                   }}
+                                  className="red"
                                 >
                                   Remove
-                                </button>
+                                </a>
                               </p>
                             </td>
                           </tr>
@@ -406,14 +406,14 @@ export default function Watchlist({ selectedCurrency }) {
                               </p>
                               <p>NFT: {nftIdLink(a.entity)}</p>
                               <p>
-                                <button
-                                  className="button-action narrow thin"
+                                <a
                                   onClick={() => {
                                     removeEntity(a.id)
                                   }}
+                                  className="red"
                                 >
                                   Remove
-                                </button>
+                                </a>
                               </p>
                             </td>
                           </tr>

@@ -10,6 +10,8 @@ import { FaUserLarge } from 'react-icons/fa6'
 import { GrMoney } from 'react-icons/gr'
 import { IoStatsChart, IoWallet } from 'react-icons/io5'
 import { FaSignOutAlt } from 'react-icons/fa'
+import { FaEye } from 'react-icons/fa'
+import { FaUserCheck } from 'react-icons/fa'
 
 const handleClick = (e) => {
   if (e.target.getAttribute('data-expanded') !== null) {
@@ -117,8 +119,16 @@ export default function MobileMenu({
 
           {proName && (
             <>
+              <Link href="/admin/watchlist" className="mobile-menu-item" onClick={mobileMenuToggle}>
+                <FaEye style={{ ...iconStyle, marginTop: '2px' }} /> Watchlist
+              </Link>
+
               <Link href="/admin/subscriptions" className="mobile-menu-item" onClick={mobileMenuToggle}>
                 <GrMoney style={iconStyle} /> Subscriptions
+              </Link>
+
+              <Link href="/admin/pro" className="mobile-menu-item" onClick={mobileMenuToggle}>
+                <FaUserCheck style={{ ...iconStyle, marginTop: '2px' }} /> Pro addresses
               </Link>
 
               <Link href="/admin/api" className="mobile-menu-item" onClick={mobileMenuToggle}>
@@ -410,15 +420,15 @@ export default function MobileMenu({
             {t('menu.sponsored.earn')}
           </a>
           {/* 
-        <a
-          href="/go/fm-play"
-          target="_blank"
-          rel="noreferrer"
-          className="mobile-menu-item"
-        >
-          {t("menu.sponsored.play")}
-        </a>
-        */}
+            <a
+              href="/go/fm-play"
+              target="_blank"
+              rel="noreferrer"
+              className="mobile-menu-item"
+            >
+              {t("menu.sponsored.play")}
+            </a>
+          */}
         </div>
       </div>
     </div>

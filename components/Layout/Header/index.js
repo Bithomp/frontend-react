@@ -316,7 +316,9 @@ export default function Header({
               <>
                 <hr />
                 <Link href="/admin">{displayName ? proName : 'Profile'}</Link>
+                <Link href="/admin/watchlist">Watchlist</Link>
                 <Link href="/admin/subscriptions">Subscriptions</Link>
+                <Link href="/admin/pro">Pro addresses</Link>
                 <Link href="/admin/api">API management</Link>
                 <span onClick={signOutPro} className="link">
                   {t('signin.signout')}
