@@ -557,7 +557,7 @@ export default function NftSales({
         filtersHide={filtersHide}
         setFiltersHide={setFiltersHide}
       >
-        <filters>
+        <>
           <AddressInput
             title={t('table.issuer')}
             placeholder={t('nfts.search-by-issuer')}
@@ -633,8 +633,8 @@ export default function NftSales({
               {t('table.text.include-without-media-data')}
             </CheckBox>
           </div>
-        </filters>
-        <content>
+        </>
+        <>
           <InfiniteScroll
             dataLength={sales.length}
             next={checkApi}
@@ -846,7 +846,7 @@ export default function NftSales({
               </>
             )}
           </InfiniteScroll>
-        </content>
+        </>
       </FiltersFrame>
     </>
   )

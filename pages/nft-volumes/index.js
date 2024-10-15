@@ -956,7 +956,7 @@ export default function NftVolumes({
         filtersHide={filtersHide}
         setFiltersHide={setFiltersHide}
       >
-        <filters>
+        <>
           <div>
             {(listTab === 'issuers' || listTab === 'collections') && (
               <CheckBox checked={extendedStats} setChecked={setExtendedStats}>
@@ -1001,8 +1001,8 @@ export default function NftVolumes({
               />
             </>
           )}
-        </filters>
-        <content>
+        </>
+        <>
           {listTab === 'charts' ? (
             <>
               <center>
@@ -1539,7 +1539,7 @@ export default function NftVolumes({
               </InfiniteScroll>
             </>
           )}
-        </content>
+        </>
       </FiltersFrame>
     </>
   )

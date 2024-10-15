@@ -266,7 +266,7 @@ export default function History({ account, setAccount, queryAddress, selectedCur
           rowsPerPage={rowsPerPage}
           setRowsPerPage={setRowsPerPage}
         >
-          <filters>
+          <>
             {verifiedAddresses?.length > 0 && data && activities && data.total > activities.length && (
               <div className="center" style={{ marginLeft: -32 }}>
                 <button
@@ -336,8 +336,8 @@ export default function History({ account, setAccount, queryAddress, selectedCur
               Period
               <DateAndTimeRange setPeriod={setPeriod} defaultPeriod="all" radio={true} />
             </div>
-          </filters>
-          <content>
+          </>
+          <>
             {addressesToCheck.length > 0 && (
               <>
                 {!width || width > 750 ? (
@@ -433,7 +433,7 @@ export default function History({ account, setAccount, queryAddress, selectedCur
             <br />
             <br />
             {errorMessage ? <div className="center orange bold">{errorMessage}</div> : <br />}
-          </content>
+          </>
         </FiltersFrame>
       </div>
     </>

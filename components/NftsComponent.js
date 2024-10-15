@@ -712,7 +712,7 @@ export default function NftsComponent({
         filtersHide={filtersHide}
         setFiltersHide={setFiltersHide}
       >
-        <filters>
+        <>
           {nftExplorer && (
             <>
               {mintedByMarketplace && (
@@ -870,8 +870,8 @@ export default function NftsComponent({
               </CheckBox>
             </div>
           </div>
-        </filters>
-        <content>
+        </>
+        <>
           {/* if accoun't nft explorer and there is no owner or id, ask to provide an address */}
           {!nftExplorer && !(id || owner) ? (
             <div className="center" style={{ marginTop: '20px' }}>
@@ -1076,7 +1076,7 @@ export default function NftsComponent({
               )}
             </InfiniteScroll>
           )}
-        </content>
+        </>
       </FiltersFrame>
     </>
   )
