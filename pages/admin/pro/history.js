@@ -17,6 +17,7 @@ import Link from 'next/link'
 import DateAndTimeRange from '../../../components/UI/DateAndTimeRange'
 import FiltersFrame from '../../../components/Layout/FiltersFrame'
 import TypeToIcon from '../../../components/Admin/subscriptions/pro/history/TypeToIcon'
+import Image from 'next/image'
 
 export const getServerSideProps = async (context) => {
   const { locale, query } = context
@@ -295,9 +296,24 @@ export default function History({ account, setAccount, queryAddress, selectedCur
                       outline
                       checkmarkStyle={{ top: '10px' }}
                     >
-                      <b className="orange">{address.name}</b> - <small>{crawlerStatus(address.crawler)}</small>
-                      <br />
-                      {addressLink(address.address, { short: 10 })}
+                      <table>
+                        <tbody>
+                          <tr>
+                            <td style={{ padding: 0 }}>
+                              <Image
+                                alt="avatar"
+                                src={'https://cdn.bithomp.com/avatar/' + address.address}
+                                width="40"
+                                height="40"
+                              />
+                            </td>
+                            <td style={{ padding: '0 0 0 5px' }}>
+                              <b className="orange">{address.name}</b> - <small>{crawlerStatus(address.crawler)}</small>
+                              {addressLink(address.address, { short: 10 })}
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
                     </CheckBox>
                   </div>
                 ))}
