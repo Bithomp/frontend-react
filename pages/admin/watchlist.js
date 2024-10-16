@@ -42,6 +42,7 @@ export default function Watchlist({ selectedCurrency, account }) {
   const [nfts, setNfts] = useState([])
   const [addresses, setAddresses] = useState([])
   const [fiatRate, setFiatRate] = useState(0)
+  const [rendered, setRendered] = useState(false)
 
   useEffect(() => {
     const sessionToken = localStorage.getItem('sessionToken')
@@ -50,6 +51,7 @@ export default function Watchlist({ selectedCurrency, account }) {
     } else {
       axiosAdmin.defaults.headers.common['Authorization'] = 'Bearer ' + sessionToken
       getFavorites()
+      setRendered(true)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
@@ -236,15 +238,19 @@ export default function Watchlist({ selectedCurrency, account }) {
 
         <AdminTabs name="mainTabs" tab="watchlist" />
 
-        <p>
-          You can add up to {subscriptionExpired ? 20 : 100} favorite addresses or NFTs to the watchlist.
-          {subscriptionExpired && (
-            <>
-              {' '}
-              If you want to add more, please subscribe to the <Link href="/admin/subscriptions">Bithomp Pro</Link>.
-            </>
-          )}
-        </p>
+        {rendered ? (
+          <p>
+            You can add up to {subscriptionExpired ? 20 : 100} favorite addresses or NFTs to the watchlist.
+            {subscriptionExpired && (
+              <>
+                {' '}
+                If you want to add more, please subscribe to the <Link href="/admin/subscriptions">Bithomp Pro</Link>.
+              </>
+            )}
+          </p>
+        ) : (
+          <p>Loading...</p>
+        )}
 
         <div>
           {data?.favorites?.length > 0 && (
