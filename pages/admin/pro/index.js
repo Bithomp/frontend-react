@@ -264,11 +264,13 @@ export default function Pro({ account, setAccount, setSignRequest, refreshPage }
               <br />
               (that you created or that have your address as a destination)
             </li>
-            <li>
-              Auto cancelation of expired NFT offers
-              <br />
-              (offers that you created and offers from others for NFTs you own)
-            </li>
+            {!xahauNetwork && (
+              <li>
+                Auto cancelation of expired NFT offers
+                <br />
+                (offers that you created and offers from others for NFTs you own)
+              </li>
+            )}
           </ul>
         </div>
         <br />
