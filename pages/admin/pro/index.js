@@ -2,6 +2,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
+import Cookies from 'universal-cookie'
 
 import { getIsSsrMobile } from '../../../utils/mobile'
 import AdminTabs from '../../../components/Tabs/AdminTabs'
@@ -30,7 +31,7 @@ export const getServerSideProps = async (context) => {
   }
 }
 
-const SettingsCheckBoxes = ({ a, mobile }) => {
+const SettingsCheckBoxes = ({ a, mobile, cookies }) => {
   let styles = {}
   if (mobile) {
     styles = { ...styles, lineHeight: '1.8em', fontSize: '1.1em' }
@@ -42,7 +43,7 @@ const SettingsCheckBoxes = ({ a, mobile }) => {
   return (
     <>
       <CheckBox
-        checked={subscriptionExpired ? false : escrowsExecution}
+        checked={subscriptionExpired(cookies) ? false : escrowsExecution}
         setChecked={() => {
           updateProAddress(a.id, {
             settings: { escrowsExecution: !escrowsExecution }
@@ -50,13 +51,13 @@ const SettingsCheckBoxes = ({ a, mobile }) => {
           setEscrowsExecution(!escrowsExecution)
         }}
         style={{ ...styles, marginTop: 0 }}
-        disabled={subscriptionExpired}
+        disabled={subscriptionExpired(cookies)}
       >
         {mobile ? 'Auto Escrow Execution' : 'Execute Escrows'}
       </CheckBox>
       {!xahauNetwork && (
         <CheckBox
-          checked={subscriptionExpired ? false : nftokensOffersCancellation}
+          checked={subscriptionExpired(cookies) ? false : nftokensOffersCancellation}
           setChecked={() => {
             updateProAddress(a.id, {
               settings: { nftokensOffersCancellation: !nftokensOffersCancellation }
@@ -64,7 +65,7 @@ const SettingsCheckBoxes = ({ a, mobile }) => {
             setNftokensOffersCancellation(!nftokensOffersCancellation)
           }}
           style={{ ...styles, marginTop: 10 }}
-          disabled={subscriptionExpired}
+          disabled={subscriptionExpired(cookies)}
         >
           {mobile ? 'Auto Cancelation of Expired NFT offers' : 'Cancel Expired NFT Offers'}
         </CheckBox>
@@ -76,6 +77,7 @@ const SettingsCheckBoxes = ({ a, mobile }) => {
 export default function Pro({ account, setAccount, setSignRequest, refreshPage }) {
   const router = useRouter()
   const width = useWidth()
+  const cookies = new Cookies()
 
   const { t } = useTranslation(['common', 'admin'])
   const [errorMessage, setErrorMessage] = useState('')
@@ -235,7 +237,7 @@ export default function Pro({ account, setAccount, setSignRequest, refreshPage }
             onClick={() => {
               activateAddressCrawler(address.address, afterVerifiedAddressesUpdate)
             }}
-            disabled={subscriptionExpired}
+            disabled={subscriptionExpired(cookies)}
           >
             Enable
           </button>
@@ -341,7 +343,7 @@ export default function Pro({ account, setAccount, setSignRequest, refreshPage }
                             {addressButtons(a)}
                           </td>
                           <td className="left">
-                            <SettingsCheckBoxes a={a} />
+                            <SettingsCheckBoxes a={a} cookies={cookies} />
                           </td>
                           <td className="center red">
                             <MdDelete
@@ -387,7 +389,7 @@ export default function Pro({ account, setAccount, setSignRequest, refreshPage }
                             </p>
                             <p>Status: {crawlerStatus(a.crawler, { inline: true })}</p>
                             <p>
-                              <SettingsCheckBoxes a={a} mobile={true} />
+                              <SettingsCheckBoxes a={a} mobile={true} cookies={cookies} />
                             </p>
                             <p>
                               {addressButtons(a, { mobile: true })}
@@ -439,7 +441,7 @@ export default function Pro({ account, setAccount, setSignRequest, refreshPage }
             <div style={{ textAlign: 'left' }}>
               {verifiedAddresses?.length > 0 ? (
                 <>
-                  {subscriptionExpired ? (
+                  {subscriptionExpired(cookies) ? (
                     <>
                       In order to activate Data Analyses, please{' '}
                       <Link href="/admin/subscriptions?tab=pro">purchase the Bithomp Pro subscription</Link>.
@@ -452,7 +454,7 @@ export default function Pro({ account, setAccount, setSignRequest, refreshPage }
                 <>In order to use PRO functionality for your accounts, you would need to verify them first.</>
               )}
               {/* Allow only 1 for non-subscribers and 5 for those with subscription */}
-              {((verifiedAddresses?.length < 5 && !subscriptionExpired) ||
+              {((verifiedAddresses?.length < 5 && !subscriptionExpired(cookies)) ||
                 !verifiedAddresses ||
                 verifiedAddresses?.length === 0) && (
                 <>

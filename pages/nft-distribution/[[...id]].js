@@ -6,6 +6,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useRouter } from 'next/router'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import Link from 'next/link'
+import Cookies from 'universal-cookie'
 
 import { FaSortAmountDown } from 'react-icons/fa'
 
@@ -50,6 +51,7 @@ export default function NftDistribution({ issuerQuery, taxonQuery, idQuery, orde
   const { t } = useTranslation()
   const windowWidth = useWidth()
   const router = useRouter()
+  const cookies = new Cookies()
 
   const [data, setData] = useState({})
   const [owners, setOwners] = useState([])
@@ -109,7 +111,7 @@ export default function NftDistribution({ issuerQuery, taxonQuery, idQuery, orde
       (order ? oldOrder === order : !oldOrder)
 
     // do not load more if thereis no session token or if Bithomp Pro is expired
-    if (loadMoreRequest && (!sessionToken || (sessionToken && subscriptionExpired))) {
+    if (loadMoreRequest && (!sessionToken || (sessionToken && subscriptionExpired(cookies)))) {
       return
     }
 
@@ -390,7 +392,7 @@ export default function NftDistribution({ issuerQuery, taxonQuery, idQuery, orde
                       </Trans>
                     ) : (
                       <>
-                        {!subscriptionExpired ? (
+                        {!subscriptionExpired(cookies) ? (
                           t('general.loading')
                         ) : (
                           <Trans i18nKey="general.renew-bithomp-pro">

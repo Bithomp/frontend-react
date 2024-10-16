@@ -4,6 +4,7 @@ import Head from 'next/head'
 import axios from 'axios'
 import { appWithTranslation } from 'next-i18next'
 import dynamic from 'next/dynamic'
+import Cookies from 'universal-cookie'
 
 import Header from '../components/Layout/Header'
 import Footer from '../components/Layout/Footer'
@@ -29,6 +30,7 @@ const MyApp = ({ Component, pageProps }) => {
   const [refreshPage, setRefreshPage] = useState('')
 
   const router = useRouter()
+  const cookies = new Cookies()
 
   const { uuid } = router.query
 
@@ -61,7 +63,7 @@ const MyApp = ({ Component, pageProps }) => {
   const pathname = router.pathname
   const pagesWithoutWrapper = ['/social-share']
 
-  const showAds = subscriptionExpired && nativeCurrency === 'XRP'
+  const showAds = subscriptionExpired(cookies) && nativeCurrency === 'XRP'
   let showTopAds = false //showAds // change here when you want to see TOP ADS
   const pagesWithNoTopAdds = [
     '/',

@@ -5,6 +5,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useRouter } from 'next/router'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import Link from 'next/link'
+import Cookies from 'universal-cookie'
 
 import { getIsSsrMobile } from '../../utils/mobile'
 
@@ -62,6 +63,7 @@ export default function NftVolumes({
   const { t } = useTranslation()
   const router = useRouter()
   const windowWidth = useWidth()
+  const cookies = new Cookies()
 
   const [data, setData] = useState([])
   const [rawData, setRawData] = useState({})
@@ -175,7 +177,7 @@ export default function NftVolumes({
       (extendedStats ? oldExtendedStats === extendedStats : !oldExtendedStats)
 
     // do not load more if there is no session token or if Bithomp Pro is expired
-    if (loadMoreRequest && (!sessionToken || (sessionToken && subscriptionExpired))) {
+    if (loadMoreRequest && (!sessionToken || (sessionToken && subscriptionExpired(cookies)))) {
       return
     }
 
@@ -1141,7 +1143,7 @@ export default function NftVolumes({
                             </Trans>
                           ) : (
                             <>
-                              {!subscriptionExpired ? (
+                              {!subscriptionExpired(cookies) ? (
                                 t('general.loading')
                               ) : (
                                 <Trans i18nKey="general.renew-bithomp-pro">

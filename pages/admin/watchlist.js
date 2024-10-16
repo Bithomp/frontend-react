@@ -3,6 +3,7 @@ import { useTranslation } from 'next-i18next'
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import { axiosAdmin } from '../../utils/axios'
+import Cookies from 'universal-cookie'
 
 import { getIsSsrMobile } from '../../utils/mobile'
 
@@ -33,6 +34,7 @@ export default function Watchlist({ selectedCurrency, account }) {
   const { t, i18n } = useTranslation()
   const router = useRouter()
   const width = useWidth()
+  const cookies = new Cookies()
 
   const [errorMessage, setErrorMessage] = useState('')
   const [data, setData] = useState([])
@@ -240,8 +242,8 @@ export default function Watchlist({ selectedCurrency, account }) {
 
         {rendered ? (
           <p>
-            You can add up to {subscriptionExpired ? 20 : 100} favorite addresses or NFTs to the watchlist.
-            {subscriptionExpired && (
+            You can add up to {subscriptionExpired(cookies) ? 20 : 100} favorite addresses or NFTs to the watchlist.
+            {subscriptionExpired(cookies) && (
               <>
                 {' '}
                 If you want to add more, please subscribe to the <Link href="/admin/subscriptions">Bithomp Pro</Link>.
@@ -499,7 +501,7 @@ export default function Watchlist({ selectedCurrency, account }) {
 
           <div>
             {/* Allow only 20 for non-subscribers and 100 for those with subscription */}
-            {((data?.favorites?.length < 100 && !subscriptionExpired) || data?.favorites?.length < 20) && (
+            {((data?.favorites?.length < 100 && !subscriptionExpired(cookies)) || data?.favorites?.length < 20) && (
               <>
                 {width > 851 && <br />}
                 <br />

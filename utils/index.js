@@ -5,8 +5,6 @@ import { decodeAccountID, isValidClassicAddress } from 'ripple-address-codec'
 import countries from 'i18n-iso-countries'
 import Cookies from 'universal-cookie'
 
-const cookies = new Cookies()
-
 export const detectRobot = (userAgent) => {
   const robots = new RegExp(
     [
@@ -50,6 +48,8 @@ export const domainFromUrl = typeof window !== 'undefined' ? encodeURI(window.lo
 export const cookieParams = { path: '/', domain: domainFromUrl, maxAge: 31536000 }
 
 export const useCookie = (key, defaultValue) => {
+  const cookies = new Cookies()
+
   const [item, setItemValue] = useState(() => {
     if (cookies.get(key) && cookies.get(key) !== 'undefined') {
       return cookies.get(key)
@@ -115,9 +115,9 @@ export const periodDescription = (periodName) => {
   }
 }
 
-export const subscriptionExpired = cookies.get('pro-expire')
-  ? Number(cookies.get('pro-expire')) < new Date().getTime()
-  : true
+export const subscriptionExpired = (cookies) => {
+  return cookies.get('pro-expire') ? Number(cookies.get('pro-expire')) < new Date().getTime() : true
+}
 
 export const countriesTranslated = (language) => {
   let lang = language.slice(0, 2)
