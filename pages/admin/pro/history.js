@@ -308,7 +308,8 @@ export default function History({ account, setAccount, queryAddress, selectedCur
                               />
                             </td>
                             <td style={{ padding: '0 0 0 5px' }}>
-                              <b className="orange">{address.name}</b> - <small>{crawlerStatus(address.crawler)}</small>
+                              <b className="orange">{address.name}</b> -{' '}
+                              <small>{crawlerStatus(address.crawler, { inline: true })}</small>
                               {addressLink(address.address, { short: 10 })}
                             </td>
                           </tr>

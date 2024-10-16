@@ -26,7 +26,7 @@ export const crawlerStatus = (crawler, options) => {
           {options?.inline ? ' ' : <br />}
           {crawler.status === 'queued' && '1-10 min'}
           {crawler.status === 'running' &&
-            shortNiceNumber(crawler.lastLedgerIndex - crawler.currentLedgerIndex) + '  ledgers to load, 2-20 min'}
+            shortNiceNumber(crawler.lastLedgerIndex - crawler.currentLedgerIndex) + ' ledgers to load, 2-20 min'}
         </>
       )}
     </>
