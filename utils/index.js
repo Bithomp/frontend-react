@@ -51,16 +51,20 @@ export const cookieParams = { path: '/', domain: domainFromUrl, maxAge: 31536000
 
 export const useCookie = (key, defaultValue) => {
   const [item, setItemValue] = useState(() => {
-    if (cookies.get(key)) {
+    if (cookies.get(key) && cookies.get(key) !== 'undefined') {
       return cookies.get(key)
     }
-    cookies.set(key, defaultValue, cookieParams)
+    if (defaultValue !== undefined) {
+      cookies.set(key, defaultValue, cookieParams)
+    }
     return defaultValue
   })
 
   const setValue = (value) => {
-    setItemValue(value)
-    cookies.set(key, value, cookieParams)
+    if (value !== undefined) {
+      setItemValue(value)
+      cookies.set(key, value, cookieParams)
+    }
   }
 
   const removeItem = () => {

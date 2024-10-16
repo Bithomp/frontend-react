@@ -20,7 +20,9 @@ export default function CurrencySelect({ setSelectedCurrency, selectedCurrency }
 
   const onCurrencyChange = (value) => {
     setSelectedOption(value)
-    setSelectedCurrency(value.value)
+    if (value.value) {
+      setSelectedCurrency(value.value)
+    }
   }
 
   useEffect(() => {
