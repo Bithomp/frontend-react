@@ -2,6 +2,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import NftsComponent from '../components/NftsComponent'
 
 import { getIsSsrMobile } from '../utils/mobile'
+import { xahauNetwork } from '../utils'
 
 export const getServerSideProps = async (context) => {
   const { query, locale } = context
@@ -33,7 +34,7 @@ export const getServerSideProps = async (context) => {
       orderQuery: order || 'mintedNew',
       view: view || 'tiles',
       list: list || 'nfts',
-      saleDestination: saleDestination || 'buyNow',
+      saleDestination: saleDestination || (xahauNetwork ? 'public' : 'buyNow'),
       saleCurrency: saleCurrency || 'xrp',
       saleCurrencyIssuer: saleCurrencyIssuer || '',
       searchQuery: search || '',

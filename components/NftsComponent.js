@@ -507,7 +507,7 @@ export default function NftsComponent({
       tabsToSet.push({
         tabList: saleDestinationTabList,
         tab: saleDestinationTab,
-        defaultTab: 'buyNow',
+        defaultTab: xahauNetwork ? 'public' : 'buyNow',
         setTab: setSaleDestinationTab,
         paramName: 'saleDestination'
       })
@@ -641,7 +641,9 @@ export default function NftsComponent({
             (owner || ownerQuery ? ', ' + t('table.owner') + ': ' + (owner || ownerQuery) : '') +
             (activeView === 'list' ? ' ' + t('tabs.list') : '') +
             (listTab === 'onSale' ? ' ' + t('tabs.onSale', { nativeCurrency }) : '') +
-            (listTab === 'onSale' && saleDestinationTab === 'buyNow' ? ', ' + t('tabs.buyNow') : '') +
+            (listTab === 'onSale' && (saleDestinationTab === 'buyNow' || saleDestinationTab === 'public')
+              ? ', ' + t('tabs.buyNow')
+              : '') +
             (search || searchQuery ? ', ' + t('table.name') + ': ' + (search || searchQuery) : '') +
             (burnedPeriod ? ', ' + t('table.burn-period') + ': ' + burnedPeriod : '') +
             (order ? ', ' + t('dropdown.' + order, { ns: 'nft-sort' }) : '') +
