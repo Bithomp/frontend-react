@@ -18,7 +18,7 @@ import Link from 'next/link'
 import axios from 'axios'
 import Image from 'next/image'
 import { fetchCurrentFiatRate } from '../../utils/common'
-import { nftPriceData, nftUrl } from '../../utils/nft'
+import { nftPriceData, nftThumbnail } from '../../utils/nft'
 
 export const getServerSideProps = async (context) => {
   const { locale } = context
@@ -412,16 +412,7 @@ export default function Watchlist({ selectedCurrency, account }) {
                               <table>
                                 <tbody>
                                   <tr>
-                                    <td style={{ padding: 0 }}>
-                                      {a?.info && (
-                                        <img
-                                          alt="nft preview"
-                                          width="40"
-                                          height="40"
-                                          src={nftUrl(a.info, 'thumbnail')}
-                                        />
-                                      )}
-                                    </td>
+                                    <td style={{ padding: 0 }}>{nftThumbnail(a.info)}</td>
                                     <td style={{ padding: '0 0 0 10px' }}>
                                       <b className="orange">{a.name}</b>
                                       <br />
@@ -459,9 +450,7 @@ export default function Watchlist({ selectedCurrency, account }) {
                         {nfts.map((a, i) => (
                           <tr key={i}>
                             <td style={{ padding: '20px 5px', verticalAlign: 'top' }} className="center">
-                              {a?.info && (
-                                <img alt="nft preview" width="30" height="30" src={nftUrl(a.info, 'thumbnail')} />
-                              )}
+                              {nftThumbnail(a.info)}
                               <br />
                               <br />
                               {i + 1}
