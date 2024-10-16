@@ -1,7 +1,7 @@
 import { axiosAdmin } from './axios'
 import { capitalize, shortNiceNumber } from './format'
 
-export const crawlerStatus = (crawler) => {
+export const crawlerStatus = (crawler, options) => {
   if (!crawler) return 'Not started'
   //“paused”, “queued”, “running”, “synced”
   const color = crawler.status === 'paused' ? 'red' : crawler.status === 'queued' ? 'orange' : 'green'
@@ -23,7 +23,7 @@ export const crawlerStatus = (crawler) => {
       <span className={color + (crawler.status === 'synced' ? ' bold' : '')}>{capitalize(crawler.status)}</span>
       {(crawler.status === 'queued' || crawler.status !== 'running') && (
         <>
-          <br />
+          {options?.inline ? ' ' : <br />}
           {crawler.status === 'queued' && '1-10 min'}
           {crawler.status === 'running' &&
             shortNiceNumber(crawler.lastLedgerIndex - crawler.currentLedgerIndex) + '  ledgers to load, 2-20 min'}
@@ -96,4 +96,12 @@ export const removeProAddress = async (id, callback) => {
       callback(json)
     }
   }
+}
+
+export const updateProAddress = async (id, data) => {
+  if (!id || !data) return
+  //{ settings: { escrowsExecution: false, nftokensOffersCancellation: true }}
+  await axiosAdmin.put('user/address/' + id, data).catch((error) => {
+    console.log(error)
+  })
 }

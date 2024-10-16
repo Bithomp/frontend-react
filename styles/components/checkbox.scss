@@ -51,5 +51,9 @@
         display: block;
       }
     }
+    &:disabled ~ .checkmark {
+      background-color: #ccc;
+      cursor: not-allowed;
+    }
   }
 }

@@ -9,15 +9,16 @@ import { axiosAdmin } from '../../../utils/axios'
 
 import SEO from '../../../components/SEO'
 import AddressInput from '../../../components/UI/AddressInput'
-import { encode, useWidth, subscriptionExpired } from '../../../utils'
-import { removeProAddress, activateAddressCrawler, crawlerStatus } from '../../../utils/pro'
+import { encode, useWidth, subscriptionExpired, xahauNetwork } from '../../../utils'
+import { removeProAddress, activateAddressCrawler, crawlerStatus, updateProAddress } from '../../../utils/pro'
 import FormInput from '../../../components/UI/FormInput'
-import { addressLink, fullDateAndTime } from '../../../utils/format'
+import { addressLink } from '../../../utils/format'
 import Image from 'next/image'
 
 import { MdDelete } from 'react-icons/md'
 import Link from 'next/link'
 import ProTabs from '../../../components/Tabs/ProTabs'
+import CheckBox from '../../../components/UI/CheckBox'
 
 export const getServerSideProps = async (context) => {
   const { locale } = context
@@ -29,7 +30,48 @@ export const getServerSideProps = async (context) => {
   }
 }
 
-const xamanImg = '/images/xaman.png'
+const SettingsCheckBoxes = ({ a, mobile }) => {
+  let styles = {}
+  if (mobile) {
+    styles = { ...styles, lineHeight: '1.8em', fontSize: '1.1em' }
+  }
+
+  const [escrowsExecution, setEscrowsExecution] = useState(a.settings?.escrowsExecution)
+  const [nftokensOffersCancellation, setNftokensOffersCancellation] = useState(a.settings?.nftokensOffersCancellation)
+
+  return (
+    <>
+      <CheckBox
+        checked={subscriptionExpired ? false : escrowsExecution}
+        setChecked={() => {
+          updateProAddress(a.id, {
+            settings: { escrowsExecution: !escrowsExecution }
+          })
+          setEscrowsExecution(!escrowsExecution)
+        }}
+        style={{ ...styles, marginTop: 0 }}
+        disabled={subscriptionExpired}
+      >
+        {mobile ? 'Auto Escrow Execution' : 'Execute Escrows'}
+      </CheckBox>
+      {!xahauNetwork && (
+        <CheckBox
+          checked={subscriptionExpired ? false : nftokensOffersCancellation}
+          setChecked={() => {
+            updateProAddress(a.id, {
+              settings: { nftokensOffersCancellation: !nftokensOffersCancellation }
+            })
+            setNftokensOffersCancellation(!nftokensOffersCancellation)
+          }}
+          style={{ ...styles, marginTop: 10 }}
+          disabled={subscriptionExpired}
+        >
+          {mobile ? 'Auto Cancelation of Expired NFT offers' : 'Cancel Expired NFT Offers'}
+        </CheckBox>
+      )}
+    </>
+  )
+}
 
 export default function Pro({ account, setAccount, setSignRequest, refreshPage }) {
   const router = useRouter()
@@ -214,12 +256,20 @@ export default function Pro({ account, setAccount, setSignRequest, refreshPage }
 
         <h4 className="center">Verified addresses</h4>
         <div>
-          View and Export your personal historical balance changes.
-          <br />
-          {/*
-            - Auto cancelation of expired NFT offers
-            <br />- Auto execution of time based escrows
-            */}
+          Pro accounts can use the following features:
+          <ul>
+            <li>View and Export your personal historical balance changes</li>
+            <li>
+              Auto execution of time based escrows
+              <br />
+              (that you created or that have your address as a destination)
+            </li>
+            <li>
+              Auto cancelation of expired NFT offers
+              <br />
+              (offers that you created and offers from others for NFTs you own)
+            </li>
+          </ul>
         </div>
         <br />
 
@@ -231,8 +281,8 @@ export default function Pro({ account, setAccount, setSignRequest, refreshPage }
                   <tr>
                     <th className="center">#</th>
                     <th className="left">Address</th>
-                    <th className="right">Data analytics</th>
-                    <th>Status</th>
+                    <th className="right">Balance history</th>
+                    <th className="left">Bot settings</th>
                     <th className="center">Remove</th>
                   </tr>
                 </thead>
@@ -264,7 +314,6 @@ export default function Pro({ account, setAccount, setSignRequest, refreshPage }
                                     <a
                                       onClick={() =>
                                         setSignRequest({
-                                          //wallet: 'xumm',
                                           action: 'setAvatar',
                                           request: {
                                             TransactionType: 'AccountSet',
@@ -284,13 +333,20 @@ export default function Pro({ account, setAccount, setSignRequest, refreshPage }
                               </tbody>
                             </table>
                           </td>
-                          <td className="right">{addressButtons(a)}</td>
-                          <td>{crawlerStatus(a.crawler)}</td>
+                          <td className="right">
+                            {crawlerStatus(a.crawler)}
+                            <div style={{ height: 5, width: '100%' }}></div>
+                            {addressButtons(a)}
+                          </td>
+                          <td className="left">
+                            <SettingsCheckBoxes a={a} />
+                          </td>
                           <td className="center red">
                             <MdDelete
                               onClick={() => {
                                 removeProAddress(a.id, afterVerifiedAddressesUpdate)
                               }}
+                              style={{ fontSize: '1.4em' }}
                             />
                           </td>
                         </tr>
@@ -327,15 +383,17 @@ export default function Pro({ account, setAccount, setSignRequest, refreshPage }
                             <p>
                               Address: <b className="orange">{a.name}</b> - {addressLink(a.address, { short: true })}
                             </p>
-                            <p>Status: {crawlerStatus(a.crawler)}</p>
-                            <p>Registered: {fullDateAndTime(a.createdAt)}</p>
+                            <p>Status: {crawlerStatus(a.crawler, { inline: true })}</p>
+                            <p>
+                              <SettingsCheckBoxes a={a} mobile={true} />
+                            </p>
                             <p>
                               {addressButtons(a, { mobile: true })}
-                              <button
-                                className="button-action narrow thin"
+                              <br />
+                              <br />
+                              <a
                                 onClick={() =>
                                   setSignRequest({
-                                    wallet: 'xumm',
                                     action: 'setAvatar',
                                     request: {
                                       TransactionType: 'AccountSet',
@@ -348,19 +406,17 @@ export default function Pro({ account, setAccount, setSignRequest, refreshPage }
                                   })
                                 }
                               >
-                                Set Avatar{' '}
-                                <Image src={xamanImg} className="xaman-logo" alt="xaman logo" height={24} width={24} />
-                              </button>
-                              <br />
-                              <br />
-                              <button
-                                className="button-action narrow thin"
+                                Set Avatar
+                              </a>
+                              ,{' '}
+                              <a
+                                className="red"
                                 onClick={() => {
-                                  removeProAddress(a.id, afterAddressRemoved)
+                                  removeProAddress(a.id, afterVerifiedAddressesUpdate)
                                 }}
                               >
                                 Remove
-                              </button>
+                              </a>
                             </p>
                           </td>
                         </tr>
@@ -423,7 +479,6 @@ export default function Pro({ account, setAccount, setSignRequest, refreshPage }
                       />
                     </span>
                   </div>
-                  <br />
                   <br />
                   <center>
                     <button

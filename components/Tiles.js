@@ -10,18 +10,23 @@ import NftImageOrVideo from './NftImageOrVideo'
 import AgeCheck from './UI/AgeCheck'
 
 const addressName = (details, name) => {
-  if (!details) return ""
+  if (!details) return ''
   const { username, service } = details
-  let label = ""
+  let label = ''
   if (service) {
     label = service
   } else if (username) {
     label = username
   }
   if (label) {
-    return <><br />{name}: {label}</>
+    return (
+      <>
+        <br />
+        {name}: {label}
+      </>
+    )
   }
-  return ""
+  return ''
 }
 
 export default function Tiles({ nftList, type = 'name', convertCurrency, account }) {
@@ -47,26 +52,30 @@ export default function Tiles({ nftList, type = 'name', convertCurrency, account
     }
   */
 
-  const saleData = sellOffers => {
-    if (!sellOffers) return ""
-    const best = bestNftOffer(sellOffers, account, 'sell')
+  const saleData = (sellOffers) => {
+    if (!sellOffers) return ''
+    const best = bestNftOffer(sellOffers, account?.address, 'sell')
     if (best) {
       if (mpUrl(best)) {
-        return <>
-          {amountFormat(best.amount)}
-          {!partnerMarketplaces[best?.destination] && <>
-            <br />
-            {t("nfts.on-service", { service: best.destinationDetails.service })}
-          </>}
-        </>
+        return (
+          <>
+            {amountFormat(best.amount)}
+            {!partnerMarketplaces[best?.destination] && (
+              <>
+                <br />
+                {t('nfts.on-service', { service: best.destinationDetails.service })}
+              </>
+            )}
+          </>
+        )
       } else {
         return amountFormat(best.amount)
       }
     }
-    return t("table.text.private-offer") //shouldn't be the case
+    return t('table.text.private-offer') //shouldn't be the case
   }
 
-  const needAgeCheck = nft => {
+  const needAgeCheck = (nft) => {
     const isOver18 = localStorage.getItem('isOver18')
     return !isOver18 && isNftExplicit(nft)
   }
@@ -80,90 +89,106 @@ export default function Tiles({ nftList, type = 'name', convertCurrency, account
     router.push('/nft/' + nft.nftokenID)
   }
 
-  if (type === "name" || type === 'onSale') {
-    return <div className='tiles'>
-      <div className="grid">
-        <ul className="hexGrid">
-          {nftList[0] && nftList.map((nft, i) =>
-            <li className="hex" key={i}>
-              <div className="hexIn">
-                <Link
-                  href={needAgeCheck(nft) ? "#" : "/nft/" + nft.nftokenID}
-                  className="hexLink"
-                  onClick={(e) => clickOnTile(e, nft)}
-                >
-                  <NftImageOrVideo nft={nft} />
-                  <div className="index">{i + 1}</div>
-                  <div className='title'></div>
+  if (type === 'name' || type === 'onSale') {
+    return (
+      <div className="tiles">
+        <div className="grid">
+          <ul className="hexGrid">
+            {nftList[0] &&
+              nftList.map((nft, i) => (
+                <li className="hex" key={i}>
+                  <div className="hexIn">
+                    <Link
+                      href={needAgeCheck(nft) ? '#' : '/nft/' + nft.nftokenID}
+                      className="hexLink"
+                      onClick={(e) => clickOnTile(e, nft)}
+                    >
+                      <NftImageOrVideo nft={nft} />
+                      <div className="index">{i + 1}</div>
+                      <div className="title"></div>
 
-                  <div className='title-text'>
-                    {type === 'name' ?
-                      nftName(nft, { maxLength: 18 })
-                      :
-                      saleData(nft.sellOffers)
-                    }
+                      <div className="title-text">
+                        {type === 'name' ? nftName(nft, { maxLength: 18 }) : saleData(nft.sellOffers)}
+                      </div>
+                      <div className="title-full">
+                        {nftName(nft) ? (
+                          <>
+                            {t('table.name')}: {nftName(nft)}
+                            <br />
+                          </>
+                        ) : (
+                          ''
+                        )}
+                        {!xahauNetwork && (
+                          <>
+                            {t('table.serial')}: {nft.sequence}
+                            <br />
+                            {t('table.taxon')}: {nft.nftokenTaxon}
+                          </>
+                        )}
+                        {addressName(nft.issuerDetails, t('table.issuer'))}
+                        {addressName(nft.ownerDetails, t('table.owner'))}
+                      </div>
+                    </Link>
                   </div>
-                  <div className='title-full'>
-                    {nftName(nft) ? <>{t("table.name")}: {nftName(nft)}<br /></> : ""}
-                    {!xahauNetwork &&
-                      <>
-                        {t("table.serial")}: {nft.sequence}<br />
-                        {t("table.taxon")}: {nft.nftokenTaxon}
-                      </>
-                    }
-                    {addressName(nft.issuerDetails, t("table.issuer"))}
-                    {addressName(nft.ownerDetails, t("table.owner"))}
-                  </div>
-                </Link>
-              </div>
-            </li>
-          )}
-        </ul>
+                </li>
+              ))}
+          </ul>
+        </div>
+        {showAgeCheck && <AgeCheck setShowAgeCheck={setShowAgeCheck} />}
       </div>
-      {showAgeCheck && <AgeCheck setShowAgeCheck={setShowAgeCheck} />}
-    </div>
+    )
   }
 
   if (type === 'priceHigh' || type === 'priceLow' || type === 'soldNew' || type === 'soldOld') {
-    return <div className='tiles'>
-      <div className="grid">
-        <ul className="hexGrid">
-          {nftList?.length > 0 && nftList.map((nft, i) =>
-            <li className="hex" key={i}>
-              <div className="hexIn">
-                <Link
-                  href={needAgeCheck(nft.nftoken) ? "#" : "/nft/" + nft.nftoken.nftokenID}
-                  className="hexLink"
-                  onClick={(e) => clickOnTile(e, nft.nftoken)}
-                >
-                  <NftImageOrVideo nft={nft.nftoken} />
-                  <div className="index">{i + 1}</div>
-                  <div className='title'></div>
-                  <div className='title-text'>
-                    {convertedAmount(nft, convertCurrency, { short: true }) || amountFormat(nft.amount)}
-                    <br />
-                    {timeOrDate(nft.acceptedAt)}
-                  </div>
-                  <div className='title-full'>
-                    {nftName(nft.nftoken) ? <>{t("table.name")}: {nftName(nft.nftoken, { maxLength: 18 })}</> : ""}
-                    {addressName(nft.nftoken?.issuerDetails, t("table.issuer"))}
-                    <br />
-                    {t("table.price")}: {amountFormat(nft.amount)}
-                    {nft.marketplace &&
-                      <>
+    return (
+      <div className="tiles">
+        <div className="grid">
+          <ul className="hexGrid">
+            {nftList?.length > 0 &&
+              nftList.map((nft, i) => (
+                <li className="hex" key={i}>
+                  <div className="hexIn">
+                    <Link
+                      href={needAgeCheck(nft.nftoken) ? '#' : '/nft/' + nft.nftoken.nftokenID}
+                      className="hexLink"
+                      onClick={(e) => clickOnTile(e, nft.nftoken)}
+                    >
+                      <NftImageOrVideo nft={nft.nftoken} />
+                      <div className="index">{i + 1}</div>
+                      <div className="title"></div>
+                      <div className="title-text">
+                        {convertedAmount(nft, convertCurrency, { short: true }) || amountFormat(nft.amount)}
                         <br />
-                        {t("table.marketplace")}: {nft.marketplace}
-                      </>
-                    }
+                        {timeOrDate(nft.acceptedAt)}
+                      </div>
+                      <div className="title-full">
+                        {nftName(nft.nftoken) ? (
+                          <>
+                            {t('table.name')}: {nftName(nft.nftoken, { maxLength: 18 })}
+                          </>
+                        ) : (
+                          ''
+                        )}
+                        {addressName(nft.nftoken?.issuerDetails, t('table.issuer'))}
+                        <br />
+                        {t('table.price')}: {amountFormat(nft.amount)}
+                        {nft.marketplace && (
+                          <>
+                            <br />
+                            {t('table.marketplace')}: {nft.marketplace}
+                          </>
+                        )}
+                      </div>
+                    </Link>
                   </div>
-                </Link>
-              </div>
-            </li>
-          )}
-        </ul>
+                </li>
+              ))}
+          </ul>
+        </div>
+        {showAgeCheck && <AgeCheck setShowAgeCheck={setShowAgeCheck} />}
       </div>
-      {showAgeCheck && <AgeCheck setShowAgeCheck={setShowAgeCheck} />}
-    </div>
+    )
   }
-  return ""
+  return ''
 }

@@ -17,6 +17,7 @@ import Link from 'next/link'
 import axios from 'axios'
 import Image from 'next/image'
 import { fetchCurrentFiatRate } from '../../utils/common'
+import { nftPriceData, nftUrl } from '../../utils/nft'
 
 export const getServerSideProps = async (context) => {
   const { locale } = context
@@ -28,7 +29,7 @@ export const getServerSideProps = async (context) => {
   }
 }
 
-export default function Watchlist({ selectedCurrency }) {
+export default function Watchlist({ selectedCurrency, account }) {
   const { t, i18n } = useTranslation()
   const router = useRouter()
   const width = useWidth()
@@ -96,10 +97,10 @@ export default function Watchlist({ selectedCurrency }) {
       setData(response.data)
       let addressList = response.data.favorites.filter((a) => a.type === 'address')
       setAddresses(addressList)
-      getEntityInfo(addressList, 'address')
+      getAddressesInfo(addressList)
       let nftList = response.data.favorites.filter((a) => a.type === 'nftoken' || a.type === 'uritoken')
       setNfts(nftList)
-      getEntityInfo(nftList, 'nft')
+      getNftsInfo(nftList)
     }
     setLoading(false)
   }
@@ -164,11 +165,11 @@ export default function Watchlist({ selectedCurrency }) {
     }
   }
 
-  const getEntityInfo = async (list, type) => {
+  const getAddressesInfo = async (list) => {
     if (list?.length > 0) {
       await Promise.all(
         list.map(async (a) => {
-          const url = type === 'address' ? '/v2/address/' + a.entity + '?&ledgerInfo=true' : '/v2/nft/' + a.entity
+          const url = 'v2/address/' + a.entity + '?&ledgerInfo=true'
           const response = await axios(url).catch((error) => {
             console.log(error)
           })
@@ -182,24 +183,49 @@ export default function Watchlist({ selectedCurrency }) {
           }
         })
       )
-      if (type === 'address') {
-        setAddresses(list)
-      } else if (type === 'nft') {
-        setNfts(list)
-      }
+      setAddresses(list)
     }
   }
 
-  const lastActive = (ledgerInfo) => {
+  const getNftsInfo = async (list) => {
+    if (list?.length > 0) {
+      let nftList = list.map((a) => a.entity)
+      const url = 'v2/nfts?ids=' + nftList + '&uri=true&metadata=true&sellOffers=true' //&buyOffers=true&offersValidate=true
+      const response = await axios(url).catch((error) => {
+        console.log(error)
+      })
+      if (response?.data?.nfts) {
+        list = list.map((l) => {
+          const nft = response.data.nfts.find((n) => n.nftokenID === l.entity)
+          if (nft) {
+            l.info = nft
+          }
+          return l
+        })
+      }
+      setNfts(list)
+    }
+  }
+
+  const lastTx = (ledgerInfo, type) => {
+    if (!ledgerInfo) {
+      return 'Loading...'
+    }
+
+    if (ledgerInfo.previousTxnID === ledgerInfo.lastSubmittedTxHash && type === 'previousTxn') {
+      return 'The last signed tx'
+    }
+
     if (ledgerInfo?.activated) {
       return (
         <>
-          {ledgerInfo.lastSubmittedAt && <>{timeFromNow(ledgerInfo.lastSubmittedAt, i18n)}</>}
-          {ledgerInfo.lastSubmittedTxHash && <> {txIdLink(ledgerInfo.lastSubmittedTxHash, 0)}</>}
+          {ledgerInfo[type + 'At'] && <>{timeFromNow(ledgerInfo[type + 'At'], i18n)}</>}
+          {ledgerInfo[type + 'TxHash'] && <> {txIdLink(ledgerInfo[type + 'TxHash'], 0)}</>}
+          {ledgerInfo[type + 'ID'] && <> {txIdLink(ledgerInfo[type + 'ID'], 0)}</>}
         </>
       )
     }
-    return 'Not activated'
+    return 'Not found'
   }
 
   return (
@@ -211,8 +237,13 @@ export default function Watchlist({ selectedCurrency }) {
         <AdminTabs name="mainTabs" tab="watchlist" />
 
         <p>
-          You can add up to 20 favorite addresses or NFTs to the watchlist. If you want to add more, please subscribe to
-          the <Link href="/admin/subscriptions">Bithomp Pro</Link>.
+          You can add up to {subscriptionExpired ? 20 : 100} favorite addresses or NFTs to the watchlist.
+          {subscriptionExpired && (
+            <>
+              {' '}
+              If you want to add more, please subscribe to the <Link href="/admin/subscriptions">Bithomp Pro</Link>.
+            </>
+          )}
         </p>
 
         <div>
@@ -227,7 +258,8 @@ export default function Watchlist({ selectedCurrency }) {
                       <th className="center">#</th>
                       <th className="left">Address</th>
                       <th className="right">Balance</th>
-                      <th className="right">Last active</th>
+                      <th className="right">Last Signed Tx</th>
+                      <th className="right">Last Affecting Tx</th>
                       <th className="center">Remove</th>
                     </tr>
                   </thead>
@@ -245,8 +277,8 @@ export default function Watchlist({ selectedCurrency }) {
                                       <Image
                                         alt="avatar"
                                         src={'https://cdn.bithomp.com/avatar/' + a.entity}
-                                        width={width < 440 ? 30 : 40}
-                                        height={width < 440 ? 30 : 40}
+                                        width="40"
+                                        height="40"
                                       />
                                     </td>
                                     <td style={{ padding: '0 0 0 10px' }}>
@@ -262,14 +294,16 @@ export default function Watchlist({ selectedCurrency }) {
                               <b className="green">
                                 {amountFormat(a.info?.ledgerInfo?.balance, { maxFractionDigits: 2 })}
                               </b>
-                              <br />≈{' '}
+                              <br />
                               {nativeCurrencyToFiat({
                                 amount: a.info?.ledgerInfo?.balance,
                                 selectedCurrency,
                                 fiatRate
                               })}
                             </td>
-                            <td className="right">{lastActive(a.info?.ledgerInfo)}</td>
+                            <td className="right">{lastTx(a.info?.ledgerInfo, 'lastSubmitted')}</td>
+                            <td className="right">{lastTx(a.info?.ledgerInfo, 'previousTxn')}</td>
+
                             <td className="center red">
                               <MdDelete
                                 onClick={() => {
@@ -315,15 +349,14 @@ export default function Watchlist({ selectedCurrency }) {
                                 Balance:{' '}
                                 <b className="green">
                                   {amountFormat(a.info?.ledgerInfo?.balance, { maxFractionDigits: 2 })}
-                                </b>{' '}
-                                ≈{' '}
+                                </b>
                                 {nativeCurrencyToFiat({
                                   amount: a.info?.ledgerInfo?.balance,
                                   selectedCurrency,
                                   fiatRate
                                 })}
                               </p>
-                              <p>Last active: {lastActive(a.info?.ledgerInfo)}</p>
+                              <p>Last signed Tx: {lastTx(a.info?.ledgerInfo, 'lastSubmitted')}</p>
                               <p>
                                 <a
                                   onClick={() => {
@@ -341,7 +374,7 @@ export default function Watchlist({ selectedCurrency }) {
                     ) : (
                       <tr>
                         <td colSpan="100" className="center">
-                          {loadingVerifiedAddresses ? 'Loading data...' : 'You do not have verified addresses yet.'}
+                          {loading ? 'Loading data...' : 'You have not added addresses yet.'}
                         </td>
                       </tr>
                     )}
@@ -356,8 +389,8 @@ export default function Watchlist({ selectedCurrency }) {
                   <thead>
                     <tr>
                       <th className="center">#</th>
-                      <th className="left">Name</th>
                       <th className="left">NFT</th>
+                      <th className="right">Price</th>
                       <th className="center">Remove</th>
                     </tr>
                   </thead>
@@ -368,9 +401,29 @@ export default function Watchlist({ selectedCurrency }) {
                           <tr key={i}>
                             <td className="center">{i + 1}</td>
                             <td className="left">
-                              <b className="orange">{a.name}</b>
+                              <table>
+                                <tbody>
+                                  <tr>
+                                    <td style={{ padding: 0 }}>
+                                      {a?.info && (
+                                        <img
+                                          alt="nft preview"
+                                          width="40"
+                                          height="40"
+                                          src={nftUrl(a.info, 'thumbnail')}
+                                        />
+                                      )}
+                                    </td>
+                                    <td style={{ padding: '0 0 0 10px' }}>
+                                      <b className="orange">{a.name}</b>
+                                      <br />
+                                      {nftIdLink(a.entity)}
+                                    </td>
+                                  </tr>
+                                </tbody>
+                              </table>
                             </td>
-                            <td className="left">{nftIdLink(a.entity)}</td>
+                            <td className="right">{nftPriceData(t, a.info?.sellOffers, account?.address)}</td>
                             <td className="center red">
                               <MdDelete
                                 onClick={() => {
@@ -398,6 +451,11 @@ export default function Watchlist({ selectedCurrency }) {
                         {nfts.map((a, i) => (
                           <tr key={i}>
                             <td style={{ padding: '20px 5px', verticalAlign: 'top' }} className="center">
+                              {a?.info && (
+                                <img alt="nft preview" width="30" height="30" src={nftUrl(a.info, 'thumbnail')} />
+                              )}
+                              <br />
+                              <br />
                               {i + 1}
                             </td>
                             <td>
@@ -405,6 +463,7 @@ export default function Watchlist({ selectedCurrency }) {
                                 Name: <b className="orange">{a.name}</b>
                               </p>
                               <p>NFT: {nftIdLink(a.entity)}</p>
+                              <p>Price: {nftPriceData(t, a.info?.sellOffers, account?.address)}</p>
                               <p>
                                 <a
                                   onClick={() => {
@@ -422,7 +481,7 @@ export default function Watchlist({ selectedCurrency }) {
                     ) : (
                       <tr>
                         <td colSpan="100" className="center">
-                          {loadingVerifiedAddresses ? 'Loading data...' : 'You do not have verified addresses yet.'}
+                          {loading ? 'Loading data...' : 'You have not added NFTs yet.'}
                         </td>
                       </tr>
                     )}

@@ -17,7 +17,7 @@ momentDurationFormatSetup(moment)
 export const nativeCurrencyToFiat = (params) => {
   const { amount, selectedCurrency, fiatRate } = params
   if (!amount || !selectedCurrency || !fiatRate) return ''
-  return shortNiceNumber((amount / 1000000) * fiatRate, 2, 3, selectedCurrency)
+  return ' ≈ ' + shortNiceNumber((amount / 1000000) * fiatRate, 2, 3, selectedCurrency)
 }
 
 export const acceptNftBuyOfferButton = (t, setSignRequest, offer) => {

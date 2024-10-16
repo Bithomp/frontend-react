@@ -15,24 +15,8 @@ import {
   nativeCurrency,
   subscriptionExpired
 } from '../utils'
-import {
-  isValidTaxon,
-  nftThumbnail,
-  nftNameLink,
-  bestNftOffer,
-  mpUrl,
-  partnerMarketplaces,
-  ipfsUrl
-} from '../utils/nft'
-import {
-  nftLink,
-  usernameOrAddress,
-  amountFormat,
-  timeOrDate,
-  fullDateAndTime,
-  niceCurrency,
-  capitalize
-} from '../utils/format'
+import { isValidTaxon, nftThumbnail, nftNameLink, ipfsUrl, nftPriceData } from '../utils/nft'
+import { nftLink, usernameOrAddress, timeOrDate, fullDateAndTime, niceCurrency, capitalize } from '../utils/format'
 
 import SEO from './SEO'
 import SearchBlock from './Layout/SearchBlock'
@@ -646,22 +630,6 @@ export default function NftsComponent({
       },
   */
 
-  const priceData = (sellOffers) => {
-    if (!sellOffers) return ''
-    const best = bestNftOffer(sellOffers, account, 'sell')
-    if (best) {
-      if (mpUrl(best) && !partnerMarketplaces[best?.destination]) {
-        return t('nfts.amount-on-service', {
-          amount: amountFormat(best.amount, { tooltip: 'right' }),
-          service: best.destinationDetails.service
-        })
-      } else {
-        return amountFormat(best.amount, { tooltip: 'right' })
-      }
-    }
-    return t('table.text.private-offer') //shouldn't be the case
-  }
-
   return (
     <>
       {nftExplorer ? (
@@ -967,7 +935,9 @@ export default function NftsComponent({
                                   {!id && !owner && (
                                     <td className="right">{nftLink(nft, 'owner', { address: 'short' })}</td>
                                   )}
-                                  {listTab === 'onSale' && <td className="right">{priceData(nft.sellOffers)}</td>}
+                                  {listTab === 'onSale' && (
+                                    <td className="right">{nftPriceData(t, nft.sellOffers, account?.address)}</td>
+                                  )}
                                 </tr>
                               ))
                             ) : (
@@ -1034,7 +1004,7 @@ export default function NftsComponent({
                                     )}
                                     {listTab === 'onSale' && (
                                       <>
-                                        {t('table.price')}: {priceData(nft.sellOffers)}
+                                        {t('table.price')}: {nftPriceData(t, nft.sellOffers, account?.address)}
                                         <br />
                                       </>
                                     )}

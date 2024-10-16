@@ -3,6 +3,7 @@ import { stripText, shortName } from '.'
 
 import Link from 'next/link'
 import LinkIcon from '../public/images/link.svg'
+import { amountFormat } from './format'
 
 //partner market places (destinations)
 export const partnerMarketplaces = {
@@ -466,4 +467,20 @@ export const nftImageStyle = (nft, style = {}) => {
       "url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADoAAAAMAgMAAABO9kYLAAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAACVBMVEUAAAAAscH///9gi2cVAAAAAXRSTlMAQObYZgAAAAFiS0dEAmYLfGQAAAAJb0ZGcwAAAAQAAAAMAO0Ou9QAAAAJdnBBZwAAAE0AAAAaABY5XmAAAABCSURBVAjXdc6xEYAwDATBI1AHcj9fwhOo/1ZsEQIKd+aCw3iVCLJKYerjW2Tb5CXsyadvx2QHbUbjXz8/lEycn5c3880aCfVVMdcAAAAASUVORK5CYII=')"
   }
   return style
+}
+
+export const nftPriceData = (t, sellOffers, loggedInAddress) => {
+  if (!sellOffers) return ''
+  const best = bestNftOffer(sellOffers, loggedInAddress, 'sell')
+  if (best) {
+    if (mpUrl(best) && !partnerMarketplaces[best?.destination]) {
+      return t('nfts.amount-on-service', {
+        amount: amountFormat(best.amount, { tooltip: 'right' }),
+        service: best.destinationDetails.service
+      })
+    } else {
+      return amountFormat(best.amount, { tooltip: 'right' })
+    }
+  }
+  return t('table.text.private-offer') //shouldn't be the case
 }
