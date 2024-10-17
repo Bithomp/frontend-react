@@ -2,7 +2,7 @@ import { useTranslation } from 'next-i18next'
 import { isAddressValid } from '../../utils'
 import AddressInput from '../UI/AddressInput'
 
-export default function SetDomain({ setSignRequest, signRequest, setStatus, setFormError }) {
+export default function NftTransfer({ setSignRequest, signRequest, setStatus, setFormError }) {
   const { t } = useTranslation()
 
   const onAddressChange = (value) => {
