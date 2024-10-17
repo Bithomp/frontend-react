@@ -10,7 +10,6 @@ import { useIsMobile } from '../utils/mobile'
 import {
   server,
   devNet,
-  typeNumberOnly,
   delay,
   encode,
   networkId,
@@ -22,17 +21,17 @@ import {
   webSiteName,
   xahauNetwork
 } from '../utils'
-import { amountFormat, capitalize, duration } from '../utils/format'
+import { capitalize, duration } from '../utils/format'
 import { payloadXamanPost, xamanWsConnect, xamanCancel, xamanGetSignedData } from '../utils/xaman'
 
 import XamanQr from './Xaman/Qr'
 import CheckBox from './UI/CheckBox'
-import ExpirationSelect from './UI/ExpirationSelect'
 import TargetTableSelect from './UI/TargetTableSelect'
 import { submitProAddressToVerify } from '../utils/pro'
 import { setAvatar } from '../utils/blobVerifications'
 import SetAvatar from './SignForms/SetAvatar'
 import SetDomain from './SignForms/SetDomain'
+import NFTokenCreateOffer from './SignForms/NFTokenCreateOffer'
 
 const qr = '/images/qr.gif'
 const ledger = '/images/wallets/ledger-large.svg'
@@ -73,8 +72,6 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
   const [rewardRate, setRewardRate] = useState()
   const [rewardDelay, setRewardDelay] = useState()
 
-  const [privateOffer, setPrivateOffer] = useState(false)
-
   const [xamanUserToken, setXummUserToken] = useState(null)
 
   useEffect(() => {
@@ -84,8 +81,8 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
   useEffect(() => {
     if (!signRequest) return
     //deeplink doesnt work on mobiles when it's not in the onClick event
-    if (!isMobile && signRequest?.wallet === 'xumm') {
-      XummTxSend()
+    if (!isMobile) {
+      txSend()
     }
     setHookData({})
     setSeatData({})
@@ -118,9 +115,22 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
     }
   }
 
-  const XummTxSend = () => {
+  const txSend = () => {
+    if (signRequest?.wallet === 'xumm') {
+      xamanTxSend()
+    } else if (signRequest?.wallet === 'gemwallet') {
+      gemwalletTxSend()
+    }
+  }
+
+  const gemwalletTxSend = () => {
+    alert('Gemwallet is not available yet')
+  }
+
+  const xamanTxSend = () => {
     //default login
     let tx = { TransactionType: 'SignIn' }
+
     if (signRequest.request) {
       tx = signRequest.request
     }
@@ -153,7 +163,7 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
         setScreen('NFTokenCreateOffer')
         return
       } else {
-        if (privateOffer && !signRequest.request?.Destination) {
+        if (signRequest.privateOffer && !signRequest.request?.Destination) {
           setStatus(t('form.error.address-empty'))
           setFormError(true)
           return
@@ -601,27 +611,6 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
     margin: '0 10px'
   }
 
-  const onPrivateOfferToggle = () => {
-    if (!privateOffer) {
-      let newRequest = signRequest
-      if (newRequest.request.Destination) {
-        delete newRequest.request.Destination
-      }
-      setSignRequest(newRequest)
-      setStatus('')
-      setFormError(false)
-    }
-    setPrivateOffer(!privateOffer)
-  }
-
-  const onAmountChange = (e) => {
-    let newRequest = signRequest
-    newRequest.request.Amount = (e.target.value * 1000000).toString()
-    setSignRequest(newRequest)
-    setFormError(false)
-    setStatus('')
-  }
-
   const onRewardDelayChange = (e) => {
     setStatus('')
     let newRequest = signRequest
@@ -690,16 +679,6 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
     } else {
       setStatus('Rate should be a number from 0 to 1')
       setAgreedToRisks(false)
-    }
-  }
-
-  const onExpirationChange = (daysCount) => {
-    if (daysCount) {
-      let newRequest = signRequest
-      let myDate = new Date()
-      myDate.setDate(myDate.getDate() + daysCount)
-      newRequest.request.Expiration = Math.floor(myDate / 1000) - 946684800 //ripple epoch
-      setSignRequest(newRequest)
     }
   }
 
@@ -820,90 +799,12 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
             </div>
 
             {screen === 'NFTokenCreateOffer' && (
-              <>
-                {signRequest.broker?.nftPrice ? (
-                  <>
-                    <span
-                      className="left whole"
-                      style={{ margin: '10px auto', fontSize: '14px', width: '360px', maxWidth: 'calc(100% - 80px)' }}
-                    >
-                      {t('signin.nft-offer.counteroffer')}
-                    </span>
-                    <div
-                      style={{ textAlign: 'left', margin: '10px auto', width: '360px', maxWidth: 'calc(100% - 80px)' }}
-                    >
-                      <table style={{ width: '100%' }}>
-                        <tbody>
-                          <tr>
-                            <td>{t('signin.nft-offer.nft-price')}</td>
-                            <td className="right"> {amountFormat(signRequest.broker.nftPrice)}</td>
-                          </tr>
-                          <tr>
-                            <td>
-                              {t('signin.nft-offer.fee', {
-                                serviceName: signRequest.broker?.name,
-                                feeText: signRequest.broker?.feeText
-                              })}
-                            </td>
-                            <td className="right"> {amountFormat(signRequest.broker?.fee, { precise: true })} </td>
-                          </tr>
-                          <tr>
-                            <td>{t('signin.nft-offer.total')}</td>
-                            <td className="right">
-                              {' '}
-                              <b>{amountFormat(signRequest.request.Amount, { precise: true })}</b>
-                            </td>
-                          </tr>
-                        </tbody>
-                      </table>
-                    </div>
-                  </>
-                ) : (
-                  <div className="center">
-                    <br />
-                    <span className={xls35Sell ? 'halv xahOnly' : 'quarter xrpOnly'}>
-                      <span className="input-title">{t('signin.amount.set-price')}</span>
-                      <input
-                        placeholder={t('signin.amount.enter-amount')}
-                        onChange={onAmountChange}
-                        onKeyPress={typeNumberOnly}
-                        className="input-text"
-                        spellCheck="false"
-                        maxLength="35"
-                        min="0"
-                        type="text"
-                        inputMode="decimal"
-                      />
-                    </span>
-                    {!xls35Sell && (
-                      <span className="quarter">
-                        <span className="input-title">{t('signin.expiration')}</span>
-                        <ExpirationSelect onChange={onExpirationChange} />
-                      </span>
-                    )}
-                    {(signRequest.request.Flags === 1 || xls35Sell) && (
-                      <>
-                        <div className="terms-checkbox">
-                          <CheckBox checked={privateOffer} setChecked={onPrivateOfferToggle}>
-                            {t('table.text.private-offer')}
-                          </CheckBox>
-                        </div>
-                        {privateOffer && (
-                          <span className="halv">
-                            <span className="input-title">{t('table.destination')}</span>
-                            <input
-                              placeholder={t()}
-                              onChange={(e) => onAddressChange(e.target.value)}
-                              className="input-text"
-                              spellCheck="false"
-                            />
-                          </span>
-                        )}
-                      </>
-                    )}
-                  </div>
-                )}
-              </>
+              <NFTokenCreateOffer
+                signRequest={signRequest}
+                setSignRequest={setSignRequest}
+                setStatus={setStatus}
+                setFormError={setFormError}
+              />
             )}
 
             {screen === 'nftTransfer' && (
@@ -1117,7 +1018,7 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
             <button
               type="button"
               className="button-action"
-              onClick={XummTxSend}
+              onClick={xamanTxSend}
               style={buttonStyle}
               disabled={!agreedToRisks || formError}
             >
@@ -1134,7 +1035,7 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
                     alt="xaman"
                     className="signin-app-logo"
                     src="/images/wallets/xaman-large.svg"
-                    onClick={XummTxSend}
+                    onClick={xamanTxSend}
                     width={150}
                     height={24}
                   />
@@ -1173,7 +1074,7 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
                     )}
                     <br />
                     {showXamanQr ? (
-                      <XamanQr expiredQr={expiredQr} xamanQrSrc={xamanQrSrc} onReset={XummTxSend} status={status} />
+                      <XamanQr expiredQr={expiredQr} xamanQrSrc={xamanQrSrc} onReset={xamanTxSend} status={status} />
                     ) : (
                       <div className="orange bold center" style={{ margin: '20px' }}>
                         {awaiting && (
