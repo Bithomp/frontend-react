@@ -159,12 +159,14 @@ export default function Watchlist({ selectedCurrency, account, subscriptionExpir
 
   const removeEntity = async (id) => {
     if (!id) return
-    const response = await axiosAdmin.delete('user/favorite/' + id).catch((error) => {
+    await axiosAdmin.delete('user/favorite/' + id).catch((error) => {
       setErrorMessage(t(error.response?.data?.error || 'error.' + error.message))
     })
-    if (response?.data) {
-      getFavorites()
-    }
+    //find it in the addressList or nftlist and remove it
+    let addressList = addresses.filter((a) => a.id !== id)
+    setAddresses(addressList)
+    let nftList = nfts.filter((a) => a.id !== id)
+    setNfts(nftList)
   }
 
   const getAddressesInfo = async (list) => {
@@ -253,10 +255,9 @@ export default function Watchlist({ selectedCurrency, account, subscriptionExpir
         )}
 
         <div>
-          {data?.favorites?.length > 0 && (
+          {addresses?.length > 0 && (
             <>
               <h4 className="center">Address Watchlist</h4>
-
               {!width || width > 750 ? (
                 <table className="table-large no-hover">
                   <thead>
@@ -270,126 +271,107 @@ export default function Watchlist({ selectedCurrency, account, subscriptionExpir
                     </tr>
                   </thead>
                   <tbody>
-                    {addresses?.length > 0 ? (
-                      <>
-                        {addresses.map((a, i) => (
-                          <tr key={i}>
-                            <td className="center">{i + 1}</td>
-                            <td className="left">
-                              <table>
-                                <tbody>
-                                  <tr>
-                                    <td style={{ padding: 0 }}>
-                                      <Image
-                                        alt="avatar"
-                                        src={'https://cdn.bithomp.com/avatar/' + a.entity}
-                                        width="40"
-                                        height="40"
-                                      />
-                                    </td>
-                                    <td style={{ padding: '0 0 0 10px' }}>
-                                      <b className="orange">{a.name}</b>
-                                      <br />
-                                      {addressLink(a.entity, { short: true })}
-                                    </td>
-                                  </tr>
-                                </tbody>
-                              </table>
-                            </td>
-                            <td className="right">
-                              <b className="green">
-                                {amountFormat(a.info?.ledgerInfo?.balance, { maxFractionDigits: 2 })}
-                              </b>
-                              <br />
-                              {nativeCurrencyToFiat({
-                                amount: a.info?.ledgerInfo?.balance,
-                                selectedCurrency,
-                                fiatRate
-                              })}
-                            </td>
-                            <td className="right">{lastTx(a.info?.ledgerInfo, 'lastSubmitted')}</td>
-                            <td className="right">{lastTx(a.info?.ledgerInfo, 'previousTxn')}</td>
+                    {addresses.map((a, i) => (
+                      <tr key={i}>
+                        <td className="center">{i + 1}</td>
+                        <td className="left">
+                          <table>
+                            <tbody>
+                              <tr>
+                                <td style={{ padding: 0 }}>
+                                  <Image
+                                    alt="avatar"
+                                    src={'https://cdn.bithomp.com/avatar/' + a.entity}
+                                    width="40"
+                                    height="40"
+                                  />
+                                </td>
+                                <td style={{ padding: '0 0 0 10px' }}>
+                                  <b className="orange">{a.name}</b>
+                                  <br />
+                                  {addressLink(a.entity, { short: true })}
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </td>
+                        <td className="right">
+                          <b className="green">{amountFormat(a.info?.ledgerInfo?.balance, { maxFractionDigits: 2 })}</b>
+                          <br />
+                          {nativeCurrencyToFiat({
+                            amount: a.info?.ledgerInfo?.balance,
+                            selectedCurrency,
+                            fiatRate
+                          })}
+                        </td>
+                        <td className="right">{lastTx(a.info?.ledgerInfo, 'lastSubmitted')}</td>
+                        <td className="right">{lastTx(a.info?.ledgerInfo, 'previousTxn')}</td>
 
-                            <td className="center red">
-                              <MdDelete
-                                onClick={() => {
-                                  removeEntity(a.id)
-                                }}
-                              />
-                            </td>
-                          </tr>
-                        ))}
-                      </>
-                    ) : (
-                      <tr>
-                        <td colSpan="100" className="center">
-                          {loading ? 'Loading data...' : 'You have not added addresses yet.'}
+                        <td className="center red">
+                          <MdDelete
+                            onClick={() => {
+                              removeEntity(a.id)
+                            }}
+                          />
                         </td>
                       </tr>
-                    )}
+                    ))}
                   </tbody>
                 </table>
               ) : (
                 <table className="table-mobile">
                   <tbody>
-                    {addresses?.length > 0 ? (
-                      <>
-                        {addresses.map((a, i) => (
-                          <tr key={i}>
-                            <td style={{ padding: '20px 5px', verticalAlign: 'top' }} className="center">
-                              <Image
-                                alt="avatar"
-                                src={'https://cdn.bithomp.com/avatar/' + a.entity}
-                                width="30"
-                                height="30"
-                              />
-                              <br />
-                              <br />
-                              {i + 1}
-                            </td>
-                            <td>
-                              <p>
-                                Address: <b className="orange">{a.name}</b> - {addressLink(a.entity, { short: true })}
-                              </p>
-                              <p>
-                                Balance:{' '}
-                                <b className="green">
-                                  {amountFormat(a.info?.ledgerInfo?.balance, { maxFractionDigits: 2 })}
-                                </b>
-                                {nativeCurrencyToFiat({
-                                  amount: a.info?.ledgerInfo?.balance,
-                                  selectedCurrency,
-                                  fiatRate
-                                })}
-                              </p>
-                              <p>Last signed Tx: {lastTx(a.info?.ledgerInfo, 'lastSubmitted')}</p>
-                              <p>
-                                <a
-                                  onClick={() => {
-                                    removeEntity(a.id)
-                                  }}
-                                  className="red"
-                                >
-                                  Remove
-                                </a>
-                              </p>
-                            </td>
-                          </tr>
-                        ))}
-                      </>
-                    ) : (
-                      <tr>
-                        <td colSpan="100" className="center">
-                          {loading ? 'Loading data...' : 'You have not added addresses yet.'}
+                    {addresses.map((a, i) => (
+                      <tr key={i}>
+                        <td style={{ padding: '20px 5px', verticalAlign: 'top' }} className="center">
+                          <Image
+                            alt="avatar"
+                            src={'https://cdn.bithomp.com/avatar/' + a.entity}
+                            width="30"
+                            height="30"
+                          />
+                          <br />
+                          <br />
+                          {i + 1}
+                        </td>
+                        <td>
+                          <p>
+                            Address: <b className="orange">{a.name}</b> - {addressLink(a.entity, { short: true })}
+                          </p>
+                          <p>
+                            Balance:{' '}
+                            <b className="green">
+                              {amountFormat(a.info?.ledgerInfo?.balance, { maxFractionDigits: 2 })}
+                            </b>
+                            {nativeCurrencyToFiat({
+                              amount: a.info?.ledgerInfo?.balance,
+                              selectedCurrency,
+                              fiatRate
+                            })}
+                          </p>
+                          <p>Last signed Tx: {lastTx(a.info?.ledgerInfo, 'lastSubmitted')}</p>
+                          <p>
+                            <a
+                              onClick={() => {
+                                removeEntity(a.id)
+                              }}
+                              className="red"
+                            >
+                              Remove
+                            </a>
+                          </p>
                         </td>
                       </tr>
-                    )}
+                    ))}
                   </tbody>
                 </table>
               )}
+            </>
+          )}
 
+          {nfts?.length > 0 && (
+            <>
               <h4 className="center">NFT Watchlist</h4>
-
               {!width || width > 750 ? (
                 <table className="table-large no-hover">
                   <thead>
@@ -401,85 +383,65 @@ export default function Watchlist({ selectedCurrency, account, subscriptionExpir
                     </tr>
                   </thead>
                   <tbody>
-                    {nfts?.length > 0 ? (
-                      <>
-                        {nfts.map((a, i) => (
-                          <tr key={i}>
-                            <td className="center">{i + 1}</td>
-                            <td className="left">
-                              <table>
-                                <tbody>
-                                  <tr>
-                                    <td style={{ padding: 0 }}>{nftThumbnail(a.info)}</td>
-                                    <td style={{ padding: '0 0 0 10px' }}>
-                                      <b className="orange">{a.name}</b>
-                                      <br />
-                                      {nftIdLink(a.entity)}
-                                    </td>
-                                  </tr>
-                                </tbody>
-                              </table>
-                            </td>
-                            <td className="right">{nftPriceData(t, a.info?.sellOffers, account?.address)}</td>
-                            <td className="center red">
-                              <MdDelete
-                                onClick={() => {
-                                  removeEntity(a.id)
-                                }}
-                              />
-                            </td>
-                          </tr>
-                        ))}
-                      </>
-                    ) : (
-                      <tr>
-                        <td colSpan="100" className="center">
-                          {loading ? 'Loading data...' : 'You have not added NFTs yet.'}
+                    {nfts.map((a, i) => (
+                      <tr key={i}>
+                        <td className="center">{i + 1}</td>
+                        <td className="left">
+                          <table>
+                            <tbody>
+                              <tr>
+                                <td style={{ padding: 0 }}>{nftThumbnail(a.info)}</td>
+                                <td style={{ padding: '0 0 0 10px' }}>
+                                  <b className="orange">{a.name}</b>
+                                  <br />
+                                  {nftIdLink(a.entity)}
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </td>
+                        <td className="right">{nftPriceData(t, a.info?.sellOffers, account?.address)}</td>
+                        <td className="center red">
+                          <MdDelete
+                            onClick={() => {
+                              removeEntity(a.id)
+                            }}
+                          />
                         </td>
                       </tr>
-                    )}
+                    ))}
                   </tbody>
                 </table>
               ) : (
                 <table className="table-mobile">
                   <tbody>
-                    {nfts?.length > 0 ? (
-                      <>
-                        {nfts.map((a, i) => (
-                          <tr key={i}>
-                            <td style={{ padding: '20px 5px', verticalAlign: 'top' }} className="center">
-                              {nftThumbnail(a.info)}
-                              <br />
-                              <br />
-                              {i + 1}
-                            </td>
-                            <td>
-                              <p>
-                                Name: <b className="orange">{a.name}</b>
-                              </p>
-                              <p>NFT: {nftIdLink(a.entity)}</p>
-                              <p>Price: {nftPriceData(t, a.info?.sellOffers, account?.address)}</p>
-                              <p>
-                                <a
-                                  onClick={() => {
-                                    removeEntity(a.id)
-                                  }}
-                                  className="red"
-                                >
-                                  Remove
-                                </a>
-                              </p>
-                            </td>
-                          </tr>
-                        ))}
-                      </>
-                    ) : (
-                      <tr>
-                        <td colSpan="100" className="center">
-                          {loading ? 'Loading data...' : 'You have not added NFTs yet.'}
+                    {nfts.map((a, i) => (
+                      <tr key={i}>
+                        <td style={{ padding: '20px 5px', verticalAlign: 'top' }} className="center">
+                          {nftThumbnail(a.info)}
+                          <br />
+                          <br />
+                          {i + 1}
+                        </td>
+                        <td>
+                          <p>
+                            Name: <b className="orange">{a.name}</b>
+                          </p>
+                          <p>NFT: {nftIdLink(a.entity)}</p>
+                          <p>Price: {nftPriceData(t, a.info?.sellOffers, account?.address)}</p>
+                          <p>
+                            <a
+                              onClick={() => {
+                                removeEntity(a.id)
+                              }}
+                              className="red"
+                            >
+                              Remove
+                            </a>
+                          </p>
                         </td>
                       </tr>
-                    )}
+                    ))}
                   </tbody>
                 </table>
               )}
@@ -513,28 +475,18 @@ export default function Watchlist({ selectedCurrency, account, subscriptionExpir
                   </span>
                 </div>
                 <br />
+                <br />
                 <center>
                   <button className="button-action" onClick={addEntetyClicked} disabled={!entetyToAdd || !entetyName}>
-                    Add
+                    Add {loading && <span className="waiting inline"></span>}
                   </button>
                 </center>
                 <br />
               </>
             )}
           </div>
-
-          {loading ? (
-            <div className="center">{t('general.loading')}</div>
-          ) : (
-            <>
-              {errorMessage && (
-                <div className="center orange bold">
-                  <br />
-                  {errorMessage}
-                </div>
-              )}
-            </>
-          )}
+          <br />
+          {!loading && errorMessage ? <div className="center orange bold">{errorMessage}</div> : <br />}
         </div>
       </div>
     </>
