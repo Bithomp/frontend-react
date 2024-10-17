@@ -11,7 +11,7 @@ import Image from 'next/image'
 import { addAndRemoveQueryParams, encode, isIdValid, isValidJson, server, xahauNetwork } from '../../utils'
 
 const checkmark = '/images/checkmark.svg'
-const xamanImg = '/images/xaman.png'
+const xamanImg = '/images/wallets/xaman.png'
 
 export const getServerSideProps = async (context) => {
   const { query, locale } = context

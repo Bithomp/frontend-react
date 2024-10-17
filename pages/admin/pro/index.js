@@ -492,7 +492,7 @@ export default function Pro({ account, setAccount, setSignRequest, refreshPage }
                     >
                       Verify{' '}
                       <Image
-                        src="/images/xaman.png"
+                        src="/images/wallets/xaman.png"
                         className={'xaman-logo' + (!addressToVerify || !addressName ? ' disabled' : '')}
                         alt="xaman"
                         height={24}

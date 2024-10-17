@@ -37,7 +37,7 @@ import SearchBlock from '../../components/Layout/SearchBlock'
 import Tabs from '../../components/Tabs'
 
 import LinkIcon from '../../public/images/link.svg'
-const xamanImg = '/images/xaman.png'
+const xamanImg = '/images/wallets/xaman.png'
 
 export default function NftOffers({ setSignRequest, refreshPage, account, offerList, id }) {
   const { t } = useTranslation()

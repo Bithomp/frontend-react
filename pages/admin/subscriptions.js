@@ -69,7 +69,7 @@ const ButtonWrapper = ({ type }) => {
 //PayPal option ends
 */
 
-const xamanImg = '/images/xaman.png'
+const xamanImg = '/images/wallets/xaman.png'
 
 export const getServerSideProps = async (context) => {
   const { query, locale } = context

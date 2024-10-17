@@ -103,7 +103,7 @@ export default function MobileMenu({
               }}
               className="link mobile-menu-item"
             >
-              <Image src="/images/xaman.png" className="xaman-logo" alt="xaman" height={20} width={20} />
+              <Image src="/images/wallets/xaman.png" className="xaman-logo" alt="xaman" height={20} width={20} />
               {t('signin.signin')}
             </span>
           )}

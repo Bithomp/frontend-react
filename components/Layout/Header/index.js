@@ -267,15 +267,34 @@ export default function Header({
           >
             {(displayName || proName) && <div style={{ minWidth: '250px' }}></div>}
             {!displayName && (
-              <span
-                onClick={() => {
-                  setSignRequest({ wallet: 'xumm' })
-                }}
-                className="link"
-              >
-                <Image src="/images/xaman.png" className="xaman-logo" alt="xaman" height={24} width={24} />
-                Xaman
-              </span>
+              <>
+                <span
+                  onClick={() => {
+                    setSignRequest({ wallet: 'xumm' })
+                  }}
+                  className="link"
+                >
+                  <Image src="/images/wallets/xaman.png" className="xaman-logo" alt="Xaman" height={24} width={24} />
+                  Xaman
+                </span>
+                {/* Gemwallet is not ready yet
+                <span
+                  onClick={() => {
+                    setSignRequest({ wallet: 'gemwallet' })
+                  }}
+                  className="link"
+                >
+                  <Image
+                    src="/images/wallets/gemwallet.svg"
+                    className="gemwallet-logo"
+                    alt="GemWallet"
+                    height={24}
+                    width={24}
+                  />
+                  GemWallet
+                </span>
+                */}
+              </>
             )}
 
             {displayName && (

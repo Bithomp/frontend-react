@@ -8,10 +8,10 @@ import { useTheme } from '../Layout/ThemeContext'
 import { nativeCurrency } from '../../utils'
 
 const Chart = dynamic(() => import('react-apexcharts'), { ssr: false })
-const zoomicon = '/images/zoom.svg'
-const zoominicon = '/images/zoom-in.svg'
-const zoomouticon = '/images/zoom-out.svg'
-const panicon = '/images/panning.svg'
+const zoomicon = '/images/chart/zoom.svg'
+const zoominicon = '/images/chart/zoom-in.svg'
+const zoomouticon = '/images/chart/zoom-out.svg'
+const panicon = '/images/chart/panning.svg'
 
 export default function PriceChart({ currency, chartPeriod, setChartPeriod, hideToolbar }) {
   const showToolbar = !hideToolbar

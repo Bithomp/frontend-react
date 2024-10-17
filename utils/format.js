@@ -10,7 +10,7 @@ import LinkIcon from '../public/images/link.svg'
 import { stripText, nativeCurrency } from '.'
 import { mpUrl } from './nft'
 
-const xamanImg = '/images/xaman.png'
+const xamanImg = '/images/wallets/xaman.png'
 
 momentDurationFormatSetup(moment)
 

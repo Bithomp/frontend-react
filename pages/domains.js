@@ -131,7 +131,7 @@ export default function Domains({ setSignRequest }) {
                   })
                 }
               >
-                <Image src="/images/xaman.png" className="xaman-logo" alt="xaman" height={24} width={24} />
+                <Image src="/images/wallets/xaman.png" className="xaman-logo" alt="xaman" height={24} width={24} />
                 {t('button.set-domain')}
               </button>
             </p>

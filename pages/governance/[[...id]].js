@@ -30,7 +30,7 @@ import { duration, shortAddress, shortHash, addressUsernameOrServiceLink, userOr
 import LinkIcon from '../../public/images/link.svg'
 import CopyButton from '../../components/UI/CopyButton'
 
-const xamanImg = '/images/xaman.png'
+const xamanImg = '/images/wallets/xaman.png'
 
 export default function Governance({ id, setSignRequest, refreshPage, account }) {
   const { t } = useTranslation(['common', 'governance'])

@@ -60,7 +60,7 @@ import SearchBlock from '../../components/Layout/SearchBlock'
 import CopyButton from '../../components/UI/CopyButton'
 import { LinkAmm } from '../../utils/links'
 
-const xamanImg = '/images/xaman.png'
+const xamanImg = '/images/wallets/xaman.png'
 
 export default function Account({
   initialData,

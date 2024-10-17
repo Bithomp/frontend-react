@@ -35,9 +35,9 @@ import SetAvatar from './SignForms/SetAvatar'
 import SetDomain from './SignForms/SetDomain'
 
 const qr = '/images/qr.gif'
-const ledger = '/images/ledger-large.svg'
-const trezor = '/images/trezor-large.svg'
-const ellipal = '/images/ellipal-large.svg'
+const ledger = '/images/wallets/ledger-large.svg'
+const trezor = '/images/wallets/trezor-large.svg'
+const ellipal = '/images/wallets/ellipal-large.svg'
 
 const voteTxs = ['castVoteRewardDelay', 'castVoteRewardRate', 'castVoteHook', 'castVoteSeat']
 const askInfoScreens = [
@@ -1133,7 +1133,7 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
                   <Image
                     alt="xaman"
                     className="signin-app-logo"
-                    src="/images/xaman-large.svg"
+                    src="/images/wallets/xaman-large.svg"
                     onClick={XummTxSend}
                     width={150}
                     height={24}

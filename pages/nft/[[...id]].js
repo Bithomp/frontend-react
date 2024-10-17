@@ -72,7 +72,7 @@ import CopyButton from '../../components/UI/CopyButton'
 import NftPreview from '../../components/NftPreview'
 
 import LinkIcon from '../../public/images/link.svg'
-const xamanImg = '/images/xaman.png'
+const xamanImg = '/images/wallets/xaman.png'
 
 const hasJsonMeta = (nft) => {
   return nft.metadata && nft.metadata.attributes?.metaSource?.toLowerCase() !== 'bithomp'
