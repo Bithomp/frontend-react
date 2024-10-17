@@ -32,6 +32,7 @@ import { setAvatar } from '../utils/blobVerifications'
 import SetAvatar from './SignForms/SetAvatar'
 import SetDomain from './SignForms/SetDomain'
 import NFTokenCreateOffer from './SignForms/NFTokenCreateOffer'
+import NftTransfer from './SignForms/NftTransfer'
 
 const qr = '/images/qr.gif'
 const ledger = '/images/wallets/ledger-large.svg'
@@ -702,22 +703,6 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
     setSeatData(seatObj)
   }
 
-  const onAddressChange = (value) => {
-    let newRequest = signRequest
-    if (isAddressValid(value)) {
-      newRequest.request.Destination = value
-      setFormError(false)
-      setStatus('')
-    } else {
-      if (newRequest.request.Destination) {
-        delete newRequest.request.Destination
-      }
-      setStatus(t('form.error.address-invalid'))
-      setFormError(true)
-    }
-    setSignRequest(newRequest)
-  }
-
   const onPlaceSelect = (topic) => {
     let hookObj = hookData
     hookObj.topic = topic.value
@@ -808,18 +793,12 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
             )}
 
             {screen === 'nftTransfer' && (
-              <div className="center">
-                <br />
-                <span className="halv">
-                  <span className="input-title">{t('table.destination')}</span>
-                  <input
-                    placeholder={t()}
-                    onChange={(e) => onAddressChange(e.target.value)}
-                    className="input-text"
-                    spellCheck="false"
-                  />
-                </span>
-              </div>
+              <NftTransfer
+                signRequest={signRequest}
+                setSignRequest={setSignRequest}
+                setStatus={setStatus}
+                setFormError={setFormError}
+              />
             )}
 
             {screen === 'setDomain' && (
