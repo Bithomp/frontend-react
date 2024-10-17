@@ -39,7 +39,7 @@ const showAmount = (amount) => {
   } else {
     positive = Number(amount) > 0
   }
-  return <span className={positive ? 'green' : 'red'}>{amountFormat(amount)}</span>
+  return <span className={positive ? 'green' : 'red'}>{amountFormat(amount, { maxFractionDigits: 6 })}</span>
 }
 
 const showFiat = (fiat) => {

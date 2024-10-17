@@ -520,7 +520,7 @@ export const amountFormat = (amount, options = {}) => {
       }
     }
   } else if (options.maxFractionDigits) {
-    showValue = niceNumber(value, options.maxFractionDigits)
+    showValue = niceNumber(value, 0, null, options.maxFractionDigits)
   }
 
   //add issued by (issuerDetails.service / username)
@@ -788,7 +788,7 @@ export const duration = (t, seconds, options) => {
 }
 
 //need to make dynamic fraction digits
-export const niceNumber = (n, fractionDigits = 0, currency = null) => {
+export const niceNumber = (n, fractionDigits = 0, currency = null, maxFractionDigits = 0) => {
   if (typeof n === 'string') {
     if (n.includes('x')) {
       //in case of placeholders xxx
@@ -799,7 +799,7 @@ export const niceNumber = (n, fractionDigits = 0, currency = null) => {
   }
   if (n) {
     let options = {
-      maximumFractionDigits: fractionDigits,
+      maximumFractionDigits: maxFractionDigits || fractionDigits,
       minimumFractionDigits: fractionDigits
     }
     if (currency) {
