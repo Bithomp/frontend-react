@@ -5,17 +5,8 @@ import axios from 'axios'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import Link from 'next/link'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import Cookies from 'universal-cookie'
 
-import {
-  stripText,
-  isAddressOrUsername,
-  setTabParams,
-  useWidth,
-  xahauNetwork,
-  nativeCurrency,
-  subscriptionExpired
-} from '../utils'
+import { stripText, isAddressOrUsername, setTabParams, useWidth, xahauNetwork, nativeCurrency } from '../utils'
 import { getIsSsrMobile } from '../utils/mobile'
 import { isValidTaxon, nftThumbnail, nftNameLink } from '../utils/nft'
 import {
@@ -103,12 +94,12 @@ export default function NftSales({
   buyerQuery,
   sellerQuery,
   searchQuery,
-  includeWithoutMediaDataQuery
+  includeWithoutMediaDataQuery,
+  subscriptionExpired
 }) {
   const { t } = useTranslation()
   const router = useRouter()
   const windowWidth = useWidth()
-  const cookies = new Cookies()
 
   const [data, setData] = useState(null)
   const [sales, setSales] = useState([])
@@ -209,7 +200,7 @@ export default function NftSales({
       setLoading(true)
     } else if (marker && marker !== 'first') {
       // do not load more if there is no session token or if Bithomp Pro is expired
-      if (!sessionToken || (sessionToken && subscriptionExpired(cookies))) {
+      if (!sessionToken || (sessionToken && subscriptionExpired)) {
         return
       }
     }
@@ -653,7 +644,7 @@ export default function NftSales({
                         </Trans>
                       ) : (
                         <>
-                          {!subscriptionExpired(cookies) ? (
+                          {!subscriptionExpired ? (
                             t('nft-sales.load-more')
                           ) : (
                             <Trans i18nKey="general.renew-bithomp-pro">

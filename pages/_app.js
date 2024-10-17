@@ -1,10 +1,9 @@
 import { useRouter } from 'next/router'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Head from 'next/head'
 import axios from 'axios'
 import { appWithTranslation } from 'next-i18next'
 import dynamic from 'next/dynamic'
-import Cookies from 'universal-cookie'
 
 import Header from '../components/Layout/Header'
 import Footer from '../components/Layout/Footer'
@@ -16,7 +15,7 @@ const TopLinks = dynamic(() => import('../components/Layout/TopLinks'), { ssr: f
 const TopProgressBar = dynamic(() => import('../components/TopProgressBar'), { ssr: false })
 
 import { IsSsrMobileContext } from '../utils/mobile'
-import { isValidUUID, network, server, useLocalStorage, subscriptionExpired, nativeCurrency, useCookie } from '../utils'
+import { isValidUUID, network, server, useLocalStorage, nativeCurrency, useCookie } from '../utils'
 
 import '../styles/ui.scss'
 import '../styles/components/nprogress.css'
@@ -26,11 +25,18 @@ import { ThemeProvider } from '../components/Layout/ThemeContext'
 const MyApp = ({ Component, pageProps }) => {
   const [account, setAccount] = useLocalStorage('account')
   const [selectedCurrency, setSelectedCurrency] = useCookie('currency', 'usd')
+  const [proExpire, setProExpire] = useCookie('pro-expire')
+  const [subscriptionExpired, setSubscriptionExpired] = useState(
+    proExpire ? Number(proExpire) < new Date().getTime() : true
+  )
   const [signRequest, setSignRequest] = useState(false)
   const [refreshPage, setRefreshPage] = useState('')
 
   const router = useRouter()
-  const cookies = new Cookies()
+
+  useEffect(() => {
+    setSubscriptionExpired(proExpire ? Number(proExpire) < new Date().getTime() : true)
+  }, [proExpire])
 
   const { uuid } = router.query
 
@@ -63,7 +69,7 @@ const MyApp = ({ Component, pageProps }) => {
   const pathname = router.pathname
   const pagesWithoutWrapper = ['/social-share']
 
-  const showAds = subscriptionExpired(cookies) && nativeCurrency === 'XRP'
+  const showAds = subscriptionExpired && nativeCurrency === 'XRP'
   let showTopAds = false //showAds // change here when you want to see TOP ADS
   const pagesWithNoTopAdds = [
     '/',
@@ -125,6 +131,8 @@ const MyApp = ({ Component, pageProps }) => {
                 selectedCurrency={selectedCurrency}
                 setSelectedCurrency={setSelectedCurrency}
                 showAds={showAds}
+                setProExpire={setProExpire}
+                subscriptionExpired={subscriptionExpired}
               />
             </div>
             <BackgroundImage />

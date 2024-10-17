@@ -4,7 +4,6 @@ import { useRouter } from 'next/router'
 import axios from 'axios'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import Link from 'next/link'
-import Cookies from 'universal-cookie'
 
 import {
   isAddressOrUsername,
@@ -13,8 +12,7 @@ import {
   xahauNetwork,
   periodDescription,
   decode,
-  nativeCurrency,
-  subscriptionExpired
+  nativeCurrency
 } from '../utils'
 import { isValidTaxon, nftThumbnail, nftNameLink, ipfsUrl, nftPriceData } from '../utils/nft'
 import { nftLink, usernameOrAddress, timeOrDate, fullDateAndTime, niceCurrency, capitalize } from '../utils/format'
@@ -52,12 +50,12 @@ export default function NftsComponent({
   includeBurnedQuery,
   includeWithoutMediaDataQuery,
   id,
-  account
+  account,
+  subscriptionExpired
 }) {
   const { t } = useTranslation()
   const router = useRouter()
   const windowWidth = useWidth()
-  const cookies = new Cookies()
 
   const orderNftsList = [
     { value: 'mintedNew', label: t('dropdown.mintedNew', { ns: 'nft-sort' }) },
@@ -180,7 +178,7 @@ export default function NftsComponent({
       nftsData = []
     } else if (marker && marker !== 'first') {
       // do not load more if there is no session token or if Bithomp Pro is expired
-      if (!sessionToken || (sessionToken && subscriptionExpired(cookies))) {
+      if (!sessionToken || (sessionToken && subscriptionExpired)) {
         return
       }
     }
@@ -866,7 +864,7 @@ export default function NftsComponent({
                           </Trans>
                         ) : (
                           <>
-                            {!subscriptionExpired(cookies) ? (
+                            {!subscriptionExpired ? (
                               t('nfts.load-more')
                             ) : (
                               <Trans i18nKey="general.renew-bithomp-pro">

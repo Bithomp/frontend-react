@@ -115,10 +115,6 @@ export const periodDescription = (periodName) => {
   }
 }
 
-export const subscriptionExpired = (cookies) => {
-  return cookies.get('pro-expire') ? Number(cookies.get('pro-expire')) < new Date().getTime() : true
-}
-
 export const countriesTranslated = (language) => {
   let lang = language.slice(0, 2)
   if (language === 'default') {

@@ -2,7 +2,6 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
-import Cookies from 'universal-cookie'
 
 import { getIsSsrMobile } from '../../../utils/mobile'
 import AdminTabs from '../../../components/Tabs/AdminTabs'
@@ -10,7 +9,7 @@ import { axiosAdmin } from '../../../utils/axios'
 
 import SEO from '../../../components/SEO'
 import AddressInput from '../../../components/UI/AddressInput'
-import { encode, useWidth, subscriptionExpired, xahauNetwork } from '../../../utils'
+import { encode, useWidth, xahauNetwork } from '../../../utils'
 import { removeProAddress, activateAddressCrawler, crawlerStatus, updateProAddress } from '../../../utils/pro'
 import FormInput from '../../../components/UI/FormInput'
 import { addressLink } from '../../../utils/format'
@@ -31,7 +30,7 @@ export const getServerSideProps = async (context) => {
   }
 }
 
-const SettingsCheckBoxes = ({ a, mobile, cookies }) => {
+const SettingsCheckBoxes = ({ a, mobile, subscriptionExpired }) => {
   let styles = {}
   if (mobile) {
     styles = { ...styles, lineHeight: '1.8em', fontSize: '1.1em' }
@@ -43,7 +42,7 @@ const SettingsCheckBoxes = ({ a, mobile, cookies }) => {
   return (
     <>
       <CheckBox
-        checked={subscriptionExpired(cookies) ? false : escrowsExecution}
+        checked={subscriptionExpired ? false : escrowsExecution}
         setChecked={() => {
           updateProAddress(a.id, {
             settings: { escrowsExecution: !escrowsExecution }
@@ -51,13 +50,13 @@ const SettingsCheckBoxes = ({ a, mobile, cookies }) => {
           setEscrowsExecution(!escrowsExecution)
         }}
         style={{ ...styles, marginTop: 0 }}
-        disabled={subscriptionExpired(cookies)}
+        disabled={subscriptionExpired}
       >
         {mobile ? 'Auto Escrow Execution' : 'Execute Escrows'}
       </CheckBox>
       {!xahauNetwork && (
         <CheckBox
-          checked={subscriptionExpired(cookies) ? false : nftokensOffersCancellation}
+          checked={subscriptionExpired ? false : nftokensOffersCancellation}
           setChecked={() => {
             updateProAddress(a.id, {
               settings: { nftokensOffersCancellation: !nftokensOffersCancellation }
@@ -65,7 +64,7 @@ const SettingsCheckBoxes = ({ a, mobile, cookies }) => {
             setNftokensOffersCancellation(!nftokensOffersCancellation)
           }}
           style={{ ...styles, marginTop: 10 }}
-          disabled={subscriptionExpired(cookies)}
+          disabled={subscriptionExpired}
         >
           {mobile ? 'Auto Cancelation of Expired NFT offers' : 'Cancel Expired NFT Offers'}
         </CheckBox>
@@ -74,10 +73,9 @@ const SettingsCheckBoxes = ({ a, mobile, cookies }) => {
   )
 }
 
-export default function Pro({ account, setAccount, setSignRequest, refreshPage }) {
+export default function Pro({ account, setAccount, setSignRequest, refreshPage, subscriptionExpired }) {
   const router = useRouter()
   const width = useWidth()
-  const cookies = new Cookies()
 
   const { t } = useTranslation(['common', 'admin'])
   const [errorMessage, setErrorMessage] = useState('')
@@ -237,7 +235,7 @@ export default function Pro({ account, setAccount, setSignRequest, refreshPage }
             onClick={() => {
               activateAddressCrawler(address.address, afterVerifiedAddressesUpdate)
             }}
-            disabled={subscriptionExpired(cookies)}
+            disabled={subscriptionExpired}
           >
             Enable
           </button>
@@ -343,7 +341,7 @@ export default function Pro({ account, setAccount, setSignRequest, refreshPage }
                             {addressButtons(a)}
                           </td>
                           <td className="left">
-                            <SettingsCheckBoxes a={a} cookies={cookies} />
+                            <SettingsCheckBoxes a={a} subscriptionExpired={subscriptionExpired} />
                           </td>
                           <td className="center red">
                             <MdDelete
@@ -389,7 +387,7 @@ export default function Pro({ account, setAccount, setSignRequest, refreshPage }
                             </p>
                             <p>Status: {crawlerStatus(a.crawler, { inline: true })}</p>
                             <p>
-                              <SettingsCheckBoxes a={a} mobile={true} cookies={cookies} />
+                              <SettingsCheckBoxes a={a} mobile={true} subscriptionExpired={subscriptionExpired} />
                             </p>
                             <p>
                               {addressButtons(a, { mobile: true })}
@@ -441,7 +439,7 @@ export default function Pro({ account, setAccount, setSignRequest, refreshPage }
             <div style={{ textAlign: 'left' }}>
               {verifiedAddresses?.length > 0 ? (
                 <>
-                  {subscriptionExpired(cookies) ? (
+                  {subscriptionExpired ? (
                     <>
                       In order to activate Data Analyses, please{' '}
                       <Link href="/admin/subscriptions?tab=pro">purchase the Bithomp Pro subscription</Link>.
@@ -454,7 +452,7 @@ export default function Pro({ account, setAccount, setSignRequest, refreshPage }
                 <>In order to use PRO functionality for your accounts, you would need to verify them first.</>
               )}
               {/* Allow only 1 for non-subscribers and 5 for those with subscription */}
-              {((verifiedAddresses?.length < 5 && !subscriptionExpired(cookies)) ||
+              {((verifiedAddresses?.length < 5 && !subscriptionExpired) ||
                 !verifiedAddresses ||
                 verifiedAddresses?.length === 0) && (
                 <>

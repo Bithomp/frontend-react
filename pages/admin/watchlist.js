@@ -3,13 +3,12 @@ import { useTranslation } from 'next-i18next'
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import { axiosAdmin } from '../../utils/axios'
-import Cookies from 'universal-cookie'
 
 import { getIsSsrMobile } from '../../utils/mobile'
 
 import SEO from '../../components/SEO'
 import AdminTabs from '../../components/Tabs/AdminTabs'
-import { isAddressValid, isIdValid, isValidNftXls20, subscriptionExpired, useWidth, xahauNetwork } from '../../utils'
+import { isAddressValid, isIdValid, isValidNftXls20, useWidth, xahauNetwork } from '../../utils'
 import AddressInput from '../../components/UI/AddressInput'
 import FormInput from '../../components/UI/FormInput'
 import { MdDelete } from 'react-icons/md'
@@ -30,11 +29,10 @@ export const getServerSideProps = async (context) => {
   }
 }
 
-export default function Watchlist({ selectedCurrency, account }) {
+export default function Watchlist({ selectedCurrency, account, subscriptionExpired }) {
   const { t, i18n } = useTranslation()
   const router = useRouter()
   const width = useWidth()
-  const cookies = new Cookies()
 
   const [errorMessage, setErrorMessage] = useState('')
   const [data, setData] = useState([])
@@ -242,8 +240,8 @@ export default function Watchlist({ selectedCurrency, account }) {
 
         {rendered ? (
           <p>
-            You can add up to {subscriptionExpired(cookies) ? 20 : 100} favorite addresses or NFTs to the watchlist.
-            {subscriptionExpired(cookies) && (
+            You can add up to {subscriptionExpired ? 20 : 100} favorite addresses or NFTs to the watchlist.
+            {subscriptionExpired && (
               <>
                 {' '}
                 If you want to add more, please subscribe to the <Link href="/admin/subscriptions">Bithomp Pro</Link>.
@@ -490,7 +488,7 @@ export default function Watchlist({ selectedCurrency, account }) {
 
           <div>
             {/* Allow only 20 for non-subscribers and 100 for those with subscription */}
-            {((data?.favorites?.length < 100 && !subscriptionExpired(cookies)) || data?.favorites?.length < 20) && (
+            {((data?.favorites?.length < 100 && !subscriptionExpired) || data?.favorites?.length < 20) && (
               <>
                 {width > 851 && <br />}
                 <br />

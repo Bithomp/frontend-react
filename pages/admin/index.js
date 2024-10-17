@@ -4,13 +4,12 @@ import { useEffect, useState } from 'react'
 import { Turnstile } from '@marsidev/react-turnstile'
 import { useTheme } from '../../components/Layout/ThemeContext'
 import Link from 'next/link'
-import Cookies from 'universal-cookie'
 import Mailto from 'react-protected-mailto'
 
 import SEO from '../../components/SEO'
 import CheckBox from '../../components/UI/CheckBox'
 
-import { cookieParams, isEmailValid, turnstileSupportedLanguages, useWidth } from '../../utils'
+import { isEmailValid, turnstileSupportedLanguages, useWidth } from '../../utils'
 import { getIsSsrMobile } from '../../utils/mobile'
 import AdminTabs from '../../components/Tabs/AdminTabs'
 import { axiosAdmin } from '../../utils/axios'
@@ -28,11 +27,10 @@ export const getServerSideProps = async (context) => {
 
 const checkmark = '/images/checkmark.svg'
 
-export default function Admin({ redirectToken, account, setAccount }) {
+export default function Admin({ redirectToken, account, setAccount, setProExpire }) {
   const { theme } = useTheme()
   const { t, i18n } = useTranslation(['common', 'admin'])
   const width = useWidth()
-  const cookies = new Cookies()
 
   const [siteKey, setSiteKey] = useState('')
   const [errorMessage, setErrorMessage] = useState('')
@@ -186,11 +184,11 @@ export default function Admin({ redirectToken, account, setAccount }) {
             }
           */
           setPackageData(packageData.data)
-          cookies.set('pro-expire', JSON.stringify(packageData.data.expiredAt * 1000), cookieParams)
+          setProExpire(JSON.stringify(packageData.data.expiredAt * 1000))
         }
         setCheckedPackageData(true)
       } else {
-        cookies.set('pro-expire', JSON.stringify(0), cookieParams)
+        setProExpire(JSON.stringify(0))
         setCheckedPackageData(true)
       }
     } else {

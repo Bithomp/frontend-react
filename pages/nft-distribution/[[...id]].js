@@ -6,7 +6,6 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useRouter } from 'next/router'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import Link from 'next/link'
-import Cookies from 'universal-cookie'
 
 import { FaSortAmountDown } from 'react-icons/fa'
 
@@ -16,8 +15,7 @@ import {
   addAndRemoveQueryParams,
   addQueryParams,
   removeQueryParams,
-  xahauNetwork,
-  subscriptionExpired
+  xahauNetwork
 } from '../../utils'
 import { getIsSsrMobile } from '../../utils/mobile'
 import { isValidTaxon } from '../../utils/nft'
@@ -47,11 +45,10 @@ export async function getServerSideProps(context) {
 import SEO from '../../components/SEO'
 import CopyButton from '../../components/UI/CopyButton'
 
-export default function NftDistribution({ issuerQuery, taxonQuery, idQuery, orderQuery }) {
+export default function NftDistribution({ issuerQuery, taxonQuery, idQuery, orderQuery, subscriptionExpired }) {
   const { t } = useTranslation()
   const windowWidth = useWidth()
   const router = useRouter()
-  const cookies = new Cookies()
 
   const [data, setData] = useState({})
   const [owners, setOwners] = useState([])
@@ -111,7 +108,7 @@ export default function NftDistribution({ issuerQuery, taxonQuery, idQuery, orde
       (order ? oldOrder === order : !oldOrder)
 
     // do not load more if thereis no session token or if Bithomp Pro is expired
-    if (loadMoreRequest && (!sessionToken || (sessionToken && subscriptionExpired(cookies)))) {
+    if (loadMoreRequest && (!sessionToken || (sessionToken && subscriptionExpired))) {
       return
     }
 
@@ -392,7 +389,7 @@ export default function NftDistribution({ issuerQuery, taxonQuery, idQuery, orde
                       </Trans>
                     ) : (
                       <>
-                        {!subscriptionExpired(cookies) ? (
+                        {!subscriptionExpired ? (
                           t('general.loading')
                         ) : (
                           <Trans i18nKey="general.renew-bithomp-pro">
