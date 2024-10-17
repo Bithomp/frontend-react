@@ -44,6 +44,9 @@ export default function Pro({ setPayPeriod }) {
         </p>
         <ul>
           <li>
+            100 Addresses or NFTs in your <Link href="/admin/watchlist">Watchlist</Link>
+          </li>
+          <li>
             Enable Infinite scroll in the <Link href="/nft-explorer">NFT Explorer</Link>
           </li>
           <li>
