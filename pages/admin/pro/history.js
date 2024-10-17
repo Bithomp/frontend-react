@@ -78,6 +78,8 @@ export default function History({ account, setAccount, queryAddress, selectedCur
       } else {
         setCurrentList(activities.slice(page * rowsPerPage, (page + 1) * rowsPerPage))
       }
+    } else {
+      setCurrentList([])
     }
     if ((page + 2) * rowsPerPage > activities.length && data?.marker) {
       getProAddressHistory({ marker: data.marker })
