@@ -163,6 +163,7 @@ export default function FiltersFrame({
                 key={i}
                 style={{ fontWeight: item.value === order ? 'bold' : 'normal' }}
                 onClick={() => hideMobileSortMenu(item.value)}
+                suppressHydrationWarning
               >
                 {item.label}
               </li>

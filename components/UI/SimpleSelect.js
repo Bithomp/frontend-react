@@ -2,11 +2,11 @@ import { useEffect, useState } from 'react'
 import Select from 'react-select'
 
 export default function SimpleSelect({ value, setValue, optionsList }) {
-  const [ready, setReady] = useState(false)
+  const [rendered, setRendered] = useState(false)
   const [choosenOption, setChoosenOption] = useState()
 
   useEffect(() => {
-    setReady(true)
+    setRendered(true)
     if (optionsList?.length === 0) return
     let found = false
     if (value) {
@@ -25,7 +25,7 @@ export default function SimpleSelect({ value, setValue, optionsList }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [value])
 
-  if (!ready) return ''
+  if (!rendered) return ''
 
   return (
     <Select

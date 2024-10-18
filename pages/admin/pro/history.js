@@ -8,8 +8,8 @@ import AdminTabs from '../../../components/Tabs/AdminTabs'
 import { axiosAdmin } from '../../../utils/axios'
 
 import SEO from '../../../components/SEO'
-import { useWidth } from '../../../utils'
-import { addressLink, amountFormat, fullDateAndTime, txIdLink } from '../../../utils/format'
+import { nativeCurrency, useWidth } from '../../../utils'
+import { addressLink, amountFormat, fullDateAndTime, niceNumber, txIdLink } from '../../../utils/format'
 import ProTabs from '../../../components/Tabs/ProTabs'
 import { crawlerStatus } from '../../../utils/pro'
 import CheckBox from '../../../components/UI/CheckBox'
@@ -33,23 +33,13 @@ export const getServerSideProps = async (context) => {
 
 const showAmount = (amount) => {
   if (!amount) return ''
-  let positive = null
-  if (amount.issuer) {
-    positive = amount.value > 0
-  } else {
-    positive = Number(amount) > 0
-  }
-  return <span className={positive ? 'green' : 'red'}>{amountFormat(amount, { maxFractionDigits: 6 })}</span>
+  return amountFormat(amount, { maxFractionDigits: 6 })
 }
 
-const showFiat = (fiat) => {
+const showFiat = (fiat, selectedCurrency) => {
   if (!fiat) return ''
   let positive = fiat > 0
-  let options = {
-    //maximumSignificantDigits: 10,
-    maximumFractionDigits: 6
-  }
-  return <span className={positive ? 'green' : 'red'}>{Number(fiat).toLocaleString(undefined, options)}</span>
+  return <span className={positive ? 'green' : 'red'}>{niceNumber(fiat, 0, selectedCurrency, 6)}</span>
 }
 
 export default function History({ account, setAccount, queryAddress, selectedCurrency, setSelectedCurrency }) {
@@ -101,6 +91,24 @@ export default function History({ account, setAccount, queryAddress, selectedCur
   const getProAddressHistory = async (options) => {
     if (addressesToCheck.length === 0) return
     setLoading(true)
+
+    let orderPart = order
+    let sortCurrency = null
+
+    if (order === 'nativeCurrencyAmountLow') {
+      orderPart = 'amountLow'
+      sortCurrency = nativeCurrency
+    } else if (order === 'nativeCurrencyAmountHigh') {
+      orderPart = 'amountHigh'
+      sortCurrency = nativeCurrency
+    } else if (order === 'fiatAmountLow') {
+      orderPart = 'amountLow'
+      sortCurrency = selectedCurrency
+    } else if (order === 'fiatAmountHigh') {
+      orderPart = 'amountHigh'
+      sortCurrency = selectedCurrency
+    }
+
     const response = await axiosAdmin
       .get(
         'user/addresses/activities?convertCurrency=' +
@@ -110,9 +118,10 @@ export default function History({ account, setAccount, queryAddress, selectedCur
           '&period=' +
           period +
           '&order=' +
-          order +
+          orderPart +
           '&limit=1000' +
-          (options?.marker ? '&marker=' + options.marker : '')
+          (options?.marker ? '&marker=' + options.marker : '') +
+          (sortCurrency ? '&sortCurrency=' + sortCurrency : '')
       )
       .catch((error) => {
         setLoading(false)
@@ -251,8 +260,12 @@ export default function History({ account, setAccount, queryAddress, selectedCur
           order={order}
           setOrder={setOrder}
           orderList={[
-            { value: 'desc', label: 'Latest first' },
-            { value: 'asc', label: 'Earliest first' }
+            { value: 'DESC', label: 'Latest first' },
+            { value: 'ASC', label: 'Earliest first' }
+            //{ value: 'nativeCurrencyAmountLow', label: nativeCurrency.toUpperCase() + ': low to high' },
+            //{ value: 'nativeCurrencyAmountHigh', label: nativeCurrency.toUpperCase() + ': high to low' },
+            //{ value: 'fiatAmountLow', label: 'FIAT: low to high' },
+            //{ value: 'fiatAmountHigh', label: 'FIAT: high to low' }
           ]}
           count={activities?.length || 0}
           total={data?.total || 0}
@@ -343,20 +356,18 @@ export default function History({ account, setAccount, queryAddress, selectedCur
           <>
             {addressesToCheck.length > 0 && (
               <>
-                {!width || width > 750 ? (
-                  <table className="table-large no-border no-hover" style={width > 750 ? { width: 730 } : {}}>
+                {!width || width > 800 ? (
+                  <table className="table-large no-border no-hover" style={width > 800 ? { width: 780 } : {}}>
                     <thead>
                       <tr>
                         <th className="center">#</th>
                         <th>Timestamp</th>
                         {addressesToCheck.length > 1 && <th>Address</th>}
-                        <th className="center">Type</th>
+                        <th className="center">Tx</th>
                         <th>Memo</th>
-                        <th>Tx</th>
-                        <th className="right">Ledger Amount</th>
-                        <th suppressHydrationWarning className="right">
-                          {selectedCurrency.toUpperCase()} equavalent
-                        </th>
+                        <th className="right">Transfer Fee</th>
+                        <th className="right">Tx Fee</th>
+                        <th className="right">Balance change</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -368,16 +379,33 @@ export default function History({ account, setAccount, queryAddress, selectedCur
                               <td>{fullDateAndTime(a.timestamp)}</td>
                               {addressesToCheck.length > 1 && <td>{addressName(a.address)}</td>}
                               <td className="center">
-                                <TypeToIcon type={a.txType} direction={a.direction} />
+                                <a href={'/explorer/' + a.hash} aria-label={a.txType}>
+                                  <TypeToIcon type={a.txType} direction={a.direction} />
+                                </a>
                               </td>
                               <td>
-                                <div style={{ width: 200, overflow: 'hidden' }}>
-                                  {a.memo && a.memo?.slice(0, 25) + (a.memo?.length > 25 ? '...' : '')}
+                                <div style={{ width: 160 }}>
+                                  <span className={a.memo?.length > 20 ? 'tooltip' : ''}>
+                                    {a.memo && a.memo?.slice(0, 20) + (a.memo?.length > 20 ? '...' : '')}
+                                    {a.memo?.length > 20 && <span className="tooltiptext right">{a.memo}</span>}
+                                  </span>
                                 </div>
                               </td>
-                              <td>{txIdLink(a.hash, 0)}</td>
-                              <td className="right">{showAmount(a.amount)}</td>
-                              <td className="right">{showFiat(a.amountInFiats?.[selectedCurrency])}</td>
+                              <td className="right" style={{ width: 110 }}>
+                                {/* showAmount(a.transferFee) */}
+                                <br />
+                                {niceNumber(a.transferFeeInFiats?.[selectedCurrency], 0, selectedCurrency, 6) || <br />}
+                              </td>
+                              <td className="right" style={{ width: 110 }}>
+                                {showAmount(a.txFee)}
+                                <br />
+                                {niceNumber(a?.txFeeInFiats?.[selectedCurrency], 0, selectedCurrency, 6) || <br />}
+                              </td>
+                              <td className="right" style={{ width: 110 }}>
+                                {showAmount(a.amount)}
+                                <br />
+                                {showFiat(a.amountInFiats?.[selectedCurrency], selectedCurrency) || <br />}
+                              </td>
                             </tr>
                           ))}
                         </>
@@ -413,10 +441,10 @@ export default function History({ account, setAccount, queryAddress, selectedCur
                                 </p>
                                 <p>
                                   {selectedCurrency.toUpperCase()} equavalent:{' '}
-                                  {showFiat(a.amountInFiats?.[selectedCurrency])}
+                                  {showFiat(a.amountInFiats?.[selectedCurrency], selectedCurrency)}
                                 </p>
                                 {a.memo && <p>Memo: {a.memo?.slice(0, 197) + (a.memo?.length > 197 ? '...' : '')}</p>}
-                                <p>Tx: {txIdLink(a.hash, 0)}</p>
+                                <p>Tx: {txIdLink(a.hash)}</p>
                               </td>
                             </tr>
                           ))}
