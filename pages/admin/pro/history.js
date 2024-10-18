@@ -9,7 +9,14 @@ import { axiosAdmin } from '../../../utils/axios'
 
 import SEO from '../../../components/SEO'
 import { nativeCurrency, useWidth } from '../../../utils'
-import { addressLink, amountFormat, fullDateAndTime, niceNumber, txIdLink } from '../../../utils/format'
+import {
+  addressLink,
+  amountFormat,
+  fullDateAndTime,
+  niceNumber,
+  shortNiceNumber,
+  txIdLink
+} from '../../../utils/format'
 import ProTabs from '../../../components/Tabs/ProTabs'
 import { crawlerStatus } from '../../../utils/pro'
 import CheckBox from '../../../components/UI/CheckBox'
@@ -33,13 +40,16 @@ export const getServerSideProps = async (context) => {
 
 const showAmount = (amount) => {
   if (!amount) return ''
-  return amountFormat(amount, { maxFractionDigits: 6 })
+  return amountFormat(amount, { short: true, maxFractionDigits: 6 })
 }
 
 const showFiat = (fiat, selectedCurrency) => {
-  if (!fiat) return ''
-  let positive = fiat > 0
-  return <span className={positive ? 'green' : 'red'}>{niceNumber(fiat, 0, selectedCurrency, 6)}</span>
+  if (!fiat && fiat !== 0) return ''
+  return (
+    <span className={'no-brake ' + (fiat > 0 ? 'green' : fiat < 0 ? 'red' : '')}>
+      {shortNiceNumber(fiat, 2, 3, selectedCurrency)}
+    </span>
+  )
 }
 
 export default function History({ account, setAccount, queryAddress, selectedCurrency, setSelectedCurrency }) {
@@ -261,11 +271,11 @@ export default function History({ account, setAccount, queryAddress, selectedCur
           setOrder={setOrder}
           orderList={[
             { value: 'DESC', label: 'Latest first' },
-            { value: 'ASC', label: 'Earliest first' }
-            //{ value: 'nativeCurrencyAmountLow', label: nativeCurrency.toUpperCase() + ': low to high' },
-            //{ value: 'nativeCurrencyAmountHigh', label: nativeCurrency.toUpperCase() + ': high to low' },
-            //{ value: 'fiatAmountLow', label: 'FIAT: low to high' },
-            //{ value: 'fiatAmountHigh', label: 'FIAT: high to low' }
+            { value: 'ASC', label: 'Earliest first' },
+            { value: 'nativeCurrencyAmountLow', label: nativeCurrency.toUpperCase() + ': low to high' },
+            { value: 'nativeCurrencyAmountHigh', label: nativeCurrency.toUpperCase() + ': high to low' },
+            { value: 'fiatAmountLow', label: 'FIAT: low to high' },
+            { value: 'fiatAmountHigh', label: 'FIAT: high to low' }
           ]}
           count={activities?.length || 0}
           total={data?.total || 0}
@@ -394,12 +404,20 @@ export default function History({ account, setAccount, queryAddress, selectedCur
                               <td className="right" style={{ width: 110 }}>
                                 {/* showAmount(a.transferFee) */}
                                 <br />
-                                {niceNumber(a.transferFeeInFiats?.[selectedCurrency], 0, selectedCurrency, 6) || <br />}
+                                {a.transferFee ? (
+                                  niceNumber(a.transferFeeInFiats?.[selectedCurrency], 0, selectedCurrency, 6)
+                                ) : (
+                                  <br />
+                                )}
                               </td>
                               <td className="right" style={{ width: 110 }}>
                                 {showAmount(a.txFee)}
                                 <br />
-                                {niceNumber(a?.txFeeInFiats?.[selectedCurrency], 0, selectedCurrency, 6) || <br />}
+                                {a.txFee ? (
+                                  niceNumber(a.txFeeInFiats?.[selectedCurrency], 0, selectedCurrency, 6)
+                                ) : (
+                                  <br />
+                                )}
                               </td>
                               <td className="right" style={{ width: 110 }}>
                                 {showAmount(a.amount)}

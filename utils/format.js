@@ -509,7 +509,7 @@ export const amountFormat = (amount, options = {}) => {
 
   let showValue = value
 
-  if (value >= 100) {
+  if (Math.abs(value) >= 100) {
     if (options.short) {
       showValue = shortNiceNumber(value, 0, 1)
     } else {
@@ -797,7 +797,7 @@ export const niceNumber = (n, fractionDigits = 0, currency = null, maxFractionDi
       n = Number(n)
     }
   }
-  if (n) {
+  if (n || n === 0 || n === '0') {
     let options = {
       maximumFractionDigits: maxFractionDigits || fractionDigits,
       minimumFractionDigits: fractionDigits
@@ -861,7 +861,7 @@ export const shortNiceNumber = (n, smallNumberFractionDigits = 2, largeNumberFra
   } else if (n > 99999) {
     output = niceNumber(Math.floor(n), 0, currency)
   } else if (n === 0) {
-    output = 0
+    output = niceNumber(0, 0, currency)
   } else {
     const pow = Math.pow(10, smallNumberFractionDigits)
     output = niceNumber(Math.floor(n * pow) / pow, smallNumberFractionDigits, currency)
