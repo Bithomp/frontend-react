@@ -189,7 +189,10 @@ h2.landing-h2 {
         width: 6%;
         text-align: center;
         @media only screen and (max-width: 800px) {
-          width: 14%;
+          width: 10%;
+        }
+        @media only screen and (max-width: 550px) {
+          width: 15%;
         }
       }
       .tx-addresses {
@@ -198,10 +201,13 @@ h2.landing-h2 {
         display: inline-block;
         min-height: 22px;
         @media only screen and (max-width: 800px) {
-          width: 48%;
+          width: 68%;
           overflow: hidden;
           padding: 0;
           vertical-align: middle;
+        }
+        @media only screen and (max-width: 550px) {
+          width: 54%;
         }
       }
       .tx-link {
@@ -232,7 +238,10 @@ h2.landing-h2 {
         display: inline-block;
         width: 11%;
         @media only screen and (max-width: 800px) {
-          width: 30%;
+          width: 15%;
+        }
+        @media screen and (max-width: 550px) {
+          width: 24%;
         }
       }
     }

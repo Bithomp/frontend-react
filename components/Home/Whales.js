@@ -4,6 +4,7 @@ import axios from 'axios'
 
 import { wssServer, devNet, useWidth } from '../../utils'
 import { addressUsernameOrServiceLink, amountFormat, shortNiceNumber, timeFormat, txIdLink } from '../../utils/format'
+import Image from 'next/image'
 
 let ws = null
 
@@ -89,17 +90,7 @@ export default function Whales({ currency }) {
      }
   */
 
-  const doShort = (tx, width) => {
-    if (
-      !tx.sourceAddressDetails?.service &&
-      !tx.destinationAddressDetails?.service &&
-      !tx.sourceAddressDetails?.username &&
-      !tx.destinationAddressDetails?.username
-    ) {
-      return true
-    }
-    return width < 730
-  }
+  const styleAddress = { width: width > 800 ? 220 : width > 550 ? 160 : 'auto', display: 'inline-block' }
 
   return (
     <>
@@ -111,9 +102,29 @@ export default function Whales({ currency }) {
               <div key={tx.hash} className={'tx-row' + (difference?.includes(tx) ? ' just-added' : '')}>
                 <span className="tx-time">{timeFormat(tx.timestamp)}</span>
                 <span className="tx-addresses">
-                  {addressUsernameOrServiceLink(tx, 'sourceAddress', { short: doShort(tx, width) })} →
-                  {width < 800 ? <div style={{ height: '6px' }}></div> : ' '}
-                  {addressUsernameOrServiceLink(tx, 'destinationAddress', { short: doShort(tx, width) })}
+                  <span style={styleAddress}>
+                    <Image
+                      src={'https://cdn.bithomp.com/avatar/' + tx.sourceAddress}
+                      className={tx.sourceAddressDetails?.service || 'service logo'}
+                      alt="service"
+                      height={20}
+                      width={20}
+                      style={{ marginRight: '5px', marginBottom: '-5px' }}
+                    />
+                    {addressUsernameOrServiceLink(tx, 'sourceAddress', { short: width > 800 ? 10 : 6 })}
+                  </span>{' '}
+                  →{width < 550 ? <div style={{ height: '8px' }} /> : ' '}
+                  <span style={styleAddress}>
+                    <Image
+                      src={'https://cdn.bithomp.com/avatar/' + tx.destinationAddress}
+                      className={tx.destinationAddressDetails?.service || 'service logo'}
+                      alt="service"
+                      height={20}
+                      width={20}
+                      style={{ marginRight: '5px', marginBottom: '-5px' }}
+                    />
+                    {addressUsernameOrServiceLink(tx, 'destinationAddress', { short: width > 800 ? 10 : 6 })}
+                  </span>
                 </span>
                 <span className="tx-link">{txIdLink(tx.hash, 0)}</span>
                 <span className="tx-amount">
