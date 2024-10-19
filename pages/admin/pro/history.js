@@ -105,17 +105,18 @@ export default function History({ account, setAccount, queryAddress, selectedCur
     let orderPart = order
     let sortCurrency = null
 
+    //amountLow, amountHigh
     if (order === 'nativeCurrencyAmountLow') {
-      orderPart = 'amountLow'
+      orderPart = 'amountAbsoluteLow'
       sortCurrency = nativeCurrency
     } else if (order === 'nativeCurrencyAmountHigh') {
-      orderPart = 'amountHigh'
+      orderPart = 'amountAbsoluteHigh'
       sortCurrency = nativeCurrency
     } else if (order === 'fiatAmountLow') {
-      orderPart = 'amountLow'
+      orderPart = 'amountAbsoluteLow'
       sortCurrency = selectedCurrency
     } else if (order === 'fiatAmountHigh') {
-      orderPart = 'amountHigh'
+      orderPart = 'amountAbsoluteHigh'
       sortCurrency = selectedCurrency
     }
 
