@@ -313,6 +313,10 @@ const metaUrl = (nft, type = 'image', gateway = 'our') => {
   if (!nft.metadata) return null
   let meta = nft.metadata
   if (type === 'image' || type === 'thumbnail') {
+    //Evernode
+    if ((meta.evernodeRegistration || meta.evernodeLease) && gateway === 'our') {
+      return '/images/nft/evernode.png'
+    }
     //XLS-35
     if (meta.content?.url) return assetUrl(meta.content.url, type, gateway)
     //XLS-20
@@ -444,7 +448,7 @@ export const nftImageStyle = (nft, style = {}) => {
   if (imageUrl) {
     const isOver18 = localStorage.getItem('isOver18')
     if (isNftExplicit(nft) && !isOver18) {
-      style.backgroundImage = "url('/images/18plus.jpg')"
+      style.backgroundImage = "url('/images/nft/18plus.jpg')"
     } else {
       style.backgroundImage = "url('" + imageUrl + "')"
     }
