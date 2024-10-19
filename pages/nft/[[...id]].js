@@ -72,6 +72,8 @@ import CopyButton from '../../components/UI/CopyButton'
 import NftPreview from '../../components/NftPreview'
 
 import LinkIcon from '../../public/images/link.svg'
+import EvernodeLease from '../../components/Nft/EvernodeLease'
+import EvernodeRegistartion from '../../components/Nft/EvernodeRegistartion'
 const xamanImg = '/images/wallets/xaman.png'
 
 const hasJsonMeta = (nft) => {
@@ -971,6 +973,10 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
     setWarnings(warnings)
   }
 
+  const evernodeNft = (data) => {
+    return data.metadata?.evernodeRegistration || data.metadata?.evernodeLease
+  }
+
   return (
     <>
       <SEO
@@ -1046,6 +1052,10 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
                                   </tbody>
                                 </table>
                               )}
+                            {data.metadata?.evernodeLease && <EvernodeLease data={data.metadata.evernodeLease} />}
+                            {data.metadata?.evernodeRegistration && (
+                              <EvernodeRegistartion data={data.metadata.evernodeRegistration} />
+                            )}
                           </div>
                         </div>
 
@@ -1079,7 +1089,7 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
                             </table>
                           )}
 
-                          {data.metadata && (
+                          {data.metadata && !evernodeNft(data) && (
                             <table className="table-details">
                               <thead>
                                 <tr>
@@ -1237,6 +1247,7 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
                               )}
                               {/* isValidJson(decodedUri) - if valid Json in URI, no need to check digest */}
                               {!notFoundInTheNetwork &&
+                                !evernodeNft(data) &&
                                 (!hasJsonMeta(data) ||
                                   (data.type === 'xls20' && !data.flags.transferable) ||
                                   data.flags.burnable ||
