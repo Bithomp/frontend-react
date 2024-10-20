@@ -48,7 +48,7 @@ export const acceptNftSellOfferButton = (t, setSignRequest, offer, nftType = 'xl
     request = {
       Amount: offer.amount,
       TransactionType: 'URITokenBuy',
-      URITokenID: offer.uriTokenID
+      URITokenID: offer.nftokenID
     }
   } else {
     request = {
@@ -56,6 +56,7 @@ export const acceptNftSellOfferButton = (t, setSignRequest, offer, nftType = 'xl
       NFTokenSellOffer: offer.offerIndex
     }
   }
+
   return (
     <button
       className="button-action wide center"
@@ -81,9 +82,6 @@ export const cancelNftOfferButtons = (t, setSignRequest, account, data) => {
 
   //for offer cancelation
   let nftId = data.nftokenID
-  if (data.type === 'xls35') {
-    nftId = data.uriTokenID
-  }
 
   if (data.sellOffers) {
     const sellOffers = data.sellOffers.filter(

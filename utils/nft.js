@@ -42,7 +42,7 @@ export const mpUrl = (offer) => {
     url = 'https://dexfi.pro' // so far there no nft specific url :(
   }
   if (url) {
-    return url + (offer.nftokenID || offer.uriTokenID)
+    return url + offer.nftokenID
   } else {
     return ''
   }
@@ -137,11 +137,11 @@ export const bestNftOffer = (nftOffers, loggedInAddress, type = 'sell') => {
 }
 
 export const nftThumbnail = (nft) => {
-  if (!nft || !(nft.nftokenID || nft.uriTokenID)) return ''
+  if (!nft || !nft.nftokenID) return ''
   const imageSrc = nftUrl(nft, 'thumbnail')
   if (!imageSrc) return ''
   return (
-    <Link href={'/nft/' + (nft.nftokenID || nft.uriTokenID)}>
+    <Link href={'/nft/' + nft.nftokenID}>
       <img
         src={imageSrc}
         width="32px"
@@ -179,8 +179,8 @@ export const collectionThumbnail = (data) => {
 }
 
 export const nftNameLink = (nft) => {
-  if (!nft || !(nft.nftokenID || nft.uriTokenID)) return ''
-  return <Link href={'/nft/' + (nft.nftokenID || nft.uriTokenID)}>{nftName(nft) ? nftName(nft) : <LinkIcon />}</Link>
+  if (!nft || !nft.nftokenID) return ''
+  return <Link href={'/nft/' + nft.nftokenID}>{nftName(nft) ? nftName(nft) : <LinkIcon />}</Link>
 }
 
 export const nftName = (nft, options = {}) => {

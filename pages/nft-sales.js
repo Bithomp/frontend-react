@@ -305,7 +305,7 @@ export default function NftSales({
               2
             )
             newdata.sales[i].amountFormated = amountFormat(newdata.sales[i].amount, { minFractionDigist: 2 })
-            newdata.sales[i].nftId = newdata.sales[i].nftoken.nftokenID || newdata.sales[i].nftoken.uriTokenID
+            newdata.sales[i].nftId = newdata.sales[i].nftoken.nftokenID
           }
 
           setErrorMessage('')

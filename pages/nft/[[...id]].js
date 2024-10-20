@@ -250,7 +250,7 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
 
   useEffect(() => {
     if (!selectedCurrency) return
-    if (!data?.nftokenID && !data?.uriTokenID) {
+    if (!data?.nftokenID) {
       // no token - first time fetching - allow right away
       checkApi()
     } else {
@@ -633,7 +633,7 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
         amount: data.amount || '0',
         owner: data.owner,
         destination: data.destination,
-        uriTokenID: data.uriTokenID
+        nftokenID: data.nftokenID
       }
     } else {
       //'xls20'
@@ -982,13 +982,12 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
       <SEO
         page="NFT"
         title={
-          (nftName(pageMeta) || pageMeta?.nftokenID || pageMeta?.uriTokenID || 'NFT') +
-          (pageMeta?.nftSerial ? ' #' + pageMeta?.nftSerial : '')
+          (nftName(pageMeta) || pageMeta?.nftokenID || 'NFT') + (pageMeta?.nftSerial ? ' #' + pageMeta?.nftSerial : '')
         }
         description={
           (pageMeta?.metadata?.description ||
             pageMeta?.metadata?.collection?.name ||
-            (!(pageMeta?.nftokenID || pageMeta?.uriTokenID) ? t('desc', { ns: 'nft' }) : '')) +
+            (!pageMeta?.nftokenID ? t('desc', { ns: 'nft' }) : '')) +
           (pageMeta?.nftSerial ? ' #' + pageMeta?.nftSerial : '') +
           (pageMeta?.issuer ? ' - ' + t('table.issuer') + ': ' + usernameOrAddress(pageMeta, 'issuer') : '')
         }
@@ -1162,8 +1161,7 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
                               <tr>
                                 <td>NFT ID</td>
                                 <td>
-                                  {shortHash(data.nftokenID || data.uriTokenID, 10)}{' '}
-                                  <CopyButton text={data.nftokenID || data.uriTokenID} />
+                                  {shortHash(data.nftokenID, 10)} <CopyButton text={data.nftokenID} />
                                 </td>
                               </tr>
                               {data.type !== 'xls20' && (
