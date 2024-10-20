@@ -19,7 +19,8 @@ import {
   niceNumber,
   shortHash,
   shortNiceNumber,
-  niceCurrency
+  niceCurrency,
+  addressUsernameOrServiceLink
 } from '../utils/format'
 
 import SEO from '../components/SEO'
@@ -508,9 +509,9 @@ export default function NftSales({
           t('nft-sales.header') +
           (saleTab === 'secondary' ? t('tabs.secondary-sales') : '') +
           (saleTab === 'primary' ? t('tabs.primary-sales') : '') +
-          (issuer ? ' ' + issuer : issuerQuery) +
-          (buyer ? ' ' + t('tabs.buyer') + ': ' + buyer : buyerQuery) +
-          (seller ? ' ' + t('tabs.seller') + ': ' + seller : sellerQuery) +
+          (issuer ? ' ' + t('table.issuer') + ': ' + issuer : issuerQuery) +
+          (buyer ? ' ' + t('table.buyer') + ': ' + buyer : buyerQuery) +
+          (seller ? ' ' + t('table.seller') + ': ' + seller : sellerQuery) +
           (isValidTaxon(taxon) ? ' ' + taxon : taxonQuery) +
           (currency ? ' ' + currency : '') +
           (currencyIssuer ? ' ' + currencyIssuer : '') +
@@ -522,9 +523,9 @@ export default function NftSales({
           t('nft-sales.header') +
           (saleTab === 'secondary' ? t('tabs.secondary-sales') : '') +
           (saleTab === 'primary' ? t('tabs.primary-sales') : '') +
-          (issuer ? ' ' + issuer : issuerQuery) +
-          (buyer ? ' ' + t('tabs.buyer') + ': ' + buyer : buyerQuery) +
-          (seller ? ' ' + t('tabs.seller') + ': ' + seller : sellerQuery) +
+          (issuer ? ' ' + t('table.issuer') + ': ' + issuer : issuerQuery) +
+          (buyer ? ' ' + t('table.buyer') + ': ' + buyer : buyerQuery) +
+          (seller ? ' ' + t('table.seller') + ': ' + seller : sellerQuery) +
           (isValidTaxon(taxon) ? ' ' + taxon : taxonQuery) +
           (currency ? ' ' + currency : '') +
           (currencyIssuer ? ' ' + currencyIssuer : '') +
@@ -534,7 +535,10 @@ export default function NftSales({
         }
       />
 
-      <h1 className="center">{t('nft-sales.header')}</h1>
+      <h1 className="center">
+        {t('nft-sales.header')}
+        {data?.issuer ? <>, {addressUsernameOrServiceLink(data, 'issuer', { short: true })}</> : ''}
+      </h1>
       <NftTabs tab="nft-sales" url={'/nft-explorer?view=' + activeView + issuerTaxonUrlPart + collectionUrlPart} />
 
       <FiltersFrame
