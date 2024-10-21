@@ -26,6 +26,18 @@ const options = {
     { value: 'm3', label: '3 months', price: '1500 EUR' },
     { value: 'm6', label: '6 months', price: '3000 EUR' },
     { value: 'y1', label: '1 year', price: '5000 EUR' }
+  ],
+  enterprise2: [
+    { value: 'm1', label: '1 month', price: '1000 EUR' },
+    { value: 'm3', label: '3 months', price: '3000 EUR' },
+    { value: 'm6', label: '6 months', price: '6000 EUR' },
+    { value: 'y1', label: '1 year', price: '10000 EUR' }
+  ],
+  enterprise3: [
+    { value: 'm1', label: '1 month', price: '2000 EUR' },
+    { value: 'm3', label: '3 months', price: '6000 EUR' },
+    { value: 'm6', label: '6 months', price: '12000 EUR' },
+    { value: 'y1', label: '1 year', price: '20000 EUR' }
   ]
 }
 
@@ -33,7 +45,9 @@ const tierOptions = [
   { value: 'basic', label: 'Basic' },
   { value: 'standard', label: 'Standard' },
   { value: 'premium', label: 'Premium' },
-  { value: 'enterprise', label: 'Enterprise' }
+  { value: 'enterprise', label: 'Enterprise' },
+  { value: 'enterprise2', label: 'Enterprise II' },
+  { value: 'enterprise3', label: 'Enterprise III' }
 ]
 
 const optionIndex = (val) => {
@@ -94,7 +108,7 @@ export default function Api({ setPayPeriod, setTier, tier }) {
       <div className="center">
         <Select
           options={tierOptions}
-          getOptionLabel={(option) => <div style={{ width: width > 400 ? '80px' : '150px' }}>{option.label}</div>}
+          getOptionLabel={(option) => <div style={{ width: width > 400 ? '100px' : '160px' }}>{option.label}</div>}
           onChange={(selected) => {
             setInnerTier(selected.value)
           }}
@@ -112,7 +126,7 @@ export default function Api({ setPayPeriod, setTier, tier }) {
         <Select
           options={optionsList}
           getOptionLabel={(option) => (
-            <div style={{ width: '150px' }}>
+            <div style={{ width: '160px' }}>
               {option.label} <span style={{ float: 'right' }}>{option.price}</span>
             </div>
           )}
