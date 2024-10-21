@@ -985,10 +985,9 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
           (nftName(pageMeta) || pageMeta?.nftokenID || 'NFT') + (pageMeta?.nftSerial ? ' #' + pageMeta?.nftSerial : '')
         }
         description={
-          (pageMeta?.metadata?.description ||
-            pageMeta?.metadata?.collection?.name ||
+          (pageMeta?.metadata?.collection?.name ||
+            pageMeta?.metadata?.description ||
             (!pageMeta?.nftokenID ? t('desc', { ns: 'nft' }) : '')) +
-          (pageMeta?.nftSerial ? ' #' + pageMeta?.nftSerial : '') +
           (pageMeta?.issuer ? ' - ' + t('table.issuer') + ': ' + usernameOrAddress(pageMeta, 'issuer') : '')
         }
         image={{ file: imageUrl }}
