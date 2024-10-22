@@ -194,7 +194,8 @@ export default function Watchlist({ selectedCurrency, account, subscriptionExpir
   const getNftsInfo = async (list) => {
     if (list?.length > 0) {
       let nftList = list.map((a) => a.entity)
-      const url = 'v2/nfts?ids=' + nftList + '&uri=true&metadata=true&sellOffers=true' //&buyOffers=true&offersValidate=true
+      const url =
+        'v2/' + (xahauNetwork ? 'uritokens' : 'nfts') + '?ids=' + nftList + '&uri=true&metadata=true&sellOffers=true' //&buyOffers=true&offersValidate=true
       const response = await axios(url).catch((error) => {
         console.log(error)
       })
