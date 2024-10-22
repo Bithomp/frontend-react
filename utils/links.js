@@ -15,7 +15,32 @@ export const LedgerLink = ({ version, text, style, onClick }) =>
     ''
   )
 
-export const LinkAccount = ({ address }) => (address ? <Link href={`/explorer/${address}`}>{address}</Link> : '')
+export const LinkAccount = ({ address, icon, copy, text, short }) =>
+  address ? (
+    <>
+      <Link href={`/explorer/${address}`}>
+        {text ? text : short > 0 ? shortHash(address, short) : short === 0 ? '' : address}
+        {icon ? (
+          <>
+            {' '}
+            <LinkIcon />
+          </>
+        ) : (
+          ''
+        )}
+      </Link>
+      {copy ? (
+        <>
+          {' '}
+          <CopyButton text={address} />
+        </>
+      ) : (
+        ''
+      )}
+    </>
+  ) : (
+    ''
+  )
 
 export const LinkAmm = ({ ammId, hash, icon, copy, text }) =>
   ammId ? (

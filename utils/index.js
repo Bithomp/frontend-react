@@ -456,6 +456,11 @@ export const submitTransaction = async (blob, callback) => {
   }
 }
 
+export const nativeCurrenciesImages = {
+  XRP: '/images/currencies/xrp.svg',
+  XAH: '/images/currencies/xah.png'
+}
+
 export const network = process.env.NEXT_PUBLIC_NETWORK_NAME
 const webAddress = process.env.NEXT_PUBLIC_WEB_ADDRESS
 export const devNet = ['mainnet', 'staging', 'xahau'].includes(network) ? false : network

@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react'
 import Image from 'next/image'
 
 import CurrencySelect from '../UI/CurrencySelect'
-import { typeNumberOnly, nativeCurrency } from '../../utils'
+import { typeNumberOnly, nativeCurrency, nativeCurrenciesImages } from '../../utils'
 
 export default function Converter({ selectedCurrency, setSelectedCurrency, chartPeriod }) {
   const [data, setData] = useState({})
@@ -48,11 +48,6 @@ export default function Converter({ selectedCurrency, setSelectedCurrency, chart
   ) : (
     <br />
   )
-
-  const nativeCurrenciesImages = {
-    XRP: '/images/currencies/xrp.svg',
-    XAH: '/images/currencies/xah.png'
-  }
 
   return (
     <>

@@ -2,7 +2,7 @@ import { useTranslation } from 'next-i18next'
 import { useEffect, useState } from 'react'
 import { axiosServer } from '../utils/axios'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import { useWidth } from '../utils'
+import { nativeCurrenciesImages, nativeCurrency, useWidth } from '../utils'
 import { getIsSsrMobile } from '../utils/mobile'
 import axios from 'axios'
 
@@ -15,7 +15,8 @@ import {
   fullDateAndTime,
   timeFromNow,
   amountFormatNode,
-  amountFormat
+  amountFormat,
+  nativeCurrencyToFiat
 } from '../utils/format'
 
 export async function getServerSideProps(context) {
@@ -59,9 +60,10 @@ export async function getServerSideProps(context) {
 
 import SEO from '../components/SEO'
 import CopyButton from '../components/UI/CopyButton'
-import { LinkAmm } from '../utils/links'
+import { LinkAccount, LinkAmm } from '../utils/links'
 import Image from 'next/image'
 import FiltersFrame from '../components/Layout/FiltersFrame'
+import { fetchCurrentFiatRate } from '../utils/common'
 
 // add to the list new parameters for CSV
 const updateListForCsv = (list) => {
@@ -78,7 +80,26 @@ const updateListForCsv = (list) => {
   })
 }
 
-export default function Amms({ initialData, initialErrorMessage, orderQuery }) {
+const AddressWithIcon = ({ children, address }) => {
+  let imageUrl = 'https://cdn.bithomp.com/avatar/' + address
+  if (!address) {
+    imageUrl = nativeCurrenciesImages[nativeCurrency]
+  }
+  return (
+    <table>
+      <tbody>
+        <tr>
+          <td style={{ padding: 0 }}>
+            <Image alt="avatar" src={imageUrl} width="35" height="35" style={{ verticalAlign: 'middle' }} />
+          </td>
+          <td style={{ padding: '0 0 0 5px' }}>{children}</td>
+        </tr>
+      </tbody>
+    </table>
+  )
+}
+
+export default function Amms({ initialData, initialErrorMessage, orderQuery, selectedCurrency }) {
   const { t, i18n } = useTranslation()
 
   const windowWidth = useWidth()
@@ -88,6 +109,7 @@ export default function Amms({ initialData, initialErrorMessage, orderQuery }) {
   const [order, setOrder] = useState(orderQuery)
   const [loading, setLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState(initialErrorMessage || '')
+  const [fiatRate, setFiatRate] = useState(0)
 
   const controller = new AbortController()
 
@@ -101,7 +123,12 @@ export default function Amms({ initialData, initialErrorMessage, orderQuery }) {
     return () => {
       controller.abort()
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  useEffect(() => {
+    fetchCurrentFiatRate(selectedCurrency, setFiatRate)
+  }, [selectedCurrency])
 
   const checkApi = async () => {
     let apiUrl = 'v2/amms?order=' + order + '&sortCurrency=XRP'
@@ -166,22 +193,6 @@ export default function Amms({ initialData, initialErrorMessage, orderQuery }) {
     { label: 'Trading fee', key: 'tradingFeeFormated' }
   ]
 
-  const AddressWithIcon = ({ children, address }) => {
-    if (!address) return children
-    return (
-      <table>
-        <tbody>
-          <tr>
-            <td style={{ padding: 0 }}>
-              <Image alt="avatar" src={'https://cdn.bithomp.com/avatar/' + address} width="35" height="35" />
-            </td>
-            <td style={{ padding: '0 0 0 5px' }}>{children}</td>
-          </tr>
-        </tbody>
-      </table>
-    )
-  }
-
   return (
     <>
       <SEO title={t('menu.amm.pools')} />
@@ -205,7 +216,7 @@ export default function Amms({ initialData, initialErrorMessage, orderQuery }) {
         >
           <></>
           <>
-            {!windowWidth || windowWidth > 1460 ? (
+            {!windowWidth || windowWidth > 1360 ? (
               <table className="table-large expand">
                 <thead>
                   <tr>
@@ -215,7 +226,7 @@ export default function Amms({ initialData, initialErrorMessage, orderQuery }) {
                     <th>LP balance</th>
                     <th className="right">AMM ID</th>
                     <th className="right">AMM address</th>
-                    <th>Currency code</th>
+                    <th className="right">Currency code</th>
                     <th>Created</th>
                     <th>Updated</th>
                     <th className="right">Trading fee</th>
@@ -247,23 +258,21 @@ export default function Amms({ initialData, initialErrorMessage, orderQuery }) {
                                 <td>
                                   <AddressWithIcon address={a.amount?.issuer}>
                                     {amountFormatNode(a.amount, { short: true, maxFractionDigits: 6 })}
-                                    {a.amount?.issuer && (
-                                      <>
-                                        <br />
-                                        {addressUsernameOrServiceLink(a.amount, 'issuer', { short: true })}
-                                      </>
-                                    )}
+                                    <br />
+                                    {a.amount?.issuer
+                                      ? addressUsernameOrServiceLink(a.amount, 'issuer', { short: true })
+                                      : fiatRate > 0 &&
+                                        nativeCurrencyToFiat({ amount: a.amount, selectedCurrency, fiatRate })}
                                   </AddressWithIcon>
                                 </td>
                                 <td>
                                   <AddressWithIcon address={a.amount2?.issuer}>
                                     {amountFormatNode(a.amount2, { short: true, maxFractionDigits: 6 })}
-                                    {a.amount2?.issuer && (
-                                      <>
-                                        <br />
-                                        {addressUsernameOrServiceLink(a.amount2, 'issuer', { short: true })}
-                                      </>
-                                    )}
+                                    <br />
+                                    {a.amount2?.issuer
+                                      ? addressUsernameOrServiceLink(a.amount2, 'issuer', { short: true })
+                                      : fiatRate > 0 &&
+                                        nativeCurrencyToFiat({ amount: a.amount2, selectedCurrency, fiatRate })}
                                   </AddressWithIcon>
                                 </td>
                                 <td suppressHydrationWarning>
@@ -272,14 +281,13 @@ export default function Amms({ initialData, initialErrorMessage, orderQuery }) {
                                   {lpTokenName(a)}
                                 </td>
                                 <td className="right">
-                                  <LinkAmm ammId={a.ammID} hash={6} copy={true} />
+                                  <LinkAmm ammId={a.ammID} copy={true} icon={true} />
                                 </td>
                                 <td className="right">
-                                  {addressUsernameOrServiceLink(a, 'account', { short: true })}{' '}
-                                  <CopyButton text={a.account} />
+                                  <LinkAccount address={a.account} icon={true} copy={true} short={0} />
                                 </td>
-                                <td>
-                                  {shortHash(a.lpTokenBalance?.currency)}{' '}
+                                <td className="right">
+                                  {shortHash(a.lpTokenBalance?.currency, 5)}{' '}
                                   <CopyButton text={a.lpTokenBalance?.currency} />
                                 </td>
                                 <td>{timeFromNow(a.createdAt, i18n)}</td>
