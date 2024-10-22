@@ -14,7 +14,8 @@ export default function LeftFilters({
   csvHeaders,
   count,
   hasMore,
-  total
+  total,
+  onlyCsv
 }) {
   const { t } = useTranslation()
 
@@ -35,38 +36,51 @@ export default function LeftFilters({
     }
   }
 
+  const CsvButton = () => {
+    if (!rendered) return ''
+    return (
+      <CSVLink
+        data={data}
+        headers={csvHeaders}
+        filename={'export ' + dateAndTimeNow + '.csv'}
+        className={'button-action thin narrow' + (!(data?.length > 0) ? ' disabled' : '')}
+      >
+        <DownloadIcon /> CSV
+      </CSVLink>
+    )
+  }
+
   return (
-    <div className="filters">
-      <div className="filters__box">
-        <button className="filters__toggle" onClick={() => toggleFilters()}>
-          <BsFilter />
-        </button>
-        <div className="filters__wrap">
-          <div className="filters-head">
-            <span className="filter-header-title">
-              {count
-                ? '1-' +
-                  count +
-                  (total ? ' ' + t('general.of') + ' ' + total : hasMore ? ' ' + t('general.of-many') : '')
-                : ''}
-            </span>
-            {rendered && (
-              <CSVLink
-                data={data}
-                headers={csvHeaders}
-                filename={'export ' + dateAndTimeNow + '.csv'}
-                className={'button-action thin narrow' + (!(data?.length > 0) ? ' disabled' : '')}
-              >
-                <DownloadIcon /> CSV
-              </CSVLink>
-            )}
-            <button className="filters__close" onClick={() => toggleFilters()}>
-              <IoMdClose />
-            </button>
-          </div>
-          <div className="filters-body">{children}</div>
+    <>
+      {onlyCsv ? (
+        <div className="filters-onlyCsv">
+          <CsvButton />
         </div>
-      </div>
-    </div>
+      ) : (
+        <div className="filters">
+          <div className="filters__box">
+            <button className="filters__toggle" onClick={() => toggleFilters()}>
+              <BsFilter />
+            </button>
+            <div className="filters__wrap">
+              <div className="filters-head">
+                <span className="filter-header-title">
+                  {count
+                    ? '1-' +
+                      count +
+                      (total ? ' ' + t('general.of') + ' ' + total : hasMore ? ' ' + t('general.of-many') : '')
+                    : ''}
+                </span>
+                <CsvButton />
+                <button className="filters__close" onClick={() => toggleFilters()}>
+                  <IoMdClose />
+                </button>
+              </div>
+              <div className="filters-body">{children}</div>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
   )
 }

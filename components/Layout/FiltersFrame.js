@@ -32,7 +32,8 @@ export default function FiltersFrame({
   page,
   setPage,
   rowsPerPage,
-  setRowsPerPage
+  setRowsPerPage,
+  onlyCsv
 }) {
   const { t } = useTranslation()
   const router = useRouter()
@@ -88,6 +89,12 @@ export default function FiltersFrame({
     } else {
       rowsPerPageOptions.push(steps[i])
     }
+  }
+
+  if (onlyCsv) {
+    contentStyle = contentStyle || {}
+    contentStyle.margin = width > 1300 ? '80px 0 25px 0' : '63px 0 25px 0'
+    contentStyle.width = '100%'
   }
 
   return (
@@ -179,6 +186,7 @@ export default function FiltersFrame({
         hasMore={hasMore}
         data={data || []}
         csvHeaders={csvHeaders}
+        onlyCsv={onlyCsv}
       >
         {children[0]}
       </LeftFilters>

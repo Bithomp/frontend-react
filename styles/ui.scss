@@ -362,7 +362,7 @@ table {
   }
   &.table-large {
     min-width: 760px;
-    max-width: calc(100% - 50px);
+    max-width: calc(100% - 30px);
     &.shrink {
       min-width: unset;
       @media screen and (max-width: 800px) {
@@ -370,7 +370,7 @@ table {
       }
     }
     &.expand {
-      width: calc(100% - 50px);
+      width: calc(100% - 30px);
     }
     margin: auto;
     border: 1px solid var(--accent-link);

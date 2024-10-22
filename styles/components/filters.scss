@@ -1,5 +1,13 @@
 $width: 340px;
 
+.filters-onlyCsv {
+  position: absolute;
+  padding: 20px 15px;
+  @media (max-width: 1300px) {
+    padding: 12px 15px;
+  }
+}
+
 .filters {
   z-index: 3;
 

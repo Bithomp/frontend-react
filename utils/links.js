@@ -17,11 +17,11 @@ export const LedgerLink = ({ version, text, style, onClick }) =>
 
 export const LinkAccount = ({ address }) => (address ? <Link href={`/explorer/${address}`}>{address}</Link> : '')
 
-export const LinkAmm = ({ ammId, hash, icon, copy }) =>
+export const LinkAmm = ({ ammId, hash, icon, copy, text }) =>
   ammId ? (
     <>
       <Link href={`/amm/${ammId}`}>
-        {hash ? shortHash(ammId, hash > 3 ? hash : 10) : ''}
+        {text ? text : hash ? shortHash(ammId, hash > 3 ? hash : 10) : ''}
         {icon ? (
           <>
             {' '}

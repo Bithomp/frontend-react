@@ -1,9 +1,11 @@
 import { useTranslation } from 'next-i18next'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { axiosServer } from '../utils/axios'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useWidth } from '../utils'
 import { getIsSsrMobile } from '../utils/mobile'
+import axios from 'axios'
+
 import {
   lpTokenName,
   shortHash,
@@ -12,11 +14,15 @@ import {
   shortNiceNumber,
   fullDateAndTime,
   timeFromNow,
-  amountFormatNode
+  amountFormatNode,
+  amountFormat
 } from '../utils/format'
 
 export async function getServerSideProps(context) {
-  const { locale, req } = context
+  const { locale, req, query } = context
+
+  const { order } = query
+
   let initialData = null
 
   let headers = {}
@@ -43,6 +49,7 @@ export async function getServerSideProps(context) {
   return {
     props: {
       initialData: initialData || null,
+      orderQuery: order || 'currencyHigh',
       initialErrorMessage: initialErrorMessage || '',
       isSsrMobile: getIsSsrMobile(context),
       ...(await serverSideTranslations(locale, ['common']))
@@ -53,222 +60,321 @@ export async function getServerSideProps(context) {
 import SEO from '../components/SEO'
 import CopyButton from '../components/UI/CopyButton'
 import { LinkAmm } from '../utils/links'
+import Image from 'next/image'
+import FiltersFrame from '../components/Layout/FiltersFrame'
 
-export default function Amms({ initialData, initialErrorMessage }) {
+// add to the list new parameters for CSV
+const updateListForCsv = (list) => {
+  return list.map((a, i) => {
+    return {
+      ...a,
+      index: i + 1,
+      amountFormated: amountFormat(a.amount),
+      amount2Formated: amountFormat(a.amount2),
+      createdAtFormated: fullDateAndTime(a.createdAt, null, { asText: true }),
+      updatedAtFormated: fullDateAndTime(a.updatedAt, null, { asText: true }),
+      tradingFeeFormated: showAmmPercents(a.tradingFee)
+    }
+  })
+}
+
+export default function Amms({ initialData, initialErrorMessage, orderQuery }) {
   const { t, i18n } = useTranslation()
 
   const windowWidth = useWidth()
 
-  const data = initialData?.amms || []
-  const errorMessage = initialErrorMessage || ''
-  const loading = false
-  /*
   const [data, setData] = useState(initialData?.amms || [])
   const [rawData, setRawData] = useState(initialData || {})
+  const [order, setOrder] = useState(orderQuery)
   const [loading, setLoading] = useState(false)
-  const [errorMessage, setErrorMessage] = useState(initialErrorMessage || "")
-  */
+  const [errorMessage, setErrorMessage] = useState(initialErrorMessage || '')
 
-  /*
+  const controller = new AbortController()
+
+  useEffect(() => {
+    if (initialData?.amms.length > 0) {
+      setData(updateListForCsv(initialData.amms))
+    }
+  }, [initialData])
+
+  useEffect(() => {
+    return () => {
+      controller.abort()
+    }
+  }, [])
+
   const checkApi = async () => {
-    let apiUrl = 'v2/amms'
+    let apiUrl = 'v2/amms?order=' + order + '&sortCurrency=XRP'
 
     setLoading(true)
     setRawData({})
     setData([])
 
-    const response = await axios.get(apiUrl, {
-      signal: controller.signal
-    }).catch(error => {
-      if (error && error.message !== "canceled") {
-        setErrorMessage(t("error." + error.message))
-        setLoading(false) //keep here for fast tab clickers
-      }
-    })
-    const newdata = response?.data;
+    const response = await axios
+      .get(apiUrl, {
+        signal: controller.signal
+      })
+      .catch((error) => {
+        if (error && error.message !== 'canceled') {
+          setErrorMessage(t('error.' + error.message))
+          setLoading(false) //keep here for fast tab clickers
+        }
+      })
+    const newdata = response?.data
 
     if (newdata) {
       setRawData(newdata)
       setLoading(false) //keep here for fast tab clickers
-      if (newdata.addresses) {
-        let list = newdata.addresses
+      if (newdata.amms) {
+        let list = newdata.amms
         if (list.length > 0) {
-          setErrorMessage("")
-          setData(list)
+          setErrorMessage('')
+          setData(updateListForCsv(list))
         } else {
-          setErrorMessage(t("general.no-data"))
+          setErrorMessage(t('general.no-data'))
         }
       } else {
         if (newdata.error) {
           setErrorMessage(newdata.error)
         } else {
-          setErrorMessage("Error")
+          setErrorMessage('Error')
           console.log(newdata)
         }
       }
     }
   }
-  */
 
   useEffect(() => {
-    //checkApi()
+    if (rawData?.order !== order) {
+      checkApi()
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [order])
+
+  const csvHeaders = [
+    { label: 'Index', key: 'index' },
+    { label: 'Asset 1', key: 'amountFormated' },
+    { label: 'Asset 1, issuer', key: 'amount.issuer' },
+    { label: 'Asset 2', key: 'amount2Formated' },
+    { label: 'Asset 2, issuer', key: 'amount2.issuer' },
+    { label: 'LP balance', key: 'lpTokenBalance.value' },
+    { label: 'Currency code', key: 'lpTokenBalance.currency' },
+    { label: 'AMM address', key: 'account' },
+    { label: 'AMM ID', key: 'ammID' },
+    { label: 'Created', key: 'createdAtFormated' },
+    { label: 'Updated', key: 'updatedAtFormated' },
+    { label: 'Trading fee', key: 'tradingFeeFormated' }
+  ]
+
+  const AddressWithIcon = ({ children, address }) => {
+    if (!address) return children
+    return (
+      <table>
+        <tbody>
+          <tr>
+            <td style={{ padding: 0 }}>
+              <Image alt="avatar" src={'https://cdn.bithomp.com/avatar/' + address} width="35" height="35" />
+            </td>
+            <td style={{ padding: '0 0 0 5px' }}>{children}</td>
+          </tr>
+        </tbody>
+      </table>
+    )
+  }
 
   return (
     <>
       <SEO title={t('menu.amm.pools')} />
       <div className="content-text">
         <h1 className="center">{t('menu.amm.pools')}</h1>
-        <br />
-        {!windowWidth || windowWidth > 1000 ? (
-          <table className="table-large shrink">
-            <thead>
-              <tr>
-                <th className="center">{t('table.index')}</th>
-                <th>Asset 1</th>
-                <th>Asset 2</th>
-                <th>LP balance</th>
-                <th className="right">AMM ID</th>
-                <th>AMM address</th>
-                <th>Currency code</th>
-                <th>Created</th>
-                <th className="right">Trading fee</th>
-                <th className="center">Vote slots</th>
-              </tr>
-            </thead>
-            <tbody>
-              {loading ? (
-                <tr className="center">
-                  <td colSpan="100">
-                    <br />
-                    <span className="waiting"></span>
-                    <br />
-                    {t('general.loading')}
-                    <br />
-                    <br />
-                  </td>
-                </tr>
-              ) : (
-                <>
-                  {!errorMessage && data ? (
+        <FiltersFrame
+          order={order}
+          setOrder={setOrder}
+          orderList={[
+            { value: 'currencyHigh', label: 'XRP High to Low' },
+            { value: 'createdOld', label: 'Creation: Earliest' },
+            { value: 'createdNew', label: 'Creation: Latest' },
+            { value: 'updatedNew', label: 'Updated: Recent' },
+            { value: 'updatedOld', label: 'Updated: Old' }
+          ]}
+          count={data?.length}
+          hasMore={false}
+          data={data || []}
+          csvHeaders={csvHeaders}
+          onlyCsv={true}
+        >
+          <></>
+          <>
+            {!windowWidth || windowWidth > 1460 ? (
+              <table className="table-large expand">
+                <thead>
+                  <tr>
+                    <th className="center">{t('table.index')}</th>
+                    <th>Asset 1</th>
+                    <th>Asset 2</th>
+                    <th>LP balance</th>
+                    <th className="right">AMM ID</th>
+                    <th className="right">AMM address</th>
+                    <th>Currency code</th>
+                    <th>Created</th>
+                    <th>Updated</th>
+                    <th className="right">Trading fee</th>
+                    <th className="center">Vote slots</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {loading ? (
+                    <tr className="center">
+                      <td colSpan="100">
+                        <br />
+                        <span className="waiting"></span>
+                        <br />
+                        {t('general.loading')}
+                        <br />
+                        <br />
+                      </td>
+                    </tr>
+                  ) : (
                     <>
-                      {data.length > 0 &&
-                        data.map((a, i) => (
-                          <tr key={i}>
-                            <td className="center">{i + 1}</td>
-                            <td>
-                              {amountFormatNode(a.amount, { short: true, maxFractionDigits: 6 })}
-                              {a.amount?.issuer && (
-                                <>
+                      {!errorMessage && data ? (
+                        <>
+                          {data.length > 0 &&
+                            data.map((a, i) => (
+                              <tr key={i}>
+                                <td className="center">
+                                  {i + 1} <LinkAmm ammId={a.ammID} icon={true} />
+                                </td>
+                                <td>
+                                  <AddressWithIcon address={a.amount?.issuer}>
+                                    {amountFormatNode(a.amount, { short: true, maxFractionDigits: 6 })}
+                                    {a.amount?.issuer && (
+                                      <>
+                                        <br />
+                                        {addressUsernameOrServiceLink(a.amount, 'issuer', { short: true })}
+                                      </>
+                                    )}
+                                  </AddressWithIcon>
+                                </td>
+                                <td>
+                                  <AddressWithIcon address={a.amount2?.issuer}>
+                                    {amountFormatNode(a.amount2, { short: true, maxFractionDigits: 6 })}
+                                    {a.amount2?.issuer && (
+                                      <>
+                                        <br />
+                                        {addressUsernameOrServiceLink(a.amount2, 'issuer', { short: true })}
+                                      </>
+                                    )}
+                                  </AddressWithIcon>
+                                </td>
+                                <td suppressHydrationWarning>
+                                  {shortNiceNumber(a.lpTokenBalance?.value)}
                                   <br />
-                                  {addressUsernameOrServiceLink(a.amount, 'issuer', { short: true })}
-                                </>
-                              )}
-                            </td>
-                            <td>
-                              {amountFormatNode(a.amount2, { short: true, maxFractionDigits: 6 })}
-                              {a.amount2?.issuer && (
-                                <>
-                                  <br />
-                                  {addressUsernameOrServiceLink(a.amount2, 'issuer', { short: true })}
-                                </>
-                              )}
-                            </td>
-                            <td suppressHydrationWarning>
-                              {shortNiceNumber(a.lpTokenBalance.value)}
-                              <br />
-                              {lpTokenName(a)}
-                            </td>
-                            <td className="right">
-                              <LinkAmm ammId={a.ammID} hash={6} copy={true} icon={true} />
-                            </td>
-                            <td>{addressUsernameOrServiceLink(a, 'account', { short: true })}</td>
-                            <td>
-                              {shortHash(a.lpTokenBalance.currency)} <CopyButton text={a.lpTokenBalance.currency} />
-                            </td>
-                            <td>{timeFromNow(a.createdAt, i18n)}</td>
-                            <td className="right">{showAmmPercents(a.tradingFee)}</td>
-                            <td className="center">{a.voteSlots?.length}</td>
-                          </tr>
-                        ))}
+                                  {lpTokenName(a)}
+                                </td>
+                                <td className="right">
+                                  <LinkAmm ammId={a.ammID} hash={6} copy={true} />
+                                </td>
+                                <td className="right">
+                                  {addressUsernameOrServiceLink(a, 'account', { short: true })}{' '}
+                                  <CopyButton text={a.account} />
+                                </td>
+                                <td>
+                                  {shortHash(a.lpTokenBalance?.currency)}{' '}
+                                  <CopyButton text={a.lpTokenBalance?.currency} />
+                                </td>
+                                <td>{timeFromNow(a.createdAt, i18n)}</td>
+                                <td>{timeFromNow(a.updatedAt, i18n)}</td>
+                                <td className="right">{showAmmPercents(a.tradingFee)}</td>
+                                <td className="center">
+                                  <LinkAmm ammId={a.ammID} text={a.voteSlots?.length} />
+                                </td>
+                              </tr>
+                            ))}
+                        </>
+                      ) : (
+                        <tr>
+                          <td colSpan="100" className="center orange bold">
+                            {errorMessage}
+                          </td>
+                        </tr>
+                      )}
                     </>
-                  ) : (
-                    <tr>
-                      <td colSpan="100" className="center orange bold">
-                        {errorMessage}
+                  )}
+                </tbody>
+              </table>
+            ) : (
+              <table className="table-mobile">
+                <thead></thead>
+                <tbody>
+                  {loading ? (
+                    <tr className="center">
+                      <td colSpan="100">
+                        <br />
+                        <span className="waiting"></span>
+                        <br />
+                        {t('general.loading')}
+                        <br />
+                        <br />
                       </td>
                     </tr>
-                  )}
-                </>
-              )}
-            </tbody>
-          </table>
-        ) : (
-          <table className="table-mobile">
-            <thead></thead>
-            <tbody>
-              {loading ? (
-                <tr className="center">
-                  <td colSpan="100">
-                    <br />
-                    <span className="waiting"></span>
-                    <br />
-                    {t('general.loading')}
-                    <br />
-                    <br />
-                  </td>
-                </tr>
-              ) : (
-                <>
-                  {!errorMessage ? (
-                    data.map((a, i) => (
-                      <tr key={i}>
-                        <td style={{ padding: '5px' }} className="center">
-                          <b>{i + 1}</b>
-                        </td>
-                        <td>
-                          <p>
-                            Asset 1: {amountFormatNode(a.amount, { short: true, maxFractionDigits: 6 })}
-                            {a.amount?.issuer && addressUsernameOrServiceLink(a.amount, 'issuer', { short: true })}
-                          </p>
-                          <p>
-                            Asset 2: {amountFormatNode(a.amount2, { short: true, maxFractionDigits: 6 })}
-                            {a.amount2?.issuer && addressUsernameOrServiceLink(a.amount2, 'issuer', { short: true })}
-                          </p>
-                          <p suppressHydrationWarning>
-                            LP balance: {shortNiceNumber(a.lpTokenBalance.value)} {lpTokenName(a)}
-                          </p>
-                          <p>
-                            AMM ID: <LinkAmm ammId={a.ammID} hash={6} copy={true} icon={true} />
-                          </p>
-                          <p>AMM address: {addressUsernameOrServiceLink(a, 'account', { short: true })}</p>
-                          <p>
-                            Currency code: {shortHash(a.lpTokenBalance.currency)}{' '}
-                            <CopyButton text={a.lpTokenBalance.currency} />
-                          </p>
-                          <p>
-                            Created: {timeFromNow(a.createdAt, i18n)}
-                            {', '}
-                            {fullDateAndTime(a.createdAt)}
-                          </p>
-                          <p>Trading fee: {showAmmPercents(a.tradingFee)}</p>
-                          <p>Vote slots: {a.voteSlots?.length}</p>
-                        </td>
-                      </tr>
-                    ))
                   ) : (
-                    <tr>
-                      <td colSpan="100" className="center orange bold">
-                        {errorMessage}
-                      </td>
-                    </tr>
+                    <>
+                      {!errorMessage ? (
+                        data?.map((a, i) => (
+                          <tr key={i}>
+                            <td style={{ padding: '5px' }} className="center">
+                              <b>{i + 1}</b>
+                            </td>
+                            <td>
+                              <p>
+                                Asset 1: {amountFormatNode(a.amount, { short: true, maxFractionDigits: 6 })}
+                                {a.amount?.issuer && addressUsernameOrServiceLink(a.amount, 'issuer', { short: true })}
+                              </p>
+                              <p>
+                                Asset 2: {amountFormatNode(a.amount2, { short: true, maxFractionDigits: 6 })}
+                                {a.amount2?.issuer &&
+                                  addressUsernameOrServiceLink(a.amount2, 'issuer', { short: true })}
+                              </p>
+                              <p suppressHydrationWarning>
+                                LP balance: {shortNiceNumber(a.lpTokenBalance?.value)} {lpTokenName(a)}
+                              </p>
+                              <p>
+                                AMM ID: <LinkAmm ammId={a.ammID} hash={6} copy={true} />
+                              </p>
+                              <p>AMM address: {addressUsernameOrServiceLink(a, 'account', { short: true })}</p>
+                              <p>
+                                Currency code: {shortHash(a.lpTokenBalance?.currency)}{' '}
+                                <CopyButton text={a.lpTokenBalance?.currency} />
+                              </p>
+                              <p>
+                                Created: {timeFromNow(a.createdAt, i18n)}
+                                {', '}
+                                {fullDateAndTime(a.createdAt)}
+                              </p>
+                              <p>
+                                Updated: {timeFromNow(a.updatedAt, i18n)}
+                                {', '}
+                                {fullDateAndTime(a.updatedAt)}
+                              </p>
+                              <p>Trading fee: {showAmmPercents(a.tradingFee)}</p>
+                              <p>Vote slots: {a.voteSlots?.length}</p>
+                            </td>
+                          </tr>
+                        ))
+                      ) : (
+                        <tr>
+                          <td colSpan="100" className="center orange bold">
+                            {errorMessage}
+                          </td>
+                        </tr>
+                      )}
+                    </>
                   )}
-                </>
-              )}
-            </tbody>
-          </table>
-        )}
+                </tbody>
+              </table>
+            )}
+          </>
+        </FiltersFrame>
       </div>
     </>
   )
