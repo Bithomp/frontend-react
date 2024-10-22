@@ -243,13 +243,6 @@ export default function NftVolumes({
       queryRemoveList = ['currency', 'currencyIssuer']
     }
 
-    if (period) {
-      queryAddList.push({
-        name: 'period',
-        value: period
-      })
-    }
-
     setTabParams(router, tabsToSet, queryAddList, queryRemoveList)
 
     setSortConfig({})

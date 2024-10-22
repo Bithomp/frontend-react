@@ -116,6 +116,7 @@ export default function DateAndTimeRange({ setPeriod, minDate, tabs, radio, defa
       setPeriod(periodName)
     } else if (startDateIn && endDateIn) {
       const range = new Date(startDateIn).toISOString() + '..' + new Date(endDateIn).toISOString()
+      queryAddList.push({ name: periodQueryName, value: range })
       setPeriod(range)
     } else {
       queryRemoveList.push(periodQueryName)

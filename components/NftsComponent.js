@@ -549,27 +549,9 @@ export default function NftsComponent({
       queryRemoveList.push('includeWithoutMediaData')
     }
 
-    if (mintedPeriod && mintedPeriod !== 'all') {
-      queryAddList.push({
-        name: 'mintedPeriod',
-        value: mintedPeriod
-      })
-    } else {
-      queryRemoveList.push('mintedPeriod')
-    }
-
-    if (burnedPeriod) {
-      queryAddList.push({
-        name: 'burnedPeriod',
-        value: burnedPeriod
-      })
-    } else {
-      queryRemoveList.push('burnedPeriod')
-    }
-
     setTabParams(router, tabsToSet, queryAddList, queryRemoveList)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [order, rawData, listTab, saleDestinationTab, includeBurned, includeWithoutMediaData, mintedPeriod, burnedPeriod])
+  }, [order, rawData, listTab, saleDestinationTab, includeBurned, includeWithoutMediaData])
 
   const onTaxonInput = (value) => {
     if (/^\d+$/.test(value) && issuer && isValidTaxon(value)) {
