@@ -111,7 +111,7 @@ export default function Whales({ currency }) {
                       width={20}
                       style={{ marginRight: '5px', marginBottom: '-5px' }}
                     />
-                    {addressUsernameOrServiceLink(tx, 'sourceAddress', { short: width > 800 ? 10 : 6 })}
+                    {addressUsernameOrServiceLink(tx, 'sourceAddress', { short: width > 800 ? 9 : 5 })}
                   </span>{' '}
                   →{width < 550 ? <div style={{ height: '8px' }} /> : ' '}
                   <span style={styleAddress}>
@@ -123,7 +123,7 @@ export default function Whales({ currency }) {
                       width={20}
                       style={{ marginRight: '5px', marginBottom: '-5px' }}
                     />
-                    {addressUsernameOrServiceLink(tx, 'destinationAddress', { short: width > 800 ? 10 : 6 })}
+                    {addressUsernameOrServiceLink(tx, 'destinationAddress', { short: width > 800 ? 9 : 6 })}
                   </span>
                 </span>
                 <span className="tx-link">{txIdLink(tx.hash, 0)}</span>
