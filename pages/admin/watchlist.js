@@ -199,9 +199,11 @@ export default function Watchlist({ selectedCurrency, account, subscriptionExpir
       const response = await axios(url).catch((error) => {
         console.log(error)
       })
-      if (response?.data?.nfts) {
+      const nftsInfo = xahauNetwork ? response?.data?.uritokens : response?.data?.nfts
+
+      if (nftsInfo) {
         list = list.map((l) => {
-          const nft = response.data.nfts.find((n) => n.nftokenID === l.entity)
+          const nft = nftsInfo.find((n) => n.nftokenID === l.entity)
           if (nft) {
             l.info = nft
           }
