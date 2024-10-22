@@ -20,7 +20,7 @@ import SEO from '../components/SEO'
 import DateAndTimeRange from '../components/UI/DateAndTimeRange'
 import SimpleChart from '../components/SimpleChart'
 
-import { chartSpan } from '../utils'
+import { chartSpan, nativeCurrency } from '../utils'
 import { niceNumber } from '../utils/format'
 
 export default function Activations({ periodQuery }) {
@@ -75,19 +75,18 @@ export default function Activations({ periodQuery }) {
         title={
           t('header', { ns: 'activations' }) +
           ' ' +
-          (period ? ' (' + (period === 'all' ? t('tabs.all-time') : t('tabs.' + period)) + ')' : '')
+          (period
+            ? ' (' +
+              (period === 'all' ? t('tabs.all-time') : period?.includes('..') ? period : t('tabs.' + period)) +
+              ')'
+            : '')
         }
+        description={nativeCurrency + ' ' + t('header', { ns: 'activations' })}
       />
       <div className="content-text">
         <h1 className="center">{t('header', { ns: 'activations' })}</h1>
         <div className="tabs-inline">
-          <DateAndTimeRange
-            period={period}
-            setPeriod={setPeriod}
-            defaultPeriod={periodQuery}
-            tabs={true}
-            periodQueryName="period"
-          />
+          <DateAndTimeRange period={period} setPeriod={setPeriod} defaultPeriod={periodQuery} tabs={true} />
         </div>
 
         <center>
