@@ -69,7 +69,8 @@ export default function Nfts({
   includeBurnedQuery,
   includeWithoutMediaDataQuery,
   id,
-  account
+  account,
+  sessionToken
 }) {
   return (
     <NftsComponent
@@ -92,6 +93,7 @@ export default function Nfts({
       nftExplorer={false}
       id={id}
       account={account}
+      sessionToken={sessionToken}
     />
   )
 }
