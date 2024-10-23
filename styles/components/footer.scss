@@ -3,6 +3,16 @@ footer {
   background-color: var(--background-footer);
   color: var(--text-contrast);
   transition: background-color .5s, color .5s;
+  min-height: 257px;
+  @media screen and (max-width: 1300px) {
+    min-height: 476px;
+  }
+  @media screen and (max-width: 600px) {
+    min-height: 565px;
+  }
+  @media screen and (max-width: 376px) {
+    min-height: 824px;
+  }
 }
 
 .footer-menu {
