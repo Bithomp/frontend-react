@@ -27,7 +27,7 @@ export const getServerSideProps = async (context) => {
 
 const checkmark = '/images/checkmark.svg'
 
-export default function Admin({ redirectToken, account, setAccount, setProExpire }) {
+export default function Admin({ redirectToken, account, setAccount, setProExpire, sessionToken, setSessionToken }) {
   const { theme } = useTheme()
   const { t, i18n } = useTranslation(['common', 'admin'])
   const width = useWidth()
@@ -71,17 +71,15 @@ export default function Admin({ redirectToken, account, setAccount, setProExpire
 
   useEffect(() => {
     redirectTokenRun()
-    const sessionToken = localStorage.getItem('sessionToken')
     if (!sessionToken) {
       checkApi()
       setStep(0)
     } else {
       setStep(2)
-      axiosAdmin.defaults.headers.common['Authorization'] = 'Bearer ' + sessionToken
       getLoggedUserData()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [sessionToken])
 
   const redirectTokenRun = async () => {
     if (redirectToken) {
@@ -104,8 +102,7 @@ export default function Admin({ redirectToken, account, setAccount, setProExpire
       if (data?.status === 'success') {
         setStep(2)
         setErrorMessage('')
-        localStorage.setItem('sessionToken', data.token)
-        axiosAdmin.defaults.headers.common['Authorization'] = 'Bearer ' + data.token
+        setSessionToken(data.token)
         getLoggedUserData()
       }
     }
@@ -285,15 +282,14 @@ export default function Admin({ redirectToken, account, setAccount, setProExpire
       if (data?.status === 'success') {
         setStep(2)
         setErrorMessage('')
-        localStorage.setItem('sessionToken', data.token)
-        axiosAdmin.defaults.headers.common['Authorization'] = 'Bearer ' + data.token
+        setSessionToken(data.token)
         getLoggedUserData()
       }
     }
   }
 
   const onLogOut = () => {
-    localStorage.removeItem('sessionToken')
+    setSessionToken('')
     setAccount({ ...account, pro: null })
     setStep(0)
     setErrorMessage('')

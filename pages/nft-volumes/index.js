@@ -58,7 +58,8 @@ export default function NftVolumes({
   currencyIssuer,
   selectedCurrency,
   sortCurrency,
-  subscriptionExpired
+  subscriptionExpired,
+  sessionToken
 }) {
   const { t } = useTranslation()
   const router = useRouter()
@@ -81,16 +82,6 @@ export default function NftVolumes({
   const [filtersHide, setFiltersHide] = useState(false)
   const [hasMore, setHasMore] = useState('first')
   const [csvHeaders, setCsvHeaders] = useState([])
-  const [sessionToken, setSessionToken] = useState('')
-
-  useEffect(() => {
-    const sessionTokenString = localStorage.getItem('sessionToken')
-    if (sessionTokenString) {
-      axios.defaults.headers.common['Authorization'] = 'Bearer ' + sessionTokenString
-      setSessionToken(sessionTokenString)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
 
   const convertCurrency = sortCurrency || selectedCurrency
 

@@ -29,7 +29,7 @@ export const getServerSideProps = async (context) => {
   }
 }
 
-export default function Watchlist({ selectedCurrency, account, subscriptionExpired }) {
+export default function Watchlist({ selectedCurrency, account, subscriptionExpired, sessionToken }) {
   const { t, i18n } = useTranslation()
   const router = useRouter()
   const width = useWidth()
@@ -45,16 +45,14 @@ export default function Watchlist({ selectedCurrency, account, subscriptionExpir
   const [rendered, setRendered] = useState(false)
 
   useEffect(() => {
-    const sessionToken = localStorage.getItem('sessionToken')
     if (!sessionToken) {
       router.push('/admin')
     } else {
-      axiosAdmin.defaults.headers.common['Authorization'] = 'Bearer ' + sessionToken
       getFavorites()
       setRendered(true)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [sessionToken])
 
   useEffect(() => {
     if (selectedCurrency) {

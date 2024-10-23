@@ -52,7 +52,15 @@ const showFiat = (fiat, selectedCurrency) => {
   )
 }
 
-export default function History({ account, setAccount, queryAddress, selectedCurrency, setSelectedCurrency }) {
+export default function History({
+  account,
+  setAccount,
+  queryAddress,
+  selectedCurrency,
+  setSelectedCurrency,
+  sessionToken,
+  setSessionToken
+}) {
   const router = useRouter()
   const width = useWidth()
 
@@ -185,7 +193,7 @@ export default function History({ account, setAccount, queryAddress, selectedCur
   }
 
   const onLogOut = () => {
-    localStorage.removeItem('sessionToken')
+    setSessionToken('')
     setAccount({ ...account, pro: null })
     setErrorMessage('')
   }
@@ -234,16 +242,14 @@ export default function History({ account, setAccount, queryAddress, selectedCur
   }
 
   useEffect(() => {
-    const sessionToken = localStorage.getItem('sessionToken')
     if (!sessionToken) {
       router.push('/admin')
     } else {
-      axiosAdmin.defaults.headers.common['Authorization'] = 'Bearer ' + sessionToken
       setErrorMessage('')
+      getVerifiedAddresses()
     }
-    getVerifiedAddresses()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [sessionToken])
 
   useEffect(() => {
     getProAddressHistory()

@@ -96,7 +96,8 @@ export default function NftSales({
   sellerQuery,
   searchQuery,
   includeWithoutMediaDataQuery,
-  subscriptionExpired
+  subscriptionExpired,
+  sessionToken
 }) {
   const { t } = useTranslation()
   const router = useRouter()
@@ -134,7 +135,6 @@ export default function NftSales({
   ])
   const [issuerTaxonUrlPart, setIssuerTaxonUrlPart] = useState('?view=' + activeView)
   const [collectionUrlPart, setCollectionUrlPart] = useState(collectionQuery ? '&collection=' + collectionQuery : '')
-  const [sessionToken, setSessionToken] = useState('')
   const [filtersHide, setFiltersHide] = useState(false)
 
   const controller = new AbortController()
@@ -150,12 +150,6 @@ export default function NftSales({
 
   useEffect(() => {
     updateSaleTabList({})
-
-    const sessionTokenString = localStorage.getItem('sessionToken')
-    if (sessionTokenString) {
-      axios.defaults.headers.common['Authorization'] = 'Bearer ' + sessionTokenString
-      setSessionToken(sessionTokenString)
-    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 

@@ -5,8 +5,15 @@ import { useState, useEffect } from 'react'
 import { useTranslation } from 'next-i18next'
 
 import { countriesTranslated } from '../../utils'
+import { axiosAdmin } from '../../utils/axios'
 
-export default function BillingCountry({ billingCountry, setBillingCountry, choosingCountry, setChoosingCountry }) {
+export default function BillingCountry({
+  billingCountry,
+  setBillingCountry,
+  choosingCountry,
+  setChoosingCountry,
+  sessionToken
+}) {
   const router = useRouter()
   const { i18n } = useTranslation()
   const countries = countriesTranslated(i18n.language)
@@ -14,18 +21,14 @@ export default function BillingCountry({ billingCountry, setBillingCountry, choo
   const [loading, setLoading] = useState(true) //keep true for country select
 
   useEffect(() => {
-    const sessionToken = localStorage.getItem('sessionToken')
-    if (!sessionToken) {
-      router.push('/admin')
-    } else {
-      axios.defaults.headers.common['Authorization'] = 'Bearer ' + sessionToken
+    if (sessionToken) {
       getApiData()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [sessionToken])
 
   const getApiData = async () => {
-    const partnerData = await axios.get('partner/partner', { baseUrl: '/api/' }).catch((error) => {
+    const partnerData = await axiosAdmin.get('partner').catch((error) => {
       if (error && error.message !== 'canceled') {
         console.log(error)
         if (error.response?.data?.error === 'errors.token.required') {

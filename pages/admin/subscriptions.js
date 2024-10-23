@@ -182,8 +182,8 @@ const subscriptionsTabList = [
   { value: 'api', label: 'API' }
 ]
 
-export default function Subscriptions({ setSignRequest, receiptQuery, tabQuery }) {
-  const { t } = useTranslation(['common', 'admin'])
+export default function Subscriptions({ setSignRequest, receiptQuery, tabQuery, sessionToken }) {
+  const { t } = useTranslation()
   const router = useRouter()
   const width = useWidth()
 
@@ -204,16 +204,14 @@ export default function Subscriptions({ setSignRequest, receiptQuery, tabQuery }
   const [transactions, setTransactions] = useState([])
 
   useEffect(() => {
-    const sessionToken = localStorage.getItem('sessionToken')
     if (!sessionToken) {
       router.push('/admin')
     } else {
-      axiosAdmin.defaults.headers.common['Authorization'] = 'Bearer ' + sessionToken
       getApiData()
-      getTransactions()
+      getTransactions
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [sessionToken])
 
   useEffect(() => {
     let queryAddList = []
@@ -235,7 +233,7 @@ export default function Subscriptions({ setSignRequest, receiptQuery, tabQuery }
       if (error && error.message !== 'canceled') {
         console.log(error)
         if (error.response?.data?.error === 'errors.token.required') {
-          router.push('/admin')
+          //router.push('/admin')
         }
       }
     })
@@ -253,7 +251,7 @@ export default function Subscriptions({ setSignRequest, receiptQuery, tabQuery }
       if (error && error.message !== 'canceled') {
         setErrorMessage(t(error.response.data.error || 'error.' + error.message))
         if (error.response?.data?.error === 'errors.token.required') {
-          router.push('/admin')
+          //router.push('/admin')
         }
       }
       setLoading(false)
@@ -316,7 +314,7 @@ export default function Subscriptions({ setSignRequest, receiptQuery, tabQuery }
       if (error && error.message !== 'canceled') {
         setErrorMessage(t(error.response.data.error || 'error.' + error.message))
         if (error.response?.data?.error === 'errors.token.required') {
-          router.push('/admin')
+          //router.push('/admin')
         }
       }
     })
@@ -497,8 +495,8 @@ export default function Subscriptions({ setSignRequest, receiptQuery, tabQuery }
             setBillingCountry={setBillingCountry}
             choosingCountry={choosingCountry}
             setChoosingCountry={setChoosingCountry}
+            sessionToken={sessionToken}
           />
-
           <br />
           <br />
 

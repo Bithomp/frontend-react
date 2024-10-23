@@ -45,7 +45,14 @@ export async function getServerSideProps(context) {
 import SEO from '../../components/SEO'
 import CopyButton from '../../components/UI/CopyButton'
 
-export default function NftDistribution({ issuerQuery, taxonQuery, idQuery, orderQuery, subscriptionExpired }) {
+export default function NftDistribution({
+  issuerQuery,
+  taxonQuery,
+  idQuery,
+  orderQuery,
+  subscriptionExpired,
+  sessionToken
+}) {
   const { t } = useTranslation()
   const windowWidth = useWidth()
   const router = useRouter()
@@ -60,16 +67,6 @@ export default function NftDistribution({ issuerQuery, taxonQuery, idQuery, orde
   const [taxonInput, setTaxonInput] = useState(taxonQuery)
   const [order, setOrder] = useState(orderQuery)
   const [hasMore, setHasMore] = useState('first')
-  const [sessionToken, setSessionToken] = useState('')
-
-  useEffect(() => {
-    const sessionTokenString = localStorage.getItem('sessionToken')
-    if (sessionTokenString) {
-      axios.defaults.headers.common['Authorization'] = 'Bearer ' + sessionTokenString
-      setSessionToken(sessionTokenString)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
 
   const checkApi = async () => {
     /*

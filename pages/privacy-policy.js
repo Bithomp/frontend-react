@@ -25,7 +25,7 @@ export default function PrivacyPolicy() {
       <SEO title={t('menu.privacy-policy')} noindex={true} />
       <div className="content-text">
         <h1>Privacy Policy</h1>
-        <p>Last updated: October 8, 2024</p>
+        <p>Last updated: October 23, 2024</p>
         <p>
           This Privacy Policy describes Our policies and procedures on the collection, use and disclosure of Your
           information when You use the Service and tells You about Your privacy rights and how the law protects You.
@@ -277,6 +277,10 @@ export default function PrivacyPolicy() {
             prevent sending unnecessary requests. (ex: "1718495999000")
           </li>
           <li>
+            <strong>sessionToken</strong> - session token for logged-in users, to show relevant data for the authroised
+            user (ex: "ebc39d9a-13eb-4a86-bf7a-2002726ec6a7-54633f3b-b8ea-483e-89e3-5f2763b269c1").
+          </li>
+          <li>
             <strong>currency</strong> - the prefered Service currency (ex: "sek").
           </li>
           <li>
@@ -304,10 +308,6 @@ export default function PrivacyPolicy() {
           </li>
           <li>
             <strong>language</strong> - on docs.bithomp.com, the prefered programing language (ex: "php").
-          </li>
-          <li>
-            <strong>sessionToken</strong> - session token for logged-in users, to show relevant data for the authroised
-            user (ex: "ebc39d9a-13eb-4a86-bf7a-2002726ec6a7-54633f3b-b8ea-483e-89e3-5f2763b269c1").
           </li>
           <li>
             <strong>isOver18</strong> - show or hide explicit content depending on the age

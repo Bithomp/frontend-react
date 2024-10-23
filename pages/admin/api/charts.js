@@ -21,7 +21,7 @@ export const getServerSideProps = async (context) => {
   }
 }
 
-export default function Charts() {
+export default function Charts({ sessionToken }) {
   const { t } = useTranslation(['common', 'admin'])
   const router = useRouter()
   const width = useWidth()
@@ -32,14 +32,11 @@ export default function Charts() {
   const [period, setPeriod] = useState('')
 
   useEffect(() => {
-    const sessionToken = localStorage.getItem('sessionToken')
     if (!sessionToken) {
       router.push('/admin')
-    } else {
-      axiosAdmin.defaults.headers.common['Authorization'] = 'Bearer ' + sessionToken
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [sessionToken])
 
   useEffect(() => {
     if (period) {

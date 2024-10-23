@@ -20,8 +20,8 @@ export const getServerSideProps = async (context) => {
   }
 }
 
-export default function Statistics() {
-  const { t } = useTranslation(['common', 'admin'])
+export default function Statistics({ sessionToken }) {
+  const { t } = useTranslation()
   const [errorMessage, setErrorMessage] = useState('')
   const [loading, setLoading] = useState(false)
   const router = useRouter()
@@ -29,15 +29,13 @@ export default function Statistics() {
   const [statistics, setStatistics] = useState({})
 
   useEffect(() => {
-    const sessionToken = localStorage.getItem('sessionToken')
     if (!sessionToken) {
       router.push('/admin')
     } else {
-      axiosAdmin.defaults.headers.common['Authorization'] = 'Bearer ' + sessionToken
       getData()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [sessionToken])
 
   const getData = async () => {
     setLoading(true)

@@ -73,7 +73,15 @@ const SettingsCheckBoxes = ({ a, mobile, subscriptionExpired }) => {
   )
 }
 
-export default function Pro({ account, setAccount, setSignRequest, refreshPage, subscriptionExpired }) {
+export default function Pro({
+  account,
+  setAccount,
+  setSignRequest,
+  refreshPage,
+  subscriptionExpired,
+  sessionToken,
+  setSessionToken
+}) {
   const router = useRouter()
   const width = useWidth()
 
@@ -149,16 +157,14 @@ export default function Pro({ account, setAccount, setSignRequest, refreshPage, 
   }
 
   useEffect(() => {
-    const sessionToken = localStorage.getItem('sessionToken')
     if (!sessionToken) {
       router.push('/admin')
     } else {
-      axiosAdmin.defaults.headers.common['Authorization'] = 'Bearer ' + sessionToken
       setErrorMessage('')
       setRendered(true)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [sessionToken])
 
   useEffect(() => {
     setAddressName('')
@@ -173,7 +179,7 @@ export default function Pro({ account, setAccount, setSignRequest, refreshPage, 
   }, [refreshPage])
 
   const onLogOut = () => {
-    localStorage.removeItem('sessionToken')
+    setSessionToken('')
     setAccount({ ...account, pro: null })
     setErrorMessage('')
   }
