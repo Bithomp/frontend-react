@@ -248,7 +248,9 @@ export default function Amms({
             { value: 'createdOld', label: 'Creation: Earliest' },
             { value: 'createdNew', label: 'Creation: Latest' },
             { value: 'updatedNew', label: 'Updated: Recent' },
-            { value: 'updatedOld', label: 'Updated: Old' }
+            { value: 'updatedOld', label: 'Updated: Old' },
+            { value: 'tradingFeeLow', label: 'Trading fee: Low to High' },
+            { value: 'tradingFeeHigh', label: 'Trading fee: High to Low' }
           ]}
           count={data?.length}
           hasMore={marker}
