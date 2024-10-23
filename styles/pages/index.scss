@@ -158,6 +158,9 @@ h2.landing-h2 {
         color: var(--text-secondary);
       }
     }
+    @media screen and (max-width: 560px) {
+      min-height: 116px;
+    }
   }
 }
 
@@ -262,6 +265,7 @@ h2.landing-h2 {
   @media only screen and (max-width: 800px) {
     margin-left: 20px;
     margin-right: 20px;
+    min-height: 849px;
   }
 }
 
