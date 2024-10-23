@@ -1,10 +1,11 @@
-import { useTranslation } from 'next-i18next'
+import { useTranslation, Trans } from 'next-i18next'
 import { useEffect, useState } from 'react'
 import { axiosServer } from '../utils/axios'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { nativeCurrenciesImages, nativeCurrency, useWidth } from '../utils'
 import { getIsSsrMobile } from '../utils/mobile'
 import axios from 'axios'
+import Link from 'next/link'
 
 import {
   lpTokenName,
@@ -64,6 +65,7 @@ import { LinkAccount, LinkAmm } from '../utils/links'
 import Image from 'next/image'
 import FiltersFrame from '../components/Layout/FiltersFrame'
 import { fetchCurrentFiatRate } from '../utils/common'
+import InfiniteScroll from 'react-infinite-scroll-component'
 
 // add to the list new parameters for CSV
 const updateListForCsv = (list) => {
@@ -99,7 +101,14 @@ const AddressWithIcon = ({ children, address }) => {
   )
 }
 
-export default function Amms({ initialData, initialErrorMessage, orderQuery, selectedCurrency }) {
+export default function Amms({
+  initialData,
+  initialErrorMessage,
+  orderQuery,
+  selectedCurrency,
+  sessionToken,
+  subscriptionExpired
+}) {
   const { t, i18n } = useTranslation()
 
   const windowWidth = useWidth()
@@ -110,6 +119,7 @@ export default function Amms({ initialData, initialErrorMessage, orderQuery, sel
   const [loading, setLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState(initialErrorMessage || '')
   const [fiatRate, setFiatRate] = useState(0)
+  const [hasMore, setHasMore] = useState('first')
 
   const controller = new AbortController()
 
@@ -131,11 +141,31 @@ export default function Amms({ initialData, initialErrorMessage, orderQuery, sel
   }, [selectedCurrency])
 
   const checkApi = async () => {
-    let apiUrl = 'v2/amms?order=' + order + '&sortCurrency=XRP'
+    const oldOrder = rawData?.order
+    const loadMoreRequest = hasMore !== 'first' && (order ? oldOrder === order : !oldOrder)
 
-    setLoading(true)
+    console.log('checkApi', loadMoreRequest, order, oldOrder) //delete
+
+    // do not load more if thereis no session token or if Bithomp Pro is expired
+    if (loadMoreRequest && (!sessionToken || (sessionToken && subscriptionExpired))) {
+      return
+    }
+
+    let marker = hasMore
+    let markerPart = ''
+    if (loadMoreRequest) {
+      markerPart = '&marker=' + rawData?.marker
+    } else {
+      marker = 'first'
+      setHasMore('first')
+    }
+
+    let apiUrl = 'v2/amms?order=' + order + '&sortCurrency=XRP' + markerPart
+
+    if (!markerPart) {
+      setLoading(true)
+    }
     setRawData({})
-    setData([])
 
     const response = await axios
       .get(apiUrl, {
@@ -156,11 +186,26 @@ export default function Amms({ initialData, initialErrorMessage, orderQuery, sel
         let list = newdata.amms
         if (list.length > 0) {
           setErrorMessage('')
-          setData(updateListForCsv(list))
+          if (newdata.marker) {
+            setHasMore(newdata.marker)
+          } else {
+            setHasMore(false)
+          }
+          const newList = updateListForCsv(list)
+          if (!loadMoreRequest) {
+            setData(newList)
+          } else {
+            setData([...data, ...newList])
+          }
         } else {
           setErrorMessage(t('general.no-data'))
         }
       } else {
+        if (marker === 'first') {
+          setErrorMessage(t('general.no-data'))
+        } else {
+          setHasMore(false)
+        }
         if (newdata.error) {
           setErrorMessage(newdata.error)
         } else {
@@ -172,9 +217,7 @@ export default function Amms({ initialData, initialErrorMessage, orderQuery, sel
   }
 
   useEffect(() => {
-    if (rawData?.order !== order) {
-      checkApi()
-    }
+    checkApi()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [order])
 
@@ -227,7 +270,41 @@ export default function Amms({ initialData, initialErrorMessage, orderQuery, sel
           onlyCsv={true}
         >
           <></>
-          <>
+          <InfiniteScroll
+            dataLength={data.length}
+            next={checkApi}
+            hasMore={hasMore}
+            loader={
+              !errorMessage && (
+                <p className="center">
+                  {hasMore !== 'first' ? (
+                    <>
+                      {!sessionToken ? (
+                        <Trans i18nKey="general.login-to-bithomp-pro">
+                          Loading more data is available to <Link href="/admin">logged-in</Link> Bithomp Pro
+                          subscribers.
+                        </Trans>
+                      ) : (
+                        <>
+                          {!subscriptionExpired ? (
+                            t('general.loading')
+                          ) : (
+                            <Trans i18nKey="general.renew-bithomp-pro">
+                              Your Bithomp Pro subscription has expired.
+                              <Link href="/admin/subscriptions">Renew your subscription</Link>.
+                            </Trans>
+                          )}
+                        </>
+                      )}
+                    </>
+                  ) : (
+                    t('general.loading')
+                  )}
+                </p>
+              )
+            }
+            endMessage={<p className="center">End of list</p>}
+          >
             {!windowWidth || windowWidth > 1360 ? (
               <table className="table-large expand">
                 <thead>
@@ -332,23 +409,22 @@ export default function Amms({ initialData, initialErrorMessage, orderQuery, sel
                               <b>{i + 1}</b>
                             </td>
                             <td>
-                              <p>
-                                Assets:
-                                <div style={{ height: 10 }} />
-                                <table>
-                                  <thead></thead>
-                                  <tbody>
-                                    <tr className="no-border">
-                                      <td>
-                                        <AmountWithIcon amount={a.amount} />
-                                      </td>
-                                      <td style={{ paddingLeft: 10 }}>
-                                        <AmountWithIcon amount={a.amount2} />
-                                      </td>
-                                    </tr>
-                                  </tbody>
-                                </table>
-                              </p>
+                              <br />
+                              Assets:
+                              <div style={{ height: 10 }} />
+                              <table>
+                                <thead></thead>
+                                <tbody>
+                                  <tr className="no-border">
+                                    <td>
+                                      <AmountWithIcon amount={a.amount} />
+                                    </td>
+                                    <td style={{ paddingLeft: 10 }}>
+                                      <AmountWithIcon amount={a.amount2} />
+                                    </td>
+                                  </tr>
+                                </tbody>
+                              </table>
                               <p suppressHydrationWarning>
                                 LP balance: {shortNiceNumber(a.lpTokenBalance?.value)} {lpTokenName(a)}
                               </p>
@@ -394,7 +470,7 @@ export default function Amms({ initialData, initialErrorMessage, orderQuery, sel
                 </tbody>
               </table>
             )}
-          </>
+          </InfiniteScroll>
         </FiltersFrame>
       </div>
     </>
