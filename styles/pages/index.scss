@@ -12,6 +12,9 @@ h2.landing-h2 {
       color: var(--text-main);
     }
   }
+  @media screen and (max-width: 530px) {
+    min-height: 72px;
+  }
 }
 
 .home-sponsored {
