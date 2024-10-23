@@ -88,7 +88,7 @@ const AddressWithIcon = ({ children, address }) => {
   return (
     <table>
       <tbody>
-        <tr>
+        <tr className="no-border">
           <td style={{ padding: 0 }}>
             <Image alt="avatar" src={imageUrl} width="35" height="35" style={{ verticalAlign: 'middle' }} />
           </td>
@@ -193,6 +193,18 @@ export default function Amms({ initialData, initialErrorMessage, orderQuery, sel
     { label: 'Trading fee', key: 'tradingFeeFormated' }
   ]
 
+  const AmountWithIcon = ({ amount }) => {
+    return (
+      <AddressWithIcon address={amount?.issuer}>
+        {amountFormatNode(amount, { short: true, maxFractionDigits: 6 })}
+        <br />
+        {amount?.issuer
+          ? addressUsernameOrServiceLink(amount, 'issuer', { short: true })
+          : fiatRate > 0 && nativeCurrencyToFiat({ amount, selectedCurrency, fiatRate })}
+      </AddressWithIcon>
+    )
+  }
+
   return (
     <>
       <SEO title={t('menu.amm.pools')} />
@@ -256,24 +268,10 @@ export default function Amms({ initialData, initialErrorMessage, orderQuery, sel
                                   {i + 1} <LinkAmm ammId={a.ammID} icon={true} />
                                 </td>
                                 <td>
-                                  <AddressWithIcon address={a.amount?.issuer}>
-                                    {amountFormatNode(a.amount, { short: true, maxFractionDigits: 6 })}
-                                    <br />
-                                    {a.amount?.issuer
-                                      ? addressUsernameOrServiceLink(a.amount, 'issuer', { short: true })
-                                      : fiatRate > 0 &&
-                                        nativeCurrencyToFiat({ amount: a.amount, selectedCurrency, fiatRate })}
-                                  </AddressWithIcon>
+                                  <AmountWithIcon amount={a.amount} />
                                 </td>
                                 <td>
-                                  <AddressWithIcon address={a.amount2?.issuer}>
-                                    {amountFormatNode(a.amount2, { short: true, maxFractionDigits: 6 })}
-                                    <br />
-                                    {a.amount2?.issuer
-                                      ? addressUsernameOrServiceLink(a.amount2, 'issuer', { short: true })
-                                      : fiatRate > 0 &&
-                                        nativeCurrencyToFiat({ amount: a.amount2, selectedCurrency, fiatRate })}
-                                  </AddressWithIcon>
+                                  <AmountWithIcon amount={a.amount2} />
                                 </td>
                                 <td suppressHydrationWarning>
                                   {shortNiceNumber(a.lpTokenBalance?.value)}
@@ -335,21 +333,32 @@ export default function Amms({ initialData, initialErrorMessage, orderQuery, sel
                             </td>
                             <td>
                               <p>
-                                Asset 1: {amountFormatNode(a.amount, { short: true, maxFractionDigits: 6 })}
-                                {a.amount?.issuer && addressUsernameOrServiceLink(a.amount, 'issuer', { short: true })}
-                              </p>
-                              <p>
-                                Asset 2: {amountFormatNode(a.amount2, { short: true, maxFractionDigits: 6 })}
-                                {a.amount2?.issuer &&
-                                  addressUsernameOrServiceLink(a.amount2, 'issuer', { short: true })}
+                                Assets:
+                                <div style={{ height: 10 }} />
+                                <table>
+                                  <thead></thead>
+                                  <tbody>
+                                    <tr className="no-border">
+                                      <td>
+                                        <AmountWithIcon amount={a.amount} />
+                                      </td>
+                                      <td style={{ paddingLeft: 10 }}>
+                                        <AmountWithIcon amount={a.amount2} />
+                                      </td>
+                                    </tr>
+                                  </tbody>
+                                </table>
                               </p>
                               <p suppressHydrationWarning>
                                 LP balance: {shortNiceNumber(a.lpTokenBalance?.value)} {lpTokenName(a)}
                               </p>
+                              <p>Trading fee: {showAmmPercents(a.tradingFee)}</p>
                               <p>
                                 AMM ID: <LinkAmm ammId={a.ammID} hash={6} copy={true} />
                               </p>
-                              <p>AMM address: {addressUsernameOrServiceLink(a, 'account', { short: true })}</p>
+                              <p>
+                                AMM address: <LinkAccount address={a.account} copy={true} short={6} />
+                              </p>
                               <p>
                                 Currency code: {shortHash(a.lpTokenBalance?.currency)}{' '}
                                 <CopyButton text={a.lpTokenBalance?.currency} />
@@ -364,8 +373,12 @@ export default function Amms({ initialData, initialErrorMessage, orderQuery, sel
                                 {', '}
                                 {fullDateAndTime(a.updatedAt)}
                               </p>
-                              <p>Trading fee: {showAmmPercents(a.tradingFee)}</p>
-                              <p>Vote slots: {a.voteSlots?.length}</p>
+                              <p>
+                                Vote slots: <LinkAmm ammId={a.ammID} text={a.voteSlots?.length} />
+                              </p>
+                              <p>
+                                Auction slot: <LinkAmm ammId={a.ammID} icon={true} />
+                              </p>
                             </td>
                           </tr>
                         ))
