@@ -1,11 +1,10 @@
-import { useTranslation, Trans } from 'next-i18next'
+import { useTranslation } from 'next-i18next'
 import { useEffect, useState } from 'react'
 import { axiosServer } from '../utils/axios'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { nativeCurrenciesImages, nativeCurrency, useWidth } from '../utils'
 import { getIsSsrMobile } from '../utils/mobile'
 import axios from 'axios'
-import Link from 'next/link'
 
 import {
   lpTokenName,
@@ -51,7 +50,7 @@ export async function getServerSideProps(context) {
   return {
     props: {
       initialData: initialData || null,
-      orderQuery: order || 'currencyHigh',
+      orderQuery: order || initialData?.order || 'currencyHigh',
       initialErrorMessage: initialErrorMessage || '',
       isSsrMobile: getIsSsrMobile(context),
       ...(await serverSideTranslations(locale, ['common']))
@@ -65,7 +64,7 @@ import { LinkAccount, LinkAmm } from '../utils/links'
 import Image from 'next/image'
 import FiltersFrame from '../components/Layout/FiltersFrame'
 import { fetchCurrentFiatRate } from '../utils/common'
-import InfiniteScroll from 'react-infinite-scroll-component'
+import InfiniteScrolling from '../components/Layout/InfiniteScrolling'
 
 // add to the list new parameters for CSV
 const updateListForCsv = (list) => {
@@ -119,7 +118,7 @@ export default function Amms({
   const [loading, setLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState(initialErrorMessage || '')
   const [fiatRate, setFiatRate] = useState(0)
-  const [hasMore, setHasMore] = useState('first')
+  const [marker, setMarker] = useState(initialData?.marker)
 
   const controller = new AbortController()
 
@@ -142,22 +141,17 @@ export default function Amms({
 
   const checkApi = async () => {
     const oldOrder = rawData?.order
-    const loadMoreRequest = hasMore !== 'first' && (order ? oldOrder === order : !oldOrder)
-
-    console.log('checkApi', loadMoreRequest, order, oldOrder) //delete
+    if (!oldOrder || !order) return
+    const loadMoreRequest = order ? oldOrder.toString() === order.toString() : !oldOrder
 
     // do not load more if thereis no session token or if Bithomp Pro is expired
     if (loadMoreRequest && (!sessionToken || (sessionToken && subscriptionExpired))) {
       return
     }
 
-    let marker = hasMore
     let markerPart = ''
     if (loadMoreRequest) {
       markerPart = '&marker=' + rawData?.marker
-    } else {
-      marker = 'first'
-      setHasMore('first')
     }
 
     let apiUrl = 'v2/amms?order=' + order + '&sortCurrency=XRP' + markerPart
@@ -186,11 +180,7 @@ export default function Amms({
         let list = newdata.amms
         if (list.length > 0) {
           setErrorMessage('')
-          if (newdata.marker) {
-            setHasMore(newdata.marker)
-          } else {
-            setHasMore(false)
-          }
+          setMarker(newdata.marker)
           const newList = updateListForCsv(list)
           if (!loadMoreRequest) {
             setData(newList)
@@ -201,11 +191,6 @@ export default function Amms({
           setErrorMessage(t('general.no-data'))
         }
       } else {
-        if (marker === 'first') {
-          setErrorMessage(t('general.no-data'))
-        } else {
-          setHasMore(false)
-        }
         if (newdata.error) {
           setErrorMessage(newdata.error)
         } else {
@@ -217,7 +202,9 @@ export default function Amms({
   }
 
   useEffect(() => {
-    checkApi()
+    if (order && rawData.order !== order) {
+      checkApi()
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [order])
 
@@ -264,46 +251,19 @@ export default function Amms({
             { value: 'updatedOld', label: 'Updated: Old' }
           ]}
           count={data?.length}
-          hasMore={false}
+          hasMore={marker}
           data={data || []}
           csvHeaders={csvHeaders}
           onlyCsv={true}
         >
           <></>
-          <InfiniteScroll
+          <InfiniteScrolling
             dataLength={data.length}
-            next={checkApi}
-            hasMore={hasMore}
-            loader={
-              !errorMessage && (
-                <p className="center">
-                  {hasMore !== 'first' ? (
-                    <>
-                      {!sessionToken ? (
-                        <Trans i18nKey="general.login-to-bithomp-pro">
-                          Loading more data is available to <Link href="/admin">logged-in</Link> Bithomp Pro
-                          subscribers.
-                        </Trans>
-                      ) : (
-                        <>
-                          {!subscriptionExpired ? (
-                            t('general.loading')
-                          ) : (
-                            <Trans i18nKey="general.renew-bithomp-pro">
-                              Your Bithomp Pro subscription has expired.
-                              <Link href="/admin/subscriptions">Renew your subscription</Link>.
-                            </Trans>
-                          )}
-                        </>
-                      )}
-                    </>
-                  ) : (
-                    t('general.loading')
-                  )}
-                </p>
-              )
-            }
-            endMessage={<p className="center">End of list</p>}
+            loadMore={checkApi}
+            hasMore={marker}
+            errorMessage={errorMessage}
+            subscriptionExpired={subscriptionExpired}
+            sessionToken={sessionToken}
           >
             {!windowWidth || windowWidth > 1360 ? (
               <table className="table-large expand">
@@ -470,7 +430,7 @@ export default function Amms({
                 </tbody>
               </table>
             )}
-          </InfiniteScroll>
+          </InfiniteScrolling>
         </FiltersFrame>
       </div>
     </>
