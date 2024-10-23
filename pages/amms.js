@@ -68,10 +68,9 @@ import InfiniteScrolling from '../components/Layout/InfiniteScrolling'
 
 // add to the list new parameters for CSV
 const updateListForCsv = (list) => {
-  return list.map((a, i) => {
+  return list.map((a) => {
     return {
       ...a,
-      index: i + 1,
       amountFormated: amountFormat(a.amount),
       amount2Formated: amountFormat(a.amount2),
       createdAtFormated: fullDateAndTime(a.createdAt, null, { asText: true }),
@@ -209,7 +208,6 @@ export default function Amms({
   }, [order])
 
   const csvHeaders = [
-    { label: 'Index', key: 'index' },
     { label: 'Asset 1', key: 'amountFormated' },
     { label: 'Asset 1, issuer', key: 'amount.issuer' },
     { label: 'Asset 2', key: 'amount2Formated' },
