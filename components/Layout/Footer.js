@@ -34,7 +34,7 @@ export default function Footer() {
           <Link href="/username">{t('menu.usernames')}</Link>
           <Link href="/submit-account-information">{t('menu.project-registration')}</Link>
           {!devNet && <Link href="/alerts">{t('menu.price-alerts', { nativeCurrency })}</Link>}
-          {!devNet && <a href={'/submit/'}>{t('menu.submit-offline-tx')}</a>}
+          <a href={'/submit/'}>{t('menu.submit-offline-tx')}</a>
         </div>
 
         <div className="footer-menu-column">
