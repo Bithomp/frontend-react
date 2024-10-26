@@ -3,7 +3,7 @@ import { useTranslation } from 'next-i18next'
 import { useState, useEffect, useRef } from 'react'
 import dynamic from 'next/dynamic'
 
-import { devNet, ledgerName, nativeCurrency, xahauNetwork } from '../../utils'
+import { devNet, ledgerName, nativeCurrency, network, xahauNetwork } from '../../utils'
 
 const CookieMessage = dynamic(() => import('./CookieMessage'), { ssr: false })
 import SocialIcons from './SocialIcons'
@@ -39,6 +39,13 @@ export default function Footer() {
 
         <div className="footer-menu-column">
           <span className="footer-menu-header">{t('menu.developers.developers')}</span>
+          {network === 'mainnet' && (
+            <>
+              <a href={'https://test.xrplexplorer.com/create/'}>{t('menu.developers.account-generation')}</a>
+              <a href={'https://test.xrplexplorer.com/faucet'}>{t('menu.developers.faucet')}</a>
+              <a href={'https://test.xrplexplorer.com/tools/'}>Bithomp tools</a>
+            </>
+          )}
           {devNet && (
             <>
               <a href={'/create/'}>{t('menu.developers.account-generation')}</a>

@@ -3,7 +3,7 @@ import { useTranslation } from 'next-i18next'
 import { useState, useEffect } from 'react'
 import MobileMenu from './MobileMenu'
 
-import { devNet, xahauNetwork, ledgerName, nativeCurrency, ledgerSubName } from '../../../utils'
+import { devNet, xahauNetwork, ledgerName, nativeCurrency, ledgerSubName, network } from '../../../utils'
 
 import Image from 'next/image'
 import Switch from './Switch'
@@ -232,6 +232,13 @@ export default function Header({
             setHoverStates={setHoverStates}
             hoverStates={hoverStates}
           >
+            {network === 'mainnet' && (
+              <>
+                <a href={'https://test.xrplexplorer.com/create/'}>{t('menu.developers.account-generation')}</a>
+                <a href={'https://test.xrplexplorer.com/faucet'}>{t('menu.developers.faucet')}</a>
+                <a href={'https://test.xrplexplorer.com/tools/'}>Bithomp tools</a>
+              </>
+            )}
             {devNet && (
               <>
                 <a href={'/create/'}>{t('menu.developers.account-generation')}</a>
