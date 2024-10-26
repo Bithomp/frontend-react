@@ -1,6 +1,6 @@
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { Trans, useTranslation } from 'next-i18next'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { LogoJsonLd, SocialProfileJsonLd } from 'next-seo'
 import Head from 'next/head'
 import dynamic from 'next/dynamic'
@@ -14,7 +14,7 @@ import Whales from '../components/Home/Whales'
 import Converter from '../components/Home/Converter'
 import PriceChart from '../components/Home/PriceChart'
 import Statistics from '../components/Home/Statistics'
-import Ads from '../components/Home/Ads'
+import Ads from '../components/Layout/Ads'
 import Link from 'next/link'
 
 const Faucet = dynamic(() => import('../components/Faucet'), { ssr: false })
@@ -54,11 +54,6 @@ export default function Home({ selectedCurrency, setSelectedCurrency, showAds, a
   const { t } = useTranslation()
 
   const [chartPeriod, setChartPeriod] = useState('one_day')
-  const [rendered, setRendered] = useState(false)
-
-  useEffect(() => {
-    setRendered(true)
-  }, [])
 
   return (
     <>
@@ -125,11 +120,7 @@ export default function Home({ selectedCurrency, setSelectedCurrency, showAds, a
 
       <SearchBlock tab="explorer" />
 
-      {rendered && showAds && !bot && (
-        <div className="home-sponsored">
-          <Ads />
-        </div>
-      )}
+      {showAds && !bot && <Ads showAds={showAds} />}
 
       {!devNet && (
         <div className="flex flex-center">

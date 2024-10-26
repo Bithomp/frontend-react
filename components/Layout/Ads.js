@@ -15,7 +15,7 @@ export default function Ads() {
 
   if (!xahauNetwork) {
     return (
-      <>
+      <div className="sponsored-block">
         {/*
       <a href="/go/play-xrp" target="_blank" rel="noreferrer">
         <div className="sponsored-brand">
@@ -65,7 +65,7 @@ export default function Ads() {
           </div>
         </a>
         */}
-      </>
+      </div>
     )
   }
 

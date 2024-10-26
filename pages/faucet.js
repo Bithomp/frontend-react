@@ -6,6 +6,7 @@ import SEO from '../components/SEO'
 import { getIsSsrMobile } from '../utils/mobile'
 import { devNet, ledgerName, nativeCurrency } from '../utils'
 import FaucetTabs from '../components/Tabs/FaucetTabs'
+import Ads from '../components/Layout/Ads'
 
 export async function getServerSideProps(context) {
   const { locale } = context
@@ -17,11 +18,12 @@ export async function getServerSideProps(context) {
   }
 }
 
-export default function FaucetPage({ account }) {
+export default function FaucetPage({ account, showAds }) {
   return (
     <>
       <SEO title="Faucet" description={'Get Free ' + ledgerName + ' ' + nativeCurrency} />
       <div className="content-text content-center">
+        {showAds && <Ads />}
         <h1 className="center">Faucet</h1>
         {!devNet && <p className="center">Choose the Network</p>}
         <FaucetTabs />
