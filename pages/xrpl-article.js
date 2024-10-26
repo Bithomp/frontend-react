@@ -1,7 +1,8 @@
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import SEO from '../components/SEO'
-import { useTranslation } from 'next-i18next'
 import { getIsSsrMobile } from '../utils/mobile'
+import { network } from '../utils'
+
 export async function getServerSideProps(context) {
   const { locale } = context
   return {
@@ -12,12 +13,14 @@ export async function getServerSideProps(context) {
   }
 }
 
-export default function TermsAndConditions() {
-  const { t } = useTranslation()
-
+export default function XrplArticle() {
   return (
     <>
-      <SEO title={t('menu.terms-and-conditions')} noindex={true} />
+      <SEO
+        title="What is XRP, XRP Ledger, Ripple"
+        description="A Comprehensive Overview of XRP, XRP Ledger, Ripple: What is XRP, how it works, its key features, and its position in the cryptocurrency market."
+        noindex={network !== 'mainnet'}
+      />
       <div className="content-text">
         <h1>What is XRP, XRP Ledger, Ripple: A Comprehensive Overview</h1>
         <p>
