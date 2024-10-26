@@ -1,4 +1,4 @@
-import { server, xahauNetwork } from '../utils'
+import { network, server, xahauNetwork } from '../utils'
 
 const pages = [
   { loc: '', changefreq: 'always', priority: '1' },
@@ -54,6 +54,10 @@ if (xahauNetwork) {
   )
 }
 
+if (network === 'mainnet') {
+  pages.push({ loc: 'xrpl-article', changefreq: 'monthly', priority: '0.6' })
+}
+
 function generateSiteMap(posts) {
   const locales = ['en', 'ko', 'ru', 'de', 'es', 'id', 'ja']
   const noTranslatedPages = [
@@ -65,7 +69,8 @@ function generateSiteMap(posts) {
     'build-unl',
     'privacy-policy',
     'terms-and-conditions',
-    'disclaimer'
+    'disclaimer',
+    'xrpl-article'
   ]
   const oldPages = ['submit/', 'paperwallet/']
   const pagesWithoutTranslation = [...noTranslatedPages, ...oldPages]
