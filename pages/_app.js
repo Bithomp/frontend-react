@@ -15,7 +15,7 @@ const TopLinks = dynamic(() => import('../components/Layout/TopLinks'), { ssr: f
 const TopProgressBar = dynamic(() => import('../components/TopProgressBar'), { ssr: false })
 
 import { IsSsrMobileContext } from '../utils/mobile'
-import { isValidUUID, network, server, useLocalStorage, nativeCurrency, useCookie } from '../utils'
+import { isValidUUID, network, server, useLocalStorage, useCookie, xahauNetwork } from '../utils'
 
 import '../styles/ui.scss'
 import '../styles/components/nprogress.css'
@@ -76,7 +76,7 @@ const MyApp = ({ Component, pageProps }) => {
   const pathname = router.pathname
   const pagesWithoutWrapper = ['/social-share']
 
-  const showAds = subscriptionExpired && nativeCurrency === 'XRP'
+  const showAds = subscriptionExpired && !xahauNetwork
   let showTopAds = false //showAds // change here when you want to see TOP ADS
   const pagesWithNoTopAdds = [
     '/',

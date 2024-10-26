@@ -70,6 +70,9 @@
       "buy": "XRP 구매",
       "earn": "XRP 수익창출",
       "play": "XRP 플레이"
+    },
+    "learn-more": {
+      "title": "더 알아보기"
     }
   },
   "components": {

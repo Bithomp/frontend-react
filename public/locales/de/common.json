@@ -69,6 +69,9 @@
       "buy": "XRP kaufen",
       "earn": "Mit XRP verdienen",
       "play": "Mit XRP wetten"
+    },
+    "learn-more": {
+      "title": "Mehr erfahren"
     }
   },
   "components": {

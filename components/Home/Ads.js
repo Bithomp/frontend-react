@@ -1,4 +1,4 @@
-import { nativeCurrency } from '../../utils'
+import { xahauNetwork } from '../../utils'
 //import { useTheme } from '../Layout/ThemeContext'
 //import { useEffect, useState } from 'react'
 
@@ -13,7 +13,7 @@ export default function Ads() {
   }, [])
   */
 
-  if (nativeCurrency === 'XRP') {
+  if (!xahauNetwork) {
     return (
       <>
         {/*

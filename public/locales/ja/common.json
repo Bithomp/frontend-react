@@ -69,6 +69,9 @@
       "buy": "Buy XRP",
       "earn": "Earn on XRP",
       "play": "Play XRP"
+    },
+    "learn-more": {
+      "title": "Learn more"
     }
   },
   "components": {

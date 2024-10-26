@@ -3,7 +3,7 @@ import { useTranslation } from 'next-i18next'
 import { useState, useEffect, useRef } from 'react'
 import dynamic from 'next/dynamic'
 
-import { devNet, ledgerName, nativeCurrency, network } from '../../utils'
+import { devNet, ledgerName, nativeCurrency, xahauNetwork } from '../../utils'
 
 const CookieMessage = dynamic(() => import('./CookieMessage'), { ssr: false })
 import SocialIcons from './SocialIcons'
@@ -71,7 +71,13 @@ export default function Footer() {
           <Link href="/privacy-policy">{t('menu.privacy-policy')}</Link>
           <Link href="/terms-and-conditions">{t('menu.terms-and-conditions')}</Link>
         </div>
-        {network === 'mainnet' && (
+        {!xahauNetwork && (
+          <div className="footer-menu-column">
+            <span className="footer-menu-header">{t('menu.learn-more.title')}</span>
+            <Link href="/xrpl-article">XRP, XRPL, Ripple</Link>
+          </div>
+        )}
+        {!xahauNetwork && (
           <div className="footer-menu-column">
             <span className="footer-menu-header">{t('menu.sponsored.title')}</span>
             <a href="/go/fm-buy" target="_blank" rel="noreferrer">

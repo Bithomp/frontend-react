@@ -69,6 +69,9 @@
       "buy": "Beli XRP",
       "earn": "Dapatkan dari XRP",
       "play": "Mainkan XRP"
+    },
+    "learn-more": {
+      "title": "Pelajari lebih lanjut"
     }
   },
   "components": {
