@@ -2,6 +2,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import SEO from '../components/SEO'
 import { getIsSsrMobile } from '../utils/mobile'
 import { network } from '../utils'
+import Link from 'next/link'
 
 export async function getServerSideProps(context) {
   const { locale } = context
@@ -21,7 +22,7 @@ export default function XrplArticle() {
         description="A Comprehensive Overview of XRP, XRP Ledger, Ripple: What is XRP, how it works, its key features, and its position in the cryptocurrency market."
         noindex={network !== 'mainnet'}
       />
-      <div className="content-text">
+      <div className="content-center">
         <h1>What is XRP, XRP Ledger, Ripple: A Comprehensive Overview</h1>
         <p>
           In the ever-evolving landscape of cryptocurrency, XRP has emerged as one of the influential digital assets
@@ -36,11 +37,10 @@ export default function XrplArticle() {
           blockchain technology.
         </p>
         <p>
-          Ripple is closely associated with the development of XRP, the digital currency used on the XRP Ledger (XRPL),
-          which Ripple Labs Inc. maintains. While Ripple Labs plays a significant role in the development and promotion
-          of XRP, the company itself focuses on broader financial applications, offering RippleNet, a network for
-          real-time, secure, and low-cost international money transfers. RippleNet is used by banks, payment providers,
-          and other financial institutions to facilitate fast cross-border transactions.
+          While Ripple Labs plays a significant role in the development and promotion of XRP, the company itself focuses
+          on broader financial applications, offering RippleNet, a network for real-time, secure, and low-cost
+          international money transfers. RippleNet is used by banks, payment providers, and other financial institutions
+          to facilitate fast cross-border transactions.
         </p>
         <h3>Ripple's Origin</h3>
         <p>
@@ -61,7 +61,7 @@ export default function XrplArticle() {
           </li>
           <li>
             <strong>Professional Background/Qualifications:</strong> Prior to his involvement with Ripple, Jed
-            established the early Bitcoin exchange MTGOX in 2010.
+            established the early Bitcoin exchange Mt.Gox in 2010.
           </li>
           <li>
             <strong>Key Contributions:</strong> Jed held the position of Chief Technology Officer at Ripple until 2013,
@@ -147,9 +147,10 @@ export default function XrplArticle() {
             <strong>Transaction Speed:</strong> Transactions on the XRP Ledger are completed in approximately 3-5
             seconds, significantly faster than Bitcoin and Ethereum.
             <div>
-              <strong>
-                <a href="https://xrplexplorer.com">Here You Can Test the Speed and Reliability of XRPL Payments</a>.
-              </strong>
+              <Link href="/" className="bold">
+                Here You Can Test the Speed and Reliability of XRPL Payments
+              </Link>
+              .
             </div>
           </li>
           <li>
@@ -170,19 +171,24 @@ export default function XrplArticle() {
           individual or entity that meets the required technical specifications and adheres to the consensus rules.
         </p>
         <p>
-          <strong>
-            <a href="https://xrplexplorer.com/validators">View the list of XRPL Validators</a>.
-          </strong>
+          <Link href="/validators" className="bold">
+            View the list of XRPL Validators
+          </Link>
+          .
         </p>
         <p>
-          <strong>Nodes</strong> are computers or servers that store a complete copy of the entire blockchain and are
-          essential for maintaining the network's decentralization. Anyone has the ability to operate a node,
-          contributing to the prevention of any single organization from dominating the ledger.
+          <strong>Nodes</strong> are computers or servers that are essential for maintaining the network's
+          decentralization. Anyone has the ability to operate a node, contributing to the prevention of any single
+          organization from dominating the ledger.
         </p>
         <p>
-          <strong>
-            <a href="https://xrplexplorer.com/nodes">View the list of XRPL Nodes</a>.
-          </strong>
+          <strong>Full History Nodes</strong> are servers that store a complete copy of the entire blockchain.
+        </p>
+        <p>
+          <Link href="https://xrplexplorer.com/nodes" className="bold">
+            View the list of XRPL Nodes
+          </Link>
+          .
         </p>
         <h3>Creating and Distributing XRP</h3>
         <p>
@@ -191,9 +197,10 @@ export default function XrplArticle() {
           ecosystem and the use of the XRP Ledger.
         </p>
         <p>
-          <strong>
-            <a href="https://xrplexplorer.com/distribution">View the TOP 100 Accounts by XRP Balances</a>.
-          </strong>
+          <Link href="https://xrplexplorer.com/distribution" className="bold">
+            View the TOP 100 Accounts by XRP Balances
+          </Link>
+          .
         </p>
 
         <h3>Key Features of XRP</h3>
@@ -211,42 +218,18 @@ export default function XrplArticle() {
             <strong>Energy Efficiency:</strong> As a non-minable cryptocurrency, XRP consumes far less energy than many
             of its counterparts that rely on proof-of-work mining.
           </li>
-          <li>
-            <strong>Regulatory Clarity:</strong> XRP has garnered regulatory attention, especially in the U.S., leading
-            to ongoing debates regarding its classification (whether it’s a security or a currency). Despite this
-            scrutiny, XRP has been integrated into various financial systems around the world.
-          </li>
-        </ul>
-
-        <h3>Use Cases of XRP</h3>
-        <ul>
-          <li>
-            <strong>Cross-Border Payments:</strong> The primary use case for XRP is its application in facilitating
-            cross-border payments through financial institutions. By connecting different currencies using XRP, banks
-            can execute international transfers quickly and efficiently, minimizing transaction costs and time delays.
-          </li>
-          <li>
-            <strong>Remittances:</strong> XRP can also streamline remittance services, allowing individuals to send
-            money across borders to family or friends with lower fees and faster processing times.
-          </li>
-          <li>
-            <strong>Payment Settlement:</strong> Several financial institutions and payment providers utilize XRP to
-            settle transactions more effectively. By using XRP, these institutions can avoid the necessity of
-            maintaining correspondent banking relationships, which can be cumbersome and costly.
-          </li>
         </ul>
 
         <h3>Market Position and Future Outlook</h3>
         <p>
           The market for XRP has experienced significant volatility, influenced by regulatory developments,
           technological advancements, and broader cryptocurrency market trends. In recent years, Ripple Labs has faced
-          legal challenges from the U.S. Securities and Exchange Commission (SEC), which has led to ongoing debates
-          regarding the classification of XRP.
+          legal challenges from the U.S. Securities and Exchange Commission (SEC), which has led to debates regarding
+          the classification of XRP.
         </p>
         <p>
           Despite these challenges, XRP and the XRP Ledger have maintained a resilient presence in the market,
-          attracting partnerships with various financial institutions and payment providers. Ripple Labs continues to
-          innovate, focusing on expanding its technology and enhancing its adoption within the financial sector.
+          attracting partnerships with various financial institutions and payment providers.
         </p>
 
         <h3>Conclusion</h3>
