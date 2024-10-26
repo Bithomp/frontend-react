@@ -185,7 +185,7 @@ export default function XrplArticle() {
           <strong>Full History Nodes</strong> are servers that store a complete copy of the entire blockchain.
         </p>
         <p>
-          <Link href="https://xrplexplorer.com/nodes" className="bold">
+          <Link href="/nodes" className="bold">
             View the list of XRPL Nodes
           </Link>
           .
@@ -197,7 +197,7 @@ export default function XrplArticle() {
           ecosystem and the use of the XRP Ledger.
         </p>
         <p>
-          <Link href="https://xrplexplorer.com/distribution" className="bold">
+          <Link href="/distribution" className="bold">
             View the TOP 100 Accounts by XRP Balances
           </Link>
           .
