@@ -22,7 +22,7 @@
     "address-you-control": "You can only register usernames for XRPL addresses you control (you have a secret or recovery 12/24 words). You can not register a username for a hosted address (which has a destination tag) within an exchange / service / wallet.",
     "pay-from-your-address": "To prove that you're in control of the XRPL address you will need to make a payment from that address (for which you want to assign a username). Payments from other addresses will be counted as donations and won't be refunded.",
     "text3": "The payment is for 100 Swedish kronor denominated in XRP. The payment for the username is <1>not refundable</1>. If you pay more than requested, the exceeding amount will be counted as donation and won't be refunded.",
-    "text4": "Usernames are now used cross-chain, <1>register a username on the XRPL mainnet</1> and it will be available on other bithomp explorers (within 1 hour).",
+    "text4": "Usernames are now used cross-chain, <2>register a username on the XRPL mainnet</2> and it will be available on other bithomp explorers (within 1 hour).",
     "enter-address-or": "Enter your XRPL address or",
     "sign-in": "Sign in with Xaman",
     "sign-out": "sign out",
