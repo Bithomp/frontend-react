@@ -31,8 +31,8 @@
     "your-username": "Username",
     "enter-country": "Your country of residence (for our accounting)",
     "agree-terms-page": "I understand and agree to the terms and conditions specified above.",
-    "agree-terms-site": "I agree with the <1>Terms and conditions</1>.",
-    "agree-privacy-policy": "I agree with the <1>Privacy policy</1>.",
+    "agree-terms-site": "I agree with the <2>Terms and conditions</2>.",
+    "agree-privacy-policy": "I agree with the <2>Privacy policy</2>.",
     "already-registered": "You account already have a registered username",
     "sign-out-to-register-another-one": "<0>Sign out</0> from this account to register a username for a different address."
   },

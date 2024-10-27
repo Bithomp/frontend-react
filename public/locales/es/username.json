@@ -31,8 +31,8 @@
     "your-username": "Nombre de usuario",
     "enter-country": "Tu país de residencia (para nuestra contabilidad)",
     "agree-terms-page": "Entiendo y acepto los términos y condiciones especificados arriba.",
-    "agree-terms-site": "Estoy de acuerdo con los <1>Términos y condiciones</1>.",
-    "agree-privacy-policy": "Estoy de acuerdo con la <1>Política de privacidad</1>.",
+    "agree-terms-site": "Estoy de acuerdo con los <2>Términos y condiciones</2>.",
+    "agree-privacy-policy": "Estoy de acuerdo con la <2>Política de privacidad</2>.",
     "already-registered": "Tu cuenta ya tiene un nombre de usuario registrado",
     "sign-out-to-register-another-one": "<0>Desconéctate</0> de esta cuenta para registrar un nombre de usuario para una dirección diferente."
   },

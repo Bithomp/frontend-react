@@ -31,8 +31,8 @@
     "your-username": "Benutzername",
     "enter-country": "Ihr Wohnsitzland (für unsere Buchhaltung)",
     "agree-terms-page": "Ich verstehe und stimme den oben genannten AGB zu.",
-    "agree-terms-site": "Ich stimmen den <1>AGB</1> zu.",
-    "agree-privacy-policy": "Ich stimmen den <1>Datenschutzbestimmungen</1> zu.",
+    "agree-terms-site": "Ich stimmen den <2>AGB</2> zu.",
+    "agree-privacy-policy": "Ich stimmen den <2>Datenschutzbestimmungen</2> zu.",
     "already-registered": "Ihr Konto hat bereits einen registrierten Benutzernamen",
     "sign-out-to-register-another-one": "<0>Ausloggen</0> von diesem Konto, um einen Benutzernamen für eine andere Adresse zu registrieren."
   },
