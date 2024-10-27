@@ -121,6 +121,8 @@ export default function Home({ selectedCurrency, setSelectedCurrency, showAds, a
 
       <SearchBlock tab="explorer" />
 
+      <Products />
+
       {showAds && !bot && <Ads showAds={showAds} />}
 
       {!devNet && (
