@@ -1,17 +1,20 @@
 import { xahauNetwork } from '../../utils'
 //import { useTheme } from '../Layout/ThemeContext'
-//import { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 
 export default function Ads() {
   //const { theme } = useTheme()
-  //const [rendered, setRendered] = useState(false)
+  const [rendered, setRendered] = useState(false)
 
-  /*
   useEffect(() => {
     setRendered(true)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
-  */
+
+  if (!rendered) {
+    //keep it here to avoid hydaration error when ads are not rendered for subsribers
+    return null
+  }
 
   if (!xahauNetwork) {
     return (
