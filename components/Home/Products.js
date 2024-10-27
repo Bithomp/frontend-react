@@ -53,8 +53,7 @@ export default function Products() {
           text: t('items.statistics', { ns: 'products' })
         }
       ],
-      bg: '/images/products/product-bg-2.png',
-      gradient: '/images/products/gradient-3.svg'
+      bg: '/images/products/product-bg-2.png'
     },
     {
       title: t('titles.list3', { ns: 'products' }),
@@ -68,8 +67,7 @@ export default function Products() {
           text: t('items.mint-nft', { ns: 'products' })
         }
       ],
-      bg: '/images/products/product-bg-3.png',
-      gradient: '/images/products/gradient-1.svg'
+      bg: '/images/products/product-bg-3.png'
     },
     {
       title: t('titles.list4', { ns: 'products' }),
@@ -91,8 +89,7 @@ export default function Products() {
           text: t('items.usernames', { ns: 'products' })
         }
       ],
-      bg: '/images/products/product-bg-4.png',
-      gradient: '/images/products/gradient-2.svg'
+      bg: '/images/products/product-bg-4.png'
     }
   ]
 
@@ -119,11 +116,7 @@ export default function Products() {
             <div className="product__bg">
               <img alt="bithomp logo" src={product.bg} />
             </div>
-            {product.gradient && (
-              <div className="product__gradient">
-                <img alt="gradient" src={product.gradient} />
-              </div>
-            )}
+            <div className="product-gradient"></div>
           </div>
         )
       })}

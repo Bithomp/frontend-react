@@ -95,7 +95,7 @@
       height: 100%;
       width: auto;
       bottom: 0;
-      right: -2%;
+      right: 0;
       z-index: 1;
 
       @media(min-width: 1500px) {
@@ -124,34 +124,14 @@
       &::after {
         background: #dd983d1a;
       }
-
-      .product__bg {
-        top: -5%;
-        right: -8%;
-        width: auto;
-        height: 109%;
-
-
-        @media(min-width: 1500px) and (max-width: 1600px) {
-          right: -10%;
-        }
-
-        @media (max-width: 380px) {
-          right: -10%;
-        }
-      }
     }
 
     &.list2 {
       &::after {
         background: #3fa3b533;
       }
-
-      .product__bg {
-        @media(max-width: 380px) {
-          height: 90%;
-          right: -2%;
-        }
+      .product-gradient {
+        background-image: url("../../public/images/products/gradient-3.svg");
       }
     }
 
@@ -159,31 +139,17 @@
       &::after {
         background: #00b1c115;
       }
-
-      .product__bg {
-        right: -9%;
-
-        @media(min-width: 1500px) {
-          right: -5%;
-        }
-
-        @media(max-width: 380px) {
-          height: 90%;
-        }
+      .product-gradient {
+        background-image: url("../../public/images/products/gradient-1.svg");
       }
-
-      
     }
 
     &.list4 {
       &::after {
         background: #14913e33;
       }
-
-      @media(min-width: 1500px) {
-        .product__bg {
-          right: -6%;
-        }
+      .product-gradient {
+        background-image: url("../../public/images/products/gradient-2.svg");
       }
     }
 

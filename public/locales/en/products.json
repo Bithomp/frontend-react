@@ -7,7 +7,7 @@
   },
   "items": {
     "watchlist": "Addresses Watchlist",
-    "tx-export": "Transactions export (tax reports)",
+    "tx-export": "Transactions export",
     "set-avatar": "Set Avatar",
     "username-registration": "Register a Username",
     "project-registration": "Register a Project"
