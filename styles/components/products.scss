@@ -120,7 +120,7 @@
       }
     }
 
-    &--nft {
+    &.list1 {
       &::after {
         background: #dd983d1a;
       }
@@ -142,7 +142,7 @@
       }
     }
 
-    &--services {
+    &.list2 {
       &::after {
         background: #3fa3b533;
       }
@@ -155,7 +155,7 @@
       }
     }
 
-    &--xrpl {
+    &.list3 {
       &::after {
         background: #00b1c115;
       }
@@ -175,7 +175,7 @@
       
     }
 
-    &--api {
+    &.list4 {
       &::after {
         background: #14913e33;
       }

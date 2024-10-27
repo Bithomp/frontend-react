@@ -1,25 +1,15 @@
 {
   "titles": {
-    "nft": "NFT Explorer",
-    "api": "API",
-    "xrpl": "XRPL Services",
-    "services": "Services"
+    "for-you": "For You",
+    "top-lists": "TOP Lists",
+    "nft": "NFT",
+    "network-developers": "Network & Developers"
   },
   "items": {
-    "search-name": "search by name",
-    "check": "check statistics",
-    "your-nft": "present your NFT",
-    "buy-sell": "buy/sell",
-    "manage-nft": "manage NFT",
-    "registration": "free registration",
-    "balance": "get balance",
-    "transaction-status": "get transaction status",
-    "statistics": "get statistics",
-    "domain": "set domain",
-    "mint-nft": "mint nft",
-    "nft-bots": "nft bots",
-    "notifications": "notifications",
-    "alerts": "price alerts",
-    "usernames": "usernames"
+    "watchlist": "Addresses Watchlist",
+    "tx-export": "Transactions export (tax reports)",
+    "set-avatar": "Set Avatar",
+    "username-registration": "Register a Username",
+    "project-registration": "Register a Project"
   }
 }

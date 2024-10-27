@@ -8,75 +8,71 @@ export default function Products() {
 
   const products = [
     {
-      type: 'nft',
-      title: t('titles.nft', { ns: 'products' }),
+      title: t('titles.for-you', { ns: 'products' }),
       list: [
         {
           link: '/',
-          text: t('items.search-name', { ns: 'products' }),
+          text: t('items.watchlist', { ns: 'products' })
         },
         {
           link: '/',
-          text: t('items.check', { ns: 'products' }),
+          text: t('items.tx-export', { ns: 'products' })
         },
         {
           link: '/',
-          text: t('items.your-nft', { ns: 'products' }),
+          text: t('items.set-avatar', { ns: 'products' })
         },
         {
           link: '/',
-          text: t('items.buy-sell', { ns: 'products' }),
+          text: t('items.username-registration', { ns: 'products' })
         },
         {
           link: '/',
-          text: t('items.manage-nft', { ns: 'products' }),
+          text: t('items.project-registration', { ns: 'products' })
         }
       ],
       bg: '/images/products/product-bg-1.png'
     },
     {
-      type: 'api',
-      title: t('titles.api', { ns: 'products' }),
+      title: t('titles.list2', { ns: 'products' }),
       list: [
         {
           link: '/',
-          text: t('items.registration', { ns: 'products' }),
+          text: t('items.registration', { ns: 'products' })
         },
         {
           link: '/',
-          text: t('items.balance', { ns: 'products' }),
+          text: t('items.balance', { ns: 'products' })
         },
         {
           link: '/',
-          text: t('items.transaction-status', { ns: 'products' }),
+          text: t('items.transaction-status', { ns: 'products' })
         },
         {
           link: '/',
-          text: t('items.statistics', { ns: 'products' }),
+          text: t('items.statistics', { ns: 'products' })
         }
       ],
       bg: '/images/products/product-bg-2.png',
       gradient: '/images/products/gradient-3.svg'
     },
     {
-      type: 'xrpl',
-      title: t('titles.xrpl', { ns: 'products' }),
+      title: t('titles.list3', { ns: 'products' }),
       list: [
         {
           link: '/',
-          text: t('items.domain', { ns: 'products' }),
+          text: t('items.domain', { ns: 'products' })
         },
         {
           link: '/',
-          text: t('items.mint-nft', { ns: 'products' }),
+          text: t('items.mint-nft', { ns: 'products' })
         }
       ],
       bg: '/images/products/product-bg-3.png',
       gradient: '/images/products/gradient-1.svg'
     },
     {
-      type: 'services',
-      title: t('titles.services', { ns: 'products' }),
+      title: t('titles.list4', { ns: 'products' }),
       list: [
         {
           link: '/',
@@ -104,7 +100,7 @@ export default function Products() {
     <div className="products">
       {products.map((product, i) => {
         return (
-          <div key={i} className={'product product--' + product.type}>
+          <div key={i} className={'product list' + (i + 1)}>
             <div className="product__wrap">
               <h2>{product.title}</h2>
               <ul>
