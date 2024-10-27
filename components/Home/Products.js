@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { useTranslation } from 'next-i18next'
+import { nativeCurrency } from '../../utils'
 
 const logo = '/images/logo-small.svg'
 
@@ -33,28 +34,32 @@ export default function Products() {
       ]
     },
     {
-      title: t('titles.list2', { ns: 'products' }),
+      title: t('titles.top-lists', { ns: 'products' }),
       list: [
         {
-          link: '/',
-          text: t('items.registration', { ns: 'products' })
+          link: '/amms',
+          text: t('items.amms', { ns: 'products' })
         },
         {
-          link: '/',
-          text: t('items.balance', { ns: 'products' })
+          link: '/distribution',
+          text: t('items.distribution', { ns: 'products', nativeCurrency })
         },
         {
-          link: '/',
-          text: t('items.transaction-status', { ns: 'products' })
+          link: '/nft-volumes?list=marketplaces',
+          text: t('items.nft-marketplaces', { ns: 'products' })
         },
         {
-          link: '/',
-          text: t('items.statistics', { ns: 'products' })
+          link: '/nft-volumes?list=collections',
+          text: t('items.nft-collections', { ns: 'products' })
+        },
+        {
+          link: '/nft-distribution',
+          text: t('items.nft-distribution', { ns: 'products' })
         }
       ]
     },
     {
-      title: t('titles.list3', { ns: 'products' }),
+      title: t('titles.nft', { ns: 'products' }),
       list: [
         {
           link: '/',
@@ -67,7 +72,7 @@ export default function Products() {
       ]
     },
     {
-      title: t('titles.list4', { ns: 'products' }),
+      title: t('titles.network-developers', { ns: 'products' }),
       list: [
         {
           link: '/',

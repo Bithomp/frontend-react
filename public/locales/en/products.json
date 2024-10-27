@@ -3,13 +3,18 @@
     "for-you": "For You",
     "top-lists": "TOP Lists",
     "nft": "NFT",
-    "network-developers": "Network & Developers"
+    "network-developers": "Network/Dev"
   },
   "items": {
     "watchlist": "Addresses Watchlist",
     "tx-export": "Transactions export",
     "set-avatar": "Set Avatar",
     "username-registration": "Register a Username",
-    "project-registration": "Register a Project"
+    "project-registration": "Register a Project",
+    "amms": "AMMs",
+    "distribution": "{{nativeCurrency}} distribution",
+    "nft-marketplaces": "NFT Marketplaces",
+    "nft-collections": "NFT Collections",
+    "nft-distribution": "NFT Holders"
   }
 }
