@@ -69,6 +69,9 @@
       "buy": "XRP kaufen",
       "earn": "Mit XRP verdienen",
       "play": "Mit XRP wetten"
+    },
+    "learn-more": {
+      "title": "Mehr erfahren"
     }
   },
   "components": {
@@ -118,6 +121,7 @@
     "not-available": "Nicht verfügbar",
     "confirm": {
       "set-domain": "Eine Domain definieren",
+      "set-avatar": "Ein Avatar definieren",
       "nft-create-transfer-offer-header": "NFT Transfer",
       "nft-transfer": "Ich biete diesen NFT KOSTENLOS für die Zielwallet an, <1> die Zielwallet muss den NFT Transfer akzeptieren</1>.",
       "nft-accept-sell-offer-header": "NFT Kauf",
@@ -147,8 +151,7 @@
   },
   "footer": {
     "cookie": {
-      "we-use-cookie": "Wir verwenden Cookies und ähnliche Technologien, um Ihr Erlebnis auf unserer Website zu verbessern.",
-      "read-more": "Mehr lesen"
+      "we-use-cookie": "Wir verwenden Cookies und ähnliche Technologien, um Ihr Erlebnis auf unserer Website zu verbessern."
     }
   },
   "home": {
@@ -219,8 +222,8 @@
     "for-sale-with-destination": "NFTs zum direkten Verkauf"
   },
   "alerts": {
-    "text0": "Benachrichtigung erhalten, wenn der Marktpreis von <1>Bitstamp</1> für XRP/USD oder XRP/BTC sich um mehr als 5% innert einer Stunde oder mehr als 10% innert eines Tages verändert.",
-    "text1": "Dem Telegram Kanal <1>bithomp</1> oder dem X Account <3>XRP_PriceAlerts</3> folgen.",
+    "text0": "Benachrichtigung erhalten, wenn der Marktpreis von <6>{{linkText}}</6> für {{ nativeCurrency }}/USD oder {{ nativeCurrency }}/BTC sich um mehr als 5% innert einer Stunde oder mehr als 10% innert eines Tages verändert.",
+    "text1": "Dem Telegram Kanal <1>bithomp</1> oder dem X Account <4>XRP_PriceAlerts</4> folgen.",
     "last-alerts": "Letzte 50 Benachrichtigungen",
     "date-and-time": "Datum & Zeit",
     "currency-pair": "Währungspaar",
@@ -270,6 +273,7 @@
     "order-id": "Bestellung Id"
   },
   "button": {
+    "set-domain": "Domain festlegen",
     "continue": "Fortfahren",
     "cancel": "Abbrechen",
     "accept": "Akzeptieren",
@@ -311,7 +315,9 @@
     "viewer": "Betrachtungsprogramm",
     "developer-mode": "Entwicklermodus",
     "search": "Search",
-    "of-many": "of many"
+    "of-many": "of many",
+    "of": "von",
+    "sort-by": "Sortieren nach"
   },
   "form": {
     "error": {
@@ -333,6 +339,7 @@
     }
   },
   "error": {
+    "payment-partly": "Bitte überweisen Sie den Rest des Betrages. Bis jetzt haben wir erst {{received}} {{currency}} erhalten, obwohl <b>{{required}} {{currency}}</b> erwartet wird.",
     "Network Error": "Es scheint keine Internetverbindung zu bestehen ;(",
     "Request failed with status code 429": "Sie senden uns zu viele Anfragen. Versuchen Sie es später erneut!",
     "Request failed with status code 404": "Dieser API Aufruf ist auf diesem Netzwerk nicht erlaubt",
@@ -383,12 +390,15 @@
     "day": "Für die letzten 24 Stunden"
   },
   "table": {
+    "currency": "Währung",
+    "currency-issuer": "Währungsemittent",
     "destination-tag": "DestinationTag",
     "uri": "URI",
     "mints": "Mints",
     "view": "View",
     "period": "Periode",
     "mint-period": "Mint Periode",
+    "burn-period": "Burn Periode",
     "warning": "Warnung",
     "sequence": "Sequenz",
     "version": "Version",
@@ -530,11 +540,13 @@
     "sell": "Verkaufen",
     "buyNow": "Jetzt kaufen",
     "publicAndKnownBrokers": "Öffentlich & MP",
-    "onSale": "Zum Verkauf für XRP",
+    "onSale": "Zum Verkauf für {{nativeCurrency}}",
     "all-tokens": "Alle Tokens",
     "xrp-only": "nur XRP",
     "mintedNew": "Neuste",
-    "mintedOld": "Älteste"
+    "mintedOld": "Älteste",
+    "existing": "Existierende",
+    "burned": "Vernichtete"
   },
   "xumm": {
     "new-qr": "Neuen QR-Code erhalten"

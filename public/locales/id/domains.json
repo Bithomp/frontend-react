@@ -13,9 +13,6 @@
   "verify": "Verifikasi",
   "verify-desc": "Anda dapat memverifikasi bahwa semuanya telah diatur dengan benar dengan alat ini: <1>Pengecekan TOML</1>. Daftar di halaman ini diperbarui dari jam 3 pagi hingga 4 pagi (waktu Stockholm). Jika domain Anda diverifikasi di alat Pengecekan, tetapi tidak ada dalam daftar kami dalam waktu 24 jam, mungkin kami tidak dapat menguraikan file TOML Anda.",
   "desc": "Di bawah ini Anda dapat menemukan daftar semua domain yang telah diverifikasi di XRPL (halaman ini diperbarui setiap hari).",
-  "button": {
-    "set-domain": "Tetapkan sebuah domain"
-  },
   "table": {
     "addresses": "Alamat"
   }

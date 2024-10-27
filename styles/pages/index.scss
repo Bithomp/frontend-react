@@ -1,106 +1,46 @@
-.home-sponsored {
-  height: 150px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  transition: background-color .5s;
-  .sponsored-brand {
-    height: 80px;
-    width: 340px;
-    display: inline-block;
-    background-color: var(--button-additional);
-    z-index: 1;
-    position: relative;
-    margin: 12px;
-    cursor: pointer;
-    box-shadow: 0px 0px 2px rgba(0, 0, 0, 0.25);
-    color: var(--text-main);
+h1.landing-h1 {
+  height: 32.5px;
+}
+
+h2.landing-h2 {
+  font-size: 1em;
+  margin: 0 0.5em;
+  line-height: 1.5em;
+  a {
+    text-decoration: underline;
     &:hover {
-      background-color: var(--background-secondary);
-      box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.25);
-    }
-    .sponsored-brand-icon {
-      position: absolute;
-      left: 16px;
-      height: 40px;
-      top: 50%;
-      transform: translateY(-50%);
-    }
-    .sponsored-brand-title {
-      position: absolute;
-      top: 10px;
-      left: 76px;
-      font-size: 14px;
-      font-weight: 700;
-    }
-    .sponsored-brand-text {
-      position: absolute;
-      top: 30px;
-      left: 76px;
-      right: 15px;
-      font-size: 14px;
+      color: var(--text-main);
     }
   }
-  /* 1460 px when 4 brands */
-  @media only screen and (max-width: 1100px) {
-    margin-top: 10px;
-    height: 120px;
-    flex-wrap: wrap;
-    .sponsored-brand {
-      height: 40px;
-      width: 160px;
-      margin: 5px;
-      .sponsored-brand-icon {
-        height: 30px;
-      }
-      .sponsored-brand-title {
-        left: 60px;
-        font-size: 14px;
-        font-weight: 400;
-      }
-      .sponsored-brand-text {
-        display: none;
-      }
-      &.easybit {
-        .sponsored-brand-icon {
-          left: 8px;
-          height: 25px;
-        }
-        .sponsored-brand-title {
-          left: 40px;
-        }
-      }
-      &.btcbit {
-        .sponsored-brand-icon {
-          left: 33px;
-          height: 25px;
-        }
-        .sponsored-brand-title {
-          left: 70px;
-        }
-      }
-    }
+  @media screen and (max-width: 530px) {
+    min-height: 72px;
   }
 }
 
 .home-converter {
-  position: relative;
+  margin-left: 20px;
   z-index: 2; //to show over the chart
+  padding-top: 32px;
   height: 200px;
   text-align: center;
-  @media only screen and (max-width: 1024px) {
+  @media only screen and (max-width: 803px) {
+    padding-top: 0;
     height: 170px;
+    margin-left: 0;
   }
 }
 
 .home-price-chart {
-  position: relative;
+  padding-top: 20px;
   z-index: 1;
-  max-width: 790px;
-  margin-left: auto;
-  margin-right: auto;
-  margin-bottom: 60px;
-  padding-right: 10px;
+  width: 404px;
+  margin-right: 20px;
+  min-height: 265px;
+  @media only screen and (max-width: 803px) {
+    min-height: 291px;
+    margin-left: 10px;
+    width: calc(100% - 20px);
+  }
 }
 
 .home-statistics {
@@ -133,6 +73,9 @@
         color: var(--text-secondary);
       }
     }
+    @media screen and (max-width: 560px) {
+      min-height: 116px;
+    }
   }
 }
 
@@ -145,53 +88,80 @@
   justify-content: center;
   .whale-transactions-block {
     font-size: 14px;
-    min-height: 290px;
+    min-height: 320px;
     width: calc(100% - 40px);
     max-width: 760px;
     z-index: 1;
     box-shadow: 0px 0px 2px rgba(0, 0, 0, 0.25);
     background-color: var(--button-additional);
     margin: 20px;
+    @media only screen and (max-width: 800px) {
+      min-height: 480px;
+    }
     .tx-row {
       &.just-added {
         background-color: var(--background-secondary);
         animation: just-added 3s 1 linear;
       }
-      margin-bottom: 10px;
+      padding-bottom: 5px;
+      padding-top: 5px;
       .tx-time {
         display: inline-block;
         width: 6%;
         text-align: center;
         @media only screen and (max-width: 800px) {
-          width: 14%;
+          width: 10%;
+        }
+        @media only screen and (max-width: 550px) {
+          width: 15%;
         }
       }
-      .tx-link {
+      .tx-addresses {
         padding-left: 5px;
-        width: 68%;
+        width: 65%;
         display: inline-block;
+        min-height: 22px;
         @media only screen and (max-width: 800px) {
-          width: 34%;
+          width: 68%;
           overflow: hidden;
           padding: 0;
           vertical-align: middle;
+        }
+        @media only screen and (max-width: 550px) {
+          width: 54%;
+        }
+      }
+      .tx-link {
+        padding-right: 5px;
+        text-align: right;
+        width: calc(5% - 5px);
+        display: inline-block;
+        margin-bottom: -5px;
+        vertical-align: middle;
+        @media only screen and (max-width: 800px) {
+          width: calc(4% - 5px);
+          padding: 0;
         }
       }
       .tx-amount {
         padding-right: 5px;
         text-align: right;
         display: inline-block;
-        width: 12%;
+        width: 11%;
         @media only screen and (max-width: 800px) {
-          width: 24%;
+          width: 0%;
+          padding-right: 0;
         }
       }
       .tx-amount-fiat {
         padding-right: 5px;
         text-align: right;
         display: inline-block;
-        width: 12%;
+        width: 11%;
         @media only screen and (max-width: 800px) {
+          width: 15%;
+        }
+        @media screen and (max-width: 550px) {
           width: 24%;
         }
       }
@@ -202,6 +172,7 @@
 .home-faucet {
   position: relative;
   z-index: 1;
+  min-height: 609px;
   max-width: 750px;
   margin-left: auto;
   margin-right: auto;
@@ -209,6 +180,7 @@
   @media only screen and (max-width: 800px) {
     margin-left: 20px;
     margin-right: 20px;
+    min-height: 849px;
   }
 }
 

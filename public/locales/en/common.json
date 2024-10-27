@@ -69,6 +69,9 @@
       "buy": "Buy XRP",
       "earn": "Earn on XRP",
       "play": "Play XRP"
+    },
+    "learn-more": {
+      "title": "Learn more"
     }
   },
   "components": {
@@ -118,6 +121,7 @@
     "not-available": "Not available",
     "confirm": {
       "set-domain": "Setting a domain",
+      "set-avatar": "Setting an avatar",
       "nft-create-transfer-offer-header": "NFT transfer",
       "nft-transfer": "I'm offering that NFT for FREE to the Destination account, <1>the destination account would need to accept the NFT transfer</1>.",
       "nft-accept-sell-offer-header": "NFT purchase",
@@ -147,13 +151,12 @@
   },
   "footer": {
     "cookie": {
-      "we-use-cookie": "We use cookies and similar technologies to improve your experience on our site.",
-      "read-more": "Read more"
+      "we-use-cookie": "We use cookies and similar technologies to improve your experience on our site."
     }
   },
   "home": {
-    "title": "{{explorerName}} Explorer | Scan the {{nativeCurrency}} Ledger",
-    "description": "{{nativeCurrency}} price chart | {{explorerName}} Statistics | NFT explorer | Wallet address lookup | {{explorerName}} NFT volumes | Buy and Sell NFT | {{explorerName}} Services",
+    "title": "Bithomp {{nativeCurrency}} Ledger Explorer",
+    "description": "Scan the {{nativeCurrency}} Ledger",
     "search-placeholder": "Search by Address / Transaction / NFT / Username / PayString / Offer / Currency hash",
     "search-placeholder-short": "Address / Transaction / Username",
     "scan-qr": "SCAN A CODE",
@@ -219,8 +222,8 @@
     "for-sale-with-destination": "NFTs for direct sale"
   },
   "alerts": {
-    "text0": "Get notified when XRP/USD or XRP/BTC market price by <1>Bitstamp</1> changes for more than 5% within an hour or more than 10% within a day.",
-    "text1": "Follow the Telegram channel: <1>bithomp</1> or the X account: <3>XRP_PriceAlerts</3>.",
+    "text0": "Get notified when {{ nativeCurrency }}/USD or {{ nativeCurrency }}/BTC market price by <6>{{linkText}}</6> changes for more than 5% within an hour or more than 10% within a day.",
+    "text1": "Follow the Telegram channel: <1>bithomp</1> or the X account: <4>XRP_PriceAlerts</4>.",
     "last-alerts": "Last 50 alerts",
     "date-and-time": "Date & time",
     "currency-pair": "Currency pair",
@@ -270,6 +273,7 @@
     "order-id": "order id"
   },
   "button": {
+    "set-domain": "Set a domain",
     "continue": "Continue",
     "cancel": "Cancel",
     "accept": "Accept",
@@ -311,7 +315,9 @@
     "viewer": "Viewer",
     "developer-mode": "Developer mode",
     "search": "Search",
-    "of-many": "of many"
+    "of-many": "of many",
+    "of": "of",
+    "sort-by": "Sort by:"
   },
   "form": {
     "error": {
@@ -333,6 +339,7 @@
     }
   },
   "error": {
+    "payment-partly": "Please send the rest of the amount, so far we only received {{received}} {{currency}} when <b>{{required}} {{currency}}</b> is required.",
     "Network Error": "It seems there is no internet connection ;(",
     "Request failed with status code 429": "You are sending us too many requests, try later!",
     "Request failed with status code 404": "Such API call is not allowed on that network",
@@ -383,12 +390,15 @@
     "day": "For the last 24 hours"
   },
   "table": {
+    "currency": "Currency",
+    "currency-issuer": "Currency issuer",
     "destination-tag": "Destination tag",
     "uri": "URI",
     "mints": "Mints",
     "view": "View",
     "period": "Period",
     "mint-period": "Mint period",
+    "burn-period": "Burn period",
     "warning": "Warning",
     "sequence": "Sequence",
     "version": "Version",
@@ -530,11 +540,13 @@
     "sell": "Sell",
     "buyNow": "Buy now",
     "publicAndKnownBrokers": "Public & MP",
-    "onSale": "On sale for XRP",
+    "onSale": "On sale for {{nativeCurrency}}",
     "all-tokens": "All tokens",
     "xrp-only": "XRP only",
     "mintedNew": "Latest",
-    "mintedOld": "Oldest"
+    "mintedOld": "Oldest",
+    "existing": "Existing",
+    "burned": "Burned"
   },
   "xumm": {
     "new-qr": "Get a new QR code"

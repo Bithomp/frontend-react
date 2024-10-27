@@ -69,6 +69,9 @@
       "buy": "Buy XRP",
       "earn": "Earn on XRP",
       "play": "Play XRP"
+    },
+    "learn-more": {
+      "title": "Learn more"
     }
   },
   "components": {
@@ -118,6 +121,7 @@
     "not-available": "利用不可",
     "confirm": {
       "set-domain": "ドメインの設定",
+      "set-avatar": "アバターの設定",
       "nft-create-transfer-offer-header": "NFT transfer",
       "nft-transfer": "I'm offering that NFT for FREE to the Destination account, <1>the destination account would need to accept the NFT transfer</1>.",
       "nft-accept-sell-offer-header": "NFTの購入",
@@ -147,8 +151,7 @@
   },
   "footer": {
     "cookie": {
-      "we-use-cookie": "本サイトでは、お客様の当社サイトでの体験を向上させるために、クッキーと同様の技術を使用しています。",
-      "read-more": "詳しく見る"
+      "we-use-cookie": "本サイトでは、お客様の当社サイトでの体験を向上させるために、クッキーと同様の技術を使用しています。"
     }
   },
   "home": {
@@ -219,8 +222,8 @@
     "for-sale-with-destination": "直接販売中のNFT"
   },
   "alerts": {
-    "text0": "<1>Bitstamp</1>によるXRP/USDまたはXRP/BTCの市場価格が、1時間以内に5%以上、または1日以内に10%以上変動した場合にアラートを受け取ります。",
-    "text1": "テレグラムのチャンネル <1>bithomp</1> またはXアカウント <3>XRP_PriceAlerts</3> をフォローしてください。",
+    "text0": "<6>{{linkText}}</6>による{{ nativeCurrency }}/USDまたは{{ nativeCurrency }}/BTCの市場価格が、1時間以内に5%以上、または1日以内に10%以上変動した場合にアラートを受け取ります。",
+    "text1": "テレグラムのチャンネル <1>bithomp</1> またはXアカウント <4>XRP_PriceAlerts</4> をフォローしてください。",
     "last-alerts": "直近50アラート",
     "date-and-time": "日付",
     "currency-pair": "通貨ペア",
@@ -270,6 +273,7 @@
     "order-id": "order id"
   },
   "button": {
+    "set-domain": "ドメインを設定",
     "continue": "続行",
     "cancel": "キャンセル",
     "accept": "承認",
@@ -311,7 +315,9 @@
     "viewer": "ビュワー",
     "developer-mode": "開発者モード",
     "search": "Search",
-    "of-many": "of many"
+    "of-many": "of many",
+    "of": "of",
+    "sort-by": "Sort by"
   },
   "form": {
     "error": {
@@ -333,6 +339,7 @@
     }
   },
   "error": {
+    "payment-partly": "<b>{{currency}} {{required}}</b>が必要ですが、{{received}} {{currency}}しか受け取っていません。残りの金額を送金してください。",
     "Network Error": "インターネットに接続していないようです ;(",
     "Request failed with status code 429": "リクエストの送信数が多すぎます、後ほどお試しください！",
     "Request failed with status code 404": "そのようなAPIコールはそのネットワークでは許可されていません",
@@ -383,12 +390,15 @@
     "day": "直近24時間"
   },
   "table": {
+    "currency": "通貨",
+    "currency-issuer": "通貨発行者",
     "destination-tag": "宛先タグ",
     "uri": "URI",
     "mints": "Mints",
     "view": "View",
     "period": "Period",
     "mint-period": "Mint period",
+    "burn-period": "Burn period",
     "warning": "Warning",
     "sequence": "シーケンス",
     "version": "バージョン",
@@ -530,11 +540,13 @@
     "sell": "売却",
     "buyNow": "今すぐ購入",
     "publicAndKnownBrokers": "パブリック & MP",
-    "onSale": "XRPで販売中",
+    "onSale": "{{nativeCurrency}}で販売中",
     "all-tokens": "全トークン",
     "xrp-only": "XRPのみ",
     "mintedNew": "新しい",
-    "mintedOld": "古い"
+    "mintedOld": "古い",
+    "existing": "既存",
+    "burned": "バーン"
   },
   "xumm": {
     "new-qr": "新しいQRコードを取得"

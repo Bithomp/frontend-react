@@ -209,8 +209,8 @@ header {
     padding: 4px 0;
     border-bottom: 1px solid #fff;
 
-    &[aria-expanded]:after,
-    &[aria-expanded]::before {
+    &[data-expanded]:after,
+    &[data-expanded]::before {
       content: '';
       position: absolute;
       top: 50%;
@@ -223,12 +223,12 @@ header {
       transition: transform 0.2s;
     }
 
-    &[aria-expanded]:after {
+    &[data-expanded]:after {
       right: 8px;
       transform: rotate(-45deg);
     }
 
-    &[aria-expanded="true"] {
+    &[data-expanded="true"] {
 
       &::after {
         transform: rotate(45deg);

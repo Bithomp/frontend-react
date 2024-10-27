@@ -3,12 +3,22 @@ footer {
   background-color: var(--background-footer);
   color: var(--text-contrast);
   transition: background-color .5s, color .5s;
+  min-height: 257px;
+  @media screen and (max-width: 1300px) {
+    min-height: 476px;
+  }
+  @media screen and (max-width: 600px) {
+    min-height: 565px;
+  }
+  @media screen and (max-width: 376px) {
+    min-height: 824px;
+  }
 }
 
 .footer-menu {
   display: inline-block;
   margin-top: 20px;
-  margin-left: 80px;
+  margin-left: 20px;
   margin-bottom: 20px;
 
   a,
@@ -41,7 +51,7 @@ footer {
 .footer-brand {
   vertical-align: top;
   margin-top: 20px;
-  margin-right: 80px;
+  margin-right: 20px;
   float: right;
   text-align: right;
 
@@ -52,7 +62,7 @@ footer {
     margin-bottom: 5px;
   }
 
-  .footer-brand-text {
+  .footer-brand-text{
     clear: both;
     line-height: 20px;
     font-size: 14px;
@@ -63,15 +73,6 @@ footer {
   margin-top: 10px;
   margin-right: -8px;
   margin-bottom: 10px;
-}
-
-.footer-social-icon {
-  margin: 8px;
-  cursor: pointer;
-  transition: opacity 0.5s;
-  &:hover {
-    opacity: 0.7;
-  }
 }
 
 .footer-cookie {
@@ -86,12 +87,7 @@ footer {
 }
 
 @media only screen and (max-width: 1024px) {
-  .footer-menu {
-    margin-left: 30px;
-  }
-
   .footer-brand {
-    margin-right: 20px;
     margin-left: 20px;
     margin-top: 0;
     float: none;

@@ -163,9 +163,6 @@ body.dark {
 
 h1 {
   font-size: 1.5em;
-  @media only screen and (max-width: 800px) {
-    font-size: 24px;
-  }
 }
 
 br {
@@ -190,10 +187,15 @@ a, .link {
     }
   }
 
-  .xumm-logo {
+  .xaman-logo {
     width: 24px;
     height: 24px;
     border-radius: 5px;
+    margin-right: 5px;
+    vertical-align: middle;
+  }
+
+  .gemwallet-logo {
     margin-right: 5px;
     vertical-align: middle;
   }
@@ -360,7 +362,7 @@ table {
   }
   &.table-large {
     min-width: 760px;
-    max-width: calc(100% - 50px);
+    max-width: calc(100% - 30px);
     &.shrink {
       min-width: unset;
       @media screen and (max-width: 800px) {
@@ -368,7 +370,7 @@ table {
       }
     }
     &.expand {
-      width: calc(100% - 50px);
+      width: calc(100% - 30px);
     }
     margin: auto;
     border: 1px solid var(--accent-link);
@@ -408,7 +410,7 @@ table {
       }
     }
     @media only screen and (max-width: 800px) {
-      min-width: 100%;
+      min-width: calc(100% - 20px);
     }
     &.no-hover {
       tr {
@@ -418,7 +420,13 @@ table {
             color: inherit;
           }
           a {
-            color: inherit;
+            color: var(--accent-link);
+            &:hover {
+              color: inherit;
+            }
+            &.button-action {
+              color: var(--text-contrast);
+            }
           }
           svg {
             stroke: inherit;
@@ -426,19 +434,34 @@ table {
               fill: inherit;
             }
           }
+          a, .link {
+            svg {
+              stroke: var(--accent-link);
+            }
+          }
         }
       }
     }
   }
-  &.table-large--without-border {
-    border: none;
-  }
   &.table-mobile {
-    width: 100%;
+    width: calc(100% - 30px);
     margin: auto;
     font-size: 12px;
     tr {
       border: 1px solid var(--accent-link);
+    }
+  }
+}
+
+.content-center {
+  table {
+    &.table-large {
+      @media only screen and (max-width: 800px) {
+        min-width: 100%;
+      }
+    }
+    &.table-mobile {
+      width: 100%;
     }
   }
 }
@@ -536,6 +559,10 @@ table {
   border: 2px solid var(--accent-link);
 }
 
+.no-border {
+  border: none !important;
+}
+
 .hidden {
   display: none;
 }
@@ -556,7 +583,7 @@ table {
   padding-bottom: 0;
   font-size: 16px;
 
-  .xumm-logo {
+  .xaman-logo {
     width: 24px;
     height: 24px;
     border-radius: 5px;
@@ -570,13 +597,13 @@ table {
 
   &:hover {
     background-color: var(--background-menu);
-    color: var(--text-contrast);
+    color: var(--text-contrast) !important;
     border-color: var(--accent-link);
   }
   &.thin {
     height: 29px;
     line-height: 28px;
-    .xumm-logo {
+    .xaman-logo {
       width: 18px;
       height: 18px;
       margin-bottom: 2px;
@@ -715,6 +742,14 @@ table {
 }
 /* tooltip ends */
 
+.social-icons {
+  a {
+    font-size: 1.5em;
+    margin: 0 5px;
+    display: inline-block;
+  }
+}
+
 pre {
   box-shadow: 0px 0px 4px rgb(0 0 0 / 15%);
   width: calc(100% - 10px);
@@ -809,6 +844,7 @@ body.dark {
 @import "./components/buttonArrowScroll.scss";
 @import "./components/radioOptions.scss";
 @import "./components/viewToggle.scss";
+@import "./components/pagination.scss";
 
 //components
 @import "./components/tiles.scss";
@@ -818,6 +854,7 @@ body.dark {
 @import "./components/dropdown.scss";
 @import "./components/ageCheck.scss";
 @import "./components/products.scss";
+@import "./components/ads.scss";
 
 //home page
 @import "./components/currencySelect.scss";
@@ -834,3 +871,4 @@ body.dark {
 @import "./pages/username.scss";
 @import "./pages/genesis.scss";
 @import "./pages/governance.scss";
+@import "./pages/pro-history.scss";

@@ -7,10 +7,10 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import Image from 'next/image'
 import Link from 'next/link'
 
-import { stripText, decode, network, isValidJson } from '../../utils'
+import { stripText, decode, network, isValidJson, xahauNetwork } from '../../utils'
 import { convertedAmount, usernameOrAddress } from '../../utils/format'
 import { getIsSsrMobile } from '../../utils/mobile'
-import { nftName, mpUrl, bestNftOffer, nftUrl, partnerMarketplaces } from '../../utils/nft'
+import { nftName, mpUrl, bestNftOffer, nftUrl, partnerMarketplaces, ipfsUrl } from '../../utils/nft'
 import {
   shortHash,
   trWithAccount,
@@ -72,7 +72,9 @@ import CopyButton from '../../components/UI/CopyButton'
 import NftPreview from '../../components/NftPreview'
 
 import LinkIcon from '../../public/images/link.svg'
-const xummImg = '/images/xumm.png'
+import EvernodeLease from '../../components/Nft/EvernodeLease'
+import EvernodeRegistartion from '../../components/Nft/EvernodeRegistartion'
+const xamanImg = '/images/wallets/xaman.png'
 
 const hasJsonMeta = (nft) => {
   return nft.metadata && nft.metadata.attributes?.metaSource?.toLowerCase() !== 'bithomp'
@@ -128,7 +130,7 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
         '?uri=true&metadata=true&history=true&sellOffers=true&buyOffers=true&offersValidate=true&offersHistory=true' +
         noCache +
         '&convertCurrencies=' +
-        selectedCurrency
+        selectedCurrency?.toLowerCase()
     ).catch((error) => {
       setErrorMessage(t('error.' + error.message))
     })
@@ -248,7 +250,7 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
 
   useEffect(() => {
     if (!selectedCurrency) return
-    if (!data?.nftokenID && !data?.uriTokenID) {
+    if (!data?.nftokenID) {
       // no token - first time fetching - allow right away
       checkApi()
     } else {
@@ -267,12 +269,16 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
       meta.External_Link
     if (url) {
       url = stripText(url)
-      if (url.toLowerCase().slice(0, 8) !== 'https://' && url.slice(0, 7).toLowerCase() !== 'http://') {
+      let urlText = url
+      if (url.toLowerCase().slice(0, 7) === 'ipfs://') {
+        urlText = url.slice(7)
+        url = ipfsUrl(url, 'viewer', 'cl')
+      } else if (url.toLowerCase().slice(0, 8) !== 'https://' && url.slice(0, 7).toLowerCase() !== 'http://') {
         url = 'https://' + url
       }
       return (
         <a href={url} target="_blank" rel="noreferrer nofollow">
-          {url}
+          {urlText}
         </a>
       )
     }
@@ -627,7 +633,7 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
         amount: data.amount || '0',
         owner: data.owner,
         destination: data.destination,
-        uriTokenID: data.uriTokenID
+        nftokenID: data.nftokenID
       }
     } else {
       //'xls20'
@@ -670,7 +676,7 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
           request.Amount = Math.ceil(best.amount * multiplier).toString()
         }
 
-        if (name === 'onXRP') {
+        if (name === 'bidds') {
           if (data.issuer === data.owner) {
             return ''
           }
@@ -696,7 +702,7 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
                 })
               }
             >
-              <Image src={xummImg} className="xumm-logo" alt="xaman" height={24} width={24} />
+              <Image src={xamanImg} className="xaman-logo" alt="xaman" height={24} width={24} />
               {t('button.nft.buy-for-amount', {
                 amount: amountFormat(Math.ceil(best.amount > 0 ? best.amount * multiplier : 1))
               })}
@@ -817,7 +823,7 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
             })
           }
         >
-          <Image src={xummImg} className="xumm-logo" alt="xaman" height={24} width={24} />
+          <Image src={xamanImg} className="xaman-logo" alt="xaman" height={24} width={24} />
           {sell
             ? hasAValidSellOffer
               ? t('button.nft.add-another-sell-offer')
@@ -838,7 +844,7 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
                 })
               }
             >
-              <Image src={xummImg} className="xumm-logo" alt="xaman" height={24} width={24} />
+              <Image src={xamanImg} className="xaman-logo" alt="xaman" height={24} width={24} />
               {t('button.nft.transfer')}
             </button>
             <br />
@@ -871,7 +877,7 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
             })
           }
         >
-          <Image src={xummImg} className="xumm-logo" alt="xaman" height={24} width={24} />
+          <Image src={xamanImg} className="xaman-logo" alt="xaman" height={24} width={24} />
           {countSellOffers?.['active-valid'] > 0 ? t('button.nft.update-sell-offer') : t('button.nft.list-for-sale')}
         </button>
         <br />
@@ -887,7 +893,7 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
             })
           }
         >
-          <Image src={xummImg} className="xumm-logo" alt="xaman" height={24} width={24} />
+          <Image src={xamanImg} className="xaman-logo" alt="xaman" height={24} width={24} />
           {t('button.nft.transfer')}
         </button>
         <br />
@@ -934,7 +940,7 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
             })
           }
         >
-          <Image src={xummImg} className="xumm-logo" alt="xaman" height={24} width={24} />
+          <Image src={xamanImg} className="xaman-logo" alt="xaman" height={24} width={24} />
           {t('button.nft.burn')} ️‍🔥
         </button>
         <br />
@@ -956,7 +962,7 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
   const updateWarningMessages = async (warnings) => {
     for (let i = 0; i < warnings.length; i++) {
       if (warnings[i].message?.indexOf('crawler is not up to date') > -1) {
-        const response = await axios('v2/statistics/nftokens/crawler')
+        const response = await axios('v2/statistics/' + (xahauNetwork ? 'uritokens' : 'nftokens') + '/crawler')
         let lastUpdate = ''
         if (response?.data?.ledgerTime) {
           lastUpdate = fullDateAndTime(response.data.ledgerTime, null, { asText: true })
@@ -967,19 +973,21 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
     setWarnings(warnings)
   }
 
+  const evernodeNft = (data) => {
+    return data.metadata?.evernodeRegistration || data.metadata?.evernodeLease
+  }
+
   return (
     <>
       <SEO
         page="NFT"
         title={
-          (nftName(pageMeta) || pageMeta?.nftokenID || pageMeta?.uriTokenID || 'NFT') +
-          (pageMeta?.nftSerial ? ' #' + pageMeta?.nftSerial : '')
+          (nftName(pageMeta) || pageMeta?.nftokenID || 'NFT') + (pageMeta?.nftSerial ? ' #' + pageMeta?.nftSerial : '')
         }
         description={
-          (pageMeta?.metadata?.description ||
-            pageMeta?.metadata?.collection?.name ||
-            (!(pageMeta?.nftokenID || pageMeta?.uriTokenID) ? t('desc', { ns: 'nft' }) : '')) +
-          (pageMeta?.nftSerial ? ' #' + pageMeta?.nftSerial : '') +
+          (pageMeta?.metadata?.collection?.name ||
+            pageMeta?.metadata?.description ||
+            (!pageMeta?.nftokenID ? t('desc', { ns: 'nft' }) : '')) +
           (pageMeta?.issuer ? ' - ' + t('table.issuer') + ': ' + usernameOrAddress(pageMeta, 'issuer') : '')
         }
         image={{ file: imageUrl }}
@@ -1042,6 +1050,10 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
                                   </tbody>
                                 </table>
                               )}
+                            {data.metadata?.evernodeLease && <EvernodeLease data={data.metadata.evernodeLease} />}
+                            {data.metadata?.evernodeRegistration && (
+                              <EvernodeRegistartion data={data.metadata.evernodeRegistration} />
+                            )}
                           </div>
                         </div>
 
@@ -1075,7 +1087,7 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
                             </table>
                           )}
 
-                          {data.metadata && (
+                          {data.metadata && !evernodeNft(data) && (
                             <table className="table-details">
                               <thead>
                                 <tr>
@@ -1148,8 +1160,7 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
                               <tr>
                                 <td>NFT ID</td>
                                 <td>
-                                  {shortHash(data.nftokenID || data.uriTokenID, 10)}{' '}
-                                  <CopyButton text={data.nftokenID || data.uriTokenID} />
+                                  {shortHash(data.nftokenID, 10)} <CopyButton text={data.nftokenID} />
                                 </td>
                               </tr>
                               {data.type !== 'xls20' && (
@@ -1233,6 +1244,7 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
                               )}
                               {/* isValidJson(decodedUri) - if valid Json in URI, no need to check digest */}
                               {!notFoundInTheNetwork &&
+                                !evernodeNft(data) &&
                                 (!hasJsonMeta(data) ||
                                   (data.type === 'xls20' && !data.flags.transferable) ||
                                   data.flags.burnable ||

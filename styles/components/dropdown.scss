@@ -3,127 +3,127 @@
 $phone-bp: 440px;
 
 .dropdown {
-    @include react-select;
-    min-width: 270px;
+  @include react-select;
+  min-width: 270px;
 
-    &--desktop {
-        @media(max-width: $phone-bp) {
-            display: none;
-        }
+  &--desktop {
+    @media(max-width: $phone-bp) {
+      display: none;
+    }
+  }
+
+  &--mobile {
+    position: fixed;
+    background: #fff;
+    inset: auto 0 -2px;
+    padding: 5px 15px 20%;
+    z-index: 3;
+    border-top: 1px solid #ccc;
+    transform: translateY(100%);
+    transition: transform 0.3s ease-in-out;
+
+    .is-sort-menu-open & {
+      transform: translateY(15%);
     }
 
-    &--mobile {
-        position: fixed;
-        background: #fff;
-        inset: auto 0 -2px;
-        padding: 5px 15px 20%;
-        z-index: 3;
-        border-top: 1px solid #ccc;
-        transform: translateY(100%);
-        transition: transform 0.3s ease-in-out;
-
-        .is-sort-menu-open & {
-            transform: translateY(15%);
-        }
-
-        .dark & {
-            background: #000;
-        }
-
-        ul {
-            list-style: none;
-            margin: 0;
-            padding: 0;
-        }
-
-        li {
-            padding: 5px 0;
-            width: fit-content;
-        }
-
-        @media(min-width: $phone-bp) {
-            display: none;
-        }
+    .dark & {
+      background: #000;
     }
 
-    &__head {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin: 5px 0 10px;
-
-        button {
-            border: none;
-            background: transparent;
-            font-size: 24px;
-
-            .dark & {
-                color: #fff;
-            }
-        }
+    ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
     }
 
-    &-btn {
-        width: 32px;
-        height: 32px;
-        border: 1px solid #ccc;
-        border-radius: 0;
-        background: #fff;
-        font-size: 16px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: var(--background-block);
-        padding: 0 5px;
-
-        @media(min-width: 440px) {
-            display: none;
-        }
+    li {
+      padding: 5px 0;
+      width: fit-content;
     }
 
-    .react-select__control {
-        border-color: var(--unaccent-icon);
-        border-radius: 0;
-        background: #fff;
+    @media(min-width: $phone-bp) {
+      display: none;
+    }
+  }
 
-        &:hover {
-            border-color: var(--accent-link);
-            box-shadow: 0 0 5px var(--unaccent-icon);
-        }
+  &__head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 5px 0 10px;
 
-        &--is-focused {
-            border-color: hsl(0, 0%, 80%) !important;
-            box-shadow: none;
-        }
+    button {
+      border: none;
+      background: transparent;
+      font-size: 24px;
 
-        .dark & {
-            background: #000;
-        }
+      .dark & {
+        color: #fff;
+      }
+    }
+  }
+
+  &-btn {
+    width: 32px;
+    height: 32px;
+    border: 1px solid var(--unaccent-icon);
+    border-radius: 0;
+    background-color: var(--background-input); 
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-main);
+    padding: 0 5px;
+
+    @media(min-width: 440px) {
+      display: none;
+    }
+  }
+
+  .react-select__control {
+    border-color: var(--unaccent-icon);
+    border-radius: 0;
+    background: #fff;
+
+    &:hover {
+      border-color: var(--accent-link);
+      box-shadow: 0 0 5px var(--unaccent-icon);
     }
 
-    .react-select__value-container {
-        @media(max-width: 1300px) {
-            font-size: 14px;
-        }
+    &--is-focused {
+      border-color: hsl(0, 0%, 80%) !important;
+      box-shadow: none;
     }
 
-    .react-select__single-value,
-    .react-select__placeholder {
-        color: hsl(0, 0%, 20%);
-
-        .dark & {
-            color: #fff;
-        }
+    .dark & {
+      background: #000;
     }
+  }
 
-    .react-select__menu {
-        background: #fff;
-        border-radius: 0;
-        margin-top: 0;
-        border: 1px solid var(--accent-link);
-
-        .dark & {
-            background: #000;
-        }
+  .react-select__value-container {
+    @media(max-width: 1300px) {
+      font-size: 14px;
     }
+  }
+
+  .react-select__single-value,
+  .react-select__placeholder {
+    color: hsl(0, 0%, 20%);
+
+    .dark & {
+      color: #fff;
+    }
+  }
+
+  .react-select__menu {
+    background: #fff;
+    border-radius: 0;
+    margin-top: 0;
+    border: 1px solid var(--accent-link);
+
+    .dark & {
+      background: #000;
+    }
+  }
 }

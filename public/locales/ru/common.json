@@ -69,6 +69,9 @@
       "buy": "Купить XRP",
       "earn": "XRP вклады",
       "play": "Играть с XRP"
+    },
+    "learn-more": {
+      "title": "Узнать больше"
     }
   },
   "components": {
@@ -118,6 +121,7 @@
     "not-available": "Не доступно",
     "confirm": {
       "set-domain": "Установка домена",
+      "set-avatar": "Установка аватара",
       "nft-create-transfer-offer-header": "Передача NFT",
       "nft-transfer": "Я передаю этот NFT БЕСПЛАТНО адресату, адресат должен будет принять NFT, чтобы завершить передачу.",
       "nft-accept-sell-offer-header": "Покупка NFT",
@@ -147,8 +151,7 @@
   },
   "footer": {
     "cookie": {
-      "we-use-cookie": "Мы используем файлы cookie и аналогичные технологии, чтобы вам было проще и удобнее пользоваться нашим сайтом.",
-      "read-more": "Подробнее тут"
+      "we-use-cookie": "Мы используем файлы cookie и аналогичные технологии, чтобы вам было проще и удобнее пользоваться нашим сайтом."
     }
   },
   "home": {
@@ -219,8 +222,8 @@
     "for-sale-with-destination": "NFT, частная продажа"
   },
   "alerts": {
-    "text0": "Вы можете получать оповещения, когда XRP/USD или XRP/BTC цена на <1>Bitstamp</1> изменяется более чем на 5% в течение часа или более чем на 10% в течение дня.",
-    "text1": "Подпишитесь на телеграм канал: <1>bithomp</1> или на X аккаунт: <3>XRP_PriceAlerts</3>.",
+    "text0": "Вы можете получать оповещения, когда {{ nativeCurrency }}/USD или {{ nativeCurrency }}/BTC цена на <6>{{linkText}}</6> изменяется более чем на 5% в течение часа или более чем на 10% в течение дня.",
+    "text1": "Подпишитесь на телеграм канал: <1>bithomp</1> или на X аккаунт: <4>XRP_PriceAlerts</4>.",
     "last-alerts": "Последние 50 оповещений",
     "date-and-time": "Дата и время",
     "currency-pair": "Пара",
@@ -270,6 +273,7 @@
     "order-id": "номер счета"
   },
   "button": {
+    "set-domain": "Установить домен",
     "continue": "Продолжить",
     "cancel": "Отменить",
     "accept": "Принять",
@@ -311,7 +315,9 @@
     "viewer": "Просмотрщик",
     "developer-mode": "Режим разработчика",
     "search": "Поиск",
-    "of-many": "из многих"
+    "of-many": "из многих",
+    "of": "из",
+    "sort-by": "Сортировать по:"
   },
   "form": {
     "error": {
@@ -333,6 +339,7 @@
     }
   },
   "error": {
+    "payment-partly": "Нам пришло лишь {{received}} {{currency}}, когда мы ожидали <b>{{required}} {{currency}}</b>. Дошлите оставшееся, чтобы завершить регистрацию.",
     "Network Error": "Похоже, что у вас пропал интернет :(",
     "Request failed with status code 429": "Вы нам шлете слишком много запросов, попробуйте вернуться позже.",
     "Request failed with status code 404": "Этот API запрос не разрешен в этой сети",
@@ -383,12 +390,15 @@
     "day": "За последние 24 часа"
   },
   "table": {
+    "currency": "Токен",
+    "currency-issuer": "Эмитент токена",
     "destination-tag": "Тег назначения",
     "uri": "URI",
     "mints": "Сначала",
     "view": "Вид",
     "period": "Период",
     "mint-period": "Период чеканки",
+    "burn-period": "Период сжигания",
     "warning": "Предупреждение",
     "sequence": "Порядковый номер",
     "version": "Версия",
@@ -530,11 +540,13 @@
     "sell": "Продажа",
     "buyNow": "Купить сейчас",
     "publicAndKnownBrokers": "Публичные и на MП",
-    "onSale": "На продаже за XRP",
+    "onSale": "На продаже за {{nativeCurrency}}",
     "all-tokens": "Все токены",
     "xrp-only": "Только XRP",
     "mintedNew": "Новые",
-    "mintedOld": "Старые"
+    "mintedOld": "Старые",
+    "existing": "Существующие",
+    "burned": "Сожженные"
   },
   "xumm": {
     "new-qr": "Получить новый QR-код"

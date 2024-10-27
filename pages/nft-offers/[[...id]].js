@@ -24,7 +24,6 @@ export const getServerSideProps = async (context) => {
   //key to refresh the component when Link pressed within the same route
   return {
     props: {
-      key: Math.random(),
       offerList: offerList || 'owned',
       id: id ? (Array.isArray(id) ? id[0] : id) : '',
       isSsrMobile: getIsSsrMobile(context),
@@ -38,7 +37,7 @@ import SearchBlock from '../../components/Layout/SearchBlock'
 import Tabs from '../../components/Tabs'
 
 import LinkIcon from '../../public/images/link.svg'
-const xummImg = '/images/xumm.png'
+const xamanImg = '/images/wallets/xaman.png'
 
 export default function NftOffers({ setSignRequest, refreshPage, account, offerList, id }) {
   const { t } = useTranslation()
@@ -235,7 +234,7 @@ export default function NftOffers({ setSignRequest, refreshPage, account, offerL
         },
         "destinationDetails": {
           "username": null,
-          "service": "onXRP"
+          "service": "bidds"
         },
         "valid": false,
         "validationErrors": [
@@ -284,7 +283,7 @@ export default function NftOffers({ setSignRequest, refreshPage, account, offerL
                 })
               }
             >
-              <Image src={xummImg} className="xumm-logo" alt="xaman" height={24} width={24} />
+              <Image src={xamanImg} className="xaman-logo" alt="xaman" height={24} width={24} />
               {account?.address && account.address === userData.address
                 ? t('nft-offers.cancel-invalid-offer', { count: offersCount.invalid })
                 : t('nft-offers.cancel-expired-offer', { count: offersCount.expired })}

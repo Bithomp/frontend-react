@@ -1,7 +1,8 @@
-import { server, xahauNetwork } from '../utils'
+import { network, server, xahauNetwork } from '../utils'
 
 const pages = [
-  { loc: 'explorer/', changefreq: 'monthly', priority: '1' },
+  { loc: '', changefreq: 'always', priority: '1' },
+  { loc: 'faucet', changefreq: 'monthly', priority: '1' },
   { loc: 'username', changefreq: 'monthly', priority: '1' },
   { loc: 'nft-explorer', changefreq: 'daily', priority: '1' },
   { loc: 'amendments', changefreq: 'always', priority: '1' },
@@ -9,7 +10,6 @@ const pages = [
   { loc: 'amms', changefreq: 'always', priority: '1' },
 
   { loc: 'nft-sales', changefreq: 'daily', priority: '0.9' },
-  { loc: '', changefreq: 'hourly', priority: '0.9' },
   { loc: 'nft-statistics', changefreq: 'always', priority: '0.9' },
   { loc: 'nft-volumes', changefreq: 'always', priority: '0.9' },
   { loc: 'nft-minters', changefreq: 'always', priority: '0.9' },
@@ -54,11 +54,14 @@ if (xahauNetwork) {
   )
 }
 
+if (network === 'mainnet') {
+  pages.push({ loc: 'xrpl-article', changefreq: 'monthly', priority: '0.6' })
+}
+
 function generateSiteMap(posts) {
   const locales = ['en', 'ko', 'ru', 'de', 'es', 'id', 'ja']
   const noTranslatedPages = [
     'admin',
-    'explorer/',
     'submit/',
     'paperwallet/',
     'advertise',
@@ -66,9 +69,10 @@ function generateSiteMap(posts) {
     'build-unl',
     'privacy-policy',
     'terms-and-conditions',
-    'disclaimer'
+    'disclaimer',
+    'xrpl-article'
   ]
-  const oldPages = ['explorer/', 'submit/', 'paperwallet/']
+  const oldPages = ['submit/', 'paperwallet/']
   const pagesWithoutTranslation = [...noTranslatedPages, ...oldPages]
 
   return `<?xml version="1.0" encoding="UTF-8"?>
@@ -77,7 +81,11 @@ function generateSiteMap(posts) {
        .map(({ loc, changefreq, priority }) => {
          return `
           <url>
-            ${!oldPages.includes(loc) ? `<loc>${`${server}/en/${loc}`}</loc>` : `<loc>${`${server}/${loc}`}</loc>`}
+            ${
+              !oldPages.includes(loc)
+                ? `<loc>${`${server}/en${loc ? '/' + loc : ''}`}</loc>`
+                : `<loc>${`${server}/${loc}`}</loc>`
+            }
             <changefreq>${changefreq}</changefreq>
             <priority>${priority}</priority>
             ${

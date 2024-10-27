@@ -3,7 +3,7 @@ import { useTranslation } from 'next-i18next'
 import { useState, useEffect } from 'react'
 import MobileMenu from './MobileMenu'
 
-import { devNet, xahauNetwork, ledgerName, nativeCurrency, ledgerSubName } from '../../../utils'
+import { devNet, xahauNetwork, ledgerName, nativeCurrency, ledgerSubName, network } from '../../../utils'
 
 import Image from 'next/image'
 import Switch from './Switch'
@@ -76,13 +76,13 @@ export default function Header({
   const [menuOpen, setMenuOpen] = useState(false)
   const [isCopied, setIsCopied] = useState(false)
 
-  const [xummUserToken, setXummUserToken] = useState(null)
+  const [xamanUserToken, setXummUserToken] = useState(null)
 
   const [hoverStates, setHoverStates] = useState({})
 
   useEffect(() => {
     setRendered(true)
-    setXummUserToken(localStorage.getItem('xummUserToken'))
+    setXummUserToken(localStorage.getItem('xamanUserToken'))
   }, [])
 
   let address, hashicon, displayName, username, pro, proName
@@ -139,7 +139,7 @@ export default function Header({
     <div className={menuOpen ? 'mobile-menu-open' : ''}>
       <header>
         <div className="header-logo">
-          <Link href="/">
+          <Link href="/" aria-label="Main page">
             <LogoAnimated />
           </Link>
         </div>
@@ -189,8 +189,7 @@ export default function Header({
             <Link href={'/nfts' + (displayName ? '/' + address : '')}>{t('menu.nft.nfts')}</Link>
             <Link href={'/nft-offers' + (displayName ? '/' + address : '')}>{t('menu.nft.offers')}</Link>
             <Link href="/nft-distribution">{t('menu.nft.distribution')}</Link>
-            {/* Hide NFT statistics for XAHAU while they are not ready yet */}
-            {!xahauNetwork && <Link href="/nft-statistics">{t('menu.nft.statistics')}</Link>}
+            <Link href="/nft-statistics">{t('menu.nft.statistics')}</Link>
             {xahauNetwork && <Link href="/services/nft-mint">{t('menu.services.nft-mint')}</Link>}
           </MenuDropDown>
 
@@ -233,10 +232,17 @@ export default function Header({
             setHoverStates={setHoverStates}
             hoverStates={hoverStates}
           >
+            {network === 'mainnet' && (
+              <>
+                <a href={'https://test.xrplexplorer.com/create/'}>{t('menu.developers.account-generation')}</a>
+                <a href={'https://test.xrplexplorer.com/faucet'}>{t('menu.developers.faucet')}</a>
+                <a href={'https://test.xrplexplorer.com/tools/'}>Bithomp tools</a>
+              </>
+            )}
             {devNet && (
               <>
                 <a href={'/create/'}>{t('menu.developers.account-generation')}</a>
-                <a href={'/faucet/'}>{t('menu.developers.faucet')}</a>
+                <Link href="/faucet">{t('menu.developers.faucet')}</Link>
                 <a href={'/tools/'}>Bithomp tools</a>
               </>
             )}
@@ -268,15 +274,34 @@ export default function Header({
           >
             {(displayName || proName) && <div style={{ minWidth: '250px' }}></div>}
             {!displayName && (
-              <span
-                onClick={() => {
-                  setSignRequest({ wallet: 'xumm' })
-                }}
-                className="link"
-              >
-                <Image src="/images/xumm.png" className="xumm-logo" alt="xaman" height={24} width={24} />
-                Xaman
-              </span>
+              <>
+                <span
+                  onClick={() => {
+                    setSignRequest({ wallet: 'xumm' })
+                  }}
+                  className="link"
+                >
+                  <Image src="/images/wallets/xaman.png" className="xaman-logo" alt="Xaman" height={24} width={24} />
+                  Xaman
+                </span>
+                {/* Gemwallet is not ready yet
+                <span
+                  onClick={() => {
+                    setSignRequest({ wallet: 'gemwallet' })
+                  }}
+                  className="link"
+                >
+                  <Image
+                    src="/images/wallets/gemwallet.svg"
+                    className="gemwallet-logo"
+                    alt="GemWallet"
+                    height={24}
+                    width={24}
+                  />
+                  GemWallet
+                </span>
+                */}
+              </>
             )}
 
             {displayName && (
@@ -284,7 +309,7 @@ export default function Header({
                 <span onClick={copyToClipboard} className="link">
                   {isCopied ? t('button.copied') : t('button.copy-my-address')}
                 </span>
-                <a href={'/explorer/' + address + (xummUserToken ? '?hw=xumm&xummtoken=' + xummUserToken : '')}>
+                <a href={'/explorer/' + address + (xamanUserToken ? '?hw=xumm&xummtoken=' + xamanUserToken : '')}>
                   {t('signin.actions.view')}
                 </a>
                 <Link href={'/nfts/' + address}>{t('signin.actions.my-nfts')}</Link>
@@ -295,8 +320,8 @@ export default function Header({
                 {/* Hide Send XRP for XAHAU while they are not ready yet */}
                 {!xahauNetwork && (
                   <>
-                    {xummUserToken && (
-                      <a href={'/explorer/' + address + '?hw=xumm&xummtoken=' + xummUserToken + '&action=send'}>
+                    {xamanUserToken && (
+                      <a href={'/explorer/' + address + '?hw=xumm&xummtoken=' + xamanUserToken + '&action=send'}>
                         {t('signin.actions.send')}
                       </a>
                     )}
@@ -317,7 +342,9 @@ export default function Header({
               <>
                 <hr />
                 <Link href="/admin">{displayName ? proName : 'Profile'}</Link>
+                <Link href="/admin/watchlist">Watchlist</Link>
                 <Link href="/admin/subscriptions">Subscriptions</Link>
+                <Link href="/admin/pro">Pro addresses</Link>
                 <Link href="/admin/api">API management</Link>
                 <span onClick={signOutPro} className="link">
                   {t('signin.signout')}
@@ -338,21 +365,22 @@ export default function Header({
           >
             <NetworkTable close={() => setHoverStates((state) => ({ ...state, dropdown8: false }))} />
           </MenuDropDown>
-
-          <MenuDropDown
-            id="dropdown9"
-            title={selectedCurrency?.toUpperCase()}
-            setHoverStates={setHoverStates}
-            hoverStates={hoverStates}
-            type="top-switch"
-            direction="stick-right"
-          >
-            <CurrencyTable
-              selectedCurrency={selectedCurrency}
-              setSelectedCurrency={setSelectedCurrency}
-              close={() => setHoverStates((state) => ({ ...state, dropdown9: false }))}
-            />
-          </MenuDropDown>
+          {rendered && (
+            <MenuDropDown
+              id="dropdown9"
+              title={selectedCurrency?.toUpperCase()}
+              setHoverStates={setHoverStates}
+              hoverStates={hoverStates}
+              type="top-switch"
+              direction="stick-right"
+            >
+              <CurrencyTable
+                selectedCurrency={selectedCurrency}
+                setSelectedCurrency={setSelectedCurrency}
+                close={() => setHoverStates((state) => ({ ...state, dropdown9: false }))}
+              />
+            </MenuDropDown>
+          )}
 
           <MenuDropDown
             id="dropdown10"
@@ -385,7 +413,7 @@ export default function Header({
           proName={proName}
           signOut={signOut}
           signOutPro={signOutPro}
-          xummUserToken={xummUserToken}
+          xamanUserToken={xamanUserToken}
           hashicon={hashicon}
           username={username}
           isCopied={isCopied}

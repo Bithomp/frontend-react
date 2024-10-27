@@ -53,7 +53,7 @@ export default function DateAndTimeRange({ setPeriod, minDate, tabs, radio, defa
 
   // if minDate was less than a year ago, do not show tab "all"
   //usefull for xahau, when there is less data than for a year, otherwise the all stats looks weird
-  if (minDate < yearAgo) {
+  if (minDate < yearAgo || radio) {
     periodTabs.push({ value: 'all', label: t('tabs.all-time') })
   }
 
@@ -108,7 +108,11 @@ export default function DateAndTimeRange({ setPeriod, minDate, tabs, radio, defa
     let queryRemoveList = []
 
     if (periodName && periodName !== 'custom') {
-      queryAddList.push({ name: periodQueryName, value: periodName })
+      if (periodName !== defaultPeriod) {
+        queryAddList.push({ name: periodQueryName, value: periodName })
+      } else {
+        queryRemoveList.push(periodQueryName)
+      }
       setPeriod(periodName)
     } else if (startDateIn && endDateIn) {
       const range = new Date(startDateIn).toISOString() + '..' + new Date(endDateIn).toISOString()
@@ -154,14 +158,14 @@ export default function DateAndTimeRange({ setPeriod, minDate, tabs, radio, defa
     <span style={style}>
       {tabs && ready && (
         <>
-          <Tabs tabList={periodTabs} tab={periodName} setTab={setPeriodName} name="periodTabs" />
+          <Tabs tabList={periodTabs} tab={periodName} setTab={setPeriodName} name={periodQueryName + 'Tabs'} />
           {windowWidth < 910 && <br />}
         </>
       )}
 
       {radio && ready && (
         <>
-          <RadioOptions tabList={periodTabs} tab={periodName} setTab={setPeriodName} name="periodTabs" />
+          <RadioOptions tabList={periodTabs} tab={periodName} setTab={setPeriodName} name={periodQueryName + 'Tabs'} />
           {windowWidth < 910 && <br />}
         </>
       )}
@@ -180,6 +184,7 @@ export default function DateAndTimeRange({ setPeriod, minDate, tabs, radio, defa
         className="dateAndTimeRange"
         showMonthDropdown
         showYearDropdown
+        name="StartDate"
       />
       <DatePicker
         selected={endDate}
@@ -195,6 +200,7 @@ export default function DateAndTimeRange({ setPeriod, minDate, tabs, radio, defa
         className="dateAndTimeRange"
         showMonthDropdown
         showYearDropdown
+        name="EndDate"
       />
     </span>
   )

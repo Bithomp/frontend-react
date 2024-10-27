@@ -1,11 +1,9 @@
 import { useTranslation } from 'next-i18next'
-import { useEffect, useState } from 'react'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import { useWidth, ledgerName, countriesTranslated } from '../utils'
+import { useWidth, ledgerName } from '../utils'
 import { axiosServer } from '../utils/axios'
 import { getIsSsrMobile } from '../utils/mobile'
 import { shortHash, duration, timeFromNow } from '../utils/format'
-import ReactCountryFlag from 'react-country-flag'
 
 export async function getServerSideProps(context) {
   const { locale, req } = context
@@ -45,6 +43,7 @@ export async function getServerSideProps(context) {
 import SEO from '../components/SEO'
 import CopyButton from '../components/UI/CopyButton'
 import NetworkPagesTab from '../components/Tabs/NetworkPagesTabs'
+import CountryWithFlag from '../components/UI/CountryWithFlag'
 
 const shortVersion = (version) => {
   version = version.replace('rippled-', '')
@@ -55,54 +54,14 @@ const shortVersion = (version) => {
   return version
 }
 
-const countryCodeWithFlag = (countryCode) => {
-  if (countryCode === 'unknown') return ''
-  return (
-    <>
-      <ReactCountryFlag
-        countryCode={countryCode}
-        style={{
-          fontSize: '1.5em',
-          lineHeight: '1em'
-        }}
-      />{' '}
-      {countryCode}
-    </>
-  )
-}
-
 export default function Nodes({ initialData, initialErrorMessage }) {
-  const { t } = useTranslation(['common'])
+  const { t, i18n } = useTranslation()
 
   const windowWidth = useWidth()
-  const countries = countriesTranslated()
 
   const data = initialData || {}
   const errorMessage = initialErrorMessage || ''
   const loading = false
-
-  const [isRendered, setIsRendered] = useState(false)
-
-  useEffect(() => {
-    setIsRendered(true)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
-
-  const countryWithFlag = (countryCode) => {
-    if (countryCode === 'unknown') return <b>Unknown</b>
-    return (
-      <>
-        <ReactCountryFlag
-          countryCode={countryCode}
-          style={{
-            fontSize: '1.5em',
-            lineHeight: '1.5em'
-          }}
-        />{' '}
-        {countries.getNameTranslated(countryCode)}
-      </>
-    )
-  }
 
   return (
     <>
@@ -120,7 +79,7 @@ export default function Nodes({ initialData, initialErrorMessage }) {
 
         <p className="center">
           Explore the list of {ledgerName} nodes. View up-to-date statistics on node versions and countries
-          {data?.crawl_time && <> (updated {timeFromNow(data.crawl_time)}).</>}
+          {data?.crawl_time && <> (updated {timeFromNow(data.crawl_time, i18n)}).</>}
         </p>
 
         <div className="flex flex-center">
@@ -205,7 +164,9 @@ export default function Nodes({ initialData, initialErrorMessage }) {
                           {data.summary.countryCodes.map((a, i) => (
                             <tr key={i}>
                               <td className="center">{i + 1}</td>
-                              <td>{isRendered && countryWithFlag(a.countryCode)}</td>
+                              <td>
+                                <CountryWithFlag countryCode={a.countryCode} />
+                              </td>
                               <td className="right">{a.count}</td>
                               <td className="right">{Math.ceil((a.count / data.summary.total) * 10000) / 100}%</td>
                             </tr>
@@ -262,7 +223,9 @@ export default function Nodes({ initialData, initialErrorMessage }) {
                         data.nodes.map((a, i) => (
                           <tr key={i}>
                             <td className="center">{i + 1}</td>
-                            <td>{isRendered && countryCodeWithFlag(a.country_code)}</td>
+                            <td>
+                              <CountryWithFlag countryCode={a.country_code} type="code" />
+                            </td>
                             <td className="right">
                               {windowWidth > 1560 ? a.node_public_key : shortHash(a.node_public_key)}{' '}
                               <CopyButton text={a.node_public_key} />
@@ -310,7 +273,9 @@ export default function Nodes({ initialData, initialErrorMessage }) {
                           <b>{i + 1}</b>
                         </td>
                         <td>
-                          <p>{isRendered && countryWithFlag(a.country_code)}</p>
+                          <p>
+                            <CountryWithFlag countryCode={a.country_code} />
+                          </p>
                           <p>
                             Public key: {windowWidth > 540 ? a.node_public_key : shortHash(a.node_public_key)}{' '}
                             <CopyButton text={a.node_public_key} />

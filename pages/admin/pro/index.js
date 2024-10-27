@@ -9,14 +9,16 @@ import { axiosAdmin } from '../../../utils/axios'
 
 import SEO from '../../../components/SEO'
 import AddressInput from '../../../components/UI/AddressInput'
-import { encode, useWidth } from '../../../utils'
-import { removeProAddress } from '../../../utils/pro'
+import { encode, useWidth, xahauNetwork } from '../../../utils'
+import { removeProAddress, activateAddressCrawler, crawlerStatus, updateProAddress } from '../../../utils/pro'
 import FormInput from '../../../components/UI/FormInput'
-import { fullDateAndTime } from '../../../utils/format'
+import { addressLink } from '../../../utils/format'
 import Image from 'next/image'
 
 import { MdDelete } from 'react-icons/md'
 import Link from 'next/link'
+import ProTabs from '../../../components/Tabs/ProTabs'
+import CheckBox from '../../../components/UI/CheckBox'
 
 export const getServerSideProps = async (context) => {
   const { locale } = context
@@ -28,17 +30,69 @@ export const getServerSideProps = async (context) => {
   }
 }
 
-export default function Pro({ account, setAccount, setSignRequest, refreshPage }) {
+const SettingsCheckBoxes = ({ a, mobile, subscriptionExpired }) => {
+  let styles = {}
+  if (mobile) {
+    styles = { ...styles, lineHeight: '1.8em', fontSize: '1.1em' }
+  }
+
+  const [escrowsExecution, setEscrowsExecution] = useState(a.settings?.escrowsExecution)
+  const [nftokensOffersCancellation, setNftokensOffersCancellation] = useState(a.settings?.nftokensOffersCancellation)
+
+  return (
+    <>
+      <CheckBox
+        checked={subscriptionExpired ? false : escrowsExecution}
+        setChecked={() => {
+          updateProAddress(a.id, {
+            settings: { escrowsExecution: !escrowsExecution }
+          })
+          setEscrowsExecution(!escrowsExecution)
+        }}
+        style={{ ...styles, marginTop: 0 }}
+        disabled={subscriptionExpired}
+      >
+        {mobile ? 'Auto Escrow Execution' : 'Execute Escrows'}
+      </CheckBox>
+      {!xahauNetwork && (
+        <CheckBox
+          checked={subscriptionExpired ? false : nftokensOffersCancellation}
+          setChecked={() => {
+            updateProAddress(a.id, {
+              settings: { nftokensOffersCancellation: !nftokensOffersCancellation }
+            })
+            setNftokensOffersCancellation(!nftokensOffersCancellation)
+          }}
+          style={{ ...styles, marginTop: 10 }}
+          disabled={subscriptionExpired}
+        >
+          {mobile ? 'Auto Cancelation of Expired NFT offers' : 'Cancel Expired NFT Offers'}
+        </CheckBox>
+      )}
+    </>
+  )
+}
+
+export default function Pro({
+  account,
+  setAccount,
+  setSignRequest,
+  refreshPage,
+  subscriptionExpired,
+  sessionToken,
+  setSessionToken
+}) {
   const router = useRouter()
   const width = useWidth()
 
   const { t } = useTranslation(['common', 'admin'])
   const [errorMessage, setErrorMessage] = useState('')
-  const [verifiedAddresses, setVerifiedAddresses] = useState(null)
+  const [verifiedAddresses, setVerifiedAddresses] = useState([])
   const [addressToVerify, setAddressToVerify] = useState('')
   const [addressName, setAddressName] = useState('')
   const [loadingVerifiedAddresses, setLoadingVerifiedAddresses] = useState(false)
   const [rawData, setRawData] = useState({})
+  const [rendered, setRendered] = useState(false)
 
   const suggestAddress = (account, verAddresses) => {
     setRawData({})
@@ -81,10 +135,19 @@ export default function Pro({ account, setAccount, setSignRequest, refreshPage }
         "count": 1,
         "addresses": [
           {
-            "id": 1,
-            "createdAt": 1721461101,
-            "address": "fytuuyfgukhg",
-            "name": "vasia"
+            "id": 28,
+            "createdAt": 1721741550,
+            "address": "raN6cSu",
+            "name": "vasia",
+            "crawler": {
+              "status": "queued",
+              "createdAt": 1728212999,
+              "updatedAt": 1728212999,
+              "lastCrawledAt": null,
+              "firstLedgerIndex": null,
+              "currentLedgerIndex": null,
+              "lastLedgerIndex": null
+            }
           }
         ]
       }
@@ -94,15 +157,14 @@ export default function Pro({ account, setAccount, setSignRequest, refreshPage }
   }
 
   useEffect(() => {
-    const sessionToken = localStorage.getItem('sessionToken')
     if (!sessionToken) {
       router.push('/admin')
     } else {
-      axiosAdmin.defaults.headers.common['Authorization'] = 'Bearer ' + sessionToken
       setErrorMessage('')
+      setRendered(true)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [sessionToken])
 
   useEffect(() => {
     setAddressName('')
@@ -117,7 +179,7 @@ export default function Pro({ account, setAccount, setSignRequest, refreshPage }
   }, [refreshPage])
 
   const onLogOut = () => {
-    localStorage.removeItem('sessionToken')
+    setSessionToken('')
     setAccount({ ...account, pro: null })
     setErrorMessage('')
   }
@@ -158,11 +220,34 @@ export default function Pro({ account, setAccount, setSignRequest, refreshPage }
     })
   }
 
-  const afterAddressRemoved = (data) => {
+  const afterVerifiedAddressesUpdate = (data) => {
     if (data?.error) {
       setErrorMessage(data.error)
     }
     getVerifiedAddresses()
+  }
+
+  const addressButtons = (address, options) => {
+    return (
+      <>
+        {address.crawler && (
+          <Link className="button-action narrow thin" href={'/admin/pro/history?address=' + address.address}>
+            {options?.mobile ? 'View history' : 'View'}
+          </Link>
+        )}{' '}
+        {!(address.crawler && address.crawler.status !== 'paused') && (
+          <button
+            className="button-action narrow thin"
+            onClick={() => {
+              activateAddressCrawler(address.address, afterVerifiedAddressesUpdate)
+            }}
+            disabled={subscriptionExpired}
+          >
+            Enable
+          </button>
+        )}
+      </>
+    )
   }
 
   return (
@@ -173,150 +258,257 @@ export default function Pro({ account, setAccount, setSignRequest, refreshPage }
 
         <AdminTabs name="mainTabs" tab="pro" />
 
-        <h4 className="center">Verified addresses</h4>
+        <ProTabs tab="addresses" />
 
-        {!width || width > 750 ? (
-          <table className="table-large no-hover">
-            <thead>
-              <tr>
-                <th className="center">#</th>
-                <th className="left">Address</th>
-                <th className="right">Private name</th>
-                <th>Verified at</th>
-                <th className="center">Remove</th>
-              </tr>
-            </thead>
-            <tbody>
-              {verifiedAddresses?.length > 0 ? (
-                <>
-                  {verifiedAddresses.map((address, i) => (
-                    <tr key={i}>
-                      <td className="center">{i + 1}</td>
-                      <td className="left">
-                        {address.address}
-                        <br />
-                        <br />
-                        <Link
-                          className="button-action narrow thin"
-                          href={'/admin/pro/history?address=' + address.address}
-                        >
-                          History
-                        </Link>
-                      </td>
-                      <td className="right">{address.name}</td>
-                      <td>{fullDateAndTime(address.createdAt)}</td>
-                      <td className="center red">
-                        <MdDelete
-                          onClick={() => {
-                            removeProAddress(address.id, afterAddressRemoved)
-                          }}
-                        />
-                      </td>
-                    </tr>
-                  ))}
-                </>
-              ) : (
-                <tr>
-                  <td colSpan="100" className="center">
-                    {loadingVerifiedAddresses ? 'Loading data...' : 'You do not have verified addresses yet.'}
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        ) : (
-          <table className="table-mobile">
-            <tbody>
-              {verifiedAddresses?.length > 0 ? (
-                <>
-                  {verifiedAddresses.map((address, i) => (
-                    <tr key={i}>
-                      <td style={{ padding: '5px' }}>#{i + 1}</td>
-                      <td>
-                        <p>
-                          Address: <b>{address.address}</b>
-                        </p>
-                        <p>
-                          Name: <b>{address.name}</b>
-                        </p>
-                        <p>Verified at: {fullDateAndTime(address.createdAt)}</p>
-                        <p>
-                          <Link className="button-action narrow thin" href={'/admin/pro/history?address=' + address}>
-                            History
-                          </Link>{' '}
-                          <button
-                            className="button-action narrow thin"
-                            onClick={() => {
-                              removeProAddress(address.id, afterAddressRemoved)
-                            }}
-                          >
-                            Remove
-                          </button>
-                        </p>
-                      </td>
-                    </tr>
-                  ))}
-                </>
-              ) : (
-                <tr>
-                  <td colSpan="100" className="center">
-                    {loadingVerifiedAddresses ? 'Loading data...' : 'You do not have verified addresses yet.'}
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        )}
-        <br />
-        <br />
-        <div style={{ textAlign: 'left' }}>
-          In order to use PRO functionality for your accounts, you would need to verify them first.
-          <br />
-          <br />
-          <div>
-            - Get your personal historical transaction's extracts and statistics.
-            <br />
-            - Auto cancelation of expired NFT offers
-            <br />- Auto execution of time based escrows
-          </div>
-          {width > 851 && <br />}
-          <br />
-          <div className="flex flex-center">
-            <span style={width > 851 ? { width: 'calc(70% - 20px)' } : { width: '100%', marginBottom: '-20px' }}>
-              <AddressInput
-                title="Address"
-                placeholder="Enter address"
-                setInnerValue={setAddressToVerify}
-                hideButton={true}
-                rawData={rawData}
-                type="address"
-              />
-            </span>
-            <span style={{ width: width > 851 ? '30%' : '100%' }}>
-              <FormInput
-                title="Private name"
-                placeholder="Enter address name"
-                setInnerValue={setAddressName}
-                defaultValue={rawData?.addressDetails?.username}
-                hideButton={true}
-              />
-            </span>
-          </div>
-          <br />
-          <br />
-          <center>
-            <button className="button-action" onClick={addAddressClicked} disabled={!addressToVerify || !addressName}>
-              Verify{' '}
-              <Image
-                src="/images/xumm.png"
-                className={'xumm-logo' + (!addressToVerify || !addressName ? ' disabled' : '')}
-                alt="xaman"
-                height={24}
-                width={24}
-              />
-            </button>
-          </center>
+        <h4 className="center">Verified addresses</h4>
+        <div>
+          Pro accounts can use the following features:
+          <ul>
+            <li>View and Export your personal historical balance changes</li>
+            <li>
+              Auto execution of time based escrows
+              <br />
+              (that you created or that have your address as a destination)
+            </li>
+            {!xahauNetwork && (
+              <li>
+                Auto cancelation of expired NFT offers
+                <br />
+                (offers that you created and offers from others for NFTs you own)
+              </li>
+            )}
+          </ul>
         </div>
+        <br />
+
+        {rendered && (
+          <>
+            {!width || width > 750 ? (
+              <table className="table-large no-hover">
+                <thead>
+                  <tr>
+                    <th className="center">#</th>
+                    <th className="left">Address</th>
+                    <th className="right">Balance history</th>
+                    <th className="left">Bot settings</th>
+                    <th className="center">Remove</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {verifiedAddresses?.length > 0 ? (
+                    <>
+                      {verifiedAddresses.map((a, i) => (
+                        <tr key={i}>
+                          <td className="center">{i + 1}</td>
+                          <td className="left">
+                            <table>
+                              <tbody>
+                                <tr>
+                                  <td style={{ padding: 0 }}>
+                                    <Image
+                                      alt="avatar"
+                                      src={
+                                        'https://cdn.bithomp.com/avatar/' +
+                                        a.address +
+                                        (refreshPage ? '?' + refreshPage : '')
+                                      }
+                                      width="40"
+                                      height="40"
+                                    />
+                                  </td>
+                                  <td style={{ padding: '0 0 0 10px' }}>
+                                    <b className="orange">{a.name}</b> - {addressLink(a.address, { short: true })}
+                                    <br />
+                                    <a
+                                      onClick={() =>
+                                        setSignRequest({
+                                          action: 'setAvatar',
+                                          request: {
+                                            TransactionType: 'AccountSet',
+                                            Account: a.address
+                                          },
+                                          data: {
+                                            signOnly: true,
+                                            action: 'set-avatar'
+                                          }
+                                        })
+                                      }
+                                    >
+                                      Set Avatar
+                                    </a>
+                                  </td>
+                                </tr>
+                              </tbody>
+                            </table>
+                          </td>
+                          <td className="right">
+                            {crawlerStatus(a.crawler)}
+                            <div style={{ height: 5, width: '100%' }}></div>
+                            {addressButtons(a)}
+                          </td>
+                          <td className="left">
+                            <SettingsCheckBoxes a={a} subscriptionExpired={subscriptionExpired} />
+                          </td>
+                          <td className="center red">
+                            <MdDelete
+                              onClick={() => {
+                                removeProAddress(a.id, afterVerifiedAddressesUpdate)
+                              }}
+                              style={{ fontSize: '1.4em' }}
+                            />
+                          </td>
+                        </tr>
+                      ))}
+                    </>
+                  ) : (
+                    <tr>
+                      <td colSpan="100" className="center">
+                        {loadingVerifiedAddresses ? 'Loading data...' : 'You do not have verified addresses yet.'}
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            ) : (
+              <table className="table-mobile">
+                <tbody>
+                  {verifiedAddresses?.length > 0 ? (
+                    <>
+                      {verifiedAddresses.map((a, i) => (
+                        <tr key={i}>
+                          <td style={{ padding: '20px 5px', verticalAlign: 'top' }} className="center">
+                            <Image
+                              alt="avatar"
+                              src={'https://cdn.bithomp.com/avatar/' + a.address}
+                              width="30"
+                              height="30"
+                            />
+                            <br />
+                            <br />
+                            {i + 1}
+                          </td>
+                          <td>
+                            <p>
+                              Address: <b className="orange">{a.name}</b> - {addressLink(a.address, { short: true })}
+                            </p>
+                            <p>Status: {crawlerStatus(a.crawler, { inline: true })}</p>
+                            <p>
+                              <SettingsCheckBoxes a={a} mobile={true} subscriptionExpired={subscriptionExpired} />
+                            </p>
+                            <p>
+                              {addressButtons(a, { mobile: true })}
+                              <br />
+                              <br />
+                              <a
+                                onClick={() =>
+                                  setSignRequest({
+                                    action: 'setAvatar',
+                                    request: {
+                                      TransactionType: 'AccountSet',
+                                      Account: a.address
+                                    },
+                                    data: {
+                                      signOnly: true,
+                                      action: 'set-avatar'
+                                    }
+                                  })
+                                }
+                              >
+                                Set Avatar
+                              </a>
+                              ,{' '}
+                              <a
+                                className="red"
+                                onClick={() => {
+                                  removeProAddress(a.id, afterVerifiedAddressesUpdate)
+                                }}
+                              >
+                                Remove
+                              </a>
+                            </p>
+                          </td>
+                        </tr>
+                      ))}
+                    </>
+                  ) : (
+                    <tr>
+                      <td colSpan="100" className="center">
+                        {loadingVerifiedAddresses ? 'Loading data...' : 'You do not have verified addresses yet.'}
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            )}
+            <br />
+            <br />
+            <div style={{ textAlign: 'left' }}>
+              {verifiedAddresses?.length > 0 ? (
+                <>
+                  {subscriptionExpired ? (
+                    <>
+                      In order to activate Data Analyses, please{' '}
+                      <Link href="/admin/subscriptions?tab=pro">purchase the Bithomp Pro subscription</Link>.
+                    </>
+                  ) : (
+                    'You can add up to 5 addresses for data analyses. If you need more, please contact us.'
+                  )}
+                </>
+              ) : (
+                <>In order to use PRO functionality for your accounts, you would need to verify them first.</>
+              )}
+              {/* Allow only 1 for non-subscribers and 5 for those with subscription */}
+              {((verifiedAddresses?.length < 5 && !subscriptionExpired) ||
+                !verifiedAddresses ||
+                verifiedAddresses?.length === 0) && (
+                <>
+                  <br />
+                  <br />
+                  <div className="flex flex-center">
+                    <span
+                      style={width > 851 ? { width: 'calc(70% - 20px)' } : { width: '100%', marginBottom: '-20px' }}
+                    >
+                      <AddressInput
+                        title="Address"
+                        placeholder="Enter address"
+                        setInnerValue={setAddressToVerify}
+                        hideButton={true}
+                        rawData={rawData}
+                        type="address"
+                      />
+                    </span>
+                    <span style={{ width: width > 851 ? '30%' : '100%' }}>
+                      <FormInput
+                        title="Private name"
+                        placeholder="Enter address name"
+                        setInnerValue={setAddressName}
+                        defaultValue={rawData?.addressDetails?.username}
+                        hideButton={true}
+                      />
+                    </span>
+                  </div>
+                  <br />
+                  <center>
+                    <button
+                      className="button-action"
+                      onClick={addAddressClicked}
+                      disabled={!addressToVerify || !addressName}
+                    >
+                      Verify{' '}
+                      <Image
+                        src="/images/wallets/xaman.png"
+                        className={'xaman-logo' + (!addressToVerify || !addressName ? ' disabled' : '')}
+                        alt="xaman"
+                        height={24}
+                        width={24}
+                      />
+                    </button>
+                  </center>
+                </>
+              )}
+            </div>
+          </>
+        )}
         <br />
         {errorMessage ? <div className="center orange bold">{errorMessage}</div> : <br />}
       </div>

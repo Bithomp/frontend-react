@@ -1,5 +1,13 @@
 $width: 340px;
 
+.filters-onlyCsv {
+  position: absolute;
+  padding: 20px 15px;
+  @media (max-width: 1300px) {
+    padding: 12px 15px;
+  }
+}
+
 .filters {
   z-index: 3;
 
@@ -45,6 +53,7 @@ $width: 340px;
       top: 95px;
       pointer-events: all;
       display: flex;
+      flex-wrap: wrap;
       align-items: center;
       gap: 15px;
 
@@ -52,6 +61,11 @@ $width: 340px;
         gap: 8px;
         margin-bottom: 8px;
       }
+
+      .dropdown {
+        margin-left: auto;
+      }
+
     }
   }
 
@@ -102,6 +116,10 @@ $width: 340px;
   & + .content-text {
     margin: 64px 0 25px 0;
     width: 100%;
+
+    @media (max-width: 920px) {
+      margin: 128px 0 25px 0;
+    }
 
     @media (max-width: 440px) {
       margin: 55px 0 15px 0;
@@ -204,14 +222,13 @@ $width: 340px;
     justify-content: center;
     top: 20px;
     left: 15px;
-    background-color: #fff;
-    border: none;
+    background-color: var(--background-input);
     margin: 0;
     font-size: 20px;
     padding: 4px;
-    border: 1px solid #ccc;
+    border: 1px solid var(--unaccent-icon);
     cursor: pointer;
-    color: var(--background-block);
+    color: var(--text-main);
 
     @media (min-width: 440px) {
       width: 38px;
@@ -220,10 +237,6 @@ $width: 340px;
 
     @media (max-width: 440px) {
       padding: 5px;
-    }
-
-    .dark & {
-      color: #000;
     }
 
     @media (max-width: 1300px) {

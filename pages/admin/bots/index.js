@@ -8,7 +8,6 @@ import SEO from '../../../components/SEO'
 import { ledgerName } from '../../../utils'
 import { getIsSsrMobile } from '../../../utils/mobile'
 import AdminTabs from '../../../components/Tabs/AdminTabs'
-import { axiosAdmin } from '../../../utils/axios'
 
 export const getServerSideProps = async (context) => {
   const { locale } = context
@@ -20,21 +19,19 @@ export const getServerSideProps = async (context) => {
   }
 }
 
-export default function Bots() {
+export default function Bots({ sessionToken }) {
   const { t } = useTranslation(['common', 'admin'])
   const [errorMessage, setErrorMessage] = useState('')
   const router = useRouter()
 
   useEffect(() => {
-    const sessionToken = localStorage.getItem('sessionToken')
     if (!sessionToken) {
       router.push('/admin')
     } else {
-      axiosAdmin.defaults.headers.common['Authorization'] = 'Bearer ' + sessionToken
       setErrorMessage('') //delete
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [sessionToken])
 
   return (
     <>

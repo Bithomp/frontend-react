@@ -4,28 +4,34 @@ import { useState, useEffect } from 'react'
 import { useTranslation } from 'next-i18next'
 import dynamic from 'next/dynamic'
 
-import { useTheme } from "../Layout/ThemeContext"
+import { useTheme } from '../Layout/ThemeContext'
 import { nativeCurrency } from '../../utils'
 
 const Chart = dynamic(() => import('react-apexcharts'), { ssr: false })
-const zoomicon = "/images/zoom.svg"
-const zoominicon = "/images/zoom-in.svg"
-const zoomouticon = "/images/zoom-out.svg"
-const panicon = "/images/panning.svg"
+const zoomicon = '/images/chart/zoom.svg'
+const zoominicon = '/images/chart/zoom-in.svg'
+const zoomouticon = '/images/chart/zoom-out.svg'
+const panicon = '/images/chart/panning.svg'
 
-export default function PriceChart({ currency, chartPeriod, setChartPeriod }) {
-  const { i18n } = useTranslation();
-  const { theme } = useTheme();
+export default function PriceChart({ currency, chartPeriod, setChartPeriod, hideToolbar }) {
+  const showToolbar = !hideToolbar
+  const { i18n } = useTranslation()
+  const { theme } = useTheme()
 
   const [data, setData] = useState({ data: [[]] })
+  const [rendered, setRendered] = useState(false)
 
-  const supportedLanguages = ["en", "ru"]
-  let chartLang = "en"
+  useEffect(() => {
+    setRendered(true)
+  }, [])
+
+  const supportedLanguages = ['en', 'ru']
+  let chartLang = 'en'
   if (supportedLanguages.includes(i18n.language)) {
     chartLang = i18n.language
   }
 
-  const xAxisLabelsFormatterDetailed = val => {
+  const xAxisLabelsFormatterDetailed = (val) => {
     return new Date(val).toLocaleDateString(undefined, {
       month: 'short',
       day: 'numeric',
@@ -42,10 +48,10 @@ export default function PriceChart({ currency, chartPeriod, setChartPeriod }) {
         datetimeFormatter: {
           day: 'd MMM'
         }
-      },
+      }
     },
     chart: {
-      id: "currency-chart",
+      id: 'currency-chart',
       defaultLocale: chartLang,
       locales: [
         {
@@ -74,82 +80,86 @@ export default function PriceChart({ currency, chartPeriod, setChartPeriod }) {
         }
       ],
       toolbar: {
+        show: showToolbar,
         tools: {
           download: false,
-          zoom: '<img src="' + zoomicon + '" width="20">',
-          zoomin: '<img src="' + zoominicon + '" width="20">',
-          zoomout: '<img src="' + zoomouticon + '" width="20">',
-          pan: '<img src="' + panicon + '" width="20">',
+          zoom: '<img src="' + zoomicon + '" width="20" alt="zoom">',
+          zoomin: '<img src="' + zoominicon + '" width="20" alt="zoom in">',
+          zoomout: '<img src="' + zoomouticon + '" width="20" alt="zoom out">',
+          pan: '<img src="' + panicon + '" width="20" alt="pan">',
           reset: false
         }
-      },
+      }
     }
-  });
+  })
 
-  const detailedDayAndWeekChartAvailable = currency === 'eur' || currency === "usd";
+  const detailedDayAndWeekChartAvailable = currency === 'eur' || currency === 'usd'
 
   useEffect(() => {
-    const date = new Date();
-    const now = date.getTime();
+    const date = new Date()
+    const now = date.getTime()
 
-    let yearAgo = new Date();
-    yearAgo.setFullYear(date.getFullYear() - 1);
-    yearAgo = yearAgo.getTime();
+    let yearAgo = new Date()
+    yearAgo.setFullYear(date.getFullYear() - 1)
+    yearAgo = yearAgo.getTime()
 
-    let halfAnYearAgo = new Date();
-    halfAnYearAgo.setMonth(date.getMonth() - 6);
-    halfAnYearAgo = halfAnYearAgo.getTime();
+    let halfAnYearAgo = new Date()
+    halfAnYearAgo.setMonth(date.getMonth() - 6)
+    halfAnYearAgo = halfAnYearAgo.getTime()
 
     let monthAgo = new Date()
-    monthAgo.setMonth(date.getMonth() - 1);
-    monthAgo = monthAgo.getTime();
+    monthAgo.setMonth(date.getMonth() - 1)
+    monthAgo = monthAgo.getTime()
 
     let weekAgo = new Date()
-    weekAgo.setDate(date.getDate() - 7);
-    weekAgo = weekAgo.getTime();
+    weekAgo.setDate(date.getDate() - 7)
+    weekAgo = weekAgo.getTime()
 
     let dayAgo = new Date()
-    dayAgo.setDate(date.getDate() - 1);
-    dayAgo = dayAgo.getTime();
+    dayAgo.setDate(date.getDate() - 1)
+    dayAgo = dayAgo.getTime()
 
-    const thisYearStart = new Date('1 Jan ' + date.getFullYear()).getTime();
+    const thisYearStart = new Date('1 Jan ' + date.getFullYear()).getTime()
 
     async function fetchData() {
       //day charts available only for eur/usd
       if (!detailedDayAndWeekChartAvailable && chartPeriod === 'one_day') {
-        setChartPeriod('one_week');
-        return;
+        setChartPeriod('one_week')
+        return
       }
 
-      const day = 86400000;
-      const hour = 3600000;
+      const day = 86400000
+      const hour = 3600000
 
-      let params = '';
+      let params = ''
       if (chartPeriod === 'all') {
-        params = '?date=20130804..';
+        params = '?date=20130804..'
       } else if (chartPeriod === 'one_day') {
-        params = '?date=' + (dayAgo - hour) + '..';
+        params = '?date=' + (dayAgo - hour) + '..'
       } else if (chartPeriod === 'one_week') {
-        params = '?date=' + (weekAgo - day) + '..';
+        params = '?date=' + (weekAgo - day) + '..'
       } else if (chartPeriod === 'one_month') {
-        params = '?date=' + (monthAgo - day) + '..';
+        params = '?date=' + (monthAgo - day) + '..'
       } else if (chartPeriod === 'six_months') {
-        params = '?date=' + (halfAnYearAgo - day) + '..';
+        params = '?date=' + (halfAnYearAgo - day) + '..'
       } else if (chartPeriod === 'one_year') {
-        params = '?date=' + (yearAgo - day) + '..';
+        params = '?date=' + (yearAgo - day) + '..'
       } else if (chartPeriod === 'ytd') {
-        params = '?date=' + thisYearStart + '..';
+        params = '?date=' + thisYearStart + '..'
       }
 
-      const response = await axios(
-        'v2/rates/history/' + currency.toLowerCase() + params,
-      );
+      const response = await axios('v2/rates/history/' + currency.toLowerCase() + params)
 
-      const chartData = response.data.data;
+      const chartData = response.data.data
 
-      const textColor = theme === 'light' ? '#000000' : '#ffffff';
+      const textColor = theme === 'light' ? '#000000' : '#ffffff'
 
-      const digitsAfterDot = chartData[0][1] > 100 && chartData[chartData.length - 1][1] > 100 ? 0 : chartData[0][1] > 1 && chartData[chartData.length - 1][1] > 1 ? 2 : 4;
+      const digitsAfterDot =
+        chartData[0][1] > 100 && chartData[chartData.length - 1][1] > 100
+          ? 0
+          : chartData[0][1] > 1 && chartData[chartData.length - 1][1] > 1
+          ? 2
+          : 4
 
       let newOptions = {
         xaxis: {
@@ -164,31 +174,58 @@ export default function PriceChart({ currency, chartPeriod, setChartPeriod }) {
         yaxis: {
           labels: {
             formatter: (val) => {
-              let currencySign = '';
-              const cur = currency.toLowerCase();
-              const dollar = ["ars", "aud", "bsd", "bbd", "bmd", "bnd", "cad", "kyd", "clp", "cop", "xcd", "svc", "fjd", "gyd", "hkd", "lrd", "mxn", "nad", "nzd", "sgd", "sbd", "srd", "tvd", "usd"];
-              const yen = ["cny", "jpy"];
-              const pound = ["egp", "fkp", "gip", "ggp", "imp", "jep", "lbp", "shp", "syp", "gbp"];
+              let currencySign = ''
+              const cur = currency.toLowerCase()
+              const dollar = [
+                'ars',
+                'aud',
+                'bsd',
+                'bbd',
+                'bmd',
+                'bnd',
+                'cad',
+                'kyd',
+                'clp',
+                'cop',
+                'xcd',
+                'svc',
+                'fjd',
+                'gyd',
+                'hkd',
+                'lrd',
+                'mxn',
+                'nad',
+                'nzd',
+                'sgd',
+                'sbd',
+                'srd',
+                'tvd',
+                'usd'
+              ]
+              const yen = ['cny', 'jpy']
+              const pound = ['egp', 'fkp', 'gip', 'ggp', 'imp', 'jep', 'lbp', 'shp', 'syp', 'gbp']
 
               if (dollar.includes(cur)) {
-                currencySign = '$';
+                currencySign = '$'
               } else if (yen.includes(cur)) {
-                currencySign = '¥';
+                currencySign = '¥'
               } else if (pound.includes(cur)) {
-                currencySign = '£';
+                currencySign = '£'
               } else if (cur === 'eur') {
-                currencySign = '€';
+                currencySign = '€'
               }
 
               return currencySign + val.toFixed(digitsAfterDot)
             }
           },
-          tickAmount: 5,
+          tickAmount: 5
         },
-        title: {
-          text: nativeCurrency + '/' + currency.toUpperCase(),
-          align: 'center'
-        },
+        title: showToolbar
+          ? {
+              text: nativeCurrency + '/' + currency.toUpperCase(),
+              align: 'center'
+            }
+          : {},
         chart: {
           type: 'area',
           animations: {
@@ -198,6 +235,7 @@ export default function PriceChart({ currency, chartPeriod, setChartPeriod }) {
             autoScaleYaxis: true
           },
           toolbar: {
+            show: showToolbar,
             autoSelected: 'zoom',
             tools: {
               download: false,
@@ -207,15 +245,15 @@ export default function PriceChart({ currency, chartPeriod, setChartPeriod }) {
           events: {
             beforeZoom: (e, { xaxis }) => {
               // dont zoom out any further
-              let maindifference = chartData[chartData.length - 1][0] - chartData[0][0];
-              let zoomdifference = xaxis.max - xaxis.min;
+              let maindifference = chartData[chartData.length - 1][0] - chartData[0][0]
+              let zoomdifference = xaxis.max - xaxis.min
               if (zoomdifference > maindifference) {
                 return {
                   xaxis: {
                     min: chartData[0][0],
                     max: chartData[chartData.length - 1][0]
                   }
-                };
+                }
               }
             }
           },
@@ -223,7 +261,7 @@ export default function PriceChart({ currency, chartPeriod, setChartPeriod }) {
         },
         tooltip: {
           x: {
-            formatter: val => {
+            formatter: (val) => {
               return new Date(val).toLocaleDateString(undefined, {
                 year: 'numeric',
                 month: 'short',
@@ -234,7 +272,7 @@ export default function PriceChart({ currency, chartPeriod, setChartPeriod }) {
           y: {
             formatter: (val) => val.toFixed(digitsAfterDot) + ' ' + currency.toUpperCase()
           },
-          theme,
+          theme
         },
         dataLabels: {
           enabled: false
@@ -242,7 +280,7 @@ export default function PriceChart({ currency, chartPeriod, setChartPeriod }) {
         stroke: {
           curve: 'smooth',
           width: 3
-        },
+        }
         //colors: ['#006B7D'],
       }
 
@@ -289,21 +327,43 @@ export default function PriceChart({ currency, chartPeriod, setChartPeriod }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currency, chartPeriod, theme, detailedDayAndWeekChartAvailable])
 
-  const series = [{
-    name: '',
-    data: data.data
-  }]
+  const series = [
+    {
+      name: '',
+      data: data.data
+    }
+  ]
 
-  return <>
-    <div className="chart-toolbar">
-      {detailedDayAndWeekChartAvailable && <button onClick={() => setChartPeriod('one_day')} className={(chartPeriod === 'one_day' ? 'active' : '')}>1D</button>}
-      <button onClick={() => setChartPeriod('one_week')} className={(chartPeriod === 'one_week' ? 'active' : '')}>1W</button>
-      <button onClick={() => setChartPeriod('one_month')} className={(chartPeriod === 'one_month' ? 'active' : '')}>1M</button>
-      <button onClick={() => setChartPeriod('six_months')} className={(chartPeriod === 'six_months' ? 'active' : '')}>6M</button>
-      <button onClick={() => setChartPeriod('one_year')} className={(chartPeriod === 'one_year' ? 'active' : '')}>1Y</button>
-      <button onClick={() => setChartPeriod('ytd')} className={(chartPeriod === 'ytd' ? 'active' : '')}>YTD</button>
-      <button onClick={() => setChartPeriod('all')} className={(chartPeriod === 'all' ? 'active' : '')}>ALL</button>
-    </div>
-    <Chart type="line" series={series} options={options} />
-  </>
+  if (!rendered) return ''
+
+  return (
+    <>
+      <div className="chart-toolbar">
+        {detailedDayAndWeekChartAvailable && (
+          <button onClick={() => setChartPeriod('one_day')} className={chartPeriod === 'one_day' ? 'active' : ''}>
+            1D
+          </button>
+        )}
+        <button onClick={() => setChartPeriod('one_week')} className={chartPeriod === 'one_week' ? 'active' : ''}>
+          1W
+        </button>
+        <button onClick={() => setChartPeriod('one_month')} className={chartPeriod === 'one_month' ? 'active' : ''}>
+          1M
+        </button>
+        <button onClick={() => setChartPeriod('six_months')} className={chartPeriod === 'six_months' ? 'active' : ''}>
+          6M
+        </button>
+        <button onClick={() => setChartPeriod('one_year')} className={chartPeriod === 'one_year' ? 'active' : ''}>
+          1Y
+        </button>
+        <button onClick={() => setChartPeriod('ytd')} className={chartPeriod === 'ytd' ? 'active' : ''}>
+          YTD
+        </button>
+        <button onClick={() => setChartPeriod('all')} className={chartPeriod === 'all' ? 'active' : ''}>
+          ALL
+        </button>
+      </div>
+      <Chart type="line" series={series} options={options} />
+    </>
+  )
 }

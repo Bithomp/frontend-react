@@ -1,7 +1,7 @@
 {
     "title": "Añadir cuenta",
     "heading": "Añadir información de la cuenta",
-    "cross-chain": "Los servicios son multi cadena, <1>registra un servicio en la red principal de XRPL</1> y aparecerá disponible en el resto de exploradoresde bithomp.",
+    "cross-chain": "Los servicios son multi cadena, <2>registra un servicio en la red principal de XRPL</2> y aparecerá disponible en el resto de exploradoresde bithomp.",
     "desc": "Bithomp se esfuerza por aumentar la calidad de la información proporcionada por el Explorador y permitir a los usuarios identificar rápidamente las relaciones en el ledger. Si ejecuta un servicio utilizando el ledger (exchange, proveedor de servicios financieros, organización sin fines de lucro o cualquier otro negocio) o si utiliza dicho servicio, envíe la información del servicio aquí.",
     "no-private": "La solicitud no está pensada para cuentas privadas, la información de cuentas personales enviadas en este formulario serán descartadas.",
     "subtitle": "Tu información",

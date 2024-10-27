@@ -22,7 +22,7 @@ export const getServerSideProps = async (context) => {
   }
 }
 
-export default function Api() {
+export default function Api({ sessionToken }) {
   const { t } = useTranslation(['common', 'admin'])
   const [errorMessage, setErrorMessage] = useState('')
   const [apiData, setApiData] = useState(null)
@@ -32,15 +32,13 @@ export default function Api() {
   const router = useRouter()
 
   useEffect(() => {
-    const sessionToken = localStorage.getItem('sessionToken')
     if (!sessionToken) {
       router.push('/admin')
     } else {
-      axiosAdmin.defaults.headers.common['Authorization'] = 'Bearer ' + sessionToken
       getApiData()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [sessionToken])
 
   const getApiData = async () => {
     setLoading(true)

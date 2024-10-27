@@ -14,47 +14,35 @@ export default function Pro({ setPayPeriod }) {
     <>
       <h4 className="center">Why Purchase a Bithomp Pro Subscription?</h4>
       <div style={{ textAlign: 'left' }}>
+        <p>This premium offering is packed with benefits that make your experience more efficient:</p>
+
         <p>
-          This premium offering is packed with benefits that make your experience with our platform more efficient and
-          enjoyable:
+          ✅ <b>Balance changes reports:</b> <Link href="/admin/pro">Up to 5 addresses</Link>, <b>40 FIAT</b>{' '}
+          currencies, historical token value calculations, CSV Export
         </p>
         <p>
-          ✅ <b>Exclusive Access to Advanced Tools:</b>
-        </p>
-        <ul>
-          <li>
-            Enable Infinite scroll in the <Link href="/nft-explorer">NFT Explorer</Link>
-          </li>
-          <li>
-            Enable Infinite scroll in the <Link href="/nft-sales">NFT Sales</Link>
-          </li>
-          <li>
-            Unlock the full list of <Link href="/nft-distribution">NFT holders</Link>
-          </li>
+          ✅ <b>Exclusive Access to Advanced Tools:</b> 100 Addresses or NFTs in your{' '}
+          <Link href="/admin/watchlist">Watchlist</Link>, Infinite scroll in the <Link href="/amms">AMM Explorer</Link>,{' '}
+          <Link href="/nft-explorer">NFT Explorer</Link>, <Link href="/nft-sales">NFT Sales</Link>,{' '}
+          <Link href="/nft-distribution">NFT holders</Link>,{' '}
           {!xahauNetwork && (
-            <li>
-              View the complete lists of NFT <Link href="/nft-volumes?list=collections">Collections</Link> &{' '}
-              <Link href="/nft-volumes?list=issuers">Issuers</Link>
-            </li>
+            <>
+              <Link href="/nft-volumes?list=collections">NFT Collections</Link> &{' '}
+              <Link href="/nft-volumes?list=issuers">NFT Issuers</Link>
+            </>
           )}
-          <li>CSV exports of complete lists</li>
-        </ul>
-        <p>
-          ✅ <b>Priority Support</b>: As a Pro subscriber, you'll receive prioritized customer support, ensuring that
-          any questions or issues you have are addressed with speed and care.
+          .
         </p>
         <p>
-          ✅ <b>Fewer Ads</b>: Experience the platform with significantly fewer advertisements, allowing you to focus on
-          what matters most.
+          ✅ <b>Fewer Ads</b>: Focus on what matters most.
         </p>
         <p>
-          ✅ <b>Support the Project</b>: By subscribing, you're directly contributing to the growth and development of
-          Bithomp. Your support is deeply appreciated and helps us continue to innovate and improve.
+          ✅ <b>Priority Support</b>: As a Pro subscriber, you'll receive prioritized customer support.
         </p>
         <p>
-          And this is just the beginning! More features to add even greater value to your Pro Subscription are coming
-          soon.
+          ✅ <b>Support the Project</b>: You're contributing to the growth and development of our project.
         </p>
+        <p>More features to add even greater value to your Pro Subscription are coming.</p>
       </div>
       <p>Subscribe to Bithomp Pro!</p>
 

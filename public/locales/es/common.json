@@ -69,6 +69,9 @@
       "buy": "Compra XRP",
       "earn": "Gana en XRP",
       "play": "Juega con XRP"
+    },
+    "learn-more": {
+      "title": "Aprende más"
     }
   },
   "components": {
@@ -118,6 +121,7 @@
     "not-available": "No disponible",
     "confirm": {
       "set-domain": "Añadir un dominio",
+      "set-avatar": "Añadir un avatar",
       "nft-create-transfer-offer-header": "Tranferir NFT",
       "nft-transfer": "Estoy ofreciendo este NFT GRATUITAMENTE a la cuenta de destino, <1>la cuenta de destino necesita aceptar la transferencia del NFT</1>.",
       "nft-accept-sell-offer-header": "Comprar NFT",
@@ -147,8 +151,7 @@
   },
   "footer": {
     "cookie": {
-      "we-use-cookie": "Utilizamos cookies y tecnologías similares para mejorar la experiencia de nuestro sitio.",
-      "read-more": "Leer más"
+      "we-use-cookie": "Utilizamos cookies y tecnologías similares para mejorar la experiencia de nuestro sitio."
     }
   },
   "home": {
@@ -219,8 +222,8 @@
     "for-sale-with-destination": "NFTs por venta directa"
   },
   "alerts": {
-    "text0": "Sé notificado cuando el precio de mercado XRP/USD o XRP/BTC de <1>Bitstamp</1> cambie en más del 5% en una hora o más del 10% en un día.",
-    "text1": "Sigue el canal de Telegram: <1>bithomp</1> o la cuenta de X: <3>XRP_PriceAlerts</3>.",
+    "text0": "Sé notificado cuando el precio de mercado {{ nativeCurrency }}/USD o {{ nativeCurrency }}/BTC de <6>{{linkText}}</6> cambie en más del 5% en una hora o más del 10% en un día.",
+    "text1": "Sigue el canal de Telegram: <1>bithomp</1> o la cuenta de X: <4>XRP_PriceAlerts</4>.",
     "last-alerts": "Últimas 50 alertas",
     "date-and-time": "Fecha y hora",
     "currency-pair": "Par de divisas",
@@ -270,6 +273,7 @@
     "order-id": "orden id"
   },
   "button": {
+    "set-domain": "Añadir un dominio",
     "continue": "Continuar",
     "cancel": "Cancelar",
     "accept": "Aceptar",
@@ -311,7 +315,9 @@
     "viewer": "Vista",
     "developer-mode": "Modo desarrollador",
     "search": "Search",
-    "of-many": "of many"
+    "of-many": "of many",
+    "of": "of",
+    "sort-by": "Sort by"
   },
   "form": {
     "error": {
@@ -333,6 +339,7 @@
     }
   },
   "error": {
+    "payment-partly": "Por favor envia el resto de la cantidad, por el momento solo hemos recibido {{received}} {{currency}} de <b>{{required}} {{currency}}</b> requeridos.",
     "Network Error": "Parece que no hay conexión a internet ;(",
     "Request failed with status code 429": "¡Nos estáis mandando demasiadas peticiones, prueba más tarde!",
     "Request failed with status code 404": "Such API call is not allowed on that network",
@@ -383,12 +390,15 @@
     "day": "Para los últimas 24 horas"
   },
   "table": {
+    "currency": "Divisa",
+    "currency-issuer": "Emisor de la divisa",
     "destination-tag": "Marca de destino",
     "uri": "URI",
     "mints": "Acuñaciones",
     "view": "View",
     "period": "Periodo",
     "mint-period": "Periodo de acuñación",
+    "burn-period": "Periodo de quema",
     "warning": "Advertencia",
     "sequence": "Secuencia",
     "version": "Versión",
@@ -530,11 +540,13 @@
     "sell": "Venta",
     "buyNow": "Comprar ya",
     "publicAndKnownBrokers": "Público Y Mercado",
-    "onSale": "En venta por XRP",
+    "onSale": "En venta por {{nativeCurrency}}",
     "all-tokens": "Todos los tokens",
     "xrp-only": "solo XRP",
     "mintedNew": "Latest",
-    "mintedOld": "Oldest"
+    "mintedOld": "Oldest",
+    "existing": "Existing",
+    "burned": "Burned"
   },
   "xumm": {
     "new-qr": "Genera un nuevo código QR"

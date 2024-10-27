@@ -25,7 +25,7 @@ export default function Disclaimer() {
       <SEO title={t('menu.disclaimer')} noindex={true} />
       <div className="content-text">
         <h1>Disclaimer</h1>
-        <p>Last updated: September 15, 2024</p>
+        <p>Last updated: September 20, 2024</p>
         <h1>Interpretation and Definitions</h1>
         <h2>Interpretation</h2>
         <p>
@@ -37,7 +37,8 @@ export default function Disclaimer() {
         <ul>
           <li>
             <strong>Company</strong> (referred to as either &quot;the Company&quot;, &quot;We&quot;, &quot;Us&quot; or
-            &quot;Our&quot; in this Disclaimer) refers to Bithomp AB, Kivra: 559342-2867, 106 31, Stockholm, Sweden.
+            &quot;Our&quot; in this Disclaimer) refers to Ledger Explorer Ltd, Suite 9, Ansuya Estate, Revolution
+            Avenue, Victoria, Mahe, Seychelles.
           </li>
           <li>
             <strong>Service</strong> refers to the Website.

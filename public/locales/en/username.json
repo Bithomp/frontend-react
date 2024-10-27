@@ -12,8 +12,7 @@
     "username-hold": "The username <b>{{username}}</b> is on hold for registration by another XRPL account. You can try again in 24 hours.",
     "agree-terms-page": "Please agree to the terms and conditions specified on this page.",
     "agree-terms-site": "Please agree to the website's terms and conditions.",
-    "agree-privacy-policy": "Please agree to our Privacy Policy.",
-    "payment-partly": "Please send the rest of the amount, so far we only received {{received}} {{currency}} when <b>{{required}} {{currency}}</b> is required."
+    "agree-privacy-policy": "Please agree to our Privacy Policy."
   },
   "step0": {
     "text0": "Bithomp <1>username</1> is a <3>public</3> username for your {{ledgerName}} address.",

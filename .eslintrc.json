@@ -1,5 +1,5 @@
 {
-  "extends": ["next", "next/core-web-vitals", "plugin:storybook/recommended"],
+  "extends": ["next", "next/core-web-vitals"],
   "rules": {
     "no-unused-vars": "error",
     "@next/next/no-img-element": "off",

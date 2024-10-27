@@ -10,10 +10,12 @@ import { FaUserLarge } from 'react-icons/fa6'
 import { GrMoney } from 'react-icons/gr'
 import { IoStatsChart, IoWallet } from 'react-icons/io5'
 import { FaSignOutAlt } from 'react-icons/fa'
+import { FaEye } from 'react-icons/fa'
+import { FaUserCheck } from 'react-icons/fa'
 
 const handleClick = (e) => {
-  if (e.target.getAttribute('aria-expanded') !== null) {
-    e.target.setAttribute('aria-expanded', e.target.getAttribute('aria-expanded') === 'true' ? 'false' : 'true')
+  if (e.target.getAttribute('data-expanded') !== null) {
+    e.target.setAttribute('data-expanded', e.target.getAttribute('data-expanded') === 'true' ? 'false' : 'true')
   }
 }
 
@@ -26,7 +28,7 @@ export default function MobileMenu({
   setSignRequest,
   proName,
   signOutPro,
-  xummUserToken,
+  xamanUserToken,
   signOut,
   isCopied,
   copyToClipboard
@@ -39,7 +41,7 @@ export default function MobileMenu({
     <div className="mobile-menu" onClick={handleClick}>
       <div className="mobile-menu-wrap">
         <br />
-        <div className="mobile-menu-directory" aria-expanded={displayName ? 'false' : 'true'}>
+        <div className="mobile-menu-directory" data-expanded={displayName ? 'false' : 'true'}>
           {displayName ? (
             <>
               <img src={hashicon} alt="user icon" style={{ width: '18px', height: '18px', marginRight: '5px' }} />
@@ -55,7 +57,7 @@ export default function MobileMenu({
           {displayName ? (
             <>
               <a
-                href={server + '/explorer/' + address + (xummUserToken ? '?hw=xumm&xummtoken=' + xummUserToken : '')}
+                href={server + '/explorer/' + address + (xamanUserToken ? '?hw=xumm&xummtoken=' + xamanUserToken : '')}
                 className="mobile-menu-item"
               >
                 {t('signin.actions.view')}
@@ -79,9 +81,9 @@ export default function MobileMenu({
               {/* Hide Send XRP for XAHAU while they are not ready yet */}
               {!xahauNetwork && (
                 <>
-                  {xummUserToken && (
+                  {xamanUserToken && (
                     <a
-                      href={server + '/explorer/' + address + '?hw=xumm&xummtoken=' + xummUserToken + '&action=send'}
+                      href={server + '/explorer/' + address + '?hw=xumm&xummtoken=' + xamanUserToken + '&action=send'}
                       className="mobile-menu-item"
                     >
                       {t('signin.actions.send')}
@@ -101,13 +103,13 @@ export default function MobileMenu({
               }}
               className="link mobile-menu-item"
             >
-              <Image src="/images/xumm.png" className="xumm-logo" alt="xaman" height={20} width={20} />
+              <Image src="/images/wallets/xaman.png" className="xaman-logo" alt="xaman" height={20} width={20} />
               {t('signin.signin')}
             </span>
           )}
         </div>
 
-        <div className="mobile-menu-directory" aria-expanded={proName ? 'false' : 'true'}>
+        <div className="mobile-menu-directory" data-expanded={proName ? 'false' : 'true'}>
           <IoIosRocket /> Bithomp Pro
         </div>
         <div className="mobile-menu__submenu">
@@ -117,8 +119,16 @@ export default function MobileMenu({
 
           {proName && (
             <>
+              <Link href="/admin/watchlist" className="mobile-menu-item" onClick={mobileMenuToggle}>
+                <FaEye style={{ ...iconStyle, marginTop: '2px' }} /> Watchlist
+              </Link>
+
               <Link href="/admin/subscriptions" className="mobile-menu-item" onClick={mobileMenuToggle}>
                 <GrMoney style={iconStyle} /> Subscriptions
+              </Link>
+
+              <Link href="/admin/pro" className="mobile-menu-item" onClick={mobileMenuToggle}>
+                <FaUserCheck style={{ ...iconStyle, marginTop: '2px' }} /> Pro addresses
               </Link>
 
               <Link href="/admin/api" className="mobile-menu-item" onClick={mobileMenuToggle}>
@@ -132,7 +142,7 @@ export default function MobileMenu({
           )}
         </div>
 
-        <div className="mobile-menu-directory" aria-expanded="false">
+        <div className="mobile-menu-directory" data-expanded="false">
           {t('menu.services.services')}
         </div>
         <div className="mobile-menu__submenu">
@@ -159,14 +169,12 @@ export default function MobileMenu({
               {t('menu.price-alerts', { nativeCurrency })}
             </Link>
           )}
-          {!devNet && (
-            <a href={'/submit/'} className="mobile-menu-item">
-              {t('menu.submit-offline-tx')}
-            </a>
-          )}
+          <a href={'/submit/'} className="mobile-menu-item">
+            {t('menu.submit-offline-tx')}
+          </a>
         </div>
 
-        <div className="mobile-menu-directory" aria-expanded="false">
+        <div className="mobile-menu-directory" data-expanded="false">
           NFT
         </div>
         <div className="mobile-menu__submenu">
@@ -235,12 +243,9 @@ export default function MobileMenu({
           <Link href="/nft-distribution" className="mobile-menu-item" onClick={mobileMenuToggle}>
             {t('menu.nft.distribution')}
           </Link>
-          {/* Hide NFT statistics for XAHAU while they are not ready yet */}
-          {!xahauNetwork && (
-            <Link href="/nft-statistics" className="mobile-menu-item" onClick={mobileMenuToggle}>
-              {t('menu.nft.statistics')}
-            </Link>
-          )}
+          <Link href="/nft-statistics" className="mobile-menu-item" onClick={mobileMenuToggle}>
+            {t('menu.nft.statistics')}
+          </Link>
           {xahauNetwork && (
             <Link href="/services/nft-mint" className="mobile-menu-item" onClick={mobileMenuToggle}>
               {t('menu.services.nft-mint')}
@@ -251,7 +256,7 @@ export default function MobileMenu({
         {/* Hide AMM for XAHAU */}
         {!xahauNetwork && (
           <>
-            <div className="mobile-menu-directory" aria-expanded="false">
+            <div className="mobile-menu-directory" data-expanded="false">
               {t('menu.amm.amm')}
             </div>
             <div className="mobile-menu__submenu">
@@ -265,7 +270,7 @@ export default function MobileMenu({
           </>
         )}
 
-        <div className="mobile-menu-directory" aria-expanded="false">
+        <div className="mobile-menu-directory" data-expanded="false">
           {t('menu.network.blockchain')}
         </div>
         <div className="mobile-menu__submenu">
@@ -315,7 +320,7 @@ export default function MobileMenu({
           </Link>
         </div>
 
-        <div className="mobile-menu-directory" aria-expanded="false">
+        <div className="mobile-menu-directory" data-expanded="false">
           {t('menu.developers.developers')}
         </div>
         <div className="mobile-menu__submenu">
@@ -324,9 +329,9 @@ export default function MobileMenu({
               <a href={'/create/'} className="mobile-menu-item">
                 {t('menu.developers.account-generation')}
               </a>
-              <a href={'/faucet/'} className="mobile-menu-item">
+              <Link href="/faucet" className="mobile-menu-item" onClick={mobileMenuToggle}>
                 {t('menu.developers.faucet')}
-              </a>
+              </Link>
               <a href={'/tools/'} className="mobile-menu-item">
                 Bithomp tools
               </a>
@@ -355,7 +360,7 @@ export default function MobileMenu({
           </Link>
         </div>
 
-        <div className="mobile-menu-directory" aria-expanded="false">
+        <div className="mobile-menu-directory" data-expanded="false">
           Bithomp
         </div>
         <div className="mobile-menu__submenu">
@@ -387,7 +392,7 @@ export default function MobileMenu({
           </Link>
         </div>
 
-        <div className="mobile-menu-directory" aria-expanded="false">
+        <div className="mobile-menu-directory" data-expanded="false">
           {t('menu.legal')}
         </div>
         <div className="mobile-menu__submenu">
@@ -402,7 +407,7 @@ export default function MobileMenu({
           </Link>
         </div>
 
-        <div className="mobile-menu-directory" aria-expanded="false">
+        <div className="mobile-menu-directory" data-expanded="false">
           {t('menu.sponsored.title')}
         </div>
         <div className="mobile-menu__submenu">
@@ -413,15 +418,15 @@ export default function MobileMenu({
             {t('menu.sponsored.earn')}
           </a>
           {/* 
-        <a
-          href="/go/fm-play"
-          target="_blank"
-          rel="noreferrer"
-          className="mobile-menu-item"
-        >
-          {t("menu.sponsored.play")}
-        </a>
-        */}
+            <a
+              href="/go/fm-play"
+              target="_blank"
+              rel="noreferrer"
+              className="mobile-menu-item"
+            >
+              {t("menu.sponsored.play")}
+            </a>
+          */}
         </div>
       </div>
     </div>

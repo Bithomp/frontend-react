@@ -1,10 +1,11 @@
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import { useTranslation } from 'next-i18next'
-import { useEffect, useState } from 'react'
+import { Trans, useTranslation } from 'next-i18next'
+import { useState } from 'react'
 import { LogoJsonLd, SocialProfileJsonLd } from 'next-seo'
 import Head from 'next/head'
+import dynamic from 'next/dynamic'
 
-import { server, explorerName, nativeCurrency, devNet } from '../utils'
+import { server, explorerName, nativeCurrency, devNet, xahauNetwork, detectRobot } from '../utils'
 import { getIsSsrMobile } from '../utils/mobile'
 
 import SEO from '../components/SEO'
@@ -13,16 +14,21 @@ import Whales from '../components/Home/Whales'
 import Converter from '../components/Home/Converter'
 import PriceChart from '../components/Home/PriceChart'
 import Statistics from '../components/Home/Statistics'
-import Ads from '../components/Home/Ads'
-import Faucet from '../components/Home/Faucet'
+import Ads from '../components/Layout/Ads'
+import Link from 'next/link'
 import Products from '../components/Home/Products'
+
+const Faucet = dynamic(() => import('../components/Faucet'), { ssr: false })
 
 export async function getServerSideProps(context) {
   const { locale } = context
+  const userAgent = context.req.headers['user-agent']
+  const bot = detectRobot(userAgent)
   return {
     props: {
+      bot: bot || '',
       isSsrMobile: getIsSsrMobile(context),
-      ...(await serverSideTranslations(locale, ['common', 'faucet', 'products']))
+      ...(await serverSideTranslations(locale, ['common', 'faucet', 'products', 'landing']))
     }
   }
 }
@@ -31,7 +37,7 @@ const ldJsonWebsite = {
   '@context': 'https://schema.org',
   '@type': 'WebSite',
   name: 'XRP Explorer',
-  alternateName: ['XRP Explorer', 'XRPL Explorer', 'Scan XRP Ledger'],
+  alternateName: ['XRP Explorer', 'XRPL Explorer', 'Scan XRP Ledger', 'Bithomp XRPL Explorer'],
   url: server,
   potentialAction: {
     '@type': 'SearchAction',
@@ -43,15 +49,12 @@ const ldJsonWebsite = {
   }
 }
 
-export default function Home({ selectedCurrency, setSelectedCurrency, showAds, account }) {
+const testPaymentAvailable = true
+
+export default function Home({ selectedCurrency, setSelectedCurrency, showAds, account, bot }) {
   const { t } = useTranslation()
 
   const [chartPeriod, setChartPeriod] = useState('one_day')
-  const [rendered, setRendered] = useState(false)
-
-  useEffect(() => {
-    setRendered(true)
-  }, [])
 
   return (
     <>
@@ -93,18 +96,35 @@ export default function Home({ selectedCurrency, setSelectedCurrency, showAds, a
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(ldJsonWebsite) }} />
       </Head>
 
+      <div className="center">
+        <h1 className="landing-h1">{t('explorer.header.main', { explorerName })}</h1>
+        <h2 className="landing-h2">
+          <Trans i18nKey="search-for" ns="landing">
+            Search for <Link href="/ledger">Transactions</Link>,{' '}
+            <Link href="/distribution">{{ nativeCurrency }} addresses</Link>, <Link href="/nft-explorer">NFTs</Link>.
+          </Trans>{' '}
+          {xahauNetwork ? (
+            <Trans i18nKey="view-xahau" ns="landing">
+              View <Link href="/governance">Xahau Governance</Link>, <Link href="/validators">Validators</Link>,{' '}
+              <Link href="/amendments">Amendments</Link>,{' '}
+              <Link href="/distribution">{{ nativeCurrency }} distribution</Link>.
+            </Trans>
+          ) : (
+            <Trans i18nKey="view-xrpl" ns="landing">
+              View <Link href="/nft-volumes">NFT volumes</Link>, <Link href="/amms">Amm pools</Link>,{' '}
+              <Link href="/validators">Validators</Link>, <Link href="/amendments">Amendments</Link>,{' '}
+              <Link href="/distribution">{{ nativeCurrency }} distribution</Link>.
+            </Trans>
+          )}
+        </h2>
+      </div>
+
       <SearchBlock tab="explorer" />
 
-      <Products />
+      {showAds && !bot && <Ads showAds={showAds} />}
 
-      {rendered && showAds && (
-        <div className="home-sponsored">
-          <Ads />
-        </div>
-      )}
-
-      {!devNet && selectedCurrency && (
-        <>
+      {!devNet && (
+        <div className="flex flex-center">
           <div className="home-converter">
             <Converter
               selectedCurrency={selectedCurrency}
@@ -113,9 +133,14 @@ export default function Home({ selectedCurrency, setSelectedCurrency, showAds, a
             />
           </div>
           <div className="home-price-chart">
-            <PriceChart currency={selectedCurrency} chartPeriod={chartPeriod} setChartPeriod={setChartPeriod} />
+            <PriceChart
+              currency={selectedCurrency}
+              chartPeriod={chartPeriod}
+              setChartPeriod={setChartPeriod}
+              hideToolbar={true}
+            />
           </div>
-        </>
+        </div>
       )}
 
       <div className="home-whale-transactions">
@@ -126,9 +151,11 @@ export default function Home({ selectedCurrency, setSelectedCurrency, showAds, a
         <Statistics />
       </div>
 
-      <div className="home-faucet">
-        <Faucet account={account} />
-      </div>
+      {!devNet && testPaymentAvailable && !bot && (
+        <div className="home-faucet">
+          <Faucet account={account} type="testPayment" />
+        </div>
+      )}
     </>
   )
 }

@@ -2,9 +2,77 @@ import axios from 'axios'
 import { useCallback, useEffect, useState } from 'react'
 import { Buffer } from 'buffer'
 import { decodeAccountID, isValidClassicAddress } from 'ripple-address-codec'
-import { useTranslation } from 'next-i18next'
 import countries from 'i18n-iso-countries'
 import Cookies from 'universal-cookie'
+
+export const detectRobot = (userAgent) => {
+  const robots = new RegExp(
+    [
+      /bot/,
+      /spider/,
+      /crawl/,
+      /APIs-Google/,
+      /AdsBot/,
+      /Googlebot/,
+      /mediapartners/,
+      /Google Favicon/,
+      /FeedFetcher/,
+      /Google-Read-Aloud/,
+      /DuplexWeb-Google/,
+      /googleweblight/,
+      /bing/,
+      /yandex/,
+      /baidu/,
+      /duckduck/,
+      /yahoo/,
+      /ecosia/,
+      /ia_archiver/,
+      /facebook/,
+      /instagram/,
+      /pinterest/,
+      /reddit/,
+      /slack/,
+      /twitter/,
+      /whatsapp/,
+      /youtube/,
+      /semrush/
+    ]
+      .map((r) => r.source)
+      .join('|'),
+    'i'
+  )
+  return robots.test(userAgent)
+}
+
+export const domainFromUrl = typeof window !== 'undefined' ? encodeURI(window.location.hostname) : ''
+export const cookieParams = { path: '/', domain: domainFromUrl, maxAge: 31536000 }
+
+export const useCookie = (key, defaultValue) => {
+  const cookies = new Cookies()
+
+  const [item, setItemValue] = useState(() => {
+    if (cookies.get(key) && cookies.get(key) !== 'undefined') {
+      return cookies.get(key)
+    }
+    if (defaultValue !== undefined) {
+      cookies.set(key, defaultValue, cookieParams)
+    }
+    return defaultValue
+  })
+
+  const setValue = (value) => {
+    if (value !== undefined) {
+      setItemValue(value)
+      cookies.set(key, value, cookieParams)
+    }
+  }
+
+  const removeItem = () => {
+    cookies.remove(key)
+  }
+
+  return [item, setValue, removeItem]
+}
 
 export const timestampExpired = (timestamp, type) => {
   if (!timestamp) return null
@@ -38,19 +106,6 @@ export const turnstileSupportedLanguages = [
   'zh-TW'
 ]
 
-const useDomainFromUrl = () => {
-  if (typeof window !== 'undefined') {
-    let domain = window.location.hostname
-    let domainParts = domain.split('.')
-    if (domainParts.length > 2) {
-      domain = domainParts.slice(1).join('.')
-    }
-    return encodeURI(domain)
-  }
-  return ''
-}
-export const domainFromUrl = useDomainFromUrl()
-
 export const periodDescription = (periodName) => {
   if (periodName?.includes('..')) {
     const periodParts = periodName.split('..')
@@ -60,18 +115,9 @@ export const periodDescription = (periodName) => {
   }
 }
 
-export const useSubscriptionExpired = () => {
-  const cookies = new Cookies(null, { path: '/' })
-  const proExpire = cookies.get('pro-expire')
-  if (!proExpire) return true
-  return Number(proExpire) < new Date().getTime()
-}
-export const subscriptionExpired = useSubscriptionExpired()
-
-export const countriesTranslated = () => {
-  const { i18n } = useTranslation()
-  let lang = i18n.language.slice(0, 2)
-  if (i18n.language === 'default') {
+export const countriesTranslated = (language) => {
+  let lang = language.slice(0, 2)
+  if (language === 'default') {
     lang = 'en'
   }
   const notSupportedLanguages = ['my'] // supported "en", "ru", "ja", "ko" etc
@@ -257,6 +303,7 @@ export const useLocalStorage = (key, initialValue) => {
 
   useEffect(() => {
     setState(initialize(key))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const setValue = useCallback(
@@ -284,6 +331,7 @@ export const useLocalStorage = (key, initialValue) => {
 }
 
 const shallRemoveParam = (tabList, tab, defaultTab, setTab) => {
+  if (!setTab) return false
   const existTab = tabList.some((t) => t.value === tab)
   if (!existTab) {
     setTab(defaultTab)
@@ -408,9 +456,9 @@ export const submitTransaction = async (blob, callback) => {
   }
 }
 
-export const capitalize = (str) => {
-  if (!str) return ''
-  return str.charAt(0).toUpperCase() + str.slice(1)
+export const nativeCurrenciesImages = {
+  XRP: '/images/currencies/xrp.svg',
+  XAH: '/images/currencies/xah.png'
 }
 
 export const network = process.env.NEXT_PUBLIC_NETWORK_NAME
@@ -433,7 +481,7 @@ export const networks = {
     id: 2,
     server: 'https://staging.bithomp.com',
     nativeCurrency: 'XRP',
-    getCoinsUrl: '/faucet/',
+    getCoinsUrl: '/faucet',
     explorerName: 'XRPL Staging',
     ledgerName: 'XRPL',
     minLedger: 32570,
@@ -441,9 +489,9 @@ export const networks = {
   },
   testnet: {
     id: 1,
-    server: 'https://test.bithomp.com',
+    server: 'https://test.xrplexplorer.com',
     nativeCurrency: 'XRP',
-    getCoinsUrl: '/faucet/',
+    getCoinsUrl: '/faucet',
     explorerName: 'XRPL Testnet',
     ledgerName: 'XRPL',
     minLedger: 1,
@@ -451,9 +499,9 @@ export const networks = {
   },
   devnet: {
     id: 2,
-    server: 'https://dev.bithomp.com',
+    server: 'https://dev.xrplexplorer.com',
     nativeCurrency: 'XRP',
-    getCoinsUrl: '/faucet/',
+    getCoinsUrl: '/faucet',
     explorerName: 'XRPL Devnet',
     ledgerName: 'XRPL',
     minLedger: 1,
@@ -463,7 +511,7 @@ export const networks = {
     id: 21338,
     server: 'https://test.xahauexplorer.com',
     nativeCurrency: 'XAH',
-    getCoinsUrl: '/faucet/',
+    getCoinsUrl: '/faucet',
     explorerName: 'Xahau Testnet',
     ledgerName: 'Xahau',
     minLedger: 3,
@@ -504,8 +552,8 @@ export const webSiteName =
 
 export const networksIds = {
   0: { server: 'https://xrplexplorer.com', name: 'mainnet' },
-  1: { server: 'https://test.bithomp.com', name: 'testnet' },
-  2: { server: 'https://dev.bithomp.com', name: 'devnet' },
+  1: { server: 'https://test.xrplexplorer.com', name: 'testnet' },
+  2: { server: 'https://dev.xrplexplorer.com', name: 'devnet' },
   21337: { server: 'https://xahauexplorer.com', name: 'xahau' },
   21338: { server: 'https://test.xahauexplorer.com', name: 'xahau-testnet' }
 }
@@ -731,8 +779,4 @@ export const shortName = (name, options) => {
     }
   }
   return name
-}
-
-export const capitalizeFirstLetter = (string) => {
-  return string.charAt(0).toUpperCase() + string.slice(1)
 }

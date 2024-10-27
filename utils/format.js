@@ -5,15 +5,20 @@ import React from 'react'
 import { Trans } from 'next-i18next'
 import moment from 'moment'
 import momentDurationFormatSetup from 'moment-duration-format'
-import { useTranslation } from 'next-i18next'
 
 import LinkIcon from '../public/images/link.svg'
 import { stripText, nativeCurrency } from '.'
 import { mpUrl } from './nft'
 
-const xummImg = '/images/xumm.png'
+const xamanImg = '/images/wallets/xaman.png'
 
 momentDurationFormatSetup(moment)
+
+export const nativeCurrencyToFiat = (params) => {
+  const { amount, selectedCurrency, fiatRate } = params
+  if (!amount || !selectedCurrency || !fiatRate) return ''
+  return ' ≈ ' + shortNiceNumber((amount / 1000000) * fiatRate, 2, 3, selectedCurrency)
+}
 
 export const acceptNftBuyOfferButton = (t, setSignRequest, offer) => {
   return (
@@ -31,7 +36,7 @@ export const acceptNftBuyOfferButton = (t, setSignRequest, offer) => {
         })
       }
     >
-      <Image src={xummImg} className="xumm-logo" alt="xaman" height={24} width={24} />
+      <Image src={xamanImg} className="xaman-logo" alt="xaman" height={24} width={24} />
       {t('button.nft.sell-for-amount', { amount: amountFormat(offer.amount) })}
     </button>
   )
@@ -43,7 +48,7 @@ export const acceptNftSellOfferButton = (t, setSignRequest, offer, nftType = 'xl
     request = {
       Amount: offer.amount,
       TransactionType: 'URITokenBuy',
-      URITokenID: offer.uriTokenID
+      URITokenID: offer.nftokenID
     }
   } else {
     request = {
@@ -51,6 +56,7 @@ export const acceptNftSellOfferButton = (t, setSignRequest, offer, nftType = 'xl
       NFTokenSellOffer: offer.offerIndex
     }
   }
+
   return (
     <button
       className="button-action wide center"
@@ -63,7 +69,7 @@ export const acceptNftSellOfferButton = (t, setSignRequest, offer, nftType = 'xl
         })
       }
     >
-      <Image src={xummImg} className="xumm-logo" alt="xaman" height={24} width={24} />
+      <Image src={xamanImg} className="xaman-logo" alt="xaman" height={24} width={24} />
       {offer.amount === '0' || !offer.amount
         ? t('button.nft.accept-transfer')
         : t('button.nft.buy-for-amount', { amount: amountFormat(offer.amount) })}
@@ -76,9 +82,6 @@ export const cancelNftOfferButtons = (t, setSignRequest, account, data) => {
 
   //for offer cancelation
   let nftId = data.nftokenID
-  if (data.type === 'xls35') {
-    nftId = data.uriTokenID
-  }
 
   if (data.sellOffers) {
     const sellOffers = data.sellOffers.filter(
@@ -136,7 +139,7 @@ export const cancelNftOfferButton = (t, setSignRequest, account, offer, type = '
         })
       }
     >
-      <Image src={xummImg} className="xumm-logo" alt="xaman" height={24} width={24} />
+      <Image src={xamanImg} className="xaman-logo" alt="xaman" height={24} width={24} />
       {offer.amount === '0' ? (
         t('button.nft.cancel-transfer')
       ) : (
@@ -253,7 +256,11 @@ export const nftIdLink = (nftId, chars = 10) => {
 
 export const txIdLink = (txId, chars = 10) => {
   if (!txId) return ''
-  return <a href={'/explorer/' + txId}>{shortHash(txId, chars)}</a>
+  return (
+    <a href={'/explorer/' + txId} aria-label="Transaction link">
+      {!chars ? <LinkIcon /> : shortHash(txId, chars)}
+    </a>
+  )
 }
 
 export const nftLink = (nft, type, options = {}) => {
@@ -403,16 +410,25 @@ export const addressUsernameOrServiceLink = (data, type, options = {}) => {
   }
   if (options.short) {
     if (options.url === '/explorer/') {
-      return <a href={options.url + data[type]}>{shortAddress(data[type])}</a>
+      return addressLink(data[type], { short: options.short })
     } else {
       return <Link href={options.url + data[type]}>{shortAddress(data[type])}</Link>
     }
   }
   if (options.url === '/explorer/') {
-    return <a href={options.url + data[type]}>{data[type]}</a>
+    return addressLink(data[type])
   } else {
     return <Link href={options.url + data[type]}>{data[type]}</Link>
   }
+}
+
+export const addressLink = (address, options = {}) => {
+  if (!address) return ''
+  return (
+    <a href={'/explorer/' + address} aria-label="address link">
+      {options.short ? shortAddress(address, options.short) : address}
+    </a>
+  )
 }
 
 export const userOrServiceName = (data) => {
@@ -428,15 +444,6 @@ export const userOrServiceName = (data) => {
   return ''
 }
 
-//replace with txIdLink
-export const txIdFormat = (txId) => {
-  txId = txId.toLowerCase()
-  if (window.innerWidth < 800) {
-    return txId.substr(0, 6) + '...' + txId.substr(-6)
-  }
-  return txId
-}
-
 export const shortHash = (id, n = 6) => {
   if (!id) return ''
   id = id.toString()
@@ -445,6 +452,9 @@ export const shortHash = (id, n = 6) => {
 
 export const shortAddress = (id, length = 6) => {
   if (!id) return ''
+  if (length === true) {
+    length = 6
+  }
   return id.substr(0, length) + '...' + id.substr(-length)
 }
 
@@ -458,7 +468,7 @@ export const convertedAmount = (nft, convertCurrency, options) => {
   return null
 }
 
-export const persentFormat = (small, big) => {
+export const percentFormat = (small, big) => {
   if (!small && small !== 0) return
   if (!big && big !== 0) return
   if (small.value && big.value) {
@@ -497,7 +507,7 @@ export const amountFormat = (amount, options = {}) => {
 
   let showValue = value
 
-  if (value >= 100) {
+  if (Math.abs(value) >= 100) {
     if (options.short) {
       showValue = shortNiceNumber(value, 0, 1)
     } else {
@@ -508,7 +518,7 @@ export const amountFormat = (amount, options = {}) => {
       }
     }
   } else if (options.maxFractionDigits) {
-    showValue = niceNumber(value, options.maxFractionDigits)
+    showValue = niceNumber(value, 0, null, options.maxFractionDigits)
   }
 
   //add issued by (issuerDetails.service / username)
@@ -680,12 +690,17 @@ const amountParced = (amount) => {
 }
 
 export const capitalize = (word) => {
+  if (!word) return ''
   return word.charAt(0).toUpperCase() + word.slice(1)
 }
 
-export const timeFromNow = (timestamp) => {
-  const { i18n } = useTranslation()
-  let lang = i18n.language.slice(0, 2)
+export const timeFromNow = (timestamp, i18n) => {
+  let lang = 'en'
+  if (i18n.language === 'default' || i18n.language === 'undefined') {
+    lang = 'en'
+  } else {
+    lang = i18n.language.slice(0, 2)
+  }
   moment.locale(lang)
   return <span suppressHydrationWarning>{moment(timestamp * 1000, 'unix').fromNow()}</span>
 }
@@ -771,7 +786,7 @@ export const duration = (t, seconds, options) => {
 }
 
 //need to make dynamic fraction digits
-export const niceNumber = (n, fractionDigits = 0, currency = null) => {
+export const niceNumber = (n, fractionDigits = 0, currency = null, maxFractionDigits = 0) => {
   if (typeof n === 'string') {
     if (n.includes('x')) {
       //in case of placeholders xxx
@@ -780,9 +795,9 @@ export const niceNumber = (n, fractionDigits = 0, currency = null) => {
       n = Number(n)
     }
   }
-  if (n) {
+  if (n || n === 0 || n === '0') {
     let options = {
-      maximumFractionDigits: fractionDigits,
+      maximumFractionDigits: maxFractionDigits || fractionDigits,
       minimumFractionDigits: fractionDigits
     }
     if (currency) {
@@ -795,7 +810,7 @@ export const niceNumber = (n, fractionDigits = 0, currency = null) => {
   }
 }
 
-export const fullNiceNumber = (n) => {
+export const fullNiceNumber = (n, currency = null) => {
   if (typeof n === 'string') {
     if (n.includes('x')) {
       //in case of placeholders xxx
@@ -804,8 +819,16 @@ export const fullNiceNumber = (n) => {
       n = Number(n)
     }
   }
+
   if (n) {
-    return <span suppressHydrationWarning>{n.toLocaleString(undefined, { maximumFractionDigits: 15 })}</span>
+    let options = {
+      maximumFractionDigits: 15
+    }
+    if (currency) {
+      options.style = 'currency'
+      options.currency = currency.toUpperCase()
+    }
+    return <span suppressHydrationWarning>{n.toLocaleString(undefined, options)}</span>
   } else {
     return n
   }
@@ -836,7 +859,7 @@ export const shortNiceNumber = (n, smallNumberFractionDigits = 2, largeNumberFra
   } else if (n > 99999) {
     output = niceNumber(Math.floor(n), 0, currency)
   } else if (n === 0) {
-    output = 0
+    output = niceNumber(0, 0, currency)
   } else {
     const pow = Math.pow(10, smallNumberFractionDigits)
     output = niceNumber(Math.floor(n * pow) / pow, smallNumberFractionDigits, currency)

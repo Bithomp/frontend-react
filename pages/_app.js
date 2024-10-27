@@ -1,7 +1,6 @@
-import Head from 'next/head'
-import Script from 'next/script'
 import { useRouter } from 'next/router'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import Head from 'next/head'
 import axios from 'axios'
 import { appWithTranslation } from 'next-i18next'
 import dynamic from 'next/dynamic'
@@ -13,25 +12,43 @@ import ScrollToTop from '../components/Layout/ScrollToTop'
 import BackgroundImage from '../components/Layout/BackgroundImage'
 
 const TopLinks = dynamic(() => import('../components/Layout/TopLinks'), { ssr: false })
+const TopProgressBar = dynamic(() => import('../components/TopProgressBar'), { ssr: false })
 
 import { IsSsrMobileContext } from '../utils/mobile'
-import { isValidUUID, network, server, useLocalStorage, subscriptionExpired } from '../utils'
+import { isValidUUID, network, server, useLocalStorage, useCookie, xahauNetwork } from '../utils'
 
 import '../styles/ui.scss'
+import '../styles/components/nprogress.css'
+
 import { ThemeProvider } from '../components/Layout/ThemeContext'
 
 const MyApp = ({ Component, pageProps }) => {
   const [account, setAccount] = useLocalStorage('account')
-  const [selectedCurrency, setSelectedCurrency] = useLocalStorage('currency', 'usd')
+  const [sessionToken, setSessionToken] = useCookie('sessionToken')
+  const [selectedCurrency, setSelectedCurrency] = useCookie('currency', 'usd')
+  const [proExpire, setProExpire] = useCookie('pro-expire')
+  const [subscriptionExpired, setSubscriptionExpired] = useState(
+    proExpire ? Number(proExpire) < new Date().getTime() : true
+  )
   const [signRequest, setSignRequest] = useState(false)
   const [refreshPage, setRefreshPage] = useState('')
 
   const router = useRouter()
 
+  useEffect(() => {
+    setSubscriptionExpired(proExpire ? Number(proExpire) < new Date().getTime() : true)
+  }, [proExpire])
+
+  useEffect(() => {
+    if (sessionToken) {
+      axios.defaults.headers.common['Authorization'] = 'Bearer ' + sessionToken
+    }
+  }, [sessionToken])
+
   const { uuid } = router.query
 
   const signOut = () => {
-    localStorage.removeItem('xummUserToken')
+    localStorage.removeItem('xamanUserToken')
     setAccount({
       ...account,
       address: null,
@@ -41,7 +58,7 @@ const MyApp = ({ Component, pageProps }) => {
   }
 
   const signOutPro = () => {
-    localStorage.removeItem('sessionToken')
+    setSessionToken('')
     setAccount({
       ...account,
       pro: null
@@ -59,7 +76,7 @@ const MyApp = ({ Component, pageProps }) => {
   const pathname = router.pathname
   const pagesWithoutWrapper = ['/social-share']
 
-  const showAds = subscriptionExpired && (network === 'mainnet' || network === 'staging') // !devNet // no ads on test network
+  const showAds = subscriptionExpired && !xahauNetwork
   let showTopAds = false //showAds // change here when you want to see TOP ADS
   const pagesWithNoTopAdds = [
     '/',
@@ -89,22 +106,6 @@ const MyApp = ({ Component, pageProps }) => {
       <IsSsrMobileContext.Provider value={pageProps.isSsrMobile}>
         <ThemeProvider>
           <div className="body" data-network={network}>
-            {process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID && (
-              <>
-                <Script
-                  src={'https://www.googletagmanager.com/gtag/js?id=' + process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID}
-                />
-                <Script id="google-analytics">
-                  {`
-                    window.dataLayer = window.dataLayer || [];
-                    function gtag(){dataLayer.push(arguments);}
-                    gtag('js', new Date());
-                    gtag('config', "` +
-                    process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID +
-                    '");'}
-                </Script>
-              </>
-            )}
             <Header
               setSignRequest={setSignRequest}
               account={account}
@@ -125,6 +126,7 @@ const MyApp = ({ Component, pageProps }) => {
               />
             )}
             <div className="content">
+              <TopProgressBar />
               {showTopAds && <TopLinks />}
               <Component
                 {...pageProps}
@@ -136,6 +138,10 @@ const MyApp = ({ Component, pageProps }) => {
                 selectedCurrency={selectedCurrency}
                 setSelectedCurrency={setSelectedCurrency}
                 showAds={showAds}
+                setProExpire={setProExpire}
+                subscriptionExpired={subscriptionExpired}
+                sessionToken={sessionToken}
+                setSessionToken={setSessionToken}
               />
             </div>
             <BackgroundImage />

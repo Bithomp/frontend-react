@@ -6,8 +6,8 @@ import axios from 'axios'
 import { useLocalStorage, countriesTranslated } from '../../utils'
 
 export default function CountrySelect({ countryCode, setCountryCode, type }) {
-  const countries = countriesTranslated()
   const { i18n } = useTranslation()
+  const countries = countriesTranslated(i18n.language)
 
   const countryArr = countries.countryArr
 
@@ -15,8 +15,8 @@ export default function CountrySelect({ countryCode, setCountryCode, type }) {
   const [selectCountry, setSelectCountry] = useState({ value: '', label: '' })
 
   async function fetchData() {
-    const response = await axios('client/info');
-    const json = response.data;
+    const response = await axios('client/info')
+    const json = response.data
     if (json && json.country) {
       const countryCode = json.country.toUpperCase()
       setSelectCountry({
@@ -24,14 +24,14 @@ export default function CountrySelect({ countryCode, setCountryCode, type }) {
         label: countries.getNameTranslated(countryCode)
       })
       setCountryCode(countryCode)
-      if (type !== "onlySelect") {
+      if (type !== 'onlySelect') {
         setSavedCounty(countryCode)
       }
     }
   }
 
   useEffect(() => {
-    if (type === "onlySelect") {
+    if (type === 'onlySelect') {
       if (countryCode) {
         setSelectCountry({
           value: countryCode,
@@ -65,7 +65,7 @@ export default function CountrySelect({ countryCode, setCountryCode, type }) {
 
   const onCountryChange = (item) => {
     setSelectCountry(item)
-    if (type !== "onlySelect") {
+    if (type !== 'onlySelect') {
       setSavedCounty(item.value)
     }
     setCountryCode(item.value)

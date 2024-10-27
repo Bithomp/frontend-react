@@ -10,7 +10,7 @@ class MyDocument extends Document {
         // Useful for wrapping the whole react tree
         enhanceApp: (App) => App,
         // Useful for wrapping in a per-page basis
-        enhanceComponent: (Component) => Component,
+        enhanceComponent: (Component) => Component
       })
 
     // Run the parent `getInitialProps`, it now includes the custom `renderPage`
@@ -28,15 +28,30 @@ class MyDocument extends Document {
           <meta name="theme-color" content="#000000" />
           <link rel="apple-touch-icon" href="/logo192.png" />
           <link rel="manifest" href="/manifest.json" />
+          {process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID && (
+            <>
+              <script
+                async
+                src={'https://www.googletagmanager.com/gtag/js?id=' + process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID}
+              ></script>
+              <script
+                dangerouslySetInnerHTML={{
+                  __html: `
+                    window.dataLayer = window.dataLayer || [];
+                    function gtag(){dataLayer.push(arguments);}
+                    gtag('js', new Date());
+
+                    gtag('config', '${process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID}');
+                  `
+                }}
+              />
+            </>
+          )}
         </Head>
         <body className={this.props.cookieTheme} data-networkname={process.env.NEXT_PUBLIC_NETWORK_NAME}>
           <script
             dangerouslySetInnerHTML={{
               __html: `(function () {
-                try {
-                  document.cookie = "theme=" + ";expires=Thu, 01 Jan 1970 00:00:01 GMT";
-                  document.cookie = "NEXT_LOCALE=" + ";expires=Thu, 01 Jan 1970 00:00:01 GMT";
-                } catch (err) {}
                 function getCookie(cname) {
                   let name = cname + "=";
                   let decodedCookie = decodeURIComponent(document.cookie);
@@ -62,11 +77,7 @@ class MyDocument extends Document {
                   setTheme(newTheme);
                   try {
                     let domain = window.location.hostname;
-                    let domainParts = domain.split('.');
-                    if (domainParts.length > 2) {
-                      domain = domainParts.slice(1).join('.');
-                    }
-                    document.cookie = "theme=" + JSON.stringify(window.__theme) + ";path=/;domain=." + encodeURI(domain) + ";max-age=31536000";
+                    document.cookie = "theme=" + JSON.stringify(window.__theme) + ";path=/;domain=" + encodeURI(domain) + ";max-age=31536000";
                   } catch (err) {}
                 };
                 let preferredTheme;

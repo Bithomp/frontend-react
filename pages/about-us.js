@@ -3,6 +3,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import SEO from '../components/SEO'
 import { useTranslation } from 'next-i18next'
 import { getIsSsrMobile } from '../utils/mobile'
+import SocialIcons from '../components/Layout/SocialIcons'
 
 export async function getServerSideProps(context) {
   const { locale } = context
@@ -41,13 +42,13 @@ export default function AboutUs() {
             ,
           </li>
           <li>
-            <a href="https://test.bithomp.com" target="_blank" rel="noreferrer">
+            <a href="https://test.xrplexplorer.com" target="_blank" rel="noreferrer">
               XRPL Testnet
             </a>
             ,
           </li>
           <li>
-            <a href="https://dev.bithomp.com" target="_blank" rel="noreferrer">
+            <a href="https://dev.xrplexplorer.com" target="_blank" rel="noreferrer">
               XRPL Devnet
             </a>
             ,
@@ -111,15 +112,15 @@ export default function AboutUs() {
           <li>
             <b>
               Explorers and Faucets for{' '}
-              <a href="https://test.bithomp.com/faucet/" target="_blank" rel="noreferrer">
+              <a href="https://test.xrplexplorer.com/faucet" target="_blank" rel="noreferrer">
                 XRPL Testnet
               </a>
               ,{' '}
-              <a href="https://dev.bithomp.com/faucet/" target="_blank" rel="noreferrer">
+              <a href="https://dev.xrplexplorer.com/faucet" target="_blank" rel="noreferrer">
                 XRPL Devnet
               </a>
               , and{' '}
-              <a href="https://test.xahauexplorer.com/faucet/" target="_blank" rel="noreferrer">
+              <a href="https://test.xahauexplorer.com/faucet" target="_blank" rel="noreferrer">
                 XAHAU Testnet
               </a>
             </b>{' '}
@@ -162,6 +163,10 @@ export default function AboutUs() {
             Humans of XRPL
           </a>{' '}
           (page 28)
+        </p>
+        <p>
+          <h2>Follow us on Social Media</h2>
+          <SocialIcons />
         </p>
       </div>
     </>

@@ -27,8 +27,8 @@ const now = new Date()
 let minDate = now.setDate(now.getDate() - 5) // 5 days ago
 minDate = new Date(minDate)
 
-export default function Requests() {
-  const { t } = useTranslation(['common', 'admin'])
+export default function Requests({ sessionToken }) {
+  const { t } = useTranslation()
   const router = useRouter()
   const width = useWidth()
 
@@ -38,16 +38,13 @@ export default function Requests() {
   const [period, setPeriod] = useState('')
 
   useEffect(() => {
-    const sessionToken = localStorage.getItem('sessionToken')
     if (!sessionToken) {
       router.push('/admin')
     } else {
-      axiosAdmin.defaults.headers.common['Authorization'] = 'Bearer ' + sessionToken
       getData()
     }
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [sessionToken])
 
   const getData = async () => {
     setApiRequests({})

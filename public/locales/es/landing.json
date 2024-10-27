@@ -1,0 +1,5 @@
+{
+  "search-for": "Buscar <1>Transacciones</1>, <4>direcciones de {{nativeCurrency}}</4>, <6>NFTs</6>.",
+  "view-xahau": "Ver <1>Gobernanza de Xahau</1>, <3>Validadores</3>, <6>Enmiendas</6>, <9>distribución de {{nativeCurrency}}</9>.",
+  "view-xrpl": "Ver <1>volúmenes de NFTs</1>, <3>Pools de AMM</3>, <6>validadores</6>, <8>enmiendas</8>, <11>distribución de {{nativeCurrency}}</11>."
+}

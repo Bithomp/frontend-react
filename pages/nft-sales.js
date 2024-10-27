@@ -6,18 +6,7 @@ import InfiniteScroll from 'react-infinite-scroll-component'
 import Link from 'next/link'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
-import { IoMdClose } from 'react-icons/io'
-import { TbArrowsSort } from 'react-icons/tb'
-
-import {
-  stripText,
-  isAddressOrUsername,
-  setTabParams,
-  useWidth,
-  xahauNetwork,
-  nativeCurrency,
-  subscriptionExpired
-} from '../utils'
+import { stripText, isAddressOrUsername, setTabParams, useWidth, xahauNetwork, nativeCurrency } from '../utils'
 import { getIsSsrMobile } from '../utils/mobile'
 import { isValidTaxon, nftThumbnail, nftNameLink } from '../utils/nft'
 import {
@@ -29,7 +18,9 @@ import {
   fullDateAndTime,
   niceNumber,
   shortHash,
-  shortNiceNumber
+  shortNiceNumber,
+  niceCurrency,
+  addressUsernameOrServiceLink
 } from '../utils/format'
 
 import SEO from '../components/SEO'
@@ -37,14 +28,12 @@ import Tiles from '../components/Tiles'
 import RadioOptions from '../components/UI/RadioOptions'
 import FormInput from '../components/UI/FormInput'
 import CheckBox from '../components/UI/CheckBox'
-import ViewTogggle from '../components/UI/ViewToggle'
-import SimpleSelect from '../components/UI/SimpleSelect'
 import DateAndTimeRange from '../components/UI/DateAndTimeRange'
 import AddressInput from '../components/UI/AddressInput'
-import LeftFilters from '../components/UI/LeftFilters'
 import NftTabs from '../components/Tabs/NftTabs'
 
 import LinkIcon from '../public/images/link.svg'
+import FiltersFrame from '../components/Layout/FiltersFrame'
 
 export const getServerSideProps = async (context) => {
   const { query, locale } = context
@@ -68,7 +57,6 @@ export const getServerSideProps = async (context) => {
   //key added to re-render page when the same route is called with different params
   return {
     props: {
-      key: Math.random(),
       collectionQuery: collection || '',
       orderQuery: order || 'priceHigh',
       view: view || 'tiles',
@@ -107,9 +95,11 @@ export default function NftSales({
   buyerQuery,
   sellerQuery,
   searchQuery,
-  includeWithoutMediaDataQuery
+  includeWithoutMediaDataQuery,
+  subscriptionExpired,
+  sessionToken
 }) {
-  const { t } = useTranslation(['common', 'nft-sort'])
+  const { t } = useTranslation()
   const router = useRouter()
   const windowWidth = useWidth()
 
@@ -126,11 +116,9 @@ export default function NftSales({
   const [hasMore, setHasMore] = useState('first')
   const [buyer, setBuyer] = useState(buyerQuery)
   const [seller, setSeller] = useState(sellerQuery)
-  const [filtersHide, setFiltersHide] = useState(false)
   const [nftCount, setNftCount] = useState(null)
   const [search, setSearch] = useState(searchQuery)
   const [includeWithoutMediaData, setIncludeWithoutMediaData] = useState(includeWithoutMediaDataQuery)
-  const [sortMenuOpen, setSortMenuOpen] = useState(false)
   const [saleTabList, setSaleTabList] = useState([
     {
       value: 'primaryAndSecondary',
@@ -147,7 +135,7 @@ export default function NftSales({
   ])
   const [issuerTaxonUrlPart, setIssuerTaxonUrlPart] = useState('?view=' + activeView)
   const [collectionUrlPart, setCollectionUrlPart] = useState(collectionQuery ? '&collection=' + collectionQuery : '')
-  const [sessionToken, setSessionToken] = useState('')
+  const [filtersHide, setFiltersHide] = useState(false)
 
   const controller = new AbortController()
 
@@ -162,19 +150,8 @@ export default function NftSales({
 
   useEffect(() => {
     updateSaleTabList({})
-
-    const sessionTokenString = localStorage.getItem('sessionToken')
-    if (sessionTokenString) {
-      axios.defaults.headers.common['Authorization'] = 'Bearer ' + sessionTokenString
-      setSessionToken(sessionTokenString)
-    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
-
-  const viewList = [
-    { value: 'tiles', label: t('tabs.tiles') },
-    { value: 'list', label: t('tabs.list') }
-  ]
 
   const updateSaleTabList = (total) => {
     setSaleTabList([
@@ -322,7 +299,7 @@ export default function NftSales({
               2
             )
             newdata.sales[i].amountFormated = amountFormat(newdata.sales[i].amount, { minFractionDigist: 2 })
-            newdata.sales[i].nftId = newdata.sales[i].nftoken.nftokenID || newdata.sales[i].nftoken.uriTokenID
+            newdata.sales[i].nftId = newdata.sales[i].nftoken.nftokenID
           }
 
           setErrorMessage('')
@@ -447,13 +424,6 @@ export default function NftSales({
           paramName: 'sale'
         },
         {
-          tabList: viewList,
-          tab: activeView,
-          defaultTab: 'tiles',
-          setTab: setActiveView,
-          paramName: 'view'
-        },
-        {
           tabList: orderList,
           tab: order,
           defaultTab: 'priceHigh',
@@ -466,7 +436,7 @@ export default function NftSales({
     )
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeView, saleTab, data, currency, currencyIssuer, period, includeWithoutMediaData])
+  }, [saleTab, data, currency, currencyIssuer, period, includeWithoutMediaData])
 
   const checkIssuerValue = (e) => {
     if (isAddressOrUsername(e)) {
@@ -526,11 +496,6 @@ export default function NftSales({
     { label: t('table.marketplace'), key: 'marketplace' }
   ]
 
-  const hideMobileSortMenu = (value) => {
-    setOrder(value)
-    setSortMenuOpen(false)
-  }
-
   return (
     <>
       <SEO
@@ -538,9 +503,9 @@ export default function NftSales({
           t('nft-sales.header') +
           (saleTab === 'secondary' ? t('tabs.secondary-sales') : '') +
           (saleTab === 'primary' ? t('tabs.primary-sales') : '') +
-          (issuer ? ' ' + issuer : issuerQuery) +
-          (buyer ? ' ' + t('tabs.buyer') + ': ' + buyer : buyerQuery) +
-          (seller ? ' ' + t('tabs.seller') + ': ' + seller : sellerQuery) +
+          (issuer ? ' ' + t('table.issuer') + ': ' + issuer : issuerQuery) +
+          (buyer ? ' ' + t('table.buyer') + ': ' + buyer : buyerQuery) +
+          (seller ? ' ' + t('table.seller') + ': ' + seller : sellerQuery) +
           (isValidTaxon(taxon) ? ' ' + taxon : taxonQuery) +
           (currency ? ' ' + currency : '') +
           (currencyIssuer ? ' ' + currencyIssuer : '') +
@@ -552,9 +517,9 @@ export default function NftSales({
           t('nft-sales.header') +
           (saleTab === 'secondary' ? t('tabs.secondary-sales') : '') +
           (saleTab === 'primary' ? t('tabs.primary-sales') : '') +
-          (issuer ? ' ' + issuer : issuerQuery) +
-          (buyer ? ' ' + t('tabs.buyer') + ': ' + buyer : buyerQuery) +
-          (seller ? ' ' + t('tabs.seller') + ': ' + seller : sellerQuery) +
+          (issuer ? ' ' + t('table.issuer') + ': ' + issuer : issuerQuery) +
+          (buyer ? ' ' + t('table.buyer') + ': ' + buyer : buyerQuery) +
+          (seller ? ' ' + t('table.seller') + ': ' + seller : sellerQuery) +
           (isValidTaxon(taxon) ? ' ' + taxon : taxonQuery) +
           (currency ? ' ' + currency : '') +
           (currencyIssuer ? ' ' + currencyIssuer : '') +
@@ -564,48 +529,26 @@ export default function NftSales({
         }
       />
 
-      <h1 className="center">{t('nft-sales.header')}</h1>
+      <h1 className="center">
+        {t('nft-sales.header')}
+        {data?.issuer ? <>, {addressUsernameOrServiceLink(data, 'issuer', { short: true })}</> : ''}
+      </h1>
       <NftTabs tab="nft-sales" url={'/nft-explorer?view=' + activeView + issuerTaxonUrlPart + collectionUrlPart} />
 
-      <div
-        className={`content-cols${sortMenuOpen ? ' is-sort-menu-open' : ''}${filtersHide ? ' is-filters-hide' : ''}`}
+      <FiltersFrame
+        order={order}
+        setOrder={setOrder}
+        orderList={orderList}
+        activeView={activeView}
+        setActiveView={setActiveView}
+        count={nftCount}
+        hasMore={hasMore}
+        data={data?.sales || []}
+        csvHeaders={csvHeaders}
+        filtersHide={filtersHide}
+        setFiltersHide={setFiltersHide}
       >
-        <div className="filters-nav">
-          <div className="filters-nav__wrap">
-            <SimpleSelect value={order} setValue={setOrder} optionsList={orderList} />
-            <button className="dropdown-btn" onClick={() => setSortMenuOpen(!sortMenuOpen)}>
-              <TbArrowsSort />
-            </button>
-            <ViewTogggle viewList={viewList} activeView={activeView} setActiveView={setActiveView} />
-          </div>
-        </div>
-        <div className="dropdown--mobile">
-          <div className="dropdown__head">
-            <span>{t('heading', { ns: 'nft-sort' })}</span>
-            <button onClick={() => setSortMenuOpen(false)}>
-              <IoMdClose />
-            </button>
-          </div>
-          <ul>
-            {orderList.map((item, i) => (
-              <li
-                key={i}
-                style={{ fontWeight: item.value === order ? 'bold' : 'normal' }}
-                onClick={() => hideMobileSortMenu(item.value)}
-              >
-                {item.label}
-              </li>
-            ))}
-          </ul>
-        </div>
-        <LeftFilters
-          filtersHide={filtersHide}
-          setFiltersHide={setFiltersHide}
-          count={nftCount}
-          hasMore={hasMore}
-          data={data?.sales || []}
-          csvHeaders={csvHeaders}
-        >
+        <>
           <AddressInput
             title={t('table.issuer')}
             placeholder={t('nfts.search-by-issuer')}
@@ -659,13 +602,30 @@ export default function NftSales({
             <RadioOptions tabList={saleTabList} tab={saleTab} setTab={setSaleTab} name="sale" />
           </div>
 
+          {currencyIssuer && currency && (
+            <>
+              <FormInput
+                title={t('table.currency')}
+                defaultValue={niceCurrency(currency)}
+                disabled={true}
+                hideButton={true}
+              />
+              <FormInput
+                title={t('table.currency-issuer')}
+                defaultValue={currencyIssuer}
+                disabled={true}
+                hideButton={true}
+              />
+            </>
+          )}
+
           <div className="filters-check-box">
             <CheckBox checked={includeWithoutMediaData} setChecked={setIncludeWithoutMediaData} outline>
               {t('table.text.include-without-media-data')}
             </CheckBox>
           </div>
-        </LeftFilters>
-        <div className="content-text">
+        </>
+        <>
           <InfiniteScroll
             dataLength={sales.length}
             next={checkApi}
@@ -705,7 +665,7 @@ export default function NftSales({
             {activeView === 'list' && (
               <>
                 {windowWidth > 720 ? (
-                  <table className="table-large table-large--without-border">
+                  <table className="table-large no-border">
                     <thead>
                       <tr>
                         <th className="center">{t('table.index')}</th>
@@ -877,8 +837,8 @@ export default function NftSales({
               </>
             )}
           </InfiniteScroll>
-        </div>
-      </div>
+        </>
+      </FiltersFrame>
     </>
   )
 }

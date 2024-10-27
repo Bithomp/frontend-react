@@ -33,6 +33,11 @@ module.exports = {
         protocol: 'https',
         hostname: 'xumm.app',
         port: ''
+      },
+      {
+        protocol: 'https',
+        hostname: 'xaman.app',
+        port: ''
       }
     ]
   },
@@ -69,6 +74,14 @@ module.exports = {
       {
         source: '/tx',
         destination: '/transaction'
+      },
+      {
+        source: '/address/:id',
+        destination: '/account/:id'
+      },
+      {
+        source: '/address',
+        destination: '/account'
       }
     ]
   },

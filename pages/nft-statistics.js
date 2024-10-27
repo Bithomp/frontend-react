@@ -17,7 +17,7 @@ export const getServerSideProps = async (context) => {
 
 import SEO from '../components/SEO'
 
-import { wssServer } from '../utils'
+import { wssServer, xahauNetwork } from '../utils'
 import { niceNumber, fullDateAndTime } from '../utils/format'
 import { LedgerLink } from '../utils/links'
 
@@ -32,7 +32,7 @@ export default function NftStatistics() {
     ws = new WebSocket(wssServer)
 
     ws.onopen = () => {
-      ws.send(JSON.stringify({ command: 'subscribe', streams: ['nftokens'], id: 1 }))
+      ws.send(JSON.stringify({ command: 'subscribe', streams: [xahauNetwork ? 'uritokens' : 'nftokens'], id: 1 }))
     }
 
     ws.onmessage = (evt) => {
@@ -144,7 +144,12 @@ export default function NftStatistics() {
           {t('nft-statistics.owners')}: <Link href="/nft-distribution?order=total">{niceNumber(nft?.owners)}</Link>
         </p>
         <p>
-          {t('nft-statistics.issuers')}: <Link href="/nft-volumes?period=all">{niceNumber(nft?.issuers)}</Link>
+          {t('nft-statistics.issuers')}: {/* Hide the link to nft-volumes while its not ready for Xahau yet */}
+          {xahauNetwork ? (
+            niceNumber(nft?.issuers)
+          ) : (
+            <Link href="/nft-volumes?period=all&list=issuers">{niceNumber(nft?.issuers)}</Link>
+          )}
         </p>
         <p>
           {t('nft-statistics.transfers')}: {niceNumber(nft?.transfers)}
@@ -154,9 +159,13 @@ export default function NftStatistics() {
         </p>
         <p>
           {t('nft-statistics.for-sale-without-destination')}:{' '}
-          <Link href="/nft-explorer?mintedPeriod=all&includeBurned=true&includeWithoutMediaData=true&list=onSale">
-            {niceNumber(nft?.forSaleWithoutDestination)}
-          </Link>
+          {xahauNetwork ? (
+            niceNumber(nft?.forSaleWithoutDestination)
+          ) : (
+            <Link href="/nft-explorer?mintedPeriod=all&includeBurned=true&includeWithoutMediaData=true&list=onSale">
+              {niceNumber(nft?.forSaleWithoutDestination)}
+            </Link>
+          )}
         </p>
         <p>
           {t('nft-statistics.for-sale-with-destination')}: {niceNumber(nft?.forSaleWithDestination)}
@@ -164,12 +173,16 @@ export default function NftStatistics() {
         <p>
           {t('nft-statistics.burnable')}: {niceNumber(nft?.burnable)}
         </p>
-        <p>
-          {t('nft-statistics.only-xrp')}: {niceNumber(nft?.onlyXRP)}
-        </p>
-        <p>
-          {t('nft-statistics.transferable')}: {niceNumber(nft?.transferable)}
-        </p>
+        {!xahauNetwork && (
+          <>
+            <p>
+              {t('nft-statistics.only-xrp')}: {niceNumber(nft?.onlyXRP)}
+            </p>
+            <p>
+              {t('nft-statistics.transferable')}: {niceNumber(nft?.transferable)}
+            </p>
+          </>
+        )}
         <p className="center" style={{ position: 'absolute', top: 'calc(50% - 72px)', left: 'calc(50% - 54px)' }}>
           {!data && (
             <>

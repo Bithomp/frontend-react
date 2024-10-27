@@ -13,9 +13,6 @@
   "verify": "Überprüfen",
   "verify-desc": "Mit dem Tool <1>TOML Checker</1> können Sie überprüfen, ob alles richtig eingestellt ist. Die Liste auf dieser Seite wird von 3 Uhr bis 4 Uhr morgens (Stockholmer Zeit) aktualisiert. Wenn Ihre Domain im Checker-Tool überprüft wird, sie aber nicht innerhalb von 24 Stunden auf unserer Liste steht, können wir Ihre TOML-Datei möglicherweise nicht analysieren oder lesen.",
   "desc": "Unten finden Sie die Liste aller verifizierten Domains auf XRPL (die Seite wird täglich aktualisiert).",
-  "button": {
-    "set-domain": "Domain festlegen"
-  },
   "table": {
     "addresses": "Adressen"
   }

@@ -4,13 +4,12 @@ import { useEffect, useState } from 'react'
 import { Turnstile } from '@marsidev/react-turnstile'
 import { useTheme } from '../../components/Layout/ThemeContext'
 import Link from 'next/link'
-import Cookies from 'universal-cookie'
 import Mailto from 'react-protected-mailto'
 
 import SEO from '../../components/SEO'
 import CheckBox from '../../components/UI/CheckBox'
 
-import { domainFromUrl, isEmailValid, turnstileSupportedLanguages, useWidth } from '../../utils'
+import { isEmailValid, turnstileSupportedLanguages, useWidth } from '../../utils'
 import { getIsSsrMobile } from '../../utils/mobile'
 import AdminTabs from '../../components/Tabs/AdminTabs'
 import { axiosAdmin } from '../../utils/axios'
@@ -28,7 +27,7 @@ export const getServerSideProps = async (context) => {
 
 const checkmark = '/images/checkmark.svg'
 
-export default function Admin({ redirectToken, account, setAccount }) {
+export default function Admin({ redirectToken, account, setAccount, setProExpire, sessionToken, setSessionToken }) {
   const { theme } = useTheme()
   const { t, i18n } = useTranslation(['common', 'admin'])
   const width = useWidth()
@@ -46,8 +45,6 @@ export default function Admin({ redirectToken, account, setAccount }) {
   const [packageData, setPackageData] = useState(null)
   const [termsAccepted, setTermsAccepted] = useState(false)
   const [rememberMe, setRememberMe] = useState(false)
-
-  const cookies = new Cookies(null, { path: '/' })
 
   const checkApi = async () => {
     /*
@@ -74,17 +71,15 @@ export default function Admin({ redirectToken, account, setAccount }) {
 
   useEffect(() => {
     redirectTokenRun()
-    const sessionToken = localStorage.getItem('sessionToken')
     if (!sessionToken) {
       checkApi()
       setStep(0)
     } else {
       setStep(2)
-      axiosAdmin.defaults.headers.common['Authorization'] = 'Bearer ' + sessionToken
       getLoggedUserData()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [sessionToken])
 
   const redirectTokenRun = async () => {
     if (redirectToken) {
@@ -107,8 +102,7 @@ export default function Admin({ redirectToken, account, setAccount }) {
       if (data?.status === 'success') {
         setStep(2)
         setErrorMessage('')
-        localStorage.setItem('sessionToken', data.token)
-        axiosAdmin.defaults.headers.common['Authorization'] = 'Bearer ' + data.token
+        setSessionToken(data.token)
         getLoggedUserData()
       }
     }
@@ -158,8 +152,6 @@ export default function Admin({ redirectToken, account, setAccount }) {
         }
       */
 
-      const cookieParams = { path: '/', domain: '.' + domainFromUrl, maxAge: 31536000 }
-
       if (partnerDataRaw.data.bithompProPackageID) {
         //request to get the package data
         const packageData = await axiosAdmin
@@ -189,11 +181,11 @@ export default function Admin({ redirectToken, account, setAccount }) {
             }
           */
           setPackageData(packageData.data)
-          cookies.set('pro-expire', JSON.stringify(packageData.data.expiredAt * 1000), cookieParams)
+          setProExpire(JSON.stringify(packageData.data.expiredAt * 1000))
         }
         setCheckedPackageData(true)
       } else {
-        cookies.set('pro-expire', JSON.stringify(0), cookieParams)
+        setProExpire(JSON.stringify(0))
         setCheckedPackageData(true)
       }
     } else {
@@ -245,7 +237,6 @@ export default function Admin({ redirectToken, account, setAccount }) {
             setErrorMessage(t(error.response.data.error || 'error.' + error.message))
             //{"error":"Authentication token is invalid"}
           }
-          setToken('')
         })
 
       /*
@@ -291,19 +282,17 @@ export default function Admin({ redirectToken, account, setAccount }) {
       if (data?.status === 'success') {
         setStep(2)
         setErrorMessage('')
-        localStorage.setItem('sessionToken', data.token)
-        axiosAdmin.defaults.headers.common['Authorization'] = 'Bearer ' + data.token
+        setSessionToken(data.token)
         getLoggedUserData()
       }
     }
   }
 
   const onLogOut = () => {
-    localStorage.removeItem('sessionToken')
+    setSessionToken('')
     setAccount({ ...account, pro: null })
     setStep(0)
     setErrorMessage('')
-    setToken('')
     setAuthToken('')
     setPassword('')
     setLoggedUserData(null)
@@ -425,8 +414,10 @@ export default function Admin({ redirectToken, account, setAccount }) {
                             <>
                               {packageData ? (
                                 <>
-                                  <b className="green">Active</b> until{' '}
-                                  {new Date(packageData.expiredAt * 1000).toLocaleDateString()}
+                                  <b className="green">Active</b>
+                                  {packageData.expiredAt && (
+                                    <> until {new Date(packageData.expiredAt * 1000).toLocaleDateString()}</>
+                                  )}
                                 </>
                               ) : (
                                 'not activated'
@@ -479,6 +470,8 @@ export default function Admin({ redirectToken, account, setAccount }) {
             </>
           )}
         </div>
+        <br />
+        <br />
       </div>
     </>
   )

@@ -1,0 +1,38 @@
+.MuiTablePagination-root {
+  display: inline-block;
+  background-color: var(--background-input);
+  transition: background-color .5s, color .5s;
+  border: 1px solid var(--unaccent-icon);
+  color: var(--text-main) !important;
+  @media screen and (max-width: 920px) and (min-width: 440px) {
+    margin-right: 0px;
+    margin-left: auto;
+    &:hover {
+      border-color: var(--accent-link);
+      box-shadow: 0 0 5px var(--unaccent-icon);
+    }
+  }
+  @media screen and (max-width: 440px) {
+    min-width: 200px;
+  }
+}
+
+.MuiSvgIcon-root {
+  color: var(--text-main) !important;
+}
+
+.MuiToolbar-root {
+ min-height: unset !important;
+}
+
+.MuiTablePagination-selectLabel,
+.MuiTablePagination-displayedRows {
+  margin: 0 !important;
+}
+
+.MuiButtonBase-root {
+  padding: 7px !important;
+  @media screen and (max-width: 440px) {
+    padding: 3px !important;
+  }
+}

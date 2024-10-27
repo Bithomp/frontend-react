@@ -34,7 +34,7 @@
       left: 0;
     }
     .halv {
-      @media only screen and (max-width: 400px) {
+      @media only screen and (max-width: 460px) {
         width: calc(100% - 80px);
       }
       &.xrpOnly {
@@ -58,11 +58,6 @@
       position: relative;
       &.xrpOnly,
       &.xahOnly {
-        input {
-          @media only screen and (max-width: 480px) {
-            width: calc(100% - 52px);
-          }
-        }
         &:after {
           position: absolute;
           right: 10px;

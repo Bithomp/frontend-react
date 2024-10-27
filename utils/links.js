@@ -4,7 +4,7 @@ import { shortHash } from './format'
 import CopyButton from '../components/UI/CopyButton'
 
 export const LinkTx = ({ tx, icon }) =>
-  tx ? <Link href={`/explorer/${tx}`}>{icon ? <LinkIcon /> : shortHash(tx, 10)}</Link> : ''
+  tx ? <a href={`/explorer/${tx}`}>{icon ? <LinkIcon /> : shortHash(tx, 10)}</a> : ''
 
 export const LedgerLink = ({ version, text, style, onClick }) =>
   version ? (
@@ -15,13 +15,38 @@ export const LedgerLink = ({ version, text, style, onClick }) =>
     ''
   )
 
-export const LinkAccount = ({ address }) => (address ? <Link href={`/explorer/${address}`}>{address}</Link> : '')
+export const LinkAccount = ({ address, icon, copy, text, short }) =>
+  address ? (
+    <>
+      <a href={`/explorer/${address}`}>
+        {text ? text : short > 0 ? shortHash(address, short) : short === 0 ? '' : address}
+        {icon ? (
+          <>
+            {' '}
+            <LinkIcon />
+          </>
+        ) : (
+          ''
+        )}
+      </a>
+      {copy ? (
+        <>
+          {' '}
+          <CopyButton text={address} />
+        </>
+      ) : (
+        ''
+      )}
+    </>
+  ) : (
+    ''
+  )
 
-export const LinkAmm = ({ ammId, hash, icon, copy }) =>
+export const LinkAmm = ({ ammId, hash, icon, copy, text }) =>
   ammId ? (
     <>
       <Link href={`/amm/${ammId}`}>
-        {hash ? shortHash(ammId, hash > 3 ? hash : 10) : ''}
+        {text ? text : hash ? shortHash(ammId, hash > 3 ? hash : 10) : ''}
         {icon ? (
           <>
             {' '}

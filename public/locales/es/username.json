@@ -12,8 +12,7 @@
     "username-hold": "El nombre de usuario <b>{{username}}</b> está en espera de ser registrado por otra cuenta XRPL. Puedes probar otra vez dentro de 24 horas.",
     "agree-terms-page": "Por favor acepta los términos y condiciones específicos en esta página.",
     "agree-terms-site": "Por favor acepta los terminos y condiciones de esta sitio web.",
-    "agree-privacy-policy": "Por favor acepta nuestra Política de Privacidad.",
-    "payment-partly": "Por favor envia el resto de la cantidad, por el momento solo hemos recibido {{received}} {{currency}} de <b>{{required}} {{currency}}</b> requeridos."
+    "agree-privacy-policy": "Por favor acepta nuestra Política de Privacidad."
   },
   "step0": {
     "text0": "El <1>nombre de usuario</1> de Bithomp es un nombre de usuario <3>público</3> para tu dirección {{ledgerName}}.",

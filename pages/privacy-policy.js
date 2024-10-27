@@ -25,7 +25,7 @@ export default function PrivacyPolicy() {
       <SEO title={t('menu.privacy-policy')} noindex={true} />
       <div className="content-text">
         <h1>Privacy Policy</h1>
-        <p>Last updated: September 15, 2024</p>
+        <p>Last updated: October 23, 2024</p>
         <p>
           This Privacy Policy describes Our policies and procedures on the collection, use and disclosure of Your
           information when You use the Service and tells You about Your privacy rights and how the law protects You.
@@ -52,7 +52,8 @@ export default function PrivacyPolicy() {
           <li>
             <p>
               <strong>Company</strong> (referred to as either &quot;the Company&quot;, &quot;We&quot;, &quot;Us&quot; or
-              &quot;Our&quot; in this Agreement) refers to Bithomp AB, Kivra: 559342-2867, 106 31, Stockholm, Sweden.
+              &quot;Our&quot; in this Agreement) refers to Ledger Explorer Ltd., Suite 9, Ansuya Estate, Revolution
+              Avenue, Victoria, Mahe, Seychelles.
             </p>
           </li>
           <li>
@@ -64,7 +65,7 @@ export default function PrivacyPolicy() {
           </li>
           <li>
             <p>
-              <strong>Country</strong> refers to: Sweden
+              <strong>Country</strong> refers to: Malta
             </p>
           </li>
           <li>
@@ -263,6 +264,9 @@ export default function PrivacyPolicy() {
         <h4>Cookies</h4>
         <ul>
           <li>
+            <strong>showCookie</strong> - show or hide the cookie message. (ex. true).
+          </li>
+          <li>
             <strong>NEXT_LOCALE</strong> - the prefered Service language (ex: "en").
           </li>
           <li>
@@ -271,6 +275,13 @@ export default function PrivacyPolicy() {
           <li>
             <strong>pro-expire</strong> - expiration date (unix) of the subscription for logged-in users, used to
             prevent sending unnecessary requests. (ex: "1718495999000")
+          </li>
+          <li>
+            <strong>sessionToken</strong> - session token for logged-in users, to show relevant data for the authroised
+            user (ex: "ebc39d9a-13eb-4a86-bf7a-2002726ec6a7-54633f3b-b8ea-483e-89e3-5f2763b269c1").
+          </li>
+          <li>
+            <strong>currency</strong> - the prefered Service currency (ex: "sek").
           </li>
           <li>
             <strong>_ga</strong> - the main cookie used by Google Analytics, enables a service to distinguish one
@@ -283,30 +294,20 @@ export default function PrivacyPolicy() {
         <h4>Local storage</h4>
         <ul>
           <li>
-            <strong>showCookie</strong> - show or hide the cookie message. (ex. true).
-          </li>
-          <li>
-            <strong>currency</strong> - the prefered Service currency (ex: "sek").
-          </li>
-          <li>
             <strong>country</strong> - country of residence (ex: "SE").
           </li>
           <li>
-            <strong>account</strong> - Logged in user data: XRPL address, hashicon, bithomp username. (ex.{' '}
+            <strong>account</strong> - Logged in user data: address, hashicon, username. (ex.{' '}
             {
               "{'address': 'rhphEJQoxuquJmuJgtLbGyBW2NK6s6nQSW', 'hashicon': 'data:image/png;base64,iV+IKg2dQrggg==', 'username': 'Bithomp'}"
             }
             )
           </li>
           <li>
-            <strong>xummUserToken</strong> - xumm user token (ex. "c3f386ab-b5b5-47c3-87a4-d031451777fa").
+            <strong>xamanUserToken</strong> - xumm user token (ex. "c3f386ab-b5b5-47c3-87a4-d031451777fa").
           </li>
           <li>
             <strong>language</strong> - on docs.bithomp.com, the prefered programing language (ex: "php").
-          </li>
-          <li>
-            <strong>sessionToken</strong> - session token for logged-in users, to show relevant data for the authroised
-            user (ex: "ebc39d9a-13eb-4a86-bf7a-2002726ec6a7-54633f3b-b8ea-483e-89e3-5f2763b269c1").
           </li>
           <li>
             <strong>isOver18</strong> - show or hide explicit content depending on the age
@@ -732,30 +733,16 @@ export default function PrivacyPolicy() {
         <h1>Supervisory organs and other authorities</h1>
         <p>Our supervisory authority who You can turn to regarding our data processing is:</p>
         <p>
-          <strong>Name:</strong> Swedish Authority for Privacy Protection (Imy)
+          <strong>Name:</strong> Information Commission of Seychelles
         </p>
         <p>
-          <strong>Address:</strong> Drottninggatan 29, plan 5, 10420 Stockholm
+          <strong>Post address:</strong> P.O. Box 1342, KLA Residence, 3rd Floor, Room 9, Mont Fleuri
         </p>
         <p>
-          <strong>Post address:</strong> Integritetsskyddsmyndigheten Box 8114, 10420 Stockholm
+          <strong>Phone:</strong> (248) 430-3188
         </p>
         <p>
-          <strong>Phone:</strong> 08-657 61 00
-        </p>
-        <p>
-          <strong>Email:</strong> <Mailto email="imy@imy.se" headers={{ subject: 'Privacy Protection' }} />
-        </p>
-        <p>
-          Foreign data protection authorities may also be involved if you have your location or place of business
-          outside Sweden. You can search the relevant authority{' '}
-          <a
-            href="https://ec.europa.eu/justice/article-29/structure/data-protection-authorities/index_en.htm"
-            rel="noreferrer"
-          >
-            here
-          </a>
-          .
+          <strong>Email:</strong> <Mailto email="enquiries@infocom.sc" headers={{ subject: 'Privacy Protection' }} />
         </p>
       </div>
     </>

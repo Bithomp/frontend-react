@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import Select from 'react-select'
 import { useTranslation, Trans } from 'next-i18next'
 import { useRouter } from 'next/router'
-import axios from 'axios';
+import axios from 'axios'
 import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 
@@ -15,8 +15,7 @@ import {
   networkId,
   networksIds,
   isValidNftXls20,
-  explorerName,
-  isCurrencyHashValid,
+  isCurrencyHashValid
 } from '../../utils'
 import { userOrServiceName, amountFormat } from '../../utils/format'
 
@@ -33,16 +32,15 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
   const windowWidth = useWidth()
 
   const { id } = router.query
-  const [searchItem, setSearchItem] = useState(id || userData?.address || "")
+  const [searchItem, setSearchItem] = useState(id || userData?.address || '')
   const [searching, setSearching] = useState(false)
   const [searchSuggestions, setSearchSuggestions] = useState([])
   const [searchingSuggestions, setSearchingSuggestions] = useState(false)
-  const [errorMessage, setErrorMessage] = useState("")
+  const [errorMessage, setErrorMessage] = useState('')
   const [isMounted, setIsMounted] = useState(false)
 
   if (!searchPlaceholderText) {
-    searchPlaceholderText =
-      windowWidth < 500 ? t("home.search-placeholder-short") : t("home.search-placeholder")
+    searchPlaceholderText = windowWidth < 500 ? t('home.search-placeholder-short') : t('home.search-placeholder')
   }
 
   useEffect(() => setIsMounted(true), [])
@@ -59,7 +57,7 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
     }
   }, [userData])
 
-  const requestSuggestions = value => {
+  const requestSuggestions = (value) => {
     if (isValidCTID(value)) {
       return
     }
@@ -71,11 +69,10 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
       typingTimer = setTimeout(async () => {
         if (value && value.length > 2) {
           setSearchingSuggestions(true)
-          const suggestionsResponse = await axios('v2/address/search/' + value)
-            .catch(error => {
-              setSearchingSuggestions(false)
-              console.log(error.message)
-            })
+          const suggestionsResponse = await axios('v2/address/search/' + value).catch((error) => {
+            setSearchingSuggestions(false)
+            console.log(error.message)
+          })
           if (suggestionsResponse) {
             const suggestions = suggestionsResponse.data
             if (suggestions?.addresses?.length > 0) {
@@ -88,7 +85,7 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
     }
   }
 
-  const searchOnKeyUp = e => {
+  const searchOnKeyUp = (e) => {
     if (e.key === 'Enter') {
       e.preventDefault()
       onSearch()
@@ -98,8 +95,7 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
     // if printable character entered
     // e.key === 'Unidentified' - for android chrome
     if (e.key === 'Unidentified' || ([...e.key].length === 1 && !e.ctrlKey && !e.metaKey)) {
-
-      // We should allow spaces here... or even non-latin characters, so that validation can be removed, together with searchItemRe 
+      // We should allow spaces here... or even non-latin characters, so that validation can be removed, together with searchItemRe
       if (!searchItemRe.test(e.key)) {
         e.preventDefault()
         return
@@ -111,7 +107,7 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
 
   const searchOnChange = (option) => {
     if (!option) return
-    if (option.username && !option.username.includes("-")) {
+    if (option.username && !option.username.includes('-')) {
       onSearch(option.username)
     } else {
       onSearch(option.address)
@@ -122,23 +118,23 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
   let addParams = ''
   if (searchParams) {
     let searchPart = searchParams.toString()
-    let searchId = searchParams.get("id")
+    let searchId = searchParams.get('id')
     if (searchId) {
-      if (searchPart.indexOf("id=" + searchId + "&") !== -1) {
-        searchPart = searchPart.replace("id=" + searchId + "&", "")
-      } else if (searchPart.indexOf("&id=" + searchId) !== -1) {
-        searchPart = searchPart.replace("&id=" + searchId, "")
+      if (searchPart.indexOf('id=' + searchId + '&') !== -1) {
+        searchPart = searchPart.replace('id=' + searchId + '&', '')
+      } else if (searchPart.indexOf('&id=' + searchId) !== -1) {
+        searchPart = searchPart.replace('&id=' + searchId, '')
       } else {
-        searchPart = searchPart.replace("id=" + searchId, "")
+        searchPart = searchPart.replace('id=' + searchId, '')
       }
     }
     if (searchPart) {
-      addParams = '?' + searchPart;
+      addParams = '?' + searchPart
     }
   }
 
   const onSearch = async (si) => {
-    setErrorMessage("")
+    setErrorMessage('')
     let searchFor = null
 
     if (typeof searchItem === 'string') {
@@ -151,33 +147,33 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
 
     if (!searchFor) return
 
-    if (tab === "account" && isAddressOrUsername(searchFor)) {
-      router.push("/account/" + encodeURI(searchFor) + addParams)
+    if (tab === 'account' && isAddressOrUsername(searchFor)) {
+      router.push('/account/' + encodeURI(searchFor) + addParams)
       return
     }
 
-    if (tab === "nfts" && isAddressOrUsername(searchFor)) {
-      router.push("/nfts/" + encodeURI(searchFor) + addParams)
+    if (tab === 'nfts' && isAddressOrUsername(searchFor)) {
+      router.push('/nfts/' + encodeURI(searchFor) + addParams)
       return
     }
 
-    if (tab === "nft-offers" && isAddressOrUsername(searchFor)) {
-      router.push("/nft-offers/" + encodeURI(searchFor) + addParams)
+    if (tab === 'nft-offers' && isAddressOrUsername(searchFor)) {
+      router.push('/nft-offers/' + encodeURI(searchFor) + addParams)
       return
     }
 
-    if (tab === "nft" && isValidNftXls20(searchFor)) {
-      router.push("/nft/" + encodeURI(searchFor))
+    if (tab === 'nft' && isValidNftXls20(searchFor)) {
+      router.push('/nft/' + encodeURI(searchFor))
       return
     }
 
-    if (tab === "amm" && (isAddressOrUsername(searchFor) || isCurrencyHashValid(searchFor))) {
-      router.push("/amm/" + encodeURI(searchFor))
+    if (tab === 'amm' && (isAddressOrUsername(searchFor) || isCurrencyHashValid(searchFor))) {
+      router.push('/amm/' + encodeURI(searchFor))
       return
     }
 
-    if (tab === "nft-volumes" && isAddressOrUsername(searchFor)) {
-      router.push("/nft-volumes/" + encodeURI(searchFor) + addParams)
+    if (tab === 'nft-volumes' && isAddressOrUsername(searchFor)) {
+      router.push('/nft-volumes/' + encodeURI(searchFor) + addParams)
       return
     }
 
@@ -217,9 +213,11 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
             <>
               <Trans i18nKey="explorer.different-network">
                 This transaction is from the <b>{{ networkNameOrId: networksIds[CTIDnetworkId].name }}</b> network
-              </Trans>,{" "}
+              </Trans>
+              ,{' '}
               <Trans i18nKey="explorer.check-tx-on-different-explorer">
-                check the details <a href={networksIds[CTIDnetworkId].server + "/explorer/" + searchFor}>
+                check the details{' '}
+                <a href={networksIds[CTIDnetworkId].server + '/explorer/' + searchFor}>
                   <u>here</u>
                 </a>
               </Trans>
@@ -231,7 +229,8 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
             <>
               <Trans i18nKey="explorer.different-network">
                 This transaction is from the <b>{{ networkNameOrId: CTIDnetworkId }}</b> network
-              </Trans>, {t("explorer.not-supported-network")}
+              </Trans>
+              , {t('explorer.not-supported-network')}
             </>
           )
           return
@@ -242,8 +241,8 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
       }
     }
 
-    if (searchFor.includes("/") || searchFor.includes("\\")) {
-      setErrorMessage(t("explorer.no-slashes"))
+    if (searchFor.includes('/') || searchFor.includes('\\')) {
+      setErrorMessage(t('explorer.no-slashes'))
       return
     }
 
@@ -275,7 +274,7 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
   const showTabs = tab && ['nfts', 'nft-offers', 'nft-volumes', 'account'].includes(tab)
 
   const searchOnInputChange = (inputValue, action) => {
-    if (action.action !== "input-blur" && action.action !== "menu-close") {
+    if (action.action !== 'input-blur' && action.action !== 'menu-close') {
       setSearchItem(inputValue)
     }
   }
@@ -283,7 +282,7 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
   const searchOnFocus = () => {
     const selectInstance = searchInput?.current?.select
     if (!selectInstance?.hasValue()) return // No value, nothing to select.
-    const textElem = selectInstance.controlRef.querySelector("[class*=singleValue]") // Element which has the text.
+    const textElem = selectInstance.controlRef.querySelector('[class*=singleValue]') // Element which has the text.
     // Following code is from https://stackoverflow.com/a/4183448/6612182
     if (window.getSelection && document.createRange) {
       // Every browser
@@ -300,31 +299,33 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
     }
   }
 
-  const explorerHeader = tab => {
-    if (tab === "explorer") {
-      return t("explorer.header.main", { explorerName })
-    }
+  const explorerHeader = (tab) => {
     if (['amm', 'account', 'nft', 'nfts', 'nft-offer', 'nft-offers', 'transaction', 'nft-volumes'].includes(tab)) {
-      return t("explorer.header." + tab)
+      return t('explorer.header.' + tab)
     }
-    return ""
+    return ''
   }
 
   return (
     <>
-      <div className="search-block">
-        <div className="search-box">
-          <div className='above-search-box'>
-            {searching ?
-              <span className='contrast'>
-                {t("explorer.searching-tx-nft-nftoffer")}
+      <div
+        className="search-block"
+        style={tab === 'explorer' ? { backgroundColor: 'unset', height: '70px', marginTop: 30 } : {}}
+      >
+        <div className="search-box" style={tab === 'explorer' ? { marginTop: '20px' } : {}}>
+          <div className="above-search-box">
+            {searching ? (
+              <span className={tab === 'explorer' ? '' : 'contrast'}>
+                {t('explorer.searching-tx-nft-nftoffer')}
                 <span className="waiting inline"></span>
               </span>
-              :
-              <h1 className='contrast'>{explorerHeader(tab)} {userOrServiceName(userData)}</h1>
-            }
+            ) : (
+              <h1 className="contrast">
+                {explorerHeader(tab)} {userOrServiceName(userData)}
+              </h1>
+            )}
           </div>
-          {isMounted ?
+          {isMounted ? (
             <div onKeyUp={searchOnKeyUp}>
               <Select
                 ref={searchInput}
@@ -334,45 +335,67 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
                 onFocus={searchOnFocus}
                 spellCheck="false"
                 options={searchSuggestions}
-                getOptionLabel={
-                  (option) => <>
-                    <span style={windowWidth < 400 ? { fontSize: "14px" } : {}}>{option.address}</span>
-                    {(option.username || option.service || option.globalid || option.xumm) ? (windowWidth > 400 ? " - " : " ") : ""}
-                    <b className='blue'>{option.username}</b>
-                    {option.service && <>
-                      {option.username ? " (" : ""}
-                      <b className='green'>{option.service}</b>
-                      {option.username ? ")" : ""}
-                    </>}
-                    {(option.username || option.service) && (option.verifiedDomain || option.serviceDomain) && <>, </>}
-                    {option.verifiedDomain ?
-                      <span className='green bold'> {option.verifiedDomain}</span>
-                      :
-                      (option.serviceDomain && <span className='green'> {option.serviceDomain}</span>)
-                    }
-                    {(option.username || option.service || option.verifiedDomain || option.serviceDomain) && option.xumm && <>, </>}
-                    {option.xumm &&
+                getOptionLabel={(option) => (
+                  <>
+                    <span style={windowWidth < 400 ? { fontSize: '14px' } : {}}>{option.address}</span>
+                    {option.username || option.service || option.globalid || option.xaman
+                      ? windowWidth > 400
+                        ? ' - '
+                        : ' '
+                      : ''}
+                    <b className="blue">{option.username}</b>
+                    {option.service && (
                       <>
-                        Xaman <span className='orange'>
-                          {option.xumm.includes("+") ? option.xumm.replace(/\+/g, " (") + ")" : option.xumm}
-                        </span>
-                        {option.xummVerified && <> ✅</>}
+                        {option.username ? ' (' : ''}
+                        <b className="green">{option.service}</b>
+                        {option.username ? ')' : ''}
                       </>
-                    }
-                    {(option.username || option.service || option.verifiedDomain || option.serviceDomain || option.xumm) && option.globalid && <>, </>}
-                    {option.globalid &&
+                    )}
+                    {(option.username || option.service) && (option.verifiedDomain || option.serviceDomain) && <>, </>}
+                    {option.verifiedDomain ? (
+                      <span className="green bold"> {option.verifiedDomain}</span>
+                    ) : (
+                      option.serviceDomain && <span className="green"> {option.serviceDomain}</span>
+                    )}
+                    {(option.username || option.service || option.verifiedDomain || option.serviceDomain) &&
+                      option.xaman && <>, </>}
+                    {option.xaman && (
                       <>
-                        GlobaliD <span className='purple'>{option.globalid}</span>
+                        Xaman{' '}
+                        <span className="orange">
+                          {option.xaman.includes('+') ? option.xaman.replace(/\+/g, ' (') + ')' : option.xaman}
+                        </span>
+                        {option.xamanVerified && <> ✅</>}
+                      </>
+                    )}
+                    {(option.username ||
+                      option.service ||
+                      option.verifiedDomain ||
+                      option.serviceDomain ||
+                      option.xaman) &&
+                      option.globalid && <>, </>}
+                    {option.globalid && (
+                      <>
+                        GlobaliD <span className="purple">{option.globalid}</span>
                         {option.globalidStatus && <> ✔️</>}
                       </>
-                    }
-                    {option.balance &&
-                      <> [<b>{amountFormat(option.balance, { maxFractionDigits: 2, noSpace: true })}</b>]</>
-                    }
+                    )}
+                    {option.balance && (
+                      <>
+                        {' '}
+                        [<b>{amountFormat(option.balance, { maxFractionDigits: 2, noSpace: true })}</b>]
+                      </>
+                    )}
                   </>
-                }
-                getOptionValue={
-                  option => (option.address + option.username + option.service + option.xumm + option.globalid + option.verifiedDomain + option.serviceDomain)
+                )}
+                getOptionValue={(option) =>
+                  option.address +
+                  option.username +
+                  option.service +
+                  option.xaman +
+                  option.globalid +
+                  option.verifiedDomain +
+                  option.serviceDomain
                 }
                 inputValue={searchItem}
                 onInputChange={searchOnInputChange}
@@ -380,32 +403,37 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
                 classNamePrefix="react-select"
                 instanceId="search-select"
                 noOptionsMessage={
-                  () => searchingSuggestions ? t("explorer.searching-for-addresses") : null
+                  () => (searchingSuggestions ? t('explorer.searching-for-addresses') : null)
                   //({ inputValue }) => inputValue.length > 3
                 }
+                aria-label="Search"
               />
             </div>
-            :
+          ) : (
             <input
+              aria-label="Search"
               ref={searchInput}
               type="text"
               className="search-input"
               placeholder={searchPlaceholderText}
               value={searchItem}
-              onChange={e => setSearchItem(e.target.value)}
+              onChange={(e) => setSearchItem(e.target.value)}
               onKeyUp={searchOnKeyUp}
               spellCheck="false"
             />
-          }
+          )}
 
           <div className="search-button" onClick={onSearch}>
             <img src="/images/search.svg" className="search-icon" alt="search" />
           </div>
-          {errorMessage &&
-            <div className='orange' style={{ position: "absolute", bottom: "-50px", minHeight: "42px", textAlign: "left" }}>
+          {errorMessage && (
+            <div
+              className="orange"
+              style={{ position: 'absolute', bottom: '-50px', minHeight: '42px', textAlign: 'left' }}
+            >
               {errorMessage}
             </div>
-          }
+          )}
           {/*
           <a className="search-scan-qr" href="/explorer/?scanqr">
             <Qr className="search-scan-qr-icon" />
@@ -414,19 +442,31 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
         */}
         </div>
       </div>
-      {showTabs &&
-        <div className='explorer-tabs-block'>
-          <div className='explorer-tabs'>
-            {tab === "nfts" ? <b>NFTs</b> : <Link href={"/nfts/" + searchItem + addParams}>NFTs</Link>}
-            {tab === "nft-offers" ? <b>{t("nft-offers.header")}</b> : <Link href={"/nft-offers/" + searchItem}>{t("nft-offers.header")}</Link>}
-            {tab === "nft-volumes" && <b>{t("menu.nft.volumes")}</b>}
-            {tab !== "account" && <a href={"/explorer/" + searchItem}>{t("explorer.menu.account")}</a>}
-            {tab !== "nft-volumes" && <a href={"/explorer/" + searchItem} className='hide-on-mobile'>{t("explorer.menu.transactions")}</a>}
-            {tab !== "nft-volumes" && <a href={"/explorer/" + searchItem} className='hide-on-mobile'>{t("explorer.menu.tokens")}</a>}
+      {showTabs && (
+        <div className="explorer-tabs-block">
+          <div className="explorer-tabs">
+            {tab === 'nfts' ? <b>NFTs</b> : <Link href={'/nfts/' + searchItem + addParams}>NFTs</Link>}
+            {tab === 'nft-offers' ? (
+              <b>{t('nft-offers.header')}</b>
+            ) : (
+              <Link href={'/nft-offers/' + searchItem}>{t('nft-offers.header')}</Link>
+            )}
+            {tab === 'nft-volumes' && <b>{t('menu.nft.volumes')}</b>}
+            {tab !== 'account' && <a href={'/explorer/' + searchItem}>{t('explorer.menu.account')}</a>}
+            {tab !== 'nft-volumes' && (
+              <a href={'/explorer/' + searchItem} className="hide-on-mobile">
+                {t('explorer.menu.transactions')}
+              </a>
+            )}
+            {tab !== 'nft-volumes' && (
+              <a href={'/explorer/' + searchItem} className="hide-on-mobile">
+                {t('explorer.menu.tokens')}
+              </a>
+            )}
           </div>
-          <div className='explorer-tabs-shadow'></div>
+          <div className="explorer-tabs-shadow"></div>
         </div>
-      }
+      )}
     </>
   )
 }

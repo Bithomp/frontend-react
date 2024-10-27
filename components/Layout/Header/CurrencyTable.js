@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react"
+import { useState, useEffect } from 'react'
 
-import { fiatCurrencyList } from "../../../utils"
+import { fiatCurrencyList } from '../../../utils'
 
 export default function CurrencySwitch({ selectedCurrency, setSelectedCurrency, close }) {
   const [rendered, setRendered] = useState(false)
@@ -12,16 +12,18 @@ export default function CurrencySwitch({ selectedCurrency, setSelectedCurrency, 
   if (!rendered) return null
 
   const spanClass = (currency) => {
-    return selectedCurrency === currency.value ? "link blue" : "link"
+    return selectedCurrency === currency.value ? 'link blue' : 'link'
   }
 
   const onCurrencySelect = (currency) => {
-    setSelectedCurrency(currency)
+    if (currency) {
+      setSelectedCurrency(currency)
+    }
     close()
   }
 
   const td = (currencyList, i) => {
-    let cols = [];
+    let cols = []
     for (let j = 0; j < 4; j++) {
       cols.push(
         <td key={j}>
@@ -42,15 +44,13 @@ export default function CurrencySwitch({ selectedCurrency, setSelectedCurrency, 
     const lines = Math.ceil(currencyList.length / 4)
     let rows = []
     for (let i = 0; i < lines; i++) {
-      rows.push(
-        <tr key={i}>{td(currencyList, i)}</tr>
-      )
+      rows.push(<tr key={i}>{td(currencyList, i)}</tr>)
     }
-    return <table>
-      <tbody>
-        {rows}
-      </tbody>
-    </table>
+    return (
+      <table>
+        <tbody>{rows}</tbody>
+      </table>
+    )
   }
 
   return currencyTable()

@@ -3,11 +3,12 @@ import { stripText, shortName } from '.'
 
 import Link from 'next/link'
 import LinkIcon from '../public/images/link.svg'
+import { amountFormat } from './format'
 
 //partner market places (destinations)
 export const partnerMarketplaces = {
-  rpZqTPC8GvrSvEfFsUuHkmPCg29GdQuXhC: { name: 'onXRP', feeText: '1,5%', fee: 0.015, multiplier: 1.015 }, //onxrp mainnet
-  rn6CYo6uSxR6fP7jWg3c8SL5jrqTc2GjCS: { name: 'onXRP', feeText: '1,5%', fee: 0.015, multiplier: 1.015 } //onxrp testnet
+  rpZqTPC8GvrSvEfFsUuHkmPCg29GdQuXhC: { name: 'bidds', feeText: '1,5%', fee: 0.015, multiplier: 1.015 }, //bidds mainnet
+  rhb5g4EHLHCiTAc8fJU5wk2jmsef2wNCxM: { name: 'bidds', feeText: '1,5%', fee: 0.015, multiplier: 1.015 } //bidds testnet new
 }
 
 //identified NFT Market Places
@@ -17,8 +18,8 @@ export const mpUrl = (offer) => {
   if (!service) return ''
   service = service.trim()
   let url = ''
-  if (service === 'onXRP') {
-    url = 'https://nft.onxrp.com/nft/'
+  if (service === 'bidds') {
+    url = 'https://nft.bidds.com/nft/'
   } else if (service === 'xrp.cafe') {
     url = 'https://xrp.cafe/nft/'
   } else if (service === 'xMart') {
@@ -41,7 +42,7 @@ export const mpUrl = (offer) => {
     url = 'https://dexfi.pro' // so far there no nft specific url :(
   }
   if (url) {
-    return url + (offer.nftokenID || offer.uriTokenID)
+    return url + offer.nftokenID
   } else {
     return ''
   }
@@ -136,11 +137,11 @@ export const bestNftOffer = (nftOffers, loggedInAddress, type = 'sell') => {
 }
 
 export const nftThumbnail = (nft) => {
-  if (!nft || !(nft.nftokenID || nft.uriTokenID)) return ''
+  if (!nft || !nft.nftokenID) return ''
   const imageSrc = nftUrl(nft, 'thumbnail')
   if (!imageSrc) return ''
   return (
-    <Link href={'/nft/' + (nft.nftokenID || nft.uriTokenID)}>
+    <Link href={'/nft/' + nft.nftokenID}>
       <img
         src={imageSrc}
         width="32px"
@@ -178,8 +179,8 @@ export const collectionThumbnail = (data) => {
 }
 
 export const nftNameLink = (nft) => {
-  if (!nft || !(nft.nftokenID || nft.uriTokenID)) return ''
-  return <Link href={'/nft/' + (nft.nftokenID || nft.uriTokenID)}>{nftName(nft) ? nftName(nft) : <LinkIcon />}</Link>
+  if (!nft || !nft.nftokenID) return ''
+  return <Link href={'/nft/' + nft.nftokenID}>{nftName(nft) ? nftName(nft) : <LinkIcon />}</Link>
 }
 
 export const nftName = (nft, options = {}) => {
@@ -312,6 +313,10 @@ const metaUrl = (nft, type = 'image', gateway = 'our') => {
   if (!nft.metadata) return null
   let meta = nft.metadata
   if (type === 'image' || type === 'thumbnail') {
+    //Evernode
+    if ((meta.evernodeRegistration || meta.evernodeLease) && gateway === 'our') {
+      return '/images/nft/evernode.png'
+    }
     //XLS-35
     if (meta.content?.url) return assetUrl(meta.content.url, type, gateway)
     //XLS-20
@@ -334,6 +339,10 @@ const metaUrl = (nft, type = 'image', gateway = 'our') => {
     if (meta.video) return assetUrl(meta.video, type, gateway)
     if (isCorrectFileType(meta.animation, type)) return assetUrl(meta.animation, type, gateway)
     if (isCorrectFileType(meta.animation_url, type)) return assetUrl(meta.animation_url, type, gateway)
+    // a hack for xSPECTAR avatars
+    if (nft.issuer === 'ra59pDJcuqKJcQws7Xpuu1S8UYKmKnpUkW' && nft.nftokenTaxon === 10) {
+      return assetUrl(meta.animation_url, type, gateway)
+    }
     if (meta.movie) return assetUrl(meta.movie, type, gateway)
     if (meta.content) return assetUrl(meta.content, type, gateway)
   }
@@ -423,6 +432,7 @@ export const isNftExplicit = (nft) => {
     nft.metadata?.title?.toLowerCase().includes('nude') ||
     nft.metadata?.name?.toLowerCase().includes('sexy') ||
     nft.metadata?.name?.toLowerCase().includes('naked') ||
+    nft.metadata?.name?.toLowerCase().includes('ladies') ||
     nft.metadata?.is_explicit
   ) {
     return true
@@ -438,7 +448,7 @@ export const nftImageStyle = (nft, style = {}) => {
   if (imageUrl) {
     const isOver18 = localStorage.getItem('isOver18')
     if (isNftExplicit(nft) && !isOver18) {
-      style.backgroundImage = "url('/images/18plus.jpg')"
+      style.backgroundImage = "url('/images/nft/18plus.jpg')"
     } else {
       style.backgroundImage = "url('" + imageUrl + "')"
     }
@@ -461,4 +471,20 @@ export const nftImageStyle = (nft, style = {}) => {
       "url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADoAAAAMAgMAAABO9kYLAAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAACVBMVEUAAAAAscH///9gi2cVAAAAAXRSTlMAQObYZgAAAAFiS0dEAmYLfGQAAAAJb0ZGcwAAAAQAAAAMAO0Ou9QAAAAJdnBBZwAAAE0AAAAaABY5XmAAAABCSURBVAjXdc6xEYAwDATBI1AHcj9fwhOo/1ZsEQIKd+aCw3iVCLJKYerjW2Tb5CXsyadvx2QHbUbjXz8/lEycn5c3880aCfVVMdcAAAAASUVORK5CYII=')"
   }
   return style
+}
+
+export const nftPriceData = (t, sellOffers, loggedInAddress) => {
+  if (!sellOffers) return ''
+  const best = bestNftOffer(sellOffers, loggedInAddress, 'sell')
+  if (best) {
+    if (mpUrl(best) && !partnerMarketplaces[best?.destination]) {
+      return t('nfts.amount-on-service', {
+        amount: amountFormat(best.amount, { tooltip: 'right' }),
+        service: best.destinationDetails.service
+      })
+    } else {
+      return amountFormat(best.amount, { tooltip: 'right' })
+    }
+  }
+  return t('table.text.private-offer') //shouldn't be the case
 }

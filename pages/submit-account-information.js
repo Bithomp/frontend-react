@@ -227,25 +227,25 @@ export default function SubmitAccountInformation() {
     const data = apiData?.data
 
     /*
-            {
-                "address": "r3bXhbFak2UHK4S1JqmyMiHTN2h4LyhMt6",
-                "verified": false,
-                "name": "bithomp",
-                "domain": "xrplexplorer.com",
-                "email": "support@email.com",
-                "twitter": "twiteter",
-                "facebook": "facebook",
-                "youtube": "youtube",
-                "instagram": "instagram",
-                "linkedin": "linkedn",
-                "reddit": "reddit",
-                "medium": "medium",
-                "telegram": "telegram",
-                "created_at": "2024-03-25 22:44:01",
-                "updated_at": "2024-03-25 22:44:01",
-                "id": 3632
-            }
-        */
+      {
+        "address": "r3bXhbFak2UHK4S1JqmyMiHTN2h4LyhMt6",
+        "verified": false,
+        "name": "bithomp",
+        "domain": "xrplexplorer.com",
+        "email": "support@email.com",
+        "twitter": "twiteter",
+        "facebook": "facebook",
+        "youtube": "youtube",
+        "instagram": "instagram",
+        "linkedin": "linkedn",
+        "reddit": "reddit",
+        "medium": "medium",
+        "telegram": "telegram",
+        "created_at": "2024-03-25 22:44:01",
+        "updated_at": "2024-03-25 22:44:01",
+        "id": 3632
+      }
+    */
 
     if (data) {
       if (data.id) {

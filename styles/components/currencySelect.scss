@@ -4,6 +4,7 @@
   @include react-select;
 
   .react-select__control {
+    min-width: 125px;
     .react-select__input {
       padding-left: 29.5px !important;
     }

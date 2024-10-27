@@ -69,6 +69,9 @@
       "buy": "Beli XRP",
       "earn": "Dapatkan dari XRP",
       "play": "Mainkan XRP"
+    },
+    "learn-more": {
+      "title": "Pelajari lebih lanjut"
     }
   },
   "components": {
@@ -118,6 +121,7 @@
     "not-available": "Tidak tersedia",
     "confirm": {
       "set-domain": "Mengatur Domain",
+      "set-avatar": "Mengatur Avatar",
       "nft-create-transfer-offer-header": "Kirim NFT",
       "nft-transfer": "Saya menawarkan NFT ini GRATIS kepada akun Tujuan, <1>akun tujuan perlu menerima transfer NFT</1>.",
       "nft-accept-sell-offer-header": "Pembelian NFT",
@@ -147,8 +151,7 @@
   },
   "footer": {
     "cookie": {
-      "we-use-cookie": "Kami menggunakan cookie dan teknologi serupa untuk meningkatkan pengalaman Anda di situs kami.",
-      "read-more": "Baca lebih lanjut"
+      "we-use-cookie": "Kami menggunakan cookie dan teknologi serupa untuk meningkatkan pengalaman Anda di situs kami."
     }
   },
   "home": {
@@ -219,8 +222,8 @@
     "for-sale-with-destination": "NFT yang Dijual Langsung"
   },
   "alerts": {
-    "text0": "Dapatkan pemberitahuan saat harga pasar XRP/USD atau XRP/BTC oleh <1>Bitstamp</1> berubah lebih dari 5% dalam satu jam atau lebih dari 10% dalam satu hari.",
-    "text1": "Ikuti saluran Telegram: <1>bithomp</1> atau akun X: <3>XRP_PriceAlert</3>.",
+    "text0": "Dapatkan pemberitahuan saat harga pasar {{ nativeCurrency }}/USD atau {{ nativeCurrency }}/BTC oleh <6>{{linkText}}</6> berubah lebih dari 5% dalam satu jam atau lebih dari 10% dalam satu hari.",
+    "text1": "Ikuti saluran Telegram: <1>bithomp</1> atau akun X: <4>XRP_PriceAlerts</4>.",
     "last-alerts": "50 Pemberitahuan Terakhir",
     "date-and-time": "Tanggal & waktu",
     "currency-pair": "Pasangan Mata Uang",
@@ -270,6 +273,7 @@
     "order-id": "ID pesanan"
   },
   "button": {
+    "set-domain": "Tetapkan sebuah domain",
     "continue": "Lanjut",
     "cancel": "Batal",
     "accept": "Terima",
@@ -311,7 +315,9 @@
     "viewer": "Pelihat",
     "developer-mode": "Mode Pengembang",
     "search": "Search",
-    "of-many": "of many"
+    "of-many": "of many",
+    "of": "of",
+    "sort-by": "Sort by"
   },
   "form": {
     "error": {
@@ -333,6 +339,7 @@
     }
   },
   "error": {
+    "payment-partly": "Silahkan kirim sisa jumlahnya, sejauh ini kami hanya menerima {{received}} {{currency}} saat <b>{{required}} {{currency}}</b> dibutuhkan.",
     "Network Error": "Sepertinya tidak ada koneksi internet ;(",
     "Request failed with status code 429": "Anda mengirimkan terlalu banyak permintaan kepada kami, coba lagi nanti!",
     "Request failed with status code 404": "Such API call is not allowed on that network",
@@ -383,12 +390,15 @@
     "day": "Selama 24 jam terakhir"
   },
   "table": {
+    "currency": "Mata Uang",
+    "currency-issuer": "Penerbit Mata Uang",
     "destination-tag": "Destination tag",
     "uri": "URI",
     "mints": "Mints",
     "view": "View",
     "period": "Periode",
     "mint-period": "Periode Mint",
+    "burn-period": "Periode Burn",
     "warning": "Warning",
     "sequence": "Urutan",
     "version": "Versi",
@@ -530,11 +540,13 @@
     "sell": "Jual",
     "buyNow": "Buy now",
     "publicAndKnownBrokers": "Publik & Broker Terkenal",
-    "onSale": "Dijual dengan XRP",
+    "onSale": "Dijual dengan {{nativeCurrency}}",
     "all-tokens": "Semua Token",
     "xrp-only": "Hanya XRP",
     "mintedNew": "Latest",
-    "mintedOld": "Oldest"
+    "mintedOld": "Oldest",
+    "existing": "Existing",
+    "burned": "Dihapus"
   },
   "xumm": {
     "new-qr": "Dapatkan kode QR baru"

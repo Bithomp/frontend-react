@@ -5,29 +5,17 @@ import axios from 'axios'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import Link from 'next/link'
 
-import { IoMdClose } from 'react-icons/io'
-import { TbArrowsSort } from 'react-icons/tb'
-
 import {
   isAddressOrUsername,
   setTabParams,
   useWidth,
   xahauNetwork,
-  capitalizeFirstLetter,
   periodDescription,
-  useSubscriptionExpired,
-  decode
+  decode,
+  nativeCurrency
 } from '../utils'
-import {
-  isValidTaxon,
-  nftThumbnail,
-  nftNameLink,
-  bestNftOffer,
-  mpUrl,
-  partnerMarketplaces,
-  ipfsUrl
-} from '../utils/nft'
-import { nftLink, usernameOrAddress, amountFormat, timeOrDate, fullDateAndTime } from '../utils/format'
+import { isValidTaxon, nftThumbnail, nftNameLink, ipfsUrl, nftPriceData } from '../utils/nft'
+import { nftLink, usernameOrAddress, timeOrDate, fullDateAndTime, niceCurrency, capitalize } from '../utils/format'
 
 import SEO from './SEO'
 import SearchBlock from './Layout/SearchBlock'
@@ -39,10 +27,8 @@ import DateAndTimeRange from './UI/DateAndTimeRange'
 import RadioOptions from './UI/RadioOptions'
 import FormInput from './UI/FormInput'
 import AddressInput from './UI/AddressInput'
-import ViewTogggle from './UI/ViewToggle'
-import SimpleSelect from './UI/SimpleSelect'
-import LeftFilters from './UI/LeftFilters'
 import NftTabs from './Tabs/NftTabs'
+import FiltersFrame from './Layout/FiltersFrame'
 
 export default function NftsComponent({
   collectionQuery,
@@ -60,16 +46,17 @@ export default function NftsComponent({
   nftExplorer,
   mintedByMarketplace,
   mintedPeriodQuery,
-  burnedPeriod,
+  burnedPeriodQuery,
   includeBurnedQuery,
   includeWithoutMediaDataQuery,
   id,
-  account
+  account,
+  subscriptionExpired,
+  sessionToken
 }) {
-  const { t } = useTranslation(['common', 'nft-sort', 'popups'])
+  const { t } = useTranslation()
   const router = useRouter()
   const windowWidth = useWidth()
-  const subscriptionExpired = useSubscriptionExpired()
 
   const orderNftsList = [
     { value: 'mintedNew', label: t('dropdown.mintedNew', { ns: 'nft-sort' }) },
@@ -87,7 +74,6 @@ export default function NftsComponent({
   const [rendered, setRendered] = useState(false)
   const [data, setData] = useState([])
   const [rawData, setRawData] = useState(null)
-  const [filtersHide, setFiltersHide] = useState(false)
   const [loading, setLoading] = useState(false)
   const [hasMore, setHasMore] = useState('first')
   const [errorMessage, setErrorMessage] = useState('')
@@ -103,14 +89,14 @@ export default function NftsComponent({
   const [includeBurned, setIncludeBurned] = useState(includeBurnedQuery)
   const [includeWithoutMediaData, setIncludeWithoutMediaData] = useState(includeWithoutMediaDataQuery)
   const [mintedPeriod, setMintedPeriod] = useState(mintedPeriodQuery)
+  const [burnedPeriod, setBurnedPeriod] = useState(burnedPeriodQuery)
   const [csvHeaders, setCsvHeaders] = useState([])
   const [nftCount, setNftCount] = useState(null)
   const [currentOrderList, setCurrentOrderList] = useState(listTab !== 'onSale' ? orderNftsList : orderOnSaleList)
   const [order, setOrder] = useState(orderQuery)
-  const [sortMenuOpen, setSortMenuOpen] = useState(false)
   const [issuerTaxonUrlPart, setIssuerTaxonUrlPart] = useState('?view=' + activeView)
   const [collectionUrlPart, setCollectionUrlPart] = useState(collectionQuery ? '&collection=' + collectionQuery : '')
-  const [sessionToken, setSessionToken] = useState('')
+  const [filtersHide, setFiltersHide] = useState(false)
 
   const controller = new AbortController()
 
@@ -130,29 +116,27 @@ export default function NftsComponent({
 
   useEffect(() => {
     setRendered(true)
-
-    const sessionTokenString = localStorage.getItem('sessionToken')
-    if (sessionTokenString) {
-      axios.defaults.headers.common['Authorization'] = 'Bearer ' + sessionTokenString
-      setSessionToken(sessionTokenString)
-    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  const viewList = [
-    { value: 'tiles', label: t('tabs.tiles') },
-    { value: 'list', label: t('tabs.list') }
-  ]
-
   const listTabList = [
     { value: 'nfts', label: t('tabs.all') },
-    { value: 'onSale', label: t('tabs.onSale') }
+    { value: 'onSale', label: t('tabs.onSale', { nativeCurrency }) }
   ]
 
-  const saleDestinationTabList = [
-    { value: 'buyNow', label: t('tabs.buyNow') },
-    { value: 'publicAndKnownBrokers', label: t('tabs.publicAndKnownBrokers') }
-  ]
+  let saleDestinationTabList = []
+
+  if (xahauNetwork) {
+    saleDestinationTabList = [
+      { value: 'public', label: t('tabs.buyNow') },
+      { value: 'all', label: t('tabs.all') }
+    ]
+  } else {
+    saleDestinationTabList = [
+      { value: 'buyNow', label: t('tabs.buyNow') },
+      { value: 'publicAndKnownBrokers', label: t('tabs.publicAndKnownBrokers') }
+    ]
+  }
 
   const checkApi = async (options) => {
     if (nftExplorer && !mintedPeriod && listTab !== 'onSale') return
@@ -213,7 +197,7 @@ export default function NftsComponent({
       if (saleCurrencyIssuer && saleCurrency) {
         listUrlPart = listUrlPart + '&currency=' + saleCurrency + '&currencyIssuer=' + saleCurrencyIssuer
       } else {
-        listUrlPart = listUrlPart + '&currency=xrp'
+        listUrlPart = listUrlPart + '&currency=' + nativeCurrency?.toLowerCase()
       }
     }
 
@@ -366,7 +350,7 @@ export default function NftsComponent({
                   typeof nftList[i].metadata[key] === 'string'
                 ) {
                   keys.push(key)
-                  csvHeadersNew.push({ label: capitalizeFirstLetter(key), key: 'metadata.' + key })
+                  csvHeadersNew.push({ label: capitalize(key), key: 'metadata.' + key })
                 }
 
                 if (
@@ -375,7 +359,7 @@ export default function NftsComponent({
                 ) {
                   if (!keys.includes(key + 'Cid')) {
                     keys.push(key + 'Cid')
-                    csvHeadersNew.push({ label: capitalizeFirstLetter(key) + ' CID', key: 'metadata.' + key + 'Cid' })
+                    csvHeadersNew.push({ label: capitalize(key) + ' CID', key: 'metadata.' + key + 'Cid' })
                   }
                   nftList[i].metadata[key + 'Cid'] = ipfsUrl(nftList[i].metadata[key], 'cid')
                 }
@@ -445,7 +429,8 @@ export default function NftsComponent({
     search,
     includeBurned,
     includeWithoutMediaData,
-    mintedPeriod
+    mintedPeriod,
+    burnedPeriod
   ])
 
   useEffect(() => {
@@ -509,13 +494,6 @@ export default function NftsComponent({
         defaultTab: 'nfts',
         setTab: setListTab,
         paramName: 'list'
-      },
-      {
-        tabList: viewList,
-        tab: activeView,
-        defaultTab: 'tiles',
-        setTab: setActiveView,
-        paramName: 'view'
       }
     ]
 
@@ -523,7 +501,7 @@ export default function NftsComponent({
       tabsToSet.push({
         tabList: saleDestinationTabList,
         tab: saleDestinationTab,
-        defaultTab: 'buyNow',
+        defaultTab: xahauNetwork ? 'public' : 'buyNow',
         setTab: setSaleDestinationTab,
         paramName: 'saleDestination'
       })
@@ -565,16 +543,9 @@ export default function NftsComponent({
       queryRemoveList.push('includeWithoutMediaData')
     }
 
-    if (mintedPeriod) {
-      queryAddList.push({
-        name: 'mintedPeriod',
-        value: mintedPeriod
-      })
-    }
-
     setTabParams(router, tabsToSet, queryAddList, queryRemoveList)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeView, order, rawData, listTab, saleDestinationTab, includeBurned, includeWithoutMediaData, mintedPeriod])
+  }, [order, rawData, listTab, saleDestinationTab, includeBurned, includeWithoutMediaData])
 
   const onTaxonInput = (value) => {
     if (/^\d+$/.test(value) && issuer && isValidTaxon(value)) {
@@ -596,11 +567,6 @@ export default function NftsComponent({
     setCurrentOrderList(actualList)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [listTab])
-
-  const hideMobileSortMenu = (value) => {
-    setOrder(value)
-    setSortMenuOpen(false)
-  }
 
   /*
   {
@@ -640,22 +606,6 @@ export default function NftsComponent({
       },
   */
 
-  const priceData = (sellOffers) => {
-    if (!sellOffers) return ''
-    const best = bestNftOffer(sellOffers, account, 'sell')
-    if (best) {
-      if (mpUrl(best) && !partnerMarketplaces[best?.destination]) {
-        return t('nfts.amount-on-service', {
-          amount: amountFormat(best.amount, { tooltip: 'right' }),
-          service: best.destinationDetails.service
-        })
-      } else {
-        return amountFormat(best.amount, { tooltip: 'right' })
-      }
-    }
-    return t('table.text.private-offer') //shouldn't be the case
-  }
-
   return (
     <>
       {nftExplorer ? (
@@ -666,11 +616,15 @@ export default function NftsComponent({
             (isValidTaxon(taxon || taxonQuery) ? ' ' + (taxon || taxonQuery) : '') +
             (owner || ownerQuery ? ', ' + t('table.owner') + ': ' + (owner || ownerQuery) : '') +
             (activeView === 'list' ? ' ' + t('tabs.list') : '') +
-            (listTab === 'onSale' ? ' ' + t('tabs.onSale') : '') +
-            (listTab === 'onSale' && saleDestinationTab === 'buyNow' ? ', ' + t('tabs.buyNow') : '') +
+            (listTab === 'onSale' ? ' ' + t('tabs.onSale', { nativeCurrency }) : '') +
+            (listTab === 'onSale' && (saleDestinationTab === 'buyNow' || saleDestinationTab === 'public')
+              ? ', ' + t('tabs.buyNow')
+              : '') +
             (search || searchQuery ? ', ' + t('table.name') + ': ' + (search || searchQuery) : '') +
             (burnedPeriod ? ', ' + t('table.burn-period') + ': ' + burnedPeriod : '') +
-            (order ? ', ' + t('dropdown.' + order, { ns: 'nft-sort' }) : '')
+            (order ? ', ' + t('dropdown.' + order, { ns: 'nft-sort' }) : '') +
+            (includeBurned ? ', ' + t('table.text.include-burned-nfts') : '') +
+            (includeWithoutMediaData ? ', ' + t('table.text.include-without-media-data') : '')
           }
           description={
             (issuer || issuerQuery || search || t('nft-explorer.header')) +
@@ -690,47 +644,42 @@ export default function NftsComponent({
           <NftTabs tab="nft-explorer" url={'/nft-sales' + issuerTaxonUrlPart + collectionUrlPart} />
         </>
       )}
-      <div
-        className={`content-cols${sortMenuOpen ? ' is-sort-menu-open' : ''}${filtersHide ? ' is-filters-hide' : ''}`}
+
+      <FiltersFrame
+        order={order}
+        setOrder={setOrder}
+        orderList={currentOrderList}
+        activeView={activeView}
+        setActiveView={setActiveView}
+        count={nftCount}
+        hasMore={hasMore}
+        data={data || []}
+        csvHeaders={csvHeaders}
+        filtersHide={filtersHide}
+        setFiltersHide={setFiltersHide}
       >
-        <div className="filters-nav">
-          <div className="filters-nav__wrap">
-            <SimpleSelect value={order} setValue={setOrder} optionsList={currentOrderList} />
-            <button className="dropdown-btn" onClick={() => setSortMenuOpen(!sortMenuOpen)}>
-              <TbArrowsSort />
-            </button>
-            <ViewTogggle viewList={viewList} activeView={activeView} setActiveView={setActiveView} name="view" />
-          </div>
-        </div>
-        <div className="dropdown--mobile">
-          <div className="dropdown__head">
-            <span>{t('heading', { ns: 'nft-sort' })}</span>
-            <button onClick={() => setSortMenuOpen(false)}>
-              <IoMdClose />
-            </button>
-          </div>
-          <ul>
-            {currentOrderList.map((item, i) => (
-              <li
-                key={i}
-                style={{ fontWeight: item.value === order ? 'bold' : 'normal' }}
-                onClick={() => hideMobileSortMenu(item.value)}
-              >
-                {item.label}
-              </li>
-            ))}
-          </ul>
-        </div>
-        <LeftFilters
-          filtersHide={filtersHide}
-          setFiltersHide={setFiltersHide}
-          count={nftCount}
-          hasMore={hasMore}
-          data={data || []}
-          csvHeaders={csvHeaders}
-        >
+        <>
           {nftExplorer && (
             <>
+              {mintedByMarketplace && (
+                <FormInput
+                  title={t('table.marketplace')}
+                  defaultValue={mintedByMarketplace}
+                  disabled={true}
+                  hideButton={true}
+                />
+              )}
+              {collectionQuery && (
+                <FormInput
+                  title={t('table.collection')}
+                  defaultValue={collectionQuery}
+                  disabled={true}
+                  hideButton={true}
+                />
+              )}
+              {serialQuery && (
+                <FormInput title={t('table.serial')} defaultValue={serialQuery} disabled={true} hideButton={true} />
+              )}
               <AddressInput
                 title={t('table.issuer')}
                 placeholder={t('nfts.search-by-issuer')}
@@ -760,23 +709,22 @@ export default function NftsComponent({
                 setValue={setSearch}
                 defaultValue={rawData?.search}
               />
+
+              {listTab === 'nfts' && (
+                <div>
+                  {t('table.mint-period')}
+                  <DateAndTimeRange
+                    periodQueryName="mintedPeriod"
+                    period={mintedPeriod}
+                    setPeriod={setMintedPeriod}
+                    defaultPeriod={mintedPeriodQuery}
+                    minDate="nft"
+                    radio={true}
+                  />
+                </div>
+              )}
             </>
           )}
-
-          {listTab === 'nfts' && nftExplorer && (
-            <div>
-              {t('table.mint-period')}
-              <DateAndTimeRange
-                periodQueryName="mintedPeriod"
-                period={mintedPeriod}
-                setPeriod={setMintedPeriod}
-                defaultPeriod={mintedPeriodQuery}
-                minDate="nft"
-                radio={true}
-              />
-            </div>
-          )}
-
           {!nftExplorer && rendered && (
             <div>
               <span style={{ display: 'inline-block', paddingBottom: '5px' }}>{t('table.issuer')}</span>
@@ -788,15 +736,13 @@ export default function NftsComponent({
               />
             </div>
           )}
-
-          {!burnedPeriod && !xahauNetwork && (
+          {!burnedPeriod && (
             <div>
               {t('general.search')}
               <RadioOptions tabList={listTabList} tab={listTab} setTab={setListTab} name="saleType" />
             </div>
           )}
-
-          {!burnedPeriod && !xahauNetwork && listTab === 'onSale' && (
+          {!burnedPeriod && listTab === 'onSale' && (
             <div>
               {t('table.on-sale')}
               <RadioOptions
@@ -805,26 +751,73 @@ export default function NftsComponent({
                 setTab={setSaleDestinationTab}
                 name="saleDestination"
               />
+              {saleCurrencyIssuer && saleCurrency && (
+                <>
+                  <FormInput
+                    title={t('table.currency')}
+                    defaultValue={niceCurrency(saleCurrency)}
+                    disabled={true}
+                    hideButton={true}
+                  />
+                  <FormInput
+                    title={t('table.currency-issuer')}
+                    defaultValue={saleCurrencyIssuer}
+                    disabled={true}
+                    hideButton={true}
+                  />
+                </>
+              )}
             </div>
           )}
-
           <div>
-            {!burnedPeriod && listTab !== 'onSale' && (
-              <div className="filters-check-box">
-                <CheckBox checked={includeBurned} setChecked={setIncludeBurned} outline>
-                  {t('table.text.include-burned-nfts')}
-                </CheckBox>
+            {listTab !== 'onSale' && (
+              <>
+                {t('table.text.include-burned-nfts')}
+                <RadioOptions
+                  tabList={[
+                    { value: 'existing', label: t('tabs.existing') },
+                    { value: 'all', label: t('tabs.all') },
+                    { value: 'burned', label: t('tabs.burned') }
+                  ]}
+                  tab={burnedPeriod ? 'burned' : includeBurned ? 'all' : 'existing'}
+                  setTab={(tab) => {
+                    if (tab === 'burned') {
+                      setBurnedPeriod('all')
+                    } else if (tab === 'all') {
+                      setIncludeBurned(true)
+                      setBurnedPeriod(null)
+                    } else {
+                      setIncludeBurned(false)
+                      setBurnedPeriod(null)
+                    }
+                  }}
+                  name="ExistingAndBurnedTabs"
+                />
+              </>
+            )}
+            {burnedPeriod && (
+              <div>
+                {t('table.burn-period')}
+                <DateAndTimeRange
+                  periodQueryName="burnedPeriod"
+                  period={burnedPeriod}
+                  setPeriod={setBurnedPeriod}
+                  defaultPeriod={burnedPeriodQuery}
+                  minDate="nft"
+                  radio={true}
+                  name="burnedPeriod"
+                />
               </div>
             )}
+
             <div className="filters-check-box">
               <CheckBox checked={includeWithoutMediaData} setChecked={setIncludeWithoutMediaData} outline>
                 {t('table.text.include-without-media-data')}
               </CheckBox>
             </div>
           </div>
-        </LeftFilters>
-
-        <div className="content-text">
+        </>
+        <>
           {/* if accoun't nft explorer and there is no owner or id, ask to provide an address */}
           {!nftExplorer && !(id || owner) ? (
             <div className="center" style={{ marginTop: '20px' }}>
@@ -880,7 +873,7 @@ export default function NftsComponent({
               {activeView === 'list' && (
                 <>
                   {windowWidth > 500 ? (
-                    <table className="table-large table-large--without-border">
+                    <table className="table-large no-border">
                       <thead>
                         <tr>
                           <th className="center">{t('table.index')}</th>
@@ -906,7 +899,7 @@ export default function NftsComponent({
                           <>
                             {!errorMessage ? (
                               data.map((nft, i) => (
-                                <tr key={nft.nftokenID || nft.uriTokenID}>
+                                <tr key={nft.nftokenID}>
                                   <td className="center">{i + 1}</td>
                                   <td>
                                     {nftThumbnail(nft)} {nftNameLink(nft)}
@@ -920,7 +913,9 @@ export default function NftsComponent({
                                   {!id && !owner && (
                                     <td className="right">{nftLink(nft, 'owner', { address: 'short' })}</td>
                                   )}
-                                  {listTab === 'onSale' && <td className="right">{priceData(nft.sellOffers)}</td>}
+                                  {listTab === 'onSale' && (
+                                    <td className="right">{nftPriceData(t, nft.sellOffers, account?.address)}</td>
+                                  )}
                                 </tr>
                               ))
                             ) : (
@@ -949,7 +944,7 @@ export default function NftsComponent({
                           <>
                             {!errorMessage ? (
                               data.map((nft, i) => (
-                                <tr key={nft.nftokenID || nft.uriTokenID}>
+                                <tr key={nft.nftokenID}>
                                   <td className="center">
                                     {i + 1}
                                     <br />
@@ -987,7 +982,7 @@ export default function NftsComponent({
                                     )}
                                     {listTab === 'onSale' && (
                                       <>
-                                        {t('table.price')}: {priceData(nft.sellOffers)}
+                                        {t('table.price')}: {nftPriceData(t, nft.sellOffers, account?.address)}
                                         <br />
                                       </>
                                     )}
@@ -1029,8 +1024,8 @@ export default function NftsComponent({
               )}
             </InfiniteScroll>
           )}
-        </div>
-      </div>
+        </>
+      </FiltersFrame>
     </>
   )
 }

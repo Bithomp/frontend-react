@@ -2,6 +2,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import NftsComponent from '../components/NftsComponent'
 
 import { getIsSsrMobile } from '../utils/mobile'
+import { xahauNetwork } from '../utils'
 
 export const getServerSideProps = async (context) => {
   const { query, locale } = context
@@ -31,10 +32,9 @@ export const getServerSideProps = async (context) => {
     props: {
       collectionQuery: collection || '',
       orderQuery: order || 'mintedNew',
-      key: Math.random(),
       view: view || 'tiles',
       list: list || 'nfts',
-      saleDestination: saleDestination || 'buyNow',
+      saleDestination: saleDestination || (xahauNetwork ? 'public' : 'buyNow'),
       saleCurrency: saleCurrency || 'xrp',
       saleCurrencyIssuer: saleCurrencyIssuer || '',
       searchQuery: search || '',
@@ -73,7 +73,8 @@ export default function Nfts({
   includeBurnedQuery,
   includeWithoutMediaDataQuery,
   id,
-  account
+  account,
+  sessionToken
 }) {
   return (
     <NftsComponent
@@ -91,12 +92,13 @@ export default function Nfts({
       serialQuery={serialQuery}
       mintedByMarketplace={mintedByMarketplace}
       mintedPeriodQuery={mintedPeriod}
-      burnedPeriod={burnedPeriod}
+      burnedPeriodQuery={burnedPeriod}
       includeBurnedQuery={includeBurnedQuery}
       includeWithoutMediaDataQuery={includeWithoutMediaDataQuery}
       nftExplorer={true}
       id={id}
       account={account}
+      sessionToken={sessionToken}
     />
   )
 }

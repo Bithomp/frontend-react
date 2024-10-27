@@ -70,6 +70,9 @@
       "buy": "XRP 구매",
       "earn": "XRP 수익창출",
       "play": "XRP 플레이"
+    },
+    "learn-more": {
+      "title": "더 알아보기"
     }
   },
   "components": {
@@ -119,6 +122,7 @@
     "not-available": "유효하지 않습니다",
     "confirm": {
       "set-domain": "도메인을 설정합니다",
+      "set-avatar": "아바타를 설정",
       "nft-create-transfer-offer-header": "NFT transfer",
       "nft-transfer": "I'm offering that NFT for FREE to the Destination account, <1>the destination account would need to accept the NFT transfer</1>.",
       "nft-accept-sell-offer-header": "NFT 구매",
@@ -148,8 +152,7 @@
   },
   "footer": {
     "cookie": {
-      "we-use-cookie": "쿠키를 사용합니다",
-      "read-more": "추가정보"
+      "we-use-cookie": "쿠키를 사용합니다"
     }
   },
   "home": {
@@ -220,8 +223,8 @@
     "for-sale-with-destination": "직접판매용 NFT"
   },
   "alerts": {
-    "text0": "<1>Bitstamp</1>에서 XRP/USD 또는 XRP/BTC의 시장 가격이 1시간 이내에 5% 이상 또는 1일 이내에 10% 이상 변동하면 알림을 받을 수 있습니다.",
-    "text1": "텔레그램 채널 <1>bithomp</1> 또는 X 계정 <3>XRP_PriceAlerts</3>를 팔로우하세요.",
+    "text0": "<6>{{linkText}}</6>에서 {{ nativeCurrency }}/USD 또는 {{ nativeCurrency }}/BTC의 시장 가격이 1시간 이내에 5% 이상 또는 1일 이내에 10% 이상 변동하면 알림을 받을 수 있습니다.",
+    "text1": "텔레그램 채널 <1>bithomp</1> 또는 X 계정 <4>XRP_PriceAlerts</4>를 팔로우하세요.",
     "last-alerts": "최근 50개 알림",
     "date-and-time": "날짜 및 시간",
     "currency-pair": "통화 페어",
@@ -271,6 +274,7 @@
     "order-id": "ID 오더"
   },
   "button": {
+    "set-domain": "도메인을 설정합니다",
     "continue": "계속",
     "cancel": "취소",
     "accept": "확인",
@@ -312,7 +316,9 @@
     "viewer": "뷰어",
     "developer-mode": "개발자 모드",
     "search": "Search",
-    "of-many": "of many"
+    "of-many": "of many",
+    "of": "of",
+    "sort-by": "Sort by"
   },
   "form": {
     "error": {
@@ -334,6 +340,7 @@
     }
   },
   "error": {
+    "payment-partly": "<b>{{currency}} {{required}}</b>가 필요하지만 {{received}} {{currency}}만 받았습니다. 나머지 금액을 송금해 주세요.",
     "Network Error": "인터넷이 연결되어 있지 않습니다;",
     "Request failed with status code 429": "요청사항이 너무 많습니다. 나중에 다시 시도하세요",
     "Request failed with status code 404": "Such API call is not allowed on that network",
@@ -384,12 +391,15 @@
     "day": "최근 24시간"
   },
   "table": {
+    "currency": "통화",
+    "currency-issuer": "통화 발행자",
     "destination-tag": "대상 태그",
     "uri": "URI",
     "mints": "Mints",
     "view": "View",
     "period": "Period",
     "mint-period": "Mint period",
+    "burn-period": "Burn period",
     "warning": "Warning",
     "sequence": "절차",
     "version": "버전",
@@ -531,11 +541,13 @@
     "sell": "판매",
     "buyNow": "Buy now",
     "publicAndKnownBrokers": "공공 & MP",
-    "onSale": "XRP로 판매 중",
+    "onSale": "{{nativeCurrency}}로 판매 중",
     "all-tokens": "모든 토큰",
     "xrp-only": "XRP만",
     "mintedNew": "Latest",
-    "mintedOld": "Oldest"
+    "mintedOld": "Oldest",
+    "existing": "Existing",
+    "burned": "Burned"
   },
   "xumm": {
     "new-qr": "새로운 QR코드를 사용하세요"

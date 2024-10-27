@@ -7,6 +7,13 @@ import { nftName, nftUrl } from '../utils/nft'
 
 import Tabs from './Tabs'
 import LoadingGif from '../public/images/loading.gif'
+import { FaCloudDownloadAlt } from 'react-icons/fa'
+
+const downloadIcon = (
+  <div style={{ display: 'inline-block', verticalAlign: 'bottom', height: '19px' }}>
+    <FaCloudDownloadAlt />
+  </div>
+)
 
 export default function NftPreview({ nft }) {
   const { t } = useTranslation()
@@ -150,7 +157,7 @@ export default function NftPreview({ nft }) {
           </span>
           <span style={{ float: 'right', padding: '4px 0px' }}>
             <a href={clUrl[contentTab]} target="_blank" rel="noreferrer">
-              {t('tabs.' + contentTab)} IPFS
+              {t('tabs.' + contentTab)} {downloadIcon}
             </a>
           </span>
         </div>
@@ -215,7 +222,7 @@ export default function NftPreview({ nft }) {
       {contentTabList.length < 2 && defaultUrl && (
         <span style={{ padding: '4px 0px' }}>
           <a href={defaultUrl} target="_blank" rel="noreferrer">
-            {t('tabs.' + defaultTab)} IPFS
+            {t('tabs.' + defaultTab)} {downloadIcon}
           </a>
         </span>
       )}
@@ -225,7 +232,7 @@ export default function NftPreview({ nft }) {
           <audio src={audioUrl} controls style={{ display: 'block', margin: '20px auto' }}></audio>
           <span style={{ padding: '4px 0px' }}>
             <a href={clUrl.audio} target="_blank" rel="noreferrer">
-              {t('tabs.audio')} IPFS
+              {t('tabs.audio')} {downloadIcon}
             </a>
           </span>
         </>

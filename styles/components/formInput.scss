@@ -25,6 +25,10 @@
   &.disabled {
     pointer-events: none;
 
+    .simple-input {
+      width: 100% !important;
+    }
+
     .form-input__wrap {
       background-color: var(--background-input-readonly);
     }
