@@ -90,39 +90,25 @@
       }
     }
 
-    &__bg {
-      position: absolute;
+    .product-bg {
       height: 100%;
-      width: auto;
-      bottom: 0;
-      right: 0;
-      z-index: 1;
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position-x: right;
+      z-index: 4;
+    }
 
-      @media(min-width: 1500px) {
-        height: 90%;
-      }
-
-      @media(min-width: 1600px) {
-        height: 95%;
-      }
-
-      @media(max-width: 600px) {
-        height: 95%;
-      }
-
-      @media (max-width: 380px) {
-        right: -7%;
-      }
-
-      img {
-        height: 100%;
-        width: auto;
-      }
+    .product-gradient {
+      background-size: contain;
+      height: 100%;
     }
 
     &.list1 {
       &::after {
         background: #dd983d1a;
+      }
+      .product-bg {
+        background-image: url("../../public/images/products/bg-1.png");
       }
     }
 
@@ -130,8 +116,8 @@
       &::after {
         background: #3fa3b533;
       }
-      .product-gradient {
-        background-image: url("../../public/images/products/gradient-3.svg");
+      .product-bg {
+        background-image: url("../../public/images/products/bg-2.png");
       }
     }
 
@@ -139,8 +125,8 @@
       &::after {
         background: #00b1c115;
       }
-      .product-gradient {
-        background-image: url("../../public/images/products/gradient-1.svg");
+      .product-bg {
+        background-image: url("../../public/images/products/bg-3.png");
       }
     }
 
@@ -148,8 +134,8 @@
       &::after {
         background: #14913e33;
       }
-      .product-gradient {
-        background-image: url("../../public/images/products/gradient-2.svg");
+      .product-bg {
+        background-image: url("../../public/images/products/bg-4.png");
       }
     }
 
