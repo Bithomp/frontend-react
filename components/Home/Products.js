@@ -11,23 +11,23 @@ export default function Products() {
       title: t('titles.for-you', { ns: 'products' }),
       list: [
         {
-          link: '/',
+          link: '/admin/watchlist',
           text: t('items.watchlist', { ns: 'products' })
         },
         {
-          link: '/',
+          link: '/admin/pro/history',
           text: t('items.tx-export', { ns: 'products' })
         },
         {
-          link: '/',
+          link: '/admin/pro',
           text: t('items.set-avatar', { ns: 'products' })
         },
         {
-          link: '/',
+          link: '/username',
           text: t('items.username-registration', { ns: 'products' })
         },
         {
-          link: '/',
+          link: '/submit-account-information',
           text: t('items.project-registration', { ns: 'products' })
         }
       ]
