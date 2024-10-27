@@ -15,6 +15,11 @@
     "distribution": "{{nativeCurrency}} distribution",
     "nft-marketplaces": "NFT Marketplaces",
     "nft-collections": "NFT Collections",
-    "nft-distribution": "NFT Holders"
+    "nft-distribution": "NFT Holders",
+    "nft-explorer": "NFT Explorer",
+    "nft-sales": "NFT Sales",
+    "nft-minters": "NFT Minters",
+    "nft-statistics": "NFT Statistics",
+    "nft-mint": "Mint NFT"
   }
 }

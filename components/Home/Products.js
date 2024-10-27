@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { useTranslation } from 'next-i18next'
-import { nativeCurrency } from '../../utils'
+import { nativeCurrency, xahauNetwork } from '../../utils'
 
 const logo = '/images/logo-small.svg'
 
@@ -62,12 +62,20 @@ export default function Products() {
       title: t('titles.nft', { ns: 'products' }),
       list: [
         {
-          link: '/',
-          text: t('items.domain', { ns: 'products' })
+          link: '/nft-explorer',
+          text: t('items.nft-explorer', { ns: 'products' })
         },
         {
-          link: '/',
-          text: t('items.mint-nft', { ns: 'products' })
+          link: '/nft-sales',
+          text: t('items.nft-sales', { ns: 'products' })
+        },
+        {
+          link: '/nft-minters',
+          text: t('items.nft-minters', { ns: 'products' })
+        },
+        {
+          link: '/nft-statistics',
+          text: t('items.nft-statistics', { ns: 'products' })
         }
       ]
     },
@@ -93,6 +101,13 @@ export default function Products() {
       ]
     }
   ]
+
+  if (xahauNetwork) {
+    products[2].list.push({
+      link: '/nft-mint',
+      text: t('items.nft-mint', { ns: 'products' })
+    })
+  }
 
   return (
     <div className="products">
