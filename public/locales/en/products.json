@@ -3,10 +3,11 @@
     "for-you": "For You",
     "top-lists": "TOP Lists",
     "nft": "NFT",
-    "network-developers": "Network/Dev"
+    "network": "Network",
+    "developers": "Developers"
   },
   "items": {
-    "watchlist": "Addresses Watchlist",
+    "watchlist": "Watchlist",
     "tx-export": "Transactions export",
     "set-avatar": "Set Avatar",
     "username-registration": "Register a Username",
@@ -20,6 +21,11 @@
     "nft-sales": "NFT Sales",
     "nft-minters": "NFT Minters",
     "nft-statistics": "NFT Statistics",
-    "nft-mint": "Mint NFT"
+    "nft-mint": "Mint NFT",
+    "validators": "Validators",
+    "amendments": "Amendments",
+    "last-ledger-information": "Live Ledger info",
+    "ledger": "Last Ledger txs",
+    "governance": "Governance"
   }
 }

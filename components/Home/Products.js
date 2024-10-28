@@ -7,105 +7,113 @@ const logo = '/images/logo-small.svg'
 export default function Products() {
   const { t } = useTranslation()
 
-  const products = [
-    {
-      title: t('titles.for-you', { ns: 'products' }),
-      list: [
-        {
-          link: '/admin/watchlist',
-          text: t('items.watchlist', { ns: 'products' })
-        },
-        {
-          link: '/admin/pro/history',
-          text: t('items.tx-export', { ns: 'products' })
-        },
-        {
-          link: '/admin/pro',
-          text: t('items.set-avatar', { ns: 'products' })
-        },
-        {
-          link: '/username',
-          text: t('items.username-registration', { ns: 'products' })
-        },
-        {
-          link: '/submit-account-information',
-          text: t('items.project-registration', { ns: 'products' })
-        }
-      ]
-    },
-    {
-      title: t('titles.top-lists', { ns: 'products' }),
-      list: [
-        {
-          link: '/amms',
-          text: t('items.amms', { ns: 'products' })
-        },
-        {
-          link: '/distribution',
-          text: t('items.distribution', { ns: 'products', nativeCurrency })
-        },
-        {
-          link: '/nft-volumes?list=marketplaces',
-          text: t('items.nft-marketplaces', { ns: 'products' })
-        },
-        {
-          link: '/nft-volumes?list=collections',
-          text: t('items.nft-collections', { ns: 'products' })
-        },
-        {
-          link: '/nft-distribution',
-          text: t('items.nft-distribution', { ns: 'products' })
-        }
-      ]
-    },
-    {
-      title: t('titles.nft', { ns: 'products' }),
-      list: [
-        {
-          link: '/nft-explorer',
-          text: t('items.nft-explorer', { ns: 'products' })
-        },
-        {
-          link: '/nft-sales',
-          text: t('items.nft-sales', { ns: 'products' })
-        },
-        {
-          link: '/nft-minters',
-          text: t('items.nft-minters', { ns: 'products' })
-        },
-        {
-          link: '/nft-statistics',
-          text: t('items.nft-statistics', { ns: 'products' })
-        }
-      ]
-    },
-    {
-      title: t('titles.network-developers', { ns: 'products' }),
-      list: [
-        {
-          link: '/',
-          text: t('items.nft-bots', { ns: 'products' })
-        },
-        {
-          link: '/',
-          text: t('items.notifications', { ns: 'products' })
-        },
-        {
-          link: '/',
-          text: t('items.alerts', { ns: 'products' })
-        },
-        {
-          link: '/',
-          text: t('items.usernames', { ns: 'products' })
-        }
-      ]
-    }
-  ]
+  let products = []
+  products[0] = {
+    title: t('titles.for-you', { ns: 'products' }),
+    list: [
+      {
+        link: '/admin/watchlist',
+        text: t('items.watchlist', { ns: 'products' })
+      },
+      {
+        link: '/admin/pro/history',
+        text: t('items.tx-export', { ns: 'products' })
+      },
+      {
+        link: '/admin/pro',
+        text: t('items.set-avatar', { ns: 'products' })
+      },
+      {
+        link: '/username',
+        text: t('items.username-registration', { ns: 'products' })
+      },
+      {
+        link: '/submit-account-information',
+        text: t('items.project-registration', { ns: 'products' })
+      }
+    ]
+  }
+  products[1] = {
+    title: t('titles.top-lists', { ns: 'products' }),
+    list: [
+      {
+        link: '/amms',
+        text: t('items.amms', { ns: 'products' })
+      },
+      {
+        link: '/distribution',
+        text: t('items.distribution', { ns: 'products', nativeCurrency })
+      },
+      {
+        link: '/nft-volumes?list=marketplaces',
+        text: t('items.nft-marketplaces', { ns: 'products' })
+      },
+      {
+        link: '/nft-volumes?list=collections',
+        text: t('items.nft-collections', { ns: 'products' })
+      },
+      {
+        link: '/nft-distribution',
+        text: t('items.nft-distribution', { ns: 'products' })
+      }
+    ]
+  }
+  products[2] = {
+    title: t('titles.nft', { ns: 'products' }),
+    list: [
+      {
+        link: '/nft-explorer',
+        text: t('items.nft-explorer', { ns: 'products' })
+      },
+      {
+        link: '/nft-sales',
+        text: t('items.nft-sales', { ns: 'products' })
+      },
+      {
+        link: '/nft-statistics',
+        text: t('items.nft-statistics', { ns: 'products' })
+      }
+    ]
+  }
 
   if (xahauNetwork) {
-    products[2].list.push({
+    products[2].list.unshift({
       link: '/nft-mint',
       text: t('items.nft-mint', { ns: 'products' })
+    })
+  } else {
+    products[2].list.push({
+      link: '/nft-minters',
+      text: t('items.nft-minters', { ns: 'products' })
+    })
+  }
+
+  products[3] = {
+    title: t('titles.network', { ns: 'products' }),
+    list: [
+      {
+        link: '/validators',
+        text: t('items.validators', { ns: 'products' })
+      },
+      {
+        link: '/amendments',
+        text: t('items.amendments', { ns: 'products' })
+      },
+      {
+        link: '/last-ledger-information',
+        text: t('items.last-ledger-information', { ns: 'products' })
+      },
+      {
+        link: '/ledger',
+        text: t('items.ledger', { ns: 'products' })
+      }
+    ]
+  }
+
+  if (xahauNetwork) {
+    products[3].list.unshift({
+      link: '/governance',
+      text: t('items.governance', { ns: 'products' })
     })
   }
 
