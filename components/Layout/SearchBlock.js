@@ -40,7 +40,7 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
   const [isMounted, setIsMounted] = useState(false)
 
   if (!searchPlaceholderText) {
-    searchPlaceholderText = windowWidth < 500 ? t('home.search-placeholder-short') : t('home.search-placeholder')
+    searchPlaceholderText = windowWidth < 730 ? t('home.search-placeholder-short') : t('home.search-placeholder')
   }
 
   useEffect(() => setIsMounted(true), [])
