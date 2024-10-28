@@ -1,11 +1,29 @@
 import Link from 'next/link'
 import { useTranslation } from 'next-i18next'
-import { nativeCurrency, xahauNetwork, devNet } from '../../utils'
+import { nativeCurrency, xahauNetwork, devNet, useWidth } from '../../utils'
+import Slider from 'react-slick'
+
+import 'slick-carousel/slick/slick.css'
+import 'slick-carousel/slick/slick-theme.css'
 
 const logo = '/images/logo-small.svg'
 
 export default function Products() {
   const { t } = useTranslation()
+  const width = useWidth()
+
+  const enoughSpaceFor4 = width > 1320
+
+  const settings = {
+    dots: !enoughSpaceFor4,
+    infinite: !enoughSpaceFor4,
+    speed: 1200,
+    autoplay: true,
+    autoplaySpeed: 4000,
+    slidesToShow: enoughSpaceFor4 ? 4 : width > 680 ? 2 : 1,
+    slidesToScroll: 1,
+    arrows: false
+  }
 
   let products = []
   let part1 = {}
@@ -174,35 +192,37 @@ export default function Products() {
 
   return (
     <div className="products">
-      {products.map((product, i) => {
-        return (
-          <div key={i} className={'product list' + (i + 1)}>
-            <div className="product__wrap">
-              <h2>{product.title}</h2>
-              <ul>
-                {product.list.map((item, index) => {
-                  return (
-                    <li key={index}>
-                      {item.externalLink || item.oldLink ? (
-                        <a href={item.externalLink || item.oldLink}>
-                          <img alt="bithomp logo" src={logo} />
-                          <span>{item.text}</span>
-                        </a>
-                      ) : (
-                        <Link href={item.link}>
-                          <img alt="bithomp logo" src={logo} />
-                          <span>{item.text}</span>
-                        </Link>
-                      )}
-                    </li>
-                  )
-                })}
-              </ul>
+      <Slider {...settings}>
+        {products.map((product, i) => {
+          return (
+            <div key={i} className={'product list' + (i + 1)}>
+              <div className="product-wrap">
+                <h2>{product.title}</h2>
+                <ul>
+                  {product.list.map((item, index) => {
+                    return (
+                      <li key={index}>
+                        {item.externalLink || item.oldLink ? (
+                          <a href={item.externalLink || item.oldLink}>
+                            <img alt="bithomp logo" src={logo} />
+                            <span>{item.text}</span>
+                          </a>
+                        ) : (
+                          <Link href={item.link}>
+                            <img alt="bithomp logo" src={logo} />
+                            <span>{item.text}</span>
+                          </Link>
+                        )}
+                      </li>
+                    )
+                  })}
+                </ul>
+              </div>
+              <div className="product-bg" style={{ backgroundImage: 'url("' + product.image + '")' }} />
             </div>
-            <div className="product-bg" style={{ backgroundImage: 'url("' + product.image + '")' }} />
-          </div>
-        )
-      })}
+          )
+        })}
+      </Slider>
     </div>
   )
 }

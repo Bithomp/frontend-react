@@ -1,56 +1,30 @@
+.slick-dots li button:before {
+  color: var(--text-main) !important;
+}
+
 .products {
-  max-width: 760px;
   margin: 30px auto;
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  justify-content: space-between;
-  position: relative;
+  width: calc(100% - 20px);
+  max-width: 1600px;
   z-index: 1;
-  gap: 20px;
 
-  @media(min-width: 1500px) and (max-width: 1600px) {
-    gap: 10px;
+  @media screen and (max-width: 1320px) {
+    max-width: 760px;
   }
 
-  @media(min-width: 1500px) {
-    max-width: 100%;
-    display: flex;
-    justify-content: center;
-  }
-
-  @media (max-width: 800px) {
-    grid-template-columns: repeat(1, 1fr);
+  @media screen and (max-width: 680px) {
+    max-width: 380px;
   }
 
   .product {
     position: relative;
-    flex-basis: calc(50% - 10px);
     height: 259px;
-    overflow: hidden;
     background: #090909;
     box-shadow: 0px 0px 2px 0px #00000040;
     transition: box-shadow 0.3s ease;
 
-    &__gradient {
-      position: absolute;
-      inset: 0;
-      z-index: 0;
-      pointer-events: none;
-      transition: transform 0.3s ease;
-    }
-
     .light & {
       background: #fff;
-    }
-
-    @media (max-width: 800px) {
-      margin: 0 auto;
-      width: 362px;
-    }
-
-    @media (max-width: 380px) {
-      width: calc(100% - 20px);
-      margin: 0 10px;
     }
 
     &::after {
@@ -61,32 +35,15 @@
       pointer-events: none;
     }
 
-    @media(min-width: 1500px) {
-      max-width: 360px;
-      height: 260px;
-    }
-
-    @media(min-width: 1600px) {
-      max-width: 370px;
-    }
-
-    &__wrap {
+    .product-wrap {
       position: absolute;
       padding: 40px 15px 20px;
       inset: 0;
       z-index: 2;
       color: #fff;
 
-      @media(min-width: 1600px) {
-        padding: 40px 20px 20px;
-      }
-
       .light & {
         color: #000;
-      }
-
-      @media (max-width: 380px) {
-        padding: 30px 15px 10px;
       }
     }
 
@@ -156,7 +113,6 @@
           color: #000;
         }
         
-
         &:hover {
           span {
             text-decoration: underline;
