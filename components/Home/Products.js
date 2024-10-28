@@ -37,13 +37,23 @@ export default function Products() {
     title: t('titles.top-lists', { ns: 'products' }),
     list: [
       {
-        link: '/amms',
-        text: t('items.amms', { ns: 'products' })
-      },
-      {
         link: '/distribution',
         text: t('items.distribution', { ns: 'products', nativeCurrency })
       },
+
+      {
+        link: '/nft-distribution',
+        text: t('items.nft-distribution', { ns: 'products' })
+      }
+    ]
+  }
+
+  if (!xahauNetwork) {
+    products[1].list.unshift({
+      link: '/amms',
+      text: t('items.amms', { ns: 'products' })
+    })
+    products[1].list.push(
       {
         link: '/nft-volumes?list=marketplaces',
         text: t('items.nft-marketplaces', { ns: 'products' })
@@ -51,13 +61,10 @@ export default function Products() {
       {
         link: '/nft-volumes?list=collections',
         text: t('items.nft-collections', { ns: 'products' })
-      },
-      {
-        link: '/nft-distribution',
-        text: t('items.nft-distribution', { ns: 'products' })
       }
-    ]
+    )
   }
+
   products[2] = {
     title: t('titles.nft', { ns: 'products' }),
     list: [
