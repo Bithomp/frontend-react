@@ -4,7 +4,7 @@
     "top-lists": "TOP Lists",
     "nft": "NFT",
     "network": "Network",
-    "developers": "Developers"
+    "developer": "Developer"
   },
   "items": {
     "watchlist": "Watchlist",
@@ -26,6 +26,12 @@
     "amendments": "Amendments",
     "last-ledger-information": "Live Ledger info",
     "ledger": "Last Ledger txs",
-    "governance": "Governance"
+    "nodes": "Nodes",
+    "governance": "Governance",
+    "faucet": "{{nativeCurrency}} Faucet",
+    "api-docs": "API Documentation",
+    "get-api-key": "Get API key",
+    "nft-cdn": "NFT Content Plans",
+    "tools": "Bithomp Tools"
   }
 }
