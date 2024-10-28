@@ -1,0 +1,37 @@
+{
+  "titles": {
+    "for-you": "당신을 위한",
+    "top-lists": "TOP 리스트",
+    "nft": "NFT",
+    "network": "네트워크",
+    "developer": "개발자"
+  },
+  "items": {
+    "watchlist": "관심목록",
+    "tx-export": "거래 내보내기",
+    "set-avatar": "아바타 설정",
+    "username-registration": "사용자 이름 등록",
+    "project-registration": "프로젝트 등록",
+    "amms": "AMMs",
+    "distribution": "{{nativeCurrency}} 배포",
+    "nft-marketplaces": "NFT 마켓플레이스",
+    "nft-collections": "NFT 컬렉션",
+    "nft-distribution": "NFT 보유자",
+    "nft-explorer": "NFT 탐색기",
+    "nft-sales": "NFT 판매",
+    "nft-minters": "NFT 민터",
+    "nft-statistics": "NFT 통계",
+    "nft-mint": "NFT 발행",
+    "validators": "검증자",
+    "amendments": "개정",
+    "last-ledger-information": "라이브 원장 정보",
+    "ledger": "마지막 원장 거래",
+    "nodes": "노드",
+    "governance": "거버넌스",
+    "faucet": "{{nativeCurrency}} 수도꼭지",
+    "api-docs": "API 문서",
+    "get-api-key": "API 키 받기",
+    "nft-cdn": "NFT 콘텐츠 계획",
+    "tools": "Bithomp 도구"
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "titles": {
+    "for-you": "Untuk Kamu",
+    "top-lists": "Daftar Teratas",
+    "nft": "NFT",
+    "network": "Jaringan",
+    "developer": "Pengembang"
+  },
+  "items": {
+    "watchlist": "Daftar Pantauan",
+    "tx-export": "Ekspor Transaksi",
+    "set-avatar": "Setel Avatar",
+    "username-registration": "Nama Pengguna",
+    "project-registration": "Daftarkan Proyek",
+    "amms": "AMMs",
+    "distribution": "Distribusi {{nativeCurrency}}",
+    "nft-marketplaces": "Pasar NFT",
+    "nft-collections": "Koleksi NFT",
+    "nft-distribution": "Pemegang NFT",
+    "nft-explorer": "Eksplorasi NFT",
+    "nft-sales": "Penjualan NFT",
+    "nft-minters": "Pencetak NFT",
+    "nft-statistics": "Statistik NFT",
+    "nft-mint": "Cetak NFT",
+    "validators": "Validator",
+    "amendments": "Amandemen",
+    "last-ledger-information": "Info Ledger Terkini",
+    "ledger": "Transaksi",
+    "nodes": "Node",
+    "governance": "Pemerintahan",
+    "faucet": "Faucet {{nativeCurrency}}",
+    "api-docs": "Dokumentasi API",
+    "get-api-key": "Dapatkan Kunci API",
+    "nft-cdn": "Rencana Konten NFT",
+    "tools": "Alat Bithomp"
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "titles": {
+    "for-you": "あなたへ",
+    "top-lists": "トップリスト",
+    "nft": "NFT",
+    "network": "ネットワーク",
+    "developer": "開発者"
+  },
+  "items": {
+    "watchlist": "ウォッチリスト",
+    "tx-export": "取引エクスポート",
+    "set-avatar": "アバターを設定",
+    "username-registration": "ユーザー名を登録",
+    "project-registration": "プロジェクトを登録",
+    "amms": "AMMs",
+    "distribution": "{{nativeCurrency}} 分配",
+    "nft-marketplaces": "NFTマーケットプレイス",
+    "nft-collections": "NFTコレクション",
+    "nft-distribution": "NFT保有者",
+    "nft-explorer": "NFTエクスプローラー",
+    "nft-sales": "NFT販売",
+    "nft-minters": "NFTミンター",
+    "nft-statistics": "NFT統計",
+    "nft-mint": "NFTを鋳造",
+    "validators": "バリデーター",
+    "amendments": "修正",
+    "last-ledger-information": "ライブ元帳情報",
+    "ledger": "最新元帳の取引",
+    "nodes": "ノード",
+    "governance": "ガバナンス",
+    "faucet": "{{nativeCurrency}} ファウセット",
+    "api-docs": "APIドキュメント",
+    "get-api-key": "APIキーを取得",
+    "nft-cdn": "NFTコンテンツプラン",
+    "tools": "Bithompツール"
+  }
+}
