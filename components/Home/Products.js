@@ -3,6 +3,7 @@ import { useTranslation } from 'next-i18next'
 import { nativeCurrency, xahauNetwork, devNet, useWidth } from '../../utils'
 import Slider from 'react-slick'
 import Image from 'next/image'
+import { useIsMobile } from '../../utils/mobile'
 
 import 'slick-carousel/slick/slick.css'
 import 'slick-carousel/slick/slick-theme.css'
@@ -12,17 +13,16 @@ const logo = '/images/logo-small.svg'
 export default function Products() {
   const { t } = useTranslation()
   const width = useWidth()
-
-  const enoughSpaceFor4 = width > 1430
+  const isMobile = useIsMobile()
 
   const settings = {
-    dots: !enoughSpaceFor4,
-    infinite: !enoughSpaceFor4,
+    dots: true,
+    infinite: true,
     speed: 1200,
     autoplay: true,
     autoplaySpeed: 5000,
-    slidesToShow: enoughSpaceFor4 ? 4 : width > 1080 ? 3 : width > 760 ? 2 : 1,
-    slidesToScroll: 1,
+    slidesToShow: width > 760 ? 2 : isMobile ? 1 : 2,
+    slidesToScroll: width > 760 ? 2 : isMobile ? 1 : 2,
     arrows: false
     /*
     responsive: [

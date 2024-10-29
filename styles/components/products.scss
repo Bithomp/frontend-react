@@ -6,11 +6,11 @@
   height: 263.5px;
   margin: auto auto 30px auto;
   width: calc(100% - 40px);
-  max-width: 1600px;
+  max-width: 760px;
   z-index: 1;
 
-  @media screen and (max-width: 1080px) {
-    max-width: 760px;
+  @media screen and (max-width: 760px) {
+    max-width: 380px;
   }
 
   .product {
