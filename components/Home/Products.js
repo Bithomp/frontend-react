@@ -84,13 +84,13 @@ export default function Products() {
       ]
     }
   }
-  part1.image = '/images/products/for-you.webp'
+  part1.image = '/images/products/for-you.png'
   part1.imageWidth = 133
   products.push(part1)
 
   if (!devNet) {
     let part2 = {
-      image: '/images/products/top-lists.webp',
+      image: '/images/products/top-lists.png',
       imageWidth: 185,
       title: t('titles.top-lists', { ns: 'products' }),
       list: [
@@ -124,7 +124,7 @@ export default function Products() {
     products.push(part2)
 
     let part3 = {
-      image: '/images/products/nft.webp',
+      image: '/images/products/nft.png',
       imageWidth: 180,
       title: t('titles.nft', { ns: 'products' }),
       list: [
@@ -159,7 +159,7 @@ export default function Products() {
   }
 
   let part4 = {
-    image: '/images/products/network.webp',
+    image: '/images/products/network.png',
     imageWidth: 103,
     title: t('titles.network', { ns: 'products' }),
     list: [
