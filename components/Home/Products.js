@@ -225,7 +225,7 @@ export default function Products() {
                 alt={product.title}
                 layout="fill"
                 className="product-bg"
-                priority={i === 0}
+                priority
                 objectPosition="right"
                 objectFit="contain"
               />
