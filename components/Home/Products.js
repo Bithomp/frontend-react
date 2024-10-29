@@ -252,14 +252,26 @@ export default function Products() {
                 })}
               </ul>
             </div>
-            <Image
-              src={product.image}
-              alt={product.title}
-              className="product-bg"
-              height={259}
-              width={product.imageWidth}
-              priority={true}
-            />
+            {width <= 760 ? (
+              <Image
+                src={product.image}
+                alt={product.title}
+                className="product-bg"
+                height={259}
+                width={product.imageWidth}
+                loading={i === 0 ? 'eager' : 'lazy'}
+              />
+            ) : (
+              <Image
+                src={product.image}
+                alt={product.title}
+                className="product-bg"
+                height={259}
+                width={product.imageWidth}
+                loading={i < 2 ? 'eager' : 'lazy'}
+                //priority={true}
+              />
+            )}
           </div>
         )
       })}
