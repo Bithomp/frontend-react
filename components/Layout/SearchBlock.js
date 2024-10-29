@@ -308,10 +308,7 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
 
   return (
     <>
-      <div
-        className="search-block"
-        style={tab === 'explorer' ? { backgroundColor: 'unset', height: '70px', marginTop: 30 } : {}}
-      >
+      <div className="search-block" style={tab === 'explorer' ? { backgroundColor: 'unset', height: 60 } : {}}>
         <div className="search-box" style={tab === 'explorer' ? { marginTop: '20px' } : {}}>
           <div className="above-search-box">
             {searching ? (
