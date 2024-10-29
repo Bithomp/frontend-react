@@ -17,7 +17,7 @@ export default function Whales({ currency }) {
 
   const checkStatApi = async () => {
     //?currency=true&service=true
-    const response = await axios('v2/transactions/whale')
+    const response = await axios('v2/transactions/whale?limit=6')
     const data = response.data
     if (data) {
       setData(data)
@@ -29,11 +29,12 @@ export default function Whales({ currency }) {
 
     ws.onopen = () => {
       //{ command: "subscribe", streams: ["whale_transactions"], currency: true, service: true, id: 1 }
-      ws.send(JSON.stringify({ command: 'subscribe', streams: ['whale_transactions'], id: 1 }))
+      ws.send(JSON.stringify({ command: 'subscribe', streams: ['whale_transactions'], id: 1, limit: 6 }))
     }
 
     ws.onmessage = (evt) => {
       const message = JSON.parse(evt.data)
+      console.log('message', message) //delete
       setData(message.transactions)
     }
 

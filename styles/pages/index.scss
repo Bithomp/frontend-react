@@ -74,7 +74,7 @@ h2.landing-h2 {
   justify-content: center;
   .whale-transactions-block {
     font-size: 14px;
-    min-height: 320px;
+    min-height: 192px;
     width: calc(100% - 40px);
     max-width: 760px;
     z-index: 1;
@@ -82,7 +82,7 @@ h2.landing-h2 {
     background-color: var(--button-additional);
     margin: 20px;
     @media only screen and (max-width: 800px) {
-      min-height: 480px;
+      min-height: 379px;
     }
     .tx-row {
       &.just-added {
