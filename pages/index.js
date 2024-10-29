@@ -1,6 +1,6 @@
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useTranslation } from 'next-i18next'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { LogoJsonLd, SocialProfileJsonLd } from 'next-seo'
 import Head from 'next/head'
 import dynamic from 'next/dynamic'
@@ -54,6 +54,12 @@ export default function Home({ selectedCurrency, setSelectedCurrency, showAds, a
   const { t } = useTranslation()
 
   const [chartPeriod, setChartPeriod] = useState('one_day')
+  const [rendered, setRendered] = useState(false)
+
+  useEffect(() => {
+    setRendered(true)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   return (
     <>
@@ -101,7 +107,7 @@ export default function Home({ selectedCurrency, setSelectedCurrency, showAds, a
 
       <SearchBlock tab="explorer" />
 
-      {showAds && !bot ? <Ads showAds={showAds} /> : <div style={{ height: 30 }}></div>}
+      {rendered && showAds && !bot ? <Ads showAds={showAds} /> : <div style={{ height: 30 }}></div>}
 
       <Products />
 
