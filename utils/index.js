@@ -51,7 +51,7 @@ export const useCookie = (key, defaultValue) => {
   const cookies = new Cookies()
 
   const [item, setItemValue] = useState(() => {
-    if (cookies.get(key) && cookies.get(key) !== 'undefined') {
+    if (cookies.get(key) !== undefined && cookies.get(key) !== 'undefined' && cookies.get(key) !== '') {
       return cookies.get(key)
     }
     if (defaultValue !== undefined) {
