@@ -15,6 +15,7 @@ export default function Products() {
   const enoughSpaceFor4 = width > 1320
 
   const settings = {
+    lazyLoad: true,
     dots: !enoughSpaceFor4,
     infinite: !enoughSpaceFor4,
     speed: 1200,
@@ -82,12 +83,12 @@ export default function Products() {
       ]
     }
   }
-  part1.image = '/images/products/for-you.png'
+  part1.image = '/images/products/for-you.webp'
   products.push(part1)
 
   if (!devNet) {
     let part2 = {
-      image: '/images/products/top-lists.png',
+      image: '/images/products/top-lists.webp',
       title: t('titles.top-lists', { ns: 'products' }),
       list: [
         {
@@ -120,7 +121,7 @@ export default function Products() {
     products.push(part2)
 
     let part3 = {
-      image: '/images/products/nft.png',
+      image: '/images/products/nft.webp',
       title: t('titles.nft', { ns: 'products' }),
       list: [
         {
@@ -154,7 +155,7 @@ export default function Products() {
   }
 
   let part4 = {
-    image: '/images/products/network.png',
+    image: '/images/products/network.webp',
     title: t('titles.network', { ns: 'products' }),
     list: [
       {
