@@ -229,6 +229,7 @@ export default function Products() {
               height={259}
               alt={product.title}
               className="product-bg"
+              style={{ objectFit: 'contain' }}
               priority
             />
           </div>
