@@ -21,7 +21,7 @@ export default function Products() {
     infinite: !enoughSpaceFor4,
     speed: 1200,
     autoplay: true,
-    autoplaySpeed: 4000,
+    autoplaySpeed: 5000,
     slidesToShow: enoughSpaceFor4 ? 4 : width > 680 ? 2 : 1,
     slidesToScroll: 1,
     arrows: false
@@ -197,45 +197,43 @@ export default function Products() {
   products.push(part4)
 
   return (
-    <div className="products">
-      <Slider {...settings}>
-        {products.map((product, i) => {
-          return (
-            <div key={i} className={'product list' + (i + 1)}>
-              <div className="product-wrap">
-                <h2>{product.title}</h2>
-                <ul>
-                  {product.list.map((item, index) => {
-                    return (
-                      <li key={index}>
-                        {item.externalLink || item.oldLink ? (
-                          <a href={item.externalLink || item.oldLink}>
-                            <img alt="bithomp logo" src={logo} />
-                            <span>{item.text}</span>
-                          </a>
-                        ) : (
-                          <Link href={item.link}>
-                            <img alt="bithomp logo" src={logo} />
-                            <span>{item.text}</span>
-                          </Link>
-                        )}
-                      </li>
-                    )
-                  })}
-                </ul>
-              </div>
-              <Image
-                src={product.image}
-                width={product.imageWidth}
-                height={259}
-                alt={product.title}
-                className="product-bg"
-                priority
-              />
+    <Slider {...settings} className="products">
+      {products.map((product, i) => {
+        return (
+          <div key={i} className={'product list' + (i + 1)}>
+            <div className="product-wrap">
+              <h2>{product.title}</h2>
+              <ul>
+                {product.list.map((item, index) => {
+                  return (
+                    <li key={index}>
+                      {item.externalLink || item.oldLink ? (
+                        <a href={item.externalLink || item.oldLink}>
+                          <img alt="bithomp logo" src={logo} />
+                          <span>{item.text}</span>
+                        </a>
+                      ) : (
+                        <Link href={item.link}>
+                          <img alt="bithomp logo" src={logo} />
+                          <span>{item.text}</span>
+                        </Link>
+                      )}
+                    </li>
+                  )
+                })}
+              </ul>
             </div>
-          )
-        })}
-      </Slider>
-    </div>
+            <Image
+              src={product.image}
+              width={product.imageWidth}
+              height={259}
+              alt={product.title}
+              className="product-bg"
+              priority
+            />
+          </div>
+        )
+      })}
+    </Slider>
   )
 }
