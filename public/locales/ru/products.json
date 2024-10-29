@@ -1,0 +1,36 @@
+{
+  "titles": {
+    "for-you": "Для вас",
+    "top-lists": "Топ списки",
+    "nft": "NFT",
+    "network": "Сеть",
+    "developer": "Разработчикам"
+  },
+  "items": {
+    "watchlist": "Списки отслеживания",
+    "tx-export": "Экспорт транзакций",
+    "set-avatar": "Добавить аватар",
+    "username-registration": "Регистрация ника",
+    "project-registration": "Регистрация проекта",
+    "amms": "АММ",
+    "distribution": "Держатели {{nativeCurrency}}",
+    "nft-marketplaces": "NFT маркетплейсы",
+    "nft-collections": "NFT коллекции",
+    "nft-distribution": "Держатели NFT",
+    "nft-explorer": "NFT эксплорер",
+    "nft-sales": "Продажи NFT",
+    "nft-minters": "Минтеры NFT",
+    "nft-statistics": "Статистика NFT",
+    "nft-mint": "Чеканка NFT",
+    "validators": "Валидаторы",
+    "amendments": "Поправки",
+    "last-ledger-information": "Текущие данные сети",
+    "ledger": "Последний леджер",
+    "nodes": "Сетевые ноды",
+    "governance": "Правление",
+    "faucet": "Фаусет {{nativeCurrency}}",
+    "api-docs": "Документация по API",
+    "get-api-key": "Получить API ключ",
+    "nft-cdn": "Bithomp-tools"
+  }
+}

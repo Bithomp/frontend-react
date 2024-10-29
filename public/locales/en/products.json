@@ -1,0 +1,37 @@
+{
+  "titles": {
+    "for-you": "For You",
+    "top-lists": "TOP Lists",
+    "nft": "NFT",
+    "network": "Network",
+    "developer": "Developer"
+  },
+  "items": {
+    "watchlist": "Watchlist",
+    "tx-export": "Transactions export",
+    "set-avatar": "Set Avatar",
+    "username-registration": "Register a Username",
+    "project-registration": "Register a Project",
+    "amms": "AMMs",
+    "distribution": "{{nativeCurrency}} distribution",
+    "nft-marketplaces": "NFT Marketplaces",
+    "nft-collections": "NFT Collections",
+    "nft-distribution": "NFT Holders",
+    "nft-explorer": "NFT Explorer",
+    "nft-sales": "NFT Sales",
+    "nft-minters": "NFT Minters",
+    "nft-statistics": "NFT Statistics",
+    "nft-mint": "Mint NFT",
+    "validators": "Validators",
+    "amendments": "Amendments",
+    "last-ledger-information": "Live Ledger info",
+    "ledger": "Last Ledger txs",
+    "nodes": "Nodes",
+    "governance": "Governance",
+    "faucet": "{{nativeCurrency}} Faucet",
+    "api-docs": "API Documentation",
+    "get-api-key": "Get API key",
+    "nft-cdn": "NFT Content Plans",
+    "tools": "Bithomp Tools"
+  }
+}

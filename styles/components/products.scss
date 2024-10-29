@@ -1,0 +1,137 @@
+.slick-dots li button:before {
+  color: var(--text-main) !important;
+}
+
+.products {
+  margin: auto auto 30px auto;
+  width: calc(100% - 20px);
+  max-width: 1600px;
+  z-index: 1;
+
+  @media screen and (max-width: 1320px) {
+    max-width: 760px;
+  }
+
+  @media screen and (max-width: 680px) {
+    max-width: 380px;
+  }
+
+  .product {
+    position: relative;
+    height: 259px;
+    background: #090909;
+    box-shadow: 0px 0px 2px 0px #00000040;
+    transition: box-shadow 0.3s ease;
+
+    .light & {
+      background: #fff;
+    }
+
+    &::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .product-wrap {
+      position: absolute;
+      padding: 40px 15px 20px;
+      inset: 0;
+      z-index: 2;
+      color: #fff;
+
+      .light & {
+        color: #000;
+      }
+    }
+
+    .product-bg {
+      height: 100%;
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position-x: right;
+      z-index: 4;
+    }
+
+    .product-gradient {
+      background-size: contain;
+      height: 100%;
+    }
+
+    &.list1 {
+      &::after {
+        background: #dd983d1a;
+      }
+    }
+
+    &.list2 {
+      &::after {
+        background: #3fa3b533;
+      }
+    }
+
+    &.list3 {
+      &::after {
+        background: #00b1c115;
+      }
+    }
+
+    &.list4 {
+      &::after {
+        background: #14913e33;
+      }
+    }
+
+    h2 {
+      font-size: 24px;
+      line-height: 1;
+      font-weight: 700;
+      margin: 0;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+      max-width: 60%;
+    }
+
+    li {
+      margin-bottom: 10px;
+      position: relative;
+
+      a {
+        display: flex;
+        align-items: center;
+        color: #fff;
+        font-weight: 400;
+        font-size: 16px;
+        line-height: 17px;
+
+        .light & {
+          color: #000;
+        }
+        
+        &:hover {
+          span {
+            text-decoration: underline;
+          }
+        }
+      }
+
+      span {
+        margin-left: 20px;
+        padding-bottom: 4px;
+        position: relative;
+      }
+
+      img {
+        position: absolute;
+        top: 2px;
+        left: 0;
+        width: 12px;
+      }
+    }
+  }
+}

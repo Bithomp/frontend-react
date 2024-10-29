@@ -1,11 +1,11 @@
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import { Trans, useTranslation } from 'next-i18next'
+import { useTranslation } from 'next-i18next'
 import { useState } from 'react'
 import { LogoJsonLd, SocialProfileJsonLd } from 'next-seo'
 import Head from 'next/head'
 import dynamic from 'next/dynamic'
 
-import { server, explorerName, nativeCurrency, devNet, xahauNetwork, detectRobot } from '../utils'
+import { server, explorerName, nativeCurrency, devNet, detectRobot } from '../utils'
 import { getIsSsrMobile } from '../utils/mobile'
 
 import SEO from '../components/SEO'
@@ -15,7 +15,7 @@ import Converter from '../components/Home/Converter'
 import PriceChart from '../components/Home/PriceChart'
 import Statistics from '../components/Home/Statistics'
 import Ads from '../components/Layout/Ads'
-import Link from 'next/link'
+import Products from '../components/Home/Products'
 
 const Faucet = dynamic(() => import('../components/Faucet'), { ssr: false })
 
@@ -27,7 +27,7 @@ export async function getServerSideProps(context) {
     props: {
       bot: bot || '',
       isSsrMobile: getIsSsrMobile(context),
-      ...(await serverSideTranslations(locale, ['common', 'faucet', 'landing']))
+      ...(await serverSideTranslations(locale, ['common', 'faucet', 'products']))
     }
   }
 }
@@ -97,30 +97,13 @@ export default function Home({ selectedCurrency, setSelectedCurrency, showAds, a
 
       <div className="center">
         <h1 className="landing-h1">{t('explorer.header.main', { explorerName })}</h1>
-        <h2 className="landing-h2">
-          <Trans i18nKey="search-for" ns="landing">
-            Search for <Link href="/ledger">Transactions</Link>,{' '}
-            <Link href="/distribution">{{ nativeCurrency }} addresses</Link>, <Link href="/nft-explorer">NFTs</Link>.
-          </Trans>{' '}
-          {xahauNetwork ? (
-            <Trans i18nKey="view-xahau" ns="landing">
-              View <Link href="/governance">Xahau Governance</Link>, <Link href="/validators">Validators</Link>,{' '}
-              <Link href="/amendments">Amendments</Link>,{' '}
-              <Link href="/distribution">{{ nativeCurrency }} distribution</Link>.
-            </Trans>
-          ) : (
-            <Trans i18nKey="view-xrpl" ns="landing">
-              View <Link href="/nft-volumes">NFT volumes</Link>, <Link href="/amms">Amm pools</Link>,{' '}
-              <Link href="/validators">Validators</Link>, <Link href="/amendments">Amendments</Link>,{' '}
-              <Link href="/distribution">{{ nativeCurrency }} distribution</Link>.
-            </Trans>
-          )}
-        </h2>
       </div>
 
       <SearchBlock tab="explorer" />
 
       {showAds && !bot && <Ads showAds={showAds} />}
+
+      <Products />
 
       {!devNet && (
         <div className="flex flex-center">
