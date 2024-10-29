@@ -259,7 +259,7 @@ export default function Products() {
               className="product-bg"
               height={259}
               width={product.imageWidth}
-              priority={width <= 760 ? i === 0 : i < 2}
+              priority={i === 0 ? true : width > 760 && i === 1 ? true : false}
             />
           </div>
         )
