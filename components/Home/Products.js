@@ -16,7 +16,7 @@ export default function Products() {
   const enoughSpaceFor4 = width > 1320
 
   const settings = {
-    lazyLoad: true,
+    lazyLoad: 'ondemand',
     dots: !enoughSpaceFor4,
     infinite: !enoughSpaceFor4,
     speed: 1200,
