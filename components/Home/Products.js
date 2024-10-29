@@ -19,8 +19,9 @@ export default function Products() {
     dots: true,
     infinite: true,
     speed: 1200,
-    autoplay: true,
-    autoplaySpeed: 5000,
+    //autoplay: true,
+    //autoplaySpeed: 5000,
+    //pauseOnHover: true,
     slidesToShow: width > 760 ? 2 : isMobile ? 1 : 2,
     slidesToScroll: width > 760 ? 2 : isMobile ? 1 : 2,
     arrows: false
