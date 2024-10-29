@@ -101,7 +101,7 @@ export default function Home({ selectedCurrency, setSelectedCurrency, showAds, a
 
       <SearchBlock tab="explorer" />
 
-      {showAds && !bot && <Ads showAds={showAds} />}
+      {showAds && !bot ? <Ads showAds={showAds} /> : <div style={{ height: 30 }}></div>}
 
       <Products />
 
