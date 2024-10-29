@@ -85,11 +85,13 @@ export default function Products() {
     }
   }
   part1.image = '/images/products/for-you.webp'
+  part1.imageWidth = 133
   products.push(part1)
 
   if (!devNet) {
     let part2 = {
       image: '/images/products/top-lists.webp',
+      imageWidth: 185,
       title: t('titles.top-lists', { ns: 'products' }),
       list: [
         {
@@ -123,6 +125,7 @@ export default function Products() {
 
     let part3 = {
       image: '/images/products/nft.webp',
+      imageWidth: 180,
       title: t('titles.nft', { ns: 'products' }),
       list: [
         {
@@ -157,6 +160,7 @@ export default function Products() {
 
   let part4 = {
     image: '/images/products/network.webp',
+    imageWidth: 103,
     title: t('titles.network', { ns: 'products' }),
     list: [
       {
@@ -222,12 +226,11 @@ export default function Products() {
               </div>
               <Image
                 src={product.image}
+                width={product.imageWidth}
+                height={259}
                 alt={product.title}
-                layout="fill"
                 className="product-bg"
                 priority
-                objectPosition="right"
-                objectFit="contain"
               />
             </div>
           )
