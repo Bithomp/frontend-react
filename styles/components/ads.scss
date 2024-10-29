@@ -1,10 +1,10 @@
-.sponsored-block {
+.brands-block {
   height: 124.5px;
   display: flex;
   justify-content: center;
   align-items: center;
   transition: background-color .5s;
-  .sponsored-brand {
+  .brand-item {
     height: 80px;
     width: 340px;
     display: inline-block;
@@ -19,21 +19,21 @@
       background-color: var(--background-secondary);
       box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.25);
     }
-    .sponsored-brand-icon {
+    .brand-item-icon {
       position: absolute;
       left: 16px;
       height: 40px;
       top: 50%;
       transform: translateY(-50%);
     }
-    .sponsored-brand-title {
+    .brand-item-title {
       position: absolute;
       top: 10px;
       left: 76px;
       font-size: 14px;
       font-weight: 700;
     }
-    .sponsored-brand-text {
+    .brand-item-text {
       position: absolute;
       top: 30px;
       left: 76px;
@@ -45,36 +45,36 @@
   @media only screen and (max-width: 760px) {
     height: 80px;
     flex-wrap: wrap;
-    .sponsored-brand {
+    .brand-item {
       height: 40px;
       width: 161px;
       margin: 5px;
-      .sponsored-brand-icon {
+      .brand-item-icon {
         height: 30px;
       }
-      .sponsored-brand-title {
+      .brand-item-title {
         left: 60px;
         font-size: 14px;
         font-weight: 400;
       }
-      .sponsored-brand-text {
+      .brand-item-text {
         display: none;
       }
       &.easybit {
-        .sponsored-brand-icon {
+        .brand-item-icon {
           left: 8px;
           height: 25px;
         }
-        .sponsored-brand-title {
+        .brand-item-title {
           left: 40px;
         }
       }
       &.btcbit {
-        .sponsored-brand-icon {
+        .brand-item-icon {
           left: 33px;
           height: 25px;
         }
-        .sponsored-brand-title {
+        .brand-item-title {
           left: 70px;
         }
       }
