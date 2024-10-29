@@ -1,7 +1,7 @@
-@import "./select.scss";
+@use "select.scss";
 
 .simple-select {
-  @include react-select;
+  @include select.react-select;
   max-width: 400px;
   display: inline-block;
 }

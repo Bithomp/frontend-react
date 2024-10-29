@@ -1,4 +1,5 @@
-@import "./variables.scss";
+@use "sass:meta";
+@use "variables.scss";
 
 /* https://gwfh.mranftl.com/fonts/open-sans?subsets=cyrillic,cyrillic-ext,latin,latin-ext */
 /* open-sans-regular - cyrillic_cyrillic-ext_latin_latin-ext */
@@ -363,6 +364,8 @@ table {
   &.table-large {
     min-width: 760px;
     max-width: calc(100% - 30px);
+    margin: auto;
+    border: 1px solid var(--accent-link);
     &.shrink {
       min-width: unset;
       @media screen and (max-width: 800px) {
@@ -372,8 +375,6 @@ table {
     &.expand {
       width: calc(100% - 30px);
     }
-    margin: auto;
-    border: 1px solid var(--accent-link);
     tr {
       &:hover {
         td {
@@ -826,49 +827,49 @@ body.dark {
 }
 
 //common ui
-@import "./components/header.scss";
-@import "./components/switch.scss";
-@import "./components/topSwitch.scss";
-@import "./components/signForm.scss";
-@import "./components/checkbox.scss";
-@import "./components/topLinks.scss";
-@import "./components/searchBlock.scss";
-@import "./components/tabs.scss";
-@import "./components/issuerSelect.scss";
-@import "./components/inputPrepend.scss";
-@import "./components/formInput.scss";
-@import "./components/addressInput.scss";
-@import "./components/buttonArrowScroll.scss";
-@import "./components/simpleSelect.scss";
-@import "./components/footer.scss";
-@import "./components/buttonArrowScroll.scss";
-@import "./components/radioOptions.scss";
-@import "./components/viewToggle.scss";
-@import "./components/pagination.scss";
+@include meta.load-css("components/header.scss");
+@include meta.load-css("components/switch.scss");
+@include meta.load-css("components/topSwitch.scss");
+@include meta.load-css("components/signForm.scss");
+@include meta.load-css("components/checkbox.scss");
+@include meta.load-css("components/topLinks.scss");
+@include meta.load-css("components/searchBlock.scss");
+@include meta.load-css("components/tabs.scss");
+@include meta.load-css("components/issuerSelect.scss");
+@include meta.load-css("components/inputPrepend.scss");
+@include meta.load-css("components/formInput.scss");
+@include meta.load-css("components/addressInput.scss");
+@include meta.load-css("components/buttonArrowScroll.scss");
+@include meta.load-css("components/simpleSelect.scss");
+@include meta.load-css("components/footer.scss");
+@include meta.load-css("components/buttonArrowScroll.scss");
+@include meta.load-css("components/radioOptions.scss");
+@include meta.load-css("components/viewToggle.scss");
+@include meta.load-css("components/pagination.scss");
 
 //components
-@import "./components/tiles.scss";
-@import "./components/receipt.scss";
-@import "./components/filters.scss";
-@import "./components/dateAndTimeRange.scss";
-@import "./components/dropdown.scss";
-@import "./components/ageCheck.scss";
-@import "./components/products.scss";
-@import "./components/ads.scss";
+@include meta.load-css("components/tiles.scss");
+@include meta.load-css("components/receipt.scss");
+@include meta.load-css("components/filters.scss");
+@include meta.load-css("components/dateAndTimeRange.scss");
+@include meta.load-css("components/dropdown.scss");
+@include meta.load-css("components/ageCheck.scss");
+@include meta.load-css("components/products.scss");
+@include meta.load-css("components/ads.scss");
 
 //home page
-@import "./components/currencySelect.scss";
-@import "./components/countrySelect.scss";
-@import "./components/converter.scss";
-@import "./components/priceChart.scss";
+@include meta.load-css("components/currencySelect.scss");
+@include meta.load-css("components/countrySelect.scss");
+@include meta.load-css("components/converter.scss");
+@include meta.load-css("components/priceChart.scss");
 
 //pages
-@import "./pages/index.scss";
-@import "./pages/account.scss";
-@import "./pages/nft.scss";
-@import "./pages/nft-offer.scss";
-@import "./pages/alerts.scss";
-@import "./pages/username.scss";
-@import "./pages/genesis.scss";
-@import "./pages/governance.scss";
-@import "./pages/pro-history.scss";
+@include meta.load-css("pages/index.scss");
+@include meta.load-css("pages/account.scss");
+@include meta.load-css("pages/nft.scss");
+@include meta.load-css("pages/nft-offer.scss");
+@include meta.load-css("pages/alerts.scss");
+@include meta.load-css("pages/username.scss");
+@include meta.load-css("pages/genesis.scss");
+@include meta.load-css("pages/governance.scss");
+@include meta.load-css("pages/pro-history.scss");

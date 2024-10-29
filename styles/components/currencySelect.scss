@@ -1,7 +1,7 @@
-@import "./select.scss";
+@use "select.scss";
 
 .currency-select {
-  @include react-select;
+  @include select.react-select;
 
   .react-select__control {
     min-width: 125px;

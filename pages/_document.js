@@ -28,25 +28,6 @@ class MyDocument extends Document {
           <meta name="theme-color" content="#000000" />
           <link rel="apple-touch-icon" href="/logo192.png" />
           <link rel="manifest" href="/manifest.json" />
-          {process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID && (
-            <>
-              <script
-                async
-                src={'https://www.googletagmanager.com/gtag/js?id=' + process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID}
-              ></script>
-              <script
-                dangerouslySetInnerHTML={{
-                  __html: `
-                    window.dataLayer = window.dataLayer || [];
-                    function gtag(){dataLayer.push(arguments);}
-                    gtag('js', new Date());
-
-                    gtag('config', '${process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID}');
-                  `
-                }}
-              />
-            </>
-          )}
         </Head>
         <body className={this.props.cookieTheme} data-networkname={process.env.NEXT_PUBLIC_NETWORK_NAME}>
           <script

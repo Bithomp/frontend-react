@@ -1,9 +1,9 @@
-@import "./select.scss";
+@use "select.scss";
 
 $phone-bp: 440px;
 
 .dropdown {
-  @include react-select;
+  @include select.react-select;
   min-width: 270px;
 
   &--desktop {
