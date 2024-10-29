@@ -5,6 +5,7 @@ import Slider from 'react-slick'
 
 import 'slick-carousel/slick/slick.css'
 import 'slick-carousel/slick/slick-theme.css'
+import { LazyBackground } from '../LazyBackground'
 
 const logo = '/images/logo-small.svg'
 
@@ -219,7 +220,7 @@ export default function Products() {
                   })}
                 </ul>
               </div>
-              <div className="product-bg" style={{ backgroundImage: 'url("' + product.image + '")' }} />
+              <LazyBackground src={product.image} className="product-bg" />
             </div>
           )
         })}
