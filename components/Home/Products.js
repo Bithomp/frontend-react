@@ -260,6 +260,7 @@ export default function Products() {
               height={259}
               width={product.imageWidth}
               priority={i === 0 ? true : width > 760 && i === 1 ? true : false}
+              fetchPriority={i === 0 ? 'high' : width > 760 && i === 1 ? 'high' : 'low'}
             />
           </div>
         )
