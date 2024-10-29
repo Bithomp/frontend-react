@@ -223,15 +223,25 @@ export default function Products() {
                 })}
               </ul>
             </div>
-            <Image
-              src={product.image}
-              width={product.imageWidth}
-              height={259}
-              alt={product.title}
-              className="product-bg"
-              style={{ objectFit: 'contain' }}
-              priority
-            />
+            {width <= 680 ? (
+              <Image
+                src={product.image}
+                alt={product.title}
+                className="product-bg"
+                fill={true}
+                style={{ objectFit: 'contain', objectPosition: 'right' }}
+                loading={i === 0 ? 'eager' : 'lazy'}
+              />
+            ) : (
+              <Image
+                src={product.image}
+                alt={product.title}
+                className="product-bg"
+                fill={true}
+                style={{ objectFit: 'contain', objectPosition: 'right' }}
+                priority={true}
+              />
+            )}
           </div>
         )
       })}
