@@ -2,10 +2,10 @@ import Link from 'next/link'
 import { useTranslation } from 'next-i18next'
 import { nativeCurrency, xahauNetwork, devNet, useWidth } from '../../utils'
 import Slider from 'react-slick'
+import Image from 'next/image'
 
 import 'slick-carousel/slick/slick.css'
 import 'slick-carousel/slick/slick-theme.css'
-import { LazyLoadImage } from '../LazyLoadImage'
 
 const logo = '/images/logo-small.svg'
 
@@ -223,7 +223,7 @@ export default function Products() {
                 })}
               </ul>
             </div>
-            <LazyLoadImage
+            <Image
               src={product.image}
               width={product.imageWidth}
               height={259}
