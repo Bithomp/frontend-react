@@ -9,12 +9,15 @@ import { getIsSsrMobile } from '../utils/mobile'
 
 import SEO from '../components/SEO'
 import SearchBlock from '../components/Layout/SearchBlock'
-import Whales from '../components/Home/Whales'
-import Converter from '../components/Home/Converter'
-import PriceChart from '../components/Home/PriceChart'
-import Statistics from '../components/Home/Statistics'
-import Ads from '../components/Layout/Ads'
 import Products from '../components/Home/Products'
+
+import dynamic from 'next/dynamic'
+//not indexed
+const Ads = dynamic(() => import('../components/Layout/Ads'), { ssr: true })
+const Whales = dynamic(() => import('../components/Home/Whales'), { ssr: false })
+const Converter = dynamic(() => import('../components/Home/Converter'), { ssr: false })
+const PriceChart = dynamic(() => import('../components/Home/PriceChart'), { ssr: false })
+const Statistics = dynamic(() => import('../components/Home/Statistics'), { ssr: false })
 
 export async function getServerSideProps(context) {
   const { locale } = context

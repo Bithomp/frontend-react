@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { useTranslation } from 'next-i18next'
-import { useState, useEffect, useRef } from 'react'
+import { useRef } from 'react'
 import dynamic from 'next/dynamic'
 
 import { devNet, ledgerName, nativeCurrency, network, xahauNetwork } from '../../utils'
@@ -11,17 +11,8 @@ import LogoAnimated from './LogoAnimated'
 import ButtonScrollTop from './ButtonScrollTop'
 
 export default function Footer() {
-  const year = new Date().getFullYear()
   const { t } = useTranslation()
   const footerRef = useRef()
-
-  const [rendered, setRendered] = useState(false)
-
-  useEffect(() => {
-    // otherwise error on mgrok tunnel when test with mobiles
-    setRendered(true)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
 
   return (
     <footer ref={footerRef}>
@@ -102,8 +93,8 @@ export default function Footer() {
         <div className="footer-logo">
           <LogoAnimated />
         </div>
-        <div className="footer-brand-text">
-          Copyright © {rendered && year} <b>Bithomp AB</b>
+        <div className="footer-brand-text" suppressHydrationWarning>
+          Copyright © {new Date().getFullYear()} <b>Bithomp AB</b>
           <br />
           Kivra: 559342-2867
           <br />
