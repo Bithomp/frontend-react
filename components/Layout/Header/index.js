@@ -150,6 +150,7 @@ export default function Header({
             setHoverStates={setHoverStates}
             hoverStates={hoverStates}
           >
+            <Link href="/faucet">{t('menu.developers.faucet')}</Link>
             {xahauNetwork && <Link href="/services/nft-mint">{t('menu.services.nft-mint')}</Link>}
             <a href={'/explorer/'}>{t('menu.services.search-on-ledgerName', { ledgerName })}</a>
             <Link href="/username">{t('menu.usernames')}</Link>

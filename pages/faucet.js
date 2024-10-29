@@ -7,6 +7,7 @@ import { getIsSsrMobile } from '../utils/mobile'
 import { devNet, ledgerName, nativeCurrency } from '../utils'
 import FaucetTabs from '../components/Tabs/FaucetTabs'
 import Ads from '../components/Layout/Ads'
+import { useTranslation } from 'next-i18next'
 
 export async function getServerSideProps(context) {
   const { locale } = context
@@ -19,15 +20,17 @@ export async function getServerSideProps(context) {
 }
 
 export default function FaucetPage({ account, showAds }) {
+  const { t } = useTranslation()
+
   return (
     <>
       <SEO title="Faucet" description={'Get Free ' + ledgerName + ' ' + nativeCurrency} />
       <div className="content-text content-center">
-        <Ads showAds={showAds} />
-        <h1 className="center">Faucet</h1>
+        <h1 className="center">{t('menu.developers.faucet')}</h1>
         {!devNet && <p className="center">Choose the Network</p>}
         <FaucetTabs />
-        {devNet ? <Faucet account={account} /> : <br />}
+        <Faucet account={account} type={devNet ? 'faucet' : 'testPayment'} />
+        <Ads showAds={showAds} />
       </div>
     </>
   )

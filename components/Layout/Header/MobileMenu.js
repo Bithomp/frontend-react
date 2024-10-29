@@ -146,6 +146,9 @@ export default function MobileMenu({
           {t('menu.services.services')}
         </div>
         <div className="mobile-menu__submenu">
+          <Link href="/faucet" className="mobile-menu-item" onClick={mobileMenuToggle}>
+            {t('menu.developers.faucet')}
+          </Link>
           {xahauNetwork && (
             <Link href="/services/nft-mint" className="mobile-menu-item" onClick={mobileMenuToggle}>
               {t('menu.services.nft-mint')}

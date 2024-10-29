@@ -3,7 +3,6 @@ import { useTranslation } from 'next-i18next'
 import { useState } from 'react'
 import { LogoJsonLd, SocialProfileJsonLd } from 'next-seo'
 import Head from 'next/head'
-import dynamic from 'next/dynamic'
 
 import { server, explorerName, nativeCurrency, devNet, detectRobot } from '../utils'
 import { getIsSsrMobile } from '../utils/mobile'
@@ -16,8 +15,6 @@ import PriceChart from '../components/Home/PriceChart'
 import Statistics from '../components/Home/Statistics'
 import Ads from '../components/Layout/Ads'
 import Products from '../components/Home/Products'
-
-const Faucet = dynamic(() => import('../components/Faucet'), { ssr: false })
 
 export async function getServerSideProps(context) {
   const { locale } = context
@@ -48,9 +45,7 @@ const ldJsonWebsite = {
   }
 }
 
-const testPaymentAvailable = true
-
-export default function Home({ selectedCurrency, setSelectedCurrency, showAds, account, bot }) {
+export default function Home({ selectedCurrency, setSelectedCurrency, showAds, bot }) {
   const { t } = useTranslation()
 
   const [chartPeriod, setChartPeriod] = useState('one_day')
@@ -132,12 +127,6 @@ export default function Home({ selectedCurrency, setSelectedCurrency, showAds, a
       <div className="home-statistics">
         <Statistics />
       </div>
-
-      {!devNet && testPaymentAvailable && !bot && (
-        <div className="home-faucet">
-          <Faucet account={account} type="testPayment" />
-        </div>
-      )}
     </>
   )
 }
