@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { useTranslation } from 'next-i18next'
-import { nativeCurrency, xahauNetwork, devNet } from '../../utils'
+import { nativeCurrency, xahauNetwork, devNet, useWidth } from '../../utils'
 import Slider from 'react-slick'
 import Image from 'next/image'
 
@@ -11,16 +11,20 @@ const logo = '/images/logo-small.svg'
 
 export default function Products() {
   const { t } = useTranslation()
+  const width = useWidth()
+
+  const enoughSpaceFor4 = width > 1430
 
   const settings = {
-    dots: false,
-    infinite: false,
+    dots: !enoughSpaceFor4,
+    infinite: !enoughSpaceFor4,
     speed: 1200,
     autoplay: true,
     autoplaySpeed: 5000,
-    slidesToShow: 4,
+    slidesToShow: enoughSpaceFor4 ? 4 : width > 1080 ? 3 : width > 760 ? 2 : 1,
     slidesToScroll: 1,
-    arrows: false,
+    arrows: false
+    /*
     responsive: [
       {
         breakpoint: 1430,
@@ -49,6 +53,7 @@ export default function Products() {
         }
       }
     ]
+    */
   }
 
   let products = []
