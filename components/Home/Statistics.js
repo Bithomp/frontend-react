@@ -170,7 +170,7 @@ export default function Statistics() {
 
   return (
     <>
-      <h2 className="center">{t('home.stat.header', { ledgerName })}</h2>
+      <h2 className="center landing-h2">{t('home.stat.header', { ledgerName })}</h2>
       <div className="statistics-block">
         <div className="stat-piece">
           <div className="stat-piece-header">{t('home.stat.ledger-index')}</div>

@@ -1,20 +1,6 @@
-h1.landing-h1 {
-  height: 32.5px;
-}
-
+h1.landing-h1,
 h2.landing-h2 {
-  font-size: 1em;
-  margin: 0 0.5em;
-  line-height: 1.5em;
-  a {
-    text-decoration: underline;
-    &:hover {
-      color: var(--text-main);
-    }
-  }
-  @media screen and (max-width: 530px) {
-    min-height: 72px;
-  }
+  height: 32.5px;
 }
 
 .home-converter {

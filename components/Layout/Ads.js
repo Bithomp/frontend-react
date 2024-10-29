@@ -2,7 +2,7 @@ import { xahauNetwork } from '../../utils'
 //import { useTheme } from '../Layout/ThemeContext'
 import { useEffect, useState } from 'react'
 
-export default function Ads() {
+export default function Ads({ showAds, heightNoAds }) {
   //const { theme } = useTheme()
   const [rendered, setRendered] = useState(false)
 
@@ -13,7 +13,11 @@ export default function Ads() {
 
   if (!rendered) {
     //keep it here to avoid hydaration error when ads are not rendered for subsribers
-    return null
+    return <div className="brands-block"></div>
+  }
+
+  if (!showAds) {
+    return <div style={{ height: heightNoAds }} />
   }
 
   if (!xahauNetwork) {

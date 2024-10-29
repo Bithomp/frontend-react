@@ -96,7 +96,7 @@ export default function Whales({ currency }) {
     <>
       {data?.length > 0 && (
         <>
-          <h2 className="center">{t('home.whales.header')}</h2>
+          <h2 className="center landing-h2">{t('home.whales.header')}</h2>
           <div className="whale-transactions-block">
             {data.map((tx) => (
               <div key={tx.hash} className={'tx-row' + (difference?.includes(tx) ? ' just-added' : '')}>
