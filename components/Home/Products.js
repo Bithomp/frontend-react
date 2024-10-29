@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import { useTranslation } from 'next-i18next'
-import { nativeCurrency, xahauNetwork, devNet, useWidth } from '../../utils'
+import { nativeCurrency, xahauNetwork, devNet } from '../../utils'
 import Slider from 'react-slick'
 import Image from 'next/image'
 
@@ -11,20 +11,44 @@ const logo = '/images/logo-small.svg'
 
 export default function Products() {
   const { t } = useTranslation()
-  const width = useWidth()
-
-  const enoughSpaceFor4 = width > 1320
 
   const settings = {
-    lazyLoad: 'ondemand',
-    dots: !enoughSpaceFor4,
-    infinite: !enoughSpaceFor4,
+    dots: false,
+    infinite: false,
     speed: 1200,
     autoplay: true,
     autoplaySpeed: 5000,
-    slidesToShow: enoughSpaceFor4 ? 4 : width > 680 ? 2 : 1,
+    slidesToShow: 4,
     slidesToScroll: 1,
-    arrows: false
+    arrows: false,
+    responsive: [
+      {
+        breakpoint: 1430,
+        dots: true,
+        settings: {
+          slidesToShow: 3,
+          infinite: true,
+          dots: true
+        }
+      },
+      {
+        breakpoint: 1080,
+        settings: {
+          slidesToShow: 2,
+          infinite: true,
+          dots: true
+        }
+      },
+      {
+        breakpoint: 760,
+        settings: {
+          slidesToShow: 1,
+          infinite: true,
+          dots: true
+          //initialSlide: 2
+        }
+      }
+    ]
   }
 
   let products = []
@@ -223,25 +247,14 @@ export default function Products() {
                 })}
               </ul>
             </div>
-            {width <= 680 ? (
-              <Image
-                src={product.image}
-                alt={product.title}
-                className="product-bg"
-                fill={true}
-                style={{ objectFit: 'contain', objectPosition: 'right' }}
-                loading={i === 0 ? 'eager' : 'lazy'}
-              />
-            ) : (
-              <Image
-                src={product.image}
-                alt={product.title}
-                className="product-bg"
-                fill={true}
-                style={{ objectFit: 'contain', objectPosition: 'right' }}
-                priority={true}
-              />
-            )}
+            <Image
+              src={product.image}
+              alt={product.title}
+              className="product-bg"
+              height={259}
+              width={product.imageWidth}
+              priority={true}
+            />
           </div>
         )
       })}

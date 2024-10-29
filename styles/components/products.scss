@@ -5,16 +5,12 @@
 .products {
   height: 263.5px;
   margin: auto auto 30px auto;
-  width: calc(100% - 20px);
+  width: calc(100% - 40px);
   max-width: 1600px;
   z-index: 1;
 
-  @media screen and (max-width: 1320px) {
+  @media screen and (max-width: 1080px) {
     max-width: 760px;
-  }
-
-  @media screen and (max-width: 680px) {
-    max-width: 380px;
   }
 
   .product {
@@ -50,6 +46,8 @@
 
     .product-bg {
       z-index: 4;
+      position: absolute;
+      right: 0;
     }
 
     .product-gradient {
