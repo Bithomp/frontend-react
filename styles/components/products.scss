@@ -15,9 +15,6 @@
 
   @media screen and (max-width: 680px) {
     max-width: 380px;
-    > .product &:not(:first-child) {
-      display: none !important;
-    }
   }
 
   .product {
