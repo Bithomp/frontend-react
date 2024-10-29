@@ -4,7 +4,7 @@ import Head from 'next/head'
 import axios from 'axios'
 import { appWithTranslation } from 'next-i18next'
 import dynamic from 'next/dynamic'
-import { GoogleTagManager } from '@next/third-parties/google'
+import { GoogleAnalytics } from '@next/third-parties/google'
 
 import Header from '../components/Layout/Header'
 import Footer from '../components/Layout/Footer'
@@ -144,14 +144,14 @@ const MyApp = ({ Component, pageProps }) => {
                 sessionToken={sessionToken}
                 setSessionToken={setSessionToken}
               />
-              {process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID && (
-                <GoogleTagManager gtmId={process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID} />
-              )}
             </div>
             <BackgroundImage />
             <Footer setSignRequest={setSignRequest} account={account} />
           </div>
         </ThemeProvider>
+        {process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID && (
+          <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID} />
+        )}
       </IsSsrMobileContext.Provider>
     </>
   )
