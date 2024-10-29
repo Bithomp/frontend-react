@@ -2,10 +2,10 @@ import Link from 'next/link'
 import { useTranslation } from 'next-i18next'
 import { nativeCurrency, xahauNetwork, devNet, useWidth } from '../../utils'
 import Slider from 'react-slick'
+import Image from 'next/image'
 
 import 'slick-carousel/slick/slick.css'
 import 'slick-carousel/slick/slick-theme.css'
-import { LazyBackground } from '../LazyBackground'
 
 const logo = '/images/logo-small.svg'
 
@@ -220,7 +220,15 @@ export default function Products() {
                   })}
                 </ul>
               </div>
-              <LazyBackground src={product.image} className="product-bg" />
+              <Image
+                src={product.image}
+                alt={product.title}
+                layout="fill"
+                className="product-bg"
+                priority={i === 0}
+                objectPosition="right"
+                objectFit="contain"
+              />
             </div>
           )
         })}
