@@ -24,6 +24,12 @@
     box-shadow: 0px 0px 2px 0px #00000040;
     transition: box-shadow 0.3s ease;
 
+    @media screen and (max-width: 680px) {
+      &:not(:first-child) {
+        display: none;
+      }
+    }
+
     .light & {
       background: #fff;
     }
