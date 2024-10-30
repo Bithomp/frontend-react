@@ -4,28 +4,25 @@ import { useState } from 'react'
 import { LogoJsonLd, SocialProfileJsonLd } from 'next-seo'
 import Head from 'next/head'
 
-import { server, explorerName, nativeCurrency, devNet, detectRobot } from '../utils'
+import { server, explorerName, nativeCurrency, devNet } from '../utils'
 import { getIsSsrMobile } from '../utils/mobile'
 
 import SEO from '../components/SEO'
 import SearchBlock from '../components/Layout/SearchBlock'
+import Ads from '../components/Layout/Ads'
 import Products from '../components/Home/Products'
+import Converter from '../components/Home/Converter'
 
 import dynamic from 'next/dynamic'
 //not indexed
-const Ads = dynamic(() => import('../components/Layout/Ads'), { ssr: true })
 const Whales = dynamic(() => import('../components/Home/Whales'), { ssr: false })
-const Converter = dynamic(() => import('../components/Home/Converter'), { ssr: false })
 const PriceChart = dynamic(() => import('../components/Home/PriceChart'), { ssr: false })
 const Statistics = dynamic(() => import('../components/Home/Statistics'), { ssr: false })
 
 export async function getServerSideProps(context) {
   const { locale } = context
-  const userAgent = context.req.headers['user-agent']
-  const bot = detectRobot(userAgent)
   return {
     props: {
-      bot: bot || '',
       isSsrMobile: getIsSsrMobile(context),
       ...(await serverSideTranslations(locale, ['common', 'faucet', 'products']))
     }
@@ -48,7 +45,7 @@ const ldJsonWebsite = {
   }
 }
 
-export default function Home({ selectedCurrency, setSelectedCurrency, showAds, bot }) {
+export default function Home({ selectedCurrency, setSelectedCurrency, showAds }) {
   const { t } = useTranslation()
 
   const [chartPeriod, setChartPeriod] = useState('one_day')
@@ -99,7 +96,7 @@ export default function Home({ selectedCurrency, setSelectedCurrency, showAds, b
 
       <SearchBlock tab="explorer" />
 
-      <Ads showAds={showAds && !bot} heightNoAds={30} />
+      <Ads showAds={showAds} heightNoAds={30} />
 
       <Products />
 

@@ -5,45 +5,6 @@ import { decodeAccountID, isValidClassicAddress } from 'ripple-address-codec'
 import countries from 'i18n-iso-countries'
 import Cookies from 'universal-cookie'
 
-export const detectRobot = (userAgent) => {
-  const robots = new RegExp(
-    [
-      /bot/,
-      /spider/,
-      /crawl/,
-      /APIs-Google/,
-      /AdsBot/,
-      /Googlebot/,
-      /mediapartners/,
-      /Google Favicon/,
-      /FeedFetcher/,
-      /Google-Read-Aloud/,
-      /DuplexWeb-Google/,
-      /googleweblight/,
-      /bing/,
-      /yandex/,
-      /baidu/,
-      /duckduck/,
-      /yahoo/,
-      /ecosia/,
-      /ia_archiver/,
-      /facebook/,
-      /instagram/,
-      /pinterest/,
-      /reddit/,
-      /slack/,
-      /twitter/,
-      /whatsapp/,
-      /youtube/,
-      /semrush/
-    ]
-      .map((r) => r.source)
-      .join('|'),
-    'i'
-  )
-  return robots.test(userAgent)
-}
-
 export const domainFromUrl = typeof window !== 'undefined' ? encodeURI(window.location.hostname) : ''
 export const cookieParams = { path: '/', domain: domainFromUrl, maxAge: 31536000 }
 
