@@ -84,8 +84,5 @@ module.exports = {
         destination: '/account'
       }
     ]
-  },
-  experimental: {
-    largePageDataBytes: 128 * 1000
   }
 }
