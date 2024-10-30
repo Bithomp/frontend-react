@@ -2,7 +2,7 @@
   "menu": {
     "amm": {
       "amm": "AMM",
-      "pools": "Piscines AMM",
+      "pools": "Pools AMM",
       "explorer": "Explorateur AMM"
     },
     "company": {
@@ -184,7 +184,7 @@
         "for-sale": "NFTs à vendre"
       },
       "escrows": "Escrows",
-      "amms": "Piscines AMM",
+      "amms": "Pools AMM",
       "nodes": "Nœuds"
     }
   },
@@ -554,7 +554,7 @@
   "explorer": {
     "header": {
       "main": "Explorateur {{explorerName}}",
-      "amm": "Informations sur la piscine AMM",
+      "amm": "Informations sur la pools AMM",
       "account": "Informations sur le compte",
       "transaction": "Informations sur la transaction",
       "nft": "NFT",
