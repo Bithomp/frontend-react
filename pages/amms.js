@@ -37,7 +37,7 @@ export async function getServerSideProps(context) {
   try {
     const res = await axiosServer({
       method: 'get',
-      url: 'v2/amms?order=currencyHigh&sortCurrency=XRP',
+      url: 'v2/amms?order=currencyHigh&sortCurrency=XRP&limit=50',
       headers
     }).catch((error) => {
       initialErrorMessage = error.message
@@ -153,7 +153,7 @@ export default function Amms({
       markerPart = '&marker=' + rawData?.marker
     }
 
-    let apiUrl = 'v2/amms?order=' + order + '&sortCurrency=XRP' + markerPart
+    let apiUrl = 'v2/amms?order=' + order + '&sortCurrency=XRP&limit=50' + markerPart
 
     if (!markerPart) {
       setLoading(true)
