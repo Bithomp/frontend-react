@@ -8,6 +8,7 @@ import { bestNftOffer, isNftExplicit, mpUrl, nftName, partnerMarketplaces } from
 import { amountFormat, timeOrDate, convertedAmount } from '../utils/format'
 import NftImageOrVideo from './NftImageOrVideo'
 import AgeCheck from './UI/AgeCheck'
+import { tiles } from '../styles/components/tiles.module.scss'
 
 const addressName = (details, name) => {
   if (!details) return ''
@@ -91,7 +92,7 @@ export default function Tiles({ nftList, type = 'name', convertCurrency, account
 
   if (type === 'name' || type === 'onSale') {
     return (
-      <div className="tiles">
+      <div className={tiles}>
         <div className="grid">
           <ul className="hexGrid">
             {nftList[0] &&
@@ -142,7 +143,7 @@ export default function Tiles({ nftList, type = 'name', convertCurrency, account
 
   if (type === 'priceHigh' || type === 'priceLow' || type === 'soldNew' || type === 'soldOld') {
     return (
-      <div className="tiles">
+      <div className={tiles}>
         <div className="grid">
           <ul className="hexGrid">
             {nftList?.length > 0 &&

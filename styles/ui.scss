@@ -846,7 +846,6 @@ body.dark {
 @include meta.load-css("components/pagination.scss");
 
 //components
-@include meta.load-css("components/tiles.scss");
 @include meta.load-css("components/receipt.scss");
 @include meta.load-css("components/filters.scss");
 @include meta.load-css("components/dateAndTimeRange.scss");
