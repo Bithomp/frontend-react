@@ -29,6 +29,7 @@ import {
 import { axiosServer } from '../../utils/axios'
 
 import SocialShare from '../../components/SocialShare'
+import { nftClass } from '../../styles/pages/nft.module.scss'
 
 export async function getServerSideProps(context) {
   const { locale, query, req } = context
@@ -978,7 +979,7 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
   }
 
   return (
-    <>
+    <div className={nftClass}>
       <SEO
         page="NFT"
         title={
@@ -993,7 +994,7 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
         image={{ file: imageUrl }}
       />
       <SearchBlock searchPlaceholderText={t('enter-nft-id', { ns: 'nft' })} tab="nft" />
-      <div className="content-center short-top nft">
+      <div className="content-center short-top">
         {id ? (
           <>
             {loading ? (
@@ -1437,6 +1438,6 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
           </>
         )}
       </div>
-    </>
+    </div>
   )
 }

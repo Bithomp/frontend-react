@@ -1,10 +1,9 @@
-.nft {
-  max-width: 1000px !important;
+.nftClass :global {
   .column-left {
     display: inline-block;
     position: relative;
-    width: calc(40% - 30px);
-    padding: 0 15px;
+    width: calc(40% - 15px);
+    padding: 0 15px 0 0;
     .model-viewer {
       width: 100%;
       min-height: 370px;
@@ -32,8 +31,8 @@
   }
   .column-right {
     display: inline-block;
-    width: calc(60% - 32px);
-    padding: 0 15px;
+    width: calc(60% - 17px);
+    padding: 0 0 0 15px;
     vertical-align: top;
     .slide {
       pre {

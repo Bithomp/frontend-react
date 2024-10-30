@@ -861,7 +861,6 @@ body.dark {
 //pages
 @include meta.load-css("pages/index.scss");
 @include meta.load-css("pages/account.scss");
-@include meta.load-css("pages/nft.scss");
 @include meta.load-css("pages/nft-offer.scss");
 @include meta.load-css("pages/alerts.scss");
 @include meta.load-css("pages/username.scss");
