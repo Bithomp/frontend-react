@@ -855,7 +855,6 @@ body.dark {
 @include meta.load-css("components/dropdown.scss");
 @include meta.load-css("components/ageCheck.scss");
 @include meta.load-css("components/products.scss");
-@include meta.load-css("components/ads.scss");
 
 //home page
 @include meta.load-css("components/currencySelect.scss");

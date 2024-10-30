@@ -1,6 +1,7 @@
 import { xahauNetwork } from '../../utils'
 //import { useTheme } from '../Layout/ThemeContext'
 import { useEffect, useState } from 'react'
+import styles from '../../styles/components/ads.module.scss'
 
 export default function Ads({ showAds, heightNoAds }) {
   //const { theme } = useTheme()
@@ -13,7 +14,7 @@ export default function Ads({ showAds, heightNoAds }) {
 
   if (!rendered) {
     //keep it here to avoid hydaration error when ads are not rendered for subsribers
-    return <div className="brands-block"></div>
+    return <div className={styles['brands-block']}></div>
   }
 
   if (!showAds) {
@@ -22,7 +23,7 @@ export default function Ads({ showAds, heightNoAds }) {
 
   if (!xahauNetwork) {
     return (
-      <div className="brands-block">
+      <div className={styles['brands-block']}>
         {/*
       <a href="/go/play-xrp" target="_blank" rel="noreferrer">
         <div className="brand-item">
