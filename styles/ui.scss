@@ -839,10 +839,8 @@ body.dark {
 @include meta.load-css("components/inputPrepend.scss");
 @include meta.load-css("components/formInput.scss");
 @include meta.load-css("components/addressInput.scss");
-@include meta.load-css("components/buttonArrowScroll.scss");
 @include meta.load-css("components/simpleSelect.scss");
 @include meta.load-css("components/footer.scss");
-@include meta.load-css("components/buttonArrowScroll.scss");
 @include meta.load-css("components/radioOptions.scss");
 @include meta.load-css("components/viewToggle.scss");
 @include meta.load-css("components/pagination.scss");

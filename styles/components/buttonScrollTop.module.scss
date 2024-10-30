@@ -1,4 +1,5 @@
-.button-arrow-scroll {
+.buttonArrowScroll :global {
+  .button-arrow-scroll {
     height: 42px;
     width: 42px;
     z-index: 2;
@@ -15,34 +16,35 @@
     -webkit-tap-highlight-color: transparent; // Remove the blue highlight on mobile
 
     @media only screen and (max-width: 816px) {
-        right: 15px;
-        bottom: 60px;
+      right: 15px;
+      bottom: 60px;
     }
 
     &.is-shown {
-        opacity: 1;
+      opacity: 1;
     }
 
     body.dark & {
-        background-color: var(--background-footer);
-        box-shadow: 0 0 7px 0 rgba(255, 255, 255, 0.3);
+      background-color: var(--background-footer);
+      box-shadow: 0 0 7px 0 rgba(255, 255, 255, 0.3);
     }
 
     &.is-fixed {
-        position: absolute;
-        top: -40px;
-        transform: translateY(-100%);
+      position: absolute;
+      top: -40px;
+      transform: translateY(-100%);
     }
 
     img {
-        transition: transform 0.3s ease-in-out;
+      transition: transform 0.3s ease-in-out;
     }
 
     &:hover {
-        box-shadow: 0 0 7px 0 rgba(0, 0, 0, 0.4);
+      box-shadow: 0 0 7px 0 rgba(0, 0, 0, 0.4);
 
-        img {
-            transform: scale(0.9);
-        }
+      img {
+        transform: scale(0.9);
+      }
     }
+  }
 }
