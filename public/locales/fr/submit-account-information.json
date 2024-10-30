@@ -1,0 +1,32 @@
+{
+    "title": "Soumettre un compte",
+    "heading": "Soumettre des informations sur le compte",
+    "cross-chain": "Les services sont utilisés de manière inter-chaînes, <2>inscrivez un service sur le réseau principal XRPL</2> et il sera disponible sur d'autres explorateurs Bithomp.",
+    "desc": "Bithomp s'efforce d'améliorer la qualité des informations fournies par l'Explorateur et de permettre aux utilisateurs d'identifier rapidement les relations sur le Grand Livre. Si vous gérez un service utilisant le Grand Livre (échange, fournisseur de services financiers, organisation à but non lucratif ou toute autre entreprise) ou si vous utilisez un tel service, veuillez soumettre les informations de ce service ici.",
+    "no-private": "La soumission n'est pas destinée aux comptes privés, les informations personnelles concernant les comptes soumises via ce formulaire seront rejetées.",
+    "subtitle": "Vos informations",
+    "info": "Veuillez fournir votre adresse e-mail au cas où nous devrions vous contacter pour valider votre soumission.",
+    "placeholders": {
+        "email": "Votre e-mail personnel",
+        "name": "Nom du service",
+        "address": "Adresse",
+        "domain": "Domaine web",
+        "twitter": "Nom d'utilisateur Twitter",
+        "instagram": "Nom d'utilisateur Instagram",
+        "facebook": "Nom d'utilisateur Facebook",
+        "youtube": "Nom d'utilisateur YouTube",
+        "linkedin": "Nom d'utilisateur LinkedIn",
+        "reddit": "Nom d'utilisateur Reddit",
+        "medium": "Nom d'utilisateur Medium",
+        "telegram": "Nom d'utilisateur Telegram"
+    },
+    "form": {
+        "error": {
+            "service-name-empty": "Veuillez entrer un nom de service."
+        },
+        "success": "Formulaire soumis avec succès."
+    },
+    "error": {
+        "Account exist": "Quelqu'un a déjà soumis des informations pour cette adresse."
+    }
+}

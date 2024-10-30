@@ -1,0 +1,13 @@
+{
+  "header": "Distribution des NFT",
+  "desc": "Ici, vous pouvez vérifier la distribution des NFT d'un émetteur de NFT particulier. Entrez l'adresse de l'émetteur de NFT ou un nom d'utilisateur et appuyez sur le bouton de recherche.",
+  "no-nfts": "Nous n'avons trouvé aucun NFT émis par cette adresse.",
+  "total": "{{users}} comptes possèdent {{nfts}} NFT",
+  "nonSelfIssued": "{{users}} comptes possèdent {{nfts}} NFT non auto-émis",
+  "selfIssued": "{{users}} comptes possèdent {{nfts}} NFT auto-émis",
+  "table": {
+    "non-self-issued": "Non auto-émis",
+    "self-issued": "Auto-émis",
+    "total": "Total"
+  }
+}
