@@ -8,10 +8,11 @@
   .glider-contain {
     overflow: hidden;
     height: 285px;
-    width: 760px;
+    width: calc(100% - 40px);
+    max-width: 760px;
     margin: 0 auto;
     @media screen and (max-width: 760px) {
-      width: 380px;
+      max-width: 380px;
     }
   }
 
