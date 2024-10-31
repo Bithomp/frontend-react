@@ -192,6 +192,7 @@ export default function Products() {
         slidesToShow={width > 760 ? 2 : isMobile ? 1 : 2}
         slidesToScroll={width > 760 ? 2 : isMobile ? 1 : 2}
         className="products"
+        scrollLock={true}
       >
         {products.map((product, i) => {
           return (
