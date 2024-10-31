@@ -1,21 +1,24 @@
 .productsClass :global {
-
   .glider-dot {
     color: var(--text-secondary) !important;
     &.active {
       background-color: var(--accent-link) !important;
     }
   }
-
-  .products {
-    height: 259px;
+  .glider-contain {
+    overflow: hidden;
+    height: 285px;
     width: 760px;
     margin: 0 auto;
-    z-index: 1;
-
     @media screen and (max-width: 760px) {
       width: 380px;
     }
+  }
+
+  .products {
+    overflow: hidden;
+    height: 259px;
+    z-index: 1;
 
     .product {
       position: relative;
