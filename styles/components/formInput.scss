@@ -120,10 +120,13 @@
     justify-content: center;
     transition: background-color 0.25s;
 
-    img {
-      padding-top: 4px;
-      width: 18px;
+    svg {
+      padding-top: 1px;
+      padding-left: 1px;
+      width: 24px;
+      height: 24px;
       transition: filter 0.25s;
+      color: white;
     }
 
     &:hover {

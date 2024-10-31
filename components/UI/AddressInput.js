@@ -8,6 +8,8 @@ import { isAddressOrUsername, isAddressValid, useWidth } from '../../utils'
 
 import { amountFormat, userOrServiceLink } from '../../utils/format'
 
+import { IoSearch } from 'react-icons/io5'
+
 let typingTimer
 
 export default function AddressInput({
@@ -282,7 +284,7 @@ export default function AddressInput({
               </button>
               {!hideButton && (
                 <div className="search-button" onClick={onSearchClick}>
-                  <img src="/images/search.svg" className="search-icon" alt="search" />
+                  <IoSearch />
                 </div>
               )}
             </div>
@@ -303,7 +305,7 @@ export default function AddressInput({
               </button>
               {!hideButton && (
                 <div className="search-button" onClick={onSearchClick}>
-                  <img src="/images/search.svg" className="search-icon" alt="search" />
+                  <IoSearch />
                 </div>
               )}
             </div>

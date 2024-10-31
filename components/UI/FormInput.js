@@ -1,5 +1,6 @@
 import { IoMdClose } from 'react-icons/io'
 import { useState, useEffect } from 'react'
+import { IoSearch } from 'react-icons/io5'
 
 export default function FormInput({
   placeholder,
@@ -81,7 +82,7 @@ export default function FormInput({
               </button>
               {!hideButton && (
                 <div className="search-button" onClick={onSearchClick}>
-                  <img src="/images/search.svg" className="search-icon" alt="search" />
+                  <IoSearch />
                 </div>
               )}
             </div>

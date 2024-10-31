@@ -19,7 +19,7 @@ import {
 } from '../../utils'
 import { userOrServiceName, amountFormat } from '../../utils/format'
 
-//import { ReactComponent as Qr } from "../../public/images/qr.svg";
+import { IoSearch } from 'react-icons/io5'
 
 const searchItemRe = /^[~]{0,1}[a-zA-Z0-9-_.]*[+]{0,1}[a-zA-Z0-9-_.]*[$]{0,1}[a-zA-Z0-9-.]*[a-zA-Z0-9]*$/i
 let typingTimer
@@ -421,7 +421,7 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
           )}
 
           <div className="search-button" onClick={onSearch}>
-            <img src="/images/search.svg" className="search-icon" alt="search" />
+            <IoSearch className="search-icon" />
           </div>
           {errorMessage && (
             <div
@@ -433,7 +433,7 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
           )}
           {/*
           <a className="search-scan-qr" href="/explorer/?scanqr">
-            <Qr className="search-scan-qr-icon" />
+            <IoQr className="search-scan-qr-icon" />
             <span className="search-scan-qr-text">{t("home.scan-qr")}</span>
           </a>
         */}
