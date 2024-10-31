@@ -37,7 +37,7 @@ export async function getServerSideProps(context) {
   try {
     const res = await axiosServer({
       method: 'get',
-      url: 'v2/amms?order=currencyHigh&sortCurrency=XRP&limit=50',
+      url: 'v2/amms?order=currencyHigh&sortCurrency=XRP&limit=50&voteSlots=false&auctionSlot=false',
       headers
     }).catch((error) => {
       initialErrorMessage = error.message
@@ -153,7 +153,7 @@ export default function Amms({
       markerPart = '&marker=' + rawData?.marker
     }
 
-    let apiUrl = 'v2/amms?order=' + order + '&sortCurrency=XRP&limit=50' + markerPart
+    let apiUrl = 'v2/amms?order=' + order + '&sortCurrency=XRP&limit=50&voteSlots=false&auctionSlot=false' + markerPart
 
     if (!markerPart) {
       setLoading(true)
@@ -329,7 +329,7 @@ export default function Amms({
                                 <td>{timeFromNow(a.updatedAt, i18n)}</td>
                                 <td className="right">{showAmmPercents(a.tradingFee)}</td>
                                 <td className="center">
-                                  <LinkAmm ammId={a.ammID} text={a.voteSlots?.length} />
+                                  <LinkAmm ammId={a.ammID} text={a.voteSlotsCount} />
                                 </td>
                               </tr>
                             ))}
@@ -410,7 +410,7 @@ export default function Amms({
                                 {fullDateAndTime(a.updatedAt)}
                               </p>
                               <p>
-                                Vote slots: <LinkAmm ammId={a.ammID} text={a.voteSlots?.length} />
+                                Vote slots: <LinkAmm ammId={a.ammID} text={a.voteSlotsCount} />
                               </p>
                               <p>
                                 Auction slot: <LinkAmm ammId={a.ammID} icon={true} />
