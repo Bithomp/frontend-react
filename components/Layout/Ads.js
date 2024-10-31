@@ -3,6 +3,9 @@ import { xahauNetwork } from '../../utils'
 import { useEffect, useState } from 'react'
 import { brandsBlock } from '../../styles/components/ads.module.scss'
 
+import BtcBit from '../../public/images/sponsored/btcbit.svg'
+import Nexo from '../../public/images/sponsored/nexo.svg'
+
 export default function Ads({ showAds, heightNoAds }) {
   //const { theme } = useTheme()
   const [rendered, setRendered] = useState(false)
@@ -44,14 +47,14 @@ export default function Ads({ showAds, heightNoAds }) {
       */}
         <a href="/go/buy-xrp" target="_blank" rel="noreferrer">
           <div className="brand-item btcbit">
-            <img src="/images/sponsored/btcbit.svg" className="brand-item-icon" alt="Logo for Buy xrp" />
+            <BtcBit className="brand-item-icon" />
             <div className="brand-item-title">Buy XRP</div>
             <div className="brand-item-text">Instantly buy and sell cryptocurrency with low commission.</div>
           </div>
         </a>
         <a href="/go/earn-xrp" target="_blank" rel="noreferrer">
           <div className="brand-item">
-            <img src="/images/sponsored/nexo.svg" className="brand-item-icon" alt="Logo for Earn on xrp" />
+            <Nexo className="brand-item-icon" />
             <div className="brand-item-title">Earn on XRP</div>
             <div className="brand-item-text">Earn up to 12% per year on XRP.</div>
           </div>
@@ -83,7 +86,7 @@ export default function Ads({ showAds, heightNoAds }) {
         return <>
           <a href="/go/play-xrp" target="_blank" rel="noreferrer">
             <div className="brand-item">
-              <img src="/images/sponsored/xbit.png" className="brand-item-icon" alt="Play Now" />
+              <Image src="/images/sponsored/xbit.png" className="brand-item-icon" alt="Play Now" />
               <div className="brand-item-title">Play Now</div>
               <div className="brand-item-text">
                 Register with a code <i>XAHAU</i> and get 125% 1st dep welcome bonus!

@@ -8,7 +8,7 @@ import Glider from 'react-glider'
 import 'glider-js/glider.min.css'
 import { productsClass } from '../../styles/components/products.module.scss'
 
-const logo = '/images/logo-small.svg'
+import LogoSmall from '../../public/images/logo-small.svg'
 
 export default function Products() {
   const { t } = useTranslation()
@@ -203,12 +203,12 @@ export default function Products() {
                       <li key={index}>
                         {item.externalLink || item.oldLink ? (
                           <a href={item.externalLink || item.oldLink}>
-                            <img alt="bithomp logo" src={logo} />
+                            <LogoSmall />
                             <span>{item.text}</span>
                           </a>
                         ) : (
                           <Link href={item.link}>
-                            <img alt="bithomp logo" src={logo} />
+                            <LogoSmall />
                             <span>{item.text}</span>
                           </Link>
                         )}
