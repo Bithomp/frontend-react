@@ -84,9 +84,5 @@ module.exports = {
         destination: '/account'
       }
     ]
-  },
-  experimental: {
-    browsersListForSwc: true,
-    legacyBrowsers: false
   }
 }
