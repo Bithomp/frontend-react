@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import { buttonArrowScroll } from '../../styles/components/buttonScrollTop.module.scss'
 
-const arrowTop = '/images/arrow-top.svg'
+import { BsArrowUp } from 'react-icons/bs'
 
 export default function ButtonScrollTop({ footer }) {
   const [buttonState, setButtonState] = useState({ isShown: false, isFixedButton: false })
@@ -40,7 +40,7 @@ export default function ButtonScrollTop({ footer }) {
         }
         onClick={scrollTop}
       >
-        <img src={arrowTop} className="arrow-top" alt="arrow to scroll top" />
+        <BsArrowUp />
       </button>
     </div>
   )

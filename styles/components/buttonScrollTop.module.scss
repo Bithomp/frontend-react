@@ -35,14 +35,18 @@
       transform: translateY(-100%);
     }
 
-    img {
+    svg {
       transition: transform 0.3s ease-in-out;
+      color: var(--accent-icon);
+      width: 28px;
+      height: 28px;
+      padding-top: 3px;
     }
 
     &:hover {
       box-shadow: 0 0 7px 0 rgba(0, 0, 0, 0.4);
 
-      img {
+      svg {
         transform: scale(0.9);
       }
     }
