@@ -193,6 +193,7 @@ export default function Products() {
         slidesToScroll={width > 760 ? 2 : isMobile ? 1 : 2}
         className="products"
         scrollLock={true}
+        rewind={true}
       >
         {products.map((product, i) => {
           return (
