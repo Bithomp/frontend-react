@@ -62,6 +62,7 @@ export default function Converter({ selectedCurrency, setSelectedCurrency, chart
           min="0"
           inputMode="decimal"
           aria-label="Crypto amount"
+          name="cryptoAmount"
         />
         <div className="converter-xrp">
           <Image height={18} width={18} src={nativeCurrenciesImages[nativeCurrency]} alt="crypto logo" />
@@ -78,6 +79,7 @@ export default function Converter({ selectedCurrency, setSelectedCurrency, chart
           min="0"
           inputMode="decimal"
           aria-label="Fiat amount"
+          name="fiatAmount"
         />
         {rendered ? (
           <div className="converter-currency-select">
