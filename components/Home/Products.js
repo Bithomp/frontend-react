@@ -188,6 +188,7 @@ export default function Products() {
     <div className={productsClass}>
       <Glider
         hasDots
+        draggable
         slidesToShow={width > 760 ? 2 : isMobile ? 1 : 2}
         slidesToScroll={width > 760 ? 2 : isMobile ? 1 : 2}
         className="products"
