@@ -1,12 +1,12 @@
 import Link from 'next/link'
 import { useTranslation } from 'next-i18next'
 import { nativeCurrency, xahauNetwork, devNet, useWidth } from '../../utils'
-import Slider from 'react-slick'
 import Image from 'next/image'
 import { useIsMobile } from '../../utils/mobile'
 
-import 'slick-carousel/slick/slick.css'
-import 'slick-carousel/slick/slick-theme.css'
+import Glider from 'react-glider'
+import 'glider-js/glider.min.css'
+import { productsClass } from '../../styles/components/products.module.scss'
 
 const logo = '/images/logo-small.svg'
 
@@ -14,48 +14,6 @@ export default function Products() {
   const { t } = useTranslation()
   const width = useWidth()
   const isMobile = useIsMobile()
-
-  const settings = {
-    dots: true,
-    infinite: true,
-    speed: 1200,
-    //autoplay: true,
-    //autoplaySpeed: 5000,
-    //pauseOnHover: true,
-    slidesToShow: width > 760 ? 2 : isMobile ? 1 : 2,
-    slidesToScroll: width > 760 ? 2 : isMobile ? 1 : 2,
-    arrows: false
-    /*
-    responsive: [
-      {
-        breakpoint: 1430,
-        dots: true,
-        settings: {
-          slidesToShow: 3,
-          infinite: true,
-          dots: true
-        }
-      },
-      {
-        breakpoint: 1080,
-        settings: {
-          slidesToShow: 2,
-          infinite: true,
-          dots: true
-        }
-      },
-      {
-        breakpoint: 760,
-        settings: {
-          slidesToShow: 1,
-          infinite: true,
-          dots: true
-          //initialSlide: 2
-        }
-      }
-    ]
-    */
-  }
 
   let products = []
   let part1 = {}
@@ -227,44 +185,51 @@ export default function Products() {
   products.push(part4)
 
   return (
-    <Slider {...settings} className="products">
-      {products.map((product, i) => {
-        return (
-          <div key={i} className={'product list' + (i + 1)}>
-            <div className="product-wrap">
-              <h2>{product.title}</h2>
-              <ul>
-                {product.list.map((item, index) => {
-                  return (
-                    <li key={index}>
-                      {item.externalLink || item.oldLink ? (
-                        <a href={item.externalLink || item.oldLink}>
-                          <img alt="bithomp logo" src={logo} />
-                          <span>{item.text}</span>
-                        </a>
-                      ) : (
-                        <Link href={item.link}>
-                          <img alt="bithomp logo" src={logo} />
-                          <span>{item.text}</span>
-                        </Link>
-                      )}
-                    </li>
-                  )
-                })}
-              </ul>
+    <div className={productsClass}>
+      <Glider
+        hasDots
+        slidesToShow={width > 760 ? 2 : isMobile ? 1 : 2}
+        slidesToScroll={width > 760 ? 2 : isMobile ? 1 : 2}
+        className="products"
+      >
+        {products.map((product, i) => {
+          return (
+            <div key={i} className={'product list' + (i + 1)}>
+              <div className="product-wrap">
+                <h2>{product.title}</h2>
+                <ul>
+                  {product.list.map((item, index) => {
+                    return (
+                      <li key={index}>
+                        {item.externalLink || item.oldLink ? (
+                          <a href={item.externalLink || item.oldLink}>
+                            <img alt="bithomp logo" src={logo} />
+                            <span>{item.text}</span>
+                          </a>
+                        ) : (
+                          <Link href={item.link}>
+                            <img alt="bithomp logo" src={logo} />
+                            <span>{item.text}</span>
+                          </Link>
+                        )}
+                      </li>
+                    )
+                  })}
+                </ul>
+              </div>
+              <Image
+                src={product.image}
+                alt={product.title}
+                className="product-bg"
+                height={259}
+                width={product.imageWidth}
+                priority={i === 0 ? true : width > 760 && i === 1 ? true : false}
+                fetchPriority={i === 0 ? 'high' : width > 760 && i === 1 ? 'high' : 'low'}
+              />
             </div>
-            <Image
-              src={product.image}
-              alt={product.title}
-              className="product-bg"
-              height={259}
-              width={product.imageWidth}
-              priority={i === 0 ? true : width > 760 && i === 1 ? true : false}
-              fetchPriority={i === 0 ? 'high' : width > 760 && i === 1 ? 'high' : 'low'}
-            />
-          </div>
-        )
-      })}
-    </Slider>
+          )
+        })}
+      </Glider>
+    </div>
   )
 }
