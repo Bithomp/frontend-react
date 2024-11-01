@@ -33,7 +33,7 @@ export default function ButtonScrollTop({ footer }) {
   return (
     <div className={buttonArrowScroll}>
       <button
-        name="button scroll up"
+        aria-label="ScrollUp"
         className={
           'button-arrow-scroll' +
           (buttonState.isShown ? ' is-shown' : '') +

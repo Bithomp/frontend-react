@@ -14,40 +14,40 @@ import { FaMedium } from 'react-icons/fa6'
 export default function SocialIcons() {
   return (
     <div className="social-icons">
-      <a href={'https://x.com/' + (xahauNetwork ? 'XahauExplorer' : 'xrplexplorer')} aria-label="X link">
+      <a href={'https://x.com/' + (xahauNetwork ? 'XahauExplorer' : 'xrplexplorer')} aria-label="X">
         <FaXTwitter />
       </a>
-      <a href="https://discord.gg/ZahGJ29WEs" area-label="Discord link">
+      <a href="https://discord.gg/ZahGJ29WEs" aria-label="Discord">
         <FaDiscord />
       </a>
-      <a href="https://tiktok.com/@bithomp" area-label="Tiktok link">
+      <a href="https://tiktok.com/@bithomp" aria-label="Tiktok">
         <FaTiktok />
       </a>
-      <a href="https://youtube.com/@bithomp" area-label="Youtube link">
+      <a href="https://youtube.com/@bithomp" aria-label="Youtube">
         <FaYoutube />
       </a>
-      <a href="https://linkedin.com/company/bithomp" area-label="Linkedin link">
+      <a href="https://linkedin.com/company/bithomp" aria-label="Linkedin">
         <FaLinkedin />
       </a>
-      <a href="https://www.instagram.com/bithomp/" area-label="Instagram link">
+      <a href="https://www.instagram.com/bithomp/" aria-label="Instagram">
         <FaInstagram />
       </a>
       {/*
-      <a href="https://t.me/bithomp" area-label="Telegram link">
+      <a href="https://t.me/bithomp" aria-label="Telegram">
         <FaTelegram />
       </a>
       */}
       {!xahauNetwork && (
-        <a href="https://www.facebook.com/xrpexplorer/" area-label="Facebook link">
+        <a href="https://www.facebook.com/xrpexplorer/" aria-label="Facebook">
           <FaFacebook />
         </a>
       )}
       {!xahauNetwork && (
-        <a href="https://medium.com/@xrplexplorer" area-label="Medium link">
+        <a href="https://medium.com/@xrplexplorer" aria-label="Medium">
           <FaMedium />
         </a>
       )}
-      <a href="https://github.com/Bithomp" area-label="Github link">
+      <a href="https://github.com/Bithomp" aria-label="Github">
         <FaGithub />
       </a>
     </div>

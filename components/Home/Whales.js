@@ -42,7 +42,6 @@ export default function Whales({ currency }) {
 
     ws.onmessage = (evt) => {
       const message = JSON.parse(evt.data)
-      console.log('message', message) //delete
       setData(message.transactions)
     }
 
