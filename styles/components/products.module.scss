@@ -1,34 +1,24 @@
 .productsClass :global {
-  .glider-dot {
-    color: var(--text-secondary) !important;
-    &.active {
-      background-color: var(--accent-link) !important;
-    }
-  }
-  .glider-contain {
-    overflow: hidden;
-    height: 285px;
-    width: calc(100% - 40px);
-    max-width: 760px;
-    margin: 0 auto;
-    @media screen and (max-width: 760px) {
-      max-width: 380px;
-    }
+  width: calc(100% - 40px);
+  margin: auto auto 30px auto;
+
+  .slick-dots li button:before {
+    color: var(--text-main) !important;
   }
 
   .products {
-    height: 259px;
+    height: 263.5px;
+    max-width: 760px;
     z-index: 1;
+
     @media screen and (max-width: 760px) {
-      height: 262px;
+      max-width: 380px;
     }
 
     .product {
       position: relative;
-      height: 259px !important;
+      height: 259px;
       background-color: var(--background-main);
-      box-shadow: 0px 0px 2px 0px #00000040;
-      transition: box-shadow 0.3s ease;
 
       &::after {
         content: '';

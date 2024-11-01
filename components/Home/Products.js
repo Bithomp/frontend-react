@@ -4,8 +4,9 @@ import { nativeCurrency, xahauNetwork, devNet, useWidth } from '../../utils'
 import Image from 'next/image'
 import { useIsMobile } from '../../utils/mobile'
 
-import Glider from 'react-glider'
-import 'glider-js/glider.min.css'
+import Slider from 'react-slick'
+import 'slick-carousel/slick/slick.css'
+import 'slick-carousel/slick/slick-theme.css'
 import { productsClass } from '../../styles/components/products.module.scss'
 
 import LogoSmall from '../../public/images/logo-small.svg'
@@ -14,6 +15,18 @@ export default function Products() {
   const { t } = useTranslation()
   const width = useWidth()
   const isMobile = useIsMobile()
+
+  const settings = {
+    dots: true,
+    //infinite: true,
+    speed: 1200,
+    //autoplay: true,
+    //autoplaySpeed: 5000,
+    //pauseOnHover: true,
+    slidesToShow: width > 760 ? 2 : isMobile ? 1 : 2,
+    slidesToScroll: width > 760 ? 2 : isMobile ? 1 : 2,
+    arrows: false
+  }
 
   let products = []
   let part1 = {}
@@ -186,14 +199,7 @@ export default function Products() {
 
   return (
     <div className={productsClass}>
-      <Glider
-        hasDots
-        draggable
-        slidesToShow={width > 760 ? 2 : isMobile ? 1 : 2}
-        slidesToScroll={width > 760 ? 2 : isMobile ? 1 : 2}
-        className="products"
-        scrollLock={true}
-      >
+      <Slider {...settings} className="products">
         {products.map((product, i) => {
           return (
             <div key={i} className={'product list' + (i + 1)}>
@@ -231,7 +237,7 @@ export default function Products() {
             </div>
           )
         })}
-      </Glider>
+      </Slider>
     </div>
   )
 }
