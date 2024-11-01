@@ -23,6 +23,14 @@ import { LedgerLink } from '../utils/links'
 
 let ws = null
 
+function sendData() {
+  if (ws.readyState) {
+    ws.send(JSON.stringify({ command: 'subscribe', streams: [xahauNetwork ? 'uritokens' : 'nftokens'], id: 1 }))
+  } else {
+    setTimeout(sendData, 1000)
+  }
+}
+
 export default function NftStatistics() {
   const { t } = useTranslation()
 
@@ -32,7 +40,7 @@ export default function NftStatistics() {
     ws = new WebSocket(wssServer)
 
     ws.onopen = () => {
-      ws.send(JSON.stringify({ command: 'subscribe', streams: [xahauNetwork ? 'uritokens' : 'nftokens'], id: 1 }))
+      sendData()
     }
 
     ws.onmessage = (evt) => {

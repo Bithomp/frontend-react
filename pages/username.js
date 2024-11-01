@@ -427,14 +427,20 @@ export default function Username({ setSignRequest, account, signOut, addressQuer
     }
   }
 
+  function sendData() {
+    if (ws.readyState) {
+      ws.send(JSON.stringify({ command: 'subscribe', bids: [{ bithompid, address, destinationTag }], id: 1 }))
+    } else {
+      setTimeout(sendData, 1000)
+    }
+  }
+
   const checkPaymentWs = (bithompid, address, destinationTag) => {
     if (!update) return
     ws = new WebSocket(wssServer)
 
     ws.onopen = () => {
-      if (ws.readyState === 1) {
-        ws.send(JSON.stringify({ command: 'subscribe', bids: [{ bithompid, address, destinationTag }], id: 1 }))
-      }
+      sendData()
     }
 
     ws.onmessage = (evt) => {

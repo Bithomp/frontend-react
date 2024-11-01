@@ -8,6 +8,15 @@ import Image from 'next/image'
 
 let ws = null
 
+function sendData() {
+  if (ws.readyState) {
+    //{ command: "subscribe", streams: ["whale_transactions"], currency: true, service: true, id: 1 }
+    ws.send(JSON.stringify({ command: 'subscribe', streams: ['whale_transactions'], id: 1, limit: 6 }))
+  } else {
+    setTimeout(sendData, 1000)
+  }
+}
+
 export default function Whales({ currency }) {
   const [data, setData] = useState(null)
   const [oldData, setOldData] = useState(null)
@@ -28,8 +37,7 @@ export default function Whales({ currency }) {
     ws = new WebSocket(wssServer)
 
     ws.onopen = () => {
-      //{ command: "subscribe", streams: ["whale_transactions"], currency: true, service: true, id: 1 }
-      ws.send(JSON.stringify({ command: 'subscribe', streams: ['whale_transactions'], id: 1, limit: 6 }))
+      sendData()
     }
 
     ws.onmessage = (evt) => {

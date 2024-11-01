@@ -457,14 +457,20 @@ export default function Subscriptions({ setSignRequest, receiptQuery, tabQuery, 
     }
   }
 
+  function sendData() {
+    if (ws.readyState) {
+      ws.send(JSON.stringify({ command: 'subscribe', bids: [{ partnerID: partnerId, destinationTag }], id: 1 }))
+    } else {
+      setTimeout(sendData, 1000)
+    }
+  }
+
   const checkPaymentWs = (partnerId, destinationTag) => {
     if (!update) return
     ws = new WebSocket(wssServer)
 
     ws.onopen = () => {
-      if (ws.readyState === 1) {
-        ws.send(JSON.stringify({ command: 'subscribe', bids: [{ partnerID: partnerId, destinationTag }], id: 1 }))
-      }
+      sendData()
     }
 
     ws.onmessage = (evt) => {

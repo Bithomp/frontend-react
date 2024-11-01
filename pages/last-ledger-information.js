@@ -10,7 +10,7 @@ export const getServerSideProps = async (context) => {
   return {
     props: {
       isSsrMobile: getIsSsrMobile(context),
-      ...(await serverSideTranslations(locale, ['common'])),
+      ...(await serverSideTranslations(locale, ['common']))
     }
   }
 }
@@ -21,24 +21,32 @@ import { LedgerLink } from '../utils/links'
 
 import SEO from '../components/SEO'
 
-let ws = null;
+let ws = null
+
+function sendData() {
+  if (ws.readyState) {
+    ws.send(JSON.stringify({ command: 'subscribe', streams: ['ledger'], id: 1 }))
+  } else {
+    setTimeout(sendData, 1000)
+  }
+}
 
 export default function LastLedgerInformation() {
   const { t } = useTranslation()
 
-  const [ledger, setLedger] = useState(null);
-  const [update, setUpdate] = useState(true);
+  const [ledger, setLedger] = useState(null)
+  const [update, setUpdate] = useState(true)
 
   const connect = () => {
-    ws = new WebSocket(wssServer);
+    ws = new WebSocket(wssServer)
 
     ws.onopen = () => {
-      ws.send(JSON.stringify({ command: "subscribe", streams: ["ledger"], id: 1 }));
+      sendData()
     }
 
-    ws.onmessage = evt => {
-      const message = JSON.parse(evt.data);
-      setLedger(message);
+    ws.onmessage = (evt) => {
+      const message = JSON.parse(evt.data)
+      setLedger(message)
 
       /* 
       {
@@ -79,92 +87,104 @@ export default function LastLedgerInformation() {
 
     ws.onclose = () => {
       if (update) {
-        connect();
+        connect()
       }
     }
   }
 
   useEffect(() => {
-    connect();
+    connect()
     return () => {
-      setLedger(null);
-      setUpdate(false);
-      if (ws) ws.close();
+      setLedger(null)
+      setUpdate(false)
+      if (ws) ws.close()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [])
 
-  let closedAt = '';
+  let closedAt = ''
   if (ledger) {
-    closedAt = ledger.validatedLedger.ledgerTime * 1000;
-    closedAt = new Date(closedAt).toLocaleTimeString();
+    closedAt = ledger.validatedLedger.ledgerTime * 1000
+    closedAt = new Date(closedAt).toLocaleTimeString()
   }
 
-  return <>
-    <SEO title={t("menu.network.last-ledger-information")} />
-    <div className="content-text content-center">
-      <h1 className="center">{t("menu.network.last-ledger-information")}</h1>
-      <div className="main-box">
-        <p>
-          {t("last-ledger-information.ledger-hash")}: {ledger?.validatedLedger.hash.toLowerCase()}
-        </p>
-        <p>
-          {t("last-ledger-information.ledger")}: <LedgerLink version={ledger?.validatedLedger.ledgerIndex} />
-        </p>
-        <p>
-          {t("last-ledger-information.ledger-closed-at")}: {closedAt}</p>
-        <p>
-          {t("last-ledger-information.ledger-interval")}: {ledger?.lastClose?.convergeTimeS && ledger?.lastClose.convergeTimeS + ' ' + t("units.seconds-short")}
-        </p>
-        <p>
-          {t("last-ledger-information.transactions")}:
-          {" "}
-          {ledger?.validatedLedger.transactionsCount &&
-            <LedgerLink
-              version={ledger?.validatedLedger.ledgerIndex}
-              text={ledger.validatedLedger.transactionsCount}
-            />
-          }
-        </p>
-        <p>
-          {t("last-ledger-information.transaction-speed")}: {ledger?.lastClose && (ledger.validatedLedger.transactionsCount / ledger.lastClose.convergeTimeS).toFixed(2)}
-        </p>
-        <p>
-          {t("last-ledger-information.proposers")}: {ledger?.lastClose?.proposers && <Link href="/validators">{ledger.lastClose.proposers}</Link>}
-        </p>
-        <p>
-          {t("last-ledger-information.validation-quorum")}: {ledger?.validationQuorum}
-        </p>
-        <p>
-          {t("last-ledger-information.base-fee")}: {ledger?.validatedLedger.baseFeeXRP && (ledger.validatedLedger.baseFeeXRP * 1).toFixed(6) + ' ' + nativeCurrency}
-        </p>
-        <p>
-          {t("last-ledger-information.base-reserve")}: {ledger?.validatedLedger.reserveBaseXRP && ledger.validatedLedger.reserveBaseXRP + ' ' + nativeCurrency}
-        </p>
-        <p>
-          {t("last-ledger-information.increment-reserve")}: {ledger?.validatedLedger.reserveIncrementXRP && ledger.validatedLedger.reserveIncrementXRP + ' ' + nativeCurrency}
-        </p>
-        <p>
-          {t("last-ledger-information.total-supply") + ": "}
-          <span className='no-brake'>
-            {niceNumber(ledger?.totalCoins && (ledger.totalCoins / 1000000), 6) + ' ' + nativeCurrency}
-          </span>
-        </p>
-        <p>
-          {t("last-ledger-information.total-burned") + ": "}
-          <span className='no-brake'>
-            {niceNumber(ledger?.totalCoins && (100000000000 - ledger.totalCoins / 1000000), 6) + ' ' + nativeCurrency}
-          </span>
-        </p>
-        <p className="center" style={{ position: "absolute", top: "calc(50% - 72px)", left: "calc(50% - 54px)" }}>
-          {!ledger &&
-            <>
-              <span className="waiting"></span>
-              <br />{t("general.loading")}
-            </>
-          }
-        </p>
+  return (
+    <>
+      <SEO title={t('menu.network.last-ledger-information')} />
+      <div className="content-text content-center">
+        <h1 className="center">{t('menu.network.last-ledger-information')}</h1>
+        <div className="main-box">
+          <p>
+            {t('last-ledger-information.ledger-hash')}: {ledger?.validatedLedger.hash.toLowerCase()}
+          </p>
+          <p>
+            {t('last-ledger-information.ledger')}: <LedgerLink version={ledger?.validatedLedger.ledgerIndex} />
+          </p>
+          <p>
+            {t('last-ledger-information.ledger-closed-at')}: {closedAt}
+          </p>
+          <p>
+            {t('last-ledger-information.ledger-interval')}:{' '}
+            {ledger?.lastClose?.convergeTimeS && ledger?.lastClose.convergeTimeS + ' ' + t('units.seconds-short')}
+          </p>
+          <p>
+            {t('last-ledger-information.transactions')}:{' '}
+            {ledger?.validatedLedger.transactionsCount && (
+              <LedgerLink
+                version={ledger?.validatedLedger.ledgerIndex}
+                text={ledger.validatedLedger.transactionsCount}
+              />
+            )}
+          </p>
+          <p>
+            {t('last-ledger-information.transaction-speed')}:{' '}
+            {ledger?.lastClose &&
+              (ledger.validatedLedger.transactionsCount / ledger.lastClose.convergeTimeS).toFixed(2)}
+          </p>
+          <p>
+            {t('last-ledger-information.proposers')}:{' '}
+            {ledger?.lastClose?.proposers && <Link href="/validators">{ledger.lastClose.proposers}</Link>}
+          </p>
+          <p>
+            {t('last-ledger-information.validation-quorum')}: {ledger?.validationQuorum}
+          </p>
+          <p>
+            {t('last-ledger-information.base-fee')}:{' '}
+            {ledger?.validatedLedger.baseFeeXRP &&
+              (ledger.validatedLedger.baseFeeXRP * 1).toFixed(6) + ' ' + nativeCurrency}
+          </p>
+          <p>
+            {t('last-ledger-information.base-reserve')}:{' '}
+            {ledger?.validatedLedger.reserveBaseXRP && ledger.validatedLedger.reserveBaseXRP + ' ' + nativeCurrency}
+          </p>
+          <p>
+            {t('last-ledger-information.increment-reserve')}:{' '}
+            {ledger?.validatedLedger.reserveIncrementXRP &&
+              ledger.validatedLedger.reserveIncrementXRP + ' ' + nativeCurrency}
+          </p>
+          <p>
+            {t('last-ledger-information.total-supply') + ': '}
+            <span className="no-brake">
+              {niceNumber(ledger?.totalCoins && ledger.totalCoins / 1000000, 6) + ' ' + nativeCurrency}
+            </span>
+          </p>
+          <p>
+            {t('last-ledger-information.total-burned') + ': '}
+            <span className="no-brake">
+              {niceNumber(ledger?.totalCoins && 100000000000 - ledger.totalCoins / 1000000, 6) + ' ' + nativeCurrency}
+            </span>
+          </p>
+          <p className="center" style={{ position: 'absolute', top: 'calc(50% - 72px)', left: 'calc(50% - 54px)' }}>
+            {!ledger && (
+              <>
+                <span className="waiting"></span>
+                <br />
+                {t('general.loading')}
+              </>
+            )}
+          </p>
+        </div>
       </div>
-    </div>
-  </>
-};
+    </>
+  )
+}
