@@ -3,8 +3,14 @@
     color: var(--text-main) !important;
   }
 
+  .slick-slide {
+    &[aria-hidden=true] a[href] {
+      visibility: hidden;
+    }
+  }
+
   .products {
-    width: calc(100% - 40px);
+    width: calc(100% - 39px);
     margin: auto auto 30px auto;
     height: 263.5px;
     max-width: 760px;
