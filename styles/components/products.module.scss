@@ -1,12 +1,11 @@
 .productsClass :global {
-  width: calc(100% - 40px);
-  margin: auto auto 30px auto;
-
   .slick-dots li button:before {
     color: var(--text-main) !important;
   }
 
   .products {
+    width: calc(100% - 40px);
+    margin: auto auto 30px auto;
     height: 263.5px;
     max-width: 760px;
     z-index: 1;
