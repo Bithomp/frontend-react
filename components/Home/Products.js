@@ -25,8 +25,7 @@ export default function Products() {
     //pauseOnHover: true,
     slidesToShow: width > 760 ? 2 : isMobile ? 1 : 2,
     slidesToScroll: width > 760 ? 2 : isMobile ? 1 : 2,
-    arrows: false,
-    swipeToSlide: true
+    arrows: false
   }
 
   let products = []
