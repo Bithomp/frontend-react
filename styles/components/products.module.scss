@@ -17,9 +17,11 @@
   }
 
   .products {
-    overflow: hidden;
     height: 259px;
     z-index: 1;
+    @media screen and (max-width: 760px) {
+      height: 262px;
+    }
 
     .product {
       position: relative;

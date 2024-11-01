@@ -12,11 +12,11 @@ import SearchBlock from '../components/Layout/SearchBlock'
 import Ads from '../components/Layout/Ads'
 import Products from '../components/Home/Products'
 import Converter from '../components/Home/Converter'
+import PriceChart from '../components/Home/PriceChart'
 
 import dynamic from 'next/dynamic'
 //not indexed
 const Whales = dynamic(() => import('../components/Home/Whales'), { ssr: false })
-const PriceChart = dynamic(() => import('../components/Home/PriceChart'), { ssr: false })
 const Statistics = dynamic(() => import('../components/Home/Statistics'), { ssr: false })
 
 export async function getServerSideProps(context) {
