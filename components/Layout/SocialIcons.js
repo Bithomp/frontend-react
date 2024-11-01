@@ -5,7 +5,6 @@ import { FaDiscord } from 'react-icons/fa6'
 import { FaYoutube } from 'react-icons/fa6'
 import { FaLinkedin } from 'react-icons/fa6'
 import { FaInstagram } from 'react-icons/fa6'
-import { FaReddit } from 'react-icons/fa6'
 import { FaGithub } from 'react-icons/fa6'
 //import { FaTelegram } from 'react-icons/fa6'
 import { FaFacebook } from 'react-icons/fa6'
@@ -33,11 +32,6 @@ export default function SocialIcons() {
       <a href="https://www.instagram.com/bithomp/">
         <FaInstagram />
       </a>
-      {!xahauNetwork && (
-        <a href="https://www.reddit.com/r/XRPEXPLORER/">
-          <FaReddit />
-        </a>
-      )}
       {/*
       <a href="https://t.me/bithomp">
         <FaTelegram />
