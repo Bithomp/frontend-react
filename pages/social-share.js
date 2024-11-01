@@ -64,9 +64,6 @@ export default function SocialSharePage() {
           <a href="https://www.youtube.com/@bithomp">
             <Img src="/images/social-share/youTube.svg" alt="youTube" width={size} height={size} style={iconStyle} />
           </a>
-          <a href="https://www.reddit.com/r/bithomp/">
-            <Img src="/images/social-share/reddit.svg" alt="reddit" width={size} height={size} style={iconStyle} />
-          </a>
         </div>
       </div>
     </>
