@@ -1,0 +1,8 @@
+{
+  "age-check": {
+    "subtitle": "Explizite Inhalte",
+    "text": "Dies wird explizite und sensible Inhalte aktivieren. Sie müssen volljährig sein, um dies ansehen zu dürfen.",
+    "button-true": "Ja, ich bin über 18",
+    "button-false": "Nein, ich bin es nicht"
+  }
+}
