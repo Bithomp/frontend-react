@@ -3,16 +3,19 @@ import { useTranslation } from 'next-i18next'
 import { useState, useEffect } from 'react'
 import MobileMenu from './MobileMenu'
 
-import { devNet, xahauNetwork, ledgerName, nativeCurrency, ledgerSubName, network } from '../../../utils'
+import { devNet, xahauNetwork, ledgerName, nativeCurrency, ledgerSubName, network, useWidth } from '../../../utils'
 
 import Image from 'next/image'
 import Switch from './Switch'
 import LangTable from './LangTable'
 import CurrencyTable from './CurrencyTable'
 import NetworkTable from './NetworkTable'
-import LogoAnimated from '../LogoAnimated'
 import { FaAngleDown } from 'react-icons/fa'
 import { IoIosRocket } from 'react-icons/io'
+
+import LogoSmall from '../LogoSmall'
+import XrplExplorer from '../../../public/images/xrplexplorer.svg'
+import XahauExplorer from '../../../public/images/xahauexplorer.svg'
 
 let timeoutIds = {}
 
@@ -80,6 +83,8 @@ export default function Header({
 
   const [hoverStates, setHoverStates] = useState({})
 
+  const width = useWidth()
+
   useEffect(() => {
     setRendered(true)
     setXummUserToken(localStorage.getItem('xamanUserToken'))
@@ -140,7 +145,15 @@ export default function Header({
       <header>
         <div className="header-logo">
           <Link href="/" aria-label="Main page">
-            <LogoAnimated />
+            {width < 1060 && width > 350 ? (
+              xahauNetwork ? (
+                <XahauExplorer height="43" width="263" />
+              ) : (
+                <XrplExplorer height="43" width="227" />
+              )
+            ) : (
+              <LogoSmall width="43" height="43" />
+            )}
           </Link>
         </div>
         <div className="header-menu-left">

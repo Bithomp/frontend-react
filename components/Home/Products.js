@@ -9,7 +9,7 @@ import 'slick-carousel/slick/slick.css'
 import 'slick-carousel/slick/slick-theme.css'
 import { productsClass } from '../../styles/components/products.module.scss'
 
-import LogoSmall from '../../public/images/logo-small.svg'
+import LogoSmall from '../../components/Layout/LogoSmall'
 
 export default function Products() {
   const { t } = useTranslation()
@@ -211,12 +211,12 @@ export default function Products() {
                       <li key={index}>
                         {item.externalLink || item.oldLink ? (
                           <a href={item.externalLink || item.oldLink}>
-                            <LogoSmall />
+                            <LogoSmall dependOnTheme={true} />
                             <span>{item.text}</span>
                           </a>
                         ) : (
                           <Link href={item.link}>
-                            <LogoSmall />
+                            <LogoSmall dependOnTheme={true} />
                             <span>{item.text}</span>
                           </Link>
                         )}
