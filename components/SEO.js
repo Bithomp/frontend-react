@@ -19,17 +19,19 @@ export default function SEO({ title, titleWithNetwork, description, image, page,
     site_name: websiteName || explorerName + ' ' + (page ? page : '')
   }
 
+  let imagePath = server + '/images/' + (xahauNetwork ? 'xahauexplorer' : 'xrplexplorer') + '/'
+
   if (image) {
     images = [image]
   } else if (!images) {
     images = [
       {
-        file: server + '/logo512.png',
+        file: imagePath + '512.png',
         width: 512,
         height: 512
       },
       {
-        file: server + '/logo192.png',
+        file: imagePath + '192.png',
         width: 192,
         height: 192
       }

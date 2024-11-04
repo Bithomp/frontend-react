@@ -32,8 +32,13 @@ export async function getServerSideProps(context) {
 const ldJsonWebsite = {
   '@context': 'https://schema.org',
   '@type': 'WebSite',
-  name: 'XRP Explorer',
-  alternateName: ['XRP Explorer', 'XRPL Explorer', 'Scan XRP Ledger', 'Bithomp XRPL Explorer'],
+  name: nativeCurrency + ' Explorer',
+  alternateName: [
+    nativeCurrency + ' Explorer',
+    explorerName + ' Explorer',
+    'Scan ' + nativeCurrency + ' Ledger',
+    'Bithomp' + explorerName + ' and Services'
+  ],
   url: server,
   potentialAction: {
     '@type': 'SearchAction',
@@ -86,12 +91,12 @@ export default function Home({ selectedCurrency, setSelectedCurrency, showAds })
           {
             width: 512,
             height: 512,
-            file: server + '/logo512.png'
+            file: server + '/images/' + (xahauNetwork ? 'xahauexplorer' : 'xrplexplorer') + '/512.png'
           },
           {
             width: 192,
             height: 192,
-            file: server + '/logo192.png'
+            file: server + '/images/' + (xahauNetwork ? 'xahauexplorer' : 'xrplexplorer') + '/192.png'
           }
         ]}
       />

@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { useEffect, useState } from 'react'
 import { useTranslation } from 'next-i18next'
 import { nativeCurrency, xahauNetwork, devNet, useWidth } from '../../utils'
 import Image from 'next/image'
@@ -15,6 +16,13 @@ export default function Products() {
   const { t } = useTranslation()
   const width = useWidth()
   const isMobile = useIsMobile()
+
+  const [rendered, setRendered] = useState(false)
+
+  useEffect(() => {
+    setRendered(true)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const settings = {
     dots: true,
@@ -211,12 +219,12 @@ export default function Products() {
                       <li key={index}>
                         {item.externalLink || item.oldLink ? (
                           <a href={item.externalLink || item.oldLink}>
-                            <LogoSmall dependOnTheme={true} />
+                            {rendered && <LogoSmall dependOnTheme={true} />}
                             <span>{item.text}</span>
                           </a>
                         ) : (
                           <Link href={item.link}>
-                            <LogoSmall dependOnTheme={true} />
+                            {rendered && <LogoSmall dependOnTheme={true} />}
                             <span>{item.text}</span>
                           </Link>
                         )}

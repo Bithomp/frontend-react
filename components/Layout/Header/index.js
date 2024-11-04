@@ -14,8 +14,8 @@ import { FaAngleDown } from 'react-icons/fa'
 import { IoIosRocket } from 'react-icons/io'
 
 import LogoSmall from '../LogoSmall'
-import XrplExplorer from '../../../public/images/xrplexplorer.svg'
-import XahauExplorer from '../../../public/images/xahauexplorer.svg'
+import XrplExplorer from '../../../public/images/xrplexplorer/long.svg'
+import XahauExplorer from '../../../public/images/xahauexplorer/long.svg'
 
 let timeoutIds = {}
 

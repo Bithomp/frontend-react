@@ -6,7 +6,8 @@ export async function middleware(req) {
   if (
     req.nextUrl.pathname.startsWith('/_next') ||
     req.nextUrl.pathname.includes('/api/') ||
-    PUBLIC_FILE.test(req.nextUrl.pathname)
+    PUBLIC_FILE.test(req.nextUrl.pathname) ||
+    req.nextUrl.pathname.includes('/manifest.json')
   ) {
     return
   }
