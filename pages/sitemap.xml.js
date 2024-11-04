@@ -1,6 +1,7 @@
 import { network, server, xahauNetwork } from '../utils'
 
 const pages = [
+  { loc: 'explorer/', changefreq: 'monthly', priority: '1' },
   { loc: '', changefreq: 'always', priority: '1' },
   { loc: 'faucet', changefreq: 'monthly', priority: '1' },
   { loc: 'username', changefreq: 'monthly', priority: '1' },
@@ -62,8 +63,6 @@ function generateSiteMap(posts) {
   const locales = ['en', 'ko', 'ru', 'de', 'es', 'id', 'ja']
   const noTranslatedPages = [
     'admin',
-    'submit/',
-    'paperwallet/',
     'advertise',
     'eaas',
     'build-unl',
@@ -72,7 +71,7 @@ function generateSiteMap(posts) {
     'disclaimer',
     'xrpl-article'
   ]
-  const oldPages = ['submit/', 'paperwallet/']
+  const oldPages = ['submit/', 'paperwallet/', 'explorer/']
   const pagesWithoutTranslation = [...noTranslatedPages, ...oldPages]
 
   return `<?xml version="1.0" encoding="UTF-8"?>
