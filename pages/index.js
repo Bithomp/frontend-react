@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { LogoJsonLd, SocialProfileJsonLd } from 'next-seo'
 import Head from 'next/head'
 
-import { server, explorerName, nativeCurrency, devNet } from '../utils'
+import { server, explorerName, nativeCurrency, devNet, xahauNetwork } from '../utils'
 import { getIsSsrMobile } from '../utils/mobile'
 
 import SEO from '../components/SEO'
@@ -55,25 +55,34 @@ export default function Home({ selectedCurrency, setSelectedCurrency, showAds })
       <LogoJsonLd logo={server + '/images/logo.svg'} url={server} />
       <SocialProfileJsonLd
         type="Organization"
-        name="Bithomp"
+        name={xahauNetwork ? 'XAHAU Explorer' : 'XRPL Explorer'}
         url={server}
-        sameAs={[
-          'http://instagram.com/bithomp',
-          'https://x.com/bithomp',
-          'https://www.youtube.com/@bithomp',
-          'https://www.linkedin.com/company/bithomp/'
-        ]}
+        sameAs={
+          xahauNetwork
+            ? [
+                'http://instagram.com/xahauexplorer/',
+                'https://x.com/xahauexplorer',
+                'https://www.youtube.com/@bithomp',
+                'https://www.linkedin.com/company/bithomp/'
+              ]
+            : [
+                'https://www.instagram.com/xrplexplorer/',
+                'https://x.com/xrplexplorer',
+                'https://www.youtube.com/@bithomp',
+                'https://www.linkedin.com/company/xrplexplorer/'
+              ]
+        }
       />
       <SEO
         title={t('home.title', { explorerName, nativeCurrency })}
         titleWithNetwork="true"
         description={t('home.description', { explorerName, nativeCurrency })}
         images={[
-          {
-            width: 1200,
-            height: 630,
-            file: 'og-logo.png'
-          },
+          //{
+          //  width: 1200,
+          //  height: 630,
+          //  file: 'og-logo.png'
+          //},
           {
             width: 512,
             height: 512,
