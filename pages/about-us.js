@@ -16,7 +16,7 @@ export async function getServerSideProps(context) {
 }
 
 export default function AboutUs() {
-  const { t } = useTranslation(['common', 'about-us'])
+  const { t, i18n } = useTranslation()
 
   return (
     <>
@@ -112,15 +112,15 @@ export default function AboutUs() {
           <li>
             <b>
               Explorers and Faucets for{' '}
-              <a href="https://test.xrplexplorer.com/faucet" target="_blank" rel="noreferrer">
+              <a href={'https://test.xrplexplorer.com/' + i18n.language + '/faucet'} target="_blank" rel="noreferrer">
                 XRPL Testnet
               </a>
               ,{' '}
-              <a href="https://dev.xrplexplorer.com/faucet" target="_blank" rel="noreferrer">
+              <a href={'https://dev.xrplexplorer.com/' + i18n.language + '/faucet'} target="_blank" rel="noreferrer">
                 XRPL Devnet
               </a>
               , and{' '}
-              <a href="https://test.xahauexplorer.com/faucet" target="_blank" rel="noreferrer">
+              <a href={'https://test.xahauexplorer.com/' + i18n.language + '/faucet'} target="_blank" rel="noreferrer">
                 XAHAU Testnet
               </a>
             </b>{' '}

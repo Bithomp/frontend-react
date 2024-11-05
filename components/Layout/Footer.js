@@ -11,7 +11,7 @@ import LogoAnimated from './LogoAnimated'
 import ButtonScrollTop from './ButtonScrollTop'
 
 export default function Footer() {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const footerRef = useRef()
 
   return (
@@ -33,7 +33,7 @@ export default function Footer() {
           {network === 'mainnet' && (
             <>
               <a href={'https://test.xrplexplorer.com/create/'}>{t('menu.developers.account-generation')}</a>
-              <a href={'https://test.xrplexplorer.com/faucet'}>{t('menu.developers.faucet')}</a>
+              <a href={'https://test.xrplexplorer.com/' + i18n.language + '/faucet'}>{t('menu.developers.faucet')}</a>
               <a href={'https://test.xrplexplorer.com/tools/'}>Bithomp tools</a>
             </>
           )}
