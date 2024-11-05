@@ -81,7 +81,7 @@ export const countriesTranslated = (language) => {
   if (language === 'default') {
     lang = 'en'
   }
-  const notSupportedLanguages = ['my'] // supported "en", "ru", "ja", "ko" etc
+  const notSupportedLanguages = ['my'] // supported "en", "ru", "ja", "ko", "fr" etc
   if (notSupportedLanguages.includes(lang)) {
     lang = 'en'
   }

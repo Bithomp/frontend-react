@@ -19,7 +19,7 @@ export default function SEO({ title, titleWithNetwork, description, image, page,
     site_name: websiteName || explorerName + ' ' + (page ? page : '')
   }
 
-  let imagePath = server + '/images/' + (xahauNetwork ? 'xahauexplorer' : 'xrplexplorer') + '/'
+  const imagePath = server + '/images/' + (xahauNetwork ? 'xahauexplorer' : 'xrplexplorer') + '/'
 
   if (image) {
     images = [image]
@@ -76,7 +76,8 @@ export default function SEO({ title, titleWithNetwork, description, image, page,
     { hrefLang: 'de', href: server + '/de' + path },
     { hrefLang: 'es', href: server + '/es' + path },
     { hrefLang: 'id', href: server + '/id' + path },
-    { hrefLang: 'ja', href: server + '/ja' + path }
+    { hrefLang: 'ja', href: server + '/ja' + path },
+    { hrefLang: 'fr', href: server + '/fr' + path }
   ]
 
   return (

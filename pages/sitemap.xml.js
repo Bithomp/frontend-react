@@ -60,7 +60,7 @@ if (network === 'mainnet') {
 }
 
 function generateSiteMap(posts) {
-  const locales = ['en', 'ko', 'ru', 'de', 'es', 'id', 'ja']
+  const locales = ['en', 'ko', 'ru', 'de', 'es', 'id', 'ja', 'fr']
   const noTranslatedPages = [
     'admin',
     'advertise',

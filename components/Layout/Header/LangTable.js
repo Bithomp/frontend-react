@@ -8,6 +8,7 @@ import 'moment/locale/de' // 'de'
 import 'moment/locale/es' // 'es'
 import 'moment/locale/id' // 'id'
 import 'moment/locale/ja' // 'ja'
+import 'moment/locale/fr' // 'fr'
 
 import { useRouter } from 'next/router'
 import Cookies from 'universal-cookie'
@@ -71,12 +72,13 @@ export default function LanguageSwitch({ close }) {
   //first collumn would become the most popular except the indonesian
   const langList = [
     { value: 'en', label: 'English' },
-    { value: 'es', label: 'Español' },
-    { value: 'ko', label: '한국어' },
     { value: 'ja', label: '日本語' },
+    { value: 'ko', label: '한국어' },
+    { value: 'es', label: 'Español' },
     { value: 'ru', label: 'Русский' },
-    { value: 'id', label: 'Bahasa Indonesia' },
-    { value: 'de', label: 'Deutsch' }
+    { value: 'fr', label: 'Français' },
+    { value: 'de', label: 'Deutsch' },
+    { value: 'id', label: 'Bahasa Indonesia' }
   ]
 
   const langTable = () => {

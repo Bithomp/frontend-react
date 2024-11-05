@@ -16,7 +16,7 @@ export async function middleware(req) {
 
   //if someone has an old link with old locale that was removed.
   const removedLocales = ['ca', 'da', 'nn', 'my', 'hr']
-  const currentLocales = ['en', 'ko', 'ru', 'de', 'es', 'id', 'ja']
+  const currentLocales = ['en', 'ko', 'ru', 'de', 'es', 'id', 'ja', 'fr']
 
   const reactLocale = req.nextUrl.locale
 
