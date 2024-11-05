@@ -3,11 +3,11 @@
   "desc": "ここでは、特定のNFT発行者のNFTの分布を確認することができます。NFT発行者のアドレスまたはユーザネームを入力し、検索ボタンを押してください。",
   "no-nfts": "そのアドレスから発行されたNFTは見つかりませんでした。",
   "total": "{{users}} アカウントが {{nfts}} NFTを保有しています。",
-  "nonSelfIssued": "{{users}} accounts own {{nfts}} non-self-issued NFTs",
-  "selfIssued": "{{users}} accounts own {{nfts}} self-issued NFTs",
+  "nonSelfIssued": "{{users}} アカウントが {{nfts}} 非自己発行NFTを保有しています",
+  "selfIssued": "{{users}} アカウントが {{nfts}} 自己発行NFTを保有しています",
   "table": {
-    "non-self-issued": "Non-self-issued",
-    "self-issued": "Self-issued",
-    "total": "Total"
+    "non-self-issued": "非自己発行",
+    "self-issued": "自己発行",
+    "total": "合計"
   }
 }

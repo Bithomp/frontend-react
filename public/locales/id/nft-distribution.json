@@ -3,11 +3,11 @@
   "desc": "Di sini Anda dapat memeriksa distribusi NFT dari penerbit NFT tertentu. Masukkan alamat penerbit NFT atau username dan tekan tombol pencarian.",
   "no-nfts": "Kami tidak dapat menemukan NFT yang diterbitkan oleh alamat tersebut.",
   "total": "{{users}} akun memiliki {{nfts}} NFT",
-  "nonSelfIssued": "{{users}} accounts own {{nfts}} non-self-issued NFTs",
-  "selfIssued": "{{users}} accounts own {{nfts}} self-issued NFTs",
+  "nonSelfIssued": "{{users}} akun memiliki {{nfts}} NFT yang diterbitkan oleh pihak lain",
+  "selfIssued": "{{users}} akun memiliki {{nfts}} NFT yang diterbitkan sendiri",
   "table": {
-    "non-self-issued": "Non-self-issued",
-    "self-issued": "Self-issued",
+    "non-self-issued": "Diterbitkan oleh pihak lain",
+    "self-issued": "Diterbitkan sendiri",
     "total": "Total"
   }
 }

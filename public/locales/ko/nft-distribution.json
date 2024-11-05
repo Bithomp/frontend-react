@@ -3,11 +3,11 @@
   "desc": "여기에서 특정 NFT 발행자의 NFT 분포를 확인할 수 있습니다. NFT 발행자 주소 또는 사용자 이름을 입력하고 검색 버튼을 누릅니다",
   "no-nfts": "해당 주소에서 발행된 NFT를 찾을 수 없습니다",
   "total": "{{users}} 계정이 {{nfts}} NFT를 보유하고 있습니다.",
-  "nonSelfIssued": "{{users}} accounts own {{nfts}} non-self-issued NFTs",
-  "selfIssued": "{{users}} accounts own {{nfts}} self-issued NFTs",
+  "nonSelfIssued": "{{users}} 계정이 {{nfts}} 비자기 발행 NFT를 보유하고 있습니다.",
+  "selfIssued": "{{users}} 계정이 {{nfts}} 자기 발행 NFT를 보유하고 있습니다.",
   "table": {
-    "non-self-issued": "Non-self-issued",
-    "self-issued": "Self-issued",
-    "total": "Total"
+    "non-self-issued": "비자기 발행",
+    "self-issued": "자기 발행",
+    "total": "총계"
   }
 }

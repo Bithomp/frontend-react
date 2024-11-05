@@ -1,0 +1,8 @@
+{
+  "age-check": {
+    "subtitle": "Konten eksplisit",
+    "text": "Ini akan mengaktifkan konten eksplisit dan sensitif. Anda harus berusia legal untuk melihat ini.",
+    "button-true": "Ya, saya di atas 18 tahun",
+    "button-false": "Tidak, saya belum"
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "age-check": {
+    "subtitle": "Contenido explícito",
+    "text": "Esto activará contenido explícito y sensible. Debes tener la edad legal para verlo.",
+    "button-true": "Sí, tengo más de 18 años",
+    "button-false": "No, no la tengo"
+  }
+}
