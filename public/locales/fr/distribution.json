@@ -1,0 +1,4 @@
+{
+  "desc": "Ici, vous pouvez trouver les 100 MEILLEURES comptes par solde de {{nativeCurrency}}.",
+  "summary": "Il y a <1>{{activeAccounts}}</1> comptes actifs, total disponible : <3>{{totalCoins}}</3>"
+}

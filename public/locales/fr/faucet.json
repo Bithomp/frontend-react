@@ -1,0 +1,31 @@
+{
+  "error-occured:": "Une erreur est survenue",
+  "try-later": "Vous avez déjà essayé aujourd'hui. Revenez dans {{time}}.",
+  "test-the-speed": "Tester la vitesse et la fiabilité des paiements {{explorerName}}",
+  "experience-fast-transactions": "Découvrez à quel point il est rapide et facile d'effectuer des transactions sur le réseau {{explorerName}} !",
+  "form": {
+    "placeholder": {
+      "enter-address": "Entrez votre adresse {{ledgerName}}"
+    }
+  },
+  "how-it-works": "Comment ça fonctionne :",
+  "activated-wallet-required": "Portefeuille activé requis",
+  "ensure-wallet-activated": "Assurez-vous que votre portefeuille est activé.",
+  "receive-currency-drops": "Recevoir des drops de {{nativeCurrency}}",
+  "get-between-drops": "Vous pouvez recevoir de 1 drop à 0,1 {{nativeCurrency}}.",
+  "get-instant-feedback": "Recevoir un retour instantané",
+  "see-if-payment-succeeded": "Voir si le paiement a réussi ou échoué. Découvrez le temps exact qu'il a fallu pour arriver, vérifiez les frais de transaction et obtenez un lien de transaction pour voir tous les détails.",
+  "daily-testing-limit": "Limite de test quotidienne",
+  "can-test-only-once-per-day": "Vous ne pouvez le tester qu'une fois par jour (un portefeuille par IP).",
+  "button": {
+    "test-now": "Tester maintenant"
+  },
+  "try-it-now": "Essayez-le maintenant et voyez à quelle vitesse les paiements en {{nativeCurrency}} sont traités !",
+  "test-completed": "Test terminé !",
+  "validated-on-ledger": "<0>Validé</0> sur le Ledger <2/>",
+  "table": {
+    "fee": "Frais",
+    "transaction-hash": "Hash de la transaction"
+  },
+  "confirmed-within-seconds": "Confirmé en <2>{{time}} secondes</2>"
+}

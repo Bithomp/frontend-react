@@ -1,0 +1,19 @@
+{
+  "table": {
+    "validator": "Validateur",
+    "server-country": "Pays du serveur",
+    "server-location": "Emplacement du serveur",
+    "cloud-private": "Cloud/privé",
+    "network-asn": "ASN du réseau",
+    "owner-country": "Pays du propriétaire",
+    "votes-for": "Votes pour",
+    "last-seen": "Dernière vue",
+    "text": {
+      "domain-verified-toml": "Domaine vérifié (fichier TOML)",
+      "unl": "Dans la liste unique des nœuds (UNL)",
+      "negative-unl": "dans la liste UNL négative"
+    }
+  },
+  "domain-legacy": "Domaine (ancienne vérification)",
+  "text0": "La liste des validateurs <1>{{url}}</1> a une séquence {{sequence}} et une expiration le {{expiration}}.<br/>Elle comprend {{validatorCount}} validateurs qui sont listés ci-dessous."
+}

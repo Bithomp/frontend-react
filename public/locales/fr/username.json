@@ -1,0 +1,54 @@
+{
+  "memo": "Inscription à un nom d'utilisateur Bithomp",
+  "error": {
+    "address-empty": "Veuillez entrer votre adresse XRPL.",
+    "address-invalid": "Veuillez entrer une adresse XRPL valide.",
+    "address-hosted": "L'adresse saisie est hébergée sur {{service}}, vous ne pouvez enregistrer des noms d'utilisateur que pour des portefeuilles non hébergés (portefeuilles matériels, Xaman, etc.). Si vous êtes un opérateur d'échange, veuillez nous contacter.",
+    "address-done": "L'adresse a déjà un nom d'utilisateur enregistré.",
+    "username-empty": "Veuillez entrer le nom d'utilisateur que vous souhaitez enregistrer.",
+    "username-invalid": "Le nom d'utilisateur doit comporter moins de 18 caractères, aucun symbole n'est autorisé.",
+    "username-taken": "Le nom d'utilisateur <b>{{username}}</b> est déjà pris :(",
+    "username-reserved": "Le nom d'utilisateur <b>{{username}}</b> est réservé, contactez notre support.",
+    "username-hold": "Le nom d'utilisateur <b>{{username}}</b> est en attente d'enregistrement par un autre compte XRPL. Vous pouvez réessayer dans 24 heures.",
+    "agree-terms-page": "Veuillez accepter les conditions générales spécifiées sur cette page.",
+    "agree-terms-site": "Veuillez accepter les conditions générales du site.",
+    "agree-privacy-policy": "Veuillez accepter notre politique de confidentialité."
+  },
+  "step0": {
+    "text0": "Le <1>nom d'utilisateur</1> Bithomp est un <3>nom public</3> pour votre adresse {{ledgerName}}.",
+    "text1": "Le nom d'utilisateur sera associé à votre adresse sur l'explorateur Bithomp et dans les services tiers qui utilisent l'<1>API</1> Bithomp. Après l'enregistrement, il deviendra public - <3>tout le monde</3> pourra le voir. Votre adresse XRPL sera accessible par :",
+    "text2": "Le nom d'utilisateur <1>ne peut pas être changé ou supprimé</1>.",
+    "only-one-for-address": "Pour chaque adresse XRPL, vous pouvez enregistrer un seul nom d'utilisateur.",
+    "address-you-control": "Vous ne pouvez enregistrer des noms d'utilisateur que pour les adresses XRPL que vous contrôlez (vous avez un secret ou des mots de récupération de 12/24 mots). Vous ne pouvez pas enregistrer un nom d'utilisateur pour une adresse hébergée (qui a une étiquette de destination) dans un échange/service/portefeuille.",
+    "pay-from-your-address": "Pour prouver que vous contrôlez l'adresse XRPL, vous devrez effectuer un paiement depuis cette adresse (pour laquelle vous souhaitez attribuer un nom d'utilisateur). Les paiements provenant d'autres adresses seront considérés comme des dons et ne seront pas remboursés.",
+    "text3": "Le paiement est de 100 couronnes suédoises libellées en XRP. Le paiement pour le nom d'utilisateur est <1>non remboursable</1>. Si vous payez plus que demandé, le montant excédentaire sera considéré comme un don et ne sera pas remboursé.",
+    "text4": "Les noms d'utilisateur sont désormais utilisés de manière inter-chaînes, <2>enregistrez un nom d'utilisateur sur le réseau principal XRPL</2> et il sera disponible sur d'autres explorateurs Bithomp (dans un délai d'1 heure).",
+    "enter-address-or": "Entrez votre adresse XRPL ou",
+    "sign-in": "Se connecter avec Xaman",
+    "sign-out": "se déconnecter",
+    "your-address": "Votre adresse XRPL",
+    "enter-username": "Entrez le nom d'utilisateur que vous souhaitez avoir",
+    "your-username": "Nom d'utilisateur",
+    "enter-country": "Votre pays de résidence (pour notre comptabilité)",
+    "agree-terms-page": "Je comprends et j'accepte les conditions générales spécifiées ci-dessus.",
+    "agree-terms-site": "J'accepte les <2>Conditions générales</2>.",
+    "agree-privacy-policy": "J'accepte la <2>politique de confidentialité</2>.",
+    "already-registered": "Votre compte a déjà un nom d'utilisateur enregistré",
+    "sign-out-to-register-another-one": "<0>Déconnectez-vous</0> de ce compte pour enregistrer un nom d'utilisateur pour une adresse différente."
+  },
+  "step1": {
+    "to-register": "Pour enregistrer votre nom d'utilisateur public :",
+    "from-your-address": "Vous devez effectuer un paiement depuis l'adresse :",
+    "text0": "Les paiements que vous <1>faites depuis d'autres adresses</1> ou avec une <3>mauvaise étiquette de destination</3> ne seront pas acceptés pour le service, ils seront considérés comme un don et <5>ne seront pas remboursés</5>.",
+    "payment-instructions": "Instructions de paiement",
+    "address": "Adresse XRPL :",
+    "tag": "Étiquette de destination :",
+    "amount": "Montant :",
+    "awaiting": "En attente de votre paiement",
+    "about-confirmation": "Vous verrez une confirmation dès que nous recevrons votre paiement."
+  },
+  "step2": {
+    "text0": "Félicitations ! Votre nom d'utilisateur <1>{{ username }}</1> a été enregistré avec succès.",
+    "one-more": "Enregistrer un autre"
+  }
+}

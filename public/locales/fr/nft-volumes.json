@@ -1,0 +1,20 @@
+{
+  "header": "Volumes de ventes de NFT",
+  "text0": "Pour cette période, XRPL a eu {{allSales}} {{currency}} NFT {{saleType}} ventes pour {{allVolume}}.",
+  "collections": {
+    "desc": "Voici la liste des collections de NFT. Les volumes ici n'incluent pas les ventes primaires (mints) qui ont été effectuées dans 2 transactions (paiement et transfert de NFT)."
+  },
+  "brokers": {
+    "desc": "Voici la liste des comptes de courtiers NFT. Vous pouvez y trouver les volumes des bots d'appariement d'offres. Les places de marché utilisent des modèles de commerce mixtes, ici vous ne pouvez voir que les volumes par le biais du modèle de courtage.",
+    "no-broker": "Aucun courtier",
+    "text0": "Pour cette période, XRPL a eu {{allSales}} <3>{{currency}}</3> NFT {{saleType}} ventes pour {{allVolume}}, dont <9>{{brokerSales}}</9> {{percentBrokerSales}} des échanges pour <13>{{brokerVolume}}</13> {{percentBrokerVolume}} étaient par le biais du modèle de courtage."
+  },
+  "marketplaces": {
+    "desc": "Voici la liste des places de marché NFT sur XRPL. Les volumes ici n'incluent pas les ventes primaires (mints) qui ont été effectuées dans 2 transactions (paiement et transfert de NFT)."
+  },
+  "issuers": {
+    "desc": "Voici la liste des émetteurs de NFT sur XRPL. Pour voir les volumes des collections de NFT identifiées par émetteur et taxon, cliquez sur le lien dans la colonne Volume des ventes."
+  },
+  "sales-chart": "Graphique des ventes",
+  "volumes-chart": "Graphique des volumes"
+}

@@ -1,0 +1,42 @@
+{
+  "header": "Jeu de gouvernance {{ledgerName}}",
+  "summary": "Il y a <1>{{ countTables }}</1> sièges.",
+  "reward-rate": "Taux de récompense : <1>{{ rewardRate }}</1>.",
+  "reward-delay": "Délai de récompense : <1>{{ rewardDelay }}</1> ({{ rewardDelaySeconds }} secondes).",
+  "button": {
+    "show-main-table": "Afficher le tableau principal",
+    "vote-seat": "Votez pour un siège",
+    "vote-reward-rate": "Votez pour un taux de récompense",
+    "vote-reward-delay": "Votez pour un délai de récompense",
+    "vote-hook": "Votez pour un hook"
+  },
+  "table": {
+    "cast-first-vote": "Exprimez le premier vote",
+    "members": "Membres",
+    "seat": "Siège",
+    "no-seat": "Pas de siège",
+    "layer": "Couche",
+    "hooks": "Hooks",
+    "place": "Place",
+    "hook": "Hook",
+    "target": "Cible",
+    "votes": "Votes",
+    "voter": "Voteur",
+    "rate": "Taux",
+    "value": "Valeur",
+    "delay": "Délai",
+    "in-seconds": "En secondes",
+    "seat-votes": "Votes de siège",
+    "seat-votes-count": "Compte des votes de siège",
+    "reward-rate-votes": "Votes pour le taux de récompense",
+    "reward-rate-votes-count": "Compte des votes pour le taux de récompense",
+    "reward-delay-votes": "Votes pour le délai de récompense",
+    "reward-delay-votes-count": "Compte des votes pour le délai de récompense",
+    "hook-votes": "Votes pour le hook",
+    "hook-votes-count": "Compte des votes pour le hook",
+    "text": {
+      "vacate-seat": "Libérer le siège",
+      "vacate-place": "Libérer la place"
+    }
+  }
+}

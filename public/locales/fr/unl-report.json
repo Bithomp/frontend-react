@@ -1,0 +1,5 @@
+{
+  "header": "Rapport UNL",
+  "desc": "Ici, vous pouvez voir le rapport UNL pour le Ledger <1>#{{ledgerIndex}}</1>, entrée du grand livre : 61E32E...6F28DC.",
+  "summary": "Il y a <1>{{activeValidators}}</1> validateurs actifs."
+}
