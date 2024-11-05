@@ -75,8 +75,8 @@ export default function Home({ selectedCurrency, setSelectedCurrency, showAds })
             : [
                 'https://www.instagram.com/xrplexplorer/',
                 'https://x.com/xrplexplorer',
-                'https://www.youtube.com/@bithomp',
-                'https://www.linkedin.com/company/xrplexplorer/'
+                'https://www.youtube.com/@bithomp'
+                //'https://www.linkedin.com/company/xrplexplorer/'
               ]
         }
       />
