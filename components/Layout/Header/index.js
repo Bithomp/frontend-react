@@ -145,7 +145,7 @@ export default function Header({
       <header>
         <div className="header-logo">
           <Link href="/" aria-label="Main page">
-            {width < 1060 && width > 350 ? (
+            {(width < 1060 && width > 350) || width > 1240 ? (
               xahauNetwork ? (
                 <XahauExplorer height="43" width="263" />
               ) : (
@@ -156,7 +156,7 @@ export default function Header({
             )}
           </Link>
         </div>
-        <div className="header-menu-left">
+        <div className="header-menu-left" style={width > 1240 ? { left: xahauNetwork ? 300 : 260 } : {}}>
           <MenuDropDown
             id="dropdown1"
             title={t('menu.services.services')}
