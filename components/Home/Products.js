@@ -25,8 +25,8 @@ export default function Products() {
   }, [])
 
   const settings = {
-    dots: true,
-    infinite: true,
+    dots: !devNet,
+    infinite: !devNet,
     //speed: 1200,
     //autoplay: true,
     //autoplaySpeed: 5000,
