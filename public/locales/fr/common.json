@@ -155,7 +155,7 @@
     }
   },
   "home": {
-    "title": "Explorateur de Registre {{nativeCurrency}} Bithomp",
+    "title": "Explorateur {{explorerName}} | Scanner le registre {{nativeCurrency}}",
     "description": "Scannez le Registre {{nativeCurrency}}",
     "search-placeholder": "Rechercher par Adresse / Transaction / NFT / Nom d'utilisateur / PayString / Offre / Hash de monnaie",
     "search-placeholder-short": "Adresse / Transaction / Nom d'utilisateur",

@@ -155,7 +155,7 @@
     }
   },
   "home": {
-    "title": "Bithomp {{nativeCurrency}} Ledger Explorer",
+    "title": "{{explorerName}} Explorer | Scan {{nativeCurrency}} Ledger",
     "description": "Scan the {{nativeCurrency}} Ledger",
     "search-placeholder": "Search by Address / Transaction / NFT / Username / PayString / Offer / Currency hash",
     "search-placeholder-short": "Address / Transaction / Username",
