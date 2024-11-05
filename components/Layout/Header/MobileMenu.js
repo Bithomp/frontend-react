@@ -23,7 +23,6 @@ export default function MobileMenu({
   mobileMenuToggle,
   displayName,
   address,
-  hashicon,
   username,
   setSignRequest,
   proName,
@@ -44,7 +43,13 @@ export default function MobileMenu({
         <div className="mobile-menu-directory" data-expanded={displayName ? 'false' : 'true'}>
           {displayName ? (
             <>
-              <img src={hashicon} alt="user icon" style={{ width: '18px', height: '18px', marginRight: '5px' }} />
+              <Image
+                alt="avatar"
+                src={'https://cdn.bithomp.com/avatar/' + address}
+                width="18"
+                height="18"
+                style={{ marginRight: '5px' }}
+              />
               {displayName}
             </>
           ) : (

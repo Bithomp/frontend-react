@@ -113,8 +113,7 @@ export default function Whales({ currency }) {
                   <span style={styleAddress}>
                     <Image
                       src={'https://cdn.bithomp.com/avatar/' + tx.sourceAddress}
-                      className={tx.sourceAddressDetails?.service || 'service logo'}
-                      alt="service"
+                      alt={tx.sourceAddressDetails?.service || 'service logo'}
                       height={20}
                       width={20}
                       style={{ marginRight: '5px', marginBottom: '-5px' }}
@@ -125,8 +124,7 @@ export default function Whales({ currency }) {
                   <span style={styleAddress}>
                     <Image
                       src={'https://cdn.bithomp.com/avatar/' + tx.destinationAddress}
-                      className={tx.destinationAddressDetails?.service || 'service logo'}
-                      alt="service"
+                      alt={tx.destinationAddressDetails?.service || 'service logo'}
                       height={20}
                       width={20}
                       style={{ marginRight: '5px', marginBottom: '-5px' }}

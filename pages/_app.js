@@ -53,8 +53,8 @@ const MyApp = ({ Component, pageProps }) => {
     setAccount({
       ...account,
       address: null,
-      hashicon: null,
-      username: null
+      username: null,
+      wallet: null
     })
   }
 
@@ -65,6 +65,22 @@ const MyApp = ({ Component, pageProps }) => {
       pro: null
     })
     window.location.reload()
+  }
+
+  const saveAddressData = async ({ address, wallet }) => {
+    //&service=true&verifiedDomain=true&blacklist=true&payString=true&twitterImageUrl=true&nickname=true
+    const response = await axios('v2/address/' + address + '?username=true')
+    if (response.data) {
+      const { username } = response.data
+      setAccount({ ...account, address, username, wallet })
+    } else {
+      setAccount({
+        ...account,
+        address: null,
+        username: null,
+        wallet: null
+      })
+    }
   }
 
   if (process.env.NODE_ENV === 'development') {
@@ -120,10 +136,10 @@ const MyApp = ({ Component, pageProps }) => {
               <SignForm
                 setSignRequest={setSignRequest}
                 account={account}
-                setAccount={setAccount}
                 signRequest={signRequest}
                 uuid={uuid}
                 setRefreshPage={setRefreshPage}
+                saveAddressData={saveAddressData}
               />
             )}
             <div className="content">

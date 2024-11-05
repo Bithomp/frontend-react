@@ -90,10 +90,9 @@ export default function Header({
     setXummUserToken(localStorage.getItem('xamanUserToken'))
   }, [])
 
-  let address, hashicon, displayName, username, pro, proName
+  let address, displayName, username, pro, proName
   if (account && account.address) {
     address = account.address
-    hashicon = account.hashicon
     username = account.username
     if (account.username) {
       displayName = <b>{username}</b>
@@ -275,7 +274,13 @@ export default function Header({
               <>
                 {displayName ? (
                   <>
-                    <img src={hashicon} alt="user icon" className="user-icon" />
+                    <Image
+                      alt="avatar"
+                      src={'https://cdn.bithomp.com/avatar/' + address}
+                      width="24"
+                      height="24"
+                      style={{ marginRight: '5px' }}
+                    />
                     {displayName}
                   </>
                 ) : (
@@ -298,7 +303,6 @@ export default function Header({
                   <Image src="/images/wallets/xaman.png" className="xaman-logo" alt="Xaman" height={24} width={24} />
                   Xaman
                 </span>
-                {/* Gemwallet is not ready yet
                 <span
                   onClick={() => {
                     setSignRequest({ wallet: 'gemwallet' })
@@ -314,7 +318,6 @@ export default function Header({
                   />
                   GemWallet
                 </span>
-                */}
               </>
             )}
 
@@ -323,7 +326,13 @@ export default function Header({
                 <span onClick={copyToClipboard} className="link">
                   {isCopied ? t('button.copied') : t('button.copy-my-address')}
                 </span>
-                <a href={'/explorer/' + address + (xamanUserToken ? '?hw=xumm&xummtoken=' + xamanUserToken : '')}>
+                <a
+                  href={
+                    '/explorer/' +
+                    address +
+                    (account?.wallet === 'xaman' && xamanUserToken ? '?hw=xumm&xummtoken=' + xamanUserToken : '')
+                  }
+                >
                   {t('signin.actions.view')}
                 </a>
                 <Link href={'/nfts/' + address}>{t('signin.actions.my-nfts')}</Link>
@@ -334,7 +343,7 @@ export default function Header({
                 {/* Hide Send XRP for XAHAU while they are not ready yet */}
                 {!xahauNetwork && (
                   <>
-                    {xamanUserToken && (
+                    {account?.wallet === 'xaman' && xamanUserToken && (
                       <a href={'/explorer/' + address + '?hw=xumm&xummtoken=' + xamanUserToken + '&action=send'}>
                         {t('signin.actions.send')}
                       </a>
@@ -427,8 +436,7 @@ export default function Header({
           proName={proName}
           signOut={signOut}
           signOutPro={signOutPro}
-          xamanUserToken={xamanUserToken}
-          hashicon={hashicon}
+          xamanUserToken={account?.wallet === 'xaman' ? xamanUserToken : null}
           username={username}
           isCopied={isCopied}
           copyToClipboard={copyToClipboard}

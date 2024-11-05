@@ -23,6 +23,7 @@ import {
 } from '../utils'
 import { capitalize, duration } from '../utils/format'
 import { payloadXamanPost, xamanWsConnect, xamanCancel, xamanGetSignedData } from '../utils/xaman'
+import { gemwalletTxSend } from '../utils/gemwallet'
 
 import XamanQr from './Xaman/Qr'
 import CheckBox from './UI/CheckBox'
@@ -51,7 +52,7 @@ const askInfoScreens = [
 ]
 const noCheckboxScreens = [...voteTxs, 'setDomain', 'setAvatar']
 
-export default function SignForm({ setSignRequest, account, setAccount, signRequest, uuid, setRefreshPage }) {
+export default function SignForm({ setSignRequest, account, signRequest, uuid, setRefreshPage, saveAddressData }) {
   const { t } = useTranslation()
   const router = useRouter()
   const isMobile = useIsMobile()
@@ -100,32 +101,13 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
     //eslint-disable-next-line react-hooks/exhaustive-deps
   }, [uuid])
 
-  const saveAddressData = async (address) => {
-    //&service=true&verifiedDomain=true&blacklist=true&payString=true&twitterImageUrl=true&nickname=true
-    const response = await axios('v2/address/' + address + '?username=true&hashicon=true')
-    if (response.data) {
-      const { hashicon, username } = response.data
-      setAccount({ ...account, address, hashicon, username })
-    } else {
-      setAccount({
-        ...account,
-        address: null,
-        hashicon: null,
-        username: null
-      })
-    }
-  }
-
   const txSend = () => {
     if (signRequest?.wallet === 'xumm') {
       xamanTxSend()
     } else if (signRequest?.wallet === 'gemwallet') {
-      gemwalletTxSend()
+      gemwalletTxSend({ saveAddressData })
+      setScreen('')
     }
-  }
-
-  const gemwalletTxSend = () => {
-    alert('Gemwallet is not available yet')
   }
 
   const xamanTxSend = () => {
@@ -480,7 +462,7 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
     const redirectName = data.custom_meta?.blob?.redirect
 
     if (data.response?.account) {
-      saveAddressData(data.response.account)
+      saveAddressData({ address: data.response.account, wallet: 'xaman' })
       //if redirect
       if (redirectName === 'nfts') {
         window.location.href = '/nfts/' + data.response.account
@@ -760,6 +742,8 @@ export default function SignForm({ setSignRequest, account, setAccount, signRequ
       </Trans>
     )
   }
+
+  if (!screen) return ''
 
   return (
     <div className="sign-in-form">

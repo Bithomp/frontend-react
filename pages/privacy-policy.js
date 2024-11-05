@@ -25,7 +25,7 @@ export default function PrivacyPolicy() {
       <SEO title={t('menu.privacy-policy')} noindex={true} />
       <div className="content-text">
         <h1>Privacy Policy</h1>
-        <p>Last updated: October 23, 2024</p>
+        <p>Last updated: November 5, 2024</p>
         <p>
           This Privacy Policy describes Our policies and procedures on the collection, use and disclosure of Your
           information when You use the Service and tells You about Your privacy rights and how the law protects You.
@@ -297,14 +297,11 @@ export default function PrivacyPolicy() {
             <strong>country</strong> - country of residence (ex: "SE").
           </li>
           <li>
-            <strong>account</strong> - Logged in user data: address, hashicon, username. (ex.{' '}
-            {
-              "{'address': 'rhphEJQoxuquJmuJgtLbGyBW2NK6s6nQSW', 'hashicon': 'data:image/png;base64,iV+IKg2dQrggg==', 'username': 'Bithomp'}"
-            }
-            )
+            <strong>account</strong> - Logged in user data: address, username. (ex.{' '}
+            {"{'address': 'rhphEJQoxuquJmuJgtLbGyBW2NK6s6nQSW', 'username': 'Bithomp'}"})
           </li>
           <li>
-            <strong>xamanUserToken</strong> - xumm user token (ex. "c3f386ab-b5b5-47c3-87a4-d031451777fa").
+            <strong>xamanUserToken</strong> - Xaman user token (ex. "c3f386ab-b5b5-47c3-87a4-d031451777fa").
           </li>
           <li>
             <strong>language</strong> - on docs.bithomp.com, the prefered programing language (ex: "php").

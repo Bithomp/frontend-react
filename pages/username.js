@@ -303,7 +303,7 @@ export default function Username({ setSignRequest, account, signOut, addressQuer
         setStep(2)
         setOnRegistration(false)
       } else {
-        if (xamanUserToken && data.destinationAddress) {
+        if (account?.wallet === 'xaman' && xamanUserToken && data.destinationAddress) {
           setOnRegistration(true)
           setSignRequest({
             wallet: 'xumm',
