@@ -4,8 +4,10 @@ import { fullDateAndTime } from '../utils/format'
 
 import { useTheme } from './Layout/ThemeContext'
 
-import Logo from '../public/images/logo.svg'
-import { nativeCurrency } from '../utils'
+import XahauExplorerLogo from '../public/images/xahauexplorer/longDark.svg'
+import XrplExplorerLogo from '../public/images/xrplexplorer/longDark.svg'
+
+import { nativeCurrency, xahauNetwork } from '../utils'
 
 export default function Receipt({ item, details }) {
   const { t } = useTranslation()
@@ -107,7 +109,13 @@ export default function Receipt({ item, details }) {
         <div className="receipt-body">
           <div className="receipt-details">
             <div className="receipt-header">
-              <Logo style={{ width: '40%' }} id="receiptLogo" />
+              {xahauNetwork ? (
+                <XahauExplorerLogo style={{ width: '40%' }} id="receiptLogo" />
+              ) : (
+                <XrplExplorerLogo style={{ width: '40%' }} id="receiptLogo" />
+              )}
+              <br />
+              <br />
               <div>{timestamp}</div>
             </div>
             <table>

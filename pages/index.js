@@ -55,9 +55,11 @@ export default function Home({ selectedCurrency, setSelectedCurrency, showAds })
 
   const [chartPeriod, setChartPeriod] = useState('one_day')
 
+  const imagePath = server + '/images/' + (xahauNetwork ? 'xahauexplorer' : 'xrplexplorer') + '/'
+
   return (
     <>
-      <LogoJsonLd logo={server + '/images/logo.svg'} url={server} />
+      <LogoJsonLd logo={imagePath + 'longDark.svg'} url={server} />
       <SocialProfileJsonLd
         type="Organization"
         name={xahauNetwork ? 'XAHAU Explorer' : 'XRPL Explorer'}
@@ -91,12 +93,12 @@ export default function Home({ selectedCurrency, setSelectedCurrency, showAds })
           {
             width: 512,
             height: 512,
-            file: server + '/images/' + (xahauNetwork ? 'xahauexplorer' : 'xrplexplorer') + '/512.png'
+            file: imagePath + '512.png'
           },
           {
             width: 192,
             height: 192,
-            file: server + '/images/' + (xahauNetwork ? 'xahauexplorer' : 'xrplexplorer') + '/192.png'
+            file: imagePath + '192.png'
           }
         ]}
       />
