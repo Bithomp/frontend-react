@@ -11,7 +11,7 @@ export async function getServerSideProps(context) {
   return {
     props: {
       isSsrMobile: getIsSsrMobile(context),
-      ...(await serverSideTranslations(locale, ['common'])),
+      ...(await serverSideTranslations(locale, ['common']))
     }
   }
 }
@@ -21,26 +21,23 @@ export default function Press() {
 
   return (
     <>
-      <SEO title={t("menu.press")} />
+      <SEO title={t('menu.press')} />
       <div className="content-text content-center">
-        <h1 className="center">{t("menu.press")}</h1>
-        <img src="/images/press.png" alt="press" style={{ "width": "100%" }} />
+        <h1 className="center">{t('menu.press')}</h1>
+        <img src="/images/press.png" alt="press" style={{ width: '100%' }} />
         <p>
           <Trans i18nKey="press">
-            This is the official logo for Bithomp to use by media and press professionals for print and web (svg, png, eps, pdf, for dark and light backgrounds).
-            For media inquiries, please <Link href="/customer-support">contact us</Link>.
+            This is the official logo for Bithomp to use by media and press professionals for print and web (svg, png,
+            eps, pdf, for dark and light backgrounds). For media inquiries, please{' '}
+            <Link href="/customer-support">contact us</Link>.
           </Trans>
         </p>
         <p className="center">
-          <a
-            className="button-action"
-            href='/download/bithomp-press.zip'
-          >
-            {t("button.download")}
+          <a className="button-action" href="/download/bithomp-press.zip">
+            {t('button.download')}
           </a>
         </p>
       </div>
     </>
-
-  );
-};
+  )
+}
