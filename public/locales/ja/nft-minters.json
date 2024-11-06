@@ -1,9 +1,10 @@
 {
   "header": "NFTの発行者",
-  "desc": "Here you can find the list of all identified NFT minters. If you want your project to be recognised, add a memo with your website address to your mint transactions.",
-  "summary-period": "For that period <1>{{minted}}</1> NFTs were minted, from which <3>{{mintedAndBurned}}</3> NFTs {{percentMintedAndBurned}} were already burned during the same period of time, total burned during this period: <7>{{burned}}</7> NFTs.",
-  "summary-all": "There are <1>{{minted}}</1> minted NFTs, from which <3>{{mintedAndBurned}}</3> NFTs {{percentMintedAndBurned}} are burned.",
-  "mint-chart": "Mint chart",
+  "desc": "ここでは、識別されたすべてのNFT作成者のリストを確認できます。プロジェクトを登録したい場合は、NFTをミントするトランザクションにウェブサイトのアドレスを記載したメモを追加してください。",
+  "summary-period": "対象期間に<1>{{minted}}</1>NFTが発行され、そのうち<3>{{mintedAndBurned}}</3>NFTが同じ期間にバーンされました。この期間にバーンされた合計枚数は<7>{{burned}}</7>NFTです。",
+  "summary-all": "これまで<1>{{minted}}</1>NFTが発行され、そのうち<3>{{mintedAndBurned}}</3> NFT {{percentMintedAndBurned}} がバーンされました。",
+
+  "mint-chart": "ミント数のチャート",
   "table": {
     "minted-total": "合計ミント数",
     "minted-with-metadata": "メタデータありのミント数",

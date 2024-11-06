@@ -2,15 +2,15 @@
   "menu": {
     "amm": {
       "amm": "AMM",
-      "pools": "AMM pools",
-      "explorer": "AMM explorer"
+      "pools": "AMMプール",
+      "explorer": "AMMエクスプローラ"
     },
     "company": {
       "about-us": "About us"
     },
     "services": {
-      "services": "Services",
-      "nft-mint": "Mint NFT",
+      "services": "サービス",
+      "nft-mint": "NFTのミント",
       "search-on-ledgerName": "{{ledgerName}}の検索"
     },
     "business": {
@@ -39,7 +39,7 @@
       "blockchain": "ブロックチェーン",
       "nodes": "ノード",
       "governance": "ガバナンス",
-      "activations": "Activated accounts (chart)",
+      "activations": "アクティブアカウント(チャート)",
       "distribution": "{{nativeCurrency}}の分布",
       "last-ledger-information": "現在のレジャー情報",
       "last-ledger-transactions": "現在のトランザクション情報",
@@ -54,7 +54,7 @@
       "account-generation": "アカウントの作成",
       "faucet": "Faucet",
       "api": "APIドキュメント",
-      "api-admin": "API account"
+      "api-admin": "APIアカウント"
     },
     "legal": "Legal",
     "disclaimer": "免責事項",
@@ -122,8 +122,8 @@
     "confirm": {
       "set-domain": "ドメインの設定",
       "set-avatar": "アバターの設定",
-      "nft-create-transfer-offer-header": "NFT transfer",
-      "nft-transfer": "I'm offering that NFT for FREE to the Destination account, <1>the destination account would need to accept the NFT transfer</1>.",
+      "nft-create-transfer-offer-header": "NFTの送信",
+      "nft-transfer": "私はそのNFTを宛先アカウントに無料で送信しています。<1>宛先アカウントは、NFTの送信を受け入れる必要があります</1>",
       "nft-accept-sell-offer-header": "NFTの購入",
       "nft-accept-buy-offer-header": "NFTの売却",
       "nft-create-sell-offer-header": "出品(販売)",
@@ -168,24 +168,24 @@
       "header": "{{ledgerName}}リアルタイム情報",
       "ledger-index": "レジャーインデックス",
       "close-time": "クローズ時間",
-      "transactions": "トランザクション数",
+      "transactions": "トランザクション",
       "txs-per-sec": "tx/秒",
       "quorum": "バリデーション定足数",
-      "proposers": "提出者数",
+      "proposers": "提出者",
       "accounts": "アカウント",
-      "accountsActiveLast24h": "Active accounts (24h)",
+      "accountsActiveLast24h": "アクティブアカウント(24h)",
       "usernames": "ユーザネーム",
       "nft": {
-        "created": "NFTミント数",
-        "burned": "NFTバーン数",
+        "created": "NFTミント",
+        "burned": "NFTバーン",
         "owners": "現在の保有者",
-        "issuers": "NFT発行者数",
-        "transfers": "NFTトランスファー数",
-        "for-sale": "販売中のNFT数"
+        "issuers": "NFT発行者",
+        "transfers": "NFTトランスファー",
+        "for-sale": "販売中のNFT"
       },
-      "escrows": "Escrows",
-      "amms": "AMM pools",
-      "nodes": "ノード数" 
+      "escrows": "エスクロー",
+      "amms": "AMMプール",
+      "nodes": "ノード" 
     }
   },
   "last-ledger-information": {
@@ -286,8 +286,8 @@
     "copy-my-address": "アドレスをコピー",
     "sign": "署名",
     "nft": {
-      "add-another-sell-offer": "Add another sell offer",
-      "transfer": "Transfer NFT",
+      "add-another-sell-offer": "追加の販売オファー",
+      "transfer": "NFTの送信",
       "update-sell-offer": "Update the sell offer",
       "cancel-sell-offer-for": "{{amount}}の売却オファーをキャンセル",
       "cancel-buy-offer-for": "{{amount}}の購入オファーをキャンセル",
@@ -305,8 +305,8 @@
     "error": "エラー",
     "no-data": "データがありません",
     "loading": "読み込み中...",
-    "login-to-bithomp-pro": "Loading more data is available to <1>logged-in</1> Bithomp Pro subscribers.",
-    "renew-bithomp-pro": "Your Bithomp Pro subscription has expired. <1>Renew your subscription</1>.",
+    "login-to-bithomp-pro": "Bithomp Proの<1>サブスクリプション加入者</1>は、さらに多くのデータを読み込むことができます。",
+    "renew-bithomp-pro": "Bithomp Proのサブスクリプション期間が終了しました。<1>サブスクリプションを更新してください。</1>.",
     "load-failed": "読み込みに失敗しました",
     "all-issuers": "全ての発行者",
     "no-expiration": "無期限",
@@ -314,7 +314,7 @@
     "no-media": "メディアが見つかりません",
     "viewer": "ビュワー",
     "developer-mode": "開発者モード",
-    "search": "Search",
+    "search": "検索",
     "of-many": "of many",
     "of": "of",
     "sort-by": "Sort by"
@@ -323,8 +323,8 @@
     "error": {
       "destination-tag-invalid": "宛先タグが無効です。",
       "price-empty": "Please enter an amount.",
-      "address-empty": "Please enter an address.",
-      "address-invalid": "Please enter a valid address.",
+      "address-empty": "アドレスを入力してください。",
+      "address-invalid": "正しいアドレスを入力してください。",
       "domain-empty": "ドメインを入力してください。",
       "domain-invalid": "有効なドメインを入力してください。",
       "description-empty": "説明を入力してください。",
@@ -335,7 +335,7 @@
       "password-invalid": "無効なパスワードです。"
     },
     "placeholder": {
-      "destination-tag": "Enter the Destination tag (if it is required)"
+      "destination-tag": "宛先タグを入力してください (必要な場合)"
     }
   },
   "error": {
@@ -396,9 +396,9 @@
     "uri": "URI",
     "mints": "Mints",
     "view": "View",
-    "period": "Period",
-    "mint-period": "Mint period",
-    "burn-period": "Burn period",
+    "period": "期間",
+    "mint-period": "ミント期間",
+    "burn-period": "バーン期間",
     "warning": "Warning",
     "sequence": "シーケンス",
     "version": "バージョン",
@@ -477,7 +477,7 @@
     "marketplace": "マーケットプレイス",
     "public-key": "公開鍵",
     "text": {
-      "private-offer": "Private offer",
+      "private-offer": "特定アカウントへのオファー",
       "show-extended-statistics": "詳細な統計情報の表示",
       "include-without-media-data": "メディアデータなしのNFTを含む",
       "include-burned-nfts": "バーン済みのNFTを含む",
@@ -488,7 +488,7 @@
       "buy": "購入",
       "show": "表示",
       "hide": "隠す",
-      "see-on": "<1><0>{{marketplace}}</0></1>で見る",
+      "see-on": "<1><0>{{marketplace}}</0></1>で確認",
       "valid": "有効",
       "invalid": "無効",
       "no-votes": "投票はありません。"
@@ -505,7 +505,7 @@
       "Offer is expired": "有効期限切れです。",
       "Unable to verify balance of the buyer account": "購入者アカウントの残高を確認できません",
       "Insufficient funds on the buyer account": "資金不足",
-      "Seller has no trustline for the token or it cannot be verified": "Selle販売者はトークンのトラストラインを保有していないか、保有を確認できません。",
+      "Seller has no trustline for the token or it cannot be verified": "販売者はトークンのトラストラインを保有していないか、保有を確認できません。",
       "NFT Issuer has no trustline for the token to accept royalty or it cannot be verified": "NFT発行者がロイヤリティを受け入れるトークンのトラストラインを保有していないか、保有を確認できません。",
       "NFT is already belongs to the buyer": "NFTは既に購入者のものです。"
     }
@@ -554,14 +554,14 @@
   "explorer": {
     "header": {
       "main": "{{explorerName}}エクスプローラ",
-      "amm": "AMM pool information",
+      "amm": "AMMプール情報",
       "account": "アカウント情報",
-      "transaction": "Transaction information",
+      "transaction": "トランザクション情報",
       "nft": "NFT",
       "nfts": "NFTs",
       "nft-offer": "NFTのオファー",
       "nft-offers": "NFTのオファー",
-      "nft-volumes": "NFT sales volumes"
+      "nft-volumes": "NFT取引量"
     },
     "enter-address": "XRPLアドレスまたはユーザネームを入力してください。",
     "searching-tx-nft-nftoffer": "トランザクション/NFT ID/NFT Offerで検索しています。",
