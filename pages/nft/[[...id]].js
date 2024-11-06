@@ -994,7 +994,7 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
         image={{ file: imageUrl }}
       />
       <SearchBlock searchPlaceholderText={t('enter-nft-id', { ns: 'nft' })} tab="nft" />
-      <div className="content-center short-top">
+      <div className="content-profile">
         {id ? (
           <>
             {loading ? (

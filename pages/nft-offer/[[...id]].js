@@ -194,7 +194,7 @@ export default function NftOffer({ setSignRequest, refreshPage, account, id }) {
     <>
       {data && <SEO title={t('nft-offer.header') + (data.offerIndex ? ' ' + data.offerIndex : '')} />}
       <SearchBlock searchPlaceholderText={t('nft-offer.enter-offer-id')} tab="nft-offer" />
-      <div className="content-center short-top nft-offer">
+      <div className="content-profile nft-offer">
         {id ? (
           <>
             {loading ? (

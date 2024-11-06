@@ -133,20 +133,26 @@ body.dark {
     border-top: none;
   }
 
-  .content-text {
-    margin: 20px;
+  .content-text,
+  .content-center,
+  .content-profile {
     z-index: 1;
     position: relative;
-    @media only screen and (max-width: 1024px) {
-      margin: 20px;
-    }
+  }
+
+  .content-profile {
+    margin: 20px auto;
+    width: calc(100% - 40px);
+    max-width: 1000px; // 1828px max
+  }
+
+  .content-text {
+    margin: 20px;
   }
 
   .content-center {
     margin: 20px auto;
     max-width: 760px;
-    z-index: 1;
-    position: relative;
     &.short-top {
       margin-top: 40px;
     }

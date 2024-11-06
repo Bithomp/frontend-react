@@ -308,7 +308,7 @@ export default function Account({
         image={{ file: avatarSrc(initialData) }}
       />
       <SearchBlock searchPlaceholderText={t('explorer.enter-address')} tab="account" userData={userData} />
-      <div className="content-center short-top account">
+      <div className="content-profile account">
         {id ? (
           <>
             {loading ? (
