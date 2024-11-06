@@ -2,7 +2,7 @@
   "header": "{{ledgerName}} Governance Game",
   "summary": "Es gibt <1>{{ countTables }}</1> Sitze.",
   "reward-rate": "Vergütungssatz: <1>{{ rewardRate }}</1>.",
-  "reward-delay": "Verzögerung Vergütung: <1>{{ rewardDelay }}</1> ({{ rewardDelaySeconds }} Sekunden).",
+  "reward-delay": "Verzögerung Vergütung: <2>{{ rewardDelay }}</2> ({{ rewardDelaySeconds }} Sekunden).",
   "button": {
     "show-main-table": "Haupttisch anzeigen",
     "vote-seat": "Für einen Sitz abstimmen",

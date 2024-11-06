@@ -2,7 +2,7 @@
   "header": "{{ledgerName}} правление",
   "summary": "Членов правления: <1>{{ countTables }}</1>.",
   "reward-rate": "Ставка вознаграждения: <1>{{ rewardRate }}</1>.",
-  "reward-delay": "Задержка вознаграждения: <1>{{ rewardDelay }}</1> ({{ rewardDelaySeconds }} ceк.).",
+  "reward-delay": "Задержка вознаграждения: <2>{{ rewardDelay }}</2> ({{ rewardDelaySeconds }} ceк.).",
   "button": {
     "show-main-table": "Показать Главный стол",
     "vote-seat": "Голосовать за место в правлении",

@@ -2,7 +2,7 @@
   "header": "{{ledgerName}} ガバナンスゲーム",
   "summary": "現在<1>{{ countTables }}</1>つの議席が存在しています。",
   "reward-rate": "報酬レート: <1>{{ rewardRate }}</1>.",
-  "reward-delay": "報酬間隔: <1>{{ rewardDelay }}</1> ({{ rewardDelaySeconds }}秒).",
+  "reward-delay": "報酬間隔: <2>{{ rewardDelay }}</2> ({{ rewardDelaySeconds }}秒).",
   "button": {
     "show-main-table": "メインテーブルを見る",
     "vote-seat": "議席に投票する",

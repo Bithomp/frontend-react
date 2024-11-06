@@ -2,7 +2,7 @@
   "header": "{{ledgerName}} Governance Game",
   "summary": "There are <1>{{ countTables }}</1> seats.",
   "reward-rate": "Reward rate: <1>{{ rewardRate }}</1>.",
-  "reward-delay": "Reward delay: <1>{{ rewardDelay }}</1> ({{ rewardDelaySeconds }} seconds).",
+  "reward-delay": "Reward delay: <2>{{ rewardDelay }}</2> ({{ rewardDelaySeconds }} seconds).",
   "button": {
     "show-main-table": "Show the Main Table",
     "vote-seat": "Vote for a seat",

@@ -2,7 +2,7 @@
   "header": "Jeu de gouvernance {{ledgerName}}",
   "summary": "Il y a <1>{{ countTables }}</1> sièges.",
   "reward-rate": "Taux de récompense : <1>{{ rewardRate }}</1>.",
-  "reward-delay": "Délai de récompense : <1>{{ rewardDelay }}</1> ({{ rewardDelaySeconds }} secondes).",
+  "reward-delay": "Délai de récompense : <2>{{ rewardDelay }}</2> ({{ rewardDelaySeconds }} secondes).",
   "button": {
     "show-main-table": "Afficher le tableau principal",
     "vote-seat": "Votez pour un siège",

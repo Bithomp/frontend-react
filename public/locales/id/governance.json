@@ -2,7 +2,7 @@
   "header": "Governance Game {{ledgerName}}",
   "summary": "Terdapat <1>{{ countTables }}</1> posisi.",
   "reward-rate": "Tingkat Hadiah: <1>{{ rewardRate }}</1>.",
-  "reward-delay": "Penundaan Hadiah: <1>{{ rewardDelay }}</1> ({{ rewardDelaySeconds }} detik).",
+  "reward-delay": "Penundaan Hadiah: <2>{{ rewardDelay }}</2> ({{ rewardDelaySeconds }} detik).",
   "button": {
     "show-main-table": "Tampilkan Tabel Utama",
     "vote-seat": "Usulkan sebuah posisi",

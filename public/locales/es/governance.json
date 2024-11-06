@@ -2,7 +2,7 @@
   "header": "{{ledgerName}} Governance Game",
   "summary": "Hay <1>{{ countTables }}</1> sillones.",
   "reward-rate": "Ratio de recompensa: <1>{{ rewardRate }}</1>.",
-  "reward-delay": "Retraso de la recompensa: <1>{{ rewardDelay }}</1> ({{ rewardDelaySeconds }} segundos).",
+  "reward-delay": "Retraso de la recompensa: <2>{{ rewardDelay }}</2> ({{ rewardDelaySeconds }} segundos).",
   "button": {
     "show-main-table": "Mostrar La Mesa Principal",
     "vote-seat": "Vota por un sillón",
