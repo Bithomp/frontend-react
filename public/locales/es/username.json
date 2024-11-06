@@ -21,7 +21,7 @@
     "only-one-for-address": "Para cada dirección XRPL solo puedes reigistrar un nombre de usuario.",
     "address-you-control": "Solo puedes registrar nombres de usuario para direcciones XRPL que controles (eres dueño del secreto o las 12/24 paralabras de recuperación). No puedes registrar un nombre de usuario para una dirección alojada (la cual tiene un tag de destino) en un exchange / servicio / cartera.",
     "pay-from-your-address": "Para confirmar que tienes el control de la dirección XRPL, necesitarás hacer un pago desde esa dirección (en la cual quieres asignar un nombre de usuario). Pagos enviados desde otras direcciones serán contabilizados como donaciones y no serán devueltos.",
-    "text3": "El pago es de 100 coronas suecas en XRP. El pago por el nombre de usuario <1>no es reembolsable</1>. Si pagas más de lo solicitado, la cantidad excedida se contabilizará como donación y no será devuelta.",
+    "text3": "El pago es de 100 coronas suecas en XRP. El pago por el nombre de usuario <2>no es reembolsable</2>. Si pagas más de lo solicitado, la cantidad excedida se contabilizará como donación y no será devuelta.",
     "text4": "Los nombres de usuario ahora son multi-cadena, <2>registra un nombre de usuario en la red principal XRPL</2> y estará disponible en los exploradores de bithomp (en 1 hora).",
     "enter-address-or": "Introduce tu dirección XRPL o",
     "sign-in": "Conéctate con Xaman",
