@@ -7,11 +7,11 @@
   "serve-toml": "Server web Anda harus menyajikan file xrp-ledger.toml, tersedia di URL berikut:",
   "address-in-toml": "Alamat yang ingin Anda verifikasi harus dijelaskan dalam entri [[ACCOUNTS]].",
   "read-about-toml": "Baca lebih lanjut tentang XRPL TOML",
-  "toml-editor": "<0>Editor TOML</0> oleh <2>SchlaubiD</2>",
+  "toml-editor": "<0>Editor TOML</0> oleh <3>SchlaubiD</3>",
   "address-claims-domain": "Domain tersebut harus diklaim oleh alamat.",
   "set-domain": "Anda sebaiknya <1>menetapkan sebuah domain untuk alamat XRPL Anda</1> yang seharusnya sesuai dengan domain dari file TOML yang disajikan.",
   "verify": "Verifikasi",
-  "verify-desc": "Anda dapat memverifikasi bahwa semuanya telah diatur dengan benar dengan alat ini: <1>Pengecekan TOML</1>. Daftar di halaman ini diperbarui dari jam 3 pagi hingga 4 pagi (waktu Stockholm). Jika domain Anda diverifikasi di alat Pengecekan, tetapi tidak ada dalam daftar kami dalam waktu 24 jam, mungkin kami tidak dapat menguraikan file TOML Anda.",
+  "verify-desc": "Anda dapat memverifikasi bahwa semuanya telah diatur dengan benar dengan alat ini: <2>Pengecekan TOML</2>. Daftar di halaman ini diperbarui dari jam 3 pagi hingga 4 pagi (waktu Stockholm). Jika domain Anda diverifikasi di alat Pengecekan, tetapi tidak ada dalam daftar kami dalam waktu 24 jam, mungkin kami tidak dapat menguraikan file TOML Anda.",
   "desc": "Di bawah ini Anda dapat menemukan daftar semua domain yang telah diverifikasi di XRPL (halaman ini diperbarui setiap hari).",
   "table": {
     "addresses": "Alamat"

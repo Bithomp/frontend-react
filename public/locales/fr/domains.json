@@ -7,11 +7,11 @@
   "serve-toml": "Votre serveur web doit servir un fichier xrp-ledger.toml, disponible à l'URL suivante :",
   "address-in-toml": "L'adresse que vous souhaitez vérifier doit être spécifiée sous l'entrée [[ACCOUNTS]].",
   "read-about-toml": "En savoir plus sur XRPL TOML",
-  "toml-editor": "<0>Éditeur TOML</0> par <2>SchlaubiD</2>",
+  "toml-editor": "<0>Éditeur TOML</0> par <3>SchlaubiD</3>",
   "address-claims-domain": "Le domaine doit être revendiqué par l'adresse.",
   "set-domain": "Vous devriez <1>définir un domaine pour votre adresse XRPL</1> qui doit correspondre au domaine à partir duquel votre fichier TOML est servi.",
   "verify": "Vérifier",
-  "verify-desc": "Vous pouvez vérifier que tout est correctement configuré avec l'outil : <1>Vérificateur TOML</1>. La liste de cette page est mise à jour de 3h à 4h (heure de Stockholm). Si votre domaine est vérifié dans l'outil Vérificateur, mais qu'il n'est pas sur notre liste dans les 24 heures, il est possible que nous ne puissions pas analyser votre fichier TOML.",
+  "verify-desc": "Vous pouvez vérifier que tout est correctement configuré avec l'outil : <2>Vérificateur TOML</2>. La liste de cette page est mise à jour de 3h à 4h (heure de Stockholm). Si votre domaine est vérifié dans l'outil Vérificateur, mais qu'il n'est pas sur notre liste dans les 24 heures, il est possible que nous ne puissions pas analyser votre fichier TOML.",
   "desc": "Vous trouverez ci-dessous la liste de tous les domaines vérifiés sur XRPL (la page se met à jour chaque jour).",
   "table": {
     "addresses": "Adresses"
