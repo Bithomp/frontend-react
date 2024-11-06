@@ -572,7 +572,7 @@
       "tokens": "Tokens"
     },
     "different-network": "Cette transaction provient du réseau <1>{{networkNameOrId}}</1>",
-    "check-tx-on-different-explorer": "vérifiez les détails <1><0>ici</0></1>.",
+    "check-tx-on-different-explorer": "vérifiez les détails <2><0>ici</0></2>.",
     "not-supported-network": "qui n'est pas supporté.",
     "no-slashes": "La recherche ne doit pas contenir de barres obliques."
   },

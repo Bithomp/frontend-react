@@ -572,7 +572,7 @@
       "tokens": "Token"
     },
     "different-network": "Transaksi ini berasal dari jaringan <1>{{networkNameOrId}}</1>",
-    "check-tx-on-different-explorer": "periksa detailnya <1><0>di sini</0></1>.",
+    "check-tx-on-different-explorer": "periksa detailnya <2><0>di sini</0></2>.",
     "not-supported-network": "yang tidak didukung.",
     "no-slashes": "The search should not contain slashes."
   },

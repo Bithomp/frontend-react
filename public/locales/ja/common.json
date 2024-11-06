@@ -572,7 +572,7 @@
       "tokens": "トークン"
     },
     "different-network": "このトランザクションは<1>{{networkNameOrId}}</1>ネットワークからのものです。",
-    "check-tx-on-different-explorer": "詳細は<1><0>こちら</0></1>をご覧ください。",
+    "check-tx-on-different-explorer": "詳細は<2><0>こちら</0></2>をご覧ください。",
     "not-supported-network": "これはサポートされていません",
     "no-slashes": "検索文字列にはスラッシュを含めないでください。"
   },

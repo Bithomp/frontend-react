@@ -573,7 +573,7 @@
       "tokens": "토큰"
     },
     "different-network": "이 트랜잭션은 <1>{{networkNameOrId}}</1> 네트워크에서 발생했습니다.",
-    "check-tx-on-different-explorer": "자세한 내용은 <1><0>여기</0></1>에서 확인하세요.",
+    "check-tx-on-different-explorer": "자세한 내용은 <2><0>여기</0></2>에서 확인하세요.",
     "not-supported-network": "지원하지 않는 네트워크입니다",
     "no-slashes": "The search should not contain slashes."
   },

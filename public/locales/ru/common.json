@@ -572,7 +572,7 @@
       "tokens": "Токены"
     },
     "different-network": "Эта транзакция из <1>{{networkNameOrId}}</1> сети",
-    "check-tx-on-different-explorer": "данные можно посмотреть <1><0>здесь</0></1>.",
+    "check-tx-on-different-explorer": "данные можно посмотреть <2><0>здесь</0></2>.",
     "not-supported-network": "которая не поддерживается.",
     "no-slashes": "В поисковой строке не должно быть слешей."
   },
