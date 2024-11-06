@@ -7,7 +7,7 @@
   "brokers": {
     "desc": "Ini adalah daftar akun perantara NFT. Di sini Anda dapat melihat volume perdagangan yang disesuaikan oleh bot. Pasar menggunakan model perdagangan campuran, di mana Anda hanya dapat melihat volume melalui perantara.",
     "no-broker": "Tidak ada perantara",
-   "text0": "Selama periode tersebut, XRPL memiliki total penjualan {{allSales}} NFT dengan mata uang <3>{{currency}}</3> {{saleType}}, dan volume penjualan {{allVolume}}. Dari jumlah tersebut, <9>{{middlemanSales}}</9> perdagangan ({{percentMiddlemanSales}}) dengan volume <13>{{middlemanVolume}}</13> ({{percentMiddlemanVolume}}) dilakukan melalui model perantara."
+    "text0": "Selama periode tersebut, XRPL memiliki total penjualan {{allSales}} NFT dengan mata uang <3>{{currency}}</3> {{saleType}}, dan volume penjualan {{allVolume}}. Dari jumlah tersebut, <13>{{middlemanSales}}</13> perdagangan ({{percentMiddlemanSales}}) dengan volume <19>{{middlemanVolume}}</19> ({{percentMiddlemanVolume}}) dilakukan melalui model perantara."
   },
   "marketplaces": {
     "desc": "Berikut adalah daftar Pasar NFT di XRPL. Volume di sini tidak termasuk penjualan utama (mint) yang dilakukan dalam 2 transaksi (pembayaran dan transfer NFT)."

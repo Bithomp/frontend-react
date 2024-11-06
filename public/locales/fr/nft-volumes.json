@@ -7,7 +7,7 @@
   "brokers": {
     "desc": "Voici la liste des comptes de courtiers NFT. Vous pouvez y trouver les volumes des bots d'appariement d'offres. Les places de marché utilisent des modèles de commerce mixtes, ici vous ne pouvez voir que les volumes par le biais du modèle de courtage.",
     "no-broker": "Aucun courtier",
-    "text0": "Pour cette période, XRPL a eu {{allSales}} <3>{{currency}}</3> NFT {{saleType}} ventes pour {{allVolume}}, dont <9>{{brokerSales}}</9> {{percentBrokerSales}} des échanges pour <13>{{brokerVolume}}</13> {{percentBrokerVolume}} étaient par le biais du modèle de courtage."
+    "text0": "Pour cette période, XRPL a eu {{allSales}} <3>{{currency}}</3> NFT {{saleType}} ventes pour {{allVolume}}, dont <13>{{brokerSales}}</13> {{percentBrokerSales}} des échanges pour <19>{{brokerVolume}}</19> {{percentBrokerVolume}} étaient par le biais du modèle de courtage."
   },
   "marketplaces": {
     "desc": "Voici la liste des places de marché NFT sur XRPL. Les volumes ici n'incluent pas les ventes primaires (mints) qui ont été effectuées dans 2 transactions (paiement et transfert de NFT)."

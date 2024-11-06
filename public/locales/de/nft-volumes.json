@@ -7,7 +7,7 @@
   "brokers": {
     "desc": "Dies ist die Liste der NFT Vermittlerkonten. Hier finden Sie zahlreiche Angebots-Matching-Bots. Marktplätze verwenden gemischte Handelsmodelle, hier können Sie nur die Volumen durch das Vermittler-Modell sehen.",
     "no-broker": "Kein Vermittler",
-    "text0": "In diesem Zeitraum hatte XRPL {{allSales}} <3>{{currency}}</3> NFT {{saleType}} Verkäufe für {{allVolume}}, wobei <9>{{brokerSales}}</9> {{percentBrokerSales}} der Geschäfte für <13>{{brokerVolume}}</13> {{percentBrokerVolume}} über das Vermittler-Modell erfolgten."
+    "text0": "In diesem Zeitraum hatte XRPL {{allSales}} <3>{{currency}}</3> NFT {{saleType}} Verkäufe für {{allVolume}}, wobei <13>{{brokerSales}}</13> {{percentBrokerSales}} der Geschäfte für <19>{{brokerVolume}}</19> {{percentBrokerVolume}} über das Vermittler-Modell erfolgten."
   },
   "marketplaces": {
     "desc": "Dies ist die Liste der NFT Marktplätze auf XRPL. In den Volumen sind hier die Primärverkäufe (Mints) nicht enthalten, die innerhalb von 2 Transaktionen (Zahlung und NFT Transfer) getätigt wurden."
