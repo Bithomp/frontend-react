@@ -262,7 +262,7 @@
   "press": "This is the official logo for Bithomp to use by media and press professionals for print and web (svg, png, eps, pdf, for dark and light backgrounds). For media inquiries, please <1>contact us</1>.",
   "page-not-found": {
     "header": "The requested page wasn't found.",
-    "text": "Click <1>here</1> to check our landing page."
+    "text": "Click <2>here</2> to check our landing page."
   },
   "receipt": {
     "quantity": "qty.",
