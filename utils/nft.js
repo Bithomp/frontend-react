@@ -162,7 +162,9 @@ export const collectionThumbnail = (data) => {
   const ipfs = ipfsUrl(uri, 'thumbnail', 'our')
   if (ipfs) {
     imageSrc = ipfs
-  } else if (typeof uri === 'string' && (uri.slice(0, 8) === 'https://' || uri.slice(0, 10) === 'data:image')) {
+  } else if (typeof uri === 'string' && uri.slice(0, 8) === 'https://') {
+    imageSrc = `https://cdn.bithomp.com/thumbnail?url=${encodeURIComponent(stripText(uri))}`
+  } else if (typeof uri === 'string' && uri.slice(0, 10) === 'data:image') {
     imageSrc = stripText(uri)
   } else {
     return ''
@@ -301,7 +303,7 @@ const assetUrl = (uri, type = 'image', gateway = 'our') => {
   if (ipfs) {
     return ipfs
   } else if (uri.slice(0, 8) === 'https://') {
-    return stripText(uri)
+    return `https://cdn.bithomp.com/${type}?url=${encodeURIComponent(stripText(uri))}`
   } else if ((type === 'image' || type === 'thumbnail') && uri.slice(0, 10) === 'data:image') {
     return stripText(uri)
   } else {
