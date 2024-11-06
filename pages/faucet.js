@@ -27,7 +27,6 @@ export default function FaucetPage({ account, showAds }) {
       <SEO title="Faucet" description={'Get Free ' + ledgerName + ' ' + nativeCurrency} />
       <div className="content-text content-center">
         <h1 className="center">{t('menu.developers.faucet')}</h1>
-        {!devNet && <p className="center">Choose the Network</p>}
         <FaucetTabs />
         <Faucet account={account} type={devNet ? 'faucet' : 'testPayment'} />
         <Ads showAds={showAds} />
