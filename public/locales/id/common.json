@@ -123,7 +123,7 @@
       "set-domain": "Mengatur Domain",
       "set-avatar": "Mengatur Avatar",
       "nft-create-transfer-offer-header": "Kirim NFT",
-      "nft-transfer": "Saya menawarkan NFT ini GRATIS kepada akun Tujuan, <1>akun tujuan perlu menerima transfer NFT</1>.",
+      "nft-transfer": "Saya menawarkan NFT ini GRATIS kepada akun Tujuan, <2>akun tujuan perlu menerima transfer NFT</2>.",
       "nft-accept-sell-offer-header": "Pembelian NFT",
       "nft-accept-buy-offer-header": "Selling NFT",
       "nft-create-sell-offer-header": "Daftar Jual",

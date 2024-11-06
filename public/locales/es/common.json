@@ -123,7 +123,7 @@
       "set-domain": "Añadir un dominio",
       "set-avatar": "Añadir un avatar",
       "nft-create-transfer-offer-header": "Tranferir NFT",
-      "nft-transfer": "Estoy ofreciendo este NFT GRATUITAMENTE a la cuenta de destino, <1>la cuenta de destino necesita aceptar la transferencia del NFT</1>.",
+      "nft-transfer": "Estoy ofreciendo este NFT GRATUITAMENTE a la cuenta de destino, <2>la cuenta de destino necesita aceptar la transferencia del NFT</2>.",
       "nft-accept-sell-offer-header": "Comprar NFT",
       "nft-accept-buy-offer-header": "Vender NFT",
       "nft-create-sell-offer-header": "Listar para vender",

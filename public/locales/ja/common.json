@@ -123,7 +123,7 @@
       "set-domain": "ドメインの設定",
       "set-avatar": "アバターの設定",
       "nft-create-transfer-offer-header": "NFTの送信",
-      "nft-transfer": "私はそのNFTを宛先アカウントに無料で送信しています。<1>宛先アカウントは、NFTの送信を受け入れる必要があります</1>",
+      "nft-transfer": "私はそのNFTを宛先アカウントに無料で送信しています。<2>宛先アカウントは、NFTの送信を受け入れる必要があります</2>",
       "nft-accept-sell-offer-header": "NFTの購入",
       "nft-accept-buy-offer-header": "NFTの売却",
       "nft-create-sell-offer-header": "出品(販売)",

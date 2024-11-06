@@ -123,7 +123,7 @@
       "set-domain": "Установка домена",
       "set-avatar": "Установка аватара",
       "nft-create-transfer-offer-header": "Передача NFT",
-      "nft-transfer": "Я передаю этот NFT БЕСПЛАТНО адресату, адресат должен будет принять NFT, чтобы завершить передачу.",
+      "nft-transfer": "Я передаю этот NFT БЕСПЛАТНО адресату, <2>адресат должен будет принять NFT, чтобы завершить передачу.</2>",
       "nft-accept-sell-offer-header": "Покупка NFT",
       "nft-accept-buy-offer-header": "Продажа NFT",
       "nft-create-sell-offer-header": "Создание офера продажи",
