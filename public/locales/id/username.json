@@ -39,7 +39,7 @@
   "step1": {
     "to-register": "Untuk mendaftarkan username publik Anda:",
     "from-your-address": "Anda perlu melakukan pembayaran dari alamat:",
-    "text0": "Pembayaran yang dilakukan oleh Anda <1>dari alamat lain</1> atau dengan <3>tag tujuan yang salah</3> tidak akan diterima untuk layanan ini, itu akan diterima sebagai sumbangan dan <5>tidak akan dikembalikan</5>.",
+    "text0": "Pembayaran yang dilakukan oleh Anda <1>dari alamat lain</1> atau dengan <4>tag tujuan yang salah</4> tidak akan diterima untuk layanan ini, itu akan diterima sebagai sumbangan dan <6>tidak akan dikembalikan</6>.",
     "payment-instructions": "Instruksi Pembayaran",
     "address": "Alamat XRPL:",
     "tag": "Tag Tujuan:",

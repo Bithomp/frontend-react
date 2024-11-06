@@ -39,7 +39,7 @@
   "step1": {
     "to-register": "Um Ihren öffentlichen Benutzernamen zu registrieren:",
     "from-your-address": "Müssen Sie eine Zahlung von nachfolgender Adresse ausführen:",
-    "text0": "Von Ihnen gemachte Zahlungen <1>von einer anderen Adresse</1> oder mit einem <3>falschen DestinationTag</3> werden nicht akzeptiert für den Service. Falsche Zahlungen werden als Spenden akzeptiert und <5>nicht zurückerstattet</5>.",
+    "text0": "Von Ihnen gemachte Zahlungen <1>von einer anderen Adresse</1> oder mit einem <4>falschen DestinationTag</4> werden nicht akzeptiert für den Service. Falsche Zahlungen werden als Spenden akzeptiert und <6>nicht zurückerstattet</6>.",
     "payment-instructions": "Zahlungsanweisungen",
     "address": "XRPL Adresse:",
     "tag": "DestinationTag:",

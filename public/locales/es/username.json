@@ -39,7 +39,7 @@
   "step1": {
     "to-register": "Para registrar tu nombre de usuario público:",
     "from-your-address": "Necesitas hacer un pago desde la dirección:",
-    "text0": "Pagos hechos por ti <1>desde cualquier otra dirección</1> o con un <3>tag de destino erróneo</3> no serán aceptados por el servicio, serán aceptados como donación y <5>no serán reembolsables</5>.",
+    "text0": "Pagos hechos por ti <1>desde cualquier otra dirección</1> o con un <4>tag de destino erróneo</4> no serán aceptados por el servicio, serán aceptados como donación y <6>no serán reembolsables</6>.",
     "payment-instructions": "Instrucciones de pago",
     "address": "Dirección XRPL:",
     "tag": "Tag de destino:",

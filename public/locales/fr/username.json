@@ -39,7 +39,7 @@
   "step1": {
     "to-register": "Pour enregistrer votre nom d'utilisateur public :",
     "from-your-address": "Vous devez effectuer un paiement depuis l'adresse :",
-    "text0": "Les paiements que vous <1>faites depuis d'autres adresses</1> ou avec une <3>mauvaise étiquette de destination</3> ne seront pas acceptés pour le service, ils seront considérés comme un don et <5>ne seront pas remboursés</5>.",
+    "text0": "Les paiements que vous <1>faites depuis d'autres adresses</1> ou avec une <4>mauvaise étiquette de destination</4> ne seront pas acceptés pour le service, ils seront considérés comme un don et <6>ne seront pas remboursés</6>.",
     "payment-instructions": "Instructions de paiement",
     "address": "Adresse XRPL :",
     "tag": "Étiquette de destination :",
