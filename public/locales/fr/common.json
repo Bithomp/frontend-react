@@ -488,7 +488,7 @@
       "buy": "Acheter",
       "show": "montrer",
       "hide": "cacher",
-      "see-on": "Voir sur <1><0>{{marketplace}}</0></1>",
+      "see-on": "Voir sur <2><0>{{marketplace}}</0></2>",
       "valid": "valide",
       "invalid": "invalide",
       "no-votes": "Il n'y a pas de votes."

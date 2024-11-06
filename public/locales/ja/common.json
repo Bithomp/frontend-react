@@ -488,7 +488,7 @@
       "buy": "購入",
       "show": "表示",
       "hide": "隠す",
-      "see-on": "<1><0>{{marketplace}}</0></1>で確認",
+      "see-on": "<2><0>{{marketplace}}</0></2>で確認",
       "valid": "有効",
       "invalid": "無効",
       "no-votes": "投票はありません。"

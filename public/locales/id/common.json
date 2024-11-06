@@ -488,7 +488,7 @@
       "buy": "Beli",
       "show": "tampilkan",
       "hide": "sembunyikan",
-      "see-on": "Lihat di <1><0>{{marketplace}}</0></1>",
+      "see-on": "Lihat di <2><0>{{marketplace}}</0></2>",
       "valid": "valid",
       "invalid": "tidak valid",
       "no-votes": "Tidak ada suara."
