@@ -1,8 +1,8 @@
 {
   "header": "Acuñadores NFT",
   "desc": "Aquí puedes encontrar la lista de todos los acuñadores NFT identificados. Si quieres que tu proyecto sea reconocido, añade un memo con tu dirección web en tus transacciones de acuñación.",
-  "summary-period": "Para este periodo, <1>{{minted}}</1> NFTs fueron acuñados, de los cuales <3>{{mintedAndBurned}}</3> NFTs {{percentMintedAndBurned}} fueron quemados durante el mismo periodo de tiempo, quemados totales durante este periodo: <7>{{burned}}</7> NFTs.",
-  "summary-all": "Hay <1>{{minted}}</1> NFTs acuñados, de los cuales <3>{{mintedAndBurned}}</3> NFTs {{percentMintedAndBurned}} fueron quemados.",
+  "summary-period": "Para este periodo, <1>{{minted}}</1> NFTs fueron acuñados, de los cuales <4>{{mintedAndBurned}}</4> NFTs {{percentMintedAndBurned}} fueron quemados durante el mismo periodo de tiempo, quemados totales durante este periodo: <11>{{burned}}</11> NFTs.",
+  "summary-all": "Hay <1>{{minted}}</1> NFTs acuñados, de los cuales <4>{{mintedAndBurned}}</4> NFTs {{percentMintedAndBurned}} fueron quemados.",
   "mint-chart": "Gráfica Acuñación",
   "table": {
     "minted-total": "Acuñados totales",

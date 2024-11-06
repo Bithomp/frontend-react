@@ -220,9 +220,9 @@ export default function NftMinters({ periodQuery }) {
                       </Trans>
                     ) : (
                       <Trans i18nKey="summary-period" ns="nft-minters">
-                        For that period XRPL had <b>{{ minted: shortNiceNumber(rawData.summary.minted, 0) }}</b> NFTs,
-                        from which <b>{{ mintedAndBurned: shortNiceNumber(rawData.summary.mintedAndBurned, 0) }}</b>{' '}
-                        NFTs{' '}
+                        For that period XRPL had <b>{{ minted: shortNiceNumber(rawData.summary.minted, 0) }}</b> NFTs
+                        were minted, from which{' '}
+                        <b>{{ mintedAndBurned: shortNiceNumber(rawData.summary.mintedAndBurned, 0) }}</b> NFTs{' '}
                         {{
                           percentMintedAndBurned: percentFormat(rawData.summary.mintedAndBurned, rawData.summary.minted)
                         }}{' '}

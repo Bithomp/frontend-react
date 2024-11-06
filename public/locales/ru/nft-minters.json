@@ -1,8 +1,8 @@
 {
   "header": "NFT чеканщики",
   "desc": "Здесь представлен список всех распознаных нами NFT чеканщиков. Если вы хотите чтобы ваш проект был в этом списке, то укажите в memo транзакции чеканки адрес вашего веб-сайта.",
-  "summary-period": "За этот период отчеканено <1>{{minted}}</1> NFT, из которых <3>{{mintedAndBurned}}</3> NFT {{percentMintedAndBurned}} были уже сожжены в этот же период времени, всего сожжено за этот период: <7>{{burned}}</7> NFT.",
-  "summary-all": "Всего отчеканено <1>{{minted}}</1> NFT, из которых <3>{{mintedAndBurned}}</3> NFT {{percentMintedAndBurned}} сожжены.",
+  "summary-period": "За этот период отчеканено <1>{{minted}}</1> NFT, из которых <4>{{mintedAndBurned}}</4> NFT {{percentMintedAndBurned}} были уже сожжены в этот же период времени, всего сожжено за этот период: <11>{{burned}}</11> NFT.",
+  "summary-all": "Всего отчеканено <1>{{minted}}</1> NFT, из которых <4>{{mintedAndBurned}}</4> NFT {{percentMintedAndBurned}} сожжены.",
   "mint-chart": "График чеканок",
   "table": {
     "minted-total": "Всего отчеканено",

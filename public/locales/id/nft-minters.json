@@ -1,8 +1,8 @@
 {
   "header": "Pembuat NFT",
   "desc": "Di sini Anda dapat menemukan daftar semua pembuat NFT yang terverifikasi. Jika Anda ingin proyek Anda diakui, tambahkan memo dengan alamat situs web Anda ke transaksi pembuatan NFT Anda.",
-  "summary-period": "Selama periode tersebut, sebanyak <1>{{minted}}</1> NFT telah dibuat. Dari jumlah tersebut, <3>{{mintedAndBurned}}</3> NFT {{percentMintedAndBurned}} sudah dihapus dalam periode yang sama. Total NFT yang dihapus selama periode ini: <7>{{burned}}</7> NFT.",
-  "summary-all": "Total NFT yang telah dibuat adalah <1>{{minted}}</1>. Dari jumlah tersebut, <3>{{mintedAndBurned}}</3> NFT {{percentMintedAndBurned}} sudah dihapus.",
+  "summary-period": "Selama periode tersebut, sebanyak <1>{{minted}}</1> NFT telah dibuat. Dari jumlah tersebut, <4>{{mintedAndBurned}}</4> NFT {{percentMintedAndBurned}} sudah dihapus dalam periode yang sama. Total NFT yang dihapus selama periode ini: <11>{{burned}}</11> NFT.",
+  "summary-all": "Total NFT yang telah dibuat adalah <1>{{minted}}</1>. Dari jumlah tersebut, <4>{{mintedAndBurned}}</4> NFT {{percentMintedAndBurned}} sudah dihapus.",
   "mint-chart": "Mint chart",
   "table": {
     "minted-total": "Total dibuat",

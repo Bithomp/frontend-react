@@ -1,8 +1,8 @@
 {
   "header": "Émetteurs de NFT",
   "desc": "Ici, vous pouvez trouver la liste de tous les émetteurs de NFT identifiés. Si vous souhaitez que votre projet soit reconnu, ajoutez un mémo avec l'adresse de votre site web à vos transactions de mint.",
-  "summary-period": "Pour cette période, <1>{{minted}}</1> NFTs ont été mintés, dont <3>{{mintedAndBurned}}</3> NFTs {{percentMintedAndBurned}} ont déjà été brûlés pendant la même période, total brûlé pendant cette période : <7>{{burned}}</7> NFTs.",
-  "summary-all": "Il y a <1>{{minted}}</1> NFTs mintés, dont <3>{{mintedAndBurned}}</3> NFTs {{percentMintedAndBurned}} sont brûlés.",
+  "summary-period": "Pour cette période, <1>{{minted}}</1> NFTs ont été mintés, dont <4>{{mintedAndBurned}}</4> NFTs {{percentMintedAndBurned}} ont déjà été brûlés pendant la même période, total brûlé pendant cette période : <11>{{burned}}</11> NFTs.",
+  "summary-all": "Il y a <1>{{minted}}</1> NFTs mintés, dont <4>{{mintedAndBurned}}</4> NFTs {{percentMintedAndBurned}} sont brûlés.",
   "mint-chart": "Graphique de mint",
   "table": {
     "minted-total": "Total minté",

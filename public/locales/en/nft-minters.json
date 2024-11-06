@@ -1,8 +1,8 @@
 {
   "header": "NFT minters",
   "desc": "Here you can find the list of all identified NFT minters. If you want your project to be recognised, add a memo with your website address to your mint transactions.",
-  "summary-period": "For that period <1>{{minted}}</1> NFTs were minted, from which <3>{{mintedAndBurned}}</3> NFTs {{percentMintedAndBurned}} were already burned during the same period of time, total burned during this period: <7>{{burned}}</7> NFTs.",
-  "summary-all": "There are <1>{{minted}}</1> minted NFTs, from which <3>{{mintedAndBurned}}</3> NFTs {{percentMintedAndBurned}} are burned.",
+  "summary-period": "For that period <1>{{minted}}</1> NFTs were minted, from which <4>{{mintedAndBurned}}</4> NFTs {{percentMintedAndBurned}} were already burned during the same period of time, total burned during this period: <11>{{burned}}</11> NFTs.",
+  "summary-all": "There are <1>{{minted}}</1> minted NFTs, from which <4>{{mintedAndBurned}}</4> NFTs {{percentMintedAndBurned}} are burned.",
   "mint-chart": "Mint chart",
   "table": {
     "minted-total": "Total minted",

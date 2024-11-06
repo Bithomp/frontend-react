@@ -1,8 +1,8 @@
 {
   "header": "NFTの発行者",
   "desc": "ここでは、識別されたすべてのNFT作成者のリストを確認できます。プロジェクトを登録したい場合は、NFTをミントするトランザクションにウェブサイトのアドレスを記載したメモを追加してください。",
-  "summary-period": "対象期間に<1>{{minted}}</1>NFTが発行され、そのうち<3>{{mintedAndBurned}}</3>NFTが同じ期間にバーンされました。この期間にバーンされた合計枚数は<7>{{burned}}</7>NFTです。",
-  "summary-all": "これまで<1>{{minted}}</1>NFTが発行され、そのうち<3>{{mintedAndBurned}}</3> NFT {{percentMintedAndBurned}} がバーンされました。",
+  "summary-period": "対象期間に<1>{{minted}}</1>NFTが発行され、そのうち<4>{{mintedAndBurned}}</4>NFTが同じ期間にバーンされました。この期間にバーンされた合計枚数は<11>{{burned}}</11>NFTです。",
+  "summary-all": "これまで<1>{{minted}}</1>NFTが発行され、そのうち<4>{{mintedAndBurned}}</4> NFT {{percentMintedAndBurned}} がバーンされました。",
 
   "mint-chart": "ミント数のチャート",
   "table": {

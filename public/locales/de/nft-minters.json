@@ -1,8 +1,8 @@
 {
   "header": "NFT Minter",
   "desc": "Hier finden Sie die Liste aller identifizierten NFT Minter. Wenn Sie möchten, dass Ihr Projekt erkannt wird, fügen Sie den Mint-Transaktionen ein Memo mit Ihrer Webseite hinzu.",
-  "summary-period": "In diesem Zeitraum wurden <1>{{minted}}</1> minted, von denen <3>{{mintedAndBurned}}</3> NFTs bereits im selben Zeitraum vernichtet wurden. Total während diesem Zeitraum vernichtet: <7>{{burned}}</7> NFTs.",
-  "summary-all": "Es gibt <1>{{minted}}</1> minted NFTs, von denen <3>{{mintedAndBurned}}</3> NFTs {{percentMintedAndBurned}} vernichtet sind.",
+  "summary-period": "In diesem Zeitraum wurden <1>{{minted}}</1> minted, von denen <4>{{mintedAndBurned}}</4> NFTs bereits im selben Zeitraum vernichtet wurden. Total während diesem Zeitraum vernichtet: <11>{{burned}}</11> NFTs.",
+  "summary-all": "Es gibt <1>{{minted}}</1> minted NFTs, von denen <4>{{mintedAndBurned}}</4> NFTs {{percentMintedAndBurned}} vernichtet sind.",
   "mint-chart": "Mint Diagramm",
   "table": {
     "minted-total": "Total minted",
