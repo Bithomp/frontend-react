@@ -16,7 +16,7 @@ export default function SEO({ title, titleWithNetwork, description, image, page,
     title: title || page,
     description,
     locale: router.locale,
-    site_name: websiteName || explorerName + ' ' + (page ? page : '')
+    site_name: websiteName || explorerName + ' ' + (page ? page : 'Explorer')
   }
 
   const imagePath = server + '/images/' + (xahauNetwork ? 'xahauexplorer' : 'xrplexplorer') + '/'
@@ -39,12 +39,13 @@ export default function SEO({ title, titleWithNetwork, description, image, page,
   }
 
   if (images) {
+    //nft previews and avatars starts wuth https
     openGraph.images = []
     for (let i = 0; i < images.length; i++) {
-      const { file, width, height } = images[i]
+      const { file, width, height, allNetworks } = images[i]
       let url = file
       if (file?.indexOf('http') !== 0) {
-        url = server + '/images/' + file
+        url = (allNetworks ? server + '/images/' : imagePath) + file
       }
       openGraph.images.push({
         url,
@@ -56,13 +57,13 @@ export default function SEO({ title, titleWithNetwork, description, image, page,
   }
 
   let twitter = {
-    handle: '@xrplexplorer',
-    site: server,
+    handle: '@bakshayev',
+    site: '@xrplexplorer',
     cardType: 'summary'
   }
 
   if (xahauNetwork) {
-    twitter.handle = '@XahauExplorer'
+    twitter.site = '@XahauExplorer'
   }
 
   // don't add the slash after language, otherwise redirects and it is bad for SEO

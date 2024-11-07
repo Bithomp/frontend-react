@@ -23,7 +23,7 @@ export default function Advertise() {
       <SEO
         title={'Advertise on ' + ledgerName + ' Explorer'}
         description={'Reach thousands of ' + ledgerName + ' users'}
-        image={{ height: 1500, width: 791, file: 'advertise/home-page-banner.png' }}
+        image={{ height: 1500, width: 791, file: 'advertise/home-page-banner.png', allNetworks: true }}
       />
       <div className="content-text content-center">
         <h1 className="center">Advertise on {ledgerName} Explorer</h1>

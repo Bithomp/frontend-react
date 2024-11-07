@@ -36,7 +36,7 @@ const amendmentLink = (a) => {
 
 export default function Amendment() {
   const windowWidth = useWidth()
-  const { t } = useTranslation(['common', 'amendments'])
+  const { t } = useTranslation()
   const [majorityAmendments, setMajorityAmendments] = useState(null)
   const [enabledAmendments, setEnabledAmendments] = useState(null)
   const [newAmendments, setNewAmendments] = useState(null)
@@ -46,12 +46,6 @@ export default function Amendment() {
   const [loadedFeatures, setLoadedFeatures] = useState(false)
   const [validations, setValidations] = useState(null)
   const [threshold, setThreshold] = useState(null)
-
-  //in production we can split "disabled" to "new", "obsolete"
-  //obsolete
-  //new
-
-  //in production features has names, votes count, thershold
 
   const checkApi = async () => {
     const response = await axios('v2/amendment')
@@ -170,7 +164,21 @@ export default function Amendment() {
 
   return (
     <>
-      <SEO title={t('menu.network.amendments')} />
+      <SEO
+        title={t('menu.network.amendments')}
+        images={[
+          {
+            width: 1200,
+            height: 630,
+            file: 'previews/1200x630/amendments.png'
+          },
+          {
+            width: 630,
+            height: 630,
+            file: 'previews/630x630/amendments.png'
+          }
+        ]}
+      />
       <div className="content-text">
         <h1 className="center">{t('menu.network.amendments')}</h1>
         <NetworkPagesTab tab="amendments" />

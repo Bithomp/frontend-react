@@ -84,23 +84,6 @@ export default function Home({ selectedCurrency, setSelectedCurrency, showAds })
         title={t('home.title', { explorerName, nativeCurrency })}
         titleWithNetwork="true"
         description={t('home.description', { explorerName, nativeCurrency })}
-        images={[
-          //{
-          //  width: 1200,
-          //  height: 630,
-          //  file: 'og-logo.png'
-          //},
-          {
-            width: 512,
-            height: 512,
-            file: imagePath + '512.png'
-          },
-          {
-            width: 192,
-            height: 192,
-            file: imagePath + '192.png'
-          }
-        ]}
       />
       <Head>
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(ldJsonWebsite) }} />
