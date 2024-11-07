@@ -2,7 +2,7 @@ import { useTranslation } from 'next-i18next'
 import { useEffect, useState } from 'react'
 import { axiosServer } from '../utils/axios'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import { nativeCurrenciesImages, nativeCurrency, useWidth } from '../utils'
+import { nativeCurrenciesImages, nativeCurrency, useWidth, xahauNetwork } from '../utils'
 import { getIsSsrMobile } from '../utils/mobile'
 import axios from 'axios'
 
@@ -235,7 +235,25 @@ export default function Amms({
 
   return (
     <>
-      <SEO title={t('menu.amm.pools')} />
+      <SEO
+        title={t('menu.amm.pools')}
+        images={
+          xahauNetwork
+            ? []
+            : [
+                {
+                  width: 1200,
+                  height: 630,
+                  file: 'previews/1200x630/amms.png'
+                },
+                {
+                  width: 630,
+                  height: 630,
+                  file: 'previews/630x630/amms.png'
+                }
+              ]
+        }
+      />
       <div className="content-text">
         <h1 className="center">{t('menu.amm.pools')}</h1>
         <FiltersFrame
