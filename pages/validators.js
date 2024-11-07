@@ -120,11 +120,13 @@ export default function Validators({ amendment, initialData, initialErrorMessage
     if (!a.domain && b.domain) return 1
 
     if (!a.domainVerified && !b.domainVerified) {
-      //with verified Legacy domains
+      //with verified Legacy domains when there is no verfiied domain
       if (a.domainLegacyVerified && !b.domainLegacyVerified) return -1
       if (!a.domainLegacyVerified && b.domainLegacyVerified) return 1
+    }
 
-      //with Legacy domains
+    if (!a.domain && !b.domain) {
+      //with Legacy domains when there is no domain
       if (a.domainLegacy && !b.domainLegacy) return -1
       if (!a.domainLegacy && b.domainLegacy) return 1
     }
@@ -163,9 +165,11 @@ export default function Validators({ amendment, initialData, initialErrorMessage
       return a.domain.toLowerCase() > b.domain.toLowerCase() ? 1 : -1
     }
 
-    //by legacy domain
-    if (a.domainLegacy && b.domainLegacy) {
-      return a.domainLegacy.toLowerCase() > b.domainLegacy.toLowerCase() ? 1 : -1
+    if (!a.domain && !b.domain) {
+      //by legacy domain if no domain
+      if (a.domainLegacy && b.domainLegacy) {
+        return a.domainLegacy.toLowerCase() > b.domainLegacy.toLowerCase() ? 1 : -1
+      }
     }
 
     //by lastSeenTime
