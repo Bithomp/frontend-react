@@ -119,13 +119,15 @@ export default function Validators({ amendment, initialData, initialErrorMessage
     if (a.domain && !b.domain) return -1
     if (!a.domain && b.domain) return 1
 
-    //with verified Legacy domains
-    if (a.domainLegacyVerified && !b.domainLegacyVerified) return -1
-    if (!a.domainLegacyVerified && b.domainLegacyVerified) return 1
+    if (!a.domainVerified && !b.domainVerified) {
+      //with verified Legacy domains
+      if (a.domainLegacyVerified && !b.domainLegacyVerified) return -1
+      if (!a.domainLegacyVerified && b.domainLegacyVerified) return 1
 
-    //with Legacy domains
-    if (a.domainLegacy && !b.domainLegacy) return -1
-    if (!a.domainLegacy && b.domainLegacy) return 1
+      //with Legacy domains
+      if (a.domainLegacy && !b.domainLegacy) return -1
+      if (!a.domainLegacy && b.domainLegacy) return 1
+    }
 
     //with principals
     if (a.principals && !b.principals) return -1
