@@ -1,6 +1,6 @@
 {
   "titles": {
-    "for-you": "Para Ti",
+    "for-you": "Para ti",
     "top-lists": "Principales",
     "nft": "NFT",
     "network": "Red",
@@ -13,7 +13,7 @@
     "username-registration": "Nombre de usuario",
     "project-registration": "Registrar un proyecto",
     "amms": "AMMs",
-    "distribution": "{{nativeCurrency}} distribución",
+    "distribution": "Distribución de {{nativeCurrency}}",
     "nft-marketplaces": "Mercados de NFT",
     "nft-collections": "Colecciones de NFT",
     "nft-distribution": "Titulares de NFT",
