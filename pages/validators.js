@@ -481,15 +481,17 @@ export default function Validators({ amendment, initialData, initialErrorMessage
         </div>
         <br />
 
-        {windowWidth >= 960 && (
-          <div style={{ width: '200px', margin: 'auto' }}>
-            <CheckBox checked={developerMode} setChecked={setDeveloperMode} style={checkBoxStyles}>
-              {t('general.developer-mode')}
-            </CheckBox>
-          </div>
+        {windowWidth >= 960 ? (
+          <center>
+            <div style={{ display: 'inline-block' }}>
+              <CheckBox checked={developerMode} setChecked={setDeveloperMode} style={checkBoxStyles}>
+                {t('general.developer-mode')}
+              </CheckBox>
+            </div>
+          </center>
+        ) : (
+          <br />
         )}
-
-        <br />
 
         {windowWidth < 960 ? (
           <table className="table-mobile">
