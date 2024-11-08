@@ -692,7 +692,7 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
               className="button-action wide center"
               onClick={() =>
                 setSignRequest({
-                  wallet: 'xumm',
+                  wallet: 'xaman',
                   request,
                   broker: {
                     name,
@@ -819,7 +819,7 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
           className="button-action wide center"
           onClick={() =>
             setSignRequest({
-              wallet: 'xumm',
+              wallet: 'xaman',
               request
             })
           }
@@ -839,7 +839,7 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
               className="button-action wide center"
               onClick={() =>
                 setSignRequest({
-                  wallet: 'xumm',
+                  wallet: 'xaman',
                   request,
                   action: 'nftTransfer'
                 })
@@ -873,7 +873,7 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
           className="button-action wide center"
           onClick={() =>
             setSignRequest({
-              wallet: 'xumm',
+              wallet: 'xaman',
               request
             })
           }
@@ -888,7 +888,7 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
           className="button-action wide center"
           onClick={() =>
             setSignRequest({
-              wallet: 'xumm',
+              wallet: 'xaman',
               request,
               action: 'nftTransfer'
             })
@@ -936,7 +936,7 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
           className="button-action wide center"
           onClick={() =>
             setSignRequest({
-              wallet: 'xumm',
+              wallet: 'xaman',
               request
             })
           }

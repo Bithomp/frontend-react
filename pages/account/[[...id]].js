@@ -186,7 +186,7 @@ export default function Account({
       2) if bithomp image, show it 
       3) if valid twitter - image from twitter
       4) if gravatar - image from gravatar 
-      5) if xummPro or xummCurratedAssets - from xumm 
+      5) if xamanPro or xamanCurratedAssets - from xaman 
       6) otherwise show hashicon
     */
     if (!data) return ''
@@ -460,7 +460,7 @@ export default function Account({
                                         className="button-action wide center"
                                         onClick={() =>
                                           setSignRequest({
-                                            wallet: 'xumm',
+                                            wallet: 'xaman',
                                             action: 'setAvatar',
                                             request: {
                                               TransactionType: 'AccountSet',
@@ -487,7 +487,7 @@ export default function Account({
                                         className="button-action wide center"
                                         onClick={() =>
                                           setSignRequest({
-                                            wallet: 'xumm',
+                                            wallet: 'xaman',
                                             action: 'setDomain',
                                             redirect: 'account',
                                             request: {

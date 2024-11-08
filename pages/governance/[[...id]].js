@@ -674,7 +674,7 @@ export default function Governance({ id, setSignRequest, refreshPage, account })
                   className="button-action wide center"
                   onClick={() =>
                     setSignRequest({
-                      wallet: 'xumm',
+                      wallet: 'xaman',
                       action: 'castVoteSeat',
                       layer: mainTable ? 1 : 2,
                       request: {
@@ -814,7 +814,7 @@ export default function Governance({ id, setSignRequest, refreshPage, account })
                   className="button-action wide center"
                   onClick={() =>
                     setSignRequest({
-                      wallet: 'xumm',
+                      wallet: 'xaman',
                       action: 'castVoteRewardRate',
                       request: {
                         TransactionType: 'Invoke',
@@ -953,7 +953,7 @@ export default function Governance({ id, setSignRequest, refreshPage, account })
                   className="button-action wide center"
                   onClick={() =>
                     setSignRequest({
-                      wallet: 'xumm',
+                      wallet: 'xaman',
                       action: 'castVoteRewardDelay',
                       request: {
                         TransactionType: 'Invoke',
@@ -1098,7 +1098,7 @@ export default function Governance({ id, setSignRequest, refreshPage, account })
                   className="button-action wide center"
                   onClick={() =>
                     setSignRequest({
-                      wallet: 'xumm',
+                      wallet: 'xaman',
                       action: 'castVoteHook',
                       layer: mainTable ? 1 : 2,
                       request: {

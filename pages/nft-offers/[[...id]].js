@@ -273,7 +273,7 @@ export default function NftOffers({ setSignRequest, refreshPage, account, offerL
               style={{ margin: '10px 10px 20px' }}
               onClick={() =>
                 setSignRequest({
-                  wallet: 'xumm',
+                  wallet: 'xaman',
                   request: {
                     TransactionType: 'NFTokenCancelOffer',
                     Account: userData?.address,

@@ -2,7 +2,6 @@ import { useTranslation, Trans } from 'next-i18next'
 import { useState, useEffect } from 'react'
 import axios from 'axios'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import Image from 'next/image'
 
 import { trWithAccount } from '../utils/format'
 import { getIsSsrMobile } from '../utils/mobile'
@@ -122,7 +121,6 @@ export default function Domains({ setSignRequest }) {
                 className="button-action center"
                 onClick={() =>
                   setSignRequest({
-                    wallet: 'xumm',
                     action: 'setDomain',
                     redirect: 'account',
                     request: {
@@ -131,7 +129,6 @@ export default function Domains({ setSignRequest }) {
                   })
                 }
               >
-                <Image src="/images/wallets/xaman.png" className="xaman-logo" alt="xaman" height={24} width={24} />
                 {t('button.set-domain')}
               </button>
             </p>

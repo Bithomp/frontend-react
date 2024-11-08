@@ -296,7 +296,7 @@ export default function Header({
               <>
                 <span
                   onClick={() => {
-                    setSignRequest({ wallet: 'xumm' })
+                    setSignRequest({ wallet: 'xaman' })
                   }}
                   className="link"
                 >

@@ -104,7 +104,7 @@ export default function MobileMenu({
           ) : (
             <span
               onClick={() => {
-                setSignRequest({ wallet: 'xumm' })
+                setSignRequest({ wallet: 'xaman' })
               }}
               className="link mobile-menu-item"
             >

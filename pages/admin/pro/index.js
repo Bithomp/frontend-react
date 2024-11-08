@@ -209,7 +209,7 @@ export default function Pro({
     }
 
     setSignRequest({
-      wallet: 'xumm',
+      wallet: 'xaman',
       request: tx,
       data: {
         signOnly: true,

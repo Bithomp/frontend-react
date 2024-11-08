@@ -306,7 +306,7 @@ export default function Username({ setSignRequest, account, signOut, addressQuer
         if (account?.wallet === 'xaman' && xamanUserToken && data.destinationAddress) {
           setOnRegistration(true)
           setSignRequest({
-            wallet: 'xumm',
+            wallet: 'xaman',
             request: {
               TransactionType: 'Payment',
               Destination: data.destinationAddress,
@@ -554,7 +554,7 @@ export default function Username({ setSignRequest, account, signOut, addressQuer
                           <>
                             <p>
                               {t('step0.enter-address-or', { ns: 'username' })}{' '}
-                              <b className="link" onClick={() => setSignRequest({ wallet: 'xumm' })}>
+                              <b className="link" onClick={() => setSignRequest({ wallet: 'xaman' })}>
                                 {t('step0.sign-in', { ns: 'username' })}
                               </b>
                               :

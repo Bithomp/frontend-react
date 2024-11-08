@@ -1,4 +1,3 @@
-import axios from 'axios'
 import { useCallback, useEffect, useState } from 'react'
 import { Buffer } from 'buffer'
 import { decodeAccountID, isValidClassicAddress } from 'ripple-address-codec'
@@ -402,19 +401,6 @@ export const decode = (code) => {
 
 export const encode = (code) => {
   return Buffer.from(code).toString('hex').toUpperCase()
-}
-
-//not in use yet
-export const submitTransaction = async (blob, callback) => {
-  blob = JSON.stringify(blob)
-
-  const response = await axios.post('v2/transaction/submit', blob).catch((error) => {
-    console.log('submitTransaction error:', error.message)
-  })
-
-  if (response) {
-    callback(response)
-  }
 }
 
 export const nativeCurrenciesImages = {

@@ -26,7 +26,7 @@ export const acceptNftBuyOfferButton = (t, setSignRequest, offer) => {
       className="button-action wide center"
       onClick={() =>
         setSignRequest({
-          wallet: 'xumm',
+          wallet: 'xaman',
           offerAmount: offer.amount,
           offerType: 'buy',
           request: {
@@ -62,7 +62,7 @@ export const acceptNftSellOfferButton = (t, setSignRequest, offer, nftType = 'xl
       className="button-action wide center"
       onClick={() =>
         setSignRequest({
-          wallet: 'xumm',
+          wallet: 'xaman',
           offerAmount: offer.amount,
           offerType: 'sell',
           request
@@ -134,7 +134,7 @@ export const cancelNftOfferButton = (t, setSignRequest, account, offer, type = '
       className="button-action wide center"
       onClick={() =>
         setSignRequest({
-          wallet: 'xumm',
+          wallet: 'xaman',
           request
         })
       }

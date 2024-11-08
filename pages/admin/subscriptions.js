@@ -641,7 +641,7 @@ export default function Subscriptions({ setSignRequest, receiptQuery, tabQuery, 
                             style={{ margin: '10px 10px 20px' }}
                             onClick={() =>
                               setSignRequest({
-                                wallet: 'xumm',
+                                wallet: 'xaman',
                                 request: {
                                   TransactionType: 'Payment',
                                   Destination: payData.bid.destinationAddress,

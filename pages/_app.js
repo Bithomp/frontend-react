@@ -136,6 +136,7 @@ const MyApp = ({ Component, pageProps }) => {
               <SignForm
                 setSignRequest={setSignRequest}
                 account={account}
+                setAccount={setAccount}
                 signRequest={signRequest}
                 uuid={uuid}
                 setRefreshPage={setRefreshPage}

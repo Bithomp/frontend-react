@@ -36,9 +36,9 @@ import NFTokenCreateOffer from './SignForms/NFTokenCreateOffer'
 import NftTransfer from './SignForms/NftTransfer'
 
 const qr = '/images/qr.gif'
-const ledger = '/images/wallets/ledger-large.svg'
-const trezor = '/images/wallets/trezor-large.svg'
-const ellipal = '/images/wallets/ellipal-large.svg'
+//const ledger = '/images/wallets/ledger-large.svg'
+//const trezor = '/images/wallets/trezor-large.svg'
+//const ellipal = '/images/wallets/ellipal-large.svg'
 
 const voteTxs = ['castVoteRewardDelay', 'castVoteRewardRate', 'castVoteHook', 'castVoteSeat']
 const askInfoScreens = [
@@ -52,12 +52,20 @@ const askInfoScreens = [
 ]
 const noCheckboxScreens = [...voteTxs, 'setDomain', 'setAvatar']
 
-export default function SignForm({ setSignRequest, account, signRequest, uuid, setRefreshPage, saveAddressData }) {
+export default function SignForm({
+  setSignRequest,
+  account,
+  signRequest,
+  uuid,
+  setRefreshPage,
+  saveAddressData,
+  setAccount
+}) {
   const { t } = useTranslation()
   const router = useRouter()
   const isMobile = useIsMobile()
 
-  const [screen, setScreen] = useState('choose-app')
+  const [screen, setScreen] = useState('')
   const [status, setStatus] = useState('')
   const [showXamanQr, setShowXamanQr] = useState(false)
   const [xamanQrSrc, setXamanQrSrc] = useState(qr)
@@ -85,6 +93,8 @@ export default function SignForm({ setSignRequest, account, signRequest, uuid, s
     //deeplink doesnt work on mobiles when it's not in the onClick event
     if (!isMobile) {
       txSend()
+    } else {
+      setScreen('choose-app') //may be can be removed
     }
     setHookData({})
     setSeatData({})
@@ -97,27 +107,41 @@ export default function SignForm({ setSignRequest, account, signRequest, uuid, s
     setScreen('xaman')
     setShowXamanQr(false)
     setStatus(t('signin.xumm.statuses.wait'))
-    xamanGetSignedData(uuid, afterSubmit)
+    xamanGetSignedData(uuid, afterSubmitXaman)
     //eslint-disable-next-line react-hooks/exhaustive-deps
   }, [uuid])
 
-  const txSend = () => {
-    if (signRequest?.wallet === 'xumm') {
-      xamanTxSend()
-    } else if (signRequest?.wallet === 'gemwallet') {
-      gemwalletTxSend({ saveAddressData })
-      setScreen('')
-    }
-  }
+  const txSend = (options) => {
+    //when the request is wallet specific it's a priority, logout if not matched
+    //when request is not wallet specific, use the account wallet if loggedin
+    let wallet = signRequest?.wallet || account?.wallet
 
-  const xamanTxSend = () => {
+    if (account?.wallet && wallet && account.wallet !== wallet) {
+      // if loggedin, but account wallet is different from the one in the request
+      // loggout from the account
+      setAccount({ ...account, address: null, username: null, wallet: null })
+    }
+
+    if (!wallet && options?.wallet) {
+      // when request is not wallet specific and user is not loggedin
+      // when user choosed a wallet in the form 'choose-app', save the wallet in account
+      wallet = options.wallet
+      // there is no account.wallet, user is not loggedin
+      setAccount({ ...account, address: null, username: null, wallet })
+    }
+
+    if (!wallet) {
+      setScreen('choose-app')
+      return
+    }
+
     //default login
     let tx = { TransactionType: 'SignIn' }
 
     if (signRequest.request) {
       tx = signRequest.request
     }
-    if (signRequest.data?.signOnly) {
+    if (wallet === 'xaman' && signRequest.data?.signOnly) {
       //for Xaman make "SignIn" when signing only.
       tx.TransactionType = 'SignIn'
     }
@@ -266,6 +290,35 @@ export default function SignForm({ setSignRequest, account, signRequest, uuid, s
       tx.NetworkID = networkId
     }
 
+    if (wallet === 'xaman') {
+      xamanTxSending(tx)
+    } else if (wallet === 'gemwallet') {
+      gemwalletTxSending(tx)
+    }
+  }
+
+  const onSignIn = async ({ address, wallet, redirectName }) => {
+    if (address) {
+      await saveAddressData({ address, wallet })
+      //if redirect
+      if (redirectName) {
+        signInCancelAndClose()
+        if (redirectName === 'nfts') {
+          router.push('/nfts/' + address)
+          return
+        } else if (redirectName === 'account') {
+          window.location.href = server + '/explorer/' + address
+          return
+        }
+      }
+    }
+  }
+
+  const gemwalletTxSending = (tx) => {
+    gemwalletTxSend({ tx, signRequest, afterSubmitExe, afterSigning, onSignIn })
+  }
+
+  const xamanTxSending = (tx) => {
     let signInPayload = {
       options: {
         expire: 3
@@ -357,7 +410,7 @@ export default function SignForm({ setSignRequest, account, signRequest, uuid, s
     } else if (obj.signed) {
       setShowXamanQr(false)
       setStatus(t('signin.xumm.statuses.wait'))
-      xamanGetSignedData(obj.payload_uuidv4, afterSubmit)
+      xamanGetSignedData(obj.payload_uuidv4, afterSubmitXaman)
     } else if (obj.expires_in_seconds) {
       if (obj.expires_in_seconds <= 0) {
         setExpiredQr(true)
@@ -401,7 +454,7 @@ export default function SignForm({ setSignRequest, account, signRequest, uuid, s
     }
   }
 
-  const afterSubmit = async (data) => {
+  const afterSubmitXaman = async (data) => {
     /*
     {
       "application": {
@@ -419,68 +472,64 @@ export default function SignForm({ setSignRequest, account, signRequest, uuid, s
     */
     //data.payload.tx_type: "SignIn"
 
-    if (data.custom_meta?.blob?.data?.signOnly) {
-      if (data.custom_meta.blob.data?.action === 'pro-add-address') {
-        //add address to the list
-        submitProAddressToVerify(
-          {
-            address: data.custom_meta.blob.data.address,
-            name: data.custom_meta.blob.data.name,
-            blob: data.response.hex
-          },
-          (res) => {
-            if (res?.error) {
-              setStatus(t(res.error))
-            } else {
-              closeSignInFormAndRefresh()
-            }
-          }
-        )
-        return
-      }
+    const signRequestData = data.custom_meta?.blob?.data
 
-      if (data.custom_meta.blob.data?.action === 'set-avatar') {
-        //add address to the list
-        setAvatar(
-          {
-            address: data.response.account,
-            blob: data.response.hex
-          },
-          (res) => {
-            if (res?.error) {
-              setStatus(t(res.error))
-            } else {
-              delay(3000, closeSignInFormAndRefresh)
-            }
+    if (signRequestData?.signOnly) {
+      afterSigning({ signRequestData, blob: data.response?.hex, address })
+    } else {
+      const redirectName = data.custom_meta?.blob?.redirect
+      onSignIn({ address: data.response?.account, wallet: 'xaman', redirectName })
+      afterSubmitExe({
+        redirectName,
+        broker: data.custom_meta?.blob?.broker,
+        txHash: data.response?.txid,
+        txType: data.payload?.tx_type
+      })
+    }
+  }
+
+  const afterSigning = async ({ signRequestData, blob, address }) => {
+    if (signRequestData?.action === 'pro-add-address') {
+      //add address to the list
+      submitProAddressToVerify(
+        {
+          address: signRequestData.address,
+          name: signRequestData.name,
+          blob
+        },
+        (res) => {
+          if (res?.error) {
+            setStatus(t(res.error))
+          } else {
+            closeSignInFormAndRefresh()
           }
-        )
-        return
-      }
+        }
+      )
       return
     }
 
-    const redirectName = data.custom_meta?.blob?.redirect
-
-    if (data.response?.account) {
-      saveAddressData({ address: data.response.account, wallet: 'xaman' })
-      //if redirect
-      if (redirectName === 'nfts') {
-        window.location.href = '/nfts/' + data.response.account
-        return
-      } else if (redirectName === 'account') {
-        window.location.href = server + '/explorer/' + data.response.account
-        return
-      }
+    if (signRequestData?.action === 'set-avatar') {
+      //add address to the list
+      setAvatar({ address, blob }, (res) => {
+        if (res?.error) {
+          setStatus(t(res.error))
+        } else {
+          delay(3000, closeSignInFormAndRefresh)
+        }
+      })
+      return
     }
+  }
 
+  const afterSubmitExe = async ({ redirectName, broker, txHash, txType }) => {
     //if broker, notify about the offer
-    if (data.custom_meta?.blob?.broker) {
-      setStatus(t('signin.status.awaiting-broker', { serviceName: data.custom_meta.blob.broker }))
-      if (data.custom_meta.blob.broker === 'bidds') {
+    if (broker) {
+      setStatus(t('signin.status.awaiting-broker', { serviceName: broker }))
+      if (broker === 'bidds') {
         setAwaiting(true)
-        const response = await axios('/v2/bidds/transaction/broker/' + data.response.txid).catch((error) => {
+        const response = await axios('/v2/bidds/transaction/broker/' + txHash).catch((error) => {
           console.log(error)
-          setStatus(t('signin.status.failed-broker', { serviceName: data.custom_meta.blob.broker }))
+          setStatus(t('signin.status.failed-broker', { serviceName: broker }))
           closeSignInFormAndRefresh() //setAwaiting false inside
         })
         setAwaiting(false)
@@ -507,11 +556,11 @@ export default function SignForm({ setSignRequest, account, signRequest, uuid, s
             // hash of the offer accept transaction
             checkTxInCrawler(responseData.data.hash, redirectName)
           } else {
-            setStatus(t('signin.status.failed-broker', { serviceName: data.custom_meta.blob.broker }))
+            setStatus(t('signin.status.failed-broker', { serviceName: broker }))
             delay(3000, closeSignInFormAndRefresh)
           }
         } else {
-          setStatus(t('signin.status.failed-broker', { serviceName: data.custom_meta.blob.broker }))
+          setStatus(t('signin.status.failed-broker', { serviceName: broker }))
           delay(3000, closeSignInFormAndRefresh)
         }
       }
@@ -519,8 +568,8 @@ export default function SignForm({ setSignRequest, account, signRequest, uuid, s
     }
 
     // For NFT transaction, lets wait for crawler to finish it's job
-    if (data.payload?.tx_type.includes('NFToken') || data.payload?.tx_type.includes('URIToken')) {
-      checkTxInCrawler(data.response?.txid, redirectName)
+    if (txType.includes('NFToken') || txType.includes('URIToken')) {
+      checkTxInCrawler(txHash, redirectName)
       return
     } else {
       // no checks or delays for non NFT transactions
@@ -564,30 +613,6 @@ export default function SignForm({ setSignRequest, account, signRequest, uuid, s
     setSignRequest(null)
     setAwaiting(false)
     setStatus('')
-  }
-
-  // temporary styles while hardware wallets are not connected
-  const notAvailable = (picture, name) => {
-    const divStyle = {
-      display: 'inline-block',
-      position: 'relative',
-      opacity: 0.5,
-      pointerEvents: 'none'
-    }
-    const spanStyle = {
-      position: 'absolute',
-      width: '100%',
-      bottom: '20px',
-      left: 0,
-      textAlign: 'center',
-      color: 'black'
-    }
-    return (
-      <div style={divStyle}>
-        <img alt={name} className="signin-app-logo" src={picture} />
-        <span style={spanStyle}>{t('signin.not-available')}</span>
-      </div>
-    )
   }
 
   const buttonStyle = {
@@ -981,7 +1006,7 @@ export default function SignForm({ setSignRequest, account, signRequest, uuid, s
             <button
               type="button"
               className="button-action"
-              onClick={xamanTxSend}
+              onClick={() => txSend()}
               style={buttonStyle}
               disabled={!agreedToRisks || formError}
             >
@@ -994,19 +1019,33 @@ export default function SignForm({ setSignRequest, account, signRequest, uuid, s
               <>
                 <div className="header">{t('signin.choose-app')}</div>
                 <div className="signin-apps">
-                  <Image
-                    alt="xaman"
-                    className="signin-app-logo"
-                    src="/images/wallets/xaman-large.svg"
-                    onClick={xamanTxSend}
-                    width={150}
-                    height={24}
-                  />
-                  {signRequest?.wallet !== 'xumm' && (
+                  <div className="signin-app-logo">
+                    <Image
+                      alt="xaman"
+                      src="/images/wallets/xaman-large.svg"
+                      onClick={() => txSend({ wallet: 'xaman' })}
+                      width={169}
+                      height={80}
+                      style={{ maxWidth: '100%', maxHeight: '100%' }}
+                    />
+                  </div>
+                  {signRequest?.wallet !== 'xaman' && (
                     <>
-                      {!isMobile && notAvailable(ledger, 'ledger')}
-                      {!isMobile && notAvailable(trezor, 'trezor')}
-                      {notAvailable(ellipal, 'ellipal')}
+                      {!isMobile && (
+                        <div className="signin-app-logo">
+                          <Image
+                            alt="gemwallet"
+                            src="/images/wallets/gemwallet.svg"
+                            onClick={() => txSend({ wallet: 'gemwallet' })}
+                            width={80}
+                            height={80}
+                            style={{ maxWidth: '100%', maxHeight: '100%' }}
+                          />
+                        </div>
+                      )}
+                      {/* !isMobile && notAvailable(ledger, 'ledger') */}
+                      {/* !isMobile && notAvailable(trezor, 'trezor') */}
+                      {/* notAvailable(ellipal, 'ellipal') */}
                     </>
                   )}
                 </div>
@@ -1037,7 +1076,12 @@ export default function SignForm({ setSignRequest, account, signRequest, uuid, s
                     )}
                     <br />
                     {showXamanQr ? (
-                      <XamanQr expiredQr={expiredQr} xamanQrSrc={xamanQrSrc} onReset={xamanTxSend} status={status} />
+                      <XamanQr
+                        expiredQr={expiredQr}
+                        xamanQrSrc={xamanQrSrc}
+                        onReset={() => txSend({ wallet: 'xaman' })}
+                        status={status}
+                      />
                     ) : (
                       <div className="orange bold center" style={{ margin: '20px' }}>
                         {awaiting && (

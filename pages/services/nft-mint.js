@@ -181,7 +181,7 @@ export default function NftMint({ setSignRequest, uriQuery, digestQuery }) {
     }
 
     setSignRequest({
-      wallet: 'xumm',
+      wallet: 'xaman',
       redirect: 'nft',
       request,
       callback: afterSubmit
