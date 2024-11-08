@@ -26,10 +26,13 @@ export default function SocialIcons() {
       <a href="https://youtube.com/@bithomp" aria-label="Youtube">
         <FaYoutube />
       </a>
-      <a href="https://linkedin.com/company/bithomp" aria-label="Linkedin">
+      <a
+        href={'https://linkedin.com/company/' + (xahauNetwork ? 'xahauexplorer' : 'xrplexplorer')}
+        aria-label="Linkedin"
+      >
         <FaLinkedin />
       </a>
-      <a href="https://www.instagram.com/bithomp/" aria-label="Instagram">
+      <a href={'https://www.instagram.com/' + (xahauNetwork ? 'xahauexplorer' : 'xrplexplorer')} aria-label="Instagram">
         <FaInstagram />
       </a>
       {/*
