@@ -420,11 +420,11 @@ export default function Admin({ redirectToken, account, setAccount, setProExpire
                                   )}
                                 </>
                               ) : (
-                                'not activated'
+                                <Link href="/admin/subscriptions?tab=pro">Activate</Link>
                               )}
                             </>
                           ) : (
-                            'loading status...'
+                            '...'
                           )}
                         </td>
                       </tr>
