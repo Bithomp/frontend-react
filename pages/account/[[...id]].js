@@ -60,8 +60,6 @@ import SearchBlock from '../../components/Layout/SearchBlock'
 import CopyButton from '../../components/UI/CopyButton'
 import { LinkAmm } from '../../utils/links'
 
-const xamanImg = '/images/wallets/xaman.png'
-
 export default function Account({
   initialData,
   refreshPage,
@@ -460,7 +458,6 @@ export default function Account({
                                         className="button-action wide center"
                                         onClick={() =>
                                           setSignRequest({
-                                            wallet: 'xaman',
                                             action: 'setAvatar',
                                             request: {
                                               TransactionType: 'AccountSet',
@@ -473,13 +470,6 @@ export default function Account({
                                           })
                                         }
                                       >
-                                        <Image
-                                          src={xamanImg}
-                                          className="xaman-logo"
-                                          alt="xaman logo"
-                                          height={24}
-                                          width={24}
-                                        />
                                         Set Avatar
                                       </button>
 
@@ -487,7 +477,6 @@ export default function Account({
                                         className="button-action wide center"
                                         onClick={() =>
                                           setSignRequest({
-                                            wallet: 'xaman',
                                             action: 'setDomain',
                                             redirect: 'account',
                                             request: {
@@ -496,13 +485,6 @@ export default function Account({
                                           })
                                         }
                                       >
-                                        <Image
-                                          src={xamanImg}
-                                          className="xaman-logo"
-                                          alt="xaman logo"
-                                          height={24}
-                                          width={24}
-                                        />
                                         {t('button.set-domain')}
                                       </button>
                                     </div>
