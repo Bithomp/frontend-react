@@ -84,6 +84,8 @@ export default function SignForm({
 
   const [xamanUserToken, setXummUserToken] = useState(null)
 
+  const [choosenWallet, setChoosenWallet] = useState(null)
+
   useEffect(() => {
     setXummUserToken(localStorage.getItem('xamanUserToken'))
   }, [])
@@ -122,12 +124,14 @@ export default function SignForm({
       setAccount({ ...account, address: null, username: null, wallet: null })
     }
 
-    if (!wallet && options?.wallet) {
+    if (!wallet) {
       // when request is not wallet specific and user is not loggedin
-      // when user choosed a wallet in the form 'choose-app', save the wallet in account
-      wallet = options.wallet
-      // there is no account.wallet, user is not loggedin
-      setAccount({ ...account, address: null, username: null, wallet })
+      // check saved wallet from options.wallet on previous steps
+      wallet = choosenWallet
+      if (!wallet && options?.wallet) {
+        // when user choosed a wallet in the form 'choose-app', save the wallet in choosenWallet
+        setChoosenWallet(options.wallet)
+      }
     }
 
     if (!wallet) {
