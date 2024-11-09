@@ -473,12 +473,13 @@ export default function SignForm({
     //data.payload.tx_type: "SignIn"
 
     const signRequestData = data.custom_meta?.blob?.data
+    const address = data.response?.account
 
     if (signRequestData?.signOnly) {
       afterSigning({ signRequestData, blob: data.response?.hex, address })
     } else {
       const redirectName = data.custom_meta?.blob?.redirect
-      onSignIn({ address: data.response?.account, wallet: 'xaman', redirectName })
+      onSignIn({ address, wallet: 'xaman', redirectName })
       afterSubmitExe({
         redirectName,
         broker: data.custom_meta?.blob?.broker,
