@@ -457,16 +457,17 @@ export default function Subscriptions({ setSignRequest, receiptQuery, tabQuery, 
     }
   }
 
-  function sendData() {
-    if (ws.readyState) {
-      ws.send(JSON.stringify({ command: 'subscribe', bids: [{ partnerID: partnerId, destinationTag }], id: 1 }))
-    } else {
-      setTimeout(sendData, 1000)
-    }
-  }
-
   const checkPaymentWs = (partnerId, destinationTag) => {
     if (!update) return
+
+    function sendData() {
+      if (ws.readyState) {
+        ws.send(JSON.stringify({ command: 'subscribe', bids: [{ partnerID: partnerId, destinationTag }], id: 1 }))
+      } else {
+        setTimeout(sendData, 1000)
+      }
+    }
+
     ws = new WebSocket(wssServer)
 
     ws.onopen = () => {
@@ -641,7 +642,6 @@ export default function Subscriptions({ setSignRequest, receiptQuery, tabQuery, 
                             style={{ margin: '10px 10px 20px' }}
                             onClick={() =>
                               setSignRequest({
-                                wallet: 'xaman',
                                 request: {
                                   TransactionType: 'Payment',
                                   Destination: payData.bid.destinationAddress,
