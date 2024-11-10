@@ -342,6 +342,7 @@ export default function History({
                             <td style={{ padding: '0 0 0 5px' }}>
                               <b className="orange">{address.name}</b> -{' '}
                               <small>{crawlerStatus(address.crawler, { inline: true })}</small>
+                              <br />
                               {addressLink(address.address, { short: 10 })}
                             </td>
                           </tr>
