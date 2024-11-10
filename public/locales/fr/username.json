@@ -24,7 +24,7 @@
     "text3": "Le paiement est de 100 couronnes suédoises libellées en XRP. Le paiement pour le nom d'utilisateur est <2>non remboursable</2>. Si vous payez plus que demandé, le montant excédentaire sera considéré comme un don et ne sera pas remboursé.",
     "text4": "Les noms d'utilisateur sont désormais utilisés de manière inter-chaînes, <2>enregistrez un nom d'utilisateur sur le réseau principal XRPL</2> et il sera disponible sur d'autres explorateurs Bithomp (dans un délai d'1 heure).",
     "enter-address-or": "Entrez votre adresse XRPL ou",
-    "sign-in": "Se connecter avec Xaman",
+    "sign-in": "Se connecter",
     "sign-out": "se déconnecter",
     "your-address": "Votre adresse XRPL",
     "enter-username": "Entrez le nom d'utilisateur que vous souhaitez avoir",

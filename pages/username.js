@@ -554,7 +554,7 @@ export default function Username({ setSignRequest, account, signOut, addressQuer
                           <>
                             <p>
                               {t('step0.enter-address-or', { ns: 'username' })}{' '}
-                              <b className="link" onClick={() => setSignRequest({ wallet: 'xaman' })}>
+                              <b className="link" onClick={() => setSignRequest({})}>
                                 {t('step0.sign-in', { ns: 'username' })}
                               </b>
                               :

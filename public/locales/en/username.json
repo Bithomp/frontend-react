@@ -24,7 +24,7 @@
     "text3": "The payment is for 100 Swedish kronor denominated in XRP. The payment for the username is <2>not refundable</2>. If you pay more than requested, the exceeding amount will be counted as donation and won't be refunded.",
     "text4": "Usernames are now used cross-chain, <2>register a username on the XRPL mainnet</2> and it will be available on other bithomp explorers (within 1 hour).",
     "enter-address-or": "Enter your XRPL address or",
-    "sign-in": "Sign in with Xaman",
+    "sign-in": "Sign in",
     "sign-out": "sign out",
     "your-address": "Your XRPL address",
     "enter-username": "Enter the username you would like to have",
