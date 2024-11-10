@@ -108,7 +108,7 @@ export default function SignForm({
     if (!uuid) return
     setScreen('xaman')
     setShowXamanQr(false)
-    setStatus(t('signin.xumm.statuses.wait'))
+    setStatus(t('signin.xaman.statuses.wait'))
     xamanGetSignedData(uuid, afterSubmitXaman)
     //eslint-disable-next-line react-hooks/exhaustive-deps
   }, [uuid])
@@ -320,6 +320,8 @@ export default function SignForm({
 
   const gemwalletTxSending = (tx) => {
     gemwalletTxSend({ tx, signRequest, afterSubmitExe, afterSigning, onSignIn })
+    setScreen('gemwallet')
+    setStatus(t('signin.statuses.check-app', { appName: 'GemWallet' }))
   }
 
   const xamanTxSending = (tx) => {
@@ -356,10 +358,10 @@ export default function SignForm({
       signInPayload.custom_meta.blob.data = signRequest.data
     }
 
-    setStatus(t('signin.xumm.statuses.wait'))
+    setStatus(t('signin.xaman.statuses.wait'))
 
     if (isMobile) {
-      setStatus(t('signin.xumm.statuses.redirecting'))
+      setStatus(t('signin.xaman.statuses.redirecting'))
       //return to the same page
       signInPayload.options.return_url = {
         app: server + router.asPath + '?uuid={id}'
@@ -389,7 +391,7 @@ export default function SignForm({
     setXamanQrSrc(data.refs.qr_png)
     setExpiredQr(false)
     if (data.pushed) {
-      setStatus(t('signin.xumm.statuses.check-push'))
+      setStatus(t('signin.xaman.statuses.check-push'))
     }
     if (isMobile) {
       if (data.next && data.next.always) {
@@ -399,7 +401,7 @@ export default function SignForm({
       }
     } else {
       setShowXamanQr(true)
-      setStatus(t('signin.xumm.scan-qr'))
+      setStatus(t('signin.xaman.scan-qr'))
       //connect to xaman websocket only if it didn't redirect to the xaman app
       xamanWsConnect(data.refs.websocket_status, xamanWsConnected)
     }
@@ -410,15 +412,15 @@ export default function SignForm({
       //cancel button pressed in xaman app
       closeSignInFormAndRefresh()
     } else if (obj.opened) {
-      setStatus(t('signin.xumm.statuses.check-app'))
+      setStatus(t('signin.statuses.check-app', { appName: 'Xaman' }))
     } else if (obj.signed) {
       setShowXamanQr(false)
-      setStatus(t('signin.xumm.statuses.wait'))
+      setStatus(t('signin.xaman.statuses.wait'))
       xamanGetSignedData(obj.payload_uuidv4, afterSubmitXaman)
     } else if (obj.expires_in_seconds) {
       if (obj.expires_in_seconds <= 0) {
         setExpiredQr(true)
-        setStatus(t('signin.xumm.statuses.expired'))
+        setStatus(t('signin.xaman.statuses.expired'))
       }
     }
   }
@@ -573,7 +575,7 @@ export default function SignForm({
     }
 
     // For NFT transaction, lets wait for crawler to finish it's job
-    if (txType.includes('NFToken') || txType.includes('URIToken')) {
+    if (txType?.includes('NFToken') || txType?.includes('URIToken')) {
       checkTxInCrawler(txHash, redirectName)
       return
     } else {
@@ -1066,16 +1068,16 @@ export default function SignForm({
                   <>
                     {!isMobile && (
                       <div className="signin-actions-list">
-                        1. {t('signin.xumm.open-app')}
+                        1. {t('signin.xaman.open-app')}
                         <br />
                         {devNet ? (
                           <>
-                            2. {t('signin.xumm.change-settings')}
+                            2. {t('signin.xaman.change-settings')}
                             <br />
-                            3. {t('signin.xumm.scan-qr')}
+                            3. {t('signin.xaman.scan-qr')}
                           </>
                         ) : (
-                          <>2. {t('signin.xumm.scan-qr')}</>
+                          <>2. {t('signin.xaman.scan-qr')}</>
                         )}
                       </div>
                     )}

@@ -100,7 +100,10 @@
     },
     "expiration": "Caducidad",
     "target-table": "Target table",
-    "xumm": {
+    "statuses": {
+      "check-app": "Por favor, sigue las siguientes instrucciones en tu app {{appName}}."
+    },
+    "xaman": {
       "open-app": "Abre la app Xaman en tu teléfono.",
       "change-settings": "Vete a opciones y elige un nodo testnet.",
       "scan-qr": "Escanea este código QR con la app Xaman.",
@@ -108,7 +111,6 @@
         "redirecting": "Redireccionando a Xaman...",
         "wait": "Por favor, espera...",
         "check-push": "Comprueba una notificación push en tu móvil.",
-        "check-app": "Por favor, sigue las siguientes instrucciones en tu app Xaman.",
         "expired": "El código QR ha caducado, solicita uno nuevo."
       }
     },
@@ -358,6 +360,9 @@
     "address": {
       "invalid_signature_address": "Invalid signature address. Make sure that you sign with the correct address.",
       "limit_reached": "You can not add more addesses, you've reached the limit."
+    },
+    "blob": {
+      "invalid_signature_address": "Debe firmar el mensaje con la dirección que está tratando de agregar."
     }
   },
   "error-api": {
@@ -547,7 +552,7 @@
     "existing": "Existing",
     "burned": "Burned"
   },
-  "xumm": {
+  "xaman": {
     "new-qr": "Genera un nuevo código QR"
   },
   "explorer": {

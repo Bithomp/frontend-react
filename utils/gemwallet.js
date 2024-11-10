@@ -32,6 +32,8 @@ const gemwalletSign = ({ address, tx, signRequest, afterSubmitExe, afterSigning,
 
     if (!tx || tx?.TransactionType === 'SignIn') {
       onSignIn({ address, wallet, redirectName })
+      //keept afterSubmitExe here to close the dialog form when signedin
+      afterSubmitExe({})
       return
     }
     submitTransaction({ transaction })
@@ -46,7 +48,7 @@ const gemwalletSign = ({ address, tx, signRequest, afterSubmitExe, afterSigning,
             txType: tx.TransactionType
           })
         } else {
-          //onlyLogin, remove redirectName
+          //when failed transaction: onlyLogin, remove redirectName
           onSignIn({ address, wallet, redirectName: null })
         }
       })

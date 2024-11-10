@@ -100,7 +100,10 @@
     },
     "expiration": "Kedaluwarsa",
     "target-table": "Target table",
-    "xumm": {
+    "statuses": {
+      "check-app": "Ikuti petunjuk di aplikasi {{appName}}."
+    },
+    "xaman": {
       "open-app": "Buka aplikasi Xaman di ponsel Anda.",
       "change-settings": "Buka pengaturan dan pilih node testnet.",
       "scan-qr": "Pindai kode QR ini dengan aplikasi Xaman.",
@@ -108,7 +111,6 @@
         "redirecting": "Mengalihkan ke Xaman...",
         "wait": "Harap tunggu...",
         "check-push": "Periksa pemberitahuan push di ponsel Anda.",
-        "check-app": "Ikuti petunjuk di aplikasi Xaman.",
         "expired": "Kode QR telah kedaluwarsa, minta yang baru."
       }
     },
@@ -358,6 +360,9 @@
     "address": {
       "invalid_signature_address": "Invalid signature address. Make sure that you sign with the correct address.",
       "limit_reached": "You can not add more addesses, you've reached the limit."
+    },
+    "blob": {
+      "invalid_signature_address": "Anda perlu menandatangani pesan dengan alamat yang ingin Anda tambahkan."
     }
   },
   "error-api": {
@@ -547,7 +552,7 @@
     "existing": "Existing",
     "burned": "Dihapus"
   },
-  "xumm": {
+  "xaman": {
     "new-qr": "Dapatkan kode QR baru"
   },
   "explorer": {

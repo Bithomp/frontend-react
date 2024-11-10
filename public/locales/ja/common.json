@@ -100,7 +100,10 @@
     },
     "expiration": "有効期限",
     "target-table": "対象テーブル",
-    "xumm": {
+    "statuses": {
+      "check-app": "{{appName}}アプリの指示に従ってください。"
+    },
+    "xaman": {
       "open-app": "スマートフォンでXamanアプリを開きます。",
       "change-settings": "設定からテストネットノードを選択してください。",
       "scan-qr": "XamanアプリでQRコードをスキャンします。",
@@ -108,7 +111,6 @@
         "redirecting": "Xamanへリダイレクトしています...",
         "wait": "しばらくお待ちください...",
         "check-push": "スマートフォンのプッシュ通知を確認してください。",
-        "check-app": "Xamanアプリの指示に従ってください。",
         "expired": "QRコードの有効期限が切れました。新しいQRコードをリクエストしてください。"
       }
     },
@@ -358,6 +360,9 @@
     "address": {
       "invalid_signature_address": "Invalid signature address. Make sure that you sign with the correct address.",
       "limit_reached": "You can not add more addesses, you've reached the limit."
+    },
+    "blob": {
+      "invalid_signature_address": "追加しようとしているアドレスでメッセージに署名する必要があります。"
     }
   },
   "error-api": {
@@ -547,7 +552,7 @@
     "existing": "既存",
     "burned": "バーン"
   },
-  "xumm": {
+  "xaman": {
     "new-qr": "新しいQRコードを取得"
   },
   "explorer": {

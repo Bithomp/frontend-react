@@ -46,11 +46,11 @@ export default function XamanQr({ expiredQr, xamanQrSrc, onReset, status }) {
       )}
       {overtime && (
         <div style={{ paddingTop: '120px' }}>
-          <input type="button" value={t('xumm.new-qr')} className="button-action" onClick={resetQr} />
+          <input type="button" value={t('xaman.new-qr')} className="button-action" onClick={resetQr} />
         </div>
       )}
       <div className="orange bold center" style={{ margin: '20px' }}>
-        {overtime ? t('signin.xumm.statuses.expired') : status}
+        {overtime ? t('signin.xaman.statuses.expired') : status}
       </div>
       {!overtime && <ProgressBar goneSeconds={expiresInSeconds} maxSeconds={180} />}
     </>
