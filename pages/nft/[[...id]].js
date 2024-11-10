@@ -4,7 +4,6 @@ import axios from 'axios'
 import { sha512 } from 'crypto-hash'
 import Select from 'react-select'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import Image from 'next/image'
 import Link from 'next/link'
 
 import { stripText, decode, network, isValidJson, xahauNetwork } from '../../utils'
@@ -75,7 +74,6 @@ import NftPreview from '../../components/NftPreview'
 import LinkIcon from '../../public/images/link.svg'
 import EvernodeLease from '../../components/Nft/EvernodeLease'
 import EvernodeRegistartion from '../../components/Nft/EvernodeRegistartion'
-const xamanImg = '/images/wallets/xaman.png'
 
 const hasJsonMeta = (nft) => {
   return nft.metadata && nft.metadata.attributes?.metaSource?.toLowerCase() !== 'bithomp'
@@ -692,7 +690,6 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
               className="button-action wide center"
               onClick={() =>
                 setSignRequest({
-                  wallet: 'xaman',
                   request,
                   broker: {
                     name,
@@ -703,7 +700,6 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
                 })
               }
             >
-              <Image src={xamanImg} className="xaman-logo" alt="xaman" height={24} width={24} />
               {t('button.nft.buy-for-amount', {
                 amount: amountFormat(Math.ceil(best.amount > 0 ? best.amount * multiplier : 1))
               })}
@@ -819,12 +815,10 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
           className="button-action wide center"
           onClick={() =>
             setSignRequest({
-              wallet: 'xaman',
               request
             })
           }
         >
-          <Image src={xamanImg} className="xaman-logo" alt="xaman" height={24} width={24} />
           {sell
             ? hasAValidSellOffer
               ? t('button.nft.add-another-sell-offer')
@@ -839,13 +833,11 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
               className="button-action wide center"
               onClick={() =>
                 setSignRequest({
-                  wallet: 'xaman',
                   request,
                   action: 'nftTransfer'
                 })
               }
             >
-              <Image src={xamanImg} className="xaman-logo" alt="xaman" height={24} width={24} />
               {t('button.nft.transfer')}
             </button>
             <br />
@@ -873,12 +865,10 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
           className="button-action wide center"
           onClick={() =>
             setSignRequest({
-              wallet: 'xaman',
               request
             })
           }
         >
-          <Image src={xamanImg} className="xaman-logo" alt="xaman" height={24} width={24} />
           {countSellOffers?.['active-valid'] > 0 ? t('button.nft.update-sell-offer') : t('button.nft.list-for-sale')}
         </button>
         <br />
@@ -888,13 +878,11 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
           className="button-action wide center"
           onClick={() =>
             setSignRequest({
-              wallet: 'xaman',
               request,
               action: 'nftTransfer'
             })
           }
         >
-          <Image src={xamanImg} className="xaman-logo" alt="xaman" height={24} width={24} />
           {t('button.nft.transfer')}
         </button>
         <br />
@@ -936,12 +924,10 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
           className="button-action wide center"
           onClick={() =>
             setSignRequest({
-              wallet: 'xaman',
               request
             })
           }
         >
-          <Image src={xamanImg} className="xaman-logo" alt="xaman" height={24} width={24} />
           {t('button.nft.burn')} ️‍🔥
         </button>
         <br />
