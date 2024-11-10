@@ -6,12 +6,10 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { getIsSsrMobile } from '../../utils/mobile'
 import { sha512 } from 'crypto-hash'
 import axios from 'axios'
-import Image from 'next/image'
 
 import { addAndRemoveQueryParams, encode, isIdValid, isValidJson, server, xahauNetwork } from '../../utils'
 
 const checkmark = '/images/checkmark.svg'
-const xamanImg = '/images/wallets/xaman.png'
 
 export const getServerSideProps = async (context) => {
   const { query, locale } = context
@@ -181,7 +179,6 @@ export default function NftMint({ setSignRequest, uriQuery, digestQuery }) {
     }
 
     setSignRequest({
-      wallet: 'xaman',
       redirect: 'nft',
       request,
       callback: afterSubmit
@@ -368,7 +365,6 @@ export default function NftMint({ setSignRequest, uriQuery, digestQuery }) {
 
             <p className="center">
               <button className="button-action" onClick={onSubmit} name="submit-button">
-                <Image src={xamanImg} className="xaman-logo" alt="xaman" height={24} width={24} />
                 Mint NFT
               </button>
             </p>

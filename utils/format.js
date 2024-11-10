@@ -1,6 +1,5 @@
 import { Buffer } from 'buffer'
 import Link from 'next/link'
-import Image from 'next/image'
 import React from 'react'
 import { Trans } from 'next-i18next'
 import moment from 'moment'
@@ -9,8 +8,6 @@ import momentDurationFormatSetup from 'moment-duration-format'
 import LinkIcon from '../public/images/link.svg'
 import { stripText, nativeCurrency } from '.'
 import { mpUrl } from './nft'
-
-const xamanImg = '/images/wallets/xaman.png'
 
 momentDurationFormatSetup(moment)
 
@@ -26,7 +23,6 @@ export const acceptNftBuyOfferButton = (t, setSignRequest, offer) => {
       className="button-action wide center"
       onClick={() =>
         setSignRequest({
-          wallet: 'xaman',
           offerAmount: offer.amount,
           offerType: 'buy',
           request: {
@@ -36,7 +32,6 @@ export const acceptNftBuyOfferButton = (t, setSignRequest, offer) => {
         })
       }
     >
-      <Image src={xamanImg} className="xaman-logo" alt="xaman" height={24} width={24} />
       {t('button.nft.sell-for-amount', { amount: amountFormat(offer.amount) })}
     </button>
   )
@@ -62,14 +57,12 @@ export const acceptNftSellOfferButton = (t, setSignRequest, offer, nftType = 'xl
       className="button-action wide center"
       onClick={() =>
         setSignRequest({
-          wallet: 'xaman',
           offerAmount: offer.amount,
           offerType: 'sell',
           request
         })
       }
     >
-      <Image src={xamanImg} className="xaman-logo" alt="xaman" height={24} width={24} />
       {offer.amount === '0' || !offer.amount
         ? t('button.nft.accept-transfer')
         : t('button.nft.buy-for-amount', { amount: amountFormat(offer.amount) })}
@@ -134,12 +127,10 @@ export const cancelNftOfferButton = (t, setSignRequest, account, offer, type = '
       className="button-action wide center"
       onClick={() =>
         setSignRequest({
-          wallet: 'xaman',
           request
         })
       }
     >
-      <Image src={xamanImg} className="xaman-logo" alt="xaman" height={24} width={24} />
       {offer.amount === '0' ? (
         t('button.nft.cancel-transfer')
       ) : (
