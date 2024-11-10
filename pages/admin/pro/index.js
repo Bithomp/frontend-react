@@ -209,7 +209,6 @@ export default function Pro({
     }
 
     setSignRequest({
-      wallet: 'xaman',
       request: tx,
       data: {
         signOnly: true,
@@ -254,7 +253,7 @@ export default function Pro({
     <>
       <SEO title="Pro accounts" />
       <div className="page-admin content-center">
-        <h1 className="center">Pro addresses</h1>
+        <h1 className="center">My addresses</h1>
 
         <AdminTabs name="mainTabs" tab="pro" />
 
@@ -494,14 +493,7 @@ export default function Pro({
                       onClick={addAddressClicked}
                       disabled={!addressToVerify || !addressName}
                     >
-                      Verify{' '}
-                      <Image
-                        src="/images/wallets/xaman.png"
-                        className={'xaman-logo' + (!addressToVerify || !addressName ? ' disabled' : '')}
-                        alt="xaman"
-                        height={24}
-                        width={24}
-                      />
+                      Verify
                     </button>
                   </center>
                 </>

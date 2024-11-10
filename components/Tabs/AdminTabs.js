@@ -8,7 +8,7 @@ export default function AdminTabs({ name, tab }) {
     { value: 'profile', label: 'Profile' },
     { value: 'watchlist', label: 'Watchlist' },
     { value: 'subscriptions', label: 'Subscriptions' },
-    { value: 'pro', label: 'Pro addresses' },
+    { value: 'pro', label: 'My addresses' },
     { value: 'api', label: 'API' }
     //{ value: "bots", label: "Bots" },
   ]

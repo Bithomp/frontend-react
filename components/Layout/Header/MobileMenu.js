@@ -133,7 +133,7 @@ export default function MobileMenu({
               </Link>
 
               <Link href="/admin/pro" className="mobile-menu-item" onClick={mobileMenuToggle}>
-                <FaUserCheck style={{ ...iconStyle, marginTop: '2px' }} /> Pro addresses
+                <FaUserCheck style={{ ...iconStyle, marginTop: '2px' }} /> My addresses
               </Link>
 
               <Link href="/admin/api" className="mobile-menu-item" onClick={mobileMenuToggle}>

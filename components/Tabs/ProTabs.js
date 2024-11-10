@@ -5,7 +5,7 @@ export default function ProTabs({ tab }) {
   const router = useRouter()
 
   const tabList = [
-    { value: 'addresses', label: 'My addresses' },
+    { value: 'addresses', label: 'Addresses' },
     { value: 'balance-changes', label: 'Balance changes' }
   ]
 

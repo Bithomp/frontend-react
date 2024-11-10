@@ -56,12 +56,12 @@ const gemwalletSign = ({ address, tx, signRequest, afterSubmitExe, afterSigning,
   }
 }
 
-export const gemwalletTxSend = ({ tx, signRequest, afterSubmitExe, onSignIn }) => {
+export const gemwalletTxSend = ({ tx, signRequest, afterSubmitExe, afterSigning, onSignIn }) => {
   isInstalled().then((response) => {
     if (response.result.isInstalled) {
       getAddress().then((response) => {
         const address = response.result?.address
-        gemwalletSign({ address, tx, signRequest, afterSubmitExe, onSignIn })
+        gemwalletSign({ address, tx, signRequest, afterSubmitExe, afterSigning, onSignIn })
       })
     } else {
       alert('GemWallet is not installed')
