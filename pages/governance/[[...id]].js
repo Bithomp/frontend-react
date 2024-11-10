@@ -4,7 +4,6 @@ import axios from 'axios'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
-import Image from 'next/image'
 
 import { useIsMobile, getIsSsrMobile } from '../../utils/mobile'
 
@@ -29,8 +28,6 @@ import { duration, shortAddress, shortHash, addressUsernameOrServiceLink, userOr
 
 import LinkIcon from '../../public/images/link.svg'
 import CopyButton from '../../components/UI/CopyButton'
-
-const xamanImg = '/images/wallets/xaman.png'
 
 export default function Governance({ id, setSignRequest, refreshPage, account }) {
   const { t } = useTranslation(['common', 'governance'])
@@ -674,7 +671,6 @@ export default function Governance({ id, setSignRequest, refreshPage, account })
                   className="button-action wide center"
                   onClick={() =>
                     setSignRequest({
-                      wallet: 'xaman',
                       action: 'castVoteSeat',
                       layer: mainTable ? 1 : 2,
                       request: {
@@ -684,7 +680,6 @@ export default function Governance({ id, setSignRequest, refreshPage, account })
                     })
                   }
                 >
-                  <Image src={xamanImg} className="xaman-logo" alt="xaman" height={24} width={24} />
                   {t('button.vote-seat', { ns: 'governance' })}
                 </button>
               )}
@@ -814,7 +809,6 @@ export default function Governance({ id, setSignRequest, refreshPage, account })
                   className="button-action wide center"
                   onClick={() =>
                     setSignRequest({
-                      wallet: 'xaman',
                       action: 'castVoteRewardRate',
                       request: {
                         TransactionType: 'Invoke',
@@ -823,7 +817,6 @@ export default function Governance({ id, setSignRequest, refreshPage, account })
                     })
                   }
                 >
-                  <Image src={xamanImg} className="xaman-logo" alt="xaman" height={24} width={24} />
                   {t('button.vote-reward-rate', { ns: 'governance' })}
                 </button>
               )}
@@ -953,7 +946,6 @@ export default function Governance({ id, setSignRequest, refreshPage, account })
                   className="button-action wide center"
                   onClick={() =>
                     setSignRequest({
-                      wallet: 'xaman',
                       action: 'castVoteRewardDelay',
                       request: {
                         TransactionType: 'Invoke',
@@ -962,7 +954,6 @@ export default function Governance({ id, setSignRequest, refreshPage, account })
                     })
                   }
                 >
-                  <Image src={xamanImg} className="xaman-logo" alt="xaman" height={24} width={24} />
                   {t('button.vote-reward-delay', { ns: 'governance' })}
                 </button>
               )}
@@ -1098,7 +1089,6 @@ export default function Governance({ id, setSignRequest, refreshPage, account })
                   className="button-action wide center"
                   onClick={() =>
                     setSignRequest({
-                      wallet: 'xaman',
                       action: 'castVoteHook',
                       layer: mainTable ? 1 : 2,
                       request: {
@@ -1108,7 +1098,6 @@ export default function Governance({ id, setSignRequest, refreshPage, account })
                     })
                   }
                 >
-                  <Image src={xamanImg} className="xaman-logo" alt="xaman" height={24} width={24} />
                   {t('button.vote-hook', { ns: 'governance' })}
                 </button>
               )}
