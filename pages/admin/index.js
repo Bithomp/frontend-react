@@ -291,6 +291,7 @@ export default function Admin({ redirectToken, account, setAccount, setProExpire
   const onLogOut = () => {
     setSessionToken('')
     setAccount({ ...account, pro: null })
+    setProExpire(JSON.stringify(0))
     setStep(0)
     setErrorMessage('')
     setAuthToken('')
