@@ -129,6 +129,7 @@ export default function SignForm({
       // check saved wallet from options.wallet on previous steps
       wallet = choosenWallet
       if (!wallet && options?.wallet) {
+        wallet = options.wallet
         // when user choosed a wallet in the form 'choose-app', save the wallet in choosenWallet
         setChoosenWallet(options.wallet)
       }
