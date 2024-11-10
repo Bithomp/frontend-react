@@ -352,7 +352,19 @@ export default function Header({
                 )}
 
                 <span onClick={signOut} className="link">
-                  {t('signin.signout')}
+                  {t('signin.signout')}{' '}
+                  {account?.wallet === 'gemwallet' && (
+                    <Image
+                      src="/images/wallets/gemwallet.svg"
+                      className="gemwallet-logo"
+                      alt="GemWallet"
+                      height={24}
+                      width={24}
+                    />
+                  )}
+                  {account?.wallet === 'xaman' && (
+                    <Image src="/images/wallets/xaman.png" className="xaman-logo" alt="Xaman" height={24} width={24} />
+                  )}
                 </span>
               </>
             )}
