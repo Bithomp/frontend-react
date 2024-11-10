@@ -2,13 +2,11 @@ import axios from 'axios'
 
 let xamanWs
 
-export const xamanGetSignedData = async (uuid, callback) => {
+export const xamanProcessSignedData = async ({ uuid, afterSigning, onSignIn, afterSubmitExe }) => {
   const response = await axios('app/xaman/payload/' + uuid)
   const data = response.data
   if (data) {
-    callback(data)
-    if (data.response && data.response.account) {
-      /*
+    /*
       {
         "application": {
           "issued_user_token": "xxx"
@@ -22,10 +20,29 @@ export const xamanGetSignedData = async (uuid, callback) => {
           "signer": "xxx"
         }
       }
-      */
+      //data.payload.tx_type: "SignIn"
+    */
+
+    const signRequestData = data.custom_meta?.blob?.data
+    const address = data.response?.account
+
+    if (signRequestData?.signOnly) {
+      afterSigning({ signRequestData, blob: data.response?.hex, address })
+    } else {
+      const redirectName = data.custom_meta?.blob?.redirect
+      onSignIn({ address, wallet: 'xaman', redirectName })
+      afterSubmitExe({
+        redirectName,
+        broker: data.custom_meta?.blob?.broker,
+        txHash: data.response?.txid,
+        txType: data.payload?.tx_type
+      })
+    }
+
+    if (data.response?.account) {
       localStorage.setItem('xamanUserToken', data.application.issued_user_token)
     } else {
-      console.log('xamanGetSignedData error: xaman get payload: no account')
+      console.log('xamanProcessSignedData error: xaman get payload: no account')
     }
   } else {
     console.log('app/xaman/payload/' + uuid + ' no data')

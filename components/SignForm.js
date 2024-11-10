@@ -22,7 +22,7 @@ import {
   xahauNetwork
 } from '../utils'
 import { capitalize, duration } from '../utils/format'
-import { payloadXamanPost, xamanWsConnect, xamanCancel, xamanGetSignedData } from '../utils/xaman'
+import { payloadXamanPost, xamanWsConnect, xamanCancel, xamanProcessSignedData } from '../utils/xaman'
 import { gemwalletTxSend } from '../utils/gemwallet'
 
 import XamanQr from './Xaman/Qr'
@@ -109,7 +109,7 @@ export default function SignForm({
     setScreen('xaman')
     setShowXamanQr(false)
     setStatus(t('signin.xaman.statuses.wait'))
-    xamanGetSignedData(uuid, afterSubmitXaman)
+    xamanProcessSignedData({ uuid, afterSigning, onSignIn, afterSubmitExe })
     //eslint-disable-next-line react-hooks/exhaustive-deps
   }, [uuid])
 
@@ -417,7 +417,7 @@ export default function SignForm({
     } else if (obj.signed) {
       setShowXamanQr(false)
       setStatus(t('signin.xaman.statuses.wait'))
-      xamanGetSignedData(obj.payload_uuidv4, afterSubmitXaman)
+      xamanProcessSignedData({ uuid: obj.payload_uuidv4, afterSigning, onSignIn, afterSubmitExe })
     } else if (obj.expires_in_seconds) {
       if (obj.expires_in_seconds <= 0) {
         setExpiredQr(true)
@@ -458,41 +458,6 @@ export default function SignForm({
     } else {
       //if no tx data, delay 3 sec
       delay(3000, closeSignInFormAndRefresh)
-    }
-  }
-
-  const afterSubmitXaman = async (data) => {
-    /*
-    {
-      "application": {
-        "issued_user_token": "xxx"
-      },
-      "response": {
-        "hex": "xxx",
-        "txid": "xxx",
-        "environment_nodeuri": "wss://testnet.xrpl-labs.com",
-        "environment_nodetype": "TESTNET",
-        "account": "xxx",
-        "signer": "xxx"
-      }
-    }
-    */
-    //data.payload.tx_type: "SignIn"
-
-    const signRequestData = data.custom_meta?.blob?.data
-    const address = data.response?.account
-
-    if (signRequestData?.signOnly) {
-      afterSigning({ signRequestData, blob: data.response?.hex, address })
-    } else {
-      const redirectName = data.custom_meta?.blob?.redirect
-      onSignIn({ address, wallet: 'xaman', redirectName })
-      afterSubmitExe({
-        redirectName,
-        broker: data.custom_meta?.blob?.broker,
-        txHash: data.response?.txid,
-        txType: data.payload?.tx_type
-      })
     }
   }
 
