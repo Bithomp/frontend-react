@@ -14,7 +14,6 @@ import AdminTabs from '../../components/Tabs/AdminTabs'
 import BillingCountry from '../../components/Admin/BillingCountry'
 import CopyButton from '../../components/UI/CopyButton'
 import LinkIcon from '../../public/images/link.svg'
-import Image from 'next/image'
 import Receipt from '../../components/Receipt'
 import Tabs from '../../components/Tabs'
 import Pro from '../../components/Admin/subscriptions/BithompPro'
@@ -68,8 +67,6 @@ const ButtonWrapper = ({ type }) => {
 
 //PayPal option ends
 */
-
-const xamanImg = '/images/wallets/xaman.png'
 
 export const getServerSideProps = async (context) => {
   const { query, locale } = context
@@ -668,8 +665,7 @@ export default function Subscriptions({ setSignRequest, receiptQuery, tabQuery, 
                               })
                             }
                           >
-                            <Image src={xamanImg} className="xaman-logo" alt="xaman" height={24} width={24} />
-                            Pay with Xaman
+                            Pay
                           </button>
                         </p>
                         <br />
