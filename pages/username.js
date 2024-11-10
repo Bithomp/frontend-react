@@ -303,10 +303,10 @@ export default function Username({ setSignRequest, account, signOut, addressQuer
         setStep(2)
         setOnRegistration(false)
       } else {
-        if (account?.wallet === 'xaman' && xamanUserToken && data.destinationAddress) {
+        if (account?.wallet && (xamanUserToken || account.wallet !== 'xaman') && data.destinationAddress) {
           setOnRegistration(true)
           setSignRequest({
-            wallet: 'xaman',
+            wallet: account.wallet,
             request: {
               TransactionType: 'Payment',
               Destination: data.destinationAddress,
