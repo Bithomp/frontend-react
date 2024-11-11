@@ -5,10 +5,10 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { nativeCurrenciesImages, nativeCurrency, useWidth, xahauNetwork } from '../utils'
 import { getIsSsrMobile } from '../utils/mobile'
 import axios from 'axios'
+import { useRouter } from 'next/router'
 
 import {
   lpTokenName,
-  shortHash,
   showAmmPercents,
   addressUsernameOrServiceLink,
   shortNiceNumber,
@@ -59,8 +59,7 @@ export async function getServerSideProps(context) {
 }
 
 import SEO from '../components/SEO'
-import CopyButton from '../components/UI/CopyButton'
-import { LinkAccount, LinkAmm } from '../utils/links'
+import { LinkAmm } from '../utils/links'
 import Image from 'next/image'
 import FiltersFrame from '../components/Layout/FiltersFrame'
 import { fetchCurrentFiatRate } from '../utils/common'
@@ -86,10 +85,10 @@ const AddressWithIcon = ({ children, address }) => {
     imageUrl = nativeCurrenciesImages[nativeCurrency]
   }
   return (
-    <table>
+    <table style={{ minWidth: 126 }}>
       <tbody>
         <tr className="no-border">
-          <td style={{ padding: 0 }}>
+          <td style={{ padding: 0, width: 35, height: 35 }}>
             <Image alt="avatar" src={imageUrl} width="35" height="35" style={{ verticalAlign: 'middle' }} />
           </td>
           <td style={{ padding: '0 0 0 5px' }}>{children}</td>
@@ -108,6 +107,7 @@ export default function Amms({
   subscriptionExpired
 }) {
   const { t, i18n } = useTranslation()
+  const router = useRouter()
 
   const windowWidth = useWidth()
 
@@ -283,21 +283,17 @@ export default function Amms({
             subscriptionExpired={subscriptionExpired}
             sessionToken={sessionToken}
           >
-            {!windowWidth || windowWidth > 1360 ? (
-              <table className="table-large expand">
+            {!windowWidth || windowWidth > 860 ? (
+              <table className="table-large">
                 <thead>
                   <tr>
                     <th className="center">{t('table.index')}</th>
                     <th>Asset 1</th>
                     <th>Asset 2</th>
                     <th>LP balance</th>
-                    <th className="right">AMM ID</th>
-                    <th className="right">AMM address</th>
-                    <th className="right">Currency code</th>
                     <th>Created</th>
                     <th>Updated</th>
                     <th className="right">Trading fee</th>
-                    <th className="center">Vote slots</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -318,10 +314,8 @@ export default function Amms({
                         <>
                           {data.length > 0 &&
                             data.map((a, i) => (
-                              <tr key={i}>
-                                <td className="center">
-                                  {i + 1} <LinkAmm ammId={a.ammID} icon={true} />
-                                </td>
+                              <tr key={i} onClick={() => router.push('/amm/' + a.ammID)} style={{ cursor: 'pointer' }}>
+                                <td className="center">{i + 1}</td>
                                 <td>
                                   <AmountWithIcon amount={a.amount} />
                                 </td>
@@ -333,22 +327,9 @@ export default function Amms({
                                   <br />
                                   {lpTokenName(a)}
                                 </td>
-                                <td className="right">
-                                  <LinkAmm ammId={a.ammID} copy={true} icon={true} />
-                                </td>
-                                <td className="right">
-                                  <LinkAccount address={a.account} icon={true} copy={true} short={0} />
-                                </td>
-                                <td className="right">
-                                  {shortHash(a.lpTokenBalance?.currency, 5)}{' '}
-                                  <CopyButton text={a.lpTokenBalance?.currency} />
-                                </td>
                                 <td>{timeFromNow(a.createdAt, i18n)}</td>
                                 <td>{timeFromNow(a.updatedAt, i18n)}</td>
                                 <td className="right">{showAmmPercents(a.tradingFee)}</td>
-                                <td className="center">
-                                  <LinkAmm ammId={a.ammID} text={a.voteSlotsCount} />
-                                </td>
                               </tr>
                             ))}
                         </>
@@ -387,7 +368,9 @@ export default function Amms({
                               <b>{i + 1}</b>
                             </td>
                             <td>
-                              <br />
+                              <p>
+                                AMM ID: <LinkAmm ammId={a.ammID} hash={12} />
+                              </p>
                               Assets:
                               <div style={{ height: 10 }} />
                               <table>
@@ -407,32 +390,8 @@ export default function Amms({
                                 LP balance: {shortNiceNumber(a.lpTokenBalance?.value)} {lpTokenName(a)}
                               </p>
                               <p>Trading fee: {showAmmPercents(a.tradingFee)}</p>
-                              <p>
-                                AMM ID: <LinkAmm ammId={a.ammID} hash={6} copy={true} />
-                              </p>
-                              <p>
-                                AMM address: <LinkAccount address={a.account} copy={true} short={6} />
-                              </p>
-                              <p>
-                                Currency code: {shortHash(a.lpTokenBalance?.currency)}{' '}
-                                <CopyButton text={a.lpTokenBalance?.currency} />
-                              </p>
-                              <p>
-                                Created: {timeFromNow(a.createdAt, i18n)}
-                                {', '}
-                                {fullDateAndTime(a.createdAt)}
-                              </p>
-                              <p>
-                                Updated: {timeFromNow(a.updatedAt, i18n)}
-                                {', '}
-                                {fullDateAndTime(a.updatedAt)}
-                              </p>
-                              <p>
-                                Vote slots: <LinkAmm ammId={a.ammID} text={a.voteSlotsCount} />
-                              </p>
-                              <p>
-                                Auction slot: <LinkAmm ammId={a.ammID} icon={true} />
-                              </p>
+                              <p>Created: {timeFromNow(a.createdAt, i18n)}</p>
+                              <p>Updated: {timeFromNow(a.updatedAt, i18n)}</p>
                             </td>
                           </tr>
                         ))
