@@ -25,7 +25,7 @@ import { ThemeProvider } from '../components/Layout/ThemeContext'
 
 const MyApp = ({ Component, pageProps }) => {
   const [account, setAccount] = useLocalStorage('account')
-  const [sessionToken, setSessionToken] = useCookie('sessionToken')
+  const [sessionToken, setSessionToken] = useLocalStorage('sessionToken')
   const [selectedCurrency, setSelectedCurrency] = useCookie('currency', 'usd')
   const [proExpire, setProExpire] = useCookie('pro-expire')
   const [subscriptionExpired, setSubscriptionExpired] = useState(
@@ -42,7 +42,7 @@ const MyApp = ({ Component, pageProps }) => {
 
   useEffect(() => {
     if (sessionToken) {
-      axios.defaults.headers.common['Authorization'] = 'Bearer ' + sessionToken
+      axios.defaults.headers.common['Authorization'] = 'Bearer ' + sessionToken?.replace(/['"]+/g, '')
     }
   }, [sessionToken])
 
