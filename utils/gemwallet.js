@@ -43,7 +43,7 @@ const gemwalletSign = ({ address, tx, signRequest, afterSubmitExe, afterSigning,
           onSignIn({ address, wallet, redirectName })
           afterSubmitExe({
             redirectName,
-            broker: signRequest.broker,
+            broker: signRequest.broker.name,
             txHash,
             txType: tx.TransactionType
           })
