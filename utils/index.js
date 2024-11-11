@@ -21,9 +21,11 @@ export const useCookie = (key, defaultValue) => {
   })
 
   const setValue = (value) => {
-    if (value !== undefined) {
+    if (value !== undefined && value !== 'undefined' && value !== '') {
       setItemValue(value)
       cookies.set(key, value, cookieParams)
+    } else {
+      cookies.remove(key)
     }
   }
 
