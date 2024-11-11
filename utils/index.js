@@ -26,11 +26,13 @@ export const useCookie = (key, defaultValue) => {
       cookies.set(key, value, cookieParams)
     } else {
       cookies.remove(key)
+      setItemValue('')
     }
   }
 
   const removeItem = () => {
     cookies.remove(key)
+    setItemValue('')
   }
 
   return [item, setValue, removeItem]
