@@ -82,12 +82,12 @@ export default function SignForm({
   const [rewardRate, setRewardRate] = useState()
   const [rewardDelay, setRewardDelay] = useState()
 
-  const [xamanUserToken, setXummUserToken] = useState(null)
+  const [xamanUserToken, setXamanUserToken] = useState(null)
 
   const [choosenWallet, setChoosenWallet] = useState(null)
 
   useEffect(() => {
-    setXummUserToken(localStorage.getItem('xamanUserToken'))
+    setXamanUserToken(localStorage.getItem('xamanUserToken'))
   }, [])
 
   useEffect(() => {

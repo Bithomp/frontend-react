@@ -79,7 +79,7 @@ export default function Header({
   const [menuOpen, setMenuOpen] = useState(false)
   const [isCopied, setIsCopied] = useState(false)
 
-  const [xamanUserToken, setXummUserToken] = useState(null)
+  const [xamanUserToken, setXamanUserToken] = useState(null)
 
   const [hoverStates, setHoverStates] = useState({})
 
@@ -87,7 +87,7 @@ export default function Header({
 
   useEffect(() => {
     setRendered(true)
-    setXummUserToken(localStorage.getItem('xamanUserToken'))
+    setXamanUserToken(localStorage.getItem('xamanUserToken'))
   }, [])
 
   let address, displayName, username, pro, proName
