@@ -33,6 +33,7 @@ export async function middleware(req) {
     viewLocale = cookieLocale
   }
 
+  //redirect old page to github
   if (req.nextUrl.pathname.startsWith(`/paperwallet`)) {
     return NextResponse.redirect(new URL('https://bithomp.github.io/xrp-paper-wallet/'))
   }

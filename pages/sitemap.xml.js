@@ -27,7 +27,6 @@ const pages = [
   { loc: 'last-ledger-information', changefreq: 'always', priority: '0.7' },
   { loc: 'nodes', changefreq: 'always', priority: '0.7' },
   { loc: 'activations', changefreq: 'always', priority: '0.7' },
-  { loc: 'paperwallet/', changefreq: 'yearly', priority: '0.7' },
   { loc: 'domains', changefreq: 'always', priority: '0.7' },
   { loc: 'distribution', changefreq: 'always', priority: '0.7' },
 
@@ -71,7 +70,7 @@ function generateSiteMap(posts) {
     'disclaimer',
     'xrpl-article'
   ]
-  const oldPages = ['submit/', 'paperwallet/', 'explorer/']
+  const oldPages = ['submit/', 'explorer/']
   const pagesWithoutTranslation = [...noTranslatedPages, ...oldPages]
 
   return `<?xml version="1.0" encoding="UTF-8"?>
