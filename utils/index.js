@@ -4,8 +4,7 @@ import { decodeAccountID, isValidClassicAddress } from 'ripple-address-codec'
 import countries from 'i18n-iso-countries'
 import Cookies from 'universal-cookie'
 
-export const domainFromUrl = typeof window !== 'undefined' ? encodeURI(window.location.hostname) : ''
-export const cookieParams = { path: '/', domain: domainFromUrl, maxAge: 31536000 }
+export const cookieParams = { path: '/', maxAge: 31536000 }
 
 export const useCookie = (key, defaultValue) => {
   const cookies = new Cookies()
