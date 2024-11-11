@@ -4,6 +4,7 @@ import ExpirationSelect from '../UI/ExpirationSelect'
 import CheckBox from '../UI/CheckBox'
 import { isAddressValid, typeNumberOnly } from '../../utils'
 import AddressInput from '../UI/AddressInput'
+import { amountFormat } from '../../utils/format'
 
 export default function NFTokenCreateOffer({ signRequest, setSignRequest, setStatus, setFormError }) {
   const { t } = useTranslation()
