@@ -317,9 +317,9 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
                 <span className="waiting inline"></span>
               </span>
             ) : (
-              <h1 className="contrast">
+              <div className="bold contrast">
                 {explorerHeader(tab)} {userOrServiceName(userData)}
-              </h1>
+              </div>
             )}
           </div>
           {isMounted ? (
