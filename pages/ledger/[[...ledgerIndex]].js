@@ -10,16 +10,20 @@ import { getIsSsrMobile } from '../../utils/mobile'
 import { fullDateAndTime, shortHash, addressUsernameOrServiceLink } from '../../utils/format'
 import { LedgerLink } from '../../utils/links'
 import { axiosServer } from '../../utils/axios'
+import Image from 'next/image'
 
 export async function getServerSideProps(context) {
   const { locale, req, query } = context
-  let pageMeta = null
   //keep it from query instead of params, anyway it is an array sometimes
   const ledgerIndex = query.ledgerIndex
     ? Array.isArray(query.ledgerIndex)
       ? query.ledgerIndex[0]
       : query.ledgerIndex
     : ''
+
+  let pageMeta = {
+    ledgerVersion: ledgerIndex
+  }
 
   let headers = {}
   if (req.headers['x-real-ip']) {
@@ -33,13 +37,12 @@ export async function getServerSideProps(context) {
     if (ledgerIndex === '' || ledgerIndex >= minLedger) {
       const res = await axiosServer({
         method: 'get',
-        url: 'xrpl/v1/ledger/' + ledgerIndex,
+        url: 'xrpl/v1/ledger/' + ledgerIndex + '?transactions=true&expand=true',
         headers
       })
       pageMeta = res?.data
-    } else {
-      pageMeta = {
-        ledgerVersion: ledgerIndex
+      if (pageMeta) {
+        pageMeta.transactions?.sort((a, b) => (a.outcome.indexInLedger > b.outcome.indexInLedger ? 1 : -1))
       }
     }
   } catch (error) {
@@ -48,7 +51,6 @@ export async function getServerSideProps(context) {
 
   return {
     props: {
-      ledgerIndex,
       pageMeta,
       isSsrMobile: getIsSsrMobile(context),
       ...(await serverSideTranslations(locale, ['common', 'ledger']))
@@ -56,12 +58,12 @@ export async function getServerSideProps(context) {
   }
 }
 
-export default function Ledger({ ledgerIndex, pageMeta }) {
-  const [data, setData] = useState(null)
+export default function Ledger({ pageMeta }) {
+  const [data, setData] = useState(pageMeta)
   const [loading, setLoading] = useState(false)
   const { t } = useTranslation()
 
-  const [ledgerVersion, setLedgerVersion] = useState(pageMeta?.ledgerVersion || ledgerIndex || '')
+  const [ledgerVersion, setLedgerVersion] = useState(pageMeta?.ledgerVersion)
 
   const checkApi = async () => {
     setLoading(true)
@@ -69,10 +71,12 @@ export default function Ledger({ ledgerIndex, pageMeta }) {
     const data = response.data
     setLoading(false)
 
-    if (data) {
+    if (data?.ledgerVersion) {
       data.transactions?.sort((a, b) => (a.outcome.indexInLedger > b.outcome.indexInLedger ? 1 : -1))
       setData(data)
       setLedgerVersion(data.ledgerVersion)
+    } else {
+      setData(null)
     }
   }
 
@@ -104,7 +108,7 @@ export default function Ledger({ ledgerIndex, pageMeta }) {
   */
 
   useEffect(() => {
-    if (ledgerVersion === '' || ledgerVersion >= minLedger) {
+    if ((ledgerVersion === '' || ledgerVersion >= minLedger) && ledgerVersion !== data?.ledgerVersion) {
       checkApi()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -132,12 +136,12 @@ export default function Ledger({ ledgerIndex, pageMeta }) {
 
   return (
     <>
-      <SEO title={t('menu.ledger') + ' ' + (pageMeta?.ledgerVersion || ledgerIndex)} />
-      <div className="content-text">
+      <SEO title={t('menu.ledger') + ' ' + ledgerVersion} />
+      <div className="content-center">
         <h1 className="center">
           {t('menu.ledger')} #{ledgerVersion}
           <br />
-          {pageMeta?.close_time ? fullDateAndTime(pageMeta.close_time) : <br />}
+          {data?.close_time ? fullDateAndTime(data.close_time) : <br />}
         </h1>
         {ledgerVersion >= minLedger ? (
           <>
@@ -147,29 +151,40 @@ export default function Ledger({ ledgerIndex, pageMeta }) {
                 <tr>
                   <th>{t('table.index')}</th>
                   <th>{t('table.type')}</th>
-                  <th className="hide-on-mobile">{t('table.address')}</th>
+                  <th className="center">{t('table.address')}</th>
                   <th className="hide-on-mobile">{t('table.status')}</th>
-                  <th>{t('table.hash')}</th>
+                  <th className="right">{t('table.hash')}</th>
                 </tr>
               </thead>
               <tbody>
-                {!loading && data ? (
+                {!loading ? (
                   <>
-                    {data.transactions ? (
-                      data.transactions.map((tx) => (
+                    {data?.transactions ? (
+                      data?.transactions.map((tx) => (
                         <tr key={tx.id}>
                           <td className="center">{tx.outcome.indexInLedger}</td>
                           <td>{tx.type}</td>
-                          <td className="hide-on-mobile">{addressUsernameOrServiceLink(tx, 'address')}</td>
-                          <td className="hide-on-mobile">{tx.outcome.result}</td>
                           <td>
-                            <a href={'/explorer/' + tx.id}>{shortHash(tx.id, 10)}</a>
+                            <Image
+                              src={'https://cdn.bithomp.com/avatar/' + tx.address}
+                              alt={tx.addressDetails?.service || 'service logo'}
+                              height={20}
+                              width={20}
+                              style={{ marginRight: '5px', marginBottom: '-5px' }}
+                            />
+                            {addressUsernameOrServiceLink(tx, 'address', { short: 6 })}
+                          </td>
+                          <td className="hide-on-mobile">{tx.outcome.result}</td>
+                          <td className="right">
+                            <a href={'/explorer/' + tx.id}>{shortHash(tx.id, 5)}</a>
                           </td>
                         </tr>
                       ))
                     ) : (
                       <tr>
-                        <td colSpan="4">{t('no-transactions', { ns: 'ledger' })}</td>
+                        <td colSpan="100" className="center">
+                          {t('no-transactions', { ns: 'ledger' })}
+                        </td>
                       </tr>
                     )}
                   </>
