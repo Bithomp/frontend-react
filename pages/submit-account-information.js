@@ -1,6 +1,6 @@
 import { FaMediumM, FaTelegramPlane } from 'react-icons/fa'
 import { SiXrp } from 'react-icons/si'
-import { FaUser, FaTwitter, FaInstagram, FaFacebookF, FaYoutube, FaLinkedinIn, FaRedditAlien } from 'react-icons/fa6'
+import { FaUser, FaXTwitter, FaInstagram, FaFacebookF, FaYoutube, FaLinkedinIn, FaRedditAlien } from 'react-icons/fa6'
 import { CiGlobe } from 'react-icons/ci'
 import { AiOutlineMail } from 'react-icons/ai'
 
@@ -39,7 +39,7 @@ const fields = [
     name: 'domain'
   },
   {
-    icon: <FaTwitter />,
+    icon: <FaXTwitter />,
     name: 'twitter'
   },
   {
