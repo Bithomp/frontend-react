@@ -19,10 +19,19 @@ export const getServerSideProps = async (context) => {
 import SEO from '../components/SEO'
 
 import { useWidth, nativeCurrency } from '../utils'
-import { amountFormat, userOrServiceLink, niceNumber, percentFormat, addressLink } from '../utils/format'
+import {
+  amountFormat,
+  userOrServiceLink,
+  niceNumber,
+  percentFormat,
+  addressLink,
+  AddressWithIcon,
+  nativeCurrencyToFiat
+} from '../utils/format'
+import { fetchCurrentFiatRate } from '../utils/common'
 
-export default function Distribution() {
-  const { t } = useTranslation(['common', 'distribution'])
+export default function Distribution({ selectedCurrency }) {
+  const { t } = useTranslation()
   const router = useRouter()
 
   const { isReady } = router
@@ -33,6 +42,11 @@ export default function Distribution() {
   const [rawData, setRawData] = useState({})
   const [loading, setLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
+  const [fiatRate, setFiatRate] = useState(0)
+
+  useEffect(() => {
+    fetchCurrentFiatRate(selectedCurrency, setFiatRate)
+  }, [selectedCurrency])
 
   const controller = new AbortController()
 
@@ -106,7 +120,7 @@ export default function Distribution() {
   return (
     <>
       <SEO title={t('menu.network.distribution', { nativeCurrency })} />
-      <div className="content-text">
+      <div className="content-center">
         <h1 className="center">{t('menu.network.distribution', { nativeCurrency })}</h1>
         <div className="flex">
           <div className="grey-box">{t('desc', { ns: 'distribution', nativeCurrency })}</div>
@@ -152,16 +166,20 @@ export default function Distribution() {
                           <tr key={i}>
                             <td className="center">{i + 1}</td>
                             <td>
-                              {userOrServiceLink(r, 'address') && (
-                                <>
-                                  {userOrServiceLink(r, 'address')}
-                                  <br />
-                                </>
-                              )}
-                              {addressLink(r.address)}
+                              <AddressWithIcon address={r.address}>
+                                {userOrServiceLink(r, 'address') && (
+                                  <>
+                                    {userOrServiceLink(r, 'address')}
+                                    <br />
+                                  </>
+                                )}
+                                {addressLink(r.address)}
+                              </AddressWithIcon>
                             </td>
                             <td className="right">
                               {amountFormat(r.balance)} {percentFormat(r.balance, rawData.summary?.totalCoins)}
+                              <br />
+                              {fiatRate > 0 && nativeCurrencyToFiat({ amount: r.balance, selectedCurrency, fiatRate })}
                             </td>
                           </tr>
                         ))}
@@ -202,16 +220,19 @@ export default function Distribution() {
                         </td>
                         <td>
                           <p>
-                            {userOrServiceLink(r, 'address') && (
-                              <>
-                                {t('table.name')}: {userOrServiceLink(r, 'address')}
-                                <br />
-                              </>
-                            )}
-                            {t('table.address')}: <a href={'/explorer/' + r.address}>{r.address}</a>
+                            <AddressWithIcon address={r.address}>
+                              {userOrServiceLink(r, 'address') && (
+                                <>
+                                  {userOrServiceLink(r, 'address')}
+                                  <br />
+                                </>
+                              )}
+                              {addressLink(r.address)}
+                            </AddressWithIcon>
                             <br />
-                            {t('table.balance')}: {amountFormat(r.balance)}{' '}
-                            {percentFormat(r.balance, rawData.summary?.totalCoins)}
+                            {amountFormat(r.balance)} {percentFormat(r.balance, rawData.summary?.totalCoins)}
+                            <br />
+                            {fiatRate > 0 && nativeCurrencyToFiat({ amount: r.balance, selectedCurrency, fiatRate })}
                           </p>
                         </td>
                       </tr>

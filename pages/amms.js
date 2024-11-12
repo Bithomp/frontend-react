@@ -2,7 +2,7 @@ import { useTranslation } from 'next-i18next'
 import { useEffect, useState } from 'react'
 import { axiosServer } from '../utils/axios'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import { nativeCurrenciesImages, nativeCurrency, useWidth, xahauNetwork } from '../utils'
+import { useWidth, xahauNetwork } from '../utils'
 import { getIsSsrMobile } from '../utils/mobile'
 import axios from 'axios'
 import { useRouter } from 'next/router'
@@ -16,7 +16,8 @@ import {
   timeFromNow,
   amountFormatNode,
   amountFormat,
-  nativeCurrencyToFiat
+  nativeCurrencyToFiat,
+  AddressWithIcon
 } from '../utils/format'
 
 export async function getServerSideProps(context) {
@@ -60,7 +61,6 @@ export async function getServerSideProps(context) {
 
 import SEO from '../components/SEO'
 import { LinkAmm } from '../utils/links'
-import Image from 'next/image'
 import FiltersFrame from '../components/Layout/FiltersFrame'
 import { fetchCurrentFiatRate } from '../utils/common'
 import InfiniteScrolling from '../components/Layout/InfiniteScrolling'
@@ -77,25 +77,6 @@ const updateListForCsv = (list) => {
       tradingFeeFormated: showAmmPercents(a.tradingFee)
     }
   })
-}
-
-const AddressWithIcon = ({ children, address }) => {
-  let imageUrl = 'https://cdn.bithomp.com/avatar/' + address
-  if (!address) {
-    imageUrl = nativeCurrenciesImages[nativeCurrency]
-  }
-  return (
-    <table style={{ minWidth: 126 }}>
-      <tbody>
-        <tr className="no-border">
-          <td style={{ padding: 0, width: 35, height: 35 }}>
-            <Image alt="avatar" src={imageUrl} width="35" height="35" style={{ verticalAlign: 'middle' }} />
-          </td>
-          <td style={{ padding: '0 0 0 5px' }}>{children}</td>
-        </tr>
-      </tbody>
-    </table>
-  )
 }
 
 export default function Amms({

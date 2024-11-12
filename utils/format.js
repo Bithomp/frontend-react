@@ -6,10 +6,30 @@ import moment from 'moment'
 import momentDurationFormatSetup from 'moment-duration-format'
 
 import LinkIcon from '../public/images/link.svg'
-import { stripText, nativeCurrency } from '.'
+import { stripText, nativeCurrency, nativeCurrenciesImages } from '.'
 import { mpUrl } from './nft'
+import Image from 'next/image'
 
 momentDurationFormatSetup(moment)
+
+export const AddressWithIcon = ({ children, address }) => {
+  let imageUrl = 'https://cdn.bithomp.com/avatar/' + address
+  if (!address) {
+    imageUrl = nativeCurrenciesImages[nativeCurrency]
+  }
+  return (
+    <table style={{ minWidth: 126 }}>
+      <tbody>
+        <tr className="no-border">
+          <td style={{ padding: 0, width: 35, height: 35 }}>
+            <Image alt="avatar" src={imageUrl} width="35" height="35" style={{ verticalAlign: 'middle' }} />
+          </td>
+          <td style={{ padding: '0 0 0 5px' }}>{children}</td>
+        </tr>
+      </tbody>
+    </table>
+  )
+}
 
 export const nativeCurrencyToFiat = (params) => {
   const { amount, selectedCurrency, fiatRate } = params
