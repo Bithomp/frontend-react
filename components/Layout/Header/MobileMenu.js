@@ -187,14 +187,24 @@ export default function MobileMenu({
         </div>
         <div className="mobile-menu__submenu">
           {!displayName && (
-            <span
-              onClick={() => {
-                setSignRequest({ redirect: 'nfts' })
-              }}
-              className="mobile-menu-item link"
-            >
-              {t('signin.actions.my-nfts')}
-            </span>
+            <>
+              <span
+                onClick={() => {
+                  setSignRequest({ redirect: 'nfts' })
+                }}
+                className="mobile-menu-item link"
+              >
+                {t('signin.actions.my-nfts')}
+              </span>
+              <span
+                onClick={() => {
+                  setSignRequest({ redirect: 'nft-offers' })
+                }}
+                className="mobile-menu-item link"
+              >
+                {t('signin.actions.my-nft-offers')}
+              </span>
+            </>
           )}
 
           <Link href="/nft-explorer" className="mobile-menu-item" onClick={mobileMenuToggle}>

@@ -173,16 +173,29 @@ export default function Header({
 
           <MenuDropDown id="dropdown3" title="NFT" setHoverStates={setHoverStates} hoverStates={hoverStates}>
             {displayName ? (
-              <Link href={'/nfts/' + address}>{t('signin.actions.my-nfts')}</Link>
+              <>
+                <Link href={'/nfts/' + address}>{t('signin.actions.my-nfts')}</Link>
+                <Link href={'/nft-offers/' + address}>{t('signin.actions.my-nft-offers')}</Link>
+              </>
             ) : (
-              <span
-                onClick={() => {
-                  setSignRequest({ redirect: 'nfts' })
-                }}
-                className="link"
-              >
-                {t('signin.actions.my-nfts')}
-              </span>
+              <>
+                <span
+                  onClick={() => {
+                    setSignRequest({ redirect: 'nfts' })
+                  }}
+                  className="link"
+                >
+                  {t('signin.actions.my-nfts')}
+                </span>
+                <span
+                  onClick={() => {
+                    setSignRequest({ redirect: 'nft-offers' })
+                  }}
+                  className="link"
+                >
+                  {t('signin.actions.my-nft-offers')}
+                </span>
+              </>
             )}
             <Link href="/nft-explorer">{t('menu.nft.explorer')}</Link>
             <Link href="/nft-sales">{t('menu.nft.sales')}</Link>
