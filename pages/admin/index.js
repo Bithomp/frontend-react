@@ -100,6 +100,7 @@ export default function Admin({ redirectToken, account, setAccount, setProExpire
         }
       */
       if (data?.status === 'success') {
+        axiosAdmin.defaults.headers.common['Authorization'] = 'Bearer ' + data.token
         setStep(2)
         setErrorMessage('')
         setSessionToken(data.token)
@@ -280,6 +281,7 @@ export default function Admin({ redirectToken, account, setAccount, setProExpire
         }
       */
       if (data?.status === 'success') {
+        axiosAdmin.defaults.headers.common['Authorization'] = 'Bearer ' + data.token
         setStep(2)
         setErrorMessage('')
         setSessionToken(data.token)
