@@ -11,3 +11,15 @@ export const axiosServer = axios.create({
 export const axiosAdmin = axios.create({
   baseURL: server + '/api/partner/'
 })
+
+//keep it here, for when page is refreshed.
+axiosAdmin.interceptors.request.use(
+  (config) => {
+    const sessionToken = localStorage.getItem('sessionToken')?.replace(/['"]+/g, '')
+    if (sessionToken && !config.headers.common['Authorization']) {
+      config.headers.common['Authorization'] = `Bearer ${sessionToken}`
+    }
+    return config
+  },
+  (error) => Promise.reject(error)
+)
