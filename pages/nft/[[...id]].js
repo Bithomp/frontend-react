@@ -25,7 +25,7 @@ import {
   acceptNftSellOfferButton,
   acceptNftBuyOfferButton
 } from '../../utils/format'
-import { axiosServer } from '../../utils/axios'
+import { axiosServer, passHeaders } from '../../utils/axios'
 
 import SocialShare from '../../components/SocialShare'
 import { nftClass } from '../../styles/pages/nft.module.scss'
@@ -37,20 +37,13 @@ export async function getServerSideProps(context) {
   //keep it from query instead of params, anyway it is an array sometimes in params too.
   const nftId = id ? (Array.isArray(id) ? id[0] : id) : ''
   if (nftId) {
-    let headers = {}
-    if (req.headers['x-real-ip']) {
-      headers['x-real-ip'] = req.headers['x-real-ip']
-    }
-    if (req.headers['x-forwarded-for']) {
-      headers['x-forwarded-for'] = req.headers['x-forwarded-for']
-    }
     try {
       //const selectedCurrency = req.cookies['selectedCurrency']
       const res = await axiosServer({
         method: 'get',
         url: 'v2/nft/' + nftId + '?uri=true&metadata=true', //&history=true&sellOffers=true&buyOffers=true&offersValidate=true&offersHistory=true&convertCurrencies=' +
         //selectedCurrency?.toLowerCase(),
-        headers
+        headers: passHeaders(req)
       })
       pageMeta = res?.data
     } catch (error) {

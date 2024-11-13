@@ -24,26 +24,18 @@ import 'react-datepicker/dist/react-datepicker.css'
 import CopyButton from '../../components/UI/CopyButton'
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
-import { axiosServer } from '../../utils/axios'
+import { axiosServer, passHeaders } from '../../utils/axios'
 
 export async function getServerSideProps(context) {
   const { locale, query, req } = context
   let initialData = null
   const { id, ledgerTimestamp } = query
-
-  let headers = {}
-  if (req.headers['x-real-ip']) {
-    headers['x-real-ip'] = req.headers['x-real-ip']
-  }
-  if (req.headers['x-forwarded-for']) {
-    headers['x-forwarded-for'] = req.headers['x-forwarded-for']
-  }
   let errorMessage = null
   try {
     const res = await axiosServer({
       method: 'get',
       url: 'v2/amm/' + id + (ledgerTimestamp ? '?ledgerTimestamp=' + ledgerTimestamp : ''),
-      headers
+      headers: passHeaders(req)
     }).catch((error) => {
       errorMessage = error.message
     })

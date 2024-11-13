@@ -4,7 +4,7 @@ import axios from 'axios'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import Link from 'next/link'
 import Image from 'next/image'
-import { axiosServer } from '../../utils/axios'
+import { axiosServer, passHeaders } from '../../utils/axios'
 
 import { server, getCoinsUrl, nativeCurrency } from '../../utils'
 import { amountFormat, fullDateAndTime, timeFromNow, txIdLink, nativeCurrencyToFiat } from '../../utils/format'
@@ -21,13 +21,6 @@ export async function getServerSideProps(context) {
   //keep it from query instead of params, anyway it is an array sometimes
   const account = id ? (Array.isArray(id) ? id[0] : id) : ''
   if (account) {
-    let headers = {}
-    if (req.headers['x-real-ip']) {
-      headers['x-real-ip'] = req.headers['x-real-ip']
-    }
-    if (req.headers['x-forwarded-for']) {
-      headers['x-forwarded-for'] = req.headers['x-forwarded-for']
-    }
     try {
       const res = await axiosServer({
         method: 'get',
@@ -36,7 +29,7 @@ export async function getServerSideProps(context) {
           account +
           '?username=true&service=true&verifiedDomain=true&parent=true&nickname=true&inception=true&flare=true&blacklist=true&payString=true&ledgerInfo=true&xamanMeta=true' +
           (ledgerTimestamp ? '&ledgerTimestamp=' + new Date(ledgerTimestamp).toISOString() : ''),
-        headers
+        headers: passHeaders(req)
       })
       initialData = res?.data
     } catch (error) {

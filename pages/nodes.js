@@ -1,27 +1,19 @@
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useWidth, ledgerName } from '../utils'
-import { axiosServer } from '../utils/axios'
+import { axiosServer, passHeaders } from '../utils/axios'
 import { getIsSsrMobile } from '../utils/mobile'
 import { shortHash, duration, timeFromNow } from '../utils/format'
 
 export async function getServerSideProps(context) {
   const { locale, req } = context
   let initialData = null
-
-  let headers = {}
-  if (req.headers['x-real-ip']) {
-    headers['x-real-ip'] = req.headers['x-real-ip']
-  }
-  if (req.headers['x-forwarded-for']) {
-    headers['x-forwarded-for'] = req.headers['x-forwarded-for']
-  }
   let initialErrorMessage = null
   try {
     const res = await axiosServer({
       method: 'get',
       url: 'v2/nodes',
-      headers
+      headers: passHeaders(req)
     }).catch((error) => {
       initialErrorMessage = error.message
     })

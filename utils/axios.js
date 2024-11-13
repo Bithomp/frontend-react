@@ -23,3 +23,18 @@ axiosAdmin.interceptors.request.use(
   },
   (error) => Promise.reject(error)
 )
+
+export const passHeaders = (req) => {
+  let headers = {}
+  //we need to pass only some headers, otherwise axios error
+  if (req.headers['x-real-ip']) {
+    headers['x-real-ip'] = req.headers['x-real-ip']
+  }
+  if (req.headers['x-forwarded-for']) {
+    headers['x-forwarded-for'] = req.headers['x-forwarded-for']
+  }
+  if (req.headers['user-agent']) {
+    headers['user-agent'] = req.headers['user-agent']
+  }
+  return headers
+}
