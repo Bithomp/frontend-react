@@ -1,14 +1,45 @@
 import axios from 'axios'
 
-//not in use yet
-export const broadcastTransaction = async (blob, callback) => {
-  blob = JSON.stringify(blob)
-
-  const response = await axios.post('v2/transaction/submit', blob).catch((error) => {
-    console.log('broadcastTransaction error:', error.message)
+export const broadcastTransaction = async ({
+  blob,
+  setStatus,
+  onSignIn,
+  afterSubmitExe,
+  address,
+  wallet,
+  signRequest,
+  tx
+}) => {
+  const response = await axios.post('v2/transaction/submit', { signedTransaction: blob }).catch((error) => {
+    if (error.response?.data?.message) {
+      setStatus(error.response.data.message)
+    } else {
+      setStatus(error.message)
+    }
   })
 
   if (response) {
-    callback(response)
+    const txHash = response.hash
+    if (txHash) {
+      const redirectName = signRequest.redirect
+      onSignIn({ address, wallet, redirectName })
+      afterSubmitExe({
+        redirectName,
+        broker: signRequest.broker?.name,
+        txHash,
+        txType: tx.TransactionType
+      })
+    } else {
+      //when failed transaction: onlyLogin, remove redirectName
+      onSignIn({ address, wallet, redirectName: null })
+    }
   }
+}
+
+export const getTransactionFee = async (tx) => {
+  const response = await axios.post('xrpl/fee', tx).catch((error) => {
+    console.error(error)
+  })
+
+  return response?.fee
 }

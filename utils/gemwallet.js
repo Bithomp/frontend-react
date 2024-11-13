@@ -1,17 +1,19 @@
 import { isInstalled, getAddress, signTransaction, submitTransaction } from '@gemwallet/api' //getNetwork
+import { broadcastTransaction, getTransactionFee } from './user'
 
 //getNetwork().then((response) => {
 //alert(response.result?.network)
 //})
 
-const gemwalletSign = ({ address, tx, signRequest, afterSubmitExe, afterSigning, onSignIn, setStatus }) => {
+const useOurServer = false
+
+const gemwalletSign = async ({ address, tx, signRequest, afterSubmitExe, afterSigning, onSignIn, setStatus }) => {
   const signRequestData = signRequest.data
-  const transaction = tx
 
   // If the transaction field Account is not set, the account of the user's wallet will be used.
 
   if (signRequestData?.signOnly) {
-    signTransaction({ transaction })
+    signTransaction({ transaction: tx })
       .then((response) => {
         /*
         {
@@ -24,37 +26,67 @@ const gemwalletSign = ({ address, tx, signRequest, afterSubmitExe, afterSigning,
         afterSigning({ signRequestData, blob: response.result?.signature, address })
       })
       .catch((error) => {
-        setStatus(error)
+        console.error(error)
       })
   } else {
-    const redirectName = signRequest.redirect
     const wallet = 'gemwallet'
 
     if (!tx || tx?.TransactionType === 'SignIn') {
-      onSignIn({ address, wallet, redirectName })
+      onSignIn({ address, wallet, redirectName: signRequest.redirect })
       //keept afterSubmitExe here to close the dialog form when signedin
       afterSubmitExe({})
       return
     }
-    submitTransaction({ transaction })
-      .then((response) => {
-        const txHash = response.result?.hash
-        if (txHash) {
-          onSignIn({ address, wallet, redirectName })
-          afterSubmitExe({
-            redirectName,
-            broker: signRequest.broker?.name,
-            txHash,
-            txType: tx.TransactionType
+
+    if (useOurServer) {
+      //get fee
+      setStatus('Getting transaction fee...')
+      const txFee = await getTransactionFee(tx)
+      tx.Fee = txFee
+      setStatus('Sign the transaction in GemWallet.')
+      signTransaction({ transaction: tx })
+        .then((response) => {
+          const blob = response.result?.signature
+          //now submit transaction
+          setStatus('Submitting transaction to the network...')
+          broadcastTransaction({
+            blob,
+            setStatus,
+            onSignIn,
+            afterSubmitExe,
+            address,
+            wallet,
+            signRequest,
+            tx
           })
-        } else {
-          //when failed transaction: onlyLogin, remove redirectName
-          onSignIn({ address, wallet, redirectName: null })
-        }
-      })
-      .catch((error) => {
-        setStatus(error)
-      })
+        })
+        .catch((error) => {
+          console.error(error)
+          setStatus('Error signing transaction')
+        })
+    } else {
+      submitTransaction({ transaction: tx })
+        .then((response) => {
+          const txHash = response.result?.hash
+          const redirectName = signRequest.redirect
+          if (txHash) {
+            onSignIn({ address, wallet, redirectName })
+            afterSubmitExe({
+              redirectName,
+              broker: signRequest.broker?.name,
+              txHash,
+              txType: tx.TransactionType
+            })
+          } else {
+            //when failed transaction: onlyLogin, remove redirectName
+            onSignIn({ address, wallet, redirectName: null })
+          }
+        })
+        .catch((error) => {
+          console.error(error)
+          setStatus('Error submitting transaction')
+        })
+    }
   }
 }
 
