@@ -45,9 +45,11 @@ export async function getServerSideProps(context) {
       headers['x-forwarded-for'] = req.headers['x-forwarded-for']
     }
     try {
+      //const selectedCurrency = req.cookies['selectedCurrency']
       const res = await axiosServer({
         method: 'get',
-        url: 'v2/nft/' + nftId + '?uri=true&metadata=true',
+        url: 'v2/nft/' + nftId + '?uri=true&metadata=true', //&history=true&sellOffers=true&buyOffers=true&offersValidate=true&offersHistory=true&convertCurrencies=' +
+        //selectedCurrency?.toLowerCase(),
         headers
       })
       pageMeta = res?.data
