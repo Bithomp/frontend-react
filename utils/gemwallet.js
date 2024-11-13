@@ -4,7 +4,7 @@ import { isInstalled, getAddress, signTransaction, submitTransaction } from '@ge
 //alert(response.result?.network)
 //})
 
-const gemwalletSign = ({ address, tx, signRequest, afterSubmitExe, afterSigning, onSignIn }) => {
+const gemwalletSign = ({ address, tx, signRequest, afterSubmitExe, afterSigning, onSignIn, setStatus }) => {
   const signRequestData = signRequest.data
   const transaction = tx
 
@@ -24,7 +24,7 @@ const gemwalletSign = ({ address, tx, signRequest, afterSubmitExe, afterSigning,
         afterSigning({ signRequestData, blob: response.result?.signature, address })
       })
       .catch((error) => {
-        console.error('Transaction submission failed', error)
+        setStatus(error)
       })
   } else {
     const redirectName = signRequest.redirect
@@ -53,20 +53,27 @@ const gemwalletSign = ({ address, tx, signRequest, afterSubmitExe, afterSigning,
         }
       })
       .catch((error) => {
-        console.error('Transaction submission failed', error)
+        setStatus(error)
       })
   }
 }
 
-export const gemwalletTxSend = ({ tx, signRequest, afterSubmitExe, afterSigning, onSignIn }) => {
+export const gemwalletTxSend = ({ tx, signRequest, afterSubmitExe, afterSigning, onSignIn, setStatus, account }) => {
   isInstalled().then((response) => {
     if (response.result.isInstalled) {
-      getAddress().then((response) => {
-        const address = response.result?.address
-        gemwalletSign({ address, tx, signRequest, afterSubmitExe, afterSigning, onSignIn })
-      })
+      if (account?.address && account?.wallet === 'gemwallet') {
+        // gemwallet installed, account is known
+        const address = account.address
+        gemwalletSign({ address, tx, signRequest, afterSubmitExe, afterSigning, onSignIn, setStatus })
+      } else {
+        //get address from gemwallet
+        getAddress().then((response) => {
+          const address = response.result?.address
+          gemwalletSign({ address, tx, signRequest, afterSubmitExe, afterSigning, onSignIn, setStatus })
+        })
+      }
     } else {
-      alert('GemWallet is not installed')
+      setStatus('GemWallet is not installed')
     }
   })
 }

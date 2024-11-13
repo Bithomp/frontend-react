@@ -323,7 +323,7 @@ export default function SignForm({
   }
 
   const gemwalletTxSending = (tx) => {
-    gemwalletTxSend({ tx, signRequest, afterSubmitExe, afterSigning, onSignIn })
+    gemwalletTxSend({ tx, signRequest, afterSubmitExe, afterSigning, onSignIn, setStatus, account })
     setScreen('gemwallet')
     setStatus(t('signin.statuses.check-app', { appName: 'GemWallet' }))
   }
@@ -429,9 +429,10 @@ export default function SignForm({
     }
   }
 
-  const checkTxInCrawler = async (txid, redirectName) => {
+  const checkTxInCrawler = async ({ txid, redirectName }) => {
     setAwaiting(true)
     setStatus(t('signin.status.awaiting-crawler'))
+    //txid can be in the ledger or not, so we need to check it in the ledger
     if (txid) {
       const response = await axios('xrpl/transaction/' + txid)
       if (response.data) {
@@ -452,11 +453,11 @@ export default function SignForm({
           checkCrawlerStatus({ inLedger: includedInLedger })
         } else {
           //if not validated or if no ledger info received, delay for 3 seconds
-          delay(3000, closeSignInFormAndRefresh)
+          delay(1500, checkTxInCrawler, { txid, redirectName })
         }
       } else {
         //if no info on transaction, delay 3 sec
-        delay(3000, closeSignInFormAndRefresh)
+        delay(1500, checkTxInCrawler, { txid, redirectName })
       }
     } else {
       //if no tx data, delay 3 sec
@@ -530,7 +531,7 @@ export default function SignForm({
           const responseData = response.data
           if (responseData.status && responseData.data?.hash) {
             // hash of the offer accept transaction
-            checkTxInCrawler(responseData.data.hash, redirectName)
+            checkTxInCrawler({ txid: responseData.data.hash, redirectName })
           } else {
             setStatus(t('signin.status.failed-broker', { serviceName: broker }))
             delay(3000, closeSignInFormAndRefresh)
@@ -545,7 +546,7 @@ export default function SignForm({
 
     // For NFT transaction, lets wait for crawler to finish it's job
     if (txType?.includes('NFToken') || txType?.includes('URIToken')) {
-      checkTxInCrawler(txHash, redirectName)
+      checkTxInCrawler({ txid: txHash, redirectName })
       return
     } else {
       // no checks or delays for non NFT transactions
