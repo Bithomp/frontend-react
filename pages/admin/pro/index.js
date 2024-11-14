@@ -73,15 +73,7 @@ const SettingsCheckBoxes = ({ a, mobile, subscriptionExpired }) => {
   )
 }
 
-export default function Pro({
-  account,
-  setAccount,
-  setSignRequest,
-  refreshPage,
-  subscriptionExpired,
-  sessionToken,
-  setSessionToken
-}) {
+export default function Pro({ account, setSignRequest, refreshPage, subscriptionExpired }) {
   const router = useRouter()
   const width = useWidth()
 
@@ -120,7 +112,7 @@ export default function Pro({
     const response = await axiosAdmin.get('user/addresses').catch((error) => {
       setLoadingVerifiedAddresses(false)
       if (error.response?.data?.error === 'errors.token.required') {
-        onLogOut()
+        router.push('/admin')
         return
       }
       if (error && error.message !== 'canceled') {
@@ -157,14 +149,9 @@ export default function Pro({
   }
 
   useEffect(() => {
-    if (!sessionToken) {
-      router.push('/admin')
-    } else {
-      setErrorMessage('')
-      setRendered(true)
-    }
+    setRendered(true)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [sessionToken])
+  }, [])
 
   useEffect(() => {
     setAddressName('')
@@ -177,12 +164,6 @@ export default function Pro({
     getVerifiedAddresses()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [refreshPage])
-
-  const onLogOut = () => {
-    setSessionToken('')
-    setAccount({ ...account, pro: null })
-    setErrorMessage('')
-  }
 
   const addAddressClicked = () => {
     if (!account?.pro) {

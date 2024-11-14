@@ -1,7 +1,5 @@
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useTranslation } from 'next-i18next'
-import { useEffect, useState } from 'react'
-import { useRouter } from 'next/router'
 
 import SEO from '../../../components/SEO'
 
@@ -19,19 +17,8 @@ export const getServerSideProps = async (context) => {
   }
 }
 
-export default function Bots({ sessionToken }) {
-  const { t } = useTranslation(['common', 'admin'])
-  const [errorMessage, setErrorMessage] = useState('')
-  const router = useRouter()
-
-  useEffect(() => {
-    if (!sessionToken) {
-      router.push('/admin')
-    } else {
-      setErrorMessage('') //delete
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [sessionToken])
+export default function Bots() {
+  const { t } = useTranslation()
 
   return (
     <>
@@ -48,7 +35,6 @@ export default function Bots({ sessionToken }) {
           <br />
           Here you will be able to set up your {ledgerName} bots.
           <br />
-          {errorMessage ? <div className="center orange bold">{errorMessage}</div> : <br />}
         </div>
       </div>
     </>

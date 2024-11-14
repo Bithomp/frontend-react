@@ -7,13 +7,7 @@ import { useTranslation } from 'next-i18next'
 import { countriesTranslated } from '../../utils'
 import { axiosAdmin } from '../../utils/axios'
 
-export default function BillingCountry({
-  billingCountry,
-  setBillingCountry,
-  choosingCountry,
-  setChoosingCountry,
-  sessionToken
-}) {
+export default function BillingCountry({ billingCountry, setBillingCountry, choosingCountry, setChoosingCountry }) {
   const router = useRouter()
   const { i18n } = useTranslation()
   const countries = countriesTranslated(i18n.language)
@@ -21,11 +15,9 @@ export default function BillingCountry({
   const [loading, setLoading] = useState(true) //keep true for country select
 
   useEffect(() => {
-    if (sessionToken) {
-      getApiData()
-    }
+    getApiData()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [sessionToken])
+  }, [])
 
   const getApiData = async () => {
     const partnerData = await axiosAdmin.get('partner').catch((error) => {

@@ -21,8 +21,8 @@ export const getServerSideProps = async (context) => {
   }
 }
 
-export default function Charts({ sessionToken }) {
-  const { t } = useTranslation(['common', 'admin'])
+export default function Charts() {
+  const { t } = useTranslation()
   const router = useRouter()
   const width = useWidth()
 
@@ -30,13 +30,6 @@ export default function Charts({ sessionToken }) {
   const [chartData, setChartData] = useState([])
   const [loading, setLoading] = useState(false)
   const [period, setPeriod] = useState('')
-
-  useEffect(() => {
-    if (!sessionToken) {
-      router.push('/admin')
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [sessionToken])
 
   useEffect(() => {
     if (period) {

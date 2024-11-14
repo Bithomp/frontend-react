@@ -29,7 +29,7 @@ export const getServerSideProps = async (context) => {
   }
 }
 
-export default function Watchlist({ selectedCurrency, account, subscriptionExpired, sessionToken }) {
+export default function Watchlist({ selectedCurrency, account, subscriptionExpired }) {
   const { t, i18n } = useTranslation()
   const router = useRouter()
   const width = useWidth()
@@ -45,14 +45,10 @@ export default function Watchlist({ selectedCurrency, account, subscriptionExpir
   const [rendered, setRendered] = useState(false)
 
   useEffect(() => {
-    if (!sessionToken) {
-      router.push('/admin')
-    } else {
-      getFavorites()
-      setRendered(true)
-    }
+    getFavorites()
+    setRendered(true)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [sessionToken])
+  }, [])
 
   useEffect(() => {
     if (selectedCurrency) {

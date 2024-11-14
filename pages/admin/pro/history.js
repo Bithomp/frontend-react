@@ -52,15 +52,7 @@ const showFiat = (fiat, selectedCurrency) => {
   )
 }
 
-export default function History({
-  account,
-  setAccount,
-  queryAddress,
-  selectedCurrency,
-  setSelectedCurrency,
-  sessionToken,
-  setSessionToken
-}) {
+export default function History({ queryAddress, selectedCurrency, setSelectedCurrency }) {
   const router = useRouter()
   const width = useWidth()
 
@@ -145,7 +137,7 @@ export default function History({
       .catch((error) => {
         setLoading(false)
         if (error.response?.data?.error === 'errors.token.required') {
-          onLogOut()
+          router.push('/admin')
           return
         }
         if (error && error.message !== 'canceled') {
@@ -192,18 +184,12 @@ export default function History({
     }
   }
 
-  const onLogOut = () => {
-    setSessionToken('')
-    setAccount({ ...account, pro: null })
-    setErrorMessage('')
-  }
-
   const getVerifiedAddresses = async () => {
     setLoadingVerifiedAddresses(true)
     const response = await axiosAdmin.get('user/addresses').catch((error) => {
       setLoadingVerifiedAddresses(false)
       if (error.response?.data?.error === 'errors.token.required') {
-        onLogOut()
+        router.push('/admin')
         return
       }
       if (error && error.message !== 'canceled') {
@@ -242,14 +228,9 @@ export default function History({
   }
 
   useEffect(() => {
-    if (!sessionToken) {
-      router.push('/admin')
-    } else {
-      setErrorMessage('')
-      getVerifiedAddresses()
-    }
+    getVerifiedAddresses()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [sessionToken])
+  }, [])
 
   useEffect(() => {
     getProAddressHistory()

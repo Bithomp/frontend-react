@@ -20,7 +20,7 @@ export const getServerSideProps = async (context) => {
   }
 }
 
-export default function Statistics({ sessionToken }) {
+export default function Statistics() {
   const { t } = useTranslation()
   const [errorMessage, setErrorMessage] = useState('')
   const [loading, setLoading] = useState(false)
@@ -29,13 +29,9 @@ export default function Statistics({ sessionToken }) {
   const [statistics, setStatistics] = useState({})
 
   useEffect(() => {
-    if (!sessionToken) {
-      router.push('/admin')
-    } else {
-      getData()
-    }
+    getData()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [sessionToken])
+  }, [])
 
   const getData = async () => {
     setLoading(true)
