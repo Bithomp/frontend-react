@@ -42,7 +42,9 @@ const gemwalletSign = async ({ address, tx, signRequest, afterSubmitExe, afterSi
       //get fee
       setStatus('Getting transaction fee...')
       const txFee = await getTransactionFee(tx)
-      tx.Fee = txFee
+      tx.Fee = (txFee * 1000000).toString() //converting to drops
+      // we need here sequence also!
+      // tx.Sequence = 123456
       setStatus('Sign the transaction in GemWallet.')
       signTransaction({ transaction: tx })
         .then((response) => {

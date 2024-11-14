@@ -10,6 +10,10 @@ export const broadcastTransaction = async ({
   signRequest,
   tx
 }) => {
+  if (!blob) {
+    setStatus('There is no blob to broadcast')
+    return
+  }
   const response = await axios.post('v2/transaction/submit', { signedTransaction: blob }).catch((error) => {
     if (error.response?.data?.message) {
       setStatus(error.response.data.message)
@@ -41,5 +45,5 @@ export const getTransactionFee = async (tx) => {
     console.error(error)
   })
 
-  return response?.fee
+  return response?.data?.fee
 }
