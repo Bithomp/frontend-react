@@ -34,7 +34,7 @@ export async function getServerSideProps(context) {
     const res2 = await axiosServer({
       method: 'get',
       url: 'v2/validators',
-      headers
+      headers: passHeaders(req)
     })
     initialData.unl = res?.data
     initialData.validators = res2?.data
