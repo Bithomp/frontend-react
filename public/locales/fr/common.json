@@ -158,7 +158,7 @@
   "home": {
     "title": "Explorateur {{explorerName}} | Scanner le registre {{nativeCurrency}}",
     "description": "Scannez le Registre {{nativeCurrency}}",
-    "search-placeholder": "Rechercher par Adresse / Transaction / NFT / Nom d'utilisateur / PayString / Offre / Hash de monnaie",
+    "search-placeholder": "Rechercher par Adresse / Transaction / NFT / Nom d'utilisateur / PayString / Offre / Hash",
     "search-placeholder-short": "Adresse / Transaction / Nom d'utilisateur",
     "scan-qr": "SCANNER UN CODE",
     "whales": {
