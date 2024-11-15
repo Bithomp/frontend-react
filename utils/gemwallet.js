@@ -1,13 +1,22 @@
 import { isInstalled, getAddress, signTransaction, submitTransaction } from '@gemwallet/api' //getNetwork
-import { broadcastTransaction, getTransactionFee } from './user'
+import { broadcastTransaction, getPaymentParams } from './user'
 
 //getNetwork().then((response) => {
 //alert(response.result?.network)
 //})
 
-const useOurServer = false
+const useOurServer = true
 
-const gemwalletSign = async ({ address, tx, signRequest, afterSubmitExe, afterSigning, onSignIn, setStatus }) => {
+const gemwalletSign = async ({
+  address,
+  tx,
+  signRequest,
+  afterSubmitExe,
+  afterSigning,
+  onSignIn,
+  setStatus,
+  setAwaiting
+}) => {
   const signRequestData = signRequest.data
 
   // If the transaction field Account is not set, the account of the user's wallet will be used.
@@ -40,17 +49,20 @@ const gemwalletSign = async ({ address, tx, signRequest, afterSubmitExe, afterSi
 
     if (useOurServer) {
       //get fee
+      setAwaiting(true)
       setStatus('Getting transaction fee...')
-      const txFee = await getTransactionFee(tx)
-      tx.Fee = (txFee * 1000000).toString() //converting to drops
-      // we need here sequence also!
-      // tx.Sequence = 123456
+      const txFee = await getPaymentParams(tx)
+      setAwaiting(false)
+      tx.Sequence = txFee.Sequence
+      tx.Fee = txFee.Fee
+      tx.LastLedgerSequence = txFee.LastLedgerSequence
       setStatus('Sign the transaction in GemWallet.')
       signTransaction({ transaction: tx })
         .then((response) => {
           const blob = response.result?.signature
           //now submit transaction
           setStatus('Submitting transaction to the network...')
+          setAwaiting(true)
           broadcastTransaction({
             blob,
             setStatus,
@@ -59,7 +71,8 @@ const gemwalletSign = async ({ address, tx, signRequest, afterSubmitExe, afterSi
             address,
             wallet,
             signRequest,
-            tx
+            tx,
+            setAwaiting
           })
         })
         .catch((error) => {
@@ -92,18 +105,27 @@ const gemwalletSign = async ({ address, tx, signRequest, afterSubmitExe, afterSi
   }
 }
 
-export const gemwalletTxSend = ({ tx, signRequest, afterSubmitExe, afterSigning, onSignIn, setStatus, account }) => {
+export const gemwalletTxSend = ({
+  tx,
+  signRequest,
+  afterSubmitExe,
+  afterSigning,
+  onSignIn,
+  setStatus,
+  account,
+  setAwaiting
+}) => {
   isInstalled().then((response) => {
     if (response.result.isInstalled) {
       if (account?.address && account?.wallet === 'gemwallet') {
         // gemwallet installed, account is known
         const address = account.address
-        gemwalletSign({ address, tx, signRequest, afterSubmitExe, afterSigning, onSignIn, setStatus })
+        gemwalletSign({ address, tx, signRequest, afterSubmitExe, afterSigning, onSignIn, setStatus, setAwaiting })
       } else {
         //get address from gemwallet
         getAddress().then((response) => {
           const address = response.result?.address
-          gemwalletSign({ address, tx, signRequest, afterSubmitExe, afterSigning, onSignIn, setStatus })
+          gemwalletSign({ address, tx, signRequest, afterSubmitExe, afterSigning, onSignIn, setStatus, setAwaiting })
         })
       }
     } else {

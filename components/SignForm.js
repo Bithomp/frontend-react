@@ -323,7 +323,7 @@ export default function SignForm({
   }
 
   const gemwalletTxSending = (tx) => {
-    gemwalletTxSend({ tx, signRequest, afterSubmitExe, afterSigning, onSignIn, setStatus, account })
+    gemwalletTxSend({ tx, signRequest, afterSubmitExe, afterSigning, onSignIn, setStatus, account, setAwaiting })
     setScreen('gemwallet')
     setStatus(t('signin.statuses.check-app', { appName: 'GemWallet' }))
   }

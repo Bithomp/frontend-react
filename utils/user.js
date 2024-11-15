@@ -22,8 +22,10 @@ export const broadcastTransaction = async ({
     }
   })
 
-  if (response) {
-    const txHash = response.hash
+  const data = response?.data
+
+  if (data) {
+    const txHash = data.id
     if (txHash) {
       const redirectName = signRequest.redirect
       onSignIn({ address, wallet, redirectName })
@@ -40,10 +42,10 @@ export const broadcastTransaction = async ({
   }
 }
 
-export const getTransactionFee = async (tx) => {
-  const response = await axios.post('xrpl/fee', tx).catch((error) => {
+export const getPaymentParams = async (tx) => {
+  const response = await axios.post('v2/transaction/paymentParams', tx).catch((error) => {
     console.error(error)
   })
 
-  return response?.data?.fee
+  return response?.data
 }
