@@ -27,9 +27,17 @@ export const getServerSideProps = async (context) => {
 
 const checkmark = '/images/checkmark.svg'
 
-export default function Admin({ redirectToken, account, setAccount, setProExpire, sessionToken, setSessionToken }) {
+export default function Admin({
+  redirectToken,
+  account,
+  setAccount,
+  setProExpire,
+  sessionToken,
+  setSessionToken,
+  signOutPro
+}) {
   const { theme } = useTheme()
-  const { t, i18n } = useTranslation(['common', 'admin'])
+  const { t, i18n } = useTranslation()
   const width = useWidth()
 
   const [siteKey, setSiteKey] = useState('')
@@ -186,7 +194,7 @@ export default function Admin({ redirectToken, account, setAccount, setProExpire
         }
         setCheckedPackageData(true)
       } else {
-        setProExpire(JSON.stringify(0))
+        setProExpire('0')
         setCheckedPackageData(true)
       }
     } else {
@@ -291,9 +299,7 @@ export default function Admin({ redirectToken, account, setAccount, setProExpire
   }
 
   const onLogOut = () => {
-    setSessionToken('')
-    setAccount({ ...account, pro: null })
-    setProExpire(JSON.stringify(0))
+    signOutPro()
     setStep(0)
     setErrorMessage('')
     setAuthToken('')

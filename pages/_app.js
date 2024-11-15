@@ -60,11 +60,11 @@ const MyApp = ({ Component, pageProps }) => {
 
   const signOutPro = () => {
     setSessionToken('')
+    setProExpire('0')
     setAccount({
       ...account,
       pro: null
     })
-    window.location.reload()
   }
 
   const saveAddressData = async ({ address, wallet }) => {
@@ -157,6 +157,7 @@ const MyApp = ({ Component, pageProps }) => {
                 setSelectedCurrency={setSelectedCurrency}
                 showAds={showAds}
                 setProExpire={setProExpire}
+                signOutPro={signOutPro}
                 subscriptionExpired={subscriptionExpired}
                 sessionToken={sessionToken}
                 setSessionToken={setSessionToken}
