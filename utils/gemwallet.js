@@ -5,7 +5,7 @@ import { broadcastTransaction, getNextTransactionParams } from './user'
 //alert(response.result?.network)
 //})
 
-const useOurServer = false
+const useOurServer = true
 
 const gemwalletSign = async ({
   address,
