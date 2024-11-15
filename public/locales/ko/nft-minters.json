@@ -1,9 +1,9 @@
 {
   "header": "NFT 채굴자",
-  "desc": "Here you can find the list of all identified NFT minters. If you want your project to be recognised, add a memo with your website address to your mint transactions.",
-  "summary-period": "For that period <1>{{minted}}</1> NFTs were minted, from which <4>{{mintedAndBurned}}</4> NFTs {{percentMintedAndBurned}} were already burned during the same period of time, total burned during this period: <11>{{burned}}</11> NFTs.",
-  "summary-all": "There are <1>{{minted}}</1> minted NFTs, from which <4>{{mintedAndBurned}}</4> NFTs {{percentMintedAndBurned}} are burned.",
-  "mint-chart": "Mint chart",
+  "desc": "여기에서 확인된 모든 NFT 민팅 계정 목록을 확인할 수 있습니다. 프로젝트가 인식되길 원하신다면, 민팅 거래에 웹사이트 주소가 포함된 메모를 추가하세요.",
+  "summary-period": "해당 기간 동안 <1>{{minted}}</1>개의 NFT가 민팅되었으며, 그중 <4>{{mintedAndBurned}}</4>개의 NFT({{percentMintedAndBurned}})는 같은 기간 내에 이미 소각되었습니다. 해당 기간 동안 총 소각된 수량: <11>{{burned}}</11>개의 NFT.",
+  "summary-all": "현재까지 <1>{{minted}}</1>개의 NFT가 민팅되었으며, 그중 <4>{{mintedAndBurned}}</4>개의 NFT({{percentMintedAndBurned}})가 소각되었습니다.",
+  "mint-chart": "민팅 차트",
   "table": {
     "minted-total": "전체 발행량",
     "minted-with-metadata": "메타 데이터 - 발행된 NFT",

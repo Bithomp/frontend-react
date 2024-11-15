@@ -1,0 +1,4 @@
+{
+  "header": "활성화된 계정",
+  "account-activations-for-that-period": "해당 기간 동안 <1>{{count}}</1>개의 계정이 활성화되었습니다."
+}
