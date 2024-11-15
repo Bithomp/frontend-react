@@ -42,8 +42,8 @@ export const broadcastTransaction = async ({
   }
 }
 
-export const getPaymentParams = async (tx) => {
-  const response = await axios.post('v2/transaction/paymentParams', tx).catch((error) => {
+export const getNextTransactionParams = async (tx) => {
+  const response = await axios.post('v2/transaction/nextTransactionParams', tx).catch((error) => {
     console.error(error)
   })
 

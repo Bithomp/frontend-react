@@ -1,11 +1,11 @@
 import { isInstalled, getAddress, signTransaction, submitTransaction } from '@gemwallet/api' //getNetwork
-import { broadcastTransaction, getPaymentParams } from './user'
+import { broadcastTransaction, getNextTransactionParams } from './user'
 
 //getNetwork().then((response) => {
 //alert(response.result?.network)
 //})
 
-const useOurServer = true
+const useOurServer = false
 
 const gemwalletSign = async ({
   address,
@@ -51,7 +51,7 @@ const gemwalletSign = async ({
       //get fee
       setAwaiting(true)
       setStatus('Getting transaction fee...')
-      const txFee = await getPaymentParams(tx)
+      const txFee = await getNextTransactionParams(tx)
       setAwaiting(false)
       tx.Sequence = txFee.Sequence
       tx.Fee = txFee.Fee
