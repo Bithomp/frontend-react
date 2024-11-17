@@ -206,6 +206,7 @@ header {
     font-size: 18px;
     padding: 4px 0;
     border-bottom: 1px solid #fff;
+    cursor: pointer;
 
     &[data-expanded]:after,
     &[data-expanded]::before {
