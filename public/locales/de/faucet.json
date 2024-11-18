@@ -1,7 +1,6 @@
 {
   "error-occured": "Ein Fehler ist aufgetreten",
   "try-later": "Sie haben es heute bereits versucht. Kommen Sie nach {{time}} zurück.",
-  "test-the-speed": "Überprüfen Sie die Geschwindigkeit und Zuverlässigkeit der Zahlungen {{explorerName}}",
   "experience-fast-transactions": "Erleben Sie, wie schnell und einfach Transaktionen auf {{explorerName}} sind!",
   "form": {
     "placeholder": {

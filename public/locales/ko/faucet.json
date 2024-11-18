@@ -1,7 +1,6 @@
 {
   "error-occured": "오류가 발생했습니다",
   "try-later": "오늘 이미 시도하셨습니다. {{time}}에 다시 돌아오세요.",
-  "test-the-speed": "{{explorerName}}에서 결제의 속도와 신뢰성을 테스트하세요",
   "experience-fast-transactions": "{{explorerName}}에서 거래가 얼마나 빠르고 간편한지 경험해 보세요!",
   "form": {
     "placeholder": {

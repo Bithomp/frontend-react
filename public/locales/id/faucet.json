@@ -1,7 +1,6 @@
 {
   "error-occured": "Terjadi kesalahan",
   "try-later": "Anda sudah mencobanya hari ini. Kembali lagi dalam {{time}}.",
-  "test-the-speed": "Uji Kecepatan dan Reliabilitas Pembayaran {{explorerName}}",
   "experience-fast-transactions": "Rasakan betapa cepat dan mudahnya melakukan transaksi di {{explorerName}}!",
   "form": {
     "placeholder": {

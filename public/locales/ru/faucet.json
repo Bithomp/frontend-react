@@ -1,7 +1,6 @@
 {
   "error-occured": "Ошибка",
   "try-later": "Вы уже пробовали сегодня. Вернитесь через {{time}}.",
-  "test-the-speed": "Проверьте скорость и надежность платежей {{explorerName}}",
   "experience-fast-transactions": "Узнайте, как быстро и легко совершать транзакции в сети {{explorerName}}!",
   "form": {
     "placeholder": {

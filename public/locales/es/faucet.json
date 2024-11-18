@@ -1,7 +1,6 @@
 {
   "error-occured": "Ocurrió un error",
   "try-later": "Ya has intentado hoy. Regresa a las {{time}}.",
-  "test-the-speed": "Prueba la velocidad y confiabilidad del pago en {{explorerName}}",
   "experience-fast-transactions": "¡Experimenta lo rápido y fácil que es transaccionar en {{explorerName}}!",
   "form": {
     "placeholder": {

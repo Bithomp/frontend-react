@@ -220,7 +220,6 @@ export default function Faucet({ account, type }) {
 
   return (
     <>
-      {testPayment && <h2 className="center landing-h2">{t('test-the-speed', { ns: 'faucet', explorerName })}</h2>}
       {(step === 0 || !testPayment) && (
         <>
           {testPayment && <p className="center">{t('experience-fast-transactions', { ns: 'faucet', explorerName })}</p>}

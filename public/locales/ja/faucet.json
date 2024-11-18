@@ -1,7 +1,6 @@
 {
   "error-occured": "エラーが発生しました",
   "try-later": "本日既に利用済みです。{{time}}にお試しください。",
-  "test-the-speed": "{{explorerName}}での支払いの速度と信頼性をテストしましょう",
   "experience-fast-transactions": "{{explorerName}}で取引がどれほど迅速かつ簡単であるかを体験してください！",
   "form": {
     "placeholder": {
