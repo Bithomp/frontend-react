@@ -100,6 +100,7 @@ export default function Faucet({ account, type }) {
 
   useEffect(() => {
     if (!account?.address) return
+    if (address === queryAddress && isAddressValid(address)) return
     setAddress(account?.address)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [account])

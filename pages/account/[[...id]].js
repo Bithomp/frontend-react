@@ -6,7 +6,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { axiosServer, passHeaders } from '../../utils/axios'
 
-import { server, getCoinsUrl, nativeCurrency } from '../../utils'
+import { server, getCoinsUrl, nativeCurrency, devNet } from '../../utils'
 import { amountFormat, fullDateAndTime, timeFromNow, txIdLink, nativeCurrencyToFiat } from '../../utils/format'
 import { getIsSsrMobile } from '../../utils/mobile'
 import { fetchCurrentFiatRate } from '../../utils/common'
@@ -570,7 +570,11 @@ export default function Account({
                                     {getCoinsUrl && (
                                       <>
                                         {' '}
-                                        <a href={getCoinsUrl} target="_blank" rel="noreferrer">
+                                        <a
+                                          href={getCoinsUrl + (devNet ? '?address=' + data?.address : '')}
+                                          target="_blank"
+                                          rel="noreferrer"
+                                        >
                                           Get your first {nativeCurrency}.
                                         </a>
                                       </>
