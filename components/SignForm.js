@@ -332,15 +332,14 @@ export default function SignForm({
     setStatus(t('signin.statuses.check-app', { appName: 'GemWallet' }))
   }
 
-  let xrpApp = null
-
   const ledgerwalletTxSending = (tx) => {
     setScreen('ledgerwallet')
     if (tx.TransactionType === 'NFTokenCreateOffer') {
       setStatus('Currently, you can not sign such transaction with Ledger Wallet.')
       return
     }
-    ledgerwalletTxSend({ xrpApp, tx, signRequest, afterSubmitExe, afterSigning, onSignIn, setStatus, setAwaiting })
+    setStatus('Please, connect your Ledger Wallet and open the XRP app.')
+    ledgerwalletTxSend({ tx, signRequest, afterSubmitExe, afterSigning, onSignIn, setStatus, setAwaiting })
   }
 
   const xamanTxSending = (tx) => {
@@ -1088,7 +1087,7 @@ export default function SignForm({
                         status={status}
                       />
                     ) : (
-                      <div className="orange bold center" style={{ margin: '20px' }}>
+                      <div className="orange bold center" style={{ margin: '30px' }}>
                         {awaiting && (
                           <>
                             <span className="waiting"></span>
@@ -1102,7 +1101,7 @@ export default function SignForm({
                   </>
                 ) : (
                   <>
-                    <div className="orange bold center" style={{ margin: '20px' }}>
+                    <div className="orange bold center" style={{ margin: '30px' }}>
                       {awaiting && (
                         <>
                           <span className="waiting"></span>

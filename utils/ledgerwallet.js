@@ -2,7 +2,6 @@ import TransportWebHID from '@ledgerhq/hw-transport-webhid'
 import Xrp from '@ledgerhq/hw-app-xrp'
 import { broadcastTransaction, getNextTransactionParams } from './user' //xahauDef
 import { encode } from 'xrpl-binary-codec-prerelease' //XrplDefinitions, DEFAULT_DEFINITIONS
-import { set } from 'nprogress'
 //import { xahauNetwork } from '.'
 
 //const definitions = xahauNetwork ? new XrplDefinitions(xahauDef) : DEFAULT_DEFINITIONS
@@ -74,9 +73,12 @@ const ledgerwalletSign = async ({
   // If the transaction field Account is not set, the account of the user's wallet will be used.
 
   if (signRequestData?.signOnly) {
+    setStatus('Sign the transaction in Ledger Wallet.')
     try {
       const signature = await signTransactionWithLedger(xrpApp, tx)
-      afterSigning({ signRequestData, blob: signature, address })
+      tx.TxnSignature = signature
+      const blob = encode(tx)
+      afterSigning({ signRequestData, blob, address })
     } catch (err) {
       setStatus(err.message)
     }
@@ -124,7 +126,6 @@ const ledgerwalletSign = async ({
 }
 
 export const ledgerwalletTxSend = async ({
-  xrpApp,
   tx,
   signRequest,
   afterSubmitExe,
@@ -134,9 +135,7 @@ export const ledgerwalletTxSend = async ({
   setAwaiting
 }) => {
   try {
-    if (!xrpApp) {
-      xrpApp = await connectLedgerHID()
-    }
+    const xrpApp = await connectLedgerHID()
     const { publicKey, address } = await getLedgerAddress(xrpApp)
     if (!tx.Account) {
       tx.Account = address
