@@ -125,6 +125,9 @@ export const gemwalletTxSend = ({
         //get address from gemwallet
         getAddress().then((response) => {
           const address = response.result?.address
+          if (!tx.Account) {
+            tx.Account = address
+          }
           gemwalletSign({ address, tx, signRequest, afterSubmitExe, afterSigning, onSignIn, setStatus, setAwaiting })
         })
       }

@@ -30,7 +30,8 @@ export default function MobileMenu({
   xamanUserToken,
   signOut,
   isCopied,
-  copyToClipboard
+  copyToClipboard,
+  account
 }) {
   const { t } = useTranslation('common')
 
@@ -99,6 +100,28 @@ export default function MobileMenu({
 
               <span onClick={signOut} className="mobile-menu-item link">
                 {t('signin.signout')}
+                <span style={{ display: 'inline-block', width: 10 }}></span>
+                {account?.wallet === 'gemwallet' && (
+                  <Image
+                    src="/images/wallets/gemwallet.svg"
+                    className="gemwallet-logo"
+                    alt="GemWallet"
+                    height={24}
+                    width={24}
+                  />
+                )}
+                {account?.wallet === 'xaman' && (
+                  <Image src="/images/wallets/xaman.png" className="xaman-logo" alt="Xaman" height={24} width={24} />
+                )}
+                {account?.wallet === 'ledgerwallet' && (
+                  <Image
+                    src="/images/wallets/ledgerwallet.svg"
+                    className="ledgerwallet-logo"
+                    alt="LedgerWallet"
+                    height={24}
+                    width={24}
+                  />
+                )}
               </span>
             </>
           ) : (

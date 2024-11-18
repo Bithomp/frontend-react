@@ -309,6 +309,22 @@ export default function Header({
               <>
                 <span
                   onClick={() => {
+                    setSignRequest({ wallet: 'ledgerwallet' })
+                  }}
+                  className="link"
+                >
+                  <Image
+                    src="/images/wallets/ledgerwallet.svg"
+                    className="ledgerwallet-logo"
+                    alt="Ledger Wallet"
+                    height={24}
+                    width={24}
+                  />
+                  Ledger
+                </span>
+
+                <span
+                  onClick={() => {
                     setSignRequest({ wallet: 'xaman' })
                   }}
                   className="link"
@@ -365,7 +381,6 @@ export default function Header({
                 )}
 
                 <span onClick={signOut} className="link">
-                  {t('signin.signout')}{' '}
                   {account?.wallet === 'gemwallet' && (
                     <Image
                       src="/images/wallets/gemwallet.svg"
@@ -378,6 +393,16 @@ export default function Header({
                   {account?.wallet === 'xaman' && (
                     <Image src="/images/wallets/xaman.png" className="xaman-logo" alt="Xaman" height={24} width={24} />
                   )}
+                  {account?.wallet === 'ledgerwallet' && (
+                    <Image
+                      src="/images/wallets/ledgerwallet.svg"
+                      className="ledgerwallet-logo"
+                      alt="LedgerWallet"
+                      height={24}
+                      width={24}
+                    />
+                  )}{' '}
+                  {t('signin.signout')}
                 </span>
               </>
             )}
@@ -465,6 +490,7 @@ export default function Header({
           username={username}
           isCopied={isCopied}
           copyToClipboard={copyToClipboard}
+          account={account}
         />
       )}
     </div>

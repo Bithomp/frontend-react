@@ -21,9 +21,10 @@ import {
   webSiteName,
   xahauNetwork
 } from '../utils'
-import { capitalize, duration } from '../utils/format'
+import { duration } from '../utils/format'
 import { payloadXamanPost, xamanWsConnect, xamanCancel, xamanProcessSignedData } from '../utils/xaman'
 import { gemwalletTxSend } from '../utils/gemwallet'
+import { ledgerwalletTxSend } from '../utils/ledgerwallet'
 
 import XamanQr from './Xaman/Qr'
 import CheckBox from './UI/CheckBox'
@@ -36,9 +37,6 @@ import NFTokenCreateOffer from './SignForms/NFTokenCreateOffer'
 import NftTransfer from './SignForms/NftTransfer'
 
 const qr = '/images/qr.gif'
-//const ledger = '/images/wallets/ledger-large.svg'
-//const trezor = '/images/wallets/trezor-large.svg'
-//const ellipal = '/images/wallets/ellipal-large.svg'
 
 const voteTxs = ['castVoteRewardDelay', 'castVoteRewardRate', 'castVoteHook', 'castVoteSeat']
 const askInfoScreens = [
@@ -290,6 +288,10 @@ export default function SignForm({
       tx.Account = account.address
     }
 
+    if (tx.TransactionType === 'Payment') {
+      tx.Flags = 2147483648
+    }
+
     //add network ID to transactions for xahau-testnet and xahau
     if (networkId === 21338 || networkId === 21337) {
       tx.NetworkID = networkId
@@ -299,6 +301,8 @@ export default function SignForm({
       xamanTxSending(tx)
     } else if (wallet === 'gemwallet') {
       gemwalletTxSending(tx)
+    } else if (wallet === 'ledgerwallet') {
+      ledgerwalletTxSending(tx)
     }
   }
 
@@ -326,6 +330,17 @@ export default function SignForm({
     gemwalletTxSend({ tx, signRequest, afterSubmitExe, afterSigning, onSignIn, setStatus, account, setAwaiting })
     setScreen('gemwallet')
     setStatus(t('signin.statuses.check-app', { appName: 'GemWallet' }))
+  }
+
+  let xrpApp = null
+
+  const ledgerwalletTxSending = (tx) => {
+    setScreen('ledgerwallet')
+    if (tx.TransactionType === 'NFTokenCreateOffer') {
+      setStatus('Currently, you can not sign such transaction with Ledger Wallet.')
+      return
+    }
+    ledgerwalletTxSend({ xrpApp, tx, signRequest, afterSubmitExe, afterSigning, onSignIn, setStatus, setAwaiting })
   }
 
   const xamanTxSending = (tx) => {
@@ -745,6 +760,12 @@ export default function SignForm({
     )
   }
 
+  const walletNames = {
+    xaman: 'Xaman',
+    gemwallet: 'GemWallet',
+    ledgerwallet: 'Ledger Wallet'
+  }
+
   if (!screen) return ''
 
   return (
@@ -996,6 +1017,18 @@ export default function SignForm({
               <>
                 <div className="header">{t('signin.choose-app')}</div>
                 <div className="signin-apps">
+                  {signRequest?.wallet !== 'xaman' && !isMobile && (
+                    <div className="signin-app-logo">
+                      <Image
+                        alt="Ledger Wallet"
+                        src="/images/wallets/ledger-large.svg"
+                        onClick={() => txSend({ wallet: 'ledgerwallet' })}
+                        width={169}
+                        height={80}
+                        style={{ maxWidth: '100%', maxHeight: '100%' }}
+                      />
+                    </div>
+                  )}
                   <div className="signin-app-logo">
                     <Image
                       alt="xaman"
@@ -1006,33 +1039,28 @@ export default function SignForm({
                       style={{ maxWidth: '100%', maxHeight: '100%' }}
                     />
                   </div>
-                  {signRequest?.wallet !== 'xaman' && (
-                    <>
-                      {!isMobile && (
-                        <div className="signin-app-logo">
-                          <Image
-                            alt="gemwallet"
-                            src="/images/wallets/gemwallet.svg"
-                            onClick={() => txSend({ wallet: 'gemwallet' })}
-                            width={80}
-                            height={80}
-                            style={{ maxWidth: '100%', maxHeight: '100%' }}
-                          />
-                        </div>
-                      )}
-                      {/* !isMobile && notAvailable(ledger, 'ledger') */}
-                      {/* !isMobile && notAvailable(trezor, 'trezor') */}
-                      {/* notAvailable(ellipal, 'ellipal') */}
-                    </>
+                  {signRequest?.wallet !== 'xaman' && !isMobile && (
+                    <div className="signin-app-logo">
+                      <Image
+                        alt="GemWallet"
+                        src="/images/wallets/gemwallet.svg"
+                        onClick={() => txSend({ wallet: 'gemwallet' })}
+                        width={80}
+                        height={80}
+                        style={{ maxWidth: '100%', maxHeight: '100%' }}
+                      />
+                    </div>
                   )}
+                  {/* signRequest?.wallet !== 'xaman' && !isMobile && '/images/wallets/trezor-large.svg' */}
+                  {/* signRequest?.wallet !== 'xaman' && '/images/wallets/ellipal-large.svg' */}
                 </div>
               </>
             ) : (
               <>
                 <div className="header">
                   {signRequest?.request
-                    ? t('signin.sign-with', { appName: capitalize(screen) })
-                    : t('signin.login-with', { appName: capitalize(screen) })}
+                    ? t('signin.sign-with', { appName: walletNames[screen] })
+                    : t('signin.login-with', { appName: walletNames[screen] })}
                 </div>
                 {screen === 'xaman' ? (
                   <>
