@@ -1020,7 +1020,7 @@ export default function SignForm({
                     <div className="signin-app-logo">
                       <Image
                         alt="Ledger Wallet"
-                        src="/images/wallets/ledger-large.svg"
+                        src="/images/wallets/ledgerwallet-large.svg"
                         onClick={() => txSend({ wallet: 'ledgerwallet' })}
                         width={169}
                         height={80}
