@@ -409,6 +409,11 @@ export default function Validators({ amendment, initialData, initialErrorMessage
             width: 630,
             height: 630,
             file: 'previews/630x630/validators.png'
+          },
+          {
+            width: 300,
+            height: 157,
+            file: 'previews/300x157/validators.png'
           }
         ]}
       />

@@ -119,7 +119,26 @@ export default function Distribution({ selectedCurrency }) {
 
   return (
     <>
-      <SEO title={t('menu.network.distribution', { nativeCurrency })} />
+      <SEO
+        title={t('menu.network.distribution', { nativeCurrency })}
+        images={[
+          {
+            width: 1200,
+            height: 630,
+            file: 'previews/1200x630/distribution.png'
+          },
+          {
+            width: 630,
+            height: 630,
+            file: 'previews/630x630/distribution.png'
+          },
+          {
+            width: 300,
+            height: 157,
+            file: 'previews/300x157/distribution.png'
+          }
+        ]}
+      />
       <div className="content-center">
         <h1 className="center">{t('menu.network.distribution', { nativeCurrency })}</h1>
         <div className="flex">

@@ -630,6 +630,23 @@ export default function NftsComponent({
             (issuer || issuerQuery || search || t('nft-explorer.header')) +
             (rendered && mintedPeriod ? ', ' + t('table.mint-period') + ': ' + periodDescription(mintedPeriod) : '')
           }
+          images={[
+            {
+              width: 1200,
+              height: 630,
+              file: 'previews/1200x630/nft-explorer.png'
+            },
+            {
+              width: 630,
+              height: 630,
+              file: 'previews/630x630/nft-explorer.png'
+            },
+            {
+              width: 300,
+              height: 157,
+              file: 'previews/300x157/nft-explorer.png'
+            }
+          ]}
         />
       ) : (
         <>

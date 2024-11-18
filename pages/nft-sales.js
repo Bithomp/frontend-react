@@ -527,6 +527,23 @@ export default function NftSales({
           (period ? ' ' + period : periodQuery) +
           (search || searchQuery ? ', ' + t('table.name') + ': ' + (search || searchQuery) : '')
         }
+        images={[
+          {
+            width: 1200,
+            height: 630,
+            file: 'previews/1200x630/nft-sales.png'
+          },
+          {
+            width: 630,
+            height: 630,
+            file: 'previews/630x630/nft-sales.png'
+          },
+          {
+            width: 300,
+            height: 157,
+            file: 'previews/300x157/nft-sales.png'
+          }
+        ]}
       />
 
       <h1 className="center">
