@@ -667,32 +667,34 @@ export default function Account({
                             </tbody>
                           </table>
 
-                          <table className="table-details">
-                            <thead>
-                              <tr>
-                                <th colSpan="100">Public data</th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              {accountNameTr(data)}
-
-                              <tr>
-                                <td>Activated</td>
-                                <td>
-                                  {timeFromNow(data.inception, i18n)} ({fullDateAndTime(data.inception)})
-                                </td>
-                              </tr>
-
-                              {data.ledgerInfo?.ammID && (
+                          {data?.inception && (
+                            <table className="table-details">
+                              <thead>
                                 <tr>
-                                  <td>AMM ID</td>
+                                  <th colSpan="100">Public data</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {accountNameTr(data)}
+
+                                <tr>
+                                  <td>Activated</td>
                                   <td>
-                                    <LinkAmm ammId={data.ledgerInfo.ammID} hash={true} icon={true} copy={true} />
+                                    {timeFromNow(data.inception, i18n)} ({fullDateAndTime(data.inception)})
                                   </td>
                                 </tr>
-                              )}
-                            </tbody>
-                          </table>
+
+                                {data.ledgerInfo?.ammID && (
+                                  <tr>
+                                    <td>AMM ID</td>
+                                    <td>
+                                      <LinkAmm ammId={data.ledgerInfo.ammID} hash={true} icon={true} copy={true} />
+                                    </td>
+                                  </tr>
+                                )}
+                              </tbody>
+                            </table>
+                          )}
                         </div>
                       </>
                     )}
