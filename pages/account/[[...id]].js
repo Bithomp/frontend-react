@@ -258,7 +258,7 @@ export default function Account({
         native: data.ledgerInfo.balance
       },
       reserved: {
-        native: data.ledgerInfo.ownerCount * networkInfo.reserveIncrement
+        native: Number(networkInfo.reserveBase) + data.ledgerInfo.ownerCount * networkInfo.reserveIncrement
       },
       available: {}
     }
