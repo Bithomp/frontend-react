@@ -32,7 +32,7 @@ import CheckBox from '../../components/UI/CheckBox'
 import DateAndTimeRange from '../../components/UI/DateAndTimeRange'
 import SimpleChart from '../../components/SimpleChart'
 
-import { setTabParams, stripText, isAddressOrUsername, useWidth, chartSpan } from '../../utils'
+import { setTabParams, stripText, isAddressOrUsername, useWidth, chartSpan, xahauNetwork } from '../../utils'
 import {
   amountFormat,
   shortNiceNumber,
@@ -931,6 +931,27 @@ export default function NftVolumes({
           (currencyIssuer ? ' ' + currencyIssuer : '') +
           (listTab === 'list' ? ' ' + t('tabs.list') : '') +
           (period ? ' ' + period : '')
+        }
+        images={
+          xahauNetwork
+            ? []
+            : [
+                {
+                  width: 1200,
+                  height: 630,
+                  file: 'previews/1200x630/nft-volumes.png'
+                },
+                {
+                  width: 630,
+                  height: 630,
+                  file: 'previews/630x630/nft-volumes.png'
+                },
+                {
+                  width: 300,
+                  height: 157,
+                  file: 'previews/300x157/nft-volumes.png'
+                }
+              ]
         }
       />
 

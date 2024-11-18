@@ -26,6 +26,21 @@ export default function SEO({ title, titleWithNetwork, description, image, page,
   } else if (!images) {
     images = [
       {
+        width: 1200,
+        height: 630,
+        file: imagePath + 'previews/1200x630/index.png'
+      },
+      {
+        width: 630,
+        height: 630,
+        file: imagePath + 'previews/630x630/index.png'
+      },
+      {
+        width: 300,
+        height: 157,
+        file: imagePath + 'previews/300x157/index.png'
+      },
+      {
         file: imagePath + '512.png',
         width: 512,
         height: 512
