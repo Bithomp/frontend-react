@@ -117,7 +117,16 @@ export default function MobileMenu({
                   <Image
                     src="/images/wallets/ledgerwallet.svg"
                     className="ledgerwallet-logo"
-                    alt="LedgerWallet"
+                    alt="Ledger Wallet"
+                    height={24}
+                    width={24}
+                  />
+                )}
+                {account?.wallet === 'trezor' && (
+                  <Image
+                    src="/images/wallets/trezor.svg"
+                    className="trezor-logo"
+                    alt="Trezor Wallet"
                     height={24}
                     width={24}
                   />

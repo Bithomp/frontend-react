@@ -194,22 +194,18 @@ a, .link {
     }
   }
 
+  .xaman-logo,
+  .gemwallet-logo,
+  .ledgerwallet-logo,
+  .trezor-logo {
+    margin-right: 5px;
+    vertical-align: middle;
+  }
+
   .xaman-logo {
     width: 24px;
     height: 24px;
     border-radius: 5px;
-    margin-right: 5px;
-    vertical-align: middle;
-  }
-
-  .gemwallet-logo {
-    margin-right: 5px;
-    vertical-align: middle;
-  }
-
-  .ledgerwallet-logo {
-    margin-right: 5px;
-    vertical-align: middle;
   }
 }
 

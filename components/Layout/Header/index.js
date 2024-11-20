@@ -81,7 +81,7 @@ export default function Header({
 
   const [xamanUserToken, setXamanUserToken] = useState(null)
 
-  const [hoverStates, setHoverStates] = useState({})
+  const [hoverStates, setHoverStates] = useState({}) //{ dropdown7: true }
 
   const width = useWidth()
 
@@ -309,22 +309,6 @@ export default function Header({
               <>
                 <span
                   onClick={() => {
-                    setSignRequest({ wallet: 'ledgerwallet' })
-                  }}
-                  className="link"
-                >
-                  <Image
-                    src="/images/wallets/ledgerwallet.svg"
-                    className="ledgerwallet-logo"
-                    alt="Ledger Wallet"
-                    height={24}
-                    width={24}
-                  />
-                  Ledger
-                </span>
-
-                <span
-                  onClick={() => {
                     setSignRequest({ wallet: 'xaman' })
                   }}
                   className="link"
@@ -346,6 +330,38 @@ export default function Header({
                     width={24}
                   />
                   GemWallet
+                </span>
+
+                <span
+                  onClick={() => {
+                    setSignRequest({ wallet: 'ledgerwallet' })
+                  }}
+                  className="link"
+                >
+                  <Image
+                    src="/images/wallets/ledgerwallet.svg"
+                    className="ledgerwallet-logo"
+                    alt="Ledger Wallet"
+                    height={24}
+                    width={24}
+                  />
+                  Ledger
+                </span>
+
+                <span
+                  onClick={() => {
+                    setSignRequest({ wallet: 'trezor' })
+                  }}
+                  className="link"
+                >
+                  <Image
+                    src="/images/wallets/trezor.svg"
+                    className="trezor-logo"
+                    alt="Trezor Wallet"
+                    height={24}
+                    width={24}
+                  />
+                  Trezor
                 </span>
               </>
             )}
@@ -397,7 +413,16 @@ export default function Header({
                     <Image
                       src="/images/wallets/ledgerwallet.svg"
                       className="ledgerwallet-logo"
-                      alt="LedgerWallet"
+                      alt="Ledger Wallet"
+                      height={24}
+                      width={24}
+                    />
+                  )}
+                  {account?.wallet === 'trezor' && (
+                    <Image
+                      src="/images/wallets/trezor.svg"
+                      className="trezor-logo"
+                      alt="Trezor Wallet"
                       height={24}
                       width={24}
                     />

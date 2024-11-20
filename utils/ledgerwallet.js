@@ -53,7 +53,7 @@ const signTransactionWithLedger = async (xrpApp, tx, path = "44'/144'/0'/0/0") =
     return signature.toUpperCase()
   } catch (error) {
     console.error('Failed to sign transaction:', error)
-    throw new Error('Unable to sign transaction with Ledger via WebHID.')
+    throw new Error('Unable to sign transaction with Ledger via WebHID.', error)
   }
 }
 
@@ -93,14 +93,13 @@ const ledgerwalletSign = async ({
       return
     }
 
-    //get fee
     setStatus('Getting transaction fee...')
     const params = await getNextTransactionParams(tx)
     setAwaiting(false)
     tx.Sequence = params.Sequence
     tx.Fee = params.Fee
     tx.LastLedgerSequence = params.LastLedgerSequence + 15
-    setStatus('Sign the transaction in ledgerwallet.')
+    setStatus('Sign the transaction in Ledger Wallet.')
     try {
       const signature = await signTransactionWithLedger(xrpApp, tx)
       tx.TxnSignature = signature

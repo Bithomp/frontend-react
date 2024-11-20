@@ -25,6 +25,7 @@ import { duration } from '../utils/format'
 import { payloadXamanPost, xamanWsConnect, xamanCancel, xamanProcessSignedData } from '../utils/xaman'
 import { gemwalletTxSend } from '../utils/gemwallet'
 import { ledgerwalletTxSend } from '../utils/ledgerwallet'
+import { trezorTxSend } from '../utils/trezor'
 
 import XamanQr from './Xaman/Qr'
 import CheckBox from './UI/CheckBox'
@@ -303,6 +304,8 @@ export default function SignForm({
       gemwalletTxSending(tx)
     } else if (wallet === 'ledgerwallet') {
       ledgerwalletTxSending(tx)
+    } else if (wallet === 'trezor') {
+      trezorTxSending(tx)
     }
   }
 
@@ -335,11 +338,21 @@ export default function SignForm({
   const ledgerwalletTxSending = (tx) => {
     setScreen('ledgerwallet')
     if (tx.TransactionType === 'NFTokenCreateOffer') {
-      setStatus('Currently, you can not sign such transaction with Ledger Wallet.')
+      setStatus('Unfortunatelly, Ledger Wallet does not support NFTokenCreateOffer Transaction Type yet.')
       return
     }
     setStatus('Please, connect your Ledger Wallet and open the XRP app.')
     ledgerwalletTxSend({ tx, signRequest, afterSubmitExe, afterSigning, onSignIn, setStatus, setAwaiting })
+  }
+
+  const trezorTxSending = (tx) => {
+    setScreen('trezor')
+    if (tx.TransactionType !== 'SignIn' && tx.TransactionType !== 'Payment') {
+      setStatus('Unfortunatelly, Trezor supports only XRP Payments, and does not allow other Transaction Types =(')
+      return
+    }
+    setStatus('Please, connect your Trezor Wallet.')
+    trezorTxSend({ tx, signRequest, afterSubmitExe, afterSigning, onSignIn, setStatus, setAwaiting })
   }
 
   const xamanTxSending = (tx) => {
@@ -762,7 +775,8 @@ export default function SignForm({
   const walletNames = {
     xaman: 'Xaman',
     gemwallet: 'GemWallet',
-    ledgerwallet: 'Ledger Wallet'
+    ledgerwallet: 'Ledger Wallet',
+    trezor: 'Trezor'
   }
 
   if (!screen) return ''
@@ -1016,18 +1030,6 @@ export default function SignForm({
               <>
                 <div className="header">{t('signin.choose-app')}</div>
                 <div className="signin-apps">
-                  {signRequest?.wallet !== 'xaman' && !isMobile && (
-                    <div className="signin-app-logo">
-                      <Image
-                        alt="Ledger Wallet"
-                        src="/images/wallets/ledgerwallet-large.svg"
-                        onClick={() => txSend({ wallet: 'ledgerwallet' })}
-                        width={169}
-                        height={80}
-                        style={{ maxWidth: '100%', maxHeight: '100%' }}
-                      />
-                    </div>
-                  )}
                   <div className="signin-app-logo">
                     <Image
                       alt="xaman"
@@ -1039,18 +1041,39 @@ export default function SignForm({
                     />
                   </div>
                   {signRequest?.wallet !== 'xaman' && !isMobile && (
-                    <div className="signin-app-logo">
-                      <Image
-                        alt="GemWallet"
-                        src="/images/wallets/gemwallet.svg"
-                        onClick={() => txSend({ wallet: 'gemwallet' })}
-                        width={80}
-                        height={80}
-                        style={{ maxWidth: '100%', maxHeight: '100%' }}
-                      />
-                    </div>
+                    <>
+                      <div className="signin-app-logo">
+                        <Image
+                          alt="GemWallet"
+                          src="/images/wallets/gemwallet.svg"
+                          onClick={() => txSend({ wallet: 'gemwallet' })}
+                          width={80}
+                          height={80}
+                          style={{ maxWidth: '100%', maxHeight: '100%' }}
+                        />
+                      </div>
+                      <div className="signin-app-logo">
+                        <Image
+                          alt="Ledger Wallet"
+                          src="/images/wallets/ledgerwallet-large.svg"
+                          onClick={() => txSend({ wallet: 'ledgerwallet' })}
+                          width={169}
+                          height={80}
+                          style={{ maxWidth: '100%', maxHeight: '100%' }}
+                        />
+                      </div>
+                      <div className="signin-app-logo">
+                        <Image
+                          alt="Trezor Wallet"
+                          src="/images/wallets/trezor-large.svg"
+                          onClick={() => txSend({ wallet: 'trezor' })}
+                          width={169}
+                          height={80}
+                          style={{ maxWidth: '100%', maxHeight: '100%' }}
+                        />
+                      </div>
+                    </>
                   )}
-                  {/* signRequest?.wallet !== 'xaman' && !isMobile && '/images/wallets/trezor-large.svg' */}
                   {/* signRequest?.wallet !== 'xaman' && '/images/wallets/ellipal-large.svg' */}
                 </div>
               </>
