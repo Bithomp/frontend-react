@@ -147,7 +147,7 @@ export default function XrplArticle() {
             <strong>Transaction Speed:</strong> Transactions on the XRP Ledger are completed in approximately 3-5
             seconds, significantly faster than Bitcoin and Ethereum.
             <div>
-              <Link href="/" className="bold">
+              <Link href="/faucet" className="bold">
                 Here You Can Test the Speed and Reliability of XRPL Payments
               </Link>
               .
