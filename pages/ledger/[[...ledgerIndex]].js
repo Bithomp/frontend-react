@@ -71,30 +71,39 @@ export default function Ledger({ pageMeta }) {
   }
 
   /*
-  {
-    error: "lgrNotFound"
-    error_code: 21
-    error_message: "ledgerNotFound"
-    status: "error"
-  }
+    {
+      error: "lgrNotFound"
+      error_code: 21
+      error_message: "ledgerNotFound"
+      status: "error"
+    }
 
-  {
-    "closeTime": "2022-11-17T11:40:20.000Z",
-    "closeTimeResolution": 10,
-    "ledgerVersion": 23545951,
-    "totalDrops": "99987053011898778",
-    "transactions": [
-      {
-        "address": "rxxx",
-        "type": "nftokenAcceptOffer",
-        "id": "F8E5691555ACCC15757A988337E2ACEBFF454DF2AD4B46C7CEF7748B58F53845",
-        "outcome": {
-          "result": "tesSUCCESS",
-          "fee": "0.000012",
-          "ledgerVersion": 23545951,
-          "indexInLedger": 0
+    {
+      "stateHash": "891188E10AA214E56A6A32F59E42A11DEF42F6FAB90901067AD7B8DEA8982914",
+      "close_time": 1694379430,
+      "closeTime": "2023-09-10T20:57:10Z",
+      "closeTimeResolution": 10,
+      "closeFlags": 0,
+      "ledgerHash": "0B881BA9FC6933AFB79EC835B8C4402804165EC3D3B65372FD6059324DEF539E",
+      "ledgerIndex": 82452578,
+      "parentLedgerHash": "5CDCFFEE933A324713545FB40013C75ACB8C608EE72BB6375658F4DA4A6F2777",
+      "parentCloseTime": 747694621,
+      "totalDrops": "99988428348415564",
+      "transactionHash": "04A6A894AF135E045521625D0EA01B359025BEE692965AB0E41CED04752688C5",
+      "transactions": [
+        {
+          "type": "OfferCreate",
+          "address": "rBTwLga3i2gz3doX6Gva3MgEV8ZCD8jjah",
+          "addressDetails": { "address": "rBTwLga3i2gz3doX6Gva3MgEV8ZCD8jjah", "username": null, "service": null },
+          "sequence": 107096439,
+          "hash": "0503C9099F370AFB0543EF54CD60636071AA1BD0F53A5B1242D22AC69244EDE6",
+          "txStatus": "tesSUCCESS",
+          "indexInLedger": 30,
+          "fee": "20"
         },
-        "rawTransaction": {}
+        ...
+      ]
+    }
   */
 
   useEffect(() => {
