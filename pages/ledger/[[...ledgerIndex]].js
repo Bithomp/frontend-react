@@ -21,20 +21,18 @@ export async function getServerSideProps(context) {
       : query.ledgerIndex
     : ''
 
-  let pageMeta = {
-    ledgerVersion: ledgerIndex
-  }
+  let pageMeta = { ledgerIndex }
 
   try {
     if (ledgerIndex === '' || ledgerIndex >= minLedger) {
       const res = await axiosServer({
         method: 'get',
-        url: 'xrpl/v1/ledger/' + ledgerIndex + '?transactions=true&expand=true',
+        url: 'xrpl/next/ledger/' + ledgerIndex,
         headers: passHeaders(req)
       })
       pageMeta = res?.data
       if (pageMeta) {
-        pageMeta.transactions?.sort((a, b) => (a.outcome.indexInLedger > b.outcome.indexInLedger ? 1 : -1))
+        pageMeta.transactions?.sort((a, b) => (a.indexInLedger > b.indexInLedger ? 1 : -1))
       }
     }
   } catch (error) {
@@ -55,18 +53,18 @@ export default function Ledger({ pageMeta }) {
   const [loading, setLoading] = useState(false)
   const { t } = useTranslation()
 
-  const [ledgerVersion, setLedgerVersion] = useState(pageMeta?.ledgerVersion)
+  const [ledgerVersion, setLedgerVersion] = useState(pageMeta?.ledgerIndex)
 
   const checkApi = async () => {
     setLoading(true)
-    const response = await axios('xrpl/v1/ledger/' + ledgerVersion + '?transactions=true&expand=true')
+    const response = await axios('xrpl/next/ledger/' + ledgerVersion)
     const data = response.data
     setLoading(false)
 
-    if (data?.ledgerVersion) {
-      data.transactions?.sort((a, b) => (a.outcome.indexInLedger > b.outcome.indexInLedger ? 1 : -1))
+    if (data?.ledgerIndex) {
+      data.transactions?.sort((a, b) => (a.indexInLedger > b.indexInLedger ? 1 : -1))
       setData(data)
-      setLedgerVersion(data.ledgerVersion)
+      setLedgerVersion(data.ledgerIndex)
     } else {
       setData(null)
     }
@@ -100,7 +98,7 @@ export default function Ledger({ pageMeta }) {
   */
 
   useEffect(() => {
-    if ((ledgerVersion === '' || ledgerVersion >= minLedger) && ledgerVersion !== data?.ledgerVersion) {
+    if ((ledgerVersion === '' || ledgerVersion >= minLedger) && ledgerVersion !== data?.ledgerIndex) {
       checkApi()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -153,8 +151,8 @@ export default function Ledger({ pageMeta }) {
                   <>
                     {data?.transactions ? (
                       data?.transactions.map((tx) => (
-                        <tr key={tx.id}>
-                          <td className="center">{tx.outcome.indexInLedger}</td>
+                        <tr key={tx.hash}>
+                          <td className="center">{tx.indexInLedger}</td>
                           <td>{tx.type}</td>
                           <td>
                             <Image
@@ -166,9 +164,9 @@ export default function Ledger({ pageMeta }) {
                             />
                             {addressUsernameOrServiceLink(tx, 'address', { short: 6 })}
                           </td>
-                          <td className="hide-on-mobile">{tx.outcome.result}</td>
+                          <td className="hide-on-mobile">{tx.txStatus}</td>
                           <td className="right">
-                            <a href={'/explorer/' + tx.id}>{shortHash(tx.id, 5)}</a>
+                            <a href={'/explorer/' + tx.hash}>{shortHash(tx.hash, 5)}</a>
                           </td>
                         </tr>
                       ))
