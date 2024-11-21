@@ -1,5 +1,4 @@
-'use client'
-
+//import Chart from 'react-apexcharts'
 import axios from 'axios'
 import { useState, useEffect } from 'react'
 import { useTranslation } from 'next-i18next'
