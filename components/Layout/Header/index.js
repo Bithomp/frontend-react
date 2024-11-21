@@ -2,21 +2,20 @@ import Link from 'next/link'
 import { useTranslation } from 'next-i18next'
 import { useState, useEffect } from 'react'
 import MobileMenu from './MobileMenu'
-import dynamic from 'next/dynamic'
-import Image from 'next/image'
 
 import { devNet, xahauNetwork, ledgerName, nativeCurrency, ledgerSubName, network, useWidth } from '../../../utils'
 
-const Switch = dynamic(() => import('./Switch'), { ssr: false })
-const LangTable = dynamic(() => import('./LangTable'), { ssr: false })
-const NetworkTable = dynamic(() => import('./NetworkTable'), { ssr: false })
-const CurrencyTable = dynamic(() => import('./CurrencyTable'), { ssr: false })
+import Image from 'next/image'
+import Switch from './Switch'
+import LangTable from './LangTable'
+import CurrencyTable from './CurrencyTable'
+import NetworkTable from './NetworkTable'
+import { FaAngleDown } from 'react-icons/fa'
+import { IoIosRocket } from 'react-icons/io'
 
 import LogoSmall from '../LogoSmall'
 import XrplExplorer from '../../../public/images/xrplexplorer/long.svg'
 import XahauExplorer from '../../../public/images/xahauexplorer/long.svg'
-import { FaAngleDown } from 'react-icons/fa'
-import { IoIosRocket } from 'react-icons/io'
 
 let timeoutIds = {}
 
