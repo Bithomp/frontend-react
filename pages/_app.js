@@ -8,10 +8,10 @@ import { GoogleAnalytics } from '@next/third-parties/google'
 
 import Header from '../components/Layout/Header'
 import Footer from '../components/Layout/Footer'
-import SignForm from '../components/SignForm'
 import ScrollToTop from '../components/Layout/ScrollToTop'
 import BackgroundImage from '../components/Layout/BackgroundImage'
 
+const SignForm = dynamic(() => import('../components/SignForm'), { ssr: false })
 const TopLinks = dynamic(() => import('../components/Layout/TopLinks'), { ssr: false })
 const TopProgressBar = dynamic(() => import('../components/TopProgressBar'), { ssr: false })
 

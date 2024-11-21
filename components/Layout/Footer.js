@@ -6,9 +6,9 @@ import dynamic from 'next/dynamic'
 import { devNet, ledgerName, nativeCurrency, network, xahauNetwork } from '../../utils'
 
 const CookieMessage = dynamic(() => import('./CookieMessage'), { ssr: false })
-import SocialIcons from './SocialIcons'
-import LogoAnimated from './LogoAnimated'
-import ButtonScrollTop from './ButtonScrollTop'
+const SocialIcons = dynamic(() => import('./SocialIcons'), { ssr: false })
+const LogoAnimated = dynamic(() => import('./LogoAnimated'), { ssr: false })
+const ButtonScrollTop = dynamic(() => import('./ButtonScrollTop'), { ssr: false })
 
 export default function Footer() {
   const { t, i18n } = useTranslation()
@@ -16,6 +16,7 @@ export default function Footer() {
 
   return (
     <footer ref={footerRef}>
+      <CookieMessage />
       <ButtonScrollTop footer={footerRef} />
 
       <div className="footer-menu">
@@ -111,7 +112,6 @@ export default function Footer() {
           <SocialIcons />
         </div>
       </div>
-      <CookieMessage />
     </footer>
   )
 }
