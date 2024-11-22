@@ -21,8 +21,17 @@ export default function XrplArticle() {
         title="What is XRP, XRP Ledger, Ripple"
         description="A Comprehensive Overview of XRP, XRP Ledger, Ripple: What is XRP, how it works, its key features, and its position in the cryptocurrency market."
         noindex={network !== 'mainnet'}
+        image={{ file: 'pages/xrpl-article.jpeg', width: 1024, height: 512, allNetworks: true }}
       />
       <div className="content-center">
+        <center>
+          <img
+            src="/images/pages/xrpl-article.jpeg"
+            alt="What is XRP, XRP Ledger, Ripple"
+            style={{ maxWidth: '100%', maxHeight: 386 }}
+          />
+        </center>
+
         <h1>What is XRP, XRP Ledger, Ripple: A Comprehensive Overview</h1>
         <p>
           In the ever-evolving landscape of cryptocurrency, XRP has emerged as one of the influential digital assets
