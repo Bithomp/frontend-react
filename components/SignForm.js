@@ -5,7 +5,6 @@ import Link from 'next/link'
 import axios from 'axios'
 import Image from 'next/image'
 import Select from 'react-select'
-import { useSDK } from '@metamask/sdk-react'
 
 import { useIsMobile } from '../utils/mobile'
 import {
@@ -86,8 +85,6 @@ export default function SignForm({
   const [xamanUserToken, setXamanUserToken] = useState(null)
 
   const [choosenWallet, setChoosenWallet] = useState(null)
-
-  const { provider } = useSDK()
 
   useEffect(() => {
     setXamanUserToken(localStorage.getItem('xamanUserToken'))
@@ -370,7 +367,7 @@ export default function SignForm({
     }
 
     setStatus('Please, connect your Metamask Wallet.')
-    metamaskTxSend({ provider, tx, signRequest, afterSubmitExe, afterSigning, onSignIn, setStatus, setAwaiting })
+    metamaskTxSend({ tx, signRequest, afterSubmitExe, afterSigning, onSignIn, setStatus, setAwaiting })
   }
 
   const xamanTxSending = (tx) => {

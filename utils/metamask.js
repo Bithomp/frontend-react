@@ -1,5 +1,14 @@
 //import { explorerName, networkId } from '.'
+import { explorerName, server } from '.'
 import { broadcastTransaction, getNextTransactionParams } from './user'
+import { MetaMaskSDK } from '@metamask/sdk'
+
+const MMSDK = new MetaMaskSDK({
+  dappMetadata: {
+    name: explorerName + ' explorer',
+    url: server
+  }
+})
 
 const hasSnapsSupport = async (provider) => {
   try {
@@ -107,7 +116,6 @@ const metamaskSign = async ({
 }
 
 export const metamaskTxSend = async ({
-  provider,
   tx,
   signRequest,
   afterSubmitExe,
@@ -116,6 +124,8 @@ export const metamaskTxSend = async ({
   setStatus,
   setAwaiting
 }) => {
+  await MMSDK.connect()
+  const provider = MMSDK.getProvider()
   try {
     //check if installed
     const installed = await hasSnapsSupport(provider)

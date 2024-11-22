@@ -5,7 +5,6 @@ import axios from 'axios'
 import { appWithTranslation } from 'next-i18next'
 import dynamic from 'next/dynamic'
 import { GoogleAnalytics } from '@next/third-parties/google'
-import { MetaMaskProvider } from '@metamask/sdk-react'
 
 import Header from '../components/Layout/Header'
 import Footer from '../components/Layout/Footer'
@@ -17,7 +16,7 @@ const TopLinks = dynamic(() => import('../components/Layout/TopLinks'), { ssr: f
 const TopProgressBar = dynamic(() => import('../components/TopProgressBar'), { ssr: false })
 
 import { IsSsrMobileContext } from '../utils/mobile'
-import { isValidUUID, network, server, useLocalStorage, useCookie, xahauNetwork, explorerName } from '../utils'
+import { isValidUUID, network, server, useLocalStorage, useCookie, xahauNetwork } from '../utils'
 
 import '../styles/ui.scss'
 import '../styles/components/nprogress.css'
@@ -121,66 +120,57 @@ const MyApp = ({ Component, pageProps }) => {
         <meta name="viewport" content="width=device-width,initial-scale=1" />
         <meta charSet="utf-8" />
       </Head>
-      <MetaMaskProvider
-        sdkOptions={{
-          dappMetadata: {
-            name: explorerName + ' Explorer',
-            url: server
-          }
-        }}
-      >
-        <IsSsrMobileContext.Provider value={pageProps.isSsrMobile}>
-          <ThemeProvider>
-            <div className="body" data-network={network}>
-              <Header
+      <IsSsrMobileContext.Provider value={pageProps.isSsrMobile}>
+        <ThemeProvider>
+          <div className="body" data-network={network}>
+            <Header
+              setSignRequest={setSignRequest}
+              account={account}
+              signOut={signOut}
+              signOutPro={signOutPro}
+              selectedCurrency={selectedCurrency}
+              setSelectedCurrency={setSelectedCurrency}
+            />
+            <ScrollToTop />
+            {(signRequest || isValidUUID(uuid)) && (
+              <SignForm
                 setSignRequest={setSignRequest}
                 account={account}
+                setAccount={setAccount}
+                signRequest={signRequest}
+                uuid={uuid}
+                setRefreshPage={setRefreshPage}
+                saveAddressData={saveAddressData}
+              />
+            )}
+            <div className="content">
+              <TopProgressBar />
+              {showTopAds && <TopLinks />}
+              <Component
+                {...pageProps}
+                refreshPage={refreshPage}
+                setSignRequest={setSignRequest}
+                account={account}
+                setAccount={setAccount}
                 signOut={signOut}
-                signOutPro={signOutPro}
                 selectedCurrency={selectedCurrency}
                 setSelectedCurrency={setSelectedCurrency}
+                showAds={showAds}
+                setProExpire={setProExpire}
+                signOutPro={signOutPro}
+                subscriptionExpired={subscriptionExpired}
+                sessionToken={sessionToken}
+                setSessionToken={setSessionToken}
               />
-              <ScrollToTop />
-              {(signRequest || isValidUUID(uuid)) && (
-                <SignForm
-                  setSignRequest={setSignRequest}
-                  account={account}
-                  setAccount={setAccount}
-                  signRequest={signRequest}
-                  uuid={uuid}
-                  setRefreshPage={setRefreshPage}
-                  saveAddressData={saveAddressData}
-                />
-              )}
-              <div className="content">
-                <TopProgressBar />
-                {showTopAds && <TopLinks />}
-                <Component
-                  {...pageProps}
-                  refreshPage={refreshPage}
-                  setSignRequest={setSignRequest}
-                  account={account}
-                  setAccount={setAccount}
-                  signOut={signOut}
-                  selectedCurrency={selectedCurrency}
-                  setSelectedCurrency={setSelectedCurrency}
-                  showAds={showAds}
-                  setProExpire={setProExpire}
-                  signOutPro={signOutPro}
-                  subscriptionExpired={subscriptionExpired}
-                  sessionToken={sessionToken}
-                  setSessionToken={setSessionToken}
-                />
-              </div>
-              <BackgroundImage />
-              <Footer setSignRequest={setSignRequest} account={account} />
             </div>
-          </ThemeProvider>
-          {process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID && (
-            <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID} />
-          )}
-        </IsSsrMobileContext.Provider>
-      </MetaMaskProvider>
+            <BackgroundImage />
+            <Footer setSignRequest={setSignRequest} account={account} />
+          </div>
+        </ThemeProvider>
+        {process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID && (
+          <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID} />
+        )}
+      </IsSsrMobileContext.Provider>
     </>
   )
 }
