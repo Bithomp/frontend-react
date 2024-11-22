@@ -17,7 +17,9 @@ export const broadcastTransaction = async ({
   }
   const response = await axios.post('v2/transaction/submit', { signedTransaction: blob }).catch((error) => {
     setAwaiting(false)
-    if (error.response?.data?.message) {
+    if (error.response?.data?.result) {
+      setStatus('Error: ' + error.response.data.result)
+    } else if (error.response?.data?.message) {
       setStatus(error.response.data.message)
     } else {
       setStatus(error.message)
@@ -43,6 +45,9 @@ export const broadcastTransaction = async ({
       //when failed transaction: onlyLogin, remove redirectName
       onSignIn({ address, wallet, redirectName: null })
     }
+  } else {
+    //when failed transaction: onlyLogin, remove redirectName
+    onSignIn({ address, wallet, redirectName: null })
   }
 }
 

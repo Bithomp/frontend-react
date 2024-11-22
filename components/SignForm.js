@@ -5,6 +5,7 @@ import Link from 'next/link'
 import axios from 'axios'
 import Image from 'next/image'
 import Select from 'react-select'
+import { useSDK } from '@metamask/sdk-react'
 
 import { useIsMobile } from '../utils/mobile'
 import {
@@ -26,6 +27,7 @@ import { payloadXamanPost, xamanWsConnect, xamanCancel, xamanProcessSignedData }
 import { gemwalletTxSend } from '../utils/gemwallet'
 import { ledgerwalletTxSend } from '../utils/ledgerwallet'
 import { trezorTxSend } from '../utils/trezor'
+import { metamaskTxSend } from '../utils/metamask'
 
 import XamanQr from './Xaman/Qr'
 import CheckBox from './UI/CheckBox'
@@ -84,6 +86,8 @@ export default function SignForm({
   const [xamanUserToken, setXamanUserToken] = useState(null)
 
   const [choosenWallet, setChoosenWallet] = useState(null)
+
+  const { provider } = useSDK()
 
   useEffect(() => {
     setXamanUserToken(localStorage.getItem('xamanUserToken'))
@@ -306,6 +310,8 @@ export default function SignForm({
       ledgerwalletTxSending(tx)
     } else if (wallet === 'trezor') {
       trezorTxSending(tx)
+    } else if (wallet === 'metamask') {
+      metamaskTxSending(tx)
     }
   }
 
@@ -353,6 +359,18 @@ export default function SignForm({
     }
     setStatus('Please, connect your Trezor Wallet.')
     trezorTxSend({ tx, signRequest, afterSubmitExe, afterSigning, onSignIn, setStatus, setAwaiting })
+  }
+
+  const metamaskTxSending = async (tx) => {
+    setScreen('metamask')
+
+    if (tx.TransactionType.includes('URIToken')) {
+      setStatus('Unfortunatelly, Metamask XRPL Slap does not support URIToken Transaction Types yet.')
+      return
+    }
+
+    setStatus('Please, connect your Metamask Wallet.')
+    metamaskTxSend({ provider, tx, signRequest, afterSubmitExe, afterSigning, onSignIn, setStatus, setAwaiting })
   }
 
   const xamanTxSending = (tx) => {
@@ -776,7 +794,8 @@ export default function SignForm({
     xaman: 'Xaman',
     gemwallet: 'GemWallet',
     ledgerwallet: 'Ledger Wallet',
-    trezor: 'Trezor'
+    trezor: 'Trezor',
+    metamask: 'Metamask'
   }
 
   if (!screen) return ''
@@ -1047,6 +1066,16 @@ export default function SignForm({
                           alt="GemWallet"
                           src="/images/wallets/gemwallet.svg"
                           onClick={() => txSend({ wallet: 'gemwallet' })}
+                          width={80}
+                          height={80}
+                          style={{ maxWidth: '100%', maxHeight: '100%' }}
+                        />
+                      </div>
+                      <div className="signin-app-logo">
+                        <Image
+                          alt="Metamask"
+                          src="/images/wallets/metamask.svg"
+                          onClick={() => txSend({ wallet: 'metamask' })}
                           width={80}
                           height={80}
                           style={{ maxWidth: '100%', maxHeight: '100%' }}

@@ -334,6 +334,22 @@ export default function Header({
 
                 <span
                   onClick={() => {
+                    setSignRequest({ wallet: 'metamask' })
+                  }}
+                  className="link"
+                >
+                  <Image
+                    src="/images/wallets/metamask.svg"
+                    className="metamask-logo"
+                    alt="Metamask Wallet"
+                    height={24}
+                    width={24}
+                  />
+                  Metamask
+                </span>
+
+                <span
+                  onClick={() => {
                     setSignRequest({ wallet: 'ledgerwallet' })
                   }}
                   className="link"
@@ -397,6 +413,15 @@ export default function Header({
                 )}
 
                 <span onClick={signOut} className="link">
+                  {account?.wallet === 'metamask' && (
+                    <Image
+                      src="/images/wallets/metamask.svg"
+                      className="metamask-logo"
+                      alt="Metamask"
+                      height={24}
+                      width={24}
+                    />
+                  )}
                   {account?.wallet === 'gemwallet' && (
                     <Image
                       src="/images/wallets/gemwallet.svg"
