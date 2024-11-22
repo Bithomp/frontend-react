@@ -41,6 +41,7 @@ export async function getServerSideProps(context) {
 
   return {
     props: {
+      ledgerIndexQuery: ledgerIndex || '',
       pageMeta,
       isSsrMobile: getIsSsrMobile(context),
       ...(await serverSideTranslations(locale, ['common', 'ledger']))
@@ -48,7 +49,7 @@ export async function getServerSideProps(context) {
   }
 }
 
-export default function Ledger({ pageMeta }) {
+export default function Ledger({ pageMeta, ledgerIndexQuery }) {
   const [data, setData] = useState(pageMeta)
   const [loading, setLoading] = useState(false)
   const { t } = useTranslation()
@@ -135,7 +136,12 @@ export default function Ledger({ pageMeta }) {
 
   return (
     <>
-      <SEO title={t('menu.ledger') + ' ' + ledgerVersion} />
+      <SEO
+        title={t('menu.ledger') + ' ' + ledgerIndexQuery}
+        description={
+          ledgerIndexQuery ? 'Transactions from the Last Ledger' : 'Transactions in the Ledger #' + ledgerIndexQuery
+        }
+      />
       <div className="content-center">
         <h1 className="center">
           {t('menu.ledger')} #{ledgerVersion}

@@ -503,29 +503,15 @@ export default function NftSales({
           t('nft-sales.header') +
           (saleTab === 'secondary' ? t('tabs.secondary-sales') : '') +
           (saleTab === 'primary' ? t('tabs.primary-sales') : '') +
-          (issuer ? ' ' + t('table.issuer') + ': ' + issuer : issuerQuery) +
-          (buyer ? ' ' + t('table.buyer') + ': ' + buyer : buyerQuery) +
-          (seller ? ' ' + t('table.seller') + ': ' + seller : sellerQuery) +
-          (isValidTaxon(taxon) ? ' ' + taxon : taxonQuery) +
+          (issuerQuery ? ' ' + t('table.issuer') + ': ' + issuerQuery : '') +
+          (buyerQuery ? ' ' + t('table.buyer') + ': ' + buyerQuery : '') +
+          (sellerQuery ? ' ' + t('table.seller') + ': ' + sellerQuery : '') +
+          (isValidTaxon(taxonQuery) ? ' ' + taxonQuery : '') +
           (currency ? ' ' + currency : '') +
           (currencyIssuer ? ' ' + currencyIssuer : '') +
           (activeView === 'list' ? ' ' + t('tabs.list') : '') +
-          (period ? ' ' + period : periodQuery) +
-          (search || searchQuery ? ', ' + t('table.name') + ': ' + (search || searchQuery) : '')
-        }
-        description={
-          t('nft-sales.header') +
-          (saleTab === 'secondary' ? t('tabs.secondary-sales') : '') +
-          (saleTab === 'primary' ? t('tabs.primary-sales') : '') +
-          (issuer ? ' ' + t('table.issuer') + ': ' + issuer : issuerQuery) +
-          (buyer ? ' ' + t('table.buyer') + ': ' + buyer : buyerQuery) +
-          (seller ? ' ' + t('table.seller') + ': ' + seller : sellerQuery) +
-          (isValidTaxon(taxon) ? ' ' + taxon : taxonQuery) +
-          (currency ? ' ' + currency : '') +
-          (currencyIssuer ? ' ' + currencyIssuer : '') +
-          (activeView === 'list' ? ' ' + t('tabs.list') : '') +
-          (period ? ' ' + period : periodQuery) +
-          (search || searchQuery ? ', ' + t('table.name') + ': ' + (search || searchQuery) : '')
+          (periodQuery ? ' ' + periodQuery : '') +
+          (searchQuery ? ', ' + t('table.name') + ': ' + searchQuery : '')
         }
         images={[
           {

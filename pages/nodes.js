@@ -58,7 +58,7 @@ export default function Nodes({ initialData, initialErrorMessage }) {
   return (
     <>
       <SEO
-        title={data?.summary?.total + ' nodes'}
+        title="Nodes"
         description={
           'Explore the list of ' + ledgerName + ' nodes. View up-to-date statistics on node versions and countries.'
         }
