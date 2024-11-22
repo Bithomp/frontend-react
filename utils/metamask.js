@@ -73,7 +73,7 @@ const metamaskSign = async ({
     setAwaiting(false)
     tx.Sequence = params.Sequence
     tx.Fee = params.Fee
-    tx.LastLedgerSequence = params.LastLedgerSequence + 15
+    tx.LastLedgerSequence = params.LastLedgerSequence
     setStatus('Sign the transaction in Metamask.')
     try {
       const { tx_blob: blob } = await provider.request({

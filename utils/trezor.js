@@ -147,7 +147,7 @@ const trezorSign = async ({
     setAwaiting(false)
     tx.Sequence = params.Sequence
     tx.Fee = params.Fee
-    tx.LastLedgerSequence = params.LastLedgerSequence + 15
+    tx.LastLedgerSequence = params.LastLedgerSequence
     setStatus('Sign the transaction in Trezor Wallet.')
     try {
       const blob = await signTransactionWithTrezor(tx)

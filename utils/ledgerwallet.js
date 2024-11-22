@@ -98,7 +98,7 @@ const ledgerwalletSign = async ({
     setAwaiting(false)
     tx.Sequence = params.Sequence
     tx.Fee = params.Fee
-    tx.LastLedgerSequence = params.LastLedgerSequence + 15
+    tx.LastLedgerSequence = params.LastLedgerSequence
     setStatus('Sign the transaction in Ledger Wallet.')
     try {
       const signature = await signTransactionWithLedger(xrpApp, tx)
