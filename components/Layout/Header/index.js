@@ -332,12 +332,7 @@ export default function Header({
                   GemWallet
                 </span>
 
-                <span
-                  onClick={() => {
-                    setSignRequest({ wallet: 'metamask' })
-                  }}
-                  className="link"
-                >
+                <span onClick={() => setSignRequest({ wallet: 'metamask' })} className="link">
                   <Image
                     src="/images/wallets/metamask.svg"
                     className="metamask-logo"
@@ -348,12 +343,7 @@ export default function Header({
                   Metamask
                 </span>
 
-                <span
-                  onClick={() => {
-                    setSignRequest({ wallet: 'ledgerwallet' })
-                  }}
-                  className="link"
-                >
+                <span onClick={() => setSignRequest({ wallet: 'ledgerwallet' })} className="link">
                   <Image
                     src="/images/wallets/ledgerwallet.svg"
                     className="ledgerwallet-logo"
@@ -364,12 +354,7 @@ export default function Header({
                   Ledger
                 </span>
 
-                <span
-                  onClick={() => {
-                    setSignRequest({ wallet: 'trezor' })
-                  }}
-                  className="link"
-                >
+                <span onClick={() => setSignRequest({ wallet: 'trezor' })} className="link">
                   <Image
                     src="/images/wallets/trezor.svg"
                     className="trezor-logo"
