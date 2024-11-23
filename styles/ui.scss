@@ -172,6 +172,10 @@ h1 {
   font-size: 1.5em;
 }
 
+h4 {
+  margin: 10px auto;
+}
+
 br {
   position: relative !important; //fix for safari
 }
@@ -496,6 +500,7 @@ table {
     .div-with-table {
       width: 100%;
     }
+    gap: 0 10px;
   }
   .grey-box {
     box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.15);

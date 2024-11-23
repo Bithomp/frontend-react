@@ -49,7 +49,7 @@ export async function getServerSideProps(context) {
       initialData: initialData || null,
       initialErrorMessage: initialErrorMessage || '',
       isSsrMobile: getIsSsrMobile(context),
-      ...(await serverSideTranslations(locale, ['common', 'validators']))
+      ...(await serverSideTranslations(locale, ['common', 'validators', 'last-ledger-information']))
     }
   }
 }
@@ -61,11 +61,18 @@ const fixCountry = (country) => {
 
 moment.relativeTimeThreshold('ss', devNet ? 36 : 6)
 
-export default function Validators({ amendment, initialData, initialErrorMessage }) {
+export default function Validators({ amendment, initialData, initialErrorMessage, isSsrMobile }) {
   const [validators, setValidators] = useState(null)
   const [unlValidatorsCount, setUnlValidatorsCount] = useState(0)
   const [developerMode, setDeveloperMode] = useState(false)
   const [serverVersions, setServerVersions] = useState({ validators: {}, unl: {}, count: { validators: 0, unl: 0 } })
+  const [baseFees, setBaseFees] = useState({ validators: {}, unl: {}, count: { validators: 0, unl: 0 } })
+  const [baseReserves, setBaseReserves] = useState({ validators: {}, unl: {}, count: { validators: 0, unl: 0 } })
+  const [reserveIncrements, setReserveIncrements] = useState({
+    validators: {},
+    unl: {},
+    count: { validators: 0, unl: 0 }
+  })
   const { t, i18n } = useTranslation()
   const windowWidth = useWidth()
   const { theme } = useTheme()
@@ -232,6 +239,9 @@ export default function Validators({ amendment, initialData, initialErrorMessage
       setUnlValidatorsCount(dataU.validators?.length)
 
       let countServerVersions = { validators: {}, unl: {}, count: { validators: 0, unl: 0 } }
+      let countBaseFees = { validators: {}, unl: {}, count: { validators: 0, unl: 0 } }
+      let countBaseReserves = { validators: {}, unl: {}, count: { validators: 0, unl: 0 } }
+      let countReserveIncrements = { validators: {}, unl: {}, count: { validators: 0, unl: 0 } }
 
       //in case some of the validators down...
       for (let i = 0; i < dataU.validators.length; i++) {
@@ -250,6 +260,30 @@ export default function Validators({ amendment, initialData, initialErrorMessage
             }
             countServerVersions.count.validators++
           }
+          if (v.baseFee) {
+            if (countBaseFees.validators[v.baseFee]) {
+              countBaseFees.validators[v.baseFee]++
+            } else {
+              countBaseFees.validators[v.baseFee] = 1
+            }
+            countBaseFees.count.validators++
+          }
+          if (v.reserveBase) {
+            if (countBaseReserves.validators[v.reserveBase]) {
+              countBaseReserves.validators[v.reserveBase]++
+            } else {
+              countBaseReserves.validators[v.reserveBase] = 1
+            }
+            countBaseReserves.count.validators++
+          }
+          if (v.reserveIncrement) {
+            if (countReserveIncrements.validators[v.reserveIncrement]) {
+              countReserveIncrements.validators[v.reserveIncrement]++
+            } else {
+              countReserveIncrements.validators[v.reserveIncrement] = 1
+            }
+            countReserveIncrements.count.validators++
+          }
           const index = dataU.validators.findIndex((x) => x.publicKey === v.publicKey)
           if (index === -1) {
             dataU.validators.push(v)
@@ -265,6 +299,30 @@ export default function Validators({ amendment, initialData, initialErrorMessage
                 countServerVersions.unl[v.serverVersion] = 1
               }
               countServerVersions.count.unl++
+            }
+            if (v.baseFee) {
+              if (countBaseFees.unl[v.baseFee]) {
+                countBaseFees.unl[v.baseFee]++
+              } else {
+                countBaseFees.unl[v.baseFee] = 1
+              }
+              countBaseFees.count.unl++
+            }
+            if (v.reserveBase) {
+              if (countBaseReserves.unl[v.reserveBase]) {
+                countBaseReserves.unl[v.reserveBase]++
+              } else {
+                countBaseReserves.unl[v.reserveBase] = 1
+              }
+              countBaseReserves.count.unl++
+            }
+            if (v.reserveIncrement) {
+              if (countReserveIncrements.unl[v.reserveIncrement]) {
+                countReserveIncrements.unl[v.reserveIncrement]++
+              } else {
+                countReserveIncrements.unl[v.reserveIncrement] = 1
+              }
+              countReserveIncrements.count.unl++
             }
           }
         }
@@ -293,6 +351,73 @@ export default function Validators({ amendment, initialData, initialErrorMessage
         countServerVersions.unl[countServerVersionsArray[i].version] = countServerVersionsArray[i].count
       }
       setServerVersions(countServerVersions)
+
+      //compareVersions for base fees Validators
+      let countBaseFeesArray = []
+      for (let v in countBaseFees.validators) {
+        countBaseFeesArray.push({ fee: v, count: countBaseFees.validators[v] })
+      }
+      countBaseFeesArray.sort(compareVersions)
+      countBaseFees.validators = {}
+      for (let i = 0; i < countBaseFeesArray.length; i++) {
+        countBaseFees.validators[countBaseFeesArray[i].fee] = countBaseFeesArray[i].count
+      }
+      //compareVersions for base fees UNL
+      countBaseFeesArray = []
+      for (let v in countBaseFees.unl) {
+        countBaseFeesArray.push({ fee: v, count: countBaseFees.unl[v] })
+      }
+      countBaseFeesArray.sort(compareVersions)
+      countBaseFees.unl = {}
+      for (let i = 0; i < countBaseFeesArray.length; i++) {
+        countBaseFees.unl[countBaseFeesArray[i].fee] = countBaseFeesArray[i].count
+      }
+      setBaseFees(countBaseFees)
+
+      //compareVersions for base reserves Validators
+      let countBaseReservesArray = []
+      for (let v in countBaseReserves.validators) {
+        countBaseReservesArray.push({ reserve: v, count: countBaseReserves.validators[v] })
+      }
+      countBaseReservesArray.sort(compareVersions)
+      countBaseReserves.validators = {}
+      for (let i = 0; i < countBaseReservesArray.length; i++) {
+        countBaseReserves.validators[countBaseReservesArray[i].reserve] = countBaseReservesArray[i].count
+      }
+      //compareVersions for base reserves UNL
+      countBaseReservesArray = []
+      for (let v in countBaseReserves.unl) {
+        countBaseReservesArray.push({ reserve: v, count: countBaseReserves.unl[v] })
+      }
+      countBaseReservesArray.sort(compareVersions)
+      countBaseReserves.unl = {}
+      for (let i = 0; i < countBaseReservesArray.length; i++) {
+        countBaseReserves.unl[countBaseReservesArray[i].reserve] = countBaseReservesArray[i].count
+      }
+      setBaseReserves(countBaseReserves)
+
+      //compareVersions for reserve increments Validators
+      let countReserveIncrementsArray = []
+      for (let v in countReserveIncrements.validators) {
+        countReserveIncrementsArray.push({ increment: v, count: countReserveIncrements.validators[v] })
+      }
+      countReserveIncrementsArray.sort(compareVersions)
+      countReserveIncrements.validators = {}
+      for (let i = 0; i < countReserveIncrementsArray.length; i++) {
+        countReserveIncrements.validators[countReserveIncrementsArray[i].increment] =
+          countReserveIncrementsArray[i].count
+      }
+      //compareVersions for reserve increments UNL
+      countReserveIncrementsArray = []
+      for (let v in countReserveIncrements.unl) {
+        countReserveIncrementsArray.push({ increment: v, count: countReserveIncrements.unl[v] })
+      }
+      countReserveIncrementsArray.sort(compareVersions)
+      countReserveIncrements.unl = {}
+      for (let i = 0; i < countReserveIncrementsArray.length; i++) {
+        countReserveIncrements.unl[countReserveIncrementsArray[i].increment] = countReserveIncrementsArray[i].count
+      }
+      setReserveIncrements(countReserveIncrements)
     }
   }
 
@@ -440,35 +565,37 @@ export default function Validators({ amendment, initialData, initialErrorMessage
         </div>
 
         <div className="flex flex-center">
-          <div className="div-with-table">
-            <h4 className="center">{t('menu.network.validators')}</h4>
-            {serverVersions?.count?.validators && (
-              <table className="table-large shrink">
-                <thead>
-                  <tr>
-                    <th className="center">{t('table.index')}</th>
-                    <th>{t('table.version')}</th>
-                    <th className="right">{t('table.count')}</th>
-                    <th className="right">%%</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {Object.keys(serverVersions.validators).map((v, i) => (
-                    <tr key={i}>
-                      <td className="center">{i + 1}</td>
-                      <td>{v}</td>
-                      <td className="right">{serverVersions.validators[v]}</td>
-                      <td className="right">
-                        {Math.ceil((serverVersions.validators[v] / serverVersions.count.validators) * 10000) / 100}%
-                      </td>
+          {!isSsrMobile && (
+            <div className="div-with-table">
+              <h4 className="center">Versions</h4>
+              {serverVersions?.count?.validators && (
+                <table className="table-large shrink">
+                  <thead>
+                    <tr>
+                      <th className="center">{t('table.index')}</th>
+                      <th>{t('table.version')}</th>
+                      <th className="right">{t('table.count')}</th>
+                      <th className="right">%%</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            )}
-          </div>
+                  </thead>
+                  <tbody>
+                    {Object.keys(serverVersions.validators).map((v, i) => (
+                      <tr key={i}>
+                        <td className="center">{i + 1}</td>
+                        <td>{v}</td>
+                        <td className="right">{serverVersions.validators[v]}</td>
+                        <td className="right">
+                          {Math.ceil((serverVersions.validators[v] / serverVersions.count.validators) * 10000) / 100}%
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              )}
+            </div>
+          )}
           <div className="div-with-table">
-            <h4 className="center">UNL {t('menu.network.validators')}</h4>
+            <h4 className="center">Versions (UNL)</h4>
             {serverVersions?.count?.unl && (
               <table className="table-large shrink">
                 <thead>
@@ -494,9 +621,176 @@ export default function Validators({ amendment, initialData, initialErrorMessage
               </table>
             )}
           </div>
+          {!isSsrMobile && (
+            <div className="div-with-table">
+              <h4 className="center">Base Fees</h4>
+              {baseFees?.count?.validators && (
+                <table className="table-large shrink">
+                  <thead>
+                    <tr>
+                      <th className="center">{t('table.index')}</th>
+                      <th>{t('last-ledger-information.base-fee')}</th>
+                      <th className="right">{t('table.count')}</th>
+                      <th className="right">%%</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {Object.keys(baseFees.validators).map((v, i) => (
+                      <tr key={i}>
+                        <td className="center">{i + 1}</td>
+                        <td>{amountFormat(v)}</td>
+                        <td className="right">{baseFees.validators[v]}</td>
+                        <td className="right">
+                          {Math.ceil((baseFees.validators[v] / baseFees.count.validators) * 10000) / 100}%
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              )}
+            </div>
+          )}
+          <div className="div-with-table">
+            <h4 className="center">Base Fees (UNL)</h4>
+            {baseFees?.count?.unl && (
+              <table className="table-large shrink">
+                <thead>
+                  <tr>
+                    <th className="center">{t('table.index')}</th>
+                    <th>{t('last-ledger-information.base-reserve')}</th>
+                    <th className="right">{t('table.count')}</th>
+                    <th className="right">%%</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {Object.keys(baseFees.unl).map((v, i) => (
+                    <tr key={i}>
+                      <td className="center">{i + 1}</td>
+                      <td>{amountFormat(v)}</td>
+                      <td className="right">{baseFees.unl[v]}</td>
+                      <td className="right">{Math.ceil((baseFees.unl[v] / baseFees.count.unl) * 10000) / 100}%</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
+          </div>
+          {!isSsrMobile && (
+            <div className="div-with-table">
+              <h4 className="center">Reserve Increments</h4>
+              {reserveIncrements?.count?.validators && (
+                <table className="table-large shrink">
+                  <thead>
+                    <tr>
+                      <th className="center">{t('table.index')}</th>
+                      <th>{t('last-ledger-information.increment-reserve')}</th>
+                      <th className="right">{t('table.count')}</th>
+                      <th className="right">%%</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {Object.keys(reserveIncrements.validators).map((v, i) => (
+                      <tr key={i}>
+                        <td className="center">{i + 1}</td>
+                        <td>{amountFormat(v)}</td>
+                        <td className="right">{reserveIncrements.validators[v]}</td>
+                        <td className="right">
+                          {Math.ceil((reserveIncrements.validators[v] / reserveIncrements.count.validators) * 10000) /
+                            100}
+                          %
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              )}
+            </div>
+          )}
+          <div className="div-with-table">
+            <h4 className="center">Reserve Increments (UNL)</h4>
+            {reserveIncrements?.count?.unl && (
+              <table className="table-large shrink">
+                <thead>
+                  <tr>
+                    <th className="center">{t('table.index')}</th>
+                    <th>{t('last-ledger-information.increment-reserve')}</th>
+                    <th className="right">{t('table.count')}</th>
+                    <th className="right">%%</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {Object.keys(reserveIncrements.unl).map((v, i) => (
+                    <tr key={i}>
+                      <td className="center">{i + 1}</td>
+                      <td>{amountFormat(v)}</td>
+                      <td className="right">{reserveIncrements.unl[v]}</td>
+                      <td className="right">
+                        {Math.ceil((reserveIncrements.unl[v] / reserveIncrements.count.unl) * 10000) / 100}%
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
+          </div>
+          {!isSsrMobile && (
+            <div className="div-with-table">
+              <h4 className="center">Base Reserves</h4>
+              {baseReserves?.count?.validators && (
+                <table className="table-large shrink">
+                  <thead>
+                    <tr>
+                      <th className="center">{t('table.index')}</th>
+                      <th>{t('last-ledger-information.base-reserve')}</th>
+                      <th className="right">{t('table.count')}</th>
+                      <th className="right">%%</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {Object.keys(baseReserves.validators).map((v, i) => (
+                      <tr key={i}>
+                        <td className="center">{i + 1}</td>
+                        <td>{amountFormat(v)}</td>
+                        <td className="right">{baseReserves.validators[v]}</td>
+                        <td className="right">
+                          {Math.ceil((baseReserves.validators[v] / baseReserves.count.validators) * 10000) / 100}%
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              )}
+            </div>
+          )}
+          <div className="div-with-table">
+            <h4 className="center">Base Reserves (UNL)</h4>
+            {baseReserves?.count?.unl && (
+              <table className="table-large shrink">
+                <thead>
+                  <tr>
+                    <th className="center">{t('table.index')}</th>
+                    <th>{t('last-ledger-information.base-reserve')}</th>
+                    <th className="right">{t('table.count')}</th>
+                    <th className="right">%%</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {Object.keys(baseReserves.unl).map((v, i) => (
+                    <tr key={i}>
+                      <td className="center">{i + 1}</td>
+                      <td>{amountFormat(v)}</td>
+                      <td className="right">{baseReserves.unl[v]}</td>
+                      <td className="right">
+                        {Math.ceil((baseReserves.unl[v] / baseReserves.count.unl) * 10000) / 100}%
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
+          </div>
         </div>
         <br />
-
         {windowWidth >= 960 ? (
           <center>
             <div style={{ display: 'inline-block' }}>
