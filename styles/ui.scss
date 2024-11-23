@@ -371,7 +371,6 @@ table {
   }
   &.table-large {
     min-width: 760px;
-    max-width: calc(100% - 30px);
     margin: auto;
     border: 1px solid var(--accent-link);
     &.shrink {
@@ -453,7 +452,6 @@ table {
     }
   }
   &.table-mobile {
-    width: calc(100% - 30px);
     margin: auto;
     font-size: 12px;
     tr {

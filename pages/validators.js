@@ -17,6 +17,7 @@ import CopyButton from '../components/UI/CopyButton'
 import NetworkPagesTab from '../components/Tabs/NetworkPagesTabs'
 
 import VerifiedIcon from '../public/images/verified.svg'
+import Image from 'next/image'
 
 export async function getServerSideProps(context) {
   const { query, locale, req } = context
@@ -64,7 +65,6 @@ export default function Validators({ amendment, initialData, initialErrorMessage
   const [validators, setValidators] = useState(null)
   const [unlValidatorsCount, setUnlValidatorsCount] = useState(0)
   const [developerMode, setDeveloperMode] = useState(false)
-  const [showServer, setShowServer] = useState(true)
   const [serverVersions, setServerVersions] = useState({ validators: {}, unl: {}, count: { validators: 0, unl: 0 } })
   const { t, i18n } = useTranslation()
   const windowWidth = useWidth()
@@ -239,7 +239,6 @@ export default function Validators({ amendment, initialData, initialErrorMessage
       }
 
       const dataV = initialData.validators
-      let foundServerCountry = false
       if (dataV) {
         for (let i = 0; i < dataV.length; i++) {
           const v = dataV[i]
@@ -250,9 +249,6 @@ export default function Validators({ amendment, initialData, initialErrorMessage
               countServerVersions.validators[v.serverVersion] = 1
             }
             countServerVersions.count.validators++
-          }
-          if (v.serverCountry) {
-            foundServerCountry = true
           }
           const index = dataU.validators.findIndex((x) => x.publicKey === v.publicKey)
           if (index === -1) {
@@ -273,7 +269,6 @@ export default function Validators({ amendment, initialData, initialErrorMessage
           }
         }
         dataU.validators.sort(compare)
-        setShowServer(foundServerCountry)
         setValidators(dataU)
       }
 
@@ -521,7 +516,16 @@ export default function Validators({ amendment, initialData, initialErrorMessage
               {!initialErrorMessage && validators?.validators?.length > 0 ? (
                 validators.validators.map((v, i) => (
                   <tr key={i}>
-                    <td style={{ padding: '5px' }}>{i + 1}</td>
+                    <td style={{ padding: '5px' }} className="center">
+                      <Image
+                        alt="avatar"
+                        src={'https://cdn.bithomp.com/avatar/' + v.publicKey}
+                        width="35"
+                        height="35"
+                      />
+                      <br />
+                      {i + 1}
+                    </td>
                     <td>
                       <p>
                         {displayFlag(v.ownerCountry, t('table.owner-country', { ns: 'validators' }))}
@@ -644,8 +648,7 @@ export default function Validators({ amendment, initialData, initialErrorMessage
                 <th>{t('table.validator', { ns: 'validators' })}</th>
                 <th className="center">UNL/nUNL</th>
                 {developerMode && <th className="center">{t('table.sequence')}</th>}
-                {showServer && <th className="center">Server</th>}
-                <th className="left">{t('table.version')}</th>
+                <th className="left">Server</th>
                 <th className="right">{t('table.last-seen', { ns: 'validators' })}</th>
                 {(xahauNetwork || (developerMode && windowWidth > 1560)) && <th>{t('table.address')}</th>}
               </tr>
@@ -654,7 +657,16 @@ export default function Validators({ amendment, initialData, initialErrorMessage
               {!initialErrorMessage && validators?.validators?.length > 0 ? (
                 validators.validators.map((v, i) => (
                   <tr key={v.publicKey}>
-                    <td>{i + 1}</td>
+                    <td className="center">
+                      <Image
+                        alt="avatar"
+                        src={'https://cdn.bithomp.com/avatar/' + v.publicKey}
+                        width="35"
+                        height="35"
+                      />
+                      <br />
+                      {i + 1}
+                    </td>
                     <td>
                       {developerMode && (
                         <>
@@ -662,7 +674,7 @@ export default function Validators({ amendment, initialData, initialErrorMessage
                           <br />
                         </>
                       )}
-                      {displayFlag(v.ownerCountry, t('table.owner-country', { ns: 'validators' }))}
+                      {displayFlag(v.ownerCountry, t('table.owner-country', { ns: 'validators' }))}{' '}
                       {v.ownerCountry && ' '}
                       {v.principals?.map((p, i) => (
                         <span key={i}>
@@ -671,12 +683,10 @@ export default function Validators({ amendment, initialData, initialErrorMessage
                           {i !== v.principals.length - 1 ? ', ' : <br />}
                         </span>
                       ))}
-                      {!v.principals?.length && <br />}
                       {v.domain ? (
                         <>
                           <a href={'https://' + v.domain}>{v.domain}</a>
                           {verifiedSign(v.domainVerified, v.domain)}
-                          <br />
                         </>
                       ) : (
                         <>
@@ -686,18 +696,15 @@ export default function Validators({ amendment, initialData, initialErrorMessage
                                 {v.domainLegacy}
                               </a>
                               {verifiedSign(v.domainLegacyVerified, v.domainLegacy)}
-                              <br />
                             </>
                           ) : !developerMode ? (
-                            <>
-                              {windowWidth > 1240 ? v.publicKey : shortHash(v.publicKey)}
-                              <br />
-                            </>
+                            <>{windowWidth > 1240 ? v.publicKey : shortHash(v.publicKey)}</>
                           ) : (
                             ''
                           )}
                         </>
                       )}
+                      {(v.domain || v.domainLegacy) && <br />}
                       {listAmendments(v.amendments)}
                       <br />
                       {t('last-ledger-information.base-fee')} {v.baseFee ? amountFormat(v.baseFee) : 'N/A'}|
@@ -727,21 +734,28 @@ export default function Validators({ amendment, initialData, initialErrorMessage
                       )}
                     </td>
                     {developerMode && <td className="center">{v.sequence}</td>}
-                    {showServer && (
-                      <td className={developerMode ? 'right' : 'center'}>
-                        {developerMode && <>{v.serverLocation && <>{v.serverLocation} </>}</>}
-                        {displayFlag(v.serverCountry, t('table.server-country', { ns: 'validators' }))}
-                        {developerMode && (
-                          <>
-                            <br />
-                            {v.serverCloud === true && <span style={{ fontSize: '1.5em' }}>☁️</span>}
-                            {v.serverCloud === false && <span style={{ fontSize: '1.5em' }}>🏠</span>}
-                            {v.networkASN && <> {v.networkASN}</>}
-                          </>
-                        )}
-                      </td>
-                    )}
-                    <td className="left">{v.serverVersion}</td>
+                    <td className="left">
+                      {displayFlag(v.serverCountry, t('table.server-country', { ns: 'validators' }))} {v.serverVersion}
+                      {developerMode && (
+                        <>
+                          {v.serverLocation && (
+                            <>
+                              <br />
+                              {v.serverLocation}{' '}
+                            </>
+                          )}
+                        </>
+                      )}
+                      {developerMode && (
+                        <>
+                          {(v.networkASN || v.serverCloud === true || v.serverCloud === false) && <br />}
+                          {v.serverCloud === true && <span style={{ fontSize: '1.5em' }}>☁️</span>}
+                          {v.serverCloud === false && <span style={{ fontSize: '1.5em' }}>🏠</span>}
+                          {v.networkASN && <> {v.networkASN}</>}
+                          {(v.networkASN || v.serverCloud === true || v.serverCloud === false) && <br />}
+                        </>
+                      )}
+                    </td>
                     <td className="right">
                       <ShowTimeMemo time={v.lastSeenTime} />
                     </td>
