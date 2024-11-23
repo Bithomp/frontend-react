@@ -1,10 +1,6 @@
 import TrezorConnect from '@trezor/connect-web'
-import { broadcastTransaction, getNextTransactionParams } from './user' //xahauDef
-//import { encode } from 'xrpl-binary-codec-prerelease' //XrplDefinitions, DEFAULT_DEFINITIONS
+import { broadcastTransaction, getNextTransactionParams } from './user'
 import { server } from '.'
-//import { xahauNetwork } from '.'
-
-//const definitions = xahauNetwork ? new XrplDefinitions(xahauDef) : DEFAULT_DEFINITIONS
 
 const initTrezor = async () => {
   try {
@@ -117,7 +113,8 @@ const trezorSign = async ({
   afterSigning,
   onSignIn,
   setStatus,
-  setAwaiting
+  setAwaiting,
+  t
 }) => {
   const signRequestData = signRequest.data
   if (signRequestData?.signOnly) {
@@ -163,7 +160,8 @@ const trezorSign = async ({
         wallet,
         signRequest,
         tx,
-        setAwaiting
+        setAwaiting,
+        t
       })
     } catch (err) {
       setStatus(err.message)
@@ -179,7 +177,8 @@ export const trezorTxSend = async ({
   onSignIn,
   setStatus,
   account,
-  setAwaiting
+  setAwaiting,
+  t
 }) => {
   try {
     let address = null
@@ -202,7 +201,8 @@ export const trezorTxSend = async ({
       afterSigning,
       onSignIn,
       setStatus,
-      setAwaiting
+      setAwaiting,
+      t
     })
   } catch (err) {
     setStatus(err.message)

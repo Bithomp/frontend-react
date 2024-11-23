@@ -1,10 +1,7 @@
 import TransportWebHID from '@ledgerhq/hw-transport-webhid'
 import Xrp from '@ledgerhq/hw-app-xrp'
-import { broadcastTransaction, getNextTransactionParams } from './user' //xahauDef
-import { encode } from 'xrpl-binary-codec-prerelease' //XrplDefinitions, DEFAULT_DEFINITIONS
-//import { xahauNetwork } from '.'
-
-//const definitions = xahauNetwork ? new XrplDefinitions(xahauDef) : DEFAULT_DEFINITIONS
+import { broadcastTransaction, getNextTransactionParams } from './user'
+import { encode } from 'xrpl-binary-codec-prerelease'
 
 const errorHandle = (error) => {
   // Handle specific errors based on the message or error type
@@ -66,7 +63,8 @@ const ledgerwalletSign = async ({
   afterSigning,
   onSignIn,
   setStatus,
-  setAwaiting
+  setAwaiting,
+  t
 }) => {
   const signRequestData = signRequest.data
 
@@ -116,7 +114,8 @@ const ledgerwalletSign = async ({
         wallet,
         signRequest,
         tx,
-        setAwaiting
+        setAwaiting,
+        t
       })
     } catch (err) {
       setStatus(err.message)
@@ -131,7 +130,8 @@ export const ledgerwalletTxSend = async ({
   afterSigning,
   onSignIn,
   setStatus,
-  setAwaiting
+  setAwaiting,
+  t
 }) => {
   try {
     const xrpApp = await connectLedgerHID()
@@ -149,7 +149,8 @@ export const ledgerwalletTxSend = async ({
       afterSigning,
       onSignIn,
       setStatus,
-      setAwaiting
+      setAwaiting,
+      t
     })
   } catch (err) {
     setStatus(err.message)

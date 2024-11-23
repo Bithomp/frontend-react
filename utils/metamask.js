@@ -44,7 +44,8 @@ const metamaskSign = async ({
   afterSigning,
   onSignIn,
   setStatus,
-  setAwaiting
+  setAwaiting,
+  t
 }) => {
   const signRequestData = signRequest.data
   if (signRequestData?.signOnly) {
@@ -107,7 +108,8 @@ const metamaskSign = async ({
         wallet,
         signRequest,
         tx,
-        setAwaiting
+        setAwaiting,
+        t
       })
     } catch (err) {
       setStatus(err.message)
@@ -122,7 +124,8 @@ export const metamaskTxSend = async ({
   afterSigning,
   onSignIn,
   setStatus,
-  setAwaiting
+  setAwaiting,
+  t
 }) => {
   await MMSDK.connect()
   const provider = MMSDK.getProvider()
@@ -193,7 +196,8 @@ export const metamaskTxSend = async ({
       afterSigning,
       onSignIn,
       setStatus,
-      setAwaiting
+      setAwaiting,
+      t
     })
   } catch (err) {
     setStatus(err.message)
@@ -202,6 +206,16 @@ export const metamaskTxSend = async ({
     } else if (err.code === 4100) {
       setStatus('Open Metamask and follow the instructions')
       await installSnaps(provider, setStatus)
+      metamaskTxSend({
+        tx,
+        signRequest,
+        afterSubmitExe,
+        afterSigning,
+        onSignIn,
+        setStatus,
+        setAwaiting,
+        t
+      })
     }
   }
 }

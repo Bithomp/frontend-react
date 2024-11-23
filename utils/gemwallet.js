@@ -15,7 +15,8 @@ const gemwalletSign = async ({
   afterSigning,
   onSignIn,
   setStatus,
-  setAwaiting
+  setAwaiting,
+  t
 }) => {
   const signRequestData = signRequest.data
 
@@ -72,7 +73,8 @@ const gemwalletSign = async ({
             wallet,
             signRequest,
             tx,
-            setAwaiting
+            setAwaiting,
+            t
           })
         })
         .catch((error) => {
@@ -113,14 +115,15 @@ export const gemwalletTxSend = ({
   onSignIn,
   setStatus,
   account,
-  setAwaiting
+  setAwaiting,
+  t
 }) => {
   isInstalled().then((response) => {
     if (response.result.isInstalled) {
       if (account?.address && account?.wallet === 'gemwallet') {
         // gemwallet installed, account is known
         const address = account.address
-        gemwalletSign({ address, tx, signRequest, afterSubmitExe, afterSigning, onSignIn, setStatus, setAwaiting })
+        gemwalletSign({ address, tx, signRequest, afterSubmitExe, afterSigning, onSignIn, setStatus, setAwaiting, t })
       } else {
         //get address from gemwallet
         getAddress().then((response) => {
@@ -128,7 +131,7 @@ export const gemwalletTxSend = ({
           if (!tx.Account) {
             tx.Account = address
           }
-          gemwalletSign({ address, tx, signRequest, afterSubmitExe, afterSigning, onSignIn, setStatus, setAwaiting })
+          gemwalletSign({ address, tx, signRequest, afterSubmitExe, afterSigning, onSignIn, setStatus, setAwaiting, t })
         })
       }
     } else {

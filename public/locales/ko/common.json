@@ -381,6 +381,9 @@
     "No nfts information is found": "죄송합니다. 오류가 발생했습니다. 다시 시도해주세요",
     "Address is not valid": "Invalid address"
   },
+  "error-tx": {
+    "terNO_ACCOUNT": "The address sending the transaction is not funded in the ledger (yet)."
+  },
   "units": {
     "seconds-short": "초",
     "minutes-short": "분",

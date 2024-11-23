@@ -380,6 +380,9 @@
     "No nfts information is found": "Хм, что-то пошло не так. Попробуйте поискать что-то другое.",
     "Address is not valid": "Неверный адрес"
   },
+  "error-tx": {
+    "terNO_ACCOUNT": "Адрес отправителя транзакции не найден в леджере (пока еще не активирован)."
+  },
   "units": {
     "seconds-short": "с",
     "minutes-short": "м",

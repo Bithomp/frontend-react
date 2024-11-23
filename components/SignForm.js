@@ -333,7 +333,7 @@ export default function SignForm({
   }
 
   const gemwalletTxSending = (tx) => {
-    gemwalletTxSend({ tx, signRequest, afterSubmitExe, afterSigning, onSignIn, setStatus, account, setAwaiting })
+    gemwalletTxSend({ tx, signRequest, afterSubmitExe, afterSigning, onSignIn, setStatus, account, setAwaiting, t })
     setScreen('gemwallet')
     setStatus(t('signin.statuses.check-app', { appName: 'GemWallet' }))
   }
@@ -345,7 +345,7 @@ export default function SignForm({
       return
     }
     setStatus('Please, connect your Ledger Wallet and open the XRP app.')
-    ledgerwalletTxSend({ tx, signRequest, afterSubmitExe, afterSigning, onSignIn, setStatus, setAwaiting })
+    ledgerwalletTxSend({ tx, signRequest, afterSubmitExe, afterSigning, onSignIn, setStatus, setAwaiting, t })
   }
 
   const trezorTxSending = (tx) => {
@@ -355,7 +355,7 @@ export default function SignForm({
       return
     }
     setStatus('Please, connect your Trezor Wallet.')
-    trezorTxSend({ tx, signRequest, afterSubmitExe, afterSigning, onSignIn, setStatus, setAwaiting })
+    trezorTxSend({ tx, signRequest, afterSubmitExe, afterSigning, onSignIn, setStatus, setAwaiting, t })
   }
 
   const metamaskTxSending = async (tx) => {
@@ -367,7 +367,7 @@ export default function SignForm({
     }
 
     setStatus('Please, connect your Metamask Wallet.')
-    metamaskTxSend({ tx, signRequest, afterSubmitExe, afterSigning, onSignIn, setStatus, setAwaiting })
+    metamaskTxSend({ tx, signRequest, afterSubmitExe, afterSigning, onSignIn, setStatus, setAwaiting, t })
   }
 
   const xamanTxSending = (tx) => {

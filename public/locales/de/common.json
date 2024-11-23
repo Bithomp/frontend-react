@@ -380,6 +380,9 @@
     "No nfts information is found": "Entschuldigung, ein Fehler ist aufgetreten. Bitte suchen Sie nach etwas anderem.",
     "Address is not valid": "Ungültige Adresse"
   },
+  "error-tx": {
+    "terNO_ACCOUNT": "Die Adresse, die die Transaktion sendet, ist noch nicht im Ledger finanziert."
+  },
   "units": {
     "seconds-short": "s",
     "minutes-short": "m",

@@ -380,6 +380,9 @@
     "No nfts information is found": "Maaf, terjadi kesalahan, silakan cari yang lain.",
     "Address is not valid": "Invalid address"
   },
+  "error-tx": {
+    "terNO_ACCOUNT": "Alamat yang mengirimkan transaksi belum didanai di ledger (belum)."
+  },
   "units": {
     "seconds-short": "d",
     "minutes-short": "m",
