@@ -371,7 +371,7 @@ export default function Validators({ amendment, initialData, initialErrorMessage
     ))
   }
 
-  const verifiedSign = (domainVerified, domain) => {
+  const verifiedSign = (domainVerified, domain, options) => {
     if (!domainVerified || !domain) return ''
     return (
       <span className="tooltip">
@@ -382,7 +382,11 @@ export default function Validators({ amendment, initialData, initialErrorMessage
         >
           <VerifiedIcon style={{ marginLeft: '5px' }} />
         </a>
-        <span className="tooltiptext right no-brake">{t('table.text.domain-verified-toml', { ns: 'validators' })}</span>
+        {(!options || options.tooltip !== false) && (
+          <span className="tooltiptext right no-brake">
+            {t('table.text.domain-verified-toml', { ns: 'validators' })}
+          </span>
+        )}
       </span>
     )
   }
@@ -534,7 +538,7 @@ export default function Validators({ amendment, initialData, initialErrorMessage
                         <p>
                           {t('table.domain')}:<br />
                           <a href={'https://' + v.domain}>{v.domain}</a>
-                          {verifiedSign(v.domainVerified, v.domain)}
+                          {verifiedSign(v.domainVerified, v.domain, { tooltip: false })}
                         </p>
                       ) : (
                         <>
@@ -543,7 +547,7 @@ export default function Validators({ amendment, initialData, initialErrorMessage
                               {t('domain-legacy', { ns: 'validators' })}
                               <br />
                               <a href={'https://' + v.domainLegacy}>{v.domainLegacy}</a>
-                              {verifiedSign(v.domainLegacyVerified, v.domainLegacy)}
+                              {verifiedSign(v.domainLegacyVerified, v.domainLegacy, { tooltip: false })}
                             </p>
                           )}
                         </>
