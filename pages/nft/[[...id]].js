@@ -5,6 +5,7 @@ import { sha512 } from 'crypto-hash'
 import Select from 'react-select'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import Link from 'next/link'
+import dynamic from 'next/dynamic'
 
 import { stripText, decode, network, isValidJson, xahauNetwork } from '../../utils'
 import { convertedAmount, usernameOrAddress } from '../../utils/format'
@@ -67,8 +68,10 @@ import CopyButton from '../../components/UI/CopyButton'
 import NftPreview from '../../components/NftPreview'
 
 import LinkIcon from '../../public/images/link.svg'
-import EvernodeLease from '../../components/Nft/EvernodeLease'
-import EvernodeRegistartion from '../../components/Nft/EvernodeRegistartion'
+
+const ProjectMetadata = dynamic(() => import('../../components/Nft/ProjectMetadata'), { ssr: false })
+const EvernodeLease = dynamic(() => import('../../components/Nft/EvernodeLease'), { ssr: false })
+const EvernodeRegistartion = dynamic(() => import('../../components/Nft/EvernodeRegistartion'), { ssr: false })
 
 const hasJsonMeta = (nft) => {
   return nft.metadata && nft.metadata.attributes?.metaSource?.toLowerCase() !== 'bithomp'
@@ -124,7 +127,8 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
         '?uri=true&metadata=true&history=true&sellOffers=true&buyOffers=true&offersValidate=true&offersHistory=true' +
         noCache +
         '&convertCurrencies=' +
-        selectedCurrency?.toLowerCase()
+        selectedCurrency?.toLowerCase() +
+        '&projectMetadata=true'
     ).catch((error) => {
       setErrorMessage(t('error.' + error.message))
     })
@@ -1013,6 +1017,7 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
                             </div>
                           )}
                           <div>
+                            {data.projectMetadata && <ProjectMetadata data={data.projectMetadata} />}
                             {data.metadata?.attributes &&
                               data.metadata?.attributes[0] &&
                               data.metadata?.attributes[0].trait_type && (
