@@ -362,7 +362,7 @@ export default function SignForm({
     setScreen('metamask')
 
     if (tx.TransactionType.includes('URIToken')) {
-      setStatus('Unfortunatelly, Metamask XRPL Slap does not support URIToken Transaction Types yet.')
+      setStatus('Unfortunatelly, Metamask XRPL Snap does not support URIToken Transaction Types yet.')
       return
     }
 
