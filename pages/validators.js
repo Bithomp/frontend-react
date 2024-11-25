@@ -568,35 +568,7 @@ export default function Validators({ amendment, initialData, initialErrorMessage
           {!isSsrMobile && (
             <div className="div-with-table">
               <h4 className="center">Versions</h4>
-              {serverVersions?.count?.validators && (
-                <table className="table-large shrink">
-                  <thead>
-                    <tr>
-                      <th className="center">{t('table.index')}</th>
-                      <th>{t('table.version')}</th>
-                      <th className="right">{t('table.count')}</th>
-                      <th className="right">%%</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {Object.keys(serverVersions.validators).map((v, i) => (
-                      <tr key={i}>
-                        <td className="center">{i + 1}</td>
-                        <td>{v}</td>
-                        <td className="right">{serverVersions.validators[v]}</td>
-                        <td className="right">
-                          {Math.ceil((serverVersions.validators[v] / serverVersions.count.validators) * 10000) / 100}%
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              )}
-            </div>
-          )}
-          <div className="div-with-table">
-            <h4 className="center">Versions (UNL)</h4>
-            {serverVersions?.count?.unl && (
+
               <table className="table-large shrink">
                 <thead>
                   <tr>
@@ -607,108 +579,106 @@ export default function Validators({ amendment, initialData, initialErrorMessage
                   </tr>
                 </thead>
                 <tbody>
-                  {Object.keys(serverVersions.unl).map((v, i) => (
-                    <tr key={i}>
-                      <td className="center">{i + 1}</td>
-                      <td>{v}</td>
-                      <td className="right">{serverVersions.unl[v]}</td>
-                      <td className="right">
-                        {Math.ceil((serverVersions.unl[v] / serverVersions.count.unl) * 10000) / 100}%
-                      </td>
-                    </tr>
-                  ))}
+                  {serverVersions?.count?.validators
+                    ? Object.keys(serverVersions.validators).map((v, i) => (
+                        <tr key={i}>
+                          <td className="center">{i + 1}</td>
+                          <td>{v}</td>
+                          <td className="right">{serverVersions.validators[v]}</td>
+                          <td className="right">
+                            {Math.ceil((serverVersions.validators[v] / serverVersions.count.validators) * 10000) / 100}%
+                          </td>
+                        </tr>
+                      ))
+                    : ''}
                 </tbody>
               </table>
-            )}
+            </div>
+          )}
+          <div className="div-with-table">
+            <h4 className="center">Versions (UNL)</h4>
+            <table className="table-large shrink">
+              <thead>
+                <tr>
+                  <th className="center">{t('table.index')}</th>
+                  <th>{t('table.version')}</th>
+                  <th className="right">{t('table.count')}</th>
+                  <th className="right">%%</th>
+                </tr>
+              </thead>
+              <tbody>
+                {serverVersions?.count?.unl
+                  ? Object.keys(serverVersions.unl).map((v, i) => (
+                      <tr key={i}>
+                        <td className="center">{i + 1}</td>
+                        <td>{v}</td>
+                        <td className="right">{serverVersions.unl[v]}</td>
+                        <td className="right">
+                          {Math.ceil((serverVersions.unl[v] / serverVersions.count.unl) * 10000) / 100}%
+                        </td>
+                      </tr>
+                    ))
+                  : ''}
+              </tbody>
+            </table>
           </div>
           {!isSsrMobile && (
             <div className="div-with-table">
               <h4 className="center">Base Fees</h4>
-              {baseFees?.count?.validators && (
-                <table className="table-large shrink">
-                  <thead>
-                    <tr>
-                      <th className="center">{t('table.index')}</th>
-                      <th>{t('last-ledger-information.base-fee')}</th>
-                      <th className="right">{t('table.count')}</th>
-                      <th className="right">%%</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {Object.keys(baseFees.validators).map((v, i) => (
-                      <tr key={i}>
-                        <td className="center">{i + 1}</td>
-                        <td>{amountFormat(v)}</td>
-                        <td className="right">{baseFees.validators[v]}</td>
-                        <td className="right">
-                          {Math.ceil((baseFees.validators[v] / baseFees.count.validators) * 10000) / 100}%
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              )}
-            </div>
-          )}
-          <div className="div-with-table">
-            <h4 className="center">Base Fees (UNL)</h4>
-            {baseFees?.count?.unl && (
               <table className="table-large shrink">
                 <thead>
                   <tr>
                     <th className="center">{t('table.index')}</th>
-                    <th>{t('last-ledger-information.base-reserve')}</th>
+                    <th>{t('last-ledger-information.base-fee')}</th>
                     <th className="right">{t('table.count')}</th>
                     <th className="right">%%</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {Object.keys(baseFees.unl).map((v, i) => (
-                    <tr key={i}>
-                      <td className="center">{i + 1}</td>
-                      <td>{amountFormat(v)}</td>
-                      <td className="right">{baseFees.unl[v]}</td>
-                      <td className="right">{Math.ceil((baseFees.unl[v] / baseFees.count.unl) * 10000) / 100}%</td>
-                    </tr>
-                  ))}
+                  {baseFees?.count?.validators
+                    ? Object.keys(baseFees.validators).map((v, i) => (
+                        <tr key={i}>
+                          <td className="center">{i + 1}</td>
+                          <td>{amountFormat(v)}</td>
+                          <td className="right">{baseFees.validators[v]}</td>
+                          <td className="right">
+                            {Math.ceil((baseFees.validators[v] / baseFees.count.validators) * 10000) / 100}%
+                          </td>
+                        </tr>
+                      ))
+                    : ''}
                 </tbody>
               </table>
-            )}
+            </div>
+          )}
+          <div className="div-with-table">
+            <h4 className="center">Base Fees (UNL)</h4>
+            <table className="table-large shrink">
+              <thead>
+                <tr>
+                  <th className="center">{t('table.index')}</th>
+                  <th>{t('last-ledger-information.base-reserve')}</th>
+                  <th className="right">{t('table.count')}</th>
+                  <th className="right">%%</th>
+                </tr>
+              </thead>
+              <tbody>
+                {baseFees?.count?.unl
+                  ? Object.keys(baseFees.unl).map((v, i) => (
+                      <tr key={i}>
+                        <td className="center">{i + 1}</td>
+                        <td>{amountFormat(v)}</td>
+                        <td className="right">{baseFees.unl[v]}</td>
+                        <td className="right">{Math.ceil((baseFees.unl[v] / baseFees.count.unl) * 10000) / 100}%</td>
+                      </tr>
+                    ))
+                  : ''}
+              </tbody>
+            </table>
           </div>
           {!isSsrMobile && (
             <div className="div-with-table">
               <h4 className="center">Reserve Increments</h4>
-              {reserveIncrements?.count?.validators && (
-                <table className="table-large shrink">
-                  <thead>
-                    <tr>
-                      <th className="center">{t('table.index')}</th>
-                      <th>{t('last-ledger-information.increment-reserve')}</th>
-                      <th className="right">{t('table.count')}</th>
-                      <th className="right">%%</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {Object.keys(reserveIncrements.validators).map((v, i) => (
-                      <tr key={i}>
-                        <td className="center">{i + 1}</td>
-                        <td>{amountFormat(v)}</td>
-                        <td className="right">{reserveIncrements.validators[v]}</td>
-                        <td className="right">
-                          {Math.ceil((reserveIncrements.validators[v] / reserveIncrements.count.validators) * 10000) /
-                            100}
-                          %
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              )}
-            </div>
-          )}
-          <div className="div-with-table">
-            <h4 className="center">Reserve Increments (UNL)</h4>
-            {reserveIncrements?.count?.unl && (
               <table className="table-large shrink">
                 <thead>
                   <tr>
@@ -719,52 +689,54 @@ export default function Validators({ amendment, initialData, initialErrorMessage
                   </tr>
                 </thead>
                 <tbody>
-                  {Object.keys(reserveIncrements.unl).map((v, i) => (
-                    <tr key={i}>
-                      <td className="center">{i + 1}</td>
-                      <td>{amountFormat(v)}</td>
-                      <td className="right">{reserveIncrements.unl[v]}</td>
-                      <td className="right">
-                        {Math.ceil((reserveIncrements.unl[v] / reserveIncrements.count.unl) * 10000) / 100}%
-                      </td>
-                    </tr>
-                  ))}
+                  {reserveIncrements?.count?.validators
+                    ? Object.keys(reserveIncrements.validators).map((v, i) => (
+                        <tr key={i}>
+                          <td className="center">{i + 1}</td>
+                          <td>{amountFormat(v)}</td>
+                          <td className="right">{reserveIncrements.validators[v]}</td>
+                          <td className="right">
+                            {Math.ceil((reserveIncrements.validators[v] / reserveIncrements.count.validators) * 10000) /
+                              100}
+                            %
+                          </td>
+                        </tr>
+                      ))
+                    : ''}
                 </tbody>
               </table>
-            )}
+            </div>
+          )}
+          <div className="div-with-table">
+            <h4 className="center">Reserve Increments (UNL)</h4>
+            <table className="table-large shrink">
+              <thead>
+                <tr>
+                  <th className="center">{t('table.index')}</th>
+                  <th>{t('last-ledger-information.increment-reserve')}</th>
+                  <th className="right">{t('table.count')}</th>
+                  <th className="right">%%</th>
+                </tr>
+              </thead>
+              <tbody>
+                {reserveIncrements?.count?.unl
+                  ? Object.keys(reserveIncrements.unl).map((v, i) => (
+                      <tr key={i}>
+                        <td className="center">{i + 1}</td>
+                        <td>{amountFormat(v)}</td>
+                        <td className="right">{reserveIncrements.unl[v]}</td>
+                        <td className="right">
+                          {Math.ceil((reserveIncrements.unl[v] / reserveIncrements.count.unl) * 10000) / 100}%
+                        </td>
+                      </tr>
+                    ))
+                  : ''}
+              </tbody>
+            </table>
           </div>
           {!isSsrMobile && (
             <div className="div-with-table">
               <h4 className="center">Base Reserves</h4>
-              {baseReserves?.count?.validators && (
-                <table className="table-large shrink">
-                  <thead>
-                    <tr>
-                      <th className="center">{t('table.index')}</th>
-                      <th>{t('last-ledger-information.base-reserve')}</th>
-                      <th className="right">{t('table.count')}</th>
-                      <th className="right">%%</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {Object.keys(baseReserves.validators).map((v, i) => (
-                      <tr key={i}>
-                        <td className="center">{i + 1}</td>
-                        <td>{amountFormat(v)}</td>
-                        <td className="right">{baseReserves.validators[v]}</td>
-                        <td className="right">
-                          {Math.ceil((baseReserves.validators[v] / baseReserves.count.validators) * 10000) / 100}%
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              )}
-            </div>
-          )}
-          <div className="div-with-table">
-            <h4 className="center">Base Reserves (UNL)</h4>
-            {baseReserves?.count?.unl && (
               <table className="table-large shrink">
                 <thead>
                   <tr>
@@ -775,19 +747,48 @@ export default function Validators({ amendment, initialData, initialErrorMessage
                   </tr>
                 </thead>
                 <tbody>
-                  {Object.keys(baseReserves.unl).map((v, i) => (
-                    <tr key={i}>
-                      <td className="center">{i + 1}</td>
-                      <td>{amountFormat(v)}</td>
-                      <td className="right">{baseReserves.unl[v]}</td>
-                      <td className="right">
-                        {Math.ceil((baseReserves.unl[v] / baseReserves.count.unl) * 10000) / 100}%
-                      </td>
-                    </tr>
-                  ))}
+                  {baseReserves?.count?.validators
+                    ? Object.keys(baseReserves.validators).map((v, i) => (
+                        <tr key={i}>
+                          <td className="center">{i + 1}</td>
+                          <td>{amountFormat(v)}</td>
+                          <td className="right">{baseReserves.validators[v]}</td>
+                          <td className="right">
+                            {Math.ceil((baseReserves.validators[v] / baseReserves.count.validators) * 10000) / 100}%
+                          </td>
+                        </tr>
+                      ))
+                    : ''}
                 </tbody>
               </table>
-            )}
+            </div>
+          )}
+          <div className="div-with-table">
+            <h4 className="center">Base Reserves (UNL)</h4>
+            <table className="table-large shrink">
+              <thead>
+                <tr>
+                  <th className="center">{t('table.index')}</th>
+                  <th>{t('last-ledger-information.base-reserve')}</th>
+                  <th className="right">{t('table.count')}</th>
+                  <th className="right">%%</th>
+                </tr>
+              </thead>
+              <tbody>
+                {baseReserves?.count?.unl
+                  ? Object.keys(baseReserves.unl).map((v, i) => (
+                      <tr key={i}>
+                        <td className="center">{i + 1}</td>
+                        <td>{amountFormat(v)}</td>
+                        <td className="right">{baseReserves.unl[v]}</td>
+                        <td className="right">
+                          {Math.ceil((baseReserves.unl[v] / baseReserves.count.unl) * 10000) / 100}%
+                        </td>
+                      </tr>
+                    ))
+                  : ''}
+              </tbody>
+            </table>
           </div>
         </div>
         <br />
