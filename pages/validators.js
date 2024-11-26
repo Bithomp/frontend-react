@@ -994,7 +994,7 @@ export default function Validators({ amendment, initialData, initialErrorMessage
                           )}
                         </>
                       )}
-                      {(v.domain || v.domainLegacy) && <br />}
+                      <br />
                       {listAmendments(v.amendments)}
                       <br />
                       {t('last-ledger-information.base-fee')} {v.baseFee ? amountFormat(v.baseFee) : 'N/A'}|
