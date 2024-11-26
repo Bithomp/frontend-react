@@ -265,7 +265,7 @@ export default function Amms({
                     <th>Asset 2</th>
                     <th>LP balance</th>
                     <th>Created</th>
-                    <th>Updated</th>
+                    <th>{t('table.updated')}</th>
                     <th className="right">Trading fee</th>
                   </tr>
                 </thead>

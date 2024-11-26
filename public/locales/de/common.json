@@ -207,7 +207,6 @@
   "nft-statistics": {
     "header": "NFT Live Statistiken",
     "text0": "Die Informationen sind ein wenig veraltet. Wir müssen <1>{{lag}}</1> Einträge auf dem Ledger aufholen.<br/>Die Daten sind verfügbar für den Ledger Index #{{crawlerIndex}}, ({{crawlerTime}}).<br/>Der letzte Validierte Ledger ist #{{currentLedgerIndex}}, ({{currentLedgerTime}}).",
-    "updated": "Aktualisiert",
     "ledger-index": "Ledger Index",
     "created": "Minted",
     "burned": "Vernichtet",
@@ -397,6 +396,7 @@
     "day": "Für die letzten 24 Stunden"
   },
   "table": {
+    "updated": "Aktualisiert",
     "currency": "Währung",
     "currency-issuer": "Währungsemittent",
     "destination-tag": "DestinationTag",

@@ -207,7 +207,6 @@
   "nft-statistics": {
     "header": "Estadísticas NFT en vivo",
     "text0": "La información está un poco desactualizada, necesitamos ponernos al día con <1>{{lag}}</1> los libros contables.<br/>Los datos proviene del libro contable #{{crawlerIndex}}, ({{crawlerTime}}).<br/>El último libro contable validado es #{{currentLedgerIndex}}, ({{currentLedgerTime}}).",
-    "updated": "Actualizado",
     "ledger-index": "Índice de Libro Contable",
     "created": "Acuñados",
     "burned": "Quemados",
@@ -397,6 +396,7 @@
     "day": "Para los últimas 24 horas"
   },
   "table": {
+    "updated": "Actualizado",
     "currency": "Divisa",
     "currency-issuer": "Emisor de la divisa",
     "destination-tag": "Marca de destino",

@@ -207,7 +207,6 @@
   "nft-statistics": {
     "header": "NFT онлайн статистика",
     "text0": "Информация немного устарела, нам осталось проанализировать ещё <1>{{lag}}</1> леджеров.<br/>Данные актуальны для леджера #{{crawlerIndex}}, ({{crawlerTime}}).<br/>Последний валидированный леджер #{{currentLedgerIndex}}, ({{currentLedgerTime}}).",
-    "updated": "Время обновления",
     "ledger-index": "Номер леджера",
     "created": "Выпущено NFT",
     "burned": "Сожжено NFT",
@@ -397,6 +396,7 @@
     "day": "За последние 24 часа"
   },
   "table": {
+    "updated": "Обновлено",
     "currency": "Токен",
     "currency-issuer": "Эмитент токена",
     "destination-tag": "Тег назначения",

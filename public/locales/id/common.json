@@ -207,7 +207,6 @@
   "nft-statistics": {
     "header": "Statistik NFT Langsung",
     "text0": "Informasi ini agak ketinggalan zaman, kami perlu mengejar <1>{{lag}}</1> ledger.<br/>Data disediakan untuk ledger #{{crawlerIndex}}, ({{crawlerTime}}).<br/>Ledger terverifikasi terakhir adalah #{{currentLedgerIndex}}, ({{currentLedgerTime}}).",
-    "updated": "Diperbarui",
     "ledger-index": "Indeks Ledger",
     "created": "Ditambahkan",
     "burned": "Dihapus",
@@ -397,6 +396,7 @@
     "day": "Selama 24 jam terakhir"
   },
   "table": {
+    "updated": "Diperbarui",
     "currency": "Mata Uang",
     "currency-issuer": "Penerbit Mata Uang",
     "destination-tag": "Destination tag",

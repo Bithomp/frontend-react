@@ -208,7 +208,6 @@
   "nft-statistics": {
     "header": "NFT 실시간 통계",
     "text0": "이 정보는 약간 오래된 것으로, {{lag}} 원장을 따라잡아야 합니다.<br/>데이터는 원장 #{{crawlerIndex}}, ({{crawlerTime}})에 대해 제공됩니다.<br/>마지막 유효한 원장은 #{{currentLedgerIndex}}, ({{currentLedgerTime}})입니다.",
-    "updated": "업데이트됨",
     "ledger-index": "원장 지표",
     "created": "채굴됨",
     "burned": "소각됨",
@@ -398,6 +397,7 @@
     "day": "최근 24시간"
   },
   "table": {
+    "updated": "업데이트됨",
     "currency": "통화",
     "currency-issuer": "통화 발행자",
     "destination-tag": "대상 태그",

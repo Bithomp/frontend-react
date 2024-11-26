@@ -1017,7 +1017,9 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
                             </div>
                           )}
                           <div>
-                            {data.projectMetadata && <ProjectMetadata data={data.projectMetadata} />}
+                            {data.projectMetadata && (
+                              <ProjectMetadata data={data.projectMetadata} updatedAt={data.projectMetadataUpdatedAt} />
+                            )}
                             {data.metadata?.attributes &&
                               data.metadata?.attributes[0] &&
                               data.metadata?.attributes[0].trait_type && (

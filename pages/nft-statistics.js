@@ -123,7 +123,7 @@ export default function NftStatistics() {
         ) : (
           <>
             <p>
-              {t('nft-statistics.updated')}: {crawlerTime}
+              {t('table.updated')}: {crawlerTime}
             </p>
             <p>
               {t('nft-statistics.ledger-index')}: <LedgerLink version={crawlerIndex} />

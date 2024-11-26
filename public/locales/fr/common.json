@@ -207,7 +207,6 @@
   "nft-statistics": {
     "header": "Statistiques en direct des NFT",
     "text0": "Les informations sont un peu obsolètes, nous devons nous mettre à jour avec <1>{{lag}}</1> registres.<br/>Les données sont fournies pour le registre #{{crawlerIndex}} ({{crawlerTime}}).<br/>Le dernier registre validé est #{{currentLedgerIndex}}, ({{currentLedgerTime}}).",
-    "updated": "Mis à jour",
     "ledger-index": "Indice du registre",
     "created": "Frappé",
     "burned": "Brûlé",
@@ -397,6 +396,7 @@
     "day": "Pour les 24 dernières heures"
   },
   "table": {
+    "updated": "Mis à jour",
     "currency": "Monnaie",
     "currency-issuer": "Émetteur de monnaie",
     "destination-tag": "Tag de destination",

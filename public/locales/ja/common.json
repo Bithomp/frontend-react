@@ -207,7 +207,6 @@
   "nft-statistics": {
     "header": "NFT リアルタイム情報",
     "text0": "この情報は少し古く、<1>{{lag}}</1>レジャー分追いつく必要があります。<br/>表示中のデータはレジャー#{{crawlerIndex}}, ({{crawlerTime}})のものです。<br/>最後に検証されたレジャーインデックスは#{{currentLedgerIndex}}, ({{currentLedgerTime}})です。",
-    "updated": "最終更新",
     "ledger-index": "レジャーインデックス",
     "created": "ミント数",
     "burned": "バーン数",
@@ -397,6 +396,7 @@
     "day": "直近24時間"
   },
   "table": {
+    "updated": "最終更新",
     "currency": "通貨",
     "currency-issuer": "通貨発行者",
     "destination-tag": "宛先タグ",
