@@ -945,11 +945,6 @@ export default function NftVolumes({
                   width: 630,
                   height: 630,
                   file: 'previews/630x630/nft-volumes.png'
-                },
-                {
-                  width: 300,
-                  height: 157,
-                  file: 'previews/300x157/nft-volumes.png'
                 }
               ]
         }
