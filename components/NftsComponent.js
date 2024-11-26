@@ -640,11 +640,6 @@ export default function NftsComponent({
               width: 630,
               height: 630,
               file: 'previews/630x630/nft-explorer.png'
-            },
-            {
-              width: 300,
-              height: 157,
-              file: 'previews/300x157/nft-explorer.png'
             }
           ]}
         />

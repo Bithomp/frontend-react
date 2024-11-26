@@ -36,11 +36,6 @@ export default function SEO({ title, titleWithNetwork, description, image, page,
         file: imagePath + 'previews/630x630/index.png'
       },
       {
-        width: 300,
-        height: 157,
-        file: imagePath + 'previews/300x157/index.png'
-      },
-      {
         file: imagePath + '512.png',
         width: 512,
         height: 512
