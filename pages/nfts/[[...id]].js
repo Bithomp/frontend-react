@@ -70,7 +70,8 @@ export default function Nfts({
   includeWithoutMediaDataQuery,
   id,
   account,
-  sessionToken
+  sessionToken,
+  subscriptionExpired
 }) {
   return (
     <NftsComponent
@@ -94,6 +95,7 @@ export default function Nfts({
       id={id}
       account={account}
       sessionToken={sessionToken}
+      subscriptionExpired={subscriptionExpired}
     />
   )
 }
