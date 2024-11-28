@@ -679,7 +679,7 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
             return ''
           }
           if (request.Amount === '0') {
-            request.Amount = '1' // accept offer must be positive
+            return '' // 0 amount is won't be accepted by bidds
           }
         }
 
