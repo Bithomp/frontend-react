@@ -509,18 +509,11 @@ export default function Account({
                               {data?.ledgerInfo?.accountIndex && (
                                 <>
                                   <tr>
-                                    <td>Hex index:</td>
+                                    <td>Account index:</td>
                                     <td>
                                       {data.ledgerInfo.accountIndex}{' '}
-                                      <CopyButton text={data.ledgerInfo.accountIndex}></CopyButton>
-                                    </td>
-                                  </tr>
-
-                                  <tr>
-                                    <td>Decimal index:</td>
-                                    <td>
-                                      {parseInt(data.ledgerInfo.accountIndex, 16)}{' '}
-                                      <CopyButton text={parseInt(data.ledgerInfo.accountIndex, 16)}></CopyButton>
+                                      <CopyButton text={data.ledgerInfo.accountIndex}></CopyButton> (
+                                      {parseInt(data.ledgerInfo.accountIndex, 16)})
                                     </td>
                                   </tr>
                                 </>
