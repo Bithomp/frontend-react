@@ -175,6 +175,9 @@
       "proposers": "提出者",
       "accounts": "アカウント",
       "accountsActiveLast24h": "アクティブアカウント(24h)",
+      "transactionsLast24h": "トランザクション(24h)",
+      "paymentsLast24h": "支払い(24h)",
+      "feesLast24h": "手数料(24h)",
       "usernames": "ユーザネーム",
       "nft": {
         "created": "NFTミント",

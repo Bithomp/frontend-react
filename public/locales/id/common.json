@@ -175,6 +175,9 @@
       "proposers": "Pengusul",
       "accounts": "Akun",
       "accountsActiveLast24h": "Akun aktiv (24h)",
+      "transactionsLast24h": "Transaksi (24h)",
+      "paymentsLast24h": "Pembayaran (24h)",
+      "feesLast24h": "Biaya (24h)",
       "usernames": "Username",
       "nft": {
         "created": "NFT dicetak",

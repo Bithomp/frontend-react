@@ -176,6 +176,9 @@
       "accounts": "Cuentas",
       "usernames": "Nombres de usuario",
       "accountsActiveLast24h": "Cuentas activas (24h)",
+      "transactionsLast24h": "Transacciones (24h)",
+      "paymentsLast24h": "Pagos (24h)",
+      "feesLast24h": "Comisiones (24h)",
       "nft": {
         "created": "NFTs acuñados",
         "burned": "NFTs quemados",

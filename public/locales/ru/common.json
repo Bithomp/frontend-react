@@ -174,7 +174,10 @@
       "quorum": "Кворум валидаторов",
       "proposers": "предлагающих",
       "accounts": "Адреса",
-      "accountsActiveLast24h": "Активные адреса (24ч)",
+      "accountsActiveLast24h": "Активных адресов за 24ч",
+      "transactionsLast24h": "Транзакций за 24ч",
+      "paymentsLast24h": "Платежей за 24ч",
+      "feesLast24h": "Комиссия за 24ч",
       "usernames": "Псевдонимы",
       "nft": {
         "created": "NFT выпущено",

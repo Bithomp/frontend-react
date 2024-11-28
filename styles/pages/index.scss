@@ -47,7 +47,8 @@ h2.landing-h2 {
     justify-content: space-around;
     align-items: center;
     &:nth-child(3), 
-    &:nth-child(4) {
+    &:nth-child(4),
+    &:nth-child(5) {
       margin-top: 20px;
     }
     .stat-piece {

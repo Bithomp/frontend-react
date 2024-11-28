@@ -175,6 +175,9 @@
       "proposers": "Antragsteller",
       "accounts": "Konten",
       "accountsActiveLast24h": "Aktive Konten (24h)",
+      "transactionsLast24h": "Transaktionen (24h)",
+      "paymentsLast24h": "Zahlungen (24h)",
+      "feesLast24h": "Gebühren (24h)",
       "usernames": "Benutzernamen",
       "nft": {
         "created": "NFT erstellt",

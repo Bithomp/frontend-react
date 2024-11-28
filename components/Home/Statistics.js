@@ -4,7 +4,7 @@ import { useTranslation } from 'next-i18next'
 import axios from 'axios'
 
 import { wssServer, ledgerName, xahauNetwork } from '../../utils'
-import { niceNumber } from '../../utils/format'
+import { amountFormat, niceNumber } from '../../utils/format'
 import { LedgerLink } from '../../utils/links'
 
 let ws = null
@@ -140,6 +140,11 @@ export default function Statistics() {
   let escrowsCount = 'xxx'
   let ammsCount = 'xxx'
   let nodesCount = 'xxx'
+  let transactionsLast24h = {
+    transactions: 'xxx',
+    payments: 'xxx',
+    fees: 'xxx'
+  }
 
   if (data) {
     const {
@@ -152,7 +157,8 @@ export default function Statistics() {
       uritokens,
       escrows,
       amms,
-      nodes
+      nodes,
+      transactions
     } = data
     closedAt = validatedLedger?.ledgerTime * 1000
     closedAt = new Date(closedAt).toLocaleTimeString()
@@ -174,11 +180,40 @@ export default function Statistics() {
     escrowsCount = niceNumber(escrows?.existing)
     ammsCount = niceNumber(amms?.existing)
     nodesCount = niceNumber(nodes?.total)
+
+    if (transactions?.last24h) {
+      transactionsLast24h.transactions = niceNumber(transactions.last24h.success)
+      transactionsLast24h.payments = niceNumber(transactions.last24h.successPayments)
+      transactionsLast24h.fees = amountFormat(transactions.last24h.fee)
+    }
   }
 
   return (
     <>
       <h2 className="center landing-h2">{t('home.stat.header', { ledgerName })}</h2>
+
+      <div className="statistics-block">
+        <div className="stat-piece">
+          <div className="stat-piece-header">{t('home.stat.accountsActiveLast24h')}</div>
+          <div>{activeAccountsLast24h}</div>
+        </div>
+
+        <div className="stat-piece">
+          <div className="stat-piece-header">{t('home.stat.transactionsLast24h')}</div>
+          <div>{transactionsLast24h.transactions}</div>
+        </div>
+
+        <div className="stat-piece">
+          <div className="stat-piece-header">{t('home.stat.paymentsLast24h')}</div>
+          <div>{transactionsLast24h.payments}</div>
+        </div>
+
+        <div className="stat-piece">
+          <div className="stat-piece-header">{t('home.stat.feesLast24h')}</div>
+          <div>{transactionsLast24h.fees}</div>
+        </div>
+      </div>
+
       <div className="statistics-block">
         <div className="stat-piece">
           <div className="stat-piece-header">{t('home.stat.ledger-index')}</div>
@@ -222,11 +257,6 @@ export default function Statistics() {
           <div>
             <Link href="/activations?period=all">{createdAccounts}</Link>
           </div>
-        </div>
-
-        <div className="stat-piece">
-          <div className="stat-piece-header">{t('home.stat.accountsActiveLast24h')}</div>
-          <div>{activeAccountsLast24h}</div>
         </div>
 
         <div className="stat-piece">
