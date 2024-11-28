@@ -6,7 +6,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { axiosServer, passHeaders } from '../../utils/axios'
 
-import { server, getCoinsUrl, nativeCurrency, devNet } from '../../utils'
+import { server, getCoinsUrl, nativeCurrency, devNet, xahauNetwork } from '../../utils'
 import { amountFormat, fullDateAndTime, timeFromNow, txIdLink, nativeCurrencyToFiat } from '../../utils/format'
 import { getIsSsrMobile } from '../../utils/mobile'
 import { fetchCurrentFiatRate } from '../../utils/common'
@@ -52,6 +52,9 @@ import SEO from '../../components/SEO'
 import SearchBlock from '../../components/Layout/SearchBlock'
 import CopyButton from '../../components/UI/CopyButton'
 import { LinkAmm } from '../../utils/links'
+import dynamic from 'next/dynamic'
+
+const XahauRewardTr = dynamic(() => import('../../components/Account/XahauRewardTr'), { ssr: false })
 
 export default function Account({
   initialData,
@@ -629,32 +632,7 @@ export default function Account({
                                   <td>#{data.ledgerInfo.importSequence}</td>
                                 </tr>
                               )}
-                              {/**
-                              $ledger = $ledgerInfo['ledger'];
-                              $xahauReward['accumulator'] = $ledgerInfo["rewardAccumulator"];
-                              $xahauReward['lgrFirst'] = $ledgerInfo["rewardLgrFirst"];
-                              $xahauReward['lgrLast'] = $ledgerInfo["rewardLgrLast"];
-                              $xahauReward['time'] = $ledgerInfo["rewardTime"];
-
-                              if ($xahauReward['lgrFirst']) {
-                              $rewardDelay = 2600000; //seconds // take it from hook instead later
-                              $rewardRate = 0.0033333333300000004; // get it from hook later
-                              $remainingSec = $rewardDelay - (time() - ($xahauReward['time'] + 946684800));
-                              //$claimable = $remainingSec <= 0;
-                              $claimableDate = date('Y-m-d H:i:s', (time() + $remainingSec));
-
-                              // calculate reward
-                              $elapsed = $ledger - $xahauReward['lgrFirst'];
-                              $elapsedSinceLast = $ledger - $xahauReward['lgrLast'];
-                              $accumulator = hexdec($xahauReward['accumulator']);
-                              if (intval($balance) > 0 && $elapsedSinceLast > 0) {
-                                $accumulator += intval($balance) / 1000000 * $elapsedSinceLast;
-                              }
-                              $reward = $accumulator / $elapsed * $rewardRate;
-                              $output .= '<div>Reward: <b>≈ ' . number_format($reward, 6) . ' XAH</b></div>';
-                              $output .= '<div>Claimable: <b>' . $claimableDate . '</b></div>';
-                            }
-                         */}
+                              {xahauNetwork ? <XahauRewardTr data={data.ledgerInfo} /> : null}
                             </tbody>
                           </table>
 
