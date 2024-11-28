@@ -671,6 +671,39 @@ export default function NftsComponent({
         setFiltersHide={setFiltersHide}
       >
         <>
+          {!burnedPeriod && (
+            <div>
+              {t('general.search')}
+              <RadioOptions tabList={listTabList} tab={listTab} setTab={setListTab} name="saleType" />
+            </div>
+          )}
+          {!burnedPeriod && listTab === 'onSale' && (
+            <div>
+              {t('table.on-sale')}
+              <RadioOptions
+                tabList={saleDestinationTabList}
+                tab={saleDestinationTab}
+                setTab={setSaleDestinationTab}
+                name="saleDestination"
+              />
+              {saleCurrencyIssuer && saleCurrency && (
+                <>
+                  <FormInput
+                    title={t('table.currency')}
+                    defaultValue={niceCurrency(saleCurrency)}
+                    disabled={true}
+                    hideButton={true}
+                  />
+                  <FormInput
+                    title={t('table.currency-issuer')}
+                    defaultValue={saleCurrencyIssuer}
+                    disabled={true}
+                    hideButton={true}
+                  />
+                </>
+              )}
+            </div>
+          )}
           {nftExplorer && (
             <>
               {mintedByMarketplace && (
@@ -746,39 +779,6 @@ export default function NftsComponent({
                 setSelectedIssuer={setIssuer}
                 disabled={!(id || owner) || issuersList?.length < 1}
               />
-            </div>
-          )}
-          {!burnedPeriod && (
-            <div>
-              {t('general.search')}
-              <RadioOptions tabList={listTabList} tab={listTab} setTab={setListTab} name="saleType" />
-            </div>
-          )}
-          {!burnedPeriod && listTab === 'onSale' && (
-            <div>
-              {t('table.on-sale')}
-              <RadioOptions
-                tabList={saleDestinationTabList}
-                tab={saleDestinationTab}
-                setTab={setSaleDestinationTab}
-                name="saleDestination"
-              />
-              {saleCurrencyIssuer && saleCurrency && (
-                <>
-                  <FormInput
-                    title={t('table.currency')}
-                    defaultValue={niceCurrency(saleCurrency)}
-                    disabled={true}
-                    hideButton={true}
-                  />
-                  <FormInput
-                    title={t('table.currency-issuer')}
-                    defaultValue={saleCurrencyIssuer}
-                    disabled={true}
-                    hideButton={true}
-                  />
-                </>
-              )}
             </div>
           )}
           <div>
