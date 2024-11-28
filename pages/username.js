@@ -5,6 +5,7 @@ import { useRouter } from 'next/router'
 import axios from 'axios'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { getIsSsrMobile } from '../utils/mobile'
+import dynamic from 'next/dynamic'
 
 import {
   isAddressValid,
@@ -32,10 +33,11 @@ export const getServerSideProps = async (context) => {
   }
 }
 
-import CountrySelect from '../components/UI/CountrySelect'
 import CheckBox from '../components/UI/CheckBox'
 import Receipt from '../components/Receipt'
 import SEO from '../components/SEO'
+
+const CountrySelect = dynamic(() => import('../components/UI/CountrySelect'), { ssr: false })
 
 const checkmark = '/images/checkmark.svg'
 
