@@ -1,4 +1,3 @@
-import { hexdec } from '../../utils'
 import { amountFormat, fullDateAndTime } from '../../utils/format'
 
 export default function XahauRewardTr({ data }) {
@@ -13,7 +12,7 @@ export default function XahauRewardTr({ data }) {
   // calculate reward
   const elapsed = data.ledger - data.rewardLgrFirst
   const elapsedSinceLast = data.ledger - data.rewardLgrLast
-  let accumulator = hexdec(data.rewardAccumulator)
+  let accumulator = parseInt(data.rewardAccumulator, 16)
   if (parseInt(data.balance) > 0 && elapsedSinceLast > 0) {
     accumulator += parseInt(data.balance) * elapsedSinceLast
   }

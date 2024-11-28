@@ -507,29 +507,23 @@ export default function Account({
                             </thead>
                             <tbody>
                               {data?.ledgerInfo?.accountIndex && (
-                                <tr>
-                                  <td>Account index</td>
-                                  <td>
-                                    <table style={{ marginLeft: '-5px' }}>
-                                      <tbody>
-                                        <tr>
-                                          <td>Hex:</td>
-                                          <td>
-                                            {data.ledgerInfo.accountIndex}{' '}
-                                            <CopyButton text={data.ledgerInfo.accountIndex}></CopyButton>
-                                          </td>
-                                        </tr>
-                                        <tr>
-                                          <td>Decimal:</td>
-                                          <td>
-                                            {parseInt(data.ledgerInfo.accountIndex, 16)}{' '}
-                                            <CopyButton text={parseInt(data.ledgerInfo.accountIndex, 16)}></CopyButton>
-                                          </td>
-                                        </tr>
-                                      </tbody>
-                                    </table>
-                                  </td>
-                                </tr>
+                                <>
+                                  <tr>
+                                    <td>Hex index:</td>
+                                    <td>
+                                      {data.ledgerInfo.accountIndex}{' '}
+                                      <CopyButton text={data.ledgerInfo.accountIndex}></CopyButton>
+                                    </td>
+                                  </tr>
+
+                                  <tr>
+                                    <td>Decimal index:</td>
+                                    <td>
+                                      {parseInt(data.ledgerInfo.accountIndex, 16)}{' '}
+                                      <CopyButton text={parseInt(data.ledgerInfo.accountIndex, 16)}></CopyButton>
+                                    </td>
+                                  </tr>
+                                </>
                               )}
                               <tr>
                                 <td>{t('table.address')}</td>

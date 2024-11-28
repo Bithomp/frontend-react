@@ -406,11 +406,6 @@ export const encode = (code) => {
   return Buffer.from(code).toString('hex').toUpperCase()
 }
 
-export const hexdec = (hexString) => {
-  hexString = (hexString + '').replace(/[^a-f0-9]/gi, '')
-  return parseInt(hexString, 16)
-}
-
 export const nativeCurrenciesImages = {
   XRP: '/images/currencies/xrp.svg',
   XAH: '/images/currencies/xah.png'
