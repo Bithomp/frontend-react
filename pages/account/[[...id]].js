@@ -587,50 +587,41 @@ export default function Account({
                                 )}
                               </tr>
                               {data?.ledgerInfo?.balance && (
-                                <tr>
-                                  <td>{t('table.balance')}</td>
-                                  <td>
-                                    <table style={{ marginLeft: '-5px' }}>
-                                      <tbody>
-                                        <tr>
-                                          <td>Available:</td>
-                                          <td>
-                                            <b className="green">{amountFormat(balances?.available?.native)}</b>
-                                          </td>
-                                          <td>
-                                            {nativeCurrencyToFiat({
-                                              amount: balances.available?.native,
-                                              selectedCurrency,
-                                              fiatRate
-                                            })}
-                                          </td>
-                                        </tr>
-                                        <tr>
-                                          <td>Reserved:</td>
-                                          <td>{amountFormat(balances?.reserved?.native, { minFractionDigits: 6 })}</td>
-                                          <td>
-                                            {nativeCurrencyToFiat({
-                                              amount: balances.reserved?.native,
-                                              selectedCurrency,
-                                              fiatRate
-                                            })}
-                                          </td>
-                                        </tr>
-                                        <tr>
-                                          <td className="right">Total:</td>
-                                          <td>{amountFormat(balances?.total?.native)}</td>
-                                          <td>
-                                            {nativeCurrencyToFiat({
-                                              amount: balances.total?.native,
-                                              selectedCurrency,
-                                              fiatRate
-                                            })}
-                                          </td>
-                                        </tr>
-                                      </tbody>
-                                    </table>
-                                  </td>
-                                </tr>
+                                <>
+                                  <tr>
+                                    <td>Total balance</td>
+                                    <td>
+                                      {amountFormat(balances?.total?.native)}
+                                      {nativeCurrencyToFiat({
+                                        amount: balances.total?.native,
+                                        selectedCurrency,
+                                        fiatRate
+                                      })}
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                    <td>Reserved</td>
+                                    <td>
+                                      {amountFormat(balances?.reserved?.native, { minFractionDigits: 6 })}
+                                      {nativeCurrencyToFiat({
+                                        amount: balances.reserved?.native,
+                                        selectedCurrency,
+                                        fiatRate
+                                      })}
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                    <td>Available</td>
+                                    <td>
+                                      <b className="green">{amountFormat(balances?.available?.native)}</b>
+                                      {nativeCurrencyToFiat({
+                                        amount: balances.available?.native,
+                                        selectedCurrency,
+                                        fiatRate
+                                      })}
+                                    </td>
+                                  </tr>
+                                </>
                               )}
                               {data.ledgerInfo?.importSequence && (
                                 <tr>
