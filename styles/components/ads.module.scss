@@ -26,6 +26,11 @@
       top: 50%;
       transform: translateY(-50%);
     }
+    &.nexo {
+      .brand-item-icon {
+        height: 24px;
+      }
+    }
     .brand-item-title {
       position: absolute;
       top: 10px;
