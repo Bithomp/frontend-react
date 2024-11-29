@@ -27,23 +27,15 @@ export default function Receipt({ item, details }) {
     }
   }
 
-  let timestamp = null
-  let fiatPrice = 0
-  let xrpPrice = 0
+  let timestamp = details?.completedAt
+  let fiatPrice = details?.priceInEUR
+  let xrpPrice = details?.price
   let serviceName = 'Service name'
-  let txHash = ''
-  let fiatCurrency = ''
+  let txHash = details?.txHash
+  let fiatCurrency = 'EUR'
 
   if (item === 'username') {
     serviceName = t('menu.usernames')
-    if (details) {
-      timestamp = details.completedAt
-      fiatPrice = details.priceInSEK
-      xrpPrice = details.price
-      txHash = details.txHash
-      fiatCurrency = 'SEK'
-    }
-
     /*
     {
       action: "Registration",
@@ -64,6 +56,7 @@ export default function Receipt({ item, details }) {
     }
     */
   } else if (item === 'subscription') {
+    serviceName = 'Bithomp Pro' //details.action
     /*
     {
       "id": 53,
@@ -87,15 +80,6 @@ export default function Receipt({ item, details }) {
       "partnerID": 5
     }
     */
-
-    if (details) {
-      serviceName = 'Bithomp Pro' //details.action
-      timestamp = details.completedAt
-      fiatPrice = details.priceInEUR
-      xrpPrice = details.price
-      txHash = details.txHash
-      fiatCurrency = 'EUR'
-    }
   }
 
   timestamp = fullDateAndTime(timestamp, null, { asText: true })
