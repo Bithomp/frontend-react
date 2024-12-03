@@ -27,6 +27,7 @@ import { gemwalletTxSend } from '../utils/gemwallet'
 import { ledgerwalletTxSend } from '../utils/ledgerwallet'
 import { trezorTxSend } from '../utils/trezor'
 import { metamaskTxSend } from '../utils/metamask'
+import { walletconnectTxSend } from '../utils/walletconnect'
 
 import XamanQr from './Xaman/Qr'
 import CheckBox from './UI/CheckBox'
@@ -309,6 +310,8 @@ export default function SignForm({
       trezorTxSending(tx)
     } else if (wallet === 'metamask') {
       metamaskTxSending(tx)
+    } else if (wallet === 'walletconnect') {
+      walletconnectTxSending(tx)
     }
   }
 
@@ -368,6 +371,12 @@ export default function SignForm({
 
     setStatus('Please, connect your Metamask Wallet.')
     metamaskTxSend({ tx, signRequest, afterSubmitExe, afterSigning, onSignIn, setStatus, setAwaiting, t })
+  }
+
+  const walletconnectTxSending = async (tx) => {
+    setScreen('walletconnect')
+    setStatus('Please, connect your WalletConnect Wallet.')
+    walletconnectTxSend({ tx, signRequest, afterSubmitExe, afterSigning, onSignIn, setStatus, setAwaiting, t })
   }
 
   const xamanTxSending = (tx) => {
@@ -792,7 +801,8 @@ export default function SignForm({
     gemwallet: 'GemWallet',
     ledgerwallet: 'Ledger Wallet',
     trezor: 'Trezor',
-    metamask: 'Metamask'
+    metamask: 'Metamask',
+    walletconnect: 'WalletConnect'
   }
 
   if (!screen) return ''
@@ -1068,6 +1078,18 @@ export default function SignForm({
                           style={{ maxWidth: '100%', maxHeight: '100%' }}
                         />
                       </div>
+                      {/*
+                      <div className="signin-app-logo">
+                        <Image
+                          alt="WalletConnect"
+                          src="/images/wallets/walletconnect-large.svg"
+                          onClick={() => txSend({ wallet: 'walletconnect' })}
+                          width={169}
+                          height={80}
+                          style={{ maxWidth: '100%', maxHeight: '100%' }}
+                        />
+                      </div>
+                      */}
                       <div className="signin-app-logo">
                         <Image
                           alt="Metamask"

@@ -313,9 +313,16 @@ export default function Header({
                   }}
                   className="link"
                 >
-                  <Image src="/images/wallets/xaman.png" className="xaman-logo" alt="Xaman" height={24} width={24} />
+                  <Image
+                    src="/images/wallets/xaman.png"
+                    className="wallet-logo xaman-logo"
+                    alt="Xaman"
+                    height={24}
+                    width={24}
+                  />
                   Xaman
                 </span>
+
                 <span
                   onClick={() => {
                     setSignRequest({ wallet: 'gemwallet' })
@@ -324,18 +331,30 @@ export default function Header({
                 >
                   <Image
                     src="/images/wallets/gemwallet.svg"
-                    className="gemwallet-logo"
+                    className="wallet-logo"
                     alt="GemWallet"
                     height={24}
                     width={24}
                   />
                   GemWallet
                 </span>
+                {/*
+                <span onClick={() => setSignRequest({ wallet: 'walletconnect' })} className="link">
+                  <Image
+                    src="/images/wallets/walletconnect.svg"
+                    className="wallet-logo walletconnect-logo"
+                    alt="Wallet Connect"
+                    height={24}
+                    width={24}
+                  />
+                  WalletConnect
+                </span>
+                */}
 
                 <span onClick={() => setSignRequest({ wallet: 'metamask' })} className="link">
                   <Image
                     src="/images/wallets/metamask.svg"
-                    className="metamask-logo"
+                    className="wallet-logo"
                     alt="Metamask Wallet"
                     height={24}
                     width={24}
@@ -346,7 +365,7 @@ export default function Header({
                 <span onClick={() => setSignRequest({ wallet: 'ledgerwallet' })} className="link">
                   <Image
                     src="/images/wallets/ledgerwallet.svg"
-                    className="ledgerwallet-logo"
+                    className="wallet-logo"
                     alt="Ledger Wallet"
                     height={24}
                     width={24}
@@ -357,7 +376,7 @@ export default function Header({
                 <span onClick={() => setSignRequest({ wallet: 'trezor' })} className="link">
                   <Image
                     src="/images/wallets/trezor.svg"
-                    className="trezor-logo"
+                    className="wallet-logo"
                     alt="Trezor Wallet"
                     height={24}
                     width={24}
@@ -398,10 +417,19 @@ export default function Header({
                 )}
 
                 <span onClick={signOut} className="link">
+                  {account?.wallet === 'walletconnect' && (
+                    <Image
+                      src="/images/wallets/walletconnect.svg"
+                      className="wallet-logo walletconnect-logo"
+                      alt="WalletConnect"
+                      height={24}
+                      width={24}
+                    />
+                  )}
                   {account?.wallet === 'metamask' && (
                     <Image
                       src="/images/wallets/metamask.svg"
-                      className="metamask-logo"
+                      className="wallet-logo"
                       alt="Metamask"
                       height={24}
                       width={24}
@@ -410,19 +438,25 @@ export default function Header({
                   {account?.wallet === 'gemwallet' && (
                     <Image
                       src="/images/wallets/gemwallet.svg"
-                      className="gemwallet-logo"
+                      className="wallet-logo"
                       alt="GemWallet"
                       height={24}
                       width={24}
                     />
                   )}
                   {account?.wallet === 'xaman' && (
-                    <Image src="/images/wallets/xaman.png" className="xaman-logo" alt="Xaman" height={24} width={24} />
+                    <Image
+                      src="/images/wallets/xaman.png"
+                      className="wallet-logo xaman-logo"
+                      alt="Xaman"
+                      height={24}
+                      width={24}
+                    />
                   )}
                   {account?.wallet === 'ledgerwallet' && (
                     <Image
                       src="/images/wallets/ledgerwallet.svg"
-                      className="ledgerwallet-logo"
+                      className="wallet-logo"
                       alt="Ledger Wallet"
                       height={24}
                       width={24}
@@ -431,7 +465,7 @@ export default function Header({
                   {account?.wallet === 'trezor' && (
                     <Image
                       src="/images/wallets/trezor.svg"
-                      className="trezor-logo"
+                      className="wallet-logo"
                       alt="Trezor Wallet"
                       height={24}
                       width={24}

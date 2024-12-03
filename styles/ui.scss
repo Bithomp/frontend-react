@@ -198,13 +198,13 @@ a, .link {
     }
   }
 
-  .xaman-logo,
-  .gemwallet-logo,
-  .ledgerwallet-logo,
-  .trezor-logo,
-  .metamask-logo {
+  .wallet-logo {
     margin-right: 5px;
     vertical-align: middle;
+  }
+
+  .walletconnect-logo {
+    margin-top: -7px;
   }
 
   .xaman-logo {
