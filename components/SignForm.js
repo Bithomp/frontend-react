@@ -1078,7 +1078,6 @@ export default function SignForm({
                           style={{ maxWidth: '100%', maxHeight: '100%' }}
                         />
                       </div>
-                      {/*
                       <div className="signin-app-logo">
                         <Image
                           alt="WalletConnect"
@@ -1089,7 +1088,6 @@ export default function SignForm({
                           style={{ maxWidth: '100%', maxHeight: '100%' }}
                         />
                       </div>
-                      */}
                       <div className="signin-app-logo">
                         <Image
                           alt="Metamask"
