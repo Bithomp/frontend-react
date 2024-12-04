@@ -38,6 +38,7 @@ const pages = [
   { loc: 'submit-account-information', changefreq: 'yearly', priority: '0.5' },
   { loc: 'admin', changefreq: 'yearly', priority: '0.5' },
 
+  { loc: 'object', changefreq: 'yearly', priority: '0.4' },
   { loc: 'about-us', changefreq: 'yearly', priority: '0.4' },
   { loc: 'customer-support', changefreq: 'yearly', priority: '0.4' },
   { loc: 'developer', changefreq: 'yearly', priority: '0.4' },
@@ -68,7 +69,8 @@ function generateSiteMap(posts) {
     'privacy-policy',
     'terms-and-conditions',
     'disclaimer',
-    'xrpl-article'
+    'xrpl-article',
+    'object'
   ]
   const oldPages = ['submit/', 'explorer/']
   const pagesWithoutTranslation = [...noTranslatedPages, ...oldPages]
