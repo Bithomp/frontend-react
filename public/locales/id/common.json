@@ -565,6 +565,7 @@
     "header": {
       "main": "Penjelajah {{explorerName}}",
       "amm": "AMM pool information",
+      "object": "Object information",
       "account": "Account information",
       "transaction": "Transaction information",
       "nft": "NFT",

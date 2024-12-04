@@ -565,6 +565,7 @@
     "header": {
       "main": "{{explorerName}}エクスプローラ",
       "amm": "AMMプール情報",
+      "object": "オブジェクト情報",
       "account": "アカウント情報",
       "transaction": "トランザクション情報",
       "nft": "NFT",
