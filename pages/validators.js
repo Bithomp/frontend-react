@@ -252,7 +252,6 @@ export default function Validators({ amendment, initialData, initialErrorMessage
       if (dataV) {
         for (let i = 0; i < dataV.length; i++) {
           const v = dataV[i]
-          /*
           if (v.serverVersion) {
             if (countServerVersions.validators[v.serverVersion]) {
               countServerVersions.validators[v.serverVersion]++
@@ -285,7 +284,6 @@ export default function Validators({ amendment, initialData, initialErrorMessage
             }
             countReserveIncrements.count.validators++
           }
-          */
           const index = dataU.validators.findIndex((x) => x.publicKey === v.publicKey)
           if (index === -1) {
             dataU.validators.push(v)
@@ -334,13 +332,11 @@ export default function Validators({ amendment, initialData, initialErrorMessage
 
       //Server Versions
       let countServerVersionsArray = []
-      /*
       for (let v in countServerVersions.validators) {
         countServerVersionsArray.push({ version: v, count: countServerVersions.validators[v] })
       }
       countServerVersions.validators = countServerVersionsArray.sort(compareVersions)
       countServerVersionsArray = []
-      */
       for (let v in countServerVersions.unl) {
         countServerVersionsArray.push({ version: v, count: countServerVersions.unl[v] })
       }
@@ -349,13 +345,11 @@ export default function Validators({ amendment, initialData, initialErrorMessage
 
       //Base fees
       let countBaseFeesArray = []
-      /*
       for (let v in countBaseFees.validators) {
         countBaseFeesArray.push({ fee: v, count: countBaseFees.validators[v] })
       }
       countBaseFees.validators = countBaseFeesArray.sort(compareVersions)
       countBaseFeesArray = []
-      */
       for (let v in countBaseFees.unl) {
         countBaseFeesArray.push({ fee: v, count: countBaseFees.unl[v] })
       }
@@ -364,13 +358,11 @@ export default function Validators({ amendment, initialData, initialErrorMessage
 
       //Base Reserves
       let countBaseReservesArray = []
-      /*
       for (let v in countBaseReserves.validators) {
         countBaseReservesArray.push({ reserve: v, count: countBaseReserves.validators[v] })
       }
       countBaseReserves.validators = countBaseReservesArray.sort(compareVersions)
       countBaseReservesArray = []
-      */
       for (let v in countBaseReserves.unl) {
         countBaseReservesArray.push({ reserve: v, count: countBaseReserves.unl[v] })
       }
@@ -379,13 +371,11 @@ export default function Validators({ amendment, initialData, initialErrorMessage
 
       //Reserve increments
       let countReserveIncrementsArray = []
-      /*
       for (let v in countReserveIncrements.validators) {
         countReserveIncrementsArray.push({ increment: v, count: countReserveIncrements.validators[v] })
       }
       countReserveIncrements.validators = countReserveIncrementsArray.sort(compareVersions)
       countReserveIncrementsArray = []
-      */
       for (let v in countReserveIncrements.unl) {
         countReserveIncrementsArray.push({ increment: v, count: countReserveIncrements.unl[v] })
       }
@@ -533,7 +523,7 @@ export default function Validators({ amendment, initialData, initialErrorMessage
         </div>
 
         <div className="flex flex-center">
-          {/* !isSsrMobile && (
+          {developerMode && (
             <div className="div-with-table">
               <h4 className="center">Versions</h4>
 
@@ -562,7 +552,7 @@ export default function Validators({ amendment, initialData, initialErrorMessage
                 </tbody>
               </table>
             </div>
-          ) */}
+          )}
           <div className="div-with-table">
             <h4 className="center">Versions (UNL)</h4>
             <table className="table-large shrink">
@@ -588,7 +578,7 @@ export default function Validators({ amendment, initialData, initialErrorMessage
               </tbody>
             </table>
           </div>
-          {/* !isSsrMobile && (
+          {developerMode && (
             <div className="div-with-table">
               <h4 className="center">Base Fees</h4>
               <table className="table-large shrink">
@@ -614,7 +604,7 @@ export default function Validators({ amendment, initialData, initialErrorMessage
                 </tbody>
               </table>
             </div>
-          ) */}
+          )}
           <div className="div-with-table">
             <h4 className="center">Base Fees (UNL)</h4>
             <table className="table-large shrink">
@@ -640,7 +630,7 @@ export default function Validators({ amendment, initialData, initialErrorMessage
               </tbody>
             </table>
           </div>
-          {/* !isSsrMobile && (
+          {developerMode && (
             <div className="div-with-table">
               <h4 className="center">Reserve Increments</h4>
               <table className="table-large shrink">
@@ -668,7 +658,7 @@ export default function Validators({ amendment, initialData, initialErrorMessage
                 </tbody>
               </table>
             </div>
-          ) */}
+          )}
           <div className="div-with-table">
             <h4 className="center">Reserve Increments (UNL)</h4>
             <table className="table-large shrink">
@@ -694,7 +684,7 @@ export default function Validators({ amendment, initialData, initialErrorMessage
               </tbody>
             </table>
           </div>
-          {/* !isSsrMobile && (
+          {developerMode && (
             <div className="div-with-table">
               <h4 className="center">Base Reserves</h4>
               <table className="table-large shrink">
@@ -722,7 +712,7 @@ export default function Validators({ amendment, initialData, initialErrorMessage
                 </tbody>
               </table>
             </div>
-          ) */}
+          )}
           <div className="div-with-table">
             <h4 className="center">Base Reserves (UNL)</h4>
             <table className="table-large shrink">
