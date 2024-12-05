@@ -1,10 +1,11 @@
 import { useConnect } from '@walletconnect/modal-sign-react'
+import { networkId } from '../../utils'
 
 export function Connect() {
   const { connect, loading: isConnecting } = useConnect({
     requiredNamespaces: {
       xrpl: {
-        chains: ['xrpl:0', 'xrpl:1'],
+        chains: ['xrpl:' + networkId],
         methods: ['xrpl_signTransaction'],
         events: ['chainChanged', 'accountsChanged']
       }
@@ -13,7 +14,6 @@ export function Connect() {
 
   async function onConnect() {
     try {
-      console.info('connect try')
       const session = await connect()
       console.info('connect result', session)
     } catch (err) {
