@@ -364,7 +364,7 @@ export default function NftsComponent({
                   nftList[i].metadata[key + 'Cid'] = ipfsUrl(nftList[i].metadata[key], 'cid')
                 }
 
-                if (key.toLowerCase() === 'attributes') {
+                if (key.toLowerCase() === 'attributes' && nftList[i].metadata[key]) {
                   Object.keys(nftList[i].metadata[key]).forEach(function (attribute) {
                     if (nftList[i].metadata[key][attribute].trait_type) {
                       let traitType = nftList[i].metadata[key][attribute]?.trait_type?.toString()
