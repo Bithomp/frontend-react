@@ -34,7 +34,7 @@ export default function PrivacyPolicy() {
           We use Your Personal data to provide and improve the Service. By using the Service, You agree to the
           collection and use of information in accordance with this Privacy Policy.
         </p>
-        <h1>Interpretation and Definitions</h1>
+        <h2>Interpretation and Definitions</h2>
         <h2>Interpretation</h2>
         <p>
           The words of which the initial letter is capitalized have meanings defined under the following conditions. The
@@ -111,7 +111,7 @@ export default function PrivacyPolicy() {
             </p>
           </li>
         </ul>
-        <h1>Collecting and Using Your Personal Data</h1>
+        <h2>Collecting and Using Your Personal Data</h2>
         <h2>Types of Data Collected</h2>
         <h3>Personal Data</h3>
         <p>
@@ -351,7 +351,7 @@ export default function PrivacyPolicy() {
           </li>
         </ul>
         <p>For any other web browser, please visit your web browser's official web pages.</p>
-        <h1>Use of Cloudflare Services</h1>
+        <h2>Use of Cloudflare Services</h2>
         <p>
           <strong>Third-Party Services:</strong>
         </p>
@@ -390,7 +390,7 @@ export default function PrivacyPolicy() {
           We reserve the right to update our Privacy Policy to reflect changes in our practices or the services provided
           by Cloudflare. Any updates will be posted on our website.
         </p>
-        <h1>Use of Direct Registration System</h1>
+        <h2>Use of Direct Registration System</h2>
         <p>
           <strong>Information Collected during Registration:</strong>
         </p>
@@ -425,7 +425,7 @@ export default function PrivacyPolicy() {
           Users have the right to request the deactivation or deletion of their accounts. Details on how to deactivate
           or delete accounts can be found in the "Account Management" section.
         </p>
-        <h1>Use of Google Analytics 4</h1>
+        <h2>Use of Google Analytics 4</h2>
         <p>
           <strong>Information Collected by Google Analytics:</strong>
         </p>
@@ -468,7 +468,7 @@ export default function PrivacyPolicy() {
           We may share Google Analytics data with third parties for the purpose of data analysis and website
           improvement. However, this data is aggregated and does not personally identify individual users.
         </p>
-        <h1>Use of PayPal</h1>
+        <h2>Use of PayPal</h2>
         <p>
           <strong>Payment Information:</strong>
         </p>
@@ -650,7 +650,7 @@ export default function PrivacyPolicy() {
           Internet, or method of electronic storage is 100% secure. While We strive to use commercially acceptable means
           to protect Your Personal Data, We cannot guarantee its absolute security.
         </p>
-        <h1>Children's Privacy</h1>
+        <h2>Children's Privacy</h2>
         <p>
           Our Service does not address anyone under the age of 13. We do not knowingly collect personally identifiable
           information from anyone under the age of 13. If You are a parent or guardian and You are aware that Your child
@@ -662,7 +662,7 @@ export default function PrivacyPolicy() {
           If We need to rely on consent as a legal basis for processing Your information and Your country requires
           consent from a parent, We may require Your parent's consent before We collect and use that information.
         </p>
-        <h1>Links to Other Websites</h1>
+        <h2>Links to Other Websites</h2>
         <p>
           Our Service may contain links to other websites that are not operated by Us. If You click on a third party
           link, You will be directed to that third party's site. We strongly advise You to review the Privacy Policy of
@@ -672,7 +672,7 @@ export default function PrivacyPolicy() {
           We have no control over and assume no responsibility for the content, privacy policies or practices of any
           third party sites or services.
         </p>
-        <h1>Your data protection rights</h1>
+        <h2>Your data protection rights</h2>
         <p>
           Our Company would like to make sure you are fully aware of all of your data protection rights. Every user is
           entitled to the following:
@@ -709,7 +709,7 @@ export default function PrivacyPolicy() {
           please contact Us at our email:{' '}
           <Mailto email="dataprotection@bithomp.com" headers={{ subject: 'Data Protection' }} />.
         </p>
-        <h1>Changes to this Privacy Policy</h1>
+        <h2>Changes to this Privacy Policy</h2>
         <p>
           We may update Our Privacy Policy from time to time. We will notify You of any changes by posting the new
           Privacy Policy on this page.
@@ -722,12 +722,12 @@ export default function PrivacyPolicy() {
           You are advised to review this Privacy Policy periodically for any changes. Changes to this Privacy Policy are
           effective when they are posted on this page.
         </p>
-        <h1>Contact Us</h1>
+        <h2>Contact Us</h2>
         <p>
           If you have any questions about this Privacy Policy, You can contact us by email:{' '}
           <Mailto email="dataprotection@bithomp.com" headers={{ subject: 'Privacy Policy' }} />.
         </p>
-        <h1>Supervisory organs and other authorities</h1>
+        <h2>Supervisory organs and other authorities</h2>
         <p>Our supervisory authority who You can turn to regarding our data processing is:</p>
         <p>
           <strong>Name:</strong> Information Commission of Seychelles

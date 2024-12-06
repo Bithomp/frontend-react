@@ -27,7 +27,7 @@ export default function TermsAndConditions() {
         <h1>Terms and Conditions</h1>
         <p>Last updated: September 21, 2024</p>
         <p>Please read these terms and conditions carefully before using Our Service.</p>
-        <h1>Interpretation and Definitions</h1>
+        <h2>Interpretation and Definitions</h2>
         <h2>Interpretation</h2>
         <p>
           The words of which the initial letter is capitalized have meanings defined under the following conditions. The
@@ -107,7 +107,7 @@ export default function TermsAndConditions() {
             </p>
           </li>
         </ul>
-        <h1>Acknowledgment</h1>
+        <h2>Acknowledgment</h2>
         <p>
           These are the Terms and Conditions governing the use of this Service and the agreement that operates between
           You and the Company. These Terms and Conditions set out the rights and obligations of all users regarding the
@@ -189,7 +189,7 @@ export default function TermsAndConditions() {
           Service.
         </p>
 
-        <h1>Third-Party Content and Services</h1>
+        <h2>Third-Party Content and Services</h2>
         <p>
           As a peer-to-peer web3 service, Company helps you explore Tokens (including NFTs and their content) created by
           third parties. Company does not make any representations or warranties about this third-party content visible
@@ -207,7 +207,7 @@ export default function TermsAndConditions() {
           and the seller. The buyer and seller are entirely responsible for communicating, promulgating, agreeing to,
           and enforcing Purchase Terms. You are solely responsible for reviewing such Purchase Terms.
         </p>
-        <h1>Links to Other Websites</h1>
+        <h2>Links to Other Websites</h2>
         <p>
           Our Service may contain links to third-party web sites or services that are not owned or controlled by the
           Company.
@@ -223,7 +223,7 @@ export default function TermsAndConditions() {
           We strongly advise You to read the terms and conditions and privacy policies of any third-party web sites or
           services that You visit.
         </p>
-        <h1>Use of Cloudflare Services</h1>
+        <h2>Use of Cloudflare Services</h2>
         <p>
           By using our website, you acknowledge and agree that we utilize the services of Cloudflare, Inc.
           ("Cloudflare") to enhance the performance and security of our website.
@@ -262,7 +262,7 @@ export default function TermsAndConditions() {
           or disputes related to Cloudflare's services should be directed to Cloudflare in accordance with their Terms
           of Service.
         </p>
-        <h1>Use of Direct Registration System</h1>
+        <h2>Use of Direct Registration System</h2>
         <p>
           <strong>User Registration:</strong>
         </p>
@@ -293,7 +293,7 @@ export default function TermsAndConditions() {
           applicable to specific services or features. Failure to comply may result in the suspension or termination of
           user accounts.
         </p>
-        <h1>Use of Google Analytics 4</h1>
+        <h2>Use of Google Analytics 4</h2>
         <p>
           <strong>Website Analytics:</strong>
         </p>
@@ -326,7 +326,7 @@ export default function TermsAndConditions() {
           Google Analytics is subject to Google's Terms of Service, which can be found on their website at Google Terms
           of Service.
         </p>
-        <h1>Use of PayPal</h1>
+        <h2>Use of PayPal</h2>
         <p>
           <strong>Payment Services:</strong>
         </p>
@@ -357,7 +357,7 @@ export default function TermsAndConditions() {
           review this agreement to understand the terms and conditions governing your use of PayPal for transactions on
           our website.
         </p>
-        <h1>API Terms of Use</h1>
+        <h2>API Terms of Use</h2>
         <p>Please read these terms and conditions carefully before using Our Service.</p>
 
         <p>
@@ -715,7 +715,7 @@ export default function TermsAndConditions() {
           date of the latest version of this API Terms is indicated at the top of the document.
         </p>
 
-        <h1> Bots Terms of Use</h1>
+        <h2> Bots Terms of Use</h2>
 
         <p>
           <strong>1. General Provisions</strong>
@@ -779,7 +779,7 @@ export default function TermsAndConditions() {
           <Mailto email="support@bithomp.com" headers={{ subject: 'Feedback' }} />
         </p>
 
-        <h1>Bithomp Pro Subscription Terms of Use</h1>
+        <h2>Bithomp Pro Subscription Terms of Use</h2>
         <p>
           <strong>Subscription Payment</strong>
         </p>
@@ -818,13 +818,13 @@ export default function TermsAndConditions() {
           these terms and conditions.
         </p>
 
-        <h1>Termination</h1>
+        <h2>Termination</h2>
         <p>
           We may terminate or suspend Your access immediately, without prior notice or liability, for any reason
           whatsoever, including without limitation if You breach these Terms and Conditions.
         </p>
         <p>Upon termination, Your right to use the Service will cease immediately.</p>
-        <h1>Limitation of Liability</h1>
+        <h2>Limitation of Liability</h2>
         <p>
           Notwithstanding any damages that You might incur, the entire liability of the Company and any of its suppliers
           under any provision of this Terms and Your exclusive remedy for all of the foregoing shall be limited to the
@@ -845,7 +845,7 @@ export default function TermsAndConditions() {
           consequential damages, which means that some of the above limitations may not apply. In these states, each
           party's liability will be limited to the greatest extent permitted by law.
         </p>
-        <h1>&quot;AS IS&quot; and &quot;AS AVAILABLE&quot; Disclaimer</h1>
+        <h2>&quot;AS IS&quot; and &quot;AS AVAILABLE&quot; Disclaimer</h2>
         <p>
           The Service is provided to You &quot;AS IS&quot; and &quot;AS AVAILABLE&quot; and with all faults and defects
           without warranty of any kind. To the maximum extent permitted under applicable law, the Company, on its own
@@ -874,30 +874,30 @@ export default function TermsAndConditions() {
           But in such a case the exclusions and limitations set forth in this section shall be applied to the greatest
           extent enforceable under applicable law.
         </p>
-        <h1>Governing Law</h1>
+        <h2>Governing Law</h2>
         <p>
           The laws of the Country, excluding its conflicts of law rules, shall govern this Terms and Your use of the
           Service. Your use of the Application may also be subject to other local, state, national, or international
           laws.
         </p>
-        <h1>Disputes Resolution</h1>
+        <h2>Disputes Resolution</h2>
         <p>
           If You have any concern or dispute about the Service, You agree to first try to resolve the dispute informally
           by contacting the Company.
         </p>
-        <h1>For European Union (EU) Users</h1>
+        <h2>For European Union (EU) Users</h2>
         <p>
           If You are a European Union consumer, you will benefit from any mandatory provisions of the law of the country
           in which you are resident in.
         </p>
-        <h1>United States Legal Compliance</h1>
+        <h2>United States Legal Compliance</h2>
         <p>
           You represent and warrant that (i) You are not located in a country that is subject to the United States
           government embargo, or that has been designated by the United States government as a &quot;terrorist
           supporting&quot; country, and (ii) You are not listed on any United States government list of prohibited or
           restricted parties.
         </p>
-        <h1>Severability and Waiver</h1>
+        <h2>Severability and Waiver</h2>
         <h2>Severability</h2>
         <p>
           If any provision of these Terms is held to be unenforceable or invalid, such provision will be changed and
@@ -910,12 +910,12 @@ export default function TermsAndConditions() {
           these Terms shall not effect a party's ability to exercise such right or require such performance at any time
           thereafter nor shall the waiver of a breach constitute a waiver of any subsequent breach.
         </p>
-        <h1>Translation Interpretation</h1>
+        <h2>Translation Interpretation</h2>
         <p>
           These Terms and Conditions may have been translated if We have made them available to You on our Service. You
           agree that the original English text shall prevail in the case of a dispute.
         </p>
-        <h1>Changes to These Terms and Conditions</h1>
+        <h2>Changes to These Terms and Conditions</h2>
         <p>
           We reserve the right, at Our sole discretion, to modify or replace these Terms at any time. If a revision is
           material We will make reasonable efforts to provide at least 30 days' notice prior to any new terms taking
@@ -926,7 +926,7 @@ export default function TermsAndConditions() {
           the revised terms. If You do not agree to the new terms, in whole or in part, please stop using the website
           and the Service.
         </p>
-        <h1>Contact Us</h1>
+        <h2>Contact Us</h2>
         <p>
           If you have any questions about these Terms and Conditions, You can contact us by email:{' '}
           <Mailto email="support@bithomp.com" headers={{ subject: 'Terms and conditions' }} />
