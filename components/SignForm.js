@@ -27,7 +27,6 @@ import { gemwalletTxSend } from '../utils/gemwallet'
 import { ledgerwalletTxSend } from '../utils/ledgerwallet'
 import { trezorTxSend } from '../utils/trezor'
 import { metamaskTxSend } from '../utils/metamask'
-import { walletconnectTxSend } from '../utils/walletconnect'
 
 import XamanQr from './Xaman/Qr'
 import CheckBox from './UI/CheckBox'
@@ -38,6 +37,7 @@ import SetAvatar from './SignForms/SetAvatar'
 import SetDomain from './SignForms/SetDomain'
 import NFTokenCreateOffer from './SignForms/NFTokenCreateOffer'
 import NftTransfer from './SignForms/NftTransfer'
+import { WalletConnect } from './Walletconnect'
 
 const qr = '/images/qr.gif'
 
@@ -79,6 +79,7 @@ export default function SignForm({
   const [targetLayer, setTargetLayer] = useState(signRequest?.layer)
   const [erase, setErase] = useState(false)
   const [awaiting, setAwaiting] = useState(false)
+  const [preparedTx, setPreparedTx] = useState(null)
 
   const [rewardRate, setRewardRate] = useState()
   const [rewardDelay, setRewardDelay] = useState()
@@ -375,8 +376,8 @@ export default function SignForm({
 
   const walletconnectTxSending = async (tx) => {
     setScreen('walletconnect')
-    setStatus('Please, connect your WalletConnect Wallet.')
-    walletconnectTxSend({ tx, signRequest, afterSubmitExe, afterSigning, onSignIn, setStatus, setAwaiting, t })
+    setPreparedTx(tx)
+    setStatus('WalletConnect modal is loading...')
   }
 
   const xamanTxSending = (tx) => {
@@ -805,388 +806,399 @@ export default function SignForm({
     walletconnect: 'WalletConnect'
   }
 
-  if (!screen) return ''
-
   return (
-    <div className="sign-in-form">
-      <div className="sign-in-body center">
-        <div className="close-button" onClick={signInCancelAndClose}></div>
-        {askInfoScreens.includes(screen) ? (
-          <>
-            <div className="header">
-              {screen === 'NFTokenBurn' && t('signin.confirm.nft-burn-header')}
-              {screen === 'NFTokenAcceptOffer' &&
-                (signRequest.offerType === 'buy'
-                  ? t('signin.confirm.nft-accept-buy-offer-header')
-                  : t('signin.confirm.nft-accept-sell-offer-header'))}
-              {screen === 'NFTokenCreateOffer' &&
-                (signRequest.request.Flags === 1 || xls35Sell
-                  ? t('signin.confirm.nft-create-sell-offer-header')
-                  : t('signin.confirm.nft-create-buy-offer-header'))}
-              {screen === 'nftTransfer' && t('signin.confirm.nft-create-transfer-offer-header')}
-              {screen === 'setDomain' && t('signin.confirm.set-domain')}
-              {screen === 'setAvatar' && t('signin.confirm.set-avatar')}
-              {voteTxs.includes(screen) && 'Cast a vote'}
-            </div>
-
-            {screen === 'NFTokenCreateOffer' && (
-              <NFTokenCreateOffer
-                signRequest={signRequest}
-                setSignRequest={setSignRequest}
-                setStatus={setStatus}
-                setFormError={setFormError}
-              />
-            )}
-
-            {screen === 'nftTransfer' && (
-              <NftTransfer
-                signRequest={signRequest}
-                setSignRequest={setSignRequest}
-                setStatus={setStatus}
-                setFormError={setFormError}
-              />
-            )}
-
-            {screen === 'setDomain' && (
-              <SetDomain
-                setSignRequest={setSignRequest}
-                signRequest={signRequest}
-                setStatus={setStatus}
-                setAgreedToRisks={setAgreedToRisks}
-              />
-            )}
-
-            {screen === 'setAvatar' && (
-              <SetAvatar
-                setSignRequest={setSignRequest}
-                signRequest={signRequest}
-                setStatus={setStatus}
-                setAgreedToRisks={setAgreedToRisks}
-              />
-            )}
-
-            {screen === 'castVoteRewardDelay' && (
-              <div className="center">
-                <br />
-                <span className="halv">
-                  <span className="input-title">Reward delay (in seconds)</span>
-                  <input
-                    placeholder="2600000"
-                    onChange={onRewardDelayChange}
-                    className="input-text"
-                    spellCheck="false"
-                    value={rewardDelay}
-                  />
-                </span>
-                <div>
-                  <br />
-                  {!status && rewardDelay ? <b>= {duration(t, rewardDelay, { seconds: true })}</b> : <br />}
-                </div>
-              </div>
-            )}
-
-            {screen === 'castVoteRewardRate' && (
-              <div className="center">
-                <br />
-                <span className="halv">
-                  <span className="input-title">
-                    Reward rate (per month compounding)
-                    <br />A number from 0 to 1, where 1 would be 100%
-                  </span>
-                  <input
-                    placeholder="0.00333333333333333"
-                    onChange={onRewardRateChange}
-                    className="input-text"
-                    spellCheck="false"
-                    value={rewardRate}
-                  />
-                </span>
-                <div>
-                  <br />
-                  {!status && rewardRate ? <b>≈ {rewardRateHuman(rewardRate)}</b> : <br />}
-                </div>
-              </div>
-            )}
-
-            {screen === 'castVoteSeat' && (
-              <div className="center">
-                <br />
-                <div>
-                  {signRequest.layer === 2 && (
-                    <span className="quarter">
-                      <span className="input-title">{t('signin.target-table')}</span>
-                      <TargetTableSelect onChange={(layer) => setTargetLayer(layer)} layer={signRequest.layer} />
-                    </span>
-                  )}
-                  <span className={signRequest.layer === 2 ? 'quarter' : 'halv'}>
-                    <span className="input-title">Seat</span>
-                    <Select
-                      options={[
-                        { value: '00', label: '0' },
-                        { value: '01', label: '1' },
-                        { value: '02', label: '2' },
-                        { value: '03', label: '3' },
-                        { value: '04', label: '4' },
-                        { value: '05', label: '5' },
-                        { value: '06', label: '6' },
-                        { value: '07', label: '7' },
-                        { value: '08', label: '8' },
-                        { value: '09', label: '9' },
-                        { value: '0A', label: '10' },
-                        { value: '0B', label: '11' },
-                        { value: '0C', label: '12' },
-                        { value: '0D', label: '13' },
-                        { value: '0E', label: '14' },
-                        { value: '0F', label: '15' },
-                        { value: '10', label: '16' },
-                        { value: '11', label: '17' },
-                        { value: '12', label: '18' },
-                        { value: '13', label: '19' }
-                      ]}
-                      defaultValue={{ value: '13', label: '19' }}
-                      onChange={onSeatSelect}
-                      isSearchable={false}
-                      className="simple-select"
-                      classNamePrefix="react-select"
-                      instanceId="seat-select"
-                    />
-                  </span>
-                </div>
-
-                <div className="terms-checkbox">
-                  <CheckBox checked={erase} setChecked={onEraseCheck}>
-                    Vacate the seat
-                  </CheckBox>
-                </div>
-
-                {!erase && (
-                  <span className="halv">
-                    <span className="input-title">Address</span>
-                    <input
-                      placeholder="Enter address"
-                      onChange={(e) => onSeatValueChange(e.target.value)}
-                      className="input-text"
-                      spellCheck="false"
-                    />
-                  </span>
-                )}
-              </div>
-            )}
-
-            {screen === 'castVoteHook' && (
-              <div className="center">
-                <br />
-                <div>
-                  {signRequest.layer === 2 && (
-                    <span className="quarter">
-                      <span className="input-title">{t('signin.target-table')}</span>
-                      <TargetTableSelect onChange={(layer) => setTargetLayer(layer)} layer={signRequest.layer} />
-                    </span>
-                  )}
-                  <span className={signRequest.layer === 2 ? 'quarter' : 'halv'}>
-                    <span className="input-title">Place</span>
-                    <Select
-                      options={[
-                        { value: 0, label: '0' },
-                        { value: 1, label: '1' },
-                        { value: 2, label: '2' },
-                        { value: 3, label: '3' },
-                        { value: 4, label: '4' },
-                        { value: 5, label: '5' },
-                        { value: 6, label: '6' },
-                        { value: 7, label: '7' },
-                        { value: 8, label: '8' },
-                        { value: 9, label: '9' }
-                      ]}
-                      defaultValue={{ value: 2, label: '2' }}
-                      onChange={onPlaceSelect}
-                      isSearchable={false}
-                      className="simple-select"
-                      classNamePrefix="react-select"
-                      instanceId="hook-topic-select"
-                    />
-                  </span>
-                </div>
-                <div className="terms-checkbox">
-                  <CheckBox checked={erase} setChecked={onEraseCheck}>
-                    Erase the hook
-                  </CheckBox>
-                </div>
-                {!erase && (
-                  <span className="halv">
-                    <span className="input-title">Hook</span>
-                    <input
-                      placeholder="Enter hook value"
-                      onChange={(e) => onHookValueChange(e.target.value)}
-                      className="input-text"
-                      spellCheck="false"
-                    />
-                  </span>
-                )}
-              </div>
-            )}
-
-            {!noCheckboxScreens.includes(screen) && (
-              <div className="terms-checkbox">
-                <CheckBox checked={agreedToRisks} setChecked={setAgreedToRisks}>
-                  {checkBoxText(screen, signRequest)}
-                </CheckBox>
-              </div>
-            )}
-
-            <div>{status ? <b className="orange">{status}</b> : <br />}</div>
-
-            <br />
-            <button type="button" className="button-action" onClick={signInCancelAndClose} style={buttonStyle}>
-              {t('button.cancel')}
-            </button>
-            <button
-              type="button"
-              className="button-action"
-              onClick={() => txSend()}
-              style={buttonStyle}
-              disabled={!agreedToRisks || formError}
-            >
-              {t('button.sign')}
-            </button>
-          </>
-        ) : (
-          <>
-            {screen === 'choose-app' ? (
+    <>
+      <WalletConnect
+        tx={preparedTx}
+        signRequest={signRequest}
+        setStatus={setStatus}
+        afterSubmitExe={afterSubmitExe}
+        onSignIn={onSignIn}
+        setAwaiting={setAwaiting}
+        setScreen={setScreen}
+      />
+      {screen && (
+        <div className="sign-in-form">
+          <div className="sign-in-body center">
+            <div className="close-button" onClick={signInCancelAndClose}></div>
+            {askInfoScreens.includes(screen) ? (
               <>
-                <div className="header">{t('signin.choose-app')}</div>
-                <div className="signin-apps">
-                  <div className="signin-app-logo">
-                    <Image
-                      alt="xaman"
-                      src="/images/wallets/xaman-large.svg"
-                      onClick={() => txSend({ wallet: 'xaman' })}
-                      width={169}
-                      height={80}
-                      style={{ maxWidth: '100%', maxHeight: '100%' }}
-                    />
-                  </div>
-                  {signRequest?.wallet !== 'xaman' && !isMobile && (
-                    <>
-                      <div className="signin-app-logo">
-                        <Image
-                          alt="GemWallet"
-                          src="/images/wallets/gemwallet.svg"
-                          onClick={() => txSend({ wallet: 'gemwallet' })}
-                          width={80}
-                          height={80}
-                          style={{ maxWidth: '100%', maxHeight: '100%' }}
-                        />
-                      </div>
-                      <div className="signin-app-logo">
-                        <Image
-                          alt="WalletConnect"
-                          src="/images/wallets/walletconnect-large.svg"
-                          onClick={() => txSend({ wallet: 'walletconnect' })}
-                          width={169}
-                          height={80}
-                          style={{ maxWidth: '100%', maxHeight: '100%' }}
-                        />
-                      </div>
-                      <div className="signin-app-logo">
-                        <Image
-                          alt="Metamask"
-                          src="/images/wallets/metamask.svg"
-                          onClick={() => txSend({ wallet: 'metamask' })}
-                          width={80}
-                          height={80}
-                          style={{ maxWidth: '100%', maxHeight: '100%' }}
-                        />
-                      </div>
-                      <div className="signin-app-logo">
-                        <Image
-                          alt="Ledger Wallet"
-                          src="/images/wallets/ledgerwallet-large.svg"
-                          onClick={() => txSend({ wallet: 'ledgerwallet' })}
-                          width={169}
-                          height={80}
-                          style={{ maxWidth: '100%', maxHeight: '100%' }}
-                        />
-                      </div>
-                      <div className="signin-app-logo">
-                        <Image
-                          alt="Trezor Wallet"
-                          src="/images/wallets/trezor-large.svg"
-                          onClick={() => txSend({ wallet: 'trezor' })}
-                          width={169}
-                          height={80}
-                          style={{ maxWidth: '100%', maxHeight: '100%' }}
-                        />
-                      </div>
-                    </>
-                  )}
-                  {/* signRequest?.wallet !== 'xaman' && '/images/wallets/ellipal-large.svg' */}
+                <div className="header">
+                  {screen === 'NFTokenBurn' && t('signin.confirm.nft-burn-header')}
+                  {screen === 'NFTokenAcceptOffer' &&
+                    (signRequest.offerType === 'buy'
+                      ? t('signin.confirm.nft-accept-buy-offer-header')
+                      : t('signin.confirm.nft-accept-sell-offer-header'))}
+                  {screen === 'NFTokenCreateOffer' &&
+                    (signRequest.request.Flags === 1 || xls35Sell
+                      ? t('signin.confirm.nft-create-sell-offer-header')
+                      : t('signin.confirm.nft-create-buy-offer-header'))}
+                  {screen === 'nftTransfer' && t('signin.confirm.nft-create-transfer-offer-header')}
+                  {screen === 'setDomain' && t('signin.confirm.set-domain')}
+                  {screen === 'setAvatar' && t('signin.confirm.set-avatar')}
+                  {voteTxs.includes(screen) && 'Cast a vote'}
                 </div>
+
+                {screen === 'NFTokenCreateOffer' && (
+                  <NFTokenCreateOffer
+                    signRequest={signRequest}
+                    setSignRequest={setSignRequest}
+                    setStatus={setStatus}
+                    setFormError={setFormError}
+                  />
+                )}
+
+                {screen === 'nftTransfer' && (
+                  <NftTransfer
+                    signRequest={signRequest}
+                    setSignRequest={setSignRequest}
+                    setStatus={setStatus}
+                    setFormError={setFormError}
+                  />
+                )}
+
+                {screen === 'setDomain' && (
+                  <SetDomain
+                    setSignRequest={setSignRequest}
+                    signRequest={signRequest}
+                    setStatus={setStatus}
+                    setAgreedToRisks={setAgreedToRisks}
+                  />
+                )}
+
+                {screen === 'setAvatar' && (
+                  <SetAvatar
+                    setSignRequest={setSignRequest}
+                    signRequest={signRequest}
+                    setStatus={setStatus}
+                    setAgreedToRisks={setAgreedToRisks}
+                  />
+                )}
+
+                {screen === 'castVoteRewardDelay' && (
+                  <div className="center">
+                    <br />
+                    <span className="halv">
+                      <span className="input-title">Reward delay (in seconds)</span>
+                      <input
+                        placeholder="2600000"
+                        onChange={onRewardDelayChange}
+                        className="input-text"
+                        spellCheck="false"
+                        value={rewardDelay}
+                      />
+                    </span>
+                    <div>
+                      <br />
+                      {!status && rewardDelay ? <b>= {duration(t, rewardDelay, { seconds: true })}</b> : <br />}
+                    </div>
+                  </div>
+                )}
+
+                {screen === 'castVoteRewardRate' && (
+                  <div className="center">
+                    <br />
+                    <span className="halv">
+                      <span className="input-title">
+                        Reward rate (per month compounding)
+                        <br />A number from 0 to 1, where 1 would be 100%
+                      </span>
+                      <input
+                        placeholder="0.00333333333333333"
+                        onChange={onRewardRateChange}
+                        className="input-text"
+                        spellCheck="false"
+                        value={rewardRate}
+                      />
+                    </span>
+                    <div>
+                      <br />
+                      {!status && rewardRate ? <b>≈ {rewardRateHuman(rewardRate)}</b> : <br />}
+                    </div>
+                  </div>
+                )}
+
+                {screen === 'castVoteSeat' && (
+                  <div className="center">
+                    <br />
+                    <div>
+                      {signRequest.layer === 2 && (
+                        <span className="quarter">
+                          <span className="input-title">{t('signin.target-table')}</span>
+                          <TargetTableSelect onChange={(layer) => setTargetLayer(layer)} layer={signRequest.layer} />
+                        </span>
+                      )}
+                      <span className={signRequest.layer === 2 ? 'quarter' : 'halv'}>
+                        <span className="input-title">Seat</span>
+                        <Select
+                          options={[
+                            { value: '00', label: '0' },
+                            { value: '01', label: '1' },
+                            { value: '02', label: '2' },
+                            { value: '03', label: '3' },
+                            { value: '04', label: '4' },
+                            { value: '05', label: '5' },
+                            { value: '06', label: '6' },
+                            { value: '07', label: '7' },
+                            { value: '08', label: '8' },
+                            { value: '09', label: '9' },
+                            { value: '0A', label: '10' },
+                            { value: '0B', label: '11' },
+                            { value: '0C', label: '12' },
+                            { value: '0D', label: '13' },
+                            { value: '0E', label: '14' },
+                            { value: '0F', label: '15' },
+                            { value: '10', label: '16' },
+                            { value: '11', label: '17' },
+                            { value: '12', label: '18' },
+                            { value: '13', label: '19' }
+                          ]}
+                          defaultValue={{ value: '13', label: '19' }}
+                          onChange={onSeatSelect}
+                          isSearchable={false}
+                          className="simple-select"
+                          classNamePrefix="react-select"
+                          instanceId="seat-select"
+                        />
+                      </span>
+                    </div>
+
+                    <div className="terms-checkbox">
+                      <CheckBox checked={erase} setChecked={onEraseCheck}>
+                        Vacate the seat
+                      </CheckBox>
+                    </div>
+
+                    {!erase && (
+                      <span className="halv">
+                        <span className="input-title">Address</span>
+                        <input
+                          placeholder="Enter address"
+                          onChange={(e) => onSeatValueChange(e.target.value)}
+                          className="input-text"
+                          spellCheck="false"
+                        />
+                      </span>
+                    )}
+                  </div>
+                )}
+
+                {screen === 'castVoteHook' && (
+                  <div className="center">
+                    <br />
+                    <div>
+                      {signRequest.layer === 2 && (
+                        <span className="quarter">
+                          <span className="input-title">{t('signin.target-table')}</span>
+                          <TargetTableSelect onChange={(layer) => setTargetLayer(layer)} layer={signRequest.layer} />
+                        </span>
+                      )}
+                      <span className={signRequest.layer === 2 ? 'quarter' : 'halv'}>
+                        <span className="input-title">Place</span>
+                        <Select
+                          options={[
+                            { value: 0, label: '0' },
+                            { value: 1, label: '1' },
+                            { value: 2, label: '2' },
+                            { value: 3, label: '3' },
+                            { value: 4, label: '4' },
+                            { value: 5, label: '5' },
+                            { value: 6, label: '6' },
+                            { value: 7, label: '7' },
+                            { value: 8, label: '8' },
+                            { value: 9, label: '9' }
+                          ]}
+                          defaultValue={{ value: 2, label: '2' }}
+                          onChange={onPlaceSelect}
+                          isSearchable={false}
+                          className="simple-select"
+                          classNamePrefix="react-select"
+                          instanceId="hook-topic-select"
+                        />
+                      </span>
+                    </div>
+                    <div className="terms-checkbox">
+                      <CheckBox checked={erase} setChecked={onEraseCheck}>
+                        Erase the hook
+                      </CheckBox>
+                    </div>
+                    {!erase && (
+                      <span className="halv">
+                        <span className="input-title">Hook</span>
+                        <input
+                          placeholder="Enter hook value"
+                          onChange={(e) => onHookValueChange(e.target.value)}
+                          className="input-text"
+                          spellCheck="false"
+                        />
+                      </span>
+                    )}
+                  </div>
+                )}
+
+                {!noCheckboxScreens.includes(screen) && (
+                  <div className="terms-checkbox">
+                    <CheckBox checked={agreedToRisks} setChecked={setAgreedToRisks}>
+                      {checkBoxText(screen, signRequest)}
+                    </CheckBox>
+                  </div>
+                )}
+
+                <div>{status ? <b className="orange">{status}</b> : <br />}</div>
+
+                <br />
+                <button type="button" className="button-action" onClick={signInCancelAndClose} style={buttonStyle}>
+                  {t('button.cancel')}
+                </button>
+                <button
+                  type="button"
+                  className="button-action"
+                  onClick={() => txSend()}
+                  style={buttonStyle}
+                  disabled={!agreedToRisks || formError}
+                >
+                  {t('button.sign')}
+                </button>
               </>
             ) : (
               <>
-                <div className="header">
-                  {signRequest?.request
-                    ? t('signin.sign-with', { appName: walletNames[screen] })
-                    : t('signin.login-with', { appName: walletNames[screen] })}
-                </div>
-                {screen === 'xaman' ? (
+                {screen === 'choose-app' ? (
                   <>
-                    {!isMobile && (
-                      <div className="signin-actions-list">
-                        1. {t('signin.xaman.open-app')}
-                        <br />
-                        {devNet ? (
-                          <>
-                            2. {t('signin.xaman.change-settings')}
-                            <br />
-                            3. {t('signin.xaman.scan-qr')}
-                          </>
-                        ) : (
-                          <>2. {t('signin.xaman.scan-qr')}</>
-                        )}
+                    <div className="header">{t('signin.choose-app')}</div>
+                    <div className="signin-apps">
+                      <div className="signin-app-logo">
+                        <Image
+                          alt="xaman"
+                          src="/images/wallets/xaman-large.svg"
+                          onClick={() => txSend({ wallet: 'xaman' })}
+                          width={169}
+                          height={80}
+                          style={{ maxWidth: '100%', maxHeight: '100%' }}
+                        />
                       </div>
-                    )}
-                    <br />
-                    {showXamanQr ? (
-                      <XamanQr
-                        expiredQr={expiredQr}
-                        xamanQrSrc={xamanQrSrc}
-                        onReset={() => txSend({ wallet: 'xaman' })}
-                        status={status}
-                      />
-                    ) : (
-                      <div className="orange bold center" style={{ margin: '30px' }}>
-                        {awaiting && (
-                          <>
-                            <span className="waiting"></span>
-                            <br />
-                            <br />
-                          </>
-                        )}
-                        {status}
-                      </div>
-                    )}
+                      {signRequest?.wallet !== 'xaman' && !isMobile && (
+                        <>
+                          <div className="signin-app-logo">
+                            <Image
+                              alt="GemWallet"
+                              src="/images/wallets/gemwallet.svg"
+                              onClick={() => txSend({ wallet: 'gemwallet' })}
+                              width={80}
+                              height={80}
+                              style={{ maxWidth: '100%', maxHeight: '100%' }}
+                            />
+                          </div>
+                          <div className="signin-app-logo">
+                            <Image
+                              alt="WalletConnect"
+                              src="/images/wallets/walletconnect-large.svg"
+                              onClick={() => txSend({ wallet: 'walletconnect' })}
+                              width={169}
+                              height={80}
+                              style={{ maxWidth: '100%', maxHeight: '100%' }}
+                            />
+                          </div>
+                          <div className="signin-app-logo">
+                            <Image
+                              alt="Metamask"
+                              src="/images/wallets/metamask.svg"
+                              onClick={() => txSend({ wallet: 'metamask' })}
+                              width={80}
+                              height={80}
+                              style={{ maxWidth: '100%', maxHeight: '100%' }}
+                            />
+                          </div>
+                          <div className="signin-app-logo">
+                            <Image
+                              alt="Ledger Wallet"
+                              src="/images/wallets/ledgerwallet-large.svg"
+                              onClick={() => txSend({ wallet: 'ledgerwallet' })}
+                              width={169}
+                              height={80}
+                              style={{ maxWidth: '100%', maxHeight: '100%' }}
+                            />
+                          </div>
+                          <div className="signin-app-logo">
+                            <Image
+                              alt="Trezor Wallet"
+                              src="/images/wallets/trezor-large.svg"
+                              onClick={() => txSend({ wallet: 'trezor' })}
+                              width={169}
+                              height={80}
+                              style={{ maxWidth: '100%', maxHeight: '100%' }}
+                            />
+                          </div>
+                        </>
+                      )}
+                      {/* signRequest?.wallet !== 'xaman' && '/images/wallets/ellipal-large.svg' */}
+                    </div>
                   </>
                 ) : (
                   <>
-                    <div className="orange bold center" style={{ margin: '30px' }}>
-                      {awaiting && (
-                        <>
-                          <span className="waiting"></span>
-                          <br />
-                          <br />
-                        </>
-                      )}
-                      {status}
+                    <div className="header">
+                      {signRequest?.request
+                        ? t('signin.sign-with', { appName: walletNames[screen] })
+                        : t('signin.login-with', { appName: walletNames[screen] })}
                     </div>
+                    {screen === 'xaman' ? (
+                      <>
+                        {!isMobile && (
+                          <div className="signin-actions-list">
+                            1. {t('signin.xaman.open-app')}
+                            <br />
+                            {devNet ? (
+                              <>
+                                2. {t('signin.xaman.change-settings')}
+                                <br />
+                                3. {t('signin.xaman.scan-qr')}
+                              </>
+                            ) : (
+                              <>2. {t('signin.xaman.scan-qr')}</>
+                            )}
+                          </div>
+                        )}
+                        <br />
+                        {showXamanQr ? (
+                          <XamanQr
+                            expiredQr={expiredQr}
+                            xamanQrSrc={xamanQrSrc}
+                            onReset={() => txSend({ wallet: 'xaman' })}
+                            status={status}
+                          />
+                        ) : (
+                          <div className="orange bold center" style={{ margin: '30px' }}>
+                            {awaiting && (
+                              <>
+                                <span className="waiting"></span>
+                                <br />
+                                <br />
+                              </>
+                            )}
+                            {status}
+                          </div>
+                        )}
+                      </>
+                    ) : (
+                      <>
+                        <div className="orange bold center" style={{ margin: '30px' }}>
+                          {awaiting && (
+                            <>
+                              <span className="waiting"></span>
+                              <br />
+                              <br />
+                            </>
+                          )}
+                          {status}
+                        </div>
+                      </>
+                    )}
                   </>
                 )}
               </>
             )}
-          </>
-        )}
-      </div>
-    </div>
+          </div>
+        </div>
+      )}
+    </>
   )
 }
