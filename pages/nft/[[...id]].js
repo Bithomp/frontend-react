@@ -124,7 +124,7 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
     const response = await axios(
       '/v2/nft/' +
         id +
-        '?uri=true&metadata=true&history=true&buyOffers=true&offersValidate=true&offersHistory=true' + //&sellOffers=true
+        '?uri=true&metadata=true&history=true&sellOffers=true&buyOffers=true&offersValidate=true&offersHistory=true' +
         noCache +
         '&convertCurrencies=' +
         selectedCurrency?.toLowerCase() +
