@@ -169,8 +169,10 @@ export default function Statistics() {
       txPerSecond = (validatedLedger?.transactionsCount / lastClose.convergeTimeS).toFixed(2)
       proposers = lastClose.proposers
     }
-    createdAccounts = niceNumber(accounts.created - accounts.deleted)
-    activeAccountsLast24h = niceNumber(accounts.activeLast24h)
+    if (accounts) {
+      createdAccounts = niceNumber(accounts.created - accounts.deleted)
+      activeAccountsLast24h = niceNumber(accounts.activeLast24h)
+    }
     registeredUsernames = niceNumber(usernames)
     if (nftokens) {
       nft = nftokens
