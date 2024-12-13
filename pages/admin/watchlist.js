@@ -231,7 +231,7 @@ export default function Watchlist({ selectedCurrency, account, subscriptionExpir
 
   return (
     <>
-      <SEO title={t('header', { ns: 'admin' })} />
+      <SEO title="Watchlist" />
       <div className="page-whatchlist content-center">
         <h1 className="center">{t('header', { ns: 'admin' })}</h1>
 

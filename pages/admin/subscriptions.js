@@ -483,7 +483,7 @@ export default function Subscriptions({ setSignRequest, receiptQuery, tabQuery }
 
   return (
     <>
-      <SEO title={t('header', { ns: 'admin' })} />
+      <SEO title="Subscription" />
       <div className="page-admin content-center">
         <h1 className="center">{t('header', { ns: 'admin' })}</h1>
 
