@@ -1,0 +1,10 @@
+{
+  "header": "Explorer-as-a-Service (EaaS)",
+  "eaas": "By utilizing our unmatched expertise in creating a cutting-edge XRPL explorer, Bithomp is able to provide you with a whole, fully hosted, and fully-managed block explorer solution for your XRPL-compatible sidechain via EaaS.",
+  "features-header": "Key Features",
+  "ledger-explorer": "Ledger Explorer - a search engine that gives users quick, straightforward access to a variety of blockchain data.",
+  "nft-explorer": "NFT Explorer - an NFT Market Place experience to search and interact with NFTs.",
+  "api-service": "API Service - a reach data API for various analytics and statistics.",
+  "admin-panel": "Admin panel - manage human readable metadata for services, view statistics and more.",
+  "contact-us": "Contact us at support@bithomp.com"
+}
