@@ -1,3 +1,4 @@
+import Mailto from 'react-protected-mailto'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import SEO from '../components/SEO'
 import { getIsSsrMobile } from '../utils/mobile'
@@ -35,7 +36,7 @@ export default function XrpTaxes() {
           Every transaction - whether it's buying, selling, sending, or receiving - can have tax implications. The most crucial thing in tax reporting is the accuracy of recording.
         </p>
 
-        <h2 className="left-align">How XRPL and Xahau Explorers Help Tax Residents</h2>
+        <h2 className="left-align">How XRPL and Xahau Explorers Assist Taxpayers</h2>
         <div className="content-center">
           <div className="image-wrapper">
             <img
@@ -66,12 +67,12 @@ export default function XrpTaxes() {
 
         <div className="content-center">
           <p className="left-align">
-            <strong>Watch these videos to learn how to start using this tool:</strong>
+            <h2>Watch these videos to learn how to start using this tool:</h2>
           </p>
           <div style={{ marginBottom: '20px' }}>
             <iframe
-              width="560"
-              height="315"
+              width="765"
+              height="437,5"
               src="https://www.youtube.com/embed/efJFyfSwXIM"
               title=" XRPL Balance Change History"
               allowFullScreen
@@ -79,8 +80,8 @@ export default function XrpTaxes() {
           </div>
           <div>
             <iframe
-              width="560"
-              height="315"
+              width="765"
+              height="437,5"
               src="https://www.youtube.com/embed/b5PSMhDUah0"
               title="Xahau Balance Change History "
               allowFullScreen
@@ -88,7 +89,7 @@ export default function XrpTaxes() {
           </div>
         </div>
 
-        <h2 className="left-align">How XRPL and Xahau Explores Help Crypto Tax Platforms</h2>
+        <h2 className="left-align">How XRPL and Xahau Explores Assist Crypto Tax Platforms</h2>
         <div className="content-center">
           <div className="image-wrapper">
             <img
@@ -110,8 +111,8 @@ export default function XrpTaxes() {
         <div className="content-center">
           <p className="left-align">
             We would love to explore partnership opportunities and learn about your interest in expanding your services. 
-            If you're interested, please reach out so we can discuss the details further at 
-            <a href="mailto:partner@bithomp.com"> partner@bithomp.com</a>.
+            If you're interested, please reach out so we can discuss the details further at {' '}
+          <Mailto email="partner@bithomp.com" headers={{ subject: 'Termination' }} />.
           </p>
         </div>
       </div>
