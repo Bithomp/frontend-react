@@ -83,6 +83,11 @@ export default function NftVolumes({
   const [hasMore, setHasMore] = useState('first')
   const [csvHeaders, setCsvHeaders] = useState([])
 
+  useEffect(() => {
+    setListTab(list)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [list])
+
   const convertCurrency = sortCurrency || selectedCurrency
 
   const listTabList = [
@@ -924,6 +929,8 @@ export default function NftVolumes({
       <SEO
         title={
           t('header', { ns: 'nft-volumes' }) +
+          ' ' +
+          t('tabs.' + listTab) +
           ' ' +
           (saleTab === 'secondary' ? t('tabs.secondary-sales') : '') +
           (saleTab === 'primary' ? t('tabs.primary-sales') : '') +
