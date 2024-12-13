@@ -612,22 +612,22 @@ export default function NftsComponent({
         <SEO
           title={
             t('nft-explorer.header') +
-            (issuer || issuerQuery ? ' ' + (issuer || issuerQuery) : '') +
-            (isValidTaxon(taxon || taxonQuery) ? ' ' + (taxon || taxonQuery) : '') +
-            (owner || ownerQuery ? ', ' + t('table.owner') + ': ' + (owner || ownerQuery) : '') +
+            (issuerQuery ? ' ' + issuerQuery : '') +
+            (isValidTaxon(taxonQuery) ? ' ' + taxonQuery : '') +
+            (ownerQuery ? ', ' + t('table.owner') + ': ' + ownerQuery : '') +
             (activeView === 'list' ? ' ' + t('tabs.list') : '') +
             (listTab === 'onSale' ? ' ' + t('tabs.onSale', { nativeCurrency }) : '') +
             (listTab === 'onSale' && (saleDestinationTab === 'buyNow' || saleDestinationTab === 'public')
               ? ', ' + t('tabs.buyNow')
               : '') +
-            (search || searchQuery ? ', ' + t('table.name') + ': ' + (search || searchQuery) : '') +
+            (searchQuery ? ', ' + t('table.name') + ': ' + searchQuery : '') +
             (burnedPeriod ? ', ' + t('table.burn-period') + ': ' + burnedPeriod : '') +
             (order ? ', ' + t('dropdown.' + order, { ns: 'nft-sort' }) : '') +
             (includeBurned ? ', ' + t('table.text.include-burned-nfts') : '') +
             (includeWithoutMediaData ? ', ' + t('table.text.include-without-media-data') : '')
           }
           description={
-            (issuer || issuerQuery || search || t('nft-explorer.header')) +
+            (issuerQuery || searchQuery || t('nft-explorer.header')) +
             (rendered && mintedPeriod ? ', ' + t('table.mint-period') + ': ' + periodDescription(mintedPeriod) : '')
           }
           images={[
