@@ -27,15 +27,13 @@ export default function Ads({ showAds, heightNoAds }) {
   if (!xahauNetwork) {
     return (
       <div className={brandsBlock}>
-        {/*
-      <a href="/go/play-xrp" target="_blank" rel="noreferrer">
-        <div className="brand-item">
-          <img src="/images/sponsored/xbit.png" className="brand-item-icon" alt="play xrp" />
-          <div className="brand-item-title">Play XRP</div>
-          <div className="brand-item-text">Register with <i>BITHOMP</i> and boost up your bonus.</div>
-        </div>
-      </a>
-      */}
+        <a href="/go/play-xrp" target="_blank" rel="noreferrer">
+          <div className="brand-item">
+            <img src="/images/sponsored/xbit.png" className="brand-item-icon" alt="play xrp" />
+            <div className="brand-item-title">Play Crypto</div>
+            <div className="brand-item-text">Welcome bonus up to 7 BTC + 250 free spins.</div>
+          </div>
+        </a>
         {/*
         <a href="/go/main-exchange" target="_blank" rel="noreferrer">
           <div className="brand-item easybit">
