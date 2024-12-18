@@ -498,6 +498,8 @@ export default function Username({ setSignRequest, account, signOut, addressQuer
                     The payment is for 100 Swedish kronor denominated in XRP. The payment for the username is{' '}
                     <b>not refundable</b>. If you pay more than requested, the exceeding amount will be counted as
                     donation and won't be refunded.
+                    <br/> 
+                    <b>Please note:</b> We reserve the right to revoke a username if it has been created for fraudulent activities or manipulations.
                   </Trans>
                 </p>
               </>
