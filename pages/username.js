@@ -497,10 +497,10 @@ export default function Username({ setSignRequest, account, signOut, addressQuer
                   <Trans ns="username" i18nKey="step0.text3">
                     The payment is for 100 Swedish kronor denominated in XRP. The payment for the username is{' '}
                     <b>not refundable</b>. If you pay more than requested, the exceeding amount will be counted as
-                    donation and won't be refunded.
-                    <br/> 
-                    <b>Please note:</b> We reserve the right to revoke a username if it has been created for fraudulent activities or manipulations.
+                    donation and won't be refunded.  
                   </Trans>
+                  <br/> 
+                    <b>{t("please-note", {ns: "username"})}</b> {t("we-can-revoke", {ns: "username"})}
                 </p>
               </>
             )}
