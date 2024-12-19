@@ -6,7 +6,7 @@
       "explorer": "AMMエクスプローラ"
     },
     "company": {
-      "about-us": "About us"
+      "about-us": "私たちについて"
     },
     "services": {
       "services": "サービス",
@@ -15,7 +15,7 @@
     },
     "business": {
       "advertise": "広告掲載",
-      "eaas": "Explorer as a Service",
+      "eaas": "サービスとしてのエクスプローラー",
       "build-unl": "UNLの作成"
     },
     "usernames": "ユーザネームの登録",
@@ -45,7 +45,7 @@
       "last-ledger-transactions": "現在のトランザクション情報",
       "verified-domains": "検証済みドメイン",
       "validators": "バリデータ",
-      "amendments": "Amendment",
+      "amendments": "修正案",
       "unl-report": "UNLレポート",
       "genesis": "ジェネシスアカウント"
     },
@@ -66,12 +66,12 @@
     "donate": "寄付",
     "sponsored": {
       "title": "スポンサー",
-      "buy": "Buy XRP",
-      "earn": "Earn on XRP",
-      "play": "Play XRP"
+      "buy": "XRPを購入",
+      "earn": "XRPで稼ぐ",
+      "play": "XRPで遊ぶ"
     },
     "learn-more": {
-      "title": "Learn more"
+      "title": "もっと学ぶ"
     }
   },
   "components": {
@@ -268,12 +268,12 @@
     "text": "<2>こちら</2>をクリックするとトップページへ遷移します。"
   },
   "receipt": {
-    "quantity": "qty.",
-    "items": "items",
-    "price": "price",
-    "total": "total",
-    "paid": "paid",
-    "order-id": "order id"
+    "quantity": "数量",
+    "items": "アイテム",
+    "price": "価格",
+    "total": "合計",
+    "paid": "支払済み",
+    "order-id": "注文ID"
   },
   "button": {
     "set-domain": "ドメインを設定",
@@ -347,7 +347,7 @@
     "Request failed with status code 429": "リクエストの送信数が多すぎます、後ほどお試しください！",
     "Request failed with status code 404": "そのようなAPIコールはそのネットワークでは許可されていません",
     "Request failed with status code 403": "ログアウトしています。再度ログインしてください。",
-    "Request aborted": "Request aborted"
+    "Request aborted": "リクエストが中止されました"
   },
   "errors": {
     "token": {
@@ -360,8 +360,8 @@
       "not_found": "APIキーがありません。"
     },
     "address": {
-      "invalid_signature_address": "Invalid signature address. Make sure that you sign with the correct address.",
-      "limit_reached": "You can not add more addesses, you've reached the limit."
+      "invalid_signature_address": "無効な署名アドレスです。正しいアドレスで署名していることを確認してください。",
+      "limit_reached": "これ以上アドレスを追加することはできません。制限に達しました。"
     },
     "blob": {
       "invalid_signature_address": "追加しようとしているアドレスでメッセージに署名する必要があります。"
