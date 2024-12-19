@@ -194,9 +194,9 @@ export default function MobileMenu({
               {t('menu.price-alerts', { nativeCurrency })}
             </Link>
           )}
-          <a href={'/submit/'} className="mobile-menu-item">
+          {/* <a href={'/submit/'} className="mobile-menu-item">
             {t('menu.submit-offline-tx')}
-          </a>
+          </a> */}
         </div>
 
         <div className="mobile-menu-directory" data-expanded="false">

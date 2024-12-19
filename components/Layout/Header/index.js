@@ -168,7 +168,7 @@ export default function Header({
             <Link href="/username">{t('menu.usernames')}</Link>
             <Link href="/submit-account-information">{t('menu.project-registration')}</Link>
             {!devNet && <Link href="/alerts">{t('menu.price-alerts', { nativeCurrency })}</Link>}
-            <a href={'/submit/'}>{t('menu.submit-offline-tx')}</a>
+            {/* <a href={'/submit/'}>{t('menu.submit-offline-tx')}</a> */}
           </MenuDropDown>
 
           <MenuDropDown id="dropdown3" title="NFT" setHoverStates={setHoverStates} hoverStates={hoverStates}>

@@ -42,8 +42,7 @@ const pages = [
   { loc: 'about-us', changefreq: 'yearly', priority: '0.4' },
   { loc: 'customer-support', changefreq: 'yearly', priority: '0.4' },
   { loc: 'developer', changefreq: 'yearly', priority: '0.4' },
-  { loc: 'press', changefreq: 'yearly', priority: '0.4' },
-  { loc: 'submit/', changefreq: 'yearly', priority: '0.4' }
+  { loc: 'press', changefreq: 'yearly', priority: '0.4' }
 ]
 
 //network specific pages
@@ -72,7 +71,7 @@ function generateSiteMap(posts) {
     'xrpl-article',
     'object'
   ]
-  const oldPages = ['submit/', 'explorer/']
+  const oldPages = ['explorer/']
   const pagesWithoutTranslation = [...noTranslatedPages, ...oldPages]
 
   return `<?xml version="1.0" encoding="UTF-8"?>
