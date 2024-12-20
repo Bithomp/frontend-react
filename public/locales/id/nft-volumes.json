@@ -2,7 +2,7 @@
   "header": "Volume Penjualan NFT",
   "text0": "Selama periode tersebut, XRPL memiliki total penjualan {{allSales}} NFT dengan mata uang {{currency}} dan tipe yang dijual {{saleType}} dengan volume penjualan sebesar {{allVolume}}.",
   "collections": {
-    "desc": "This is the list of NFT collections. Volume di sini tidak termasuk penjualan utama (mint) yang dilakukan dalam 2 transaksi (pembayaran dan transfer NFT)."
+    "desc": "Ini adalah daftar koleksi NFT. Volume di sini tidak termasuk penjualan utama (mint) yang dilakukan dalam 2 transaksi (pembayaran dan transfer NFT)."
   },
   "brokers": {
     "desc": "Ini adalah daftar akun perantara NFT. Di sini Anda dapat melihat volume perdagangan yang disesuaikan oleh bot. Pasar menggunakan model perdagangan campuran, di mana Anda hanya dapat melihat volume melalui perantara.",
@@ -15,6 +15,6 @@
   "issuers": {
    "desc": "Ini adalah daftar penerbit NFT di XRPL. Untuk melihat volume koleksi NFT yang diidentifikasi oleh penerbit, klik tautan dalam kolom Volume Penjualan."
   },
-  "sales-chart": "Sales chart",
-  "volumes-chart": "Volumes chart"
+  "sales-chart": "Grafik penjualan",
+  "volumes-chart": "Grafik volume"
 }

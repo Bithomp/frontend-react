@@ -1,15 +1,15 @@
 {
   "table": {
-    "validator": "Validador",
-    "server-country": "Server country",
-    "server-location": "Server location",
-    "cloud-private": "Cloud/private",
-    "network-asn": "Network ASN",
-    "owner-country": "Owner country",
-    "votes-for": "Votes for",
-    "last-seen": "Last seen",
+    "validator": "검증자",
+    "server-country": "서버 국가",
+    "server-location": "서버 위치",
+    "cloud-private": "클라우드/프라이빗",
+    "network-asn": "네트워크 ASN",
+    "owner-country": "소유자 국가",
+    "votes-for": "찬성 투표",
+    "last-seen": "마지막 확인",
     "text": {
-      "domain-verified-toml": "Verified domain (TOML file)",
+      "domain-verified-toml": "검증된 도메인 (TOML 파일)",
       "unl": "In the Unique Node List (UNL)",
       "negative-unl": "in the Negative UNL"
     }

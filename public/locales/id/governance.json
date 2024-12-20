@@ -1,5 +1,5 @@
 {
-  "header": "Governance Game {{ledgerName}}",
+  "header": "Permainan Tata Kelola {{ledgerName}}",
   "summary": "Terdapat <1>{{ countTables }}</1> posisi.",
   "reward-rate": "Tingkat Hadiah: <1>{{ rewardRate }}</1>.",
   "reward-delay": "Penundaan Hadiah: <2>{{ rewardDelay }}</2> ({{ rewardDelaySeconds }} detik).",

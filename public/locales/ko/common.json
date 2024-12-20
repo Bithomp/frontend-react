@@ -6,11 +6,11 @@
       "explorer": "AMM explorer"
     },
     "company": {
-      "about-us": "About us"
+      "about-us": "우리에 대해"
     },
     "services": {
-      "services": "Services",
-      "nft-mint": "Mint NFT",
+      "services": "서비스",
+      "nft-mint": "NFT 민팅",
       "search-on-ledgerName": "{{ledgerName}}에서 탐색하기"
     },
     "business": {
@@ -39,9 +39,9 @@
     "network": {
       "blockchain": "블록체인",
       "nodes": "노드",
-      "governance": "Governance",
-      "activations": "Activated accounts (chart)",
-      "distribution": "{{nativeCurrency}} distribution",
+      "governance": "거버넌스",
+      "activations": "활성화된 계정 (차트)",
+      "distribution": "{{nativeCurrency}} 분배",
       "last-ledger-information": "최근 원장 정보",
       "last-ledger-transactions": "최근 거래 정보",
       "verified-domains": "검증된 도메인",
@@ -55,7 +55,7 @@
       "account-generation": "계정 일반화",
       "faucet": "퍼셋",
       "api": "API 문서화",
-      "api-admin": "API account"
+      "api-admin": "API 계정"
     },
     "legal": "정책",
     "disclaimer": "면책조항",
@@ -85,8 +85,8 @@
       "90d": "90일"
     },
     "target-table-select": {
-      "01": "L1 - Main table",
-      "02": "L2 - My table"
+      "01": "L1 - 메인 테이블",
+      "02": "L2 - 내 테이블"
     }
   },
   "signin": {
@@ -125,7 +125,7 @@
       "set-domain": "도메인을 설정합니다",
       "set-avatar": "아바타를 설정",
       "nft-create-transfer-offer-header": "NFT transfer",
-      "nft-transfer": "I'm offering that NFT for FREE to the Destination account, <2>the destination account would need to accept the NFT transfer</2>.",
+      "nft-transfer": "저는 그 NFT를 무료로 목적지 계정에 제공하고 있습니다. <2>목적지 계정은 NFT 전송을 수락해야 합니다</2>.",
       "nft-accept-sell-offer-header": "NFT 구매",
       "nft-accept-buy-offer-header": "Selling NFT",
       "nft-create-sell-offer-header": "출품(판매)",
@@ -140,15 +140,15 @@
       "enter-domain": "도메인을 입력하세요."
     },
     "status": {
-      "awaiting-crawler": "Awaiting for crawler to update the data",
-      "awaiting-broker": "Awaiting for {{serviceName}} to accept the offer",
-      "failed-broker": "Failed to notify {{serviceName}} about the offer. You can cancel it."
+      "awaiting-crawler": "크롤러가 데이터를 업데이트할 때까지 기다리는 중",
+      "awaiting-broker": "{{serviceName}}가 제안을 수락할 때까지 기다리는 중",
+      "failed-broker": "{{serviceName}}에 제안 알림에 실패했습니다. 이를 취소할 수 있습니다."
     },
     "nft-offer": {
-      "counteroffer": "You're making a counteroffer, which should to be accepted automatically within 20 seconds. If it's not accepted you can cancel it at any time.",
-      "nft-price": "NFT price",
-      "fee": "{{serviceName}} fee ({{feeText}})",
-      "total": "Total"
+      "counteroffer": "당신은 반대 제안을 하고 있으며, 이 제안은 20초 이내에 자동으로 수락되어야 합니다. 만약 수락되지 않으면 언제든지 취소할 수 있습니다.",
+      "nft-price": "NFT 가격",
+      "fee": "{{serviceName}} 수수료 ({{feeText}})",
+      "total": "총합"
     }
   },
   "footer": {
@@ -290,9 +290,9 @@
     "copy-my-address": "주소를 복사하세요",
     "sign": "서명",
     "nft": {
-      "add-another-sell-offer": "Add another sell offer",
-      "transfer": "Transfer NFT",
-      "update-sell-offer": "Update the sell offer",
+      "add-another-sell-offer": "추가 판매 제안하기",
+      "transfer": "NFT 전송",
+      "update-sell-offer": "판매 제안 업데이트하기",
       "cancel-sell-offer-for": "{{amount}}에 대한 판매 제안 취소",
       "cancel-buy-offer-for": "{{amount}}에 대한 구매 제안 취소",
       "cancel-transfer": "NFT 변환 취소",
@@ -309,8 +309,8 @@
     "error": "오류",
     "no-data": "데이터를 찾을 수 없습니다",
     "loading": "대기 중",
-    "login-to-bithomp-pro": "Loading more data is available to <1>logged-in</1> Bithomp Pro subscribers.",
-    "renew-bithomp-pro": "Your Bithomp Pro subscription has expired. <1>Renew your subscription</1>.",
+    "login-to-bithomp-pro": "더 많은 데이터를 로드하려면 <1>로그인한</1> Bithomp Pro 구독자가 필요합니다.",
+    "renew-bithomp-pro": "귀하의 Bithomp Pro 구독이 만료되었습니다. <1>구독을 갱신하세요</1>",
     "load-failed": "로딩에 실패했습니다",
     "all-issuers": "모든 발행자",
     "no-expiration": "무기한",
@@ -318,51 +318,51 @@
     "no-media": "미디어를 찾을 수 없습니다",
     "viewer": "뷰어",
     "developer-mode": "개발자 모드",
-    "search": "Search",
-    "of-many": "of many",
-    "of": "of",
-    "sort-by": "Sort by"
+    "search": "검색",
+    "of-many": "중에서",
+    "of": "의",
+    "sort-by": "정렬 기준"
   },
   "form": {
     "error": {
       "destination-tag-invalid": "유효하지 않은 대상 태그입니다",
-      "price-empty": "Please enter an amount.",
-      "address-empty": "Please enter an address.",
-      "address-invalid": "Please enter a valid address.",
-      "domain-empty": "Please enter web domain.",
-      "domain-invalid": "Please enter a valid web domain.",
-      "description-empty": "Please enter a description.",
-      "description-short": "Description is too short.",
+      "price-empty": "금액을 입력해주세요.",
+      "address-empty": "주소를 입력해주세요.",
+      "address-invalid": "유효한 주소를 입력해주세요.",
+      "domain-empty": "웹 도메인을 입력해주세요.",
+      "domain-invalid": "유효한 웹 도메인을 입력해주세요.",
+      "description-empty": "설명을 입력해주세요.", 
+      "description-short": "설명이 너무 짧습니다.",
       "email-empty": "이메일을 입력하세요",
       "email-invalid": "유효한 이메일 주소를 입력하세요",
       "password-empty": "비밀번호를 입력하세요",
       "password-invalid": "Invalid password."
     },
     "placeholder": {
-      "destination-tag": "Enter the Destination tag (if it is required)"
+      "destination-tag": "목적지 태그를 입력해주세요 (필요한 경우)"
     }
   },
   "error": {
     "payment-partly": "<b>{{currency}} {{required}}</b>가 필요하지만 {{received}} {{currency}}만 받았습니다. 나머지 금액을 송금해 주세요.",
     "Network Error": "인터넷이 연결되어 있지 않습니다;",
     "Request failed with status code 429": "요청사항이 너무 많습니다. 나중에 다시 시도하세요",
-    "Request failed with status code 404": "Such API call is not allowed on that network",
-    "Request failed with status code 403": "It seems you're logged out, please log in again",
-    "Request aborted": "Request aborted"
+    "Request failed with status code 404": "해당 네트워크에서는 이 API 호출이 허용되지 않습니다",
+    "Request failed with status code 403": "로그아웃된 것 같습니다. 다시 로그인해주세요.",
+    "Request aborted": "요청이 취소되었습니다"
   },
   "errors": {
     "token": {
-      "required": "Please login to continue"
+      "required": "계속하려면 로그인해주세요"
     },
     "partner": {
-      "not_found": "There are no projects"
+      "not_found": "프로젝트가 없습니다."
     },
     "access_token": {
-      "not_found": "There are no API keys."
+      "not_found": "API 키가 없습니다."
     },
     "address": {
-      "invalid_signature_address": "Invalid signature address. Make sure that you sign with the correct address.",
-      "limit_reached": "You can not add more addesses, you've reached the limit."
+      "invalid_signature_address": "유효하지 않은 서명 주소입니다. 올바른 주소로 서명했는지 확인해주세요.",
+      "limit_reached": "더 이상 주소를 추가할 수 없습니다. 한도에 도달했습니다."
     },
     "blob": {
       "invalid_signature_address": "추가하려는 주소로 메시지에 서명해야 합니다."
@@ -381,10 +381,10 @@
     "currencyIssuer is invalid": "유효하지 않은 통화 발행자의 주소입니다",
     "Token information is not found": "해당 ID에 대한 정보를 찾을 수 없습니다",
     "No nfts information is found": "죄송합니다. 오류가 발생했습니다. 다시 시도해주세요",
-    "Address is not valid": "Invalid address"
+    "Address is not valid": "유효하지 않은 주소입니다"
   },
   "error-tx": {
-    "terNO_ACCOUNT": "The address sending the transaction is not funded in the ledger (yet)."
+    "terNO_ACCOUNT": "거래를 전송하는 주소가 아직 원장에 자금이 충전되지 않았습니다"
   },
   "units": {
     "seconds-short": "초",
@@ -404,13 +404,13 @@
     "currency": "통화",
     "currency-issuer": "통화 발행자",
     "destination-tag": "대상 태그",
-    "uri": "URI",
-    "mints": "Mints",
-    "view": "View",
-    "period": "Period",
-    "mint-period": "Mint period",
-    "burn-period": "Burn period",
-    "warning": "Warning",
+    "uri": "URI", 
+    "mints": "민팅", 
+    "view": "보기", 
+    "period": "기간", 
+    "mint-period": "민팅 기간", 
+    "burn-period": "소각 기간", 
+    "warning": "경고",
     "sequence": "절차",
     "version": "버전",
     "domain": "도메인",
@@ -488,7 +488,7 @@
     "marketplace": "마켓 플레이스",
     "public-key": "공개 키",
     "text": {
-      "private-offer": "Private offer",
+      "private-offer": "개인 오퍼",
       "show-extended-statistics": "확장된 실시간 데이터를 보여줍니다",
       "include-without-media-data": "미디어 데이터가 없는 NFT를 포함합니다.",
       "include-burned-nfts": "소각된 NFT가 포함되어 있습니다",
@@ -499,7 +499,7 @@
       "buy": "구매",
       "show": "보여주기",
       "hide": "숨기기",
-      "see-on": "See on <2><0>{{marketplace}}</0></2>",
+      "see-on": "<2><0>{{marketplace}}</0></2>에서 보기",
       "valid": "유효함",
       "invalid": "유효하지 않음",
       "no-votes": "투표가 없습니다"
@@ -554,10 +554,10 @@
     "onSale": "{{nativeCurrency}}로 판매 중",
     "all-tokens": "모든 토큰",
     "xrp-only": "XRP만",
-    "mintedNew": "Latest",
-    "mintedOld": "Oldest",
-    "existing": "Existing",
-    "burned": "Burned"
+    "mintedNew": "최신", 
+    "mintedOld": "가장 오래된", 
+    "existing": "기존", 
+    "burned": "소각됨"
   },
   "xaman": {
     "new-qr": "새로운 QR코드를 사용하세요"
@@ -565,10 +565,10 @@
   "explorer": {
     "header": {
       "main": "{{explorerName}} 탐색기",
-      "amm": "AMM pool information",
-      "object": "Object information",
-      "account": "Account information",
-      "transaction": "Transaction information",
+      "amm": "AMM 풀 정보",
+      "object": "객체 정보",
+      "account": "계정 정보",
+      "transaction": "거래 정보",
       "nft": "NFT",
       "nfts": "NFTs",
       "nft-offer": "NFT 제안",
@@ -586,7 +586,7 @@
     "different-network": "이 트랜잭션은 <1>{{networkNameOrId}}</1> 네트워크에서 발생했습니다.",
     "check-tx-on-different-explorer": "자세한 내용은 <2><0>여기</0></2>에서 확인하세요.",
     "not-supported-network": "지원하지 않는 네트워크입니다",
-    "no-slashes": "The search should not contain slashes."
+    "no-slashes": "검색에는 슬래시(/)를 포함해서는 안 됩니다."
   },
   "nft-explorer": {
     "header": "NFT 탐색기"

@@ -1,13 +1,13 @@
 {
   "header": "NFT 판매량",
-  "text0": "For that period XRPL은 {{saleType}}에서 {{allSales}} {{currency}} NFT({{allVolume}}) 거래가 이루어졌습니다.",
+  "text0": "해당 기간 동안 XRPL은 {{saleType}}에서 {{allSales}} {{currency}} NFT({{allVolume}}) 거래가 이루어졌습니다.",
   "collections": {
-    "desc": "This is the list of NFT collections. 여기 거래량에는 2번의 거래(결제 및 NFT 전송) 내에서 이루어진 1차 판매(채굴)는 포함되지 않습니다"
+    "desc": "이것은 NFT 컬렉션 목록입니다. 여기 거래량에는 2번의 거래(결제 및 NFT 전송) 내에서 이루어진 1차 판매(채굴)는 포함되지 않습니다"
   },
   "brokers": {
     "desc": "NFT 브로커 계좌 목록입니다. 여기에서 제안 매칭 봇의 거래량을 확인할 수 있습니다. 마켓플레이스는 혼합 거래 모델을 사용하므로 여기에서는 중개 모델을 통한 거래량만 볼 수 있습니다",
     "no-broker": "브로커 없음",
-    "text0": "For that period XRPL은 {{saleType}}에서 {{allSales}}<3>{{currency}}</3> NFT/{{allVolume}}의 매출이 있었으며, 그 중 <13>{{{brokerSales}}</13> {{percentBrokerSales}}/<19>{{brokerVolume}}</19> {{percentBrokerVolume}}은 브로커 거래로 인한 매출입니다."
+    "text0": "해당 기간 동안 XRPL은 {{saleType}}에서 {{allSales}}<3>{{currency}}</3> NFT/{{allVolume}}의 매출이 있었으며, 그 중 <13>{{{brokerSales}}</13> {{percentBrokerSales}}/<19>{{brokerVolume}}</19> {{percentBrokerVolume}}은 브로커 거래로 인한 매출입니다."
   },
   "marketplaces": {
     "desc": "다음은 XRPL의 NFT 마켓플레이스 목록입니다. 여기 거래량에는 2번의 거래(결제 및 NFT 전송) 내에서 이루어진 1차 판매(채굴)는 포함되지 않습니다"
@@ -15,6 +15,6 @@
   "issuers": {
     "desc": "XRPL의 NFT 발행자 목록입니다. 발행자 및 분류군별로 식별된 NFT 컬렉션의 거래량을 확인하려면 판매량 열의 링크를 클릭하세요"
   },
-  "sales-chart": "Sales chart",
-  "volumes-chart": "Volumes chart"
+  "sales-chart": "판매 차트",
+  "volumes-chart": "거래량 차트"
 }

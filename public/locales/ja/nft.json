@@ -5,7 +5,7 @@
   "nft-id-decoded-data": "NFT IDからの解析データ",
   "nft-not-found-on-that-network": "このNFTは<1>{{network}}</1>では見つかりませんでした。",
   "table": {
-    "digest": "Digest",
+    "digest": "ダイジェスト",
     "attention": "注意",
     "attention-texts": {
       "no-uri": "URIが設定されていません。一般的に採用されている規格との互換性がありません。",
@@ -16,7 +16,7 @@
       "invalid-digest": "NFTの整合性チェックに失敗しました。DigestがNFTのメタデータと一致しません。"
     },
     "warnings": {
-      "nft-crawler-delay": "Some data is outdated, the last update: {{lastUpdate}}. Our servers are catching up, check later for more accurate data."
+      "nft-crawler-delay": "一部のデータは古くなっています。最後の更新: {{lastUpdate}}。サーバーが追いついていますので、後で再度確認してください。"
     }
   }
 }
