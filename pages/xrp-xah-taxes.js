@@ -25,7 +25,8 @@ export default function XrpTaxes() {
       <div className="content-center">
         <h1>XRP and XAH Taxes</h1>
         <p className="left-align">
-          The booming world of cryptocurrencies has led to an explosion of interest in not only investing but also understanding the various tax implications associated with digital assets.
+          The booming world of cryptocurrencies has led to an explosion of interest in not only investing but also
+          understanding the various tax implications associated with digital assets.
         </p>
 
         <h2 className="left-align">Why are XRP and XAH Taxable</h2>
@@ -33,35 +34,24 @@ export default function XrpTaxes() {
           In many jurisdictions, cryptocurrencies - XRP and XAH included - are treated as capital assets.
         </p>
         <p className="left-align">
-          Every transaction - whether it's buying, selling, sending, or receiving - can have tax implications. The most crucial thing in tax reporting is the accuracy of recording.
+          Every transaction - whether it's buying, selling, sending, or receiving - can have tax implications. The most
+          crucial thing in tax reporting is the accuracy of recording.
         </p>
 
         <h2 className="left-align">How XRPL and Xahau Explorers Assist Taxpayers</h2>
         <div className="content-center">
           <div className="image-wrapper">
-            <img
-              src="/images/pages/xrp-xah-taxes-1.jpeg"
-              alt="Illustration Problem"
-              className="image"
-            />
+            <img src="/images/pages/xrp-xah-taxes-1.jpeg" alt="Illustration Problem" className="image" />
           </div>
         </div>
 
         <div className="content-center">
           <div className="image-wrapper">
-            <img
-              src="/images/pages/xrp-xah-taxes-2.jpeg"
-              alt="Illustration Solution"
-              className="image"
-            />
+            <img src="/images/pages/xrp-xah-taxes-2.jpeg" alt="Illustration Solution" className="image" />
           </div>
 
           <div className="image-wrapper">
-            <img
-              src="/images/pages/xrp-xah-taxes-3.jpeg"
-              alt="Illustration We offer"
-              className="image"
-            />
+            <img src="/images/pages/xrp-xah-taxes-3.jpeg" alt="Illustration We offer" className="image" />
           </div>
         </div>
 
@@ -92,27 +82,19 @@ export default function XrpTaxes() {
         <h2 className="left-align">How XRPL and Xahau Explores Assist Crypto Tax Platforms</h2>
         <div className="content-center">
           <div className="image-wrapper">
-            <img
-              src="/images/pages/xrp-xah-taxes-4.jpeg"
-              alt="Illustration You Get"
-              className="image"
-            />
+            <img src="/images/pages/xrp-xah-taxes-4.jpeg" alt="Illustration You Get" className="image" />
           </div>
 
           <div className="image-wrapper">
-            <img
-              src="/images/pages/xrp-xah-taxes-5.jpeg"
-              alt="Illustration Your Benefits"
-              className="image"
-            />
+            <img src="/images/pages/xrp-xah-taxes-5.jpeg" alt="Illustration Your Benefits" className="image" />
           </div>
         </div>
 
         <div className="content-center">
           <p className="left-align">
-            We would love to explore partnership opportunities and learn about your interest in expanding your services. 
-            If you're interested, please reach out so we can discuss the details further at {' '}
-          <Mailto email="partner@bithomp.com" headers={{ subject: 'Termination' }} />.
+            We would love to explore partnership opportunities and learn about your interest in expanding your services.
+            If you're interested, please reach out so we can discuss the details further at{' '}
+            <Mailto email="partner@bithomp.com" headers={{ subject: 'Termination' }} />.
           </p>
         </div>
       </div>
@@ -155,4 +137,3 @@ export default function XrpTaxes() {
     </>
   )
 }
-
