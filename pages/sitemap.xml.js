@@ -56,6 +56,7 @@ if (xahauNetwork) {
 
 if (network === 'mainnet') {
   pages.push({ loc: 'xrpl-article', changefreq: 'monthly', priority: '0.6' })
+  pages.push({ loc: 'xrp-xah-taxes', changefreq: 'monthly', priority: '0.9' })
 }
 
 function generateSiteMap(posts) {
@@ -69,6 +70,7 @@ function generateSiteMap(posts) {
     'terms-and-conditions',
     'disclaimer',
     'xrpl-article',
+    'xrp-xah-taxes',
     'object'
   ]
   const oldPages = ['explorer/']
