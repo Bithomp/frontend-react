@@ -62,6 +62,7 @@ export default function XrpTaxes() {
               src="https://www.youtube.com/embed/efJFyfSwXIM"
               title=" XRPL Balance Change History"
               allowFullScreen
+              className="videoIframe"
             ></iframe>
           </div>
           <div>
@@ -71,6 +72,7 @@ export default function XrpTaxes() {
               src="https://www.youtube.com/embed/b5PSMhDUah0"
               title="Xahau Balance Change History"
               allowFullScreen
+              className="videoIframe"
             ></iframe>
           </div>
         </div>
@@ -129,6 +131,14 @@ export default function XrpTaxes() {
         .image:hover {
           transform: scale(1.03); /* Slight zoom effect */
           box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1); /* Subtle shadow around the image */
+        }
+
+        @media screen and (max-width: 765px) {
+          iframe.videoIframe {
+            max-width: 100% !important;
+            width: auto !important;
+            height: auto !important;
+          }
         }
       `}</style>
     </>
