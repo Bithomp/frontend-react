@@ -22,6 +22,8 @@
     "address-you-control": "Anda hanya dapat mendaftarkan username untuk alamat XRPL yang Anda kendalikan (Anda memiliki kata sandi atau kata pemulihan 12/24 kata). Anda tidak dapat mendaftarkan username untuk alamat yang di-hosting (yang memiliki tag tujuan) dalam pertukaran / layanan / dompet.",
     "pay-from-your-address": "Untuk membuktikan bahwa Anda mengendalikan alamat XRPL, Anda perlu melakukan pembayaran dari alamat tersebut (yang ingin Anda berikan username). Pembayaran dari alamat lain akan dianggap sumbangan dan tidak akan dikembalikan.",
     "text3": "Pembayaran ini sebesar 100 kronor Swedia dalam denominasi XRP. Pembayaran untuk username <2>tidak dapat dikembalikan</2>. Jika Anda membayar lebih dari yang diminta, jumlah yang melebihi akan dianggap sumbangan dan tidak akan dikembalikan.",
+    "please-note": "Harap diperhatikan:",
+    "we-can-revoke": "Kami berhak untuk mencabut username jika dibuat untuk aktivitas penipuan atau manipulasi.",
     "text4": "Username sekarang digunakan lintas rantai, <2>daftarkan username di jaringan utama XRPL</2> dan akan tersedia di penjelajah bithomp (dalam waktu 1 jam).",
     "enter-address-or": "Masukkan alamat XRPL Anda atau",
     "sign-in": "Masuk",

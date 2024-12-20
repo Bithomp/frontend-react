@@ -22,6 +22,8 @@
     "address-you-control": "Sie können einen Benutzernamen nur für die XRPL Adressen registrieren, welche Sie kontrollieren (Sie haben das Geheimnis/Seed oder die 12/24 Wörter zur Wiederherstellung). Sie können keinen Benutzernamen für gehostete Adressen registrieren (welche einen Destinnation Tag haben) wie bei einer Börse / Dienst / Wallet.",
     "pay-from-your-address": "Um zu beweisen, dass Sie diese XRPL Adresse kontrollieren, müssen Sie eine Zahlung von dieser Adresse ausführen (welcher Sie einen Benutzernamen zuweisen möchten). Zahlungen von anderen Adressen werden als Spenden betrachtet und nicht zurückerstattet.",
     "text3": "Die Zahlung ist für 100 Swedische Kronen in XRP umgerechnet. Die Zahlung für den Benutzernamen ist <2>nicht zurückerstattbar</2>. Falls Sie mehr als notwendig überweisen, wird der zuviel überwiesene Betrag als Spende betrachtet und nicht zurückerstattet.",
+    "please-note": "Bitte beachten Sie:",
+    "we-can-revoke": "Wir behalten uns das Recht vor, einen Benutzernamen zu widerrufen, wenn dieser für betrügerische Aktivitäten oder Manipulationen erstellt wurde.",
     "text4": "Benutzernamen sind jetzt netzwerkübergreifend. <2>Registrieren Sie einen Benutzernamen auf dem XRPL Mainnet</2> und er wird in den bithomp Explorer innert einer Stunde verfügbar sein.",
     "enter-address-or": "Geben Sie Ihre XRPL Adresse ein oder",
     "sign-in": "loggen Sie sich",

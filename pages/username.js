@@ -500,6 +500,9 @@ export default function Username({ setSignRequest, account, signOut, addressQuer
                     donation and won't be refunded.
                   </Trans>
                 </p>
+                <p>
+                  <b>{t('step0.please-note', { ns: 'username' })}</b> {t('step0.we-can-revoke', { ns: 'username' })}
+                </p>
               </>
             )}
             {!account?.username || onRegistration ? (
