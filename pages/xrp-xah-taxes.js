@@ -1,139 +1,248 @@
-import Mailto from 'react-protected-mailto'
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import SEO from '../components/SEO'
-import { getIsSsrMobile } from '../utils/mobile'
-import { network } from '../utils'
+import Mailto from 'react-protected-mailto';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import SEO from '../components/SEO';
+import { getIsSsrMobile } from '../utils/mobile';
+import { network } from '../utils';
 
 export async function getServerSideProps(context) {
-  const { locale } = context
+  const { locale } = context;
   return {
     props: {
       isSsrMobile: getIsSsrMobile(context),
-      ...(await serverSideTranslations(locale, ['common']))
-    }
-  }
+      ...(await serverSideTranslations(locale, ['common'])),
+    },
+  };
 }
 
 export default function XrpTaxes() {
   return (
     <>
       <SEO
-        title="XRP and Xah Taxes"
+        title="XRP and XAH Taxes"
         description="How XRPL and Xahau Explorers can help you with taxes"
         noindex={network !== 'mainnet'}
       />
-      <div className="content-center">
-        <h1>XRP and XAH Taxes</h1>
-        <p className="left-align">
-          The booming world of cryptocurrencies has led to an explosion of interest in not only investing but also
-          understanding the various tax implications associated with digital assets.
-        </p>
-
-        <h2 className="left-align">Why are XRP and XAH Taxable</h2>
-        <p className="left-align">
-          In many jurisdictions, cryptocurrencies - XRP and XAH included - are treated as capital assets.
-        </p>
-        <p className="left-align">
-          Every transaction - whether it's buying, selling, sending, or receiving - can have tax implications. The most
-          crucial thing in tax reporting is the accuracy of recording.
-        </p>
-
-        <h2 className="left-align">How XRPL and Xahau Explorers Assist Taxpayers</h2>
-        <div className="content-center">
-          <div className="image-wrapper">
-            <img src="/images/pages/xrp-xah-taxes-1.jpeg" alt="Illustration Problem" className="image" />
-          </div>
-        </div>
-
-        <div className="content-center">
-          <div className="image-wrapper">
-            <img src="/images/pages/xrp-xah-taxes-2.jpeg" alt="Illustration Solution" className="image" />
-          </div>
-
-          <div className="image-wrapper">
-            <img src="/images/pages/xrp-xah-taxes-3.jpeg" alt="Illustration We offer" className="image" />
-          </div>
-        </div>
-
-        <div className="content-center">
-          <p className="left-align">
-            <h2>Watch these videos to learn how to start using this tool:</h2>
-          </p>
-          <div style={{ marginBottom: '20px' }}>
-            <iframe
-              width="765"
-              height="437,5"
-              src="https://www.youtube.com/embed/efJFyfSwXIM"
-              title=" XRPL Balance Change History"
-              allowFullScreen
-            ></iframe>
-          </div>
-          <div>
-            <iframe
-              width="765"
-              height="437,5"
-              src="https://www.youtube.com/embed/b5PSMhDUah0"
-              title="Xahau Balance Change History "
-              allowFullScreen
-            ></iframe>
-          </div>
-        </div>
-
-        <h2 className="left-align">How XRPL and Xahau Explores Assist Crypto Tax Platforms</h2>
-        <div className="content-center">
-          <div className="image-wrapper">
-            <img src="/images/pages/xrp-xah-taxes-4.jpeg" alt="Illustration You Get" className="image" />
-          </div>
-
-          <div className="image-wrapper">
-            <img src="/images/pages/xrp-xah-taxes-5.jpeg" alt="Illustration Your Benefits" className="image" />
-          </div>
-        </div>
-
-        <div className="content-center">
-          <p className="left-align">
-            We would love to explore partnership opportunities and learn about your interest in expanding your services.
-            If you're interested, please reach out so we can discuss the details further at{' '}
-            <Mailto email="partner@bithomp.com" headers={{ subject: 'Termination' }} />.
+      <div className="container">
+        <div className="hero">
+          <h1>XRP and XAH Taxes</h1>
+          <p>
+            The booming world of cryptocurrencies has led to an explosion of interest in not only investing but also
+            understanding the various tax implications associated with digital assets.
           </p>
         </div>
+
+        <section>
+          <h2>Why Are XRP and XAH Taxable?</h2>
+          <p>
+            In many jurisdictions, cryptocurrencies—XRP and XAH included—are treated as capital assets. Every transaction—buying, selling, sending, or receiving—can have tax implications. Accurate recording is crucial for tax reporting.
+          </p>
+        </section>
+
+        <section className="assist">
+          <h2>How XRPL and Xahau Explorers Assist Taxpayers</h2>
+          <div className="feature-grid">
+            <div className="feature">
+              <h3>Existing Problems</h3>
+              <p> Many users need transaction exports for tax reporting, but existing tools fall short in several critical areas:</p>
+              <ul>
+                <li>Limited Token Support: Most solutions ignore IOUs (DEX tokens), leaving gaps in reporting.</li>
+                <li>Inaccurate Calculations: Transfer fees are often overlooked.</li>
+                <li>Lack of XRPL and XAHAU Compatibility: Many platforms don’t support these ledgers.</li>
+              </ul>
+            </div>
+            <div className="feature">
+              <h3>Our Solution</h3>
+              <p>
+                Get the most comprehensive XRPL and XAHAU transaction exports for your <strong>tax reports:</strong>
+              </p>
+              <div className="links">
+                <a href="https://xrplexplorer.com/admin/pro/history" target="_blank" rel="noopener noreferrer">XRPL</a>
+                <a href="https://xahauexplorer.com/admin/pro/history" target="_blank" rel="noopener noreferrer">XAHAU</a>
+              </div>
+              <h3>We Offer</h3>
+              <ul>
+                <li>Monitor up to 5 Wallets: Track the full history of balance changes.</li>
+                <li>Extensive Calculations: Includes payments, NFT sales, AMM transactions, and network fees.</li>
+                <li>Accurate Token Value Calculations: Historical prices in 40 fiat currencies based on order book depth.</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <section className="assist">
+          <h2>How XRPL and Xahau Explorers Assist Crypto Tax Platforms</h2>
+          <div className="feature">
+            <h3>You Get</h3>
+            <ul>
+              <li>Expand the range of your available services to meet community demand.</li>
+              <li>Build stronger, more lasting relationships with clients by addressing specific tax reporting needs.</li>
+            </ul>
+          </div>
+          <div className="feature" style={{ marginTop: '30px' }}>
+            <h3>Your Benefits of Working with Us:</h3>
+            <ul>
+              <li><strong>XRPL Support:</strong> One of the oldest blockchains, XRPL has been active since 2012 with a large user base. We ensure up-to-date XRPL support by adding new transaction types and integrating amendments even before they go live.</li>
+              <li><strong>Xahau Support:</strong> XAHAU, launched in 2023, is an XRPL-based network with smart contracts (hooks). Coopbank, a bank with over 13 million customers, has started using the Xahau blockchain for its remittance service.</li>
+              <li><strong>All Types of Transactions Support:</strong> You will have support for all Token type of transactions on DEX, including the new AMM transaction types.</li>
+              <li><strong>No Need for XRPL Integration:</strong> You don’t need to integrate XRPL, which is very different from EVM or PoW chains. You don’t need to run your own XRPL node.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section className="cta">
+          <p>
+            We would love to explore partnership opportunities and learn about your interest in expanding your services. Contact us at{' '}
+            <Mailto email="partner@bithomp.com" headers={{ subject: 'Partnership Inquiry' }} />.
+          </p>
+        </section>
       </div>
 
       <style jsx>{`
-        .content-center {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          justify-content: center;
+        .container {
+          max-width: 1200px;
+          margin: 0 auto;
+          padding: 20px;
+          font-family: 'Open Sans', sans-serif;
+          line-height: 1.6;
+          color: #333; /* Default text color for light backgrounds */
         }
 
-        .left-align {
-          text-align: left;
-          width: 100%;
-          max-width: 900px;
+        .hero {
+          text-align: center;
+          padding: 40px 20px;
+          background: linear-gradient(135deg, #4BA8B6, #A1D7E8);
+          color: white;
+          border-radius: 10px;
+          margin-bottom: 30px;
         }
 
-        .image-wrapper {
-          display: flex;
-          justify-content: center;
+        .hero h1 {
+          font-size: 2.5rem;
+          margin-bottom: 10px;
+        }
+
+        .hero p {
+          font-size: 1.2rem;
+        }
+
+        section {
           margin-bottom: 40px;
         }
 
-        .image {
-          width: 100%;
-          max-width: 900px; /* Limits the width for large screens */
-          height: auto;
-          border: 5px solid #ddd; /* Soft border around the image */
-          border-radius: 15px; /* Rounded corners */
-          transition: transform 0.4s ease, box-shadow 0.4s ease; /* Smooth transitions */
-          object-fit: cover;
+        h2 {
+          font-size: 1.8rem;
+          margin-bottom: 20px;
+          color: #1a1a1a; /* Darker color for better contrast */
         }
 
-        .image:hover {
-          transform: scale(1.03); /* Slight zoom effect */
-          box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1); /* Subtle shadow around the image */
+        .assist .feature-grid {
+          display: flex;
+          gap: 20px;
+          flex-wrap: wrap;
+        }
+
+        .feature {
+          flex: 1 1 calc(50% - 20px);
+          background: #f9f9f9; /* Light background for sections */
+          border: 1px solid #ddd; /* Border for definition */
+          border-radius: 10px;
+          padding: 20px;
+          box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .feature h3 {
+          color: #4BA8B6; /* Section header color */
+          margin-bottom: 10px;
+        }
+
+        .links {
+          display: flex;
+          gap: 15px;
+        }
+
+        .links a {
+          background: #4BA8B6;
+          color: white;
+          padding: 10px 20px;
+          text-decoration: none;
+          border-radius: 5px;
+          transition: background 0.3s ease;
+          font-weight: bold;
+        }
+
+        .links a:hover {
+          background: #35909E;
+        }
+
+        .cta {
+          text-align: center;
+          background: #f9f9f9;
+          padding: 30px;
+          border-radius: 10px;
+          box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .cta p {
+          font-size: 1.2rem;
+          color: #333; /* Ensuring color contrast in the CTA */
+        }
+
+        /* Additional Styles for Dark Mode */
+        @media (prefers-color-scheme: dark) {
+          .container {
+            color: #ddd; /* Light text for dark backgrounds */
+            background-color: #121212; /* Dark background for the container */
+          }
+
+          .hero {
+            background: linear-gradient(135deg, #005d69, #007a8c); /* Darker gradient for hero */
+            color: #eee; /* Light text color for hero */
+          }
+
+          .feature {
+            background: #1e1e1e; /* Dark background for feature sections */
+            border: 1px solid #444; /* Darker border */
+          }
+
+          h2 {
+            color: #fff; /* Light color for headings in dark mode */
+          }
+
+          .assist p {
+            color: #ddd; /* Light color for paragraphs in dark mode */
+          }
+
+          .cta {
+            background: #1e1e1e; /* Dark background for CTA */
+          }
+
+          .cta p {
+            color: #eee; /* Light color for CTA text */
+          }
+
+          .feature h3 {
+            color: #4BA8B6; /* Maintain header color contrast in dark mode */
+          }
+
+          .feature ul {
+            color: #ddd; /* Light color for list items in dark mode */
+          }
+
+          .links a {
+            background: #4BA8B6;
+            color: white;
+          }
+
+          /* Adjust paragraph colors for better readability */
+          .assist p, .hero p, .cta p {
+            color: #ccc; /* Lighter text for better contrast */
+          }
         }
       `}</style>
     </>
-  )
+  );
 }
+
+
+
+
