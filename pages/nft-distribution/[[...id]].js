@@ -1,11 +1,8 @@
 import { useTranslation, Trans } from 'next-i18next'
 import { useState, useEffect } from 'react'
 import axios from 'axios'
-import { CSVLink } from 'react-csv'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useRouter } from 'next/router'
-import InfiniteScroll from 'react-infinite-scroll-component'
-import Link from 'next/link'
 
 import { FaSortAmountDown } from 'react-icons/fa'
 
@@ -19,9 +16,9 @@ import {
 } from '../../utils'
 import { getIsSsrMobile } from '../../utils/mobile'
 import { isValidTaxon } from '../../utils/nft'
-import { nftsExplorerLink, addressUsernameOrServiceLink, userOrServiceLink, niceNumber } from '../../utils/format'
+import { nftsExplorerLink, addressUsernameOrServiceLink, niceNumber } from '../../utils/format'
 
-import DownloadIcon from '../../public/images/download.svg'
+import FiltersFrame from '../../components/Layout/FiltersFrame'
 
 export async function getServerSideProps(context) {
   const { locale, query } = context
@@ -44,6 +41,9 @@ export async function getServerSideProps(context) {
 
 import SEO from '../../components/SEO'
 import CopyButton from '../../components/UI/CopyButton'
+import AddressInput from '../../components/UI/AddressInput'
+import FormInput from '../../components/UI/FormInput'
+import InfiniteScrolling from '../../components/Layout/InfiniteScrolling'
 
 export default function NftDistribution({
   issuerQuery,
@@ -67,6 +67,7 @@ export default function NftDistribution({
   const [taxonInput, setTaxonInput] = useState(taxonQuery)
   const [order, setOrder] = useState(orderQuery)
   const [hasMore, setHasMore] = useState('first')
+  const [filtersHide, setFiltersHide] = useState(false)
 
   const checkApi = async () => {
     /*
@@ -197,7 +198,7 @@ export default function NftDistribution({
     { label: t('table.total', { ns: 'nft-distribution' }), key: 'total' }
   ]
 
-  const searchClick = () => {
+  useEffect(() => {
     let queryAddList = []
     let queryRemoveList = []
     if (isAddressOrUsername(issuerInput)) {
@@ -228,19 +229,15 @@ export default function NftDistribution({
       queryRemoveList.push('taxon')
     }
     addAndRemoveQueryParams(router, queryAddList, queryRemoveList)
-  }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [issuerInput, taxonInput])
 
-  const enterPress = (e) => {
-    if (e.key === 'Enter') {
-      searchClick()
+  const onTaxonInput = (value) => {
+    if (isValidTaxon(value) && issuerInput) {
+      setTaxonInput(value)
+    } else {
+      setTaxonInput('')
     }
-  }
-
-  const onTaxonInput = (e) => {
-    if (!/^\d+$/.test(e.key)) {
-      e.preventDefault()
-    }
-    enterPress(e)
   }
 
   const changeOrder = (order) => {
@@ -263,150 +260,72 @@ export default function NftDistribution({
           (order === 'selfIssued' ? ' ' + t('table.self-issued', { ns: 'nft-distribution' }) : '')
         }
       />
-      <div className="content-text">
-        <h1 className="center">{t('header', { ns: 'nft-distribution' })}</h1>
-        <div className="center">
-          <span className="halv">
-            <span className="input-title">
-              {t('table.issuer')} {userOrServiceLink(data, 'issuer')}
-            </span>
-            <input
-              placeholder={t('nfts.search-by-issuer')}
-              value={issuerInput}
-              onChange={(e) => {
-                setIssuerInput(e.target.value)
-              }}
-              onKeyPress={enterPress}
-              className="input-text"
-              spellCheck="false"
-              maxLength="35"
-            />
-          </span>
+      <h1 className="center">{t('header', { ns: 'nft-distribution' })}</h1>
+      <FiltersFrame
+        contentStyle={{}}
+        count={owners?.length}
+        total={data?.summary?.totalOwners}
+        hasMore={hasMore}
+        data={owners || []}
+        csvHeaders={csvHeaders}
+        filtersHide={filtersHide}
+        setFiltersHide={setFiltersHide}
+        order={order}
+        setOrder={changeOrder}
+        orderList={
+          !issuer
+            ? [
+                { value: 'nonSelfIssued', label: t('table.non-self-issued', { ns: 'nft-distribution' }) },
+                { value: 'selfIssued', label: t('table.self-issued', { ns: 'nft-distribution' }) },
+                { value: 'total', label: t('table.total', { ns: 'nft-distribution' }) }
+              ]
+            : null
+        }
+      >
+        <>
+          <AddressInput
+            title={t('table.issuer')}
+            placeholder={t('nfts.search-by-issuer')}
+            setValue={setIssuerInput}
+            rawData={data}
+            defaultValue={data?.issuer}
+            type="issuer"
+          />
           {!xahauNetwork && (
-            <span className="halv">
-              <span className="input-title">{t('table.taxon')}</span>
-              <input
-                placeholder={t('nfts.search-by-taxon')}
-                value={taxonInput}
-                onChange={(e) => {
-                  setTaxonInput(e.target.value)
-                }}
-                onKeyPress={onTaxonInput}
-                className="input-text"
-                spellCheck="false"
-                maxLength="35"
-                disabled={issuerInput ? false : true}
-              />
-            </span>
+            <FormInput
+              title={t('table.taxon')}
+              placeholder={t('nfts.search-by-taxon')}
+              setValue={onTaxonInput}
+              disabled={issuerInput ? false : true}
+              defaultValue={data?.taxon}
+            />
           )}
-        </div>
-        <p className="center" style={{ marginBottom: '20px' }}>
-          <input type="button" className="button-action" value={t('button.search')} onClick={searchClick} />
-        </p>
-
-        {data?.summary?.totalNfts && (
-          <p className="center">
-            <Trans
-              i18nKey={order}
-              ns="nft-distribution"
-              values={{
-                users: niceNumber(data.summary?.totalOwners),
-                nfts: niceNumber(data.summary.totalNfts)
-              }}
-            >
-              {niceNumber(data.summary?.totalOwners)} users own {niceNumber(data.summary.totalNfts)} NFTs
-            </Trans>
-            {windowWidth < 960 ? (
-              <>
-                <br />
-                <br />
-              </>
-            ) : (
-              ' '
-            )}
-            <CSVLink
-              data={owners}
-              headers={csvHeaders}
-              filename={
-                'nft_destribution_' + (data.issuer ? data.issuer + '_' : '') + new Date().toLocaleString() + '.csv'
-              }
-              className="button-action thin narrow"
-            >
-              <DownloadIcon /> CSV
-            </CSVLink>
-          </p>
-        )}
-
-        {windowWidth && windowWidth < 960 && !issuer ? (
-          <>
-            <p>
-              <span
-                onClick={() => changeOrder('nonSelfIssued')}
-                style={order !== 'nonSelfIssued' ? { cursor: 'pointer' } : {}}
-                className={order === 'nonSelfIssued' ? 'blue' : ''}
+          {data?.summary?.totalNfts && (
+            <p className="center">
+              <Trans
+                i18nKey={order}
+                ns="nft-distribution"
+                values={{
+                  users: niceNumber(data.summary?.totalOwners),
+                  nfts: niceNumber(data.summary.totalNfts)
+                }}
               >
-                {t('table.non-self-issued', { ns: 'nft-distribution' })} <FaSortAmountDown />
-              </span>
+                {niceNumber(data.summary?.totalOwners)} users own {niceNumber(data.summary.totalNfts)} NFTs
+              </Trans>
             </p>
-            <p>
-              <span
-                onClick={() => changeOrder('selfIssued')}
-                style={order !== 'selfIssued' ? { cursor: 'pointer' } : {}}
-                className={order === 'selfIssued' ? 'blue' : ''}
-              >
-                {t('table.self-issued', { ns: 'nft-distribution' })} <FaSortAmountDown />
-              </span>
-            </p>
-            <p>
-              <span
-                onClick={() => changeOrder('total')}
-                style={order !== 'total' ? { cursor: 'pointer' } : {}}
-                className={order === 'total' ? 'blue' : ''}
-              >
-                {t('table.total', { ns: 'nft-distribution' })} <FaSortAmountDown />
-              </span>
-            </p>
-          </>
-        ) : (
-          ''
-        )}
-
-        <InfiniteScroll
+          )}
+        </>
+        <InfiniteScrolling
           dataLength={owners.length}
-          next={checkApi}
+          loadMore={checkApi}
           hasMore={hasMore}
-          loader={
-            !errorMessage && (
-              <p className="center">
-                {hasMore !== 'first' ? (
-                  <>
-                    {!sessionToken ? (
-                      <Trans i18nKey="general.login-to-bithomp-pro">
-                        Loading more data is available to <Link href="/admin">logged-in</Link> Bithomp Pro subscribers.
-                      </Trans>
-                    ) : (
-                      <>
-                        {!subscriptionExpired ? (
-                          t('general.loading')
-                        ) : (
-                          <Trans i18nKey="general.renew-bithomp-pro">
-                            Your Bithomp Pro subscription has expired.
-                            <Link href="/admin/subscriptions">Renew your subscription</Link>.
-                          </Trans>
-                        )}
-                      </>
-                    )}
-                  </>
-                ) : (
-                  t('general.loading')
-                )}
-              </p>
-            )
-          }
-          endMessage={<p className="center">End of list</p>}
+          errorMessage={errorMessage}
+          subscriptionExpired={subscriptionExpired}
+          sessionToken={sessionToken}
+          //height={!filtersHide ? '1300px' : '100vh'}
         >
           {!windowWidth || windowWidth >= 960 ? (
-            <table className="table-large shrink">
+            <table className="table-large">
               <thead>
                 <tr>
                   <th className="center">{t('table.index')}</th>
@@ -567,23 +486,8 @@ export default function NftDistribution({
               </tbody>
             </table>
           )}
-        </InfiniteScroll>
-
-        <center>
-          {!hasMore && (
-            <CSVLink
-              data={owners}
-              headers={csvHeaders}
-              filename={
-                'nft_destribution_' + (data.issuer ? data.issuer + '_' : '') + new Date().toLocaleString() + '.csv'
-              }
-              className="button-action thin narrow"
-            >
-              <DownloadIcon /> CSV
-            </CSVLink>
-          )}
-        </center>
-      </div>
+        </InfiniteScrolling>
+      </FiltersFrame>
     </>
   )
 }

@@ -10,6 +10,7 @@ export default function InfiniteScrolling({
   errorMessage,
   subscriptionExpired,
   sessionToken,
+  height,
   children
 }) {
   const { t } = useTranslation()
@@ -25,6 +26,7 @@ export default function InfiniteScrolling({
       dataLength={dataLength}
       next={loadMore}
       hasMore={hasMore}
+      height={height}
       loader={
         !errorMessage &&
         rendered && (
