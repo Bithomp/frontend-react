@@ -68,7 +68,21 @@ export default function XrpTaxes() {
             </div>
           </div>
         </section>
-
+        <section className="videos">
+          <h2>Watch These Videos to Learn How to Start Using These Tools:</h2>
+          <div className="video-wrapper">
+            <iframe
+              src="https://www.youtube.com/embed/efJFyfSwXIM"
+              title="XRPL Balance Change History"
+              allowFullScreen
+            ></iframe>
+            <iframe
+              src="https://www.youtube.com/embed/b5PSMhDUah0"
+              title="Xahau Balance Change History"
+              allowFullScreen
+            ></iframe>
+          </div>
+        </section>
         <section className="assist">
           <h2>How XRPL and Xahau Explorers Assist Crypto Tax Platforms</h2>
           <div className="feature">
