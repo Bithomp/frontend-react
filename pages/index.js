@@ -62,7 +62,7 @@ export default function Home({ selectedCurrency, setSelectedCurrency, showAds })
       <LogoJsonLd logo={imagePath + 'longDark.svg'} url={server} />
       <SocialProfileJsonLd
         type="Organization"
-        name={xahauNetwork ? 'XAHAU Explorer' : 'XRPL Explorer'}
+        name={xahauNetwork ? 'XAHAU Explorer' : 'XRP Explorer'}
         url={server}
         sameAs={
           xahauNetwork
