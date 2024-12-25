@@ -125,7 +125,7 @@ export default function Products() {
           text: t('items.nft-marketplaces', { ns: 'products' })
         },
         {
-          link: '/nft-volumes?list=collections',
+          link: '/nft-volumes',
           text: t('items.nft-collections', { ns: 'products' })
         }
       )

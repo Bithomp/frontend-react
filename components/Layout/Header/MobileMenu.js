@@ -234,11 +234,7 @@ export default function MobileMenu({
           {/* Hide NFT-volumes for XAHAU while they are not ready yet */}
           {!xahauNetwork && (
             <>
-              <Link
-                href="/nft-volumes?list=collections&period=week"
-                className="mobile-menu-item"
-                onClick={mobileMenuToggle}
-              >
+              <Link href="/nft-volumes?period=week" className="mobile-menu-item" onClick={mobileMenuToggle}>
                 {t('menu.nft.collections')}
               </Link>
               <Link

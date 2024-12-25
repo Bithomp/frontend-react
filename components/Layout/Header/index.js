@@ -203,7 +203,7 @@ export default function Header({
             {/* Hide NFT menu for XAHAU while they are not ready yet */}
             {!xahauNetwork && (
               <>
-                <Link href="/nft-volumes?list=collections&period=week">{t('menu.nft.collections')}</Link>
+                <Link href="/nft-volumes?period=week">{t('menu.nft.collections')}</Link>
                 <Link href="/nft-volumes?list=marketplaces&period=week">{t('menu.nft.marketplaces')}</Link>
                 <Link href="/nft-volumes?list=charts&period=week">{t('menu.nft.volumes')}</Link>
               </>
