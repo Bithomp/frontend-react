@@ -261,7 +261,7 @@ export const ipfsUrl = (uri, type = 'image', gateway = 'our') => {
     url = stripText(cid + url.split(cid).pop())
     url = url.replace('#', '%23')
     if (gateway === 'our' && (type === 'image' || type === 'video' || type === 'thumbnail' || type === 'preview')) {
-      return 'https://ipfs.bithomp.com/' + type + '/' + url + filename
+      return 'https://cdn.bithomp.com/' + type + '/' + url + filename
     } else if (gateway === 'cl' && type === 'model') {
       return stripText(uri)
     } else if (gateway === 'cl' || type === 'audio' || type === 'model' || type === 'viewer') {

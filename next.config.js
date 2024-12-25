@@ -21,11 +21,6 @@ module.exports = {
       },
       {
         protocol: 'https',
-        hostname: 'ipfs.bithomp.com',
-        port: ''
-      },
-      {
-        protocol: 'https',
         hostname: 'pbs.twimg.com',
         port: ''
       },
