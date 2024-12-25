@@ -6,14 +6,14 @@ import moment from 'moment'
 import momentDurationFormatSetup from 'moment-duration-format'
 
 import LinkIcon from '../public/images/link.svg'
-import { stripText, nativeCurrency, nativeCurrenciesImages } from '.'
+import { stripText, nativeCurrency, nativeCurrenciesImages, avatarServer } from '.'
 import { mpUrl } from './nft'
 import Image from 'next/image'
 
 momentDurationFormatSetup(moment)
 
 export const AddressWithIcon = ({ children, address }) => {
-  let imageUrl = 'https://cdn.bithomp.com/avatar/' + address
+  let imageUrl = avatarServer + address
   if (!address) {
     imageUrl = nativeCurrenciesImages[nativeCurrency]
   }

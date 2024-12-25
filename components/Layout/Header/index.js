@@ -3,7 +3,16 @@ import { useTranslation } from 'next-i18next'
 import { useState, useEffect } from 'react'
 import MobileMenu from './MobileMenu'
 
-import { devNet, xahauNetwork, ledgerName, nativeCurrency, ledgerSubName, network, useWidth } from '../../../utils'
+import {
+  devNet,
+  xahauNetwork,
+  ledgerName,
+  nativeCurrency,
+  ledgerSubName,
+  network,
+  useWidth,
+  avatarServer
+} from '../../../utils'
 
 import Image from 'next/image'
 import Switch from './Switch'
@@ -289,7 +298,7 @@ export default function Header({
                   <>
                     <Image
                       alt="avatar"
-                      src={'https://cdn.bithomp.com/avatar/' + address}
+                      src={avatarServer + address}
                       width="24"
                       height="24"
                       style={{ marginRight: '5px' }}

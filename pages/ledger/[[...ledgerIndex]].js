@@ -5,7 +5,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 import SEO from '../../components/SEO'
 
-import { network, ledgerName, minLedger } from '../../utils'
+import { network, ledgerName, minLedger, avatarServer } from '../../utils'
 import { getIsSsrMobile } from '../../utils/mobile'
 import { fullDateAndTime, shortHash, addressUsernameOrServiceLink } from '../../utils/format'
 import { LedgerLink } from '../../utils/links'
@@ -171,7 +171,7 @@ export default function Ledger({ pageMeta, ledgerIndexQuery }) {
                           <td>{tx.type}</td>
                           <td>
                             <Image
-                              src={'https://cdn.bithomp.com/avatar/' + tx.address}
+                              src={avatarServer + tx.address}
                               alt={tx.addressDetails?.service || 'service logo'}
                               height={20}
                               width={20}

@@ -500,6 +500,8 @@ const webAddressParts = server?.replace('http://', '').replace('https://', '').s
 export const webSiteName =
   webAddressParts[webAddressParts.length - 2] + '.' + webAddressParts[webAddressParts.length - 1]
 
+export const avatarServer = 'https://cdn.' + server.replace('https://', '') + '/avatar/'
+
 export const networksIds = {
   0: { server: 'https://xrplexplorer.com', name: 'mainnet' },
   1: { server: 'https://test.xrplexplorer.com', name: 'testnet' },

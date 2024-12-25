@@ -9,7 +9,7 @@ import SEO from '../components/SEO'
 import CheckBox from '../components/UI/CheckBox'
 
 import { addressUsernameOrServiceLink, amountFormat, fullDateAndTime, shortHash, timeFromNow } from '../utils/format'
-import { devNet, useWidth, xahauNetwork, countriesTranslated } from '../utils'
+import { devNet, useWidth, xahauNetwork, countriesTranslated, avatarServer } from '../utils'
 import { axiosServer, passHeaders } from '../utils/axios'
 import { getIsSsrMobile } from '../utils/mobile'
 
@@ -760,12 +760,7 @@ export default function Validators({ amendment, initialData, initialErrorMessage
                 validators.validators.map((v, i) => (
                   <tr key={i}>
                     <td style={{ padding: '5px' }} className="center">
-                      <Image
-                        alt="avatar"
-                        src={'https://cdn.bithomp.com/avatar/' + v.publicKey}
-                        width="35"
-                        height="35"
-                      />
+                      <Image alt="avatar" src={avatarServer + v.publicKey} width="35" height="35" />
                       <br />
                       {i + 1}
                     </td>
@@ -901,12 +896,7 @@ export default function Validators({ amendment, initialData, initialErrorMessage
                 validators.validators.map((v, i) => (
                   <tr key={v.publicKey}>
                     <td className="center">
-                      <Image
-                        alt="avatar"
-                        src={'https://cdn.bithomp.com/avatar/' + v.publicKey}
-                        width="35"
-                        height="35"
-                      />
+                      <Image alt="avatar" src={avatarServer + v.publicKey} width="35" height="35" />
                       <br />
                       {i + 1}
                     </td>
