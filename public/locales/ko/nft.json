@@ -5,18 +5,18 @@
   "nft-id-decoded-data": "NFT ID 디코딩 데이터",
   "nft-not-found-on-that-network": "이 NFT는 <1>{{network}}</1> 네트워크에서 찾을 수 없습니다.",
   "table": {
-    "digest": "Digest",
-    "attention": "Attention",
+    "digest": "다이제스트",
+    "attention": "주의",
     "attention-texts": {
-      "no-uri": "That NFT lacks an URI, it is incompatible with commonly accepted standards.",
-      "no-metadata": "The given URI is missing the metadata for that NFT. It goes against commonly accepted standards.",
-      "not-transferable": "This NFT is not transferable; it can only be transferred to and from the issuer.",
-      "burnable": "The issuer (or an entity authorized by the issuer) can destroy the NFT.",
-      "no-digest": "There is no Digest provided for that NFT. The NFT integrity cannot be verified.",
-      "invalid-digest": "The NFT integrity check failed. The Digest does not match the NFT metadata."
+      "no-uri": "해당 NFT에는 URI가 없습니다. 이는 일반적으로 인정된 표준과 호환되지 않습니다.",
+      "no-metadata": "제공된 URI에 해당 NFT의 메타데이터가 없습니다. 이는 일반적으로 인정된 표준에 맞지 않습니다.",
+      "not-transferable": "이 NFT는 전송할 수 없습니다. 발행자와 발행자로부터만 전송 가능합니다.",
+      "burnable": "발행자(또는 발행자가 승인한 엔티티)가 NFT를 파괴할 수 있습니다.",
+      "no-digest": "해당 NFT에 대한 다이제스트가 제공되지 않았습니다. NFT의 무결성을 확인할 수 없습니다.",
+      "invalid-digest": "NFT 무결성 검사에 실패했습니다. 다이제스트가 NFT 메타데이터와 일치하지 않습니다."
     },
     "warnings": {
-      "nft-crawler-delay": "Some data is outdated, the last update: {{lastUpdate}}. Our servers are catching up, check later for more accurate data."
+      "nft-crawler-delay": "일부 데이터가 오래되었습니다. 마지막 업데이트: {{lastUpdate}}. 서버가 데이터를 업데이트 중입니다. 더 정확한 데이터를 확인하려면 나중에 다시 확인하십시오."
     }
   }
 }
