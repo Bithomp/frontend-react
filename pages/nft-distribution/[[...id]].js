@@ -51,7 +51,8 @@ export default function NftDistribution({
   idQuery,
   orderQuery,
   subscriptionExpired,
-  sessionToken
+  sessionToken,
+  setSessionToken
 }) {
   const { t } = useTranslation()
   const windowWidth = useWidth()
@@ -177,7 +178,11 @@ export default function NftDistribution({
           setHasMore(false)
         }
         if (newdata.error) {
-          setErrorMessage(newdata.error)
+          if (newdata.error === 'This endpoint/query is available only within bithomp pro subscription') {
+            setSessionToken('')
+          } else {
+            setErrorMessage(newdata.error)
+          }
         } else {
           console.log(newdata)
         }
