@@ -888,7 +888,8 @@ export default function TermsAndConditions() {
         <h2>For European Union (EU) Users</h2>
         <p>
           If You are a European Union consumer, you will benefit from any mandatory provisions of the law of the country
-          in which you are resident in.
+          in which you are resident in. You can access the European Commission's Online Dispute Resolution platform to resolve disputes: 
+          <a href="https://ec.europa.eu/consumers/odr/main/?event=main.home2.show"> Online Dispute Resolution</a>.
         </p>
         <h2>United States Legal Compliance</h2>
         <p>
