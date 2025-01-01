@@ -140,7 +140,6 @@ export default function XrpTaxes() {
         </section>
       </div>
 
-      {/* Styles */}
       <style jsx>{`
         .container {
           max-width: 1200px;
