@@ -319,8 +319,34 @@ export default function Account({
                   <>
                     {data?.address && (
                       <>
+                        <table className="table-details autowidth show-on-big-w800">
+                          <thead></thead>
+                          <tbody>
+                            <tr>
+                              <td style={{ paddingTop: 8, paddingLeft: 10 }}>
+                                <Image
+                                  alt="avatar"
+                                  src={avatarSrc(data, { noCache: true })}
+                                  width="60"
+                                  height="60"
+                                  priority
+                                />
+                              </td>
+                              <td>
+                                {data.username ? <h1>{data.username}</h1> : <b>No username</b>}
+                                <br />
+                                {!data.username && data?.address === account?.address ? (
+                                  <Link href={'/username?address=' + data.address}>Register</Link>
+                                ) : (
+                                  <br />
+                                )}
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+
                         <div className="column-left">
-                          <center>
+                          <div className="hide-on-small-w800">
                             <Image
                               alt="avatar"
                               src={avatarSrc(data, { noCache: true })}
@@ -329,7 +355,7 @@ export default function Account({
                               className="avatar"
                               priority
                             />
-                          </center>
+                          </div>
 
                           <table className="table-details autowidth">
                             <thead>
@@ -356,26 +382,14 @@ export default function Account({
                                       showYearDropdown
                                     />
                                   </div>
-                                  <div>
+                                  <div className="flex flex-center">
                                     <button
                                       onClick={() => setLedgerTimestamp(ledgerTimestampInput)}
-                                      className="button-action thin narrow"
-                                      style={{
-                                        width: 'calc(50% - 30px)',
-                                        marginRight: '10px',
-                                        display: 'inline-block'
-                                      }}
+                                      className="button-action thin button-wide"
                                     >
                                       Update
                                     </button>{' '}
-                                    <button
-                                      onClick={resetTimeMachine}
-                                      className="button-action thin narrow"
-                                      style={{
-                                        width: 'calc(50% - 30px)',
-                                        display: 'inline-block'
-                                      }}
-                                    >
+                                    <button onClick={resetTimeMachine} className="button-action thin button-wide">
                                       Reset
                                     </button>
                                   </div>
@@ -451,7 +465,7 @@ export default function Account({
                                   <td colSpan="2">
                                     <div className="flex flex-center">
                                       <button
-                                        className="button-action wide center"
+                                        className="button-action button-wide thin"
                                         onClick={() =>
                                           setSignRequest({
                                             action: 'setAvatar',
@@ -470,7 +484,7 @@ export default function Account({
                                       </button>
 
                                       <button
-                                        className="button-action wide center"
+                                        className="button-action button-wide thin"
                                         onClick={() =>
                                           setSignRequest({
                                             action: 'setDomain',
@@ -669,6 +683,31 @@ export default function Account({
           </>
         )}
       </div>
+      <style jsx>{`
+        .hide-on-small-w800 {
+          @media only screen and (max-width: 800px) {
+            display: none;
+          }
+        }
+
+        .show-on-big-w800 {
+          display: none;
+          @media only screen and (max-width: 800px) {
+            display: inline-block;
+          }
+        }
+
+        @media (min-width: 800px) {
+          .button-wide {
+            width: 100%;
+          }
+        }
+        @media (max-width: 800px) {
+          .button-wide {
+            width: calc(50% - 27px);
+          }
+        }
+      `}</style>
     </>
   )
 }
