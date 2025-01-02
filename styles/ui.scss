@@ -188,7 +188,6 @@ a, .link {
   cursor: pointer;
   color: var(--accent-link);
   transition: color 0.5s;
-  text-decoration: none;
   &:hover {
     color: var(--accent-link-hover);
   }
@@ -580,6 +579,7 @@ table {
 }
 
 .button-action {
+  text-decoration: none;
   display: inline-block;
   box-sizing: content-box;
   line-height: 38px;
