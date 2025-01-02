@@ -344,7 +344,9 @@ export default function Account({
                                 {data.service?.name ? (
                                   <span className="green">{data.service?.name}</span>
                                 ) : data?.address === account?.address && data?.ledgerInfo?.activated ? (
-                                  <Link href={'/username?address=' + data.address}>Register username</Link>
+                                  <>
+                                    Username <Link href={'/username?address=' + data.address}>register</Link>
+                                  </>
                                 ) : (
                                   'No username'
                                 )}
@@ -353,10 +355,20 @@ export default function Account({
                             )}
                             {data?.ledgerInfo?.activated ? (
                               <>
-                                <span className="green">Active </span>
-                                <br />
-                                {data?.ledgerInfo?.lastSubmittedAt && (
-                                  <>{timeFromNow(data.ledgerInfo.lastSubmittedAt, i18n)}</>
+                                {data.ledgerInfo.lastSubmittedAt ? (
+                                  <>
+                                    <span className="green">Active </span>
+                                    <br />
+                                    {data?.ledgerInfo?.lastSubmittedAt && (
+                                      <>{timeFromNow(data.ledgerInfo.lastSubmittedAt, i18n)}</>
+                                    )}
+                                  </>
+                                ) : (
+                                  <>
+                                    Activated
+                                    <br />
+                                    {timeFromNow(data.inception, i18n)}
+                                  </>
                                 )}
                               </>
                             ) : (
@@ -602,15 +614,21 @@ export default function Account({
                                 <td>{t('table.status')}</td>
                                 {data?.ledgerInfo?.activated ? (
                                   <td>
-                                    <span className="green">Active </span>
-                                    {data?.ledgerInfo?.lastSubmittedAt && (
+                                    {data.ledgerInfo.lastSubmittedAt ? (
                                       <>
-                                        {timeFromNow(data.ledgerInfo.lastSubmittedAt, i18n)} (
-                                        {fullDateAndTime(data.ledgerInfo.lastSubmittedAt)})
+                                        <span className="green">Active </span>
+                                        {data?.ledgerInfo?.lastSubmittedAt && (
+                                          <>
+                                            {timeFromNow(data.ledgerInfo.lastSubmittedAt, i18n)} (
+                                            {fullDateAndTime(data.ledgerInfo.lastSubmittedAt)})
+                                          </>
+                                        )}
+                                        {data?.ledgerInfo?.lastSubmittedTxHash && (
+                                          <> {txIdLink(data.ledgerInfo.lastSubmittedTxHash, 0)}</>
+                                        )}
                                       </>
-                                    )}
-                                    {data?.ledgerInfo?.lastSubmittedTxHash && (
-                                      <> {txIdLink(data.ledgerInfo.lastSubmittedTxHash, 0)}</>
+                                    ) : (
+                                      'Activated'
                                     )}
                                   </td>
                                 ) : (
