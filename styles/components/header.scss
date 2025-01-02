@@ -46,6 +46,7 @@ header {
         border-top: 1px solid var(--background-menu);
       }
       a, .link {
+        text-decoration: none;
         display: block;
         margin: 0;
         padding: 10px 16px;
@@ -182,6 +183,7 @@ header {
     padding-top: 5px;
   }
   .mobile-menu-item {
+    text-decoration: none;
     display: flex;
     margin: 5px 40px;
     color:#fff;
