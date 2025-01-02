@@ -1,4 +1,10 @@
 .account {
+  .showOnSmall-w800 {
+    display: none;
+    @media only screen and (max-width: 800px) {
+      display: block;
+    }
+  }
   .mobile-summary {
     border: 1px solid var(--button-additional);
     border-radius: 10px;
@@ -8,10 +14,6 @@
     padding-top: 6px;
     padding-bottom: 3px;
     padding-right: 5px;
-    display: none;
-    @media only screen and (max-width: 800px) {
-      display: inline-block;
-    }
     width: calc(100% - 14px);
   }
   .column-left {

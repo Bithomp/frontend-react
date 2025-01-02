@@ -87,6 +87,7 @@ export default function Account({
   })
   const [networkInfo, setNetworkInfo] = useState({})
   const [balances, setBalances] = useState({})
+  const [showTimeMachine, setShowTimeMachine] = useState(false)
 
   useEffect(() => {
     if (!initialData?.address) return
@@ -326,7 +327,7 @@ export default function Account({
                   <>
                     {data?.address && (
                       <>
-                        <div className="mobile-summary">
+                        <div className="mobile-summary showOnSmall-w800">
                           <Image
                             alt="avatar"
                             src={avatarSrc(data, { noCache: true })}
@@ -417,6 +418,14 @@ export default function Account({
                           </div>
                         </div>
 
+                        <div className="center showOnSmall-w800 grey" style={{ marginTop: 10 }}>
+                          <a href={'/explorer/' + data.address}>Transactions</a> |{' '}
+                          <a href={'/explorer/' + data.address}>Tokens</a> |{' '}
+                          <a href="#" onClick={() => setShowTimeMachine(!showTimeMachine)}>
+                            Time machine
+                          </a>
+                        </div>
+
                         <div className="column-left">
                           <div className="hide-on-small-w800">
                             <Image
@@ -429,7 +438,10 @@ export default function Account({
                             />
                           </div>
 
-                          <table className="table-details autowidth">
+                          <table
+                            className={'table-details autowidth hide-on-small-w800'}
+                            style={showTimeMachine ? { display: 'table' } : null}
+                          >
                             <thead>
                               <tr>
                                 <th colSpan="100">Time machine</th>
