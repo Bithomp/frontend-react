@@ -7,7 +7,14 @@ import Image from 'next/image'
 import { axiosServer, passHeaders } from '../../utils/axios'
 
 import { server, getCoinsUrl, nativeCurrency, devNet, xahauNetwork, avatarServer } from '../../utils'
-import { amountFormat, fullDateAndTime, timeFromNow, txIdLink, nativeCurrencyToFiat } from '../../utils/format'
+import {
+  amountFormat,
+  fullDateAndTime,
+  timeFromNow,
+  txIdLink,
+  nativeCurrencyToFiat,
+  shortNiceNumber
+} from '../../utils/format'
 import { getIsSsrMobile } from '../../utils/mobile'
 import { fetchCurrentFiatRate } from '../../utils/common'
 
@@ -319,31 +326,84 @@ export default function Account({
                   <>
                     {data?.address && (
                       <>
-                        <table className="table-details autowidth show-on-big-w800">
-                          <thead></thead>
-                          <tbody>
-                            <tr>
-                              <td style={{ paddingTop: 8, paddingLeft: 10 }}>
-                                <Image
-                                  alt="avatar"
-                                  src={avatarSrc(data, { noCache: true })}
-                                  width="60"
-                                  height="60"
-                                  priority
-                                />
-                              </td>
-                              <td>
-                                {data.username ? <h1>{data.username}</h1> : <b>No username</b>}
-                                <br />
-                                {!data.username && data?.address === account?.address ? (
-                                  <Link href={'/username?address=' + data.address}>Register</Link>
+                        <div className="mobile-summary">
+                          <Image
+                            alt="avatar"
+                            src={avatarSrc(data, { noCache: true })}
+                            width="60"
+                            height="60"
+                            priority
+                          />
+                          <div style={{ display: 'inline-block', position: 'absolute', top: 7, left: 75 }}>
+                            {data.username ? (
+                              <h1 style={{ fontSize: '1em', margin: 0 }} className="blue">
+                                {data.username}
+                              </h1>
+                            ) : (
+                              <b>
+                                {data.service?.name ? (
+                                  <span className="green">{data.service?.name}</span>
+                                ) : data?.address === account?.address && data?.ledgerInfo?.activated ? (
+                                  <Link href={'/username?address=' + data.address}>Register username</Link>
                                 ) : (
-                                  <br />
+                                  'No username'
                                 )}
-                              </td>
-                            </tr>
-                          </tbody>
-                        </table>
+                                <br />
+                              </b>
+                            )}
+                            {data?.ledgerInfo?.activated ? (
+                              <>
+                                <span className="green">Active </span>
+                                <br />
+                                {data?.ledgerInfo?.lastSubmittedAt && (
+                                  <>{timeFromNow(data.ledgerInfo.lastSubmittedAt, i18n)}</>
+                                )}
+                              </>
+                            ) : (
+                              <>
+                                {/* Also show blackholed status */}
+                                {data?.ledgerInfo?.deleted ? (
+                                  <span className="red bold">Account deleted</span>
+                                ) : (
+                                  <>
+                                    <span className="orange">Not activated</span>
+                                    <br />
+                                    <a
+                                      href={getCoinsUrl + (devNet ? '?address=' + data?.address : '')}
+                                      target="_blank"
+                                      rel="noreferrer"
+                                    >
+                                      Get your first {nativeCurrency}
+                                    </a>
+                                  </>
+                                )}
+                              </>
+                            )}
+                          </div>
+                          <div
+                            style={{
+                              display: 'inline-block',
+                              position: 'absolute',
+                              top: 7,
+                              right: 5,
+                              textAlign: 'right'
+                            }}
+                          >
+                            <b>{data?.ledgerInfo?.activated ? 'Available ' : 'Balance'}</b>
+                            <br />
+                            <span className={balances?.available?.native ? 'green bold' : ''}>
+                              {shortNiceNumber(balances?.available?.native / 1000000, 2, 0) || '0'} {nativeCurrency}
+                            </span>
+                            <br />
+                            <span className="grey">
+                              {nativeCurrencyToFiat({
+                                amount: balances.available?.native,
+                                selectedCurrency,
+                                fiatRate
+                              }) || '0 ' + selectedCurrency.toUpperCase()}
+                            </span>
+                          </div>
+                        </div>
 
                         <div className="column-left">
                           <div className="hide-on-small-w800">
@@ -365,7 +425,7 @@ export default function Account({
                             </thead>
                             <tbody>
                               <tr>
-                                <td colSpan="2">
+                                <td colSpan="2" className="no-padding">
                                   {/*  (info) Check account balance and settings in any Time in the past. */}
                                   <div className="time-machine">
                                     <DatePicker
@@ -462,7 +522,7 @@ export default function Account({
                               </thead>
                               <tbody>
                                 <tr>
-                                  <td colSpan="2">
+                                  <td colSpan="2" className="no-padding">
                                     <div className="flex flex-center">
                                       <button
                                         className="button-action button-wide thin"
@@ -684,16 +744,13 @@ export default function Account({
         )}
       </div>
       <style jsx>{`
+        .no-padding {
+          padding: 0;
+        }
+
         .hide-on-small-w800 {
           @media only screen and (max-width: 800px) {
             display: none;
-          }
-        }
-
-        .show-on-big-w800 {
-          display: none;
-          @media only screen and (max-width: 800px) {
-            display: inline-block;
           }
         }
 
