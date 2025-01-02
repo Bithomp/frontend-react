@@ -227,7 +227,7 @@ export default function Account({
     let thirdPartyService = null
     if (data.xamanMeta?.thirdPartyProfiles?.length) {
       for (let i = 0; i < data.xamanMeta.thirdPartyProfiles.length; i++) {
-        const excludeList = ['xumm.app', 'xaman.app', 'xrpl', 'xrplexplorer.com']
+        const excludeList = ['xumm.app', 'xaman.app', 'xrpl', 'xrplexplorer.com', 'bithomp.com']
         if (!excludeList.includes(data.xamanMeta.thirdPartyProfiles[i].source)) {
           thirdPartyService = data.xamanMeta.thirdPartyProfiles[i].accountAlias
           break
@@ -497,25 +497,50 @@ export default function Account({
                                   {data.xamanMeta?.kycApproved && (
                                     <tr>
                                       <td>KYC</td>
-                                      <td>XUMM verified</td>
+                                      <td>Xaman verified</td>
                                     </tr>
                                   )}
                                   {data.xamanMeta?.xummPro && (
                                     <tr>
-                                      <td>XUMM Pro</td>
+                                      <td>Xaman Pro</td>
                                       <td>
                                         {data?.xamanMeta?.xummProfile?.slug ? (
                                           <a href={data.xamanMeta.xummProfile.profileUrl}>
-                                            <u className="bold orange">{data.xamanMeta.xummProfile.slug}</u>
+                                            <b className="orange">{data.xamanMeta.xummProfile.slug}</b>
                                           </a>
                                         ) : (
-                                          <span className="bold orange">
-                                            activated <i className="fa fa-heart"></i>
+                                          <b className="orange">activated ❤️</b>
+                                        )}
+                                        {/* Need to be done on the backend and tested, also need to hide the add for 1 hour after click, or longer if we also cache */}
+                                        {data.xamanMeta?.monetisation?.status === 'PAYMENT_REQUIRED' && (
+                                          <span className="red">
+                                            <br />
+                                            Limited 😔
                                           </span>
+                                        )}
+                                        {data.xamanMeta?.monetisation?.status === 'COMING_UP' && (
+                                          <span className="red">
+                                            <br />
+                                            Soon limited 😔
+                                          </span>
+                                        )}
+                                        {(data.xamanMeta?.monetisation?.status === 'COMING_UP' ||
+                                          data.xamanMeta?.monetisation?.status === 'PAYMENT_REQUIRED') && (
+                                          <>
+                                            <br />
+                                            <a
+                                              href="https://xrpl-labs.com/pro/get?v=BITHOMP"
+                                              target="_blank"
+                                              rel="noopener nofollow"
+                                            >
+                                              <b>Purchase Xaman Pro ❤️</b>
+                                            </a>
+                                          </>
                                         )}
                                       </td>
                                     </tr>
                                   )}
+
                                   {data.xamanMeta?.globalid?.profileUrl && (
                                     <tr>
                                       <td>GlobaliD</td>
