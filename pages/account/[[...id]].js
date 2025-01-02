@@ -24,7 +24,8 @@ import {
   nativeCurrencyToFiat,
   shortNiceNumber,
   shortHash,
-  codeHighlight
+  codeHighlight,
+  niceNumber
 } from '../../utils/format'
 import { getIsSsrMobile } from '../../utils/mobile'
 import { fetchCurrentFiatRate } from '../../utils/common'
@@ -1009,6 +1010,30 @@ export default function Account({
                                   <td className="bold">spent</td>
                                 </tr>
                               )}
+                              {data.ledgerInfo?.signerList && (
+                                <>
+                                  <tr>
+                                    <td>Multi-signing</td>
+                                    <td className="bold">Enabled</td>
+                                  </tr>
+                                  {data.ledgerInfo.signerList.signerQuorum && (
+                                    <tr>
+                                      <td>Multi signing threshold</td>
+                                      <td className="bold">{data.ledgerInfo.signerList.signerQuorum}</td>
+                                    </tr>
+                                  )}
+                                  {data.ledgerInfo.signerList.signerEntries.map((signer, index) => (
+                                    <tr key={index}>
+                                      <td>
+                                        Signer {index + 1}, weight <b>{signer.signerWeight}</b>
+                                      </td>
+                                      <td>
+                                        <LinkAccount account={signer.account} />
+                                      </td>
+                                    </tr>
+                                  ))}
+                                </>
+                              )}
                             </tbody>
                           </table>
 
@@ -1040,6 +1065,14 @@ export default function Account({
                                       >
                                         {data.service.domain}
                                       </a>
+                                    </td>
+                                  </tr>
+                                )}
+                                {data.genesis && (
+                                  <tr>
+                                    <td>Genesis balance</td>
+                                    <td>
+                                      {niceNumber(data.initialBalance)} {nativeCurrency}
                                     </td>
                                   </tr>
                                 )}
