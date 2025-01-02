@@ -6,20 +6,33 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { axiosServer, passHeaders } from '../../utils/axios'
 
-import { server, getCoinsUrl, nativeCurrency, devNet, xahauNetwork, avatarServer } from '../../utils'
+import {
+  server,
+  getCoinsUrl,
+  nativeCurrency,
+  devNet,
+  xahauNetwork,
+  avatarServer,
+  stripDomain,
+  isDomainValid
+} from '../../utils'
 import {
   amountFormat,
   fullDateAndTime,
   timeFromNow,
   txIdLink,
   nativeCurrencyToFiat,
-  shortNiceNumber
+  shortNiceNumber,
+  shortHash,
+  codeHighlight
 } from '../../utils/format'
 import { getIsSsrMobile } from '../../utils/mobile'
 import { fetchCurrentFiatRate } from '../../utils/common'
 
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
+
+import { MdVerified } from 'react-icons/md'
 
 export async function getServerSideProps(context) {
   const { locale, query, req } = context
@@ -58,7 +71,7 @@ export async function getServerSideProps(context) {
 import SEO from '../../components/SEO'
 import SearchBlock from '../../components/Layout/SearchBlock'
 import CopyButton from '../../components/UI/CopyButton'
-import { LinkAmm } from '../../utils/links'
+import { LinkAccount, LinkAmm } from '../../utils/links'
 import dynamic from 'next/dynamic'
 
 const XahauRewardTr = dynamic(() => import('../../components/Account/XahauRewardTr'), { ssr: false })
@@ -355,7 +368,14 @@ export default function Account({
                               </b>
                             )}
                             {data?.ledgerInfo?.blackholed ? (
-                              <b className="orange">Blackholed</b>
+                              <>
+                                <b className="orange">Blackholed </b> {console.log(data.ledgerInfo)}
+                                <br />
+                                {/* need to test taht backend returns lastSubmittedAt for blackholed accounts */}
+                                {data?.ledgerInfo?.lastSubmittedAt && (
+                                  <>{timeFromNow(data.ledgerInfo.lastSubmittedAt, i18n)}</>
+                                )}
+                              </>
                             ) : data?.ledgerInfo?.activated ? (
                               <>
                                 {data.ledgerInfo.lastSubmittedAt ? (
@@ -679,7 +699,10 @@ export default function Account({
                                             )}
                                           </>
                                         ) : (
-                                          'Activated'
+                                          <>
+                                            Activated {timeFromNow(data.inception, i18n)} (
+                                            {fullDateAndTime(data.inception)})
+                                          </>
                                         )}
                                       </>
                                     ) : (
@@ -764,7 +787,228 @@ export default function Account({
                                   <td>#{data.ledgerInfo.importSequence}</td>
                                 </tr>
                               )}
-                              {xahauNetwork ? <XahauRewardTr data={data.ledgerInfo} /> : null}
+                              {xahauNetwork ? (
+                                <>
+                                  <XahauRewardTr data={data.ledgerInfo} />
+                                  {data.ledgerInfo?.hookStateCount && (
+                                    <tr>
+                                      <td>Hook state count</td>
+                                      <td>#{data.ledgerInfo?.hookStateCount}</td>
+                                    </tr>
+                                  )}
+                                  {data.ledgerInfo?.hookNamespaces && (
+                                    <tr>
+                                      <td>Hook Namespaces</td>
+                                      <td>#{data.ledgerInfo?.hookNamespaces.length}</td>
+                                    </tr>
+                                  )}
+                                </>
+                              ) : (
+                                <>
+                                  {data.ledgerInfo?.ammID && (
+                                    <tr>
+                                      <td>AMM ID</td>
+                                      <td>
+                                        <Link href={'/amm/' + data.ledgerInfo.ammID}>
+                                          {shortHash(data.ledgerInfo.ammID, 4)}
+                                        </Link>
+                                      </td>
+                                    </tr>
+                                  )}
+                                  {data.ledgerInfo?.mintedNFTokens && (
+                                    <tr>
+                                      <td>Minted NFTs</td>
+                                      <td>{data.ledgerInfo.mintedNFTokens}</td>
+                                    </tr>
+                                  )}
+                                  {data.ledgerInfo?.burnedNFTokens && (
+                                    <tr>
+                                      <td>Burned NFTs</td>
+                                      <td>{data.ledgerInfo.burnedNFTokens}</td>
+                                    </tr>
+                                  )}
+                                  {data.ledgerInfo?.firstNFTokenSequence && (
+                                    <tr>
+                                      <td>First NFT sequence</td>
+                                      <td>{data.ledgerInfo.firstNFTokenSequence}</td>
+                                    </tr>
+                                  )}
+                                  {data.ledgerInfo?.nftokenMinter && (
+                                    <tr>
+                                      <td>NFT minter</td>
+                                      <td>
+                                        <LinkAccount account={data.ledgerInfo.nftokenMinter} />
+                                      </td>
+                                    </tr>
+                                  )}
+                                </>
+                              )}
+
+                              {data.ledgerInfo?.ammID && (
+                                <tr>
+                                  <td>AMM ID</td>
+                                  <td>
+                                    <LinkAmm ammId={data.ledgerInfo.ammID} hash={true} icon={true} copy={true} />
+                                  </td>
+                                </tr>
+                              )}
+                              {data.ledgerInfo?.domain && (
+                                <tr>
+                                  <td>Domain</td>
+                                  <td>
+                                    {isDomainValid(stripDomain(data.ledgerInfo.domain)) ? (
+                                      <>
+                                        <a
+                                          href={'https://' + stripDomain(data.ledgerInfo.domain)}
+                                          className={data.verifiedDomain ? 'green bold' : ''}
+                                          target="_blank"
+                                          rel="noopener nofollow"
+                                        >
+                                          {stripDomain(data.ledgerInfo.domain)}
+                                        </a>{' '}
+                                        {data.verifiedDomain && (
+                                          <span className="green">
+                                            <MdVerified />
+                                          </span>
+                                        )}
+                                      </>
+                                    ) : (
+                                      codeHighlight(data.ledgerInfo.domain)
+                                    )}
+                                  </td>
+                                </tr>
+                              )}
+                              {data.ledgerInfo?.flags?.disallowXRP && (
+                                <tr>
+                                  <td>Receiving {nativeCurrency}</td>
+                                  <td className="bold">disabled</td>
+                                </tr>
+                              )}
+                              {data.ledgerInfo?.flags?.requireDestTag && (
+                                <tr>
+                                  <td>Destination tag</td>
+                                  <td className="bold">required</td>
+                                </tr>
+                              )}
+                              {data.ledgerInfo?.flags?.ticketCount && (
+                                <tr>
+                                  <td>Tickets</td>
+                                  <td className="bold">{data.ledgerInfo.ticketCount}</td>
+                                </tr>
+                              )}
+                              {data.ledgerInfo?.flags?.ticketSize && (
+                                <tr>
+                                  <td>Ticket size</td>
+                                  <td className="bold">{data.ledgerInfo.ticketSize}</td>
+                                </tr>
+                              )}
+                              {data.ledgerInfo?.flags?.transferRate && (
+                                <tr>
+                                  <td>Transfer rate</td>
+                                  <td className="bold">
+                                    {Math.ceil((data.ledgerInfo.transferRate - 1) * 10000) / 100}
+                                  </td>
+                                </tr>
+                              )}
+                              {data.ledgerInfo?.flags?.globalFreeze && (
+                                <tr>
+                                  <td>Global freeze</td>
+                                  <td className="bold">true</td>
+                                </tr>
+                              )}
+                              {data.ledgerInfo?.flags?.noFreeze && (
+                                <tr>
+                                  <td>Freeze</td>
+                                  <td className="bold">disabled</td>
+                                </tr>
+                              )}
+                              {/* If set, this account must individually approve other users in order for those users to hold this account’s issuances. */}
+                              {data.ledgerInfo?.flags?.requireAuth && (
+                                <tr>
+                                  <td>Token authorization</td>
+                                  <td className="bold">required</td>
+                                </tr>
+                              )}
+                              {data.ledgerInfo?.flags?.depositAuth && (
+                                <tr>
+                                  <td>Deposit authorization</td>
+                                  <td className="bold">required</td>
+                                </tr>
+                              )}
+                              {data.ledgerInfo?.flags?.defaultRipple && (
+                                <tr>
+                                  <td>Rippling</td>
+                                  <td className="bold">enabled</td>
+                                </tr>
+                              )}
+                              {data.ledgerInfo?.flags?.disallowIncomingNFTokenOffers && (
+                                <tr>
+                                  <td>Incoming NFT offers</td>
+                                  <td className="bold">disallowed</td>
+                                </tr>
+                              )}
+                              {data.ledgerInfo?.flags?.disallowIncomingCheck && (
+                                <tr>
+                                  <td>Incoming checks</td>
+                                  <td className="bold">disallowed</td>
+                                </tr>
+                              )}
+                              {data.ledgerInfo?.flags?.disallowIncomingPayChan && (
+                                <tr>
+                                  <td>Incoming payment channels</td>
+                                  <td className="bold">disallowed</td>
+                                </tr>
+                              )}
+                              {data.ledgerInfo?.flags?.disallowIncomingTrustline && (
+                                <tr>
+                                  <td>Incoming trustlines</td>
+                                  <td className="bold">disallowed</td>
+                                </tr>
+                              )}
+                              {data.ledgerInfo?.flags?.amm && (
+                                <tr>
+                                  <td>AMM</td>
+                                  <td className="bold">true</td>
+                                </tr>
+                              )}
+                              {data.ledgerInfo?.flags?.allowTrustlineClawback && (
+                                <tr>
+                                  <td>Trustline clawback</td>
+                                  <td className="bold">enabled</td>
+                                </tr>
+                              )}
+                              {data.ledgerInfo?.flags?.uriTokenIssuer && (
+                                <tr>
+                                  <td>URI token issuer</td>
+                                  <td className="bold">true</td>
+                                </tr>
+                              )}
+                              {data.ledgerInfo?.flags?.dissallowIncomingRemit && (
+                                <tr>
+                                  <td>Incoming Remit</td>
+                                  <td className="bold">disallowed</td>
+                                </tr>
+                              )}
+                              {data.ledgerInfo?.flags?.disableMaster && (
+                                <tr>
+                                  <td>Master key</td>
+                                  <td className="bold">disabled</td>
+                                </tr>
+                              )}
+                              {data.ledgerInfo?.regularKey && (
+                                <tr>
+                                  <td>Regular key</td>
+                                  <td>
+                                    <LinkAccount account={data.ledgerInfo.regularKey} />
+                                  </td>
+                                </tr>
+                              )}
+                              {data.ledgerInfo?.flags?.passwordSpend && (
+                                <tr>
+                                  <td>Free re-key</td>
+                                  <td className="bold">spent</td>
+                                </tr>
+                              )}
                             </tbody>
                           </table>
 
@@ -784,12 +1028,18 @@ export default function Account({
                                     {timeFromNow(data.inception, i18n)} ({fullDateAndTime(data.inception)})
                                   </td>
                                 </tr>
-
-                                {data.ledgerInfo?.ammID && (
+                                {data.service?.domain && (
                                   <tr>
-                                    <td>AMM ID</td>
+                                    <td>Web address</td>
                                     <td>
-                                      <LinkAmm ammId={data.ledgerInfo.ammID} hash={true} icon={true} copy={true} />
+                                      <a
+                                        href={'https://' + data.service.domain}
+                                        className="green bold"
+                                        target="_blank"
+                                        rel="noopener nofollow"
+                                      >
+                                        {data.service.domain}
+                                      </a>
                                     </td>
                                   </tr>
                                 )}

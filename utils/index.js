@@ -570,6 +570,15 @@ export const isUrlValid = (x) => {
   return !!re.test(x)
 }
 
+export const stripDomain = (x) => {
+  if (!x) return ''
+  x = x.replace('http://', '')
+  x = x.replace('https://', '')
+  x = x.replace('www.', '')
+  x = x.split('/')[0]
+  return x
+}
+
 export const isDomainValid = (x) => {
   var re = /^((?:(?:(?:\w[\.\-\+]?)*)\w)+)((?:(?:(?:\w[\.\-\+]?){0,62})\w)+)\.(\w{2,6})$/
   return re.test(x)
