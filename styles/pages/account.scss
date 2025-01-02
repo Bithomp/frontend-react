@@ -5,6 +5,9 @@
       display: block;
     }
   }
+  .avatar-div {
+    background-color: var(--background-main);
+  }
   .mobile-summary {
     border: 1px solid var(--button-additional);
     border-radius: 10px;

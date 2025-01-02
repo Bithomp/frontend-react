@@ -427,7 +427,7 @@ export default function Account({
                         </div>
 
                         <div className="column-left">
-                          <div className="hide-on-small-w800">
+                          <div className="hide-on-small-w800 avatar-div">
                             <Image
                               alt="avatar"
                               src={avatarSrc(data, { noCache: true })}
