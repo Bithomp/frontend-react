@@ -422,7 +422,13 @@ export default function Account({
                         <div className="center showOnSmall-w800 grey" style={{ marginTop: 10 }}>
                           <a href={'/explorer/' + data.address}>Transactions</a> |{' '}
                           <a href={'/explorer/' + data.address}>Tokens</a> |{' '}
-                          <a href="#" onClick={() => setShowTimeMachine(!showTimeMachine)}>
+                          <a
+                            href="#"
+                            onClick={(e) => {
+                              e.preventDefault()
+                              setShowTimeMachine(!showTimeMachine)
+                            }}
+                          >
                             Time machine
                           </a>
                         </div>
