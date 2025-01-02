@@ -354,7 +354,9 @@ export default function Account({
                                 <br />
                               </b>
                             )}
-                            {data?.ledgerInfo?.activated ? (
+                            {data?.ledgerInfo?.blackholed ? (
+                              <b className="orange">Blackholed</b>
+                            ) : data?.ledgerInfo?.activated ? (
                               <>
                                 {data.ledgerInfo.lastSubmittedAt ? (
                                   <>
@@ -374,7 +376,6 @@ export default function Account({
                               </>
                             ) : (
                               <>
-                                {/* Also show blackholed status */}
                                 {data?.ledgerInfo?.deleted ? (
                                   <span className="red bold">Account deleted</span>
                                 ) : (
@@ -622,64 +623,73 @@ export default function Account({
                                   {data.address} <CopyButton text={data.address}></CopyButton>
                                 </td>
                               </tr>
-                              <tr>
-                                <td>{t('table.status')}</td>
-                                {data?.ledgerInfo?.activated ? (
+                              {data?.ledgerInfo?.blackholed ? (
+                                <tr>
+                                  <td className="orange">Blackholed</td>
+                                  <td>This account is BLACKHOLED. It can not issue more tokens.</td>
+                                </tr>
+                              ) : (
+                                <tr>
+                                  <td>{t('table.status')}</td>
                                   <td>
-                                    {data.ledgerInfo.lastSubmittedAt ? (
+                                    {data?.ledgerInfo?.activated ? (
                                       <>
-                                        <span className="green">Active </span>
-                                        {data?.ledgerInfo?.lastSubmittedAt && (
+                                        {data.ledgerInfo.lastSubmittedAt ? (
                                           <>
-                                            {timeFromNow(data.ledgerInfo.lastSubmittedAt, i18n)} (
-                                            {fullDateAndTime(data.ledgerInfo.lastSubmittedAt)})
+                                            <span className="green">Active </span>
+                                            {data?.ledgerInfo?.lastSubmittedAt && (
+                                              <>
+                                                {timeFromNow(data.ledgerInfo.lastSubmittedAt, i18n)} (
+                                                {fullDateAndTime(data.ledgerInfo.lastSubmittedAt)})
+                                              </>
+                                            )}
+                                            {data?.ledgerInfo?.lastSubmittedTxHash && (
+                                              <> {txIdLink(data.ledgerInfo.lastSubmittedTxHash, 0)}</>
+                                            )}
+                                          </>
+                                        ) : (
+                                          'Activated'
+                                        )}
+                                      </>
+                                    ) : (
+                                      <>
+                                        {data?.ledgerInfo?.deleted ? (
+                                          <>
+                                            <span className="red bold">Account deleted.</span>
+                                            <br />
+                                            <span className="orange">
+                                              This account has been deactivated and is no longer active. It can be
+                                              restored by sending at least {amountFormat(networkInfo?.reserveBase)} to
+                                              the address.
+                                            </span>
+                                          </>
+                                        ) : (
+                                          <span className="orange">
+                                            Not activated yet. The owner with full access to the account can activate it
+                                            by sending at least {amountFormat(networkInfo?.reserveBase)} to the address.
+                                          </span>
+                                        )}
+                                        {getCoinsUrl && (
+                                          <>
+                                            {' '}
+                                            <a
+                                              href={getCoinsUrl + (devNet ? '?address=' + data?.address : '')}
+                                              target="_blank"
+                                              rel="noreferrer"
+                                            >
+                                              Get your first {nativeCurrency}.
+                                            </a>
                                           </>
                                         )}
-                                        {data?.ledgerInfo?.lastSubmittedTxHash && (
-                                          <> {txIdLink(data.ledgerInfo.lastSubmittedTxHash, 0)}</>
-                                        )}
-                                      </>
-                                    ) : (
-                                      'Activated'
-                                    )}
-                                  </td>
-                                ) : (
-                                  <td>
-                                    {/* Also show blackholed status */}
-                                    {data?.ledgerInfo?.deleted ? (
-                                      <>
-                                        <span className="red bold">Account deleted.</span>
                                         <br />
-                                        <span className="orange">
-                                          This account has been deactivated and is no longer active. It can be restored
-                                          by sending at least {amountFormat(networkInfo?.reserveBase)} to the address.
-                                        </span>
-                                      </>
-                                    ) : (
-                                      <span className="orange">
-                                        Not activated yet. The owner with full access to the account can activate it by
-                                        sending at least {amountFormat(networkInfo?.reserveBase)} to the address.
-                                      </span>
-                                    )}
-                                    {getCoinsUrl && (
-                                      <>
-                                        {' '}
-                                        <a
-                                          href={getCoinsUrl + (devNet ? '?address=' + data?.address : '')}
-                                          target="_blank"
-                                          rel="noreferrer"
-                                        >
-                                          Get your first {nativeCurrency}.
+                                        <a href="https://xrpl.org/reserves.html" target="_blank" rel="noreferrer">
+                                          Learn more about reserves.
                                         </a>
                                       </>
                                     )}
-                                    <br />
-                                    <a href="https://xrpl.org/reserves.html" target="_blank" rel="noreferrer">
-                                      Learn more about reserves.
-                                    </a>
                                   </td>
-                                )}
-                              </tr>
+                                </tr>
+                              )}
                               {data?.ledgerInfo?.balance && (
                                 <>
                                   <tr>
