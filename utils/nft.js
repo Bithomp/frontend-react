@@ -1,5 +1,5 @@
 import { Buffer } from 'buffer'
-import { stripText, shortName, server } from '.'
+import { stripText, shortName, server, webSiteName } from '.'
 
 import Link from 'next/link'
 import LinkIcon from '../public/images/link.svg'
@@ -163,7 +163,7 @@ export const collectionThumbnail = (data) => {
   if (ipfs) {
     imageSrc = ipfs
   } else if (typeof uri === 'string' && uri.slice(0, 8) === 'https://') {
-    imageSrc = `https://cdn.${server.replace('https://', '')}/thumbnail?url=${encodeURIComponent(stripText(uri))}`
+    imageSrc = `https://cdn.${webSiteName}/thumbnail?url=${encodeURIComponent(stripText(uri))}`
   } else if (typeof uri === 'string' && uri.slice(0, 10) === 'data:image') {
     imageSrc = stripText(uri)
   } else {
@@ -261,7 +261,7 @@ export const ipfsUrl = (uri, type = 'image', gateway = 'our') => {
     url = stripText(cid + url.split(cid).pop())
     url = url.replace('#', '%23')
     if (gateway === 'our' && (type === 'image' || type === 'video' || type === 'thumbnail' || type === 'preview')) {
-      return 'https://cdn.' + server.replace('https://', '') + '/' + type + '/' + url + filename
+      return 'https://cdn.' + webSiteName + '/' + type + '/' + url + filename
     } else if (gateway === 'cl' && type === 'model') {
       return stripText(uri)
     } else if (gateway === 'cl' || type === 'audio' || type === 'model' || type === 'viewer') {
@@ -303,7 +303,7 @@ const assetUrl = (uri, type = 'image', gateway = 'our') => {
   if (ipfs) {
     return ipfs
   } else if (uri.slice(0, 8) === 'https://') {
-    return `https://cdn.${server.replace('https://', '')}/${type}?url=${encodeURIComponent(stripText(uri))}`
+    return `https://cdn.${webSiteName}/${type}?url=${encodeURIComponent(stripText(uri))}`
   } else if ((type === 'image' || type === 'thumbnail') && uri.slice(0, 10) === 'data:image') {
     return stripText(uri)
   } else {
