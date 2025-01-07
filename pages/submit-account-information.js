@@ -272,11 +272,7 @@ export default function SubmitAccountInformation() {
             <Trans ns="submit-account-information" i18nKey="cross-chain">
               Services are used cross-chain,{' '}
               <a
-                href={
-                  'https://xrplexplorer.com/' +
-                  (i18n.language !== 'en' ? i18n.language + '/' : '') +
-                  'submit-account-information'
-                }
+                href={'https://xrplexplorer.com/' + i18n.language + '/submit-account-information'}
                 target="_blank"
                 rel="noreferrer"
               >
