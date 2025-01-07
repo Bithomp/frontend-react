@@ -73,7 +73,7 @@ function generateSiteMap(posts) {
     'xrp-xah-taxes',
     'object'
   ]
-  const oldPages = ['explorer/']
+  const oldPages = [] // 'explorer/'
   const pagesWithoutTranslation = [...noTranslatedPages, ...oldPages]
 
   return `<?xml version="1.0" encoding="UTF-8"?>
