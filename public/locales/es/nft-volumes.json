@@ -10,10 +10,10 @@
     "text0": "Para este periodo, la red tuvo {{allSales}} <3>{{currency}}</3> ventas {{saleType}} NFT por {{allVolume}}, de las cuales <13>{{brokerSales}}</13> {{percentBrokerSales}} de los acuerdos de <19>{{brokerVolume}}</19> {{percentBrokerVolume}} fueron a través del modelo de broker."
   },
   "marketplaces": {
-    "desc": "Esta es la lista de Mercados NFT en XRPL. Los volúmenes aquí no incluyen las ventas primarias (acuñaciones) las cuales fueron hechas en 2 transacciones (pago y transferencia de NFT)."
+    "desc": "Esta es la lista de Mercados NFT en {{explorerName}}. Los volúmenes aquí no incluyen las ventas primarias (acuñaciones) las cuales fueron hechas en 2 transacciones (pago y transferencia de NFT)."
   },
   "issuers": {
-    "desc": "Esta es la lista de los emisores de NFTs en XRPL. Para ver los volúmenes de colecciones de NFTs identificados por emisor y taxón haz click en el enlace en la columna de Volumen en ventas."
+    "desc": "Esta es la lista de los emisores de NFTs en {{explorerName}}. Para ver los volúmenes de colecciones de NFTs identificados por emisor y taxón haz click en el enlace en la columna de Volumen en ventas."
   },
   "sales-chart": "Gráfico de ventas",
   "volumes-chart": "Gráfico de volúmenes"

@@ -1,6 +1,6 @@
 {
   "header": "Volumes de ventes de NFT",
-  "text0": "Pour cette période, XRPL a eu {{allSales}} {{currency}} NFT {{saleType}} ventes pour {{allVolume}}.",
+  "text0": "Pour cette période, {{explorerName}} a eu {{allSales}} {{currency}} NFT {{saleType}} ventes pour {{allVolume}}.",
   "collections": {
     "desc": "Voici la liste des collections de NFT. Les volumes ici n'incluent pas les ventes primaires (mints) qui ont été effectuées dans 2 transactions (paiement et transfert de NFT)."
   },
@@ -10,10 +10,10 @@
     "text0": "Pour cette période, XRPL a eu {{allSales}} <3>{{currency}}</3> NFT {{saleType}} ventes pour {{allVolume}}, dont <13>{{brokerSales}}</13> {{percentBrokerSales}} des échanges pour <19>{{brokerVolume}}</19> {{percentBrokerVolume}} étaient par le biais du modèle de courtage."
   },
   "marketplaces": {
-    "desc": "Voici la liste des places de marché NFT sur XRPL. Les volumes ici n'incluent pas les ventes primaires (mints) qui ont été effectuées dans 2 transactions (paiement et transfert de NFT)."
+    "desc": "Voici la liste des places de marché NFT sur {{explorerName}}. Les volumes ici n'incluent pas les ventes primaires (mints) qui ont été effectuées dans 2 transactions (paiement et transfert de NFT)."
   },
   "issuers": {
-    "desc": "Voici la liste des émetteurs de NFT sur XRPL. Pour voir les volumes des collections de NFT identifiées par émetteur et taxon, cliquez sur le lien dans la colonne Volume des ventes."
+    "desc": "Voici la liste des émetteurs de NFT sur {{explorerName}}. Pour voir les volumes des collections de NFT identifiées par émetteur et taxon, cliquez sur le lien dans la colonne Volume des ventes."
   },
   "sales-chart": "Graphique des ventes",
   "volumes-chart": "Graphique des volumes"

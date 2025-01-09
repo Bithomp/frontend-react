@@ -208,15 +208,9 @@ export default function Header({
             )}
             <Link href="/nft-explorer">{t('menu.nft.explorer')}</Link>
             <Link href="/nft-sales">{t('menu.nft.sales')}</Link>
-
-            {/* Hide NFT menu for XAHAU while they are not ready yet */}
-            {!xahauNetwork && (
-              <>
-                <Link href="/nft-volumes?period=week">{t('menu.nft.collections')}</Link>
-                <Link href="/nft-volumes?list=marketplaces&period=week">{t('menu.nft.marketplaces')}</Link>
-                <Link href="/nft-volumes?list=charts&period=week">{t('menu.nft.volumes')}</Link>
-              </>
-            )}
+            <Link href="/nft-volumes?period=week">{t('menu.nft.collections')}</Link>
+            <Link href="/nft-volumes?list=marketplaces&period=week">{t('menu.nft.marketplaces')}</Link>
+            <Link href="/nft-volumes?list=charts&period=week">{t('menu.nft.volumes')}</Link>
 
             {/* Hide NFT menu for XAHAU while they are not ready yet */}
             {!xahauNetwork && <Link href="/nft-minters">{t('menu.nft.minters')}</Link>}

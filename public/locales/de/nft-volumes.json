@@ -1,6 +1,6 @@
 {
   "header": "NFT Verkaufsvolumen",
-  "text0": "In diesem Zeitraum hatte XRPL {{allSales}} {{currency}} NFT {{saleType}} Verkäufe für {{allVolume}}.",
+  "text0": "In diesem Zeitraum hatte {{explorerName}} {{allSales}} {{currency}} NFT {{saleType}} Verkäufe für {{allVolume}}.",
   "collections": {
     "desc": "Dies ist die Liste der NFT-Sammlungen. In den Volumen sind hier die Primärverkäufe (Mints) nicht enthalten, die innerhalb von 2 Transaktionen (Zahlung und NFT Transfer) getätigt wurden."
   },
@@ -10,10 +10,10 @@
     "text0": "In diesem Zeitraum hatte XRPL {{allSales}} <3>{{currency}}</3> NFT {{saleType}} Verkäufe für {{allVolume}}, wobei <13>{{brokerSales}}</13> {{percentBrokerSales}} der Geschäfte für <19>{{brokerVolume}}</19> {{percentBrokerVolume}} über das Vermittler-Modell erfolgten."
   },
   "marketplaces": {
-    "desc": "Dies ist die Liste der NFT Marktplätze auf XRPL. In den Volumen sind hier die Primärverkäufe (Mints) nicht enthalten, die innerhalb von 2 Transaktionen (Zahlung und NFT Transfer) getätigt wurden."
+    "desc": "Dies ist die Liste der NFT Marktplätze auf {{explorerName}}. In den Volumen sind hier die Primärverkäufe (Mints) nicht enthalten, die innerhalb von 2 Transaktionen (Zahlung und NFT Transfer) getätigt wurden."
   },
   "issuers": {
-    "desc": "Dies ist die Liste der NFT Emittenten auf XRPL. Um die Volumen der NFT Kollektionen nach Emittenten und Taxon anzuzeigen, klicken Sie auf den Link in der Spalte Volumen"
+    "desc": "Dies ist die Liste der NFT Emittenten auf {{explorerName}}. Um die Volumen der NFT Kollektionen nach Emittenten und Taxon anzuzeigen, klicken Sie auf den Link in der Spalte Volumen"
   },
   "sales-chart": "Verkaufsdiagramm",
   "volumes-chart": "Volumen Diagramm"

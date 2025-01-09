@@ -375,12 +375,7 @@ export default function Statistics() {
         <div className="stat-piece">
           <div className="stat-piece-header">{t('home.stat.nft.issuers')}</div>
           <div>
-            {/* Hide link to nft-volumes while its not ready on xahau yet*/}
-            {xahauNetwork ? (
-              niceNumber(nft.issuers)
-            ) : (
-              <Link href="/nft-volumes?period=all&list=issuers">{niceNumber(nft.issuers)}</Link>
-            )}
+            <Link href="/nft-volumes?period=all&list=issuers">{niceNumber(nft.issuers)}</Link>
           </div>
         </div>
         <div className="stat-piece">

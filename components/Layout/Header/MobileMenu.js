@@ -225,24 +225,19 @@ export default function MobileMenu({
             {t('menu.nft.sales')}
           </Link>
 
-          {/* Hide NFT-volumes for XAHAU while they are not ready yet */}
-          {!xahauNetwork && (
-            <>
-              <Link href="/nft-volumes?period=week" className="mobile-menu-item" onClick={mobileMenuToggle}>
-                {t('menu.nft.collections')}
-              </Link>
-              <Link
-                href="/nft-volumes?list=marketplaces&period=week"
-                className="mobile-menu-item"
-                onClick={mobileMenuToggle}
-              >
-                {t('menu.nft.marketplaces')}
-              </Link>
-              <Link href="/nft-volumes?list=charts&period=week" className="mobile-menu-item" onClick={mobileMenuToggle}>
-                {t('menu.nft.volumes')}
-              </Link>
-            </>
-          )}
+          <Link href="/nft-volumes?period=week" className="mobile-menu-item" onClick={mobileMenuToggle}>
+            {t('menu.nft.collections')}
+          </Link>
+          <Link
+            href="/nft-volumes?list=marketplaces&period=week"
+            className="mobile-menu-item"
+            onClick={mobileMenuToggle}
+          >
+            {t('menu.nft.marketplaces')}
+          </Link>
+          <Link href="/nft-volumes?list=charts&period=week" className="mobile-menu-item" onClick={mobileMenuToggle}>
+            {t('menu.nft.volumes')}
+          </Link>
 
           {/* Hide NFT-minters for XAHAU while they are not ready yet */}
           {!xahauNetwork && (

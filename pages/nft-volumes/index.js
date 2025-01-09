@@ -8,6 +8,17 @@ import Link from 'next/link'
 
 import { getIsSsrMobile } from '../../utils/mobile'
 
+import {
+  setTabParams,
+  stripText,
+  isAddressOrUsername,
+  useWidth,
+  chartSpan,
+  xahauNetwork,
+  nativeCurrency,
+  explorerName
+} from '../../utils'
+
 export const getServerSideProps = async (context) => {
   const { query, locale } = context
   const { period, sale, list, currency, currencyIssuer, sortCurrency, extendedStats } = query
@@ -16,7 +27,7 @@ export const getServerSideProps = async (context) => {
       extendedStatsQuery: extendedStats || true,
       periodQuery: period || 'month',
       sale: sale || 'secondary',
-      list: list || 'collections',
+      list: list || (xahauNetwork ? 'issuers' : 'collections'),
       currency: currency || '',
       currencyIssuer: currencyIssuer || '',
       sortCurrency: sortCurrency || '',
@@ -32,15 +43,6 @@ import CheckBox from '../../components/UI/CheckBox'
 import DateAndTimeRange from '../../components/UI/DateAndTimeRange'
 import SimpleChart from '../../components/SimpleChart'
 
-import {
-  setTabParams,
-  stripText,
-  isAddressOrUsername,
-  useWidth,
-  chartSpan,
-  xahauNetwork,
-  nativeCurrency
-} from '../../utils'
 import {
   amountFormat,
   shortNiceNumber,
@@ -81,7 +83,7 @@ export default function NftVolumes({
   const [period, setPeriod] = useState(periodQuery)
   const [saleTab, setSaleTab] = useState(sale)
   const [listTab, setListTab] = useState(list)
-  const [currencyTab, setCurrencyTab] = useState(currency?.toLowerCase())
+  const [currencyTab, setCurrencyTab] = useState(currency?.toUpperCase())
   const [sortConfig, setSortConfig] = useState({})
   const [extendedStats, setExtendedStats] = useState(extendedStatsQuery)
   const [chartIssuers, setChartIssuers] = useState([])
@@ -99,13 +101,16 @@ export default function NftVolumes({
   const convertCurrency = sortCurrency || selectedCurrency
 
   const listTabList = [
-    { value: 'collections', label: t('tabs.collections') },
     { value: 'marketplaces', label: t('tabs.marketplaces') },
     { value: 'currencies', label: t('tabs.currencies') },
-    { value: 'issuers', label: t('tabs.issuers') },
-    { value: 'brokers', label: t('tabs.brokers') },
-    { value: 'charts', label: t('tabs.charts') }
+    { value: 'issuers', label: t('tabs.issuers') }
   ]
+  if (!xahauNetwork) {
+    //We don't have yet collections on xahau, also there are no brokers there
+    listTabList.unshift({ value: 'collections', label: t('tabs.collections') })
+    listTabList.push({ value: 'brokers', label: t('tabs.brokers') })
+  }
+  listTabList.push({ value: 'charts', label: t('tabs.charts') })
 
   const saleTabList = [
     { value: 'primaryAndSecondary', label: t('tabs.primaryAndSecondary-sales') },
@@ -115,7 +120,7 @@ export default function NftVolumes({
 
   const currencyTabList = [
     { value: '', label: t('tabs.all-tokens') },
-    { value: 'xrp', label: t('tabs.native-currency-only', { nativeCurrency }) }
+    { value: nativeCurrency, label: t('tabs.native-currency-only', { nativeCurrency }) }
   ]
 
   const controller = new AbortController()
@@ -152,14 +157,16 @@ export default function NftVolumes({
     } else if (listTab === 'currencies') {
       setCsvHeaders([{ label: t('table.amount'), key: 'amount' }, ...constCsvHeaders])
     } else if (listTab === 'collections') {
-      setCsvHeaders([
+      let headers = [
         { label: t('table.name'), key: 'collectionDetails.name' },
         { label: t('table.collection-family'), key: 'collectionDetails.family' },
         { label: t('table.description'), key: 'collectionDetails.description' },
-        { label: t('table.issuer'), key: 'collectionDetails.issuer' },
-        { label: t('table.taxon'), key: 'collectionDetails.taxon' },
-        ...constCsvHeaders
-      ])
+        { label: t('table.issuer'), key: 'collectionDetails.issuer' }
+      ]
+      if (!xahauNetwork) {
+        headers.push({ label: t('table.taxon'), key: 'collectionDetails.taxon' })
+      }
+      setCsvHeaders([...headers, ...constCsvHeaders])
     }
 
     const oldListTab = rawData?.list
@@ -198,8 +205,8 @@ export default function NftVolumes({
     if (listTab !== 'currencies') {
       if (currency && currencyIssuer) {
         currencyUrlPart = '&currency=' + stripText(currency) + '&currencyIssuer=' + stripText(currencyIssuer)
-      } else if (currencyTab === 'xrp') {
-        currencyUrlPart = '&currency=xrp'
+      } else if (currencyTab === nativeCurrency) {
+        currencyUrlPart = '&currency=' + nativeCurrency
       }
     }
 
@@ -246,7 +253,9 @@ export default function NftVolumes({
     // end getting the chart data
 
     let apiUrl =
-      'v2/nft-volumes-extended?list=' +
+      'v2/' +
+      (xahauNetwork ? 'uritoken' : 'nft') +
+      '-volumes-extended?list=' +
       listTab +
       '&convertCurrencies=' +
       convertCurrency +
@@ -541,7 +550,7 @@ export default function NftVolumes({
       {
         tabList: listTabList,
         tab: listTab,
-        defaultTab: 'collections',
+        defaultTab: xahauNetwork ? 'issuers' : 'collections',
         setTab: setListTab,
         paramName: 'list'
       },
@@ -555,7 +564,7 @@ export default function NftVolumes({
     ]
     if (
       !currencyTab ||
-      (currencyTab.toLowerCase() !== 'xrp' && !isAddressOrUsername(currencyIssuer)) ||
+      (currencyTab.toUpperCase() !== nativeCurrency && !isAddressOrUsername(currencyIssuer)) ||
       listTab === 'currencies'
     ) {
       queryRemoveList = ['currency', 'currencyIssuer']
@@ -563,10 +572,10 @@ export default function NftVolumes({
 
     if (currencyTab === '') {
       queryRemoveList = ['currency', 'currencyIssuer']
-    } else if (currencyTab === 'xrp') {
+    } else if (currencyTab === nativeCurrency) {
       queryAddList.push({
         name: 'currency',
-        value: 'xrp'
+        value: nativeCurrency
       })
     }
 
@@ -601,7 +610,7 @@ export default function NftVolumes({
           '&currencyIssuer=' +
           volume.volumes[0].amount.issuer
       } else {
-        urlPart = urlPart + '&currency=xrp'
+        urlPart = urlPart + '&currency=' + nativeCurrency
       }
     }
     if (!options?.excludeIssuer) {
@@ -666,10 +675,12 @@ export default function NftVolumes({
   const nftSalesLink = (data) => {
     if (!data) return ''
     return (
-      <Link href={'/nft-sales' + urlParams(data)}>
+      <>
         {' '}
-        <LinkIcon />
-      </Link>
+        <Link href={'/nft-sales' + urlParams(data)}>
+          <LinkIcon />
+        </Link>
+      </>
     )
   }
 
@@ -1068,7 +1079,7 @@ export default function NftVolumes({
             <>
               {listTab !== 'currencies' && (
                 <div className="text-after-filter-toggle" style={{ marginTop: '-15px' }}>
-                  <p>{t(listTab + '.desc', { ns: 'nft-volumes' })}</p>
+                  {!xahauNetwork && <p>{t(listTab + '.desc', { ns: 'nft-volumes', explorerName })}</p>}
                   <p>
                     {loading ? (
                       t('general.loading')
@@ -1124,7 +1135,7 @@ export default function NftVolumes({
                               </Trans>
                             ) : (
                               <Trans i18nKey="text0" ns="nft-volumes">
-                                XRPL had {{ allSales: shortNiceNumber(rawDataSummary.all.sales, 0) }}{' '}
+                                {{ explorerName }} had {{ allSales: shortNiceNumber(rawDataSummary.all.sales, 0) }}{' '}
                                 {{ currency: currencyIssuer ? niceCurrency(currency) : currencyTab.toUpperCase() }} NFT{' '}
                                 {{
                                   saleType:
@@ -1252,9 +1263,9 @@ export default function NftVolumes({
                             </b>
                           </th>
                         )}
-                        {(listTab === 'currencies' || (currency && currencyIssuer) || currencyTab === 'xrp') && (
-                          <th className="right">{t('table.volume')}</th>
-                        )}
+                        {(listTab === 'currencies' ||
+                          (currency && currencyIssuer) ||
+                          currencyTab === nativeCurrency) && <th className="right">{t('table.volume')}</th>}
                         <th className="right">
                           {t('table.volume')} ({convertCurrency?.toUpperCase()}){' '}
                           <b
@@ -1349,7 +1360,7 @@ export default function NftVolumes({
                                     )}
                                     {(listTab === 'currencies' ||
                                       (currency && currencyIssuer) ||
-                                      currencyTab === 'xrp') && (
+                                      currencyTab === nativeCurrency) && (
                                       <td className="right">
                                         {amountFormat(volume.volumes?.[0]?.amount, { maxFractionDigits: 2 })}
                                       </td>

@@ -1,19 +1,19 @@
 {
   "header": "Volume Penjualan NFT",
-  "text0": "Selama periode tersebut, XRPL memiliki total penjualan {{allSales}} NFT dengan mata uang {{currency}} dan tipe yang dijual {{saleType}} dengan volume penjualan sebesar {{allVolume}}.",
+  "text0": "Selama periode tersebut, {{explorerName}} memiliki total penjualan {{allSales}} NFT dengan mata uang {{currency}} dan tipe yang dijual {{saleType}} dengan volume penjualan sebesar {{allVolume}}.",
   "collections": {
     "desc": "Ini adalah daftar koleksi NFT. Volume di sini tidak termasuk penjualan utama (mint) yang dilakukan dalam 2 transaksi (pembayaran dan transfer NFT)."
   },
   "brokers": {
     "desc": "Ini adalah daftar akun perantara NFT. Di sini Anda dapat melihat volume perdagangan yang disesuaikan oleh bot. Pasar menggunakan model perdagangan campuran, di mana Anda hanya dapat melihat volume melalui perantara.",
     "no-broker": "Tidak ada perantara",
-    "text0": "Selama periode tersebut, XRPL memiliki total penjualan {{allSales}} NFT dengan mata uang <3>{{currency}}</3> {{saleType}}, dan volume penjualan {{allVolume}}. Dari jumlah tersebut, <13>{{middlemanSales}}</13> perdagangan ({{percentMiddlemanSales}}) dengan volume <19>{{middlemanVolume}}</19> ({{percentMiddlemanVolume}}) dilakukan melalui model perantara."
+    "text0": "Selama periode tersebut, XRPL memiliki total penjualan {{allSales}} NFT dengan mata uang <3>{{currency}}</3> {{saleType}}, dan volume penjualan {{allVolume}}. Dari jumlah tersebut, <13>{{brokerSales}}</13> perdagangan ({{percentBrokerSales}}) dengan volume <19>{{brokerVolume}}</19> ({{percentBrokerVolume}}) dilakukan melalui model perantara."
   },
   "marketplaces": {
-    "desc": "Berikut adalah daftar Pasar NFT di XRPL. Volume di sini tidak termasuk penjualan utama (mint) yang dilakukan dalam 2 transaksi (pembayaran dan transfer NFT)."
+    "desc": "Berikut adalah daftar Pasar NFT di {{explorerName}}. Volume di sini tidak termasuk penjualan utama (mint) yang dilakukan dalam 2 transaksi (pembayaran dan transfer NFT)."
   },
   "issuers": {
-   "desc": "Ini adalah daftar penerbit NFT di XRPL. Untuk melihat volume koleksi NFT yang diidentifikasi oleh penerbit, klik tautan dalam kolom Volume Penjualan."
+   "desc": "Ini adalah daftar penerbit NFT di {{explorerName}}. Untuk melihat volume koleksi NFT yang diidentifikasi oleh penerbit, klik tautan dalam kolom Volume Penjualan."
   },
   "sales-chart": "Grafik penjualan",
   "volumes-chart": "Grafik volume"

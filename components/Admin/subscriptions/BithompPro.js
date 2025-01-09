@@ -28,10 +28,9 @@ export default function Pro({ setPayPeriod }) {
           {!xahauNetwork && (
             <>
               <Link href="/nft-volumes">NFT Collections</Link> &{' '}
-              <Link href="/nft-volumes?list=issuers">NFT Issuers</Link>
             </>
           )}
-          .
+          <Link href="/nft-volumes?list=issuers">NFT Issuers</Link>.
         </p>
         <p>
           ✅ <b>Fewer Ads</b>: Focus on what matters most.
