@@ -821,13 +821,33 @@ export default function Account({
                                   {data.ledgerInfo?.mintedNFTokens && (
                                     <tr>
                                       <td>Minted NFTs</td>
-                                      <td>{data.ledgerInfo.mintedNFTokens}</td>
+                                      <td>
+                                        <Link
+                                          href={
+                                            '/nft-explorer?includeWithoutMediaData=true&issuer=' +
+                                            data?.address +
+                                            '&includeBurned=true'
+                                          }
+                                        >
+                                          {data.ledgerInfo.mintedNFTokens}
+                                        </Link>
+                                      </td>
                                     </tr>
                                   )}
                                   {data.ledgerInfo?.burnedNFTokens && (
                                     <tr>
                                       <td>Burned NFTs</td>
-                                      <td>{data.ledgerInfo.burnedNFTokens}</td>
+                                      <td>
+                                        <Link
+                                          href={
+                                            '/nft-explorer?includeWithoutMediaData=true&issuer=' +
+                                            data?.address +
+                                            '&includeBurned=true&burnedPeriod=all'
+                                          }
+                                        >
+                                          {data.ledgerInfo.burnedNFTokens}
+                                        </Link>
+                                      </td>
                                     </tr>
                                   )}
                                   {data.ledgerInfo?.firstNFTokenSequence && (
@@ -1018,11 +1038,11 @@ export default function Account({
                                 <>
                                   <tr>
                                     <td>Multi-signing</td>
-                                    <td className="bold">Enabled</td>
+                                    <td className="bold">enabled</td>
                                   </tr>
                                   {data.ledgerInfo.signerList.signerQuorum && (
                                     <tr>
-                                      <td>Multi signing threshold</td>
+                                      <td>Multi-signing threshold</td>
                                       <td className="bold">{data.ledgerInfo.signerList.signerQuorum}</td>
                                     </tr>
                                   )}
