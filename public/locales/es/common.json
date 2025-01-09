@@ -552,7 +552,7 @@
     "publicAndKnownBrokers": "Público Y Mercado",
     "onSale": "En venta por {{nativeCurrency}}",
     "all-tokens": "Todos los tokens",
-    "xrp-only": "solo XRP",
+    "native-currency-only": "Solo {{nativeCurrency}}",
     "mintedNew": "Latest",
     "mintedOld": "Oldest",
     "existing": "Existing",

@@ -552,7 +552,7 @@
     "publicAndKnownBrokers": "パブリック & MP",
     "onSale": "{{nativeCurrency}}で販売中",
     "all-tokens": "全トークン",
-    "xrp-only": "XRPのみ",
+    "native-currency-only": "{{nativeCurrency}}のみ",
     "mintedNew": "新しい",
     "mintedOld": "古い",
     "existing": "既存",

@@ -552,7 +552,7 @@
     "publicAndKnownBrokers": "Public & MP",
     "onSale": "On sale for {{nativeCurrency}}",
     "all-tokens": "All tokens",
-    "xrp-only": "XRP only",
+    "native-currency-only": "{{nativeCurrency}} only",
     "mintedNew": "Latest",
     "mintedOld": "Oldest",
     "existing": "Existing",

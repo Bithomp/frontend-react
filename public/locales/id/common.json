@@ -552,7 +552,7 @@
     "publicAndKnownBrokers": "Publik & Broker Terkenal",
     "onSale": "Dijual dengan {{nativeCurrency}}",
     "all-tokens": "Semua Token",
-    "xrp-only": "Hanya XRP",
+    "native-currency-only": "Hanya {{nativeCurrency}}",
     "mintedNew": "Latest",
     "mintedOld": "Oldest",
     "existing": "Existing",

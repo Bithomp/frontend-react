@@ -32,7 +32,15 @@ import CheckBox from '../../components/UI/CheckBox'
 import DateAndTimeRange from '../../components/UI/DateAndTimeRange'
 import SimpleChart from '../../components/SimpleChart'
 
-import { setTabParams, stripText, isAddressOrUsername, useWidth, chartSpan, xahauNetwork } from '../../utils'
+import {
+  setTabParams,
+  stripText,
+  isAddressOrUsername,
+  useWidth,
+  chartSpan,
+  xahauNetwork,
+  nativeCurrency
+} from '../../utils'
 import {
   amountFormat,
   shortNiceNumber,
@@ -107,7 +115,7 @@ export default function NftVolumes({
 
   const currencyTabList = [
     { value: '', label: t('tabs.all-tokens') },
-    { value: 'xrp', label: t('tabs.xrp-only') }
+    { value: 'xrp', label: t('tabs.native-currency-only', { nativeCurrency }) }
   ]
 
   const controller = new AbortController()
@@ -203,7 +211,9 @@ export default function NftVolumes({
     if (listTab === 'charts') {
       const chartDataResponse = await axios
         .get(
-          'v2/nft-sales-chart?span=' +
+          'v2/' +
+            (xahauNetwork ? 'uritoken' : 'nft') +
+            '-sales-chart?span=' +
             chartSpan(period) +
             '&period=' +
             period +

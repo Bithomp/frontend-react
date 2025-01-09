@@ -552,7 +552,7 @@
     "publicAndKnownBrokers": "Öffentlich & MP",
     "onSale": "Zum Verkauf für {{nativeCurrency}}",
     "all-tokens": "Alle Tokens",
-    "xrp-only": "nur XRP",
+    "native-currency-only": "Nur {{nativeCurrency}}",
     "mintedNew": "Neuste",
     "mintedOld": "Älteste",
     "existing": "Existierende",
