@@ -533,21 +533,21 @@ export default function Account({
                                       <td>Xaman Pro</td>
                                       <td>
                                         {data?.xamanMeta?.xummProfile?.slug ? (
-                                          <a href={data.xamanMeta.xummProfile.profileUrl}>
-                                            <b className="orange">{data.xamanMeta.xummProfile.slug}</b>
+                                          <a href={data.xamanMeta.xummProfile.profileUrl} className="green">
+                                            {data.xamanMeta.xummProfile.slug}
                                           </a>
                                         ) : (
                                           <b className="orange">activated ❤️</b>
                                         )}
                                         {/* Need to be done on the backend and tested, also need to hide the add for 1 hour after click, or longer if we also cache */}
                                         {data.xamanMeta?.monetisation?.status === 'PAYMENT_REQUIRED' && (
-                                          <span className="red">
+                                          <span className="orange">
                                             <br />
                                             Limited 😔
                                           </span>
                                         )}
                                         {data.xamanMeta?.monetisation?.status === 'COMING_UP' && (
-                                          <span className="red">
+                                          <span className="orange">
                                             <br />
                                             Soon limited 😔
                                           </span>
@@ -561,8 +561,9 @@ export default function Account({
                                               target="_blank"
                                               rel="noopener nofollow"
                                             >
-                                              <b>Purchase Xaman Pro ❤️</b>
-                                            </a>
+                                              Purchase Xaman Pro
+                                            </a>{' '}
+                                            ❤️
                                           </>
                                         )}
                                       </td>
