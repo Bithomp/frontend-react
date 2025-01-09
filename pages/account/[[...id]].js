@@ -24,7 +24,9 @@ import {
   nativeCurrencyToFiat,
   shortNiceNumber,
   shortHash,
-  niceNumber
+  niceNumber,
+  AddressWithIcon,
+  addressUsernameOrServiceLink
 } from '../../utils/format'
 import { getIsSsrMobile } from '../../utils/mobile'
 import { fetchCurrentFiatRate } from '../../utils/common'
@@ -1000,7 +1002,9 @@ export default function Account({
                                 <tr>
                                   <td>Regular key</td>
                                   <td>
-                                    <LinkAccount address={data.ledgerInfo.regularKey} />
+                                    <AddressWithIcon address={data.ledgerInfo.regularKey}>
+                                      {addressUsernameOrServiceLink(data.ledgerInfo, 'regularKey')}
+                                    </AddressWithIcon>
                                   </td>
                                 </tr>
                               )}
@@ -1025,10 +1029,14 @@ export default function Account({
                                   {data.ledgerInfo.signerList.signerEntries.map((signer, index) => (
                                     <tr key={index}>
                                       <td>
-                                        Signer {index + 1}, weight <b>{signer.signerWeight}</b>
+                                        Signer #{index + 1}
+                                        <br />
+                                        Weight: <b>{signer.signerWeight}</b>
                                       </td>
                                       <td>
-                                        <LinkAccount address={signer.account} />
+                                        <AddressWithIcon address={signer.account}>
+                                          {addressUsernameOrServiceLink(signer, 'account')}
+                                        </AddressWithIcon>
                                       </td>
                                     </tr>
                                   ))}
