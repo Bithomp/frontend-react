@@ -184,6 +184,10 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
 }
 
+.code-highlight {
+  background-color: var(--background-input-readonly);
+}
+
 a, .link {
   cursor: pointer;
   color: var(--accent-link);

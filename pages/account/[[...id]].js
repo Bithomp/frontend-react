@@ -24,7 +24,6 @@ import {
   nativeCurrencyToFiat,
   shortNiceNumber,
   shortHash,
-  codeHighlight,
   niceNumber
 } from '../../utils/format'
 import { getIsSsrMobile } from '../../utils/mobile'
@@ -839,7 +838,7 @@ export default function Account({
                                     <tr>
                                       <td>NFT minter</td>
                                       <td>
-                                        <LinkAccount account={data.ledgerInfo.nftokenMinter} />
+                                        <LinkAccount address={data.ledgerInfo.nftokenMinter} />
                                       </td>
                                     </tr>
                                   )}
@@ -875,7 +874,7 @@ export default function Account({
                                         )}
                                       </>
                                     ) : (
-                                      codeHighlight(data.ledgerInfo.domain)
+                                      <code className="code-highlight">{data.ledgerInfo.domain}</code>
                                     )}
                                   </td>
                                 </tr>
@@ -1001,7 +1000,7 @@ export default function Account({
                                 <tr>
                                   <td>Regular key</td>
                                   <td>
-                                    <LinkAccount account={data.ledgerInfo.regularKey} />
+                                    <LinkAccount address={data.ledgerInfo.regularKey} />
                                   </td>
                                 </tr>
                               )}
@@ -1029,7 +1028,7 @@ export default function Account({
                                         Signer {index + 1}, weight <b>{signer.signerWeight}</b>
                                       </td>
                                       <td>
-                                        <LinkAccount account={signer.account} />
+                                        <LinkAccount address={signer.account} />
                                       </td>
                                     </tr>
                                   ))}
