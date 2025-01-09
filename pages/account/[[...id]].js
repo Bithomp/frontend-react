@@ -151,7 +151,6 @@ export default function Account({
           setErrorMessage(t('error-api.' + newdata.error))
         } else {
           setErrorMessage('Error')
-          console.log(newdata)
         }
       }
     }
@@ -371,7 +370,7 @@ export default function Account({
                             )}
                             {data?.ledgerInfo?.blackholed ? (
                               <>
-                                <b className="orange">Blackholed </b> {console.log(data.ledgerInfo)}
+                                <b className="orange">Blackholed </b>
                                 <br />
                                 {/* need to test taht backend returns lastSubmittedAt for blackholed accounts */}
                                 {data?.ledgerInfo?.lastSubmittedAt && (
@@ -592,56 +591,57 @@ export default function Account({
                             </div>
                           )}
 
-                          {((!account?.address && !data?.service?.name) || data?.address === account?.address) && (
-                            <table className="table-details autowidth">
-                              <thead>
-                                <tr>
-                                  <th colSpan="100">Actions</th>
-                                </tr>
-                              </thead>
-                              <tbody>
-                                <tr>
-                                  <td colSpan="2" className="no-padding">
-                                    <div className="flex flex-center">
-                                      <button
-                                        className="button-action button-wide thin"
-                                        onClick={() =>
-                                          setSignRequest({
-                                            action: 'setAvatar',
-                                            request: {
-                                              TransactionType: 'AccountSet',
-                                              Account: data.address
-                                            },
-                                            data: {
-                                              signOnly: true,
-                                              action: 'set-avatar'
-                                            }
-                                          })
-                                        }
-                                      >
-                                        Set Avatar
-                                      </button>
+                          {((!account?.address && !data?.service?.name) || data?.address === account?.address) &&
+                            !data?.ledgerInfo?.blackholed && (
+                              <table className="table-details autowidth">
+                                <thead>
+                                  <tr>
+                                    <th colSpan="100">Actions</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  <tr>
+                                    <td colSpan="2" className="no-padding">
+                                      <div className="flex flex-center">
+                                        <button
+                                          className="button-action button-wide thin"
+                                          onClick={() =>
+                                            setSignRequest({
+                                              action: 'setAvatar',
+                                              request: {
+                                                TransactionType: 'AccountSet',
+                                                Account: data.address
+                                              },
+                                              data: {
+                                                signOnly: true,
+                                                action: 'set-avatar'
+                                              }
+                                            })
+                                          }
+                                        >
+                                          Set Avatar
+                                        </button>
 
-                                      <button
-                                        className="button-action button-wide thin"
-                                        onClick={() =>
-                                          setSignRequest({
-                                            action: 'setDomain',
-                                            redirect: 'account',
-                                            request: {
-                                              TransactionType: 'AccountSet'
-                                            }
-                                          })
-                                        }
-                                      >
-                                        {t('button.set-domain')}
-                                      </button>
-                                    </div>
-                                  </td>
-                                </tr>
-                              </tbody>
-                            </table>
-                          )}
+                                        <button
+                                          className="button-action button-wide thin"
+                                          onClick={() =>
+                                            setSignRequest({
+                                              action: 'setDomain',
+                                              redirect: 'account',
+                                              request: {
+                                                TransactionType: 'AccountSet'
+                                              }
+                                            })
+                                          }
+                                        >
+                                          {t('button.set-domain')}
+                                        </button>
+                                      </div>
+                                    </td>
+                                  </tr>
+                                </tbody>
+                              </table>
+                            )}
                         </div>
                         <div className="column-right">
                           <table className="table-details">

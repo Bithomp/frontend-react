@@ -18,7 +18,7 @@ export const getServerSideProps = async (context) => {
 
 import SEO from '../components/SEO'
 
-import { useWidth, nativeCurrency } from '../utils'
+import { useWidth, nativeCurrency, devNet } from '../utils'
 import {
   amountFormat,
   userOrServiceLink,
@@ -193,7 +193,10 @@ export default function Distribution({ selectedCurrency }) {
                             <td className="right">
                               {amountFormat(r.balance)} {percentFormat(r.balance, rawData.summary?.totalCoins)}
                               <br />
-                              {fiatRate > 0 && nativeCurrencyToFiat({ amount: r.balance, selectedCurrency, fiatRate })}
+                              {devNet
+                                ? t('table.no-value')
+                                : fiatRate > 0 &&
+                                  nativeCurrencyToFiat({ amount: r.balance, selectedCurrency, fiatRate })}
                             </td>
                           </tr>
                         ))}
@@ -246,7 +249,9 @@ export default function Distribution({ selectedCurrency }) {
                             <br />
                             {amountFormat(r.balance)} {percentFormat(r.balance, rawData.summary?.totalCoins)}
                             <br />
-                            {fiatRate > 0 && nativeCurrencyToFiat({ amount: r.balance, selectedCurrency, fiatRate })}
+                            {devNet
+                              ? t('table.no-value')
+                              : fiatRate > 0 && nativeCurrencyToFiat({ amount: r.balance, selectedCurrency, fiatRate })}
                           </p>
                         </td>
                       </tr>

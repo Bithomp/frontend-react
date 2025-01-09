@@ -162,8 +162,7 @@
     "search-placeholder-short": "Adresse / Transaction / Nom d'utilisateur",
     "scan-qr": "SCANNER UN CODE",
     "whales": {
-      "header": "Les transactions les plus significatives des dernières 24 heures",
-      "no-value": "sans valeur"
+      "header": "Les transactions les plus significatives des dernières 24 heures"
     },
     "stat": {
       "header": "Statistiques en direct de {{ledgerName}}",
@@ -399,6 +398,7 @@
     "day": "Pour les 24 dernières heures"
   },
   "table": {
+    "no-value": "sans valeur",
     "updated": "Mis à jour",
     "currency": "Monnaie",
     "currency-issuer": "Émetteur de monnaie",

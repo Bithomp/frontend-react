@@ -162,8 +162,7 @@
     "search-placeholder-short": "アドレス/トランザクション/ユーザで検索",
     "scan-qr": "QRコードをスキャン",
     "whales": {
-      "header": "直近24時間の代表的なトランザクション",
-      "no-value": "値なし"
+      "header": "直近24時間の代表的なトランザクション"
     },
     "stat": {
       "header": "{{ledgerName}}リアルタイム情報",
@@ -399,6 +398,7 @@
     "day": "直近24時間"
   },
   "table": {
+    "no-value": "値なし",
     "updated": "最終更新",
     "currency": "通貨",
     "currency-issuer": "通貨発行者",

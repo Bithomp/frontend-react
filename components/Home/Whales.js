@@ -144,7 +144,7 @@ export default function Whales({ currency }) {
                     </>
                   )}
                   {devNet
-                    ? t('home.whales.no-value')
+                    ? t('table.no-value')
                     : tx.amountFiats
                     ? shortNiceNumber(tx.amountFiats[currency?.toLowerCase()], 2, 1, currency)
                     : ''}

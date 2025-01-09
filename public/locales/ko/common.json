@@ -163,8 +163,7 @@
     "search-placeholder-short": "주소/거래/사용자별 검색",
     "scan-qr": "QR코드를 스캔하세요",
     "whales": {
-      "header": "지난 24시간 동안 가장 중요한 거래",
-      "no-value": "값 없음"
+      "header": "지난 24시간 동안 가장 중요한 거래"
     },
     "stat": {
       "header": "{{ledgerName}} 실시간 통계",
@@ -400,6 +399,7 @@
     "day": "최근 24시간"
   },
   "table": {
+    "no-value": "값 없음",
     "updated": "업데이트됨",
     "currency": "통화",
     "currency-issuer": "통화 발행자",

@@ -162,8 +162,7 @@
     "search-placeholder-short": "Suche nach Adresse / Transaktion",
     "scan-qr": "CODE SCANNEN",
     "whales": {
-      "header": "Die signifikantesten Transaktionen der letzten 24 Stunden",
-      "no-value": "kein Wert"
+      "header": "Die signifikantesten Transaktionen der letzten 24 Stunden"
     },
     "stat": {
       "header": "{{ledgerName}} Live Statistiken",
@@ -399,6 +398,7 @@
     "day": "Für die letzten 24 Stunden"
   },
   "table": {
+    "no-value": "kein wert",
     "updated": "Aktualisiert",
     "currency": "Währung",
     "currency-issuer": "Währungsemittent",
