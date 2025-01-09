@@ -703,6 +703,7 @@ export default function Account({
                                           <>
                                             Activated {timeFromNow(data.inception, i18n)} (
                                             {fullDateAndTime(data.inception)})
+                                            {data?.inceptionTxHash && <> {txIdLink(data.inceptionTxHash, 0)}</>}
                                           </>
                                         )}
                                       </>
@@ -1051,6 +1052,7 @@ export default function Account({
                                   <td>Activated</td>
                                   <td>
                                     {timeFromNow(data.inception, i18n)} ({fullDateAndTime(data.inception)})
+                                    {data?.inceptionTxHash && <> {txIdLink(data.inceptionTxHash, 0)}</>}
                                   </td>
                                 </tr>
                                 {data.service?.domain && (
