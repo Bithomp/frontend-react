@@ -274,12 +274,12 @@ export default function Statistics() {
       {xahauNetwork && (
         <div className="statistics-block">
           <div className="stat-piece">
-            <div className="stat-piece-header">Unique Hooks used (24h)</div>
-            <div>{hooksLast24h.emitHooks}</div>
-          </div>
-          <div className="stat-piece">
             <div className="stat-piece-header">Hook's parent txs (24h)</div>
             <div>{hooksLast24h.emitTxs}</div>
+          </div>
+          <div className="stat-piece">
+            <div className="stat-piece-header">Unique Hooks used (24h)</div>
+            <div>{hooksLast24h.emitHooks}</div>
           </div>
           <div className="stat-piece">
             <div className="stat-piece-header">Txs emitted by hooks (24h)</div>
