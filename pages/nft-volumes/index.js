@@ -1305,8 +1305,17 @@ export default function NftVolumes({
                                     {listTab === 'marketplaces' && <td>{volume.marketplace}</td>}
                                     {listTab === 'marketplaces' && (
                                       <td className="right">
-                                        {shortNiceNumber(volume.nftokens?.minted, 0)}{' '}
-                                        {volume.nftokens?.minted ? nftExplorerLink(volume) : ''}
+                                        {xahauNetwork ? (
+                                          <>
+                                            {shortNiceNumber(volume.uritokens?.minted, 0)}{' '}
+                                            {volume.uritokens?.minted ? nftExplorerLink(volume) : ''}
+                                          </>
+                                        ) : (
+                                          <>
+                                            {shortNiceNumber(volume.nftokens?.minted, 0)}{' '}
+                                            {volume.nftokens?.minted ? nftExplorerLink(volume) : ''}
+                                          </>
+                                        )}
                                       </td>
                                     )}
                                     {listTab === 'issuers' && (
