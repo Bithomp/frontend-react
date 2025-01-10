@@ -25,8 +25,7 @@ import {
   shortNiceNumber,
   shortHash,
   niceNumber,
-  AddressWithIcon,
-  addressUsernameOrServiceLink
+  AddressWithIconFilled
 } from '../../utils/format'
 import { getIsSsrMobile } from '../../utils/mobile'
 import { fetchCurrentFiatRate } from '../../utils/common'
@@ -372,7 +371,6 @@ export default function Account({
                               <>
                                 <b className="orange">Blackholed </b>
                                 <br />
-                                {/* need to test taht backend returns lastSubmittedAt for blackholed accounts */}
                                 {data?.ledgerInfo?.lastSubmittedAt && (
                                   <>{timeFromNow(data.ledgerInfo.lastSubmittedAt, i18n)}</>
                                 )}
@@ -536,7 +534,7 @@ export default function Account({
                                             {data.xamanMeta.xummProfile.slug}
                                           </a>
                                         ) : (
-                                          <b className="orange">activated ❤️</b>
+                                          <span className="orange">activated ❤️</span>
                                         )}
                                         {/* Need to be done on the backend and tested, also need to hide the add for 1 hour after click, or longer if we also cache */}
                                         {data.xamanMeta?.monetisation?.status === 'PAYMENT_REQUIRED' && (
@@ -680,7 +678,16 @@ export default function Account({
                               {data?.ledgerInfo?.blackholed ? (
                                 <tr>
                                   <td className="orange">Blackholed</td>
-                                  <td>This account is BLACKHOLED. It can not issue more tokens.</td>
+                                  <td>
+                                    This account is BLACKHOLED{' '}
+                                    {data?.ledgerInfo?.lastSubmittedAt && (
+                                      <>
+                                        {timeFromNow(data.ledgerInfo.lastSubmittedAt, i18n)} (
+                                        {fullDateAndTime(data.ledgerInfo.lastSubmittedAt)}).
+                                      </>
+                                    )}{' '}
+                                    It can not issue more tokens.
+                                  </td>
                                 </tr>
                               ) : (
                                 <tr>
@@ -1023,9 +1030,7 @@ export default function Account({
                                 <tr>
                                   <td>Regular key</td>
                                   <td>
-                                    <AddressWithIcon address={data.ledgerInfo.regularKey}>
-                                      {addressUsernameOrServiceLink(data.ledgerInfo, 'regularKey')}
-                                    </AddressWithIcon>
+                                    <AddressWithIconFilled data={data.ledgerInfo} name="regularKey" />
                                   </td>
                                 </tr>
                               )}
@@ -1055,9 +1060,7 @@ export default function Account({
                                         Weight: <b>{signer.signerWeight}</b>
                                       </td>
                                       <td>
-                                        <AddressWithIcon address={signer.account}>
-                                          {addressUsernameOrServiceLink(signer, 'account')}
-                                        </AddressWithIcon>
+                                        <AddressWithIconFilled data={signer} name="account" />
                                       </td>
                                     </tr>
                                   ))}
@@ -1075,7 +1078,6 @@ export default function Account({
                               </thead>
                               <tbody>
                                 {accountNameTr(data)}
-
                                 <tr>
                                   <td>Activated</td>
                                   <td>

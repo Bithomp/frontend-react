@@ -31,6 +31,24 @@ export const AddressWithIcon = ({ children, address }) => {
   )
 }
 
+export const AddressWithIconFilled = ({ data, name }) => {
+  if (!data) return ''
+  if (!name) {
+    name = 'address'
+  }
+  return (
+    <AddressWithIcon address={data[name]}>
+      {userOrServiceLink(data, name) && (
+        <>
+          {userOrServiceLink(data, name)}
+          <br />
+        </>
+      )}
+      {addressLink(data[name])}
+    </AddressWithIcon>
+  )
+}
+
 export const nativeCurrencyToFiat = (params) => {
   const { amount, selectedCurrency, fiatRate } = params
   if (!amount || !selectedCurrency || !fiatRate) return ''
