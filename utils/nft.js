@@ -429,13 +429,19 @@ export const nftUrl = (nft, type = 'image', gateway = 'our') => {
 }
 
 export const isNftExplicit = (nft) => {
+  const name = nft.metadata?.name && typeof nft.metadata?.name === 'string' ? nft.metadata.name.toLowerCase() : ''
+  const title = nft.metadata?.title && typeof nft.metadata?.title === 'string' ? nft.metadata.title.toLowerCase() : ''
+  const collection =
+    nft.metadata?.collection?.name && typeof nft.metadata?.collection?.name === 'string'
+      ? nft.metadata.collection.name.toLowerCase()
+      : ''
   if (
-    nft.metadata?.name?.toLowerCase().includes('nude') ||
-    nft.metadata?.title?.toLowerCase().includes('nude') ||
-    nft.metadata?.name?.toLowerCase().includes('sexy') ||
-    nft.metadata?.name?.toLowerCase().includes('naked') ||
-    nft.metadata?.name?.toLowerCase().includes('ladies') ||
-    nft.metadata?.collection?.name?.includes('18+') ||
+    name.includes('nude') ||
+    title.includes('nude') ||
+    name.includes('sexy') ||
+    name.includes('naked') ||
+    name.includes('ladies') ||
+    collection.includes('18+') ||
     nft.metadata?.is_explicit
   ) {
     return true
