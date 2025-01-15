@@ -858,7 +858,12 @@ export default function NftsComponent({
                         ) : (
                           <>
                             {!subscriptionExpired ? (
-                              t('nfts.load-more')
+                              t('nfts.load-more') +
+                              ' [session: ' +
+                              sessionToken +
+                              ', subscription: ' +
+                              subscriptionExpired +
+                              ']'
                             ) : (
                               <Trans i18nKey="general.renew-bithomp-pro">
                                 Your Bithomp Pro subscription has expired.
@@ -869,7 +874,7 @@ export default function NftsComponent({
                         )}
                       </>
                     ) : (
-                      t('nfts.load-more') + ' [' + hasMore + ']'
+                      t('nfts.load-more')
                     )}
                   </p>
                 )
