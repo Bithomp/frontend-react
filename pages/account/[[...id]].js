@@ -760,7 +760,7 @@ export default function Account({
                                   <tr>
                                     <td>Total balance</td>
                                     <td>
-                                      {amountFormat(balances?.total?.native)}
+                                      {amountFormat(balances?.total?.native, { precise: true })}
                                       {nativeCurrencyToFiat({
                                         amount: balances.total?.native,
                                         selectedCurrency,
@@ -771,7 +771,7 @@ export default function Account({
                                   <tr>
                                     <td>Reserved</td>
                                     <td>
-                                      {amountFormat(balances?.reserved?.native, { minFractionDigits: 6 })}
+                                      {amountFormat(balances?.reserved?.native, { precise: true })}
                                       {nativeCurrencyToFiat({
                                         amount: balances.reserved?.native,
                                         selectedCurrency,
@@ -782,7 +782,9 @@ export default function Account({
                                   <tr>
                                     <td>Available</td>
                                     <td>
-                                      <b className="green">{amountFormat(balances?.available?.native)}</b>
+                                      <b className="green">
+                                        {amountFormat(balances?.available?.native, { precise: true })}
+                                      </b>
                                       {nativeCurrencyToFiat({
                                         amount: balances.available?.native,
                                         selectedCurrency,
