@@ -282,11 +282,11 @@ export default function Statistics() {
             <div>{hooksLast24h.emitHooks}</div>
           </div>
           <div className="stat-piece">
-            <div className="stat-piece-header">Txs emitted by hooks (24h)</div>
+            <div className="stat-piece-header">Txs emitted by Hooks (24h)</div>
             <div>{hooksLast24h.hooksEmitted}</div>
           </div>
           <div className="stat-piece">
-            <div className="stat-piece-header">Fees paid by hooks (24h)</div>
+            <div className="stat-piece-header">Fees paid by Hooks (24h)</div>
             <div>{hooksLast24h.hooksEmittedFee}</div>
           </div>
         </div>
