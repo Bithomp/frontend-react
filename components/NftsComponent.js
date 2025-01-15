@@ -1,9 +1,7 @@
-import { useTranslation, Trans } from 'next-i18next'
+import { useTranslation } from 'next-i18next'
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import axios from 'axios'
-import InfiniteScroll from 'react-infinite-scroll-component'
-import Link from 'next/link'
 
 import {
   isAddressOrUsername,
@@ -29,6 +27,7 @@ import FormInput from './UI/FormInput'
 import AddressInput from './UI/AddressInput'
 import NftTabs from './Tabs/NftTabs'
 import FiltersFrame from './Layout/FiltersFrame'
+import InfiniteScrolling from './Layout/InfiniteScrolling'
 
 export default function NftsComponent({
   collectionQuery,
@@ -841,56 +840,15 @@ export default function NftsComponent({
               {t('nfts.desc')}
             </div>
           ) : (
-            <InfiniteScroll
+            <InfiniteScrolling
               dataLength={data?.length}
-              next={checkApi}
+              loadMore={checkApi}
               hasMore={hasMore}
-              loader={
-                !errorMessage && (
-                  <p className="center">
-                    {hasMore !== 'first' ? (
-                      <>
-                        {!sessionToken ? (
-                          <Trans i18nKey="general.login-to-bithomp-pro">
-                            Loading more data is available to <Link href="/admin">logged-in</Link> Bithomp Pro
-                            subscribers.
-                          </Trans>
-                        ) : (
-                          <>
-                            {!subscriptionExpired ? (
-                              t('nfts.load-more') +
-                              ' [session: ' +
-                              sessionToken +
-                              ', subscription: ' +
-                              subscriptionExpired +
-                              ']'
-                            ) : (
-                              <Trans i18nKey="general.renew-bithomp-pro">
-                                Your Bithomp Pro subscription has expired.
-                                <Link href="/admin/subscriptions">Renew your subscription</Link>.
-                              </Trans>
-                            )}
-                          </>
-                        )}
-                      </>
-                    ) : (
-                      t('nfts.load-more')
-                    )}
-                  </p>
-                )
-              }
-              endMessage={<p className="center">{t('nfts.end')}</p>}
-              height={!filtersHide ? '1300px' : '100vh'}
-              // below props only if you need pull down functionality
-              //refreshFunction={this.refresh}
-              //pullDownToRefresh
-              //pullDownToRefreshThreshold={50}
-              //</>pullDownToRefreshContent={
-              //  <h3 style={{ textAlign: 'center' }}>&#8595; Pull down to refresh</h3>
-              //}
-              //releaseToRefreshContent={
-              //  <h3 style={{ textAlign: 'center' }}>&#8593; Release to refresh</h3>
-              //}
+              errorMessage={errorMessage}
+              subscriptionExpired={subscriptionExpired}
+              sessionToken={sessionToken}
+              endMessage={t('nfts.end')}
+              //height={!filtersHide ? '1300px' : '100vh'}
             >
               {activeView === 'list' && (
                 <>
@@ -1044,7 +1002,7 @@ export default function NftsComponent({
                   )}
                 </>
               )}
-            </InfiniteScroll>
+            </InfiniteScrolling>
           )}
         </>
       </FiltersFrame>

@@ -11,6 +11,7 @@ export default function InfiniteScrolling({
   subscriptionExpired,
   sessionToken,
   height,
+  endMessage,
   children
 }) {
   const { t } = useTranslation()
@@ -56,7 +57,7 @@ export default function InfiniteScrolling({
           </p>
         )
       }
-      endMessage={<p className="center">End of list</p>}
+      endMessage={<p className="center">{endMessage || 'End of list'}</p>}
     >
       {children}
     </InfiniteScroll>
