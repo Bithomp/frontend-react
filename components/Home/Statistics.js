@@ -278,7 +278,7 @@ export default function Statistics() {
             <div>{hooksLast24h.emitTxs}</div>
           </div>
           <div className="stat-piece">
-            <div className="stat-piece-header">Unique Hooks used (24h)</div>
+            <div className="stat-piece-header">Hooks emitting txs (24h)</div>
             <div>{hooksLast24h.emitHooks}</div>
           </div>
           <div className="stat-piece">
