@@ -52,7 +52,7 @@ export default function NftDistribution({
   orderQuery,
   subscriptionExpired,
   sessionToken,
-  setSessionToken
+  signOutPro
 }) {
   const { t } = useTranslation()
   const windowWidth = useWidth()
@@ -179,7 +179,8 @@ export default function NftDistribution({
         }
         if (newdata.error) {
           if (newdata.error === 'This endpoint/query is available only within bithomp pro subscription') {
-            setSessionToken('')
+            // user logged out...
+            signOutPro()
           } else {
             setErrorMessage(t('error-api.' + newdata.error))
           }
