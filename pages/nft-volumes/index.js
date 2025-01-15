@@ -685,19 +685,21 @@ export default function NftVolumes({
   }
 
   const nftVolumesLink = (data) => {
-    if (!data) return ''
+    if (!data || xahauNetwork) return ''
     if (data.issuer) {
       return (
-        <Link
-          href={
-            '/nft-volumes/' +
-            usernameOrAddress(data, 'issuer') +
-            urlParams(data, { excludeIssuer: true, excludeCurrency: true })
-          }
-        >
+        <>
           {' '}
-          <LinkIcon />
-        </Link>
+          <Link
+            href={
+              '/nft-volumes/' +
+              usernameOrAddress(data, 'issuer') +
+              urlParams(data, { excludeIssuer: true, excludeCurrency: true })
+            }
+          >
+            <LinkIcon />
+          </Link>
+        </>
       )
     }
   }
