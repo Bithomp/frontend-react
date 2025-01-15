@@ -30,7 +30,7 @@ import SearchBlock from '../../components/Layout/SearchBlock'
 import DateAndTimeRange from '../../components/UI/DateAndTimeRange'
 import SimpleChart from '../../components/SimpleChart'
 
-import { setTabParams, stripText, isAddressOrUsername, useWidth, chartSpan, xahauNetwork } from '../../utils'
+import { setTabParams, stripText, isAddressOrUsername, useWidth, chartSpan } from '../../utils'
 import { niceNumber, shortNiceNumber, usernameOrAddress, amountFormat } from '../../utils/format'
 
 import LinkIcon from '../../public/images/link.svg'
@@ -75,9 +75,7 @@ export default function NftVolumes({
     if (!period || !issuer || !convertCurrency) return
 
     let apiUrl =
-      'v2/' +
-      (xahauNetwork ? 'uritoken' : 'nft') +
-      '-volumes-extended?issuer=' +
+      'v2/nft-volumes-extended?issuer=' +
       issuer +
       '&list=taxons&convertCurrencies=' +
       convertCurrency +
