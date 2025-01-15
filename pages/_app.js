@@ -59,6 +59,7 @@ const MyApp = ({ Component, pageProps }) => {
   }
 
   const signOutPro = () => {
+    console.log('signOutPro run') //delete
     setSessionToken('')
     setProExpire('0')
     setAccount({
