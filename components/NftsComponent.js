@@ -848,6 +848,7 @@ export default function NftsComponent({
               subscriptionExpired={subscriptionExpired}
               sessionToken={sessionToken}
               endMessage={t('nfts.end')}
+              loadMoreMessage={t('nfts.load-more')}
               //height={!filtersHide ? '1300px' : '100vh'}
             >
               {activeView === 'list' && (

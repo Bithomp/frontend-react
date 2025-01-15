@@ -12,6 +12,7 @@ export default function InfiniteScrolling({
   sessionToken,
   height,
   endMessage,
+  loadMoreMessage,
   children
 }) {
   const { t } = useTranslation()
@@ -52,7 +53,7 @@ export default function InfiniteScrolling({
                 )}
               </>
             ) : (
-              t('general.loading')
+              loadMoreMessage || t('general.loading')
             )}
           </p>
         )
