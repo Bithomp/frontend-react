@@ -869,7 +869,7 @@ export default function NftsComponent({
                         )}
                       </>
                     ) : (
-                      t('nfts.load-more')
+                      t('nfts.load-more') + ' [' + hasMore + ']'
                     )}
                   </p>
                 )
