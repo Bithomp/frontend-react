@@ -52,7 +52,8 @@ export default function NftsComponent({
   id,
   account,
   subscriptionExpired,
-  sessionToken
+  sessionToken,
+  setSessionToken
 }) {
   const { t } = useTranslation()
   const router = useRouter()
@@ -297,7 +298,11 @@ export default function NftsComponent({
       setLoading(false)
       setRawData(newdata)
       if (newdata.error) {
-        setErrorMessage(t('error-api.' + newdata.error))
+        if (newdata.error === 'This endpoint/query is available only within bithomp pro subscription') {
+          setSessionToken('')
+        } else {
+          setErrorMessage(t('error-api.' + newdata.error))
+        }
       } else {
         if (newdata.issuer) {
           if (isValidTaxon(newdata.taxon)) {

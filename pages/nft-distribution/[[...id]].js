@@ -181,7 +181,7 @@ export default function NftDistribution({
           if (newdata.error === 'This endpoint/query is available only within bithomp pro subscription') {
             setSessionToken('')
           } else {
-            setErrorMessage(newdata.error)
+            setErrorMessage(t('error-api.' + newdata.error))
           }
         } else {
           console.log(newdata)
