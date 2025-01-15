@@ -806,13 +806,13 @@ export default function Account({
                                   {data.ledgerInfo?.hookStateCount && (
                                     <tr>
                                       <td>Hook state count</td>
-                                      <td>#{data.ledgerInfo?.hookStateCount}</td>
+                                      <td>{data.ledgerInfo?.hookStateCount}</td>
                                     </tr>
                                   )}
                                   {data.ledgerInfo?.hookNamespaces && (
                                     <tr>
                                       <td>Hook Namespaces</td>
-                                      <td>#{data.ledgerInfo?.hookNamespaces.length}</td>
+                                      <td>{data.ledgerInfo?.hookNamespaces.length}</td>
                                     </tr>
                                   )}
                                 </>
