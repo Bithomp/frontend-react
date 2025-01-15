@@ -298,11 +298,16 @@ export default function NftsComponent({
       setRawData(newdata)
       if (newdata.error) {
         if (newdata.error === 'This endpoint/query is available only within bithomp pro subscription') {
-          console.log('user logged out...') //delete
           // user logged out...
+          console.log('user logged out...') //delete
           signOutPro()
         } else {
-          setErrorMessage(t('error-api.' + newdata.error))
+          if (typeof newdata.error === 'string') {
+            setErrorMessage(t('error-api.' + newdata.error))
+          } else {
+            setErrorMessage('error occured')
+            console.log(newdata.error)
+          }
         }
       } else {
         if (newdata.issuer) {
