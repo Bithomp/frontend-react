@@ -890,7 +890,7 @@ export default function Account({
                                         </a>{' '}
                                         {data.verifiedDomain && (
                                           <span
-                                            className="blue"
+                                            className="blue tooltip"
                                             style={{
                                               display: 'inline-block',
                                               verticalAlign: 'bottom',
@@ -898,6 +898,7 @@ export default function Account({
                                             }}
                                           >
                                             <MdVerified />
+                                            <span className="tooltiptext small no-brake">TOML Verified Domain</span>
                                           </span>
                                         )}
                                       </>
