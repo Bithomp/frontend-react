@@ -889,7 +889,14 @@ export default function Account({
                                           {stripDomain(data.ledgerInfo.domain)}
                                         </a>{' '}
                                         {data.verifiedDomain && (
-                                          <span className="green">
+                                          <span
+                                            className="blue"
+                                            style={{
+                                              display: 'inline-block',
+                                              verticalAlign: 'bottom',
+                                              marginBottom: -3
+                                            }}
+                                          >
                                             <MdVerified />
                                           </span>
                                         )}
