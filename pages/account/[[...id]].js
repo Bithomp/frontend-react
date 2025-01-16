@@ -1066,6 +1066,34 @@ export default function Account({
                                   ))}
                                 </>
                               )}
+                              {data.ledgerInfo?.sequence && (
+                                <tr>
+                                  <td>Next sequence</td>
+                                  <td>#{data.ledgerInfo.sequence}</td>
+                                </tr>
+                              )}
+                              {data.ledgerInfo?.previousTxnID && (
+                                <tr>
+                                  <td>Last affecting tx:</td>
+                                  <td>{txIdLink(data.ledgerInfo.previousTxnID, 6)}</td>
+                                </tr>
+                              )}
+                              {data.ledgerInfo?.accountTxnID && (
+                                <tr>
+                                  <td>Last initiated tx:</td>
+                                  <td>{txIdLink(data.ledgerInfo.accountTxnID, 6)}</td>
+                                </tr>
+                              )}
+                              {data.ledgerInfo?.messageKey &&
+                                data.ledgerInfo?.messageKey.Substring(0, 26) !==
+                                  '02000000000000000000000000'(
+                                    <tr>
+                                      <td>Message key</td>
+                                      <td>
+                                        <code className="code-highlight">{data.ledgerInfo.messageKey}</code>
+                                      </td>
+                                    </tr>
+                                  )}
                             </tbody>
                           </table>
 
@@ -1138,6 +1166,46 @@ export default function Account({
                                       {data.initialBalance} {nativeCurrency}
                                     </td>
                                   </tr>
+                                )}
+                                {data.flare?.spark && (
+                                  <>
+                                    <tr>
+                                      <td>Flare address</td>
+                                      <td>
+                                        <a
+                                          href={'https://flarescan.org/address/' + data.flare.address}
+                                          target="_blank"
+                                          rel="noopener"
+                                        >
+                                          {data.flare.address}
+                                        </a>
+                                      </td>
+                                    </tr>
+                                    <tr>
+                                      <td>Flare claim</td>
+                                      <td className="bold">{data.flare.spark * 0.15} FLR</td>
+                                    </tr>
+                                    <tr>
+                                      <td>Songbird address</td>
+                                      <td>
+                                        <a
+                                          href={
+                                            'https://songbird-explorer.flare.network/address/' +
+                                            data.flare.address +
+                                            '/transactions'
+                                          }
+                                          target="_blank"
+                                          rel="noopener"
+                                        >
+                                          {data.flare.address}
+                                        </a>
+                                      </td>
+                                    </tr>
+                                    <tr>
+                                      <td>Songbird claim</td>
+                                      <td className="bold">{data.flare.songbird} SGB</td>
+                                    </tr>
+                                  </>
                                 )}
                               </tbody>
                             </table>
