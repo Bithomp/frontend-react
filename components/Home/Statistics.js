@@ -199,6 +199,8 @@ export default function Statistics() {
     if (lastClose) {
       txPerSecond = (validatedLedger?.transactionsCount / lastClose.convergeTimeS).toFixed(2)
       proposers = lastClose.proposers
+    } else {
+      txPerSecond = (validatedLedger?.transactionsCount / 3).toFixed(2)
     }
     if (accounts) {
       createdAccounts = niceNumber(accounts.created - accounts.deleted)
@@ -306,7 +308,8 @@ export default function Statistics() {
         <div className="stat-piece">
           <div className="stat-piece-header">{t('home.stat.transactions')}</div>
           <div>
-            <LedgerLink version={ledgerIndex} text={txCount} /> ({txPerSecond} {t('home.stat.txs-per-sec')})
+            {txCount ? <LedgerLink version={ledgerIndex} text={txCount} /> : '0'} ({txPerSecond}{' '}
+            {t('home.stat.txs-per-sec')})
           </div>
         </div>
         {nodesCount > 0 && (
