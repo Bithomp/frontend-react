@@ -14,7 +14,8 @@ import {
   xahauNetwork,
   avatarServer,
   stripDomain,
-  isDomainValid
+  isDomainValid,
+  networks
 } from '../../utils'
 import {
   amountFormat,
@@ -1102,8 +1103,39 @@ export default function Account({
                                 {data.genesis && (
                                   <tr>
                                     <td>Genesis balance</td>
-                                    <td>
+                                    <td className="bold">
                                       {niceNumber(data.initialBalance)} {nativeCurrency}
+                                    </td>
+                                  </tr>
+                                )}
+                                {data.parent?.address === data.address ? (
+                                  <tr>
+                                    <td>Imported from the XRPL</td>
+                                    <td>
+                                      <a
+                                        href={
+                                          (devNet ? networks.testnet.server : networks.mainnet.server) +
+                                          '/account/' +
+                                          data.address
+                                        }
+                                      >
+                                        origin
+                                      </a>
+                                    </td>
+                                  </tr>
+                                ) : (
+                                  <tr>
+                                    <td>Activated by</td>
+                                    <td>
+                                      <AddressWithIconFilled data={data.parent} name="address" />
+                                    </td>
+                                  </tr>
+                                )}
+                                {!data.genesis && data.initialBalance && (
+                                  <tr>
+                                    <td>Initial balance</td>
+                                    <td>
+                                      {data.initialBalance} {nativeCurrency}
                                     </td>
                                   </tr>
                                 )}
