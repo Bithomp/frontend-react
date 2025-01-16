@@ -23,7 +23,6 @@ import {
   txIdLink,
   nativeCurrencyToFiat,
   shortNiceNumber,
-  shortHash,
   niceNumber,
   AddressWithIconFilled
 } from '../../utils/format'
@@ -822,9 +821,7 @@ export default function Account({
                                     <tr>
                                       <td>AMM ID</td>
                                       <td>
-                                        <Link href={'/amm/' + data.ledgerInfo.ammID}>
-                                          {shortHash(data.ledgerInfo.ammID, 4)}
-                                        </Link>
+                                        <LinkAmm ammId={data.ledgerInfo.ammID} hash={true} icon={true} copy={true} />
                                       </td>
                                     </tr>
                                   )}
@@ -877,14 +874,6 @@ export default function Account({
                                 </>
                               )}
 
-                              {data.ledgerInfo?.ammID && (
-                                <tr>
-                                  <td>AMM ID</td>
-                                  <td>
-                                    <LinkAmm ammId={data.ledgerInfo.ammID} hash={true} icon={true} copy={true} />
-                                  </td>
-                                </tr>
-                              )}
                               {data.ledgerInfo?.domain && (
                                 <tr>
                                   <td>Domain</td>
