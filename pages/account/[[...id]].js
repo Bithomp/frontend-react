@@ -1133,7 +1133,7 @@ export default function Account({
                                 )}
                                 {!data.genesis && data.initialBalance && (
                                   <tr>
-                                    <td>Initial balance</td>
+                                    <td>Activated with</td>
                                     <td>
                                       {data.initialBalance} {nativeCurrency}
                                     </td>
