@@ -25,7 +25,8 @@ import {
   nativeCurrencyToFiat,
   shortNiceNumber,
   niceNumber,
-  AddressWithIconFilled
+  AddressWithIconFilled,
+  fullNiceNumber
 } from '../../utils/format'
 import { getIsSsrMobile } from '../../utils/mobile'
 import { fetchCurrentFiatRate } from '../../utils/common'
@@ -251,7 +252,7 @@ export default function Account({
     if (data.service?.name || thirdPartyService) {
       output.push(
         <tr key="1">
-          <td>Service</td>
+          <td>Service name</td>
           {data.service?.name ? (
             <td className="green bold">{data.service.name}</td>
           ) : (
@@ -464,65 +465,158 @@ export default function Account({
                             />
                           </div>
 
-                          <table
-                            className={'table-details autowidth hide-on-small-w800'}
-                            style={showTimeMachine ? { display: 'table' } : null}
-                          >
-                            <thead>
-                              <tr>
-                                <th colSpan="100">Time machine</th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              <tr>
-                                <td colSpan="2" className="no-padding">
-                                  {/*  (info) Check account balance and settings in any Time in the past. */}
-                                  <div className="time-machine">
-                                    <DatePicker
-                                      selected={ledgerTimestampInput || new Date()}
-                                      onChange={setLedgerTimestampInput}
-                                      selectsStart
-                                      showTimeInput
-                                      timeInputLabel={t('table.time')}
-                                      minDate={new Date(data.inception * 1000)}
-                                      maxDate={new Date()}
-                                      dateFormat="yyyy/MM/dd HH:mm:ss"
-                                      className="dateAndTimeRange"
-                                      showMonthDropdown
-                                      showYearDropdown
-                                    />
-                                  </div>
-                                  <div className="flex flex-center">
-                                    <button
-                                      onClick={() => setLedgerTimestamp(ledgerTimestampInput)}
-                                      className="button-action thin button-wide"
-                                    >
-                                      Update
-                                    </button>{' '}
-                                    <button onClick={resetTimeMachine} className="button-action thin button-wide">
-                                      Reset
-                                    </button>
-                                  </div>
-                                </td>
-                              </tr>
-                            </tbody>
-                          </table>
-
                           {(data.xamanMeta?.kycApproved ||
                             data.xamanMeta?.xummPro ||
-                            data.xamanMeta?.globalid?.profileUrl) && (
+                            data.xamanMeta?.globalid?.profileUrl ||
+                            data.service?.socialAccounts) && (
                             <div>
                               <table className="table-details autowidth">
                                 <thead>
                                   <tr>
-                                    <th colSpan="100">Statuses</th>
+                                    <th colSpan="100">Public profiles</th>
                                   </tr>
                                 </thead>
                                 <tbody>
+                                  {data.service?.socialAccounts && (
+                                    <>
+                                      {data.service.socialAccounts.twitter && (
+                                        <tr>
+                                          <td>X</td>
+                                          <td>
+                                            <a
+                                              href={'https://x.com/' + data.service.socialAccounts.twitter}
+                                              aria-label="X"
+                                              target="_blank"
+                                              rel="noopener"
+                                            >
+                                              {data.service.socialAccounts.twitter}
+                                            </a>
+                                          </td>
+                                        </tr>
+                                      )}
+                                      {data.service.socialAccounts.youtube && (
+                                        <tr>
+                                          <td>YouTube</td>
+                                          <td>
+                                            <a
+                                              href={'https://youtube.com/' + data.service.socialAccounts.youtube}
+                                              aria-label="Youtube"
+                                              target="_blank"
+                                              rel="noopener"
+                                            >
+                                              {data.service.socialAccounts.youtube}
+                                            </a>
+                                          </td>
+                                        </tr>
+                                      )}
+                                      {data.service.socialAccounts.linkedin && (
+                                        <tr>
+                                          <td>LinkedIn</td>
+                                          <td>
+                                            <a
+                                              href={
+                                                'https://linkedin.com/company/' +
+                                                data.service.socialAccounts.linkedin +
+                                                '/'
+                                              }
+                                              aria-label="Linkedin"
+                                              target="_blank"
+                                              rel="noopener"
+                                            >
+                                              {data.service.socialAccounts.linkedin}
+                                            </a>
+                                          </td>
+                                        </tr>
+                                      )}
+                                      {data.service.socialAccounts.instagram && (
+                                        <tr>
+                                          <td>Instagram</td>
+                                          <td>
+                                            <a
+                                              href={
+                                                'https://www.instagram.com/' +
+                                                data.service.socialAccounts.instagram +
+                                                '/'
+                                              }
+                                              aria-label="Instagram"
+                                              target="_blank"
+                                              rel="noopener"
+                                            >
+                                              {data.service.socialAccounts.instagram}
+                                            </a>
+                                          </td>
+                                        </tr>
+                                      )}
+                                      {data.service.socialAccounts.telegram && (
+                                        <tr>
+                                          <td>Telegram</td>
+                                          <td>
+                                            <a
+                                              href={'https://t.me/' + data.service.socialAccounts.telegram}
+                                              aria-label="Telegram"
+                                              target="_blank"
+                                              rel="noopener"
+                                            >
+                                              {data.service.socialAccounts.telegram}
+                                            </a>
+                                          </td>
+                                        </tr>
+                                      )}
+                                      {data.service.socialAccounts.facebook && (
+                                        <tr>
+                                          <td>Facebook</td>
+                                          <td>
+                                            <a
+                                              href={
+                                                'https://www.facebook.com/' + data.service.socialAccounts.facebook + '/'
+                                              }
+                                              aria-label="Facebook"
+                                              target="_blank"
+                                              rel="noopener"
+                                            >
+                                              {data.service.socialAccounts.facebook}
+                                            </a>
+                                          </td>
+                                        </tr>
+                                      )}
+                                      {data.service.socialAccounts.medium && (
+                                        <tr>
+                                          <td>Medium</td>
+                                          <td>
+                                            <a
+                                              href={'https://medium.com/' + data.service.socialAccounts.medium}
+                                              aria-label="Medium"
+                                              target="_blank"
+                                              rel="noopener"
+                                            >
+                                              {data.service.socialAccounts.medium}
+                                            </a>
+                                          </td>
+                                        </tr>
+                                      )}
+                                      {data.service.socialAccounts.reddit && (
+                                        <tr>
+                                          <td>Reddit</td>
+                                          <td>
+                                            <a
+                                              href={
+                                                'https://www.reddit.com/' + data.service.socialAccounts.reddit + '/'
+                                              }
+                                              aria-label="Reddit"
+                                              target="_blank"
+                                              rel="noopener"
+                                            >
+                                              {data.service.socialAccounts.reddit}
+                                            </a>
+                                          </td>
+                                        </tr>
+                                      )}
+                                    </>
+                                  )}
                                   {data.xamanMeta?.kycApproved && (
                                     <tr>
                                       <td>KYC</td>
-                                      <td>Xaman verified</td>
+                                      <td>verified by Xaman</td>
                                     </tr>
                                   )}
                                   {data.xamanMeta?.xummPro && (
@@ -588,6 +682,50 @@ export default function Account({
                               </table>
                             </div>
                           )}
+
+                          <table
+                            className={'table-details autowidth hide-on-small-w800'}
+                            style={showTimeMachine ? { display: 'table' } : null}
+                          >
+                            <thead>
+                              <tr>
+                                <th colSpan="100">Time machine</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr>
+                                <td colSpan="2" className="no-padding">
+                                  {/*  (info) Check account balance and settings in any Time in the past. */}
+                                  <div className="time-machine">
+                                    <DatePicker
+                                      selected={ledgerTimestampInput || new Date()}
+                                      onChange={setLedgerTimestampInput}
+                                      selectsStart
+                                      showTimeInput
+                                      timeInputLabel={t('table.time')}
+                                      minDate={new Date(data.inception * 1000)}
+                                      maxDate={new Date()}
+                                      dateFormat="yyyy/MM/dd HH:mm:ss"
+                                      className="dateAndTimeRange"
+                                      showMonthDropdown
+                                      showYearDropdown
+                                    />
+                                  </div>
+                                  <div className="flex flex-center">
+                                    <button
+                                      onClick={() => setLedgerTimestamp(ledgerTimestampInput)}
+                                      className="button-action thin button-wide"
+                                    >
+                                      Update
+                                    </button>{' '}
+                                    <button onClick={resetTimeMachine} className="button-action thin button-wide">
+                                      Reset
+                                    </button>
+                                  </div>
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
 
                           {((!account?.address && !data?.service?.name) || data?.address === account?.address) &&
                             !data?.ledgerInfo?.blackholed && (
@@ -671,7 +809,7 @@ export default function Account({
                               )}
                               <tr>
                                 <td>{t('table.address')}</td>
-                                <td>
+                                <td className="bold">
                                   {data.address} <CopyButton text={data.address}></CopyButton>
                                 </td>
                               </tr>
@@ -1173,7 +1311,7 @@ export default function Account({
                                       <td>Flare address</td>
                                       <td>
                                         <a
-                                          href={'https://flarescan.org/address/' + data.flare.address}
+                                          href={'https://flarescan.com/address/' + data.flare.address}
                                           target="_blank"
                                           rel="noopener"
                                         >
@@ -1183,17 +1321,13 @@ export default function Account({
                                     </tr>
                                     <tr>
                                       <td>Flare claim</td>
-                                      <td className="bold">{data.flare.spark * 0.15} FLR</td>
+                                      <td>{fullNiceNumber(data.flare.spark * 0.15)} FLR</td>
                                     </tr>
                                     <tr>
                                       <td>Songbird address</td>
                                       <td>
                                         <a
-                                          href={
-                                            'https://songbird-explorer.flare.network/address/' +
-                                            data.flare.address +
-                                            '/transactions'
-                                          }
+                                          href={'https://songbird.flarescan.com/address/' + data.flare.address}
                                           target="_blank"
                                           rel="noopener"
                                         >
@@ -1203,7 +1337,7 @@ export default function Account({
                                     </tr>
                                     <tr>
                                       <td>Songbird claim</td>
-                                      <td className="bold">{data.flare.songbird} SGB</td>
+                                      <td>{fullNiceNumber(data.flare.songbird)} SGB</td>
                                     </tr>
                                   </>
                                 )}
