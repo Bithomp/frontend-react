@@ -1234,7 +1234,7 @@ export default function Account({
                                 </tr>
                               )}
                               {data.ledgerInfo?.messageKey &&
-                                data.ledgerInfo?.messageKey.Substring(0, 26) !==
+                                data.ledgerInfo?.messageKey.substring(0, 26) !==
                                   '02000000000000000000000000'(
                                     <tr>
                                       <td>Message key</td>
