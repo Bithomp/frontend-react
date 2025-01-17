@@ -129,6 +129,9 @@
     display: flex;
     justify-content: space-around; //space-between
     align-items: center;
+    a {
+      text-decoration: none;
+    }
   }
   .explorer-tabs-shadow {
     height: 1px;

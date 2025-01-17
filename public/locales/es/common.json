@@ -162,8 +162,7 @@
     "search-placeholder-short": "Dirección / Transacción / Usuario",
     "scan-qr": "ESCANEA UN CÓDIGO",
     "whales": {
-      "header": "Las transacciones más significativas en las últimas 24 horas",
-      "no-value": "sin valor"
+      "header": "Las transacciones más significativas en las últimas 24 horas"
     },
     "stat": {
       "header": "Estadísticas {{ledgerName}} en vivo",
@@ -254,7 +253,7 @@
     "email": "Dirección de correo electrónico de tu empresa/universidad:",
     "url": "URL de tu app/sitio web:",
     "description": "Descripción del proyecto y detalles del uso de la API:",
-    "success": "Thank you. The API token was sent to your e-mail.",
+    "success": "Gracias. El token de la API fue enviado a tu correo electrónico.",
     "error": {
       "url-empty": "Por favor, introduce la URL de tu sitio web/app.",
       "url-invalid": "Por favor, introduce una URL válida.",
@@ -289,7 +288,7 @@
     "copy-my-address": "Copiar mi dirección",
     "sign": "Firmar",
     "nft": {
-      "add-another-sell-offer": "Add another sell offer",
+      "add-another-sell-offer": "Añadir otra oferta de venta",
       "transfer": "Transferir NFT",
       "update-sell-offer": "Actualizar la oferta de venta",
       "cancel-sell-offer-for": "Cancelar oferta de Venta por {{amount}}",
@@ -308,8 +307,8 @@
     "error": "Error",
     "no-data": "Datos no disponibles",
     "loading": "Cargando...",
-    "login-to-bithomp-pro": "Loading more data is available to <1>logged-in</1> Bithomp Pro subscribers.",
-    "renew-bithomp-pro": "Your Bithomp Pro subscription has expired. <1>Renew your subscription</1>.",
+    "login-to-bithomp-pro": "Cargar más datos está disponible para los suscriptores de Bithomp Pro <1>con sesión iniciada</1>.",
+    "renew-bithomp-pro": "Tu suscripción a Bithomp Pro ha expirado. <1>Renueva tu suscripción</1>.",
     "load-failed": "Fallo al cargar",
     "all-issuers": "Todos los emisores",
     "no-expiration": "Nunca",
@@ -317,10 +316,10 @@
     "no-media": "No se ha encontrado contenido",
     "viewer": "Vista",
     "developer-mode": "Modo desarrollador",
-    "search": "Search",
-    "of-many": "of many",
-    "of": "of",
-    "sort-by": "Sort by"
+    "search": "Buscar",
+    "of-many": "de muchos",
+    "of": "de",
+    "sort-by": "Ordenar por"
   },
   "form": {
     "error": {
@@ -338,16 +337,16 @@
       "password-invalid": "Por favor, introduce una contraseña válida."
     },
     "placeholder": {
-      "destination-tag": "Enter the Destination tag (if it is required)"
+      "destination-tag": "Ingresa la etiqueta de destino (si es requerida)"
     }
   },
   "error": {
     "payment-partly": "Por favor envia el resto de la cantidad, por el momento solo hemos recibido {{received}} {{currency}} de <b>{{required}} {{currency}}</b> requeridos.",
     "Network Error": "Parece que no hay conexión a internet ;(",
     "Request failed with status code 429": "¡Nos estáis mandando demasiadas peticiones, prueba más tarde!",
-    "Request failed with status code 404": "Such API call is not allowed on that network",
-    "Request failed with status code 403": "It seems you're logged out, please log in again",
-    "Request aborted": "Request aborted"
+    "Request failed with status code 404": "Este tipo de llamada a la API no está permitida en esa red.",
+    "Request failed with status code 403": "Parece que has cerrado sesión, por favor, inicia sesión nuevamente.",
+    "Request aborted": "Solicitud abortada"
   },
   "errors": {
     "token": {
@@ -360,8 +359,8 @@
       "not_found": "No hay claves API."
     },
     "address": {
-      "invalid_signature_address": "Invalid signature address. Make sure that you sign with the correct address.",
-      "limit_reached": "You can not add more addesses, you've reached the limit."
+      "invalid_signature_address": "Dirección de firma inválida. Asegúrate de firmar con la dirección correcta.",
+      "limit_reached": "No puedes agregar más direcciones, has alcanzado el límite."
     },
     "blob": {
       "invalid_signature_address": "Debe firmar el mensaje con la dirección que está tratando de agregar."
@@ -399,6 +398,7 @@
     "day": "Para los últimas 24 horas"
   },
   "table": {
+    "no-value": "sin valor",
     "updated": "Actualizado",
     "currency": "Divisa",
     "currency-issuer": "Emisor de la divisa",
@@ -552,7 +552,7 @@
     "publicAndKnownBrokers": "Público Y Mercado",
     "onSale": "En venta por {{nativeCurrency}}",
     "all-tokens": "Todos los tokens",
-    "xrp-only": "solo XRP",
+    "native-currency-only": "Solo {{nativeCurrency}}",
     "mintedNew": "Latest",
     "mintedOld": "Oldest",
     "existing": "Existing",
@@ -564,10 +564,10 @@
   "explorer": {
     "header": {
       "main": "Explorador {{explorerName}}",
-      "amm": "AMM pool information",
-      "object": "Object information",
-      "account": "Account information",
-      "transaction": "Transaction information",
+      "amm": "Información del pool AMM",
+      "object": "Información del objeto",
+      "account": "Información de la cuenta",
+      "transaction": "Información de la transacción",
       "nft": "NFT",
       "nfts": "NFTs",
       "nft-offer": "Ofertas NFT",
@@ -585,7 +585,7 @@
     "different-network": "Esta transacción es de la red <1>{{networkNameOrId}}</1>",
     "check-tx-on-different-explorer": "comprueba los detalles <2><0>aquí</0></2>.",
     "not-supported-network": "que no está soportada.",
-    "no-slashes": "The search should not contain slashes."
+    "no-slashes": "La búsqueda no debe contener barras."
   },
   "nft-explorer": {
     "header": "Explorador NFT"

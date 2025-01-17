@@ -8,7 +8,7 @@ import { getIsSsrMobile } from '../../utils/mobile'
 
 import SEO from '../../components/SEO'
 import AdminTabs from '../../components/Tabs/AdminTabs'
-import { isAddressValid, isIdValid, isValidNftXls20, useWidth, xahauNetwork } from '../../utils'
+import { avatarServer, isAddressValid, isIdValid, isValidNftXls20, useWidth, xahauNetwork } from '../../utils'
 import AddressInput from '../../components/UI/AddressInput'
 import FormInput from '../../components/UI/FormInput'
 import { MdDelete } from 'react-icons/md'
@@ -231,7 +231,7 @@ export default function Watchlist({ selectedCurrency, account, subscriptionExpir
 
   return (
     <>
-      <SEO title={t('header', { ns: 'admin' })} />
+      <SEO title="Watchlist" />
       <div className="page-whatchlist content-center">
         <h1 className="center">{t('header', { ns: 'admin' })}</h1>
 
@@ -276,12 +276,7 @@ export default function Watchlist({ selectedCurrency, account, subscriptionExpir
                             <tbody>
                               <tr>
                                 <td style={{ padding: 0 }}>
-                                  <Image
-                                    alt="avatar"
-                                    src={'https://cdn.bithomp.com/avatar/' + a.entity}
-                                    width="40"
-                                    height="40"
-                                  />
+                                  <Image alt="avatar" src={avatarServer + a.entity} width="40" height="40" />
                                 </td>
                                 <td style={{ padding: '0 0 0 10px' }}>
                                   <b className="orange">{a.name}</b>
@@ -321,12 +316,7 @@ export default function Watchlist({ selectedCurrency, account, subscriptionExpir
                     {addresses.map((a, i) => (
                       <tr key={i}>
                         <td style={{ padding: '20px 5px', verticalAlign: 'top' }} className="center">
-                          <Image
-                            alt="avatar"
-                            src={'https://cdn.bithomp.com/avatar/' + a.entity}
-                            width="30"
-                            height="30"
-                          />
+                          <Image alt="avatar" src={avatarServer + a.entity} width="30" height="30" />
                           <br />
                           <br />
                           {i + 1}

@@ -1,13 +1,13 @@
 import { xahauNetwork } from '../../utils'
-import { useTheme } from '../Layout/ThemeContext'
+//import { useTheme } from '../Layout/ThemeContext'
 import { useEffect, useState } from 'react'
 import { brandsBlock } from '../../styles/components/ads.module.scss'
 
 import BtcBit from '../../public/images/sponsored/btcbit.svg'
-import Nexo from '../../public/images/sponsored/nexo.svg'
+//import Nexo from '../../public/images/sponsored/nexo.svg'
 
 export default function Ads({ showAds, heightNoAds }) {
-  const { theme } = useTheme()
+  //const { theme } = useTheme()
   const [rendered, setRendered] = useState(false)
 
   useEffect(() => {
@@ -50,6 +50,7 @@ export default function Ads({ showAds, heightNoAds }) {
             <div className="brand-item-text">Instantly buy and sell cryptocurrency with low commission.</div>
           </div>
         </a>
+        {/*
         <a href="/go/earn-xrp" target="_blank" rel="noreferrer">
           <div className="brand-item nexo">
             <Nexo className="brand-item-icon" fill={theme === 'dark' ? 'white' : '#1C1F21'} />
@@ -57,6 +58,7 @@ export default function Ads({ showAds, heightNoAds }) {
             <div className="brand-item-text">Earn up to 12% per year on XRP.</div>
           </div>
         </a>
+        */}
         {/*
         <a href="/go/main-play" target="_blank" rel="noreferrer">
           <div className="brand-item easybit">

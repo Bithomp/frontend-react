@@ -6,13 +6,35 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { axiosServer, passHeaders } from '../../utils/axios'
 
-import { server, getCoinsUrl, nativeCurrency, devNet, xahauNetwork } from '../../utils'
-import { amountFormat, fullDateAndTime, timeFromNow, txIdLink, nativeCurrencyToFiat } from '../../utils/format'
+import {
+  server,
+  getCoinsUrl,
+  nativeCurrency,
+  devNet,
+  xahauNetwork,
+  avatarServer,
+  stripDomain,
+  isDomainValid,
+  networks
+} from '../../utils'
+import {
+  amountFormat,
+  fullDateAndTime,
+  timeFromNow,
+  txIdLink,
+  nativeCurrencyToFiat,
+  shortNiceNumber,
+  niceNumber,
+  AddressWithIconFilled,
+  fullNiceNumber
+} from '../../utils/format'
 import { getIsSsrMobile } from '../../utils/mobile'
 import { fetchCurrentFiatRate } from '../../utils/common'
 
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
+
+import { MdVerified } from 'react-icons/md'
 
 export async function getServerSideProps(context) {
   const { locale, query, req } = context
@@ -51,7 +73,7 @@ export async function getServerSideProps(context) {
 import SEO from '../../components/SEO'
 import SearchBlock from '../../components/Layout/SearchBlock'
 import CopyButton from '../../components/UI/CopyButton'
-import { LinkAmm } from '../../utils/links'
+import { LinkAccount, LinkAmm } from '../../utils/links'
 import dynamic from 'next/dynamic'
 
 const XahauRewardTr = dynamic(() => import('../../components/Account/XahauRewardTr'), { ssr: false })
@@ -80,6 +102,7 @@ export default function Account({
   })
   const [networkInfo, setNetworkInfo] = useState({})
   const [balances, setBalances] = useState({})
+  const [showTimeMachine, setShowTimeMachine] = useState(false)
 
   useEffect(() => {
     if (!initialData?.address) return
@@ -128,7 +151,6 @@ export default function Account({
           setErrorMessage(t('error-api.' + newdata.error))
         } else {
           setErrorMessage('Error')
-          console.log(newdata)
         }
       }
     }
@@ -184,7 +206,7 @@ export default function Account({
       6) otherwise show hashicon
     */
     if (!data) return ''
-    return 'https://cdn.bithomp.com/avatar/' + data.address + (options?.noCache && refreshPage ? '?' + refreshPage : '')
+    return avatarServer + data.address + (options?.noCache && refreshPage ? '?' + refreshPage : '')
   }
 
   const accountNameTr = (data) => {
@@ -219,7 +241,7 @@ export default function Account({
     let thirdPartyService = null
     if (data.xamanMeta?.thirdPartyProfiles?.length) {
       for (let i = 0; i < data.xamanMeta.thirdPartyProfiles.length; i++) {
-        const excludeList = ['xumm.app', 'xaman.app', 'xrpl', 'xrplexplorer.com']
+        const excludeList = ['xumm.app', 'xaman.app', 'xrpl', 'xrplexplorer.com', 'bithomp.com']
         if (!excludeList.includes(data.xamanMeta.thirdPartyProfiles[i].source)) {
           thirdPartyService = data.xamanMeta.thirdPartyProfiles[i].accountAlias
           break
@@ -230,7 +252,7 @@ export default function Account({
     if (data.service?.name || thirdPartyService) {
       output.push(
         <tr key="1">
-          <td>Service</td>
+          <td>Service name</td>
           {data.service?.name ? (
             <td className="green bold">{data.service.name}</td>
           ) : (
@@ -319,8 +341,120 @@ export default function Account({
                   <>
                     {data?.address && (
                       <>
+                        <div className="mobile-summary showOnSmall-w800">
+                          <Image
+                            alt="avatar"
+                            src={avatarSrc(data, { noCache: true })}
+                            width="60"
+                            height="60"
+                            priority
+                          />
+                          <div style={{ display: 'inline-block', position: 'absolute', top: 7, left: 75 }}>
+                            {data.username ? (
+                              <h1 style={{ fontSize: '1em', margin: 0 }} className="blue">
+                                {data.username}
+                              </h1>
+                            ) : (
+                              <b>
+                                {data.service?.name ? (
+                                  <span className="green">{data.service?.name}</span>
+                                ) : data?.address === account?.address && data?.ledgerInfo?.activated ? (
+                                  <>
+                                    Username <Link href={'/username?address=' + data.address}>register</Link>
+                                  </>
+                                ) : (
+                                  'No username'
+                                )}
+                                <br />
+                              </b>
+                            )}
+                            {data?.ledgerInfo?.blackholed ? (
+                              <>
+                                <b className="orange">Blackholed </b>
+                                <br />
+                                {data?.ledgerInfo?.lastSubmittedAt && (
+                                  <>{timeFromNow(data.ledgerInfo.lastSubmittedAt, i18n)}</>
+                                )}
+                              </>
+                            ) : data?.ledgerInfo?.activated ? (
+                              <>
+                                {data.ledgerInfo.lastSubmittedAt ? (
+                                  <>
+                                    <span className="green">Active </span>
+                                    <br />
+                                    {data?.ledgerInfo?.lastSubmittedAt && (
+                                      <>{timeFromNow(data.ledgerInfo.lastSubmittedAt, i18n)}</>
+                                    )}
+                                  </>
+                                ) : (
+                                  <>
+                                    Activated
+                                    <br />
+                                    {timeFromNow(data.inception, i18n)}
+                                  </>
+                                )}
+                              </>
+                            ) : (
+                              <>
+                                {data?.ledgerInfo?.deleted ? (
+                                  <span className="red bold">Account deleted</span>
+                                ) : (
+                                  <>
+                                    <span className="orange">Not activated</span>
+                                    <br />
+                                    <a
+                                      href={getCoinsUrl + (devNet ? '?address=' + data?.address : '')}
+                                      target="_blank"
+                                      rel="noreferrer"
+                                    >
+                                      Get your first {nativeCurrency}
+                                    </a>
+                                  </>
+                                )}
+                              </>
+                            )}
+                          </div>
+                          <div
+                            style={{
+                              display: 'inline-block',
+                              position: 'absolute',
+                              top: 7,
+                              right: 5,
+                              textAlign: 'right'
+                            }}
+                          >
+                            <b>{data?.ledgerInfo?.activated ? 'Available ' : 'Balance'}</b>
+                            <br />
+                            <span className={balances?.available?.native ? 'green bold' : ''}>
+                              {shortNiceNumber(balances?.available?.native / 1000000, 2, 0) || '0'} {nativeCurrency}
+                            </span>
+                            <br />
+                            <span className="grey">
+                              {nativeCurrencyToFiat({
+                                amount: balances.available?.native,
+                                selectedCurrency,
+                                fiatRate
+                              }) || '0 ' + selectedCurrency.toUpperCase()}
+                            </span>
+                          </div>
+                        </div>
+
+                        <div className="center showOnSmall-w800 grey" style={{ marginTop: 10 }}>
+                          <a href={'/explorer/' + data.address}>Transactions</a> |{' '}
+                          <a href={'/explorer/' + data.address}>Tokens</a> |{' '}
+                          <a
+                            href="#"
+                            onClick={(e) => {
+                              e.preventDefault()
+                              setShowTimeMachine(!showTimeMachine)
+                            }}
+                          >
+                            Time machine
+                          </a>
+                        </div>
+
                         <div className="column-left">
-                          <center>
+                          <div className="hide-on-small-w800 avatar-div">
                             <Image
                               alt="avatar"
                               src={avatarSrc(data, { noCache: true })}
@@ -329,94 +463,204 @@ export default function Account({
                               className="avatar"
                               priority
                             />
-                          </center>
-
-                          <table className="table-details autowidth">
-                            <thead>
-                              <tr>
-                                <th colSpan="100">Time machine</th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              <tr>
-                                <td colSpan="2">
-                                  {/*  (info) Check account balance and settings in any Time in the past. */}
-                                  <div className="time-machine">
-                                    <DatePicker
-                                      selected={ledgerTimestampInput || new Date()}
-                                      onChange={setLedgerTimestampInput}
-                                      selectsStart
-                                      showTimeInput
-                                      timeInputLabel={t('table.time')}
-                                      minDate={new Date(data.inception * 1000)}
-                                      maxDate={new Date()}
-                                      dateFormat="yyyy/MM/dd HH:mm:ss"
-                                      className="dateAndTimeRange"
-                                      showMonthDropdown
-                                      showYearDropdown
-                                    />
-                                  </div>
-                                  <div>
-                                    <button
-                                      onClick={() => setLedgerTimestamp(ledgerTimestampInput)}
-                                      className="button-action thin narrow"
-                                      style={{
-                                        width: 'calc(50% - 30px)',
-                                        marginRight: '10px',
-                                        display: 'inline-block'
-                                      }}
-                                    >
-                                      Update
-                                    </button>{' '}
-                                    <button
-                                      onClick={resetTimeMachine}
-                                      className="button-action thin narrow"
-                                      style={{
-                                        width: 'calc(50% - 30px)',
-                                        display: 'inline-block'
-                                      }}
-                                    >
-                                      Reset
-                                    </button>
-                                  </div>
-                                </td>
-                              </tr>
-                            </tbody>
-                          </table>
+                          </div>
 
                           {(data.xamanMeta?.kycApproved ||
                             data.xamanMeta?.xummPro ||
-                            data.xamanMeta?.globalid?.profileUrl) && (
+                            data.xamanMeta?.globalid?.profileUrl ||
+                            data.service?.socialAccounts) && (
                             <div>
                               <table className="table-details autowidth">
                                 <thead>
                                   <tr>
-                                    <th colSpan="100">Statuses</th>
+                                    <th colSpan="100">Public profiles</th>
                                   </tr>
                                 </thead>
                                 <tbody>
+                                  {data.service?.socialAccounts && (
+                                    <>
+                                      {data.service.socialAccounts.twitter && (
+                                        <tr>
+                                          <td>X</td>
+                                          <td>
+                                            <a
+                                              href={'https://x.com/' + data.service.socialAccounts.twitter}
+                                              aria-label="X"
+                                              target="_blank"
+                                              rel="noopener"
+                                            >
+                                              {data.service.socialAccounts.twitter}
+                                            </a>
+                                          </td>
+                                        </tr>
+                                      )}
+                                      {data.service.socialAccounts.youtube && (
+                                        <tr>
+                                          <td>YouTube</td>
+                                          <td>
+                                            <a
+                                              href={'https://youtube.com/' + data.service.socialAccounts.youtube}
+                                              aria-label="Youtube"
+                                              target="_blank"
+                                              rel="noopener"
+                                            >
+                                              {data.service.socialAccounts.youtube}
+                                            </a>
+                                          </td>
+                                        </tr>
+                                      )}
+                                      {data.service.socialAccounts.linkedin && (
+                                        <tr>
+                                          <td>LinkedIn</td>
+                                          <td>
+                                            <a
+                                              href={
+                                                'https://linkedin.com/company/' +
+                                                data.service.socialAccounts.linkedin +
+                                                '/'
+                                              }
+                                              aria-label="Linkedin"
+                                              target="_blank"
+                                              rel="noopener"
+                                            >
+                                              {data.service.socialAccounts.linkedin}
+                                            </a>
+                                          </td>
+                                        </tr>
+                                      )}
+                                      {data.service.socialAccounts.instagram && (
+                                        <tr>
+                                          <td>Instagram</td>
+                                          <td>
+                                            <a
+                                              href={
+                                                'https://www.instagram.com/' +
+                                                data.service.socialAccounts.instagram +
+                                                '/'
+                                              }
+                                              aria-label="Instagram"
+                                              target="_blank"
+                                              rel="noopener"
+                                            >
+                                              {data.service.socialAccounts.instagram}
+                                            </a>
+                                          </td>
+                                        </tr>
+                                      )}
+                                      {data.service.socialAccounts.telegram && (
+                                        <tr>
+                                          <td>Telegram</td>
+                                          <td>
+                                            <a
+                                              href={'https://t.me/' + data.service.socialAccounts.telegram}
+                                              aria-label="Telegram"
+                                              target="_blank"
+                                              rel="noopener"
+                                            >
+                                              {data.service.socialAccounts.telegram}
+                                            </a>
+                                          </td>
+                                        </tr>
+                                      )}
+                                      {data.service.socialAccounts.facebook && (
+                                        <tr>
+                                          <td>Facebook</td>
+                                          <td>
+                                            <a
+                                              href={
+                                                'https://www.facebook.com/' + data.service.socialAccounts.facebook + '/'
+                                              }
+                                              aria-label="Facebook"
+                                              target="_blank"
+                                              rel="noopener"
+                                            >
+                                              {data.service.socialAccounts.facebook}
+                                            </a>
+                                          </td>
+                                        </tr>
+                                      )}
+                                      {data.service.socialAccounts.medium && (
+                                        <tr>
+                                          <td>Medium</td>
+                                          <td>
+                                            <a
+                                              href={'https://medium.com/' + data.service.socialAccounts.medium}
+                                              aria-label="Medium"
+                                              target="_blank"
+                                              rel="noopener"
+                                            >
+                                              {data.service.socialAccounts.medium}
+                                            </a>
+                                          </td>
+                                        </tr>
+                                      )}
+                                      {data.service.socialAccounts.reddit && (
+                                        <tr>
+                                          <td>Reddit</td>
+                                          <td>
+                                            <a
+                                              href={
+                                                'https://www.reddit.com/' + data.service.socialAccounts.reddit + '/'
+                                              }
+                                              aria-label="Reddit"
+                                              target="_blank"
+                                              rel="noopener"
+                                            >
+                                              {data.service.socialAccounts.reddit}
+                                            </a>
+                                          </td>
+                                        </tr>
+                                      )}
+                                    </>
+                                  )}
                                   {data.xamanMeta?.kycApproved && (
                                     <tr>
                                       <td>KYC</td>
-                                      <td>XUMM verified</td>
+                                      <td>verified by Xaman</td>
                                     </tr>
                                   )}
                                   {data.xamanMeta?.xummPro && (
                                     <tr>
-                                      <td>XUMM Pro</td>
+                                      <td>Xaman Pro</td>
                                       <td>
                                         {data?.xamanMeta?.xummProfile?.slug ? (
-                                          <a href={data.xamanMeta.xummProfile.profileUrl}>
-                                            <u className="bold orange">{data.xamanMeta.xummProfile.slug}</u>
+                                          <a href={data.xamanMeta.xummProfile.profileUrl} className="green">
+                                            {data.xamanMeta.xummProfile.slug}
                                           </a>
                                         ) : (
-                                          <span className="bold orange">
-                                            activated <i className="fa fa-heart"></i>
+                                          <span className="orange">activated ❤️</span>
+                                        )}
+                                        {/* Need to be done on the backend and tested, also need to hide the add for 1 hour after click, or longer if we also cache */}
+                                        {data.xamanMeta?.monetisation?.status === 'PAYMENT_REQUIRED' && (
+                                          <span className="orange">
+                                            <br />
+                                            Limited 😔
                                           </span>
+                                        )}
+                                        {data.xamanMeta?.monetisation?.status === 'COMING_UP' && (
+                                          <span className="orange">
+                                            <br />
+                                            Soon limited 😔
+                                          </span>
+                                        )}
+                                        {(data.xamanMeta?.monetisation?.status === 'COMING_UP' ||
+                                          data.xamanMeta?.monetisation?.status === 'PAYMENT_REQUIRED') && (
+                                          <>
+                                            <br />
+                                            <a
+                                              href="https://xrpl-labs.com/pro/get?v=BITHOMP"
+                                              target="_blank"
+                                              rel="noopener nofollow"
+                                            >
+                                              Purchase Xaman Pro
+                                            </a>{' '}
+                                            ❤️
+                                          </>
                                         )}
                                       </td>
                                     </tr>
                                   )}
+
                                   {data.xamanMeta?.globalid?.profileUrl && (
                                     <tr>
                                       <td>GlobaliD</td>
@@ -434,61 +678,117 @@ export default function Account({
                                       </td>
                                     </tr>
                                   )}
+
+                                  {data.payString &&
+                                    !data.ledgerInfo?.requireDestTag &&
+                                    !data.ledgerInfo?.blackholed &&
+                                    !data.blacklist?.blacklisted &&
+                                    !data.service && (
+                                      <tr>
+                                        <td>PayString</td>
+                                        <td className="blue">{data.payString}</td>
+                                      </tr>
+                                    )}
                                 </tbody>
                               </table>
                             </div>
                           )}
 
-                          {((!account?.address && !data?.service?.name) || data?.address === account?.address) && (
-                            <table className="table-details autowidth">
-                              <thead>
-                                <tr>
-                                  <th colSpan="100">Actions</th>
-                                </tr>
-                              </thead>
-                              <tbody>
-                                <tr>
-                                  <td colSpan="2">
-                                    <div className="flex flex-center">
-                                      <button
-                                        className="button-action wide center"
-                                        onClick={() =>
-                                          setSignRequest({
-                                            action: 'setAvatar',
-                                            request: {
-                                              TransactionType: 'AccountSet',
-                                              Account: data.address
-                                            },
-                                            data: {
-                                              signOnly: true,
-                                              action: 'set-avatar'
-                                            }
-                                          })
-                                        }
-                                      >
-                                        Set Avatar
-                                      </button>
+                          <table
+                            className={'table-details autowidth hide-on-small-w800'}
+                            style={showTimeMachine ? { display: 'table' } : null}
+                          >
+                            <thead>
+                              <tr>
+                                <th colSpan="100">Time machine</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr>
+                                <td colSpan="2" className="no-padding">
+                                  {/*  (info) Check account balance and settings in any Time in the past. */}
+                                  <div className="time-machine">
+                                    <DatePicker
+                                      selected={ledgerTimestampInput || new Date()}
+                                      onChange={setLedgerTimestampInput}
+                                      selectsStart
+                                      showTimeInput
+                                      timeInputLabel={t('table.time')}
+                                      minDate={new Date(data.inception * 1000)}
+                                      maxDate={new Date()}
+                                      dateFormat="yyyy/MM/dd HH:mm:ss"
+                                      className="dateAndTimeRange"
+                                      showMonthDropdown
+                                      showYearDropdown
+                                    />
+                                  </div>
+                                  <div className="flex flex-center">
+                                    <button
+                                      onClick={() => setLedgerTimestamp(ledgerTimestampInput)}
+                                      className="button-action thin button-wide"
+                                    >
+                                      Update
+                                    </button>{' '}
+                                    <button onClick={resetTimeMachine} className="button-action thin button-wide">
+                                      Reset
+                                    </button>
+                                  </div>
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
 
-                                      <button
-                                        className="button-action wide center"
-                                        onClick={() =>
-                                          setSignRequest({
-                                            action: 'setDomain',
-                                            redirect: 'account',
-                                            request: {
-                                              TransactionType: 'AccountSet'
-                                            }
-                                          })
-                                        }
-                                      >
-                                        {t('button.set-domain')}
-                                      </button>
-                                    </div>
-                                  </td>
-                                </tr>
-                              </tbody>
-                            </table>
-                          )}
+                          {((!account?.address && !data?.service) || data?.address === account?.address) &&
+                            !data?.ledgerInfo?.blackholed && (
+                              <table className="table-details autowidth">
+                                <thead>
+                                  <tr>
+                                    <th colSpan="100">Actions</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  <tr>
+                                    <td colSpan="2" className="no-padding">
+                                      <div className="flex flex-center">
+                                        <button
+                                          className="button-action button-wide thin"
+                                          onClick={() =>
+                                            setSignRequest({
+                                              action: 'setAvatar',
+                                              request: {
+                                                TransactionType: 'AccountSet',
+                                                Account: data.address
+                                              },
+                                              data: {
+                                                signOnly: true,
+                                                action: 'set-avatar'
+                                              }
+                                            })
+                                          }
+                                        >
+                                          Set Avatar
+                                        </button>
+
+                                        <button
+                                          className="button-action button-wide thin"
+                                          onClick={() =>
+                                            setSignRequest({
+                                              action: 'setDomain',
+                                              redirect: 'account',
+                                              request: {
+                                                TransactionType: 'AccountSet'
+                                              }
+                                            })
+                                          }
+                                        >
+                                          {t('button.set-domain')}
+                                        </button>
+                                      </div>
+                                    </td>
+                                  </tr>
+                                </tbody>
+                              </table>
+                            )}
                         </div>
                         <div className="column-right">
                           <table className="table-details">
@@ -520,68 +820,96 @@ export default function Account({
                               )}
                               <tr>
                                 <td>{t('table.address')}</td>
-                                <td>
+                                <td className="bold">
                                   {data.address} <CopyButton text={data.address}></CopyButton>
                                 </td>
                               </tr>
-                              <tr>
-                                <td>{t('table.status')}</td>
-                                {data?.ledgerInfo?.activated ? (
+                              {data?.ledgerInfo?.blackholed ? (
+                                <tr>
+                                  <td className="orange">Blackholed</td>
                                   <td>
-                                    <span className="green">Active </span>
+                                    This account is BLACKHOLED{' '}
                                     {data?.ledgerInfo?.lastSubmittedAt && (
                                       <>
                                         {timeFromNow(data.ledgerInfo.lastSubmittedAt, i18n)} (
-                                        {fullDateAndTime(data.ledgerInfo.lastSubmittedAt)})
+                                        {fullDateAndTime(data.ledgerInfo.lastSubmittedAt)}).
                                       </>
-                                    )}
-                                    {data?.ledgerInfo?.lastSubmittedTxHash && (
-                                      <> {txIdLink(data.ledgerInfo.lastSubmittedTxHash, 0)}</>
-                                    )}
+                                    )}{' '}
+                                    It can not issue more tokens.
                                   </td>
-                                ) : (
+                                </tr>
+                              ) : (
+                                <tr>
+                                  <td>{t('table.status')}</td>
                                   <td>
-                                    {/* Also show blackholed status */}
-                                    {data?.ledgerInfo?.deleted ? (
+                                    {data?.ledgerInfo?.activated ? (
                                       <>
-                                        <span className="red bold">Account deleted.</span>
-                                        <br />
-                                        <span className="orange">
-                                          This account has been deactivated and is no longer active. It can be restored
-                                          by sending at least {amountFormat(networkInfo?.reserveBase)} to the address.
-                                        </span>
+                                        {data.ledgerInfo.lastSubmittedAt ? (
+                                          <>
+                                            <span className="green">Active </span>
+                                            {data?.ledgerInfo?.lastSubmittedAt && (
+                                              <>
+                                                {timeFromNow(data.ledgerInfo.lastSubmittedAt, i18n)} (
+                                                {fullDateAndTime(data.ledgerInfo.lastSubmittedAt)})
+                                              </>
+                                            )}
+                                            {data?.ledgerInfo?.lastSubmittedTxHash && (
+                                              <> {txIdLink(data.ledgerInfo.lastSubmittedTxHash, 0)}</>
+                                            )}
+                                          </>
+                                        ) : (
+                                          <>
+                                            Activated {timeFromNow(data.inception, i18n)} (
+                                            {fullDateAndTime(data.inception)})
+                                            {data?.inceptionTxHash && <> {txIdLink(data.inceptionTxHash, 0)}</>}
+                                          </>
+                                        )}
                                       </>
                                     ) : (
-                                      <span className="orange">
-                                        Not activated yet. The owner with full access to the account can activate it by
-                                        sending at least {amountFormat(networkInfo?.reserveBase)} to the address.
-                                      </span>
-                                    )}
-                                    {getCoinsUrl && (
                                       <>
-                                        {' '}
-                                        <a
-                                          href={getCoinsUrl + (devNet ? '?address=' + data?.address : '')}
-                                          target="_blank"
-                                          rel="noreferrer"
-                                        >
-                                          Get your first {nativeCurrency}.
+                                        {data?.ledgerInfo?.deleted ? (
+                                          <>
+                                            <span className="red bold">Account deleted.</span>
+                                            <br />
+                                            <span className="orange">
+                                              This account has been deactivated and is no longer active. It can be
+                                              restored by sending at least {amountFormat(networkInfo?.reserveBase)} to
+                                              the address.
+                                            </span>
+                                          </>
+                                        ) : (
+                                          <span className="orange">
+                                            Not activated yet. The owner with full access to the account can activate it
+                                            by sending at least {amountFormat(networkInfo?.reserveBase)} to the address.
+                                          </span>
+                                        )}
+                                        {getCoinsUrl && (
+                                          <>
+                                            {' '}
+                                            <a
+                                              href={getCoinsUrl + (devNet ? '?address=' + data?.address : '')}
+                                              target="_blank"
+                                              rel="noreferrer"
+                                            >
+                                              Get your first {nativeCurrency}.
+                                            </a>
+                                          </>
+                                        )}
+                                        <br />
+                                        <a href="https://xrpl.org/reserves.html" target="_blank" rel="noreferrer">
+                                          Learn more about reserves.
                                         </a>
                                       </>
                                     )}
-                                    <br />
-                                    <a href="https://xrpl.org/reserves.html" target="_blank" rel="noreferrer">
-                                      Learn more about reserves.
-                                    </a>
                                   </td>
-                                )}
-                              </tr>
+                                </tr>
+                              )}
                               {data?.ledgerInfo?.balance && (
                                 <>
                                   <tr>
                                     <td>Total balance</td>
                                     <td>
-                                      {amountFormat(balances?.total?.native)}
+                                      {amountFormat(balances?.total?.native, { precise: true })}
                                       {nativeCurrencyToFiat({
                                         amount: balances.total?.native,
                                         selectedCurrency,
@@ -592,7 +920,7 @@ export default function Account({
                                   <tr>
                                     <td>Reserved</td>
                                     <td>
-                                      {amountFormat(balances?.reserved?.native, { minFractionDigits: 6 })}
+                                      {amountFormat(balances?.reserved?.native, { precise: true })}
                                       {nativeCurrencyToFiat({
                                         amount: balances.reserved?.native,
                                         selectedCurrency,
@@ -603,7 +931,9 @@ export default function Account({
                                   <tr>
                                     <td>Available</td>
                                     <td>
-                                      <b className="green">{amountFormat(balances?.available?.native)}</b>
+                                      <b className="green">
+                                        {amountFormat(balances?.available?.native, { precise: true })}
+                                      </b>
                                       {nativeCurrencyToFiat({
                                         amount: balances.available?.native,
                                         selectedCurrency,
@@ -619,7 +949,300 @@ export default function Account({
                                   <td>#{data.ledgerInfo.importSequence}</td>
                                 </tr>
                               )}
-                              {xahauNetwork ? <XahauRewardTr data={data.ledgerInfo} /> : null}
+                              {xahauNetwork ? (
+                                <>
+                                  <XahauRewardTr data={data.ledgerInfo} />
+                                  {data.ledgerInfo?.hookStateCount && (
+                                    <tr>
+                                      <td>Hook state count</td>
+                                      <td>{data.ledgerInfo?.hookStateCount}</td>
+                                    </tr>
+                                  )}
+                                  {data.ledgerInfo?.hookNamespaces && (
+                                    <tr>
+                                      <td>Hook Namespaces</td>
+                                      <td>{data.ledgerInfo?.hookNamespaces.length}</td>
+                                    </tr>
+                                  )}
+                                </>
+                              ) : (
+                                <>
+                                  {data.ledgerInfo?.ammID && (
+                                    <tr>
+                                      <td>AMM ID</td>
+                                      <td>
+                                        <LinkAmm ammId={data.ledgerInfo.ammID} hash={true} icon={true} copy={true} />
+                                      </td>
+                                    </tr>
+                                  )}
+                                  {data.ledgerInfo?.mintedNFTokens && (
+                                    <tr>
+                                      <td>Minted NFTs</td>
+                                      <td>
+                                        <Link
+                                          href={
+                                            '/nft-explorer?includeWithoutMediaData=true&issuer=' +
+                                            data?.address +
+                                            '&includeBurned=true'
+                                          }
+                                        >
+                                          {data.ledgerInfo.mintedNFTokens}
+                                        </Link>
+                                      </td>
+                                    </tr>
+                                  )}
+                                  {data.ledgerInfo?.burnedNFTokens && (
+                                    <tr>
+                                      <td>Burned NFTs</td>
+                                      <td>
+                                        <Link
+                                          href={
+                                            '/nft-explorer?includeWithoutMediaData=true&issuer=' +
+                                            data?.address +
+                                            '&includeBurned=true&burnedPeriod=all'
+                                          }
+                                        >
+                                          {data.ledgerInfo.burnedNFTokens}
+                                        </Link>
+                                      </td>
+                                    </tr>
+                                  )}
+                                  {data.ledgerInfo?.firstNFTokenSequence && (
+                                    <tr>
+                                      <td>First NFT sequence</td>
+                                      <td>{data.ledgerInfo.firstNFTokenSequence}</td>
+                                    </tr>
+                                  )}
+                                  {data.ledgerInfo?.nftokenMinter && (
+                                    <tr>
+                                      <td>NFT minter</td>
+                                      <td>
+                                        <LinkAccount address={data.ledgerInfo.nftokenMinter} />
+                                      </td>
+                                    </tr>
+                                  )}
+                                </>
+                              )}
+
+                              {data.ledgerInfo?.domain && (
+                                <tr>
+                                  <td>Domain</td>
+                                  <td>
+                                    {isDomainValid(stripDomain(data.ledgerInfo.domain)) ? (
+                                      <>
+                                        <a
+                                          href={'https://' + stripDomain(data.ledgerInfo.domain)}
+                                          className={data.verifiedDomain ? 'green bold' : ''}
+                                          target="_blank"
+                                          rel="noopener nofollow"
+                                        >
+                                          {stripDomain(data.ledgerInfo.domain)}
+                                        </a>{' '}
+                                        {data.verifiedDomain && (
+                                          <span
+                                            className="blue tooltip"
+                                            style={{
+                                              display: 'inline-block',
+                                              verticalAlign: 'bottom',
+                                              marginBottom: -3
+                                            }}
+                                          >
+                                            <MdVerified />
+                                            <span className="tooltiptext small no-brake">TOML Verified Domain</span>
+                                          </span>
+                                        )}
+                                      </>
+                                    ) : (
+                                      <code className="code-highlight">{data.ledgerInfo.domain}</code>
+                                    )}
+                                  </td>
+                                </tr>
+                              )}
+                              {data.ledgerInfo?.flags?.disallowXRP && (
+                                <tr>
+                                  <td>Receiving {nativeCurrency}</td>
+                                  <td className="bold">disabled</td>
+                                </tr>
+                              )}
+                              {data.ledgerInfo?.flags?.requireDestTag && (
+                                <tr>
+                                  <td>Destination tag</td>
+                                  <td className="bold">required</td>
+                                </tr>
+                              )}
+                              {data.ledgerInfo?.flags?.ticketCount && (
+                                <tr>
+                                  <td>Tickets</td>
+                                  <td className="bold">{data.ledgerInfo.ticketCount}</td>
+                                </tr>
+                              )}
+                              {data.ledgerInfo?.flags?.ticketSize && (
+                                <tr>
+                                  <td>Ticket size</td>
+                                  <td className="bold">{data.ledgerInfo.ticketSize}</td>
+                                </tr>
+                              )}
+                              {data.ledgerInfo?.flags?.transferRate && (
+                                <tr>
+                                  <td>Transfer rate</td>
+                                  <td className="bold">
+                                    {Math.ceil((data.ledgerInfo.transferRate - 1) * 10000) / 100}
+                                  </td>
+                                </tr>
+                              )}
+                              {data.ledgerInfo?.flags?.globalFreeze && (
+                                <tr>
+                                  <td>Global freeze</td>
+                                  <td className="bold">true</td>
+                                </tr>
+                              )}
+                              {data.ledgerInfo?.flags?.noFreeze && (
+                                <tr>
+                                  <td>Freeze</td>
+                                  <td className="bold">disabled</td>
+                                </tr>
+                              )}
+                              {/* If set, this account must individually approve other users in order for those users to hold this account’s issuances. */}
+                              {data.ledgerInfo?.flags?.requireAuth && (
+                                <tr>
+                                  <td>Token authorization</td>
+                                  <td className="bold">required</td>
+                                </tr>
+                              )}
+                              {data.ledgerInfo?.flags?.depositAuth && (
+                                <tr>
+                                  <td>Deposit authorization</td>
+                                  <td className="bold">required</td>
+                                </tr>
+                              )}
+                              {data.ledgerInfo?.flags?.defaultRipple && (
+                                <tr>
+                                  <td>Rippling</td>
+                                  <td className="bold">enabled</td>
+                                </tr>
+                              )}
+                              {data.ledgerInfo?.flags?.disallowIncomingNFTokenOffers && (
+                                <tr>
+                                  <td>Incoming NFT offers</td>
+                                  <td className="bold">disallowed</td>
+                                </tr>
+                              )}
+                              {data.ledgerInfo?.flags?.disallowIncomingCheck && (
+                                <tr>
+                                  <td>Incoming checks</td>
+                                  <td className="bold">disallowed</td>
+                                </tr>
+                              )}
+                              {data.ledgerInfo?.flags?.disallowIncomingPayChan && (
+                                <tr>
+                                  <td>Incoming payment channels</td>
+                                  <td className="bold">disallowed</td>
+                                </tr>
+                              )}
+                              {data.ledgerInfo?.flags?.disallowIncomingTrustline && (
+                                <tr>
+                                  <td>Incoming trustlines</td>
+                                  <td className="bold">disallowed</td>
+                                </tr>
+                              )}
+                              {data.ledgerInfo?.flags?.amm && (
+                                <tr>
+                                  <td>AMM</td>
+                                  <td className="bold">true</td>
+                                </tr>
+                              )}
+                              {data.ledgerInfo?.flags?.allowTrustlineClawback && (
+                                <tr>
+                                  <td>Trustline clawback</td>
+                                  <td className="bold">enabled</td>
+                                </tr>
+                              )}
+                              {data.ledgerInfo?.flags?.uriTokenIssuer && (
+                                <tr>
+                                  <td>URI token issuer</td>
+                                  <td className="bold">true</td>
+                                </tr>
+                              )}
+                              {data.ledgerInfo?.flags?.dissallowIncomingRemit && (
+                                <tr>
+                                  <td>Incoming Remit</td>
+                                  <td className="bold">disallowed</td>
+                                </tr>
+                              )}
+                              {data.ledgerInfo?.flags?.disableMaster && (
+                                <tr>
+                                  <td>Master key</td>
+                                  <td className="bold">disabled</td>
+                                </tr>
+                              )}
+                              {data.ledgerInfo?.regularKey && (
+                                <tr>
+                                  <td>Regular key</td>
+                                  <td>
+                                    <AddressWithIconFilled data={data.ledgerInfo} name="regularKey" />
+                                  </td>
+                                </tr>
+                              )}
+                              {data.ledgerInfo?.flags?.passwordSpend && (
+                                <tr>
+                                  <td>Free re-key</td>
+                                  <td className="bold">spent</td>
+                                </tr>
+                              )}
+                              {data.ledgerInfo?.signerList && (
+                                <>
+                                  <tr>
+                                    <td>Multi-signing</td>
+                                    <td className="bold">enabled</td>
+                                  </tr>
+                                  {data.ledgerInfo.signerList.signerQuorum && (
+                                    <tr>
+                                      <td>Multi-signing threshold</td>
+                                      <td className="bold">{data.ledgerInfo.signerList.signerQuorum}</td>
+                                    </tr>
+                                  )}
+                                  {data.ledgerInfo.signerList.signerEntries.map((signer, index) => (
+                                    <tr key={index}>
+                                      <td>
+                                        Signer #{index + 1}
+                                        <br />
+                                        Weight: <b>{signer.signerWeight}</b>
+                                      </td>
+                                      <td>
+                                        <AddressWithIconFilled data={signer} name="account" />
+                                      </td>
+                                    </tr>
+                                  ))}
+                                </>
+                              )}
+                              {data.ledgerInfo?.sequence && (
+                                <tr>
+                                  <td>Next sequence</td>
+                                  <td>#{data.ledgerInfo.sequence}</td>
+                                </tr>
+                              )}
+                              {data.ledgerInfo?.previousTxnID && (
+                                <tr>
+                                  <td>Last affecting tx</td>
+                                  <td>{txIdLink(data.ledgerInfo.previousTxnID)}</td>
+                                </tr>
+                              )}
+                              {data.ledgerInfo?.accountTxnID && (
+                                <tr>
+                                  <td>Last initiated tx:</td>
+                                  <td>{txIdLink(data.ledgerInfo.accountTxnID)}</td>
+                                </tr>
+                              )}
+                              {data.ledgerInfo?.messageKey &&
+                                data.ledgerInfo?.messageKey.Substring(0, 26) !==
+                                  '02000000000000000000000000'(
+                                    <tr>
+                                      <td>Message key</td>
+                                      <td>
+                                        <code className="code-highlight">{data.ledgerInfo.messageKey}</code>
+                                      </td>
+                                    </tr>
+                                  )}
                             </tbody>
                           </table>
 
@@ -632,21 +1255,102 @@ export default function Account({
                               </thead>
                               <tbody>
                                 {accountNameTr(data)}
-
                                 <tr>
                                   <td>Activated</td>
                                   <td>
                                     {timeFromNow(data.inception, i18n)} ({fullDateAndTime(data.inception)})
+                                    {data?.inceptionTxHash && <> {txIdLink(data.inceptionTxHash, 0)}</>}
                                   </td>
                                 </tr>
-
-                                {data.ledgerInfo?.ammID && (
+                                {data.service?.domain && (
                                   <tr>
-                                    <td>AMM ID</td>
+                                    <td>Web address</td>
                                     <td>
-                                      <LinkAmm ammId={data.ledgerInfo.ammID} hash={true} icon={true} copy={true} />
+                                      <a
+                                        href={'https://' + data.service.domain}
+                                        className="green bold"
+                                        target="_blank"
+                                        rel="noopener nofollow"
+                                      >
+                                        {data.service.domain}
+                                      </a>
                                     </td>
                                   </tr>
+                                )}
+                                {data.genesis && (
+                                  <tr>
+                                    <td>Genesis balance</td>
+                                    <td className="bold">
+                                      {niceNumber(data.initialBalance)} {nativeCurrency}
+                                    </td>
+                                  </tr>
+                                )}
+                                {data.parent?.address === data.address ? (
+                                  <tr>
+                                    <td>Imported from the XRPL</td>
+                                    <td>
+                                      <a
+                                        href={
+                                          (devNet ? networks.testnet.server : networks.mainnet.server) +
+                                          '/account/' +
+                                          data.address
+                                        }
+                                      >
+                                        origin
+                                      </a>
+                                    </td>
+                                  </tr>
+                                ) : (
+                                  <tr>
+                                    <td>Activated by</td>
+                                    <td>
+                                      <AddressWithIconFilled data={data.parent} name="address" />
+                                    </td>
+                                  </tr>
+                                )}
+                                {!data.genesis && data.initialBalance && (
+                                  <tr>
+                                    <td>Activated with</td>
+                                    <td>
+                                      {data.initialBalance} {nativeCurrency}
+                                    </td>
+                                  </tr>
+                                )}
+                                {data.flare?.spark && (
+                                  <>
+                                    <tr>
+                                      <td>Flare address</td>
+                                      <td>
+                                        <a
+                                          href={'https://flarescan.com/address/' + data.flare.address}
+                                          target="_blank"
+                                          rel="noopener"
+                                        >
+                                          {data.flare.address}
+                                        </a>
+                                      </td>
+                                    </tr>
+                                    <tr>
+                                      <td>Flare claim</td>
+                                      <td>{fullNiceNumber(data.flare.spark * 0.15)} FLR</td>
+                                    </tr>
+                                    <tr>
+                                      <td>Songbird address</td>
+                                      <td>
+                                        <a
+                                          href={'https://songbird.flarescan.com/address/' + data.flare.address}
+                                          target="_blank"
+                                          rel="noopener"
+                                        >
+                                          {data.flare.address}
+                                        </a>
+                                      </td>
+                                    </tr>
+                                    <tr>
+                                      <td>Songbird claim</td>
+                                      <td>{fullNiceNumber(data.flare.songbird)} SGB</td>
+                                    </tr>
+                                  </>
                                 )}
                               </tbody>
                             </table>
@@ -669,6 +1373,28 @@ export default function Account({
           </>
         )}
       </div>
+      <style jsx>{`
+        .no-padding {
+          padding: 0;
+        }
+
+        .hide-on-small-w800 {
+          @media only screen and (max-width: 800px) {
+            display: none;
+          }
+        }
+
+        @media (min-width: 800px) {
+          .button-wide {
+            width: 100%;
+          }
+        }
+        @media (max-width: 800px) {
+          .button-wide {
+            width: calc(50% - 27px);
+          }
+        }
+      `}</style>
     </>
   )
 }

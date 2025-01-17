@@ -6,14 +6,14 @@ import moment from 'moment'
 import momentDurationFormatSetup from 'moment-duration-format'
 
 import LinkIcon from '../public/images/link.svg'
-import { stripText, nativeCurrency, nativeCurrenciesImages } from '.'
+import { stripText, nativeCurrency, nativeCurrenciesImages, avatarServer } from '.'
 import { mpUrl } from './nft'
 import Image from 'next/image'
 
 momentDurationFormatSetup(moment)
 
 export const AddressWithIcon = ({ children, address }) => {
-  let imageUrl = 'https://cdn.bithomp.com/avatar/' + address
+  let imageUrl = avatarServer + address
   if (!address) {
     imageUrl = nativeCurrenciesImages[nativeCurrency]
   }
@@ -28,6 +28,24 @@ export const AddressWithIcon = ({ children, address }) => {
         </tr>
       </tbody>
     </table>
+  )
+}
+
+export const AddressWithIconFilled = ({ data, name }) => {
+  if (!data) return ''
+  if (!name) {
+    name = 'address'
+  }
+  return (
+    <AddressWithIcon address={data[name]}>
+      {userOrServiceLink(data, name) && (
+        <>
+          {userOrServiceLink(data, name)}
+          <br />
+        </>
+      )}
+      {addressLink(data[name])}
+    </AddressWithIcon>
   )
 }
 
@@ -867,8 +885,10 @@ export const shortNiceNumber = (n, smallNumberFractionDigits = 2, largeNumberFra
     output = niceNumber(n / 1000000000, largeNumberFractionDigits, currency) + 'B'
   } else if (n > 999999) {
     output = niceNumber(n / 1000000, largeNumberFractionDigits, currency) + 'M'
-  } else if (n > 99999) {
-    output = niceNumber(Math.floor(n), 0, currency)
+    //} else if (n > 99999) {
+    //output = niceNumber(Math.floor(n), 0, currency)
+  } else if (n > 999) {
+    output = niceNumber(n / 1000, largeNumberFractionDigits, currency) + 'K'
   } else if (n === 0) {
     output = niceNumber(0, 0, currency)
   } else {

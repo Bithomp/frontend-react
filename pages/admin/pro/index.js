@@ -9,7 +9,7 @@ import { axiosAdmin } from '../../../utils/axios'
 
 import SEO from '../../../components/SEO'
 import AddressInput from '../../../components/UI/AddressInput'
-import { encode, useWidth, xahauNetwork } from '../../../utils'
+import { avatarServer, encode, useWidth, xahauNetwork } from '../../../utils'
 import { removeProAddress, activateAddressCrawler, crawlerStatus, updateProAddress } from '../../../utils/pro'
 import FormInput from '../../../components/UI/FormInput'
 import { addressLink } from '../../../utils/format'
@@ -287,11 +287,7 @@ export default function Pro({ account, setSignRequest, refreshPage, subscription
                                   <td style={{ padding: 0 }}>
                                     <Image
                                       alt="avatar"
-                                      src={
-                                        'https://cdn.bithomp.com/avatar/' +
-                                        a.address +
-                                        (refreshPage ? '?' + refreshPage : '')
-                                      }
+                                      src={avatarServer + a.address + (refreshPage ? '?' + refreshPage : '')}
                                       width="40"
                                       height="40"
                                     />
@@ -357,12 +353,7 @@ export default function Pro({ account, setSignRequest, refreshPage, subscription
                       {verifiedAddresses.map((a, i) => (
                         <tr key={i}>
                           <td style={{ padding: '20px 5px', verticalAlign: 'top' }} className="center">
-                            <Image
-                              alt="avatar"
-                              src={'https://cdn.bithomp.com/avatar/' + a.address}
-                              width="30"
-                              height="30"
-                            />
+                            <Image alt="avatar" src={avatarServer + a.address} width="30" height="30" />
                             <br />
                             <br />
                             {i + 1}

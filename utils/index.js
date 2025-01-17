@@ -500,6 +500,8 @@ const webAddressParts = server?.replace('http://', '').replace('https://', '').s
 export const webSiteName =
   webAddressParts[webAddressParts.length - 2] + '.' + webAddressParts[webAddressParts.length - 1]
 
+export const avatarServer = 'https://cdn.' + webSiteName + '/avatar/'
+
 export const networksIds = {
   0: { server: 'https://xrplexplorer.com', name: 'mainnet' },
   1: { server: 'https://test.xrplexplorer.com', name: 'testnet' },
@@ -566,6 +568,15 @@ export const isUrlValid = (x) => {
     'i'
   ) // fragment locator
   return !!re.test(x)
+}
+
+export const stripDomain = (x) => {
+  if (!x) return ''
+  x = x.replace('http://', '')
+  x = x.replace('https://', '')
+  x = x.replace('www.', '')
+  x = x.split('/')[0]
+  return x
 }
 
 export const isDomainValid = (x) => {

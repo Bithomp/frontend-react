@@ -1,6 +1,6 @@
 {
   "header": "NFT sales volumes",
-  "text0": "For that period XRPL had {{allSales}} {{currency}} NFT {{saleType}} sales for {{allVolume}}.",
+  "text0": "For that period {{explorerName}} had {{allSales}} {{currency}} NFT {{saleType}} sales for {{allVolume}}.",
   "collections": {
     "desc": "This is the list of NFT collections. The volumes here do not include the primary sales (mints) which were done within 2 transactions (payment and NFT transfer)."
   },
@@ -10,10 +10,10 @@
     "text0": "For that period XRPL had {{allSales}} <3>{{currency}}</3> NFT {{saleType}} sales for {{allVolume}}, from which <13>{{brokerSales}}</13> {{percentBrokerSales}} of trades for <19>{{brokerVolume}}</19> {{percentBrokerVolume}} were through the brokerage model."
   },
   "marketplaces": {
-    "desc": "This is the list of NFT Marketplaces on XRPL. The volumes here do not include the primary sales (mints) which were done within 2 transactions (payment and NFT transfer)."
+    "desc": "This is the list of NFT Marketplaces on {{explorerName}}. The volumes here do not include the primary sales (mints) which were done within 2 transactions (payment and NFT transfer)."
   },
   "issuers": {
-    "desc": "This the list of NFT issuers on XRPL. To see volumes of NFT collections identified by issuer and taxon click on the link in the Sales volume column."
+    "desc": "This the list of NFT issuers on {{explorerName}}. To see volumes of NFT collections identified by issuer and taxon click on the link in the Sales volume column."
   },
   "sales-chart": "Sales chart",
   "volumes-chart": "Volume chart"

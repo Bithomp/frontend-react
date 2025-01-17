@@ -162,8 +162,7 @@
     "search-placeholder-short": "Адрес / Транзакция / Псевдоним",
     "scan-qr": "СКАНИРОВАТЬ КОД",
     "whales": {
-      "header": "Самые крупные транзакции за последние 24 часа",
-      "no-value": "без цены"
+      "header": "Самые крупные транзакции за последние 24 часа"
     },
     "stat": {
       "header": "Последние данные с {{ledgerName}}",
@@ -399,6 +398,7 @@
     "day": "За последние 24 часа"
   },
   "table": {
+    "no-value": "без цены",
     "updated": "Обновлено",
     "currency": "Токен",
     "currency-issuer": "Эмитент токена",
@@ -552,7 +552,7 @@
     "publicAndKnownBrokers": "Публичные и на MП",
     "onSale": "На продаже за {{nativeCurrency}}",
     "all-tokens": "Все токены",
-    "xrp-only": "Только XRP",
+    "native-currency-only": "Только {{nativeCurrency}}",
     "mintedNew": "Новые",
     "mintedOld": "Старые",
     "existing": "Существующие",

@@ -1,6 +1,6 @@
 {
   "header": "NFTの取引量",
-  "text0": "対象期間中にXRPLでは{{saleType}}にて{{allSales}} {{currency}} NFT({{allVolume}})の取引が行われました。",
+  "text0": "対象期間中に{{explorerName}}では{{saleType}}にて{{allSales}} {{currency}} NFT({{allVolume}})の取引が行われました。",
   "collections": {
     "desc": "これはNFTコレクションのリストです。2つの取引（支払いとNFT送金）によって行われた一次販売(ミント)は含まれていません。"
   },
@@ -10,10 +10,10 @@
     "text0": "対象期間中にXRPLでは{{saleType}}にて{{allSales}}<3>{{currency}}</3> NFT/{{allVolume}}の売上があり、そのうちの<13>{{brokerSales}}</13> {{percentBrokerSales}}/<19>{{brokerVolume}}</19> {{percentBrokerVolume}}はブローカー取引によるものでした。"
   },
   "marketplaces": {
-    "desc": "XRPLのNFTマーケットプレイス一覧です。ここでの取引量には、2つの取引（支払いとNFT送金）によって行われた一次販売(ミント)は含まれていません。"
+    "desc": "{{explorerName}}のNFTマーケットプレイス一覧です。ここでの取引量には、2つの取引（支払いとNFT送金）によって行われた一次販売(ミント)は含まれていません。"
   },
   "issuers": {
-    "desc": "XRPLのNFT発行者リストです。発行者とTaxon毎に分類されたNFTコレクションの販売量を見るには、販売量欄のリンクをクリックしてください。"
+    "desc": "{{explorerName}}のNFT発行者リストです。発行者とTaxon毎に分類されたNFTコレクションの販売量を見るには、販売量欄のリンクをクリックしてください。"
   },
   "sales-chart": "販売数チャート",
   "volumes-chart": "取引高チャート"

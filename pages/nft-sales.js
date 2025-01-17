@@ -97,7 +97,8 @@ export default function NftSales({
   searchQuery,
   includeWithoutMediaDataQuery,
   subscriptionExpired,
-  sessionToken
+  sessionToken,
+  signOutPro
 }) {
   const { t } = useTranslation()
   const router = useRouter()
@@ -318,7 +319,12 @@ export default function NftSales({
         }
       } else {
         if (newdata.error) {
-          setErrorMessage(t('error-api.' + newdata.error))
+          if (newdata.error === 'This endpoint/query is available only within bithomp pro subscription') {
+            // user logged out...
+            signOutPro()
+          } else {
+            setErrorMessage(t('error-api.' + newdata.error))
+          }
         } else {
           setErrorMessage('Error')
           console.log(newdata)

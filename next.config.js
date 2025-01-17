@@ -16,12 +16,17 @@ module.exports = {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'cdn.bithomp.com',
+        hostname: 'cdn.xrplexplorer.com',
         port: ''
       },
       {
         protocol: 'https',
-        hostname: 'ipfs.bithomp.com',
+        hostname: 'cdn.xahauexplorer.com',
+        port: ''
+      },
+      {
+        protocol: 'https',
+        hostname: 'cdn.bithomp.com',
         port: ''
       },
       {

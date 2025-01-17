@@ -11,6 +11,8 @@ export default function InfiniteScrolling({
   subscriptionExpired,
   sessionToken,
   height,
+  endMessage,
+  loadMoreMessage,
   children
 }) {
   const { t } = useTranslation()
@@ -40,7 +42,7 @@ export default function InfiniteScrolling({
                 ) : (
                   <>
                     {!subscriptionExpired ? (
-                      t('general.loading')
+                      loadMoreMessage || t('general.loading')
                     ) : (
                       <Trans i18nKey="general.renew-bithomp-pro">
                         Your Bithomp Pro subscription has expired.
@@ -51,12 +53,12 @@ export default function InfiniteScrolling({
                 )}
               </>
             ) : (
-              t('general.loading')
+              loadMoreMessage || t('general.loading')
             )}
           </p>
         )
       }
-      endMessage={<p className="center">End of list</p>}
+      endMessage={<p className="center">{endMessage || 'End of list'}</p>}
     >
       {children}
     </InfiniteScroll>

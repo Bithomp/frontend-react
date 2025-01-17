@@ -6,10 +6,10 @@
       "explorer": "AMM explorer"
     },
     "company": {
-      "about-us": "About us"
+      "about-us": "Über uns"
     },
     "services": {
-      "services": "Services",
+      "services": "Dienste",
       "nft-mint": "NFT minten",
       "tax-reports": "Tax reports"
     },
@@ -162,8 +162,7 @@
     "search-placeholder-short": "Suche nach Adresse / Transaktion",
     "scan-qr": "CODE SCANNEN",
     "whales": {
-      "header": "Die signifikantesten Transaktionen der letzten 24 Stunden",
-      "no-value": "kein Wert"
+      "header": "Die signifikantesten Transaktionen der letzten 24 Stunden"
     },
     "stat": {
       "header": "{{ledgerName}} Live Statistiken",
@@ -246,7 +245,7 @@
     "address": "Adresse",
     "genesis-balance": "Genesis Kontostand",
     "rippletrade-username": "Rippletrade Benutzernamen",
-    "nickname": " Nickname",
+    "nickname": "Spitzname",
     "genesis-index": "Genesis Index"
   },
   "developer": {
@@ -282,8 +281,8 @@
     "accept": "Akzeptieren",
     "submit": "Abschicken",
     "search": "Suchen",
-    "print": "Drucken",
-    "download": "Download",
+    "print": "Drucken", 
+    "download": "Herunterladen",
     "copy": "Kopieren",
     "copied": "Kopiert",
     "copy-my-address": "Meine Adresse kopieren",
@@ -308,7 +307,7 @@
     "error": "Fehler",
     "no-data": "Keine Daten verfügbar",
     "loading": "Lade...",
-    "login-to-bithomp-pro": "Loading more data is available to <1>logged-in</1> Bithomp Pro subscribers.",
+    "login-to-bithomp-pro": "Das Laden weiterer Daten ist für <1>eingeloggte</1> Bithomp Pro-Abonnenten verfügbar.",
     "renew-bithomp-pro": "Your Bithomp Pro subscription has expired. <1>Renew your subscription</1>.",
     "load-failed": "Laden fehlgeschlagen",
     "all-issuers": "Alle Emittenten",
@@ -317,8 +316,8 @@
     "no-media": "Kein Medien gefunden",
     "viewer": "Betrachtungsprogramm",
     "developer-mode": "Entwicklermodus",
-    "search": "Search",
-    "of-many": "of many",
+    "search": "Suche",
+    "of-many": "von vielen",
     "of": "von",
     "sort-by": "Sortieren nach"
   },
@@ -347,7 +346,7 @@
     "Request failed with status code 429": "Sie senden uns zu viele Anfragen. Versuchen Sie es später erneut!",
     "Request failed with status code 404": "Dieser API Aufruf ist auf diesem Netzwerk nicht erlaubt",
     "Request failed with status code 403": "Es sieht so aus, als wären Sie abgemeldet. Bitte loggen Sie sich erneut ein",
-    "Request aborted": "Request aborted"
+    "Request aborted": "Anfrage abgebrochen"
   },
   "errors": {
     "token": {
@@ -360,8 +359,8 @@
       "not_found": "Keine API Keys vorhanden."
     },
     "address": {
-      "invalid_signature_address": "Invalid signature address. Make sure that you sign with the correct address.",
-      "limit_reached": "You can not add more addesses, you've reached the limit."
+      "invalid_signature_address": "Ungültige Signatur-Adresse. Stellen Sie sicher, dass Sie mit der richtigen Adresse signieren.",
+      "limit_reached": "Sie können keine weiteren Adressen hinzufügen, da Sie das Limit erreicht haben."
     },
     "blob": {
       "invalid_signature_address": "Sie müssen die Nachricht mit der Adresse signieren, die Sie hinzufügen möchten."
@@ -399,6 +398,7 @@
     "day": "Für die letzten 24 Stunden"
   },
   "table": {
+    "no-value": "kein wert",
     "updated": "Aktualisiert",
     "currency": "Währung",
     "currency-issuer": "Währungsemittent",
@@ -487,7 +487,7 @@
     "marketplace": "Marktplatz",
     "public-key": "Public Key",
     "text": {
-      "private-offer": "Private offer",
+      "private-offer": "Private Angebot",
       "show-extended-statistics": "Erweiterte Statistiken anzeigen",
       "include-without-media-data": "NFTs ohne Mediendaten einbeziehen",
       "include-burned-nfts": "Vernichtete NFTs einbeziehen",
@@ -552,7 +552,7 @@
     "publicAndKnownBrokers": "Öffentlich & MP",
     "onSale": "Zum Verkauf für {{nativeCurrency}}",
     "all-tokens": "Alle Tokens",
-    "xrp-only": "nur XRP",
+    "native-currency-only": "Nur {{nativeCurrency}}",
     "mintedNew": "Neuste",
     "mintedOld": "Älteste",
     "existing": "Existierende",

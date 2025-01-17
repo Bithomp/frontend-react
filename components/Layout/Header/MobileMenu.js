@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { useTranslation } from 'next-i18next'
 
-import { devNet, xahauNetwork, nativeCurrency, server } from '../../../utils'
+import { devNet, xahauNetwork, nativeCurrency, server, avatarServer } from '../../../utils'
 
 import Image from 'next/image'
 
@@ -44,13 +44,7 @@ export default function MobileMenu({
         <div className="mobile-menu-directory" data-expanded={displayName ? 'false' : 'true'}>
           {displayName ? (
             <>
-              <Image
-                alt="avatar"
-                src={'https://cdn.bithomp.com/avatar/' + address}
-                width="18"
-                height="18"
-                style={{ marginRight: '5px' }}
-              />
+              <Image alt="avatar" src={avatarServer + address} width="18" height="18" style={{ marginRight: '5px' }} />
               {displayName}
             </>
           ) : (
@@ -231,24 +225,19 @@ export default function MobileMenu({
             {t('menu.nft.sales')}
           </Link>
 
-          {/* Hide NFT-volumes for XAHAU while they are not ready yet */}
-          {!xahauNetwork && (
-            <>
-              <Link href="/nft-volumes?period=week" className="mobile-menu-item" onClick={mobileMenuToggle}>
-                {t('menu.nft.collections')}
-              </Link>
-              <Link
-                href="/nft-volumes?list=marketplaces&period=week"
-                className="mobile-menu-item"
-                onClick={mobileMenuToggle}
-              >
-                {t('menu.nft.marketplaces')}
-              </Link>
-              <Link href="/nft-volumes?list=charts&period=week" className="mobile-menu-item" onClick={mobileMenuToggle}>
-                {t('menu.nft.volumes')}
-              </Link>
-            </>
-          )}
+          <Link href="/nft-volumes?period=week" className="mobile-menu-item" onClick={mobileMenuToggle}>
+            {t('menu.nft.collections')}
+          </Link>
+          <Link
+            href="/nft-volumes?list=marketplaces&period=week"
+            className="mobile-menu-item"
+            onClick={mobileMenuToggle}
+          >
+            {t('menu.nft.marketplaces')}
+          </Link>
+          <Link href="/nft-volumes?list=charts&period=week" className="mobile-menu-item" onClick={mobileMenuToggle}>
+            {t('menu.nft.volumes')}
+          </Link>
 
           {/* Hide NFT-minters for XAHAU while they are not ready yet */}
           {!xahauNetwork && (
@@ -445,9 +434,11 @@ export default function MobileMenu({
           <a href="/go/fm-buy" target="_blank" rel="noreferrer" className="mobile-menu-item">
             {t('menu.sponsored.buy')}
           </a>
+          {/*
           <a href="/go/fm-earn" target="_blank" rel="noreferrer" className="mobile-menu-item">
             {t('menu.sponsored.earn')}
           </a>
+          */}
           <a href="/go/fm-play" target="_blank" rel="noreferrer" className="mobile-menu-item">
             {t('menu.sponsored.play')}
           </a>

@@ -162,8 +162,7 @@
     "search-placeholder-short": "Cari berdasarkan Alamat / Transaksi",
     "scan-qr": "PINDAI KODE",
     "whales": {
-      "header": "Transaksi paling signifikan dalam 24 jam terakhir",
-      "no-value": "tidak ada nilai"
+      "header": "Transaksi paling signifikan dalam 24 jam terakhir"
     },
     "stat": {
       "header": "Statistik live {{ledgerName}}",
@@ -178,7 +177,7 @@
       "transactionsLast24h": "Transaksi (24h)",
       "paymentsLast24h": "Pembayaran (24h)",
       "feesLast24h": "Biaya (24h)",
-      "usernames": "Username",
+      "usernames": "Nama Pengguna",
       "nft": {
         "created": "NFT dicetak",
         "burned": "NFT dihapus",
@@ -308,8 +307,8 @@
     "error": "Kesalahan",
     "no-data": "Tidak ada data tersedia",
     "loading": "Memuat...",
-    "login-to-bithomp-pro": "Loading more data is available to <1>logged-in</1> Bithomp Pro subscribers.",
-    "renew-bithomp-pro": "Your Bithomp Pro subscription has expired. <1>Renew your subscription</1>.",
+    "login-to-bithomp-pro": "Memuat lebih banyak data tersedia untuk pelanggan Bithomp Pro yang <1>termasuk login</1>.",
+    "renew-bithomp-pro": "Langganan Bithomp Pro Anda telah kedaluwarsa. <1>Perbarui langganan Anda</1>.",
     "load-failed": "Gagal memuat",
     "all-issuers": "Semua penerbit",
     "no-expiration": "Tidak pernah",
@@ -318,9 +317,9 @@
     "viewer": "Pelihat",
     "developer-mode": "Mode Pengembang",
     "search": "Search",
-    "of-many": "of many",
-    "of": "of",
-    "sort-by": "Sort by"
+    "of-many": "dari banyak",
+    "of": "dari",
+    "sort-by": "Urutkan berdasarkan"
   },
   "form": {
     "error": {
@@ -338,30 +337,30 @@
       "password-invalid": "Silakan masukkan kata sandi yang valid."
     },
     "placeholder": {
-      "destination-tag": "Enter the Destination tag (if it is required)"
+      "destination-tag": "Masukkan tag tujuan (jika diperlukan)"
     }
   },
   "error": {
     "payment-partly": "Silahkan kirim sisa jumlahnya, sejauh ini kami hanya menerima {{received}} {{currency}} saat <b>{{required}} {{currency}}</b> dibutuhkan.",
     "Network Error": "Sepertinya tidak ada koneksi internet ;(",
     "Request failed with status code 429": "Anda mengirimkan terlalu banyak permintaan kepada kami, coba lagi nanti!",
-    "Request failed with status code 404": "Such API call is not allowed on that network",
-    "Request failed with status code 403": "It seems you're logged out, please log in again",
-    "Request aborted": "Request aborted"
+    "Request failed with status code 404": "Panggilan API seperti itu tidak diizinkan di jaringan tersebut.",
+    "Request failed with status code 403": "Sepertinya Anda telah keluar, silakan masuk kembali.",
+    "Request aborted": "Permintaan dibatalkan"
   },
   "errors": {
     "token": {
-      "required": "Please login to continue"
+      "required": "Silakan masuk untuk melanjutkan."
     },
     "partner": {
-      "not_found": "There are no projects"
+      "not_found": "Tidak ada proyek."
     },
     "access_token": {
-      "not_found": "There are no API keys."
+      "not_found": "Tidak ada kunci API."
     },
     "address": {
-      "invalid_signature_address": "Invalid signature address. Make sure that you sign with the correct address.",
-      "limit_reached": "You can not add more addesses, you've reached the limit."
+      "invalid_signature_address": "Alamat tanda tangan tidak valid. Pastikan Anda menandatangani dengan alamat yang benar.",
+      "limit_reached": "Anda tidak dapat menambahkan lebih banyak alamat, Anda telah mencapai batasnya."
     },
     "blob": {
       "invalid_signature_address": "Anda perlu menandatangani pesan dengan alamat yang ingin Anda tambahkan."
@@ -399,6 +398,7 @@
     "day": "Selama 24 jam terakhir"
   },
   "table": {
+    "no-value": "tidak ada nilai",
     "updated": "Diperbarui",
     "currency": "Mata Uang",
     "currency-issuer": "Penerbit Mata Uang",
@@ -552,7 +552,7 @@
     "publicAndKnownBrokers": "Publik & Broker Terkenal",
     "onSale": "Dijual dengan {{nativeCurrency}}",
     "all-tokens": "Semua Token",
-    "xrp-only": "Hanya XRP",
+    "native-currency-only": "Hanya {{nativeCurrency}}",
     "mintedNew": "Latest",
     "mintedOld": "Oldest",
     "existing": "Existing",

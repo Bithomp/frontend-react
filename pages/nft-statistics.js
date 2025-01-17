@@ -152,12 +152,8 @@ export default function NftStatistics() {
           {t('nft-statistics.owners')}: <Link href="/nft-distribution?order=total">{niceNumber(nft?.owners)}</Link>
         </p>
         <p>
-          {t('nft-statistics.issuers')}: {/* Hide the link to nft-volumes while its not ready for Xahau yet */}
-          {xahauNetwork ? (
-            niceNumber(nft?.issuers)
-          ) : (
-            <Link href="/nft-volumes?period=all&list=issuers">{niceNumber(nft?.issuers)}</Link>
-          )}
+          {t('nft-statistics.issuers')}:{' '}
+          <Link href="/nft-volumes?period=all&list=issuers">{niceNumber(nft?.issuers)}</Link>
         </p>
         <p>
           {t('nft-statistics.transfers')}: {niceNumber(nft?.transfers)}

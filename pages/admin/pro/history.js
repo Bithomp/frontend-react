@@ -8,7 +8,7 @@ import AdminTabs from '../../../components/Tabs/AdminTabs'
 import { axiosAdmin } from '../../../utils/axios'
 
 import SEO from '../../../components/SEO'
-import { nativeCurrency, useWidth } from '../../../utils'
+import { avatarServer, nativeCurrency, useWidth } from '../../../utils'
 import {
   addressLink,
   amountFormat,
@@ -313,12 +313,7 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
                         <tbody>
                           <tr>
                             <td style={{ padding: 0 }}>
-                              <Image
-                                alt="avatar"
-                                src={'https://cdn.bithomp.com/avatar/' + address.address}
-                                width="40"
-                                height="40"
-                              />
+                              <Image alt="avatar" src={avatarServer + address.address} width="40" height="40" />
                             </td>
                             <td style={{ padding: '0 0 0 5px' }}>
                               <b className="orange">{address.name}</b> -{' '}
