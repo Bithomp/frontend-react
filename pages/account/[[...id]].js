@@ -1234,15 +1234,14 @@ export default function Account({
                                 </tr>
                               )}
                               {data.ledgerInfo?.messageKey &&
-                                data.ledgerInfo?.messageKey.substring(0, 26) !==
-                                  '02000000000000000000000000'(
-                                    <tr>
-                                      <td>Message key</td>
-                                      <td>
-                                        <code className="code-highlight">{data.ledgerInfo.messageKey}</code>
-                                      </td>
-                                    </tr>
-                                  )}
+                                data.ledgerInfo?.messageKey.substring(0, 26) !== '02000000000000000000000000' && (
+                                  <tr>
+                                    <td>Message key</td>
+                                    <td>
+                                      <code className="code-highlight">{data.ledgerInfo.messageKey}</code>
+                                    </td>
+                                  </tr>
+                                )}
                             </tbody>
                           </table>
 
