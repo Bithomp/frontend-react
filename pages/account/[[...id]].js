@@ -738,7 +738,7 @@ export default function Account({
                             </tbody>
                           </table>
 
-                          {((!account?.address && !data?.service?.name) || data?.address === account?.address) &&
+                          {((!account?.address && !data?.service) || data?.address === account?.address) &&
                             !data?.ledgerInfo?.blackholed && (
                               <table className="table-details autowidth">
                                 <thead>
