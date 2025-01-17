@@ -1074,14 +1074,14 @@ export default function Account({
                               )}
                               {data.ledgerInfo?.previousTxnID && (
                                 <tr>
-                                  <td>Last affecting tx:</td>
-                                  <td>{txIdLink(data.ledgerInfo.previousTxnID, 6)}</td>
+                                  <td>Last affecting tx</td>
+                                  <td>{txIdLink(data.ledgerInfo.previousTxnID)}</td>
                                 </tr>
                               )}
                               {data.ledgerInfo?.accountTxnID && (
                                 <tr>
                                   <td>Last initiated tx:</td>
-                                  <td>{txIdLink(data.ledgerInfo.accountTxnID, 6)}</td>
+                                  <td>{txIdLink(data.ledgerInfo.accountTxnID)}</td>
                                 </tr>
                               )}
                               {data.ledgerInfo?.messageKey &&
