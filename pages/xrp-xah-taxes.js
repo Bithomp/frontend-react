@@ -2,7 +2,8 @@ import Mailto from 'react-protected-mailto'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import SEO from '../components/SEO'
 import { getIsSsrMobile } from '../utils/mobile'
-import { network } from '../utils'
+import { network, useWidth } from '../utils'
+import { i18n } from 'next-i18next'
 
 export async function getServerSideProps(context) {
   const { locale } = context
@@ -15,6 +16,7 @@ export async function getServerSideProps(context) {
 }
 
 export default function XrpTaxes() {
+  const width = useWidth()
   return (
     <>
       <SEO
@@ -61,10 +63,18 @@ export default function XrpTaxes() {
                 Get the most comprehensive XRPL and XAHAU transaction exports for your <strong>tax reports:</strong>
               </p>
               <div className="links">
-                <a href="https://xrplexplorer.com/admin/pro/history" target="_blank" rel="noopener noreferrer">
+                <a
+                  href={'https://xrplexplorer.com/' + i18n.language + '/admin/pro/history'}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   XRPL
                 </a>
-                <a href="https://xahauexplorer.com/admin/pro/history" target="_blank" rel="noopener noreferrer">
+                <a
+                  href={'https://xahauexplorer.com/' + i18n.language + '/admin/pro/history'}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   XAHAU
                 </a>
               </div>
@@ -82,7 +92,7 @@ export default function XrpTaxes() {
 
         <section className="videos">
           <h2>Watch These Videos to Learn How to Start Using These Tools:</h2>
-          <div className="video-wrapper">
+          <div className={width > 1000 ? 'video-wrapper' : ''}>
             <iframe
               src="https://www.youtube.com/embed/efJFyfSwXIM"
               title="XRPL Balance Change History"
@@ -117,8 +127,7 @@ export default function XrpTaxes() {
               </li>
               <li>
                 <strong>Xahau Support:</strong> XAHAU, launched in 2023, is an XRPL-based network with smart contracts
-                (hooks). Coopbank, a bank with over 13 million customers, has started using the Xahau blockchain for its
-                remittance service.
+                (hooks).
               </li>
               <li>
                 <strong>All Types of Transactions Support:</strong> You will have support for all Token type of
@@ -157,7 +166,7 @@ export default function XrpTaxes() {
         }
 
         .hero h1 {
-          font-size: 2.5rem;
+          font-size: 2rem;
         }
 
         .hero p {

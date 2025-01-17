@@ -3,7 +3,7 @@ import { useTranslation } from 'next-i18next'
 import { useRef } from 'react'
 import dynamic from 'next/dynamic'
 
-import { devNet, ledgerName, nativeCurrency, network, xahauNetwork } from '../../utils'
+import { devNet, nativeCurrency, network, xahauNetwork } from '../../utils'
 
 const CookieMessage = dynamic(() => import('./CookieMessage'), { ssr: false })
 const SocialIcons = dynamic(() => import('./SocialIcons'), { ssr: false })
@@ -22,8 +22,8 @@ export default function Footer() {
       <div className="footer-menu">
         <div className="footer-menu-column">
           <span className="footer-menu-header">{t('menu.services.services')}</span>
-          <a href={'/explorer/'}>{t('menu.services.search-on-ledgerName', { ledgerName })}</a>
           <Link href="/username">{t('menu.usernames')}</Link>
+          <Link href="/xrp-xah-taxes">{t('menu.services.tax-reports')}</Link>
           <Link href="/submit-account-information">{t('menu.project-registration')}</Link>
           {!devNet && <Link href="/alerts">{t('menu.price-alerts', { nativeCurrency })}</Link>}
           {/* <a href={'/submit/'}>{t('menu.submit-offline-tx')}</a> */}
