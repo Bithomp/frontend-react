@@ -909,7 +909,7 @@ export default function Account({
                                   <tr>
                                     <td>Total balance</td>
                                     <td>
-                                      {amountFormat(balances?.total?.native, { precise: true })}
+                                      {amountFormat(balances?.total?.native, { precise: 'nice' })}
                                       {nativeCurrencyToFiat({
                                         amount: balances.total?.native,
                                         selectedCurrency,
@@ -920,7 +920,7 @@ export default function Account({
                                   <tr>
                                     <td>Reserved</td>
                                     <td>
-                                      {amountFormat(balances?.reserved?.native, { precise: true })}
+                                      {amountFormat(balances?.reserved?.native, { precise: 'nice' })}
                                       {nativeCurrencyToFiat({
                                         amount: balances.reserved?.native,
                                         selectedCurrency,
@@ -932,7 +932,7 @@ export default function Account({
                                     <td>Available</td>
                                     <td>
                                       <b className="green">
-                                        {amountFormat(balances?.available?.native, { precise: true })}
+                                        {amountFormat(balances?.available?.native, { precise: 'nice' })}
                                       </b>
                                       {nativeCurrencyToFiat({
                                         amount: balances.available?.native,
@@ -1163,7 +1163,7 @@ export default function Account({
                                   <td className="bold">true</td>
                                 </tr>
                               )}
-                              {data.ledgerInfo?.flags?.dissallowIncomingRemit && (
+                              {data.ledgerInfo?.flags?.disallowIncomingRemit && (
                                 <tr>
                                   <td>Incoming Remit</td>
                                   <td className="bold">disallowed</td>
@@ -1183,7 +1183,7 @@ export default function Account({
                                   </td>
                                 </tr>
                               )}
-                              {data.ledgerInfo?.flags?.passwordSpend && (
+                              {data.ledgerInfo?.flags?.passwordSpent && (
                                 <tr>
                                   <td>Free re-key</td>
                                   <td className="bold">spent</td>
@@ -1311,7 +1311,7 @@ export default function Account({
                                   <tr>
                                     <td>Activated with</td>
                                     <td>
-                                      {data.initialBalance} {nativeCurrency}
+                                      {fullNiceNumber(data.initialBalance)} {nativeCurrency}
                                     </td>
                                   </tr>
                                 )}

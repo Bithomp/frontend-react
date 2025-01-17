@@ -531,6 +531,9 @@ export const amountFormat = (amount, options = {}) => {
   const { value, currency, valuePrefix, issuer, type } = amountParced(amount)
 
   if (options.precise) {
+    if (options.precise === 'nice') {
+      return niceNumber(value, 0, null, 15) + ' ' + valuePrefix + ' ' + currency
+    }
     return value + ' ' + valuePrefix + ' ' + currency
   }
 
