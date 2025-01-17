@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { useTranslation } from 'next-i18next'
 
-import { devNet, xahauNetwork, ledgerName, nativeCurrency, server, avatarServer } from '../../../utils'
+import { devNet, xahauNetwork, nativeCurrency, server, avatarServer } from '../../../utils'
 
 import Image from 'next/image'
 
@@ -170,14 +170,14 @@ export default function MobileMenu({
               {t('menu.services.nft-mint')}
             </Link>
           )}
-          <a href={server + '/explorer/'} className="mobile-menu-item">
-            {t('menu.services.search-on-ledgerName', { ledgerName })}
-          </a>
           {!displayName && (
             <Link href="/username" className="mobile-menu-item" onClick={mobileMenuToggle}>
               {t('menu.usernames')}
             </Link>
           )}
+          <Link href="/xrp-xah-taxes" className="mobile-menu-item" onClick={mobileMenuToggle}>
+            {t('menu.services.tax-reports')}
+          </Link>
 
           <Link href="/submit-account-information" className="mobile-menu-item" onClick={mobileMenuToggle}>
             {t('menu.project-registration')}

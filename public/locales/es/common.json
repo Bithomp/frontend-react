@@ -11,7 +11,7 @@
     "services": {
       "services": "Servicios",
       "nft-mint": "Acuñar NFT",
-      "search-on-ledgerName": "Buscar en {{ledgerName}}"
+      "tax-reports": "Tax reports"
     },
     "business": {
       "advertise": "Anúnciate",

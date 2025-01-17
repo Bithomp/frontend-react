@@ -2,7 +2,8 @@ import Mailto from 'react-protected-mailto'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import SEO from '../components/SEO'
 import { getIsSsrMobile } from '../utils/mobile'
-import { network } from '../utils'
+import { network, useWidth } from '../utils'
+import { i18n } from 'next-i18next'
 
 export async function getServerSideProps(context) {
   const { locale } = context
@@ -15,130 +16,228 @@ export async function getServerSideProps(context) {
 }
 
 export default function XrpTaxes() {
+  const width = useWidth()
   return (
     <>
       <SEO
-        title="XRP and Xah Taxes"
+        title="XRP and XAH Taxes"
         description="How XRPL and Xahau Explorers can help you with taxes"
         noindex={network !== 'mainnet'}
       />
-      <div className="content-center">
-        <h1>XRP and XAH Taxes</h1>
-        <p className="left-align">
-          The booming world of cryptocurrencies has led to an explosion of interest in not only investing but also
-          understanding the various tax implications associated with digital assets.
-        </p>
-
-        <h3 className="left-align">Why are XRP and XAH Taxable</h3>
-        <p className="left-align">
-          In many jurisdictions, cryptocurrencies - XRP and XAH included - are treated as capital assets.
-        </p>
-        <p className="left-align">
-          Every transaction - whether it's buying, selling, sending, or receiving - can have tax implications. The most
-          crucial thing in tax reporting is the accuracy of recording.
-        </p>
-
-        <h3 className="left-align">How XRPL and Xahau Explorers Assist Tax payers</h3>
-        <div className="content-center">
-          <div className="image-wrapper">
-            <img src="/images/pages/xrp-xah-taxes/1.jpeg" alt="Illustration Problem" className="image" />
-          </div>
-
-          <div className="image-wrapper">
-            <img src="/images/pages/xrp-xah-taxes/2.jpeg" alt="Illustration Solution" className="image" />
-          </div>
-
-          <div className="image-wrapper">
-            <img src="/images/pages/xrp-xah-taxes/3.jpeg" alt="Illustration We offer" className="image" />
-          </div>
+      <div className="container">
+        <div className="hero">
+          <h1>XRP and XAH Taxes</h1>
+          <p>
+            The booming world of cryptocurrencies has led to an explosion of interest in not only investing but also
+            understanding the various tax implications associated with digital assets.
+          </p>
         </div>
 
-        <h3 className="left-align">Watch these videos to learn how to start using this tool:</h3>
-        <div className="content-center">
-          <div style={{ marginBottom: '20px' }}>
-            <iframe
-              width="765"
-              height="437,5"
-              src="https://www.youtube.com/embed/efJFyfSwXIM"
-              title=" XRPL Balance Change History"
-              allowFullScreen
-              className="videoIframe"
-            ></iframe>
+        <section className="intro">
+          <h2>Why Are XRP and XAH Taxable?</h2>
+          <p>
+            In many jurisdictions, cryptocurrencies—XRP and XAH included—are treated as capital assets. Every
+            transaction—buying, selling, sending, or receiving—can have tax implications. Accurate recording is crucial
+            for tax reporting.
+          </p>
+        </section>
+
+        <section className="assist">
+          <h2>How XRPL and Xahau Explorers Assist Taxpayers</h2>
+          <div className="feature-grid">
+            <div className="feature">
+              <h3>Existing Problems</h3>
+              <p>
+                Many users need transaction exports for tax reporting, but existing tools fall short in several critical
+                areas:
+              </p>
+              <ul>
+                <li>Limited Token Support: Most solutions ignore IOUs (DEX tokens), leaving gaps in reporting.</li>
+                <li>Inaccurate Calculations: Transfer fees are often overlooked.</li>
+                <li>Lack of XRPL and XAHAU Compatibility: Many platforms don’t support these ledgers.</li>
+              </ul>
+            </div>
+            <div className="feature">
+              <h3>Our Solution</h3>
+              <p>
+                Get the most comprehensive XRPL and XAHAU transaction exports for your <strong>tax reports:</strong>
+              </p>
+              <div className="links">
+                <a
+                  href={'https://xrplexplorer.com/' + i18n.language + '/admin/pro/history'}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  XRPL
+                </a>
+                <a
+                  href={'https://xahauexplorer.com/' + i18n.language + '/admin/pro/history'}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  XAHAU
+                </a>
+              </div>
+              <h3>We Offer</h3>
+              <ul>
+                <li>Monitor up to 5 Wallets: Track the full history of balance changes.</li>
+                <li>Extensive Calculations: Includes payments, NFT sales, AMM transactions, and network fees.</li>
+                <li>
+                  Accurate Token Value Calculations: Historical prices in 40 fiat currencies based on order book depth.
+                </li>
+              </ul>
+            </div>
           </div>
-          <div>
+        </section>
+
+        <section className="videos">
+          <h2>Watch These Videos to Learn How to Start Using These Tools:</h2>
+          <div className={width > 1000 ? 'video-wrapper' : ''}>
             <iframe
-              width="765"
-              height="437,5"
+              src="https://www.youtube.com/embed/efJFyfSwXIM"
+              title="XRPL Balance Change History"
+              allowFullScreen
+            ></iframe>
+            <iframe
               src="https://www.youtube.com/embed/b5PSMhDUah0"
               title="Xahau Balance Change History"
               allowFullScreen
-              className="videoIframe"
             ></iframe>
           </div>
-        </div>
+        </section>
 
-        <h3 className="left-align">How XRPL and Xahau Explores Assist Crypto Tax Platforms</h3>
-        <div className="content-center">
-          <div className="image-wrapper">
-            <img src="/images/pages/xrp-xah-taxes/4.jpeg" alt="Illustration You Get" className="image" />
+        <section className="assist">
+          <h2>How XRPL and Xahau Explorers Assist Crypto Tax Platforms</h2>
+          <div className="feature">
+            <h3>You Get</h3>
+            <ul>
+              <li>Expand the range of your available services to meet community demand.</li>
+              <li>
+                Build stronger, more lasting relationships with clients by addressing specific tax reporting needs.
+              </li>
+            </ul>
           </div>
-
-          <div className="image-wrapper">
-            <img src="/images/pages/xrp-xah-taxes/5.jpeg" alt="Illustration Your Benefits" className="image" />
+          <div className="feature" style={{ marginTop: '30px' }}>
+            <h3>Your Benefits of Working with Us:</h3>
+            <ul>
+              <li>
+                <strong>XRPL Support:</strong> One of the oldest blockchains, XRPL has been active since 2012 with a
+                large user base. We ensure up-to-date XRPL support by adding new transaction types and integrating
+                amendments even before they go live.
+              </li>
+              <li>
+                <strong>Xahau Support:</strong> XAHAU, launched in 2023, is an XRPL-based network with smart contracts
+                (hooks).
+              </li>
+              <li>
+                <strong>All Types of Transactions Support:</strong> You will have support for all Token type of
+                transactions on DEX, including the new AMM transaction types.
+              </li>
+              <li>
+                <strong>No Need for XRPL Integration:</strong> You don’t need to integrate XRPL, which is very different
+                from EVM or PoW chains. You don’t need to run your own XRPL node.
+              </li>
+            </ul>
           </div>
-        </div>
+        </section>
 
-        <div className="content-center">
-          <p className="left-align">
+        <section className="cta">
+          <p>
             We would love to explore partnership opportunities and learn about your interest in expanding your services.
-            If you're interested, please reach out so we can discuss the details further at{'  '}
-            <Mailto email="partner@bithomp.com" headers={{ subject: 'TX export opportunities' }} />.
+            Contact us at <Mailto email="partner@bithomp.com" headers={{ subject: 'Partnership Inquiry' }} />.
           </p>
-        </div>
+        </section>
       </div>
 
       <style jsx>{`
-        .content-center {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          justify-content: center;
-          margin-bottom: 0;
+        .container {
+          max-width: 1200px;
+          margin: 0 auto;
+          padding: 20px;
+          font-family: 'Open Sans', sans-serif;
+          line-height: 1.6;
         }
 
-        .left-align {
-          text-align: left;
-          width: 100%;
-          max-width: 900px;
+        .hero {
+          text-align: center;
+          padding: 40px 20px;
+          border-radius: 10px;
+          margin-bottom: 30px;
         }
 
-        .image-wrapper {
-          display: flex;
-          justify-content: center;
+        .hero h1 {
+          font-size: 2rem;
+        }
+
+        .hero p {
+          font-size: 1.2rem;
+          margin: 10px 0;
+        }
+
+        section {
           margin-bottom: 40px;
         }
 
-        .image {
+        .assist .feature-grid {
+          display: flex;
+          gap: 20px;
+          flex-wrap: wrap;
+        }
+
+        .feature {
+          flex: 1 1 calc(50% - 20px);
+          border: 1px solid #ddd;
+          border-radius: 8px;
+          padding: 20px;
+          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+          transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .feature:hover {
+          transform: translateY(-5px);
+          box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .links {
+          display: flex;
+          gap: 15px;
+        }
+
+        .links a {
+          padding: 10px 20px;
+          text-decoration: none;
+          border-radius: 5px;
+          transition: background 0.3s ease;
+          font-weight: bold;
+        }
+
+        .links a:hover {
+          background: #35909e; /* Darker teal for hover state */
+        }
+
+        .video-wrapper {
+          display: flex;
+          gap: 20px;
+          justify-content: center;
+          margin-top: 20px;
+        }
+
+        .video-wrapper iframe {
           width: 100%;
-          max-width: 900px; /* Limits the width for large screens */
-          height: auto;
-          border: 5px solid #ddd; /* Soft border around the image */
-          border-radius: 15px; /* Rounded corners */
-          transition: transform 0.4s ease, box-shadow 0.4s ease; /* Smooth transitions */
-          object-fit: cover;
+          max-width: 560px;
+          height: 315px;
         }
 
-        .image:hover {
-          transform: scale(1.03); /* Slight zoom effect */
-          box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1); /* Subtle shadow around the image */
+        .cta {
+          text-align: center;
+          background: #e0f2f1;
+          padding: 30px;
+          border-radius: 10px;
+          box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
 
-        @media screen and (max-width: 765px) {
-          iframe.videoIframe {
-            max-width: 100% !important;
-            width: auto !important;
-            height: auto !important;
-          }
+        .cta p {
+          font-size: 1.2rem;
         }
       `}</style>
     </>

@@ -11,7 +11,7 @@
     "services": {
       "services": "Layanan",
       "nft-mint": "Mint NFT",
-      "search-on-ledgerName": "Cari di {{ledgerName}}"
+      "tax-reports": "Tax reports"
     },
     "business": {
       "advertise": "Iklankan",

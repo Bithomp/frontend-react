@@ -11,7 +11,7 @@
     "services": {
       "services": "서비스",
       "nft-mint": "NFT 민팅",
-      "search-on-ledgerName": "{{ledgerName}}에서 탐색하기"
+      "tax-reports": "Tax reports"
     },
     "business": {
       "business": "사업",

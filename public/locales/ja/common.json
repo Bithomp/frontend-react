@@ -11,7 +11,7 @@
     "services": {
       "services": "サービス",
       "nft-mint": "NFTのミント",
-      "search-on-ledgerName": "{{ledgerName}}の検索"
+      "tax-reports": "Tax reports"
     },
     "business": {
       "advertise": "広告掲載",

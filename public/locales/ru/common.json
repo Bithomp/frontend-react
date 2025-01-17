@@ -11,7 +11,7 @@
     "services": {
       "services": "Сервисы",
       "nft-mint": "Чеканка NFT",
-      "search-on-ledgerName": "Поиск по {{ledgerName}}"
+      "tax-reports": "Tax reports"
     },
     "business": {
       "advertise": "Размещение рекламы",
