@@ -952,16 +952,24 @@ export default function Account({
                               {xahauNetwork ? (
                                 <>
                                   <XahauRewardTr data={data.ledgerInfo} />
+                                  {data.ledgerInfo?.hookNamespaces && (
+                                    <>
+                                      <tr>
+                                        <td>Hooks count</td>
+                                        <td className="bold">{data.ledgerInfo?.hookNamespaces.length}</td>
+                                      </tr>
+                                      {data.ledgerInfo.hookNamespaces.map((hook, i) => (
+                                        <tr key={i}>
+                                          <td>Hook #{i + 1}</td>
+                                          <td style={{ fontSize: 14 }}>{hook}</td>
+                                        </tr>
+                                      ))}
+                                    </>
+                                  )}
                                   {data.ledgerInfo?.hookStateCount && (
                                     <tr>
                                       <td>Hook state count</td>
                                       <td>{data.ledgerInfo?.hookStateCount}</td>
-                                    </tr>
-                                  )}
-                                  {data.ledgerInfo?.hookNamespaces && (
-                                    <tr>
-                                      <td>Hook Namespaces</td>
-                                      <td>{data.ledgerInfo?.hookNamespaces.length}</td>
                                     </tr>
                                   )}
                                 </>
