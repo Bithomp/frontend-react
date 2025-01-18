@@ -18,16 +18,8 @@ export const getServerSideProps = async (context) => {
 
 import SEO from '../components/SEO'
 
-import { useWidth, nativeCurrency } from '../utils'
-import {
-  amountFormat,
-  userOrServiceLink,
-  niceNumber,
-  percentFormat,
-  addressLink,
-  AddressWithIcon,
-  nativeCurrencyToFiat
-} from '../utils/format'
+import { useWidth, nativeCurrency, devNet } from '../utils'
+import { amountFormat, niceNumber, percentFormat, nativeCurrencyToFiat, AddressWithIconFilled } from '../utils/format'
 import { fetchCurrentFiatRate } from '../utils/common'
 
 export default function Distribution({ selectedCurrency }) {
@@ -180,20 +172,15 @@ export default function Distribution({ selectedCurrency }) {
                           <tr key={i}>
                             <td className="center">{i + 1}</td>
                             <td>
-                              <AddressWithIcon address={r.address}>
-                                {userOrServiceLink(r, 'address') && (
-                                  <>
-                                    {userOrServiceLink(r, 'address')}
-                                    <br />
-                                  </>
-                                )}
-                                {addressLink(r.address)}
-                              </AddressWithIcon>
+                              <AddressWithIconFilled data={r} />
                             </td>
                             <td className="right">
                               {amountFormat(r.balance)} {percentFormat(r.balance, rawData.summary?.totalCoins)}
                               <br />
-                              {fiatRate > 0 && nativeCurrencyToFiat({ amount: r.balance, selectedCurrency, fiatRate })}
+                              {devNet
+                                ? t('table.no-value')
+                                : fiatRate > 0 &&
+                                  nativeCurrencyToFiat({ amount: r.balance, selectedCurrency, fiatRate })}
                             </td>
                           </tr>
                         ))}
@@ -234,19 +221,13 @@ export default function Distribution({ selectedCurrency }) {
                         </td>
                         <td>
                           <p>
-                            <AddressWithIcon address={r.address}>
-                              {userOrServiceLink(r, 'address') && (
-                                <>
-                                  {userOrServiceLink(r, 'address')}
-                                  <br />
-                                </>
-                              )}
-                              {addressLink(r.address)}
-                            </AddressWithIcon>
+                            <AddressWithIconFilled data={r} />
                             <br />
                             {amountFormat(r.balance)} {percentFormat(r.balance, rawData.summary?.totalCoins)}
                             <br />
-                            {fiatRate > 0 && nativeCurrencyToFiat({ amount: r.balance, selectedCurrency, fiatRate })}
+                            {devNet
+                              ? t('table.no-value')
+                              : fiatRate > 0 && nativeCurrencyToFiat({ amount: r.balance, selectedCurrency, fiatRate })}
                           </p>
                         </td>
                       </tr>

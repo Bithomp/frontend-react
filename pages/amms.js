@@ -95,7 +95,7 @@ export default function Amms({
   const controller = new AbortController()
 
   useEffect(() => {
-    if (initialData?.amms.length > 0) {
+    if (initialData?.amms?.length > 0) {
       setData(updateListForCsv(initialData.amms))
     }
   }, [initialData])

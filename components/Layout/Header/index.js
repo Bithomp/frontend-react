@@ -3,7 +3,16 @@ import { useTranslation } from 'next-i18next'
 import { useState, useEffect } from 'react'
 import MobileMenu from './MobileMenu'
 
-import { devNet, xahauNetwork, ledgerName, nativeCurrency, ledgerSubName, network, useWidth } from '../../../utils'
+import {
+  devNet,
+  xahauNetwork,
+  ledgerName,
+  nativeCurrency,
+  ledgerSubName,
+  network,
+  useWidth,
+  avatarServer
+} from '../../../utils'
 
 import Image from 'next/image'
 import Switch from './Switch'
@@ -164,11 +173,11 @@ export default function Header({
           >
             <Link href="/faucet">{t('menu.developers.faucet')}</Link>
             {xahauNetwork && <Link href="/services/nft-mint">{t('menu.services.nft-mint')}</Link>}
-            <a href={'/explorer/'}>{t('menu.services.search-on-ledgerName', { ledgerName })}</a>
             <Link href="/username">{t('menu.usernames')}</Link>
+            <Link href="/xrp-xah-taxes">{t('menu.services.tax-reports')}</Link>
             <Link href="/submit-account-information">{t('menu.project-registration')}</Link>
             {!devNet && <Link href="/alerts">{t('menu.price-alerts', { nativeCurrency })}</Link>}
-            <a href={'/submit/'}>{t('menu.submit-offline-tx')}</a>
+            {/* <a href={'/submit/'}>{t('menu.submit-offline-tx')}</a> */}
           </MenuDropDown>
 
           <MenuDropDown id="dropdown3" title="NFT" setHoverStates={setHoverStates} hoverStates={hoverStates}>
@@ -199,15 +208,9 @@ export default function Header({
             )}
             <Link href="/nft-explorer">{t('menu.nft.explorer')}</Link>
             <Link href="/nft-sales">{t('menu.nft.sales')}</Link>
-
-            {/* Hide NFT menu for XAHAU while they are not ready yet */}
-            {!xahauNetwork && (
-              <>
-                <Link href="/nft-volumes?list=collections&period=week">{t('menu.nft.collections')}</Link>
-                <Link href="/nft-volumes?list=marketplaces&period=week">{t('menu.nft.marketplaces')}</Link>
-                <Link href="/nft-volumes?list=charts&period=week">{t('menu.nft.volumes')}</Link>
-              </>
-            )}
+            <Link href="/nft-volumes?period=week">{t('menu.nft.collections')}</Link>
+            <Link href="/nft-volumes?list=marketplaces&period=week">{t('menu.nft.marketplaces')}</Link>
+            <Link href="/nft-volumes?list=charts&period=week">{t('menu.nft.volumes')}</Link>
 
             {/* Hide NFT menu for XAHAU while they are not ready yet */}
             {!xahauNetwork && <Link href="/nft-minters">{t('menu.nft.minters')}</Link>}
@@ -289,7 +292,7 @@ export default function Header({
                   <>
                     <Image
                       alt="avatar"
-                      src={'https://cdn.bithomp.com/avatar/' + address}
+                      src={avatarServer + address}
                       width="24"
                       height="24"
                       style={{ marginRight: '5px' }}

@@ -1,6 +1,7 @@
 .brandsBlock :global {
-  height: 124.5px;
+  flex-wrap: wrap;
   display: flex;
+  margin-top: 4px;
   justify-content: center;
   align-items: center;
   transition: background-color .5s;
@@ -46,12 +47,11 @@
       font-size: 14px;
     }
   }
-  /* 1460 px when 4 brands, 1100 - 3 brands */
+  /* 760px - 2 brands, 1100 - 3 brands, 1460 px when 4 brands */
   @media only screen and (max-width: 760px) {
-    height: 80px;
     .brand-item {
       height: 40px;
-      width: 161px;
+      width: 154px;
       margin: 5px;
       .brand-item-icon {
         height: 30px;

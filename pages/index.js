@@ -62,7 +62,7 @@ export default function Home({ selectedCurrency, setSelectedCurrency, showAds })
       <LogoJsonLd logo={imagePath + 'longDark.svg'} url={server} />
       <SocialProfileJsonLd
         type="Organization"
-        name={xahauNetwork ? 'XAHAU Explorer' : 'XRPL Explorer'}
+        name={xahauNetwork ? 'XAHAU Explorer' : 'XRP Explorer'}
         url={server}
         sameAs={
           xahauNetwork
@@ -84,6 +84,18 @@ export default function Home({ selectedCurrency, setSelectedCurrency, showAds })
         title={t('home.title', { explorerName, nativeCurrency })}
         titleWithNetwork="true"
         description={t('home.description', { explorerName, nativeCurrency })}
+        images={[
+          {
+            width: 1200,
+            height: 630,
+            file: 'previews/1200x630/index.png'
+          },
+          {
+            width: 630,
+            height: 630,
+            file: 'previews/630x630/index.png'
+          }
+        ]}
       />
       <Head>
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(ldJsonWebsite) }} />

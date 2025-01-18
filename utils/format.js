@@ -6,14 +6,14 @@ import moment from 'moment'
 import momentDurationFormatSetup from 'moment-duration-format'
 
 import LinkIcon from '../public/images/link.svg'
-import { stripText, nativeCurrency, nativeCurrenciesImages } from '.'
+import { stripText, nativeCurrency, nativeCurrenciesImages, avatarServer } from '.'
 import { mpUrl } from './nft'
 import Image from 'next/image'
 
 momentDurationFormatSetup(moment)
 
 export const AddressWithIcon = ({ children, address }) => {
-  let imageUrl = 'https://cdn.bithomp.com/avatar/' + address
+  let imageUrl = avatarServer + address
   if (!address) {
     imageUrl = nativeCurrenciesImages[nativeCurrency]
   }
@@ -31,10 +31,28 @@ export const AddressWithIcon = ({ children, address }) => {
   )
 }
 
+export const AddressWithIconFilled = ({ data, name }) => {
+  if (!data) return ''
+  if (!name) {
+    name = 'address'
+  }
+  return (
+    <AddressWithIcon address={data[name]}>
+      {userOrServiceLink(data, name) && (
+        <>
+          {userOrServiceLink(data, name)}
+          <br />
+        </>
+      )}
+      {addressLink(data[name])}
+    </AddressWithIcon>
+  )
+}
+
 export const nativeCurrencyToFiat = (params) => {
   const { amount, selectedCurrency, fiatRate } = params
   if (!amount || !selectedCurrency || !fiatRate) return ''
-  return ' ≈ ' + shortNiceNumber((amount / 1000000) * fiatRate, 2, 3, selectedCurrency)
+  return ' ≈ ' + shortNiceNumber((amount / 1000000) * fiatRate, 2, 1, selectedCurrency)
 }
 
 export const acceptNftBuyOfferButton = (t, setSignRequest, offer) => {
@@ -513,6 +531,9 @@ export const amountFormat = (amount, options = {}) => {
   const { value, currency, valuePrefix, issuer, type } = amountParced(amount)
 
   if (options.precise) {
+    if (options.precise === 'nice') {
+      return niceNumber(value, 0, null, 15) + ' ' + valuePrefix + ' ' + currency
+    }
     return value + ' ' + valuePrefix + ' ' + currency
   }
 
@@ -867,8 +888,10 @@ export const shortNiceNumber = (n, smallNumberFractionDigits = 2, largeNumberFra
     output = niceNumber(n / 1000000000, largeNumberFractionDigits, currency) + 'B'
   } else if (n > 999999) {
     output = niceNumber(n / 1000000, largeNumberFractionDigits, currency) + 'M'
-  } else if (n > 99999) {
-    output = niceNumber(Math.floor(n), 0, currency)
+    //} else if (n > 99999) {
+    //output = niceNumber(Math.floor(n), 0, currency)
+  } else if (n > 999) {
+    output = niceNumber(n / 1000, largeNumberFractionDigits, currency) + 'K'
   } else if (n === 0) {
     output = niceNumber(0, 0, currency)
   } else {

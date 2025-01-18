@@ -30,31 +30,31 @@ export default function AboutUs() {
         </p>
         <ul>
           <li>
-            <a href="https://xrplexplorer.com" target="_blank" rel="noreferrer">
+            <a href={'https://xrplexplorer.com/' + i18n.language} target="_blank" rel="noreferrer">
               XRPL Mainnet
             </a>
             ,
           </li>
           <li>
-            <a href="https://xahauexplorer.com" target="_blank" rel="noreferrer">
+            <a href={'https://xahauexplorer.com/' + i18n.language} target="_blank" rel="noreferrer">
               XAHAU Mainnet
             </a>
             ,
           </li>
           <li>
-            <a href="https://test.xrplexplorer.com" target="_blank" rel="noreferrer">
+            <a href={'https://test.xrplexplorer.com/' + i18n.language} target="_blank" rel="noreferrer">
               XRPL Testnet
             </a>
             ,
           </li>
           <li>
-            <a href="https://dev.xrplexplorer.com" target="_blank" rel="noreferrer">
+            <a href={'https://dev.xrplexplorer.com/' + i18n.language} target="_blank" rel="noreferrer">
               XRPL Devnet
             </a>
             ,
           </li>
           <li>
-            <a href="https://test.xahauexplorer.com" target="_blank" rel="noreferrer">
+            <a href={'https://test.xahauexplorer.com/' + i18n.language} target="_blank" rel="noreferrer">
               XAHAU Testnet
             </a>
             .

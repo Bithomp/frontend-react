@@ -172,6 +172,11 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
       return
     }
 
+    if (tab === 'object' && isIdValid(searchFor)) {
+      router.push('/object/' + searchFor)
+      return
+    }
+
     if (tab === 'nft-volumes' && isAddressOrUsername(searchFor)) {
       router.push('/nft-volumes/' + encodeURI(searchFor) + addParams)
       return
@@ -184,15 +189,19 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
       setSearching(false)
       const data = response.data
       if (data.type === 'nftoken' || data.type === 'uriToken') {
-        router.push('/nft/' + encodeURI(searchFor))
+        router.push('/nft/' + searchFor)
         return
       }
       if (data.type === 'nftokenOffer') {
-        router.push('/nft-offer/' + encodeURI(searchFor))
+        router.push('/nft-offer/' + searchFor)
         return
       }
       if (data.type === 'amm') {
-        router.push('/amm/' + encodeURI(searchFor))
+        router.push('/amm/' + searchFor)
+        return
+      }
+      if (data.type === 'ledgerEntry') {
+        router.push('/object/' + searchFor)
         return
       }
       //allow transaction search only tab transactions for now (while it's not ready for public)
@@ -300,7 +309,9 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
   }
 
   const explorerHeader = (tab) => {
-    if (['amm', 'account', 'nft', 'nfts', 'nft-offer', 'nft-offers', 'transaction', 'nft-volumes'].includes(tab)) {
+    if (
+      ['amm', 'account', 'nft', 'nfts', 'nft-offer', 'nft-offers', 'transaction', 'nft-volumes', 'object'].includes(tab)
+    ) {
       return t('explorer.header.' + tab)
     }
     return ''

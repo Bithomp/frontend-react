@@ -1,6 +1,8 @@
-# React + Next
+# XRP Ledger and XAHAU Explorer frontend
 
-Bithomp Frontend
+Bithomp Frontend for XRPL and XAHAU Explorers.\
+[https://xrplexplorer.com](https://xrplexplorer.com)\
+[https://xahauexplorer.com](https://xahauexplorer.com)
 
 ## Available Scripts
 
@@ -40,7 +42,7 @@ Runs the app in production
 
 `nano .env.local` // open the file .env.local and remove # for the env you have api key for and before the last line with the key, enter your `NEXT_PUBLIC_BITHOMP_API_TEST_KEY`
 
-`yarn` // install packgaes
+`yarn` // install packages
 
 `yarn dev` // run project in dev mode, you will see on the localhost:3000 
 
@@ -62,7 +64,7 @@ Runs the app in production
 
 `yarn build`
 
-`pm2 start yarn --name "frontend-react" -- start` // otherwise: -- start:next
+`pm2 start yarn --name "frontend-react" -- start` // otherwise: `-- start:next` or `PORT=3700 pm2 start yarn --name "mainnet-frontend-react" -- start`
 
 `pm2 logs frontend-react --lines 1000` //verify it runs properly
 

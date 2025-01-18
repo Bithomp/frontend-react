@@ -1,7 +1,21 @@
 {
   "name": "frontend-react",
   "version": "0.1.0",
+  "author": "Bithomp AB",
+  "description": "Bithomp Frontend for XRPL and XAHAU Explorers",
   "private": true,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Bithomp/frontend-react.git"
+  },
+  "funding": {
+    "type": "individual",
+    "url": "https://xrplexplorer.com/en/donate"
+  },
+  "bugs": {
+    "url": "https://github.com/Bithomp/frontend-react/issues"
+  },
+  "homepage": "https://github.com/Bithomp/frontend-react#readme",
   "dependencies": {
     "@emotion/react": "^11.13.3",
     "@emotion/styled": "^11.13.0",
@@ -45,6 +59,7 @@
     "react-slick": "^0.30.2",
     "ripple-address-codec": "^4.3.1",
     "sass": "^1.80.5",
+    "sharp": "^0.33.5",
     "slick-carousel": "^1.8.1",
     "styled-components": "^6.1.8",
     "universal-cookie": "^7.2.1",

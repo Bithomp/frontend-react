@@ -1,5 +1,5 @@
 {
-  "header": "{{ledgerName}} Governance Game",
+  "header": "{{ledgerName}} Juego de Gobernanza",
   "summary": "Hay <1>{{ countTables }}</1> sillones.",
   "reward-rate": "Ratio de recompensa: <1>{{ rewardRate }}</1>.",
   "reward-delay": "Retraso de la recompensa: <2>{{ rewardDelay }}</2> ({{ rewardDelaySeconds }} segundos).",

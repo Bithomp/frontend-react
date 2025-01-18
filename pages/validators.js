@@ -9,7 +9,7 @@ import SEO from '../components/SEO'
 import CheckBox from '../components/UI/CheckBox'
 
 import { addressUsernameOrServiceLink, amountFormat, fullDateAndTime, shortHash, timeFromNow } from '../utils/format'
-import { devNet, useWidth, xahauNetwork, countriesTranslated } from '../utils'
+import { devNet, useWidth, xahauNetwork, countriesTranslated, avatarServer } from '../utils'
 import { axiosServer, passHeaders } from '../utils/axios'
 import { getIsSsrMobile } from '../utils/mobile'
 
@@ -61,7 +61,7 @@ const fixCountry = (country) => {
 
 moment.relativeTimeThreshold('ss', devNet ? 36 : 6)
 
-export default function Validators({ amendment, initialData, initialErrorMessage, isSsrMobile }) {
+export default function Validators({ amendment, initialData, initialErrorMessage }) {
   const [validators, setValidators] = useState(null)
   const [unlValidatorsCount, setUnlValidatorsCount] = useState(0)
   const [developerMode, setDeveloperMode] = useState(false)
@@ -330,93 +330,56 @@ export default function Validators({ amendment, initialData, initialErrorMessage
         setValidators(dataU)
       }
 
-      //compareVersions for server versions Validators
+      //Server Versions
       let countServerVersionsArray = []
       for (let v in countServerVersions.validators) {
         countServerVersionsArray.push({ version: v, count: countServerVersions.validators[v] })
       }
-      countServerVersionsArray.sort(compareVersions)
-      countServerVersions.validators = {}
-      for (let i = 0; i < countServerVersionsArray.length; i++) {
-        countServerVersions.validators[countServerVersionsArray[i].version] = countServerVersionsArray[i].count
-      }
-      //compareVersions for server versions UNL
+      countServerVersions.validators = countServerVersionsArray.sort(compareVersions)
       countServerVersionsArray = []
       for (let v in countServerVersions.unl) {
         countServerVersionsArray.push({ version: v, count: countServerVersions.unl[v] })
       }
-      countServerVersionsArray.sort(compareVersions)
-      countServerVersions.unl = {}
-      for (let i = 0; i < countServerVersionsArray.length; i++) {
-        countServerVersions.unl[countServerVersionsArray[i].version] = countServerVersionsArray[i].count
-      }
+      countServerVersions.unl = countServerVersionsArray.sort(compareVersions)
       setServerVersions(countServerVersions)
 
-      //compareVersions for base fees Validators
+      //Base fees
       let countBaseFeesArray = []
       for (let v in countBaseFees.validators) {
         countBaseFeesArray.push({ fee: v, count: countBaseFees.validators[v] })
       }
-      countBaseFeesArray.sort(compareVersions)
-      countBaseFees.validators = {}
-      for (let i = 0; i < countBaseFeesArray.length; i++) {
-        countBaseFees.validators[countBaseFeesArray[i].fee] = countBaseFeesArray[i].count
-      }
-      //compareVersions for base fees UNL
+      countBaseFees.validators = countBaseFeesArray.sort(compareVersions)
       countBaseFeesArray = []
       for (let v in countBaseFees.unl) {
         countBaseFeesArray.push({ fee: v, count: countBaseFees.unl[v] })
       }
-      countBaseFeesArray.sort(compareVersions)
-      countBaseFees.unl = {}
-      for (let i = 0; i < countBaseFeesArray.length; i++) {
-        countBaseFees.unl[countBaseFeesArray[i].fee] = countBaseFeesArray[i].count
-      }
+      countBaseFees.unl = countBaseFeesArray.sort(compareVersions)
       setBaseFees(countBaseFees)
 
-      //compareVersions for base reserves Validators
+      //Base Reserves
       let countBaseReservesArray = []
       for (let v in countBaseReserves.validators) {
         countBaseReservesArray.push({ reserve: v, count: countBaseReserves.validators[v] })
       }
-      countBaseReservesArray.sort(compareVersions)
-      countBaseReserves.validators = {}
-      for (let i = 0; i < countBaseReservesArray.length; i++) {
-        countBaseReserves.validators[countBaseReservesArray[i].reserve] = countBaseReservesArray[i].count
-      }
-      //compareVersions for base reserves UNL
+      countBaseReserves.validators = countBaseReservesArray.sort(compareVersions)
       countBaseReservesArray = []
       for (let v in countBaseReserves.unl) {
         countBaseReservesArray.push({ reserve: v, count: countBaseReserves.unl[v] })
       }
-      countBaseReservesArray.sort(compareVersions)
-      countBaseReserves.unl = {}
-      for (let i = 0; i < countBaseReservesArray.length; i++) {
-        countBaseReserves.unl[countBaseReservesArray[i].reserve] = countBaseReservesArray[i].count
-      }
+      countBaseReserves.unl = countBaseReservesArray.sort(compareVersions)
       setBaseReserves(countBaseReserves)
 
-      //compareVersions for reserve increments Validators
+      //Reserve increments
       let countReserveIncrementsArray = []
       for (let v in countReserveIncrements.validators) {
         countReserveIncrementsArray.push({ increment: v, count: countReserveIncrements.validators[v] })
       }
-      countReserveIncrementsArray.sort(compareVersions)
-      countReserveIncrements.validators = {}
-      for (let i = 0; i < countReserveIncrementsArray.length; i++) {
-        countReserveIncrements.validators[countReserveIncrementsArray[i].increment] =
-          countReserveIncrementsArray[i].count
-      }
-      //compareVersions for reserve increments UNL
+      countReserveIncrements.validators = countReserveIncrementsArray.sort(compareVersions)
       countReserveIncrementsArray = []
       for (let v in countReserveIncrements.unl) {
         countReserveIncrementsArray.push({ increment: v, count: countReserveIncrements.unl[v] })
       }
-      countReserveIncrementsArray.sort(compareVersions)
-      countReserveIncrements.unl = {}
-      for (let i = 0; i < countReserveIncrementsArray.length; i++) {
-        countReserveIncrements.unl[countReserveIncrementsArray[i].increment] = countReserveIncrementsArray[i].count
-      }
+      countReserveIncrements.unl = countReserveIncrementsArray.sort(compareVersions)
       setReserveIncrements(countReserveIncrements)
     }
   }
@@ -560,7 +523,7 @@ export default function Validators({ amendment, initialData, initialErrorMessage
         </div>
 
         <div className="flex flex-center">
-          {!isSsrMobile && (
+          {developerMode && (
             <div className="div-with-table">
               <h4 className="center">Versions</h4>
 
@@ -575,13 +538,13 @@ export default function Validators({ amendment, initialData, initialErrorMessage
                 </thead>
                 <tbody>
                   {serverVersions?.count?.validators
-                    ? Object.keys(serverVersions.validators).map((v, i) => (
+                    ? serverVersions.validators.map((v, i) => (
                         <tr key={i}>
                           <td className="center">{i + 1}</td>
-                          <td>{v}</td>
-                          <td className="right">{serverVersions.validators[v]}</td>
+                          <td>{v.version}</td>
+                          <td className="right">{v.count}</td>
                           <td className="right">
-                            {Math.ceil((serverVersions.validators[v] / serverVersions.count.validators) * 10000) / 100}%
+                            {Math.ceil((v.count / serverVersions.count.validators) * 10000) / 100}%
                           </td>
                         </tr>
                       ))
@@ -603,21 +566,19 @@ export default function Validators({ amendment, initialData, initialErrorMessage
               </thead>
               <tbody>
                 {serverVersions?.count?.unl
-                  ? Object.keys(serverVersions.unl).map((v, i) => (
+                  ? serverVersions.unl.map((v, i) => (
                       <tr key={i}>
                         <td className="center">{i + 1}</td>
-                        <td>{v}</td>
-                        <td className="right">{serverVersions.unl[v]}</td>
-                        <td className="right">
-                          {Math.ceil((serverVersions.unl[v] / serverVersions.count.unl) * 10000) / 100}%
-                        </td>
+                        <td>{v.version}</td>
+                        <td className="right">{v.count}</td>
+                        <td className="right">{Math.ceil((v.count / serverVersions.count.unl) * 10000) / 100}%</td>
                       </tr>
                     ))
                   : ''}
               </tbody>
             </table>
           </div>
-          {!isSsrMobile && (
+          {developerMode && (
             <div className="div-with-table">
               <h4 className="center">Base Fees</h4>
               <table className="table-large shrink">
@@ -631,14 +592,12 @@ export default function Validators({ amendment, initialData, initialErrorMessage
                 </thead>
                 <tbody>
                   {baseFees?.count?.validators
-                    ? Object.keys(baseFees.validators).map((v, i) => (
+                    ? baseFees.validators.map((v, i) => (
                         <tr key={i}>
                           <td className="center">{i + 1}</td>
-                          <td>{amountFormat(v)}</td>
-                          <td className="right">{baseFees.validators[v]}</td>
-                          <td className="right">
-                            {Math.ceil((baseFees.validators[v] / baseFees.count.validators) * 10000) / 100}%
-                          </td>
+                          <td>{amountFormat(v.fee)}</td>
+                          <td className="right">{v.count}</td>
+                          <td className="right">{Math.ceil((v.count / baseFees.count.validators) * 10000) / 100}%</td>
                         </tr>
                       ))
                     : ''}
@@ -659,19 +618,19 @@ export default function Validators({ amendment, initialData, initialErrorMessage
               </thead>
               <tbody>
                 {baseFees?.count?.unl
-                  ? Object.keys(baseFees.unl).map((v, i) => (
+                  ? baseFees.unl.map((v, i) => (
                       <tr key={i}>
                         <td className="center">{i + 1}</td>
-                        <td>{amountFormat(v)}</td>
-                        <td className="right">{baseFees.unl[v]}</td>
-                        <td className="right">{Math.ceil((baseFees.unl[v] / baseFees.count.unl) * 10000) / 100}%</td>
+                        <td>{amountFormat(v.fee)}</td>
+                        <td className="right">{v.count}</td>
+                        <td className="right">{Math.ceil((v.count / baseFees.count.unl) * 10000) / 100}%</td>
                       </tr>
                     ))
                   : ''}
               </tbody>
             </table>
           </div>
-          {!isSsrMobile && (
+          {developerMode && (
             <div className="div-with-table">
               <h4 className="center">Reserve Increments</h4>
               <table className="table-large shrink">
@@ -685,15 +644,13 @@ export default function Validators({ amendment, initialData, initialErrorMessage
                 </thead>
                 <tbody>
                   {reserveIncrements?.count?.validators
-                    ? Object.keys(reserveIncrements.validators).map((v, i) => (
+                    ? reserveIncrements.validators.map((v, i) => (
                         <tr key={i}>
                           <td className="center">{i + 1}</td>
-                          <td>{amountFormat(v)}</td>
-                          <td className="right">{reserveIncrements.validators[v]}</td>
+                          <td>{amountFormat(v.increment)}</td>
+                          <td className="right">{v.count}</td>
                           <td className="right">
-                            {Math.ceil((reserveIncrements.validators[v] / reserveIncrements.count.validators) * 10000) /
-                              100}
-                            %
+                            {Math.ceil((v.count / reserveIncrements.count.validators) * 10000) / 100}%
                           </td>
                         </tr>
                       ))
@@ -715,21 +672,19 @@ export default function Validators({ amendment, initialData, initialErrorMessage
               </thead>
               <tbody>
                 {reserveIncrements?.count?.unl
-                  ? Object.keys(reserveIncrements.unl).map((v, i) => (
+                  ? reserveIncrements.unl.map((v, i) => (
                       <tr key={i}>
                         <td className="center">{i + 1}</td>
-                        <td>{amountFormat(v)}</td>
-                        <td className="right">{reserveIncrements.unl[v]}</td>
-                        <td className="right">
-                          {Math.ceil((reserveIncrements.unl[v] / reserveIncrements.count.unl) * 10000) / 100}%
-                        </td>
+                        <td>{amountFormat(v.increment)}</td>
+                        <td className="right">{v.count}</td>
+                        <td className="right">{Math.ceil((v.count / reserveIncrements.count.unl) * 10000) / 100}%</td>
                       </tr>
                     ))
                   : ''}
               </tbody>
             </table>
           </div>
-          {!isSsrMobile && (
+          {developerMode && (
             <div className="div-with-table">
               <h4 className="center">Base Reserves</h4>
               <table className="table-large shrink">
@@ -743,13 +698,13 @@ export default function Validators({ amendment, initialData, initialErrorMessage
                 </thead>
                 <tbody>
                   {baseReserves?.count?.validators
-                    ? Object.keys(baseReserves.validators).map((v, i) => (
+                    ? baseReserves.validators.map((v, i) => (
                         <tr key={i}>
                           <td className="center">{i + 1}</td>
-                          <td>{amountFormat(v)}</td>
-                          <td className="right">{baseReserves.validators[v]}</td>
+                          <td>{amountFormat(v.reserve)}</td>
+                          <td className="right">{v.count}</td>
                           <td className="right">
-                            {Math.ceil((baseReserves.validators[v] / baseReserves.count.validators) * 10000) / 100}%
+                            {Math.ceil((v.count / baseReserves.count.validators) * 10000) / 100}%
                           </td>
                         </tr>
                       ))
@@ -771,14 +726,12 @@ export default function Validators({ amendment, initialData, initialErrorMessage
               </thead>
               <tbody>
                 {baseReserves?.count?.unl
-                  ? Object.keys(baseReserves.unl).map((v, i) => (
+                  ? baseReserves.unl.map((v, i) => (
                       <tr key={i}>
                         <td className="center">{i + 1}</td>
-                        <td>{amountFormat(v)}</td>
-                        <td className="right">{baseReserves.unl[v]}</td>
-                        <td className="right">
-                          {Math.ceil((baseReserves.unl[v] / baseReserves.count.unl) * 10000) / 100}%
-                        </td>
+                        <td>{amountFormat(v.reserve)}</td>
+                        <td className="right">{v.count}</td>
+                        <td className="right">{Math.ceil((v.count / baseReserves.count.unl) * 10000) / 100}%</td>
                       </tr>
                     ))
                   : ''}
@@ -807,12 +760,7 @@ export default function Validators({ amendment, initialData, initialErrorMessage
                 validators.validators.map((v, i) => (
                   <tr key={i}>
                     <td style={{ padding: '5px' }} className="center">
-                      <Image
-                        alt="avatar"
-                        src={'https://cdn.bithomp.com/avatar/' + v.publicKey}
-                        width="35"
-                        height="35"
-                      />
+                      <Image alt="avatar" src={avatarServer + v.publicKey} width="35" height="35" />
                       <br />
                       {i + 1}
                     </td>
@@ -948,12 +896,7 @@ export default function Validators({ amendment, initialData, initialErrorMessage
                 validators.validators.map((v, i) => (
                   <tr key={v.publicKey}>
                     <td className="center">
-                      <Image
-                        alt="avatar"
-                        src={'https://cdn.bithomp.com/avatar/' + v.publicKey}
-                        width="35"
-                        height="35"
-                      />
+                      <Image alt="avatar" src={avatarServer + v.publicKey} width="35" height="35" />
                       <br />
                       {i + 1}
                     </td>

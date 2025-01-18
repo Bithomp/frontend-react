@@ -42,67 +42,91 @@ export default function Statistics() {
 
       /* 
       {
-        "type": "ledgerClosed", // ledger ws
-        "lastClose": { 
-          "convergeTimeS": 2, // server info
-          "proposers": 6 // server info
+        "lastClose": {
+          "convergeTimeS": 3.002,
+          "proposers": 34
         },
-        "validationQuorum": 5, // server info
-        "totalCoins": "99999573822861715", // ledger info
-        "validatedLedgers": "27887240-28154648", // ledger ws
         "validatedLedger": {
-          "age": 2, // ledger ws (current time - ledgerTime)
-          "hash": "CEFB234BABF6592B973D108F4C4283711878425F1A4ABF3B5F9703B1B703F908", // ledger ws
-          "baseFeeXRP": "0.00001", // ledger ws
-          "reserveBaseXRP": "10", // ledger ws
-          "reserveIncrementXRP": "2", // ledger ws
-          "ledgerTime": 1653770111, // ledger ws
-          "ledgerIndex": 28154648, // ledger ws
-          "transactionsCount": 7 // ledger ws
+          "age": 1, // ledger ws (current time - ledgerTime)
+          "hash": "E40A884142D9B2345FBBD873B258243380AF9FC478D1482F1CE6DD127C051B7E",
+          "baseFeeXRP": "0.00001",
+          "reserveBaseXRP": "1",
+          "reserveIncrementXRP": "0.2",
+          "ledgerIndex": 93302604,
+          "ledgerTime": 1736272900,
+          "transactionsCount": 158
         },
-        usernames: 1,
-        accounts: {
-          activeLast24h: 7657,
-          crawler: {},
-          created: 1,
-          blackholed: 5,
-          deleted: 34
-        },
-        "nftokens":{
-          "created": 138633,
-          "burned": 9182,
-          "burnable": 21042,
-          "onlyXRP": 12602,
-          "transferable": 111820,
-          "owners": 11976,
-          "issuers": 13671,
-          "transfers": 16720,
-          "forSale": 4377,
-          "forSaleWithoutDestination": 2564,
-          "forSaleWithDestination": 1817
-        },
-        "escrows": {
+        "validationQuorum": 28,
+        "validatedLedgers": "32570-93302604",
+        "totalCoins": "99986665562376584",
+        "accounts": {
           "crawler": {
-            "ledgerIndex": 87214991,
-            "ledgerTime": 1712755071
+            "ledgerIndex": 93302577,
+            "ledgerTime": 1736272791
           },
-          "existing": 10374
+          "created": 6411212,
+          "blackholed": 33230,
+          "deleted": 548331,
+          "activeLast24h": 33812
         },
         "amms": {
           "crawler": {
-            "ledgerIndex": 87214991,
-            "ledgerTime": 1712755071
+            "ledgerIndex": 93302577,
+            "ledgerTime": 1736272791
           },
-          "existing": 193
+          "existing": 14168
         },
+        "escrows": {
+          "crawler": {
+            "ledgerIndex": 93302577,
+            "ledgerTime": 1736272791
+          },
+          "existing": 10855
+        },
+        "nftokens": {
+          "crawler": {
+            "ledgerIndex": 93302603,
+            "ledgerTime": 1736272892
+          },
+          "created": 7480601,
+          "burned": 1962594,
+          "burnable": 1135168,
+          "onlyXRP": 124255,
+          "transferable": 5497202,
+          "owners": 51749,
+          "issuers": 7790,
+          "transfers": 2310166,
+          "forSale": 166868,
+          "forSaleWithoutDestination": 38909,
+          "forSaleWithDestination": 128897
+        },
+        "uritokens": null,
+        "transactions": {
+          "crawler": {
+            "ledgerIndex": 93302586,
+            "ledgerTime": 1736272830
+          },
+          "last24h": {
+            "count": 2339404,
+            "success": 1922896,
+            "successPayments": 959349,
+            "hooksEmitted": 0,
+            "hooksEmittedSuccess": 0,
+            "accounts": 33824,
+            "emitTxs": 0,
+            "emitHooks": 0,
+            "fee": "4593995472"
+          }
+        },
+        "usernames": 133554,
         "nodes": {
           "crawler": {
-            "time": 1714145597
+            "time": 1736272720
           },
-          "total": 606
+          "total": 817
         }
       }
-      */
+    */
     }
 
     ws.onclose = () => {
@@ -127,7 +151,6 @@ export default function Statistics() {
   let quorum = 'x'
   let proposers = 'x'
   let createdAccounts = 'xxxx'
-  let activeAccountsLast24h = 'xxxx'
   let registeredUsernames = 'xx'
   let nft = {
     created: 'xxx',
@@ -141,9 +164,17 @@ export default function Statistics() {
   let ammsCount = 'xxx'
   let nodesCount = 'xxx'
   let transactionsLast24h = {
+    activeAccounts: 'xxx',
     transactions: 'xxx',
     payments: 'xxx',
     fees: 'xxx'
+  }
+
+  let hooksLast24h = {
+    emitHooks: 'xxx',
+    emitTxs: 'xxx',
+    hooksEmitted: 'xxx',
+    hooksEmittedFee: 'xxx'
   }
 
   if (data) {
@@ -168,9 +199,12 @@ export default function Statistics() {
     if (lastClose) {
       txPerSecond = (validatedLedger?.transactionsCount / lastClose.convergeTimeS).toFixed(2)
       proposers = lastClose.proposers
+    } else {
+      txPerSecond = (validatedLedger?.transactionsCount / 3).toFixed(2)
     }
-    createdAccounts = niceNumber(accounts.created - accounts.deleted)
-    activeAccountsLast24h = niceNumber(accounts.activeLast24h)
+    if (accounts) {
+      createdAccounts = niceNumber(accounts.created - accounts.deleted)
+    }
     registeredUsernames = niceNumber(usernames)
     if (nftokens) {
       nft = nftokens
@@ -185,6 +219,31 @@ export default function Statistics() {
       transactionsLast24h.transactions = niceNumber(transactions.last24h.success)
       transactionsLast24h.payments = niceNumber(transactions.last24h.successPayments)
       transactionsLast24h.fees = amountFormat(transactions.last24h.fee)
+      transactionsLast24h.activeAccounts = niceNumber(transactions.last24h.accounts)
+
+      /*
+        "count": 2339404, //total txs
+        "success": 1922896, // total success txs
+        "successPayments": 959349, //  total success payments txs
+        "accounts": 33824, //uniq list of senders, anothe way to count used accounts
+        "fee": "4593995472" // fee paid for all txs
+
+        "hooksEmitted": 0, // txs created by hooks 
+        "hooksEmittedSuccess": 0, //successed executed txs created by hooks 
+        "emitTxs": 0, //uniq count of txs executed hooks
+        "emitHooks": 0, //uniq count of executed hooks
+
+        hooksEmittedFee - fee paid for txs executed by hooks
+      */
+    }
+
+    if (xahauNetwork) {
+      hooksLast24h = {
+        emitHooks: niceNumber(transactions.last24h.emitHooks),
+        emitTxs: niceNumber(transactions.last24h.emitTxs),
+        hooksEmitted: niceNumber(transactions.last24h.hooksEmitted),
+        hooksEmittedFee: amountFormat(transactions.last24h.hooksEmittedFee)
+      }
     }
   }
 
@@ -195,7 +254,7 @@ export default function Statistics() {
       <div className="statistics-block">
         <div className="stat-piece">
           <div className="stat-piece-header">{t('home.stat.accountsActiveLast24h')}</div>
-          <div>{activeAccountsLast24h}</div>
+          <div>{transactionsLast24h.activeAccounts}</div>
         </div>
 
         <div className="stat-piece">
@@ -214,6 +273,27 @@ export default function Statistics() {
         </div>
       </div>
 
+      {xahauNetwork && (
+        <div className="statistics-block">
+          <div className="stat-piece">
+            <div className="stat-piece-header">Hook's parent txs (24h)</div>
+            <div>{hooksLast24h.emitTxs}</div>
+          </div>
+          <div className="stat-piece">
+            <div className="stat-piece-header">Hooks emitting txs (24h)</div>
+            <div>{hooksLast24h.emitHooks}</div>
+          </div>
+          <div className="stat-piece">
+            <div className="stat-piece-header">Txs emitted by Hooks (24h)</div>
+            <div>{hooksLast24h.hooksEmitted}</div>
+          </div>
+          <div className="stat-piece">
+            <div className="stat-piece-header">Fees paid by Hooks (24h)</div>
+            <div>{hooksLast24h.hooksEmittedFee}</div>
+          </div>
+        </div>
+      )}
+
       <div className="statistics-block">
         <div className="stat-piece">
           <div className="stat-piece-header">{t('home.stat.ledger-index')}</div>
@@ -228,7 +308,8 @@ export default function Statistics() {
         <div className="stat-piece">
           <div className="stat-piece-header">{t('home.stat.transactions')}</div>
           <div>
-            <LedgerLink version={ledgerIndex} text={txCount} /> ({txPerSecond} {t('home.stat.txs-per-sec')})
+            {txCount ? <LedgerLink version={ledgerIndex} text={txCount} /> : '0'} ({txPerSecond}{' '}
+            {t('home.stat.txs-per-sec')})
           </div>
         </div>
         {nodesCount > 0 && (
@@ -297,12 +378,7 @@ export default function Statistics() {
         <div className="stat-piece">
           <div className="stat-piece-header">{t('home.stat.nft.issuers')}</div>
           <div>
-            {/* Hide link to nft-volumes while its not ready on xahau yet*/}
-            {xahauNetwork ? (
-              niceNumber(nft.issuers)
-            ) : (
-              <Link href="/nft-volumes?period=all&list=issuers">{niceNumber(nft.issuers)}</Link>
-            )}
+            <Link href="/nft-volumes?period=all&list=issuers">{niceNumber(nft.issuers)}</Link>
           </div>
         </div>
         <div className="stat-piece">
@@ -318,14 +394,14 @@ export default function Statistics() {
         <div className="stat-piece">
           <div className="stat-piece-header">{t('home.stat.nft.for-sale')}</div>
           <div>
-            {/* Hide link to nft-explorer?list=onSale while its not ready on xahau yet*/}
-            {xahauNetwork ? (
-              niceNumber(nft.forSale)
-            ) : (
-              <Link href="/nft-explorer?list=onSale&saleDestination=publicAndKnownBrokers&mintedPeriod=all&includeWithoutMediaData=true">
-                {niceNumber(nft.forSale)}
-              </Link>
-            )}
+            <Link
+              href={
+                '/nft-explorer?list=onSale&includeWithoutMediaData=true' +
+                (xahauNetwork ? '' : '&saleDestination=publicAndKnownBrokers')
+              }
+            >
+              {niceNumber(nft.forSale)}
+            </Link>
           </div>
         </div>
       </div>

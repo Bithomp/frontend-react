@@ -1,5 +1,5 @@
 import { Buffer } from 'buffer'
-import { stripText, shortName } from '.'
+import { stripText, shortName, server, webSiteName } from '.'
 
 import Link from 'next/link'
 import LinkIcon from '../public/images/link.svg'
@@ -163,7 +163,7 @@ export const collectionThumbnail = (data) => {
   if (ipfs) {
     imageSrc = ipfs
   } else if (typeof uri === 'string' && uri.slice(0, 8) === 'https://') {
-    imageSrc = `https://cdn.bithomp.com/thumbnail?url=${encodeURIComponent(stripText(uri))}`
+    imageSrc = `https://cdn.${webSiteName}/thumbnail?url=${encodeURIComponent(stripText(uri))}`
   } else if (typeof uri === 'string' && uri.slice(0, 10) === 'data:image') {
     imageSrc = stripText(uri)
   } else {
@@ -261,7 +261,7 @@ export const ipfsUrl = (uri, type = 'image', gateway = 'our') => {
     url = stripText(cid + url.split(cid).pop())
     url = url.replace('#', '%23')
     if (gateway === 'our' && (type === 'image' || type === 'video' || type === 'thumbnail' || type === 'preview')) {
-      return 'https://ipfs.bithomp.com/' + type + '/' + url + filename
+      return 'https://cdn.' + webSiteName + '/' + type + '/' + url + filename
     } else if (gateway === 'cl' && type === 'model') {
       return stripText(uri)
     } else if (gateway === 'cl' || type === 'audio' || type === 'model' || type === 'viewer') {
@@ -303,7 +303,7 @@ const assetUrl = (uri, type = 'image', gateway = 'our') => {
   if (ipfs) {
     return ipfs
   } else if (uri.slice(0, 8) === 'https://') {
-    return `https://cdn.bithomp.com/${type}?url=${encodeURIComponent(stripText(uri))}`
+    return `https://cdn.${webSiteName}/${type}?url=${encodeURIComponent(stripText(uri))}`
   } else if ((type === 'image' || type === 'thumbnail') && uri.slice(0, 10) === 'data:image') {
     return stripText(uri)
   } else {
@@ -429,12 +429,19 @@ export const nftUrl = (nft, type = 'image', gateway = 'our') => {
 }
 
 export const isNftExplicit = (nft) => {
+  const name = nft.metadata?.name && typeof nft.metadata?.name === 'string' ? nft.metadata.name.toLowerCase() : ''
+  const title = nft.metadata?.title && typeof nft.metadata?.title === 'string' ? nft.metadata.title.toLowerCase() : ''
+  const collection =
+    nft.metadata?.collection?.name && typeof nft.metadata?.collection?.name === 'string'
+      ? nft.metadata.collection.name.toLowerCase()
+      : ''
   if (
-    nft.metadata?.name?.toLowerCase().includes('nude') ||
-    nft.metadata?.title?.toLowerCase().includes('nude') ||
-    nft.metadata?.name?.toLowerCase().includes('sexy') ||
-    nft.metadata?.name?.toLowerCase().includes('naked') ||
-    nft.metadata?.name?.toLowerCase().includes('ladies') ||
+    name.includes('nude') ||
+    title.includes('nude') ||
+    name.includes('sexy') ||
+    name.includes('naked') ||
+    name.includes('ladies') ||
+    collection.includes('18+') ||
     nft.metadata?.is_explicit
   ) {
     return true

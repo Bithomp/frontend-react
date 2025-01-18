@@ -38,11 +38,11 @@ const pages = [
   { loc: 'submit-account-information', changefreq: 'yearly', priority: '0.5' },
   { loc: 'admin', changefreq: 'yearly', priority: '0.5' },
 
+  { loc: 'object', changefreq: 'yearly', priority: '0.4' },
   { loc: 'about-us', changefreq: 'yearly', priority: '0.4' },
   { loc: 'customer-support', changefreq: 'yearly', priority: '0.4' },
   { loc: 'developer', changefreq: 'yearly', priority: '0.4' },
-  { loc: 'press', changefreq: 'yearly', priority: '0.4' },
-  { loc: 'submit/', changefreq: 'yearly', priority: '0.4' }
+  { loc: 'press', changefreq: 'yearly', priority: '0.4' }
 ]
 
 //network specific pages
@@ -56,6 +56,7 @@ if (xahauNetwork) {
 
 if (network === 'mainnet') {
   pages.push({ loc: 'xrpl-article', changefreq: 'monthly', priority: '0.6' })
+  pages.push({ loc: 'xrp-xah-taxes', changefreq: 'monthly', priority: '0.9' })
 }
 
 function generateSiteMap(posts) {
@@ -68,9 +69,11 @@ function generateSiteMap(posts) {
     'privacy-policy',
     'terms-and-conditions',
     'disclaimer',
-    'xrpl-article'
+    'xrpl-article',
+    'xrp-xah-taxes',
+    'object'
   ]
-  const oldPages = ['submit/', 'explorer/']
+  const oldPages = [] // 'explorer/'
   const pagesWithoutTranslation = [...noTranslatedPages, ...oldPages]
 
   return `<?xml version="1.0" encoding="UTF-8"?>

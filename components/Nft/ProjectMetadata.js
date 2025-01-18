@@ -2,6 +2,27 @@ import { stripText } from '../../utils'
 import { timeFromNow } from '../../utils/format'
 import { useTranslation } from 'next-i18next'
 
+const tableWithData = (data) => {
+  return (
+    <table style={{ fontSize: 12 }}>
+      <tbody>
+        {Array.isArray(data)
+          ? data.map((n, i) => (
+              <tr key={i}>
+                <td>{typeof n === 'object' ? tableWithData(n) : n}</td>
+              </tr>
+            ))
+          : Object.keys(data).map((n, i) => (
+              <tr key={i}>
+                <td>{n}:</td>
+                <td>{typeof data[n] === 'object' ? tableWithData(data[n]) : data[n]}</td>
+              </tr>
+            ))}
+      </tbody>
+    </table>
+  )
+}
+
 export default function ProjectMetadata({ data, updatedAt }) {
   const { t, i18n } = useTranslation()
   return (
@@ -19,22 +40,7 @@ export default function ProjectMetadata({ data, updatedAt }) {
         {Object.keys(data).map((name, i) => (
           <tr key={i}>
             <td>{stripText(name)}</td>
-            <td>
-              {typeof data[name] === 'object' ? (
-                <table style={{ fontSize: 12 }}>
-                  <tbody>
-                    {Object.keys(data[name]).map((n, i) => (
-                      <tr key={i}>
-                        <td>{n}:</td>
-                        <td>{data[name][n]}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              ) : (
-                stripText(data[name])
-              )}
-            </td>
+            <td>{typeof data[name] === 'object' ? tableWithData(data[name]) : stripText(data[name])}</td>
           </tr>
         ))}
       </tbody>

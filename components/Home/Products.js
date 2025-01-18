@@ -110,6 +110,14 @@ export default function Products() {
         {
           link: '/nft-distribution',
           text: t('items.nft-distribution', { ns: 'products' })
+        },
+        {
+          link: '/nft-volumes?list=marketplaces',
+          text: t('items.nft-marketplaces', { ns: 'products' })
+        },
+        {
+          link: '/nft-volumes',
+          text: t('items.nft-collections', { ns: 'products' })
         }
       ]
     }
@@ -119,16 +127,6 @@ export default function Products() {
         link: '/amms',
         text: t('items.amms', { ns: 'products' })
       })
-      part2.list.push(
-        {
-          link: '/nft-volumes?list=marketplaces',
-          text: t('items.nft-marketplaces', { ns: 'products' })
-        },
-        {
-          link: '/nft-volumes?list=collections',
-          text: t('items.nft-collections', { ns: 'products' })
-        }
-      )
     }
     products.push(part2)
 

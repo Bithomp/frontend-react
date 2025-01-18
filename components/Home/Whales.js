@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { useTranslation } from 'next-i18next'
 import axios from 'axios'
 
-import { wssServer, devNet, useWidth } from '../../utils'
+import { wssServer, devNet, useWidth, avatarServer } from '../../utils'
 import { addressUsernameOrServiceLink, amountFormat, shortNiceNumber, timeFormat, txIdLink } from '../../utils/format'
 import Image from 'next/image'
 
@@ -112,7 +112,7 @@ export default function Whales({ currency }) {
                 <span className="tx-addresses">
                   <span style={styleAddress}>
                     <Image
-                      src={'https://cdn.bithomp.com/avatar/' + tx.sourceAddress}
+                      src={avatarServer + tx.sourceAddress}
                       alt={tx.sourceAddressDetails?.service || 'service logo'}
                       height={20}
                       width={20}
@@ -123,7 +123,7 @@ export default function Whales({ currency }) {
                   →{width < 550 ? <div style={{ height: '8px' }} /> : ' '}
                   <span style={styleAddress}>
                     <Image
-                      src={'https://cdn.bithomp.com/avatar/' + tx.destinationAddress}
+                      src={avatarServer + tx.destinationAddress}
                       alt={tx.destinationAddressDetails?.service || 'service logo'}
                       height={20}
                       width={20}
@@ -144,7 +144,7 @@ export default function Whales({ currency }) {
                     </>
                   )}
                   {devNet
-                    ? t('home.whales.no-value')
+                    ? t('table.no-value')
                     : tx.amountFiats
                     ? shortNiceNumber(tx.amountFiats[currency?.toLowerCase()], 2, 1, currency)
                     : ''}

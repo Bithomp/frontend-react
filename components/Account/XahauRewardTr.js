@@ -1,4 +1,5 @@
-import { amountFormat, fullDateAndTime } from '../../utils/format'
+import { i18n } from 'next-i18next'
+import { amountFormat, fullDateAndTime, timeFromNow } from '../../utils/format'
 
 export default function XahauRewardTr({ data }) {
   if (!data?.rewardLgrFirst) return null
@@ -7,7 +8,7 @@ export default function XahauRewardTr({ data }) {
   const rewardRate = 0.0033333333300000004 // get it from hook later
   const remainingSec = rewardDelay - (timeNow - (data.rewardTime + 946684800))
   // const claimable = remainingSec <= 0
-  const claimableDate = fullDateAndTime(timeNow + remainingSec)
+  const claimableDate = timeNow + remainingSec
 
   // calculate reward
   const elapsed = data.ledger - data.rewardLgrFirst
@@ -26,7 +27,9 @@ export default function XahauRewardTr({ data }) {
       </tr>
       <tr>
         <td>Claimable</td>
-        <td>{claimableDate}</td>
+        <td>
+          {timeFromNow(claimableDate, i18n)} ({fullDateAndTime(claimableDate)})
+        </td>
       </tr>
     </>
   )
