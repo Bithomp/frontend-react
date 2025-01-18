@@ -328,6 +328,9 @@ export default function SignForm({
         } else if (redirectName === 'nft-offers') {
           router.push('/nft-offers/' + address)
           return
+        } else if (redirectName === 'account-new') {
+          router.push('/account/' + address)
+          return
         } else if (redirectName === 'account') {
           window.location.href = server + '/explorer/' + address
           return
