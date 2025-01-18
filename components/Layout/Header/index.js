@@ -341,7 +341,7 @@ export default function Header({
                   />
                   GemWallet
                 </span>
-                {/*
+
                 <span onClick={() => setSignRequest({ wallet: 'walletconnect' })} className="link">
                   <Image
                     src="/images/wallets/walletconnect.svg"
@@ -352,7 +352,6 @@ export default function Header({
                   />
                   WalletConnect
                 </span>
-                */}
 
                 <span onClick={() => setSignRequest({ wallet: 'metamask' })} className="link">
                   <Image

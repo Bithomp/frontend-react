@@ -65,7 +65,7 @@ export default function Charts() {
 
   return (
     <>
-      <SEO title={t('header', { ns: 'admin' })} />
+      <SEO title="API charts" />
       <div className="page-admin content-text">
         <h1 className="center">{t('header', { ns: 'admin' })}</h1>
 

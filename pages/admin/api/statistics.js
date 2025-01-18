@@ -53,7 +53,7 @@ export default function Statistics() {
 
   return (
     <>
-      <SEO title={t('header', { ns: 'admin' })} />
+      <SEO title="API statistics" />
       <div className="page-admin content-text">
         <h1 className="center">{t('header', { ns: 'admin' })}</h1>
 

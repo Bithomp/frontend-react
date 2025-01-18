@@ -22,7 +22,7 @@ export default function Bots() {
 
   return (
     <>
-      <SEO title={t('header', { ns: 'admin' })} />
+      <SEO title="Bots" />
       <div className="page-admin content-center">
         <h1 className="center">{t('header', { ns: 'admin' })}</h1>
 

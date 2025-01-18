@@ -108,7 +108,7 @@ export default function Api() {
 
   return (
     <>
-      <SEO title={t('header', { ns: 'admin' })} />
+      <SEO title="API" />
       <div className="page-admin content-center">
         <h1 className="center">{t('header', { ns: 'admin' })}</h1>
 

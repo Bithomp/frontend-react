@@ -232,7 +232,7 @@ export default function Pro({ account, setSignRequest, refreshPage, subscription
 
   return (
     <>
-      <SEO title="Pro accounts" />
+      <SEO title="My addresses" />
       <div className="page-admin content-center">
         <h1 className="center">My addresses</h1>
 

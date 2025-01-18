@@ -247,7 +247,7 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
 
   return (
     <>
-      <SEO title="Pro address: history" />
+      <SEO title="My addresses: history" />
       <div className="page-pro-history">
         <h1 className="center">Pro address balances history</h1>
 

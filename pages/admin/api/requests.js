@@ -63,7 +63,7 @@ export default function Requests() {
 
   return (
     <>
-      <SEO title={t('header', { ns: 'admin' })} />
+      <SEO title="API requests" />
       <div className="page-admin content-text">
         <h1 className="center">{t('header', { ns: 'admin' })}</h1>
 
