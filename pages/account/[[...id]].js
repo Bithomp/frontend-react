@@ -955,15 +955,15 @@ export default function Account({
                                   {data.ledgerInfo?.hookNamespaces && (
                                     <>
                                       <tr>
-                                        <td>Hooks count</td>
+                                        <td>Hook namespaces</td>
                                         <td className="bold">{data.ledgerInfo?.hookNamespaces.length}</td>
                                       </tr>
-                                      {data.ledgerInfo.hookNamespaces.map((hook, i) => (
+                                      {/* data.ledgerInfo.hookNamespaces.map((hook, i) => (
                                         <tr key={i}>
                                           <td>Hook #{i + 1}</td>
                                           <td style={{ fontSize: 14 }}>{hook}</td>
                                         </tr>
-                                      ))}
+                                      )) */}
                                     </>
                                   )}
                                   {data.ledgerInfo?.hookStateCount && (
