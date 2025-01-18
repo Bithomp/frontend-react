@@ -342,16 +342,19 @@ export default function Header({
                   GemWallet
                 </span>
 
-                <span onClick={() => setSignRequest({ wallet: 'walletconnect' })} className="link">
-                  <Image
-                    src="/images/wallets/walletconnect.svg"
-                    className="wallet-logo walletconnect-logo"
-                    alt="Wallet Connect"
-                    height={24}
-                    width={24}
-                  />
-                  WalletConnect
-                </span>
+                {/* testing walletconnect on devnets */}
+                {devNet && (
+                  <span onClick={() => setSignRequest({ wallet: 'walletconnect' })} className="link">
+                    <Image
+                      src="/images/wallets/walletconnect.svg"
+                      className="wallet-logo walletconnect-logo"
+                      alt="Wallet Connect"
+                      height={24}
+                      width={24}
+                    />
+                    WalletConnect
+                  </span>
+                )}
 
                 <span onClick={() => setSignRequest({ wallet: 'metamask' })} className="link">
                   <Image
