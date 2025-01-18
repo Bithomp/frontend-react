@@ -1186,7 +1186,7 @@ export default function Account({
                               {data.ledgerInfo?.flags?.passwordSpent && (
                                 <tr>
                                   <td>Free re-key</td>
-                                  <td className="bold">spent</td>
+                                  <td>spent</td>
                                 </tr>
                               )}
                               {data.ledgerInfo?.signerList && (
@@ -1303,7 +1303,15 @@ export default function Account({
                                   <tr>
                                     <td>Activated by</td>
                                     <td>
-                                      <AddressWithIconFilled data={data.parent} name="address" />
+                                      <AddressWithIconFilled
+                                        data={{
+                                          address: data.parent?.address,
+                                          addressDetails: {
+                                            username: data.parent?.username,
+                                            service: data.parent?.service?.name || data.parent?.service?.domain
+                                          }
+                                        }}
+                                      />
                                     </td>
                                   </tr>
                                 )}
