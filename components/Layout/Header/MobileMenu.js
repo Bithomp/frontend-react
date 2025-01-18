@@ -49,7 +49,7 @@ export default function MobileMenu({
             </>
           ) : (
             <>
-              <IoWallet style={{ marginBottom: '-2px' }} /> {t('table.address')}
+              <IoWallet style={{ marginBottom: '-2px' }} /> {t('signin.signin')}
             </>
           )}
         </div>
@@ -107,21 +107,41 @@ export default function MobileMenu({
               </span>
             </>
           ) : (
-            <span
-              onClick={() => {
-                setSignRequest({ wallet: 'xaman' })
-              }}
-              className="link mobile-menu-item"
-            >
-              <Image
-                src="/images/wallets/xaman.png"
-                className="wallet-logo xaman-logo"
-                alt="xaman"
-                height={20}
-                width={20}
-              />
-              {t('signin.signin')}
-            </span>
+            <>
+              <span
+                onClick={() => {
+                  setSignRequest({ wallet: 'xaman' })
+                }}
+                className="link mobile-menu-item"
+              >
+                <Image
+                  src="/images/wallets/xaman.png"
+                  className="wallet-logo xaman-logo"
+                  alt="xaman"
+                  height={24}
+                  width={24}
+                />
+                Xaman
+              </span>
+              {/* hide wallet-connect on devnet */}
+              {devNet && (
+                <span
+                  onClick={() => {
+                    setSignRequest({ wallet: 'wallet-connect' })
+                  }}
+                  className="link mobile-menu-item"
+                >
+                  <Image
+                    src="/images/wallets/walletconnect.svg"
+                    className="wallet-logo"
+                    alt="wallet-connect"
+                    height={24}
+                    width={24}
+                  />
+                  WalletConnect
+                </span>
+              )}
+            </>
           )}
         </div>
 

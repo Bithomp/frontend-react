@@ -1080,27 +1080,32 @@ export default function SignForm({
                         />
                       </div>
                       {signRequest?.wallet !== 'xaman' && !isMobile && (
+                        <div className="signin-app-logo">
+                          <Image
+                            alt="GemWallet"
+                            src="/images/wallets/gemwallet.svg"
+                            onClick={() => txSend({ wallet: 'gemwallet' })}
+                            width={80}
+                            height={80}
+                            style={{ maxWidth: '100%', maxHeight: '100%' }}
+                          />
+                        </div>
+                      )}
+                      {/* hide on mainnets */}
+                      {signRequest?.wallet !== 'xaman' && devNet && (
+                        <div className="signin-app-logo">
+                          <Image
+                            alt="WalletConnect"
+                            src="/images/wallets/walletconnect-large.svg"
+                            onClick={() => txSend({ wallet: 'walletconnect' })}
+                            width={169}
+                            height={80}
+                            style={{ maxWidth: '100%', maxHeight: '100%' }}
+                          />
+                        </div>
+                      )}
+                      {signRequest?.wallet !== 'xaman' && !isMobile && (
                         <>
-                          <div className="signin-app-logo">
-                            <Image
-                              alt="GemWallet"
-                              src="/images/wallets/gemwallet.svg"
-                              onClick={() => txSend({ wallet: 'gemwallet' })}
-                              width={80}
-                              height={80}
-                              style={{ maxWidth: '100%', maxHeight: '100%' }}
-                            />
-                          </div>
-                          <div className="signin-app-logo">
-                            <Image
-                              alt="WalletConnect"
-                              src="/images/wallets/walletconnect-large.svg"
-                              onClick={() => txSend({ wallet: 'walletconnect' })}
-                              width={169}
-                              height={80}
-                              style={{ maxWidth: '100%', maxHeight: '100%' }}
-                            />
-                          </div>
                           <div className="signin-app-logo">
                             <Image
                               alt="Metamask"
