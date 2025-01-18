@@ -1286,7 +1286,9 @@ export default function Account({
                                 )}
                                 {data.parent?.address === data.address ? (
                                   <tr>
-                                    <td>Imported from the XRPL</td>
+                                    <td>
+                                      Imported from <b>XRPL</b>
+                                    </td>
                                     <td>
                                       <a
                                         href={
@@ -1295,7 +1297,7 @@ export default function Account({
                                           data.address
                                         }
                                       >
-                                        origin
+                                        {data.address}
                                       </a>
                                     </td>
                                   </tr>
