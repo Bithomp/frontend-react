@@ -18,6 +18,9 @@ const TopProgressBar = dynamic(() => import('../components/TopProgressBar'), { s
 import { IsSsrMobileContext } from '../utils/mobile'
 import { isValidUUID, network, server, useLocalStorage, useCookie, xahauNetwork } from '../utils'
 
+import { getAppMetadata } from '@walletconnect/utils'
+import { WalletConnectModalSign } from '@walletconnect/modal-sign-react'
+
 import '../styles/ui.scss'
 import '../styles/components/nprogress.css'
 
@@ -132,6 +135,7 @@ const MyApp = ({ Component, pageProps }) => {
               setSelectedCurrency={setSelectedCurrency}
             />
             <ScrollToTop />
+            <WalletConnectModalSign projectId={process.env.NEXT_PUBLIC_WALLETCONNECT} metadata={getAppMetadata()} />
             {(signRequest || isValidUUID(uuid)) && (
               <SignForm
                 setSignRequest={setSignRequest}

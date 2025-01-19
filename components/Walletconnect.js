@@ -1,7 +1,6 @@
-import { useConnect, useRequest, WalletConnectModalSign } from '@walletconnect/modal-sign-react'
+import { useConnect, useRequest } from '@walletconnect/modal-sign-react'
 import { delay, networkId } from '../utils'
 import { useEffect, useState } from 'react'
-import { getAppMetadata } from '@walletconnect/utils'
 import { broadcastTransaction, getNextTransactionParams } from '../utils/user'
 import { useTranslation } from 'next-i18next'
 import { encode } from 'xrpl-binary-codec-prerelease'
@@ -176,7 +175,6 @@ export function WalletConnect({ tx, setScreen, signRequest, afterSubmitExe, onSi
 
   return (
     <>
-      <WalletConnectModalSign projectId={process.env.NEXT_PUBLIC_WALLETCONNECT} metadata={getAppMetadata()} />
       {sendNow && (
         <SendTx
           topic={session?.topic}
