@@ -152,7 +152,16 @@ export function WalletConnect({ tx, setScreen, signRequest, afterSubmitExe, onSi
         }
       */
     } catch (err) {
-      console.error(err)
+      if (err.message === 'Modal closed') {
+        return
+      }
+      setAwaiting(false)
+      setScreen('walletconnect')
+      if (err.message === 'Requested chains reside on testnet') {
+        setStatus('Make sure your Wallet is connected to the Test network and then try again.')
+      } else {
+        setStatus(err.message || 'Error connecting through WalletConnect')
+      }
     }
   }
 
