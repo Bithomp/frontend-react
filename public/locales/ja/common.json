@@ -89,6 +89,7 @@
     }
   },
   "signin": {
+    "connect": "接続",
     "signin": "サインイン",
     "signout": "サインアウト",
     "choose-app": "サインインするアプリを選択",

@@ -89,6 +89,7 @@
     }
   },
   "signin": {
+    "connect": "Hubungkan",
     "signin": "Masuk",
     "signout": "Keluar",
     "choose-app": "Pilih aplikasi masuk",

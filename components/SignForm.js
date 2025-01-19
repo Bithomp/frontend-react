@@ -1069,16 +1069,18 @@ export default function SignForm({
                   <>
                     <div className="header">{t('signin.choose-app')}</div>
                     <div className="signin-apps">
-                      <div className="signin-app-logo">
-                        <Image
-                          alt="xaman"
-                          src="/images/wallets/xaman-large.svg"
-                          onClick={() => txSend({ wallet: 'xaman' })}
-                          width={169}
-                          height={80}
-                          style={{ maxWidth: '100%', maxHeight: '100%' }}
-                        />
-                      </div>
+                      {signRequest?.wallet !== 'walletconnect' && (
+                        <div className="signin-app-logo">
+                          <Image
+                            alt="xaman"
+                            src="/images/wallets/xaman-large.svg"
+                            onClick={() => txSend({ wallet: 'xaman' })}
+                            width={169}
+                            height={80}
+                            style={{ maxWidth: '100%', maxHeight: '100%' }}
+                          />
+                        </div>
+                      )}
                       {signRequest?.wallet !== 'xaman' && !isMobile && (
                         <div className="signin-app-logo">
                           <Image

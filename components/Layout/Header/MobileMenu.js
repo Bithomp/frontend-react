@@ -9,9 +9,8 @@ import { IoIosRocket } from 'react-icons/io'
 import { FaUserLarge } from 'react-icons/fa6'
 import { GrMoney } from 'react-icons/gr'
 import { IoStatsChart, IoWallet } from 'react-icons/io5'
-import { FaSignOutAlt } from 'react-icons/fa'
-import { FaEye } from 'react-icons/fa'
-import { FaUserCheck } from 'react-icons/fa'
+import { FaSignOutAlt, FaEye, FaUserCheck } from 'react-icons/fa'
+import { FiLink } from 'react-icons/fi'
 
 const handleClick = (e) => {
   if (e.target.getAttribute('data-expanded') !== null) {
@@ -49,7 +48,7 @@ export default function MobileMenu({
             </>
           ) : (
             <>
-              <IoWallet style={{ marginBottom: '-2px' }} /> {t('signin.signin')}
+              <IoWallet style={{ marginBottom: '-2px' }} /> {t('table.address')}
             </>
           )}
         </div>
@@ -107,41 +106,9 @@ export default function MobileMenu({
               </span>
             </>
           ) : (
-            <>
-              <span
-                onClick={() => {
-                  setSignRequest({ wallet: 'xaman' })
-                }}
-                className="link mobile-menu-item"
-              >
-                <Image
-                  src="/images/wallets/xaman.png"
-                  className="wallet-logo xaman-logo"
-                  alt="xaman"
-                  height={24}
-                  width={24}
-                />
-                Xaman
-              </span>
-              {/* hide wallet-connect on devnet */}
-              {devNet && (
-                <span
-                  onClick={() => {
-                    setSignRequest({ wallet: 'wallet-connect' })
-                  }}
-                  className="link mobile-menu-item"
-                >
-                  <Image
-                    src="/images/wallets/walletconnect.svg"
-                    className="wallet-logo"
-                    alt="wallet-connect"
-                    height={24}
-                    width={24}
-                  />
-                  WalletConnect
-                </span>
-              )}
-            </>
+            <span onClick={setSignRequest} className="link mobile-menu-item">
+              <FiLink style={{ marginRight: 4, height: 18, width: 18, marginLeft: -1 }} /> {t('signin.connect')}
+            </span>
           )}
         </div>
 

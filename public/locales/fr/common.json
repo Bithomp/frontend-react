@@ -89,6 +89,7 @@
     }
   },
   "signin": {
+    "connect": "Se connecter",
     "signin": "Se connecter",
     "signout": "Se déconnecter",
     "choose-app": "Choisir une application de signature",

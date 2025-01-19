@@ -89,6 +89,7 @@
     }
   },
   "signin": {
+    "connect": "Conectar",
     "signin": "Conectar",
     "signout": "Desconectar",
     "choose-app": "Elige una app para conectarte.",

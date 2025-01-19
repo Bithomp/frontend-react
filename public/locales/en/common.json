@@ -89,6 +89,7 @@
     }
   },
   "signin": {
+    "connect": "Connect",
     "signin": "Sign in",
     "signout": "Sign out",
     "choose-app": "Choose a signing app",

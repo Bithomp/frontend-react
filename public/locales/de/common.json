@@ -89,6 +89,7 @@
     }
   },
   "signin": {
+    "connect": "Verbinden",
     "signin": "Einloggen",
     "signout": "Ausloggen",
     "choose-app": "App zum Einloggen wählen",
