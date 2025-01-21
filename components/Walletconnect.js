@@ -15,7 +15,8 @@ function SendTx({
   address,
   wallet,
   setAwaiting,
-  setScreen
+  setScreen,
+  afterSigning
 }) {
   const [txToSign, setTxToSign] = useState(null)
   const { t } = useTranslation()
@@ -33,10 +34,13 @@ function SendTx({
     setTxToSign(tx)
   }
 
-  if (signRequestData?.signOnly) {
-    //later
-  } else {
-    if (tx && !tx.Sequence) {
+  if (tx && !tx.Sequence) {
+    if (signRequestData?.signOnly) {
+      //there is no message signing =(, so set some rendom sequence and fee to sign
+      tx.Sequence = 1
+      tx.Fee = '100'
+      setTxToSign(tx)
+    } else {
       getNextTxParams(tx)
     }
   }
@@ -45,7 +49,11 @@ function SendTx({
 
   async function onLoad(transaction) {
     if (!transaction) return
+
     try {
+      setScreen('walletconnect')
+      setStatus('Sign transaction in your Wallet')
+
       const signedTx = await request({
         chainId: 'xrpl:' + networkId,
         topic,
@@ -58,10 +66,14 @@ function SendTx({
         }
       })
 
-      setScreen('walletconnect')
-      setStatus('Submitting transaction to the network...')
-
       const blob = encode(signedTx?.tx_json)
+
+      if (signRequestData?.signOnly) {
+        afterSigning({ signRequestData, blob, address })
+        return
+      }
+
+      setStatus('Submitting transaction to the network...')
 
       //now submit transaction
       broadcastTransaction({
@@ -98,7 +110,16 @@ function SendTx({
   return <></>
 }
 
-export function WalletConnect({ tx, setScreen, signRequest, afterSubmitExe, onSignIn, setStatus, setAwaiting }) {
+export function WalletConnect({
+  tx,
+  setScreen,
+  signRequest,
+  afterSubmitExe,
+  onSignIn,
+  setStatus,
+  setAwaiting,
+  afterSigning
+}) {
   const [session, setSession] = useState(null)
   const [sendNow, setSendNow] = useState(false)
 
@@ -211,6 +232,7 @@ export function WalletConnect({ tx, setScreen, signRequest, afterSubmitExe, onSi
           wallet={wallet}
           setAwaiting={setAwaiting}
           setScreen={setScreen}
+          afterSigning={afterSigning}
         />
       )}
     </>

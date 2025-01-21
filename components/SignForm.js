@@ -328,11 +328,8 @@ export default function SignForm({
         } else if (redirectName === 'nft-offers') {
           router.push('/nft-offers/' + address)
           return
-        } else if (redirectName === 'account-new') {
-          router.push('/account/' + address)
-          return
         } else if (redirectName === 'account') {
-          window.location.href = server + '/explorer/' + address
+          router.push('/account/' + address)
           return
         }
       }
@@ -819,6 +816,7 @@ export default function SignForm({
         onSignIn={onSignIn}
         setAwaiting={setAwaiting}
         setScreen={setScreen}
+        afterSigning={afterSigning}
       />
       {screen && (
         <div className="sign-in-form">
