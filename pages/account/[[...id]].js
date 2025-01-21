@@ -30,6 +30,7 @@ import {
 } from '../../utils/format'
 import { getIsSsrMobile } from '../../utils/mobile'
 import { fetchCurrentFiatRate } from '../../utils/common'
+import { LinkAmm } from '../../utils/links'
 
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
@@ -73,7 +74,6 @@ export async function getServerSideProps(context) {
 import SEO from '../../components/SEO'
 import SearchBlock from '../../components/Layout/SearchBlock'
 import CopyButton from '../../components/UI/CopyButton'
-import { LinkAccount, LinkAmm } from '../../utils/links'
 import dynamic from 'next/dynamic'
 
 const XahauRewardTr = dynamic(() => import('../../components/Account/XahauRewardTr'), { ssr: false })
@@ -1026,7 +1026,7 @@ export default function Account({
                                     <tr>
                                       <td>NFT minter</td>
                                       <td>
-                                        <LinkAccount address={data.ledgerInfo.nftokenMinter} />
+                                        <AddressWithIconFilled data={data.ledgerInfo} name="nftokenMinter" />
                                       </td>
                                     </tr>
                                   )}
