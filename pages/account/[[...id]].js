@@ -774,7 +774,7 @@ export default function Account({
                                           onClick={() =>
                                             setSignRequest({
                                               action: 'setDomain',
-                                              redirect: 'account-new',
+                                              redirect: 'account',
                                               request: {
                                                 TransactionType: 'AccountSet',
                                                 Account: data?.address

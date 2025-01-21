@@ -483,7 +483,7 @@ export default function Username({ setSignRequest, account, signOut, addressQuer
                     services which use bithomp <a href="https://docs.bithomp.com">API</a>. After the registration it
                     will become public - <b>anyone</b> will be able to see it. Your XRPL address will be accessable by:
                   </Trans>
-                  {' ' + server}/explorer/{isUsernameValid(username) ? username : <i>username</i>}
+                  {' ' + server}/account/{isUsernameValid(username) ? username : <i>username</i>}
                 </p>
                 <p>
                   <Trans ns="username" i18nKey="step0.text2">
@@ -705,11 +705,9 @@ export default function Username({ setSignRequest, account, signOut, addressQuer
               </Trans>
             </p>
             <p className="center bold">
-              <a href={server + '/explorer/' + register.bithompid}>
-                <u>
-                  {server}/explorer/{register.bithompid}
-                </u>
-              </a>
+              <Link href={'/account/' + register.bithompid}>
+                {server}/account/{register.bithompid}
+              </Link>
             </p>
             <Receipt item="username" details={bidData} />
             <br />

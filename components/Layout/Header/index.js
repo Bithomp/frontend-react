@@ -396,15 +396,7 @@ export default function Header({
                 <span onClick={copyToClipboard} className="link">
                   {isCopied ? t('button.copied') : t('button.copy-my-address')}
                 </span>
-                <a
-                  href={
-                    '/explorer/' +
-                    address +
-                    (account?.wallet === 'xaman' && xamanUserToken ? '?hw=xumm&xummtoken=' + xamanUserToken : '')
-                  }
-                >
-                  {t('signin.actions.view')}
-                </a>
+                <Link href={'/account/' + address}>{t('signin.actions.view')}</Link>
                 <Link href={'/nfts/' + address}>{t('signin.actions.my-nfts')}</Link>
                 <Link href={'/nft-offers/' + address}>{t('signin.actions.my-nft-offers')}</Link>
 

@@ -427,9 +427,18 @@ export const userOrServiceLink = (data, type, options = {}) => {
   return ''
 }
 
+const oldExplorerLink = (address, options = {}) => {
+  if (!address) return ''
+  return (
+    <a href={'/explorer/' + address} aria-label="address link">
+      {options.short ? shortAddress(address, options.short) : address}
+    </a>
+  )
+}
+
 export const addressUsernameOrServiceLink = (data, type, options = {}) => {
   if (!options.url) {
-    options.url = '/explorer/'
+    options.url = '/account/'
   }
   if (type === 'broker' && data?.broker === 'no broker') {
     return <b>{options.noBroker}</b>
@@ -439,13 +448,13 @@ export const addressUsernameOrServiceLink = (data, type, options = {}) => {
   }
   if (options.short) {
     if (options.url === '/explorer/') {
-      return addressLink(data[type], { short: options.short })
+      return oldExplorerLink(data[type], { short: options.short })
     } else {
       return <Link href={options.url + data[type]}>{shortAddress(data[type])}</Link>
     }
   }
   if (options.url === '/explorer/') {
-    return addressLink(data[type])
+    return oldExplorerLink(data[type])
   } else {
     return <Link href={options.url + data[type]}>{data[type]}</Link>
   }
@@ -454,9 +463,9 @@ export const addressUsernameOrServiceLink = (data, type, options = {}) => {
 export const addressLink = (address, options = {}) => {
   if (!address) return ''
   return (
-    <a href={'/explorer/' + address} aria-label="address link">
+    <Link href={'/account/' + address} aria-label="address link">
       {options.short ? shortAddress(address, options.short) : address}
-    </a>
+    </Link>
   )
 }
 
@@ -559,7 +568,7 @@ export const amountFormat = (amount, options = {}) => {
       <span suppressHydrationWarning>
         {showValue} {valuePrefix}{' '}
         <span className="tooltip">
-          <a href={'/explorer/' + issuer}>{currency}</a>
+          <Link href={'/account/' + issuer}>{currency}</Link>
           <span className={'tooltiptext ' + options.tooltip}>
             {addressUsernameOrServiceLink(amount, 'issuer', { short: true })}
           </span>

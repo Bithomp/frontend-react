@@ -55,12 +55,9 @@ export default function MobileMenu({
         <div className="mobile-menu__submenu">
           {displayName ? (
             <>
-              <a
-                href={server + '/explorer/' + address + (xamanUserToken ? '?hw=xumm&xummtoken=' + xamanUserToken : '')}
-                className="mobile-menu-item"
-              >
+              <Link href={'/account/' + address} className="mobile-menu-item">
                 {t('signin.actions.view')}
-              </a>
+              </Link>
               <span onClick={copyToClipboard} className="mobile-menu-item link">
                 {isCopied ? t('button.copied') : t('button.copy-my-address')}
               </span>

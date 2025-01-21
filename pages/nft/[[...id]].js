@@ -360,7 +360,7 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
               </td>
             </tr>
           )}
-          {trWithAccount(nftEvent, nftEvent.minter ? 'minter' : 'owner', ownerName(nftEvent), '/explorer/', 'owner')}
+          {trWithAccount(nftEvent, nftEvent.minter ? 'minter' : 'owner', ownerName(nftEvent), '/account/', 'owner')}
           {nftEvent.marketplace && (
             <tr>
               <td>{marketPlaceUsage(nftEvent)}</td>
@@ -409,7 +409,7 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
       return offers.map((offer, i) => (
         <tbody key={i}>
           {trStatus(t, offer)}
-          {trWithAccount(offer, 'owner', buyerOrSeller, '/explorer/', 'nft-seller')}
+          {trWithAccount(offer, 'owner', buyerOrSeller, '/account/', 'nft-seller')}
           <tr>
             <td>{t('table.amount')}</td>
             <td>{amountFormat(offer.amount, { tooltip: 'right' })}</td>
@@ -453,8 +453,7 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
               <td>{fullDateAndTime(offer.expiration, 'expiration')}</td>
             </tr>
           )}
-          {offer.destination &&
-            trWithAccount(offer, 'destination', t('table.destination'), '/explorer/', 'destination')}
+          {offer.destination && trWithAccount(offer, 'destination', t('table.destination'), '/account/', 'destination')}
           {offer.offerIndex && (
             <tr>
               <td>{t('table.offer')}</td>
@@ -1160,18 +1159,12 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
                               )}
                               {data.issuer === data.owner ? (
                                 <>
-                                  {trWithAccount(
-                                    data,
-                                    'owner',
-                                    t('table.issuer-owner'),
-                                    '/explorer/',
-                                    'ownerAndIssuer'
-                                  )}
+                                  {trWithAccount(data, 'owner', t('table.issuer-owner'), '/account/', 'ownerAndIssuer')}
                                 </>
                               ) : (
                                 <>
-                                  {trWithAccount(data, 'owner', t('table.owner'), '/explorer/', 'owner')}
-                                  {trWithAccount(data, 'issuer', t('table.issuer'), '/explorer/', 'issuer')}
+                                  {trWithAccount(data, 'owner', t('table.owner'), '/account/', 'owner')}
+                                  {trWithAccount(data, 'issuer', t('table.issuer'), '/account/', 'issuer')}
                                 </>
                               )}
                               {data.type === 'xls20' && (

@@ -7,7 +7,7 @@ import { axiosAdmin } from '../../utils/axios'
 
 import { useWidth, encode, wssServer, timestampExpired, addAndRemoveQueryParams } from '../../utils'
 import { getIsSsrMobile } from '../../utils/mobile'
-import { fullDateAndTime, shortNiceNumber, amountFormat } from '../../utils/format'
+import { fullDateAndTime, shortNiceNumber, amountFormat, AddressWithIconFilled, addressLink } from '../../utils/format'
 
 import SEO from '../../components/SEO'
 import AdminTabs from '../../components/Tabs/AdminTabs'
@@ -697,7 +697,7 @@ export default function Subscriptions({ setSignRequest, receiptQuery, tabQuery }
                                   <tr key={index}>
                                     <td>{fullDateAndTime(payment.processedAt)}</td>
                                     <td>
-                                      <a href={'/explorer/' + payment.sourceAddress}>{payment.sourceAddress}</a>
+                                      <AddressWithIconFilled data={payment} name="sourceAddress" />
                                     </td>
                                     <td>{amountFormat(payment.amount * 1000000)}</td>
                                     <td>
@@ -723,7 +723,7 @@ export default function Subscriptions({ setSignRequest, receiptQuery, tabQuery }
                                       <p>{fullDateAndTime(payment.processedAt)}</p>
                                       <p>
                                         From: <br />
-                                        <a href={'/explorer/' + payment.sourceAddress}>{payment.sourceAddress}</a>
+                                        {addressLink(payment.sourceAddress)}
                                       </p>
                                       <p>Amount: {amountFormat(payment.amount)}</p>
                                       <p>Fiat equivalent: {payment.fiatAmount}</p>

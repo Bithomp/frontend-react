@@ -258,14 +258,14 @@ export default function NftOffer({ setSignRequest, refreshPage, account, id }) {
                                   {shortHash(data.offerIndex, 10)} <CopyButton text={data.offerIndex} />
                                 </td>
                               </tr>
-                              {trWithAccount(data, 'account', sellerOrBuyer, '/explorer/', 0)}
+                              {trWithAccount(data, 'account', sellerOrBuyer, '/account/', 0)}
                               <tr>
                                 <td>
                                   {data.flags.sellToken === true ? t('nft-offer.selling') : t('nft-offer.buying')} NFT
                                 </td>
                                 <td>{nftIdLink(data.nftokenID)}</td>
                               </tr>
-                              {trWithAccount(data, 'destination', t('table.destination'), '/explorer/', 0)}
+                              {trWithAccount(data, 'destination', t('table.destination'), '/account/', 0)}
                               <tr>
                                 <td>{t('table.price')}</td>
                                 <td>{amountFormat(data.amount, { tooltip: 'right' })}</td>

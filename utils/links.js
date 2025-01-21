@@ -18,7 +18,7 @@ export const LedgerLink = ({ version, text, style, onClick }) =>
 export const LinkAccount = ({ address, icon, copy, text, short }) =>
   address ? (
     <>
-      <a href={`/explorer/${address}`}>
+      <Link href={'/account/' + address}>
         {text ? text : short > 0 ? shortHash(address, short) : short === 0 ? '' : address}
         {icon ? (
           <>
@@ -28,7 +28,7 @@ export const LinkAccount = ({ address, icon, copy, text, short }) =>
         ) : (
           ''
         )}
-      </a>
+      </Link>
       {copy ? (
         <>
           {' '}

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useWidth } from '../utils'
-import { amountFormat, fullDateAndTime } from '../utils/format'
+import { amountFormat, fullDateAndTime, addressLink, AddressWithIconFilled } from '../utils/format'
 import { niceNumber } from '../utils/format'
 import axios from 'axios'
 
@@ -84,7 +84,7 @@ export default function ListTransactions({ transactions }) {
                     <tr key={index}>
                       <td>{fullDateAndTime(payment.processedAt)}</td>
                       <td>
-                        <a href={'/explorer/' + payment.sourceAddress}>{payment.sourceAddress}</a>
+                        <AddressWithIconFilled data={payment} name="sourceAddress" />
                       </td>
                       <td>{amountFormat(payment.amount)}</td>
                       <td>{payment.fiatAmount}</td>
@@ -112,7 +112,7 @@ export default function ListTransactions({ transactions }) {
                         <p>{fullDateAndTime(payment.processedAt)}</p>
                         <p>
                           From: <br />
-                          <a href={'/explorer/' + payment.sourceAddress}>{payment.sourceAddress}</a>
+                          {addressLink(payment.sourceAddress)}
                         </p>
                         <p>Amount: {amountFormat(payment.amount)}</p>
                         <p>Fiat equivalent: {payment.fiatAmount}</p>

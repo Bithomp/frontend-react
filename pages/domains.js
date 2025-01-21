@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react'
 import axios from 'axios'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
-import { trWithAccount } from '../utils/format'
+import { AddressWithIconFilled } from '../utils/format'
 import { getIsSsrMobile } from '../utils/mobile'
 import { useWidth } from '../utils'
 
@@ -122,7 +122,7 @@ export default function Domains({ setSignRequest }) {
                 onClick={() =>
                   setSignRequest({
                     action: 'setDomain',
-                    redirect: 'account-new',
+                    redirect: 'account',
                     request: {
                       TransactionType: 'AccountSet'
                     }
@@ -184,19 +184,16 @@ export default function Domains({ setSignRequest }) {
                         <a href={'https://' + d.domain}>{d.domain}</a>
                       </td>
                       <td>
-                        <table>
-                          <tbody>
-                            {d.addresses.map((a, j) =>
-                              trWithAccount(
-                                a,
-                                'address',
-                                d.addresses.length > 1 ? j + 1 + '. ' : <>&nbsp;&nbsp;&nbsp;</>,
-                                '/explorer/',
-                                j
-                              )
-                            )}
-                          </tbody>
-                        </table>
+                        {d.addresses.length === 1 ? (
+                          <AddressWithIconFilled data={d.addresses[0]} />
+                        ) : (
+                          d.addresses.map((a, j) => (
+                            <>
+                              {j + 1} . <AddressWithIconFilled data={a} />
+                              {j !== d.addresses.length - 1 && <br />}
+                            </>
+                          ))
+                        )}
                       </td>
                     </tr>
                   ))}
@@ -227,22 +224,19 @@ export default function Domains({ setSignRequest }) {
                         <b>{i + 1}</b>
                       </td>
                       <td>
-                        <p>
+                        <p className="bold">
                           <a href={'https://' + d.domain}>{d.domain}</a>
                         </p>
-                        <table className="table-mobile" style={{ width: 'calc(100% - 22px)', margin: '10px 0' }}>
-                          <tbody>
-                            {d.addresses.map((a, j) =>
-                              trWithAccount(
-                                a,
-                                'address',
-                                d.addresses.length > 1 ? j + 1 + '. ' : <>&nbsp;&nbsp;&nbsp;</>,
-                                '/explorer/',
-                                j
-                              )
-                            )}
-                          </tbody>
-                        </table>
+                        {d.addresses.length === 1 ? (
+                          <AddressWithIconFilled data={d.addresses[0]} />
+                        ) : (
+                          d.addresses.map((a, j) => (
+                            <>
+                              {j + 1} . <AddressWithIconFilled data={a} />
+                              {j !== d.addresses.length - 1 && <br />}
+                            </>
+                          ))
+                        )}
                       </td>
                     </tr>
                   ))}

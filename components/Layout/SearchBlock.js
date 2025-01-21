@@ -255,6 +255,11 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
       return
     }
 
+    if (isAddressOrUsername(searchFor)) {
+      router.push('/account/' + encodeURI(searchFor))
+      return
+    }
+
     //remove tab='transaction' to allow transaction search on all tabs
     //tx, address etc
     window.location = '/explorer/' + encodeURI(searchFor)
@@ -460,7 +465,7 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
               <Link href={'/nft-offers/' + searchItem}>{t('nft-offers.header')}</Link>
             )}
             {tab === 'nft-volumes' && <b>{t('menu.nft.volumes')}</b>}
-            {tab !== 'account' && <a href={'/explorer/' + searchItem}>{t('explorer.menu.account')}</a>}
+            {tab !== 'account' && <Link href={'/account/' + searchItem}>{t('explorer.menu.account')}</Link>}
             {tab !== 'nft-volumes' && (
               <a href={'/explorer/' + searchItem} className="hide-on-mobile">
                 {t('explorer.menu.transactions')}
