@@ -678,17 +678,6 @@ export default function Account({
                                       </td>
                                     </tr>
                                   )}
-
-                                  {data.payString &&
-                                    !data.ledgerInfo?.requireDestTag &&
-                                    !data.ledgerInfo?.blackholed &&
-                                    !data.blacklist?.blacklisted &&
-                                    !data.service && (
-                                      <tr>
-                                        <td>PayString</td>
-                                        <td className="blue">{data.payString}</td>
-                                      </tr>
-                                    )}
                                 </tbody>
                               </table>
                             </div>
@@ -1263,6 +1252,18 @@ export default function Account({
                               </thead>
                               <tbody>
                                 {accountNameTr(data)}
+                                {data.payString &&
+                                  !data.ledgerInfo?.requireDestTag &&
+                                  !data.ledgerInfo?.blackholed &&
+                                  !data.blacklist?.blacklisted &&
+                                  !data.service && (
+                                    <tr>
+                                      <td>PayString</td>
+                                      <td className="blue">
+                                        {data.payString} <CopyButton text={data.payString} />
+                                      </td>
+                                    </tr>
+                                  )}
                                 <tr>
                                   <td>Activated</td>
                                   <td>
