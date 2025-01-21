@@ -1079,16 +1079,16 @@ export default function Account({
                                   <td className="bold">required</td>
                                 </tr>
                               )}
-                              {data.ledgerInfo?.flags?.ticketCount && (
+                              {data.ledgerInfo?.ticketCount && (
                                 <tr>
                                   <td>Tickets</td>
                                   <td className="bold">{data.ledgerInfo.ticketCount}</td>
                                 </tr>
                               )}
-                              {data.ledgerInfo?.flags?.ticketSize && (
+                              {data.ledgerInfo?.tickSize && (
                                 <tr>
-                                  <td>Ticket size</td>
-                                  <td className="bold">{data.ledgerInfo.ticketSize}</td>
+                                  <td>Tick size</td>
+                                  <td className="bold">{data.ledgerInfo.tickSize}</td>
                                 </tr>
                               )}
                               {data.ledgerInfo?.flags?.transferRate && (
