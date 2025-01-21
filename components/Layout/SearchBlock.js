@@ -15,7 +15,8 @@ import {
   networkId,
   networksIds,
   isValidNftXls20,
-  isCurrencyHashValid
+  isCurrencyHashValid,
+  server
 } from '../../utils'
 import { userOrServiceName, amountFormat } from '../../utils/format'
 
@@ -458,6 +459,21 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
       {showTabs && (
         <div className="explorer-tabs-block">
           <div className="explorer-tabs">
+            {tab == 'account' ? (
+              <b>{t('explorer.menu.account')}</b>
+            ) : (
+              <Link href={'/account/' + searchItem}>{t('explorer.menu.account')}</Link>
+            )}
+            {tab !== 'nft-volumes' && (
+              <a href={server + '/explorer/' + searchItem} className="hideOnSmall-w800">
+                {t('explorer.menu.transactions')}
+              </a>
+            )}
+            {tab !== 'nft-volumes' && (
+              <a href={server + '/explorer/' + searchItem} className="hideOnSmall-w800">
+                {t('explorer.menu.tokens')}
+              </a>
+            )}
             {tab === 'nfts' ? <b>NFTs</b> : <Link href={'/nfts/' + searchItem + addParams}>NFTs</Link>}
             {tab === 'nft-offers' ? (
               <b>{t('nft-offers.header')}</b>
@@ -465,17 +481,6 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
               <Link href={'/nft-offers/' + searchItem}>{t('nft-offers.header')}</Link>
             )}
             {tab === 'nft-volumes' && <b>{t('menu.nft.volumes')}</b>}
-            {tab !== 'account' && <Link href={'/account/' + searchItem}>{t('explorer.menu.account')}</Link>}
-            {tab !== 'nft-volumes' && (
-              <a href={'/explorer/' + searchItem} className="hide-on-mobile">
-                {t('explorer.menu.transactions')}
-              </a>
-            )}
-            {tab !== 'nft-volumes' && (
-              <a href={'/explorer/' + searchItem} className="hide-on-mobile">
-                {t('explorer.menu.tokens')}
-              </a>
-            )}
           </div>
           <div className="explorer-tabs-shadow"></div>
         </div>

@@ -674,6 +674,12 @@ table {
   }
 }
 
+.hideOnSmall-w800 {
+  @media only screen and (max-width: 800px) {
+    display: none;
+  }
+}
+
 .close-button {
   position: absolute;
   top: 0;
