@@ -1276,7 +1276,7 @@ export default function Account({
                                     <td>
                                       <a
                                         href={'https://' + data.service.domain}
-                                        className="green bold"
+                                        className="bold"
                                         target="_blank"
                                         rel="noopener nofollow"
                                       >
