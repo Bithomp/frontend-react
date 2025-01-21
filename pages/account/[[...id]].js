@@ -75,6 +75,16 @@ import SEO from '../../components/SEO'
 import SearchBlock from '../../components/Layout/SearchBlock'
 import CopyButton from '../../components/UI/CopyButton'
 import dynamic from 'next/dynamic'
+import {
+  FaFacebook,
+  FaInstagram,
+  FaLinkedin,
+  FaMedium,
+  FaReddit,
+  FaTelegram,
+  FaXTwitter,
+  FaYoutube
+} from 'react-icons/fa6'
 
 const XahauRewardTr = dynamic(() => import('../../components/Account/XahauRewardTr'), { ssr: false })
 
@@ -464,224 +474,6 @@ export default function Account({
                               priority
                             />
                           </div>
-
-                          {(data.xamanMeta?.kycApproved ||
-                            data.xamanMeta?.xummPro ||
-                            data.xamanMeta?.globalid?.profileUrl ||
-                            data.service?.socialAccounts) && (
-                            <div>
-                              <table className="table-details autowidth">
-                                <thead>
-                                  <tr>
-                                    <th colSpan="100">Public profiles</th>
-                                  </tr>
-                                </thead>
-                                <tbody>
-                                  {data.service?.socialAccounts && (
-                                    <>
-                                      {data.service.socialAccounts.twitter && (
-                                        <tr>
-                                          <td>X</td>
-                                          <td>
-                                            <a
-                                              href={'https://x.com/' + data.service.socialAccounts.twitter}
-                                              aria-label="X"
-                                              target="_blank"
-                                              rel="noopener"
-                                            >
-                                              {data.service.socialAccounts.twitter}
-                                            </a>
-                                          </td>
-                                        </tr>
-                                      )}
-                                      {data.service.socialAccounts.youtube && (
-                                        <tr>
-                                          <td>YouTube</td>
-                                          <td>
-                                            <a
-                                              href={'https://youtube.com/' + data.service.socialAccounts.youtube}
-                                              aria-label="Youtube"
-                                              target="_blank"
-                                              rel="noopener"
-                                            >
-                                              {data.service.socialAccounts.youtube}
-                                            </a>
-                                          </td>
-                                        </tr>
-                                      )}
-                                      {data.service.socialAccounts.linkedin && (
-                                        <tr>
-                                          <td>LinkedIn</td>
-                                          <td>
-                                            <a
-                                              href={
-                                                'https://linkedin.com/company/' +
-                                                data.service.socialAccounts.linkedin +
-                                                '/'
-                                              }
-                                              aria-label="Linkedin"
-                                              target="_blank"
-                                              rel="noopener"
-                                            >
-                                              {data.service.socialAccounts.linkedin}
-                                            </a>
-                                          </td>
-                                        </tr>
-                                      )}
-                                      {data.service.socialAccounts.instagram && (
-                                        <tr>
-                                          <td>Instagram</td>
-                                          <td>
-                                            <a
-                                              href={
-                                                'https://www.instagram.com/' +
-                                                data.service.socialAccounts.instagram +
-                                                '/'
-                                              }
-                                              aria-label="Instagram"
-                                              target="_blank"
-                                              rel="noopener"
-                                            >
-                                              {data.service.socialAccounts.instagram}
-                                            </a>
-                                          </td>
-                                        </tr>
-                                      )}
-                                      {data.service.socialAccounts.telegram && (
-                                        <tr>
-                                          <td>Telegram</td>
-                                          <td>
-                                            <a
-                                              href={'https://t.me/' + data.service.socialAccounts.telegram}
-                                              aria-label="Telegram"
-                                              target="_blank"
-                                              rel="noopener"
-                                            >
-                                              {data.service.socialAccounts.telegram}
-                                            </a>
-                                          </td>
-                                        </tr>
-                                      )}
-                                      {data.service.socialAccounts.facebook && (
-                                        <tr>
-                                          <td>Facebook</td>
-                                          <td>
-                                            <a
-                                              href={
-                                                'https://www.facebook.com/' + data.service.socialAccounts.facebook + '/'
-                                              }
-                                              aria-label="Facebook"
-                                              target="_blank"
-                                              rel="noopener"
-                                            >
-                                              {data.service.socialAccounts.facebook}
-                                            </a>
-                                          </td>
-                                        </tr>
-                                      )}
-                                      {data.service.socialAccounts.medium && (
-                                        <tr>
-                                          <td>Medium</td>
-                                          <td>
-                                            <a
-                                              href={'https://medium.com/' + data.service.socialAccounts.medium}
-                                              aria-label="Medium"
-                                              target="_blank"
-                                              rel="noopener"
-                                            >
-                                              {data.service.socialAccounts.medium}
-                                            </a>
-                                          </td>
-                                        </tr>
-                                      )}
-                                      {data.service.socialAccounts.reddit && (
-                                        <tr>
-                                          <td>Reddit</td>
-                                          <td>
-                                            <a
-                                              href={
-                                                'https://www.reddit.com/' + data.service.socialAccounts.reddit + '/'
-                                              }
-                                              aria-label="Reddit"
-                                              target="_blank"
-                                              rel="noopener"
-                                            >
-                                              {data.service.socialAccounts.reddit}
-                                            </a>
-                                          </td>
-                                        </tr>
-                                      )}
-                                    </>
-                                  )}
-                                  {data.xamanMeta?.kycApproved && (
-                                    <tr>
-                                      <td>KYC</td>
-                                      <td>verified by Xaman</td>
-                                    </tr>
-                                  )}
-                                  {data.xamanMeta?.xummPro && (
-                                    <tr>
-                                      <td>Xaman Pro</td>
-                                      <td>
-                                        {data?.xamanMeta?.xummProfile?.slug ? (
-                                          <a href={data.xamanMeta.xummProfile.profileUrl} className="green">
-                                            {data.xamanMeta.xummProfile.slug}
-                                          </a>
-                                        ) : (
-                                          <span className="orange">activated ❤️</span>
-                                        )}
-                                        {/* Need to be done on the backend and tested, also need to hide the add for 1 hour after click, or longer if we also cache */}
-                                        {data.xamanMeta?.monetisation?.status === 'PAYMENT_REQUIRED' && (
-                                          <span className="orange">
-                                            <br />
-                                            Limited 😔
-                                          </span>
-                                        )}
-                                        {data.xamanMeta?.monetisation?.status === 'COMING_UP' && (
-                                          <span className="orange">
-                                            <br />
-                                            Soon limited 😔
-                                          </span>
-                                        )}
-                                        {(data.xamanMeta?.monetisation?.status === 'COMING_UP' ||
-                                          data.xamanMeta?.monetisation?.status === 'PAYMENT_REQUIRED') && (
-                                          <>
-                                            <br />
-                                            <a
-                                              href="https://xrpl-labs.com/pro/get?v=BITHOMP"
-                                              target="_blank"
-                                              rel="noopener nofollow"
-                                            >
-                                              Purchase Xaman Pro
-                                            </a>{' '}
-                                            ❤️
-                                          </>
-                                        )}
-                                      </td>
-                                    </tr>
-                                  )}
-
-                                  {data.xamanMeta?.globalid?.profileUrl && (
-                                    <tr>
-                                      <td>GlobaliD</td>
-                                      <td>
-                                        <a href={data.xamanMeta.globalid.profileUrl}>
-                                          <u className="bold green">
-                                            {data.xamanMeta.globalid.profileUrl.replace('https://app.global.id/u/', '')}
-                                          </u>
-                                        </a>{' '}
-                                        <a href={data.xamanMeta.globalid.profileUrl}>
-                                          <b className="green">
-                                            <i className="fa fa-globe"></i>
-                                          </b>
-                                        </a>
-                                      </td>
-                                    </tr>
-                                  )}
-                                </tbody>
-                              </table>
-                            </div>
-                          )}
 
                           <table
                             className={'table-details autowidth hide-on-small-w800'}
@@ -1251,6 +1043,100 @@ export default function Account({
                                 </tr>
                               </thead>
                               <tbody>
+                                {data.service?.socialAccounts && (
+                                  <tr>
+                                    <td>Social accounts</td>
+                                    <td className="social-icons">
+                                      {data.service.socialAccounts.twitter && (
+                                        <a
+                                          href={'https://x.com/' + data.service.socialAccounts.twitter}
+                                          aria-label="X"
+                                          target="_blank"
+                                          rel="noopener"
+                                        >
+                                          <FaXTwitter />
+                                        </a>
+                                      )}
+                                      {data.service.socialAccounts.youtube && (
+                                        <a
+                                          href={'https://youtube.com/' + data.service.socialAccounts.youtube}
+                                          aria-label="Youtube"
+                                          target="_blank"
+                                          rel="noopener"
+                                        >
+                                          <FaYoutube />
+                                        </a>
+                                      )}
+                                      {data.service.socialAccounts.linkedin && (
+                                        <a
+                                          href={
+                                            'https://linkedin.com/company/' + data.service.socialAccounts.linkedin + '/'
+                                          }
+                                          aria-label="Linkedin"
+                                          target="_blank"
+                                          rel="noopener"
+                                        >
+                                          <FaLinkedin />
+                                        </a>
+                                      )}
+                                      {data.service.socialAccounts.instagram && (
+                                        <a
+                                          href={
+                                            'https://www.instagram.com/' + data.service.socialAccounts.instagram + '/'
+                                          }
+                                          aria-label="Instagram"
+                                          target="_blank"
+                                          rel="noopener"
+                                        >
+                                          <FaInstagram />
+                                        </a>
+                                      )}
+                                      {data.service.socialAccounts.telegram && (
+                                        <a
+                                          href={'https://t.me/' + data.service.socialAccounts.telegram}
+                                          aria-label="Telegram"
+                                          target="_blank"
+                                          rel="noopener"
+                                        >
+                                          <FaTelegram />
+                                        </a>
+                                      )}
+                                      {data.service.socialAccounts.facebook && (
+                                        <a
+                                          href={
+                                            'https://www.facebook.com/' + data.service.socialAccounts.facebook + '/'
+                                          }
+                                          aria-label="Facebook"
+                                          target="_blank"
+                                          rel="noopener"
+                                        >
+                                          <FaFacebook />
+                                        </a>
+                                      )}
+                                      {data.service.socialAccounts.medium && (
+                                        <a
+                                          href={'https://medium.com/' + data.service.socialAccounts.medium}
+                                          aria-label="Medium"
+                                          target="_blank"
+                                          rel="noopener"
+                                        >
+                                          <FaMedium />
+                                        </a>
+                                      )}
+                                      {data.service.socialAccounts.reddit && (
+                                        <a
+                                          href={'https://www.reddit.com/' + data.service.socialAccounts.reddit + '/'}
+                                          aria-label="Reddit"
+                                          target="_blank"
+                                          rel="noopener"
+                                        >
+                                          <FaReddit />
+                                        </a>
+                                      )}
+                                    </td>
+                                  </tr>
+                                )}
+
                                 {accountNameTr(data)}
                                 {data.payString &&
                                   !data.ledgerInfo?.requireDestTag &&
@@ -1370,6 +1256,72 @@ export default function Account({
                                       <td>{fullNiceNumber(data.flare.songbird)} SGB</td>
                                     </tr>
                                   </>
+                                )}
+
+                                {data.xamanMeta?.kycApproved && (
+                                  <tr>
+                                    <td>KYC</td>
+                                    <td>verified by Xaman</td>
+                                  </tr>
+                                )}
+                                {data.xamanMeta?.xummPro && (
+                                  <tr>
+                                    <td>Xaman Pro</td>
+                                    <td>
+                                      {data?.xamanMeta?.xummProfile?.slug ? (
+                                        <a href={data.xamanMeta.xummProfile.profileUrl} className="green">
+                                          {data.xamanMeta.xummProfile.slug}
+                                        </a>
+                                      ) : (
+                                        <span className="orange">activated ❤️</span>
+                                      )}
+                                      {/* Need to be done on the backend and tested, also need to hide the add for 1 hour after click, or longer if we also cache */}
+                                      {data.xamanMeta?.monetisation?.status === 'PAYMENT_REQUIRED' && (
+                                        <span className="orange">
+                                          <br />
+                                          Limited 😔
+                                        </span>
+                                      )}
+                                      {data.xamanMeta?.monetisation?.status === 'COMING_UP' && (
+                                        <span className="orange">
+                                          <br />
+                                          Soon limited 😔
+                                        </span>
+                                      )}
+                                      {(data.xamanMeta?.monetisation?.status === 'COMING_UP' ||
+                                        data.xamanMeta?.monetisation?.status === 'PAYMENT_REQUIRED') && (
+                                        <>
+                                          <br />
+                                          <a
+                                            href="https://xrpl-labs.com/pro/get?v=BITHOMP"
+                                            target="_blank"
+                                            rel="noopener nofollow"
+                                          >
+                                            Purchase Xaman Pro
+                                          </a>{' '}
+                                          ❤️
+                                        </>
+                                      )}
+                                    </td>
+                                  </tr>
+                                )}
+
+                                {data.xamanMeta?.globalid?.profileUrl && (
+                                  <tr>
+                                    <td>GlobaliD</td>
+                                    <td>
+                                      <a href={data.xamanMeta.globalid.profileUrl}>
+                                        <u className="bold green">
+                                          {data.xamanMeta.globalid.profileUrl.replace('https://app.global.id/u/', '')}
+                                        </u>
+                                      </a>{' '}
+                                      <a href={data.xamanMeta.globalid.profileUrl}>
+                                        <b className="green">
+                                          <i className="fa fa-globe"></i>
+                                        </b>
+                                      </a>
+                                    </td>
+                                  </tr>
                                 )}
                               </tbody>
                             </table>
