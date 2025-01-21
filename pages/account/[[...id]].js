@@ -1160,7 +1160,7 @@ export default function Account({
                                   <td className="bold">true</td>
                                 </tr>
                               )}
-                              {data.ledgerInfo?.flags?.allowTrustlineClawback && (
+                              {data.ledgerInfo?.flags?.allowTrustLineClawback && (
                                 <tr>
                                   <td>Trustline clawback</td>
                                   <td className="bold">enabled</td>
