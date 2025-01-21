@@ -231,6 +231,7 @@ export default function XrpTaxes() {
         .cta {
           text-align: center;
           background: #e0f2f1;
+          color: #333333;
           padding: 30px;
           border-radius: 10px;
           box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
