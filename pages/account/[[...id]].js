@@ -776,7 +776,8 @@ export default function Account({
                                               action: 'setDomain',
                                               redirect: 'account-new',
                                               request: {
-                                                TransactionType: 'AccountSet'
+                                                TransactionType: 'AccountSet',
+                                                Account: data?.address
                                               }
                                             })
                                           }

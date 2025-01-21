@@ -43,7 +43,8 @@ function SendTx({
 
   const { request } = useRequest()
 
-  async function onLoad() {
+  async function onLoad(transaction) {
+    if (!transaction) return
     try {
       const signedTx = await request({
         chainId: 'xrpl:' + networkId,
@@ -52,7 +53,7 @@ function SendTx({
           method: 'xrpl_signTransaction',
           params: {
             submit: false,
-            tx_json: txToSign //tx
+            tx_json: transaction
           }
         }
       })
@@ -89,7 +90,7 @@ function SendTx({
 
   useEffect(() => {
     if (txToSign) {
-      onLoad()
+      onLoad(txToSign)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [txToSign])
@@ -121,14 +122,25 @@ export function WalletConnect({ tx, setScreen, signRequest, afterSubmitExe, onSi
         return a.split(':')[2]
       })
 
-      const address = accounts[0]
+      const address0 = accounts[0]
 
       if (!tx.Account) {
-        tx.Account = address
+        tx.Account = address0
+      } else if (tx.Account !== address0) {
+        setScreen('walletconnect')
+        setStatus(
+          'The account in the transaction (' +
+            tx.Account +
+            ') does not match the account in the WalletConnect session (' +
+            address0 +
+            '). Log out from the current account or Sign transaction with it.'
+        )
+        setAwaiting(false)
+        return
       }
 
       if (!tx || tx?.TransactionType === 'SignIn') {
-        onSignIn({ address, wallet, redirectName: signRequest.redirect })
+        onSignIn({ address: address0, wallet, redirectName: signRequest.redirect })
         //keept afterSubmitExe here to close the dialog form when signedin
         afterSubmitExe({})
         return
@@ -165,7 +177,19 @@ export function WalletConnect({ tx, setScreen, signRequest, afterSubmitExe, onSi
   }
 
   useEffect(() => {
-    setAwaiting(true)
+    if (tx && session?.namespaces?.xrpl?.accounts) {
+      //don't show awaiting spinning when accounts do not match
+      const accounts = session?.namespaces?.xrpl?.accounts?.map((a) => {
+        return a.split(':')[2]
+      })
+      const address0 = accounts[0]
+      if (address0 === tx.Account) {
+        setAwaiting(true)
+      }
+    } else {
+      setAwaiting(true)
+    }
+
     if (tx && !session) {
       delay(100, onConnect)
       delay(500, setScreen, '')
