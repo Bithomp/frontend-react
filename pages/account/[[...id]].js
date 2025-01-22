@@ -85,6 +85,7 @@ import {
   FaXTwitter,
   FaYoutube
 } from 'react-icons/fa6'
+import Did from '../../components/Account/Did'
 
 const XahauRewardTr = dynamic(() => import('../../components/Account/XahauRewardTr'), { ssr: false })
 
@@ -1034,6 +1035,8 @@ export default function Account({
                                 )}
                             </tbody>
                           </table>
+
+                          {data?.ledgerInfo?.did && <Did data={data.ledgerInfo.did} />}
 
                           {data?.inception && (
                             <table className="table-details">
