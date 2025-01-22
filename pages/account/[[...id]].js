@@ -831,7 +831,7 @@ export default function Account({
                                         >
                                           {stripDomain(data.ledgerInfo.domain)}
                                         </a>{' '}
-                                        {data.verifiedDomain && (
+                                        {data.verifiedDomain ? (
                                           <span
                                             className="blue tooltip"
                                             style={{
@@ -843,6 +843,13 @@ export default function Account({
                                             <MdVerified />
                                             <span className="tooltiptext small no-brake">TOML Verified Domain</span>
                                           </span>
+                                        ) : !data.service?.domain ||
+                                          !data.ledgerInfo.domain
+                                            .toLowerCase()
+                                            .includes(data.service.domain.toLowerCase()) ? (
+                                          <span className="orange">(unverified)</span>
+                                        ) : (
+                                          ''
                                         )}
                                       </>
                                     ) : (
