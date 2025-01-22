@@ -614,7 +614,8 @@ export default function Subscriptions({ setSignRequest, receiptQuery, tabQuery }
                             <p>
                               Amount:
                               <br />
-                              {payData.bid.price} {payData.bid.currency} <CopyButton text={payData.bid.price} />
+                              {shortNiceNumber(Math.ceil(payData.bid.price * 100) / 100, 2, 2)} {payData.bid.currency}{' '}
+                              <CopyButton text={payData.bid.price} />
                             </p>
                             <table className="table-mobile">
                               <tbody></tbody>
