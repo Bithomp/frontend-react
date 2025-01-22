@@ -532,24 +532,26 @@ export default function Account({
                                   <tr>
                                     <td colSpan="2" className="no-padding">
                                       <div className="flex flex-center">
-                                        <button
-                                          className="button-action button-wide thin"
-                                          onClick={() =>
-                                            setSignRequest({
-                                              action: 'setAvatar',
-                                              request: {
-                                                TransactionType: 'AccountSet',
-                                                Account: data.address
-                                              },
-                                              data: {
-                                                signOnly: true,
-                                                action: 'set-avatar'
-                                              }
-                                            })
-                                          }
-                                        >
-                                          Set Avatar
-                                        </button>
+                                        {!devNet && (
+                                          <button
+                                            className="button-action button-wide thin"
+                                            onClick={() =>
+                                              setSignRequest({
+                                                action: 'setAvatar',
+                                                request: {
+                                                  TransactionType: 'AccountSet',
+                                                  Account: data.address
+                                                },
+                                                data: {
+                                                  signOnly: true,
+                                                  action: 'set-avatar'
+                                                }
+                                              })
+                                            }
+                                          >
+                                            Set Avatar
+                                          </button>
+                                        )}
 
                                         <button
                                           className="button-action button-wide thin"

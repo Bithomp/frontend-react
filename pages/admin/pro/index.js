@@ -9,7 +9,7 @@ import { axiosAdmin } from '../../../utils/axios'
 
 import SEO from '../../../components/SEO'
 import AddressInput from '../../../components/UI/AddressInput'
-import { avatarServer, encode, useWidth, xahauNetwork } from '../../../utils'
+import { avatarServer, devNet, encode, useWidth, xahauNetwork } from '../../../utils'
 import { removeProAddress, activateAddressCrawler, crawlerStatus, updateProAddress } from '../../../utils/pro'
 import FormInput from '../../../components/UI/FormInput'
 import { addressLink } from '../../../utils/format'
@@ -295,23 +295,25 @@ export default function Pro({ account, setSignRequest, refreshPage, subscription
                                   <td style={{ padding: '0 0 0 10px' }}>
                                     <b className="orange">{a.name}</b> - {addressLink(a.address, { short: true })}
                                     <br />
-                                    <a
-                                      onClick={() =>
-                                        setSignRequest({
-                                          action: 'setAvatar',
-                                          request: {
-                                            TransactionType: 'AccountSet',
-                                            Account: a.address
-                                          },
-                                          data: {
-                                            signOnly: true,
-                                            action: 'set-avatar'
-                                          }
-                                        })
-                                      }
-                                    >
-                                      Set Avatar
-                                    </a>
+                                    {!devNet && (
+                                      <a
+                                        onClick={() =>
+                                          setSignRequest({
+                                            action: 'setAvatar',
+                                            request: {
+                                              TransactionType: 'AccountSet',
+                                              Account: a.address
+                                            },
+                                            data: {
+                                              signOnly: true,
+                                              action: 'set-avatar'
+                                            }
+                                          })
+                                        }
+                                      >
+                                        Set Avatar
+                                      </a>
+                                    )}
                                   </td>
                                 </tr>
                               </tbody>
@@ -370,24 +372,28 @@ export default function Pro({ account, setSignRequest, refreshPage, subscription
                               {addressButtons(a, { mobile: true })}
                               <br />
                               <br />
-                              <a
-                                onClick={() =>
-                                  setSignRequest({
-                                    action: 'setAvatar',
-                                    request: {
-                                      TransactionType: 'AccountSet',
-                                      Account: a.address
-                                    },
-                                    data: {
-                                      signOnly: true,
-                                      action: 'set-avatar'
+                              {!devNet && (
+                                <>
+                                  <a
+                                    onClick={() =>
+                                      setSignRequest({
+                                        action: 'setAvatar',
+                                        request: {
+                                          TransactionType: 'AccountSet',
+                                          Account: a.address
+                                        },
+                                        data: {
+                                          signOnly: true,
+                                          action: 'set-avatar'
+                                        }
+                                      })
                                     }
-                                  })
-                                }
-                              >
-                                Set Avatar
-                              </a>
-                              ,{' '}
+                                  >
+                                    Set Avatar
+                                  </a>
+                                  ,{' '}
+                                </>
+                              )}
                               <a
                                 className="red"
                                 onClick={() => {
