@@ -385,7 +385,7 @@ export const usernameOrAddress = (data, type) => {
 export const userOrServiceLink = (data, type, options = {}) => {
   if (!data || !type || !data[type]) return ''
   if (!options.url) {
-    options.url = '/explorer/'
+    options.url = '/account/'
   }
   if (data[type + 'Details']) {
     const { username, service } = data[type + 'Details']
