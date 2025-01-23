@@ -60,7 +60,9 @@ export default function SignForm({
   uuid,
   setRefreshPage,
   saveAddressData,
-  setAccount
+  setAccount,
+  wcSession,
+  setWcSession
 }) {
   const { t } = useTranslation()
   const router = useRouter()
@@ -815,8 +817,9 @@ export default function SignForm({
         afterSubmitExe={afterSubmitExe}
         onSignIn={onSignIn}
         setAwaiting={setAwaiting}
-        setScreen={setScreen}
         afterSigning={afterSigning}
+        session={wcSession}
+        setSession={setWcSession}
       />
       {screen && (
         <div className="sign-in-form">

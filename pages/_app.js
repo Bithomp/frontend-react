@@ -36,6 +36,7 @@ const MyApp = ({ Component, pageProps }) => {
   )
   const [signRequest, setSignRequest] = useState(false)
   const [refreshPage, setRefreshPage] = useState('')
+  const [wcSession, setWcSession] = useState(null)
 
   const router = useRouter()
 
@@ -53,6 +54,7 @@ const MyApp = ({ Component, pageProps }) => {
 
   const signOut = () => {
     localStorage.removeItem('xamanUserToken')
+    setWcSession(null)
     setAccount({
       ...account,
       address: null,
@@ -145,6 +147,8 @@ const MyApp = ({ Component, pageProps }) => {
                 uuid={uuid}
                 setRefreshPage={setRefreshPage}
                 saveAddressData={saveAddressData}
+                wcSession={wcSession}
+                setWcSession={setWcSession}
               />
             )}
             <div className="content">

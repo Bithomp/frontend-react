@@ -15,7 +15,6 @@ function SendTx({
   address,
   wallet,
   setAwaiting,
-  setScreen,
   afterSigning
 }) {
   const [txToSign, setTxToSign] = useState(null)
@@ -51,7 +50,6 @@ function SendTx({
     if (!transaction) return
 
     try {
-      setScreen('walletconnect')
       setStatus('Sign transaction in your Wallet')
 
       const signedTx = await request({
@@ -112,15 +110,15 @@ function SendTx({
 
 export function WalletConnect({
   tx,
-  setScreen,
   signRequest,
   afterSubmitExe,
   onSignIn,
   setStatus,
   setAwaiting,
-  afterSigning
+  afterSigning,
+  session,
+  setSession
 }) {
-  const [session, setSession] = useState(null)
   const [sendNow, setSendNow] = useState(false)
 
   const wallet = 'walletconnect'
@@ -136,39 +134,55 @@ export function WalletConnect({
   })
 
   async function onConnect() {
-    try {
-      const session = await connect()
-      setSession(session)
-      const accounts = session?.namespaces?.xrpl?.accounts?.map((a) => {
-        return a.split(':')[2]
-      })
+    let sessionNew = session
 
-      const address0 = accounts[0]
-
-      if (!tx.Account) {
-        tx.Account = address0
-      } else if (tx.Account !== address0) {
-        setScreen('walletconnect')
-        setStatus(
-          'The account in the transaction (' +
-            tx.Account +
-            ') does not match the account in the WalletConnect session (' +
-            address0 +
-            '). Log out from the current account or Sign transaction with it.'
-        )
+    if (!sessionNew) {
+      try {
+        sessionNew = await connect()
+      } catch (err) {
+        if (err.message === 'Modal closed') {
+          return
+        }
         setAwaiting(false)
-        return
+        if (err.message === 'Requested chains reside on testnet') {
+          setStatus('Make sure your Wallet is connected to the Test network and then try again.')
+        } else {
+          setStatus(err.message || 'Error connecting through WalletConnect')
+        }
       }
+    }
 
-      if (!tx || tx?.TransactionType === 'SignIn') {
-        onSignIn({ address: address0, wallet, redirectName: signRequest.redirect })
-        //keept afterSubmitExe here to close the dialog form when signedin
-        afterSubmitExe({})
-        return
-      }
+    const accounts = sessionNew?.namespaces?.xrpl?.accounts?.map((a) => {
+      return a.split(':')[2]
+    })
 
-      setSendNow(true)
-      /*
+    const address0 = accounts[0]
+
+    if (!tx.Account) {
+      tx.Account = address0
+    } else if (tx.Account !== address0) {
+      setStatus(
+        'The account in the transaction (' +
+          tx.Account +
+          ') does not match the account in the WalletConnect session (' +
+          address0 +
+          '). Log out from the current account or Sign transaction with it.'
+      )
+      setAwaiting(false)
+      return
+    }
+
+    setSession(sessionNew)
+
+    if (!tx || tx?.TransactionType === 'SignIn') {
+      onSignIn({ address: address0, wallet, redirectName: signRequest.redirect })
+      //keept afterSubmitExe here to close the dialog form when signedin
+      afterSubmitExe({})
+      return
+    }
+
+    setSendNow(true)
+    /*
         {
           "peer": {
             "publicKey": "af5bea4152b94af725b117560bc3637417b9910c72167f6ace81426c4d6e5b18",
@@ -183,18 +197,6 @@ export function WalletConnect({
           }
         }
       */
-    } catch (err) {
-      if (err.message === 'Modal closed') {
-        return
-      }
-      setAwaiting(false)
-      setScreen('walletconnect')
-      if (err.message === 'Requested chains reside on testnet') {
-        setStatus('Make sure your Wallet is connected to the Test network and then try again.')
-      } else {
-        setStatus(err.message || 'Error connecting through WalletConnect')
-      }
-    }
   }
 
   useEffect(() => {
@@ -211,9 +213,8 @@ export function WalletConnect({
       setAwaiting(true)
     }
 
-    if (tx && !session) {
+    if (tx) {
       delay(100, onConnect)
-      delay(500, setScreen, '')
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tx, session])
@@ -231,8 +232,8 @@ export function WalletConnect({
           address={tx.Account}
           wallet={wallet}
           setAwaiting={setAwaiting}
-          setScreen={setScreen}
           afterSigning={afterSigning}
+          session={session}
         />
       )}
     </>
