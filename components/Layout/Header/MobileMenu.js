@@ -55,7 +55,7 @@ export default function MobileMenu({
         <div className="mobile-menu__submenu">
           {displayName ? (
             <>
-              <Link href={'/account/' + address} className="mobile-menu-item">
+              <Link href={'/account/' + address} className="mobile-menu-item" onClick={mobileMenuToggle}>
                 {t('signin.actions.view')}
               </Link>
               <span onClick={copyToClipboard} className="mobile-menu-item link">
