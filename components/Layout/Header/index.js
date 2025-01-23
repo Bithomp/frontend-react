@@ -11,7 +11,8 @@ import {
   ledgerSubName,
   network,
   useWidth,
-  avatarServer
+  avatarServer,
+  networkId
 } from '../../../utils'
 
 import Image from 'next/image'
@@ -342,8 +343,8 @@ export default function Header({
                   GemWallet
                 </span>
 
-                {/* hide on mainnets and xahau */}
-                {devNet && !xahauNetwork && (
+                {/* available only on the mainnet and testnet */}
+                {(networkId === 0 || networkId === 1) && (
                   <span onClick={() => setSignRequest({ wallet: 'walletconnect' })} className="link">
                     <Image
                       src="/images/wallets/walletconnect.svg"

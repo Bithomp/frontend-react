@@ -810,17 +810,19 @@ export default function SignForm({
 
   return (
     <>
-      <WalletConnect
-        tx={preparedTx}
-        signRequest={signRequest}
-        setStatus={setStatus}
-        afterSubmitExe={afterSubmitExe}
-        onSignIn={onSignIn}
-        setAwaiting={setAwaiting}
-        afterSigning={afterSigning}
-        session={wcSession}
-        setSession={setWcSession}
-      />
+      {(networkId === 0 || networkId === 1) && (
+        <WalletConnect
+          tx={preparedTx}
+          signRequest={signRequest}
+          setStatus={setStatus}
+          afterSubmitExe={afterSubmitExe}
+          onSignIn={onSignIn}
+          setAwaiting={setAwaiting}
+          afterSigning={afterSigning}
+          session={wcSession}
+          setSession={setWcSession}
+        />
+      )}
       {screen && (
         <div className="sign-in-form">
           <div className="sign-in-body center">
@@ -1094,8 +1096,8 @@ export default function SignForm({
                           />
                         </div>
                       )}
-                      {/* hide on mainnets and xahau */}
-                      {signRequest?.wallet !== 'xaman' && devNet && !xahauNetwork && (
+                      {/* available only for mainnet and testnet */}
+                      {signRequest?.wallet !== 'xaman' && (networkId === 0 || networkId === 1) && (
                         <div className="signin-app-logo">
                           <Image
                             alt="WalletConnect"

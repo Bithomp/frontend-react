@@ -16,7 +16,7 @@ const TopLinks = dynamic(() => import('../components/Layout/TopLinks'), { ssr: f
 const TopProgressBar = dynamic(() => import('../components/TopProgressBar'), { ssr: false })
 
 import { IsSsrMobileContext } from '../utils/mobile'
-import { isValidUUID, network, server, useLocalStorage, useCookie, xahauNetwork } from '../utils'
+import { isValidUUID, network, server, useLocalStorage, useCookie, xahauNetwork, networkId } from '../utils'
 
 import { getAppMetadata } from '@walletconnect/utils'
 import { WalletConnectModalSign } from '@walletconnect/modal-sign-react'
@@ -137,7 +137,8 @@ const MyApp = ({ Component, pageProps }) => {
               setSelectedCurrency={setSelectedCurrency}
             />
             <ScrollToTop />
-            {!xahauNetwork && (
+            {/* available only on the mainnet and testnet */}
+            {(networkId === 0 || networkId === 1) && (
               <WalletConnectModalSign projectId={process.env.NEXT_PUBLIC_WALLETCONNECT} metadata={getAppMetadata()} />
             )}
             {(signRequest || isValidUUID(uuid)) && (
