@@ -342,8 +342,8 @@ export default function Header({
                   GemWallet
                 </span>
 
-                {/* testing walletconnect on devnets */}
-                {devNet && (
+                {/* hide on mainnets and xahau */}
+                {devNet && !xahauNetwork && (
                   <span onClick={() => setSignRequest({ wallet: 'walletconnect' })} className="link">
                     <Image
                       src="/images/wallets/walletconnect.svg"

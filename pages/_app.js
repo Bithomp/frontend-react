@@ -137,7 +137,9 @@ const MyApp = ({ Component, pageProps }) => {
               setSelectedCurrency={setSelectedCurrency}
             />
             <ScrollToTop />
-            <WalletConnectModalSign projectId={process.env.NEXT_PUBLIC_WALLETCONNECT} metadata={getAppMetadata()} />
+            {!xahauNetwork && (
+              <WalletConnectModalSign projectId={process.env.NEXT_PUBLIC_WALLETCONNECT} metadata={getAppMetadata()} />
+            )}
             {(signRequest || isValidUUID(uuid)) && (
               <SignForm
                 setSignRequest={setSignRequest}

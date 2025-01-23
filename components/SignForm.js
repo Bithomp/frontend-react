@@ -1094,8 +1094,8 @@ export default function SignForm({
                           />
                         </div>
                       )}
-                      {/* hide on mainnets */}
-                      {signRequest?.wallet !== 'xaman' && devNet && (
+                      {/* hide on mainnets and xahau */}
+                      {signRequest?.wallet !== 'xaman' && devNet && !xahauNetwork && (
                         <div className="signin-app-logo">
                           <Image
                             alt="WalletConnect"
