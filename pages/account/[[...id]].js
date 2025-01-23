@@ -1045,8 +1045,6 @@ export default function Account({
                             </tbody>
                           </table>
 
-                          {data?.ledgerInfo?.did && <Did data={data.ledgerInfo.did} />}
-
                           {data?.inception && (
                             <table className="table-details">
                               <thead>
@@ -1338,6 +1336,8 @@ export default function Account({
                               </tbody>
                             </table>
                           )}
+
+                          {data?.ledgerInfo?.did && <Did data={data.ledgerInfo.did} />}
                         </div>
                       </>
                     )}

@@ -1,6 +1,7 @@
 import { i18n } from 'next-i18next'
 import { codeHighlight, fullDateAndTime, shortHash, timeFromNow, txIdLink } from '../../utils/format'
 import CopyButton from '../UI/CopyButton'
+import { decode } from '../../utils'
 
 export default function Did({ data }) {
   /*
@@ -57,13 +58,13 @@ export default function Did({ data }) {
         {data.data && (
           <tr>
             <td>Data</td>
-            <td>{data.data}</td>
+            <td>{decode(data.data)}</td>
           </tr>
         )}
         {data.didDocument && (
           <tr>
             <td>DID Document</td>
-            <td>{data.didDocument}</td>
+            <td>{decode(data.didDocument)}</td>
           </tr>
         )}
         <tr>
