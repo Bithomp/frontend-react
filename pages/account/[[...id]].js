@@ -532,6 +532,15 @@ export default function Account({
                                   <tr>
                                     <td colSpan="2" className="no-padding">
                                       <div className="flex flex-center">
+                                        {!account?.address && (
+                                          <button
+                                            className="button-action button-wide thin"
+                                            onClick={() => setSignRequest({})}
+                                          >
+                                            {t('signin.signin')}
+                                          </button>
+                                        )}
+
                                         {!devNet && (
                                           <button
                                             className="button-action button-wide thin"
@@ -548,6 +557,7 @@ export default function Account({
                                                 }
                                               })
                                             }
+                                            disabled={data.address !== account?.address}
                                           >
                                             Set Avatar
                                           </button>
@@ -565,6 +575,7 @@ export default function Account({
                                               }
                                             })
                                           }
+                                          disabled={data.address !== account?.address || !data?.ledgerInfo?.activated}
                                         >
                                           {t('button.set-domain')}
                                         </button>
