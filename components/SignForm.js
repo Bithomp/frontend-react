@@ -100,7 +100,14 @@ export default function SignForm({
     if (!isMobile) {
       txSend()
     } else {
-      setScreen('choose-app') //may be can be removed
+      //if mobile, but if loggedin as walletconnect
+      if (account?.address) {
+        if (account?.wallet === 'walletconnect') {
+          txSend()
+          return
+        }
+      }
+      setScreen('choose-app') //can be refactored, so it opens on previous click
     }
     setHookData({})
     setSeatData({})
@@ -1097,18 +1104,20 @@ export default function SignForm({
                         </div>
                       )}
                       {/* available only for mainnet and testnet */}
-                      {signRequest?.wallet !== 'xaman' && (networkId === 0 || networkId === 1) && (
-                        <div className="signin-app-logo">
-                          <Image
-                            alt="WalletConnect"
-                            src="/images/wallets/walletconnect-large.svg"
-                            onClick={() => txSend({ wallet: 'walletconnect' })}
-                            width={169}
-                            height={80}
-                            style={{ maxWidth: '100%', maxHeight: '100%' }}
-                          />
-                        </div>
-                      )}
+                      {signRequest?.wallet !== 'xaman' &&
+                        !(account?.address && account.wallet === 'xaman') &&
+                        (networkId === 0 || networkId === 1) && (
+                          <div className="signin-app-logo">
+                            <Image
+                              alt="WalletConnect"
+                              src="/images/wallets/walletconnect-large.svg"
+                              onClick={() => txSend({ wallet: 'walletconnect' })}
+                              width={169}
+                              height={80}
+                              style={{ maxWidth: '100%', maxHeight: '100%' }}
+                            />
+                          </div>
+                        )}
                       {signRequest?.wallet !== 'xaman' && !isMobile && (
                         <>
                           <div className="signin-app-logo">
