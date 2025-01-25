@@ -1372,6 +1372,11 @@ export default function Account({
           padding: 0;
         }
 
+        .no-padding .flex {
+          gap: 10px;
+          margin-top: 3px;
+        }
+
         .hide-on-small-w800 {
           @media only screen and (max-width: 800px) {
             display: none;
