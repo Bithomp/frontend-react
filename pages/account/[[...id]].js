@@ -1053,6 +1053,14 @@ export default function Account({
                                     </td>
                                   </tr>
                                 )}
+                              {data.ledgerInfo?.walletLocator && (
+                                <tr>
+                                  <td>Wallet locator</td>
+                                  <td>
+                                    <code className="code-highlight">{data.ledgerInfo.walletLocator}</code>
+                                  </td>
+                                </tr>
+                              )}
                             </tbody>
                           </table>
 
