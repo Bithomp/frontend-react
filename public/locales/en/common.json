@@ -361,7 +361,8 @@
     },
     "address": {
       "invalid_signature_address": "Invalid signature address. Make sure that you sign with the correct address.",
-      "limit_reached": "You can not add more addesses, you've reached the limit."
+      "limit_reached": "You can not add more addesses, you've reached the limit.",
+      "not_activated": "The address is not activated yet."
     },
     "blob": {
       "invalid_signature_address": "You need to sign the message with the address that you're trying to add."

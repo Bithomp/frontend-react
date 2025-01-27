@@ -362,7 +362,8 @@
     },
     "address": {
       "invalid_signature_address": "유효하지 않은 서명 주소입니다. 올바른 주소로 서명했는지 확인해주세요.",
-      "limit_reached": "더 이상 주소를 추가할 수 없습니다. 한도에 도달했습니다."
+      "limit_reached": "더 이상 주소를 추가할 수 없습니다. 한도에 도달했습니다.",
+      "not_activated": "이 주소는 아직 활성화되지 않았습니다. 활성화하려면 20 XRP를 보유해야 합니다."
     },
     "blob": {
       "invalid_signature_address": "추가하려는 주소로 메시지에 서명해야 합니다."

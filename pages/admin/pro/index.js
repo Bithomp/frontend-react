@@ -202,7 +202,7 @@ export default function Pro({ account, setSignRequest, refreshPage, subscription
 
   const afterVerifiedAddressesUpdate = (data) => {
     if (data?.error) {
-      setErrorMessage(data.error)
+      setErrorMessage(t(data.error))
     }
     getVerifiedAddresses()
   }

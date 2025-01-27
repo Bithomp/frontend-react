@@ -361,7 +361,8 @@
     },
     "address": {
       "invalid_signature_address": "Alamat tanda tangan tidak valid. Pastikan Anda menandatangani dengan alamat yang benar.",
-      "limit_reached": "Anda tidak dapat menambahkan lebih banyak alamat, Anda telah mencapai batasnya."
+      "limit_reached": "Anda tidak dapat menambahkan lebih banyak alamat, Anda telah mencapai batasnya.",
+      "not_activated": "Alamat ini belum diaktifkan di ledger."
     },
     "blob": {
       "invalid_signature_address": "Anda perlu menandatangani pesan dengan alamat yang ingin Anda tambahkan."

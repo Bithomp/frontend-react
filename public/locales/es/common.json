@@ -361,7 +361,8 @@
     },
     "address": {
       "invalid_signature_address": "Dirección de firma inválida. Asegúrate de firmar con la dirección correcta.",
-      "limit_reached": "No puedes agregar más direcciones, has alcanzado el límite."
+      "limit_reached": "No puedes agregar más direcciones, has alcanzado el límite.",
+      "not_activated": "La dirección no está activada en el libro contable (aún)."
     },
     "blob": {
       "invalid_signature_address": "Debe firmar el mensaje con la dirección que está tratando de agregar."

@@ -361,7 +361,8 @@
     },
     "address": {
       "invalid_signature_address": "Ungültige Signatur-Adresse. Stellen Sie sicher, dass Sie mit der richtigen Adresse signieren.",
-      "limit_reached": "Sie können keine weiteren Adressen hinzufügen, da Sie das Limit erreicht haben."
+      "limit_reached": "Sie können keine weiteren Adressen hinzufügen, da Sie das Limit erreicht haben.",
+      "not_activated": "Die Adresse ist noch nicht aktiviert."
     },
     "blob": {
       "invalid_signature_address": "Sie müssen die Nachricht mit der Adresse signieren, die Sie hinzufügen möchten."

@@ -361,7 +361,8 @@
     },
     "address": {
       "invalid_signature_address": "Adresse de signature invalide. Assurez-vous de signer avec la bonne adresse.",
-      "limit_reached": "Vous ne pouvez pas ajouter plus d'adresses, vous avez atteint la limite."
+      "limit_reached": "Vous ne pouvez pas ajouter plus d'adresses, vous avez atteint la limite.",
+      "not_activated": "L'adresse n'est pas activée."
     },
     "blob": {
       "invalid_signature_address": "Vous devez signer le message avec l'adresse que vous essayez d'ajouter."
