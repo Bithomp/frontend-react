@@ -50,7 +50,9 @@ function SendTx({
     if (!transaction) return
 
     try {
-      setStatus('Sign transaction in your Wallet')
+      setStatus(
+        'Please open your Wallet app, wait for the transaction to be prepared, and Sign it. Once done, return to our website to continue.'
+      )
 
       const signedTx = await request({
         chainId: 'xrpl:' + networkId,
