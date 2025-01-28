@@ -3,5 +3,7 @@
   "ledger-not-found": "We can not find that ledger yet",
   "earliest-ledger": "The ledger <1>{{minLedger}}</1> is the earliest ledger available.",
   "earliest-ledger-mainnet": "The ledger <1>32570</1> is the earliest ledger available, approximately the first week of XRPL history, <3>ledgers 1 through 32569 were lost due to a mishap in 2012</3>.",
-  "ledger-continue": "Because the {{ledgerName}}'s state is recorded in every ledger version, the ledger can continue without the missing history."
+  "ledger-continue": "Because the {{ledgerName}}'s state is recorded in every ledger version, the ledger can continue without the missing history.",
+  "ledger_unix_close_time": "Ledger Unix close time: {data.close_time}",
+  "ledger_utc_close_time": "Ledger UTC close time: {data.closeTime}"
 }

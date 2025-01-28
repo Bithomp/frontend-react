@@ -3,5 +3,7 @@
   "ledger-not-found": "そのレジャーは見つかっていません。",
   "earliest-ledger": "レジャー<1>{{minLedger}}</1>は、利用可能な最も古いレジャーです。",
   "earliest-ledger-mainnet": "レジャー<1>32570</1>は、XRPLの歴史のおよそ1週間目、利用可能な最も古いレジャーです。<3>レジャー1から32569までは、2012年の不慮の事故で失われました</3>。",
-  "ledger-continue": "{{ledgerName}}の状態はすべてのレジャーのバージョンに記録されているため、レジャーは履歴が欠けていても継続することができます。"
+  "ledger-continue": "{{ledgerName}}の状態はすべてのレジャーのバージョンに記録されているため、レジャーは履歴が欠けていても継続することができます。",
+  "ledger_unix_close_time": "台帳のUnix閉鎖時間: {data.close_time}",
+  "ledger_utc_close_time": "台帳のUTC閉鎖時間: {data.closeTime}"
 }

@@ -3,5 +3,7 @@
   "ledger-not-found": "Kami tidak dapat menemukan ledger tersebut saat ini",
   "earliest-ledger": "Ledger <1>{{minLedger}}</1> adalah ledger tertua yang tersedia.",
   "earliest-ledger-mainnet": "Ledger <1>32570</1> adalah ledger tertua yang tersedia, sekitar pada minggu pertama sejarah XRPL, <3>ledger 1 hingga 32569 hilang karena insiden pada tahun 2012</3>.",
-  "ledger-continue": "Karena status {{ledgerName}} dicatat dalam setiap versi ledger, ledger dapat melanjutkan tanpa sejarah yang hilang."
+  "ledger-continue": "Karena status {{ledgerName}} dicatat dalam setiap versi ledger, ledger dapat melanjutkan tanpa sejarah yang hilang.",
+  "ledger_unix_close_time": "Waktu tutup Unix Ledger: {data.close_time}",
+  "ledger_utc_close_time": "Waktu tutup UTC Ledger: {data.closeTime}"
 }
