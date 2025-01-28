@@ -2,23 +2,11 @@ import { useState, useEffect } from 'react'
 import { useTranslation } from 'next-i18next'
 import axios from 'axios'
 
-import { wssServer, devNet, useWidth, avatarServer } from '../../utils'
+import { devNet, useWidth, avatarServer } from '../../utils'
 import { addressUsernameOrServiceLink, amountFormat, shortNiceNumber, timeFormat, txIdLink } from '../../utils/format'
 import Image from 'next/image'
 
-let ws = null
-
-function sendData() {
-  if (ws.readyState) {
-    //{ command: "subscribe", streams: ["whale_transactions"], currency: true, service: true, id: 1 }
-    ws.send(JSON.stringify({ command: 'subscribe', streams: ['whale_transactions'], id: 1, limit: 6 }))
-  } else {
-    setTimeout(sendData, 1000)
-  }
-}
-
-export default function Whales({ currency }) {
-  const [data, setData] = useState(null)
+export default function Whales({ currency, data, setData }) {
   const [oldData, setOldData] = useState(null)
   const [difference, setDifference] = useState(null)
   const { t } = useTranslation()
@@ -33,23 +21,6 @@ export default function Whales({ currency }) {
     }
   }
 
-  const connect = () => {
-    ws = new WebSocket(wssServer)
-
-    ws.onopen = () => {
-      sendData()
-    }
-
-    ws.onmessage = (evt) => {
-      const message = JSON.parse(evt.data)
-      setData(message.transactions)
-    }
-
-    ws.onclose = () => {
-      connect()
-    }
-  }
-
   useEffect(() => {
     if (oldData && data) {
       const change = data.filter(({ hash: id1 }) => !oldData.some(({ hash: id2 }) => id2 === id1))
@@ -61,11 +32,8 @@ export default function Whales({ currency }) {
 
   useEffect(() => {
     checkStatApi()
-    connect()
     return () => {
-      setData(null)
       setDifference(null)
-      if (ws) ws.close()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])

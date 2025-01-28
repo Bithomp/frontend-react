@@ -1,24 +1,13 @@
-import { useState, useEffect } from 'react'
+import { useEffect } from 'react'
 import Link from 'next/link'
 import { useTranslation } from 'next-i18next'
 import axios from 'axios'
 
-import { wssServer, ledgerName, xahauNetwork } from '../../utils'
+import { ledgerName, xahauNetwork } from '../../utils'
 import { amountFormat, niceNumber } from '../../utils/format'
 import { LedgerLink } from '../../utils/links'
 
-let ws = null
-
-function sendData() {
-  if (ws.readyState) {
-    ws.send(JSON.stringify({ command: 'subscribe', streams: ['statistics'], id: 1 }))
-  } else {
-    setTimeout(sendData, 1000)
-  }
-}
-
-export default function Statistics() {
-  const [data, setData] = useState(null)
+export default function Statistics({ data, setData }) {
   const { t } = useTranslation()
 
   const checkStatApi = async () => {
@@ -29,18 +18,7 @@ export default function Statistics() {
     }
   }
 
-  const connect = () => {
-    ws = new WebSocket(wssServer)
-
-    ws.onopen = () => {
-      sendData()
-    }
-
-    ws.onmessage = (evt) => {
-      const message = JSON.parse(evt.data)
-      setData(message)
-
-      /* 
+  /* 
       {
         "lastClose": {
           "convergeTimeS": 3.002,
@@ -127,20 +105,9 @@ export default function Statistics() {
         }
       }
     */
-    }
-
-    ws.onclose = () => {
-      connect()
-    }
-  }
 
   useEffect(() => {
     checkStatApi()
-    connect()
-    return () => {
-      setData(null)
-      if (ws) ws.close()
-    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 

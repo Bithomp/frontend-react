@@ -1,10 +1,10 @@
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useTranslation } from 'next-i18next'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { LogoJsonLd, SocialProfileJsonLd } from 'next-seo'
 import Head from 'next/head'
 
-import { server, explorerName, nativeCurrency, devNet, xahauNetwork } from '../utils'
+import { server, explorerName, nativeCurrency, devNet, xahauNetwork, wssServer } from '../utils'
 import { getIsSsrMobile } from '../utils/mobile'
 
 import SEO from '../components/SEO'
@@ -18,6 +18,8 @@ import dynamic from 'next/dynamic'
 //not indexed
 const Whales = dynamic(() => import('../components/Home/Whales'), { ssr: false })
 const Statistics = dynamic(() => import('../components/Home/Statistics'), { ssr: false })
+
+let ws = null
 
 export async function getServerSideProps(context) {
   const { locale } = context
@@ -50,12 +52,61 @@ const ldJsonWebsite = {
   }
 }
 
+function sendData() {
+  if (ws.readyState) {
+    //{ command: "subscribe", streams: ["whale_transactions"], currency: true, service: true, id: 1 }
+    ws.send(
+      JSON.stringify({
+        command: 'subscribe',
+        streams: ['statistics', 'whale_transactions'],
+        id: 1,
+        limit: 10
+      })
+    )
+  } else {
+    setTimeout(sendData, 1000)
+  }
+}
+
 export default function Home({ selectedCurrency, setSelectedCurrency, showAds }) {
   const { t } = useTranslation()
 
   const [chartPeriod, setChartPeriod] = useState('one_day')
+  const [whaleTransactions, setWhaleTransactions] = useState(null)
+  const [statistics, setStatistics] = useState(null)
 
   const imagePath = server + '/images/' + (xahauNetwork ? 'xahauexplorer' : 'xrplexplorer') + '/'
+
+  const connect = () => {
+    ws = new WebSocket(wssServer)
+
+    ws.onopen = () => {
+      sendData()
+    }
+
+    ws.onmessage = (evt) => {
+      const message = JSON.parse(evt.data)
+      if (message.type === 'statistics') {
+        setStatistics(message)
+      } else {
+        //type === 'WhaleTransactions'
+        setWhaleTransactions(message.transactions)
+      }
+    }
+
+    ws.onclose = () => {
+      connect()
+    }
+  }
+
+  useEffect(() => {
+    connect()
+    return () => {
+      setWhaleTransactions(null)
+      if (ws) ws.close()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   return (
     <>
@@ -132,11 +183,11 @@ export default function Home({ selectedCurrency, setSelectedCurrency, showAds })
       )}
 
       <div className="home-whale-transactions">
-        <Whales currency={selectedCurrency} />
+        <Whales currency={selectedCurrency} data={whaleTransactions} setData={setWhaleTransactions} />
       </div>
 
       <div className="home-statistics">
-        <Statistics />
+        <Statistics data={statistics} setData={setStatistics} />
       </div>
     </>
   )
