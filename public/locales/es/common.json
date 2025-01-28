@@ -384,7 +384,8 @@
     "Address is not valid": "Dirección inválida"
   },
   "error-tx": {
-    "terNO_ACCOUNT": "La dirección que envía la transacción no está financiada en el libro contable (aún)."
+    "terNO_ACCOUNT": "La dirección que envía la transacción no está financiada en el libro contable (aún).",
+    "tefMAX_LEDGER": "La transacción no se ha incluido en el libro contable debido a la antigüedad de la transacción."
   },
   "units": {
     "seconds-short": "s",

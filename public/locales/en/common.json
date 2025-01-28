@@ -384,7 +384,8 @@
     "Address is not valid": "Invalid address"
   },
   "error-tx": {
-    "terNO_ACCOUNT": "The address sending the transaction is not funded in the ledger (yet)."
+    "terNO_ACCOUNT": "The address sending the transaction is not funded in the ledger (yet).",
+    "tefMAX_LEDGER": "La transaction a expiré."
   },
   "units": {
     "seconds-short": "s",

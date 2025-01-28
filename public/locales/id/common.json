@@ -384,7 +384,8 @@
     "Address is not valid": "Invalid address"
   },
   "error-tx": {
-    "terNO_ACCOUNT": "Alamat yang mengirimkan transaksi belum didanai di ledger (belum)."
+    "terNO_ACCOUNT": "Alamat yang mengirimkan transaksi belum didanai di ledger (belum).",
+    "tefMAX_LEDGER": "Transaksi tidak dapat dimasukkan ke ledger tertutup ter"
   },
   "units": {
     "seconds-short": "d",

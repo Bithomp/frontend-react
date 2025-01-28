@@ -385,7 +385,8 @@
     "Address is not valid": "유효하지 않은 주소입니다"
   },
   "error-tx": {
-    "terNO_ACCOUNT": "거래를 전송하는 주소가 아직 원장에 자금이 충전되지 않았습니다"
+    "terNO_ACCOUNT": "거래를 전송하는 주소가 아직 원장에 자금이 충전되지 않았습니다",
+    "tefMAX_LEDGER": "The transaction has expired."
   },
   "units": {
     "seconds-short": "초",
