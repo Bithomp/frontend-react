@@ -385,7 +385,7 @@
   },
   "error-tx": {
     "terNO_ACCOUNT": "The address sending the transaction is not funded in the ledger (yet).",
-    "tefMAX_LEDGER": "La transaction a expiré."
+    "tefMAX_LEDGER": "The transaction has expired."
   },
   "units": {
     "seconds-short": "s",
