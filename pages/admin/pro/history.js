@@ -92,8 +92,27 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
     { label: 'Timestamp', key: 'timestampExport' },
     { label: 'Address', key: 'address' },
     { label: 'Type', key: 'txType' },
-    { label: 'Ledger Amount', key: 'amountExport' },
-    { label: selectedCurrency.toUpperCase() + ' equavalent', key: 'amountInFiats.' + selectedCurrency },
+    { label: 'Amount as Text', key: 'amountExport' },
+    { label: 'Amount', key: 'amountNumber' },
+    { label: 'Currency', key: 'currencyCode' },
+    { label: 'Currency issuer', key: 'currencyIssuer' },
+    { label: selectedCurrency.toUpperCase() + ' Amount equavalent', key: 'amountInFiats.' + selectedCurrency },
+    { label: 'Direction', key: 'direction' },
+    { label: 'Transfer fee as Text', key: 'transferFeeExport' },
+    { label: 'Transfer fee', key: 'transferFeeNumber' },
+    { label: 'Transfer fee currency', key: 'transferFeeCurrencyCode' },
+    { label: 'Transfer fee currency issuer', key: 'transferFeeCurrencyIssuer' },
+    {
+      label: selectedCurrency.toUpperCase() + ' Transfer Fee equavalent',
+      key: 'transferFeeInFiats.' + selectedCurrency
+    },
+    { label: 'Tx fee as Text', key: 'txFeeExport' },
+    { label: 'Tx fee', key: 'txFeeNumber' },
+    { label: 'Tx fee currency', key: 'txFeeCurrencyCode' },
+    {
+      label: selectedCurrency.toUpperCase() + ' Tx Fee equavalent',
+      key: 'txFeeInFiats.' + selectedCurrency
+    },
     { label: 'Memo', key: 'memo' },
     { label: 'Tx', key: 'hash' }
   ]
@@ -173,6 +192,19 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
       for (let i = 0; i < res.activities.length; i++) {
         res.activities[i].index = options?.marker ? activities.length + 1 + i : i + 1
         res.activities[i].amountExport = amountFormat(res.activities[i].amount)
+        res.activities[i].amountNumber = res.activities[i].amount?.value || res.activities[i].amount / 1000000
+        res.activities[i].currencyCode = res.activities[i].amount?.currency || nativeCurrency
+        res.activities[i].currencyIssuer = res.activities[i].amount?.issuer
+
+        res.activities[i].transferFeeExport = amountFormat(res.activities[i].transferFee)
+        res.activities[i].transferFeeNumber = res.activities[i].transferFee?.value
+        res.activities[i].transferFeeCurrencyCode = res.activities[i].transferFee?.currency
+        res.activities[i].transferFeeCurrencyIssuer = res.activities[i].transferFee?.issuer
+
+        res.activities[i].txFeeExport = amountFormat(res.activities[i].txFee)
+        res.activities[i].txFeeNumber = res.activities[i].txFee / 1000000
+        res.activities[i].txFeeCurrencyCode = nativeCurrency
+
         res.activities[i].timestampExport = fullDateAndTime(res.activities[i].timestamp, null, { asText: true })
       }
       setData(res) // last request data
