@@ -3,5 +3,7 @@
   "ledger-not-found": "No podemos encontrar ese libro contable todavía",
   "earliest-ledger": "El libro contable <1>{{minLedger}}</1> es el libro contable más antiguo disponible.",
   "earliest-ledger-mainnet": "El libro contable <1>32570</1> es el libro contable más antiguo disponible, aproximadamente la primera semana del histórico de XRPL, <3>libros contables del 1 hasta 32569, se perdió debido a un percance en 2012</3>.",
-  "ledger-continue": "Debido a que el estado del {{ledgerName}} se guarda en cada versión del libro contable, el Ledger puede continuar sin la necesidad del histórico perdido."
+  "ledger-continue": "Debido a que el estado del {{ledgerName}} se guarda en cada versión del libro contable, el Ledger puede continuar sin la necesidad del histórico perdido.",
+  "ledger_unix_close_time": "Hora de cierre Unix de Ledger: {data.close_time}",
+  "ledger_utc_close_time": "Hora de cierre UTC de Ledger: {data.closeTime}"
 }
