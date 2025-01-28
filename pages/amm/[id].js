@@ -9,13 +9,13 @@ import { addQueryParams, removeQueryParams, useWidth } from '../../utils'
 import { getIsSsrMobile } from '../../utils/mobile'
 import {
   lpTokenName,
-  trWithAccount,
   shortHash,
   fullDateAndTime,
   fullNiceNumber,
   trAmountWithGateway,
   showAmmPercents,
-  timeFromNow
+  timeFromNow,
+  AddressWithIconFilled
 } from '../../utils/format'
 import { LinkTx } from '../../utils/links'
 import DatePicker from 'react-datepicker'
@@ -227,7 +227,12 @@ export default function Amm({ id, initialData, initialErrorMessage, ledgerTimest
                             {shortHash(data.ammID, 10)} <CopyButton text={data.ammID} />
                           </td>
                         </tr>
-                        {trWithAccount(data, 'account', t('table.address'))}
+                        <tr>
+                          <td>{t('table.address')}</td>
+                          <td>
+                            <AddressWithIconFilled data={data} name="account" />
+                          </td>
+                        </tr>
                         {trAmountWithGateway({ amount: data.amount, name: 'Asset 1' })}
                         {trAmountWithGateway({ amount: data.amount2, name: 'Asset 2' })}
                         <tr>
@@ -276,16 +281,21 @@ export default function Amm({ id, initialData, initialErrorMessage, ledgerTimest
                           </tr>
                         </thead>
                         <tbody>
-                          {trWithAccount(data.auctionSlot, 'account', t('table.owner'))}
+                          <tr>
+                            <td>{t('table.owner')}</td>
+                            <td>
+                              <AddressWithIconFilled data={data.auctionSlot} name="account" />
+                            </td>
+                          </tr>
+
                           {data.auctionSlot.authAccounts?.length > 0 ? (
                             data.auctionSlot.authAccounts.map((account, i) => (
-                              <React.Fragment key={i}>
-                                {trWithAccount(
-                                  account,
-                                  'account',
-                                  'Authorized account ' + (data.auctionSlot.authAccounts.length > 1 ? i + 1 : '')
-                                )}
-                              </React.Fragment>
+                              <tr key={i}>
+                                <td>Authorized account {data.auctionSlot.authAccounts.length > 1 ? i + 1 : ''}</td>
+                                <td>
+                                  <AddressWithIconFilled data={account} name="account" />
+                                </td>
+                              </tr>
                             ))
                           ) : (
                             <tr>
@@ -335,7 +345,12 @@ export default function Amm({ id, initialData, initialErrorMessage, ledgerTimest
                         <tbody>
                           {data.voteSlots.map((slot, i) => (
                             <React.Fragment key={i}>
-                              {trWithAccount(slot, 'account', 'Voter ' + (data.voteSlots.length > 1 ? i + 1 : ''))}
+                              <tr>
+                                <td>Voter {data.voteSlots.length > 1 ? i + 1 : ''}</td>
+                                <td>
+                                  <AddressWithIconFilled data={slot} name="account" />
+                                </td>
+                              </tr>
                               <tr>
                                 <td>Trading fee</td>
                                 <td>{showAmmPercents(slot.tradingFee)}</td>
