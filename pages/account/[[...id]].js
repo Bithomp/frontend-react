@@ -1308,9 +1308,9 @@ export default function Account({
                                           {data.xamanMeta.xummProfile.slug}
                                         </a>
                                       ) : (
-                                        <span className="orange">activated ❤️</span>
+                                        <span className="bold">activated</span>
                                       )}
-                                      {/* Need to be done on the backend and tested, also need to hide the add for 1 hour after click, or longer if we also cache */}
+                                      {/* need to hide the add for 2 hours after click (1hour our cache + 1 hour xppl-labs cache) */}
                                       {data.xamanMeta?.monetisation?.status === 'PAYMENT_REQUIRED' && (
                                         <span className="orange">
                                           <br />
