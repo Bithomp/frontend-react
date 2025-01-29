@@ -1,7 +1,7 @@
 import { i18n } from 'next-i18next'
 import { codeHighlight, fullDateAndTime, shortHash, timeFromNow, txIdLink } from '../../utils/format'
 import CopyButton from '../UI/CopyButton'
-import { decode } from '../../utils'
+import { decode, isUrlValid } from '../../utils'
 
 export default function Did({ data }) {
   /*
@@ -82,13 +82,21 @@ export default function Did({ data }) {
         <tr>
           <td>URL</td>
           <td>
-            <pre>{data.url}</pre>
+            {isUrlValid(data.url) ? (
+              <a href={data.url} target="_blank" rel="noopener noreferrer">
+                {data.url}
+              </a>
+            ) : (
+              <pre>{data.url}</pre>
+            )}
           </td>
         </tr>
-        <tr>
-          <td>Metadata</td>
-          <td>{codeHighlight(data.metadata)}</td>
-        </tr>
+        {data.metadata && (
+          <tr>
+            <td>Metadata</td>
+            <td>{codeHighlight(data.metadata)}</td>
+          </tr>
+        )}
       </tbody>
     </table>
   )
