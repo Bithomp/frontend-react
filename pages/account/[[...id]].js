@@ -452,18 +452,23 @@ export default function Account({
                         </div>
 
                         <div className="center showOnSmall-w800 grey" style={{ marginTop: 10 }}>
+                          {((!account?.address && !data?.service) || data?.address === account?.address) &&
+                            !data?.ledgerInfo?.blackholed && (
+                              <>
+                                <a
+                                  href="#"
+                                  onClick={(e) => {
+                                    e.preventDefault()
+                                    setShownOnSmall(shownOnSmall === 'actions' ? null : 'actions')
+                                  }}
+                                >
+                                  Actions
+                                </a>{' '}
+                                |{' '}
+                              </>
+                            )}
                           <a href={'/explorer/' + data.address}>Transactions</a> |{' '}
                           <a href={'/explorer/' + data.address}>Tokens</a> |{' '}
-                          <a
-                            href="#"
-                            onClick={(e) => {
-                              e.preventDefault()
-                              setShownOnSmall(shownOnSmall === 'actions' ? null : 'actions')
-                            }}
-                          >
-                            Actions
-                          </a>{' '}
-                          |{' '}
                           <a
                             href="#"
                             onClick={(e) => {
