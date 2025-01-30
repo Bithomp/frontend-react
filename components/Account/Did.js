@@ -2,8 +2,9 @@ import { i18n } from 'next-i18next'
 import { codeHighlight, fullDateAndTime, shortHash, timeFromNow, txIdLink } from '../../utils/format'
 import CopyButton from '../UI/CopyButton'
 import { decode, isUrlValid } from '../../utils'
+import { useTranslation } from 'next-i18next'
 
-export default function Did({ data }) {
+export default function Did({ data, setSignRequest, account }) {
   /*
   "did": {
     "didID": "ECE205A44D95E5D7A008823BFCBC597788F840F64AB93E0503A48F6E06B4319F",
@@ -41,71 +42,128 @@ export default function Did({ data }) {
   },
   */
 
-  const url = decode(data.uri)
+  const { t } = useTranslation()
+
+  const didData = data.ledgerInfo.did
+  const url = decode(didData.uri)
 
   return (
-    <table className="table-details">
-      <thead>
-        <tr>
-          <th colSpan="100">Decentralized Identifier (DID)</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>DID ID</td>
-          <td>
-            {shortHash(data.didID, 10)} <CopyButton text={data.didID} />
-          </td>
-        </tr>
-        {data.data && (
+    <>
+      <table className="table-details">
+        <thead>
           <tr>
-            <td>Data</td>
-            <td>{decode(data.data)}</td>
+            <th colSpan="100">Decentralized Identifier (DID)</th>
           </tr>
-        )}
-        {data.didDocument && (
+        </thead>
+        <tbody>
           <tr>
-            <td>DID Document</td>
-            <td>{decode(data.didDocument)}</td>
-          </tr>
-        )}
-        {data.createdAt && (
-          <tr>
-            <td>Created At</td>
+            <td>DID ID</td>
             <td>
-              {timeFromNow(data.createdAt, i18n)} ({fullDateAndTime(data.createdAt)}) {txIdLink(data.createdTxHash, 0)}
+              {shortHash(didData.didID, 10)} <CopyButton text={didData.didID} />
             </td>
           </tr>
-        )}
-        {data.updatedAt && data.updatedAt !== data.createdAt && (
+          {didData.data && (
+            <tr>
+              <td>Data</td>
+              <td>{decode(didData.data)}</td>
+            </tr>
+          )}
+          {didData.didDocument && (
+            <tr>
+              <td>DID Document</td>
+              <td>{decode(didData.didDocument)}</td>
+            </tr>
+          )}
+          {didData.createdAt && (
+            <tr>
+              <td>Created At</td>
+              <td>
+                {timeFromNow(didData.createdAt, i18n)} ({fullDateAndTime(didData.createdAt)}){' '}
+                {txIdLink(didData.createdTxHash, 0)}
+              </td>
+            </tr>
+          )}
+          {didData.updatedAt && didData.updatedAt !== didData.createdAt && (
+            <tr>
+              <td>Updated At</td>
+              <td>
+                {timeFromNow(didData.updatedAt, i18n)} ({fullDateAndTime(didData.updatedAt)}){' '}
+                {txIdLink(didData.updatedTxHash, 0)}
+              </td>
+            </tr>
+          )}
+          {url && (
+            <tr>
+              <td>URL</td>
+              <td>
+                {isUrlValid(url) ? (
+                  <>
+                    <a href={url} target="_blank" rel="noopener noreferrer">
+                      {url}
+                    </a>{' '}
+                    <span className="orange">(unverified)</span>
+                  </>
+                ) : (
+                  <pre>{url}</pre>
+                )}
+              </td>
+            </tr>
+          )}
+          {didData.metadata && (
+            <tr>
+              <td>Metadata</td>
+              <td>{codeHighlight(didData.metadata)}</td>
+            </tr>
+          )}
           <tr>
-            <td>Updated At</td>
-            <td>
-              {timeFromNow(data.updatedAt, i18n)} ({fullDateAndTime(data.updatedAt)}) {txIdLink(data.updatedTxHash, 0)}
-            </td>
-          </tr>
-        )}
-        {url && (
-          <tr>
-            <td>URL</td>
-            <td>
-              {isUrlValid(url) ? (
-                <a href={url} target="_blank" rel="noopener noreferrer">
-                  {url}
-                </a>
-              ) : (
-                <pre>{url}</pre>
+            <td>Actions</td>
+            <td className="action-buttons">
+              <button
+                className="button-action thin button-margin"
+                onClick={() =>
+                  setSignRequest({
+                    action: 'setDid',
+                    redirect: 'account',
+                    request: {
+                      TransactionType: 'DIDSet',
+                      Account: data?.address
+                    }
+                  })
+                }
+                disabled={data.address !== account?.address || !data?.ledgerInfo?.activated}
+              >
+                {t('button.update-did', { ns: 'account' })}
+              </button>{' '}
+              {data?.ledgerInfo?.did && (
+                <button
+                  className="button-action thin button-margin"
+                  onClick={() =>
+                    setSignRequest({
+                      redirect: 'account',
+                      request: {
+                        TransactionType: 'DIDDelete',
+                        Account: data?.address
+                      }
+                    })
+                  }
+                >
+                  {t('button.delete-did', { ns: 'account' })}
+                </button>
               )}
             </td>
           </tr>
-        )}
-        {data.metadata && (
-          <tr>
-            <td>Metadata</td>
-            <td>{codeHighlight(data.metadata)}</td>
-          </tr>
-        )}
-      </tbody>
-    </table>
+        </tbody>
+      </table>
+      <style jsx>{`
+        .action-buttons > :not(:first-child) {
+          margin-left: 5px;
+        }
+        @media (max-width: 800px) {
+          .button-margin {
+            min-width: unset;
+          }
+        }
+      `}</style>
+    </>
   )
 }

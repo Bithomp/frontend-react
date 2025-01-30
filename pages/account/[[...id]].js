@@ -549,7 +549,7 @@ export default function Account({
                                           {t('button.set-domain')}
                                         </button>
 
-                                        {!xahauNetwork && (
+                                        {!xahauNetwork && !data?.ledgerInfo?.did && (
                                           <>
                                             <button
                                               className="button-action button-wide thin"
@@ -567,26 +567,8 @@ export default function Account({
                                                 data.address !== account?.address || !data?.ledgerInfo?.activated
                                               }
                                             >
-                                              {t(data?.ledgerInfo?.did ? 'button.update-did' : 'button.set-did', {
-                                                ns: 'account'
-                                              })}
+                                              {t('button.set-did', { ns: 'account' })}
                                             </button>
-                                            {data?.ledgerInfo?.did && (
-                                              <button
-                                                className="button-action button-wide thin"
-                                                onClick={() =>
-                                                  setSignRequest({
-                                                    redirect: 'account',
-                                                    request: {
-                                                      TransactionType: 'DIDDelete',
-                                                      Account: data?.address
-                                                    }
-                                                  })
-                                                }
-                                              >
-                                                {t('button.delete-did', { ns: 'account' })}
-                                              </button>
-                                            )}
                                           </>
                                         )}
                                       </div>
@@ -1420,7 +1402,9 @@ export default function Account({
                             </table>
                           )}
 
-                          {data?.ledgerInfo?.did && <Did data={data.ledgerInfo.did} />}
+                          {data?.ledgerInfo?.did && (
+                            <Did data={data} account={account} setSignRequest={setSignRequest} />
+                          )}
                         </div>
                       </>
                     )}
