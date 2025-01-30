@@ -744,11 +744,13 @@ export default function Account({
                               {data?.ledgerInfo?.balance && (
                                 <>
                                   <tr>
-                                    <td>Total balance</td>
+                                    <td>Available</td>
                                     <td>
-                                      {amountFormat(balances?.total?.native, { precise: 'nice' })}
+                                      <b className="green">
+                                        {amountFormat(balances?.available?.native, { precise: 'nice' })}
+                                      </b>
                                       {nativeCurrencyToFiat({
-                                        amount: balances.total?.native,
+                                        amount: balances.available?.native,
                                         selectedCurrency,
                                         fiatRate
                                       })}
@@ -766,13 +768,11 @@ export default function Account({
                                     </td>
                                   </tr>
                                   <tr>
-                                    <td>Available</td>
+                                    <td>Total balance</td>
                                     <td>
-                                      <b className="green">
-                                        {amountFormat(balances?.available?.native, { precise: 'nice' })}
-                                      </b>
+                                      {amountFormat(balances?.total?.native, { precise: 'nice' })}
                                       {nativeCurrencyToFiat({
-                                        amount: balances.available?.native,
+                                        amount: balances.total?.native,
                                         selectedCurrency,
                                         fiatRate
                                       })}
@@ -1274,20 +1274,24 @@ export default function Account({
                                     </td>
                                   </tr>
                                 ) : (
-                                  <tr>
-                                    <td>Activated by</td>
-                                    <td>
-                                      <AddressWithIconFilled
-                                        data={{
-                                          address: data.parent?.address,
-                                          addressDetails: {
-                                            username: data.parent?.username,
-                                            service: data.parent?.service?.name || data.parent?.service?.domain
-                                          }
-                                        }}
-                                      />
-                                    </td>
-                                  </tr>
+                                  <>
+                                    {!data.genesis && (
+                                      <tr>
+                                        <td>Activated by</td>
+                                        <td>
+                                          <AddressWithIconFilled
+                                            data={{
+                                              address: data.parent?.address,
+                                              addressDetails: {
+                                                username: data.parent?.username,
+                                                service: data.parent?.service?.name || data.parent?.service?.domain
+                                              }
+                                            }}
+                                          />
+                                        </td>
+                                      </tr>
+                                    )}
+                                  </>
                                 )}
                                 {!data.genesis && data.initialBalance && (
                                   <tr>
