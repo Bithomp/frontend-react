@@ -66,7 +66,7 @@ export async function getServerSideProps(context) {
       ledgerTimestampQuery: Date.parse(ledgerTimestamp) || '',
       isSsrMobile: getIsSsrMobile(context),
       initialData,
-      ...(await serverSideTranslations(locale, ['common']))
+      ...(await serverSideTranslations(locale, ['common', 'account']))
     }
   }
 }
@@ -559,7 +559,7 @@ export default function Account({
                                             }
                                             disabled={data.address !== account?.address}
                                           >
-                                            Set Avatar
+                                            Set an Avatar
                                           </button>
                                         )}
 
@@ -579,6 +579,47 @@ export default function Account({
                                         >
                                           {t('button.set-domain')}
                                         </button>
+
+                                        {!xahauNetwork && (
+                                          <>
+                                            <button
+                                              className="button-action button-wide thin"
+                                              onClick={() =>
+                                                setSignRequest({
+                                                  action: 'setDid',
+                                                  redirect: 'account',
+                                                  request: {
+                                                    TransactionType: 'DIDSet',
+                                                    Account: data?.address
+                                                  }
+                                                })
+                                              }
+                                              disabled={
+                                                data.address !== account?.address || !data?.ledgerInfo?.activated
+                                              }
+                                            >
+                                              {t(data?.ledgerInfo?.did ? 'button.update-did' : 'button.set-did', {
+                                                ns: 'account'
+                                              })}
+                                            </button>
+                                            {data?.ledgerInfo?.did && (
+                                              <button
+                                                className="button-action button-wide thin"
+                                                onClick={() =>
+                                                  setSignRequest({
+                                                    redirect: 'account',
+                                                    request: {
+                                                      TransactionType: 'DIDDelete',
+                                                      Account: data?.address
+                                                    }
+                                                  })
+                                                }
+                                              >
+                                                {t('button.delete-did', { ns: 'account' })}
+                                              </button>
+                                            )}
+                                          </>
+                                        )}
                                       </div>
                                     </td>
                                   </tr>

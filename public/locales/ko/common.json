@@ -122,6 +122,7 @@
       "my-nft-offers": "내 NFT 제안"
     },
     "confirm": {
+      "set-did": "Setting a DID",
       "set-domain": "도메인을 설정합니다",
       "set-avatar": "아바타를 설정",
       "nft-create-transfer-offer-header": "NFT transfer",
@@ -338,7 +339,8 @@
       "password-invalid": "Invalid password."
     },
     "placeholder": {
-      "destination-tag": "목적지 태그를 입력해주세요 (필요한 경우)"
+      "destination-tag": "목적지 태그를 입력해주세요 (필요한 경우)",
+      "uri": "URI를 입력해주세요"
     }
   },
   "error": {

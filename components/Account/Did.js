@@ -41,6 +41,8 @@ export default function Did({ data }) {
   },
   */
 
+  const url = decode(data.uri)
+
   return (
     <table className="table-details">
       <thead>
@@ -67,30 +69,36 @@ export default function Did({ data }) {
             <td>{decode(data.didDocument)}</td>
           </tr>
         )}
-        <tr>
-          <td>Created At</td>
-          <td>
-            {timeFromNow(data.createdAt, i18n)} ({fullDateAndTime(data.createdAt)}) {txIdLink(data.createdTxHash, 0)}
-          </td>
-        </tr>
-        <tr>
-          <td>Updated At</td>
-          <td>
-            {timeFromNow(data.updatedAt, i18n)} ({fullDateAndTime(data.updatedAt)}) {txIdLink(data.updatedTxHash, 0)}
-          </td>
-        </tr>
-        <tr>
-          <td>URL</td>
-          <td>
-            {isUrlValid(data.url) ? (
-              <a href={data.url} target="_blank" rel="noopener noreferrer">
-                {data.url}
-              </a>
-            ) : (
-              <pre>{data.url}</pre>
-            )}
-          </td>
-        </tr>
+        {data.createdAt && (
+          <tr>
+            <td>Created At</td>
+            <td>
+              {timeFromNow(data.createdAt, i18n)} ({fullDateAndTime(data.createdAt)}) {txIdLink(data.createdTxHash, 0)}
+            </td>
+          </tr>
+        )}
+        {data.updatedAt && data.updatedAt !== data.createdAt && (
+          <tr>
+            <td>Updated At</td>
+            <td>
+              {timeFromNow(data.updatedAt, i18n)} ({fullDateAndTime(data.updatedAt)}) {txIdLink(data.updatedTxHash, 0)}
+            </td>
+          </tr>
+        )}
+        {url && (
+          <tr>
+            <td>URL</td>
+            <td>
+              {isUrlValid(url) ? (
+                <a href={url} target="_blank" rel="noopener noreferrer">
+                  {url}
+                </a>
+              ) : (
+                <pre>{url}</pre>
+              )}
+            </td>
+          </tr>
+        )}
         {data.metadata && (
           <tr>
             <td>Metadata</td>

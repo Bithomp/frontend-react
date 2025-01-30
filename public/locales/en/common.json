@@ -122,8 +122,9 @@
       "my-nft-offers": "My NFT offers"
     },
     "confirm": {
-      "set-domain": "Setting a domain",
-      "set-avatar": "Setting an avatar",
+      "set-did": "Setting a DID",
+      "set-domain": "Setting a Domain",
+      "set-avatar": "Setting an Avatar",
       "nft-create-transfer-offer-header": "NFT transfer",
       "nft-transfer": "I'm offering that NFT for FREE to the Destination account, <2>the destination account would need to accept the NFT transfer</2>.",
       "nft-accept-sell-offer-header": "NFT purchase",
@@ -276,7 +277,7 @@
     "order-id": "order id"
   },
   "button": {
-    "set-domain": "Set a domain",
+    "set-domain": "Set a Domain",
     "continue": "Continue",
     "cancel": "Cancel",
     "accept": "Accept",
@@ -338,7 +339,8 @@
       "password-invalid": "Please enter a valid password."
     },
     "placeholder": {
-      "destination-tag": "Enter the Destination tag (if it is required)"
+      "destination-tag": "Enter the Destination tag (if it is required)",
+      "uri": "Enter the URI"
     }
   },
   "error": {

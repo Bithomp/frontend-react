@@ -35,6 +35,7 @@ import { submitProAddressToVerify } from '../utils/pro'
 import { setAvatar } from '../utils/blobVerifications'
 import SetAvatar from './SignForms/SetAvatar'
 import SetDomain from './SignForms/SetDomain'
+import SetDid from './SignForms/SetDid'
 import NFTokenCreateOffer from './SignForms/NFTokenCreateOffer'
 import NftTransfer from './SignForms/NftTransfer'
 import { WalletConnect } from './Walletconnect'
@@ -48,10 +49,11 @@ const askInfoScreens = [
   'NFTokenCreateOffer',
   'NFTokenBurn',
   'setDomain',
+  'setDid',
   'setAvatar',
   'nftTransfer'
 ]
-const noCheckboxScreens = [...voteTxs, 'setDomain', 'setAvatar']
+const noCheckboxScreens = [...voteTxs, 'setDomain', 'setDid', 'setAvatar']
 
 export default function SignForm({
   setSignRequest,
@@ -206,6 +208,11 @@ export default function SignForm({
 
     if (signRequest.action === 'setDomain' && !agreedToRisks) {
       setScreen('setDomain')
+      return
+    }
+
+    if (signRequest.action === 'setDid' && !agreedToRisks) {
+      setScreen('setDid')
       return
     }
 
@@ -848,6 +855,7 @@ export default function SignForm({
                       : t('signin.confirm.nft-create-buy-offer-header'))}
                   {screen === 'nftTransfer' && t('signin.confirm.nft-create-transfer-offer-header')}
                   {screen === 'setDomain' && t('signin.confirm.set-domain')}
+                  {screen === 'setDid' && t('signin.confirm.set-did')}
                   {screen === 'setAvatar' && t('signin.confirm.set-avatar')}
                   {voteTxs.includes(screen) && 'Cast a vote'}
                 </div>
@@ -872,6 +880,15 @@ export default function SignForm({
 
                 {screen === 'setDomain' && (
                   <SetDomain
+                    setSignRequest={setSignRequest}
+                    signRequest={signRequest}
+                    setStatus={setStatus}
+                    setAgreedToRisks={setAgreedToRisks}
+                  />
+                )}
+
+                {screen === 'setDid' && (
+                  <SetDid
                     setSignRequest={setSignRequest}
                     signRequest={signRequest}
                     setStatus={setStatus}

@@ -122,6 +122,7 @@
       "my-nft-offers": "Meine NFT Angebote"
     },
     "confirm": {
+      "set-did": "Setting a DID",
       "set-domain": "Eine Domain definieren",
       "set-avatar": "Ein Avatar definieren",
       "nft-create-transfer-offer-header": "NFT Transfer",
@@ -338,7 +339,8 @@
       "password-invalid": "Bitte geben Sie ein gültiges Passwort ein."
     },
     "placeholder": {
-      "destination-tag": "Enter the Destination tag (if it is required)"
+      "destination-tag": "Enter the Destination tag (if it is required)",
+      "uri": "Enter the URI"
     }
   },
   "error": {

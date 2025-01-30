@@ -1,0 +1,7 @@
+{
+  "button": {
+    "set-did": "Set a DID",
+    "update-did": "Update DID",
+    "delete-did": "Delete DID"
+  }
+}
