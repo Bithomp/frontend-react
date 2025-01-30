@@ -35,7 +35,8 @@ import { LinkAmm } from '../../utils/links'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 
-import { MdVerified } from 'react-icons/md'
+import { MdVerified, MdDeleteForever } from 'react-icons/md'
+import { FiEdit } from 'react-icons/fi'
 
 export async function getServerSideProps(context) {
   const { locale, query, req } = context
@@ -532,22 +533,24 @@ export default function Account({
                                           </button>
                                         )}
 
-                                        <button
-                                          className="button-action button-wide thin"
-                                          onClick={() =>
-                                            setSignRequest({
-                                              action: 'setDomain',
-                                              redirect: 'account',
-                                              request: {
-                                                TransactionType: 'AccountSet',
-                                                Account: data?.address
-                                              }
-                                            })
-                                          }
-                                          disabled={data.address !== account?.address || !data?.ledgerInfo?.activated}
-                                        >
-                                          {t('button.set-domain')}
-                                        </button>
+                                        {!data.ledgerInfo.domain && (
+                                          <button
+                                            className="button-action button-wide thin"
+                                            onClick={() =>
+                                              setSignRequest({
+                                                action: 'setDomain',
+                                                redirect: 'account',
+                                                request: {
+                                                  TransactionType: 'AccountSet',
+                                                  Account: data?.address
+                                                }
+                                              })
+                                            }
+                                            disabled={data.address !== account?.address || !data?.ledgerInfo?.activated}
+                                          >
+                                            {t('button.set-domain')}
+                                          </button>
+                                        )}
 
                                         {!xahauNetwork && !data?.ledgerInfo?.did && (
                                           <button
@@ -886,10 +889,11 @@ export default function Account({
                                             <MdVerified />
                                             <span className="tooltiptext small no-brake">TOML Verified Domain</span>
                                           </span>
-                                        ) : !data.service?.domain ||
-                                          !data.ledgerInfo.domain
-                                            .toLowerCase()
-                                            .includes(data.service.domain.toLowerCase()) ? (
+                                        ) : (!data.service?.domain ||
+                                            !data.ledgerInfo.domain
+                                              .toLowerCase()
+                                              .includes(data.service.domain.toLowerCase())) &&
+                                          data?.address !== account?.address ? (
                                           <span className="orange">(unverified)</span>
                                         ) : (
                                           ''
@@ -897,6 +901,47 @@ export default function Account({
                                       </>
                                     ) : (
                                       <code className="code-highlight">{data.ledgerInfo.domain}</code>
+                                    )}
+                                    {data?.address === account?.address && (
+                                      <>
+                                        <span className="tooltip tooltip-icon" style={{ marginLeft: 5 }}>
+                                          <div
+                                            style={{ fontSize: 18, marginBottom: -4 }}
+                                            onClick={() =>
+                                              setSignRequest({
+                                                action: 'setDomain',
+                                                redirect: 'account',
+                                                request: {
+                                                  TransactionType: 'AccountSet',
+                                                  Account: data?.address
+                                                }
+                                              })
+                                            }
+                                          >
+                                            <FiEdit />
+                                          </div>
+                                          <span className="tooltiptext">Change</span>
+                                        </span>{' '}
+                                        <span className="tooltip tooltip-icon">
+                                          <div
+                                            className="red"
+                                            style={{ fontSize: 20, marginBottom: -6 }}
+                                            onClick={() =>
+                                              setSignRequest({
+                                                redirect: 'account',
+                                                request: {
+                                                  TransactionType: 'AccountSet',
+                                                  Domain: '',
+                                                  Account: data?.address
+                                                }
+                                              })
+                                            }
+                                          >
+                                            <MdDeleteForever />
+                                          </div>
+                                          <span className="tooltiptext">Remove</span>
+                                        </span>
+                                      </>
                                     )}
                                   </td>
                                 </tr>

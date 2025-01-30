@@ -705,6 +705,10 @@ table {
   display: inline-block;
   cursor: pointer;
 
+  &.tooltip-icon {
+    vertical-align: bottom;
+  }
+
   .tooltiptext {
     visibility: hidden;
     top: -5px;
