@@ -115,43 +115,46 @@ export default function Did({ data, setSignRequest, account }) {
               <td>{codeHighlight(didData.metadata)}</td>
             </tr>
           )}
-          <tr>
-            <td>Actions</td>
-            <td className="action-buttons">
-              <button
-                className="button-action thin button-margin"
-                onClick={() =>
-                  setSignRequest({
-                    action: 'setDid',
-                    redirect: 'account',
-                    request: {
-                      TransactionType: 'DIDSet',
-                      Account: data?.address
-                    }
-                  })
-                }
-                disabled={data.address !== account?.address || !data?.ledgerInfo?.activated}
-              >
-                {t('button.update-did', { ns: 'account' })}
-              </button>{' '}
-              {data?.ledgerInfo?.did && (
+          {data.address === account?.address && (
+            <tr>
+              <td>Actions</td>
+              <td className="action-buttons">
                 <button
                   className="button-action thin button-margin"
                   onClick={() =>
                     setSignRequest({
+                      action: 'setDid',
                       redirect: 'account',
                       request: {
-                        TransactionType: 'DIDDelete',
+                        TransactionType: 'DIDSet',
                         Account: data?.address
                       }
                     })
                   }
+                  disabled={!data?.ledgerInfo?.activated}
                 >
-                  {t('button.delete-did', { ns: 'account' })}
-                </button>
-              )}
-            </td>
-          </tr>
+                  {t('button.update-did', { ns: 'account' })}
+                </button>{' '}
+                {data?.ledgerInfo?.did && (
+                  <button
+                    className="button-action thin button-margin"
+                    onClick={() =>
+                      setSignRequest({
+                        redirect: 'account',
+                        request: {
+                          TransactionType: 'DIDDelete',
+                          Account: data?.address
+                        }
+                      })
+                    }
+                    disabled={!data?.ledgerInfo?.activated}
+                  >
+                    {t('button.delete-did', { ns: 'account' })}
+                  </button>
+                )}
+              </td>
+            </tr>
+          )}
         </tbody>
       </table>
       <style jsx>{`

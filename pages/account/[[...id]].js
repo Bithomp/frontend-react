@@ -550,26 +550,22 @@ export default function Account({
                                         </button>
 
                                         {!xahauNetwork && !data?.ledgerInfo?.did && (
-                                          <>
-                                            <button
-                                              className="button-action button-wide thin"
-                                              onClick={() =>
-                                                setSignRequest({
-                                                  action: 'setDid',
-                                                  redirect: 'account',
-                                                  request: {
-                                                    TransactionType: 'DIDSet',
-                                                    Account: data?.address
-                                                  }
-                                                })
-                                              }
-                                              disabled={
-                                                data.address !== account?.address || !data?.ledgerInfo?.activated
-                                              }
-                                            >
-                                              {t('button.set-did', { ns: 'account' })}
-                                            </button>
-                                          </>
+                                          <button
+                                            className="button-action button-wide thin"
+                                            onClick={() =>
+                                              setSignRequest({
+                                                action: 'setDid',
+                                                redirect: 'account',
+                                                request: {
+                                                  TransactionType: 'DIDSet',
+                                                  Account: data?.address
+                                                }
+                                              })
+                                            }
+                                            disabled={data.address !== account?.address || !data?.ledgerInfo?.activated}
+                                          >
+                                            {t('button.set-did', { ns: 'account' })}
+                                          </button>
                                         )}
                                       </div>
                                     </td>
