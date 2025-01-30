@@ -15,7 +15,8 @@ import {
   avatarServer,
   stripDomain,
   isDomainValid,
-  networks
+  networks,
+  network
 } from '../../utils'
 import {
   amountFormat,
@@ -1444,6 +1445,80 @@ export default function Account({
                                     </td>
                                   </tr>
                                 )}
+
+                                <tr>
+                                  <td>On other Networks</td>
+                                  <td>
+                                    {network !== 'mainnet' && (
+                                      <>
+                                        <a
+                                          href={
+                                            'https://xrplexplorer.com/' + i18n.language + '/account/' + data?.address
+                                          }
+                                        >
+                                          XRPL
+                                        </a>{' '}
+                                        |{' '}
+                                      </>
+                                    )}
+                                    {network !== 'testnet' && (
+                                      <>
+                                        <a
+                                          href={
+                                            'https://test.xrplexplorer.com/' +
+                                            i18n.language +
+                                            '/account/' +
+                                            data?.address
+                                          }
+                                        >
+                                          XRPL Testnet
+                                        </a>{' '}
+                                        |{' '}
+                                      </>
+                                    )}
+                                    {network !== 'devnet' && (
+                                      <>
+                                        <a
+                                          href={
+                                            'https://dev.xrplexplorer.com/' +
+                                            i18n.language +
+                                            '/account/' +
+                                            data?.address
+                                          }
+                                        >
+                                          XRPL Devnet
+                                        </a>{' '}
+                                        |{' '}
+                                      </>
+                                    )}
+                                    {network !== 'xahau' && (
+                                      <>
+                                        <a
+                                          href={
+                                            'https://xahauexplorer.com/' + i18n.language + '/account/' + data?.address
+                                          }
+                                        >
+                                          Xahau
+                                        </a>
+                                        {network !== 'xahau-testnet' && ' | '}
+                                      </>
+                                    )}
+                                    {network !== 'xahau-testnet' && (
+                                      <>
+                                        <a
+                                          href={
+                                            'https://test.xahauexplorer.com/' +
+                                            i18n.language +
+                                            '/account/' +
+                                            data?.address
+                                          }
+                                        >
+                                          Xahau Testnet
+                                        </a>
+                                      </>
+                                    )}
+                                  </td>
+                                </tr>
                               </tbody>
                             </table>
                           )}
