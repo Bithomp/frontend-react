@@ -113,7 +113,7 @@ export default function Account({
   })
   const [networkInfo, setNetworkInfo] = useState({})
   const [balances, setBalances] = useState({})
-  const [showTimeMachine, setShowTimeMachine] = useState(false)
+  const [shownOnSmall, setShownOnSmall] = useState(null)
 
   useEffect(() => {
     if (!initialData?.address) return
@@ -457,7 +457,17 @@ export default function Account({
                             href="#"
                             onClick={(e) => {
                               e.preventDefault()
-                              setShowTimeMachine(!showTimeMachine)
+                              setShownOnSmall(shownOnSmall === 'actions' ? null : 'actions')
+                            }}
+                          >
+                            Actions
+                          </a>{' '}
+                          |{' '}
+                          <a
+                            href="#"
+                            onClick={(e) => {
+                              e.preventDefault()
+                              setShownOnSmall(shownOnSmall === 'timeMachine' ? null : 'timeMachine')
                             }}
                           >
                             Time machine
@@ -476,53 +486,12 @@ export default function Account({
                             />
                           </div>
 
-                          <table
-                            className={'table-details autowidth hide-on-small-w800'}
-                            style={showTimeMachine ? { display: 'table' } : null}
-                          >
-                            <thead>
-                              <tr>
-                                <th colSpan="100">Time machine</th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              <tr>
-                                <td colSpan="2" className="no-padding">
-                                  {/*  (info) Check account balance and settings in any Time in the past. */}
-                                  <div className="time-machine">
-                                    <DatePicker
-                                      selected={ledgerTimestampInput || new Date()}
-                                      onChange={setLedgerTimestampInput}
-                                      selectsStart
-                                      showTimeInput
-                                      timeInputLabel={t('table.time')}
-                                      minDate={new Date(data.inception * 1000)}
-                                      maxDate={new Date()}
-                                      dateFormat="yyyy/MM/dd HH:mm:ss"
-                                      className="dateAndTimeRange"
-                                      showMonthDropdown
-                                      showYearDropdown
-                                    />
-                                  </div>
-                                  <div className="flex flex-center">
-                                    <button
-                                      onClick={() => setLedgerTimestamp(ledgerTimestampInput)}
-                                      className="button-action thin button-wide"
-                                    >
-                                      Update
-                                    </button>{' '}
-                                    <button onClick={resetTimeMachine} className="button-action thin button-wide">
-                                      Reset
-                                    </button>
-                                  </div>
-                                </td>
-                              </tr>
-                            </tbody>
-                          </table>
-
                           {((!account?.address && !data?.service) || data?.address === account?.address) &&
                             !data?.ledgerInfo?.blackholed && (
-                              <table className="table-details autowidth">
+                              <table
+                                className={'table-details autowidth hide-on-small-w800'}
+                                style={shownOnSmall === 'actions' ? { display: 'table' } : null}
+                              >
                                 <thead>
                                   <tr>
                                     <th colSpan="100">Actions</th>
@@ -626,6 +595,50 @@ export default function Account({
                                 </tbody>
                               </table>
                             )}
+
+                          <table
+                            className={'table-details autowidth hide-on-small-w800'}
+                            style={shownOnSmall === 'timeMachine' ? { display: 'table' } : null}
+                          >
+                            <thead>
+                              <tr>
+                                <th colSpan="100">Time machine</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              <tr>
+                                <td colSpan="2" className="no-padding">
+                                  {/*  (info) Check account balance and settings in any Time in the past. */}
+                                  <div className="time-machine">
+                                    <DatePicker
+                                      selected={ledgerTimestampInput || new Date()}
+                                      onChange={setLedgerTimestampInput}
+                                      selectsStart
+                                      showTimeInput
+                                      timeInputLabel={t('table.time')}
+                                      minDate={new Date(data.inception * 1000)}
+                                      maxDate={new Date()}
+                                      dateFormat="yyyy/MM/dd HH:mm:ss"
+                                      className="dateAndTimeRange"
+                                      showMonthDropdown
+                                      showYearDropdown
+                                    />
+                                  </div>
+                                  <div className="flex flex-center">
+                                    <button
+                                      onClick={() => setLedgerTimestamp(ledgerTimestampInput)}
+                                      className="button-action thin button-wide"
+                                    >
+                                      Update
+                                    </button>{' '}
+                                    <button onClick={resetTimeMachine} className="button-action thin button-wide">
+                                      Reset
+                                    </button>
+                                  </div>
+                                </td>
+                              </tr>
+                            </tbody>
+                          </table>
                         </div>
                         <div className="column-right">
                           <table className="table-details">
