@@ -1573,7 +1573,9 @@ export default function Account({
                             </table>
                           )}
 
-                          {data?.xamanMeta && (
+                          {(data?.xamanMeta?.xummPro ||
+                            data.xamanMeta?.kycApproved ||
+                            data.xamanMeta?.globalid?.profileUrl) && (
                             <table className="table-details">
                               <thead>
                                 <tr>
