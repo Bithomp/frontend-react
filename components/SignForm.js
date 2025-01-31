@@ -504,7 +504,7 @@ export default function SignForm({
     if (txid) {
       const response = await axios('xrpl/transaction/' + txid)
       if (response.data) {
-        const { validated, inLedger, ledger_index, meta } = response.data
+        const { validated, inLedger, ledger_index, meta, TransactionType } = response.data
         const includedInLedger = inLedger || ledger_index
         if (validated && includedInLedger) {
           if (redirectName === 'nft') {
@@ -518,7 +518,7 @@ export default function SignForm({
             }
             return
           }
-          checkCrawlerStatus({ inLedger: includedInLedger })
+          checkCrawlerStatus({ inLedger: includedInLedger, type: TransactionType })
         } else {
           //if not validated or if no ledger info received, delay for 3 seconds
           delay(1500, checkTxInCrawler, { txid, redirectName })
@@ -613,7 +613,7 @@ export default function SignForm({
     }
 
     // For NFT transaction, lets wait for crawler to finish it's job
-    if (txType?.includes('NFToken') || txType?.includes('URIToken')) {
+    if (txType?.includes('NFToken') || txType?.includes('URIToken') || txType?.includes('DID')) {
       checkTxInCrawler({ txid: txHash, redirectName })
       return
     } else {
@@ -622,8 +622,14 @@ export default function SignForm({
     }
   }
 
-  const checkCrawlerStatus = async ({ inLedger, param }) => {
-    const crawlerResponse = await axios('v2/statistics/' + (xahauNetwork ? 'uritokens' : 'nftokens') + '/crawler')
+  const checkCrawlerStatus = async ({ inLedger, param, type }) => {
+    let crawler = xahauNetwork ? 'uritokens' : 'nftokens'
+
+    if (type && type.includes('DID')) {
+      crawler = 'dids'
+    }
+
+    const crawlerResponse = await axios('v2/statistics/' + crawler + '/crawler')
     if (crawlerResponse.data) {
       const { ledgerIndex } = crawlerResponse.data
       // if crawler 10 ledgers behind, update right away
@@ -636,7 +642,7 @@ export default function SignForm({
         closeSignInFormAndRefresh()
       } else {
         //check again in 1 second if crawler ctached up with the ledger where transaction was included
-        delay(1000, checkCrawlerStatus, { inLedger, param })
+        delay(1000, checkCrawlerStatus, { inLedger, param, type })
       }
     }
   }

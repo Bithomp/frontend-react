@@ -545,7 +545,6 @@ export default function Account({
                                             onClick={() =>
                                               setSignRequest({
                                                 action: 'setDomain',
-                                                redirect: 'account',
                                                 request: {
                                                   TransactionType: 'AccountSet',
                                                   Account: data?.address
@@ -564,7 +563,6 @@ export default function Account({
                                             onClick={() =>
                                               setSignRequest({
                                                 action: 'setDid',
-                                                redirect: 'account',
                                                 request: {
                                                   TransactionType: 'DIDSet',
                                                   Account: data?.address

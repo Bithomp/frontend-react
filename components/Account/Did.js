@@ -124,7 +124,6 @@ export default function Did({ data, setSignRequest, account }) {
                   onClick={() =>
                     setSignRequest({
                       action: 'setDid',
-                      redirect: 'account',
                       request: {
                         TransactionType: 'DIDSet',
                         Account: data?.address
@@ -140,7 +139,6 @@ export default function Did({ data, setSignRequest, account }) {
                     className="button-action thin button-margin"
                     onClick={() =>
                       setSignRequest({
-                        redirect: 'account',
                         request: {
                           TransactionType: 'DIDDelete',
                           Account: data?.address
