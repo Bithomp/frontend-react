@@ -1013,7 +1013,7 @@ export default function Account({
                                   <td className="bold">enabled</td>
                                 </tr>
                               )}
-                              {data.ledgerInfo?.flags?.disallowIncomingNFTokenOffers && (
+                              {data.ledgerInfo?.flags?.disallowIncomingNFTokenOffer && (
                                 <tr>
                                   <td>Incoming NFT offers</td>
                                   <td className="bold">disallowed</td>
@@ -1377,73 +1377,6 @@ export default function Account({
                                     </tr>
                                   </>
                                 )}
-
-                                {data.xamanMeta?.kycApproved && (
-                                  <tr>
-                                    <td>KYC</td>
-                                    <td>verified by Xaman</td>
-                                  </tr>
-                                )}
-                                {data.xamanMeta?.xummPro && (
-                                  <tr>
-                                    <td>Xaman Pro</td>
-                                    <td>
-                                      {data?.xamanMeta?.xummProfile?.slug ? (
-                                        <a href={data.xamanMeta.xummProfile.profileUrl} className="green">
-                                          {data.xamanMeta.xummProfile.slug}
-                                        </a>
-                                      ) : (
-                                        <span className="bold">activated</span>
-                                      )}
-                                      {/* need to hide the add for 2 hours after click (1hour our cache + 1 hour xppl-labs cache) */}
-                                      {data.xamanMeta?.monetisation?.status === 'PAYMENT_REQUIRED' && (
-                                        <span className="orange">
-                                          <br />
-                                          Limited 😔
-                                        </span>
-                                      )}
-                                      {data.xamanMeta?.monetisation?.status === 'COMING_UP' && (
-                                        <span className="orange">
-                                          <br />
-                                          Soon limited 😔
-                                        </span>
-                                      )}
-                                      {(data.xamanMeta?.monetisation?.status === 'COMING_UP' ||
-                                        data.xamanMeta?.monetisation?.status === 'PAYMENT_REQUIRED') && (
-                                        <>
-                                          <br />
-                                          <a
-                                            href="https://xrpl-labs.com/pro/get?v=BITHOMP"
-                                            target="_blank"
-                                            rel="noopener nofollow"
-                                          >
-                                            Purchase Xaman Pro
-                                          </a>{' '}
-                                          ❤️
-                                        </>
-                                      )}
-                                    </td>
-                                  </tr>
-                                )}
-
-                                {data.xamanMeta?.globalid?.profileUrl && (
-                                  <tr>
-                                    <td>GlobaliD</td>
-                                    <td>
-                                      <a href={data.xamanMeta.globalid.profileUrl}>
-                                        <u className="bold green">
-                                          {data.xamanMeta.globalid.profileUrl.replace('https://app.global.id/u/', '')}
-                                        </u>
-                                      </a>{' '}
-                                      <a href={data.xamanMeta.globalid.profileUrl}>
-                                        <b className="green">
-                                          <i className="fa fa-globe"></i>
-                                        </b>
-                                      </a>
-                                    </td>
-                                  </tr>
-                                )}
-
                                 <tr>
                                   <td>On other Networks</td>
                                   <td>
@@ -1453,6 +1386,7 @@ export default function Account({
                                           href={
                                             'https://xrplexplorer.com/' + i18n.language + '/account/' + data?.address
                                           }
+                                          rel="nofollow"
                                         >
                                           XRPL
                                         </a>{' '}
@@ -1468,6 +1402,7 @@ export default function Account({
                                             '/account/' +
                                             data?.address
                                           }
+                                          rel="nofollow"
                                         >
                                           XRPL Testnet
                                         </a>{' '}
@@ -1483,6 +1418,7 @@ export default function Account({
                                             '/account/' +
                                             data?.address
                                           }
+                                          rel="nofollow"
                                         >
                                           XRPL Devnet
                                         </a>{' '}
@@ -1495,6 +1431,7 @@ export default function Account({
                                           href={
                                             'https://xahauexplorer.com/' + i18n.language + '/account/' + data?.address
                                           }
+                                          rel="nofollow"
                                         >
                                           Xahau
                                         </a>
@@ -1510,6 +1447,7 @@ export default function Account({
                                             '/account/' +
                                             data?.address
                                           }
+                                          rel="nofollow"
                                         >
                                           Xahau Testnet
                                         </a>
@@ -1563,7 +1501,12 @@ export default function Account({
                                     )}
                                     {network === 'testnet' && (
                                       <>
-                                        <a href={'https://test.xrplexplorer.com/explorer/' + data?.address}>Bithomp</a>{' '}
+                                        <a
+                                          href={'https://test.xrplexplorer.com/explorer/' + data?.address}
+                                          rel="nofollow"
+                                        >
+                                          Bithomp
+                                        </a>{' '}
                                         (old view) |{' '}
                                         <a href={'https://testnet.xrpl.org/accounts/' + data?.address} rel="nofollow">
                                           XRPL.org
@@ -1576,7 +1519,12 @@ export default function Account({
                                     )}
                                     {network === 'devnet' && (
                                       <>
-                                        <a href={'https://dev.xrplexplorer.com/explorer/' + data?.address}>Bithomp</a>{' '}
+                                        <a
+                                          href={'https://dev.xrplexplorer.com/explorer/' + data?.address}
+                                          rel="nofollow"
+                                        >
+                                          Bithomp
+                                        </a>{' '}
                                         (old view) |{' '}
                                         <a href={'https://devnet.xrpl.org/accounts/' + data?.address} rel="nofollow">
                                           XRPL.org
@@ -1585,7 +1533,7 @@ export default function Account({
                                     )}
                                     {network === 'xahau' && (
                                       <>
-                                        <a href={'https://xahauexplorer.com/explorer/' + data?.address}>
+                                        <a href={'https://xahauexplorer.com/explorer/' + data?.address} rel="nofollow">
                                           Xahau Explorer
                                         </a>{' '}
                                         (old view) |{' '}
@@ -1621,6 +1569,98 @@ export default function Account({
                                     )}
                                   </td>
                                 </tr>
+                              </tbody>
+                            </table>
+                          )}
+
+                          {data?.xamanMeta && (
+                            <table className="table-details">
+                              <thead>
+                                <tr>
+                                  <th colSpan="100">Xaman data</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {data.xamanMeta?.xummPro && (
+                                  <>
+                                    <tr>
+                                      <td>Pro</td>
+                                      <td>
+                                        {data?.xamanMeta?.xummProfile?.slug ? (
+                                          <a href={data.xamanMeta.xummProfile.profileUrl} className="green">
+                                            {data.xamanMeta.xummProfile.slug}
+                                          </a>
+                                        ) : (
+                                          <span className="bold">activated</span>
+                                        )}
+                                        {/* need to hide the add for 2 hours after click (1hour our cache + 1 hour xppl-labs cache) */}
+                                        {data.xamanMeta?.monetisation?.status === 'PAYMENT_REQUIRED' && (
+                                          <span className="orange">
+                                            <br />
+                                            Limited 😔
+                                          </span>
+                                        )}
+                                        {data.xamanMeta?.monetisation?.status === 'COMING_UP' && (
+                                          <span className="orange">
+                                            <br />
+                                            Soon limited 😔
+                                          </span>
+                                        )}
+                                        {(data.xamanMeta?.monetisation?.status === 'COMING_UP' ||
+                                          data.xamanMeta?.monetisation?.status === 'PAYMENT_REQUIRED') && (
+                                          <>
+                                            <br />
+                                            <a
+                                              href="https://xrpl-labs.com/pro/get?v=BITHOMP"
+                                              target="_blank"
+                                              rel="noopener nofollow"
+                                            >
+                                              Purchase Xaman Pro
+                                            </a>{' '}
+                                            ❤️
+                                          </>
+                                        )}
+                                      </td>
+                                    </tr>
+                                    {data.xamanMeta?.xummProfile?.ownerAlias && (
+                                      <tr>
+                                        <td>Owner alias</td>
+                                        <td>{data.xamanMeta?.xummProfile?.ownerAlias}</td>
+                                      </tr>
+                                    )}
+                                    {data.xamanMeta?.xummProfile?.accountAlias && (
+                                      <tr>
+                                        <td>Account alias</td>
+                                        <td>{data.xamanMeta?.xummProfile?.accountAlias}</td>
+                                      </tr>
+                                    )}
+                                  </>
+                                )}
+
+                                {data.xamanMeta?.kycApproved && (
+                                  <tr>
+                                    <td>KYC</td>
+                                    <td className="green">verified</td>
+                                  </tr>
+                                )}
+
+                                {data.xamanMeta?.globalid?.profileUrl && (
+                                  <tr>
+                                    <td>GlobaliD</td>
+                                    <td>
+                                      <a href={data.xamanMeta.globalid.profileUrl}>
+                                        <u className="bold green">
+                                          {data.xamanMeta.globalid.profileUrl.replace('https://app.global.id/u/', '')}
+                                        </u>
+                                      </a>{' '}
+                                      <a href={data.xamanMeta.globalid.profileUrl}>
+                                        <b className="green">
+                                          <i className="fa fa-globe"></i>
+                                        </b>
+                                      </a>
+                                    </td>
+                                  </tr>
+                                )}
                               </tbody>
                             </table>
                           )}
