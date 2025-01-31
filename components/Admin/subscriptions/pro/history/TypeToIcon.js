@@ -1,13 +1,9 @@
-import { GiReceiveMoney } from 'react-icons/gi'
-import { GiPayMoney } from 'react-icons/gi'
+import { GiReceiveMoney, GiPayMoney, GiPassport } from 'react-icons/gi'
 import { RiNftFill } from 'react-icons/ri'
-import { CiSettings } from 'react-icons/ci'
-import { CiLink } from 'react-icons/ci'
-import { CiFileOn } from 'react-icons/ci'
-import { BsCurrencyExchange } from 'react-icons/bs'
+import { CiSettings, CiLink, CiFileOn } from 'react-icons/ci'
+import { BsCurrencyExchange, BsFillSafeFill } from 'react-icons/bs'
 import { TbPigMoney } from 'react-icons/tb'
 import { LuFileCheck2 } from 'react-icons/lu'
-import { BsFillSafeFill } from 'react-icons/bs'
 
 export default function TypeToIcon({ type, direction }) {
   if (!type) return ''
@@ -29,6 +25,8 @@ export default function TypeToIcon({ type, direction }) {
     icon = <LuFileCheck2 />
   } else if (type.includes('Escrow')) {
     icon = <BsFillSafeFill />
+  } else if (type.includes('DID')) {
+    icon = <GiPassport />
   } else {
     icon = <CiFileOn />
   }

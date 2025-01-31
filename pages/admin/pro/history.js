@@ -89,7 +89,8 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
 
   let csvHeaders = [
     { label: '#', key: 'index' },
-    { label: 'Timestamp', key: 'timestampExport' },
+    { label: 'Timestamp Unix', key: 'timestamp' },
+    { label: 'Timestamp ISO', key: 'timestampExport' },
     { label: 'Address', key: 'address' },
     { label: 'Type', key: 'txType' },
     { label: 'Amount as Text', key: 'amountExport' },
@@ -205,7 +206,7 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
         res.activities[i].txFeeNumber = res.activities[i].txFee / 1000000
         res.activities[i].txFeeCurrencyCode = nativeCurrency
 
-        res.activities[i].timestampExport = fullDateAndTime(res.activities[i].timestamp, null, { asText: true })
+        res.activities[i].timestampExport = new Date(res.activities[i].timestamp * 1000).toISOString()
       }
       setData(res) // last request data
       if (options?.marker) {
