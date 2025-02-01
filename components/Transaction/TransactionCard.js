@@ -13,18 +13,24 @@ export const TransactionCard = ({ tx, children }) => {
         <Info>
           {tx.id} <CopyButton text={tx.id} />
         </Info>
-        {isSuccessful ? (
-          <Info>
-            The transaction was <b className="green">successfull</b> and validated in the ledger{' '}
-            <LedgerLink version={tx.outcome.ledgerVersion} /> (index: {tx.outcome.indexInLedger}).
-          </Info>
+        {tx.error ? (
+          <Info>{tx.error_message}</Info>
         ) : (
-          <Info>
-            The transaction <b className="red">FAILED</b> and included to the ledger{' '}
-            <LedgerLink version={tx.outcome.ledgerVersion} /> (index: {tx.outcome.indexInLedger}).
-          </Info>
+          <>
+            {isSuccessful ? (
+              <Info>
+                The transaction was <b className="green">successfull</b> and validated in the ledger{' '}
+                <LedgerLink version={tx.outcome.ledgerVersion} /> (index: {tx.outcome.indexInLedger}).
+              </Info>
+            ) : (
+              <Info>
+                The transaction <b className="red">FAILED</b> and included to the ledger{' '}
+                <LedgerLink version={tx.outcome.ledgerVersion} /> (index: {tx.outcome.indexInLedger}).
+              </Info>
+            )}
+            {children}
+          </>
         )}
-        {children}
       </Card>
     </MainBody>
   )
