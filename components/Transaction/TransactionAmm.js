@@ -1,16 +1,16 @@
-import { useTranslation } from "next-i18next";
+import { useTranslation } from 'next-i18next'
 
-import { amountFormat, fullDateAndTime, codeHighlight } from "../../utils/format";
-import { TBody, TData, TDetails, TRow } from "../TableDetails";
+import { amountFormat, fullDateAndTime, codeHighlight } from '../../utils/format'
+import { TBody, TData, TDetails, TRow } from '../TableDetails'
 
-import * as Styled from "./styled";
-import { LinkAccount } from "../../utils/links";
-import { TransactionCard } from "./TransactionCard";
-import { useState } from "react";
-import CopyButton from "../UI/CopyButton";
+import * as Styled from './styled'
+import { LinkAccount } from '../../utils/links'
+import { TransactionCard } from './TransactionCard'
+import { useState } from 'react'
+import CopyButton from '../UI/CopyButton'
 
 export const TransactionAmm = ({ tx }) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation()
 
   const [showRawData, setShowRawData] = useState(false)
 
@@ -20,16 +20,14 @@ export const TransactionAmm = ({ tx }) => {
         <TDetails>
           <TBody>
             <TRow>
-              <TData>{t("table.type")}:</TData>
+              <TData>{t('table.type')}:</TData>
               <TData>
                 <Styled.Type>{tx.type}</Styled.Type>
               </TData>
             </TRow>
             <TRow>
               <TData>Time:</TData>
-              <TData>
-                {fullDateAndTime(tx.rawTransaction?.date, 'ripple')}
-              </TData>
+              <TData>{fullDateAndTime(tx.rawTransaction?.date, 'ripple')}</TData>
             </TRow>
             <TRow>
               <TData>Initiated by:</TData>
@@ -45,31 +43,28 @@ export const TransactionAmm = ({ tx }) => {
               <TData>Ledger fee:</TData>
               <TData>{amountFormat(tx.rawTransaction?.Fee)}</TData>
             </TRow>
-            {tx.rawTransaction?.ctid &&
+            {tx.rawTransaction?.ctid && (
               <TRow>
                 <TData>CTID:</TData>
                 <TData>
                   {tx.rawTransaction.ctid} <CopyButton text={tx.rawTransaction.ctid} />
                 </TData>
               </TRow>
-            }
+            )}
             <TRow>
-              <TData>{t("table.raw-data")}</TData>
+              <TData>{t('table.raw-data')}</TData>
               <TData>
-                <span className='link' onClick={() => setShowRawData(!showRawData)}>
-                  {showRawData ? t("table.text.hide") : t("table.text.show")}
+                <span className="link" onClick={() => setShowRawData(!showRawData)}>
+                  {showRawData ? t('table.text.hide') : t('table.text.show')}
                 </span>
               </TData>
             </TRow>
           </TBody>
         </TDetails>
       </TransactionCard>
-      <div
-        className={'slide ' + (showRawData ? "opened" : "closed")}
-        style={{ margin: '0 15px' }}
-      >
+      <div className={'slide ' + (showRawData ? 'opened' : 'closed')} style={{ margin: '0 15px' }}>
         {codeHighlight(tx.rawTransaction)}
       </div>
     </>
-  );
-};
+  )
+}
