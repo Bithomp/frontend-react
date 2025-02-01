@@ -48,21 +48,19 @@ export default function Transaction({ id, initialData }) {
   const { t } = useTranslation()
 
   let TransactionComponent = null
-  switch (initialData?.type) {
-    case 'ammCreate' || 'ammBid' || 'ammVote' || 'ammWithdraw' || 'ammDeposit' || 'ammDelete':
-      TransactionComponent = TransactionAmm
-      break
-    case 'escrowCreation' || 'escrowExecution' || 'escrowCancelation':
-      TransactionComponent = TransactionEscrow
-      break
-    case 'order':
-      TransactionComponent = TransactionOrder
-      break
-    case 'payment':
-      TransactionComponent = TransactionPayment
-      break
-    default:
-      TransactionComponent = TransactionDetails
+  const txType = initialData?.rawTransaction?.TransactionType
+  // https://xrpl.org/docs/references/protocol/transactions/types
+
+  if (txType?.includes('Escrow')) {
+    TransactionComponent = TransactionEscrow
+  } else if (txType === 'OfferCreate' || txType === 'OfferCancel') {
+    TransactionComponent = TransactionOrder
+  } else if (txType === 'Payment') {
+    TransactionComponent = TransactionPayment
+  } else if (txType?.includes('AMM')) {
+    TransactionComponent = TransactionAmm
+  } else {
+    TransactionComponent = TransactionDetails
   }
 
   return (
@@ -75,7 +73,7 @@ export default function Transaction({ id, initialData }) {
           (initialData?.service?.name || initialData?.username || initialData?.address || id)
         }
         description={
-          'Transaction details, transactions, NFTs, Tokens for ' +
+          'Transaction details for ' +
           (initialData?.service?.name || initialData?.username) +
           ' ' +
           (initialData?.address || id)
