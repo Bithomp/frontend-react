@@ -517,6 +517,48 @@ export default function Account({
                                           </button>
                                         )}
 
+                                        {xahauNetwork && (
+                                          <>
+                                            {data.ledgerInfo.rewardLgrFirst ? (
+                                              <button
+                                                className="button-action button-wide thin"
+                                                onClick={() =>
+                                                  setSignRequest({
+                                                    request: {
+                                                      TransactionType: 'ClaimReward',
+                                                      Account: data.address,
+                                                      Flags: 1
+                                                    }
+                                                  })
+                                                }
+                                                disabled={
+                                                  data.address !== account?.address || !data.ledgerInfo?.activated
+                                                }
+                                              >
+                                                Rewards Opt-out
+                                              </button>
+                                            ) : (
+                                              <button
+                                                className="button-action button-wide thin"
+                                                onClick={() =>
+                                                  setSignRequest({
+                                                    request: {
+                                                      TransactionType: 'ClaimReward',
+                                                      Issuer: 'rHb9CJAWyB4rj91VRWn96DkukG4bwdtyTh',
+                                                      Account: data.address
+                                                    }
+                                                  })
+                                                }
+                                                disabled={
+                                                  data.address !== account?.address || !data.ledgerInfo?.activated
+                                                }
+                                              >
+                                                Rewards Opt-in
+                                              </button>
+                                            )}
+                                          </>
+                                        )}
+
                                         {!devNet && (
                                           <button
                                             className="button-action button-wide thin"
@@ -786,7 +828,7 @@ export default function Account({
                               )}
                               {xahauNetwork ? (
                                 <>
-                                  <XahauRewardTr data={data.ledgerInfo} />
+                                  <XahauRewardTr data={data} setSignRequest={setSignRequest} account={account} />
                                   {data.ledgerInfo?.hookNamespaces && (
                                     <>
                                       <tr>
