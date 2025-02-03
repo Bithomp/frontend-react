@@ -248,32 +248,6 @@ export const trWithFlags = (t, flags) => {
   )
 }
 
-export const trWithAccount = (data, valueName, tableName, url = '/explorer/', i = 0) => {
-  if (!data || !data[valueName]) return null
-  let link = <a href={url + data[valueName]}>{data[valueName]}</a>
-  if (url !== '/explorer/') {
-    link = <Link href={url + data[valueName]}>{data[valueName]}</Link>
-  }
-  let userOrServicelink = userOrServiceLink(data, valueName, { url })
-  return userOrServicelink ? (
-    <React.Fragment key={i}>
-      <tr>
-        <td>{tableName}</td>
-        <td>{userOrServicelink}</td>
-      </tr>
-      <tr>
-        <td></td>
-        <td>{link}</td>
-      </tr>
-    </React.Fragment>
-  ) : (
-    <tr key={i} td={i}>
-      <td>{tableName}</td>
-      <td>{link}</td>
-    </tr>
-  )
-}
-
 export const nftOfferLink = (nftOfferId, chars = 10) => {
   if (!nftOfferId) return ''
   return <Link href={'/nft-offer/' + nftOfferId}>{shortHash(nftOfferId, chars)}</Link>

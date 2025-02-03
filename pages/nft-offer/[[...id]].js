@@ -8,12 +8,12 @@ import {
   fullDateAndTime,
   amountFormat,
   shortHash,
-  trWithAccount,
   expirationExpired,
   trStatus,
   nftIdLink,
   cancelNftOfferButton,
-  acceptNftSellOfferButton
+  acceptNftSellOfferButton,
+  AddressWithIconFilled
 } from '../../utils/format'
 
 import { getIsSsrMobile } from '../../utils/mobile'
@@ -258,14 +258,26 @@ export default function NftOffer({ setSignRequest, refreshPage, account, id }) {
                                   {shortHash(data.offerIndex, 10)} <CopyButton text={data.offerIndex} />
                                 </td>
                               </tr>
-                              {trWithAccount(data, 'account', sellerOrBuyer, '/account/', 0)}
+                              <tr>
+                                <td>{sellerOrBuyer}</td>
+                                <td>
+                                  <AddressWithIconFilled data={data} name="account" />
+                                </td>
+                              </tr>
                               <tr>
                                 <td>
                                   {data.flags.sellToken === true ? t('nft-offer.selling') : t('nft-offer.buying')} NFT
                                 </td>
                                 <td>{nftIdLink(data.nftokenID)}</td>
                               </tr>
-                              {trWithAccount(data, 'destination', t('table.destination'), '/account/', 0)}
+                              {data?.destination && (
+                                <tr>
+                                  <td>{t('table.destination')}</td>
+                                  <td>
+                                    <AddressWithIconFilled data={data} name="destination" />
+                                  </td>
+                                </tr>
+                              )}
                               <tr>
                                 <td>{t('table.price')}</td>
                                 <td>{amountFormat(data.amount, { tooltip: 'right' })}</td>
@@ -296,8 +308,14 @@ export default function NftOffer({ setSignRequest, refreshPage, account, id }) {
                                       </a>
                                     </td>
                                   </tr>
-                                  {data.acceptedAccount &&
-                                    trWithAccount(data, 'acceptedAccount', t('table.accepted-by'), '/explorer/', 0)}
+                                  {data.acceptedAccount && (
+                                    <tr>
+                                      <td>{t('table.accepted-by')}</td>
+                                      <td>
+                                        <AddressWithIconFilled data={data} name="acceptedAccount" />
+                                      </td>
+                                    </tr>
+                                  )}
                                 </>
                               )}
                               {data.canceledAt && (

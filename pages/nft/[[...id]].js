@@ -412,6 +412,12 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
     if (offers.length > 0) {
       return offers.map((offer, i) => (
         <tbody key={i}>
+          {offer.offerIndex && (
+            <tr>
+              <td>{t('table.offer')}</td>
+              <td>{nftOfferLink(offer.offerIndex)}</td>
+            </tr>
+          )}
           {trStatus(t, offer)}
           <tr>
             <td>{buyerOrSeller}</td>
@@ -468,12 +474,6 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
               <td>
                 <AddressWithIconFilled data={offer} name="destination" />
               </td>
-            </tr>
-          )}
-          {offer.offerIndex && (
-            <tr>
-              <td>{t('table.offer')}</td>
-              <td>{nftOfferLink(offer.offerIndex)}</td>
             </tr>
           )}
           {offer.valid && (
