@@ -25,6 +25,8 @@ import DateAndTimeRange from '../../../components/UI/DateAndTimeRange'
 import FiltersFrame from '../../../components/Layout/FiltersFrame'
 import TypeToIcon from '../../../components/Admin/subscriptions/pro/history/TypeToIcon'
 import Image from 'next/image'
+import { CSVLink } from 'react-csv'
+import DownloadIcon from '../../../public/images/download.svg'
 
 export const getServerSideProps = async (context) => {
   const { locale, query } = context
@@ -70,6 +72,12 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
   const [page, setPage] = useState(0)
   const [rowsPerPage, setRowsPerPage] = useState(10)
   const [currentList, setCurrentList] = useState([])
+  const [rendered, setRendered] = useState(false)
+
+  useEffect(() => {
+    setRendered(true)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   useEffect(() => {
     if (activities.length > 0) {
@@ -191,6 +199,7 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
     */
     if (res) {
       for (let i = 0; i < res.activities.length; i++) {
+        let sending = res.activities[i].amountInFiats?.[selectedCurrency]?.[0] === '-'
         res.activities[i].index = options?.marker ? activities.length + 1 + i : i + 1
         res.activities[i].amountExport = amountFormat(res.activities[i].amount)
         res.activities[i].amountNumber = res.activities[i].amount?.value || res.activities[i].amount / 1000000
@@ -207,6 +216,22 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
         res.activities[i].txFeeCurrencyCode = nativeCurrency
 
         res.activities[i].timestampExport = new Date(res.activities[i].timestamp * 1000).toISOString()
+
+        res.activities[i].sentAmount = sending ? res.activities[i].amountNumber : 0
+        res.activities[i].sentCurrency = sending
+          ? res.activities[i].amount?.currency
+            ? res.activities[i].amount.currency + ':' + res.activities[i].amount.issuer
+            : nativeCurrency
+          : ''
+
+        res.activities[i].receivedAmount = !sending ? res.activities[i].amountNumber : 0
+        res.activities[i].receivedCurrency = !sending
+          ? res.activities[i].amount?.currency
+            ? res.activities[i].amount.currency + ':' + res.activities[i].amount.issuer
+            : nativeCurrency
+          : ''
+
+        res.activities[i].netWorthCurrency = selectedCurrency.toUpperCase()
       }
       setData(res) // last request data
       if (options?.marker) {
@@ -378,6 +403,31 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
             <div>
               Period
               <DateAndTimeRange setPeriod={setPeriod} defaultPeriod="all" radio={true} />
+            </div>
+            <div>
+              {rendered && (
+                <CSVLink
+                  data={activities || []}
+                  headers={[
+                    { label: 'Date', key: 'timestampExport' },
+                    { label: 'Sent Amount', key: 'sentAmount' },
+                    { label: 'Sent Currency', key: 'sentCurrency' },
+                    { label: 'Received Amount', key: 'receivedAmount' },
+                    { label: 'Received Currency', key: 'receivedCurrency' },
+                    { label: 'Fee Amount', key: 'txFeeNumber' },
+                    { label: 'Fee Currency', key: 'txFeeCurrencyCode' },
+                    { label: 'Net Worth Amount', key: 'amountInFiats.' + selectedCurrency },
+                    { label: 'Net Worth Currency', key: 'netWorthCurrency' },
+                    { label: 'Label', key: '' },
+                    { label: 'Description', key: 'memo' },
+                    { label: 'TxHash', key: 'hash' }
+                  ]}
+                  filename={'export ' + new Date().toISOString() + '.csv'}
+                  className={'button-action' + (!(activities?.length > 0) ? ' disabled' : '')}
+                >
+                  <DownloadIcon /> CSV for Koinly
+                </CSVLink>
+              )}
             </div>
           </>
           <>
