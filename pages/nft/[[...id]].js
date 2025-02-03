@@ -8,12 +8,11 @@ import Link from 'next/link'
 import dynamic from 'next/dynamic'
 
 import { stripText, decode, network, isValidJson, xahauNetwork } from '../../utils'
-import { convertedAmount, usernameOrAddress } from '../../utils/format'
+import { AddressWithIconFilled, convertedAmount, usernameOrAddress } from '../../utils/format'
 import { getIsSsrMobile } from '../../utils/mobile'
 import { nftName, mpUrl, bestNftOffer, nftUrl, partnerMarketplaces, ipfsUrl } from '../../utils/nft'
 import {
   shortHash,
-  trWithAccount,
   trWithFlags,
   fullDateAndTime,
   amountFormat,
@@ -360,7 +359,12 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
               </td>
             </tr>
           )}
-          {trWithAccount(nftEvent, nftEvent.minter ? 'minter' : 'owner', ownerName(nftEvent), '/account/', 'owner')}
+          <tr>
+            <td>{ownerName(nftEvent)}</td>
+            <td>
+              <AddressWithIconFilled data={nftEvent} name={nftEvent.minter ? 'minter' : 'owner'} />
+            </td>
+          </tr>
           {nftEvent.marketplace && (
             <tr>
               <td>{marketPlaceUsage(nftEvent)}</td>
@@ -409,7 +413,12 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
       return offers.map((offer, i) => (
         <tbody key={i}>
           {trStatus(t, offer)}
-          {trWithAccount(offer, 'owner', buyerOrSeller, '/account/', 'nft-seller')}
+          <tr>
+            <td>{buyerOrSeller}</td>
+            <td>
+              <AddressWithIconFilled data={offer} name="owner" />
+            </td>
+          </tr>
           <tr>
             <td>{t('table.amount')}</td>
             <td>{amountFormat(offer.amount, { tooltip: 'right' })}</td>
@@ -453,7 +462,14 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
               <td>{fullDateAndTime(offer.expiration, 'expiration')}</td>
             </tr>
           )}
-          {offer.destination && trWithAccount(offer, 'destination', t('table.destination'), '/account/', 'destination')}
+          {offer.destination && (
+            <tr>
+              <td>{t('table.destination')}</td>
+              <td>
+                <AddressWithIconFilled data={offer} name="destination" />
+              </td>
+            </tr>
+          )}
           {offer.offerIndex && (
             <tr>
               <td>{t('table.offer')}</td>
@@ -1158,13 +1174,26 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
                                 </tr>
                               )}
                               {data.issuer === data.owner ? (
-                                <>
-                                  {trWithAccount(data, 'owner', t('table.issuer-owner'), '/account/', 'ownerAndIssuer')}
-                                </>
+                                <tr>
+                                  <td>{t('table.issuer-owner')}</td>
+                                  <td>
+                                    <AddressWithIconFilled data={data} name="owner" />
+                                  </td>
+                                </tr>
                               ) : (
                                 <>
-                                  {trWithAccount(data, 'owner', t('table.owner'), '/account/', 'owner')}
-                                  {trWithAccount(data, 'issuer', t('table.issuer'), '/account/', 'issuer')}
+                                  <tr>
+                                    <td>{t('table.owner')}</td>
+                                    <td>
+                                      <AddressWithIconFilled data={data} name="owner" />
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                    <td>{t('table.issuer')}</td>
+                                    <td>
+                                      <AddressWithIconFilled data={data} name="issuer" />
+                                    </td>
+                                  </tr>
                                 </>
                               )}
                               {data.type === 'xls20' && (
