@@ -1079,12 +1079,6 @@ export default function Account({
                                   <td className="bold">disallowed</td>
                                 </tr>
                               )}
-                              {data.ledgerInfo?.flags?.amm && (
-                                <tr>
-                                  <td>AMM</td>
-                                  <td className="bold">true</td>
-                                </tr>
-                              )}
                               {data.ledgerInfo?.flags?.allowTrustLineClawback && (
                                 <tr>
                                   <td>Trustline clawback</td>
