@@ -15,8 +15,7 @@ import {
   avatarServer,
   stripDomain,
   isDomainValid,
-  networks,
-  network
+  networks
 } from '../../utils'
 import {
   amountFormat,
@@ -32,6 +31,7 @@ import {
 import { getIsSsrMobile } from '../../utils/mobile'
 import { fetchCurrentFiatRate } from '../../utils/common'
 import { LinkAmm } from '../../utils/links'
+import RelatedLinks from '../../components/Account/RelatedLinks'
 
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
@@ -1413,198 +1413,6 @@ export default function Account({
                                     </tr>
                                   </>
                                 )}
-                                <tr>
-                                  <td>On other Networks</td>
-                                  <td>
-                                    {network !== 'mainnet' && (
-                                      <>
-                                        <a
-                                          href={
-                                            'https://xrplexplorer.com/' + i18n.language + '/account/' + data?.address
-                                          }
-                                          rel="nofollow"
-                                        >
-                                          XRPL
-                                        </a>{' '}
-                                        |{' '}
-                                      </>
-                                    )}
-                                    {network !== 'testnet' && (
-                                      <>
-                                        <a
-                                          href={
-                                            'https://test.xrplexplorer.com/' +
-                                            i18n.language +
-                                            '/account/' +
-                                            data?.address
-                                          }
-                                          rel="nofollow"
-                                        >
-                                          XRPL Testnet
-                                        </a>{' '}
-                                        |{' '}
-                                      </>
-                                    )}
-                                    {network !== 'devnet' && (
-                                      <>
-                                        <a
-                                          href={
-                                            'https://dev.xrplexplorer.com/' +
-                                            i18n.language +
-                                            '/account/' +
-                                            data?.address
-                                          }
-                                          rel="nofollow"
-                                        >
-                                          XRPL Devnet
-                                        </a>{' '}
-                                        |{' '}
-                                      </>
-                                    )}
-                                    {network !== 'xahau' && (
-                                      <>
-                                        <a
-                                          href={
-                                            'https://xahauexplorer.com/' + i18n.language + '/account/' + data?.address
-                                          }
-                                          rel="nofollow"
-                                        >
-                                          Xahau
-                                        </a>
-                                        {network !== 'xahau-testnet' && ' | '}
-                                      </>
-                                    )}
-                                    {network !== 'xahau-testnet' && (
-                                      <>
-                                        <a
-                                          href={
-                                            'https://test.xahauexplorer.com/' +
-                                            i18n.language +
-                                            '/account/' +
-                                            data?.address
-                                          }
-                                          rel="nofollow"
-                                        >
-                                          Xahau Testnet
-                                        </a>
-                                      </>
-                                    )}
-                                  </td>
-                                </tr>
-                                <tr>
-                                  <td>On other explorers</td>
-                                  <td>
-                                    {network === 'mainnet' && (
-                                      <>
-                                        <a href={'https://xrplexplorer.com/explorer/' + data?.address} rel="nofollow">
-                                          Bithomp
-                                        </a>{' '}
-                                        (old view) |{' '}
-                                        <a href={'https://livenet.xrpl.org/accounts/' + data?.address} rel="nofollow">
-                                          XRPL.org
-                                        </a>{' '}
-                                        |{' '}
-                                        <a href={'https://explorer.xrplf.org/' + data?.address} rel="nofollow">
-                                          XRPLF
-                                        </a>{' '}
-                                        |{' '}
-                                        <a href={'https://xrpscan.com/account/' + data?.address} rel="nofollow">
-                                          XRPScan
-                                        </a>{' '}
-                                        |{' '}
-                                        <a href={'https://xrplwin.com/account/' + data?.address} rel="nofollow">
-                                          XRPLWin
-                                        </a>{' '}
-                                        |{' '}
-                                        <a
-                                          href={'https://blockchair.com/xrp-ledger/account/' + data?.address}
-                                          rel="nofollow"
-                                        >
-                                          Blockchair
-                                        </a>{' '}
-                                        |{' '}
-                                        <a href={'https://gatehub.net/explorer/' + data?.address} rel="nofollow">
-                                          Gatehub
-                                        </a>{' '}
-                                        |{' '}
-                                        <a
-                                          href={'https://explorer.bitquery.io/ripple/address/' + data?.address}
-                                          rel="nofollow"
-                                        >
-                                          BitQuery
-                                        </a>
-                                      </>
-                                    )}
-                                    {network === 'testnet' && (
-                                      <>
-                                        <a
-                                          href={'https://test.xrplexplorer.com/explorer/' + data?.address}
-                                          rel="nofollow"
-                                        >
-                                          Bithomp
-                                        </a>{' '}
-                                        (old view) |{' '}
-                                        <a href={'https://testnet.xrpl.org/accounts/' + data?.address} rel="nofollow">
-                                          XRPL.org
-                                        </a>{' '}
-                                        |{' '}
-                                        <a href={'https://explorer-testnet.xrplf.org/' + data?.address} rel="nofollow">
-                                          XRPLF
-                                        </a>
-                                      </>
-                                    )}
-                                    {network === 'devnet' && (
-                                      <>
-                                        <a
-                                          href={'https://dev.xrplexplorer.com/explorer/' + data?.address}
-                                          rel="nofollow"
-                                        >
-                                          Bithomp
-                                        </a>{' '}
-                                        (old view) |{' '}
-                                        <a href={'https://devnet.xrpl.org/accounts/' + data?.address} rel="nofollow">
-                                          XRPL.org
-                                        </a>
-                                      </>
-                                    )}
-                                    {network === 'xahau' && (
-                                      <>
-                                        <a href={'https://xahauexplorer.com/explorer/' + data?.address} rel="nofollow">
-                                          Xahau Explorer
-                                        </a>{' '}
-                                        (old view) |{' '}
-                                        <a href={'https://xahau.xrpl.org/accounts/' + data?.address} rel="nofollow">
-                                          XRPL.org
-                                        </a>{' '}
-                                        |{' '}
-                                        <a href={'https://explorer.xahau.network/' + data?.address} rel="nofollow">
-                                          XRPLF
-                                        </a>
-                                      </>
-                                    )}
-                                    {network === 'xahau-testnet' && (
-                                      <>
-                                        <a
-                                          href={'https://test.xahauexplorer.com/explorer/' + data?.address}
-                                          rel="nofollow"
-                                        >
-                                          Xahau Explorer
-                                        </a>{' '}
-                                        (old view) |
-                                        <a
-                                          href={'https://xahau-testnet.xrpl.org/accounts/' + data?.address}
-                                          rel="nofollow"
-                                        >
-                                          XRPL.org
-                                        </a>{' '}
-                                        |{' '}
-                                        <a href={'https://explorer.xahau-test.net/' + data?.address} rel="nofollow">
-                                          XRPLF
-                                        </a>
-                                      </>
-                                    )}
-                                  </td>
-                                </tr>
                               </tbody>
                             </table>
                           )}
@@ -1702,6 +1510,8 @@ export default function Account({
                               </tbody>
                             </table>
                           )}
+
+                          <RelatedLinks data={data} />
 
                           {data?.ledgerInfo?.did && (
                             <Did data={data} account={account} setSignRequest={setSignRequest} />
