@@ -30,7 +30,7 @@ export default function XahauRewardTr({ data, setSignRequest, account }) {
           {claimable && (
             <span className="orange">
               <TbPigMoney style={{ fontSize: 18, marginBottom: -4 }} />{' '}
-              {data.address !== account?.address ? (
+              {data.address === account?.address ? (
                 <a
                   href="#"
                   onClick={() =>
