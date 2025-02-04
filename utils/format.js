@@ -710,7 +710,7 @@ export const capitalize = (word) => {
   return word.charAt(0).toUpperCase() + word.slice(1)
 }
 
-export const timeFromNow = (timestamp, i18n) => {
+export const timeFromNow = (timestamp, i18n, type) => {
   let lang = 'en'
   if (i18n.language === 'default' || i18n.language === 'undefined') {
     lang = 'en'
@@ -718,6 +718,11 @@ export const timeFromNow = (timestamp, i18n) => {
     lang = i18n.language.slice(0, 2)
   }
   moment.locale(lang)
+
+  if (type === 'ripple') {
+    timestamp += 946684800 //946684800 is the difference between Unix and Ripple timestamps
+  }
+
   return <span suppressHydrationWarning>{moment(timestamp * 1000, 'unix').fromNow()}</span>
 }
 

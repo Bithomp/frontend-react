@@ -222,7 +222,10 @@ export default function NftPreview({ nft }) {
       {contentTabList.length < 2 && defaultUrl && (
         <span style={{ padding: '4px 0px' }}>
           <a href={defaultUrl} target="_blank" rel="noreferrer">
-            {t('tabs.' + defaultTab)} {downloadIcon}
+            {t('tabs.' + defaultTab)}
+          </a>{' '}
+          <a href={defaultUrl} target="_blank" rel="noreferrer">
+            {downloadIcon}
           </a>
         </span>
       )}
