@@ -179,7 +179,13 @@ const subscriptionsTabList = [
   { value: 'api', label: 'API' }
 ]
 
-export default function Subscriptions({ setSignRequest, receiptQuery, tabQuery }) {
+export default function Subscriptions({
+  setSignRequest,
+  receiptQuery,
+  tabQuery,
+  setSubscriptionExpired,
+  setProExpire
+}) {
   const { t } = useTranslation()
   const router = useRouter()
   const width = useWidth()
@@ -279,6 +285,10 @@ export default function Subscriptions({ setSignRequest, receiptQuery, tabQuery }
           expired.push(packageItem)
         } else {
           newAndActive.push(packageItem)
+          if (packageItem.type === 'bithomp_pro') {
+            setSubscriptionExpired(false)
+            setProExpire(JSON.stringify(packageItem.expiredAt * 1000))
+          }
         }
       })
 
@@ -408,6 +418,9 @@ export default function Subscriptions({ setSignRequest, receiptQuery, tabQuery }
       }
     */
     if (data.bid.status === 'Completed') {
+      if (data.bid.type === 'bithomp_pro') {
+        setSubscriptionExpired(false)
+      }
       setStep(2)
       setUpdate(false)
       setErrorMessage('')

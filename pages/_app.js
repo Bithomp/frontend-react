@@ -170,6 +170,7 @@ const MyApp = ({ Component, pageProps }) => {
                 setProExpire={setProExpire}
                 signOutPro={signOutPro}
                 subscriptionExpired={subscriptionExpired}
+                setSubscriptionExpired={setSubscriptionExpired}
                 sessionToken={sessionToken}
                 setSessionToken={setSessionToken}
               />
