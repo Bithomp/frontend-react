@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from 'styled-components'
 
 export const TDetails = styled.table`
   width: 100%;
@@ -9,14 +9,13 @@ export const TDetails = styled.table`
   font-weight: 400;
   text-align: left;
   margin: auto;
-`;
+`
 
-export const TBody = ({ children }) => <tbody>{children}</tbody>;
-export const TRow = ({ children }) => <tr>{children}</tr>;
+export const TBody = ({ children }) => <tbody>{children}</tbody>
+export const TRow = ({ children }) => <tr>{children}</tr>
 
 export const TData = styled.td`
   padding: 4px;
-  border-bottom: 1px solid var(--accent-link);
   &:first-child {
     color: var(--text-secondary);
     text-align: right;
@@ -24,4 +23,4 @@ export const TData = styled.td`
   &:nth-child(2) {
     word-break: break-word;
   }
-`;
+`

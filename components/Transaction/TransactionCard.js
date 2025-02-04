@@ -1,11 +1,11 @@
 import CopyButton from '../UI/CopyButton'
 import { useState } from 'react'
-import { useTranslation } from 'next-i18next'
+import { i18n, useTranslation } from 'next-i18next'
 
 import { Card, Info, Heading, MainBody, Type } from './styled'
 import { LedgerLink } from '../../utils/links'
 import { TDetails, TBody, TRow, TData } from '../TableDetails'
-import { amountFormat, codeHighlight, fullDateAndTime } from '../../utils/format'
+import { amountFormat, codeHighlight, fullDateAndTime, timeFromNow } from '../../utils/format'
 
 export const TransactionCard = ({ data, children }) => {
   const { t } = useTranslation()
@@ -13,18 +13,28 @@ export const TransactionCard = ({ data, children }) => {
   const [showRawMeta, setShowRawMeta] = useState(false)
 
   if (!data) return null
-  const { tx, outcome, meta } = data
+  const { transaction, error_message, tx, outcome, meta } = data
   const isSuccessful = outcome?.result == 'tesSUCCESS'
+
+  /*
+  {
+    transaction: '2617C08D8D62E90083EC8EE5B573673B96C16CF3D64CF374F3C73A6A653C769E',
+    error: 'txnNotFound',
+    error_code: 29,
+    error_message: 'Transaction not found.',
+    status: 'error'
+  }
+  */
 
   return (
     <MainBody>
       <Heading>Transaction Details</Heading>
       <Card>
         <Info>
-          {tx.hash} <CopyButton text={tx.hash} />
+          {transaction || tx.hash} <CopyButton text={transaction || tx.hash} />
         </Info>
-        {tx.error ? (
-          <Info>{tx.error_message}</Info>
+        {error_message ? (
+          <Info className="orange">{error_message}</Info>
         ) : (
           <>
             {isSuccessful ? (
@@ -48,7 +58,9 @@ export const TransactionCard = ({ data, children }) => {
                 </TRow>
                 <TRow>
                   <TData>Date and time:</TData>
-                  <TData>{fullDateAndTime(tx?.date, 'ripple')}</TData>
+                  <TData>
+                    {timeFromNow(tx.date, i18n, 'ripple')} ({fullDateAndTime(tx.date, 'ripple')})
+                  </TData>
                 </TRow>
                 {children}
                 <TRow>
