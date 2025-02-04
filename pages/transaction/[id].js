@@ -16,24 +16,22 @@ import {
 
 export async function getServerSideProps(context) {
   const { locale, query, req } = context
-  let initialData = null
+  let data = null
   const { id } = query
   try {
     const res = await axiosServer({
       method: 'get',
-      url: 'v2/transaction/' + id,
+      url: 'v3/transaction/' + id,
       headers: passHeaders(req)
     })
-    initialData = res?.data
-    initialData.rawTransaction = JSON.parse(initialData.rawTransaction)
+    data = res?.data
   } catch (error) {
     console.error(error)
   }
 
   return {
     props: {
-      id,
-      initialData,
+      data,
       isSsrMobile: getIsSsrMobile(context),
       ...(await serverSideTranslations(locale, ['common']))
     }
@@ -44,11 +42,11 @@ const Container = ({ children }) => {
   return <>{children}</>
 }
 
-export default function Transaction({ id, initialData }) {
+export default function Transaction({ data }) {
   const { t } = useTranslation()
 
   let TransactionComponent = null
-  const txType = initialData?.rawTransaction?.TransactionType
+  const txType = data?.tx?.TransactionType
   // https://xrpl.org/docs/references/protocol/transactions/types
 
   if (txType?.includes('Escrow')) {
@@ -67,21 +65,12 @@ export default function Transaction({ id, initialData }) {
     <>
       <SEO
         page="Transaction"
-        title={
-          t('explorer.header.transaction') +
-          ' ' +
-          (initialData?.service?.name || initialData?.username || initialData?.address || id)
-        }
-        description={
-          'Transaction details for ' +
-          (initialData?.service?.name || initialData?.username) +
-          ' ' +
-          (initialData?.address || id)
-        }
+        title={t('explorer.header.transaction') + data?.tx?.hash}
+        description={'Transaction details for tx: ' + data?.tx?.hash}
       />
       <SearchBlock tab="transaction" />
       <Container>
-        <TransactionComponent tx={initialData} />
+        <TransactionComponent data={data} />
       </Container>
     </>
   )
