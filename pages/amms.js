@@ -54,7 +54,6 @@ export async function getServerSideProps(context) {
 import SEO from '../components/SEO'
 import { LinkAmm } from '../utils/links'
 import FiltersFrame from '../components/Layout/FiltersFrame'
-import { fetchCurrentFiatRate } from '../utils/common'
 import InfiniteScrolling from '../components/Layout/InfiniteScrolling'
 
 // add to the list new parameters for CSV
@@ -77,7 +76,8 @@ export default function Amms({
   orderQuery,
   selectedCurrency,
   sessionToken,
-  subscriptionExpired
+  subscriptionExpired,
+  fiatRate
 }) {
   const { t, i18n } = useTranslation()
   const router = useRouter()
@@ -89,7 +89,6 @@ export default function Amms({
   const [order, setOrder] = useState(orderQuery)
   const [loading, setLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState(initialErrorMessage || '')
-  const [fiatRate, setFiatRate] = useState(0)
   const [marker, setMarker] = useState(initialData?.marker)
 
   const controller = new AbortController()
@@ -106,10 +105,6 @@ export default function Amms({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
-
-  useEffect(() => {
-    fetchCurrentFiatRate(selectedCurrency, setFiatRate)
-  }, [selectedCurrency])
 
   const checkApi = async () => {
     const oldOrder = rawData?.order

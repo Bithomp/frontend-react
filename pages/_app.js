@@ -25,11 +25,13 @@ import '../styles/ui.scss'
 import '../styles/components/nprogress.css'
 
 import { ThemeProvider } from '../components/Layout/ThemeContext'
+import { fetchCurrentFiatRate } from '../utils/common'
 
 const MyApp = ({ Component, pageProps }) => {
   const [account, setAccount] = useLocalStorage('account')
   const [sessionToken, setSessionToken] = useLocalStorage('sessionToken')
   const [selectedCurrency, setSelectedCurrency] = useCookie('currency', 'usd')
+  const [fiatRate, setFiatRate] = useState(0)
   const [proExpire, setProExpire] = useCookie('pro-expire')
   const [subscriptionExpired, setSubscriptionExpired] = useState(
     proExpire ? Number(proExpire) < new Date().getTime() : true
@@ -39,6 +41,15 @@ const MyApp = ({ Component, pageProps }) => {
   const [wcSession, setWcSession] = useState(null)
 
   const router = useRouter()
+
+  useEffect(() => {
+    //pages where we need to show the latest fiat price
+    const allowedRoutes = ['/', '/account/[[...id]]', '/amms', '/distribution', '/admin/watchlist', '/transaction/[id]']
+    if (allowedRoutes.includes(router.pathname)) {
+      fetchCurrentFiatRate(selectedCurrency, setFiatRate)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedCurrency])
 
   useEffect(() => {
     setSubscriptionExpired(proExpire ? Number(proExpire) < new Date().getTime() : true)
@@ -173,6 +184,7 @@ const MyApp = ({ Component, pageProps }) => {
                 setSubscriptionExpired={setSubscriptionExpired}
                 sessionToken={sessionToken}
                 setSessionToken={setSessionToken}
+                fiatRate={fiatRate}
               />
             </div>
             <BackgroundImage />

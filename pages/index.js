@@ -68,7 +68,7 @@ function sendData() {
   }
 }
 
-export default function Home({ selectedCurrency, setSelectedCurrency, showAds }) {
+export default function Home({ selectedCurrency, setSelectedCurrency, showAds, fiatRate }) {
   const { t } = useTranslation()
 
   const [chartPeriod, setChartPeriod] = useState('one_day')
@@ -169,6 +169,7 @@ export default function Home({ selectedCurrency, setSelectedCurrency, showAds })
               selectedCurrency={selectedCurrency}
               setSelectedCurrency={setSelectedCurrency}
               chartPeriod={chartPeriod}
+              fiatRate={fiatRate}
             />
           </div>
           <div className="home-price-chart">

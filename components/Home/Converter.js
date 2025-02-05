@@ -1,12 +1,10 @@
-import axios from 'axios'
 import { useState, useEffect } from 'react'
 import Image from 'next/image'
 
 import CurrencySelect from '../UI/CurrencySelect'
 import { typeNumberOnly, nativeCurrency, nativeCurrenciesImages } from '../../utils'
 
-export default function Converter({ selectedCurrency, setSelectedCurrency, chartPeriod }) {
-  const [data, setData] = useState({})
+export default function Converter({ selectedCurrency, setSelectedCurrency, chartPeriod, fiatRate }) {
   const [nativeTokenValue, setNativeTokenValue] = useState('1')
   const [fiatValue, setFiatValue] = useState('')
   const [rendered, setRendered] = useState(false)
@@ -16,14 +14,9 @@ export default function Converter({ selectedCurrency, setSelectedCurrency, chart
   }, [])
 
   useEffect(() => {
-    async function fetchData() {
-      const response = await axios('v2/rates/current/' + selectedCurrency)
-      setData(response.data)
-      setFiatValue((nativeTokenValue * response.data[selectedCurrency]).toFixed(2))
-    }
-    fetchData()
+    setFiatValue((nativeTokenValue * fiatRate).toFixed(2))
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedCurrency, chartPeriod])
+  }, [fiatRate, chartPeriod])
 
   const onXrpAmountChange = (e) => {
     let xrpAmount = e.target.value
@@ -31,7 +24,7 @@ export default function Converter({ selectedCurrency, setSelectedCurrency, chart
       xrpAmount = xrpAmount * 1
     }
     setNativeTokenValue(xrpAmount)
-    setFiatValue((xrpAmount * data[selectedCurrency]).toFixed(2))
+    setFiatValue((xrpAmount * fiatRate).toFixed(2))
   }
 
   const onFiatAmountChange = (e) => {
@@ -40,14 +33,10 @@ export default function Converter({ selectedCurrency, setSelectedCurrency, chart
       fiatAmount = fiatAmount * 1
     }
     setFiatValue(fiatAmount)
-    setNativeTokenValue((fiatAmount / data[selectedCurrency]).toFixed(2))
+    setNativeTokenValue((fiatAmount / fiatRate).toFixed(2))
   }
 
-  const rate = data[selectedCurrency] ? (
-    '1 ' + nativeCurrency + ' = ' + data[selectedCurrency] + ' ' + selectedCurrency.toUpperCase()
-  ) : (
-    <br />
-  )
+  const rate = fiatRate ? '1 ' + nativeCurrency + ' = ' + fiatRate + ' ' + selectedCurrency.toUpperCase() : <br />
 
   return (
     <>

@@ -53,6 +53,11 @@ export const nativeCurrencyToFiat = (params) => {
   if (devNet) return ''
   const { amount, selectedCurrency, fiatRate } = params
   if (!amount || !selectedCurrency || !fiatRate) return ''
+
+  if (amount.currency === nativeCurrency) {
+    return ' ≈ ' + shortNiceNumber(amount.value * fiatRate, 2, 1, selectedCurrency)
+  }
+
   return ' ≈ ' + shortNiceNumber((amount / 1000000) * fiatRate, 2, 1, selectedCurrency)
 }
 
@@ -879,7 +884,7 @@ export const shortNiceNumber = (n, smallNumberFractionDigits = 2, largeNumberFra
     output = niceNumber(n / 1000000, largeNumberFractionDigits, currency) + 'M'
     //} else if (n > 99999) {
     //output = niceNumber(Math.floor(n), 0, currency)
-  } else if (n > 999) {
+  } else if (n > 9999) {
     output = niceNumber(n / 1000, largeNumberFractionDigits, currency) + 'K'
   } else if (n === 0) {
     output = niceNumber(0, 0, currency)

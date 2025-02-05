@@ -42,7 +42,7 @@ const Container = ({ children }) => {
   return <>{children}</>
 }
 
-export default function Transaction({ data }) {
+export default function Transaction({ data, fiatRate, selectedCurrency }) {
   const { t } = useTranslation()
 
   let TransactionComponent = null
@@ -65,12 +65,12 @@ export default function Transaction({ data }) {
     <>
       <SEO
         page="Transaction"
-        title={t('explorer.header.transaction') + data?.tx?.hash}
-        description={'Transaction details for tx: ' + data?.tx?.hash}
+        title={t('explorer.header.transaction') + data?.txHash}
+        description={'Transaction details for tx: ' + data?.txHash}
       />
       <SearchBlock tab="transaction" />
       <Container>
-        <TransactionComponent data={data} />
+        <TransactionComponent data={data} fiatRate={fiatRate} selectedCurrency={selectedCurrency} />
       </Container>
     </>
   )

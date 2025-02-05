@@ -16,7 +16,6 @@ import { addressLink, amountFormat, nativeCurrencyToFiat, nftIdLink, timeFromNow
 import Link from 'next/link'
 import axios from 'axios'
 import Image from 'next/image'
-import { fetchCurrentFiatRate } from '../../utils/common'
 import { nftPriceData, nftThumbnail } from '../../utils/nft'
 
 export const getServerSideProps = async (context) => {
@@ -29,7 +28,7 @@ export const getServerSideProps = async (context) => {
   }
 }
 
-export default function Watchlist({ selectedCurrency, account, subscriptionExpired }) {
+export default function Watchlist({ selectedCurrency, account, subscriptionExpired, fiatRate }) {
   const { t, i18n } = useTranslation()
   const router = useRouter()
   const width = useWidth()
@@ -41,7 +40,6 @@ export default function Watchlist({ selectedCurrency, account, subscriptionExpir
   const [entetyName, setEntetyName] = useState('')
   const [nfts, setNfts] = useState([])
   const [addresses, setAddresses] = useState([])
-  const [fiatRate, setFiatRate] = useState(0)
   const [rendered, setRendered] = useState(false)
 
   useEffect(() => {
@@ -49,13 +47,6 @@ export default function Watchlist({ selectedCurrency, account, subscriptionExpir
     setRendered(true)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
-
-  useEffect(() => {
-    if (selectedCurrency) {
-      fetchCurrentFiatRate(selectedCurrency, setFiatRate)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedCurrency])
 
   /*
     .delete("/user/favorite/1");

@@ -29,7 +29,6 @@ import {
   fullNiceNumber
 } from '../../utils/format'
 import { getIsSsrMobile } from '../../utils/mobile'
-import { fetchCurrentFiatRate } from '../../utils/common'
 import { LinkAmm } from '../../utils/links'
 import RelatedLinks from '../../components/Account/RelatedLinks'
 
@@ -98,7 +97,8 @@ export default function Account({
   selectedCurrency,
   ledgerTimestampQuery,
   account,
-  setSignRequest
+  setSignRequest,
+  fiatRate
 }) {
   const { t, i18n } = useTranslation()
 
@@ -107,7 +107,7 @@ export default function Account({
   const [errorMessage, setErrorMessage] = useState('')
   const [ledgerTimestamp, setLedgerTimestamp] = useState(ledgerTimestampQuery)
   const [ledgerTimestampInput, setLedgerTimestampInput] = useState(ledgerTimestampQuery)
-  const [fiatRate, setFiatRate] = useState('')
+  const [pageFiatRate, setPageFiatRate] = useState(0)
   const [userData, setUserData] = useState({
     username: initialData?.username,
     service: initialData?.service?.name,
@@ -184,14 +184,15 @@ export default function Account({
   }, [ledgerTimestamp])
 
   useEffect(() => {
+    if (!selectedCurrency) return
     if (!ledgerTimestamp) {
-      //if there is ledgerTimestamp then we need a historical rate
-      fetchCurrentFiatRate(selectedCurrency, setFiatRate)
+      setPageFiatRate(fiatRate)
     } else {
+      //if there is ledgerTimestamp then we need a historical rate
       getHistoricalRate()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedCurrency])
+  }, [selectedCurrency, fiatRate])
 
   const getHistoricalRate = () => {
     if (ledgerTimestamp && selectedCurrency) {
@@ -202,7 +203,7 @@ export default function Account({
           console.log(error)
         })
         if (response?.data?.[selectedCurrency]) {
-          setFiatRate(response.data[selectedCurrency])
+          setPageFiatRate(response.data[selectedCurrency])
         }
       }
       fetchHistoricalRate()
@@ -312,7 +313,7 @@ export default function Account({
     }
 
     setBalances(balanceList)
-  }, [data, networkInfo, fiatRate])
+  }, [data, networkInfo, pageFiatRate])
 
   const resetTimeMachine = () => {
     setLedgerTimestampInput(null)
@@ -446,7 +447,7 @@ export default function Account({
                               {nativeCurrencyToFiat({
                                 amount: balances.available?.native,
                                 selectedCurrency,
-                                fiatRate
+                                fiatRate: pageFiatRate
                               }) || '0 ' + selectedCurrency.toUpperCase()}
                             </span>
                           </div>
@@ -755,27 +756,42 @@ export default function Account({
                                             </span>
                                           </>
                                         ) : (
-                                          <span className="orange">
-                                            Not activated yet. The owner with full access to the account can activate it
-                                            by sending at least {amountFormat(networkInfo?.reserveBase)} to the address.
-                                          </span>
-                                        )}
-                                        {getCoinsUrl && (
                                           <>
-                                            {' '}
-                                            <a
-                                              href={getCoinsUrl + (devNet ? '?address=' + data?.address : '')}
-                                              target="_blank"
-                                              rel="noreferrer"
-                                            >
-                                              Get your first {nativeCurrency}.
-                                            </a>
+                                            {data?.ledgerInfo?.activated === false ? (
+                                              <>
+                                                <span className="orange">
+                                                  Not activated yet. The owner with full access to the account can
+                                                  activate it by sending at least{' '}
+                                                  {amountFormat(networkInfo?.reserveBase)} to the address.
+                                                </span>
+                                                {getCoinsUrl && (
+                                                  <>
+                                                    {' '}
+                                                    <a
+                                                      href={getCoinsUrl + (devNet ? '?address=' + data?.address : '')}
+                                                      target="_blank"
+                                                      rel="noreferrer"
+                                                    >
+                                                      Get your first {nativeCurrency}.
+                                                    </a>
+                                                  </>
+                                                )}
+                                                <br />
+                                                <a
+                                                  href="https://xrpl.org/reserves.html"
+                                                  target="_blank"
+                                                  rel="noreferrer"
+                                                >
+                                                  Learn more about reserves.
+                                                </a>
+                                              </>
+                                            ) : (
+                                              <span className="orange">
+                                                Network error. The account status is unknown. Please try again later.
+                                              </span>
+                                            )}
                                           </>
                                         )}
-                                        <br />
-                                        <a href="https://xrpl.org/reserves.html" target="_blank" rel="noreferrer">
-                                          Learn more about reserves.
-                                        </a>
                                       </>
                                     )}
                                   </td>
@@ -792,7 +808,7 @@ export default function Account({
                                       {nativeCurrencyToFiat({
                                         amount: balances.available?.native,
                                         selectedCurrency,
-                                        fiatRate
+                                        fiatRate: pageFiatRate
                                       })}
                                     </td>
                                   </tr>
@@ -803,7 +819,7 @@ export default function Account({
                                       {nativeCurrencyToFiat({
                                         amount: balances.reserved?.native,
                                         selectedCurrency,
-                                        fiatRate
+                                        fiatRate: pageFiatRate
                                       })}
                                     </td>
                                   </tr>
@@ -814,7 +830,7 @@ export default function Account({
                                       {nativeCurrencyToFiat({
                                         amount: balances.total?.native,
                                         selectedCurrency,
-                                        fiatRate
+                                        fiatRate: pageFiatRate
                                       })}
                                     </td>
                                   </tr>

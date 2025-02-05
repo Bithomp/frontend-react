@@ -1,9 +1,9 @@
 import { TRow, TData } from '../TableDetails'
-import { AddressWithIconFilled, amountFormat } from '../../utils/format'
+import { AddressWithIconFilled, amountFormat, nativeCurrencyToFiat } from '../../utils/format'
 
 import { TransactionCard } from './TransactionCard'
 
-export const TransactionPayment = ({ data }) => {
+export const TransactionPayment = ({ data, selectedCurrency, fiatRate }) => {
   if (!data) return null
   const { tx, outcome } = data
 
@@ -74,12 +74,19 @@ export const TransactionPayment = ({ data }) => {
       {tx?.DestinationTag && (
         <TRow>
           <TData>Destination tag:</TData>
-          <TData>{tx?.DestinationTag}</TData>
+          <TData className="bold">{tx?.DestinationTag}</TData>
         </TRow>
       )}
       <TRow>
         <TData>Delivered amount:</TData>
-        <TData className="bold green">{amountFormat(outcome.deliveredAmount)}</TData>
+        <TData className="bold green">
+          {amountFormat(outcome.deliveredAmount)}
+          {nativeCurrencyToFiat({
+            amount: outcome.deliveredAmount,
+            selectedCurrency,
+            fiatRate
+          })}
+        </TData>
       </TRow>
     </TransactionCard>
   )

@@ -13,7 +13,7 @@ export const TransactionCard = ({ data, children }) => {
   const [showRawMeta, setShowRawMeta] = useState(false)
 
   if (!data) return null
-  const { transaction, error_message, tx, outcome, meta } = data
+  const { txHash, error_message, tx, outcome, meta } = data
   const isSuccessful = outcome?.result == 'tesSUCCESS'
 
   /*
@@ -31,7 +31,7 @@ export const TransactionCard = ({ data, children }) => {
       <Heading>Transaction Details</Heading>
       <Card>
         <Info>
-          {transaction || tx.hash} <CopyButton text={transaction || tx.hash} />
+          {txHash} <CopyButton text={txHash} />
         </Info>
         {error_message ? (
           <Info className="orange">{error_message}</Info>

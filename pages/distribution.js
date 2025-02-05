@@ -20,9 +20,8 @@ import SEO from '../components/SEO'
 
 import { useWidth, nativeCurrency, devNet } from '../utils'
 import { amountFormat, niceNumber, percentFormat, nativeCurrencyToFiat, AddressWithIconFilled } from '../utils/format'
-import { fetchCurrentFiatRate } from '../utils/common'
 
-export default function Distribution({ selectedCurrency }) {
+export default function Distribution({ selectedCurrency, fiatRate }) {
   const { t } = useTranslation()
   const router = useRouter()
 
@@ -34,11 +33,6 @@ export default function Distribution({ selectedCurrency }) {
   const [rawData, setRawData] = useState({})
   const [loading, setLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
-  const [fiatRate, setFiatRate] = useState(0)
-
-  useEffect(() => {
-    fetchCurrentFiatRate(selectedCurrency, setFiatRate)
-  }, [selectedCurrency])
 
   const controller = new AbortController()
 
