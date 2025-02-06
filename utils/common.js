@@ -5,10 +5,10 @@ export const fetchCurrentFiatRate = async (currency, setRate) => {
   setRate(response?.data[currency])
 }
 
-export const fetchHistoricalRate = async ({ ledgerTimestamp, selectedCurrency, setPageFiatRate }) => {
-  if (!ledgerTimestamp || !selectedCurrency || !setPageFiatRate) return
+export const fetchHistoricalRate = async ({ timestamp, selectedCurrency, setPageFiatRate }) => {
+  if (!timestamp || !selectedCurrency) return
   const response = await axios(
-    'v2/rates/history/nearest/' + selectedCurrency + '?date=' + new Date(ledgerTimestamp).valueOf()
+    'v2/rates/history/nearest/' + selectedCurrency + '?date=' + new Date(timestamp).valueOf()
   ).catch((error) => {
     console.log(error)
   })

@@ -184,7 +184,7 @@ export default function Account({
       setPageFiatRate(fiatRate)
     } else {
       //if there is ledgerTimestamp then we need a historical rate
-      fetchHistoricalRate({ ledgerTimestamp, selectedCurrency, setPageFiatRate })
+      fetchHistoricalRate({ timestamp: ledgerTimestamp, selectedCurrency, setPageFiatRate })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fiatRate, ledgerTimestamp])

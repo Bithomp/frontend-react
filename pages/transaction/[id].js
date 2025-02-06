@@ -42,7 +42,7 @@ const Container = ({ children }) => {
   return <>{children}</>
 }
 
-export default function Transaction({ data, fiatRate, selectedCurrency }) {
+export default function Transaction({ data, selectedCurrency }) {
   const { t } = useTranslation()
 
   let TransactionComponent = null
@@ -70,7 +70,7 @@ export default function Transaction({ data, fiatRate, selectedCurrency }) {
       />
       <SearchBlock tab="transaction" />
       <Container>
-        <TransactionComponent data={data} fiatRate={fiatRate} selectedCurrency={selectedCurrency} />
+        <TransactionComponent data={data} selectedCurrency={selectedCurrency} />
       </Container>
     </>
   )
