@@ -1,5 +1,5 @@
 import { TData, TRow } from '../TableDetails'
-import { amountFormat, fullDateAndTime } from '../../utils/format'
+import { AddressWithIconFilled, amountFormat, fullDateAndTime } from '../../utils/format'
 
 import { LinkAccount } from '../../utils/links'
 import { TransactionCard } from './TransactionCard'
@@ -52,7 +52,7 @@ export const TransactionEscrow = ({ data }) => {
           <TRow>
             <TData>Initiated by:</TData>
             <TData>
-              <LinkAccount address={tx.Account} />
+              <AddressWithIconFilled data={specification.source} name="address" />
             </TData>
           </TRow>
           <TRow>

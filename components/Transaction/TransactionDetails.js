@@ -1,18 +1,18 @@
 import { TData, TRow } from '../TableDetails'
 
-import { LinkAccount } from '../../utils/links'
 import { TransactionCard } from './TransactionCard'
+import { AddressWithIconFilled } from '../../utils/format'
 
 export const TransactionDetails = ({ data }) => {
   if (!data) return null
-  const { tx } = data
+  const { specification } = data
 
   return (
     <TransactionCard data={data}>
       <TRow>
         <TData>Initiated by:</TData>
         <TData>
-          <LinkAccount address={tx?.Account} />
+          <AddressWithIconFilled data={specification.source} name="address" />
         </TData>
       </TRow>
     </TransactionCard>

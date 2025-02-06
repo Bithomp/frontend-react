@@ -8,7 +8,7 @@ import { fetchHistoricalRate } from '../../utils/common'
 export const TransactionPayment = ({ data, selectedCurrency }) => {
   const [pageFiatRate, setPageFiatRate] = useState(0)
 
-  const { outcome, tx } = data
+  const { outcome, specification } = data
 
   useEffect(() => {
     if (!selectedCurrency || !outcome) return
@@ -76,19 +76,19 @@ export const TransactionPayment = ({ data, selectedCurrency }) => {
       <TRow>
         <TData>Source:</TData>
         <TData>
-          <AddressWithIconFilled data={tx} name="Account" />
+          <AddressWithIconFilled data={specification.source} name="address" />
         </TData>
       </TRow>
       <TRow>
         <TData>Destination:</TData>
         <TData>
-          <AddressWithIconFilled data={tx} name="Destination" />
+          <AddressWithIconFilled data={specification.destination} name="address" />
         </TData>
       </TRow>
-      {tx?.DestinationTag && (
+      {specification.destination?.tag && (
         <TRow>
           <TData>Destination tag:</TData>
-          <TData className="bold">{tx?.DestinationTag}</TData>
+          <TData className="bold">{specification.destination.tag}</TData>
         </TRow>
       )}
       <TRow>
