@@ -87,6 +87,7 @@ import {
   FaYoutube
 } from 'react-icons/fa6'
 import Did from '../../components/Account/Did'
+import { fetchHistoricalRate } from '../../utils/common'
 
 const XahauRewardTr = dynamic(() => import('../../components/Account/XahauRewardTr'), { ssr: false })
 
@@ -175,13 +176,7 @@ export default function Account({
       checkApi({ noCache: true })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id, refreshPage, selectedCurrency, ledgerTimestamp])
-
-  useEffect(() => {
-    if (!ledgerTimestamp) return
-    getHistoricalRate()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [ledgerTimestamp])
+  }, [id, refreshPage, ledgerTimestamp])
 
   useEffect(() => {
     if (!selectedCurrency) return
@@ -189,26 +184,10 @@ export default function Account({
       setPageFiatRate(fiatRate)
     } else {
       //if there is ledgerTimestamp then we need a historical rate
-      getHistoricalRate()
+      fetchHistoricalRate({ ledgerTimestamp, selectedCurrency, setPageFiatRate })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedCurrency, fiatRate])
-
-  const getHistoricalRate = () => {
-    if (ledgerTimestamp && selectedCurrency) {
-      async function fetchHistoricalRate() {
-        const response = await axios(
-          'v2/rates/history/nearest/' + selectedCurrency + '?date=' + new Date(ledgerTimestamp).valueOf()
-        ).catch((error) => {
-          console.log(error)
-        })
-        if (response?.data?.[selectedCurrency]) {
-          setPageFiatRate(response.data[selectedCurrency])
-        }
-      }
-      fetchHistoricalRate()
-    }
-  }
+  }, [fiatRate, ledgerTimestamp])
 
   const avatarSrc = (data, options) => {
     /*
