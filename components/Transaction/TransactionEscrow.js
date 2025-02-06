@@ -4,7 +4,7 @@ import { AddressWithIconFilled, amountFormat, fullDateAndTime } from '../../util
 import { LinkAccount } from '../../utils/links'
 import { TransactionCard } from './TransactionCard'
 
-export const TransactionEscrow = ({ data }) => {
+export const TransactionEscrow = ({ data, pageFiatRate, selectedCurrency }) => {
   if (!data) return null
   const { tx, specification, outcome } = data
 
@@ -38,7 +38,7 @@ export const TransactionEscrow = ({ data }) => {
   }
 
   return (
-    <TransactionCard data={data}>
+    <TransactionCard data={data} pageFiatRate={pageFiatRate} selectedCurrency={selectedCurrency}>
       {/* Different data for EscrowCreation vs Execution/Cancellation */}
       {isEscrowCreation ? (
         <TRow>

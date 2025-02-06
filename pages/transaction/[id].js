@@ -13,6 +13,8 @@ import {
   TransactionPayment,
   TransactionAmm
 } from '../../components/Transaction'
+import { useEffect, useState } from 'react'
+import { fetchHistoricalRate } from '../../utils/common'
 
 export async function getServerSideProps(context) {
   const { locale, query, req } = context
@@ -38,15 +40,24 @@ export async function getServerSideProps(context) {
   }
 }
 
-const Container = ({ children }) => {
-  return <>{children}</>
-}
-
 export default function Transaction({ data, selectedCurrency }) {
   const { t } = useTranslation()
 
+  const [pageFiatRate, setPageFiatRate] = useState(0)
+
+  const { txHash, outcome, tx } = data
+
+  useEffect(() => {
+    if (!selectedCurrency || !outcome) return
+    const { ledgerTimestamp } = outcome
+    if (!ledgerTimestamp) return
+
+    fetchHistoricalRate({ timestamp: ledgerTimestamp * 1000, selectedCurrency, setPageFiatRate })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedCurrency])
+
   let TransactionComponent = null
-  const txType = data?.tx?.TransactionType
+  const txType = tx?.TransactionType
   // https://xrpl.org/docs/references/protocol/transactions/types
 
   if (txType?.includes('Escrow')) {
@@ -61,16 +72,20 @@ export default function Transaction({ data, selectedCurrency }) {
     TransactionComponent = TransactionDetails
   }
 
+  const Container = ({ children }) => {
+    return <>{children}</>
+  }
+
   return (
     <>
       <SEO
         page="Transaction"
-        title={t('explorer.header.transaction') + data?.txHash}
-        description={'Transaction details for tx: ' + data?.txHash}
+        title={t('explorer.header.transaction') + txHash}
+        description={'Transaction details for tx: ' + txHash}
       />
       <SearchBlock tab="transaction" />
       <Container>
-        <TransactionComponent data={data} selectedCurrency={selectedCurrency} />
+        <TransactionComponent data={data} pageFiatRate={pageFiatRate} selectedCurrency={selectedCurrency} />
       </Container>
     </>
   )

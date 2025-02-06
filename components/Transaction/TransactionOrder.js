@@ -3,12 +3,12 @@ import { LinkAccount } from '../../utils/links'
 import { TransactionCard } from './TransactionCard'
 import { AddressWithIconFilled } from '../../utils/format'
 
-export const TransactionOrder = ({ data }) => {
+export const TransactionOrder = ({ data, pageFiatRate, selectedCurrency }) => {
   if (!data) return null
   const { specification } = data
 
   return (
-    <TransactionCard data={data}>
+    <TransactionCard data={data} pageFiatRate={pageFiatRate} selectedCurrency={selectedCurrency}>
       <TRow>
         <TData>Initiated by:</TData>
         <TData>

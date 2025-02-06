@@ -2,22 +2,9 @@ import { TRow, TData } from '../TableDetails'
 import { AddressWithIconFilled, amountFormat, nativeCurrencyToFiat } from '../../utils/format'
 
 import { TransactionCard } from './TransactionCard'
-import { useEffect, useState } from 'react'
-import { fetchHistoricalRate } from '../../utils/common'
 
-export const TransactionPayment = ({ data, selectedCurrency }) => {
-  const [pageFiatRate, setPageFiatRate] = useState(0)
-
+export const TransactionPayment = ({ data, pageFiatRate, selectedCurrency }) => {
   const { outcome, specification } = data
-
-  useEffect(() => {
-    if (!selectedCurrency || !outcome) return
-    const { timestamp } = outcome
-    if (!timestamp) return
-
-    fetchHistoricalRate({ timestamp, selectedCurrency, setPageFiatRate })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedCurrency])
 
   if (!data) return null
 
@@ -72,7 +59,7 @@ export const TransactionPayment = ({ data, selectedCurrency }) => {
   */
 
   return (
-    <TransactionCard data={data}>
+    <TransactionCard data={data} pageFiatRate={pageFiatRate} selectedCurrency={selectedCurrency}>
       <TRow>
         <TData>Source:</TData>
         <TData>
@@ -95,13 +82,11 @@ export const TransactionPayment = ({ data, selectedCurrency }) => {
         <TData>Delivered amount:</TData>
         <TData className="bold green">
           {amountFormat(outcome.deliveredAmount)}
-          {pageFiatRate
-            ? nativeCurrencyToFiat({
-                amount: outcome.deliveredAmount,
-                selectedCurrency,
-                fiatRate: pageFiatRate
-              })
-            : ''}
+          {nativeCurrencyToFiat({
+            amount: outcome.deliveredAmount,
+            selectedCurrency,
+            fiatRate: pageFiatRate
+          })}
         </TData>
       </TRow>
     </TransactionCard>

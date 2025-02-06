@@ -5,9 +5,9 @@ import { i18n, useTranslation } from 'next-i18next'
 import { Card, Info, Heading, MainBody, Type } from './styled'
 import { LedgerLink } from '../../utils/links'
 import { TDetails, TBody, TRow, TData } from '../TableDetails'
-import { amountFormat, codeHighlight, fullDateAndTime, timeFromNow } from '../../utils/format'
+import { amountFormat, codeHighlight, fullDateAndTime, nativeCurrencyToFiat, timeFromNow } from '../../utils/format'
 
-export const TransactionCard = ({ data, children }) => {
+export const TransactionCard = ({ data, pageFiatRate, selectedCurrency, children }) => {
   const { t } = useTranslation()
   const [showRawData, setShowRawData] = useState(false)
   const [showRawMeta, setShowRawMeta] = useState(false)
@@ -40,12 +40,12 @@ export const TransactionCard = ({ data, children }) => {
             {isSuccessful ? (
               <Info>
                 The transaction was <b className="green">successfull</b> and validated in the ledger{' '}
-                <LedgerLink version={outcome.ledgerVersion} /> (index: {outcome.indexInLedger}).
+                <LedgerLink version={outcome.ledgerIndex} /> (index: {outcome.indexInLedger}).
               </Info>
             ) : (
               <Info>
                 The transaction <b className="red">FAILED</b> and included to the ledger{' '}
-                <LedgerLink version={outcome.ledgerVersion} /> (index: {outcome.indexInLedger}).
+                <LedgerLink version={outcome.ledgerIndex} /> (index: {outcome.indexInLedger}).
               </Info>
             )}
             <TDetails>
@@ -69,7 +69,14 @@ export const TransactionCard = ({ data, children }) => {
                 </TRow>
                 <TRow>
                   <TData>Ledger fee:</TData>
-                  <TData>{amountFormat(tx.Fee)}</TData>
+                  <TData>
+                    {amountFormat(tx.Fee)}
+                    {nativeCurrencyToFiat({
+                      amount: tx.Fee,
+                      selectedCurrency,
+                      fiatRate: pageFiatRate
+                    })}
+                  </TData>
                 </TRow>
                 {tx?.ctid && (
                   <TRow>
