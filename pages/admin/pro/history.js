@@ -8,10 +8,11 @@ import AdminTabs from '../../../components/Tabs/AdminTabs'
 import { axiosAdmin } from '../../../utils/axios'
 
 import SEO from '../../../components/SEO'
-import { avatarServer, nativeCurrency, useWidth } from '../../../utils'
+import { avatarServer, nativeCurrency, useWidth, xahauNetwork } from '../../../utils'
 import {
   addressLink,
   amountFormat,
+  amountParced,
   fullDateAndTime,
   niceNumber,
   shortNiceNumber,
@@ -27,6 +28,7 @@ import TypeToIcon from '../../../components/Admin/subscriptions/pro/history/Type
 import Image from 'next/image'
 import { CSVLink } from 'react-csv'
 import DownloadIcon from '../../../public/images/download.svg'
+import { koinly } from '../../../utils/koinly'
 
 export const getServerSideProps = async (context) => {
   const { locale, query } = context
@@ -204,6 +206,21 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
         res.activities[i].amountExport = amountFormat(res.activities[i].amount)
         res.activities[i].amountNumber = res.activities[i].amount?.value || res.activities[i].amount / 1000000
         res.activities[i].currencyCode = res.activities[i].amount?.currency || nativeCurrency
+
+        const { currency } = amountParced(res.activities[i].amount)
+
+        let scvCurrency = currency
+
+        if (res.activities[i].amount?.issuer) {
+          let koinlyId =
+            koinly[xahauNetwork ? 'xahau' : 'xrpl'][
+              res.activities[i].amount?.issuer + ':' + res.activities[i].amount?.currency
+            ]
+          if (koinlyId) {
+            scvCurrency = koinlyId
+          }
+        }
+
         res.activities[i].currencyIssuer = res.activities[i].amount?.issuer
 
         res.activities[i].transferFeeExport = amountFormat(res.activities[i].transferFee)
@@ -218,18 +235,10 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
         res.activities[i].timestampExport = new Date(res.activities[i].timestamp * 1000).toISOString()
 
         res.activities[i].sentAmount = sending ? res.activities[i].amountNumber : 0
-        res.activities[i].sentCurrency = sending
-          ? res.activities[i].amount?.currency
-            ? res.activities[i].amount.currency + ':' + res.activities[i].amount.issuer
-            : nativeCurrency
-          : ''
+        res.activities[i].sentCurrency = sending ? scvCurrency : ''
 
         res.activities[i].receivedAmount = !sending ? res.activities[i].amountNumber : 0
-        res.activities[i].receivedCurrency = !sending
-          ? res.activities[i].amount?.currency
-            ? res.activities[i].amount.currency + ':' + res.activities[i].amount.issuer
-            : nativeCurrency
-          : ''
+        res.activities[i].receivedCurrency = !sending ? scvCurrency : ''
 
         res.activities[i].netWorthCurrency = selectedCurrency.toUpperCase()
       }
@@ -428,6 +437,9 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
                   <DownloadIcon /> CSV for Koinly
                 </CSVLink>
               )}
+              <br />
+              <br />
+              Let us know if we miss koinlyIDs for your tokens. We will add them to the system.
             </div>
           </>
           <>

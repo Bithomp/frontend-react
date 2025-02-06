@@ -630,7 +630,7 @@ export const niceCurrency = (currency) => {
   return currency
 }
 
-const amountParced = (amount) => {
+export const amountParced = (amount) => {
   if (!amount && amount !== 0) {
     return false
   }
