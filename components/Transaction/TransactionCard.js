@@ -5,7 +5,14 @@ import { i18n, useTranslation } from 'next-i18next'
 import { Card, Info, Heading, MainBody, Type } from './styled'
 import { LedgerLink } from '../../utils/links'
 import { TDetails, TBody, TRow, TData } from '../TableDetails'
-import { amountFormat, codeHighlight, fullDateAndTime, nativeCurrencyToFiat, timeFromNow } from '../../utils/format'
+import {
+  AddressWithIconFilled,
+  amountFormat,
+  codeHighlight,
+  fullDateAndTime,
+  nativeCurrencyToFiat,
+  timeFromNow
+} from '../../utils/format'
 
 export const TransactionCard = ({ data, pageFiatRate, selectedCurrency, children }) => {
   const { t } = useTranslation()
@@ -13,7 +20,7 @@ export const TransactionCard = ({ data, pageFiatRate, selectedCurrency, children
   const [showRawMeta, setShowRawMeta] = useState(false)
 
   if (!data) return null
-  const { txHash, error_message, tx, outcome, meta } = data
+  const { txHash, error_message, tx, outcome, meta, specification } = data
   const isSuccessful = outcome?.result == 'tesSUCCESS'
 
   /*
@@ -86,6 +93,23 @@ export const TransactionCard = ({ data, pageFiatRate, selectedCurrency, children
                     </TData>
                   </TRow>
                 )}
+                {specification?.signer && (
+                  <TRow>
+                    <TData>Signer:</TData>
+                    <TData>
+                      <AddressWithIconFilled data={specification.signer} name="address" />
+                    </TData>
+                  </TRow>
+                )}
+                {specification?.signers &&
+                  specification?.signers.map((signer, index) => (
+                    <TRow key={index}>
+                      <TData>Signer {index + 1}:</TData>
+                      <TData>
+                        <AddressWithIconFilled data={signer} name="address" />
+                      </TData>
+                    </TRow>
+                  ))}
                 <TRow>
                   <TData>{t('table.raw-data')}</TData>
                   <TData>
