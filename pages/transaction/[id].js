@@ -15,6 +15,7 @@ import {
 } from '../../components/Transaction'
 import { useEffect, useState } from 'react'
 import { fetchHistoricalRate } from '../../utils/common'
+import { TransactionSetRegularKey } from '../../components/Transaction/TransactionSetRegularKey'
 
 export async function getServerSideProps(context) {
   const { locale, query, req } = context
@@ -27,6 +28,7 @@ export async function getServerSideProps(context) {
       headers: passHeaders(req)
     })
     data = res?.data
+    //console.log('data', data) //delete
   } catch (error) {
     console.error(error)
   }
@@ -66,6 +68,8 @@ export default function Transaction({ data, selectedCurrency }) {
     TransactionComponent = TransactionOrder
   } else if (txType === 'Payment') {
     TransactionComponent = TransactionPayment
+  } else if (txType === 'SetRegularKey') {
+    TransactionComponent = TransactionSetRegularKey
   } else if (txType?.includes('AMM')) {
     TransactionComponent = TransactionAmm
   } else {
