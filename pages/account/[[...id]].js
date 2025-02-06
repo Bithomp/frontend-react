@@ -1527,11 +1527,11 @@ export default function Account({
                             </table>
                           )}
 
-                          <RelatedLinks data={data} />
-
                           {data?.ledgerInfo?.did && (
                             <Did data={data} account={account} setSignRequest={setSignRequest} />
                           )}
+
+                          <RelatedLinks data={data} />
                         </div>
                       </>
                     )}
