@@ -445,10 +445,10 @@ export default function Validators({ amendment, initialData, initialErrorMessage
     return amendments.map((a, i) => (
       <span key={i}>
         {a === amendment ? (
-          <span className="purple bold">{a}</span>
+          <span className="purple bold">{a.length === 64 ? shortHash(a) : a}</span>
         ) : (
           <a href={'?amendment=' + a} className="orange">
-            {a}
+            {a.length === 64 ? shortHash(a) : a}
           </a>
         )}
         {i !== amendments.length - 1 && ', '}
