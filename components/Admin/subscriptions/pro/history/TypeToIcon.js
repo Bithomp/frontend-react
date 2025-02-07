@@ -1,9 +1,11 @@
-import { GiReceiveMoney, GiPayMoney, GiPassport } from 'react-icons/gi'
+import { GiReceiveMoney, GiPayMoney, GiPassport, GiMoneyStack } from 'react-icons/gi'
 import { RiNftFill } from 'react-icons/ri'
 import { CiSettings, CiLink, CiFileOn } from 'react-icons/ci'
 import { BsCurrencyExchange, BsFillSafeFill } from 'react-icons/bs'
 import { TbPigMoney } from 'react-icons/tb'
 import { LuFileCheck2 } from 'react-icons/lu'
+import { FaMoneyCheckAlt, FaSwimmingPool } from 'react-icons/fa'
+import { MdDeleteSweep } from 'react-icons/md'
 
 export default function TypeToIcon({ type, direction }) {
   if (!type) return ''
@@ -27,6 +29,14 @@ export default function TypeToIcon({ type, direction }) {
     icon = <BsFillSafeFill />
   } else if (type.includes('DID')) {
     icon = <GiPassport />
+  } else if (type.includes('AMM')) {
+    icon = <FaSwimmingPool />
+  } else if (type.includes('PaymentChannel')) {
+    icon = <GiMoneyStack />
+  } else if (type === 'AccountDelete') {
+    icon = <MdDeleteSweep />
+  } else if (type.includes('Check')) {
+    icon = <FaMoneyCheckAlt />
   } else {
     icon = <CiFileOn />
   }
