@@ -75,6 +75,8 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
   const [rowsPerPage, setRowsPerPage] = useState(10)
   const [currentList, setCurrentList] = useState([])
   const [rendered, setRendered] = useState(false)
+  const [removeDust, setRemoveDust] = useState(false)
+  const [filteredActivities, setFilteredActivities] = useState([])
 
   useEffect(() => {
     setRendered(true)
@@ -82,20 +84,33 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
   }, [])
 
   useEffect(() => {
-    if (activities.length > 0) {
+    if (filteredActivities.length > 0) {
       if (rowsPerPage === -1) {
-        setCurrentList(activities)
+        setCurrentList(filteredActivities)
       } else {
-        setCurrentList(activities.slice(page * rowsPerPage, (page + 1) * rowsPerPage))
+        setCurrentList(filteredActivities.slice(page * rowsPerPage, (page + 1) * rowsPerPage))
       }
     } else {
       setCurrentList([])
     }
-    if ((page + 2) * rowsPerPage > activities.length && data?.marker) {
+    if ((page + 2) * rowsPerPage > filteredActivities.length && data?.marker) {
       getProAddressHistory({ marker: data.marker })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activities, page, rowsPerPage])
+  }, [filteredActivities, page, rowsPerPage])
+
+  useEffect(() => {
+    if (!activities) return
+    if (removeDust) {
+      //remove records which are lower than 0.004 in fiat currency
+      setFilteredActivities(
+        activities.filter((activity) => Math.abs(parseFloat(activity.amountInFiats?.[selectedCurrency])) >= 0.004)
+      )
+    } else {
+      setFilteredActivities(activities)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activities, removeDust])
 
   let csvHeaders = [
     { label: '#', key: 'index' },
@@ -338,7 +353,7 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
           count={activities?.length || 0}
           total={data?.total || 0}
           hasMore={data?.marker}
-          data={activities || []}
+          data={filteredActivities || []}
           csvHeaders={csvHeaders}
           setSelectedCurrency={setSelectedCurrency}
           selectedCurrency={selectedCurrency}
@@ -417,9 +432,14 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
               <DateAndTimeRange setPeriod={setPeriod} defaultPeriod="all" radio={true} />
             </div>
             <div>
+              <CheckBox checked={removeDust} outline setChecked={setRemoveDust}>
+                Remove dust transactions
+              </CheckBox>
+            </div>
+            <div>
               {rendered && (
                 <CSVLink
-                  data={activities || []}
+                  data={filteredActivities || []}
                   headers={[
                     { label: 'Date', key: 'timestampExport' },
                     { label: 'Sent Amount', key: 'sentAmount' },
