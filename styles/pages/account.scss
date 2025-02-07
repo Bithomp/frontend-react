@@ -58,6 +58,13 @@
     width: calc(70% - 32px);
     padding: 0 15px;
     vertical-align: top;
+    table.table-details {
+      tbody tr {
+        td:first-child {
+          width: 23%;
+        }
+      }
+    }
     .slide {
       pre {
         white-space: pre;
