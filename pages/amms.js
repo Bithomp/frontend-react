@@ -2,7 +2,7 @@ import { useTranslation } from 'next-i18next'
 import { useEffect, useState } from 'react'
 import { axiosServer, passHeaders } from '../utils/axios'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import { useWidth, xahauNetwork } from '../utils'
+import { addQueryParams, nativeCurrency, removeQueryParams, useWidth, xahauNetwork } from '../utils'
 import { getIsSsrMobile } from '../utils/mobile'
 import axios from 'axios'
 import { useRouter } from 'next/router'
@@ -17,20 +17,26 @@ import {
   amountFormatNode,
   amountFormat,
   nativeCurrencyToFiat,
-  AddressWithIcon
+  AddressWithIcon,
+  niceCurrency
 } from '../utils/format'
 
 export async function getServerSideProps(context) {
   const { locale, req, query } = context
 
-  const { order } = query
+  const { order, currency, currencyIssuer } = query
 
   let initialData = null
   let initialErrorMessage = null
+
+  let currencyPart = '&sortCurrency=' + nativeCurrency
+  if (currencyIssuer) {
+    currencyPart = '&sortCurrency=' + currency + '&sortCurrencyIssuer=' + currencyIssuer
+  }
   try {
     const res = await axiosServer({
       method: 'get',
-      url: 'v2/amms?order=currencyHigh&sortCurrency=XRP&limit=50&voteSlots=false&auctionSlot=false',
+      url: 'v2/amms?order=currencyHigh&limit=50&voteSlots=false&auctionSlot=false' + currencyPart,
       headers: passHeaders(req)
     }).catch((error) => {
       initialErrorMessage = error.message
@@ -44,6 +50,8 @@ export async function getServerSideProps(context) {
     props: {
       initialData: initialData || null,
       orderQuery: order || initialData?.order || 'currencyHigh',
+      currencyQuery: currency || initialData?.currency || nativeCurrency,
+      currencyIssuerQuery: currencyIssuer || initialData?.currencyIssuer || '',
       initialErrorMessage: initialErrorMessage || '',
       isSsrMobile: getIsSsrMobile(context),
       ...(await serverSideTranslations(locale, ['common']))
@@ -55,6 +63,8 @@ import SEO from '../components/SEO'
 import { LinkAmm } from '../utils/links'
 import FiltersFrame from '../components/Layout/FiltersFrame'
 import InfiniteScrolling from '../components/Layout/InfiniteScrolling'
+import RadioOptions from '../components/UI/RadioOptions'
+import FormInput from '../components/UI/FormInput'
 
 // add to the list new parameters for CSV
 const updateListForCsv = (list) => {
@@ -77,7 +87,9 @@ export default function Amms({
   selectedCurrency,
   sessionToken,
   subscriptionExpired,
-  fiatRate
+  fiatRate,
+  currencyQuery,
+  currencyIssuerQuery
 }) {
   const { t, i18n } = useTranslation()
   const router = useRouter()
@@ -90,8 +102,21 @@ export default function Amms({
   const [loading, setLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState(initialErrorMessage || '')
   const [marker, setMarker] = useState(initialData?.marker)
+  const [currency, setCurrency] = useState(currencyQuery?.toUpperCase() || nativeCurrency)
 
   const controller = new AbortController()
+
+  useEffect(() => {
+    if (currency === 'RLUSD') {
+      addQueryParams(router, [
+        { name: 'currency', value: 'RLUSD' },
+        { name: 'currencyIssuer', value: 'rMxCKbEDwqr76QuheSUMdEGf4B9xJ8m5De' }
+      ])
+    } else {
+      removeQueryParams(router, ['currencyIssuer', 'currency'])
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currency])
 
   useEffect(() => {
     if (initialData?.amms?.length > 0) {
@@ -108,8 +133,11 @@ export default function Amms({
 
   const checkApi = async () => {
     const oldOrder = rawData?.order
+    const oldCurrency = rawData?.sortCurrency
     if (!oldOrder || !order) return
-    const loadMoreRequest = order ? oldOrder.toString() === order.toString() : !oldOrder
+    const loadMoreRequest =
+      (order ? oldOrder.toString() === order.toString() : !oldOrder) &&
+      (currency ? oldCurrency.toString() === currency.toString() : !oldCurrency)
 
     // do not load more if thereis no session token or if Bithomp Pro is expired
     if (loadMoreRequest && (!sessionToken || (sessionToken && subscriptionExpired))) {
@@ -121,7 +149,14 @@ export default function Amms({
       markerPart = '&marker=' + rawData?.marker
     }
 
-    let apiUrl = 'v2/amms?order=' + order + '&sortCurrency=XRP&limit=50&voteSlots=false&auctionSlot=false' + markerPart
+    let currencyPart = '&sortCurrency=' + nativeCurrency
+    if (currency === 'RLUSD') {
+      currencyPart = '&sortCurrency=RLUSD&sortCurrencyIssuer=rMxCKbEDwqr76QuheSUMdEGf4B9xJ8m5De'
+    } else if (currencyQuery === currency && currencyIssuerQuery) {
+      currencyPart = '&sortCurrency=' + currencyQuery + '&sortCurrencyIssuer=' + currencyIssuerQuery
+    }
+
+    let apiUrl = 'v2/amms?order=' + order + '&limit=50&voteSlots=false&auctionSlot=false' + markerPart + currencyPart
 
     if (!markerPart) {
       setLoading(true)
@@ -169,11 +204,11 @@ export default function Amms({
   }
 
   useEffect(() => {
-    if (order && rawData.order !== order) {
+    if (order && (rawData.order !== order || rawData.currency !== currency)) {
       checkApi()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [order])
+  }, [order, currency])
 
   const csvHeaders = [
     { label: 'Asset 1', key: 'amountFormated' },
@@ -240,9 +275,37 @@ export default function Amms({
           hasMore={marker}
           data={data || []}
           csvHeaders={csvHeaders}
-          onlyCsv={true}
         >
-          <></>
+          <>
+            <div>
+              {t('table.currency')}
+              <RadioOptions
+                tabList={[
+                  { value: nativeCurrency, label: nativeCurrency },
+                  { value: 'RLUSD', label: 'RLUSD' }
+                ]}
+                tab={currency}
+                setTab={setCurrency}
+                name="currency"
+              />
+            </div>
+            {currencyIssuerQuery && (
+              <>
+                <FormInput
+                  title={t('table.currency')}
+                  defaultValue={niceCurrency(currencyQuery)}
+                  disabled={true}
+                  hideButton={true}
+                />
+                <FormInput
+                  title={t('table.issuer')}
+                  defaultValue={currencyIssuerQuery}
+                  disabled={true}
+                  hideButton={true}
+                />
+              </>
+            )}
+          </>
           <InfiniteScrolling
             dataLength={data.length}
             loadMore={checkApi}
