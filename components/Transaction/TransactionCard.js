@@ -58,24 +58,24 @@ export const TransactionCard = ({ data, pageFiatRate, selectedCurrency, children
             <TDetails>
               <TBody>
                 <TRow>
-                  <TData>{t('table.type')}:</TData>
+                  <TData>{t('table.type')}</TData>
                   <TData>
                     <Type>{tx.TransactionType}</Type>
                   </TData>
                 </TRow>
                 <TRow>
-                  <TData>Date and time:</TData>
+                  <TData>Date and time</TData>
                   <TData>
                     {timeFromNow(tx.date, i18n, 'ripple')} ({fullDateAndTime(tx.date, 'ripple')})
                   </TData>
                 </TRow>
                 {children}
                 <TRow>
-                  <TData>Sequence:</TData>
+                  <TData>Sequence</TData>
                   <TData>#{tx.Sequence}</TData>
                 </TRow>
                 <TRow>
-                  <TData>Ledger fee:</TData>
+                  <TData>Ledger fee</TData>
                   <TData>
                     {amountFormat(tx.Fee)}
                     {nativeCurrencyToFiat({
@@ -87,7 +87,7 @@ export const TransactionCard = ({ data, pageFiatRate, selectedCurrency, children
                 </TRow>
                 {tx?.ctid && (
                   <TRow>
-                    <TData>CTID:</TData>
+                    <TData>CTID</TData>
                     <TData>
                       {tx.ctid} <CopyButton text={tx.ctid} />
                     </TData>
@@ -95,7 +95,7 @@ export const TransactionCard = ({ data, pageFiatRate, selectedCurrency, children
                 )}
                 {specification?.signer && (
                   <TRow>
-                    <TData>Signer:</TData>
+                    <TData>Signer</TData>
                     <TData>
                       <AddressWithIconFilled data={specification.signer} name="address" />
                     </TData>

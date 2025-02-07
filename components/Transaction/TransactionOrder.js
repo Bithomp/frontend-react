@@ -10,19 +10,19 @@ export const TransactionOrder = ({ data, pageFiatRate, selectedCurrency }) => {
   return (
     <TransactionCard data={data} pageFiatRate={pageFiatRate} selectedCurrency={selectedCurrency}>
       <TRow>
-        <TData>Initiated by:</TData>
+        <TData>Initiated by</TData>
         <TData>
           <AddressWithIconFilled data={specification.source} name="address" />
         </TData>
       </TRow>
       <TRow>
-        <TData>Quantity:</TData>
+        <TData>Quantity</TData>
         <TData>
           {specification.quantity.value} {specification.quantity.currency}
         </TData>
       </TRow>
       <TRow>
-        <TData>Total Price:</TData>
+        <TData>Total Price</TData>
         <TData>
           {specification.totalPrice.value} {specification.totalPrice.currency} (
           <LinkAccount address={specification.totalPrice.counterparty} />)

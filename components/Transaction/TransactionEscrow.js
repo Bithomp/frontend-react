@@ -42,7 +42,7 @@ export const TransactionEscrow = ({ data, pageFiatRate, selectedCurrency }) => {
       {/* Different data for EscrowCreation vs Execution/Cancellation */}
       {isEscrowCreation ? (
         <TRow>
-          <TData>Escrow Owner:</TData>
+          <TData>Escrow Owner</TData>
           <TData>
             <LinkAccount address={specification?.source?.address} />
           </TData>
@@ -50,13 +50,13 @@ export const TransactionEscrow = ({ data, pageFiatRate, selectedCurrency }) => {
       ) : (
         <>
           <TRow>
-            <TData>Initiated by:</TData>
+            <TData>Initiated by</TData>
             <TData>
               <AddressWithIconFilled data={specification.source} name="address" />
             </TData>
           </TRow>
           <TRow>
-            <TData>Escrow Owner:</TData>
+            <TData>Escrow Owner</TData>
             <TData>
               <LinkAccount address={specification?.owner} />
             </TData>
@@ -65,7 +65,7 @@ export const TransactionEscrow = ({ data, pageFiatRate, selectedCurrency }) => {
       )}
 
       <TRow>
-        <TData>Escrow Sequence:</TData>
+        <TData>Escrow Sequence</TData>
         <TData>#{outcome?.escrowChanges?.escrowSequence}</TData>
       </TRow>
 
@@ -73,33 +73,33 @@ export const TransactionEscrow = ({ data, pageFiatRate, selectedCurrency }) => {
       {isEscrowCreation && (
         <>
           <TRow>
-            <TData>Destination:</TData>
+            <TData>Destination</TData>
             <TData>
               <LinkAccount address={specification?.destination?.address} />
             </TData>
           </TRow>
           <TRow>
-            <TData>Escrow Amount:</TData>
+            <TData>Escrow Amount</TData>
             <TData>{amountFormat(escrowAmount)}</TData>
           </TRow>
           <TRow>
-            <TData>Source Tag:</TData>
+            <TData>Source Tag</TData>
             <TData>{specification?.source?.tag}</TData>
           </TRow>
           <TRow>
-            <TData>Destination Tag:</TData>
+            <TData>Destination Tag</TData>
             <TData>{specification?.destination?.tag}</TData>
           </TRow>
           <TRow>
-            <TData>Execute After:</TData>
+            <TData>Execute After</TData>
             <TData>{fullDateAndTime(specification?.allowExecuteAfter)}</TData>
           </TRow>
           <TRow>
-            <TData>Cancel After:</TData>
+            <TData>Cancel After</TData>
             <TData>{fullDateAndTime(specification?.allowCancelAfter)}</TData>
           </TRow>
           <TRow>
-            <TData>Condition:</TData>
+            <TData>Condition</TData>
             <TData>{specification?.condition}</TData>
           </TRow>
         </>
