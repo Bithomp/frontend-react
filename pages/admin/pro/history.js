@@ -104,7 +104,10 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
     if (removeDust) {
       //remove records which are lower than 0.004 in fiat currency
       setFilteredActivities(
-        activities.filter((activity) => Math.abs(parseFloat(activity.amountInFiats?.[selectedCurrency])) >= 0.004)
+        activities.filter(
+          (activity) =>
+            Math.abs(parseFloat(activity.amountInFiats?.[selectedCurrency])) >= 0.004 || activity.amount?.currency
+        )
       )
     } else {
       setFilteredActivities(activities)
