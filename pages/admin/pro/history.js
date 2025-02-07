@@ -241,6 +241,9 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
         res.activities[i].receivedCurrency = !sending ? scvCurrency : ''
 
         res.activities[i].netWorthCurrency = selectedCurrency.toUpperCase()
+
+        //sanitize memos for CSV
+        res.activities[i].memo = res.activities[i].memo?.replace(/"/g, "'") || ''
       }
       setData(res) // last request data
       if (options?.marker) {
