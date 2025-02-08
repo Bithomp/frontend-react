@@ -11,7 +11,7 @@
   "activated-wallet-required": "Требуется активированный кошелек",
   "ensure-wallet-activated": "Убедитесь, что ваш кошелек активирован.",
   "receive-currency-drops": "Получите дропы {{nativeCurrency}}",
-  "get-between-drops": "Вы можете получить от 1 дропа до 0.1 {{nativeCurrency}}.",
+  "get-between-drops": "Вы можете получить от 1 дропа до 1 {{nativeCurrency}}.",
   "get-instant-feedback": "Получите моментальную обратную связь",
   "see-if-payment-succeeded": "Узнайте, удался ли платеж или нет. Узнайте точное время доставки, проверьте комиссию за транзакцию и получите ссылку на транзакцию для просмотра всех деталей.",
   "daily-testing-limit": "Суточный лимит тестирования",

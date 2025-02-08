@@ -11,7 +11,7 @@
   "activated-wallet-required": "Activated Wallet Required",
   "ensure-wallet-activated": "Ensure your wallet is activated.",
   "receive-currency-drops": "Receive {{nativeCurrency}} Drops",
-  "get-between-drops": "You can receive from 1 drop to 0.1 {{nativeCurrency}}.",
+  "get-between-drops": "You can receive from 1 drop to 1 {{nativeCurrency}}.",
   "get-instant-feedback": "Get Instant Feedback",
   "see-if-payment-succeeded": "See if the payment succeeded or failed. Find out the exact time it took to arrive, check the transaction fee, and get a transaction link to view the full details.",
   "daily-testing-limit": "Daily Testing Limit",

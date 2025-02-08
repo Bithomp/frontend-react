@@ -11,7 +11,7 @@
   "activated-wallet-required": "Portefeuille activé requis",
   "ensure-wallet-activated": "Assurez-vous que votre portefeuille est activé.",
   "receive-currency-drops": "Recevoir des drops de {{nativeCurrency}}",
-  "get-between-drops": "Vous pouvez recevoir de 1 drop à 0,1 {{nativeCurrency}}.",
+  "get-between-drops": "Vous pouvez recevoir de 1 drop à 1 {{nativeCurrency}}.",
   "get-instant-feedback": "Recevoir un retour instantané",
   "see-if-payment-succeeded": "Voir si le paiement a réussi ou échoué. Découvrez le temps exact qu'il a fallu pour arriver, vérifiez les frais de transaction et obtenez un lien de transaction pour voir tous les détails.",
   "daily-testing-limit": "Limite de test quotidienne",

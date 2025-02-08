@@ -11,7 +11,7 @@
   "activated-wallet-required": "Se requiere una billetera activada",
   "ensure-wallet-activated": "Asegúrate de que tu billetera esté activada.",
   "receive-currency-drops": "Recibe gotas de criptomonedas en {{nativeCurrency}}",
-  "get-between-drops": "Puedes recibir desde 1 gota hasta 0,1 {{nativeCurrency}}.",
+  "get-between-drops": "Puedes recibir desde 1 gota hasta 1 {{nativeCurrency}}.",
   "get-instant-feedback": "Recibe comentarios instantáneos",
   "see-if-payment-succeeded": "Verifica si el pago fue exitoso y recibe un enlace de transacción para comprobar el tiempo exacto de transmisión, tarifas de transacción y todos los detalles.",
   "daily-testing-limit": "Límite de prueba diario",

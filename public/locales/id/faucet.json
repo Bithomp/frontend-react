@@ -11,7 +11,7 @@
   "activated-wallet-required": "Dompet yang diaktifkan diperlukan",
   "ensure-wallet-activated": "Pastikan dompet Anda sudah diaktifkan.",
   "receive-currency-drops": "Terima cryptocurrency drops {{nativeCurrency}}",
-  "get-between-drops": "Anda bisa menerima dari 1 drop hingga 0,1 {{nativeCurrency}}.",
+  "get-between-drops": "Anda bisa menerima dari 1 drop hingga 1 {{nativeCurrency}}.",
   "get-instant-feedback": "Dapatkan umpan balik instan",
   "see-if-payment-succeeded": "Lihat apakah pembayaran berhasil atau tidak. Ketahui waktu pengiriman yang tepat, periksa biaya transaksi, dan dapatkan tautan transaksi untuk melihat semua detail.",
   "daily-testing-limit": "Batas pengujian harian",
