@@ -49,7 +49,7 @@ const MyApp = ({ Component, pageProps }) => {
       fetchCurrentFiatRate(selectedCurrency, setFiatRate)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedCurrency])
+  }, [selectedCurrency, router.pathname])
 
   useEffect(() => {
     setSubscriptionExpired(proExpire ? Number(proExpire) < new Date().getTime() : true)
