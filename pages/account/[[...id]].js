@@ -491,7 +491,11 @@ export default function Account({
                                         {!account?.address && (
                                           <button
                                             className="button-action button-wide thin"
-                                            onClick={() => setSignRequest({})}
+                                            onClick={() =>
+                                              setSignRequest({
+                                                redirect: 'account'
+                                              })
+                                            }
                                           >
                                             {t('signin.signin')}
                                           </button>
