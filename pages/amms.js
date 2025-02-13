@@ -24,14 +24,14 @@ import {
 export async function getServerSideProps(context) {
   const { locale, req, query } = context
 
-  const { order, currency, currencyIssuer } = query
+  const { order, sortCurrency, sortCurrencyIssuer } = query
 
   let initialData = null
   let initialErrorMessage = null
 
   let currencyPart = '&sortCurrency=' + nativeCurrency
-  if (currencyIssuer) {
-    currencyPart = '&sortCurrency=' + currency + '&sortCurrencyIssuer=' + currencyIssuer
+  if (sortCurrencyIssuer) {
+    currencyPart = '&sortCurrency=' + sortCurrency + '&sortCurrencyIssuer=' + sortCurrencyIssuer
   }
   try {
     const res = await axiosServer({
@@ -50,8 +50,8 @@ export async function getServerSideProps(context) {
     props: {
       initialData: initialData || null,
       orderQuery: order || initialData?.order || 'currencyHigh',
-      currencyQuery: currency || initialData?.currency || nativeCurrency,
-      currencyIssuerQuery: currencyIssuer || initialData?.currencyIssuer || '',
+      sortCurrencyQuery: sortCurrency || initialData?.sortCurrency || nativeCurrency,
+      sortCurrencyIssuerQuery: sortCurrencyIssuer || initialData?.sortCurrencyIssuer || '',
       initialErrorMessage: initialErrorMessage || '',
       isSsrMobile: getIsSsrMobile(context),
       ...(await serverSideTranslations(locale, ['common']))
@@ -63,7 +63,6 @@ import SEO from '../components/SEO'
 import { LinkAmm } from '../utils/links'
 import FiltersFrame from '../components/Layout/FiltersFrame'
 import InfiniteScrolling from '../components/Layout/InfiniteScrolling'
-import RadioOptions from '../components/UI/RadioOptions'
 import FormInput from '../components/UI/FormInput'
 
 // add to the list new parameters for CSV
@@ -80,6 +79,32 @@ const updateListForCsv = (list) => {
   })
 }
 
+const sortCurrenciesList = [
+  { currency: nativeCurrency, label: nativeCurrency },
+  {
+    currency: '524C555344000000000000000000000000000000',
+    currencyIssuer: 'rMxCKbEDwqr76QuheSUMdEGf4B9xJ8m5De',
+    label: 'RLUSD'
+  }
+  /*
+  {
+    currency: 'USD',
+    currencyIssuer: 'rhub8VRN55s94qWKDv6jmDy1pUykJzF3wq',
+    label: 'USD Gatehub'
+  },
+  {
+    currency: 'USD',
+    currencyIssuer: 'rvYAfWj5gh67oV6fW32ZzP3Aw4Eubs59B',
+    label: 'USD Bitstamp'
+  },
+  {
+    currency: 'EUR',
+    currencyIssuer: 'rhub8VRN55s94qWKDv6jmDy1pUykJzF3wq',
+    label: 'EUR Gatehub'
+  }
+  */
+]
+
 export default function Amms({
   initialData,
   initialErrorMessage,
@@ -88,8 +113,8 @@ export default function Amms({
   sessionToken,
   subscriptionExpired,
   fiatRate,
-  currencyQuery,
-  currencyIssuerQuery
+  sortCurrencyQuery,
+  sortCurrencyIssuerQuery
 }) {
   const { t, i18n } = useTranslation()
   const router = useRouter()
@@ -102,21 +127,23 @@ export default function Amms({
   const [loading, setLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState(initialErrorMessage || '')
   const [marker, setMarker] = useState(initialData?.marker)
-  const [currency, setCurrency] = useState(currencyQuery?.toUpperCase() || nativeCurrency)
+  const [sortCurrency, setSortCurrency] = useState(sortCurrencyQuery || nativeCurrency)
+  const [sortCurrencyIssuer, setSortCurrencyIssuer] = useState(sortCurrencyIssuerQuery || '')
+  const [filtersHide, setFiltersHide] = useState(false)
 
   const controller = new AbortController()
 
   useEffect(() => {
-    if (currency === 'RLUSD') {
+    if (sortCurrency && sortCurrencyIssuer && order === 'currencyHigh') {
       addQueryParams(router, [
-        { name: 'currency', value: 'RLUSD' },
-        { name: 'currencyIssuer', value: 'rMxCKbEDwqr76QuheSUMdEGf4B9xJ8m5De' }
+        { name: 'sortCurrency', value: sortCurrency },
+        { name: 'sortCurrencyIssuer', value: sortCurrencyIssuer }
       ])
     } else {
-      removeQueryParams(router, ['currencyIssuer', 'currency'])
+      removeQueryParams(router, ['sortCurrencyIssuer', 'sortCurrency'])
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currency])
+  }, [sortCurrency, sortCurrencyIssuer, order])
 
   useEffect(() => {
     if (initialData?.amms?.length > 0) {
@@ -133,11 +160,17 @@ export default function Amms({
 
   const checkApi = async () => {
     const oldOrder = rawData?.order
-    const oldCurrency = rawData?.sortCurrency
+    const oldSortCurrency = rawData?.sortCurrency
+    const oldSortCurrencyIssuer = rawData?.sortCurrencyIssuer
     if (!oldOrder || !order) return
-    const loadMoreRequest =
-      (order ? oldOrder.toString() === order.toString() : !oldOrder) &&
-      (currency ? oldCurrency.toString() === currency.toString() : !oldCurrency)
+    let loadMoreRequest = order ? oldOrder.toString() === order.toString() : !oldOrder
+
+    if (order === 'currencyHigh') {
+      loadMoreRequest =
+        loadMoreRequest &&
+        (sortCurrency ? oldSortCurrency === sortCurrency : !oldSortCurrency) &&
+        (sortCurrencyIssuer ? oldSortCurrencyIssuer === sortCurrencyIssuer : !oldSortCurrencyIssuer)
+    }
 
     // do not load more if thereis no session token or if Bithomp Pro is expired
     if (loadMoreRequest && (!sessionToken || (sessionToken && subscriptionExpired))) {
@@ -150,10 +183,8 @@ export default function Amms({
     }
 
     let currencyPart = '&sortCurrency=' + nativeCurrency
-    if (currency === 'RLUSD') {
-      currencyPart = '&sortCurrency=RLUSD&sortCurrencyIssuer=rMxCKbEDwqr76QuheSUMdEGf4B9xJ8m5De'
-    } else if (currencyQuery === currency && currencyIssuerQuery) {
-      currencyPart = '&sortCurrency=' + currencyQuery + '&sortCurrencyIssuer=' + currencyIssuerQuery
+    if (sortCurrency && sortCurrencyIssuer) {
+      currencyPart = '&sortCurrency=' + sortCurrency + '&sortCurrencyIssuer=' + sortCurrencyIssuer
     }
 
     let apiUrl = 'v2/amms?order=' + order + '&limit=50&voteSlots=false&auctionSlot=false' + markerPart + currencyPart
@@ -204,11 +235,16 @@ export default function Amms({
   }
 
   useEffect(() => {
-    if (order && (rawData.order !== order || rawData.currency !== currency)) {
+    if (
+      order &&
+      (rawData.order !== order ||
+        rawData.sortCurrency !== sortCurrency ||
+        rawData.sortCurrencyIssuer !== sortCurrencyIssuer)
+    ) {
       checkApi()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [order, currency])
+  }, [order, sortCurrency, sortCurrencyIssuer])
 
   const csvHeaders = [
     { label: 'Asset 1', key: 'amountFormated' },
@@ -257,190 +293,208 @@ export default function Amms({
               ]
         }
       />
-      <div className="content-text">
-        <h1 className="center">{t('menu.amm.pools')}</h1>
-        <FiltersFrame
-          order={order}
-          setOrder={setOrder}
-          orderList={[
-            { value: 'currencyHigh', label: 'XRP High to Low' },
-            { value: 'createdOld', label: 'Creation: Earliest' },
-            { value: 'createdNew', label: 'Creation: Latest' },
-            { value: 'updatedNew', label: 'Updated: Recent' },
-            { value: 'updatedOld', label: 'Updated: Old' },
-            { value: 'tradingFeeLow', label: 'Trading fee: Low to High' },
-            { value: 'tradingFeeHigh', label: 'Trading fee: High to Low' }
-          ]}
-          count={data?.length}
+      <h1 className="center">{t('menu.amm.pools')}</h1>
+      <FiltersFrame
+        order={order}
+        setOrder={setOrder}
+        orderList={[
+          { value: 'currencyHigh', label: 'Currency: High to Low' },
+          { value: 'createdOld', label: 'Creation: Earliest' },
+          { value: 'createdNew', label: 'Creation: Latest' },
+          { value: 'updatedNew', label: 'Updated: Recent' },
+          { value: 'updatedOld', label: 'Updated: Old' },
+          { value: 'tradingFeeLow', label: 'Trading fee: Low to High' },
+          { value: 'tradingFeeHigh', label: 'Trading fee: High to Low' }
+        ]}
+        count={data?.length}
+        hasMore={marker}
+        data={data || []}
+        csvHeaders={csvHeaders}
+        filtersHide={filtersHide}
+        setFiltersHide={setFiltersHide}
+      >
+        <>
+          {order === 'currencyHigh' && (
+            <>
+              <div>
+                Sort currency
+                <div className={`radio-options${sortCurrenciesList.length > 3 ? ' radio-options--large' : ''}`}>
+                  {sortCurrenciesList.map((cur, i) => (
+                    <div className="radio-input" key={i}>
+                      <input
+                        type="radio"
+                        name="selectSortCurrency"
+                        checked={
+                          cur.currency === sortCurrency &&
+                          (!cur.currencyIssuer || cur.currencyIssuer === sortCurrencyIssuer)
+                        }
+                        onChange={() => {
+                          setSortCurrency(cur.currency)
+                          setSortCurrencyIssuer(cur.currencyIssuer)
+                        }}
+                        id={'selectSortCurrency' + i}
+                      />
+                      <label htmlFor={'selectSortCurrency' + i}>{cur.label}</label>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              {!sortCurrenciesList.some(
+                (item) =>
+                  item.currency === sortCurrency && (!item.currencyIssuer || item.currencyIssuer === sortCurrencyIssuer)
+              ) && (
+                <>
+                  <FormInput
+                    title={t('table.currency') + ' ' + niceCurrency(sortCurrency)}
+                    defaultValue={sortCurrency}
+                    disabled={true}
+                    hideButton={true}
+                  />
+                  <FormInput
+                    title={t('table.issuer')}
+                    defaultValue={sortCurrencyIssuer}
+                    disabled={true}
+                    hideButton={true}
+                  />
+                </>
+              )}
+            </>
+          )}
+        </>
+        <InfiniteScrolling
+          dataLength={data.length}
+          loadMore={checkApi}
           hasMore={marker}
-          data={data || []}
-          csvHeaders={csvHeaders}
+          errorMessage={errorMessage}
+          subscriptionExpired={subscriptionExpired}
+          sessionToken={sessionToken}
         >
-          <>
-            <div>
-              {t('table.currency')}
-              <RadioOptions
-                tabList={[
-                  { value: nativeCurrency, label: nativeCurrency },
-                  { value: 'RLUSD', label: 'RLUSD' }
-                ]}
-                tab={currency}
-                setTab={setCurrency}
-                name="currency"
-              />
-            </div>
-            {currencyIssuerQuery && (
-              <>
-                <FormInput
-                  title={t('table.currency')}
-                  defaultValue={niceCurrency(currencyQuery)}
-                  disabled={true}
-                  hideButton={true}
-                />
-                <FormInput
-                  title={t('table.issuer')}
-                  defaultValue={currencyIssuerQuery}
-                  disabled={true}
-                  hideButton={true}
-                />
-              </>
-            )}
-          </>
-          <InfiniteScrolling
-            dataLength={data.length}
-            loadMore={checkApi}
-            hasMore={marker}
-            errorMessage={errorMessage}
-            subscriptionExpired={subscriptionExpired}
-            sessionToken={sessionToken}
-          >
-            {!windowWidth || windowWidth > 860 ? (
-              <table className="table-large">
-                <thead>
-                  <tr>
-                    <th className="center">{t('table.index')}</th>
-                    <th>Asset 1</th>
-                    <th>Asset 2</th>
-                    <th>LP balance</th>
-                    <th>Created</th>
-                    <th>{t('table.updated')}</th>
-                    <th className="right">Trading fee</th>
+          {!windowWidth || windowWidth > 860 ? (
+            <table className="table-large">
+              <thead>
+                <tr>
+                  <th className="center">{t('table.index')}</th>
+                  <th>Asset 1</th>
+                  <th>Asset 2</th>
+                  <th>LP balance</th>
+                  <th>Created</th>
+                  <th>{t('table.updated')}</th>
+                  <th className="right">Trading fee</th>
+                </tr>
+              </thead>
+              <tbody>
+                {loading ? (
+                  <tr className="center">
+                    <td colSpan="100">
+                      <br />
+                      <span className="waiting"></span>
+                      <br />
+                      {t('general.loading')}
+                      <br />
+                      <br />
+                    </td>
                   </tr>
-                </thead>
-                <tbody>
-                  {loading ? (
-                    <tr className="center">
-                      <td colSpan="100">
-                        <br />
-                        <span className="waiting"></span>
-                        <br />
-                        {t('general.loading')}
-                        <br />
-                        <br />
-                      </td>
-                    </tr>
-                  ) : (
-                    <>
-                      {!errorMessage && data ? (
-                        <>
-                          {data.length > 0 &&
-                            data.map((a, i) => (
-                              <tr key={i} onClick={() => router.push('/amm/' + a.ammID)} style={{ cursor: 'pointer' }}>
-                                <td className="center">{i + 1}</td>
-                                <td>
-                                  <AmountWithIcon amount={a.amount} />
-                                </td>
-                                <td>
-                                  <AmountWithIcon amount={a.amount2} />
-                                </td>
-                                <td suppressHydrationWarning>
-                                  {shortNiceNumber(a.lpTokenBalance?.value)}
-                                  <br />
-                                  {lpTokenName(a)}
-                                </td>
-                                <td>{timeFromNow(a.createdAt, i18n)}</td>
-                                <td>{timeFromNow(a.updatedAt, i18n)}</td>
-                                <td className="right">{showAmmPercents(a.tradingFee)}</td>
-                              </tr>
-                            ))}
-                        </>
-                      ) : (
-                        <tr>
-                          <td colSpan="100" className="center orange bold">
-                            {errorMessage}
+                ) : (
+                  <>
+                    {!errorMessage && data ? (
+                      <>
+                        {data.length > 0 &&
+                          data.map((a, i) => (
+                            <tr key={i} onClick={() => router.push('/amm/' + a.ammID)} style={{ cursor: 'pointer' }}>
+                              <td className="center">{i + 1}</td>
+                              <td>
+                                <AmountWithIcon amount={a.amount} />
+                              </td>
+                              <td>
+                                <AmountWithIcon amount={a.amount2} />
+                              </td>
+                              <td suppressHydrationWarning>
+                                {shortNiceNumber(a.lpTokenBalance?.value)}
+                                <br />
+                                {lpTokenName(a)}
+                              </td>
+                              <td>{timeFromNow(a.createdAt, i18n)}</td>
+                              <td>{timeFromNow(a.updatedAt, i18n)}</td>
+                              <td className="right">{showAmmPercents(a.tradingFee)}</td>
+                            </tr>
+                          ))}
+                      </>
+                    ) : (
+                      <tr>
+                        <td colSpan="100" className="center orange bold">
+                          {errorMessage}
+                        </td>
+                      </tr>
+                    )}
+                  </>
+                )}
+              </tbody>
+            </table>
+          ) : (
+            <table className="table-mobile">
+              <thead></thead>
+              <tbody>
+                {loading ? (
+                  <tr className="center">
+                    <td colSpan="100">
+                      <br />
+                      <span className="waiting"></span>
+                      <br />
+                      {t('general.loading')}
+                      <br />
+                      <br />
+                    </td>
+                  </tr>
+                ) : (
+                  <>
+                    {!errorMessage ? (
+                      data?.map((a, i) => (
+                        <tr key={i}>
+                          <td style={{ padding: '5px' }} className="center">
+                            <b>{i + 1}</b>
+                          </td>
+                          <td>
+                            <p>
+                              AMM ID: <LinkAmm ammId={a.ammID} hash={12} />
+                            </p>
+                            Assets:
+                            <div style={{ height: 10 }} />
+                            <table>
+                              <thead></thead>
+                              <tbody>
+                                <tr className="no-border">
+                                  <td>
+                                    <AmountWithIcon amount={a.amount} />
+                                  </td>
+                                  <td style={{ paddingLeft: 10 }}>
+                                    <AmountWithIcon amount={a.amount2} />
+                                  </td>
+                                </tr>
+                              </tbody>
+                            </table>
+                            <p suppressHydrationWarning>
+                              LP balance: {shortNiceNumber(a.lpTokenBalance?.value)} {lpTokenName(a)}
+                            </p>
+                            <p>Trading fee: {showAmmPercents(a.tradingFee)}</p>
+                            <p>Created: {timeFromNow(a.createdAt, i18n)}</p>
+                            <p>Updated: {timeFromNow(a.updatedAt, i18n)}</p>
                           </td>
                         </tr>
-                      )}
-                    </>
-                  )}
-                </tbody>
-              </table>
-            ) : (
-              <table className="table-mobile">
-                <thead></thead>
-                <tbody>
-                  {loading ? (
-                    <tr className="center">
-                      <td colSpan="100">
-                        <br />
-                        <span className="waiting"></span>
-                        <br />
-                        {t('general.loading')}
-                        <br />
-                        <br />
-                      </td>
-                    </tr>
-                  ) : (
-                    <>
-                      {!errorMessage ? (
-                        data?.map((a, i) => (
-                          <tr key={i}>
-                            <td style={{ padding: '5px' }} className="center">
-                              <b>{i + 1}</b>
-                            </td>
-                            <td>
-                              <p>
-                                AMM ID: <LinkAmm ammId={a.ammID} hash={12} />
-                              </p>
-                              Assets:
-                              <div style={{ height: 10 }} />
-                              <table>
-                                <thead></thead>
-                                <tbody>
-                                  <tr className="no-border">
-                                    <td>
-                                      <AmountWithIcon amount={a.amount} />
-                                    </td>
-                                    <td style={{ paddingLeft: 10 }}>
-                                      <AmountWithIcon amount={a.amount2} />
-                                    </td>
-                                  </tr>
-                                </tbody>
-                              </table>
-                              <p suppressHydrationWarning>
-                                LP balance: {shortNiceNumber(a.lpTokenBalance?.value)} {lpTokenName(a)}
-                              </p>
-                              <p>Trading fee: {showAmmPercents(a.tradingFee)}</p>
-                              <p>Created: {timeFromNow(a.createdAt, i18n)}</p>
-                              <p>Updated: {timeFromNow(a.updatedAt, i18n)}</p>
-                            </td>
-                          </tr>
-                        ))
-                      ) : (
-                        <tr>
-                          <td colSpan="100" className="center orange bold">
-                            {errorMessage}
-                          </td>
-                        </tr>
-                      )}
-                    </>
-                  )}
-                </tbody>
-              </table>
-            )}
-          </InfiniteScrolling>
-        </FiltersFrame>
-      </div>
+                      ))
+                    ) : (
+                      <tr>
+                        <td colSpan="100" className="center orange bold">
+                          {errorMessage}
+                        </td>
+                      </tr>
+                    )}
+                  </>
+                )}
+              </tbody>
+            </table>
+          )}
+        </InfiniteScrolling>
+      </FiltersFrame>
     </>
   )
 }

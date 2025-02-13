@@ -26,7 +26,8 @@
     pointer-events: none;
 
     .simple-input {
-      width: 100% !important;
+      width: calc(100% - 16px) !important;
+      text-overflow: ellipsis;
     }
 
     .form-input__wrap {
