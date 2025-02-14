@@ -2,7 +2,14 @@ import { useTranslation } from 'next-i18next'
 import { useEffect, useState } from 'react'
 import { axiosServer, passHeaders } from '../utils/axios'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import { addQueryParams, nativeCurrency, removeQueryParams, useWidth, xahauNetwork } from '../utils'
+import {
+  addAndRemoveQueryParams,
+  addQueryParams,
+  nativeCurrency,
+  removeQueryParams,
+  useWidth,
+  xahauNetwork
+} from '../utils'
 import { getIsSsrMobile } from '../utils/mobile'
 import axios from 'axios'
 import { useRouter } from 'next/router'
@@ -24,15 +31,22 @@ import {
 export async function getServerSideProps(context) {
   const { locale, req, query } = context
 
-  const { order, sortCurrency, sortCurrencyIssuer } = query
+  const { order, currency, currencyIssuer } = query
 
   let initialData = null
   let initialErrorMessage = null
 
-  let currencyPart = '&sortCurrency=' + nativeCurrency
-  if (sortCurrencyIssuer) {
-    currencyPart = '&sortCurrency=' + sortCurrency + '&sortCurrencyIssuer=' + sortCurrencyIssuer
+  let currencyPart = ''
+  if (currency) {
+    currencyPart = '&currency=' + currency + '&sortCurrency=' + currency
+    if (currencyIssuer) {
+      currencyPart += '&currencyIssuer=' + currencyIssuer + '&sortCurrencyIssuer=' + currencyIssuer
+    }
+  } else {
+    //default
+    currencyPart = '&currency=' + nativeCurrency + '&sortCurrency=' + nativeCurrency
   }
+
   try {
     const res = await axiosServer({
       method: 'get',
@@ -50,8 +64,8 @@ export async function getServerSideProps(context) {
     props: {
       initialData: initialData || null,
       orderQuery: order || initialData?.order || 'currencyHigh',
-      sortCurrencyQuery: sortCurrency || initialData?.sortCurrency || nativeCurrency,
-      sortCurrencyIssuerQuery: sortCurrencyIssuer || initialData?.sortCurrencyIssuer || '',
+      currencyQuery: currency || initialData?.currency || nativeCurrency,
+      currencyIssuerQuery: currencyIssuer || initialData?.currencyIssuer || '',
       initialErrorMessage: initialErrorMessage || '',
       isSsrMobile: getIsSsrMobile(context),
       ...(await serverSideTranslations(locale, ['common']))
@@ -79,7 +93,8 @@ const updateListForCsv = (list) => {
   })
 }
 
-const sortCurrenciesList = [
+const currenciesList = [
+  { currency: '', label: 'All' },
   { currency: nativeCurrency, label: nativeCurrency },
   {
     currency: '524C555344000000000000000000000000000000',
@@ -113,8 +128,8 @@ export default function Amms({
   sessionToken,
   subscriptionExpired,
   fiatRate,
-  sortCurrencyQuery,
-  sortCurrencyIssuerQuery
+  currencyQuery,
+  currencyIssuerQuery
 }) {
   const { t, i18n } = useTranslation()
   const router = useRouter()
@@ -127,23 +142,29 @@ export default function Amms({
   const [loading, setLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState(initialErrorMessage || '')
   const [marker, setMarker] = useState(initialData?.marker)
-  const [sortCurrency, setSortCurrency] = useState(sortCurrencyQuery || nativeCurrency)
-  const [sortCurrencyIssuer, setSortCurrencyIssuer] = useState(sortCurrencyIssuerQuery || '')
+  const [currency, setCurrency] = useState(currencyQuery || nativeCurrency)
+  const [currencyIssuer, setCurrencyIssuer] = useState(currencyIssuerQuery || '')
   const [filtersHide, setFiltersHide] = useState(false)
 
   const controller = new AbortController()
 
   useEffect(() => {
-    if (sortCurrency && sortCurrencyIssuer && order === 'currencyHigh') {
-      addQueryParams(router, [
-        { name: 'sortCurrency', value: sortCurrency },
-        { name: 'sortCurrencyIssuer', value: sortCurrencyIssuer }
-      ])
+    if (currency && order === 'currencyHigh') {
+      if (currency === nativeCurrency) {
+        addAndRemoveQueryParams(router, [{ name: 'currency', value: nativeCurrency }], ['currencyIssuer'])
+      } else if (currencyIssuer) {
+        addQueryParams(router, [
+          { name: 'currency', value: currency },
+          { name: 'currencyIssuer', value: currencyIssuer }
+        ])
+      } else {
+        removeQueryParams(router, ['currencyIssuer', 'currency'])
+      }
     } else {
-      removeQueryParams(router, ['sortCurrencyIssuer', 'sortCurrency'])
+      removeQueryParams(router, ['currencyIssuer', 'currency'])
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [sortCurrency, sortCurrencyIssuer, order])
+  }, [currency, currencyIssuer, order])
 
   useEffect(() => {
     if (initialData?.amms?.length > 0) {
@@ -160,17 +181,13 @@ export default function Amms({
 
   const checkApi = async () => {
     const oldOrder = rawData?.order
-    const oldSortCurrency = rawData?.sortCurrency
-    const oldSortCurrencyIssuer = rawData?.sortCurrencyIssuer
+    const oldCurrency = rawData?.currency
+    const oldCurrencyIssuer = rawData?.currencyIssuer
     if (!oldOrder || !order) return
-    let loadMoreRequest = order ? oldOrder.toString() === order.toString() : !oldOrder
-
-    if (order === 'currencyHigh') {
-      loadMoreRequest =
-        loadMoreRequest &&
-        (sortCurrency ? oldSortCurrency === sortCurrency : !oldSortCurrency) &&
-        (sortCurrencyIssuer ? oldSortCurrencyIssuer === sortCurrencyIssuer : !oldSortCurrencyIssuer)
-    }
+    let loadMoreRequest =
+      (order ? oldOrder.toString() === order.toString() : !oldOrder) &&
+      (currency ? oldCurrency === currency : !oldCurrency) &&
+      (currencyIssuer ? oldCurrencyIssuer === currencyIssuer : !oldCurrencyIssuer)
 
     // do not load more if thereis no session token or if Bithomp Pro is expired
     if (loadMoreRequest && (!sessionToken || (sessionToken && subscriptionExpired))) {
@@ -182,9 +199,15 @@ export default function Amms({
       markerPart = '&marker=' + rawData?.marker
     }
 
-    let currencyPart = '&sortCurrency=' + nativeCurrency
-    if (sortCurrency && sortCurrencyIssuer) {
-      currencyPart = '&sortCurrency=' + sortCurrency + '&sortCurrencyIssuer=' + sortCurrencyIssuer
+    let currencyPart = ''
+    if (currency) {
+      currencyPart = '&currency=' + currency + '&sortCurrency=' + currency
+      if (currencyIssuer) {
+        currencyPart += '&currencyIssuer=' + currencyIssuer + '&sortCurrencyIssuer=' + currencyIssuer
+      }
+    } else {
+      //default
+      currencyPart = '&sortCurrency=' + nativeCurrency
     }
 
     let apiUrl = 'v2/amms?order=' + order + '&limit=50&voteSlots=false&auctionSlot=false' + markerPart + currencyPart
@@ -237,14 +260,12 @@ export default function Amms({
   useEffect(() => {
     if (
       order &&
-      (rawData.order !== order ||
-        rawData.sortCurrency !== sortCurrency ||
-        rawData.sortCurrencyIssuer !== sortCurrencyIssuer)
+      (rawData.order !== order || rawData.currency !== currency || rawData.currencyIssuer !== currencyIssuer)
     ) {
       checkApi()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [order, sortCurrency, sortCurrencyIssuer])
+  }, [order, currency, currencyIssuer])
 
   const csvHeaders = [
     { label: 'Asset 1', key: 'amountFormated' },
@@ -314,50 +335,39 @@ export default function Amms({
         setFiltersHide={setFiltersHide}
       >
         <>
-          {order === 'currencyHigh' && (
-            <>
-              <div>
-                Sort currency
-                <div className={`radio-options${sortCurrenciesList.length > 3 ? ' radio-options--large' : ''}`}>
-                  {sortCurrenciesList.map((cur, i) => (
-                    <div className="radio-input" key={i}>
-                      <input
-                        type="radio"
-                        name="selectSortCurrency"
-                        checked={
-                          cur.currency === sortCurrency &&
-                          (!cur.currencyIssuer || cur.currencyIssuer === sortCurrencyIssuer)
-                        }
-                        onChange={() => {
-                          setSortCurrency(cur.currency)
-                          setSortCurrencyIssuer(cur.currencyIssuer)
-                        }}
-                        id={'selectSortCurrency' + i}
-                      />
-                      <label htmlFor={'selectSortCurrency' + i}>{cur.label}</label>
-                    </div>
-                  ))}
+          <div>
+            {t('table.currency')}
+            <div className={`radio-options${currenciesList.length > 3 ? ' radio-options--large' : ''}`}>
+              {currenciesList.map((cur, i) => (
+                <div className="radio-input" key={i}>
+                  <input
+                    type="radio"
+                    name="selectCurrency"
+                    checked={
+                      cur.currency === currency && (!cur.currencyIssuer || cur.currencyIssuer === currencyIssuer)
+                    }
+                    onChange={() => {
+                      setCurrency(cur.currency)
+                      setCurrencyIssuer(cur.currencyIssuer)
+                    }}
+                    id={'selectCurrency' + i}
+                  />
+                  <label htmlFor={'selectCurrency' + i}>{cur.label}</label>
                 </div>
-              </div>
-              {!sortCurrenciesList.some(
-                (item) =>
-                  item.currency === sortCurrency && (!item.currencyIssuer || item.currencyIssuer === sortCurrencyIssuer)
-              ) && (
-                <>
-                  <FormInput
-                    title={t('table.currency') + ' ' + niceCurrency(sortCurrency)}
-                    defaultValue={sortCurrency}
-                    disabled={true}
-                    hideButton={true}
-                  />
-                  <FormInput
-                    title={t('table.issuer')}
-                    defaultValue={sortCurrencyIssuer}
-                    disabled={true}
-                    hideButton={true}
-                  />
-                </>
-              )}
+              ))}
+            </div>
+          </div>
+          {!currenciesList.some(
+            (item) => item.currency === currency && (!item.currencyIssuer || item.currencyIssuer === currencyIssuer)
+          ) && (
+            <>
+              <FormInput
+                title={t('table.currency') + ' ' + niceCurrency(currency)}
+                defaultValue={currency}
+                disabled={true}
+                hideButton={true}
+              />
+              <FormInput title={t('table.issuer')} defaultValue={currencyIssuer} disabled={true} hideButton={true} />
             </>
           )}
         </>
