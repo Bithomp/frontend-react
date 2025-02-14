@@ -299,6 +299,92 @@ export default function Account({
     setLedgerTimestamp(null)
   }
 
+  const accountSummary = (
+    <div className="account-summary">
+      <Image alt="avatar" src={avatarSrc(data, { noCache: true })} width="60" height="60" priority />
+      <div style={{ display: 'inline-block', position: 'absolute', top: 7, left: 75 }}>
+        {data.username ? (
+          <h1 style={{ fontSize: '1em', margin: 0 }} className="blue">
+            {data.username}
+          </h1>
+        ) : (
+          <b>
+            {data.service?.name ? (
+              <span className="green">{data.service?.name}</span>
+            ) : data?.address === account?.address && data?.ledgerInfo?.activated ? (
+              <>
+                Username <Link href={'/username?address=' + data.address}>register</Link>
+              </>
+            ) : (
+              'No username'
+            )}
+            <br />
+          </b>
+        )}
+        {data?.ledgerInfo?.blackholed ? (
+          <>
+            <b className="orange">Blackholed </b>
+            <br />
+            {data?.ledgerInfo?.lastSubmittedAt && <>{timeFromNow(data.ledgerInfo.lastSubmittedAt, i18n)}</>}
+          </>
+        ) : data?.ledgerInfo?.activated ? (
+          <>
+            {data.ledgerInfo.lastSubmittedAt ? (
+              <>
+                <span className="green">Active </span>
+                <br />
+                {data?.ledgerInfo?.lastSubmittedAt && <>{timeFromNow(data.ledgerInfo.lastSubmittedAt, i18n)}</>}
+              </>
+            ) : (
+              <>
+                Activated
+                <br />
+                {timeFromNow(data.inception, i18n)}
+              </>
+            )}
+          </>
+        ) : (
+          <>
+            {data?.ledgerInfo?.deleted ? (
+              <span className="red bold">Account deleted</span>
+            ) : (
+              <>
+                <span className="orange">Not activated</span>
+                <br />
+                <a href={getCoinsUrl + (devNet ? '?address=' + data?.address : '')} target="_blank" rel="noreferrer">
+                  Get your first {nativeCurrency}
+                </a>
+              </>
+            )}
+          </>
+        )}
+      </div>
+      <div
+        style={{
+          display: 'inline-block',
+          position: 'absolute',
+          top: 7,
+          right: 5,
+          textAlign: 'right'
+        }}
+      >
+        <b>{data?.ledgerInfo?.activated && !data?.ledgerInfo?.blackholed ? 'Available ' : 'Balance'}</b>
+        <br />
+        <span className={balances?.available?.native && !data?.ledgerInfo?.blackholed ? 'green bold' : ''}>
+          {shortNiceNumber(balances?.available?.native / 1000000, 2, 0) || '0'} {nativeCurrency}
+        </span>
+        <br />
+        <span className="grey">
+          {nativeCurrencyToFiat({
+            amount: balances.available?.native,
+            selectedCurrency,
+            fiatRate: pageFiatRate
+          }) || '0 ' + selectedCurrency.toUpperCase()}
+        </span>
+      </div>
+    </div>
+  )
+
   return (
     <>
       <SEO
@@ -334,105 +420,9 @@ export default function Account({
                   <>
                     {data?.address && (
                       <>
-                        <div className="mobile-summary showOnSmall-w800">
-                          <Image
-                            alt="avatar"
-                            src={avatarSrc(data, { noCache: true })}
-                            width="60"
-                            height="60"
-                            priority
-                          />
-                          <div style={{ display: 'inline-block', position: 'absolute', top: 7, left: 75 }}>
-                            {data.username ? (
-                              <h1 style={{ fontSize: '1em', margin: 0 }} className="blue">
-                                {data.username}
-                              </h1>
-                            ) : (
-                              <b>
-                                {data.service?.name ? (
-                                  <span className="green">{data.service?.name}</span>
-                                ) : data?.address === account?.address && data?.ledgerInfo?.activated ? (
-                                  <>
-                                    Username <Link href={'/username?address=' + data.address}>register</Link>
-                                  </>
-                                ) : (
-                                  'No username'
-                                )}
-                                <br />
-                              </b>
-                            )}
-                            {data?.ledgerInfo?.blackholed ? (
-                              <>
-                                <b className="orange">Blackholed </b>
-                                <br />
-                                {data?.ledgerInfo?.lastSubmittedAt && (
-                                  <>{timeFromNow(data.ledgerInfo.lastSubmittedAt, i18n)}</>
-                                )}
-                              </>
-                            ) : data?.ledgerInfo?.activated ? (
-                              <>
-                                {data.ledgerInfo.lastSubmittedAt ? (
-                                  <>
-                                    <span className="green">Active </span>
-                                    <br />
-                                    {data?.ledgerInfo?.lastSubmittedAt && (
-                                      <>{timeFromNow(data.ledgerInfo.lastSubmittedAt, i18n)}</>
-                                    )}
-                                  </>
-                                ) : (
-                                  <>
-                                    Activated
-                                    <br />
-                                    {timeFromNow(data.inception, i18n)}
-                                  </>
-                                )}
-                              </>
-                            ) : (
-                              <>
-                                {data?.ledgerInfo?.deleted ? (
-                                  <span className="red bold">Account deleted</span>
-                                ) : (
-                                  <>
-                                    <span className="orange">Not activated</span>
-                                    <br />
-                                    <a
-                                      href={getCoinsUrl + (devNet ? '?address=' + data?.address : '')}
-                                      target="_blank"
-                                      rel="noreferrer"
-                                    >
-                                      Get your first {nativeCurrency}
-                                    </a>
-                                  </>
-                                )}
-                              </>
-                            )}
-                          </div>
-                          <div
-                            style={{
-                              display: 'inline-block',
-                              position: 'absolute',
-                              top: 7,
-                              right: 5,
-                              textAlign: 'right'
-                            }}
-                          >
-                            <b>{data?.ledgerInfo?.activated ? 'Available ' : 'Balance'}</b>
-                            <br />
-                            <span className={balances?.available?.native ? 'green bold' : ''}>
-                              {shortNiceNumber(balances?.available?.native / 1000000, 2, 0) || '0'} {nativeCurrency}
-                            </span>
-                            <br />
-                            <span className="grey">
-                              {nativeCurrencyToFiat({
-                                amount: balances.available?.native,
-                                selectedCurrency,
-                                fiatRate: pageFiatRate
-                              }) || '0 ' + selectedCurrency.toUpperCase()}
-                            </span>
-                          </div>
-                        </div>
+                        <div className="show-on-small-w800">{accountSummary}</div>
 
-                        <div className="center showOnSmall-w800 grey" style={{ marginTop: 10 }}>
+                        <div className="center show-on-small-w800 grey" style={{ marginTop: 10 }}>
                           {((!account?.address && !data?.service) || data?.address === account?.address) &&
                             !data?.ledgerInfo?.blackholed && (
                               <>
@@ -652,6 +642,11 @@ export default function Account({
                           </table>
                         </div>
                         <div className="column-right">
+                          <div className="hide-on-small-w800">
+                            {accountSummary}
+                            <br />
+                          </div>
+
                           <table className="table-details">
                             <thead>
                               <tr>
@@ -782,6 +777,7 @@ export default function Account({
                               )}
                               {data?.ledgerInfo?.balance && (
                                 <>
+                                  {/*
                                   <tr>
                                     <td>Available</td>
                                     <td>
@@ -795,6 +791,7 @@ export default function Account({
                                       })}
                                     </td>
                                   </tr>
+                                  */}
                                   <tr>
                                     <td>Reserved</td>
                                     <td>
