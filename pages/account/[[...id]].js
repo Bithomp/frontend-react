@@ -816,6 +816,90 @@ export default function Account({
                                   </tr>
                                 </>
                               )}
+
+                              {data.ledgerInfo?.domain && (
+                                <tr>
+                                  <td>Domain</td>
+                                  <td>
+                                    {isDomainValid(stripDomain(data.ledgerInfo.domain)) ? (
+                                      <>
+                                        <a
+                                          href={'https://' + stripDomain(data.ledgerInfo.domain)}
+                                          className={data.verifiedDomain ? 'green bold' : ''}
+                                          target="_blank"
+                                          rel="noopener nofollow"
+                                        >
+                                          {stripDomain(data.ledgerInfo.domain)}
+                                        </a>{' '}
+                                        {data.verifiedDomain ? (
+                                          <span
+                                            className="blue tooltip"
+                                            style={{
+                                              display: 'inline-block',
+                                              verticalAlign: 'bottom',
+                                              marginBottom: -3
+                                            }}
+                                          >
+                                            <MdVerified />
+                                            <span className="tooltiptext small no-brake">TOML Verified Domain</span>
+                                          </span>
+                                        ) : (!data.service?.domain ||
+                                            !data.ledgerInfo.domain
+                                              .toLowerCase()
+                                              .includes(data.service.domain.toLowerCase())) &&
+                                          data?.address !== account?.address ? (
+                                          <span className="orange">(unverified)</span>
+                                        ) : (
+                                          ''
+                                        )}
+                                      </>
+                                    ) : (
+                                      <code className="code-highlight">{data.ledgerInfo.domain}</code>
+                                    )}
+                                    {data?.address === account?.address && (
+                                      <>
+                                        <span className="tooltip tooltip-icon" style={{ marginLeft: 5 }}>
+                                          <div
+                                            style={{ fontSize: 18, marginBottom: -4 }}
+                                            onClick={() =>
+                                              setSignRequest({
+                                                action: 'setDomain',
+                                                redirect: 'account',
+                                                request: {
+                                                  TransactionType: 'AccountSet',
+                                                  Account: data?.address
+                                                }
+                                              })
+                                            }
+                                          >
+                                            <FiEdit />
+                                          </div>
+                                          <span className="tooltiptext">Change</span>
+                                        </span>{' '}
+                                        <span className="tooltip tooltip-icon">
+                                          <div
+                                            className="red"
+                                            style={{ fontSize: 20, marginBottom: -6 }}
+                                            onClick={() =>
+                                              setSignRequest({
+                                                redirect: 'account',
+                                                request: {
+                                                  TransactionType: 'AccountSet',
+                                                  Domain: '',
+                                                  Account: data?.address
+                                                }
+                                              })
+                                            }
+                                          >
+                                            <MdDeleteForever />
+                                          </div>
+                                          <span className="tooltiptext">Remove</span>
+                                        </span>
+                                      </>
+                                    )}
+                                  </td>
+                                </tr>
+                              )}
                               {data.ledgerInfo?.importSequence && (
                                 <tr>
                                   <td>Import sequence</td>
@@ -905,89 +989,6 @@ export default function Account({
                                 </>
                               )}
 
-                              {data.ledgerInfo?.domain && (
-                                <tr>
-                                  <td>Domain</td>
-                                  <td>
-                                    {isDomainValid(stripDomain(data.ledgerInfo.domain)) ? (
-                                      <>
-                                        <a
-                                          href={'https://' + stripDomain(data.ledgerInfo.domain)}
-                                          className={data.verifiedDomain ? 'green bold' : ''}
-                                          target="_blank"
-                                          rel="noopener nofollow"
-                                        >
-                                          {stripDomain(data.ledgerInfo.domain)}
-                                        </a>{' '}
-                                        {data.verifiedDomain ? (
-                                          <span
-                                            className="blue tooltip"
-                                            style={{
-                                              display: 'inline-block',
-                                              verticalAlign: 'bottom',
-                                              marginBottom: -3
-                                            }}
-                                          >
-                                            <MdVerified />
-                                            <span className="tooltiptext small no-brake">TOML Verified Domain</span>
-                                          </span>
-                                        ) : (!data.service?.domain ||
-                                            !data.ledgerInfo.domain
-                                              .toLowerCase()
-                                              .includes(data.service.domain.toLowerCase())) &&
-                                          data?.address !== account?.address ? (
-                                          <span className="orange">(unverified)</span>
-                                        ) : (
-                                          ''
-                                        )}
-                                      </>
-                                    ) : (
-                                      <code className="code-highlight">{data.ledgerInfo.domain}</code>
-                                    )}
-                                    {data?.address === account?.address && (
-                                      <>
-                                        <span className="tooltip tooltip-icon" style={{ marginLeft: 5 }}>
-                                          <div
-                                            style={{ fontSize: 18, marginBottom: -4 }}
-                                            onClick={() =>
-                                              setSignRequest({
-                                                action: 'setDomain',
-                                                redirect: 'account',
-                                                request: {
-                                                  TransactionType: 'AccountSet',
-                                                  Account: data?.address
-                                                }
-                                              })
-                                            }
-                                          >
-                                            <FiEdit />
-                                          </div>
-                                          <span className="tooltiptext">Change</span>
-                                        </span>{' '}
-                                        <span className="tooltip tooltip-icon">
-                                          <div
-                                            className="red"
-                                            style={{ fontSize: 20, marginBottom: -6 }}
-                                            onClick={() =>
-                                              setSignRequest({
-                                                redirect: 'account',
-                                                request: {
-                                                  TransactionType: 'AccountSet',
-                                                  Domain: '',
-                                                  Account: data?.address
-                                                }
-                                              })
-                                            }
-                                          >
-                                            <MdDeleteForever />
-                                          </div>
-                                          <span className="tooltiptext">Remove</span>
-                                        </span>
-                                      </>
-                                    )}
-                                  </td>
-                                </tr>
-                              )}
                               {data.ledgerInfo?.flags?.disallowXRP && (
                                 <tr>
                                   <td>Receiving {nativeCurrency}</td>
