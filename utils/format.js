@@ -54,11 +54,23 @@ export const nativeCurrencyToFiat = (params) => {
   const { amount, selectedCurrency, fiatRate } = params
   if (!amount || !selectedCurrency || !fiatRate) return ''
 
+  let calculatedAmount = null
+
   if (amount.currency === nativeCurrency) {
-    return ' ≈ ' + shortNiceNumber(amount.value * fiatRate, 2, 1, selectedCurrency)
+    calculatedAmount = shortNiceNumber(amount.value * fiatRate, 2, 1, selectedCurrency)
+  } else {
+    calculatedAmount = shortNiceNumber((amount / 1000000) * fiatRate, 2, 1, selectedCurrency)
   }
 
-  return ' ≈ ' + shortNiceNumber((amount / 1000000) * fiatRate, 2, 1, selectedCurrency)
+  return (
+    <span className="tooltip">
+      {' '}
+      ≈ {calculatedAmount}
+      <span className="tooltiptext no-brake">
+        1 {nativeCurrency} = {shortNiceNumber(fiatRate, 2, 1, selectedCurrency)}
+      </span>
+    </span>
+  )
 }
 
 export const acceptNftBuyOfferButton = (t, setSignRequest, offer) => {
