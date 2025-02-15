@@ -12,10 +12,10 @@ import {
   nativeCurrency,
   devNet,
   xahauNetwork,
-  avatarServer,
   stripDomain,
   isDomainValid,
-  networks
+  networks,
+  avatarSrc
 } from '../../utils'
 import {
   amountFormat,
@@ -23,7 +23,6 @@ import {
   timeFromNow,
   txIdLink,
   nativeCurrencyToFiat,
-  shortNiceNumber,
   niceNumber,
   AddressWithIconFilled,
   fullNiceNumber
@@ -88,6 +87,7 @@ import {
 } from 'react-icons/fa6'
 import Did from '../../components/Account/Did'
 import { fetchHistoricalRate } from '../../utils/common'
+import AccountSummary from '../../components/Account/AccountSummary'
 
 const XahauRewardTr = dynamic(() => import('../../components/Account/XahauRewardTr'), { ssr: false })
 
@@ -189,19 +189,6 @@ export default function Account({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fiatRate, ledgerTimestamp])
 
-  const avatarSrc = (data, options) => {
-    /*
-      1) if in blacklist - alert image
-      2) if bithomp image, show it 
-      3) if valid twitter - image from twitter
-      4) if gravatar - image from gravatar 
-      5) if xamanPro or xamanCurratedAssets - from xaman 
-      6) otherwise show hashicon
-    */
-    if (!data) return ''
-    return avatarServer + data.address + (options?.noCache && refreshPage ? '?' + refreshPage : '')
-  }
-
   const accountNameTr = (data) => {
     if (!data) return ''
 
@@ -299,92 +286,6 @@ export default function Account({
     setLedgerTimestamp(null)
   }
 
-  const accountSummary = (
-    <div className="account-summary">
-      <Image alt="avatar" src={avatarSrc(data, { noCache: true })} width="60" height="60" priority />
-      <div style={{ display: 'inline-block', position: 'absolute', top: 7, left: 75 }}>
-        {data.username ? (
-          <h1 style={{ fontSize: '1em', margin: 0 }} className="blue">
-            {data.username}
-          </h1>
-        ) : (
-          <b>
-            {data.service?.name ? (
-              <span className="green">{data.service?.name}</span>
-            ) : data?.address === account?.address && data?.ledgerInfo?.activated ? (
-              <>
-                Username <Link href={'/username?address=' + data.address}>register</Link>
-              </>
-            ) : (
-              'No username'
-            )}
-            <br />
-          </b>
-        )}
-        {data?.ledgerInfo?.blackholed ? (
-          <>
-            <b className="orange">Blackholed </b>
-            <br />
-            {data?.ledgerInfo?.lastSubmittedAt && <>{timeFromNow(data.ledgerInfo.lastSubmittedAt, i18n)}</>}
-          </>
-        ) : data?.ledgerInfo?.activated ? (
-          <>
-            {data.ledgerInfo.lastSubmittedAt ? (
-              <>
-                <span className="green">Active </span>
-                <br />
-                {data?.ledgerInfo?.lastSubmittedAt && <>{timeFromNow(data.ledgerInfo.lastSubmittedAt, i18n)}</>}
-              </>
-            ) : (
-              <>
-                Activated
-                <br />
-                {timeFromNow(data.inception, i18n)}
-              </>
-            )}
-          </>
-        ) : (
-          <>
-            {data?.ledgerInfo?.deleted ? (
-              <span className="red bold">Account deleted</span>
-            ) : (
-              <>
-                <span className="orange">Not activated</span>
-                <br />
-                <a href={getCoinsUrl + (devNet ? '?address=' + data?.address : '')} target="_blank" rel="noreferrer">
-                  Get your first {nativeCurrency}
-                </a>
-              </>
-            )}
-          </>
-        )}
-      </div>
-      <div
-        style={{
-          display: 'inline-block',
-          position: 'absolute',
-          top: 7,
-          right: 5,
-          textAlign: 'right'
-        }}
-      >
-        <b>{data?.ledgerInfo?.activated && !data?.ledgerInfo?.blackholed ? 'Available ' : 'Balance'}</b>
-        <br />
-        <span className={balances?.available?.native && !data?.ledgerInfo?.blackholed ? 'green bold' : ''}>
-          {shortNiceNumber(balances?.available?.native / 1000000, 2, 0) || '0'} {nativeCurrency}
-        </span>
-        <br />
-        <span className="grey">
-          {nativeCurrencyToFiat({
-            amount: balances.available?.native,
-            selectedCurrency,
-            fiatRate: pageFiatRate
-          }) || '0 ' + selectedCurrency.toUpperCase()}
-        </span>
-      </div>
-    </div>
-  )
-
   return (
     <>
       <SEO
@@ -400,7 +301,7 @@ export default function Account({
           ' ' +
           (initialData?.address || id)
         }
-        image={{ file: avatarSrc(initialData) }}
+        image={{ file: avatarSrc(initialData?.address) }}
       />
       <SearchBlock searchPlaceholderText={t('explorer.enter-address')} tab="account" userData={userData} />
       <div className="content-profile account">
@@ -420,7 +321,16 @@ export default function Account({
                   <>
                     {data?.address && (
                       <>
-                        <div className="show-on-small-w800">{accountSummary}</div>
+                        <div className="show-on-small-w800">
+                          <AccountSummary
+                            data={data}
+                            account={account}
+                            balances={balances}
+                            refreshPage={refreshPage}
+                            selectedCurrency={selectedCurrency}
+                            pageFiatRate={pageFiatRate}
+                          />
+                        </div>
 
                         <div className="center show-on-small-w800 grey" style={{ marginTop: 10 }}>
                           {((!account?.address && !data?.service) || data?.address === account?.address) &&
@@ -455,7 +365,7 @@ export default function Account({
                           <div className="hide-on-small-w800 avatar-div">
                             <Image
                               alt="avatar"
-                              src={avatarSrc(data, { noCache: true })}
+                              src={avatarSrc(data?.address, refreshPage)}
                               width="200"
                               height="200"
                               className="avatar"
@@ -643,7 +553,14 @@ export default function Account({
                         </div>
                         <div className="column-right">
                           <div className="hide-on-small-w800">
-                            {accountSummary}
+                            <AccountSummary
+                              data={data}
+                              account={account}
+                              balances={balances}
+                              refreshPage={refreshPage}
+                              selectedCurrency={selectedCurrency}
+                              pageFiatRate={pageFiatRate}
+                            />
                             <br />
                           </div>
 

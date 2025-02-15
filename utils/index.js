@@ -502,6 +502,19 @@ export const webSiteName =
 
 export const avatarServer = 'https://cdn.' + webSiteName + '/avatar/'
 
+export const avatarSrc = (address, refreshPage) => {
+  /*
+    1) if in blacklist - alert image
+    2) if bithomp image, show it 
+    3) if valid twitter - image from twitter
+    4) if gravatar - image from gravatar 
+    5) if xamanPro or xamanCurratedAssets - from xaman 
+    6) otherwise show hashicon
+  */
+  if (!address) return ''
+  return avatarServer + address + (refreshPage ? '?' + refreshPage : '')
+}
+
 export const networksIds = {
   0: { server: 'https://xrplexplorer.com', name: 'mainnet' },
   1: { server: 'https://test.xrplexplorer.com', name: 'testnet' },
