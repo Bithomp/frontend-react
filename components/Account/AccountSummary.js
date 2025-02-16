@@ -16,7 +16,7 @@ export default function AccountSummary({ data, account, balances, refreshPage, s
             {data.username}
           </h1>
         ) : (
-          <b>
+          <span className="bold">
             {data.service?.name ? (
               <span className="green">{data.service?.name}</span>
             ) : data?.address === account?.address && data?.ledgerInfo?.activated ? (
@@ -27,11 +27,11 @@ export default function AccountSummary({ data, account, balances, refreshPage, s
               'No username'
             )}
             <br />
-          </b>
+          </span>
         )}
         {data?.ledgerInfo?.blackholed ? (
           <>
-            <b className="orange">Blackholed </b>
+            <span className="orange bold">Blackholed </span>
             <br />
             {data?.ledgerInfo?.lastSubmittedAt && <>{timeFromNow(data.ledgerInfo.lastSubmittedAt, i18n)}</>}
           </>

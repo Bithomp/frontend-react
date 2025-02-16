@@ -2,19 +2,10 @@ import { useTranslation } from 'next-i18next'
 import { useState, useEffect } from 'react'
 import axios from 'axios'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import Link from 'next/link'
 import Image from 'next/image'
 import { axiosServer, passHeaders } from '../../utils/axios'
 
-import { server, nativeCurrency, devNet, xahauNetwork, networks, avatarSrc } from '../../utils'
-import {
-  fullDateAndTime,
-  timeFromNow,
-  txIdLink,
-  niceNumber,
-  AddressWithIconFilled,
-  fullNiceNumber
-} from '../../utils/format'
+import { devNet, xahauNetwork, avatarSrc } from '../../utils'
 import { getIsSsrMobile } from '../../utils/mobile'
 import RelatedLinks from '../../components/Account/RelatedLinks'
 
@@ -57,21 +48,11 @@ export async function getServerSideProps(context) {
 
 import SEO from '../../components/SEO'
 import SearchBlock from '../../components/Layout/SearchBlock'
-import CopyButton from '../../components/UI/CopyButton'
-import {
-  FaFacebook,
-  FaInstagram,
-  FaLinkedin,
-  FaMedium,
-  FaReddit,
-  FaTelegram,
-  FaXTwitter,
-  FaYoutube
-} from 'react-icons/fa6'
 import Did from '../../components/Account/Did'
 import { fetchHistoricalRate } from '../../utils/common'
 import AccountSummary from '../../components/Account/AccountSummary'
 import LedgerData from '../../components/Account/LedgerData'
+import PublicData from '../../components/Account/PublicData'
 
 export default function Account({
   initialData,
@@ -83,7 +64,7 @@ export default function Account({
   setSignRequest,
   fiatRate
 }) {
-  const { t, i18n } = useTranslation()
+  const { t } = useTranslation()
 
   const [data, setData] = useState({})
   const [loading, setLoading] = useState(false)
@@ -170,73 +151,6 @@ export default function Account({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fiatRate, ledgerTimestamp])
-
-  const accountNameTr = (data) => {
-    if (!data) return ''
-
-    let output = []
-
-    if (data.ledgerInfo?.activated) {
-      //show username registration link and usernsmes only for active accounts
-      if (data.username) {
-        output.push(
-          <tr key="0">
-            <td>{t('table.username')}</td>
-            <td className="blue bold">
-              {data.username} <CopyButton text={server + '/account/' + data.username}></CopyButton>
-            </td>
-          </tr>
-        )
-      } else if (!data.service?.name) {
-        //if no username and no service - show register link
-        output.push(
-          <tr key="0">
-            <td>{t('table.username')}</td>
-            <td>
-              <Link href={'/username?address=' + data.address}>register</Link>
-            </td>
-          </tr>
-        )
-      }
-    }
-
-    let thirdPartyService = null
-    if (data.xamanMeta?.thirdPartyProfiles?.length) {
-      for (let i = 0; i < data.xamanMeta.thirdPartyProfiles.length; i++) {
-        const excludeList = ['xumm.app', 'xaman.app', 'xrpl', 'xrplexplorer.com', 'bithomp.com']
-        if (!excludeList.includes(data.xamanMeta.thirdPartyProfiles[i].source)) {
-          thirdPartyService = data.xamanMeta.thirdPartyProfiles[i].accountAlias
-          break
-        }
-      }
-    }
-
-    if (data.service?.name || thirdPartyService) {
-      output.push(
-        <tr key="1">
-          <td>Service name</td>
-          {data.service?.name ? (
-            <td className="green bold">{data.service.name}</td>
-          ) : (
-            <td>
-              <span className="bold">{thirdPartyService}</span> (unverified)
-            </td>
-          )}
-        </tr>
-      )
-    }
-
-    if (data.nickname) {
-      output.push(
-        <tr key="2">
-          <td>Nickname</td>
-          <td className="orange bold">{data.nickname}</td>
-        </tr>
-      )
-    }
-
-    return output
-  }
 
   useEffect(() => {
     if (!data?.ledgerInfo || !networkInfo) return
@@ -557,241 +471,7 @@ export default function Account({
                             fiatRate={fiatRate}
                           />
 
-                          {data?.inception && (
-                            <table className="table-details">
-                              <thead>
-                                <tr>
-                                  <th colSpan="100">Public data</th>
-                                </tr>
-                              </thead>
-                              <tbody>
-                                {data.service?.socialAccounts && (
-                                  <tr>
-                                    <td>Social accounts</td>
-                                    <td className="social-icons">
-                                      {data.service.socialAccounts.twitter && (
-                                        <a
-                                          href={'https://x.com/' + data.service.socialAccounts.twitter}
-                                          aria-label="X"
-                                          target="_blank"
-                                          rel="noopener"
-                                        >
-                                          <FaXTwitter />
-                                        </a>
-                                      )}
-                                      {data.service.socialAccounts.youtube && (
-                                        <a
-                                          href={'https://youtube.com/' + data.service.socialAccounts.youtube}
-                                          aria-label="Youtube"
-                                          target="_blank"
-                                          rel="noopener"
-                                        >
-                                          <FaYoutube />
-                                        </a>
-                                      )}
-                                      {data.service.socialAccounts.linkedin && (
-                                        <a
-                                          href={
-                                            'https://linkedin.com/company/' + data.service.socialAccounts.linkedin + '/'
-                                          }
-                                          aria-label="Linkedin"
-                                          target="_blank"
-                                          rel="noopener"
-                                        >
-                                          <FaLinkedin />
-                                        </a>
-                                      )}
-                                      {data.service.socialAccounts.instagram && (
-                                        <a
-                                          href={
-                                            'https://www.instagram.com/' + data.service.socialAccounts.instagram + '/'
-                                          }
-                                          aria-label="Instagram"
-                                          target="_blank"
-                                          rel="noopener"
-                                        >
-                                          <FaInstagram />
-                                        </a>
-                                      )}
-                                      {data.service.socialAccounts.telegram && (
-                                        <a
-                                          href={'https://t.me/' + data.service.socialAccounts.telegram}
-                                          aria-label="Telegram"
-                                          target="_blank"
-                                          rel="noopener"
-                                        >
-                                          <FaTelegram />
-                                        </a>
-                                      )}
-                                      {data.service.socialAccounts.facebook && (
-                                        <a
-                                          href={
-                                            'https://www.facebook.com/' + data.service.socialAccounts.facebook + '/'
-                                          }
-                                          aria-label="Facebook"
-                                          target="_blank"
-                                          rel="noopener"
-                                        >
-                                          <FaFacebook />
-                                        </a>
-                                      )}
-                                      {data.service.socialAccounts.medium && (
-                                        <a
-                                          href={'https://medium.com/' + data.service.socialAccounts.medium}
-                                          aria-label="Medium"
-                                          target="_blank"
-                                          rel="noopener"
-                                        >
-                                          <FaMedium />
-                                        </a>
-                                      )}
-                                      {data.service.socialAccounts.reddit && (
-                                        <a
-                                          href={'https://www.reddit.com/' + data.service.socialAccounts.reddit + '/'}
-                                          aria-label="Reddit"
-                                          target="_blank"
-                                          rel="noopener"
-                                        >
-                                          <FaReddit />
-                                        </a>
-                                      )}
-                                    </td>
-                                  </tr>
-                                )}
-
-                                {accountNameTr(data)}
-                                {data.bithomp?.bithompPro && (
-                                  <tr>
-                                    <td>Bithomp Pro</td>
-                                    <td className="bold">Activated ❤️</td>
-                                  </tr>
-                                )}
-                                {data.payString &&
-                                  !data.ledgerInfo?.requireDestTag &&
-                                  !data.ledgerInfo?.blackholed &&
-                                  !data.blacklist?.blacklisted &&
-                                  !data.service && (
-                                    <tr>
-                                      <td>PayString</td>
-                                      <td className="blue">
-                                        {data.payString} <CopyButton text={data.payString} />
-                                      </td>
-                                    </tr>
-                                  )}
-                                <tr>
-                                  <td>Activated</td>
-                                  <td>
-                                    {timeFromNow(data.inception, i18n)} ({fullDateAndTime(data.inception)})
-                                    {data?.inceptionTxHash && <> {txIdLink(data.inceptionTxHash, 0)}</>}
-                                  </td>
-                                </tr>
-                                {data.service?.domain && (
-                                  <tr>
-                                    <td>Web address</td>
-                                    <td>
-                                      <a
-                                        href={'https://' + data.service.domain}
-                                        className="bold"
-                                        target="_blank"
-                                        rel="noopener nofollow"
-                                      >
-                                        {data.service.domain}
-                                      </a>
-                                    </td>
-                                  </tr>
-                                )}
-                                {data.genesis && (
-                                  <tr>
-                                    <td>Genesis balance</td>
-                                    <td className="bold">
-                                      {niceNumber(data.initialBalance)} {nativeCurrency}
-                                    </td>
-                                  </tr>
-                                )}
-                                {data.parent?.address === data.address ? (
-                                  <tr>
-                                    <td>
-                                      Imported from <b>XRPL</b>
-                                    </td>
-                                    <td>
-                                      <a
-                                        href={
-                                          (devNet ? networks.testnet.server : networks.mainnet.server) +
-                                          '/account/' +
-                                          data.address
-                                        }
-                                      >
-                                        {data.address}
-                                      </a>
-                                    </td>
-                                  </tr>
-                                ) : (
-                                  <>
-                                    {!data.genesis && (
-                                      <tr>
-                                        <td>Activated by</td>
-                                        <td>
-                                          <AddressWithIconFilled
-                                            data={{
-                                              address: data.parent?.address,
-                                              addressDetails: {
-                                                username: data.parent?.username,
-                                                service: data.parent?.service?.name || data.parent?.service?.domain
-                                              }
-                                            }}
-                                          />
-                                        </td>
-                                      </tr>
-                                    )}
-                                  </>
-                                )}
-                                {!data.genesis && data.initialBalance && (
-                                  <tr>
-                                    <td>Activated with</td>
-                                    <td>
-                                      {fullNiceNumber(data.initialBalance)} {nativeCurrency}
-                                    </td>
-                                  </tr>
-                                )}
-                                {data.flare?.spark && (
-                                  <>
-                                    <tr>
-                                      <td>Flare address</td>
-                                      <td>
-                                        <a
-                                          href={'https://flarescan.com/address/' + data.flare.address}
-                                          target="_blank"
-                                          rel="noopener"
-                                        >
-                                          {data.flare.address}
-                                        </a>
-                                      </td>
-                                    </tr>
-                                    <tr>
-                                      <td>Flare claim</td>
-                                      <td>{fullNiceNumber(data.flare.spark * 0.15)} FLR</td>
-                                    </tr>
-                                    <tr>
-                                      <td>Songbird address</td>
-                                      <td>
-                                        <a
-                                          href={'https://songbird.flarescan.com/address/' + data.flare.address}
-                                          target="_blank"
-                                          rel="noopener"
-                                        >
-                                          {data.flare.address}
-                                        </a>
-                                      </td>
-                                    </tr>
-                                    <tr>
-                                      <td>Songbird claim</td>
-                                      <td>{fullNiceNumber(data.flare.songbird)} SGB</td>
-                                    </tr>
-                                  </>
-                                )}
-                              </tbody>
-                            </table>
-                          )}
+                          <PublicData data={data} />
 
                           {(data?.xamanMeta?.xummPro ||
                             data.xamanMeta?.kycApproved ||

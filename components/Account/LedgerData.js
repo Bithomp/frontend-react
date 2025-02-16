@@ -53,7 +53,7 @@ export default function LedgerData({
 
   const blackholedNode = (
     <>
-      This account is <b className="orange">blackholed</b>
+      This account is <span className="orange bold">blackholed</span>
       {data?.ledgerInfo?.lastSubmittedAt ? (
         <>
           {' '}
