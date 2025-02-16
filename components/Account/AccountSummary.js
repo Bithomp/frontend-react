@@ -1,5 +1,5 @@
 import { i18n } from 'next-i18next'
-import { nativeCurrencyToFiat, shortNiceNumber, timeFromNow } from '../../utils/format'
+import { fullNiceNumber, nativeCurrencyToFiat, shortNiceNumber, timeFromNow } from '../../utils/format'
 import { avatarSrc, devNet, getCoinsUrl, nativeCurrency } from '../../utils'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -79,7 +79,18 @@ export default function AccountSummary({ data, account, balances, refreshPage, s
         <b>{data?.ledgerInfo?.activated && !data?.ledgerInfo?.blackholed ? 'Available ' : 'Balance'}</b>
         <br />
         <span className={balances?.available?.native && !data?.ledgerInfo?.blackholed ? 'green bold' : ''}>
-          {niceBalance ? niceBalance + ' ' + nativeCurrency : ''}
+          {niceBalance ? (
+            <span className="tooltip">
+              {niceBalance + ' ' + nativeCurrency}
+              <span className="tooltiptext no-brake">
+                {fullNiceNumber(balances?.available?.native / 1000000)} {nativeCurrency}
+              </span>
+            </span>
+          ) : data?.ledgerInfo?.activated === false ? (
+            '0 ' + nativeCurrency
+          ) : (
+            '...'
+          )}
         </span>
         <br />
         <span className="grey">
