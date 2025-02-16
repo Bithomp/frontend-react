@@ -25,6 +25,7 @@ import {
 import Link from 'next/link'
 
 import LinkIcon from '../../public/images/link.svg'
+import { LinkTx } from '../../utils/links'
 
 export default function PublicData({ data }) {
   const { t, i18n } = useTranslation()
@@ -226,17 +227,12 @@ export default function PublicData({ data }) {
     </span>
   )
 
-  const activatedNode = (
-    <>
-      {timeFromNow(data.inception, i18n)} ({fullDateAndTime(data.inception)})
-      {data?.inceptionTxHash && <> {txIdLink(data.inceptionTxHash, 0)}</>}
-    </>
-  )
-
-  const webAddressNode = (
+  const webAddressNode = data.service?.domain ? (
     <a href={'https://' + data.service.domain} className="bold" target="_blank" rel="noopener nofollow">
       {data.service.domain}
     </a>
+  ) : (
+    ''
   )
 
   const genesisNode = (
@@ -269,9 +265,9 @@ export default function PublicData({ data }) {
     </>
   )
 
-  const flareClaimNode = <>{fullNiceNumber(data.flare.spark * 0.15)} FLR</>
+  const flareClaimNode = data.flare?.spark ? <>{fullNiceNumber(data.flare.spark * 0.15)} FLR</> : ''
 
-  const songbirdClaimNode = <>{fullNiceNumber(data.flare.songbird)} SGB</>
+  const songbirdClaimNode = data.flare?.songbird ? <>{fullNiceNumber(data.flare.songbird)} SGB</> : ''
 
   return (
     <>
@@ -310,7 +306,10 @@ export default function PublicData({ data }) {
           )}
           <tr>
             <td>Activated</td>
-            <td>{activatedNode}</td>
+            <td>
+              {timeFromNow(data.inception, i18n)} ({fullDateAndTime(data.inception)})
+              {data?.inceptionTxHash ? <> {txIdLink(data.inceptionTxHash, 0)}</> : ''}
+            </td>
           </tr>
           {data.genesis && (
             <tr>
@@ -394,9 +393,6 @@ export default function PublicData({ data }) {
             {webAddressNode}
           </p>
         )}
-        <p>
-          <span className="grey">Activated</span> {activatedNode}
-        </p>
         {data.genesis && (
           <p>
             <span className="grey">Genesis balance</span>
@@ -406,8 +402,9 @@ export default function PublicData({ data }) {
         )}
         {data.parent?.address === data.address ? (
           <p>
+            <span className="grey">Imported</span> {timeFromNow(data.inception, i18n)}{' '}
             <span className="grey">
-              Imported from <span className="bold">XRPL</span>
+              from <span className="bold">XRPL</span>
             </span>
             <br />
             {importedFromNode}
@@ -415,13 +412,16 @@ export default function PublicData({ data }) {
         ) : (
           !data.genesis && (
             <p>
+              <span className="grey">Activated </span>
+              <LinkTx tx={data.inceptionTxHash}>{timeFromNow(data.inception, i18n)}</LinkTx>{' '}
               {data.initialBalance ? (
                 <>
-                  <span className="grey">Activated with</span> {activatedWithNode} <span className="grey">by</span>
+                  <span className="grey">with</span> {activatedWithNode} <span className="grey">by</span>
                 </>
               ) : (
-                <span className="grey">Activated by</span>
+                <span className="grey">by</span>
               )}
+              <br />
               <br />
               {activatedByNode}
             </p>

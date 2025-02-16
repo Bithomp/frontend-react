@@ -11,7 +11,7 @@ export default function RelatedLinks({ data }) {
       </thead>
       <tbody>
         <tr>
-          <td>On other Networks</td>
+          <td>On other networks</td>
           <td>
             {network !== 'mainnet' && (
               <>

@@ -1,5 +1,5 @@
 import { Buffer } from 'buffer'
-import { stripText, shortName, server, webSiteName } from '.'
+import { stripText, shortName, webSiteName } from '.'
 
 import Link from 'next/link'
 import LinkIcon from '../public/images/link.svg'
