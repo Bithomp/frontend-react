@@ -272,9 +272,9 @@ export default function LedgerData({
 
   const regularKeyNode = <AddressWithIconFilled data={data.ledgerInfo} name="regularKey" />
 
-  const lastEffectedTxNode = txIdLink(data.ledgerInfo.previousTxnID)
+  const lastEffectedTxNode = txIdLink(data.ledgerInfo.previousTxnID, 6)
 
-  const lastAccountTxNode = txIdLink(data.ledgerInfo.accountTxnID)
+  const lastAccountTxNode = txIdLink(data.ledgerInfo.accountTxnID, 6)
 
   const messageKeyNode = <code className="code-highlight">{data.ledgerInfo.messageKey}</code>
 
@@ -821,16 +821,12 @@ export default function LedgerData({
         )}
         {data.ledgerInfo?.previousTxnID && (
           <p>
-            <span className="grey">Last affecting tx</span>
-            <br />
-            {lastEffectedTxNode}
+            <span className="grey">Last affecting tx</span> {lastEffectedTxNode}
           </p>
         )}
         {data.ledgerInfo?.accountTxnID && (
           <p>
-            <span className="grey">Last initiated tx:</span>
-            <br />
-            {lastAccountTxNode}
+            <span className="grey">Last initiated tx:</span> {lastAccountTxNode}
           </p>
         )}
         {data.ledgerInfo?.messageKey &&
