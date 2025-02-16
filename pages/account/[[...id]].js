@@ -71,7 +71,7 @@ import {
 import Did from '../../components/Account/Did'
 import { fetchHistoricalRate } from '../../utils/common'
 import AccountSummary from '../../components/Account/AccountSummary'
-import HistoricalData from '../../components/Account/HistoricalData'
+import LedgerData from '../../components/Account/LedgerData'
 
 export default function Account({
   initialData,
@@ -546,7 +546,7 @@ export default function Account({
                             <br />
                           </div>
 
-                          <HistoricalData
+                          <LedgerData
                             data={data}
                             account={account}
                             balances={balances}
@@ -554,6 +554,7 @@ export default function Account({
                             pageFiatRate={pageFiatRate}
                             networkInfo={networkInfo}
                             setSignRequest={setSignRequest}
+                            fiatRate={fiatRate}
                           />
 
                           {data?.inception && (

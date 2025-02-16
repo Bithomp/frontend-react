@@ -76,7 +76,9 @@ export default function AccountSummary({ data, account, balances, refreshPage, s
           textAlign: 'right'
         }}
       >
-        <b>{data?.ledgerInfo?.activated && !data?.ledgerInfo?.blackholed ? 'Available ' : 'Balance'}</b>
+        <span className="bold">
+          {data?.ledgerInfo?.activated && !data?.ledgerInfo?.blackholed ? 'Available ' : 'Balance'}
+        </span>
         <br />
         <span className={balances?.available?.native && !data?.ledgerInfo?.blackholed ? 'green bold' : ''}>
           {niceBalance ? (
