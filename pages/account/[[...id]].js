@@ -919,12 +919,6 @@ export default function Account({
           margin-top: 3px;
         }
 
-        .hide-on-small-w800 {
-          @media only screen and (max-width: 800px) {
-            display: none;
-          }
-        }
-
         @media (min-width: 800px) {
           .button-wide {
             width: 100%;
