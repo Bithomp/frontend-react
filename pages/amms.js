@@ -38,13 +38,13 @@ export async function getServerSideProps(context) {
 
   let currencyPart = ''
   if (currency) {
-    currencyPart = '&currency=' + currency + '&sortCurrency=' + currency
+    currencyPart = '&currency=' + currency
     if (currencyIssuer) {
-      currencyPart += '&currencyIssuer=' + currencyIssuer + '&sortCurrencyIssuer=' + currencyIssuer
+      currencyPart += '&currencyIssuer=' + currencyIssuer
     }
   } else {
     //default
-    currencyPart = '&currency=' + nativeCurrency + '&sortCurrency=' + nativeCurrency
+    currencyPart = '&currency=' + nativeCurrency
   }
 
   try {
@@ -201,9 +201,9 @@ export default function Amms({
 
     let currencyPart = ''
     if (currency) {
-      currencyPart = '&currency=' + currency + '&sortCurrency=' + currency
+      currencyPart = '&currency=' + currency
       if (currencyIssuer) {
-        currencyPart += '&currencyIssuer=' + currencyIssuer + '&sortCurrencyIssuer=' + currencyIssuer
+        currencyPart += '&currencyIssuer=' + currencyIssuer
       }
     } else {
       //default
