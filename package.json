@@ -42,6 +42,7 @@
     "moment-duration-format": "^2.3.2",
     "next": "^14.2.16",
     "next-i18next": "^13.2.1",
+    "next-qrcode": "^2.5.1",
     "next-seo": "^5.15.0",
     "nprogress": "^0.2.0",
     "react": "^18.3.1",

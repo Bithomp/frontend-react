@@ -6731,6 +6731,13 @@ next-i18next@^13.2.1:
     hoist-non-react-statics "^3.3.2"
     i18next-fs-backend "^2.1.1"
 
+next-qrcode@^2.5.1:
+  version "2.5.1"
+  resolved "https://registry.yarnpkg.com/next-qrcode/-/next-qrcode-2.5.1.tgz#71575396cfffcc0f9d94e5635149b76f776a8c29"
+  integrity sha512-ibiS1+p+myjurC1obVIgo7UCjFhxm0SNYTkikahQVmnyzlfREOdUCf2f77Vbz6W6q2zfx5Eww2/20vbgkLNdLw==
+  dependencies:
+    qrcode "^1.5.3"
+
 next-seo@^5.15.0:
   version "5.15.0"
   resolved "https://registry.npmjs.org/next-seo/-/next-seo-5.15.0.tgz"
@@ -7238,6 +7245,15 @@ qrcode@1.5.3:
   dependencies:
     dijkstrajs "^1.0.1"
     encode-utf8 "^1.0.3"
+    pngjs "^5.0.0"
+    yargs "^15.3.1"
+
+qrcode@^1.5.3:
+  version "1.5.4"
+  resolved "https://registry.yarnpkg.com/qrcode/-/qrcode-1.5.4.tgz#5cb81d86eb57c675febb08cf007fff963405da88"
+  integrity sha512-1ca71Zgiu6ORjHqFBDpnSMTR2ReToX4l1Au1VFLyVeBTFavzQnv5JxMFr3ukHVKpSrSA2MCk0lNJSykjUfz7Zg==
+  dependencies:
+    dijkstrajs "^1.0.1"
     pngjs "^5.0.0"
     yargs "^15.3.1"
 

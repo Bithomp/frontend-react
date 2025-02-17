@@ -4,12 +4,39 @@ import { avatarSrc, devNet, getCoinsUrl, nativeCurrency } from '../../utils'
 import Image from 'next/image'
 import Link from 'next/link'
 
+import { useQRCode } from 'next-qrcode'
+
 export default function AccountSummary({ data, account, balances, refreshPage, selectedCurrency, pageFiatRate }) {
+  const { Canvas } = useQRCode()
+
   const niceBalance = shortNiceNumber(balances?.available?.native / 1000000, 2, 0)
 
   return (
     <div className="account-summary">
-      <Image alt="avatar" src={avatarSrc(data?.address, refreshPage)} width="60" height="60" priority />
+      <Image
+        alt="avatar"
+        src={avatarSrc(data?.address, refreshPage)}
+        width="60"
+        height="60"
+        priority
+        className="show-on-small-w800"
+      />
+      <div className="hide-on-small-w800" style={{ paddingTop: 2, marginBottom: -2 }}>
+        <Canvas
+          text={data?.address}
+          options={{
+            errorCorrectionLevel: 'M',
+            margin: 2,
+            scale: 4,
+            width: 62,
+            color: {
+              dark: '#333333ff',
+              light: '#ffffffff'
+            }
+          }}
+        />
+      </div>
+
       <div style={{ display: 'inline-block', position: 'absolute', top: 7, left: 75 }}>
         {data.username ? (
           <h1 style={{ fontSize: '1em', margin: 0 }} className="blue">
