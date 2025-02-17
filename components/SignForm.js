@@ -520,11 +520,11 @@ export default function SignForm({
           }
           checkCrawlerStatus({ inLedger: includedInLedger, type: TransactionType })
         } else {
-          //if not validated or if no ledger info received, delay for 3 seconds
+          //if not validated or if no ledger info received, delay for 1.5 seconds
           delay(1500, checkTxInCrawler, { txid, redirectName })
         }
       } else {
-        //if no info on transaction, delay 3 sec
+        //if no info on transaction, delay 1.5 sec
         delay(1500, checkTxInCrawler, { txid, redirectName })
       }
     } else {
