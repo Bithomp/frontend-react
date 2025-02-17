@@ -98,6 +98,7 @@ export default function XamanData({ data }) {
       </table>
 
       <div className="show-on-small-w800">
+        <br />
         <center>{'Xaman data'.toUpperCase()}</center>
         {data.xamanMeta?.xummPro && (
           <>

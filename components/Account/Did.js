@@ -171,6 +171,7 @@ export default function Did({ data, setSignRequest, account }) {
         </tbody>
       </table>
       <div className="show-on-small-w800">
+        <br />
         <center>{'Decentralized Identifier (DID)'.toUpperCase()}</center>
         <p>
           <span className="grey">DID ID</span> {idNode}

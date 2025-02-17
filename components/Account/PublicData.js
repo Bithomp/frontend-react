@@ -373,6 +373,7 @@ export default function PublicData({ data }) {
         </tbody>
       </table>
       <div className="show-on-small-w800">
+        <br />
         <center>{'Public data'.toUpperCase()}</center>
         {data.service?.socialAccounts && <p className="center">{socialAccountsNode}</p>}
         {accountNameTr({ data, mobile: true })}
