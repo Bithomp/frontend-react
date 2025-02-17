@@ -313,7 +313,7 @@ export default function Header({
               <>
                 <span
                   onClick={() => {
-                    setSignRequest({ wallet: 'xaman' })
+                    setSignRequest({ wallet: 'xaman', redirect: 'account' })
                   }}
                   className="link"
                 >
@@ -329,7 +329,7 @@ export default function Header({
 
                 <span
                   onClick={() => {
-                    setSignRequest({ wallet: 'gemwallet' })
+                    setSignRequest({ wallet: 'gemwallet', redirect: 'account' })
                   }}
                   className="link"
                 >
@@ -345,7 +345,10 @@ export default function Header({
 
                 {/* available only on the mainnet and testnet */}
                 {(networkId === 0 || networkId === 1) && (
-                  <span onClick={() => setSignRequest({ wallet: 'walletconnect' })} className="link">
+                  <span
+                    onClick={() => setSignRequest({ wallet: 'walletconnect', redirect: 'account' })}
+                    className="link"
+                  >
                     <Image
                       src="/images/wallets/walletconnect.svg"
                       className="wallet-logo walletconnect-logo"
@@ -357,7 +360,7 @@ export default function Header({
                   </span>
                 )}
 
-                <span onClick={() => setSignRequest({ wallet: 'metamask' })} className="link">
+                <span onClick={() => setSignRequest({ wallet: 'metamask', redirect: 'account' })} className="link">
                   <Image
                     src="/images/wallets/metamask.svg"
                     className="wallet-logo"
@@ -368,7 +371,7 @@ export default function Header({
                   Metamask
                 </span>
 
-                <span onClick={() => setSignRequest({ wallet: 'ledgerwallet' })} className="link">
+                <span onClick={() => setSignRequest({ wallet: 'ledgerwallet', redirect: 'account' })} className="link">
                   <Image
                     src="/images/wallets/ledgerwallet.svg"
                     className="wallet-logo"
@@ -379,7 +382,7 @@ export default function Header({
                   Ledger
                 </span>
 
-                <span onClick={() => setSignRequest({ wallet: 'trezor' })} className="link">
+                <span onClick={() => setSignRequest({ wallet: 'trezor', redirect: 'account' })} className="link">
                   <Image
                     src="/images/wallets/trezor.svg"
                     className="wallet-logo"
