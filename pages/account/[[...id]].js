@@ -53,6 +53,7 @@ import { fetchHistoricalRate } from '../../utils/common'
 import AccountSummary from '../../components/Account/AccountSummary'
 import LedgerData from '../../components/Account/LedgerData'
 import PublicData from '../../components/Account/PublicData'
+import XamanData from '../../components/Account/XamanData'
 
 export default function Account({
   initialData,
@@ -473,99 +474,7 @@ export default function Account({
 
                           <PublicData data={data} />
 
-                          {(data?.xamanMeta?.xummPro ||
-                            data.xamanMeta?.kycApproved ||
-                            data.xamanMeta?.globalid?.profileUrl) && (
-                            <table className="table-details">
-                              <thead>
-                                <tr>
-                                  <th colSpan="100">Xaman data</th>
-                                </tr>
-                              </thead>
-                              <tbody>
-                                {data.xamanMeta?.xummPro && (
-                                  <>
-                                    <tr>
-                                      <td>Pro</td>
-                                      <td>
-                                        {data?.xamanMeta?.xummProfile?.slug ? (
-                                          <a href={data.xamanMeta.xummProfile.profileUrl} className="green">
-                                            {data.xamanMeta.xummProfile.slug}
-                                          </a>
-                                        ) : (
-                                          <span className="bold">activated</span>
-                                        )}
-                                        {/* need to hide the add for 2 hours after click (1hour our cache + 1 hour xppl-labs cache) */}
-                                        {data.xamanMeta?.monetisation?.status === 'PAYMENT_REQUIRED' && (
-                                          <span className="orange">
-                                            <br />
-                                            Limited 😔
-                                          </span>
-                                        )}
-                                        {data.xamanMeta?.monetisation?.status === 'COMING_UP' && (
-                                          <span className="orange">
-                                            <br />
-                                            Soon limited 😔
-                                          </span>
-                                        )}
-                                        {(data.xamanMeta?.monetisation?.status === 'COMING_UP' ||
-                                          data.xamanMeta?.monetisation?.status === 'PAYMENT_REQUIRED') && (
-                                          <>
-                                            <br />
-                                            <a
-                                              href="https://xrpl-labs.com/pro/get?v=BITHOMP"
-                                              target="_blank"
-                                              rel="noopener nofollow"
-                                            >
-                                              Purchase Xaman Pro
-                                            </a>{' '}
-                                            ❤️
-                                          </>
-                                        )}
-                                      </td>
-                                    </tr>
-                                    {data.xamanMeta?.xummProfile?.ownerAlias && (
-                                      <tr>
-                                        <td>Owner alias</td>
-                                        <td>{data.xamanMeta?.xummProfile?.ownerAlias}</td>
-                                      </tr>
-                                    )}
-                                    {data.xamanMeta?.xummProfile?.accountAlias && (
-                                      <tr>
-                                        <td>Account alias</td>
-                                        <td>{data.xamanMeta?.xummProfile?.accountAlias}</td>
-                                      </tr>
-                                    )}
-                                  </>
-                                )}
-
-                                {data.xamanMeta?.kycApproved && (
-                                  <tr>
-                                    <td>KYC</td>
-                                    <td className="green">verified</td>
-                                  </tr>
-                                )}
-
-                                {data.xamanMeta?.globalid?.profileUrl && (
-                                  <tr>
-                                    <td>GlobaliD</td>
-                                    <td>
-                                      <a href={data.xamanMeta.globalid.profileUrl}>
-                                        <u className="bold green">
-                                          {data.xamanMeta.globalid.profileUrl.replace('https://app.global.id/u/', '')}
-                                        </u>
-                                      </a>{' '}
-                                      <a href={data.xamanMeta.globalid.profileUrl}>
-                                        <b className="green">
-                                          <i className="fa fa-globe"></i>
-                                        </b>
-                                      </a>
-                                    </td>
-                                  </tr>
-                                )}
-                              </tbody>
-                            </table>
-                          )}
+                          <XamanData data={data} />
 
                           {data?.ledgerInfo?.did && (
                             <Did data={data} account={account} setSignRequest={setSignRequest} />
