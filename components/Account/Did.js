@@ -44,12 +44,61 @@ export default function Did({ data, setSignRequest, account }) {
 
   const { t } = useTranslation()
 
-  const didData = data.ledgerInfo.did
+  const didData = data?.ledgerInfo?.did
+
+  if (!didData) return ''
+
   const url = decode(didData.uri)
+
+  const idNode = (
+    <>
+      {shortHash(didData.didID, 10)} <CopyButton text={didData.didID} />
+    </>
+  )
+
+  const dataNode = decode(didData.data)
+  const documentNode = decode(didData.didDocument)
+  const metadataNode = codeHighlight(didData.metadata)
+
+  const actionsNode = (
+    <>
+      <button
+        className="button-action thin button-margin"
+        onClick={() =>
+          setSignRequest({
+            action: 'setDid',
+            request: {
+              TransactionType: 'DIDSet',
+              Account: data?.address
+            }
+          })
+        }
+        disabled={!data?.ledgerInfo?.activated}
+      >
+        {t('button.update-did', { ns: 'account' })}
+      </button>{' '}
+      {data?.ledgerInfo?.did && (
+        <button
+          className="button-action thin button-margin"
+          onClick={() =>
+            setSignRequest({
+              request: {
+                TransactionType: 'DIDDelete',
+                Account: data?.address
+              }
+            })
+          }
+          disabled={!data?.ledgerInfo?.activated}
+        >
+          {t('button.delete-did', { ns: 'account' })}
+        </button>
+      )}
+    </>
+  )
 
   return (
     <>
-      <table className="table-details">
+      <table className="table-details hide-on-small-w800">
         <thead>
           <tr>
             <th colSpan="100">Decentralized Identifier (DID)</th>
@@ -58,25 +107,23 @@ export default function Did({ data, setSignRequest, account }) {
         <tbody>
           <tr>
             <td>DID ID</td>
-            <td>
-              {shortHash(didData.didID, 10)} <CopyButton text={didData.didID} />
-            </td>
+            <td>{idNode}</td>
           </tr>
           {didData.data && (
             <tr>
               <td>Data</td>
-              <td>{decode(didData.data)}</td>
+              <td>{dataNode}</td>
             </tr>
           )}
           {didData.didDocument && (
             <tr>
               <td>DID Document</td>
-              <td>{decode(didData.didDocument)}</td>
+              <td>{documentNode}</td>
             </tr>
           )}
           {didData.createdAt && (
             <tr>
-              <td>Created At</td>
+              <td>Created</td>
               <td>
                 {timeFromNow(didData.createdAt, i18n)} ({fullDateAndTime(didData.createdAt)}){' '}
                 {txIdLink(didData.createdTxHash, 0)}
@@ -85,7 +132,7 @@ export default function Did({ data, setSignRequest, account }) {
           )}
           {didData.updatedAt && didData.updatedAt !== didData.createdAt && (
             <tr>
-              <td>Updated At</td>
+              <td>Updated</td>
               <td>
                 {timeFromNow(didData.updatedAt, i18n)} ({fullDateAndTime(didData.updatedAt)}){' '}
                 {txIdLink(didData.updatedTxHash, 0)}
@@ -112,49 +159,75 @@ export default function Did({ data, setSignRequest, account }) {
           {didData.metadata && (
             <tr>
               <td>Metadata</td>
-              <td>{codeHighlight(didData.metadata)}</td>
+              <td>{metadataNode}</td>
             </tr>
           )}
           {data.address === account?.address && (
             <tr>
               <td>Actions</td>
-              <td className="action-buttons">
-                <button
-                  className="button-action thin button-margin"
-                  onClick={() =>
-                    setSignRequest({
-                      action: 'setDid',
-                      request: {
-                        TransactionType: 'DIDSet',
-                        Account: data?.address
-                      }
-                    })
-                  }
-                  disabled={!data?.ledgerInfo?.activated}
-                >
-                  {t('button.update-did', { ns: 'account' })}
-                </button>{' '}
-                {data?.ledgerInfo?.did && (
-                  <button
-                    className="button-action thin button-margin"
-                    onClick={() =>
-                      setSignRequest({
-                        request: {
-                          TransactionType: 'DIDDelete',
-                          Account: data?.address
-                        }
-                      })
-                    }
-                    disabled={!data?.ledgerInfo?.activated}
-                  >
-                    {t('button.delete-did', { ns: 'account' })}
-                  </button>
-                )}
-              </td>
+              <td className="action-buttons">{actionsNode}</td>
             </tr>
           )}
         </tbody>
       </table>
+      <div className="show-on-small-w800">
+        <center>{'Decentralized Identifier (DID)'.toUpperCase()}</center>
+        <p>
+          <span className="grey">DID ID</span> {idNode}
+        </p>
+        {didData.data && (
+          <p>
+            <span className="grey">Data</span>
+            <br />
+            {dataNode}
+          </p>
+        )}
+        {didData.didDocument && (
+          <p>
+            <span className="grey">DID Document</span>
+            <br />
+            {documentNode}
+          </p>
+        )}
+        {didData.createdAt && (
+          <p>
+            <span className="grey">Created</span> {timeFromNow(didData.createdAt, i18n)}{' '}
+            {txIdLink(didData.createdTxHash, 0)}
+          </p>
+        )}
+        {didData.updatedAt && didData.updatedAt !== didData.createdAt && (
+          <p>
+            <span className="grey">Updated</span> {timeFromNow(didData.updatedAt, i18n)}{' '}
+            {txIdLink(didData.updatedTxHash, 0)}
+          </p>
+        )}
+        {url && (
+          <p>
+            <span className="grey">URL</span> <span className="orange">(unverified)</span>
+            <br />
+            {isUrlValid(url) ? (
+              <a href={url} target="_blank" rel="noopener noreferrer">
+                {url}
+              </a>
+            ) : (
+              <pre>{url}</pre>
+            )}
+          </p>
+        )}
+        {didData.metadata && (
+          <p>
+            <span className="grey">Metadata</span>
+            <br />
+            {metadataNode}
+          </p>
+        )}
+        {data.address === account?.address && (
+          <p>
+            <span className="grey">Actions</span>
+            <div className="action-buttons">{actionsNode}</div>
+          </p>
+        )}
+      </div>
       <style jsx>{`
         .action-buttons > :not(:first-child) {
           margin-left: 5px;

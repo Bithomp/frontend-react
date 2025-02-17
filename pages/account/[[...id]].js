@@ -471,15 +471,9 @@ export default function Account({
                             setSignRequest={setSignRequest}
                             fiatRate={fiatRate}
                           />
-
                           <PublicData data={data} />
-
                           <XamanData data={data} />
-
-                          {data?.ledgerInfo?.did && (
-                            <Did data={data} account={account} setSignRequest={setSignRequest} />
-                          )}
-
+                          <Did data={data} account={account} setSignRequest={setSignRequest} />
                           <RelatedLinks data={data} />
                         </div>
                       </>
