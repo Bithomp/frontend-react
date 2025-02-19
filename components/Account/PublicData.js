@@ -375,7 +375,12 @@ export default function PublicData({ data }) {
       <div className="show-on-small-w800">
         <br />
         <center>{'Public data'.toUpperCase()}</center>
-        {data.service?.socialAccounts && <p className="center">{socialAccountsNode}</p>}
+        {data.service?.socialAccounts && (
+          <div className="center">
+            <br />
+            {socialAccountsNode}
+          </div>
+        )}
         {accountNameTr({ data, mobile: true })}
         {data.bithomp?.bithompPro && (
           <p>
@@ -412,20 +417,20 @@ export default function PublicData({ data }) {
           </p>
         ) : (
           !data.genesis && (
-            <p>
-              <span className="grey">Activated </span>
-              <LinkTx tx={data.inceptionTxHash}>{timeFromNow(data.inception, i18n)}</LinkTx>{' '}
-              {data.initialBalance ? (
-                <>
-                  <span className="grey">with</span> {activatedWithNode} <span className="grey">by</span>
-                </>
-              ) : (
-                <span className="grey">by</span>
-              )}
-              <br />
-              <br />
-              {activatedByNode}
-            </p>
+            <>
+              <p>
+                <span className="grey">Activated </span>
+                <LinkTx tx={data.inceptionTxHash}>{timeFromNow(data.inception, i18n)}</LinkTx>{' '}
+                {data.initialBalance ? (
+                  <>
+                    <span className="grey">with</span> {activatedWithNode} <span className="grey">by</span>
+                  </>
+                ) : (
+                  <span className="grey">by</span>
+                )}
+              </p>
+              {!data.initialBalance ? activatedByNode : ''}
+            </>
           )
         )}
         {data.flare?.spark && (
