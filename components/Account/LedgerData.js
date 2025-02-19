@@ -272,7 +272,20 @@ export default function LedgerData({
 
   const regularKeyNode = <AddressWithIconFilled data={data.ledgerInfo} name="regularKey" />
 
-  const lastEffectedTxNode = txIdLink(data.ledgerInfo.previousTxnID, 6)
+  const showLastEffectedTx =
+    data?.ledgerInfo?.blackholed ||
+    (data?.ledgerInfo?.previousTxnID && data?.ledgerInfo?.lastSubmittedTxHash !== data.ledgerInfo.previousTxnID)
+
+  const lastEffectedTxNode = showLastEffectedTx && (
+    <>
+      {data?.ledgerInfo?.previousTxnAt && (
+        <>
+          {timeFromNow(data.ledgerInfo.previousTxnAt, i18n)} ({fullDateAndTime(data.ledgerInfo.previousTxnAt)})
+        </>
+      )}
+      {data?.ledgerInfo?.previousTxnID && <> {txIdLink(data.ledgerInfo.previousTxnID, 0)}</>}
+    </>
+  )
 
   const lastAccountTxNode = txIdLink(data.ledgerInfo.accountTxnID, 6)
 
@@ -555,7 +568,7 @@ export default function LedgerData({
               <td>#{data.ledgerInfo.sequence}</td>
             </tr>
           )}
-          {data.ledgerInfo?.previousTxnID && (
+          {showLastEffectedTx && (
             <tr>
               <td>Last affecting tx</td>
               <td>{lastEffectedTxNode}</td>
@@ -819,7 +832,7 @@ export default function LedgerData({
             <span className="grey">Next sequence</span> #{data.ledgerInfo.sequence}
           </p>
         )}
-        {data.ledgerInfo?.previousTxnID && (
+        {showLastEffectedTx && (
           <p>
             <span className="grey">Last affecting tx</span> {lastEffectedTxNode}
           </p>
