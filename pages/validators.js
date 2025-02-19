@@ -38,6 +38,9 @@ export async function getServerSideProps(context) {
       headers: passHeaders(req)
     })
     initialData.unl = res?.data
+    if (res?.data?.error) {
+      initialErrorMessage = res.data.error
+    }
     initialData.validators = res2?.data
   } catch (error) {
     console.error(error)
@@ -236,7 +239,7 @@ export default function Validators({ amendment, initialData, initialErrorMessage
   const checkApi = async () => {
     if (!initialData) return
     let dataU = initialData.unl
-    if (dataU) {
+    if (dataU?.validators) {
       dataU.validators?.sort(compare)
       setUnlValidatorsCount(dataU.validators?.length)
 
