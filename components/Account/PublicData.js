@@ -172,7 +172,7 @@ export default function PublicData({ data }) {
 
     if (data.service?.name || thirdPartyService) {
       const serviceNode = <span className="green bold">{data.service?.name}</span>
-      const thirdPartyService = (
+      const thirdPartyServiceNode = (
         <>
           <span className="bold">{thirdPartyService}</span> (unverified)
         </>
@@ -180,14 +180,14 @@ export default function PublicData({ data }) {
       if (mobile) {
         output.push(
           <p key="1">
-            <span className="grey">Service name</span> {data.service?.name ? serviceNode : thirdPartyService}
+            <span className="grey">Service name</span> {data.service?.name ? serviceNode : thirdPartyServiceNode}
           </p>
         )
       } else {
         output.push(
           <tr key="1">
             <td>Service name</td>
-            {data.service?.name ? <td>{serviceNode}</td> : <td>{thirdPartyService}</td>}
+            {data.service?.name ? <td>{serviceNode}</td> : <td>{thirdPartyServiceNode}</td>}
           </tr>
         )
       }
@@ -429,7 +429,7 @@ export default function PublicData({ data }) {
                   <span className="grey">by</span>
                 )}
               </p>
-              {!data.initialBalance ? activatedByNode : ''}
+              {data.initialBalance && activatedByNode}
             </>
           )
         )}
