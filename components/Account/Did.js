@@ -222,12 +222,7 @@ export default function Did({ data, setSignRequest, account }) {
             {metadataNode}
           </p>
         )}
-        {data.address === account?.address && (
-          <p>
-            <span className="grey">Actions</span>
-            <div className="action-buttons">{actionsNode}</div>
-          </p>
-        )}
+        {data.address === account?.address && <div className="center">{actionsNode}</div>}
       </div>
       <style jsx>{`
         .action-buttons > :not(:first-child) {
