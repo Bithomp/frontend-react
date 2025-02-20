@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { useTranslation } from 'next-i18next'
+import { useRouter } from 'next/router'
 import { useState, useEffect } from 'react'
-import MobileMenu from './MobileMenu'
 
 import {
   devNet,
@@ -20,6 +20,7 @@ import Switch from './Switch'
 import LangTable from './LangTable'
 import CurrencyTable from './CurrencyTable'
 import NetworkTable from './NetworkTable'
+import MobileMenu from './MobileMenu'
 import { FaAngleDown } from 'react-icons/fa'
 import { IoIosRocket } from 'react-icons/io'
 
@@ -85,6 +86,8 @@ export default function Header({
 }) {
   const { i18n, t } = useTranslation()
 
+  const router = useRouter()
+
   const [rendered, setRendered] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
   const [isCopied, setIsCopied] = useState(false)
@@ -147,6 +150,11 @@ export default function Header({
         console.error('Could not copy text: ', err)
       }
     )
+  }
+
+  const signinWithWallet = (wallet) => {
+    //redirect to account, if user is on the account page
+    setSignRequest(router.pathname === '/account/[[...id]]' ? { wallet, redirect: 'account' } : { wallet })
   }
 
   return (
@@ -313,7 +321,7 @@ export default function Header({
               <>
                 <span
                   onClick={() => {
-                    setSignRequest({ wallet: 'xaman' })
+                    signinWithWallet('xaman')
                   }}
                   className="link"
                 >
@@ -329,7 +337,7 @@ export default function Header({
 
                 <span
                   onClick={() => {
-                    setSignRequest({ wallet: 'gemwallet' })
+                    signinWithWallet('gemwallet')
                   }}
                   className="link"
                 >
@@ -345,7 +353,7 @@ export default function Header({
 
                 {/* available only on the mainnet and testnet */}
                 {(networkId === 0 || networkId === 1) && (
-                  <span onClick={() => setSignRequest({ wallet: 'walletconnect' })} className="link">
+                  <span onClick={() => signinWithWallet('walletconnect')} className="link">
                     <Image
                       src="/images/wallets/walletconnect.svg"
                       className="wallet-logo walletconnect-logo"
@@ -357,7 +365,7 @@ export default function Header({
                   </span>
                 )}
 
-                <span onClick={() => setSignRequest({ wallet: 'metamask' })} className="link">
+                <span onClick={() => signinWithWallet('metamask')} className="link">
                   <Image
                     src="/images/wallets/metamask.svg"
                     className="wallet-logo"
@@ -368,7 +376,7 @@ export default function Header({
                   Metamask
                 </span>
 
-                <span onClick={() => setSignRequest({ wallet: 'ledgerwallet' })} className="link">
+                <span onClick={() => signinWithWallet('ledgerwallet')} className="link">
                   <Image
                     src="/images/wallets/ledgerwallet.svg"
                     className="wallet-logo"
@@ -379,7 +387,7 @@ export default function Header({
                   Ledger
                 </span>
 
-                <span onClick={() => setSignRequest({ wallet: 'trezor' })} className="link">
+                <span onClick={() => signinWithWallet('trezor')} className="link">
                   <Image
                     src="/images/wallets/trezor.svg"
                     className="wallet-logo"
