@@ -178,7 +178,7 @@ export default function NftVolumes({
         : rawData.saleType
       : false
     const oldCurrency = rawData?.currency
-    const oldCurrencyIssuer = rawData?.currencyIssuer
+    //const oldCurrencyIssuer = rawData?.currencyIssuer
     const oldExtendedStats = rawData?.statistics && rawData?.floorPrice
     const loadMoreRequest =
       hasMore !== 'first' &&
@@ -186,8 +186,8 @@ export default function NftVolumes({
       (convertCurrency ? oldConvertCurrency === convertCurrency : !oldConvertCurrency) &&
       (period ? oldPeriod === period : !oldPeriod) &&
       (saleTab ? oldSaleType === saleTab : !oldSaleType) &&
-      (currency ? oldCurrency === currency : !oldCurrency) &&
-      (currencyIssuer ? oldCurrencyIssuer === currencyIssuer : !oldCurrencyIssuer) &&
+      (currencyTab ? oldCurrency === currencyTab : !oldCurrency) &&
+      //(currencyIssuer ? oldCurrencyIssuer === currencyIssuer : !oldCurrencyIssuer) &&
       (extendedStats ? oldExtendedStats === extendedStats : !oldExtendedStats)
 
     // do not load more if there is no session token or if Bithomp Pro is expired
