@@ -138,6 +138,7 @@ export default function NftDistribution({
     if (issuer) {
       issuerPart = '&issuer=' + issuer
       orderPart = 'total'
+      setOrder('total')
     }
 
     const response = await axios(
