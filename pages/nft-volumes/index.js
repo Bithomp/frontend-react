@@ -173,6 +173,10 @@ export default function NftVolumes({
     const oldConvertCurrency = rawData?.sortCurrency
     const oldPeriod = rawData?.period
     const oldSaleType = rawData?.saleType
+      ? rawData.saleType === 'all'
+        ? 'primaryAndSecondary'
+        : rawData.saleType
+      : false
     const oldCurrency = rawData?.currency
     const oldCurrencyIssuer = rawData?.currencyIssuer
     const oldExtendedStats = rawData?.statistics && rawData?.floorPrice
@@ -225,7 +229,7 @@ export default function NftVolumes({
             '&period=' +
             period +
             '&saleType=' +
-            saleTab +
+            (saleTab === 'primaryAndSecondary' ? 'all' : saleTab) +
             currencyUrlPart +
             '&convertCurrencies=' +
             convertCurrency
@@ -274,9 +278,17 @@ export default function NftVolumes({
     setRawData({})
 
     const response = await axios
-      .get(apiUrl + '&period=' + period + '&saleType=' + saleTab + markerPart, {
-        signal: controller.signal
-      })
+      .get(
+        apiUrl +
+          '&period=' +
+          period +
+          '&saleType=' +
+          (saleTab === 'primaryAndSecondary' ? 'all' : saleTab) +
+          markerPart,
+        {
+          signal: controller.signal
+        }
+      )
       .catch((error) => {
         if (error && error.message !== 'canceled') {
           setErrorMessage(t('error.' + error.message))
@@ -600,7 +612,7 @@ export default function NftVolumes({
   }, [saleTab, period, listTab, currencyIssuer, convertCurrency, extendedStats, currencyTab])
 
   const urlParams = (volume, options) => {
-    let urlPart = '?period=' + period + '&sale=' + saleTab
+    let urlPart = '?period=' + period + '&sale=' + (saleTab === 'primaryAndSecondary' ? 'all' : saleTab)
     if (volume?.volumes && volume?.volumes.length === 1 && !options?.excludeCurrency) {
       if (volume.volumes[0].amount.currency) {
         urlPart =
