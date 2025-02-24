@@ -1,5 +1,6 @@
 import { useTranslation } from 'next-i18next'
 import { useState, useEffect } from 'react'
+import dynamic from 'next/dynamic'
 import axios from 'axios'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import Image from 'next/image'
@@ -7,7 +8,8 @@ import { axiosServer, passHeaders } from '../../utils/axios'
 
 import { devNet, xahauNetwork, avatarSrc } from '../../utils'
 import { getIsSsrMobile } from '../../utils/mobile'
-import RelatedLinks from '../../components/Account/RelatedLinks'
+
+const RelatedLinks = dynamic(() => import('../../components/Account/RelatedLinks'), { ssr: false })
 
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
