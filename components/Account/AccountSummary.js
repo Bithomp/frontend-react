@@ -82,13 +82,19 @@ export default function AccountSummary({ data, account, balances, refreshPage, s
           <>
             {data?.ledgerInfo?.deleted ? (
               <span className="red bold">Account deleted</span>
-            ) : (
+            ) : data?.ledgerInfo?.activated === false ? (
               <>
                 <span className="orange">Not activated</span>
                 <br />
                 <a href={getCoinsUrl + (devNet ? '?address=' + data?.address : '')} target="_blank" rel="noreferrer">
                   Get your first {nativeCurrency}
                 </a>
+              </>
+            ) : (
+              <>
+                <span className="orange">Network error</span>
+                <br />
+                Please try again later.
               </>
             )}
           </>
