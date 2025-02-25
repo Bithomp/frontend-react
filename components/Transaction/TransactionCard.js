@@ -33,6 +33,17 @@ export const TransactionCard = ({ data, pageFiatRate, selectedCurrency, children
   }
   */
 
+  const shortErrorCode = (code) => {
+    // replace DST_TAG with Destination Tag
+    code = code.replace('DST_TAG', 'Destination Tag')
+    // remove first three characters from the error code
+    // replace _ with space
+    // make lower case
+    code = code.slice(3).replace(/_/g, ' ').toLowerCase()
+    // make the first letter in the string capital
+    return code.charAt(0).toUpperCase() + code.slice(1)
+  }
+
   return (
     <MainBody>
       <Heading>Transaction Details</Heading>
@@ -57,6 +68,18 @@ export const TransactionCard = ({ data, pageFiatRate, selectedCurrency, children
             )}
             <TDetails>
               <TBody>
+                {!isSuccessful && (
+                  <>
+                    <TRow>
+                      <TData>Failure</TData>
+                      <TData className="red bold">{shortErrorCode(outcome.result)}</TData>
+                    </TRow>
+                    <TRow>
+                      <TData>Failure description</TData>
+                      <TData className="orange">{t('errors-tx.' + outcome.result)}</TData>
+                    </TRow>
+                  </>
+                )}
                 <TRow>
                   <TData>{t('table.type')}</TData>
                   <TData>
