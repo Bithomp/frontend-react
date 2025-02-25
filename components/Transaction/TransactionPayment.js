@@ -72,7 +72,7 @@ export const TransactionPayment = ({ data, pageFiatRate, selectedCurrency }) => 
           <AddressWithIconFilled data={specification.destination} name="address" />
         </TData>
       </TRow>
-      {specification.destination?.tag && (
+      {specification.destination?.tag !== undefined && (
         <TRow>
           <TData>Destination tag</TData>
           <TData className="bold">{specification.destination.tag}</TData>

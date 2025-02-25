@@ -12,7 +12,7 @@ export const TransactionDetails = ({ data, pageFiatRate, selectedCurrency }) => 
       <TRow>
         <TData>Initiated by</TData>
         <TData>
-          <AddressWithIconFilled data={specification.source} name="address" />
+          <AddressWithIconFilled data={specification?.source} name="address" />
         </TData>
       </TRow>
     </TransactionCard>
