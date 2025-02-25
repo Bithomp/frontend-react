@@ -151,6 +151,47 @@ export default function NftSales({
 
   useEffect(() => {
     updateSaleTabList({})
+
+    if (isAddressOrUsername(issuerQuery)) {
+      setIssuer(issuerQuery)
+    }
+
+    if (isAddressOrUsername(buyerQuery)) {
+      setBuyer(buyerQuery)
+    }
+
+    if (isAddressOrUsername(sellerQuery)) {
+      setSeller(sellerQuery)
+    }
+
+    if (view) {
+      setActiveView(view)
+    }
+
+    if (sale) {
+      setSaleTab(sale)
+    }
+
+    if (taxonQuery) {
+      setTaxon(taxonQuery)
+    }
+
+    if (periodQuery) {
+      setPeriod(periodQuery)
+    }
+
+    if (orderQuery) {
+      setOrder(orderQuery)
+    }
+
+    if (searchQuery) {
+      setSearch(searchQuery)
+    }
+
+    if (includeWithoutMediaDataQuery) {
+      setIncludeWithoutMediaData(includeWithoutMediaDataQuery)
+    }
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -278,18 +319,6 @@ export default function NftSales({
         updateSaleTabList(newdata.total)
       }
 
-      if (newdata.issuer) {
-        setIssuer(newdata.issuer)
-      }
-
-      if (newdata.buyer) {
-        setBuyer(newdata.buyer)
-      }
-
-      if (newdata.seller) {
-        setSeller(newdata.seller)
-      }
-
       if (newdata.sales) {
         if (newdata.sales.length > 0) {
           //for CSV export
@@ -336,40 +365,16 @@ export default function NftSales({
   }
 
   useEffect(() => {
-    if (sortCurrency) {
-      checkApi({ restart: true })
-    }
-
-    return () => {
-      if (controller) {
-        controller.abort()
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [saleTab, issuer, taxon, order, sortCurrency, period, buyer, seller, search, includeWithoutMediaData])
-
-  useEffect(() => {
     let queryAddList = []
     let queryRemoveList = []
 
-    if (data) {
-      setIssuerTaxonUrlPart(
-        '?view=' +
-          activeView +
-          '&issuer=' +
-          usernameOrAddress(data, 'issuer') +
-          (isValidTaxon(data.taxon) ? '&taxon=' + data.taxon : '')
-      )
-      setCollectionUrlPart(data.collection ? '&collection=' + data.collection : '')
-    }
-
-    if (isAddressOrUsername(data?.issuer)) {
+    if (isAddressOrUsername(issuer)) {
       queryAddList.push({
         name: 'issuer',
-        value: usernameOrAddress(data, 'issuer')
+        value: issuer
       })
-      if (isValidTaxon(data?.taxon)) {
-        queryAddList.push({ name: 'taxon', value: data.taxon })
+      if (isValidTaxon(taxon)) {
+        queryAddList.push({ name: 'taxon', value: taxon })
       } else {
         queryRemoveList.push('taxon')
       }
@@ -378,33 +383,28 @@ export default function NftSales({
       queryRemoveList.push('taxon')
     }
 
-    if (isAddressOrUsername(data?.buyer)) {
+    if (isAddressOrUsername(buyer)) {
       queryAddList.push({
         name: 'buyer',
-        value: usernameOrAddress(data, 'buyer')
+        value: buyer
       })
     } else {
       queryRemoveList.push('buyer')
     }
 
-    if (isAddressOrUsername(data?.seller)) {
+    if (isAddressOrUsername(seller)) {
       queryAddList.push({
         name: 'seller',
-        value: usernameOrAddress(data, 'seller')
+        value: seller
       })
     } else {
       queryRemoveList.push('seller')
     }
 
-    if (!currency || (currency.toLowerCase() !== 'xrp' && !isAddressOrUsername(currencyIssuer))) {
-      queryRemoveList.push('currency')
-      queryRemoveList.push('currencyIssuer')
-    }
-
-    if (data?.search) {
+    if (search) {
       queryAddList.push({
         name: 'search',
-        value: data.search
+        value: search
       })
     } else {
       queryRemoveList.push('search')
@@ -417,6 +417,11 @@ export default function NftSales({
       })
     } else {
       queryRemoveList.push('includeWithoutMediaData')
+    }
+
+    if (!currency || (currency.toLowerCase() !== 'xrp' && !isAddressOrUsername(currencyIssuer))) {
+      queryRemoveList.push('currency')
+      queryRemoveList.push('currencyIssuer')
     }
 
     setTabParams(
@@ -441,8 +446,45 @@ export default function NftSales({
       queryRemoveList
     )
 
+    if (sortCurrency) {
+      checkApi({ restart: true })
+    }
+
+    return () => {
+      if (controller) {
+        controller.abort()
+      }
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [saleTab, data, currency, currencyIssuer, period, includeWithoutMediaData])
+  }, [
+    saleTab,
+    issuer,
+    taxon,
+    order,
+    sortCurrency,
+    period,
+    buyer,
+    seller,
+    search,
+    includeWithoutMediaData,
+    currency,
+    currencyIssuer
+  ])
+
+  useEffect(() => {
+    if (data) {
+      setIssuerTaxonUrlPart(
+        '?view=' +
+          activeView +
+          '&issuer=' +
+          usernameOrAddress(data, 'issuer') +
+          (isValidTaxon(data.taxon) ? '&taxon=' + data.taxon : '')
+      )
+      setCollectionUrlPart(data.collection ? '&collection=' + data.collection : '')
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeView, data])
 
   const checkIssuerValue = (e) => {
     if (isAddressOrUsername(e)) {
