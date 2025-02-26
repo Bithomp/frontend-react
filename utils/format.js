@@ -6,7 +6,15 @@ import moment from 'moment'
 import momentDurationFormatSetup from 'moment-duration-format'
 
 import LinkIcon from '../public/images/link.svg'
-import { stripText, nativeCurrency, nativeCurrenciesImages, avatarServer, devNet, isAmountInNativeCurrency } from '.'
+import {
+  stripText,
+  nativeCurrency,
+  nativeCurrenciesImages,
+  avatarServer,
+  devNet,
+  isAmountInNativeCurrency,
+  xls14NftValue
+} from '.'
 import { mpUrl } from './nft'
 import Image from 'next/image'
 
@@ -644,25 +652,6 @@ export const niceCurrency = (currency) => {
 
 export const amountParced = (amount) => {
   if (!amount && amount !== 0) {
-    return false
-  }
-
-  const xls14NftValue = (value) => {
-    value = value.toString()
-    if (value.includes('e-')) {
-      let power = Number(value.slice(-2))
-      const number = value.slice(0, -4)
-      const numberLength = number.length
-      power = power + (16 - numberLength)
-      if (power > 84 && power < 97) {
-        const powCalc = 15 - (96 - power)
-        return Number(number) / Math.pow(10, powCalc)
-      }
-    }
-    if (value.includes('0.0000000000000000000000000000000000000000000000000000000000000000000000')) {
-      value = value.replace('0.0', '')
-      return value.replace(/^0+/, '')
-    }
     return false
   }
 

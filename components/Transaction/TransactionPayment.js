@@ -2,11 +2,26 @@ import { TRow, TData } from '../TableDetails'
 import { AddressWithIconFilled, amountFormat, nativeCurrencyToFiat } from '../../utils/format'
 
 import { TransactionCard } from './TransactionCard'
+import { xls14NftValue } from '../../utils'
 
 export const TransactionPayment = ({ data, pageFiatRate, selectedCurrency }) => {
   if (!data) return null
 
   const { outcome, specification } = data
+
+  let txTypeSpecial = 'Payment'
+
+  const isConvertion =
+    specification?.source?.address === specification?.destination?.address &&
+    specification?.source?.tag === specification?.destination?.tag
+
+  if (isConvertion) {
+    txTypeSpecial = 'Conversion payment'
+  }
+
+  if (xls14NftValue(outcome.deliveredAmount?.value)) {
+    txTypeSpecial = 'NFT transfer (XLS-14)'
+  }
 
   /*
   {
@@ -59,19 +74,32 @@ export const TransactionPayment = ({ data, pageFiatRate, selectedCurrency }) => 
   */
 
   return (
-    <TransactionCard data={data} pageFiatRate={pageFiatRate} selectedCurrency={selectedCurrency}>
+    <TransactionCard
+      data={data}
+      pageFiatRate={pageFiatRate}
+      selectedCurrency={selectedCurrency}
+      txTypeSpecial={txTypeSpecial}
+    >
       <TRow>
-        <TData>Source</TData>
+        <TData>{isConvertion ? 'Address' : 'Source'}</TData>
         <TData>
           <AddressWithIconFilled data={specification.source} name="address" />
         </TData>
       </TRow>
-      <TRow>
-        <TData>Destination</TData>
-        <TData>
-          <AddressWithIconFilled data={specification.destination} name="address" />
-        </TData>
-      </TRow>
+      {specification.source?.tag !== undefined && (
+        <TRow>
+          <TData>Source tag</TData>
+          <TData className="bold">{specification.source.tag}</TData>
+        </TRow>
+      )}
+      {!isConvertion && (
+        <TRow>
+          <TData>Destination</TData>
+          <TData>
+            <AddressWithIconFilled data={specification.destination} name="address" />
+          </TData>
+        </TRow>
+      )}
       {specification.destination?.tag !== undefined && (
         <TRow>
           <TData>Destination tag</TData>

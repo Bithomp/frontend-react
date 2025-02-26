@@ -759,3 +759,23 @@ export const isAmountInNativeCurrency = (amount) => {
   if (!amount) return false
   return !amount?.issuer && !amount?.mpt_issuance_id
 }
+
+export const xls14NftValue = (value) => {
+  if (!value) return value
+  value = value.toString()
+  if (value.includes('e-')) {
+    let power = Number(value.slice(-2))
+    const number = value.slice(0, -4)
+    const numberLength = number.length
+    power = power + (16 - numberLength)
+    if (power > 84 && power < 97) {
+      const powCalc = 15 - (96 - power)
+      return Number(number) / Math.pow(10, powCalc)
+    }
+  }
+  if (value.includes('0.0000000000000000000000000000000000000000000000000000000000000000000000')) {
+    value = value.replace('0.0', '')
+    return value.replace(/^0+/, '')
+  }
+  return false
+}

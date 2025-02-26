@@ -16,7 +16,7 @@ import {
 } from '../../utils/format'
 import { nativeCurrency } from '../../utils'
 
-export const TransactionCard = ({ data, pageFiatRate, selectedCurrency, children }) => {
+export const TransactionCard = ({ data, pageFiatRate, selectedCurrency, txTypeSpecial, children }) => {
   const { t } = useTranslation()
   const [showRawData, setShowRawData] = useState(false)
   const [showRawMeta, setShowRawMeta] = useState(false)
@@ -197,7 +197,7 @@ export const TransactionCard = ({ data, pageFiatRate, selectedCurrency, children
                 <TRow>
                   <TData>{t('table.type')}</TData>
                   <TData>
-                    <Type>{tx.TransactionType}</Type>
+                    <Type>{txTypeSpecial || tx.TransactionType}</Type>
                   </TData>
                 </TRow>
                 {!isSuccessful && (
