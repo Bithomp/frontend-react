@@ -6,7 +6,7 @@ import moment from 'moment'
 import momentDurationFormatSetup from 'moment-duration-format'
 
 import LinkIcon from '../public/images/link.svg'
-import { stripText, nativeCurrency, nativeCurrenciesImages, avatarServer, devNet } from '.'
+import { stripText, nativeCurrency, nativeCurrenciesImages, avatarServer, devNet, isAmountInNativeCurrency } from '.'
 import { mpUrl } from './nft'
 import Image from 'next/image'
 
@@ -52,7 +52,7 @@ export const AddressWithIconFilled = ({ data, name }) => {
 export const nativeCurrencyToFiat = (params) => {
   if (devNet) return ''
   const { amount, selectedCurrency, fiatRate } = params
-  if (!amount || !selectedCurrency || !fiatRate) return ''
+  if (!amount || !selectedCurrency || !fiatRate || !isAmountInNativeCurrency(amount)) return ''
 
   let calculatedAmount = null
 

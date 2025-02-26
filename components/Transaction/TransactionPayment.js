@@ -4,9 +4,9 @@ import { AddressWithIconFilled, amountFormat, nativeCurrencyToFiat } from '../..
 import { TransactionCard } from './TransactionCard'
 
 export const TransactionPayment = ({ data, pageFiatRate, selectedCurrency }) => {
-  const { outcome, specification } = data
-
   if (!data) return null
+
+  const { outcome, specification } = data
 
   /*
   {
