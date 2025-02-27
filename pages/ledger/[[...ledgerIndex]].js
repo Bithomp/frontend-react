@@ -119,7 +119,7 @@ export default function Ledger({ pageMeta, ledgerIndexQuery }) {
       {ledgerVersion >= minLedger + 1 && (
         <LedgerLink
           version={Number(ledgerVersion) - 1}
-          style={{ marginRight: '10px' }}
+          style={{ marginRight: '10px', textDecoration: 'none' }}
           onClick={() => setLedgerVersion(ledgerVersion - 1)}
           text="←"
         />
@@ -127,7 +127,7 @@ export default function Ledger({ pageMeta, ledgerIndexQuery }) {
       #{ledgerVersion}
       <LedgerLink
         version={Number(ledgerVersion) + 1}
-        style={{ marginLeft: '10px' }}
+        style={{ marginLeft: '10px', textDecoration: 'none' }}
         onClick={() => setLedgerVersion(ledgerVersion + 1)}
         text="→"
       />
@@ -209,7 +209,7 @@ export default function Ledger({ pageMeta, ledgerIndexQuery }) {
             <div>
               Ledger Unix close time: <b>{data.close_time}</b>
               <br />
-              Ledger UTC close time: <b>{data.closeTime}</b>
+              Ledger UTC close time: <b>{new Date(data.close_time * 1000).toISOString()}</b>
             </div>
           </>
         ) : (
