@@ -80,8 +80,13 @@ export default function LedgerData({
 
   const activatedNode = (
     <>
-      Activated {timeFromNow(data.inception, i18n)} ({fullDateAndTime(data.inception)})
-      {data?.inceptionTxHash && <> {txIdLink(data.inceptionTxHash, 0)}</>}
+      Activated{' '}
+      {data.inception && (
+        <>
+          {timeFromNow(data.inception, i18n)} ({fullDateAndTime(data.inception)})
+          {data?.inceptionTxHash && <> {txIdLink(data.inceptionTxHash, 0)}</>}
+        </>
+      )}
     </>
   )
 

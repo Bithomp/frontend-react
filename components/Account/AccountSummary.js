@@ -74,7 +74,7 @@ export default function AccountSummary({ data, account, balances, refreshPage, s
               <>
                 Activated
                 <br />
-                {timeFromNow(data.inception, i18n)}
+                {data.inception ? timeFromNow(data.inception, i18n) : ''}
               </>
             )}
           </>
