@@ -29,6 +29,9 @@ const convertToDrops = (amount) => {
   return parseInt(amount * 1000000).toString()
 }
 
+const maxAmount = 100 // in native currency
+const defaultAmount = 10 // in native currency
+
 export default function Faucet({ account, type }) {
   const router = useRouter()
   const { address: queryAddress, amount: queryAmount, destinationTag: queryDestinationTag } = router.query
@@ -36,7 +39,7 @@ export default function Faucet({ account, type }) {
   const [data, setData] = useState({})
   const [address, setAddress] = useState(isAddressValid(queryAddress) ? queryAddress : account?.address)
   const [destinationTag, setDestinationTag] = useState(isTagValid(queryDestinationTag) ? queryDestinationTag : null)
-  const [amount, setAmount] = useState(queryAmount ? convertToDrops(queryAmount) : '100000000')
+  const [amount, setAmount] = useState(queryAmount ? convertToDrops(queryAmount) : convertToDrops(defaultAmount))
   const [siteKey, setSiteKey] = useState('')
   const [errorMessage, setErrorMessage] = useState()
   const [token, setToken] = useState()
@@ -78,7 +81,7 @@ export default function Faucet({ account, type }) {
       }
     }
 
-    if (amount !== convertToDrops(queryAmount) && amount !== '100000000') {
+    if (amount !== convertToDrops(queryAmount) && amount !== convertToDrops(defaultAmount)) {
       if (amount) {
         queryAddList.push({
           name: 'amount',
@@ -196,9 +199,8 @@ export default function Faucet({ account, type }) {
     setErrorMessage('')
     let amountString = e.target.value
     if (!amountString || amountString < 0) return
-    if (amountString > 100) {
-      setErrorMessage("The amount can't be more than 100 " + nativeCurrency)
-      return
+    if (amountString > maxAmount) {
+      setErrorMessage("The amount can't be more than " + maxAmount + ' ' + nativeCurrency)
     }
     amountString = convertToDrops(amountString)
     setAmount(amountString)
@@ -252,7 +254,7 @@ export default function Faucet({ account, type }) {
               <div>
                 {width > 1100 && <br />}
                 <span className="input-title">
-                  {capitalize(devNet)} {nativeCurrency} amount (maximum: 100 {nativeCurrency})
+                  {capitalize(devNet)} {nativeCurrency} amount (maximum: {maxAmount} {nativeCurrency})
                 </span>
                 <input
                   placeholder={'Enter amount in ' + nativeCurrency}
@@ -315,7 +317,12 @@ export default function Faucet({ account, type }) {
                   <br />
                   <button
                     className="center button-action"
-                    disabled={!token || !isAddressValid(address) || loading}
+                    disabled={
+                      !token ||
+                      !isAddressValid(address) ||
+                      loading ||
+                      (Number(amount) > maxAmount * 1000000 && !testPayment)
+                    }
                     onClick={onSubmit}
                   >
                     {testPayment
