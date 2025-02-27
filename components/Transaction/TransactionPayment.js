@@ -109,8 +109,8 @@ export const TransactionPayment = ({ data, pageFiatRate, selectedCurrency }) => 
       {outcome.deliveredAmount && (
         <TRow>
           <TData>Delivered amount</TData>
-          <TData className="bold green">
-            {amountFormat(outcome.deliveredAmount)}
+          <TData>
+            <span className="bold green">{amountFormat(outcome.deliveredAmount)}</span>
             {nativeCurrencyToFiat({
               amount: outcome.deliveredAmount,
               selectedCurrency,
