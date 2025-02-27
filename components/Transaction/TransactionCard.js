@@ -22,6 +22,7 @@ export const TransactionCard = ({ data, pageFiatRate, selectedCurrency, txTypeSp
   const [showRawMeta, setShowRawMeta] = useState(false)
 
   if (!data) return null
+
   const { txHash, error_message, tx, outcome, meta, specification } = data
   const isSuccessful = outcome?.result == 'tesSUCCESS'
 
@@ -228,10 +229,21 @@ export const TransactionCard = ({ data, pageFiatRate, selectedCurrency, txTypeSp
                   </TData>
                 </TRow>
                 {children}
-                <TRow>
-                  <TData>Sequence</TData>
-                  <TData>#{tx.Sequence}</TData>
-                </TRow>
+                {tx?.TransactionType !== 'UNLReport' && (
+                  <>
+                    {tx.TicketSequence ? (
+                      <TRow>
+                        <TData>Ticket sequence</TData>
+                        <TData>#{tx.TicketSequence}</TData>
+                      </TRow>
+                    ) : (
+                      <TRow>
+                        <TData>Sequence</TData>
+                        <TData>#{tx.Sequence}</TData>
+                      </TRow>
+                    )}
+                  </>
+                )}
                 <TRow>
                   <TData>Ledger fee</TData>
                   <TData>
