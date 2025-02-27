@@ -32,14 +32,22 @@ export default function RelatedLinks({ data }) {
         <>
           <a href={'https://xahauexplorer.com/' + i18n.language + '/account/' + data?.address} rel="nofollow">
             Xahau
-          </a>
-          {network !== 'xahau-testnet' && ' | '}
+          </a>{' '}
+          |{' '}
         </>
       )}
       {network !== 'xahau-testnet' && (
         <>
           <a href={'https://test.xahauexplorer.com/' + i18n.language + '/account/' + data?.address} rel="nofollow">
             Xahau Testnet
+          </a>
+          {network !== 'xahau-jshooks' && ' | '}
+        </>
+      )}
+      {network !== 'xahau-jshooks' && (
+        <>
+          <a href={'https://jshooks.xahauexplorer.com/' + i18n.language + '/account/' + data?.address} rel="nofollow">
+            Xahau JS Hooks
           </a>
         </>
       )}
@@ -134,6 +142,17 @@ export default function RelatedLinks({ data }) {
           </a>{' '}
           |{' '}
           <a href={'https://explorer.xahau-test.net/' + data?.address} rel="nofollow">
+            XRPLF
+          </a>
+        </>
+      )}
+      {network === 'xahau-jshooks' && (
+        <>
+          <a href={'https://jshooks.xahauexplorer.com/explorer/' + data?.address} rel="nofollow">
+            Xahau Explorer
+          </a>{' '}
+          (old view) |
+          <a href={'https://jshooks.xahau-test.net/' + data?.address} rel="nofollow">
             XRPLF
           </a>
         </>

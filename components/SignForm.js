@@ -312,8 +312,8 @@ export default function SignForm({
       tx.Flags = 2147483648
     }
 
-    //add network ID to transactions for xahau-testnet and xahau
-    if (networkId === 21338 || networkId === 21337) {
+    //add network ID to transactions for xahau, xahau-testnet and xahau-jshooks
+    if (networkId === 21337 || networkId === 21338 || networkId === 31338) {
       tx.NetworkID = networkId
     }
 

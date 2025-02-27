@@ -4,15 +4,15 @@ import { useRouter } from 'next/router'
 export default function NetworkTable({ close }) {
   const router = useRouter()
 
-  const handleChange = newNetwork => {
+  const handleChange = (newNetwork) => {
     close()
     if (network === newNetwork) return
     router.push(networks[newNetwork].server + router.asPath)
   }
 
-  const spanClass = option => {
+  const spanClass = (option) => {
     if (!option) return
-    return network === option.value ? "link blue" : "link"
+    return network === option.value ? 'link blue' : 'link'
   }
 
   const td = (list, i, columnsNumber) => {
@@ -35,9 +35,10 @@ export default function NetworkTable({ close }) {
   const list = [
     { value: 'mainnet', label: networks['mainnet'].explorerName },
     { value: 'xahau', label: networks['xahau'].explorerName },
-    { value: 'xahau-testnet', label: networks['xahau-testnet'].explorerName },
     { value: 'testnet', label: networks['testnet'].explorerName },
     { value: 'devnet', label: networks['devnet'].explorerName },
+    { value: 'xahau-testnet', label: networks['xahau-testnet'].explorerName },
+    { value: 'xahau-jshooks', label: networks['xahau-jshooks'].explorerName }
   ]
 
   const table = () => {
@@ -45,15 +46,13 @@ export default function NetworkTable({ close }) {
     const lines = Math.ceil(list.length / columnsNumber)
     let rows = []
     for (let i = 0; i < lines; i++) {
-      rows.push(
-        <tr key={i}>{td(list, i, columnsNumber)}</tr>
-      )
+      rows.push(<tr key={i}>{td(list, i, columnsNumber)}</tr>)
     }
-    return <table>
-      <tbody>
-        {rows}
-      </tbody>
-    </table>
+    return (
+      <table>
+        <tbody>{rows}</tbody>
+      </table>
+    )
   }
 
   return table()

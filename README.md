@@ -12,7 +12,7 @@ In the project directory, you can run:
 
 `NEXT_PUBLIC_NETWORK_NAME=mainnet yarn dev`
 
-mainnet | staging | testnet | devnet | xahau-testnet | xahau
+mainnet | staging | testnet | devnet | xahau | xahau-testnet | xahau-jshooks
 
 Runs the app in the development mode.\
 Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
@@ -44,7 +44,7 @@ Runs the app in production
 
 `yarn` // install packages
 
-`yarn dev` // run project in dev mode, you will see on the localhost:3000 
+`yarn dev` // run project in dev mode, you will see on the localhost:3000
 
 ### Deployment (first time)
 
@@ -88,7 +88,7 @@ Runs the app in production
 
 ### Language tanslation credits
 
-Spanish -  [@Ekiserrepe](https://github.com/Ekiserrepe)
+Spanish - [@Ekiserrepe](https://github.com/Ekiserrepe)
 
 Indonesian - [@suuf24](https://github.com/suuf24)
 

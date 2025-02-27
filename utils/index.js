@@ -457,6 +457,16 @@ export const networks = {
     minLedger: 1,
     subname: 'Devnet'
   },
+  xahau: {
+    id: 21337,
+    server: 'https://xahauexplorer.com',
+    nativeCurrency: 'XAH',
+    getCoinsUrl: null,
+    explorerName: 'Xahau',
+    ledgerName: 'Xahau',
+    minLedger: 1,
+    subname: ''
+  },
   'xahau-testnet': {
     id: 21338,
     server: 'https://test.xahauexplorer.com',
@@ -467,15 +477,15 @@ export const networks = {
     minLedger: 3,
     subname: 'Testnet'
   },
-  xahau: {
-    id: 21337,
-    server: 'https://xahauexplorer.com',
+  'xahau-jshooks': {
+    id: 31338,
+    server: 'https://jshooks.xahauexplorer.com',
     nativeCurrency: 'XAH',
-    getCoinsUrl: null,
-    explorerName: 'Xahau',
+    getCoinsUrl: '/faucet',
+    explorerName: 'Xahau JS Hooks',
     ledgerName: 'Xahau',
-    minLedger: 1,
-    subname: ''
+    minLedger: 12,
+    subname: 'JS Hooks'
   }
 }
 
@@ -520,7 +530,8 @@ export const networksIds = {
   1: { server: 'https://test.xrplexplorer.com', name: 'testnet' },
   2: { server: 'https://dev.xrplexplorer.com', name: 'devnet' },
   21337: { server: 'https://xahauexplorer.com', name: 'xahau' },
-  21338: { server: 'https://test.xahauexplorer.com', name: 'xahau-testnet' }
+  21338: { server: 'https://test.xahauexplorer.com', name: 'xahau-testnet' },
+  31338: { server: 'https://jshooks.xahauexplorer.com', name: 'xahau-jshooks' }
 }
 
 const WssServer = () => {
@@ -542,6 +553,8 @@ export const networkMinimumDate = (type = 'ledger') => {
       minDate = new Date('2023-11-01T13:00:29.000Z') //first nft on xahau
     } else if (network === 'xahau-testnet') {
       minDate = new Date('2023-01-28T08:35:30.000Z') //first nft on xahau-testnet
+    } else if (network === 'xahau-jshooks') {
+      minDate = new Date('2024-10-21T08:59:00.000Z') //first nft on xahau-jshooks
     } else if (network === 'testnet') {
       minDate = new Date('2023-08-09T01:53:41.000Z') // first nft in history for the testnet
     } else if (network === 'devnet') {
@@ -556,6 +569,8 @@ export const networkMinimumDate = (type = 'ledger') => {
       minDate = new Date('2023-10-30T12:21:00.000Z') // ledger 2 on xahau
     } else if (network === 'xahau-testnet') {
       minDate = new Date('2023-01-27T13:07:10.000Z') // ledger 3 on xahau-testnet
+    } else if (network === 'xahau-jshooks') {
+      minDate = new Date('2024-10-21T08:59:00.000Z') // ledger 12 on xahau-jshooks
     } else {
       minDate = new Date('2013-01-01T03:21:10.000Z') // ledger 32570 on mainnet
     }
