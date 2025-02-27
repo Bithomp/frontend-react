@@ -28,7 +28,6 @@ export async function getServerSideProps(context) {
       headers: passHeaders(req)
     })
     data = res?.data
-    //console.log('data', data) //delete
   } catch (error) {
     console.error(error)
   }
