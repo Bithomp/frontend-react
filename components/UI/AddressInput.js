@@ -214,11 +214,7 @@ export default function AddressInput({
               getOptionLabel={(option) => (
                 <>
                   <span style={windowWidth < 400 ? { fontSize: '14px' } : {}}>{option.address || option.issuer}</span>
-                  {option.username || option.service || option.globalid || option.xaman
-                    ? windowWidth > 400
-                      ? ' - '
-                      : ' '
-                    : ''}
+                  {option.username || option.service || option.xaman ? (windowWidth > 400 ? ' - ' : ' ') : ''}
                   <b className="blue">{option.username}</b>
                   {option.service && (
                     <>
@@ -248,14 +244,7 @@ export default function AddressInput({
                     option.service ||
                     option.verifiedDomain ||
                     option.serviceDomain ||
-                    option.xaman) &&
-                    option.globalid && <>, </>}
-                  {option.globalid && (
-                    <>
-                      GlobaliD <span className="purple">{option.globalid}</span>
-                      {option.globalidStatus && <> ✔️</>}
-                    </>
-                  )}
+                    option.xaman) && <>, </>}
                   {option.balance && (
                     <>
                       {' '}
@@ -269,7 +258,6 @@ export default function AddressInput({
                 option.username +
                 option.service +
                 option.xaman +
-                option.globalid +
                 option.verifiedDomain +
                 option.serviceDomain
               }

@@ -1,5 +1,5 @@
 export default function XamanData({ data }) {
-  if (!(data?.xamanMeta?.xummPro || data.xamanMeta?.kycApproved || data.xamanMeta?.globalid?.profileUrl)) return ''
+  if (!(data?.xamanMeta?.xummPro || data.xamanMeta?.kycApproved)) return ''
 
   const proStatusNode = (
     <>
@@ -34,21 +34,6 @@ export default function XamanData({ data }) {
         </>
       )}
     </>
-  )
-
-  const globalidNode = data.xamanMeta?.globalid?.profileUrl ? (
-    <>
-      <a href={data.xamanMeta.globalid.profileUrl}>
-        <u className="bold green">{data.xamanMeta.globalid.profileUrl.replace('https://app.global.id/u/', '')}</u>
-      </a>{' '}
-      <a href={data.xamanMeta.globalid.profileUrl}>
-        <span className="bold green">
-          <i className="fa fa-globe"></i>
-        </span>
-      </a>
-    </>
-  ) : (
-    ''
   )
 
   return (
@@ -87,13 +72,6 @@ export default function XamanData({ data }) {
               <td className="green">verified</td>
             </tr>
           )}
-
-          {data.xamanMeta?.globalid?.profileUrl && (
-            <tr>
-              <td>GlobaliD</td>
-              <td>{globalidNode}</td>
-            </tr>
-          )}
         </tbody>
       </table>
 
@@ -120,11 +98,6 @@ export default function XamanData({ data }) {
         {data.xamanMeta?.kycApproved && (
           <p>
             <span className="grey">KYC</span> <span className="green">verified</span>
-          </p>
-        )}
-        {data.xamanMeta?.globalid?.profileUrl && (
-          <p>
-            <span className="grey">GlobaliD</span> {globalidNode}
           </p>
         )}
       </div>
