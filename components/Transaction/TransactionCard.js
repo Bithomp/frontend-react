@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { i18n, useTranslation } from 'next-i18next'
 
 import { Card, Info, Heading, MainBody, Type } from './styled'
-import { LedgerLink } from '../../utils/links'
+import { LedgerLink, LinkTx } from '../../utils/links'
 import { TDetails, TBody, TRow, TData } from '../TableDetails'
 import {
   addressUsernameOrServiceLink,
@@ -230,6 +230,14 @@ export const TransactionCard = ({ data, pageFiatRate, selectedCurrency, txTypeSp
                     )}
                   </>
                 )}
+                {tx?.AccountTxnID && (
+                  <TRow>
+                    <TData>Previous transaction</TData>
+                    <TData>
+                      <LinkTx tx={tx?.AccountTxnID} />
+                    </TData>
+                  </TRow>
+                )}
                 <TRow>
                   <TData>Date and time</TData>
                   <TData>
@@ -288,6 +296,20 @@ export const TransactionCard = ({ data, pageFiatRate, selectedCurrency, txTypeSp
                       </TData>
                     </TRow>
                   ))}
+                {tx?.LastLedgerSequence && (
+                  <TRow>
+                    <TData
+                      tooltip={
+                        'The last ledger sequence number that the transaction can be included in. Specifying this field places a strict upper limit on how long the transaction can wait to be validated or rejected.'
+                      }
+                    >
+                      Last ledger sequence
+                    </TData>
+                    <TData>
+                      #{tx.LastLedgerSequence} ({tx.LastLedgerSequence - outcome.ledgerIndex} ledgers)
+                    </TData>
+                  </TRow>
+                )}
                 <TRow>
                   <TData>{t('table.raw-data')}</TData>
                   <TData>
