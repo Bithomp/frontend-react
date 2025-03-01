@@ -20,7 +20,6 @@ export const TransactionCard = ({ data, pageFiatRate, selectedCurrency, txTypeSp
   const { t } = useTranslation()
   const [showRawData, setShowRawData] = useState(false)
   const [showRawMeta, setShowRawMeta] = useState(false)
-  const [showAdditionalData, setShowAdditionalData] = useState(false)
 
   if (!data) return null
 
@@ -174,7 +173,7 @@ export const TransactionCard = ({ data, pageFiatRate, selectedCurrency, txTypeSp
 
   const hookReturn = meta?.HookExecutions?.[0]?.HookExecution?.HookReturnString
 
-  const isMoreData = tx?.LastLedgerSequence
+  const waitLedgers = tx?.LastLedgerSequence - outcome.ledgerIndex
 
   return (
     <MainBody>
@@ -233,14 +232,6 @@ export const TransactionCard = ({ data, pageFiatRate, selectedCurrency, txTypeSp
                     )}
                   </>
                 )}
-                {tx?.AccountTxnID && (
-                  <TRow>
-                    <TData>Previous transaction</TData>
-                    <TData>
-                      <LinkTx tx={tx?.AccountTxnID} />
-                    </TData>
-                  </TRow>
-                )}
                 <TRow>
                   <TData>{isSuccessful ? 'Validated' : 'Rejected'}</TData>
                   <TData>
@@ -248,6 +239,22 @@ export const TransactionCard = ({ data, pageFiatRate, selectedCurrency, txTypeSp
                   </TData>
                 </TRow>
                 {children}
+                {tx?.AccountTxnID && (
+                  <TRow>
+                    <TData
+                      tooltip={
+                        isSuccessful
+                          ? 'This transaction is only valid as there is such a previously-sent transaction.'
+                          : 'This transaction is only valid if there is such a previously-sent transaction.'
+                      }
+                    >
+                      Previous transaction
+                    </TData>
+                    <TData>
+                      <LinkTx tx={tx?.AccountTxnID} />
+                    </TData>
+                  </TRow>
+                )}
                 {tx?.TransactionType !== 'UNLReport' && (
                   <>
                     {tx.TicketSequence ? (
@@ -299,33 +306,19 @@ export const TransactionCard = ({ data, pageFiatRate, selectedCurrency, txTypeSp
                       </TData>
                     </TRow>
                   ))}
-                {isMoreData && (
+                {tx?.LastLedgerSequence && (
                   <TRow>
-                    <TData>Additional data</TData>
+                    <TData
+                      tooltip={
+                        'The last ledger sequence number that the transaction can be included in. Specifying this field places a strict upper limit on how long the transaction can wait to be validated or rejected.'
+                      }
+                    >
+                      Last ledger sequence
+                    </TData>
                     <TData>
-                      <span className="link" onClick={() => setShowAdditionalData(!showAdditionalData)}>
-                        {showAdditionalData ? t('table.text.hide') : t('table.text.show')}
-                      </span>
+                      #{tx.LastLedgerSequence} ({waitLedgers} {waitLedgers === 1 ? 'ledger' : 'ledgers'})
                     </TData>
                   </TRow>
-                )}
-                {showAdditionalData && (
-                  <>
-                    {tx?.LastLedgerSequence && (
-                      <TRow>
-                        <TData
-                          tooltip={
-                            'The last ledger sequence number that the transaction can be included in. Specifying this field places a strict upper limit on how long the transaction can wait to be validated or rejected.'
-                          }
-                        >
-                          Last ledger sequence
-                        </TData>
-                        <TData>
-                          #{tx.LastLedgerSequence} ({tx.LastLedgerSequence - outcome.ledgerIndex} ledgers)
-                        </TData>
-                      </TRow>
-                    )}
-                  </>
                 )}
                 <TRow>
                   <TData>{t('table.raw-data')}</TData>
