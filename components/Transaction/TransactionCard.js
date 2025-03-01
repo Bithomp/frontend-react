@@ -14,7 +14,7 @@ import {
   nativeCurrencyToFiat,
   timeFromNow
 } from '../../utils/format'
-import { nativeCurrency } from '../../utils'
+import { decode, nativeCurrency } from '../../utils'
 
 export const TransactionCard = ({ data, pageFiatRate, selectedCurrency, txTypeSpecial, children }) => {
   const { t } = useTranslation()
@@ -171,6 +171,8 @@ export const TransactionCard = ({ data, pageFiatRate, selectedCurrency, txTypeSp
     return codes[code] || code
   }
 
+  const hookReturn = meta?.HookExecutions?.[0]?.HookExecution?.HookReturnString
+
   return (
     <MainBody>
       <Heading>Transaction Details</Heading>
@@ -201,6 +203,12 @@ export const TransactionCard = ({ data, pageFiatRate, selectedCurrency, txTypeSp
                     <Type>{txTypeSpecial || tx.TransactionType}</Type>
                   </TData>
                 </TRow>
+                {hookReturn && (
+                  <TRow>
+                    <TData>Hook return</TData>
+                    <TData className="orange bold">{decode(hookReturn)}</TData>
+                  </TRow>
+                )}
                 {!isSuccessful && (
                   <>
                     <TRow>
