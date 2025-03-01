@@ -298,6 +298,15 @@ export default function LedgerData({
 
   const walletLocatorNode = <code className="code-highlight">{data.ledgerInfo.walletLocator}</code>
 
+  const isValidDomain = isDomainValid(stripDomain(data.ledgerInfo.domain))
+
+  const verifyDomainNode = isValidDomain && !data.verifiedDomain && (
+    <>
+      {' '}
+      (<Link href="/domains">verify</Link>)
+    </>
+  )
+
   return (
     <>
       <table className="table-details hide-on-small-w800">
@@ -344,7 +353,7 @@ export default function LedgerData({
             <tr>
               <td>Domain</td>
               <td>
-                {isDomainValid(stripDomain(data.ledgerInfo.domain)) ? (
+                {isValidDomain ? (
                   <>
                     {domainLinkNode}
                     {domainVerifiedSign}
@@ -354,6 +363,7 @@ export default function LedgerData({
                   domainNotValidNode
                 )}
                 {domainChangeAndRemoveButtons}
+                {verifyDomainNode}
               </td>
             </tr>
           )}
@@ -636,8 +646,9 @@ export default function LedgerData({
           <p>
             <span className="grey">Domain </span>
             {domainUnverifiedSign}
+            {verifyDomainNode}
             <br />
-            {isDomainValid(stripDomain(data.ledgerInfo.domain)) ? (
+            {isValidDomain ? (
               <>
                 {domainLinkNode}
                 {domainVerifiedSign}
@@ -839,12 +850,16 @@ export default function LedgerData({
         )}
         {showLastEffectedTx && (
           <p>
-            <span className="grey">Last affecting tx</span> {lastEffectedTxNode}
+            <span className="grey">Last affecting tx</span>
+            <br />
+            {lastEffectedTxNode}
           </p>
         )}
         {data.ledgerInfo?.accountTxnID && (
           <p>
-            <span className="grey">Last initiated tx:</span> {lastAccountTxNode}
+            <span className="grey">Last initiated tx</span>
+            <br />
+            {lastAccountTxNode}
           </p>
         )}
         {data.ledgerInfo?.messageKey &&
