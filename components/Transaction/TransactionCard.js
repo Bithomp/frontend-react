@@ -14,7 +14,7 @@ import {
   nativeCurrencyToFiat,
   timeFromNow
 } from '../../utils/format'
-import { decode, nativeCurrency } from '../../utils'
+import { decode, nativeCurrency, server } from '../../utils'
 
 export const TransactionCard = ({ data, pageFiatRate, selectedCurrency, txTypeSpecial, children }) => {
   const { t } = useTranslation()
@@ -175,6 +175,8 @@ export const TransactionCard = ({ data, pageFiatRate, selectedCurrency, txTypeSp
 
   const waitLedgers = tx?.LastLedgerSequence - outcome.ledgerIndex
 
+  const txLink = server + '/tx/' + (tx.ctid || tx.txHash)
+
   return (
     <MainBody>
       <Heading>Transaction Details</Heading>
@@ -205,6 +207,14 @@ export const TransactionCard = ({ data, pageFiatRate, selectedCurrency, txTypeSp
                     <Type>{txTypeSpecial || tx.TransactionType}</Type>
                   </TData>
                 </TRow>
+                {tx?.ctid && (
+                  <TRow>
+                    <TData tooltip="Compact transaction identifier">CTID</TData>
+                    <TData>
+                      {tx.ctid} <CopyButton text={tx.ctid} />
+                    </TData>
+                  </TRow>
+                )}
                 {hookReturn && (
                   <TRow>
                     <TData>Hook return</TData>
@@ -281,14 +291,6 @@ export const TransactionCard = ({ data, pageFiatRate, selectedCurrency, txTypeSp
                     })}
                   </TData>
                 </TRow>
-                {tx?.ctid && (
-                  <TRow>
-                    <TData>CTID</TData>
-                    <TData>
-                      {tx.ctid} <CopyButton text={tx.ctid} />
-                    </TData>
-                  </TRow>
-                )}
                 {specification?.signer && (
                   <TRow>
                     <TData>Signer</TData>
@@ -320,6 +322,12 @@ export const TransactionCard = ({ data, pageFiatRate, selectedCurrency, txTypeSp
                     </TData>
                   </TRow>
                 )}
+                <TRow>
+                  <TData>Transaction link</TData>
+                  <TData>
+                    {txLink} <CopyButton text={txLink} />
+                  </TData>
+                </TRow>
                 <TRow>
                   <TData>{t('table.raw-data')}</TData>
                   <TData>

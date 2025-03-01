@@ -24,13 +24,11 @@ const TDataStyled = styled.td`
   &:nth-child(2) {
     word-break: break-word;
   }
-  tooltiptext {
-    width: 200px;
-  }
 `
 
 const ResponsiveTooltip = styled.span`
-  width: 200px;
+  width: 170px;
+  text-align: left !important;
   &::after {
     top: 16px !important;
   }
