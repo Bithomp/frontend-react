@@ -1,5 +1,10 @@
 import { TRow, TData } from '../TableDetails'
-import { AddressWithIconFilled, amountFormat, nativeCurrencyToFiat } from '../../utils/format'
+import {
+  addressUsernameOrServiceLink,
+  AddressWithIconFilled,
+  amountFormat,
+  nativeCurrencyToFiat
+} from '../../utils/format'
 
 import { TransactionCard } from './TransactionCard'
 import { xls14NftValue } from '../../utils'
@@ -111,6 +116,9 @@ export const TransactionPayment = ({ data, pageFiatRate, selectedCurrency }) => 
           <TData>Delivered amount</TData>
           <TData>
             <span className="bold green">{amountFormat(outcome.deliveredAmount)}</span>
+            {outcome.deliveredAmount?.issuer && (
+              <>({addressUsernameOrServiceLink(outcome.deliveredAmount, 'issuer', { short: true })})</>
+            )}
             {nativeCurrencyToFiat({
               amount: outcome.deliveredAmount,
               selectedCurrency,
