@@ -28,6 +28,7 @@ export async function getServerSideProps(context) {
       headers: passHeaders(req)
     })
     data = res?.data
+    data.id = id
   } catch (error) {
     console.error(error)
   }

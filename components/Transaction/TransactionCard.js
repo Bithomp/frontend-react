@@ -12,6 +12,7 @@ import {
   codeHighlight,
   fullDateAndTime,
   nativeCurrencyToFiat,
+  shortHash,
   timeFromNow
 } from '../../utils/format'
 import { decode, nativeCurrency, server } from '../../utils'
@@ -20,10 +21,11 @@ export const TransactionCard = ({ data, pageFiatRate, selectedCurrency, txTypeSp
   const { t } = useTranslation()
   const [showRawData, setShowRawData] = useState(false)
   const [showRawMeta, setShowRawMeta] = useState(false)
+  const [showAdditionalData, setShowAdditionalData] = useState(false)
 
   if (!data) return null
 
-  const { txHash, error_message, tx, outcome, meta, specification } = data
+  const { id, error_message, tx, outcome, meta, specification } = data
   const isSuccessful = outcome?.result == 'tesSUCCESS'
 
   /*
@@ -175,15 +177,17 @@ export const TransactionCard = ({ data, pageFiatRate, selectedCurrency, txTypeSp
 
   const waitLedgers = tx?.LastLedgerSequence - outcome.ledgerIndex
 
-  const txLink = server + '/tx/' + (tx.ctid || tx.txHash)
+  const txLink = server + '/tx/' + (tx.ctid || tx.hash)
 
   return (
     <MainBody>
       <Heading>Transaction Details</Heading>
       <Card>
-        <Info>
-          {txHash} <CopyButton text={txHash} />
-        </Info>
+        {id === tx?.hash && (
+          <Info>
+            <span className="bold">{id}</span> <CopyButton text={id} />
+          </Info>
+        )}
         {error_message ? (
           <Info className="orange">{error_message}</Info>
         ) : (
@@ -201,20 +205,20 @@ export const TransactionCard = ({ data, pageFiatRate, selectedCurrency, txTypeSp
             )}
             <TDetails>
               <TBody>
+                {id === tx.ctid && (
+                  <TRow>
+                    <TData>Compact Tx ID</TData>
+                    <TData>
+                      <span className="bold">{tx.ctid}</span> <CopyButton text={tx.ctid} />
+                    </TData>
+                  </TRow>
+                )}
                 <TRow>
                   <TData>{t('table.type')}</TData>
                   <TData>
                     <Type>{txTypeSpecial || tx.TransactionType}</Type>
                   </TData>
                 </TRow>
-                {tx?.ctid && (
-                  <TRow>
-                    <TData tooltip="Compact transaction identifier">CTID</TData>
-                    <TData>
-                      {tx.ctid} <CopyButton text={tx.ctid} />
-                    </TData>
-                  </TRow>
-                )}
                 {hookReturn && (
                   <TRow>
                     <TData>Hook return</TData>
@@ -265,21 +269,6 @@ export const TransactionCard = ({ data, pageFiatRate, selectedCurrency, txTypeSp
                     </TData>
                   </TRow>
                 )}
-                {tx?.TransactionType !== 'UNLReport' && (
-                  <>
-                    {tx.TicketSequence ? (
-                      <TRow>
-                        <TData>Ticket sequence</TData>
-                        <TData>#{tx.TicketSequence}</TData>
-                      </TRow>
-                    ) : (
-                      <TRow>
-                        <TData>Sequence</TData>
-                        <TData>#{tx.Sequence}</TData>
-                      </TRow>
-                    )}
-                  </>
-                )}
                 <TRow>
                   <TData>Ledger fee</TData>
                   <TData>
@@ -308,20 +297,6 @@ export const TransactionCard = ({ data, pageFiatRate, selectedCurrency, txTypeSp
                       </TData>
                     </TRow>
                   ))}
-                {tx?.LastLedgerSequence && (
-                  <TRow>
-                    <TData
-                      tooltip={
-                        'The last ledger sequence number that the transaction can be included in. Specifying this field places a strict upper limit on how long the transaction can wait to be validated or rejected.'
-                      }
-                    >
-                      Last ledger sequence
-                    </TData>
-                    <TData>
-                      #{tx.LastLedgerSequence} ({waitLedgers} {waitLedgers === 1 ? 'ledger' : 'ledgers'})
-                    </TData>
-                  </TRow>
-                )}
                 <TRow>
                   <TData>Transaction link</TData>
                   <TData>
@@ -329,21 +304,78 @@ export const TransactionCard = ({ data, pageFiatRate, selectedCurrency, txTypeSp
                   </TData>
                 </TRow>
                 <TRow>
-                  <TData>{t('table.raw-data')}</TData>
+                  <TData>Show more</TData>
                   <TData>
+                    <span className="link" onClick={() => setShowAdditionalData(!showAdditionalData)}>
+                      Additional data
+                    </span>{' '}
+                    |{' '}
                     <span className="link" onClick={() => setShowRawData(!showRawData)}>
-                      {showRawData ? t('table.text.hide') : t('table.text.show')}
-                    </span>
-                  </TData>
-                </TRow>
-                <TRow>
-                  <TData>Raw Tx Metadata</TData>
-                  <TData>
+                      {t('table.raw-data')}
+                    </span>{' '}
+                    |{' '}
                     <span className="link" onClick={() => setShowRawMeta(!showRawMeta)}>
-                      {showRawMeta ? t('table.text.hide') : t('table.text.show')}
+                      Tx Metadata
                     </span>
                   </TData>
                 </TRow>
+                {showAdditionalData && (
+                  <>
+                    {tx?.TransactionType !== 'UNLReport' && (
+                      <>
+                        {tx.TicketSequence ? (
+                          <TRow>
+                            <TData>Ticket sequence</TData>
+                            <TData>#{tx.TicketSequence}</TData>
+                          </TRow>
+                        ) : (
+                          <TRow>
+                            <TData>Sequence</TData>
+                            <TData>#{tx.Sequence}</TData>
+                          </TRow>
+                        )}
+                      </>
+                    )}
+                    {tx?.hash && id !== tx.hash && (
+                      <TRow>
+                        <TData>Transaction hash</TData>
+                        <TData>
+                          {shortHash(tx.hash, 10)} <CopyButton text={tx.hash} />
+                        </TData>
+                      </TRow>
+                    )}
+                    {tx?.ctid && id !== tx.ctid && (
+                      <TRow>
+                        <TData tooltip="Compact transaction identifier">CTID</TData>
+                        <TData>
+                          {tx.ctid} <CopyButton text={tx.ctid} />
+                        </TData>
+                      </TRow>
+                    )}
+                    {tx?.LastLedgerSequence && (
+                      <TRow>
+                        <TData
+                          tooltip={
+                            'The last ledger sequence number that the transaction can be included in. Specifying this field places a strict upper limit on how long the transaction can wait to be validated or rejected.'
+                          }
+                        >
+                          Last ledger
+                        </TData>
+                        <TData>
+                          #{tx.LastLedgerSequence} ({waitLedgers} {waitLedgers === 1 ? 'ledger' : 'ledgers'})
+                        </TData>
+                      </TRow>
+                    )}
+                    {tx?.NetworkID && (
+                      <TRow>
+                        <TData tooltip="The network ID of the chain this transaction is intended for.">
+                          Network ID
+                        </TData>
+                        <TData>{tx.NetworkID}</TData>
+                      </TRow>
+                    )}
+                  </>
+                )}
               </TBody>
             </TDetails>
             <div className={'slide ' + (showRawData ? 'opened' : 'closed')} style={{ margin: '0 15px' }}>
