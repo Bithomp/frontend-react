@@ -46,8 +46,8 @@ const ResponsiveTooltip = styled.span`
   }
 `
 
-export const TData = ({ tooltip, children }) => (
-  <TDataStyled>
+export const TData = ({ tooltip, className, children }) => (
+  <TDataStyled className={className}>
     {children}
     {tooltip && (
       <>
