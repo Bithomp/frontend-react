@@ -300,7 +300,7 @@ export default function LedgerData({
 
   const isValidDomain = isDomainValid(stripDomain(data.ledgerInfo.domain))
 
-  const verifyDomainNode = isValidDomain && !data.verifiedDomain && (
+  const verifyDomainNode = data?.address === account?.address && isValidDomain && !data.verifiedDomain && (
     <>
       {' '}
       (<Link href="/domains">verify</Link>)
