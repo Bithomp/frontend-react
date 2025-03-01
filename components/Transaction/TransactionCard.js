@@ -239,7 +239,7 @@ export const TransactionCard = ({ data, pageFiatRate, selectedCurrency, txTypeSp
                   </TRow>
                 )}
                 <TRow>
-                  <TData>Date and time</TData>
+                  <TData>{isSuccessful ? 'Validated' : 'Rejected'}</TData>
                   <TData>
                     {timeFromNow(tx.date, i18n, 'ripple')} ({fullDateAndTime(tx.date, 'ripple')})
                   </TData>
