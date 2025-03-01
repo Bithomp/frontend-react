@@ -175,9 +175,9 @@ export const TransactionCard = ({ data, pageFiatRate, selectedCurrency, txTypeSp
 
   const hookReturn = meta?.HookExecutions?.[0]?.HookExecution?.HookReturnString
 
-  const waitLedgers = tx?.LastLedgerSequence - outcome.ledgerIndex
+  const waitLedgers = tx?.LastLedgerSequence - outcome?.ledgerIndex
 
-  const txLink = server + '/tx/' + (tx.ctid || tx.hash)
+  const txLink = server + '/tx/' + (tx?.ctid || tx?.hash)
 
   return (
     <MainBody>
@@ -194,7 +194,7 @@ export const TransactionCard = ({ data, pageFiatRate, selectedCurrency, txTypeSp
           <>
             {isSuccessful ? (
               <Info>
-                The transaction was <b className="green">successfull</b> and validated in the ledger{' '}
+                The transaction was <b className="green">successful</b> and validated in the ledger{' '}
                 <LedgerLink version={outcome.ledgerIndex} /> (index: {outcome.indexInLedger}).
               </Info>
             ) : (
