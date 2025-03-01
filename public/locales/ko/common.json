@@ -116,7 +116,7 @@
       }
     },
     "actions": {
-      "view": "보기",
+      "view": "내 계정 페이지",
       "send": "전송",
       "my-nfts": "내 NFT",
       "my-nft-offers": "내 NFT 제안"

@@ -116,7 +116,7 @@
       }
     },
     "actions": {
-      "view": "Vue explorateur",
+      "view": "Ma page de compte",
       "send": "Envoyer XRP",
       "my-nfts": "Mes NFTs",
       "my-nft-offers": "Mes offres NFT"

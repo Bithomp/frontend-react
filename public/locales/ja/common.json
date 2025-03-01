@@ -116,7 +116,7 @@
       }
     },
     "actions": {
-      "view": "エクスプローラで確認",
+      "view": "マイアカウントページ",
       "send": "XRPを送信",
       "my-nfts": "NFTを確認",
       "my-nft-offers": "NFTオファーの確認"
