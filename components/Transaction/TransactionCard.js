@@ -346,7 +346,7 @@ export const TransactionCard = ({ data, pageFiatRate, selectedCurrency, txTypeSp
                     )}
                     {tx?.ctid && id !== tx.ctid && (
                       <TRow>
-                        <TData tooltip="Compact transaction identifier">CTID</TData>
+                        <TData>Compact Tx ID</TData>
                         <TData>
                           {tx.ctid} <CopyButton text={tx.ctid} />
                         </TData>
