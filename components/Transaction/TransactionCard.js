@@ -20,6 +20,7 @@ export const TransactionCard = ({ data, pageFiatRate, selectedCurrency, txTypeSp
   const { t } = useTranslation()
   const [showRawData, setShowRawData] = useState(false)
   const [showRawMeta, setShowRawMeta] = useState(false)
+  const [showAdditionalData, setShowAdditionalData] = useState(false)
 
   if (!data) return null
 
@@ -173,6 +174,8 @@ export const TransactionCard = ({ data, pageFiatRate, selectedCurrency, txTypeSp
 
   const hookReturn = meta?.HookExecutions?.[0]?.HookExecution?.HookReturnString
 
+  const isMoreData = tx?.LastLedgerSequence
+
   return (
     <MainBody>
       <Heading>Transaction Details</Heading>
@@ -296,19 +299,33 @@ export const TransactionCard = ({ data, pageFiatRate, selectedCurrency, txTypeSp
                       </TData>
                     </TRow>
                   ))}
-                {tx?.LastLedgerSequence && (
+                {isMoreData && (
                   <TRow>
-                    <TData
-                      tooltip={
-                        'The last ledger sequence number that the transaction can be included in. Specifying this field places a strict upper limit on how long the transaction can wait to be validated or rejected.'
-                      }
-                    >
-                      Last ledger sequence
-                    </TData>
+                    <TData>Additional data</TData>
                     <TData>
-                      #{tx.LastLedgerSequence} ({tx.LastLedgerSequence - outcome.ledgerIndex} ledgers)
+                      <span className="link" onClick={() => setShowAdditionalData(!showAdditionalData)}>
+                        {showAdditionalData ? t('table.text.hide') : t('table.text.show')}
+                      </span>
                     </TData>
                   </TRow>
+                )}
+                {showAdditionalData && (
+                  <>
+                    {tx?.LastLedgerSequence && (
+                      <TRow>
+                        <TData
+                          tooltip={
+                            'The last ledger sequence number that the transaction can be included in. Specifying this field places a strict upper limit on how long the transaction can wait to be validated or rejected.'
+                          }
+                        >
+                          Last ledger sequence
+                        </TData>
+                        <TData>
+                          #{tx.LastLedgerSequence} ({tx.LastLedgerSequence - outcome.ledgerIndex} ledgers)
+                        </TData>
+                      </TRow>
+                    )}
+                  </>
                 )}
                 <TRow>
                   <TData>{t('table.raw-data')}</TData>
