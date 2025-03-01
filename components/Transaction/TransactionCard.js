@@ -283,7 +283,7 @@ export const TransactionCard = ({ data, pageFiatRate, selectedCurrency, txTypeSp
                 <TRow>
                   <TData>Ledger fee</TData>
                   <TData>
-                    {amountFormat(tx.Fee)}
+                    <span className="bold">{amountFormat(tx.Fee)}</span>
                     {nativeCurrencyToFiat({
                       amount: tx.Fee,
                       selectedCurrency,
