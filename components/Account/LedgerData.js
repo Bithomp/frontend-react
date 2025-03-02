@@ -810,12 +810,12 @@ export default function LedgerData({
           </p>
         )}
         {data.ledgerInfo?.regularKey && (
-          <p>
-            <span className="grey">Regular key</span>
-            <br />
-            <br />
+          <>
+            <p>
+              <span className="grey">Regular key</span>
+            </p>
             {regularKeyNode}
-          </p>
+          </>
         )}
         {data.ledgerInfo?.flags?.passwordSpent && (
           <p>
