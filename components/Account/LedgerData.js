@@ -316,14 +316,6 @@ export default function LedgerData({
           </tr>
         </thead>
         <tbody>
-          {data?.ledgerInfo?.accountIndex && (
-            <>
-              <tr>
-                <td>Account index:</td>
-                <td>{accountIndex}</td>
-              </tr>
-            </>
-          )}
           <tr>
             <td>{t('table.address')}</td>
             <td>{addressNode}</td>
@@ -332,6 +324,14 @@ export default function LedgerData({
             <td>{t('table.status')}</td>
             <td>{statusNode}</td>
           </tr>
+          {data?.ledgerInfo?.accountIndex && (
+            <>
+              <tr>
+                <td>Account index:</td>
+                <td>{accountIndex}</td>
+              </tr>
+            </>
+          )}
           {data?.ledgerInfo?.balance && (
             <>
               <tr>
@@ -348,7 +348,6 @@ export default function LedgerData({
               </tr>
             </>
           )}
-
           {data.ledgerInfo?.domain && (
             <tr>
               <td>Domain</td>
@@ -539,43 +538,11 @@ export default function LedgerData({
               <td className="bold">disabled</td>
             </tr>
           )}
-          {data.ledgerInfo?.regularKey && (
-            <tr>
-              <td>Regular key</td>
-              <td>{regularKeyNode}</td>
-            </tr>
-          )}
           {data.ledgerInfo?.flags?.passwordSpent && (
             <tr>
               <td>Free re-key</td>
               <td>spent</td>
             </tr>
-          )}
-          {data.ledgerInfo?.signerList && (
-            <>
-              <tr>
-                <td>Multi-signing</td>
-                <td className="bold">enabled</td>
-              </tr>
-              {data.ledgerInfo.signerList.signerQuorum && (
-                <tr>
-                  <td>Multi-signing threshold</td>
-                  <td className="bold">{data.ledgerInfo.signerList.signerQuorum}</td>
-                </tr>
-              )}
-              {data.ledgerInfo.signerList.signerEntries.map((signer, index) => (
-                <tr key={index}>
-                  <td>
-                    Signer #{index + 1}
-                    <br />
-                    Weight: <b>{signer.signerWeight}</b>
-                  </td>
-                  <td>
-                    <AddressWithIconFilled data={signer} name="account" />
-                  </td>
-                </tr>
-              ))}
-            </>
           )}
           {data.ledgerInfo?.sequence && (
             <tr>
@@ -608,21 +575,50 @@ export default function LedgerData({
               <td>{walletLocatorNode}</td>
             </tr>
           )}
+          {data.ledgerInfo?.regularKey && (
+            <tr>
+              <td>Regular key</td>
+              <td>{regularKeyNode}</td>
+            </tr>
+          )}
+          {data.ledgerInfo?.signerList && (
+            <>
+              <tr>
+                <td>Multi-signing</td>
+                <td className="bold">enabled</td>
+              </tr>
+              {data.ledgerInfo.signerList.signerQuorum && (
+                <tr>
+                  <td>Multi-signing threshold</td>
+                  <td className="bold">{data.ledgerInfo.signerList.signerQuorum}</td>
+                </tr>
+              )}
+              {data.ledgerInfo.signerList.signerEntries.map((signer, index) => (
+                <tr key={index}>
+                  <td>
+                    Signer #{index + 1}
+                    <br />
+                    Weight: <b>{signer.signerWeight}</b>
+                  </td>
+                  <td>
+                    <AddressWithIconFilled data={signer} name="account" />
+                  </td>
+                </tr>
+              ))}
+            </>
+          )}
         </tbody>
       </table>
       <div className="show-on-small-w800">
+        <center>{addressNode}</center>
+        <br />
         <center>{title}</center>
+        <p>{statusNode}</p>
         {data?.ledgerInfo?.accountIndex && (
           <p>
             <span className="grey">Account index:</span> {accountIndex}
           </p>
         )}
-        <p>
-          <span className="grey">{t('table.address')}</span>
-          <br />
-          {addressNode}
-        </p>
-        <p>{statusNode}</p>
         {data?.ledgerInfo?.balance && (
           <>
             <p>
@@ -809,39 +805,10 @@ export default function LedgerData({
             <span className="grey">Master key</span> <span className="bold">disabled</span>
           </p>
         )}
-        {data.ledgerInfo?.regularKey && (
-          <>
-            <p>
-              <span className="grey">Regular key</span>
-            </p>
-            {regularKeyNode}
-          </>
-        )}
         {data.ledgerInfo?.flags?.passwordSpent && (
           <p>
             <span className="grey">Free re-key</span> spent
           </p>
-        )}
-        {data.ledgerInfo?.signerList && (
-          <>
-            <p>
-              <span className="grey">Multi-signing</span> <span className="bold">enabled</span>
-            </p>
-            {data.ledgerInfo.signerList.signerQuorum && (
-              <p>
-                <span className="grey">Multi-signing threshold</span>{' '}
-                <span className="bold">{data.ledgerInfo.signerList.signerQuorum}</span>
-              </p>
-            )}
-            {data.ledgerInfo.signerList.signerEntries.map((signer, index) => (
-              <p key={index}>
-                <span className="grey">Signer #{index + 1}</span>, weight: <b>{signer.signerWeight}</b>
-                <br />
-                <br />
-                <AddressWithIconFilled data={signer} name="account" />
-              </p>
-            ))}
-          </>
         )}
         {data.ledgerInfo?.sequence && (
           <p>
@@ -876,6 +843,35 @@ export default function LedgerData({
             <br />
             {walletLocatorNode}
           </p>
+        )}
+        {data.ledgerInfo?.regularKey && (
+          <>
+            <p>
+              <span className="grey">Regular key</span>
+            </p>
+            {regularKeyNode}
+          </>
+        )}
+        {data.ledgerInfo?.signerList && (
+          <>
+            <p>
+              <span className="grey">Multi-signing</span> <span className="bold">enabled</span>
+            </p>
+            {data.ledgerInfo.signerList.signerQuorum && (
+              <p>
+                <span className="grey">Multi-signing threshold</span>{' '}
+                <span className="bold">{data.ledgerInfo.signerList.signerQuorum}</span>
+              </p>
+            )}
+            {data.ledgerInfo.signerList.signerEntries.map((signer, index) => (
+              <p key={index}>
+                <span className="grey">Signer #{index + 1}</span>, weight: <b>{signer.signerWeight}</b>
+                <br />
+                <br />
+                <AddressWithIconFilled data={signer} name="account" />
+              </p>
+            ))}
+          </>
         )}
       </div>
     </>
