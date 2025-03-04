@@ -179,6 +179,95 @@ export const TransactionCard = ({ data, pageFiatRate, selectedCurrency, txTypeSp
 
   const txLink = server + '/tx/' + (tx?.ctid || tx?.hash)
 
+  const decodeJsonMemo = (memopiece) => {
+    if (memopiece[0] === '{') {
+      memopiece = JSON.parse(memopiece)
+      return codeHighlight(memopiece)
+    }
+    return ''
+  }
+
+  const memoNode = (memos) => {
+    let output = []
+    if (memos && Array.isArray(memos)) {
+      for (const memo of memos) {
+        let memotype = memo?.type
+        let memopiece = memo?.data
+        let memoformat = memo?.format
+
+        if (!memopiece && memoformat?.slice(0, 2) === 'rt') {
+          memopiece = memoformat
+        }
+
+        let clientname = ''
+
+        if (memopiece) {
+          if (memopiece.slice(0, 16) === 'xrplexplorer.com') {
+            memopiece = memopiece.slice(16)
+            clientname = 'xrplexplorer.com'
+          }
+
+          if (memotype) {
+            if (memotype.slice(0, 25) === '[https://xumm.community]-') {
+              memotype = memotype.slice(25)
+              clientname = 'xumm.community'
+            } else if (memotype.slice(0, 24) === '[https://xrpl.services]-') {
+              memotype = memotype.slice(24)
+              clientname = 'xrpl.services'
+            } else {
+              memotype = memotype.charAt(0).toUpperCase() + memotype.slice(1)
+            }
+          } else {
+            memotype = 'Memo'
+          }
+
+          if (decodeJsonMemo(memopiece)) {
+            output.push(
+              <TRow key="a2">
+                <TData>{memotype}</TData>
+                <TData>{decodeJsonMemo(memopiece)}</TData>
+              </TRow>
+            )
+          } else {
+            if (memopiece.length > 100 && memopiece.split(' ').length === 0) {
+              memopiece = memopiece.replace('"', '')
+              const pieces = memopiece.split('.')
+              for (i = 0; i < pieces.length; i++) {
+                output.push(
+                  <TRow key={i}>
+                    <TData>{memotype}</TData>
+                    <TData>{decodeJsonMemo(strip_text(atob(pieces[i])))}</TData>
+                  </TRow>
+                )
+              }
+            } else {
+              output.push(
+                <TRow key="a1">
+                  <TData>{memotype}</TData>
+                  <TData>{memopiece}</TData>
+                </TRow>
+              )
+            }
+          }
+
+          if (clientname) {
+            output.push(
+              <TRow key="a3">
+                <TData>Client</TData>
+                <TData>
+                  <a href={'https://' + clientname} rel="nofollow">
+                    {clientname}
+                  </a>
+                </TData>
+              </TRow>
+            )
+          }
+        }
+      }
+    }
+    return output
+  }
+
   return (
     <>
       <div className="tx-body">
@@ -254,6 +343,7 @@ export const TransactionCard = ({ data, pageFiatRate, selectedCurrency, txTypeSp
                     </TData>
                   </TRow>
                   {children}
+                  {specification?.memos && memoNode(specification.memos)}
                   {tx?.AccountTxnID && (
                     <TRow>
                       <TData
