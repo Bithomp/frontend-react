@@ -3,16 +3,18 @@ import {
   addressUsernameOrServiceLink,
   AddressWithIconFilled,
   amountFormat,
-  nativeCurrencyToFiat
+  nativeCurrencyToFiat,
+  shortHash
 } from '../../utils/format'
 
 import { TransactionCard } from './TransactionCard'
 import { xls14NftValue } from '../../utils'
+import CopyButton from '../UI/CopyButton'
 
 export const TransactionPayment = ({ data, pageFiatRate, selectedCurrency }) => {
   if (!data) return null
 
-  const { outcome, specification } = data
+  const { outcome, specification, tx } = data
 
   let txTypeSpecial = 'Payment'
 
@@ -109,6 +111,14 @@ export const TransactionPayment = ({ data, pageFiatRate, selectedCurrency }) => 
         <TRow>
           <TData>Destination tag</TData>
           <TData className="bold">{specification.destination.tag}</TData>
+        </TRow>
+      )}
+      {tx?.InvoiceID && (
+        <TRow>
+          <TData>Invoice ID</TData>
+          <TData>
+            {shortHash(tx.InvoiceID, 10)} <CopyButton text={tx.InvoiceID} />
+          </TData>
         </TRow>
       )}
       {outcome.deliveredAmount && (
