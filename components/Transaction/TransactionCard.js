@@ -1,3 +1,4 @@
+import React from 'react'
 import CopyButton from '../UI/CopyButton'
 import { useState } from 'react'
 import { i18n, useTranslation } from 'next-i18next'
@@ -108,22 +109,22 @@ export const TransactionCard = ({ data, pageFiatRate, selectedCurrency, txTypeSp
               memopiece = memopiece.replace('"', '')
               const pieces = memopiece.split('.')
               output.push(
-                <>
-                  <TRow key={'header' + j}>
+                <React.Fragment key={'jwt' + j}>
+                  <TRow>
                     <TData>JWT Header</TData>
                     <TData>{decodeJsonMemo(pieces[0], { code: 'base64' })}</TData>
                   </TRow>
-                  <TRow key={'payload' + j}>
+                  <TRow>
                     <TData>JWT Payload</TData>
                     <TData>{decodeJsonMemo(pieces[1], { code: 'base64' })}</TData>
                   </TRow>
-                  <TRow key={'signature' + j}>
+                  <TRow>
                     <TData>JWT Signature</TData>
                     <TData>
                       <pre>{pieces[2]}</pre>
                     </TData>
                   </TRow>
-                </>
+                </React.Fragment>
               )
             } else {
               output.push(
