@@ -45,7 +45,14 @@ export const TransactionCard = ({ data, pageFiatRate, selectedCurrency, txTypeSp
 
   const txLink = server + '/tx/' + (tx?.ctid || tx?.hash)
 
-  const decodeJsonMemo = (memopiece) => {
+  const decodeJsonMemo = (memopiece, options) => {
+    if (options?.code === 'base64') {
+      try {
+        memopiece = atob(memopiece)
+      } catch (e) {
+        return memopiece
+      }
+    }
     if (memopiece[0] === '{') {
       memopiece = JSON.parse(memopiece)
       return codeHighlight(memopiece)
@@ -56,7 +63,8 @@ export const TransactionCard = ({ data, pageFiatRate, selectedCurrency, txTypeSp
   const memoNode = (memos) => {
     let output = []
     if (memos && Array.isArray(memos)) {
-      for (const memo of memos) {
+      for (let j = 0; j < memos.length; j++) {
+        const memo = memos[j]
         let memotype = memo?.type
         let memopiece = memo?.data
         let memoformat = memo?.format
@@ -89,26 +97,37 @@ export const TransactionCard = ({ data, pageFiatRate, selectedCurrency, txTypeSp
 
           if (decodeJsonMemo(memopiece)) {
             output.push(
-              <TRow key="a2">
+              <TRow key={'a2' + j}>
                 <TData>{memotype}</TData>
                 <TData>{decodeJsonMemo(memopiece)}</TData>
               </TRow>
             )
           } else {
-            if (memopiece.length > 100 && memopiece.split(' ').length === 0) {
+            if (memopiece.length > 100 && memopiece.split(' ').length === 1) {
+              //jwt
               memopiece = memopiece.replace('"', '')
               const pieces = memopiece.split('.')
-              for (i = 0; i < pieces.length; i++) {
-                output.push(
-                  <TRow key={i}>
-                    <TData>{memotype}</TData>
-                    <TData>{decodeJsonMemo(strip_text(atob(pieces[i])))}</TData>
+              output.push(
+                <>
+                  <TRow key={'header' + j}>
+                    <TData>JWT Header</TData>
+                    <TData>{decodeJsonMemo(pieces[0], { code: 'base64' })}</TData>
                   </TRow>
-                )
-              }
+                  <TRow key={'payload' + j}>
+                    <TData>JWT Payload</TData>
+                    <TData>{decodeJsonMemo(pieces[1], { code: 'base64' })}</TData>
+                  </TRow>
+                  <TRow key={'signature' + j}>
+                    <TData>JWT Signature</TData>
+                    <TData>
+                      <pre>{pieces[2]}</pre>
+                    </TData>
+                  </TRow>
+                </>
+              )
             } else {
               output.push(
-                <TRow key="a1">
+                <TRow key={'a1' + j}>
                   <TData>{memotype}</TData>
                   <TData>{memopiece}</TData>
                 </TRow>
