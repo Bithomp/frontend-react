@@ -206,11 +206,13 @@ export default function Ledger({ pageMeta, ledgerIndexQuery }) {
             </table>
             {ledgerNavigation}
             <br />
-            <div>
-              Ledger Unix close time: <b>{data.close_time}</b>
-              <br />
-              Ledger UTC close time: <b>{new Date(data.close_time * 1000).toISOString()}</b>
-            </div>
+            {data.close_time && (
+              <div>
+                Ledger Unix close time: <b>{data.close_time}</b>
+                <br />
+                Ledger UTC close time: <b>{new Date(data.close_time * 1000).toISOString()}</b>
+              </div>
+            )}
           </>
         ) : (
           <div className="flex">
