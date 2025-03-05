@@ -12,7 +12,8 @@ import {
   network,
   useWidth,
   avatarServer,
-  networkId
+  networkId,
+  server
 } from '../../../utils'
 
 import Image from 'next/image'
@@ -406,6 +407,7 @@ export default function Header({
                   {isCopied ? t('button.copied') : t('button.copy-my-address')}
                 </span>
                 <Link href={'/account/' + address}>{t('signin.actions.view')}</Link>
+                <a href={server + '/explorer/' + address}>{t('signin.actions.my-transactions')}</a>
                 <Link href={'/nfts/' + address}>{t('signin.actions.my-nfts')}</Link>
                 <Link href={'/nft-offers/' + address}>{t('signin.actions.my-nft-offers')}</Link>
 

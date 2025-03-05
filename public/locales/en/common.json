@@ -117,6 +117,7 @@
     },
     "actions": {
       "view": "My Account page",
+      "my-transactions": "My Transactions",
       "send": "Send XRP",
       "my-nfts": "My NFTs",
       "my-nft-offers": "My NFT offers"

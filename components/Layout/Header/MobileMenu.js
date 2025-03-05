@@ -55,12 +55,15 @@ export default function MobileMenu({
         <div className="mobile-menu__submenu">
           {displayName ? (
             <>
-              <Link href={'/account/' + address} className="mobile-menu-item" onClick={mobileMenuToggle}>
-                {t('signin.actions.view')}
-              </Link>
               <span onClick={copyToClipboard} className="mobile-menu-item link">
                 {isCopied ? t('button.copied') : t('button.copy-my-address')}
               </span>
+              <Link href={'/account/' + address} className="mobile-menu-item" onClick={mobileMenuToggle}>
+                {t('signin.actions.view')}
+              </Link>
+              <a href={server + '/explorer/' + address} className="mobile-menu-item">
+                {t('signin.actions.my-transactions')}
+              </a>
               <Link href={'/nfts/' + address} className="mobile-menu-item" onClick={mobileMenuToggle}>
                 {t('signin.actions.my-nfts')}
               </Link>
