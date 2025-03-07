@@ -22,7 +22,7 @@ const locales = {
   }
 }
 
-export default function PriceChart({ data }) {
+export default function PriceChart({ data, colors }) {
   const { i18n } = useTranslation()
   const { theme } = useTheme()
 
@@ -170,14 +170,18 @@ export default function PriceChart({ data }) {
     stroke: {
       curve: 'smooth',
       width: 3
-    }
-    //colors: ['#006B7D'],
+    },
+    colors: colors
   }
 
   const series = [
     {
-      name: '',
-      data
+      name: 'Issuers',
+      data: data.issuers
+    },
+    {
+      name: 'Volumes',
+      data: data.volumes
     }
   ]
 
