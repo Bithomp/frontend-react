@@ -741,7 +741,7 @@ export default function NftsComponent({
                 <FormInput
                   title={t('table.taxon')}
                   placeholder={t('nfts.search-by-taxon')}
-                  setValue={onTaxonInput}
+                  setValue={issuer ? onTaxonInput : ''}
                   defaultValue={rawData?.taxon}
                   disabled={issuer ? false : true}
                 />

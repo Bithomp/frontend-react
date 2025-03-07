@@ -606,7 +606,7 @@ export default function NftSales({
             <FormInput
               title={t('table.taxon')}
               placeholder={t('nfts.search-by-taxon')}
-              setValue={onTaxonInput}
+              setValue={issuer ? onTaxonInput : ''}
               disabled={issuer ? false : true}
               defaultValue={data?.taxon}
             />

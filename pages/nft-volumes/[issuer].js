@@ -117,7 +117,6 @@ export default function NftVolumes({
         setLoadingChart(false)
       })
     setLoadingChart(false)
-
     if (chartDataResponse?.data?.chart?.length > 0) {
       const issuersData = chartDataResponse.data.chart.map((item) => {
         return [item.time, item.sales]
@@ -299,6 +298,13 @@ export default function NftVolumes({
     }
   }
 
+  const chartData = {
+    issuers: chartIssuers,
+    volumes: chartVolumes
+  }
+
+  const chartColors = ['#FF5733', '#33FF57'] 
+
   return (
     <>
       <SEO
@@ -345,23 +351,18 @@ export default function NftVolumes({
               <br />
             </>
           ) : (
-            <>
+            <> 
+            
               {chartIssuers.length > 0 && chartVolumes.length > 0 && (
-                <div>
-                  <div style={{ maxWidth: '100%', width: '600px', display: 'inline-block' }}>
-                    <h3>{t('sales-chart', { ns: 'nft-volumes' })}</h3>
-                    <SimpleChart data={chartIssuers} />
-                  </div>
-                  {windowWidth > 1000 && <div style={{ display: 'inline-block', width: '100px' }}></div>}
-                  <div style={{ maxWidth: '100%', width: '600px', display: 'inline-block' }}>
-                    <h3>
-                      {t('volumes-chart', { ns: 'nft-volumes' })} ({convertCurrency?.toUpperCase()})
-                    </h3>
-                    <SimpleChart data={chartVolumes} />
-                  </div>
+                <div style={{ maxWidth: '100%', width: '600px', display: 'inline-block' }}>
+                  <h3>
+                    {t('combined-chart', { ns: 'nft-volumes' })} ({convertCurrency?.toUpperCase()})
+                  </h3>
+                  <SimpleChart data={chartData} colors={chartColors} />
                 </div>
               )}
             </>
+
           )}
         </center>
 
