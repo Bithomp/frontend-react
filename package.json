@@ -65,7 +65,8 @@
     "styled-components": "^6.1.8",
     "universal-cookie": "^7.2.1",
     "web-vitals": "^2.1.0",
-    "xrpl-binary-codec-prerelease": "^8.0.1"
+    "xrpl-binary-codec-prerelease": "^8.0.1",
+    "yarn": "^1.22.22"
   },
   "scripts": {
     "dev": "next dev",

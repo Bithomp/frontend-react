@@ -302,7 +302,7 @@ export default function NftDistribution({
             <FormInput
               title={t('table.taxon')}
               placeholder={t('nfts.search-by-taxon')}
-              setValue={onTaxonInput}
+              setValue={issuerInput? onTaxonInput :''}
               disabled={issuerInput ? false : true}
               defaultValue={data?.taxon}
             />
