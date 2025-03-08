@@ -298,13 +298,14 @@ export default function NftDistribution({
             defaultValue={data?.issuer}
             type="issuer"
           />
+          
           {!xahauNetwork && (
             <FormInput
               title={t('table.taxon')}
               placeholder={t('nfts.search-by-taxon')}
-              setValue={issuerInput? onTaxonInput :''}
+              setValue={onTaxonInput}
               disabled={issuerInput ? false : true}
-              defaultValue={data?.taxon}
+              defaultValue={issuerInput ? data?.taxon : ' '}
             />
           )}
           {data?.summary?.totalNfts && (
