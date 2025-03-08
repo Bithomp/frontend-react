@@ -347,18 +347,14 @@ export default function NftVolumes({
           ) : (
             <>
               {chartIssuers.length > 0 && chartVolumes.length > 0 && (
-                <div>
-                  <div style={{ maxWidth: '100%', width: '600px', display: 'inline-block' }}>
-                    <h3>{t('sales-chart', { ns: 'nft-volumes' })}</h3>
-                    <SimpleChart data={chartIssuers} />
-                  </div>
-                  {windowWidth > 1000 && <div style={{ display: 'inline-block', width: '100px' }}></div>}
-                  <div style={{ maxWidth: '100%', width: '600px', display: 'inline-block' }}>
-                    <h3>
-                      {t('volumes-chart', { ns: 'nft-volumes' })} ({convertCurrency?.toUpperCase()})
-                    </h3>
-                    <SimpleChart data={chartVolumes} />
-                  </div>
+                <div style={{ maxWidth: '100%', width: '800px' }}>
+                  <SimpleChart 
+                    data={[chartIssuers, chartVolumes]}
+                    names={[
+                      t('sales-chart', { ns: 'nft-volumes' }), 
+                      `${t('volumes-chart', { ns: 'nft-volumes' })} (${convertCurrency?.toUpperCase()})`
+                    ]} 
+                  />
                 </div>
               )}
             </>
