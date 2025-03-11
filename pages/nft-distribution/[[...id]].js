@@ -237,6 +237,9 @@ export default function NftDistribution({
     }
     addAndRemoveQueryParams(router, queryAddList, queryRemoveList)
     // eslint-disable-next-line react-hooks/exhaustive-deps
+    if(!(issuerInput.length > 0)){
+      setData({...data,taxon:''});
+    }
   }, [issuerInput, taxonInput])
 
   const onTaxonInput = (value) => {

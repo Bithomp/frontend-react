@@ -17,6 +17,8 @@ export default function FormInput({
   useEffect(() => {
     if (defaultValue || defaultValue === '0' || defaultValue === 0) {
       setInputInnerValue(defaultValue)
+    }else{
+      setInputInnerValue("")
     }
   }, [defaultValue])
 
