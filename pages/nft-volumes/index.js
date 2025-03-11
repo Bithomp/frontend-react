@@ -1075,14 +1075,16 @@ export default function NftVolumes({
                       <div className="flex" style={{ marginLeft: '10px' }}>
                         <div style={chartDivStyle}>
                           <h3>{t('sales-chart', { ns: 'nft-volumes' })}</h3>
-                          <SimpleChart data={chartIssuers} />
+                          <SimpleChart data={[
+                            {name:t('sales-chart', { ns: 'nft-volumes' }),data: chartIssuers},
+                            {name:t('volumes-chart', { ns: 'nft-volumes' }) + ' (' + convertCurrency?.toUpperCase() + ')',data: chartVolumes}]} />
                         </div>
-                        <div style={chartDivStyle}>
+                        {/* <div style={chartDivStyle}>
                           <h3>
                             {t('volumes-chart', { ns: 'nft-volumes' })} ({convertCurrency?.toUpperCase()})
                           </h3>
-                          <SimpleChart data={chartVolumes} />
-                        </div>
+                          <SimpleChart data={[{name:'',data:chartVolumes}]} />
+                        </div> */}
                       </div>
                     )}
                   </>

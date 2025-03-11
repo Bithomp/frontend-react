@@ -33,8 +33,8 @@ export default function PriceChart({ data }) {
   }
 
   const textColor = theme === 'light' ? '#000000' : '#ffffff'
-
-  const timeDifference = new Date(data[data.length - 1][0]).valueOf() - new Date(data[0][0]).valueOf()
+  const firstData = data[0].data
+  const timeDifference = new Date(firstData[firstData.length - 1][0]).valueOf() - new Date(firstData[0][0]).valueOf()
 
   let formatForXaxisLabels = {
     datetimeUTC: true,
@@ -173,13 +173,8 @@ export default function PriceChart({ data }) {
     }
     //colors: ['#006B7D'],
   }
-
-  const series = [
-    {
-      name: '',
-      data
-    }
-  ]
+  const series =  data
+  
 
   return (
     <>
