@@ -8,13 +8,40 @@ import {
 } from '../../utils/format'
 
 import { TransactionCard } from './TransactionCard'
-import { xls14NftValue } from '../../utils'
+import { nativeCurrency, xls14NftValue } from '../../utils'
 import CopyButton from '../UI/CopyButton'
+import { add } from '../../utils/calc'
+
+// Function to get balance changes for a specific address
+const getBalanceChanges = (data, address) => {
+  const balanceChange = data.filter((entry) => entry.address === address)
+  return balanceChange[0]?.balanceChanges
+}
+
+const sourceBalanceChanges = (data) => {
+  if (!data) return null
+  const { outcome, specification } = data
+  const allSourceBalanceChanges = getBalanceChanges(outcome.balanceChanges, specification.source.address)
+  let balanceChanges = []
+  const fee = outcome.fee // string in nativeCurrency not drops
+  for (let i = 0; i < allSourceBalanceChanges.length; i++) {
+    const change = allSourceBalanceChanges[i]
+    if (!(change.currency === nativeCurrency && change.value === '-' + fee)) {
+      if (change.currency === nativeCurrency) {
+        change.value = add(change.value, fee)
+      }
+      balanceChanges.push(change)
+    }
+  }
+  return balanceChanges
+}
 
 export const TransactionPayment = ({ data, pageFiatRate, selectedCurrency }) => {
   if (!data) return null
 
   const { outcome, specification, tx } = data
+
+  const sourceBalanceChangesList = sourceBalanceChanges(data)
 
   let txTypeSpecial = 'Payment'
 
@@ -69,7 +96,12 @@ export const TransactionPayment = ({ data, pageFiatRate, selectedCurrency }) => 
       timestamp: '2025-02-03T22:37:20.000Z',
       fee: '0.000024',
       balanceChanges: {
-        rMJXDzU1N9ZSDzPF7s1i2GGKyjM2wB3iom: [Array],
+        rMJXDzU1N9ZSDzPF7s1i2GGKyjM2wB3iom: [
+          {
+            "currency": "XRP",
+            "value": "-0.00001"
+          },
+        ],
         rLD5k36bJkNk1HkYSSCJwM4jBXChHjRViQ: [Array]
       },
       ledgerVersion: 93905635,
@@ -121,21 +153,46 @@ export const TransactionPayment = ({ data, pageFiatRate, selectedCurrency }) => 
           </TData>
         </TRow>
       )}
-      {outcome.deliveredAmount && (
+
+      {isConvertion ? (
         <TRow>
-          <TData>Delivered amount</TData>
           <TData>
-            <span className="bold green">{amountFormat(outcome.deliveredAmount)}</span>
-            {outcome.deliveredAmount?.issuer && (
-              <>({addressUsernameOrServiceLink(outcome.deliveredAmount, 'issuer', { short: true })})</>
-            )}
-            {nativeCurrencyToFiat({
-              amount: outcome.deliveredAmount,
-              selectedCurrency,
-              fiatRate: pageFiatRate
+            Balance changes
+            {sourceBalanceChangesList.map((change, index) => {
+              return <br key={index} />
             })}
           </TData>
+          <TData>
+            {sourceBalanceChangesList.map((change, index) => (
+              <div key={index}>
+                <span className={'bold ' + (Number(change?.value) > 0 ? 'green' : 'red')}>{amountFormat(change)}</span>
+                {change?.issuer && <>({addressUsernameOrServiceLink(change, 'issuer', { short: true })})</>}
+                {nativeCurrencyToFiat({
+                  amount: change,
+                  selectedCurrency,
+                  fiatRate: pageFiatRate
+                })}
+              </div>
+            ))}
+          </TData>
         </TRow>
+      ) : (
+        outcome.deliveredAmount && (
+          <TRow>
+            <TData>Delivered amount</TData>
+            <TData>
+              <span className="bold green">{amountFormat(outcome.deliveredAmount)}</span>
+              {outcome.deliveredAmount?.issuer && (
+                <>({addressUsernameOrServiceLink(outcome.deliveredAmount, 'issuer', { short: true })})</>
+              )}
+              {nativeCurrencyToFiat({
+                amount: outcome.deliveredAmount,
+                selectedCurrency,
+                fiatRate: pageFiatRate
+              })}
+            </TData>
+          </TRow>
+        )
       )}
     </TransactionCard>
   )
