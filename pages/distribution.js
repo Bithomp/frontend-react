@@ -214,9 +214,9 @@ export default function Distribution({ selectedCurrency, fiatRate }) {
                           <b>{i + 1}</b>
                         </td>
                         <td>
+                          <br />
+                          <AddressWithIconFilled data={r} />
                           <p>
-                            <AddressWithIconFilled data={r} />
-                            <br />
                             {amountFormat(r.balance)} {percentFormat(r.balance, rawData.summary?.totalCoins)}
                             <br />
                             {devNet

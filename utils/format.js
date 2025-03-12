@@ -17,6 +17,7 @@ import {
 } from '.'
 import { mpUrl } from './nft'
 import Image from 'next/image'
+import CopyButton from '../components/UI/CopyButton'
 
 momentDurationFormatSetup(moment)
 
@@ -39,7 +40,7 @@ export const AddressWithIcon = ({ children, address }) => {
   )
 }
 
-export const AddressWithIconFilled = ({ data, name }) => {
+export const AddressWithIconFilled = ({ data, name, copyButton }) => {
   if (!data) return ''
   if (!name) {
     name = 'address'
@@ -52,7 +53,7 @@ export const AddressWithIconFilled = ({ data, name }) => {
           <br />
         </>
       )}
-      {addressLink(data[name])}
+      {addressLink(data[name])} {copyButton && <CopyButton text={data[name]} />}
     </AddressWithIcon>
   )
 }

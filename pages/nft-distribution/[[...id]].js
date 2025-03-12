@@ -16,7 +16,7 @@ import {
 } from '../../utils'
 import { getIsSsrMobile } from '../../utils/mobile'
 import { isValidTaxon } from '../../utils/nft'
-import { nftsExplorerLink, addressUsernameOrServiceLink, niceNumber } from '../../utils/format'
+import { nftsExplorerLink, niceNumber, AddressWithIconFilled } from '../../utils/format'
 
 import FiltersFrame from '../../components/Layout/FiltersFrame'
 
@@ -40,7 +40,6 @@ export async function getServerSideProps(context) {
 }
 
 import SEO from '../../components/SEO'
-import CopyButton from '../../components/UI/CopyButton'
 import AddressInput from '../../components/UI/AddressInput'
 import FormInput from '../../components/UI/FormInput'
 import InfiniteScrolling from '../../components/Layout/InfiniteScrolling'
@@ -388,7 +387,7 @@ export default function NftDistribution({
                         <tr key={i}>
                           <td className="center">{i + 1}</td>
                           <td>
-                            <CopyButton text={user.address} /> {addressUsernameOrServiceLink(user, 'address')}
+                            <AddressWithIconFilled data={user} name="address" copyButton={true} />
                           </td>
                           {!issuer && (
                             <>
@@ -453,9 +452,7 @@ export default function NftDistribution({
                             <p>{i + 1}</p>
                           </td>
                           <td>
-                            <p>
-                              {addressUsernameOrServiceLink(user, 'address')} <CopyButton text={user.address} />
-                            </p>
+                            <AddressWithIconFilled data={user} name="address" copyButton={true} />
                             {!issuer && (
                               <>
                                 <p>

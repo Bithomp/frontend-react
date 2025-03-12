@@ -4,7 +4,7 @@ import { useTranslation, Trans } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 import { useIsMobile, getIsSsrMobile } from '../utils/mobile'
-import { dateFormat, addressUsernameOrServiceLink, amountFormat } from '../utils/format'
+import { dateFormat, amountFormat, AddressWithIconFilled } from '../utils/format'
 import { network } from '../utils'
 
 export async function getServerSideProps(context) {
@@ -18,7 +18,6 @@ export async function getServerSideProps(context) {
 }
 
 import SEO from '../components/SEO'
-import CopyButton from '../components/UI/CopyButton'
 
 export default function Genesis() {
   const { t } = useTranslation()
@@ -136,11 +135,8 @@ export default function Genesis() {
                 <tr key={i}>
                   <td>{account.genesis_index}</td>
                   <td>
-                    <p>
-                      {t('genesis.address')}
-                      <br />
-                      {addressUsernameOrServiceLink(account, 'address')} <CopyButton text={account.address} />
-                    </p>
+                    <p></p>
+                    <AddressWithIconFilled data={account} name="address" copyButton={true} />
                     <p>
                       {t('genesis.genesis-balance')}
                       <br />
@@ -173,7 +169,7 @@ export default function Genesis() {
                 <tr key={i}>
                   <td className="center">{account.genesis_index}</td>
                   <td>
-                    <CopyButton text={account.address} /> {addressUsernameOrServiceLink(account, 'address')}
+                    <AddressWithIconFilled data={account} name="address" copyButton={true} />
                   </td>
                   <td className="right">{amountFormat(account.genesis_balance)}</td>
                   <td className="right">{amountFormat(account.balance)}</td>
