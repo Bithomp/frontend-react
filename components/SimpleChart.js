@@ -22,7 +22,7 @@ const locales = {
   }
 }
 
-export default function PriceChart({ data }) {
+export default function PriceChart({ data1, data2, data1Label, data2Label }) {
   const { i18n } = useTranslation()
   const { theme } = useTheme()
 
@@ -34,7 +34,7 @@ export default function PriceChart({ data }) {
 
   const textColor = theme === 'light' ? '#000000' : '#ffffff'
 
-  const timeDifference = new Date(data[data.length - 1][0]).valueOf() - new Date(data[0][0]).valueOf()
+  const timeDifference = new Date(data1[data1.length - 1][0]).valueOf() - new Date(data1[0][0]).valueOf()
 
   let formatForXaxisLabels = {
     datetimeUTC: true,
@@ -176,11 +176,15 @@ export default function PriceChart({ data }) {
 
   const series = [
     {
-      name: '',
-      data
+      name: data1Label,
+      data:data1
+    },
+    {
+      name: data2Label,
+      data:data2
     }
   ]
-
+ 
   return (
     <>
       <Chart type="line" series={series} options={options} />
