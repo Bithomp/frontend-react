@@ -27,7 +27,7 @@ export const TransactionCard = ({ data, pageFiatRate, selectedCurrency, txTypeSp
 
   if (!data) return null
 
-  const { id, error_message, tx, outcome, meta, specification } = data
+  const { id, error_message, tx, outcome, meta, specification, error } = data
   const isSuccessful = outcome?.result == 'tesSUCCESS'
 
   /*
@@ -154,6 +154,8 @@ export const TransactionCard = ({ data, pageFiatRate, selectedCurrency, txTypeSp
     return output
   }
 
+  const errorMessage = error_message || error
+
   return (
     <>
       <div className="tx-body">
@@ -164,8 +166,8 @@ export const TransactionCard = ({ data, pageFiatRate, selectedCurrency, txTypeSp
               <span className="bold">{id}</span> <CopyButton text={id} />
             </Info>
           )}
-          {error_message ? (
-            <Info className="orange">{error_message}</Info>
+          {errorMessage ? (
+            <Info className="orange">{errorMessage}</Info>
           ) : (
             <>
               {isSuccessful ? (

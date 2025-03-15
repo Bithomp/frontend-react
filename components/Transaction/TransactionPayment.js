@@ -21,7 +21,9 @@ const getBalanceChanges = (data, address) => {
 const sourceBalanceChanges = (data) => {
   if (!data) return null
   const { outcome, specification } = data
-  const allSourceBalanceChanges = getBalanceChanges(outcome.balanceChanges, specification.source.address)
+  let allSourceBalanceChanges = getBalanceChanges(outcome.balanceChanges, specification.source.address)
+  allSourceBalanceChanges = structuredClone(allSourceBalanceChanges)
+
   let balanceChanges = []
   const fee = outcome.fee // string in nativeCurrency not drops
   for (let i = 0; i < allSourceBalanceChanges.length; i++) {
@@ -157,7 +159,7 @@ export const TransactionPayment = ({ data, pageFiatRate, selectedCurrency }) => 
       {isConvertion ? (
         <TRow>
           <TData>
-            Balance changes
+            Exchanged
             {sourceBalanceChangesList.map((change, index) => {
               return <br key={index} />
             })}

@@ -1,5 +1,10 @@
 import BigNumber from 'bignumber.js'
 
+BigNumber.config({
+  DECIMAL_PLACES: 15, // Up to 15 decimal places, IOUs
+  ROUNDING_MODE: BigNumber.ROUND_HALF_UP // Standard rounding mode
+})
+
 export const add = (a, b) => new BigNumber(a).plus(new BigNumber(b)).toString()
 
 export const subtract = (a, b) => new BigNumber(a).minus(new BigNumber(b)).toString()
