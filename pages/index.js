@@ -118,10 +118,10 @@ export default function Home({ selectedCurrency, setSelectedCurrency, showAds, f
         sameAs={
           xahauNetwork
             ? [
-                'http://instagram.com/xahauexplorer/',
-                'https://x.com/xahauexplorer',
+                'http://instagram.com/bithomp/',
+                'https://x.com/bithomp',
                 'https://www.youtube.com/@bithomp',
-                'https://www.linkedin.com/company/xahauexplorer/'
+                'https://www.linkedin.com/company/bithomp/'
               ]
             : [
                 'https://www.instagram.com/xrplexplorer/',
