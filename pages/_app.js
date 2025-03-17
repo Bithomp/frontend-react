@@ -110,7 +110,7 @@ const MyApp = ({ Component, pageProps }) => {
   const pagesWithoutWrapper = ['/social-share']
 
   const showAds = (subscriptionExpired || !account?.pro) && !xahauNetwork
-  let showTopAds = false //showAds // change here when you want to see TOP ADS
+  let showTopAds = showAds // change here when you want to see TOP ADS
   const pagesWithNoTopAdds = [
     '/',
     '/username',

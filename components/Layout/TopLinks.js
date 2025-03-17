@@ -1,11 +1,11 @@
 //import { useTranslation } from 'next-i18next'
 //import { useState, useEffect } from 'react'
-//import { useWidth, network } from '../../utils'
+import { useWidth } from '../../utils' //network
 //import axios from 'axios'
 
 export default function TopLinks() {
   //const { t } = useTranslation()
-  //const width = useWidth()
+  const width = useWidth()
   //const [countryCode, setCountryCode] = useState('')
 
   //check country
@@ -157,8 +157,11 @@ export default function TopLinks() {
   return (
     <div className="top-links">
       <span className="tooltip">
-        <a href="/go/buy-land" target="_blank" rel="noreferrer" className="top-link orange">
-          Set up your spot in the metaverse. Join now.
+        💰
+        <a href="/go/top-earn" target="_blank" rel="noreferrer" className="top-link orange">
+          {width > 590
+            ? 'Build your long-term wealth with industry-leading rates on XRP, BTC, and more.'
+            : 'Earn up to 14%'}
         </a>
       </span>
     </div>
