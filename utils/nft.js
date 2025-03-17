@@ -459,7 +459,7 @@ export const nftImageStyle = (nft, style = {}) => {
     if (isNftExplicit(nft) && !isOver18) {
       style.backgroundImage = "url('/images/nft/18plus.jpg')"
     } else {
-      style.backgroundImage = "url('" + imageUrl + "')"
+      style.backgroundImage = "url('" + imageUrl.replace(/'/g, "\\'") + "')"
     }
     if (imageUrl.slice(0, 10) === 'data:image') {
       style.imageRendering = 'pixelated'
