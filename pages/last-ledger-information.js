@@ -15,7 +15,7 @@ export const getServerSideProps = async (context) => {
   }
 }
 
-import { wssServer, nativeCurrency } from '../utils'
+import { wssServer, nativeCurrency, xahauNetwork } from '../utils'
 import { niceNumber } from '../utils/format'
 import { LedgerLink } from '../utils/links'
 
@@ -168,12 +168,14 @@ export default function LastLedgerInformation() {
               {niceNumber(ledger?.totalCoins && ledger.totalCoins / 1000000, 6) + ' ' + nativeCurrency}
             </span>
           </p>
-          <p>
-            {t('last-ledger-information.total-burned') + ': '}
-            <span className="no-brake">
-              {niceNumber(ledger?.totalCoins && 100000000000 - ledger.totalCoins / 1000000, 6) + ' ' + nativeCurrency}
-            </span>
-          </p>
+          {!xahauNetwork && (
+            <p>
+              {t('last-ledger-information.total-burned') + ': '}
+              <span className="no-brake">
+                {niceNumber(ledger?.totalCoins && 100000000000 - ledger.totalCoins / 1000000, 6) + ' ' + nativeCurrency}
+              </span>
+            </p>
+          )}
           <p className="center" style={{ position: 'absolute', top: 'calc(50% - 72px)', left: 'calc(50% - 54px)' }}>
             {!ledger && (
               <>
