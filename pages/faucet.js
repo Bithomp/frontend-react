@@ -29,8 +29,9 @@ export default function FaucetPage({ account, showAds }) {
         <h1 className="center">{t('menu.developers.faucet')}</h1>
         <FaucetTabs />
         <Faucet account={account} type={devNet ? 'faucet' : 'testPayment'} />
-        <Ads showAds={showAds} />
       </div>
+      <Ads showAds={showAds} />
+      <br />
     </>
   )
 }
