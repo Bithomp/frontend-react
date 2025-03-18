@@ -359,12 +359,14 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
               </td>
             </tr>
           )}
-          <tr>
-            <td>{ownerName(nftEvent)}</td>
-            <td>
-              <AddressWithIconFilled data={nftEvent} name={nftEvent.minter ? 'minter' : 'owner'} />
-            </td>
-          </tr>
+          {nftEvent.owner && (
+            <tr>
+              <td>{ownerName(nftEvent)}</td>
+              <td>
+                <AddressWithIconFilled data={nftEvent} name={nftEvent.minter ? 'minter' : 'owner'} />
+              </td>
+            </tr>
+          )}
           {nftEvent.marketplace && (
             <tr>
               <td>{marketPlaceUsage(nftEvent)}</td>
@@ -1182,12 +1184,14 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
                                 </tr>
                               ) : (
                                 <>
-                                  <tr>
-                                    <td>{t('table.owner')}</td>
-                                    <td>
-                                      <AddressWithIconFilled data={data} name="owner" />
-                                    </td>
-                                  </tr>
+                                  {data?.owner && (
+                                    <tr>
+                                      <td>{t('table.owner')}</td>
+                                      <td>
+                                        <AddressWithIconFilled data={data} name="owner" />
+                                      </td>
+                                    </tr>
+                                  )}
                                   <tr>
                                     <td>{t('table.issuer')}</td>
                                     <td>
