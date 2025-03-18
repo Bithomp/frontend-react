@@ -108,6 +108,12 @@ export default function LastLedgerInformation() {
     closedAt = new Date(closedAt).toLocaleTimeString()
   }
 
+  const totalBurned = xahauNetwork
+    ? ledger?.totalBurnedCoins
+    : ledger?.totalCoins
+    ? 100000000000000000 - ledger.totalCoins
+    : '--'
+
   return (
     <>
       <SEO title={t('menu.network.last-ledger-information')} />
@@ -168,14 +174,18 @@ export default function LastLedgerInformation() {
               {niceNumber(ledger?.totalCoins && ledger.totalCoins / 1000000, 6) + ' ' + nativeCurrency}
             </span>
           </p>
-          {!xahauNetwork && (
+          {xahauNetwork && (
             <p>
-              {t('last-ledger-information.total-burned') + ': '}
+              {'Burned by Hooks' + ': '}
               <span className="no-brake">
-                {niceNumber(ledger?.totalCoins && 100000000000 - ledger.totalCoins / 1000000, 6) + ' ' + nativeCurrency}
+                {niceNumber(ledger?.hooksBurnedCoins / 1000000, 6) + ' ' + nativeCurrency}
               </span>
             </p>
           )}
+          <p>
+            {t('last-ledger-information.total-burned') + ': '}
+            <span className="no-brake">{niceNumber(totalBurned / 1000000, 6) + ' ' + nativeCurrency}</span>
+          </p>
           <p className="center" style={{ position: 'absolute', top: 'calc(50% - 72px)', left: 'calc(50% - 54px)' }}>
             {!ledger && (
               <>
