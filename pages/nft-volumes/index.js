@@ -1,22 +1,22 @@
-import { useTranslation, Trans } from 'next-i18next'
-import { useState, useEffect } from 'react'
 import axios from 'axios'
+import { Trans, useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import { useRouter } from 'next/router'
-import InfiniteScroll from 'react-infinite-scroll-component'
 import Link from 'next/link'
+import { useRouter } from 'next/router'
+import { useEffect, useState } from 'react'
+import InfiniteScroll from 'react-infinite-scroll-component'
 
 import { getIsSsrMobile } from '../../utils/mobile'
 
 import {
+  chartSpan,
+  explorerName,
+  isAddressOrUsername,
+  nativeCurrency,
   setTabParams,
   stripText,
-  isAddressOrUsername,
   useWidth,
-  chartSpan,
-  xahauNetwork,
-  nativeCurrency,
-  explorerName
+  xahauNetwork
 } from '../../utils'
 
 export const getServerSideProps = async (context) => {
@@ -41,23 +41,23 @@ import SEO from '../../components/SEO'
 import Tabs from '../../components/Tabs'
 import CheckBox from '../../components/UI/CheckBox'
 import DateAndTimeRange from '../../components/UI/DateAndTimeRange'
-import SimpleChart from '../../components/SimpleChart'
 
 import {
-  amountFormat,
-  shortNiceNumber,
   addressUsernameOrServiceLink,
-  usernameOrAddress,
-  percentFormat,
+  amountFormat,
+  niceCurrency,
   niceNumber,
-  niceCurrency
+  percentFormat,
+  shortNiceNumber,
+  usernameOrAddress
 } from '../../utils/format'
 
-import LinkIcon from '../../public/images/link.svg'
-import RadioOptions from '../../components/UI/RadioOptions'
-import FormInput from '../../components/UI/FormInput'
-import { collectionThumbnail } from '../../utils/nft'
+import CombinedPriceChart from '../../components/CombinedChart'
 import FiltersFrame from '../../components/Layout/FiltersFrame'
+import FormInput from '../../components/UI/FormInput'
+import RadioOptions from '../../components/UI/RadioOptions'
+import LinkIcon from '../../public/images/link.svg'
+import { collectionThumbnail } from '../../utils/nft'
 
 export default function NftVolumes({
   extendedStatsQuery,
@@ -74,7 +74,6 @@ export default function NftVolumes({
   const { t } = useTranslation()
   const router = useRouter()
   const windowWidth = useWidth()
-
   const [data, setData] = useState([])
   const [rawData, setRawData] = useState({})
   const [rawDataSummary, setRawDataSummary] = useState(null)
@@ -223,16 +222,16 @@ export default function NftVolumes({
       const chartDataResponse = await axios
         .get(
           'v2/' +
-            (xahauNetwork ? 'uritoken' : 'nft') +
-            '-sales-chart?span=' +
-            chartSpan(period) +
-            '&period=' +
-            period +
-            '&saleType=' +
-            (saleTab === 'primaryAndSecondary' ? 'all' : saleTab) +
-            currencyUrlPart +
-            '&convertCurrencies=' +
-            convertCurrency
+          (xahauNetwork ? 'uritoken' : 'nft') +
+          '-sales-chart?span=' +
+          chartSpan(period) +
+          '&period=' +
+          period +
+          '&saleType=' +
+          (saleTab === 'primaryAndSecondary' ? 'all' : saleTab) +
+          currencyUrlPart +
+          '&convertCurrencies=' +
+          convertCurrency
         )
         .catch((error) => {
           if (error && error.message !== 'canceled') {
@@ -280,11 +279,11 @@ export default function NftVolumes({
     const response = await axios
       .get(
         apiUrl +
-          '&period=' +
-          period +
-          '&saleType=' +
-          (saleTab === 'primaryAndSecondary' ? 'all' : saleTab) +
-          markerPart,
+        '&period=' +
+        period +
+        '&saleType=' +
+        (saleTab === 'primaryAndSecondary' ? 'all' : saleTab) +
+        markerPart,
         {
           signal: controller.signal
         }
@@ -978,17 +977,17 @@ export default function NftVolumes({
           xahauNetwork
             ? []
             : [
-                {
-                  width: 1200,
-                  height: 630,
-                  file: 'previews/1200x630/nft-volumes.png'
-                },
-                {
-                  width: 630,
-                  height: 630,
-                  file: 'previews/630x630/nft-volumes.png'
-                }
-              ]
+              {
+                width: 1200,
+                height: 630,
+                file: 'previews/1200x630/nft-volumes.png'
+              },
+              {
+                width: 630,
+                height: 630,
+                file: 'previews/630x630/nft-volumes.png'
+              }
+            ]
         }
       />
 
@@ -1074,14 +1073,17 @@ export default function NftVolumes({
                     {chartIssuers.length > 0 && chartVolumes.length > 0 && (
                       <div className="flex" style={{ marginLeft: '10px' }}>
                         <div style={chartDivStyle}>
-                          <h3>{t('sales-chart', { ns: 'nft-volumes' })}</h3>
-                          <SimpleChart data={chartIssuers} />
-                        </div>
-                        <div style={chartDivStyle}>
-                          <h3>
-                            {t('volumes-chart', { ns: 'nft-volumes' })} ({convertCurrency?.toUpperCase()})
-                          </h3>
-                          <SimpleChart data={chartVolumes} />
+                          <CombinedPriceChart seriesData={[
+                            {
+                              name: `${t('sales-chart', { ns: 'nft-volumes' })}`,
+                              data: chartIssuers
+                            },
+                            {
+                              name: `${t('volumes-chart', { ns: 'nft-volumes' })} (${convertCurrency?.toUpperCase()})`,
+                              data: chartVolumes
+                            }]}
+                            colors={['#1f77b4', '#ff7f0e']}
+                          />
                         </div>
                       </div>
                     )}
@@ -1384,10 +1386,10 @@ export default function NftVolumes({
                                     {(listTab === 'currencies' ||
                                       (currency && currencyIssuer) ||
                                       currencyTab === nativeCurrency) && (
-                                      <td className="right">
-                                        {amountFormat(volume.volumes?.[0]?.amount, { maxFractionDigits: 2 })}
-                                      </td>
-                                    )}
+                                        <td className="right">
+                                          {amountFormat(volume.volumes?.[0]?.amount, { maxFractionDigits: 2 })}
+                                        </td>
+                                      )}
                                     <td className="right">
                                       <span className={listTab !== 'currencies' ? 'tooltip' : ''}>
                                         {niceNumber(
