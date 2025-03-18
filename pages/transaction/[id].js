@@ -11,7 +11,8 @@ import {
   TransactionEscrow,
   TransactionOrder,
   TransactionPayment,
-  TransactionAmm
+  TransactionAmm,
+  TransactionCheck
 } from '../../components/Transaction'
 import { useEffect, useState } from 'react'
 import { fetchHistoricalRate } from '../../utils/common'
@@ -77,6 +78,8 @@ export default function Transaction({ data, selectedCurrency }) {
     TransactionComponent = TransactionSetRegularKey
   } else if (txType?.includes('AMM')) {
     TransactionComponent = TransactionAmm
+  } else if (txType?.includes('Check')) {
+    TransactionComponent = TransactionCheck
   } else {
     TransactionComponent = TransactionDetails
   }
