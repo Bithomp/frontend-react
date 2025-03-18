@@ -13,7 +13,7 @@ import CopyButton from '../UI/CopyButton'
 export const TransactionCheck = ({ data, pageFiatRate, selectedCurrency }) => {
   if (!data) return null
 
-  const { specification, tx } = data
+  const { outcome, specification, tx } = data
 
   /*
   {
@@ -101,6 +101,15 @@ export const TransactionCheck = ({ data, pageFiatRate, selectedCurrency }) => {
           <TData>Invoice ID</TData>
           <TData>
             {shortHash(tx.InvoiceID, 10)} <CopyButton text={tx.InvoiceID} />
+          </TData>
+        </TRow>
+      )}
+
+      {outcome?.checkChanges?.checkID && (
+        <TRow>
+          <TData>Check ID</TData>
+          <TData>
+            {shortHash(outcome?.checkChanges?.checkID, 10)} <CopyButton text={outcome?.checkChanges?.checkID} />
           </TData>
         </TRow>
       )}
