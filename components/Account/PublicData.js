@@ -117,11 +117,13 @@ export default function PublicData({ data }) {
   const accountNameTr = ({ data, mobile }) => {
     let output = []
 
+    const blacklisted = data.blacklist?.blacklisted
+
     if (data.ledgerInfo?.activated) {
       //show username registration link and usernsmes only for active accounts
       if (data.username) {
         const usernameNode = (
-          <span className="blue bold">
+          <span className={'blue bold' + (blacklisted ? ' strike' : '')}>
             {data.username} <CopyButton text={server + '/account/' + data.username}></CopyButton>
           </span>
         )
@@ -139,7 +141,7 @@ export default function PublicData({ data }) {
             </tr>
           )
         }
-      } else if (!data.service?.name) {
+      } else if (!data.service?.name && !blacklisted) {
         //if no username and no service - show register link
         const regsiterUsernameNode = <Link href={'/username?address=' + data.address}>register</Link>
         if (mobile) {
