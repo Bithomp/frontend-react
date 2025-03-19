@@ -9,6 +9,8 @@ import {
 
 import { TransactionCard } from './TransactionCard'
 import CopyButton from '../UI/CopyButton'
+import { fullDateAndTime, timeFromNow } from '../../utils/format'
+import { i18n } from 'next-i18next'
 
 export const TransactionCheck = ({ data, pageFiatRate, selectedCurrency }) => {
   if (!data) return null
@@ -125,6 +127,17 @@ export const TransactionCheck = ({ data, pageFiatRate, selectedCurrency }) => {
               selectedCurrency,
               fiatRate: pageFiatRate
             })}
+          </TData>
+        </TRow>
+      )}
+
+      {tx.Expiration && (
+        <TRow>
+          <TData>Expiration</TData>
+          <TData>
+            {timeFromNow(tx.Expiration, i18n)}
+            {', '}
+            {fullDateAndTime(tx.Expiration)}
           </TData>
         </TRow>
       )}
