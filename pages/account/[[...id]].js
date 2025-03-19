@@ -56,6 +56,7 @@ import AccountSummary from '../../components/Account/AccountSummary'
 import LedgerData from '../../components/Account/LedgerData'
 import PublicData from '../../components/Account/PublicData'
 import XamanData from '../../components/Account/XamanData'
+import ObjectsData from '../../components/Account/ObjectsData'
 
 export default function Account({
   initialData,
@@ -474,6 +475,7 @@ export default function Account({
                             fiatRate={fiatRate}
                           />
                           <PublicData data={data} />
+                          <ObjectsData account={account} setSignRequest={setSignRequest} id={id} />
                           <XamanData data={data} />
                           <Did data={data} account={account} setSignRequest={setSignRequest} />
                           <RelatedLinks data={data} />
