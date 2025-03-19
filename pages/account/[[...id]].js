@@ -475,7 +475,7 @@ export default function Account({
                             fiatRate={fiatRate}
                           />
                           <PublicData data={data} />
-                          <ObjectsData account={account} setSignRequest={setSignRequest} id={id} />
+                          <ObjectsData account={account} setSignRequest={setSignRequest} address={data?.address} />
                           <XamanData data={data} />
                           <Did data={data} account={account} setSignRequest={setSignRequest} />
                           <RelatedLinks data={data} />

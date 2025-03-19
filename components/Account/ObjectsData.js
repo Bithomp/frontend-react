@@ -1,12 +1,19 @@
 import { useState, useEffect } from 'react'
-import { shortHash } from '../../utils/format'
+import { amountFormat, shortHash } from '../../utils/format'
 import CopyButton from '../UI/CopyButton'
 import axios from 'axios'
 import { useTranslation } from 'next-i18next'
+import { avatarServer, timestampExpired } from '../../utils'
+import Image from 'next/image'
+import Link from 'next/link'
+import { TbPigMoney } from 'react-icons/tb'
+import { MdMoneyOff } from 'react-icons/md'
 
-export default function ObjectsData({ id }) {
+export default function ObjectsData({ address, account, setSignRequest }) {
   const [errorMessage, setErrorMessage] = useState('')
   const [loadingObjects, setLoadingObjects] = useState(false)
+  const [checkList, setCheckList] = useState([])
+  const [issuedCheckList, setIssuedCheckList] = useState([])
   const [hookList, setHookList] = useState([])
   const { t } = useTranslation()
 
@@ -16,7 +23,7 @@ export default function ObjectsData({ id }) {
     async function checkObjects() {
       setLoadingObjects(true)
       const accountObjectsData = await axios
-        .get('xrpl/objects/' + id, {
+        .get('xrpl/objects/' + address, {
           signal: controller.signal
         })
         .catch((error) => {
@@ -28,12 +35,16 @@ export default function ObjectsData({ id }) {
       const accountObjects = accountObjectsData?.data
       if (accountObjects) {
         setLoadingObjects(false)
-        const accountObjectWithHooks =
-          accountObjects.length > 0 ? accountObjects.find((o) => o.LedgerEntryType === 'Hook') : []
-        if (accountObjectWithHooks?.Hooks?.length > 0) {
-          const hooks = accountObjectWithHooks.Hooks
-          const hookHashes = hooks.map((h) => h.Hook.HookHash)
-          setHookList(hookHashes)
+        if (accountObjects.length > 0) {
+          const accountObjectWithHooks = accountObjects.find((o) => o.LedgerEntryType === 'Hook')
+          if (accountObjectWithHooks?.Hooks?.length > 0) {
+            const hooks = accountObjectWithHooks.Hooks
+            const hookHashes = hooks.map((h) => h.Hook.HookHash)
+            setHookList(hookHashes)
+          }
+          const accountObjectWithChecks = accountObjects.filter((o) => o.LedgerEntryType === 'Check') || []
+          setCheckList(accountObjectWithChecks.filter((o) => o.Destination === address))
+          setIssuedCheckList(accountObjectWithChecks.filter((o) => o.Account === address))
         }
       }
     }
@@ -45,6 +56,90 @@ export default function ObjectsData({ id }) {
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  const checkListNode = (checkList, options) => {
+    const adrLabel = options?.type === 'issued' ? 'Destination' : 'Account'
+
+    return checkList.map((c, i) => (
+      <tr key={i}>
+        <td className="center" style={{ width: 30 }}>
+          {i + 1}
+        </td>
+        <td className="bold right">{amountFormat(c.SendMax)}</td>
+        <td>
+          {options?.type === 'issued' ? 'to' : 'from'}{' '}
+          <Link href={'/account/' + c[adrLabel]}>
+            <Image
+              src={avatarServer + c[adrLabel]}
+              alt={'service logo'}
+              height={20}
+              width={20}
+              style={{ marginRight: '5px', marginBottom: '-5px' }}
+            />
+          </Link>
+          <Link href={'/account/' + c[adrLabel]}>{shortHash(c[adrLabel])}</Link>
+        </td>
+        <td>
+          {c.Destination === account?.address ? (
+            <>
+              <span className="orange">
+                <TbPigMoney style={{ fontSize: 18, marginBottom: -4 }} />{' '}
+                <a
+                  href="#"
+                  onClick={() =>
+                    setSignRequest({
+                      request: {
+                        TransactionType: 'CheckCash',
+                        Account: c.Destination,
+                        Amount: c.SendMax,
+                        CheckID: c.index
+                      }
+                    })
+                  }
+                >
+                  Redeem
+                </a>
+              </span>
+            </>
+          ) : (
+            <span className="grey">
+              <TbPigMoney style={{ fontSize: 18, marginBottom: -4 }} /> Redeem
+            </span>
+          )}
+        </td>
+        <td>
+          {c.Destination === account?.address ||
+          c.Account === account?.address ||
+          timestampExpired(c.Expiration, 'ripple') ? (
+            <>
+              <span className="red">
+                <MdMoneyOff style={{ fontSize: 18, marginBottom: -4 }} />{' '}
+                <a
+                  href="#"
+                  onClick={() =>
+                    setSignRequest({
+                      request: {
+                        TransactionType: 'CheckCancel',
+                        Account: c.Account,
+                        CheckID: c.index
+                      }
+                    })
+                  }
+                  className="red"
+                >
+                  Cancel
+                </a>
+              </span>
+            </>
+          ) : (
+            <span className="grey">
+              <MdMoneyOff style={{ fontSize: 18, marginBottom: -4 }} /> Cancel
+            </span>
+          )}
+        </td>
+      </tr>
+    ))
+  }
 
   return (
     <>
@@ -94,6 +189,74 @@ export default function ObjectsData({ id }) {
         </>
       ) : (
         <>
+          {checkList.length > 0 && (
+            <>
+              <table className="table-details hide-on-small-w800">
+                <thead>
+                  <tr>
+                    <th colSpan="100">
+                      {checkList.length} Received Checks
+                      {!account?.address && (
+                        <>
+                          {' '}
+                          [
+                          <a href="#" onClick={() => setSignRequest({})}>
+                            Sign in
+                          </a>{' '}
+                          to Redeem]
+                        </>
+                      )}
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>{checkList.length > 0 && checkListNode(checkList)}</tbody>
+              </table>
+              <div className="show-on-small-w800">
+                <br />
+                <center>{'Received Checks'.toUpperCase()}</center>
+                <br />
+                {checkList.length > 0 && (
+                  <table className="table-mobile">
+                    <tbody>{checkListNode(checkList)}</tbody>
+                  </table>
+                )}
+              </div>
+            </>
+          )}
+          {issuedCheckList.length > 0 && (
+            <>
+              <table className="table-details hide-on-small-w800">
+                <thead>
+                  <tr>
+                    <th colSpan="100">
+                      {issuedCheckList.length} Issued Checks
+                      {!account?.address && (
+                        <>
+                          {' '}
+                          [
+                          <a href="#" onClick={() => setSignRequest({})}>
+                            Sign in
+                          </a>{' '}
+                          to Cancel]
+                        </>
+                      )}
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>{issuedCheckList.length > 0 && checkListNode(issuedCheckList, { type: 'issued' })}</tbody>
+              </table>
+              <div className="show-on-small-w800">
+                <br />
+                <center>{'Issued Checks'.toUpperCase()}</center>
+                <br />
+                {issuedCheckList.length > 0 && (
+                  <table className="table-mobile">
+                    <tbody>{checkListNode(issuedCheckList, { type: 'issued' })}</tbody>
+                  </table>
+                )}
+              </div>
+            </>
+          )}
           {hookList.length > 0 && (
             <>
               <table className="table-details hide-on-small-w800">
