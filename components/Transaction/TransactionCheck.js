@@ -3,6 +3,7 @@ import {
   addressUsernameOrServiceLink,
   AddressWithIconFilled,
   amountFormat,
+  expirationExpired,
   nativeCurrencyToFiat,
   shortHash
 } from '../../utils/format'
@@ -10,9 +11,12 @@ import {
 import { TransactionCard } from './TransactionCard'
 import CopyButton from '../UI/CopyButton'
 import { fullDateAndTime, timeFromNow } from '../../utils/format'
-import { i18n } from 'next-i18next'
+import { useTranslation } from 'next-i18next'
+import { timestampExpired } from '../../utils'
 
 export const TransactionCheck = ({ data, pageFiatRate, selectedCurrency }) => {
+  const { t, i18n } = useTranslation()
+
   if (!data) return null
 
   const { outcome, specification, tx } = data
@@ -133,11 +137,13 @@ export const TransactionCheck = ({ data, pageFiatRate, selectedCurrency }) => {
 
       {tx.Expiration && (
         <TRow>
-          <TData>Expiration</TData>
+          <TData className={timestampExpired(tx.Expiration, 'ripple') ? 'red' : ''}>
+            {expirationExpired(t, tx.Expiration, 'ripple')}
+          </TData>
           <TData>
-            {timeFromNow(tx.Expiration, i18n)}
+            {timeFromNow(tx.Expiration, i18n, 'ripple')}
             {', '}
-            {fullDateAndTime(tx.Expiration)}
+            {fullDateAndTime(tx.Expiration, 'ripple')}
           </TData>
         </TRow>
       )}

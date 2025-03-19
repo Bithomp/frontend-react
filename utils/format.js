@@ -782,8 +782,14 @@ export const timeOrDate = (timestamp) => {
     : dateFormat(timestamp)
 }
 
-export const expirationExpired = (t, timestamp) => {
-  return new Date(timestamp * 1000) < new Date() ? t('table.expired') : t('table.expiration')
+export const expirationExpired = (t, timestamp, type) => {
+  if (!timestamp.toString().includes('T')) {
+    if (type === 'ripple') {
+      timestamp += 946684800 //946684800 is the difference between Unix and Ripple timestamps
+    }
+    timestamp = timestamp * 1000
+  }
+  return new Date(timestamp) < new Date() ? t('table.expired') : t('table.expiration')
 }
 
 export const duration = (t, seconds, options) => {
