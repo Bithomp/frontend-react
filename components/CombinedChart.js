@@ -22,7 +22,7 @@ const locales = {
     }
 }
 
-export default function CombinedPriceChart({ seriesData, colors }) {
+export default function CombinedPriceChart({ seriesData, colors, yAxis }) {
     const { i18n } = useTranslation()
     const { theme } = useTheme()
 
@@ -53,19 +53,21 @@ export default function CombinedPriceChart({ seriesData, colors }) {
         }
     }
 
+    const defaultYAxis = [{
+        labels: {
+            formatter: (val) => {
+                return niceNumber(val, 0, 0)
+            }
+        },
+        tickAmount: 5
+    }]
+
     const options = {
         xaxis: {
             type: 'datetime',
             labels: formatForXaxisLabels
         },
-        yaxis: {
-            labels: {
-                formatter: (val) => {
-                    return niceNumber(val, 0, 0)
-                }
-            },
-            tickAmount: 5
-        },
+        yaxis: yAxis || defaultYAxis,
         chart: {
             id: 'combined-chart',
             type: 'area',

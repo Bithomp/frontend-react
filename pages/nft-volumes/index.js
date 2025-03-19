@@ -1083,6 +1083,37 @@ export default function NftVolumes({
                               data: chartVolumes
                             }]}
                             colors={['#1f77b4', '#ff7f0e']}
+                            yAxis={[
+                              {
+                                title: {
+                                  text: "Sales",
+                                  style: {
+                                    color: '#1f77b4'
+                                  }
+                                },
+                                labels: {
+                                  formatter: (val) => niceNumber(val, 0),
+                                  style: {
+                                    colors: '#1f77b4'
+                                  }
+                                }
+                              },
+                              {
+                                opposite: true,
+                                title: {
+                                  text: "Volume",
+                                  style: {
+                                    color: '#ff7f0e'
+                                  }
+                                },
+                                labels: {
+                                  formatter: (val) => niceNumber(val, 0, 'USD'),
+                                  style: {
+                                    colors: '#ff7f0e'
+                                  }
+                                }
+                              }
+                            ]}
                           />
                         </div>
                       </div>
