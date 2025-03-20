@@ -187,7 +187,11 @@
         "owners": "Владельцев",
         "issuers": "NFT эмитентов",
         "transfers": "Продано",
-        "for-sale": "Продается"
+        "for-sale": "Продается",
+        "hooks-parent-txs": "Родительские тр-ции Хуков (24ч)",
+        "hooks-emitting-txs": "Хуки, генерирующие тр-ции (24ч)",
+        "txs-emitted-by-hooks": "Тр-ции, отправленные Хуками (24ч)",
+        "fees-paid-by-hooks": "Комиссия, выплаченная Хуками (24ч)"
       },
       "escrows": "Эскроу",
       "amms": "Пулы AMM",
@@ -207,6 +211,7 @@
     "base-reserve": "Базовый резерв",
     "increment-reserve": "Резерв трастлайна и др.",
     "total-supply": "Всего существует",
+    "burned-by-hooks": "Сожжено Хуками",
     "total-burned": "Всего сожжено (комиссией)"
   },
   "nft-statistics": {
