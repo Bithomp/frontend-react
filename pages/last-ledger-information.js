@@ -112,7 +112,7 @@ export default function LastLedgerInformation() {
     ? ledger?.totalBurnedCoins
     : ledger?.totalCoins
     ? 100000000000000000 - ledger.totalCoins
-    : '--'
+    : null
 
   return (
     <>
@@ -170,21 +170,27 @@ export default function LastLedgerInformation() {
           </p>
           <p>
             {t('last-ledger-information.total-supply') + ': '}
-            <span className="no-brake">
-              {niceNumber(ledger?.totalCoins && ledger.totalCoins / 1000000, 6) + ' ' + nativeCurrency}
-            </span>
+            {ledger?.totalCoins && (
+              <span className="no-brake">
+                {niceNumber(ledger?.totalCoins && ledger.totalCoins / 1000000, 6) + ' ' + nativeCurrency}
+              </span>
+            )}
           </p>
           {xahauNetwork && (
             <p>
               {'Burned by Hooks' + ': '}
-              <span className="no-brake">
-                {niceNumber(ledger?.hooksBurnedCoins / 1000000, 6) + ' ' + nativeCurrency}
-              </span>
+              {ledger?.hooksBurnedCoins && (
+                <span className="no-brake">
+                  {niceNumber(ledger?.hooksBurnedCoins / 1000000, 6) + ' ' + nativeCurrency}
+                </span>
+              )}
             </p>
           )}
           <p>
             {t('last-ledger-information.total-burned') + ': '}
-            <span className="no-brake">{niceNumber(totalBurned / 1000000, 6) + ' ' + nativeCurrency}</span>
+            {totalBurned && (
+              <span className="no-brake">{niceNumber(totalBurned / 1000000, 6) + ' ' + nativeCurrency}</span>
+            )}
           </p>
           <p className="center" style={{ position: 'absolute', top: 'calc(50% - 72px)', left: 'calc(50% - 54px)' }}>
             {!ledger && (
