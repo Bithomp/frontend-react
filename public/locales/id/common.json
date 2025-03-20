@@ -181,6 +181,11 @@
       "paymentsLast24h": "Pembayaran (24h)",
       "feesLast24h": "Biaya (24h)",
       "usernames": "Nama Pengguna",
+      "hooks-parent-txs": "Txs induk dari Hooks (24h)",
+      "hooks-emitting-txs": "Hooks yang mengeluarkan Txs (24h)",
+      "txs-emitted-by-hooks": "Txs yang dikeluarkan oleh Hooks (24h)",
+      "fees-paid-by-hooks": "Biaya yang dibayar oleh Hooks (24h)",
+      "burned-by-hooks": "Dibakar oleh Hooks",   
       "nft": {
         "created": "NFT dicetak",
         "burned": "NFT dihapus",
@@ -207,6 +212,7 @@
     "base-reserve": "Cadangan Dasar",
     "increment-reserve": "Penambahan Cadangan",
     "total-supply": "Total Pasokan",
+    "burned-by-hooks": "Dibakar oleh Hooks",
     "total-burned": "Total Dihapus"
   },
   "nft-statistics": {

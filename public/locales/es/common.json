@@ -181,6 +181,10 @@
       "transactionsLast24h": "Transacciones (24h)",
       "paymentsLast24h": "Pagos (24h)",
       "feesLast24h": "Comisiones (24h)",
+      "hooks-parent-txs": "Txs padres de Hooks (24h)",
+      "hooks-emitting-txs": "Hooks que emiten Txs (24h)",
+      "txs-emitted-by-hooks": "Txs emitidos por Hooks (24h)",
+      "fees-paid-by-hooks": "Tarifas pagadas por Hooks (24h)",
       "nft": {
         "created": "NFTs acuñados",
         "burned": "NFTs quemados",
@@ -207,6 +211,7 @@
     "base-reserve": "Reserva inicial",
     "increment-reserve": "Reserva incremental",
     "total-supply": "Distribución total",
+    "burned-by-hooks": "Quemado por Hooks",
     "total-burned": "Quemado en total"
   },
   "nft-statistics": {
