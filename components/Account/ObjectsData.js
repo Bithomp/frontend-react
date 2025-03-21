@@ -82,7 +82,7 @@ export default function ObjectsData({ address, account, setSignRequest, setObjec
           let nfts = []
           if (accountObjectWithNFTokenPage.length > 0) {
             for (let nftPage of accountObjectWithNFTokenPage) {
-              nfts = [...nftPage.NFTokens]
+              nfts.push(...nftPage.NFTokens)
             }
           }
           setObjects({
