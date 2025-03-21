@@ -96,6 +96,13 @@ export default function ObjectsData({ address, account, setSignRequest }) {
           <Link href={'/account/' + c[adrLabel]}>{shortHash(c[adrLabel])}</Link>
         </td>
         <td>
+          {typeof c.DestinationTag !== undefined && (
+            <>
+              DT: <span className="bold">{c.DestinationTag}</span>
+            </>
+          )}
+        </td>
+        <td>
           {c.Destination === account?.address ? (
             <>
               <span className="orange">
