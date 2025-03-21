@@ -259,29 +259,31 @@ export default function LedgerData({
 
   const ammIdNode = <LinkAmm ammId={data.ledgerInfo.ammID} hash={true} icon={true} copy={true} />
 
-  const ownedNftsNode =
-    objects?.nftList?.length > 0 ? (
-      <>
-        <span className="bold orange">{objects?.nftList?.length}</span>{' '}
-        <Link href={'/nfts/' + data?.address + '?includeWithoutMediaData=true'}>
-          <LinkIcon />
-        </Link>
-      </>
-    ) : (
-      "This account doesn't own any NFTs."
-    )
+  const ownedNftsNode = !objects?.nftList ? (
+    'Loading...'
+  ) : objects?.nftList?.length > 0 ? (
+    <>
+      <span className="bold orange">{objects?.nftList?.length}</span>{' '}
+      <Link href={'/nfts/' + data?.address + '?includeWithoutMediaData=true'}>
+        <LinkIcon />
+      </Link>
+    </>
+  ) : (
+    "This account doesn't own any NFTs."
+  )
 
-  const nftOffersNode =
-    objects?.nftOfferList?.length > 0 ? (
-      <>
-        <span className="bold orange">{objects?.nftOfferList?.length}</span>{' '}
-        <Link href={'/nft-offers/' + data?.address}>
-          <LinkIcon />
-        </Link>
-      </>
-    ) : (
-      "This account doesn't have any NFT Offers."
-    )
+  const nftOffersNode = !objects?.nftOfferList ? (
+    'Loading...'
+  ) : objects?.nftOfferList?.length > 0 ? (
+    <>
+      <span className="bold orange">{objects?.nftOfferList?.length}</span>{' '}
+      <Link href={'/nft-offers/' + data?.address}>
+        <LinkIcon />
+      </Link>
+    </>
+  ) : (
+    "This account doesn't have any NFT Offers."
+  )
 
   const mintedNftsNode = (
     <>
@@ -341,38 +343,41 @@ export default function LedgerData({
     </>
   )
 
-  const tokensNode =
-    objects?.rippleStateList?.length > 0 ? (
+  const tokensNode = !objects?.rippleStateList ? (
+    'Loading...'
+  ) : objects?.rippleStateList?.length > 0 ? (
+    <a href={server + '/explorer/' + data.address} className="bold">
+      View tokens
+    </a>
+  ) : (
+    "This account doesn't hold Tokens."
+  )
+
+  const dexOrdersNode = !objects?.offerList ? (
+    'Loading...'
+  ) : objects?.offerList?.length > 0 ? (
+    <>
+      <span className="bold orange">{objects?.offerList?.length}</span>{' '}
       <a href={server + '/explorer/' + data.address} className="bold">
-        View tokens
+        <LinkIcon />
       </a>
-    ) : (
-      "This account doesn't hold Tokens."
-    )
+    </>
+  ) : (
+    "This account doesn't have DEX orders."
+  )
 
-  const dexOrdersNode =
-    objects?.offerList?.length > 0 ? (
-      <>
-        <span className="bold orange">{objects?.offerList?.length}</span>{' '}
-        <a href={server + '/explorer/' + data.address} className="bold">
-          <LinkIcon />
-        </a>
-      </>
-    ) : (
-      "This account doesn't have DEX orders."
-    )
-
-  const escrowNode =
-    objects?.escrowList?.length > 0 ? (
-      <>
-        <span className="bold orange">{objects?.escrowList?.length}</span>{' '}
-        <a href={server + '/explorer/' + data.address} className="bold">
-          <LinkIcon />
-        </a>
-      </>
-    ) : (
-      "This account doesn't have Escrows."
-    )
+  const escrowNode = !objects?.escrowList ? (
+    'Loading...'
+  ) : objects?.escrowList?.length > 0 ? (
+    <>
+      <span className="bold orange">{objects?.escrowList?.length}</span>{' '}
+      <a href={server + '/explorer/' + data.address} className="bold">
+        <LinkIcon />
+      </a>
+    </>
+  ) : (
+    "This account doesn't have Escrows."
+  )
 
   return (
     <>
