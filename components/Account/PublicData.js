@@ -300,7 +300,7 @@ export default function PublicData({ data }) {
               <td>{payStringNode}</td>
             </tr>
           )}
-          {data.service?.domain && (
+          {data.service?.domain && data.ledgerInfo?.domain !== data.service.domain && (
             <tr>
               <td>Web address</td>
               <td>{webAddressNode}</td>
