@@ -42,7 +42,23 @@ export default function ObjectsData({ address, account, setSignRequest }) {
             const hookHashes = hooks.map((h) => h.Hook.HookHash)
             setHookList(hookHashes)
           }
-          const accountObjectWithChecks = accountObjects.filter((o) => o.LedgerEntryType === 'Check') || []
+          let accountObjectWithChecks = accountObjects.filter((o) => o.LedgerEntryType === 'Check') || []
+          accountObjectWithChecks = accountObjectWithChecks.sort((a, b) => {
+            // 1. Sort by issuer (undefined/null issuers come first)
+            const issuerCompare =
+              (a.SendMax?.issuer || '') === (b.SendMax?.issuer || '') ? 0 : a.SendMax?.issuer ? 1 : -1
+            if (issuerCompare !== 0) return issuerCompare
+
+            // 2. Sort by Destination alphabetically
+            const destinationCompare = (a.Destination || '').localeCompare(b.Destination || '')
+            if (destinationCompare !== 0) return destinationCompare
+
+            // 3. Sort by SendMax?.value — if missing, use Number(SendMax)
+            const valueA = Number(a.SendMax?.value || a.SendMax) || 0
+            const valueB = Number(b.SendMax?.value || b.SendMax) || 0
+
+            return valueB - valueA
+          })
           setCheckList(accountObjectWithChecks.filter((o) => o.Destination === address))
           setIssuedCheckList(accountObjectWithChecks.filter((o) => o.Account === address))
         }
