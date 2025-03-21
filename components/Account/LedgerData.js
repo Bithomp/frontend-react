@@ -261,7 +261,7 @@ export default function LedgerData({
   const ownedNftsNode =
     objects?.nftList?.length > 0 ? (
       <>
-        <span className="bold">{objects?.nftList?.length}</span>{' '}
+        <span className="bold orange">{objects?.nftList?.length}</span>{' '}
         <Link href={'/nfts/' + data?.address + '?includeWithoutMediaData=true'}>
           <LinkIcon />
         </Link>
@@ -273,7 +273,7 @@ export default function LedgerData({
   const nftOffersNode =
     objects?.nftOfferList?.length > 0 ? (
       <>
-        <span className="bold">{objects?.nftOfferList?.length}</span>{' '}
+        <span className="bold orange">{objects?.nftOfferList?.length}</span>{' '}
         <Link href={'/nft-offers/' + data?.address}>
           <LinkIcon />
         </Link>
