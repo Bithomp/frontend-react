@@ -20,6 +20,8 @@ import { LinkAmm } from '../../utils/links'
 import { MdDeleteForever, MdVerified } from 'react-icons/md'
 import { FiEdit } from 'react-icons/fi'
 
+import LinkIcon from '../../public/images/link.svg'
+
 export default function LedgerData({
   data,
   account,
@@ -28,7 +30,8 @@ export default function LedgerData({
   pageFiatRate,
   networkInfo,
   setSignRequest,
-  fiatRate
+  fiatRate,
+  objects
 }) {
   const { t, i18n } = useTranslation()
 
@@ -255,20 +258,38 @@ export default function LedgerData({
 
   const ammIdNode = <LinkAmm ammId={data.ledgerInfo.ammID} hash={true} icon={true} copy={true} />
 
+  const ownedNftsNode =
+    objects?.nftList?.length > 0 ? (
+      <>
+        <span className="bold">{objects?.nftList?.length}</span>{' '}
+        <Link href={'/nfts/' + data?.address + '?includeWithoutMediaData=true'}>
+          <LinkIcon />
+        </Link>
+      </>
+    ) : (
+      "This account doesn't own any NFTs"
+    )
+
   const mintedNftsNode = (
-    <Link href={'/nft-explorer?includeWithoutMediaData=true&issuer=' + data?.address + '&includeBurned=true'}>
-      {data.ledgerInfo.mintedNFTokens}
-    </Link>
+    <>
+      {data.ledgerInfo.mintedNFTokens}{' '}
+      <Link href={'/nft-explorer?includeWithoutMediaData=true&issuer=' + data?.address + '&includeBurned=true'}>
+        <LinkIcon />
+      </Link>
+    </>
   )
 
   const burnedNftsNode = (
-    <Link
-      href={
-        '/nft-explorer?includeWithoutMediaData=true&issuer=' + data?.address + '&includeBurned=true&burnedPeriod=all'
-      }
-    >
-      {data.ledgerInfo.burnedNFTokens}
-    </Link>
+    <>
+      {data.ledgerInfo.burnedNFTokens}{' '}
+      <Link
+        href={
+          '/nft-explorer?includeWithoutMediaData=true&issuer=' + data?.address + '&includeBurned=true&burnedPeriod=all'
+        }
+      >
+        <LinkIcon />
+      </Link>
+    </>
   )
 
   const nftMinterNode = <AddressWithIconFilled data={data.ledgerInfo} name="nftokenMinter" />
@@ -402,6 +423,10 @@ export default function LedgerData({
                   <td>{ammIdNode}</td>
                 </tr>
               )}
+              <tr>
+                <td>Owned NFTs</td>
+                <td>{ownedNftsNode}</td>
+              </tr>
               {data.ledgerInfo?.mintedNFTokens && (
                 <tr>
                   <td>Minted NFTs</td>
@@ -444,7 +469,7 @@ export default function LedgerData({
           {data.ledgerInfo?.ticketCount && (
             <tr>
               <td>Tickets</td>
-              <td className="bold">{data.ledgerInfo.ticketCount}</td>
+              <td>{data.ledgerInfo.ticketCount}</td>
             </tr>
           )}
           {data.ledgerInfo?.tickSize && (
@@ -690,6 +715,9 @@ export default function LedgerData({
                 {ammIdNode}
               </p>
             )}
+            <p>
+              <span className="grey">Owned NFTs</span> {ownedNftsNode}
+            </p>
             {data.ledgerInfo?.mintedNFTokens && (
               <p>
                 <span className="grey">Minted NFTs</span> {mintedNftsNode}

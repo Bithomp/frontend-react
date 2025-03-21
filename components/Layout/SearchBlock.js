@@ -462,7 +462,6 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
                 {t('explorer.menu.tokens')}
               </a>
             )}
-            {tab === 'nfts' ? <b>NFTs</b> : <Link href={'/nfts/' + searchItem + addParams}>NFTs</Link>}
             {tab === 'nft-offers' ? (
               <b>{t('nft-offers.header')}</b>
             ) : (

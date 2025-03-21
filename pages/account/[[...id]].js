@@ -84,6 +84,7 @@ export default function Account({
   const [networkInfo, setNetworkInfo] = useState({})
   const [balances, setBalances] = useState({})
   const [shownOnSmall, setShownOnSmall] = useState(null)
+  const [objects, setObjects] = useState({})
 
   useEffect(() => {
     if (!initialData?.address) return
@@ -473,9 +474,15 @@ export default function Account({
                             networkInfo={networkInfo}
                             setSignRequest={setSignRequest}
                             fiatRate={fiatRate}
+                            objects={objects}
                           />
                           <PublicData data={data} />
-                          <ObjectsData account={account} setSignRequest={setSignRequest} address={data?.address} />
+                          <ObjectsData
+                            account={account}
+                            setSignRequest={setSignRequest}
+                            address={data?.address}
+                            setObjects={setObjects}
+                          />
                           <XamanData data={data} />
                           <Did data={data} account={account} setSignRequest={setSignRequest} />
                           <RelatedLinks data={data} />

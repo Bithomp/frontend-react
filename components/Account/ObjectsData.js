@@ -9,7 +9,7 @@ import Link from 'next/link'
 import { TbPigMoney } from 'react-icons/tb'
 import { MdMoneyOff } from 'react-icons/md'
 
-export default function ObjectsData({ address, account, setSignRequest }) {
+export default function ObjectsData({ address, account, setSignRequest, setObjects }) {
   const [errorMessage, setErrorMessage] = useState('')
   const [loadingObjects, setLoadingObjects] = useState(false)
   const [checkList, setCheckList] = useState([])
@@ -18,7 +18,6 @@ export default function ObjectsData({ address, account, setSignRequest }) {
   const [depositPreauthList, setDepositPreauthList] = useState([])
   const [escrowList, setEscrowList] = useState([])
   const [nftokenOfferList, setNftokenOfferList] = useState([])
-  const [nftList, setNftList] = useState([])
   const [offerList, setOfferList] = useState([])
   const [payChannelList, setPayChannelList] = useState([])
   const [rippleStateList, setRippleStateList] = useState([])
@@ -28,6 +27,7 @@ export default function ObjectsData({ address, account, setSignRequest }) {
   const controller = new AbortController()
 
   useEffect(() => {
+    setObjects({})
     async function checkObjects() {
       setLoadingObjects(true)
       const accountObjectsData = await axios
@@ -87,13 +87,21 @@ export default function ObjectsData({ address, account, setSignRequest }) {
           setRippleStateList(accountObjectWithRippleState)
 
           let accountObjectWithNFTokenPage = accountObjects.filter((o) => o.LedgerEntryType === 'NFTokenPage') || []
+          let nfts = []
           if (accountObjectWithNFTokenPage.length > 0) {
-            let nfts = []
             for (let nftPage of accountObjectWithNFTokenPage) {
               nfts = [...nftPage.NFTokens]
             }
-            setNftList(nfts)
           }
+          setObjects({
+            depositPreauthList: accountObjectWithDepositPreauth,
+            escrowList: accountObjectWithEscrow,
+            nftokenOfferList: accountObjectWithNFTokenOffer,
+            nftList: nfts,
+            offerList: accountObjectWithOffer,
+            payChannelList: accountObjectWithPayChannel,
+            rippleStateList: accountObjectWithRippleState
+          })
         }
       }
     }
@@ -201,7 +209,6 @@ export default function ObjectsData({ address, account, setSignRequest }) {
     depositPreauthList.length +
     escrowList.length +
     nftokenOfferList.length +
-    nftList.length +
     offerList.length +
     payChannelList.length +
     rippleStateList.length
@@ -281,12 +288,6 @@ export default function ObjectsData({ address, account, setSignRequest }) {
                       <td className="bold">{nftokenOfferList.length}</td>
                     </tr>
                   )}
-                  {nftList.length > 0 && (
-                    <tr>
-                      <td>NFTs</td>
-                      <td className="bold">{nftList.length}</td>
-                    </tr>
-                  )}
                   {offerList.length > 0 && (
                     <tr>
                       <td>Dex Offers</td>
@@ -324,11 +325,6 @@ export default function ObjectsData({ address, account, setSignRequest }) {
                 {nftokenOfferList.length > 0 && (
                   <p>
                     NFT Offers: <span className="bold">{nftokenOfferList.length}</span>
-                  </p>
-                )}
-                {nftList.length > 0 && (
-                  <p>
-                    NFTs: <span className="bold">{nftList.length}</span>
                   </p>
                 )}
                 {offerList.length > 0 && (
