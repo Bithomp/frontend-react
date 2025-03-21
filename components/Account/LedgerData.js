@@ -12,7 +12,7 @@ import {
   timeFromNow,
   txIdLink
 } from '../../utils/format'
-import { devNet, getCoinsUrl, isDomainValid, nativeCurrency, stripDomain, xahauNetwork } from '../../utils'
+import { devNet, getCoinsUrl, isDomainValid, nativeCurrency, server, stripDomain, xahauNetwork } from '../../utils'
 
 import CopyButton from '../UI/CopyButton'
 import { LinkAmm } from '../../utils/links'
@@ -340,6 +340,15 @@ export default function LedgerData({
     </>
   )
 
+  const tokensNode =
+    objects?.rippleStateList?.length > 0 ? (
+      <Link href={server + '/explorer/' + data.address} className="bold">
+        View tokens
+      </Link>
+    ) : (
+      "This account doesn't hold Tokens."
+    )
+
   return (
     <>
       <table className="table-details hide-on-small-w800">
@@ -381,6 +390,10 @@ export default function LedgerData({
               </tr>
             </>
           )}
+          <tr>
+            <td>{t('explorer.menu.tokens')}</td>
+            <td>{tokensNode}</td>
+          </tr>
           {data.ledgerInfo?.domain && (
             <tr>
               <td>Domain</td>
@@ -679,6 +692,14 @@ export default function LedgerData({
             </p>
           </>
         )}
+        <p>
+          {objects?.rippleStateList?.length > 0 && (
+            <>
+              <span className="grey">{t('explorer.menu.tokens')}</span>{' '}
+            </>
+          )}
+          {tokensNode}
+        </p>
         {data.ledgerInfo?.domain && (
           <p>
             <span className="grey">Domain </span>
@@ -753,11 +774,12 @@ export default function LedgerData({
               </p>
             )}
             {data.ledgerInfo?.nftokenMinter && (
-              <p>
-                <span className="grey">NFT minter</span>
-                <br />
+              <>
+                <p>
+                  <span className="grey">NFT minter</span>
+                </p>
                 {nftMinterNode}
-              </p>
+              </>
             )}
           </>
         )}

@@ -19,7 +19,6 @@ export default function ObjectsData({ address, account, setSignRequest, setObjec
   const [escrowList, setEscrowList] = useState([])
   const [offerList, setOfferList] = useState([])
   const [payChannelList, setPayChannelList] = useState([])
-  const [rippleStateList, setRippleStateList] = useState([])
 
   const { t } = useTranslation()
 
@@ -82,7 +81,6 @@ export default function ObjectsData({ address, account, setSignRequest, setObjec
           setEscrowList(accountObjectWithEscrow)
           setOfferList(accountObjectWithOffer)
           setPayChannelList(accountObjectWithPayChannel)
-          setRippleStateList(accountObjectWithRippleState)
 
           let accountObjectWithNFTokenPage = accountObjects.filter((o) => o.LedgerEntryType === 'NFTokenPage') || []
           let nfts = []
@@ -203,7 +201,7 @@ export default function ObjectsData({ address, account, setSignRequest, setObjec
     ))
   }
 
-  const objectsToShow = depositPreauthList.length + escrowList.length + payChannelList.length + rippleStateList.length
+  const objectsToShow = depositPreauthList.length + escrowList.length + payChannelList.length
 
   return (
     <>
@@ -286,12 +284,6 @@ export default function ObjectsData({ address, account, setSignRequest, setObjec
                       <td className="bold">{payChannelList.length}</td>
                     </tr>
                   )}
-                  {rippleStateList.length > 0 && (
-                    <tr>
-                      <td>Ripple States</td>
-                      <td className="bold">{rippleStateList.length}</td>
-                    </tr>
-                  )}
                 </tbody>
               </table>
               <div className="show-on-small-w800">
@@ -316,11 +308,6 @@ export default function ObjectsData({ address, account, setSignRequest, setObjec
                 {payChannelList.length > 0 && (
                   <p>
                     Pay Channels: <span className="bold">{payChannelList.length}</span>
-                  </p>
-                )}
-                {rippleStateList.length > 0 && (
-                  <p>
-                    Ripple States: <span className="bold">{rippleStateList.length}</span>
                   </p>
                 )}
               </div>
