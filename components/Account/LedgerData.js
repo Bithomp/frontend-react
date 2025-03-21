@@ -343,9 +343,9 @@ export default function LedgerData({
 
   const tokensNode =
     objects?.rippleStateList?.length > 0 ? (
-      <Link href={server + '/explorer/' + data.address} className="bold">
+      <a href={server + '/explorer/' + data.address} className="bold">
         View tokens
-      </Link>
+      </a>
     ) : (
       "This account doesn't hold Tokens."
     )
@@ -354,9 +354,9 @@ export default function LedgerData({
     objects?.offerList?.length > 0 ? (
       <>
         <span className="bold orange">{objects?.offerList?.length}</span>{' '}
-        <Link href={server + '/explorer/' + data.address} className="bold">
+        <a href={server + '/explorer/' + data.address} className="bold">
           <LinkIcon />
-        </Link>
+        </a>
       </>
     ) : (
       "This account doesn't have DEX orders."
@@ -366,9 +366,9 @@ export default function LedgerData({
     objects?.escrowList?.length > 0 ? (
       <>
         <span className="bold orange">{objects?.escrowList?.length}</span>{' '}
-        <Link href={server + '/explorer/' + data.address} className="bold">
+        <a href={server + '/explorer/' + data.address} className="bold">
           <LinkIcon />
-        </Link>
+        </a>
       </>
     ) : (
       "This account doesn't have Escrows."
