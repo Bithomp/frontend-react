@@ -267,7 +267,7 @@ export default function LedgerData({
         </Link>
       </>
     ) : (
-      "This account doesn't own any NFTs"
+      "This account doesn't own any NFTs."
     )
 
   const nftOffersNode =
@@ -279,7 +279,7 @@ export default function LedgerData({
         </Link>
       </>
     ) : (
-      "This account doesn't have any NFT Offers"
+      "This account doesn't have any NFT Offers."
     )
 
   const mintedNftsNode = (
@@ -349,6 +349,18 @@ export default function LedgerData({
       "This account doesn't hold Tokens."
     )
 
+  const dexOrdersNode =
+    objects?.offerList?.length > 0 ? (
+      <>
+        <span className="bold orange">{objects?.offerList?.length}</span>{' '}
+        <Link href={server + '/explorer/' + data.address} className="bold">
+          <LinkIcon />
+        </Link>
+      </>
+    ) : (
+      "This account doesn't have DEX orders."
+    )
+
   return (
     <>
       <table className="table-details hide-on-small-w800">
@@ -393,6 +405,10 @@ export default function LedgerData({
           <tr>
             <td>{t('explorer.menu.tokens')}</td>
             <td>{tokensNode}</td>
+          </tr>
+          <tr>
+            <td>DEX orders</td>
+            <td>{dexOrdersNode}</td>
           </tr>
           {data.ledgerInfo?.domain && (
             <tr>
@@ -699,6 +715,9 @@ export default function LedgerData({
             </>
           )}
           {tokensNode}
+        </p>
+        <p>
+          {objects?.offerList?.length > 0 && <span className="grey">DEX orders</span>} {dexOrdersNode}
         </p>
         {data.ledgerInfo?.domain && (
           <p>

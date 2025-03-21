@@ -17,7 +17,6 @@ export default function ObjectsData({ address, account, setSignRequest, setObjec
   const [hookList, setHookList] = useState([])
   const [depositPreauthList, setDepositPreauthList] = useState([])
   const [escrowList, setEscrowList] = useState([])
-  const [offerList, setOfferList] = useState([])
   const [payChannelList, setPayChannelList] = useState([])
 
   const { t } = useTranslation()
@@ -79,7 +78,6 @@ export default function ObjectsData({ address, account, setSignRequest, setObjec
 
           setDepositPreauthList(accountObjectWithDepositPreauth)
           setEscrowList(accountObjectWithEscrow)
-          setOfferList(accountObjectWithOffer)
           setPayChannelList(accountObjectWithPayChannel)
 
           let accountObjectWithNFTokenPage = accountObjects.filter((o) => o.LedgerEntryType === 'NFTokenPage') || []
@@ -201,7 +199,7 @@ export default function ObjectsData({ address, account, setSignRequest, setObjec
     ))
   }
 
-  const objectsToShow = depositPreauthList.length + escrowList.length + payChannelList.length + offerList.length
+  const objectsToShow = depositPreauthList.length + escrowList.length + payChannelList.length
 
   return (
     <>
@@ -272,12 +270,6 @@ export default function ObjectsData({ address, account, setSignRequest, setObjec
                       <td className="bold">{escrowList.length}</td>
                     </tr>
                   )}
-                  {offerList.length > 0 && (
-                    <tr>
-                      <td>DEX Offers</td>
-                      <td className="bold">{offerList.length}</td>
-                    </tr>
-                  )}
                   {payChannelList.length > 0 && (
                     <tr>
                       <td>Pay Channels</td>
@@ -298,11 +290,6 @@ export default function ObjectsData({ address, account, setSignRequest, setObjec
                 {escrowList.length > 0 && (
                   <p>
                     Escrows: <span className="bold">{escrowList.length}</span>
-                  </p>
-                )}
-                {offerList.length > 0 && (
-                  <p>
-                    DEX Offers: <span className="bold">{offerList.length}</span>
                   </p>
                 )}
                 {payChannelList.length > 0 && (
