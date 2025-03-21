@@ -453,20 +453,9 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
               <Link href={'/account/' + searchItem}>{t('explorer.menu.account')}</Link>
             )}
             {tab !== 'nft-volumes' && (
-              <a href={server + '/explorer/' + searchItem} className="hideOnSmall-w800">
-                {t('explorer.menu.transactions')}
-              </a>
+              <a href={server + '/explorer/' + searchItem}>{t('explorer.menu.transactions')}</a>
             )}
-            {tab !== 'nft-volumes' && (
-              <a href={server + '/explorer/' + searchItem} className="hideOnSmall-w800">
-                {t('explorer.menu.tokens')}
-              </a>
-            )}
-            {tab === 'nft-offers' ? (
-              <b>{t('nft-offers.header')}</b>
-            ) : (
-              <Link href={'/nft-offers/' + searchItem}>{t('nft-offers.header')}</Link>
-            )}
+            {tab !== 'nft-volumes' && <a href={server + '/explorer/' + searchItem}>{t('explorer.menu.tokens')}</a>}
             {tab === 'nft-volumes' && <b>{t('menu.nft.volumes')}</b>}
           </div>
           <div className="explorer-tabs-shadow"></div>

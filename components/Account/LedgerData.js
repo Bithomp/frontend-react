@@ -270,6 +270,18 @@ export default function LedgerData({
       "This account doesn't own any NFTs"
     )
 
+  const nftOffersNode =
+    objects?.nftOfferList?.length > 0 ? (
+      <>
+        <span className="bold">{objects?.nftOfferList?.length}</span>{' '}
+        <Link href={'/nft-offers/' + data?.address}>
+          <LinkIcon />
+        </Link>
+      </>
+    ) : (
+      "This account doesn't have any NFT Offers"
+    )
+
   const mintedNftsNode = (
     <>
       {data.ledgerInfo.mintedNFTokens}{' '}
@@ -439,6 +451,10 @@ export default function LedgerData({
                   <td>{burnedNftsNode}</td>
                 </tr>
               )}
+              <tr>
+                <td>NFT Offers</td>
+                <td>{nftOffersNode}</td>
+              </tr>
               {data.ledgerInfo?.firstNFTokenSequence && (
                 <tr>
                   <td>First NFT sequence</td>
@@ -716,7 +732,7 @@ export default function LedgerData({
               </p>
             )}
             <p>
-              <span className="grey">Owned NFTs</span> {ownedNftsNode}
+              {objects?.nftList?.length > 0 && <span className="grey">Owned NFTs</span>} {ownedNftsNode}
             </p>
             {data.ledgerInfo?.mintedNFTokens && (
               <p>
@@ -728,6 +744,9 @@ export default function LedgerData({
                 <span className="grey">Burned NFTs</span> {burnedNftsNode}
               </p>
             )}
+            <p>
+              {objects?.nftOfferList?.length > 0 && <span className="grey">NFT Offers</span>} {nftOffersNode}
+            </p>
             {data.ledgerInfo?.firstNFTokenSequence && (
               <p>
                 <span className="grey">First NFT sequence</span> {data.ledgerInfo.firstNFTokenSequence}

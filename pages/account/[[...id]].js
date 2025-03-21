@@ -249,8 +249,6 @@ export default function Account({
                                 |{' '}
                               </>
                             )}
-                          <a href={'/explorer/' + data.address}>Transactions</a> |{' '}
-                          <a href={'/explorer/' + data.address}>Tokens</a> |{' '}
                           <a
                             href="#"
                             onClick={(e) => {

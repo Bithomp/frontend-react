@@ -17,7 +17,6 @@ export default function ObjectsData({ address, account, setSignRequest, setObjec
   const [hookList, setHookList] = useState([])
   const [depositPreauthList, setDepositPreauthList] = useState([])
   const [escrowList, setEscrowList] = useState([])
-  const [nftokenOfferList, setNftokenOfferList] = useState([])
   const [offerList, setOfferList] = useState([])
   const [payChannelList, setPayChannelList] = useState([])
   const [rippleStateList, setRippleStateList] = useState([])
@@ -81,7 +80,6 @@ export default function ObjectsData({ address, account, setSignRequest, setObjec
 
           setDepositPreauthList(accountObjectWithDepositPreauth)
           setEscrowList(accountObjectWithEscrow)
-          setNftokenOfferList(accountObjectWithNFTokenOffer)
           setOfferList(accountObjectWithOffer)
           setPayChannelList(accountObjectWithPayChannel)
           setRippleStateList(accountObjectWithRippleState)
@@ -96,7 +94,7 @@ export default function ObjectsData({ address, account, setSignRequest, setObjec
           setObjects({
             depositPreauthList: accountObjectWithDepositPreauth,
             escrowList: accountObjectWithEscrow,
-            nftokenOfferList: accountObjectWithNFTokenOffer,
+            nftOfferList: accountObjectWithNFTokenOffer,
             nftList: nfts,
             offerList: accountObjectWithOffer,
             payChannelList: accountObjectWithPayChannel,
@@ -205,13 +203,7 @@ export default function ObjectsData({ address, account, setSignRequest, setObjec
     ))
   }
 
-  const objectsToShow =
-    depositPreauthList.length +
-    escrowList.length +
-    nftokenOfferList.length +
-    offerList.length +
-    payChannelList.length +
-    rippleStateList.length
+  const objectsToShow = depositPreauthList.length + escrowList.length + payChannelList.length + rippleStateList.length
 
   return (
     <>
@@ -282,15 +274,9 @@ export default function ObjectsData({ address, account, setSignRequest, setObjec
                       <td className="bold">{escrowList.length}</td>
                     </tr>
                   )}
-                  {nftokenOfferList.length > 0 && (
-                    <tr>
-                      <td>NFT Offers</td>
-                      <td className="bold">{nftokenOfferList.length}</td>
-                    </tr>
-                  )}
                   {offerList.length > 0 && (
                     <tr>
-                      <td>Dex Offers</td>
+                      <td>DEX Offers</td>
                       <td className="bold">{offerList.length}</td>
                     </tr>
                   )}
@@ -320,11 +306,6 @@ export default function ObjectsData({ address, account, setSignRequest, setObjec
                 {escrowList.length > 0 && (
                   <p>
                     Escrows: <span className="bold">{escrowList.length}</span>
-                  </p>
-                )}
-                {nftokenOfferList.length > 0 && (
-                  <p>
-                    NFT Offers: <span className="bold">{nftokenOfferList.length}</span>
                   </p>
                 )}
                 {offerList.length > 0 && (
