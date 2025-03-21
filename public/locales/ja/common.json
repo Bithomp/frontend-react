@@ -181,10 +181,6 @@
       "paymentsLast24h": "支払い(24h)",
       "feesLast24h": "手数料(24h)",
       "usernames": "ユーザネーム",
-      "hooks-parent-txs": "Hooksの親Txs (24時間)",
-      "hooks-emitting-txs": "Txsを発行するHooks (24時間)",
-      "txs-emitted-by-hooks": "Hooksによって送信されたTxs (24時間)",
-      "fees-paid-by-hooks": "Hooksによって支払われた手数料 (24時間)",
       "nft": {
         "created": "NFTミント",
         "burned": "NFTバーン",

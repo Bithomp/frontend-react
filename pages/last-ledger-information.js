@@ -176,7 +176,7 @@ export default function LastLedgerInformation() {
           </p>
           {xahauNetwork && (
             <p>
-              {'Burned by Hooks' + ': '}
+             {t('last-ledger-information.burned-by-hooks') + ': '}
               <span className="no-brake">
                 {niceNumber(ledger?.hooksBurnedCoins / 1000000, 6) + ' ' + nativeCurrency}
               </span>

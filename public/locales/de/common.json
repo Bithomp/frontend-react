@@ -181,10 +181,6 @@
       "paymentsLast24h": "Zahlungen (24h)",
       "feesLast24h": "Gebühren (24h)",
       "usernames": "Benutzernamen",
-      "hooks-parent-txs": "Übergeordnete Txs von Hooks (24h)",
-      "hooks-emitting-txs": "Hooks, die Txs emittieren (24h)",
-      "txs-emitted-by-hooks": "Von Hooks gesendete Txs (24h)",
-      "fees-paid-by-hooks": "Von Hooks gezahlte Gebühren (24h)",
       "nft": {
         "created": "NFT erstellt",
         "burned": "NFT vernichtet",

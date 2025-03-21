@@ -181,10 +181,6 @@
       "paymentsLast24h": "Paiements (24h)",
       "feesLast24h": "Frais (24h)",
       "usernames": "Noms d'utilisateur",
-      "hooks-parent-txs": "Txs parentes de Hooks (24h)",
-      "hooks-emitting-txs": "Hooks émettant des Txs (24h)",
-      "txs-emitted-by-hooks": "Txs émis par Hooks (24h)",
-      "fees-paid-by-hooks": "Frais payés par Hooks (24h)",
       "nft": {
         "created": "NFT créé",
         "burned": "NFT brûlé",

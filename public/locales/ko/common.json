@@ -181,10 +181,6 @@
       "paymentsLast24h": "지불 (24h)",
       "feesLast24h": "수수료 (24h)",
       "usernames": "사용자명",
-      "hooks-parent-txs": "Hooks의 부모 Txs (24시간)",
-      "hooks-emitting-txs": "Txs를 생성하는 Hooks (24시간)",
-      "txs-emitted-by-hooks": "Hooks에 의해 전송된 Txs (24시간)",
-      "fees-paid-by-hooks": "Hooks가 지불한 수수료 (24시간)",
       "nft": {
         "created": "NFT 채굴됨",
         "burned": "NFT 소각",
