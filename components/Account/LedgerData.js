@@ -1,3 +1,4 @@
+import React from 'react'
 import { useTranslation } from 'next-i18next'
 import Link from 'next/link'
 import dynamic from 'next/dynamic'
@@ -361,6 +362,18 @@ export default function LedgerData({
       "This account doesn't have DEX orders."
     )
 
+  const escrowNode =
+    objects?.escrowList?.length > 0 ? (
+      <>
+        <span className="bold orange">{objects?.escrowList?.length}</span>{' '}
+        <Link href={server + '/explorer/' + data.address} className="bold">
+          <LinkIcon />
+        </Link>
+      </>
+    ) : (
+      "This account doesn't have Escrows."
+    )
+
   return (
     <>
       <table className="table-details hide-on-small-w800">
@@ -409,6 +422,10 @@ export default function LedgerData({
           <tr>
             <td>DEX orders</td>
             <td>{dexOrdersNode}</td>
+          </tr>
+          <tr>
+            <td>Escrows</td>
+            <td>{escrowNode}</td>
           </tr>
           {data.ledgerInfo?.domain && (
             <tr>
@@ -719,6 +736,9 @@ export default function LedgerData({
         <p>
           {objects?.offerList?.length > 0 && <span className="grey">DEX orders</span>} {dexOrdersNode}
         </p>
+        <p>
+          {objects?.escrowList?.length > 0 && <span className="grey">Escrows</span>} {escrowNode}
+        </p>
         {data.ledgerInfo?.domain && (
           <p>
             <span className="grey">Domain </span>
@@ -952,12 +972,12 @@ export default function LedgerData({
               </p>
             )}
             {data.ledgerInfo.signerList.signerEntries.map((signer, index) => (
-              <p key={index}>
-                <span className="grey">Signer #{index + 1}</span>, weight: <b>{signer.signerWeight}</b>
-                <br />
-                <br />
+              <React.Fragment key={index}>
+                <p>
+                  <span className="grey">Signer #{index + 1}</span>, weight: <b>{signer.signerWeight}</b>
+                </p>
                 <AddressWithIconFilled data={signer} name="account" />
-              </p>
+              </React.Fragment>
             ))}
           </>
         )}

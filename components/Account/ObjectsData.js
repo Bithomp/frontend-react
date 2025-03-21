@@ -16,7 +16,6 @@ export default function ObjectsData({ address, account, setSignRequest, setObjec
   const [issuedCheckList, setIssuedCheckList] = useState([])
   const [hookList, setHookList] = useState([])
   const [depositPreauthList, setDepositPreauthList] = useState([])
-  const [escrowList, setEscrowList] = useState([])
   const [payChannelList, setPayChannelList] = useState([])
 
   const { t } = useTranslation()
@@ -77,7 +76,6 @@ export default function ObjectsData({ address, account, setSignRequest, setObjec
           let accountObjectWithRippleState = accountObjects.filter((o) => o.LedgerEntryType === 'RippleState') || []
 
           setDepositPreauthList(accountObjectWithDepositPreauth)
-          setEscrowList(accountObjectWithEscrow)
           setPayChannelList(accountObjectWithPayChannel)
 
           let accountObjectWithNFTokenPage = accountObjects.filter((o) => o.LedgerEntryType === 'NFTokenPage') || []
@@ -199,7 +197,7 @@ export default function ObjectsData({ address, account, setSignRequest, setObjec
     ))
   }
 
-  const objectsToShow = depositPreauthList.length + escrowList.length + payChannelList.length
+  const objectsToShow = depositPreauthList.length + payChannelList.length
 
   return (
     <>
@@ -264,12 +262,6 @@ export default function ObjectsData({ address, account, setSignRequest, setObjec
                       <td className="bold">{depositPreauthList.length}</td>
                     </tr>
                   )}
-                  {escrowList.length > 0 && (
-                    <tr>
-                      <td>Escrows</td>
-                      <td className="bold">{escrowList.length}</td>
-                    </tr>
-                  )}
                   {payChannelList.length > 0 && (
                     <tr>
                       <td>Pay Channels</td>
@@ -285,11 +277,6 @@ export default function ObjectsData({ address, account, setSignRequest, setObjec
                 {depositPreauthList.length > 0 && (
                   <p>
                     Deposit Preauth: <span className="bold">{depositPreauthList.length}</span>
-                  </p>
-                )}
-                {escrowList.length > 0 && (
-                  <p>
-                    Escrows: <span className="bold">{escrowList.length}</span>
                   </p>
                 )}
                 {payChannelList.length > 0 && (
