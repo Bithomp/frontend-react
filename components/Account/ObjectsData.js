@@ -201,7 +201,7 @@ export default function ObjectsData({ address, account, setSignRequest, setObjec
     ))
   }
 
-  const objectsToShow = depositPreauthList.length + escrowList.length + payChannelList.length
+  const objectsToShow = depositPreauthList.length + escrowList.length + payChannelList.length + offerList.length
 
   return (
     <>
