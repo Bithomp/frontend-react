@@ -61,7 +61,7 @@ export default function Domains({ setSignRequest }) {
     "total": 97,
     "domains": [
       {
-        "domain": "xrplexplorer.com",
+        "domain": "bithomp.com",
         "validToml": true,
         "lastTomlCheck": 1693184438,
         "addresses": [

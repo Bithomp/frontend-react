@@ -30,7 +30,7 @@ export default function AboutUs() {
         </p>
         <ul>
           <li>
-            <a href={'https://xrplexplorer.com/' + i18n.language} target="_blank" rel="noreferrer">
+            <a href={'https://bithomp.com/' + i18n.language} target="_blank" rel="noreferrer">
               XRPL Mainnet
             </a>
             ,

@@ -412,7 +412,7 @@ export default function Subscriptions({
               "destinationTag": 978199589,
               "amount": 20.66,
               "status": "Completed",
-              "memos": "[{\"data\":\"Payment for Bithomp Pro (1 month)\"},{\"data\":\"xrplexplorer.com\"}]"
+              "memos": "[{\"data\":\"Payment for Bithomp Pro (1 month)\"},{\"data\":\"bithomp.com\"}]"
             }
         ]
       }

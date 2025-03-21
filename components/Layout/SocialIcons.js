@@ -14,7 +14,7 @@ import { FaMedium } from 'react-icons/fa6'
 export default function SocialIcons() {
   return (
     <div className="social-icons">
-      <a href={'https://x.com/' + (xahauNetwork ? 'XahauExplorer' : 'xrplexplorer')} aria-label="X">
+      <a href={'https://x.com/' + (xahauNetwork ? 'XahauExplorer' : 'bithomp')} aria-label="X">
         <FaXTwitter />
       </a>
       <a href="https://discord.gg/ZahGJ29WEs" aria-label="Discord">
@@ -26,13 +26,10 @@ export default function SocialIcons() {
       <a href="https://youtube.com/@bithomp" aria-label="Youtube">
         <FaYoutube />
       </a>
-      <a
-        href={'https://linkedin.com/company/' + (xahauNetwork ? 'xahauexplorer' : 'xrplexplorer')}
-        aria-label="Linkedin"
-      >
+      <a href={'https://linkedin.com/company/' + (xahauNetwork ? 'xahauexplorer' : 'bithomp')} aria-label="Linkedin">
         <FaLinkedin />
       </a>
-      <a href={'https://www.instagram.com/' + (xahauNetwork ? 'xahauexplorer' : 'xrplexplorer')} aria-label="Instagram">
+      <a href={'https://www.instagram.com/' + (xahauNetwork ? 'xahauexplorer' : 'bithomp')} aria-label="Instagram">
         <FaInstagram />
       </a>
       {/*

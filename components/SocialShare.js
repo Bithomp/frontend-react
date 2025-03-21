@@ -92,7 +92,7 @@ export default function SocialShare({ t, title, hashtag, description, image }) {
             <TwitterShareButton
               url={url}
               title={title}
-              via={xahauNetwork ? 'xahauexplorer' : 'xrplexplorer'}
+              via={xahauNetwork ? 'xahauexplorer' : 'bithomp'}
               hashtags={[hashtag, networkHashtag]}
               related={['bithomp', 'xrplexplorer', 'xahauexplorer', 'XRP_PriceAlerts']}
               style={iconStyle}

@@ -521,9 +521,7 @@ export default function Username({ setSignRequest, account, signOut, addressQuer
                           Usernames are now used cross-chain,{' '}
                           <a
                             href={
-                              'https://xrplexplorer.com/' +
-                              (i18n.language !== 'en' ? i18n.language + '/' : '') +
-                              'username'
+                              'https://bithomp.com/' + (i18n.language !== 'en' ? i18n.language + '/' : '') + 'username'
                             }
                             target="_blank"
                             rel="noreferrer"

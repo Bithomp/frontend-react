@@ -124,10 +124,10 @@ export default function Home({ selectedCurrency, setSelectedCurrency, showAds, f
                 'https://www.linkedin.com/company/bithomp/'
               ]
             : [
-                'https://www.instagram.com/xrplexplorer/',
-                'https://x.com/xrplexplorer',
+                'https://www.instagram.com/bithomp/',
+                'https://x.com/bithomp',
                 'https://www.youtube.com/@bithomp',
-                'https://www.linkedin.com/company/xrplexplorer/'
+                'https://www.linkedin.com/company/bithomp/'
               ]
         }
       />

@@ -131,7 +131,7 @@ export default function Contact() {
         <p>
           <Trans ns="customer-support" i18nKey="submit-info-here">
             If you have a public service and you want your addresses to be recognised, submit your information{' '}
-            <a href="https://xrplexplorer.com/submit-account-information">here</a>.
+            <a href="https://bithomp.com/submit-account-information">here</a>.
           </Trans>
         </p>
         <h3>{t('follow-us', { ns: 'customer-support' })}</h3>

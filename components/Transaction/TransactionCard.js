@@ -77,9 +77,9 @@ export const TransactionCard = ({ data, pageFiatRate, selectedCurrency, txTypeSp
         let clientname = ''
 
         if (memopiece) {
-          if (memopiece.slice(0, 16) === 'xrplexplorer.com') {
+          if (memopiece.slice(0, 16) === 'xrplexplorer.com' || memopiece.slice(0, 11) === 'bithomp.com') {
             memopiece = memopiece.slice(16)
-            clientname = 'xrplexplorer.com'
+            clientname = 'bithomp.com'
           }
 
           if (memotype) {

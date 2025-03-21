@@ -64,14 +64,14 @@ export default function XrpTaxes() {
               </p>
               <div className="links">
                 <a
-                  href={'https://xrplexplorer.com/' + i18n.language + '/admin/pro/history'}
+                  href={'https://bithomp.com/' + i18n.language + '/admin/pro/history'}
                   target="_blank"
                   rel="noopener noreferrer"
                 >
                   XRPL
                 </a>
                 <a
-                  href={'https://xahauexplorer.com/' + i18n.language + '/admin/pro/history'}
+                  href={'https://bithomp.com/' + i18n.language + '/admin/pro/history'}
                   target="_blank"
                   rel="noopener noreferrer"
                 >
