@@ -15,6 +15,14 @@ export default function ObjectsData({ address, account, setSignRequest }) {
   const [checkList, setCheckList] = useState([])
   const [issuedCheckList, setIssuedCheckList] = useState([])
   const [hookList, setHookList] = useState([])
+  const [depositPreauthList, setDepositPreauthList] = useState([])
+  const [escrowList, setEscrowList] = useState([])
+  const [nftokenOfferList, setNftokenOfferList] = useState([])
+  const [nftList, setNftList] = useState([])
+  const [offerList, setOfferList] = useState([])
+  const [payChannelList, setPayChannelList] = useState([])
+  const [rippleStateList, setRippleStateList] = useState([])
+
   const { t } = useTranslation()
 
   const controller = new AbortController()
@@ -61,6 +69,31 @@ export default function ObjectsData({ address, account, setSignRequest }) {
           })
           setCheckList(accountObjectWithChecks.filter((o) => o.Destination === address))
           setIssuedCheckList(accountObjectWithChecks.filter((o) => o.Account === address))
+
+          // DepositPreauth, Escrow, NFTokenOffer, NFTokenPage, Offer, PayChannel, SignerList, Ticket, RippleState
+          let accountObjectWithDepositPreauth =
+            accountObjects.filter((o) => o.LedgerEntryType === 'DepositPreauth') || []
+          let accountObjectWithEscrow = accountObjects.filter((o) => o.LedgerEntryType === 'Escrow') || []
+          let accountObjectWithNFTokenOffer = accountObjects.filter((o) => o.LedgerEntryType === 'NFTokenOffer') || []
+          let accountObjectWithOffer = accountObjects.filter((o) => o.LedgerEntryType === 'Offer') || []
+          let accountObjectWithPayChannel = accountObjects.filter((o) => o.LedgerEntryType === 'PayChannel') || []
+          let accountObjectWithRippleState = accountObjects.filter((o) => o.LedgerEntryType === 'RippleState') || []
+
+          setDepositPreauthList(accountObjectWithDepositPreauth)
+          setEscrowList(accountObjectWithEscrow)
+          setNftokenOfferList(accountObjectWithNFTokenOffer)
+          setOfferList(accountObjectWithOffer)
+          setPayChannelList(accountObjectWithPayChannel)
+          setRippleStateList(accountObjectWithRippleState)
+
+          let accountObjectWithNFTokenPage = accountObjects.filter((o) => o.LedgerEntryType === 'NFTokenPage') || []
+          if (accountObjectWithNFTokenPage.length > 0) {
+            let nfts = []
+            for (let nftPage of accountObjectWithNFTokenPage) {
+              nfts = [...nftPage.NFTokens]
+            }
+            setNftList(nfts)
+          }
         }
       }
     }
@@ -164,6 +197,15 @@ export default function ObjectsData({ address, account, setSignRequest }) {
     ))
   }
 
+  const objectsToShow =
+    depositPreauthList.length +
+    escrowList.length +
+    nftokenOfferList.length +
+    nftList.length +
+    offerList.length +
+    payChannelList.length +
+    rippleStateList.length
+
   return (
     <>
       {loadingObjects || errorMessage ? (
@@ -212,6 +254,102 @@ export default function ObjectsData({ address, account, setSignRequest }) {
         </>
       ) : (
         <>
+          {objectsToShow > 0 && (
+            <>
+              <table className="table-details hide-on-small-w800">
+                <thead>
+                  <tr>
+                    <th colSpan="100">Objects</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {depositPreauthList.length > 0 && (
+                    <tr>
+                      <td>Deposit Preauth</td>
+                      <td className="bold">{depositPreauthList.length}</td>
+                    </tr>
+                  )}
+                  {escrowList.length > 0 && (
+                    <tr>
+                      <td>Escrows</td>
+                      <td className="bold">{escrowList.length}</td>
+                    </tr>
+                  )}
+                  {nftokenOfferList.length > 0 && (
+                    <tr>
+                      <td>NFT Offers</td>
+                      <td className="bold">{nftokenOfferList.length}</td>
+                    </tr>
+                  )}
+                  {nftList.length > 0 && (
+                    <tr>
+                      <td>NFTs</td>
+                      <td className="bold">{nftList.length}</td>
+                    </tr>
+                  )}
+                  {offerList.length > 0 && (
+                    <tr>
+                      <td>Dex Offers</td>
+                      <td className="bold">{offerList.length}</td>
+                    </tr>
+                  )}
+                  {payChannelList.length > 0 && (
+                    <tr>
+                      <td>Pay Channels</td>
+                      <td className="bold">{payChannelList.length}</td>
+                    </tr>
+                  )}
+                  {rippleStateList.length > 0 && (
+                    <tr>
+                      <td>Ripple States</td>
+                      <td className="bold">{rippleStateList.length}</td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+              <div className="show-on-small-w800">
+                <br />
+                <center>Objects</center>
+                <br />
+                {depositPreauthList.length > 0 && (
+                  <p>
+                    Deposit Preauth: <span className="bold">{depositPreauthList.length}</span>
+                  </p>
+                )}
+                {escrowList.length > 0 && (
+                  <p>
+                    Escrows: <span className="bold">{escrowList.length}</span>
+                  </p>
+                )}
+                {nftokenOfferList.length > 0 && (
+                  <p>
+                    NFT Offers: <span className="bold">{nftokenOfferList.length}</span>
+                  </p>
+                )}
+                {nftList.length > 0 && (
+                  <p>
+                    NFTs: <span className="bold">{nftList.length}</span>
+                  </p>
+                )}
+                {offerList.length > 0 && (
+                  <p>
+                    DEX Offers: <span className="bold">{offerList.length}</span>
+                  </p>
+                )}
+                {payChannelList.length > 0 && (
+                  <p>
+                    Pay Channels: <span className="bold">{payChannelList.length}</span>
+                  </p>
+                )}
+                {rippleStateList.length > 0 && (
+                  <p>
+                    Ripple States: <span className="bold">{rippleStateList.length}</span>
+                  </p>
+                )}
+              </div>
+            </>
+          )}
+
           {checkList.length > 0 && (
             <>
               <table className="table-details hide-on-small-w800">
