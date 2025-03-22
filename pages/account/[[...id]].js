@@ -475,12 +475,14 @@ export default function Account({
                             objects={objects}
                           />
                           <PublicData data={data} />
-                          <ObjectsData
-                            account={account}
-                            setSignRequest={setSignRequest}
-                            address={data?.address}
-                            setObjects={setObjects}
-                          />
+                          {data?.ledgerInfo?.activated && (
+                            <ObjectsData
+                              account={account}
+                              setSignRequest={setSignRequest}
+                              address={data?.address}
+                              setObjects={setObjects}
+                            />
+                          )}
                           <XamanData data={data} />
                           <Did data={data} account={account} setSignRequest={setSignRequest} />
                           <RelatedLinks data={data} />
