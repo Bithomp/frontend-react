@@ -432,6 +432,7 @@ export default function PublicData({ data }) {
                 )}
               </p>
               {data.initialBalance && activatedByNode}
+              <br />
             </>
           )
         )}

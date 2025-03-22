@@ -57,6 +57,7 @@ import LedgerData from '../../components/Account/LedgerData'
 import PublicData from '../../components/Account/PublicData'
 import XamanData from '../../components/Account/XamanData'
 import ObjectsData from '../../components/Account/ObjectsData'
+import NftData from '../../components/Account/NftData'
 
 export default function Account({
   initialData,
@@ -475,6 +476,7 @@ export default function Account({
                             objects={objects}
                           />
                           <PublicData data={data} />
+                          <NftData data={data} objects={objects} />
                           {data?.ledgerInfo?.activated && (
                             <ObjectsData
                               account={account}

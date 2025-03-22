@@ -21,8 +21,6 @@ import { LinkAmm } from '../../utils/links'
 import { MdDeleteForever, MdVerified } from 'react-icons/md'
 import { FiEdit } from 'react-icons/fi'
 
-import LinkIcon from '../../public/images/link.svg'
-
 export default function LedgerData({
   data,
   account,
@@ -259,56 +257,6 @@ export default function LedgerData({
 
   const ammIdNode = <LinkAmm ammId={data.ledgerInfo.ammID} hash={true} icon={true} copy={true} />
 
-  const ownedNftsNode = !objects?.nftList ? (
-    'Loading...'
-  ) : objects?.nftList?.length > 0 ? (
-    <>
-      <span className="bold orange">{objects?.nftList?.length}</span>{' '}
-      <Link href={'/nfts/' + data?.address + '?includeWithoutMediaData=true'}>
-        <LinkIcon />
-      </Link>
-    </>
-  ) : (
-    "This account doesn't own any NFTs."
-  )
-
-  const nftOffersNode = !objects?.nftOfferList ? (
-    'Loading...'
-  ) : objects?.nftOfferList?.length > 0 ? (
-    <>
-      <span className="bold orange">{objects?.nftOfferList?.length}</span>{' '}
-      <Link href={'/nft-offers/' + data?.address}>
-        <LinkIcon />
-      </Link>
-    </>
-  ) : (
-    "This account doesn't have any NFT Offers."
-  )
-
-  const mintedNftsNode = (
-    <>
-      {data.ledgerInfo.mintedNFTokens}{' '}
-      <Link href={'/nft-explorer?includeWithoutMediaData=true&issuer=' + data?.address + '&includeBurned=true'}>
-        <LinkIcon />
-      </Link>
-    </>
-  )
-
-  const burnedNftsNode = (
-    <>
-      {data.ledgerInfo.burnedNFTokens}{' '}
-      <Link
-        href={
-          '/nft-explorer?includeWithoutMediaData=true&issuer=' + data?.address + '&includeBurned=true&burnedPeriod=all'
-        }
-      >
-        <LinkIcon />
-      </Link>
-    </>
-  )
-
-  const nftMinterNode = <AddressWithIconFilled data={data.ledgerInfo} name="nftokenMinter" />
-
   const transferRateNode = Math.ceil((data.ledgerInfo.transferRate - 1) * 10000) / 100
 
   const regularKeyNode = <AddressWithIconFilled data={data.ledgerInfo} name="regularKey" />
@@ -356,12 +304,9 @@ export default function LedgerData({
   const dexOrdersNode = !objects?.offerList ? (
     'Loading...'
   ) : objects?.offerList?.length > 0 ? (
-    <>
-      <span className="bold orange">{objects?.offerList?.length}</span>{' '}
-      <a href={server + '/explorer/' + data.address} className="bold">
-        <LinkIcon />
-      </a>
-    </>
+    <a href={server + '/explorer/' + data.address} className="bold">
+      View orders ({objects?.offerList?.length})
+    </a>
   ) : (
     "This account doesn't have DEX orders."
   )
@@ -369,12 +314,9 @@ export default function LedgerData({
   const escrowNode = !objects?.escrowList ? (
     'Loading...'
   ) : objects?.escrowList?.length > 0 ? (
-    <>
-      <span className="bold orange">{objects?.escrowList?.length}</span>{' '}
-      <a href={server + '/explorer/' + data.address} className="bold">
-        <LinkIcon />
-      </a>
-    </>
+    <a href={server + '/explorer/' + data.address} className="bold">
+      View Escrows ({objects?.escrowList?.length})
+    </a>
   ) : (
     "This account doesn't have Escrows."
   )
@@ -490,42 +432,6 @@ export default function LedgerData({
                   <td>{ammIdNode}</td>
                 </tr>
               )}
-              {data?.ledgerInfo?.activated && (
-                <tr>
-                  <td>Owned NFTs</td>
-                  <td>{ownedNftsNode}</td>
-                </tr>
-              )}
-              {data.ledgerInfo?.mintedNFTokens && (
-                <tr>
-                  <td>Minted NFTs</td>
-                  <td>{mintedNftsNode}</td>
-                </tr>
-              )}
-              {data.ledgerInfo?.burnedNFTokens && (
-                <tr>
-                  <td>Burned NFTs</td>
-                  <td>{burnedNftsNode}</td>
-                </tr>
-              )}
-              {data?.ledgerInfo?.activated && (
-                <tr>
-                  <td>NFT Offers</td>
-                  <td>{nftOffersNode}</td>
-                </tr>
-              )}
-              {data.ledgerInfo?.firstNFTokenSequence && (
-                <tr>
-                  <td>First NFT sequence</td>
-                  <td>{data.ledgerInfo.firstNFTokenSequence}</td>
-                </tr>
-              )}
-              {data.ledgerInfo?.nftokenMinter && (
-                <tr>
-                  <td>NFT minter</td>
-                  <td>{nftMinterNode}</td>
-                </tr>
-              )}
             </>
           )}
 
@@ -618,12 +524,6 @@ export default function LedgerData({
             <tr>
               <td>Trustline clawback</td>
               <td className="bold">enabled</td>
-            </tr>
-          )}
-          {data.ledgerInfo?.flags?.uriTokenIssuer && (
-            <tr>
-              <td>URI token issuer</td>
-              <td className="bold">true</td>
             </tr>
           )}
           {data.ledgerInfo?.flags?.disallowIncomingRemit && (
@@ -808,39 +708,6 @@ export default function LedgerData({
                 {ammIdNode}
               </p>
             )}
-            {data?.ledgerInfo?.activated && (
-              <p>
-                {objects?.nftList?.length > 0 && <span className="grey">Owned NFTs</span>} {ownedNftsNode}
-              </p>
-            )}
-            {data.ledgerInfo?.mintedNFTokens && (
-              <p>
-                <span className="grey">Minted NFTs</span> {mintedNftsNode}
-              </p>
-            )}
-            {data.ledgerInfo?.burnedNFTokens && (
-              <p>
-                <span className="grey">Burned NFTs</span> {burnedNftsNode}
-              </p>
-            )}
-            {data?.ledgerInfo?.activated && (
-              <p>
-                {objects?.nftOfferList?.length > 0 && <span className="grey">NFT Offers</span>} {nftOffersNode}
-              </p>
-            )}
-            {data.ledgerInfo?.firstNFTokenSequence && (
-              <p>
-                <span className="grey">First NFT sequence</span> {data.ledgerInfo.firstNFTokenSequence}
-              </p>
-            )}
-            {data.ledgerInfo?.nftokenMinter && (
-              <>
-                <p>
-                  <span className="grey">NFT minter</span>
-                </p>
-                {nftMinterNode}
-              </>
-            )}
           </>
         )}
         {data.ledgerInfo?.flags?.disallowXRP && (
@@ -917,11 +784,6 @@ export default function LedgerData({
         {data.ledgerInfo?.flags?.allowTrustLineClawback && (
           <p>
             <span className="grey">Trustline clawback</span> <span className="bold">enabled</span>
-          </p>
-        )}
-        {data.ledgerInfo?.flags?.uriTokenIssuer && (
-          <p>
-            <span className="grey">URI token issuer</span> <span className="bold">true</span>
           </p>
         )}
         {data.ledgerInfo?.flags?.disallowIncomingRemit && (
