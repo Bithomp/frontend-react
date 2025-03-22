@@ -420,18 +420,22 @@ export default function LedgerData({
               </tr>
             </>
           )}
-          <tr>
-            <td>{t('explorer.menu.tokens')}</td>
-            <td>{tokensNode}</td>
-          </tr>
-          <tr>
-            <td>DEX orders</td>
-            <td>{dexOrdersNode}</td>
-          </tr>
-          <tr>
-            <td>Escrows</td>
-            <td>{escrowNode}</td>
-          </tr>
+          {data?.ledgerInfo?.activated && (
+            <>
+              <tr>
+                <td>{t('explorer.menu.tokens')}</td>
+                <td>{tokensNode}</td>
+              </tr>
+              <tr>
+                <td>DEX orders</td>
+                <td>{dexOrdersNode}</td>
+              </tr>
+              <tr>
+                <td>Escrows</td>
+                <td>{escrowNode}</td>
+              </tr>
+            </>
+          )}
           {data.ledgerInfo?.domain && (
             <tr>
               <td>Domain</td>
@@ -486,10 +490,12 @@ export default function LedgerData({
                   <td>{ammIdNode}</td>
                 </tr>
               )}
-              <tr>
-                <td>Owned NFTs</td>
-                <td>{ownedNftsNode}</td>
-              </tr>
+              {data?.ledgerInfo?.activated && (
+                <tr>
+                  <td>Owned NFTs</td>
+                  <td>{ownedNftsNode}</td>
+                </tr>
+              )}
               {data.ledgerInfo?.mintedNFTokens && (
                 <tr>
                   <td>Minted NFTs</td>
@@ -502,10 +508,12 @@ export default function LedgerData({
                   <td>{burnedNftsNode}</td>
                 </tr>
               )}
-              <tr>
-                <td>NFT Offers</td>
-                <td>{nftOffersNode}</td>
-              </tr>
+              {data?.ledgerInfo?.activated && (
+                <tr>
+                  <td>NFT Offers</td>
+                  <td>{nftOffersNode}</td>
+                </tr>
+              )}
               {data.ledgerInfo?.firstNFTokenSequence && (
                 <tr>
                   <td>First NFT sequence</td>
@@ -730,20 +738,24 @@ export default function LedgerData({
             </p>
           </>
         )}
-        <p>
-          {objects?.rippleStateList?.length > 0 && (
-            <>
-              <span className="grey">{t('explorer.menu.tokens')}</span>{' '}
-            </>
-          )}
-          {tokensNode}
-        </p>
-        <p>
-          {objects?.offerList?.length > 0 && <span className="grey">DEX orders</span>} {dexOrdersNode}
-        </p>
-        <p>
-          {objects?.escrowList?.length > 0 && <span className="grey">Escrows</span>} {escrowNode}
-        </p>
+        {data?.ledgerInfo?.activated && (
+          <>
+            <p>
+              {objects?.rippleStateList?.length > 0 && (
+                <>
+                  <span className="grey">{t('explorer.menu.tokens')}</span>{' '}
+                </>
+              )}
+              {tokensNode}
+            </p>
+            <p>
+              {objects?.offerList?.length > 0 && <span className="grey">DEX orders</span>} {dexOrdersNode}
+            </p>
+            <p>
+              {objects?.escrowList?.length > 0 && <span className="grey">Escrows</span>} {escrowNode}
+            </p>
+          </>
+        )}
         {data.ledgerInfo?.domain && (
           <p>
             <span className="grey">Domain </span>
@@ -796,9 +808,11 @@ export default function LedgerData({
                 {ammIdNode}
               </p>
             )}
-            <p>
-              {objects?.nftList?.length > 0 && <span className="grey">Owned NFTs</span>} {ownedNftsNode}
-            </p>
+            {data?.ledgerInfo?.activated && (
+              <p>
+                {objects?.nftList?.length > 0 && <span className="grey">Owned NFTs</span>} {ownedNftsNode}
+              </p>
+            )}
             {data.ledgerInfo?.mintedNFTokens && (
               <p>
                 <span className="grey">Minted NFTs</span> {mintedNftsNode}
@@ -809,9 +823,11 @@ export default function LedgerData({
                 <span className="grey">Burned NFTs</span> {burnedNftsNode}
               </p>
             )}
-            <p>
-              {objects?.nftOfferList?.length > 0 && <span className="grey">NFT Offers</span>} {nftOffersNode}
-            </p>
+            {data?.ledgerInfo?.activated && (
+              <p>
+                {objects?.nftOfferList?.length > 0 && <span className="grey">NFT Offers</span>} {nftOffersNode}
+              </p>
+            )}
             {data.ledgerInfo?.firstNFTokenSequence && (
               <p>
                 <span className="grey">First NFT sequence</span> {data.ledgerInfo.firstNFTokenSequence}
