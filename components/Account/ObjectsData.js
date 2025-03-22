@@ -94,6 +94,17 @@ export default function ObjectsData({ address, account, setSignRequest, setObjec
             payChannelList: accountObjectWithPayChannel,
             rippleStateList: accountObjectWithRippleState
           })
+        } else {
+          // no objects
+          setObjects({
+            depositPreauthList: [],
+            escrowList: [],
+            nftOfferList: [],
+            nftList: [],
+            offerList: [],
+            payChannelList: [],
+            rippleStateList: []
+          })
         }
       }
     }
