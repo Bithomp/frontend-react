@@ -347,7 +347,7 @@ export default function LedgerData({
     'Loading...'
   ) : objects?.rippleStateList?.length > 0 ? (
     <a href={server + '/explorer/' + data.address} className="bold">
-      View tokens
+      View tokens ({objects?.rippleStateList?.length})
     </a>
   ) : (
     "This account doesn't hold Tokens."

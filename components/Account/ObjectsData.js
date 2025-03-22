@@ -9,6 +9,14 @@ import Link from 'next/link'
 import { TbPigMoney } from 'react-icons/tb'
 import { MdMoneyOff } from 'react-icons/md'
 
+const isPositiveBalance = (balance) => {
+  return balance !== '0' && balance[0] !== '-'
+}
+
+const isNegativeBalance = (balance) => {
+  return balance !== '0' && balance[0] === '-'
+}
+
 export default function ObjectsData({ address, account, setSignRequest, setObjects }) {
   const [errorMessage, setErrorMessage] = useState('')
   const [loadingObjects, setLoadingObjects] = useState(false)
@@ -73,7 +81,37 @@ export default function ObjectsData({ address, account, setSignRequest, setObjec
           let accountObjectWithNFTokenOffer = accountObjects.filter((o) => o.LedgerEntryType === 'NFTokenOffer') || []
           let accountObjectWithOffer = accountObjects.filter((o) => o.LedgerEntryType === 'Offer') || []
           let accountObjectWithPayChannel = accountObjects.filter((o) => o.LedgerEntryType === 'PayChannel') || []
-          let accountObjectWithRippleState = accountObjects.filter((o) => o.LedgerEntryType === 'RippleState') || []
+          //https://github.com/Bithomp/xrpl-api/blob/master/src/models/account_object.ts#L95-L131
+
+          let accountObjectWithRippleState =
+            accountObjects.filter((node) => {
+              if (node.LedgerEntryType !== 'RippleState') {
+                return false
+              }
+              if (node.HighLimit.issuer === address) {
+                if (node.Flags & 131072) {
+                  console.log('hello')
+                  if (isPositiveBalance(node.Balance.value)) {
+                    return false
+                  }
+                  return true
+                }
+                if (isNegativeBalance(node.Balance.value)) {
+                  return true
+                }
+              } else {
+                if (node.Flags & 65536) {
+                  if (isNegativeBalance(node.Balance.value)) {
+                    return false
+                  }
+                  return true
+                }
+                if (isPositiveBalance(node.Balance.value)) {
+                  return true
+                }
+              }
+              return false
+            }) || []
 
           setDepositPreauthList(accountObjectWithDepositPreauth)
           setPayChannelList(accountObjectWithPayChannel)
