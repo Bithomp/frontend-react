@@ -19,9 +19,11 @@ export default function NftData({ data, objects, ledgerTimestamp }) {
   ) : objects?.nftList?.length > 0 ? (
     <>
       <span className="bold orange">{objects?.nftList?.length}</span>{' '}
-      <Link href={'/nfts/' + data?.address + '?includeWithoutMediaData=true'}>
-        <LinkIcon />
-      </Link>
+      {!ledgerTimestamp && (
+        <Link href={'/nfts/' + data?.address + '?includeWithoutMediaData=true'}>
+          <LinkIcon />
+        </Link>
+      )}
     </>
   ) : (
     "This account doesn't own any NFTs."
@@ -32,9 +34,11 @@ export default function NftData({ data, objects, ledgerTimestamp }) {
   ) : objects?.nftOfferList?.length > 0 ? (
     <>
       <span className="bold orange">{objects?.nftOfferList?.length}</span>{' '}
-      <Link href={'/nft-offers/' + data?.address}>
-        <LinkIcon />
-      </Link>
+      {!ledgerTimestamp && (
+        <Link href={'/nft-offers/' + data?.address}>
+          <LinkIcon />
+        </Link>
+      )}
     </>
   ) : (
     "This account doesn't have any NFT Offers."
@@ -43,22 +47,28 @@ export default function NftData({ data, objects, ledgerTimestamp }) {
   const mintedNftsNode = (
     <>
       {data.ledgerInfo.mintedNFTokens}{' '}
-      <Link href={'/nft-explorer?includeWithoutMediaData=true&issuer=' + data?.address + '&includeBurned=true'}>
-        <LinkIcon />
-      </Link>
+      {!ledgerTimestamp && (
+        <Link href={'/nft-explorer?includeWithoutMediaData=true&issuer=' + data?.address + '&includeBurned=true'}>
+          <LinkIcon />
+        </Link>
+      )}
     </>
   )
 
   const burnedNftsNode = (
     <>
       {data.ledgerInfo.burnedNFTokens}{' '}
-      <Link
-        href={
-          '/nft-explorer?includeWithoutMediaData=true&issuer=' + data?.address + '&includeBurned=true&burnedPeriod=all'
-        }
-      >
-        <LinkIcon />
-      </Link>
+      {!ledgerTimestamp && (
+        <Link
+          href={
+            '/nft-explorer?includeWithoutMediaData=true&issuer=' +
+            data?.address +
+            '&includeBurned=true&burnedPeriod=all'
+          }
+        >
+          <LinkIcon />
+        </Link>
+      )}
     </>
   )
 

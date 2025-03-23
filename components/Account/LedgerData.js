@@ -294,9 +294,13 @@ export default function LedgerData({
   const tokensNode = !objects?.rippleStateList ? (
     'Loading...'
   ) : objects?.rippleStateList?.length > 0 ? (
-    <a href={server + '/explorer/' + data.address} className="bold">
-      View tokens ({objects?.rippleStateList?.length})
-    </a>
+    data?.ledgerInfo?.ledgerTimestamp ? (
+      <span className="orange bold">{objects?.rippleStateList?.length}</span>
+    ) : (
+      <a href={server + '/explorer/' + data.address} className="bold">
+        View tokens ({objects?.rippleStateList?.length})
+      </a>
+    )
   ) : (
     "This account doesn't hold Tokens."
   )
@@ -304,9 +308,13 @@ export default function LedgerData({
   const dexOrdersNode = !objects?.offerList ? (
     'Loading...'
   ) : objects?.offerList?.length > 0 ? (
-    <a href={server + '/explorer/' + data.address} className="bold">
-      View orders ({objects?.offerList?.length})
-    </a>
+    data?.ledgerInfo?.ledgerTimestamp ? (
+      <span className="orange bold">{objects?.offerList?.length}</span>
+    ) : (
+      <a href={server + '/explorer/' + data.address} className="bold">
+        View orders ({objects?.offerList?.length})
+      </a>
+    )
   ) : (
     "This account doesn't have DEX orders."
   )
@@ -314,9 +322,13 @@ export default function LedgerData({
   const escrowNode = !objects?.escrowList ? (
     'Loading...'
   ) : objects?.escrowList?.length > 0 ? (
-    <a href={server + '/explorer/' + data.address} className="bold">
-      View Escrows ({objects?.escrowList?.length})
-    </a>
+    data?.ledgerInfo?.ledgerTimestamp ? (
+      <span className="orange bold">{objects?.escrowList?.length}</span>
+    ) : (
+      <a href={server + '/explorer/' + data.address} className="bold">
+        View Escrows ({objects?.escrowList?.length})
+      </a>
+    )
   ) : (
     "This account doesn't have Escrows."
   )
