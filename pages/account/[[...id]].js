@@ -238,16 +238,18 @@ export default function Account({
                   <>
                     {data?.address && (
                       <>
-                        <div className="show-on-small-w800">
-                          <AccountSummary
-                            data={data}
-                            account={account}
-                            balances={balances}
-                            refreshPage={refreshPage}
-                            selectedCurrency={selectedCurrency}
-                            pageFiatRate={pageFiatRate}
-                          />
-                        </div>
+                        {!ledgerTimestamp && (
+                          <div className="show-on-small-w800">
+                            <AccountSummary
+                              data={data}
+                              account={account}
+                              balances={balances}
+                              refreshPage={refreshPage}
+                              selectedCurrency={selectedCurrency}
+                              pageFiatRate={pageFiatRate}
+                            />
+                          </div>
+                        )}
 
                         <div className="center show-on-small-w800 grey" style={{ marginTop: 10 }}>
                           {((!account?.address && !data?.service) || data?.address === account?.address) &&
@@ -467,17 +469,19 @@ export default function Account({
                           </table>
                         </div>
                         <div className="column-right">
-                          <div className="hide-on-small-w800">
-                            <AccountSummary
-                              data={data}
-                              account={account}
-                              balances={balances}
-                              refreshPage={refreshPage}
-                              selectedCurrency={selectedCurrency}
-                              pageFiatRate={pageFiatRate}
-                            />
-                            <br />
-                          </div>
+                          {!ledgerTimestamp && (
+                            <div className="hide-on-small-w800">
+                              <AccountSummary
+                                data={data}
+                                account={account}
+                                balances={balances}
+                                refreshPage={refreshPage}
+                                selectedCurrency={selectedCurrency}
+                                pageFiatRate={pageFiatRate}
+                              />
+                              <br />
+                            </div>
+                          )}
 
                           <LedgerData
                             data={data}
