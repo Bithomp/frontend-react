@@ -71,6 +71,10 @@ export const nativeCurrencyToFiat = (params) => {
     calculatedAmount = shortNiceNumber((amount / 1000000) * fiatRate, 2, 1, selectedCurrency)
   }
 
+  if (params.asText) {
+    return '≈' + calculatedAmount
+  }
+
   return (
     <span className="tooltip">
       {' '}

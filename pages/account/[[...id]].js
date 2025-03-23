@@ -6,7 +6,8 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import Image from 'next/image'
 import { axiosServer, passHeaders } from '../../utils/axios'
 
-import { devNet, xahauNetwork, avatarSrc } from '../../utils'
+import { devNet, xahauNetwork, avatarSrc, nativeCurrency } from '../../utils'
+import { nativeCurrencyToFiat, shortNiceNumber } from '../../utils/format'
 import { getIsSsrMobile } from '../../utils/mobile'
 
 const RelatedLinks = dynamic(() => import('../../components/Account/RelatedLinks'), { ssr: false })
@@ -195,7 +196,21 @@ export default function Account({
         title={
           t('explorer.header.account') +
           ' ' +
-          (initialData?.service?.name || initialData?.username || initialData?.address || id)
+          (initialData?.service?.name || initialData?.username || initialData?.address || id) +
+          (data?.ledgerInfo?.balance > 1000000
+            ? ' - ' +
+              shortNiceNumber(data.ledgerInfo.balance / 1000000, 2, 0) +
+              ' ' +
+              nativeCurrency +
+              ' (' +
+              nativeCurrencyToFiat({
+                amount: data.ledgerInfo.balance,
+                selectedCurrency,
+                fiatRate,
+                asText: true
+              }) +
+              ')'
+            : '')
         }
         description={
           'Account details, transactions, NFTs, Tokens for ' +
