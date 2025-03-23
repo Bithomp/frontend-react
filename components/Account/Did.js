@@ -168,7 +168,7 @@ export default function Did({ data, setSignRequest, account, ledgerTimestamp }) 
               <td>{metadataNode}</td>
             </tr>
           )}
-          {data.address === account?.address && (
+          {data.address === account?.address && !ledgerTimestamp && (
             <tr>
               <td>Actions</td>
               <td className="action-buttons">{actionsNode}</td>
@@ -228,7 +228,7 @@ export default function Did({ data, setSignRequest, account, ledgerTimestamp }) 
             {metadataNode}
           </p>
         )}
-        {data.address === account?.address && <div className="center">{actionsNode}</div>}
+        {data.address === account?.address && !ledgerTimestamp && <div className="center">{actionsNode}</div>}
       </div>
       <style jsx>{`
         .action-buttons > :not(:first-child) {
