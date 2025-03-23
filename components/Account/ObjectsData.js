@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { amountFormat, shortHash } from '../../utils/format'
+import { addressUsernameOrServiceLink, amountFormat, shortHash } from '../../utils/format'
 import CopyButton from '../UI/CopyButton'
 import axios from 'axios'
 import { useTranslation } from 'next-i18next'
@@ -35,7 +35,7 @@ export default function ObjectsData({ address, account, setSignRequest, setObjec
     async function checkObjects() {
       setLoadingObjects(true)
       const accountObjectsData = await axios
-        .get('xrpl/objects/' + address, {
+        .get('v2/objects/' + address, {
           signal: controller.signal
         })
         .catch((error) => {
@@ -44,7 +44,7 @@ export default function ObjectsData({ address, account, setSignRequest, setObjec
             setLoadingObjects(false)
           }
         })
-      const accountObjects = accountObjectsData?.data
+      const accountObjects = accountObjectsData?.data?.objects
       if (accountObjects) {
         setLoadingObjects(false)
         if (accountObjects.length > 0) {
@@ -90,7 +90,6 @@ export default function ObjectsData({ address, account, setSignRequest, setObjec
               }
               if (node.HighLimit.issuer === address) {
                 if (node.Flags & 131072) {
-                  console.log('hello')
                   if (isPositiveBalance(node.Balance.value)) {
                     return false
                   }
@@ -175,7 +174,7 @@ export default function ObjectsData({ address, account, setSignRequest, setObjec
               style={{ marginRight: '5px', marginBottom: '-5px' }}
             />
           </Link>
-          <Link href={'/account/' + c[adrLabel]}>{shortHash(c[adrLabel])}</Link>
+          {addressUsernameOrServiceLink(c, adrLabel, { short: true })}
         </td>
         <td>
           {typeof c.DestinationTag !== undefined && (

@@ -387,8 +387,11 @@ export const userOrServiceLink = (data, type, options = {}) => {
   if (!options.url) {
     options.url = '/account/'
   }
-  if (data[type + 'Details']) {
-    const { username, service } = data[type + 'Details']
+
+  const typeDetails = type.charAt(0).toLowerCase() + type.slice(1) + 'Details'
+
+  if (data[typeDetails]) {
+    const { username, service } = data[typeDetails]
     let link = username ? username : data[type]
     if (service) {
       let serviceName = service
