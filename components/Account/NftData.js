@@ -9,7 +9,7 @@ export default function NftData({ data, objects, ledgerTimestamp }) {
   const title = 'NFT Data'
 
   const historicalTitle = ledgerTimestamp ? (
-    <span className="red bold"> Historical data ({fullDateAndTime(ledgerTimestamp)})</span>
+    <span className="red bold">Historical NFT data ({fullDateAndTime(ledgerTimestamp)})</span>
   ) : (
     ''
   )
@@ -79,10 +79,7 @@ export default function NftData({ data, objects, ledgerTimestamp }) {
       <table className="table-details hide-on-small-w800">
         <thead>
           <tr>
-            <th colSpan="100">
-              {title}
-              {historicalTitle}
-            </th>
+            <th colSpan="100">{historicalTitle || title}</th>
           </tr>
         </thead>
         <tbody>
@@ -142,10 +139,7 @@ export default function NftData({ data, objects, ledgerTimestamp }) {
         </tbody>
       </table>
       <div className="show-on-small-w800">
-        <center>
-          {title.toUpperCase()}
-          {historicalTitle}
-        </center>
+        <center>{historicalTitle || title.toUpperCase()}</center>
         {!xahauNetwork && (
           <>
             {data?.ledgerInfo?.activated && (
