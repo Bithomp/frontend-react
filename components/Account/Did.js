@@ -4,7 +4,7 @@ import CopyButton from '../UI/CopyButton'
 import { decode, isUrlValid } from '../../utils'
 import { useTranslation } from 'next-i18next'
 
-export default function Did({ data, setSignRequest, account }) {
+export default function Did({ data, setSignRequest, account, ledgerTimestamp }) {
   /*
   "did": {
     "didID": "ECE205A44D95E5D7A008823BFCBC597788F840F64AB93E0503A48F6E06B4319F",
@@ -43,6 +43,12 @@ export default function Did({ data, setSignRequest, account }) {
   */
 
   const { t } = useTranslation()
+
+  const title = ledgerTimestamp ? (
+    <span className="red bold">Historical DID data ({fullDateAndTime(ledgerTimestamp)})</span>
+  ) : (
+    'Decentralized Identifier (DID)'
+  )
 
   const didData = data?.ledgerInfo?.did
 
@@ -101,7 +107,7 @@ export default function Did({ data, setSignRequest, account }) {
       <table className="table-details hide-on-small-w800">
         <thead>
           <tr>
-            <th colSpan="100">Decentralized Identifier (DID)</th>
+            <th colSpan="100">{title}</th>
           </tr>
         </thead>
         <tbody>
@@ -172,7 +178,7 @@ export default function Did({ data, setSignRequest, account }) {
       </table>
       <div className="show-on-small-w800">
         <br />
-        <center>{'Decentralized Identifier (DID)'.toUpperCase()}</center>
+        <center>{title}</center>
         <p>
           <span className="grey">DID ID</span> {idNode}
         </p>

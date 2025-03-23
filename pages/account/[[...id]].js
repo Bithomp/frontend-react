@@ -502,7 +502,12 @@ export default function Account({
                             />
                           )}
                           <XamanData data={data} />
-                          <Did data={data} account={account} setSignRequest={setSignRequest} />
+                          <Did
+                            data={data}
+                            account={account}
+                            setSignRequest={setSignRequest}
+                            ledgerTimestamp={data?.ledgerInfo?.ledgerTimestamp}
+                          />
                           <RelatedLinks data={data} />
                         </div>
                       </>
