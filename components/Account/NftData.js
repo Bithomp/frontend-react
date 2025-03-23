@@ -1,12 +1,18 @@
 import Link from 'next/link'
 
-import { AddressWithIconFilled } from '../../utils/format'
+import { AddressWithIconFilled, fullDateAndTime } from '../../utils/format'
 import { xahauNetwork } from '../../utils'
 
 import LinkIcon from '../../public/images/link.svg'
 
-export default function NftData({ data, objects }) {
+export default function NftData({ data, objects, ledgerTimestamp }) {
   const title = 'NFT Data'
+
+  const historicalTitle = ledgerTimestamp ? (
+    <span className="red bold"> Historical data ({fullDateAndTime(ledgerTimestamp)})</span>
+  ) : (
+    ''
+  )
 
   const ownedNftsNode = !objects?.nftList ? (
     'Loading...'
@@ -63,7 +69,10 @@ export default function NftData({ data, objects }) {
       <table className="table-details hide-on-small-w800">
         <thead>
           <tr>
-            <th colSpan="100">{title}</th>
+            <th colSpan="100">
+              {title}
+              {historicalTitle}
+            </th>
           </tr>
         </thead>
         <tbody>
@@ -123,7 +132,10 @@ export default function NftData({ data, objects }) {
         </tbody>
       </table>
       <div className="show-on-small-w800">
-        <center>{title.toUpperCase()}</center>
+        <center>
+          {title.toUpperCase()}
+          {historicalTitle}
+        </center>
         {!xahauNetwork && (
           <>
             {data?.ledgerInfo?.activated && (

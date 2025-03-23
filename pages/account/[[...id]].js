@@ -476,13 +476,14 @@ export default function Account({
                             objects={objects}
                           />
                           <PublicData data={data} />
-                          <NftData data={data} objects={objects} />
+                          <NftData data={data} objects={objects} ledgerTimestamp={data?.ledgerInfo?.ledgerTimestamp} />
                           {data?.ledgerInfo?.activated && (
                             <ObjectsData
                               account={account}
                               setSignRequest={setSignRequest}
                               address={data?.address}
                               setObjects={setObjects}
+                              ledgerTimestamp={data?.ledgerInfo?.ledgerTimestamp}
                             />
                           )}
                           <XamanData data={data} />

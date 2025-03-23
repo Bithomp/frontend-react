@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { addressUsernameOrServiceLink, amountFormat, shortHash } from '../../utils/format'
+import { addressUsernameOrServiceLink, amountFormat, fullDateAndTime, shortHash } from '../../utils/format'
 import CopyButton from '../UI/CopyButton'
 import axios from 'axios'
 import { useTranslation } from 'next-i18next'
@@ -17,7 +17,7 @@ const isNegativeBalance = (balance) => {
   return balance !== '0' && balance[0] === '-'
 }
 
-export default function ObjectsData({ address, account, setSignRequest, setObjects }) {
+export default function ObjectsData({ address, account, setSignRequest, setObjects, ledgerTimestamp }) {
   const [errorMessage, setErrorMessage] = useState('')
   const [loadingObjects, setLoadingObjects] = useState(false)
   const [checkList, setCheckList] = useState([])
@@ -30,12 +30,18 @@ export default function ObjectsData({ address, account, setSignRequest, setObjec
 
   const controller = new AbortController()
 
+  const historicalTitle = ledgerTimestamp ? (
+    <span className="red bold"> Historical data ({fullDateAndTime(ledgerTimestamp)})</span>
+  ) : (
+    ''
+  )
+
   useEffect(() => {
     setObjects({})
     async function checkObjects() {
       setLoadingObjects(true)
       const accountObjectsData = await axios
-        .get('v2/objects/' + address, {
+        .get('v2/objects/' + address + (ledgerTimestamp ? '?ledgerTimestamp=' + ledgerTimestamp : ''), {
           signal: controller.signal
         })
         .catch((error) => {
@@ -183,64 +189,68 @@ export default function ObjectsData({ address, account, setSignRequest, setObjec
             </>
           )}
         </td>
-        <td>
-          {c.Destination === account?.address ? (
-            <>
-              <span className="orange">
-                <TbPigMoney style={{ fontSize: 18, marginBottom: -4 }} />{' '}
-                <a
-                  href="#"
-                  onClick={() =>
-                    setSignRequest({
-                      request: {
-                        TransactionType: 'CheckCash',
-                        Account: c.Destination,
-                        Amount: c.SendMax,
-                        CheckID: c.index
+        {!ledgerTimestamp && (
+          <>
+            <td>
+              {c.Destination === account?.address ? (
+                <>
+                  <span className="orange">
+                    <TbPigMoney style={{ fontSize: 18, marginBottom: -4 }} />{' '}
+                    <a
+                      href="#"
+                      onClick={() =>
+                        setSignRequest({
+                          request: {
+                            TransactionType: 'CheckCash',
+                            Account: c.Destination,
+                            Amount: c.SendMax,
+                            CheckID: c.index
+                          }
+                        })
                       }
-                    })
-                  }
-                >
-                  Redeem
-                </a>
-              </span>
-            </>
-          ) : (
-            <span className="grey">
-              <TbPigMoney style={{ fontSize: 18, marginBottom: -4 }} /> Redeem
-            </span>
-          )}
-        </td>
-        <td>
-          {c.Destination === account?.address ||
-          c.Account === account?.address ||
-          timestampExpired(c.Expiration, 'ripple') ? (
-            <>
-              <span className="red">
-                <MdMoneyOff style={{ fontSize: 18, marginBottom: -4 }} />{' '}
-                <a
-                  href="#"
-                  onClick={() =>
-                    setSignRequest({
-                      request: {
-                        TransactionType: 'CheckCancel',
-                        Account: c.Account,
-                        CheckID: c.index
+                    >
+                      Redeem
+                    </a>
+                  </span>
+                </>
+              ) : (
+                <span className="grey">
+                  <TbPigMoney style={{ fontSize: 18, marginBottom: -4 }} /> Redeem
+                </span>
+              )}
+            </td>
+            <td>
+              {c.Destination === account?.address ||
+              c.Account === account?.address ||
+              timestampExpired(c.Expiration, 'ripple') ? (
+                <>
+                  <span className="red">
+                    <MdMoneyOff style={{ fontSize: 18, marginBottom: -4 }} />{' '}
+                    <a
+                      href="#"
+                      onClick={() =>
+                        setSignRequest({
+                          request: {
+                            TransactionType: 'CheckCancel',
+                            Account: c.Account,
+                            CheckID: c.index
+                          }
+                        })
                       }
-                    })
-                  }
-                  className="red"
-                >
-                  Cancel
-                </a>
-              </span>
-            </>
-          ) : (
-            <span className="grey">
-              <MdMoneyOff style={{ fontSize: 18, marginBottom: -4 }} /> Cancel
-            </span>
-          )}
-        </td>
+                      className="red"
+                    >
+                      Cancel
+                    </a>
+                  </span>
+                </>
+              ) : (
+                <span className="grey">
+                  <MdMoneyOff style={{ fontSize: 18, marginBottom: -4 }} /> Cancel
+                </span>
+              )}
+            </td>
+          </>
+        )}
       </tr>
     ))
   }
@@ -254,7 +264,7 @@ export default function ObjectsData({ address, account, setSignRequest, setObjec
           <table className="table-details hide-on-small-w800">
             <thead>
               <tr>
-                <th colSpan="100">Objects</th>
+                <th colSpan="100">Objects{historicalTitle}</th>
               </tr>
             </thead>
             <tbody>
@@ -279,7 +289,10 @@ export default function ObjectsData({ address, account, setSignRequest, setObjec
           </table>
           <div className="show-on-small-w800">
             <br />
-            <center>{'Objects'.toUpperCase()}</center>
+            <center>
+              {'Objects'.toUpperCase()}
+              {historicalTitle}
+            </center>
             <p className="center">
               {loadingObjects ? (
                 <>
@@ -300,7 +313,7 @@ export default function ObjectsData({ address, account, setSignRequest, setObjec
               <table className="table-details hide-on-small-w800">
                 <thead>
                   <tr>
-                    <th colSpan="100">Objects</th>
+                    <th colSpan="100">Objects{historicalTitle}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -320,7 +333,7 @@ export default function ObjectsData({ address, account, setSignRequest, setObjec
               </table>
               <div className="show-on-small-w800">
                 <br />
-                <center>Objects</center>
+                <center>Objects{historicalTitle}</center>
                 <br />
                 {depositPreauthList.length > 0 && (
                   <p>
@@ -342,8 +355,8 @@ export default function ObjectsData({ address, account, setSignRequest, setObjec
                 <thead>
                   <tr>
                     <th colSpan="100">
-                      {checkList.length} Received Checks
-                      {!account?.address && (
+                      {checkList.length} Received Checks{historicalTitle}
+                      {!account?.address && !ledgerTimestamp && (
                         <>
                           {' '}
                           [
@@ -360,7 +373,10 @@ export default function ObjectsData({ address, account, setSignRequest, setObjec
               </table>
               <div className="show-on-small-w800">
                 <br />
-                <center>{'Received Checks'.toUpperCase()}</center>
+                <center>
+                  {'Received Checks'.toUpperCase()}
+                  {historicalTitle}
+                </center>
                 <br />
                 {checkList.length > 0 && (
                   <table className="table-mobile">
@@ -376,8 +392,8 @@ export default function ObjectsData({ address, account, setSignRequest, setObjec
                 <thead>
                   <tr>
                     <th colSpan="100">
-                      {issuedCheckList.length} Issued Checks
-                      {!account?.address && (
+                      {issuedCheckList.length} Issued Checks{historicalTitle}
+                      {!account?.address && !ledgerTimestamp && (
                         <>
                           {' '}
                           [
@@ -394,7 +410,10 @@ export default function ObjectsData({ address, account, setSignRequest, setObjec
               </table>
               <div className="show-on-small-w800">
                 <br />
-                <center>{'Issued Checks'.toUpperCase()}</center>
+                <center>
+                  {'Issued Checks'.toUpperCase()}
+                  {historicalTitle}
+                </center>
                 <br />
                 {issuedCheckList.length > 0 && (
                   <table className="table-mobile">
@@ -409,7 +428,7 @@ export default function ObjectsData({ address, account, setSignRequest, setObjec
               <table className="table-details hide-on-small-w800">
                 <thead>
                   <tr>
-                    <th colSpan="100">Hooks</th>
+                    <th colSpan="100">Hooks{historicalTitle}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -425,7 +444,10 @@ export default function ObjectsData({ address, account, setSignRequest, setObjec
               </table>
               <div className="show-on-small-w800">
                 <br />
-                <center>{'Hooks'.toUpperCase()}</center>
+                <center>
+                  {'Hooks'.toUpperCase()}
+                  {historicalTitle}
+                </center>
                 {hookList.map((p, i) => (
                   <p key={i}>
                     <span className="grey">{i}</span> {shortHash(p, 16)} <CopyButton text={p} />
