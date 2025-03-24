@@ -225,7 +225,6 @@ export default function ObjectsData({ address, account, setSignRequest, setObjec
                   setSignRequest({
                     request: {
                       TransactionType: 'CheckCancel',
-                      Account: c.Account,
                       CheckID: c.index
                     }
                   })
