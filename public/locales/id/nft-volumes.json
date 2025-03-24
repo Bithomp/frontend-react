@@ -16,5 +16,7 @@
    "desc": "Ini adalah daftar penerbit NFT di {{explorerName}}. Untuk melihat volume koleksi NFT yang diidentifikasi oleh penerbit, klik tautan dalam kolom Volume Penjualan."
   },
   "sales-chart": "Grafik penjualan",
-  "volumes-chart": "Grafik volume"
+  "volumes-chart": "Grafik volume",
+  "sales-label": "Penjualan",
+  "volumes-label": "Volume"
 }

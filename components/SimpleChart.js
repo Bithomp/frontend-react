@@ -22,7 +22,7 @@ const locales = {
   }
 }
 
-export default function PriceChart({ data, combined }) {
+export default function PriceChart({ data, combined, currency }) {
   const { i18n } = useTranslation()
   const { theme } = useTheme()
 
@@ -180,7 +180,12 @@ export default function PriceChart({ data, combined }) {
         }
       },
       y: {
-        formatter: (val) => niceNumber(val, 0, 0)
+        formatter: (val, { seriesIndex }) => {
+          if (combined && seriesIndex === 1) {
+            return niceNumber(val, 0, 0) + ' ' + currency.toUpperCase()
+          }
+          return niceNumber(val, 0, 0)
+        }
       },
       theme
     },

@@ -16,5 +16,7 @@
     "desc": "{{explorerName}}のNFT発行者リストです。発行者とTaxon毎に分類されたNFTコレクションの販売量を見るには、販売量欄のリンクをクリックしてください。"
   },
   "sales-chart": "販売数チャート",
-  "volumes-chart": "取引高チャート"
+  "volumes-chart": "取引高チャート",
+  "sales-label": "販売数",
+  "volumes-label": "取引高"
 }

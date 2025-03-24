@@ -877,7 +877,7 @@ export default function NftVolumes({
 
   const chartDivStyle =
     windowWidth > 600
-      ? { flexGrow: 0, flexBasis: 'calc(50% - 20px)' }
+      ? { flexGrow: 0, flexBasis: 'calc(60% - 20px)' }
       : { width: '100%', marginLeft: 0, marginRight: '10px' }
 
   const collectionNameText = (data) => {
@@ -1072,12 +1072,14 @@ export default function NftVolumes({
                 ) : (
                   <>
                     {chartIssuers.length > 0 && chartVolumes.length > 0 && (
-                      <div className="flex" style={{ marginLeft: '10px' }}>
+                      <div className="flex" style={{ marginLeft: '10px', justifyContent: 'center' }}>
                         <div style={chartDivStyle}>
                           <h3>{t('sales-chart', { ns: 'nft-volumes' })} / {t('volumes-chart', { ns: 'nft-volumes' })} ({convertCurrency?.toUpperCase()})</h3>
-                          <SimpleChart data={[
-                            { name: t('sales-chart', { ns: 'nft-volumes' }), data: chartIssuers },
-                            { name: t('volumes-chart', { ns: 'nft-volumes' }) + ' (' + convertCurrency?.toUpperCase() + ')', data: chartVolumes }]}
+                          <SimpleChart
+                            currency={selectedCurrency}
+                            data={[
+                              { name: t('sales-label', { ns: 'nft-volumes' }), data: chartIssuers },
+                              { name: t('volumes-label', { ns: 'nft-volumes' }), data: chartVolumes }]}
                             combined={true}
                           />
                         </div>
