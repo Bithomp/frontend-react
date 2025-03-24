@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { addressUsernameOrServiceLink, amountFormat, fullDateAndTime, shortHash } from '../../utils/format'
+import { addressUsernameOrServiceLink, amountFormat, fullDateAndTime, shortHash, timeOrDate } from '../../utils/format'
 import CopyButton from '../UI/CopyButton'
 import axios from 'axios'
 import { useTranslation } from 'next-i18next'
@@ -163,14 +163,12 @@ export default function ObjectsData({ address, account, setSignRequest, setObjec
   const checkListNode = (checkList, options) => {
     const adrLabel = options?.type === 'issued' ? 'Destination' : 'Account'
 
-    return checkList.map((c, i) => (
+    const rows = checkList.map((c, i) => (
       <tr key={i}>
         <td className="center" style={{ width: 30 }}>
           {i + 1}
         </td>
-        <td className="bold right">{amountFormat(c.SendMax)}</td>
         <td>
-          {options?.type === 'issued' ? 'to' : 'from'}{' '}
           <Link href={'/account/' + c[adrLabel]}>
             <Image
               src={avatarServer + c[adrLabel]}
@@ -182,77 +180,84 @@ export default function ObjectsData({ address, account, setSignRequest, setObjec
           </Link>
           {addressUsernameOrServiceLink(c, adrLabel, { short: true })}
         </td>
-        <td>
-          {typeof c.DestinationTag !== undefined && (
-            <>
-              DT: <span className="bold">{c.DestinationTag}</span>
-            </>
+        <td className="bold right">{amountFormat(c.SendMax)}</td>
+        <td className="right">{typeof c.DestinationTag !== 'undefined' && c.DestinationTag}</td>
+        <td className="right">
+          {c.expiration ? (
+            <span className={timestampExpired(c.expiration) ? 'red' : ''}>{timeOrDate(c.expiration)}</span>
+          ) : (
+            <span className="grey">does not expire</span>
           )}
         </td>
         {!ledgerTimestamp && (
-          <>
-            <td>
-              {c.Destination === account?.address ? (
-                <>
-                  <span className="orange">
-                    <TbPigMoney style={{ fontSize: 18, marginBottom: -4 }} />{' '}
-                    <a
-                      href="#"
-                      onClick={() =>
-                        setSignRequest({
-                          request: {
-                            TransactionType: 'CheckCash',
-                            Account: c.Destination,
-                            Amount: c.SendMax,
-                            CheckID: c.index
-                          }
-                        })
-                      }
-                    >
-                      Redeem
-                    </a>
-                  </span>
-                </>
-              ) : (
-                <span className="grey">
-                  <TbPigMoney style={{ fontSize: 18, marginBottom: -4 }} /> Redeem
-                </span>
-              )}
-            </td>
-            <td>
-              {c.Destination === account?.address ||
-              c.Account === account?.address ||
-              timestampExpired(c.Expiration, 'ripple') ? (
-                <>
-                  <span className="red">
-                    <MdMoneyOff style={{ fontSize: 18, marginBottom: -4 }} />{' '}
-                    <a
-                      href="#"
-                      onClick={() =>
-                        setSignRequest({
-                          request: {
-                            TransactionType: 'CheckCancel',
-                            Account: c.Account,
-                            CheckID: c.index
-                          }
-                        })
-                      }
-                      className="red"
-                    >
-                      Cancel
-                    </a>
-                  </span>
-                </>
-              ) : (
-                <span className="grey">
-                  <MdMoneyOff style={{ fontSize: 18, marginBottom: -4 }} /> Cancel
-                </span>
-              )}
-            </td>
-          </>
+          <td className="center">
+            {c.Destination === account?.address ? (
+              <a
+                href="#"
+                onClick={() =>
+                  setSignRequest({
+                    request: {
+                      TransactionType: 'CheckCash',
+                      Account: c.Destination,
+                      Amount: c.SendMax,
+                      CheckID: c.index
+                    }
+                  })
+                }
+                className="orange tooltip"
+              >
+                <TbPigMoney style={{ fontSize: 18, marginBottom: -4 }} />
+                <span className="tooltiptext">Redeem</span>
+              </a>
+            ) : (
+              <span className="grey tooltip">
+                <TbPigMoney style={{ fontSize: 18, marginBottom: -4 }} />
+                <span className="tooltiptext">Redeem</span>
+              </span>
+            )}
+            <span style={{ display: 'inline-block', width: options?.mobile ? 0 : 15 }}> </span>
+            {c.Destination === account?.address ||
+            c.Account === account?.address ||
+            timestampExpired(c.Expiration, 'ripple') ? (
+              <a
+                href="#"
+                onClick={() =>
+                  setSignRequest({
+                    request: {
+                      TransactionType: 'CheckCancel',
+                      Account: c.Account,
+                      CheckID: c.index
+                    }
+                  })
+                }
+                className="red tooltip"
+              >
+                <MdMoneyOff style={{ fontSize: 18, marginBottom: -4 }} />
+                <span className="tooltiptext">Cancel</span>
+              </a>
+            ) : (
+              <span className="grey tooltip">
+                <MdMoneyOff style={{ fontSize: 18, marginBottom: -4 }} />
+                <span className="tooltiptext">Cancel</span>
+              </span>
+            )}
+          </td>
         )}
       </tr>
     ))
+    return (
+      <>
+        <tr>
+          <th>#</th>
+          <th className="left">{options?.type === 'issued' ? 'To' : 'From'}</th>
+          <th className="right">Amount</th>
+          <th className="right">DT</th>
+          <th className="right">Expiration</th>
+          {!ledgerTimestamp && <th>Actions</th>}
+        </tr>
+        {rows}
+      </>
+    )
   }
 
   const objectsToShow = depositPreauthList.length + payChannelList.length
@@ -380,7 +385,7 @@ export default function ObjectsData({ address, account, setSignRequest, setObjec
                 <br />
                 {checkList.length > 0 && (
                   <table className="table-mobile">
-                    <tbody>{checkListNode(checkList)}</tbody>
+                    <tbody>{checkListNode(checkList, { mobile: true })}</tbody>
                   </table>
                 )}
               </div>
@@ -417,7 +422,7 @@ export default function ObjectsData({ address, account, setSignRequest, setObjec
                 <br />
                 {issuedCheckList.length > 0 && (
                   <table className="table-mobile">
-                    <tbody>{checkListNode(issuedCheckList, { type: 'issued' })}</tbody>
+                    <tbody>{checkListNode(issuedCheckList, { type: 'issued', mobile: true })}</tbody>
                   </table>
                 )}
               </div>
