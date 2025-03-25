@@ -845,7 +845,7 @@ export default function NftsComponent({
               dataLength={data?.length}
               loadMore={checkApi}
               hasMore={hasMore}
-              errorMessage={errorMessage}
+              errorMessage={t(errorMessage)}
               subscriptionExpired={subscriptionExpired}
               sessionToken={sessionToken}
               endMessage={t('nfts.end')}
@@ -903,7 +903,7 @@ export default function NftsComponent({
                             ) : (
                               <tr>
                                 <td colSpan="100" className="center orange bold">
-                                  {errorMessage}
+                                  {t(errorMessage)}
                                 </td>
                               </tr>
                             )}
@@ -974,7 +974,7 @@ export default function NftsComponent({
                             ) : (
                               <tr>
                                 <td colSpan="100" className="center orange bold">
-                                  {errorMessage}
+                                  {t(errorMessage)}
                                 </td>
                               </tr>
                             )}
@@ -996,7 +996,7 @@ export default function NftsComponent({
                   ) : (
                     <>
                       {errorMessage ? (
-                        <div className="center orange bold" style={{ paddingLeft: '40px', paddingRight: '40px' }} dangerouslySetInnerHTML={{ __html: t(errorMessage)}} ></div>
+                        <div className="center orange bold" style={{ paddingLeft: '40px', paddingRight: '40px' }} dangerouslySetInnerHTML={{ __html: t(errorMessage) }} ></div>
                       ) : (
                         <Tiles nftList={data} type={listTab === 'onSale' ? 'onSale' : 'name'} account={account} />
                       )}
