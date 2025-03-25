@@ -13,66 +13,42 @@ import CopyButton from '../UI/CopyButton'
 import { fullDateAndTime, timeFromNow } from '../../utils/format'
 import { useTranslation } from 'next-i18next'
 import { timestampExpired } from '../../utils'
+import { addressBalanceChanges } from '../../utils/transaction'
 
 export const TransactionCheck = ({ data, pageFiatRate, selectedCurrency }) => {
   const { t, i18n } = useTranslation()
 
   if (!data) return null
 
-  const { outcome, specification, tx } = data
+  const { outcome, tx, specification } = data
+
+  const checkChanges = outcome?.checkChanges
+
+  //here we need to check source balance changes, as executor can be source/destination or anyone when expired
+  const destinationBalanceChangesList = addressBalanceChanges(data, checkChanges.destination.address)
 
   /*
   {
-    tx: {
-      Account: 'rMJXDzU1N9ZSDzPF7s1i2GGKyjM2wB3iom',
-      Amount: '30000000000000',
-      Destination: 'rLD5k36bJkNk1HkYSSCJwM4jBXChHjRViQ',
-      DestinationTag: 3681967221,
-      Fee: '24',
-      Flags: 2147483648,
-      LastLedgerSequence: 93908709,
-      Sequence: 92082425,
-      SigningPubKey: '022F5F5DDD08A08B1535EE5A7CD75485FDFDFD19AE676796B9F09D95AB505C34F4',
-      TransactionType: 'Payment',
-      TxnSignature: '30440220581609CA59B4FC7BFA61D4D7775D340F8A95916217E2E7C9578CFB3E235C1046022007F9CF3363A5A90C384FB935EEFFD0CB497DAA9B46539AD08E664D9417C0674A',
-      hash: '2617C08D8D62E90083EC8EE5B573673B96C16CF3D64CF374F3C73A6A653C769E',
-      DeliverMax: '30000000000000',
-      ctid: 'C598E2E300530000',
-      date: 791937440,
-      ledger_index: 93905635,
-      inLedger: 93905635
-    },
-    meta: {
-      AffectedNodes: [ [Object], [Object] ],
-      TransactionIndex: 83,
-      TransactionResult: 'tesSUCCESS',
-      delivered_amount: '30000000000000'
-    },
-    specification: {
-      source: {
-        address: 'rMJXDzU1N9ZSDzPF7s1i2GGKyjM2wB3iom',
-        maxAmount: [Object]
+    "checkChanges": {
+      "status": "deleted",
+      "checkID": "5B98C64DDE7774A55D3DCD5806A27EB9197E725D2D9822F95343EDD4152D4FA4",
+      "source": {
+        "address": "rfnaakrqCzTPwthqtubCJ7m3iQ7Kcd7x3k"
       },
-      destination: { address: 'rLD5k36bJkNk1HkYSSCJwM4jBXChHjRViQ', tag: 3681967221 }
-    },
-    outcome: {
-      result: 'tesSUCCESS',
-      timestamp: '2025-02-03T22:37:20.000Z',
-      fee: '0.000024',
-      balanceChanges: {
-        rMJXDzU1N9ZSDzPF7s1i2GGKyjM2wB3iom: [
-          {
-            "currency": "XRP",
-            "value": "-0.00001"
-          },
-        ],
-        rLD5k36bJkNk1HkYSSCJwM4jBXChHjRViQ: [Array]
+      "destination": {
+        "address": "rnBKit9uv2L3pH8HQwPKpDJhhwACKct3ro",
+        "tag": 1283813905
       },
-      ledgerVersion: 93905635,
-      indexInLedger: 83,
-      deliveredAmount: { currency: 'XRP', value: '30000000' }
+      "sendMax": {
+        "currency": "XRP",
+        "value": "990"
+      },
+      "sequence": 92885957,
+      "expiration": 1741074748
     },
-    validated: true
+    "ledgerIndex": 94986374,
+    "indexInLedger": 56,
+    "ledgerTimestamp": 1742817001
   }
   */
 
@@ -81,25 +57,25 @@ export const TransactionCheck = ({ data, pageFiatRate, selectedCurrency }) => {
       <TRow>
         <TData>Source</TData>
         <TData>
-          <AddressWithIconFilled data={specification.source} name="address" />
+          <AddressWithIconFilled data={checkChanges.source} name="address" />
         </TData>
       </TRow>
-      {specification.source?.tag !== undefined && (
+      {checkChanges.source?.tag !== undefined && (
         <TRow>
           <TData>Source tag</TData>
-          <TData className="bold">{specification.source.tag}</TData>
+          <TData className="bold">{checkChanges.source.tag}</TData>
         </TRow>
       )}
       <TRow>
         <TData>Destination</TData>
         <TData>
-          <AddressWithIconFilled data={specification.destination} name="address" />
+          <AddressWithIconFilled data={checkChanges.destination} name="address" />
         </TData>
       </TRow>
-      {specification.destination?.tag !== undefined && (
+      {checkChanges.destination?.tag !== undefined && (
         <TRow>
           <TData>Destination tag</TData>
-          <TData className="bold">{specification.destination.tag}</TData>
+          <TData className="bold">{checkChanges.destination.tag}</TData>
         </TRow>
       )}
       {tx?.InvoiceID && (
@@ -111,23 +87,25 @@ export const TransactionCheck = ({ data, pageFiatRate, selectedCurrency }) => {
         </TRow>
       )}
 
-      {outcome?.checkChanges?.checkID && (
+      {checkChanges?.checkID && (
         <TRow>
           <TData>Check ID</TData>
           <TData>
-            {shortHash(outcome?.checkChanges?.checkID, 10)} <CopyButton text={outcome?.checkChanges?.checkID} />
+            {shortHash(checkChanges?.checkID, 10)} <CopyButton text={checkChanges?.checkID} />
           </TData>
         </TRow>
       )}
 
-      {tx.SendMax && (
+      {checkChanges.sendMax && (
         <TRow>
           <TData>Max amount</TData>
           <TData>
-            <span className="bold orange">{amountFormat(tx.SendMax)}</span>
-            {tx.SendMax?.issuer && <>({addressUsernameOrServiceLink(tx.SendMax, 'issuer', { short: true })})</>}
+            <span className="bold orange">{amountFormat(checkChanges.sendMax)}</span>
+            {checkChanges.sendMax?.issuer && (
+              <>({addressUsernameOrServiceLink(checkChanges.sendMax, 'issuer', { short: true })})</>
+            )}
             {nativeCurrencyToFiat({
-              amount: tx.SendMax,
+              amount: checkChanges.sendMax,
               selectedCurrency,
               fiatRate: pageFiatRate
             })}
@@ -135,18 +113,50 @@ export const TransactionCheck = ({ data, pageFiatRate, selectedCurrency }) => {
         </TRow>
       )}
 
-      {tx.Expiration && (
+      {checkChanges.expiration && (
         <TRow>
-          <TData className={timestampExpired(tx.Expiration, 'ripple') ? 'red' : ''}>
-            {expirationExpired(t, tx.Expiration, 'ripple')}
+          <TData className={timestampExpired(checkChanges.expiration) ? 'red' : ''}>
+            {expirationExpired(t, checkChanges.expiration)}
           </TData>
           <TData>
-            {timeFromNow(tx.Expiration, i18n, 'ripple')}
+            {timeFromNow(checkChanges.expiration, i18n)}
             {', '}
-            {fullDateAndTime(tx.Expiration, 'ripple')}
+            {fullDateAndTime(checkChanges.expiration)}
           </TData>
         </TRow>
       )}
+
+      {tx.TransactionType === 'CheckCash' && (
+        <TRow>
+          <TData>
+            Redeemed
+            {destinationBalanceChangesList.map((change, index) => {
+              return <br key={index} />
+            })}
+          </TData>
+          <TData>
+            {destinationBalanceChangesList.map((change, index) => (
+              <div key={index}>
+                <span className={'bold ' + (Number(change?.value) > 0 ? 'green' : 'red')}>{amountFormat(change)}</span>
+                {change?.issuer && <>({addressUsernameOrServiceLink(change, 'issuer', { short: true })})</>}
+                {nativeCurrencyToFiat({
+                  amount: change,
+                  selectedCurrency,
+                  fiatRate: pageFiatRate
+                })}
+              </div>
+            ))}
+          </TData>
+        </TRow>
+      )}
+
+      {/*Always show executor, as it can be destination/source aor anyone when expired */}
+      <TRow>
+        <TData>Executor</TData>
+        <TData>
+          <AddressWithIconFilled data={specification.source} name="address" />
+        </TData>
+      </TRow>
     </TransactionCard>
   )
 }

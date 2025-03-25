@@ -8,42 +8,17 @@ import {
 } from '../../utils/format'
 
 import { TransactionCard } from './TransactionCard'
-import { nativeCurrency, xls14NftValue } from '../../utils'
+import { xls14NftValue } from '../../utils'
 import CopyButton from '../UI/CopyButton'
-import { add } from '../../utils/calc'
-
-// Function to get balance changes for a specific address
-const getBalanceChanges = (data, address) => {
-  const balanceChange = data.filter((entry) => entry.address === address)
-  return balanceChange[0]?.balanceChanges
-}
-
-const sourceBalanceChanges = (data) => {
-  if (!data) return null
-  const { outcome, specification } = data
-  let allSourceBalanceChanges = getBalanceChanges(outcome.balanceChanges, specification.source.address)
-  allSourceBalanceChanges = structuredClone(allSourceBalanceChanges)
-
-  let balanceChanges = []
-  const fee = outcome.fee // string in nativeCurrency not drops
-  for (let i = 0; i < allSourceBalanceChanges.length; i++) {
-    const change = allSourceBalanceChanges[i]
-    if (!(change.currency === nativeCurrency && change.value === '-' + fee)) {
-      if (change.currency === nativeCurrency) {
-        change.value = add(change.value, fee)
-      }
-      balanceChanges.push(change)
-    }
-  }
-  return balanceChanges
-}
+import { addressBalanceChanges } from '../../utils/transaction'
 
 export const TransactionPayment = ({ data, pageFiatRate, selectedCurrency }) => {
   if (!data) return null
 
   const { outcome, specification, tx } = data
 
-  const sourceBalanceChangesList = sourceBalanceChanges(data)
+  //for payments executor is always the sender, sowe can check executor's balance changes.
+  const sourceBalanceChangesList = addressBalanceChanges(data, specification.source.address)
 
   let txTypeSpecial = 'Payment'
 

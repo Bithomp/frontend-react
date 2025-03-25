@@ -1,4 +1,35 @@
 import { nativeCurrency } from '.'
+import { add } from './calc'
+
+// Function to get balance changes for a specific address
+const getBalanceChanges = (data, address) => {
+  const balanceChange = data.filter((entry) => entry.address === address)
+  return balanceChange[0]?.balanceChanges
+}
+
+export const addressBalanceChanges = (data, address) => {
+  if (!data) return null
+  const { outcome, specification } = data
+  let allSourceBalanceChanges = getBalanceChanges(outcome.balanceChanges, address)
+  if (specification.source.address !== address) {
+    // if address we looking for is not an executor, return as it is
+    return allSourceBalanceChanges
+  }
+  // if address is an executor - check for the fee
+  allSourceBalanceChanges = structuredClone(allSourceBalanceChanges)
+  let balanceChanges = []
+  const fee = outcome.fee // string in nativeCurrency not drops
+  for (let i = 0; i < allSourceBalanceChanges.length; i++) {
+    const change = allSourceBalanceChanges[i]
+    if (!(change.currency === nativeCurrency && change.value === '-' + fee)) {
+      if (change.currency === nativeCurrency) {
+        change.value = add(change.value, fee)
+      }
+      balanceChanges.push(change)
+    }
+  }
+  return balanceChanges
+}
 
 export const shortErrorCode = (code) => {
   // replace DST_TAG with Destination Tag

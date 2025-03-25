@@ -173,11 +173,6 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
       return
     }
 
-    if (tab === 'object' && isIdValid(searchFor)) {
-      router.push('/object/' + searchFor)
-      return
-    }
-
     if (tab === 'nft-volumes' && isAddressOrUsername(searchFor)) {
       router.push('/nft-volumes/' + encodeURI(searchFor) + addParams)
       return
@@ -205,10 +200,20 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
         router.push('/object/' + searchFor)
         return
       }
-      //allow transaction search only tab transactions for now (while it's not ready for public)
-      if (tab === 'transaction' && data.type === 'transaction') {
-        router.push('/tx/' + searchFor)
-        return
+
+      if (data.type === 'transaction') {
+        const txData = data.data
+        //show check transactions in the new design
+        if (txData?.type?.includes('check')) {
+          //old transaction type names // remake to v3/search to use new ones
+          router.push('/tx/' + searchFor)
+          return
+        }
+        //allow transaction search only on the tab transactions for now (while it's not ready for public)
+        if (tab === 'transaction') {
+          router.push('/tx/' + searchFor)
+          return
+        }
       }
     }
 
