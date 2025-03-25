@@ -238,7 +238,7 @@ export default function NftsComponent({
       searchPart = '&search=' + encodeURIComponent(search) + '&searchLocations=metadata.name'
       //'&searchLocations=metadata.name,metadata.description'
       if (search.length < 3) {
-        setErrorMessage(t('error-api.search is too short'))
+        setErrorMessage('error-api.search is too short')
         setLoading(false)
         return
       }
@@ -267,25 +267,25 @@ export default function NftsComponent({
 
     const response = await axios(
       'v2/' +
-        (xahauNetwork ? 'uritokens' : 'nfts') +
-        listUrlPart +
-        ownerUrlPart +
-        issuerTaxonUrlPart +
-        collectionUrlPart +
-        markerUrlPart +
-        searchPart +
-        serialPart +
-        mintAndBurnPart +
-        orderPart +
-        hasImagePart +
-        includeBurnedPart,
+      (xahauNetwork ? 'uritokens' : 'nfts') +
+      listUrlPart +
+      ownerUrlPart +
+      issuerTaxonUrlPart +
+      collectionUrlPart +
+      markerUrlPart +
+      searchPart +
+      serialPart +
+      mintAndBurnPart +
+      orderPart +
+      hasImagePart +
+      includeBurnedPart,
       {
         signal: controller.signal
       }
     ).catch((error) => {
       if (error) {
         if (error && error.message !== 'canceled') {
-          setErrorMessage(t('error.' + error.message))
+          setErrorMessage('error.' + error.message)
           setLoading(false)
         }
       }
@@ -301,7 +301,7 @@ export default function NftsComponent({
           // user logged out...
           signOutPro()
         } else {
-          setErrorMessage(t('error-api.' + newdata.error))
+          setErrorMessage('error-api.' + newdata.error)
         }
       } else {
         if (newdata.issuer) {
@@ -406,7 +406,7 @@ export default function NftsComponent({
           setData([...nftsData, ...nftList])
         } else {
           if (marker === 'first') {
-            setErrorMessage(t('nfts.no-nfts'))
+            setErrorMessage('nfts.no-nfts')
           } else {
             setHasMore(false)
           }
@@ -445,10 +445,10 @@ export default function NftsComponent({
     if (rawData) {
       setIssuerTaxonUrlPart(
         '?view=' +
-          activeView +
-          '&issuer=' +
-          usernameOrAddress(rawData, 'issuer') +
-          (isValidTaxon(rawData.taxon) ? '&taxon=' + rawData.taxon : '')
+        activeView +
+        '&issuer=' +
+        usernameOrAddress(rawData, 'issuer') +
+        (isValidTaxon(rawData.taxon) ? '&taxon=' + rawData.taxon : '')
       )
 
       setCollectionUrlPart(rawData.collection ? '&collection=' + rawData.collection : '')
@@ -850,7 +850,7 @@ export default function NftsComponent({
               sessionToken={sessionToken}
               endMessage={t('nfts.end')}
               loadMoreMessage={t('nfts.load-more')}
-              //height={!filtersHide ? '1300px' : '100vh'}
+            //height={!filtersHide ? '1300px' : '100vh'}
             >
               {activeView === 'list' && (
                 <>
@@ -996,7 +996,7 @@ export default function NftsComponent({
                   ) : (
                     <>
                       {errorMessage ? (
-                        <div className="center orange bold">{errorMessage}</div>
+                        <div className="center orange bold" style={{ paddingLeft: '40px', paddingRight: '40px' }} dangerouslySetInnerHTML={{ __html: t(errorMessage)}} ></div>
                       ) : (
                         <Tiles nftList={data} type={listTab === 'onSale' ? 'onSale' : 'name'} account={account} />
                       )}
