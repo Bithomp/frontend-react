@@ -276,7 +276,7 @@ export default function LedgerData({
     </>
   )
 
-  const lastAccountTxNode = txIdLink(data.ledgerInfo.accountTxnID, 6)
+  //const lastAccountTxNode = txIdLink(data.ledgerInfo.accountTxnID, 6)
 
   const messageKeyNode = <code className="code-highlight">{data.ledgerInfo.messageKey}</code>
 
@@ -568,12 +568,12 @@ export default function LedgerData({
               <td>{lastEffectedTxNode}</td>
             </tr>
           )}
-          {data.ledgerInfo?.accountTxnID && (
+          {/* data.ledgerInfo?.accountTxnID && (
             <tr>
-              <td>Last initiated tx:</td>
+              <td>Last initiated tx</td>
               <td>{lastAccountTxNode}</td>
             </tr>
-          )}
+          ) */}
           {data.ledgerInfo?.messageKey &&
             data.ledgerInfo?.messageKey.substring(0, 26) !== '02000000000000000000000000' && (
               <tr>
@@ -825,13 +825,13 @@ export default function LedgerData({
             {lastEffectedTxNode}
           </p>
         )}
-        {data.ledgerInfo?.accountTxnID && (
+        {/* data.ledgerInfo?.accountTxnID && (
           <p>
             <span className="grey">Last initiated tx</span>
             <br />
             {lastAccountTxNode}
           </p>
-        )}
+        ) */}
         {data.ledgerInfo?.messageKey &&
           data.ledgerInfo?.messageKey.substring(0, 26) !== '02000000000000000000000000' && (
             <p>
