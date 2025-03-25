@@ -623,7 +623,7 @@
     "search-by-owner": "NFT保有者で検索",
     "search-by-buyer": "NFT購入者で検索",
     "search-by-seller": "NFT売却者で検索",
-    "no-nfts": "検索条件に該当するNFTは見つかりませんでした。",
+    "no-nfts": "フィルターを調整して、検索条件に合った結果を確認してみましょう！<br/> さまざまなフィルターオプションを使用するか、他の検索パラメーターを選択して、興味に合ったNFTをさらに探索してください。<a href='https://xrplexplorer.com/en/admin' target='_blank'>Bithomp Pro</a> にログインして、無限スクロールを有効にし、すべての既存の結果にアクセスしましょう！",
     "on-service": "{{service}}",
     "amount-on-service": "{{service}}にて{{amount}}",
     "load-more": "XRPLからデータを探しています...しばらくお待ちください...",

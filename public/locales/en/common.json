@@ -623,7 +623,7 @@
     "search-by-owner": "Search by NFT owner",
     "search-by-buyer": "Search by NFT buyer",
     "search-by-seller": "Search by NFT seller",
-    "no-nfts": "We couldn't find any NFTs with your search parameters.",
+    "no-nfts": "If there are no results but the filter is adjusted, in addition to \"No data available\": Try adjusting the filters to see results that match your search! <br/> Use different filter options or select other search parameters to explore more NFTs that match your interests. Log in to <a href='https://xrplexplorer.com/en/admin' target='_blank'>Bithomp Pro</a> to enable infinite scroll and access all existing results!",
     "on-service": "on {{service}}",
     "amount-on-service": "{{amount}} on {{service}}",
     "load-more": "We are looking for data on the ledger... please wait...",
