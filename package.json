@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/Bithomp/frontend-react#readme",
   "dependencies": {
+    "@crossmarkio/sdk": "^0.4.0",
     "@emotion/react": "^11.13.3",
     "@emotion/styled": "^11.13.0",
     "@gemwallet/api": "^3.8.0",

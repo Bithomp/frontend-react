@@ -27,6 +27,7 @@ import { gemwalletTxSend } from '../utils/gemwallet'
 import { ledgerwalletTxSend } from '../utils/ledgerwallet'
 import { trezorTxSend } from '../utils/trezor'
 import { metamaskTxSend } from '../utils/metamask'
+import { crossmarkTxSend } from '../utils/crossmark'
 
 import XamanQr from './Xaman/Qr'
 import CheckBox from './UI/CheckBox'
@@ -329,6 +330,8 @@ export default function SignForm({
       metamaskTxSending(tx)
     } else if (wallet === 'walletconnect') {
       walletconnectTxSending(tx)
+    } else if (wallet === 'crossmark') {
+      crossmarkTxSending(tx)
     }
   }
 
@@ -394,6 +397,22 @@ export default function SignForm({
     setScreen('walletconnect')
     setPreparedTx(tx)
     setStatus('WalletConnect modal is loading...')
+  }
+
+  const crossmarkTxSending = (tx) => {
+    setScreen('crossmark')
+    setStatus(t('signin.statuses.check-app', { appName: 'Crossmark' }))
+    crossmarkTxSend({
+      tx,
+      signRequest,
+      afterSubmitExe,
+      afterSigning,
+      onSignIn,
+      setStatus,
+      setAwaiting,
+      t,
+      setScreen
+    })
   }
 
   const xamanTxSending = (tx) => {
@@ -825,7 +844,8 @@ export default function SignForm({
     ledgerwallet: 'Ledger Wallet',
     trezor: 'Trezor',
     metamask: 'Metamask',
-    walletconnect: 'WalletConnect'
+    walletconnect: 'WalletConnect',
+    crossmark: 'Crossmark'
   }
 
   return (
@@ -1175,7 +1195,18 @@ export default function SignForm({
                           </div>
                         </>
                       )}
-                      {/* signRequest?.wallet !== 'xaman' && '/images/wallets/ellipal-large.svg' */}
+                      {signRequest?.wallet !== 'xaman' && !isMobile && (
+                        <div className="signin-app-logo">
+                          <Image
+                            alt="Crossmark"
+                            src="/images/wallets/crossmark.png"
+                            onClick={() => txSend({ wallet: 'crossmark' })}
+                            width={169}
+                            height={80}
+                            style={{ maxWidth: '100%', maxHeight: '100%', objectFit: "contain" }}
+                          />
+                        </div>
+                      )}
                     </div>
                   </>
                 ) : (
