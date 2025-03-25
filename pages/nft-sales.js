@@ -271,7 +271,7 @@ export default function NftSales({
       searchPart = '&search=' + encodeURIComponent(search) + '&searchLocations=metadata.name'
       //'&searchLocations=metadata.name,metadata.description'
       if (search.length < 3) {
-        setErrorMessage(t('error-api.search is too short'))
+        setErrorMessage('error-api.search is too short')
         setLoading(false)
         return
       }
@@ -281,31 +281,31 @@ export default function NftSales({
 
     const response = await axios(
       'v2/' +
-        nftTypeName +
-        '-sales?order=' +
-        order +
-        currencyUrlPart() +
-        '&saleType=' +
-        saleTab +
-        issuerTaxonUrlPart +
-        collectionUrlPart +
-        periodUrlPart +
-        markerUrlPart +
-        '&convertCurrencies=' +
-        sortCurrency +
-        '&sortCurrency=' +
-        sortCurrency +
-        marketplaceUrlPart +
-        buyerUrlPart +
-        sellerUrlPart +
-        searchPart +
-        hasImagePart,
+      nftTypeName +
+      '-sales?order=' +
+      order +
+      currencyUrlPart() +
+      '&saleType=' +
+      saleTab +
+      issuerTaxonUrlPart +
+      collectionUrlPart +
+      periodUrlPart +
+      markerUrlPart +
+      '&convertCurrencies=' +
+      sortCurrency +
+      '&sortCurrency=' +
+      sortCurrency +
+      marketplaceUrlPart +
+      buyerUrlPart +
+      sellerUrlPart +
+      searchPart +
+      hasImagePart,
       {
         signal: controller.signal
       }
     ).catch((error) => {
       if (error && error.message !== 'canceled') {
-        setErrorMessage(t('error.' + error.message))
+        setErrorMessage('error.' + error.message)
         setLoading(false)
       }
     })
@@ -341,7 +341,7 @@ export default function NftSales({
           setSales([...salesData, ...newdata.sales])
         } else {
           if (marker === 'first') {
-            setErrorMessage(t('general.no-data'))
+            setErrorMessage('nfts.no-nfts')
           } else {
             setHasMore(false)
           }
@@ -352,7 +352,7 @@ export default function NftSales({
             // user logged out...
             signOutPro()
           } else {
-            setErrorMessage(t('error-api.' + newdata.error))
+            setErrorMessage('error-api.' + newdata.error)
           }
         } else {
           setErrorMessage('Error')
@@ -475,10 +475,10 @@ export default function NftSales({
     if (data) {
       setIssuerTaxonUrlPart(
         '?view=' +
-          activeView +
-          '&issuer=' +
-          usernameOrAddress(data, 'issuer') +
-          (isValidTaxon(data.taxon) ? '&taxon=' + data.taxon : '')
+        activeView +
+        '&issuer=' +
+        usernameOrAddress(data, 'issuer') +
+        (isValidTaxon(data.taxon) ? '&taxon=' + data.taxon : '')
       )
       setCollectionUrlPart(data.collection ? '&collection=' + data.collection : '')
     }
@@ -778,7 +778,7 @@ export default function NftSales({
                           ) : (
                             <tr>
                               <td colSpan="100" className="center orange bold">
-                                {errorMessage}
+                                {t(errorMessage)}
                               </td>
                             </tr>
                           )}
@@ -852,7 +852,7 @@ export default function NftSales({
                           ) : (
                             <tr>
                               <td colSpan="100" className="center orange bold">
-                                {errorMessage}
+                                {t(errorMessage)}
                               </td>
                             </tr>
                           )}
@@ -874,7 +874,7 @@ export default function NftSales({
                 ) : (
                   <>
                     {errorMessage ? (
-                      <div className="center orange bold">{errorMessage}</div>
+                      <div className="center orange bold" style={{ paddingLeft: '40px', paddingRight: '40px' }} dangerouslySetInnerHTML={{ __html: t(errorMessage) }}></div>
                     ) : (
                       <Tiles nftList={sales} type={order} convertCurrency={sortCurrency} account={account} />
                     )}
