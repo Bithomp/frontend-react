@@ -1,5 +1,12 @@
 import { useState, useEffect } from 'react'
-import { addressUsernameOrServiceLink, amountFormat, fullDateAndTime, shortHash, timeOrDate } from '../../utils/format'
+import {
+  addressUsernameOrServiceLink,
+  AddressWithIconFilled,
+  amountFormat,
+  fullDateAndTime,
+  shortHash,
+  timeOrDate
+} from '../../utils/format'
 import CopyButton from '../UI/CopyButton'
 import axios from 'axios'
 import { useTranslation } from 'next-i18next'
@@ -8,6 +15,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { TbPigMoney } from 'react-icons/tb'
 import { MdMoneyOff } from 'react-icons/md'
+import { LinkTx } from '../../utils/links'
 
 const isPositiveBalance = (balance) => {
   return balance !== '0' && balance[0] !== '-'
@@ -15,6 +23,12 @@ const isPositiveBalance = (balance) => {
 
 const isNegativeBalance = (balance) => {
   return balance !== '0' && balance[0] === '-'
+}
+
+const objectsCountText = (objects) => {
+  if (!objects) return ''
+  if (objects.length > 1) return objects.length + ' '
+  return ''
 }
 
 export default function ObjectsData({ address, account, setSignRequest, setObjects, ledgerTimestamp }) {
@@ -259,7 +273,32 @@ export default function ObjectsData({ address, account, setSignRequest, setObjec
     )
   }
 
-  const objectsToShow = depositPreauthList.length + payChannelList.length
+  const depositPreAuthListNode = (list) => {
+    const adrLabel = 'Authorize'
+    const rows = list.map((c, i) => (
+      <tr key={i}>
+        <td className="center" style={{ width: 30 }}>
+          {i + 1}
+        </td>
+        <td>
+          <AddressWithIconFilled data={c} name={adrLabel} />
+        </td>
+        <td className="center">
+          <LinkTx tx={c.PreviousTxnID} icon={true} />
+        </td>
+      </tr>
+    ))
+    return (
+      <>
+        <tr>
+          <th>#</th>
+          <th className="left">Address</th>
+          <th>Transaction</th>
+        </tr>
+        {rows}
+      </>
+    )
+  }
 
   return (
     <>
@@ -312,54 +351,13 @@ export default function ObjectsData({ address, account, setSignRequest, setObjec
         </>
       ) : (
         <>
-          {objectsToShow > 0 && (
-            <>
-              <table className="table-details hide-on-small-w800">
-                <thead>
-                  <tr>
-                    <th colSpan="100">Objects{historicalTitle}</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {depositPreauthList.length > 0 && (
-                    <tr>
-                      <td>Deposit Preauth</td>
-                      <td className="bold">{depositPreauthList.length}</td>
-                    </tr>
-                  )}
-                  {payChannelList.length > 0 && (
-                    <tr>
-                      <td>Pay Channels</td>
-                      <td className="bold">{payChannelList.length}</td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
-              <div className="show-on-small-w800">
-                <br />
-                <center>Objects{historicalTitle}</center>
-                <br />
-                {depositPreauthList.length > 0 && (
-                  <p>
-                    Deposit Preauth: <span className="bold">{depositPreauthList.length}</span>
-                  </p>
-                )}
-                {payChannelList.length > 0 && (
-                  <p>
-                    Pay Channels: <span className="bold">{payChannelList.length}</span>
-                  </p>
-                )}
-              </div>
-            </>
-          )}
-
           {checkList.length > 0 && (
             <>
               <table className="table-details hide-on-small-w800">
                 <thead>
                   <tr>
                     <th colSpan="100">
-                      {checkList.length} Received Checks{historicalTitle}
+                      {objectsCountText(checkList)}Received Checks{historicalTitle}
                       {!account?.address && !ledgerTimestamp && (
                         <>
                           {' '}
@@ -378,6 +376,7 @@ export default function ObjectsData({ address, account, setSignRequest, setObjec
               <div className="show-on-small-w800">
                 <br />
                 <center>
+                  {objectsCountText(checkList)}
                   {'Received Checks'.toUpperCase()}
                   {historicalTitle}
                 </center>
@@ -396,7 +395,7 @@ export default function ObjectsData({ address, account, setSignRequest, setObjec
                 <thead>
                   <tr>
                     <th colSpan="100">
-                      {issuedCheckList.length} Issued Checks{historicalTitle}
+                      {objectsCountText(issuedCheckList)}Issued Checks{historicalTitle}
                       {!account?.address && !ledgerTimestamp && (
                         <>
                           {' '}
@@ -410,20 +409,55 @@ export default function ObjectsData({ address, account, setSignRequest, setObjec
                     </th>
                   </tr>
                 </thead>
-                <tbody>{issuedCheckList.length > 0 && checkListNode(issuedCheckList, { type: 'issued' })}</tbody>
+                <tbody>{checkListNode(issuedCheckList, { type: 'issued' })}</tbody>
               </table>
               <div className="show-on-small-w800">
                 <br />
                 <center>
+                  {objectsCountText(issuedCheckList)}
                   {'Issued Checks'.toUpperCase()}
                   {historicalTitle}
                 </center>
                 <br />
-                {issuedCheckList.length > 0 && (
-                  <table className="table-mobile">
-                    <tbody>{checkListNode(issuedCheckList, { type: 'issued', mobile: true })}</tbody>
-                  </table>
-                )}
+                <table className="table-mobile">
+                  <tbody>{checkListNode(issuedCheckList, { type: 'issued', mobile: true })}</tbody>
+                </table>
+              </div>
+            </>
+          )}
+          {depositPreauthList.length > 0 && (
+            <>
+              <table className="table-details hide-on-small-w800">
+                <thead>
+                  <tr>
+                    <th colSpan="100">
+                      {objectsCountText(depositPreauthList)}Deposit preauthorized accounts{historicalTitle}
+                      {!account?.address && !ledgerTimestamp && (
+                        <>
+                          {' '}
+                          [
+                          <a href="#" onClick={() => setSignRequest({})}>
+                            Sign in
+                          </a>{' '}
+                          to Cancel]
+                        </>
+                      )}
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>{depositPreAuthListNode(depositPreauthList)}</tbody>
+              </table>
+              <div className="show-on-small-w800">
+                <br />
+                <center>
+                  {objectsCountText(depositPreauthList)}
+                  {'Deposit preauthorized accounts'.toUpperCase()}
+                  {historicalTitle}
+                </center>
+                <br />
+                <table className="table-mobile">
+                  <tbody>{depositPreAuthListNode(depositPreauthList)}</tbody>
+                </table>
               </div>
             </>
           )}
@@ -432,7 +466,9 @@ export default function ObjectsData({ address, account, setSignRequest, setObjec
               <table className="table-details hide-on-small-w800">
                 <thead>
                   <tr>
-                    <th colSpan="100">Hooks{historicalTitle}</th>
+                    <th colSpan="100">
+                      {objectsCountText(hookList)}Hooks{historicalTitle}
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
@@ -449,6 +485,7 @@ export default function ObjectsData({ address, account, setSignRequest, setObjec
               <div className="show-on-small-w800">
                 <br />
                 <center>
+                  {objectsCountText(hookList)}
                   {'Hooks'.toUpperCase()}
                   {historicalTitle}
                 </center>
@@ -457,6 +494,35 @@ export default function ObjectsData({ address, account, setSignRequest, setObjec
                     <span className="grey">{i}</span> {shortHash(p, 16)} <CopyButton text={p} />
                   </p>
                 ))}
+              </div>
+            </>
+          )}
+          {payChannelList.length > 0 && (
+            <>
+              <table className="table-details hide-on-small-w800">
+                <thead>
+                  <tr>
+                    <th colSpan="100">Objects{historicalTitle}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {payChannelList.length > 0 && (
+                    <tr>
+                      <td>Pay Channels</td>
+                      <td className="bold">{payChannelList.length}</td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+              <div className="show-on-small-w800">
+                <br />
+                <center>Objects{historicalTitle}</center>
+                <br />
+                {payChannelList.length > 0 && (
+                  <p>
+                    Pay Channels: <span className="bold">{payChannelList.length}</span>
+                  </p>
+                )}
               </div>
             </>
           )}
