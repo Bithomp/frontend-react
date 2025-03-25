@@ -78,7 +78,7 @@ export const TransactionCard = ({ data, pageFiatRate, selectedCurrency, txTypeSp
 
         if (memopiece) {
           if (memopiece.slice(0, 16) === 'xrplexplorer.com' || memopiece.slice(0, 11) === 'bithomp.com') {
-            memopiece = memopiece.slice(16)
+            memopiece = ''
             clientname = 'bithomp.com'
           }
 
@@ -127,12 +127,14 @@ export const TransactionCard = ({ data, pageFiatRate, selectedCurrency, txTypeSp
                 </React.Fragment>
               )
             } else {
-              output.push(
-                <TRow key={'a1' + j}>
-                  <TData>{memotype}</TData>
-                  <TData>{memopiece}</TData>
-                </TRow>
-              )
+              if (memopiece) {
+                output.push(
+                  <TRow key={'a1' + j}>
+                    <TData>{memotype}</TData>
+                    <TData>{memopiece}</TData>
+                  </TRow>
+                )
+              }
             }
           }
 
