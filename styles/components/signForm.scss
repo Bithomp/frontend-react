@@ -20,7 +20,8 @@
     outline-offset: -15px;
     position: fixed;
     width: 480px;
-    height: 570px; //bigger on devnets
+    height: auto; //bigger on devnets
+    padding-bottom: 40px;
     margin-top: -240px;
     margin-left: -240px;
     top: 50%;
