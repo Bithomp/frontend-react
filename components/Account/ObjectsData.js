@@ -273,33 +273,6 @@ export default function ObjectsData({ address, account, setSignRequest, setObjec
     )
   }
 
-  const depositPreAuthListNode = (list) => {
-    const adrLabel = 'Authorize'
-    const rows = list.map((c, i) => (
-      <tr key={i}>
-        <td className="center" style={{ width: 30 }}>
-          {i + 1}
-        </td>
-        <td>
-          <AddressWithIconFilled data={c} name={adrLabel} />
-        </td>
-        <td className="center">
-          <LinkTx tx={c.PreviousTxnID} icon={true} />
-        </td>
-      </tr>
-    ))
-    return (
-      <>
-        <tr>
-          <th>#</th>
-          <th className="left">Address</th>
-          <th>Transaction</th>
-        </tr>
-        {rows}
-      </>
-    )
-  }
-
   return (
     <>
       {loadingObjects || errorMessage ? (
@@ -382,7 +355,7 @@ export default function ObjectsData({ address, account, setSignRequest, setObjec
                 </center>
                 <br />
                 {checkList.length > 0 && (
-                  <table className="table-mobile">
+                  <table className="table-mobile wide">
                     <tbody>{checkListNode(checkList, { mobile: true })}</tbody>
                   </table>
                 )}
@@ -419,7 +392,7 @@ export default function ObjectsData({ address, account, setSignRequest, setObjec
                   {historicalTitle}
                 </center>
                 <br />
-                <table className="table-mobile">
+                <table className="table-mobile wide">
                   <tbody>{checkListNode(issuedCheckList, { type: 'issued', mobile: true })}</tbody>
                 </table>
               </div>
@@ -432,20 +405,29 @@ export default function ObjectsData({ address, account, setSignRequest, setObjec
                   <tr>
                     <th colSpan="100">
                       {objectsCountText(depositPreauthList)}Deposit preauthorized accounts{historicalTitle}
-                      {!account?.address && !ledgerTimestamp && (
-                        <>
-                          {' '}
-                          [
-                          <a href="#" onClick={() => setSignRequest({})}>
-                            Sign in
-                          </a>{' '}
-                          to Cancel]
-                        </>
-                      )}
                     </th>
                   </tr>
                 </thead>
-                <tbody>{depositPreAuthListNode(depositPreauthList)}</tbody>
+                <tbody>
+                  <tr>
+                    <th>#</th>
+                    <th className="left">Address</th>
+                    <th>Transaction</th>
+                  </tr>
+                  {depositPreauthList.map((c, i) => (
+                    <tr key={i}>
+                      <td className="center" style={{ width: 30 }}>
+                        {i + 1}
+                      </td>
+                      <td>
+                        <AddressWithIconFilled data={c} name="Authorize" />
+                      </td>
+                      <td className="center">
+                        <LinkTx tx={c.PreviousTxnID} icon={true} />
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
               </table>
               <div className="show-on-small-w800">
                 <br />
@@ -455,9 +437,21 @@ export default function ObjectsData({ address, account, setSignRequest, setObjec
                   {historicalTitle}
                 </center>
                 <br />
-                <table className="table-mobile">
-                  <tbody>{depositPreAuthListNode(depositPreauthList)}</tbody>
-                </table>
+                {depositPreauthList.map((c, i) => (
+                  <table className="table-mobile wide" key={i}>
+                    <tbody>
+                      <tr>
+                        <td className="center">{i + 1}</td>
+                        <td>
+                          <AddressWithIconFilled data={c} name="Authorize" />
+                          <p>
+                            <span className="grey">Transaction</span> <LinkTx tx={c.PreviousTxnID} icon={true} />
+                          </p>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                ))}
               </div>
             </>
           )}

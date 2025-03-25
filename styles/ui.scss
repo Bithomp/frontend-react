@@ -461,6 +461,9 @@ table {
   &.table-mobile {
     margin: auto;
     font-size: 12px;
+    &.wide {
+      width: 100%;
+    }
     tr {
       border: 1px solid var(--accent-link);
     }
