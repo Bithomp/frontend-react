@@ -503,6 +503,8 @@ export default function Account({
                               address={data?.address}
                               setObjects={setObjects}
                               ledgerTimestamp={data?.ledgerInfo?.ledgerTimestamp}
+                              selectedCurrency={selectedCurrency}
+                              pageFiatRate={pageFiatRate}
                             />
                           )}
                           <XamanData data={data} />

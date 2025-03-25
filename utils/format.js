@@ -21,6 +21,17 @@ import CopyButton from '../components/UI/CopyButton'
 
 momentDurationFormatSetup(moment)
 
+export const NiceNativeBalance = ({ amount }) => {
+  return (
+    <span className="tooltip">
+      {shortNiceNumber(amount / 1000000, 2, 1) + ' ' + nativeCurrency}
+      <span className="tooltiptext no-brake">
+        {fullNiceNumber(amount / 1000000)} {nativeCurrency}
+      </span>
+    </span>
+  )
+}
+
 export const AddressWithIcon = ({ children, address }) => {
   let imageUrl = avatarServer + address
   if (!address) {
@@ -899,7 +910,7 @@ export const shortNiceNumber = (n, smallNumberFractionDigits = 2, largeNumberFra
     output = niceNumber(n / 1000000, largeNumberFractionDigits, currency) + 'M'
     //} else if (n > 99999) {
     //output = niceNumber(Math.floor(n), 0, currency)
-  } else if (n > 9999) {
+  } else if (n > 999) {
     output = niceNumber(n / 1000, largeNumberFractionDigits, currency) + 'K'
   } else if (n === 0) {
     output = niceNumber(0, 0, currency)
