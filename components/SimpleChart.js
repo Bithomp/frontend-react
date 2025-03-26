@@ -22,7 +22,7 @@ const locales = {
   }
 }
 
-export default function PriceChart({ data }) {
+export default function PriceChart({ data, combined, currency }) {
   const { i18n } = useTranslation()
   const { theme } = useTheme()
 
@@ -55,14 +55,36 @@ export default function PriceChart({ data }) {
       type: 'datetime',
       labels: formatForXaxisLabels
     },
-    yaxis: {
-      labels: {
-        formatter: (val) => {
-          return niceNumber(val, 0, 0)
-        }
-      },
-      tickAmount: 5
-    },
+    yaxis: combined
+      ? [
+          {
+            title: { text: data[0].name },
+            labels: {
+              formatter: (val) => {
+                return niceNumber(val, 0, 0)
+              }
+            },
+            tickAmount: 5
+          },
+          {
+            title: { text: data[1].name },
+            opposite: true,
+            labels: {
+              formatter: (val) => {
+                return niceNumber(val, 0, 0) + (currency ? ' ' + currency.toUpperCase() : '')
+              }
+            },
+            tickAmount: 5
+          }
+        ]
+      : {
+          labels: {
+            formatter: (val) => {
+              return niceNumber(val, 0, 0)
+            }
+          },
+          tickAmount: 5
+        },
     chart: {
       id: 'simple-chart',
       type: 'area',
@@ -160,7 +182,12 @@ export default function PriceChart({ data }) {
         }
       },
       y: {
-        formatter: (val) => niceNumber(val, 0, 0)
+        formatter: (val, { seriesIndex }) => {
+          if (combined && seriesIndex === 1) {
+            return niceNumber(val, 0, 0) + (currency ? ' ' + currency.toUpperCase() : '')
+          }
+          return niceNumber(val, 0, 0)
+        }
       },
       theme
     },
@@ -174,12 +201,14 @@ export default function PriceChart({ data }) {
     //colors: ['#006B7D'],
   }
 
-  const series = [
-    {
-      name: '',
-      data
-    }
-  ]
+  const series = combined
+    ? data
+    : [
+        {
+          name: '',
+          data
+        }
+      ]
 
   return (
     <>
