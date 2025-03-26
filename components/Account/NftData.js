@@ -3,8 +3,6 @@ import Link from 'next/link'
 import { AddressWithIconFilled, fullDateAndTime } from '../../utils/format'
 import { xahauNetwork } from '../../utils'
 
-import LinkIcon from '../../public/images/link.svg'
-
 export default function NftData({ data, objects, ledgerTimestamp }) {
   const title = 'NFT Data'
 
@@ -18,10 +16,9 @@ export default function NftData({ data, objects, ledgerTimestamp }) {
     'Loading...'
   ) : objects?.nftList?.length > 0 ? (
     <>
-      <span className="bold orange">{objects?.nftList?.length}</span>{' '}
       {!ledgerTimestamp && (
-        <Link href={'/nfts/' + data?.address + '?includeWithoutMediaData=true'}>
-          <LinkIcon />
+        <Link href={'/nfts/' + data?.address + '?includeWithoutMediaData=true'} className="bold">
+          View owned NFTs ({objects?.nftList?.length})
         </Link>
       )}
     </>
@@ -33,10 +30,9 @@ export default function NftData({ data, objects, ledgerTimestamp }) {
     'Loading...'
   ) : objects?.nftOfferList?.length > 0 ? (
     <>
-      <span className="bold orange">{objects?.nftOfferList?.length}</span>{' '}
       {!ledgerTimestamp && (
-        <Link href={'/nft-offers/' + data?.address}>
-          <LinkIcon />
+        <Link href={'/nft-offers/' + data?.address} className="bold">
+          View NFT Offers ({objects?.nftOfferList?.length})
         </Link>
       )}
     </>
@@ -46,10 +42,9 @@ export default function NftData({ data, objects, ledgerTimestamp }) {
 
   const mintedNftsNode = (
     <>
-      {data.ledgerInfo.mintedNFTokens}{' '}
       {!ledgerTimestamp && (
         <Link href={'/nft-explorer?includeWithoutMediaData=true&issuer=' + data?.address + '&includeBurned=true'}>
-          <LinkIcon />
+          View minted NFTs ({data.ledgerInfo.mintedNFTokens})
         </Link>
       )}
     </>
@@ -57,7 +52,6 @@ export default function NftData({ data, objects, ledgerTimestamp }) {
 
   const burnedNftsNode = (
     <>
-      {data.ledgerInfo.burnedNFTokens}{' '}
       {!ledgerTimestamp && (
         <Link
           href={
@@ -66,7 +60,7 @@ export default function NftData({ data, objects, ledgerTimestamp }) {
             '&includeBurned=true&burnedPeriod=all'
           }
         >
-          <LinkIcon />
+          View burned NFTs ({data.ledgerInfo.burnedNFTokens})
         </Link>
       )}
     </>
@@ -142,26 +136,10 @@ export default function NftData({ data, objects, ledgerTimestamp }) {
         <center>{historicalTitle || title.toUpperCase()}</center>
         {!xahauNetwork && (
           <>
-            {data?.ledgerInfo?.activated && (
-              <p>
-                {objects?.nftList?.length > 0 && <span className="grey">Owned NFTs</span>} {ownedNftsNode}
-              </p>
-            )}
-            {data.ledgerInfo?.mintedNFTokens && (
-              <p>
-                <span className="grey">Minted NFTs</span> {mintedNftsNode}
-              </p>
-            )}
-            {data.ledgerInfo?.burnedNFTokens && (
-              <p>
-                <span className="grey">Burned NFTs</span> {burnedNftsNode}
-              </p>
-            )}
-            {data?.ledgerInfo?.activated && (
-              <p>
-                {objects?.nftOfferList?.length > 0 && <span className="grey">NFT Offers</span>} {nftOffersNode}
-              </p>
-            )}
+            {data?.ledgerInfo?.activated && <p>{ownedNftsNode}</p>}
+            {data.ledgerInfo?.mintedNFTokens && <p>{mintedNftsNode}</p>}
+            {data.ledgerInfo?.burnedNFTokens && <p>{burnedNftsNode}</p>}
+            {data?.ledgerInfo?.activated && <p>{nftOffersNode}</p>}
             {data.ledgerInfo?.firstNFTokenSequence && (
               <p>
                 <span className="grey">First NFT sequence</span> {data.ledgerInfo.firstNFTokenSequence}
