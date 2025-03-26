@@ -537,7 +537,7 @@ export default function ObjectsData({
                   <tr>
                     <th>#</th>
                     <th className="left">Address</th>
-                    <th>Transaction</th>
+                    <th>Last update</th>
                   </tr>
                   {depositPreauthList.map((c, i) => (
                     <tr key={i}>
@@ -548,7 +548,7 @@ export default function ObjectsData({
                         <AddressWithIconFilled data={c} name="Authorize" />
                       </td>
                       <td className="center">
-                        <LinkTx tx={c.PreviousTxnID} icon={true} />
+                        {timeOrDate(c.previousTxAt)} <LinkTx tx={c.PreviousTxnID} icon={true} />
                       </td>
                     </tr>
                   ))}
@@ -570,7 +570,8 @@ export default function ObjectsData({
                         <td>
                           <AddressWithIconFilled data={c} name="Authorize" />
                           <p>
-                            <span className="grey">Transaction</span> <LinkTx tx={c.PreviousTxnID} icon={true} />
+                            <span className="grey">Last update</span> {timeOrDate(c.previousTxAt)}{' '}
+                            <LinkTx tx={c.PreviousTxnID} icon={true} />
                           </p>
                         </td>
                       </tr>
