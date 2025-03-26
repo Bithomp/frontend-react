@@ -623,7 +623,7 @@
     "search-by-owner": "Cari berdasarkan pemilik NFT",
     "search-by-buyer": "Cari berdasarkan pembeli NFT",
     "search-by-seller": "Cari berdasarkan penjual NFT",
-    "no-nfts": "Kami tidak dapat menemukan NFT dengan parameter pencarian Anda.",
+    "no-nfts": "Coba sesuaikan filter untuk melihat hasil yang sesuai dengan pencarian Anda! <br/> Gunakan berbagai opsi filter atau pilih parameter pencarian lainnya untuk menjelajahi lebih banyak NFT yang sesuai dengan minat Anda. Masuk ke <a href='https://xrplexplorer.com/en/admin' target='_blank'>Bithomp Pro</a> untuk mengaktifkan gulir tak terbatas dan mengakses semua hasil yang ada!",
     "on-service": "di {{service}}",
     "amount-on-service": "{{amount}} di {{service}}",
     "load-more": "Kami sedang mencari data di XRPL... harap tunggu...",
