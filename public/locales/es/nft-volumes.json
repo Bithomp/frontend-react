@@ -16,7 +16,5 @@
     "desc": "Esta es la lista de los emisores de NFTs en {{explorerName}}. Para ver los volúmenes de colecciones de NFTs identificados por emisor y taxón haz click en el enlace en la columna de Volumen en ventas."
   },
   "sales-chart": "Gráfico de ventas",
-  "volumes-chart": "Gráfico de volúmenes",
-  "sales-label": "Ventas",
-  "volumes-label": "Volúmenes"
+  "volumes-chart": "Gráfico de volúmenes"
 }

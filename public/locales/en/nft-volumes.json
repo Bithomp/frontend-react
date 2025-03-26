@@ -16,7 +16,5 @@
     "desc": "This the list of NFT issuers on {{explorerName}}. To see volumes of NFT collections identified by issuer and taxon click on the link in the Sales volume column."
   },
   "sales-chart": "Sales chart",
-  "volumes-chart": "Volume chart",
-  "sales-label": "Sales",
-  "volumes-label": "Volumes"
+  "volumes-chart": "Volume chart"
 }

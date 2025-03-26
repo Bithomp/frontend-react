@@ -16,7 +16,5 @@
     "desc": "{{explorerName}}의 NFT 발행자 목록입니다. 발행자 및 분류군별로 식별된 NFT 컬렉션의 거래량을 확인하려면 판매량 열의 링크를 클릭하세요"
   },
   "sales-chart": "판매 차트",
-  "volumes-chart": "거래량 차트",
-  "sales-label": "판매",
-  "volumes-label": "거래량"
+  "volumes-chart": "거래량 차트"
 }

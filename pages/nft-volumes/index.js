@@ -223,16 +223,16 @@ export default function NftVolumes({
       const chartDataResponse = await axios
         .get(
           'v2/' +
-          (xahauNetwork ? 'uritoken' : 'nft') +
-          '-sales-chart?span=' +
-          chartSpan(period) +
-          '&period=' +
-          period +
-          '&saleType=' +
-          (saleTab === 'primaryAndSecondary' ? 'all' : saleTab) +
-          currencyUrlPart +
-          '&convertCurrencies=' +
-          convertCurrency
+            (xahauNetwork ? 'uritoken' : 'nft') +
+            '-sales-chart?span=' +
+            chartSpan(period) +
+            '&period=' +
+            period +
+            '&saleType=' +
+            (saleTab === 'primaryAndSecondary' ? 'all' : saleTab) +
+            currencyUrlPart +
+            '&convertCurrencies=' +
+            convertCurrency
         )
         .catch((error) => {
           if (error && error.message !== 'canceled') {
@@ -280,11 +280,11 @@ export default function NftVolumes({
     const response = await axios
       .get(
         apiUrl +
-        '&period=' +
-        period +
-        '&saleType=' +
-        (saleTab === 'primaryAndSecondary' ? 'all' : saleTab) +
-        markerPart,
+          '&period=' +
+          period +
+          '&saleType=' +
+          (saleTab === 'primaryAndSecondary' ? 'all' : saleTab) +
+          markerPart,
         {
           signal: controller.signal
         }
@@ -978,17 +978,17 @@ export default function NftVolumes({
           xahauNetwork
             ? []
             : [
-              {
-                width: 1200,
-                height: 630,
-                file: 'previews/1200x630/nft-volumes.png'
-              },
-              {
-                width: 630,
-                height: 630,
-                file: 'previews/630x630/nft-volumes.png'
-              }
-            ]
+                {
+                  width: 1200,
+                  height: 630,
+                  file: 'previews/1200x630/nft-volumes.png'
+                },
+                {
+                  width: 630,
+                  height: 630,
+                  file: 'previews/630x630/nft-volumes.png'
+                }
+              ]
         }
       />
 
@@ -1074,12 +1074,16 @@ export default function NftVolumes({
                     {chartIssuers.length > 0 && chartVolumes.length > 0 && (
                       <div className="flex" style={{ marginLeft: '10px', justifyContent: 'center' }}>
                         <div style={chartDivStyle}>
-                          <h3>{t('sales-chart', { ns: 'nft-volumes' })} / {t('volumes-chart', { ns: 'nft-volumes' })} ({convertCurrency?.toUpperCase()})</h3>
+                          <h3>
+                            {t('sales-chart', { ns: 'nft-volumes' })} / {t('volumes-chart', { ns: 'nft-volumes' })} (
+                            {convertCurrency?.toUpperCase()})
+                          </h3>
                           <SimpleChart
                             currency={selectedCurrency}
                             data={[
-                              { name: t('sales-label', { ns: 'nft-volumes' }), data: chartIssuers },
-                              { name: t('volumes-label', { ns: 'nft-volumes' }), data: chartVolumes }]}
+                              { name: t('table.sales'), data: chartIssuers },
+                              { name: t('table.volume'), data: chartVolumes }
+                            ]}
                             combined={true}
                           />
                         </div>
@@ -1384,10 +1388,10 @@ export default function NftVolumes({
                                     {(listTab === 'currencies' ||
                                       (currency && currencyIssuer) ||
                                       currencyTab === nativeCurrency) && (
-                                        <td className="right">
-                                          {amountFormat(volume.volumes?.[0]?.amount, { maxFractionDigits: 2 })}
-                                        </td>
-                                      )}
+                                      <td className="right">
+                                        {amountFormat(volume.volumes?.[0]?.amount, { maxFractionDigits: 2 })}
+                                      </td>
+                                    )}
                                     <td className="right">
                                       <span className={listTab !== 'currencies' ? 'tooltip' : ''}>
                                         {niceNumber(
