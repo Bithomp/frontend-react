@@ -460,7 +460,7 @@ export default function ObjectsData({
                         <>
                           {' '}
                           [
-                          <a href="#" onClick={() => setSignRequest({})}>
+                          <a href="#" onClick={() => setSignRequest({})} className="bold">
                             Sign in
                           </a>{' '}
                           to Redeem]
@@ -498,7 +498,7 @@ export default function ObjectsData({
                         <>
                           {' '}
                           [
-                          <a href="#" onClick={() => setSignRequest({})}>
+                          <a href="#" onClick={() => setSignRequest({})} className="bold">
                             Sign in
                           </a>{' '}
                           to Cancel]
