@@ -21,7 +21,7 @@ import {
 import { userOrServiceName, amountFormat } from '../../utils/format'
 
 import { IoSearch } from 'react-icons/io5'
-
+import { IoMdClose } from 'react-icons/io'
 const searchItemRe = /^[~]{0,1}[a-zA-Z0-9-_.]*[+]{0,1}[a-zA-Z0-9-_.]*[$]{0,1}[a-zA-Z0-9-.]*[a-zA-Z0-9]*$/i
 let typingTimer
 
@@ -323,6 +323,12 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
     return ''
   }
 
+  const clearAll = () => {
+    if (setSearchItem) {
+      setSearchItem('')
+    }
+  }
+
   return (
     <>
       <div className="search-block" style={tab === 'explorer' ? { backgroundColor: 'unset', height: 60 } : {}}>
@@ -425,8 +431,13 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
             />
           )}
 
-          <div className="search-button" onClick={onSearch}>
-            <IoSearch className="search-icon" />
+          <div className={`form-input__btns ${searchItem ? ' not-empty' : ''}`}>
+            <button className="form-input__clear" onClick={clearAll}>
+              <IoMdClose />
+            </button>
+            <div className="search-button" onClick={onSearch}>
+              <IoSearch />
+            </div>
           </div>
           {errorMessage && (
             <div
