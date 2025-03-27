@@ -1137,6 +1137,17 @@ export default function SignForm({
                       {signRequest?.wallet !== 'xaman' && !isMobile && (
                         <div className="signin-app-logo">
                           <Image
+                            alt="Crossmark"
+                            src="/images/wallets/crossmark-large.png"
+                            onClick={() => txSend({ wallet: 'crossmark' })}
+                            width={169}
+                            height={80}
+                          />
+                        </div>
+                      )}
+                      {signRequest?.wallet !== 'xaman' && !isMobile && (
+                        <div className="signin-app-logo">
+                          <Image
                             alt="GemWallet"
                             src="/images/wallets/gemwallet.svg"
                             onClick={() => txSend({ wallet: 'gemwallet' })}
@@ -1194,18 +1205,6 @@ export default function SignForm({
                             />
                           </div>
                         </>
-                      )}
-                      {signRequest?.wallet !== 'xaman' && !isMobile && (
-                        <div className="signin-app-logo">
-                          <Image
-                            alt="Crossmark"
-                            src="/images/wallets/crossmark.png"
-                            onClick={() => txSend({ wallet: 'crossmark' })}
-                            width={169}
-                            height={80}
-                            style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }}
-                          />
-                        </div>
                       )}
                     </div>
                   </>
