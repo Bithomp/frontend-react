@@ -1206,6 +1206,7 @@ export default function SignForm({
                           </div>
                         </>
                       )}
+                      {/* signRequest?.wallet !== 'xaman' && '/images/wallets/ellipal-large.svg' */}
                     </div>
                   </>
                 ) : (
