@@ -26,6 +26,7 @@ export const getServerSideProps = async (context) => {
 
 import CheckBox from '../../components/UI/CheckBox'
 import SEO from '../../components/SEO'
+import NftMintTabs from '../../components/Tabs/NftMintTabs'
 
 let interval
 let startTime
@@ -107,8 +108,8 @@ export default function NftMint({ setSignRequest, uriQuery, digestQuery }) {
           setUpdate(true)
           setMetadataStatus(
             'Trying to load the metadata from URI... (' +
-              Math.ceil((Date.now() - startTime) / 1000 / 5) +
-              '/24 attempts)'
+            Math.ceil((Date.now() - startTime) / 1000 / 5) +
+            '/24 attempts)'
           )
         } else {
           setUpdate(false)
@@ -167,7 +168,14 @@ export default function NftMint({ setSignRequest, uriQuery, digestQuery }) {
             MemoData: encode('NFT Mint')
           }
         }
-      ]
+      ],
+    }
+
+    if (!xahauNetwork) {
+      request = {
+        ...JSON.parse(metadata),
+        TransactionType: "NFTokenMint"
+      }
     }
 
     if (uri) {
@@ -255,6 +263,7 @@ export default function NftMint({ setSignRequest, uriQuery, digestQuery }) {
       <SEO title="NFT Mint" />
       <div className="page-services-nft-mint content-center">
         <h1 className="center">NFT Mint</h1>
+        <NftMintTabs />
         <p>
           You can use this page to create a new NFT, a unique digital asset that can be used in a variety of
           applications.
