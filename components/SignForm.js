@@ -361,6 +361,22 @@ export default function SignForm({
     setStatus(t('signin.statuses.check-app', { appName: 'GemWallet' }))
   }
 
+  const crossmarkTxSending = (tx) => {
+    crossmarkTxSend({
+      tx,
+      signRequest,
+      afterSubmitExe,
+      afterSigning,
+      onSignIn,
+      setStatus,
+      account,
+      setAwaiting,
+      t
+    })
+    setScreen('crossmark')
+    setStatus(t('signin.statuses.check-app', { appName: 'Crossmark' }))
+  }
+
   const ledgerwalletTxSending = (tx) => {
     setScreen('ledgerwallet')
     if (tx.TransactionType === 'NFTokenCreateOffer') {
@@ -397,22 +413,6 @@ export default function SignForm({
     setScreen('walletconnect')
     setPreparedTx(tx)
     setStatus('WalletConnect modal is loading...')
-  }
-
-  const crossmarkTxSending = (tx) => {
-    setScreen('crossmark')
-    setStatus(t('signin.statuses.check-app', { appName: 'Crossmark' }))
-    crossmarkTxSend({
-      tx,
-      signRequest,
-      afterSubmitExe,
-      afterSigning,
-      onSignIn,
-      setStatus,
-      setAwaiting,
-      t,
-      setScreen
-    })
   }
 
   const xamanTxSending = (tx) => {

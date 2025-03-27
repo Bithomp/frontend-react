@@ -1,4 +1,7 @@
 import sdk from '@crossmarkio/sdk'
+import { broadcastTransaction, getNextTransactionParams } from './user'
+
+const useOurServer = true
 
 const hasExtension = async () => {
   try {
@@ -6,6 +9,89 @@ const hasExtension = async () => {
     return sdk.methods.isInstalled()
   } catch {
     return false
+  }
+}
+
+const crossmarkSign = async ({
+  address,
+  tx,
+  signRequest,
+  afterSubmitExe,
+  afterSigning,
+  onSignIn,
+  setStatus,
+  setAwaiting,
+  t
+}) => {
+  const signRequestData = signRequest.data
+
+  // If the transaction field Account is not set, the account of the user's wallet will be used.
+
+  if (signRequestData?.signOnly) {
+    const signResult = await sdk.async.signAndWait(tx)
+
+    if (signResult?.response?.data?.txBlob) {
+      afterSigning({ signRequestData, blob: signResult.response.data.txBlob, address })
+    } else {
+      setStatus('Failed to sign transaction')
+    }
+  } else {
+    const wallet = 'crossmark'
+
+    if (!tx || tx?.TransactionType === 'SignIn') {
+      onSignIn({ address, wallet, redirectName: signRequest.redirect })
+      //keept afterSubmitExe here to close the dialog form when signedin
+      afterSubmitExe({})
+      return
+    }
+
+    if (useOurServer) {
+      //get fee
+      setAwaiting(true)
+      setStatus('Getting transaction fee...')
+      const txFee = await getNextTransactionParams(tx)
+      setAwaiting(false)
+      tx.Sequence = txFee.Sequence
+      tx.Fee = txFee.Fee
+      tx.LastLedgerSequence = txFee.LastLedgerSequence
+      setStatus('Sign the transaction in Crossmark.')
+
+      const signResult = await sdk.async.signAndWait(tx)
+      const blob = signResult.response.data.txBlob
+
+      //now submit transaction
+      setStatus('Submitting transaction to the network...')
+      setAwaiting(true)
+      broadcastTransaction({
+        blob,
+        setStatus,
+        onSignIn,
+        afterSubmitExe,
+        address,
+        wallet,
+        signRequest,
+        tx,
+        setAwaiting,
+        t
+      })
+    } else {
+      const signResult = sdk.sync.signAndSubmit(tx)
+
+      const txHash = signResult?.response?.data?.id
+      const redirectName = signRequest.redirect
+      if (txHash) {
+        onSignIn({ address, wallet, redirectName })
+        afterSubmitExe({
+          redirectName,
+          broker: signRequest.broker?.name,
+          txHash,
+          txType: tx.TransactionType
+        })
+      } else {
+        //when failed transaction: onlyLogin, remove redirectName
+        onSignIn({ address, wallet, redirectName: null })
+      }
+    }
   }
 }
 
@@ -18,7 +104,7 @@ export const crossmarkTxSend = async ({
   setStatus,
   setAwaiting,
   t,
-  setScreen
+  account
 }) => {
   try {
     // Check if extension is installed
@@ -28,56 +114,23 @@ export const crossmarkTxSend = async ({
       return
     }
 
-    setAwaiting(true)
-    console.log(tx.TransactionType)
-    // If it's a SignIn transaction
-    if (tx.TransactionType === 'SignIn') {
+    if (account?.address && account?.wallet === 'crossmark') {
+      // account is known
+      const address = account.address
+      crossmarkSign({ address, tx, signRequest, afterSubmitExe, afterSigning, onSignIn, setStatus, setAwaiting, t })
+    } else {
+      //get address from crossmark
       const signInResult = await sdk.async.signInAndWait()
-      if (signInResult?.response?.data?.address) {
-        await onSignIn({
-          address: signInResult.response.data.address,
-          wallet: 'crossmark'
-        })
-        setAwaiting(false)
-        setScreen('')
-        return
+      const address = signInResult?.response?.data?.address
+      if (!tx.Account) {
+        tx.Account = address
       }
+      crossmarkSign({ address, tx, signRequest, afterSubmitExe, afterSigning, onSignIn, setStatus, setAwaiting, t })
     }
 
-    // For other transaction types
-    const signResult = await sdk.async.signAndWait(tx)
-
-    if (!signResult?.response?.data?.txBlob) {
-      throw new Error('Failed to sign transaction')
-    }
-
-    // Process after successful signing
-    if (signRequest?.data) {
-      await afterSigning({
-        signRequestData: signRequest.data,
-        blob: signResult.response.data,
-        address: tx.Account
-      })
-    }
-
-    // Submit transaction
-    const submitResult = await sdk.async.submitAndWait(tx.Account, signResult.response.data.txBlob)
-
-    if (!submitResult?.response?.data?.resp?.result?.hash) {
-      throw new Error('Failed to submit transaction')
-    }
-
-    // Process after successful submission
-    await afterSubmitExe({
-      txHash: submitResult.response.data.resp.result.hash,
-      txType: tx.TransactionType,
-      redirectName: signRequest?.redirect,
-      broker: signRequest?.broker?.name
-    })
+    setAwaiting(true)
   } catch (error) {
     console.error('Crossmark error:', error)
-    setStatus(t('signin.crossmark.error', { error: error.message }))
-  } finally {
-    setAwaiting(false)
+    setStatus(error.message || 'Error crossmark 101')
   }
 }
