@@ -24,7 +24,7 @@ export const crossmarkTxSend = async ({
     // Check if extension is installed
     const installed = await hasExtension()
     if (!installed) {
-      setStatus(t('signin.crossmark.not-installed'))
+      setStatus('Crossmark wallet extention is not installed in your browser. Try again after the installation.')
       return
     }
 
