@@ -1203,7 +1203,7 @@ export default function SignForm({
                             onClick={() => txSend({ wallet: 'crossmark' })}
                             width={169}
                             height={80}
-                            style={{ maxWidth: '100%', maxHeight: '100%', objectFit: "contain" }}
+                            style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }}
                           />
                         </div>
                       )}
