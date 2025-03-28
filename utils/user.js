@@ -14,6 +14,7 @@ export const broadcastTransaction = async ({
 }) => {
   if (!blob) {
     setStatus('There is no blob to broadcast')
+    setAwaiting(false)
     return
   }
 
