@@ -262,8 +262,8 @@ export default function LedgerData({
   const regularKeyNode = <AddressWithIconFilled data={data.ledgerInfo} name="regularKey" />
 
   const showLastEffectedTx =
-    data?.ledgerInfo?.blackholed ||
-    (data?.ledgerInfo?.previousTxnID && data?.ledgerInfo?.lastSubmittedTxHash !== data.ledgerInfo.previousTxnID)
+    data?.ledgerInfo?.previousTxnID &&
+    (data?.ledgerInfo?.blackholed || data?.ledgerInfo?.lastSubmittedTxHash !== data.ledgerInfo.previousTxnID)
 
   const lastEffectedTxNode = showLastEffectedTx && (
     <>
