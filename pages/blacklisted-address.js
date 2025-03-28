@@ -2,7 +2,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import SEO from '../components/SEO'
 import { getIsSsrMobile } from '../utils/mobile'
 import { network } from '../utils'
-import { nativeCurrency, explorerName} from '../utils'
+import { nativeCurrency, explorerName, xahauNetwork} from '../utils'
 
 export async function getServerSideProps(context) {
   const { locale } = context
@@ -18,7 +18,7 @@ export default function BlacklistedAddress() {
   return (
     <>
       <SEO
-        title="Blacklisted Accounts on XRPL and Xahau"
+        title={"Blacklisted Addresses on " + explorerName}
         description="What are blacklisted addresses on XRP and Xahau Ledgers, why fraud alert is displayed, how and why accounts become blacklisted."
         noindex={network !== 'mainnet'}
         image={{ file: 'pages/blacklisted-picture.jpg', width: '100%', height: '386', allNetworks: true }}
@@ -49,7 +49,7 @@ export default function BlacklistedAddress() {
         <div>
           <center>
             <img
-              src="/images/pages/blacklisted-screen.png"
+              src={"/images/pages/blacklisted-screen" + (xahauNetwork ? "-xahau" : "") +".png"}
               alt="Blacklisted Account on XRPL-example"
               style={{ maxWidth: '100%', maxHeight: 386 }}
             />
