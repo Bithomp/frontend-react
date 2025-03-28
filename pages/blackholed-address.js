@@ -15,11 +15,11 @@ export async function getServerSideProps(context) {
   };
 }
 
-export default function BlackholedArticle() {
+export default function BlackholedAddress() {
   return (
     <>
       <SEO
-        title="Blackholed Addresses on XRP and Xahau Ledgers"
+        title={"Blackholed Addresses on " + explorerName}
         description="What are blackholed addresses on XRP and Xahau Ledgers, why they are important, how accounts become blackholed."
         noindex={network !== 'mainnet'}
         image={{ file: 'pages/blackholed-picture.png', width: 'auto', height: 'auto', allNetworks: true }}
@@ -44,7 +44,7 @@ export default function BlackholedArticle() {
         </p>
         <center>
           <img
-            src="/images/pages/blackholed-screen.png"
+            src={"/images/pages/blackholed-screen" + (xahauNetwork ? "-xahau" : "") +".png"}
             alt="Blackholed Account-example"
             style={{ maxWidth: '100%', maxHeight: 500 }}
           />
