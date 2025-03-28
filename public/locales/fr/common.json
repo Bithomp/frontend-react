@@ -623,7 +623,7 @@
     "search-by-owner": "Rechercher par propriétaire de NFT",
     "search-by-buyer": "Rechercher par acheteur de NFT",
     "search-by-seller": "Rechercher par vendeur de NFT",
-    "no-nfts": "Nous n'avons trouvé aucun NFT avec vos paramètres de recherche.",
+    "no-nfts": "Essayez d’ajuster les filtres pour voir des résultats correspondant à votre recherche !",
     "on-service": "sur {{service}}",
     "amount-on-service": "{{amount}} sur {{service}}",
     "load-more": "Nous cherchons des données sur le registre... veuillez patienter...",

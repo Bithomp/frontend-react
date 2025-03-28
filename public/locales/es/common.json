@@ -623,7 +623,7 @@
     "search-by-owner": "Buscar por dueño del NFT",
     "search-by-buyer": "Buscar por comprador del NFT",
     "search-by-seller": "Buscar por vendedor del NFT",
-    "no-nfts": "No pudimos encontrar ningún NFT con tus parámetros de búsqueda.",
+    "no-nfts": "¡Intenta ajustar los filtros para ver resultados que coincidan con tu búsqueda!",
     "on-service": "en {{service}}",
     "amount-on-service": "{{amount}} en {{service}}",
     "load-more": "Estamos buscando información en el XRPL... por favor, espera...",

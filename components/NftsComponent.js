@@ -238,7 +238,7 @@ export default function NftsComponent({
       searchPart = '&search=' + encodeURIComponent(search) + '&searchLocations=metadata.name'
       //'&searchLocations=metadata.name,metadata.description'
       if (search.length < 3) {
-        setErrorMessage(t('error-api.search is too short'))
+        setErrorMessage('error-api.search is too short')
         setLoading(false)
         return
       }
@@ -285,7 +285,7 @@ export default function NftsComponent({
     ).catch((error) => {
       if (error) {
         if (error && error.message !== 'canceled') {
-          setErrorMessage(t('error.' + error.message))
+          setErrorMessage('error.' + error.message)
           setLoading(false)
         }
       }
@@ -301,7 +301,7 @@ export default function NftsComponent({
           // user logged out...
           signOutPro()
         } else {
-          setErrorMessage(t('error-api.' + newdata.error))
+          setErrorMessage('error-api.' + newdata.error)
         }
       } else {
         if (newdata.issuer) {
@@ -406,7 +406,7 @@ export default function NftsComponent({
           setData([...nftsData, ...nftList])
         } else {
           if (marker === 'first') {
-            setErrorMessage(t('nfts.no-nfts'))
+            setErrorMessage('nfts.no-nfts')
           } else {
             setHasMore(false)
           }
@@ -845,7 +845,7 @@ export default function NftsComponent({
               dataLength={data?.length}
               loadMore={checkApi}
               hasMore={hasMore}
-              errorMessage={errorMessage}
+              errorMessage={t(errorMessage)}
               subscriptionExpired={subscriptionExpired}
               sessionToken={sessionToken}
               endMessage={t('nfts.end')}
@@ -903,7 +903,7 @@ export default function NftsComponent({
                             ) : (
                               <tr>
                                 <td colSpan="100" className="center orange bold">
-                                  {errorMessage}
+                                  {t(errorMessage)}
                                 </td>
                               </tr>
                             )}
@@ -974,7 +974,7 @@ export default function NftsComponent({
                             ) : (
                               <tr>
                                 <td colSpan="100" className="center orange bold">
-                                  {errorMessage}
+                                  {t(errorMessage)}
                                 </td>
                               </tr>
                             )}
@@ -996,7 +996,7 @@ export default function NftsComponent({
                   ) : (
                     <>
                       {errorMessage ? (
-                        <div className="center orange bold">{errorMessage}</div>
+                        <div className="center orange bold">{t(errorMessage)}</div>
                       ) : (
                         <Tiles nftList={data} type={listTab === 'onSale' ? 'onSale' : 'name'} account={account} />
                       )}
