@@ -1,5 +1,5 @@
 import sdk from '@crossmarkio/sdk'
-import { broadcastTransaction, getNextTransactionParams } from './user'
+import { broadcastTransaction } from './user' //getNextTransactionParams
 
 const useOurServer = true
 
@@ -47,13 +47,13 @@ const crossmarkSign = async ({
 
     if (useOurServer) {
       //get fee
-      setAwaiting(true)
-      setStatus('Getting transaction fee...')
-      const txFee = await getNextTransactionParams(tx)
-      setAwaiting(false)
-      tx.Sequence = txFee.Sequence
-      tx.Fee = txFee.Fee
-      tx.LastLedgerSequence = txFee.LastLedgerSequence
+      //setAwaiting(true)
+      //setStatus('Getting transaction fee...')
+      //const txFee = await getNextTransactionParams(tx)
+      //setAwaiting(false)
+      //tx.Sequence = txFee.Sequence
+      //tx.Fee = txFee.Fee
+      //tx.LastLedgerSequence = txFee.LastLedgerSequence //crossmark has it own lastLedgerSequence
       setStatus('Sign the transaction in Crossmark.')
 
       const signResult = await sdk.async.signAndWait(tx)
