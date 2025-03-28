@@ -336,6 +336,17 @@ export default function Header({
                   Xaman
                 </span>
 
+                <span onClick={() => signinWithWallet('crossmark')} className="link">
+                  <Image
+                    src="/images/wallets/crossmark.png"
+                    className="wallet-logo"
+                    alt="Crossmark Wallet"
+                    height={24}
+                    width={24}
+                  />
+                  Crossmark
+                </span>
+
                 <span
                   onClick={() => {
                     signinWithWallet('gemwallet')
@@ -475,6 +486,15 @@ export default function Header({
                       src="/images/wallets/trezor.svg"
                       className="wallet-logo"
                       alt="Trezor Wallet"
+                      height={24}
+                      width={24}
+                    />
+                  )}
+                  {account?.wallet === 'crossmark' && (
+                    <Image
+                      src="/images/wallets/crossmark.png"
+                      className="wallet-logo"
+                      alt="Crossmark Wallet"
                       height={24}
                       width={24}
                     />
