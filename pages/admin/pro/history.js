@@ -1,5 +1,5 @@
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 
@@ -29,7 +29,9 @@ import Image from 'next/image'
 import { CSVLink } from 'react-csv'
 import DownloadIcon from '../../../public/images/download.svg'
 import { koinly } from '../../../utils/koinly'
-
+import { format } from 'date-fns'
+import { TbArrowsSort } from 'react-icons/tb'
+import SimpleSelect from '../../../components/UI/SimpleSelect'
 export const getServerSideProps = async (context) => {
   const { locale, query } = context
   const { address } = query
@@ -56,6 +58,26 @@ const showFiat = (fiat, selectedCurrency) => {
   )
 }
 
+const dateFormatters = {
+  koinly: (timestamp) => {
+    // ISO format: YYYY-MM-DDTHH:MM:SS.000Z
+    return new Date(timestamp * 1000).toISOString()
+  },
+  coinLedger: (timestamp) => {
+    // Format: MM/DD/YYYY HH:MM:SS in UTC
+    const date = new Date(timestamp * 1000)
+    return format(new Date(date.getTime() + date.getTimezoneOffset() * 60000), 'MM/dd/yyyy HH:mm:ss')
+  }
+}
+
+const processDataForExport = (activities, platform) => {
+  return activities.map(activity => {
+    const processedActivity = { ...activity }
+    processedActivity.timestampExport = dateFormatters[platform](activity.timestamp)
+    return processedActivity
+  })
+}
+
 export default function History({ queryAddress, selectedCurrency, setSelectedCurrency }) {
   const router = useRouter()
   const width = useWidth()
@@ -77,6 +99,42 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
   const [rendered, setRendered] = useState(false)
   const [removeDust, setRemoveDust] = useState(false)
   const [filteredActivities, setFilteredActivities] = useState([])
+  const [platformCSVExport, setPlatformCSVExport] = useState('koinly')
+
+  const platformCSVHeaders = useMemo(() => [
+    {
+      platform: 'koinly',
+      headers: [
+        { label: 'Date', key: 'timestampExport' },
+        { label: 'Sent Amount', key: 'sentAmount' },
+        { label: 'Sent Currency', key: 'sentCurrency' },
+        { label: 'Received Amount', key: 'receivedAmount' },
+        { label: 'Received Currency', key: 'receivedCurrency' },
+        { label: 'Fee Amount', key: 'txFeeNumber' },
+        { label: 'Fee Currency', key: 'txFeeCurrencyCode' },
+        { label: 'Net Worth Amount', key: 'amountInFiats.' + selectedCurrency },
+        { label: 'Net Worth Currency', key: 'netWorthCurrency' },
+        { label: 'Label', key: '' },
+        { label: 'Description', key: 'memo' },
+        { label: 'TxHash', key: 'hash' }
+      ]
+    }, {
+      platform: 'coinLedger',
+      headers: [
+        { label: 'Date (UTC)', key: 'timestampExport' },
+        { label: 'Platform (Optional)', key: 'platform' },
+        { label: 'Asset Sent', key: 'sentCurrency' },
+        { label: 'Amount Sent', key: 'sentAmount' },
+        { label: 'Asset Received', key: 'receivedCurrency' },
+        { label: 'Amount Received', key: 'receivedAmount' },
+        { label: 'Fee Currency (Optional)', key: 'txFeeCurrencyCode' },
+        { label: 'Fee Amount (Optional)', key: 'txFeeNumber' },
+        { label: 'Type', key: 'txType' },
+        { label: 'Description (Optional)', key: 'memo' },
+        { label: 'TxHash (Optional)', key: 'hash' }
+      ]
+    }
+  ], [selectedCurrency])
 
   useEffect(() => {
     setRendered(true)
@@ -171,16 +229,16 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
     const response = await axiosAdmin
       .get(
         'user/addresses/activities?convertCurrency=' +
-          selectedCurrency +
-          '&addresses=' +
-          addressesToCheck +
-          '&period=' +
-          period +
-          '&order=' +
-          orderPart +
-          '&limit=1000' +
-          (options?.marker ? '&marker=' + options.marker : '') +
-          (sortCurrency ? '&sortCurrency=' + sortCurrency : '')
+        selectedCurrency +
+        '&addresses=' +
+        addressesToCheck +
+        '&period=' +
+        period +
+        '&order=' +
+        orderPart +
+        '&limit=1000' +
+        (options?.marker ? '&marker=' + options.marker : '') +
+        (sortCurrency ? '&sortCurrency=' + sortCurrency : '')
       )
       .catch((error) => {
         setLoading(false)
@@ -232,7 +290,7 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
         if (res.activities[i].amount?.issuer) {
           let koinlyId =
             koinly[xahauNetwork ? 'xahau' : 'xrpl'][
-              res.activities[i].amount?.issuer + ':' + res.activities[i].amount?.currency
+            res.activities[i].amount?.issuer + ':' + res.activities[i].amount?.currency
             ]
           if (koinlyId) {
             scvCurrency = koinlyId
@@ -440,32 +498,34 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
               </CheckBox>
             </div>
             <div>
+              <div style={{
+                marginBottom: 20,
+              }}>
+                <SimpleSelect
+                  value={platformCSVExport}
+                  setValue={setPlatformCSVExport}
+                  optionsList={[
+                    { value: 'koinly', label: 'Koinly' },
+                    { value: 'coinLedger', label: 'CoinLedger' }
+                  ]}
+                />
+                <button className="dropdown-btn" onClick={() => setSortMenuOpen(!sortMenuOpen)}>
+                  <TbArrowsSort />
+                </button>
+              </div>
               {rendered && (
                 <CSVLink
-                  data={filteredActivities || []}
-                  headers={[
-                    { label: 'Date', key: 'timestampExport' },
-                    { label: 'Sent Amount', key: 'sentAmount' },
-                    { label: 'Sent Currency', key: 'sentCurrency' },
-                    { label: 'Received Amount', key: 'receivedAmount' },
-                    { label: 'Received Currency', key: 'receivedCurrency' },
-                    { label: 'Fee Amount', key: 'txFeeNumber' },
-                    { label: 'Fee Currency', key: 'txFeeCurrencyCode' },
-                    { label: 'Net Worth Amount', key: 'amountInFiats.' + selectedCurrency },
-                    { label: 'Net Worth Currency', key: 'netWorthCurrency' },
-                    { label: 'Label', key: '' },
-                    { label: 'Description', key: 'memo' },
-                    { label: 'TxHash', key: 'hash' }
-                  ]}
+                  data={processDataForExport(filteredActivities || [], platformCSVExport)}
+                  headers={platformCSVHeaders.find(header => header.platform.toLowerCase() === platformCSVExport.toLocaleLowerCase())?.headers || []}
                   filename={'export ' + new Date().toISOString() + '.csv'}
                   className={'button-action' + (!(activities?.length > 0) ? ' disabled' : '')}
                 >
-                  <DownloadIcon /> CSV for Koinly
+                  <DownloadIcon /> CSV for {platformCSVExport}
                 </CSVLink>
               )}
+              {/* <br />
               <br />
-              <br />
-              Let us know if we miss koinlyIDs for your tokens. We will add them to the system.
+              Let us know if we miss koinlyIDs for your tokens. We will add them to the system. */}
             </div>
           </>
           <>
