@@ -59,24 +59,24 @@ const showFiat = (fiat, selectedCurrency) => {
 }
 
 const dateFormatters = {
-  koinly: (timestamp) => {
+  Koinly: (timestamp) => {
     // ISO format: YYYY-MM-DDTHH:MM:SS.000Z
-    return new Date(timestamp * 1000).toISOString()
+    return new Date(timestamp * 1000).toISOString();
   },
-  coinLedger: (timestamp) => {
+  CoinLedger: (timestamp) => {
     // Format: MM/DD/YYYY HH:MM:SS in UTC
-    const date = new Date(timestamp * 1000)
-    return format(new Date(date.getTime() + date.getTimezoneOffset() * 60000), 'MM/dd/yyyy HH:mm:ss')
+    const date = new Date(timestamp * 1000);
+    return format(new Date(date.getTime() + date.getTimezoneOffset() * 60000), 'MM/dd/yyyy HH:mm:ss');
   }
-}
+};
 
 const processDataForExport = (activities, platform) => {
   return activities.map(activity => {
-    const processedActivity = { ...activity }
-    processedActivity.timestampExport = dateFormatters[platform](activity.timestamp)
-    return processedActivity
-  })
-}
+    const processedActivity = { ...activity };
+    processedActivity.timestampExport = dateFormatters[platform](activity.timestamp);
+    return processedActivity;
+  });
+};
 
 export default function History({ queryAddress, selectedCurrency, setSelectedCurrency }) {
   const router = useRouter()
@@ -99,11 +99,11 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
   const [rendered, setRendered] = useState(false)
   const [removeDust, setRemoveDust] = useState(false)
   const [filteredActivities, setFilteredActivities] = useState([])
-  const [platformCSVExport, setPlatformCSVExport] = useState('koinly')
+  const [platformCSVExport, setPlatformCSVExport] = useState('Koinly')
 
   const platformCSVHeaders = useMemo(() => [
     {
-      platform: 'koinly',
+      platform: 'Koinly',
       headers: [
         { label: 'Date', key: 'timestampExport' },
         { label: 'Sent Amount', key: 'sentAmount' },
@@ -119,7 +119,7 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
         { label: 'TxHash', key: 'hash' }
       ]
     }, {
-      platform: 'coinLedger',
+      platform: 'CoinLedger',
       headers: [
         { label: 'Date (UTC)', key: 'timestampExport' },
         { label: 'Platform (Optional)', key: 'platform' },
@@ -310,10 +310,10 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
 
         res.activities[i].timestampExport = new Date(res.activities[i].timestamp * 1000).toISOString()
 
-        res.activities[i].sentAmount = sending ? res.activities[i].amountNumber : 0
+        res.activities[i].sentAmount = sending ? res.activities[i].amountNumber : ""
         res.activities[i].sentCurrency = sending ? scvCurrency : ''
 
-        res.activities[i].receivedAmount = !sending ? res.activities[i].amountNumber : 0
+        res.activities[i].receivedAmount = !sending ? res.activities[i].amountNumber : ""
         res.activities[i].receivedCurrency = !sending ? scvCurrency : ''
 
         res.activities[i].netWorthCurrency = selectedCurrency.toUpperCase()
@@ -505,8 +505,8 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
                   value={platformCSVExport}
                   setValue={setPlatformCSVExport}
                   optionsList={[
-                    { value: 'koinly', label: 'Koinly' },
-                    { value: 'coinLedger', label: 'CoinLedger' }
+                    { value: 'Koinly', label: 'Koinly' },
+                    { value: 'CoinLedger', label: 'CoinLedger' }
                   ]}
                 />
                 <button className="dropdown-btn" onClick={() => setSortMenuOpen(!sortMenuOpen)}>
