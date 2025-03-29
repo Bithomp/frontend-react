@@ -172,9 +172,16 @@ export default function NftMint({ setSignRequest, uriQuery, digestQuery }) {
     }
 
     if (!xahauNetwork) {
-      request = {
-        ...JSON.parse(metadata),
-        TransactionType: "NFTokenMint"
+      if (metadata && isValidJson(metadata)) {
+        const metadata = typeof metadata === 'string' ? JSON.parse(metadata) : metadata
+        request = {
+          ...metadata,
+          TransactionType: "NFTokenMint"
+        }
+      }
+      else {
+        setErrorMessage('Please enter valid JSON')
+        return
       }
     }
 
