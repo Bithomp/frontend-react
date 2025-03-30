@@ -70,12 +70,13 @@ export default function Footer() {
           <Link href="/privacy-policy">{t('menu.privacy-policy')}</Link>
           <Link href="/terms-and-conditions">{t('menu.terms-and-conditions')}</Link>
         </div>
-        {!xahauNetwork && (
-          <div className="footer-menu-column">
-            <span className="footer-menu-header">{t('menu.learn-more.title')}</span>
-            <Link href="/xrpl-article">XRP, XRPL, Ripple</Link>
-          </div>
-        )}
+
+        <div className="footer-menu-column">
+          <span className="footer-menu-header">{t('menu.learn-more.title')}</span>
+          {!xahauNetwork && <Link href="/xrpl-article">XRP, XRPL, Ripple</Link>}
+          <Link href="/blacklisted-address">Blacklisted address</Link>
+        </div>
+
         {!xahauNetwork && (
           <div className="footer-menu-column">
             <span className="footer-menu-header">{t('menu.sponsored.title')}</span>

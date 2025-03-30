@@ -55,8 +55,11 @@ if (xahauNetwork) {
 }
 
 if (network === 'mainnet') {
-  pages.push({ loc: 'xrpl-article', changefreq: 'monthly', priority: '0.6' })
+  if (!xahauNetwork) {
+    pages.push({ loc: 'xrpl-article', changefreq: 'monthly', priority: '0.6' })
+  }
   pages.push({ loc: 'xrp-xah-taxes', changefreq: 'monthly', priority: '0.9' })
+  pages.push({ loc: 'blacklisted-address', changefreq: 'monthly', priority: '0.5' })
 }
 
 function generateSiteMap(posts) {
@@ -70,8 +73,10 @@ function generateSiteMap(posts) {
     'terms-and-conditions',
     'disclaimer',
     'xrpl-article',
+    'blacklisted-address',
     'xrp-xah-taxes',
-    'object'
+    'object',
+    'about-us'
   ]
   const oldPages = [] // 'explorer/'
   const pagesWithoutTranslation = [...noTranslatedPages, ...oldPages]
