@@ -164,10 +164,8 @@ export default function AboutUs() {
           </a>{' '}
           (page 28)
         </p>
-        <p>
-          <h2>Follow us on Social Media</h2>
-          <SocialIcons />
-        </p>
+        <h2>Follow us on Social Media</h2>
+        <SocialIcons />
       </div>
     </>
   )
