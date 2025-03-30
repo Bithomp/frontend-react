@@ -60,6 +60,7 @@ if (network === 'mainnet') {
   }
   pages.push({ loc: 'xrp-xah-taxes', changefreq: 'monthly', priority: '0.9' })
   pages.push({ loc: 'blacklisted-address', changefreq: 'monthly', priority: '0.5' })
+  pages.push({ loc: 'blackholed-address', changefreq: 'monthly', priority: '0.5' })
 }
 
 function generateSiteMap(posts) {

@@ -74,6 +74,7 @@ export default function Footer() {
         <div className="footer-menu-column">
           <span className="footer-menu-header">{t('menu.learn-more.title')}</span>
           {!xahauNetwork && <Link href="/xrpl-article">XRP, XRPL, Ripple</Link>}
+          <Link href="/blackholed-address">Blackholed address</Link>
           <Link href="/blacklisted-address">Blacklisted address</Link>
         </div>
 
