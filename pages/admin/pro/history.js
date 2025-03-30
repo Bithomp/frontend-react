@@ -523,9 +523,9 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
                   <DownloadIcon /> CSV for {platformCSVExport}
                 </CSVLink>
               )}
-              {/* <br />
-              <br />
-              Let us know if we miss koinlyIDs for your tokens. We will add them to the system. */}
+              {platformCSVExport === "Koinly" && <><br />
+                <br />
+                Let us know if we miss koinlyIDs for your tokens. We will add them to the system.</>}
             </div>
           </>
           <>
