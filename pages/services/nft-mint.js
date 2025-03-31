@@ -26,7 +26,7 @@ export const getServerSideProps = async (context) => {
 
 import CheckBox from '../../components/UI/CheckBox'
 import SEO from '../../components/SEO'
-import NftMintTabs from '../../components/Tabs/NftMintTabs'
+import XRPLNftMint from './xrpl-nft-mint'
 
 let interval
 let startTime
@@ -168,21 +168,7 @@ export default function NftMint({ setSignRequest, uriQuery, digestQuery }) {
             MemoData: encode('NFT Mint')
           }
         }
-      ],
-    }
-
-    if (!xahauNetwork) {
-      if (metadata && isValidJson(metadata)) {
-        const metadata = typeof metadata === 'string' ? JSON.parse(metadata) : metadata
-        request = {
-          ...metadata,
-          TransactionType: "NFTokenMint"
-        }
-      }
-      else {
-        setErrorMessage('Please enter valid JSON')
-        return
-      }
+      ]
     }
 
     if (uri) {
@@ -270,141 +256,145 @@ export default function NftMint({ setSignRequest, uriQuery, digestQuery }) {
       <SEO title="NFT Mint" />
       <div className="page-services-nft-mint content-center">
         <h1 className="center">NFT Mint</h1>
-        <NftMintTabs />
         <p>
           You can use this page to create a new NFT, a unique digital asset that can be used in a variety of
           applications.
         </p>
 
-        {!minted && (
+        {xahauNetwork ? (
           <>
-            <p>URI that points to the data or metadata associated with the NFT:</p>
-            <div className="input-validation">
-              <input
-                placeholder="ipfs://bafkreignnol62jayyt3hbofhkqvb7jolxyr4vxtby5o7iqpfi2r2gmt6fa4"
-                value={uri}
-                onChange={onUriChange}
-                className="input-text"
-                ref={(node) => {
-                  uriRef = node
-                }}
-                spellCheck="false"
-                maxLength="256"
-                name="uri"
-              />
-            </div>
-
-            {!uriValidDigest && (
+            {!minted && (
               <>
-                <CheckBox checked={calculateDigest} setChecked={setCalculateDigest} name="add-digest">
-                  Add <b>Digest</b> (recommended)
-                </CheckBox>
-
-                {calculateDigest && (
-                  <>
-                    <p>
-                      The digest is calculated from the metadata. It is used to verify that the URI and the metadata
-                      have not been tampered with.
-                    </p>
-
-                    <button
-                      className="button-action thin"
-                      onClick={loadMetadata}
-                      style={{ marginBottom: '10px' }}
-                      name="load-metadata-button"
-                    >
-                      Load metadata
-                    </button>
-
-                    <b className="orange" style={{ marginLeft: '20px' }}>
-                      {metadataStatus}
-                    </b>
-
-                    <p>
-                      Metadata: <b className="orange">{metadataError}</b>
-                    </p>
-                    <textarea
-                      value={metadata}
-                      placeholder="Paste your JSON metadata here"
-                      onChange={onMetadataChange}
-                      className="input-text"
-                      autoFocus={true}
-                      readOnly={metaLoadedFromUri}
-                      name="metadata"
-                    />
-                  </>
-                )}
-              </>
-            )}
-
-            {(calculateDigest || uriValidDigest) && (
-              <>
-                <p>Digest:</p>
+                <p>URI that points to the data or metadata associated with the NFT:</p>
                 <div className="input-validation">
                   <input
-                    placeholder="Digest"
-                    value={digest}
-                    onChange={onDigestChange}
+                    placeholder="ipfs://bafkreignnol62jayyt3hbofhkqvb7jolxyr4vxtby5o7iqpfi2r2gmt6fa4"
+                    value={uri}
+                    onChange={onUriChange}
                     className="input-text"
                     ref={(node) => {
-                      digestRef = node
+                      uriRef = node
                     }}
                     spellCheck="false"
-                    maxLength="64"
-                    readOnly={metaLoadedFromUri}
-                    name="digest"
+                    maxLength="256"
+                    name="uri"
                   />
-                  {isIdValid(digest) && <img src={checkmark} className="validation-icon" alt="validated" />}
                 </div>
+
+                {!uriValidDigest && (
+                  <>
+                    <CheckBox checked={calculateDigest} setChecked={setCalculateDigest} name="add-digest">
+                      Add <b>Digest</b> (recommended)
+                    </CheckBox>
+
+                    {calculateDigest && (
+                      <>
+                        <p>
+                          The digest is calculated from the metadata. It is used to verify that the URI and the metadata
+                          have not been tampered with.
+                        </p>
+
+                        <button
+                          className="button-action thin"
+                          onClick={loadMetadata}
+                          style={{ marginBottom: '10px' }}
+                          name="load-metadata-button"
+                        >
+                          Load metadata
+                        </button>
+
+                        <b className="orange" style={{ marginLeft: '20px' }}>
+                          {metadataStatus}
+                        </b>
+
+                        <p>
+                          Metadata: <b className="orange">{metadataError}</b>
+                        </p>
+                        <textarea
+                          value={metadata}
+                          placeholder="Paste your JSON metadata here"
+                          onChange={onMetadataChange}
+                          className="input-text"
+                          autoFocus={true}
+                          readOnly={metaLoadedFromUri}
+                          name="metadata"
+                        />
+                      </>
+                    )}
+                  </>
+                )}
+
+                {(calculateDigest || uriValidDigest) && (
+                  <>
+                    <p>Digest:</p>
+                    <div className="input-validation">
+                      <input
+                        placeholder="Digest"
+                        value={digest}
+                        onChange={onDigestChange}
+                        className="input-text"
+                        ref={(node) => {
+                          digestRef = node
+                        }}
+                        spellCheck="false"
+                        maxLength="64"
+                        readOnly={metaLoadedFromUri}
+                        name="digest"
+                      />
+                      {isIdValid(digest) && <img src={checkmark} className="validation-icon" alt="validated" />}
+                    </div>
+                  </>
+                )}
+
+                <CheckBox checked={agreeToSiteTerms} setChecked={setAgreeToSiteTerms} name="agree-to-terms">
+                  I agree with the{' '}
+                  <Link href="/terms-and-conditions" target="_blank">
+                    Terms and conditions
+                  </Link>
+                  .
+                </CheckBox>
+
+                <CheckBox
+                  checked={agreeToPrivacyPolicy}
+                  setChecked={setAgreeToPrivacyPolicy}
+                  name="agree-to-privacy-policy"
+                >
+                  I agree with the{' '}
+                  <Link href="/privacy-policy" target="_blank">
+                    Privacy policy
+                  </Link>
+                  .
+                </CheckBox>
+
+                <p className="center">
+                  <button className="button-action" onClick={onSubmit} name="submit-button">
+                    Mint NFT
+                  </button>
+                </p>
               </>
             )}
 
-            <CheckBox checked={agreeToSiteTerms} setChecked={setAgreeToSiteTerms} name="agree-to-terms">
-              I agree with the{' '}
-              <Link href="/terms-and-conditions" target="_blank">
-                Terms and conditions
-              </Link>
-              .
-            </CheckBox>
-
-            <CheckBox
-              checked={agreeToPrivacyPolicy}
-              setChecked={setAgreeToPrivacyPolicy}
-              name="agree-to-privacy-policy"
-            >
-              I agree with the{' '}
-              <Link href="/privacy-policy" target="_blank">
-                Privacy policy
-              </Link>
-              .
-            </CheckBox>
-
-            <p className="center">
-              <button className="button-action" onClick={onSubmit} name="submit-button">
-                Mint NFT
-              </button>
-            </p>
+            {minted && (
+              <>
+                The NFT was sucefully minted:
+                <br />
+                <Link href={'/nft/' + minted} className="brake">
+                  {server}/nft/{minted}
+                </Link>
+                <br />
+                <br />
+                <center>
+                  <button className="button-action" onClick={() => setMinted('')} name="mint-another-nft">
+                    Mint another NFT
+                  </button>
+                </center>
+              </>
+            )}
+            <p className="red center" dangerouslySetInnerHTML={{ __html: errorMessage || '&nbsp;' }} />
           </>
+        ) : (
+          <XRPLNftMint setSignRequest={setSignRequest} />
         )}
-
-        {minted && (
-          <>
-            The NFT was sucefully minted:
-            <br />
-            <Link href={'/nft/' + minted} className="brake">
-              {server}/nft/{minted}
-            </Link>
-            <br />
-            <br />
-            <center>
-              <button className="button-action" onClick={() => setMinted('')} name="mint-another-nft">
-                Mint another NFT
-              </button>
-            </center>
-          </>
-        )}
-
-        <p className="red center" dangerouslySetInnerHTML={{ __html: errorMessage || '&nbsp;' }} />
       </div>
     </>
   )
