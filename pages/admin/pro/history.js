@@ -129,7 +129,7 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
         { label: 'Amount Received', key: 'receivedAmount' },
         { label: 'Fee Currency (Optional)', key: 'txFeeCurrencyCode' },
         { label: 'Fee Amount (Optional)', key: 'txFeeNumber' },
-        { label: 'Type', key: 'txType' },
+        { label: 'Type', key: 'coinLedgerTxType' },
         { label: 'Description (Optional)', key: 'memo' },
         { label: 'TxHash (Optional)', key: 'hash' }
       ]
@@ -280,7 +280,7 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
         let sending = res.activities[i].amountInFiats?.[selectedCurrency]?.[0] === '-'
         res.activities[i].index = options?.marker ? activities.length + 1 + i : i + 1
         res.activities[i].amountExport = amountFormat(res.activities[i].amount)
-        res.activities[i].amountNumber = res.activities[i].amount?.value || res.activities[i].amount / 1000000
+        res.activities[i].amountNumber = res.activities[i].amount?.value || (parseFloat(res.activities[i].amount) / 1000000)
         res.activities[i].currencyCode = res.activities[i].amount?.currency || nativeCurrency
 
         const { currency } = amountParced(res.activities[i].amount)
@@ -320,6 +320,10 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
 
         //sanitize memos for CSV
         res.activities[i].memo = res.activities[i].memo?.replace(/"/g, "'") || ''
+
+        // For CoinLedger platform
+        res.activities[i].coinLedgerTxType = res.activities[i].direction === 'sent' ? 'Withdrawal' : res.activities[i].direction === 'received' ? 'Deposit' : res.activities[i].txType
+
       }
       setData(res) // last request data
       if (options?.marker) {
