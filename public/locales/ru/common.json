@@ -207,6 +207,7 @@
     "base-reserve": "Базовый резерв",
     "increment-reserve": "Резерв трастлайна и др.",
     "total-supply": "Всего существует",
+    "burned-by-hooks": "Сожжено Хуками",
     "total-burned": "Всего сожжено (комиссией)"
   },
   "nft-statistics": {

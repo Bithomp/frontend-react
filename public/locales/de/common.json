@@ -207,6 +207,7 @@
     "base-reserve": "Basis Reserve",
     "increment-reserve": "Zunahme Reserve",
     "total-supply": "Totales Angebot",
+    "burned-by-hooks": "Von Hooks verbrannt",
     "total-burned": "Total vernichtet"
   },
   "nft-statistics": {
