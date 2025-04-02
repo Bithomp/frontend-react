@@ -46,19 +46,21 @@ export default function Jobs() {
         <strong>Requirements:</strong>
         </p>
         <ul>
-          <li><strong>Proficiency in Next.js - IMPORTANT</strong></li>
-          <li><strong>Advanced GitHub skills - IMPORTANT</strong></li>
-          <li>English - your level should be enough to communicate with the team, read and understand the tasks</li>
-          <li>Blockchain knowledge is an advantage; you should be able to find and study relevant documentation</li>
-          <li>Ability to work in a team</li>
+        <li><strong>Proficiency in Next.js - IMPORTANT</strong></li>
+        <li><strong>Advanced GitHub skills - IMPORTANT</strong></li>
+        <li>English - your level should be enough to communicate with the team, read and understand the tasks</li>
+        <li>Blockchain knowledge is an advantage; you should be able to find and study relevant documentation</li>
+        <li>Ability to work in a team</li>
         </ul>
         <p>
         <strong>What We Offer:</strong>
         </p>
+        <ul>
         <li>Remote position</li>
-          <li>Part-time with the possibility of full-time employment in future</li>
-          <li>Flexible working schedule</li>
-          <li>Competitive compensation: payment per task during the probation period, transitioning to an hourly rate or full-time employment if we are satisfied with the quality of your work.</li>
+        <li>Part-time with the possibility of full-time employment in future</li>
+        <li>Flexible working schedule</li>
+        <li>Competitive compensation: payment per task during the probation period, transitioning to an hourly rate or full-time employment if we are satisfied with the quality of your work.</li>
+        </ul>
         <p>
         If you're passionate about web development, you have enough experience and want to contribute to an exciting project, we’d love to hear from you!  
         </p>
