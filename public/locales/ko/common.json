@@ -207,6 +207,7 @@
     "base-reserve": "기본 준비금",
     "increment-reserve": "준비금 증가",
     "total-supply": "전체 공급",
+    "burned-by-hooks":"Hooks에 의해 소각됨",
     "total-burned": "전체 소각량"
   },
   "nft-statistics": {

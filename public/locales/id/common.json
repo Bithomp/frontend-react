@@ -207,6 +207,7 @@
     "base-reserve": "Cadangan Dasar",
     "increment-reserve": "Penambahan Cadangan",
     "total-supply": "Total Pasokan",
+    "burned-by-hooks": "Dibakar oleh Hooks",
     "total-burned": "Total Dihapus"
   },
   "nft-statistics": {
