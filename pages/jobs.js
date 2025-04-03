@@ -1,7 +1,7 @@
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import SEO from '../components/SEO'
 import { getIsSsrMobile } from '../utils/mobile'
-import { network } from '../utils'
+import { explorerName, network } from '../utils'
 import Mailto from 'react-protected-mailto'
 
 export async function getServerSideProps(context) {
@@ -18,8 +18,8 @@ export default function Jobs() {
   return (
     <>
       <SEO
-        title={'We are hiring'}
-        description="Next.js"
+        title="We are hiring"
+        description="we are looking for the Next.js Developer"
         noindex={network !== 'mainnet'}
         image={{ file: 'pages/jobs', width: 'auto', height: 'auto', allNetworks: true }}
       />
@@ -34,7 +34,7 @@ export default function Jobs() {
         <h1>We Are Hiring: Developer - Next.js</h1>
         <h3>About Us</h3>
         <p>
-          Bithomp is a leading platform for exploring the XRPL and Xahau networks. Now, we are looking for a talented
+          Bithomp is a leading platform for exploring the {explorerName} network. Now, we are looking for a talented
           developer to join our team!
         </p>
         <p>
@@ -49,10 +49,14 @@ export default function Jobs() {
         </p>
         <ul>
           <li>
-            <strong>Proficiency in Next.js - IMPORTANT</strong>
+            <strong>
+              Proficiency in Next.js - <span className="orange">IMPORTANT</span>
+            </strong>
           </li>
           <li>
-            <strong>Advanced GitHub skills - IMPORTANT</strong>
+            <strong>
+              Advanced GitHub skills - <span className="orange">IMPORTANT</span>
+            </strong>
           </li>
           <li>English - your level should be enough to communicate with the team, read and understand the tasks</li>
           <li>Blockchain knowledge is an advantage; you should be able to find and study relevant documentation</li>
@@ -78,7 +82,16 @@ export default function Jobs() {
           Apply now! Send your CV, GitHub profile and portfolio to{' '}
           <Mailto email="info@bithomp.com" headers={{ subject: 'Job Search - Developer' }} />
         </p>
-        <p>If we find your CV interesting, we will get back to you.</p>
+        <p>
+          We are looking forward to hearing from you! If we find your CV interesting, we will get back to you.
+          <br />
+          <br />
+          Bithomp Team <span className="red">❤</span>
+          <br />
+          <br />
+          <span className="grey">P.S. We are not interested in working with agencies.</span>
+        </p>
+        <br />
       </div>
     </>
   )
