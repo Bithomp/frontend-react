@@ -34,43 +34,51 @@ export default function Jobs() {
         <h1>We Are Hiring: Developer - Next.js</h1>
         <h3>About Us</h3>
         <p>
-        Bithomp is a leading platform for exploring the XRPL and Xahau networks. Now, we are looking for a talented developer to join our team!
+          Bithomp is a leading platform for exploring the XRPL and Xahau networks. Now, we are looking for a talented
+          developer to join our team!
         </p>
         <p>
-        We are searching for a person to jump into the project without a long back-and-forth communication process and deliver clean, working code that doesn’t break other components or mess up the website structure.
+          We are searching for a person to jump into the project without a long back-and-forth communication process and
+          deliver clean, working code that doesn’t break other components or mess up the website structure.
         </p>
         <p>
-        <strong>Position:</strong> Next.js Developer
+          <strong>Position:</strong> Next.js Developer
         </p>
         <p>
-        <strong>Requirements:</strong>
+          <strong>Requirements:</strong>
         </p>
         <ul>
-        <li><strong>Proficiency in Next.js - IMPORTANT</strong></li>
-        <li><strong>Advanced GitHub skills - IMPORTANT</strong></li>
-        <li>English - your level should be enough to communicate with the team, read and understand the tasks</li>
-        <li>Blockchain knowledge is an advantage; you should be able to find and study relevant documentation</li>
-        <li>Ability to work in a team</li>
+          <li>
+            <strong>Proficiency in Next.js - IMPORTANT</strong>
+          </li>
+          <li>
+            <strong>Advanced GitHub skills - IMPORTANT</strong>
+          </li>
+          <li>English - your level should be enough to communicate with the team, read and understand the tasks</li>
+          <li>Blockchain knowledge is an advantage; you should be able to find and study relevant documentation</li>
+          <li>Ability to work in a team</li>
         </ul>
         <p>
-        <strong>What We Offer:</strong>
+          <strong>What We Offer:</strong>
         </p>
         <ul>
-        <li>Remote position</li>
-        <li>Part-time with the possibility of full-time employment in future</li>
-        <li>Flexible working schedule</li>
-        <li>Competitive compensation: payment per task during the probation period, transitioning to an hourly rate or full-time employment if we are satisfied with the quality of your work.</li>
+          <li>Remote position</li>
+          <li>Part-time with the possibility of full-time employment in future</li>
+          <li>Flexible working schedule</li>
+          <li>
+            Competitive compensation: payment per task during the probation period, transitioning to an hourly rate or
+            full-time employment if we are satisfied with the quality of your work.
+          </li>
         </ul>
         <p>
-        If you're passionate about web development, you have enough experience and want to contribute to an exciting project, we’d love to hear from you!  
+          If you're passionate about web development, you have enough experience and want to contribute to an exciting
+          project, we’d love to hear from you!
         </p>
         <p>
-        Apply now! Send your CV, GitHub profile and portfolio to {' '}
-        <Mailto email="info@bithomp.com" headers={{ subject: 'Job Search - Developer' }} />
+          Apply now! Send your CV, GitHub profile and portfolio to{' '}
+          <Mailto email="info@bithomp.com" headers={{ subject: 'Job Search - Developer' }} />
         </p>
-        <p>
-        If we find your CV interesting, we will get back to you.
-        </p>
+        <p>If we find your CV interesting, we will get back to you.</p>
       </div>
     </>
   )
