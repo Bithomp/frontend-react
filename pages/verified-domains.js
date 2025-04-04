@@ -22,12 +22,12 @@ export default function VerifiedDomains() {
         title={'Verified Domains on ' + explorerName}
         description="What are verified domains on {explorerName}, how to set and verify domain"
         noindex={network !== 'mainnet'}
-        image={{ file: 'pages/verified-domains-picture.jpg', width: 'auto', height: 'auto', allNetworks: true }}
+        image={{ file: 'pages/verified-domains/green-checkmark.jpg', width: 'auto', height: 'auto', allNetworks: true }}
       />
       <div className="content-center">
         <center>
           <img
-            src="/images/pages/verified-domains-picture.jpg"
+            src="/images/pages/verified-domains/green-checkmark.jpg"
             alt="Verified Domains"
             style={{ width: '100%', height: 'auto', maxHeight: 500 }}
           />
@@ -48,7 +48,7 @@ export default function VerifiedDomains() {
         </ul>
         <h2>Domain claims to own an address</h2>
         <p>Your web server should serve {xahauNetwork ? "a" : "an"} {ledgerName}-ledger.toml file, available at the following URL:</p>
-        <pre><code>https://DOMAIN/.well-known/{ledgerName}.toml</code></pre>
+        <pre><code>https://{"{"}DOMAIN{"}"}/.well-known/{ledgerName}.toml</code></pre>
         <p>The address you want to verify should be specified under the <code>[[ACCOUNTS]]</code>entry.
         </p>
         <p>
@@ -65,7 +65,7 @@ export default function VerifiedDomains() {
         </p>
         <center>
           <img
-            src="/images/pages/verified-domain-screen.png"
+            src="/images/pages/verified-domains/domains-screen.png"
             alt="Verified Domains"
             style={{ width: '100%', height: 'auto', maxHeight: 500 }}
           />
@@ -75,7 +75,7 @@ export default function VerifiedDomains() {
         </p>
         <center>
           <img
-            src={"/images/pages/domains-screen" + (xahauNetwork ? "-xahau" : "") +".png"}
+            src={xahauNetwork ? "/images/xahauexplorer/verified-domains/screen-account-page.png" : "/images/xrplexplorer/verified-domains/screen-account-page.png"}
             alt="Verified Domains"
             style={{ width: '100%', height: 'auto', maxHeight: 500 }}
           />
@@ -100,7 +100,7 @@ export default function VerifiedDomains() {
         </p>
         <center>
           <img
-            src={"/images/pages/checkmark" + (xahauNetwork ? "-xahau" : "") +".png"}
+            src={xahauNetwork ? "/images/xahauexplorer/verified-domains/checkmark-example-screen.png" : "/images/xrplexplorer/verified-domains/checkmark-example-screen.png"}
             alt="Verified Domains"
             style={{ width: '100%', height: 'auto', maxHeight: 500 }}
           />
