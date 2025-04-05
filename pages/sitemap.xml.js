@@ -77,6 +77,9 @@ function generateSiteMap(posts) {
     'disclaimer',
     'xrpl-article',
     'blacklisted-address',
+    'blackholed-address',
+    'verified-domains',
+    'jobs',
     'xrp-xah-taxes',
     'object',
     'about-us'
