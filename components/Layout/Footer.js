@@ -77,6 +77,7 @@ export default function Footer() {
           {!xahauNetwork && <Link href="/xrpl-article">XRP, XRPL, Ripple</Link>}
           <Link href="/blackholed-address">Blackholed address</Link>
           <Link href="/blacklisted-address">Blacklisted address</Link>
+          <Link href="/verified-domains">Verified domains</Link>
         </div>
 
         {!xahauNetwork && (
