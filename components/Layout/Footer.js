@@ -53,6 +53,7 @@ export default function Footer() {
         </div>
         <div className="footer-menu-column">
           <span className="footer-menu-header">Bithomp</span>
+          <Link href="/jobs">Join our team 🧑‍💻</Link>
           <Link href="/about-us">{t('menu.company.about-us')}</Link>
           <Link href="/advertise">{t('menu.business.advertise')}</Link>
           <a href="https://xrplmerch.com/product-category/bithomp/?wpam_id=22" target="_blank" rel="noreferrer">

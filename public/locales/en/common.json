@@ -207,6 +207,7 @@
     "base-reserve": "Base reserve",
     "increment-reserve": "Increment reserve",
     "total-supply": "Total supply",
+    "burned-by-hooks": "Burned by Hooks",
     "total-burned": "Total burned"
   },
   "nft-statistics": {
