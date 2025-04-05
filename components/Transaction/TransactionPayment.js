@@ -22,9 +22,12 @@ export const TransactionPayment = ({ data, pageFiatRate, selectedCurrency }) => 
 
   let txTypeSpecial = 'Payment'
 
+  // sourse address and destination address is the same
+  // sometimes source tag is added to show the dapp
+  // so if there is no destintaion tag, no need the source tag to be the same
   const isConvertion =
     specification?.source?.address === specification?.destination?.address &&
-    specification?.source?.tag === specification?.destination?.tag
+    (specification?.source?.tag === specification?.destination?.tag || !specification?.destination?.tag)
 
   if (isConvertion) {
     txTypeSpecial = 'Conversion payment'
