@@ -419,7 +419,7 @@ export const xahauNetwork = network.includes('xahau')
 export const networks = {
   mainnet: {
     id: 0,
-    server: 'https://xrplexplorer.com',
+    server: 'https://bithomp.com',
     nativeCurrency: 'XRP',
     getCoinsUrl: '/go/buy-first-xrp',
     explorerName: 'XRPL',
