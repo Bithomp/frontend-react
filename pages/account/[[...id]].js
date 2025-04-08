@@ -91,6 +91,7 @@ export default function Account({
   useEffect(() => {
     if (!initialData?.address) return
     setData(initialData)
+    console.log("initialData", initialData)
   }, [initialData])
 
   useEffect(() => {
@@ -142,7 +143,7 @@ export default function Account({
 
   useEffect(() => {
     if (!selectedCurrency) return
-    if (data?.address) {
+    if (data?.address || id) {
       checkApi({ noCache: true })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
