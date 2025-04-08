@@ -21,6 +21,7 @@ import {
 import { userOrServiceName, amountFormat } from '../../utils/format'
 
 import { IoSearch } from 'react-icons/io5'
+import { IoMdClose } from 'react-icons/io'
 
 const searchItemRe = /^[~]{0,1}[a-zA-Z0-9-_.]*[+]{0,1}[a-zA-Z0-9-_.]*[$]{0,1}[a-zA-Z0-9-.]*[a-zA-Z0-9]*$/i
 let typingTimer
@@ -39,6 +40,7 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
   const [searchingSuggestions, setSearchingSuggestions] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
   const [isMounted, setIsMounted] = useState(false)
+  const [notEmpty, setNotEmpty] = useState(false)
 
   if (!searchPlaceholderText) {
     searchPlaceholderText = windowWidth < 730 ? t('home.search-placeholder-short') : t('home.search-placeholder')
@@ -57,6 +59,14 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
       setSearchItem(userData.address)
     }
   }, [userData])
+
+  useEffect(() => {
+    if (searchItem) {
+      setNotEmpty(true)
+    } else {
+      setNotEmpty(false)
+    }
+  }, [searchItem])
 
   const requestSuggestions = (value) => {
     if (isValidCTID(value)) {
@@ -297,6 +307,7 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
     if (action.action !== 'input-blur' && action.action !== 'menu-close') {
       setSearchItem(inputValue)
     }
+    
   }
 
   const searchOnFocus = () => {
@@ -319,6 +330,10 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
     }
   }
 
+  const clearAll = () => {
+    setSearchItem('');
+  }
+  
   const explorerHeader = (tab) => {
     if (
       ['amm', 'account', 'nft', 'nfts', 'nft-offer', 'nft-offers', 'transaction', 'nft-volumes', 'object'].includes(tab)
@@ -331,7 +346,7 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
   return (
     <>
       <div className="search-block" style={tab === 'explorer' ? { backgroundColor: 'unset', height: 60 } : {}}>
-        <div className="search-box" style={tab === 'explorer' ? { marginTop: '20px' } : {}}>
+        <div className="search-box form-input" style={tab === 'explorer' ? { marginTop: '20px' } : {}}>
           <div className="above-search-box">
             {searching ? (
               <span className={tab === 'explorer' ? '' : 'contrast'}>
@@ -345,10 +360,10 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
             )}
           </div>
           {isMounted ? (
-            <div onKeyUp={searchOnKeyUp}>
+            <div className="form-input__wrap" onKeyUp={searchOnKeyUp}>
               <Select
                 ref={searchInput}
-                className="search-input search-input-select"
+                className={`address-input search-input search-input-select ${notEmpty ? ' not-empty' : ''}`}
                 placeholder={searchPlaceholderText}
                 onChange={searchOnChange}
                 onFocus={searchOnFocus}
@@ -415,8 +430,17 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
                 }
                 aria-label="Search"
               />
+               <div className="form-input__btns">
+                <button className="form-input__clear" onClick={clearAll}>
+                  <IoMdClose />
+                </button>
+                <div className="search-block-button" onClick={onSearch}>
+                  <IoSearch className="search-icon" />
+                </div>
+              </div>
             </div>
           ) : (
+            <div className="form-input__wrap">
             <input
               aria-label="Search"
               ref={searchInput}
@@ -428,11 +452,16 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
               onKeyUp={searchOnKeyUp}
               spellCheck="false"
             />
-          )}
-
-          <div className="search-button" onClick={onSearch}>
-            <IoSearch className="search-icon" />
+            <div className="form-input__btns">
+            <button className="form-input__clear" onClick={clearAll}>
+              <IoMdClose />
+            </button>
+            <div className="search-block-button" onClick={onSearch}>
+              <IoSearch className="search-icon" />
+            </div>
           </div>
+          </div>
+          )}
           {errorMessage && (
             <div
               className="orange"
