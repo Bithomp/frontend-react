@@ -28,7 +28,7 @@ export async function getServerSideProps(context) {
         url:
           'v2/address/' +
           account +
-          '?username=true&service=true&verifiedDomain=true&parent=true&nickname=true&inception=true&flare=true&blacklist=true&payString=true&ledgerInfo=true&xamanMeta=true&bithomp=true' +
+          '?username=true&service=true&verifiedDomain=true&parent=true&nickname=true&inception=true&flare=true&blacklist=true&payString=true&ledgerInfo=true&xamanMeta=true&bithomp=true&obligations=true' +
           (ledgerTimestamp ? '&ledgerTimestamp=' + new Date(ledgerTimestamp).toISOString() : ''),
         headers: passHeaders(req)
       })
@@ -72,6 +72,14 @@ export default function Account({
 }) {
   const { t } = useTranslation()
 
+  /*
+  obligations: {
+    "trustlines": 44799,
+    "holders": 12131,
+    "tokens": 7
+  }
+  */
+
   const [data, setData] = useState({})
   const [loading, setLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
@@ -87,10 +95,19 @@ export default function Account({
   const [balances, setBalances] = useState({})
   const [shownOnSmall, setShownOnSmall] = useState(null)
   const [objects, setObjects] = useState({})
+  //const [obligations, setObligations] = useState({})
+  const [gateway, setGateway] = useState(false)
 
   useEffect(() => {
     if (!initialData?.address) return
     setData(initialData)
+
+    if (initialData?.obligations) {
+      //setObligations(initialData.obligations)
+      if (initialData.obligations?.trustlines > 200) {
+        setGateway(true)
+      }
+    }
   }, [initialData])
 
   useEffect(() => {
@@ -493,10 +510,11 @@ export default function Account({
                             setSignRequest={setSignRequest}
                             fiatRate={fiatRate}
                             objects={objects}
+                            gateway={gateway}
                           />
                           <PublicData data={data} />
                           <NftData data={data} objects={objects} ledgerTimestamp={data?.ledgerInfo?.ledgerTimestamp} />
-                          {data?.ledgerInfo?.activated && (
+                          {data?.ledgerInfo?.activated && !gateway && (
                             <ObjectsData
                               account={account}
                               setSignRequest={setSignRequest}

@@ -30,7 +30,8 @@ export default function LedgerData({
   networkInfo,
   setSignRequest,
   fiatRate,
-  objects
+  objects,
+  gateway
 }) {
   const { t, i18n } = useTranslation()
 
@@ -374,7 +375,7 @@ export default function LedgerData({
               </tr>
             </>
           )}
-          {data?.ledgerInfo?.activated && (
+          {data?.ledgerInfo?.activated && !gateway && (
             <>
               <tr>
                 <td>{t('explorer.menu.tokens')}</td>
