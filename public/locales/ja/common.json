@@ -182,12 +182,12 @@
       "feesLast24h": "手数料(24h)",
       "usernames": "ユーザネーム",
       "nft": {
-        "created": "NFTミント",
-        "burned": "NFTバーン",
+        "created": "ミント",
+        "burned": "バーン",
         "owners": "現在の保有者",
-        "issuers": "NFT発行者",
-        "transfers": "NFTトランスファー",
-        "for-sale": "販売中のNFT"
+        "issuers": "発行者",
+        "transfers": "トランスファー",
+        "for-sale": "販売中"
       },
       "escrows": "エスクロー",
       "amms": "AMMプール",

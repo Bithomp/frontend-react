@@ -182,12 +182,12 @@
       "feesLast24h": "Fees (24h)",
       "usernames": "Usernames",
       "nft": {
-        "created": "NFT minted",
-        "burned": "NFT burned",
+        "created": "Minted",
+        "burned": "Burned",
         "owners": "Current owners",
-        "issuers": "NFT issuers",
-        "transfers": "NFT transfers",
-        "for-sale": "NFTs for sale"
+        "issuers": "Issuers",
+        "transfers": "Transfers",
+        "for-sale": "Listed"
       },
       "escrows": "Escrows",
       "amms": "AMM pools",

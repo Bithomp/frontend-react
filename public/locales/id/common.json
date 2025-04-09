@@ -182,12 +182,12 @@
       "feesLast24h": "Biaya (24h)",
       "usernames": "Nama Pengguna",
       "nft": {
-        "created": "NFT dicetak",
-        "burned": "NFT dihapus",
+        "created": "Dicetak",
+        "burned": "Dihapus",
         "owners": "Pemilik saat ini",
-        "issuers": "Penerbit NFT",
-        "transfers": "Transfer NFT",
-        "for-sale": "NFT yang Dijual"
+        "issuers": "Penerbit",
+        "transfers": "Transfer",
+        "for-sale": "Yang Dijual"
       },
       "escrows": "Escrows",
       "amms": "AMM pools",

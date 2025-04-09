@@ -182,12 +182,12 @@
       "feesLast24h": "Frais (24h)",
       "usernames": "Noms d'utilisateur",
       "nft": {
-        "created": "NFT créé",
-        "burned": "NFT brûlé",
+        "created": "Créé",
+        "burned": "Brûlé",
         "owners": "Propriétaires actuels",
-        "issuers": "Émetteurs de NFT",
-        "transfers": "Transferts de NFT",
-        "for-sale": "NFTs à vendre"
+        "issuers": "Émetteurs",
+        "transfers": "Transferts",
+        "for-sale": "À vendre"
       },
       "escrows": "Escrows",
       "amms": "Pools AMM",

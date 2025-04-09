@@ -217,7 +217,6 @@ export default function Statistics({ data, setData }) {
   return (
     <>
       <h2 className="center landing-h2">{t('home.stat.header', { ledgerName })}</h2>
-
       <div className="statistics-block">
         <div className="stat-piece">
           <div className="stat-piece-header">{t('home.stat.accountsActiveLast24h')}</div>
@@ -239,7 +238,6 @@ export default function Statistics({ data, setData }) {
           <div>{transactionsLast24h.fees}</div>
         </div>
       </div>
-
       {xahauNetwork && (
         <div className="statistics-block">
           <div className="stat-piece">
@@ -260,7 +258,6 @@ export default function Statistics({ data, setData }) {
           </div>
         </div>
       )}
-
       <div className="statistics-block">
         <div className="stat-piece">
           <div className="stat-piece-header">{t('home.stat.ledger-index')}</div>
@@ -298,7 +295,6 @@ export default function Statistics({ data, setData }) {
           </div>
         </div>
       </div>
-
       <div className="statistics-block">
         <div className="stat-piece">
           <div className="stat-piece-header">{t('home.stat.accounts')}</div>
@@ -326,6 +322,9 @@ export default function Statistics({ data, setData }) {
       </div>
 
       <div className="statistics-block">
+        <div className="stat-header">
+          NFT (<Link href="/nft-statistics">view more</Link>)
+        </div>
         <div className="stat-piece">
           <div className="stat-piece-header">{t('home.stat.nft.created')}</div>
           <div>

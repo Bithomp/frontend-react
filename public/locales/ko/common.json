@@ -182,12 +182,12 @@
       "feesLast24h": "수수료 (24h)",
       "usernames": "사용자명",
       "nft": {
-        "created": "NFT 채굴됨",
-        "burned": "NFT 소각",
+        "created": "채굴됨",
+        "burned": "소각",
         "owners": "현재 소유자",
-        "issuers": "NFT 발행자",
-        "transfers": "NFT 전환",
-        "for-sale": "NFT 판매 중"
+        "issuers": "발행자",
+        "transfers": "전환",
+        "for-sale": "판매 중"
       },
       "escrows": "Escrows",
       "amms": "AMM pools",
