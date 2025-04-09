@@ -218,6 +218,7 @@ export default function Statistics({ data, setData }) {
     <>
       <h2 className="center landing-h2">{t('home.stat.header', { ledgerName })}</h2>
       <div className="statistics-block">
+        <div className="stat-header">Transactions (last 24h)</div>
         <div className="stat-piece">
           <div className="stat-piece-header">{t('home.stat.accountsActiveLast24h')}</div>
           <div>{transactionsLast24h.activeAccounts}</div>
@@ -240,25 +241,29 @@ export default function Statistics({ data, setData }) {
       </div>
       {xahauNetwork && (
         <div className="statistics-block">
+          <div className="stat-header">Hooks (last 24h)</div>
           <div className="stat-piece">
-            <div className="stat-piece-header">Hook's parent txs (24h)</div>
+            <div className="stat-piece-header">Hook parent txs</div>
             <div>{hooksLast24h.emitTxs}</div>
           </div>
           <div className="stat-piece">
-            <div className="stat-piece-header">Hooks emitting txs (24h)</div>
+            <div className="stat-piece-header">Hooks emitting txs</div>
             <div>{hooksLast24h.emitHooks}</div>
           </div>
           <div className="stat-piece">
-            <div className="stat-piece-header">Txs emitted by Hooks (24h)</div>
+            <div className="stat-piece-header">Txs emitted by Hooks</div>
             <div>{hooksLast24h.hooksEmitted}</div>
           </div>
           <div className="stat-piece">
-            <div className="stat-piece-header">Fees paid by Hooks (24h)</div>
+            <div className="stat-piece-header">Fees paid by Hooks</div>
             <div>{hooksLast24h.hooksEmittedFee}</div>
           </div>
         </div>
       )}
       <div className="statistics-block">
+        <div className="stat-header">
+          The last ledger (<Link href="/last-ledger-information">view more</Link>)
+        </div>
         <div className="stat-piece">
           <div className="stat-piece-header">{t('home.stat.ledger-index')}</div>
           <div>
@@ -296,6 +301,7 @@ export default function Statistics({ data, setData }) {
         </div>
       </div>
       <div className="statistics-block">
+        <div className="stat-header">General</div>
         <div className="stat-piece">
           <div className="stat-piece-header">{t('home.stat.accounts')}</div>
           <div>
