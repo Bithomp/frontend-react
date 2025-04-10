@@ -11,6 +11,7 @@ import { TransactionCard } from './TransactionCard'
 import { xls14NftValue } from '../../utils'
 import CopyButton from '../UI/CopyButton'
 import { addressBalanceChanges } from '../../utils/transaction'
+import DestinationTagProblemSolving from './DestinationTagProblemSolving'
 
 export const TransactionPayment = ({ data, pageFiatRate, selectedCurrency }) => {
   if (!data) return null
@@ -110,6 +111,7 @@ export const TransactionPayment = ({ data, pageFiatRate, selectedCurrency }) => 
           </TData>
         </TRow>
       )}
+      {isSuccessful && <DestinationTagProblemSolving specification={specification} />}
       <TRow>
         <TData>{isConvertion ? 'Address' : 'Source'}</TData>
         <TData>
