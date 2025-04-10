@@ -96,7 +96,7 @@ export default function ObjectsData({
     async function checkObjects() {
       setLoadingObjects(true)
       const accountObjectsData = await axios
-        .get('v2/objects/' + address + (ledgerTimestamp ? '?ledgerTimestamp=' + ledgerTimestamp : ''), {
+        .get('v2/objects/' + address + '?limit=1000' + (ledgerTimestamp ? '&ledgerTimestamp=' + ledgerTimestamp : ''), {
           signal: controller.signal
         })
         .catch((error) => {
