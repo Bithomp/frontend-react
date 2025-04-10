@@ -7,7 +7,6 @@ import { Card, Info, Type } from './styled'
 import { LedgerLink, LinkTx } from '../../utils/links'
 import { TDetails, TBody, TRow, TData } from '../TableDetails'
 import {
-  addressUsernameOrServiceLink,
   AddressWithIconFilled,
   amountFormat,
   codeHighlight,
@@ -215,15 +214,6 @@ export const TransactionCard = ({ data, pageFiatRate, selectedCurrency, txTypeSp
                         <TData className="bold">Description</TData>
                         <TData className="orange bold">{errorCodeDescription(outcome.result)}</TData>
                       </TRow>
-                      {tx?.TransactionType === 'Payment' && specification?.source?.addressDetails?.service && (
-                        <TRow>
-                          <TData className="bold">Problem solving</TData>
-                          <TData className="bold">
-                            The transaction <span class="red">FAILED</span>, if your balance changed, contact{' '}
-                            {addressUsernameOrServiceLink(specification.source, 'address')} support.
-                          </TData>
-                        </TRow>
-                      )}
                     </>
                   )}
                   <TRow>
@@ -335,11 +325,7 @@ export const TransactionCard = ({ data, pageFiatRate, selectedCurrency, txTypeSp
                       )}
                       {tx?.LastLedgerSequence && (
                         <TRow>
-                          <TData
-                            tooltip={
-                              'The last ledger sequence number that the transaction can be included in. Specifying this field places a strict upper limit on how long the transaction can wait to be validated or rejected.'
-                            }
-                          >
+                          <TData tooltip="The last ledger sequence number that the transaction can be included in. Specifying this field places a strict upper limit on how long the transaction can wait to be validated or rejected.">
                             Last ledger
                           </TData>
                           <TData>

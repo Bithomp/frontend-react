@@ -29,6 +29,8 @@ export const TransactionPayment = ({ data, pageFiatRate, selectedCurrency }) => 
     specification?.source?.address === specification?.destination?.address &&
     (specification?.source?.tag === specification?.destination?.tag || !specification?.destination?.tag)
 
+  const isSuccessful = outcome?.result == 'tesSUCCESS'
+
   if (isConvertion) {
     txTypeSpecial = 'Conversion payment'
   }
@@ -99,6 +101,15 @@ export const TransactionPayment = ({ data, pageFiatRate, selectedCurrency }) => 
       selectedCurrency={selectedCurrency}
       txTypeSpecial={txTypeSpecial}
     >
+      {!isSuccessful && specification?.source?.addressDetails?.service && (
+        <TRow>
+          <TData className="bold">Problem solving</TData>
+          <TData className="bold">
+            The transaction <span class="red">FAILED</span>, if your balance changed, contact{' '}
+            {addressUsernameOrServiceLink(specification.source, 'address')} support.
+          </TData>
+        </TRow>
+      )}
       <TRow>
         <TData>{isConvertion ? 'Address' : 'Source'}</TData>
         <TData>
