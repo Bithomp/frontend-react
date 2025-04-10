@@ -106,7 +106,13 @@ export default function Account({
       //setObligations(initialData.obligations)
       if (initialData.obligations?.trustlines > 200) {
         setGateway(true)
+      } else {
+        //keep it here for cases when address changes without refreshing the page
+        setGateway(false)
       }
+    } else {
+      //keep it here for cases when address changes without refreshing the page
+      setGateway(false)
     }
   }, [initialData])
 
