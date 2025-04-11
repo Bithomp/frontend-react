@@ -33,8 +33,15 @@ export const TransactionPayment = ({ data, pageFiatRate, selectedCurrency }) => 
 
   const isSuccessful = outcome?.result == 'tesSUCCESS'
 
+  let iouPayment = false
+
   if (isConvertion) {
     txTypeSpecial = 'Conversion payment'
+  } else {
+    //check if iou involved (pathfinding or iou with fee)
+    if (sourceBalanceChangesList[0]?.value !== '-' + outcome.deliveredAmount?.value) {
+      iouPayment = true
+    }
   }
 
   if (xls14NftValue(outcome.deliveredAmount?.value)) {
@@ -96,6 +103,15 @@ export const TransactionPayment = ({ data, pageFiatRate, selectedCurrency }) => 
   }
   */
 
+  const optionalAbsAmount = (change) => {
+    return !isConvertion && (change?.value ? change.value.toString()[0] === '-' : change?.toString()[0] === '-')
+      ? {
+          ...change,
+          value: change?.value ? change?.value.toString().slice(1) : change?.toString().slice(1)
+        }
+      : change
+  }
+
   return (
     <TransactionCard
       data={data}
@@ -149,11 +165,11 @@ export const TransactionPayment = ({ data, pageFiatRate, selectedCurrency }) => 
           </TData>
         </tr>
       )}
-      {isConvertion ? (
+      {(isConvertion || iouPayment) && (
         <>
           <tr>
             <TData>
-              Exchanged
+              {isConvertion ? 'Exchanged' : 'Sender spent'}
               {sourceBalanceChangesList.map((change, index) => {
                 return <br key={index} />
               })}
@@ -162,11 +178,11 @@ export const TransactionPayment = ({ data, pageFiatRate, selectedCurrency }) => 
               {sourceBalanceChangesList.map((change, index) => (
                 <div key={index}>
                   <span className={'bold ' + (Number(change?.value) > 0 ? 'green' : 'red')}>
-                    {amountFormat(change)}
+                    {amountFormat(optionalAbsAmount(change))}
                   </span>
                   {change?.issuer && <>({addressUsernameOrServiceLink(change, 'issuer', { short: true })})</>}
                   {nativeCurrencyToFiat({
-                    amount: change,
+                    amount: optionalAbsAmount(change),
                     selectedCurrency,
                     fiatRate: pageFiatRate
                   })}
@@ -195,23 +211,22 @@ export const TransactionPayment = ({ data, pageFiatRate, selectedCurrency }) => 
             </tr>
           )}
         </>
-      ) : (
-        outcome.deliveredAmount && (
-          <tr>
-            <TData>Delivered amount</TData>
-            <TData>
-              <span className="bold green">{amountFormat(outcome.deliveredAmount)}</span>
-              {outcome.deliveredAmount?.issuer && (
-                <>({addressUsernameOrServiceLink(outcome.deliveredAmount, 'issuer', { short: true })})</>
-              )}
-              {nativeCurrencyToFiat({
-                amount: outcome.deliveredAmount,
-                selectedCurrency,
-                fiatRate: pageFiatRate
-              })}
-            </TData>
-          </tr>
-        )
+      )}
+      {!isConvertion && outcome.deliveredAmount && (
+        <tr>
+          <TData>Delivered amount</TData>
+          <TData>
+            <span className="bold green">{amountFormat(outcome.deliveredAmount)}</span>
+            {outcome.deliveredAmount?.issuer && (
+              <>({addressUsernameOrServiceLink(outcome.deliveredAmount, 'issuer', { short: true })})</>
+            )}
+            {nativeCurrencyToFiat({
+              amount: outcome.deliveredAmount,
+              selectedCurrency,
+              fiatRate: pageFiatRate
+            })}
+          </TData>
+        </tr>
       )}
       <PaymentInstructions data={data} sourceBalanceChanges={sourceBalanceChangesList} />
     </TransactionCard>
