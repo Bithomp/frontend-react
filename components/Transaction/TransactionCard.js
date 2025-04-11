@@ -359,7 +359,7 @@ export const TransactionCard = ({ data, pageFiatRate, selectedCurrency, txTypeSp
       <style jsx>{`
         .card-block {
           border-top: 4px solid var(--accent-link);
-          box-shadow: 0 1px 3px hsla(0, 0%, 0%, 0.2);
+          box-shadow: 0 1px 3px 0 var(--shadow);
           padding: 8px;
         }
         .tx-body {
