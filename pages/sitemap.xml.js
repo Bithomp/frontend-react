@@ -42,27 +42,32 @@ const pages = [
   { loc: 'about-us', changefreq: 'yearly', priority: '0.4' },
   { loc: 'customer-support', changefreq: 'yearly', priority: '0.4' },
   { loc: 'developer', changefreq: 'yearly', priority: '0.4' },
-  { loc: 'press', changefreq: 'yearly', priority: '0.4' }
+  { loc: 'press', changefreq: 'yearly', priority: '0.4' },
+
+  { loc: 'blacklisted-address', changefreq: 'monthly', priority: '0.5' },
+  { loc: 'blackholed-address', changefreq: 'monthly', priority: '0.5' },
+  { loc: 'verified-domains', changefreq: 'monthly', priority: '0.5' },
+  { loc: 'jobs', changefreq: 'monthly', priority: '0.5' }
 ]
 
 //network specific pages
-
 if (xahauNetwork) {
+  //only o xahau
   pages.push(
     { loc: 'governance', changefreq: 'hourly', priority: '0.9' },
     { loc: 'unl-report', changefreq: 'always', priority: '0.8' }
   )
+} else {
+  // only on xrpl
+  pages.push({ loc: 'rlusd', changefreq: 'monthly', priority: '0.6' })
 }
 
+//works only on the mainnet
 if (network === 'mainnet') {
   if (!xahauNetwork) {
     pages.push({ loc: 'xrpl-article', changefreq: 'monthly', priority: '0.6' })
   }
   pages.push({ loc: 'xrp-xah-taxes', changefreq: 'monthly', priority: '0.9' })
-  pages.push({ loc: 'blacklisted-address', changefreq: 'monthly', priority: '0.5' })
-  pages.push({ loc: 'blackholed-address', changefreq: 'monthly', priority: '0.5' })
-  pages.push({ loc: 'verified-domains', changefreq: 'monthly', priority: '0.5' })
-  pages.push({ loc: 'jobs', changefreq: 'monthly', priority: '0.5' })
 }
 
 function generateSiteMap(posts) {
@@ -80,6 +85,7 @@ function generateSiteMap(posts) {
     'blackholed-address',
     'verified-domains',
     'jobs',
+    'rlusd',
     'xrp-xah-taxes',
     'object',
     'about-us'

@@ -78,6 +78,7 @@ export default function Footer() {
           <Link href="/blackholed-address">Blackholed address</Link>
           <Link href="/blacklisted-address">Blacklisted address</Link>
           <Link href="/verified-domains">Verified domains</Link>
+          {!xahauNetwork && <Link href="/rlusd">Ripple USD</Link>}
         </div>
 
         {!xahauNetwork && (
