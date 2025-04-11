@@ -159,8 +159,8 @@
     }
   },
   "home": {
-    "title": "{{nativeCurrency}} Explorer | Scan {{nativeCurrency}} Ledger | {{explorerName}} Explorer",
-    "description": "Bithomp {{nativeCurrency}} Explorer. Track Ripple RLUSD, {{nativeCurrency}} accounts. Search {{nativeCurrency}} transactions. NFTs on {{explorerName}}. Validators, Amendments and much more.",
+    "title": "The best {{nativeCurrency}} Explorer | Scan {{nativeCurrency}} Ledger | {{explorerName}} Explorer",
+    "description": "Bithomp - The best {{nativeCurrency}} Explorer. Track Ripple RLUSD, {{nativeCurrency}} accounts. Search {{nativeCurrency}} transactions. NFTs on {{explorerName}}. Validators, Amendments and much more.",
     "search-placeholder": "Search by Address / Transaction / NFT / Username / PayString / Offer / Currency hash",
     "search-placeholder-short": "Address / Transaction / Username",
     "scan-qr": "SCAN A CODE",
