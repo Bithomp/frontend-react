@@ -32,6 +32,9 @@ export default function RLUSD() {
         </center>
         <h1>What is Ripple USD (RLUSD)?</h1>
         <p>
+          <em>April 11, 2025</em>
+        </p>
+        <p>
           Ripple USD (RLUSD) is a stablecoin designed to bring speed, reliability, and dollar-backed stability to global
           payments. Issued by Ripple in 2024, RLUSD is built for real-world utility — from remittances and trading to
           financial settlement — all powered by fast and cost-effective blockchain infrastructure.
@@ -47,7 +50,8 @@ export default function RLUSD() {
         </p>
         <h3>Why RLUSD?</h3>
         <p>
-          Built for Speed and Stability As a stablecoin built on the XRP Ledger, RLUSD inherits some powerful features:
+          Built for Speed and Stability.
+          <p>As a stablecoin built on the XRP Ledger, RLUSD inherits some powerful features:</p>
         </p>
         <ul>
           <li>
@@ -108,12 +112,17 @@ export default function RLUSD() {
             </p>
           </li>
         </ul>
+        <br />
         <p>
           {' '}
-          <a href="https://bithomp.com/en/amms?currency=524C555344000000000000000000000000000000&currencyIssuer=rMxCKbEDwqr76QuheSUMdEGf4B9xJ8m5De">
-            View RLUSD AMM Pools on XRPL
-          </a>
+          <strong>
+            <a href="https://bithomp.com/en/amms?currency=524C555344000000000000000000000000000000&currencyIssuer=rMxCKbEDwqr76QuheSUMdEGf4B9xJ8m5De">
+              View RLUSD AMM Pools on XRPL
+            </a>
+          </strong>
         </p>
+        <br />
+        <br />
       </div>
     </>
   )
