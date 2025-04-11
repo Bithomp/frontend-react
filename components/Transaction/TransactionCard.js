@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { i18n, useTranslation } from 'next-i18next'
 
 import { LedgerLink, LinkTx } from '../../utils/links'
-import { TDetails, TData } from '../TableDetails'
+import { TData } from '../TableDetails'
 import {
   AddressWithIconFilled,
   amountFormat,
@@ -183,7 +183,7 @@ export const TransactionCard = ({ data, pageFiatRate, selectedCurrency, txTypeSp
                   </>
                 )}
               </p>
-              <TDetails>
+              <table>
                 <tbody>
                   {id === tx.ctid && (
                     <tr>
@@ -345,7 +345,7 @@ export const TransactionCard = ({ data, pageFiatRate, selectedCurrency, txTypeSp
                     </>
                   )}
                 </tbody>
-              </TDetails>
+              </table>
               <div className={'slide ' + (showRawData ? 'opened' : 'closed')} style={{ margin: '0 15px' }}>
                 {codeHighlight(tx)}
               </div>

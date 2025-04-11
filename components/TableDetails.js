@@ -1,17 +1,6 @@
 import { BsInfoCircleFill } from 'react-icons/bs'
 import styled from 'styled-components'
 
-export const TDetails = styled.table`
-  width: 100%;
-  border-collapse: collapse;
-  border-spacing: 0;
-  color: var(--text-main);
-  font-size: 16px;
-  font-weight: 400;
-  text-align: left;
-  margin: auto;
-`
-
 const TDataStyled = styled.td`
   padding: 4px;
   &:first-child {
