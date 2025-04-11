@@ -3,12 +3,13 @@ import { TRow, TData } from '../TableDetails'
 import { useEffect, useState } from 'react'
 import { addressUsernameOrServiceLink } from '../../utils/format'
 
-export default function DestinationTagProblemSolving({ specification }) {
+export default function DestinationTagProblemSolving({ specification, pageFiatRate }) {
   const [dtData, setDtData] = useState(null)
 
   useEffect(() => {
     const noDestTagOrShortDestTag = !specification?.destination?.tag || specification.destination.tag < 9999
-    if (noDestTagOrShortDestTag) {
+    //pageFiatRate - to render only once when the rate is known, otherwise will do 3 calls
+    if (noDestTagOrShortDestTag && pageFiatRate) {
       axios
         .get('xrpl/accounts/' + specification.destination.address)
         .then((response) => {
@@ -40,7 +41,7 @@ export default function DestinationTagProblemSolving({ specification }) {
           console.error('Error fetching destination tag data:', error)
         })
     }
-  }, [specification])
+  }, [specification, pageFiatRate])
 
   if (dtData?.result !== 'success' || !dtData?.account_data?.require_dest_tag) return ''
 
@@ -58,7 +59,7 @@ export default function DestinationTagProblemSolving({ specification }) {
 
   return (
     <TRow>
-      <TData className="bold">Problem solving</TData>
+      <TData className="bold orange">Problem solving</TData>
       <TData>
         This payment was sent to {destUser} {tagSpecified ? 'with a short (that can be wrong)' : 'without a'}{' '}
         <span className="red bold">Destination Tag</span>.

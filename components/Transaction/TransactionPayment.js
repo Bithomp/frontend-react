@@ -104,14 +104,16 @@ export const TransactionPayment = ({ data, pageFiatRate, selectedCurrency }) => 
     >
       {!isSuccessful && specification?.source?.addressDetails?.service && (
         <TRow>
-          <TData className="bold">Problem solving</TData>
+          <TData className="bold orange">Problem solving</TData>
           <TData className="bold">
             The transaction <span class="red">FAILED</span>, if your balance changed, contact{' '}
             {addressUsernameOrServiceLink(specification.source, 'address')} support.
           </TData>
         </TRow>
       )}
-      {isSuccessful && <DestinationTagProblemSolving specification={specification} />}
+      {isSuccessful && !isConvertion && (
+        <DestinationTagProblemSolving specification={specification} pageFiatRate={pageFiatRate} />
+      )}
       <TRow>
         <TData>{isConvertion ? 'Address' : 'Source'}</TData>
         <TData>
@@ -146,7 +148,6 @@ export const TransactionPayment = ({ data, pageFiatRate, selectedCurrency }) => 
           </TData>
         </TRow>
       )}
-
       {isConvertion ? (
         <TRow>
           <TData>
