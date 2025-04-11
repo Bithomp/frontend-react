@@ -1,7 +1,7 @@
 import axios from 'axios'
-import { TRow, TData } from '../TableDetails'
+import { TRow, TData } from '../../TableDetails'
 import { useEffect, useState } from 'react'
-import { addressUsernameOrServiceLink } from '../../utils/format'
+import { addressUsernameOrServiceLink } from '../../../utils/format'
 
 export default function DestinationTagProblemSolving({ specification, pageFiatRate }) {
   const [dtData, setDtData] = useState(null)

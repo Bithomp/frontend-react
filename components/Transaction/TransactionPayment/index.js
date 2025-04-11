@@ -1,16 +1,16 @@
-import { TRow, TData } from '../TableDetails'
+import { TRow, TData } from '../../TableDetails'
 import {
   addressUsernameOrServiceLink,
   AddressWithIconFilled,
   amountFormat,
   nativeCurrencyToFiat,
   shortHash
-} from '../../utils/format'
+} from '../../../utils/format'
 
-import { TransactionCard } from './TransactionCard'
-import { xls14NftValue } from '../../utils'
-import CopyButton from '../UI/CopyButton'
-import { addressBalanceChanges } from '../../utils/transaction'
+import { TransactionCard } from '../TransactionCard'
+import { xls14NftValue } from '../../../utils'
+import CopyButton from '../../UI/CopyButton'
+import { addressBalanceChanges } from '../../../utils/transaction'
 import DestinationTagProblemSolving from './DestinationTagProblemSolving'
 
 export const TransactionPayment = ({ data, pageFiatRate, selectedCurrency }) => {
