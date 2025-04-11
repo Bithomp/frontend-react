@@ -50,13 +50,11 @@ export default function RLUSD() {
         </p>
         <h3>Why RLUSD?</h3>
         <p>
-          Built for Speed and Stability.
-          <p>As a stablecoin built on the XRP Ledger, RLUSD inherits some powerful features:</p>
+          Built for Speed and Stability. As a stablecoin built on the XRP Ledger, RLUSD inherits some powerful features:
         </p>
         <ul>
           <li>
             <p>
-              {' '}
               <strong>Instant Settlement:</strong> XRP Ledger enables near real-time transaction confirmation, making
               RLUSD ideal for time-sensitive use cases.
             </p>
@@ -68,7 +66,6 @@ export default function RLUSD() {
             </p>
           </li>
           <li>
-            {' '}
             <p>
               <strong>Multi-Chain Flexibility:</strong> RLUSD is currently issued on both the XRPL and Ethereum,
               offering interoperability and diverse use cases across these platforms, with potential expansion to
@@ -87,7 +84,6 @@ export default function RLUSD() {
         <ul>
           <li>
             <p>
-              {' '}
               <strong>Cross-border Remittances:</strong> Individuals and businesses can use RLUSD to bypass delays and
               costs associated with legacy payment systems.
             </p>
@@ -99,7 +95,6 @@ export default function RLUSD() {
             </p>
           </li>
           <li>
-            {' '}
             <p>
               <strong>Micropayments:</strong> With its low fees and instant confirmation, RLUSD opens new doors for
               digital payments, content monetization, and IoT integrations.
@@ -114,7 +109,6 @@ export default function RLUSD() {
         </ul>
         <br />
         <p>
-          {' '}
           <strong>
             <a href="https://bithomp.com/en/amms?currency=524C555344000000000000000000000000000000&currencyIssuer=rMxCKbEDwqr76QuheSUMdEGf4B9xJ8m5De">
               View RLUSD AMM Pools on XRPL
