@@ -163,7 +163,7 @@ export const TransactionCard = ({ data, pageFiatRate, selectedCurrency, txTypeSp
         <div className="card-block">
           {id === tx?.hash && (
             <p className="center">
-              <span className="bold">{id}</span> <CopyButton text={id} />
+              <span className="bold brake">{id}</span> <CopyButton text={id} />
             </p>
           )}
           {errorMessage ? (
