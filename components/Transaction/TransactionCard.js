@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { i18n, useTranslation } from 'next-i18next'
 
 import { LedgerLink, LinkTx } from '../../utils/links'
-import { TData } from '../TableDetails'
+import { TData } from '../Table'
 import {
   AddressWithIconFilled,
   amountFormat,

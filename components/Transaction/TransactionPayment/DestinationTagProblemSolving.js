@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { TData } from '../../TableDetails'
+import { TData } from '../../Table'
 import { useEffect, useState } from 'react'
 import { addressUsernameOrServiceLink } from '../../../utils/format'
 

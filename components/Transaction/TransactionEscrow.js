@@ -1,4 +1,4 @@
-import { TData } from '../TableDetails'
+import { TData } from '../Table'
 import { AddressWithIconFilled, amountFormat, fullDateAndTime } from '../../utils/format'
 
 import { LinkAccount } from '../../utils/links'

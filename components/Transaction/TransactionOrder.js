@@ -1,4 +1,4 @@
-import { TData } from '../TableDetails'
+import { TData } from '../Table'
 import { LinkAccount } from '../../utils/links'
 import { TransactionCard } from './TransactionCard'
 import { AddressWithIconFilled } from '../../utils/format'
