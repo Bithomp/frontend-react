@@ -3,7 +3,6 @@ import CopyButton from '../UI/CopyButton'
 import { useState } from 'react'
 import { i18n, useTranslation } from 'next-i18next'
 
-import { Card, Info, Type } from './styled'
 import { LedgerLink, LinkTx } from '../../utils/links'
 import { TDetails, TBody, TRow, TData } from '../TableDetails'
 import {
@@ -161,27 +160,29 @@ export const TransactionCard = ({ data, pageFiatRate, selectedCurrency, txTypeSp
     <>
       <div className="tx-body">
         <h1 className="tx-header">Transaction Details</h1>
-        <Card>
+        <div className="card-block">
           {id === tx?.hash && (
-            <Info>
+            <p className="center">
               <span className="bold">{id}</span> <CopyButton text={id} />
-            </Info>
+            </p>
           )}
           {errorMessage ? (
-            <Info className="orange">{errorMessage}</Info>
+            <p className="center orange">{errorMessage}</p>
           ) : (
             <>
-              {isSuccessful ? (
-                <Info>
-                  The transaction was <b className="green">successful</b> and validated in the ledger{' '}
-                  <LedgerLink version={outcome.ledgerIndex} /> (index: {outcome.indexInLedger}).
-                </Info>
-              ) : (
-                <Info>
-                  The transaction <b className="red">FAILED</b> and included to the ledger{' '}
-                  <LedgerLink version={outcome.ledgerIndex} /> (index: {outcome.indexInLedger}).
-                </Info>
-              )}
+              <p className="center">
+                {isSuccessful ? (
+                  <>
+                    The transaction was <b className="green">successful</b> and validated in the ledger{' '}
+                    <LedgerLink version={outcome.ledgerIndex} /> (index: {outcome.indexInLedger}).
+                  </>
+                ) : (
+                  <>
+                    The transaction <b className="red">FAILED</b> and included to the ledger{' '}
+                    <LedgerLink version={outcome.ledgerIndex} /> (index: {outcome.indexInLedger}).
+                  </>
+                )}
+              </p>
               <TDetails>
                 <TBody>
                   {id === tx.ctid && (
@@ -195,7 +196,7 @@ export const TransactionCard = ({ data, pageFiatRate, selectedCurrency, txTypeSp
                   <TRow>
                     <TData>{t('table.type')}</TData>
                     <TData>
-                      <Type>{txTypeSpecial || tx.TransactionType}</Type>
+                      <span className="bold">{txTypeSpecial || tx.TransactionType}</span>
                     </TData>
                   </TRow>
                   {hookReturn && (
@@ -353,9 +354,14 @@ export const TransactionCard = ({ data, pageFiatRate, selectedCurrency, txTypeSp
               </div>
             </>
           )}
-        </Card>
+        </div>
       </div>
       <style jsx>{`
+        .card-block {
+          border-top: 4px solid var(--accent-link);
+          box-shadow: 0 1px 3px hsla(0, 0%, 0%, 0.2);
+          padding: 8px;
+        }
         .tx-body {
           margin: 40px auto;
           width: calc(100% - 40px);
