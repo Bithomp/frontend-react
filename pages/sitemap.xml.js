@@ -63,6 +63,7 @@ if (network === 'mainnet') {
   pages.push({ loc: 'blackholed-address', changefreq: 'monthly', priority: '0.5' })
   pages.push({ loc: 'verified-domains', changefreq: 'monthly', priority: '0.5' })
   pages.push({ loc: 'jobs', changefreq: 'monthly', priority: '0.5' })
+  pages.push({ loc: 'rlusd', changefreq: 'monthly', priority: '0.5' })
 }
 
 function generateSiteMap(posts) {
@@ -80,6 +81,7 @@ function generateSiteMap(posts) {
     'blackholed-address',
     'verified-domains',
     'jobs',
+    'rlusd',
     'xrp-xah-taxes',
     'object',
     'about-us'
