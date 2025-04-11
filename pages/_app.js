@@ -12,7 +12,7 @@ import ScrollToTop from '../components/Layout/ScrollToTop'
 import BackgroundImage from '../components/Layout/BackgroundImage'
 
 const SignForm = dynamic(() => import('../components/SignForm'), { ssr: false })
-const TopLinks = dynamic(() => import('../components/Layout/TopLinks'), { ssr: false })
+import TopLinks from '../components/Layout/TopLinks'
 const TopProgressBar = dynamic(() => import('../components/TopProgressBar'), { ssr: false })
 
 import { IsSsrMobileContext } from '../utils/mobile'
