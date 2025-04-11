@@ -1,4 +1,4 @@
-import { TRow, TData } from '../TableDetails'
+import { TData } from '../TableDetails'
 import {
   addressUsernameOrServiceLink,
   AddressWithIconFilled,
@@ -54,50 +54,50 @@ export const TransactionCheck = ({ data, pageFiatRate, selectedCurrency }) => {
 
   return (
     <TransactionCard data={data} pageFiatRate={pageFiatRate} selectedCurrency={selectedCurrency}>
-      <TRow>
+      <tr>
         <TData>Source</TData>
         <TData>
           <AddressWithIconFilled data={checkChanges.source} name="address" />
         </TData>
-      </TRow>
+      </tr>
       {checkChanges.source?.tag !== undefined && (
-        <TRow>
+        <tr>
           <TData>Source tag</TData>
           <TData className="bold">{checkChanges.source.tag}</TData>
-        </TRow>
+        </tr>
       )}
-      <TRow>
+      <tr>
         <TData>Destination</TData>
         <TData>
           <AddressWithIconFilled data={checkChanges.destination} name="address" />
         </TData>
-      </TRow>
+      </tr>
       {checkChanges.destination?.tag !== undefined && (
-        <TRow>
+        <tr>
           <TData>Destination tag</TData>
           <TData className="bold">{checkChanges.destination.tag}</TData>
-        </TRow>
+        </tr>
       )}
       {tx?.InvoiceID && (
-        <TRow>
+        <tr>
           <TData>Invoice ID</TData>
           <TData>
             {shortHash(tx.InvoiceID, 10)} <CopyButton text={tx.InvoiceID} />
           </TData>
-        </TRow>
+        </tr>
       )}
 
       {checkChanges?.checkID && (
-        <TRow>
+        <tr>
           <TData>Check ID</TData>
           <TData>
             {shortHash(checkChanges?.checkID, 10)} <CopyButton text={checkChanges?.checkID} />
           </TData>
-        </TRow>
+        </tr>
       )}
 
       {checkChanges.sendMax && (
-        <TRow>
+        <tr>
           <TData>Max amount</TData>
           <TData>
             <span className="bold orange">{amountFormat(checkChanges.sendMax)}</span>
@@ -110,11 +110,11 @@ export const TransactionCheck = ({ data, pageFiatRate, selectedCurrency }) => {
               fiatRate: pageFiatRate
             })}
           </TData>
-        </TRow>
+        </tr>
       )}
 
       {checkChanges.expiration && (
-        <TRow>
+        <tr>
           <TData className={timestampExpired(checkChanges.expiration) ? 'red' : ''}>
             {expirationExpired(t, checkChanges.expiration)}
           </TData>
@@ -123,11 +123,11 @@ export const TransactionCheck = ({ data, pageFiatRate, selectedCurrency }) => {
             {', '}
             {fullDateAndTime(checkChanges.expiration)}
           </TData>
-        </TRow>
+        </tr>
       )}
 
       {tx.TransactionType === 'CheckCash' && (
-        <TRow>
+        <tr>
           <TData>
             Redeemed
             {destinationBalanceChangesList.map((change, index) => {
@@ -147,16 +147,16 @@ export const TransactionCheck = ({ data, pageFiatRate, selectedCurrency }) => {
               </div>
             ))}
           </TData>
-        </TRow>
+        </tr>
       )}
 
       {/*Always show executor, as it can be destination/source aor anyone when expired */}
-      <TRow>
+      <tr>
         <TData>Executor</TData>
         <TData>
           <AddressWithIconFilled data={specification.source} name="address" />
         </TData>
-      </TRow>
+      </tr>
     </TransactionCard>
   )
 }

@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { i18n, useTranslation } from 'next-i18next'
 
 import { LedgerLink, LinkTx } from '../../utils/links'
-import { TDetails, TBody, TRow, TData } from '../TableDetails'
+import { TDetails, TData } from '../TableDetails'
 import {
   AddressWithIconFilled,
   amountFormat,
@@ -96,10 +96,10 @@ export const TransactionCard = ({ data, pageFiatRate, selectedCurrency, txTypeSp
 
           if (decodeJsonMemo(memopiece)) {
             output.push(
-              <TRow key={'a2' + j}>
+              <tr key={'a2' + j}>
                 <TData>{memotype}</TData>
                 <TData>{decodeJsonMemo(memopiece)}</TData>
-              </TRow>
+              </tr>
             )
           } else {
             if (memopiece.length > 100 && memopiece.split(' ').length === 1) {
@@ -108,29 +108,29 @@ export const TransactionCard = ({ data, pageFiatRate, selectedCurrency, txTypeSp
               const pieces = memopiece.split('.')
               output.push(
                 <React.Fragment key={'jwt' + j}>
-                  <TRow>
+                  <tr>
                     <TData>JWT Header</TData>
                     <TData>{decodeJsonMemo(pieces[0], { code: 'base64' })}</TData>
-                  </TRow>
-                  <TRow>
+                  </tr>
+                  <tr>
                     <TData>JWT Payload</TData>
                     <TData>{decodeJsonMemo(pieces[1], { code: 'base64' })}</TData>
-                  </TRow>
-                  <TRow>
+                  </tr>
+                  <tr>
                     <TData>JWT Signature</TData>
                     <TData>
                       <pre>{pieces[2]}</pre>
                     </TData>
-                  </TRow>
+                  </tr>
                 </React.Fragment>
               )
             } else {
               if (memopiece) {
                 output.push(
-                  <TRow key={'a1' + j}>
+                  <tr key={'a1' + j}>
                     <TData>{memotype}</TData>
                     <TData>{memopiece}</TData>
-                  </TRow>
+                  </tr>
                 )
               }
             }
@@ -138,14 +138,14 @@ export const TransactionCard = ({ data, pageFiatRate, selectedCurrency, txTypeSp
 
           if (clientname) {
             output.push(
-              <TRow key="a3">
+              <tr key="a3">
                 <TData>Client</TData>
                 <TData>
                   <a href={'https://' + clientname} rel="nofollow">
                     {clientname}
                   </a>
                 </TData>
-              </TRow>
+              </tr>
             )
           }
         }
@@ -184,47 +184,47 @@ export const TransactionCard = ({ data, pageFiatRate, selectedCurrency, txTypeSp
                 )}
               </p>
               <TDetails>
-                <TBody>
+                <tbody>
                   {id === tx.ctid && (
-                    <TRow>
+                    <tr>
                       <TData>Compact Tx ID</TData>
                       <TData>
                         <span className="bold">{tx.ctid}</span> <CopyButton text={tx.ctid} />
                       </TData>
-                    </TRow>
+                    </tr>
                   )}
-                  <TRow>
+                  <tr>
                     <TData>{t('table.type')}</TData>
                     <TData>
                       <span className="bold">{txTypeSpecial || tx.TransactionType}</span>
                     </TData>
-                  </TRow>
+                  </tr>
                   {hookReturn && (
-                    <TRow>
+                    <tr>
                       <TData>Hook return</TData>
                       <TData className="orange bold">{decode(hookReturn)}</TData>
-                    </TRow>
+                    </tr>
                   )}
                   {!isSuccessful && (
                     <>
-                      <TRow>
+                      <tr>
                         <TData className="bold">Failure</TData>
                         <TData className="red bold">{shortErrorCode(outcome.result)}</TData>
-                      </TRow>
-                      <TRow>
+                      </tr>
+                      <tr>
                         <TData className="bold">Description</TData>
                         <TData className="orange bold">{errorCodeDescription(outcome.result)}</TData>
-                      </TRow>
+                      </tr>
                     </>
                   )}
-                  <TRow>
+                  <tr>
                     <TData>{isSuccessful ? 'Validated' : 'Rejected'}</TData>
                     <TData>
                       {timeFromNow(tx.date, i18n, 'ripple')} ({fullDateAndTime(tx.date, 'ripple')})
                     </TData>
-                  </TRow>
+                  </tr>
                   {children}
-                  <TRow>
+                  <tr>
                     <TData>Ledger fee</TData>
                     <TData>
                       <span className="bold">{amountFormat(tx.Fee)}</span>
@@ -234,10 +234,10 @@ export const TransactionCard = ({ data, pageFiatRate, selectedCurrency, txTypeSp
                         fiatRate: pageFiatRate
                       })}
                     </TData>
-                  </TRow>
+                  </tr>
                   {specification?.memos && memoNode(specification.memos)}
                   {tx?.AccountTxnID && (
-                    <TRow>
+                    <tr>
                       <TData
                         tooltip={
                           isSuccessful
@@ -250,32 +250,32 @@ export const TransactionCard = ({ data, pageFiatRate, selectedCurrency, txTypeSp
                       <TData>
                         <LinkTx tx={tx?.AccountTxnID} />
                       </TData>
-                    </TRow>
+                    </tr>
                   )}
                   {specification?.signer && (
-                    <TRow>
+                    <tr>
                       <TData>Signer</TData>
                       <TData>
                         <AddressWithIconFilled data={specification.signer} name="address" />
                       </TData>
-                    </TRow>
+                    </tr>
                   )}
                   {specification?.signers &&
                     specification?.signers.map((signer, index) => (
-                      <TRow key={index}>
+                      <tr key={index}>
                         <TData>Signer {index + 1}:</TData>
                         <TData>
                           <AddressWithIconFilled data={signer} name="address" />
                         </TData>
-                      </TRow>
+                      </tr>
                     ))}
-                  <TRow>
+                  <tr>
                     <TData>Transaction link</TData>
                     <TData>
                       {txLink} <CopyButton text={txLink} />
                     </TData>
-                  </TRow>
-                  <TRow>
+                  </tr>
+                  <tr>
                     <TData>Show more</TData>
                     <TData>
                       <span className="link" onClick={() => setShowAdditionalData(!showAdditionalData)}>
@@ -290,61 +290,61 @@ export const TransactionCard = ({ data, pageFiatRate, selectedCurrency, txTypeSp
                         Tx Metadata
                       </span>
                     </TData>
-                  </TRow>
+                  </tr>
                   {showAdditionalData && (
                     <>
                       {tx?.TransactionType !== 'UNLReport' && (
                         <>
                           {tx.TicketSequence ? (
-                            <TRow>
+                            <tr>
                               <TData>Ticket sequence</TData>
                               <TData>#{tx.TicketSequence}</TData>
-                            </TRow>
+                            </tr>
                           ) : (
-                            <TRow>
+                            <tr>
                               <TData>Sequence</TData>
                               <TData>#{tx.Sequence}</TData>
-                            </TRow>
+                            </tr>
                           )}
                         </>
                       )}
                       {tx?.hash && id !== tx.hash && (
-                        <TRow>
+                        <tr>
                           <TData>Transaction hash</TData>
                           <TData>
                             {shortHash(tx.hash, 10)} <CopyButton text={tx.hash} />
                           </TData>
-                        </TRow>
+                        </tr>
                       )}
                       {tx?.ctid && id !== tx.ctid && (
-                        <TRow>
+                        <tr>
                           <TData>Compact Tx ID</TData>
                           <TData>
                             {tx.ctid} <CopyButton text={tx.ctid} />
                           </TData>
-                        </TRow>
+                        </tr>
                       )}
                       {tx?.LastLedgerSequence && (
-                        <TRow>
+                        <tr>
                           <TData tooltip="The last ledger sequence number that the transaction can be included in. Specifying this field places a strict upper limit on how long the transaction can wait to be validated or rejected.">
                             Last ledger
                           </TData>
                           <TData>
                             #{tx.LastLedgerSequence} ({waitLedgers} {waitLedgers === 1 ? 'ledger' : 'ledgers'})
                           </TData>
-                        </TRow>
+                        </tr>
                       )}
                       {tx?.NetworkID && (
-                        <TRow>
+                        <tr>
                           <TData tooltip="The network ID of the chain this transaction is intended for.">
                             Network ID
                           </TData>
                           <TData>{tx.NetworkID}</TData>
-                        </TRow>
+                        </tr>
                       )}
                     </>
                   )}
-                </TBody>
+                </tbody>
               </TDetails>
               <div className={'slide ' + (showRawData ? 'opened' : 'closed')} style={{ margin: '0 15px' }}>
                 {codeHighlight(tx)}

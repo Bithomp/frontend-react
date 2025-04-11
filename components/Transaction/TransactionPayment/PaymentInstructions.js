@@ -1,6 +1,6 @@
 import { nativeCurrency } from '../../../utils'
 import { amountFormat } from '../../../utils/format'
-import { TRow, TData } from '../../TableDetails'
+import { TData } from '../../TableDetails'
 
 export default function PaymentInstructions({ data, sourceBalanceChanges }) {
   const { outcome, specification, tx } = data
@@ -16,42 +16,42 @@ export default function PaymentInstructions({ data, sourceBalanceChanges }) {
     return (
       <>
         {specification.source?.maxAmount && (
-          <TRow>
+          <tr>
             <TData className="bold">Max amount</TData>
             <TData>
               It was instructed to spend up to{' '}
               <span className="bold">{amountFormat(specification.source.maxAmount, { precise: 'nice' })}</span>
             </TData>
-          </TRow>
+          </tr>
         )}
         {specification.destination?.minAmount && (
-          <TRow>
+          <tr>
             <TData className="bold">Min amount</TData>
             <TData>
               It was instructed to deliver at least{' '}
               <span className="bold">{amountFormat(specification.destination.minAmount, { precise: 'nice' })}</span>
             </TData>
-          </TRow>
+          </tr>
         )}
         {specification.allowPartialPayment && (
-          <TRow>
+          <tr>
             <TData className="bold orange">Allow partial payment</TData>
             <TData>
               It was instructed for this payment to go through even if the whole amount cannot be delivered because of a
               lack of liquidity or funds in the source account.
             </TData>
-          </TRow>
+          </tr>
         )}
         {specification.noDirectRipple && (
-          <TRow>
+          <tr>
             <TData className="bold">No direct ripple</TData>
             <TData>
               It was instructed to disregard any direct paths from the source account to the destination account.
             </TData>
-          </TRow>
+          </tr>
         )}
         {specification.limitQuality && (
-          <TRow>
+          <tr>
             <TData className="bold">Limit quality</TData>
             <TData>
               It was instructed to only take paths where all the conversions have rate that is equal or better than 1{' '}
@@ -70,7 +70,7 @@ export default function PaymentInstructions({ data, sourceBalanceChanges }) {
               </span>
               .
             </TData>
-          </TRow>
+          </tr>
         )}
       </>
     )

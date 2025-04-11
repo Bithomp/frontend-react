@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { TRow, TData } from '../../TableDetails'
+import { TData } from '../../TableDetails'
 import { useEffect, useState } from 'react'
 import { addressUsernameOrServiceLink } from '../../../utils/format'
 
@@ -58,7 +58,7 @@ export default function DestinationTagProblemSolving({ specification, pageFiatRa
   const tagSpecified = specification?.destination?.tag || specification?.destination?.tag === 0
 
   return (
-    <TRow>
+    <tr>
       <TData className="bold orange">Problem solving</TData>
       <TData>
         This payment was sent to {destUser} {tagSpecified ? 'with a short (that can be wrong)' : 'without a'}{' '}
@@ -73,6 +73,6 @@ export default function DestinationTagProblemSolving({ specification, pageFiatRa
           Contact <span className="bold">{destUser}</span> customer support to solve this issue.
         </span>
       </TData>
-    </TRow>
+    </tr>
   )
 }

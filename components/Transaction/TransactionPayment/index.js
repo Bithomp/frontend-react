@@ -1,4 +1,4 @@
-import { TRow, TData } from '../../TableDetails'
+import { TData } from '../../TableDetails'
 import {
   addressUsernameOrServiceLink,
   AddressWithIconFilled,
@@ -104,54 +104,54 @@ export const TransactionPayment = ({ data, pageFiatRate, selectedCurrency }) => 
       txTypeSpecial={txTypeSpecial}
     >
       {!isSuccessful && specification?.source?.addressDetails?.service && (
-        <TRow>
+        <tr>
           <TData className="bold orange">Problem solving</TData>
           <TData className="bold">
             The transaction <span class="red">FAILED</span>, if your balance changed, contact{' '}
             {addressUsernameOrServiceLink(specification.source, 'address')} support.
           </TData>
-        </TRow>
+        </tr>
       )}
       {isSuccessful && !isConvertion && (
         <DestinationTagProblemSolving specification={specification} pageFiatRate={pageFiatRate} />
       )}
-      <TRow>
+      <tr>
         <TData>{isConvertion ? 'Address' : 'Source'}</TData>
         <TData>
           <AddressWithIconFilled data={specification.source} name="address" />
         </TData>
-      </TRow>
+      </tr>
       {specification.source?.tag !== undefined && (
-        <TRow>
+        <tr>
           <TData>Source tag</TData>
           <TData className="bold">{specification.source.tag}</TData>
-        </TRow>
+        </tr>
       )}
       {!isConvertion && (
-        <TRow>
+        <tr>
           <TData>Destination</TData>
           <TData>
             <AddressWithIconFilled data={specification.destination} name="address" />
           </TData>
-        </TRow>
+        </tr>
       )}
       {specification.destination?.tag !== undefined && (
-        <TRow>
+        <tr>
           <TData>Destination tag</TData>
           <TData className="bold">{specification.destination.tag}</TData>
-        </TRow>
+        </tr>
       )}
       {tx?.InvoiceID && (
-        <TRow>
+        <tr>
           <TData>Invoice ID</TData>
           <TData>
             {shortHash(tx.InvoiceID, 10)} <CopyButton text={tx.InvoiceID} />
           </TData>
-        </TRow>
+        </tr>
       )}
       {isConvertion ? (
         <>
-          <TRow>
+          <tr>
             <TData>
               Exchanged
               {sourceBalanceChangesList.map((change, index) => {
@@ -173,9 +173,9 @@ export const TransactionPayment = ({ data, pageFiatRate, selectedCurrency }) => 
                 </div>
               ))}
             </TData>
-          </TRow>
+          </tr>
           {sourceBalanceChangesList.length === 2 && (
-            <TRow>
+            <tr>
               <TData>Exchange rate</TData>
               <TData>
                 1 {sourceBalanceChangesList[0].currency} ={' '}
@@ -192,12 +192,12 @@ export const TransactionPayment = ({ data, pageFiatRate, selectedCurrency }) => 
                   <>({addressUsernameOrServiceLink(sourceBalanceChangesList[1], 'issuer', { short: true })})</>
                 )}
               </TData>
-            </TRow>
+            </tr>
           )}
         </>
       ) : (
         outcome.deliveredAmount && (
-          <TRow>
+          <tr>
             <TData>Delivered amount</TData>
             <TData>
               <span className="bold green">{amountFormat(outcome.deliveredAmount)}</span>
@@ -210,7 +210,7 @@ export const TransactionPayment = ({ data, pageFiatRate, selectedCurrency }) => 
                 fiatRate: pageFiatRate
               })}
             </TData>
-          </TRow>
+          </tr>
         )
       )}
       <PaymentInstructions data={data} sourceBalanceChanges={sourceBalanceChangesList} />

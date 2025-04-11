@@ -12,9 +12,6 @@ export const TDetails = styled.table`
   margin: auto;
 `
 
-export const TBody = ({ children }) => <tbody>{children}</tbody>
-export const TRow = ({ children }) => <tr>{children}</tr>
-
 const TDataStyled = styled.td`
   padding: 4px;
   &:first-child {
