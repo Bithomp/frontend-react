@@ -1,3 +1,4 @@
+import { nativeCurrency } from '../../../utils'
 import { amountFormat } from '../../../utils/format'
 import { TRow, TData } from '../../TableDetails'
 
@@ -53,11 +54,19 @@ export default function PaymentInstructions({ data, sourceBalanceChanges }) {
           <TRow>
             <TData className="bold">Limit quality</TData>
             <TData>
-              It was instructed to only take paths where all the conversions have an input / output ratio that is equal
-              or better than the ratio of{' '}
+              It was instructed to only take paths where all the conversions have rate that is equal or better than 1{' '}
+              {specification.source.maxAmount.currency} ={' '}
               <span className="bold">
-                {amountFormat(tx.Amount, { precise: 'nice' })} /{' '}
-                {amountFormat(specification.source.maxAmount, { precise: 'nice' })}
+                {amountFormat(
+                  {
+                    currency: tx.Amount?.currency || nativeCurrency,
+                    issuer: tx.Amount?.issuer,
+                    value: Math.abs(
+                      (tx.Amount?.value ? tx.Amount?.value : tx.Amount / 1000000) / specification.source.maxAmount.value
+                    )
+                  },
+                  { precise: 'nice', noSpace: true }
+                )}
               </span>
               .
             </TData>

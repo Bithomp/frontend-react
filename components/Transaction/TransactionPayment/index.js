@@ -150,27 +150,51 @@ export const TransactionPayment = ({ data, pageFiatRate, selectedCurrency }) => 
         </TRow>
       )}
       {isConvertion ? (
-        <TRow>
-          <TData>
-            Exchanged
-            {sourceBalanceChangesList.map((change, index) => {
-              return <br key={index} />
-            })}
-          </TData>
-          <TData>
-            {sourceBalanceChangesList.map((change, index) => (
-              <div key={index}>
-                <span className={'bold ' + (Number(change?.value) > 0 ? 'green' : 'red')}>{amountFormat(change)}</span>
-                {change?.issuer && <>({addressUsernameOrServiceLink(change, 'issuer', { short: true })})</>}
-                {nativeCurrencyToFiat({
-                  amount: change,
-                  selectedCurrency,
-                  fiatRate: pageFiatRate
-                })}
-              </div>
-            ))}
-          </TData>
-        </TRow>
+        <>
+          <TRow>
+            <TData>
+              Exchanged
+              {sourceBalanceChangesList.map((change, index) => {
+                return <br key={index} />
+              })}
+            </TData>
+            <TData>
+              {sourceBalanceChangesList.map((change, index) => (
+                <div key={index}>
+                  <span className={'bold ' + (Number(change?.value) > 0 ? 'green' : 'red')}>
+                    {amountFormat(change)}
+                  </span>
+                  {change?.issuer && <>({addressUsernameOrServiceLink(change, 'issuer', { short: true })})</>}
+                  {nativeCurrencyToFiat({
+                    amount: change,
+                    selectedCurrency,
+                    fiatRate: pageFiatRate
+                  })}
+                </div>
+              ))}
+            </TData>
+          </TRow>
+          {sourceBalanceChangesList.length === 2 && (
+            <TRow>
+              <TData>Exchange rate</TData>
+              <TData>
+                1 {sourceBalanceChangesList[0].currency} ={' '}
+                <span className="bold">
+                  {amountFormat(
+                    {
+                      ...sourceBalanceChangesList[1],
+                      value: Math.abs(sourceBalanceChangesList[1].value / sourceBalanceChangesList[0].value)
+                    },
+                    { precise: 'nice' }
+                  )}
+                </span>
+                {sourceBalanceChangesList[1].issuer && (
+                  <>({addressUsernameOrServiceLink(sourceBalanceChangesList[1], 'issuer', { short: true })})</>
+                )}
+              </TData>
+            </TRow>
+          )}
+        </>
       ) : (
         outcome.deliveredAmount && (
           <TRow>
