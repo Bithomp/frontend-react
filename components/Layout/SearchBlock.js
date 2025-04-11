@@ -427,6 +427,11 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
               onChange={(e) => setSearchItem(e.target.value)}
               onKeyUp={searchOnKeyUp}
               spellCheck="false"
+              style={{
+                height: 36,
+                paddingLeft: 10,
+                paddingRight: 64
+              }}
             />
           )}
 
