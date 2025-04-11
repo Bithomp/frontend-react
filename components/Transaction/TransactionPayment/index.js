@@ -12,6 +12,7 @@ import { xls14NftValue } from '../../../utils'
 import CopyButton from '../../UI/CopyButton'
 import { addressBalanceChanges } from '../../../utils/transaction'
 import DestinationTagProblemSolving from './DestinationTagProblemSolving'
+import PaymentInstructions from './PaymentInstructions'
 
 export const TransactionPayment = ({ data, pageFiatRate, selectedCurrency }) => {
   if (!data) return null
@@ -188,6 +189,7 @@ export const TransactionPayment = ({ data, pageFiatRate, selectedCurrency }) => 
           </TRow>
         )
       )}
+      <PaymentInstructions data={data} sourceBalanceChanges={sourceBalanceChangesList} />
     </TransactionCard>
   )
 }
