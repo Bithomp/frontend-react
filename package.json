@@ -64,7 +64,6 @@
     "sass": "^1.80.5",
     "sharp": "^0.33.5",
     "slick-carousel": "^1.8.1",
-    "styled-components": "^6.1.8",
     "universal-cookie": "^7.2.1",
     "web-vitals": "^2.1.0",
     "xrpl-binary-codec-prerelease": "^8.0.1"
