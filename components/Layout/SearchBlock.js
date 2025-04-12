@@ -181,7 +181,7 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
     //nft nftOffer uriToken
     if (isIdValid(searchFor)) {
       setSearching(true)
-      const response = await axios('v2/search/' + searchFor)
+      const response = await axios('v2/search/' + searchFor) //change to v3
       setSearching(false)
       const data = response.data
       if (data.type === 'nftoken' || data.type === 'uriToken') {
@@ -204,7 +204,8 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
       if (data.type === 'transaction') {
         const txData = data.data
         //show check transactions in the new design
-        if (txData?.type?.includes('check')) {
+        //rewrite to v3 tx types
+        if (txData?.type?.includes('check') || txData?.type === 'payment') {
           //old transaction type names // remake to v3/search to use new ones
           router.push('/tx/' + searchFor)
           return
