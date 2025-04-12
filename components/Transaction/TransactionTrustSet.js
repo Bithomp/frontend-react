@@ -1,6 +1,6 @@
 import { TData } from '../Table'
 import { TransactionCard } from './TransactionCard'
-import { AddressWithIconFilled, amountFormat, niceCurrency } from '../../utils/format'
+import { AddressWithIconFilled, amountFormat } from '../../utils/format'
 
 export const TransactionTrustSet = ({ data, pageFiatRate, selectedCurrency }) => {
   if (!data) return null
@@ -15,18 +15,20 @@ export const TransactionTrustSet = ({ data, pageFiatRate, selectedCurrency }) =>
         </TData>
       </tr>
       <tr>
-        <TData>Counterparty</TData>
+        <TData>Trust to the issuer</TData>
         <TData>
           <AddressWithIconFilled data={specification} name="counterparty" />
         </TData>
       </tr>
       <tr>
-        <TData>Currency</TData>
-        <TData className="bold">{niceCurrency(specification.currency)}</TData>
-      </tr>
-      <tr>
         <TData>Limit</TData>
-        <TData>{amountFormat(specification.limit)}</TData>
+        <TData className="bold">
+          {amountFormat({
+            value: specification.limit,
+            currency: specification.currency,
+            issuer: specification?.counterparty
+          })}
+        </TData>
       </tr>
       <tr>
         <TData>Rippling</TData>
