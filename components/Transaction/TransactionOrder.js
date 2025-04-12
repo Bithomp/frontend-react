@@ -1,14 +1,22 @@
 import { TData } from '../Table'
-import { LinkAccount } from '../../utils/links'
 import { TransactionCard } from './TransactionCard'
-import { AddressWithIconFilled } from '../../utils/format'
+import { addressUsernameOrServiceLink, AddressWithIconFilled, amountFormat, capitalize } from '../../utils/format'
 
 export const TransactionOrder = ({ data, pageFiatRate, selectedCurrency }) => {
   if (!data) return null
-  const { specification } = data
+  const { tx, specification } = data
+
+  //console.log('TransactionOrder', data) //delete
+
+  const txTypeSpecial = tx.TransactionType + ' - ' + capitalize(specification.direction) + ' order'
 
   return (
-    <TransactionCard data={data} pageFiatRate={pageFiatRate} selectedCurrency={selectedCurrency}>
+    <TransactionCard
+      data={data}
+      pageFiatRate={pageFiatRate}
+      selectedCurrency={selectedCurrency}
+      txTypeSpecial={txTypeSpecial}
+    >
       <tr>
         <TData>Initiated by</TData>
         <TData>
@@ -17,15 +25,28 @@ export const TransactionOrder = ({ data, pageFiatRate, selectedCurrency }) => {
       </tr>
       <tr>
         <TData>Quantity</TData>
-        <TData>
-          {specification.quantity.value} {specification.quantity.currency}
+        <TData className="bold">
+          {amountFormat({
+            value: specification.quantity.value,
+            currency: specification.quantity.currency,
+            issuer: specification?.quantity?.issuer
+          })}
+          {specification?.quantity?.issuer && (
+            <>({addressUsernameOrServiceLink(specification.quantity, 'issuer', { short: true })})</>
+          )}
         </TData>
       </tr>
       <tr>
         <TData>Total Price</TData>
-        <TData>
-          {specification.totalPrice.value} {specification.totalPrice.currency} (
-          <LinkAccount address={specification.totalPrice.counterparty} />)
+        <TData className="bold">
+          {amountFormat({
+            value: specification.totalPrice.value,
+            currency: specification.totalPrice.currency,
+            issuer: specification?.totalPrice?.issuer
+          })}
+          {specification?.totalPrice?.issuer && (
+            <>({addressUsernameOrServiceLink(specification.totalPrice, 'issuer', { short: true })})</>
+          )}
         </TData>
       </tr>
     </TransactionCard>
