@@ -7,17 +7,18 @@ import { axiosServer, passHeaders } from '../../utils/axios'
 import { getIsSsrMobile } from '../../utils/mobile'
 
 import {
+  TransactionAccountDelete,
   TransactionDetails,
   TransactionEscrow,
   TransactionOrder,
   TransactionPayment,
   TransactionAmm,
   TransactionCheck,
-  TransactionTrustSet
+  TransactionTrustSet,
+  TransactionSetRegularKey
 } from '../../components/Transaction'
 import { useEffect, useState } from 'react'
 import { fetchHistoricalRate } from '../../utils/common'
-import { TransactionSetRegularKey } from '../../components/Transaction/TransactionSetRegularKey'
 
 export async function getServerSideProps(context) {
   const { locale, query, req } = context
@@ -52,6 +53,8 @@ export default function Transaction({ data, selectedCurrency }) {
 
   const [pageFiatRate, setPageFiatRate] = useState(0)
 
+  const { txHash, outcome, tx } = data
+
   useEffect(() => {
     if (!selectedCurrency || !outcome) return
     const { ledgerTimestamp } = outcome
@@ -59,11 +62,9 @@ export default function Transaction({ data, selectedCurrency }) {
 
     fetchHistoricalRate({ timestamp: ledgerTimestamp * 1000, selectedCurrency, setPageFiatRate })
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedCurrency])
+  }, [selectedCurrency, outcome])
 
   if (!data) return null
-
-  const { txHash, outcome, tx } = data
 
   let TransactionComponent = null
   const txType = tx?.TransactionType
@@ -81,9 +82,10 @@ export default function Transaction({ data, selectedCurrency }) {
     TransactionComponent = TransactionAmm
   } else if (txType?.includes('Check')) {
     TransactionComponent = TransactionCheck
-  }
-  if (txType?.includes('TrustSet')) {
+  } else if (txType === 'TrustSet') {
     TransactionComponent = TransactionTrustSet
+  } else if (txType === 'AccountDelete') {
+    TransactionComponent = TransactionAccountDelete
   } else {
     TransactionComponent = TransactionDetails
   }

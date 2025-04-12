@@ -1,8 +1,11 @@
 export { TransactionCard } from './TransactionCard'
 export { TransactionDetails } from './TransactionDetails'
+
+export { TransactionAccountDelete } from './TransactionAccountDelete'
 export { TransactionEscrow } from './TransactionEscrow'
 export { TransactionOrder } from './TransactionOrder'
 export { TransactionPayment } from './TransactionPayment'
 export { TransactionAmm } from './TransactionAmm'
 export { TransactionCheck } from './TransactionCheck'
 export { TransactionTrustSet } from './TransactionTrustSet'
+export { TransactionSetRegularKey } from './TransactionSetRegularKey'

@@ -19,7 +19,7 @@ export const TransactionEscrow = ({ data, pageFiatRate, selectedCurrency }) => {
         </TData>
       </tr>
 
-      {outcome?.escrowChanges?.source?.tag && (
+      {outcome?.escrowChanges?.source?.tag !== undefined && (
         <tr>
           <TData>Source tag</TData>
           <TData>{outcome.escrowChanges.source.tag}</TData>
@@ -38,7 +38,7 @@ export const TransactionEscrow = ({ data, pageFiatRate, selectedCurrency }) => {
         </TData>
       </tr>
 
-      {outcome?.escrowChanges?.destination?.tag && (
+      {outcome?.escrowChanges?.destination?.tag !== undefined && (
         <tr>
           <TData>Destination tag</TData>
           <TData>{outcome.escrowChanges.destination.tag}</TData>
