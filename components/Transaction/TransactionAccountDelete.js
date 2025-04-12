@@ -1,6 +1,6 @@
 import { TData } from '../Table'
 import { TransactionCard } from './TransactionCard'
-import { AddressWithIconFilled, amountFormat } from '../../utils/format'
+import { AddressWithIconFilled, amountFormat, nativeCurrencyToFiat } from '../../utils/format'
 
 export const TransactionAccountDelete = ({ data, pageFiatRate, selectedCurrency }) => {
   if (!data) return null
@@ -28,7 +28,14 @@ export const TransactionAccountDelete = ({ data, pageFiatRate, selectedCurrency 
       )}
       <tr>
         <TData>Delivered amount</TData>
-        <TData className="bold green">{amountFormat(outcome.deliveredAmount)}</TData>
+        <TData className="bold">
+          <span className="green">{amountFormat(outcome.deliveredAmount)}</span>
+          {nativeCurrencyToFiat({
+            amount: outcome.deliveredAmount,
+            selectedCurrency,
+            fiatRate: pageFiatRate
+          })}
+        </TData>
       </tr>
     </TransactionCard>
   )
