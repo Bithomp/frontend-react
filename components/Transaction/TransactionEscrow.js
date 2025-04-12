@@ -1,5 +1,5 @@
 import { TData } from '../Table'
-import { AddressWithIconFilled, amountFormat, fullDateAndTime } from '../../utils/format'
+import { AddressWithIconFilled, amountFormat, fullDateAndTime, nativeCurrencyToFiat } from '../../utils/format'
 
 import { TransactionCard } from './TransactionCard'
 
@@ -9,7 +9,8 @@ export const TransactionEscrow = ({ data, pageFiatRate, selectedCurrency }) => {
 
   console.log('TransactionEscrow', data) //delete
 
-  let isEscrowCreation = tx.TransactionType === 'EscrowCreate'
+  const isEscrowCreation = tx.TransactionType === 'EscrowCreate'
+  const isEscrowFinish = tx.TransactionType === 'EscrowFinish'
 
   return (
     <TransactionCard data={data} pageFiatRate={pageFiatRate} selectedCurrency={selectedCurrency}>
@@ -48,7 +49,16 @@ export const TransactionEscrow = ({ data, pageFiatRate, selectedCurrency }) => {
 
       <tr>
         <TData>Escrow amount</TData>
-        <TData className="bold">{amountFormat(outcome?.escrowChanges?.amount)}</TData>
+        <TData className="bold">
+          <span className={isEscrowFinish ? 'green' : ''}>{amountFormat(outcome?.escrowChanges?.amount)}</span>
+
+          {isEscrowFinish &&
+            nativeCurrencyToFiat({
+              amount: outcome?.escrowChanges?.amount,
+              selectedCurrency,
+              fiatRate: pageFiatRate
+            })}
+        </TData>
       </tr>
 
       {outcome?.escrowChanges?.allowExecuteAfter && (
