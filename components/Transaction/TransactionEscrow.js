@@ -7,8 +7,6 @@ export const TransactionEscrow = ({ data, pageFiatRate, selectedCurrency }) => {
   if (!data) return null
   const { tx, specification, outcome } = data
 
-  console.log('TransactionEscrow', data) //delete
-
   const isEscrowCreation = tx.TransactionType === 'EscrowCreate'
   const isEscrowFinish = tx.TransactionType === 'EscrowFinish'
 
@@ -78,7 +76,14 @@ export const TransactionEscrow = ({ data, pageFiatRate, selectedCurrency }) => {
       {outcome?.escrowChanges?.condition && (
         <tr>
           <TData>Condition</TData>
-          <TData>{outcome.escrowChanges?.condition}</TData>
+          <TData>{outcome.escrowChanges.condition}</TData>
+        </tr>
+      )}
+
+      {isEscrowFinish && outcome?.escrowChanges?.fulfillment && (
+        <tr>
+          <TData>Fulfillment</TData>
+          <TData>{outcome.escrowChanges.fulfillment}</TData>
         </tr>
       )}
 
