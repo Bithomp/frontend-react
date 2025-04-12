@@ -12,7 +12,8 @@ import {
   TransactionOrder,
   TransactionPayment,
   TransactionAmm,
-  TransactionCheck
+  TransactionCheck,
+  TransactionTrustSet
 } from '../../components/Transaction'
 import { useEffect, useState } from 'react'
 import { fetchHistoricalRate } from '../../utils/common'
@@ -80,6 +81,9 @@ export default function Transaction({ data, selectedCurrency }) {
     TransactionComponent = TransactionAmm
   } else if (txType?.includes('Check')) {
     TransactionComponent = TransactionCheck
+  }
+  if (txType?.includes('TrustSet')) {
+    TransactionComponent = TransactionTrustSet
   } else {
     TransactionComponent = TransactionDetails
   }
