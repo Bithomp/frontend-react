@@ -39,15 +39,7 @@ export const TransactionEscrow = ({ data, pageFiatRate, selectedCurrency }) => {
 
   return (
     <TransactionCard data={data} pageFiatRate={pageFiatRate} selectedCurrency={selectedCurrency}>
-      {/* Different data for EscrowCreation vs Execution/Cancellation */}
-      {isEscrowCreation ? (
-        <tr>
-          <TData>Escrow Owner</TData>
-          <TData>
-            <LinkAccount address={specification?.source?.address} />
-          </TData>
-        </tr>
-      ) : (
+      {!isEscrowCreation && (
         <>
           <tr>
             <TData>Initiated by</TData>
@@ -55,69 +47,84 @@ export const TransactionEscrow = ({ data, pageFiatRate, selectedCurrency }) => {
               <AddressWithIconFilled data={specification.source} name="address" />
             </TData>
           </tr>
-          <tr>
-            <TData>Escrow Owner</TData>
-            <TData>
-              <LinkAccount address={specification?.owner} />
-            </TData>
-          </tr>
+          {specification.source?.address !== outcome?.escrowChanges?.source?.address &&
+            specification.source?.address !== outcome?.escrowChanges?.destination?.address && (
+              <tr>
+                <TData>Note</TData>
+                <TData className="orange">
+                  This Escrow was finished by the third party (not by Sender or Receiver), anyone can finish time-based
+                  escrow when the time passed.
+                </TData>
+              </tr>
+            )}
         </>
       )}
 
       <tr>
-        <TData>Escrow Sequence</TData>
+        <TData>Escrow source</TData>
+        <TData>
+          {isEscrowCreation ? (
+            <AddressWithIconFilled data={specification.source} name="address" />
+          ) : (
+            <AddressWithIconFilled data={specification} name="owner" />
+          )}
+        </TData>
+      </tr>
+
+      {specification?.source?.tag && (
+        <tr>
+          <TData>Source tag</TData>
+          <TData>{specification.source.tag}</TData>
+        </tr>
+      )}
+
+      <tr>
+        <TData>Escrow sequence</TData>
         <TData>#{outcome?.escrowChanges?.escrowSequence}</TData>
       </tr>
 
-      {/* Additional details for EscrowCreation */}
-      {isEscrowCreation && (
-        <>
-          <tr>
-            <TData>Destination</TData>
-            <TData>
-              <LinkAccount address={specification?.destination?.address} />
-            </TData>
-          </tr>
-          <tr>
-            <TData>Escrow Amount</TData>
-            <TData>{amountFormat(escrowAmount)}</TData>
-          </tr>
-          <tr>
-            <TData>Source Tag</TData>
-            <TData>{specification?.source?.tag}</TData>
-          </tr>
-          <tr>
-            <TData>Destination Tag</TData>
-            <TData>{specification?.destination?.tag}</TData>
-          </tr>
-          <tr>
-            <TData>Execute After</TData>
-            <TData>{fullDateAndTime(specification?.allowExecuteAfter)}</TData>
-          </tr>
-          <tr>
-            <TData>Cancel After</TData>
-            <TData>{fullDateAndTime(specification?.allowCancelAfter)}</TData>
-          </tr>
-          <tr>
-            <TData>Condition</TData>
-            <TData>{specification?.condition}</TData>
-          </tr>
-        </>
+      <tr>
+        <TData>Destination</TData>
+        <TData>
+          {isEscrowCreation ? (
+            <AddressWithIconFilled data={specification.destination} name="address" />
+          ) : (
+            <LinkAccount address={escrowReciever} />
+          )}
+        </TData>
+      </tr>
+
+      {specification?.destination?.tag && (
+        <tr>
+          <TData>Destination tag</TData>
+          <TData>{specification.destination.tag}</TData>
+        </tr>
       )}
 
-      {!isEscrowCreation && (
-        <>
-          <tr>
-            <TData>Escrow Receiver:</TData>
-            <TData>
-              <LinkAccount address={escrowReciever} />
-            </TData>
-          </tr>
-          <tr>
-            <TData>Escrow Amount:</TData>
-            <TData>{amountFormat(escrowAmount)}</TData>
-          </tr>
-        </>
+      <tr>
+        <TData>Escrow amount</TData>
+        <TData className="bold">{amountFormat(escrowAmount)}</TData>
+      </tr>
+
+      {specification?.allowExecuteAfter && (
+        <tr>
+          <TData>Execute after</TData>
+          <TData>{fullDateAndTime(specification.allowExecuteAfter)}</TData>
+        </tr>
+      )}
+
+      {specification?.allowCancelAfter && (
+        <tr>
+          <TData>Cancel after</TData>
+          <TData>{fullDateAndTime(specification.allowCancelAfter)}</TData>
+        </tr>
+      )}
+
+      {specification?.condition && (
+        <tr>
+          <TData>Condition</TData>
+          <TData>{specification?.condition}</TData>
+        </tr>
       )}
     </TransactionCard>
   )
