@@ -294,7 +294,8 @@ export const TransactionCard = ({ data, pageFiatRate, selectedCurrency, txTypeSp
                         </TData>
                       </tr>
                     ))}
-                  {filteredBalanceChanges.length > 1 && (
+                  {/* keep here outcome?.balanceChanges.length, to hide simple xrp and to show iou payments that are filtered when gateway doesn't have a transfer fee */}
+                  {outcome?.balanceChanges.length > 2 && (
                     <>
                       <tr>
                         <TData>Affected accounts</TData>
