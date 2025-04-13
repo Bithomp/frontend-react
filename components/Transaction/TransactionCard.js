@@ -313,13 +313,12 @@ export const TransactionCard = ({ data, pageFiatRate, selectedCurrency, txTypeSp
                         return (
                           <tr key={index}>
                             <TData>
-                              {change.address === tx.Account ? (
+                              Account {index + 1}
+                              {change.address === tx.Account && (
                                 <span className="bold">
-                                  Initiator
                                   <br />
+                                  Initiator
                                 </span>
-                              ) : (
-                                <>Account {index + 1}</>
                               )}
                             </TData>
                             <TData>
