@@ -19,8 +19,12 @@ import { decode, server } from '../../utils'
 import { errorCodeDescription, shortErrorCode } from '../../utils/transaction'
 import { add } from '../../utils/calc'
 
+const gatewaySum = (balances) => {
+  return balances?.reduce((sum, c) => add(sum, c.value), 0) || 0
+}
+
 const gatewayChanges = (balances) => {
-  const sum = balances?.reduce((sum, c) => add(sum, c.value), 0) || 0
+  const sum = gatewaySum(balances)
   return (
     <span className={'bold ' + (sum > 0 ? 'green' : 'red')}>
       {sum > 0 ? '+' : ''}
@@ -30,6 +34,10 @@ const gatewayChanges = (balances) => {
       })}
     </span>
   )
+}
+
+const noBalanceChange = (change) => {
+  return change?.balanceChanges?.[0]?.issuer === change.address && gatewaySum(change.balanceChanges) === '0'
 }
 
 export const TransactionCard = ({ data, pageFiatRate, selectedCurrency, txTypeSpecial, children }) => {
@@ -171,6 +179,8 @@ export const TransactionCard = ({ data, pageFiatRate, selectedCurrency, txTypeSp
 
   const errorMessage = error_message || error
 
+  const filteredBalanceChanges = outcome?.balanceChanges.filter((change) => !noBalanceChange(change))
+
   return (
     <>
       <div className="tx-body">
@@ -284,16 +294,16 @@ export const TransactionCard = ({ data, pageFiatRate, selectedCurrency, txTypeSp
                         </TData>
                       </tr>
                     ))}
-                  {outcome?.balanceChanges.length > 2 && (
+                  {filteredBalanceChanges.length > 1 && (
                     <>
                       <tr>
                         <TData>Affected accounts</TData>
                         <TData>
-                          There are <span className="bold">{outcome?.balanceChanges.length}</span> accounts that were
+                          There are <span className="bold">{filteredBalanceChanges.length}</span> accounts that were
                           affected by this transaction.
                         </TData>
                       </tr>
-                      {outcome?.balanceChanges.map((change, index) => {
+                      {filteredBalanceChanges.map((change, index) => {
                         return (
                           <tr key={index}>
                             <TData>
