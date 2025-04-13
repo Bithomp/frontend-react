@@ -80,10 +80,10 @@ export const TransactionEscrow = ({ data, pageFiatRate, selectedCurrency }) => {
         </tr>
       )}
 
-      {isEscrowFinish && outcome?.escrowChanges?.fulfillment && (
+      {isEscrowFinish && specification?.fulfillment && (
         <tr>
           <TData>Fulfillment</TData>
-          <TData>{outcome.escrowChanges.fulfillment}</TData>
+          <TData>{specification.fulfillment}</TData>
         </tr>
       )}
 
