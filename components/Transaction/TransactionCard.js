@@ -6,6 +6,7 @@ import { i18n, useTranslation } from 'next-i18next'
 import { LedgerLink, LinkTx } from '../../utils/links'
 import { TData } from '../Table'
 import {
+  addressUsernameOrServiceLink,
   AddressWithIconFilled,
   amountFormat,
   codeHighlight,
@@ -16,6 +17,20 @@ import {
 } from '../../utils/format'
 import { decode, server } from '../../utils'
 import { errorCodeDescription, shortErrorCode } from '../../utils/transaction'
+import { add } from '../../utils/calc'
+
+const gatewayChanges = (balances) => {
+  const sum = balances?.reduce((sum, c) => add(sum, c.value), 0) || 0
+  return (
+    <span className={'bold ' + (sum > 0 ? 'green' : 'red')}>
+      {sum > 0 ? '+' : ''}
+      {amountFormat({
+        ...balances[0],
+        value: sum
+      })}
+    </span>
+  )
+}
 
 export const TransactionCard = ({ data, pageFiatRate, selectedCurrency, txTypeSpecial, children }) => {
   const { t } = useTranslation()
@@ -269,6 +284,58 @@ export const TransactionCard = ({ data, pageFiatRate, selectedCurrency, txTypeSp
                         </TData>
                       </tr>
                     ))}
+                  {outcome?.balanceChanges.length > 2 && (
+                    <>
+                      <tr>
+                        <TData>Affected accounts</TData>
+                        <TData>
+                          There are <span className="bold">{outcome?.balanceChanges.length}</span> accounts that were
+                          affected by this transaction.
+                        </TData>
+                      </tr>
+                      {outcome?.balanceChanges.map((change, index) => {
+                        return (
+                          <tr key={index}>
+                            <TData>
+                              {change.address === tx.Account ? (
+                                <span className="bold">
+                                  Initiator
+                                  <br />
+                                </span>
+                              ) : (
+                                <>Account {index + 1}</>
+                              )}
+                            </TData>
+                            <TData>
+                              <div style={{ height: '10px' }}></div>
+                              <AddressWithIconFilled data={change} name="address" />
+                              {change?.balanceChanges?.[0]?.issuer === change.address
+                                ? gatewayChanges(change.balanceChanges)
+                                : change.balanceChanges?.map((c, i) => {
+                                    return (
+                                      <div key={i}>
+                                        <span className={'bold ' + (Number(c.value) > 0 ? 'green' : 'red')}>
+                                          {Number(c.value) > 0 ? '+' : ''}
+                                          {amountFormat(c)}
+                                        </span>
+                                        {c.issuer && (
+                                          <>({addressUsernameOrServiceLink(c, 'issuer', { short: true })})</>
+                                        )}
+                                        {nativeCurrencyToFiat({
+                                          amount: c,
+                                          selectedCurrency,
+                                          fiatRate: pageFiatRate
+                                        })}
+                                      </div>
+                                    )
+                                  })}
+                              <div style={{ height: '10px' }}></div>
+                            </TData>
+                          </tr>
+                        )
+                      })}
+                    </>
+                  )}
                   <tr>
                     <TData>Transaction link</TData>
                     <TData>

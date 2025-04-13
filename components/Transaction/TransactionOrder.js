@@ -6,8 +6,6 @@ export const TransactionOrder = ({ data, pageFiatRate, selectedCurrency }) => {
   if (!data) return null
   const { tx, specification } = data
 
-  //console.log('TransactionOrder', data) //delete
-
   const txTypeSpecial = tx.TransactionType + ' - ' + capitalize(specification.direction) + ' order'
 
   return (
