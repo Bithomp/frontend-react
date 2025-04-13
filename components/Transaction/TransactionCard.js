@@ -28,10 +28,13 @@ const gatewayChanges = (balances) => {
   return (
     <span className={'bold ' + (sum > 0 ? 'green' : 'red')}>
       {sum > 0 ? '+' : ''}
-      {amountFormat({
-        ...balances[0],
-        value: sum
-      })}
+      {amountFormat(
+        {
+          ...balances[0],
+          value: sum
+        },
+        { precise: true }
+      )}
     </span>
   )
 }
@@ -47,6 +50,8 @@ export const TransactionCard = ({ data, pageFiatRate, selectedCurrency, txTypeSp
   const [showAdditionalData, setShowAdditionalData] = useState(false)
 
   if (!data) return null
+
+  //console.log('TransactionCard', data) //delete
 
   const { id, error_message, tx, outcome, meta, specification, error } = data
   const isSuccessful = outcome?.result == 'tesSUCCESS'
@@ -327,7 +332,7 @@ export const TransactionCard = ({ data, pageFiatRate, selectedCurrency, txTypeSp
                                       <div key={i}>
                                         <span className={'bold ' + (Number(c.value) > 0 ? 'green' : 'red')}>
                                           {Number(c.value) > 0 ? '+' : ''}
-                                          {amountFormat(c)}
+                                          {amountFormat(c, { precise: true })}
                                         </span>
                                         {c.issuer && (
                                           <>({addressUsernameOrServiceLink(c, 'issuer', { short: true })})</>
