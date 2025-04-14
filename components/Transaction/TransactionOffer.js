@@ -57,7 +57,13 @@ export const TransactionOffer = ({ data, pageFiatRate, selectedCurrency }) => {
 
       {tx?.OfferSequence && (
         <tr>
-          <TData tooltip={offerCreate ? 'An Offer to delete first.' : 'Offer sequence to Cancel'}>
+          <TData
+            tooltip={
+              offerCreate
+                ? 'The sequence (or ticket) number of a previous OfferCreate transaction. It is instructed to Cancel any offer object in the ledger that was created by that transaction. It is not considered an error if the offer specified does not exist.'
+                : 'Offer sequence to Cancel'
+            }
+          >
             {offerCreate ? 'Offer ID' : 'Offer sequence'}
           </TData>
           <TData>#{tx.OfferSequence}</TData>
