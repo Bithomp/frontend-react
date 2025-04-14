@@ -43,8 +43,6 @@ export const TransactionAccountSet = ({ data, pageFiatRate, selectedCurrency }) 
   if (!data) return null
   const { specification, tx } = data
 
-  //console.log('AccountSet', data) //delete
-
   return (
     <TransactionCard data={data} pageFiatRate={pageFiatRate} selectedCurrency={selectedCurrency}>
       <tr>
