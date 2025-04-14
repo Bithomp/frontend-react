@@ -21,7 +21,7 @@ export const TransactionOrder = ({ data, pageFiatRate, selectedCurrency }) => {
         </TData>
       </tr>
       <tr>
-        <TData>Taker Gets</TData>
+        <TData tooltip="The amount and type of currency being sold.">Taker Gets</TData>
         <TData className="bold">
           {amountFormat(specification.quantity, { presice: true })}
           {specification.quantity?.issuer && (
@@ -30,7 +30,7 @@ export const TransactionOrder = ({ data, pageFiatRate, selectedCurrency }) => {
         </TData>
       </tr>
       <tr>
-        <TData>Taker Pays</TData>
+        <TData tooltip="The amount and type of currency being bought.">Taker Pays</TData>
         <TData className="bold">
           {amountFormat(specification.totalPrice, { presice: true })}
           {specification?.totalPrice?.issuer && (
@@ -41,10 +41,17 @@ export const TransactionOrder = ({ data, pageFiatRate, selectedCurrency }) => {
 
       {tx?.Expiration && (
         <tr>
-          <TData>Expiration</TData>
+          <TData tooltip="Time after which the Offer is no longer active.">Expiration</TData>
           <TData>
             {timeFromNow(tx.Expiration, i18n, 'ripple')} ({fullDateAndTime(tx.Expiration, 'ripple')})
           </TData>
+        </tr>
+      )}
+
+      {tx?.OfferSequence && (
+        <tr>
+          <TData tooltip="An Offer to delete first.">Offer Sequence</TData>
+          <TData>{tx.OfferSequence}</TData>
         </tr>
       )}
 
