@@ -12,8 +12,6 @@ export const TransactionOffer = ({ data, pageFiatRate, selectedCurrency }) => {
   if (!data) return null
   const { tx, specification, outcome } = data
 
-  console.log('TransactionOffer', data)
-
   //most likely the orderbookChanges format will be changed...
   const takerGets = specification.quantity || outcome?.orderbookChanges?.[specification.source.address]?.[0]?.quantity
   const takerPays =
