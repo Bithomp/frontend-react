@@ -50,8 +50,8 @@ export const TransactionOrder = ({ data, pageFiatRate, selectedCurrency }) => {
 
       {tx?.OfferSequence && (
         <tr>
-          <TData tooltip="An Offer to delete first.">Offer Sequence</TData>
-          <TData>{tx.OfferSequence}</TData>
+          <TData tooltip="An Offer to delete first.">Delete Offer</TData>
+          <TData>#{tx.OfferSequence}</TData>
         </tr>
       )}
 
