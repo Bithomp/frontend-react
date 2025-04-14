@@ -50,7 +50,7 @@ export const TransactionOrder = ({ data, pageFiatRate, selectedCurrency }) => {
 
       {specification.direction === 'sell' && (
         <tr>
-          <TData className="bold">Sell order</TData>
+          <TData>Sell order</TData>
           <TData>
             This offer is a Sell order, meaning it is designed to exchange all of the{' '}
             {amountFormat(tx.TakerGets, { presice: true, noSpace: true })}, even if doing so results in receiving more
@@ -62,7 +62,7 @@ export const TransactionOrder = ({ data, pageFiatRate, selectedCurrency }) => {
 
       {specification?.passive && (
         <tr>
-          <TData className="bold">Passive</TData>
+          <TData>Passive</TData>
           <TData>
             This Offer does not consume Offers that exactly match it, and instead becomes an Offer object in the ledger.
             It still consumes Offers that cross it.
@@ -72,7 +72,7 @@ export const TransactionOrder = ({ data, pageFiatRate, selectedCurrency }) => {
 
       {specification?.immediateOrCancel && (
         <tr>
-          <TData className="bold">Immediate or Cancel</TData>
+          <TData>Immediate or Cancel</TData>
           <TData>
             This offer is an Immediate or Cancel order, meaning it will execute only against existing matching offers in
             the ledger at the time of submission. It does not create a standing offer. Any portion of the offer that
@@ -84,7 +84,7 @@ export const TransactionOrder = ({ data, pageFiatRate, selectedCurrency }) => {
 
       {specification?.fillOrKill && (
         <tr>
-          <TData className="bold">Fill or Kill</TData>
+          <TData>Fill or Kill</TData>
           <TData>
             This offer is a Fill or Kill order, meaning it will only execute if it can be fully filled immediately. It
             does not create a standing offer in the ledger. If the full amount cannot be exchanged at the time of
