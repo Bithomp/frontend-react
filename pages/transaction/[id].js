@@ -7,15 +7,16 @@ import { axiosServer, passHeaders } from '../../utils/axios'
 import { getIsSsrMobile } from '../../utils/mobile'
 
 import {
-  TransactionAccountDelete,
   TransactionDetails,
+  TransactionAccountDelete,
+  TransactionAccountSet,
+  TransactionAmm,
+  TransactionCheck,
   TransactionEscrow,
   TransactionOrder,
   TransactionPayment,
-  TransactionAmm,
-  TransactionCheck,
-  TransactionTrustSet,
-  TransactionSetRegularKey
+  TransactionSetRegularKey,
+  TransactionTrustSet
 } from '../../components/Transaction'
 import { useEffect, useState } from 'react'
 import { fetchHistoricalRate } from '../../utils/common'
@@ -70,7 +71,15 @@ export default function Transaction({ data, selectedCurrency }) {
   const txType = tx?.TransactionType
   // https://xrpl.org/docs/references/protocol/transactions/types
 
-  if (txType?.includes('Escrow')) {
+  if (txType === 'AccountDelete') {
+    TransactionComponent = TransactionAccountDelete
+  } else if (txType === 'AccountSet') {
+    TransactionComponent = TransactionAccountSet
+  } else if (txType?.includes('AMM')) {
+    TransactionComponent = TransactionAmm
+  } else if (txType?.includes('Check')) {
+    TransactionComponent = TransactionCheck
+  } else if (txType?.includes('Escrow')) {
     TransactionComponent = TransactionEscrow
   } else if (txType === 'OfferCreate' || txType === 'OfferCancel') {
     TransactionComponent = TransactionOrder
@@ -78,14 +87,8 @@ export default function Transaction({ data, selectedCurrency }) {
     TransactionComponent = TransactionPayment
   } else if (txType === 'SetRegularKey') {
     TransactionComponent = TransactionSetRegularKey
-  } else if (txType?.includes('AMM')) {
-    TransactionComponent = TransactionAmm
-  } else if (txType?.includes('Check')) {
-    TransactionComponent = TransactionCheck
   } else if (txType === 'TrustSet') {
     TransactionComponent = TransactionTrustSet
-  } else if (txType === 'AccountDelete') {
-    TransactionComponent = TransactionAccountDelete
   } else {
     TransactionComponent = TransactionDetails
   }

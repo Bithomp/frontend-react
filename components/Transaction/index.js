@@ -2,6 +2,7 @@ export { TransactionCard } from './TransactionCard'
 export { TransactionDetails } from './TransactionDetails'
 
 export { TransactionAccountDelete } from './TransactionAccountDelete'
+export { TransactionAccountSet } from './TransactionAccountSet'
 export { TransactionEscrow } from './TransactionEscrow'
 export { TransactionOrder } from './TransactionOrder'
 export { TransactionPayment } from './TransactionPayment'

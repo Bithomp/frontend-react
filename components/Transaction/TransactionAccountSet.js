@@ -1,0 +1,251 @@
+import { TData } from '../Table'
+import { TransactionCard } from './TransactionCard'
+import { AddressWithIconFilled } from '../../utils/format'
+import { isDomainValid, nativeCurrency } from '../../utils'
+
+const messageKeyNode = (messageKey) => {
+  if (messageKey) {
+    if (messageKey.startsWith('02000000000000000000000000')) {
+      const ethAddress = '0x' + messageKey.slice(26)
+      return (
+        <>
+          Added a Flare address <br />
+          <a href={`https://flarescan.com/address/${ethAddress}`} target="_blank" rel="noopener">
+            {ethAddress}
+          </a>
+        </>
+      )
+    } else {
+      return <pre>{messageKey}</pre>
+    }
+  } else {
+    return <span className="orange">removed</span>
+  }
+}
+
+const domainNode = (domain) => {
+  if (domain) {
+    if (isDomainValid(domain)) {
+      return (
+        <a href={`https://${domain}`} target="_blank" rel="noopener">
+          {domain}
+        </a>
+      )
+    } else {
+      return <pre>{domain}</pre>
+    }
+  } else {
+    return <span className="orange">removed</span>
+  }
+}
+
+{
+  /*
+    AccountTxnID	- Track the ID of this account's most recent transaction.
+    AllowTrustLineClawback	- Allow account to claw back tokens it has issued.
+    AuthorizedNFTokenMinter - Enable to allow another account to mint non-fungible tokens (NFTokens) on this account's behalf.
+    GlobalFreeze - Freeze all assets issued by this account.
+*/
+}
+
+export const TransactionAccountSet = ({ data, pageFiatRate, selectedCurrency }) => {
+  if (!data) return null
+  const { specification, tx } = data
+
+  console.log('AccountSet', data) //delete
+
+  return (
+    <TransactionCard data={data} pageFiatRate={pageFiatRate} selectedCurrency={selectedCurrency}>
+      <tr>
+        <TData>Initiated by</TData>
+        <TData>
+          <AddressWithIconFilled data={specification.source} name="address" />
+        </TData>
+      </tr>
+      {tx.ClearFlag !== undefined && (
+        <tr>
+          <TData className="bold" tooltip="Unique identifier of a flag to disable for this account.">
+            Clear flag
+          </TData>
+          <TData className="bold">{tx.ClearFlag}</TData>
+        </tr>
+      )}
+      {tx.Domain !== undefined && (
+        <tr>
+          <TData className="bold">Domain</TData>
+          <TData className="bold">{domainNode(specification.domain)}</TData>
+        </tr>
+      )}
+      {tx.OperationLimit !== undefined && (
+        <tr>
+          <TData className="bold">Operation limit</TData>
+          <TData className="bold">{tx.OperationLimit}</TData>
+        </tr>
+      )}
+      {tx.EmailHash !== undefined && (
+        <tr>
+          <TData
+            className="bold"
+            tooltip="Often used to add md5 hash of an email address for displaying a Gravatar image."
+          >
+            Email hash
+          </TData>
+          <TData className="bold">{specification.emailHash || <span className="orange">removed</span>}</TData>
+        </tr>
+      )}
+      {tx.MessageKey !== undefined && (
+        <tr>
+          <TData className="bold" tooltip="Public key for sending encrypted messages to this account.">
+            Message key
+          </TData>
+          <TData className="bold">{messageKeyNode(specification.messageKey)}</TData>
+        </tr>
+      )}
+      {tx.NFTokenMinter !== undefined && (
+        <tr>
+          <TData className="bold" tooltip="Another account that can mint NFTs for that account.">
+            NFT minter
+          </TData>
+          <TData className="bold">{specification.nftokenMinter || <span className="orange">removed</span>}</TData>
+        </tr>
+      )}
+      {tx.SetFlag !== undefined && (
+        <tr>
+          <TData className="bold">Set flag</TData>
+          <TData className="bold">{tx.SetFlag}</TData>
+        </tr>
+      )}
+      {tx.TransferRate !== undefined && (
+        <tr>
+          <TData className="bold" tooltip="The fee to charge when users transfer this account's tokens.">
+            Transfer rate
+          </TData>
+          <TData className="bold">{tx.TransferRate}</TData>
+        </tr>
+      )}
+      {tx.TickSize !== undefined && (
+        <tr>
+          <TData className="bold" tooltip="Tick size to use for offers involving a currency issued by this address.">
+            Tick size
+          </TData>
+          <TData className="bold">{tx.TickSize}</TData>
+        </tr>
+      )}
+      {tx.WalletLocator !== undefined && (
+        <tr>
+          <TData
+            className="bold"
+            tooltip="The value is stored as part of the account but has no inherent meaning or requirements."
+          >
+            Wallet locator
+          </TData>
+          <TData className="bold">{tx.WalletLocator}</TData>
+        </tr>
+      )}
+      {tx.WalletSize !== undefined && (
+        <tr>
+          <TData className="bold" tooltip="This field is valid in AccountSet transactions but does nothing.">
+            Wallet size
+          </TData>
+          <TData className="bold">{tx.WalletSize}</TData>
+        </tr>
+      )}
+      {specification.disallowIncomingXRP !== undefined && (
+        <tr>
+          <TData
+            className="bold"
+            tooltip={
+              nativeCurrency + ' should not be sent to this account (it is not enforced by the Ledger protocol).'
+            }
+          >
+            Incoming {nativeCurrency}
+          </TData>
+          <TData className="bold">{specification.disallowIncomingXRP ? 'Disallow' : 'Allow'}</TData>
+        </tr>
+      )}
+      {specification.requireDestinationTag !== undefined && (
+        <tr>
+          <TData className="bold" tooltip="Require a destination tag to send transactions to this account.">
+            Destination tag
+          </TData>
+          <TData className="bold">{specification.requireDestinationTag ? 'Require' : "Don't require"}</TData>
+        </tr>
+      )}
+      {specification.disableMasterKey !== undefined && (
+        <tr>
+          <TData className="bold" tooltip="The use of the master key pair.">
+            Master key
+          </TData>
+          <TData className="bold">{specification.disableMasterKey ? 'Disabled' : 'Enabled'}</TData>
+        </tr>
+      )}
+      {specification.noFreeze && (
+        <tr>
+          <TData
+            className="bold"
+            tooltip="Permanently give up the ability to freeze individual trust lines or disable Global Freeze. This flag can never be disabled after being enabled."
+          >
+            No freeze
+          </TData>
+          <TData className="bold">Enabled</TData>
+        </tr>
+      )}
+      {specification.defaultRipple !== undefined && (
+        <tr>
+          <TData className="bold" tooltip="Enable rippling on this account's trust lines by default.">
+            Default ripple
+          </TData>
+          <TData className="bold">{specification.defaultRipple ? 'Enabled' : 'Disabled'}</TData>
+        </tr>
+      )}
+      {specification.depositAuth !== undefined && (
+        <tr>
+          <TData className="bold" tooltip="Enable Deposit Authorization on this account.">
+            Deposit authorization
+          </TData>
+          <TData className="bold">{specification.depositAuth ? 'Enabled' : 'Disabled'}</TData>
+        </tr>
+      )}
+      {specification.requireAuthorization !== undefined && (
+        <tr>
+          <TData className="bold" tooltip="Require authorization for users to hold balances issued by this address.">
+            Require authorization
+          </TData>
+          <TData className="bold">{specification.requireAuthorization ? 'Enabled' : 'Disabled'}</TData>
+        </tr>
+      )}
+      {specification.disallowIncomingCheck !== undefined && (
+        <tr>
+          <TData className="bold" tooltip="Block incoming Checks.">
+            Incoming check
+          </TData>
+          <TData className="bold">{specification.disallowIncomingCheck ? 'Disallow' : 'Allow'}</TData>
+        </tr>
+      )}
+      {specification.disallowIncomingPayChan !== undefined && (
+        <tr>
+          <TData className="bold" tooltip="Block incoming Payment Channels.">
+            Incoming payment channel
+          </TData>
+          <TData className="bold">{specification.disallowIncomingPayChan ? 'Disallow' : 'Allow'}</TData>
+        </tr>
+      )}
+      {specification.disallowIncomingNFTOffer !== undefined && (
+        <tr>
+          <TData className="bold" tooltip="Block incoming NFTOffers.">
+            Incoming NFT offer
+          </TData>
+          <TData className="bold">{specification.disallowIncomingNFTOffer ? 'Disallow' : 'Allow'}</TData>
+        </tr>
+      )}
+      {specification.disallowIncomingTrustline !== undefined && (
+        <tr>
+          <TData className="bold" tooltip="Block incoming trust lines.">
+            Incoming trust line
+          </TData>
+          <TData className="bold">{specification.disallowIncomingTrustline ? 'Disallow' : 'Allow'}</TData>
+        </tr>
+      )}
+    </TransactionCard>
+  )
+}
