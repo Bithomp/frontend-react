@@ -6,22 +6,34 @@ import {
   amountFormat,
   capitalize,
   fullDateAndTime,
+  nativeCurrencyToFiat,
+  niceCurrency,
   timeFromNow
 } from '../../utils/format'
+import { addressBalanceChanges } from '../../utils/transaction'
 
 export const TransactionOffer = ({ data, pageFiatRate, selectedCurrency }) => {
   if (!data) return null
   const { tx, specification, outcome } = data
 
+  const sourceOrderbookChange = outcome?.orderbookChanges
+    .filter((entry) => entry.address === specification.source.address)?.[0]
+    ?.orderbookChanges.filter((entry) => entry.sequence === specification.orderSequence)?.[0]
+
   //most likely the orderbookChanges format will be changed...
-  const takerGets = specification.quantity || outcome?.orderbookChanges?.[specification.source.address]?.[0]?.quantity
-  const takerPays =
-    specification.totalPrice || outcome?.orderbookChanges?.[specification.source.address]?.[0]?.totalPrice
-  const direction = specification.direction || outcome?.orderbookChanges?.[specification.source.address]?.[0]?.direction
+  const takerGets = specification.takerGets || sourceOrderbookChange?.takerGets
+  const takerPays = specification.takerPays || sourceOrderbookChange?.takerPays
+
+  const direction = (specification.flags ? specification.flags.sell : sourceOrderbookChange?.direction) ? 'Sell' : 'Buy'
+  const passive = specification?.flags?.passive || sourceOrderbookChange?.flags?.passive
+  const status = sourceOrderbookChange?.status
 
   const offerCreate = tx?.TransactionType === 'OfferCreate'
 
-  const txTypeSpecial = tx?.TransactionType + (direction ? ' - ' + capitalize(direction) + ' order' : '')
+  const txTypeSpecial = tx?.TransactionType + ' - ' + direction + ' Order'
+
+  //for payments executor is always the sender, so we can check executor's balance changes.
+  const sourceBalanceChangesList = addressBalanceChanges(data, specification.source.address)
 
   return (
     <TransactionCard
@@ -40,7 +52,7 @@ export const TransactionOffer = ({ data, pageFiatRate, selectedCurrency }) => {
         <tr>
           <TData tooltip="The amount and type of currency being sold.">Taker Gets</TData>
           <TData className="bold">
-            {amountFormat(takerGets, { presice: true })}
+            {amountFormat(takerGets, { precise: true })}
             {takerGets?.issuer && <>({addressUsernameOrServiceLink(takerGets, 'issuer', { short: true })})</>}
           </TData>
         </tr>
@@ -49,28 +61,87 @@ export const TransactionOffer = ({ data, pageFiatRate, selectedCurrency }) => {
         <tr>
           <TData tooltip="The amount and type of currency being bought.">Taker Pays</TData>
           <TData className="bold">
-            {amountFormat(takerPays, { presice: true })}
+            {amountFormat(takerPays, { precise: true })}
             {takerPays?.issuer && <>({addressUsernameOrServiceLink(takerPays, 'issuer', { short: true })})</>}
           </TData>
         </tr>
       )}
 
-      {/* from specification directly - so we show it only on OfferCreate */}
-      {specification.direction === 'sell' ? (
+      {offerCreate && (
+        <>
+          {direction === 'Sell' ? (
+            <tr>
+              <TData>Sell order</TData>
+              <TData>
+                The priority is to fully Sell {amountFormat(takerGets, { precise: true, noSpace: true })}, even if doing
+                so results in receiving more than {amountFormat(takerPays, { precise: true, noSpace: true })}.
+              </TData>
+            </tr>
+          ) : (
+            <tr>
+              <TData>Buy order</TData>
+              <TData>
+                The priority is to Buy only the {amountFormat(takerPays, { precise: true, noSpace: true })}, not need to
+                spend {amountFormat(takerGets, { precise: true, noSpace: true })} fully.
+              </TData>
+            </tr>
+          )}
+        </>
+      )}
+
+      {status && (
         <tr>
-          <TData>Sell order</TData>
-          <TData>
-            The priority is to fully Sell {amountFormat(specification.quantity, { presice: true, noSpace: true })}, even
-            if doing so results in receiving more than{' '}
-            {amountFormat(specification.totalPrice, { presice: true, noSpace: true })}.
-          </TData>
+          <TData>Order status</TData>
+          <TData>{capitalize(status)}</TData>
         </tr>
-      ) : (
+      )}
+
+      <tr>
+        <TData>
+          Exchanged
+          <br />
+        </TData>
+        <TData>
+          {sourceBalanceChangesList.map((change, index) => (
+            <div key={index}>
+              <span className={'bold ' + (Number(change?.value) > 0 ? 'green' : 'red')}>
+                {Number(change?.value) > 0 && '+'}
+                {amountFormat(change, { precise: 'nice' })}
+              </span>
+              {change?.issuer && <>({addressUsernameOrServiceLink(change, 'issuer', { short: true })})</>}
+              {nativeCurrencyToFiat({
+                amount: change,
+                selectedCurrency,
+                fiatRate: pageFiatRate
+              })}
+            </div>
+          ))}
+        </TData>
+      </tr>
+      {sourceBalanceChangesList.length === 2 && (
         <tr>
-          <TData>Buy order</TData>
+          <TData>Rate</TData>
           <TData>
-            The priority is to Buy only the {amountFormat(specification.totalPrice, { presice: true, noSpace: true })},
-            not need to spend {amountFormat(specification.quantity, { presice: true, noSpace: true })} fully.
+            1 {niceCurrency(sourceBalanceChangesList[0].currency)} ={' '}
+            <span className="bold">
+              {amountFormat(
+                {
+                  ...sourceBalanceChangesList[1],
+                  value: Math.abs(sourceBalanceChangesList[1].value / sourceBalanceChangesList[0].value)
+                },
+                { precise: 'nice' }
+              )}
+            </span>
+            <br />1 {niceCurrency(sourceBalanceChangesList[1].currency)} ={' '}
+            <span className="bold">
+              {amountFormat(
+                {
+                  ...sourceBalanceChangesList[0],
+                  value: Math.abs(sourceBalanceChangesList[0].value / sourceBalanceChangesList[1].value)
+                },
+                { precise: 'nice' }
+              )}
+            </span>
           </TData>
         </tr>
       )}
@@ -98,7 +169,7 @@ export const TransactionOffer = ({ data, pageFiatRate, selectedCurrency }) => {
         </tr>
       )}
 
-      {specification?.passive && (
+      {passive && (
         <tr>
           <TData>Passive</TData>
           <TData>
@@ -108,7 +179,7 @@ export const TransactionOffer = ({ data, pageFiatRate, selectedCurrency }) => {
         </tr>
       )}
 
-      {specification?.immediateOrCancel && (
+      {specification?.flags?.immediateOrCancel && (
         <tr>
           <TData>Immediate or Cancel</TData>
           <TData>
@@ -120,7 +191,7 @@ export const TransactionOffer = ({ data, pageFiatRate, selectedCurrency }) => {
         </tr>
       )}
 
-      {specification?.fillOrKill && (
+      {specification?.flags?.fillOrKill && (
         <tr>
           <TData>Fill or Kill</TData>
           <TData>
@@ -129,13 +200,11 @@ export const TransactionOffer = ({ data, pageFiatRate, selectedCurrency }) => {
             submission, the offer is automatically canceled.
             <br />
             <span className="bold">
-              {specification.direction === 'sell'
+              {direction === 'Sell'
                 ? 'The owner must be able to spend the entire ' +
-                  amountFormat(specification.quantity, { presice: true, noSpace: true }) +
+                  amountFormat(takerGets, { precise: true, noSpace: true }) +
                   '.'
-                : 'The owner must receive ' +
-                  amountFormat(specification.totalPrice, { presice: true, noSpace: true }) +
-                  '.'}
+                : 'The owner must receive ' + amountFormat(takerPays, { precise: true, noSpace: true }) + '.'}
             </span>
           </TData>
         </tr>

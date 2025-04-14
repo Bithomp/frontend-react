@@ -20,7 +20,7 @@ export const TransactionPayment = ({ data, pageFiatRate, selectedCurrency }) => 
 
   const { outcome, specification, tx } = data
 
-  //for payments executor is always the sender, sowe can check executor's balance changes.
+  //for payments executor is always the sender, so we can check executor's balance changes.
   const sourceBalanceChangesList = addressBalanceChanges(data, specification.source.address)
 
   let txTypeSpecial = 'Payment'
