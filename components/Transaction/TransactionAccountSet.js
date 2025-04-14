@@ -2,6 +2,7 @@ import { TData } from '../Table'
 import { TransactionCard } from './TransactionCard'
 import { AddressWithIconFilled } from '../../utils/format'
 import { isDomainValid, nativeCurrency } from '../../utils'
+import { subtract } from '../../utils/calc'
 
 const messageKeyNode = (messageKey) => {
   if (messageKey) {
@@ -95,7 +96,7 @@ export const TransactionAccountSet = ({ data, pageFiatRate, selectedCurrency }) 
           <TData className="bold" tooltip="The fee to charge when users transfer this account's tokens.">
             Transfer rate
           </TData>
-          <TData className="bold">{tx.TransferRate}</TData>
+          <TData className="bold">{subtract(tx.TransferRate / 1000000000, 1) * 100} %</TData>
         </tr>
       )}
       {tx.TickSize !== undefined && (
