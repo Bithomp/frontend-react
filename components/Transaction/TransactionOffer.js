@@ -8,9 +8,16 @@ import {
   timeFromNow
 } from '../../utils/format'
 
-export const TransactionOrder = ({ data, pageFiatRate, selectedCurrency }) => {
+export const TransactionOffer = ({ data, pageFiatRate, selectedCurrency }) => {
   if (!data) return null
-  const { tx, specification } = data
+  const { tx, specification, outcome } = data
+
+  console.log('TransactionOffer', data)
+
+  //most likely the orderbookChanges format will be changed...
+  const takerGets = specification.quantity || outcome?.orderbookChanges?.[specification.source.address]?.[0]?.quantity
+  const takerPays =
+    specification.totalPrice || outcome?.orderbookChanges?.[specification.source.address]?.[0]?.totalPrice
 
   return (
     <TransactionCard data={data} pageFiatRate={pageFiatRate} selectedCurrency={selectedCurrency}>
@@ -20,24 +27,24 @@ export const TransactionOrder = ({ data, pageFiatRate, selectedCurrency }) => {
           <AddressWithIconFilled data={specification.source} name="address" />
         </TData>
       </tr>
-      <tr>
-        <TData tooltip="The amount and type of currency being sold.">Taker Gets</TData>
-        <TData className="bold">
-          {amountFormat(specification.quantity, { presice: true })}
-          {specification.quantity?.issuer && (
-            <>({addressUsernameOrServiceLink(specification.quantity, 'issuer', { short: true })})</>
-          )}
-        </TData>
-      </tr>
-      <tr>
-        <TData tooltip="The amount and type of currency being bought.">Taker Pays</TData>
-        <TData className="bold">
-          {amountFormat(specification.totalPrice, { presice: true })}
-          {specification?.totalPrice?.issuer && (
-            <>({addressUsernameOrServiceLink(specification.totalPrice, 'issuer', { short: true })})</>
-          )}
-        </TData>
-      </tr>
+      {takerGets && (
+        <tr>
+          <TData tooltip="The amount and type of currency being sold.">Taker Gets</TData>
+          <TData className="bold">
+            {amountFormat(takerGets, { presice: true })}
+            {takerGets?.issuer && <>({addressUsernameOrServiceLink(takerGets, 'issuer', { short: true })})</>}
+          </TData>
+        </tr>
+      )}
+      {takerPays && (
+        <tr>
+          <TData tooltip="The amount and type of currency being bought.">Taker Pays</TData>
+          <TData className="bold">
+            {amountFormat(takerPays, { presice: true })}
+            {takerPays?.issuer && <>({addressUsernameOrServiceLink(takerPays, 'issuer', { short: true })})</>}
+          </TData>
+        </tr>
+      )}
 
       {tx?.Expiration && (
         <tr>

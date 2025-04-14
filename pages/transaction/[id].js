@@ -13,7 +13,7 @@ import {
   TransactionAmm,
   TransactionCheck,
   TransactionEscrow,
-  TransactionOrder,
+  TransactionOffer,
   TransactionPayment,
   TransactionSetRegularKey,
   TransactionTrustSet
@@ -82,7 +82,7 @@ export default function Transaction({ data, selectedCurrency }) {
   } else if (txType?.includes('Escrow')) {
     TransactionComponent = TransactionEscrow
   } else if (txType === 'OfferCreate' || txType === 'OfferCancel') {
-    TransactionComponent = TransactionOrder
+    TransactionComponent = TransactionOffer
   } else if (txType === 'Payment') {
     TransactionComponent = TransactionPayment
   } else if (txType === 'SetRegularKey') {
