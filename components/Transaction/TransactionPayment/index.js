@@ -194,7 +194,11 @@ export const TransactionPayment = ({ data, pageFiatRate, selectedCurrency }) => 
             <tr>
               <TData>Exchange rate</TData>
               <TData>
-                1 {sourceBalanceChangesList[0].currency} ={' '}
+                {amountFormat({
+                  ...sourceBalanceChangesList[0],
+                  value: 1
+                })}
+                ={' '}
                 <span className="bold">
                   {amountFormat(
                     {
