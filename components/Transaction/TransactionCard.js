@@ -12,6 +12,7 @@ import {
   codeHighlight,
   fullDateAndTime,
   nativeCurrencyToFiat,
+  niceCurrency,
   shortHash,
   timeFromNow
 } from '../../utils/format'
@@ -318,6 +319,12 @@ export const TransactionCard = ({ data, pageFiatRate, selectedCurrency, txTypeSp
                                 <span className="bold">
                                   <br />
                                   Initiator
+                                </span>
+                              )}
+                              {change?.balanceChanges?.[0]?.issuer === change.address && (
+                                <span className="bold">
+                                  <br />
+                                  {niceCurrency(change.balanceChanges[0].currency)} issuer
                                 </span>
                               )}
                             </TData>
