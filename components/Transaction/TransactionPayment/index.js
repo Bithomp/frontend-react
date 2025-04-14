@@ -4,6 +4,7 @@ import {
   AddressWithIconFilled,
   amountFormat,
   nativeCurrencyToFiat,
+  niceCurrency,
   shortHash
 } from '../../../utils/format'
 
@@ -194,11 +195,7 @@ export const TransactionPayment = ({ data, pageFiatRate, selectedCurrency }) => 
             <tr>
               <TData>Exchange rate</TData>
               <TData>
-                {amountFormat({
-                  ...sourceBalanceChangesList[0],
-                  value: 1
-                })}
-                ={' '}
+                1 {niceCurrency(sourceBalanceChangesList[0].currency)} ={' '}
                 <span className="bold">
                   {amountFormat(
                     {
