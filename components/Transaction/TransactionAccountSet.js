@@ -90,12 +90,6 @@ export const TransactionAccountSet = ({ data, pageFiatRate, selectedCurrency }) 
           <TData className="bold">{messageKeyNode(specification.messageKey)}</TData>
         </tr>
       )}
-      {tx.SetFlag !== undefined && (
-        <tr>
-          <TData className="bold">Set flag</TData>
-          <TData className="bold">{tx.SetFlag}</TData>
-        </tr>
-      )}
       {tx.TransferRate !== undefined && (
         <tr>
           <TData className="bold" tooltip="The fee to charge when users transfer this account's tokens.">
@@ -131,7 +125,15 @@ export const TransactionAccountSet = ({ data, pageFiatRate, selectedCurrency }) 
           <TData className="bold">{tx.WalletSize}</TData>
         </tr>
       )}
-      {specification.disallowIncomingXRP !== undefined && (
+      {specification.defaultRipple !== undefined && (
+        <tr>
+          <TData className="bold" tooltip="Enable rippling on this account's trust lines by default.">
+            Default ripple
+          </TData>
+          <TData className="bold orange">{specification.defaultRipple ? 'enabled' : 'disabled'}</TData>
+        </tr>
+      )}
+      {specification.disallowXRP !== undefined && (
         <tr>
           <TData
             className="bold"
@@ -141,15 +143,15 @@ export const TransactionAccountSet = ({ data, pageFiatRate, selectedCurrency }) 
           >
             Incoming {nativeCurrency}
           </TData>
-          <TData className="bold">{specification.disallowIncomingXRP ? 'Disallow' : 'Allow'}</TData>
+          <TData className="bold">{specification.disallowXRP ? 'disallow' : 'allow'}</TData>
         </tr>
       )}
-      {specification.requireDestinationTag !== undefined && (
+      {specification.requireDestTag !== undefined && (
         <tr>
           <TData className="bold" tooltip="Require a destination tag to send transactions to this account.">
             Destination tag
           </TData>
-          <TData className="bold">{specification.requireDestinationTag ? 'Require' : "Don't require"}</TData>
+          <TData className="bold orange">{specification.requireDestTag ? 'require' : "don't require"}</TData>
         </tr>
       )}
       {specification.disableMasterKey !== undefined && (
@@ -157,7 +159,7 @@ export const TransactionAccountSet = ({ data, pageFiatRate, selectedCurrency }) 
           <TData className="bold" tooltip="The use of the master key pair.">
             Master key
           </TData>
-          <TData className="bold">{specification.disableMasterKey ? 'Disabled' : 'Enabled'}</TData>
+          <TData className="bold">{specification.disableMasterKey ? 'disabled' : 'enabled'}</TData>
         </tr>
       )}
       {specification.noFreeze && (
@@ -168,15 +170,7 @@ export const TransactionAccountSet = ({ data, pageFiatRate, selectedCurrency }) 
           >
             No freeze
           </TData>
-          <TData className="bold">Enabled</TData>
-        </tr>
-      )}
-      {specification.defaultRipple !== undefined && (
-        <tr>
-          <TData className="bold" tooltip="Enable rippling on this account's trust lines by default.">
-            Default ripple
-          </TData>
-          <TData className="bold">{specification.defaultRipple ? 'Enabled' : 'Disabled'}</TData>
+          <TData className="bold">enabled</TData>
         </tr>
       )}
       {specification.depositAuth !== undefined && (
@@ -184,15 +178,15 @@ export const TransactionAccountSet = ({ data, pageFiatRate, selectedCurrency }) 
           <TData className="bold" tooltip="Enable Deposit Authorization on this account.">
             Deposit authorization
           </TData>
-          <TData className="bold">{specification.depositAuth ? 'Enabled' : 'Disabled'}</TData>
+          <TData className="bold">{specification.depositAuth ? 'enabled' : 'disabled'}</TData>
         </tr>
       )}
-      {specification.requireAuthorization !== undefined && (
+      {specification.requireAuth !== undefined && (
         <tr>
           <TData className="bold" tooltip="Require authorization for users to hold balances issued by this address.">
             Require authorization
           </TData>
-          <TData className="bold">{specification.requireAuthorization ? 'Enabled' : 'Disabled'}</TData>
+          <TData className="bold">{specification.requireAuth ? 'enabled' : 'disabled'}</TData>
         </tr>
       )}
       {specification.disallowIncomingCheck !== undefined && (
@@ -200,7 +194,7 @@ export const TransactionAccountSet = ({ data, pageFiatRate, selectedCurrency }) 
           <TData className="bold" tooltip="Block incoming Checks.">
             Incoming check
           </TData>
-          <TData className="bold">{specification.disallowIncomingCheck ? 'Disallow' : 'Allow'}</TData>
+          <TData className="bold">{specification.disallowIncomingCheck ? 'disallow' : 'allow'}</TData>
         </tr>
       )}
       {specification.disallowIncomingPayChan !== undefined && (
@@ -208,7 +202,7 @@ export const TransactionAccountSet = ({ data, pageFiatRate, selectedCurrency }) 
           <TData className="bold" tooltip="Block incoming Payment Channels.">
             Incoming payment channel
           </TData>
-          <TData className="bold">{specification.disallowIncomingPayChan ? 'Disallow' : 'Allow'}</TData>
+          <TData className="bold">{specification.disallowIncomingPayChan ? 'disallow' : 'allow'}</TData>
         </tr>
       )}
       {specification.disallowIncomingNFTokenOffer !== undefined && (
@@ -216,7 +210,7 @@ export const TransactionAccountSet = ({ data, pageFiatRate, selectedCurrency }) 
           <TData className="bold" tooltip="Block incoming NFT Offers.">
             Incoming NFT offer
           </TData>
-          <TData className="bold">{specification.disallowIncomingNFTokenOffer ? 'Disallow' : 'Allow'}</TData>
+          <TData className="bold">{specification.disallowIncomingNFTokenOffer ? 'disallow' : 'allow'}</TData>
         </tr>
       )}
       {specification.disallowIncomingTrustline !== undefined && (
@@ -224,7 +218,7 @@ export const TransactionAccountSet = ({ data, pageFiatRate, selectedCurrency }) 
           <TData className="bold" tooltip="Block incoming trust lines.">
             Incoming trust line
           </TData>
-          <TData className="bold">{specification.disallowIncomingTrustline ? 'Disallow' : 'Allow'}</TData>
+          <TData className="bold">{specification.disallowIncomingTrustline ? 'disallow' : 'allow'}</TData>
         </tr>
       )}
       {specification.enableTransactionIDTracking !== undefined && (
@@ -232,7 +226,7 @@ export const TransactionAccountSet = ({ data, pageFiatRate, selectedCurrency }) 
           <TData className="bold" tooltip="Track the ID of this account's most recent transaction.">
             Transaction ID tracking
           </TData>
-          <TData className="bold">{specification.enableTransactionIDTracking ? 'Enabled' : 'Disabled'}</TData>
+          <TData className="bold">{specification.enableTransactionIDTracking ? 'enabled' : 'disabled'}</TData>
         </tr>
       )}
       {specification.globalFreeze !== undefined && (
@@ -240,15 +234,15 @@ export const TransactionAccountSet = ({ data, pageFiatRate, selectedCurrency }) 
           <TData className="bold" tooltip="Freeze all assets issued by this account.">
             Global freeze
           </TData>
-          <TData className="bold">{specification.globalFreeze ? 'Enabled' : 'Disabled'}</TData>
+          <TData className="bold">{specification.globalFreeze ? 'enabled' : 'disabled'}</TData>
         </tr>
       )}
       {specification.authorizedMinter !== undefined && (
         <tr>
-          <TData className="bold" tooltip="Allow another account to mint NFTs on this account's behalf.">
+          <TData className="bold" tooltip="allow another account to mint NFTs on this account's behalf.">
             Authorized minter
           </TData>
-          <TData className="bold">{specification.authorizedMinter ? 'Enabled' : 'Disabled'}</TData>
+          <TData className="bold">{specification.authorizedMinter ? 'enabled' : 'disabled'}</TData>
         </tr>
       )}
       {tx.NFTokenMinter !== undefined && (
@@ -261,10 +255,10 @@ export const TransactionAccountSet = ({ data, pageFiatRate, selectedCurrency }) 
       )}
       {specification.allowTrustLineClawback !== undefined && (
         <tr>
-          <TData className="bold" tooltip="Allow account to claw back tokens it has issued.">
+          <TData className="bold" tooltip="allow account to claw back tokens it has issued.">
             Trust line Clawback
           </TData>
-          <TData className="bold">{specification.allowTrustLineClawback ? 'Allowed' : 'Disallow'}</TData>
+          <TData className="bold">{specification.allowTrustLineClawback ? 'allowed' : 'disallow'}</TData>
         </tr>
       )}
       {specification.disallowIncomingRemit !== undefined && (
@@ -272,7 +266,7 @@ export const TransactionAccountSet = ({ data, pageFiatRate, selectedCurrency }) 
           <TData className="bold" tooltip="Block incoming Remit.">
             Incoming Remit
           </TData>
-          <TData className="bold">{specification.disallowIncomingRemit ? 'Disallow' : 'Allow'}</TData>
+          <TData className="bold">{specification.disallowIncomingRemit ? 'disallow' : 'allow'}</TData>
         </tr>
       )}
     </TransactionCard>

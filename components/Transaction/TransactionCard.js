@@ -396,6 +396,12 @@ export const TransactionCard = ({ data, pageFiatRate, selectedCurrency, txTypeSp
                   </tr>
                   {showAdditionalData && (
                     <>
+                      {tx.SetFlag !== undefined && (
+                        <tr>
+                          <TData>Set flag</TData>
+                          <TData>{tx.SetFlag}</TData>
+                        </tr>
+                      )}
                       {tx?.TransactionType !== 'UNLReport' && (
                         <>
                           {tx.TicketSequence ? (
