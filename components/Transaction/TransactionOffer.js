@@ -16,11 +16,12 @@ export const TransactionOffer = ({ data, pageFiatRate, selectedCurrency }) => {
   if (!data) return null
   const { tx, specification, outcome } = data
 
+  //console.log('TransactionOffer', data) //delete
+
   const sourceOrderbookChange = outcome?.orderbookChanges
     .filter((entry) => entry.address === specification.source.address)?.[0]
     ?.orderbookChanges.filter((entry) => entry.sequence === specification.orderSequence)?.[0]
 
-  //most likely the orderbookChanges format will be changed...
   const takerGets = specification.takerGets || sourceOrderbookChange?.takerGets
   const takerPays = specification.takerPays || sourceOrderbookChange?.takerPays
 
@@ -89,72 +90,6 @@ export const TransactionOffer = ({ data, pageFiatRate, selectedCurrency }) => {
         </>
       )}
 
-      {status && (
-        <tr>
-          <TData>Order status</TData>
-          <TData>{capitalize(status)}</TData>
-        </tr>
-      )}
-
-      <tr>
-        <TData>
-          Exchanged
-          <br />
-        </TData>
-        <TData>
-          {sourceBalanceChangesList.map((change, index) => (
-            <div key={index}>
-              <span className={'bold ' + (Number(change?.value) > 0 ? 'green' : 'red')}>
-                {Number(change?.value) > 0 && '+'}
-                {amountFormat(change, { precise: 'nice' })}
-              </span>
-              {change?.issuer && <>({addressUsernameOrServiceLink(change, 'issuer', { short: true })})</>}
-              {nativeCurrencyToFiat({
-                amount: change,
-                selectedCurrency,
-                fiatRate: pageFiatRate
-              })}
-            </div>
-          ))}
-        </TData>
-      </tr>
-      {sourceBalanceChangesList.length === 2 && (
-        <tr>
-          <TData>Rate</TData>
-          <TData>
-            1 {niceCurrency(sourceBalanceChangesList[0].currency)} ={' '}
-            <span className="bold">
-              {amountFormat(
-                {
-                  ...sourceBalanceChangesList[1],
-                  value: Math.abs(sourceBalanceChangesList[1].value / sourceBalanceChangesList[0].value)
-                },
-                { precise: 'nice' }
-              )}
-            </span>
-            <br />1 {niceCurrency(sourceBalanceChangesList[1].currency)} ={' '}
-            <span className="bold">
-              {amountFormat(
-                {
-                  ...sourceBalanceChangesList[0],
-                  value: Math.abs(sourceBalanceChangesList[0].value / sourceBalanceChangesList[1].value)
-                },
-                { precise: 'nice' }
-              )}
-            </span>
-          </TData>
-        </tr>
-      )}
-
-      {tx?.Expiration && (
-        <tr>
-          <TData tooltip="Time after which the Offer is no longer active.">Expiration</TData>
-          <TData>
-            {timeFromNow(tx.Expiration, i18n, 'ripple')} ({fullDateAndTime(tx.Expiration, 'ripple')})
-          </TData>
-        </tr>
-      )}
-
       {tx?.OfferSequence && (
         <tr>
           <TData
@@ -166,6 +101,74 @@ export const TransactionOffer = ({ data, pageFiatRate, selectedCurrency }) => {
             {offerCreate ? 'Offer to Cancel' : 'Offer sequence'}
           </TData>
           <TData>#{tx.OfferSequence}</TData>
+        </tr>
+      )}
+
+      {status && (
+        <tr>
+          <TData>Offer status</TData>
+          <TData className={status === 'cancelled' ? 'red bold' : ''}>{capitalize(status)}</TData>
+        </tr>
+      )}
+
+      {sourceBalanceChangesList.length === 2 && (
+        <>
+          <tr>
+            <TData>
+              Exchanged
+              <br />
+            </TData>
+            <TData>
+              {sourceBalanceChangesList.map((change, index) => (
+                <div key={index}>
+                  <span className={'bold ' + (Number(change?.value) > 0 ? 'green' : 'red')}>
+                    {Number(change?.value) > 0 && '+'}
+                    {amountFormat(change, { precise: 'nice' })}
+                  </span>
+                  {change?.issuer && <>({addressUsernameOrServiceLink(change, 'issuer', { short: true })})</>}
+                  {nativeCurrencyToFiat({
+                    amount: change,
+                    selectedCurrency,
+                    fiatRate: pageFiatRate
+                  })}
+                </div>
+              ))}
+            </TData>
+          </tr>
+          <tr>
+            <TData>Rate</TData>
+            <TData>
+              1 {niceCurrency(sourceBalanceChangesList[0].currency)} ={' '}
+              <span className="bold">
+                {amountFormat(
+                  {
+                    ...sourceBalanceChangesList[1],
+                    value: Math.abs(sourceBalanceChangesList[1].value / sourceBalanceChangesList[0].value)
+                  },
+                  { precise: 'nice' }
+                )}
+              </span>
+              <br />1 {niceCurrency(sourceBalanceChangesList[1].currency)} ={' '}
+              <span className="bold">
+                {amountFormat(
+                  {
+                    ...sourceBalanceChangesList[0],
+                    value: Math.abs(sourceBalanceChangesList[0].value / sourceBalanceChangesList[1].value)
+                  },
+                  { precise: 'nice' }
+                )}
+              </span>
+            </TData>
+          </tr>
+        </>
+      )}
+
+      {tx?.Expiration && (
+        <tr>
+          <TData tooltip="Time after which the Offer is no longer active.">Expiration</TData>
+          <TData>
+            {timeFromNow(tx.Expiration, i18n, 'ripple')} ({fullDateAndTime(tx.Expiration, 'ripple')})
+          </TData>
         </tr>
       )}
 
