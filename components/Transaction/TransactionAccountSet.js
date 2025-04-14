@@ -39,20 +39,11 @@ const domainNode = (domain) => {
   }
 }
 
-{
-  /*
-    AccountTxnID	- Track the ID of this account's most recent transaction.
-    AllowTrustLineClawback	- Allow account to claw back tokens it has issued.
-    AuthorizedNFTokenMinter - Enable to allow another account to mint non-fungible tokens (NFTokens) on this account's behalf.
-    GlobalFreeze - Freeze all assets issued by this account.
-*/
-}
-
 export const TransactionAccountSet = ({ data, pageFiatRate, selectedCurrency }) => {
   if (!data) return null
   const { specification, tx } = data
 
-  console.log('AccountSet', data) //delete
+  //console.log('AccountSet', data) //delete
 
   return (
     <TransactionCard data={data} pageFiatRate={pageFiatRate} selectedCurrency={selectedCurrency}>
@@ -99,14 +90,6 @@ export const TransactionAccountSet = ({ data, pageFiatRate, selectedCurrency }) 
             Message key
           </TData>
           <TData className="bold">{messageKeyNode(specification.messageKey)}</TData>
-        </tr>
-      )}
-      {tx.NFTokenMinter !== undefined && (
-        <tr>
-          <TData className="bold" tooltip="Another account that can mint NFTs for that account.">
-            NFT minter
-          </TData>
-          <TData className="bold">{specification.nftokenMinter || <span className="orange">removed</span>}</TData>
         </tr>
       )}
       {tx.SetFlag !== undefined && (
@@ -230,12 +213,12 @@ export const TransactionAccountSet = ({ data, pageFiatRate, selectedCurrency }) 
           <TData className="bold">{specification.disallowIncomingPayChan ? 'Disallow' : 'Allow'}</TData>
         </tr>
       )}
-      {specification.disallowIncomingNFTOffer !== undefined && (
+      {specification.disallowIncomingNFTokenOffer !== undefined && (
         <tr>
-          <TData className="bold" tooltip="Block incoming NFTOffers.">
+          <TData className="bold" tooltip="Block incoming NFT Offers.">
             Incoming NFT offer
           </TData>
-          <TData className="bold">{specification.disallowIncomingNFTOffer ? 'Disallow' : 'Allow'}</TData>
+          <TData className="bold">{specification.disallowIncomingNFTokenOffer ? 'Disallow' : 'Allow'}</TData>
         </tr>
       )}
       {specification.disallowIncomingTrustline !== undefined && (
@@ -244,6 +227,54 @@ export const TransactionAccountSet = ({ data, pageFiatRate, selectedCurrency }) 
             Incoming trust line
           </TData>
           <TData className="bold">{specification.disallowIncomingTrustline ? 'Disallow' : 'Allow'}</TData>
+        </tr>
+      )}
+      {specification.enableTransactionIDTracking !== undefined && (
+        <tr>
+          <TData className="bold" tooltip="Track the ID of this account's most recent transaction.">
+            Transaction ID tracking
+          </TData>
+          <TData className="bold">{specification.enableTransactionIDTracking ? 'Enabled' : 'Disabled'}</TData>
+        </tr>
+      )}
+      {specification.globalFreeze !== undefined && (
+        <tr>
+          <TData className="bold" tooltip="Freeze all assets issued by this account.">
+            Global freeze
+          </TData>
+          <TData className="bold">{specification.globalFreeze ? 'Enabled' : 'Disabled'}</TData>
+        </tr>
+      )}
+      {specification.authorizedMinter !== undefined && (
+        <tr>
+          <TData className="bold" tooltip="Allow another account to mint NFTs on this account's behalf.">
+            Authorized minter
+          </TData>
+          <TData className="bold">{specification.authorizedMinter ? 'Enabled' : 'Disabled'}</TData>
+        </tr>
+      )}
+      {tx.NFTokenMinter !== undefined && (
+        <tr>
+          <TData className="bold" tooltip="Another account that can mint NFTs for that account.">
+            NFT minter
+          </TData>
+          <TData className="bold">{specification.nftokenMinter || <span className="orange">removed</span>}</TData>
+        </tr>
+      )}
+      {specification.allowTrustLineClawback !== undefined && (
+        <tr>
+          <TData className="bold" tooltip="Allow account to claw back tokens it has issued.">
+            Trust line Clawback
+          </TData>
+          <TData className="bold">{specification.allowTrustLineClawback ? 'Allowed' : 'Disallow'}</TData>
+        </tr>
+      )}
+      {specification.disallowIncomingRemit !== undefined && (
+        <tr>
+          <TData className="bold" tooltip="Block incoming Remit.">
+            Incoming Remit
+          </TData>
+          <TData className="bold">{specification.disallowIncomingRemit ? 'Disallow' : 'Allow'}</TData>
         </tr>
       )}
     </TransactionCard>
