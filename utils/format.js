@@ -667,7 +667,7 @@ export const niceCurrency = (currency) => {
       currency = Buffer.from(currency, 'hex')
     }
   }
-  return currency
+  return currency.toString('utf8').replace(/\0/g, '') // remove padding nulls
 }
 
 export const amountParced = (amount) => {
