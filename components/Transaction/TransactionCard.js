@@ -119,15 +119,21 @@ export const TransactionCard = ({ data, pageFiatRate, selectedCurrency, txTypeSp
             } else {
               memotype = memotype.charAt(0).toUpperCase() + memotype.slice(1)
             }
-          } else {
-            memotype = 'Memo'
           }
 
           if (decodeJsonMemo(memopiece)) {
             output.push(
               <tr key={'a2' + j}>
-                <TData>{memotype}</TData>
-                <TData>{decodeJsonMemo(memopiece)}</TData>
+                <TData>Memo {memos.length > 1 ? j + 1 : ''}</TData>
+                <TData>
+                  {memotype && (
+                    <>
+                      {memotype}
+                      <br />
+                    </>
+                  )}
+                  {decodeJsonMemo(memopiece)}
+                </TData>
               </tr>
             )
           } else {
@@ -157,8 +163,16 @@ export const TransactionCard = ({ data, pageFiatRate, selectedCurrency, txTypeSp
               if (memopiece) {
                 output.push(
                   <tr key={'a1' + j}>
-                    <TData>{memotype}</TData>
-                    <TData>{memopiece}</TData>
+                    <TData>Memo {memos.length > 1 ? j + 1 : ''}</TData>
+                    <TData>
+                      {memotype && (
+                        <>
+                          {memotype}
+                          <br />
+                        </>
+                      )}
+                      {memopiece}
+                    </TData>
                   </tr>
                 )
               }
