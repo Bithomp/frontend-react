@@ -155,12 +155,12 @@ export const TransactionAccountSet = ({ data, pageFiatRate, selectedCurrency }) 
           <TData className="bold orange">{specification.requireDestTag ? 'require' : "don't require"}</TData>
         </tr>
       )}
-      {specification.disableMasterKey !== undefined && (
+      {specification.disableMaster !== undefined && (
         <tr>
           <TData className="bold" tooltip="The use of the master key pair.">
             Master key
           </TData>
-          <TData className="bold">{specification.disableMasterKey ? 'disabled' : 'enabled'}</TData>
+          <TData className="bold red">{specification.disableMaster ? 'disabled' : 'enabled'}</TData>
         </tr>
       )}
       {specification.noFreeze && (
