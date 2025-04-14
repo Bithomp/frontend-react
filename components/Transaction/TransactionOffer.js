@@ -17,6 +17,8 @@ export const TransactionOffer = ({ data, pageFiatRate, selectedCurrency }) => {
   const takerPays =
     specification.totalPrice || outcome?.orderbookChanges?.[specification.source.address]?.[0]?.totalPrice
 
+  const offerCreate = tx?.TransactionType === 'OfferCreate'
+
   return (
     <TransactionCard data={data} pageFiatRate={pageFiatRate} selectedCurrency={selectedCurrency}>
       <tr>
@@ -55,7 +57,9 @@ export const TransactionOffer = ({ data, pageFiatRate, selectedCurrency }) => {
 
       {tx?.OfferSequence && (
         <tr>
-          <TData tooltip="An Offer to delete first.">Delete Offer</TData>
+          <TData tooltip={offerCreate ? 'An Offer to delete first.' : 'Offer sequence to Cancel'}>
+            {offerCreate ? 'Offer ID' : 'Offer sequence'}
+          </TData>
           <TData>#{tx.OfferSequence}</TData>
         </tr>
       )}
