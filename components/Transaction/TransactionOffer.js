@@ -4,6 +4,7 @@ import {
   addressUsernameOrServiceLink,
   AddressWithIconFilled,
   amountFormat,
+  capitalize,
   fullDateAndTime,
   timeFromNow
 } from '../../utils/format'
@@ -16,11 +17,19 @@ export const TransactionOffer = ({ data, pageFiatRate, selectedCurrency }) => {
   const takerGets = specification.quantity || outcome?.orderbookChanges?.[specification.source.address]?.[0]?.quantity
   const takerPays =
     specification.totalPrice || outcome?.orderbookChanges?.[specification.source.address]?.[0]?.totalPrice
+  const direction = specification.direction || outcome?.orderbookChanges?.[specification.source.address]?.[0]?.direction
 
   const offerCreate = tx?.TransactionType === 'OfferCreate'
 
+  const txTypeSpecial = tx?.TransactionType + (direction ? ' - ' + capitalize(direction) + ' order' : '')
+
   return (
-    <TransactionCard data={data} pageFiatRate={pageFiatRate} selectedCurrency={selectedCurrency}>
+    <TransactionCard
+      data={data}
+      pageFiatRate={pageFiatRate}
+      selectedCurrency={selectedCurrency}
+      txTypeSpecial={txTypeSpecial}
+    >
       <tr>
         <TData>Offer Maker</TData>
         <TData>
@@ -46,6 +55,26 @@ export const TransactionOffer = ({ data, pageFiatRate, selectedCurrency }) => {
         </tr>
       )}
 
+      {/* from specification directly - so we show it only on OfferCreate */}
+      {specification.direction === 'sell' ? (
+        <tr>
+          <TData>Sell order</TData>
+          <TData>
+            The priority is to fully Sell {amountFormat(specification.quantity, { presice: true, noSpace: true })}, even
+            if doing so results in receiving more than{' '}
+            {amountFormat(specification.totalPrice, { presice: true, noSpace: true })}.
+          </TData>
+        </tr>
+      ) : (
+        <tr>
+          <TData>Buy order</TData>
+          <TData>
+            The priority is to Buy only the {amountFormat(specification.totalPrice, { presice: true, noSpace: true })},
+            not need to spend {amountFormat(specification.quantity, { presice: true, noSpace: true })} fully.
+          </TData>
+        </tr>
+      )}
+
       {tx?.Expiration && (
         <tr>
           <TData tooltip="Time after which the Offer is no longer active.">Expiration</TData>
@@ -59,26 +88,13 @@ export const TransactionOffer = ({ data, pageFiatRate, selectedCurrency }) => {
         <tr>
           <TData
             tooltip={
-              offerCreate
-                ? 'The sequence (or ticket) number of a previous OfferCreate transaction. It is instructed to Cancel any offer object in the ledger that was created by that transaction. It is not considered an error if the offer specified does not exist.'
-                : 'Offer sequence to Cancel'
+              offerCreate &&
+              'The sequence (or ticket) number of a previous OfferCreate transaction. It is instructed to Cancel any offer object in the ledger that was created by that transaction. It is not considered an error if the offer specified does not exist.'
             }
           >
-            {offerCreate ? 'Offer ID' : 'Offer sequence'}
+            {offerCreate ? 'Offer to Cancel' : 'Offer sequence'}
           </TData>
           <TData>#{tx.OfferSequence}</TData>
-        </tr>
-      )}
-
-      {specification.direction === 'sell' && (
-        <tr>
-          <TData>Sell order</TData>
-          <TData>
-            This offer is a Sell order, meaning it is designed to exchange all of the{' '}
-            {amountFormat(tx.TakerGets, { presice: true, noSpace: true })}, even if doing so results in receiving more
-            than {amountFormat(specification.totalPrice, { presice: true, noSpace: true })}. The priority is to fully
-            sell the offered amount, not to limit the return.
-          </TData>
         </tr>
       )}
 
