@@ -100,7 +100,9 @@ export default function Home({ selectedCurrency, setSelectedCurrency, showAds, f
   }
 
   useEffect(() => {
-    connect()
+    if (navigator.onLine) {
+      connect()
+    }
     return () => {
       setWhaleTransactions(null)
       if (ws) ws.close()

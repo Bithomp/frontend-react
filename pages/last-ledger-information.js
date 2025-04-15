@@ -93,7 +93,9 @@ export default function LastLedgerInformation() {
   }
 
   useEffect(() => {
-    connect()
+    if (navigator.onLine) {
+      connect()
+    }
     return () => {
       setLedger(null)
       setUpdate(false)

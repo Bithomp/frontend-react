@@ -82,7 +82,9 @@ export default function NftStatistics() {
   }
 
   useEffect(() => {
-    connect()
+    if (navigator.onLine) {
+      connect()
+    }
     return () => {
       setData(null)
       if (ws) ws.close()
