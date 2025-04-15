@@ -536,7 +536,7 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
                   data={processDataForExport(filteredActivities || [], platformCSVExport)}
                   headers={
                     platformCSVHeaders.find(
-                      (header) => header.platform.toLowerCase() === platformCSVExport.toLocaleLowerCase()
+                      (header) => header.platform.toLowerCase() === platformCSVExport.toLowerCase()
                     )?.headers || []
                   }
                   filename={'export ' + new Date().toISOString() + '.csv'}
