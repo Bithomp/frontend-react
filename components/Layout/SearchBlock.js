@@ -1,10 +1,11 @@
 import { useState, useEffect, useRef } from 'react'
-import Select from 'react-select'
+import Select, { components } from 'react-select'
 import { useTranslation, Trans } from 'next-i18next'
 import { useRouter } from 'next/router'
 import axios from 'axios'
 import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
+import { IoMdClose } from 'react-icons/io'
 
 import {
   isAddressOrUsername,
@@ -25,6 +26,41 @@ import { IoSearch } from 'react-icons/io5'
 const searchItemRe = /^[~]{0,1}[a-zA-Z0-9-_.]*[+]{0,1}[a-zA-Z0-9-_.]*[$]{0,1}[a-zA-Z0-9-.]*[a-zA-Z0-9]*$/i
 let typingTimer
 
+const CustomClearIndicator = (props) => {
+  const {
+    selectProps: { inputValue, onInputChange }
+  } = props
+
+  if (!inputValue) return null
+
+  const handleClear = (e) => {
+    e.stopPropagation()
+    onInputChange('', { action: 'input-change' })
+  }
+
+  return (
+    <div
+      onClick={handleClear}
+      style={{
+        cursor: 'pointer',
+        paddingRight: '8px',
+        display: 'flex',
+        alignItems: 'center'
+      }}
+    >
+      <IoMdClose size={18} color="#666" />
+    </div>
+  )
+}
+
+const CustomIndicatorsContainer = (props) => {
+  return (
+    <div style={{ display: 'flex', alignItems: 'center' }}>
+      <CustomClearIndicator {...props} />
+      <components.IndicatorsContainer {...props} />
+    </div>
+  )
+}
 export default function SearchBlock({ searchPlaceholderText, tab = null, userData = {} }) {
   const { t } = useTranslation()
   const searchParams = useSearchParams()
@@ -181,7 +217,7 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
     //nft nftOffer uriToken
     if (isIdValid(searchFor)) {
       setSearching(true)
-      const response = await axios('v3/search/' + searchFor)
+      const response = await axios('v2/search/' + searchFor)
       setSearching(false)
       const data = response.data
       if (data.type === 'nftoken' || data.type === 'uriToken') {
@@ -202,9 +238,9 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
       }
 
       if (data.type === 'transaction') {
-        const txType = data.data?.tx?.TransactionType
-        //show some transactions in the new design
-        if (txType?.includes('Check') || txType === 'Payment') {
+        const txData = data.data
+        //show check transactions in the new design
+        if (txData?.type?.includes('check')) {
           //old transaction type names // remake to v3/search to use new ones
           router.push('/tx/' + searchFor)
           return
@@ -414,6 +450,7 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
                   //({ inputValue }) => inputValue.length > 3
                 }
                 aria-label="Search"
+                components={{ IndicatorsContainer: CustomIndicatorsContainer }}
               />
             </div>
           ) : (
@@ -427,11 +464,6 @@ export default function SearchBlock({ searchPlaceholderText, tab = null, userDat
               onChange={(e) => setSearchItem(e.target.value)}
               onKeyUp={searchOnKeyUp}
               spellCheck="false"
-              style={{
-                height: 36,
-                paddingLeft: 10,
-                paddingRight: 64
-              }}
             />
           )}
 
