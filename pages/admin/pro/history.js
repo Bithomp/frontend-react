@@ -296,7 +296,6 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
         res.activities[i].amountExport = amountFormat(res.activities[i].amount)
         res.activities[i].amountNumber = res.activities[i].amount?.value || res.activities[i].amount / 1000000
         res.activities[i].currencyCode = res.activities[i].amount?.currency || nativeCurrency
-
         const { currency } = amountParced(res.activities[i].amount)
 
         let scvCurrency = currency
@@ -336,12 +335,7 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
         res.activities[i].memo = res.activities[i].memo?.replace(/"/g, "'") || ''
 
         // For CoinLedger platform
-        res.activities[i].coinLedgerTxType =
-          res.activities[i].amountNumber > 0
-            ? 'Deposit'
-            : Math.abs(res.activities[i].amountNumber) <= res.activities[i].txFeeNumber
-            ? 'Fee'
-            : 'Withdrawal'
+        res.activities[i].coinLedgerTxType = res.activities[i].amountNumber > 0 ? 'Deposit' : 'Withdrawal'
       }
       setData(res) // last request data
       if (options?.marker) {
