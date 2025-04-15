@@ -7,7 +7,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import Link from 'next/link'
 import dynamic from 'next/dynamic'
 
-import { stripText, decode, network, isValidJson, xahauNetwork } from '../../utils'
+import { stripText, decode, network, isValidJson, xahauNetwork, devNet, encode } from '../../utils'
 import { AddressWithIconFilled, convertedAmount, usernameOrAddress } from '../../utils/format'
 import { getIsSsrMobile } from '../../utils/mobile'
 import { nftName, mpUrl, bestNftOffer, nftUrl, partnerMarketplaces, ipfsUrl } from '../../utils/nft'
@@ -952,6 +952,55 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
     )
   }
 
+  const setAsAvatarButton = () => {
+    if (!id || data.deletedAt) return '' //if it is already burned do not offer to burn
+
+    //if devnet, or signed, but not an owner or issuer - do not show set as avatar button
+    if (devNet || (account?.address && account.address !== data.owner && account.address !== data.issuer)) return ''
+
+    const command = {
+      action: 'setAvatar',
+      url: imageUrl,
+      timestamp: new Date().toISOString()
+    }
+
+    const request = {
+      Account: data.owner,
+      TransactionType: 'AccountSet',
+      Memos: [
+        {
+          Memo: {
+            MemoType: encode('json'),
+            MemoData: encode(JSON.stringify(command))
+          }
+        }
+      ]
+    }
+
+    return (
+      <>
+        <button
+          className="button-action wide center"
+          onClick={() =>
+            setSignRequest({
+              request,
+              data: {
+                signOnly: true,
+                action: 'set-avatar',
+                redirect: 'account'
+              }
+            })
+          }
+          disabled={data.owner !== account?.address}
+        >
+          Set as Avatar 😎
+        </button>
+        <br />
+        <br />
+      </>
+    )
+  }
+
   const imageUrl = nftUrl(pageMeta, 'image')
 
   const typeName = (type) => {
@@ -1017,6 +1066,7 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
                           {!notFoundInTheNetwork ? (
                             <>
                               <NftPreview nft={data} />
+                              {setAsAvatarButton()}
                               {sellButton(data.buyOffers)}
                               {buyButton(data.sellOffers)}
                               {cancelNftOfferButtons(t, setSignRequest, account?.address, data)}

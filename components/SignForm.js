@@ -89,13 +89,7 @@ export default function SignForm({
   const [rewardRate, setRewardRate] = useState()
   const [rewardDelay, setRewardDelay] = useState()
 
-  const [xamanUserToken, setXamanUserToken] = useState(null)
-
   const [choosenWallet, setChoosenWallet] = useState(null)
-
-  useEffect(() => {
-    setXamanUserToken(localStorage.getItem('xamanUserToken'))
-  }, [])
 
   useEffect(() => {
     if (!signRequest) return
@@ -463,6 +457,7 @@ export default function SignForm({
         signInPayload.options.return_url.app += '&receipt=true'
       }
     } else {
+      const xamanUserToken = localStorage.getItem('xamanUserToken')
       if (xamanUserToken) {
         signInPayload.user_token = xamanUserToken
       }
@@ -578,7 +573,14 @@ export default function SignForm({
         if (res?.error) {
           setStatus(t(res.error))
         } else {
-          delay(3000, closeSignInFormAndRefresh)
+          if (signRequestData?.redirect === 'account') {
+            delay(3000, () => {
+              closeSignInFormAndRefresh()
+              router.push('/account/' + address)
+            })
+          } else {
+            delay(3000, closeSignInFormAndRefresh)
+          }
         }
       })
       return
