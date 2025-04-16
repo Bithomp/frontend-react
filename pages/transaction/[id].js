@@ -10,7 +10,7 @@ import {
   TransactionDetails,
   TransactionAccountDelete,
   TransactionAccountSet,
-  TransactionAmm,
+  TransactionAMM,
   TransactionCheck,
   TransactionEscrow,
   TransactionOffer,
@@ -76,7 +76,7 @@ export default function Transaction({ data, selectedCurrency }) {
   } else if (txType === 'AccountSet') {
     TransactionComponent = TransactionAccountSet
   } else if (txType?.includes('AMM')) {
-    TransactionComponent = TransactionAmm
+    TransactionComponent = TransactionAMM
   } else if (txType?.includes('Check')) {
     TransactionComponent = TransactionCheck
   } else if (txType?.includes('Escrow')) {
