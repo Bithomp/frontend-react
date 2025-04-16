@@ -3,7 +3,7 @@ export { TransactionDetails } from './TransactionDetails'
 
 export { TransactionAccountDelete } from './TransactionAccountDelete'
 export { TransactionAccountSet } from './TransactionAccountSet'
-export { TransactionAMM } from './TransactionAMM'
+export { TransactionAMM } from './TransactionAMM2'
 export { TransactionCheck } from './TransactionCheck'
 export { TransactionDID } from './TransactionDID'
 export { TransactionEscrow } from './TransactionEscrow'
