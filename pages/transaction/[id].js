@@ -46,7 +46,7 @@ export async function getServerSideProps(context) {
 
   return {
     props: {
-      data,
+      data: data || null,
       isSsrMobile: getIsSsrMobile(context),
       ...(await serverSideTranslations(locale, ['common']))
     }
@@ -58,18 +58,26 @@ export default function Transaction({ data, selectedCurrency }) {
 
   const [pageFiatRate, setPageFiatRate] = useState(0)
 
-  const { txHash, outcome, tx } = data
-
   useEffect(() => {
-    if (!selectedCurrency || !outcome) return
-    const { ledgerTimestamp } = outcome
+    if (!selectedCurrency || !data?.outcome) return
+    const { ledgerTimestamp } = data?.outcome
     if (!ledgerTimestamp) return
 
     fetchHistoricalRate({ timestamp: ledgerTimestamp * 1000, selectedCurrency, setPageFiatRate })
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedCurrency, outcome])
+  }, [selectedCurrency, data])
 
-  if (!data) return null
+  if (!data)
+    return (
+      <center>
+        <br />
+        No data received. Are you online?
+        <br />
+        <br />
+      </center>
+    )
+
+  const { txHash, tx } = data
 
   let TransactionComponent = null
   const txType = tx?.TransactionType
