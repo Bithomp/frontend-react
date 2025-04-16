@@ -1,7 +1,7 @@
 import { TData } from '../Table'
 
 import { TransactionCard } from './TransactionCard'
-import { AddressWithIconFilled, nftIdLink } from '../../utils/format'
+import { AddressWithIconFilled, nftIdLink, trWithFlags } from '../../utils/format'
 
 //URITokenBuy, URITokenCreateSellOffer, URITokenCancelSellOffer, URITokenBurn
 
@@ -72,6 +72,9 @@ export const TransactionURIToken = ({ data, pageFiatRate, selectedCurrency }) =>
           )}
         </>
       )}
+
+      {/* not sure how much nessary it's here, need to check xahau flags that are possible */}
+      {specification.flags && trWithFlags(specification.flags)}
     </TransactionCard>
   )
 }

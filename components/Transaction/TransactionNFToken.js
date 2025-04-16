@@ -1,7 +1,7 @@
 import { TData } from '../Table'
 
 import { TransactionCard } from './TransactionCard'
-import { AddressWithIconFilled, amountFormat, nftIdLink, nftOfferLink } from '../../utils/format'
+import { AddressWithIconFilled, amountFormat, nftIdLink, nftOfferLink, trWithFlags } from '../../utils/format'
 
 //NFTokenAcceptOffer, NFTokenBurn, NFTokenCancelOffer, NFTokenCreateOffer, NFTokenMint, NFTokenModify
 
@@ -128,6 +128,8 @@ export const TransactionNFToken = ({ data, pageFiatRate, selectedCurrency }) => 
           )}
         </>
       )}
+
+      {specification.flags && trWithFlags(specification.flags)}
     </TransactionCard>
   )
 }
