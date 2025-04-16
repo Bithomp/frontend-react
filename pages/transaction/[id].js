@@ -15,6 +15,7 @@ import {
   TransactionDID,
   TransactionEscrow,
   TransactionImport,
+  TransactionNFToken,
   TransactionOffer,
   TransactionPayment,
   TransactionSetRegularKey,
@@ -85,6 +86,8 @@ export default function Transaction({ data, selectedCurrency }) {
     TransactionComponent = TransactionEscrow
   } else if (txType === 'Import') {
     TransactionComponent = TransactionImport
+  } else if (txType?.includes('NFToken')) {
+    TransactionComponent = TransactionNFToken
   } else if (txType === 'OfferCreate' || txType === 'OfferCancel') {
     TransactionComponent = TransactionOffer
   } else if (txType === 'Payment') {
