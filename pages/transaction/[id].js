@@ -12,6 +12,7 @@ import {
   TransactionAccountSet,
   TransactionAMM,
   TransactionCheck,
+  TransactionDID,
   TransactionEscrow,
   TransactionOffer,
   TransactionPayment,
@@ -89,6 +90,8 @@ export default function Transaction({ data, selectedCurrency }) {
     TransactionComponent = TransactionSetRegularKey
   } else if (txType === 'TrustSet') {
     TransactionComponent = TransactionTrustSet
+  } else if (txType?.includes('DID')) {
+    TransactionComponent = TransactionDID
   } else {
     TransactionComponent = TransactionDetails
   }
