@@ -958,6 +958,21 @@ export const codeHighlight = (json) => {
   )
 }
 
+export const decodeJsonMemo = (memopiece, options) => {
+  if (options?.code === 'base64') {
+    try {
+      memopiece = atob(memopiece)
+    } catch (e) {
+      return memopiece
+    }
+  }
+  if (memopiece[0] === '{') {
+    memopiece = JSON.parse(memopiece)
+    return codeHighlight(memopiece)
+  }
+  return ''
+}
+
 export const showAmmPercents = (x) => {
   x = x ? x / 1000 : '0'
   return x + '%'

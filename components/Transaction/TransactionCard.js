@@ -10,6 +10,7 @@ import {
   AddressWithIconFilled,
   amountFormat,
   codeHighlight,
+  decodeJsonMemo,
   fullDateAndTime,
   nativeCurrencyToFiat,
   niceCurrency,
@@ -72,21 +73,6 @@ export const TransactionCard = ({ data, pageFiatRate, selectedCurrency, txTypeSp
   const waitLedgers = tx?.LastLedgerSequence - outcome?.ledgerIndex
 
   const txLink = server + '/tx/' + (tx?.ctid || tx?.hash)
-
-  const decodeJsonMemo = (memopiece, options) => {
-    if (options?.code === 'base64') {
-      try {
-        memopiece = atob(memopiece)
-      } catch (e) {
-        return memopiece
-      }
-    }
-    if (memopiece[0] === '{') {
-      memopiece = JSON.parse(memopiece)
-      return codeHighlight(memopiece)
-    }
-    return ''
-  }
 
   const memoNode = (memos) => {
     let output = []
