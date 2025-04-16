@@ -7,6 +7,11 @@ import { LinkTx } from '../../utils/links'
 
 //https://docs.xahau.network/technical/protocol-reference/transactions/transaction-types/import
 
+/*
+tx for test, xahau mainnet
+851BFFF152023C0BE95E5968476E734C4D76AB83F76EC2D986CCB3D546B8A651
+*/
+
 export const TransactionImport = ({ data, pageFiatRate, selectedCurrency }) => {
   if (!data) return null
   const { specification, tx, outcome } = data
@@ -14,19 +19,18 @@ export const TransactionImport = ({ data, pageFiatRate, selectedCurrency }) => {
   const importExplorer = networkId === 21338 ? networksIds[1].server : networksIds[0].server
 
   //check that txType and proofTxStatus works!
-  const blobTransaction = tx?.Blob?.transaction
-  const specBlobTransaction = specification?.blob?.transaction
+  const blobTransaction = specification?.blob?.transaction
 
-  const importTX = specBlobTransaction?.id
-  const burnedNft = specBlobTransaction?.specification?.nftokenID
+  const importTX = blobTransaction?.id
+  const burnedNft = blobTransaction?.specification?.nftokenID
 
   const txTypeSpecial = tx?.TransactionType + ' - ' + blobTransaction?.tx?.TransactionType
 
   const proofTxStatusNode =
-    blobTransaction?.tx?.meta?.TransactionResult === 'tesSUCCESS' ? (
-      <span class="green">Success</span>
+    blobTransaction?.meta?.TransactionResult === 'tesSUCCESS' ? (
+      <span className="green bold">Success</span>
     ) : (
-      <span className="red">Failed</span>
+      <span className="red bold">Failed</span>
     )
 
   return (
@@ -50,7 +54,7 @@ export const TransactionImport = ({ data, pageFiatRate, selectedCurrency }) => {
         <tr>
           <TData>XRPL NFT</TData>
           <TData>
-            <a href={importExplorer + '/' + +i18n.language + '/nft/' + burnedNft}>{shortHash(burnedNft)}</a>
+            <a href={importExplorer + '/' + i18n.language + '/nft/' + burnedNft}>{shortHash(burnedNft)}</a>
           </TData>
         </tr>
       )}
