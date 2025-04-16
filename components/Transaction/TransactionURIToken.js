@@ -75,6 +75,8 @@ export const TransactionURIToken = ({ data, pageFiatRate, selectedCurrency }) =>
 
       {/* not sure how much nessary it's here, need to check xahau flags that are possible */}
       {specification.flags && trWithFlags(specification.flags)}
+
+      {outcome?.uritokenChanges && <>TODO</>}
     </TransactionCard>
   )
 }

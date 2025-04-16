@@ -17,7 +17,7 @@ import {
   shortHash,
   timeFromNow
 } from '../../utils/format'
-import { decode, server } from '../../utils'
+import { decode, server, xahauNetwork } from '../../utils'
 import { errorCodeDescription, shortErrorCode } from '../../utils/transaction'
 import { add } from '../../utils/calc'
 
@@ -187,6 +187,12 @@ export const TransactionCard = ({ data, pageFiatRate, selectedCurrency, txTypeSp
 
   const filteredBalanceChanges = outcome?.balanceChanges.filter((change) => !noBalanceChange(change))
 
+  let emitTX = null
+  if (xahauNetwork) {
+    //check why wouldn't it be always in specs
+    emitTX = specification.emittedDetails.emitParentTxnID || tx.EmitDetails.EmitParentTxnID
+  }
+
   return (
     <>
       <div className="tx-body">
@@ -266,6 +272,48 @@ export const TransactionCard = ({ data, pageFiatRate, selectedCurrency, txTypeSp
                       })}
                     </TData>
                   </tr>
+
+                  {xahauNetwork && (
+                    <>
+                      {outcome?.emittedTxns?.map((etx, i) => (
+                        <tr key={i}>
+                          <TData>Emitted TX {outcome?.emittedTxns?.length > 1 ? i + 1 : ''}</TData>
+                          <TData>
+                            <LinkTx tx={etx?.id} />
+                          </TData>
+                        </tr>
+                      ))}
+                      {emitTX && (
+                        <tr>
+                          <TData>Emit Parent TX</TData>
+                          <TData>
+                            <LinkTx tx={emitTX} />
+                          </TData>
+                        </tr>
+                      )}
+                    </>
+                  )}
+                  {tx.TransactionType !== 'Payment' &&
+                    !tx.TransactionType?.includes('Check') &&
+                    tx.SourceTag(
+                      <tr>
+                        <TData>Source tag</TData>
+                        <TData>{tx.SourceTag}</TData>
+                      </tr>
+                    )}
+
+                  {(tx.TransactionType === 'EscrowFinish' || tx.TransactionType === 'EscrowCancel') &&
+                    specification.source?.address !== outcome?.escrowChanges?.source?.address &&
+                    specification.source?.address !== outcome?.escrowChanges?.destination?.address && (
+                      <tr>
+                        <TData>Memos note</TData>
+                        <TData className="orange">
+                          Memos were added by the third party{' '}
+                          {addressUsernameOrServiceLink(specification.source, 'address')} that finished the Escrow.
+                        </TData>
+                      </tr>
+                    )}
+
                   {specification?.memos && memoNode(specification.memos)}
                   {tx?.AccountTxnID && (
                     <tr>

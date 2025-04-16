@@ -3,7 +3,6 @@ import { TransactionCard } from './TransactionCard'
 import { AddressWithIconFilled, shortHash } from '../../utils/format'
 import { networkId, networksIds } from '../../utils'
 import { i18n } from 'next-i18next'
-import { LinkTx } from '../../utils/links'
 
 //https://docs.xahau.network/technical/protocol-reference/transactions/transaction-types/import
 
@@ -14,7 +13,7 @@ tx for test, xahau mainnet
 
 export const TransactionImport = ({ data, pageFiatRate, selectedCurrency }) => {
   if (!data) return null
-  const { specification, tx, outcome } = data
+  const { specification, tx } = data
 
   const importExplorer = networkId === 21338 ? networksIds[1].server : networksIds[0].server
 
@@ -64,22 +63,6 @@ export const TransactionImport = ({ data, pageFiatRate, selectedCurrency }) => {
           <AddressWithIconFilled data={specification.source} name="address" />
         </TData>
       </tr>
-      {outcome?.emittedTxns?.[0]?.id && (
-        <tr>
-          <TData>Emitted TX</TData>
-          <TData>
-            <LinkTx tx={emittedTX} />
-          </TData>
-        </tr>
-      )}
-      {specification?.emittedDetails?.emitParentTxnID && (
-        <tr>
-          <TData>Emit Parent TX</TData>
-          <TData>
-            <LinkTx tx={specification.emittedDetails.emitParentTxnID} />
-          </TData>
-        </tr>
-      )}
     </TransactionCard>
   )
 }

@@ -7,7 +7,7 @@ import { AddressWithIconFilled, amountFormat, nftIdLink, nftOfferLink, trWithFla
 
 export const TransactionNFToken = ({ data, pageFiatRate, selectedCurrency }) => {
   if (!data) return null
-  const { specification, tx } = data
+  const { specification, tx, outcome } = data
 
   const txType = tx?.TransactionType
 
@@ -130,6 +130,11 @@ export const TransactionNFToken = ({ data, pageFiatRate, selectedCurrency }) => 
       )}
 
       {specification.flags && trWithFlags(specification.flags)}
+
+      {outcome?.nftokenChanges && <>TODO</>}
+
+      {txType === 'NFTokenCreateOffer' &&
+        outcome?.nftokenOfferChanges?.map((change) => change.map((offer) => nftOfferLink(offer.index)))}
     </TransactionCard>
   )
 }
