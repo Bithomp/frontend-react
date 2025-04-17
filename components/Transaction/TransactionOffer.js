@@ -49,6 +49,14 @@ export const TransactionOffer = ({ data, pageFiatRate, selectedCurrency }) => {
           <AddressWithIconFilled data={specification.source} name="address" />
         </TData>
       </tr>
+
+      {tx.TransactionType === 'OfferCreate' && (
+        <tr>
+          <TData>Offer sequence</TData>
+          <TData>#{tx.Sequence || tx.TicketSequence}</TData>
+        </tr>
+      )}
+
       {takerGets && (
         <tr>
           <TData tooltip="The amount and type of currency being sold.">Taker Gets</TData>
