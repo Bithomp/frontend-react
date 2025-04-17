@@ -18,7 +18,6 @@ export async function getServerSideProps(context) {
       headers: passHeaders(req)
     })
     data = res?.data
-    console.log('data', data) //delete
   } catch (r) {
     data = r?.response?.data
   }
@@ -34,8 +33,6 @@ export async function getServerSideProps(context) {
 
 export default function Whales({ data }) {
   const isMobile = useIsMobile()
-
-  console.log(data) //delete
 
   return (
     <>
