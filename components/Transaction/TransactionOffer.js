@@ -19,7 +19,7 @@ export const TransactionOffer = ({ data, pageFiatRate, selectedCurrency }) => {
   //console.log('TransactionOffer', data) //delete
 
   const sourceOrderbookChange = outcome?.orderbookChanges
-    .filter((entry) => entry.address === specification.source.address)?.[0]
+    ?.filter((entry) => entry.address === specification.source.address)?.[0]
     ?.orderbookChanges.filter((entry) => entry.sequence === specification.orderSequence)?.[0]
 
   const takerGets = specification.takerGets || sourceOrderbookChange?.takerGets
