@@ -293,14 +293,12 @@ export const TransactionCard = ({ data, pageFiatRate, selectedCurrency, txTypeSp
                       )}
                     </>
                   )}
-                  {tx.TransactionType !== 'Payment' &&
-                    !tx.TransactionType?.includes('Check') &&
-                    tx.SourceTag(
-                      <tr>
-                        <TData>Source tag</TData>
-                        <TData>{tx.SourceTag}</TData>
-                      </tr>
-                    )}
+                  {tx.TransactionType !== 'Payment' && !tx.TransactionType?.includes('Check') && tx.SourceTag && (
+                    <tr>
+                      <TData>Source tag</TData>
+                      <TData>{tx.SourceTag}</TData>
+                    </tr>
+                  )}
 
                   {(tx.TransactionType === 'EscrowFinish' || tx.TransactionType === 'EscrowCancel') &&
                     specification.source?.address !== outcome?.escrowChanges?.source?.address &&
