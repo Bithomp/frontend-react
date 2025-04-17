@@ -8,7 +8,7 @@ export const TransactionDetails = ({ data, pageFiatRate, selectedCurrency }) => 
   const { specification } = data
 
   return (
-    <TransactionCard data={data} pageFiatRate={pageFiatRate} selectedCurrency={selectedCurrency}>
+    <TransactionCard data={data} pageFiatRate={pageFiatRate} selectedCurrency={selectedCurrency} fullySupported={false}>
       <tr>
         <TData>Initiated by</TData>
         <TData>

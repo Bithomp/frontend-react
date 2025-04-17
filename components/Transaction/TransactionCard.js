@@ -45,7 +45,7 @@ const noBalanceChange = (change) => {
   return change?.balanceChanges?.[0]?.issuer === change.address && gatewaySum(change.balanceChanges) === '0'
 }
 
-export const TransactionCard = ({ data, pageFiatRate, selectedCurrency, txTypeSpecial, children }) => {
+export const TransactionCard = ({ data, pageFiatRate, selectedCurrency, txTypeSpecial, fullySupported, children }) => {
   const { t } = useTranslation()
   const [showRawData, setShowRawData] = useState(false)
   const [showRawMeta, setShowRawMeta] = useState(false)
@@ -347,15 +347,17 @@ export const TransactionCard = ({ data, pageFiatRate, selectedCurrency, txTypeSp
                       </tr>
                     ))}
                   {/* keep here outcome?.balanceChanges.length, to hide simple xrp and to show iou payments that are filtered when gateway doesn't have a transfer fee */}
-                  {tx.TransactionType !== 'UNLReport' && outcome?.balanceChanges.length > 2 && (
+                  {tx.TransactionType !== 'UNLReport' && (outcome?.balanceChanges.length > 2 || !fullySupported) && (
                     <>
-                      <tr>
-                        <TData>Affected accounts</TData>
-                        <TData>
-                          There are <span className="bold">{filteredBalanceChanges.length}</span> accounts that were
-                          affected by this transaction.
-                        </TData>
-                      </tr>
+                      {filteredBalanceChanges.length > 1 && (
+                        <tr>
+                          <TData>Affected accounts</TData>
+                          <TData>
+                            There are <span className="bold">{filteredBalanceChanges.length}</span> accounts that were
+                            affected by this transaction.
+                          </TData>
+                        </tr>
+                      )}
                       {filteredBalanceChanges.map((change, index) => {
                         return (
                           <tr key={index}>
