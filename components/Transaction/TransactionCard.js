@@ -197,7 +197,7 @@ export const TransactionCard = ({
   let emitTX = null
   if (xahauNetwork) {
     //check why wouldn't it be always in specs
-    emitTX = specification.emittedDetails?.emitParentTxnID || tx.EmitDetails?.EmitParentTxnID
+    emitTX = specification?.emittedDetails?.emitParentTxnID || tx?.EmitDetails?.EmitParentTxnID
   }
 
   return (
@@ -308,13 +308,13 @@ export const TransactionCard = ({
                   )}
 
                   {(tx.TransactionType === 'EscrowFinish' || tx.TransactionType === 'EscrowCancel') &&
-                    specification.source?.address !== outcome?.escrowChanges?.source?.address &&
-                    specification.source?.address !== outcome?.escrowChanges?.destination?.address && (
+                    specification?.source?.address !== outcome?.escrowChanges?.source?.address &&
+                    specification?.source?.address !== outcome?.escrowChanges?.destination?.address && (
                       <tr>
                         <TData>Memos note</TData>
                         <TData className="orange">
                           Memos were added by the third party{' '}
-                          {addressUsernameOrServiceLink(specification.source, 'address')} that finished the Escrow.
+                          {addressUsernameOrServiceLink(specification?.source, 'address')} that finished the Escrow.
                         </TData>
                       </tr>
                     )}
