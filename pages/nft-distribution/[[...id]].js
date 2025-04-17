@@ -302,7 +302,6 @@ export default function NftDistribution({
               title={t('table.taxon')}
               placeholder={t('nfts.search-by-taxon')}
               setValue={onTaxonInput}
-              disabled={issuerInput ? false : true}
               defaultValue={data?.taxon}
             />
           )}

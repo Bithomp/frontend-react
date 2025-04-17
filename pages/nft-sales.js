@@ -607,7 +607,6 @@ export default function NftSales({
               title={t('table.taxon')}
               placeholder={t('nfts.search-by-taxon')}
               setValue={onTaxonInput}
-              disabled={issuer ? false : true}
               defaultValue={data?.taxon}
             />
           )}

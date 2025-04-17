@@ -743,7 +743,6 @@ export default function NftsComponent({
                   placeholder={t('nfts.search-by-taxon')}
                   setValue={onTaxonInput}
                   defaultValue={rawData?.taxon}
-                  disabled={issuer ? false : true}
                 />
               )}
               <AddressInput
