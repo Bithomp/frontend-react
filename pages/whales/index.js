@@ -84,19 +84,19 @@ export default function Whales({ data, selectedCurrency }) {
           <table className="table-mobile">
             <thead></thead>
             <tbody>
-              {data?.map((d, i) => (
+              {data?.map((tx, i) => (
                 <tr key={i}>
                   <td style={{ padding: '5px' }} className="center">
                     <b>{i + 1}</b>
                   </td>
                   <td>
-                    <p suppressHydrationWarning>{timeFormat(tx.timestamp)}</p>
+                    <p suppressHydrationWarning>Time: {timeFormat(tx.timestamp)}</p>
                     From:
                     <AddressWithIconFilled data={tx} name="sourceAddress" />
                     <br />
                     To:
                     <AddressWithIconFilled data={tx} name="destinationAddress" />
-                    <p>Tx: {txIdLink(tx.hash, 0)}</p>
+                    <p>Transaction link: {txIdLink(tx.hash, 0)}</p>
                     <p>Amount: {amountFormat(tx.amount, { short: true, maxFractionDigits: 2 })}</p>
                     <p suppressHydrationWarning>
                       Fiat value:
