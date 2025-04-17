@@ -40,6 +40,12 @@ export const TransactionImport = ({ data, pageFiatRate, selectedCurrency }) => {
       txTypeSpecial={txTypeSpecial}
     >
       <tr>
+        <TData>Initiated by</TData>
+        <TData>
+          <AddressWithIconFilled data={specification.source} name="address" />
+        </TData>
+      </tr>
+      <tr>
         <TData>Proof TX hash</TData>
         <TData>
           <a href={importExplorer + '/' + i18n.language + '/tx/' + importTX}>{shortHash(importTX)}</a>
@@ -57,12 +63,6 @@ export const TransactionImport = ({ data, pageFiatRate, selectedCurrency }) => {
           </TData>
         </tr>
       )}
-      <tr>
-        <TData>Initiated by</TData>
-        <TData>
-          <AddressWithIconFilled data={specification.source} name="address" />
-        </TData>
-      </tr>
     </TransactionCard>
   )
 }
