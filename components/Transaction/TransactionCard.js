@@ -197,7 +197,7 @@ export const TransactionCard = ({
   let emitTX = null
   if (xahauNetwork) {
     //check why wouldn't it be always in specs
-    emitTX = specification.emittedDetails.emitParentTxnID || tx.EmitDetails.EmitParentTxnID
+    emitTX = specification.emittedDetails?.emitParentTxnID || tx.EmitDetails?.EmitParentTxnID
   }
 
   return (
