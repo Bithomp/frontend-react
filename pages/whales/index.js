@@ -51,7 +51,7 @@ export default function Whales({ data, selectedCurrency }) {
                 <th>Time</th>
                 <th>Sender</th>
                 <th>Receiver</th>
-                <th>Tx link</th>
+                <th className="center">Tx link</th>
                 <th>Amount</th>
                 <th>Fiat value</th>
               </tr>
@@ -67,7 +67,7 @@ export default function Whales({ data, selectedCurrency }) {
                   <td>
                     <AddressWithIconFilled data={tx} name="destinationAddress" />
                   </td>
-                  <td>{txIdLink(tx.hash, 0)}</td>
+                  <td className="center">{txIdLink(tx.hash, 0)}</td>
                   <td>{amountFormat(tx.amount, { short: true, maxFractionDigits: 2 })}</td>
                   <td suppressHydrationWarning>
                     {devNet
