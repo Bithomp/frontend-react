@@ -31,15 +31,19 @@ export const WhalesTable = ({ isMobile, data }) => (
           <table className="table-mobile">
             <thead></thead>
             <tbody>
-              {data?.map((d, i) => (
+              {data?.map((tx, i) => (
                 <tr key={i}>
                   <td style={{ padding: '5px' }} className="center">
                     <b>{i + 1}</b>
                   </td>
                   <td>
-                    <AddressWithIconFilled data={tx} name="sourceAddress" />
-                    <p>Txs: {tx.transactionsCount}</p>
-                    <p>Amount: {amountFormat(tx.amount, { short: true, maxFractionDigits: 2 })}</p>
+                    <br />
+                    <AddressWithIconFilled data={tx} />
+                    <p>Transactions count: {tx.transactionsCount}</p>
+                    <p>
+                      Amount:{' '}
+                      <span className="bold">{amountFormat(tx.amount, { short: true, maxFractionDigits: 2 })}</span>
+                    </p>
                   </td>
                 </tr>
               ))}

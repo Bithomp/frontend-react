@@ -13,7 +13,7 @@ export async function getServerSideProps(context) {
   try {
     const res = await axiosServer({
       method: 'get',
-      url: 'v2/address/whale/senders',
+      url: 'v2/address/whale/senders?limit=100',
       headers: passHeaders(req)
     })
     data = res?.data
@@ -35,10 +35,10 @@ export default function Whales({ data }) {
 
   return (
     <>
-      <SEO title={ledgerName + '  addresses that are sending the most in the last 24h'} />
+      <SEO title="Whale Senders" description="Addresses that are sending the most in the last 24 hours." />
       <div className="content-text">
         <WhaleTabs tab="senders" />
-        <h1 className="center">{ledgerName + '  addresses that are sending the most in the last 24h'}</h1>
+        <h1 className="center">{ledgerName + ' addresses that are sending the most in the last 24 hours'}</h1>
 
         <WhalesTable isMobile={isMobile} data={data} />
       </div>
