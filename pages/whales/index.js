@@ -38,10 +38,10 @@ export default function Whales({ data, selectedCurrency }) {
 
   return (
     <>
-      <SEO title={ledgerName + ' Whales'} />
+      <SEO title={ledgerName + ' Whales'} description="The most significant transactions for the last 24 hours" />
       <div className="content-text">
         <WhaleTabs tab="transactions" />
-        <h1 className="center">{ledgerName + ' Whales'}</h1>
+        <h1 className="center">The most significant transactions for the last 24 hours</h1>
 
         {!isMobile ? (
           <table className="table-large shrink">
@@ -60,7 +60,7 @@ export default function Whales({ data, selectedCurrency }) {
               {data?.map((tx, i) => (
                 <tr key={i}>
                   <td>{i + 1}</td>
-                  <td>{timeFormat(tx.timestamp)}</td>
+                  <td suppressHydrationWarning>{timeFormat(tx.timestamp)}</td>
                   <td>
                     <AddressWithIconFilled data={tx} name="sourceAddress" />
                   </td>
@@ -69,7 +69,7 @@ export default function Whales({ data, selectedCurrency }) {
                   </td>
                   <td>{txIdLink(tx.hash, 0)}</td>
                   <td>{amountFormat(tx.amount, { short: true, maxFractionDigits: 2 })}</td>
-                  <td>
+                  <td suppressHydrationWarning>
                     {devNet
                       ? t('table.no-value')
                       : tx.amountFiats
@@ -90,7 +90,7 @@ export default function Whales({ data, selectedCurrency }) {
                     <b>{i + 1}</b>
                   </td>
                   <td>
-                    <p>{timeFormat(tx.timestamp)}</p>
+                    <p suppressHydrationWarning>{timeFormat(tx.timestamp)}</p>
                     From:
                     <AddressWithIconFilled data={tx} name="sourceAddress" />
                     <br />
@@ -98,7 +98,7 @@ export default function Whales({ data, selectedCurrency }) {
                     <AddressWithIconFilled data={tx} name="destinationAddress" />
                     <p>Tx: {txIdLink(tx.hash, 0)}</p>
                     <p>Amount: {amountFormat(tx.amount, { short: true, maxFractionDigits: 2 })}</p>
-                    <p>
+                    <p suppressHydrationWarning>
                       Fiat value:
                       {devNet
                         ? t('table.no-value')
