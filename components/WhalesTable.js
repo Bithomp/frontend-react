@@ -10,8 +10,8 @@ export const WhalesTable = ({ isMobile, data }) => (
               <tr>
                 <th>#</th>
                 <th>Address</th>
-                <th>Txs count</th>
-                <th>Amount</th>
+                <th className="right">Transactions</th>
+                <th className="right">Amount</th>
               </tr>
             </thead>
             <tbody>
@@ -21,8 +21,8 @@ export const WhalesTable = ({ isMobile, data }) => (
                   <td>
                     <AddressWithIconFilled data={tx} />
                   </td>
-                  <td>{tx.transactionsCount}</td>
-                  <td>{amountFormat(tx.amount, { short: true, maxFractionDigits: 2 })}</td>
+                  <td className="right">{tx.transactionsCount}</td>
+                  <td className="right">{amountFormat(tx.amount, { short: true, maxFractionDigits: 2 })}</td>
                 </tr>
               ))}
             </tbody>
@@ -39,7 +39,7 @@ export const WhalesTable = ({ isMobile, data }) => (
                   <td>
                     <br />
                     <AddressWithIconFilled data={tx} />
-                    <p>Transactions count: {tx.transactionsCount}</p>
+                    <p>Transactions: {tx.transactionsCount}</p>
                     <p>
                       Amount:{' '}
                       <span className="bold">{amountFormat(tx.amount, { short: true, maxFractionDigits: 2 })}</span>
