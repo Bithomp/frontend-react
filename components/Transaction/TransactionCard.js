@@ -45,7 +45,14 @@ const noBalanceChange = (change) => {
   return change?.balanceChanges?.[0]?.issuer === change.address && gatewaySum(change.balanceChanges) === '0'
 }
 
-export const TransactionCard = ({ data, pageFiatRate, selectedCurrency, txTypeSpecial, fullySupported, children }) => {
+export const TransactionCard = ({
+  data,
+  pageFiatRate,
+  selectedCurrency,
+  txTypeSpecial,
+  notFullySupported,
+  children
+}) => {
   const { t } = useTranslation()
   const [showRawData, setShowRawData] = useState(false)
   const [showRawMeta, setShowRawMeta] = useState(false)
@@ -347,7 +354,7 @@ export const TransactionCard = ({ data, pageFiatRate, selectedCurrency, txTypeSp
                       </tr>
                     ))}
                   {/* keep here outcome?.balanceChanges.length, to hide simple xrp and to show iou payments that are filtered when gateway doesn't have a transfer fee */}
-                  {tx.TransactionType !== 'UNLReport' && (outcome?.balanceChanges.length > 2 || !fullySupported) && (
+                  {tx.TransactionType !== 'UNLReport' && (outcome?.balanceChanges.length > 2 || notFullySupported) && (
                     <>
                       {filteredBalanceChanges.length > 1 && (
                         <tr>
