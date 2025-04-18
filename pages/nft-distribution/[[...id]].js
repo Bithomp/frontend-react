@@ -303,7 +303,8 @@ export default function NftDistribution({
               placeholder={t('nfts.search-by-taxon')}
               setValue={onTaxonInput}
               disabled={issuerInput ? false : true}
-              defaultValue={data?.taxon}
+              defaultValue={issuerInput ? data?.taxon : ''}
+              key={issuerInput || 'empty'}
             />
           )}
           {data?.summary?.totalNfts && (

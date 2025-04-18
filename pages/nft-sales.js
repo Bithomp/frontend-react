@@ -608,7 +608,8 @@ export default function NftSales({
               placeholder={t('nfts.search-by-taxon')}
               setValue={onTaxonInput}
               disabled={issuer ? false : true}
-              defaultValue={data?.taxon}
+              defaultValue={issuer ? data?.taxon : ''}
+              key={issuer || 'empty'}
             />
           )}
           <AddressInput
