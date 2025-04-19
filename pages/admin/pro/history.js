@@ -77,6 +77,20 @@ const dateFormatters = {
     const ss = pad(date.getUTCSeconds())
 
     return `${mm}/${dd}/${yyyy} ${hh}:${min}:${ss}`
+  },
+  CoinTracking: (timestamp) => {
+    // Format: dd.mm.yyyy HH:MM:SS in UTC
+    const date = new Date(timestamp * 1000)
+    const pad = (n) => n.toString().padStart(2, '0')
+
+    const dd = pad(date.getUTCDate())
+    const mm = pad(date.getUTCMonth() + 1)
+    const yyyy = date.getUTCFullYear()
+    const hh = pad(date.getUTCHours())
+    const min = pad(date.getUTCMinutes())
+    const ss = pad(date.getUTCSeconds())
+
+    return `${dd}.${mm}.${yyyy} ${hh}:${min}:${ss}`
   }
 }
 
@@ -144,6 +158,27 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
           { label: 'Type', key: 'coinLedgerTxType' },
           { label: 'Description (Optional)', key: 'memo' },
           { label: 'TxHash (Optional)', key: 'hash' }
+        ]
+      },
+      {
+        platform: "CoinTracking",
+        headers: [
+          { label: 'Type', key: 'coinTrackingTxType' },
+          { label: 'Buy Amount', key: 'receivedAmount' },
+          { label: 'Buy Currency', key: 'receivedCurrency' },
+          { label: 'Sell Amount', key: 'sentAmount' },
+          { label: 'Sell Currency', key: 'sentCurrency' },
+          { label: 'Fee', key: 'txFeeNumber' },
+          { label: 'Fee Currency', key: 'txFeeCurrencyCode' },
+          { label: 'Exchange', key: 'platform' },
+          { label: 'Trade-Group', key: '' },
+          { label: 'Comment', key: 'memo' },
+          { label: 'Date', key: 'timestampExport' },
+          // Optional
+          { label: 'Tx-ID', key: 'hash' },
+          { label: 'Buy Value in Account Currency', key: 'amountInFiats.' + selectedCurrency },
+          { label: 'Sell Value in Account Currency', key: '' },
+          { label: 'Liquidity pool', key: '' }
         ]
       }
     ],
@@ -336,6 +371,11 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
 
         // For CoinLedger platform
         res.activities[i].coinLedgerTxType = res.activities[i].amountNumber > 0 ? 'Deposit' : 'Withdrawal'
+
+        // For CoinTracking platform
+        res.activities[i].coinTrackingTxType = res.activities[i].amountNumber > 0 
+          ? 'Deposit' 
+          : (Math.abs(res.activities[i].amountNumber) <= res.activities[i].txFeeNumber ? 'Other Fee' : 'Withdrawal')
       }
       setData(res) // last request data
       if (options?.marker) {
@@ -524,7 +564,8 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
                   setValue={setPlatformCSVExport}
                   optionsList={[
                     { value: 'Koinly', label: 'Koinly' },
-                    { value: 'CoinLedger', label: 'CoinLedger' }
+                    { value: 'CoinLedger', label: 'CoinLedger' },
+                    { value: 'CoinTracking', label: 'CoinTracking' }
                   ]}
                 />
                 <button className="dropdown-btn" onClick={() => setSortMenuOpen(!sortMenuOpen)}>
