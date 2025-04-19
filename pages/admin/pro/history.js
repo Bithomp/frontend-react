@@ -77,6 +77,21 @@ const dateFormatters = {
     const ss = pad(date.getUTCSeconds())
 
     return `${mm}/${dd}/${yyyy} ${hh}:${min}:${ss}`
+  },
+  TokenTax: (timestamp) => {
+    // Format: MM/DD/YY HH:MM
+    const date = new Date(timestamp * 1000)
+    
+    const pad = (n) => n.toString().padStart(2, '0')
+    
+    const mm = pad(date.getUTCMonth() + 1)
+    const dd = pad(date.getUTCDate())
+    const yy = date.getUTCFullYear().toString().slice(-2)
+    
+    const hh = pad(date.getUTCHours())
+    const min = pad(date.getUTCMinutes())
+    
+    return `${mm}/${dd}/${yy} ${hh}:${min}`
   }
 }
 
@@ -144,6 +159,22 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
           { label: 'Type', key: 'coinLedgerTxType' },
           { label: 'Description (Optional)', key: 'memo' },
           { label: 'TxHash (Optional)', key: 'hash' }
+        ]
+      },
+      {
+        platform: "TokenTax",
+        headers: [
+          { label: 'Type', key: 'tokenTaxTxType' },
+          { label: 'BuyAmount', key: 'receivedAmount' },
+          { label: 'BuyCurrency', key: 'receivedCurrency' },
+          { label: 'SellAmount', key: 'sentAmount' },
+          { label: 'SellCurrency', key: 'sentCurrency' },
+          { label: 'FeeAmount', key: 'txFeeNumber' },
+          { label: 'FeeCurrency', key: 'txFeeCurrencyCode' },
+          { label: 'Exchange', key: 'platform' },
+          { label: 'Group', key: '' },
+          { label: 'Comment', key: 'memo' },
+          { label: 'Date', key: 'timestampExport' }
         ]
       }
     ],
@@ -336,6 +367,9 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
 
         // For CoinLedger platform
         res.activities[i].coinLedgerTxType = res.activities[i].amountNumber > 0 ? 'Deposit' : 'Withdrawal'
+
+        // For TokenTax platform
+        res.activities[i].tokenTaxTxType = res.activities[i].amountNumber > 0 ? 'Deposit' : 'Withdrawal'
       }
       setData(res) // last request data
       if (options?.marker) {
@@ -524,7 +558,8 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
                   setValue={setPlatformCSVExport}
                   optionsList={[
                     { value: 'Koinly', label: 'Koinly' },
-                    { value: 'CoinLedger', label: 'CoinLedger' }
+                    { value: 'CoinLedger', label: 'CoinLedger' },
+                    { value: 'TokenTax', label: 'TokenTax' }
                   ]}
                 />
                 <button className="dropdown-btn" onClick={() => setSortMenuOpen(!sortMenuOpen)}>
