@@ -77,7 +77,22 @@ const dateFormatters = {
     const ss = pad(date.getUTCSeconds())
 
     return `${mm}/${dd}/${yyyy} ${hh}:${min}:${ss}`
+  },
+  ZenLedger: (timestamp) => {
+    // Format: mm/dd/yyyy hh:mm:ss in UTC
+    const date = new Date(timestamp * 1000)
+    const pad = (n) => n.toString().padStart(2, '0')
+    
+    const mm = pad(date.getUTCMonth() + 1)
+    const dd = pad(date.getUTCDate())
+    const yyyy = date.getUTCFullYear()
+    const hh = pad(date.getUTCHours())
+    const min = pad(date.getUTCMinutes())
+    const ss = pad(date.getUTCSeconds())
+    
+    return `${mm}/${dd}/${yyyy} ${hh}:${min}:${ss}`
   }
+    
 }
 
 const processDataForExport = (activities, platform) => {
@@ -144,6 +159,21 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
           { label: 'Type', key: 'coinLedgerTxType' },
           { label: 'Description (Optional)', key: 'memo' },
           { label: 'TxHash (Optional)', key: 'hash' }
+        ]
+      },
+      {
+        platform: "ZenLedger",
+        headers: [
+          { label: 'Timestamp', key: 'timestampExport' },
+          { label: 'Type', key: 'zenLedgerTxType' },
+          { label: 'IN Amount', key: 'receivedAmount' },
+          { label: 'IN Currency', key: 'receivedCurrency' },
+          { label: 'Out Amount', key: 'sentAmount' },
+          { label: 'Out Currency', key: 'sentCurrency' },
+          { label: 'Fee Amount', key: 'txFeeNumber' },
+          { label: 'Fee Currency', key: 'txFeeCurrencyCode' },
+          { label: 'Exchange(optional)', key: 'platform' },
+          { label: 'US Based', key: '' }
         ]
       }
     ],
@@ -336,6 +366,11 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
 
         // For CoinLedger platform
         res.activities[i].coinLedgerTxType = res.activities[i].amountNumber > 0 ? 'Deposit' : 'Withdrawal'
+
+        // For ZenLedger platform
+        res.activities[i].zenLedgerTxType = res.activities[i].amountNumber > 0 
+          ? 'Buy' 
+          : (Math.abs(res.activities[i].amountNumber) <= res.activities[i].txFeeNumber ? 'Fee' : 'Sell')
       }
       setData(res) // last request data
       if (options?.marker) {
@@ -524,7 +559,8 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
                   setValue={setPlatformCSVExport}
                   optionsList={[
                     { value: 'Koinly', label: 'Koinly' },
-                    { value: 'CoinLedger', label: 'CoinLedger' }
+                    { value: 'CoinLedger', label: 'CoinLedger' },
+                    { value: 'ZenLedger', label: 'ZenLedger' }
                   ]}
                 />
                 <button className="dropdown-btn" onClick={() => setSortMenuOpen(!sortMenuOpen)}>
