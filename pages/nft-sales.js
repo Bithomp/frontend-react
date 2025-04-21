@@ -341,7 +341,7 @@ export default function NftSales({
           setSales([...salesData, ...newdata.sales])
         } else {
           if (marker === 'first') {
-            setErrorMessage(t('general.no-data'))
+            setErrorMessage(t('nfts.no-nfts'))
           } else {
             setHasMore(false)
           }
