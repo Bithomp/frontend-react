@@ -37,7 +37,7 @@ export default function InfiniteScrolling({
               <>
                 {!sessionToken ? (
                   <Trans i18nKey="general.login-to-bithomp-pro">
-                    Loading more data is available to <Link href="/admin">logged-in</Link> Bithomp Pro subscribers.
+                    Use different filter options or select other search parameters to explore more NFTs that match your interests. Log in to <Link href="/admin">Bithomp Pro</Link> to enable infinite scroll and access all existing results!
                   </Trans>
                 ) : (
                   <>
