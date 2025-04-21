@@ -17,7 +17,7 @@ import {
   shortHash,
   timeFromNow
 } from '../../utils/format'
-import { decode, server } from '../../utils'
+import { decode, server, xahauNetwork } from '../../utils'
 import { errorCodeDescription, shortErrorCode } from '../../utils/transaction'
 import { add } from '../../utils/calc'
 
@@ -45,7 +45,14 @@ const noBalanceChange = (change) => {
   return change?.balanceChanges?.[0]?.issuer === change.address && gatewaySum(change.balanceChanges) === '0'
 }
 
-export const TransactionCard = ({ data, pageFiatRate, selectedCurrency, txTypeSpecial, children }) => {
+export const TransactionCard = ({
+  data,
+  pageFiatRate,
+  selectedCurrency,
+  txTypeSpecial,
+  notFullySupported,
+  children
+}) => {
   const { t } = useTranslation()
   const [showRawData, setShowRawData] = useState(false)
   const [showRawMeta, setShowRawMeta] = useState(false)
@@ -187,6 +194,12 @@ export const TransactionCard = ({ data, pageFiatRate, selectedCurrency, txTypeSp
 
   const filteredBalanceChanges = outcome?.balanceChanges.filter((change) => !noBalanceChange(change))
 
+  let emitTX = null
+  if (xahauNetwork) {
+    //check why wouldn't it be always in specs
+    emitTX = specification?.emittedDetails?.emitParentTxnID || tx?.EmitDetails?.EmitParentTxnID
+  }
+
   return (
     <>
       <div className="tx-body">
@@ -266,6 +279,46 @@ export const TransactionCard = ({ data, pageFiatRate, selectedCurrency, txTypeSp
                       })}
                     </TData>
                   </tr>
+
+                  {xahauNetwork && (
+                    <>
+                      {outcome?.emittedTxns?.map((etx, i) => (
+                        <tr key={i}>
+                          <TData>Emitted TX {outcome?.emittedTxns?.length > 1 ? i + 1 : ''}</TData>
+                          <TData>
+                            <LinkTx tx={etx?.id} />
+                          </TData>
+                        </tr>
+                      ))}
+                      {emitTX && (
+                        <tr>
+                          <TData>Emit Parent TX</TData>
+                          <TData>
+                            <LinkTx tx={emitTX} />
+                          </TData>
+                        </tr>
+                      )}
+                    </>
+                  )}
+                  {tx.TransactionType !== 'Payment' && !tx.TransactionType?.includes('Check') && tx.SourceTag && (
+                    <tr>
+                      <TData>Source tag</TData>
+                      <TData>{tx.SourceTag}</TData>
+                    </tr>
+                  )}
+
+                  {(tx.TransactionType === 'EscrowFinish' || tx.TransactionType === 'EscrowCancel') &&
+                    specification?.source?.address !== outcome?.escrowChanges?.source?.address &&
+                    specification?.source?.address !== outcome?.escrowChanges?.destination?.address && (
+                      <tr>
+                        <TData>Memos note</TData>
+                        <TData className="orange">
+                          Memos were added by the third party{' '}
+                          {addressUsernameOrServiceLink(specification?.source, 'address')} that finished the Escrow.
+                        </TData>
+                      </tr>
+                    )}
+
                   {specification?.memos && memoNode(specification.memos)}
                   {tx?.AccountTxnID && (
                     <tr>
@@ -301,15 +354,17 @@ export const TransactionCard = ({ data, pageFiatRate, selectedCurrency, txTypeSp
                       </tr>
                     ))}
                   {/* keep here outcome?.balanceChanges.length, to hide simple xrp and to show iou payments that are filtered when gateway doesn't have a transfer fee */}
-                  {outcome?.balanceChanges.length > 2 && (
+                  {tx.TransactionType !== 'UNLReport' && (outcome?.balanceChanges.length > 2 || notFullySupported) && (
                     <>
-                      <tr>
-                        <TData>Affected accounts</TData>
-                        <TData>
-                          There are <span className="bold">{filteredBalanceChanges.length}</span> accounts that were
-                          affected by this transaction.
-                        </TData>
-                      </tr>
+                      {filteredBalanceChanges.length > 1 && (
+                        <tr>
+                          <TData>Affected accounts</TData>
+                          <TData>
+                            There are <span className="bold">{filteredBalanceChanges.length}</span> accounts that were
+                            affected by this transaction.
+                          </TData>
+                        </tr>
+                      )}
                       {filteredBalanceChanges.map((change, index) => {
                         return (
                           <tr key={index}>

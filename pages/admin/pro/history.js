@@ -1,5 +1,5 @@
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 
@@ -29,7 +29,8 @@ import Image from 'next/image'
 import { CSVLink } from 'react-csv'
 import DownloadIcon from '../../../public/images/download.svg'
 import { koinly } from '../../../utils/koinly'
-
+import { TbArrowsSort } from 'react-icons/tb'
+import SimpleSelect from '../../../components/UI/SimpleSelect'
 export const getServerSideProps = async (context) => {
   const { locale, query } = context
   const { address } = query
@@ -56,6 +57,37 @@ const showFiat = (fiat, selectedCurrency) => {
   )
 }
 
+const dateFormatters = {
+  Koinly: (timestamp) => {
+    // ISO format: YYYY-MM-DDTHH:MM:SS.000Z
+    return new Date(timestamp * 1000).toISOString()
+  },
+  CoinLedger: (timestamp) => {
+    // Format: MM/DD/YYYY HH:MM:SS in UTC
+    const date = new Date(timestamp * 1000) // Convert to milliseconds
+
+    const pad = (n) => n.toString().padStart(2, '0')
+
+    const mm = pad(date.getUTCMonth() + 1)
+    const dd = pad(date.getUTCDate())
+    const yyyy = date.getUTCFullYear()
+
+    const hh = pad(date.getUTCHours())
+    const min = pad(date.getUTCMinutes())
+    const ss = pad(date.getUTCSeconds())
+
+    return `${mm}/${dd}/${yyyy} ${hh}:${min}:${ss}`
+  }
+}
+
+const processDataForExport = (activities, platform) => {
+  return activities.map((activity) => {
+    const processedActivity = { ...activity }
+    processedActivity.timestampExport = dateFormatters[platform](activity.timestamp)
+    return processedActivity
+  })
+}
+
 export default function History({ queryAddress, selectedCurrency, setSelectedCurrency }) {
   const router = useRouter()
   const width = useWidth()
@@ -77,6 +109,46 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
   const [rendered, setRendered] = useState(false)
   const [removeDust, setRemoveDust] = useState(false)
   const [filteredActivities, setFilteredActivities] = useState([])
+  const [platformCSVExport, setPlatformCSVExport] = useState('Koinly')
+
+  const platformCSVHeaders = useMemo(
+    () => [
+      {
+        platform: 'Koinly',
+        headers: [
+          { label: 'Date', key: 'timestampExport' },
+          { label: 'Sent Amount', key: 'sentAmount' },
+          { label: 'Sent Currency', key: 'sentCurrency' },
+          { label: 'Received Amount', key: 'receivedAmount' },
+          { label: 'Received Currency', key: 'receivedCurrency' },
+          { label: 'Fee Amount', key: 'txFeeNumber' },
+          { label: 'Fee Currency', key: 'txFeeCurrencyCode' },
+          { label: 'Net Worth Amount', key: 'amountInFiats.' + selectedCurrency },
+          { label: 'Net Worth Currency', key: 'netWorthCurrency' },
+          { label: 'Label', key: '' },
+          { label: 'Description', key: 'memo' },
+          { label: 'TxHash', key: 'hash' }
+        ]
+      },
+      {
+        platform: 'CoinLedger',
+        headers: [
+          { label: 'Date (UTC)', key: 'timestampExport' },
+          { label: 'Platform (Optional)', key: 'platform' },
+          { label: 'Asset Sent', key: 'sentCurrency' },
+          { label: 'Amount Sent', key: 'sentAmount' },
+          { label: 'Asset Received', key: 'receivedCurrency' },
+          { label: 'Amount Received', key: 'receivedAmount' },
+          { label: 'Fee Currency (Optional)', key: 'txFeeCurrencyCode' },
+          { label: 'Fee Amount (Optional)', key: 'txFeeNumber' },
+          { label: 'Type', key: 'coinLedgerTxType' },
+          { label: 'Description (Optional)', key: 'memo' },
+          { label: 'TxHash (Optional)', key: 'hash' }
+        ]
+      }
+    ],
+    [selectedCurrency]
+  )
 
   useEffect(() => {
     setRendered(true)
@@ -224,7 +296,6 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
         res.activities[i].amountExport = amountFormat(res.activities[i].amount)
         res.activities[i].amountNumber = res.activities[i].amount?.value || res.activities[i].amount / 1000000
         res.activities[i].currencyCode = res.activities[i].amount?.currency || nativeCurrency
-
         const { currency } = amountParced(res.activities[i].amount)
 
         let scvCurrency = currency
@@ -252,16 +323,19 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
 
         res.activities[i].timestampExport = new Date(res.activities[i].timestamp * 1000).toISOString()
 
-        res.activities[i].sentAmount = sending ? res.activities[i].amountNumber : 0
+        res.activities[i].sentAmount = sending ? res.activities[i].amountNumber : ''
         res.activities[i].sentCurrency = sending ? scvCurrency : ''
 
-        res.activities[i].receivedAmount = !sending ? res.activities[i].amountNumber : 0
+        res.activities[i].receivedAmount = !sending ? res.activities[i].amountNumber : ''
         res.activities[i].receivedCurrency = !sending ? scvCurrency : ''
 
         res.activities[i].netWorthCurrency = selectedCurrency.toUpperCase()
 
         //sanitize memos for CSV
         res.activities[i].memo = res.activities[i].memo?.replace(/"/g, "'") || ''
+
+        // For CoinLedger platform
+        res.activities[i].coinLedgerTxType = res.activities[i].amountNumber > 0 ? 'Deposit' : 'Withdrawal'
       }
       setData(res) // last request data
       if (options?.marker) {
@@ -440,32 +514,44 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
               </CheckBox>
             </div>
             <div>
+              <div
+                style={{
+                  marginBottom: 20
+                }}
+              >
+                <SimpleSelect
+                  value={platformCSVExport}
+                  setValue={setPlatformCSVExport}
+                  optionsList={[
+                    { value: 'Koinly', label: 'Koinly' },
+                    { value: 'CoinLedger', label: 'CoinLedger' }
+                  ]}
+                />
+                <button className="dropdown-btn" onClick={() => setSortMenuOpen(!sortMenuOpen)}>
+                  <TbArrowsSort />
+                </button>
+              </div>
               {rendered && (
                 <CSVLink
-                  data={filteredActivities || []}
-                  headers={[
-                    { label: 'Date', key: 'timestampExport' },
-                    { label: 'Sent Amount', key: 'sentAmount' },
-                    { label: 'Sent Currency', key: 'sentCurrency' },
-                    { label: 'Received Amount', key: 'receivedAmount' },
-                    { label: 'Received Currency', key: 'receivedCurrency' },
-                    { label: 'Fee Amount', key: 'txFeeNumber' },
-                    { label: 'Fee Currency', key: 'txFeeCurrencyCode' },
-                    { label: 'Net Worth Amount', key: 'amountInFiats.' + selectedCurrency },
-                    { label: 'Net Worth Currency', key: 'netWorthCurrency' },
-                    { label: 'Label', key: '' },
-                    { label: 'Description', key: 'memo' },
-                    { label: 'TxHash', key: 'hash' }
-                  ]}
+                  data={processDataForExport(filteredActivities || [], platformCSVExport)}
+                  headers={
+                    platformCSVHeaders.find(
+                      (header) => header.platform.toLowerCase() === platformCSVExport.toLowerCase()
+                    )?.headers || []
+                  }
                   filename={'export ' + new Date().toISOString() + '.csv'}
                   className={'button-action' + (!(activities?.length > 0) ? ' disabled' : '')}
                 >
-                  <DownloadIcon /> CSV for Koinly
+                  <DownloadIcon /> CSV for {platformCSVExport}
                 </CSVLink>
               )}
-              <br />
-              <br />
-              Let us know if we miss koinlyIDs for your tokens. We will add them to the system.
+              {platformCSVExport === 'Koinly' && (
+                <>
+                  <br />
+                  <br />
+                  Let us know if we miss koinlyIDs for your tokens. We will add them to the system.
+                </>
+              )}
             </div>
           </>
           <>
