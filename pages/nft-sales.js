@@ -683,7 +683,7 @@ export default function NftSales({
                   {hasMore !== 'first' ? (
                     <>
                       {!sessionToken ? (
-                        <Trans i18nKey="general.login-to-bithomp-pro">
+                        <Trans i18nKey="general.login-to-bithomp-pro-explorer-or-sales-page">
                           Use different filter options or select other search parameters to explore more NFTs that match your interests. Log in to <Link href="/admin">Bithomp Pro</Link> to enable infinite scroll and access all existing results!
                         </Trans>
                       ) : (
