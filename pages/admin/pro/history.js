@@ -77,6 +77,22 @@ const dateFormatters = {
     const ss = pad(date.getUTCSeconds())
 
     return `${mm}/${dd}/${yyyy} ${hh}:${min}:${ss}`
+  },
+  CryptoTax: (timestamp) => {
+    // Format: YYYY-MM-DD HH:mm:ss
+    const date = new Date(timestamp * 1000)
+
+    const pad = (n) => n.toString().padStart(2, '0')
+
+    const yyyy = date.getUTCFullYear()
+    const mm = pad(date.getUTCMonth() + 1)
+    const dd = pad(date.getUTCDate())
+
+    const hh = pad(date.getUTCHours())
+    const min = pad(date.getUTCMinutes())
+    const ss = pad(date.getUTCSeconds())
+
+    return `${yyyy}-${mm}-${dd} ${hh}:${min}:${ss}`
   }
 }
 
@@ -144,6 +160,26 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
           { label: 'Type', key: 'coinLedgerTxType' },
           { label: 'Description (Optional)', key: 'memo' },
           { label: 'TxHash (Optional)', key: 'hash' }
+        ]
+      },
+      {
+        platform: 'CryptoTax',
+        headers: [
+          { label: 'Timestamp (UTC)', key: 'timestampExport' },
+          { label: 'Type', key: 'cryptoTaxTxType' },
+          { label: 'Base Currency', key: 'baseCurrency' },
+          { label: 'Base Amount', key: 'baseAmount' },
+          { label: 'Quote Currency (Optional)', key: '' },
+          { label: 'Quote Amount (Optional)', key: '' },
+          { label: 'Fee Currency (Optional)', key: 'cryptoTaxFeeCurrencyCode' },
+          { label: 'Fee Amount (Optional)', key: 'cryptoTaxFeeNumber' },
+          { label: 'From (Optional)', key: '' },
+          { label: 'To (Optional)', key: '' },
+          { label: 'Blockchain (Optional)', key: '' },
+          { label: 'ID (Optional)', key: 'hash' },
+          { label: 'Description (Optional)', key: 'memo' },
+          { label: 'Reference Price Per Unit (Optional)', key: '' },
+          { label: 'Reference Price Currency (Optional)', key: '' }
         ]
       }
     ],
@@ -336,6 +372,30 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
 
         // For CoinLedger platform
         res.activities[i].coinLedgerTxType = res.activities[i].amountNumber > 0 ? 'Deposit' : 'Withdrawal'
+
+        // For CryptoTax platform
+        res.activities[i].cryptoTaxTxType =
+          res.activities[i].amountNumber > 0
+            ? 'buy'
+            : Math.abs(res.activities[i].amountNumber) <= res.activities[i].txFeeNumber
+            ? 'fee'
+            : 'sell'
+
+        res.activities[i].cryptoTaxFeeCurrencyCode = res.activities[i].txFeeCurrencyCode
+        res.activities[i].cryptoTaxFeeNumber = res.activities[i].txFeeNumber
+
+        if (res.activities[i].cryptoTaxTxType === 'buy') {
+          res.activities[i].baseCurrency = res.activities[i].receivedCurrency
+          res.activities[i].baseAmount = res.activities[i].receivedAmount
+        } else {
+          res.activities[i].baseCurrency = res.activities[i].sentCurrency
+          res.activities[i].baseAmount = res.activities[i].sentAmount
+          // don't include this fee amount in the fee column for type 'fee'
+          if (res.activities[i].cryptoTaxTxType === 'fee') {
+            res.activities[i].cryptoTaxFeeCurrencyCode = ''
+            res.activities[i].cryptoTaxFeeNumber = ''
+          }
+        }
       }
       setData(res) // last request data
       if (options?.marker) {
@@ -524,7 +584,8 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
                   setValue={setPlatformCSVExport}
                   optionsList={[
                     { value: 'Koinly', label: 'Koinly' },
-                    { value: 'CoinLedger', label: 'CoinLedger' }
+                    { value: 'CoinLedger', label: 'CoinLedger' },
+                    { value: 'CryptoTax', label: 'CryptoTax' }
                   ]}
                 />
                 <button className="dropdown-btn" onClick={() => setSortMenuOpen(!sortMenuOpen)}>
