@@ -18,7 +18,7 @@ import {
   timeFromNow
 } from '../../utils/format'
 import { decode, server, xahauNetwork } from '../../utils'
-import { errorCodeDescription, shortErrorCode } from '../../utils/transaction'
+import { dappBySourceTag, errorCodeDescription, shortErrorCode } from '../../utils/transaction'
 import { add } from '../../utils/calc'
 
 const gatewaySum = (balances) => {
@@ -158,7 +158,7 @@ export const TransactionCard = ({
                   <tr key={'a1' + j}>
                     <TData>Memo {memos.length > 1 ? j + 1 : ''}</TData>
                     <TData>
-                      {memotype && (
+                      {memotype && memotype.toLowerCase() !== 'memo' && (
                         <>
                           {memotype}
                           <br />
@@ -199,6 +199,8 @@ export const TransactionCard = ({
     //check why wouldn't it be always in specs
     emitTX = specification?.emittedDetails?.emitParentTxnID || tx?.EmitDetails?.EmitParentTxnID
   }
+
+  const dapp = dappBySourceTag(tx.SourceTag)
 
   return (
     <>
@@ -300,10 +302,10 @@ export const TransactionCard = ({
                       )}
                     </>
                   )}
-                  {tx.TransactionType !== 'Payment' && !tx.TransactionType?.includes('Check') && tx.SourceTag && (
+                  {dapp && (
                     <tr>
-                      <TData>Source tag</TData>
-                      <TData>{tx.SourceTag}</TData>
+                      <TData>Client</TData>
+                      <TData>{dapp}</TData>
                     </tr>
                   )}
 
@@ -447,7 +449,9 @@ export const TransactionCard = ({
                         <>
                           {tx.TicketSequence ? (
                             <tr>
-                              <TData>Ticket sequence</TData>
+                              <TData>
+                                <span className="bold">Ticket</span> sequence
+                              </TData>
                               <TData>#{tx.TicketSequence}</TData>
                             </tr>
                           ) : (
@@ -457,6 +461,15 @@ export const TransactionCard = ({
                             </tr>
                           )}
                         </>
+                      )}
+                      {(dapp ||
+                        (tx.SourceTag !== undefined &&
+                          tx.TransactionType !== 'Payment' &&
+                          !tx.TransactionType?.includes('Check'))) && (
+                        <tr>
+                          <TData>Source tag</TData>
+                          <TData>{tx.SourceTag}</TData>
+                        </tr>
                       )}
                       {tx?.hash && id !== tx.hash && (
                         <tr>
