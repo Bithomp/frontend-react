@@ -82,17 +82,16 @@ const dateFormatters = {
     // Format: mm/dd/yyyy hh:mm:ss in UTC
     const date = new Date(timestamp * 1000)
     const pad = (n) => n.toString().padStart(2, '0')
-    
+
     const mm = pad(date.getUTCMonth() + 1)
     const dd = pad(date.getUTCDate())
     const yyyy = date.getUTCFullYear()
     const hh = pad(date.getUTCHours())
     const min = pad(date.getUTCMinutes())
     const ss = pad(date.getUTCSeconds())
-    
+
     return `${mm}/${dd}/${yyyy} ${hh}:${min}:${ss}`
   }
-    
 }
 
 const processDataForExport = (activities, platform) => {
@@ -162,14 +161,14 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
         ]
       },
       {
-        platform: "ZenLedger",
+        platform: 'ZenLedger',
         headers: [
           { label: 'Timestamp', key: 'timestampExport' },
           { label: 'Type', key: 'zenLedgerTxType' },
-          { label: 'IN Amount', key: 'receivedAmount' },
-          { label: 'IN Currency', key: 'receivedCurrency' },
-          { label: 'Out Amount', key: 'sentAmount' },
-          { label: 'Out Currency', key: 'sentCurrency' },
+          { label: 'IN Amount', key: 'zenLedgerReceivedAmount' },
+          { label: 'IN Currency', key: 'zenLedgerReceivedCurrency' },
+          { label: 'Out Amount', key: 'zenLedgerSentAmount' },
+          { label: 'Out Currency', key: 'zenLedgerSentCurrency' },
           { label: 'Fee Amount', key: 'txFeeNumber' },
           { label: 'Fee Currency', key: 'txFeeCurrencyCode' },
           { label: 'Exchange(optional)', key: 'platform' },
@@ -368,9 +367,30 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
         res.activities[i].coinLedgerTxType = res.activities[i].amountNumber > 0 ? 'Deposit' : 'Withdrawal'
 
         // For ZenLedger platform
-        res.activities[i].zenLedgerTxType = res.activities[i].amountNumber > 0 
-          ? 'Buy' 
-          : (Math.abs(res.activities[i].amountNumber) <= res.activities[i].txFeeNumber ? 'Fee' : 'Sell')
+        if (res.activities[i].amountNumber > 0) {
+          res.activities[i].zenLedgerTxType = 'Receive'
+          res.activities[i].zenLedgerReceivedAmount = res.activities[i].amountNumber
+          res.activities[i].zenLedgerReceivedCurrency = res.activities[i].receivedCurrency
+
+          // USD Value
+          res.activities[i].zenLedgerSentAmount =
+            res.activities[i].amountInFiats?.[selectedCurrency] > 0
+              ? res.activities[i].amountInFiats?.[selectedCurrency]
+              : ''
+          res.activities[i].zenLedgerSentCurrency = selectedCurrency
+        } else {
+          res.activities[i].zenLedgerTxType =
+            Math.abs(res.activities[i].amountNumber) <= res.activities[i].txFeeNumber ? 'Fee' : 'Send'
+          res.activities[i].zenLedgerSentAmount = res.activities[i].amountNumber
+          res.activities[i].zenLedgerSentCurrency = res.activities[i].currencyCode
+
+          // USD Value
+          res.activities[i].zenLedgerReceivedAmount =
+            res.activities[i].amountInFiats?.[selectedCurrency] > 0
+              ? res.activities[i].amountInFiats?.[selectedCurrency]
+              : ''
+          res.activities[i].zenLedgerReceivedCurrency = selectedCurrency
+        }
       }
       setData(res) // last request data
       if (options?.marker) {
