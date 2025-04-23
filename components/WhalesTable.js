@@ -1,4 +1,4 @@
-import { AddressWithIconFilled, amountFormat } from '../utils/format'
+import { AddressWithIconFilled, amountFormat, fullNiceNumber } from '../utils/format'
 
 export const WhalesTable = ({ isMobile, data }) => (
   <>
@@ -21,7 +21,7 @@ export const WhalesTable = ({ isMobile, data }) => (
                   <td>
                     <AddressWithIconFilled data={tx} />
                   </td>
-                  <td className="right">{tx.transactionsCount}</td>
+                  <td className="right">{fullNiceNumber(tx.transactionsCount)}</td>
                   <td className="right">{amountFormat(tx.amount, { short: true, maxFractionDigits: 2 })}</td>
                 </tr>
               ))}
@@ -39,7 +39,7 @@ export const WhalesTable = ({ isMobile, data }) => (
                   <td>
                     <br />
                     <AddressWithIconFilled data={tx} />
-                    <p>Transactions: {tx.transactionsCount}</p>
+                    <p>Transactions: {fullNiceNumber(tx.transactionsCount)}</p>
                     <p>
                       Amount:{' '}
                       <span className="bold">{amountFormat(tx.amount, { short: true, maxFractionDigits: 2 })}</span>
