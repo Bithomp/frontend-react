@@ -57,6 +57,18 @@ const showFiat = (fiat, selectedCurrency) => {
   )
 }
 
+const timePieces = (timestamp) => {
+  const date = new Date(timestamp * 1000) // Convert to milliseconds
+  const pad = (n) => n.toString().padStart(2, '0')
+  const dd = pad(date.getUTCDate())
+  const mm = pad(date.getUTCMonth() + 1)
+  const yyyy = date.getUTCFullYear()
+  const hh = pad(date.getUTCHours())
+  const min = pad(date.getUTCMinutes())
+  const ss = pad(date.getUTCSeconds())
+  return { dd, mm, yyyy, hh, min, ss }
+}
+
 const dateFormatters = {
   Koinly: (timestamp) => {
     // ISO format: YYYY-MM-DDTHH:MM:SS.000Z
@@ -64,32 +76,12 @@ const dateFormatters = {
   },
   CoinLedger: (timestamp) => {
     // Format: MM/DD/YYYY HH:MM:SS in UTC
-    const date = new Date(timestamp * 1000) // Convert to milliseconds
-
-    const pad = (n) => n.toString().padStart(2, '0')
-
-    const mm = pad(date.getUTCMonth() + 1)
-    const dd = pad(date.getUTCDate())
-    const yyyy = date.getUTCFullYear()
-
-    const hh = pad(date.getUTCHours())
-    const min = pad(date.getUTCMinutes())
-    const ss = pad(date.getUTCSeconds())
-
+    const { mm, dd, yyyy, hh, min, ss } = timePieces(timestamp)
     return `${mm}/${dd}/${yyyy} ${hh}:${min}:${ss}`
   },
   CoinTracking: (timestamp) => {
     // Format: dd.mm.yyyy HH:MM:SS in UTC
-    const date = new Date(timestamp * 1000)
-    const pad = (n) => n.toString().padStart(2, '0')
-
-    const dd = pad(date.getUTCDate())
-    const mm = pad(date.getUTCMonth() + 1)
-    const yyyy = date.getUTCFullYear()
-    const hh = pad(date.getUTCHours())
-    const min = pad(date.getUTCMinutes())
-    const ss = pad(date.getUTCSeconds())
-
+    const { dd, mm, yyyy, hh, min, ss } = timePieces(timestamp)
     return `${dd}.${mm}.${yyyy} ${hh}:${min}:${ss}`
   }
 }
@@ -98,6 +90,9 @@ const processDataForExport = (activities, platform) => {
   return activities.map((activity) => {
     const processedActivity = { ...activity }
     processedActivity.timestampExport = dateFormatters[platform](activity.timestamp)
+    processedActivity.amountExport = amountFormat(activity.amount)
+    processedActivity.transferFeeExport = amountFormat(activity.transferFee)
+    processedActivity.txFeeExport = amountFormat(activity.txFee)
     return processedActivity
   })
 }
@@ -161,7 +156,7 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
         ]
       },
       {
-        platform: "CoinTracking",
+        platform: 'CoinTracking',
         headers: [
           { label: 'Type', key: 'coinTrackingTxType' },
           { label: 'Buy Amount', key: 'receivedAmount' },
@@ -328,7 +323,6 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
       for (let i = 0; i < res.activities.length; i++) {
         let sending = res.activities[i].amountInFiats?.[selectedCurrency]?.[0] === '-'
         res.activities[i].index = options?.marker ? activities.length + 1 + i : i + 1
-        res.activities[i].amountExport = amountFormat(res.activities[i].amount)
         res.activities[i].amountNumber = res.activities[i].amount?.value || res.activities[i].amount / 1000000
         res.activities[i].currencyCode = res.activities[i].amount?.currency || nativeCurrency
         const { currency } = amountParced(res.activities[i].amount)
@@ -346,17 +340,12 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
         }
 
         res.activities[i].currencyIssuer = res.activities[i].amount?.issuer
-
-        res.activities[i].transferFeeExport = amountFormat(res.activities[i].transferFee)
         res.activities[i].transferFeeNumber = res.activities[i].transferFee?.value
         res.activities[i].transferFeeCurrencyCode = res.activities[i].transferFee?.currency
         res.activities[i].transferFeeCurrencyIssuer = res.activities[i].transferFee?.issuer
 
-        res.activities[i].txFeeExport = amountFormat(res.activities[i].txFee)
         res.activities[i].txFeeNumber = res.activities[i].txFee / 1000000
         res.activities[i].txFeeCurrencyCode = nativeCurrency
-
-        res.activities[i].timestampExport = new Date(res.activities[i].timestamp * 1000).toISOString()
 
         res.activities[i].sentAmount = sending ? res.activities[i].amountNumber : ''
         res.activities[i].sentCurrency = sending ? scvCurrency : ''
@@ -373,9 +362,12 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
         res.activities[i].coinLedgerTxType = res.activities[i].amountNumber > 0 ? 'Deposit' : 'Withdrawal'
 
         // For CoinTracking platform
-        res.activities[i].coinTrackingTxType = res.activities[i].amountNumber > 0 
-          ? 'Deposit' 
-          : (Math.abs(res.activities[i].amountNumber) <= res.activities[i].txFeeNumber ? 'Other Fee' : 'Withdrawal')
+        res.activities[i].coinTrackingTxType =
+          res.activities[i].amountNumber > 0
+            ? 'Deposit'
+            : Math.abs(res.activities[i].amountNumber) <= res.activities[i].txFeeNumber
+            ? 'Other Fee'
+            : 'Withdrawal'
       }
       setData(res) // last request data
       if (options?.marker) {
