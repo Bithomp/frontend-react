@@ -77,6 +77,10 @@ const dateFormatters = {
     const ss = pad(date.getUTCSeconds())
 
     return `${mm}/${dd}/${yyyy} ${hh}:${min}:${ss}`
+  },
+  TaxBit: (timestamp) => {
+    // ISO format: YYYY-MM-DDTHH:MM:SS.000Z (same as Koinly)
+    return new Date(timestamp * 1000).toISOString()
   }
 }
 
@@ -144,6 +148,31 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
           { label: 'Type', key: 'coinLedgerTxType' },
           { label: 'Description (Optional)', key: 'memo' },
           { label: 'TxHash (Optional)', key: 'hash' }
+        ]
+      },
+      {
+        platform: 'TaxBit',
+        headers: [
+          { label: 'timestamp', key: 'timestampExport' },
+          { label: 'txid', key: 'hash' },
+          { label: 'source_name', key: '' },
+          { label: 'from_wallet_address', key: 'address' },
+          { label: 'to_wallet_address', key: '' },
+          { label: 'category', key: 'taxBitTxType' },
+          { label: 'in_currency', key: 'receivedCurrency' },
+          { label: 'in_amount', key: 'receivedAmount' },
+          { label: 'in_currency_fiat', key: 'netWorthCurrency' },
+          { label: 'in_amount_fiat', key: 'amountInFiats.' + selectedCurrency },
+          { label: 'out_currency', key: 'sentCurrency' },
+          { label: 'out_amount', key: 'sentAmount' },
+          { label: 'out_currency_fiat', key: 'netWorthCurrency' },
+          { label: 'out_amount_fiat', key: 'amountInFiats.' + selectedCurrency },
+          { label: 'fee_currency', key: 'txFeeCurrencyCode' },
+          { label: 'fee', key: 'txFeeNumber' },
+          { label: 'fee_currency_fiat', key: selectedCurrency },
+          { label: 'fee_fiat', key: 'txFeeInFiats.' + selectedCurrency },
+          { label: 'memo', key: 'memo' },
+          { label: 'status', key: '' }
         ]
       }
     ],
@@ -336,6 +365,9 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
 
         // For CoinLedger platform
         res.activities[i].coinLedgerTxType = res.activities[i].amountNumber > 0 ? 'Deposit' : 'Withdrawal'
+
+        // For TaxBit platform
+        res.activities[i].taxBitTxType = res.activities[i].amountNumber > 0 ? 'Buy' : 'Sell'
       }
       setData(res) // last request data
       if (options?.marker) {
@@ -524,7 +556,8 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
                   setValue={setPlatformCSVExport}
                   optionsList={[
                     { value: 'Koinly', label: 'Koinly' },
-                    { value: 'CoinLedger', label: 'CoinLedger' }
+                    { value: 'CoinLedger', label: 'CoinLedger' },
+                    { value: 'TaxBit', label: 'TaxBit' }
                   ]}
                 />
                 <button className="dropdown-btn" onClick={() => setSortMenuOpen(!sortMenuOpen)}>
