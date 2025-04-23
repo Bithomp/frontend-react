@@ -200,7 +200,7 @@ export const TransactionCard = ({
     emitTX = specification?.emittedDetails?.emitParentTxnID || tx?.EmitDetails?.EmitParentTxnID
   }
 
-  const dapp = dappBySourceTag(tx.SourceTag)
+  const dapp = dappBySourceTag(tx?.SourceTag)
 
   return (
     <>
@@ -463,12 +463,12 @@ export const TransactionCard = ({
                         </>
                       )}
                       {(dapp ||
-                        (tx.SourceTag !== undefined &&
+                        (tx?.SourceTag !== undefined &&
                           tx.TransactionType !== 'Payment' &&
                           !tx.TransactionType?.includes('Check'))) && (
                         <tr>
                           <TData>Source tag</TData>
-                          <TData>{tx.SourceTag}</TData>
+                          <TData>{tx?.SourceTag}</TData>
                         </tr>
                       )}
                       {tx?.hash && id !== tx.hash && (
