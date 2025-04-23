@@ -220,6 +220,21 @@ export default function NftSales({
     ])
   }
 
+  const hasActiveFilters = () => {
+    return !!(
+      issuer ||
+      taxon ||
+      buyer ||
+      seller ||
+      search ||
+      (period && period !== (xahauNetwork ? 'year' : 'week')) ||
+      (saleTab !== 'primaryAndSecondary') ||
+      includeWithoutMediaData ||
+      currency ||
+      currencyIssuer
+    )
+  }
+
   const checkApi = async (options) => {
     if (!period || !sortCurrency) return
 
@@ -320,7 +335,7 @@ export default function NftSales({
       }
 
       if (newdata.sales) {
-        if (newdata.sales.length > 0) {
+        if (newdata.sales.length < 0) {
           //for CSV export
           for (let i = 0; i < newdata.sales.length; i++) {
             newdata.sales[i].localDate = fullDateAndTime(newdata.sales[i].acceptedAt, null, { asText: true })
@@ -341,7 +356,11 @@ export default function NftSales({
           setSales([...salesData, ...newdata.sales])
         } else {
           if (marker === 'first') {
-            setErrorMessage(t('nfts.no-nfts'))
+            setErrorMessage(
+              hasActiveFilters() 
+                ? t('nfts.no-nfts')
+                : t('general.no-data')
+            )
           } else {
             setHasMore(false)
           }
