@@ -57,6 +57,18 @@ const showFiat = (fiat, selectedCurrency) => {
   )
 }
 
+const timePieces = (timestamp) => {
+  const date = new Date(timestamp * 1000) // Convert to milliseconds
+  const pad = (n) => n.toString().padStart(2, '0')
+  const dd = pad(date.getUTCDate())
+  const mm = pad(date.getUTCMonth() + 1)
+  const yyyy = date.getUTCFullYear()
+  const hh = pad(date.getUTCHours())
+  const min = pad(date.getUTCMinutes())
+  const ss = pad(date.getUTCSeconds())
+  return { dd, mm, yyyy, hh, min, ss }
+}
+
 const dateFormatters = {
   Koinly: (timestamp) => {
     // ISO format: YYYY-MM-DDTHH:MM:SS.000Z
@@ -64,32 +76,12 @@ const dateFormatters = {
   },
   CoinLedger: (timestamp) => {
     // Format: MM/DD/YYYY HH:MM:SS in UTC
-    const date = new Date(timestamp * 1000) // Convert to milliseconds
-
-    const pad = (n) => n.toString().padStart(2, '0')
-
-    const mm = pad(date.getUTCMonth() + 1)
-    const dd = pad(date.getUTCDate())
-    const yyyy = date.getUTCFullYear()
-
-    const hh = pad(date.getUTCHours())
-    const min = pad(date.getUTCMinutes())
-    const ss = pad(date.getUTCSeconds())
-
+    const { mm, dd, yyyy, hh, min, ss } = timePieces(timestamp)
     return `${mm}/${dd}/${yyyy} ${hh}:${min}:${ss}`
   },
   CoinTracking: (timestamp) => {
     // Format: dd.mm.yyyy HH:MM:SS in UTC
-    const date = new Date(timestamp * 1000)
-    const pad = (n) => n.toString().padStart(2, '0')
-
-    const dd = pad(date.getUTCDate())
-    const mm = pad(date.getUTCMonth() + 1)
-    const yyyy = date.getUTCFullYear()
-    const hh = pad(date.getUTCHours())
-    const min = pad(date.getUTCMinutes())
-    const ss = pad(date.getUTCSeconds())
-
+    const { dd, mm, yyyy, hh, min, ss } = timePieces(timestamp)
     return `${dd}.${mm}.${yyyy} ${hh}:${min}:${ss}`
   }
 }
@@ -161,7 +153,7 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
         ]
       },
       {
-        platform: "CoinTracking",
+        platform: 'CoinTracking',
         headers: [
           { label: 'Type', key: 'coinTrackingTxType' },
           { label: 'Buy Amount', key: 'receivedAmount' },
@@ -373,9 +365,12 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
         res.activities[i].coinLedgerTxType = res.activities[i].amountNumber > 0 ? 'Deposit' : 'Withdrawal'
 
         // For CoinTracking platform
-        res.activities[i].coinTrackingTxType = res.activities[i].amountNumber > 0 
-          ? 'Deposit' 
-          : (Math.abs(res.activities[i].amountNumber) <= res.activities[i].txFeeNumber ? 'Other Fee' : 'Withdrawal')
+        res.activities[i].coinTrackingTxType =
+          res.activities[i].amountNumber > 0
+            ? 'Deposit'
+            : Math.abs(res.activities[i].amountNumber) <= res.activities[i].txFeeNumber
+            ? 'Other Fee'
+            : 'Withdrawal'
       }
       setData(res) // last request data
       if (options?.marker) {
