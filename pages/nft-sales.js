@@ -335,7 +335,7 @@ export default function NftSales({
       }
 
       if (newdata.sales) {
-        if (newdata.sales.length < 0) {
+        if (newdata.sales.length > 0) {
           //for CSV export
           for (let i = 0; i < newdata.sales.length; i++) {
             newdata.sales[i].localDate = fullDateAndTime(newdata.sales[i].acceptedAt, null, { asText: true })
