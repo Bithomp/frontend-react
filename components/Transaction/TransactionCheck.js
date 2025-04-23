@@ -13,7 +13,7 @@ import CopyButton from '../UI/CopyButton'
 import { fullDateAndTime, timeFromNow } from '../../utils/format'
 import { useTranslation } from 'next-i18next'
 import { timestampExpired } from '../../utils'
-import { addressBalanceChanges } from '../../utils/transaction'
+import { addressBalanceChanges, dappBySourceTag } from '../../utils/transaction'
 
 export const TransactionCheck = ({ data, pageFiatRate, selectedCurrency }) => {
   const { t, i18n } = useTranslation()
@@ -52,6 +52,9 @@ export const TransactionCheck = ({ data, pageFiatRate, selectedCurrency }) => {
   }
   */
 
+  //don't show sourcetag if it's the tag of a known dapp
+  const dapp = dappBySourceTag(specification.source.tag)
+
   return (
     <TransactionCard data={data} pageFiatRate={pageFiatRate} selectedCurrency={selectedCurrency}>
       <tr>
@@ -60,7 +63,7 @@ export const TransactionCheck = ({ data, pageFiatRate, selectedCurrency }) => {
           <AddressWithIconFilled data={checkChanges.source} name="address" />
         </TData>
       </tr>
-      {checkChanges.source?.tag !== undefined && (
+      {checkChanges.source?.tag !== undefined && !dapp && (
         <tr>
           <TData>Source tag</TData>
           <TData className="bold">{checkChanges.source.tag}</TData>
