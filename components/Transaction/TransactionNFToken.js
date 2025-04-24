@@ -3,6 +3,7 @@ import { TData } from '../Table'
 
 import { TransactionCard } from './TransactionCard'
 import { AddressWithIconFilled, amountFormat, nftIdLink, nftOfferLink } from '../../utils/format'
+import { decode } from '../../utils'
 
 //NFTokenAcceptOffer, NFTokenBurn, NFTokenCancelOffer, NFTokenCreateOffer, NFTokenMint, NFTokenModify
 
@@ -13,7 +14,7 @@ const nftData = (change, nftInfo, txType) => {
         <TData>NFT</TData>
         <TData>{nftIdLink(change.nftokenID)}</TData>
       </tr>
-      {txType !== 'NFTokenMint' && (
+      {txType !== 'NFTokenMint' && txType !== 'NFTokenModify' && (
         <>
           {nftInfo.issuer && (
             <tr>
@@ -23,7 +24,7 @@ const nftData = (change, nftInfo, txType) => {
               </TData>
             </tr>
           )}
-          {nftInfo.transferFee && (
+          {nftInfo.transferFee !== undefined && (
             <tr>
               <TData>Transfer fee</TData>
               <TData>{nftInfo.transferFee / 1000}%</TData>
@@ -48,6 +49,20 @@ const nftData = (change, nftInfo, txType) => {
           <TData>NFT serial</TData>
           <TData>{nftInfo.sequence}</TData>
         </tr>
+      )}
+      {change.previousURI && (
+        <>
+          <tr>
+            <TData>Previous URI</TData>
+            <TData>{decode(change.previousURI)}</TData>
+          </tr>
+          {change.uri && (
+            <tr>
+              <TData className="orange">New URI</TData>
+              <TData>{decode(change.uri)}</TData>
+            </tr>
+          )}
+        </>
       )}
     </>
   )
@@ -76,7 +91,7 @@ const nftokenChanges = (changes, nftokens, txType) => {
   let transfer = false
   let addressFrom = ''
   let addressTo = ''
-  if (txType === 'NFTokenMint' || txType === 'NFTokenAcceptOffer') {
+  if (txType === 'NFTokenMint' || txType === 'NFTokenModify' || txType === 'NFTokenAcceptOffer') {
     showAll = false
     if (txType === 'NFTokenAcceptOffer' && Object.keys(changes).length === 2) {
       transfer = true
@@ -100,7 +115,7 @@ const nftokenChanges = (changes, nftokens, txType) => {
             <tr key={'h' + i}>
               <TData>&nbsp;</TData>
               <TData>
-                {i + 1}. <AddressWithIconFilled data={address} name="address" />
+                {i + 1}. <AddressWithIconFilled data={{ address }} name="address" />
               </TData>
             </tr>
           )
