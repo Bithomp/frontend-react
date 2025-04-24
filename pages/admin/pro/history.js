@@ -81,16 +81,16 @@ const dateFormatters = {
   TokenTax: (timestamp) => {
     // Format: MM/DD/YY HH:MM
     const date = new Date(timestamp * 1000)
-    
+
     const pad = (n) => n.toString().padStart(2, '0')
-    
+
     const mm = pad(date.getUTCMonth() + 1)
     const dd = pad(date.getUTCDate())
     const yy = date.getUTCFullYear().toString().slice(-2)
-    
+
     const hh = pad(date.getUTCHours())
     const min = pad(date.getUTCMinutes())
-    
+
     return `${mm}/${dd}/${yy} ${hh}:${min}`
   }
 }
@@ -133,9 +133,9 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
         headers: [
           { label: 'Date', key: 'timestampExport' },
           { label: 'Sent Amount', key: 'sentAmount' },
-          { label: 'Sent Currency', key: 'sentCurrency' },
+          { label: 'Sent Currency', key: 'koinlySentCurrency' },
           { label: 'Received Amount', key: 'receivedAmount' },
-          { label: 'Received Currency', key: 'receivedCurrency' },
+          { label: 'Received Currency', key: 'koinlyReceivedCurrency' },
           { label: 'Fee Amount', key: 'txFeeNumber' },
           { label: 'Fee Currency', key: 'txFeeCurrencyCode' },
           { label: 'Net Worth Amount', key: 'amountInFiats.' + selectedCurrency },
@@ -162,7 +162,7 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
         ]
       },
       {
-        platform: "TokenTax",
+        platform: 'TokenTax',
         headers: [
           { label: 'Type', key: 'tokenTaxTxType' },
           { label: 'BuyAmount', key: 'receivedAmount' },
@@ -355,10 +355,14 @@ export default function History({ queryAddress, selectedCurrency, setSelectedCur
         res.activities[i].timestampExport = new Date(res.activities[i].timestamp * 1000).toISOString()
 
         res.activities[i].sentAmount = sending ? res.activities[i].amountNumber : ''
-        res.activities[i].sentCurrency = sending ? scvCurrency : ''
+        res.activities[i].sentCurrency = sending ? currency : ''
 
         res.activities[i].receivedAmount = !sending ? res.activities[i].amountNumber : ''
-        res.activities[i].receivedCurrency = !sending ? scvCurrency : ''
+        res.activities[i].receivedCurrency = !sending ? currency : ''
+
+        // For Koinly platform
+        res.activities[i].koinlySentCurrency = sending ? scvCurrency : ''
+        res.activities[i].koinlyReceivedCurrency = !sending ? scvCurrency : ''
 
         res.activities[i].netWorthCurrency = selectedCurrency.toUpperCase()
 
