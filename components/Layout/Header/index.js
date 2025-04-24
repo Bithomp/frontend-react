@@ -28,6 +28,7 @@ import { IoIosRocket } from 'react-icons/io'
 import LogoSmall from '../LogoSmall'
 import XrplExplorer from '../../../public/images/xrplexplorer/long.svg'
 import XahauExplorer from '../../../public/images/xahauexplorer/long.svg'
+import LogoAnimated from '../LogoAnimated'
 
 let timeoutIds = {}
 
@@ -158,14 +159,20 @@ export default function Header({
     setSignRequest(router.pathname === '/account/[[...id]]' ? { wallet, redirect: 'account' } : { wallet })
   }
 
+  const bithomp = server.includes('bithomp')
+
   return (
     <div className={menuOpen ? 'mobile-menu-open' : ''}>
       <header>
         <div className="header-logo">
           <Link href="/" aria-label="Main page">
-            {(width < 1060 && width > 350) || width > 1240 ? (
+            {(width < 1060 && width > 350) || width > 1240 || !width ? (
               xahauNetwork ? (
                 <XahauExplorer height="43" width="263" />
+              ) : bithomp ? (
+                <div style={{ height: 46, width: 160, marginTop: -2.5 }}>
+                  <LogoAnimated />
+                </div>
               ) : (
                 <XrplExplorer height="43" width="227" />
               )
@@ -174,7 +181,10 @@ export default function Header({
             )}
           </Link>
         </div>
-        <div className="header-menu-left" style={width > 1240 ? { left: xahauNetwork ? 300 : 260 } : {}}>
+        <div
+          className="header-menu-left"
+          style={!width || width > 1240 ? { left: xahauNetwork ? 300 : bithomp ? 193 : 260 } : {}}
+        >
           <MenuDropDown
             id="dropdown1"
             title={t('menu.services.services')}
@@ -336,6 +346,17 @@ export default function Header({
                   Xaman
                 </span>
 
+                <span onClick={() => signinWithWallet('crossmark')} className="link">
+                  <Image
+                    src="/images/wallets/crossmark.png"
+                    className="wallet-logo"
+                    alt="Crossmark Wallet"
+                    height={24}
+                    width={24}
+                  />
+                  Crossmark
+                </span>
+
                 <span
                   onClick={() => {
                     signinWithWallet('gemwallet')
@@ -475,6 +496,15 @@ export default function Header({
                       src="/images/wallets/trezor.svg"
                       className="wallet-logo"
                       alt="Trezor Wallet"
+                      height={24}
+                      width={24}
+                    />
+                  )}
+                  {account?.wallet === 'crossmark' && (
+                    <Image
+                      src="/images/wallets/crossmark.png"
+                      className="wallet-logo"
+                      alt="Crossmark Wallet"
                       height={24}
                       width={24}
                     />

@@ -4,6 +4,15 @@ import { AddressWithIconFilled, fullDateAndTime } from '../../utils/format'
 import { xahauNetwork } from '../../utils'
 
 export default function NftData({ data, objects, ledgerTimestamp }) {
+  if (
+    !data?.ledgerInfo?.nftokenMinter &&
+    !data.ledgerInfo?.burnedNFTokens &&
+    !data.ledgerInfo?.mintedNFTokens &&
+    !(objects?.nftOfferList?.length > 0) &&
+    !(objects?.nftList?.length > 0)
+  )
+    return ''
+
   const title = 'NFT Data'
 
   const historicalTitle = ledgerTimestamp ? (

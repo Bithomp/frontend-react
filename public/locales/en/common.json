@@ -159,8 +159,8 @@
     }
   },
   "home": {
-    "title": "{{nativeCurrency}} Explorer | Scan {{nativeCurrency}} Ledger | {{explorerName}} Explorer",
-    "description": "Bithomp {{nativeCurrency}} Explorer. Track Ripple RLUSD, {{nativeCurrency}} accounts. Search {{nativeCurrency}} transactions. NFTs on {{explorerName}}. Validators, Amendments and much more.",
+    "title": "The best {{nativeCurrency}} Explorer | Scan {{nativeCurrency}} Ledger | {{explorerName}} Explorer",
+    "description": "Bithomp - The best {{nativeCurrency}} Explorer. Track Ripple USD (RLUSD), {{nativeCurrency}} accounts. Search {{nativeCurrency}} transactions. NFTs on {{explorerName}}. Validators, Amendments and much more.",
     "search-placeholder": "Search by Address / Transaction / NFT / Username / PayString / Offer / Currency hash",
     "search-placeholder-short": "Address / Transaction / Username",
     "scan-qr": "SCAN A CODE",
@@ -176,18 +176,18 @@
       "quorum": "Validation quorum",
       "proposers": "proposers",
       "accounts": "Accounts",
-      "accountsActiveLast24h": "Active accounts (24h)",
-      "transactionsLast24h": "Transactions (24h)",
-      "paymentsLast24h": "Payments (24h)",
-      "feesLast24h": "Fees (24h)",
+      "accountsActiveLast24h": "Active accounts",
+      "transactionsLast24h": "Transactions",
+      "paymentsLast24h": "Payments",
+      "feesLast24h": "Fees",
       "usernames": "Usernames",
       "nft": {
-        "created": "NFT minted",
-        "burned": "NFT burned",
+        "created": "Minted",
+        "burned": "Burned",
         "owners": "Current owners",
-        "issuers": "NFT issuers",
-        "transfers": "NFT transfers",
-        "for-sale": "NFTs for sale"
+        "issuers": "Issuers",
+        "transfers": "Transfers",
+        "for-sale": "Listed"
       },
       "escrows": "Escrows",
       "amms": "AMM pools",
@@ -207,6 +207,7 @@
     "base-reserve": "Base reserve",
     "increment-reserve": "Increment reserve",
     "total-supply": "Total supply",
+    "burned-by-hooks": "Burned by Hooks",
     "total-burned": "Total burned"
   },
   "nft-statistics": {

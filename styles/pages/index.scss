@@ -46,11 +46,11 @@ h2.landing-h2 {
     flex-flow: row wrap;
     justify-content: space-around;
     align-items: center;
-    &:nth-child(3), 
-    &:nth-child(4),
-    &:nth-child(5),
-    &:nth-child(6) {
-      margin-top: 20px;
+    margin-top: 35px;
+    .stat-header {
+      position: absolute;
+      top: -25px;
+      left: 0;
     }
     .stat-piece {
       display: inline-block;

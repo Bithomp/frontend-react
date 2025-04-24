@@ -558,11 +558,16 @@ export const amountFormat = (amount, options = {}) => {
   }
   const { value, currency, valuePrefix, issuer, type } = amountParced(amount)
 
+  let textCurrency = currency
+  if (options.noSpace) {
+    textCurrency = textCurrency?.trim()
+  }
+
   if (options.precise) {
     if (options.precise === 'nice') {
-      return niceNumber(value, 0, null, 15) + ' ' + valuePrefix + ' ' + currency
+      return niceNumber(value, 0, null, 15) + ' ' + valuePrefix + ' ' + textCurrency
     }
-    return value + ' ' + valuePrefix + ' ' + currency
+    return value + ' ' + valuePrefix + ' ' + textCurrency
   }
 
   let showValue = value
@@ -596,10 +601,6 @@ export const amountFormat = (amount, options = {}) => {
     )
   } else {
     //type: ['IOU', 'IOU demurraging', 'NFT']
-    let textCurrency = currency
-    if (options.noSpace) {
-      textCurrency = textCurrency?.trim()
-    }
     return showValue + ' ' + valuePrefix + ' ' + textCurrency
   }
 }
@@ -666,7 +667,7 @@ export const niceCurrency = (currency) => {
       currency = Buffer.from(currency, 'hex')
     }
   }
-  return currency
+  return currency.toString('utf8').replace(/\0/g, '') // remove padding nulls
 }
 
 export const amountParced = (amount) => {
@@ -955,6 +956,21 @@ export const codeHighlight = (json) => {
       }}
     />
   )
+}
+
+export const decodeJsonMemo = (memopiece, options) => {
+  if (options?.code === 'base64') {
+    try {
+      memopiece = atob(memopiece)
+    } catch (e) {
+      return memopiece
+    }
+  }
+  if (memopiece[0] === '{') {
+    memopiece = JSON.parse(memopiece)
+    return codeHighlight(memopiece)
+  }
+  return ''
 }
 
 export const showAmmPercents = (x) => {

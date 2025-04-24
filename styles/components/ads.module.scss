@@ -1,7 +1,7 @@
 .brandsBlock :global {
   flex-wrap: wrap;
   display: flex;
-  margin-top: 4px;
+  margin: 15px auto;
   justify-content: center;
   align-items: center;
   transition: background-color .5s;
@@ -12,7 +12,7 @@
     background-color: var(--button-additional);
     z-index: 1;
     position: relative;
-    margin: 20px;
+    margin: 10px;
     cursor: pointer;
     box-shadow: 0px 0px 2px rgba(0, 0, 0, 0.25);
     color: var(--text-main);
@@ -48,7 +48,7 @@
     }
   }
   /* 760px - 2 brands, 1100 - 3 brands, 1460 px when 4 brands */
-  @media only screen and (max-width: 760px) {
+  @media only screen and (max-width: 1100px) {
     .brand-item {
       height: 40px;
       width: 154px;

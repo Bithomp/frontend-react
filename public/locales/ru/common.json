@@ -176,16 +176,16 @@
       "quorum": "Кворум валидаторов",
       "proposers": "предлагающих",
       "accounts": "Адреса",
-      "accountsActiveLast24h": "Активных адресов за 24ч",
-      "transactionsLast24h": "Транзакций за 24ч",
-      "paymentsLast24h": "Платежей за 24ч",
-      "feesLast24h": "Комиссия за 24ч",
+      "accountsActiveLast24h": "Активные адреса",
+      "transactionsLast24h": "Транзакции",
+      "paymentsLast24h": "Платежи",
+      "feesLast24h": "Комиссия",
       "usernames": "Псевдонимы",
       "nft": {
-        "created": "NFT выпущено",
-        "burned": "NFT сожжено",
+        "created": "Выпущено",
+        "burned": "Сожжено",
         "owners": "Владельцев",
-        "issuers": "NFT эмитентов",
+        "issuers": "Эмитентов",
         "transfers": "Продано",
         "for-sale": "Продается"
       },
@@ -207,6 +207,7 @@
     "base-reserve": "Базовый резерв",
     "increment-reserve": "Резерв трастлайна и др.",
     "total-supply": "Всего существует",
+    "burned-by-hooks": "Сожжено Хуками",
     "total-burned": "Всего сожжено (комиссией)"
   },
   "nft-statistics": {

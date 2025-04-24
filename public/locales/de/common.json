@@ -176,18 +176,18 @@
       "quorum": "Quorum Validatoren",
       "proposers": "Antragsteller",
       "accounts": "Konten",
-      "accountsActiveLast24h": "Aktive Konten (24h)",
-      "transactionsLast24h": "Transaktionen (24h)",
-      "paymentsLast24h": "Zahlungen (24h)",
-      "feesLast24h": "Gebühren (24h)",
+      "accountsActiveLast24h": "Aktive Konten",
+      "transactionsLast24h": "Transaktionen",
+      "paymentsLast24h": "Zahlungen",
+      "feesLast24h": "Gebühren",
       "usernames": "Benutzernamen",
       "nft": {
-        "created": "NFT erstellt",
-        "burned": "NFT vernichtet",
+        "created": "Erstellt",
+        "burned": "Vernichtet",
         "owners": "Aktuelle Besitzer",
-        "issuers": "NFT Emittenten",
-        "transfers": "NFT Transfers",
-        "for-sale": "NFTs zum Verkauf"
+        "issuers": "Emittenten",
+        "transfers": "Transfers",
+        "for-sale": "Zum Verkauf"
       },
       "escrows": "Escrows",
       "amms": "AMM pools",
@@ -207,6 +207,7 @@
     "base-reserve": "Basis Reserve",
     "increment-reserve": "Zunahme Reserve",
     "total-supply": "Totales Angebot",
+    "burned-by-hooks": "Von Hooks verbrannt",
     "total-burned": "Total vernichtet"
   },
   "nft-statistics": {

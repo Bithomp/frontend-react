@@ -7,7 +7,7 @@ import Image from 'next/image'
 import { axiosServer, passHeaders } from '../../utils/axios'
 
 import { devNet, xahauNetwork, avatarSrc, nativeCurrency } from '../../utils'
-import { nativeCurrencyToFiat, shortNiceNumber } from '../../utils/format'
+import { shortNiceNumber } from '../../utils/format'
 import { getIsSsrMobile } from '../../utils/mobile'
 
 const RelatedLinks = dynamic(() => import('../../components/Account/RelatedLinks'), { ssr: false })
@@ -28,7 +28,7 @@ export async function getServerSideProps(context) {
         url:
           'v2/address/' +
           account +
-          '?username=true&service=true&verifiedDomain=true&parent=true&nickname=true&inception=true&flare=true&blacklist=true&payString=true&ledgerInfo=true&xamanMeta=true&bithomp=true' +
+          '?username=true&service=true&verifiedDomain=true&parent=true&nickname=true&inception=true&flare=true&blacklist=true&payString=true&ledgerInfo=true&xamanMeta=true&bithomp=true&obligations=true' +
           (ledgerTimestamp ? '&ledgerTimestamp=' + new Date(ledgerTimestamp).toISOString() : ''),
         headers: passHeaders(req)
       })
@@ -72,6 +72,14 @@ export default function Account({
 }) {
   const { t } = useTranslation()
 
+  /*
+  obligations: {
+    "trustlines": 44799,
+    "holders": 12131,
+    "tokens": 7
+  }
+  */
+
   const [data, setData] = useState({})
   const [loading, setLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState('')
@@ -87,10 +95,25 @@ export default function Account({
   const [balances, setBalances] = useState({})
   const [shownOnSmall, setShownOnSmall] = useState(null)
   const [objects, setObjects] = useState({})
+  //const [obligations, setObligations] = useState({})
+  const [gateway, setGateway] = useState(false)
 
   useEffect(() => {
     if (!initialData?.address) return
     setData(initialData)
+
+    if (initialData?.obligations) {
+      //setObligations(initialData.obligations)
+      if (initialData.obligations?.trustlines > 200) {
+        setGateway(true)
+      } else {
+        //keep it here for cases when address changes without refreshing the page
+        setGateway(false)
+      }
+    } else {
+      //keep it here for cases when address changes without refreshing the page
+      setGateway(false)
+    }
   }, [initialData])
 
   useEffect(() => {
@@ -198,18 +221,7 @@ export default function Account({
           ' ' +
           (initialData?.service?.name || initialData?.username || initialData?.address || id) +
           (data?.ledgerInfo?.balance > 1000000
-            ? ' - ' +
-              shortNiceNumber(data.ledgerInfo.balance / 1000000, 2, 0) +
-              ' ' +
-              nativeCurrency +
-              ' (' +
-              nativeCurrencyToFiat({
-                amount: data.ledgerInfo.balance,
-                selectedCurrency,
-                fiatRate,
-                asText: true
-              }) +
-              ')'
+            ? ' - ' + shortNiceNumber(data.ledgerInfo.balance / 1000000, 2, 0) + ' ' + nativeCurrency
             : '')
         }
         description={
@@ -493,10 +505,11 @@ export default function Account({
                             setSignRequest={setSignRequest}
                             fiatRate={fiatRate}
                             objects={objects}
+                            gateway={gateway}
                           />
                           <PublicData data={data} />
                           <NftData data={data} objects={objects} ledgerTimestamp={data?.ledgerInfo?.ledgerTimestamp} />
-                          {data?.ledgerInfo?.activated && (
+                          {data?.ledgerInfo?.activated && !gateway && (
                             <ObjectsData
                               account={account}
                               setSignRequest={setSignRequest}

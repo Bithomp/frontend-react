@@ -8,15 +8,22 @@ import { getIsSsrMobile } from '../../utils/mobile'
 
 import {
   TransactionDetails,
+  TransactionAccountDelete,
+  TransactionAccountSet,
+  TransactionAMM,
+  TransactionCheck,
+  TransactionDID,
   TransactionEscrow,
-  TransactionOrder,
+  TransactionImport,
+  TransactionNFToken,
+  TransactionOffer,
   TransactionPayment,
-  TransactionAmm,
-  TransactionCheck
+  TransactionSetRegularKey,
+  TransactionTrustSet,
+  TransactionURIToken
 } from '../../components/Transaction'
 import { useEffect, useState } from 'react'
 import { fetchHistoricalRate } from '../../utils/common'
-import { TransactionSetRegularKey } from '../../components/Transaction/TransactionSetRegularKey'
 
 export async function getServerSideProps(context) {
   const { locale, query, req } = context
@@ -39,7 +46,7 @@ export async function getServerSideProps(context) {
 
   return {
     props: {
-      data,
+      data: data || null,
       isSsrMobile: getIsSsrMobile(context),
       ...(await serverSideTranslations(locale, ['common']))
     }
@@ -52,34 +59,56 @@ export default function Transaction({ data, selectedCurrency }) {
   const [pageFiatRate, setPageFiatRate] = useState(0)
 
   useEffect(() => {
-    if (!selectedCurrency || !outcome) return
-    const { ledgerTimestamp } = outcome
+    if (!selectedCurrency || !data?.outcome) return
+    const { ledgerTimestamp } = data?.outcome
     if (!ledgerTimestamp) return
 
     fetchHistoricalRate({ timestamp: ledgerTimestamp * 1000, selectedCurrency, setPageFiatRate })
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedCurrency])
+  }, [selectedCurrency, data])
 
-  if (!data) return null
+  if (!data)
+    return (
+      <center>
+        <br />
+        No data received. Are you online?
+        <br />
+        <br />
+      </center>
+    )
 
-  const { txHash, outcome, tx } = data
+  const { txHash, tx } = data
 
   let TransactionComponent = null
   const txType = tx?.TransactionType
   // https://xrpl.org/docs/references/protocol/transactions/types
 
-  if (txType?.includes('Escrow')) {
+  if (txType === 'AccountDelete') {
+    TransactionComponent = TransactionAccountDelete
+  } else if (txType === 'AccountSet') {
+    TransactionComponent = TransactionAccountSet
+  } else if (txType?.includes('AMM')) {
+    TransactionComponent = TransactionAMM
+  } else if (txType?.includes('Check')) {
+    TransactionComponent = TransactionCheck
+  } else if (txType?.includes('Escrow')) {
     TransactionComponent = TransactionEscrow
+  } else if (txType === 'Import') {
+    TransactionComponent = TransactionImport
+  } else if (txType?.includes('NFToken')) {
+    TransactionComponent = TransactionNFToken
   } else if (txType === 'OfferCreate' || txType === 'OfferCancel') {
-    TransactionComponent = TransactionOrder
+    TransactionComponent = TransactionOffer
   } else if (txType === 'Payment') {
     TransactionComponent = TransactionPayment
   } else if (txType === 'SetRegularKey') {
     TransactionComponent = TransactionSetRegularKey
-  } else if (txType?.includes('AMM')) {
-    TransactionComponent = TransactionAmm
-  } else if (txType?.includes('Check')) {
-    TransactionComponent = TransactionCheck
+  } else if (txType === 'TrustSet') {
+    TransactionComponent = TransactionTrustSet
+  } else if (txType?.includes('DID')) {
+    TransactionComponent = TransactionDID
+  } else if (txType?.includes('URIToken')) {
+    TransactionComponent = TransactionURIToken
   } else {
     TransactionComponent = TransactionDetails
   }

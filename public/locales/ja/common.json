@@ -176,18 +176,18 @@
       "quorum": "バリデーション定足数",
       "proposers": "提出者",
       "accounts": "アカウント",
-      "accountsActiveLast24h": "アクティブアカウント(24h)",
-      "transactionsLast24h": "トランザクション(24h)",
-      "paymentsLast24h": "支払い(24h)",
-      "feesLast24h": "手数料(24h)",
+      "accountsActiveLast24h": "アクティブアカウント",
+      "transactionsLast24h": "トランザクション",
+      "paymentsLast24h": "支払い",
+      "feesLast24h": "手数料",
       "usernames": "ユーザネーム",
       "nft": {
-        "created": "NFTミント",
-        "burned": "NFTバーン",
+        "created": "ミント",
+        "burned": "バーン",
         "owners": "現在の保有者",
-        "issuers": "NFT発行者",
-        "transfers": "NFTトランスファー",
-        "for-sale": "販売中のNFT"
+        "issuers": "発行者",
+        "transfers": "トランスファー",
+        "for-sale": "販売中"
       },
       "escrows": "エスクロー",
       "amms": "AMMプール",
@@ -207,6 +207,7 @@
     "base-reserve": "基本準備金",
     "increment-reserve": "所有者準備金",
     "total-supply": "供給量",
+    "burned-by-hooks": "Hooksによって焼却された",
     "total-burned": "合計バーン"
   },
   "nft-statistics": {

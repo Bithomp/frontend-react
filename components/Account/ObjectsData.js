@@ -78,6 +78,8 @@ export default function ObjectsData({
   const [depositPreauthList, setDepositPreauthList] = useState([])
   const [payChannelList, setPayChannelList] = useState([])
   const [incomingPayChannelList, setIncomingPayChannelList] = useState([])
+  const [mptIssuanceList, setMptIssuanceList] = useState([])
+  const [mptList, setMptList] = useState([])
 
   const { t } = useTranslation()
 
@@ -94,7 +96,7 @@ export default function ObjectsData({
     async function checkObjects() {
       setLoadingObjects(true)
       const accountObjectsData = await axios
-        .get('v2/objects/' + address + (ledgerTimestamp ? '?ledgerTimestamp=' + ledgerTimestamp : ''), {
+        .get('v2/objects/' + address + '?limit=1000' + (ledgerTimestamp ? '&ledgerTimestamp=' + ledgerTimestamp : ''), {
           signal: controller.signal
         })
         .catch((error) => {
@@ -133,7 +135,8 @@ export default function ObjectsData({
           setCheckList(accountObjectWithChecks.filter((o) => o.Destination === address))
           setIssuedCheckList(accountObjectWithChecks.filter((o) => o.Account === address))
 
-          // DepositPreauth, Escrow, NFTokenOffer, NFTokenPage, Offer, PayChannel, SignerList, Ticket, RippleState
+          // DepositPreauth, Escrow, NFTokenOffer, NFTokenPage, Offer, PayChannel, SignerList, Ticket, RippleState,
+          // devnet: MPTokenIssuance
           let accountObjectWithDepositPreauth =
             accountObjects.filter((o) => o.LedgerEntryType === 'DepositPreauth') || []
           let accountObjectWithEscrow = accountObjects.filter((o) => o.LedgerEntryType === 'Escrow') || []
@@ -143,6 +146,12 @@ export default function ObjectsData({
           let accountObjectWithPayChannel = accountObjects.filter((o) => o.LedgerEntryType === 'PayChannel') || []
           setPayChannelList(accountObjectWithPayChannel.filter((o) => o.Account === address))
           setIncomingPayChannelList(accountObjectWithPayChannel.filter((o) => o.Destination === address))
+
+          let accountObjectWithMptIssuance = accountObjects.filter((o) => o.LedgerEntryType === 'MPTokenIssuance') || []
+          setMptIssuanceList(accountObjectWithMptIssuance)
+
+          let accountObjectsWithMpt = accountObjects.filter((o) => o.LedgerEntryType === 'MPToken') || []
+          setMptList(accountObjectsWithMpt)
 
           //https://github.com/Bithomp/xrpl-api/blob/master/src/models/account_object.ts#L95-L131
 
@@ -191,7 +200,9 @@ export default function ObjectsData({
             nftList: nfts,
             offerList: accountObjectWithOffer,
             payChannelList: accountObjectWithPayChannel,
-            rippleStateList: accountObjectWithRippleState
+            rippleStateList: accountObjectWithRippleState,
+            mptIssuanceList: accountObjectWithMptIssuance,
+            mptList: accountObjectsWithMpt
           })
         } else {
           // no objects
@@ -202,7 +213,9 @@ export default function ObjectsData({
             nftList: [],
             offerList: [],
             payChannelList: [],
-            rippleStateList: []
+            rippleStateList: [],
+            mptIssuanceList: [],
+            mptList: []
           })
         }
       }
@@ -619,6 +632,140 @@ export default function ObjectsData({
           )}
           {payChannelList.length > 0 && payChannelListNode(payChannelList)}
           {incomingPayChannelList.length > 0 && payChannelListNode(incomingPayChannelList, { type: 'incoming' })}
+
+          {mptIssuanceList.length > 0 && (
+            <>
+              <table className="table-details hide-on-small-w800">
+                <thead>
+                  <tr>
+                    <th colSpan="100">
+                      {objectsCountText(mptIssuanceList)}Multi-Purpose Token issuance{historicalTitle}
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <th>#</th>
+                    <th className="left">ID</th>
+                    <th className="right">Outstanding amount</th>
+                    <th>Last update</th>
+                  </tr>
+                  {mptIssuanceList.map((c, i) => (
+                    <tr key={i}>
+                      <td className="center" style={{ width: 30 }}>
+                        {i + 1}
+                      </td>
+                      <td>
+                        {shortHash(c.mpt_issuance_id)} <CopyButton text={c.mpt_issuance_id} />
+                      </td>
+                      <td className="right">{c.OutstandingAmount}</td>
+                      <td className="center">
+                        {timeOrDate(c.previousTxAt)} <LinkTx tx={c.PreviousTxnID} icon={true} />
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              <div className="show-on-small-w800">
+                <br />
+                <center>
+                  {objectsCountText(mptIssuanceList)}
+                  {'Multi-Purpose Token issuance'.toUpperCase()}
+                  {historicalTitle}
+                </center>
+                <br />
+                {mptIssuanceList.map((c, i) => (
+                  <table className="table-mobile wide" key={i}>
+                    <tbody>
+                      <tr>
+                        <td className="center">{i + 1}</td>
+                        <td>
+                          <p>
+                            <span className="grey">ID</span> {shortHash(c.mpt_issuance_id)}{' '}
+                            <CopyButton text={c.mpt_issuance_id} />
+                          </p>
+                          <p>
+                            <span className="grey">Outstanding amount</span> {c.OutstandingAmount}
+                          </p>
+                          <p>
+                            <span className="grey">Last update</span> {timeOrDate(c.previousTxAt)}{' '}
+                            <LinkTx tx={c.PreviousTxnID} icon={true} />
+                          </p>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                ))}
+              </div>
+            </>
+          )}
+
+          {mptList.length > 0 && (
+            <>
+              <table className="table-details hide-on-small-w800">
+                <thead>
+                  <tr>
+                    <th colSpan="100">
+                      {objectsCountText(mptList)}Multi-Purpose Token{historicalTitle}
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <th>#</th>
+                    <th className="left">ID</th>
+                    <th className="right">Amount</th>
+                    <th>Last update</th>
+                  </tr>
+                  {mptList.map((c, i) => (
+                    <tr key={i}>
+                      <td className="center" style={{ width: 30 }}>
+                        {i + 1}
+                      </td>
+                      <td>
+                        {shortHash(c.MPTokenIssuanceID)} <CopyButton text={c.MPTokenIssuanceID} />
+                      </td>
+                      <td className="right">{c.MPTAmount}</td>
+                      <td className="center">
+                        {timeOrDate(c.previousTxAt)} <LinkTx tx={c.PreviousTxnID} icon={true} />
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              <div className="show-on-small-w800">
+                <br />
+                <center>
+                  {objectsCountText(mptList)}
+                  {'Multi-Purpose Token'.toUpperCase()}
+                  {historicalTitle}
+                </center>
+                <br />
+                {mptList.map((c, i) => (
+                  <table className="table-mobile wide" key={i}>
+                    <tbody>
+                      <tr>
+                        <td className="center">{i + 1}</td>
+                        <td>
+                          <p>
+                            <span className="grey">ID</span> {shortHash(c.MPTokenIssuanceID)}{' '}
+                            <CopyButton text={c.MPTokenIssuanceID} />
+                          </p>
+                          <p>
+                            <span className="grey">Amount</span> {c.MPTAmount}
+                          </p>
+                          <p>
+                            <span className="grey">Last update</span> {timeOrDate(c.previousTxAt)}{' '}
+                            <LinkTx tx={c.PreviousTxnID} icon={true} />
+                          </p>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                ))}
+              </div>
+            </>
+          )}
         </>
       )}
     </>

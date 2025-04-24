@@ -7,8 +7,8 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import Link from 'next/link'
 import dynamic from 'next/dynamic'
 
-import { stripText, decode, network, isValidJson, xahauNetwork } from '../../utils'
-import { AddressWithIconFilled, convertedAmount, usernameOrAddress } from '../../utils/format'
+import { stripText, decode, network, isValidJson, xahauNetwork, devNet, encode } from '../../utils'
+import { AddressWithIconFilled, convertedAmount, timeFromNow, usernameOrAddress } from '../../utils/format'
 import { getIsSsrMobile } from '../../utils/mobile'
 import { nftName, mpUrl, bestNftOffer, nftUrl, partnerMarketplaces, ipfsUrl } from '../../utils/nft'
 import {
@@ -77,7 +77,7 @@ const hasJsonMeta = (nft) => {
 }
 
 export default function Nft({ setSignRequest, account, pageMeta, id, selectedCurrency, refreshPage }) {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
 
   const [data, setData] = useState({})
   const [decodedUri, setDecodedUri] = useState(null)
@@ -301,6 +301,10 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
         return t('table.minted')
       }
     } else {
+      //if there is URI then it's URI modified, otherwise burned
+      if (event.url) {
+        return t('table.updated')
+      }
       return <span className="red">{t('table.burned')}</span>
     }
   }
@@ -342,12 +346,22 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
           <tr>
             <td className="bold">{eventType(nftEvent)}</td>
             <td>
-              {fullDateAndTime(nftEvent.changedAt)}{' '}
+              {timeFromNow(nftEvent.changedAt, i18n)} ({fullDateAndTime(nftEvent.changedAt)}){' '}
               <a href={'/explorer/' + nftEvent.txHash}>
                 <LinkIcon />
               </a>
             </td>
           </tr>
+          {nftEvent.url && (
+            <tr>
+              <td>{t('table.uri')}</td>
+              <td>
+                <a href={nftEvent.url} target="_blank" rel="noreferrer nofollow">
+                  {nftEvent.url}
+                </a>
+              </td>
+            </tr>
+          )}
           {nftEvent.amount && nftEvent.amount !== '0' && (
             <tr>
               <td>{t('table.price')}</td>
@@ -952,6 +966,55 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
     )
   }
 
+  const setAsAvatarButton = () => {
+    if (!id || data.deletedAt) return '' //if it is already burned do not offer to burn
+
+    //if devnet, or signed, but not an owner or issuer - do not show set as avatar button
+    if (devNet || (account?.address && account.address !== data.owner && account.address !== data.issuer)) return ''
+
+    const command = {
+      action: 'setAvatar',
+      url: imageUrl,
+      timestamp: new Date().toISOString()
+    }
+
+    const request = {
+      Account: data.owner,
+      TransactionType: 'AccountSet',
+      Memos: [
+        {
+          Memo: {
+            MemoType: encode('json'),
+            MemoData: encode(JSON.stringify(command))
+          }
+        }
+      ]
+    }
+
+    return (
+      <>
+        <button
+          className="button-action wide center"
+          onClick={() =>
+            setSignRequest({
+              request,
+              data: {
+                signOnly: true,
+                action: 'set-avatar',
+                redirect: 'account'
+              }
+            })
+          }
+          disabled={data.owner !== account?.address}
+        >
+          Set as Avatar 😎
+        </button>
+        <br />
+        <br />
+      </>
+    )
+  }
+
   const imageUrl = nftUrl(pageMeta, 'image')
 
   const typeName = (type) => {
@@ -1017,6 +1080,7 @@ export default function Nft({ setSignRequest, account, pageMeta, id, selectedCur
                           {!notFoundInTheNetwork ? (
                             <>
                               <NftPreview nft={data} />
+                              {setAsAvatarButton()}
                               {sellButton(data.buyOffers)}
                               {buyButton(data.sellOffers)}
                               {cancelNftOfferButtons(t, setSignRequest, account?.address, data)}

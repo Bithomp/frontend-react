@@ -27,6 +27,7 @@ import { gemwalletTxSend } from '../utils/gemwallet'
 import { ledgerwalletTxSend } from '../utils/ledgerwallet'
 import { trezorTxSend } from '../utils/trezor'
 import { metamaskTxSend } from '../utils/metamask'
+import { crossmarkTxSend } from '../utils/crossmark'
 
 import XamanQr from './Xaman/Qr'
 import CheckBox from './UI/CheckBox'
@@ -88,13 +89,7 @@ export default function SignForm({
   const [rewardRate, setRewardRate] = useState()
   const [rewardDelay, setRewardDelay] = useState()
 
-  const [xamanUserToken, setXamanUserToken] = useState(null)
-
   const [choosenWallet, setChoosenWallet] = useState(null)
-
-  useEffect(() => {
-    setXamanUserToken(localStorage.getItem('xamanUserToken'))
-  }, [])
 
   useEffect(() => {
     if (!signRequest) return
@@ -329,6 +324,8 @@ export default function SignForm({
       metamaskTxSending(tx)
     } else if (wallet === 'walletconnect') {
       walletconnectTxSending(tx)
+    } else if (wallet === 'crossmark') {
+      crossmarkTxSending(tx)
     }
   }
 
@@ -356,6 +353,22 @@ export default function SignForm({
     gemwalletTxSend({ tx, signRequest, afterSubmitExe, afterSigning, onSignIn, setStatus, account, setAwaiting, t })
     setScreen('gemwallet')
     setStatus(t('signin.statuses.check-app', { appName: 'GemWallet' }))
+  }
+
+  const crossmarkTxSending = (tx) => {
+    crossmarkTxSend({
+      tx,
+      signRequest,
+      afterSubmitExe,
+      afterSigning,
+      onSignIn,
+      setStatus,
+      account,
+      setAwaiting,
+      t
+    })
+    setScreen('crossmark')
+    setStatus(t('signin.statuses.check-app', { appName: 'Crossmark' }))
   }
 
   const ledgerwalletTxSending = (tx) => {
@@ -444,6 +457,7 @@ export default function SignForm({
         signInPayload.options.return_url.app += '&receipt=true'
       }
     } else {
+      const xamanUserToken = localStorage.getItem('xamanUserToken')
       if (xamanUserToken) {
         signInPayload.user_token = xamanUserToken
       }
@@ -559,7 +573,14 @@ export default function SignForm({
         if (res?.error) {
           setStatus(t(res.error))
         } else {
-          delay(3000, closeSignInFormAndRefresh)
+          if (signRequestData?.redirect === 'account') {
+            delay(3000, () => {
+              closeSignInFormAndRefresh()
+              router.push('/account/' + address)
+            })
+          } else {
+            delay(3000, closeSignInFormAndRefresh)
+          }
         }
       })
       return
@@ -825,7 +846,8 @@ export default function SignForm({
     ledgerwallet: 'Ledger Wallet',
     trezor: 'Trezor',
     metamask: 'Metamask',
-    walletconnect: 'WalletConnect'
+    walletconnect: 'WalletConnect',
+    crossmark: 'Crossmark'
   }
 
   return (
@@ -1111,6 +1133,17 @@ export default function SignForm({
                             width={169}
                             height={80}
                             style={{ maxWidth: '100%', maxHeight: '100%' }}
+                          />
+                        </div>
+                      )}
+                      {signRequest?.wallet !== 'xaman' && !isMobile && (
+                        <div className="signin-app-logo">
+                          <Image
+                            alt="Crossmark"
+                            src="/images/wallets/crossmark-large.png"
+                            onClick={() => txSend({ wallet: 'crossmark' })}
+                            width={169}
+                            height={80}
                           />
                         </div>
                       )}

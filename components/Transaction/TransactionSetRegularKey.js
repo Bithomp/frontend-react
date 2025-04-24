@@ -1,4 +1,4 @@
-import { TData, TRow } from '../TableDetails'
+import { TData } from '../Table'
 
 import { TransactionCard } from './TransactionCard'
 import { AddressWithIconFilled } from '../../utils/format'
@@ -9,12 +9,18 @@ export const TransactionSetRegularKey = ({ data, pageFiatRate, selectedCurrency 
 
   return (
     <TransactionCard data={data} pageFiatRate={pageFiatRate} selectedCurrency={selectedCurrency}>
-      <TRow>
+      <tr>
+        <TData>Initiated by</TData>
+        <TData>
+          <AddressWithIconFilled data={specification.source} name="address" />
+        </TData>
+      </tr>
+      <tr>
         <TData className="bold">New Regular key</TData>
         <TData>
           <AddressWithIconFilled data={specification} name="regularKey" />
         </TData>
-      </TRow>
+      </tr>
     </TransactionCard>
   )
 }

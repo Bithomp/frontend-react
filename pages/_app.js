@@ -12,14 +12,17 @@ import ScrollToTop from '../components/Layout/ScrollToTop'
 import BackgroundImage from '../components/Layout/BackgroundImage'
 
 const SignForm = dynamic(() => import('../components/SignForm'), { ssr: false })
-const TopLinks = dynamic(() => import('../components/Layout/TopLinks'), { ssr: false })
+import TopLinks from '../components/Layout/TopLinks'
 const TopProgressBar = dynamic(() => import('../components/TopProgressBar'), { ssr: false })
 
 import { IsSsrMobileContext } from '../utils/mobile'
 import { isValidUUID, network, server, useLocalStorage, useCookie, xahauNetwork, networkId } from '../utils'
 
 import { getAppMetadata } from '@walletconnect/utils'
-import { WalletConnectModalSign } from '@walletconnect/modal-sign-react'
+const WalletConnectModalSign = dynamic(
+  () => import('@walletconnect/modal-sign-react').then((mod) => mod.WalletConnectModalSign),
+  { ssr: false }
+)
 
 import '../styles/ui.scss'
 import '../styles/components/nprogress.css'
@@ -39,6 +42,13 @@ const MyApp = ({ Component, pageProps }) => {
   const [signRequest, setSignRequest] = useState(false)
   const [refreshPage, setRefreshPage] = useState('')
   const [wcSession, setWcSession] = useState(null)
+  const [isClient, setIsClient] = useState(false)
+  const [isOnline, setIsOnline] = useState(true)
+
+  useEffect(() => {
+    setIsClient(true)
+    setIsOnline(navigator.onLine)
+  }, [])
 
   const router = useRouter()
 
@@ -148,8 +158,8 @@ const MyApp = ({ Component, pageProps }) => {
               setSelectedCurrency={setSelectedCurrency}
             />
             <ScrollToTop />
-            {/* available only on the mainnet and testnet */}
-            {(networkId === 0 || networkId === 1) && (
+            {/* available only on the mainnet and testnet, only on the client side, only when online */}
+            {(networkId === 0 || networkId === 1) && isClient && isOnline && (
               <WalletConnectModalSign projectId={process.env.NEXT_PUBLIC_WALLETCONNECT} metadata={getAppMetadata()} />
             )}
             {(signRequest || isValidUUID(uuid)) && (

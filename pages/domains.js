@@ -1,5 +1,5 @@
 import { useTranslation, Trans } from 'next-i18next'
-import { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
@@ -188,10 +188,10 @@ export default function Domains({ setSignRequest }) {
                           <AddressWithIconFilled data={d.addresses[0]} />
                         ) : (
                           d.addresses.map((a, j) => (
-                            <>
+                            <React.Fragment key={j}>
                               {j + 1} . <AddressWithIconFilled data={a} />
                               {j !== d.addresses.length - 1 && <br />}
-                            </>
+                            </React.Fragment>
                           ))
                         )}
                       </td>
@@ -231,10 +231,10 @@ export default function Domains({ setSignRequest }) {
                           <AddressWithIconFilled data={d.addresses[0]} />
                         ) : (
                           d.addresses.map((a, j) => (
-                            <>
+                            <React.Fragment key={j}>
                               {j + 1} . <AddressWithIconFilled data={a} />
                               {j !== d.addresses.length - 1 && <br />}
-                            </>
+                            </React.Fragment>
                           ))
                         )}
                       </td>

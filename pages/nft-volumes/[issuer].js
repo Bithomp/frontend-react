@@ -299,6 +299,11 @@ export default function NftVolumes({
     }
   }
 
+  const chartDivStyle =
+    windowWidth > 600
+      ? { flexGrow: 0, flexBasis: 'calc(60% - 20px)' }
+      : { width: '100%', marginLeft: 0, marginRight: '10px' }
+
   return (
     <>
       <SEO
@@ -347,17 +352,20 @@ export default function NftVolumes({
           ) : (
             <>
               {chartIssuers.length > 0 && chartVolumes.length > 0 && (
-                <div>
-                  <div style={{ maxWidth: '100%', width: '600px', display: 'inline-block' }}>
-                    <h3>{t('sales-chart', { ns: 'nft-volumes' })}</h3>
-                    <SimpleChart data={chartIssuers} />
-                  </div>
-                  {windowWidth > 1000 && <div style={{ display: 'inline-block', width: '100px' }}></div>}
-                  <div style={{ maxWidth: '100%', width: '600px', display: 'inline-block' }}>
+                <div className="flex" style={{ marginLeft: '10px', justifyContent: 'center' }}>
+                  <div style={chartDivStyle}>
                     <h3>
-                      {t('volumes-chart', { ns: 'nft-volumes' })} ({convertCurrency?.toUpperCase()})
+                      {t('sales-chart', { ns: 'nft-volumes' })} / {t('volumes-chart', { ns: 'nft-volumes' })} (
+                      {convertCurrency?.toUpperCase()})
                     </h3>
-                    <SimpleChart data={chartVolumes} />
+                    <SimpleChart
+                      currency={selectedCurrency}
+                      data={[
+                        { name: t('table.sales'), data: chartIssuers },
+                        { name: t('table.volume'), data: chartVolumes }
+                      ]}
+                      combined={true}
+                    />
                   </div>
                 </div>
               )}

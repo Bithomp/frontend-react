@@ -1,5 +1,5 @@
 import Document, { Html, Head, Main, NextScript } from 'next/document'
-import { xahauNetwork } from '../utils'
+import { server, xahauNetwork } from '../utils'
 
 class MyDocument extends Document {
   static async getInitialProps(ctx) {
@@ -17,7 +17,7 @@ class MyDocument extends Document {
     // Run the parent `getInitialProps`, it now includes the custom `renderPage`
     const initialProps = await Document.getInitialProps(ctx)
     const cookieTheme = ctx.req?.cookies?.theme ?? null
-    const logoPath = '/images/' + (xahauNetwork ? 'xahauexplorer' : 'xrplexplorer')
+    const logoPath = server.includes('bithomp') ? '' : '/images/' + (xahauNetwork ? 'xahauexplorer' : 'xrplexplorer')
 
     return { ...initialProps, cookieTheme, logoPath }
   }

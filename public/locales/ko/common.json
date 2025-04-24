@@ -176,18 +176,18 @@
       "quorum": "유효 쿼럼",
       "proposers": "제안자",
       "accounts": "거래",
-      "accountsActiveLast24h": "활성 계정 (24h)",
-      "transactionsLast24h": "거래 (24h)",
-      "paymentsLast24h": "지불 (24h)",
-      "feesLast24h": "수수료 (24h)",
+      "accountsActiveLast24h": "활성 계정",
+      "transactionsLast24h": "거래",
+      "paymentsLast24h": "지불",
+      "feesLast24h": "수수료",
       "usernames": "사용자명",
       "nft": {
-        "created": "NFT 채굴됨",
-        "burned": "NFT 소각",
+        "created": "채굴됨",
+        "burned": "소각",
         "owners": "현재 소유자",
-        "issuers": "NFT 발행자",
-        "transfers": "NFT 전환",
-        "for-sale": "NFT 판매 중"
+        "issuers": "발행자",
+        "transfers": "전환",
+        "for-sale": "판매 중"
       },
       "escrows": "Escrows",
       "amms": "AMM pools",
@@ -207,6 +207,7 @@
     "base-reserve": "기본 준비금",
     "increment-reserve": "준비금 증가",
     "total-supply": "전체 공급",
+    "burned-by-hooks":"Hooks에 의해 소각됨",
     "total-burned": "전체 소각량"
   },
   "nft-statistics": {

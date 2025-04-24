@@ -53,6 +53,7 @@ export default function Footer() {
         </div>
         <div className="footer-menu-column">
           <span className="footer-menu-header">Bithomp</span>
+          <Link href="/jobs">Join our team 🧑‍💻</Link>
           <Link href="/about-us">{t('menu.company.about-us')}</Link>
           <Link href="/advertise">{t('menu.business.advertise')}</Link>
           <a href="https://xrplmerch.com/product-category/bithomp/?wpam_id=22" target="_blank" rel="noreferrer">
@@ -70,12 +71,16 @@ export default function Footer() {
           <Link href="/privacy-policy">{t('menu.privacy-policy')}</Link>
           <Link href="/terms-and-conditions">{t('menu.terms-and-conditions')}</Link>
         </div>
-        {!xahauNetwork && (
-          <div className="footer-menu-column">
-            <span className="footer-menu-header">{t('menu.learn-more.title')}</span>
-            <Link href="/xrpl-article">XRP, XRPL, Ripple</Link>
-          </div>
-        )}
+
+        <div className="footer-menu-column">
+          <span className="footer-menu-header">{t('menu.learn-more.title')}</span>
+          {!xahauNetwork && <Link href="/xrpl-article">XRP, XRPL, Ripple</Link>}
+          <Link href="/blackholed-address">Blackholed address</Link>
+          <Link href="/blacklisted-address">Blacklisted address</Link>
+          <Link href="/verified-domains">Verified domains</Link>
+          {!xahauNetwork && <Link href="/rlusd">Ripple USD</Link>}
+        </div>
+
         {!xahauNetwork && (
           <div className="footer-menu-column">
             <span className="footer-menu-header">{t('menu.sponsored.title')}</span>

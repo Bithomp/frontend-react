@@ -945,8 +945,8 @@ export default function Validators({ amendment, initialData, initialErrorMessage
                       <br />
                       {listAmendments(v.amendments)}
                       <br />
-                      {t('last-ledger-information.base-fee')} {v.baseFee ? amountFormat(v.baseFee) : 'N/A'}|
-                      {t('last-ledger-information.base-reserve')} {v.reserveBase ? amountFormat(v.reserveBase) : 'N/A'}|
+                      {t('last-ledger-information.base-fee')} {v.baseFee ? amountFormat(v.baseFee) : 'N/A'}|{' '}
+                      {t('last-ledger-information.base-reserve')} {v.reserveBase ? amountFormat(v.reserveBase) : 'N/A'}|{' '}
                       {t('last-ledger-information.increment-reserve')}{' '}
                       {v.reserveIncrement ? amountFormat(v.reserveIncrement) : 'N/A'}
                     </td>

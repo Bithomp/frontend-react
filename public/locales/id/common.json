@@ -176,18 +176,18 @@
       "quorum": "Quorum validasi",
       "proposers": "Pengusul",
       "accounts": "Akun",
-      "accountsActiveLast24h": "Akun aktiv (24h)",
-      "transactionsLast24h": "Transaksi (24h)",
-      "paymentsLast24h": "Pembayaran (24h)",
-      "feesLast24h": "Biaya (24h)",
+      "accountsActiveLast24h": "Akun aktiv",
+      "transactionsLast24h": "Transaksi",
+      "paymentsLast24h": "Pembayaran",
+      "feesLast24h": "Biaya",
       "usernames": "Nama Pengguna",
       "nft": {
-        "created": "NFT dicetak",
-        "burned": "NFT dihapus",
+        "created": "Dicetak",
+        "burned": "Dihapus",
         "owners": "Pemilik saat ini",
-        "issuers": "Penerbit NFT",
-        "transfers": "Transfer NFT",
-        "for-sale": "NFT yang Dijual"
+        "issuers": "Penerbit",
+        "transfers": "Transfer",
+        "for-sale": "Yang Dijual"
       },
       "escrows": "Escrows",
       "amms": "AMM pools",
@@ -207,6 +207,7 @@
     "base-reserve": "Cadangan Dasar",
     "increment-reserve": "Penambahan Cadangan",
     "total-supply": "Total Pasokan",
+    "burned-by-hooks": "Dibakar oleh Hooks",
     "total-burned": "Total Dihapus"
   },
   "nft-statistics": {
