@@ -89,7 +89,7 @@ const uritokenChanges = (changes, nftokens, txType) => {
         }
 
         for (let i = 0; i < change.length; i++) {
-          const nftInfo = nftokens[change[i].uri]
+          const nftInfo = nftokens[change[i].uritokenID]
           if (showAll) {
             output.push(
               <tr key={i}>
