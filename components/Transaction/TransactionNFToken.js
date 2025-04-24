@@ -362,7 +362,7 @@ export const TransactionNFToken = ({ data, pageFiatRate, selectedCurrency }) => 
         nftokenChanges(outcome?.nftokenChanges, outcome?.affectedObjects?.nftokens, txType)}
       {txType === 'NFTokenCreateOffer' && Object.keys(outcome?.nftokenOfferChanges).length > 0 && (
         <tr>
-          <TData>Offer changes</TData>
+          <TData>Offer</TData>
           <TData>{showAllOfferLinks(outcome?.nftokenOfferChanges)}</TData>
         </tr>
       )}
