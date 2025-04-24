@@ -216,7 +216,7 @@ export const TransactionURIToken = ({ data, pageFiatRate, selectedCurrency }) =>
           <TData className="orange">burnable</TData>
         </tr>
       )}
-      {outcome?.uriTokenChanges?.length > 0 && txType !== 'NFTokenBurn' && (
+      {outcome?.uriTokenChanges && Object.keys(outcome?.uriTokenChanges).length > 0 && txType !== 'NFTokenBurn' && (
         <tr>
           <TData>URI Token Changes</TData>
           <TData>{uritokenChanges(outcome?.uritokenChanges, outcome?.affectedObjects?.uritokens, txType)}</TData>

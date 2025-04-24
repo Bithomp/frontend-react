@@ -29,7 +29,6 @@ const nftData = (change, nftInfo, txType) => {
               <TData>{nftInfo.transferFee / 1000}%</TData>
             </tr>
           )}
-
           {nftInfo.flags && (
             <tr>
               <TData>Flag{Object.keys(nftInfo.flags).length > 1 ? 's' : ''}</TData>
@@ -318,12 +317,9 @@ export const TransactionNFToken = ({ data, pageFiatRate, selectedCurrency }) => 
           <TData>{flagList(specification.flags)}</TData>
         </tr>
       )}
-      {outcome?.nftokenChanges?.length > 0 && (
-        <tr>
-          <TData>NFT changes</TData>
-          <TData>{nftokenChanges(outcome?.nftokenChanges, outcome?.affectedObjects?.nftokens, txType)}</TData>
-        </tr>
-      )}
+      {outcome?.nftokenChanges &&
+        Object.keys(outcome?.nftokenChanges).length > 0 &&
+        nftokenChanges(outcome?.nftokenChanges, outcome?.affectedObjects?.nftokens, txType)}
       {txType === 'NFTokenCreateOffer' &&
         outcome?.nftokenOfferChanges?.map((change) => change.map((offer) => nftOfferLink(offer.index)))}
     </TransactionCard>
