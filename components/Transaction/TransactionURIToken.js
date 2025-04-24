@@ -2,7 +2,7 @@ import React from 'react'
 import { TData } from '../Table'
 
 import { TransactionCard } from './TransactionCard'
-import { AddressWithIconFilled, nftIdLink } from '../../utils/format'
+import { AddressWithIconFilled, amountFormat, nftIdLink } from '../../utils/format'
 
 //URITokenBuy, URITokenCreateSellOffer, URITokenCancelSellOffer, URITokenBurn
 
@@ -144,7 +144,7 @@ const uritokenChanges = (changes, nftokens, txType) => {
 
 export const TransactionURIToken = ({ data, pageFiatRate, selectedCurrency }) => {
   if (!data) return null
-  const { specification, tx } = data
+  const { specification, tx, outcome } = data
 
   const txType = tx?.TransactionType
 
