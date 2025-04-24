@@ -219,10 +219,13 @@ export const TransactionNFToken = ({ data, pageFiatRate, selectedCurrency }) => 
 
   const txType = tx?.TransactionType
 
-  const direction = specification.flags.sellToken ? 'Sell' : 'Buy'
+  const direction = specification.flags ? (specification.flags.sellToken ? 'Sell' : 'Buy') : null
 
   const txTypeSpecial =
-    txType + (txType === 'NFTokenAcceptOffer' || txType === 'NFTokenCreateOffer' ? ' - ' + direction + ' Offer' : '')
+    txType +
+    (direction && (txType === 'NFTokenAcceptOffer' || txType === 'NFTokenCreateOffer')
+      ? ' - ' + direction + ' Offer'
+      : '')
 
   return (
     <TransactionCard
